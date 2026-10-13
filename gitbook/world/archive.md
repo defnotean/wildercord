@@ -86,26 +86,55 @@ being killed, the lectern wakes a new one after players spend about 3 minutes ne
 - It floats and keeps its distance. Every 8 to 14 seconds it may **blink** about 10 blocks away (always if you're
   within 6 blocks). If it strays more than 22 blocks from its lectern, it blinks back.
 - It needs line of sight to start a spell. Each spell shows its circle and lands **1.4 seconds** later.
-- It casts its phase's spells in a fixed order, about 3 to 4 seconds apart (2 to 3.5 in the last phase).
+- Between its spells it plays **tricks** from its tome. Spells and tricks come out of one deck, so it **never does the
+  same thing twice running**, and it picks what suits where you stand: near or far, behind it, above it, or crowded
+  together. Sealing its casting stops its spells, but not its tricks.
+
+| Trick | From | What you see | What to do |
+|---|---|---|---|
+| **Hurling tomes** | Phase 1 | Arms swept up, books wheeling faster and higher about it, marks opening under and around you | Step off the marks |
+| **Writing a line** | Phase 1 | Quill drawn back, a line of ink following you, turning gold as the aim locks | Sidestep the line |
+| **Reading aloud** | Phase 1 | Tome raised high, a ring of script drawn in at its feet, then rolling out along the floor | Jump the ring |
+| **Snapping its tome** | Phase 1 | Tome thrust out and opened flat, light drawn into it, a circle marked about 4.5 blocks round | Back out of the circle, or be thrown. Then strike: while its tome hangs shut it takes 35% more |
+| **Erasing** | Phase 2 | A hand drawn across its body, a pale cone chalked before it | Get behind it, or right under it. The sweep burns and strips a blessing. Afterwards it hangs blank and takes 50% more |
+| **Binding** | Phase 2 | Chains of script running to everyone it can see, turning gold before they pull | Break its sight behind a pillar, or get past 16 blocks |
+| **Marking its place** | Phase 3 | An arm straight up, a gold mark creeping after you, stopping just before it lands | Keep moving. It steps onto the mark in a burst, then leafs for its place and takes 30% more |
+| **Calling for quiet** | Phase 3 | A finger to its hood, a seal over everyone near, then two seconds of quiet | **Stand still**: whoever walks is struck. Hit it from where you stand |
 
 | Phase | Its spells |
 |---|---|
 | **1** | Splitting Frost Bolt, Shock Rain, Arcane Orb |
 | **2** | Volleying Fire Crescent, Wide Venom Zone, Greater Arcane Blitz, Splitting Chill Mine |
-| **3** | Arcane-Chill Domain, Dismantle Barrage, Sonic Boom Beam, Frost-Shock Bolt, and one time in four **Sunfall** |
+| **3** | Arcane-Chill Domain, Dismantle Barrage, Sonic Boom Beam, Frost-Shock Bolt, and now and then **Sunfall** |
+
+**What each phase changes.**
+- **Phase 2:** Erasing and Binding join in, more tomes fall, three ink lines fan out, and it pauses less between moves.
+- **Phase 3:**
+  - Marking its place and Calling for quiet join in.
+  - Its earlier tricks grow stronger:
+    - a second volley of tomes
+    - a second, faster ring
+    - the open tome pulls at anyone near
+    - a wider erasing cone
+    - chains that drag the bound in
+  - Most tricks run straight on into another with a shorter tell, and it rests less.
 
 **Sunfall** is a [secret spell](../spellcraft/secret-spells.md). A wide orange circle marks the ground
 around you. A Shield won't hold it unless you [parry](../spellcraft/shields.md) at the last moment, so
 get out of the circle. Everyone within 40 blocks learns Sunfall's riddle.
 
-**Rewriting its Cord.** At each phase change it can't be hurt for **2.5 seconds** and calls up two Runebound (a
+**Rewriting its Cord.** At each phase change the room's light is drawn into it and a column of gold rises over it as it
+writes. It can't be hurt for **2.5 seconds**, clears away whatever its tricks left on the floor, and calls up two Runebound (a
 skeleton and a pillager; Adepts the second time). No single blow skips a phase.
 
 ## Tips and counterplay
 
 - **Bring void, leave fire.** Sonic Boom, Hollow and Blackspark hit hard. Burning does nothing, and arcane does half.
 - **Fight at range.** It blinks when you close in, so bolts, beams and lances beat Touch or Burst.
-- **Read the boss bar.** Step out of Zones and marked Rain or Mine spots. Sidestep bolts.
+- **Read the boss bar.** It names every spell and trick. Step out of Zones and marked Rain or Mine spots. Sidestep bolts.
+- **Punish its tome.** After it snaps its tome shut, erases, or steps onto its mark, it hangs open for a moment and
+  takes more damage. Save your big spell for then.
+- **Freeze when it calls for quiet.** Anyone who walks during the quiet is struck, so stop and cast from where you stand.
 - **Use the pillars** to break line of sight.
 - **Shield up** against bolts and orbs. See [Shields and Parrying](../spellcraft/shields.md).
 - **During a rewrite**, kill the two Runebound instead of wasting a big spell.

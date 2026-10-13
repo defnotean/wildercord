@@ -163,7 +163,7 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
   - Saved per player, kept through death, and synced only to its owner.
   - Older saves open empty, then fill in from progress the player already has.
   - Tabs: Leads, Places, People, Learned and Talk.
-- **Six discovery leads**:
+- **Six standalone discovery leads and the Scout's Last Cairn continuation**:
 
 | Lead | Clue from | Goal | Reward |
 |---|---|---|---|
@@ -173,6 +173,15 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
 | The Warden's Threshold | a Field Guide entry | set off any element reaction | 30 XP, 2 Blank Runes |
 | Different Hands | a tournament board | win a duel | 30 XP, 2 Aura Shards, 1 Blank Rune, Aura XP |
 | The Masters' Ledger | a Stone duelist | meet a Sword Master | 50 XP, 3 Aura Shards, 1 Blank Rune, Aura XP |
+| The Scout's Last Cairn | finish The Scout's Wall | enter a road watchtower | 30 XP, 1 Aura Shard, 1 Blank Rune |
+| The Road Before Roads | finish The Scout's Last Cairn | enter standing stones | 30 XP, 2 Blank Runes |
+| An Oath at Rest | finish The Road Before Roads | use an authentic Sleeping Blade stone | 40 XP, 2 Aura Shards, 1 Blank Rune |
+
+The continuation joins existing histories: road-makers raised the stone rings before the
+Marchkeepers used those routes; the scout's paired cairns kept account of the living and those
+carried home; she later set the keeper's blade in stone. New watch orders and First Roads pages
+preserve that account (`tools/sites_travel.py`). The stone shares the Last Oath even with visitors
+who cannot draw the blade. Reading the history never claims the sword.
 
 - **How leads behave**
   - The goal and hint can be read again in the journal at any time.

@@ -54,6 +54,14 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(2);mc.resizeGui();mc.options.toggleCrouch().set(false);mc.options.setCameraType(CameraType.FIRST_PERSON);});
 			stand(world,at,AuraRules.EDGE);c.waitTicks(25);aim(c,at);c.runOnClient(mc->mc.options.keyShift.setDown(true));c.waitTicks(10);
 			use(c,at);c.waitTicks(130);unclaimed(world,at,"Edge cannot draw a Form blade");
+			// Visiting now gives the history before Form. Keep it when the fixture equips its next test weapon.
+			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();
+				check(books(p)==1 && Heart.discovered(p,"aura:sleeping_blade"),"An Edge visitor learns the Last Oath without claiming the blade");
+				if(p.getMainHandItem().has(DataComponents.WRITTEN_BOOK_CONTENT)){
+					check(p.getInventory().getItem(9).isEmpty(),"History storage slot is free");
+					p.getInventory().setItem(9,p.getMainHandItem());p.setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);
+				}
+			});
 			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",4,0,100,0));p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_SWORD));});
 			use(c,at);c.waitTicks(15);check(!world.getServer().computeOnServer(s->SleepingBlades.drawingAt(s.overworld(),at)),"Occupied hand cannot start a draw");
 			// Existing bonds are respected; no automatic replacement of a player's chosen weapon.

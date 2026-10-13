@@ -1124,7 +1124,7 @@ def write_lang(runes):
     import delve_art
     lang.update(delve_art.LANG)
     # ---- lore pack
-    import lore_journal_text  # The lore journal, its six discovery quests and the teachers' lines.
+    import lore_journal_text  # The lore journal, discovery chains and the teachers' lines.
     lang.update(lore_journal_text.LANG)
     # ---- prog pack
     import circle_vow_text
@@ -1207,6 +1207,10 @@ def write_lang(runes):
         lang[f"rune.wildercord.{path}.found"] = f"A signature fusion at a Fusion Altar: {names[a]} + {names[b]}, those two runes only"
     write_recipe_doc(runes)
     write_fusion_doc(runes)
+    import boss_encounter_text
+    for key in boss_encounter_text.RETIRED_KEYS:
+        lang.pop(key, None)
+    lang.update(boss_encounter_text.LANG)
     write_json(ASSETS / "lang/en_us.json", lang)
 
 

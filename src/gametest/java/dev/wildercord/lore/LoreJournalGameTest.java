@@ -148,6 +148,7 @@ public final class LoreJournalGameTest implements FabricClientGameTest {
 			c.waitFor(mc -> LoreJournal.data(mc.player).has("victory:tide") && !LoreJournal.data(mc.player).has("victory:venom"), 100);
 			press(c, InputConstants.KEY_H);
 			check(c.computeOnClient(mc -> mc.gui.screen() == null), "The journal key closes the journal");
+			ScoutLegendChecks.run(c, world);
 		} finally {
 			c.getInput().releaseKey(InputConstants.KEY_H);
 			c.runOnClient(mc -> mc.gui.setScreen(null));

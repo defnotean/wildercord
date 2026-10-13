@@ -55,6 +55,7 @@ class LoreQuestRulesTest {
 	void noSoftlockEveryActiveQuestCompletesOnceItsObjectiveIsSeen() {
 		for (Quest quest : ALL) {
 			Map<String, Integer> stages = new HashMap<>();
+			if (!quest.prerequisite().isEmpty()) stages.put(quest.prerequisite(), DONE);
 			Advance first = advance(stages, Set.of(quest.trigger(), quest.objective()));
 			assertTrue(first.clued().contains(quest), quest.id());
 			Advance second = advance(first.quests(), Set.of(quest.objective()));
@@ -62,6 +63,51 @@ class LoreQuestRulesTest {
 			assertEquals(DONE, second.quests().get(quest.id()));
 			Advance third = advance(second.quests(), Set.of(quest.trigger(), quest.objective()));
 			assertFalse(third.completed().contains(quest), "the reward is paid once: " + quest.id());
+		}
+	}
+
+	@Test
+	void scoutChaptersRequirePreviousCompletionAndNeverCascadeWithinAPoll() {
+		Set<String> facts = Set.of(MEMORIAL, TALK_GALE, WATCHTOWER, STANDING_STONES, SLEEPING_BLADE);
+		Map<String, Integer> stages = Map.of();
+		List<String> sequence = List.of("scout_wall", "last_cairn", "road_before_roads", "oath_at_rest");
+		Set<String> paid = new HashSet<>();
+		for (String id : sequence) {
+			Advance clue = advance(stages, facts);
+			assertEquals(List.of(quest(id)), clue.clued(), "one readable chapter, even on an experienced save");
+			assertTrue(clue.completed().isEmpty());
+			Advance done = advance(clue.quests(), facts);
+			assertEquals(List.of(quest(id)), done.completed());
+			assertTrue(done.clued().isEmpty(), "the next chapter waits for another poll");
+			assertTrue(paid.add(id));
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, facts).changed(), "completed chain never pays again");
+	}
+
+	@Test
+	void earlyDiscoveryIsRememberedButCannotSkipAChapter() {
+		Set<String> facts = facts(List.of("aura:sleeping_blade"), List.of("place:travel_watchtower",
+			"place:travel_standing_stones"), false);
+		assertTrue(facts.containsAll(Set.of(WATCHTOWER, STANDING_STONES, SLEEPING_BLADE)));
+		assertFalse(advance(Map.of(), facts).changed(), "regional visits alone do not invent the scout's story");
+		Advance active = advance(Map.of("road_before_roads", DONE), facts);
+		assertTrue(active.clued().contains(quest("oath_at_rest")));
+		assertTrue(advance(active.quests(), facts).completed().contains(quest("oath_at_rest")), "earlier blade visit counts");
+		assertTrue(advance(Map.of("oath_at_rest", ACTIVE), Set.of(SLEEPING_BLADE)).completed().contains(quest("oath_at_rest")),
+			"an active chapter can recover even if an old save lacks its prerequisite");
+	}
+
+	@Test
+	void chapterGraphHasExistingAcyclicPrerequisites() {
+		for (Quest quest : ALL) {
+			Set<String> chain = new HashSet<>();
+			Quest cursor = quest;
+			while (!cursor.prerequisite().isEmpty()) {
+				assertTrue(chain.add(cursor.id()), "cycle at " + cursor.id());
+				cursor = byId(cursor.prerequisite());
+				assertNotNull(cursor, "all prerequisite quests exist");
+			}
 		}
 	}
 

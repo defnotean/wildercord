@@ -78,7 +78,9 @@ public final class SleepingBlades {
 		if (!Config.get().auraWorld().sleepingBlades() || !p.isAlive() || p.isSpectator() || !p.level().hasChunkAt(at)
 				|| p.distanceToSqr(Vec3.atCenterOf(at)) > SleepingBladeRules.REACH * SleepingBladeRules.REACH) return;
 		if (!(p.level().getBlockEntity(at) instanceof SleepingBladeEntity stone) || !stone.authentic()) { say(p, "empty"); return; }
-		if (stone.claimedBy() != null) { stone.phase(4); history(p); say(p, "drawn"); return; }
+		// The site's history is for every visitor; only drawing the blade requires Form and an unbound hand.
+		history(p);
+		if (stone.claimedBy() != null) { stone.phase(4); say(p, "drawn"); return; }
 		if (!BondedBlades.on(p)) { say(p, "off"); return; }
 		if (BondedBlades.standing(p)) { say(p, "bonded"); return; }
 		if (!ready(p, p.level(), at, p.position())) { say(p, "intent"); return; }

@@ -88,6 +88,20 @@ straight away.
 | The Warden's Threshold | start a field guide entry | set off any element reaction | 30 XP, 2 Blank Runes |
 | Different Hands | see a village tournament board | win a duel against any duelist | 30 XP, 2 Aura Shards, 1 Blank Rune, 40 Aura XP |
 | The Masters' Ledger | meet a Stone duelist | meet a Sword Master | 50 XP, 3 Aura Shards, 1 Blank Rune, 80 Aura XP |
+| The Scout's Last Cairn | finish The Scout's Wall | enter a road watchtower | 30 XP, 1 Aura Shard, 1 Blank Rune |
+| The Road Before Roads | finish The Scout's Last Cairn | enter a ring of standing stones | 30 XP, 2 Blank Runes |
+| An Oath at Rest | finish The Road Before Roads | use an authentic Sleeping Blade stone | 40 XP, 2 Aura Shards, 1 Blank Rune |
+
+The last three chapters continue the Marchkeeper scout's story. Watchtowers on hills, meadows and
+plains keep a copy of the watch orders; standing stones in plains, meadows and taiga keep *The
+First Roads*. Their new pages connect the scout's cairns to the older roads. The final chapter
+leads to a Sleeping Blade in plains, meadows or windswept hills.
+
+You can read the Last Oath without drawing the sword or learning Aura. Use a real Sleeping Blade
+stone to receive its history once. Drawing the blade still requires its usual preparation, and
+reading never claims it. Earlier visits count toward later chapters, but each chapter appears
+only after the previous one is finished. Older towers and stone rings retain the books they
+already contain; their journal discoveries still count.
 
 Leads you have not found yet show as hidden, with the hint *"Explore ruins, talk to duelists, read
 your field guide."*

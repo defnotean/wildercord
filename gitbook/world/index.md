@@ -21,11 +21,12 @@ Cord, good armour and a plan.
 | 5 | [World events](world-events.md) | Near you, now and then | Mana storms, fallen stars and rift sieges, with runes and Mana Crystals |
 | 6 | [Runes of the world](runes-of-the-world.md) | Structure chests, biomes and fishing | Runes nobody can craft |
 | 7 | [Expeditions](expeditions.md) | Deserts, forests, meadows and windswept hills | Relics |
-| 8 | [Root Guardian and Storm Conductor](root-and-storm-bosses.md) | Swamps and peaks | Boss loot |
-| 9 | [The Archive](archive.md) | Under the Overworld | Tier IV runes, casting gear |
-| 10 | [The Ember Sanctum](ember-sanctum.md) | The Nether | The Cinder Heart trophy |
-| 11 | [The Drowned Scriptorium](drowned-scriptorium.md) | The deep ocean floor | The Drowned Quill trophy |
-| 12 | [The Astral Observatory](astral-observatory.md) | The End's outer islands | The Astral Lens trophy |
+| 8 | [Lair bosses](lair-bosses.md) | Jungles, plains, forests, snowy peaks and the deep ocean | A boon from each, Mojito's Fetchblade |
+| 9 | [Root Guardian and Storm Conductor](root-and-storm-bosses.md) | Swamps and peaks | Boss loot |
+| 10 | [The Archive](archive.md) | Under the Overworld | Tier IV runes, casting gear |
+| 11 | [The Ember Sanctum](ember-sanctum.md) | The Nether | The Cinder Heart trophy |
+| 12 | [The Drowned Scriptorium](drowned-scriptorium.md) | The deep ocean floor | The Drowned Quill trophy |
+| 13 | [The Astral Observatory](astral-observatory.md) | The End's outer islands | The Astral Lens trophy |
 
 ## 48 places to explore
 
@@ -136,6 +137,8 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 - [The Drowned Scriptorium](drowned-scriptorium.md)
 - [The Astral Observatory](astral-observatory.md)
 - [Root Guardian and Storm Conductor](root-and-storm-bosses.md)
+- [Lair Bosses](lair-bosses.md)
+- [Roaming Giants](roaming-giants.md)
 - [Expeditions and Relics](expeditions.md)
 
 **Sites to explore**

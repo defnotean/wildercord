@@ -32,9 +32,14 @@ public final class LoreQuestRules {
 	public static final String TALK_STONE = "talk_stone";
 	public static final String TRAINED = "trained";
 	public static final String MASTER_MET = "master_met";
+	public static final String WATCHTOWER = "watchtower", STANDING_STONES = "standing_stones", SLEEPING_BLADE = "sleeping_blade";
 
 	/** A quest: what starts it, what finishes it, and what it pays (vanilla experience, Aura Shards, Blank Runes, Aura experience). */
-	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp) {
+	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp, String prerequisite) {
+		public Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp) {
+			this(id, trigger, objective, xp, shards, runes, auraXp, "");
+		}
+
 		public String key(String part) {
 			return "journal.wildercord.quest." + id + "." + part;
 		}
@@ -46,7 +51,10 @@ public final class LoreQuestRules {
 		new Quest("keeper_openings", TOMB, PERFECT_GUARD, 40, 3, 0, 60),
 		new Quest("warden_threshold", FIELD_GUIDE, REACTION, 30, 0, 2, 0),
 		new Quest("different_hands", TOURNAMENT, DUEL_WON, 30, 2, 1, 40),
-		new Quest("masters_ledger", TALK_STONE, MASTER_MET, 50, 3, 1, 80));
+		new Quest("masters_ledger", TALK_STONE, MASTER_MET, 50, 3, 1, 80),
+		new Quest("last_cairn", MEMORIAL, WATCHTOWER, 30, 1, 1, 0, "scout_wall"),
+		new Quest("road_before_roads", WATCHTOWER, STANDING_STONES, 30, 0, 2, 0, "last_cairn"),
+		new Quest("oath_at_rest", STANDING_STONES, SLEEPING_BLADE, 40, 2, 1, 0, "road_before_roads"));
 
 	public static Quest byId(String id) {
 		for (Quest quest : ALL) if (quest.id().equals(id)) return quest;
@@ -72,6 +80,10 @@ public final class LoreQuestRules {
 		List<Quest> clued = new ArrayList<>(), completed = new ArrayList<>();
 		for (Quest quest : ALL) {
 			int before = stages.getOrDefault(quest.id(), UNKNOWN);
+			// Read the previous snapshot: finishing one chapter cannot reveal every later chapter in this poll.
+			// Already active quests keep working even if an older or repaired save lacks their prerequisite.
+			if (before <= UNKNOWN && !quest.prerequisite().isEmpty()
+				&& stages.getOrDefault(quest.prerequisite(), UNKNOWN) < DONE) continue;
 			int after = step(quest, before, facts);
 			if (after == before) continue;
 			next.put(quest.id(), after);
@@ -101,6 +113,7 @@ public final class LoreQuestRules {
 			else if (key.startsWith("reaction:")) facts.add(REACTION);
 			else if (key.equals("aura:perfect_guard")) facts.add(PERFECT_GUARD);
 			else if (key.equals("aura:duelist")) facts.add(DUEL_WON);
+			else if (key.equals("aura:sleeping_blade")) facts.add(SLEEPING_BLADE);
 		}
 		for (String entry : journal) {
 			switch (entry) {
@@ -108,6 +121,9 @@ public final class LoreQuestRules {
 				case "place:tomb" -> facts.add(TOMB);
 				case "place:tournament" -> facts.add(TOURNAMENT);
 				case "place:training" -> facts.add(TRAINED);
+				case "place:travel_watchtower" -> facts.add(WATCHTOWER);
+				case "place:travel_standing_stones" -> facts.add(STANDING_STONES);
+				case "place:sleeping_blade" -> facts.add(SLEEPING_BLADE);
 				case "duelist:ember" -> facts.add(TALK_EMBER);
 				case "duelist:gale" -> facts.add(TALK_GALE);
 				case "duelist:stone" -> facts.add(TALK_STONE);

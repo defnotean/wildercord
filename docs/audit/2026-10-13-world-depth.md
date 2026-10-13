@@ -73,6 +73,15 @@ biome selectors do not constitute registered custom biomes.
 7. **P2 — Older roadmap completion claims conflict.** `LIVING_WORLD_ROADMAP.md`, Masters roadmap,
    release reports and the 0.13 snapshot have different baselines. Use this ledger for new work and
    cite implementation plus evidence when reconciling them; never mark a target done from a name count.
+8. **P0 — Asset generation loses recent boss guidance.** Running the generator exposed 145 missing
+   warning/message keys and 12 changed values, including nine detailed bestiary entries, at the
+   baseline. It also resurrected ten retired labels. The ordinary build had passed because it used
+   committed resources. Preserve all 157 authored values in an owned generator module, remove the
+   retired labels, and exercise generation parity plus the existing boss language assertions.
+9. **P2 — Sleeping Blade discovery is gated behind drawing.** Its use callback consumes the
+   interaction before the journal's observer runs; its Grimoire history previously arrived only
+   when drawn or already claimed. Reading an authentic site's history should be accessible to an
+   explorer without changing the ownership or draw rules. A copied stone must not grant history.
 
 ## Prioritized implementation list
 
@@ -122,6 +131,7 @@ deepens it after its foundations work. Names below are **proposals**, not shippe
 | QA-01 | 0 | Repeatable evidence and GitHub checkpoints | Small coherent commits, generated assets, unit/build checks, focused native evidence and pushes; draft PR preserves full CI status. |
 | QA-02 | 1 | Cooperative content tour | Two clients discover/complete a lead, enter/leave a boss and trade with an NPC; no stolen credit, duplicate payment or leaked private progress. |
 | QA-03 | 1 | Packaging and release candidate checks | Generated asset parity, distributable packaging, all required client gates and exact candidate SHA recorded; alpha publication is separate from saving code. |
+| POL-09 | 0 | Preserve current boss text in the generator | All 157 authored values preserved, ten retired names excluded, repeat generation stable, boss language tests pass. |
 
 ## Delivery sequence
 
@@ -145,6 +155,9 @@ a biome must actually generate; a legend must be discoverable and lead somewhere
 | Baseline structural/content audit | Complete at stated scope | Inventory above; source paths; baseline build passed. Full runtime audit remains open. |
 | POL-01: sixteen-school journal | Implemented and locally verified | Stable IDs, old-save normalization, four regression tests; 2,705 unit tests pass; focused native journal suite passes (32s launch, ~12s scene); rendered People tab inspected. |
 | POL-02: current lore reference | Reference corrected | Sixteen breaths/Masters and migration described in `LORE_CANON.md`; old 0.13 Git status labeled historical. Wider player-guide audit remains open. |
+| LOR-03 foundation: Scout's Last Cairn | Implemented and locally verified | Three connected chapters after Scout's Wall; two new book pages; ordinary tower/ring discovery and blade-stone interaction exercised by `ScoutLegendChecks` inside the registered journal suite. The proposed highland biome/lodge/Cartographer extension remains unbuilt. |
+| POL-09: generator preserves boss guidance | Implemented and locally verified | All 157 existing authored values preserved; ten obsolete labels suppressed; 8,987 generated paths stable; two Python regression checks added. Existing CI runs generation parity and boss JUnit assertions. |
+| Sleeping Blade history access | Implemented and locally verified | Native journal test verifies authentic-only discovery, one book per visitor and no ownership/draw from reading. Full existing focused `SleepingBladeTest` also passes, including generation, interrupted draws, unique ownership and guard tradeoffs. |
 | Full development goal | Active | Remaining backlog above; not a release-readiness claim. |
 
 ### POL-01 verification
@@ -159,3 +172,48 @@ a biome must actually generate; a legend must be discoverable and lead somewhere
   `artifacts/review/world-depth/master-journal/` before another native run can replace it.
 - This focused run calls the first-clear journal hook; it does not claim to defeat all sixteen
   Masters or certify their combat. Full client CI and release gates remain separate.
+
+### Scout legend and generator verification
+
+- Three additional quest-state tests cover ordered prerequisites, no same-poll cascade, earlier
+  discoveries, interrupted-state recovery and a valid acyclic chapter graph. The existing text
+  tests cover the new quest lines and both book pages. All **2,708 JUnit tests pass**.
+- Expanded native `LoreJournalGameTest`: passed in 52 seconds including startup (~25-second
+  scene). Two real structure pieces are built chunk by chunk, their authored books checked and
+  starts registered; the normal structure observer discovers them. The final step invokes the
+  ordinary block interaction chain, rejects an unauthentic stone, gives the Last Oath exactly once,
+  and confirms that reading neither starts a draw nor claims the blade. Completed journal text and
+  the screenshot `lore_scout_last_cairn.png` were inspected.
+- The native fixture supplies the memorial discovery and teacher conversation through their
+  production hooks. It does not claim a full unaided survival playthrough or naturally seeded site
+  distribution. Tower/ring books already saved in older chunks are not rewritten; their discovery
+  entries still advance the story, and earlier blade discoveries also count.
+- `python tools/check_generated_assets.py`: **8,987 paths pass**, including pixel equality for PNGs
+  and byte equality for other files. A semantic comparison with the prior commit confirms no
+  existing language value changed or disappeared; only the 17 new story entries were added.
+- `python -m unittest discover -s tools -p test_boss_encounter_text.py -v`: both checks pass. The
+  first repair run also exposed the generator restoring the retired Lantern Bearer `slam` label;
+  the existing boss test caught it. The final generator now excludes all ten retired labels.
+- `python tools/player_docs.py --check`: 189 pages pass. Exporting also brought the existing
+  wiki boss descriptions into the previously stale GitBook export, including the lair-boss page.
+- Three pinned launcher profiles built from the local JAR, and `tools/audit_packages.py` passed
+  with explicit JAR/profile paths. The report under `artifacts/review/world-depth/` records local
+  checkout provenance; this is packaging evidence, not a published release or all-client pass.
+- Existing focused `SleepingBladeTest`: **passed** in 1m 22s (~55-second scene). Its first run
+  revealed that the fixture equipped an iron sword over the newly delivered history book. The
+  fixture now asserts early discovery and stores that book in a free inventory slot before
+  equipping the test weapon. The original exact-one-book/blade, draw-interruption, serialized
+  ownership, later-visitor, guard, book-screen and natural-generation checks remain intact.
+- Packaging audit's own 44 Python tests also pass. No claim is made yet for all 341 registered
+  client suites or the separate multiplayer gates on this candidate.
+- GitHub's available push credential rejected a proposed workflow edit for lack of workflow
+  scope. The unpushed commit was amended to retain the existing workflow. Its asset-parity check
+  and boss JUnit tests already cover generator drift; the two additional Python checks are kept
+  and were run locally. No credential or repository permission was changed.
+
+### Next work
+
+Keep the full goal active. Check the draft PR's CI outcomes, then implement the first actual custom
+biome with registry/placement and seed evidence. Prefer one complete regional slice over adding four
+biome names without generation. New bosses, new resident NPCs, and new buildings from the proposal
+table remain open. Preserve the existing boss movesets and the newly repaired generator on every pass.

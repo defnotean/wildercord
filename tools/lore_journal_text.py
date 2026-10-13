@@ -145,7 +145,7 @@ DIALOGUE = {
     ),
 }
 
-# The six discovery quests: title, clue, objective, hint, completion.
+# Discovery quests and the Scout's Last Cairn chapters: title, clue, objective, hint, completion.
 QUESTS = {
     "scout_wall": (
         "The Scout's Wall",
@@ -188,6 +188,27 @@ QUESTS = {
         "Meet a Sword Master.",
         "Reach Aura Form or Heart Circle VIII. Then sneak and use a teacher twice. The trial is dangerous.",
         "You met a Master. Their record of victories stays with you, win or lose.",
+    ),
+    "last_cairn": (
+        "The Scout's Last Cairn",
+        "The Gale teacher's story continues on the road. The Marchkeepers copied their scout's watch orders for the next traveller.",
+        "Enter a road watchtower.",
+        "Look on hills, meadows and open plains for a tower with a beacon. Its watch orders keep the scout's account.",
+        "The watch orders remember two cairns: one for those walking, one for those carried home. The scout followed an older road.",
+    ),
+    "road_before_roads": (
+        "The Road Before Roads",
+        "The watch orders point toward the old rings. The Marchkeepers used the road-makers' stones long after the roads were lost.",
+        "Enter a ring of standing stones.",
+        "Search plains, meadows or taiga for tall stones in a ring. The First Roads book tells who walked there before the scouts.",
+        "The rings belonged to travellers before they belonged to soldiers. The scout's last oath was to keep the way open.",
+    ),
+    "oath_at_rest": (
+        "An Oath at Rest",
+        "The old road ended in a promise. The Marchkeeper scout left Oathkeeper in stone so a blade could rest while its oath endured.",
+        "Find and use a Sleeping Blade stone. You do not need to draw the blade.",
+        "Seek a blade standing in stone in plains, meadows or windswept hills. Use the stone; drawing the sword is not required.",
+        "The scout laid down the sword, not the duty. A guide keeps the road for the next walker, even with empty hands.",
     ),
 }
 

@@ -39,10 +39,10 @@ public final class TravelSites {
 	public static final Map<String, Integer> BOOKS = new LinkedHashMap<>();
 	static {
 		BOOKS.put("travel_ledger", 3);
-		BOOKS.put("travel_watch", 2);
+		BOOKS.put("travel_watch", 3);
 		BOOKS.put("travel_toll", 2);
 		BOOKS.put("travel_catalog", 3);
-		BOOKS.put("travel_first_roads", 4);
+		BOOKS.put("travel_first_roads", 5);
 		BOOKS.put("travel_survey", 3);
 		BOOKS.put("travel_vows", 2);
 	}
