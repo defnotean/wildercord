@@ -9,7 +9,7 @@ You need:
 
 - **JDK 25** (Temurin works well)
 - **Python 3.11+**, available as `python3` on macOS/Linux or `python` on Windows for full/sharded client test resource processing
-- **Pillow and NumPy** (`python -m pip install -r tools/requirements.txt`) for asset generation and image checks. The shared requirements pin the versions used for committed art and CI.
+- **Pillow and NumPy** (`python -m pip install -r tools/requirements.txt`) for asset generation and image checks. The shared requirements pin the versions used for committed art and VPS checks.
 - Git, and an IDE with Gradle support (IntelliJ IDEA recommended)
 
 ```bash
@@ -21,9 +21,10 @@ cd wildercord
 
 In IntelliJ, open the folder as a Gradle project; Loom sets up run configurations for the client
 and server.
-The owned CI launcher runs on Linux. Full/sharded Gradle plan selection uses a portable
-bounded configuration reader. See [the explicit plan contract](docs/FULL_CLIENT_SHARD_PLAN.md).
-Focused selectors keep their existing platform behavior.
+The owned project runner runs on the isolated Windows VPS. See [VPS setup and
+commands](docs/testing/vps.md). Full/sharded Gradle plan selection uses a portable
+bounded configuration reader; [the explicit plan contract](docs/FULL_CLIENT_SHARD_PLAN.md)
+still governs its coverage. GitHub Actions remains disabled.
 
 ## Where things live
 
@@ -40,7 +41,7 @@ The game design (what each rune does and why) is in [docs/DESIGN.md](docs/DESIGN
    ```bash
    python tools/generate_assets.py
    ```
-   Commit the generated files together with your code. CI fails if they're out of date.
+   Commit the generated files together with your code. The VPS parity check fails if they're out of date.
 5. **Test** (see below).
 6. **Open a pull request** and fill in the template.
 

@@ -6,13 +6,14 @@
 
 A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 
-[![Build](https://github.com/defnotean/wildercord/actions/workflows/build.yml/badge.svg)](https://github.com/defnotean/wildercord/actions/workflows/build.yml)
 ![Minecraft 26.3](https://img.shields.io/badge/Minecraft-26.3-3C8527)
 ![Fabric](https://img.shields.io/badge/loader-Fabric-DBD0B4)
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 **[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.12.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.12.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
+
+[VPS testing and evidence](docs/testing/vps.md) · [Current development audit](docs/audit/2026-10-13-world-depth.md)
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
@@ -280,11 +281,11 @@ Commands (operators, permission level 2):
 
 ## Building from source
 
-Requirements: **JDK 25** and Python 3.11+. **Pillow** is needed only for regenerating art and data.
+Requirements: **JDK 25** and Python 3.11+. **Pillow and NumPy** are used for generated art and image checks (`tools/requirements.txt`).
 Gradle comes with the wrapper.
 Full/sharded client test resources and launch preflight also require Python on PATH
-as `python3` on macOS/Linux or `python` on Windows. The owned CI launcher runs on Linux;
-focused selectors retain their existing platform behavior. See
+as `python3` on macOS/Linux or `python` on Windows. Project checks run in the isolated
+Windows VPS checkout through [the owned VPS runner](docs/testing/vps.md). See
 [the explicit full-client plan](docs/FULL_CLIENT_SHARD_PLAN.md) for its fail-closed contract.
 
 ```bash
@@ -429,8 +430,11 @@ no other changes. Walk through it in [docs/ADDING_RUNES.md](docs/ADDING_RUNES.md
     Archivist), asserting what it can and screenshotting the rest. Set `WILDERCORD_TOUR_ONLY=1` to
     run just the tour; the images in [Screenshots](#screenshots) come from it.
 
-Screenshots land in `build/run/clientGameTest/screenshots/`. CI runs the build and unit tests on
-every push, checks generated resources, and runs the client game suites under Xvfb with screenshots and logs retained as artifacts.
+Screenshots land in `build/run/clientGameTest/screenshots/`. GitHub Actions is disabled;
+builds, unit tests, generated-resource checks and native client tests run on the VPS.
+The [VPS testing guide](docs/testing/vps.md) describes exact-commit execution and retained
+logs/manifests. The [development audit](docs/audit/2026-10-13-world-depth.md) records passing
+checkpoints and open failures. A focused pass does not establish full-suite acceptance.
 
 ## 0.9.0: the wilds and the sword
 
