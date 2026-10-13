@@ -47,7 +47,7 @@ during a flood, and why their last boatman counted everyone twice.
 A **Tideward Reedkeeper** lives here. Use the resident to open ordinary fishing
 trades. Crouch and use them to hear their stories, allowing a short pause between
 lines. The first meeting adds the keeper to the journal's **People** tab, and each
-heard story stays under **Conversations**, including after you leave the world.
+heard story stays under **Talk**, including after you leave the world.
 The keeper explains the garden, the first crossing and the Reed-Crowned Ferryman.
 The resident lives as a villager and needs protection from the usual dangers.
 
@@ -57,6 +57,19 @@ and water intact if you want it to flower again.
 
 Finding the landing earns **Keeper of the Crossing**. Landings need suitable low
 ground and shallow water, so they will not appear beside every pool.
+
+## Follow the Drowned Road
+
+Meeting a Reedkeeper opens **The Drowned Road** in the journal. Listen through the
+Ferryman's account, then follow the coast to a pier boathouse. Its *Second Count*
+ledger connects the passenger counts to the lighthouse keeper's duty. The last
+chapter asks you to climb a lighthouse and tend its lamp with the lever beside it.
+A lamp another visitor already lit also counts when you stand beside it.
+
+The three chapters pay 90 XP, five Blank Runes and one Aura Shard altogether,
+once per player. Earlier visits still count, and no combat or Aura rank is needed.
+See the [Lore Journal](../progression/lore-journal.md) for the
+individual clues and rewards.
 
 ## Smoke above the water
 

@@ -33,6 +33,7 @@ public final class LoreQuestRules {
 	public static final String TRAINED = "trained";
 	public static final String MASTER_MET = "master_met";
 	public static final String WATCHTOWER = "watchtower", STANDING_STONES = "standing_stones", SLEEPING_BLADE = "sleeping_blade";
+	public static final String REEDKEEPER = "reedkeeper", FERRYMAN_STORY = "ferryman_story", BOATHOUSE = "boathouse", COAST_LIGHT = "coast_light";
 
 	/** A quest: what starts it, what finishes it, and what it pays (vanilla experience, Aura Shards, Blank Runes, Aura experience). */
 	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp, String prerequisite) {
@@ -54,7 +55,10 @@ public final class LoreQuestRules {
 		new Quest("masters_ledger", TALK_STONE, MASTER_MET, 50, 3, 1, 80),
 		new Quest("last_cairn", MEMORIAL, WATCHTOWER, 30, 1, 1, 0, "scout_wall"),
 		new Quest("road_before_roads", WATCHTOWER, STANDING_STONES, 30, 0, 2, 0, "last_cairn"),
-		new Quest("oath_at_rest", STANDING_STONES, SLEEPING_BLADE, 40, 2, 1, 0, "road_before_roads"));
+		new Quest("oath_at_rest", STANDING_STONES, SLEEPING_BLADE, 40, 2, 1, 0, "road_before_roads"),
+		new Quest("drowned_road", REEDKEEPER, FERRYMAN_STORY, 20, 0, 1, 0),
+		new Quest("second_count", FERRYMAN_STORY, BOATHOUSE, 30, 0, 2, 0, "drowned_road"),
+		new Quest("last_boat_light", BOATHOUSE, COAST_LIGHT, 40, 1, 2, 0, "second_count"));
 
 	public static Quest byId(String id) {
 		for (Quest quest : ALL) if (quest.id().equals(id)) return quest;
@@ -124,6 +128,10 @@ public final class LoreQuestRules {
 				case "place:travel_watchtower" -> facts.add(WATCHTOWER);
 				case "place:travel_standing_stones" -> facts.add(STANDING_STONES);
 				case "place:sleeping_blade" -> facts.add(SLEEPING_BLADE);
+				case "person:reedkeeper" -> facts.add(REEDKEEPER);
+				case "said:reedkeeper.ferryman" -> facts.add(FERRYMAN_STORY);
+				case "place:water_pier_boathouse" -> facts.add(BOATHOUSE);
+				case "learned:coast_light" -> facts.add(COAST_LIGHT);
 				case "duelist:ember" -> facts.add(TALK_EMBER);
 				case "duelist:gale" -> facts.add(TALK_GALE);
 				case "duelist:stone" -> facts.add(TALK_STONE);

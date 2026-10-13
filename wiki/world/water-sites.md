@@ -6,7 +6,7 @@ permalink: /world/water-sites/
 ---
 # Water Sites
 
-Nine places by rivers, swamps, coasts, warm seas and frozen water. Each has a chest with fishing gear and runes from the Tide pack (see [everyday rune packs]({{ '/runes/everyday-packs/' | relative_url }})), and each gives an advancement when you first step inside. They only appear in chunks you have not explored yet.
+Nine places by rivers, swamps, coasts, warm seas and frozen water. Each has a chest with fishing gear and runes from the Tide pack (see [everyday rune packs]({{ '/runes/everyday-packs/' | relative_url }})), and each gives an advancement when you first step inside. Visits also enter your journal's Places tab. They only appear in chunks you have not explored yet.
 
 | Site | Where to look | What is inside |
 |---|---|---|
@@ -23,7 +23,8 @@ Nine places by rivers, swamps, coasts, warm seas and frozen water. Each has a ch
 ## Tips
 
 - The sunken shrine is deep. Bring a way to breathe for the swim down; the conduit helps once you are close.
-- The lighthouse, shrine and grotto each have a short book. Read it for a hint about the site.
+- The landing, lighthouse, boathouse, shrine and grotto each have a short book. Read it for a hint about the site.
+- The Reedkeeper's [Drowned Road]({{ '/progression/lore-journal/' | relative_url }}) story continues in the boathouse's *Second Count* ledger beside its slip. The final chapter asks you to climb a lighthouse and light its lamp. An already lit tower also counts when you stand beside the lamp.
 - Server owners: these sites only generate in new chunks. They are not added to old ones by the world upgrade.
 
 ## Advancements

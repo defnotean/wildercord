@@ -13,8 +13,8 @@ description: "Your lore journal (H): leads to follow, places you found, people y
 
 ## What it is
 
-The lore journal is your own record of the sword side of the world. It writes itself as you
-explore: ruins you found, duelists and Sword Masters you met, what you learned, and what people
+The lore journal is your own record of Wildercord's people and places. It writes itself as you
+explore: ruins you found, residents, duelists and Sword Masters you met, what you learned, and what people
 said to you. It also gives you **leads**: short discovery quests that point you to the next thing
 worth finding.
 
@@ -35,9 +35,9 @@ turn.
 |---|---|
 | **Leads** | The discovery quests you have found, open or done, with their goals and rewards |
 | **Places** | Ruins and sites you found |
-| **People** | Duelists and Sword Masters you met, duels you won and Master trials you passed |
+| **People** | Residents, duelists and Sword Masters you met, duels you won and Master trials you passed |
 | **Learned** | Your breathing method, Aura stages, field forms and Grimoire milestones |
-| **Talk** | What duelists and Masters said to you, so you can read it again |
+| **Talk** | What residents, duelists and Masters said to you, so you can read it again |
 
 Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
 
@@ -53,6 +53,8 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
   where you breathe in stance.
 - Every [roadside place]({{ '/world/travel-sites/' | relative_url }}) and every
   [mine]({{ '/world/mine-sites/' | relative_url }}) you walk into.
+- The Luminous Reedlands and all nine water sites, including Reedkeeper Landings, coastal boathouses
+  and lighthouses. Walk into their grounds to record them.
 
 **People**
 
@@ -60,6 +62,7 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
 - Each [Sword Master]({{ '/masters/' | relative_url }}) who greets you. A Master greets you once, the
   first time you come within about 20 blocks.
 - Each Master trial you win.
+- Tideward Reedkeepers you speak with at their Reedlands survey houses.
 
 **Learned**
 
@@ -91,8 +94,11 @@ straight away.
 | The Scout's Last Cairn | finish The Scout's Wall | enter a road watchtower | 30 XP, 1 Aura Shard, 1 Blank Rune |
 | The Road Before Roads | finish The Scout's Last Cairn | enter a ring of standing stones | 30 XP, 2 Blank Runes |
 | An Oath at Rest | finish The Road Before Roads | use an authentic Sleeping Blade stone | 40 XP, 2 Aura Shards, 1 Blank Rune |
+| The Drowned Road | speak with a Tideward Reedkeeper | hear the Ferryman story | 20 XP, 1 Blank Rune |
+| The Second Count | finish The Drowned Road | enter a coastal pier boathouse | 30 XP, 2 Blank Runes |
+| A Light for the Last Boat | finish The Second Count | stand beside a working lighthouse lamp | 40 XP, 1 Aura Shard, 2 Blank Runes |
 
-The last three chapters continue the Marchkeeper scout's story. Watchtowers on hills, meadows and
+The three chapters after The Scout's Wall continue the Marchkeeper scout's story. Watchtowers on hills, meadows and
 plains keep a copy of the watch orders; standing stones in plains, meadows and taiga keep *The
 First Roads*. Their new pages connect the scout's cairns to the older roads. The final chapter
 leads to a Sleeping Blade in plains, meadows or windswept hills.
@@ -102,6 +108,22 @@ stone to receive its history once. Drawing the blade still requires its usual pr
 reading never claims it. Earlier visits count toward later chapters, but each chapter appears
 only after the previous one is finished. Older towers and stone rings retain the books they
 already contain; their journal discoveries still count.
+
+The Drowned Road begins with a [Tideward Reedkeeper]({{ '/world/luminous-reedlands/' | relative_url }}).
+Sneak-use the keeper and leave a short pause between stories; the Ferryman's account follows the
+garden and crossing accounts. Coastal boathouses on beaches and stony shores hold *The Second Count*,
+a three-page passenger ledger beside the boat slip. Its final page asks the lighthouse to wait for
+the last boat.
+
+Find a lighthouse on a beach or stony shore, climb the ladder and use the lever beside its redstone
+lamp. Stand within six blocks of that lamp while it is lit. A lamp another traveller already tended
+counts too; entering a dark tower does not. This final discovery appears under Learned. The route
+pays 90 XP, five Blank Runes and one Aura Shard in total, once per player. It needs no Aura rank or
+combat victory, and the Ferryman remains a legend told by the coast's people.
+
+Older boathouses retain their existing furnishings and lighthouse books retain their existing pages.
+Their structure discoveries and working lamps still count toward the route, so an older building
+does not block progress. Earlier visits and lamp discoveries are remembered until their chapter opens.
 
 Leads you have not found yet show as hidden, with the hint *"Explore ruins, talk to duelists, read
 your field guide."*
@@ -115,5 +137,5 @@ soon as it starts.
 - The Talk tab keeps Master hints. Read them again before a
   [Master trial]({{ '/masters/' | relative_url }}).
 - The journal and the [Grimoire]({{ '/progression/grimoire/' | relative_url }}) are different. The
-  Grimoire tracks feats and discoveries across all of Wildercord; the journal is the story of your
-  travels with the sword.
+  Grimoire tracks feats and discoveries across all of Wildercord; the journal keeps the stories of
+  your travels and the people you meet.

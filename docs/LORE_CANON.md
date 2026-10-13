@@ -166,7 +166,7 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
   - Saved per player, kept through death, and synced only to its owner.
   - Older saves open empty, then fill in from progress the player already has.
   - Tabs: Leads, Places, People, Learned and Talk.
-- **Six standalone discovery leads and the Scout's Last Cairn continuation**:
+- **Six standalone discovery leads, the Scout's Last Cairn continuation and the Drowned Road**:
 
 | Lead | Clue from | Goal | Reward |
 |---|---|---|---|
@@ -179,12 +179,23 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
 | The Scout's Last Cairn | finish The Scout's Wall | enter a road watchtower | 30 XP, 1 Aura Shard, 1 Blank Rune |
 | The Road Before Roads | finish The Scout's Last Cairn | enter standing stones | 30 XP, 2 Blank Runes |
 | An Oath at Rest | finish The Road Before Roads | use an authentic Sleeping Blade stone | 40 XP, 2 Aura Shards, 1 Blank Rune |
+| The Drowned Road | meet a Tideward Reedkeeper | hear the Ferryman account | 20 XP, 1 Blank Rune |
+| The Second Count | finish The Drowned Road | enter a coastal pier boathouse | 30 XP, 2 Blank Runes |
+| A Light for the Last Boat | finish The Second Count | stand beside a working lighthouse lamp | 40 XP, 1 Aura Shard, 2 Blank Runes |
 
 The continuation joins existing histories: road-makers raised the stone rings before the
 Marchkeepers used those routes; the scout's paired cairns kept account of the living and those
 carried home; she later set the keeper's blade in stone. New watch orders and First Roads pages
 preserve that account (`tools/sites_travel.py`). The stone shares the Last Oath even with visitors
 who cannot draw the blade. Reading the history never claims the sword.
+
+The coastal continuation connects the Reedkeeper's First Crossing account to the boathouses'
+*Second Count* ledger and a fourth page in the Keeper's Log. The second count is made ashore; the
+lighthouse waits for word that every passenger has landed. The margin drawing of a reed hat is
+evidence of a remembered practice, not proof of a supernatural boatman. The player finishes by
+standing beside a working lamp in a real lighthouse, after using its existing lever or finding
+that another traveller already tended it. Books only appear in newly generated buildings; old
+structure records and lamp locations remain valid. Discovery never overwrites a player's building.
 
 - **How leads behave**
   - The goal and hint can be read again in the journal at any time.

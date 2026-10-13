@@ -1,7 +1,12 @@
 package dev.wildercord.world.sites.water;
 
 import dev.wildercord.world.sites.Sites;
+import dev.wildercord.world.sites.SiteStructure;
+import dev.wildercord.lore.LoreJournal;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
 
@@ -11,6 +16,10 @@ import net.minecraft.world.level.storage.loot.LootTable;
  */
 public final class WaterSites {
 	private WaterSites() {}
+	public static final String COAST_LIGHT_ENTRY = "learned:coast_light";
+	public static final java.util.Set<String> IDS = java.util.Set.of("water_reedkeeper_landing", "water_stilt_smokehouse",
+		"water_lighthouse", "water_watermill", "water_ice_camp", "water_pier_boathouse", "water_sunken_shrine",
+		"water_netweaver_village", "water_tidepool_grotto");
 	public static final StructurePieceType REEDKEEPER_LANDING = Sites.piece("water_reedkeeper_landing", (StructurePieceType.ContextlessType) ReedkeeperLandingPiece::new);
 	static final ResourceKey<LootTable> REEDKEEPER_LOOT = Sites.loot("chests/water_reedkeeper_landing");
 
@@ -43,5 +52,26 @@ public final class WaterSites {
 		Sites.register("water_sunken_shrine", SunkenShrinePiece::locate);
 		Sites.register("water_netweaver_village", NetweaverVillagePiece::locate);
 		Sites.register("water_tidepool_grotto", TidepoolGrottoPiece::locate);
+	}
+
+	/** One bounded structure lookup in the journal's existing poll; no terrain edits or block-volume search. */
+	public static void observe(ServerPlayer player) {
+		if (player.isSpectator() || !player.isAlive()) return;
+		var level = player.level();
+		var start = level.structureManager().getStructureWithPieceAt(player.blockPosition(),
+			holder -> holder.value() instanceof SiteStructure site && IDS.contains(site.site()));
+		if (!start.isValid() || !(start.getStructure() instanceof SiteStructure site)) return;
+		LoreJournal.record(player, "place:" + site.site(), true);
+		if (!site.site().equals("water_lighthouse") || LoreJournal.data(player).has(COAST_LIGHT_ENTRY)) return;
+		for (var piece : start.getPieces()) {
+			if (!(piece instanceof LighthousePiece lighthouse)) continue;
+			var lamp = lighthouse.lampPosition();
+			if (!lamp.closerToCenterThan(player.position(), 6) || !level.hasChunkAt(lamp)) continue;
+			var state = level.getBlockState(lamp);
+			if (state.is(Blocks.REDSTONE_LAMP) && state.getValue(RedstoneLampBlock.LIT)) {
+				LoreJournal.record(player, COAST_LIGHT_ENTRY, true);
+				return;
+			}
+		}
 	}
 }

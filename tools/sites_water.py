@@ -2,7 +2,7 @@
 
 Read by generate_assets.py, which finds every tools/sites_*.py. For each site this writes its structure, its
 structure set, the biomes it may appear in, its chest's loot and its advancement; LANG holds their text and the
-pages of the books left in four of them. The buildings themselves are Java: dev.wildercord.world.sites.water.
+pages of the books left in five of them. The buildings themselves are Java: dev.wildercord.world.sites.water.
 """
 
 # id: (biomes, spacing, separation, salt, advancement icon, title, description)
@@ -42,6 +42,10 @@ LANG = {
     "book.wildercord.water_lighthouse.1": "Keeper's log. Fog again. Lit the lamp at dusk and kept it till dawn. Two boats came home by it.",
     "book.wildercord.water_lighthouse.2": "The lamp is wired to a lever by it. If I am ever gone, any hand can throw it and light the way.",
     "book.wildercord.water_lighthouse.3": "What I kept I kept below. Look for the cracked stone by the wall, and the ladder under it.",
+    "book.wildercord.water_lighthouse.4": "The boatkeepers send word when their second count is done. Until then I keep the lamp burning. The old coast road lies under the water; its duty did not drown with it. Let the last boat have a light.",
+    "book.wildercord.water_boathouse.1": "THE SECOND COUNT\n\nCopied for every Tideward boathouse\n\nWrite the number aboard before you cast off. Count again when the last passenger steps ashore. A crossed line means both counts agree.",
+    "book.wildercord.water_boathouse.2": "The oldest page names no boatman. In the margin someone drew a hat full of reeds. Beneath it: twelve aboard, twelve ashore. Then, in a smaller hand: thirteen, if you count the child who arrived before dawn.",
+    "book.wildercord.water_boathouse.3": "Send word to the lighthouse only when the second count is done. Its keeper leaves the lamp burning for the last boat. If the tower stands dark, climb its ladder. The lever by the lamp is a small duty any traveller can take up.",
     "book.wildercord.water_sunken_shrine.1": "Here the Tide is honoured. Breathe as the sea breathes: in with the swell, out with the ebb.",
     "book.wildercord.water_sunken_shrine.2": "The way in is under the wall and up through the pool. The conduit gives breath to those who come.",
     "book.wildercord.water_tidepool_grotto.1": "Each tide fills the pools and leaves gifts. I count the pickles and the fish and write them here.",
@@ -50,6 +54,7 @@ LANG = {
 for _sid, (_b, _s, _sep, _salt, _icon, _title, _desc) in SITES.items():
     LANG[f"advancements.wildercord.world.{_sid}.title"] = _title
     LANG[f"advancements.wildercord.world.{_sid}.description"] = _desc
+    LANG[f"journal.wildercord.entry.place.{_sid}"] = _desc + "."
 
 
 def _tide_page():

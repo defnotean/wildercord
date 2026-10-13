@@ -156,6 +156,7 @@ a biome must actually generate; a legend must be discoverable and lead somewhere
 | POL-01: sixteen-school journal | Implemented and locally verified | Stable IDs, old-save normalization, four regression tests; 2,705 unit tests pass; focused native journal suite passes (32s launch, ~12s scene); rendered People tab inspected. |
 | POL-02: current lore reference | Reference corrected | Sixteen breaths/Masters and migration described in `LORE_CANON.md`; old 0.13 Git status labeled historical. Wider player-guide audit remains open. |
 | LOR-03 foundation: Scout's Last Cairn | Implemented and locally verified | Three connected chapters after Scout's Wall; two new book pages; ordinary tower/ring discovery and blade-stone interaction exercised by `ScoutLegendChecks` inside the registered journal suite. The proposed highland biome/lodge/Cartographer extension remains unbuilt. |
+| LOR-01 foundation: Drowned Road | Implemented and locally verified | Three ordered chapters, Reedkeeper account, boathouse ledger and working lighthouse action. Real conversation/use packets, dark/copied/unrelated/spectator negatives, exact rewards, owner UI and save/reopen pass. Proposed drowned-site and Ferryman encounter extensions remain unbuilt. |
 | POL-09: generator preserves boss guidance | Implemented and locally verified | All 157 existing authored values preserved; ten obsolete labels suppressed; 8,987 generated paths stable; two Python regression checks added. Existing CI runs generation parity and boss JUnit assertions. |
 | Sleeping Blade history access | Implemented and locally verified | Native journal test verifies authentic-only discovery, one book per visitor and no ownership/draw from reading. Full existing focused `SleepingBladeTest` also passes, including generation, interrupted draws, unique ownership and guard tradeoffs. |
 | BIO-01 foundation: Luminous Reedlands | Implemented and locally verified | Actual climate placement, surface/spawn/structure tags, natural Moonreed, owner-only journal discovery and save/reopen. Fixed 49-chunk census and existing wetland checks pass. Broader frequency and fauna-density measurements remain open. |
@@ -542,3 +543,45 @@ The 420-tick shelter window is unchanged. A future failure now also reports the
 actual cover predicate, shelter clock, running goals and existing navigation path;
 it does not request diagnostic paths or manipulate the bird. This local pass does
 not resolve the intermittent CI shelter failure.
+
+### The Drowned Road: a playable coastal continuation
+
+The Reedkeeper's conversations now open three ordered chapters: **The Drowned
+Road**, **The Second Count** and **A Light for the Last Boat**. The player hears
+the complete Ferryman account, visits a coastal pier boathouse and stands beside
+the working lamp in a lighthouse. Newly generated boathouses hold a three-page
+passenger ledger beside their slip; a fourth Keeper's Log page connects the lamp
+to the second passenger count. The existing lever supplies the final action.
+An already tended lamp counts for another visitor, and earlier discoveries are
+retained without skipping chapter announcements. Rewards total 90 vanilla XP,
+five Blank Runes and one Aura Shard per player, with no combat or Aura gate.
+
+All nine water sites now record their actual structure visits under Places. One
+structure lookup in the existing journal poll supplies these discoveries and
+checks the authored lighthouse lamp within six blocks. It performs no block-volume
+search or terrain edits. Copied/unregistered buildings, unrelated lamps, darkness
+and spectator visits do not count. Older registered structures remain eligible;
+their furnishings and books are not overwritten.
+
+The expanded native `ReedlandBiomeTest` passes in **1m 31s**, including its original
+fixed natural-terrain census, four landing orientations, real resident interaction
+packets, an east-facing boathouse, a west-facing lighthouse, ordinary journal polls
+and a real client lever packet. It verifies all four negative lamp cases, exact
+item rewards, final-chapter XP, translated owner UI, repeated-poll idempotence and
+actual save/reopen without repayment. The first run failed a new test precondition:
+placing its unrelated power source before the test lamp did not send the needed
+neighbour update. Reversing those two fixture placements powers the negative
+control; no production condition or assertion was relaxed. The helper adds no
+entrypoint and changes no roster hash. This remains authored-piece integration,
+not an unaided survival route or a natural structure-frequency measurement.
+
+The build and all **2,716 JUnit tests** pass, with zero failures, errors or skips.
+The unit addition checks earlier coastal visits, the specific final conversation,
+ordered announcements and one-time completion. Both player-guide editions and
+the lore canon describe the route and old-world behavior.
+
+Current CI also narrows the open Excise disconnect issue: at frozen clock 704,
+the old body has recovery deadline 716 and no pending hold, while the new body
+has no saved recovery deadline. Cancellation computes the expected deadline;
+save/lifecycle ordering requires further investigation. This is not a passing
+dedicated-server result or a claimed fix.

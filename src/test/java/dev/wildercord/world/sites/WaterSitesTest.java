@@ -75,6 +75,7 @@ class WaterSitesTest {
 			assertTrue(adv.toString().contains("wildercord:" + id), id + " advancement is not for its structure");
 			assertTrue(lang.has("advancements.wildercord.world." + id + ".title"), id);
 			assertTrue(lang.has("advancements.wildercord.world." + id + ".description"), id);
+			assertTrue(lang.has("journal.wildercord.entry.place." + id), id + " has a readable journal discovery");
 		}
 		JsonObject structures = json(DATA.resolve("tags/worldgen/structure/site.json"));
 		for (String id : SITES) {
@@ -85,7 +86,8 @@ class WaterSitesTest {
 	@Test
 	void booksHaveTheirPages() throws IOException {
 		JsonObject lang = json(LANG);
-		Map<String, Integer> books = Map.of("water_lighthouse", 3, "water_sunken_shrine", 2, "water_tidepool_grotto", 2, "reedkeeper", 4);
+		Map<String, Integer> books = Map.of("water_lighthouse", 4, "water_sunken_shrine", 2, "water_tidepool_grotto", 2, "reedkeeper", 4,
+			"water_boathouse", 3);
 		books.forEach((id, pages) -> {
 			for (int i = 1; i <= pages; i++) {
 				String key = "book.wildercord." + id + "." + i;

@@ -99,6 +99,34 @@ class LoreQuestRulesTest {
 	}
 
 	@Test
+	void drownedRoadKeepsEarlierVisitsButRequiresTheReedkeepersWholeAccount() {
+		Set<String> places = facts(List.of(), List.of("place:water_pier_boathouse", "place:water_lighthouse",
+			"learned:coast_light", "said:reedkeeper.crossing"), false);
+		assertFalse(advance(Map.of(), places).changed(), "lamps and visits alone cannot invent the boatman's account");
+		Set<String> heard = new HashSet<>(places);
+		heard.addAll(facts(List.of(), List.of("person:reedkeeper"), false));
+		Advance first = advance(Map.of(), heard);
+		assertEquals(List.of(quest("drowned_road")), first.clued());
+		assertFalse(advance(first.quests(), heard).changed(), "greeting and crossing are not the final Ferryman story");
+		heard.addAll(facts(List.of(), List.of("said:reedkeeper.ferryman"), false));
+		Map<String, Integer> stages = first.quests();
+		for (String id : List.of("drowned_road", "second_count", "last_boat_light")) {
+			if (!id.equals("drowned_road")) {
+				Advance clue = advance(stages, heard);
+				assertEquals(List.of(quest(id)), clue.clued());
+				assertTrue(clue.completed().isEmpty());
+				stages = clue.quests();
+			}
+			Advance done = advance(stages, heard);
+			assertEquals(List.of(quest(id)), done.completed(), "earlier discoveries count in order");
+			assertTrue(done.clued().isEmpty(), "no chapter cascade in one poll");
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, heard).changed(), "a completed coastal route never pays again");
+		assertFalse(facts(List.of(), List.of("place:water_lighthouse"), false).contains(COAST_LIGHT), "a dark tower is not a working lamp");
+	}
+
+	@Test
 	void chapterGraphHasExistingAcyclicPrerequisites() {
 		for (Quest quest : ALL) {
 			Set<String> chain = new HashSet<>();

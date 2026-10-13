@@ -1,4 +1,4 @@
-"""The lore journal: its screen, entries, the six discovery quests and the teachers' conversation lines.
+"""The lore journal: its screen, discovery quests, connected legends and conversation lines.
 
 Text only (no images). Canon for every line lives in docs/LORE_CANON.md. Combat instructions stay in the
 existing lesson lines; these lines are background and short leads.
@@ -145,7 +145,7 @@ DIALOGUE = {
     ),
 }
 
-# Discovery quests and the Scout's Last Cairn chapters: title, clue, objective, hint, completion.
+# Discovery quests and connected chapters: title, clue, objective, hint, completion.
 QUESTS = {
     "scout_wall": (
         "The Scout's Wall",
@@ -212,6 +212,30 @@ QUESTS = {
     ),
 }
 
+QUESTS.update({
+    "drowned_road": (
+        "The Drowned Road",
+        "The Reedkeeper remembers a road lost to a flood. Stay for the account of the last boatman.",
+        "Hear the Reedkeeper's Ferryman story.",
+        "Sneak-use a Tideward Reedkeeper between pauses. After the garden and crossing stories comes the last boatman.",
+        "The Ferryman counted his passengers twice. Coastal boatkeepers still keep that second count in their ledgers.",
+    ),
+    "second_count": (
+        "The Second Count",
+        "The old boatkeepers wrote two numbers for every crossing: those aboard and those safely ashore.",
+        "Enter a coastal pier boathouse.",
+        "Follow beaches or stony shores to a long wooden pier. Its boathouse keeps The Second Count beside the boat slip.",
+        "No passenger became a number missing from the shore. The boatkeepers asked the lighthouse to wait for the last boat.",
+    ),
+    "last_boat_light": (
+        "A Light for the Last Boat",
+        "The road is under water, but its promise survives. A lighthouse can still guide the next traveller home.",
+        "Stand beside a working lighthouse lamp.",
+        "Find a coastal lighthouse, climb its ladder and throw the lever beside the lamp. A light already tended also counts.",
+        "The shore has a light again. You kept the Ferryman's promise: leave the way visible for whoever comes after you.",
+    ),
+})
+
 ENTRIES = {
     "place:memorial": "Found a Marchkeeper memorial.",
     "place:tomb": "Entered a Sword Tomb.",
@@ -225,6 +249,7 @@ ENTRIES = {
     "learned:technique": "Wrote a technique of your own.",
     "learned:reaction": "Set off an element reaction.",
     "learned:field_guide": "Started a field guide.",
+    "learned:coast_light": "Stood beside a working coastal lighthouse lamp. The last boat still has a light to follow.",
 }
 
 FORMS = {"wall_turn": "Wall Turn", "stone_hinge": "Stone Hinge", "cinder_lunge": "Cinder Lunge", "reed_slip": "Reed Slip"}

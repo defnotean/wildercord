@@ -86,6 +86,7 @@ public final class ReedkeeperLandingChecks {
 	public static void run(ClientGameTestContext context) {
 		net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave save;
 		UUID identity;
+		int[] storyRewards;
 		BlockPos home;
 		boolean hidden = context.computeOnClient(mc -> mc.gui.hud.isHidden());
 		try (var world = context.worldBuilder().create()) {
@@ -153,6 +154,7 @@ public final class ReedkeeperLandingChecks {
 				check(LoreJournalScreen.describe("said:reedkeeper.crossing").getString().contains("Tideward Reedkeeper"), "Saved dialogue resolves its actual speaker");
 				mc.player.closeContainer();
 			});
+			storyRewards = DrownedRoadChecks.run(context, world);
 			world.getServer().runOnServer(server -> {
 				for (var piece : pieces) verify(server.overworld(), piece);
 				var player = server.getPlayerList().getPlayers().getFirst();
@@ -178,6 +180,7 @@ public final class ReedkeeperLandingChecks {
 				check(level.getEntity(identity) instanceof Villager resident && resident.entityTags().contains(ReedkeeperResident.TAG), "Original resident UUID and role survive reopening");
 				var data = LoreJournal.data(server.getPlayerList().getPlayers().getFirst());
 				check(data.has(ReedkeeperResident.ENTRY) && data.has("said:reedkeeper.ferryman"), "The person and all heard stories persist");
+				DrownedRoadChecks.reopened(server.getPlayerList().getPlayers().getFirst(), storyRewards);
 			});
 		}
 	}
