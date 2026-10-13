@@ -28,7 +28,13 @@ public final class VoidWardDeliveryTest implements FabricClientGameTest {
     server.runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();switch(rune){
      case "veil"->check(p.hasEffect(MobEffects.INVISIBILITY),"Actual invisibility ward");
      case "anchor"->check(VoidTime.anchored(p),"Actual Anchor state");
-     case "shulkershell"->check(p.hasEffect(MobEffects.RESISTANCE) && p.getEffect(MobEffects.RESISTANCE).getAmplifier()==3 && p.hasEffect(MobEffects.SLOWNESS),"Actual shell mitigation and immobility");
+     case "shulkershell"->{
+      check(p.hasEffect(MobEffects.RESISTANCE) && p.getEffect(MobEffects.RESISTANCE).getAmplifier()==DefenceCaps.RESISTANCE_CAP
+        && p.hasEffect(MobEffects.SLOWNESS) && p.getEffect(MobEffects.SLOWNESS).getAmplifier()==6,"Player shell respects the sustained defence cap and stops movement");
+      // Drowning bypasses Anchor's armour, but still exercises vanilla Resistance damage reduction.
+      float health=p.getHealth();Effects.readyToHurt(p);
+      check(p.hurtServer(s.overworld(),p.damageSources().drown(),10) && Math.abs(health-p.getHealth()-6)<.001F,"Player shell actually reduces a ten-point hit by forty percent");
+     }
      case "phantom"->check(s.overworld().getEntities((net.minecraft.world.entity.Entity)null,p.getBoundingBox().inflate(4),e->e.entityTags().contains("wildercord.afterimage")).size()==1,"Owned Phantom creates exactly one real afterimage");
      default->{}
     }});

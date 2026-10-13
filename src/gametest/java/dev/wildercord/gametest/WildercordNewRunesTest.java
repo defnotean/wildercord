@@ -163,7 +163,7 @@ public class WildercordNewRunesTest implements FabricClientGameTest {
 		samples.add(new Sample("Vortex", List.of(Runes.VORTEX, Runes.HARM), 1, 40,
 			h -> hurt(h.getFirst()), p -> true));
 		samples.add(new Sample("Shulkershell", List.of(Runes.SELF, Runes.SHULKERSHELL), 0, 3,
-			h -> true, p -> has(p, MobEffects.RESISTANCE, 3)));
+			h -> true, p -> has(p, MobEffects.RESISTANCE, dev.wildercord.cast.DefenceCaps.RESISTANCE_CAP)));
 		samples.add(new Sample("Cinderheart", List.of(Runes.SELF, Runes.CINDERHEART), 1, 30,
 			h -> true, p -> has(p, MobEffects.STRENGTH, 1) && p.hasEffect(MobEffects.FIRE_RESISTANCE)));
 		samples.add(new Sample("Warcry", List.of(Runes.SELF, Runes.WARCRY), 0, 3,

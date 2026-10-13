@@ -30,36 +30,36 @@ class NativeSingleplayerCloseTests(unittest.TestCase):
 
     def test_only_test_descriptor_enables_the_exact_hook(self):
         name = "native-singleplayer-close-gametest.mixins.json"
-        test_descriptor = json.loads((ROOT / "src/gametest/resources/fabric.mod.json").read_text())
+        test_descriptor = json.loads((ROOT / "src/gametest/resources/fabric.mod.json").read_text(encoding="utf-8"))
         self.assertEqual(test_descriptor["mixins"].count(name), 1)
         for source_set in ("main", "client"):
             for path in (ROOT / "src" / source_set).rglob("*"):
                 if path.is_file() and path.suffix in (".java", ".json"):
-                    self.assertNotIn("NativeSingleplayerClose", path.read_text(), str(path))
-                    self.assertNotIn(name, path.read_text(), str(path))
-        hook = (SOURCE / "mixin/NativeIntegratedServerHaltMixin.java").read_text()
+                    self.assertNotIn("NativeSingleplayerClose", path.read_text(encoding="utf-8"), str(path))
+                    self.assertNotIn(name, path.read_text(encoding="utf-8"), str(path))
+        hook = (SOURCE / "mixin/NativeIntegratedServerHaltMixin.java").read_text(encoding="utf-8")
         self.assertIn('method = "halt(Z)V"', hook)
         self.assertIn('Lnet/minecraft/client/server/IntegratedServer;executeBlocking(Ljava/lang/Runnable;)V', hook)
         self.assertIn('require = 1, allow = 1', hook)
         self.assertIn('original.call(server, task)', hook)
-        bridge = (SOURCE / "mixin/NativeClientPhaseAccess.java").read_text()
+        bridge = (SOURCE / "mixin/NativeClientPhaseAccess.java").read_text(encoding="utf-8")
         self.assertIn('priority = 900', bridge)
         self.assertIn('@Invoker(value = "postRunTasks", remap = false)', bridge)
 
     def test_no_timeout_or_forced_phase_and_native_acceptance_is_retained(self):
-        gate = (SOURCE / "NativeHaltHandshake.java").read_text()
-        adapter = (SOURCE / "NativeSingleplayerClose.java").read_text()
+        gate = (SOURCE / "NativeHaltHandshake.java").read_text(encoding="utf-8")
+        adapter = (SOURCE / "NativeSingleplayerClose.java").read_text(encoding="utf-8")
         for forbidden in ("orTimeout", "completeOnTimeout", "forceTermination", "arriveAndDeregister", "enterPhase(", "Thread.sleep", "nanoTime", "complete(null)"):
             self.assertNotIn(forbidden, gate + adapter)
         self.assertIn('try (var scope = GATE.open', adapter)
         self.assertIn('future.join()', gate)
-        checks = (SOURCE / "NativeSingleplayerCloseChecks.java").read_text()
+        checks = (SOURCE / "NativeSingleplayerCloseChecks.java").read_text(encoding="utf-8")
         self.assertIn('new boolean[] {false, true}', checks)
         self.assertIn('save.open()', checks)
         self.assertIn('original.isShutdown()', checks)
-        relay = (ROOT / "src/gametest/java/dev/wildercord/cast/RelayCircleTest.java").read_text()
+        relay = (ROOT / "src/gametest/java/dev/wildercord/cast/RelayCircleTest.java").read_text(encoding="utf-8")
         self.assertLess(relay.index('NativeSingleplayerCloseChecks.verify'), relay.index('RelayLessonChecks.run'))
-        lesson = (ROOT / "src/gametest/java/dev/wildercord/content/RelayLessonChecks.java").read_text()
+        lesson = (ROOT / "src/gametest/java/dev/wildercord/content/RelayLessonChecks.java").read_text(encoding="utf-8")
         self.assertIn('reconnect(context)', lesson)
         self.assertIn('connection.close()', lesson)
 

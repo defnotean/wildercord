@@ -487,7 +487,7 @@ A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks tak
 
 *Tier III · Void · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Shuts the target in a shulker's shell for 4 seconds: 80% less damage and no knockback, but it can't move. When it opens, what it turned aside leaves as up to 3 bullets that seek the nearest enemies (6 damage each at most, and they float), and enemies within 3 blocks float up for 2 seconds.
+Shuts the target in a shulker's shell for 4 seconds: 40% less damage for players, 80% for other creatures, and no knockback, but it can't move. When it opens, what it turned aside leaves as up to 3 bullets that seek the nearest enemies (6 damage each at most, and they float), and enemies within 3 blocks float up for 2 seconds.
 
 **How to get it:** Never crafted. Where it comes from: End cities.
 

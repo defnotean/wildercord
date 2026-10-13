@@ -226,3 +226,39 @@ NumPy installation masked that baseline provisioning defect. `tools/requirements
 verified local versions (Pillow 12.2.0, NumPy 2.4.6); the build and three native image-verification
 installation steps use that same requirements file. This is a dependency correction, not permission
 to ignore asset differences. The new run must still pass pixel/byte parity and all relevant gates.
+
+### Native CI follow-up: current rules and remaining failures
+
+GitHub run `38401906989` at `08f51410` passed its build, generated-asset parity and
+packaging job after the dependency correction. It did **not** pass the whole native
+matrix. Failures include ward expectations, the burst-survival fixture, Stone March
+recovery, Master opening-cost assumptions, connected Resistance prevention, and one
+player-save preflight. Each remains a separate finding until its relevant run passes.
+
+- The Void Ward failure reproduced locally: the fixture expected Resistance IV on a
+  player, while the existing `DefenceCaps` mixin limits lasting grants to Resistance II.
+  Corrected the fixture and Brace/Shulkershell descriptions without changing combat
+  balance. The focused ward test now also applies a real ten-point drowning hit,
+  bypassing prior Anchor armour, and verifies six health lost. Native pass: 40 seconds.
+- The Physical Magic burst fixture used a default cheap cast, whose current paid
+  damage allowance runs out before it can reach the death guard. An explicit synthetic
+  30-mana allowance lets all eight four-point hits enter the same cast. The test now
+  asserts all eight land and the same player survives on two health. The full focused
+  Physical Magic test passed in 56 seconds, retaining its terrain and crafting checks.
+- The complete focused Relay suite passed locally in 2m 10s, including paused and
+  unpaused save/reopen and socket reconnection. The CI save warning hides its exception;
+  a test-only observer now exposes that cause without changing save behavior. No
+  cross-platform save fix is claimed. Three pure-JDK/source-boundary tests pass after
+  explicitly reading UTF-8 on Windows.
+- Unit results remain 2,708 passed. Regenerated resources retain parity across all
+  8,987 paths; the 189-page guide export passes. Other native repairs are in progress.
+- Running the wider wiki generator revealed another open audit item: its Master
+  technique timing model has hard-coded recovery values and omits the current opening
+  floor. The unrelated generated technique-table changes were not included in this
+  checkpoint; that model needs comparison against the actual Java techniques before
+  its output can be trusted.
+
+The first new-biome slice is paused behind these native regressions. Minecraft 26.3
+uses data-driven material rules; old surface-rule integration examples are unsuitable.
+The Reedlands proposal still requires actual registry, climate-placement, surface and
+seed evidence, and remains explicitly unimplemented.

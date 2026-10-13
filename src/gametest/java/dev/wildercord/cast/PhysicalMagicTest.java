@@ -96,8 +96,10 @@ public final class PhysicalMagicTest implements FabricClientGameTest {
 				check(dev.wildercord.player.Spellbooks.readyAt(p,0)==0,"foreign soul weave consumes no cooldown");p.setGameMode(GameType.CREATIVE);
 				p.setGameMode(GameType.SURVIVAL);p.setHealth(20);p.removeAllEffects();
 				p.setAttached(dev.wildercord.player.WildercordAttachments.SPELLGUARD,p.level().getGameTime()-1201);
-				Cast burst=new Cast(p);for(int i=0;i<8;i++){Effects.readyToHurt(p);SpellDefence.hurt(p.level(),p,p.damageSources().magic(),4,burst);}
-				check(p.isAlive()&&p.getHealth()==2,"spellguard sees the start of a multi-effect burst rather than each dwindling hit");
+				// Give this synthetic burst enough paid allowance to reach the lethal-hit guard; a default cheap cast cannot.
+				Cast burst=new Cast(p).damagePrice(30);int landed=0;
+				for(int i=0;i<8;i++){Effects.readyToHurt(p);if(SpellDefence.hurt(p.level(),p,p.damageSources().magic(),4,burst))landed++;}
+				check(landed==8 && p.isAlive()&&p.getHealth()==2,"All eight admitted hits preserve the burst's starting health for spellguard; landed="+landed+", health="+p.getHealth());
 				p.setHealth(20);p.setGameMode(GameType.CREATIVE);
 				p.teleportTo(p.level(),2.5,100,-1.5,Set.<Relative>of(),0,0,false);p.setGameMode(GameType.SURVIVAL);p.experienceLevel=3;p.setShiftKeyDown(true);
 				p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new net.minecraft.world.item.ItemStack(dev.wildercord.content.WildercordItems.BLANK_RUNE,2));

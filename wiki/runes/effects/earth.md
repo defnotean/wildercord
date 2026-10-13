@@ -57,7 +57,7 @@ Crafts nine of a kind in your pack into their block, like iron ingots into an ir
 
 *Tier I · Earth · Helps you and your allies · 4 mana · needs any Cord*
 
-Braces for the blow: 80% less damage for 2 seconds. Bracing again takes 6 seconds.
+Braces for the blow for 2 seconds: 40% less damage for players, 80% for other creatures. After it ends, wait 6 seconds before bracing again.
 
 **How to get it:** Craft: a Blank Rune, Cobblestone and Iron Ingot. The recipe is shapeless: any layout, any crafting grid.
 

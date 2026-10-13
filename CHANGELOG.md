@@ -6,6 +6,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Fixed
 
+- Brace and Shulkershell descriptions state the existing player defence cap: 40% less damage for players, 80% for other creatures. Brace also explains that its six-second rest starts after the guard. Native ward and burst-survival checks now exercise the current defence cap and paid damage allowance.
 - The lore journal now names all sixteen Sword Masters and keeps each school's own victory dialogue. Older `school_3` through `school_15` victory entries recover their names when loaded, without reopening completed leads or paying their rewards again.
 - Regenerating assets preserves the recent bosses' warning lines and expanded bestiary descriptions instead of dropping or replacing them with earlier text.
 - Build and native image-check jobs install the pinned Pillow and NumPy dependencies used by the creature-art generators, fixing a clean-runner failure that an existing local NumPy installation could hide.

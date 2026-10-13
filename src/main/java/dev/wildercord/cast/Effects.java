@@ -2071,7 +2071,7 @@ public final class Effects {
 	/** When each creature may brace again. */
 	private static final Map<UUID, Long> BRACED = new HashMap<>();
 
-	/** Brace: 80% less damage for a moment, and a while before it can be done again. */
+	/** Brace: Resistance IV (capped to II for players), then a six-second recovery after the guard. */
 	private static void brace(Cast cast, LivingEntity t, int ticks) {
 		long now = cast.level.getGameTime();
 		Long ready = BRACED.get(t.getUUID());
