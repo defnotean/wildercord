@@ -6,7 +6,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Fixed
 
-- The advancement guide includes the missing Aura and cooking milestones, with all 155 visible entries and their reward totals checked against shipped data.
+- The advancement guide includes the missing Aura and cooking milestones, with all 156 visible entries and their reward totals checked against shipped data.
 - Sword Masters cancel a paid attack when the last challenger leaves the arena and depart after their abandonment window. A participant can return the Master's severed Aura bolt to hurt that Master; ordinary spells still fail against its spellbane.
 - Heart Circle chat and Cord tooltips preserve fractional power bonuses: +1.5% per circle, including +28.5% with nineteen working circles. The progression tables and Overflow guidance now match the existing +30% cap and +15% full-mana bonus. These are display corrections, not balance changes.
 - Native Aura progression, airborne Master recovery, Master animation payments and Reweave refusal checks now follow the current progression/combat rules and the lesson screen's visible refusal state.
@@ -19,6 +19,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Added
 
+- **The Reed-Crowned Ferryman and the Last Crossing.** Find a broad timber ferry basin in the Luminous Reedlands and read its book before ringing the authentic Crossing Bell. Its reed-raft guardian announces an oar sweep, anchor circle and wake lanes, with open escape paths and a changed pattern below half health. Eligible surviving contributors earn 80 XP, a field note and a compass pointing to that crossing. The bell keeps one guardian and remembers its completed encounter through chunk replay and world reopening.
+- **The Drowned Road.** Follow the Reedkeeper's account through a coastal boathouse passenger ledger to a lighthouse's working lamp. Three ordered journal chapters remember earlier visits and pay 90 XP, five Blank Runes and one Aura Shard in total, once per player. The route needs no combat victory; its discoveries support older buildings as well as new ones.
+- **Reedkeeper return conversations.** After the original four stories, the keeper responds to your current coastal chapter, gives a practical clue for the next stop, thanks you for tending the lighthouse and recognizes your return from a Ferryman victory. Heard responses stay in your own journal. Ordinary fishing trades remain available.
 - **Tideward Reedkeeper Landings.** A new regional survey house stands over shallow Reedlands water, with a resident fisher, planted Moonreed garden, four-page First Crossing book and its own discovery advancement. Crouch-use the Reedkeeper to hear four stories; the person and heard conversations remain in your journal after rejoining. Ordinary use opens fishing trades.
 - **Luminous Reedlands.** A new Overworld region grows in the wettest swamp country: pale banks, blue-green pools, small natural Moonreed colonies and the existing wetland creatures. Stilt Smokehouses can generate along its shallow water. Entering the region records the Tideward's first-crossing field note in the lore journal; the discovery and biome survive saving and reopening the world.
 - **The Scout's Last Cairn.** After the Scout's Wall lead, follow three connected journal chapters through a road watchtower, a ring of standing stones and a Sleeping Blade. Watch orders and The First Roads gain an account of the Marchkeepers' road. Earlier discoveries count, chapters reveal in order, and each pays once. An authentic Sleeping Blade stone now shares the Last Oath with every visitor; drawing and owning its sword still have their existing requirements.
