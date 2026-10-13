@@ -15,12 +15,12 @@ a dated snapshot, not live process discovery.
 | Review | Draft [PR #2](https://github.com/defnotean/wildercord/pull/2); not merged or released |
 | Local workspace | `C:\Users\Eating\Desktop\WilderCord` |
 | Work baseline | `0a18358929180f1c4bc5cc4b827f7f92f05571c4` |
-| Last content candidate | `a85023dd32b2c9f4037aed81e39ef26f0cc2e7ec`, pushed to GitHub and verified on `pandora-vps` |
-| Immediately preceding checkpoint | `195e4c22089260f513c8eb3c746c2e2aa057ff56` (`57fff8a9` + handoff docs) |
+| Last content candidate | `3778d1ebc9d34f299c4e21ed4d4efb6e841011f8`, pushed to GitHub and verified on `pandora-vps` |
+| Immediately preceding checkpoint | `972f11a3e28b92cb13429d184d3cb2fd474c9038` (`a85023dd` + Batch 2 handoff docs) |
 | Development goal | **Active** (resumed by owner on 2026-10-13) |
 | Scheduled continuation | **ACTIVE**, 15-minute recurring development heartbeat |
 | GitHub Actions | Repository-wide **disabled**; build/docs workflows also disabled |
-| Owned VPS work | Batch 1 (`BIO-02`) and Batch 2 (`BLD-03`, `NPC-03`, `LOR-03`, `BOS-03`) verified on `WIN-I2GBVRRD872` |
+| Owned VPS work | Batch 1 (`BIO-02`), Batch 2 (`BLD-03`, `NPC-03`, `LOR-03`, `BOS-03`), and Batch 3 (`BIO-04`, `BLD-02`, `NPC-02`, `LOR-02`, `BOS-01`) verified on `WIN-I2GBVRRD872` |
 | Live Minecraft server | Left running and unchanged (`PID 24072` in `C:\wildercord`) |
 
 The owner originally asked for a repository-wide audit, a detailed expansion list,
@@ -28,12 +28,13 @@ and sustained development of bosses, buildings, NPCs, custom biomes, legends, lo
 and polish, with regular GitHub pushes. They required **all future tests on
 the VPS, no GitHub CI**, and later explicitly resumed work one batch at a time.
 
-Candidate `a85023dd` completes the connected **Windscar Highlands** slice (`BIO-02`,
-`BLD-03` Highland Cairn Lodge & Survey Ring, `NPC-03` Highland Cairn Keeper,
-`LOR-03` 3-chapter Paired Cairns / Ridge Watch / Lamp on the Ridge journal route,
-and `BOS-03` The Glass Cartographer) and passes the owned VPS build (`2,731` JUnit
-tests, asset parity, and guide checks) plus focused native `WindscarBiomeTest`,
-`CartographerEncounterTest`, and `LoreJournalGameTest`.
+Candidate `3778d1eb` completes the connected **Belowkeeper Hollows** slice (`BIO-04`
+Belowkeeper Hollows subterranean biome, `BLD-02` Belowkeeper Listening Station &
+Bell Sanctum, `NPC-02` Belowkeeper Listener, `LOR-02` 3-chapter What the Empty Bell
+Kept / Pressure Records / Resonance Shutter journal route, and `BOS-01` The Hollow
+Bell) and passes the owned VPS build (`2,740` JUnit tests, `9,052` generated asset
+paths, and `195` guide pages) plus focused native `BelowkeeperBiomeTest`,
+`HollowBellEncounterTest`, `LoreJournalGameTest`, and `FungalTerrainTest`.
 
 ## 2. Where the full context lives
 
@@ -177,6 +178,39 @@ Native coverage: `ReedlandBiomeTest`, `ReedkeeperLandingChecks`, `DrownedRoadChe
   reset, chunk-replay preservation, and a one-time `Compass of the High Meridian`
   (`high_meridian_compass`) + `80 XP` + `learned:glass_cartographer` reward.
 
+### Connected Belowkeeper Hollows region — native evidence available (`3778d1eb`)
+
+- **Belowkeeper Hollows (`BIO-04`)**: partitions the continental subterranean band of
+  `minecraft:dripstone_caves` (`continentalness >= 0.40`), preserving all other climate
+  coordinates and biome entries. Combines dripstone formations with lush moss/clay
+  cave shelves while keeping `generation.features` strictly ordered with vanilla cave
+  feature steps (`FeatureSorter` verified acyclic across all 70 Overworld biomes).
+  Includes `glowcap_patch`, `breathmark_site`, `belowkeeper_drainhouse`, Sporeback
+  Snails, Mossveil Dormice, Rootmolt Striders, and shares `deep_caves`' Belowkeeper
+  Stillness attunement at `Y <= 0` (`skyLight == 0`).
+- **Belowkeeper Listening Station (`BLD-02`) & Belowkeeper Listener (`NPC-02`)**: a
+  21-by-21 vaulted deepslate-and-oxidized-copper acoustic chamber with a damp moss/clay
+  Glowcap basin, overhead Fungal Nursery, Acoustic Resonance Shutter Lamp and lever,
+  four-page *What the Empty Bell Kept* lectern book, supply chest, and a persistent
+  librarian Belowkeeper Listener villager (`belowkeeper_listener`) with four original
+  stories plus four progress-aware return conversations (`deep_records`, `station_gauge`,
+  `gauge_return`, `bell_return`).
+- **What the Empty Bell Kept / Pressure Records / Resonance Shutter (`LOR-02`)**: three
+  ordered journal chapters (`empty_bell_kept` -> `pressure_records` -> `resonance_shutter`,
+  `90 XP`, `5 Blank Runes`, `1 Aura Shard` once per player) connecting the Listener's
+  stories, Deepslate Vault (`place:mine_deep_vault`) discovery, and lighting the
+  authentic Acoustic Resonance Shutter Lamp (`learned:belowkeeper_shutter`).
+- **Belowkeeper Bell Sanctum & The Hollow Bell (`BOS-01`)**: a 35-by-35 vaulted
+  deepslate-and-copper resonance court with an entrance vestibule, two-page *The Quiet
+  Bell* lectern book, supply chest, and authentic `ListeningBelfryBlock`. Using the
+  belfry in Survival summons the plinth-anchored `HollowBell` with three world-geometry
+  telegraphed acoustic attacks (`TOLL` annular pressure ring with a safe inner eye,
+  `CLAPPER` locked drop circle, `CHORD` damped acoustic shutter lane) readable under
+  `ParticleStatus.MINIMAL`, a Phase 2 rotated resonance chord at `<= 50%` health,
+  target-loss retirement, quiet abandonment reset, chunk-replay preservation, and a
+  one-time `Compass of the Quiet Bell` (`quiet_bell_compass`) + `80 XP` +
+  `learned:hollow_bell` reward.
+
 ## 5. Evidence index — do not merge scopes
 
 These are actual VPS receipts. Full `result.json`, logs and screenshots are
@@ -186,6 +220,11 @@ artifacts are ignored by Git. A fresh clone has this index, not all raw evidence
 
 | Check | Candidate | Result | Receipt UUID |
 | --- | --- | --- | --- |
+| Owned build, native compilation, 2,740 JUnit cases, 9,052 generated paths, 195 guide pages | `3778d1eb` | Pass; no JUnit failures/errors/skips | `12e79d1a-6067-41ec-bfa2-1d58b9e10713` |
+| Belowkeeper Hollows terrain, Listening Station, Belowkeeper Listener, and Empty Bell 3-chapter route | `3778d1eb` | Pass, 2m 51s; `belowkeeper_hollows_terrain.png` + `belowkeeper_listening_station.png` | `de852d21-9301-4664-8487-8ee4196f1598` |
+| Full Hollow Bell encounter, Bell Sanctum chunk replay, Minimal-particle tells, and victory return dialogue | `3778d1eb` | Pass, 3m 01s; 4 encounter screenshots | `3a335b67-98ce-46a0-b5f5-e85f431dbc0a` |
+| Lore Journal screen, sixteen Master victories, and ordered regional routes | `3778d1eb` | Pass, 1m 44s | `30b0373e-9130-425f-befe-e84b9d32aaad` |
+| Natural Fungal terrain and Glowcap ecosystem regression | `3778d1eb` | Pass, 1m 54s | `e5fb6e34-2e6c-4472-824a-f8be354efe9b` |
 | Owned build, native compilation, 2,731 JUnit cases, generated assets, 192 guide pages | `a85023dd` | Pass; no JUnit failures/errors/skips | `7d0cac44-4930-4853-b984-4852b5c2bca2` |
 | Windscar Highlands terrain, Highland Cairn Lodge, Cairn Keeper, and Paired Cairns 3-chapter route | `a85023dd` | Pass, 2m 52s; unobstructed `windscar_highlands_terrain.png` + `highland_cairn_lodge.png` | `38bfd658-92a9-459f-a2ed-b4aca4ceaf0b` |
 | Full Glass Cartographer encounter, Survey Ring chunk replay, Minimal-particle tells, and victory return dialogue | `a85023dd` | Pass, 3m 33s; 4 encounter screenshots | `9f996124-3ec3-455e-8530-0c4620652799` |
@@ -312,12 +351,14 @@ normal stderr progress with a failed test or accidentally swallow a real failure
 
 ## 8. Native acceptance contract
 
-Current plan: `full-client-explicit-v6-cartographer`, **345** classes in groups
-**86 / 86 / 87 / 86**. Earlier plans (`v4` with 343 classes and `v5` with 344
-classes) are frozen in `tools/tests/full-client-plan-v4-343.json` and
-`tools/tests/full-client-plan-v5-344.json`. `CartographerEncounterTest` is
-appended to group 4; the three earlier groups and every original class's
-order/membership are preserved.
+Current plan: `full-client-explicit-v7-belowkeeper`, **347** classes in groups
+**87 / 87 / 87 / 86**. Earlier plans (`v4` with 343 classes, `v5` with 344
+classes, and `v6` with 345 classes) are frozen in
+`tools/tests/full-client-plan-v4-343.json`,
+`tools/tests/full-client-plan-v5-344.json`, and
+`tools/tests/full-client-plan-v6-345.json`. `BelowkeeperBiomeTest` is appended
+to group 1 and `HollowBellEncounterTest` is appended to group 2; all 345
+previous classes keep their exact shard membership and relative order.
 
 Focused native execution requires the exact class's ordered setup/run/cleanup/
 returned markers, a fresh launch UUID, exact processed descriptor, successful
@@ -340,18 +381,12 @@ of a live process; use process ownership plus interruption/completion records.
 
 ## 9. Exact next work, when authorized
 
-1. **Batch 3 — Belowkeeper Hollows Slice (`BIO-04` + `BLD-02` + `NPC-02` + `LOR-02` + `BOS-01`):**
-   Implement the underground **Belowkeeper Hollows** custom biome (`BIO-04`),
-   **Belowkeeper Listening Station** (`BLD-02`), **Belowkeeper Listener** resident
-   and acoustic survey trade/dialogue (`NPC-02`), 3-chapter Belowkeeper journal
-   investigation (`LOR-02`), and **The Hollow Bell** optional resonance encounter
-   (`BOS-01`), then verify on `pandora-vps`.
-2. **Batch 4 — Emberwood Reach Slice (`BIO-03` + `BLD-04` + `NPC-04` + `LOR-04` + `BOS-04`):**
+1. **Batch 4 — Emberwood Reach Slice (`BIO-03` + `BLD-04` + `NPC-04` + `LOR-04` + `BOS-04`):**
    Implement **Emberwood Reach** (`BIO-03`), **Emberwood Charcoal Yard** (`BLD-04`),
    Kiln Keeper resident (`NPC-04`), Emberwood journal route (`LOR-04`), and **The
    Kiln Widow** (`BOS-04`), then verify on `pandora-vps`.
-3. **Batch 5 — Return Visits, Progression, and Boss/Site Polish (`BLD-05`, `NPC-01`, `POL-03..08`, `BOS-05`).**
-4. **Batch 6 — Full Native Gate & Paired Matrix Verification on `pandora-vps`.**
+2. **Batch 5 — Return Visits, Progression, and Boss/Site Polish (`BLD-05`, `NPC-01`, `POL-03..08`, `BOS-05`).**
+3. **Batch 6 — Full Native Gate & Paired Matrix Verification on `pandora-vps`.**
 
 Keep the user's preference for substantial connected detail: useful residents,
 clear encounter tells, return visits, meaningful resources, persistence and lore
