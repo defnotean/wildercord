@@ -904,8 +904,10 @@ batch/attempt, actual child exit and class lifecycle nonce. Aggregation refuses
 mixed providers, candidates, computers, batches, duplicate parts and reused
 launches. Nine new protocol/actual-child tests, all sixteen existing full-client
 protocol tests (including executable Gradle parity), and all fifteen required-part
-tests pass on the VPS: **40 tests, zero skips**. A real Stone March group run is
-in progress; no full aggregate is accepted from these tooling tests.
+tests pass on the VPS: **40 tests, zero skips**. The real Stone March required
+group subsequently passes in **8m 36s**, receipt
+`140a81dc-5084-4d5f-a61c-860c4fc8a79e`, with its observed seed and accepted schema-2
+part manifest. Neither the tooling tests nor this one part accepts the aggregate.
 
 The unfiltered `WildercordArtsTest` fails at `73c34d4a` in **5m 27s**, receipt
 `94575240-8a03-409b-8850-022bb8c326ed`. The first errors involve Glacier Mirror,
@@ -920,7 +922,7 @@ asserts their exact authored health after world admission. Active AI and native
 damage/movement/freeze/thaw behavior remain. A dead original player fails at the
 reset boundary instead of generating dozens of misleading later errors. Individual
 art start/pass/failure observations make the original fifty-art run diagnosable.
-This repair still needs its new native VPS run; no production combat values changed.
+Its complete native VPS rerun is recorded below; no production combat values changed.
 
 The README's inactive Actions badge is removed and its testing instructions now
 point to VPS evidence. Contributor guidance also records the new execution policy.
@@ -960,3 +962,26 @@ actual child exit zero. Native screenshots and the complete successful log are
 retained alongside the earlier failed receipt. This establishes the ordinary
 fixture correction at that candidate; it does not establish the full 343-class
 gate or solve the independent long-run heap issue.
+
+### Reedkeeper return conversations on the VPS
+
+`64b0cfbe` passes the owned build, native compilation, all **2,721** JUnit tests
+(no failures/errors/skips), **9,005** generated paths and **191** guide pages,
+receipt `d4d1e9ca-88e6-4f80-b571-dcd80d046e62`.
+
+Its complete `ReedlandBiomeTest` passes in **3m 9s**, receipt
+`6212756c-8828-40b3-b560-9c58be1fd66c`. The original 49-chunk census again finds
+9,394 regional columns, 2,552 water columns and six naturally placed Moonreeds.
+The landing, trades, four stories, ledger clue, lighthouse advice and return
+after restoring the lamp all pass through actual client interaction packets and
+translated owner journals. Reopening retains the three new peaceful responses
+without inventing the separate Ferryman-victory entry. All original copied-site,
+unrelated-lamp, spectator and one-time reward checks remain. Native screenshots
+and logs are retained.
+
+The separate full `FerrymanEncounterTest` passes at the same candidate in
+**3m 25s**, receipt `86dbe112-9234-46be-a008-78a6f2727c62`. The original survival
+bell, tells, evasions, phase change, abandonment, chunk replay, authentic reward
+and reopen checks remain. After its actual victory, the test hears all four
+original stories first, then the new thanks; repeating that conversation awards
+no additional XP or compass, and the heard response survives another reopen.

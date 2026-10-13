@@ -153,3 +153,11 @@ string contract and Aura page. Its ordinary targets now refuse both independent
 elite systems and assert their declared health. Native combat assertions,
 movement, freeze/thaw and timing remain unchanged. The earlier failed log remains
 retained; this focused pass leaves full-client acceptance unverified.
+
+At `64b0cfbe`, build/native compilation, all 2,721 unit tests, 9,005 generated
+paths and 191 guide pages pass. `ReedlandBiomeTest` passes in 3m 9s, including the
+three peaceful progress responses, actual lighthouse completion, owner dialogue
+and save/reopen. `FerrymanEncounterTest` passes in 3m 25s, including the victory
+response after the real encounter, original story priority, no duplicate rewards
+and saved dialogue. Their receipts are `6212756c-8828-40b3-b560-9c58be1fd66c` and
+`86dbe112-9234-46be-a008-78a6f2727c62`; all original gameplay checks remain.
