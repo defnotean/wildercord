@@ -610,13 +610,26 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 			if (haunt == null || haunt.rank() != 1) {
 				return "a spawner room should be a haunt of rank 1 (" + haunt + ")";
 			}
-			FallenKnight knight = KnightSpawner.spawnIn(level, player.blockPosition(), haunt, level.getRandom());
+			// The ordinary sixteen attempts can all miss this small room. Fix their input, not the spawn gates or budget.
+			FallenKnight knight = KnightSpawner.spawnIn(level, player.blockPosition(), haunt, net.minecraft.util.RandomSource.create(1));
 			if (knight == null) {
 				return "a knight should rise in the dark room";
 			}
 			knight.addTag(TAG);
-			if (knight.rank() != 1 || Math.abs(knight.getMaxHealth() - AuraWorldRules.knightHealth(1)) > 1e-3 || Math.abs(knight.getY() - y) > 1) {
-				return "it should be rank 1, inside the room (" + knight.rank() + ", y " + knight.getY() + ")";
+			// Natural ENTITY_LOAD applies progression and possible elite health after setRank supplies the base.
+			int threat = dev.wildercord.monster.Tempering.threat(knight);
+			var elite = dev.wildercord.monster.Tempering.elite(knight);
+			double base = knight.getAttribute(Attributes.MAX_HEALTH).getBaseValue();
+			double expected = AuraWorldRules.knightHealth(1) * dev.wildercord.monster.TemperingRules.health(threat)
+				* (elite == null ? 1 : dev.wildercord.monster.TemperingRules.ELITE_HEALTH);
+			dev.wildercord.Wildercord.LOGGER.info("AURA_WORLD_KNIGHT rank={} base={} max={} expected={} threat={} elite={} y={}",
+				knight.rank(), base, knight.getMaxHealth(), expected, threat, elite, knight.getY());
+			if (knight.rank() != 1 || Math.abs(base - AuraWorldRules.knightHealth(1)) > 1e-3
+				|| Math.abs(knight.getMaxHealth() - expected) > 1e-3 || Math.abs(knight.getY() - y) > 1
+				|| !knight.entityTags().contains(dev.wildercord.monster.Tempering.TAG)
+				|| threat != dev.wildercord.monster.TemperingRules.threat(Heart.circles(player), Aura.stage(player))) {
+				return "it should be rank 1, naturally tempered, inside the room (" + knight.rank() + ", base " + base
+					+ ", health " + knight.getMaxHealth() + " expected " + expected + ", threat " + threat + ", y " + knight.getY() + ")";
 			}
 			var tag = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getTagOrEmpty(KnightSpawner.HAUNTS);
 			List<String> haunts = new ArrayList<>();
@@ -649,7 +662,14 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		check(telegraphed, "a knight out of reach should raise its blade to slash");
 		context.waitTicks(AuraWorldRules.knightSlashWindup(2) + 14);
 		float struck = on(world, player -> player.getMaxHealth() - player.getHealth());
-		check(struck > 2 && struck < AuraWorldRules.knightSlash(2) + 1, "its slash should land through the spell defences (" + struck + ")");
+		double expectedSlash = on(world, player -> {
+			FallenKnight attacker = (FallenKnight) tagged(player, "wildercord.knight");
+			return AuraWorldRules.knightSlash(2) * dev.wildercord.monster.TemperingRules.damage(dev.wildercord.monster.Tempering.threat(attacker))
+				* (dev.wildercord.monster.Tempering.elite(attacker) == dev.wildercord.monster.TemperingRules.Elite.BRUTAL
+					? dev.wildercord.monster.TemperingRules.BRUTAL_DAMAGE : 1);
+		});
+		check(struck > 2 && Math.abs(struck - expectedSlash) < .01,
+			"its naturally tempered slash should land through the spell defences (" + struck + " expected " + expectedSlash + ")");
 		// Stepping off its line dodges it.
 		on(world, player -> {
 			player.setHealth(player.getMaxHealth());

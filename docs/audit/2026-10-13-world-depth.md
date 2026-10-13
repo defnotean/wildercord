@@ -585,3 +585,39 @@ the old body has recovery deadline 716 and no pending hold, while the new body
 has no saved recovery deadline. Cancellation computes the expected deadline;
 save/lifecycle ordering requires further investigation. This is not a passing
 dedicated-server result or a claimed fix.
+
+### Existing water sites and naturally tempered knights
+
+The existing `WaterSitesGameTest` passes in **1m 10s** after the coastal story
+changes, including the original structure locators, doors, walkable pier, slip,
+books and loot. All three profile packs built from the explicit current JAR pass
+the packaging audit, and generated parity remains 8,995 paths.
+
+The next third-shard failure was `WildercordAuraWorldTest`'s Fallen Knight case.
+It compared final health to rank base health even though the real ENTITY_LOAD
+handler tempers the spawned knight. A native diagnostic measured rank 1, base
+40, threat 9 and final health 76. The subsequent slash measured 7.8 damage,
+which is the normal rank-two 6 damage at threat 6's 1.3 multiplier. The fixture
+now verifies rank base, expected threat, the exact scaled maximum including any
+elite modifier, and the exact scaled slash. The rest of its encounter checks,
+including telegraph, dodge and reflected crescent, remain in place.
+
+An unchanged local run also showed the random sixteen spawn attempts can all
+miss this small artificial room. The spawn call now receives a fixed seed of 1;
+its original production attempt count, radius, darkness, distance and haunt
+predicates are unchanged. The complete corrected Aura World suite passes in
+**1m 57s**. No knight health, damage, spawn rate or production RNG changed.
+
+Excise now has bounded test-only tracing immediately before player serialization
+and before/after retirement, including body identity, thread and authoritative
+deadlines. This adds evidence without changing persistence or cancelling a hold.
+The diagnostics load successfully in the native client; the actual dedicated
+disconnect sequence still requires the existing CI environment.
+
+The latest Siltcrest failure is a separate, earlier observation limit: Full
+quality completes its natural hunt, while Minimal quality records three lawful
+escapes at ticks 67, 748 and 980, then reaches its original 1,100-tick allowance.
+Each escape has an out-of-range committed quarry and retains the production
+cooldown. The full receipts remain in CI. No larger observation window, forced
+quarry, reset appetite or creature behavior change is being substituted for this
+intermittent presentation result.
