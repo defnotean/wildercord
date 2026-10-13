@@ -1,0 +1,86 @@
+# VPS testing
+
+The owner moved all testing from GitHub Actions to the existing Windows VPS on
+October 13, 2026. Repository Actions is disabled (`enabled=false`), and existing
+builds were cancelled. Do not reenable or dispatch a GitHub workflow. The YAML
+under `.github/workflows` records the former setup and its acceptance selections;
+retaining it does not mean those jobs are active. Player Guide auto-publication
+through Actions is stopped as well.
+
+## Workspace and source
+
+- SSH alias: `pandora-vps` (the user's configured connection).
+- Expected computer: `WIN-I2GBVRRD872`.
+- Test checkout: `C:\wildercord-ci\repo`.
+- Java: `C:\java\jdk-25.0.4.1+1`.
+- Python environment: `C:\wildercord-ci\venv` (Python 3.12 and pinned requirements).
+- Gradle cache: `C:\wildercord-ci\gradle`.
+- Live Minecraft server: `C:\wildercord`; never use its world as a test fixture.
+
+The checkout is detached at the exact candidate SHA. Inspect running jobs and
+checkout status before fetching/checking out another candidate. A local Git bundle
+can transfer an unpublished committed candidate for testing before its GitHub push.
+Do not reset a dirty checkout or replace sources under a running client.
+
+## Build and focused native checks
+
+Run from the test checkout on the VPS after setting these process-local variables:
+
+```powershell
+$env:JAVA_HOME='C:\java\jdk-25.0.4.1+1'
+$env:GRADLE_USER_HOME='C:\wildercord-ci\gradle'
+$env:PATH="C:\wildercord-ci\venv\Scripts;$env:JAVA_HOME\bin;$env:PATH"
+$candidate=(git rev-parse HEAD).Trim()
+
+python tools/run_vps_checks.py build --head $candidate --computer WIN-I2GBVRRD872
+python tools/run_vps_checks.py focused --head $candidate --computer WIN-I2GBVRRD872 --suite dev.wildercord.cast.NextCounterTest --accepted-eula C:\wildercord\eula.txt
+```
+
+The EULA input must already contain the owner's acceptance. The runner reads it
+and records its hash; it does not change that file or impersonate a GitHub CI
+environment. No accepted EULA is committed to the repository.
+
+Build mode runs the full build, compiles native test sources, checks generated
+asset parity and checks the guide. Its JUnit summary rejects missing reports,
+failures, errors and skips. Focused mode accepts exactly one registered class and
+requires its ordered setup/run/cleanup/return markers with this run's nonce,
+the exact processed descriptor and a successful process/build completion. A skip,
+foreign nonce, wrong class or partial log cannot pass. Every result remains
+explicitly `fullClientGate: unverified`.
+
+The runner refuses the wrong computer, dirty/wrong candidate, inherited test
+filters, injected JVM options and GitHub environment variables. It shares the
+existing two-client supervisor's checkout lock. Commands run sequentially with
+two Gradle workers. An owned Windows job is created before launching children;
+its handle closes when the runner exits or is interrupted, so its descendants
+cannot leave an orphan native client behind. This uses the Windows job inheritance
+and kill-on-close contract described in [Microsoft's job-object documentation](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects).
+
+Evidence is retained in a new `artifacts/review/vps/<launch UUID>/` directory:
+result JSON, each command's complete log, SHA, process identity, timestamps and
+validation issues. The default total deadline is one hour, with an explicit
+maximum of three hours. Both failed graphics backends end the run promptly.
+OpenAL uses its real null-output mixer when no backend was explicitly configured.
+Screenshots remain in the ordinary client output directory; preserve needed
+images before the next Gradle native run replaces that directory.
+
+Run the runner's evidence and real process-ownership tests on the VPS:
+
+```powershell
+python -m unittest discover -s tools -p test_vps_checks.py -v
+```
+
+## Acceptance still being migrated
+
+The focused runner does not replace the four full-client groups, the three
+required Masters parts, articulated coverage, connected wide/slim and Moon
+matrices, packaging checks or manual visual acceptance. Their rosters, deadlines,
+geometry comparisons and evidence requirements remain in their existing tools.
+The former top-level launcher, bounded evidence readers and paired-matrix alarm
+currently contain Linux-specific operations. Windows adapters and a fresh full
+VPS execution are still required; do not label a focused pass as their substitute.
+
+The first remote checkpoint at `550fa619` passed build/native compilation,
+generated assets and guide validation. That bootstrap run's logs are directly
+under `C:\wildercord-ci` and predate this runner. Native VPS execution and runner
+verification are pending at the time this file is introduced.

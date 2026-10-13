@@ -46,6 +46,11 @@ The game design (what each rune does and why) is in [docs/DESIGN.md](docs/DESIGN
 
 ## Testing
 
+The project owner moved automated testing to the Windows VPS on October 13, 2026.
+GitHub Actions is disabled. Run development checks on the isolated VPS checkout
+using [the VPS testing guide](docs/testing/vps.md); the commands below describe
+the underlying checks, not permission to resume GitHub CI.
+
 | Command | When |
 |---|---|
 | `./gradlew test` | Always. Fast, headless unit tests for the spell engine. |
