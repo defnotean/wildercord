@@ -46,12 +46,52 @@ feeding, warnings, shelter, the Ridge Whistle and the recipes for travel gear.
 Windscar gives these animals another habitat; ordinary spawning limits and server
 settings still apply.
 
-## Old routes
+## Shelters on the ridge
+
+**Highland Cairn Lodges** stand on dry stone shelves across the Windscar Highlands,
+windswept hills and meadows. Look for a carved north wind-break wall, a spruce-and-stone
+shelter and a tall stone cairn on the eastern point carrying a shuttered redstone
+lamp and lever. In the lee of the north wall grows an open-sky terrace of six
+living **Windreed** plants. Inside are a hearth, a bed, a cartography table, travel
+supplies and a lectern holding **The Paired Cairns**, a four-page account of how the
+Marchkeepers became ridge guides.
+
+A **Highland Cairn Keeper** lives at the lodge. Use the resident to open ordinary
+cartographer trades. Crouch and use them to hear their stories, leaving a short
+pause between lines. Meeting the keeper adds them to the **People** tab of your
+[lore journal](../progression/lore-journal.md), and each story
+remains under **Talk**. The keeper explains the leeward Windreed terrace, the
+paired cairns and the high meridian survey ring. Returning as your investigation
+progresses unlocks guidance on the watchtowers, the cairn lamp, and the optional
+survey ring encounter.
+
+Finding a lodge earns **Keeper of the Cairns**. Lodges need level shelf ground, so
+not every ridge will carry one.
+
+## Follow the Paired Cairns
+
+Speaking with a Highland Cairn Keeper through their fourth story opens **The Paired
+Cairns** in the lore journal. Visit a road watchtower or a ring of standing stones
+to complete **The Ridge Watch**, connecting the hill road-markers to the high
+shelves. The final chapter, **A Lamp on the Ridge**, asks you to flip the lever on
+a Cairn Lodge's eastern cairn lamp and stand within six blocks of the lit beacon.
+A cairn lamp another traveller already lit also counts.
+
+The three chapters pay 90 XP, five Blank Runes and one Aura Shard in total, once
+per player, with no combat or Aura stage required.
+
+## Old routes and the High Meridian
+
+Higher on the dry shelves stands the **Highland Survey Ring**, a stone meridian
+court with four compass causeways and a northern shelter holding a **Survey
+Astrolabe** and **The Glass Meridian**. Waking the astrolabe in Survival challenges
+the [Glass Cartographer](glass-cartographer.md). The
+encounter is optional and separate from the peaceful Paired Cairns journal route.
 
 [Watchtowers and standing stones](travel-sites.md) can
 appear here. Towers give a place to read the surrounding country, while standing
-stones preserve clues to older routes. They also belong to the Scout's investigation
-in the lore journal, so visits can matter beyond the supplies you find.
+stones preserve clues to older routes. They also belong to both the Scout's and the
+Cairn Keeper's investigations in the lore journal.
 
 The [Wind Gate](masters-sites.md) can stand on suitable
 highland ground. Its climbing challenge belongs to the Gale and Thunder schools.

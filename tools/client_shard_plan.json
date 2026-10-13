@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "planId": "full-client-explicit-v5-windscar",
+  "planId": "full-client-explicit-v6-cartographer",
   "shardCount": 4,
-  "expectedCount": 344,
-  "orderedRosterSha256": "126d2d719d34c460c09c28df08755f6c93d644f59d6322e74e6ccee4c2989cd8",
+  "expectedCount": 345,
+  "orderedRosterSha256": "25cc1b81e19a4780b1837fa08a94540a22d69bb08c02a2f988b225415f52d9d0",
   "executionProfile": {
     "execution": "complete",
     "animationGallery": true,
@@ -349,7 +349,7 @@
     },
     {
       "id": 4,
-      "expectedCount": 85,
+      "expectedCount": 86,
       "entries": [
         "dev.wildercord.wildlife.TidewardPendingReceiverTest",
         "dev.wildercord.wildlife.MixedWetlandPerformanceTest",
@@ -435,7 +435,8 @@
         "dev.wildercord.aura.MovesPackTest",
         "dev.wildercord.aura.world.MethodsBMastersClientTest",
         "dev.wildercord.world.sites.TravelSitesClientTest",
-        "dev.wildercord.world.biome.WindscarBiomeTest"
+        "dev.wildercord.world.biome.WindscarBiomeTest",
+        "dev.wildercord.world.cartographer.CartographerEncounterTest"
       ]
     }
   ]

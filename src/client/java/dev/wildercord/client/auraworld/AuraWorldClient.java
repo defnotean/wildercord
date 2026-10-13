@@ -34,6 +34,8 @@ public final class AuraWorldClient {
 	public static void init() {
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.ferryman.FerrymanRenderer.LAYER, dev.wildercord.client.ferryman.FerrymanModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.ferryman.FerrymanContent.FERRYMAN, dev.wildercord.client.ferryman.FerrymanRenderer::new);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.cartographer.GlassCartographerModel.LAYER, dev.wildercord.client.cartographer.GlassCartographerModel::createBodyLayer);
+		EntityRendererRegistry.register(dev.wildercord.world.cartographer.CartographerContent.CARTOGRAPHER, dev.wildercord.client.cartographer.GlassCartographerRenderer::new);
 		ModelLayerRegistry.registerModelLayer(DUELIST, DuelistModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
 		EntityRendererRegistry.register(AuraWorld.DUELIST, AuraWorldClient::duelist);

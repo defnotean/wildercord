@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "biomes": "#wildercord:has_structure/highland_survey_ring",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_thin",
+  "site": "highland_survey_ring"
+}

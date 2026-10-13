@@ -14,10 +14,10 @@ import sys
 
 PLAN = Path(__file__).resolve().with_name("client_shard_plan.json")
 MAX_CONFIG_BYTES = 128 * 1024
-PLAN_ID = "full-client-explicit-v5-windscar"
-PLAN_SHA256 = "b368fe963d03670abb48ad692b12c1eed82dba1a68289e95d1c5c93e97b105dc"
-ROSTER_SHA256 = "126d2d719d34c460c09c28df08755f6c93d644f59d6322e74e6ccee4c2989cd8"
-COUNTS = (86, 86, 87, 85)
+PLAN_ID = "full-client-explicit-v6-cartographer"
+PLAN_SHA256 = "d17f2e750b0b00c8b274cf9bb63d5d749218b6aa127fb9ad612f2b16936cb39e"
+ROSTER_SHA256 = "25cc1b81e19a4780b1837fa08a94540a22d69bb08c02a2f988b225415f52d9d0"
+COUNTS = (86, 86, 87, 86)
 REQUIRED_PROFILE = {"execution": "complete", "animationGallery": True,
                     "shaders": False, "showcase": False, "firebloodShots": False}
 REQUIRED_BLOCKS = {

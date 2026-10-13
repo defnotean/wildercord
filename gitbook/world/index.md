@@ -36,9 +36,9 @@ Cord, good armour and a plan.
 | 12 | [The Drowned Scriptorium](drowned-scriptorium.md) | The deep ocean floor | The Drowned Quill trophy |
 | 13 | [The Astral Observatory](astral-observatory.md) | The End's outer islands | The Astral Lens trophy |
 
-## 49 places to explore
+## 52 places to explore
 
-Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands. Most are peaceful; a few hide a guard, a seal or a
+Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands and the Cairn Lodge and Survey Ring in the Windscar Highlands. Most are peaceful; a few hide a guard, a seal or a
 small puzzle in front of their best chest. Walking into one earns its advancement, and many add an entry to your
 [lore journal](../progression/lore-journal.md).
 
@@ -50,8 +50,8 @@ upgrade tool doesn't add them either, so head out past the edge of your map to f
 | [Farmstead Sites](farm-sites.md) | Plains, forests, meadows, savannas, taigas | Windmill farmstead, herbalist's cottage, beekeeper's apiary, walled orchard, shepherd's hut, sunken mushroom ring, granary barn, scarecrow field |
 | [Master halls and shrines](masters-sites.md) | Badlands, windswept hills, peaks, snow, jungles, desert, cherry groves, deep caves | Forge Dojo, Wind Gate, Quarry Hall, Waterfall Shrine, Root Temple, Sundial Court, Star Terrace, Resonance Chamber |
 | [Mines, Forges and Crystals](mine-sites.md) | Hills, meadows, underground, badlands, the Nether | Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry, Deepslate Vault, Prospector's Camp, Miner's Rest |
-| [Roadside Sites](travel-sites.md) | Flat ground across the Overworld | Wayfarer Inn, Watchtower, Broken Bridge, Rune Library, Standing Stones, Caravan Camp, Cartographer's Hut, Vow Circle |
-| [Water Sites](water-sites.md) | Rivers, swamps, Luminous Reedlands, coasts, warm seas, frozen water | Tideward Reedkeeper Landing, Stilt Smokehouse, Lighthouse, Watermill, Ice Fishing Camp, Pier and Boathouse, Sunken Shrine, Net-Weavers' Huts, Tidepool Grotto |
+| [Roadside Sites](travel-sites.md) | Flat ground and highland shelves across the Overworld | Wayfarer Inn, Watchtower, Broken Bridge, Rune Library, Standing Stones, Caravan Camp, Cartographer's Hut, Vow Circle, Highland Cairn Lodge, Highland Survey Ring |
+| [Water Sites](water-sites.md) | Rivers, swamps, Luminous Reedlands, coasts, warm seas, frozen water | Tideward Reedkeeper Landing, The Last Crossing, Stilt Smokehouse, Lighthouse, Watermill, Ice Fishing Camp, Pier and Boathouse, Sunken Shrine, Net-Weavers' Huts, Tidepool Grotto |
 | [Wild Places](wilds-sites.md) | Jungle, desert, snow, badlands, cherry groves, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern |
 
 ## Sword Masters
@@ -145,6 +145,8 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 - [The Drowned Scriptorium](drowned-scriptorium.md)
 - [The Astral Observatory](astral-observatory.md)
 - [Root Guardian and Storm Conductor](root-and-storm-bosses.md)
+- [Reed-Crowned Ferryman](reed-crowned-ferryman.md)
+- [Glass Cartographer](glass-cartographer.md)
 - [Lair Bosses](lair-bosses.md)
 - [Roaming Giants](roaming-giants.md)
 - [Expeditions and Relics](expeditions.md)

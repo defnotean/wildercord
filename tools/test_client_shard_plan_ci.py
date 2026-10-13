@@ -21,13 +21,24 @@ class ExplicitPlanTests(unittest.TestCase):
         self.assertEqual(plan.digest(previous), "39035ca63ca627b22c5d65ea62cab8dc828775cff77973e9d408be3693665685")
         addition = "dev.wildercord.world.sites.water.FerrymanEncounterTest"
         self.assertEqual(self.entries.count(addition), 1)
+        later = (addition, "dev.wildercord.world.biome.WindscarBiomeTest", "dev.wildercord.world.cartographer.CartographerEncounterTest")
         for current, old in zip(self.plan["groups"], previous["groups"]):
-            self.assertEqual([e for e in current["entries"] if e not in (addition, "dev.wildercord.world.biome.WindscarBiomeTest")], old["entries"])
+            self.assertEqual([e for e in current["entries"] if e not in later], old["entries"])
 
     def test_windscar_addition_preserves_the_entire_343_class_plan(self):
         previous = plan.read_json(suites.ROOT / "tools/tests/full-client-plan-v4-343.json")
         self.assertEqual(plan.digest(previous), "c352d1d9e27cf30927698bf026eb3fbb9d7f5bfe3351bb258254afe88b2a01a9")
         addition = "dev.wildercord.world.biome.WindscarBiomeTest"
+        self.assertEqual(self.entries.count(addition), 1)
+        self.assertEqual(self.plan["groups"][3]["entries"].count(addition), 1)
+        later = (addition, "dev.wildercord.world.cartographer.CartographerEncounterTest")
+        for current, old in zip(self.plan["groups"], previous["groups"]):
+            self.assertEqual([entry for entry in current["entries"] if entry not in later], old["entries"])
+
+    def test_cartographer_addition_preserves_the_entire_344_class_plan(self):
+        previous = plan.read_json(suites.ROOT / "tools/tests/full-client-plan-v5-344.json")
+        self.assertEqual(plan.digest(previous), "b368fe963d03670abb48ad692b12c1eed82dba1a68289e95d1c5c93e97b105dc")
+        addition = "dev.wildercord.world.cartographer.CartographerEncounterTest"
         self.assertEqual(self.entries.count(addition), 1)
         self.assertEqual(self.plan["groups"][3]["entries"].count(addition), 1)
         for current, old in zip(self.plan["groups"], previous["groups"]):
@@ -44,13 +55,13 @@ class ExplicitPlanTests(unittest.TestCase):
             plan.validate_plan(self.entries, changed)
 
     def test_exact_reviewed_groups_and_independently_pinned_identity(self):
-        self.assertEqual(plan.digest(self.plan), "b368fe963d03670abb48ad692b12c1eed82dba1a68289e95d1c5c93e97b105dc")
-        self.assertEqual(plan.digest(self.entries), "126d2d719d34c460c09c28df08755f6c93d644f59d6322e74e6ccee4c2989cd8")
+        self.assertEqual(plan.digest(self.plan), "d17f2e750b0b00c8b274cf9bb63d5d749218b6aa127fb9ad612f2b16936cb39e")
+        self.assertEqual(plan.digest(self.entries), "25cc1b81e19a4780b1837fa08a94540a22d69bb08c02a2f988b225415f52d9d0")
         self.assertEqual([plan.digest(group["entries"]) for group in self.plan["groups"]], [
             "2271c4d3db8124db7897651d1742ad1cf0c581ef79e76c07df28584121c7b226",
             "43a7468679c26e787c54c1c8158d263cdb5bd78265547bc75bc30d6823a79a29",
             "db7bbbbb5bc7948cf411270116731b8437e416dd0d70ae152e0c3c373020f306",
-            "b4b34d55ba4df6ea29f629fee22434471c062ebba82d061706909b85471f757a"])
+            "78724d0a28f4eb45435c4c7a60584441720406f52f74369c980cc615502117e7"])
         full = suites.select_entries()
         for shard, group in zip(gate.SHARDS, self.plan["groups"]):
             selected = suites.select_entries(shard=shard)

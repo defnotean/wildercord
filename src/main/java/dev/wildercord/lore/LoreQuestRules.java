@@ -34,6 +34,7 @@ public final class LoreQuestRules {
 	public static final String MASTER_MET = "master_met";
 	public static final String WATCHTOWER = "watchtower", STANDING_STONES = "standing_stones", SLEEPING_BLADE = "sleeping_blade";
 	public static final String REEDKEEPER = "reedkeeper", FERRYMAN_STORY = "ferryman_story", BOATHOUSE = "boathouse", COAST_LIGHT = "coast_light";
+	public static final String CAIRN_KEEPER = "cairn_keeper", CARTOGRAPHER_STORY = "cartographer_story", RIDGE_SITE = "ridge_site", CAIRN_LAMP = "cairn_lamp";
 
 	/** A quest: what starts it, what finishes it, and what it pays (vanilla experience, Aura Shards, Blank Runes, Aura experience). */
 	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp, String prerequisite) {
@@ -58,7 +59,10 @@ public final class LoreQuestRules {
 		new Quest("oath_at_rest", STANDING_STONES, SLEEPING_BLADE, 40, 2, 1, 0, "road_before_roads"),
 		new Quest("drowned_road", REEDKEEPER, FERRYMAN_STORY, 20, 0, 1, 0),
 		new Quest("second_count", FERRYMAN_STORY, BOATHOUSE, 30, 0, 2, 0, "drowned_road"),
-		new Quest("last_boat_light", BOATHOUSE, COAST_LIGHT, 40, 1, 2, 0, "second_count"));
+		new Quest("last_boat_light", BOATHOUSE, COAST_LIGHT, 40, 1, 2, 0, "second_count"),
+		new Quest("paired_cairns", CAIRN_KEEPER, CARTOGRAPHER_STORY, 20, 0, 1, 0),
+		new Quest("ridge_orders", CARTOGRAPHER_STORY, RIDGE_SITE, 30, 0, 2, 0, "paired_cairns"),
+		new Quest("cairn_beacon", RIDGE_SITE, CAIRN_LAMP, 40, 1, 2, 0, "ridge_orders"));
 
 	public static Quest byId(String id) {
 		for (Quest quest : ALL) if (quest.id().equals(id)) return quest;
@@ -125,13 +129,16 @@ public final class LoreQuestRules {
 				case "place:tomb" -> facts.add(TOMB);
 				case "place:tournament" -> facts.add(TOURNAMENT);
 				case "place:training" -> facts.add(TRAINED);
-				case "place:travel_watchtower" -> facts.add(WATCHTOWER);
-				case "place:travel_standing_stones" -> facts.add(STANDING_STONES);
+				case "place:travel_watchtower" -> { facts.add(WATCHTOWER); facts.add(RIDGE_SITE); }
+				case "place:travel_standing_stones" -> { facts.add(STANDING_STONES); facts.add(RIDGE_SITE); }
 				case "place:sleeping_blade" -> facts.add(SLEEPING_BLADE);
 				case "person:reedkeeper" -> facts.add(REEDKEEPER);
 				case "said:reedkeeper.ferryman" -> facts.add(FERRYMAN_STORY);
 				case "place:water_pier_boathouse" -> facts.add(BOATHOUSE);
 				case "learned:coast_light" -> facts.add(COAST_LIGHT);
+				case "person:cairn_keeper" -> facts.add(CAIRN_KEEPER);
+				case "said:cairn_keeper.cartographer" -> facts.add(CARTOGRAPHER_STORY);
+				case "learned:scout_wind_mark" -> facts.add(CAIRN_LAMP);
 				case "duelist:ember" -> facts.add(TALK_EMBER);
 				case "duelist:gale" -> facts.add(TALK_GALE);
 				case "duelist:stone" -> facts.add(TALK_STONE);

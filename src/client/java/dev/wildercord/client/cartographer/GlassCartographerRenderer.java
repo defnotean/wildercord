@@ -1,0 +1,129 @@
+package dev.wildercord.client.cartographer;
+
+import com.mojang.blaze3d.vertex.*;
+import dev.wildercord.Wildercord;
+import dev.wildercord.world.cartographer.*;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+
+import static dev.wildercord.world.cartographer.CartographerRules.*;
+
+public final class GlassCartographerRenderer extends MobRenderer<GlassCartographer, GlassCartographerRenderState, GlassCartographerModel> {
+	private static final Identifier TEXTURE = Wildercord.id("textures/entity/glass_cartographer.png");
+	private static final Identifier MARK = Wildercord.id("textures/misc/white.png");
+
+	public GlassCartographerRenderer(EntityRendererProvider.Context context) {
+		super(context, new GlassCartographerModel(context.bakeLayer(GlassCartographerModel.LAYER)), 1.3F);
+	}
+
+	@Override public GlassCartographerRenderState createRenderState() { return new GlassCartographerRenderState(); }
+	@Override public Identifier getTextureLocation(GlassCartographerRenderState state) { return TEXTURE; }
+
+	@Override public void extractRenderState(GlassCartographer entity, GlassCartographerRenderState s, float tickDelta) {
+		super.extractRenderState(entity, s, tickDelta);
+		int age = Mth.floor(s.ageInTicks);
+		int move = entity.activeMove();
+		int start = Math.max(0, (int) (entity.moveBeganAt() - (entity.level().getGameTime() - entity.tickCount)));
+		s.idle.startIfStopped(age);
+		s.move = move;
+		s.aim = entity.aimRadians();
+		s.markX = entity.markX();
+		s.markZ = entity.markZ();
+		s.acrossX = entity.acrossX();
+		s.second = entity.isSecondPhase();
+		int total = tell(move);
+		s.tellProgress = total <= 0 ? 0 : Mth.clamp((entity.level().getGameTime() - entity.moveBeganAt() + tickDelta) / total, 0, 1);
+		toggle(s.sweep, move == SWEEP, start);
+		toggle(s.plumb, move == PLUMB, start);
+		toggle(s.grid, move == GRID, start);
+	}
+
+	@Override public void submit(GlassCartographerRenderState s, PoseStack matrices, SubmitNodeCollector collector, CameraRenderState camera) {
+		super.submit(s, matrices, collector, camera);
+		if (s.move == IDLE) return;
+		float pulse = .55F + .35F * Mth.sin(s.ageInTicks * .35F);
+		int warm = color(s.second ? 0.98F : 0.94F, s.second ? 0.86F : 0.72F, 0.32F, .78F * pulse);
+		int safe = color(0.62F, 0.92F, 0.96F, .85F);
+		matrices.pushPose();
+		var pose = matrices.last().copy();
+		collector.order(1).submitCustomGeometry(pose, RenderTypes.entityTranslucentEmissive(MARK), (p, consumer) -> {
+			if (s.move == SWEEP) drawSweep(consumer, p, s.aim, s.tellProgress, warm);
+			else if (s.move == PLUMB) drawPlumb(consumer, p, s.markX, s.markZ, s.tellProgress, warm);
+			else if (s.move == GRID) drawGrid(consumer, p, s.acrossX, warm, safe);
+		});
+		matrices.popPose();
+	}
+
+	private static void toggle(net.minecraft.world.entity.AnimationState state, boolean active, int tick) {
+		if (active) state.startIfStopped(tick); else state.stop();
+	}
+
+	private static void drawSweep(VertexConsumer c, PoseStack.Pose p, float aim, float progress, int color) {
+		int segs = 12;
+		float r = (float) SWEEP_REACH, inner = 1.6F + progress * (r - 1.8F);
+		for (int i = 0; i < segs; i++) {
+			double a0 = aim - SWEEP_HALF_ANGLE + i * (SWEEP_HALF_ANGLE * 2 / segs);
+			double a1 = aim - SWEEP_HALF_ANGLE + (i + 1) * (SWEEP_HALF_ANGLE * 2 / segs);
+			line(c, p, (float) (Math.sin(a0) * r), (float) (Math.cos(a0) * r), (float) (Math.sin(a1) * r), (float) (Math.cos(a1) * r), .16F, color);
+			line(c, p, (float) (Math.sin(a0) * inner), (float) (Math.cos(a0) * inner), (float) (Math.sin(a1) * inner), (float) (Math.cos(a1) * inner), .1F, color);
+		}
+		for (double edge : new double[]{aim - SWEEP_HALF_ANGLE, aim, aim + SWEEP_HALF_ANGLE})
+			line(c, p, (float) (Math.sin(edge) * 1.3), (float) (Math.cos(edge) * 1.3), (float) (Math.sin(edge) * r), (float) (Math.cos(edge) * r), .13F, color);
+	}
+
+	private static void drawPlumb(VertexConsumer c, PoseStack.Pose p, float x, float z, float progress, int color) {
+		float r = (float) PLUMB_RADIUS, inner = Math.max(.35F, (1 - progress) * r);
+		ring(c, p, x, z, r, .15F, color);
+		ring(c, p, x, z, inner, .1F, color);
+		line(c, p, x - r * .75F, z, x + r * .75F, z, .1F, color);
+		line(c, p, x, z - r * .75F, x, z + r * .75F, .1F, color);
+	}
+
+	private static void drawGrid(VertexConsumer c, PoseStack.Pose p, boolean acrossX, int danger, int safe) {
+		float span = (float) (ARENA - 1), lane = (float) SAFE_HALF_WIDTH;
+		if (acrossX) {
+			line(c, p, -span, -lane, span, -lane, .18F, safe);
+			line(c, p, -span, lane, span, lane, .18F, safe);
+			for (float z : new float[]{-8.5F, -5F, 5F, 8.5F}) for (float x : new float[]{-8F, -3F, 3F, 8F}) cross(c, p, x, z, 1.1F, danger);
+		} else {
+			line(c, p, -lane, -span, -lane, span, .18F, safe);
+			line(c, p, lane, -span, lane, span, .18F, safe);
+			for (float x : new float[]{-8.5F, -5F, 5F, 8.5F}) for (float z : new float[]{-8F, -3F, 3F, 8F}) cross(c, p, x, z, 1.1F, danger);
+		}
+	}
+
+	private static void ring(VertexConsumer c, PoseStack.Pose p, float cx, float cz, float r, float w, int color) {
+		for (int i = 0; i < 16; i++) {
+			double a0 = i * Math.PI * 2 / 16, a1 = (i + 1) * Math.PI * 2 / 16;
+			line(c, p, cx + (float) Math.sin(a0) * r, cz + (float) Math.cos(a0) * r, cx + (float) Math.sin(a1) * r, cz + (float) Math.cos(a1) * r, w, color);
+		}
+	}
+
+	private static void cross(VertexConsumer c, PoseStack.Pose p, float x, float z, float r, int color) {
+		line(c, p, x - r, z - r, x + r, z + r, .12F, color);
+		line(c, p, x - r, z + r, x + r, z - r, .12F, color);
+	}
+
+	private static void line(VertexConsumer c, PoseStack.Pose p, float x0, float z0, float x1, float z1, float width, int color) {
+		float dx = x1 - x0, dz = z1 - z0, len = Mth.sqrt(dx * dx + dz * dz);
+		if (len < 1e-4F) return;
+		float nx = -dz / len * width * .5F, nz = dx / len * width * .5F, y = .08F;
+		vertex(c, p, x0 + nx, y, z0 + nz, 0, 0, color);
+		vertex(c, p, x1 + nx, y, z1 + nz, 1, 0, color);
+		vertex(c, p, x1 - nx, y, z1 - nz, 1, 1, color);
+		vertex(c, p, x0 - nx, y, z0 - nz, 0, 1, color);
+	}
+
+	private static void vertex(VertexConsumer c, PoseStack.Pose p, float x, float y, float z, float u, float v, int color) {
+		c.addVertex(p, x, y, z).setColor(color).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(p, 0, 1, 0);
+	}
+
+	private static int color(float r, float g, float b, float a) {
+		return ((int) (a * 255) << 24) | ((int) (r * 255) << 16) | ((int) (g * 255) << 8) | (int) (b * 255);
+	}
+}

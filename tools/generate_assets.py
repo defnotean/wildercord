@@ -856,6 +856,9 @@ def write_lang(runes):
     import ferryman_art
     lang.update(ferryman_art.LANG)
     ferryman_art.write(sys.modules[__name__])
+    import cartographer_art
+    lang.update(cartographer_art.LANG)
+    cartographer_art.write(sys.modules[__name__])
     # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
     import importlib
     site_ids = []

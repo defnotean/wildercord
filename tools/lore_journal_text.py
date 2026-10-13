@@ -234,6 +234,27 @@ QUESTS.update({
         "Find a coastal lighthouse, climb its ladder and throw the lever beside the lamp. A light already tended also counts.",
         "The shore has a light again. You kept the Ferryman's promise: leave the way visible for whoever comes after you.",
     ),
+    "paired_cairns": (
+        "The Paired Cairns",
+        "A Highland Cairn Keeper in the Windscar Highlands keeps the Marchkeepers' ridge survey notes.",
+        "Hear the Cairn Keeper's story about the high meridian survey ring.",
+        "Sneak-use a Highland Cairn Keeper at a Cairn Lodge until they speak of the stone survey ring.",
+        "The Marchkeepers' paired cairns link the hill watchtowers and standing stone rings to the high shelves.",
+    ),
+    "ridge_orders": (
+        "The Ridge Watch",
+        "The Cairn Keeper says watchtowers and standing stone rings record how the old ridge routes were laid.",
+        "Visit a road watchtower or a ring of standing stones.",
+        "Follow hill and meadow roads to a stone watchtower or a ring of nine standing stones.",
+        "The watch orders and road stones agree: a ridge path endures only while someone keeps its cairn lamp lit.",
+    ),
+    "cairn_beacon": (
+        "A Lamp on the Ridge",
+        "Each Highland Cairn Lodge carries a shuttered cairn lamp on its eastern stone point.",
+        "Stand beside a lit cairn lamp at a Highland Cairn Lodge.",
+        "Return to a Highland Cairn Lodge in the Windscar Highlands and flip the lever on its eastern cairn lamp.",
+        "The ridge cairn shines across the shelf. Travellers coming down from the wind will see the way home.",
+    ),
 })
 
 ENTRIES = {

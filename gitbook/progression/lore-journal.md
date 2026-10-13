@@ -45,6 +45,7 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
   [mine](../world/mine-sites.md) you walk into.
 - The Luminous Reedlands and all ten water sites, including the Last Crossing, Reedkeeper Landings, coastal boathouses
   and lighthouses. Walk into their grounds to record them.
+- The [Windscar Highlands](../world/windscar-highlands.md), Highland Cairn Lodges and the Highland Survey Ring.
 
 **People**
 
@@ -52,7 +53,7 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
 - Each [Sword Master](../masters/index.md) who greets you. A Master greets you once, the
   first time you come within about 20 blocks.
 - Each Master trial you win.
-- Tideward Reedkeepers you speak with at their Reedlands survey houses.
+- Tideward Reedkeepers you speak with at their Reedlands survey houses, and Highland Cairn Keepers at their Windscar cairn lodges.
 
 **Learned**
 
@@ -87,6 +88,9 @@ straight away.
 | The Drowned Road | speak with a Tideward Reedkeeper | hear the Ferryman story | 20 XP, 1 Blank Rune |
 | The Second Count | finish The Drowned Road | enter a coastal pier boathouse | 30 XP, 2 Blank Runes |
 | A Light for the Last Boat | finish The Second Count | stand beside a working lighthouse lamp | 40 XP, 1 Aura Shard, 2 Blank Runes |
+| The Paired Cairns | speak with a Highland Cairn Keeper | hear the survey ring story | 20 XP, 1 Blank Rune |
+| The Ridge Watch | finish The Paired Cairns | visit a road watchtower or ring of standing stones | 30 XP, 2 Blank Runes |
+| A Lamp on the Ridge | finish The Ridge Watch | stand beside a lit cairn lamp at a Highland Cairn Lodge | 40 XP, 1 Aura Shard, 2 Blank Runes |
 
 The three chapters after The Scout's Wall continue the Marchkeeper scout's story. Watchtowers on hills, meadows and
 plains keep a copy of the watch orders; standing stones in plains, meadows and taiga keep *The
@@ -112,6 +116,13 @@ pays 90 XP, five Blank Runes and one Aura Shard in total, once per player. It ne
 combat victory. Return to the keeper during the investigation for a clue about
 your next stop. After the lighthouse chapter, the keeper thanks you and describes
 the optional Last Crossing, where you can seek the Ferryman separately.
+
+The Paired Cairns begins with a [Highland Cairn Keeper](../world/windscar-highlands.md)
+at a Highland Cairn Lodge. Sneak-use the keeper through their fourth story about the high meridian
+survey ring, then visit a road watchtower or a ring of standing stones to complete **The Ridge Watch**.
+Finally, flip the lever on a Highland Cairn Lodge's eastern cairn lamp and stand beside the lit
+beacon to complete **A Lamp on the Ridge**. Like the coastal route, these three chapters pay 90 XP,
+five Blank Runes and one Aura Shard in total, once per player, and require no combat or Aura rank.
 
 Older boathouses retain their existing furnishings and lighthouse books retain their existing pages.
 Their structure discoveries and working lamps still count toward the route, so an older building

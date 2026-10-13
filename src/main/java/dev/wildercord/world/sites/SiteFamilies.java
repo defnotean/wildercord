@@ -72,5 +72,8 @@ public final class SiteFamilies {
 		worldgen("wildercord:mine_deep_vault", "New deep vault; its long shaft must not cut through existing terrain.");
 		worldgen("wildercord:mine_prospector_camp", "New badlands camp; generates only in new chunks.");
 		worldgen("wildercord:mine_miners_rest", "New cliff-edge shrine; generates only in new chunks.");
+		// ---- sites-highland pack
+		worldgen("wildercord:highland_cairn_lodge", "New Windscar ridge shelter and Cairn Keeper resident; generates only in new chunks, never over a player's build.");
+		worldgen("wildercord:highland_survey_ring", "Optional highland survey ring encounter; generates only in new chunks, never over explored ridges.");
 	}
 }

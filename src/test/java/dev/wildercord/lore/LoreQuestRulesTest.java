@@ -198,10 +198,40 @@ class LoreQuestRulesTest {
 			}
 		}
 		for (String entry : List.of("place:memorial", "place:tomb", "place:tournament", "place:sleeping_blade", "place:crossroads", "place:training",
-			"learned:way", "learned:lineage", "learned:perfect_guard", "learned:technique", "learned:reaction", "learned:field_guide")) {
+			"place:highland_cairn_lodge", "place:highland_survey_ring", "person:cairn_keeper",
+			"learned:way", "learned:lineage", "learned:perfect_guard", "learned:technique", "learned:reaction", "learned:field_guide",
+			"learned:scout_wind_mark", "learned:glass_cartographer")) {
 			assertTrue(lang.has(LoreEntries.fixedKey(entry)), entry);
 		}
 		assertTrue(lang.has("key.wildercord.lore_journal"));
 		assertTrue(lang.has("key.category.wildercord.lore"));
+	}
+
+	@Test
+	void highlandCairnRouteKeepsEarlierVisitsAndNeverCascadesWithinAPoll() {
+		Set<String> places = facts(List.of(), List.of("place:travel_watchtower", "place:highland_cairn_lodge",
+			"learned:scout_wind_mark", "said:cairn_keeper.cairns"), false);
+		assertFalse(advance(Map.of(), places).changed(), "lamps and visits alone cannot invent the Cairn Keeper's account");
+		Set<String> heard = new HashSet<>(places);
+		heard.addAll(facts(List.of(), List.of("person:cairn_keeper"), false));
+		Advance first = advance(Map.of(), heard);
+		assertEquals(List.of(quest("paired_cairns")), first.clued());
+		assertFalse(advance(first.quests(), heard).changed(), "greeting and cairns are not the final survey ring story");
+		heard.addAll(facts(List.of(), List.of("said:cairn_keeper.cartographer"), false));
+		Map<String, Integer> stages = first.quests();
+		for (String id : List.of("paired_cairns", "ridge_orders", "cairn_beacon")) {
+			if (!id.equals("paired_cairns")) {
+				Advance clue = advance(stages, heard);
+				assertEquals(List.of(quest(id)), clue.clued());
+				assertTrue(clue.completed().isEmpty());
+				stages = clue.quests();
+			}
+			Advance done = advance(stages, heard);
+			assertEquals(List.of(quest(id)), done.completed(), "earlier highland discoveries count in order");
+			assertTrue(done.clued().isEmpty(), "no chapter cascade in one poll");
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, heard).changed(), "a completed highland route never pays again");
+		assertFalse(facts(List.of(), List.of("place:highland_cairn_lodge"), false).contains(CAIRN_LAMP), "an unlit cairn lodge is not a lit cairn lamp");
 	}
 }

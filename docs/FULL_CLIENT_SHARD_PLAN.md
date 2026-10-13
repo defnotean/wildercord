@@ -1,7 +1,7 @@
 # Explicit full-client shard plan
 
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
-344-class descriptor as exactly four groups: **86 / 86 / 87 / 85**.
+345-class descriptor as exactly four groups: **86 / 86 / 87 / 86**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,
 manifest/aggregate tooling, and Gradle resource processing and launch preflight.
 There is no equal-count fallback or automatic assignment for newly added classes.
@@ -13,11 +13,11 @@ holds that reviewed plan so the tests can prove it.
 
 ## Identity and invariants
 
-- Plan schema 1, ID `full-client-explicit-v5-windscar`.
+- Plan schema 1, ID `full-client-explicit-v6-cartographer`.
 - Ordered roster SHA-256:
-  `126d2d719d34c460c09c28df08755f6c93d644f59d6322e74e6ccee4c2989cd8`.
+  `25cc1b81e19a4780b1837fa08a94540a22d69bb08c02a2f988b225415f52d9d0`.
 - Complete plan SHA-256:
-  `b368fe963d03670abb48ad692b12c1eed82dba1a68289e95d1c5c93e97b105dc`.
+  `d17f2e750b0b00c8b274cf9bb63d5d749218b6aa127fb9ad612f2b16936cb39e`.
 - Hashes use UTF-8 JSON with sorted object keys, compact separators and no trailing
   newline. The plan digest excludes no fields and is pinned in the selector.
   These are source identities, not claims of runtime acceptance.
@@ -47,6 +47,9 @@ holds that reviewed plan so the tests can prove it.
   save/reopen coverage. The 343-class plan is frozen in
   `tools/tests/full-client-plan-v4-343.json`; every old class stays in its original
   group and relative order. The first three groups remain byte-identical lists.
+- `CartographerEncounterTest` follows `WindscarBiomeTest` in group 4 and in the
+  descriptor. The 344-class plan is frozen in `tools/tests/full-client-plan-v5-344.json`;
+  every old class stays in its original group and relative order.
 
 Missing/foreign/duplicate/reordered classes, changed descriptors, invalid counts,
 noncanonical shard selectors, altered blocks, malformed JSON or types, duplicate

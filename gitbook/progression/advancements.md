@@ -4,7 +4,7 @@
 ![The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/b-advancements.jpg)
 
 Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
-Circle, the dungeon bosses and the 50 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
+Circle, the dungeon bosses and the 52 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
 Crystals.
 
 
@@ -265,12 +265,14 @@ See [Farmstead Sites](../world/farm-sites.md).
 | **Broken Bridge** | Wayfarer Inn | Find a broken bridge over a creek | 20 XP |
 | **Caravan Camp** | Wayfarer Inn | Find a caravan camp on the road | 20 XP |
 | **Cartographer's Hut** | Wayfarer Inn | Find a cartographer's hut | 20 XP |
+| **Keeper of the Cairns** | Ley Walker | Find a Highland Cairn Lodge and its leeward Windreed terrace in the Windscar Highlands | 20 XP |
+| **The High Meridian** | Ley Walker | Find a Highland Survey Ring on the Windscar ridges | 20 XP |
 | **Rune Library** | Wayfarer Inn | Find a roadside rune library | 20 XP |
 | **Standing Stones** | Wayfarer Inn | Find a ring of standing stones | 20 XP |
 | **Vow Circle** | Wayfarer Inn | Find a vow circle shrine | 20 XP |
 | **Watchtower** | Wayfarer Inn | Find a road watchtower | 20 XP |
 
-See [Roadside Sites](../world/travel-sites.md).
+See [Roadside Sites](../world/travel-sites.md) and [Windscar Highlands](../world/windscar-highlands.md).
 
 ### Water
 
@@ -306,14 +308,14 @@ See [Wild Places](../world/wilds-sites.md).
 
 ## Totals
 
-156 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+158 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 110 |
+| Tasks | 112 |
 | Goals | 32 |
 | Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 14,650 |
+| Experience for all of them | 14,690 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |

@@ -67,6 +67,7 @@ public final class WindscarBiomeTest implements FabricClientGameTest {
 				check(chunks == 81 && columns >= 256, "The fixed survey contains a real highland region");
 				check(stone > 0 && grass > 0 && highest - lowest >= 8, "Natural highland ground includes exposed rock, grass and changing elevation");
 				check(plants > 0 && firstPlant != null, "Natural decoration places Windreed in its region without placement commands");
+				dev.wildercord.world.sites.highland.HighlandCairnChecks.verifyLocator(server.overworld(), center);
 				var player = server.getPlayerList().getPlayers().getFirst();
 				check(!LoreJournal.data(player).has(WindscarClimate.JOURNAL_ENTRY), "The player has not already discovered the distant region");
 				player.setGameMode(GameType.SPECTATOR);
@@ -85,7 +86,7 @@ public final class WindscarBiomeTest implements FabricClientGameTest {
 				LoreJournal.poll(player);
 				check(LoreJournal.data(player).entries().stream().filter(WindscarClimate.JOURNAL_ENTRY::equals).count() == 1, "Returning does not duplicate the note");
 				player.setGameMode(GameType.SPECTATOR);
-				Vec3 target = Vec3.atCenterOf(firstPlant), eye = target.add(9, 7, 9);
+				Vec3 target = Vec3.atCenterOf(firstPlant), eye = camera(server.overworld(), player, target);
 				Vec3 look = target.subtract(eye.add(0, player.getEyeHeight(), 0));
 				player.teleportTo(server.overworld(), eye.x, eye.y, eye.z, Set.of(),
 					(float) Math.toDegrees(Math.atan2(-look.x, look.z)), (float) -Math.toDegrees(Math.atan2(look.y, look.horizontalDistance())), false);
@@ -134,6 +135,7 @@ public final class WindscarBiomeTest implements FabricClientGameTest {
 				registered(server.overworld());
 			});
 		}
+		dev.wildercord.world.sites.highland.HighlandCairnChecks.run(context);
 	}
 
 	private static void registered(ServerLevel level) {
@@ -148,11 +150,29 @@ public final class WindscarBiomeTest implements FabricClientGameTest {
 		var feature = ResourceKey.create(Registries.PLACED_FEATURE, Wildercord.id("windreed_patch"));
 		check(biome.getGenerationSettings().features().get(GenerationStep.Decoration.VEGETAL_DECORATION.ordinal())
 			.stream().filter(entry -> entry.is(feature)).count() == 1, "Exactly one real Windreed decorator belongs to the region");
-		for (String site : List.of("travel_watchtower", "travel_standing_stones", "master_wind_gate")) {
+		for (String site : List.of("travel_watchtower", "travel_standing_stones", "master_wind_gate", "highland_cairn_lodge", "highland_survey_ring")) {
 			var structure = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE, Wildercord.id(site))).value();
 			check(structure.biomes().contains(holder), "The loaded structure admits highland ground: " + site);
 			check(holder.is(TagKey.create(Registries.BIOME, Wildercord.id("has_structure/" + site))), "The structure biome tag agrees: " + site);
 		}
+	}
+
+	private static Vec3 camera(ServerLevel level, ServerPlayer player, Vec3 target) {
+		for (int[] offset : new int[][]{{-6, 4, -6}, {-7, 5, -5}, {6, 4, -6}, {-6, 4, 6}, {0, 5, -7}, {-7, 5, 0}, {6, 5, 6}, {0, 6, -5}}) {
+			Vec3 feet = target.add(offset[0], offset[1], offset[2]);
+			BlockPos pos = BlockPos.containing(feet);
+			if (!level.getBlockState(pos).isAir() || !level.getBlockState(pos.above()).isAir() || !level.getBlockState(pos.below()).isAir()) continue;
+			Vec3 eye = feet.add(0, player.getEyeHeight(), 0);
+			if (level.clip(new net.minecraft.world.level.ClipContext(eye, target,
+					net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, player)).getType()
+					== net.minecraft.world.phys.HitResult.Type.MISS
+				&& level.clip(new net.minecraft.world.level.ClipContext(eye, target.add(0, -0.35, 0),
+					net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, player)).getType()
+					== net.minecraft.world.phys.HitResult.Type.MISS) {
+				return feet;
+			}
+		}
+		return target.add(-5, 5, -5);
 	}
 
 	private static BlockPos findRegion(ServerLevel level) {

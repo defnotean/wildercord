@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "highland_cairn_lodge": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:highland_cairn_lodge"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:windreed"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.highland_cairn_lodge.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.highland_cairn_lodge.description"
+    }
+  },
+  "requirements": [
+    [
+      "highland_cairn_lodge"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

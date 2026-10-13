@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "highland_survey_ring": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:highland_survey_ring"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:survey_astrolabe"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.highland_survey_ring.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.highland_survey_ring.description"
+    }
+  },
+  "requirements": [
+    [
+      "highland_survey_ring"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}
