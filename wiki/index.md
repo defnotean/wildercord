@@ -19,7 +19,7 @@ Wear a Cord, thread runes from left to right, and cast the whole sequence with o
 
 - **16 Sword Masters**, one for each breathing method, wait to test you. Six new breathing methods
   join them: Tide, Iron, Dune, Echo, Dawn and Venom. See [Sword Masters]({{ '/masters/' | relative_url }}).
-- **48 places to find** in newly explored land: [farmsteads]({{ '/world/farm-sites/' | relative_url }}),
+- **49 places to find** in newly explored land: [farmsteads]({{ '/world/farm-sites/' | relative_url }}),
   [Master halls]({{ '/world/masters-sites/' | relative_url }}), [mines]({{ '/world/mine-sites/' | relative_url }}),
   [roadside sites]({{ '/world/travel-sites/' | relative_url }}), [water sites]({{ '/world/water-sites/' | relative_url }})
   and [wild places]({{ '/world/wilds-sites/' | relative_url }}).

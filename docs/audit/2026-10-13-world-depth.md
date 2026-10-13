@@ -427,3 +427,61 @@ refusal with no active study, nonce or advanced page; existing expiry, dimension
 and cracked-circle checks still require closure. The local dedicated-server rerun
 stopped before gameplay because the local EULA opt-in was absent. Verification of
 this change remains assigned to the existing owner-approved CI server setup.
+
+### Tideward landing, resident and first-crossing legend
+
+The Reedlands now has an authored regional building: a raised survey house with
+mud-brick walls, a dark prismarine roof, covered workbench, seating, fishing chest,
+bed and open Moonreed garden. Its villager resident is a persistent apprentice
+fisher with ordinary trades. First contact records the Reedkeeper under People;
+sneak-use reveals four journal conversations, with a per-player pause between
+lines. The four-page attributed book connects Iona's existing wetland survey to
+the Tideward flood crossing and the Reed-Crowned Ferryman legend. This introduces
+the Ferryman as lore; it does not add the proposed boss encounter.
+
+The registered locator admits a real site in the existing fixed 49-chunk census:
+seed `-7620530482425397421`, chunk `[-176, 204]`, bounds
+`(-2816, 56, 3264)` through `(-2798, 73, 3281)`. The inspected guide screenshot
+places that authored piece on its locator-selected terrain after the untouched
+biome survey. It is not evidence of random-spread frequency. The original terrain
+census still finds exactly six naturally decorated Moonreeds before site placement.
+
+The complete extended `ReedlandBiomeTest` passes in 1m 30s. Four separately clipped
+orientations preserve entrances, real soil/water/sky for all garden buds, the
+four-page book and fishing trades. Replaying every chunk through a serialized and
+restored piece keeps exactly one resident. Actual client interaction packets
+verify every conversation, the cooldown, translated saved speaker and merchant
+screen. A real save/reopen preserves the resident UUID and heard stories. Earlier
+fixture failures came from inspecting distant, non-ticking/unloaded entities;
+the four bounded sites now reach entity-ticking status before inspection and stay
+loaded during the conversation checks. No resident-count assertion was removed.
+
+The player guide now describes 49 sites. The advancement page was also missing
+nine Aura and three cooking entries. With the landing added, its actual displayed
+roster is 155: 109 tasks, 32 goals, 14 challenges, four hidden entries, 14,630 XP,
+48 Blank Runes and 29 Mana Crystals. A new source-to-guide check verifies every
+named row and these totals in both editions. All 8,995 generated asset paths retain
+parity; the guide still exports 190 pages.
+
+The first Reedlands CI run found a remaining test anchor that treated the current
+full roster as the old frozen 339-class roster. It now excludes only the explicit
+later Reedlands addition while retaining the original 339-class hash and every
+stale-evidence rejection. The portable anchor and selector checks pass (29 tests).
+The POSIX evidence-reader portion remains a Linux CI check, not a Windows pass.
+Other new CI diagnostics remain open: Siltcrest daytime shelter navigation and
+Mana Skin production mana regeneration. They are not attributed to the new biome
+without a reproducer, and no broad native acceptance is claimed.
+
+The repository-wide test run caught a duplicate placement salt on the new landing.
+Its corrected salt, `2026101509`, is unique among all 69 registered structure sets.
+The complete build and native-source compilation then passed in 1m 21s, with all
+2,715 JUnit tests passing and no failures, errors or skips. The final native
+Reedlands/landing rerun passed in 1m 10s after that correction. Existing placement
+counts, strict natural-plant observations and resident persistence assertions
+remain intact.
+
+The final asset comparison passes across all 8,995 paths, and the 190-page guide
+passes export checks. Performance, balanced and cinematic profiles built from the
+explicit current JAR pass the packaging audit. This checkpoint is ready for
+development review; the unresolved full native matrix still prevents a release
+readiness claim.

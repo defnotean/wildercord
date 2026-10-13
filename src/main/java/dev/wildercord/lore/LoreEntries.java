@@ -82,7 +82,7 @@ public final class LoreEntries {
 	public static String tab(String entry) {
 		if (entry.startsWith("said:")) return "talk";
 		if (entry.startsWith("place:")) return "places";
-		if (entry.startsWith("duelist:") || entry.startsWith("master:") || entry.startsWith("won:") || entry.startsWith("victory:")) return "people";
+		if (entry.startsWith("person:") || entry.startsWith("duelist:") || entry.startsWith("master:") || entry.startsWith("won:") || entry.startsWith("victory:")) return "people";
 		return "learned";
 	}
 }

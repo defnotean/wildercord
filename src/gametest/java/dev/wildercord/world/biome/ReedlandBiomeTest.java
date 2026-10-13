@@ -62,6 +62,7 @@ public final class ReedlandBiomeTest implements FabricClientGameTest {
 				check(chunks == 49 && columns >= 256, "The fixed census contains a naturally selected region, not an isolated forced biome cell");
 				check(waterColumns > 0, "The custom biome inherits natural swamp surface pools");
 				check(plants > 0 && firstPlant != null, "The fixed census contains naturally decorated Moonreed without placement commands");
+				dev.wildercord.world.sites.water.ReedkeeperLandingChecks.verifyLocator(server.overworld(), center);
 				var player = server.getPlayerList().getPlayers().getFirst();
 				player.setGameMode(GameType.CREATIVE);
 				player.teleportTo(server.overworld(), firstPlant.getX() + .5, firstPlant.getY() + 2, firstPlant.getZ() + .5, Set.of(), 0, 0, false);
@@ -103,7 +104,9 @@ public final class ReedlandBiomeTest implements FabricClientGameTest {
 				check(server.overworld().getBlockState(firstPlant).is(WetlandGarden.REED), "The natural plant persists with its region");
 				registered(server.overworld());
 			});
+			dev.wildercord.world.sites.water.ReedkeeperLandingChecks.captureNatural(context, world, center);
 		}
+		dev.wildercord.world.sites.water.ReedkeeperLandingChecks.run(context);
 	}
 
 	private static void registered(ServerLevel level) {

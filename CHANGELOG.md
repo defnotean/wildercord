@@ -6,6 +6,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Fixed
 
+- The advancement guide includes the missing Aura and cooking milestones, with all 155 visible entries and their reward totals checked against shipped data.
 - Sword Masters cancel a paid attack when the last challenger leaves the arena and depart after their abandonment window. A participant can return the Master's severed Aura bolt to hurt that Master; ordinary spells still fail against its spellbane.
 - Heart Circle chat and Cord tooltips preserve fractional power bonuses: +1.5% per circle, including +28.5% with nineteen working circles. The progression tables and Overflow guidance now match the existing +30% cap and +15% full-mana bonus. These are display corrections, not balance changes.
 - Native Aura progression, airborne Master recovery, Master animation payments and Reweave refusal checks now follow the current progression/combat rules and the lesson screen's visible refusal state.
@@ -18,6 +19,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Added
 
+- **Tideward Reedkeeper Landings.** A new regional survey house stands over shallow Reedlands water, with a resident fisher, planted Moonreed garden, four-page First Crossing book and its own discovery advancement. Crouch-use the Reedkeeper to hear four stories; the person and heard conversations remain in your journal after rejoining. Ordinary use opens fishing trades.
 - **Luminous Reedlands.** A new Overworld region grows in the wettest swamp country: pale banks, blue-green pools, small natural Moonreed colonies and the existing wetland creatures. Stilt Smokehouses can generate along its shallow water. Entering the region records the Tideward's first-crossing field note in the lore journal; the discovery and biome survive saving and reopening the world.
 - **The Scout's Last Cairn.** After the Scout's Wall lead, follow three connected journal chapters through a road watchtower, a ring of standing stones and a Sleeping Blade. Watch orders and The First Roads gain an account of the Marchkeepers' road. Earlier discoveries count, chapters reveal in order, and each pays once. An authentic Sleeping Blade stone now shares the Last Oath with every visitor; drawing and owning its sword still have their existing requirements.
 - **More kinds of bounty.** The board's offers grow with your standing. At Known it adds gathering bounties (bring it leather, string, bone, amethyst and the like) and a great bounty once a week (a hunt of 12 to 20 creatures for 24 emeralds, 2 Mana Crystals and 20 reputation). At Friend it sets named elites loose near the board for you to hunt down. At Honoured it pays for any dungeon's guardian.

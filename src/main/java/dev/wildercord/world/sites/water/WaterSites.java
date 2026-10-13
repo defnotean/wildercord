@@ -6,11 +6,13 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
- * The water pack: eight places on rivers, swamps, coasts, the sea floor and frozen lakes, for anglers and those who
+ * The water pack: nine places on rivers, swamps, coasts, the sea floor and frozen lakes, for anglers and those who
  * breathe the Tide. Where each appears and how often is in tools/sites_water.py; what each looks like is its piece.
  */
 public final class WaterSites {
 	private WaterSites() {}
+	public static final StructurePieceType REEDKEEPER_LANDING = Sites.piece("water_reedkeeper_landing", (StructurePieceType.ContextlessType) ReedkeeperLandingPiece::new);
+	static final ResourceKey<LootTable> REEDKEEPER_LOOT = Sites.loot("chests/water_reedkeeper_landing");
 
 	public static final StructurePieceType STILT_SMOKEHOUSE = Sites.piece("water_stilt_smokehouse", (StructurePieceType.ContextlessType) StiltSmokehousePiece::new);
 	public static final StructurePieceType LIGHTHOUSE = Sites.piece("water_lighthouse", (StructurePieceType.ContextlessType) LighthousePiece::new);
@@ -31,6 +33,8 @@ public final class WaterSites {
 	static final ResourceKey<LootTable> GROTTO_LOOT = Sites.loot("chests/water_tidepool_grotto");
 
 	public static void init() {
+		Sites.register("water_reedkeeper_landing", ReedkeeperLandingPiece::locate);
+		ReedkeeperResident.init();
 		Sites.register("water_stilt_smokehouse", StiltSmokehousePiece::locate);
 		Sites.register("water_lighthouse", LighthousePiece::locate);
 		Sites.register("water_watermill", WatermillPiece::locate);

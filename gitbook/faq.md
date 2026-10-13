@@ -154,7 +154,7 @@ The Master's Arts: Spellcut (from Edge), Rising Break and Driving Cut (from Form
 Your [Lore Journal](progression/lore-journal.md). It records places you find, duelists and Masters you meet, what you learn and what they say. Its **leads** point you to your next discovery and give rewards.
 
 ### Where are the new buildings?
-There are 48 sites in six families: farmsteads, Master halls, mines, roadside places, water places and wild places. They only appear in newly generated land, so explore away from old ground. See [Farmstead Sites](world/farm-sites.md), [Master Halls and Shrines](world/masters-sites.md), [Mines, Forges and Crystals](world/mine-sites.md), [Roadside Sites](world/travel-sites.md), [Water Sites](world/water-sites.md) and [Wild Places](world/wilds-sites.md).
+There are 49 sites in six families: farmsteads, Master halls, mines, roadside places, water places and wild places. They only appear in newly generated land, so explore away from old ground. See [Farmstead Sites](world/farm-sites.md), [Master Halls and Shrines](world/masters-sites.md), [Mines, Forges and Crystals](world/mine-sites.md), [Roadside Sites](world/travel-sites.md), [Water Sites](world/water-sites.md) and [Wild Places](world/wilds-sites.md).
 
 ### Some monsters glow and cast spells.
 They're **Runebound**: monsters with a Cord. Read the circle they hold out before each cast. See [Runebound](world/runebound.md) and [Magic Circles](spellcraft/magic-circles.md).
@@ -182,4 +182,4 @@ Sections include `casting`, `mana`, `world`, `loot`, `features`, `travel`, `defe
 No. Missing settings are added at their defaults when the server starts or reloads, and your own values are kept.
 
 ### Can I add a training pavilion to an old world?
-Yes, as an optional, owner-approved step with `/wildercord-upgrade`. It doesn't add the 48 sites; those only appear in new land. See [Pavilion Upgrade](world/pavilion-upgrade.md).
+Yes, as an optional, owner-approved step with `/wildercord-upgrade`. It doesn't add the 49 sites; those only appear in new land. See [Pavilion Upgrade](world/pavilion-upgrade.md).

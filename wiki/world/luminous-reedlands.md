@@ -41,6 +41,30 @@ suitable ground, water close by and an open sky; trees and dry ridges can leave
 long gaps between flowers. New colonies do not replace an existing plant or
 drain a pool.
 
+## A light at the landing
+
+<img src="{{ '/assets/images/reedkeeper-landing.png' | relative_url }}" alt="A green-roofed Tideward survey house and Moonreed garden on stilts beside a wooded Reedlands bank" class="shot">
+
+**Tideward Reedkeeper Landings** stand on stilts over shallow pools. Look for two
+lantern posts and a spruce survey house, with a small open garden beside the deck.
+Inside are a bed, a map table, fishing supplies and a lectern holding **The First
+Crossing**. Its four pages tell how the Tideward passed a lamp from boat to boat
+during a flood, and why their last boatman counted everyone twice.
+
+A **Tideward Reedkeeper** lives here. Use the resident to open ordinary fishing
+trades. Crouch and use them to hear their stories, allowing a short pause between
+lines. The first meeting adds the keeper to the journal's **People** tab, and each
+heard story stays under **Conversations**, including after you leave the world.
+The keeper explains the garden, the first crossing and the Reed-Crowned Ferryman.
+The resident lives as a villager and needs protection from the usual dangers.
+
+The garden is planted with living buds beside water and beneath an open sky. It
+can host the same evening pollination as a bank you plant yourself. Keep its roots
+and water intact if you want it to flower again.
+
+Finding the landing earns **Keeper of the Crossing**. Landings need suitable low
+ground and shallow water, so they will not appear beside every pool.
+
 ## Smoke above the water
 
 [Stilt Smokehouses]({{ '/world/water-sites/' | relative_url }}) can stand over

@@ -145,7 +145,7 @@ class RequiredPartTests(unittest.TestCase):
                                           "CounterAddonCaptureMixin"])
         self.assertNotIn(observer, (suites.ROOT / "src/main/resources/fabric.mod.json").read_text())
 
-    def test_unmoved_null_preserves_frozen_forty_five_and_rejects_stale_core(self):
+    def test_unmoved_null_preserves_frozen_forty_five(self):
         full = suites.select_entries(suite="masters")
         prior = [entry for entry in full["entries"] if entry not in COUNTER_ADDITIONS]
         self.assertEqual(len(prior), 45)
@@ -155,7 +155,12 @@ class RequiredPartTests(unittest.TestCase):
         anchor = full["entries"].index("dev.wildercord.aura.MirrorRiposteReleasedOwnerTest") + 1
         self.assertEqual(full["entries"][anchor:anchor + 2], list(COUNTER_ADDITIONS))
         descriptor = json.loads(suites.DESCRIPTOR.read_text())
-        previous_full = [entry for entry in descriptor["entrypoints"]["fabric-client-gametest"] if entry not in COUNTER_ADDITIONS]
+        # Reedlands joined the full roster after this frozen counter checkpoint.
+        # Exclude that explicit addition while preserving the original 339-class hash.
+        regional = "dev.wildercord.world.biome.ReedlandBiomeTest"
+        self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(regional), 1)
+        previous_full = [entry for entry in descriptor["entrypoints"]["fabric-client-gametest"]
+                         if entry not in COUNTER_ADDITIONS and entry != regional]
         self.assertEqual(len(previous_full), 339)
         self.assertEqual(hashlib.sha256(json.dumps(previous_full, separators=(",", ":")).encode()).hexdigest(),
                          "a9d1285c179ffb4622f973e9151502b0bc0ec4f868efb0328ece3cf134b4212d")
@@ -167,6 +172,10 @@ class RequiredPartTests(unittest.TestCase):
         config = json.loads((suites.ROOT / "src/gametest/resources" / observers).read_text())
         self.assertEqual(config["mixins"].count("ReleasedOwnerSetterProbeMixin"), 1)
         self.assertNotIn(observers, (suites.ROOT / "src/main/resources/fabric.mod.json").read_text())
+
+    def test_unmoved_null_rejects_stale_core(self):
+        full = suites.select_entries(suite="masters")
+        prior = [entry for entry in full["entries"] if entry not in COUNTER_ADDITIONS]
         current = suites.select_entries(suite="masters-core")
         for omitted in (COUNTER_ADDITIONS, COUNTER_ADDITIONS[:1], COUNTER_ADDITIONS[1:]):
             with self.subTest(omitted=omitted):

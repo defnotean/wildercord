@@ -10,7 +10,7 @@ nav_order: 3
 <img src="{{ '/assets/images/b-advancements.jpg' | relative_url }}" alt="The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows" class="shot">
 
 Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
-Circle, the dungeon bosses and the 48 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
+Circle, the dungeon bosses and the 49 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
 Crystals.
 
 1. TOC
@@ -193,6 +193,28 @@ See [Ley Lines and the Wellstone]({{ '/progression/ley-lines/' | relative_url }}
 [Magic in the World]({{ '/world/world-magic/' | relative_url }}) and
 [Playing Together]({{ '/social/playing-together/' | relative_url }}).
 
+## Aura and the blade
+
+| Advancement | Kind | After | Needs | Reward |
+|---|---|---|---|---|
+| **First Breath** | task | Wildercord | Learn a breathing method and wake your aura | 25 XP |
+| **Bonded Blade** | task | First Breath | Bond a blade to your aura | 30 XP |
+| **Not a Scratch** | task | First Breath | Turn a blow aside with a perfect guard | 25 XP |
+| **Flow** | task | First Breath | Break through to Flow | 50 XP |
+| **Edge** | goal | Flow | Break through to Edge | 150 XP, 1 Mana Crystal |
+| **Form** | goal | Edge | Break through to Form | 300 XP, 3 Mana Crystals |
+| **Dominion** | goal | Form | Spread your aura over the ground around you | 75 XP |
+| **Sovereign** | challenge | Form | Break through to Sovereign | 1,000 XP, 3 Mana Crystals |
+| **The Sixteen** | challenge | Form | Beat every Sword Master back to back in the Gauntlet | 2,000 XP, 3 Mana Crystals |
+
+## Cooking
+
+| Advancement | Kind | After | Needs | Reward |
+|---|---|---|---|---|
+| **Something on the Fire** | task | Wildercord | Craft a Camp Pot | 10 XP |
+| **Square Meal** | task | Something on the Fire | Eat a meal cooked in a Camp Pot | 20 XP |
+| **A Feast Fit for an Archmage** | goal | Square Meal | Eat an Archmage's Feast | 100 XP |
+
 ## Sites
 
 Every site advancement is a task. You earn it by walking into the site.
@@ -267,6 +289,7 @@ See [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}).
 | **Cast a Wide Net** | Ley Walker | Find the net-weavers' huts in a mangrove swamp | 20 XP |
 | **Safe Harbour** | Ley Walker | Find a pier and boathouse on the shore | 20 XP |
 | **Smoke on the Water** | Ley Walker | Find a smokehouse on stilts over a swamp or river | 20 XP |
+| **Keeper of the Crossing** | Ley Walker | Find a Tideward survey house in the Luminous Reedlands | 20 XP |
 | **Shrine of the Tide** | Ley Walker | Find the shrine on the floor of a warm sea | 20 XP |
 | **Pools Left by the Tide** | Ley Walker | Find a tidepool grotto on a stony shore | 20 XP |
 | **Run of the Mill** | Ley Walker | Find a watermill on a river bank | 20 XP |
@@ -290,14 +313,14 @@ See [Wild Places]({{ '/world/wilds-sites/' | relative_url }}).
 
 ## Totals
 
-142 advancements, counting the root.
+155 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 102 |
-| Goals | 28 |
-| Challenges | 12 |
+| Tasks | 109 |
+| Goals | 32 |
+| Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 10,825 |
+| Experience for all of them | 14,630 |
 | Blank Runes | 48 (six stacks of 8) |
-| Mana Crystals | 19 |
+| Mana Crystals | 29 |
