@@ -70,6 +70,10 @@ one **Compass of the Last Crossing**. The compass points back to that exact basi
 in its dimension. It works without placing a lodestone, giving you a landmark to
 return to on later river journeys.
 
+Return to a Tideward Reedkeeper after the victory. Once you have heard the
+keeper's original four stories, they acknowledge the crossing you completed and
+the compass you brought home. Their response remains in your journal's Talk tab.
+
 The bell stays complete after victory and cannot repeat the reward. Leaving an
 attempt or reloading it clears that attempt's participation. The peaceful coastal
 journal route keeps its own clues and rewards.

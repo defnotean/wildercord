@@ -56,6 +56,12 @@ trades. Crouch and use them to hear their stories, allowing a short pause betwee
 lines. The first meeting adds the keeper to the journal's **People** tab, and each
 heard story stays under **Talk**, including after you leave the world.
 The keeper explains the garden, the first crossing and the Reed-Crowned Ferryman.
+After those stories, return as your investigation develops. The keeper points you
+toward the boatkeepers' ledger, explains the lighthouse lamp, and thanks you once
+the light is tended. Completing the peaceful route earns a clue to the optional
+Last Crossing. After you defeat its guardian, the keeper recognizes your return
+and the compass you earned. These conversations use your own journal progress
+and stay in its Talk tab; they do not grant another encounter reward.
 The resident lives as a villager and needs protection from the usual dangers.
 
 The garden is planted with living buds beside water and beneath an open sky. It

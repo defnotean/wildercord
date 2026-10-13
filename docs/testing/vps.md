@@ -140,3 +140,9 @@ skips, 9,005 matching generated paths and 191 validated guide pages. The unfilte
 `WildercordArtsTest` fails on that VPS checkpoint: Glacier Mirror/Skate/Winters
 Hush failures precede unavailable stage/husk errors in later scenes. The complete
 failed log is retained; those gameplay failures are not converted into acceptance.
+
+The full `masters-march-mechanics` selection passes at `48fb5cc8` in 8m 36s,
+receipt `140a81dc-5084-4d5f-a61c-860c4fc8a79e`, with a schema-2 passed part manifest,
+the actual seed and no verification issues. It alone does not accept the combined
+Masters gate. The nine new VPS protocol/child-process tests, sixteen full-client
+tests and fifteen required-Masters tests also pass on the VPS, with zero skips.

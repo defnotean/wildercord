@@ -2,6 +2,8 @@ package dev.wildercord.world.sites.water;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.lore.LoreJournal;
+import dev.wildercord.lore.LoreJournalData;
+import dev.wildercord.lore.LoreQuestRules;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -42,13 +44,22 @@ public final class ReedkeeperResident {
 		if (last != null && player.tickCount >= last && player.tickCount - last < TALK_COOLDOWN) return;
 		player.setAttached(LAST_TALK, player.tickCount);
 		var data = LoreJournal.data(player);
-		String chosen = "garden";
-		for (String line : LINES) if (!data.has("said:reedkeeper." + line)) { chosen = line; break; }
+		String chosen = nextLine(data);
 		LoreJournal.record(player, ENTRY, true);
 		LoreJournal.record(player, "said:reedkeeper." + chosen, false);
 		player.sendSystemMessage(Component.translatable("dialogue.wildercord.says",
 			Component.translatable("entity.wildercord.reedkeeper"),
 			Component.translatable("dialogue.wildercord.reedkeeper." + chosen)).withColor(0xC6DFCD));
+	}
+
+	/** Finish the family account first, then answer what this visitor has actually learned. */
+	private static String nextLine(LoreJournalData data) {
+		for (String line : LINES) if (!data.has("said:reedkeeper." + line)) return line;
+		if (data.has("learned:last_crossing")) return "crossing_kept";
+		if (data.stage("last_boat_light") == LoreQuestRules.DONE) return "lamp_return";
+		if (data.stage("last_boat_light") == LoreQuestRules.ACTIVE) return "lighthouse";
+		if (data.stage("second_count") == LoreQuestRules.ACTIVE) return "ledger";
+		return "garden";
 	}
 
 	/** The owning structure chunk calls this once, then persists its successful spawn flag. */

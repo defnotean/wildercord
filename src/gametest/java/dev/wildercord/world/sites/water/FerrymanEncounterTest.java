@@ -112,9 +112,20 @@ public final class FerrymanEncounterTest implements FabricClientGameTest {
 				use(c,piece.bellPosition()); c.waitTicks(25);
 				world.getServer().runOnServer(s->{check(player(s).getInventory().countItem(Items.COMPASS)==1,"Ringing a completed bell cannot repeat the reward");check(bell(s).guardian().equals(identity),"Completed bell never replaces its guardian");
 					build(s.overworld(),piece,false);check(bell(s).slain()&&bell(s).guardian().equals(identity),"Chunk replay preserves completion and cannot reopen the reward");});
+				var keeper=world.getServer().computeOnServer(s->{
+					var at=piece.bellPosition().offset(2,0,-2);
+					check(ReedkeeperResident.spawn(s.overworld(),at),"An ordinary keeper enters the completed crossing for the return conversation");
+					return s.overworld().getEntitiesOfClass(net.minecraft.world.entity.npc.villager.Villager.class,new AABB(at).inflate(3),v->v.entityTags().contains(ReedkeeperResident.TAG)).getFirst().getUUID();
+				});
+				// A victory does not skip the keeper's original four stories.
+				for(String line:List.of("greet","garden","crossing","ferryman","crossing_kept"))
+					ReedkeeperLandingChecks.hear(c,world,keeper,line);
+				int returnedXp=world.getServer().computeOnServer(s->player(s).totalExperience);
+				ReedkeeperLandingChecks.hear(c,world,keeper,"crossing_kept");
+				world.getServer().runOnServer(s->{check(player(s).totalExperience==returnedXp,"Return conversation cannot repay the encounter");check(player(s).getInventory().countItem(Items.COMPASS)==1,"Repeated thanks cannot create another compass");});
 			}
 			try(var world=save.open()) {
-				world.getServer().runOnServer(s->{check(bell(s).slain()&&bell(s).guardian().equals(identity),"Completion and identity persist across reopening");check(player(s).getInventory().countItem(Items.COMPASS)==1,"The one reward survives reopening");});
+				world.getServer().runOnServer(s->{check(bell(s).slain()&&bell(s).guardian().equals(identity),"Completion and identity persist across reopening");check(player(s).getInventory().countItem(Items.COMPASS)==1,"The one reward survives reopening");check(dev.wildercord.lore.LoreJournal.data(player(s)).has("said:reedkeeper.crossing_kept"),"The keeper's response to the actual victory survives reopening");});
 			}
 		} finally {
 			c.runOnClient(mc->{mc.options.particles().set(oldParticles);mc.options.setCameraType(oldCamera);});

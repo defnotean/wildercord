@@ -109,7 +109,9 @@ Find a lighthouse on a beach or stony shore, climb the ladder and use the lever 
 lamp. Stand within six blocks of that lamp while it is lit. A lamp another traveller already tended
 counts too; entering a dark tower does not. This final discovery appears under Learned. The route
 pays 90 XP, five Blank Runes and one Aura Shard in total, once per player. It needs no Aura rank or
-combat victory, and the Ferryman remains a legend told by the coast's people.
+combat victory. Return to the keeper during the investigation for a clue about
+your next stop. After the lighthouse chapter, the keeper thanks you and describes
+the optional Last Crossing, where you can seek the Ferryman separately.
 
 Older boathouses retain their existing furnishings and lighthouse books retain their existing pages.
 Their structure discoveries and working lamps still count toward the route, so an older building

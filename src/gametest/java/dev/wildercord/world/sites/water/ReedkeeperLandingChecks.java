@@ -146,6 +146,7 @@ public final class ReedkeeperLandingChecks {
 			}
 			context.getInput().releaseKey(options -> options.keyShift);
 			context.waitTicks(3);
+			hear(context, world, identity, "ledger");
 			interact(context, world, identity);
 			context.waitFor(mc -> mc.gui.screen() instanceof net.minecraft.client.gui.screens.inventory.MerchantScreen, 100);
 			context.runOnClient(mc -> {
@@ -154,7 +155,8 @@ public final class ReedkeeperLandingChecks {
 				check(LoreJournalScreen.describe("said:reedkeeper.crossing").getString().contains("Tideward Reedkeeper"), "Saved dialogue resolves its actual speaker");
 				mc.player.closeContainer();
 			});
-			storyRewards = DrownedRoadChecks.run(context, world);
+			storyRewards = DrownedRoadChecks.run(context, world, identity);
+			hear(context, world, identity, "lamp_return");
 			world.getServer().runOnServer(server -> {
 				for (var piece : pieces) verify(server.overworld(), piece);
 				var player = server.getPlayerList().getPlayers().getFirst();
@@ -180,8 +182,32 @@ public final class ReedkeeperLandingChecks {
 				check(level.getEntity(identity) instanceof Villager resident && resident.entityTags().contains(ReedkeeperResident.TAG), "Original resident UUID and role survive reopening");
 				var data = LoreJournal.data(server.getPlayerList().getPlayers().getFirst());
 				check(data.has(ReedkeeperResident.ENTRY) && data.has("said:reedkeeper.ferryman"), "The person and all heard stories persist");
+				check(data.has("said:reedkeeper.ledger") && data.has("said:reedkeeper.lighthouse") && data.has("said:reedkeeper.lamp_return"), "Progress-aware return conversations survive reopening");
+				check(!data.has("said:reedkeeper.crossing_kept"), "The peaceful coastal route cannot invent a Ferryman victory");
 				DrownedRoadChecks.reopened(server.getPlayerList().getPlayers().getFirst(), storyRewards);
 			});
+		}
+	}
+
+	/** A real tracked NPC interaction, with the same pause and owner synchronization as ordinary conversations. */
+	static void hear(ClientGameTestContext context, TestSingleplayerContext world, UUID uuid, String line) {
+		context.waitTicks(ReedkeeperResident.TALK_COOLDOWN);
+		context.getInput().holdKey(options -> options.keyShift);
+		context.waitTicks(4);
+		try {
+			interact(context, world, uuid);
+			world.getServer().runOnServer(server -> check(LoreJournal.data(server.getPlayerList().getPlayers().getFirst()).has("said:reedkeeper." + line), "Progress-aware real conversation records " + line));
+			context.waitFor(mc -> LoreJournal.data(mc.player).has("said:reedkeeper." + line), 100);
+			context.runOnClient(mc -> {
+				String text = LoreJournalScreen.describe("said:reedkeeper." + line).getString();
+				check(text.contains("Tideward Reedkeeper") && !text.contains("dialogue.wildercord."), "Saved return dialogue resolves its speaker and complete translated text");
+			});
+			int entries = world.getServer().computeOnServer(server -> LoreJournal.data(server.getPlayerList().getPlayers().getFirst()).entries().size());
+			interact(context, world, uuid);
+			world.getServer().runOnServer(server -> check(LoreJournal.data(server.getPlayerList().getPlayers().getFirst()).entries().size() == entries, "Return conversation respects the same packet cooldown"));
+		} finally {
+			context.getInput().releaseKey(options -> options.keyShift);
+			context.waitTicks(3);
 		}
 	}
 
@@ -192,6 +218,7 @@ public final class ReedkeeperLandingChecks {
 			return resident.getId();
 		});
 		context.waitTicks(3);
+		context.waitFor(mc -> mc.level.getEntity(id) != null && mc.level.getEntity(id).getUUID().equals(uuid), 100);
 		context.runOnClient(mc -> {
 			var entity = mc.level.getEntity(id);
 			check(entity != null && entity.getUUID().equals(uuid), "Interaction targets the actual tracked resident");

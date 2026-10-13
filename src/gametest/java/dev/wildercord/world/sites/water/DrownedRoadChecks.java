@@ -36,7 +36,7 @@ import java.util.Set;
 final class DrownedRoadChecks {
 	private DrownedRoadChecks() {}
 
-	static int[] run(ClientGameTestContext c, TestSingleplayerContext world) {
+	static int[] run(ClientGameTestContext c, TestSingleplayerContext world, java.util.UUID keeper) {
 		await(c, world, "drowned_road", LoreQuestRules.DONE);
 		await(c, world, "second_count", LoreQuestRules.ACTIVE);
 		int[] before = world.getServer().computeOnServer(s -> rewards(s.getPlayerList().getPlayers().getFirst()));
@@ -53,6 +53,7 @@ final class DrownedRoadChecks {
 		});
 		await(c, world, "second_count", LoreQuestRules.DONE);
 		await(c, world, "last_boat_light", LoreQuestRules.ACTIVE);
+		ReedkeeperLandingChecks.hear(c, world, keeper, "lighthouse");
 		world.getServer().runOnServer(s -> {
 			visit(s.getPlayerList().getPlayers().getFirst(), stand);
 			s.overworld().setBlock(supply, Blocks.REDSTONE_BLOCK.defaultBlockState(), 3);
