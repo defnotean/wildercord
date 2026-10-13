@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.*;
 import dev.wildercord.Wildercord;
 import dev.wildercord.world.cartographer.*;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -15,52 +16,52 @@ import static dev.wildercord.world.cartographer.CartographerRules.*;
 
 public final class GlassCartographerRenderer extends MobRenderer<GlassCartographer, GlassCartographerRenderState, GlassCartographerModel> {
 	private static final Identifier TEXTURE = Wildercord.id("textures/entity/glass_cartographer.png");
-	private static final Identifier MARK = Wildercord.id("textures/misc/white.png");
+	private static final Identifier GLOW = Wildercord.id("textures/entity/glass_cartographer_glow.png");
+	private static final Identifier MARK = Wildercord.id("textures/entity/glass_cartographer_mark.png");
 
 	public GlassCartographerRenderer(EntityRendererProvider.Context context) {
 		super(context, new GlassCartographerModel(context.bakeLayer(GlassCartographerModel.LAYER)), 1.3F);
+		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<GlassCartographerRenderState, GlassCartographerModel>(this) {
+			@Override public void submit(PoseStack pose, SubmitNodeCollector collector, int light, GlassCartographerRenderState state, float yRot, float xRot) {
+				if (!state.isInvisible && state.deathTime <= 0) {
+					collector.order(1).submitModel(getParentModel(), state, pose, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, null, state.outlineColor);
+				}
+			}
+		});
 	}
 
 	@Override public GlassCartographerRenderState createRenderState() { return new GlassCartographerRenderState(); }
 	@Override public Identifier getTextureLocation(GlassCartographerRenderState state) { return TEXTURE; }
+	@Override protected float getFlipDegrees() { return 0; }
+	@Override public boolean shouldRender(GlassCartographer e, Frustum frustum, double x, double y, double z, float partial) {
+		return super.shouldRender(e, frustum, x, y, z, partial) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
+	}
 
 	@Override public void extractRenderState(GlassCartographer entity, GlassCartographerRenderState s, float tickDelta) {
 		super.extractRenderState(entity, s, tickDelta);
-		int age = Mth.floor(s.ageInTicks);
 		int move = entity.activeMove();
-		int start = Math.max(0, (int) (entity.moveBeganAt() - (entity.level().getGameTime() - entity.tickCount)));
-		s.idle.startIfStopped(age);
 		s.move = move;
+		s.elapsed = entity.elapsed(tickDelta);
 		s.aim = entity.aimRadians();
 		s.markX = entity.markX();
 		s.markZ = entity.markZ();
 		s.acrossX = entity.acrossX();
 		s.second = entity.isSecondPhase();
 		int total = tell(move);
-		s.tellProgress = total <= 0 ? 0 : Mth.clamp((entity.level().getGameTime() - entity.moveBeganAt() + tickDelta) / total, 0, 1);
-		toggle(s.sweep, move == SWEEP, start);
-		toggle(s.plumb, move == PLUMB, start);
-		toggle(s.grid, move == GRID, start);
+		s.tellProgress = total <= 0 ? 0 : Mth.clamp(s.elapsed / total, 0, 1);
 	}
 
 	@Override public void submit(GlassCartographerRenderState s, PoseStack matrices, SubmitNodeCollector collector, CameraRenderState camera) {
 		super.submit(s, matrices, collector, camera);
-		if (s.move == IDLE) return;
+		if (s.isInvisible || s.deathTime > 0 || s.move == IDLE || s.elapsed > tell(s.move) + 5) return;
 		float pulse = .55F + .35F * Mth.sin(s.ageInTicks * .35F);
 		int warm = color(s.second ? 0.98F : 0.94F, s.second ? 0.86F : 0.72F, 0.32F, .78F * pulse);
 		int safe = color(0.62F, 0.92F, 0.96F, .85F);
-		matrices.pushPose();
-		var pose = matrices.last().copy();
-		collector.order(1).submitCustomGeometry(pose, RenderTypes.entityTranslucentEmissive(MARK), (p, consumer) -> {
+		collector.order(1).submitCustomGeometry(matrices, RenderTypes.entityTranslucentEmissive(MARK), (p, consumer) -> {
 			if (s.move == SWEEP) drawSweep(consumer, p, s.aim, s.tellProgress, warm);
 			else if (s.move == PLUMB) drawPlumb(consumer, p, s.markX, s.markZ, s.tellProgress, warm);
 			else if (s.move == GRID) drawGrid(consumer, p, s.acrossX, warm, safe);
 		});
-		matrices.popPose();
-	}
-
-	private static void toggle(net.minecraft.world.entity.AnimationState state, boolean active, int tick) {
-		if (active) state.startIfStopped(tick); else state.stop();
 	}
 
 	private static void drawSweep(VertexConsumer c, PoseStack.Pose p, float aim, float progress, int color) {
