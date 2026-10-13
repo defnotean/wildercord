@@ -42,6 +42,6 @@ public final class WatchweftHistoryTest implements FabricClientGameTest {
    CampConcordNative.check(c.computeOnClient(mc->CampConcordClient.accepted(CampConcordFx.WARN)==before+1),"Fresh complete observed outside then inside crossing warns exactly once");
   }
   w.getServer().runOnServer(s->{subject.discard();Watchweft.remove(CampConcordNative.player(s).getUUID(),false);});
- }finally{injectCrowd=false;departDuringClaim=false;armAtBoundary=false;crossAtBoundary=false;callbackTick=-1;crowd.clear();}}
+ }finally{injectCrowd=false;departDuringClaim=false;armAtBoundary=false;crossAtBoundary=false;callbackTick=-1;crowd.clear();subject=null;watchedOwner=null;}}
  private static Zombie zombie(net.minecraft.server.level.ServerLevel l,double z){var e=new Zombie(l);e.setCustomName(Component.literal("Controlled crossing admission body"));e.setNoAi(true);e.setPos(.5,101,z);return e;}
 }

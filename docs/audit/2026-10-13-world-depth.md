@@ -951,6 +951,15 @@ replacement/slot-mutation, reservation, transfer and save/reopen assertions rema
 This suite also runs after the historical first heap failure. Its focused VPS
 verification is pending.
 
+The callback audit also found `WatchweftHistoryTest.subject` retained the last
+discarded zombie: its permanently registered callbacks capture the fixture
+instance, which kept the entity and its world reachable. The per-world `finally`
+now clears that subject and the watched owner's UUID along with the existing
+control flags/crowd. This class runs **before** `LifeOutcomeEdgesTest`, unlike the
+later cleanup above. It is a confirmed retained reference, not yet a demonstrated
+explanation for the full heap exhaustion. Its native callback/crossing assertions
+are unchanged; focused VPS verification and the long rerun are next.
+
 ### Complete VPS Arts rerun
 
 The exact `fc403c21` candidate passes the complete unfiltered `WildercordArtsTest`
