@@ -202,7 +202,7 @@ public final class RelayDefenceTest implements FabricClientGameTest {
 					});c.waitTicks(12);
 				}
 			}finally{world.getServer().runOnServer(server->dev.wildercord.cast.CampConcordNative.config(original));}
-		} finally {cancelSecond=false;watchedOwner=null;mirrorTarget=null;reprieveTarget=null;debt=null;directionalTarget=null;directionalFocus=null;}
+		} finally {cancelSecond=false;watchedOwner=null;mirrorTarget=null;reprieveTarget=null;debt=null;directionalTarget=null;directionalFocus=null;owner=null;defender=null;failure=null;}
 	}
 
 	private static final class DebtProbe {

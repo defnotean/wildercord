@@ -1013,7 +1013,9 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 			dev.wildercord.cast.Effects.readyToHurt(player);
 			FakePlayer rival = rival(player, "rime", AuraRules.EDGE, 1.0);
 			var root = SpellCompiler.compile(List.of(Runes.BOLT, Runes.HARM)).root();
+			// A lethal carried-spell probe must fund the shared damage allowance beyond this cheap spell's list price.
 			Cast cast = new Cast(rival, 1, Heart.Bonuses.NONE.withPower(60), false, null, new Cast.Info(root, 2, ""));
+			cast.damagePrice(60);
 			if (!Spellblade.draw(rival, cast, root, c -> {})) {
 				return "the rival's blade should take the spell";
 			}
@@ -1183,6 +1185,9 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 			player.teleportTo(player.level(), heart[0], y, heart[1], Set.<Relative>of(), 0.0F, 15.0F, false);
 			player.setDeltaMovement(Vec3.ZERO);
 			setAura(player, "ember", AuraRules.EDGE, 8, AuraRules.threshold(AuraRules.FORM));
+			// Earlier spellblade cases condensed mana. A first-Circle awakening would open an unrelated
+			// choice screen and release the held meditation key during this Aura-only tempest observation.
+			player.setAttached(WildercordAttachments.CONDENSED, 0);
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			return null;
 		});

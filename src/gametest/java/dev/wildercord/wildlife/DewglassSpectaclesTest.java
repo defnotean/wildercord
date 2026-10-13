@@ -15,7 +15,8 @@ import java.util.List;
 /** Actual living warning, head-slot wear and an owner-only observation with obstruction refusal. */
 public final class DewglassSpectaclesTest implements FabricClientGameTest {
  private ReedbackCrab crab;
- @Override public void runTest(ClientGameTestContext c){long deadline;TestWorldSave save;
+ @Override public void runTest(ClientGameTestContext c){try {spectacles(c);} finally {crab=null;}}
+ private void spectacles(ClientGameTestContext c){long deadline;TestWorldSave save;
   try(var settings=new TidewardNative(c)){
    try(var w=c.worldBuilder().create()){
     c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("difficulty normal");w.getServer().runCommand("time set 6000");

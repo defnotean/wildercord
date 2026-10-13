@@ -11,6 +11,9 @@ import java.util.UUID;
 public final class RootmoltEcologyTest implements FabricClientGameTest {
  private RootmoltStrider a,b;private final BlockPos cap=new BlockPos(2,30,0);
  public void runTest(ClientGameTestContext c) {
+  try {ecology(c);} finally {a=b=null;}
+ }
+ private void ecology(ClientGameTestContext c) {
   UUID saved;long meal;TestWorldSave save;
   try(var w=c.worldBuilder().create()) {
    c.waitTicks(25);w.getServer().runCommand("difficulty normal");w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("gamerule random_tick_speed 0");w.getServer().runCommand("time set 18000");

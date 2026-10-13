@@ -20,6 +20,9 @@ import java.util.*;
 public final class DrainhouseAcquisitionTest implements FabricClientGameTest {
  private final SporebackSnail[] snails=new SporebackSnail[6];private final BlockPos[] plants=new BlockPos[6],marks=new BlockPos[3];private RootmoltStrider root;
  public void runTest(ClientGameTestContext c){
+  try {acquisition(c);} finally {Arrays.fill(snails,null);root=null;}
+ }
+ private void acquisition(ClientGameTestContext c){
   TestWorldSave save;UUID creature;BlockPos rootHome;long mealReady,repairReady,bellReady;
   try(var w=c.worldBuilder().create()){
    c.waitTicks(25);w.getServer().runCommand("difficulty normal");w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("gamerule random_tick_speed 0");w.getServer().runCommand("time set 18000");

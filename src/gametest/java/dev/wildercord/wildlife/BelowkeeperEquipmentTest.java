@@ -61,7 +61,7 @@ public final class BelowkeeperEquipmentTest implements FabricClientGameTest {
     c.takeScreenshot(TestScreenshotOptions.of("belowkeeper_real_anchor_bell_and_copy_rest").disableCounterPrefix());save=w.getWorldSave();
    }
    try(var w=save.open()){c.waitTicks(8);w.getServer().runOnServer(s -> {check(p(s).getAttachedOrElse(BelowkeeperEquipment.BELL_READY,0L)==bellRest && p(s).getAttachedOrElse(BelowkeeperEquipment.GREAVES_READY,0L)==bootsRest,"Full world restart preserves exact independent equipment rests");check(p(s).getCooldowns().isOnCooldown(new ItemStack(BelowkeeperEquipment.BELL)),"Join restores visible cooldown for the fresh bell copy");check(BelowkeeperEquipment.prepared(p(s))<BelowkeeperEquipment.PREP_TICKS,"Rejoining restarts actual preparation instead of restoring a ready stance");});}
-  }finally{c.runOnClient(mc -> {mc.options.keyShift.setDown(shift);mc.options.keyUse.setDown(use);mc.options.keyJump.setDown(jump);mc.options.keyRight.setDown(right);mc.options.keyUp.setDown(forward);});}
+  }finally{source=null;c.runOnClient(mc -> {mc.options.keyShift.setDown(shift);mc.options.keyUse.setDown(use);mc.options.keyJump.setDown(jump);mc.options.keyRight.setDown(right);mc.options.keyUp.setDown(forward);});}
  }
  // An idle territorial source may stroll during its remaining rest; it does not pursue its target.
  // Keep the real actor in warning reach through native input, then let its motion settle before ringing.

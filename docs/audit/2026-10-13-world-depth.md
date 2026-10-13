@@ -158,6 +158,11 @@ a biome must actually generate; a legend must be discoverable and lead somewhere
 | LOR-03 foundation: Scout's Last Cairn | Implemented and locally verified | Three connected chapters after Scout's Wall; two new book pages; ordinary tower/ring discovery and blade-stone interaction exercised by `ScoutLegendChecks` inside the registered journal suite. The proposed highland biome/lodge/Cartographer extension remains unbuilt. |
 | POL-09: generator preserves boss guidance | Implemented and locally verified | All 157 existing authored values preserved; ten obsolete labels suppressed; 8,987 generated paths stable; two Python regression checks added. Existing CI runs generation parity and boss JUnit assertions. |
 | Sleeping Blade history access | Implemented and locally verified | Native journal test verifies authentic-only discovery, one book per visitor and no ownership/draw from reading. Full existing focused `SleepingBladeTest` also passes, including generation, interrupted draws, unique ownership and guard tradeoffs. |
+| BIO-01 foundation: Luminous Reedlands | Implemented and locally verified | Actual climate placement, surface/spawn/structure tags, natural Moonreed, owner-only journal discovery and save/reopen. Fixed 49-chunk census and existing wetland checks pass. Broader frequency and fauna-density measurements remain open. |
+| BLD-01 / NPC foundation: Reedkeeper Landing | Implemented and locally verified | New house, ordinary fisher trades, four saved conversations, attributed First Crossing book, functional garden and discovery advancement. Four facings, real locator-selected terrain, chunk-order replay and resident save/reopen pass. Named Iona/Tamsin NPCs and the proposed repair service remain unbuilt. |
+| POL-04: Master abandonment and returned Aura | Implemented and locally verified | Paid attacks retire when the last challenger leaves; severed Aura can return to its original Master within its payment allowance. Full native trial and Stone March checks pass; wider encounter lifecycle audit remains open. |
+| Player-guide fidelity | Expanded and checked | All 417 Master technique timings and all 155 visible advancements/reward totals checked against runtime data; fractional Heart bonuses and ward caps corrected. 190 guide pages and 8,995 generated paths validated at the landing checkpoint. |
+| Native matrix repairs | Ongoing | Focused high-stage Aura and two-scenario Mana Skin checks pass; six retained fixture references cleared. Later Excise disconnect, Siltcrest shelter, connected counter receipt and long-run save/heap failures remain under investigation. |
 | Full development goal | Active | Remaining backlog above; not a release-readiness claim. |
 
 ### POL-01 verification
@@ -502,3 +507,38 @@ before the same lethal first hit. No damage, armour, tempering, health, Mana Ski
 or regeneration rules changed. The detailed review in
 `docs/reviews/MANA_SKIN_RESOLVED_DAMAGE.md` now distinguishes the original review
 environment from this fresh native evidence. Full CI confirmation remains pending.
+
+### High-stage Aura and test-world retention
+
+The complete `WildercordAuraMasteryTest` passes in 2m 44s. Its carried-spell probe
+now explicitly funds a 60-mana damage allowance through `Cast.damagePrice`, keeping
+the original two-rune spell and lethal spellguard assertions. Changing the rune
+count metadata did not fund that allowance; an intermediate rerun caught that
+mistake. The tempest setup clears mana condensed by earlier spellblade cases,
+preventing an unrelated first-Circle awakening screen from releasing the held
+meditation input. The clear-sky negative and full thunderstorm breakthrough remain
+unchanged. No progression, damage or spellguard rule changed.
+
+Source review also found six cached native-test instances retaining entities from
+closed worlds: Rootmolt ecology, Drainhouse acquisition, Belowkeeper equipment,
+Dewglass spectacles, Siltcrest presentation and Relay defence. Their outer cleanup
+now clears those specific fields/arrays on success and failure. The Rootmolt
+ecology suite passes in 49 seconds with its actual competing consumers, finite meal
+deadline and full restart. Dewglass spectacles passes in 29 seconds, including
+its owner-only observation and restart checks. This removes concrete retention paths; it does not
+establish the cause or resolution of the earlier four-GiB CI heap failure.
+
+GitHub run `38424793282` passes build and March mechanics and now reaches the
+Excise gameplay checks beyond the repaired roster preflight and refusal screen.
+Its later active-disconnect assertion fails. That check retains its exact clock,
+body-replacement and recovery-deadline requirements and now reports each observed
+value plus the old body's pending state. A gameplay fix is not claimed without
+those diagnostics; dedicated-server verification still uses the owner-approved CI
+environment.
+
+The focused Siltcrest presentation rerun passes in 1m 6s at both Full and Minimal
+settings, retaining its original hunt, phase, shelter-navigation and pixel checks.
+The 420-tick shelter window is unchanged. A future failure now also reports the
+actual cover predicate, shelter clock, running goals and existing navigation path;
+it does not request diagnostic paths or manipulate the bird. This local pass does
+not resolve the intermittent CI shelter failure.
