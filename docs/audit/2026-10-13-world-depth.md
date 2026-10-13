@@ -939,17 +939,20 @@ in shard two. They cannot explain the earlier failure at that class. They were
 additional retention sources for a longer run. The same review found the
 `ResonantStrikesTest` fake player/Cast and the `MovesPackTest` and
 `LessonPackPlayableTest` entity fields retained their later closed worlds. Those
-are now released in their outer `finally` blocks too. Compile verification and a
-fresh full run remain pending for these small cleanups; the original heap failure
-is still open.
+are now released in their outer `finally` blocks too. They compile in the passing
+`9de25fbe` VPS build; a fresh full run remains pending for these small cleanups.
+The original heap failure is still open.
 
 `NextTrailTest` also kept three discarded item entities, and its globally
 registered transaction callback captured a closed-world player even after its
 mutation flag returned to zero. The callback now uses its event's own level;
 the item fields and previous tow position clear before reopening. The original
 replacement/slot-mutation, reservation, transfer and save/reopen assertions remain.
-This suite also runs after the historical first heap failure. Its focused VPS
-verification is pending.
+This suite also runs after the historical first heap failure. Its complete focused
+VPS run passes at `9de25fbe` in **1m 39s**, receipt
+`c926245a-49ac-410e-9df0-39f16613b95c`. The same candidate passes the owned build,
+all 2,721 unit tests, 9,005 generated paths and 191 guide pages, receipt
+`f2753cde-619e-48fc-b264-29dfabe96475`.
 
 The callback audit also found `WatchweftHistoryTest.subject` retained the last
 discarded zombie: its permanently registered callbacks capture the fixture
@@ -958,7 +961,16 @@ now clears that subject and the watched owner's UUID along with the existing
 control flags/crowd. This class runs **before** `LifeOutcomeEdgesTest`, unlike the
 later cleanup above. It is a confirmed retained reference, not yet a demonstrated
 explanation for the full heap exhaustion. Its native callback/crossing assertions
-are unchanged; focused VPS verification and the long rerun are next.
+are unchanged. Its complete focused VPS run passes at `3f0af5fb` in **2m 44s**,
+receipt `113c6799-bf45-4e1d-ae1d-b70535999236`, including its five controlled
+crossing/pool/claim/world-departure scenarios. The long rerun remains necessary.
+
+An obsolete queued first-group launch at `9de25fbe`, receipt
+`df9ad375-66c5-41d4-840d-7cf9e328e903`, was deliberately interrupted at startup
+to include this additional cleanup. Only its verified owned runner/job was
+stopped. Its interruption record is retained; it is neither a gameplay pass nor
+a newly diagnosed gameplay failure. The replacement uses the complete original
+86-class first group, not a reduced selection or enlarged heap.
 
 ### Complete VPS Arts rerun
 

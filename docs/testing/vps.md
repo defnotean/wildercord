@@ -161,3 +161,15 @@ and save/reopen. `FerrymanEncounterTest` passes in 3m 25s, including the victory
 response after the real encounter, original story priority, no duplicate rewards
 and saved dialogue. Their receipts are `6212756c-8828-40b3-b560-9c58be1fd66c` and
 `86dbe112-9234-46be-a008-78a6f2727c62`; all original gameplay checks remain.
+
+`9de25fbe` passes the full build/native compilation, 2,721 unit tests, generated
+assets and guide checks. The complete `NextTrailTest` passes in 1m 39s, receipt
+`c926245a-49ac-410e-9df0-39f16613b95c`, after removing the discarded item references
+and the transaction listener's captured closed-world player. Actual transaction
+callbacks, reservations, paid spells and save/reopen remain covered.
+
+`3f0af5fb` recompiles native sources and passes the complete
+`WatchweftHistoryTest` in 2m 44s, receipt
+`113c6799-bf45-4e1d-ae1d-b70535999236`. Its five original crossing/claim cases
+remain; the final subject now clears despite the listener retaining the fixture
+instance. The full first-group run must still establish cumulative behavior.
