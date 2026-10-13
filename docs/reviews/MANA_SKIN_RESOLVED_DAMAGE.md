@@ -29,3 +29,32 @@ Pure boundary tests cover finite values, lethal/nonlethal loss, existing wounds,
 `ManaSkinSustainChecks` is an independently selectable, observation-only benchmark. It uses a fresh fixed-seed world, a connected player with 20 health, P4 netherite, Circle 20, an Echo Cord, 600 starting mana and normal 18 mana/second regeneration. An unpaused Gale Master selects and executes its actual attacks for 400 server ticks or until death. The player stands still without casting or guarding. There are no attack replays, combat teleports, manual AI steps or resource resets during observation. Logs report attack timing, the actual callback snapshots, health, absorption, mana payment, observed regeneration and survival. This is one specified Gale encounter, not a general difficulty claim.
 
 For a valid before/after comparison, run the identical benchmark source on each revision with `-PfocusedSuite=dev.wildercord.aura.world.ManaSkinSustainChecks`, then compare the `[mana-skin-sustain]` logs and settings. The baseline build needs only that benchmark and descriptor registration, not the correction-dependent assertion changes. The corrected benchmark also runs in the Masters suite. Local verification compiles native test source but cannot execute Loom/native clients in this environment; CI must establish actual runtime outcomes. No corrected native or sustained-survival result is claimed here before that run.
+
+## 2026-10-13 native follow-up
+
+The corrected `WildercordHeartCirclesTest`, including `ManaSkinChecks`, now passes
+locally (41 seconds at the recorded world-depth checkpoint). The earlier paragraph
+describes the original review environment; native execution is available in this
+development checkout. The world-depth audit records the exact scope.
+
+The sustain benchmark reproduced a different fixture problem in both Linux CI and
+a fresh local world. The Circle XX player gives the naturally loaded Gale Master
+threat 20. Production tempering doubles its opening 36-point crescent to 72 before
+armour. The player still wears all four Protection IV netherite pieces: 20 armour,
+12 toughness and 16 protection points. The source bypasses none of those defences,
+but the hit is lethal. Mana Skin correctly restores and spends nothing. Starting
+at full mana therefore offers no regeneration capacity before this observation
+ends; requiring positive regeneration in that case was invalid.
+
+The fixture now retains the unchanged 600-mana reference and adds an independent
+300-mana scenario with otherwise identical settings and normal world tempering.
+The second scenario must positively observe production regeneration. Both retain
+the exact five-tick cadence checks, native entity/attack clocks, damage-source
+checks and absence of resource refills or interventions during combat. Each
+scenario owns and releases its player/world references.
+
+Both scenarios pass in one 44-second native run. Each observes a lethal first hit
+at tick 25. The full reference finishes at 600 mana with zero spending and zero
+regeneration; the half-mana scenario finishes at 322.5 after five real regeneration
+ticks restored 22.5. These are measured outcomes of a stationary, unguarded Gale
+trial, not a general survival or balance claim. No production combat values changed.

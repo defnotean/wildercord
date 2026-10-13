@@ -7,6 +7,7 @@ import dev.wildercord.cast.LeyWalker;
 import dev.wildercord.config.Config;
 import dev.wildercord.content.CordTier;
 import dev.wildercord.content.WildercordItems;
+import dev.wildercord.monster.Tempering;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Mana;
 import dev.wildercord.player.Spellbook;
@@ -22,6 +23,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -31,6 +33,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -45,7 +48,9 @@ import java.util.Set;
  * chooses and executes all attacks through normal entity ticks. No projected(), manual AI step,
  * artificial charge, tick replay, teleport, or resource refill occurs during observation.
  *
- * This is a stationary, unguarded, non-casting survival trial, not a claim about every school or
+ * Separate full-mana and half-mana starts preserve the original survival observation and positively
+ * exercise regeneration even when a tempered Master's first hit is lethal. These are stationary,
+ * unguarded, non-casting survival trials, not a claim about every school or
  * player strategy. Native knockback, navigation, guard rests, breathing and projectile flight
  * remain live. Outcomes are logged, not asserted: either implementation may survive or die.
  */
@@ -87,6 +92,11 @@ public final class ManaSkinSustainChecks implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		registerObservers();
+		new ManaSkinSustainChecks().runTrial(context, false);
+		new ManaSkinSustainChecks().runTrial(context, true);
+	}
+
+	private void runTrial(ClientGameTestContext context, boolean halfMana) {
 		try (var world = context.worldBuilder().adjustSettings(settings -> settings.setSeed(Long.toString(SEED))).create()) {
 			context.waitTicks(40);
 			for (String command : List.of("difficulty normal", "gamerule spawn_mobs false", "gamerule natural_health_regeneration false",
@@ -97,7 +107,7 @@ public final class ManaSkinSustainChecks implements FabricClientGameTest {
 			try {
 				world.getServer().waitFor(server -> {
 					if (server.getTickCount() % 5 != 0) return false;
-					start();
+					start(halfMana);
 					return true;
 				}, 10);
 				world.getServer().waitFor(server -> done, WINDOW + 40);
@@ -105,8 +115,8 @@ public final class ManaSkinSustainChecks implements FabricClientGameTest {
 					check(failure == null, "Sustain benchmark fixture: " + failure);
 					check(began >= 0 && attacks > 0 && releases > 0 && hits > 0,
 						"The benchmark must observe a naturally started trial, real releases and native Master hits");
-					check(regenTicks > 0 && observedRegeneration > 0,
-						"The connected player's normal production mana regeneration must actually run");
+					if (halfMana) check(regenTicks > 0 && observedRegeneration > 0,
+						"The connected player's normal production mana regeneration must actually run with available capacity");
 					check(unexpectedDamage == 0, "Only this enrolled Master may damage the benchmark player");
 				});
 			} finally {
@@ -115,7 +125,10 @@ public final class ManaSkinSustainChecks implements FabricClientGameTest {
 					if (master != null && !master.isRemoved()) master.discard();
 				});
 			}
-		} finally { active = null; }
+		} finally {
+			active = null;
+			player = null; master = null; origin = null; initial = previous = null; pending = null;
+		}
 	}
 
 	private void prepare(ServerPlayer target) {
@@ -162,12 +175,12 @@ public final class ManaSkinSustainChecks implements FabricClientGameTest {
 		throw new AssertionError("No fixed off-ley arena was found for the benchmark seed");
 	}
 
-	private void start() {
+	private void start(boolean halfMana) {
 		check(player.onGround() && !player.isShiftKeyDown() && player.getHealth() == HEALTH, "The fresh player is healthy, grounded and not meditating");
 		check(player.getArmorValue() == 20 && player.getAttributeValue(Attributes.ARMOR_TOUGHNESS) == 12,
 			"All four real Protection IV netherite pieces have installed their native modifiers");
 		check(standardMana(), "Echo/Circle20 must provide the unboosted default 600 mana / 18 mana per second: " + Mana.of(player));
-		Spellbooks.setMana(player, Mana.max(player)); // The only refill; observation has not begun.
+		Spellbooks.setMana(player, Mana.max(player) * (halfMana ? .5F : 1F)); // The only initial charge; observation has not begun.
 		master = AuraWorld.SWORD_MASTER.create(player.level(), EntitySpawnReason.COMMAND);
 		check(master != null, "The native sustain Master is constructible");
 		master.setDiscipline(MastersRules.GALE);
@@ -178,9 +191,10 @@ public final class ManaSkinSustainChecks implements FabricClientGameTest {
 		check(SwordMaster.ready(player) == 1 && master.challengerCount() == 1, "The sole genuine challenger explicitly enrolls and closes preparation");
 		initial = previous = Snapshot.of(player); minimumMana = initial.mana();
 		active = this;
-		log("settings seed=" + SEED + " windowTicks=" + WINDOW + " school=gale difficulty=" + player.level().getDifficulty()
+		log("settings scenario=" + (halfMana ? "half_mana_regeneration" : "full_mana_reference")
+			+ " seed=" + SEED + " windowTicks=" + WINDOW + " school=gale difficulty=" + player.level().getDifficulty()
 			+ " initial=" + initial + " manaStats=" + Mana.of(player) + " regenMultiplier=" + Config.regenMultiplier(player)
-			+ " defence=" + Config.defence(player) + " startDistance=" + master.distanceTo(player)
+			+ " defence=" + Config.defence(player) + " startDistance=" + master.distanceTo(player) + " masterThreat=" + Tempering.threat(master)
 			+ " arena=" + origin + " naturalHealthRegen=false strategy=stationary_no_cast_no_guard"
 			+ " armour=P4_netherite nativeKnockback=true initialServerTickModulo5=" + player.level().getServer().getTickCount() % 5);
 	}
@@ -232,6 +246,11 @@ public final class ManaSkinSustainChecks implements FabricClientGameTest {
 			unexpectedDamage++; log("unexpected_damage source=" + source + " amount=" + amount); return;
 		}
 		if (pending != null) { failure = "An earlier Master damage request did not complete"; return; }
+		log("native_defences armour=" + player.getArmorValue() + " toughness=" + player.getAttributeValue(Attributes.ARMOR_TOUGHNESS)
+			+ " protection=" + EnchantmentHelper.getDamageProtection(player.level(), player, source)
+			+ " bypassArmour=" + source.is(DamageTypeTags.BYPASSES_ARMOR) + " bypassEnchantments=" + source.is(DamageTypeTags.BYPASSES_ENCHANTMENTS)
+			+ " bypassEffects=" + source.is(DamageTypeTags.BYPASSES_EFFECTS) + " effects=" + player.getActiveEffects()
+			+ " amountAfterTempering=" + Tempering.onPlayer(source, amount));
 		pending = new Hit(player.level().getGameTime(), source, Snapshot.of(player), amount);
 	}
 

@@ -485,3 +485,20 @@ passes export checks. Performance, balanced and cinematic profiles built from th
 explicit current JAR pass the packaging audit. This checkpoint is ready for
 development review; the unresolved full native matrix still prevents a release
 readiness claim.
+
+### Mana Skin sustain benchmark correction
+
+The CI failure reproduced in a fresh local world. Production threat-20 tempering
+doubles the Gale Master's opening crescent from 36 to 72 before native defences.
+The properly equipped stationary player dies on tick 25, so Mana Skin has no
+nonlethal wound to rebate and the original full mana pool never has room to
+regenerate. This is not a failure of production mana regeneration.
+
+The original 600-mana reference remains intact. A second, independent 300-mana
+scenario now supplies available capacity and must observe real regeneration,
+under the same strict cadence, native clock and source checks. Both scenarios
+pass together in 44 seconds. The second gains 22.5 mana in five production ticks
+before the same lethal first hit. No damage, armour, tempering, health, Mana Skin
+or regeneration rules changed. The detailed review in
+`docs/reviews/MANA_SKIN_RESOLVED_DAMAGE.md` now distinguishes the original review
+environment from this fresh native evidence. Full CI confirmation remains pending.
