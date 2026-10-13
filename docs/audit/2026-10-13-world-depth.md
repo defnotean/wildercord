@@ -262,3 +262,23 @@ The first new-biome slice is paused behind these native regressions. Minecraft 2
 uses data-driven material rules; old surface-rule integration examples are unsuitable.
 The Reedlands proposal still requires actual registry, climate-placement, surface and
 seed evidence, and remains explicitly unimplemented.
+
+### Published Master timing repair
+
+The Master technique generator now reads the current opening minimum and recovery
+formula, and uses Java-compatible half-up rounding. Both published guides have been
+regenerated for all 417 techniques. A JUnit check compares every named row in both
+outputs with the runtime impact and recovery values, rather than trusting the
+Python calculation. All 2,709 unit tests pass; the 189-page guide export also passes.
+No attack timing or damage balance changed in this documentation repair.
+
+Further native diagnosis found an actual Master cancellation bug: a last enrolled
+fighter leaving the arena bypasses attack ticking and leaves the windup set. The
+local repair passed all 40 Stone March damage/cancellation cases and its eight-player
+trial. The final admission fixture needs natural Aura replenishment before it can
+isolate rest as its only admission gate; the complete rerun is still pending.
+
+The save observer also exposed the prior opaque failure: a ConcurrentModificationException
+in Fabric's attachment map collection while saving the player during disconnect.
+This is not a missing rest codec. Off-thread mutation diagnosis is in progress;
+no save fix or full native pass is claimed.

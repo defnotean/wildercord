@@ -9,6 +9,7 @@ Called from tools/wiki.py (python tools/wiki.py). Pure Python: it reads the Java
 Anything it can't parse is skipped with a warning rather than guessed.
 """
 import json
+import math
 import re
 from pathlib import Path
 
@@ -408,8 +409,9 @@ def read_rewards(words):
 
 def read_techniques():
     mt = _src("aura/world/MasterTechniques.java")
-    consts = {k: int(v) for k, v in re.findall(r"\b(\w+)\s*=\s*(-?\d+)", re.search(r"FIRST_TELL[^;]*;", mt).group(0))}
-    first, follow, least = consts.get("FIRST_TELL", 12), consts.get("FOLLOW_TELL", 8), consts.get("MIN_TELL", 5)
+    consts = _ints(mt)
+    first, follow, least = consts["FIRST_TELL"], consts["FOLLOW_TELL"], consts["MIN_TELL"]
+    opening_least = consts["MIN_OPENING_TELL"]
     max_share = _num(re.search(r"MAX_SHARE\s*=\s*([\d.]+)", mt).group(1))
     prims = {}
     for name, shape, reach, width, damage in re.findall(
@@ -419,6 +421,10 @@ def read_techniques():
     tempo = {k: float(v) for k, v in re.findall(r"MastersRules\.(\w+)\s*\?\s*([\d.]+)", tempo_body)}
     tempo_default = float(re.findall(r":\s*([\d.]+)\s*;", tempo_body)[-1]) if re.findall(r":\s*([\d.]+)\s*;", tempo_body) else 1.0
     rec_m = re.search(r"int recovery = (.*?);", mt, re.S)
+    recovery_rule = re.match(r"(\d+)\s*\+\s*(?:(\d+)\s*\*\s*)?\(count\s*-\s*1\)\s*\+\s*\(lastHeavy\s*\?\s*(\d+)\s*:\s*0\)", rec_m.group(1)) if rec_m else None
+    if not recovery_rule:
+        raise ValueError("wiki_reference: Master recovery formula changed; update its parser before publishing times")
+    recovery_base, recovery_per_strike, recovery_heavy = recovery_rule.groups()
     rec_adj = {k: int(v) for k, v in re.findall(r"MastersRules\.(\w+)\s*\?\s*(-?\d+)", rec_m.group(1))} if rec_m else {}
     rules = _src("aura/world/MastersRules.java")
     attack_cost = _const(rules, "ATTACK_COST", "MastersRules")
@@ -453,7 +459,8 @@ def read_techniques():
                 spin = "@" in flags or token[len(flags):] == "WHIRL"
                 heavy, quick, step = "!" in flags, "*" in flags, 2.0 * flags.count("^")
                 tell = (first if i == 0 else follow) + (4 if heavy else 0) - (3 if quick else 0) + (2 if step else 0) + (2 if spin else 0)
-                tell = max(least, int(round(tell * tempo.get(school, tempo_default))))
+                # Java Math.round rounds half up; Python round uses ties-to-even.
+                tell = max(opening_least if i == 0 else least, math.floor(tell * tempo.get(school, tempo_default) + .5))
                 if t and t["kind"] == "fixed":
                     tell = max(t["min"], min(t["max"], t["min"] + (t["heavy"] if heavy else 0) + (t["turn"] if spin or step else 0)))
                 elif t and t["kind"] == "clamp":
@@ -472,7 +479,7 @@ def read_techniques():
             if total > max_share:
                 for s in strikes:
                     s["damage"] *= max_share / total
-            recovery = 12 + 3 * (count - 1) + (4 if last_heavy else 0) + rec_adj.get(school, 0)
+            recovery = int(recovery_base) + int(recovery_per_strike or 1) * (count - 1) + (int(recovery_heavy) if last_heavy else 0) + rec_adj.get(school, 0)
             if t and t["kind"] == "fixed":
                 recovery = t["rec"] + max(0, min(t["rec_extra"], count - 1))
             elif t and t["kind"] == "clamp":
