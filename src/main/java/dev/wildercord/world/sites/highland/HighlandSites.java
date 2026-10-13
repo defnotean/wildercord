@@ -3,15 +3,14 @@ package dev.wildercord.world.sites.highland;
 import dev.wildercord.Wildercord;
 import dev.wildercord.lore.LoreJournal;
 import dev.wildercord.world.cartographer.CartographerContent;
+import dev.wildercord.world.sites.SiteStructure;
 import dev.wildercord.world.sites.Sites;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.world.item.ItemStack;
@@ -37,15 +36,11 @@ public final class HighlandSites {
 	public static final String CAIRN_LODGE = "highland_cairn_lodge";
 	public static final String SURVEY_RING = "highland_survey_ring";
 	public static final String WIND_MARK_ENTRY = "learned:scout_wind_mark";
-	public static final List<String> IDS = List.of(CAIRN_LODGE, SURVEY_RING);
+	public static final Set<String> IDS = Set.of(CAIRN_LODGE, SURVEY_RING);
 	public static final Map<String, Integer> BOOKS = Map.of("cairn_keeper", 4, "survey_ring", 2);
 
-	public static final StructurePieceType LODGE_PIECE = piece("cairn_lodge", CairnLodgePiece::new);
-	public static final StructurePieceType RING_PIECE = piece("survey_ring", SurveyRingPiece::new);
-
-	private static StructurePieceType piece(String id, StructurePieceType.ContextlessType type) {
-		return Registry.register(BuiltInRegistries.STRUCTURE_PIECE, Wildercord.id("highland_" + id), type);
-	}
+	public static final StructurePieceType LODGE_PIECE = Sites.piece(CAIRN_LODGE, (StructurePieceType.ContextlessType) CairnLodgePiece::new);
+	public static final StructurePieceType RING_PIECE = Sites.piece(SURVEY_RING, (StructurePieceType.ContextlessType) SurveyRingPiece::new);
 
 	public static void init() {
 		Sites.register(CAIRN_LODGE, HighlandSites::locateCairnLodge);
@@ -55,26 +50,23 @@ public final class HighlandSites {
 	}
 
 	public static void observe(ServerPlayer player) {
-		if (!(player.level() instanceof ServerLevel level)) return;
-		var structures = level.structureManager();
-		if (!structures.hasAnyStructureAt(player.blockPosition())) return;
-		var pos = player.blockPosition();
-		for (String site : IDS) {
-			var key = ResourceKey.create(Registries.STRUCTURE, Wildercord.id(site));
-			if (!structures.getStructureWithPieceAt(pos, key).isValid()) continue;
-			LoreJournal.record(player, "place:" + site, true);
-			if (site.equals(CAIRN_LODGE) && nearLitCairnLamp(level, pos)) {
+		if (player.isSpectator() || !player.isAlive()) return;
+		var level = player.level();
+		var start = level.structureManager().getStructureWithPieceAt(player.blockPosition(),
+			holder -> holder.value() instanceof SiteStructure site && IDS.contains(site.site()));
+		if (!start.isValid() || !(start.getStructure() instanceof SiteStructure site)) return;
+		LoreJournal.record(player, "place:" + site.site(), true);
+		if (!site.site().equals(CAIRN_LODGE) || LoreJournal.data(player).has(WIND_MARK_ENTRY)) return;
+		for (var piece : start.getPieces()) {
+			if (!(piece instanceof CairnLodgePiece lodge)) continue;
+			var lamp = lodge.lampPos();
+			if (!lamp.closerToCenterThan(player.position(), 6) || !level.hasChunkAt(lamp)) continue;
+			var state = level.getBlockState(lamp);
+			if (state.is(Blocks.REDSTONE_LAMP) && state.getValue(RedstoneLampBlock.LIT)) {
 				LoreJournal.record(player, WIND_MARK_ENTRY, true);
+				return;
 			}
 		}
-	}
-
-	private static boolean nearLitCairnLamp(ServerLevel level, BlockPos center) {
-		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-6, -4, -6), center.offset(6, 6, 6))) {
-			var state = level.getBlockState(pos);
-			if (state.is(Blocks.REDSTONE_LAMP) && state.getValue(RedstoneLampBlock.LIT)) return true;
-		}
-		return false;
 	}
 
 	public static Optional<Structure.GenerationStub> locateCairnLodge(Structure.GenerationContext ctx) {
