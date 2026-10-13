@@ -78,7 +78,7 @@ public final class NextTrailTest implements FabricClientGameTest {
     loose.discard();p.level().setBlockAndUpdate(ORE,Blocks.IRON_ORE.defaultBlockState());pose(p,.5,.5,50);cast(p,Runes.BEAM,Runes.SHARD_COMPASS);
    });c.waitTicks(20);
    w.getServer().runOnServer(s->check(TrailSignatures.active()==1,"Active finite locator exists before complete server shutdown"));save=w.getWorldSave();
-  }finally{seamVeto.set(false);c.getInput().releaseKey(o->o.keyUp);}
+  }finally{foreign=delayed=loose=null;towStart=null;seamVeto.set(false);c.getInput().releaseKey(o->o.keyUp);}
   try(var reopened=save.open()){c.waitTicks(20);reopened.getServer().runOnServer(s->{var p=player(s);check(TrailSignatures.active()==0 && TrailSignatures.successfulProbes()==0,"All trail watchers/callback generations clear across full server reopen");
    check(PocketChestOwnership.owns(p,chest(p,CHEST)) && count(chest(p,CHEST),Items.DIAMOND)==16,"Actual chest-local ownership and transferred contents persist across reopen");});}
  }
@@ -103,7 +103,8 @@ public final class NextTrailTest implements FabricClientGameTest {
    if(!pos.equals(new BlockPos(0,100,2)))return true;
    int mode=mutation.getAndSet(0);
    if(mode==1){level.setBlockAndUpdate(CHEST,Blocks.AIR.defaultBlockState());level.setBlockAndUpdate(CHEST,Blocks.CHEST.defaultBlockState());}
-   if(mode==2)chest(p,CHEST).setItem(0,new ItemStack(Items.GOLD_INGOT));return true;
+   // The event keeps this listener for the JVM lifetime; use its level instead of retaining the closed fixture player.
+   if(mode==2)((ChestBlockEntity)level.getBlockEntity(CHEST)).setItem(0,new ItemStack(Items.GOLD_INGOT));return true;
   });
   try{pocket(p,new Cast(p),CHEST);check(goods.getItem().getCount()==3 && chest(p,CHEST).isEmpty(),"A chest replaced during a later drop permission callback cannot receive stale transaction/input deletion");}
   finally{mutation.set(0);}goods.discard();p.level().setBlockAndUpdate(CHEST,Blocks.AIR.defaultBlockState());placeChest(p,CHEST);

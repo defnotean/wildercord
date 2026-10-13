@@ -941,6 +941,14 @@ are now released in their outer `finally` blocks too. Compile verification and a
 fresh full run remain pending for these small cleanups; the original heap failure
 is still open.
 
+`NextTrailTest` also kept three discarded item entities, and its globally
+registered transaction callback captured a closed-world player even after its
+mutation flag returned to zero. The callback now uses its event's own level;
+the item fields and previous tow position clear before reopening. The original
+replacement/slot-mutation, reservation, transfer and save/reopen assertions remain.
+This suite also runs after the historical first heap failure. Its focused VPS
+verification is pending.
+
 ### Complete VPS Arts rerun
 
 The exact `fc403c21` candidate passes the complete unfiltered `WildercordArtsTest`
