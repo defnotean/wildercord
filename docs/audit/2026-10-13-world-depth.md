@@ -850,3 +850,42 @@ The broad development goal remains active, and a 15-minute chat heartbeat record
 the VPS-only requirement, coherent commits/pushes, the unfinished roadmap and the
 need to inspect running jobs before starting another. See the accompanying
 `2026-10-13-progress.md` for the requested readable progress inventory.
+
+### First VPS build, native gameplay and evidence migration
+
+The exact `550fa619` candidate passes its first VPS build and native-source
+compilation (5m 18s Gradle, initial tool setup separate), generated-asset parity
+and guide validation. Tests run in `C:\wildercord-ci\repo`, with a dedicated
+Python environment and Gradle cache. The live `C:\wildercord` installation is
+not changed. GitHub Actions remains disabled.
+
+`tools/run_vps_checks.py` now owns sequential Windows build/focused-native runs,
+requires the expected computer and exact clean source commit, rejects inherited
+test filters/JVM injection, uses the shared checkout lock and retains per-launch
+JSON/logs. An owned Windows job contains only the runner and its descendants.
+Seven VPS tests pass, including real normal/forced-exit cleanup while an unrelated
+sibling remains alive. Native success requires the actual processed descriptor,
+four ordered lifecycle stages with a fresh nonce, no skip and a successful process
+exit. A focused receipt always leaves full-client acceptance unverified.
+
+The pending `NextCounterTest` and `NextSupportTest` field cleanup is now verified
+on the VPS at `ad8b967c`: native passes in **3m 11s** and **1m 38s**, including
+their real save/reopen checks. The initial native run includes first-time setup.
+AMD OpenGL and OpenAL's no-output mixer initialize successfully in the SSH session.
+The former retained static entity/Cast references are released; the wider heap
+failure still needs its long-run reproduction.
+
+Completed-evidence reading now preserves the Linux checks and adds an actual
+Windows handle path. It opens final reparse points without following them, rejects
+links/devices/directories and denies writer/deletion sharing. Bounds and stable
+file checks remain; the full and required-Masters parsers reuse it. Four actual
+Windows file tests pass. The wider tooling run has **69 passing tests and one
+explicit Gradle/Groovy-runtime discovery skip**, not 70 passes. Its cache lookup
+now honors `GRADLE_USER_HOME`; the executable parity rerun remains pending here.
+
+`FerrymanEncounterTest` also passes on the VPS at `39d05075` in **2m 47s**, through
+the new evidence reader. Result UUIDs are `d0d876e2-4645-4a79-8ff1-e68e62cede96`
+(Counter), `d38dfd8f-0b4d-4e60-bb66-cbfb441ce3b1` (Support), and
+`bd6e55ee-a6bf-40c7-8def-27120654e2cb` (Ferryman). Full-suite orchestration,
+connected matrices and their fresh candidate acceptance remain migration work;
+none of these focused successes substitutes for them.

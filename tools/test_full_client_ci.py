@@ -304,7 +304,8 @@ class FullClientTests(unittest.TestCase):
         home = Path(os.environ.get("GRADLE_HOME", ""))
         java_home = Path(os.environ.get("JAVA_HOME", ""))
         candidates = [home, *java_home.parent.glob("gradle-*")]
-        candidates += list((Path.home() / ".gradle/wrapper/dists").glob("gradle-*/*/gradle-*"))
+        user_home = Path(os.environ.get("GRADLE_USER_HOME", str(Path.home() / ".gradle")))
+        candidates += list((user_home / "wrapper/dists").glob("gradle-*/*/gradle-*"))
         groovy = next((path / "lib" for path in candidates if list((path / "lib").glob("groovy-*.jar"))), None)
         if groovy is None:
             self.skipTest("A Gradle distribution's Groovy runtime is required for executable parity checks")

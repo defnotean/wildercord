@@ -30,6 +30,7 @@ Run from the test checkout on the VPS after setting these process-local variable
 $env:JAVA_HOME='C:\java\jdk-25.0.4.1+1'
 $env:GRADLE_USER_HOME='C:\wildercord-ci\gradle'
 $env:PATH="C:\wildercord-ci\venv\Scripts;$env:JAVA_HOME\bin;$env:PATH"
+$env:PYTHONUTF8='1'
 $candidate=(git rev-parse HEAD).Trim()
 
 python tools/run_vps_checks.py build --head $candidate --computer WIN-I2GBVRRD872
@@ -76,11 +77,26 @@ The focused runner does not replace the four full-client groups, the three
 required Masters parts, articulated coverage, connected wide/slim and Moon
 matrices, packaging checks or manual visual acceptance. Their rosters, deadlines,
 geometry comparisons and evidence requirements remain in their existing tools.
-The former top-level launcher, bounded evidence readers and paired-matrix alarm
-currently contain Linux-specific operations. Windows adapters and a fresh full
-VPS execution are still required; do not label a focused pass as their substitute.
+The former top-level launcher and paired-matrix alarm still contain Linux-specific
+operations. Windows orchestration and a fresh full VPS execution are still
+required; do not label a focused pass as their substitute. The bounded completed-
+evidence readers now work on Windows as well as Linux. Windows opens the reparse
+point itself, rejects it, and denies concurrent writers/deletion while reading;
+the existing byte limits, stable-file checks and strict JSON validation remain.
 
 The first remote checkpoint at `550fa619` passed build/native compilation,
 generated assets and guide validation. That bootstrap run's logs are directly
-under `C:\wildercord-ci` and predate this runner. Native VPS execution and runner
-verification are pending at the time this file is introduced.
+under `C:\wildercord-ci` and predate this runner.
+
+The runner's seven evidence/ownership tests pass on the actual VPS, including
+normal and interrupted process cleanup while an unrelated sibling stays alive.
+`NextCounterTest` passes at `ad8b967c` in 3m 11s (including initial native setup),
+and `NextSupportTest` passes in 1m 38s. The VPS initializes the AMD OpenGL driver
+and real OpenAL null mixer without needing an interactive login.
+
+At `39d05075`, `FerrymanEncounterTest` passes in 2m 47s through the new completed-
+evidence reader. The tooling test run has 69 passes and one explicit skip: the
+Gradle/Groovy parity test searched the default cache instead of the configured
+`GRADLE_USER_HOME`. Its lookup is corrected here and requires its own VPS rerun.
+The four new evidence-reader tests pass, including actual symlinks and concurrent
+writer/deletion refusal. No full native matrix pass is established.
