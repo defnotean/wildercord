@@ -21,7 +21,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -40,6 +39,7 @@ import java.util.UUID;
 
 /** The actual server AI admits, braces, releases and recovers; fixture inputs never edit its private attack state. */
 final class StoneFractureChecks {
+	private static final double AFTER_FORM = MastersRules.AURA_MAX - MastersRules.ATTACK_COST - StoneFractureRules.COST;
 	private static final class Challenger extends FakePlayer {
 		private final List<String> messages = new ArrayList<>();
 		Challenger(ServerLevel level, String name) { super(level, new GameProfile(UUID.randomUUID(), name)); }
@@ -246,7 +246,7 @@ final class StoneFractureChecks {
 			check(!master.fracturePending() && !master.state(AuraFighter.WINDUP) && !master.guarding(), "Every outcome consumes its one pending reply and drops the brace");
 			check(bystander.getHealth() == HEALTH, "A bystander standing in the accepted lane is unharmed");
 			for (Challenger guest : party) if (guest != target) check(guest.getHealth() == HEALTH, "Other enrolled players cannot inherit or multiply the selected-target reply");
-			check(close(master.auraRemaining(), 56), "Thrust and every completed, cancelled or baited Fracture retain exactly 16 + 28 Aura payments");
+			check(close(master.auraRemaining(), AFTER_FORM), "Thrust and every completed, cancelled or baited Fracture retain both ordinary-attack and Fracture Aura payments");
 			releasedHealth = target.getHealth();
 			if (answer == Answer.NO_AI) master.setNoAi(false);
 			if (answer == Answer.HOLD) threat = incomingThreat();
@@ -255,7 +255,7 @@ final class StoneFractureChecks {
 		observeRecovery(world, recoveryEnd - 1, answer);
 		if (answer == Answer.HOLD) at(world, recoveryEnd, () -> {
 			check(ordinaryMove(master) != null && master.attackElapsed(0) == 0
-				&& !master.guarding() && close(master.auraRemaining(), 40),
+				&& !master.guarding() && close(master.auraRemaining(), AFTER_FORM - MastersRules.ATTACK_COST),
 				"A completed Fracture advances sequence to the next admitted ordinary attack without buying a redundant guard after its paid brace");
 		});
 		world.getServer().runOnServer(server -> cleanup());
@@ -272,7 +272,7 @@ final class StoneFractureChecks {
 			began = level.getGameTime() - (long) master.attackElapsed(0);
 			aimYaw = master.getYRot();
 			check(Math.abs(aimYaw) < .1 && master.onGround() && !master.isNoAi() && !master.getMoveControl().hasWanted(), "Admission captures the forward aim and brakes a grounded native AI body");
-			check(master.challengerCount() == count && !master.canHarmParticipant(bystander) && close(master.auraRemaining(), 56), "The locked consenting roster and single 28-Aura payment survive admission");
+			check(master.challengerCount() == count && !master.canHarmParticipant(bystander) && close(master.auraRemaining(), AFTER_FORM), "The locked consenting roster and single 28-Aura payment survive admission");
 			for (Challenger guest : party) check(guest.heard("message.wildercord.master.stone_lesson"), "Every enrolled challenger hears Stone's counterplay lesson");
 			check(!bystander.heard("message.wildercord.master.stone_lesson"), "The nearby nonparticipant receives no trial lesson");
 			return true;
@@ -287,7 +287,7 @@ final class StoneFractureChecks {
 			began = level.getGameTime() - (long) master.attackElapsed(0);
 			return true;
 		}, 45);
-		at(world, MastersRules.Move.THRUST.tell, () -> check(!master.state(AuraFighter.WINDUP) && close(master.auraRemaining(), 84), "The opening Thrust genuinely completes and pays its ordinary Aura"));
+		at(world, MastersRules.Move.THRUST.tell, () -> check(!master.state(AuraFighter.WINDUP) && close(master.auraRemaining(), MastersRules.AURA_MAX - MastersRules.ATTACK_COST), "The opening Thrust genuinely completes and pays its ordinary Aura"));
 		at(world, MastersRules.Move.THRUST.tell + MastersRules.Move.THRUST.recovery - 1, () -> {
 			for (Challenger guest : party) { guest.setHealth(HEALTH); place(guest, guest == target ? 0 : .2, 4); }
 			place(bystander, -.2, 4); bystander.setHealth(HEALTH);
@@ -310,7 +310,7 @@ final class StoneFractureChecks {
 				}
 			});
 			at(world, MastersRules.Move.THRUST.tell + MastersRules.Move.THRUST.recovery, () -> {
-				check(!master.fracturePending() && !master.state(AuraFighter.WINDUP) && master.guarding() && close(master.auraRemaining(), 72),
+				check(!master.fracturePending() && !master.state(AuraFighter.WINDUP) && master.guarding() && close(master.auraRemaining(), MastersRules.AURA_MAX - MastersRules.ATTACK_COST - MastersRules.GUARD_COST),
 					"Out-of-band distance, height or existing cover declines Fracture before payment and preserves Stone's ordinary due guard: " + kind);
 				cleanup();
 			});
@@ -321,25 +321,39 @@ final class StoneFractureChecks {
 		beginNaturally(world, 1);
 		at(world, StoneFractureRules.PLANT, () -> Effects.withSource(target,
 			() -> check(master.interruptWindup(), "The resource probe cancels a naturally paid Fracture")));
-		at(world, StoneFractureRules.PLANT + StoneFractureRules.RECOVERY - 1, () -> check(!master.state(AuraFighter.WINDUP) && !master.guarding() && close(master.auraRemaining(), 56), "Cancellation retains all forty paid recovery frames"));
+		at(world, StoneFractureRules.PLANT + StoneFractureRules.RECOVERY - 1, () -> check(!master.state(AuraFighter.WINDUP) && !master.guarding() && close(master.auraRemaining(), AFTER_FORM), "Cancellation retains all paid recovery frames"));
 		at(world, StoneFractureRules.PLANT + StoneFractureRules.RECOVERY, () -> {
 			check(ordinaryMove(master) != null && master.attackElapsed(0) == 0
-				&& !master.fracturePending() && !master.guarding() && close(master.auraRemaining(), 40),
+				&& !master.fracturePending() && !master.guarding() && close(master.auraRemaining(), AFTER_FORM - MastersRules.ATTACK_COST),
 				"Cancellation leaves sequence one intact and clears the redundant guard, so native AI selects a legal ordinary attack");
 		});
 		world.getServer().waitFor(server -> {
 			if (master.auraRemaining() >= StoneFractureRules.COST) return false;
-			check(close(master.auraRemaining(), 12) && ordinaryMove(master) != null,
+			check(close(master.auraRemaining(), AFTER_FORM - 2 * MastersRules.ATTACK_COST - MastersRules.GUARD_COST) && ordinaryMove(master) != null,
 				"Two admitted ordinary moves and one normal guard spend the finite remainder without a refund");
 			began = level.getGameTime() - (long) master.attackElapsed(0);
 			return true;
 		}, 120);
 		MastersRules.Move exhaustedMove = ordinaryMove(master);
+		double exhaustedAura = AFTER_FORM - 2 * MastersRules.ATTACK_COST - 2 * MastersRules.GUARD_COST;
 		at(world, exhaustedMove.tell + exhaustedMove.recovery, () -> {
-			check(close(master.auraRemaining(), 12) && !master.state(AuraFighter.WINDUP) && !master.guarding() && !master.fracturePending(), "Exhausted native AI breathes exposed instead of borrowing Aura for another form");
+			check(!master.state(AuraFighter.WINDUP) && !master.fracturePending(), "The ordinary attack completes before the next guard");
 		});
-		at(world, exhaustedMove.tell + exhaustedMove.recovery + 10, () -> {
-			check(master.auraRemaining() > 12 && !master.state(AuraFighter.WINDUP) && !master.guarding(), "Ordinary breathing gradually restores the exhausted resource");
+		world.getServer().waitFor(server -> {
+			if (!master.guarding()) {
+				check(close(master.auraRemaining(), exhaustedAura + MastersRules.GUARD_COST) && !master.state(AuraFighter.WINDUP),
+					"A faster ordinary exchange waits for the previous guard's rest without spending another payment");
+				return false;
+			}
+			check(close(master.auraRemaining(), exhaustedAura), "The naturally admitted guard spends exactly its remaining payment");
+			began = level.getGameTime();
+			return true;
+		}, 120);
+		at(world, 1, () -> {
+			check(close(master.auraRemaining(), exhaustedAura) && !master.state(AuraFighter.WINDUP) && !master.guarding() && !master.fracturePending(), "Exhausted native AI drops the guard and breathes exposed instead of borrowing Aura for another form");
+		});
+		at(world, 11, () -> {
+			check(master.auraRemaining() > exhaustedAura && !master.state(AuraFighter.WINDUP) && !master.guarding(), "Ordinary breathing gradually restores the exhausted resource");
 			cleanup();
 		});
 	}
@@ -356,6 +370,7 @@ final class StoneFractureChecks {
 		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
 		if (master != null) master.plainOrdinaryOnly();
 		check(master != null, "The Stone fixture is constructible");
+		master.fixAura(); // Payment checks isolate debits from the multiplayer trickle.
 		master.setDiscipline(MastersRules.STONE); master.snapTo(origin.x, origin.y, origin.z, 0, 0);
 		level.addFreshEntity(master);
 		for (Challenger player : party) { master.mobInteract(player, InteractionHand.MAIN_HAND); master.mobInteract(player, InteractionHand.MAIN_HAND); }
@@ -371,7 +386,7 @@ final class StoneFractureChecks {
 			long now = level.getGameTime();
 			check(now <= last, "Recovery observation cannot skip its final promised frame");
 			check(!master.fracturePending() && !master.state(AuraFighter.WINDUP) && !master.guarding() && !master.state(AuraFighter.DASH), "Every observed recovery frame stays exposed: " + answer);
-			check(close(master.auraRemaining(), 56) && target.getHealth() == releasedHealth, "Recovery neither refunds Aura, pays for evasions nor repeats the reply");
+			check(close(master.auraRemaining(), AFTER_FORM) && target.getHealth() == releasedHealth, "Recovery neither refunds Aura, pays for evasions nor repeats the reply");
 			if (answer != Answer.DEATH) {
 				check(!master.canBeginFracture(now), "Recovery is never free Fracture admission");
 				check(StoneFracture.prepare(master, target, MastersRules.STONE, 1, 100, now, 0) == null, "An otherwise eligible request cannot replace the promised recovery");
@@ -404,8 +419,17 @@ final class StoneFractureChecks {
 	}
 	private boolean hit(Challenger attacker, float damage, boolean fresh) {
 		if (fresh) Effects.readyToHurt(master);
-		// Vanilla MAGIC carries no_knockback; keep receipt cancellation distinct from the separate actual impulse probe.
-		return master.hurtServer(level, level.damageSources().source(DamageTypes.MAGIC, attacker, attacker), damage);
+		// Measure a landed physical receipt separately from evasion and the actual impulse probe.
+		// MAGIC used to suppress knockback here, but Masters correctly erase magic now.
+		master.spendEvadeFocus();
+		var resistance = master.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
+		double previous = resistance.getBaseValue();
+		resistance.setBaseValue(1);
+		try {
+			return master.hurtServer(level, level.damageSources().playerAttack(attacker), damage);
+		} finally {
+			resistance.setBaseValue(previous);
+		}
 	}
 	private void guard() {
 		target.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));

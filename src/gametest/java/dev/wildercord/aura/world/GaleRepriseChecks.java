@@ -35,6 +35,7 @@ import java.util.UUID;
 
 /** Real server AI owns admission, each movement tick, release, and the complete exposed recovery. */
 final class GaleRepriseChecks {
+	private static final double AFTER_FORM = MastersRules.AURA_MAX - MastersRules.ATTACK_COST - GaleRepriseRules.COST;
 	private static final class Challenger extends FakePlayer {
 		Challenger(ServerLevel level, String name) { super(level, new GameProfile(UUID.randomUUID(), name)); }
 		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return false; }
@@ -143,15 +144,15 @@ final class GaleRepriseChecks {
 			check(bystander.getHealth() == HEALTH, "An unaccepted body in the marked lane remains unharmed");
 			for (Challenger guest : party) if (guest != target) check(guest.getHealth() == HEALTH,
 				"Other enrolled bodies cannot multiply or inherit a captured-target reply");
-			check(close(master.auraRemaining(), 60), "The Crescent and every completed, cancelled, or baited Reprise retain their 16 + 24 Aura payments");
+			check(close(master.auraRemaining(), AFTER_FORM), "The Crescent and every completed, cancelled, or baited Reprise retain their ordinary-attack and Reprise Aura payments");
 			if (answer == Answer.NO_AI) master.setNoAi(false);
 			if (answer == Answer.HOLD) threat = incomingThreat();
 		});
 		int recoveryEnd = cancelled(answer) ? (int) (cancelledAt - began) + GaleRepriseRules.RECOVERY : GaleRepriseRules.TELL + GaleRepriseRules.RECOVERY;
 		at(world, recoveryEnd - 1, () -> {
 			check(!master.reprisePending() && !master.state(AuraFighter.WINDUP) && !master.guarding() && !master.state(AuraFighter.DASH),
-				"The complete 32-tick recovery stays exposed after release or cancellation: " + answer);
-			check(close(master.auraRemaining(), 60), "Recovery neither refunds Aura nor spends it on another attack, guard, or dodge");
+				"The complete paid recovery stays exposed after release or cancellation: " + answer);
+			check(close(master.auraRemaining(), AFTER_FORM), "Recovery neither refunds Aura nor spends it on another attack, guard, or dodge");
 			if (answer != Answer.DEATH) {
 				check(!master.canBeginReprise(level.getGameTime()), "A recovery frame is never a free Reprise admission");
 				check(GaleReprise.prepare(master, target, MastersRules.GALE, 1, 100, level.getGameTime(), 0) == null,
@@ -178,7 +179,7 @@ final class GaleRepriseChecks {
 			check(Math.abs(aimYaw - Math.toDegrees(Math.atan2(-1.8, 4))) < .1,
 				"Accepted aim already points from the predicted landing to the original target before departure");
 			check(master.onGround() && !master.isNoAi() && !master.getMoveControl().hasWanted(), "Admission grounds and brakes the actual AI body");
-			check(master.challengerCount() == count && !master.canHarmParticipant(bystander) && close(master.auraRemaining(), 60),
+			check(master.challengerCount() == count && !master.canHarmParticipant(bystander) && close(master.auraRemaining(), AFTER_FORM),
 				"The locked consenting roster and one 24-Aura payment are preserved at admission");
 			return true;
 		}, 4);
@@ -194,7 +195,7 @@ final class GaleRepriseChecks {
 			return true;
 		}, 45);
 		at(world, MastersRules.Move.CRESCENT.tell, () -> {
-			check(!master.state(AuraFighter.WINDUP) && close(master.auraRemaining(), 84), "The opening Crescent really completes and spends its normal Aura");
+			check(!master.state(AuraFighter.WINDUP) && close(master.auraRemaining(), MastersRules.AURA_MAX - MastersRules.ATTACK_COST), "The opening Crescent really completes and spends its normal Aura");
 		});
 		at(world, MastersRules.Move.CRESCENT.tell + MastersRules.Move.CRESCENT.recovery - 1, () -> {
 			for (Challenger guest : party) { guest.setHealth(HEALTH); place(guest, guest == target ? 0 : .2, 4); }
@@ -215,7 +216,7 @@ final class GaleRepriseChecks {
 			});
 			at(world, MastersRules.Move.CRESCENT.tell + MastersRules.Move.CRESCENT.recovery, () -> {
 				check(!master.reprisePending() && ordinaryMove(master) != null
-					&& close(master.auraRemaining(), 68) && master.position().distanceToSqr(origin) < .003,
+					&& close(master.auraRemaining(), MastersRules.AURA_MAX - 2 * MastersRules.ATTACK_COST) && master.position().distanceToSqr(origin) < .003,
 					"A blocked complete path or out-of-band target declines Reprise before payment or sideways movement: " + kind);
 				cleanup();
 			});
@@ -230,12 +231,12 @@ final class GaleRepriseChecks {
 			check(master.position().distanceToSqr(origin.add(-1.8, 0, .5)) < .003, "A real external displacement changes the final landing after its last step");
 		});
 		at(world, GaleRepriseRules.GATHER + GaleRepriseRules.STEP_TICKS, () -> {
-			check(!master.reprisePending() && master.attackAnimation() == 0 && close(master.auraRemaining(), 60),
+			check(!master.reprisePending() && master.attackAnimation() == 0 && close(master.auraRemaining(), AFTER_FORM),
 				"The reply refuses a displaced final landing instead of inventing a new warned origin");
 		});
 		at(world, GaleRepriseRules.GATHER + GaleRepriseRules.STEP_TICKS + GaleRepriseRules.RECOVERY - 1, () -> {
-			check(target.getHealth() == HEALTH && !master.state(AuraFighter.WINDUP) && !master.guarding() && close(master.auraRemaining(), 60),
-				"Final-landing cancellation preserves its harmless, fully paid 32-tick recovery");
+			check(target.getHealth() == HEALTH && !master.state(AuraFighter.WINDUP) && !master.guarding() && close(master.auraRemaining(), AFTER_FORM),
+				"Final-landing cancellation preserves its harmless, fully paid recovery");
 			cleanup();
 		});
 	}
@@ -247,12 +248,12 @@ final class GaleRepriseChecks {
 		at(world, GaleRepriseRules.GATHER + 1, () -> Effects.withSource(target,
 			() -> check(master.interruptWindup(), "The resource probe cancels a naturally paid Reprise")));
 		at(world, GaleRepriseRules.GATHER + GaleRepriseRules.RECOVERY, () -> {
-			check(!master.state(AuraFighter.WINDUP) && close(master.auraRemaining(), 60), "Cancelled Reprise retains its full paid recovery through the last frame");
+			check(!master.state(AuraFighter.WINDUP) && close(master.auraRemaining(), AFTER_FORM), "Cancelled Reprise retains its full paid recovery through the last frame");
 		});
 		at(world, GaleRepriseRules.GATHER + 1 + GaleRepriseRules.RECOVERY, () -> {
 			check(ordinaryMove(master) != null && master.attackElapsed(0) == 0
-				&& !master.reprisePending() && close(master.auraRemaining(), 44),
-				"The next still-eligible sequence uses an admitted ordinary attack because the paid Reprise's 140-tick cooldown survives cancellation");
+				&& !master.reprisePending() && close(master.auraRemaining(), AFTER_FORM - MastersRules.ATTACK_COST),
+				"The next still-eligible sequence uses an admitted ordinary attack because the paid Reprise's cooldown survives cancellation");
 		});
 		world.getServer().waitFor(server -> {
 			if (master.auraRemaining() >= GaleRepriseRules.COST) return false;
@@ -302,6 +303,7 @@ final class GaleRepriseChecks {
 		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
 		if (master != null) master.plainOrdinaryOnly();
 		check(master != null, "The Gale fixture is constructible");
+		master.fixAura(); // Payment checks isolate debits from the multiplayer trickle.
 		master.setDiscipline(MastersRules.GALE); master.snapTo(origin.x, origin.y, origin.z, 0, 0);
 		level.addFreshEntity(master);
 		for (Challenger player : party) {

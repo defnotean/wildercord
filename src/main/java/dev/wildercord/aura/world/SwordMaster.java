@@ -637,8 +637,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			if (++quiet >= MastersRules.ABANDON_TICKS) discard();
 			return;
 		}
-		quiet = 0;
 		if (!started) {
+			quiet = 0;
 			getNavigation().stop();
 			if (now < begins) return;
 			removeAllEffects(); // Staging buffs cannot be smuggled into the locked encounter.
@@ -683,7 +683,16 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			ordinaryPlanner.observe(target == null ? null : target.getUUID(), Set.copyOf(participants));
 			if (target != null && !hasLineOfSight(target)) endOrdinaryPhrase();
 		}
-		if (target == null) return;
+		if (target == null) {
+			// Enrollment outlives a fighter leaving the arena. End any paid action even
+			// when nobody remains in range to drive its normal attack tick.
+			cancelAttack();
+			dropGuard();
+			getNavigation().stop();
+			if (++quiet >= MastersRules.ABANDON_TICKS) discard();
+			return;
+		}
+		quiet = 0;
 		if (attack != null) {
 			tickAttack(level, now, target);
 			return;

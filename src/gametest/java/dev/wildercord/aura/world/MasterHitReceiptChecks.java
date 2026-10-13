@@ -123,7 +123,8 @@ final class MasterHitReceiptChecks {
 				target.setHealth(1); target.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.TOTEM_OF_UNDYING));
 			}
 			if (defence == Defence.RESISTANCE_V) {
-				check(target.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 100, 4)), "Native Resistance V is installed");
+				check(target.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, dev.wildercord.cast.DefenceCaps.DODGE_TICKS, 4))
+					&& target.getEffect(MobEffects.RESISTANCE).getAmplifier() == 4, "The actual short-dodge exception installs Resistance V for this immediate hit");
 			}
 			if (defence == Defence.FORESIGHT)
 				CastEngine.cast(target, SpellCompiler.compile(List.of(Runes.SELF, Runes.FORESIGHT)).root());

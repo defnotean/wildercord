@@ -53,6 +53,7 @@ final class EmberAfterburnChecks {
 				bystander = add(level, "WakeBystander", 0, 6.8);
 				master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
 				check(master != null, "Ember fixture is constructible");
+				master.fixAura(); // Isolate exact attack payments from the enrolled party's passive trickle.
 				master.setNoAi(true);
 				master.setNoGravity(true);
 				master.snapTo(origin.x, origin.y, origin.z, 0, 0);

@@ -275,7 +275,11 @@ public final class CastHitReceiptConsistencyChecks {
 				target.addEffect(new MobEffectInstance(WildercordEffects.WARDED, 100, 3));
 				CastEngine.cast(target, SpellCompiler.compile(List.of(Runes.SELF, Runes.FORESIGHT)).root());
 			}
-			case RESISTANCE -> check(target.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 100, 4)), "Native Resistance V is installed");
+			case RESISTANCE -> {
+				// Lasting player guards cap at Resistance II. This same-tick prevention control is a short dodge.
+				check(target.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, dev.wildercord.cast.DefenceCaps.DODGE_TICKS, 4))
+					&& target.getEffect(MobEffects.RESISTANCE).getAmplifier() == 4, "Native short-dodge Resistance V is installed before the actual release");
+			}
 			case REJECTED -> target.setPermanentlyInvulnerable(true);
 			case NEW_CHARGE, IDLE -> Charging.interrupt(target);
 			case WINDUP_REPLACEMENT -> { Charging.interrupt(target); Charging.request(target, 0, true); }

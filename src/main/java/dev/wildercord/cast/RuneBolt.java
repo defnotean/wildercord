@@ -362,7 +362,15 @@ public class RuneBolt extends Projectile {
 				&& !Shields.stops(cast, living, result.getLocation())) {
 				double damage = dev.wildercord.aura.world.MastersRules.Move.CRESCENT.damage;
 				Effects.readyToHurt(living);
-				SpellDefence.hurt((ServerLevel) level(), living, level().damageSources().source(dev.wildercord.aura.Aura.DAMAGE, cast.caster, cast.caster), (float) damage, cast);
+				DamageSource source = level().damageSources().source(dev.wildercord.aura.Aura.DAMAGE, cast.caster, cast.caster);
+				if (living == trialMaster) {
+					// This is the Master's own severed Aura, returned by a participant. Keep the original
+					// cast allowance, but do not relabel it as spell damage and erase this counterplay.
+					float admitted = cast.admits(living) ? cast.admitDamage(living, (float) damage) : 0;
+					if (admitted > 0) living.hurtServer((ServerLevel) level(), source, admitted);
+				} else {
+					SpellDefence.hurt((ServerLevel) level(), living, source, (float) damage, cast);
+				}
 			}
 			fizzle();
 			return;

@@ -315,10 +315,14 @@ public final class SwordMasterTrialTest implements FabricClientGameTest {
 		float shield = Shields.strength(spectator);
 		float masterHealth = master.getHealth();
 		master.spendEvadeFocus(); // A Master slips blows while it has focus; this return must land.
+		check(!dev.wildercord.cast.SpellDefence.hurt(level, master, level.damageSources().indirectMagic(player, player), 10, new Cast(player))
+			&& master.getHealth() == masterHealth, "Ordinary magic still meets spellbane even with no evasion focus");
+		check(!twice.spellbane(master), "The Master's severed Aura return survives its own spellbane");
 		for (int i = 0; i < 4 && !twice.isRemoved(); i++) twice.tick();
 		check(Shields.strength(spectator) == shield && spectator.getHealth() == bystanderHealth,
 			"A bystander's Shield and health survive the participant-owned return");
 		check(master.getHealth() < masterHealth, "The protected bystander does not eat the participant's valid return to the master");
+		check(twice.isRemoved() && !master.isOnFire(), "The bounded Aura return ends at impact without restoring its original Fire payload");
 		twice.discard();
 		spectator.removeAttached(WildercordAttachments.SPELL_SHIELD);
 		player.removeAttached(WildercordAttachments.SPELL_SHIELD);

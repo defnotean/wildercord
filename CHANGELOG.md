@@ -6,6 +6,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Fixed
 
+- Sword Masters cancel a paid attack when the last challenger leaves the arena and depart after their abandonment window. A participant can return the Master's severed Aura bolt to hurt that Master; ordinary spells still fail against its spellbane.
 - Heart Circle chat and Cord tooltips preserve fractional power bonuses: +1.5% per circle, including +28.5% with nineteen working circles. The progression tables and Overflow guidance now match the existing +30% cap and +15% full-mana bonus. These are display corrections, not balance changes.
 - Native Aura progression, airborne Master recovery, Master animation payments and Reweave refusal checks now follow the current progression/combat rules and the lesson screen's visible refusal state.
 - The Master technique guide now reports the current impact and recovery times for all 417 techniques, with both published guides checked against the runtime definitions.

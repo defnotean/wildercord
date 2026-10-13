@@ -354,6 +354,7 @@ final class MasterPursuitChecks {
 		bystander = add(player.level(), "PursuitBystander", 2, 7);
 		master = AuraWorld.SWORD_MASTER.create(player.level(), EntitySpawnReason.COMMAND);
 		check(master != null, "Pursuit Master is constructible");
+		master.fixAura(); // Exact pursuit payments exclude passive multiplayer Aura.
 		master.setDiscipline(school); master.snapTo(origin.x, origin.y, origin.z, 0, 0);
 		player.level().addFreshEntity(master);
 		enroll(player); for (var guest : guests) enroll(guest);

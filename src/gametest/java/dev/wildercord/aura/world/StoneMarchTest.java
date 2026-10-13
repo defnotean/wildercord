@@ -162,7 +162,10 @@ public final class StoneMarchTest implements FabricClientGameTest {
 		});
 		fixture.at(world, 95, () -> {
 			if (fixture.master.isAlive() && !fixture.master.isRemoved()) check(!fixture.master.guarding() && !fixture.master.state(AuraFighter.WINDUP)
-				&& close(fixture.master.auraRemaining(), fixture.paidAura), "Every normal and cancelled action retains the complete exposed window through95");
+				&& close(fixture.master.auraRemaining(), fixture.paidAura), "Every normal and cancelled action retains the complete exposed window through95: "
+					+ chosen + ", guarding=" + fixture.master.guarding() + ", windup=" + fixture.master.state(AuraFighter.WINDUP)
+					+ ", aura=" + fixture.master.auraRemaining() + ", paid=" + fixture.paidAura + ", recoverUntil=" + StoneMarchFixture.field(fixture.master, "recoverUntil")
+					+ ", now=" + level.getGameTime());
 			cleanup();
 		});
 	}
@@ -180,12 +183,20 @@ public final class StoneMarchTest implements FabricClientGameTest {
 	private void admissionPriority(TestSingleplayerContext world) {
 		world.getServer().runOnServer(server -> setup(1)); fixture.await(world);
 		fixture.at(world, 10, () -> fixture.master.setNoAi(true));
+		// The current ordinary/guard cadence leaves only six Aura after this March.
+		// Let the actual breathing AI replenish it before testing rest as the sole gate.
+		fixture.at(world, StoneMarchRules.END, () -> fixture.master.setNoAi(false));
+		fixture.at(world, StoneMarchRules.END + MastersRules.BREATH_TICKS / 2, () -> {
+			check((long) StoneMarchFixture.field(fixture.master, "breathingUntil") > level.getGameTime()
+				&& fixture.master.auraRemaining() >= StoneMarchRules.COST, "Natural breathing funds the next priority proposal during signature rest");
+			fixture.master.setNoAi(true);
+		});
 		fixture.at(world, StoneMarchRules.COOLDOWN - 1, () -> {
 			fixture.master.setNoAi(false);
 			check(fixture.master.canBeginMarch(level.getGameTime()), "The body is free before the signature rest expires");
-			check(StoneMarch.prepare(fixture.master, target, MastersRules.STONE, fixture.admittedSequence, fixture.paidAura, level.getGameTime(), fixture.readyAt()) == null,
-				"The native signature rest still declines at acceptance+219");
-			check(StoneMarch.prepare(fixture.master, target, MastersRules.STONE, fixture.admittedSequence, fixture.paidAura, level.getGameTime(), level.getGameTime()) != null,
+			check(StoneMarch.prepare(fixture.master, target, MastersRules.STONE, fixture.admittedSequence, fixture.master.auraRemaining(), level.getGameTime(), fixture.readyAt()) == null,
+				"The native signature rest still declines one tick before its deadline");
+			check(StoneMarch.prepare(fixture.master, target, MastersRules.STONE, fixture.admittedSequence, fixture.master.auraRemaining(), level.getGameTime(), level.getGameTime()) != null,
 				"Only the real rest deadline, not geometry or busy state, prevented the read-only proposal");
 			fixture.master.setNoAi(true);
 		});

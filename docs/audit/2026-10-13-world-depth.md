@@ -348,3 +348,20 @@ approximately 4 GiB Java heap during chunk serialization in `LifeOutcomeEdgesTes
 after roughly forty minutes. No off-thread attachment writer was reported. This
 does not resolve the intermittent attachment save race; the memory failure is a
 separate open investigation, and increasing the heap alone is not a demonstrated fix.
+
+
+### Verified Master trial repairs
+
+`SwordMasterTrialTest` now passes in full (10m 5s). Its real damage paths cover
+consenting enrollment and bystanders, spellbane, returned severed Aura, abandonment,
+lifecycle, Ember Afterburn, pursuit, Gale Reprise, Stone Fracture, Master wound
+receipts and Break Cast receipt consistency. The earlier full Stone March suite
+also passed (7m 39s). The returned bolt retains its original cast allowance and
+cannot recover the original spell payload. An empty arena cancels paid actions
+without refunding them, then removes the abandoned Master after the existing delay.
+
+The fixtures isolate existing multiplayer Aura trickle where exact payment matters,
+wait for real guard recovery and natural breathing, and grant the actual short
+Resistance dodge exception only at the tested hit. Lasting Resistance and ordinary
+spell immunity retain their current caps. Connected-client receipt coverage still
+requires its separate CI run; the full native matrix is not claimed green.
