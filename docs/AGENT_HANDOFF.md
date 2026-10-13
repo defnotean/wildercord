@@ -15,25 +15,25 @@ a dated snapshot, not live process discovery.
 | Review | Draft [PR #2](https://github.com/defnotean/wildercord/pull/2); not merged or released |
 | Local workspace | `C:\Users\Eating\Desktop\WilderCord` |
 | Work baseline | `0a18358929180f1c4bc5cc4b827f7f92f05571c4` |
-| Last content candidate | `57fff8a91d6df3bc9c5c49e252a7617212a543b7`, pushed to GitHub |
-| Immediately preceding checkpoint | `76a1f82330df245189cb5c63c6203dce87c2d589` |
-| Development goal | **Paused by the owner**, not completed |
-| Scheduled continuation | **PAUSED**, `continue-wildercord-world-expansion-on-vps` |
+| Last content candidate | `a85023dd32b2c9f4037aed81e39ef26f0cc2e7ec`, pushed to GitHub and verified on `pandora-vps` |
+| Immediately preceding checkpoint | `195e4c22089260f513c8eb3c746c2e2aa057ff56` (`57fff8a9` + handoff docs) |
+| Development goal | **Active** (resumed by owner on 2026-10-13) |
+| Scheduled continuation | **ACTIVE**, 15-minute recurring development heartbeat |
 | GitHub Actions | Repository-wide **disabled**; build/docs workflows also disabled |
-| Owned VPS work | Stopped; runner/native test PIDs absent and zero task runners verified |
-| Live Minecraft server | Left running and unchanged |
+| Owned VPS work | Batch 1 (`BIO-02`) and Batch 2 (`BLD-03`, `NPC-03`, `LOR-03`, `BOS-03`) verified on `WIN-I2GBVRRD872` |
+| Live Minecraft server | Left running and unchanged (`PID 24072` in `C:\wildercord`) |
 
 The owner originally asked for a repository-wide audit, a detailed expansion list,
 and sustained development of bosses, buildings, NPCs, custom biomes, legends, lore
-and polish, with regular GitHub pushes. They then required **all future tests on
-the VPS, no GitHub CI**, and a thorough work inventory. Their latest instruction
-is to **stop work and leave substantial project context**. Do not resume because
-of the older continuous-work request; wait for a new request to continue.
+and polish, with regular GitHub pushes. They required **all future tests on
+the VPS, no GitHub CI**, and later explicitly resumed work one batch at a time.
 
-The last content commit contains an implemented Windscar candidate and its tests.
-It is saved for review, but **its build, new JUnit cases, native compilation,
-generator parity and actual Windscar gameplay checks are still pending**. The
-docs added with this handoff do not turn that candidate into a verified build.
+Candidate `a85023dd` completes the connected **Windscar Highlands** slice (`BIO-02`,
+`BLD-03` Highland Cairn Lodge & Survey Ring, `NPC-03` Highland Cairn Keeper,
+`LOR-03` 3-chapter Paired Cairns / Ridge Watch / Lamp on the Ridge journal route,
+and `BOS-03` The Glass Cartographer) and passes the owned VPS build (`2,731` JUnit
+tests, asset parity, and guide checks) plus focused native `WindscarBiomeTest`,
+`CartographerEncounterTest`, and `LoreJournalGameTest`.
 
 ## 2. Where the full context lives
 
@@ -68,8 +68,8 @@ The public guide is not automatically updating while Actions is disabled.
 | `aura/`, `aura/world/` | Breathing schools, techniques, Masters, physical combat, trials and highland beasts |
 | `world/biome/` | Reedlands and Windscar climate integration; Reedland bank placement |
 | `mixin/ReedlandPlacementMixin.java`, `ReedlandSurfaceMixin.java` | Both regional biome adapters now use these originally named hooks |
-| `world/sites/{farm,masters,wilds,travel,water,mine}/` | Site registration, procedural pieces, authentic markers, loot and discovery |
-| `world/ferryman/` | Reed-Crowned Ferryman rules, encounter state and content registration |
+| `world/sites/{farm,masters,wilds,travel,water,mine,highland}/` | Site registration, procedural pieces, authentic markers, loot and discovery |
+| `world/ferryman/`, `world/cartographer/` | Reed-Crowned Ferryman and Glass Cartographer rules, encounter state and content registration |
 | `wildlife/`, `monster/` | Existing ecosystems, animals, resources, rare threats and spawn predicates |
 | `lore/` | Owner journal, serialized discovery IDs, conversations and ordered quest rules |
 | `player/`, `net/`, `api/`, `config/` | Saved attachments, authority, packets, integration hooks and config |
@@ -151,36 +151,31 @@ Native coverage: `ReedlandBiomeTest`, `ReedkeeperLandingChecks`, `DrownedRoadChe
   Original geometry, provenance and camera checks remain. Archived paired
   captures revalidate, but a fresh connected VPS matrix is still required.
 
-### Windscar candidate — saved, runtime verification pending
+### Connected Windscar Highlands region — native evidence available (`a85023dd`)
 
-`57fff8a9` adds **Windscar Highlands**, using the dry windswept-hill humidity band
-at or below -0.25. It preserves all other climate coordinates and other biome
-entries. The surface adapter inherits highland stone; data retains ordered
-vanilla features and ores with sparse trees and an authored landscape palette.
-
-Existing Windreed decoration, Stonehorns, Galeclaws, Tussock Pikas and Skyrays
-include the region with their original habitat/rarity/config limits. Watchtowers,
-standing stones and Wind Gate tags admit it. The owner receives a persistent
-Marchkeeper field note. The wiki has a new region chapter and connected guides.
-
-Windscar retains Summit Wind at height 200 or higher, sharing `peaks`' daily rest.
-Reedlands now retains rain-only Mire, sharing `swamp`'s rest. Neither creates a
-second daily allowance merely by crossing a regional boundary.
-
-Added tests: four `WindscarClimateTest` methods, one regional case in
-`WorldRunesTest`, and the full `WindscarBiomeTest`. The native test declares its
-fixed seed, 8,192-block noise search and 81-chunk census before measurement. It
-requires actual region selection, stone/grass/elevation, natural Windreed, a
-Survival client harvest, no repeat yield, spectator refusal, owner sync and a
-saved-world reopen. It has not yet executed. Do not enlarge its census or weaken
-assertions simply because a first run fails; diagnose the actual generation.
-
-VPS authoring evidence for this candidate: 17 explicit-plan tests, 16 full-protocol
-tests including executable Groovy parity, 28 client-protocol tests and 15 Masters
-protocol tests pass (**76**, no skips). The full asset generator completed and
-**192** guide pages validated/exported. This was a separate authoring checkout,
-not an owned candidate build. Five new Java tests, native compilation, exact
-asset parity, actual terrain, screenshots and the Reedlands regression are pending.
+- **Windscar Highlands (`BIO-02`)**: partitions the dry windswept-hill humidity band
+  at or below `-0.25`, preserving all other climate coordinates and biome entries.
+  Inherits highland stone surfaces, retains ordered vanilla features/ores with sparse
+  trees and an authored palette, includes Windreed decoration, Stonehorns, Galeclaws,
+  Tussock Pikas and Skyrays, and shares `peaks`' Summit Wind attunement at `Y >= 200`.
+- **Highland Cairn Lodge (`BLD-03`) & Cairn Keeper (`NPC-03`)**: a 21-by-21 stone-and-spruce
+  ridge shelter with a dry-stone wind-break wall, cultivated leeward Windreed terrace,
+  eastern Cairn Beacon Lamp and lever, four-page *The Paired Cairns* book, supply chest,
+  and a persistent trading Cairn Keeper villager (`cairn_keeper`) with four original
+  stories plus four progress-aware return conversations (`watch_orders`, `cairn_light`,
+  `light_return`, `cartographer_return`).
+- **Paired Cairns / Ridge Watch / Lamp on the Ridge (`LOR-03`)**: three ordered journal
+  chapters (`paired_cairns` -> `ridge_orders` -> `cairn_beacon`) connecting the Cairn
+  Keeper's stories, Marchkeeper watchtower visits, and lighting the authentic Cairn
+  Beacon Lamp (`learned:scout_wind_mark`).
+- **Highland Survey Ring & The Glass Cartographer (`BOS-03`)**: a 35-by-35 open stone
+  meridian court with an entrance shelter, two-page *The Glass Meridian* book, supply
+  chest, and authentic `SurveyAstrolabeBlock`. Using the astrolabe in Survival summons
+  the pedestal-anchored `GlassCartographer` with three world-geometry telegraphed
+  attacks (`SWEEP`, `PLUMB`, `GRID`) readable under `ParticleStatus.MINIMAL`, a Phase 2
+  rotated meridian grid at `<= 50%` health, target-loss retirement, quiet abandonment
+  reset, chunk-replay preservation, and a one-time `Compass of the High Meridian`
+  (`high_meridian_compass`) + `80 XP` + `learned:glass_cartographer` reward.
 
 ## 5. Evidence index — do not merge scopes
 
@@ -191,6 +186,13 @@ artifacts are ignored by Git. A fresh clone has this index, not all raw evidence
 
 | Check | Candidate | Result | Receipt UUID |
 | --- | --- | --- | --- |
+| Owned build, native compilation, 2,731 JUnit cases, generated assets, 192 guide pages | `a85023dd` | Pass; no JUnit failures/errors/skips | `7d0cac44-4930-4853-b984-4852b5c2bca2` |
+| Windscar Highlands terrain, Highland Cairn Lodge, Cairn Keeper, and Paired Cairns 3-chapter route | `a85023dd` | Pass, 2m 52s; unobstructed `windscar_highlands_terrain.png` + `highland_cairn_lodge.png` | `38bfd658-92a9-459f-a2ed-b4aca4ceaf0b` |
+| Full Glass Cartographer encounter, Survey Ring chunk replay, Minimal-particle tells, and victory return dialogue | `a85023dd` | Pass, 3m 33s; 4 encounter screenshots | `9f996124-3ec3-455e-8530-0c4620652799` |
+| Lore Journal screen, sixteen Master victories, and Scout's Last Cairn route | `a85023dd` | Pass, 1m 45s | `c75d4e71-7757-4b49-9ff7-2cf7100328cc` |
+| Initial Windscar candidate build (2,726 JUnit cases) | `195e4c22` | Pass | `67a759ec-352f-4b80-9681-afc1770f1cfd` |
+| Initial Windscar terrain + harvest native check | `195e4c22` | Pass, 1m 58s | `6824ce51-1e4c-468c-a8c4-caa1211ca8f8` |
+| Reedlands regression after Windscar climate/surface integration | `195e4c22` | Pass, 3m 9s | `01a81321-d5a9-4785-a227-ef072d654d6b` |
 | Owned build, native compilation, 2,721 JUnit cases, 9,005 generated paths, 191 guide pages | `9de25fbe` | Pass; no JUnit failures/errors/skips | `f2753cde-619e-48fc-b264-29dfabe96475` |
 | Same build checks for return-dialogue content | `64b0cfbe` | Pass | `d4d1e9ca-88e6-4f80-b571-dcd80d046e62` |
 | Reedlands/landing/Drowned Road, including return dialogue | `64b0cfbe` | Pass, 3m 9s | `6212756c-8828-40b3-b560-9c58be1fd66c` |
@@ -310,17 +312,19 @@ normal stderr progress with a failed test or accidentally swallow a real failure
 
 ## 8. Native acceptance contract
 
-Current plan: `full-client-explicit-v5-windscar`, **344** classes in groups
-**86 / 86 / 87 / 85**. The earlier v4 plan has 343 classes and is frozen in
-`tools/tests/full-client-plan-v4-343.json`. Windscar is appended to group 4; the
-three earlier groups and every original class's order/membership are preserved.
+Current plan: `full-client-explicit-v6-cartographer`, **345** classes in groups
+**86 / 86 / 87 / 86**. Earlier plans (`v4` with 343 classes and `v5` with 344
+classes) are frozen in `tools/tests/full-client-plan-v4-343.json` and
+`tools/tests/full-client-plan-v5-344.json`. `CartographerEncounterTest` is
+appended to group 4; the three earlier groups and every original class's
+order/membership are preserved.
 
 Focused native execution requires the exact class's ordered setup/run/cleanup/
 returned markers, a fresh launch UUID, exact processed descriptor, successful
 owned child exit and build completion. It always leaves full acceptance unverified.
 The full gate needs **all four** complete groups from the same source, computer,
 batch and attempt, then a passing aggregate. Do not combine the stopped v4 run
-with later v5 groups or reuse focused/archived evidence as full-group evidence.
+with later groups or reuse focused/archived evidence as full-group evidence.
 
 The three required Masters parts remain **44 / 1 / 2** classes, and the articulated
 group has six. Their acceptance is separate. Windows full manifests use schema
@@ -336,28 +340,18 @@ of a live process; use process ownership plus interruption/completion records.
 
 ## 9. Exact next work, when authorized
 
-1. **Validate the Windscar candidate.** Run the owned build and repair real
-   compilation/parity failures. Run `WindscarBiomeTest`, inspect the actual
-   terrain screenshot and acquisition outcome, then rerun Reedlands because the
-   shared placement/surface hooks and attunement integration changed. Record
-   source/receipt/counts honestly and update the progress report and draft PR.
-2. **Finish native reliability and complete coverage.** The stopped first group
-   did not reach the previous heap-failure point. Investigate cumulative heap
-   exhaustion, then perform fresh complete groups at one chosen exact candidate.
-   Do not keep restarting expensive runs for incidental documentation edits.
-3. **Finish connected VPS verification.** Wide/slim counter and Moon matrices
-   need fresh native VPS execution. `tools/native/run_paired_matrix.py` still has
-   POSIX-specific alarm behavior; migrate that ownership/deadline path without
-   weakening geometry, identity, frame, lifecycle or timeout checks. Existing
-   Windows evidence readers and standalone owned launch support are already in.
-4. **Continue the connected regional roadmap.** Windscar still needs measured
-   traversal, multi-seed distribution, regional investigation, Cairn Lodge and
-   the proposed Glass Cartographer. Named Iona/Tamsin services, Belowkeeper and
-   Emberwood biomes, Hollow Bell/Kiln Widow and related settlements are future
-   work. Existing ecosystems do not count as newly implemented custom biomes.
-5. **Measure the whole experience.** Natural fauna/structure frequency, actual
-   two-client attribution/rewards, unaided survival journeys, supported visual
-   configurations, old-world safety and sustained performance remain open.
+1. **Batch 3 — Belowkeeper Hollows Slice (`BIO-04` + `BLD-02` + `NPC-02` + `LOR-02` + `BOS-01`):**
+   Implement the underground **Belowkeeper Hollows** custom biome (`BIO-04`),
+   **Belowkeeper Listening Station** (`BLD-02`), **Belowkeeper Listener** resident
+   and acoustic survey trade/dialogue (`NPC-02`), 3-chapter Belowkeeper journal
+   investigation (`LOR-02`), and **The Hollow Bell** optional resonance encounter
+   (`BOS-01`), then verify on `pandora-vps`.
+2. **Batch 4 — Emberwood Reach Slice (`BIO-03` + `BLD-04` + `NPC-04` + `LOR-04` + `BOS-04`):**
+   Implement **Emberwood Reach** (`BIO-03`), **Emberwood Charcoal Yard** (`BLD-04`),
+   Kiln Keeper resident (`NPC-04`), Emberwood journal route (`LOR-04`), and **The
+   Kiln Widow** (`BOS-04`), then verify on `pandora-vps`.
+3. **Batch 5 — Return Visits, Progression, and Boss/Site Polish (`BLD-05`, `NPC-01`, `POL-03..08`, `BOS-05`).**
+4. **Batch 6 — Full Native Gate & Paired Matrix Verification on `pandora-vps`.**
 
 Keep the user's preference for substantial connected detail: useful residents,
 clear encounter tells, return visits, meaningful resources, persistence and lore

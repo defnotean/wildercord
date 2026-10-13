@@ -1047,9 +1047,22 @@ no repeat yield, spectator refusal, owner sync and save/reopen. It is appended
 to group 4; the frozen v4 plan proves the original 343 classes keep their exact
 membership/order. Current plan v5 is **86 / 86 / 87 / 85**.
 
-**Pending:** candidate build/JUnit/native compilation, exact generator parity,
+**Pending at `57fff8a9`:** candidate build/JUnit/native compilation, exact generator parity,
 the new real terrain test, Reedlands regression and actual screenshot inspection.
-This is source implementation with VPS authoring evidence, not native acceptance.
-Natural animal densities, structure frequency, multiple seeds, safe traversal,
-the Cairn Lodge, Cartographer encounter and a dedicated regional investigation
-remain open BIO-02/BLD-03/BOSS work.
+
+### BIO-02, BLD-03, NPC-03, LOR-03, BOS-03: Windscar Highlands regional slice verified on VPS (`a85023dd`)
+
+1. **Batch 1 (`195e4c22` / `57fff8a9` runtime verification):**
+   - Owned `build` receipt `67a759ec-352f-4b80-9681-afc1770f1cfd`: **passed** (`2,726` JUnit tests, `0` failures, `tools/check_generated_assets.py` and `tools/player_docs.py --check` exit `0`).
+   - Focused `WindscarBiomeTest` receipt `6824ce51-1e4c-468c-a8c4-caa1211ca8f8`: **passed** in `1m 58s` (`seed=-7620530482425397421`, `center=(-1792, 64, 576)`, `chunks=81`, `columns=11012`, `stone=894`, `grass=9935`, `height=63/115`, `naturalWindreed=20`).
+   - Focused `ReedlandBiomeTest` receipt `01a81321-d5a9-4785-a227-ef072d654d6b`: **passed** in `3m 09s` (`0` verification issues).
+2. **Batch 2 (`a85023dd` connected highland settlement, resident, 3-chapter lore route, and boss encounter):**
+   - Raycast-verified camera placement in `WindscarBiomeTest` (`ClipContext.Block.COLLIDER`) so `windscar_highlands_terrain.png` has an unobstructed line of sight to the natural Windreed patch and highland slope.
+   - Implemented `HighlandSites`, `HighlandPiece`, `CairnLodgePiece` (`BLD-03`), `CairnKeeperResident` (`NPC-03`), and `SurveyRingPiece`, plus the 3-chapter Highland Cairn journal route (`paired_cairns` -> `ridge_orders` -> `cairn_beacon`, `LOR-03`) in `LoreQuestRules`.
+   - Implemented `GlassCartographer`, `CartographerRules`, `CartographerContent`, `SurveyAstrolabeBlock`, `SurveyAstrolabeEntity`, and client renderer/model (`BOS-03`), with world-geometry telegraphs for `SWEEP`, `PLUMB`, and `GRID` (readable under `ParticleStatus.MINIMAL`), Phase 2 rotated meridian grid, quiet reset, chunk-replay furniture protection, and one-time `Compass of the High Meridian` (`high_meridian_compass`) + `80 XP` + `learned:glass_cartographer` reward.
+   - Updated explicit shard plan to `full-client-explicit-v6-cartographer` (`345` classes: `86 / 86 / 87 / 86`) with `tools/tests/full-client-plan-v5-344.json` frozen.
+   - Owned `build` at `a85023dd`: receipt `7d0cac44-4930-4853-b984-4852b5c2bca2` (**passed**, `2,731` JUnit tests, `0` failures, asset parity and guide checks).
+   - Focused `WindscarBiomeTest` at `a85023dd`: receipt `38bfd658-92a9-459f-a2ed-b4aca4ceaf0b` (**passed**, `2m 52s`, `0` verification issues, unobstructed `windscar_highlands_terrain.png` and `highland_cairn_lodge.png`).
+   - Focused `CartographerEncounterTest` at `a85023dd`: receipt `9f996124-3ec3-455e-8530-0c4620652799` (**passed**, `3m 33s`, `0` verification issues, `cartographer_sweep_full.png`, `cartographer_grid_minimal.png`, `cartographer_plumb_third_person.png`, `glass_cartographer_encounter.png`).
+   - Focused `LoreJournalGameTest` at `a85023dd`: receipt `c75d4e71-7757-4b49-9ff7-2cf7100328cc` (**passed**, `1m 45s`, `0` verification issues).
+
