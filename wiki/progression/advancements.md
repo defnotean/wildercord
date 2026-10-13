@@ -10,7 +10,7 @@ nav_order: 3
 <img src="{{ '/assets/images/b-advancements.jpg' | relative_url }}" alt="The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows" class="shot">
 
 Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
-Circle, the dungeon bosses and the 52 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
+Circle, the dungeon bosses and the 54 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
 Crystals.
 
 1. TOC
@@ -246,8 +246,10 @@ See [Master Halls and Shrines]({{ '/world/masters-sites/' | relative_url }}).
 | **Mountain Forge Hall** | Hillside Mine | Find a Mountain Forge Hall | 35 XP |
 | **Miner's Rest** | Hillside Mine | Find a Miner's Rest on a cliff edge | 20 XP |
 | **Prospector's Camp** | Hillside Mine | Find a Prospector's Camp in the badlands | 20 XP |
+| **The Quiet Eye** | Ley Walker | Find a Belowkeeper Bell Sanctum in the Belowkeeper Hollows | 20 XP |
+| **Where the Hollows Listen** | Ley Walker | Find a Belowkeeper Listening Station and its Glowcap basin in the Belowkeeper Hollows | 20 XP |
 
-See [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }}).
+See [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }}) and [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }}).
 
 ### Farms
 
@@ -316,14 +318,14 @@ See [Wild Places]({{ '/world/wilds-sites/' | relative_url }}).
 
 ## Totals
 
-158 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+160 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 112 |
+| Tasks | 114 |
 | Goals | 32 |
 | Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 14,690 |
+| Experience for all of them | 14,730 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |

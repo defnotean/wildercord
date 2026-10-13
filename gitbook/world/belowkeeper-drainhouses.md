@@ -10,7 +10,8 @@ a raised copper return desk. Each room has a ledger from Mara. Follow her notes 
 
 ## How to get it
 
-**Finding a house.** Drainhouses appear in **lush caves** and **dripstone caves** in newly generated land. Their
+**Finding a house.** Drainhouses appear in **lush caves**, **dripstone caves** and the
+**[Belowkeeper Hollows](belowkeeper-hollows.md)** in newly generated land. Their
 entrance opens off a dry cave mouth. Not every cave has one.
 
 **Following Mara's notes.** Read the ledgers in order, in Survival. Each gives you one of her journals, once:

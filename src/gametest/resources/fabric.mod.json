@@ -350,7 +350,9 @@
       "dev.wildercord.world.sites.WaterSitesGameTest",
       "dev.wildercord.world.sites.MineSitesClientTest",
       "dev.wildercord.world.biome.WindscarBiomeTest",
-      "dev.wildercord.world.cartographer.CartographerEncounterTest"
+      "dev.wildercord.world.cartographer.CartographerEncounterTest",
+      "dev.wildercord.world.biome.BelowkeeperBiomeTest",
+      "dev.wildercord.world.hollowbell.HollowBellEncounterTest"
     ]
   },
   "mixins": [

@@ -75,5 +75,8 @@ public final class SiteFamilies {
 		// ---- sites-highland pack
 		worldgen("wildercord:highland_cairn_lodge", "New Windscar ridge shelter and Cairn Keeper resident; generates only in new chunks, never over a player's build.");
 		worldgen("wildercord:highland_survey_ring", "Optional highland survey ring encounter; generates only in new chunks, never over explored ridges.");
+		// ---- sites-belowkeeper pack
+		worldgen("wildercord:belowkeeper_listening_station", "New Belowkeeper Hollows listening station and Listener resident; generates only in new chunks.");
+		worldgen("wildercord:belowkeeper_bell_sanctum", "Optional Belowkeeper Bell Sanctum encounter; generates only in new chunks.");
 	}
 }

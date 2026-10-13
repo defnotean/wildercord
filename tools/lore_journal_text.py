@@ -255,6 +255,27 @@ QUESTS.update({
         "Return to a Highland Cairn Lodge in the Windscar Highlands and flip the lever on its eastern cairn lamp.",
         "The ridge cairn shines across the shelf. Travellers coming down from the wind will see the way home.",
     ),
+    "empty_bell_kept": (
+        "What the Empty Bell Kept",
+        "A Belowkeeper Listener in the Belowkeeper Hollows tends the Glowcap basins and acoustic pressure logs.",
+        "Hear the Belowkeeper Listener's story about The Hollow Bell.",
+        "Sneak-use a Belowkeeper Listener at a Listening Station until they speak of the Bell Sanctum.",
+        "The Belowkeepers cast a bronze resonance bell in a deeper sanctum to measure how pressure waves move through stone.",
+    ),
+    "pressure_records": (
+        "The Deep Pressure Logs",
+        "The Listener says the buried Crystal Survey Labs, Deepslate Vaults, and the Bell Sanctum share the same pressure records.",
+        "Visit a Crystal Survey Lab, a Deepslate Vault, or a Belowkeeper Bell Sanctum.",
+        "Explore underground beneath forests, hills, or the Belowkeeper Hollows to enter a Crystal Lab, Deepslate Vault, or Bell Sanctum.",
+        "The deep ledgers agree: a gallery stays safe only while someone keeps the listening station's shutter lamp lit.",
+    ),
+    "resonance_shutter": (
+        "A Lamp in the Hollows",
+        "Each Belowkeeper Listening Station carries an acoustic shutter lamp on its northeast copper pillar.",
+        "Stand beside a lit shutter lamp at a Belowkeeper Listening Station.",
+        "Return to a Belowkeeper Listening Station in the Belowkeeper Hollows and flip the lever on its northeast shutter lamp.",
+        "The shutter lamp shines across the damp vault. Any watch coming up from the lower galleries will know the roof holds.",
+    ),
 })
 
 ENTRIES = {

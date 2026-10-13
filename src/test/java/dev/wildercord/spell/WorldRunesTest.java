@@ -188,8 +188,12 @@ class WorldRunesTest {
 		assertEquals(SUMMIT_WIND, attuned(summit));
 		assertEquals("peaks", Attunements.match(summit).orElseThrow().id());
 		assertNull(attuned(place("wildercord:windscar_highlands", 6000, 3, "none", true, false, 199)));
+		var hollows = place("wildercord:belowkeeper_hollows", 0, 0, "none", false, false, 10);
+		assertEquals(STALACTITE, attuned(hollows));
+		assertEquals("dripstone_caves", Attunements.match(hollows).orElseThrow().id());
 		assertTrue(Attunements.biomeHolds("wildercord:luminous_reedlands"));
 		assertTrue(Attunements.biomeHolds("wildercord:windscar_highlands"));
+		assertTrue(Attunements.biomeHolds("wildercord:belowkeeper_hollows"));
 	}
 
 	@Test

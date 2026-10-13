@@ -161,12 +161,16 @@ class RequiredPartTests(unittest.TestCase):
         ferryman = "dev.wildercord.world.sites.water.FerrymanEncounterTest"
         windscar = "dev.wildercord.world.biome.WindscarBiomeTest"
         cartographer = "dev.wildercord.world.cartographer.CartographerEncounterTest"
+        belowkeeper = "dev.wildercord.world.biome.BelowkeeperBiomeTest"
+        hollowbell = "dev.wildercord.world.hollowbell.HollowBellEncounterTest"
         self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(regional), 1)
         self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(ferryman), 1)
         self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(windscar), 1)
         self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(cartographer), 1)
+        self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(belowkeeper), 1)
+        self.assertEqual(descriptor["entrypoints"]["fabric-client-gametest"].count(hollowbell), 1)
         previous_full = [entry for entry in descriptor["entrypoints"]["fabric-client-gametest"]
-                         if entry not in COUNTER_ADDITIONS and entry not in (regional, ferryman, windscar, cartographer)]
+                         if entry not in COUNTER_ADDITIONS and entry not in (regional, ferryman, windscar, cartographer, belowkeeper, hollowbell)]
         self.assertEqual(len(previous_full), 339)
         self.assertEqual(hashlib.sha256(json.dumps(previous_full, separators=(",", ":")).encode()).hexdigest(),
                          "a9d1285c179ffb4622f973e9151502b0bc0ec4f868efb0328ece3cf134b4212d")

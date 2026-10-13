@@ -859,6 +859,9 @@ def write_lang(runes):
     import cartographer_art
     lang.update(cartographer_art.LANG)
     cartographer_art.write(sys.modules[__name__])
+    import hollow_bell_art
+    lang.update(hollow_bell_art.LANG)
+    hollow_bell_art.write(sys.modules[__name__])
     # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
     import importlib
     site_ids = []

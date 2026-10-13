@@ -75,7 +75,7 @@ Each land gives you its rune **once per in-game day** (20 minutes of play). Slee
 | **Swamp** or **Luminous Reedlands** | While **rain is falling on you** | [Mire](../runes/world.md#mire) | II |
 | **Lush Caves** | Any time | [Glowvine](../runes/world.md#glowvine) | I |
 | **Mangrove Swamp** | Any time | [Rootsnare](../runes/world.md#rootsnare) | II |
-| **Dripstone Caves** | Any time | [Stalactite](../runes/world.md#stalactite) | II |
+| **Dripstone Caves** or **Belowkeeper Hollows** | Any time | [Stalactite](../runes/world.md#stalactite) | II |
 | **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, **Windswept Hills / Gravelly Hills / Forests**, or **Windscar Highlands** | Standing at **height 200** or higher | [Summit Wind](../runes/world.md#summit_wind) | III |
 | **Soul Sand Valley** | Any time | [Soulfire](../runes/world.md#soulfire) | III |
 | **Warped Forest** | Any time | [Warp Step](../runes/world.md#warp_step) | II |
@@ -85,9 +85,10 @@ Each land gives you its rune **once per in-game day** (20 minutes of play). Slee
 
 Craft Blank Runes from 4 Cobblestone around 1 Lapis Lazuli. One craft makes 4. See [Items and Crafting](../items/index.md).
 
-Reedlands share the swamp's daily attunement rest, and Windscar shares the peaks'
-rest. Walking across a biome border does not give a second rune before that rest
-ends. Rain and altitude requirements still apply in the regional biomes.
+Reedlands share the swamp's daily attunement rest, Windscar shares the peaks' rest, and
+Belowkeeper Hollows share the dripstone caves' rest. Walking across a biome border does
+not give a second rune before that rest ends. Rain and altitude requirements still apply
+in the regional biomes.
 
 ### Dungeons and bosses
 

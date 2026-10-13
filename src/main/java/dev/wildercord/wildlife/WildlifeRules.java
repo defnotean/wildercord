@@ -88,7 +88,7 @@ public final class WildlifeRules {
 	public static final Kind CAPCROWN_SNAIL = new Kind("capcrown_snail", Pool.CREATURE, 8, 1, 3, 1 / 2.0, 6, 48, List.of(
 		"minecraft:mushroom_fields"));
 	public static final Kind GLOWBERRY_DORMOUSE = new Kind("glowberry_dormouse", Pool.CREATURE, 20, 1, 3, 1.0, 6, 32, List.of(
-		"minecraft:lush_caves"));
+		"minecraft:lush_caves", "wildercord:belowkeeper_hollows"));
 	public static final Kind HUSHWING_OWLET = new Kind("hushwing_owlet", Pool.CREATURE, 12, 1, 2, 1 / 2.0, 4, 48, List.of(
 		"minecraft:pale_garden"));
 	public static final Kind BLOSSOM_TANUKI = new Kind("blossom_tanuki", Pool.CREATURE, 10, 1, 3, 1 / 2.0, 6, 48, List.of(

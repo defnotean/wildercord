@@ -199,8 +199,9 @@ class LoreQuestRulesTest {
 		}
 		for (String entry : List.of("place:memorial", "place:tomb", "place:tournament", "place:sleeping_blade", "place:crossroads", "place:training",
 			"place:highland_cairn_lodge", "place:highland_survey_ring", "person:cairn_keeper",
+			"place:belowkeeper_listening_station", "place:belowkeeper_bell_sanctum", "person:belowkeeper_listener",
 			"learned:way", "learned:lineage", "learned:perfect_guard", "learned:technique", "learned:reaction", "learned:field_guide",
-			"learned:scout_wind_mark", "learned:glass_cartographer")) {
+			"learned:scout_wind_mark", "learned:glass_cartographer", "learned:belowkeeper_shutter", "learned:hollow_bell")) {
 			assertTrue(lang.has(LoreEntries.fixedKey(entry)), entry);
 		}
 		assertTrue(lang.has("key.wildercord.lore_journal"));
@@ -233,5 +234,33 @@ class LoreQuestRulesTest {
 		}
 		assertFalse(advance(stages, heard).changed(), "a completed highland route never pays again");
 		assertFalse(facts(List.of(), List.of("place:highland_cairn_lodge"), false).contains(CAIRN_LAMP), "an unlit cairn lodge is not a lit cairn lamp");
+	}
+
+	@Test
+	void belowkeeperListeningRouteKeepsEarlierVisitsAndNeverCascadesWithinAPoll() {
+		Set<String> places = facts(List.of(), List.of("place:mine_collapsed_delve", "place:belowkeeper_listening_station",
+			"learned:belowkeeper_shutter", "said:belowkeeper_listener.pressure"), false);
+		assertFalse(advance(Map.of(), places).changed(), "shutters and delve visits alone cannot invent the Belowkeeper Listener's account");
+		Set<String> heard = new HashSet<>(places);
+		heard.addAll(facts(List.of(), List.of("person:belowkeeper_listener"), false));
+		Advance first = advance(Map.of(), heard);
+		assertEquals(List.of(quest("empty_bell_kept")), first.clued());
+		assertFalse(advance(first.quests(), heard).changed(), "greeting and pressure are not the final Bell Sanctum story");
+		heard.addAll(facts(List.of(), List.of("said:belowkeeper_listener.hollow_bell"), false));
+		Map<String, Integer> stages = first.quests();
+		for (String id : List.of("empty_bell_kept", "pressure_records", "resonance_shutter")) {
+			if (!id.equals("empty_bell_kept")) {
+				Advance clue = advance(stages, heard);
+				assertEquals(List.of(quest(id)), clue.clued());
+				assertTrue(clue.completed().isEmpty());
+				stages = clue.quests();
+			}
+			Advance done = advance(stages, heard);
+			assertEquals(List.of(quest(id)), done.completed(), "earlier delve and shutter discoveries count in order");
+			assertTrue(done.clued().isEmpty(), "no chapter cascade in one poll");
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, heard).changed(), "a completed belowkeeper route never pays again");
+		assertFalse(facts(List.of(), List.of("place:belowkeeper_listening_station"), false).contains(BELOWKEEPER_SHUTTER), "an unlit listening station is not a lit resonance shutter");
 	}
 }

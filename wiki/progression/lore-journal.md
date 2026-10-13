@@ -56,6 +56,7 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
 - The Luminous Reedlands and all ten water sites, including the Last Crossing, Reedkeeper Landings, coastal boathouses
   and lighthouses. Walk into their grounds to record them.
 - The [Windscar Highlands]({{ '/world/windscar-highlands/' | relative_url }}), Highland Cairn Lodges and the Highland Survey Ring.
+- The [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }}), Belowkeeper Listening Stations and the Belowkeeper Bell Sanctum.
 
 **People**
 
@@ -63,7 +64,7 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
 - Each [Sword Master]({{ '/masters/' | relative_url }}) who greets you. A Master greets you once, the
   first time you come within about 20 blocks.
 - Each Master trial you win.
-- Tideward Reedkeepers you speak with at their Reedlands survey houses, and Highland Cairn Keepers at their Windscar cairn lodges.
+- Tideward Reedkeepers you speak with at their Reedlands survey houses, Highland Cairn Keepers at their Windscar cairn lodges, and Belowkeeper Listeners at their subterranean listening stations.
 
 **Learned**
 
@@ -101,6 +102,9 @@ straight away.
 | The Paired Cairns | speak with a Highland Cairn Keeper | hear the survey ring story | 20 XP, 1 Blank Rune |
 | The Ridge Watch | finish The Paired Cairns | visit a road watchtower or ring of standing stones | 30 XP, 2 Blank Runes |
 | A Lamp on the Ridge | finish The Ridge Watch | stand beside a lit cairn lamp at a Highland Cairn Lodge | 40 XP, 1 Aura Shard, 2 Blank Runes |
+| What the Empty Bell Kept | speak with a Belowkeeper Listener | hear the Bell Sanctum story | 20 XP, 1 Blank Rune |
+| The Pressure Records | finish What the Empty Bell Kept | visit a Collapsed Delve or Deepslate Vault | 30 XP, 2 Blank Runes |
+| The Resonance Shutter | finish The Pressure Records | stand beside a lit resonance shutter at a Belowkeeper Listening Station | 40 XP, 1 Aura Shard, 2 Blank Runes |
 
 The three chapters after The Scout's Wall continue the Marchkeeper scout's story. Watchtowers on hills, meadows and
 plains keep a copy of the watch orders; standing stones in plains, meadows and taiga keep *The
@@ -133,6 +137,14 @@ survey ring, then visit a road watchtower or a ring of standing stones to comple
 Finally, flip the lever on a Highland Cairn Lodge's eastern cairn lamp and stand beside the lit
 beacon to complete **A Lamp on the Ridge**. Like the coastal route, these three chapters pay 90 XP,
 five Blank Runes and one Aura Shard in total, once per player, and require no combat or Aura rank.
+
+What the Empty Bell Kept begins with a [Belowkeeper Listener]({{ '/world/belowkeeper-hollows/' | relative_url }})
+at a Belowkeeper Listening Station. Sneak-use the listener through their fourth story about the
+unclappered bell in the deep sanctum, then visit a Collapsed Delve or a Deepslate Vault to complete
+**The Pressure Records**. Finally, flip the lever on a Listening Station's western resonance frame
+and stand beside the lit shutter lamp to complete **The Resonance Shutter**. These three chapters
+also pay 90 XP, five Blank Runes and one Aura Shard in total, once per player, without requiring
+combat or Aura rank.
 
 Older boathouses retain their existing furnishings and lighthouse books retain their existing pages.
 Their structure discoveries and working lamps still count toward the route, so an older building

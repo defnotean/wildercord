@@ -178,6 +178,7 @@ public final class LoreJournal {
 	public static void poll(ServerPlayer player) {
 		dev.wildercord.world.sites.water.WaterSites.observe(player);
 		dev.wildercord.world.sites.highland.HighlandSites.observe(player);
+		dev.wildercord.world.sites.belowkeeper.BelowkeeperSites.observe(player);
 		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.ReedlandClimate.JOURNAL_ENTRY)
 			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)) {
 			record(player, dev.wildercord.world.biome.ReedlandClimate.JOURNAL_ENTRY, true);
@@ -185,6 +186,10 @@ public final class LoreJournal {
 		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.WindscarClimate.JOURNAL_ENTRY)
 			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.WindscarClimate.WINDSCAR)) {
 			record(player, dev.wildercord.world.biome.WindscarClimate.JOURNAL_ENTRY, true);
+		}
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.BelowkeeperClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)) {
+			record(player, dev.wildercord.world.biome.BelowkeeperClimate.JOURNAL_ENTRY, true);
 		}
 		LoreJournalData before = data(player);
 		LoreJournalData data = before;

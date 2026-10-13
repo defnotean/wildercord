@@ -77,7 +77,7 @@ public final class Attunements {
 			"Beneath the green, where berries glow on hanging vines.", "anywhere"),
 		new Rule("mangrove_swamp", Runes.ROOTSNARE, Set.of("minecraft:mangrove_swamp"), ALWAYS,
 			"Where the trees stand on their own tangled roots in the water.", "anywhere"),
-		new Rule("dripstone_caves", Runes.STALACTITE, Set.of("minecraft:dripstone_caves"), ALWAYS,
+		new Rule("dripstone_caves", Runes.STALACTITE, Set.of("minecraft:dripstone_caves", "wildercord:belowkeeper_hollows"), ALWAYS,
 			"Under stone teeth that drip, slowly, forever.", "anywhere"),
 		new Rule("peaks", Runes.SUMMIT_WIND, Set.of("minecraft:jagged_peaks", "minecraft:frozen_peaks", "minecraft:stony_peaks",
 			"minecraft:snowy_slopes", "minecraft:grove", "minecraft:windswept_hills",

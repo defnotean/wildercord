@@ -7,7 +7,7 @@ permalink: /world/mine-sites/
 ---
 # Mines, Forges and Crystals
 
-Eight small sites about mining, forging and crystals. They appear only in **newly generated chunks**. Each one has chest
+Ten small sites about mining, forging, crystals and subterranean drainage. They appear only in **newly generated chunks**. Each one has chest
 loot built around the delving runes and the Iron and Stone breathing methods. When you walk into one, it is written in
 your lore journal and you get its advancement.
 
@@ -23,6 +23,8 @@ your lore journal and you get its advancement.
 | **Deepslate Vault** | Deep under forests, taigas, plains and savannas | A small stone tower with a trapdoor sits over a ladder shaft down to about y -5. Below is an antechamber held by two Runebound skeletons, one of them an adept, and a warded vault behind a sealed door. |
 | **Prospector's Camp** | Badlands | Two canvas tents, a sluice box, a panning cauldron, a campfire, and a lookout tower flying a red flag. Peaceful. |
 | **Miner's Rest** | Cliff edges in hills, savanna plateaus, meadows, groves and stony shores | A small shrine with a bell and candles, and a balcony over the drop with a lantern hung below on a chain. Peaceful. |
+| **Belowkeeper Listening Station** | Underground in [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }}), lush caves and dripstone caves | A mossy deepslate hall with timber shoring, a drainage sump, a Glowcap bed, a western resonance shutter lamp and lever, *What the Empty Bell Kept* on a lectern, and a **Belowkeeper Listener** resident. Peaceful. |
+| **Belowkeeper Bell Sanctum** | Deep in [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }}) and dripstone caves | A circular deepslate and copper resonance court with four cardinal passages, a central pedestal, and a northern alcove holding a **Listening Belfry**, a supply chest and *The Unclappered Bell*. Waking the belfry in Survival challenges the [Hollow Bell]({{ '/world/hollow-bell/' | relative_url }}). |
 
 ## Puzzles
 
@@ -47,14 +49,14 @@ part of the delving pack in the [everyday rune packs]({{ '/runes/everyday-packs/
 | Miner's Rest | Stone and Iron | |
 | Prospector's Camp | [Dune]({{ '/masters/dune/' | relative_url }}) | |
 | Crystal Survey Lab | | A Mana Crystal |
+| Belowkeeper Listening Station | | Delving runes, copper, glow berries, Blank Runes |
+| Belowkeeper Bell Sanctum | | Cave survey runes, Blank Runes, optional [Tuning Fork of the Hollow Bell]({{ '/world/hollow-bell/' | relative_url }}) |
 
 There are no stacks of netherite anywhere.
 
 ## Advancements
 
-The Hillside Mine's advancement sits under Ley Line. The other seven sit under Hillside Mine. Each is named after its
-site: Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry, Deepslate Vault,
-Prospector's Camp and Miner's Rest.
+The Hillside Mine's advancement sits under Ley Line. The other nine sit under Hillside Mine: Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry, Deepslate Vault, Prospector's Camp, Miner's Rest, **Ears in the Stone** (Belowkeeper Listening Station) and **The Unclappered Bell** (Belowkeeper Bell Sanctum).
 
 ## Safe digging
 

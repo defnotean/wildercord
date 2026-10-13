@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
+    "wildercord:belowkeeper_bell_sanctum",
+    "wildercord:belowkeeper_listening_station",
     "wildercord:farm_apiary",
     "wildercord:farm_granary",
     "wildercord:farm_herbalist",

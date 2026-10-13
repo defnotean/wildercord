@@ -67,6 +67,8 @@ public final class Sites {
 		dev.wildercord.world.sites.water.WaterSites.init();
 		// ---- sites-highland pack
 		dev.wildercord.world.sites.highland.HighlandSites.init();
+		// ---- sites-belowkeeper pack
+		dev.wildercord.world.sites.belowkeeper.BelowkeeperSites.init();
 		// ---- sites-mine pack
 		dev.wildercord.world.sites.mine.MineSites.init();
 	}

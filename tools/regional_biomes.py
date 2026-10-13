@@ -5,6 +5,8 @@ LANG = {
     "journal.wildercord.entry.place.luminous_reedlands": "Luminous Reedlands. Pale banks, blue-green pools, and Moonreed opening to the night. The Tideward call these lights the lamps of the first crossing: leave a flower standing for the next traveller. Lantern Newts shelter in the shallows; Glimmerwings carry pollen between the reeds. Look for smoke above the water to find a fisher's stilt house.",
     "biome.wildercord.windscar_highlands": "Windscar Highlands",
     "journal.wildercord.entry.place.windscar_highlands": "Windscar Highlands. Gold-green grass follows the dry shelves between exposed stone ridges. The Marchkeepers say the wind never took a road; it only found the paths people had stopped tending. Take the ripe tassels of Windreed and leave its root for the next walker. Stonehorns graze the slopes, while a Galeclaw's warning carries farther than its footsteps. Watchtowers, standing stones and the Wind Gate can mark a way through the heights.",
+    "biome.wildercord.belowkeeper_hollows": "Belowkeeper Hollows",
+    "journal.wildercord.entry.place.belowkeeper_hollows": "Belowkeeper Hollows. Damp clay basins and copper-stained dripstone vaults where water carries the hum of the lower rock. Mara's listeners kept Glowcap beds under the stone arches so every watch had filter gills and steady light. Sporeback Snails, Mossveil Dormice and Rootmolt Striders share the dark, while Listening Stations, Drainhouses and the Bell Sanctum still hold the Belowkeepers' acoustic logs.",
 }
 
 
@@ -133,12 +135,72 @@ def windscar():
     }
 
 
+def belowkeeper():
+    """Subterranean dripstone-and-clay vaults with damp moss floors for Glowcap beds.
+
+    Keeps vanilla dripstone cave ores/clusters and lush clay/moss features in exact vanilla
+    order so cross-biome chunk decoration never cycles.
+    """
+    return {
+        "attributes": {
+            "minecraft:audio/background_music": {"default": {
+                "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.dripstone_caves"}},
+            "minecraft:gameplay/natural_mob_spawns": {"modifier": "overlay", "argument": {
+                "spawn_costs": {},
+                "spawns_by_category": {
+                    "ambient": [_spawn("bat", 10, 8)],
+                    "creature": [],
+                    "monster": [_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
+                                _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
+                                _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
+                                _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1),
+                                _spawn("drowned", 95, 4)],
+                    "underground_water_creature": [_spawn("glow_squid", 10, 4, 6)],
+                },
+            }},
+            "minecraft:visual/sky_color": "#7ba4ff",
+            "minecraft:visual/water_fog_color": "#284a4e",
+        },
+        "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
+        "downfall": 0.6,
+        "effects": {
+            "dry_foliage_color": "#7b6c52", "foliage_color": "#5f8c74",
+            "grass_color": "#6f9c82", "grass_color_modifier": "none", "water_color": "#3a7f86",
+        },
+        "features": [
+            [],
+            ["minecraft:lake_lava_underground", "minecraft:lake_lava_surface"],
+            ["minecraft:amethyst_geode", "minecraft:large_dripstone"],
+            ["minecraft:monster_room", "minecraft:monster_room_deep"],
+            [], [],
+            ["minecraft:" + name for name in (
+                "ore_dirt", "ore_gravel", "ore_granite_upper", "ore_granite_lower",
+                "ore_diorite_upper", "ore_diorite_lower", "ore_andesite_upper", "ore_andesite_lower",
+                "ore_tuff", "ore_coal_upper", "ore_coal_lower", "ore_iron_upper", "ore_iron_middle",
+                "ore_iron_small", "ore_gold", "ore_gold_lower", "ore_redstone", "ore_redstone_lower",
+                "ore_diamond", "ore_diamond_medium", "ore_diamond_large", "ore_diamond_buried",
+                "ore_lapis", "ore_lapis_buried", "ore_copper_large", "underwater_magma", "disk_sand",
+                "disk_clay", "disk_gravel")],
+            ["minecraft:dripstone_cluster", "minecraft:pointed_dripstone"],
+            ["minecraft:spring_water", "minecraft:spring_lava"],
+            ["minecraft:" + name for name in (
+                "glow_lichen", "patch_tall_grass_2", "lush_caves_ceiling_vegetation", "cave_vines",
+                "lush_caves_clay", "lush_caves_vegetation", "rooted_azalea_tree", "spore_blossom",
+                "classic_vines_cave_feature")],
+            ["minecraft:freeze_top_layer"],
+        ],
+        "has_precipitation": True,
+        "temperature": 0.7,
+    }
+
+
 def write(g):
     g.write_json(g.DATA / "worldgen/biome/luminous_reedlands.json", reedlands())
     g.write_json(g.DATA / "worldgen/biome/windscar_highlands.json", windscar())
+    g.write_json(g.DATA / "worldgen/biome/belowkeeper_hollows.json", belowkeeper())
     # Appending to these tags preserves vanilla members and other packs' additions.
     for name, members in {
-        "is_overworld": ["wildercord:luminous_reedlands", "wildercord:windscar_highlands"],
+        "is_overworld": ["wildercord:luminous_reedlands", "wildercord:windscar_highlands", "wildercord:belowkeeper_hollows"],
         "is_swamp": ["wildercord:luminous_reedlands"],
         "is_hill": ["wildercord:windscar_highlands"],
     }.items():

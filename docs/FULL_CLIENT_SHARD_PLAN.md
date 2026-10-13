@@ -1,7 +1,7 @@
 # Explicit full-client shard plan
 
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
-345-class descriptor as exactly four groups: **86 / 86 / 87 / 86**.
+347-class descriptor as exactly four groups: **87 / 87 / 87 / 86**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,
 manifest/aggregate tooling, and Gradle resource processing and launch preflight.
 There is no equal-count fallback or automatic assignment for newly added classes.
@@ -13,11 +13,11 @@ holds that reviewed plan so the tests can prove it.
 
 ## Identity and invariants
 
-- Plan schema 1, ID `full-client-explicit-v6-cartographer`.
+- Plan schema 1, ID `full-client-explicit-v7-belowkeeper`.
 - Ordered roster SHA-256:
-  `25cc1b81e19a4780b1837fa08a94540a22d69bb08c02a2f988b225415f52d9d0`.
+  `7d159da2f7552ff4e2e90b06cdf1b12006c5d936ddc2a0b1b6625b3f4be8d496`.
 - Complete plan SHA-256:
-  `d17f2e750b0b00c8b274cf9bb63d5d749218b6aa127fb9ad612f2b16936cb39e`.
+  `3f55d0c3b180cce97854972ce5005ad5f7d691a397c23b74c55ff6ea728f2ca6`.
 - Hashes use UTF-8 JSON with sorted object keys, compact separators and no trailing
   newline. The plan digest excludes no fields and is pinned in the selector.
   These are source identities, not claims of runtime acceptance.
@@ -49,6 +49,10 @@ holds that reviewed plan so the tests can prove it.
   group and relative order. The first three groups remain byte-identical lists.
 - `CartographerEncounterTest` follows `WindscarBiomeTest` in group 4 and in the
   descriptor. The 344-class plan is frozen in `tools/tests/full-client-plan-v5-344.json`;
+  every old class stays in its original group and relative order.
+- `BelowkeeperBiomeTest` is appended to group 1 and `HollowBellEncounterTest` is
+  appended to group 2, following `CartographerEncounterTest` in the descriptor.
+  The 345-class plan is frozen in `tools/tests/full-client-plan-v6-345.json`;
   every old class stays in its original group and relative order.
 
 Missing/foreign/duplicate/reordered classes, changed descriptors, invalid counts,

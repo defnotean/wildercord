@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "planId": "full-client-explicit-v6-cartographer",
+  "planId": "full-client-explicit-v7-belowkeeper",
   "shardCount": 4,
-  "expectedCount": 345,
-  "orderedRosterSha256": "25cc1b81e19a4780b1837fa08a94540a22d69bb08c02a2f988b225415f52d9d0",
+  "expectedCount": 347,
+  "orderedRosterSha256": "7d159da2f7552ff4e2e90b06cdf1b12006c5d936ddc2a0b1b6625b3f4be8d496",
   "executionProfile": {
     "execution": "complete",
     "animationGallery": true,
@@ -72,7 +72,7 @@
   "groups": [
     {
       "id": 1,
-      "expectedCount": 86,
+      "expectedCount": 87,
       "entries": [
         "dev.wildercord.cast.RelayCircleTest",
         "dev.wildercord.cast.RelayLifetimeTest",
@@ -159,12 +159,13 @@
         "dev.wildercord.aura.world.MastersPackBTrialTest",
         "dev.wildercord.gametest.perf.PerformanceHarnessTest",
         "dev.wildercord.world.sites.FarmSitesClientTest",
-        "dev.wildercord.world.sites.WaterSitesGameTest"
+        "dev.wildercord.world.sites.WaterSitesGameTest",
+        "dev.wildercord.world.biome.BelowkeeperBiomeTest"
       ]
     },
     {
       "id": 2,
-      "expectedCount": 86,
+      "expectedCount": 87,
       "entries": [
         "dev.wildercord.client.fx.VoidWardDeliveryTest",
         "dev.wildercord.client.fx.VoidMovementDeliveryTest",
@@ -251,7 +252,8 @@
         "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
         "dev.wildercord.client.combat.CrimsonMoonCaptureTest",
         "dev.wildercord.world.sites.MastersSitesTest",
-        "dev.wildercord.world.sites.MineSitesClientTest"
+        "dev.wildercord.world.sites.MineSitesClientTest",
+        "dev.wildercord.world.hollowbell.HollowBellEncounterTest"
       ]
     },
     {

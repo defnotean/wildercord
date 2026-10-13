@@ -35,6 +35,7 @@ public final class LoreQuestRules {
 	public static final String WATCHTOWER = "watchtower", STANDING_STONES = "standing_stones", SLEEPING_BLADE = "sleeping_blade";
 	public static final String REEDKEEPER = "reedkeeper", FERRYMAN_STORY = "ferryman_story", BOATHOUSE = "boathouse", COAST_LIGHT = "coast_light";
 	public static final String CAIRN_KEEPER = "cairn_keeper", CARTOGRAPHER_STORY = "cartographer_story", RIDGE_SITE = "ridge_site", CAIRN_LAMP = "cairn_lamp";
+	public static final String BELOWKEEPER_LISTENER = "belowkeeper_listener", HOLLOW_BELL_STORY = "hollow_bell_story", DEEP_SITE = "deep_site", BELOWKEEPER_SHUTTER = "belowkeeper_shutter";
 
 	/** A quest: what starts it, what finishes it, and what it pays (vanilla experience, Aura Shards, Blank Runes, Aura experience). */
 	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp, String prerequisite) {
@@ -62,7 +63,10 @@ public final class LoreQuestRules {
 		new Quest("last_boat_light", BOATHOUSE, COAST_LIGHT, 40, 1, 2, 0, "second_count"),
 		new Quest("paired_cairns", CAIRN_KEEPER, CARTOGRAPHER_STORY, 20, 0, 1, 0),
 		new Quest("ridge_orders", CARTOGRAPHER_STORY, RIDGE_SITE, 30, 0, 2, 0, "paired_cairns"),
-		new Quest("cairn_beacon", RIDGE_SITE, CAIRN_LAMP, 40, 1, 2, 0, "ridge_orders"));
+		new Quest("cairn_beacon", RIDGE_SITE, CAIRN_LAMP, 40, 1, 2, 0, "ridge_orders"),
+		new Quest("empty_bell_kept", BELOWKEEPER_LISTENER, HOLLOW_BELL_STORY, 20, 0, 1, 0),
+		new Quest("pressure_records", HOLLOW_BELL_STORY, DEEP_SITE, 30, 0, 2, 0, "empty_bell_kept"),
+		new Quest("resonance_shutter", DEEP_SITE, BELOWKEEPER_SHUTTER, 40, 1, 2, 0, "pressure_records"));
 
 	public static Quest byId(String id) {
 		for (Quest quest : ALL) if (quest.id().equals(id)) return quest;
@@ -139,6 +143,10 @@ public final class LoreQuestRules {
 				case "person:cairn_keeper" -> facts.add(CAIRN_KEEPER);
 				case "said:cairn_keeper.cartographer" -> facts.add(CARTOGRAPHER_STORY);
 				case "learned:scout_wind_mark" -> facts.add(CAIRN_LAMP);
+				case "person:belowkeeper_listener" -> facts.add(BELOWKEEPER_LISTENER);
+				case "said:belowkeeper_listener.hollow_bell" -> facts.add(HOLLOW_BELL_STORY);
+				case "place:mine_crystal_lab", "place:mine_collapsed_delve", "place:mine_deep_vault", "place:belowkeeper_bell_sanctum" -> facts.add(DEEP_SITE);
+				case "learned:belowkeeper_shutter" -> facts.add(BELOWKEEPER_SHUTTER);
 				case "duelist:ember" -> facts.add(TALK_EMBER);
 				case "duelist:gale" -> facts.add(TALK_GALE);
 				case "duelist:stone" -> facts.add(TALK_STONE);

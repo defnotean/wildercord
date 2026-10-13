@@ -160,6 +160,7 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
   - The Reed-Crowned Ferryman: a boatman remembered differently by different villages, whose second passenger count ensured everyone reached shore. His reed crown and the shared lamp belong to the First Crossing legend. The Last Crossing's new guardian carries this title in a body of reeds and old timber; its existence does not settle the historical boatman's identity. Deliberately ringing the basin's bell begins the optional encounter. The peaceful coastal journal route remains independent.
   - Highland Cairn Lodges and the Glass Cartographer: dry-stone shelters in the Windscar Highlands with leeward Windreed terraces, four-page *Paired Cairns* books, eastern cairn lamps and resident Highland Cairn Keepers. Higher on the shelves stands the Highland Survey Ring, where waking the Survey Astrolabe begins an optional encounter with the Marchkeepers' brass-and-prism Glass Cartographer.
   - The Belowkeepers: Mara, the Fungal Nursery, the Drainhouse and the Empty Bell.
+  - Belowkeeper Hollows, Listening Stations and the Hollow Bell: subterranean vaults where dripstone caverns meet mossy clay shelves (`tools/regional_biomes.py`). Belowkeeper Listening Stations house resident Belowkeeper Listeners, six-cap Glowcap beds, the four-page *What the Empty Bell Kept* ledger and a western resonance shutter lamp (`tools/sites_belowkeeper.py`). Deeper in the caverns stands the Belowkeeper Bell Sanctum, where waking the Listening Belfry begins an optional encounter with the unclappered bronze Hollow Bell (`tools/hollow_bell_art.py`).
   - Rook's Rainshield.
   - Highland beasts: Stonehorn and Galeclaw.
   - Fallen Knights carry manual pages.
@@ -171,7 +172,7 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
   - Saved per player, kept through death, and synced only to its owner.
   - Older saves open empty, then fill in from progress the player already has.
   - Tabs: Leads, Places, People, Learned and Talk.
-- **Six standalone discovery leads, the Scout's Last Cairn continuation, the Drowned Road and the Paired Cairns**:
+- **Six standalone discovery leads, the Scout's Last Cairn continuation, the Drowned Road, the Paired Cairns and What the Empty Bell Kept**:
 
 | Lead | Clue from | Goal | Reward |
 |---|---|---|---|
@@ -190,6 +191,9 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
 | The Paired Cairns | meet a Highland Cairn Keeper | hear the survey ring account | 20 XP, 1 Blank Rune |
 | The Ridge Watch | finish The Paired Cairns | visit a road watchtower or standing stones | 30 XP, 2 Blank Runes |
 | A Lamp on the Ridge | finish The Ridge Watch | stand beside a lit cairn lamp at a Highland Cairn Lodge | 40 XP, 1 Aura Shard, 2 Blank Runes |
+| What the Empty Bell Kept | meet a Belowkeeper Listener | hear the Bell Sanctum account | 20 XP, 1 Blank Rune |
+| The Pressure Records | finish What the Empty Bell Kept | visit a Collapsed Delve or Deepslate Vault | 30 XP, 2 Blank Runes |
+| The Resonance Shutter | finish The Pressure Records | stand beside a lit resonance shutter at a Belowkeeper Listening Station | 40 XP, 1 Aura Shard, 2 Blank Runes |
 
 The continuation joins existing histories: road-makers raised the stone rings before the
 Marchkeepers used those routes; the scout's paired cairns kept account of the living and those
@@ -209,6 +213,12 @@ The highland continuation connects the Cairn Keeper's *Paired Cairns* account to
 watchtowers and standing stone rings, and ends at a working cairn lamp on the eastern stone cairn
 of a Highland Cairn Lodge (`tools/sites_highland.py`). The optional Glass Cartographer encounter
 at the Highland Survey Ring remains independent of the peaceful route.
+
+The subterranean continuation connects the Belowkeeper Listener's *What the Empty Bell Kept*
+account to the dry miners' Collapsed Delves and Deepslate Vaults, and ends at a working resonance
+shutter lamp on the western frame of a Belowkeeper Listening Station (`tools/sites_belowkeeper.py`).
+The optional Hollow Bell encounter at the Belowkeeper Bell Sanctum remains independent of the
+peaceful route.
 
 - **How leads behave**
   - The goal and hint can be read again in the journal at any time.

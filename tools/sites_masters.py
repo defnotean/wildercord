@@ -21,7 +21,7 @@ SITES = {
     'master_star_terrace': (('starlit', 'dawn'), 'Star Terrace', 'Find the Master terrace that reads the stars', 'minecraft:spyglass',
         ['minecraft:cherry_grove', 'minecraft:sunflower_plains', 'minecraft:plains'], 52, 18, 'surface_structures', 'beard_thin'),
     'master_resonance_chamber': (('hollow', 'echo'), 'Resonance Chamber', 'Find the deep Master chamber under the bell', 'minecraft:bell',
-        ['minecraft:deep_dark', 'minecraft:dripstone_caves', 'minecraft:lush_caves'], 50, 18, 'underground_structures', 'none'),
+        ['minecraft:deep_dark', 'minecraft:dripstone_caves', 'minecraft:lush_caves', 'wildercord:belowkeeper_hollows'], 50, 18, 'underground_structures', 'none'),
 }
 SALT_BASE = 2026100900 + 100 * 1
 

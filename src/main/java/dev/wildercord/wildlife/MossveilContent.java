@@ -31,7 +31,7 @@ public final class MossveilContent{
    if(!(l instanceof ServerLevel actual)||!actual.getServer().isSameThread())return false;
    var cfg=Config.get().wildlife();return cfg.spawns("mossveil_dormouse")&&r.nextDouble()<Math.min(1,.08*cfg.spawnMultiplier())&&MossveilHome.natural(actual,p)&&room(actual,p);
   });
-  BiomeModifications.create(Wildercord.id("mossveil_caves")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES)),c->{var cfg=Config.get().wildlife();if(cfg.spawns("mossveil_dormouse"))c.getMobSpawnSettings().addSpawn(MobCategory.CREATURE,new net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData(DORMOUSE,net.minecraft.util.valueproviders.UniformInt.of(1,1)),Math.max(1,(int)Math.ceil(2*cfg.spawnMultiplier())));});
+  BiomeModifications.create(Wildercord.id("mossveil_caves")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)),c->{var cfg=Config.get().wildlife();if(cfg.spawns("mossveil_dormouse"))c.getMobSpawnSettings().addSpawn(MobCategory.CREATURE,new net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData(DORMOUSE,net.minecraft.util.valueproviders.UniformInt.of(1,1)),Math.max(1,(int)Math.ceil(2*cfg.spawnMultiplier())));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:mossveil_dormouse",FieldGuide.Group.WILDLIFE,0x8C9870));
   CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(o->o.accept(EGG));
   CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->{o.accept(EGG);o.accept(MossveilCowl.ITEM);});

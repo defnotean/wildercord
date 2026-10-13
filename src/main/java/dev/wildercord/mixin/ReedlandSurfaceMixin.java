@@ -1,5 +1,6 @@
 package dev.wildercord.mixin;
 
+import dev.wildercord.world.biome.BelowkeeperClimate;
 import dev.wildercord.world.biome.ReedlandClimate;
 import dev.wildercord.world.biome.WindscarClimate;
 import net.minecraft.world.level.biome.Biomes;
@@ -19,13 +20,15 @@ abstract class ReedlandSurfaceMixin {
 		var biomes = ((BiomeCondition) (Object) this).biomes();
 		boolean swamp = biomes.stream().anyMatch(biome -> biome.is(Biomes.SWAMP));
 		boolean hills = biomes.stream().anyMatch(biome -> biome.is(Biomes.WINDSWEPT_HILLS));
-		if (!swamp && !hills) return;
+		boolean dripstone = biomes.stream().anyMatch(biome -> biome.is(Biomes.DRIPSTONE_CAVES));
+		if (!swamp && !hills && !dripstone) return;
 		ConditionEvaluator original = result.getReturnValue();
 		result.setReturnValue(new MaterialRuleContext.LazyYCondition(ruleContext) {
 			@Override
 			protected boolean compute() {
 				return (swamp && context.getBiome().is(ReedlandClimate.REEDLANDS))
-					|| (hills && context.getBiome().is(WindscarClimate.WINDSCAR)) || original.test();
+					|| (hills && context.getBiome().is(WindscarClimate.WINDSCAR))
+					|| (dripstone && context.getBiome().is(BelowkeeperClimate.HOLLOWS)) || original.test();
 			}
 		});
 	}

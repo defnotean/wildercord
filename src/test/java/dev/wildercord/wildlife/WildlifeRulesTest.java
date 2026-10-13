@@ -32,7 +32,7 @@ class WildlifeRulesTest {
 			assertFalse(kind.biomes().isEmpty(), kind.id() + " lives somewhere");
 			assertEquals(kind.biomes().size(), new HashSet<>(kind.biomes()).size(), kind.id() + " lists each biome once");
 			for (String biome : kind.biomes()) {
-				assertTrue(biome.matches("minecraft:[a-z_]+") || List.of("wildercord:luminous_reedlands", "wildercord:windscar_highlands").contains(biome), biome);
+				assertTrue(biome.matches("minecraft:[a-z_]+") || List.of("wildercord:luminous_reedlands", "wildercord:windscar_highlands", "wildercord:belowkeeper_hollows").contains(biome), biome);
 			}
 			assertSame(kind, WildlifeRules.kind(kind.id()));
 		}

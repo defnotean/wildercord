@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "belowkeeper_listening_station": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:belowkeeper_listening_station"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:glowcap"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.belowkeeper_listening_station.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.belowkeeper_listening_station.description"
+    }
+  },
+  "requirements": [
+    [
+      "belowkeeper_listening_station"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

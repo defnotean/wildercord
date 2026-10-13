@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "wildercord:belowkeeper_listening_station",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 11,
+    "salt": 2026101603
+  }
+}

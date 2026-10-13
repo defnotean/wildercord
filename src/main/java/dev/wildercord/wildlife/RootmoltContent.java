@@ -78,7 +78,7 @@ public final class RootmoltContent {
    var floor=l.getBlockState(p.below());if(!(floor.is(Blocks.MOSS_BLOCK) || floor.is(Blocks.CLAY)) || !localRoom(l.getLevel(),type,p))return false;
    for(int x=-4;x<=4;x++)for(int z=-4;z<=4;z++)for(int y=-1;y<=1;y++) {var at=p.offset(x,y,z);if(!l.hasChunkAt(at))continue;var state=l.getBlockState(at);if(state.is(FungalGarden.GLOWCAP) && state.getValue(GlowcapBlock.AGE)==2)return true;}return false;
   });
-  BiomeModifications.create(Wildercord.id("rootmolt_caves")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES)),c -> {var s=Config.get().wildlife();if(s.spawns("rootmolt_strider"))c.getMobSpawnSettings().addSpawn(MobCategory.MONSTER,new MobSpawnSettings.SpawnerData(STRIDER,net.minecraft.util.valueproviders.UniformInt.of(1,1)),Math.max(1,(int)(3*Math.max(1,s.spawnMultiplier()))));});
+  BiomeModifications.create(Wildercord.id("rootmolt_caves")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)),c -> {var s=Config.get().wildlife();if(s.spawns("rootmolt_strider"))c.getMobSpawnSettings().addSpawn(MobCategory.MONSTER,new MobSpawnSettings.SpawnerData(STRIDER,net.minecraft.util.valueproviders.UniformInt.of(1,1)),Math.max(1,(int)(3*Math.max(1,s.spawnMultiplier()))));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:rootmolt_strider",FieldGuide.Group.WILDLIFE,0xAB926B));
   CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(EGG));CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(o -> o.accept(EGG));
  }

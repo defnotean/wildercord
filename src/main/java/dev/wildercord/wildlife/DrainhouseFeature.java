@@ -125,7 +125,7 @@ public record DrainhouseFeature() implements Feature {
    for(int y=47;y>=Math.max(-64,l.getMinY());y--){
     var p=new BlockPos(column.getX(),y,column.getZ());if(!l.hasChunkAt(p))break;
     if(!l.isEmptyBlock(p) || !GlowcapBlock.footing(l,p) || !GlowcapBlock.structuralCover(l,p))continue;
-    var biome=l.getBiome(p);if(l instanceof net.minecraft.server.level.WorldGenRegion && !biome.is(net.minecraft.world.level.biome.Biomes.LUSH_CAVES) && !biome.is(net.minecraft.world.level.biome.Biomes.DRIPSTONE_CAVES))continue;
+    var biome=l.getBiome(p);if(l instanceof net.minecraft.server.level.WorldGenRegion && !biome.is(net.minecraft.world.level.biome.Biomes.LUSH_CAVES) && !biome.is(net.minecraft.world.level.biome.Biomes.DRIPSTONE_CAVES) && !biome.is(dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS))continue;
     observe(l,"candidate",col,origin,p,null,"original-center");
     if(checked>=8){observe(l,"budget",col,origin,p,null,"original-center");return false;}
     checked++;observe(l,"fit",col,origin,p,null,"original-center");

@@ -169,6 +169,8 @@
   * [Reed-Crowned Ferryman](world/reed-crowned-ferryman.md)
   * [Windscar Highlands](world/windscar-highlands.md)
   * [Glass Cartographer](world/glass-cartographer.md)
+  * [Belowkeeper Hollows](world/belowkeeper-hollows.md)
+  * [Hollow Bell](world/hollow-bell.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

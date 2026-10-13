@@ -31,7 +31,7 @@ The lectern says the same thing in every hall. First reach Aura Form or Heart Ci
 | Root Temple | [Verdant]({{ '/masters/verdant/' | relative_url }}) or [Venom]({{ '/masters/venom/' | relative_url }}) | Jungles and dark forests | A stepped, root-wrapped temple. Beat the Runebound bogged in the root pit. |
 | Sundial Court | [Dune]({{ '/masters/dune/' | relative_url }}) or [Hourglass]({{ '/masters/hourglass/' | relative_url }}) | Desert | A ring of hour stones around a tall gnomon. The shrine behind it is sealed with the school's element. |
 | Star Terrace | [Starlit]({{ '/masters/starlit/' | relative_url }}) or [Dawn]({{ '/masters/dawn/' | relative_url }}) | Cherry groves, plains and sunflower plains | A raised terrace with a glowing star map and a telescope. The reading room is sealed. |
-| Resonance Chamber | [Hollow]({{ '/masters/hollow/' | relative_url }}) or [Echo]({{ '/masters/echo/' | relative_url }}) | Under deep dark, dripstone and lush caves | Look for a small bell frame on the surface. A ladder leads far down to a chamber of amethyst or sculk with a sealed vault. |
+| Resonance Chamber | [Hollow]({{ '/masters/hollow/' | relative_url }}) or [Echo]({{ '/masters/echo/' | relative_url }}) | Under deep dark, [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }}), dripstone and lush caves | Look for a small bell frame on the surface. A ladder leads far down to a chamber of amethyst or sculk with a sealed vault. |
 
 Each school name links to its page, with the Master, the breathing forms and how to learn them. Runebound guards are explained on [Runebound]({{ '/world/runebound/' | relative_url }}).
 
