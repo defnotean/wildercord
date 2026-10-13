@@ -82,15 +82,47 @@ everyone. How reactions work is on [Reactions]({{ '/spellcraft/reactions/' | rel
 
 ### How it fights
 
-- **Its fist.** If you're within 4.5 blocks, a **ring of fire glows on the floor** around it (about 4 blocks out) for
-  0.8 seconds, then its fist comes down: heavy damage, burning and knockback. Step out of the ring.
-- **Its spells** set up reactions on **you**. The boss bar names each one, and the circle lands 1.4 seconds later.
+It fights with its fists, its chains and its own heat, and **never makes the same move twice running**. Each move has
+its own wind-up and marks where it will land on the floor, and the boss bar names it with a hint on what to do. Nothing
+lands until the wind-up ends, and the aim of the aimed moves locks a quarter of a second before the blow.
+
+| Move | From | What you see | What to do |
+|---|---|---|---|
+| **Hammerfall** | Phase 1 | Both fists raised overhead, trembling, over a ring marked before it | Leave the ring (behind it is safe). From phase 2 a **wall of fire** rolls out from the blow: jump it |
+| **Chain Sweep** | Phase 1 | Its chains let out to lie along the floor, scraping, out to a marked ring | Hug its feet, stand outside the ring, or jump the chains as they come round |
+| **Seam** | Phase 1 | Crouched, gauntlets dug into the floor, a line marked out up to 13 blocks | Step off the line before the floor bursts open along it |
+| **Vent** | Phase 1 | Hunched round its core, back plates lifting and hissing, a cone marked behind it | Get out from behind it |
+| **Haul** | Phase 2 | A chain whirled overhead, faster and faster, down a marked lane | Step out of its line, or be hauled in and struck. On a miss it hauls itself after the hook, bowling people over |
+| **Slag** | Phase 2 | Head thrown back, chest heaving, marks round everyone | Keep off the marks; the pools burn a while. It favours anyone standing still |
+| **Bellows** | Phase 2 | Chest swelling, arms spread, then a long cone of fire that turns slowly after you | Run round it, or put stone between you |
+| **Flare** | Phase 3 | Curled tight round its core, flames running in across the floor, its glow beating faster | Put stone between you and it. It reaches 16 blocks, and comes at most every 15 seconds |
+
+**Its openings.** Some moves leave it open, and the boss bar says so:
+
+- **Fists sunk** in the floor after a Hammerfall: its back is bare for a moment.
+- **Steaming** for 5 seconds after a Vent (7 from phase 2): a storm spell sets off Conduct.
+- **Tangled** in its own chain after a Haul that bit nothing, then **pulled taut** for 3 seconds: blast it (Implode) or
+  repel it (Collapse).
+- **Fanned open** for 4 seconds after its Bellows: fire sets off Wildfire.
+- **Spent and brittle** after a Flare: it goes nearly dark and cold, open to fire (Shatter) or earth (Fracture).
+- **Reeling.** Set off a reaction on it during any wind-up and it rocks back on its heels for over a second and loses
+  the move. This can happen once every 10 seconds.
+
+Its armour is unchanged: only a reaction still cracks it. The openings just hand you the reaction.
+
+**Its spells** set up reactions on **you**. It casts most early in each phase, then between its moves, more often when
+you keep your distance. The boss bar names each one, and the circle lands 1.4 seconds later.
 
 | Phase | Its spells (the reaction it sets up on you) |
 |---|---|
 | **1** (300 to 200) | Frost Bolt › Fire Bolt (Shatter), Fire Pillar, Ember Wave |
 | **2** (200 to 100) | Dash Bolt › Fire Comet (Wildfire), Frost Ring › Fire Ring (Shatter), Fire Rain, Flashfire Cone |
 | **3** (100 to 0) | Drawing Bolt+ (Implode), Frost Bolt+ (Shatter), Inferno Zone, Frost Wave › Fire Wave (Shatter) |
+
+**What each phase changes.** In phase 2, Haul, Slag and Bellows join in, the Sweep turns back the other way, the
+Vent's cone grows and it rests less between moves. In phase 3 the Flare joins in, the Seam fans out into three, the
+Sweep reaches further, a second load of slag drops out of the dark, the breath turns faster, and over half its moves run
+straight on into another with a shorter wind-up.
 
 **Stoking its forge.** At each phase change it can't be hurt for **3 seconds**, then the heat throws everyone within 8
 blocks back. Two Runebound wither skeletons climb out of the fire (Fire Bolt and Frost Arc; Adepts the second time).
@@ -113,7 +145,11 @@ No single blow skips a phase.
   Nothing sets the Warden alight, so fire-based Overload doesn't work. There's no rain in the Nether, so soak it with a
   spell if you want Conduct.
 - **Hit hard inside the crack.** For 1.5 seconds every spell does full damage, and frost does 50% more.
-- **Fight at range** and its fist never comes. When it does, you have 0.8 seconds to step away.
+- **Read the floor.** Every move marks where it will land: a ring, a line, a cone or spots. Get off the mark before the
+  wind-up ends.
+- **Use its openings.** Storm it while it steams, blast it while it's pulled taut, burn it while it's fanned open or
+  spent. Each one hands you a reaction for free.
+- **Stand behind its fists**, not before them, and don't stand behind it when its plates lift.
 - **Dodge the second half** of its paired spells. When the bar says *Drawing Bolt+*, get clear of the comet.
 - **Fire Resistance** stops its burning (not blasts or the fist). So does the Cinder Heart on your next visit.
 - **Kill its keepers** first: Fire Bolt plus Frost Arc is a Shatter on you.
