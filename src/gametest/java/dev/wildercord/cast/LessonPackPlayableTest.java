@@ -247,6 +247,9 @@ public final class LessonPackPlayableTest implements FabricClientGameTest {
             context.waitTicks(5);
             context.setScreen(() -> null);
             context.waitTicks(2);
+        } finally {
+            foe = null;
+            pet = null;
         }
     }
     private static void clearRest(ServerPlayer p, Lesson lesson, int slot) {

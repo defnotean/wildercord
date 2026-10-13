@@ -931,8 +931,24 @@ Historical failures are retained, and no artificial green GitHub status is added
 `RuneEtchingsTest.foe` and both `VoidFlightVariantsTest` delivery targets held
 entities after their world context closed. Both now release those references in
 `finally`, including an assertion failure path; their native assertions and
-presentation settings restoration remain unchanged. These classes occur after
-`LifeOutcomeEdgesTest` in the first shard's frozen order, so they cannot explain
-the earlier failure at that class. They were additional retention sources for a
-longer run. Compile verification and a fresh full run remain pending for this
-small cleanup; the original heap failure is still open.
+presentation settings restoration remain unchanged. Void variants occur after
+`LifeOutcomeEdgesTest` in shard one's frozen order; Rune Etchings runs separately
+in shard two. They cannot explain the earlier failure at that class. They were
+additional retention sources for a longer run. The same review found the
+`ResonantStrikesTest` fake player/Cast and the `MovesPackTest` and
+`LessonPackPlayableTest` entity fields retained their later closed worlds. Those
+are now released in their outer `finally` blocks too. Compile verification and a
+fresh full run remain pending for these small cleanups; the original heap failure
+is still open.
+
+### Complete VPS Arts rerun
+
+The exact `fc403c21` candidate passes the complete unfiltered `WildercordArtsTest`
+on the VPS in **12m 6s** (owned wall time 12m 7s), receipt
+`ec4d309d-c8f9-4006-a3f3-377e65658cde`. All fifty individual art scenes, the
+registry/string contract and the Aura page pass: 52 successful observations,
+zero failed observations, all four owned class lifecycle stages, no skip and
+actual child exit zero. Native screenshots and the complete successful log are
+retained alongside the earlier failed receipt. This establishes the ordinary
+fixture correction at that candidate; it does not establish the full 343-class
+gate or solve the independent long-run heap issue.

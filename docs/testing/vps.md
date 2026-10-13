@@ -146,3 +146,10 @@ receipt `140a81dc-5084-4d5f-a61c-860c4fc8a79e`, with a schema-2 passed part mani
 the actual seed and no verification issues. It alone does not accept the combined
 Masters gate. The nine new VPS protocol/child-process tests, sixteen full-client
 tests and fifteen required-Masters tests also pass on the VPS, with zero skips.
+
+At `fc403c21`, the complete unfiltered `WildercordArtsTest` passes in 12m 6s,
+receipt `ec4d309d-c8f9-4006-a3f3-377e65658cde`: all fifty arts plus the registry/
+string contract and Aura page. Its ordinary targets now refuse both independent
+elite systems and assert their declared health. Native combat assertions,
+movement, freeze/thaw and timing remain unchanged. The earlier failed log remains
+retained; this focused pass leaves full-client acceptance unverified.

@@ -80,6 +80,9 @@ public final class MovesPackTest implements FabricClientGameTest {
 			aerial(context, world);
 			followUps(context, world);
 			spellCut(context, world);
+		} finally {
+			husk = null;
+			caster = null;
 		}
 	}
 

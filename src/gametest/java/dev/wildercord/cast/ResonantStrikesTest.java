@@ -101,6 +101,9 @@ public final class ResonantStrikesTest implements FabricClientGameTest {
 				int n=ResonantStrikes.reactions();spell(new Cast(p),ally,"fire",2);float before=ally.getHealth();float original=AuraCombat.projected(p,ally,2,true);
 				check(ResonantStrikes.reactions()==n+1,"Actual competitive player receives a resonant strike");check(before-ally.getHealth()<=original+.751F,"Player bonus remains below three quarters of a health point through defenses");
 			});
+		} finally {
+			ally=null;
+			continuing=null;
 		}
 	}
 	private static String partner(String e) {return switch(e){case "fire"->"gale";case "frost"->"ember";case "storm"->"stone";case "wind","arcane"->"hourglass";case "earth"->"rime";case "life"->"crimson";case "void"->"starlit";case "time"->"gale";default->"hollow";};}
