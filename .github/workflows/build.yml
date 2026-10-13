@@ -41,7 +41,7 @@ jobs:
       # the runes wasn't followed by `python tools/generate_assets.py`, fail here and say so.
       - name: Check generated files are up to date
         run: |
-          pip install pillow
+          python -m pip install -r tools/requirements.txt
           python tools/check_generated_assets.py
 
       - name: Build and run unit tests
@@ -213,7 +213,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install existing image-verification dependency
-        run: pip install pillow
+        run: python -m pip install -r tools/requirements.txt
       - uses: gradle/actions/setup-gradle@v6
       - name: Check native CI selection and evidence tooling
         run: python -m unittest discover -s tools -p 'test_*ci*.py' -v
@@ -287,7 +287,7 @@ jobs:
           python-version: "3.12"
       - uses: gradle/actions/setup-gradle@v6
       - name: Install existing image-verification dependency
-        run: pip install pillow
+        run: python -m pip install -r tools/requirements.txt
       - name: Verify bounded two-client supervision
         run: |
           python -m unittest discover -s tools -p 'test_two_client_supervisor.py' -v
@@ -361,7 +361,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install existing image-verification dependency
-        run: pip install pillow
+        run: python -m pip install -r tools/requirements.txt
       - uses: gradle/actions/setup-gradle@v6
       - name: Check passive shared-render receipt tooling
         run: python tools/check_articulated_render_receipts.py

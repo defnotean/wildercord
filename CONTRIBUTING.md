@@ -9,7 +9,7 @@ You need:
 
 - **JDK 25** (Temurin works well)
 - **Python 3.11+**, available as `python3` on macOS/Linux or `python` on Windows for full/sharded client test resource processing
-- **Pillow** (`pip install pillow`) for the asset generator
+- **Pillow and NumPy** (`python -m pip install -r tools/requirements.txt`) for asset generation and image checks. The shared requirements pin the versions used for committed art and CI.
 - Git, and an IDE with Gradle support (IntelliJ IDEA recommended)
 
 ```bash
@@ -79,7 +79,7 @@ rebuilding under it crashes the game. Use `./gradlew -PaltBuild compileJava` to 
 - **Send particles through `Fx`/`Vfx`**, damage through `Effects.hurt`, and delays through
   `Scheduler` (checking `cast.alive()`).
 - **Numbers modifiers change live in `SpellNumbers`**, so the readout can show them.
-- Python tools: 4 spaces, standard library plus Pillow only.
+- Python tools: 4 spaces; prefer the standard library. Art and image checks use the Pillow and NumPy versions pinned in `tools/requirements.txt`.
 
 ## Writing for players
 

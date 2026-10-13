@@ -217,3 +217,12 @@ Keep the full goal active. Check the draft PR's CI outcomes, then implement the 
 biome with registry/placement and seed evidence. Prefer one complete regional slice over adding four
 biome names without generation. New bosses, new resident NPCs, and new buildings from the proposal
 table remain open. Preserve the existing boss movesets and the newly repaired generator on every pass.
+
+### CI environment follow-up
+
+The first full checkpoint (`6dc32560`, run `38401206245`) failed its generated-file step before
+comparison: `tools/serpent_art.py` imports NumPy, while CI installed only Pillow. The existing local
+NumPy installation masked that baseline provisioning defect. `tools/requirements.txt` now pins the
+verified local versions (Pillow 12.2.0, NumPy 2.4.6); the build and three native image-verification
+installation steps use that same requirements file. This is a dependency correction, not permission
+to ignore asset differences. The new run must still pass pixel/byte parity and all relevant gates.
