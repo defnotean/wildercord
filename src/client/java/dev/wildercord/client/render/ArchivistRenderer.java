@@ -3,6 +3,7 @@ package dev.wildercord.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.Archivist;
+import dev.wildercord.cast.ArchivistRules;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -20,7 +21,8 @@ import java.util.function.ToIntFunction;
 /**
  * The Archivist (see {@link ArchivistModel}): its robe and tome on its own skin, and two glowing
  * layers drawn over them at full brightness, whatever the light: its eyes and the gold sigil on its
- * chest, always lit, and the writing on its pages, dim at rest and blazing while it casts.
+ * chest, always lit, and the writing on its pages, dim at rest and blazing while it casts or
+ * winds up a trick (and all but gone while it stands wiped blank).
  */
 public class ArchivistRenderer extends MobRenderer<Archivist, ArchivistRenderState, ArchivistModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("archivist"), "main");
@@ -37,7 +39,14 @@ public class ArchivistRenderer extends MobRenderer<Archivist, ArchivistRenderSta
 		}));
 		addLayer(new Glow(this, RUNES, state -> {
 			float glow = Math.max(state.casting, state.rewriting);
+			for (int i = 1; i < ArchivistRules.MOVES; i++) {
+				if (!ArchivistRules.open(i)) {
+					glow = Math.max(glow, state.moves[i]);
+				}
+			}
 			float alpha = 0.35F + 0.1F * Mth.sin(state.ageInTicks * 0.1F) + 0.6F * glow;
+			// Wiped blank, its pages hold almost nothing.
+			alpha *= 1 - 0.8F * state.moves[ArchivistRules.BLANK];
 			if (state.deathTime > 0) {
 				alpha *= Math.max(0, 1 - state.deathTime / 20F);
 			}
@@ -60,6 +69,12 @@ public class ArchivistRenderer extends MobRenderer<Archivist, ArchivistRenderSta
 		super.extractRenderState(archivist, state, partial);
 		state.casting = archivist.castPose(partial);
 		state.rewriting = archivist.rewritePose(partial);
+		state.move = archivist.currentMove();
+		state.tell = archivist.moveTell();
+		state.since = archivist.moveSince(partial);
+		for (int i = 0; i < ArchivistRules.MOVES; i++) {
+			state.moves[i] = archivist.moveBlend(i, partial);
+		}
 	}
 
 	/** It doesn't topple when it dies: it sinks into its robe and its pages scatter (see the model). */
