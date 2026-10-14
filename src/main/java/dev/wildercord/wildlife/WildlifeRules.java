@@ -39,7 +39,7 @@ public final class WildlifeRules {
 	public static final Kind MOSSBACK_TORTOISE = new Kind("mossback_tortoise", Pool.CREATURE, 5, 1, 2, 1.0, 4, 48, List.of(
 		"wildercord:luminous_reedlands", "minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle", "minecraft:bamboo_jungle"));
 	public static final Kind CINDERFOX = new Kind("cinderfox", Pool.CREATURE, 6, 1, 3, 1.0, 5, 48, List.of(
-		"minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands"));
+		"minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands", "wildercord:emberwood_reach"));
 	public static final Kind SKYRAY = new Kind("skyray", Pool.AMBIENT, 3, 1, 1, 1 / 800.0, 1, 112, List.of(
 		"wildercord:windscar_highlands", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_forest", "minecraft:meadow",
 		"minecraft:jagged_peaks", "minecraft:stony_peaks", "minecraft:snowy_slopes"));
@@ -55,7 +55,7 @@ public final class WildlifeRules {
 		"minecraft:snowy_taiga", "minecraft:snowy_plains", "minecraft:snowy_slopes", "minecraft:grove"));
 	/** The Dune Cougar (0.13): a tameable predator of the savannas and badlands (its own module, so not in {@link #ALL}). */
 	public static final Kind DUNE_COUGAR = new Kind("dune_cougar", Pool.CREATURE, 3, 1, 1, 1 / 2.0, 1, 64, List.of(
-		"minecraft:savanna", "minecraft:savanna_plateau", "minecraft:windswept_savanna", "minecraft:badlands", "minecraft:wooded_badlands"));
+		"minecraft:savanna", "minecraft:savanna_plateau", "minecraft:windswept_savanna", "minecraft:badlands", "minecraft:wooded_badlands", "wildercord:emberwood_reach"));
 	/** The Reefback Turtle (0.13): a water mount come ashore on beaches (a mount, so not in {@link #ALL}). */
 	public static final Kind REEFBACK_TURTLE = new Kind("reefback_turtle", Pool.CREATURE, ReefbackRules.WEIGHT, ReefbackRules.MIN_GROUP,
 		ReefbackRules.MAX_GROUP, 1 / 2.0, 2, 64, List.of("minecraft:beach", "minecraft:mangrove_swamp"));

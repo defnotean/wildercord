@@ -19,6 +19,10 @@ The [Belowkeeper Hollows](belowkeeper-hollows.md) open
 beneath dry hill country where dripstone caverns meet mossy clay vaults, Glowcap
 beds, listening stations and Mara's drainage works.
 
+The [Emberwood Reach](emberwood-reach.md) borders the
+wooded badlands with warm oak-and-birch woodland, podzol ash floors, Cinder Fern
+patches, charcoal yards and the Kiln Court.
+
 ## Where to go, roughly in order
 
 You can do most of these in any order. Early rows need only a Twine Cord and a few runes. Later rows want a strong
@@ -40,9 +44,9 @@ Cord, good armour and a plan.
 | 12 | [The Drowned Scriptorium](drowned-scriptorium.md) | The deep ocean floor | The Drowned Quill trophy |
 | 13 | [The Astral Observatory](astral-observatory.md) | The End's outer islands | The Astral Lens trophy |
 
-## 54 places to explore
+## 56 places to explore
 
-Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands, the Cairn Lodge and Survey Ring in the Windscar Highlands, and the Listening Station and Bell Sanctum in the Belowkeeper Hollows. Most are peaceful; a few hide a guard, a seal or a
+Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands, the Cairn Lodge and Survey Ring in the Windscar Highlands, the Listening Station and Bell Sanctum in the Belowkeeper Hollows, and the Charcoal Yard and Kiln Court in the Emberwood Reach. Most are peaceful; a few hide a guard, a seal or a
 small puzzle in front of their best chest. Walking into one earns its advancement, and many add an entry to your
 [lore journal](../progression/lore-journal.md).
 
@@ -52,11 +56,11 @@ upgrade tool doesn't add them either, so head out past the edge of your map to f
 | Family | Where | The sites |
 |---|---|---|
 | [Farmstead Sites](farm-sites.md) | Plains, forests, meadows, savannas, taigas | Windmill farmstead, herbalist's cottage, beekeeper's apiary, walled orchard, shepherd's hut, sunken mushroom ring, granary barn, scarecrow field |
-| [Master halls and shrines](masters-sites.md) | Badlands, windswept hills, peaks, snow, jungles, desert, cherry groves, deep caves | Forge Dojo, Wind Gate, Quarry Hall, Waterfall Shrine, Root Temple, Sundial Court, Star Terrace, Resonance Chamber |
+| [Master halls and shrines](masters-sites.md) | Badlands, Emberwood Reach, windswept hills, peaks, snow, jungles, desert, cherry groves, deep caves | Forge Dojo, Wind Gate, Quarry Hall, Waterfall Shrine, Root Temple, Sundial Court, Star Terrace, Resonance Chamber |
 | [Mines, Forges and Crystals](mine-sites.md) | Hills, meadows, underground, Belowkeeper Hollows, badlands, the Nether | Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry, Deepslate Vault, Prospector's Camp, Miner's Rest, Belowkeeper Listening Station, Belowkeeper Bell Sanctum |
 | [Roadside Sites](travel-sites.md) | Flat ground and highland shelves across the Overworld | Wayfarer Inn, Watchtower, Broken Bridge, Rune Library, Standing Stones, Caravan Camp, Cartographer's Hut, Vow Circle, Highland Cairn Lodge, Highland Survey Ring |
 | [Water Sites](water-sites.md) | Rivers, swamps, Luminous Reedlands, coasts, warm seas, frozen water | Tideward Reedkeeper Landing, The Last Crossing, Stilt Smokehouse, Lighthouse, Watermill, Ice Fishing Camp, Pier and Boathouse, Sunken Shrine, Net-Weavers' Huts, Tidepool Grotto |
-| [Wild Places](wilds-sites.md) | Jungle, desert, snow, badlands, cherry groves, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern |
+| [Wild Places](wilds-sites.md) | Jungle, desert, snow, badlands, Emberwood Reach, cherry groves, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern, Emberwood Charcoal Yard, Emberwood Kiln Court |
 
 ## Sword Masters
 
@@ -152,6 +156,7 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 - [Reed-Crowned Ferryman](reed-crowned-ferryman.md)
 - [Glass Cartographer](glass-cartographer.md)
 - [Hollow Bell](hollow-bell.md)
+- [Kiln Widow](kiln-widow.md)
 - [Lair Bosses](lair-bosses.md)
 - [Roaming Giants](roaming-giants.md)
 - [Expeditions and Relics](expeditions.md)
@@ -181,6 +186,7 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 
 **Caves and woods**
 - [Belowkeeper Hollows](belowkeeper-hollows.md)
+- [Emberwood Reach](emberwood-reach.md)
 - [Sporeback Snails](sporeback-snails.md)
 - [Glowcap Nurseries](glowcap-nurseries.md)
 - [Rootmolt Striders](rootmolt-striders.md)

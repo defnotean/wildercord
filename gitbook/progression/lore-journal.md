@@ -47,6 +47,7 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
   and lighthouses. Walk into their grounds to record them.
 - The [Windscar Highlands](../world/windscar-highlands.md), Highland Cairn Lodges and the Highland Survey Ring.
 - The [Belowkeeper Hollows](../world/belowkeeper-hollows.md), Belowkeeper Listening Stations and the Belowkeeper Bell Sanctum.
+- The [Emberwood Reach](../world/emberwood-reach.md), Emberwood Charcoal Yards and the Emberwood Kiln Court.
 
 **People**
 
@@ -54,7 +55,7 @@ Scroll with the mouse wheel. **Home** and **End** jump to the top and bottom.
 - Each [Sword Master](../masters/index.md) who greets you. A Master greets you once, the
   first time you come within about 20 blocks.
 - Each Master trial you win.
-- Tideward Reedkeepers you speak with at their Reedlands survey houses, Highland Cairn Keepers at their Windscar cairn lodges, and Belowkeeper Listeners at their subterranean listening stations.
+- Tideward Reedkeepers you speak with at their Reedlands survey houses, Highland Cairn Keepers at their Windscar cairn lodges, Belowkeeper Listeners at their subterranean listening stations, and Emberwood Kiln Keepers at their charcoal yards.
 
 **Learned**
 
@@ -95,6 +96,9 @@ straight away.
 | What the Empty Bell Kept | speak with a Belowkeeper Listener | hear the Bell Sanctum story | 20 XP, 1 Blank Rune |
 | The Pressure Records | finish What the Empty Bell Kept | visit a Collapsed Delve or Deepslate Vault | 30 XP, 2 Blank Runes |
 | The Resonance Shutter | finish The Pressure Records | stand beside a lit resonance shutter at a Belowkeeper Listening Station | 40 XP, 1 Aura Shard, 2 Blank Runes |
+| Eleven Winters at the Gate | speak with an Emberwood Kiln Keeper | hear the Kiln Widow story | 20 XP, 1 Blank Rune |
+| The Forge Records | finish Eleven Winters at the Gate | visit an Iron Gatehouse or Forge Dojo | 30 XP, 2 Blank Runes |
+| The Kiln Draft Lamp | finish The Forge Records | stand beside a lit kiln draft lamp at an Emberwood Charcoal Yard | 40 XP, 1 Aura Shard, 2 Blank Runes |
 
 The three chapters after The Scout's Wall continue the Marchkeeper scout's story. Watchtowers on hills, meadows and
 plains keep a copy of the watch orders; standing stones in plains, meadows and taiga keep *The
@@ -135,6 +139,13 @@ unclappered bell in the deep sanctum, then visit a Collapsed Delve or a Deepslat
 and stand beside the lit shutter lamp to complete **The Resonance Shutter**. These three chapters
 also pay 90 XP, five Blank Runes and one Aura Shard in total, once per player, without requiring
 combat or Aura rank.
+
+Eleven Winters at the Gate begins with an [Emberwood Kiln Keeper](../world/emberwood-reach.md)
+at an Emberwood Charcoal Yard. Sneak-use the keeper through their fourth story about the Kiln Widow
+in the firing court, then visit an Iron Gatehouse or a Forge Dojo to complete **The Forge Records**.
+Finally, flip the lever on a Charcoal Yard's eastern kiln draft stack and stand beside the lit draft
+lamp to complete **The Kiln Draft Lamp**. These three chapters pay 90 XP, five Blank Runes and one
+Aura Shard in total, once per player, without requiring combat or Aura rank.
 
 Older boathouses retain their existing furnishings and lighthouse books retain their existing pages.
 Their structure discoveries and working lamps still count toward the route, so an older building

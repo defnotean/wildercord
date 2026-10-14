@@ -36,6 +36,7 @@ public final class LoreQuestRules {
 	public static final String REEDKEEPER = "reedkeeper", FERRYMAN_STORY = "ferryman_story", BOATHOUSE = "boathouse", COAST_LIGHT = "coast_light";
 	public static final String CAIRN_KEEPER = "cairn_keeper", CARTOGRAPHER_STORY = "cartographer_story", RIDGE_SITE = "ridge_site", CAIRN_LAMP = "cairn_lamp";
 	public static final String BELOWKEEPER_LISTENER = "belowkeeper_listener", HOLLOW_BELL_STORY = "hollow_bell_story", DEEP_SITE = "deep_site", BELOWKEEPER_SHUTTER = "belowkeeper_shutter";
+	public static final String KILN_KEEPER = "kiln_keeper", KILN_WIDOW_STORY = "kiln_widow_story", FORGE_SITE = "forge_site", EMBERWOOD_DRAFT = "emberwood_draft";
 
 	/** A quest: what starts it, what finishes it, and what it pays (vanilla experience, Aura Shards, Blank Runes, Aura experience). */
 	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp, String prerequisite) {
@@ -66,7 +67,10 @@ public final class LoreQuestRules {
 		new Quest("cairn_beacon", RIDGE_SITE, CAIRN_LAMP, 40, 1, 2, 0, "ridge_orders"),
 		new Quest("empty_bell_kept", BELOWKEEPER_LISTENER, HOLLOW_BELL_STORY, 20, 0, 1, 0),
 		new Quest("pressure_records", HOLLOW_BELL_STORY, DEEP_SITE, 30, 0, 2, 0, "empty_bell_kept"),
-		new Quest("resonance_shutter", DEEP_SITE, BELOWKEEPER_SHUTTER, 40, 1, 2, 0, "pressure_records"));
+		new Quest("resonance_shutter", DEEP_SITE, BELOWKEEPER_SHUTTER, 40, 1, 2, 0, "pressure_records"),
+		new Quest("eleven_winters", KILN_KEEPER, KILN_WIDOW_STORY, 20, 0, 1, 0),
+		new Quest("forge_records", KILN_WIDOW_STORY, FORGE_SITE, 30, 0, 2, 0, "eleven_winters"),
+		new Quest("kiln_draft_lamp", FORGE_SITE, EMBERWOOD_DRAFT, 40, 1, 2, 0, "forge_records"));
 
 	public static Quest byId(String id) {
 		for (Quest quest : ALL) if (quest.id().equals(id)) return quest;
@@ -147,6 +151,10 @@ public final class LoreQuestRules {
 				case "said:belowkeeper_listener.hollow_bell" -> facts.add(HOLLOW_BELL_STORY);
 				case "place:mine_crystal_lab", "place:mine_collapsed_delve", "place:mine_deep_vault", "place:belowkeeper_bell_sanctum" -> facts.add(DEEP_SITE);
 				case "learned:belowkeeper_shutter" -> facts.add(BELOWKEEPER_SHUTTER);
+				case "person:kiln_keeper" -> facts.add(KILN_KEEPER);
+				case "said:kiln_keeper.kiln_widow" -> facts.add(KILN_WIDOW_STORY);
+				case "place:mine_forge_hall", "place:mine_prospector_camp", "place:mine_basalt_foundry", "place:emberwood_kiln_court" -> facts.add(FORGE_SITE);
+				case "learned:emberwood_draft" -> facts.add(EMBERWOOD_DRAFT);
 				case "duelist:ember" -> facts.add(TALK_EMBER);
 				case "duelist:gale" -> facts.add(TALK_GALE);
 				case "duelist:stone" -> facts.add(TALK_STONE);

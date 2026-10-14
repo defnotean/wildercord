@@ -69,7 +69,7 @@ public final class Attunements {
 			"Where the listening moss grows, be quieter than it.", "beside sculk"),
 		new Rule("mushroom_fields", Runes.SPOREBLOOM, Set.of("minecraft:mushroom_fields"), ALWAYS,
 			"On the island where the ground is fungus, and no monster walks.", "anywhere"),
-		new Rule("badlands", Runes.SUNSCORCH, Set.of("minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands"),
+		new Rule("badlands", Runes.SUNSCORCH, Set.of("minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands", "wildercord:emberwood_reach"),
 			p -> p.noon() && p.openSky(), "In the red canyons, when the sun stands at its highest.", "at noon, under open sky"),
 		new Rule("swamp", Runes.MIRE, Set.of("minecraft:swamp", "wildercord:luminous_reedlands"), p -> p.precipitation().equals("rain"),
 			"The murky marsh speaks only while the rain beats down on it.", "in the rain"),

@@ -24,7 +24,9 @@ class ExplicitPlanTests(unittest.TestCase):
         later = (addition, "dev.wildercord.world.biome.WindscarBiomeTest",
                  "dev.wildercord.world.cartographer.CartographerEncounterTest",
                  "dev.wildercord.world.biome.BelowkeeperBiomeTest",
-                 "dev.wildercord.world.hollowbell.HollowBellEncounterTest")
+                 "dev.wildercord.world.hollowbell.HollowBellEncounterTest",
+                 "dev.wildercord.world.biome.EmberwoodBiomeTest",
+                 "dev.wildercord.world.kilnwidow.KilnWidowEncounterTest")
         for current, old in zip(self.plan["groups"], previous["groups"]):
             self.assertEqual([e for e in current["entries"] if e not in later], old["entries"])
 
@@ -36,7 +38,9 @@ class ExplicitPlanTests(unittest.TestCase):
         self.assertEqual(self.plan["groups"][3]["entries"].count(addition), 1)
         later = (addition, "dev.wildercord.world.cartographer.CartographerEncounterTest",
                  "dev.wildercord.world.biome.BelowkeeperBiomeTest",
-                 "dev.wildercord.world.hollowbell.HollowBellEncounterTest")
+                 "dev.wildercord.world.hollowbell.HollowBellEncounterTest",
+                 "dev.wildercord.world.biome.EmberwoodBiomeTest",
+                 "dev.wildercord.world.kilnwidow.KilnWidowEncounterTest")
         for current, old in zip(self.plan["groups"], previous["groups"]):
             self.assertEqual([entry for entry in current["entries"] if entry not in later], old["entries"])
 
@@ -47,7 +51,9 @@ class ExplicitPlanTests(unittest.TestCase):
         self.assertEqual(self.entries.count(addition), 1)
         self.assertEqual(self.plan["groups"][3]["entries"].count(addition), 1)
         later = (addition, "dev.wildercord.world.biome.BelowkeeperBiomeTest",
-                 "dev.wildercord.world.hollowbell.HollowBellEncounterTest")
+                 "dev.wildercord.world.hollowbell.HollowBellEncounterTest",
+                 "dev.wildercord.world.biome.EmberwoodBiomeTest",
+                 "dev.wildercord.world.kilnwidow.KilnWidowEncounterTest")
         for current, old in zip(self.plan["groups"], previous["groups"]):
             self.assertEqual([entry for entry in current["entries"] if entry not in later], old["entries"])
 
@@ -60,8 +66,22 @@ class ExplicitPlanTests(unittest.TestCase):
         self.assertEqual(self.entries.count(bell), 1)
         self.assertEqual(self.plan["groups"][0]["entries"].count(biome), 1)
         self.assertEqual(self.plan["groups"][1]["entries"].count(bell), 1)
+        later = (biome, bell, "dev.wildercord.world.biome.EmberwoodBiomeTest",
+                 "dev.wildercord.world.kilnwidow.KilnWidowEncounterTest")
         for current, old in zip(self.plan["groups"], previous["groups"]):
-            self.assertEqual([entry for entry in current["entries"] if entry not in (biome, bell)], old["entries"])
+            self.assertEqual([entry for entry in current["entries"] if entry not in later], old["entries"])
+
+    def test_emberwood_addition_preserves_the_entire_347_class_plan(self):
+        previous = plan.read_json(suites.ROOT / "tools/tests/full-client-plan-v7-347.json")
+        self.assertEqual(plan.digest(previous), "3f55d0c3b180cce97854972ce5005ad5f7d691a397c23b74c55ff6ea728f2ca6")
+        biome = "dev.wildercord.world.biome.EmberwoodBiomeTest"
+        widow = "dev.wildercord.world.kilnwidow.KilnWidowEncounterTest"
+        self.assertEqual(self.entries.count(biome), 1)
+        self.assertEqual(self.entries.count(widow), 1)
+        self.assertEqual(self.plan["groups"][2]["entries"].count(biome), 1)
+        self.assertEqual(self.plan["groups"][3]["entries"].count(widow), 1)
+        for current, old in zip(self.plan["groups"], previous["groups"]):
+            self.assertEqual([entry for entry in current["entries"] if entry not in (biome, widow)], old["entries"])
 
     def setUp(self):
         self.entries = plan.read_json(suites.DESCRIPTOR)["entrypoints"]["fabric-client-gametest"]
@@ -74,13 +94,13 @@ class ExplicitPlanTests(unittest.TestCase):
             plan.validate_plan(self.entries, changed)
 
     def test_exact_reviewed_groups_and_independently_pinned_identity(self):
-        self.assertEqual(plan.digest(self.plan), "3f55d0c3b180cce97854972ce5005ad5f7d691a397c23b74c55ff6ea728f2ca6")
-        self.assertEqual(plan.digest(self.entries), "7d159da2f7552ff4e2e90b06cdf1b12006c5d936ddc2a0b1b6625b3f4be8d496")
+        self.assertEqual(plan.digest(self.plan), "2136c19ee0beaa49862ba0f9d770de5b2a5dabea8a2acfbdc5158dbdcdee5790")
+        self.assertEqual(plan.digest(self.entries), "63e4dae5883e2b9375df0bee213d66ca0ed01096a678c753f1840e079c8f3b40")
         self.assertEqual([plan.digest(group["entries"]) for group in self.plan["groups"]], [
             "327bfb218446fbe9a8363ae9518a7bd962340b63e0a6ba4c3fb6d9d070b125e0",
             "f31236382aa19a06efdb015338232e3a80eff2376084df4c308acd22ecb4bb5a",
-            "db7bbbbb5bc7948cf411270116731b8437e416dd0d70ae152e0c3c373020f306",
-            "78724d0a28f4eb45435c4c7a60584441720406f52f74369c980cc615502117e7"])
+            "c60cd408eabde5cf685e253fd663f432f75298418e4520c2a378762f42d8e23f",
+            "a966990a83c027c77706e505a91b9124c12cfad1fb1b5f92cc26052d15a49ef4"])
         full = suites.select_entries()
         for shard, group in zip(gate.SHARDS, self.plan["groups"]):
             selected = suites.select_entries(shard=shard)

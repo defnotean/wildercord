@@ -191,9 +191,14 @@ class WorldRunesTest {
 		var hollows = place("wildercord:belowkeeper_hollows", 0, 0, "none", false, false, 10);
 		assertEquals(STALACTITE, attuned(hollows));
 		assertEquals("dripstone_caves", Attunements.match(hollows).orElseThrow().id());
+		var emberwood = place("wildercord:emberwood_reach", 6000, 3, "none", true, false, 80);
+		assertEquals(SUNSCORCH, attuned(emberwood));
+		assertEquals("badlands", Attunements.match(emberwood).orElseThrow().id());
+		assertNull(attuned(place("wildercord:emberwood_reach", 12000, 3, "none", true, false, 80)));
 		assertTrue(Attunements.biomeHolds("wildercord:luminous_reedlands"));
 		assertTrue(Attunements.biomeHolds("wildercord:windscar_highlands"));
 		assertTrue(Attunements.biomeHolds("wildercord:belowkeeper_hollows"));
+		assertTrue(Attunements.biomeHolds("wildercord:emberwood_reach"));
 	}
 
 	@Test

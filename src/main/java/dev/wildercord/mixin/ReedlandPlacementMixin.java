@@ -2,6 +2,7 @@ package dev.wildercord.mixin;
 
 import com.mojang.datafixers.util.Pair;
 import dev.wildercord.world.biome.BelowkeeperClimate;
+import dev.wildercord.world.biome.EmberwoodClimate;
 import dev.wildercord.world.biome.ReedlandClimate;
 import dev.wildercord.world.biome.WindscarClimate;
 import net.minecraft.resources.ResourceKey;
@@ -20,6 +21,9 @@ abstract class ReedlandPlacementMixin {
 	@ModifyVariable(method = "addBiomes", at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> wildercord$regionalBiomes(
 		Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> output) {
-		return entry -> ReedlandClimate.emit(entry, wetland -> WindscarClimate.emit(wetland, hill -> BelowkeeperClimate.emit(hill, output)));
+		return entry -> ReedlandClimate.emit(entry,
+			wetland -> WindscarClimate.emit(wetland,
+				hill -> BelowkeeperClimate.emit(hill,
+					cave -> EmberwoodClimate.emit(cave, output))));
 	}
 }

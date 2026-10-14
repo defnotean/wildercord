@@ -26,6 +26,10 @@ The [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }}) op
 beneath dry hill country where dripstone caverns meet mossy clay vaults, Glowcap
 beds, listening stations and Mara's drainage works.
 
+The [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }}) borders the
+wooded badlands with warm oak-and-birch woodland, podzol ash floors, Cinder Fern
+patches, charcoal yards and the Kiln Court.
+
 ## Where to go, roughly in order
 
 You can do most of these in any order. Early rows need only a Twine Cord and a few runes. Later rows want a strong
@@ -47,9 +51,9 @@ Cord, good armour and a plan.
 | 12 | [The Drowned Scriptorium]({{ '/world/drowned-scriptorium/' | relative_url }}) | The deep ocean floor | The Drowned Quill trophy |
 | 13 | [The Astral Observatory]({{ '/world/astral-observatory/' | relative_url }}) | The End's outer islands | The Astral Lens trophy |
 
-## 54 places to explore
+## 56 places to explore
 
-Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands, the Cairn Lodge and Survey Ring in the Windscar Highlands, and the Listening Station and Bell Sanctum in the Belowkeeper Hollows. Most are peaceful; a few hide a guard, a seal or a
+Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands, the Cairn Lodge and Survey Ring in the Windscar Highlands, the Listening Station and Bell Sanctum in the Belowkeeper Hollows, and the Charcoal Yard and Kiln Court in the Emberwood Reach. Most are peaceful; a few hide a guard, a seal or a
 small puzzle in front of their best chest. Walking into one earns its advancement, and many add an entry to your
 [lore journal]({{ '/progression/lore-journal/' | relative_url }}).
 
@@ -59,11 +63,11 @@ upgrade tool doesn't add them either, so head out past the edge of your map to f
 | Family | Where | The sites |
 |---|---|---|
 | [Farmstead Sites]({{ '/world/farm-sites/' | relative_url }}) | Plains, forests, meadows, savannas, taigas | Windmill farmstead, herbalist's cottage, beekeeper's apiary, walled orchard, shepherd's hut, sunken mushroom ring, granary barn, scarecrow field |
-| [Master halls and shrines]({{ '/world/masters-sites/' | relative_url }}) | Badlands, windswept hills, peaks, snow, jungles, desert, cherry groves, deep caves | Forge Dojo, Wind Gate, Quarry Hall, Waterfall Shrine, Root Temple, Sundial Court, Star Terrace, Resonance Chamber |
+| [Master halls and shrines]({{ '/world/masters-sites/' | relative_url }}) | Badlands, Emberwood Reach, windswept hills, peaks, snow, jungles, desert, cherry groves, deep caves | Forge Dojo, Wind Gate, Quarry Hall, Waterfall Shrine, Root Temple, Sundial Court, Star Terrace, Resonance Chamber |
 | [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }}) | Hills, meadows, underground, Belowkeeper Hollows, badlands, the Nether | Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry, Deepslate Vault, Prospector's Camp, Miner's Rest, Belowkeeper Listening Station, Belowkeeper Bell Sanctum |
 | [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}) | Flat ground and highland shelves across the Overworld | Wayfarer Inn, Watchtower, Broken Bridge, Rune Library, Standing Stones, Caravan Camp, Cartographer's Hut, Vow Circle, Highland Cairn Lodge, Highland Survey Ring |
 | [Water Sites]({{ '/world/water-sites/' | relative_url }}) | Rivers, swamps, Luminous Reedlands, coasts, warm seas, frozen water | Tideward Reedkeeper Landing, The Last Crossing, Stilt Smokehouse, Lighthouse, Watermill, Ice Fishing Camp, Pier and Boathouse, Sunken Shrine, Net-Weavers' Huts, Tidepool Grotto |
-| [Wild Places]({{ '/world/wilds-sites/' | relative_url }}) | Jungle, desert, snow, badlands, cherry groves, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern |
+| [Wild Places]({{ '/world/wilds-sites/' | relative_url }}) | Jungle, desert, snow, badlands, Emberwood Reach, cherry groves, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern, Emberwood Charcoal Yard, Emberwood Kiln Court |
 
 ## Sword Masters
 
@@ -159,6 +163,7 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 - [Reed-Crowned Ferryman]({{ '/world/reed-crowned-ferryman/' | relative_url }})
 - [Glass Cartographer]({{ '/world/glass-cartographer/' | relative_url }})
 - [Hollow Bell]({{ '/world/hollow-bell/' | relative_url }})
+- [Kiln Widow]({{ '/world/kiln-widow/' | relative_url }})
 - [Lair Bosses]({{ '/world/lair-bosses/' | relative_url }})
 - [Roaming Giants]({{ '/world/roaming-giants/' | relative_url }})
 - [Expeditions and Relics]({{ '/world/expeditions/' | relative_url }})
@@ -188,6 +193,7 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 
 **Caves and woods**
 - [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }})
+- [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }})
 - [Sporeback Snails]({{ '/world/sporeback-snails/' | relative_url }})
 - [Glowcap Nurseries]({{ '/world/glowcap-nurseries/' | relative_url }})
 - [Rootmolt Striders]({{ '/world/rootmolt-striders/' | relative_url }})

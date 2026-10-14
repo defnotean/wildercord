@@ -1,7 +1,7 @@
 # Explicit full-client shard plan
 
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
-347-class descriptor as exactly four groups: **87 / 87 / 87 / 86**.
+349-class descriptor as exactly four groups: **87 / 87 / 88 / 87**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,
 manifest/aggregate tooling, and Gradle resource processing and launch preflight.
 There is no equal-count fallback or automatic assignment for newly added classes.
@@ -13,11 +13,11 @@ holds that reviewed plan so the tests can prove it.
 
 ## Identity and invariants
 
-- Plan schema 1, ID `full-client-explicit-v7-belowkeeper`.
+- Plan schema 1, ID `full-client-explicit-v8-emberwood`.
 - Ordered roster SHA-256:
-  `7d159da2f7552ff4e2e90b06cdf1b12006c5d936ddc2a0b1b6625b3f4be8d496`.
+  `63e4dae5883e2b9375df0bee213d66ca0ed01096a678c753f1840e079c8f3b40`.
 - Complete plan SHA-256:
-  `3f55d0c3b180cce97854972ce5005ad5f7d691a397c23b74c55ff6ea728f2ca6`.
+  `2136c19ee0beaa49862ba0f9d770de5b2a5dabea8a2acfbdc5158dbdcdee5790`.
 - Hashes use UTF-8 JSON with sorted object keys, compact separators and no trailing
   newline. The plan digest excludes no fields and is pinned in the selector.
   These are source identities, not claims of runtime acceptance.
@@ -53,6 +53,10 @@ holds that reviewed plan so the tests can prove it.
 - `BelowkeeperBiomeTest` is appended to group 1 and `HollowBellEncounterTest` is
   appended to group 2, following `CartographerEncounterTest` in the descriptor.
   The 345-class plan is frozen in `tools/tests/full-client-plan-v6-345.json`;
+  every old class stays in its original group and relative order.
+- `EmberwoodBiomeTest` is appended to group 3 and `KilnWidowEncounterTest` is
+  appended to group 4, following `HollowBellEncounterTest` in the descriptor.
+  The 347-class plan is frozen in `tools/tests/full-client-plan-v7-347.json`;
   every old class stays in its original group and relative order.
 
 Missing/foreign/duplicate/reordered classes, changed descriptors, invalid counts,

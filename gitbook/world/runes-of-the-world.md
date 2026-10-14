@@ -71,7 +71,7 @@ Each land gives you its rune **once per in-game day** (20 minutes of play). Slee
 | **Ice Spikes** | While **snow is falling on you** | [Hoarfrost](../runes/world.md#hoarfrost) | III |
 | **Deep Dark** | Within about **4 blocks of sculk** (any sculk block: sculk, veins, sensors, shriekers or catalysts) | [Hush](../runes/world.md#hush) | II |
 | **Mushroom Fields** | Any time | [Sporebloom](../runes/world.md#sporebloom) | II |
-| **Badlands** (plain, eroded or wooded) | **Around noon** (from mid-morning to mid-afternoon on the day clock), under open sky | [Sunscorch](../runes/world.md#sunscorch) | III |
+| **Badlands** (plain, eroded or wooded) or **Emberwood Reach** | **Around noon** (from mid-morning to mid-afternoon on the day clock), under open sky | [Sunscorch](../runes/world.md#sunscorch) | III |
 | **Swamp** or **Luminous Reedlands** | While **rain is falling on you** | [Mire](../runes/world.md#mire) | II |
 | **Lush Caves** | Any time | [Glowvine](../runes/world.md#glowvine) | I |
 | **Mangrove Swamp** | Any time | [Rootsnare](../runes/world.md#rootsnare) | II |
@@ -85,10 +85,10 @@ Each land gives you its rune **once per in-game day** (20 minutes of play). Slee
 
 Craft Blank Runes from 4 Cobblestone around 1 Lapis Lazuli. One craft makes 4. See [Items and Crafting](../items/index.md).
 
-Reedlands share the swamp's daily attunement rest, Windscar shares the peaks' rest, and
-Belowkeeper Hollows share the dripstone caves' rest. Walking across a biome border does
-not give a second rune before that rest ends. Rain and altitude requirements still apply
-in the regional biomes.
+Reedlands share the swamp's daily attunement rest, Windscar shares the peaks' rest,
+Belowkeeper Hollows share the dripstone caves' rest, and Emberwood Reach shares the
+badlands' rest. Walking across a biome border does not give a second rune before that
+rest ends. Rain, noon sky and altitude requirements still apply in the regional biomes.
 
 ### Dungeons and bosses
 

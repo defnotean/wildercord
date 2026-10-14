@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "planId": "full-client-explicit-v7-belowkeeper",
+  "planId": "full-client-explicit-v8-emberwood",
   "shardCount": 4,
-  "expectedCount": 347,
-  "orderedRosterSha256": "7d159da2f7552ff4e2e90b06cdf1b12006c5d936ddc2a0b1b6625b3f4be8d496",
+  "expectedCount": 349,
+  "orderedRosterSha256": "63e4dae5883e2b9375df0bee213d66ca0ed01096a678c753f1840e079c8f3b40",
   "executionProfile": {
     "execution": "complete",
     "animationGallery": true,
@@ -258,7 +258,7 @@
     },
     {
       "id": 3,
-      "expectedCount": 87,
+      "expectedCount": 88,
       "entries": [
         "dev.wildercord.gametest.WildercordPerformanceCastTest",
         "dev.wildercord.gametest.WildercordResonanceTest",
@@ -346,12 +346,13 @@
         "dev.wildercord.cast.FxSupportPackTest",
         "dev.wildercord.aura.world.MethodsAMastersNativeTest",
         "dev.wildercord.client.HudHandednessLayoutTest",
-        "dev.wildercord.world.sites.WildsSitesTest"
+        "dev.wildercord.world.sites.WildsSitesTest",
+        "dev.wildercord.world.biome.EmberwoodBiomeTest"
       ]
     },
     {
       "id": 4,
-      "expectedCount": 86,
+      "expectedCount": 87,
       "entries": [
         "dev.wildercord.wildlife.TidewardPendingReceiverTest",
         "dev.wildercord.wildlife.MixedWetlandPerformanceTest",
@@ -438,7 +439,8 @@
         "dev.wildercord.aura.world.MethodsBMastersClientTest",
         "dev.wildercord.world.sites.TravelSitesClientTest",
         "dev.wildercord.world.biome.WindscarBiomeTest",
-        "dev.wildercord.world.cartographer.CartographerEncounterTest"
+        "dev.wildercord.world.cartographer.CartographerEncounterTest",
+        "dev.wildercord.world.kilnwidow.KilnWidowEncounterTest"
       ]
     }
   ]

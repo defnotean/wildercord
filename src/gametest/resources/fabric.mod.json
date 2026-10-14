@@ -352,7 +352,9 @@
       "dev.wildercord.world.biome.WindscarBiomeTest",
       "dev.wildercord.world.cartographer.CartographerEncounterTest",
       "dev.wildercord.world.biome.BelowkeeperBiomeTest",
-      "dev.wildercord.world.hollowbell.HollowBellEncounterTest"
+      "dev.wildercord.world.hollowbell.HollowBellEncounterTest",
+      "dev.wildercord.world.biome.EmberwoodBiomeTest",
+      "dev.wildercord.world.kilnwidow.KilnWidowEncounterTest"
     ]
   },
   "mixins": [

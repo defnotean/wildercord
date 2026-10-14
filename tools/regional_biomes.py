@@ -7,6 +7,8 @@ LANG = {
     "journal.wildercord.entry.place.windscar_highlands": "Windscar Highlands. Gold-green grass follows the dry shelves between exposed stone ridges. The Marchkeepers say the wind never took a road; it only found the paths people had stopped tending. Take the ripe tassels of Windreed and leave its root for the next walker. Stonehorns graze the slopes, while a Galeclaw's warning carries farther than its footsteps. Watchtowers, standing stones and the Wind Gate can mark a way through the heights.",
     "biome.wildercord.belowkeeper_hollows": "Belowkeeper Hollows",
     "journal.wildercord.entry.place.belowkeeper_hollows": "Belowkeeper Hollows. Damp clay basins and copper-stained dripstone vaults where water carries the hum of the lower rock. Mara's listeners kept Glowcap beds under the stone arches so every watch had filter gills and steady light. Sporeback Snails, Mossveil Dormice and Rootmolt Striders share the dark, while Listening Stations, Drainhouses and the Bell Sanctum still hold the Belowkeepers' acoustic logs.",
+    "biome.wildercord.emberwood_reach": "Emberwood Reach",
+    "journal.wildercord.entry.place.emberwood_reach": "Emberwood Reach. Scorched oak woods and coarse-dirt firebreaks where Ashwin's charcoal burners cut timber for the southern forges. Harvest the cooled fronds of Cinder Fern and leave the root for the Cinder Bailiffs that patrol the ash beds. Cinderfoxes and Dune Cougars hunt the warm borders, while Charcoal Yards, Forge Dojos and the Kiln Court still keep the burners' tallies.",
 }
 
 
@@ -194,15 +196,78 @@ def belowkeeper():
     }
 
 
+def emberwood():
+    """Warm scorched oak-and-ash woodland with vanilla forest decoration order.
+
+    Cinder Fern patches, Cinder Bailiffs, Cinderfoxes and Dune Cougars join through their
+    existing biome modifiers. Keeping shared features in vanilla forest order prevents
+    cross-biome decoration cycles.
+    """
+    return {
+        "attributes": {
+            "minecraft:audio/background_music": {"default": {
+                "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.forest"}},
+            "minecraft:gameplay/natural_mob_spawns": {"modifier": "overlay", "argument": {
+                "spawn_costs": {},
+                "spawns_by_category": {
+                    "ambient": [_spawn("bat", 10, 8)],
+                    "creature": [_spawn("sheep", 12, 4), _spawn("pig", 10, 4),
+                                 _spawn("chicken", 10, 4), _spawn("cow", 8, 4),
+                                 _spawn("wolf", 5, 4)],
+                    "monster": [_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
+                                _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
+                                _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
+                                _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1)],
+                    "underground_water_creature": [_spawn("glow_squid", 10, 4, 6)],
+                },
+            }},
+            "minecraft:visual/sky_color": "#b49774",
+            "minecraft:visual/water_fog_color": "#3d332a",
+        },
+        "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
+        "downfall": 0.35,
+        "effects": {
+            "dry_foliage_color": "#9b6438", "foliage_color": "#8f713f",
+            "grass_color": "#9a8248", "grass_color_modifier": "none", "water_color": "#5d6a64",
+        },
+        "features": [
+            [],
+            ["minecraft:lake_lava_underground", "minecraft:lake_lava_surface"],
+            ["minecraft:amethyst_geode"],
+            ["minecraft:monster_room", "minecraft:monster_room_deep"],
+            [], [],
+            ["minecraft:" + name for name in (
+                "ore_dirt", "ore_gravel", "ore_granite_upper", "ore_granite_lower",
+                "ore_diorite_upper", "ore_diorite_lower", "ore_andesite_upper", "ore_andesite_lower",
+                "ore_tuff", "ore_coal_upper", "ore_coal_lower", "ore_iron_upper", "ore_iron_middle",
+                "ore_iron_small", "ore_gold", "ore_gold_lower", "ore_redstone", "ore_redstone_lower",
+                "ore_diamond", "ore_diamond_medium", "ore_diamond_large", "ore_diamond_buried",
+                "ore_lapis", "ore_lapis_buried", "ore_copper", "underwater_magma", "disk_sand",
+                "disk_clay", "disk_gravel")],
+            [],
+            ["minecraft:spring_water", "minecraft:spring_lava"],
+            ["minecraft:" + name for name in (
+                "glow_lichen", "forest_flowers", "trees_birch_and_oak_leaf_litter", "flower_default",
+                "patch_grass_forest", "brown_mushroom_normal", "red_mushroom_normal", "patch_pumpkin",
+                "patch_sugar_cane", "patch_berry_bush", "patch_firefly_bush_near_water")],
+            ["minecraft:freeze_top_layer"],
+        ],
+        "has_precipitation": True,
+        "temperature": 0.9,
+    }
+
+
 def write(g):
     g.write_json(g.DATA / "worldgen/biome/luminous_reedlands.json", reedlands())
     g.write_json(g.DATA / "worldgen/biome/windscar_highlands.json", windscar())
     g.write_json(g.DATA / "worldgen/biome/belowkeeper_hollows.json", belowkeeper())
+    g.write_json(g.DATA / "worldgen/biome/emberwood_reach.json", emberwood())
     # Appending to these tags preserves vanilla members and other packs' additions.
     for name, members in {
-        "is_overworld": ["wildercord:luminous_reedlands", "wildercord:windscar_highlands", "wildercord:belowkeeper_hollows"],
+        "is_overworld": ["wildercord:luminous_reedlands", "wildercord:windscar_highlands", "wildercord:belowkeeper_hollows", "wildercord:emberwood_reach"],
         "is_swamp": ["wildercord:luminous_reedlands"],
         "is_hill": ["wildercord:windscar_highlands"],
+        "is_forest": ["wildercord:emberwood_reach"],
     }.items():
         g.write_json(g.RES / "data/minecraft/tags/worldgen/biome" / (name + ".json"),
                      {"replace": False, "values": members})

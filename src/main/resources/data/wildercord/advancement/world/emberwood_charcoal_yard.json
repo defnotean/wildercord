@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "emberwood_charcoal_yard": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:emberwood_charcoal_yard"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:cinder_fern_frond"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.emberwood_charcoal_yard.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.emberwood_charcoal_yard.description"
+    }
+  },
+  "requirements": [
+    [
+      "emberwood_charcoal_yard"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

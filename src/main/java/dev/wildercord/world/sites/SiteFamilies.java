@@ -78,5 +78,8 @@ public final class SiteFamilies {
 		// ---- sites-belowkeeper pack
 		worldgen("wildercord:belowkeeper_listening_station", "New Belowkeeper Hollows listening station and Listener resident; generates only in new chunks.");
 		worldgen("wildercord:belowkeeper_bell_sanctum", "Optional Belowkeeper Bell Sanctum encounter; generates only in new chunks.");
+		// ---- sites-emberwood pack
+		worldgen("wildercord:emberwood_charcoal_yard", "New Emberwood Reach charcoal yard and Kiln Keeper resident; generates only in new chunks.");
+		worldgen("wildercord:emberwood_kiln_court", "Optional Emberwood Kiln Court encounter; generates only in new chunks.");
 	}
 }

@@ -171,6 +171,8 @@
   * [Glass Cartographer](world/glass-cartographer.md)
   * [Belowkeeper Hollows](world/belowkeeper-hollows.md)
   * [Hollow Bell](world/hollow-bell.md)
+  * [Emberwood Reach](world/emberwood-reach.md)
+  * [Kiln Widow](world/kiln-widow.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

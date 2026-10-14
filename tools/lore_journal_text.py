@@ -276,6 +276,27 @@ QUESTS.update({
         "Return to a Belowkeeper Listening Station in the Belowkeeper Hollows and flip the lever on its northeast shutter lamp.",
         "The shutter lamp shines across the damp vault. Any watch coming up from the lower galleries will know the roof holds.",
     ),
+    "eleven_winters": (
+        "Eleven Winters at the Gate",
+        "An Emberwood Kiln Keeper in the Emberwood Reach tends the charcoal kilns and Cinder Fern ash beds.",
+        "Hear the Kiln Keeper's story about The Kiln Widow.",
+        "Sneak-use an Emberwood Kiln Keeper at a Charcoal Yard until they speak of the Kiln Court.",
+        "Ashwin's burners built a ceramic kiln court where The Kiln Widow still guards the old firing tallies.",
+    ),
+    "forge_records": (
+        "The Southern Forge Ledgers",
+        "The Kiln Keeper says Mountain Forge Halls, Prospector's Camps, Basalt Foundries, and the Kiln Court share the burner tallies.",
+        "Visit a Mountain Forge Hall, Prospector's Camp, Basalt Foundry, or Emberwood Kiln Court.",
+        "Explore mountains, badlands, or the Emberwood Reach to enter a Forge Hall, Prospector's Camp, or Kiln Court.",
+        "The forge tallies agree: a charcoal yard stays safe from sparks only while someone keeps its draft lamp lit.",
+    ),
+    "kiln_draft_lamp": (
+        "A Lamp by the Kilns",
+        "Each Emberwood Charcoal Yard carries a shuttered draft lamp on its eastern brick stack.",
+        "Stand beside a lit draft lamp at an Emberwood Charcoal Yard.",
+        "Return to an Emberwood Charcoal Yard in the Emberwood Reach and flip the lever on its eastern draft lamp.",
+        "The draft lamp shines across the firebreak. Any burner walking the ash road at dusk will see the kiln is banked.",
+    ),
 })
 
 ENTRIES = {

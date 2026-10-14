@@ -15,7 +15,7 @@ SITES = {
                              ["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:ice_spikes", "minecraft:grove"], 34, 12,
                              "The Cold Bell", "Find a Rime Monastery in the snow", "minecraft:bell"),
     "wilds_iron_gatehouse": ("Iron Gatehouse", "surface_structures",
-                             ["minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands"], 40, 14,
+                             ["minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands", "wildercord:emberwood_reach"], 40, 14,
                              "The Last Gate", "Find an Iron Gatehouse in the badlands", "minecraft:iron_bars"),
     "wilds_dawn_pavilion": ("Dawn Pavilion", "surface_structures", ["minecraft:cherry_grove"], 28, 10,
                             "First Light", "Find a Dawn Pavilion in a cherry grove", "minecraft:cherry_log"),

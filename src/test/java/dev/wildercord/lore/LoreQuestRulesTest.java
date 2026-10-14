@@ -200,8 +200,10 @@ class LoreQuestRulesTest {
 		for (String entry : List.of("place:memorial", "place:tomb", "place:tournament", "place:sleeping_blade", "place:crossroads", "place:training",
 			"place:highland_cairn_lodge", "place:highland_survey_ring", "person:cairn_keeper",
 			"place:belowkeeper_listening_station", "place:belowkeeper_bell_sanctum", "person:belowkeeper_listener",
+			"place:emberwood_charcoal_yard", "place:emberwood_kiln_court", "person:kiln_keeper",
 			"learned:way", "learned:lineage", "learned:perfect_guard", "learned:technique", "learned:reaction", "learned:field_guide",
-			"learned:scout_wind_mark", "learned:glass_cartographer", "learned:belowkeeper_shutter", "learned:hollow_bell")) {
+			"learned:scout_wind_mark", "learned:glass_cartographer", "learned:belowkeeper_shutter", "learned:hollow_bell",
+			"learned:emberwood_draft", "learned:kiln_widow")) {
 			assertTrue(lang.has(LoreEntries.fixedKey(entry)), entry);
 		}
 		assertTrue(lang.has("key.wildercord.lore_journal"));
@@ -262,5 +264,33 @@ class LoreQuestRulesTest {
 		}
 		assertFalse(advance(stages, heard).changed(), "a completed belowkeeper route never pays again");
 		assertFalse(facts(List.of(), List.of("place:belowkeeper_listening_station"), false).contains(BELOWKEEPER_SHUTTER), "an unlit listening station is not a lit resonance shutter");
+	}
+
+	@Test
+	void emberwoodKilnRouteKeepsEarlierVisitsAndNeverCascadesWithinAPoll() {
+		Set<String> places = facts(List.of(), List.of("place:mine_forge_hall", "place:emberwood_charcoal_yard",
+			"learned:emberwood_draft", "said:kiln_keeper.firebreaks"), false);
+		assertFalse(advance(Map.of(), places).changed(), "draft lamps and forge visits alone cannot invent the Kiln Keeper's account");
+		Set<String> heard = new HashSet<>(places);
+		heard.addAll(facts(List.of(), List.of("person:kiln_keeper"), false));
+		Advance first = advance(Map.of(), heard);
+		assertEquals(List.of(quest("eleven_winters")), first.clued());
+		assertFalse(advance(first.quests(), heard).changed(), "greeting and firebreaks are not the final Kiln Court story");
+		heard.addAll(facts(List.of(), List.of("said:kiln_keeper.kiln_widow"), false));
+		Map<String, Integer> stages = first.quests();
+		for (String id : List.of("eleven_winters", "forge_records", "kiln_draft_lamp")) {
+			if (!id.equals("eleven_winters")) {
+				Advance clue = advance(stages, heard);
+				assertEquals(List.of(quest(id)), clue.clued());
+				assertTrue(clue.completed().isEmpty());
+				stages = clue.quests();
+			}
+			Advance done = advance(stages, heard);
+			assertEquals(List.of(quest(id)), done.completed(), "earlier forge and draft discoveries count in order");
+			assertTrue(done.clued().isEmpty(), "no chapter cascade in one poll");
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, heard).changed(), "a completed emberwood route never pays again");
+		assertFalse(facts(List.of(), List.of("place:emberwood_charcoal_yard"), false).contains(EMBERWOOD_DRAFT), "an unlit charcoal yard is not a lit kiln draft lamp");
 	}
 }
