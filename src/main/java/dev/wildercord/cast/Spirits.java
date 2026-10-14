@@ -174,7 +174,8 @@ public final class Spirits {
 			|| target instanceof dev.wildercord.aura.world.SwordMaster
 			|| target instanceof dev.wildercord.world.ferryman.ReedCrownedFerryman
 			|| target instanceof dev.wildercord.world.cartographer.GlassCartographer
-			|| target instanceof dev.wildercord.world.hollowbell.HollowBell;
+			|| target instanceof dev.wildercord.world.hollowbell.HollowBell
+			|| target instanceof dev.wildercord.world.kilnwidow.KilnWidow;
 	}
 
 	/** Freeze: {@link #hold} plus ice, which sets up Shatter. */
