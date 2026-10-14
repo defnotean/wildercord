@@ -21,7 +21,7 @@ user request to resume development authorizes continuing from this handoff.
   repository level. Do not reenable Actions, dispatch CI, synthesize green statuses,
   or delete historical failed runs to make the history appear successful.
 - Development uses `living-world-expansion` and draft
-  [PR #2](https://github.com/defnotean/wildercord/pull/2). The owner authorized
+  [PR #3](https://github.com/defnotean/wildercord/pull/3) (succeeding [PR #2](https://github.com/defnotean/wildercord/pull/2) after branch rename). The owner authorized
   coherent commits and pushes while developing. No release, merge or live-server
   deployment was requested. Preserve unrelated user changes.
 - VPS test checkout: `C:\wildercord-ci\repo`. The live server and world at

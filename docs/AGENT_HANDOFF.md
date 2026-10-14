@@ -12,7 +12,7 @@ a dated snapshot, not live process discovery.
 | Project | WilderCord, a Minecraft Java **26.3** mod, Fabric Loader **0.19.5**, Java **25** |
 | Repository | <https://github.com/defnotean/wildercord> |
 | Development branch | `living-world-expansion` (renamed from `defnotean/world-depth-audit`) |
-| Review | Draft [PR #2](https://github.com/defnotean/wildercord/pull/2); not merged or released |
+| Review | Draft [PR #3](https://github.com/defnotean/wildercord/pull/3) (succeeding [PR #2](https://github.com/defnotean/wildercord/pull/2) after branch rename); not merged or released |
 | Local workspace | `C:\Users\Eating\Desktop\WilderCord` |
 | Work baseline | `0a18358929180f1c4bc5cc4b827f7f92f05571c4` |
 | Last content candidate | `710dc620`, pushed to GitHub (`0476c86b` verified on `pandora-vps`; `710dc620` ready for VPS sync once `sshd` is restarted) |
