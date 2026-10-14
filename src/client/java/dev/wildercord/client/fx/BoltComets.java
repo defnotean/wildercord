@@ -43,23 +43,6 @@ public final class BoltComets {
 		if (level == null) {
 			return;
 		}
-		boolean hasBolt = false;
-		for (Entity e : level.entitiesForRendering()) {
-			if (e instanceof RuneBolt) {
-				hasBolt = true;
-				break;
-			}
-		}
-		if (hasBolt && mc.packetProcessor() != null) {
-			long gameTime = level.getGameTime();
-			mc.packetProcessor().processQueuedPackets();
-			if (mc.level != level) {
-				return;
-			}
-			if (level.getGameTime() != gameTime) {
-				level.getLevelData().setGameTime(gameTime);
-			}
-		}
 		DRAWN.removeIf(id -> level.getEntity(id) == null || level.getEntity(id).isRemoved());
 		for (Entity e : level.entitiesForRendering()) {
 			if (e instanceof RuneBolt bolt) {

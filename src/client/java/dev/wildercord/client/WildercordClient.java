@@ -141,6 +141,25 @@ public final class WildercordClient implements ClientModInitializer {
 			SpellHud.forget();
 		});
 
+		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+			if (client.packetProcessor() != null && client.level != null) {
+				boolean hasBolt = false;
+				for (var e : client.level.entitiesForRendering()) {
+					if (e instanceof dev.wildercord.cast.RuneBolt) {
+						hasBolt = true;
+						break;
+					}
+				}
+				if (hasBolt) {
+					long gameTime = client.level.getGameTime();
+					client.packetProcessor().processQueuedPackets();
+					if (client.level != null && client.level.getGameTime() != gameTime) {
+						client.level.getLevelData().setGameTime(gameTime);
+					}
+				}
+			}
+		});
+
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.level == null) {
 				// Out of the world: these let go of everything they remembered about it.
