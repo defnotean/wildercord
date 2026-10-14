@@ -1092,3 +1092,12 @@ the new real terrain test, Reedlands regression and actual screenshot inspection
    - Focused `CinderBailiffEcologyTest` at `3920b5c3`: receipt `48972ce8-41c4-45dc-8198-ef3bbaac3e02` (**passed**, `2m 19s`, `0` verification issues).
    - Focused `LoreJournalGameTest` at `3920b5c3`: receipt `7df2fbe5-f697-4a5d-b75d-06aec16bdf99` (**passed**, `2m 04s`, `0` verification issues).
 
+### BIO-05, POL-02..08, LOR-06, BOS-05: Cross-region world-depth audit & existing boss regression tour verified on VPS (`0d63abfa`)
+
+1. **Batch 5 (`0d63abfa` cross-region climate/site/quest/boss audit, lore canon reconciliation, and existing boss regressions):**
+   - Reconciled `docs/LORE_CANON.md` (`POL-02`) with Emberwood Reach, Charcoal Yards, Emberwood Kiln Keepers, The Kiln Widow, and the 3-chapter Eleven Winters at the Gate / The Southern Forge Ledgers / The Kiln Draft Lamp journal route.
+   - Added `RegionalWorldDepthAuditTest` (`BIO-05`, `POL-03`, `POL-04`, `POL-06`, `POL-08`, `LOR-06`), verifying 24-permutation climate adapter commutativity and idempotence across all four regional biomes, shared parent attunement rules (`15` rules), unique structure salts and valid spacing across all eight regional sites, finite 3-chapter quest rewards (`90 XP`, `5 Blank Runes`, `1 Aura Shard` once per route), complete journal entry and resident dialogue translation coverage, and regional boss rule invariants.
+   - Owned `build` at `0d63abfa`: receipt `2d1da2fc-6fcf-4c7a-bbdd-907bd5ac6d39` (**passed**, `2,755` JUnit tests, `0` failures, `9,081` generated asset paths, and `197` guide pages).
+   - Focused `NewEncountersTest` (`RootGuardian` + `StormConductor`, `BOS-05`) at `0d63abfa`: receipt `11b2b5d7-a88c-4b74-90b2-8c6cf195313a` (**passed**, `2m 00s`, `0` verification issues, `root_guardian_bound.png`, `root_guardian_exposed.png`, `storm_conductor_grounded.png`).
+   - Focused `WildercordDungeonsTest` (`CinderWarden` + `StarEater` + `TideScribe`, `BOS-05`) at `0d63abfa`: receipt `f170838d-2325-4341-bedc-6e1da5a5fbcf` (**passed**, `2m 28s`, `0` verification issues).
+

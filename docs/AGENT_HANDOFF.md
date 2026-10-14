@@ -15,12 +15,12 @@ a dated snapshot, not live process discovery.
 | Review | Draft [PR #2](https://github.com/defnotean/wildercord/pull/2); not merged or released |
 | Local workspace | `C:\Users\Eating\Desktop\WilderCord` |
 | Work baseline | `0a18358929180f1c4bc5cc4b827f7f92f05571c4` |
-| Last content candidate | `3920b5c3f6cf9c5e3d0002b86858d1aa785f73d3`, pushed to GitHub and verified on `pandora-vps` |
-| Immediately preceding checkpoint | `2fa5deafa4df89a32805205824f047c17248134d` (`3778d1eb` + Batch 3 handoff docs) |
+| Last content candidate | `0d63abfaee47919c6d260661189315ff680084d1`, pushed to GitHub and verified on `pandora-vps` |
+| Immediately preceding checkpoint | `9852024dc36feaf456efda9d91a5d54d4f16060b` (`3920b5c3` + Batch 4 handoff docs) |
 | Development goal | **Active** (resumed by owner on 2026-10-13) |
 | Scheduled continuation | **ACTIVE**, 15-minute recurring development heartbeat |
 | GitHub Actions | Repository-wide **disabled**; build/docs workflows also disabled |
-| Owned VPS work | Batch 1 (`BIO-02`), Batch 2 (`BLD-03`, `NPC-03`, `LOR-03`, `BOS-03`), Batch 3 (`BIO-04`, `BLD-02`, `NPC-02`, `LOR-02`, `BOS-01`), and Batch 4 (`BIO-03`, `BLD-04`, `NPC-04`, `LOR-04`, `BOS-04`) verified on `WIN-I2GBVRRD872` |
+| Owned VPS work | Batch 1 (`BIO-02`), Batch 2 (`BLD-03`, `NPC-03`, `LOR-03`, `BOS-03`), Batch 3 (`BIO-04`, `BLD-02`, `NPC-02`, `LOR-02`, `BOS-01`), Batch 4 (`BIO-03`, `BLD-04`, `NPC-04`, `LOR-04`, `BOS-04`), and Batch 5 (`BIO-05`, `POL-02..08`, `LOR-06`, `BOS-05`) verified on `WIN-I2GBVRRD872` |
 | Live Minecraft server | Left running and unchanged (`PID 24072` in `C:\wildercord`) |
 
 The owner originally asked for a repository-wide audit, a detailed expansion list,
@@ -28,14 +28,13 @@ and sustained development of bosses, buildings, NPCs, custom biomes, legends, lo
 and polish, with regular GitHub pushes. They required **all future tests on
 the VPS, no GitHub CI**, and later explicitly resumed work one batch at a time.
 
-Candidate `3920b5c3` completes the connected **Emberwood Reach** slice (`BIO-03`
-Emberwood Reach fire-adapted woodland biome, `BLD-04` Emberwood Charcoal Yard &
-Kiln Court, `NPC-04` Emberwood Kiln Keeper, `LOR-04` 3-chapter Eleven Winters at
-the Gate / The Southern Forge Ledgers / The Kiln Draft Lamp journal route, and
-`BOS-04` The Kiln Widow) and passes the owned VPS build (`2,749` JUnit tests,
-`9,081` generated asset paths, and `197` guide pages) plus focused native
-`EmberwoodBiomeTest`, `KilnWidowEncounterTest`, `CinderBailiffEcologyTest`, and
-`LoreJournalGameTest`.
+Candidate `0d63abfa` completes the connected **Emberwood Reach** slice (`3920b5c3`)
+plus the **Cross-Region World-Depth Audit, Lore Canon Reconciliation & Existing
+Boss Regression Tour** (`BIO-05`, `POL-02..08`, `LOR-06`, `BOS-05`) and passes the
+owned VPS build (`2,755` JUnit tests, `9,081` generated asset paths, and `197`
+guide pages) plus focused native `NewEncountersTest` (`RootGuardian` +
+`StormConductor`) and `WildercordDungeonsTest` (`CinderWarden` + `StarEater` +
+`TideScribe`).
 
 ## 2. Where the full context lives
 
@@ -244,6 +243,23 @@ Native coverage: `ReedlandBiomeTest`, `ReedkeeperLandingChecks`, `DrownedRoadChe
   and a one-time `Compass of the Cooled Kiln` (`cooled_kiln_compass`) + `80 XP` +
   `learned:kiln_widow` reward.
 
+### Cross-region world-depth audit, lore canon & existing boss regression — native evidence available (`0d63abfa`)
+
+- **Lore Canon Reconciliation (`POL-02`)**: updated `docs/LORE_CANON.md` with Emberwood
+  Reach, Emberwood Charcoal Yards, Emberwood Kiln Keepers, The Kiln Widow, and the
+  3-chapter Eleven Winters at the Gate / The Southern Forge Ledgers / The Kiln Draft
+  Lamp journal route.
+- **Cross-Region World-Depth Audit (`BIO-05`, `POL-03..08`, `LOR-06`)**: added
+  `RegionalWorldDepthAuditTest` verifying 24-permutation climate adapter commutativity
+  and idempotence across all four regional biomes, shared parent attunement rules (`15`
+  rules), unique structure salts and valid spacing across all eight regional sites,
+  finite 3-chapter quest rewards (`90 XP`, `5 Blank Runes`, `1 Aura Shard` once per
+  route), complete journal entry and resident dialogue translation coverage, and
+  regional boss rule invariants.
+- **Existing Boss Regression Tour (`BOS-05`)**: verified native `NewEncountersTest`
+  (`RootGuardian` + `StormConductor`) and `WildercordDungeonsTest` (`CinderWarden` +
+  `StarEater` + `TideScribe`) on `pandora-vps` after all four regional expansions.
+
 ## 5. Evidence index — do not merge scopes
 
 These are actual VPS receipts. Full `result.json`, logs and screenshots are
@@ -253,6 +269,9 @@ artifacts are ignored by Git. A fresh clone has this index, not all raw evidence
 
 | Check | Candidate | Result | Receipt UUID |
 | --- | --- | --- | --- |
+| Owned build, native compilation, 2,755 JUnit cases, 9,081 generated paths, 197 guide pages | `0d63abfa` | Pass; no JUnit failures/errors/skips | `2d1da2fc-6fcf-4c7a-bbdd-907bd5ac6d39` |
+| Root Guardian & Storm Conductor native boss regression (`NewEncountersTest`) | `0d63abfa` | Pass, 2m 00s; `root_guardian_bound.png`, `root_guardian_exposed.png`, `storm_conductor_grounded.png` | `11b2b5d7-a88c-4b74-90b2-8c6cf195313a` |
+| Cinder Warden, Star-Eater & Tide Scribe dungeon boss regression (`WildercordDungeonsTest`) | `0d63abfa` | Pass, 2m 28s | `f170838d-2325-4341-bedc-6e1da5a5fbcf` |
 | Owned build, native compilation, 2,749 JUnit cases, 9,081 generated paths, 197 guide pages | `3920b5c3` | Pass; no JUnit failures/errors/skips | `e9508d34-d240-40e8-bf9c-cf850a58b05b` |
 | Emberwood Reach terrain, Charcoal Yard, Kiln Keeper, and Eleven Winters 3-chapter route | `3920b5c3` | Pass, 3m 03s; `emberwood_reach_terrain.png` + `emberwood_charcoal_yard.png` | `f6a12b04-7dfa-4b66-b4cc-cd8d3be0031f` |
 | Full Kiln Widow encounter, Kiln Court chunk replay, Minimal-particle tells, and victory return dialogue | `3920b5c3` | Pass, 3m 21s; 4 encounter screenshots | `347b60af-3d00-4a1c-9812-e55f868f92ee` |
