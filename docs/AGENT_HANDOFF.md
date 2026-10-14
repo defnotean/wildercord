@@ -15,26 +15,33 @@ a dated snapshot, not live process discovery.
 | Review | Draft [PR #2](https://github.com/defnotean/wildercord/pull/2); not merged or released |
 | Local workspace | `C:\Users\Eating\Desktop\WilderCord` |
 | Work baseline | `0a18358929180f1c4bc5cc4b827f7f92f05571c4` |
-| Last content candidate | `0d63abfaee47919c6d260661189315ff680084d1`, pushed to GitHub and verified on `pandora-vps` |
-| Immediately preceding checkpoint | `9852024dc36feaf456efda9d91a5d54d4f16060b` (`3920b5c3` + Batch 4 handoff docs) |
-| Development goal | **Active** (resumed by owner on 2026-10-13) |
-| Scheduled continuation | **ACTIVE**, 15-minute recurring development heartbeat |
+| Last content candidate | `710dc620`, pushed to GitHub (`0476c86b` verified on `pandora-vps`; `710dc620` ready for VPS sync once `sshd` is restarted) |
+| Immediately preceding checkpoint | `0476c86bc6ec1476062ead27c8ed11b872716201` (verified build, Masters 47-class gate, articulated 6-class suite, and Siltcrest stabilization) |
+| Development goal | **Waiting for `sshd` restart on `pandora-vps`** (owner away from home; resume VPS 4-shard run once `sshd` is restarted) |
+| Scheduled continuation | **PAUSED** while `pandora-vps` (`192.168.1.110:22`) is wedged in pre-auth |
 | GitHub Actions | Repository-wide **disabled**; build/docs workflows also disabled |
-| Owned VPS work | Batch 1 (`BIO-02`), Batch 2 (`BLD-03`, `NPC-03`, `LOR-03`, `BOS-03`), Batch 3 (`BIO-04`, `BLD-02`, `NPC-02`, `LOR-02`, `BOS-01`), Batch 4 (`BIO-03`, `BLD-04`, `NPC-04`, `LOR-04`, `BOS-04`), and Batch 5 (`BIO-05`, `POL-02..08`, `LOR-06`, `BOS-05`) verified on `WIN-I2GBVRRD872` |
-| Live Minecraft server | Left running and unchanged (`PID 24072` in `C:\wildercord`) |
+| Owned VPS work | Batches 1–5, plus Batch 6 (`132` Python gate tests, release packaging audit, 6-class `articulated` suite, 47-class `required-masters-aggregate` gate, `SiltcrestPresentationTest` stabilization, and heap-dump root-cause diagnosis of `IntegratedServer` retention) verified on `WIN-I2GBVRRD872` |
+| Live Minecraft server | Left running and unchanged (`PID 4724` in `C:\wildercord`) |
 
 The owner originally asked for a repository-wide audit, a detailed expansion list,
 and sustained development of bosses, buildings, NPCs, custom biomes, legends, lore
 and polish, with regular GitHub pushes. They required **all future tests on
 the VPS, no GitHub CI**, and later explicitly resumed work one batch at a time.
 
-Candidate `0d63abfa` completes the connected **Emberwood Reach** slice (`3920b5c3`)
-plus the **Cross-Region World-Depth Audit, Lore Canon Reconciliation & Existing
-Boss Regression Tour** (`BIO-05`, `POL-02..08`, `LOR-06`, `BOS-05`) and passes the
-owned VPS build (`2,755` JUnit tests, `9,081` generated asset paths, and `197`
-guide pages) plus focused native `NewEncountersTest` (`RootGuardian` +
-`StormConductor`) and `WildercordDungeonsTest` (`CinderWarden` + `StarEater` +
-`TideScribe`).
+Candidate `0476c86b` passes the owned VPS build (`4ce8196d-c56f-4f2b-a43a-9e0c4040466a`,
+`2,755` JUnit tests, `9,081` generated asset paths, `197` guide pages), all `132`
+Python protocol/gate unit tests, release packaging audit (`29,214,149` bytes), the
+complete 6-class `articulated` suite (`65705560-fbcc-4759-9adb-446f8892aa90`), the
+complete 47-class `required-masters-aggregate` gate (`batch 1791952000`:
+`43fc14bd-645a-4f84-9ead-8ecc334c1fce`, `713a7f5f-5e2e-47aa-af05-4039c15d6b62`,
+`9750c316-30db-4819-a5cc-a7b5e98a6a4d`), and focused `SiltcrestPresentationTest`
+(`020fca8f-0345-46bd-8e0a-f88cca13559b`). Commit `710dc620` (`ServerDisconnects` +
+`ExcisePlayerRemovalMixin`) resolves the exact root cause of both the `IntegratedServer`
+memory leak (`ServerNetworkingImpl.PLAY.trackedAddons` retaining closed singleplayer
+worlds when `RootCarry`'s `DISCONNECT` listener mutated `ServerPlayer` attachments on
+the `Render thread` inside `Connection.channelInactive` and tripped
+`PlayerAttachmentThreadDiagnosticsMixin` before `AbstractNetworkAddon.endSession()`)
+and the historical off-thread attachment save race.
 
 ## 2. Where the full context lives
 
@@ -260,6 +267,43 @@ Native coverage: `ReedlandBiomeTest`, `ReedkeeperLandingChecks`, `DrownedRoadChe
   (`RootGuardian` + `StormConductor`) and `WildercordDungeonsTest` (`CinderWarden` +
   `StarEater` + `TideScribe`) on `pandora-vps` after all four regional expansions.
 
+### Batch 6 native gates, Siltcrest stabilization & `IntegratedServer` leak resolution (`0476c86b` / `710dc620`)
+
+- **Complete 47-Class `required-masters-aggregate` Gate (`batch 1791952000`)**: all three
+  required Masters suites (`masters-core` 44 classes, `masters-march-mechanics` 1 class,
+  `masters-march-visuals` 2 classes) passed on `pandora-vps` and passed
+  `tools/masters_required_ci.py` (`focusedClientGate: "passed"`,
+  `artifacts/review/world-depth/vps-native/masters-aggregate-1791952000.json`).
+- **Complete 6-Class `articulated` Suite**: passed on `pandora-vps` in `41m 22s`
+  (`65705560-fbcc-4759-9adb-446f8892aa90`).
+- **Python Protocol/Gate Unit Tests & Release Packaging Audit**: all `132` unit tests in
+  `tools/test_*.py` passed on `pandora-vps`, and `tools/build_profiles.py` +
+  `tools/audit_packages.py` passed (`wildercord-0.13.0-alpha+mc26.3.jar` at `29,214,149`
+  bytes, `within_32_mib_raw_file_limit: true`).
+- **`SiltcrestPresentationTest` Stabilization (`654b8106` & `0476c86b`)**:
+  `BitternShelterGoal.findShelter` now completes the full 6-block radius sweep on each
+  activation tick, and `SiltcrestPresentationWitness.classifyRefusal` recognizes
+  `REACH_ONLY_STRIKE`. Verified in focused mode (`020fca8f-0345-46bd-8e0a-f88cca13559b`)
+  and inside `shard 1/4` (class `38 / 87`, `38.36s`).
+- **`IntegratedServer` Memory Leak & Off-Thread Disconnect Race Fix (`710dc620`)**:
+  forensic heap-dump (`C:\wildercord-ci\dump.hprof`, `538 MB`) and stack-trace analysis
+  established that when a singleplayer world closes on the client `Render thread`,
+  Netty's `LocalChannel` synchronously calls `Connection.channelInactive` ->
+  `ServerPlayNetworkAddon.handleDisconnect()` -> `ServerPlayConnectionEvents.DISCONNECT`
+  on the `Render thread` (`!server.isSameThread()`). Listener `[22]`
+  (`RootCarry.java:91`) called `h.player.removeAttached(SELECT)` off-thread, causing
+  `PlayerAttachmentThreadDiagnosticsMixin` to throw `AssertionError` before
+  `AbstractNetworkAddon.handleDisconnect()` could call `this.endSession()` (while Netty's
+  `Connection.exceptionCaught` silently swallowed the exception because `!channel.isOpen()`).
+  That left every closed world's `ServerPlayNetworkAddon` in
+  `ServerNetworkingImpl.PLAY.trackedAddons`, retaining ~45 MB per closed `IntegratedServer`
+  until `shard 1/4` hit `OutOfMemoryError` at class `69 / 87` (and was also the exact cause
+  of the historical off-thread attachment `ConcurrentModificationException` during player
+  saves). `dev.wildercord.net.ServerDisconnects` and `ExcisePlayerRemovalMixin` marshal
+  all 59 WilderCord `DISCONNECT` listeners onto the owning `MinecraftServer` thread and
+  flush pending off-thread disconnects at `SERVER_STOPPING` and at the head of
+  `PlayerList.remove`, `saveAll`, and `removeAll`.
+
 ## 5. Evidence index — do not merge scopes
 
 These are actual VPS receipts. Full `result.json`, logs and screenshots are
@@ -269,6 +313,13 @@ artifacts are ignored by Git. A fresh clone has this index, not all raw evidence
 
 | Check | Candidate | Result | Receipt UUID |
 | --- | --- | --- | --- |
+| Owned build, native compilation, 2,755 JUnit cases, 9,081 generated paths, 197 guide pages | `0476c86b` | Pass; no JUnit failures/errors/skips | `4ce8196d-c56f-4f2b-a43a-9e0c4040466a` |
+| Focused `SiltcrestPresentationTest` (shelter sweep + reach-only refusal) | `0476c86b` | Pass, 2m 08s | `020fca8f-0345-46bd-8e0a-f88cca13559b` |
+| Complete 6-class `articulated` suite | `708172ec` | Pass, 41m 22s | `65705560-fbcc-4759-9adb-446f8892aa90` |
+| Complete `masters-core` part (44 classes, `batch 1791952000`) | `708172ec` | Pass, 31m 39s | `43fc14bd-645a-4f84-9ead-8ecc334c1fce` |
+| Complete `masters-march-mechanics` part (1 class, `batch 1791952000`) | `708172ec` | Pass, 7m 11s | `713a7f5f-5e2e-47aa-af05-4039c15d6b62` |
+| Complete `masters-march-visuals` part (2 classes, `batch 1791952000`) | `708172ec` | Pass, 4m 56s | `9750c316-30db-4819-a5cc-a7b5e98a6a4d` |
+| Combined 47-class `required-masters-aggregate` (`batch 1791952000`) | `708172ec` | Pass (`focusedClientGate: "passed"`) | `masters-aggregate-1791952000.json` |
 | Owned build, native compilation, 2,755 JUnit cases, 9,081 generated paths, 197 guide pages | `0d63abfa` | Pass; no JUnit failures/errors/skips | `2d1da2fc-6fcf-4c7a-bbdd-907bd5ac6d39` |
 | Root Guardian & Storm Conductor native boss regression (`NewEncountersTest`) | `0d63abfa` | Pass, 2m 00s; `root_guardian_bound.png`, `root_guardian_exposed.png`, `storm_conductor_grounded.png` | `11b2b5d7-a88c-4b74-90b2-8c6cf195313a` |
 | Cinder Warden, Star-Eater & Tide Scribe dungeon boss regression (`WildercordDungeonsTest`) | `0d63abfa` | Pass, 2m 28s | `f170838d-2325-4341-bedc-6e1da5a5fbcf` |
@@ -437,34 +488,53 @@ the declared timeout. Stop only a verified owned runner if interruption is neede
 Never issue a blanket Java kill. A stale `result.json` marked running is not proof
 of a live process; use process ownership plus interruption/completion records.
 
-## 9. Exact next work, when authorized
+## 9. Exact next work once `sshd` on `pandora-vps` is restarted
 
-1. **Batch 5 — Return Visits, Progression, and Boss/Site Polish (`BLD-05`, `NPC-01`, `POL-03..08`, `BOS-05`).**
-2. **Batch 6 — Full Native Gate & Paired Matrix Verification on `pandora-vps`.**
+1. **Restart `sshd` on `pandora-vps` (`192.168.1.110`)**:
+   - Run `Restart-Service sshd` on `WIN-I2GBVRRD872` (`192.168.1.110`) to clear the wedged pre-auth `sshd.exe` child pipes.
+2. **Sync `710dc620` (or latest `HEAD`), delete `C:\wildercord-ci\dump.hprof`, and run the 4-shard full-client matrix (`1/4`–`4/4`) on `pandora-vps`**:
+   ```powershell
+   Remove-Item -Force -ErrorAction SilentlyContinue C:\wildercord-ci\dump.hprof
+   Set-Location C:\wildercord-ci\repo
+   git fetch origin defnotean/world-depth-audit
+   git checkout --detach origin/defnotean/world-depth-audit
+   git clean -fd -e build/vps-runs
 
-Keep the user's preference for substantial connected detail: useful residents,
-clear encounter tells, return visits, meaningful resources, persistence and lore
-that points to something a player can actually do. Read the canon before adding
-named people. Do not duplicate already implemented Root Guardian/Storm Conductor
-content. Do not mark this broad project finished because a milestone or budget ends.
+   $env:JAVA_HOME='C:\java\jdk-25.0.4.1+1'
+   $env:GRADLE_USER_HOME='C:\wildercord-ci\gradle'
+   $env:PATH="C:\wildercord-ci\venv\Scripts;$env:JAVA_HOME\bin;$env:PATH"
+   $env:PYTHONUTF8='1'
+   $candidate=(git rev-parse HEAD).Trim()
+   $batch=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
 
-## 10. Known unresolved risks
+   python tools/run_vps_checks.py build --head $candidate --computer WIN-I2GBVRRD872
+   python tools/run_vps_checks.py shard --shard 1/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
+   python tools/run_vps_checks.py shard --shard 2/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
+   python tools/run_vps_checks.py shard --shard 3/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
+   python tools/run_vps_checks.py shard --shard 4/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
+   ```
+3. **Aggregate all four shard manifests with `tools/full_client_ci.py` and record the final receipts.**
 
-- A former long group exhausted an approximately 4 GiB heap near
-  `LifeOutcomeEdgesTest` after roughly 38–40 minutes. Concrete fixture references
-  were cleaned up, including Watchweft before that point. Some other cleaned
-  fixtures run later or in other groups and cannot explain that original failure.
-  The paused rerun is inconclusive. Capture actual retention evidence before
-  claiming a root cause or raising the heap merely to hide it.
-- Intermittent Siltcrest shelter/return observations and a broader historical
-  attachment-save concurrent-modification issue remain open. The Excise lifecycle
-  repair and focused ecology passes are real but narrower than those broad issues.
+## 10. Resolved & remaining risks
+
+- **Resolved (`710dc620`, pending VPS verification once `sshd` restarts)**:
+  Both the cumulative `IntegratedServer` heap retention (`~45 MB` per closed world via
+  `ServerNetworkingImpl.PLAY.trackedAddons`) and the historical off-thread attachment
+  `ConcurrentModificationException` during player save traced to the same root cause:
+  `Connection.channelInactive` invoking `ServerPlayNetworkAddon.handleDisconnect()` ->
+  `ServerPlayConnectionEvents.DISCONNECT` on the client `Render thread`, where
+  `RootCarry.java:91` mutated `ServerPlayer` attachments off-thread and triggered
+  `PlayerAttachmentThreadDiagnosticsMixin` (`AssertionError`), skipping
+  `AbstractNetworkAddon.endSession()`. `ServerDisconnects` and
+  `ExcisePlayerRemovalMixin` now marshal all 59 WilderCord `DISCONNECT` listeners onto
+  the owning `MinecraftServer` thread and flush pending off-thread disconnects before
+  player saves and shutdown.
+- **Resolved (`654b8106` & `0476c86b`, verified in `020fca8f-0345-46bd-8e0a-f88cca13559b` and inside `shard 1/4`)**:
+  `SiltcrestPresentationTest` shelter search sweep and reach-only strike refusal
+  classification.
 - The original Arts failure receipt `94575240-8a03-409b-8850-022bb8c326ed` is retained.
   It exposed random elite conversion in an ordinary fixture. The fixed full pass
   is `ec4d309d-…`; preserve both rather than erasing failed evidence.
-- Windscar's chosen natural seed, census, first harvest foothold and screenshot
-  have not been observed yet. They are explicit pending acceptance, not claims
-  supported by the earlier Reedlands images.
 - No new release, PR merge or live deployment has been performed. Old downloads
   and public guide pages may therefore differ from the development branch.
 
