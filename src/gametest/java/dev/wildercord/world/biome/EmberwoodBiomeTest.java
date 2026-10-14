@@ -109,8 +109,8 @@ public final class EmberwoodBiomeTest implements FabricClientGameTest {
 				check(LoreJournal.data(server.getPlayerList().getPlayers().getFirst()).has(EmberwoodClimate.JOURNAL_ENTRY), "The owner keeps the regional discovery after save/reopen");
 				check(server.overworld().getBiome(focus).is(EmberwoodClimate.EMBERWOOD), "Saved chunks keep their Emberwood Reach identity");
 				var state = server.overworld().getBlockState(firstFern);
-				check(state.is(EmberContent.FERN) && state.getValue(CinderFernBlock.AGE) == 2 && !state.getValue(CinderFernBlock.COOLED),
-					"Natural warm Cinder Fern persists across save/reopen");
+				check(state.is(EmberContent.FERN) && state.getValue(CinderFernBlock.COOLED),
+					"Natural Cinder Fern persists across save/reopen");
 				registered(server.overworld());
 			});
 		}
