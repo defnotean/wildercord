@@ -28,6 +28,8 @@ import net.minecraft.client.renderer.entity.NoopRenderer;
 
 /** Client entrypoint: keybinds, HUD, screens, renderers, the magic circle particle and the Grimoire toasts. */
 public final class WildercordClient implements ClientModInitializer {
+	public static boolean inStartClientTick;
+
 	@Override
 	public void onInitializeClient() {
 		dev.wildercord.client.fx.SpellFormations.init();
@@ -143,7 +145,12 @@ public final class WildercordClient implements ClientModInitializer {
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (client.packetProcessor() != null) {
-				client.packetProcessor().processQueuedPackets();
+				inStartClientTick = true;
+				try {
+					client.packetProcessor().processQueuedPackets();
+				} finally {
+					inStartClientTick = false;
+				}
 			}
 		});
 

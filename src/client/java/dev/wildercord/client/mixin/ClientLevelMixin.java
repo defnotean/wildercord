@@ -28,7 +28,9 @@ public abstract class ClientLevelMixin {
 	@Inject(method = "setTimeFromServer", at = @At("HEAD"), cancellable = true)
 	private void wildercord$preservePostTickTime(long gameTime, CallbackInfo ci) {
 		ClientLevel self = (ClientLevel) (Object) this;
-		if (self.tickRateManager().runsNormally() && gameTime + 1L == self.getGameTime()) {
+		if (!dev.wildercord.client.WildercordClient.inStartClientTick
+				&& self.tickRateManager().runsNormally()
+				&& gameTime + 1L == self.getGameTime()) {
 			ci.cancel();
 		}
 	}
