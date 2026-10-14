@@ -2,17 +2,17 @@
 
 SITES = [
     ("emberwood_charcoal_yard", 32, 11, 2026101605, ["wildercord:emberwood_reach", "minecraft:wooded_badlands", "minecraft:badlands"],
-     "wildercord:cinder_fern_frond", "Keeper of the Kilns",
+     "wildercord:cinder_fern", "Keeper of the Kilns",
      "Find an Emberwood Charcoal Yard and its Cinder Fern ash bed in the Emberwood Reach",
      [("minecraft:bread", 3, 6, 12), ("minecraft:charcoal", 3, 6, 12), ("minecraft:coal", 3, 6, 10),
       ("minecraft:iron_ingot", 2, 4, 8), ("minecraft:brick", 3, 6, 10), ("minecraft:flint_and_steel", 1, 1, 6),
-      ("wildercord:cinder_fern_frond", 2, 4, 12)],
+      ("wildercord:cinder_fern", 2, 4, 12)],
      [("ember", 3), ("fireward", 3), ("kilnbake", 3), ("kilned", 2), ("firebreak", 2)]),
     ("emberwood_kiln_court", 36, 12, 2026101606, ["wildercord:emberwood_reach"],
      "wildercord:kiln_heartstone", "The Cooled Kiln",
      "Find an Emberwood Kiln Court in the Emberwood Reach",
      [("minecraft:iron_ingot", 2, 5, 10), ("minecraft:copper_ingot", 3, 6, 10), ("minecraft:compass", 1, 1, 8),
-      ("minecraft:charcoal", 3, 6, 10), ("wildercord:cinder_fern_frond", 2, 4, 10), ("wildercord:hearth_ash_salve", 1, 2, 8)],
+      ("minecraft:charcoal", 3, 6, 10), ("wildercord:cinder_fern", 2, 4, 10), ("wildercord:ember_tuft", 1, 2, 8)],
      [("smelt", 3), ("toolmend", 3), ("emberguard", 3), ("hearthglow", 2), ("fire", 2)]),
 ]
 
@@ -36,7 +36,7 @@ LANG = {
     "dialogue.wildercord.kiln_keeper.draft_return": "The draft lamp is lit. Anyone coming back along the firebreak at dusk will know the embers are settled.",
     "dialogue.wildercord.kiln_keeper.widow_return": "You carry the Cooled Kiln's compass. You held the firebreak lane while the old ceramic mantle vented its heat.",
     "book.wildercord.emberwood_yard.1": "Hessa kept the southern kiln gate eleven winters. She taught us that a charcoal burner's first tool is not the axe, but the coarse-dirt firebreak.",
-    "book.wildercord.emberwood_yard.2": "Set Cinder Fern in the ash bed along the west wall. Harvest only mature cooled fronds for Hearth Ash Salve, and leave the root for the next firing.",
+    "book.wildercord.emberwood_yard.2": "Set Cinder Fern in the ash bed along the west wall. Harvest only mature cooled fronds for new Cinder Fern roots, and leave the root for the next firing.",
     "book.wildercord.emberwood_yard.3": "Our charcoal tallies match the ledgers in the Mountain Forge Halls, Prospector's Camps, and the ceramic Kiln Court deeper in the Reach.",
     "book.wildercord.emberwood_yard.4": "Before nightfall, throw the lever on the eastern draft lamp. A steady light tells the next burner that the kiln is banked and the firebreak holds.",
     "book.wildercord.kiln_court.1": "Here stands the Emberwood Kiln Court, where The Kiln Widow was cast from brick and iron slag to test the draft of the great firing rings.",

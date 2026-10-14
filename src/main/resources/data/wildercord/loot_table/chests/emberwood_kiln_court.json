@@ -118,7 +118,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "wildercord:cinder_fern_frond",
+          "name": "wildercord:cinder_fern",
           "weight": 10,
           "modifier": {
             "count": {
@@ -131,7 +131,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "wildercord:hearth_ash_salve",
+          "name": "wildercord:ember_tuft",
           "weight": 8,
           "modifier": {
             "count": {

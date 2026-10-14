@@ -64,7 +64,7 @@ firebreaks and the old Kiln Court deeper in the reach. Returning as your investi
 advances unlocks guidance on the gatehouse forge records, the kiln draft lamp and the
 optional Kiln Court challenge.
 
-Finding a yard earns **Keeper of the Charcoal Yard**.
+Finding a yard earns **Keeper of the Kilns**.
 
 ## Follow Eleven Winters at the Gate
 
