@@ -7,7 +7,7 @@ import net.minecraft.world.attribute.EnvironmentAttributes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
@@ -25,13 +25,12 @@ public abstract class ClientLevelMixin {
 		layers.addTimeBasedLayer(EnvironmentAttributes.CLOUD_COLOR, (color, tick) -> StormSky.tintCloud(color));
 	}
 
-	@Inject(method = "setTimeFromServer", at = @At("HEAD"), cancellable = true)
-	private void wildercord$preservePostTickTime(long gameTime, CallbackInfo ci) {
+	@ModifyVariable(method = "setTimeFromServer", at = @At("HEAD"), argsOnly = true)
+	private long wildercord$adjustPostTickTime(long gameTime) {
 		ClientLevel self = (ClientLevel) (Object) this;
-		if (!dev.wildercord.client.WildercordClient.inStartClientTick
-				&& self.tickRateManager().runsNormally()
-				&& gameTime + 1L == self.getGameTime()) {
-			ci.cancel();
+		if (!dev.wildercord.client.WildercordClient.inStartClientTick && self.tickRateManager().runsNormally()) {
+			return gameTime + 1L;
 		}
+		return gameTime;
 	}
 }
