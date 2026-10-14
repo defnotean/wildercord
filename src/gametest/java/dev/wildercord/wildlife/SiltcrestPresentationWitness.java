@@ -62,7 +62,7 @@ final class SiltcrestPresentationWitness {
     nativeStrike(row);source(row,3);fish(row,true);
     require(integer(row,"cancelPause")==40&&number(row,"huntReady")==strikeTick+200,"Exact native failed-strike cancellation retains two hundred ticks");
     var target=object(row,"admittedFish");
-    require((decimal(target,"committedDistanceSqr")>.36||ecology&&(decimal(target,"sourceDistanceSqr")>3.24||!bool(target,"loadedSight")))
+    require((decimal(target,"committedDistanceSqr")>.36||decimal(target,"sourceDistanceSqr")>3.24||ecology&&!bool(target,"loadedSight"))
       &&value(row,"admittedFish").equals(value(entered,"admittedFish")),"The live native quarry actually escaped the locked center before any damage");
     cancelled=row;step=5;
    }
