@@ -279,7 +279,11 @@ public final class EmberwoodYardChecks {
 	private static void interact(ClientGameTestContext context, TestSingleplayerContext world, UUID uuid) {
 		int id = world.getServer().computeOnServer(server -> {
 			var resident = server.overworld().getEntity(uuid);
-			server.getPlayerList().getPlayers().getFirst().teleportTo(server.overworld(), resident.getX(), resident.getY(), resident.getZ() + 2, Set.of(), 180, 0, false);
+			resident.teleportTo(server.overworld(), 105.5, 93.0, 105.5, Set.of(), 0, 0, false);
+			var player = server.getPlayerList().getPlayers().getFirst();
+			player.clearFire();
+			player.setHealth(player.getMaxHealth());
+			player.teleportTo(server.overworld(), 105.5, 93.0, 107.5, Set.of(), 180, 0, false);
 			return resident.getId();
 		});
 		context.waitTicks(3);

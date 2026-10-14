@@ -43,7 +43,7 @@ public final class CharcoalYardPiece extends EmberwoodPiece {
 	public BlockPos leverPos() { return world(LEVER_X, LEVER_Y, LEVER_Z); }
 
 	private static boolean furniture(int x, int y, int z) {
-		return (y == DECK + 1 && ((x == 12 && (z == 9 || z == 12)) || (x == 11 && z == 7)))
+		return (y == DECK + 1 && ((x == 12 && (z == 9 || z == 12)) || (x == 11 && (z == 6 || z == 7))))
 			|| (x == LAMP_X && y == LAMP_Y && z == LAMP_Z)
 			|| (x == LEVER_X && y == LEVER_Y && z == LEVER_Z);
 	}
@@ -128,8 +128,10 @@ public final class CharcoalYardPiece extends EmberwoodPiece {
 
 		// Interior charcoal kiln, orange bed, smithing table, supply chest, and lectern with Eleven Winters at the Gate.
 		fill(level, clip, 10, DECK + 1, 6, 12, DECK + 6, 6, BRICKS);
-		set(level, clip, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), 11, DECK + 1, 7);
-		set(level, clip, Blocks.BRICK_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH).setValue(StairBlock.HALF, Half.TOP), 11, DECK + 2, 7);
+		fill(level, clip, 11, DECK + 1, 5, 11, DECK + 2, 5, BRICKS);
+		set(level, clip, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), 11, DECK + 1, 6);
+		set(level, clip, Blocks.BRICK_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH).setValue(StairBlock.HALF, Half.TOP), 11, DECK + 2, 6);
+		set(level, clip, Blocks.IRON_BARS.defaultBlockState(), 11, DECK + 1, 7);
 		bed(level, clip, Blocks.BED.orange(), 7, DECK + 1, 8, Direction.NORTH);
 		set(level, clip, Blocks.SMITHING_TABLE.defaultBlockState(), 7, DECK + 1, 11);
 		set(level, clip, Blocks.CRAFTING_TABLE.defaultBlockState(), 7, DECK + 1, 12);
