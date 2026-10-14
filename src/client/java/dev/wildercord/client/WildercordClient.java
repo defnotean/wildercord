@@ -142,20 +142,12 @@ public final class WildercordClient implements ClientModInitializer {
 		});
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
-			if (client.packetProcessor() != null && client.level != null) {
-				boolean hasBolt = false;
-				for (var e : client.level.entitiesForRendering()) {
-					if (e instanceof dev.wildercord.cast.RuneBolt) {
-						hasBolt = true;
-						break;
-					}
-				}
-				if (hasBolt) {
-					long gameTime = client.level.getGameTime();
-					client.packetProcessor().processQueuedPackets();
-					if (client.level != null && client.level.getGameTime() != gameTime) {
-						client.level.getLevelData().setGameTime(gameTime);
-					}
+			if (client.packetProcessor() != null) {
+				var level = client.level;
+				long gameTime = level != null ? level.getGameTime() : 0L;
+				client.packetProcessor().processQueuedPackets();
+				if (level != null && client.level == level && gameTime > 0L && level.getGameTime() != gameTime) {
+					level.getLevelData().setGameTime(gameTime);
 				}
 			}
 		});
