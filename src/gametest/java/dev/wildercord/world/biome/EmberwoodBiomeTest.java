@@ -122,7 +122,7 @@ public final class EmberwoodBiomeTest implements FabricClientGameTest {
 		check(level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes().contains(holder), "The default Overworld can select Emberwood Reach");
 		var biome = holder.value();
 		var spawns = biome.getAttributes().applyModifier(EnvironmentAttributes.NATURAL_MOB_SPAWNS, MobSpawnSettings.EMPTY);
-		for (var type : List.of(Wildlife.CINDERFOX, Wildlife.DUNE_COUGAR)) {
+		for (var type : List.of(Wildlife.CINDERFOX, dev.wildercord.wildlife.PredatorContent.DUNE_COUGAR)) {
 			check(spawns.getMobsToSpawn(MobCategory.CREATURE).unwrap().stream().anyMatch(entry -> entry.value().type() == type), "Actual Emberwood creature spawn pool contains " + type);
 		}
 		check(spawns.getMobsToSpawn(MobCategory.MONSTER).unwrap().stream().anyMatch(entry -> entry.value().type() == EmberContent.BAILIFF), "Cinder Bailiffs patrol Emberwood Reach");
