@@ -11,7 +11,7 @@ a dated snapshot, not live process discovery.
 | --- | --- |
 | Project | WilderCord, a Minecraft Java **26.3** mod, Fabric Loader **0.19.5**, Java **25** |
 | Repository | <https://github.com/defnotean/wildercord> |
-| Development branch | `defnotean/world-depth-audit` |
+| Development branch | `living-world-expansion` (renamed from `defnotean/world-depth-audit`) |
 | Review | Draft [PR #2](https://github.com/defnotean/wildercord/pull/2); not merged or released |
 | Local workspace | `C:\Users\Eating\Desktop\WilderCord` |
 | Work baseline | `0a18358929180f1c4bc5cc4b827f7f92f05571c4` |
@@ -496,8 +496,8 @@ of a live process; use process ownership plus interruption/completion records.
    ```powershell
    Remove-Item -Force -ErrorAction SilentlyContinue C:\wildercord-ci\dump.hprof
    Set-Location C:\wildercord-ci\repo
-   git fetch origin defnotean/world-depth-audit
-   git checkout --detach origin/defnotean/world-depth-audit
+   git fetch origin living-world-expansion
+   git checkout --detach origin/living-world-expansion
    git clean -fd -e build/vps-runs
 
    $env:JAVA_HOME='C:\java\jdk-25.0.4.1+1'

@@ -20,7 +20,7 @@ user request to resume development authorizes continuing from this handoff.
   source inspection and Git operations are fine. GitHub Actions is disabled at
   repository level. Do not reenable Actions, dispatch CI, synthesize green statuses,
   or delete historical failed runs to make the history appear successful.
-- Development uses `defnotean/world-depth-audit` and draft
+- Development uses `living-world-expansion` and draft
   [PR #2](https://github.com/defnotean/wildercord/pull/2). The owner authorized
   coherent commits and pushes while developing. No release, merge or live-server
   deployment was requested. Preserve unrelated user changes.
