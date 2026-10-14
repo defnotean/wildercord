@@ -4,7 +4,7 @@
 ![The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/b-advancements.jpg)
 
 Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
-Circle, the dungeon bosses and the 54 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
+Circle, the dungeon bosses and the 56 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
 Crystals.
 
 
@@ -297,6 +297,8 @@ See [Water Sites](../world/water-sites.md).
 
 | Advancement | After | Needs | Reward |
 |---|---|---|---|
+| **Keeper of the Kilns** | Ley Walker | Find an Emberwood Charcoal Yard and its Cinder Fern ash bed in the Emberwood Reach | 20 XP |
+| **The Cooled Kiln** | Ley Walker | Find an Emberwood Kiln Court in the Emberwood Reach | 20 XP |
 | **First Light** | The Buried Library | Find a Dawn Pavilion in a cherry grove | 20 XP |
 | **Shifting Sands** | The Buried Library | Find a Dune Temple in the desert | 20 XP |
 | **Listening In** | The Buried Library | Find an Echo Post in the deep dark | 20 XP |
@@ -306,18 +308,18 @@ See [Water Sites](../world/water-sites.md).
 | **Poison Darts** | The Buried Library | Find a Venom Ziggurat in the jungle | 20 XP |
 | **Light at the Edge** | The Buried Library | Find a Void Lantern on the End's outer islands | 20 XP |
 
-See [Wild Places](../world/wilds-sites.md).
+See [Wild Places](../world/wilds-sites.md) and [Emberwood Reach](../world/emberwood-reach.md).
 
 ## Totals
 
-160 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+162 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 114 |
+| Tasks | 116 |
 | Goals | 32 |
 | Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 14,730 |
+| Experience for all of them | 14,770 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |
