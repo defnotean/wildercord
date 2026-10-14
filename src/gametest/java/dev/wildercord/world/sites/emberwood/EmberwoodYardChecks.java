@@ -193,9 +193,9 @@ public final class EmberwoodYardChecks {
 			});
 			world.getServer().runOnServer(server -> {
 				var p = server.getPlayerList().getPlayers().getFirst();
-				LoreJournal.record(p, "place:wilds_iron_gatehouse", true);
+				LoreJournal.record(p, "place:mine_forge_hall", true);
 				LoreJournal.poll(p);
-				check(LoreJournal.data(p).stage("forge_records") == LoreQuestRules.DONE, "Iron gatehouse visit completes forge_records");
+				check(LoreJournal.data(p).stage("forge_records") == LoreQuestRules.DONE, "Mountain Forge Hall visit completes forge_records");
 				LoreJournal.poll(p);
 				check(LoreJournal.data(p).stage("kiln_draft_lamp") == LoreQuestRules.ACTIVE, "Next poll opens kiln_draft_lamp");
 				check(!LoreJournal.data(p).has(EmberwoodSites.DRAFT_MARK_ENTRY), "Unlit draft lamp does not complete kiln_draft_lamp");

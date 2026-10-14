@@ -69,8 +69,8 @@ Finding a yard earns **Keeper of the Kilns**.
 ## Follow Eleven Winters at the Gate
 
 Speaking with an Emberwood Kiln Keeper through their fourth story opens **Eleven
-Winters at the Gate** in the lore journal. Visit an [Iron Gatehouse or Forge Dojo]({{ '/world/wilds-sites/' | relative_url }})
-to complete **The Forge Records**, matching the gatehouse tally-stones against the
+Winters at the Gate** in the lore journal. Visit a [Mountain Forge Hall, Prospector's Camp, Basalt Foundry]({{ '/world/mine-sites/' | relative_url }}) or Emberwood Kiln Court
+to complete **The Southern Forge Ledgers**, matching the forge tallies against the
 burners' charcoal deliveries. The final chapter, **The Kiln Draft Lamp**, asks you to
 flip the lever on a Charcoal Yard's eastern draft stack and stand within six blocks
 of the lit lamp. A draft lamp another traveller already lit also counts.
