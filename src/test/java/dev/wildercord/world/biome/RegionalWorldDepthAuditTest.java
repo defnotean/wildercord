@@ -105,7 +105,8 @@ class RegionalWorldDepthAuditTest {
 		Set<Long> salts = new HashSet<>();
 		for (String id : regionalStructures) {
 			JsonObject structure = readJson("/data/wildercord/worldgen/structure/" + id + ".json");
-			assertEquals("wildercord:" + id, structure.get("type").getAsString());
+			assertEquals("wildercord:site", structure.get("type").getAsString());
+			assertEquals(id, structure.get("site").getAsString());
 			assertTrue(structure.get("biomes").getAsString().startsWith("#wildercord:has_structure/"), id + " biome tag");
 
 			JsonObject set = readJson("/data/wildercord/worldgen/structure_set/" + id + ".json");
@@ -175,33 +176,30 @@ class RegionalWorldDepthAuditTest {
 			"person:reedkeeper", "person:cairn_keeper", "person:belowkeeper_listener", "person:kiln_keeper"
 		);
 		var learned = List.of(
-			"learned:lighthouse_keeper_mark", "learned:scout_wind_mark", "learned:belowkeeper_shutter", "learned:emberwood_draft",
-			"learned:reed_crowned_ferryman", "learned:glass_cartographer", "learned:hollow_bell", "learned:kiln_widow"
+			"learned:coast_light", "learned:scout_wind_mark", "learned:belowkeeper_shutter", "learned:emberwood_draft",
+			"learned:last_crossing", "learned:glass_cartographer", "learned:hollow_bell", "learned:kiln_widow"
 		);
 		for (String entry : places) {
 			assertEquals("places", LoreEntries.tab(entry));
-			assertTranslated(lang, LoreEntries.fixedKey(entry) + ".title");
-			assertTranslated(lang, LoreEntries.fixedKey(entry) + ".body");
+			assertTranslated(lang, LoreEntries.fixedKey(entry));
 		}
 		for (String entry : people) {
 			assertEquals("people", LoreEntries.tab(entry));
-			assertTranslated(lang, LoreEntries.fixedKey(entry) + ".title");
-			assertTranslated(lang, LoreEntries.fixedKey(entry) + ".body");
+			assertTranslated(lang, LoreEntries.fixedKey(entry));
 		}
 		for (String entry : learned) {
 			assertEquals("learned", LoreEntries.tab(entry));
-			assertTranslated(lang, LoreEntries.fixedKey(entry) + ".title");
-			assertTranslated(lang, LoreEntries.fixedKey(entry) + ".body");
+			assertTranslated(lang, LoreEntries.fixedKey(entry));
 		}
 
 		var dialogues = Map.of(
-			"reedkeeper", List.of("reeds", "lantern", "tide", "ferryman", "ledger_note", "lighthouse_lamp", "light_return", "ferryman_return"),
-			"cairn_keeper", List.of("wind", "windreed", "cairns", "cartographer", "watch_orders", "cairn_light", "light_return", "cartographer_return"),
-			"belowkeeper_listener", List.of("drip", "glowcap", "shutter", "hollow_bell", "deep_records", "station_gauge", "gauge_return", "bell_return"),
-			"kiln_keeper", List.of("ash", "cinder_fern", "firebreaks", "kiln_widow", "forge_ledger", "kiln_draft", "draft_return", "widow_return")
+			"reedkeeper", List.of("greet", "garden", "crossing", "ferryman", "ledger", "lighthouse", "lamp_return", "crossing_kept"),
+			"cairn_keeper", List.of("greet", "windreed", "cairns", "cartographer", "watch_orders", "cairn_light", "light_return", "cartographer_return"),
+			"belowkeeper_listener", List.of("greet", "glowcap", "pressure", "hollow_bell", "deep_records", "station_gauge", "gauge_return", "bell_return"),
+			"kiln_keeper", List.of("greet", "cinder_fern", "firebreaks", "kiln_widow", "forge_ledger", "kiln_draft", "draft_return", "widow_return")
 		);
 		for (var entry : dialogues.entrySet()) {
-			assertTranslated(lang, "dialogue.wildercord.role." + entry.getKey());
+			assertTranslated(lang, "dialogue.wildercord.speaker." + entry.getKey());
 			for (String line : entry.getValue()) {
 				String fullLine = entry.getKey() + "." + line;
 				assertEquals("talk", LoreEntries.tab("said:" + fullLine));
