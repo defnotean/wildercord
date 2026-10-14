@@ -146,7 +146,8 @@ public final class WildercordClient implements ClientModInitializer {
 				var level = client.level;
 				long gameTime = level != null ? level.getGameTime() : 0L;
 				client.packetProcessor().processQueuedPackets();
-				if (level != null && client.level == level && gameTime > 0L && level.getGameTime() != gameTime) {
+				if (level != null && client.level == level && level.tickRateManager().runsNormally()
+						&& gameTime > 0L && level.getGameTime() == gameTime + 1L) {
 					level.getLevelData().setGameTime(gameTime);
 				}
 			}
