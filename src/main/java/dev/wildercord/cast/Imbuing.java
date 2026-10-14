@@ -139,7 +139,7 @@ public final class Imbuing {
 		UseItemCallback.EVENT.register(Imbuing::onUse);
 		ServerTickEvents.END_SERVER_TICK.register(Imbuing::tick);
 		// The shared cooldown outlasts a logout (relogging mustn't reset it); spent ones are swept in the tick.
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> LAST_SHOT.remove(handler.player.getUUID()));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> LAST_SHOT.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			READY_AT.clear();
 			LAST_SHOT.clear();

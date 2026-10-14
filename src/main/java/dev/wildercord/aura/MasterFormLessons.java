@@ -45,7 +45,7 @@ public final class MasterFormLessons {
 		PayloadTypeRegistry.clientboundPlay().register(Open.TYPE, Open.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(Accept.TYPE, Accept.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Accept.TYPE, (packet, context) -> accept(context.player(), packet.nonce()));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> OFFERS.remove(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> OFFERS.remove(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> OFFERS.clear());
 	}
 	/** Sneak-use with an empty hand leaves the existing weapon-in-hand Master-trial introduction intact. */

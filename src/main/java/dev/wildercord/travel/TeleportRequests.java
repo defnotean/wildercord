@@ -36,7 +36,7 @@ public final class TeleportRequests {
 				expire(server, server.getTickCount());
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			ServerPlayer leaving = handler.player;
 			for (TravelRules.Request r : BOOK.forget(leaving.getUUID())) {
 				ServerPlayer other = online(server, r.from().equals(leaving.getUUID()) ? r.to() : r.from());

@@ -702,7 +702,7 @@ public final class Spars {
 				return RINGS.containsKey(player.getUUID()) ? 0 : amount;
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			SALUTES.remove(id);
 			LAST.remove(id);

@@ -157,7 +157,7 @@ public final class DuelistDuels {
 				finish(active, player.level().getServer());
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			OFFERS.remove(handler.player.getUUID());
 			if (BY_PLAYER.get(handler.player.getUUID()) instanceof Active active) {
 				active.duel.forfeit(active.player, DuelRules.Ending.LOGGED_OFF);

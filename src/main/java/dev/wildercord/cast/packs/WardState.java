@@ -121,7 +121,7 @@ public final class WardState {
 		ServerLivingEntityEvents.ALLOW_DEATH.register(WardState::allowDeath);
 		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> mayBreak(world, player, pos));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> clear());
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> leave(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> leave(handler.player));
 	}
 
 	private static List<Map<UUID, Mark>> marks() {

@@ -31,7 +31,7 @@ public final class ResonantStrikes {
 	}
 	public static void init() {
 		ServerLifecycleEvents.SERVER_STOPPED.register(s -> { ledger = new ResonantRules.Ledger(); reactions = 0; SCOPED.clear(); });
-		ServerPlayConnectionEvents.DISCONNECT.register((h,s) -> { ledger.forget(h.player.getUUID()); SCOPED.keySet().removeIf(key -> key.hit().player().equals(h.player.getUUID())); });
+		dev.wildercord.net.ServerDisconnects.register((h,s) -> { ledger.forget(h.player.getUUID()); SCOPED.keySet().removeIf(key -> key.hit().player().equals(h.player.getUUID())); });
 	}
 	public static boolean spell(Cast cast, LivingEntity target, String element, float taken) {
 		if (answering || !(cast.caster instanceof ServerPlayer p) || !cast.alive() || !cast.admits(target) || !eligible(p,target,taken)

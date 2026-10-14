@@ -129,7 +129,7 @@ public final class ArtWards {
 			retireHardening(oldPlayer, null);
 			syncHardening(newPlayer);
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> retireHardening(handler.player, null));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> retireHardening(handler.player, null));
 		// A frenzied swordsman's blows feed the frenzy; a blow on a foe Thousand Moments stopped is stored to land again.
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
 			if (taken > 0 && source.getEntity() instanceof ServerPlayer player && source.getDirectEntity() == player

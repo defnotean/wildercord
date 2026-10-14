@@ -493,7 +493,7 @@ public final class WayEffects {
 				finisherLanded(attacker, target);
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			UNSEEN.remove(id);
 			LOST.remove(id);

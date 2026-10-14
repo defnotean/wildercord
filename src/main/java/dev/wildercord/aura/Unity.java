@@ -106,7 +106,7 @@ public final class Unity {
 				if((now(p)-s.since())%20==0)UnityFx.breathe(p);
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((h,s) -> {stop(h.player);packets.forget(h.player.getUUID());});
+		dev.wildercord.net.ServerDisconnects.register((h,s) -> {stop(h.player);packets.forget(h.player.getUUID());});
 		// An integrated shutdown can save the player before its disconnect callback. Stop before that save,
 		// and also close a loaded window at join (including an abrupt shutdown's last autosave).
 		ServerLifecycleEvents.SERVER_STOPPING.register(s -> s.getPlayerList().getPlayers().forEach(Unity::stop));

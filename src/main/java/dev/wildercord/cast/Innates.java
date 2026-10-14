@@ -221,7 +221,7 @@ public final class Innates {
 				entity.discard();
 			}
 		});
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			HURT_HISTORY.remove(handler.player.getUUID());
 			// Mirrorfrost answers the last spell within 30 seconds: a leaver has none to answer.
 			LAST_SPELL_ON.remove(handler.player.getUUID());

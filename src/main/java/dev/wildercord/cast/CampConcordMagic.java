@@ -17,7 +17,7 @@ public final class CampConcordMagic {
  }
  public static void init(){CampConcordFx.init();CampConcordFeels.init();
   ServerTickEvents.END_SERVER_TICK.register(s->{Watchweft.tick(s);Manabraid.tick(s);});
-  ServerPlayConnectionEvents.DISCONNECT.register((h,s)->{Watchweft.remove(h.player.getUUID(),false);Manabraid.depart(h.player.getUUID());});
+  dev.wildercord.net.ServerDisconnects.register((h,s)->{Watchweft.remove(h.player.getUUID(),false);Manabraid.depart(h.player.getUUID());});
   ServerPlayConnectionEvents.JOIN.register((h,sender,s)->{Watchweft.remove(h.player.getUUID(),false);Manabraid.depart(h.player.getUUID());});
   ServerLifecycleEvents.SERVER_STOPPING.register(s->{Watchweft.clear();Manabraid.clear();});
  }

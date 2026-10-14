@@ -104,7 +104,7 @@ public final class MasteryChoices {
 				context.player().sendOverlayMessage(answer);
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> THROTTLE.forget(handler.player.getUUID()));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> THROTTLE.forget(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> THROTTLE.clear());
 	}
 

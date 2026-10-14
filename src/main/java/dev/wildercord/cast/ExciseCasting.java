@@ -173,7 +173,7 @@ public final class ExciseCasting {
         });
         // PlayerList.remove retires before saving. This event is also useful for transports that close early;
         // its callback can arrive from Netty, so any body/attachment mutation belongs on the server thread.
-        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+        dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
             if (server.isSameThread()) retire(handler.player); else server.execute(() -> retire(handler.player));
         });
         ServerTickEvents.START_SERVER_TICK.register(server -> {

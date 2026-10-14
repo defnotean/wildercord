@@ -115,7 +115,7 @@ public final class MastersArts {
 		ServerPlayNetworking.registerGlobalReceiver(Activate.TYPE, (payload, context) -> {
 			if (REQUESTS.allow(context.player().getUUID(), context.server().getTickCount())) activate(context.player(), payload.move());
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			REQUESTS.forget(handler.player.getUUID());
 			forget(handler.player.getUUID());
 		});

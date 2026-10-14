@@ -24,7 +24,7 @@ public final class MethodsBArts {
 		AuraApi.registerArts(DawnArts.METHOD, DawnArts.arts());
 		AuraApi.registerArts(VenomArts.METHOD, VenomArts.arts());
 		// Dawn's glint rest is per player; a player who leaves takes theirs with them.
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register(
+		dev.wildercord.net.ServerDisconnects.register(
 			(handler, server) -> dev.wildercord.aura.MethodsBCoating.forget(handler.player.getUUID()));
 	}
 }

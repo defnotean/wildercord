@@ -7,7 +7,7 @@ public final class PerfHygiene {
 	private PerfHygiene() {}
 
 	public static void init() {
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
+		dev.wildercord.net.ServerDisconnects.register((handler, server) ->
 			WayfarerEffects.forget(handler.player.getUUID(), server.overworld().getGameTime()));
 	}
 }

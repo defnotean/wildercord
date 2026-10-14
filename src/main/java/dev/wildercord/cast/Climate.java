@@ -135,7 +135,7 @@ public final class Climate {
 	public static void init() {
 		PayloadTypeRegistry.clientboundPlay().register(Sync.TYPE, Sync.CODEC);
 		ServerTickEvents.END_SERVER_TICK.register(Climate::tick);
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			CACHE.remove(handler.player.getUUID());
 			SENT.remove(handler.player.getUUID());
 		});

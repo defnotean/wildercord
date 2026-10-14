@@ -110,7 +110,7 @@ public final class HeartCircles {
 			}
 		});
 		// A spell kill only counts for a caster still here, so a leaver's marks on creatures go with them.
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			LAST_SPELL_HIT.values().removeIf(hit -> hit.caster().equals(id));
 		});

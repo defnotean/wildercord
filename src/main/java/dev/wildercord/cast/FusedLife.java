@@ -56,7 +56,7 @@ final class FusedLife {
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register(FusedLife::allowDamage);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> afterDamage(entity));
 		ServerLivingEntityEvents.ALLOW_DEATH.register(FusedLife::allowDeath);
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> forget(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> forget(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			BONDS.clear();
 			WINDS.clear();

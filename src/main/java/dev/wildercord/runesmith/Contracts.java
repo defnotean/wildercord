@@ -100,7 +100,7 @@ public final class Contracts {
 				CREDIT.values().removeIf(credit -> credit.idle(now));
 			}
 		});
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			CREDIT.remove(handler.player.getUUID());
 			// A kill only counts for a caster still here, so a leaver's marks on creatures go with them.
 			UUID id = handler.player.getUUID();

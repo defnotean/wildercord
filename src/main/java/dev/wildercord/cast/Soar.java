@@ -87,7 +87,7 @@ public final class Soar {
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(Soar::tick);
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> login(handler.player));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> leave(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> leave(handler.player));
 		// Before the players are saved for the last time: none of them is saved able to fly.
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			for (Flier flier : List.copyOf(FLIERS.values())) {
