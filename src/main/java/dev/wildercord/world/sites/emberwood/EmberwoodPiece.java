@@ -22,7 +22,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 public abstract class EmberwoodPiece extends StructurePiece {
 	protected static final BlockState AIR = Blocks.AIR.defaultBlockState();
 	protected static final BlockState TERRACOTTA = Blocks.TERRACOTTA.defaultBlockState();
-	protected static final BlockState BROWN_TERRACOTTA = Blocks.BROWN_TERRACOTTA.defaultBlockState();
+	protected static final BlockState BROWN_TERRACOTTA = Blocks.PACKED_MUD.defaultBlockState();
 	protected static final BlockState MUD_BRICKS = Blocks.MUD_BRICKS.defaultBlockState();
 	protected static final BlockState BRICKS = Blocks.BRICKS.defaultBlockState();
 	protected static final BlockState STONE_BRICK = Blocks.STONE_BRICKS.defaultBlockState();
