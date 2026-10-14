@@ -188,11 +188,15 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					MobEffectInstance stronger = player.getEffect(MobEffects.RESISTANCE);
 					ArtWards.Hardened unmoved = grant(player);
 					ArtWards.harden(player, 25);
-					check(player.getEffect(MobEffects.RESISTANCE) == stronger && stronger.getAmplifier() == 2 && stronger.getDuration() == 240,
+					check(player.getEffect(MobEffects.RESISTANCE) == stronger
+							&& stronger.getAmplifier() == dev.wildercord.cast.DefenceCaps.RESISTANCE_CAP
+							&& stronger.getDuration() == 240,
 						"Both native addEffect calls preserve an existing stronger, longer effect");
 					plan.at(10, () -> {
 						int duration = stronger.getDuration(); unmoved.retire();
-						check(player.getEffect(MobEffects.RESISTANCE) == stronger && stronger.getAmplifier() == 2 && stronger.getDuration() == duration,
+						check(player.getEffect(MobEffects.RESISTANCE) == stronger
+								&& stronger.getAmplifier() == dev.wildercord.cast.DefenceCaps.RESISTANCE_CAP
+								&& stronger.getDuration() == duration,
 							"Retiring Unmoved never strips an unrelated stronger Resistance"); ward(player, true);
 					});
 					plan.at(26, () -> { ward(player, false); check(player.getEffect(MobEffects.RESISTANCE) == stronger, "Mountain expiry also leaves stronger Resistance intact"); });
