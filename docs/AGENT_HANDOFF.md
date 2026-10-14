@@ -15,12 +15,12 @@ a dated snapshot, not live process discovery.
 | Review | Draft [PR #2](https://github.com/defnotean/wildercord/pull/2); not merged or released |
 | Local workspace | `C:\Users\Eating\Desktop\WilderCord` |
 | Work baseline | `0a18358929180f1c4bc5cc4b827f7f92f05571c4` |
-| Last content candidate | `3778d1ebc9d34f299c4e21ed4d4efb6e841011f8`, pushed to GitHub and verified on `pandora-vps` |
-| Immediately preceding checkpoint | `972f11a3e28b92cb13429d184d3cb2fd474c9038` (`a85023dd` + Batch 2 handoff docs) |
+| Last content candidate | `3920b5c3f6cf9c5e3d0002b86858d1aa785f73d3`, pushed to GitHub and verified on `pandora-vps` |
+| Immediately preceding checkpoint | `2fa5deafa4df89a32805205824f047c17248134d` (`3778d1eb` + Batch 3 handoff docs) |
 | Development goal | **Active** (resumed by owner on 2026-10-13) |
 | Scheduled continuation | **ACTIVE**, 15-minute recurring development heartbeat |
 | GitHub Actions | Repository-wide **disabled**; build/docs workflows also disabled |
-| Owned VPS work | Batch 1 (`BIO-02`), Batch 2 (`BLD-03`, `NPC-03`, `LOR-03`, `BOS-03`), and Batch 3 (`BIO-04`, `BLD-02`, `NPC-02`, `LOR-02`, `BOS-01`) verified on `WIN-I2GBVRRD872` |
+| Owned VPS work | Batch 1 (`BIO-02`), Batch 2 (`BLD-03`, `NPC-03`, `LOR-03`, `BOS-03`), Batch 3 (`BIO-04`, `BLD-02`, `NPC-02`, `LOR-02`, `BOS-01`), and Batch 4 (`BIO-03`, `BLD-04`, `NPC-04`, `LOR-04`, `BOS-04`) verified on `WIN-I2GBVRRD872` |
 | Live Minecraft server | Left running and unchanged (`PID 24072` in `C:\wildercord`) |
 
 The owner originally asked for a repository-wide audit, a detailed expansion list,
@@ -28,13 +28,14 @@ and sustained development of bosses, buildings, NPCs, custom biomes, legends, lo
 and polish, with regular GitHub pushes. They required **all future tests on
 the VPS, no GitHub CI**, and later explicitly resumed work one batch at a time.
 
-Candidate `3778d1eb` completes the connected **Belowkeeper Hollows** slice (`BIO-04`
-Belowkeeper Hollows subterranean biome, `BLD-02` Belowkeeper Listening Station &
-Bell Sanctum, `NPC-02` Belowkeeper Listener, `LOR-02` 3-chapter What the Empty Bell
-Kept / Pressure Records / Resonance Shutter journal route, and `BOS-01` The Hollow
-Bell) and passes the owned VPS build (`2,740` JUnit tests, `9,052` generated asset
-paths, and `195` guide pages) plus focused native `BelowkeeperBiomeTest`,
-`HollowBellEncounterTest`, `LoreJournalGameTest`, and `FungalTerrainTest`.
+Candidate `3920b5c3` completes the connected **Emberwood Reach** slice (`BIO-03`
+Emberwood Reach fire-adapted woodland biome, `BLD-04` Emberwood Charcoal Yard &
+Kiln Court, `NPC-04` Emberwood Kiln Keeper, `LOR-04` 3-chapter Eleven Winters at
+the Gate / The Southern Forge Ledgers / The Kiln Draft Lamp journal route, and
+`BOS-04` The Kiln Widow) and passes the owned VPS build (`2,749` JUnit tests,
+`9,081` generated asset paths, and `197` guide pages) plus focused native
+`EmberwoodBiomeTest`, `KilnWidowEncounterTest`, `CinderBailiffEcologyTest`, and
+`LoreJournalGameTest`.
 
 ## 2. Where the full context lives
 
@@ -211,6 +212,38 @@ Native coverage: `ReedlandBiomeTest`, `ReedkeeperLandingChecks`, `DrownedRoadChe
   one-time `Compass of the Quiet Bell` (`quiet_bell_compass`) + `80 XP` +
   `learned:hollow_bell` reward.
 
+### Connected Emberwood Reach region — native evidence available (`3920b5c3`)
+
+- **Emberwood Reach (`BIO-03`)**: partitions the warm, dry band of `minecraft:savanna`
+  (`temperature >= 0.45`, `humidity <= -0.35`, `depth < 0.175`), preserving all other
+  climate coordinates and biome entries. Blends podzol and coarse-dirt ash firebreaks
+  with warm grassland in `ReedlandSurfaceMixin` while keeping `generation.features`
+  strictly ordered with vanilla feature steps (`FeatureSorter` verified acyclic across
+  all 71 Overworld biomes). Includes `cinder_fern_patch`, Cinderfoxes, Salamanders,
+  Charcoal Moths, Cinder Bailiffs, and shares `savanna`'s Warm Sun attunement.
+- **Emberwood Charcoal Yard (`BLD-04`) & Emberwood Kiln Keeper (`NPC-04`)**: a
+  21-by-21 brick-and-dark-oak burner's yard with a coarse-dirt firebreak, cultivated
+  Cinder Fern ash bed, recessed hearth behind an iron-bar grate, Kiln Draft Lamp and
+  lever, four-page *Eleven Winters at the Gate* lectern book, supply chest, and a
+  persistent weaponsmith Kiln Keeper villager (`kiln_keeper`) with four original
+  stories plus four progress-aware return conversations (`forge_ledger`, `kiln_draft`,
+  `draft_return`, `widow_return`).
+- **Eleven Winters at the Gate / The Southern Forge Ledgers / The Kiln Draft Lamp (`LOR-04`)**:
+  three ordered journal chapters (`eleven_winters` -> `forge_records` -> `kiln_draft_lamp`,
+  `90 XP`, `5 Blank Runes`, `1 Aura Shard` once per player) connecting the Kiln Keeper's
+  stories, Mountain Forge Hall (`place:mine_forge_hall`) discovery, and lighting the
+  authentic Kiln Draft Lamp (`learned:emberwood_draft`).
+- **Emberwood Kiln Court & The Kiln Widow (`BOS-04`)**: a 35-by-35 brick-and-terracotta
+  kiln court with an entrance gatehouse, four corner draft vents, two-page *The Cooled
+  Kiln* lectern book, supply chest, and authentic `KilnHeartstoneBlock`. Using the
+  heartstone in Survival summons the plinth-anchored `KilnWidow` (registered in
+  `Spirits.isBoss`) with three world-geometry telegraphed kiln attacks (`DRAFT` safe
+  cooling-eye ring, `SLAG` locked mortar drop circle, `SWEEP` cooled-brick shelter lane)
+  readable under `ParticleStatus.MINIMAL`, a Phase 2 rotated flue-sweep lane at `<= 50%`
+  health, target-loss retirement, quiet abandonment reset, chunk-replay preservation,
+  and a one-time `Compass of the Cooled Kiln` (`cooled_kiln_compass`) + `80 XP` +
+  `learned:kiln_widow` reward.
+
 ## 5. Evidence index — do not merge scopes
 
 These are actual VPS receipts. Full `result.json`, logs and screenshots are
@@ -220,6 +253,11 @@ artifacts are ignored by Git. A fresh clone has this index, not all raw evidence
 
 | Check | Candidate | Result | Receipt UUID |
 | --- | --- | --- | --- |
+| Owned build, native compilation, 2,749 JUnit cases, 9,081 generated paths, 197 guide pages | `3920b5c3` | Pass; no JUnit failures/errors/skips | `e9508d34-d240-40e8-bf9c-cf850a58b05b` |
+| Emberwood Reach terrain, Charcoal Yard, Kiln Keeper, and Eleven Winters 3-chapter route | `3920b5c3` | Pass, 3m 03s; `emberwood_reach_terrain.png` + `emberwood_charcoal_yard.png` | `f6a12b04-7dfa-4b66-b4cc-cd8d3be0031f` |
+| Full Kiln Widow encounter, Kiln Court chunk replay, Minimal-particle tells, and victory return dialogue | `3920b5c3` | Pass, 3m 21s; 4 encounter screenshots | `347b60af-3d00-4a1c-9812-e55f868f92ee` |
+| Cinder Bailiff & Emberwood wildlife ecology regression | `3920b5c3` | Pass, 2m 19s | `48972ce8-41c4-45dc-8198-ef3bbaac3e02` |
+| Lore Journal screen, sixteen Master victories, and ordered regional routes | `3920b5c3` | Pass, 2m 04s | `7df2fbe5-f697-4a5d-b75d-06aec16bdf99` |
 | Owned build, native compilation, 2,740 JUnit cases, 9,052 generated paths, 195 guide pages | `3778d1eb` | Pass; no JUnit failures/errors/skips | `12e79d1a-6067-41ec-bfa2-1d58b9e10713` |
 | Belowkeeper Hollows terrain, Listening Station, Belowkeeper Listener, and Empty Bell 3-chapter route | `3778d1eb` | Pass, 2m 51s; `belowkeeper_hollows_terrain.png` + `belowkeeper_listening_station.png` | `de852d21-9301-4664-8487-8ee4196f1598` |
 | Full Hollow Bell encounter, Bell Sanctum chunk replay, Minimal-particle tells, and victory return dialogue | `3778d1eb` | Pass, 3m 01s; 4 encounter screenshots | `3a335b67-98ce-46a0-b5f5-e85f431dbc0a` |
@@ -351,13 +389,14 @@ normal stderr progress with a failed test or accidentally swallow a real failure
 
 ## 8. Native acceptance contract
 
-Current plan: `full-client-explicit-v7-belowkeeper`, **347** classes in groups
-**87 / 87 / 87 / 86**. Earlier plans (`v4` with 343 classes, `v5` with 344
-classes, and `v6` with 345 classes) are frozen in
+Current plan: `full-client-explicit-v8-emberwood`, **349** classes in groups
+**87 / 87 / 88 / 87**. Earlier plans (`v4` with 343 classes, `v5` with 344
+classes, `v6` with 345 classes, and `v7` with 347 classes) are frozen in
 `tools/tests/full-client-plan-v4-343.json`,
-`tools/tests/full-client-plan-v5-344.json`, and
-`tools/tests/full-client-plan-v6-345.json`. `BelowkeeperBiomeTest` is appended
-to group 1 and `HollowBellEncounterTest` is appended to group 2; all 345
+`tools/tests/full-client-plan-v5-344.json`,
+`tools/tests/full-client-plan-v6-345.json`, and
+`tools/tests/full-client-plan-v7-347.json`. `EmberwoodBiomeTest` is appended
+to group 3 and `KilnWidowEncounterTest` is appended to group 4; all 347
 previous classes keep their exact shard membership and relative order.
 
 Focused native execution requires the exact class's ordered setup/run/cleanup/
@@ -381,12 +420,8 @@ of a live process; use process ownership plus interruption/completion records.
 
 ## 9. Exact next work, when authorized
 
-1. **Batch 4 — Emberwood Reach Slice (`BIO-03` + `BLD-04` + `NPC-04` + `LOR-04` + `BOS-04`):**
-   Implement **Emberwood Reach** (`BIO-03`), **Emberwood Charcoal Yard** (`BLD-04`),
-   Kiln Keeper resident (`NPC-04`), Emberwood journal route (`LOR-04`), and **The
-   Kiln Widow** (`BOS-04`), then verify on `pandora-vps`.
-2. **Batch 5 — Return Visits, Progression, and Boss/Site Polish (`BLD-05`, `NPC-01`, `POL-03..08`, `BOS-05`).**
-3. **Batch 6 — Full Native Gate & Paired Matrix Verification on `pandora-vps`.**
+1. **Batch 5 — Return Visits, Progression, and Boss/Site Polish (`BLD-05`, `NPC-01`, `POL-03..08`, `BOS-05`).**
+2. **Batch 6 — Full Native Gate & Paired Matrix Verification on `pandora-vps`.**
 
 Keep the user's preference for substantial connected detail: useful residents,
 clear encounter tells, return visits, meaningful resources, persistence and lore
