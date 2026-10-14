@@ -109,15 +109,15 @@ public final class VoidFlightTest implements FabricClientGameTest {
  static java.util.concurrent.CompletableFuture<int[]> capturePixels(net.minecraft.client.Minecraft mc,String name){
   var result=new java.util.concurrent.CompletableFuture<int[]>();
   mc.gameRenderer.update(net.minecraft.client.DeltaTracker.ONE);mc.gameRenderer.extract(net.minecraft.client.DeltaTracker.ONE,true);mc.gameRenderer.render();
-  com.mojang.blaze3d.systems.RenderSystem.getDevice().createCommandEncoder().submit();
   net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image->{try(image){var path=java.nio.file.Path.of("screenshots",name+".png");java.nio.file.Files.createDirectories(path.getParent());image.writeToFile(path);result.complete(image.getPixels());}catch(Throwable e){result.completeExceptionally(e);}});
+  com.mojang.blaze3d.systems.RenderSystem.getDevice().createCommandEncoder().submit();
+  while(!result.isDone())com.mojang.blaze3d.systems.RenderSystem.executePendingTasks();
   return result;
  }
  static java.util.concurrent.CompletableFuture<Void> snapshot(net.minecraft.client.Minecraft mc,String name) {
   // Capture this exact production-particle step, without extra screenshot helper ticks.
   var result=new java.util.concurrent.CompletableFuture<Void>();
   mc.gameRenderer.update(net.minecraft.client.DeltaTracker.ONE);mc.gameRenderer.extract(net.minecraft.client.DeltaTracker.ONE,true);mc.gameRenderer.render();
-  com.mojang.blaze3d.systems.RenderSystem.getDevice().createCommandEncoder().submit();
   net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image -> {
    try(image) {
     var file=java.nio.file.Path.of("screenshots",name+".png");java.nio.file.Files.createDirectories(file.getParent());image.writeToFile(file);
@@ -128,7 +128,10 @@ public final class VoidFlightTest implements FabricClientGameTest {
      if(!name.equals("never_skip"))check(changed>10,"Visible formation differs inside aim-area region: "+name+", changed="+changed);
     }result.complete(null);
    }catch(Throwable e){result.completeExceptionally(e);}
-  });return result;
+  });
+  com.mojang.blaze3d.systems.RenderSystem.getDevice().createCommandEncoder().submit();
+  while(!result.isDone())com.mojang.blaze3d.systems.RenderSystem.executePendingTasks();
+  return result;
  }
  static Object field(Object value,Class<?> owner,String name){try{var f=owner.getDeclaredField(name);f.setAccessible(true);return f.get(value);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}
  static Vec3 at(Particle p){return new Vec3(((Number)field(p,Particle.class,"x")).doubleValue(),((Number)field(p,Particle.class,"y")).doubleValue(),((Number)field(p,Particle.class,"z")).doubleValue());}
