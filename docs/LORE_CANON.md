@@ -161,6 +161,7 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
   - Highland Cairn Lodges and the Glass Cartographer: dry-stone shelters in the Windscar Highlands with leeward Windreed terraces, four-page *Paired Cairns* books, eastern cairn lamps and resident Highland Cairn Keepers. Higher on the shelves stands the Highland Survey Ring, where waking the Survey Astrolabe begins an optional encounter with the Marchkeepers' brass-and-prism Glass Cartographer.
   - The Belowkeepers: Mara, the Fungal Nursery, the Drainhouse and the Empty Bell.
   - Belowkeeper Hollows, Listening Stations and the Hollow Bell: subterranean vaults where dripstone caverns meet mossy clay shelves (`tools/regional_biomes.py`). Belowkeeper Listening Stations house resident Belowkeeper Listeners, six-cap Glowcap beds, the four-page *What the Empty Bell Kept* ledger and a western resonance shutter lamp (`tools/sites_belowkeeper.py`). Deeper in the caverns stands the Belowkeeper Bell Sanctum, where waking the Listening Belfry begins an optional encounter with the unclappered bronze Hollow Bell (`tools/hollow_bell_art.py`).
+  - Emberwood Reach, Charcoal Yards and the Kiln Widow: fire-adapted oak-and-ash woodland along the humid edge of wooded badlands, with podzol and coarse-dirt ash firebreaks, natural Cinder Fern patches, Cinderfoxes, Salamanders, Charcoal Moths and Cinder Bailiffs (`tools/regional_biomes.py`). Emberwood Charcoal Yards house resident Emberwood Kiln Keepers, cultivated Cinder Fern ash beds, the four-page *Eleven Winters at the Gate* ledger and an eastern kiln draft lamp (`tools/sites_emberwood.py`). Deeper in the scorched woods stands the Emberwood Kiln Court, where stoking the Kiln Heartstone begins an optional encounter with the many-legged ceramic Kiln Widow (`tools/kiln_widow_art.py`).
   - Rook's Rainshield.
   - Highland beasts: Stonehorn and Galeclaw.
   - Fallen Knights carry manual pages.
@@ -172,7 +173,7 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
   - Saved per player, kept through death, and synced only to its owner.
   - Older saves open empty, then fill in from progress the player already has.
   - Tabs: Leads, Places, People, Learned and Talk.
-- **Six standalone discovery leads, the Scout's Last Cairn continuation, the Drowned Road, the Paired Cairns and What the Empty Bell Kept**:
+- **Six standalone discovery leads, the Scout's Last Cairn continuation, the Drowned Road, the Paired Cairns, What the Empty Bell Kept and Eleven Winters at the Gate**:
 
 | Lead | Clue from | Goal | Reward |
 |---|---|---|---|
@@ -194,6 +195,9 @@ The journal uses the stable school identities in `MastersRules.schoolId`. Old `v
 | What the Empty Bell Kept | meet a Belowkeeper Listener | hear the Bell Sanctum account | 20 XP, 1 Blank Rune |
 | The Pressure Records | finish What the Empty Bell Kept | visit a Collapsed Delve or Deepslate Vault | 30 XP, 2 Blank Runes |
 | The Resonance Shutter | finish The Pressure Records | stand beside a lit resonance shutter at a Belowkeeper Listening Station | 40 XP, 1 Aura Shard, 2 Blank Runes |
+| Eleven Winters at the Gate | meet an Emberwood Kiln Keeper | hear the Kiln Widow account | 20 XP, 1 Blank Rune |
+| The Southern Forge Ledgers | finish Eleven Winters at the Gate | visit a Mountain Forge Hall, Prospector's Camp, Basalt Foundry or Kiln Court | 30 XP, 2 Blank Runes |
+| The Kiln Draft Lamp | finish The Southern Forge Ledgers | stand beside a lit kiln draft lamp at an Emberwood Charcoal Yard | 40 XP, 1 Aura Shard, 2 Blank Runes |
 
 The continuation joins existing histories: road-makers raised the stone rings before the
 Marchkeepers used those routes; the scout's paired cairns kept account of the living and those
@@ -219,6 +223,12 @@ account to the dry miners' Collapsed Delves and Deepslate Vaults, and ends at a 
 shutter lamp on the western frame of a Belowkeeper Listening Station (`tools/sites_belowkeeper.py`).
 The optional Hollow Bell encounter at the Belowkeeper Bell Sanctum remains independent of the
 peaceful route.
+
+The woodland continuation connects the Emberwood Kiln Keeper's *Eleven Winters at the Gate*
+account to the southern Mountain Forge Halls, Prospector's Camps and Basalt Foundries, and ends
+at a working kiln draft lamp on the eastern brick stack of an Emberwood Charcoal Yard
+(`tools/sites_emberwood.py`). The optional Kiln Widow encounter at the Emberwood Kiln Court
+remains independent of the peaceful route.
 
 - **How leads behave**
   - The goal and hint can be read again in the journal at any time.

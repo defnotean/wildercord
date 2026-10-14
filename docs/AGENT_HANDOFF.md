@@ -214,13 +214,13 @@ Native coverage: `ReedlandBiomeTest`, `ReedkeeperLandingChecks`, `DrownedRoadChe
 
 ### Connected Emberwood Reach region — native evidence available (`3920b5c3`)
 
-- **Emberwood Reach (`BIO-03`)**: partitions the warm, dry band of `minecraft:savanna`
-  (`temperature >= 0.45`, `humidity <= -0.35`, `depth < 0.175`), preserving all other
-  climate coordinates and biome entries. Blends podzol and coarse-dirt ash firebreaks
-  with warm grassland in `ReedlandSurfaceMixin` while keeping `generation.features`
-  strictly ordered with vanilla feature steps (`FeatureSorter` verified acyclic across
-  all 71 Overworld biomes). Includes `cinder_fern_patch`, Cinderfoxes, Salamanders,
-  Charcoal Moths, Cinder Bailiffs, and shares `savanna`'s Warm Sun attunement.
+- **Emberwood Reach (`BIO-03`)**: partitions the humid band of `minecraft:wooded_badlands`
+  (`humidity >= 0.25`), preserving all other climate coordinates and biome entries.
+  Blends podzol and coarse-dirt ash firebreaks with warm grassland in
+  `ReedlandSurfaceMixin` while keeping `generation.features` strictly ordered with
+  vanilla feature steps (`FeatureSorter` verified acyclic across all 71 Overworld
+  biomes). Includes `cinder_fern_patch`, Cinderfoxes, Salamanders, Charcoal Moths,
+  Cinder Bailiffs, and shares `badlands`'s Sunscorch attunement at noon under open sky.
 - **Emberwood Charcoal Yard (`BLD-04`) & Emberwood Kiln Keeper (`NPC-04`)**: a
   21-by-21 brick-and-dark-oak burner's yard with a coarse-dirt firebreak, cultivated
   Cinder Fern ash bed, recessed hearth behind an iron-bar grate, Kiln Draft Lamp and
