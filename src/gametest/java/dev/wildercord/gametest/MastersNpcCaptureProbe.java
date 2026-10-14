@@ -231,6 +231,13 @@ public final class MastersNpcCaptureProbe {
 		boolean fullWarningCoverage = !closeBody;
 		var result = new CompletableFuture<Evidence>();
 		try {
+			if (mc.packetProcessor() != null && mc.level != null) {
+				long gameTime = mc.level.getGameTime();
+				mc.packetProcessor().processQueuedPackets();
+				if (mc.level != null && mc.level.getGameTime() != gameTime) {
+					mc.level.getLevelData().setGameTime(gameTime);
+				}
+			}
 			mc.gameRenderer.update(DELTA); mc.gameRenderer.extract(DELTA, true); mc.gameRenderer.render();
 			RenderSystem.getDevice().createCommandEncoder().submit();
 			Vec3 eye = mc.gameRenderer.mainCamera().position();
@@ -348,6 +355,18 @@ public final class MastersNpcCaptureProbe {
 					result.complete(evidence);
 				} catch (Throwable problem) { result.completeExceptionally(problem); }
 			});
+			RenderSystem.getDevice().createCommandEncoder().submit();
+			for (int spin = 0; spin < 200 && !result.isDone(); spin++) {
+				RenderSystem.executePendingTasks();
+				if (!result.isDone()) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException ignored) {
+						Thread.currentThread().interrupt();
+						break;
+					}
+				}
+			}
 		} finally { end(); }
 		return result;
 	}
