@@ -141,11 +141,6 @@ public final class WildercordClient implements ClientModInitializer {
 			SpellHud.forget();
 		});
 
-		ClientTickEvents.START_CLIENT_TICK.register(client -> {
-			if (client.packetProcessor() != null) {
-				client.packetProcessor().processQueuedPackets();
-			}
-		});
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.level == null) {
 				// Out of the world: these let go of everything they remembered about it.
