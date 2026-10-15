@@ -4,6 +4,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.13.0-alpha] — 2026-10-15
+
+**Living world.** New regions with their own buildings, residents, lore routes and bosses, plus bounties, mounts, guilds and a long list of fixes.
+
 ### Fixed
 
 - The advancement guide includes the missing Aura and cooking milestones, with all 156 visible entries and their reward totals checked against shipped data.
@@ -19,6 +23,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Added
 
+- **Windscar Highlands.** A wind-scoured highland region with a Cairn Lodge, its Cairn Keeper, the Paired Cairns and the Glass Cartographer, tied into the Scout's Last Cairn lead.
+- **Belowkeeper Hollows.** A hollow-country region with a Listening Station and its Listener, the Empty Bell route and the Hollow Bell encounter.
+- **Emberwood Reach.** A charred-forest region with a Charcoal Yard and its Kiln Keeper, the Eleven Winters route and the Kiln Widow encounter.
 - **The Reed-Crowned Ferryman and the Last Crossing.** Find a broad timber ferry basin in the Luminous Reedlands and read its book before ringing the authentic Crossing Bell. Its reed-raft guardian announces an oar sweep, anchor circle and wake lanes, with open escape paths and a changed pattern below half health. Eligible surviving contributors earn 80 XP, a field note and a compass pointing to that crossing. The bell keeps one guardian and remembers its completed encounter through chunk replay and world reopening.
 - **The Drowned Road.** Follow the Reedkeeper's account through a coastal boathouse passenger ledger to a lighthouse's working lamp. Three ordered journal chapters remember earlier visits and pay 90 XP, five Blank Runes and one Aura Shard in total, once per player. The route needs no combat victory; its discoveries support older buildings as well as new ones.
 - **Reedkeeper return conversations.** After the original four stories, the keeper responds to your current coastal chapter, gives a practical clue for the next stop, thanks you for tending the lighthouse and recognizes your return from a Ferryman victory. Heard responses stay in your own journal. Ordinary fishing trades remain available.
