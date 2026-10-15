@@ -31,7 +31,7 @@ public final class BelowkeeperResident {
 	public static final String ENTRY = "person:belowkeeper_listener";
 	public static final int TALK_COOLDOWN = 100;
 	public static final List<String> LINES = List.of("greet", "glowcap", "pressure", "hollow_bell");
-	public static final List<String> PROGRESS_LINES = List.of("deep_records", "station_gauge", "gauge_return", "bell_return");
+	public static final List<String> PROGRESS_LINES = List.of("four_lights", "deep_records", "station_gauge", "gauge_return", "bell_return");
 	private static final AttachmentType<Integer> LAST_TALK = AttachmentRegistry.create(Wildercord.id("belowkeeper_listener_last_talk"));
 	private static final int SPEECH = 0xB8E2DC;
 
@@ -61,6 +61,7 @@ public final class BelowkeeperResident {
 	}
 
 	public static String lineFor(LoreJournalData data) {
+		if (data.stage("four_lights") == LoreQuestRules.ACTIVE && !data.has("said:belowkeeper_listener.four_lights")) return "four_lights";
 		for (String line : LINES) if (!data.has("said:belowkeeper_listener." + line)) return line;
 		if (data.has("learned:hollow_bell")) return "bell_return";
 		if (data.stage("resonance_shutter") == LoreQuestRules.DONE) return "gauge_return";

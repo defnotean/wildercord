@@ -31,7 +31,7 @@ public final class CairnKeeperResident {
 	public static final String ENTRY = "person:cairn_keeper";
 	public static final int TALK_COOLDOWN = 100;
 	public static final List<String> LINES = List.of("greet", "windreed", "cairns", "cartographer");
-	public static final List<String> PROGRESS_LINES = List.of("watch_orders", "cairn_light", "light_return", "cartographer_return");
+	public static final List<String> PROGRESS_LINES = List.of("four_lights", "watch_orders", "cairn_light", "light_return", "cartographer_return");
 	private static final AttachmentType<Integer> LAST_TALK = AttachmentRegistry.create(Wildercord.id("cairn_keeper_last_talk"));
 	private static final int SPEECH = 0xEDE3C8;
 
@@ -61,6 +61,7 @@ public final class CairnKeeperResident {
 	}
 
 	public static String lineFor(LoreJournalData data) {
+		if (data.stage("four_lights") == LoreQuestRules.ACTIVE && !data.has("said:cairn_keeper.four_lights")) return "four_lights";
 		for (String line : LINES) if (!data.has("said:cairn_keeper." + line)) return line;
 		if (data.has("learned:glass_cartographer")) return "cartographer_return";
 		if (data.stage("cairn_beacon") == LoreQuestRules.DONE) return "light_return";
