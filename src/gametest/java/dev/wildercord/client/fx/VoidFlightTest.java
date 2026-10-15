@@ -88,7 +88,9 @@ public final class VoidFlightTest implements FabricClientGameTest {
   // Diagnostic framing follows the retained production Void objects (the ones asserted below), sampled now rather than a stale moving bolt.
   double minX=Double.POSITIVE_INFINITY,minY=minX,minZ=minX,maxX=Double.NEGATIVE_INFINITY,maxY=maxX,maxZ=maxX;
   for(var particle:live){if(!(particle instanceof VoidParticle))continue;var pos=at(particle);minX=Math.min(minX,pos.x);minY=Math.min(minY,pos.y);minZ=Math.min(minZ,pos.z);maxX=Math.max(maxX,pos.x);maxY=Math.max(maxY,pos.y);maxZ=Math.max(maxZ,pos.z);}
-  var centre=new Vec3((minX+maxX)/2,(minY+maxY)/2,(minZ+maxZ)/2);
+  var spread=new Vec3((minX+maxX)/2,(minY+maxY)/2,(minZ+maxZ)/2);
+  // Void is sparse along a fast flight; aim at the retained Void nearest the middle so the asserted object is what the camera frames.
+  var centre=live.stream().filter(p->p instanceof VoidParticle).map(VoidFlightTest::at).min(java.util.Comparator.comparingDouble(v->v.distanceToSqr(spread))).orElseThrow();
   var eye=centre.add(2.7,.6,2);var aim=centre.subtract(eye);
   float yaw=(float)Math.toDegrees(Math.atan2(-aim.x,aim.z));
   float pitch=(float)-Math.toDegrees(Math.atan2(aim.y,Math.hypot(aim.x,aim.z)));
