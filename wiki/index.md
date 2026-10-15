@@ -17,7 +17,7 @@ Wear a Cord, thread runes from left to right, and cast the whole sequence with o
 
 ## The current update: 0.13, Living world
 
-- **Four new regions**, each with its own biome, building, resident, lore route and boss:
+- **Four new regions**, each with its own biome, building, resident, lore route and optional boss:
   [Luminous Reedlands]({{ '/world/luminous-reedlands/' | relative_url }}),
   [Windscar Highlands]({{ '/world/windscar-highlands/' | relative_url }}),
   [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }}) and

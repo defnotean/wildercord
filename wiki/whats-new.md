@@ -9,7 +9,7 @@ Install `wildercord-0.13.0-alpha+mc26.3.jar` on the server and every client, wit
 
 ## New places to find
 
-Each region has its own biome, a building, a resident, a lore route in your [journal]({{ '/progression/lore-journal/' | relative_url }}) and a boss.
+Each region has its own biome, a building, a resident, a lore route in your [journal]({{ '/progression/lore-journal/' | relative_url }}) and an optional boss.
 
 - **[Luminous Reedlands]({{ '/world/luminous-reedlands/' | relative_url }})**: pale banks and Moonreed pools, the Tideward Reedkeeper Landing, the Drowned Road and the [Reed-Crowned Ferryman]({{ '/world/reed-crowned-ferryman/' | relative_url }}) at the Last Crossing.
 - **[Windscar Highlands]({{ '/world/windscar-highlands/' | relative_url }})**: the Cairn Lodge and Cairn Keeper, the Paired Cairns and the [Glass Cartographer]({{ '/world/glass-cartographer/' | relative_url }}).
