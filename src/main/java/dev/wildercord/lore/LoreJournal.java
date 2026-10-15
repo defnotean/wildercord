@@ -178,6 +178,12 @@ public final class LoreJournal {
 	private static void tick(MinecraftServer server) {
 		for (ServerPlayer player : List.copyOf(server.getPlayerList().getPlayers())) {
 			if ((player.tickCount + (player.getId() & 31)) % POLL_TICKS == 0 && player.isAlive()) poll(player);
+			if (player.tickCount % 40 == 0 && player.isAlive() && !player.isSpectator()
+				&& (player.getMainHandItem().is(LAMPLIGHTER) || player.getOffhandItem().is(LAMPLIGHTER))
+				&& player.level().getMaxLocalRawBrightness(player.blockPosition()) < 7) {
+				// Held in the dark, the lantern lets its bearer see the road: night vision, without the particles.
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 300, 0, true, false, true));
+			}
 		}
 	}
 
