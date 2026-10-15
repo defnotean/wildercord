@@ -38,6 +38,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 
 import java.util.HashMap;
@@ -64,6 +66,11 @@ public final class LoreJournal {
 
 	private static final Map<UUID, Long> LAST_TALK = new HashMap<>();
 	private static final Map<UUID, Integer> TALKS = new HashMap<>();
+
+	/** The keepsake "Four Lamps, One Road" leaves: a lamplighter's lantern, one for each traveller who walks the whole road. */
+	public static final Item LAMPLIGHTER = net.minecraft.core.Registry.register(net.minecraft.core.registries.BuiltInRegistries.ITEM,
+		Wildercord.id("lamplighters_lantern"), new AuraWorld.Lore("lamplighters_lantern", new Item.Properties().setId(net.minecraft.resources.ResourceKey.create(
+			net.minecraft.core.registries.Registries.ITEM, Wildercord.id("lamplighters_lantern"))).stacksTo(1).rarity(Rarity.RARE)));
 
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(LoreJournal::tick);
@@ -250,6 +257,7 @@ public final class LoreJournal {
 		if (quest.xp() > 0) player.giveExperiencePoints(quest.xp());
 		if (quest.shards() > 0) give(player, new ItemStack(AuraWorld.AURA_SHARD, quest.shards()));
 		if (quest.runes() > 0) give(player, new ItemStack(WildercordItems.BLANK_RUNE, quest.runes()));
+		if (quest.id().equals(LoreQuestRules.FOUR_LIGHTS)) lightRoad(player);
 		double aura = quest.auraXp() > 0 ? AuraExperience.grant(player, quest.auraXp()) : 0;
 		net.minecraft.network.chat.MutableComponent paid = Component.empty();
 		int parts = 0;
@@ -264,6 +272,16 @@ public final class LoreJournal {
 		}
 		player.sendSystemMessage(Component.translatable("journal.wildercord.reward", paid).withColor(HINT));
 		player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.5F, 1.3F);
+	}
+
+	/** The ending of "Four Lamps, One Road": the lantern, and the four lamps flaring once as the road is walked. */
+	private static void lightRoad(ServerPlayer player) {
+		give(player, new ItemStack(LAMPLIGHTER));
+		player.sendSystemMessage(Component.translatable("journal.wildercord.lamplighter").withColor(HINT));
+		if (player.level() instanceof net.minecraft.server.level.ServerLevel level) {
+			level.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD, player.getX(), player.getY() + 1, player.getZ(), 60, 1.5, 1.2, 1.5, 0.02);
+			level.playSound(null, player.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.0F, 0.6F);
+		}
 	}
 
 	private static void give(ServerPlayer player, ItemStack stack) {

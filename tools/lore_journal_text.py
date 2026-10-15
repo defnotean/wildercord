@@ -364,6 +364,12 @@ LANG = {
     "dialogue.wildercord.speaker.master": "Master of %s",
 }
 
+LANG.update({
+    "item.wildercord.lamplighters_lantern": "Lamplighter's Lantern",
+    "item.wildercord.lamplighters_lantern.lore": "A small lantern that took its flame from four lamps on four roads.",
+    "item.wildercord.lamplighters_lantern.use": "Keepsake of Four Lamps, One Road. It burns for whoever has walked the road.",
+    "journal.wildercord.lamplighter": "The keepers' flames gather in a small lantern. It is yours, lamplighter.",
+})
 for _entry, _text in ENTRIES.items():
     LANG["journal.wildercord.entry." + _entry.replace(":", ".")] = _text
 for _form, _name in FORMS.items():
