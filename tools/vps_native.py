@@ -3,59 +3,38 @@
 No process is launched here. The Windows runner owns the child and records its
 actual exit; Gradle and Minecraft must supply descriptor/profile/lifecycle proof.
 """
+import hashlib
 import json
 import re
 import uuid
 
 import client_suites as suites
 import full_client_ci as full
-import masters_required_ci as masters
-from run_client_ci import MOON_ENTRY, MOON_NONCE
 from vps_identity import make_identity
 
-SUITES = (*suites.MASTERS_PART_NAMES, "articulated", "release-smoke")
+SUITES = ("release-smoke",)
 PREFIX = "WILDERCORD_VPS_NATIVE "
 
 
 def prepare(*, head, computer, batch, attempt, launch, environment, suite=None, shard=None):
-    if (suite is None) == (shard is None) or (suite is not None and suite not in SUITES):
-        raise ValueError("Select one complete supported VPS suite or full-client shard")
+    if shard is not None or suite not in SUITES:
+        raise ValueError("Select the complete release-smoke suite")
     selection = suites.select_entries(suite=suite, shard=shard)
     if str(uuid.UUID(launch)) != launch:
         raise ValueError("VPS launch must own a canonical UUID")
     identity = make_identity(head, computer, batch, attempt,
-        "game-tests" if shard else "masters-native" if suite in suites.MASTERS_PART_NAMES else "articulated-native" if suite == "articulated" else "smoke-native")
+        "smoke-native")
     child = dict(environment)
     child[full.LAUNCH_ENV] = launch
     profile = None
-    if shard:
-        child["WILDERCORD_ANIMATION_GALLERY"] = "1"
-        profile = full.execution_profile(child)
-        proof = full.provenance(selection, identity, profile, launch)
-        prefix = full.PROVENANCE_PREFIX
-        number, count = shard.split("/")
-        flags = ["-PciShard=" + number, "-PciShards=" + count]
-    else:
-        flags = ["-PciSuite=" + suite]
-        if suite in suites.MASTERS_PART_NAMES:
-            proof, prefix = masters.provenance(selection, identity, launch), masters.PART_PREFIX
-        else:
-            proof, prefix = {"schemaVersion": 1, **identity, "launchId": launch,
-                             "selectionSha256": masters.selection_hash(selection)}, PREFIX
+    flags = ["-PciSuite=" + suite]
+    proof, prefix = {"schemaVersion": 1, **identity, "launchId": launch,
+                     "selectionSha256": hashlib.sha256(json.dumps(selection, sort_keys=True, separators=(",", ":")).encode()).hexdigest()}, PREFIX
     preamble = [suites.SELECTION_PREFIX + json.dumps(selection, sort_keys=True),
                 prefix + json.dumps(proof, sort_keys=True)]
-    moon = None
-    if MOON_ENTRY in selection["entries"]:
-        nonce = str(uuid.uuid4())
-        child[MOON_NONCE] = nonce
-        # Explicit VPS receipt. Historical GitHub frame packages are not borrowed.
-        moon = {"schemaVersion": 2, "purpose": "owner-fp-native-diagnostic",
-                **identity, "nonce": nonce, "launchId": launch, "selection": selection,
-                "remoteObserverCoverage": False, "serverReleaseFrameCorrespondenceVerified": False}
-        preamble.append("WILDERCORD_MOON_OWNER_LAUNCH " + json.dumps(moon, sort_keys=True))
     return {"selection": selection, "identity": identity, "launch": launch, "profile": profile,
             "proof": proof, "prefix": prefix, "preamble": preamble, "flags": flags,
-            "environment": child, "moonReceipt": moon}
+            "environment": child, "moonReceipt": None}
 
 
 def exit_markers(plan, code):
@@ -105,25 +84,12 @@ def group_boundaries(log, plan):
 def manifest(log, plan):
     selection, identity, launch = plan["selection"], plan["identity"], plan["launch"]
     issues = suites.selection_issues(log, selection, launch_id=launch)
-    if selection["kind"] == "shard":
-        proof, extra = full.run_evidence(log, selection, plan["profile"], identity=identity)
-        if not suites.exact_json_marker(json.dumps(proof["provenance"]), plan["proof"]):
-            extra.append("Full-client log belongs to a different owned VPS launch")
-        proof.update(shard=selection["shard"])
-        outcome = "shardOutcome"
-        results = full.suite_results(selection, plan["profile"])
-    else:
-        issues.extend(group_boundaries(log, plan))
-        if selection["kind"] == "required-part":
-            proof, extra = masters.part_evidence(log, selection, identity=identity, launch_id=launch)
-            proof["focusedClientGate"] = "unverified"
-            outcome = "requiredPartOutcome"
-        else:
-            completed, extra = suites._whole_class_completion(log, selection["entries"], "VPS articulated", launch_id=launch)
-            proof = {"schemaVersion": 1, "scope": "vps-articulated-suite", "provenance": plan["proof"],
-                     "completedEntries": completed}
-            outcome = "focusedClientGate"
-        results = [{"suite": entry, "status": "passed"} for entry in selection["entries"]]
+    issues.extend(group_boundaries(log, plan))
+    completed, extra = suites._whole_class_completion(log, selection["entries"], "VPS smoke", launch_id=launch)
+    proof = {"schemaVersion": 1, "scope": "vps-release-smoke", "provenance": plan["proof"],
+             "completedEntries": completed}
+    outcome = "focusedClientGate"
+    results = [{"suite": entry, "status": "passed"} for entry in selection["entries"]]
     issues.extend(extra)
     if issues:
         results = [{**item, "status": "unverified"} for item in results]

@@ -5,6 +5,7 @@ Optional profiles remain explicitly skipped, not passed; the required aggregate
 includes the complete animation gallery but excludes Iris/showcase/extra shots.
 """
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -16,10 +17,14 @@ import uuid
 from client_suites import (ROOT, SELECTION_PREFIX, DESCRIPTOR_PREFIX, EXIT_PREFIX,
                            select_entries, exact_json_marker, _unique_completion_object,
                            _whole_class_completion, scene_marker)
-from masters_required_ci import selection_hash
 from client_shard_plan import REQUIRED_PROFILE
 from native_evidence import read_text as read_evidence
 from vps_identity import is_vps, extension
+
+
+def selection_hash(selection):
+    return hashlib.sha256(json.dumps(selection, sort_keys=True, separators=(",", ":"),
+                                     allow_nan=False).encode()).hexdigest()
 
 PROVENANCE_PREFIX = "WILDERCORD_FULL_CLIENT "
 PROFILE_PREFIX = "WILDERCORD_CLIENT_PROFILE "
