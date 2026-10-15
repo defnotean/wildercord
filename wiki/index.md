@@ -15,7 +15,20 @@ Wear a Cord, thread runes from left to right, and cast the whole sequence with o
 
 ![The Cord editor previews a magic circle while explaining the spell.]({{ '/assets/images/circle-editor.jpg' | relative_url }})
 
-## The current update: 0.11, Masters of Tomorrow
+## The current update: 0.13, Living world
+
+- **Four new regions**, each with its own biome, building, resident, lore route and boss:
+  [Luminous Reedlands]({{ '/world/luminous-reedlands/' | relative_url }}),
+  [Windscar Highlands]({{ '/world/windscar-highlands/' | relative_url }}),
+  [Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }}) and
+  [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }}).
+- **A busier world**: wider bounties and escort jobs, inn raids and rooms, hamlets and wandering caravans.
+- **New ways to play**: flying, water and burrowing mounts, [guilds and covens]({{ '/social/guilds/' | relative_url }}),
+  co-op tribulations, ritual spells, flawed runes and a spell-duel [arena]({{ '/social/arena/' | relative_url }}).
+
+Read [What's New]({{ '/whats-new/' | relative_url }}) for everything in the update.
+
+## Earlier: 0.11, Masters of Tomorrow
 
 - **16 Sword Masters**, one for each breathing method, wait to test you. Six new breathing methods
   join them: Tide, Iron, Dune, Echo, Dawn and Venom. See [Sword Masters]({{ '/masters/' | relative_url }}).

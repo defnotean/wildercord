@@ -3,6 +3,30 @@ title: What's New
 nav_order: 1.1
 ---
 
+# What's new in 0.13.0: Living world
+
+Install `wildercord-0.13.0-alpha+mc26.3.jar` on the server and every client, with Fabric API 0.161.0+26.3 and Fabric Loader 0.19.5 or newer. This update adds blocks, items, entities and packets, so **0.12.x clients must update before joining**. Back up your worlds first.
+
+## New places to find
+
+Each region has its own biome, a building, a resident, a lore route in your [journal]({{ '/progression/lore-journal/' | relative_url }}) and a boss.
+
+- **[Luminous Reedlands]({{ '/world/luminous-reedlands/' | relative_url }})**: pale banks and Moonreed pools, the Tideward Reedkeeper Landing, the Drowned Road and the [Reed-Crowned Ferryman]({{ '/world/reed-crowned-ferryman/' | relative_url }}) at the Last Crossing.
+- **[Windscar Highlands]({{ '/world/windscar-highlands/' | relative_url }})**: the Cairn Lodge and Cairn Keeper, the Paired Cairns and the [Glass Cartographer]({{ '/world/glass-cartographer/' | relative_url }}).
+- **[Belowkeeper Hollows]({{ '/world/belowkeeper-hollows/' | relative_url }})**: a Listening Station, its Listener, the Empty Bell route and the [Hollow Bell]({{ '/world/hollow-bell/' | relative_url }}).
+- **[Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }})**: a Charcoal Yard, its Kiln Keeper, the Eleven Winters route and the Kiln Widow.
+
+## Also in this update
+
+- Wider bounties and escort jobs, inn raids and rooms, hamlets and wandering caravans.
+- Ritual spells and flawed runes.
+- A spell-duel [arena]({{ '/social/arena/' | relative_url }}).
+- Flying, water and burrowing mounts.
+- [Guilds and covens]({{ '/social/guilds/' | relative_url }}) and co-op tribulations.
+- Ascension past the Twentieth Circle, a codex bestiary and a [stats page]({{ '/progression/stats/' | relative_url }}).
+
+This is an alpha. Report problems on the [issue tracker](https://github.com/defnotean/wildercord/issues/new/choose).
+
 # What's new in 0.12.0: Tempering
 
 Players were far too strong, so this update rebalances spell damage and defence. Circles and aura now take real effort, and the world fights back. Install `wildercord-0.12.0-alpha+mc26.3.jar` on the server and every client together: **0.11 clients must update before joining**. **Back up your world first.** Saves are re-tempered, so a heart or aura can settle a few circles or a stage lower. Condensed mana and aura experience are kept.
