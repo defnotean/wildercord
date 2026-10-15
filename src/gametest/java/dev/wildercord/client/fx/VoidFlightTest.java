@@ -85,9 +85,9 @@ public final class VoidFlightTest implements FabricClientGameTest {
   var live=particles(mc.particleEngine).stream().filter(p->p.isAlive() && (p instanceof VoidParticle || p instanceof MaterialParticle)
     && ((Number)field(p,Particle.class,"lifetime")).intValue()==5).toList();
   check(live.stream().anyMatch(p->p instanceof VoidParticle),"Actual production void retained for close view");
-  // Diagnostic framing follows these retained production objects, sampled now rather than a stale moving bolt.
+  // Diagnostic framing follows the retained production Void objects (the ones asserted below), sampled now rather than a stale moving bolt.
   double minX=Double.POSITIVE_INFINITY,minY=minX,minZ=minX,maxX=Double.NEGATIVE_INFINITY,maxY=maxX,maxZ=maxX;
-  for(var particle:live){var pos=at(particle);minX=Math.min(minX,pos.x);minY=Math.min(minY,pos.y);minZ=Math.min(minZ,pos.z);maxX=Math.max(maxX,pos.x);maxY=Math.max(maxY,pos.y);maxZ=Math.max(maxZ,pos.z);}
+  for(var particle:live){if(!(particle instanceof VoidParticle))continue;var pos=at(particle);minX=Math.min(minX,pos.x);minY=Math.min(minY,pos.y);minZ=Math.min(minZ,pos.z);maxX=Math.max(maxX,pos.x);maxY=Math.max(maxY,pos.y);maxZ=Math.max(maxZ,pos.z);}
   var centre=new Vec3((minX+maxX)/2,(minY+maxY)/2,(minZ+maxZ)/2);
   var eye=centre.add(2.7,.6,2);var aim=centre.subtract(eye);
   float yaw=(float)Math.toDegrees(Math.atan2(-aim.x,aim.z));

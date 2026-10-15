@@ -92,7 +92,7 @@ public final class VoidFlightVariantsTest implements FabricClientGameTest {
   // Frame the exact retained production objects at this capture step, not the Arc's earlier moving entity position.
   var camera=mc.level.getEntity(cameraId);
   double minX=Double.POSITIVE_INFINITY,minY=minX,minZ=minX,maxX=Double.NEGATIVE_INFINITY,maxY=maxX,maxZ=maxX;
-  for(var particle:actual){var pos=VoidFlightTest.at(particle);minX=Math.min(minX,pos.x);minY=Math.min(minY,pos.y);minZ=Math.min(minZ,pos.z);maxX=Math.max(maxX,pos.x);maxY=Math.max(maxY,pos.y);maxZ=Math.max(maxZ,pos.z);}
+  for(var particle:actual){if(!(particle instanceof VoidParticle))continue;var pos=VoidFlightTest.at(particle);minX=Math.min(minX,pos.x);minY=Math.min(minY,pos.y);minZ=Math.min(minZ,pos.z);maxX=Math.max(maxX,pos.x);maxY=Math.max(maxY,pos.y);maxZ=Math.max(maxZ,pos.z);}
   var centre=new Vec3((minX+maxX)/2,(minY+maxY)/2,(minZ+maxZ)/2);
   check(Double.isFinite(centre.x) && Double.isFinite(centre.y) && Double.isFinite(centre.z),"Actual retained body bounds are finite");
   var eye=centre.add(2.7,.6,2);var aim=centre.subtract(eye);
