@@ -29,13 +29,12 @@ user request to resume development authorizes continuing from this handoff.
   all Java processes. Check actual process ownership before stopping a test.
 - Never change sources or build outputs underneath a running native client.
   Inspect processes, checkout status and run receipts before switching candidates.
-- **Latest content candidate `57fff8a9` includes Windscar but has not passed a
-  candidate build or its new native test.** Earlier passes do not establish that
-  the current branch passes. The full 344-class native aggregate is unverified.
-- Preserve original tests, cases, seeds, exact timing, geometry and receipt
-  boundaries. Diagnose a failure before changing expectations. A focused pass,
-  partial class count, archived screenshot check or interrupted run is not a full
-  native pass. The explicit scheduling plan has no automatic fallback or balancing.
+- **Native tests are a 14-class smoke tier (`release-smoke` in `tools/client_suite_catalog.json`).**
+  The old 349-class gate and its per-feature suites were deleted on 2026-10-15 at the owner's
+  request (a full run took ~2 h). Run the smoke suite **once, when a release is about to be cut**:
+  `python tools/run_vps_checks.py suite --suite release-smoke --head <sha> --computer WIN-I2GBVRRD872`.
+  Target: about 5 minutes. A smoke pass is a smoke result, not proof of every feature; say so.
+  Do not recreate per-feature native suites without being asked.
 - Update generator sources alongside generated resources. Use the real game for
   native evidence and screenshots. Record candidate SHA, receipt ID and practical
   limits in the evidence ledger rather than claiming every feature is verified.
