@@ -42,7 +42,11 @@ public final class BountyRules {
 		new Goods("minecraft:rabbit_hide", 4, 8),
 		new Goods("minecraft:honeycomb", 3, 6),
 		new Goods("minecraft:amethyst_shard", 6, 12),
-		new Goods("minecraft:sweet_berries", 16, 32));
+		new Goods("minecraft:sweet_berries", 16, 32),
+		// The four regions' own gatherables, so the boards ask for what the Reedlands, Hollows and Emberwood give.
+		new Goods("wildercord:moonreed_floss", 4, 8),
+		new Goods("wildercord:dried_glowcap_gills", 4, 8),
+		new Goods("wildercord:ember_tuft", 4, 8));
 
 	/** The creatures a named elite can be: Wildercord's own monsters. */
 	public static final List<String> ELITES = List.of("wildercord:bramblewalker", "wildercord:gloomstalker", "wildercord:geode_crawler",

@@ -38,6 +38,16 @@ class BountyRulesTest {
 	}
 
 	@Test
+	void gatheringBountiesAskForTheRegionsOwnGoods() {
+		Set<String> asked = new HashSet<>();
+		for (long day = 0; day < 4000; day++) {
+			Bounty bounty = BountyRules.offer(UUID.randomUUID(), day, day * 13, Tier.KNOWN, false);
+			if (bounty.kind() == BountyRules.Kind.GATHER) asked.add(bounty.target());
+		}
+		assertTrue(asked.containsAll(java.util.List.of("wildercord:moonreed_floss", "wildercord:dried_glowcap_gills", "wildercord:ember_tuft")), asked.toString());
+	}
+
+	@Test
 	void reputationClimbsThroughTheTiers() {
 		assertEquals(Tier.STRANGER, Tier.of(0));
 		assertEquals(Tier.STRANGER, Tier.of(14));
