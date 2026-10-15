@@ -17,16 +17,22 @@ import net.minecraft.util.Mth;
 public final class LanternBearerModel extends EntityModel<LanternBearerRenderState> {
 	/** Where its waist sits, and its shoulders above that. */
 	private static final float WAIST=8,SHOULDER=-10.5F,HAND=7.5F;
+	private final ModelPart capeTip;
+	private final ModelPart[] tatters=new ModelPart[10];
 	private final ModelPart body,head,skirt,cape,armR,foreR,spade,armL,foreL,crook,lantern;
 	private final ModelPart[] posed;
 	/** The pose being built: the body's drop, lean, twist and sway; the head; each arm, its elbow, and the world pitch and slide of what it holds. */
 	private float by,bX,bY,bZ,hX,hY,rX,rY,rZ,rE,spadeW,spadeSlide,lX,lY,lZ,lE,crookW,crookSlide,swing,swingZ,skirtX,capeX;
+	/** How far the cape's lower piece swings past the upper (each move sets it a beat after the cape itself moves), and the same for the hem's tatters. */
+	private float capeT,hemKick,clock;
 	public LanternBearerModel(ModelPart root){
 		super(root,RenderTypes::entityTranslucent);
 		body=root.getChild("body");head=body.getChild("head");skirt=body.getChild("skirt");cape=body.getChild("cape");
 		armR=body.getChild("armR");foreR=armR.getChild("fore");spade=foreR.getChild("spade");
 		armL=body.getChild("armL");foreL=armL.getChild("fore");crook=foreL.getChild("crook");lantern=crook.getChild("tip").getChild("lantern");
-		posed=new ModelPart[]{body,head,skirt,cape,armR,foreR,spade,armL,foreL,crook,lantern};
+		capeTip=cape.getChild("capeTip");
+		for(int i=0;i<10;i++)tatters[i]=skirt.getChild("tatter"+i);
+		posed=new ModelPart[]{body,head,skirt,cape,capeTip,armR,foreR,spade,armL,foreL,crook,lantern};
 	}
 	public static LayerDefinition createLayer(){
 		var mesh=new MeshDefinition();var root=mesh.getRoot();
@@ -39,7 +45,9 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 			skirt.addOrReplaceChild("tatter"+n++,CubeListBuilder.create().texOffs(0,46).addBox(-1,0,0,2,3,0),PartPose.offsetAndRotation(x+(z>0?1:0),15,z,z<0?-.12F:.12F,0,0));
 		for(float x:new float[]{-5.01F,5.01F})for(float z:new float[]{-2,1.5F})
 			skirt.addOrReplaceChild("tatter"+n++,CubeListBuilder.create().texOffs(8,46).addBox(0,0,-1,0,3,2),PartPose.offsetAndRotation(x,15,z,0,0,x<0?.12F:-.12F));
-		body.addOrReplaceChild("cape",CubeListBuilder.create().texOffs(70,0).addBox(-5,0,0,10,21,0),PartPose.offset(0,-11.5F,3.2F));
+		// The cape in two pieces, the lower one (the same cloth, carried on from the upper) swinging a beat behind it.
+		var cape=body.addOrReplaceChild("cape",CubeListBuilder.create().texOffs(70,0).addBox(-5,0,0,10,14,0),PartPose.offset(0,-11.5F,3.2F));
+		cape.addOrReplaceChild("capeTip",CubeListBuilder.create().texOffs(70,14).addBox(-5,0,0,10,7,0),PartPose.offset(0,14,0));
 		// The hood, its brim jutting over the dark where a face should be, and its peak falling behind.
 		body.addOrReplaceChild("head",CubeListBuilder.create().texOffs(40,0).addBox(-3.5F,-7,-4,7,7,7)
 			.texOffs(70,24).addBox(-4,-7.5F,-4.6F,8,2,1)
@@ -84,12 +92,18 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		lantern.visible=LanternBearerRules.holdsLantern(s.rise);
 	}
 
+	/** Time held still for two ticks at {@code at}, the contact pose of a blow, then running on: the hit-stop. */
+	private static float stop(float el,float at){return el<at?el:el<at+2?at:el-2;}
+	/** The ring-down after a blow lands at {@code at}: a quick overshoot past the mark, decaying away. */
+	private static float ring(float el,float at){float q=el-at;return q<0?0:Mth.exp(-q*.3F)*Mth.sin(q*.9F);}
+
 	/** 0 to 1 as {@code t} runs {@code from} to {@code to}, eased in and out. */
 	private static float smooth(float t,float from,float to){float k=Mth.clamp((t-from)/(to-from),0,1);return k*k*(3-2*k);}
 
 	/** The whole pose for {@code move}, {@code el} ticks in: standing with its spade and lantern, risen (or not yet), gliding, then the move, a blow's jolt and its death. */
 	private void pose(LanternBearerRenderState s,int move,float el,int tell,int side){
 		float t=s.ageInTicks,ws=Math.min(1,s.walkAnimationSpeed),wp=s.walkAnimationPos;
+		clock=t;capeT=0;hemKick=0;
 		stand();
 		// Hovering a hair off the ground, breathing slow; its robe trailing as it glides, the cape lifting, the lantern swaying.
 		by+=Mth.sin(t*.08F)*.5F-.6F;bX+=Mth.sin(t*.05F)*.02F+.15F*ws;
@@ -130,6 +144,13 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		body.y=WAIST+by;body.xRot=bX;body.yRot=bY;body.zRot=bZ;
 		head.xRot=hX;head.yRot=hY;
 		skirt.xRot=skirtX;cape.xRot=capeX;
+		// The cape's lower piece and the hem's tatters follow a beat late: each swings on the way the cloth above it is moving, and ripples on its own period.
+		capeTip.xRot=capeX*.7F+capeT+Mth.sin(clock*.1F-1.3F)*.07F+Mth.sin(clock*.23F-.6F)*.03F;
+		for(int i=0;i<tatters.length;i++){
+			float ph=i*.7F,flap=Mth.sin(clock*.13F-ph)*.08F+hemKick*Mth.sin(1.4F-ph*.3F);
+			if(i<6)tatters[i].xRot=(i%2==0?-.12F:.12F)+flap+skirtX*.8F;
+			else tatters[i].zRot=(i<8?.12F:-.12F)+flap*.8F;
+		}
 		armR.xRot=rX;armR.yRot=rY;armR.zRot=rZ;foreR.xRot=rE;
 		spade.xRot=spadeW-bX-rX-rE;spade.y=HAND+spadeSlide;
 		armL.xRot=lX;armL.yRot=lY;armL.zRot=lZ;foreL.xRot=lE;
@@ -160,9 +181,12 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 	 */
 	private void low(float el,float T,boolean twice){
 		float b0=T+LanternBearerRules.REAP_SWEEP+LanternBearerRules.REAP_BACK,done=twice?b0+1:T+1;
-		float wind=smooth(el,0,T),cut=smooth(el,T-1,T+3),back=twice?smooth(el,b0-1,b0+3):0,
+		float wind=smooth(el,0,T),cut=smooth(stop(el,T+1.5F),T-1,T+3),back=twice?smooth(el>b0+1.5F?stop(el,b0+1.5F):el,b0-1,b0+3):0,
 			off=1-smooth(el,done+4,done+LanternBearerRules.REAP_RECOVER);
 		float on=wind*off;
+		// Past the mark after each cut, the cloth swinging on after the body has stopped.
+		float over=ring(el,T+3)-(twice?ring(el,b0+3):0);
+		bY-=.22F*over*off;rY-=.12F*over*off;capeT+=.5F*over*off;hemKick+=.8F*over*off;
 		by+=2.4F*on;bX+=.3F*on;hX-=.25F*on;
 		rX=Mth.lerp(on,rX,-1.2F);rE=Mth.lerp(on,rE,-.05F);rZ=Mth.lerp(on,rZ,.2F);spadeW=Mth.lerp(on,spadeW,-1.4F);spadeSlide+=9*on;
 		bY+=(.85F*wind-1.95F*cut+1.95F*back)*off;rY+=(.5F*wind-1.0F*cut+1.0F*back)*off;
@@ -181,7 +205,7 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 	}
 	/** The hook: the crook drawn back level, thrust out at whoever keeps away, and hauled in with them on it. */
 	private void hook(float el,float T){
-		float draw=smooth(el,0,T),thrust=smooth(el,T-1,T+1.5F),haul=smooth(el,T+2,T+2+LanternBearerRules.HOOK_DRAG),
+		float draw=smooth(el,0,T),thrust=smooth(stop(el,T+1.5F),T-1,T+1.5F),haul=smooth(el,T+2,T+2+LanternBearerRules.HOOK_DRAG),
 			back=1-smooth(el,T+3+LanternBearerRules.HOOK_DRAG,T+LanternBearerRules.HOOK_DRAG+LanternBearerRules.HOOK_RECOVER);
 		float on=draw*back;
 		lX=Mth.lerp(on,lX,Mth.lerp(thrust,-1.0F,-1.55F)+.45F*haul);
@@ -222,7 +246,9 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 	 */
 	private void graves(float el,float T){
 		float stuck=T+LanternBearerRules.GRAVE_MARK+LanternBearerRules.GRAVE_HOLD;
-		float lift=smooth(el,0,T*.8F),drive=smooth(el,T-1,T+1),pull=smooth(el,stuck-3,stuck+3);
+		float lift=smooth(el,0,T*.8F),drive=smooth(stop(el,T+1),T-1,T+1),pull=smooth(el,stuck-3,stuck+3);
+		float over=ring(el,T+1)*(1-pull);
+		bX+=.1F*over;by+=.5F*over;capeT+=.4F*over;hemKick+=.6F*over;
 		float on=lift*(1-pull),strain=drive*(1-pull)*Math.max(0,Mth.sin(el*.5F));
 		rX=Mth.lerp(on,rX,Mth.lerp(drive,-2.9F,-.85F));rE=Mth.lerp(on,rE,Mth.lerp(drive,-.2F,-.15F));rZ=Mth.lerp(on,rZ,Mth.lerp(drive,-.15F,0));
 		rY+=.25F*on*(1-drive);
@@ -265,8 +291,10 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 	 * low behind it.
 	 */
 	private void backsweep(float el,float T){
-		float coil=smooth(el,0,T),whip=smooth(el,T-1,T+2),off=1-smooth(el,T+3,T+3+LanternBearerRules.BACK_RECOVER);
+		float coil=smooth(el,0,T),whip=smooth(stop(el,T+1.5F),T-1,T+2),off=1-smooth(el,T+3,T+3+LanternBearerRules.BACK_RECOVER);
 		float on=coil*off;
+		float over=ring(el,T+3.5F)*off;
+		bY-=.2F*over;hY+=.15F*over;capeT-=.5F*over;hemKick+=.7F*over;
 		hY+=Mth.lerp(whip,1.3F,-.4F)*on;hX+=.15F*on;
 		bY+=(.7F*coil-1.9F*whip)*off;bX+=Mth.lerp(whip,.1F,.3F)*on;by+=.8F*whip*off;
 		lX=Mth.lerp(on,lX,Mth.lerp(whip,-1.1F,.6F));lZ=Mth.lerp(on,lZ,Mth.lerp(whip,.7F,-1.2F));lE=Mth.lerp(on,lE,Mth.lerp(whip,-1.0F,-.1F));
@@ -338,6 +366,9 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		if(s.hurt<=0||s.deathTime>0)return;
 		float k=s.hurt*s.hurt;
 		bX-=.15F*k;hX-=.25F*k;bZ+=Mth.sin(s.hurt*18)*.05F*k;swing+=.3F*k;
+		// The cloth is flung forward by the jolt and swings back after it; the arms flinch in.
+		capeT+=.7F*s.hurt*Mth.sin(s.hurt*9);hemKick+=.9F*k;capeX+=.3F*k;
+		rZ+=.12F*k;lZ-=.12F*k;by-=.4F*k;
 	}
 	/** Dying: it doubles over, its arms fall slack and its spade and crook tip out of its hands, and it sinks down into the earth. */
 	private void die(LanternBearerRenderState s){
@@ -348,5 +379,10 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		lX=Mth.lerp(fold,lX,-.15F);lE=Mth.lerp(fold,lE,0);lZ=Mth.lerp(fold,lZ,-.15F);
 		spadeW=Mth.lerp(sink,Mth.lerp(fold,spadeW,-.5F),-1.4F);crookW=Mth.lerp(sink,Mth.lerp(fold,crookW,.4F),1.4F);
 		capeX=Mth.lerp(fold,capeX,.6F);by+=3*fold+22*sink;
+		// Staggered back first, then folding, the cloth settling over it with a last small bounce as it goes down.
+		float stagger=smooth(s.deathTime,0,3)*(1-smooth(s.deathTime,3,8));
+		bX-=.3F*stagger;hX-=.3F*stagger;
+		float land=Mth.exp(-Math.max(0,s.deathTime-18)*.4F)*Mth.sin(Math.max(0,s.deathTime-18)*1.1F)*sink;
+		by-=1.2F*land;capeT+=.6F*land+.4F*fold*(1-sink);hemKick+=.8F*land;
 	}
 }

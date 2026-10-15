@@ -140,6 +140,54 @@ public class DuelistModel extends HumanoidModel<AuraFighterRenderState> {
 		rightArm.yRot = Mth.lerp(sit, rightArm.yRot, 0.15F);
 		leftArm.yRot = Mth.lerp(sit, leftArm.yRot, -0.15F);
 		cloak.xRot = Mth.lerp(sit, cloak.xRot, 1.15F);
+
+		// Idle: the breath, the weight and the head each on their own period, so the stance never visibly loops.
+		float still = (1 - walk) * (1 - sit) * (1 - wind) * (1 - stagger);
+		body.xRot += Mth.sin(t * 0.11F) * 0.012F * still;
+		body.zRot += Mth.sin(t * 0.047F + 0.8F) * 0.018F * still;
+		head.xRot += Mth.sin(t * 0.083F + 2.0F) * 0.016F * still;
+		head.zRot += Mth.sin(t * 0.039F) * 0.022F * still;
+		leftArm.zRot -= Mth.sin(t * 0.09F + 1.0F) * 0.02F * still;
+		rightArm.zRot += Mth.sin(t * 0.09F) * 0.02F * still;
+
+		// Cloth and tassel trail the body on a lag: the cloak a beat behind the stride and behind a turn of the head, the
+		// tassel a beat behind the cloak, and the whole cloak shudders in the tell.
+		float lagged = Mth.sin(state.walkAnimationPos * 0.6662F - 1.1F) * 0.09F * walk;
+		cloak.xRot += lagged + wind * Mth.sin(t * 1.7F) * 0.03F;
+		cloak.zRot = Mth.clamp(state.yRot, -45.0F, 45.0F) * -0.006F + Mth.sin(t * 0.045F + 1.3F) * 0.03F * (1 - walk);
+		ModelPart tassel = scabbard.getChild("tassel");
+		tassel.xRot = 0.2F + Mth.sin(state.walkAnimationPos * 0.6662F - 2.3F) * 0.35F * walk + Mth.sin(t * 0.13F) * 0.05F + 0.4F * dash;
+		tassel.zRot = Mth.sin(t * 0.08F + 0.5F) * 0.08F;
+		scabbard.xRot += Mth.sin(state.walkAnimationPos * 0.6662F - 0.6F) * 0.05F * walk;
+
+		// Hurt: a snap away from the blow that rebounds, the cloak flung forward over it.
+		float hit = state.hurt;
+		if (hit > 0 && state.deathTime <= 0) {
+			float k = (float) (hit * Math.cos((1 - hit) * 6.0F));
+			body.xRot -= 0.22F * k;
+			head.xRot -= 0.32F * k;
+			head.zRot += 0.1F * k;
+			rightArm.zRot += 0.28F * k;
+			leftArm.zRot -= 0.28F * k;
+			cloak.xRot += 0.35F * k;
+			tassel.xRot += 0.5F * k;
+		}
+
+		// Staged death: the head is thrown back, the knees fold one after the other, the arms go slack, the cloak settles.
+		if (state.deathTime > 0) {
+			float d = state.deathTime;
+			float recoil = Mth.clamp(d / 3.0F, 0.0F, 1.0F), foldR = Mth.clamp((d - 3.0F) / 8.0F, 0.0F, 1.0F);
+			float foldL = Mth.clamp((d - 5.0F) / 8.0F, 0.0F, 1.0F), slump = Mth.clamp((d - 8.0F) / 8.0F, 0.0F, 1.0F);
+			body.xRot += -0.3F * recoil * (1 - slump) + 0.3F * slump;
+			head.xRot += -0.4F * recoil * (1 - slump) + 0.5F * slump;
+			rightLeg.xRot += -0.8F * foldR;
+			leftLeg.xRot += -0.45F * foldL;
+			rightArm.xRot = Mth.lerp(slump, rightArm.xRot, 0.3F);
+			leftArm.xRot = Mth.lerp(slump, leftArm.xRot, 0.2F);
+			rightArm.zRot += 0.35F * slump;
+			leftArm.zRot -= 0.35F * slump;
+			cloak.xRot += 0.4F * foldR;
+		}
 	}
 
 	/**

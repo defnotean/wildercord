@@ -40,8 +40,27 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 		root.getAllParts().forEach(ModelPart::resetPose);
 		hilt.visible = state.drawn < .5F;
 		super.setupAnim(state);
+		float calm = 1 - Math.min(1, state.walkAnimationSpeed * 2F);
+		// Cloak and body breathe on offset periods so the idle never visibly loops; the cloak trails a turn of the head.
 		cloak.xRot = .06F + Math.min(1, state.walkAnimationSpeed) * .45F + Mth.sin(state.ageInTicks * .07F) * .03F;
-		if (state.deathTime > 0 || state.isUpsideDown) return;
+		cloak.zRot = Mth.sin(state.ageInTicks * .045F + 1.3F) * .035F * calm + Mth.clamp(state.yRot, -45, 45) * .004F;
+		body.zRot += Mth.sin(state.ageInTicks * .052F) * .014F * calm;
+		head.xRot += Mth.sin(state.ageInTicks * .09F + 2F) * .015F * calm;
+		head.zRot += Mth.sin(state.ageInTicks * .037F) * .02F * calm;
+		if (state.deathTime > 0) {
+			// Staged fall: the head is thrown back, then the knees fold one after the other and the head drops.
+			float d = state.deathTime;
+			float recoil = Mth.clamp(d / 3F, 0, 1), fold = Mth.clamp((d - 3F) / 8F, 0, 1), drop = Mth.clamp((d - 8F) / 8F, 0, 1);
+			head.xRot += .4F * recoil * (1 - drop) - .55F * drop;
+			body.xRot += .25F * fold;
+			rightLeg.xRot += .7F * fold;
+			leftLeg.xRot += .4F * Mth.clamp((d - 5F) / 8F, 0, 1);
+			rightArm.zRot += .3F * drop;
+			leftArm.zRot -= .3F * drop;
+			cloak.xRot += .3F * fold;
+			return;
+		}
+		if (state.isUpsideDown) return;
 		Frame frame = state.getData(FRAME);
 		boolean left = frame != null ? frame.leftHanded() : state.mainArm == HumanoidArm.LEFT;
 		ModelPart sword = left ? leftArm : rightArm;

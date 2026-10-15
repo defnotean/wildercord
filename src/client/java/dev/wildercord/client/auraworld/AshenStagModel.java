@@ -17,14 +17,16 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 	private static final float FRONT=-9,HIND=9,HIND_U=-.2F,HIND_L=.45F;
 	/** How long the thigh is to the knee, and the shin and hoof below it. */
 	private static final float THIGH=6.5F,SHIN=8;
-	private final ModelPart body,neck,head,tail;
+	private final ModelPart body,neck,head,tail,ruff;
+	private final ModelPart[] ears=new ModelPart[2],antlers=new ModelPart[2];
 	private final ModelPart[] legs=new ModelPart[4],shins=new ModelPart[4];
 	private final ModelPart[] posed;
 	/** The pose being built: each leg's thigh angle in the world and shin angle from the thigh, the body's pitch and roll, the neck, the head. */
 	private final float[] u=new float[4],l=new float[4],uz=new float[4];
 	private float pitch,roll,yaw,neckX,neckY,headX,tailX;
 	public AshenStagModel(ModelPart root){
-		super(root);body=root.getChild("body");neck=body.getChild("neck");head=neck.getChild("head");tail=body.getChild("tail");
+		super(root);body=root.getChild("body");neck=body.getChild("neck");head=neck.getChild("head");tail=body.getChild("tail");ruff=neck.getChild("ruff");
+		ears[0]=head.getChild("earR");ears[1]=head.getChild("earL");antlers[0]=head.getChild("antlerR");antlers[1]=head.getChild("antlerL");
 		String[] names={"legFL","legFR","legHL","legHR"};
 		for(int i=0;i<4;i++){legs[i]=body.getChild(names[i]);shins[i]=legs[i].getChild("shin");}
 		posed=new ModelPart[]{body,neck,head,tail,legs[0],legs[1],legs[2],legs[3],shins[0],shins[1],shins[2],shins[3]};
@@ -59,13 +61,13 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 
 	@Override public void setupAnim(AshenStagRenderState s){
 		super.setupAnim(s);
-		pose(s,s.move,s.elapsed,s.tell,s.side);
+		pose(s,s.move,hold(s.move,s.elapsed,s.tell),s.tell,s.side);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
 		if(s.blend<1&&s.prevMove!=s.move){
 			PartPose[] now=new PartPose[posed.length];
 			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
 			root().resetPose();
-			pose(s,s.prevMove,s.prevElapsed,s.prevTell,s.side);
+			pose(s,s.prevMove,hold(s.prevMove,s.prevElapsed,s.prevTell),s.prevTell,s.side);
 			float k=s.blend*s.blend*(3-2*s.blend);
 			for(int i=0;i<posed.length;i++){
 				PartPose a=posed[i].storePose(),b=now[i];
@@ -73,13 +75,68 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
 			}
 		}
+		secondary(s);
 		hurt(s);
 		die(s);
 		ground();
 		// Off the ground through a bound, highest halfway.
 		if(s.move==AshenStagRules.BOUND&&s.deathTime<=0)body.y-=5*Mth.sin(Mth.PI*Mth.clamp(s.elapsed/Math.max(1,s.tell),0,1));
 		// Rolled onto its side in death, it lies on its flank.
-		if(s.deathTime>0)body.y=Mth.lerp(smooth(s.deathTime,6,18),body.y,24-5.5F);
+		if(s.deathTime>0){
+			body.y=Mth.lerp(smooth(s.deathTime,6,18),body.y,24-5.5F);
+			// The flank lands with a small bounce, then lies still.
+			float landed=s.deathTime-17;
+			if(landed>0)body.y-=2.2F*(float)(Math.exp(-.5F*landed)*Math.abs(Mth.sin(landed*.9F)));
+		}
+	}
+
+	/**
+	 * The hit-stop: a beat in which the pose of a blow's landing is held before the move plays on, so the hit has weight. Only the moves
+	 * whose blow lands once (the toss, buck, rear, lunge and kindling), and the held time is taken out of the move's own clock after it.
+	 */
+	private static float hold(int move,float el,int tell){
+		if(move!=AshenStagRules.TOSS&&move!=AshenStagRules.BUCK&&move!=AshenStagRules.REAR&&move!=AshenStagRules.LUNGE&&move!=AshenStagRules.KINDLE)return el;
+		float at=Math.max(1,tell)+2;
+		return el<at?el:el<at+1.5F?at:el-1.5F;
+	}
+
+	/**
+	 * What follows the body rather than being posed: the ears flick on their own periods and flatten for a charge, the antlers and
+	 * ruff swing a beat behind the head and lift on a rear, the tail whips after a blow and swings behind a stride, and every move
+	 * rings on past its blow (the neck and head overshoot and settle) instead of stopping dead.
+	 */
+	private void secondary(AshenStagRenderState s){
+		float t=s.ageInTicks,r=s.rise;
+		boolean moving=s.move!=0;
+		float walk=Math.min(1,s.walkAnimationSpeed)*r;
+		// Ears: each flicks on its own period, both pinned back through a tell.
+		float tellK=moving&&s.tell>0?ramp(s.elapsed,0,s.tell)*(1-ramp(s.elapsed,s.tell,3)):0;
+		for(int i=0;i<2;i++){
+			float sign=i==0?-1:1,flick=(float)Math.pow(Math.max(0,Mth.sin(t*(.21F+.05F*i)+i*2.1F)),9);
+			ears[i].xRot=.2F+.2F*flick+.7F*tellK;
+			ears[i].zRot=sign*(1.0F+.35F*flick+.5F*tellK)+Mth.sin(t*.08F+i*1.7F)*.04F;
+		}
+		// Antlers and ruff trail the head by a few ticks: they swing against the neck's turn and back, and bob with the stride.
+		float lag=Mth.sin(t*.09F-.7F)*.02F+Mth.sin(s.walkAnimationPos*1.2F-1.3F)*.04F*walk;
+		antlers[0].zRot=-.5F-neck.yRot*.18F+lag;antlers[1].zRot=.5F-neck.yRot*.18F-lag;
+		antlers[0].xRot=-.25F+neck.xRot*.1F+lag;antlers[1].xRot=-.25F+neck.xRot*.1F+lag;
+		ruff.xRot=Mth.sin(t*.06F-.9F)*.03F+Mth.sin(s.walkAnimationPos*1.2F-.8F)*.07F*walk+.15F*tellK;
+		// Tail: swung behind the stride, a lazy sway standing, flagged by the move, and whipped after the blow.
+		float since=moving&&s.tell>0?s.elapsed-s.tell:-1;
+		float ring=since>=0?(float)(Math.exp(-.28F*since)*Mth.sin(since*.85F)):0;
+		tail.xRot+=Mth.sin(s.walkAnimationPos*1.2F-1.6F)*.12F*walk-.35F*ring*(s.move==AshenStagRules.RECOVER?0:1);
+		tail.yRot=Mth.sin(t*.07F+1.0F)*.1F*(1-walk)+Mth.sin(s.walkAnimationPos*.6F-.8F)*.25F*walk+.3F*ring;
+		// Follow-through: the head runs on past the blow and settles, the neck a tick behind it.
+		if(since>=0&&s.move!=AshenStagRules.RECOVER&&s.move!=AshenStagRules.STUCK&&s.deathTime<=0){
+			float over=(float)(Math.exp(-.3F*since)*Mth.sin(since*.9F));
+			head.xRot+=.22F*over;neck.xRot+=.1F*(float)(Math.exp(-.3F*Math.max(0,since-1))*Mth.sin(Math.max(0,since-1)*.9F));
+		}
+		// Breathing on offset periods: the barrel, then the neck, then the head, so the loop never lines up.
+		body.yScale=1+Mth.sin(t*.07F)*.008F*(1-walk);
+		neck.xRot+=Mth.sin(t*.043F+1.1F)*.02F;
+		head.zRot=Mth.sin(t*.051F+2.2F)*.03F;
+		// The hind legs give a little when the pose lands: weight settles through the shins.
+		if(since>=0&&since<8)for(int i=2;i<4;i++)shins[i].xRot+=.12F*(float)(Math.exp(-.35F*since)*Mth.cos(since*.9F));
 	}
 
 	/** 0 to 1 over {@code ticks}, from {@code from}, eased out. */
@@ -327,6 +384,9 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 		if(s.hurt<=0||s.deathTime>0)return;
 		float k=s.hurt*s.hurt;
 		neck.xRot-=.25F*k;head.xRot-=.1F*k;body.zRot+=Mth.sin(s.hurt*18)*.04F*k;
+		body.xRot-=.08F*k;ears[0].xRot+=.5F*k;ears[1].xRot+=.5F*k;tail.xRot+=.5F*k;
+		for(int i=0;i<4;i++){legs[i].zRot+=(i%2==0?-1:1)*.1F*k;shins[i].xRot+=.18F*k;}
+		body.y+=1.2F*k;
 	}
 
 	/** Dying: its legs buckle under it and it sinks onto its belly, then rolls onto its side, legs gone slack and its head down. */
@@ -343,5 +403,7 @@ public final class AshenStagModel extends EntityModel<AshenStagRenderState> {
 		neck.xRot=Mth.lerp(buckle,neck.xRot,.9F);neck.yRot=Mth.lerp(fall,neck.yRot*(1-buckle),.25F);
 		head.xRot=Mth.lerp(fall,Mth.lerp(buckle,head.xRot,-.6F),-.2F);
 		tail.xRot=Mth.lerp(buckle,tail.xRot,.1F);
+		ears[0].xRot=Mth.lerp(buckle,ears[0].xRot,.8F);ears[1].xRot=Mth.lerp(buckle,ears[1].xRot,.8F);
+		ears[0].zRot=Mth.lerp(fall,ears[0].zRot,-1.5F);ears[1].zRot=Mth.lerp(fall,ears[1].zRot,1.5F);
 	}
 }

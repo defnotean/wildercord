@@ -101,5 +101,49 @@ public class FallenKnightModel extends HumanoidModel<AuraFighterRenderState> {
 		rightArm.zRot += 0.6F * stagger;
 		leftArm.zRot -= 0.6F * stagger;
 		rightArm.xRot = Mth.lerp(stagger, rightArm.xRot, -0.2F);
+
+		// Idle: heavy plate settling, each part on its own slow period; the crest nods a beat behind the helm.
+		float still = (1 - walk) * (1 - wind) * (1 - stagger);
+		body.xRot += Mth.sin(t * 0.09F) * 0.014F * still;
+		body.zRot += Mth.sin(t * 0.041F + 0.6F) * 0.02F * still;
+		head.zRot += Mth.sin(t * 0.033F + 2.0F) * 0.03F * still;
+		head.yRot += Mth.sin(t * 0.027F) * 0.05F * still;
+		rightArm.zRot += Mth.sin(t * 0.07F) * 0.025F * still;
+		leftArm.zRot -= Mth.sin(t * 0.07F + 1.4F) * 0.025F * still;
+		ModelPart crest = head.getChild("crest");
+		crest.xRot = -0.12F + Mth.sin(t * 0.09F - 0.9F) * 0.05F + walk * Mth.sin(state.walkAnimationPos * 0.6662F - 1.4F) * 0.12F - 0.3F * wind;
+
+		// Rags and tabard lag the stride by a beat and swing out sideways when the helm turns.
+		cloak.xRot += Mth.sin(state.walkAnimationPos * 0.6662F - 1.2F) * 0.08F * walk;
+		cloak.zRot = Mth.clamp(state.yRot, -45.0F, 45.0F) * -0.005F + Mth.sin(t * 0.05F + 0.4F) * 0.03F;
+		tabard.zRot = Mth.sin(state.walkAnimationPos * 0.6662F - 0.8F) * 0.12F * walk + Mth.sin(t * 0.06F) * 0.02F;
+
+		// The blow: a heavy lurch (plate does not snap), the pauldrons ringing against it.
+		float hit = state.hurt;
+		if (hit > 0 && state.deathTime <= 0) {
+			float k = (float) (hit * Math.cos((1 - hit) * 5.0F));
+			body.xRot -= 0.16F * k;
+			head.xRot -= 0.26F * k;
+			head.yRot += 0.12F * k;
+			rightArm.zRot += 0.22F * k;
+			leftArm.zRot -= 0.22F * k;
+			cloak.xRot += 0.3F * k;
+		}
+
+		// Staged collapse: the helm jerks up, the knees buckle one after the other, the arms hang, the plate slumps forward.
+		if (state.deathTime > 0) {
+			float d = state.deathTime;
+			float jerk = Mth.clamp(d / 3.0F, 0.0F, 1.0F), foldR = Mth.clamp((d - 3.0F) / 7.0F, 0.0F, 1.0F);
+			float foldL = Mth.clamp((d - 5.0F) / 7.0F, 0.0F, 1.0F), slump = Mth.clamp((d - 8.0F) / 8.0F, 0.0F, 1.0F);
+			head.xRot += -0.4F * jerk * (1 - slump) + 0.55F * slump;
+			body.xRot += -0.2F * jerk * (1 - foldR) + 0.45F * slump;
+			rightLeg.xRot += -0.9F * foldR;
+			leftLeg.xRot += -0.5F * foldL;
+			rightArm.xRot = Mth.lerp(slump, rightArm.xRot, 0.35F);
+			leftArm.xRot = Mth.lerp(slump, leftArm.xRot, 0.25F);
+			rightArm.zRot += 0.3F * slump;
+			leftArm.zRot -= 0.3F * slump;
+			cloak.xRot += 0.35F * foldR;
+		}
 	}
 }
