@@ -95,7 +95,7 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 	/** Time held still for two ticks at {@code at}, the contact pose of a blow, then running on: the hit-stop. */
 	private static float stop(float el,float at){return el<at?el:el<at+2?at:el-2;}
 	/** The ring-down after a blow lands at {@code at}: a quick overshoot past the mark, decaying away. */
-	private static float ring(float el,float at){float q=el-at;return q<0?0:Mth.exp(-q*.3F)*Mth.sin(q*.9F);}
+	private static float ring(float el,float at){float q=el-at;return q<0?0:(float)Math.exp(-q*.3F)*Mth.sin(q*.9F);}
 
 	/** 0 to 1 as {@code t} runs {@code from} to {@code to}, eased in and out. */
 	private static float smooth(float t,float from,float to){float k=Mth.clamp((t-from)/(to-from),0,1);return k*k*(3-2*k);}
@@ -382,7 +382,7 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		// Staggered back first, then folding, the cloth settling over it with a last small bounce as it goes down.
 		float stagger=smooth(s.deathTime,0,3)*(1-smooth(s.deathTime,3,8));
 		bX-=.3F*stagger;hX-=.3F*stagger;
-		float land=Mth.exp(-Math.max(0,s.deathTime-18)*.4F)*Mth.sin(Math.max(0,s.deathTime-18)*1.1F)*sink;
+		float land=(float)Math.exp(-Math.max(0,s.deathTime-18)*.4F)*Mth.sin(Math.max(0,s.deathTime-18)*1.1F)*sink;
 		by-=1.2F*land;capeT+=.6F*land+.4F*fold*(1-sink);hemKick+=.8F*land;
 	}
 }

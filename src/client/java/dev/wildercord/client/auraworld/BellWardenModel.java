@@ -80,7 +80,7 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 	/** Time held still for two ticks at {@code at}, the contact pose of a blow, then running on: the hit-stop. */
 	private static float stop(float el,float at){return el<at?el:el<at+2?at:el-2;}
 	/** The ring-down after a blow lands at {@code at}: a quick overshoot, decaying away. */
-	private static float ring(float el,float at){float q=el-at;return q<0?0:Mth.exp(-q*.3F)*Mth.sin(q*1.1F);}
+	private static float ring(float el,float at){float q=el-at;return q<0?0:(float)Math.exp(-q*.3F)*Mth.sin(q*1.1F);}
 	/** 0 to 1 as {@code t} runs {@code from} to {@code to}, eased in and out. */
 	private static float smooth(float t,float from,float to){float k=Mth.clamp((t-from)/(to-from),0,1);return k*k*(3-2*k);}
 
@@ -238,7 +238,7 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 				right.zRot=.08F+.4F*wind;foreR.xRot=-.3F*wind;body.xRot-=.15F*wind;
 				bend(.2F*wind);
 				if(el>tell){float a=el-(g2>0?tell+BellWardenRules.TOLL_AGAIN:tell);bell.zRot=Mth.sin(a*1.6F)*.12F*(float)Math.exp(-a*.25F);
-					kelpKick+=Mth.sin(a*1.6F-1F)*.25F*(float)Math.exp(-a*.25F);body.xRot+=.05F*Mth.exp(-a*.5F);}
+					kelpKick+=Mth.sin(a*1.6F-1F)*.25F*(float)Math.exp(-a*.25F);body.xRot+=.05F*(float)Math.exp(-a*.5F);}
 			}
 			case BellWardenRules.LASH->{
 				// The chain arm raised straight up, whirling the chain round overhead faster and faster; then flung out ahead at the
@@ -352,7 +352,7 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 		// A stagger back before it sinks, and a last rebound off the floor as it lands, the bell ringing dully on its head.
 		float stagger=smooth(s.deathTime,0,3)*(1-smooth(s.deathTime,3,8));
 		body.xRot-=.3F*stagger;bell.xRot-=.2F*stagger;
-		float q=Math.max(0,s.deathTime-19),land=Mth.exp(-q*.35F)*Mth.sin(q*1.3F)*fall;
+		float q=Math.max(0,s.deathTime-19),land=(float)Math.exp(-q*.35F)*Mth.sin(q*1.3F)*fall;
 		body.xRot-=.1F*land;bell.xRot-=.15F*land;bell.zRot+=.08F*land;
 		kelpL.xRot+=.5F*land+.3F*fall*(1-fall);kelpR.xRot+=.5F*land+.3F*fall*(1-fall);kelpB.xRot-=.5F*land;
 	}
