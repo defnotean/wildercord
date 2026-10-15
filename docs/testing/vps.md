@@ -1,5 +1,13 @@
 # VPS testing
 
+> **Current policy (2026-10-15).** Native tests are only `release-smoke` (14 classes), run once
+> when a release is about to be cut:
+> `python tools/run_vps_checks.py suite --suite release-smoke --head <sha> --computer WIN-I2GBVRRD872 --batch 1 --accepted-eula C:\wildercord\eula.txt`.
+> Shard, Masters-part and articulated commands below no longer exist. Delete the VPS CI
+> checkout, artifacts and backups after each run (disk filled up 2026-10-15). Never touch the
+> live server's java process.
+
+
 The owner moved all testing from GitHub Actions to the existing Windows VPS on
 October 13, 2026. Repository Actions is disabled (`enabled=false`), and existing
 builds were cancelled. Do not reenable or dispatch a GitHub workflow. The YAML

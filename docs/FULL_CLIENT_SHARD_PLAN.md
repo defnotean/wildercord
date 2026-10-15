@@ -1,5 +1,10 @@
 # Explicit full-client shard plan
 
+> **Retired (2026-10-15).** The full-client shard plan and its per-feature native suites were
+> deleted. Only the 14-class `release-smoke` suite remains; see `docs/testing/vps.md`.
+> The text below is kept as history and no longer describes runnable tooling.
+
+
 The full-client plan is `tools/client_shard_plan.json`. It schedules the explicitly expanded
 349-class descriptor as exactly four groups: **87 / 87 / 88 / 87**.
 `tools/client_shard_plan.py` is the authoritative selector for the Python launcher,

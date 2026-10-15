@@ -1,5 +1,16 @@
 # WilderCord development handoff
 
+> **Superseded testing state (2026-10-15).** The owner asked to cut CI time and delete
+> redundant native tests. The 349-class gate, shards, Masters parts and every per-feature
+> native suite were removed at `d79a9ee1`/`38b10291`. Native testing is now only the
+> 14-class `release-smoke` suite in `tools/client_suite_catalog.json`, run **once when a
+> release is about to be cut** with
+> `python tools/run_vps_checks.py suite --suite release-smoke --head <sha> --computer WIN-I2GBVRRD872`.
+> A smoke pass is a smoke result, not proof of every feature. Candidate `38b10291` passed it
+> (receipt `f9817149-33b2-412f-b55f-672cc70e1d41`). Everything below that mentions the
+> 4-shard run, Masters parts, `articulated` or the 344/349-class aggregate is **historical**.
+
+
 Prepared October 13, 2026 after the owner requested a pause. This document is
 intended to work without the preceding chat. Read it together with the current
 user request and the actual Git/process state; paths, PIDs and results below are
