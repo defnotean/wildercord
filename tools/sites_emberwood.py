@@ -28,6 +28,7 @@ LANG = {
     "journal.wildercord.entry.person.kiln_keeper": "Emberwood Kiln Keeper: tends the charcoal kilns, Cinder Fern ash beds, and burner tallies in the Emberwood Reach.",
     "journal.wildercord.entry.learned.emberwood_draft": "Tended an Emberwood Charcoal Yard draft lamp so the firebreak road stays readable through smoke and dusk.",
     "dialogue.wildercord.kiln_keeper.greet": "Mind the ash bed by the west wall. A banked kiln looks cold long before its heart gives up the heat.",
+    "dialogue.wildercord.kiln_keeper.four_lights": "Four lamps, one road. Burners used to say the ash road ends at the sea; now a walker could cross it all by light.",
     "dialogue.wildercord.kiln_keeper.cinder_fern": "We plant Cinder Fern in the podzol and coarse dirt beside the firebreak. Wait for the fronds to cool before you cut them.",
     "dialogue.wildercord.kiln_keeper.firebreaks": "Hessa held the kiln gate eleven winters by clearing the firebreaks first and letting the draft do the work.",
     "dialogue.wildercord.kiln_keeper.kiln_widow": "Out in the scorched woods stands our old ceramic Kiln Court. Its Kiln Widow still wakes if you stoke the Kiln Heartstone.",

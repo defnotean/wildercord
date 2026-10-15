@@ -297,6 +297,13 @@ QUESTS.update({
         "Return to an Emberwood Charcoal Yard in the Emberwood Reach and flip the lever on its eastern draft lamp.",
         "The draft lamp shines across the firebreak. Any burner walking the ash road at dusk will see the kiln is banked.",
     ),
+    "four_lights": (
+        "Four Lamps, One Road",
+        "Four regional lamps of yours now burn. Each region's keeper may have something to say.",
+        "Hear the answer of the Reedkeeper, Cairn Keeper, Listener and Kiln Keeper.",
+        "Sneak-use each regional keeper again now that every lamp is lit.",
+        "Four keepers, four lamps, one road. Whoever walks it at night is never wholly lost.",
+    ),
 })
 
 ENTRIES = {
