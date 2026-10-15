@@ -751,7 +751,7 @@ public final class Clashes {
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Clashes::tick);
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			STRUCK.remove(id);
 			PRESSES.forget(id);

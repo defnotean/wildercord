@@ -6,13 +6,19 @@
 
 A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 
-[![Build](https://github.com/defnotean/wildercord/actions/workflows/build.yml/badge.svg)](https://github.com/defnotean/wildercord/actions/workflows/build.yml)
 ![Minecraft 26.3](https://img.shields.io/badge/Minecraft-26.3-3C8527)
 ![Fabric](https://img.shields.io/badge/loader-Fabric-DBD0B4)
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 **[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.12.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.12.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
+
+[VPS testing and evidence](docs/testing/vps.md) · [Current development audit](docs/audit/2026-10-13-world-depth.md)
+
+**For agents and contributors:** read [AGENTS.md](AGENTS.md) and the
+[development handoff](docs/AGENT_HANDOFF.md) before continuing. Development and
+scheduled continuation are paused at the owner's request; the handoff records
+the latest candidate, unfinished verification and exact resumption steps.
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
@@ -73,6 +79,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Runes of the world** | Fifty-nine runes nobody can craft: in vanilla structures' chests, on bosses, in fallen-star craters and rift sieges, or taken from the land itself by **Attunement** (meditate with a Blank Rune in the right biome at the right moment). The Grimoire lists where each is found, with a riddle for the ones you haven't learned. See [docs/features/new-runes.md](docs/features/new-runes.md). |
 | **Dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor each have a three phase boss. The Rootbound Maze in swamps and Storm Spire on peaks add custom bosses, guarded side caches, sealed vaults and reusable relics. Clockwork Crypt, Living Greenhouse and Moving Sky Ruin each add three layouts and a distinct handling relic. See [docs/features/dungeons.md](docs/features/dungeons.md). |
 | **World events** | Mana storms over the ley lines (faster mana, cheaper spells, wild surges), fallen stars that leave a guarded crater, and rift sieges that end with the Riftcaller. See [docs/features/world-events.md](docs/features/world-events.md). |
+| **Luminous Reedlands** | A custom wetland region with natural Moonreed, stilted survey houses and resident Reedkeepers. Their remembered stories lead through the Drowned Road's coastal ledger and working lighthouse to the optional Reed-Crowned Ferryman at the Last Crossing. Three marked attacks, dry escape paths and a return compass connect its encounter to river exploration. See the [regional guide](wiki/world/luminous-reedlands.md) and [Ferryman guide](wiki/world/reed-crowned-ferryman.md). |
 | **Magic that changes the world** | Fire lights the grass and boils water into blinding steam, frost freezes a pond you can walk on, storm arcs through water to everyone in it, wind knocks arrows back, earth heaves the ground and life makes flowers bloom. Real temporary walls, borrowed water attacks and wind stepping stones add terrain interactions. See [physical magic](docs/features/physical-magic.md) and [world magic](docs/features/world-magic.md). |
 | **The Fusion Altar** | Three of a rune make its next rank, any two elemental effects fuse into one of 55 fused runes (every pair of elements, and each element with itself) or, for forty particular pairs, a **signature fusion** of their own, and a Blank Rune and string tie a whole spell into one **Knot** that takes a single socket. Amethyst blocks weave up to eight exact elemental effects, including the owner’s imprinted innate at Tier IV. See [docs/features/fusion-altar.md](docs/features/fusion-altar.md). |
 | **Familiars** | Wisps of light rise from the ley lines at night. Tame one with its own element and it floats at your shoulder, quickens your mana, casts a little spell of its own and levels up as you fight together. Dress your Cord in beads and glow colours on the Cosmetics page. See [docs/features/familiars-and-cosmetics.md](docs/features/familiars-and-cosmetics.md). |
@@ -280,11 +287,11 @@ Commands (operators, permission level 2):
 
 ## Building from source
 
-Requirements: **JDK 25** and Python 3.11+. **Pillow** is needed only for regenerating art and data.
+Requirements: **JDK 25** and Python 3.11+. **Pillow and NumPy** are used for generated art and image checks (`tools/requirements.txt`).
 Gradle comes with the wrapper.
 Full/sharded client test resources and launch preflight also require Python on PATH
-as `python3` on macOS/Linux or `python` on Windows. The owned CI launcher runs on Linux;
-focused selectors retain their existing platform behavior. See
+as `python3` on macOS/Linux or `python` on Windows. Project checks run in the isolated
+Windows VPS checkout through [the owned VPS runner](docs/testing/vps.md). See
 [the explicit full-client plan](docs/FULL_CLIENT_SHARD_PLAN.md) for its fail-closed contract.
 
 ```bash
@@ -429,8 +436,11 @@ no other changes. Walk through it in [docs/ADDING_RUNES.md](docs/ADDING_RUNES.md
     Archivist), asserting what it can and screenshotting the rest. Set `WILDERCORD_TOUR_ONLY=1` to
     run just the tour; the images in [Screenshots](#screenshots) come from it.
 
-Screenshots land in `build/run/clientGameTest/screenshots/`. CI runs the build and unit tests on
-every push, checks generated resources, and runs the client game suites under Xvfb with screenshots and logs retained as artifacts.
+Screenshots land in `build/run/clientGameTest/screenshots/`. GitHub Actions is disabled;
+builds, unit tests, generated-resource checks and native client tests run on the VPS.
+The [VPS testing guide](docs/testing/vps.md) describes exact-commit execution and retained
+logs/manifests. The [development audit](docs/audit/2026-10-13-world-depth.md) records passing
+checkpoints and open failures. A focused pass does not establish full-suite acceptance.
 
 ## 0.9.0: the wilds and the sword
 

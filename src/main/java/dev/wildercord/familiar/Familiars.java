@@ -60,7 +60,7 @@ public final class Familiars {
 			WispSpawner.tick(server);
 		});
 		// Logging off: the familiar goes back into its lantern (it's still "out", so it comes back with them).
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			Wisp wisp = live(handler.player);
 			if (wisp != null) {
 				// The world's entity list may only change on the server thread: a disconnect handled anywhere else waits for it.

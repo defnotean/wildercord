@@ -539,7 +539,7 @@ public final class PlayerAffinities {
 			}
 		});
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> seed(handler.player));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> forget(handler.player.getUUID()));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> forget(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			REMAINDER.clear();
 			STATS.clear();

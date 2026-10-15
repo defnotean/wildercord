@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "emberwood_kiln_court": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:emberwood_kiln_court"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:kiln_heartstone"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.emberwood_kiln_court.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.emberwood_kiln_court.description"
+    }
+  },
+  "requirements": [
+    [
+      "emberwood_kiln_court"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

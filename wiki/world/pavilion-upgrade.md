@@ -12,7 +12,7 @@ This page is for **server owners**. Players don't need to do anything.
 
 An optional, owner-approved tool that places one small **Wayfarer Training Pavilion** in an existing Overworld. The pavilion is 7 by 7 blocks: a mossy stone brick floor, four stripped oak columns, and a stone and smooth stone roof. That is 123 plain blocks, all inside one chunk.
 
-You don't need it for most new content. Wildlife, wandering Duelists and Master introductions, wisps and world events already appear in old terrain. Large dungeons, gardens and the 48 explorable sites (farmsteads, Master halls, mines, roadside sites, water sites and wild places) still only appear in newly generated land. This tool does not add them.
+You don't need it for most new content. Wildlife, wandering Duelists and Master introductions, wisps and world events already appear in old terrain. Large dungeons, gardens and the 54 explorable sites (farmsteads, Master halls, mines, roadside sites, water sites and wild places) still only appear in newly generated land. This tool does not add them.
 
 ## What it never does
 
@@ -64,7 +64,7 @@ The rest, the memorial and the duel ring are each limited to one per region, the
 
 Two more commands help you plan:
 
-- `/wildercord-upgrade catalog` lists every Wildercord structure family and whether this tool can add it. The 48
+- `/wildercord-upgrade catalog` lists every Wildercord structure family and whether this tool can add it. The 54
   explorable sites (farmsteads, Master halls, mines, roadside, water and wild places) are listed as new land only.
 - `/wildercord-upgrade sites` lists the encounters this tool has placed so far.
 

@@ -313,10 +313,58 @@ class DataFormatTest {
 
 	/** Every data file is one of the kinds checked above. */
 	@Test
+	void regionalBiomesUseTheAttributeBasedFormat() throws IOException {
+		// Biome, BiomeSpecialEffects and MobSpawnSettings codecs in the pinned 26.3 sources.
+		// Native registry/terrain checks resolve all named features, carvers and entity types.
+		for (Path file : files("wildercord/worldgen/biome")) {
+			var biome = read(file);
+			allowed(biome, file, "attributes", "carvers", "downfall", "effects", "features", "has_precipitation", "temperature", "temperature_modifier");
+			required(biome, file, "effects", "features", "carvers", "has_precipitation", "temperature", "downfall");
+			assertTrue(biome.get("has_precipitation").getAsJsonPrimitive().isBoolean());
+			assertTrue(Double.isFinite(biome.get("temperature").getAsDouble()));
+			assertTrue(biome.get("downfall").getAsDouble() >= 0 && biome.get("downfall").getAsDouble() <= 1);
+			var effects = biome.getAsJsonObject("effects");
+			allowed(effects, file, "water_color", "foliage_color", "dry_foliage_color", "grass_color", "grass_color_modifier");
+			required(effects, file, "water_color");
+			for (var effect : effects.entrySet()) {
+				if (effect.getKey().endsWith("_color")) assertTrue(effect.getValue().getAsString().matches("#[0-9a-fA-F]{6}"), file + " color " + effect.getKey());
+			}
+			for (var carver : biome.getAsJsonArray("carvers")) assertTrue(carver.getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
+			for (var stage : biome.getAsJsonArray("features")) {
+				assertTrue(stage.isJsonArray(), file + " decoration stage");
+				for (var feature : stage.getAsJsonArray()) assertTrue(feature.getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
+			}
+			var attributes = biome.getAsJsonObject("attributes");
+			allowed(attributes, file, "minecraft:audio/background_music", "minecraft:gameplay/increased_fire_burnout",
+				"minecraft:gameplay/natural_mob_spawns", "minecraft:visual/sky_color", "minecraft:visual/water_fog_color", "minecraft:visual/water_fog_end_distance");
+			var spawns = attributes.getAsJsonObject("minecraft:gameplay/natural_mob_spawns");
+			allowed(spawns, file, "modifier", "argument"); required(spawns, file, "modifier", "argument");
+			assertEquals("overlay", spawns.get("modifier").getAsString());
+			var argument = spawns.getAsJsonObject("argument");
+			allowed(argument, file, "spawns_by_category", "spawn_costs"); required(argument, file, "spawns_by_category", "spawn_costs");
+			for (var pool : argument.getAsJsonObject("spawns_by_category").entrySet()) for (var value : pool.getValue().getAsJsonArray()) {
+				var spawn = value.getAsJsonObject();
+				allowed(spawn, file, "type", "weight", "count"); required(spawn, file, "type", "weight", "count");
+				assertTrue(spawn.get("type").getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
+				assertTrue(spawn.get("weight").getAsInt() > 0);
+				var count = spawn.get("count");
+				if (count.isJsonPrimitive()) assertTrue(count.getAsInt() > 0);
+				else {
+					var range = count.getAsJsonObject();
+					allowed(range, file, "type", "min_inclusive", "max_inclusive"); required(range, file, "type", "min_inclusive", "max_inclusive");
+					assertEquals("minecraft:uniform", range.get("type").getAsString());
+					assertTrue(range.get("min_inclusive").getAsInt() > 0 && range.get("max_inclusive").getAsInt() >= range.get("min_inclusive").getAsInt());
+				}
+			}
+		}
+	}
+
+	/** Every data file is one of the kinds checked above. */
+	@Test
 	void everyKindOfDataIsChecked() throws IOException {
 		Set<String> checked = Set.of("wildercord/advancement", "wildercord/loot_table", "wildercord/enchantment", "wildercord/recipe",
 			"wildercord/villager_trade", "wildercord/trade_set", "wildercord/worldgen/structure", "wildercord/worldgen/structure_set",
-			"wildercord/worldgen/feature", "wildercord/worldgen/placed_feature",
+			"wildercord/worldgen/feature", "wildercord/worldgen/placed_feature", "wildercord/worldgen/biome",
 			"wildercord/tags", "minecraft/tags", "wildercord/dimension", "wildercord/damage_type");
 		List<Path> all = files("");
 		assertTrue(!all.isEmpty(), "there should be data files to check");

@@ -31,6 +31,9 @@ public final class WetlandGenerationProbe {
  private WetlandGenerationProbe() {}
 
  public static Session beginFixture() {return begin(ABSENCE);}
+ public static Session beginRegion(String name,long seed,int minX,int maxX,int minZ,int maxZ) {
+  return begin(new Scope(name,seed,minX,maxX,minZ,maxZ));
+ }
  static Session begin(Scope scope) {return begin(scope,line -> Wildercord.LOGGER.info(line));}
  static Session begin(Consumer<String> sink) {return begin(ABSENCE,sink);}
  static synchronized Session begin(Scope scope,Consumer<String> sink) {
@@ -66,6 +69,7 @@ public final class WetlandGenerationProbe {
   var steps=((WetlandFeatureIndexAccessor)generator).wildercord$featuresPerStep().get();
   int stage=GenerationStep.Decoration.VEGETAL_DECORATION.ordinal();
   var data=steps.get(stage);int index=data.indexMapping().applyAsInt(feature);
+  session.featureGraph(data.features().stream().map(entry -> String.valueOf(level.registryAccess().lookupOrThrow(Registries.PLACED_FEATURE).getKey(entry))).toList());
   var source=session.claim(center.x(),center.z());
   if(source==null)return null;
   session.index(index,data.features().size());
@@ -137,6 +141,10 @@ public final class WetlandGenerationProbe {
   invocation.gates.append(gate).append('=').append(result);
   if(!result)terminal(invocation,"reject="+gate,"reject_"+gate);
  }
+ public static void occupied(WorldGenLevel level,BlockPos at) {
+  var invocation=INVOCATION.get();if(invocation==null || !live(invocation.source))return;
+  invocation.source.session.emit("OCCUPIED at="+position(at)+", block="+level.getBlockState(at)+", biome="+level.getBiome(at).unwrapKey().orElseThrow().identifier());
+ }
  public static void write(boolean result) {
   var invocation=INVOCATION.get();if(invocation==null || !live(invocation.source) || invocation.ordinal>24)return;
   terminal(invocation,"writeReturn="+result,result ? "writesTrue" : "writesFalse");
@@ -174,6 +182,7 @@ public final class WetlandGenerationProbe {
   private final Set<Integer> indexes=new LinkedHashSet<>(),stepSizes=new LinkedHashSet<>();
   private volatile boolean closed;
   private int lines,omitted,checkpoints,sinkFailures;
+  private boolean graphReported;
   private Session(Scope scope,Consumer<String> sink) {this.scope=scope;this.sink=sink;}
   synchronized Source claim(int x,int z) {
    if(!inScope(this,true,true,scope.seed,x,z))return null;
@@ -183,6 +192,9 @@ public final class WetlandGenerationProbe {
   }
   synchronized void count(String name) {if(!closed)counters.merge(name,1,Integer::sum);}
   synchronized void index(int index,int size) {if(!closed) {indexes.add(index);stepSizes.add(size);}}
+  synchronized void featureGraph(List<String> keys) {
+   if(!closed && !graphReported) {graphReported=true;emit("FEATURE_GRAPH stage=9, keys="+keys);}
+  }
   synchronized void attempt(String receipt,BlockPos written) {
    if(closed)return;
    if(attempts.size()>=121*24) {count("omittedAttempts");return;}

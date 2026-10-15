@@ -363,7 +363,7 @@ and craftable.
 | Prism | Shape · Direct | II | A beam that splits into three rays at the first creature it hits; each ray strikes the next creature behind |
 | Stream | Shape · Direct | II | A beam that follows your aim for a second: 6 strikes at 35% power (Quicken: 12) on the first thing within 20 blocks |
 | Barrier | Effect · Support | I | 2 absorption hearts for 20 s |
-| Brace | Effect · Support | I | 80% less damage for 2 s; bracing again takes 6 s |
+| Brace | Effect · Support | I | 40% less damage for players (80% for other creatures) for 2 s; 6 s recovery after the guard |
 | Anchor | Effect · Support | I | 15 s: no knockback from blows or blasts, no spell can move you, and 4 armour (8 once you stand still) |
 | Bramble | Effect · Support | I | 10 s: whatever hurts you from within 4 blocks takes 3 damage and is shoved away |
 | Frostward | Effect · Support | I | 60 s: you can't freeze, not even in powder snow, a frost hold on you lasts a second at most, and frost can't leave you brittle for Shatter |

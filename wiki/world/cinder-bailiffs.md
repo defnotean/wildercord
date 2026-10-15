@@ -16,7 +16,7 @@ vents. It feeds on **Cinder Ferns** and guards them. Come too close and it warns
 
 ## How to get it
 
-**Finding ferns.** Cinder Fern patches grow on dry ground in newly generated **forests** and **wooded badlands**.
+**Finding ferns.** Cinder Fern patches grow on dry ground in newly generated **forests**, **wooded badlands** and the **[Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }})**.
 
 **Making a fern.** Craft **fern + clay ball + charcoal** (shapeless) for a Cinder Fern root. Plant it on grass, dirt,
 coarse dirt, rooted dirt or podzol, out of water.

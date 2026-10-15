@@ -660,7 +660,7 @@ public final class SpellCaster {
 	/** Mana regeneration and the starter runes, checked every few ticks. */
 	public static void init() {
 		// What the server remembers about a player goes when they leave, and about anything when it stops.
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			ServerPlayer player = handler.player;
 			java.util.UUID id = player.getUUID();
 			Charging.forget(player);

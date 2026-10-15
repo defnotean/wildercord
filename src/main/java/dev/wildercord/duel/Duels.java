@@ -308,7 +308,7 @@ public final class Duels {
 				finish(active, victim.level().getServer());
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			ServerPlayer player = handler.player;
 			CHALLENGES.removeIf(c -> c.from().equals(player.getUUID()) || c.to().equals(player.getUUID()));
 			if (BY_PLAYER.get(player.getUUID()) instanceof Active active) {
@@ -333,7 +333,7 @@ public final class Duels {
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Duels::tick);
 		// A leaver's own rests stay (a relog never skips them); everyone's that have run go once the maps grow.
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			long now = server.overworld().getGameTime();
 			dev.wildercord.spell.StatePrune.rested(LAST_HURT, now, DuelRules.HURT_TICKS);
 			dev.wildercord.spell.StatePrune.rested(LAST_PVP, now, DuelRules.PVP_TICKS);

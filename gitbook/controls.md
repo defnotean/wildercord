@@ -139,7 +139,7 @@ These need operator permission (or cheats on in single player).
 | `/wildercord reload` | Reload the server settings and report any problems |
 | `/wildercord aura method <method>`, `stage <stage>` and more | Aura testing tools: set your breathing method, stage and the rest |
 | `/setwarp <name>`, `/delwarp <name>` | Manage public warps |
-| `/wildercord-upgrade` | Places a few small encounters, such as the training pavilion, in old terrain, with a preview first and a way back. It doesn't add the 48 sites. Server owners only. See [Pavilion Upgrade for Old Worlds](world/pavilion-upgrade.md) |
+| `/wildercord-upgrade` | Places a few small encounters, such as the training pavilion, in old terrain, with a preview first and a way back. It doesn't add the 54 sites. Server owners only. See [Pavilion Upgrade for Old Worlds](world/pavilion-upgrade.md) |
 | `/gamerule wildercord:allow_duels false` | Turn duels off |
 
 Players on the same `/team` count as allies, so your helpful spells reach them. See [friendly fire](spellcraft/reading-spells.md#friendly-fire).

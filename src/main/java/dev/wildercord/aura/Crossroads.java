@@ -496,7 +496,7 @@ public final class Crossroads {
 				close(player, true);
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			STANDING.remove(handler.player.getUUID());
 			REST.remove(handler.player.getUUID());
 		});

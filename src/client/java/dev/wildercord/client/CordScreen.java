@@ -433,6 +433,16 @@ public class CordScreen extends Screen {
 		return onScreen(W - 27 - 18 + 7, 7 + 7);
 	}
 
+	/** The Heart Circle badge, following the panel's responsive position and scale. */
+	public double[] heartPoint() {
+		return onScreen(W - 27 - 36 + 7, 7 + 7);
+	}
+
+	/** The rendered Heart Circle readout, for native UI checks and accessibility. */
+	public List<String> heartLines() {
+		return heartTooltip().stream().map(Component::getString).toList();
+	}
+
 	/** The middle of the spell-defence badge in the header (left of the heart's), on screen. */
 	public double[] defencePoint() {
 		return onScreen(W - 27 - 18 * 3 + 7, 7 + 7);
@@ -1959,7 +1969,7 @@ public class CordScreen extends Screen {
 			: Component.translatable("screen.wildercord.heart.title", Circles.ordinal(circles)).withColor(0xFFF5C46A));
 		if (circles > 0) {
 			lines.add(Component.translatable("screen.wildercord.heart.bonus", active * Circles.MANA_PER_CIRCLE,
-				String.format(Locale.ROOT, "%.1f", active * Circles.REGEN_PER_CIRCLE), Math.round(active * Circles.POWER_PER_CIRCLE * 100)).withStyle(ChatFormatting.GRAY));
+				String.format(Locale.ROOT, "%.1f", active * Circles.REGEN_PER_CIRCLE), Circles.powerPercent(active)).withStyle(ChatFormatting.GRAY));
 		}
 		lines.add(Component.translatable("screen.wildercord.heart.passives", Passives.slots(Heart.active(player)), Passives.MAX).withStyle(ChatFormatting.GRAY));
 		int cracked = Heart.cracked(player);

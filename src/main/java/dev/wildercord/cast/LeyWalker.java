@@ -35,7 +35,7 @@ public final class LeyWalker {
 	public static void init() {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
 			ServerPlayNetworking.send(handler.player, new WildercordNetworking.LeySeed(LeyLines.seedOf(server.overworld().getSeed()))));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> AT_CROSSING.remove(handler.player.getUUID()));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> AT_CROSSING.remove(handler.player.getUUID()));
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> AT_CROSSING.clear());
 	}
 

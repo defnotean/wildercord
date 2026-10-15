@@ -32,16 +32,16 @@ public final class WildlifeRules {
 
 	public static final Kind GLIMMERWING = new Kind("glimmerwing", Pool.AMBIENT, 8, 3, 5, 1 / 4.0, 9, 40, List.of(
 		"minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:dark_forest",
-		"minecraft:meadow", "minecraft:sunflower_plains", "minecraft:cherry_grove", "minecraft:swamp", "minecraft:mangrove_swamp"));
+		"minecraft:meadow", "minecraft:sunflower_plains", "minecraft:cherry_grove", "minecraft:swamp", "minecraft:mangrove_swamp", "wildercord:luminous_reedlands"));
 	public static final Kind LUMEN_STAG = new Kind("lumen_stag", Pool.CREATURE, 2, 1, 1, 1 / 3.0, 0, 80, List.of(
 		"minecraft:old_growth_birch_forest", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:taiga",
 		"minecraft:cherry_grove"));
 	public static final Kind MOSSBACK_TORTOISE = new Kind("mossback_tortoise", Pool.CREATURE, 5, 1, 2, 1.0, 4, 48, List.of(
-		"minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle", "minecraft:bamboo_jungle"));
+		"wildercord:luminous_reedlands", "minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle", "minecraft:bamboo_jungle"));
 	public static final Kind CINDERFOX = new Kind("cinderfox", Pool.CREATURE, 6, 1, 3, 1.0, 5, 48, List.of(
-		"minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands"));
+		"minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands", "wildercord:emberwood_reach"));
 	public static final Kind SKYRAY = new Kind("skyray", Pool.AMBIENT, 3, 1, 1, 1 / 800.0, 1, 112, List.of(
-		"minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_forest", "minecraft:meadow",
+		"wildercord:windscar_highlands", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_forest", "minecraft:meadow",
 		"minecraft:jagged_peaks", "minecraft:stony_peaks", "minecraft:snowy_slopes"));
 	public static final Kind RIMEHARE = new Kind("rimehare", Pool.CREATURE, 6, 2, 3, 1.0, 6, 48, List.of(
 		"minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:ice_spikes", "minecraft:snowy_slopes", "minecraft:grove"));
@@ -55,7 +55,7 @@ public final class WildlifeRules {
 		"minecraft:snowy_taiga", "minecraft:snowy_plains", "minecraft:snowy_slopes", "minecraft:grove"));
 	/** The Dune Cougar (0.13): a tameable predator of the savannas and badlands (its own module, so not in {@link #ALL}). */
 	public static final Kind DUNE_COUGAR = new Kind("dune_cougar", Pool.CREATURE, 3, 1, 1, 1 / 2.0, 1, 64, List.of(
-		"minecraft:savanna", "minecraft:savanna_plateau", "minecraft:windswept_savanna", "minecraft:badlands", "minecraft:wooded_badlands"));
+		"minecraft:savanna", "minecraft:savanna_plateau", "minecraft:windswept_savanna", "minecraft:badlands", "minecraft:wooded_badlands", "wildercord:emberwood_reach"));
 	/** The Reefback Turtle (0.13): a water mount come ashore on beaches (a mount, so not in {@link #ALL}). */
 	public static final Kind REEFBACK_TURTLE = new Kind("reefback_turtle", Pool.CREATURE, ReefbackRules.WEIGHT, ReefbackRules.MIN_GROUP,
 		ReefbackRules.MAX_GROUP, 1 / 2.0, 2, 64, List.of("minecraft:beach", "minecraft:mangrove_swamp"));
@@ -88,7 +88,7 @@ public final class WildlifeRules {
 	public static final Kind CAPCROWN_SNAIL = new Kind("capcrown_snail", Pool.CREATURE, 8, 1, 3, 1 / 2.0, 6, 48, List.of(
 		"minecraft:mushroom_fields"));
 	public static final Kind GLOWBERRY_DORMOUSE = new Kind("glowberry_dormouse", Pool.CREATURE, 20, 1, 3, 1.0, 6, 32, List.of(
-		"minecraft:lush_caves"));
+		"minecraft:lush_caves", "wildercord:belowkeeper_hollows"));
 	public static final Kind HUSHWING_OWLET = new Kind("hushwing_owlet", Pool.CREATURE, 12, 1, 2, 1 / 2.0, 4, 48, List.of(
 		"minecraft:pale_garden"));
 	public static final Kind BLOSSOM_TANUKI = new Kind("blossom_tanuki", Pool.CREATURE, 10, 1, 3, 1 / 2.0, 6, 48, List.of(
@@ -96,7 +96,7 @@ public final class WildlifeRules {
 	public static final Kind MIREBATH_CAPYBARA = new Kind("mirebath_capybara", Pool.CREATURE, 6, 2, 4, 1 / 2.0, 6, 48, List.of(
 		"minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle"));
 	public static final Kind TUSSOCK_PIKA = new Kind("tussock_pika", Pool.CREATURE, 10, 1, 3, 1 / 2.0, 6, 48, List.of(
-		"minecraft:meadow", "minecraft:stony_peaks", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills"));
+		"minecraft:meadow", "minecraft:stony_peaks", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "wildercord:windscar_highlands"));
 	public static final Kind FLOE_PENGUIN = new Kind("floe_penguin", Pool.CREATURE, 10, 2, 5, 1 / 2.0, 6, 48, List.of(
 		"minecraft:snowy_beach", "minecraft:frozen_ocean", "minecraft:deep_frozen_ocean", "minecraft:ice_spikes", "minecraft:snowy_plains",
 		"minecraft:frozen_river"));
@@ -234,6 +234,7 @@ public final class WildlifeRules {
 
 	private static final Map<String, Garden> GARDENS = Map.of(
 		"minecraft:swamp", Garden.SWAMP,
+		"wildercord:luminous_reedlands", Garden.SWAMP,
 		"minecraft:mangrove_swamp", Garden.MANGROVE,
 		"minecraft:jungle", Garden.JUNGLE,
 		"minecraft:sparse_jungle", Garden.JUNGLE,

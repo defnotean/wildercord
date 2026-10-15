@@ -110,7 +110,7 @@ public final class CordCosmetics {
 			}
 		});
 		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> tidy(handler.player));
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> LIMIT.forget(handler.player.getUUID()));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> LIMIT.forget(handler.player.getUUID()));
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> LIMIT.clear());
 	}
 

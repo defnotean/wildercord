@@ -4,7 +4,7 @@
 ![The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/b-advancements.jpg)
 
 Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
-Circle, the dungeon bosses and the 48 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
+Circle, the dungeon bosses and the 56 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
 Crystals.
 
 
@@ -185,6 +185,28 @@ See [Ley Lines and the Wellstone](ley-lines.md),
 [Magic in the World](../world/world-magic.md) and
 [Playing Together](../social/playing-together.md).
 
+## Aura and the blade
+
+| Advancement | Kind | After | Needs | Reward |
+|---|---|---|---|---|
+| **First Breath** | task | Wildercord | Learn a breathing method and wake your aura | 25 XP |
+| **Bonded Blade** | task | First Breath | Bond a blade to your aura | 30 XP |
+| **Not a Scratch** | task | First Breath | Turn a blow aside with a perfect guard | 25 XP |
+| **Flow** | task | First Breath | Break through to Flow | 50 XP |
+| **Edge** | goal | Flow | Break through to Edge | 150 XP, 1 Mana Crystal |
+| **Form** | goal | Edge | Break through to Form | 300 XP, 3 Mana Crystals |
+| **Dominion** | goal | Form | Spread your aura over the ground around you | 75 XP |
+| **Sovereign** | challenge | Form | Break through to Sovereign | 1,000 XP, 3 Mana Crystals |
+| **The Sixteen** | challenge | Form | Beat every Sword Master back to back in the Gauntlet | 2,000 XP, 3 Mana Crystals |
+
+## Cooking
+
+| Advancement | Kind | After | Needs | Reward |
+|---|---|---|---|---|
+| **Something on the Fire** | task | Wildercord | Craft a Camp Pot | 10 XP |
+| **Square Meal** | task | Something on the Fire | Eat a meal cooked in a Camp Pot | 20 XP |
+| **A Feast Fit for an Archmage** | goal | Square Meal | Eat an Archmage's Feast | 100 XP |
+
 ## Sites
 
 Every site advancement is a task. You earn it by walking into the site.
@@ -216,8 +238,10 @@ See [Master Halls and Shrines](../world/masters-sites.md).
 | **Mountain Forge Hall** | Hillside Mine | Find a Mountain Forge Hall | 35 XP |
 | **Miner's Rest** | Hillside Mine | Find a Miner's Rest on a cliff edge | 20 XP |
 | **Prospector's Camp** | Hillside Mine | Find a Prospector's Camp in the badlands | 20 XP |
+| **The Quiet Eye** | Ley Walker | Find a Belowkeeper Bell Sanctum in the Belowkeeper Hollows | 20 XP |
+| **Where the Hollows Listen** | Ley Walker | Find a Belowkeeper Listening Station and its Glowcap basin in the Belowkeeper Hollows | 20 XP |
 
-See [Mines, Forges and Crystals](../world/mine-sites.md).
+See [Mines, Forges and Crystals](../world/mine-sites.md) and [Belowkeeper Hollows](../world/belowkeeper-hollows.md).
 
 ### Farms
 
@@ -243,12 +267,14 @@ See [Farmstead Sites](../world/farm-sites.md).
 | **Broken Bridge** | Wayfarer Inn | Find a broken bridge over a creek | 20 XP |
 | **Caravan Camp** | Wayfarer Inn | Find a caravan camp on the road | 20 XP |
 | **Cartographer's Hut** | Wayfarer Inn | Find a cartographer's hut | 20 XP |
+| **Keeper of the Cairns** | Ley Walker | Find a Highland Cairn Lodge and its leeward Windreed terrace in the Windscar Highlands | 20 XP |
+| **The High Meridian** | Ley Walker | Find a Highland Survey Ring on the Windscar ridges | 20 XP |
 | **Rune Library** | Wayfarer Inn | Find a roadside rune library | 20 XP |
 | **Standing Stones** | Wayfarer Inn | Find a ring of standing stones | 20 XP |
 | **Vow Circle** | Wayfarer Inn | Find a vow circle shrine | 20 XP |
 | **Watchtower** | Wayfarer Inn | Find a road watchtower | 20 XP |
 
-See [Roadside Sites](../world/travel-sites.md).
+See [Roadside Sites](../world/travel-sites.md) and [Windscar Highlands](../world/windscar-highlands.md).
 
 ### Water
 
@@ -259,6 +285,8 @@ See [Roadside Sites](../world/travel-sites.md).
 | **Cast a Wide Net** | Ley Walker | Find the net-weavers' huts in a mangrove swamp | 20 XP |
 | **Safe Harbour** | Ley Walker | Find a pier and boathouse on the shore | 20 XP |
 | **Smoke on the Water** | Ley Walker | Find a smokehouse on stilts over a swamp or river | 20 XP |
+| **Keeper of the Crossing** | Ley Walker | Find a Tideward survey house in the Luminous Reedlands | 20 XP |
+| **The Last Crossing** | Ley Walker | Find the old ferry basin in the Luminous Reedlands | 20 XP |
 | **Shrine of the Tide** | Ley Walker | Find the shrine on the floor of a warm sea | 20 XP |
 | **Pools Left by the Tide** | Ley Walker | Find a tidepool grotto on a stony shore | 20 XP |
 | **Run of the Mill** | Ley Walker | Find a watermill on a river bank | 20 XP |
@@ -269,6 +297,8 @@ See [Water Sites](../world/water-sites.md).
 
 | Advancement | After | Needs | Reward |
 |---|---|---|---|
+| **Keeper of the Kilns** | Ley Walker | Find an Emberwood Charcoal Yard and its Cinder Fern ash bed in the Emberwood Reach | 20 XP |
+| **The Cooled Kiln** | Ley Walker | Find an Emberwood Kiln Court in the Emberwood Reach | 20 XP |
 | **First Light** | The Buried Library | Find a Dawn Pavilion in a cherry grove | 20 XP |
 | **Shifting Sands** | The Buried Library | Find a Dune Temple in the desert | 20 XP |
 | **Listening In** | The Buried Library | Find an Echo Post in the deep dark | 20 XP |
@@ -278,18 +308,18 @@ See [Water Sites](../world/water-sites.md).
 | **Poison Darts** | The Buried Library | Find a Venom Ziggurat in the jungle | 20 XP |
 | **Light at the Edge** | The Buried Library | Find a Void Lantern on the End's outer islands | 20 XP |
 
-See [Wild Places](../world/wilds-sites.md).
+See [Wild Places](../world/wilds-sites.md) and [Emberwood Reach](../world/emberwood-reach.md).
 
 ## Totals
 
-142 advancements, counting the root.
+162 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 102 |
-| Goals | 28 |
-| Challenges | 12 |
+| Tasks | 116 |
+| Goals | 32 |
+| Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 10,825 |
+| Experience for all of them | 14,770 |
 | Blank Runes | 48 (six stacks of 8) |
-| Mana Crystals | 19 |
+| Mana Crystals | 29 |

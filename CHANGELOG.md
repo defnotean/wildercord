@@ -4,8 +4,34 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.13.0-alpha] — 2026-10-15
+
+**Living world.** New regions with their own buildings, residents, lore routes and bosses, plus bounties, mounts, guilds and a long list of fixes.
+
+### Fixed
+
+- The advancement guide includes the missing Aura and cooking milestones, with all 156 visible entries and their reward totals checked against shipped data.
+- Sword Masters cancel a paid attack when the last challenger leaves the arena and depart after their abandonment window. A participant can return the Master's severed Aura bolt to hurt that Master; ordinary spells still fail against its spellbane.
+- Heart Circle chat and Cord tooltips preserve fractional power bonuses: +1.5% per circle, including +28.5% with nineteen working circles. The progression tables and Overflow guidance now match the existing +30% cap and +15% full-mana bonus. These are display corrections, not balance changes.
+- Native Aura progression, airborne Master recovery, Master animation payments and Reweave refusal checks now follow the current progression/combat rules and the lesson screen's visible refusal state.
+- Excise's native retrieval checks distinguish a visible refusal from an active lesson; refused requests must still leave no study session or advanced page.
+- The Master technique guide now reports the current impact and recovery times for all 417 techniques, with both published guides checked against the runtime definitions.
+- Brace and Shulkershell descriptions state the existing player defence cap: 40% less damage for players, 80% for other creatures. Brace also explains that its six-second rest starts after the guard. Native ward and burst-survival checks now exercise the current defence cap and paid damage allowance.
+- The lore journal now names all sixteen Sword Masters and keeps each school's own victory dialogue. Older `school_3` through `school_15` victory entries recover their names when loaded, without reopening completed leads or paying their rewards again.
+- Regenerating assets preserves the recent bosses' warning lines and expanded bestiary descriptions instead of dropping or replacing them with earlier text.
+- Build and native image-check jobs install the pinned Pillow and NumPy dependencies used by the creature-art generators, fixing a clean-runner failure that an existing local NumPy installation could hide.
+
 ### Added
 
+- **Windscar Highlands.** A wind-scoured highland region with a Cairn Lodge, its Cairn Keeper, the Paired Cairns and the Glass Cartographer, tied into the Scout's Last Cairn lead.
+- **Belowkeeper Hollows.** A hollow-country region with a Listening Station and its Listener, the Empty Bell route and the Hollow Bell encounter.
+- **Emberwood Reach.** A charred-forest region with a Charcoal Yard and its Kiln Keeper, the Eleven Winters route and the Kiln Widow encounter.
+- **The Reed-Crowned Ferryman and the Last Crossing.** Find a broad timber ferry basin in the Luminous Reedlands and read its book before ringing the authentic Crossing Bell. Its reed-raft guardian announces an oar sweep, anchor circle and wake lanes, with open escape paths and a changed pattern below half health. Eligible surviving contributors earn 80 XP, a field note and a compass pointing to that crossing. The bell keeps one guardian and remembers its completed encounter through chunk replay and world reopening.
+- **The Drowned Road.** Follow the Reedkeeper's account through a coastal boathouse passenger ledger to a lighthouse's working lamp. Three ordered journal chapters remember earlier visits and pay 90 XP, five Blank Runes and one Aura Shard in total, once per player. The route needs no combat victory; its discoveries support older buildings as well as new ones.
+- **Reedkeeper return conversations.** After the original four stories, the keeper responds to your current coastal chapter, gives a practical clue for the next stop, thanks you for tending the lighthouse and recognizes your return from a Ferryman victory. Heard responses stay in your own journal. Ordinary fishing trades remain available.
+- **Tideward Reedkeeper Landings.** A new regional survey house stands over shallow Reedlands water, with a resident fisher, planted Moonreed garden, four-page First Crossing book and its own discovery advancement. Crouch-use the Reedkeeper to hear four stories; the person and heard conversations remain in your journal after rejoining. Ordinary use opens fishing trades.
+- **Luminous Reedlands.** A new Overworld region grows in the wettest swamp country: pale banks, blue-green pools, small natural Moonreed colonies and the existing wetland creatures. Stilt Smokehouses can generate along its shallow water. Entering the region records the Tideward's first-crossing field note in the lore journal; the discovery and biome survive saving and reopening the world.
+- **The Scout's Last Cairn.** After the Scout's Wall lead, follow three connected journal chapters through a road watchtower, a ring of standing stones and a Sleeping Blade. Watch orders and The First Roads gain an account of the Marchkeepers' road. Earlier discoveries count, chapters reveal in order, and each pays once. An authentic Sleeping Blade stone now shares the Last Oath with every visitor; drawing and owning its sword still have their existing requirements.
 - **More kinds of bounty.** The board's offers grow with your standing. At Known it adds gathering bounties (bring it leather, string, bone, amethyst and the like) and a great bounty once a week (a hunt of 12 to 20 creatures for 24 emeralds, 2 Mana Crystals and 20 reputation). At Friend it sets named elites loose near the board for you to hunt down. At Honoured it pays for any dungeon's guardian.
 - **Escort bounties.** From Known, the board may ask you to lead a traveller's pack llama 160 to 240 blocks down the road. Ambushes come for it on the way. Bring it there alive and you're paid on the spot.
 - **Older inns join in.** A Wayfarer Inn generated before 0.12 gets its bounty board and keepers the first time someone walks in.

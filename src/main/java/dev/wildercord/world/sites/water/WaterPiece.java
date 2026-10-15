@@ -180,24 +180,33 @@ abstract class WaterPiece extends DungeonPiece {
 
 	/** A lectern facing {@code facing} (in the piece's frame), holding a written book of translated pages. */
 	protected void lectern(WorldGenLevel level, BoundingBox bb, int x, int y, int z, Direction facing, String title, String key, int pages) {
+		lectern(level, bb, x, y, z, facing, title, key, pages, "?");
+	}
+
+	/** An attributed survey book; older anonymous site books keep their existing author. */
+	protected void lectern(WorldGenLevel level, BoundingBox bb, int x, int y, int z, Direction facing, String title, String key, int pages, String author) {
 		BlockPos pos = getWorldPos(x, y, z);
 		if (!bb.isInside(pos)) {
 			return;
 		}
 		set(level, bb, Blocks.LECTERN.defaultBlockState().setValue(LecternBlock.FACING, facing).setValue(LecternBlock.HAS_BOOK, true), x, y, z);
 		if (level.getBlockEntity(pos) instanceof LecternBlockEntity lectern) {
-			lectern.setBook(book(title, key, pages));
+			lectern.setBook(book(title, key, pages, author));
 		}
 	}
 
 	/** A written book whose pages are {@code key.1} to {@code key.pages}, translated when read. */
 	static ItemStack book(String title, String key, int pages) {
+		return book(title, key, pages, "?");
+	}
+
+	private static ItemStack book(String title, String key, int pages, String author) {
 		List<Filterable<Component>> text = new java.util.ArrayList<>();
 		for (int i = 1; i <= pages; i++) {
 			text.add(Filterable.passThrough(Component.translatable(key + "." + i)));
 		}
 		ItemStack stack = new ItemStack(Items.WRITTEN_BOOK);
-		stack.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough(title), "?", 0, text, true));
+		stack.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough(title), author, 0, text, true));
 		return stack;
 	}
 

@@ -29,7 +29,7 @@ public record GlowcapFeature() implements Feature {
    for(int dy=0;dy<112;dy++) {
     var p=top.below(dy);if(p.getY()<l.getMinY() || !l.hasChunkAt(p))break;
     if(!l.isEmptyBlock(p) || !GlowcapBlock.footing(l,p) || !GlowcapBlock.moist(l,p) || !GlowcapBlock.structuralCover(l,p))continue;
-    if(natural && !(l.getBiome(p).is(net.minecraft.world.level.biome.Biomes.LUSH_CAVES) || l.getBiome(p).is(net.minecraft.world.level.biome.Biomes.DRIPSTONE_CAVES)))continue;
+    if(natural && !(l.getBiome(p).is(net.minecraft.world.level.biome.Biomes.LUSH_CAVES) || l.getBiome(p).is(net.minecraft.world.level.biome.Biomes.DRIPSTONE_CAVES) || l.getBiome(p).is(dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)))continue;
     var state=FungalGarden.GLOWCAP.defaultBlockState();if(state.canSurvive(l,p)) {l.setBlock(p,state,Block.UPDATE_CLIENTS);placed++;break;}
    }
   }

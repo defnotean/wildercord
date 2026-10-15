@@ -155,7 +155,7 @@ public final class Residues {
 				harvested(level, pos, state, player instanceof ServerPlayer sp ? sp : null);
 			}
 		});
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> RESTED.remove(handler.player.getUUID()));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> RESTED.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			RESTED.clear();
 			LOADED.clear();

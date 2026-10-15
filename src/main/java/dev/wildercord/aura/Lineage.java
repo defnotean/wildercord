@@ -782,7 +782,7 @@ public final class Lineage {
 		AuraApi.allowBladePassing(Lineage::isDisciple);
 		ServerTickEvents.END_SERVER_TICK.register(Lineage::tick);
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> joined(handler.player)));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			Under rite = RITES.remove(id);
 			TOLD.remove(id);

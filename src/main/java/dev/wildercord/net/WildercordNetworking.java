@@ -221,7 +221,7 @@ public final class WildercordNetworking {
 	}
 
 	public static void init() {
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			SPELLBOOK.forget(handler.player.getUUID());
 			CASTING.forget(handler.player.getUUID());
 		});

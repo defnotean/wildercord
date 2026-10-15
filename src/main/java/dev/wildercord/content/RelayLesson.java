@@ -82,7 +82,7 @@ public final class RelayLesson {
 			} else openSaved(context.player(), packet.request());
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> removeInvalid(READINGS, RelayLesson::valid, RelayLesson::interrupted));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> READINGS.remove(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> READINGS.remove(handler.player));
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, from, to) -> retire(player));
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> READINGS.remove(oldPlayer));
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {

@@ -139,6 +139,13 @@ public final class MastersCaptureProbe {
 		var result = new CompletableFuture<Void>();
 		begin(mc);
 		try {
+			if (mc.packetProcessor() != null && mc.level != null) {
+				long gameTime = mc.level.getGameTime();
+				mc.packetProcessor().processQueuedPackets();
+				if (mc.level != null && mc.level.getGameTime() != gameTime) {
+					mc.level.getLevelData().setGameTime(gameTime);
+				}
+			}
 			BraceNullCaptureProbe.begin(mc, name);
 			mc.gameRenderer.update(DELTA);
 			mc.gameRenderer.extract(DELTA, true);
@@ -170,6 +177,18 @@ public final class MastersCaptureProbe {
 					result.complete(null);
 				} catch (Throwable failure) { result.completeExceptionally(failure); }
 			});
+			RenderSystem.getDevice().createCommandEncoder().submit();
+			for (int spin = 0; spin < 200 && !result.isDone(); spin++) {
+				RenderSystem.executePendingTasks();
+				if (!result.isDone()) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException ignored) {
+						Thread.currentThread().interrupt();
+						break;
+					}
+				}
+			}
 		} finally { BraceNullCaptureProbe.end(); end(); }
 		return result;
 	}

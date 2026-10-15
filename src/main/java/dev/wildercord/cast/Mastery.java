@@ -1000,7 +1000,7 @@ public final class Mastery {
 			}
 		});
 		// What was earned is written before a player is saved: leaving, dying, the server stopping.
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			flush(handler.player);
 			SHOWN_AT.remove(handler.player.getUUID());
 		});

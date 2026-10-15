@@ -17,14 +17,14 @@ The lectern says the same thing in every hall. First reach Aura Form or Heart Ci
 
 | Site | Schools | Where to look | Trial |
 |---|---|---|---|
-| Forge Dojo | [Ember](../masters/ember.md) or [Crimson](../masters/crimson.md) | Badlands (all kinds) | A brick hall with a smoking chimney. The vault at the back is sealed. Strike the seal with the school's element. |
-| Wind Gate | [Gale](../masters/gale.md) or [Thunder](../masters/thunder.md) | Windswept hills, forests and savannas, savanna plateaus | Two tall pillars joined by a beam. Climb the posts one by one to the chest on top. |
+| Forge Dojo | [Ember](../masters/ember.md) or [Crimson](../masters/crimson.md) | Badlands (all kinds), [Emberwood Reach](emberwood-reach.md) | A brick hall with a smoking chimney. The vault at the back is sealed. Strike the seal with the school's element. |
+| Wind Gate | [Gale](../masters/gale.md) or [Thunder](../masters/thunder.md) | Windscar Highlands, windswept hills, forests and savannas, savanna plateaus | Two tall pillars joined by a beam. Climb the posts one by one to the chest on top. |
 | Quarry Hall | [Stone](../masters/stone.md) or [Iron](../masters/iron.md) | Windswept gravelly hills, stony peaks, meadows | A stone hall with a sparring pit. Beat the Runebound guard (a vindicator or a husk, depending on the school); the chest is in the pit. |
 | Waterfall Shrine | [Rime](../masters/rime.md) or [Tide](../masters/tide.md) | Snowy plains, snowy taiga, groves, snowy slopes, ice spikes | A frozen waterfall over a pool. Hop the ledges up to the alcove in the cliff. If you fall, you land in the water. |
 | Root Temple | [Verdant](../masters/verdant.md) or [Venom](../masters/venom.md) | Jungles and dark forests | A stepped, root-wrapped temple. Beat the Runebound bogged in the root pit. |
 | Sundial Court | [Dune](../masters/dune.md) or [Hourglass](../masters/hourglass.md) | Desert | A ring of hour stones around a tall gnomon. The shrine behind it is sealed with the school's element. |
 | Star Terrace | [Starlit](../masters/starlit.md) or [Dawn](../masters/dawn.md) | Cherry groves, plains and sunflower plains | A raised terrace with a glowing star map and a telescope. The reading room is sealed. |
-| Resonance Chamber | [Hollow](../masters/hollow.md) or [Echo](../masters/echo.md) | Under deep dark, dripstone and lush caves | Look for a small bell frame on the surface. A ladder leads far down to a chamber of amethyst or sculk with a sealed vault. |
+| Resonance Chamber | [Hollow](../masters/hollow.md) or [Echo](../masters/echo.md) | Under deep dark, [Belowkeeper Hollows](belowkeeper-hollows.md), dripstone and lush caves | Look for a small bell frame on the surface. A ladder leads far down to a chamber of amethyst or sculk with a sealed vault. |
 
 Each school name links to its page, with the Master, the breathing forms and how to learn them. Runebound guards are explained on [Runebound](runebound.md).
 

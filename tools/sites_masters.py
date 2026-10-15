@@ -7,9 +7,9 @@ The buildings are dev.wildercord.world.sites.masters.
 # id: (schools, title, short description, icon, biomes, spacing, separation, step, terrain adaptation)
 SITES = {
     'master_forge_dojo': (('ember', 'crimson'), 'Forge Dojo', 'Find a Master dojo in the badlands', 'minecraft:campfire',
-        ['minecraft:badlands', 'minecraft:wooded_badlands', 'minecraft:eroded_badlands'], 44, 16, 'surface_structures', 'beard_thin'),
+        ['minecraft:badlands', 'minecraft:wooded_badlands', 'minecraft:eroded_badlands', 'wildercord:emberwood_reach'], 44, 16, 'surface_structures', 'beard_thin'),
     'master_wind_gate': (('gale', 'thunder'), 'Wind Gate', 'Find the Master gate on the windswept heights', 'minecraft:lightning_rod',
-        ['minecraft:windswept_hills', 'minecraft:windswept_forest', 'minecraft:windswept_savanna', 'minecraft:savanna_plateau'], 46, 16, 'surface_structures', 'beard_thin'),
+        ['minecraft:windswept_hills', 'minecraft:windswept_forest', 'minecraft:windswept_savanna', 'minecraft:savanna_plateau', 'wildercord:windscar_highlands'], 46, 16, 'surface_structures', 'beard_thin'),
     'master_quarry_hall': (('stone', 'iron'), 'Quarry Hall', 'Find a Master hall among the stony hills', 'minecraft:stonecutter',
         ['minecraft:windswept_gravelly_hills', 'minecraft:stony_peaks', 'minecraft:meadow'], 46, 16, 'surface_structures', 'beard_thin'),
     'master_waterfall_shrine': (('rime', 'tide'), 'Waterfall Shrine', 'Find the frozen fall of a Master shrine', 'minecraft:blue_ice',
@@ -21,7 +21,7 @@ SITES = {
     'master_star_terrace': (('starlit', 'dawn'), 'Star Terrace', 'Find the Master terrace that reads the stars', 'minecraft:spyglass',
         ['minecraft:cherry_grove', 'minecraft:sunflower_plains', 'minecraft:plains'], 52, 18, 'surface_structures', 'beard_thin'),
     'master_resonance_chamber': (('hollow', 'echo'), 'Resonance Chamber', 'Find the deep Master chamber under the bell', 'minecraft:bell',
-        ['minecraft:deep_dark', 'minecraft:dripstone_caves', 'minecraft:lush_caves'], 50, 18, 'underground_structures', 'none'),
+        ['minecraft:deep_dark', 'minecraft:dripstone_caves', 'minecraft:lush_caves', 'wildercord:belowkeeper_hollows'], 50, 18, 'underground_structures', 'none'),
 }
 SALT_BASE = 2026100900 + 100 * 1
 

@@ -98,52 +98,19 @@ processResources {
 	}
 }
 
-// Life32 has an unchanged generic31 renderer plus one separately admitted held lesson.
-def lifeExciseEntries = [
-    'dev.wildercord.client.fx.LifeRecipeTest',
-    'dev.wildercord.client.fx.LifeFormationTest',
-    'dev.wildercord.client.fx.LifeFlightTest',
-    'dev.wildercord.cast.LifeOutcomeRecipeTest',
-    'dev.wildercord.cast.ExcisePlayableTest'
-]
-def validateLifeExciseSelection = { name, group ->
-    if (name == 'diagnostic-life-excise' && (group.purpose != 'diagnostic' || group.expectedCount != 5 || group.entries != lifeExciseEntries))
-        throw new GradleException('Life32 requires all four generic suites and the separate Excise ordinary class, without release relabeling')
-}
-
-def validateMastersParts = { name, catalog ->
-    def partNames = ['masters-core', 'masters-march-mechanics', 'masters-march-visuals']
-    if (!(name in partNames)) return
-    def march = ['dev.wildercord.aura.world.StoneMarchTest',
-                 'dev.wildercord.aura.world.StoneMarchPresentationTest',
-                 'dev.wildercord.aura.world.StoneMarchOpponentViewTest']
-    def full = catalog.masters.entries
-    if (catalog.masters.get('purpose', 'release') != 'release' || catalog.masters.expectedCount != 47
-            || full.size() != 47 || full.toSet().size() != 47 || full.findAll { it in march } != march
-            || full.last() != 'dev.wildercord.gametest.WildercordMastersArtsPresentationTest')
-        throw new GradleException('Required Masters parts need the ordered 47-class roster')
-    def expected = [full.findAll { !(it in march) }, march.take(1), march.drop(1)]
-    partNames.eachWithIndex { part, i ->
-        def group = catalog[part]
-        if (group == null || group.purpose != 'required-part' || !(group.expectedCount instanceof Integer)
-                || group.expectedCount != expected[i].size() || group.entries != expected[i])
-            throw new GradleException('Required Masters parts must retain the exact disjoint ordered 44/1/2 partition')
-    }
-}
-
 def clientCiContract = new GroovyClassLoader(getClass().classLoader).parseClass(file('tools/ClientCiContract.groovy'))
 // jdeps must read Java 25 class files, so take it from the build's own toolchain.
 def affectedJdeps = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(targetJavaVersion) }
 	.map { it.metadata.installationPath.file(System.getProperty('os.name').toLowerCase(Locale.ROOT).startsWith('windows') ? 'bin/jdeps.exe' : 'bin/jdeps') }
 
-// Focused in-world screenshot suites keep iteration fast while the full descriptor remains available.
+// Client game tests: the descriptor lists only the release-smoke classes, which run once before a release.
 tasks.named('processGametestResources') {
     inputs.file('tools/ClientCiContract.groovy')
     inputs.file('tools/client_shard_plan.py')
     inputs.file('tools/client_shard_plan.json')
 	inputs.file('tools/client_suite_catalog.json')
 	// Presence matters too: an empty -PciSuite is invalid, not the absent/full selector.
-	inputs.property('selectorPresence', ['ciSuite', 'focusedSuite', 'affectedSince', 'tailFrom', 'ciShard', 'ciShards'].findAll { project.hasProperty(it) })
+	inputs.property('selectorPresence', ['ciSuite', 'focusedSuite', 'affectedSince', 'ciShard', 'ciShards'].findAll { project.hasProperty(it) })
 	inputs.property('ciSuite', project.findProperty('ciSuite') ?: '')
 	inputs.property('affectedSince', project.findProperty('affectedSince') ?: '')
 	// Impact selection reads compiled classes and the git working tree, so it always reruns.
@@ -152,49 +119,14 @@ tasks.named('processGametestResources') {
 		outputs.upToDateWhen { false }
 	}
 	inputs.property('focusedSuite', project.findProperty('focusedSuite') ?: '')
-	inputs.property('twoClientSuite', project.findProperty('twoClientSuite') ?: '')
-	inputs.property('twoClientSuitePresent', project.hasProperty('twoClientSuite'))
-	if (project.findProperty('twoClientSuite') == 'cast-receipt') {
-		inputs.file('src/gametest/resources/cast-receipt-native-contract.json')
-		inputs.file('src/gametest/resources/counter-peer-gametest.mixins.json')
-	}
-	if (project.findProperty('twoClientSuite') == 'moon') inputs.file('src/gametest/resources/crimson-moon-native-contract.json')
-    if (project.findProperty('twoClientSuite') == 'stone-hinge-peer') inputs.file('src/gametest/resources/stone-hinge-peer-native-contract.json')
-	if (project.findProperty('twoClientSuite') == 'social') inputs.file('src/gametest/resources/social-native-contract.json')
-	inputs.property('twoClientUnitySuite', project.hasProperty('twoClientUnitySuite'))
-	inputs.property('twoClientRainshieldSuite', project.hasProperty('twoClientRainshieldSuite'))
-	inputs.property('twoClientCampSuite', project.hasProperty('twoClientCampSuite'))
-	inputs.property('encounterSuite', project.hasProperty('encounterSuite'))
-	inputs.property('cinnamonSuite', project.hasProperty('cinnamonSuite'))
-	inputs.property('defensiveSuite', project.hasProperty('defensiveSuite'))
-	inputs.property('practiceSuite', project.hasProperty('practiceSuite'))
-	inputs.property('magicSuite', project.hasProperty('magicSuite'))
-	inputs.property('fusionSuite', project.hasProperty('fusionSuite'))
-	inputs.property('runeSuite', project.hasProperty('runeSuite'))
-	inputs.property('mechanicsSuite', project.hasProperty('mechanicsSuite'))
-	inputs.property('tourSuite', project.hasProperty('tourSuite'))
-	inputs.property('parrySuite', project.hasProperty('parrySuite'))
-	inputs.property('signatureSuite', project.hasProperty('signatureSuite'))
-	inputs.property('tailSuite', project.hasProperty('tailSuite'))
-	inputs.property('tailFrom', project.findProperty('tailFrom') ?: '')
 	inputs.property('ciShard', project.findProperty('ciShard') ?: '')
 	inputs.property('ciShards', project.findProperty('ciShards') ?: '')
 	doLast {
         def originalDescriptor = new groovy.json.JsonSlurper().parse(file("${destinationDir}/fabric.mod.json"))
         def fullEntries = originalDescriptor.entrypoints['fabric-client-gametest']
-        if (lifeExciseEntries.take(4).any { fullEntries.contains(it) } && !fullEntries.contains(lifeExciseEntries.last()))
-            throw new GradleException('Life32 full descriptor must retain the separate Excise ordinary class')
-		def selectors = ['ciSuite', 'ciShard', 'focusedSuite', 'affectedSince', 'twoClientSuite', 'encounterSuite',
-			'cinnamonSuite', 'defensiveSuite', 'practiceSuite', 'magicSuite', 'fusionSuite',
-			'runeSuite', 'mechanicsSuite', 'tourSuite', 'parrySuite', 'signatureSuite', 'tailSuite']
+		def selectors = ['ciSuite', 'ciShard', 'focusedSuite', 'affectedSince']
 		def active = selectors.findAll { project.hasProperty(it) }
 		if (active.size() > 1) throw new GradleException("Do not combine client suite selectors: ${active.join(', ')}")
-		def multiplayer = ['twoClientUnitySuite', 'twoClientRainshieldSuite', 'twoClientCampSuite'].findAll { project.hasProperty(it) }
-		if (multiplayer.size() > 1 || (!multiplayer.isEmpty() && !project.hasProperty('twoClientSuite'))) throw new GradleException('Select one supervised multiplayer suite together with twoClientSuite')
-		def supervisedName = project.findProperty('twoClientSuite')?.toString() ?: ''
-		if (supervisedName && !(supervisedName in ['cast-receipt', 'moon', 'stone-hinge-peer', 'social'])) throw new GradleException('twoClientSuite must be empty (legacy), cast-receipt, moon, stone-hinge-peer or social')
-		if (supervisedName && !multiplayer.isEmpty()) throw new GradleException('Named twoClientSuite cannot be combined with legacy companion flags')
-		if (project.hasProperty('tailFrom') && !project.hasProperty('tailSuite')) throw new GradleException('tailFrom requires tailSuite')
         // Full/shard selection has one Python authority and a pinned explicit four-group plan.
         def fullSelection = clientCiContract.selection(fullEntries, project.properties,
             file('tools/client_shard_plan.py'), file('tools/client_shard_plan.json'),
@@ -214,8 +146,6 @@ tasks.named('processGametestResources') {
 			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))
 			if (!catalog.containsKey(name)) throw new GradleException("Unknown ciSuite '${name}'; choose from ${catalog.keySet().join(', ')}")
 			def group = catalog[name]
-            validateLifeExciseSelection(name, group)
-            validateMastersParts(name, catalog)
 			if (!(group.get('purpose', 'release') in ['release', 'diagnostic', 'required-part'])) throw new GradleException("ciSuite '${name}' has an unknown purpose")
 			def selected = group.entries
 			if (!(selected instanceof List) || selected.isEmpty() || !selected.every { it instanceof String && !it.trim().isEmpty() }) throw new GradleException("ciSuite '${name}' must contain a nonempty list of entrypoint names")
@@ -229,42 +159,6 @@ tasks.named('processGametestResources') {
 			if (!missing.isEmpty()) throw new GradleException("ciSuite '${name}' has unregistered entrypoints: ${missing.join(', ')}")
 			data.entrypoints['fabric-client-gametest'] = selected
 			descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
-			return
-		}
-		// Requires the explicit two-process supervisor; never enters the ordinary CI roster.
-		if (project.hasProperty('twoClientSuite')) {
-			def descriptor=file("${destinationDir}/fabric.mod.json")
-			def data=new groovy.json.JsonSlurper().parse(descriptor)
-			if (supervisedName == 'cast-receipt') {
-				def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/cast-receipt-native-contract.json'))
-				def expected = 'dev.wildercord.aura.world.ConnectedCastReceiptTest'
-				if (contract.suite != 'cast-receipt' || contract.entrypoint != expected) throw new GradleException('Supervised contract does not match the fixed cast receipt entrypoint')
-				if (contract.requiredMixins != ['counter-peer-gametest.mixins.json']) throw new GradleException('Counter passive hook identity changed')
-				data.mixins = ((data.mixins ?: []) + contract.requiredMixins).unique()
-				data.entrypoints['fabric-client-gametest'] = [expected]
-			} else if (supervisedName == 'moon') {
-				def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/crimson-moon-native-contract.json'))
-				def expected = 'dev.wildercord.client.combat.CrimsonMoonMultiplayerCaptureTest'
-				def hooks = ['crimson-moon-multiplayer-gametest.mixins.json']
-				if (contract.suite != 'moon' || contract.entrypoint != expected || contract.requiredMixins != hooks) throw new GradleException('Supervised Moon contract does not match its fixed entrypoint and passive hooks')
-				data.entrypoints['fabric-client-gametest'] = [expected]
-				data.mixins = ((data.mixins ?: []).findAll { it != 'crimson-moon-owner-gametest.mixins.json' } + hooks).unique()
-            } else if (supervisedName == 'stone-hinge-peer') {
-                def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/stone-hinge-peer-native-contract.json'))
-                def expected = 'dev.wildercord.aura.StoneHingePeerTransportTest'
-                if (contract.suite != 'stone-hinge-peer' || contract.entrypoint != expected || contract.expectedCount != 29)
-                    throw new GradleException('Stone Hinge requires its fixed 29-case supervised diagnostic contract')
-                data.entrypoints['fabric-client-gametest'] = [expected]
-                data.mixins = ((data.mixins ?: []) + ['stone-hinge-proof-gametest.mixins.json', 'stone-hinge-peer-gametest.mixins.json']).unique()
-            } else if (supervisedName == 'social') {
-                def contract = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/social-native-contract.json'))
-                def expected = 'dev.wildercord.gametest.WildercordSocialTwoClientsTest'
-                if (contract.suite != 'social' || contract.entrypoint != expected) throw new GradleException('Social contract does not match its fixed entrypoint')
-                data.entrypoints['fabric-client-gametest'] = [expected]
-            } else {
-                data.entrypoints['fabric-client-gametest']=[project.hasProperty('twoClientRainshieldSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsRainshieldTest' : project.hasProperty('twoClientCampSuite') ? 'dev.wildercord.gametest.WildercordTwoClientsCampTest' : project.hasProperty('twoClientUnitySuite') ? 'dev.wildercord.gametest.WildercordTwoClientsUnityTest' : 'dev.wildercord.gametest.WildercordTwoClientsTest']
-			}
-			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
 		}
 		// Static impact analysis (tools/affected_tests.py): a fast iteration aid, never a release gate.
@@ -303,33 +197,6 @@ tasks.named('processGametestResources') {
 			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 			return
 		}
-		if (!project.hasProperty('encounterSuite') && !project.hasProperty('practiceSuite') && !project.hasProperty('defensiveSuite') && !project.hasProperty('cinnamonSuite') && !project.hasProperty('magicSuite') && !project.hasProperty('fusionSuite') && !project.hasProperty('runeSuite') && !project.hasProperty('mechanicsSuite') && !project.hasProperty('tourSuite') && !project.hasProperty('parrySuite') && !project.hasProperty('signatureSuite') && !project.hasProperty('tailSuite')) return
-		def descriptor = file("${destinationDir}/fabric.mod.json")
-		def data = new groovy.json.JsonSlurper().parse(descriptor)
-		data.entrypoints['fabric-client-gametest'] = project.hasProperty('tailSuite')
-			? data.entrypoints['fabric-client-gametest'].dropWhile { it != 'dev.wildercord.gametest.' + (project.findProperty('tailFrom') ?: 'WildercordGearTest') }
-			: [project.hasProperty('encounterSuite')
-			? 'dev.wildercord.cast.NewEncountersTest'
-			: project.hasProperty('practiceSuite')
-			? 'dev.wildercord.cast.PracticeRoomTest'
-			: project.hasProperty('defensiveSuite')
-			? 'dev.wildercord.cast.DefensiveFociTest'
-			: project.hasProperty('signatureSuite')
-			? 'dev.wildercord.gametest.WildercordSignatureFusionTest'
-			: project.hasProperty('parrySuite')
-			? 'dev.wildercord.gametest.WildercordParryTest'
-			: project.hasProperty('tourSuite')
-			? 'dev.wildercord.gametest.WildercordFeatureTour'
-			: project.hasProperty('mechanicsSuite')
-			? 'dev.wildercord.gametest.WildercordScreenshots'
-			: project.hasProperty('runeSuite')
-			? 'dev.wildercord.cast.WildercordRuneGapsTest'
-			: project.hasProperty('fusionSuite')
-			? 'dev.wildercord.gametest.WildercordFusionTest'
-			: project.hasProperty('magicSuite')
-			? 'dev.wildercord.gametest.WildercordMagicReleaseTest'
-			: 'dev.wildercord.gametest.WildercordCinnamonTest']
-		descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 	}
 }
 
@@ -337,7 +204,6 @@ tasks.named('processGametestResources') {
 // resource processing is UP-TO-DATE. The manifest checks this evidence against the launcher.
 tasks.named('runClientGameTest') {
 	doFirst {
-		if (project.findProperty('twoClientSuite') in ['cast-receipt', 'moon', 'stone-hinge-peer', 'social']) throw new GradleException('Named two-client suites require exportTwoClientLaunch and tools/native/launch_two_clients.py; direct single-client execution is forbidden')
         def sourceEntries = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/fabric.mod.json')).entrypoints['fabric-client-gametest']
         def resources = tasks.named('processGametestResources').get()
         def expected = clientCiContract.selection(sourceEntries, project.properties,
@@ -362,8 +228,6 @@ tasks.named('runClientGameTest') {
 			def descriptor = new groovy.json.JsonSlurper().parse(file("${resources.destinationDir}/fabric.mod.json"))
 			def entries = descriptor.entrypoints['fabric-client-gametest']
 			if (!catalog.containsKey(name) || entries != catalog[name].entries) throw new GradleException('Processed client descriptor does not match ciSuite catalog selection')
-            validateLifeExciseSelection(name, catalog[name])
-            validateMastersParts(name, catalog)
 			logger.lifecycle('WILDERCORD_CLIENT_DESCRIPTOR ' + groovy.json.JsonOutput.toJson(
 				[kind: catalog[name].purpose in ['diagnostic', 'required-part'] ? catalog[name].purpose : 'suite', name: name, count: entries.size(), entries: entries]))
 		}

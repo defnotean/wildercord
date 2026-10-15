@@ -9,7 +9,7 @@ You need:
 
 - **JDK 25** (Temurin works well)
 - **Python 3.11+**, available as `python3` on macOS/Linux or `python` on Windows for full/sharded client test resource processing
-- **Pillow** (`pip install pillow`) for the asset generator
+- **Pillow and NumPy** (`python -m pip install -r tools/requirements.txt`) for asset generation and image checks. The shared requirements pin the versions used for committed art and VPS checks.
 - Git, and an IDE with Gradle support (IntelliJ IDEA recommended)
 
 ```bash
@@ -21,9 +21,10 @@ cd wildercord
 
 In IntelliJ, open the folder as a Gradle project; Loom sets up run configurations for the client
 and server.
-The owned CI launcher runs on Linux. Full/sharded Gradle plan selection uses a portable
-bounded configuration reader. See [the explicit plan contract](docs/FULL_CLIENT_SHARD_PLAN.md).
-Focused selectors keep their existing platform behavior.
+The owned project runner runs on the isolated Windows VPS. See [VPS setup and
+commands](docs/testing/vps.md). Full/sharded Gradle plan selection uses a portable
+bounded configuration reader; [the explicit plan contract](docs/FULL_CLIENT_SHARD_PLAN.md)
+still governs its coverage. GitHub Actions remains disabled.
 
 ## Where things live
 
@@ -40,11 +41,16 @@ The game design (what each rune does and why) is in [docs/DESIGN.md](docs/DESIGN
    ```bash
    python tools/generate_assets.py
    ```
-   Commit the generated files together with your code. CI fails if they're out of date.
+   Commit the generated files together with your code. The VPS parity check fails if they're out of date.
 5. **Test** (see below).
 6. **Open a pull request** and fill in the template.
 
 ## Testing
+
+The project owner moved automated testing to the Windows VPS on October 13, 2026.
+GitHub Actions is disabled. Run development checks on the isolated VPS checkout
+using [the VPS testing guide](docs/testing/vps.md); the commands below describe
+the underlying checks, not permission to resume GitHub CI.
 
 | Command | When |
 |---|---|
@@ -79,7 +85,7 @@ rebuilding under it crashes the game. Use `./gradlew -PaltBuild compileJava` to 
 - **Send particles through `Fx`/`Vfx`**, damage through `Effects.hurt`, and delays through
   `Scheduler` (checking `cast.alive()`).
 - **Numbers modifiers change live in `SpellNumbers`**, so the readout can show them.
-- Python tools: 4 spaces, standard library plus Pillow only.
+- Python tools: 4 spaces; prefer the standard library. Art and image checks use the Pillow and NumPy versions pinned in `tools/requirements.txt`.
 
 ## Writing for players
 

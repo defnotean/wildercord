@@ -134,7 +134,7 @@ public final class HearthEffects {
 
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(HearthEffects::tick);
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> forget(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> forget(handler.player));
 		// Like a potion's, a hearth rune's gifts end with you.
 		net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			if (!alive) {

@@ -9,7 +9,8 @@ permalink: /world/luminous-wetlands/
 
 ## What it is
 
-**Lantern Newts** live in open, shallow water in swamps and mangrove swamps. They have wide heads, frilled gills and
+**Lantern Newts** live in open, shallow water in swamps, mangrove swamps and the
+[Luminous Reedlands]({{ '/world/luminous-reedlands/' | relative_url }}). They have wide heads, frilled gills and
 three nodules that glow at night. Feed one gently and it gives you a **Dusk Pearl**, used for Marshlights and field
 notes.
 

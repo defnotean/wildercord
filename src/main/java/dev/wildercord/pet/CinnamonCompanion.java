@@ -75,7 +75,7 @@ final class CinnamonCompanion {
 			LIVE.remove(id, dog);
 		});
 		ServerTickEvents.END_SERVER_TICK.register(CinnamonCompanion::tick);
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			CinnamonDog dog = LIVE.get(id);
 			if (dog != null) changed(dog);

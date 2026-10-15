@@ -1,4 +1,4 @@
-"""The lore journal: its screen, entries, the six discovery quests and the teachers' conversation lines.
+"""The lore journal: its screen, discovery quests, connected legends and conversation lines.
 
 Text only (no images). Canon for every line lives in docs/LORE_CANON.md. Combat instructions stay in the
 existing lesson lines; these lines are background and short leads.
@@ -145,7 +145,7 @@ DIALOGUE = {
     ),
 }
 
-# The six discovery quests: title, clue, objective, hint, completion.
+# Discovery quests and connected chapters: title, clue, objective, hint, completion.
 QUESTS = {
     "scout_wall": (
         "The Scout's Wall",
@@ -189,7 +189,115 @@ QUESTS = {
         "Reach Aura Form or Heart Circle VIII. Then sneak and use a teacher twice. The trial is dangerous.",
         "You met a Master. Their record of victories stays with you, win or lose.",
     ),
+    "last_cairn": (
+        "The Scout's Last Cairn",
+        "The Gale teacher's story continues on the road. The Marchkeepers copied their scout's watch orders for the next traveller.",
+        "Enter a road watchtower.",
+        "Look on hills, meadows and open plains for a tower with a beacon. Its watch orders keep the scout's account.",
+        "The watch orders remember two cairns: one for those walking, one for those carried home. The scout followed an older road.",
+    ),
+    "road_before_roads": (
+        "The Road Before Roads",
+        "The watch orders point toward the old rings. The Marchkeepers used the road-makers' stones long after the roads were lost.",
+        "Enter a ring of standing stones.",
+        "Search plains, meadows or taiga for tall stones in a ring. The First Roads book tells who walked there before the scouts.",
+        "The rings belonged to travellers before they belonged to soldiers. The scout's last oath was to keep the way open.",
+    ),
+    "oath_at_rest": (
+        "An Oath at Rest",
+        "The old road ended in a promise. The Marchkeeper scout left Oathkeeper in stone so a blade could rest while its oath endured.",
+        "Find and use a Sleeping Blade stone. You do not need to draw the blade.",
+        "Seek a blade standing in stone in plains, meadows or windswept hills. Use the stone; drawing the sword is not required.",
+        "The scout laid down the sword, not the duty. A guide keeps the road for the next walker, even with empty hands.",
+    ),
 }
+
+QUESTS.update({
+    "drowned_road": (
+        "The Drowned Road",
+        "The Reedkeeper remembers a road lost to a flood. Stay for the account of the last boatman.",
+        "Hear the Reedkeeper's Ferryman story.",
+        "Sneak-use a Tideward Reedkeeper between pauses. After the garden and crossing stories comes the last boatman.",
+        "The Ferryman counted his passengers twice. Coastal boatkeepers still keep that second count in their ledgers.",
+    ),
+    "second_count": (
+        "The Second Count",
+        "The old boatkeepers wrote two numbers for every crossing: those aboard and those safely ashore.",
+        "Enter a coastal pier boathouse.",
+        "Follow beaches or stony shores to a long wooden pier. Its boathouse keeps The Second Count beside the boat slip.",
+        "No passenger became a number missing from the shore. The boatkeepers asked the lighthouse to wait for the last boat.",
+    ),
+    "last_boat_light": (
+        "A Light for the Last Boat",
+        "The road is under water, but its promise survives. A lighthouse can still guide the next traveller home.",
+        "Stand beside a working lighthouse lamp.",
+        "Find a coastal lighthouse, climb its ladder and throw the lever beside the lamp. A light already tended also counts.",
+        "The shore has a light again. You kept the Ferryman's promise: leave the way visible for whoever comes after you.",
+    ),
+    "paired_cairns": (
+        "The Paired Cairns",
+        "A Highland Cairn Keeper in the Windscar Highlands keeps the Marchkeepers' ridge survey notes.",
+        "Hear the Cairn Keeper's story about the high meridian survey ring.",
+        "Sneak-use a Highland Cairn Keeper at a Cairn Lodge until they speak of the stone survey ring.",
+        "The Marchkeepers' paired cairns link the hill watchtowers and standing stone rings to the high shelves.",
+    ),
+    "ridge_orders": (
+        "The Ridge Watch",
+        "The Cairn Keeper says watchtowers and standing stone rings record how the old ridge routes were laid.",
+        "Visit a road watchtower or a ring of standing stones.",
+        "Follow hill and meadow roads to a stone watchtower or a ring of nine standing stones.",
+        "The watch orders and road stones agree: a ridge path endures only while someone keeps its cairn lamp lit.",
+    ),
+    "cairn_beacon": (
+        "A Lamp on the Ridge",
+        "Each Highland Cairn Lodge carries a shuttered cairn lamp on its eastern stone point.",
+        "Stand beside a lit cairn lamp at a Highland Cairn Lodge.",
+        "Return to a Highland Cairn Lodge in the Windscar Highlands and flip the lever on its eastern cairn lamp.",
+        "The ridge cairn shines across the shelf. Travellers coming down from the wind will see the way home.",
+    ),
+    "empty_bell_kept": (
+        "What the Empty Bell Kept",
+        "A Belowkeeper Listener in the Belowkeeper Hollows tends the Glowcap basins and acoustic pressure logs.",
+        "Hear the Belowkeeper Listener's story about The Hollow Bell.",
+        "Sneak-use a Belowkeeper Listener at a Listening Station until they speak of the Bell Sanctum.",
+        "The Belowkeepers cast a bronze resonance bell in a deeper sanctum to measure how pressure waves move through stone.",
+    ),
+    "pressure_records": (
+        "The Deep Pressure Logs",
+        "The Listener says the buried Crystal Survey Labs, Deepslate Vaults, and the Bell Sanctum share the same pressure records.",
+        "Visit a Crystal Survey Lab, a Deepslate Vault, or a Belowkeeper Bell Sanctum.",
+        "Explore underground beneath forests, hills, or the Belowkeeper Hollows to enter a Crystal Lab, Deepslate Vault, or Bell Sanctum.",
+        "The deep ledgers agree: a gallery stays safe only while someone keeps the listening station's shutter lamp lit.",
+    ),
+    "resonance_shutter": (
+        "A Lamp in the Hollows",
+        "Each Belowkeeper Listening Station carries an acoustic shutter lamp on its northeast copper pillar.",
+        "Stand beside a lit shutter lamp at a Belowkeeper Listening Station.",
+        "Return to a Belowkeeper Listening Station in the Belowkeeper Hollows and flip the lever on its northeast shutter lamp.",
+        "The shutter lamp shines across the damp vault. Any watch coming up from the lower galleries will know the roof holds.",
+    ),
+    "eleven_winters": (
+        "Eleven Winters at the Gate",
+        "An Emberwood Kiln Keeper in the Emberwood Reach tends the charcoal kilns and Cinder Fern ash beds.",
+        "Hear the Kiln Keeper's story about The Kiln Widow.",
+        "Sneak-use an Emberwood Kiln Keeper at a Charcoal Yard until they speak of the Kiln Court.",
+        "Ashwin's burners built a ceramic kiln court where The Kiln Widow still guards the old firing tallies.",
+    ),
+    "forge_records": (
+        "The Southern Forge Ledgers",
+        "The Kiln Keeper says Mountain Forge Halls, Prospector's Camps, Basalt Foundries, and the Kiln Court share the burner tallies.",
+        "Visit a Mountain Forge Hall, Prospector's Camp, Basalt Foundry, or Emberwood Kiln Court.",
+        "Explore mountains, badlands, or the Emberwood Reach to enter a Forge Hall, Prospector's Camp, or Kiln Court.",
+        "The forge tallies agree: a charcoal yard stays safe from sparks only while someone keeps its draft lamp lit.",
+    ),
+    "kiln_draft_lamp": (
+        "A Lamp by the Kilns",
+        "Each Emberwood Charcoal Yard carries a shuttered draft lamp on its eastern brick stack.",
+        "Stand beside a lit draft lamp at an Emberwood Charcoal Yard.",
+        "Return to an Emberwood Charcoal Yard in the Emberwood Reach and flip the lever on its eastern draft lamp.",
+        "The draft lamp shines across the firebreak. Any burner walking the ash road at dusk will see the kiln is banked.",
+    ),
+})
 
 ENTRIES = {
     "place:memorial": "Found a Marchkeeper memorial.",
@@ -204,6 +312,7 @@ ENTRIES = {
     "learned:technique": "Wrote a technique of your own.",
     "learned:reaction": "Set off an element reaction.",
     "learned:field_guide": "Started a field guide.",
+    "learned:coast_light": "Stood beside a working coastal lighthouse lamp. The last boat still has a light to follow.",
 }
 
 FORMS = {"wall_turn": "Wall Turn", "stone_hinge": "Stone Hinge", "cinder_lunge": "Cinder Lunge", "reed_slip": "Reed Slip"}

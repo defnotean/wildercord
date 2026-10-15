@@ -163,12 +163,7 @@ public final class LoreJournal {
 	}
 
 	public static String schoolMethod(int school) {
-		return switch (school) {
-			case MastersRules.EMBER -> "ember";
-			case MastersRules.GALE -> "gale";
-			case MastersRules.STONE -> "stone";
-			default -> "school_" + school;
-		};
+		return MastersRules.schoolId(school);
 	}
 
 	// ------------------------------------------------------------------ the poll
@@ -181,6 +176,26 @@ public final class LoreJournal {
 
 	/** Brings the journal up to date from what the player already has, then steps the quests. Safe to call any time. */
 	public static void poll(ServerPlayer player) {
+		dev.wildercord.world.sites.water.WaterSites.observe(player);
+		dev.wildercord.world.sites.highland.HighlandSites.observe(player);
+		dev.wildercord.world.sites.belowkeeper.BelowkeeperSites.observe(player);
+		dev.wildercord.world.sites.emberwood.EmberwoodSites.observe(player);
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.ReedlandClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)) {
+			record(player, dev.wildercord.world.biome.ReedlandClimate.JOURNAL_ENTRY, true);
+		}
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.WindscarClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.WindscarClimate.WINDSCAR)) {
+			record(player, dev.wildercord.world.biome.WindscarClimate.JOURNAL_ENTRY, true);
+		}
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.BelowkeeperClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)) {
+			record(player, dev.wildercord.world.biome.BelowkeeperClimate.JOURNAL_ENTRY, true);
+		}
+		if (!player.isSpectator() && !data(player).has(dev.wildercord.world.biome.EmberwoodClimate.JOURNAL_ENTRY)
+			&& player.level().getBiome(player.blockPosition()).is(dev.wildercord.world.biome.EmberwoodClimate.EMBERWOOD)) {
+			record(player, dev.wildercord.world.biome.EmberwoodClimate.JOURNAL_ENTRY, true);
+		}
 		LoreJournalData before = data(player);
 		LoreJournalData data = before;
 		List<String> grimoire = Heart.grimoire(player);

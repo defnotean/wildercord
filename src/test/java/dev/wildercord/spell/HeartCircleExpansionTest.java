@@ -7,6 +7,28 @@ import static org.junit.jupiter.api.Assertions.*;
 /** Progression, save compatibility and bounds for the twenty-circle heart. */
 class HeartCircleExpansionTest {
 	@Test
+	void powerReadoutsPreserveFractionalBonusesAndMatchPublishedTables() throws java.io.IOException {
+		assertEquals("1.5", Circles.powerPercent(1));
+		assertEquals("28.5", Circles.powerPercent(19));
+		assertEquals("0", Circles.powerPercent(Integer.MIN_VALUE));
+		assertEquals("30", Circles.powerPercent(Integer.MAX_VALUE));
+		String overflow = Math.round((Circles.OVERFLOW_POWER - 1) * 100) + "%%";
+		var lang = com.google.gson.JsonParser.parseString(java.nio.file.Files.readString(
+			java.nio.file.Path.of("src/main/resources/assets/wildercord/lang/en_us.json"))).getAsJsonObject();
+		assertTrue(lang.get("screen.wildercord.heart.perk.7").getAsString().contains(overflow));
+		assertTrue(lang.get("message.wildercord.perk.7").getAsString().contains(overflow));
+		for (String root : java.util.List.of("wiki", "gitbook")) {
+			String guide = java.nio.file.Files.readString(java.nio.file.Path.of(root, "progression", "heart-circles.md"));
+			for (int n : new int[] {1, 4, 8, 12, 16, 20}) {
+				String row = guide.lines().filter(line -> line.startsWith("| " + n + " | ")).findFirst().orElseThrow();
+				assertTrue(row.endsWith("+" + Circles.powerPercent(n) + "% |"), root + " circle " + n);
+				assertEquals((Circles.power(0, n, false) - 1) * 100, Double.parseDouble(Circles.powerPercent(n)), 1e-9);
+			}
+			assertTrue(guide.contains("hits **" + Math.round((Circles.OVERFLOW_POWER - 1) * 100) + "% harder**"), root + " Overflow");
+		}
+	}
+
+	@Test
 	void firstEightThresholdsAreTemperedAndMilestonesStayCompatible() {
 		int[] original = {0, 1000, 4000, 12000, 28000, 55000, 95000, 150000, 230000};
 		for (int n = 0; n < original.length; n++) {

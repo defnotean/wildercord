@@ -1,13 +1,17 @@
-"""The water sites pack: eight places on rivers, swamps, coasts, the sea floor and frozen lakes.
+"""The water sites pack: ten places on rivers, swamps, coasts, the sea floor and frozen lakes.
 
 Read by generate_assets.py, which finds every tools/sites_*.py. For each site this writes its structure, its
 structure set, the biomes it may appear in, its chest's loot and its advancement; LANG holds their text and the
-pages of the books left in three of them. The buildings themselves are Java: dev.wildercord.world.sites.water.
+pages of the books left in five of them. The buildings themselves are Java: dev.wildercord.world.sites.water.
 """
 
 # id: (biomes, spacing, separation, salt, advancement icon, title, description)
 SITES = {
-    "water_stilt_smokehouse": (["minecraft:swamp", "minecraft:river"], 36, 12, 2026101201,
+    "water_last_crossing": (["wildercord:luminous_reedlands"], 42, 14, 2026101510,
+                             "minecraft:bell", "The Last Crossing", "Find the old ferry basin in the Luminous Reedlands"),
+    "water_reedkeeper_landing": (["wildercord:luminous_reedlands"], 28, 9, 2026101509,
+                                  "minecraft:cartography_table", "Keeper of the Crossing", "Find a Tideward survey house in the Luminous Reedlands"),
+    "water_stilt_smokehouse": (["minecraft:swamp", "minecraft:river", "wildercord:luminous_reedlands"], 36, 12, 2026101201,
                                "minecraft:smoker", "Smoke on the Water", "Find a smokehouse on stilts over a swamp or river"),
     "water_lighthouse": (["minecraft:beach", "minecraft:snowy_beach", "minecraft:stony_shore"], 44, 16, 2026101202,
                          "minecraft:redstone_lamp", "Keeper of the Light", "Find a lighthouse on the shore"),
@@ -26,9 +30,28 @@ SITES = {
 }
 
 LANG = {
+    "entity.wildercord.reedkeeper": "Tideward Reedkeeper",
+    "dialogue.wildercord.speaker.reedkeeper": "Tideward Reedkeeper",
+    "journal.wildercord.entry.person.reedkeeper": "Tideward Reedkeeper. A fisher and keeper of the bank's stories. Trade for fishing supplies, or sneak-use to listen. The keeper tends Moonreed beside the survey house and remembers the first crossing by its lights.",
+    "dialogue.wildercord.reedkeeper.greet": "Welcome to the landing. Trade if your creel is empty; crouch and speak to me if you have time for a story. The banks have kept more names than the maps.",
+    "dialogue.wildercord.reedkeeper.garden": "Leave the pale bud beside open water. Glimmerwings will find it when the light fades. Take the flower when it opens, and leave the root for the next visitor.",
+    "dialogue.wildercord.reedkeeper.crossing": "The first Tideward crossed in a flood, passing one small light from boat to boat. They planted reeds where each boat reached land. A landing is a promise that someone will leave a light for you.",
+    "dialogue.wildercord.reedkeeper.ferryman": "My grandmother called the last boatman the Reed-Crowned Ferryman. She said he counted every passenger twice, once aboard and once ashore. Whether he was a man or a river-story, I still make the second count.",
+    "dialogue.wildercord.reedkeeper.ledger": "A story can lose a name in the telling. Boatkeepers write them down. Look for a covered pier with a boathouse at its end; its ledger remembers who made the second crossing.",
+    "dialogue.wildercord.reedkeeper.lighthouse": "So the ledger kept them. Now find the coastal lighthouse. There is a lever in its upper gallery for the tower's lamp. A light on the shore is only a promise when someone keeps it burning.",
+    "dialogue.wildercord.reedkeeper.lamp_return": "Then there is a light again. Thank you. Leave it for the boat that arrives after yours. If you seek the old Ferryman, look for a broad timber crossing among the luminous reeds. His bell waits beside a book; read before you ring.",
+    "dialogue.wildercord.reedkeeper.crossing_kept": "So you rang the old bell, and came back. Keep that compass. A crossing needs someone who remembers the way home. I will put another place at the table when the next boat comes.",
+    "book.wildercord.reedkeeper.1": "THE FIRST CROSSING\n\nFrom the Tideward survey books\n\nThe flood took the old road in a single night. The families came to the bank with their doors for rafts and their cooking pots tied shut.",
+    "book.wildercord.reedkeeper.2": "The first boat carried a lamp. When it touched the far bank, its keeper held the light high. The second boat left a reed there; the third planted another. By dawn the crossing had a path of pale flowers.",
+    "book.wildercord.reedkeeper.3": "The last boatman wore reeds in his hat so the children could find him in the rain. Every journey he counted his passengers aboard, then counted them ashore. We call him the Reed-Crowned Ferryman. No two villages agree on his name.",
+    "book.wildercord.reedkeeper.4": "Our landings keep that promise. Mend the deck. Leave a flower rooted by the water. Share the lamp before the storm reaches the next boat. Iona's survey marks the living lights; this book remembers why we watch them.",
     "book.wildercord.water_lighthouse.1": "Keeper's log. Fog again. Lit the lamp at dusk and kept it till dawn. Two boats came home by it.",
     "book.wildercord.water_lighthouse.2": "The lamp is wired to a lever by it. If I am ever gone, any hand can throw it and light the way.",
     "book.wildercord.water_lighthouse.3": "What I kept I kept below. Look for the cracked stone by the wall, and the ladder under it.",
+    "book.wildercord.water_lighthouse.4": "The boatkeepers send word when their second count is done. Until then I keep the lamp burning. The old coast road lies under the water; its duty did not drown with it. Let the last boat have a light.",
+    "book.wildercord.water_boathouse.1": "THE SECOND COUNT\n\nCopied for every Tideward boathouse\n\nWrite the number aboard before you cast off. Count again when the last passenger steps ashore. A crossed line means both counts agree.",
+    "book.wildercord.water_boathouse.2": "The oldest page names no boatman. In the margin someone drew a hat full of reeds. Beneath it: twelve aboard, twelve ashore. Then, in a smaller hand: thirteen, if you count the child who arrived before dawn.",
+    "book.wildercord.water_boathouse.3": "Send word to the lighthouse only when the second count is done. Its keeper leaves the lamp burning for the last boat. If the tower stands dark, climb its ladder. The lever by the lamp is a small duty any traveller can take up.",
     "book.wildercord.water_sunken_shrine.1": "Here the Tide is honoured. Breathe as the sea breathes: in with the swell, out with the ebb.",
     "book.wildercord.water_sunken_shrine.2": "The way in is under the wall and up through the pool. The conduit gives breath to those who come.",
     "book.wildercord.water_tidepool_grotto.1": "Each tide fills the pools and leaves gifts. I count the pickles and the fish and write them here.",
@@ -37,6 +60,7 @@ LANG = {
 for _sid, (_b, _s, _sep, _salt, _icon, _title, _desc) in SITES.items():
     LANG[f"advancements.wildercord.world.{_sid}.title"] = _title
     LANG[f"advancements.wildercord.world.{_sid}.description"] = _desc
+    LANG[f"journal.wildercord.entry.place.{_sid}"] = _desc + "."
 
 
 def _tide_page():
@@ -69,6 +93,11 @@ def _chance(pool, odds):
 def write(g):
     e = g.item_entry
     loot = {
+        "water_last_crossing": _loot(g, [("tide_marker", 3), ("shore_sense", 2), ("mooring_call", 2)], [
+            e("minecraft:cooked_cod", 3, 2, 5), e("minecraft:string", 3, 2, 5), e("minecraft:paper", 3, 2, 4), e("minecraft:lantern", 1)]),
+        "water_reedkeeper_landing": _loot(g, [("water_reading", 3), ("tide_lantern", 3), ("reed_cut", 2)], [
+            e("minecraft:paper", 4, 3, 8), e("minecraft:ink_sac", 3, 1, 4), e("minecraft:fishing_rod", 2),
+            e("minecraft:cooked_cod", 3, 2, 5), e("minecraft:string", 3, 2, 6), e("minecraft:lantern", 1)]),
         "water_stilt_smokehouse": _loot(g, [("angler_lure", 3), ("bait_blessing", 3), ("bobber_bell", 3), ("reeling_tide", 2), ("tackle_mend", 2)], [
             e("minecraft:cooked_cod", 4, 2, 6), e("minecraft:cooked_salmon", 3, 2, 5), e("minecraft:fishing_rod", 2),
             e("minecraft:string", 3, 2, 6), e("minecraft:dried_kelp", 3, 3, 9), e("minecraft:charcoal", 2, 1, 4)]),

@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "wildercord:emberwood_reach",
+    "minecraft:wooded_badlands",
+    "minecraft:badlands"
+  ]
+}

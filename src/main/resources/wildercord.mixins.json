@@ -3,6 +3,9 @@
 	"package": "dev.wildercord.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
+		"ExcisePlayerRemovalMixin",
+		"ReedlandPlacementMixin",
+		"ReedlandSurfaceMixin",
 		"RelayLivingDamageMixin",
 		"RelayPlayerDamageMixin",
 		"ReweavePlayerModeMixin",

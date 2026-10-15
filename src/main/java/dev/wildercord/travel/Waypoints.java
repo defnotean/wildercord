@@ -73,7 +73,7 @@ public final class Waypoints {
 				sync(handler.player);
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID leaving = handler.player.getUUID();
 			SHARED.keySet().removeIf(share -> share.from().equals(leaving) || share.to().equals(leaving));
 		});

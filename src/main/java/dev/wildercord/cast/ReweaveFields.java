@@ -344,7 +344,7 @@ public final class ReweaveFields {
         net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer p) retire(p); });
         net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((p, from, to) -> retire(p));
         net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AFTER_RESPAWN.register((old, fresh, alive) -> retire(old));
-        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> retire(handler.player));
+        dev.wildercord.net.ServerDisconnects.register((handler, server) -> retire(handler.player));
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for (Field field : List.copyOf(FIELDS.values())) if (field.level.getServer() == server) tick(field);
         });

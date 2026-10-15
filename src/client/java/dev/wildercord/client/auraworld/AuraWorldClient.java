@@ -32,6 +32,14 @@ public final class AuraWorldClient {
 	private static final Map<String, Identifier> DUELIST_SKINS = new HashMap<>();
 
 	public static void init() {
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.ferryman.FerrymanRenderer.LAYER, dev.wildercord.client.ferryman.FerrymanModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.world.ferryman.FerrymanContent.FERRYMAN, dev.wildercord.client.ferryman.FerrymanRenderer::new);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.cartographer.GlassCartographerModel.LAYER, dev.wildercord.client.cartographer.GlassCartographerModel::createBodyLayer);
+		EntityRendererRegistry.register(dev.wildercord.world.cartographer.CartographerContent.CARTOGRAPHER, dev.wildercord.client.cartographer.GlassCartographerRenderer::new);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.hollowbell.HollowBellModel.LAYER, dev.wildercord.client.hollowbell.HollowBellModel::createBodyLayer);
+		EntityRendererRegistry.register(dev.wildercord.world.hollowbell.HollowBellContent.BELL, dev.wildercord.client.hollowbell.HollowBellRenderer::new);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.kilnwidow.KilnWidowModel.LAYER, dev.wildercord.client.kilnwidow.KilnWidowModel::createBodyLayer);
+		EntityRendererRegistry.register(dev.wildercord.world.kilnwidow.KilnWidowContent.WIDOW, dev.wildercord.client.kilnwidow.KilnWidowRenderer::new);
 		ModelLayerRegistry.registerModelLayer(DUELIST, DuelistModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
 		EntityRendererRegistry.register(AuraWorld.DUELIST, AuraWorldClient::duelist);

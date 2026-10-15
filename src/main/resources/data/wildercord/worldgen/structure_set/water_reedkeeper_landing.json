@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 2026101509,
+    "separation": 9,
+    "spacing": 28
+  },
+  "structures": [
+    {
+      "structure": "wildercord:water_reedkeeper_landing",
+      "weight": 1
+    }
+  ]
+}

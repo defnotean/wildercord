@@ -55,6 +55,7 @@ class LoreQuestRulesTest {
 	void noSoftlockEveryActiveQuestCompletesOnceItsObjectiveIsSeen() {
 		for (Quest quest : ALL) {
 			Map<String, Integer> stages = new HashMap<>();
+			if (!quest.prerequisite().isEmpty()) stages.put(quest.prerequisite(), DONE);
 			Advance first = advance(stages, Set.of(quest.trigger(), quest.objective()));
 			assertTrue(first.clued().contains(quest), quest.id());
 			Advance second = advance(first.quests(), Set.of(quest.objective()));
@@ -62,6 +63,79 @@ class LoreQuestRulesTest {
 			assertEquals(DONE, second.quests().get(quest.id()));
 			Advance third = advance(second.quests(), Set.of(quest.trigger(), quest.objective()));
 			assertFalse(third.completed().contains(quest), "the reward is paid once: " + quest.id());
+		}
+	}
+
+	@Test
+	void scoutChaptersRequirePreviousCompletionAndNeverCascadeWithinAPoll() {
+		Set<String> facts = Set.of(MEMORIAL, TALK_GALE, WATCHTOWER, STANDING_STONES, SLEEPING_BLADE);
+		Map<String, Integer> stages = Map.of();
+		List<String> sequence = List.of("scout_wall", "last_cairn", "road_before_roads", "oath_at_rest");
+		Set<String> paid = new HashSet<>();
+		for (String id : sequence) {
+			Advance clue = advance(stages, facts);
+			assertEquals(List.of(quest(id)), clue.clued(), "one readable chapter, even on an experienced save");
+			assertTrue(clue.completed().isEmpty());
+			Advance done = advance(clue.quests(), facts);
+			assertEquals(List.of(quest(id)), done.completed());
+			assertTrue(done.clued().isEmpty(), "the next chapter waits for another poll");
+			assertTrue(paid.add(id));
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, facts).changed(), "completed chain never pays again");
+	}
+
+	@Test
+	void earlyDiscoveryIsRememberedButCannotSkipAChapter() {
+		Set<String> facts = facts(List.of("aura:sleeping_blade"), List.of("place:travel_watchtower",
+			"place:travel_standing_stones"), false);
+		assertTrue(facts.containsAll(Set.of(WATCHTOWER, STANDING_STONES, SLEEPING_BLADE)));
+		assertFalse(advance(Map.of(), facts).changed(), "regional visits alone do not invent the scout's story");
+		Advance active = advance(Map.of("road_before_roads", DONE), facts);
+		assertTrue(active.clued().contains(quest("oath_at_rest")));
+		assertTrue(advance(active.quests(), facts).completed().contains(quest("oath_at_rest")), "earlier blade visit counts");
+		assertTrue(advance(Map.of("oath_at_rest", ACTIVE), Set.of(SLEEPING_BLADE)).completed().contains(quest("oath_at_rest")),
+			"an active chapter can recover even if an old save lacks its prerequisite");
+	}
+
+	@Test
+	void drownedRoadKeepsEarlierVisitsButRequiresTheReedkeepersWholeAccount() {
+		Set<String> places = facts(List.of(), List.of("place:water_pier_boathouse", "place:water_lighthouse",
+			"learned:coast_light", "said:reedkeeper.crossing"), false);
+		assertFalse(advance(Map.of(), places).changed(), "lamps and visits alone cannot invent the boatman's account");
+		Set<String> heard = new HashSet<>(places);
+		heard.addAll(facts(List.of(), List.of("person:reedkeeper"), false));
+		Advance first = advance(Map.of(), heard);
+		assertEquals(List.of(quest("drowned_road")), first.clued());
+		assertFalse(advance(first.quests(), heard).changed(), "greeting and crossing are not the final Ferryman story");
+		heard.addAll(facts(List.of(), List.of("said:reedkeeper.ferryman"), false));
+		Map<String, Integer> stages = first.quests();
+		for (String id : List.of("drowned_road", "second_count", "last_boat_light")) {
+			if (!id.equals("drowned_road")) {
+				Advance clue = advance(stages, heard);
+				assertEquals(List.of(quest(id)), clue.clued());
+				assertTrue(clue.completed().isEmpty());
+				stages = clue.quests();
+			}
+			Advance done = advance(stages, heard);
+			assertEquals(List.of(quest(id)), done.completed(), "earlier discoveries count in order");
+			assertTrue(done.clued().isEmpty(), "no chapter cascade in one poll");
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, heard).changed(), "a completed coastal route never pays again");
+		assertFalse(facts(List.of(), List.of("place:water_lighthouse"), false).contains(COAST_LIGHT), "a dark tower is not a working lamp");
+	}
+
+	@Test
+	void chapterGraphHasExistingAcyclicPrerequisites() {
+		for (Quest quest : ALL) {
+			Set<String> chain = new HashSet<>();
+			Quest cursor = quest;
+			while (!cursor.prerequisite().isEmpty()) {
+				assertTrue(chain.add(cursor.id()), "cycle at " + cursor.id());
+				cursor = byId(cursor.prerequisite());
+				assertNotNull(cursor, "all prerequisite quests exist");
+			}
 		}
 	}
 
@@ -124,10 +198,99 @@ class LoreQuestRulesTest {
 			}
 		}
 		for (String entry : List.of("place:memorial", "place:tomb", "place:tournament", "place:sleeping_blade", "place:crossroads", "place:training",
-			"learned:way", "learned:lineage", "learned:perfect_guard", "learned:technique", "learned:reaction", "learned:field_guide")) {
+			"place:highland_cairn_lodge", "place:highland_survey_ring", "person:cairn_keeper",
+			"place:belowkeeper_listening_station", "place:belowkeeper_bell_sanctum", "person:belowkeeper_listener",
+			"place:emberwood_charcoal_yard", "place:emberwood_kiln_court", "person:kiln_keeper",
+			"learned:way", "learned:lineage", "learned:perfect_guard", "learned:technique", "learned:reaction", "learned:field_guide",
+			"learned:scout_wind_mark", "learned:glass_cartographer", "learned:belowkeeper_shutter", "learned:hollow_bell",
+			"learned:emberwood_draft", "learned:kiln_widow")) {
 			assertTrue(lang.has(LoreEntries.fixedKey(entry)), entry);
 		}
 		assertTrue(lang.has("key.wildercord.lore_journal"));
 		assertTrue(lang.has("key.category.wildercord.lore"));
+	}
+
+	@Test
+	void highlandCairnRouteKeepsEarlierVisitsAndNeverCascadesWithinAPoll() {
+		Set<String> places = facts(List.of(), List.of("place:travel_watchtower", "place:highland_cairn_lodge",
+			"learned:scout_wind_mark", "said:cairn_keeper.cairns"), false);
+		assertFalse(advance(Map.of(), places).changed(), "lamps and visits alone cannot invent the Cairn Keeper's account");
+		Set<String> heard = new HashSet<>(places);
+		heard.addAll(facts(List.of(), List.of("person:cairn_keeper"), false));
+		Advance first = advance(Map.of(), heard);
+		assertEquals(List.of(quest("paired_cairns")), first.clued());
+		assertFalse(advance(first.quests(), heard).changed(), "greeting and cairns are not the final survey ring story");
+		heard.addAll(facts(List.of(), List.of("said:cairn_keeper.cartographer"), false));
+		Map<String, Integer> stages = first.quests();
+		for (String id : List.of("paired_cairns", "ridge_orders", "cairn_beacon")) {
+			if (!id.equals("paired_cairns")) {
+				Advance clue = advance(stages, heard);
+				assertEquals(List.of(quest(id)), clue.clued());
+				assertTrue(clue.completed().isEmpty());
+				stages = clue.quests();
+			}
+			Advance done = advance(stages, heard);
+			assertEquals(List.of(quest(id)), done.completed(), "earlier highland discoveries count in order");
+			assertTrue(done.clued().isEmpty(), "no chapter cascade in one poll");
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, heard).changed(), "a completed highland route never pays again");
+		assertFalse(facts(List.of(), List.of("place:highland_cairn_lodge"), false).contains(CAIRN_LAMP), "an unlit cairn lodge is not a lit cairn lamp");
+	}
+
+	@Test
+	void belowkeeperListeningRouteKeepsEarlierVisitsAndNeverCascadesWithinAPoll() {
+		Set<String> places = facts(List.of(), List.of("place:mine_collapsed_delve", "place:belowkeeper_listening_station",
+			"learned:belowkeeper_shutter", "said:belowkeeper_listener.pressure"), false);
+		assertFalse(advance(Map.of(), places).changed(), "shutters and delve visits alone cannot invent the Belowkeeper Listener's account");
+		Set<String> heard = new HashSet<>(places);
+		heard.addAll(facts(List.of(), List.of("person:belowkeeper_listener"), false));
+		Advance first = advance(Map.of(), heard);
+		assertEquals(List.of(quest("empty_bell_kept")), first.clued());
+		assertFalse(advance(first.quests(), heard).changed(), "greeting and pressure are not the final Bell Sanctum story");
+		heard.addAll(facts(List.of(), List.of("said:belowkeeper_listener.hollow_bell"), false));
+		Map<String, Integer> stages = first.quests();
+		for (String id : List.of("empty_bell_kept", "pressure_records", "resonance_shutter")) {
+			if (!id.equals("empty_bell_kept")) {
+				Advance clue = advance(stages, heard);
+				assertEquals(List.of(quest(id)), clue.clued());
+				assertTrue(clue.completed().isEmpty());
+				stages = clue.quests();
+			}
+			Advance done = advance(stages, heard);
+			assertEquals(List.of(quest(id)), done.completed(), "earlier delve and shutter discoveries count in order");
+			assertTrue(done.clued().isEmpty(), "no chapter cascade in one poll");
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, heard).changed(), "a completed belowkeeper route never pays again");
+		assertFalse(facts(List.of(), List.of("place:belowkeeper_listening_station"), false).contains(BELOWKEEPER_SHUTTER), "an unlit listening station is not a lit resonance shutter");
+	}
+
+	@Test
+	void emberwoodKilnRouteKeepsEarlierVisitsAndNeverCascadesWithinAPoll() {
+		Set<String> places = facts(List.of(), List.of("place:mine_forge_hall", "place:emberwood_charcoal_yard",
+			"learned:emberwood_draft", "said:kiln_keeper.firebreaks"), false);
+		assertFalse(advance(Map.of(), places).changed(), "draft lamps and forge visits alone cannot invent the Kiln Keeper's account");
+		Set<String> heard = new HashSet<>(places);
+		heard.addAll(facts(List.of(), List.of("person:kiln_keeper"), false));
+		Advance first = advance(Map.of(), heard);
+		assertEquals(List.of(quest("eleven_winters")), first.clued());
+		assertFalse(advance(first.quests(), heard).changed(), "greeting and firebreaks are not the final Kiln Court story");
+		heard.addAll(facts(List.of(), List.of("said:kiln_keeper.kiln_widow"), false));
+		Map<String, Integer> stages = first.quests();
+		for (String id : List.of("eleven_winters", "forge_records", "kiln_draft_lamp")) {
+			if (!id.equals("eleven_winters")) {
+				Advance clue = advance(stages, heard);
+				assertEquals(List.of(quest(id)), clue.clued());
+				assertTrue(clue.completed().isEmpty());
+				stages = clue.quests();
+			}
+			Advance done = advance(stages, heard);
+			assertEquals(List.of(quest(id)), done.completed(), "earlier forge and draft discoveries count in order");
+			assertTrue(done.clued().isEmpty(), "no chapter cascade in one poll");
+			stages = done.quests();
+		}
+		assertFalse(advance(stages, heard).changed(), "a completed emberwood route never pays again");
+		assertFalse(facts(List.of(), List.of("place:emberwood_charcoal_yard"), false).contains(EMBERWOOD_DRAFT), "an unlit charcoal yard is not a lit kiln draft lamp");
 	}
 }

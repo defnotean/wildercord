@@ -88,7 +88,7 @@ public final class RootCarry {
   if(c.level.hasChunkAt(from)&&c.level.hasChunkAt(to)&&!c.level.getBlockState(to).equals(old)&&c.level.getBlockState(from).isAir()&&old.canSurvive(c.level,from))c.level.setBlock(from,old,2);
  }
  public static void init(){
-  RootCarryFx.init();ServerPlayConnectionEvents.JOIN.register((h,sender,s)->h.player.removeAttached(SELECT));ServerPlayConnectionEvents.DISCONNECT.register((h,s)->h.player.removeAttached(SELECT));
+  RootCarryFx.init();ServerPlayConnectionEvents.JOIN.register((h,sender,s)->h.player.removeAttached(SELECT));dev.wildercord.net.ServerDisconnects.register((h,s)->h.player.removeAttached(SELECT));
   ServerTickEvents.END_SERVER_TICK.register(s->{for(var p:s.getPlayerList().getPlayers()){var mark=p.getAttached(SELECT);if(mark!=null&&(!p.isAlive()||p.isRemoved()||p.isSpectator()||!p.level().dimension().equals(mark.dimension())||now(p)>=mark.until()||!p.level().hasChunkAt(mark.at())||p.getEyePosition().distanceToSqr(point(mark.at()))>36))p.removeAttached(SELECT);}});
  }
 }

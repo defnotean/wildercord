@@ -177,6 +177,20 @@ public final class MastersRules {
 			|| MethodsBMasters.owns(school); // ---- methods-b pack
 	}
 
+	/** Stable method id for a saved school number; unknown future schools keep a distinct fallback. */
+	public static String schoolId(int school) {
+		if (ElementalMasters.owns(school)) return ElementalMasters.name(school);
+		if (MastersPackB.owns(school)) return MastersPackB.id(school);
+		if (MethodsAMasters.owns(school)) return MethodsAMasters.id(school);
+		if (MethodsBMasters.owns(school)) return MethodsBMasters.id(school);
+		return switch (school) {
+			case EMBER -> "ember";
+			case GALE -> "gale";
+			case STONE -> "stone";
+			default -> "school_" + school;
+		};
+	}
+
 	public static int phase(double health, double maximum) {
 		if (!Double.isFinite(health) || !Double.isFinite(maximum) || maximum <= 0) {
 			return 0;

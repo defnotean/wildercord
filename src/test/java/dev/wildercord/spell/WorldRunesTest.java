@@ -178,6 +178,30 @@ class WorldRunesTest {
 	}
 
 	@Test
+	void regionalVariantsKeepTheirParentsConditionsAndSharedDailyRestKeys() {
+		var wet = place("wildercord:luminous_reedlands", 6000, 3, "rain", true, false, 63);
+		assertEquals(MIRE, attuned(wet));
+		assertEquals("swamp", Attunements.match(wet).orElseThrow().id(), "Crossing a regional border cannot create a second daily reward");
+		assertNull(attuned(place("wildercord:luminous_reedlands", 6000, 3, "none", true, false, 63)));
+		assertNull(attuned(place("wildercord:luminous_reedlands", 6000, 3, "snow", true, false, 63)));
+		var summit = place("wildercord:windscar_highlands", 6000, 3, "none", true, false, 200);
+		assertEquals(SUMMIT_WIND, attuned(summit));
+		assertEquals("peaks", Attunements.match(summit).orElseThrow().id());
+		assertNull(attuned(place("wildercord:windscar_highlands", 6000, 3, "none", true, false, 199)));
+		var hollows = place("wildercord:belowkeeper_hollows", 0, 0, "none", false, false, 10);
+		assertEquals(STALACTITE, attuned(hollows));
+		assertEquals("dripstone_caves", Attunements.match(hollows).orElseThrow().id());
+		var emberwood = place("wildercord:emberwood_reach", 6000, 3, "none", true, false, 80);
+		assertEquals(SUNSCORCH, attuned(emberwood));
+		assertEquals("badlands", Attunements.match(emberwood).orElseThrow().id());
+		assertNull(attuned(place("wildercord:emberwood_reach", 12000, 3, "none", true, false, 80)));
+		assertTrue(Attunements.biomeHolds("wildercord:luminous_reedlands"));
+		assertTrue(Attunements.biomeHolds("wildercord:windscar_highlands"));
+		assertTrue(Attunements.biomeHolds("wildercord:belowkeeper_hollows"));
+		assertTrue(Attunements.biomeHolds("wildercord:emberwood_reach"));
+	}
+
+	@Test
 	void someLandsAlwaysHoldTheirRune() {
 		assertEquals(SPOREBLOOM, attuned(place("minecraft:mushroom_fields")));
 		assertEquals(GLOWVINE, attuned(place("minecraft:lush_caves", 18000, 0, "none", false, false, 20)));

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WildlifeRulesTest {
  @Test void wetlandPollinatorsKeepTheirSharedAmbientAndCrowdingRules() {
-  assertTrue(WildlifeRules.GLIMMERWING.biomes().containsAll(List.of("minecraft:swamp","minecraft:mangrove_swamp")));
+  assertTrue(WildlifeRules.GLIMMERWING.biomes().containsAll(List.of("minecraft:swamp","minecraft:mangrove_swamp","wildercord:luminous_reedlands")));
   assertEquals(WildlifeRules.Pool.AMBIENT,WildlifeRules.GLIMMERWING.pool());
   assertTrue(WildlifeRules.roomFor(WildlifeRules.GLIMMERWING,WildlifeRules.GLIMMERWING.crowd()));
   assertFalse(WildlifeRules.roomFor(WildlifeRules.GLIMMERWING,WildlifeRules.GLIMMERWING.crowd()+1));
@@ -32,7 +32,7 @@ class WildlifeRulesTest {
 			assertFalse(kind.biomes().isEmpty(), kind.id() + " lives somewhere");
 			assertEquals(kind.biomes().size(), new HashSet<>(kind.biomes()).size(), kind.id() + " lists each biome once");
 			for (String biome : kind.biomes()) {
-				assertTrue(biome.matches("minecraft:[a-z_]+"), biome);
+				assertTrue(biome.matches("minecraft:[a-z_]+") || List.of("wildercord:luminous_reedlands", "wildercord:windscar_highlands", "wildercord:belowkeeper_hollows", "wildercord:emberwood_reach").contains(biome), biome);
 			}
 			assertSame(kind, WildlifeRules.kind(kind.id()));
 		}

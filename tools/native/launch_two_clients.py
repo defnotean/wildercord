@@ -890,14 +890,17 @@ def counter_image(game, role, values, identity, action, accepted_sha):
     item_pass = next(p for p in passes if p["kind"].endswith("item"))
     require(draw.get("binding") == item_pass["binding"] and type(draw.get("quads")) is int and 0 < draw["quads"] <= 512,
             "Counter deep item draw changed original source or has no geometry")
-    expected_context = ("FIRST_PERSON_" if role == "host" else "THIRD_PERSON_") + action["hand"] + "_HAND"
+    # ArticulatedViewModel submits the AvatarRenderState's original world-hand item
+    # at its authored socket. Its camera is first person, but the item display basis
+    # deliberately remains THIRD_PERSON (the same stock hilt used by the rig).
+    socket_item = role == "peer" or action["mode"] == "articulated"
+    expected_context = ("THIRD_PERSON_" if socket_item else "FIRST_PERSON_") + action["hand"] + "_HAND"
     require(draw.get("displayContext") == expected_context and draw.get("anchorKind") == "stock_diamond_hilt",
             "Counter deep item draw changed hand, camera or actual hilt basis")
     side = -1 if action["hand"] == "LEFT" else 1
-    remote = role == "peer"
-    display = {"displayRotation": [0., -90. * side, (55. if remote else 25.) * side],
-               "displayTranslation": [0., 4./16, .5/16] if remote else [1.13/16, 3.2/16, 1.13/16],
-               "displayScale": [.85 if remote else .68] * 3,
+    display = {"displayRotation": [0., -90. * side, (55. if socket_item else 25.) * side],
+               "displayTranslation": [0., 4./16, .5/16] if socket_item else [1.13/16, 3.2/16, 1.13/16],
+               "displayScale": [.85 if socket_item else .68] * 3,
                "displayLocal": [1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.,0.,0.,0.,0.,1.]}
     for key, wanted in display.items():
         actual = draw.get(key)

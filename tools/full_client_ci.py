@@ -5,11 +5,11 @@ Optional profiles remain explicitly skipped, not passed; the required aggregate
 includes the complete animation gallery but excludes Iris/showcase/extra shots.
 """
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
 import re
-import stat
 import subprocess
 import sys
 import uuid
@@ -17,8 +17,14 @@ import uuid
 from client_suites import (ROOT, SELECTION_PREFIX, DESCRIPTOR_PREFIX, EXIT_PREFIX,
                            select_entries, exact_json_marker, _unique_completion_object,
                            _whole_class_completion, scene_marker)
-from masters_required_ci import selection_hash
 from client_shard_plan import REQUIRED_PROFILE
+from native_evidence import read_text as read_evidence
+from vps_identity import is_vps, extension
+
+
+def selection_hash(selection):
+    return hashlib.sha256(json.dumps(selection, sort_keys=True, separators=(",", ":"),
+                                     allow_nan=False).encode()).hexdigest()
 
 PROVENANCE_PREFIX = "WILDERCORD_FULL_CLIENT "
 PROFILE_PREFIX = "WILDERCORD_CLIENT_PROFILE "
@@ -33,21 +39,6 @@ OPTIONAL = {
     "dev.wildercord.gametest.WildercordShowcase": ("showcase", "set WILDERCORD_SHOWCASE=1 for the optional staged showcase"),
     "dev.wildercord.gametest.WildercordFireBloodShots": ("firebloodShots", "set WILDERCORD_FIREBLOOD_SHOTS=1 for the additional fire/blood close-up gallery"),
 }
-
-
-def read_evidence(path, limit):
-    """No symlinks/devices/FIFOs, unbounded reads, or changed files."""
-    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-    with os.fdopen(fd, "rb") as source:
-        before = os.fstat(source.fileno())
-        if not stat.S_ISREG(before.st_mode) or before.st_size > limit:
-            raise ValueError("Evidence must be a bounded regular non-symlink file")
-        raw = source.read(limit + 1)
-        after = os.fstat(source.fileno())
-    if len(raw) > limit or any(getattr(before, key) != getattr(after, key) for key in
-                             ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")):
-        raise ValueError("Evidence changed during read or exceeded its size bound")
-    return raw.decode("utf-8-sig")
 
 
 def read_manifest(path):
@@ -85,8 +76,7 @@ def provenance(selection, identity, profile, launch_id):
     if selection.get("kind") not in ("full", "shard") or not exact_json_marker(json.dumps(selection),
             select_entries(shard=selection.get("shard"))):
         raise ValueError("Full-client selection must match the exact current full roster or shard")
-    if set(identity) != {"headSha", "checkoutSha", "workflowSha", "runId", "runAttempt", "job"}:
-        raise ValueError("Missing or foreign full-client provenance fields")
+    vps = is_vps(identity)
     if any(not isinstance(identity[key], str) or not re.fullmatch(r"[0-9a-f]{40}", identity[key])
            for key in ("headSha", "checkoutSha", "workflowSha")):
         raise ValueError("Full-client evidence requires exact full source/workflow SHAs")
@@ -96,7 +86,7 @@ def provenance(selection, identity, profile, launch_id):
         raise ValueError("Full-client checkout, workflow, run, attempt or job mismatch")
     if not isinstance(launch_id, str) or str(uuid.UUID(launch_id)) != launch_id:
         raise ValueError("Full-client evidence requires a canonical owned-launch UUID")
-    return {"schemaVersion": 3, "gate": "full-client", **identity, "launchId": launch_id,
+    return {"schemaVersion": 4 if vps else 3, "gate": "full-client", **identity, "launchId": launch_id,
             "selectionSha256": selection_hash(selection), "fullSelectionSha256": selection_hash(select_entries()),
             "plan": selection["plan"], "profile": validate_profile(profile)}
 
@@ -184,11 +174,12 @@ def run_evidence(log, selection, profile, *, identity=None):
             observed_skips.append(current)
     if observed_skips != list(expected_skips):
         issues.append("Optional skips must be explicit, exact, once, and in selected class order")
-    return {"schemaVersion": 3, "scope": "full-client-shard" if selection["kind"] == "shard" else "full-client-run",
+    version = 4 if identity is not None and identity.get("executor") == "windows-vps" else 3
+    return {"schemaVersion": version, "scope": "full-client-shard" if selection["kind"] == "shard" else "full-client-run",
             "provenance": found, "completedEntries": completed, "lifecycleLaunchId": launch_id, "profile": profile}, issues
 
 
-def validate_aggregate(manifests, *, head_sha, workflow_sha, run_id, run_attempt, shards_result="success", download_result="success"):
+def validate_aggregate(manifests, *, head_sha, workflow_sha, run_id, run_attempt, shards_result="success", download_result="success", executor=None, computer=None):
     issues, seen, entries, launches = [], set(), [], set()
     if len(manifests) != 4:
         issues.append("Exactly four shard manifests are required")
@@ -197,7 +188,7 @@ def validate_aggregate(manifests, *, head_sha, workflow_sha, run_id, run_attempt
     if shards_result != "success":
         issues.append("All four shard jobs, manifest writes and evidence uploads must succeed")
     identity = {"headSha": head_sha, "checkoutSha": workflow_sha, "workflowSha": workflow_sha,
-                "runId": run_id, "runAttempt": run_attempt, "job": "game-tests"}
+                "runId": run_id, "runAttempt": run_attempt, "job": "game-tests", **extension(executor, computer)}
     for manifest in manifests:
         try:
             shard = manifest["shard"]
@@ -211,7 +202,7 @@ def validate_aggregate(manifests, *, head_sha, workflow_sha, run_id, run_attempt
             launches.add(launch)
             expected = provenance(selection, identity, REQUIRED_PROFILE, launch)
             results = suite_results(selection, REQUIRED_PROFILE)
-            exact = {"schemaVersion": 3, "scope": "full-client-shard", "shard": shard,
+            exact = {"schemaVersion": expected["schemaVersion"], "scope": "full-client-shard", "shard": shard,
                      "selection": selection, "provenance": expected, "profile": REQUIRED_PROFILE,
                      "shardOutcome": "passed", "fullClientGate": "unverified", "verificationIssues": [],
                      "completedEntries": selection["entries"], "lifecycleLaunchId": launch, "clientSuites": results,
@@ -228,11 +219,13 @@ def validate_aggregate(manifests, *, head_sha, workflow_sha, run_id, run_attempt
     if seen != set(SHARDS) or len(entries) != full["count"] or len(set(entries)) != full["count"] or set(entries) != set(full["entries"]):
         issues.append("All four shards must prove the exact disjoint current full-roster union")
     results = suite_results(full, REQUIRED_PROFILE) if not issues else []
-    return {"schemaVersion": 3, "scope": "full-client-aggregate", "fullClientGate": "unverified" if issues else "passed",
+    return {"schemaVersion": 4 if executor == "windows-vps" else 3, "scope": "full-client-aggregate", "fullClientGate": "unverified" if issues else "passed",
             "selection": full, "fullSelectionSha256": selection_hash(full), "profile": REQUIRED_PROFILE,
             "plan": full["plan"],
             **identity, "shards": list(SHARDS), "verificationIssues": issues, "clientSuites": results,
-            "basis": "All four matching completed shards and successful evidence uploads are mandatory. Optional skipped profiles are not passed coverage. Manual visual acceptance is separate."}
+            "basis": ("All four matching completed VPS shards and readable retained evidence are mandatory. " if executor == "windows-vps" else
+                      "All four matching completed shards and successful evidence uploads are mandatory. ") +
+                     "Optional skipped profiles are not passed coverage. Manual visual acceptance is separate."}
 
 
 def main(argv=None):
@@ -245,6 +238,8 @@ def main(argv=None):
     parser.add_argument("--shards-result", required=True)
     parser.add_argument("--download-result", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--executor", choices=("windows-vps",))
+    parser.add_argument("--computer")
     args = parser.parse_args(argv)
     errors, manifests = [], []
     paths = args.manifest or []
@@ -265,7 +260,7 @@ def main(argv=None):
             errors.append(f"Unreadable shard evidence {path.name}: {exc}")
     result = validate_aggregate(manifests, head_sha=args.head_sha, workflow_sha=args.workflow_sha,
                                 run_id=args.run_id, run_attempt=args.run_attempt, shards_result=args.shards_result,
-                                download_result=args.download_result)
+                                download_result=args.download_result, executor=args.executor, computer=args.computer)
     result["verificationIssues"].extend(errors)
     if result["verificationIssues"]:
         result["fullClientGate"], result["clientSuites"] = "unverified", []

@@ -186,10 +186,13 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	}
 
 	private static void run(List<String> failures, String what, Runnable test) {
+		dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_METHOD_ART_BEGIN {}", what);
 		try {
 			test.run();
+			dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_METHOD_ART_PASS {}", what);
 		} catch (AssertionError e) {
 			failures.add(what + ": " + e.getMessage());
+			dev.wildercord.Wildercord.LOGGER.error("WILDERCORD_METHOD_ART_FAIL {}: {}", what, e.getMessage());
 		}
 	}
 
@@ -1600,6 +1603,10 @@ public class WildercordArtsTest implements FabricClientGameTest {
 
 	private static void reset(ClientGameTestContext context, TestSingleplayerContext world) {
 		context.getInput().releaseKey(o -> o.keyShift);
+		on(world, player -> {
+			check(player.isAlive() && !player.isRemoved(), "The previous art scene must leave its original player alive; reset cannot revive a removed body");
+			return null;
+		});
 		world.getServer().runCommand("kill @e[tag=" + TAG + "]");
 		world.getServer().runCommand("kill @e[type=item]");
 		world.getServer().runCommand("kill @e[type=arrow]");
@@ -1667,6 +1674,11 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		mob.snapTo(at.x, at.y, at.z, 180, 0);
 		mob.addTag(TAG);
 		mob.addTag("wildercord.rolled");
+		// Keep the authored ordinary body. Runebound's rolled marker does not stop
+		// the independent wild-monster tempering pass: random Ironhide alters damage,
+		// Vampiric heals it, and killing a Splitting fixture leaves untagged attackers.
+		// AI remains active so native lifts, knockback, freezes and thaws still apply.
+		mob.addTag(dev.wildercord.monster.Tempering.TAG);
 		mob.setPersistenceRequired();
 		AttributeInstance max = mob.getAttribute(Attributes.MAX_HEALTH);
 		if (max != null) {
@@ -1681,7 +1693,11 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			sight.setBaseValue(0.0);
 		}
 		mob.setHealth((float) health);
-		level.addFreshEntity(mob);
+		check(level.addFreshEntity(mob), "The authored art target must enter the world");
+		check(mob.getHealth() == (float) health && mob.getMaxHealth() == (float) health
+			&& dev.wildercord.monster.Tempering.elite(mob) == null
+			&& !mob.hasAttached(dev.wildercord.player.WildercordAttachments.RUNEBOUND),
+			"Art target admission must preserve ordinary health without elite or Runebound mutations");
 		// It stands steady the whole scene: nothing wears its stance, so no art's check meets an opened, staggered foe (stance and
 		// finishers are WildercordMomentumTest's).
 		long now = level.getGameTime();

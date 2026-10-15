@@ -802,7 +802,7 @@ public final class ExplorerEffects {
 		}
 	}
 
-	/** Shulkershell: a shell that turns nearly every blow, holds the target still, and lifts its attackers when it opens. */
+	/** Shulkershell: a guard under the player's defence cap that holds still and lifts attackers when it opens. */
 	private static void shulkershell(Cast cast, LivingEntity t, int ticks) {
 		t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 3, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 6, false, false));

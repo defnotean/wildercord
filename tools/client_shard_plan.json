@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "planId": "full-client-explicit-v2-counter-lifetimes",
+  "planId": "full-client-explicit-v8-emberwood",
   "shardCount": 4,
-  "expectedCount": 341,
-  "orderedRosterSha256": "af359daf9aa00cf6ca2ceca38c6b7eb6239b37b10e521c4e43ae2ce43be38e9c",
+  "expectedCount": 349,
+  "orderedRosterSha256": "63e4dae5883e2b9375df0bee213d66ca0ed01096a678c753f1840e079c8f3b40",
   "executionProfile": {
     "execution": "complete",
     "animationGallery": true,
@@ -72,7 +72,7 @@
   "groups": [
     {
       "id": 1,
-      "expectedCount": 86,
+      "expectedCount": 87,
       "entries": [
         "dev.wildercord.cast.RelayCircleTest",
         "dev.wildercord.cast.RelayLifetimeTest",
@@ -159,12 +159,13 @@
         "dev.wildercord.aura.world.MastersPackBTrialTest",
         "dev.wildercord.gametest.perf.PerformanceHarnessTest",
         "dev.wildercord.world.sites.FarmSitesClientTest",
-        "dev.wildercord.world.sites.WaterSitesGameTest"
+        "dev.wildercord.world.sites.WaterSitesGameTest",
+        "dev.wildercord.world.biome.BelowkeeperBiomeTest"
       ]
     },
     {
       "id": 2,
-      "expectedCount": 86,
+      "expectedCount": 87,
       "entries": [
         "dev.wildercord.client.fx.VoidWardDeliveryTest",
         "dev.wildercord.client.fx.VoidMovementDeliveryTest",
@@ -251,12 +252,13 @@
         "dev.wildercord.client.combat.ArticulatedAuraShellPresentationTest",
         "dev.wildercord.client.combat.CrimsonMoonCaptureTest",
         "dev.wildercord.world.sites.MastersSitesTest",
-        "dev.wildercord.world.sites.MineSitesClientTest"
+        "dev.wildercord.world.sites.MineSitesClientTest",
+        "dev.wildercord.world.hollowbell.HollowBellEncounterTest"
       ]
     },
     {
       "id": 3,
-      "expectedCount": 85,
+      "expectedCount": 88,
       "entries": [
         "dev.wildercord.gametest.WildercordPerformanceCastTest",
         "dev.wildercord.gametest.WildercordResonanceTest",
@@ -284,6 +286,8 @@
         "dev.wildercord.wildlife.WetlandPlacementContractTest",
         "dev.wildercord.wildlife.WetlandTerrainAbsenceTest",
         "dev.wildercord.wildlife.WetlandTerrainTest",
+        "dev.wildercord.world.biome.ReedlandBiomeTest",
+        "dev.wildercord.world.sites.water.FerrymanEncounterTest",
         "dev.wildercord.wildlife.ReedRefugeTest",
         "dev.wildercord.wildlife.ReedbackCrabTest",
         "dev.wildercord.wildlife.WetlandQueryBoundsTest",
@@ -342,12 +346,13 @@
         "dev.wildercord.cast.FxSupportPackTest",
         "dev.wildercord.aura.world.MethodsAMastersNativeTest",
         "dev.wildercord.client.HudHandednessLayoutTest",
-        "dev.wildercord.world.sites.WildsSitesTest"
+        "dev.wildercord.world.sites.WildsSitesTest",
+        "dev.wildercord.world.biome.EmberwoodBiomeTest"
       ]
     },
     {
       "id": 4,
-      "expectedCount": 84,
+      "expectedCount": 87,
       "entries": [
         "dev.wildercord.wildlife.TidewardPendingReceiverTest",
         "dev.wildercord.wildlife.MixedWetlandPerformanceTest",
@@ -432,7 +437,10 @@
         "dev.wildercord.aura.ProgressionVowWallTurnNativeTest",
         "dev.wildercord.aura.MovesPackTest",
         "dev.wildercord.aura.world.MethodsBMastersClientTest",
-        "dev.wildercord.world.sites.TravelSitesClientTest"
+        "dev.wildercord.world.sites.TravelSitesClientTest",
+        "dev.wildercord.world.biome.WindscarBiomeTest",
+        "dev.wildercord.world.cartographer.CartographerEncounterTest",
+        "dev.wildercord.world.kilnwidow.KilnWidowEncounterTest"
       ]
     }
   ]

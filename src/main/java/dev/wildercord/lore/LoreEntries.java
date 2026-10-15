@@ -1,5 +1,7 @@
 package dev.wildercord.lore;
 
+import dev.wildercord.aura.world.MastersRules;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -40,6 +42,21 @@ public final class LoreEntries {
 		return "dialogue.wildercord." + line;
 	}
 
+	/** Repair the placeholder victory ids written before all sixteen Masters had journal identities. */
+	public static String canonicalEntry(String entry) {
+		String prefix = "victory:school_";
+		if (entry == null || !entry.startsWith(prefix)) return entry;
+		try {
+			int school = Integer.parseInt(entry.substring(prefix.length()));
+			if (MastersRules.knownSchool(school) && entry.equals(prefix + school)) {
+				return "victory:" + MastersRules.schoolId(school);
+			}
+		} catch (NumberFormatException ignored) {
+			// Unknown add-on or future ids are retained exactly as saved.
+		}
+		return entry;
+	}
+
 	/** The journal entry a Grimoire discovery writes, or null if it has none. */
 	public static String fromGrimoire(String key) {
 		if (key.startsWith("aura:battlefield")) return "place:memorial";
@@ -65,7 +82,7 @@ public final class LoreEntries {
 	public static String tab(String entry) {
 		if (entry.startsWith("said:")) return "talk";
 		if (entry.startsWith("place:")) return "places";
-		if (entry.startsWith("duelist:") || entry.startsWith("master:") || entry.startsWith("won:") || entry.startsWith("victory:")) return "people";
+		if (entry.startsWith("person:") || entry.startsWith("duelist:") || entry.startsWith("master:") || entry.startsWith("won:") || entry.startsWith("victory:")) return "people";
 		return "learned";
 	}
 }

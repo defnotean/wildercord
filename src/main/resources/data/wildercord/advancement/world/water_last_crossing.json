@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_last_crossing": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_last_crossing"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:bell"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_last_crossing.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_last_crossing.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_last_crossing"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

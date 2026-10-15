@@ -413,7 +413,7 @@ public final class MasterForms {
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer player) retire(player); });
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> retire(player));
 		ServerPlayerEvents.AFTER_RESPAWN.register((before, after, alive) -> retire(before));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> retire(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> retire(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { SESSIONS.clear(); MasterFormMovement.clear(); });
 	}
 }

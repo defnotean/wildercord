@@ -311,7 +311,12 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                     server.runOnServer(s -> {
                         var fresh=player(s);
                         check(fresh != probe.player && ExciseCasting.now(fresh)==probe.cancelledAt && ExciseCasting.recoveryUntil(fresh)==probe.recovery,
-                            "Disconnect itself cancels the paid hold before save and keeps its one recovery deadline");
+                            "Disconnect itself cancels the paid hold before save and keeps its one recovery deadline"
+                                + " replaced=" + (fresh != probe.player) + " now=" + ExciseCasting.now(fresh)
+                                + " frozenAt=" + probe.cancelledAt + " freshRecovery=" + ExciseCasting.recoveryUntil(fresh)
+                                + " savedRecovery=" + fresh.getAttachedOrElse(ExciseState.RECOVERY, 0L)
+                                + " oldRecovery=" + probe.player.getAttachedOrElse(ExciseState.RECOVERY, 0L)
+                                + " expectedRecovery=" + probe.recovery + " oldPending=" + ExciseCasting.pending(probe.player));
                         check(!ExciseCasting.pending(fresh) && !fresh.hasAttached(ExciseState.VIEW) && !probe.selected.excised && ExciseCasting.rest(fresh)==probe.rest,
                             "Active disconnect cannot resurrect or complete the locked target");
                     });

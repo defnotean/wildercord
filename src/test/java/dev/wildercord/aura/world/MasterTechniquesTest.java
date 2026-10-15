@@ -98,4 +98,26 @@ class MasterTechniquesTest {
 		for (var technique : MasterTechniques.all()) assertTrue(lang.has(technique.translationKey()), technique.key());
 		assertTrue(lang.has("boss.wildercord.master.technique"));
 	}
+
+	@Test
+	void publishedTechniqueTimingsMatchEveryRuntimeTechnique() throws Exception {
+		var lang = JsonParser.parseString(Files.readString(Path.of("src/main/resources/assets/wildercord/lang/en_us.json"))).getAsJsonObject();
+		for (String guide : new String[] {"wiki/masters/techniques.md", "gitbook/masters/techniques.md"}) {
+			var rows = Files.readAllLines(Path.of(guide)).stream().filter(line -> line.startsWith("| **")).toList();
+			assertEquals(MasterTechniques.all().size(), rows.size(), guide);
+			for (var technique : MasterTechniques.all()) {
+				String name = lang.get(technique.translationKey()).getAsString();
+				var matches = rows.stream().filter(row -> row.startsWith("| **" + name + "**")
+					|| row.startsWith("| **" + name + " (signature)**")).toList();
+				assertEquals(1, matches.size(), guide + ": " + technique.key());
+				String[] cells = matches.getFirst().split("\\|", -1);
+				assertEquals(seconds(technique.lastImpact()), cells[4].trim(), guide + " impact: " + technique.key());
+				assertEquals(seconds(technique.recovery()), cells[5].trim(), guide + " recovery: " + technique.key());
+			}
+		}
+	}
+
+	private static String seconds(int ticks) {
+		return java.math.BigDecimal.valueOf(ticks).divide(java.math.BigDecimal.valueOf(20)).stripTrailingZeros().toPlainString() + " s";
+	}
 }

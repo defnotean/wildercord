@@ -1,0 +1,4 @@
+# Shared by asset generation and native image-verification tools.
+# Keep these aligned with the versions used to regenerate committed assets.
+Pillow==12.2.0
+numpy==2.4.6

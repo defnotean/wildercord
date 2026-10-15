@@ -111,7 +111,7 @@ public final class TidewardEquipment {
  }
  public static void init(){
   ServerTickEvents.END_SERVER_TICK.register(s -> s.getPlayerList().getPlayers().forEach(p -> {walk(p);sight(p);}));
-  ServerPlayConnectionEvents.DISCONNECT.register((handler,server) -> removeWalk(handler.player));
+  dev.wildercord.net.ServerDisconnects.register((handler,server) -> removeWalk(handler.player));
   CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> {o.accept(WADERS);o.accept(SPECTACLES);});
  }
 }

@@ -72,6 +72,7 @@ public final class ExciseLessonScreen extends Screen implements CordEditorParent
 	/** Read-only presentation state for accessibility and native protocol checks. */
 	public int pageNumber() { return page; }
 	public boolean isStudying() { return studying; }
+	public boolean isRefused() { return refusal != null; }
 	public long sessionNonce() { return nonce; }
 	public double[] nextPagePoint() { return new double[] {next.getX() + next.getWidth() / 2.0, next.getY() + 10}; }
 

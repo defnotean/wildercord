@@ -82,7 +82,7 @@ public final class Teleports {
 				cancel(player, pending, "hurt");
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> PENDING.remove(handler.player.getUUID()));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> PENDING.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			PENDING.clear();
 			READY_AT.clear();

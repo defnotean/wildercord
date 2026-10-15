@@ -110,7 +110,7 @@ public final class HeartCircles {
 			}
 		});
 		// A spell kill only counts for a caster still here, so a leaver's marks on creatures go with them.
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			LAST_SPELL_HIT.values().removeIf(hit -> hit.caster().equals(id));
 		});
@@ -312,7 +312,7 @@ public final class HeartCircles {
 		player.connection.send(new ClientboundSetTitleTextPacket(title));
 		player.connection.send(new ClientboundSetSubtitleTextPacket(subtitle));
 		player.sendSystemMessage(Component.translatable("message.wildercord.circle_formed", Circles.ordinal(n), Circles.MANA_PER_CIRCLE,
-			String.format(java.util.Locale.ROOT, "%.1f", Circles.REGEN_PER_CIRCLE), Math.round(Circles.POWER_PER_CIRCLE * 100)).withColor(COLORS[n - 1]));
+			String.format(java.util.Locale.ROOT, "%.1f", Circles.REGEN_PER_CIRCLE), Circles.powerPercent(1)).withColor(COLORS[n - 1]));
 		Component perk = switch (n) {
 			case 1, 5 -> Component.translatable("message.wildercord.passive_slot", dev.wildercord.spell.Passives.slots(n));
 			default -> null;

@@ -581,7 +581,7 @@ public final class Aura {
 				newPlayer.removeAttached(AuraAttachments.STATE);
 			}
 		});
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			STANCES.remove(id);
 			FIGHTING.remove(id);

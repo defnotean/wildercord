@@ -28,7 +28,9 @@ public final class SiltcrestPresentationWitnessChecks {
   rejected(escaped,rows->rows.get(2).addProperty("ground",false),"unsupported source is not a lawful escape witness");
   rejected(escaped,rows->rows.get(2).getAsJsonObject("admittedFish").addProperty("health",2),"damaged quarry is not an untouched refusal");
   rejected(escaped,rows->rows.get(1).getAsJsonObject("admittedFish").addProperty("noAi",true),"frozen target cannot qualify");
-  rejected(escaped,rows->{for(int i=1;i<4;i++)rows.get(i).getAsJsonObject("admittedFish").addProperty("committedDistanceSqr",.1);},"no actual locked-center escape");
+  var range=copy(escaped);for(int i=1;i<4;i++){var fish=range.get(i).getAsJsonObject("admittedFish");fish.addProperty("committedDistanceSqr",.31);fish.addProperty("sourceDistanceSqr",4.86);}
+  check(inspect(range).outcome()==SiltcrestPresentationWitness.Outcome.ESCAPED,"Ordinary reach-only final refusal is classified without demanding a fabricated locked-center escape");
+  rejected(escaped,rows->{for(int i=1;i<4;i++){var fish=rows.get(i).getAsJsonObject("admittedFish");fish.addProperty("committedDistanceSqr",.1);fish.addProperty("sourceDistanceSqr",2);}},"no actual locked-center or reach escape");
   rejected(escaped,rows->rows.get(1).addProperty("threw",true),"thrown native action");
   rejected(escaped,rows->rows.get(2).remove("pool"),"missing predicate receipt");
   expectFailure(()->policy(escaped).inspect(escaped,1,0),"observer error");

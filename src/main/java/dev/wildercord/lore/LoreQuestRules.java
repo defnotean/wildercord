@@ -32,9 +32,18 @@ public final class LoreQuestRules {
 	public static final String TALK_STONE = "talk_stone";
 	public static final String TRAINED = "trained";
 	public static final String MASTER_MET = "master_met";
+	public static final String WATCHTOWER = "watchtower", STANDING_STONES = "standing_stones", SLEEPING_BLADE = "sleeping_blade";
+	public static final String REEDKEEPER = "reedkeeper", FERRYMAN_STORY = "ferryman_story", BOATHOUSE = "boathouse", COAST_LIGHT = "coast_light";
+	public static final String CAIRN_KEEPER = "cairn_keeper", CARTOGRAPHER_STORY = "cartographer_story", RIDGE_SITE = "ridge_site", CAIRN_LAMP = "cairn_lamp";
+	public static final String BELOWKEEPER_LISTENER = "belowkeeper_listener", HOLLOW_BELL_STORY = "hollow_bell_story", DEEP_SITE = "deep_site", BELOWKEEPER_SHUTTER = "belowkeeper_shutter";
+	public static final String KILN_KEEPER = "kiln_keeper", KILN_WIDOW_STORY = "kiln_widow_story", FORGE_SITE = "forge_site", EMBERWOOD_DRAFT = "emberwood_draft";
 
 	/** A quest: what starts it, what finishes it, and what it pays (vanilla experience, Aura Shards, Blank Runes, Aura experience). */
-	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp) {
+	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp, String prerequisite) {
+		public Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp) {
+			this(id, trigger, objective, xp, shards, runes, auraXp, "");
+		}
+
 		public String key(String part) {
 			return "journal.wildercord.quest." + id + "." + part;
 		}
@@ -46,7 +55,22 @@ public final class LoreQuestRules {
 		new Quest("keeper_openings", TOMB, PERFECT_GUARD, 40, 3, 0, 60),
 		new Quest("warden_threshold", FIELD_GUIDE, REACTION, 30, 0, 2, 0),
 		new Quest("different_hands", TOURNAMENT, DUEL_WON, 30, 2, 1, 40),
-		new Quest("masters_ledger", TALK_STONE, MASTER_MET, 50, 3, 1, 80));
+		new Quest("masters_ledger", TALK_STONE, MASTER_MET, 50, 3, 1, 80),
+		new Quest("last_cairn", MEMORIAL, WATCHTOWER, 30, 1, 1, 0, "scout_wall"),
+		new Quest("road_before_roads", WATCHTOWER, STANDING_STONES, 30, 0, 2, 0, "last_cairn"),
+		new Quest("oath_at_rest", STANDING_STONES, SLEEPING_BLADE, 40, 2, 1, 0, "road_before_roads"),
+		new Quest("drowned_road", REEDKEEPER, FERRYMAN_STORY, 20, 0, 1, 0),
+		new Quest("second_count", FERRYMAN_STORY, BOATHOUSE, 30, 0, 2, 0, "drowned_road"),
+		new Quest("last_boat_light", BOATHOUSE, COAST_LIGHT, 40, 1, 2, 0, "second_count"),
+		new Quest("paired_cairns", CAIRN_KEEPER, CARTOGRAPHER_STORY, 20, 0, 1, 0),
+		new Quest("ridge_orders", CARTOGRAPHER_STORY, RIDGE_SITE, 30, 0, 2, 0, "paired_cairns"),
+		new Quest("cairn_beacon", RIDGE_SITE, CAIRN_LAMP, 40, 1, 2, 0, "ridge_orders"),
+		new Quest("empty_bell_kept", BELOWKEEPER_LISTENER, HOLLOW_BELL_STORY, 20, 0, 1, 0),
+		new Quest("pressure_records", HOLLOW_BELL_STORY, DEEP_SITE, 30, 0, 2, 0, "empty_bell_kept"),
+		new Quest("resonance_shutter", DEEP_SITE, BELOWKEEPER_SHUTTER, 40, 1, 2, 0, "pressure_records"),
+		new Quest("eleven_winters", KILN_KEEPER, KILN_WIDOW_STORY, 20, 0, 1, 0),
+		new Quest("forge_records", KILN_WIDOW_STORY, FORGE_SITE, 30, 0, 2, 0, "eleven_winters"),
+		new Quest("kiln_draft_lamp", FORGE_SITE, EMBERWOOD_DRAFT, 40, 1, 2, 0, "forge_records"));
 
 	public static Quest byId(String id) {
 		for (Quest quest : ALL) if (quest.id().equals(id)) return quest;
@@ -72,6 +96,10 @@ public final class LoreQuestRules {
 		List<Quest> clued = new ArrayList<>(), completed = new ArrayList<>();
 		for (Quest quest : ALL) {
 			int before = stages.getOrDefault(quest.id(), UNKNOWN);
+			// Read the previous snapshot: finishing one chapter cannot reveal every later chapter in this poll.
+			// Already active quests keep working even if an older or repaired save lacks their prerequisite.
+			if (before <= UNKNOWN && !quest.prerequisite().isEmpty()
+				&& stages.getOrDefault(quest.prerequisite(), UNKNOWN) < DONE) continue;
 			int after = step(quest, before, facts);
 			if (after == before) continue;
 			next.put(quest.id(), after);
@@ -101,6 +129,7 @@ public final class LoreQuestRules {
 			else if (key.startsWith("reaction:")) facts.add(REACTION);
 			else if (key.equals("aura:perfect_guard")) facts.add(PERFECT_GUARD);
 			else if (key.equals("aura:duelist")) facts.add(DUEL_WON);
+			else if (key.equals("aura:sleeping_blade")) facts.add(SLEEPING_BLADE);
 		}
 		for (String entry : journal) {
 			switch (entry) {
@@ -108,6 +137,24 @@ public final class LoreQuestRules {
 				case "place:tomb" -> facts.add(TOMB);
 				case "place:tournament" -> facts.add(TOURNAMENT);
 				case "place:training" -> facts.add(TRAINED);
+				case "place:travel_watchtower" -> { facts.add(WATCHTOWER); facts.add(RIDGE_SITE); }
+				case "place:travel_standing_stones" -> { facts.add(STANDING_STONES); facts.add(RIDGE_SITE); }
+				case "place:sleeping_blade" -> facts.add(SLEEPING_BLADE);
+				case "person:reedkeeper" -> facts.add(REEDKEEPER);
+				case "said:reedkeeper.ferryman" -> facts.add(FERRYMAN_STORY);
+				case "place:water_pier_boathouse" -> facts.add(BOATHOUSE);
+				case "learned:coast_light" -> facts.add(COAST_LIGHT);
+				case "person:cairn_keeper" -> facts.add(CAIRN_KEEPER);
+				case "said:cairn_keeper.cartographer" -> facts.add(CARTOGRAPHER_STORY);
+				case "learned:scout_wind_mark" -> facts.add(CAIRN_LAMP);
+				case "person:belowkeeper_listener" -> facts.add(BELOWKEEPER_LISTENER);
+				case "said:belowkeeper_listener.hollow_bell" -> facts.add(HOLLOW_BELL_STORY);
+				case "place:mine_crystal_lab", "place:mine_collapsed_delve", "place:mine_deep_vault", "place:belowkeeper_bell_sanctum" -> facts.add(DEEP_SITE);
+				case "learned:belowkeeper_shutter" -> facts.add(BELOWKEEPER_SHUTTER);
+				case "person:kiln_keeper" -> facts.add(KILN_KEEPER);
+				case "said:kiln_keeper.kiln_widow" -> facts.add(KILN_WIDOW_STORY);
+				case "place:mine_forge_hall", "place:mine_prospector_camp", "place:mine_basalt_foundry", "place:emberwood_kiln_court" -> facts.add(FORGE_SITE);
+				case "learned:emberwood_draft" -> facts.add(EMBERWOOD_DRAFT);
 				case "duelist:ember" -> facts.add(TALK_EMBER);
 				case "duelist:gale" -> facts.add(TALK_GALE);
 				case "duelist:stone" -> facts.add(TALK_STONE);

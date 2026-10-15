@@ -66,7 +66,7 @@ public final class ReleasedArtOwner {
 	public static void init() {
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer player) retire(player); });
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> retire(oldPlayer));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> retire(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> retire(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			LIVES.clear();
 		});

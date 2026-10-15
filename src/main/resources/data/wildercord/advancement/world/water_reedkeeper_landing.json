@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "water_reedkeeper_landing": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:water_reedkeeper_landing"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:cartography_table"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.water_reedkeeper_landing.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.water_reedkeeper_landing.description"
+    }
+  },
+  "requirements": [
+    [
+      "water_reedkeeper_landing"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

@@ -72,3 +72,17 @@ A native fatal-task exception requires a separate expected-failure process and
 receipt. That acceptance is pending; no control clears Fabric's global failure
 state to make a failing run pass. The deliberate body exception above is caught
 by the test itself and never claims that a native process crash recovered.
+
+## October 13 follow-up
+
+The exact pushed candidate `08f51410` failed its Linux Masters preflight after vanilla
+reported `Failed to save player data for Player0`; the reopened inventory was empty.
+The complete focused Relay suite passed locally, including both save/reopen receipts
+and its socket reconnection. This is not yet a resolved cross-platform failure.
+
+`PlayerSaveDiagnosticsMixin`, enabled only in the GameTest descriptor, logs the
+exception that vanilla otherwise discards at this warning. It observes the catch
+path without retrying, fabricating saved state, changing the shutdown handshake,
+or relaxing the inventory assertion. The next native CI attempt must supply the
+cause before any behavior change is justified. The source-boundary checks now read
+UTF-8 explicitly so they also run under the default Windows Python encoding.

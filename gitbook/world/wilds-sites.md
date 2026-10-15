@@ -1,21 +1,23 @@
 # Wild Places
 
-Eight old ruins and lonely posts, one for each wild corner of the world, the Nether and the End included. They
-appear only in newly generated chunks. Each one guards a vault behind an **element rune seal**: open it with the
-matching rune magic. Vaults hold a breathing method manual page, runes of that place's elements, and Wildercord
+Ten old ruins, firing courts and lonely posts across the wild corners of the world, the Nether and the End included. Eight
+guard a vault behind an **element rune seal**: open it with the matching rune magic. Vaults hold a breathing method manual page, runes of that place's elements, and Wildercord
 materials: an Aura Shard, a Blank Rune, a Mana Crystal and a Spell Scroll. Each site also has a hall chest that anyone
-can open, with Torn Pages among its finds.
+can open, with Torn Pages among its finds. Two additional Emberwood Reach landmarks—the **Emberwood Charcoal Yard** and
+the **Emberwood Kiln Court**—appear in warm border woodlands without a rune seal.
 
-| Site | Where | Seal | Manual |
+| Site | Where | Seal / Feature | Manual / Focus |
 |---|---|---|---|
 | Venom Ziggurat | Jungles | Life and Void | Venom |
 | Dune Temple | Deserts | Earth and Wind | Dune |
 | Rime Monastery | Snowy plains, snowy taiga, ice spikes, groves | Frost and Time | Rime |
-| Iron Gatehouse | Badlands | Earth and Storm | Iron |
+| Iron Gatehouse | Badlands, [Emberwood Reach](emberwood-reach.md) | Earth and Storm | Iron |
 | Dawn Pavilion | Cherry groves | Arcane and Life | Dawn |
 | Echo Post | Deep dark floor | Wind and Void | Echo |
 | Ember Outpost | Crimson and warped forests, Nether wastes | Fire and Blood | Ember |
 | Void Lantern | End outer islands | Void and Arcane | Hollow |
+| Emberwood Charcoal Yard | [Emberwood Reach](emberwood-reach.md), wooded badlands, forests | Kiln Keeper resident, Cinder Fern ash bed & kiln draft lamp | [Emberwood Reach](emberwood-reach.md) |
+| Emberwood Kiln Court | [Emberwood Reach](emberwood-reach.md), wooded badlands | Optional [Kiln Widow](kiln-widow.md) heartstone challenge | [Kiln Widow](kiln-widow.md) |
 
 ## Venom Ziggurat
 
@@ -38,7 +40,7 @@ in its wall.
 
 ## Iron Gatehouse
 
-A ruined gate across an old road in the badlands. The portcullis is down. Skeletons with shackle spells hold the
+A ruined gate across an old road in the badlands and the Emberwood Reach. The portcullis is down. Skeletons with shackle spells hold the
 rampart, reached by the ladder in the left tower (its iron door opens with the buttons beside it). The vault is
 the right tower's strongroom, opened from inside the hall, and a vindicator adept stands inside it.
 
@@ -64,6 +66,12 @@ A purpur tower on an End island, with a lit cage on the roof. Endermen with bolt
 the ladder to the second floor, open the seal into the alcove, and climb on to the lantern room at the top, where
 the vault chest sits.
 
+## Emberwood Charcoal Yard and Kiln Court
+
+In the [Emberwood Reach](emberwood-reach.md), **Emberwood Charcoal Yards** keep a cooled
+Cinder Fern ash bed, a kiln draft lamp and lever, *Eleven Winters at the Gate*, and a resident **Emberwood Kiln Keeper**.
+Nearby **Emberwood Kiln Courts** hold the optional [Kiln Widow](kiln-widow.md) challenge.
+
 ## Tips
 
 - The vault walls are protected: you cannot dig around a seal in Survival.
@@ -75,6 +83,8 @@ the vault chest sits.
 | Dune Temple | Shifting Sands |
 | Echo Post | Listening In |
 | Ember Outpost | Fire on the Tower |
+| Emberwood Charcoal Yard | Keeper of the Charcoal Yard |
+| Emberwood Kiln Court | The Cooled Kiln |
 | Iron Gatehouse | The Last Gate |
 | Rime Monastery | The Cold Bell |
 | Venom Ziggurat | Poison Darts |

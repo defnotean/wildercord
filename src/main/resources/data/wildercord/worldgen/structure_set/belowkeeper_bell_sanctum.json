@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "wildercord:belowkeeper_bell_sanctum",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 36,
+    "separation": 12,
+    "salt": 2026101604
+  }
+}

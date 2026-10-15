@@ -29,6 +29,12 @@ public final class Circles {
 	public static final float REGEN_PER_CIRCLE = 0.5F;
 	public static final double POWER_PER_CIRCLE = 0.015;
 
+	/** Exact percentage for player-facing text, including fractional bonuses at odd circle counts. */
+	public static String powerPercent(int circles) {
+		return java.math.BigDecimal.valueOf(POWER_PER_CIRCLE).multiply(java.math.BigDecimal.valueOf(100L * count(circles)))
+			.stripTrailingZeros().toPlainString();
+	}
+
 	/** Perks. */
 	public static final int MANA_SKIN = 3;
 	public static final double MANA_SKIN_SHARE = 0.2;

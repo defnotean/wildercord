@@ -29,6 +29,8 @@ final class StoneMarchFixture {
 		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
 		check(master != null, "Registered Stone Master exists");
 		master.plainOrdinaryOnly(); master.setDiscipline(MastersRules.STONE); master.snapTo(origin.x, origin.y, origin.z, 0, 0); level.addFreshEntity(master);
+		// Exact debit/refund assertions exclude the separate multiplayer Aura trickle.
+		master.fixAura();
 		for (ServerPlayer player : party) { master.mobInteract(player, InteractionHand.MAIN_HAND); master.mobInteract(player, InteractionHand.MAIN_HAND); }
 		check(SwordMaster.ready(party.getFirst()) == 1, "Every challenger explicitly enrolls in the actual trial");
 		master.setTarget(party.getFirst());

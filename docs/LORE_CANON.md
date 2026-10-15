@@ -4,7 +4,7 @@ This is the reference for the story behind Wildercord. New text should agree wit
 
 Status labels:
 - **Shipped**: in the game today, with the source file named.
-- **Canon**: agreed background for content still being built, such as the six newer breaths and the Masters who are not in the game yet. Build to it and do not contradict it. Mark it Shipped once it is in the game.
+- **Canon**: agreed background for content still being built. Build to it and do not contradict it. Mark it Shipped once it is in the game. All sixteen breaths and their Masters below are now implemented; this source status does not replace release-candidate testing.
 
 ## 1. The two traditions
 
@@ -40,14 +40,14 @@ Each method is a way of breathing taught by people, not a gift from a god. Each 
 | Starlit | arcane | Breathe in time with the far lights, and they lend you theirs. | Shipped |
 | Hourglass | time | Breathe in the space between one grain falling and the next. | Shipped |
 | Crimson | blood | Breathe to the beat of the blood, and the blood answers. | Shipped |
-| Tide | water | Breathe as the sea does: rise, fall, and never fight the pull. | Canon |
-| Iron | metal | Breathe as the forge breathes: heat, strike, cool, and again. | Canon |
-| Dune | sand | Breathe as sand shifts: nothing stays where you left it. | Canon |
-| Echo | sound | Breathe once and listen; the answer is the second blow. | Canon |
-| Dawn | light | Breathe as morning comes: slow to wake, then bright. | Canon |
-| Venom | poison | Breathe small and patient; the sting is short and the end is sure. | Canon |
+| Tide | water | Breathe as the sea does: rise, fall, and never fight the pull. | Shipped |
+| Iron | metal | Breathe as the forge breathes: heat, strike, cool, and again. | Shipped |
+| Dune | sand | Breathe as sand shifts: nothing stays where you left it. | Shipped |
+| Echo | sound | Breathe once and listen; the answer is the second blow. | Shipped |
+| Dawn | light | Breathe as morning comes: slow to wake, then bright. | Shipped |
+| Venom | poison | Breathe small and patient; the sting is short and the end is sure. | Shipped |
 
-Canon for the six newer breaths. Mechanics belong to whoever builds each method; this gives only the story.
+Background for the six newer breaths. Their implementations are in `BreathingMethods`, the `MethodsA`/`MethodsB` families and their Master classes; this section gives the story.
 
 - **Tide**
   - Kept by the coast-road wardens after the sea took the old road.
@@ -77,7 +77,7 @@ Canon for the six newer breaths. Mechanics belong to whoever builds each method;
 ## 3. Schools and Sword Masters
 
 **Shipped** (`aura/world/SwordMaster.java`, `MastersRules.java` and `MasterVictories.java`):
-- Ember, Gale and Stone Sword Masters.
+- All sixteen Sword Masters: Ember, Gale, Stone, Rime, Thunder, Verdant, Hollow, Starlit, Hourglass, Crimson, Tide, Iron, Dune, Echo, Dawn and Venom. The expansion tables are `ElementalMasters`, `MastersPackB`, `MethodsAMasters` and `MethodsBMasters`.
 - A Master is called by sneaking and speaking twice to a duelist teacher, once you reach Aura Form or Heart Circle VIII.
 - The trial is lethal and open to up to 8 challengers. A first clear teaches a technique part and is kept in the Masters' record.
 
@@ -104,6 +104,8 @@ Every method has one Master. In-game they are called "Master of <Breath>". Each 
 
 Each Master's greeting, hint and parting line is in `tools/lore_journal_text.py`. Master hints are background, never full instructions. The combat lessons stay in `tools/masters_art.py`.
 
+The journal uses the stable school identities in `MastersRules.schoolId`. Old `victory:school_<number>` entries for known schools normalize to their names without replaying a victory, changing a completed lead, or inventing dialogue that was never spoken.
+
 ## 4. Named teachers (Shipped)
 
 - **Iven Reed, road tutor**
@@ -126,6 +128,10 @@ Each Master's greeting, hint and parting line is in `tools/lore_journal_text.py`
   - *The Last Shelter*: the keeper held the garden door. Teaches Bind.
   - *The Returned Step*: the scout and the paired cairns. Teaches Echo.
   - The Marchkeepers ended as an army and began again as guides.
+  - Their Windscar saying remembers roads that survive only while people tend them.
+    The region's field note ties leaving Windreed roots to leaving a route usable
+    for the next traveller (`tools/regional_biomes.py`). This is a local saying,
+    not a claim that wind or mountains have a will of their own.
 - **The Sword Tomb**
   - The Buried Keeper wears a blindfold and guards a promise.
   - The Keeper's Testament says the old masters left openings on purpose. This is the root of the earned counters.
@@ -149,7 +155,13 @@ Each Master's greeting, hint and parting line is in `tools/lore_journal_text.py`
   - Reweave.
 - **The living world**:
   - Tideward: Iona the surveyor, Tamsin her apprentice, the Lantern Newts and the Reed Refuge.
+  - Luminous Reedlands: the wettest swamp country, with pale banks and natural Moonreed colonies. Entering it records a Tideward field note.
+  - Tideward Reedkeeper Landings: raised survey houses with resident fishers, open Moonreed gardens and the four-page *First Crossing*. Each Reedkeeper preserves the same four conversations; these are regional keepers, not new names for Iona or Tamsin.
+  - The Reed-Crowned Ferryman: a boatman remembered differently by different villages, whose second passenger count ensured everyone reached shore. His reed crown and the shared lamp belong to the First Crossing legend. The Last Crossing's new guardian carries this title in a body of reeds and old timber; its existence does not settle the historical boatman's identity. Deliberately ringing the basin's bell begins the optional encounter. The peaceful coastal journal route remains independent.
+  - Highland Cairn Lodges and the Glass Cartographer: dry-stone shelters in the Windscar Highlands with leeward Windreed terraces, four-page *Paired Cairns* books, eastern cairn lamps and resident Highland Cairn Keepers. Higher on the shelves stands the Highland Survey Ring, where waking the Survey Astrolabe begins an optional encounter with the Marchkeepers' brass-and-prism Glass Cartographer.
   - The Belowkeepers: Mara, the Fungal Nursery, the Drainhouse and the Empty Bell.
+  - Belowkeeper Hollows, Listening Stations and the Hollow Bell: subterranean vaults where dripstone caverns meet mossy clay shelves (`tools/regional_biomes.py`). Belowkeeper Listening Stations house resident Belowkeeper Listeners, six-cap Glowcap beds, the four-page *What the Empty Bell Kept* ledger and a western resonance shutter lamp (`tools/sites_belowkeeper.py`). Deeper in the caverns stands the Belowkeeper Bell Sanctum, where waking the Listening Belfry begins an optional encounter with the unclappered bronze Hollow Bell (`tools/hollow_bell_art.py`).
+  - Emberwood Reach, Charcoal Yards and the Kiln Widow: fire-adapted oak-and-ash woodland along the humid edge of wooded badlands, with podzol and coarse-dirt ash firebreaks, natural Cinder Fern patches, Cinderfoxes, Salamanders, Charcoal Moths and Cinder Bailiffs (`tools/regional_biomes.py`). Emberwood Charcoal Yards house resident Emberwood Kiln Keepers, cultivated Cinder Fern ash beds, the four-page *Eleven Winters at the Gate* ledger and an eastern kiln draft lamp (`tools/sites_emberwood.py`). Deeper in the scorched woods stands the Emberwood Kiln Court, where stoking the Kiln Heartstone begins an optional encounter with the many-legged ceramic Kiln Widow (`tools/kiln_widow_art.py`).
   - Rook's Rainshield.
   - Highland beasts: Stonehorn and Galeclaw.
   - Fallen Knights carry manual pages.
@@ -161,7 +173,7 @@ Each Master's greeting, hint and parting line is in `tools/lore_journal_text.py`
   - Saved per player, kept through death, and synced only to its owner.
   - Older saves open empty, then fill in from progress the player already has.
   - Tabs: Leads, Places, People, Learned and Talk.
-- **Six discovery leads**:
+- **Six standalone discovery leads, the Scout's Last Cairn continuation, the Drowned Road, the Paired Cairns, What the Empty Bell Kept and Eleven Winters at the Gate**:
 
 | Lead | Clue from | Goal | Reward |
 |---|---|---|---|
@@ -171,6 +183,52 @@ Each Master's greeting, hint and parting line is in `tools/lore_journal_text.py`
 | The Warden's Threshold | a Field Guide entry | set off any element reaction | 30 XP, 2 Blank Runes |
 | Different Hands | a tournament board | win a duel | 30 XP, 2 Aura Shards, 1 Blank Rune, Aura XP |
 | The Masters' Ledger | a Stone duelist | meet a Sword Master | 50 XP, 3 Aura Shards, 1 Blank Rune, Aura XP |
+| The Scout's Last Cairn | finish The Scout's Wall | enter a road watchtower | 30 XP, 1 Aura Shard, 1 Blank Rune |
+| The Road Before Roads | finish The Scout's Last Cairn | enter standing stones | 30 XP, 2 Blank Runes |
+| An Oath at Rest | finish The Road Before Roads | use an authentic Sleeping Blade stone | 40 XP, 2 Aura Shards, 1 Blank Rune |
+| The Drowned Road | meet a Tideward Reedkeeper | hear the Ferryman account | 20 XP, 1 Blank Rune |
+| The Second Count | finish The Drowned Road | enter a coastal pier boathouse | 30 XP, 2 Blank Runes |
+| A Light for the Last Boat | finish The Second Count | stand beside a working lighthouse lamp | 40 XP, 1 Aura Shard, 2 Blank Runes |
+| The Paired Cairns | meet a Highland Cairn Keeper | hear the survey ring account | 20 XP, 1 Blank Rune |
+| The Ridge Watch | finish The Paired Cairns | visit a road watchtower or standing stones | 30 XP, 2 Blank Runes |
+| A Lamp on the Ridge | finish The Ridge Watch | stand beside a lit cairn lamp at a Highland Cairn Lodge | 40 XP, 1 Aura Shard, 2 Blank Runes |
+| What the Empty Bell Kept | meet a Belowkeeper Listener | hear the Bell Sanctum account | 20 XP, 1 Blank Rune |
+| The Pressure Records | finish What the Empty Bell Kept | visit a Collapsed Delve or Deepslate Vault | 30 XP, 2 Blank Runes |
+| The Resonance Shutter | finish The Pressure Records | stand beside a lit resonance shutter at a Belowkeeper Listening Station | 40 XP, 1 Aura Shard, 2 Blank Runes |
+| Eleven Winters at the Gate | meet an Emberwood Kiln Keeper | hear the Kiln Widow account | 20 XP, 1 Blank Rune |
+| The Southern Forge Ledgers | finish Eleven Winters at the Gate | visit a Mountain Forge Hall, Prospector's Camp, Basalt Foundry or Kiln Court | 30 XP, 2 Blank Runes |
+| The Kiln Draft Lamp | finish The Southern Forge Ledgers | stand beside a lit kiln draft lamp at an Emberwood Charcoal Yard | 40 XP, 1 Aura Shard, 2 Blank Runes |
+
+The continuation joins existing histories: road-makers raised the stone rings before the
+Marchkeepers used those routes; the scout's paired cairns kept account of the living and those
+carried home; she later set the keeper's blade in stone. New watch orders and First Roads pages
+preserve that account (`tools/sites_travel.py`). The stone shares the Last Oath even with visitors
+who cannot draw the blade. Reading the history never claims the sword.
+
+The coastal continuation connects the Reedkeeper's First Crossing account to the boathouses'
+*Second Count* ledger and a fourth page in the Keeper's Log. The second count is made ashore; the
+lighthouse waits for word that every passenger has landed. The margin drawing of a reed hat is
+evidence of a remembered practice, not proof of a supernatural boatman. The player finishes by
+standing beside a working lamp in a real lighthouse, after using its existing lever or finding
+that another traveller already tended it. Books only appear in newly generated buildings; old
+structure records and lamp locations remain valid. Discovery never overwrites a player's building.
+
+The highland continuation connects the Cairn Keeper's *Paired Cairns* account to the hill road
+watchtowers and standing stone rings, and ends at a working cairn lamp on the eastern stone cairn
+of a Highland Cairn Lodge (`tools/sites_highland.py`). The optional Glass Cartographer encounter
+at the Highland Survey Ring remains independent of the peaceful route.
+
+The subterranean continuation connects the Belowkeeper Listener's *What the Empty Bell Kept*
+account to the dry miners' Collapsed Delves and Deepslate Vaults, and ends at a working resonance
+shutter lamp on the western frame of a Belowkeeper Listening Station (`tools/sites_belowkeeper.py`).
+The optional Hollow Bell encounter at the Belowkeeper Bell Sanctum remains independent of the
+peaceful route.
+
+The woodland continuation connects the Emberwood Kiln Keeper's *Eleven Winters at the Gate*
+account to the southern Mountain Forge Halls, Prospector's Camps and Basalt Foundries, and ends
+at a working kiln draft lamp on the eastern brick stack of an Emberwood Charcoal Yard
+(`tools/sites_emberwood.py`). The optional Kiln Widow encounter at the Emberwood Kiln Court
+remains independent of the peaceful route.
 
 - **How leads behave**
   - The goal and hint can be read again in the journal at any time.

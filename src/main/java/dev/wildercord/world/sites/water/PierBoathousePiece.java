@@ -136,6 +136,8 @@ public class PierBoathousePiece extends WaterPiece {
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 9, DECK + 1, 22);
 		chest(level, bb, 9, DECK + 1, 26, WaterSites.BOATHOUSE_LOOT, Direction.WEST, 305);
 		set(level, bb, Blocks.CRAFTING_TABLE.defaultBlockState(), 1, DECK + 1, 26);
+		lectern(level, bb, 1, DECK + 1, 24, Direction.EAST, "The Second Count",
+			"book.wildercord.water_boathouse", 3, "Tideward boatkeepers");
 		spawn(level, bb, EntityTypes.SPRUCE_BOAT, 5, BASE, 24, 0.6);
 	}
 }

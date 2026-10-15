@@ -650,7 +650,7 @@ def write_lang(runes):
         "screen.wildercord.heart.passives": "Passive slots: %s of %s",
         "screen.wildercord.heart.perk.3": "%s Circle · Mana Skin: a fifth of damage taken is paid with mana",
         "screen.wildercord.heart.perk.5": "%s Circle · Flow: cooldowns 15%% shorter",
-        "screen.wildercord.heart.perk.7": "%s Circle · Overflow: spells cast at full mana hit 30%% harder",
+        "screen.wildercord.heart.perk.7": "%s Circle · Overflow: spells cast at full mana hit 15%% harder",
         "screen.wildercord.heart.perk.8": "%s Circle · Archmage: spells cost 15%% less mana",
         "screen.wildercord.heart.complete": "Your heart is complete: %s circles. Master Heart.",
         "screen.wildercord.heart.next": "Next: the %s Circle",
@@ -669,7 +669,7 @@ def write_lang(runes):
         "message.wildercord.perk.3": "Mana Skin: a fifth of the damage you take is now paid with mana.",
         "message.wildercord.perk.4": "Overchannel III: maximum channel capacity reached (up to 60%% stronger).",
         "message.wildercord.perk.5": "Flow: your cooldowns are 15%% shorter.",
-        "message.wildercord.perk.7": "Overflow: spells cast at full mana hit 30%% harder.",
+        "message.wildercord.perk.7": "Overflow: spells cast at full mana hit 15%% harder.",
         "message.wildercord.perk.8": "Archmage: your spells cost 15%% less mana.",
         "message.wildercord.boss_breakthrough": "A boss has fallen. Your heart can now break through to the 7th Circle.",
         "message.wildercord.passive_locked": "That passive slot opens with the %s Heart Circle",
@@ -853,6 +853,18 @@ def write_lang(runes):
     import lantern_bearer_art
     lang.update(lantern_bearer_art.LANG)
     lantern_bearer_art.write(sys.modules[__name__])
+    import ferryman_art
+    lang.update(ferryman_art.LANG)
+    ferryman_art.write(sys.modules[__name__])
+    import cartographer_art
+    lang.update(cartographer_art.LANG)
+    cartographer_art.write(sys.modules[__name__])
+    import hollow_bell_art
+    lang.update(hollow_bell_art.LANG)
+    hollow_bell_art.write(sys.modules[__name__])
+    import kiln_widow_art
+    lang.update(kiln_widow_art.LANG)
+    kiln_widow_art.write(sys.modules[__name__])
     # Explorable sites: every tools/sites_<pack>.py writes its own worldgen, loot, advancements and text.
     import importlib
     site_ids = []
@@ -1124,7 +1136,7 @@ def write_lang(runes):
     import delve_art
     lang.update(delve_art.LANG)
     # ---- lore pack
-    import lore_journal_text  # The lore journal, its six discovery quests and the teachers' lines.
+    import lore_journal_text  # The lore journal, discovery chains and the teachers' lines.
     lang.update(lore_journal_text.LANG)
     # ---- prog pack
     import circle_vow_text
@@ -1207,6 +1219,13 @@ def write_lang(runes):
         lang[f"rune.wildercord.{path}.found"] = f"A signature fusion at a Fusion Altar: {names[a]} + {names[b]}, those two runes only"
     write_recipe_doc(runes)
     write_fusion_doc(runes)
+    import regional_biomes
+    lang.update(regional_biomes.LANG)
+    regional_biomes.write(sys.modules[__name__])
+    import boss_encounter_text
+    for key in boss_encounter_text.RETIRED_KEYS:
+        lang.pop(key, None)
+    lang.update(boss_encounter_text.LANG)
     write_json(ASSETS / "lang/en_us.json", lang)
 
 

@@ -53,6 +53,8 @@ public final class SiteFamilies {
 		worldgen("wildercord:travel_cartographer_hut", "Hut with wall maps and a desk chest map to another site; new chunks only.");
 		worldgen("wildercord:travel_vow_circle", "Shrine explaining the Circle Vows; new chunks only.");
 		// ---- sites-water pack
+		worldgen("wildercord:water_last_crossing", "Optional ferry-basin encounter; generates only in new chunks, never over a player's shore.");
+		worldgen("wildercord:water_reedkeeper_landing", "New Reedlands survey house and resident; generates only in new chunks, never over a player's bank.");
 		worldgen("wildercord:water_stilt_smokehouse", "New water site: generates only in newly explored chunks.");
 		worldgen("wildercord:water_lighthouse", "New water site: generates only in newly explored chunks.");
 		worldgen("wildercord:water_watermill", "New water site: generates only in newly explored chunks.");
@@ -70,5 +72,14 @@ public final class SiteFamilies {
 		worldgen("wildercord:mine_deep_vault", "New deep vault; its long shaft must not cut through existing terrain.");
 		worldgen("wildercord:mine_prospector_camp", "New badlands camp; generates only in new chunks.");
 		worldgen("wildercord:mine_miners_rest", "New cliff-edge shrine; generates only in new chunks.");
+		// ---- sites-highland pack
+		worldgen("wildercord:highland_cairn_lodge", "New Windscar ridge shelter and Cairn Keeper resident; generates only in new chunks, never over a player's build.");
+		worldgen("wildercord:highland_survey_ring", "Optional highland survey ring encounter; generates only in new chunks, never over explored ridges.");
+		// ---- sites-belowkeeper pack
+		worldgen("wildercord:belowkeeper_listening_station", "New Belowkeeper Hollows listening station and Listener resident; generates only in new chunks.");
+		worldgen("wildercord:belowkeeper_bell_sanctum", "Optional Belowkeeper Bell Sanctum encounter; generates only in new chunks.");
+		// ---- sites-emberwood pack
+		worldgen("wildercord:emberwood_charcoal_yard", "New Emberwood Reach charcoal yard and Kiln Keeper resident; generates only in new chunks.");
+		worldgen("wildercord:emberwood_kiln_court", "Optional Emberwood Kiln Court encounter; generates only in new chunks.");
 	}
 }

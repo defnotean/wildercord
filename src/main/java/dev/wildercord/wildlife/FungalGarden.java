@@ -54,7 +54,7 @@ public final class FungalGarden {
  public static final Item ROOT_NOTES=journal("breathmark_roots","Where the Roots Drink",0),AIR_NOTES=journal("breathmark_air","The Second Breath",1),CONCLUSION=journal("nursery_journal","Three Breathmarks",2);
  public static void init() {
   Registry.register(BuiltInRegistries.FEATURE_TYPE,Wildercord.id("glowcap_patch"),GlowcapFeature.CODEC);Registry.register(BuiltInRegistries.FEATURE_TYPE,Wildercord.id("breathmark_site"),BreathmarkFeature.CODEC);
-  var biomes=BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES));
+  var biomes=BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS));
   BiomeModifications.addFeature(biomes,GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("glowcap_patch")));
   BiomeModifications.addFeature(biomes,GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("breathmark_site")));
   CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(CUTTING,GILLS,NURSERY_ITEM,BREATHER,ROOT_NOTES,AIR_NOTES,CONCLUSION).forEach(o::accept));

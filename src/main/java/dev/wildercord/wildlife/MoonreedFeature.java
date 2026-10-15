@@ -18,6 +18,7 @@ public record MoonreedFeature() implements Feature {
    var state=WetlandGarden.REED.defaultBlockState().setValue(MoonreedBlock.AGE,1);
    if(l.isEmptyBlock(at) && state.canSurvive(l,at) && MoonreedBlock.moist(l,at) && MoonreedBlock.openSky(l,at)) {l.setBlock(at,state,Block.UPDATE_CLIENTS);placed++;}
   }
+  placed+=dev.wildercord.world.biome.ReedlandBanks.place(l,origin);
   return placed>0;
  }
 }

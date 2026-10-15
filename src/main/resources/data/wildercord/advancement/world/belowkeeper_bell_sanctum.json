@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "belowkeeper_bell_sanctum": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:belowkeeper_bell_sanctum"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:listening_belfry"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.belowkeeper_bell_sanctum.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.belowkeeper_bell_sanctum.description"
+    }
+  },
+  "requirements": [
+    [
+      "belowkeeper_bell_sanctum"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

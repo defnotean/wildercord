@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "wildercord:emberwood_charcoal_yard",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 11,
+    "salt": 2026101605
+  }
+}

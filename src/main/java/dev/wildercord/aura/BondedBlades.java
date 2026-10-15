@@ -1499,7 +1499,7 @@ public final class BondedBlades {
 				collect(handler.player);
 			}
 		}));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			UUID id = handler.player.getUUID();
 			flush(handler.player);
 			PENDING.remove(id);

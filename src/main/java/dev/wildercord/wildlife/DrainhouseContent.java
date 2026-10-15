@@ -28,7 +28,7 @@ public final class DrainhouseContent {
  public static final Item ENTRANCE_NOTES=journal("drainhouse_threshold","The Borrowed Third Breath",0),GARDEN_NOTES=journal("drainhouse_garden","Six Feet at the Table",1),ALCOVE_NOTES=journal("drainhouse_alcove","What the Empty Bell Keeps",2);
  public static void init(){
   BelowkeeperEquipment.init();Registry.register(BuiltInRegistries.FEATURE_TYPE,Wildercord.id("belowkeeper_drainhouse"),DrainhouseFeature.CODEC);
-  BiomeModifications.addFeature(BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES)),GenerationStep.Decoration.TOP_LAYER_MODIFICATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("belowkeeper_drainhouse")));
+  BiomeModifications.addFeature(BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)),GenerationStep.Decoration.TOP_LAYER_MODIFICATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("belowkeeper_drainhouse")));
   CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(ENTRANCE_NOTES,GARDEN_NOTES,ALCOVE_NOTES).forEach(o::accept));
  }
 }

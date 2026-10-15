@@ -70,6 +70,7 @@ LANG = {
     "book.wildercord.travel_ledger.3": "Lost your way? Open the Rune Catalog (Ctrl+B) and pick Use: Travel or Use: Exploring. Those runes find roads, homes and the places between.",
     "book.wildercord.travel_watch.1": "Watch Orders\n\nKeep the beacon cold until there is need. Light it with flint and steel and the smoke climbs high enough for any road to see.",
     "book.wildercord.travel_watch.2": "From up here you can read the land. Runes that read the sky, sun and moon are kept in the watch chest. Take what you need.",
+    "book.wildercord.travel_watch.3": "The Scout's Copy\n\nTwo cairns at each turn: one for those walking, one for those carried home. That was the Marchkeepers' rule. Before our towers, the stone rings kept the road. Follow them when our beacons go dark.",
     "book.wildercord.travel_toll.1": "Toll Notice\n\nThe middle fell in the spring flood. Jump the gap if you dare. If you fall, the water is deep and there are ladders on both banks.",
     "book.wildercord.travel_toll.2": "Tolls are suspended until the bridge is mended. The takings are in the chest. Bridge runes would help, if anyone still carved them.",
     "book.wildercord.travel_catalog.1": "Reading the Catalog\n\nThere are hundreds of runes. Open the Rune Catalog with Ctrl+B, or the Catalog link on your Cord screen.",
@@ -83,6 +84,7 @@ LANG = {
     "book.wildercord.travel_first_roads.2": "The road-makers carved runes that told the way: which way home, which way a ruin lay, which way the next ring stood.",
     "book.wildercord.travel_first_roads.3": "When the roads were done the rings were left to the grass. The tallest stone of each still points inward, toward the old road.",
     "book.wildercord.travel_first_roads.4": "At every ring the road-makers left a gift for the next walker. Kneel at the flat stone before the tallest and dig beside it.",
+    "book.wildercord.travel_first_roads.5": "A Later Hand\n\nThe Marchkeeper scout came by these stones when the army was gone. She set the keeper's blade in stone and kept walking. The Last Oath was for the next traveller, not the next battle.",
     "book.wildercord.travel_survey.1": "Survey Notes\n\nThe roads between inns, towers and libraries were never mapped in full. The desk chest keeps my last map. It marks a place I never reached.",
     "book.wildercord.travel_survey.2": "A cartography table copies and extends a map. Bring paper. Bring a compass too: it locks the map to you.",
     "book.wildercord.travel_survey.3": "Sense runes tell which way a village, ruin or portal lies. Bearing runes point home or to where you first woke.",
@@ -117,7 +119,10 @@ def write(g):
         g.write_json(g.DATA / f"worldgen/structure_set/{site}.json", {
             "placement": {"type": "minecraft:random_spread", "salt": SALT + n, "spacing": spacing, "separation": separation},
             "structures": [{"structure": f"wildercord:{site}", "weight": 1}]})
-        g.write_json(g.DATA / f"tags/worldgen/biome/has_structure/{site}.json", {"replace": False, "values": [f"minecraft:{b}" for b in biomes]})
+        values = [f"minecraft:{b}" for b in biomes]
+        if site in ("travel_watchtower", "travel_standing_stones"):
+            values.append("wildercord:windscar_highlands")
+        g.write_json(g.DATA / f"tags/worldgen/biome/has_structure/{site}.json", {"replace": False, "values": values})
         pools = [{"rolls": {"type": "minecraft:uniform", "min": 1, "max": 2}, "entries": _runes(g, site)},
                  {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 4}, "entries": [g.item_entry(*goods) for goods in GOODS[site]]}]
         if site == "travel_cartographer_hut":

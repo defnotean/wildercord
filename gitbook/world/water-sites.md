@@ -1,9 +1,11 @@
 # Water Sites
 
-Eight new places by rivers, swamps, coasts, warm seas and frozen water. Each has a chest with fishing gear and runes from the Tide pack (see [everyday rune packs](../runes/everyday-packs.md)), and each gives an advancement when you first step inside. They only appear in chunks you have not explored yet.
+Ten places by rivers, swamps, coasts, warm seas and frozen water. Each has a chest with fishing gear and runes from the Tide pack (see [everyday rune packs](../runes/everyday-packs.md)), and each gives an advancement when you first step inside. Visits also enter your journal's Places tab. They only appear in chunks you have not explored yet.
 
 | Site | Where to look | What is inside |
 |---|---|---|
+| The Last Crossing | [Luminous Reedlands](luminous-reedlands.md) | A shallow ferry basin with four dry paths, a supply chest and an instruction book. Deliberately ring its bell to challenge the [Reed-Crowned Ferryman](reed-crowned-ferryman.md). Visiting alone is peaceful. |
+| Tideward Reedkeeper Landing | [Luminous Reedlands](luminous-reedlands.md) | A survey house on stilts, a planted Moonreed garden and a resident fisher. Trade normally or crouch-use to hear permanent journal stories. The First Crossing on the lectern remembers the Reed-Crowned Ferryman. The chest holds surveying supplies and Water Reading, Tide Lantern or Reed Cut runes. |
 | Stilt Smokehouse | Swamps and rivers | A smokehouse on stilts over the water. Smoked fish, rods, line and fishing runes. Steps lead up from the water. Runes include Angler's Lure, Bait Blessing, Bobber Bell, Reeling Tide and Tackle Mend. |
 | Lighthouse | Beaches, snowy beaches and stony shores | A tall tower with a lamp at the top. Read the keeper's log on the lectern. A lever lights the lamp. The keeper hid a chest in the cellar: look for the cracked stone. It holds a spyglass, coast runes such as Tide Lantern, Storm Glass and Wreck Sense, and sometimes a buried treasure map. |
 | Watermill | River banks | A mill with a wheel turning in the river and a miller at home. Bread, a bucket and water-drawing runes such as Spring Draw, Brimming and Sluice. |
@@ -16,15 +18,18 @@ Eight new places by rivers, swamps, coasts, warm seas and frozen water. Each has
 ## Tips
 
 - The sunken shrine is deep. Bring a way to breathe for the swim down; the conduit helps once you are close.
-- The lighthouse, shrine and grotto each have a short book. Read it for a hint about the site.
+- The landing, lighthouse, boathouse, shrine and grotto each have a short book. Read it for a hint about the site.
+- The Reedkeeper's [Drowned Road](../progression/lore-journal.md) story continues in the boathouse's *Second Count* ledger beside its slip. The final chapter asks you to climb a lighthouse and light its lamp. An already lit tower also counts when you stand beside the lamp.
 - Server owners: these sites only generate in new chunks. They are not added to old ones by the world upgrade.
 
 ## Advancements
 
-All eight sit under Ley Line.
+All ten sit under Ley Line.
 
 | Site | Advancement |
 |---|---|
+| The Last Crossing | The Last Crossing |
+| Tideward Reedkeeper Landing | Keeper of the Crossing |
 | Stilt Smokehouse | Smoke on the Water |
 | Lighthouse | Keeper of the Light |
 | Watermill | Run of the Mill |

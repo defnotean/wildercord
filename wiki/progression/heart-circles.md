@@ -102,12 +102,12 @@ Each working circle adds **+15 max mana**, **+0.5 mana a second** and **+1.5% sp
 
 | Circles | Max mana | Regeneration | Spell power |
 |---|---|---|---|
-| 1 | +15 | +0.5/s | +3% |
-| 4 | +60 | +2.0/s | +12% |
-| 8 | +120 | +4.0/s | +24% |
-| 12 | +180 | +6.0/s | +36% |
-| 16 | +240 | +8.0/s | +48% |
-| 20 | +300 | +10.0/s | +60% |
+| 1 | +15 | +0.5/s | +1.5% |
+| 4 | +60 | +2.0/s | +6% |
+| 8 | +120 | +4.0/s | +12% |
+| 12 | +180 | +6.0/s | +18% |
+| 16 | +240 | +8.0/s | +24% |
+| 20 | +300 | +10.0/s | +30% |
 
 ### The perks
 
@@ -115,7 +115,7 @@ Each working circle adds **+15 max mana**, **+0.5 mana a second** and **+1.5% sp
 |---|---|---|
 | **Mana Skin** | 3rd | A fifth of the damage you take is paid with mana instead, at 2 mana per point of health, while you wear a Cord and have the mana. |
 | **Flow** | 5th | Cooldowns are **15% shorter**. |
-| **Overflow** | 7th | A spell cast at **full mana** hits **30% harder**. |
+| **Overflow** | 7th | A spell cast at **full mana** hits **15% harder**. |
 | **Archmage** | 8th | Spells and passives cost **15% less**. |
 
 ### Circle Vows

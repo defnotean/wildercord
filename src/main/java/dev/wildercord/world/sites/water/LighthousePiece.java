@@ -136,7 +136,7 @@ public class LighthousePiece extends WaterPiece {
 		for (int y = BASE + 1; y <= GALLERY; y++) {
 			set(level, bb, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), CX, y, 8);
 		}
-		lectern(level, bb, 8, BASE + 1, 5, Direction.WEST, "Keeper's Log", "book.wildercord.water_lighthouse", 3);
+		lectern(level, bb, 8, BASE + 1, 5, Direction.WEST, "Keeper's Log", "book.wildercord.water_lighthouse", 4);
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 5, BASE + 1, 8);
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 5, BASE + 2, 8);
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 5, BASE + 1, 4);
@@ -144,6 +144,11 @@ public class LighthousePiece extends WaterPiece {
 			set(level, bb, Blocks.GLASS.defaultBlockState(), 9, y, CZ);
 			set(level, bb, Blocks.GLASS.defaultBlockState(), 3, y, CZ);
 		}
+	}
+
+	/** The authored lamp, transformed with the piece's orientation for observation in old and new worlds. */
+	public BlockPos lampPosition() {
+		return localPosition(CX, GALLERY + 1, CZ);
 	}
 
 	/** The gallery, its railing, the glass lamp room and the dark lamp with its lever. */

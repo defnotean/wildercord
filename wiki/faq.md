@@ -163,7 +163,7 @@ The Master's Arts: Spellcut (from Edge), Rising Break and Driving Cut (from Form
 Your [Lore Journal]({{ '/progression/lore-journal/' | relative_url }}). It records places you find, duelists and Masters you meet, what you learn and what they say. Its **leads** point you to your next discovery and give rewards.
 
 ### Where are the new buildings?
-There are 48 sites in six families: farmsteads, Master halls, mines, roadside places, water places and wild places. They only appear in newly generated land, so explore away from old ground. See [Farmstead Sites]({{ '/world/farm-sites/' | relative_url }}), [Master Halls and Shrines]({{ '/world/masters-sites/' | relative_url }}), [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }}), [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}), [Water Sites]({{ '/world/water-sites/' | relative_url }}) and [Wild Places]({{ '/world/wilds-sites/' | relative_url }}).
+There are 54 sites in six families: farmsteads, Master halls, mines, roadside places, water places and wild places. They only appear in newly generated land, so explore away from old ground. See [Farmstead Sites]({{ '/world/farm-sites/' | relative_url }}), [Master Halls and Shrines]({{ '/world/masters-sites/' | relative_url }}), [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }}), [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}), [Water Sites]({{ '/world/water-sites/' | relative_url }}) and [Wild Places]({{ '/world/wilds-sites/' | relative_url }}).
 
 ### Some monsters glow and cast spells.
 They're **Runebound**: monsters with a Cord. Read the circle they hold out before each cast. See [Runebound]({{ '/world/runebound/' | relative_url }}) and [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}).
@@ -191,4 +191,4 @@ Sections include `casting`, `mana`, `world`, `loot`, `features`, `travel`, `defe
 No. Missing settings are added at their defaults when the server starts or reloads, and your own values are kept.
 
 ### Can I add a training pavilion to an old world?
-Yes, as an optional, owner-approved step with `/wildercord-upgrade`. It doesn't add the 48 sites; those only appear in new land. See [Pavilion Upgrade]({{ '/world/pavilion-upgrade/' | relative_url }}).
+Yes, as an optional, owner-approved step with `/wildercord-upgrade`. It doesn't add the 54 sites; those only appear in new land. See [Pavilion Upgrade]({{ '/world/pavilion-upgrade/' | relative_url }}).

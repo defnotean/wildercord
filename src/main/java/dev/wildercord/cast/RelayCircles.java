@@ -386,7 +386,7 @@ public final class RelayCircles {
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer p) retire(p); });
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((p, from, to) -> retire(p));
 		ServerPlayerEvents.AFTER_RESPAWN.register((old, fresh, alive) -> retire(old));
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> retire(handler.player));
+		dev.wildercord.net.ServerDisconnects.register((handler, server) -> retire(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			for (ServerPlayer player : List.copyOf(FOCI.keySet())) cancel(player);
 			INPUT.clear(); RECOVERY.clear();

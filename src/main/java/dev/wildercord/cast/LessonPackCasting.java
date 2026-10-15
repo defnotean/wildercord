@@ -442,7 +442,7 @@ public final class LessonPackCasting {
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             handler.player.removeAttached(LessonPackState.VIEW); INPUT.remove(handler.player);
         });
-        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> { retire(handler.player); releaseAlly(handler.player); });
+        dev.wildercord.net.ServerDisconnects.register((handler, server) -> { retire(handler.player); releaseAlly(handler.player); });
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             List<Placed> all = new java.util.ArrayList<>(GATES.values()); all.addAll(LINES.values()); all.addAll(RODS.values());
             for (Placed placed : all) {
