@@ -13,7 +13,7 @@ import masters_required_ci as masters
 from run_client_ci import MOON_ENTRY, MOON_NONCE
 from vps_identity import make_identity
 
-SUITES = (*suites.MASTERS_PART_NAMES, "articulated")
+SUITES = (*suites.MASTERS_PART_NAMES, "articulated", "release-smoke")
 PREFIX = "WILDERCORD_VPS_NATIVE "
 
 
@@ -24,7 +24,7 @@ def prepare(*, head, computer, batch, attempt, launch, environment, suite=None, 
     if str(uuid.UUID(launch)) != launch:
         raise ValueError("VPS launch must own a canonical UUID")
     identity = make_identity(head, computer, batch, attempt,
-        "game-tests" if shard else "masters-native" if suite in suites.MASTERS_PART_NAMES else "articulated-native")
+        "game-tests" if shard else "masters-native" if suite in suites.MASTERS_PART_NAMES else "articulated-native" if suite == "articulated" else "smoke-native")
     child = dict(environment)
     child[full.LAUNCH_ENV] = launch
     profile = None

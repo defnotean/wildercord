@@ -111,6 +111,15 @@ class VpsNativeTests(unittest.TestCase):
         self.assertEqual(p["moonReceipt"]["executor"], "windows-vps")
         self.assertFalse(p["moonReceipt"]["remoteObserverCoverage"])
 
+    def test_release_smoke_group_is_small_and_completes_without_moon_receipt(self):
+        p = plan(suite="release-smoke")
+        self.assertLessEqual(p["selection"]["count"], 16)
+        self.assertIsNone(p["moonReceipt"])
+        result = native.manifest(log_for(p), p)
+        self.assertEqual(result["focusedClientGate"], "passed", result["verificationIssues"])
+        self.assertEqual(result["fullClientGate"], "unverified")
+        self.assertEqual(result["counts"]["passed"], p["selection"]["count"])
+
     def test_partial_reordered_duplicate_and_foreign_group_logs_fail_closed(self):
         for name in ("masters-core", "masters-march-visuals", "articulated"):
             p = plan(suite=name); good = log_for(p)

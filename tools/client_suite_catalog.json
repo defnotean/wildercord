@@ -318,5 +318,25 @@
     "entries": [
       "dev.wildercord.aura.world.StoneMarchOpponentViewTest"
     ]
+  },
+  "release-smoke": {
+    "description": "Pre-release smoke: one quick native class per major area (casting, party, client fx, journal, meditation, wildlife, content, research, commands, monsters, lore, world). A fast sanity check run once before a release; it does not replace the full 349-class native gate.",
+    "expectedCount": 14,
+    "entries": [
+      "dev.wildercord.cast.BasinfillTest",
+      "dev.wildercord.cast.FortuneDamageAdmissionTest",
+      "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.client.fx.LifeOutcomeQualityTest",
+      "dev.wildercord.gametest.LifeJournalTest",
+      "dev.wildercord.gametest.WildercordMeditationTest",
+      "dev.wildercord.wildlife.SiltcrestWaterControlTest",
+      "dev.wildercord.wildlife.RootmoltPlacementTest",
+      "dev.wildercord.familiar.ContentSystemsTest",
+      "dev.wildercord.player.ResearchLibraryTest",
+      "dev.wildercord.command.LearnAllFusionTest",
+      "dev.wildercord.monster.WildMonsterPressureTest",
+      "dev.wildercord.lore.LoreJournalGameTest",
+      "dev.wildercord.world.dungeons.SwordTombTest"
+    ]
   }
 }
