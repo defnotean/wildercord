@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+
+- **Four Lamps, One Road**, a journal capstone that opens when the Reedlands, Highland, Belowkeeper and Emberwood lamps are all lit and each regional keeper has answered. It pays 120 XP, four Blank Runes, five Aura Shards and Aura experience, and ends with the Lamplighter's Lantern keepsake, a flare of end-rod light and a bell.
+- Gathering bounties can ask for Moonreed Floss, Dried Glowcap Gills and Ember Tuft.
+- Wandering caravaneers buy those three goods, four at a time, for an emerald each.
+
 ## [0.13.0-alpha] — 2026-10-15
 
 **Living world.** New regions with their own buildings, residents, lore routes and bosses, plus bounties, mounts, guilds and a long list of fixes.

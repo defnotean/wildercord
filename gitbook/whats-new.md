@@ -1,3 +1,11 @@
+# What's new in 0.14.0: One road
+
+Install `wildercord-0.14.0-alpha+mc26.3.jar` on the server and every client. This update adds an item, so it must match on both sides.
+
+- **Four Lamps, One Road**: light all four regional lamps, then sneak-use each regional keeper again to finish a [journal](progression/lore-journal.md) lead that ends with a Lamplighter's Lantern.
+- **Regional bounties**: gathering bounties can now ask for Moonreed Floss, Dried Glowcap Gills or Ember Tuft.
+- **Caravans buy regional goods**: a wandering caravaneer pays an emerald each for Moonreed Floss, Dried Glowcap Gills and Ember Tuft, four at a time.
+
 # What's new in 0.13.0: Living world
 
 Install `wildercord-0.13.0-alpha+mc26.3.jar` on the server and every client, with Fabric API 0.161.0+26.3 and Fabric Loader 0.19.5 or newer. This update adds blocks, items, entities and packets, so **0.12.x clients must update before joining**. Back up your worlds first.
