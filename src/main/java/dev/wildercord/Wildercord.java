@@ -160,6 +160,7 @@ public final class Wildercord implements ModInitializer {
   dev.wildercord.wildlife.DrainhouseContent.init();
 		dev.wildercord.cast.Dungeons.init();
 		dev.wildercord.world.dungeons.DungeonWards.init();
+		dev.wildercord.world.dungeons.ArenaTrees.init();
 		SpellCaster.init();
 		dev.wildercord.cast.RelayCircles.init();
 		dev.wildercord.content.RelayLesson.init();

@@ -20,6 +20,7 @@
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.lore.LoreJournalGameTest",
       "dev.wildercord.world.dungeons.SwordTombTest",
+      "dev.wildercord.world.dungeons.ArenaTreeClearingTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
       "dev.wildercord.gametest.WildercordMonstersTest",

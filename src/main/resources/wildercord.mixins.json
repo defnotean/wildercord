@@ -5,6 +5,8 @@
 	"mixins": [
 		"ExcisePlayerRemovalMixin",
 		"ReedlandPlacementMixin",
+		"ArenaTreeMixin",
+		"ArenaFallenTreeMixin",
 		"ReedlandSurfaceMixin",
 		"RelayLivingDamageMixin",
 		"RelayPlayerDamageMixin",

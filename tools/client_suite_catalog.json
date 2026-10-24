@@ -20,9 +20,9 @@
     ]
   },
   "area-combat-bosses": {
-    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, monsters, aura beasts, boss damage through armour.",
+    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, monsters, aura beasts, boss damage through armour, trees kept out of boss arenas.",
     "purpose": "area",
-    "expectedCount": 8,
+    "expectedCount": 9,
     "entries": [
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
@@ -31,7 +31,8 @@
       "dev.wildercord.world.dungeons.SleepingBladeTest",
       "dev.wildercord.gametest.WildercordMonstersTest",
       "dev.wildercord.aura.world.AuraBeastsTest",
-      "dev.wildercord.aura.world.BossDamageTest"
+      "dev.wildercord.aura.world.BossDamageTest",
+      "dev.wildercord.world.dungeons.ArenaTreeClearingTest"
     ]
   },
   "area-combat-arts": {

@@ -45,6 +45,10 @@ Roughly from easiest to hardest:
   sleeps again after 10, healed.
 - **It heals when left alone.** After 3 seconds without being hurt, it heals 1.5% of its health a second. Keep at it.
 - **Its blows bite through armour.** Part of every hit ignores armour.
+- **No trees in the arena.** The forest around a lair doesn't grow into it or hang over its edge. Trees that had
+  already grown inside an older lair are cut down the first time the whole lair is loaded. The lair's own dead trees,
+  posts and planted leaves stay. Saplings planted within 4 blocks of a lair (or a dungeon) won't grow, even with bone
+  meal.
 - **Not on Peaceful.** None of them wake.
 - **A chest and a boon.** Each lair has a chest. Six of the seven also guard a **boon**: a block in the lair you use to
   take its gift for good. You can't take it while its boss is alive nearby. Each player can take it once, and it stays
