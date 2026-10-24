@@ -19,9 +19,9 @@ public final class GuardianBite {
 		finally{piercing=was;}
 	}
 
-	/** What a defence leaves of a hit ({@code after} of {@code before}), with a landing guardian's blow going partly through it. */
-	public static float pierce(float before,float after){
-		return pierced(before,after,piercing);
+	/** The share of its defences the landing guardian's blow goes through; zero when none is landing. */
+	static double share(){
+		return piercing;
 	}
 	static float pierced(float before,float after,double share){
 		return share>0 && after<before?(float)(after+(before-after)*share):after;

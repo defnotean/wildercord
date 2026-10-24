@@ -229,7 +229,7 @@ class SerpentRulesTest {
 		assertEquals(20,GuardianBite.pierced(20,20,.45),1e-6);
 		assertEquals(10+10*.45,GuardianBite.pierced(20,10,.45),1e-4);
 		assertEquals(10,GuardianBite.pierced(20,10,0),1e-6);
-		assertEquals(10,GuardianBite.pierce(20,10),1e-6);
+		assertEquals(0,GuardianBite.share(),1e-9);
 	}
 	@Test void theSlamsClodsFlyChestHighAcrossItsReach(){
 		for(double d=SerpentRules.SLAM_AHEAD;d<=SerpentRules.SLAM_REACH-SerpentRules.SLAM_AHEAD;d+=.5){

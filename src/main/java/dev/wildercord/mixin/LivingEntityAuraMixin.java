@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
  * Aura between a creature and what strikes it, wrapped round the whole of {@code hurtServer} (after a player's own checks,
  * difficulty and PvP, have had their say), in this order:
  * <ul>
+ * <li>a boss's blow on a player (see {@link dev.wildercord.aura.world.BossDamage}): it lands harder, before anything weakens it;</li>
  * <li>an Aura Step's untouchable moment (see {@link AuraStep}): the hit never lands;</li>
  * <li>a striker standing in a foe's Dominion (see {@link AuraDominion}): its blow lands weaker;</li>
  * <li>a body a Way steadies (see {@link WayBanner}: a Banner's cry, presence or sheltering Dominion, an unbroken Bulwark's awakening): what
@@ -34,6 +35,7 @@ public abstract class LivingEntityAuraMixin {
 		if (AuraStep.untouchable(self, source)) {
 			return false;
 		}
+		damage = dev.wildercord.aura.world.BossDamage.harm(self, source, damage);
 		float weakened = dev.wildercord.aura.BladeTraits.harm(self, source, WayBanner.harm(self, source, AuraDominion.weakened(self, source, damage)));
 		float through = AuraGuard.incoming(self, source, weakened);
 		if (through < 0) {

@@ -37,6 +37,7 @@
       "dev.wildercord.wildlife.ReedRefugeTest",
       "dev.wildercord.wildlife.RainshieldAckTest",
       "dev.wildercord.aura.world.WeaversSilkStowTest",
+      "dev.wildercord.aura.world.BossDamageTest",
       "dev.wildercord.wildlife.RainshieldFaultTest",
       "dev.wildercord.wildlife.SiltcrestPresentationTest",
       "dev.wildercord.gametest.WildercordFeatureTour"

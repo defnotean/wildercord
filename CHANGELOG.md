@@ -11,6 +11,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Wandering caravaneers buy those three goods, four at a time, for an emerald each.
 - Weaver's Silk can be put away and taken out again with `G` (rebindable) or `/silk`, so it stops catching you on walls while you jump around. The choice is kept through death and relogs.
 
+### Changed
+
+- Every boss hits players harder: lair bosses, dungeon guardians, Masters, the Gravekeeper, the Archivist, the Glass Cartographer, the Reed-Crowned Ferryman, the Hollow Bell, the Kiln Widow and giants. Their blows (and their projectiles) land 35% harder, and at least 40% of what armour, Protection and Resistance would stop goes through anyway. A 10-damage blow on full diamond with Protection IV used to take about half a heart; it now takes about two and a half.
+
 ### Fixed
 
 - The official server no longer goes down every night around 4 a.m. The nightly backup zipped the whole world at full speed, which stalled the server until its watchdog killed it. It now saves the world first and refreshes a folder snapshot at idle priority, copying only what changed.

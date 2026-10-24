@@ -14,6 +14,9 @@ Seven bosses sleep in lairs of their own, each in its own kind of land. Wake one
   a way off. Move, and you change what comes.
 - **Every move has a tell.** A pose, a sound, and often a mark on the ground. Its boss bar names the move it's making.
 - **Openings.** Many moves leave it stuck, sprawled, dazed or panting. That's when it takes more.
+- **Armour only goes so far.** Every boss, not only these seven, hits players 35% harder than its numbers suggest, and
+  at least 40% of what armour, Protection and Resistance would stop gets through. Full diamond with Protection IV
+  still helps a lot, but it won't make you safe.
 - **Half beaten, it turns fiercer.** It stops for one big move, then fights on quicker, often with its moves in pairs.
 
 1. TOC
