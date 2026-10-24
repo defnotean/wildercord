@@ -333,8 +333,9 @@ public final class Duels {
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Duels::tick);
 		// A leaver's own rests stay (a relog never skips them); everyone's that have run go once the maps grow.
+		// The rests are stamped with the server tick count, so they are measured by it too.
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
-			long now = server.overworld().getGameTime();
+			long now = server.getTickCount();
 			dev.wildercord.spell.StatePrune.rested(LAST_HURT, now, DuelRules.HURT_TICKS);
 			dev.wildercord.spell.StatePrune.rested(LAST_PVP, now, DuelRules.PVP_TICKS);
 			dev.wildercord.spell.StatePrune.rested(LAST_DUEL, now, DuelRules.DUEL_COOLDOWN_TICKS);
@@ -388,6 +389,11 @@ public final class Duels {
 		UUID id = player.getUUID();
 		return DuelRules.ready(now, LAST_HURT.getOrDefault(id, DuelRules.NEVER), LAST_PVP.getOrDefault(id, DuelRules.NEVER),
 			LAST_DUEL.getOrDefault(id, DuelRules.NEVER));
+	}
+
+	/** Whether {@code player} took damage in the last {@link DuelRules#HURT_TICKS}. */
+	public static boolean hurtRecently(ServerPlayer player) {
+		return DuelRules.within(player.level().getServer().getTickCount(), LAST_HURT.getOrDefault(player.getUUID(), DuelRules.NEVER), DuelRules.HURT_TICKS);
 	}
 
 	/** Calls {@code player}'s duel off (for nobody: an operator, a test). */

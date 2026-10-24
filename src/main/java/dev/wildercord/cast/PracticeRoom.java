@@ -24,6 +24,8 @@ public final class PracticeRoom {
  public static final ResourceKey<Level> DIMENSION = ResourceKey.create(Registries.DIMENSION,Wildercord.id("practice"));
  private static final AttachmentType<GlobalPos> RETURN = AttachmentRegistry.create(Wildercord.id("practice_return"),
   b -> b.persistent(GlobalPos.CODEC).copyOnDeath());
+ /** When each player last stepped in (server ticks, not saved): entry has a cooldown. */
+ private static final java.util.Map<java.util.UUID,Long> ENTERED=new java.util.HashMap<>();
  public static void init() {
   ServerTickEvents.END_SERVER_TICK.register(server -> {
    for(ServerPlayer player:server.getPlayerList().getPlayers()) if(player.level().dimension().equals(DIMENSION) && player.getY()<78)
@@ -33,6 +35,13 @@ public final class PracticeRoom {
  public static int enter(ServerPlayer player) {
   ServerLevel world=player.level().getServer().getLevel(DIMENSION);
   if(world==null) { player.sendSystemMessage(Component.translatable("message.wildercord.practice.restart")); return 0; }
+  // Not a way out of a duel, a fight, a fall, a fire or a ride; and not again straight away.
+  long now=player.level().getServer().getTickCount();
+  boolean inside=player.level().dimension().equals(DIMENSION);
+  PracticeRules.Refusal refusal=inside ? PracticeRules.Refusal.NONE : PracticeRules.refusal(dev.wildercord.duel.Duels.inDuel(player),dev.wildercord.duel.Duels.hurtRecently(player),
+   player.onGround(),player.isOnFire() || player.isInLava(),player.isPassenger(),now,ENTERED.getOrDefault(player.getUUID(),PracticeRules.NEVER));
+  if(refusal!=PracticeRules.Refusal.NONE) { player.sendSystemMessage(Component.translatable("message.wildercord.practice.refused."+refusal.name().toLowerCase(java.util.Locale.ROOT))); return 0; }
+  if(!inside) ENTERED.put(player.getUUID(),now);
   if(!player.level().dimension().equals(DIMENSION)) player.setAttached(RETURN,GlobalPos.of(player.level().dimension(),player.blockPosition()));
   build(world);
   player.teleportTo(world,.5,81,.5,Set.<Relative>of(),0,0,false);

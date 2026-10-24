@@ -3069,6 +3069,12 @@ LOADOUT_LANG = {
     "message.wildercord.practice.restart": "The practice dimension is not loaded. Restart the world after installing this version.",
     "message.wildercord.practice.enter": "Practice arena: use your spells on the dummies. /wildercord practice moving, stress <1-24>, benchmark, or leave.",
     "message.wildercord.practice.benchmark": "Cast for 10 seconds. The result reports server particle deliveries, decorations limited, and plan cache work.",
+    "message.wildercord.practice.refused.duel": "You can't go to the practice arena during a duel.",
+    "message.wildercord.practice.refused.hurt": "You were hurt too recently to go to the practice arena.",
+    "message.wildercord.practice.refused.falling": "Stand on solid ground before going to the practice arena.",
+    "message.wildercord.practice.refused.burning": "Put the fire out before going to the practice arena.",
+    "message.wildercord.practice.refused.riding": "Dismount before going to the practice arena.",
+    "message.wildercord.practice.refused.cooldown": "You went to the practice arena moments ago. Wait a little before going again.",
     # The server's answers (above the hotbar, or in chat for /loadout)
     "message.wildercord.loadout.saved": "Saved your Cord as %s (%s of %s)",
     "message.wildercord.loadout.replaced": "Saved your Cord over %s",
