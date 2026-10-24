@@ -190,9 +190,10 @@ public final class ContractRules {
 
 		private final ArrayDeque<Cast> casts = new ArrayDeque<>();
 		private final List<String> reactions = new ArrayList<>();
-		private long reactionTick = Long.MIN_VALUE;
+		// Halved: now - Long.MIN_VALUE overflows negative, so a fresh credit never read as idle and was never swept.
+		private long reactionTick = Long.MIN_VALUE / 2;
 		/** The tick of the last real hit, whether a cast was credited in it, and whether it's a hit no cast has used yet. */
-		private long hitTick = Long.MIN_VALUE;
+		private long hitTick = Long.MIN_VALUE / 2;
 		private boolean creditedThisTick;
 		private boolean spareHit;
 
