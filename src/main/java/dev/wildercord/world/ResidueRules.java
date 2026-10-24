@@ -272,4 +272,16 @@ public final class ResidueRules {
 	public static long seedlingDue(long parentDue, long now, long ownLifetime) {
 		return Math.min(parentDue, now + ownLifetime);
 	}
+
+	/** A residue's saved owner as a player id: empty for the world's own, or when the save holds something that isn't an id. */
+	public static Optional<java.util.UUID> ownerId(String owner) {
+		if (owner == null || owner.isEmpty()) {
+			return Optional.empty();
+		}
+		try {
+			return Optional.of(java.util.UUID.fromString(owner));
+		} catch (IllegalArgumentException e) {
+			return Optional.empty();
+		}
+	}
 }

@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -156,5 +157,15 @@ class ResidueRulesTest {
 		assertEquals(5000, ResidueRules.seedlingDue(5000, 1000, 24000), "a seedling fades with its parent");
 		assertEquals(3000, ResidueRules.seedlingDue(50000, 1000, 2000));
 		assertTrue(ResidueRules.BLOOM_GENERATIONS >= 1 && ResidueRules.BLOOM_GENERATIONS <= 3, "wildblooms spread only a little");
+	}
+
+	@Test
+	void aSavedOwnerThatIsNotAnIdReadsAsNoOne() {
+		java.util.UUID id = java.util.UUID.randomUUID();
+		assertEquals(Optional.of(id), ResidueRules.ownerId(id.toString()));
+		assertEquals(Optional.empty(), ResidueRules.ownerId(""), "the world's own residue has no owner");
+		assertEquals(Optional.empty(), ResidueRules.ownerId(null));
+		assertEquals(Optional.empty(), ResidueRules.ownerId("Steve"), "a damaged save never crashes a random tick");
+		assertEquals(Optional.empty(), ResidueRules.ownerId("not-a-real-uuid-at-all"));
 	}
 }
