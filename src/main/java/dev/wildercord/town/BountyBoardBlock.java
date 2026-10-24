@@ -104,6 +104,7 @@ public class BountyBoardBlock extends Block {
 			} else if (bounty.done()) {
 				turnIn(player, level, pos, standing, bounty, today);
 			} else if (player.isShiftKeyDown()) {
+				if (bounty.type() == BountyRules.Kind.ESCORT) BountyEscorts.abandon(player);
 				Town.set(player, standing.with(Optional.empty()));
 				say(player, "abandoned", ChatFormatting.GRAY, Town.targetName(bounty));
 			} else if (bounty.type() == BountyRules.Kind.ESCORT) {

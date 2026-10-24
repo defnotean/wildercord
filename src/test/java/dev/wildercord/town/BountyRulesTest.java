@@ -104,4 +104,13 @@ class BountyRulesTest {
 		assertTrue(BountyRules.greatDue(BountyRules.week(15), 21), "a new week");
 		assertEquals(BountyRules.offer(PLAYER, 16, 99L, Tier.FRIEND, false), BountyRules.offer(PLAYER, 16, 99L, Tier.FRIEND, false), "the same all day");
 	}
+
+	@Test
+	void ambushesNeedTheEscortToMoveAndStopAtTheCap() {
+		assertFalse(BountyRules.ambushMayRoll(0, 0), "standing still farms nothing");
+		assertFalse(BountyRules.ambushMayRoll(BountyRules.AMBUSH_MOVED - 0.01, 0));
+		assertTrue(BountyRules.ambushMayRoll(BountyRules.AMBUSH_MOVED, 0));
+		assertTrue(BountyRules.ambushMayRoll(6, BountyRules.AMBUSH_MAX - 1));
+		assertFalse(BountyRules.ambushMayRoll(6, BountyRules.AMBUSH_MAX));
+	}
 }

@@ -106,6 +106,9 @@ public final class BountyRules {
 	public static final int ESCORT_EMERALDS = 6, ESCORT_BLOCKS_PER_EMERALD = 40, ESCORT_REPUTATION = 10;
 	/** What an escort names as its target: the pack llama. */
 	public static final String ESCORT_TARGET = "minecraft:llama";
+	/** How far the llama has to have moved since the last second for an ambush to roll, and how many one road can bring. */
+	public static final double AMBUSH_MOVED = 2;
+	public static final int AMBUSH_MAX = 3;
 
 	/** What a dungeon bounty names as its target. */
 	public static final String DUNGEON_GUARDIAN = "dungeon_guardian";
@@ -239,5 +242,13 @@ public final class BountyRules {
 	/** Whether the traveller can take another bounty today, having last turned one in on {@code lastDay} (-1 for never). */
 	public static boolean ready(long lastDay, long today) {
 		return lastDay < today;
+	}
+
+	/**
+	 * Whether an ambush may roll this second: the llama moved at least {@link #AMBUSH_MOVED} blocks since the last one and the
+	 * road hasn't brought {@link #AMBUSH_MAX} yet. A parked llama draws none, so an escort can't be left as a mob farm.
+	 */
+	public static boolean ambushMayRoll(double moved, int ambushes) {
+		return moved >= AMBUSH_MOVED && ambushes < AMBUSH_MAX;
 	}
 }
