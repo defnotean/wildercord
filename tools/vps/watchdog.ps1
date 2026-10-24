@@ -57,9 +57,24 @@ function Test-Minecraft([string]$server, [int]$port) {
         $stream.Write($bytes, 0, $bytes.Length)
         Write-VarInt $stream 1
         Write-VarInt $stream 0
+        # Finish the whole status exchange (response, ping, pong). Hanging up after the packet id makes the
+        # server log an EncoderException stack trace on every check.
+        $length = Read-VarInt $stream
+        if ($length -le 0 -or $length -gt 1048576) { return $false }
+        $body = New-Object byte[] $length
+        $read = 0
+        while ($read -lt $length) {
+            $n = $stream.Read($body, $read, $length - $read)
+            if ($n -le 0) { return $false }
+            $read += $n
+        }
+        if ($body[0] -ne 0) { return $false }
+        $ping = New-Object byte[] 10
+        $ping[0] = 9
+        $ping[1] = 1
+        $stream.Write($ping, 0, $ping.Length)
         $null = Read-VarInt $stream
-        $id = Read-VarInt $stream
-        return $id -eq 0
+        return (Read-VarInt $stream) -eq 1
     } catch {
         return $false
     } finally {

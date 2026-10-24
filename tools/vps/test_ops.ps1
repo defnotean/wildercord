@@ -118,10 +118,49 @@ try {
     foreach ($r in $roots) { Remove-Item -LiteralPath $r -Recurse -Force -ErrorAction SilentlyContinue }
 }
 
-# 10. The real rcon.ps1 against the live server: a read-only `list`.
+# 10. The watchdog's status ping finishes the exchange: a fake server answers the status request and
+# records whether the client went on to ping. Hanging up early made the real server log a stack trace.
+$ast = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PSScriptRoot 'watchdog.ps1'), [ref]$null, [ref]$null)
+foreach ($f in $ast.FindAll({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -in 'Write-VarInt', 'Read-VarInt', 'Test-Minecraft' }, $false)) {
+    . ([scriptblock]::Create($f.Extent.Text))
+}
+$pinged = Join-Path $env:TEMP "wc-ping-$PID.txt"
+$portFile = "$pinged.port"
+Remove-Item $pinged, $portFile -ErrorAction SilentlyContinue
+$server = Start-Job -ArgumentList $portFile, $pinged -ScriptBlock {
+    param($portFile, $pinged)
+    $l = New-Object System.Net.Sockets.TcpListener([System.Net.IPAddress]::Loopback, 0)
+    $l.Start()
+    Set-Content $portFile $l.LocalEndpoint.Port
+    $c = $l.AcceptTcpClient()
+    $s = $c.GetStream()
+    $s.ReadTimeout = 5000
+    function Skip-Packet { $len = 0; $shift = 0; do { $b = $s.ReadByte(); $len = $len -bor (($b -band 0x7F) -shl $shift); $shift += 7 } while ($b -band 0x80); $buf = New-Object byte[] $len; $r = 0; while ($r -lt $len) { $r += $s.Read($buf, $r, $len - $r) }; $buf }
+    $null = Skip-Packet
+    $null = Skip-Packet
+    $json = [System.Text.Encoding]::UTF8.GetBytes('{"version":{"name":"test","protocol":775}}')
+    $body = [byte[]](@(0, $json.Length) + $json)
+    $s.Write([byte[]](@($body.Length) + $body), 0, $body.Length + 1)
+    try {
+        $ping = Skip-Packet
+        if ($ping[0] -eq 1) { Set-Content $pinged 'ping'; $s.Write([byte[]](@($ping.Length) + $ping), 0, $ping.Length + 1) }
+    } catch { }
+    Start-Sleep -Milliseconds 200
+    $c.Close(); $l.Stop()
+}
+for ($i = 0; $i -lt 60 -and -not (Test-Path $portFile); $i++) { Start-Sleep -Milliseconds 250 }
+$ok = (Test-Path $portFile) -and (Test-Minecraft '127.0.0.1' ([int](Get-Content $portFile)))
+$null = Wait-Job $server -Timeout 15
+Remove-Job $server -Force
+Check ($ok -and (Test-Path $pinged)) "status ping reads the response and pings back (answered=$ok, pinged=$(Test-Path $pinged))"
+Remove-Item $pinged, $portFile -ErrorAction SilentlyContinue
+
+# 11. The real rcon.ps1 against the live server: a read-only `list`.
 if ($LiveRcon) {
     $out = & (Join-Path $PSScriptRoot 'rcon.ps1') -Command 'list'
     Check ("$out" -match '^There are \d+ of a max') "live rcon list: $out"
+    $livePort = [int]((Get-Content 'C:\wildercord\server.properties' | Where-Object { $_ -like 'server-port=*' }) -replace 'server-port=', '')
+    Check (Test-Minecraft '127.0.0.1' $livePort) "live status ping on port $livePort"
 }
 
 Write-Output "$failures failure(s)"
