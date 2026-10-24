@@ -9,7 +9,8 @@ it takes precedence over this snapshot.
 
 The owner started a polish loop on branch `0.14-connected-world`: audit, fix, test and refine in
 rounds until they say "stop" (then finish the current edit, let VPS tests end, commit, push, clean up
-and report). Findings and status live in `docs/audit/2026-10-24-polish.md`. The section below is the
+and report). **No pull requests:** once a fix is confirmed on the VPS and implemented, merge the branch
+into `main` directly (owner, 2026-10-24). Findings and status live in `docs/audit/2026-10-24-polish.md`. The section below is the
 older October 13 pause note.
 
 ## Earlier state: paused by the owner (2026-10-13)
