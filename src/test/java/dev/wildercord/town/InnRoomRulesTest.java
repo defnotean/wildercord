@@ -33,4 +33,14 @@ class InnRoomRulesTest {
 		assertEquals(1, InnRoomRules.daysLeft(10, 9));
 		assertEquals(0, InnRoomRules.daysLeft(10, 10));
 	}
+
+	@Test
+	void theRoomChestShutsWhenTheTravellerWalksOff() {
+		double reach = InnRoomRules.CHEST_REACH;
+		assertTrue(InnRoomRules.atChest(true, true, 0));
+		assertTrue(InnRoomRules.atChest(true, true, reach * reach));
+		assertFalse(InnRoomRules.atChest(true, true, reach * reach + 0.01), "Walked off, the chest shuts");
+		assertFalse(InnRoomRules.atChest(false, true, 0), "Dead, the chest shuts");
+		assertFalse(InnRoomRules.atChest(true, false, 0), "In another dimension, the chest shuts");
+	}
 }

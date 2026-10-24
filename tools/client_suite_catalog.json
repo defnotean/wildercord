@@ -119,5 +119,13 @@
       "dev.wildercord.monster.CofferMimicTamingTest",
       "dev.wildercord.wildlife.ThistleHedgehogTamingTest"
     ]
+  },
+  "area-towns-guards": {
+    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator.",
+    "purpose": "area",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.town.InnChestReachTest"
+    ]
   }
 }
