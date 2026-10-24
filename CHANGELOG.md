@@ -32,6 +32,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Inn raid bandits carried into an unloaded chunk still count as fighting, so a raid can no longer be won by walking them out of range.
 - Runesmith contract tracking releases idle players instead of keeping them for the whole session.
 - Duel bookkeeping prunes old records on the server clock, a disconnect listener that throws no longer stops the others, and add-ons load after the core systems they hook into.
+- Lesson screens (Relay, Reweave, Excise and pack lessons) share a small allowance of page turns and reopenings per player, so a modified client flooding them can no longer make the server rebuild lesson pages hundreds of times a tick.
+- The field-form and Master-form lesson screens no longer try to open while the client has no world loaded.
 
 ## [0.13.0-alpha] — 2026-10-15
 
