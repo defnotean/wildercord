@@ -75,13 +75,15 @@ public final class ExciseLesson {
 		PayloadTypeRegistry.clientboundPlay().register(Show.TYPE, Show.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(Turn.TYPE, Turn.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(Retrieve.TYPE, Retrieve.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(Turn.TYPE, (packet, context) -> turn(context.player(), packet));
+		ServerPlayNetworking.registerGlobalReceiver(Turn.TYPE, (packet, context) -> {
+			if (packet.page() == -1 || LessonPackets.admit(context.player())) turn(context.player(), packet);
+		});
 		ServerPlayNetworking.registerGlobalReceiver(Retrieve.TYPE, (packet, context) -> {
 			if (packet.request() == 0) return;
 			if (packet.close()) {
 				Reading reading = READINGS.get(context.player());
 				if (reading != null && reading.request() == packet.request()) READINGS.remove(context.player());
-			} else openSaved(context.player(), packet.request());
+			} else if (LessonPackets.admit(context.player())) openSaved(context.player(), packet.request());
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> RelayLesson.removeInvalid(READINGS, ExciseLesson::valid, ExciseLesson::interrupted));
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> READINGS.remove(handler.player));
