@@ -72,7 +72,7 @@ public final class InnChestReachTest implements FabricClientGameTest {
 				var p = p(s);
 				p.setGameMode(GameType.CREATIVE);
 				Spellbooks.setCord(p, new ItemStack(WildercordItems.ECHO_CORD));
-				Spellbooks.set(p, new Spellbook(List.of(Runes.BEAM.id(), Runes.HARM.id()), List.of(), 0, true));
+				Spellbooks.set(p, new Spellbook(List.of(Runes.BEAM.id(), Runes.HARM.id()), List.of(List.of(Runes.BEAM.id(), Runes.HARM.id())), 0, true));
 				int before = scrolls(p);
 				SpellScrollItem.inscribe(p, 0);
 				check(scrolls(p) == before + 1, "A player inscribes their spell");
