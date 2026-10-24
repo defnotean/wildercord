@@ -10,6 +10,16 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Gathering bounties can ask for Moonreed Floss, Dried Glowcap Gills and Ember Tuft.
 - Wandering caravaneers buy those three goods, four at a time, for an emerald each.
 
+### Fixed
+
+- Abandoning an escort bounty, or reaching its destination, sends the llama home and drops its cargo where it stands. An escort llama found after its escort ended (a relog, a server restart) is released the same way, so escorts no longer leave free llamas or duplicate cargo.
+- Escort ambushes only roll while the caravan is moving, and stop after three per escort, so an idle escort can no longer be farmed for bandits.
+- The practice arena refuses entry during a duel, within ten seconds of taking damage, while falling, burning or riding, and within thirty seconds of the last entry. Leaving is always allowed.
+- Rituals draw mana only from members of the leader's party, never from strangers standing nearby.
+- Inn raid bandits carried into an unloaded chunk still count as fighting, so a raid can no longer be won by walking them out of range.
+- Runesmith contract tracking releases idle players instead of keeping them for the whole session.
+- Duel bookkeeping prunes old records on the server clock, a disconnect listener that throws no longer stops the others, and add-ons load after the core systems they hook into.
+
 ## [0.13.0-alpha] — 2026-10-15
 
 **Living world.** New regions with their own buildings, residents, lore routes and bosses, plus bounties, mounts, guilds and a long list of fixes.
