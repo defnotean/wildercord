@@ -111,11 +111,12 @@
     ]
   },
   "area-mounts-taming": {
-    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill).",
+    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill) and berry-tamed thistle hedgehogs (sit, follow, heal, hoglets).",
     "purpose": "area",
-    "expectedCount": 1,
+    "expectedCount": 2,
     "entries": [
-      "dev.wildercord.monster.CofferMimicTamingTest"
+      "dev.wildercord.monster.CofferMimicTamingTest",
+      "dev.wildercord.wildlife.ThistleHedgehogTamingTest"
     ]
   }
 }

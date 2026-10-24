@@ -13,7 +13,8 @@ LANG = {
                                       'it, and it curls into a ball: struck like that it takes little and its quills prick back. Give it a '
                                       'moment and it peeks out, then uncurls. Sweet berries tempt it and breed it, and its young are tiny '
                                       'hoglets. Feed one and it trusts you a while: it follows you about, no longer minds your running, and '
-                                      'often brings you something it found.',
+                                      'often brings you something it found. Now and then a handful tames it for good: then it follows you, sits '
+                                      'when told, never curls up at you and brings you something every few minutes.',
 }
 
 QUILL = ramp("#2E2119", "#3E2D21", "#523B2A", "#684C36", "#7E5F45")

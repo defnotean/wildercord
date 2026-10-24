@@ -37,6 +37,7 @@ For wetland, cave and highland wildlife, see [Lights Along the Bank]({{ '/world/
 | [Skyray](#skyray) | Windswept hills and forests, meadows, peaks, snowy slopes | Very rare, high up | Skyray Membrane | Slow Falling potions, mending elytra |
 | [Rimehare](#rimehare) | Snowy plains and taigas, ice spikes, snowy slopes, groves | 2 or 3 | Rime Fur | Rimebound armour, leather |
 | [Wandering Duelist](#wandering-duelist) | Near villages and roads, by day | Rare | Its breathing method | Learning aura |
+| [Thistle Hedgehog](#thistle-hedgehog) | Meadows, plains and forests | 1 to 3 | Nothing; brings you finds | A tameable pet that forages for you |
 
 Glimmer Dust, Mossback Scutes, Ember Tufts and Skyray Membranes each brew their potion from an Awkward Potion.
 
@@ -155,6 +156,20 @@ A rare melanistic wildcat of dark forests and old taigas, as big as a polar bear
 on whatever hurts it. Offer it fish, raw or cooked: one time in three it becomes yours. A tame bobcat follows, sits when
 told, joins your fights and heals on fish; two fed fish raise a kitten. Toggle it with `creatures.black_bobcat`.
 Its kin, the Frost Lynx and the Dune Cougar, each have a perk of their own: see [Tameable Predators]({{ '/world/tameable-predators/' | relative_url }}).
+
+## Thistle Hedgehog
+
+A small round forager with cream-tipped quills, snuffling through the grass of meadows, plains and forests. Run at it,
+let something hostile near or hit it and it curls into a ball: curled, it takes little damage and pricks back whatever
+struck it. It peeks out after a few seconds, then uncurls.
+
+- **Trust:** feed it **sweet berries** and it trusts you for two minutes. It follows you, ignores your running and
+  often brings you something it found: berries, a mushroom, a dandelion, an apple or seeds.
+- **Taming:** each handful of sweet berries also has a 1 in 3 chance to tame it for good (hearts).
+- **A tame hedgehog** follows you, turns up beside you if you get far ahead, and never curls up at you. Use it with
+  anything but berries to make it sit (it half curls and peeks out), and again to make it follow. Berries heal it
+  while it's hurt. Every few minutes it brings you another find.
+- Two tame hedgehogs fed berries raise a hoglet that is yours too.
 
 ## Camp cooking
 

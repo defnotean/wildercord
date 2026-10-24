@@ -2,8 +2,8 @@ package dev.wildercord.wildlife;
 
 /**
  * The thistle hedgehog's numbers and decisions, kept pure for its tests: when something startles it into a ball, how long it
- * stays curled and when it peeks out, how sharp its quills are, how long a handful of berries buys its trust, and which
- * forage gift it brings.
+ * stays curled and when it peeks out, how sharp its quills are, how long a handful of berries buys its trust, how often
+ * one tames it, and which forage gift it brings.
  */
 public final class HedgehogRules {
 	private HedgehogRules() {}
@@ -22,6 +22,11 @@ public final class HedgehogRules {
 	public static final double GIFT_CHANCE = 0.6;
 	/** How near whoever fed it it has to be to hand the gift over. */
 	public static final double GIFT_REACH = 3.0;
+	/** The chance a handful of sweet berries tames a wild one, and what a handful heals a tame one. */
+	public static final double TAME_CHANCE = 1.0 / 3;
+	public static final float BERRY_HEAL = 2.0F;
+	/** Tame, it brings its owner something now and then: the wait between one try and the next, in ticks. */
+	public static final int TAME_GIFT_MIN = 2400, TAME_GIFT_MAX = 6000;
 	/** About one tick in this many, it sneezes. */
 	public static final int SNEEZE_ODDS = 900;
 
@@ -52,6 +57,16 @@ public final class HedgehogRules {
 	/** When, after a feeding, its gift comes, given a roll in [0, 1). */
 	public static int giftDelay(double roll) {
 		return GIFT_MIN + (int) (roll * (GIFT_MAX - GIFT_MIN));
+	}
+
+	/** Whether a feeding tames a wild one, given a roll in [0, 1). */
+	public static boolean tames(double roll) {
+		return roll < TAME_CHANCE;
+	}
+
+	/** When a tame one next tries to bring its owner something, given a roll in [0, 1). */
+	public static int tameGiftDelay(double roll) {
+		return TAME_GIFT_MIN + (int) (roll * (TAME_GIFT_MAX - TAME_GIFT_MIN));
 	}
 
 	/** Which gift a roll in [0, 1) brings. */
