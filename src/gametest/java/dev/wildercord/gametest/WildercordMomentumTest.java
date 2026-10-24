@@ -998,6 +998,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		mob.snapTo(at.x, at.y, at.z, 180, 0);
 		mob.addTag(TAG);
 		mob.addTag("wildercord.rolled");
+		// Not tempered to the tester's aura, so its health, and its stance, are what the test sets.
+		mob.addTag(dev.wildercord.monster.Tempering.TAG);
 		mob.setPersistenceRequired();
 		AttributeInstance max = mob.getAttribute(Attributes.MAX_HEALTH);
 		if (max != null) {
