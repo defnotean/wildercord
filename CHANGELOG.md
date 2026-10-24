@@ -21,6 +21,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 - Trees no longer grow inside boss lairs and dungeons in the overworld, or close enough to hang over their edges. Trees that had already grown inside an existing lair are cut down once, the first time the whole lair is loaded; the lair's own build is left as it was. A sapling planted within 4 blocks of a lair won't grow.
 - A wildbloom residue whose saved owner is damaged no longer stops the server's residue tick.
+- An inn room chest now shuts once you walk more than 8 blocks from where you opened it, instead of staying open wherever you went. Its contents are kept.
+- The Cord screen no longer inscribes spell scrolls while you're dead or in spectator mode.
 - The official server no longer goes down every night around 4 a.m. The nightly backup zipped the whole world at full speed, which stalled the server until its watchdog killed it. It now saves the world first and refreshes a folder snapshot at idle priority, copying only what changed.
 - The official server's auto-installer only installs a build whose SHA-256 matches the checksum uploaded with it, so a half-uploaded or wrong jar is set aside instead of loaded.
 - Abandoning an escort bounty, or reaching its destination, sends the llama home and drops its cargo where it stands. An escort llama found after its escort ended (a relog, a server restart) is released the same way, so escorts no longer leave free llamas or duplicate cargo.
