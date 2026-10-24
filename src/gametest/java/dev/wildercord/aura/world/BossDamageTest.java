@@ -19,7 +19,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 	private static float taken(MinecraftServer s, String id) {
 		var p = p(s);
 		p.setHealth(p.getMaxHealth());
-		p.invulnerableTime = 0;
+		p.setInvulnerableTime(0);
 		float before = p.getHealth();
 		p.hurtServer(s.overworld(), s.overworld().damageSources().mobAttack(mob(s, id)), 10);
 		return before - p.getHealth();

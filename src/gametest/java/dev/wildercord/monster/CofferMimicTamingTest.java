@@ -33,7 +33,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 		p(s).setDeltaMovement(0, 0, 0);
 	}
 	private static void hold(MinecraftServer s, ItemStack stack) { p(s).setItemInHand(InteractionHand.MAIN_HAND, stack); }
-	private static void use(ClientGameTestContext c) { c.getInput().pressKey(c.computeOnClient(mc -> mc.options.keyUse)); c.waitTicks(4); }
+	private static void use(ClientGameTestContext c) { c.getInput().pressKey(o -> o.keyUse); c.waitTicks(4); }
 	private static void shot(ClientGameTestContext c, String name) {
 		c.runOnClient(mc -> mc.gui.hud.getChat().clearMessages(false));
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
@@ -85,7 +85,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> hold(s, ItemStack.EMPTY));
 			c.waitTicks(2);
 			use(c);
-			check(c.computeOnClient(mc -> mc.screen instanceof ContainerScreen), "Its owner opens it as a chest");
+			check(c.computeOnClient(mc -> mc.gui.screen() instanceof ContainerScreen), "Its owner opens it as a chest");
 			w.getServer().runOnServer(s -> {
 				check(p(s).containerMenu instanceof ChestMenu chest && chest.getRowCount() == MimicRules.STORAGE_ROWS, "A three-row chest");
 				p(s).containerMenu.getSlot(0).set(new ItemStack(Items.DIAMOND, 3));
@@ -102,10 +102,10 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			});
 
 			// Sneaking: an empty hand pets it, anything else tells it to stay or follow.
-			c.getInput().holdKey(c.computeOnClient(mc -> mc.options.keyShift));
+			c.getInput().holdKey(o -> o.keyShift);
 			c.waitTicks(3);
 			use(c);
-			check(c.computeOnClient(mc -> mc.screen == null), "Sneaking with an empty hand pets it rather than opening it");
+			check(c.computeOnClient(mc -> mc.gui.screen() == null), "Sneaking with an empty hand pets it rather than opening it");
 			w.getServer().runOnServer(s -> {
 				check(!mimic(s).staying(), "Petting gives no order");
 				hold(s, new ItemStack(Items.STICK));
@@ -115,7 +115,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> check(mimic(s).staying(), "Sneaking with something in hand tells it to stay"));
 			use(c);
 			w.getServer().runOnServer(s -> check(!mimic(s).staying(), "Again, and it follows"));
-			c.getInput().releaseKey(c.computeOnClient(mc -> mc.options.keyShift));
+			c.getInput().releaseKey(o -> o.keyShift);
 
 			// Someone else gets nothing from it.
 			w.getServer().runOnServer(s -> {

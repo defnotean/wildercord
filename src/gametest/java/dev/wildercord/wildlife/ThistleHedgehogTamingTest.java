@@ -38,7 +38,7 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 		h.setDeltaMovement(0, 0, 0);
 	}
 	private static void hold(MinecraftServer s, ItemStack stack) { p(s).setItemInHand(InteractionHand.MAIN_HAND, stack); }
-	private static void use(ClientGameTestContext c) { c.getInput().pressKey(c.computeOnClient(mc -> mc.options.keyUse)); c.waitTicks(4); }
+	private static void use(ClientGameTestContext c) { c.getInput().pressKey(o -> o.keyUse); c.waitTicks(4); }
 	private static boolean aimed(ClientGameTestContext c) { return c.computeOnClient(mc -> mc.crosshairPickEntity != null && mc.crosshairPickEntity.getUUID().equals(id)); }
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {

@@ -46,7 +46,7 @@ public final class InnChestReachTest implements FabricClientGameTest {
 				InnRooms.open(p(s));
 			});
 			c.waitTicks(5);
-			check(c.computeOnClient(mc -> mc.screen instanceof ContainerScreen), "A keeper opens the room chest");
+			check(c.computeOnClient(mc -> mc.gui.screen() instanceof ContainerScreen), "A keeper opens the room chest");
 			w.getServer().runOnServer(s -> check(p(s).containerMenu instanceof ChestMenu, "The room chest is open on the server"));
 			c.runOnClient(mc -> mc.gui.hud.getChat().clearMessages(false));
 			c.takeScreenshot(TestScreenshotOptions.of("inn_room_chest_open").disableCounterPrefix());
@@ -65,7 +65,7 @@ public final class InnChestReachTest implements FabricClientGameTest {
 				check(!kept.isEmpty() && kept.getFirst().is(Items.EMERALD) && kept.getFirst().getCount() == 7, "Its things stay in it");
 			});
 			c.waitTicks(3);
-			check(c.computeOnClient(mc -> mc.screen == null), "The client's chest screen closes too");
+			check(c.computeOnClient(mc -> mc.gui.screen() == null), "The client's chest screen closes too");
 
 			// The Cord screen's inscribe writes a scroll for a player, and none for a spectator.
 			w.getServer().runOnServer(s -> {
