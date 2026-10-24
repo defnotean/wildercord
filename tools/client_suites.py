@@ -120,7 +120,7 @@ def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CAT
         if missing:
             raise ValueError(f"Suite {suite} has unregistered entrypoints: {', '.join(missing)}")
         purpose = group.get("purpose", "release")
-        if purpose not in ("release", "diagnostic", "required-part"):
+        if purpose not in ("release", "area", "diagnostic", "required-part"):
             raise ValueError(f"Suite {suite} has an unknown purpose")
         if purpose == "required-part" and suite not in MASTERS_PART_NAMES:
             raise ValueError("Unknown required Masters part")

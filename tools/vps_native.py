@@ -12,13 +12,19 @@ import client_suites as suites
 import full_client_ci as full
 from vps_identity import make_identity
 
-SUITES = ("release-smoke",)
 PREFIX = "WILDERCORD_VPS_NATIVE "
+# release-smoke runs before a release; "area" groups are the per-area suites of the polish loop.
+PURPOSES = ("release", "area")
+
+
+def suites_available(catalog=suites.CATALOG):
+    groups = json.loads(catalog.read_text(encoding="utf-8"))
+    return tuple(name for name, group in groups.items() if group.get("purpose", "release") in PURPOSES)
 
 
 def prepare(*, head, computer, batch, attempt, launch, environment, suite=None, shard=None):
-    if shard is not None or suite not in SUITES:
-        raise ValueError("Select the complete release-smoke suite")
+    if shard is not None or suite not in suites_available():
+        raise ValueError("Select one complete catalog suite: " + ", ".join(suites_available()))
     selection = suites.select_entries(suite=suite, shard=shard)
     if str(uuid.UUID(launch)) != launch:
         raise ValueError("VPS launch must own a canonical UUID")
@@ -85,8 +91,8 @@ def manifest(log, plan):
     selection, identity, launch = plan["selection"], plan["identity"], plan["launch"]
     issues = suites.selection_issues(log, selection, launch_id=launch)
     issues.extend(group_boundaries(log, plan))
-    completed, extra = suites._whole_class_completion(log, selection["entries"], "VPS smoke", launch_id=launch)
-    proof = {"schemaVersion": 1, "scope": "vps-release-smoke", "provenance": plan["proof"],
+    completed, extra = suites._whole_class_completion(log, selection["entries"], "VPS suite", launch_id=launch)
+    proof = {"schemaVersion": 1, "scope": "vps-native:" + selection["name"], "provenance": plan["proof"],
              "completedEntries": completed}
     outcome = "focusedClientGate"
     results = [{"suite": entry, "status": "passed"} for entry in selection["entries"]]

@@ -103,7 +103,7 @@ def clientCiContract = new GroovyClassLoader(getClass().classLoader).parseClass(
 def affectedJdeps = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(targetJavaVersion) }
 	.map { it.metadata.installationPath.file(System.getProperty('os.name').toLowerCase(Locale.ROOT).startsWith('windows') ? 'bin/jdeps.exe' : 'bin/jdeps') }
 
-// Client game tests: the descriptor lists only the release-smoke classes, which run once before a release.
+// Client game tests: the descriptor lists the release-smoke classes and the per-area suites' classes; -PciSuite picks one group.
 tasks.named('processGametestResources') {
     inputs.file('tools/ClientCiContract.groovy')
     inputs.file('tools/client_shard_plan.py')
@@ -146,7 +146,7 @@ tasks.named('processGametestResources') {
 			def catalog = new groovy.json.JsonSlurper().parse(file('tools/client_suite_catalog.json'))
 			if (!catalog.containsKey(name)) throw new GradleException("Unknown ciSuite '${name}'; choose from ${catalog.keySet().join(', ')}")
 			def group = catalog[name]
-			if (!(group.get('purpose', 'release') in ['release', 'diagnostic', 'required-part'])) throw new GradleException("ciSuite '${name}' has an unknown purpose")
+			if (!(group.get('purpose', 'release') in ['release', 'area', 'diagnostic', 'required-part'])) throw new GradleException("ciSuite '${name}' has an unknown purpose")
 			def selected = group.entries
 			if (!(selected instanceof List) || selected.isEmpty() || !selected.every { it instanceof String && !it.trim().isEmpty() }) throw new GradleException("ciSuite '${name}' must contain a nonempty list of entrypoint names")
 			if (selected.toSet().size() != selected.size()) throw new GradleException("ciSuite '${name}' contains duplicate entrypoints")

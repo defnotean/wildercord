@@ -19,7 +19,26 @@
       "dev.wildercord.command.LearnAllFusionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.lore.LoreJournalGameTest",
-      "dev.wildercord.world.dungeons.SwordTombTest"
+      "dev.wildercord.world.dungeons.SwordTombTest",
+      "dev.wildercord.world.dungeons.BattlefieldsTest",
+      "dev.wildercord.world.dungeons.SleepingBladeTest",
+      "dev.wildercord.gametest.WildercordMonstersTest",
+      "dev.wildercord.aura.world.AuraBeastsTest",
+      "dev.wildercord.gametest.WildercordArtsTest",
+      "dev.wildercord.aura.arts.ArtWardsHardeningTest",
+      "dev.wildercord.gametest.WildercordSwordStringsTest",
+      "dev.wildercord.gametest.WildercordMomentumTest",
+      "dev.wildercord.gametest.WildercordAuraFxTest",
+      "dev.wildercord.cast.RelayCircleTest",
+      "dev.wildercord.cast.ExcisePlayableTest",
+      "dev.wildercord.wildlife.SiltcrestEcologyTest",
+      "dev.wildercord.wildlife.SiltcrestBankReturnTest",
+      "dev.wildercord.wildlife.FungalNurseryTest",
+      "dev.wildercord.wildlife.ReedRefugeTest",
+      "dev.wildercord.wildlife.RainshieldAckTest",
+      "dev.wildercord.wildlife.RainshieldFaultTest",
+      "dev.wildercord.wildlife.SiltcrestPresentationTest",
+      "dev.wildercord.gametest.WildercordFeatureTour"
     ]
   },
   "mixins": [
