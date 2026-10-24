@@ -197,6 +197,11 @@ public final class HollowMatronRules {
 		return offGround < SILK_GRIP;
 	}
 
+	/** Whether the silk holds its wearer to a wall: never while it is put away, otherwise while it still grips. */
+	public static boolean holds(boolean stowed, long offGround) {
+		return !stowed && grips(offGround);
+	}
+
 	/** The bar's name for what she is doing. */
 	public static String key(int move) {
 		return switch (move) {

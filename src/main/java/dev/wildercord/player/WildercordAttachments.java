@@ -177,6 +177,16 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/** Has put the Weaver's Silk away (the silk key, or /silk): walls stop holding them until they take it out again. Kept through death. */
+	public static final AttachmentType<Boolean> WEAVERS_SILK_STOWED = AttachmentRegistry.create(
+		Wildercord.id("weavers_silk_stowed"),
+		builder -> builder
+			.initializer(() -> false)
+			.persistent(Codec.BOOL)
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Whether this player has taken the Bearer's Lantern from the foot of the Barrow Field's gibbet (and the gravedigger's book with it). */
 	public static final AttachmentType<Boolean> BARROW_LANTERN = AttachmentRegistry.create(
 		Wildercord.id("barrow_lantern"),

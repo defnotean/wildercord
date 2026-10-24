@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
  * wheel (hold); K opens the Cord screen; B opens the backpack worn in the Backpack slot (in the inventory
  * too, and closes an open backpack); Z is the Aura key (a tap, a press while sneaking, a double tap, a
  * hold, and a tap then a held press each go to the server, which picks the technique: see {@code api.AuraApi}).
- * Casting spells 1-4 directly, and loading the next loadout, are unbound by default.
+ * G puts the Weaver's Silk away or takes it out again. Casting spells 1-4 directly, and loading the next loadout, are unbound by default.
  */
 public final class WildercordKeys {
 	private WildercordKeys() {}
@@ -33,6 +33,8 @@ public final class WildercordKeys {
 	/** Loads the next saved loadout (the server checks it may, and names it above the hotbar). */
 	private static KeyMapping nextLoadout;
 	private static KeyMapping magicSettings;
+	/** Puts the Weaver's Silk away or takes it out again (the server checks the player has it). */
+	private static KeyMapping silk;
 	/** "Cast spell N": the Cord's four, and the tome's fifth. */
 	private static final KeyMapping[] CAST_N = new KeyMapping[dev.wildercord.gear.SpellSlots.ALL];
 
@@ -143,6 +145,7 @@ public final class WildercordKeys {
 		}
 		nextLoadout = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.next_loadout",
 			InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
+		silk = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.weavers_silk", InputConstants.KEY_G, CATEGORY));
 		ClientTickEvents.END_CLIENT_TICK.register(WildercordKeys::tick);
 	}
 
@@ -365,6 +368,11 @@ public final class WildercordKeys {
 		while (backpack.consumeClick()) {
 			if (playing) {
 				openBackpack();
+			}
+		}
+		while (silk.consumeClick()) {
+			if (playing) {
+				ClientPlayNetworking.send(new WildercordNetworking.ToggleSilk());
 			}
 		}
 		while (nextLoadout.consumeClick()) {

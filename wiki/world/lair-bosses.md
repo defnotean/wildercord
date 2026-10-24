@@ -184,6 +184,7 @@ She throws herself wide, flinging everyone back and leaving web all about. Then 
 - Walk into a wall to climb it. Stop and you slide slowly down. Sneak to cling fast.
 - No fall damage while you cling.
 - The silk holds you for 6 seconds off the ground, then lets go until you've stood on the ground again.
+- If it keeps catching you on walls while you jump about, press `G` (or type `/silk`) to put it away. Press it again to take it out. It stays put away through death and relogs.
 
 ## Ashen Stag
 

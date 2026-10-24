@@ -15,6 +15,13 @@ class HollowMatronRulesTest {
 		assertFalse(HollowMatronRules.scripted(HollowMatronRules.WATCH));
 		assertFalse(HollowMatronRules.scripted(HollowMatronRules.RECOVER));
 	}
+	@Test void aStowedSilkNeverHoldsAndAnOutOneHoldsOnlyWhileItGrips(){
+		assertTrue(HollowMatronRules.holds(false,0));
+		assertTrue(HollowMatronRules.holds(false,HollowMatronRules.SILK_GRIP-1));
+		assertFalse(HollowMatronRules.holds(false,HollowMatronRules.SILK_GRIP));
+		assertFalse(HollowMatronRules.holds(true,0));
+		assertFalse(HollowMatronRules.holds(true,HollowMatronRules.SILK_GRIP-1));
+	}
 	@Test void theDropRunsForwardAndClimbingRunsItBack(){
 		assertEquals(0,HollowMatronRules.drop(HollowMatronRules.DORMANT,30));
 		assertEquals(.5F,HollowMatronRules.drop(HollowMatronRules.DROP,HollowMatronRules.DROP_TICKS/2F),1e-6);
