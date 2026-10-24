@@ -35,4 +35,12 @@ class InnRaidRulesTest {
 		assertEquals(2, InnRaidRules.resumeFrom(Tier.FRIEND, 2));
 		assertEquals(2, InnRaidRules.resumeFrom(Tier.KNOWN, 7));
 	}
+
+	@Test
+	void banditsCarriedOffInUnloadedChunksStillCount() {
+		assertTrue(InnRaidRules.stillFighting(true, false, false));
+		assertFalse(InnRaidRules.stillFighting(false, false, false));
+		assertTrue(InnRaidRules.stillFighting(false, true, true), "unloaded, not beaten");
+		assertFalse(InnRaidRules.stillFighting(false, true, false), "killed or discarded");
+	}
 }

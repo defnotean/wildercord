@@ -28,6 +28,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -262,10 +263,11 @@ public final class InnRaid {
 		}
 		int alive = 0;
 		for (Mob mob : mobs) {
-			if (mob.isAlive() && !mob.isRemoved()) {
-				alive++;
-				if (mob.getTarget() == null || !mob.getTarget().isAlive()) mob.setTarget(nearest(defenders, mob));
-			}
+			Entity.RemovalReason reason = mob.getRemovalReason();
+			boolean unloaded = reason == Entity.RemovalReason.UNLOADED_TO_CHUNK || reason == Entity.RemovalReason.UNLOADED_WITH_PLAYER;
+			if (!InnRaidRules.stillFighting(mob.isAlive(), mob.isRemoved(), unloaded)) continue;
+			alive++;
+			if (!mob.isRemoved() && (mob.getTarget() == null || !mob.getTarget().isAlive())) mob.setTarget(nearest(defenders, mob));
 		}
 		if (now % 10 == 0 && wave > 0) {
 			int size = InnRaidRules.waveSize(tier, wave) + (InnRaidRules.lastWave(tier, wave) ? 1 : 0);

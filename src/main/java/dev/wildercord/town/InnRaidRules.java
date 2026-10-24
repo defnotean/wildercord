@@ -63,4 +63,12 @@ public final class InnRaidRules {
 	public static int reputation(BountyRules.Tier tier) {
 		return 2 * waves(tier);
 	}
+
+	/**
+	 * Whether a bandit still counts against its wave: alive, or carried off with an unloading chunk (it comes back with it,
+	 * so walking away from the fight can't clear a wave). Only one killed, discarded or gone to another dimension is out.
+	 */
+	public static boolean stillFighting(boolean alive, boolean removed, boolean unloaded) {
+		return removed ? unloaded : alive;
+	}
 }
