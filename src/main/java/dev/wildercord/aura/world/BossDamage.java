@@ -20,7 +20,7 @@ public final class BossDamage {
 	public static final TagKey<EntityType<?>> BOSSES = TagKey.create(Registries.ENTITY_TYPE, Wildercord.id("bosses"));
 
 	public static boolean boss(Entity entity) {
-		return entity != null && (entity.getType().is(BOSSES) || entity instanceof Mob mob && Giants.bar(mob) != null);
+		return entity != null && (entity.is(BOSSES) || entity instanceof Mob mob && Giants.bar(mob) != null);
 	}
 
 	private static boolean bossOnPlayer(LivingEntity victim, DamageSource source) {
