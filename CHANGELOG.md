@@ -10,6 +10,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Gathering bounties can ask for Moonreed Floss, Dried Glowcap Gills and Ember Tuft.
 - Wandering caravaneers buy those three goods, four at a time, for an emerald each.
 - Weaver's Silk can be put away and taken out again with `G` (rebindable) or `/silk`, so it stops catching you on walls while you jump around. The choice is kept through death and relogs.
+- Coffer mimics can be tamed with books (1 in 3 per book). A tamed mimic never bites its owner, follows them, shuts up as a coffer beside them when they stop and turns up beside them when left far behind. Its owner can open it as a 27-slot chest that only they can use, pet it by sneaking with an empty hand, and tell it to stay or follow by sneaking while holding something. It spills what it holds if it dies. See the new Coffer Mimics guide page.
 
 ### Changed
 
