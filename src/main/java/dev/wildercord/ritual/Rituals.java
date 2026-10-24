@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.monster.MonsterContent;
+import dev.wildercord.party.Parties;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.ritual.RitualRules.Ritual;
@@ -168,13 +169,13 @@ public final class Rituals {
 		};
 	}
 
-	/** The casters sharing the cost: the one channelling first, then every other Cord-wearer close by. */
+	/** The casters sharing the cost: the one channelling first, then every Cord-wearer of their party close by (see {@link RitualRules#joins}). */
 	public static List<ServerPlayer> circle(ServerLevel level, ServerPlayer leader) {
 		List<ServerPlayer> circle = new ArrayList<>();
 		circle.add(leader);
 		for (ServerPlayer other : level.players()) {
-			if (other != leader && other.isAlive() && !other.isSpectator() && Spellbooks.tier(other) != null
-				&& other.distanceTo(leader) <= RitualRules.CIRCLE_RANGE) {
+			if (other != leader && other.isAlive() && !other.isSpectator()
+				&& RitualRules.joins(Parties.sameParty(other, leader), Spellbooks.tier(other) != null, other.distanceTo(leader))) {
 				circle.add(other);
 			}
 		}

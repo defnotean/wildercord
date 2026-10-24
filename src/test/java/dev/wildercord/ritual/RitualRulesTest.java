@@ -49,4 +49,12 @@ class RitualRulesTest {
 		assertNull(RitualRules.split(new float[0], 10));
 		assertArrayEquals(new float[] {60, 60}, RitualRules.split(new float[] {60, 60}, 120), 0.01F);
 	}
+
+	@Test
+	void onlyThePartyJoinsTheCircle() {
+		assertTrue(RitualRules.joins(true, true, RitualRules.CIRCLE_RANGE));
+		assertFalse(RitualRules.joins(false, true, 1), "a stranger nearby is never drawn on");
+		assertFalse(RitualRules.joins(true, false, 1));
+		assertFalse(RitualRules.joins(true, true, RitualRules.CIRCLE_RANGE + 0.1));
+	}
 }
