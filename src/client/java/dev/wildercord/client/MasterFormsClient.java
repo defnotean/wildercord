@@ -34,8 +34,10 @@ public final class MasterFormsClient {
 		key = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.master_form", InputConstants.KEY_C,
 			KeyMapping.Category.register(Wildercord.id("master_forms"))));
 		ClientPlayNetworking.registerGlobalReceiver(MasterForms.Event.TYPE, (event, context) -> receive(context.client(), event));
-		ClientPlayNetworking.registerGlobalReceiver(MasterFormLessons.Open.TYPE, (event, context) ->
-			context.client().gui.setScreen(new MasterFormsScreen(context.client().gui.screen(), event.nonce(), true, event.form())));
+		ClientPlayNetworking.registerGlobalReceiver(MasterFormLessons.Open.TYPE, (event, context) -> {
+			if (context.client().player != null && context.client().level != null)
+				context.client().gui.setScreen(new MasterFormsScreen(context.client().gui.screen(), event.nonce(), true, event.form()));
+		});
 		net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.BEFORE_INIT.register((client, screen, width, height) -> {
 			send(WallTurnRules.CANCEL); suppressed = true;
 		});
