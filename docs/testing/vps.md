@@ -23,7 +23,8 @@ through Actions is stopped as well.
 - Java: `C:\java\jdk-25.0.4.1+1`.
 - Python environment: `C:\wildercord-ci\venv` (Python 3.12 and pinned requirements).
 - Gradle cache: `C:\wildercord-ci\gradle`.
-- Live Minecraft server: `C:\wildercord`; never use its world as a test fixture.
+- Live Minecraft server: `C:\wildercord`; never use its world as a test fixture. Its backup, watchdog,
+  auto-install and deploy scripts live in [`tools/vps`](../../tools/vps/README.md) with their own tests.
 
 The checkout is detached at the exact candidate SHA. Inspect running jobs and
 checkout status before fetching/checking out another candidate. A local Git bundle
