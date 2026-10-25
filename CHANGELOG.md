@@ -16,8 +16,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ### Changed
 
 - Every boss hits players harder: lair bosses, dungeon guardians, Masters, the Gravekeeper, the Archivist, the Glass Cartographer, the Reed-Crowned Ferryman, the Hollow Bell, the Kiln Widow and giants. Their blows (and their projectiles) land 35% harder, and at least 40% of what armour, Protection and Resistance would stop goes through anyway. A 10-damage blow on full diamond with Protection IV used to take about half a heart; it now takes about two and a half.
+- The boss models move with more weight: clearer wind-ups before their big moves, follow-through and secondary motion on tails, wings and cloth, a flinch when hurt, and staged deaths instead of a plain fall.
 
 ### Fixed
+- Riding a mount for the first time after taming it no longer crashes the server.
 - The Gravekeeper, Ashen Stag, Frost Wyrmling, Hollow Matron and Mojito no longer snap back to the start of a move they use twice in a row; they blend out of the last swing as they do between different moves. All seven animated bosses' blends no longer build new poses every frame.
 - Less per-frame and per-tick work: the cord, cord-bead, Master, Runebound and spell-circle renderers reuse their texture names instead of rebuilding them every frame, and Cinnamon's recall check looks around its owner instead of across the whole dimension.
 - The `<` and `>` page buttons in the rune catalogue and the spell notebook now show "Previous Page"/"Next Page" on hover and say so to a screen reader, instead of reading out a bare arrow.
