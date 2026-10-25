@@ -112,6 +112,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			section(failures, "Geode Crawler", () -> crawler(context, world));
 			section(failures, "Bog Witch-Frog", () -> frog(context, world));
 			section(failures, "Mana Ooze", () -> ooze(context, world));
+			section(failures, "Rootcoil Serpent", () -> serpent(context, world));
 			section(failures, "Runebound", () -> runebound(world));
 			section(failures, "Peaceful", () -> peaceful(context, world));
 			cut(context);
@@ -803,6 +804,39 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		});
 		check(popped, "a bubble struck in the air should pop");
 		clear(world);
+	}
+
+	// ------------------------------------------------------------------ the Rootcoil Serpent
+
+	/** The grove guardian coiled round its tree: its tube body is drawn from reused buffers, and this is the picture of it. */
+	private static void serpent(ClientGameTestContext context, TestSingleplayerContext world) {
+		Vec3 at = stage(6);
+		BlockPos c = BlockPos.containing(at);
+		world.getServer().runCommand("time set 6000");
+		build(world, at, "moss_block");
+		BlockPos tree = c.offset(0, 0, 6);
+		world.getServer().runCommand("fill %d %d %d %d %d %d oak_log".formatted(tree.getX(), tree.getY(), tree.getZ(), tree.getX(), tree.getY() + 6, tree.getZ()));
+		heal(world, GameType.CREATIVE);
+		int id = world.getServer().computeOnServer(server -> {
+			var serpent = dev.wildercord.aura.world.Guardians.SERPENT.create(level(server), EntitySpawnReason.COMMAND);
+			serpent.snapTo(tree.getX() + 0.5, tree.getY(), tree.getZ() + 0.5, 180, 0);
+			serpent.bind(tree, 180);
+			serpent.addTag("wildercord.rolled");
+			serpent.setNoAi(true);
+			level(server).addFreshEntity(serpent);
+			return serpent.getId();
+		});
+		Vec3 spot = Vec3.atBottomCenterOf(tree);
+		director(context, world, threeQuarter(spot, 9, 4), spot.add(0, 1.2, 0));
+		context.waitTicks(30);
+		check(world.getServer().computeOnServer(server -> level(server).getEntity(id) != null), "the serpent should stay coiled round its tree");
+		shot(context, "rootcoil_serpent");
+		world.getServer().runOnServer(server -> {
+			Entity serpent = level(server).getEntity(id);
+			if (serpent != null) {
+				serpent.discard();
+			}
+		});
 	}
 
 	// ------------------------------------------------------------------ the Mana Ooze
