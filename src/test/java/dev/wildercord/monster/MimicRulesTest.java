@@ -53,6 +53,14 @@ class MimicRulesTest {
 	}
 
 	@Test
+	void onlyAPlainBookWhileHurtMendsIt() {
+		assertTrue(MimicRules.mends(true, false, 10.0F, 30.0F));
+		assertFalse(MimicRules.mends(true, false, 30.0F, 30.0F), "at full health the book goes in its chest");
+		assertFalse(MimicRules.mends(true, true, 10.0F, 30.0F), "sneaking opens it instead");
+		assertFalse(MimicRules.mends(false, false, 10.0F, 30.0F), "an enchanted or written book is never eaten");
+	}
+
+	@Test
 	void aTamedOneFollowsItsOwnerUnlessToldToStay() {
 		assertEquals(MimicRules.Heel.STAY, MimicRules.heel(4.0, false, false), "near enough: it keeps its spot");
 		assertEquals(MimicRules.Heel.WALK, MimicRules.heel(MimicRules.FOLLOW_START + 1, false, false));

@@ -42,6 +42,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -644,7 +645,12 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 			return InteractionResult.SUCCESS;
 		}
 		ItemStack held = player.getItemInHand(hand);
-		if (held.is(ItemTags.BOOKSHELF_BOOKS) && (!tamed() || isOwnedBy(player))) {
+		if (held.is(ItemTags.BOOKSHELF_BOOKS) && !tamed()) {
+			feed(server, player, held);
+			return InteractionResult.SUCCESS;
+		}
+		// Its owner's plain book mends it; at full health, or with any other book, it opens as usual.
+		if (tamed() && isOwnedBy(player) && MimicRules.mends(held.is(Items.BOOK), player.isSecondaryUseActive(), getHealth(), getMaxHealth())) {
 			feed(server, player, held);
 			return InteractionResult.SUCCESS;
 		}
@@ -679,9 +685,6 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 
 	/** Eats a book: an untamed one may take to whoever fed it; its owner's book mends it a little. */
 	private void feed(ServerLevel level, Player player, ItemStack book) {
-		if (tamed() && getHealth() >= getMaxHealth()) {
-			return;
-		}
 		book.consume(1, player);
 		play(level, SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.7F);
 		play(level, SoundEvents.GENERIC_EAT.value(), 0.7F, 0.8F);

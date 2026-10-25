@@ -24,7 +24,7 @@ or an enchanted book.
 | Action | Cost | What happens |
 |---|---|---|
 | Feed an untamed mimic | 1 book | **1 in 3** chance it takes to you (hearts). Otherwise it puffs smoke and eats the book anyway |
-| Feed your own mimic | 1 book | Heals 4 health. It refuses books at full health |
+| Feed your own mimic | 1 plain book | Heals 4 health while it is hurt. At full health, or with any other book, it opens as a chest instead, so books can be stored in it |
 | Open it | Nothing | Use it with any item or an empty hand: a 27-slot chest, for its owner only |
 | Pet it | Nothing | Sneak and use it with an **empty hand**: its lid lifts and it purrs |
 | Stay or follow | Nothing | Sneak and use it while **holding something**: it stays put, or starts following again |

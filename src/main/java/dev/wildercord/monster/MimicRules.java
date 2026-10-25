@@ -114,6 +114,14 @@ public final class MimicRules {
 		return roll < TAME_CHANCE;
 	}
 
+	/**
+	 * Whether its owner's book goes to mending it: only a plain book, used standing, while it is hurt. Any other book,
+	 * or one at full health, opens it like any other item, so a book bound for its chest is never eaten.
+	 */
+	public static boolean mends(boolean plainBook, boolean sneaking, float health, float maxHealth) {
+		return plainBook && !sneaking && health < maxHealth;
+	}
+
 	/** What a tamed one does with its owner this far off, if it's been told to stay put, or is busy already. */
 	public static Heel heel(double distance, boolean staying, boolean following) {
 		if (staying) {

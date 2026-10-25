@@ -81,8 +81,35 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				check(p(s).getMainHandItem().getCount() == 64 - books, "Each book fed is eaten, tamed or not (" + books + " fed)");
 				check(m.getHealth() >= m.getMaxHealth(), "Fed whole, it is at full health");
 			});
+			// At full health its owner's book is kept and the chest opens, so books can be stored in it.
 			use(c);
-			w.getServer().runOnServer(s -> check(p(s).getMainHandItem().getCount() == 64 - books, "At full health, its owner's book is refused"));
+			w.getServer().runOnServer(s -> check(p(s).getMainHandItem().getCount() == 64 - books, "At full health, its owner's book is not eaten"));
+			check(c.computeOnClient(mc -> mc.gui.screen() instanceof ContainerScreen), "At full health, a book opens it as a chest");
+			c.runOnClient(mc -> mc.player.closeContainer());
+			c.waitTicks(3);
+
+			// Hurt, a plain book mends it; an enchanted book is never eaten and opens it instead.
+			w.getServer().runOnServer(s -> {
+				mimic(s).setHealth(mimic(s).getMaxHealth() - 8.0F);
+				hold(s, new ItemStack(Items.ENCHANTED_BOOK));
+			});
+			c.waitTicks(2);
+			use(c);
+			w.getServer().runOnServer(s -> {
+				check(p(s).getMainHandItem().is(Items.ENCHANTED_BOOK), "An enchanted book is never eaten");
+				check(mimic(s).getHealth() <= mimic(s).getMaxHealth() - 8.0F, "Nor does it mend it");
+			});
+			check(c.computeOnClient(mc -> mc.gui.screen() instanceof ContainerScreen), "An enchanted book opens it as a chest");
+			c.runOnClient(mc -> mc.player.closeContainer());
+			c.waitTicks(3);
+			w.getServer().runOnServer(s -> hold(s, new ItemStack(Items.BOOK, 2)));
+			c.waitTicks(2);
+			use(c);
+			w.getServer().runOnServer(s -> {
+				check(p(s).getMainHandItem().getCount() == 1, "Hurt, its owner's plain book is eaten");
+				check(mimic(s).getHealth() > mimic(s).getMaxHealth() - 8.0F, "And mends it");
+			});
+			check(c.computeOnClient(mc -> !(mc.gui.screen() instanceof ContainerScreen)), "Mending does not open the chest");
 
 			// Its owner opens it as a chest.
 			w.getServer().runOnServer(s -> hold(s, ItemStack.EMPTY));
