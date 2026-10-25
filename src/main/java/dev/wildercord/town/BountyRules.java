@@ -106,6 +106,8 @@ public final class BountyRules {
 	public static final int ESCORT_EMERALDS = 6, ESCORT_BLOCKS_PER_EMERALD = 40, ESCORT_REPUTATION = 10;
 	/** What an escort names as its target: the pack llama. */
 	public static final String ESCORT_TARGET = "minecraft:llama";
+	/** How strong the pack llama is: three columns of chest, nine slots, for the traveller's goods. */
+	public static final int ESCORT_STRENGTH = 3;
 	/** How far the llama has to have moved since the last second for an ambush to roll, and how many one road can bring. */
 	public static final double AMBUSH_MOVED = 2;
 	public static final int AMBUSH_MAX = 3;

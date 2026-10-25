@@ -39,6 +39,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - The official server no longer goes down every night around 4 a.m. The nightly backup zipped the whole world at full speed, which stalled the server until its watchdog killed it. It now saves the world first and refreshes a folder snapshot at idle priority, copying only what changed.
 - The official server's auto-installer only installs a build whose SHA-256 matches the checksum uploaded with it, so a half-uploaded or wrong jar is set aside instead of loaded.
 - Abandoning an escort bounty, or reaching its destination, sends the llama home and drops its cargo where it stands. An escort llama found after its escort ended (a relog, a server restart) is released the same way, so escorts no longer leave free llamas or duplicate cargo.
+- An escort's pack llama now really has a chest. It was spawned with no strength, so it had no slots for the traveller's goods.
 - Escort ambushes only roll while the caravan is moving, and stop after three per escort, so an idle escort can no longer be farmed for bandits.
 - The practice arena refuses entry during a duel, within ten seconds of taking damage, while falling, burning or riding, and within thirty seconds of the last entry. Leaving is always allowed.
 - Rituals draw mana only from members of the leader's party, never from strangers standing nearby.

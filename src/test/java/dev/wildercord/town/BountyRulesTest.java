@@ -25,6 +25,12 @@ class BountyRulesTest {
 	}
 
 	@Test
+	void thePackLlamaIsAStrengthAVanillaLlamaCanHave() {
+		// Vanilla clamps llama strength to 1..5; three columns of chest hold the traveller's goods.
+		assertTrue(BountyRules.ESCORT_STRENGTH >= 1 && BountyRules.ESCORT_STRENGTH <= 5);
+	}
+
+	@Test
 	void everyBountyIsFairAndPaysWithinItsBounds() {
 		Set<String> seen = new HashSet<>();
 		for (long day = 0; day < 2000; day++) {

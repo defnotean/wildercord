@@ -154,7 +154,10 @@ public final class BountyEscorts {
 		int destX = board.getX() + (int) Math.round(Math.cos(angle) * bounty.needed());
 		int destZ = board.getZ() + (int) Math.round(Math.sin(angle) * bounty.needed());
 		llama.setTamed(true);
+		// Made without a natural spawn, a llama has no strength and so no chest slots: give it both.
+		((dev.wildercord.mixin.PackLlamaAccessor) llama).wildercord$strength(BountyRules.ESCORT_STRENGTH);
 		llama.setChest(true);
+		((dev.wildercord.mixin.HorseInventoryAccessor) llama).wildercord$rebuildInventory();
 		llama.setPersistenceRequired();
 		var health = llama.getAttribute(Attributes.MAX_HEALTH);
 		if (health != null) {

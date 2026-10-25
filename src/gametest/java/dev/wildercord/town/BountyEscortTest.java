@@ -83,7 +83,7 @@ public final class BountyEscortTest implements FabricClientGameTest {
 			// Abandoned: what it carried falls where it stands and the traveller takes it back.
 			w.getServer().runOnServer(s -> {
 				var llama = BountyEscorts.llama(p(s));
-				check(llama.getInventorySize() > 0, "the llama has a chest to fill");
+				check(llama.getStrength() == BountyRules.ESCORT_STRENGTH && llama.getInventorySize() == BountyRules.ESCORT_STRENGTH * 3, "the llama has a chest to fill (" + llama.getInventorySize() + " slots)");
 				llama.getSlot(AbstractHorse.INVENTORY_SLOT_OFFSET).set(new ItemStack(Items.DIAMOND));
 				BlockPos at = llama.blockPosition();
 				BountyEscorts.abandon(p(s));
