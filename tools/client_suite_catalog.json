@@ -55,14 +55,15 @@
     ]
   },
   "area-rituals-parties": {
-    "description": "Rituals and parties: relay circles, party admission during release, excise and basinfill casts.",
+    "description": "Rituals and parties: relay circles, party admission during release, excise, basinfill and farm-spell casts.",
     "purpose": "area",
-    "expectedCount": 4,
+    "expectedCount": 5,
     "entries": [
       "dev.wildercord.party.RelayImpactTest",
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.ExcisePlayableTest",
-      "dev.wildercord.cast.BasinfillTest"
+      "dev.wildercord.cast.BasinfillTest",
+      "dev.wildercord.cast.FarmSoilTest"
     ]
   },
   "area-regions-worldgen": {
