@@ -92,10 +92,19 @@ public final class ScreenEffects {
 		tintAlpha = Mth.lerp(0.15F, tintAlpha, tintTicks > 0 ? 1 : 0);
 	}
 
-	private static float scale() {
-		if (MagicQuality.reducedFlash) return 0.15F;
+	static float scale() {
 		Minecraft mc = Minecraft.getInstance();
-		return mc.options == null ? 1 : mc.options.screenEffectScale().get().floatValue();
+		return scale(MagicQuality.reducedFlash, mc.options == null ? 1 : mc.options.screenEffectScale().get().floatValue());
+	}
+
+	/** Reduced flash caps the vanilla screen-effect setting at 15%; it never raises a lower one (0% stays off). */
+	static float scale(boolean reducedFlash, float vanilla) {
+		return reducedFlash ? Math.min(0.15F, vanilla) : vanilla;
+	}
+
+	/** How strongly the strain vignette shows: no weaker than 40% so the warning stays readable, but off at 0%. */
+	static float strainSoften(float scale) {
+		return scale <= 0 ? 0 : Math.max(0.4F, scale);
 	}
 
 	/** Aura's nudge: a small turn of the view as a blow lands (degrees), and when it began (nanoseconds) and how long it lasts (ms). */
@@ -194,7 +203,10 @@ public final class ScreenEffects {
 		int stage = charge.stage();
 		float tension = stage >= charge.stages()
 			? Mth.clamp((now - charge.stageTime()) / dev.wildercord.spell.Overchannel.GRACE, 0, 1) : 0;
-		float soften = Math.max(0.4F, scale());
+		float soften = strainSoften(scale());
+		if (soften <= 0) {
+			return;
+		}
 		float breath = 0.85F + 0.15F * Mth.sin(now * (0.25F + 0.1F * stage));
 		int w = g.guiWidth();
 		int h = g.guiHeight();

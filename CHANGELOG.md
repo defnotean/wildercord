@@ -19,6 +19,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Fixed
 
+- Reduced flash no longer turns screen shake and kicks back on when the game's Screen Effect Scale is at 0%, and at 0% the charge strain vignette is gone too. Before, reduced flash forced 15% and the vignette never dropped below 40%.
 - A Master gauntlet that was still running when you left a single-player world no longer carries on in the next world you open. Hamlet greetings, Duelist chatter and spell-residue cooldowns also start fresh with each world.
 - A renamed item now counts as what it is: rituals take a renamed reagent, inscribing a technique scroll takes renamed paper and aura shards, and a Hearth lamp cast takes a renamed torch. They used to be refused as if you had none.
 - Sapling Sow, Coppice and Gourdcall work on grass, podzol and moss as well as dirt: Sapling Sow plants there, Coppice replants the stump of a tree that stood on grass, and Gourdcall sets fruit on a grassy side.
