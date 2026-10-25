@@ -35,7 +35,8 @@ public final class RenamedReagentTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				var p = p(s);
 				var l = s.overworld();
-				check(l.isRaining(), "It rains before the ritual");
+				// The weather flag, not isRaining(): the rain level takes many ticks to fade in or out.
+				check(l.getWeatherData().isRaining(), "It rains before the ritual");
 				Spellbooks.setMana(p, 1000);
 				var first = Rituals.check(l, p, Ritual.CLEAR_SKIES);
 				check(first == Rituals.Result.DONE, "The renamed sunflower is accepted as the reagent (" + first + ")");
@@ -47,7 +48,7 @@ public final class RenamedReagentTest implements FabricClientGameTest {
 				check(Rituals.check(l, p, Ritual.CLEAR_SKIES) == Rituals.Result.NO_REAGENT, "Without a sunflower the ritual is refused");
 			});
 			c.waitTicks(5);
-			check(w.getServer().computeOnServer(s -> !s.overworld().isRaining()), "The rain stops");
+			check(w.getServer().computeOnServer(s -> !s.overworld().getWeatherData().isRaining()), "The rain stops");
 		}
 	}
 
