@@ -4,13 +4,19 @@ import dev.wildercord.world.ferryman.FerrymanContent;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.*;
+import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.*;
 import java.util.Optional;
 
-/** A shallow ferry basin with dry crossing paths. Ringing its bell is optional; every edge remains open. */
+/**
+ * A shallow ferry basin with dry crossing paths on a stone quay, a roofed toll shelter by the shore entrance and lamp
+ * standards at every path mouth. Ringing its bell is optional; every edge remains open.
+ */
 public final class LastCrossingPiece extends WaterPiece {
 	public static final int SIZE = 35, HEIGHT = 21, BASE = 12, DECK = BASE + 1;
 	public LastCrossingPiece(int x, int y, int z, Direction facing) { super(WaterSites.LAST_CROSSING, x, y, z, SIZE, HEIGHT, SIZE, facing); }
@@ -54,13 +60,68 @@ public final class LastCrossingPiece extends WaterPiece {
 			set(level, clip, AIR, width, DECK + 2, v);
 			set(level, clip, AIR, v, DECK + 1, width); set(level, clip, AIR, v, DECK + 2, width);
 		}
+		// The paths read as boardwalks: stripped log kerbs down each edge, a prismarine compass rose under the mooring.
+		var alongZ = log.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z); var alongX = log.setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
+		for (int v = 0; v < SIZE; v++) for (int edge : new int[] {15,19}) {
+			if (v < 15 || v > 19) { set(level, clip, alongZ, edge, DECK, v); set(level, clip, alongX, v, DECK, edge); }
+		}
+		for (int x = 15; x <= 19; x++) for (int z = 15; z <= 19; z++) {
+			int d = Math.abs(x - 17) + Math.abs(z - 17);
+			set(level, clip, d == 0 ? Blocks.DARK_PRISMARINE.defaultBlockState() : d == 1 || x == 17 || z == 17 ? Blocks.PRISMARINE_BRICKS.defaultBlockState() : planks, x, DECK, z);
+		}
+		// Each pool glows from below and has a little weed in its corners.
+		for (int x : new int[] {5,22}) for (int z : new int[] {5,22}) {
+			fill(level, clip, x + 3, DECK - 1, z + 3, x + 4, DECK - 1, z + 4, Blocks.SEA_LANTERN.defaultBlockState());
+			for (int px = x; px <= x + 7; px++) for (int pz = z; pz <= z + 7; pz++)
+				if ((px == x || px == x + 7 || pz == z || pz == z + 7) && noise(px, pz) < 22) set(level, clip, Blocks.SEAGRASS.defaultBlockState(), px, DECK, pz);
+		}
+		// A dressed stone quay just outside the arena: a deepslate coping on prismarine corbels, piles every few blocks.
+		Palette coping = Palette.of(Blocks.DEEPSLATE_BRICKS, 6, Blocks.POLISHED_DEEPSLATE, 3, Blocks.CRACKED_DEEPSLATE_BRICKS, 1);
+		for (int v = 1; v <= 33; v++) {
+			for (int[] c : new int[][] {{1, v}, {33, v}, {v, 1}, {v, 33}}) set(level, clip, coping.at(c[0], DECK, c[1]), c[0], DECK, c[1]);
+			if (v == 1 || v == 33) continue;
+			wet(level, clip, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.EAST, true), 1, DECK - 1, v);
+			wet(level, clip, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.WEST, true), 33, DECK - 1, v);
+			wet(level, clip, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.NORTH, true), v, DECK - 1, 1);
+			wet(level, clip, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.SOUTH, true), v, DECK - 1, 33);
+			if ((v - 1) % 4 == 0 && (v < 14 || v > 20)) {
+				post(level, clip, log, 1, v, DECK - 2); post(level, clip, log, 33, v, DECK - 2);
+				post(level, clip, log, v, 1, DECK - 2); post(level, clip, log, v, 33, DECK - 2);
+			}
+		}
+		for (int x : new int[] {1,33}) for (int z : new int[] {1,33}) post(level, clip, Blocks.DEEPSLATE_BRICKS.defaultBlockState(), x, z, DECK - 1);
+		// Corner lamp posts on deepslate bases, kept to the arena's very corners.
 		for (int x : new int[] {3,31}) for (int z : new int[] {3,31}) {
-			post(level, clip, log, x, z, DECK); fill(level, clip, x, DECK + 1, z, x, DECK + 3, z, log);
+			post(level, clip, log, x, z, DECK); set(level, clip, Blocks.POLISHED_DEEPSLATE.defaultBlockState(), x, DECK + 1, z);
+			fill(level, clip, x, DECK + 2, z, x, DECK + 3, z, log);
 			set(level, clip, Blocks.LANTERN.defaultBlockState(), x, DECK + 4, z);
 		}
-		// Open toll shelter, beside the shore entrance rather than across it.
-		for (int x : new int[] {14,21}) fill(level, clip, x, DECK + 1, 3, x, DECK + 4, 3, log);
-		fill(level, clip, 14, DECK + 5, 2, 21, DECK + 5, 5, Blocks.DARK_PRISMARINE.defaultBlockState());
+		// Taller lamp standards flank every path where it meets the quay, outside the arena.
+		for (int mouth : new int[] {1,33}) for (int side : new int[] {14,20}) {
+			for (int[] c : new int[][] {{side, mouth}, {mouth, side}}) {
+				post(level, clip, log, c[0], c[1], DECK - 1);
+				set(level, clip, Blocks.POLISHED_DEEPSLATE.defaultBlockState(), c[0], DECK, c[1]);
+				set(level, clip, Blocks.POLISHED_DEEPSLATE_WALL.defaultBlockState(), c[0], DECK + 1, c[1]);
+				fill(level, clip, c[0], DECK + 2, c[1], c[0], DECK + 3, c[1], Blocks.DARK_OAK_FENCE.defaultBlockState());
+				set(level, clip, Blocks.CHISELED_DEEPSLATE.defaultBlockState(), c[0], DECK + 4, c[1]);
+				set(level, clip, Blocks.LANTERN.defaultBlockState(), c[0], DECK + 5, c[1]);
+			}
+		}
+		// The toll shelter, beside the shore entrance rather than across it: four posts, a boarded ceiling and a
+		// hipped prismarine roof whose eaves reach over the chest. The path through it stays clear.
+		for (int x : new int[] {14,21}) for (int z : new int[] {3,5}) fill(level, clip, x, DECK + 1, z, x, DECK + 5, z, log);
+		fill(level, clip, 14, DECK + 5, 2, 21, DECK + 5, 5, Blocks.DARK_OAK_PLANKS.defaultBlockState());
+		for (int z : new int[] {3,5}) fill(level, clip, 15, DECK + 5, z, 20, DECK + 5, z, alongX);
+		hipRoof(level, clip, 14, 2, 21, 5, DECK + 5, Blocks.DARK_PRISMARINE_STAIRS, Blocks.DARK_PRISMARINE.defaultBlockState(), Blocks.PRISMARINE_BRICK_SLAB.defaultBlockState());
+		for (int x : new int[] {14,21}) set(level, clip, stair(Blocks.SPRUCE_STAIRS, x == 14 ? Direction.WEST : Direction.EAST, true), x, DECK + 4, 4);
+		for (int x : new int[] {15,19}) hangingLantern(level, clip, x, DECK + 4, 4, 0, false);
+		for (int x : new int[] {14,21}) banner(level, clip, Blocks.WALL_BANNER.pick(DyeColor.BLUE), x, DECK + 3, 2, Direction.SOUTH);
+		// The boatkeepers' clutter under the eaves, off the path.
+		set(level, clip, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 13, DECK + 1, 3);
+		set(level, clip, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.EAST), 13, DECK + 1, 4);
+		set(level, clip, Blocks.FLOWER_POT.defaultBlockState(), 13, DECK + 2, 3);
+		set(level, clip, Blocks.HAY_BLOCK.defaultBlockState(), 22, DECK + 1, 3);
+		set(level, clip, Blocks.LANTERN.defaultBlockState(), 22, DECK + 2, 3);
 		set(level, clip, FerrymanContent.BELL.defaultBlockState(), 17, DECK + 1, 4);
 		lectern(level, clip, 20, DECK + 1, 4, Direction.SOUTH, "The Last Crossing", "book.wildercord.last_crossing", 2, "Tideward boatkeepers");
 		chest(level, clip, 20, DECK + 1, 6, WaterSites.CROSSING_LOOT, Direction.WEST, 317);

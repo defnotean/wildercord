@@ -5,13 +5,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LanternBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -37,6 +38,8 @@ public class NetweaverVillagePiece extends WaterPiece {
 	private static final BlockState PLANKS = Blocks.MANGROVE_PLANKS.defaultBlockState();
 	private static final BlockState LOG = Blocks.MANGROVE_LOG.defaultBlockState();
 	private static final BlockState FENCE = Blocks.SPRUCE_FENCE.defaultBlockState();
+	private static final BlockState BEAM_X = Blocks.STRIPPED_MANGROVE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
+	private static final BlockState BEAM_Z = Blocks.STRIPPED_MANGROVE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
 
 	public NetweaverVillagePiece(int x, int y, int z, Direction facing) {
 		super(WaterSites.NETWEAVER_VILLAGE, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -104,15 +107,39 @@ public class NetweaverVillagePiece extends WaterPiece {
 			clear(level, bb, x, DECK, 1, x, DECK + 2, 1);
 		}
 		walk(level, bb, 12, 2, 13, 10);
+		// A gate over the walk where it leaves the bank: two posts, a beam and two lanterns.
+		for (int x : new int[] {11, 14}) {
+			post(level, bb, LOG, x, 2, DECK + 3);
+		}
+		fill(level, bb, 11, DECK + 4, 2, 14, DECK + 4, 2, BEAM_X);
+		for (int x = 12; x <= 13; x++) {
+			hangingLantern(level, bb, x, DECK + 3, 2, 0, false);
+		}
+		post(level, bb, LOG, 14, 6, DECK);
+		set(level, bb, FENCE, 14, DECK + 1, 6);
+		set(level, bb, FENCE, 14, DECK + 2, 6);
+		set(level, bb, Blocks.LANTERN.defaultBlockState(), 14, DECK + 3, 6);
 		walk(level, bb, 10, 6, 11, 7);
 		walk(level, bb, 14, 8, 16, 9);
 		walk(level, bb, 12, 16, 13, 16);
-		// The middle, where the nets are mended.
+		// The middle, where the nets are mended: an open frame of posts and beams to hang them from.
 		walk(level, bb, 11, 11, 15, 15);
 		for (int[] p : new int[][] {{11, 11}, {15, 11}, {11, 15}, {15, 15}}) {
 			post(level, bb, LOG, p[0], p[1], DECK - 1);
-			set(level, bb, FENCE, p[0], DECK + 1, p[1]);
-			set(level, bb, Blocks.LANTERN.defaultBlockState(), p[0], DECK + 2, p[1]);
+			fill(level, bb, p[0], DECK + 1, p[1], p[0], DECK + 4, p[1], LOG);
+			set(level, bb, Blocks.LANTERN.defaultBlockState(), p[0], DECK + 5, p[1]);
+		}
+		for (int v = 12; v <= 14; v++) {
+			set(level, bb, BEAM_X, v, DECK + 4, 11);
+			set(level, bb, BEAM_X, v, DECK + 4, 15);
+			set(level, bb, BEAM_Z, 11, DECK + 4, v);
+			set(level, bb, BEAM_Z, 15, DECK + 4, v);
+		}
+		for (int[] l : new int[][] {{13, 11}, {11, 13}, {15, 13}}) {
+			hangingLantern(level, bb, l[0], DECK + 3, l[1], 0, false);
+		}
+		for (int x : new int[] {12, 14}) {
+			set(level, bb, Blocks.COBWEB.defaultBlockState(), x, DECK + 3, 15);
 		}
 	}
 
@@ -125,13 +152,33 @@ public class NetweaverVillagePiece extends WaterPiece {
 					post(level, bb, LOG, x, z, DECK - 1);
 				}
 				set(level, bb, PLANKS, x, DECK, z);
-				clear(level, bb, x, DECK + 1, z, x, DECK + 6, z);
+				clear(level, bb, x, DECK + 1, z, x, DECK + 7, z);
 			}
 		}
-		fill(level, bb, cx - 2, DECK + 1, cz - 2, cx + 2, DECK + 3, cz + 2, PLANKS);
+		// Stair corbels under the platform's rim, between the stilts.
+		for (int i = -2; i <= 2; i++) {
+			if (i == 0) {
+				continue;
+			}
+			wet(level, bb, stair(Blocks.MANGROVE_STAIRS, Direction.NORTH, true), cx + i, DECK - 1, cz - 3);
+			wet(level, bb, stair(Blocks.MANGROVE_STAIRS, Direction.SOUTH, true), cx + i, DECK - 1, cz + 3);
+			wet(level, bb, stair(Blocks.MANGROVE_STAIRS, Direction.EAST, true), cx - 3, DECK - 1, cz + i);
+			wet(level, bb, stair(Blocks.MANGROVE_STAIRS, Direction.WEST, true), cx + 3, DECK - 1, cz + i);
+		}
+		// Walls: a mud-brick footing course, planks over it, a stripped log plate on top, logs at the corners.
+		fill(level, bb, cx - 2, DECK + 1, cz - 2, cx + 2, DECK + 1, cz + 2, Blocks.MUD_BRICKS.defaultBlockState());
+		fill(level, bb, cx - 2, DECK + 2, cz - 2, cx + 2, DECK + 3, cz + 2, PLANKS);
+		for (int v = -1; v <= 1; v++) {
+			set(level, bb, BEAM_X, cx + v, DECK + 3, cz - 2);
+			set(level, bb, BEAM_X, cx + v, DECK + 3, cz + 2);
+			set(level, bb, BEAM_Z, cx - 2, DECK + 3, cz + v);
+			set(level, bb, BEAM_Z, cx + 2, DECK + 3, cz + v);
+		}
 		fill(level, bb, cx - 1, DECK + 1, cz - 1, cx + 1, DECK + 3, cz + 1, AIR);
 		for (int[] k : new int[][] {{-2, -2}, {2, -2}, {-2, 2}, {2, 2}}) {
 			fill(level, bb, cx + k[0], DECK + 1, cz + k[1], cx + k[0], DECK + 3, cz + k[1], LOG);
+			// Posts at the platform's corners carry the eaves, making a narrow verandah all round.
+			fill(level, bb, cx + k[0] * 3 / 2, DECK + 1, cz + k[1] * 3 / 2, cx + k[0] * 3 / 2, DECK + 3, cz + k[1] * 3 / 2, LOG);
 		}
 		// Windows on every side, then the door cut through one of them.
 		set(level, bb, Blocks.GLASS.defaultBlockState(), cx - 2, DECK + 2, cz);
@@ -140,11 +187,16 @@ public class NetweaverVillagePiece extends WaterPiece {
 		set(level, bb, Blocks.GLASS.defaultBlockState(), cx, DECK + 2, cz + 2);
 		int dx = sx * 2, dz = sz * 2;
 		fill(level, bb, cx + dx, DECK + 1, cz + dz, cx + dx, DECK + 2, cz + dz, AIR);
-		// A stepped roof: a slab skirt, a planked course, a slab cap.
-		fill(level, bb, cx - 3, DECK + 4, cz - 3, cx + 3, DECK + 4, cz + 3, Blocks.MANGROVE_SLAB.defaultBlockState());
+		// A boarded ceiling under a hipped dark oak roof that overhangs the verandah.
 		fill(level, bb, cx - 2, DECK + 4, cz - 2, cx + 2, DECK + 4, cz + 2, PLANKS);
-		fill(level, bb, cx - 1, DECK + 5, cz - 1, cx + 1, DECK + 5, cz + 1, Blocks.MANGROVE_SLAB.defaultBlockState());
-		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), cx, DECK + 3, cz);
+		hipRoof(level, bb, cx - 2, cz - 2, cx + 2, cz + 2, DECK + 4, Blocks.DARK_OAK_STAIRS, PLANKS, Blocks.DARK_OAK_SLAB.defaultBlockState());
+		hangingLantern(level, bb, cx, DECK + 3, cz, 0, false);
+		// Lanterns under the eaves either side of the door and the weavers' colours beside it.
+		int px = Math.abs(sz) * 2, pz = Math.abs(sx) * 2;
+		hangingLantern(level, bb, cx + sx * 3 + px, DECK + 3, cz + sz * 3 + pz, 0, false);
+		hangingLantern(level, bb, cx + sx * 3 - px, DECK + 3, cz + sz * 3 - pz, 0, false);
+		Direction out = sx > 0 ? Direction.EAST : sx < 0 ? Direction.WEST : sz > 0 ? Direction.NORTH : Direction.SOUTH;
+		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), cx + sx * 3 + px / 2, DECK + 3, cz + sz * 3 + pz / 2, out);
 	}
 
 	/** What's in each hut, the nets in the middle, and the two weavers who are home. */
@@ -161,6 +213,13 @@ public class NetweaverVillagePiece extends WaterPiece {
 		bed(level, bb, 11, 20, Direction.NORTH);
 		set(level, bb, barrel, 13, DECK + 1, 21);
 		set(level, bb, Blocks.COMPOSTER.defaultBlockState(), 13, DECK + 1, 20);
+		// Rugs, a pot and candles, so each room looks lived in.
+		fill(level, bb, 6, DECK + 1, 5, 7, DECK + 1, 5, Blocks.CARPET.brown().defaultBlockState());
+		set(level, bb, Blocks.CANDLE.defaultBlockState(), 5, DECK + 2, 7);
+		set(level, bb, Blocks.CARPET.blue().defaultBlockState(), 19, DECK + 1, 9);
+		set(level, bb, Blocks.POTTED_ALLIUM.defaultBlockState(), 21, DECK + 2, 9);
+		set(level, bb, Blocks.CARPET.blue().defaultBlockState(), 12, DECK + 1, 21);
+		set(level, bb, Blocks.CANDLE.defaultBlockState(), 13, DECK + 2, 21);
 		// The middle: nets spread to dry, kelp drying, a cauldron of water.
 		for (int x = 12; x <= 14; x++) {
 			set(level, bb, Blocks.COBWEB.defaultBlockState(), x, DECK + 1, 15);

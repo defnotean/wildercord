@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -102,9 +103,19 @@ public class SunkenShrinePiece extends WaterPiece {
 			}
 		}
 		soaked(level, bb, Blocks.CONDUIT.defaultBlockState(), CONDUIT_X, CONDUIT_Y, CONDUIT_Z);
+		// The processional way: a dark inlay lit from below, running from the sea to the tunnel mouth.
+		for (int z = 1; z <= 7; z++) {
+			set(level, bb, DARK, 7, FLOOR, z);
+			set(level, bb, DARK, 9, FLOOR, z);
+			set(level, bb, z == 2 || z == 6 ? LIGHT : BRICKS, 8, FLOOR, z);
+		}
+		// Four tall columns: dark base and capital, rough prismarine shafts, a lantern crown under a slab.
 		for (int[] p : new int[][] {{2, 2}, {14, 2}, {2, 7}, {14, 7}}) {
-			fill(level, bb, p[0], FLOOR + 1, p[1], p[0], FLOOR + 4, p[1], BRICKS);
+			set(level, bb, DARK, p[0], FLOOR + 1, p[1]);
+			fill(level, bb, p[0], FLOOR + 2, p[1], p[0], FLOOR + 3, p[1], Blocks.PRISMARINE.defaultBlockState());
+			set(level, bb, DARK, p[0], FLOOR + 4, p[1]);
 			set(level, bb, LIGHT, p[0], FLOOR + 5, p[1]);
+			wet(level, bb, Blocks.PRISMARINE_BRICK_SLAB.defaultBlockState(), p[0], FLOOR + 6, p[1]);
 		}
 		BlockState[] growth = {Blocks.TUBE_CORAL.defaultBlockState(), Blocks.BRAIN_CORAL_FAN.defaultBlockState(), Blocks.HORN_CORAL.defaultBlockState(),
 			Blocks.TUBE_CORAL_FAN.defaultBlockState()};
@@ -120,6 +131,17 @@ public class SunkenShrinePiece extends WaterPiece {
 					soaked(level, bb, growth[n % growth.length], x, FLOOR + 1, z);
 				}
 			}
+		}
+		// A kerb of stepped dark prismarine round the platform, open at the processional way.
+		for (int v = 2; v <= 14; v++) {
+			wet(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.EAST, false), 1, FLOOR + 1, v);
+			wet(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.WEST, false), 15, FLOOR + 1, v);
+			if (v < 7 || v > 9) {
+				wet(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.NORTH, false), v, FLOOR + 1, 1);
+			}
+		}
+		for (int[] c : new int[][] {{1, 1}, {15, 1}, {1, 15}, {15, 15}}) {
+			set(level, bb, DARK, c[0], FLOOR + 1, c[1]);
 		}
 	}
 
@@ -140,22 +162,79 @@ public class SunkenShrinePiece extends WaterPiece {
 		set(level, bb, LIGHT, POOL_X - 1, HALL, POOL_Z);
 		set(level, bb, LIGHT, POOL_X + 1, HALL, POOL_Z);
 		set(level, bb, LIGHT, POOL_X, FLOOR + 2, 11);
-		// Its roof, stepped, a sea lantern on top for divers to find.
-		fill(level, bb, 4, HALL + 6, 9, 12, HALL + 6, 14, Blocks.PRISMARINE_BRICK_SLAB.defaultBlockState());
-		fill(level, bb, 6, HALL + 6, 10, 10, HALL + 6, 13, DARK);
-		set(level, bb, LIGHT, 8, HALL + 7, 11);
+		// The facade: pilasters, an arched tunnel mouth with a keystone light, and a corbelled cornice.
+		for (int x : new int[] {3, 5, 11, 13}) {
+			set(level, bb, DARK, x, FLOOR + 1, 7);
+			fill(level, bb, x, FLOOR + 2, 7, x, HALL + 3, 7, BRICKS);
+			set(level, bb, DARK, x, HALL + 4, 7);
+		}
+		for (int x = 4; x <= 12; x++) {
+			if (x != 5 && x != 11) {
+				wet(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, HALL + 4, 7);
+			}
+		}
+		fill(level, bb, 3, HALL + 5, 7, 13, HALL + 5, 7, DARK);
+		fill(level, bb, 7, FLOOR + 1, 7, 7, FLOOR + 3, 7, DARK);
+		fill(level, bb, 9, FLOOR + 1, 7, 9, FLOOR + 3, 7, DARK);
+		set(level, bb, DARK, POOL_X, FLOOR + 3, 7);
+		set(level, bb, LIGHT, POOL_X, FLOOR + 4, 7);
+		for (int x : new int[] {6, 10}) {
+			set(level, bb, Blocks.GLASS.defaultBlockState(), x, HALL + 2, 8);
+			wet(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, HALL + 1, 7);
+			wet(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, false), x, HALL + 3, 7);
+		}
+		// Its roof, a stepped pyramid of prismarine, a sea lantern on top for divers to find.
+		stepRing(level, bb, 3, 8, 13, 15, HALL + 6);
+		fill(level, bb, 4, HALL + 6, 9, 12, HALL + 6, 14, BRICKS);
+		stepRing(level, bb, 5, 10, 11, 13, HALL + 7);
+		fill(level, bb, 6, HALL + 7, 11, 10, HALL + 7, 12, DARK);
+		fill(level, bb, 7, HALL + 8, 11, 9, HALL + 8, 12, Blocks.PRISMARINE_BRICK_SLAB.defaultBlockState());
+		set(level, bb, LIGHT, 8, HALL + 8, 11);
 		for (int[] l : new int[][] {{5, 11}, {11, 11}, {8, 13}}) {
 			set(level, bb, LIGHT, l[0], HALL + 5, l[1]);
 		}
-		for (int x : new int[] {6, 10}) {
-			set(level, bb, Blocks.GLASS.defaultBlockState(), x, HALL + 2, 8);
+		// Inside: engaged columns, a cornice under the ceiling and a tide altar lit from the back wall.
+		for (int x : new int[] {4, 12}) {
+			set(level, bb, DARK, x, HALL + 1, 11);
+			fill(level, bb, x, HALL + 2, 11, x, HALL + 3, 11, Blocks.PRISMARINE.defaultBlockState());
+			set(level, bb, DARK, x, HALL + 4, 11);
 		}
-		for (int z = 11; z <= 14; z++) {
+		for (int z = 10; z <= 13; z++) {
+			if (z != 11) {
+				set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.WEST, true), 4, HALL + 4, z);
+				set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.EAST, true), 12, HALL + 4, z);
+			}
+		}
+		for (int x = 5; x <= 11; x++) {
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, HALL + 4, 14);
+		}
+		for (int z = 11; z <= 13; z++) {
 			set(level, bb, Blocks.CARPET.cyan().defaultBlockState(), 8, HALL + 1, z);
+		}
+		set(level, bb, DARK, 8, HALL + 1, 14);
+		set(level, bb, Blocks.CANDLE.defaultBlockState(), 8, HALL + 2, 14);
+		set(level, bb, LIGHT, 8, HALL + 2, 15);
+		for (int x : new int[] {6, 10}) {
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.CYAN), x, HALL + 3, 14, Direction.SOUTH);
 		}
 		set(level, bb, Blocks.PRISMARINE_STAIRS.defaultBlockState(), 5, HALL + 1, 9);
 		set(level, bb, Blocks.PRISMARINE_STAIRS.defaultBlockState(), 11, HALL + 1, 9);
 		lectern(level, bb, 4, HALL + 1, 14, Direction.EAST, "Tide Tablet", "book.wildercord.water_sunken_shrine", 2);
 		chest(level, bb, 12, HALL + 1, 14, WaterSites.SHRINE_LOOT, Direction.WEST, 306);
+	}
+
+	/** A course of stairs climbing inward round a roof step, with solid dark corners. */
+	private void stepRing(WorldGenLevel level, BoundingBox bb, int x0, int z0, int x1, int z1, int y) {
+		for (int x = x0 + 1; x < x1; x++) {
+			wet(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, false), x, y, z0);
+			wet(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.SOUTH, false), x, y, z1);
+		}
+		for (int z = z0 + 1; z < z1; z++) {
+			wet(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.EAST, false), x0, y, z);
+			wet(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.WEST, false), x1, y, z);
+		}
+		for (int[] c : new int[][] {{x0, z0}, {x1, z0}, {x0, z1}, {x1, z1}}) {
+			set(level, bb, DARK, c[0], y, c[1]);
+		}
 	}
 }
