@@ -122,15 +122,9 @@ final class StructureGallery {
 			var p = s.getPlayerList().getPlayers().getFirst();
 			p.teleportTo(s.overworld(), x, y, z, Set.<Relative>of(), yaw, pitch, false);
 		});
-		c.waitTicks(60);
-		try {
-			world.getConnection().waitForChunksRender();
-		} catch (AssertionError slow) {
-			// A far chunk still drawing only blurs the horizon; take the picture anyway.
-			log("view", "chunks still rendering at " + (int) x + "," + (int) z);
-			c.waitTicks(100);
-		}
-		c.waitTicks(10);
+		// A fixed wait: on the VPS waitForChunksRender always ran into its minute-long timeout over far horizon chunks,
+		// and the ground is already generated, so a few seconds draws everything near the camera.
+		c.waitTicks(120);
 	}
 
 	private static void shot(ClientGameTestContext c, String name) {
