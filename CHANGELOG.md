@@ -19,6 +19,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Fixed
 - The `<` and `>` page buttons in the rune catalogue and the spell notebook now show "Previous Page"/"Next Page" on hover and say so to a screen reader, instead of reading out a bare arrow.
+- The Cord screen's "Unfinished … · cannot cast" header and its paste refusals, the Fusion Altar's two-effect line and the lesson screen's Circle line now come from the lang file, so a translation pack reaches them.
 - The eight spell-construct blocks (Wind Step, Cinder Bulwark, Lifted Water and the rest) have names, so the debug screen and block-info mods no longer show a raw `block.wildercord.*` key.
 
 - Reduced flash no longer turns screen shake and kicks back on when the game's Screen Effect Scale is at 0%, and at 0% the charge strain vignette is gone too. Before, reduced flash forced 15% and the vignette never dropped below 40%.

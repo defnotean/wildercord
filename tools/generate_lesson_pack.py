@@ -44,6 +44,7 @@ LANG = {
     "screen.wildercord.lesson_pack.learned": "%s learned · %s / %s",
     "screen.wildercord.lesson_pack.scroll": "Scroll to read · %s / %s",
     "screen.wildercord.lesson_pack.practiced": "Practice remembered",
+    "screen.wildercord.lesson_pack.circle": "Circle %s · %s",
     "message.wildercord.lifeline_lesson.offered": "%s threaded a Lifeline to you. Crouch now to refuse the pull.",
     "message.wildercord.lifeline_lesson.refused": "You refused the Lifeline.",
 }
