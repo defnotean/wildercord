@@ -95,14 +95,15 @@
     ]
   },
   "area-guis-hud": {
-    "description": "GUIs and HUD: life journal, lore journal, quality settings, screen-effect setting and strain vignette, meditation, creature presentation.",
+    "description": "GUIs and HUD: life journal, lore journal, quality settings, screen-effect setting and strain vignette, colour-blind-safe telegraphs, meditation, creature presentation.",
     "purpose": "area",
-    "expectedCount": 6,
+    "expectedCount": 7,
     "entries": [
       "dev.wildercord.gametest.LifeJournalTest",
       "dev.wildercord.lore.LoreJournalGameTest",
       "dev.wildercord.client.fx.LifeOutcomeQualityTest",
       "dev.wildercord.client.fx.ScreenEffectSettingTest",
+      "dev.wildercord.client.fx.SafeTelegraphsTest",
       "dev.wildercord.gametest.WildercordMeditationTest",
       "dev.wildercord.wildlife.SiltcrestPresentationTest"
     ]

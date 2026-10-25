@@ -25,6 +25,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - The `<` and `>` page buttons in the rune catalogue and the spell notebook now show "Previous Page"/"Next Page" on hover and say so to a screen reader, instead of reading out a bare arrow.
 - The Cord screen's "Unfinished … · cannot cast" header and its paste refusals, the Fusion Altar's two-effect line and the lesson screen's Circle line now come from the lang file, so a translation pack reaches them.
 - The eight spell-construct blocks (Wind Step, Cinder Bulwark, Lifted Water and the rest) have names, so the debug screen and block-info mods no longer show a raw `block.wildercord.*` key.
+- Colour-blind-safe telegraphs now recolour spell circles, ward and shield rings and boss warning circles too. Before, the setting only reached rune sigils, so the circles that matter most in a fight kept their red and green.
 
 - Reduced flash no longer turns screen shake and kicks back on when the game's Screen Effect Scale is at 0%, and at 0% the charge strain vignette is gone too. Before, reduced flash forced 15% and the vignette never dropped below 40%.
 - A Master gauntlet that was still running when you left a single-player world no longer carries on in the next world you open. Hamlet greetings, Duelist chatter and spell-residue cooldowns also start fresh with each world.

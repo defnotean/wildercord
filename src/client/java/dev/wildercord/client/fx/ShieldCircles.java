@@ -109,7 +109,7 @@ public final class ShieldCircles {
 			this.dir = new Vector3f(dir);
 			this.offset = option.offset();
 			this.radius = option.radius();
-			this.color = option.color() & 0xFFFFFF;
+			this.color = (MagicQuality.safeTelegraphs ? dev.wildercord.presentation.SafeColourRules.safe(option.color()) : option.color()) & 0xFFFFFF;
 			this.early = option.kind() == ShieldOption.APPEAR;
 			this.random = random;
 			int n = option.layers();
