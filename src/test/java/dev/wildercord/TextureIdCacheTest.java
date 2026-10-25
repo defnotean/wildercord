@@ -18,7 +18,7 @@ class TextureIdCacheTest {
 				"cosmetic/CordStyleLook.java", "auraworld/MasterRenderer.java")) {
 			String source = Files.readString(CLIENT.resolve(file));
 			assertTrue(source.contains("computeIfAbsent"), file + " no longer caches its textures");
-			assertFalse(source.matches("(?s).*return Wildercord\.id\(\"textures/[^\"]*\" \+.*"), file + " builds a texture id on every call");
+			assertFalse(source.matches("(?s).*return Wildercord\\.id\\(\"textures/[^\"]*\" \\+.*"), file + " builds a texture id on every call");
 			assertFalse(source.contains("Identifier skin = Wildercord.id(") || source.contains("Identifier texture = Wildercord.id("), file + " builds a texture id every frame");
 		}
 	}
