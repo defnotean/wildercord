@@ -6468,6 +6468,7 @@
   "message.wildercord.mentor.taken_apprentice": "%s is now your mentor. Casting within %s blocks of them condenses a quarter more, until you form the %s circle.",
   "message.wildercord.mentor.taken_mentor": "%s is now your apprentice. Every circle they form pays you in Mana Crystals.",
   "message.wildercord.mentor.tutelage": "%s formed their %s circle: your tutelage earns you %s Mana Crystals.",
+  "message.wildercord.mentor.tutelage_owed": "While you were away, your apprentices' circles earned you %s Mana Crystals.",
   "message.wildercord.mentor.graduated": "You have graduated: %s has nothing left to teach you.",
   "message.wildercord.mentor.graduated_mentor": "%s has graduated and goes on alone.",
   "message.wildercord.mentor.ended": "You ended your apprenticeship with %s.",

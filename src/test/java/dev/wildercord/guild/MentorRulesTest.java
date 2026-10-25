@@ -54,4 +54,25 @@ class MentorRulesTest {
 		assertTrue(book.end(B, M));
 		assertFalse(book.end(M, B));
 	}
+
+	/** A circle pays its mentor once, however often it is formed again, and a mentor who was away is paid when they return. */
+	@Test
+	void eachCirclePaysOnceAndNothingIsLostWhileTheMentorIsAway() {
+		MentorRules.Tutelage t = new MentorRules.Tutelage();
+		assertEquals(1, t.earn(A, 1));
+		assertEquals(0, t.earn(A, 1), "the same circle formed again pays nothing");
+		assertEquals(1, t.earn(A, 2));
+		assertEquals(0, t.earn(A, 1), "nor a lower one");
+		assertEquals(1, t.earn(B, 1), "each apprentice keeps their own count");
+		assertEquals(2, t.earn(A, 5));
+		t.owe(M, 2);
+		t.owe(M, 1);
+		t.owe(M, 0);
+		// Saved and loaded again, as the ledger does.
+		MentorRules.Tutelage loaded = new MentorRules.Tutelage(t.paidThrough(), t.owed());
+		assertEquals(0, loaded.earn(A, 5));
+		assertEquals(3, loaded.collect(M));
+		assertEquals(0, loaded.collect(M), "collected once");
+		assertEquals(0, loaded.collect(A));
+	}
 }
