@@ -4,6 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
@@ -52,6 +53,8 @@ public final class CinderAntler {
 	}
 
 	public static void init() {
+		// Tick counts restart with the server, so a remembered tick from the last world would make the cooldown look stuck.
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { LAST.clear(); SPRINT.clear(); });
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			for (var player : server.getPlayerList().getPlayers()) {
 				if (!bound(player)) continue;

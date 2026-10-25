@@ -45,11 +45,12 @@
     ]
   },
   "area-combat-aura": {
-    "description": "Combat: aura wards, sword strings, momentum and aura effects.",
+    "description": "Combat: aura wards, sword strings, momentum and aura effects; bound-beast cooldowns reset with the server.",
     "purpose": "area",
-    "expectedCount": 4,
+    "expectedCount": 5,
     "entries": [
       "dev.wildercord.aura.arts.ArtWardsHardeningTest",
+      "dev.wildercord.aura.world.CooldownRestartTest",
       "dev.wildercord.gametest.WildercordSwordStringsTest",
       "dev.wildercord.gametest.WildercordMomentumTest",
       "dev.wildercord.gametest.WildercordAuraFxTest"

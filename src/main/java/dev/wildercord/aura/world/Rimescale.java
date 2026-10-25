@@ -4,6 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -55,6 +56,8 @@ public final class Rimescale {
 
 	public static void init() {
 		// The cold cannot touch its bearer.
+		// Tick counts restart with the server, so a remembered tick from the last world would make the cooldown look stuck.
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { LAST.clear(); });
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) ->
 			!(entity instanceof ServerPlayer player && source.is(DamageTypes.FREEZE) && bound(player)));
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {

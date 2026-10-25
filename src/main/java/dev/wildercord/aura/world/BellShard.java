@@ -4,6 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -52,6 +53,8 @@ public final class BellShard {
 	}
 
 	public static void init() {
+		// Tick counts restart with the server, so a remembered tick from the last world would make the cooldown look stuck.
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { LAST.clear(); });
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
 			if (!(entity instanceof ServerPlayer player) || taken <= 0 || !player.isAlive() || !bound(player)) return;
 			long now = player.level().getServer().getTickCount();
