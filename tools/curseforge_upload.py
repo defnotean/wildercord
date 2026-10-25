@@ -11,7 +11,6 @@ import os
 from pathlib import Path
 import sys
 import zipfile
-import requests
 
 parser = argparse.ArgumentParser()
 parser.add_argument("file", type=Path)
@@ -45,6 +44,8 @@ else:
     metadata["gameVersions"] = [17045, 7499, 14454, 9638, 9639]
     metadata["relations"] = {"projects": [{"slug": "fabric-api", "projectID": 306612,
                                              "type": "requiredDependency"}]}
+import requests  # only needed once the guards above have passed
+
 with args.file.open("rb") as file:
     response = requests.post(
         f"https://minecraft.curseforge.com/api/projects/{args.project}/upload-file",

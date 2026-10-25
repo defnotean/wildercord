@@ -1,7 +1,6 @@
-"""The CurseForge upload refuses a file whose SHA-256 is already in the upload ledger."""
+"""The CurseForge upload refuses a file whose SHA-256 is already in the upload ledger (no network or requests needed)."""
 
 import hashlib
-import importlib.util
 import json
 import os
 from pathlib import Path
@@ -14,7 +13,6 @@ import unittest
 SCRIPT = Path(__file__).resolve().parent / "curseforge_upload.py"
 
 
-@unittest.skipUnless(importlib.util.find_spec("requests"), "requests is not installed")
 class CurseforgeUploadTest(unittest.TestCase):
     def test_a_recorded_file_is_refused_before_the_token_is_read(self):
         with tempfile.TemporaryDirectory() as tmp:
