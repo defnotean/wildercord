@@ -9,12 +9,13 @@ import unittest
 
 SCRIPT = Path(__file__).resolve().parent / "check_generated_assets.py"
 
-# Stands in for generate_assets.py: rewrites one file, removes one and adds one.
+# Stands in for generate_assets.py: rewrites two files (one a generated doc), removes one and adds one.
 FAKE_GENERATOR = """from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 (root / "src/main/resources/kept.json").write_text('{"drifted": true}')
 (root / "src/main/resources/removed.json").unlink()
 (root / "src/main/resources/assets/added.json").write_text("{}")
+(root / "docs/features/fusion-altar.md").write_text("drifted")
 """
 
 
@@ -27,12 +28,12 @@ class CheckGeneratedAssetsTest(unittest.TestCase):
             (root / "tools/generate_assets.py").write_text(FAKE_GENERATOR)
             resources = root / "src/main/resources"
             (resources / "assets").mkdir(parents=True)
-            (resources / "kept.json").write_bytes(b'{"drifted": false}
-')
+            (resources / "kept.json").write_bytes(b'{"drifted": false}\n')
             (resources / "removed.json").write_bytes(b"[]")
             (root / "docs").mkdir()
-            (root / "docs/RECIPES.md").write_bytes(b"# Recipes
-")
+            (root / "docs/RECIPES.md").write_bytes(b"# Recipes\n")
+            (root / "docs/features").mkdir()
+            (root / "docs/features/fusion-altar.md").write_bytes(b"# Fusion altar\n")
             before = {p.relative_to(root).as_posix(): p.read_bytes() for p in root.rglob("*")
                       if p.is_file() and p.relative_to(root).parts[0] != "tools"}
 
@@ -41,6 +42,7 @@ class CheckGeneratedAssetsTest(unittest.TestCase):
             self.assertEqual(1, run.returncode, run.stderr)
             for name in ("kept.json", "removed.json", "assets/added.json"):
                 self.assertIn("src/main/resources/" + name, run.stderr)
+            self.assertIn("docs/features/fusion-altar.md", run.stderr)
 
             after = {p.relative_to(root).as_posix(): p.read_bytes() for p in root.rglob("*")
                      if p.is_file() and p.relative_to(root).parts[0] != "tools"}

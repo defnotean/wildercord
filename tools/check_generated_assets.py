@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def generated_files():
-    paths = list((ROOT / "src/main/resources").rglob("*")) + [ROOT / "docs/RECIPES.md"]
+    paths = list((ROOT / "src/main/resources").rglob("*")) + [ROOT / "docs/RECIPES.md", ROOT / "docs/features/fusion-altar.md"]
     return {path.relative_to(ROOT).as_posix(): path.read_bytes() for path in paths if path.is_file()}
 
 
