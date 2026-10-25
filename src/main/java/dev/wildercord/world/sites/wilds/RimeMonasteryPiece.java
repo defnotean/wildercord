@@ -25,7 +25,7 @@ import java.util.Optional;
  * keeps the old reliquary shut.
  */
 public final class RimeMonasteryPiece extends WildsPiece {
-	public RimeMonasteryPiece(int x, int z, Direction facing) { super(WildsSites.RIME_MONASTERY, x, z, 23, 16, 23, facing); }
+	public RimeMonasteryPiece(int x, int z, Direction facing) { super(WildsSites.RIME_MONASTERY, x, z, 23, 20, 23, facing); }
 	public RimeMonasteryPiece(CompoundTag tag) { super(WildsSites.RIME_MONASTERY, tag); }
 	static Optional<Structure.GenerationStub> locate(Structure.GenerationContext c) {
 		return surface(c, new RimeMonasteryPiece(c.chunkPos().getMinBlockX(), c.chunkPos().getMinBlockZ(), facing(c)), 4);
@@ -41,7 +41,7 @@ public final class RimeMonasteryPiece extends WildsPiece {
 		DungeonWards.remember(level, this);
 		footing(level, bb, 0, 0, 22, 22, s(Blocks.COBBLESTONE));
 		for (int x = 0; x <= 22; x++) for (int z = 0; z <= 22; z++) set(level, bb, noise(x, z) < 50 ? s(Blocks.SNOW_BLOCK) : stone(x, 0, z), x, 0, z);
-		clear(level, bb, 0, 1, 0, 22, 15, 22);
+		clear(level, bb, 0, 1, 0, 22, 19, 22);
 		for (int x = 0; x <= 22; x++) for (int z = 0; z <= 22; z++) if (noise(z, x) < 45) set(level, bb, s(Blocks.SNOW), x, 1, z);
 		// The broken outer wall, with its gate.
 		for (int x = 0; x <= 22; x++) for (int z = 0; z <= 22; z++) {
@@ -50,7 +50,13 @@ public final class RimeMonasteryPiece extends WildsPiece {
 			for (int y = 1; y <= h; y++) set(level, bb, stone(x, y, z), x, y, z);
 		}
 		clear(level, bb, 10, 1, 0, 12, 4, 0);
-		for (int x : new int[]{9, 13}) fill(level, bb, x, 1, 0, x, 5, 0, s(Blocks.STONE_BRICKS));
+		for (int x : new int[]{9, 13}) {
+			fill(level, bb, x, 1, 0, x, 5, 0, s(Blocks.STONE_BRICKS));
+			set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), x, 6, 0);
+			set(level, bb, s(Blocks.LANTERN), x, 7, 0);
+		}
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), 10, 4, 0);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 12, 4, 0);
 		// Two monks' cells along the west wall.
 		for (int z0 : new int[]{2, 7}) {
 			room(level, bb, 1, 0, z0, 5, 4, z0 + 4, s(Blocks.STONE_BRICKS));
@@ -59,6 +65,8 @@ public final class RimeMonasteryPiece extends WildsPiece {
 			for (int x = 2; x <= 4; x++) for (int z = z0 + 1; z <= z0 + 3; z++) if (noise(x, z0, z) < 30) set(level, bb, s(Blocks.SNOW), x, 4, z);
 			set(level, bb, s(Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.LIGHT_BLUE)), 2, 1, z0 + 3);
 		}
+		// One hipped spruce roof over both cells, its eaves past their doors; snow still lies on the broken ceilings below.
+		hipRoof(level, bb, 1, 2, 5, 11, 5, Blocks.SPRUCE_STAIRS, s(Blocks.SPRUCE_PLANKS), s(Blocks.SPRUCE_SLAB));
 		chest(level, bb, 2, 1, 3, WildsSites.RIME_HALL, Direction.EAST, 1);
 		set(level, bb, s(Blocks.BARREL), 2, 1, 8);
 		set(level, bb, s(Blocks.LANTERN), 4, 1, 3);
@@ -84,6 +92,15 @@ public final class RimeMonasteryPiece extends WildsPiece {
 		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), 7, 1, 20);
 		set(level, bb, s(Blocks.LECTERN).setValue(LecternBlock.FACING, Direction.SOUTH), 6, 1, 20);
 		set(level, bb, s(Blocks.LANTERN), 7, 2, 20);
+		// Candles and the order's pale banners by the altar.
+		for (int x : new int[]{5, 8}) set(level, bb, s(Blocks.CANDLE), x, 1, 20);
+		for (int x : new int[]{4, 9}) banner(level, bb, Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.LIGHT_BLUE), x, 3, 20, Direction.SOUTH);
+		// The chapel's front: chiselled jambs, a hood, a glazed lancet over the door; buttresses down its long sides.
+		for (int x : new int[]{5, 8}) fill(level, bb, x, 1, 13, x, 4, 13, s(Blocks.CHISELED_STONE_BRICKS));
+		for (int x = 5; x <= 8; x++) set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), x, 4, 12);
+		for (int x : new int[]{6, 7}) fill(level, bb, x, 5, 13, x, 6, 13, s(Blocks.GLASS));
+		for (int z : new int[]{14, 17, 20}) buttress(level, bb, 12, z, 1, 6, Direction.EAST, s(Blocks.STONE_BRICKS), Blocks.STONE_BRICK_STAIRS);
+		buttress(level, bb, 2, 17, 1, 6, Direction.WEST, s(Blocks.STONE_BRICKS), Blocks.STONE_BRICK_STAIRS);
 		// The crypt, down a stair under the chapel floor.
 		room(level, bb, 3, -6, 14, 11, -1, 20, s(Blocks.DEEPSLATE_BRICKS));
 		for (int step = 0; step <= 5; step++) {
@@ -110,6 +127,27 @@ public final class RimeMonasteryPiece extends WildsPiece {
 		}
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.FACING, Direction.NORTH).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING), 18, 14, 17);
 		fill(level, bb, 15, 15, 15, 20, 15, 20, s(Blocks.SPRUCE_PLANKS));
+		// A string course halfway up, a corbel course under the belfry, a hood over the door and a slate-dark hipped cap.
+		towerRing(level, bb, 6, false);
+		towerRing(level, bb, 12, true);
+		for (int x = 16; x <= 19; x++) set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), x, 4, 14);
+		hangingLantern(level, bb, 17, 3, 14, 0, false);
+		hipRoof(level, bb, 15, 15, 20, 20, 16, Blocks.DEEPSLATE_TILE_STAIRS, s(Blocks.DEEPSLATE_TILES), s(Blocks.DEEPSLATE_TILE_SLAB));
+	}
+
+	/** A course of upside-down stairs around the bell tower's outside at {@code y}; a flat band of slabs when not {@code corbel}. */
+	private void towerRing(WorldGenLevel level, BoundingBox bb, int y, boolean corbel) {
+		for (int v = 15; v <= 20; v++) {
+			if (corbel) {
+				set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), v, y, 14);
+				set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.SOUTH, true), v, y, 21);
+				set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 14, y, v);
+				set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), 21, y, v);
+			} else {
+				for (int[] c : new int[][]{{v, 14}, {v, 21}, {14, v}, {21, v}}) set(level, bb, topSlab(Blocks.STONE_BRICK_SLAB), c[0], y, c[1]);
+			}
+		}
+		for (int[] c : new int[][]{{14, 14}, {21, 14}, {14, 21}, {21, 21}}) set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), c[0], y, c[1]);
 	}
 
 	@Override public List<BoundingBox> wardedBoxes() { return List.of(worldBox(3, -6, 14, 6, -1, 20)); }

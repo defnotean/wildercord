@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -70,6 +71,13 @@ public final class IronGatehousePiece extends WildsPiece {
 		set(level, bb, s(Blocks.LANTERN), 5, 1, 8);
 		set(level, bb, s(Blocks.LANTERN), 5, 11, 8);
 		crenels(level, bb, 0, 1, 6, 9, 17);
+		// Arrow loops front and back of the upper room, a corbel course under the battlements.
+		for (int z : new int[]{1, 9}) {
+			clear(level, bb, 3, 5, z, 3, 6, z);
+			clear(level, bb, 3, 13, z, 3, 14, z);
+		}
+		corbels(level, bb, 0, 6, 15);
+		for (int x : new int[]{1, 5}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), x, 12, 0, Direction.SOUTH);
 		// The gate hall, portcullis down at the front, an open arch at the back, the rampart on its roof.
 		walls(level, bb, 7, 0, 2, 17, 10, 8);
 		fill(level, bb, 8, 0, 3, 16, 0, 7, s(Blocks.STONE_BRICKS));
@@ -79,6 +87,21 @@ public final class IronGatehousePiece extends WildsPiece {
 		clear(level, bb, 6, 1, 5, 7, 2, 5);
 		clear(level, bb, 6, 11, 5, 6, 12, 5);
 		crenels(level, bb, 7, 2, 17, 8, 11);
+		// The gate's face: chiselled jambs, a hood and keystone, a machicolation row, banners and lamp posts.
+		for (int x : new int[]{9, 15}) fill(level, bb, x, 1, 2, x, 6, 2, s(Blocks.CHISELED_STONE_BRICKS));
+		for (int x = 9; x <= 15; x++) set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), x, 6, 1);
+		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), 12, 7, 1);
+		for (int x = 8; x <= 16; x++) set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), x, 9, 1);
+		for (int x : new int[]{8, 16}) {
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), x, 5, 1, Direction.SOUTH);
+			fill(level, bb, x, 1, 0, x, 2, 0, s(Blocks.STONE_BRICK_WALL));
+			set(level, bb, s(Blocks.LANTERN), x, 3, 0);
+		}
+		// The back arch's shoulders, two more lamps and the wardens' barrels inside.
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), 10, 5, 8);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 14, 5, 8);
+		for (int x : new int[]{9, 15}) hangingLantern(level, bb, x, 9, 5, 1, false);
+		for (int z : new int[]{6, 7}) set(level, bb, s(Blocks.BARREL), 16, 1, z);
 		set(level, bb, AIR, 7, 11, 5);
 		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 12, 9, 5);
 		set(level, bb, s(Blocks.CHIPPED_ANVIL), 16, 1, 3);
@@ -87,6 +110,7 @@ public final class IronGatehousePiece extends WildsPiece {
 		walls(level, bb, 18, 0, 1, 24, 8, 9);
 		fill(level, bb, 18, 9, 1, 24, 12, 9, s(Blocks.STONE_BRICKS));
 		crenels(level, bb, 18, 1, 24, 9, 13);
+		corbels(level, bb, 18, 24, 11);
 		clear(level, bb, 17, 1, 4, 17, 3, 6);
 		sealDoorAlong(level, bb, 18, 4, 6, 1, 3, RuneSealBlock.Element.EARTH, RuneSealBlock.Element.STORM);
 		fill(level, bb, 19, 0, 2, 23, 0, 8, s(Blocks.POLISHED_ANDESITE));
@@ -97,9 +121,28 @@ public final class IronGatehousePiece extends WildsPiece {
 		// Rubble in the yard behind.
 		for (int x = 0; x <= 24; x++) for (int z = 10; z <= 14; z++) if (noise(x, z) < 12 && (x < 9 || x > 15))
 			set(level, bb, stone(x, 1, z), x, 1, z);
+		// Battered plinths along both towers' faces, the door's path left clear; lit merlons on their corners.
+		for (int[] t : new int[][]{{0, 6, 17}, {18, 24, 13}}) {
+			for (int x = t[0]; x <= t[1]; x++) {
+				if (x != 3) set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, false), x, 1, 0);
+				set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.SOUTH, false), x, 1, 10);
+			}
+			for (int[] c : new int[][]{{t[0], 1}, {t[1], 1}, {t[0], 9}, {t[1], 9}}) {
+				set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), c[0], t[2], c[1]);
+				set(level, bb, s(Blocks.LANTERN), c[0], t[2] + 1, c[1]);
+			}
+		}
 		guard(level, bb, EntityTypes.SKELETON, 9, 11, 5, List.of(Runes.BOLT, Runes.SHACKLE), false);
 		guard(level, bb, EntityTypes.SKELETON, 15, 11, 5, List.of(Runes.BOLT, Runes.SHACKLE), false);
 		guard(level, bb, EntityTypes.VINDICATOR, 20, 1, 3, List.of(Runes.BURST, Runes.TREMOR), true);
+	}
+
+	/** Upside-down stairs under a tower's battlements on its front and back faces, from x0 to x1 at {@code y}. */
+	private void corbels(WorldGenLevel level, BoundingBox bb, int x0, int x1, int y) {
+		for (int x = x0; x <= x1; x++) {
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), x, y, 0);
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.SOUTH, true), x, y, 10);
+		}
 	}
 
 	@Override public List<BoundingBox> wardedBoxes() { return List.of(worldBox(18, 0, 1, 24, 8, 9)); }

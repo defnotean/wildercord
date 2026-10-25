@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -57,11 +58,40 @@ public final class DawnPavilionPiece extends WildsPiece {
 			boolean inShrine = x >= box[0] && x <= box[2] && z >= box[1] && z <= box[3];
 			if ((x < 3 || x > 15 || z < 3 || z > 15) && !inShrine && noise(x, z) < 35) set(level, bb, s(Blocks.PINK_PETALS), x, 1, z);
 		}
-		// The platform, four posts and a stepped roof.
+		// The platform on a stone kerb, with a low stair-step skirt round it.
+		Palette kerb = Palette.of(Blocks.STONE_BRICKS, 6, Blocks.MOSSY_STONE_BRICKS, 3, Blocks.CRACKED_STONE_BRICKS, 1);
 		fill(level, bb, 3, 0, 3, 15, 0, 15, s(Blocks.CHERRY_PLANKS));
+		for (int v = 3; v <= 15; v++) for (int[] c : new int[][]{{3, v}, {15, v}, {v, 3}, {v, 15}}) set(level, bb, kerb.at(c[0], 0, c[1]), c[0], 0, c[1]);
+		for (int v = 3; v <= 15; v++) {
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, false), 2, 0, v);
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, false), 16, 0, v);
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, false), v, 0, 2);
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.SOUTH, false), v, 0, 16);
+		}
+		for (int x : new int[]{2, 16}) for (int z : new int[]{2, 16}) set(level, bb, s(Blocks.STONE_BRICKS), x, 0, z);
 		fill(level, bb, 7, 0, 7, 11, 0, 11, s(Blocks.STRIPPED_CHERRY_LOG));
-		for (int[] p : new int[][]{{4, 4}, {14, 4}, {4, 14}, {14, 14}}) fill(level, bb, p[0], 1, p[1], p[0], 5, p[1], s(Blocks.CHERRY_LOG));
-		int[][] tiers = {{3, 15}, {5, 13}, {7, 11}};
+		// A low cherry rail round the edge, open in the middle of each side.
+		for (int v = 4; v <= 14; v++) {
+			if (v >= 8 && v <= 10) continue;
+			for (int[] c : new int[][]{{3, v}, {15, v}, {v, 3}, {v, 15}}) set(level, bb, s(Blocks.CHERRY_FENCE), c[0], 1, c[1]);
+		}
+		// Four posts on stone bases, braced at the top and tied by stripped beams under the eaves.
+		for (int[] p : new int[][]{{4, 4}, {14, 4}, {4, 14}, {14, 14}}) {
+			fill(level, bb, p[0], 1, p[1], p[0], 5, p[1], s(Blocks.CHERRY_LOG));
+			set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), p[0], 1, p[1]);
+			int ix = p[0] < 9 ? 1 : -1, iz = p[1] < 9 ? 1 : -1;
+			set(level, bb, stair(Blocks.CHERRY_STAIRS, ix > 0 ? Direction.WEST : Direction.EAST, true), p[0] + ix, 5, p[1]);
+			set(level, bb, stair(Blocks.CHERRY_STAIRS, iz > 0 ? Direction.SOUTH : Direction.NORTH, true), p[0], 5, p[1] + iz);
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), p[0] - ix, 4, p[1], ix > 0 ? Direction.WEST : Direction.EAST);
+		}
+		for (int v = 6; v <= 12; v++) {
+			for (int z : new int[]{4, 14}) set(level, bb, s(Blocks.STRIPPED_CHERRY_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X), v, 5, z);
+			for (int x : new int[]{4, 14}) set(level, bb, s(Blocks.STRIPPED_CHERRY_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z), x, 5, v);
+		}
+		// Cushions round the sunken centre for the watchers.
+		for (int v = 7; v <= 11; v += 2) for (int[] c : new int[][]{{6, v}, {12, v}, {v, 6}, {v, 12}}) set(level, bb, Blocks.CARPET.red().defaultBlockState(), c[0], 1, c[1]);
+		// A four-tier roof with a lantern at every eave corner.
+		int[][] tiers = {{3, 15}, {5, 13}, {7, 11}, {8, 10}};
 		for (int t = 0; t < tiers.length; t++) {
 			int a = tiers[t][0], b = tiers[t][1], y = 6 + t;
 			fill(level, bb, a, y, a, b, y, b, s(Blocks.CHERRY_PLANKS));
@@ -70,14 +100,28 @@ public final class DawnPavilionPiece extends WildsPiece {
 			fill(level, bb, a, y, a + 1, a, y, b - 1, edge(Blocks.CHERRY_STAIRS, Direction.EAST));
 			fill(level, bb, b, y, a + 1, b, y, b - 1, edge(Blocks.CHERRY_STAIRS, Direction.WEST));
 		}
-		set(level, bb, s(Blocks.CHERRY_PLANKS), 9, 9, 9);
-		set(level, bb, s(Blocks.CHERRY_SLAB), 9, 10, 9);
+		set(level, bb, s(Blocks.CHERRY_PLANKS), 9, 10, 9);
+		set(level, bb, s(Blocks.CHERRY_SLAB), 9, 11, 9);
 		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 9, 5, 9);
 		for (int[] p : new int[][]{{4, 4}, {14, 4}, {4, 14}, {14, 14}}) set(level, bb, s(Blocks.CHERRY_LEAVES).setValue(LeavesBlock.PERSISTENT, true), p[0], 6, p[1]);
+		for (int x : new int[]{3, 15}) for (int z : new int[]{3, 15}) {
+			set(level, bb, s(Blocks.CHERRY_SLAB), x, 7, z);
+			hangingLantern(level, bb, x, 5, z, 0, false);
+		}
 		chest(level, bb, 5, 1, 4, WildsSites.DAWN_HALL, Direction.NORTH, 1);
 		set(level, bb, s(Blocks.FLOWER_POT), 13, 1, 5);
-		// The sunrise shrine.
+		// The sunrise shrine: calcite between stripped cherry corner posts, under a slab coping.
 		fill(level, bb, box[0], 0, box[1], box[2], 4, box[3], s(Blocks.CALCITE));
+		for (int x : new int[]{box[0], box[2]}) for (int z : new int[]{box[1], box[3]}) fill(level, bb, x, 1, z, x, 4, z, s(Blocks.STRIPPED_CHERRY_LOG));
+		for (int x = box[0]; x <= box[2]; x++) for (int z = box[1]; z <= box[3]; z++)
+			if (x == box[0] || x == box[2] || z == box[1] || z == box[3]) set(level, bb, s(Blocks.CHERRY_SLAB), x, 5, z);
+		// Two stone lanterns stand on the far side, looking across the pavilion to the shrine.
+		for (int j : new int[]{-2, 2}) {
+			int[] p = at(-8, j);
+			set(level, bb, s(Blocks.STONE_BRICKS), p[0], 1, p[1]);
+			set(level, bb, s(Blocks.STONE_BRICK_WALL), p[0], 2, p[1]);
+			set(level, bb, s(Blocks.LANTERN), p[0], 3, p[1]);
+		}
 		for (int k = 7; k <= 8; k++) for (int j = -1; j <= 1; j++) for (int y = 1; y <= 3; y++) { int[] p = at(k, j); set(level, bb, AIR, p[0], y, p[1]); }
 		for (int j = -1; j <= 1; j++) for (int y = 2; y <= 3; y++) { int[] p = at(9, j); set(level, bb, Blocks.STAINED_GLASS.orange().defaultBlockState(), p[0], y, p[1]); }
 		int[] door = at(6, 0), d = towardSunrise();
