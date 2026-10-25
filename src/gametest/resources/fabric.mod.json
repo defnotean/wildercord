@@ -21,6 +21,8 @@
       "dev.wildercord.town.InnRoomStayTest",
       "dev.wildercord.town.HamletStandingTest",
       "dev.wildercord.guild.GuildFoundingTest",
+      "dev.wildercord.guild.MentorTutelageTest",
+      "dev.wildercord.ritual.SanctuaryWardTest",
       "dev.wildercord.wildlife.MountBondPerksTest",
       "dev.wildercord.wildlife.SkyrayFlightTest",
       "dev.wildercord.backpack.BackpackMenuTest",

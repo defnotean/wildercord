@@ -60,9 +60,9 @@
     ]
   },
   "area-rituals-parties": {
-    "description": "Rituals and parties: relay circles, party admission during release, excise, basinfill and farm-spell casts, founding a guild and a coven.",
+    "description": "Rituals and parties: relay circles, party admission during release, excise, basinfill and farm-spell casts, founding a guild and a coven, mentor tutelage while away, a Sanctuary sparing bosses.",
     "purpose": "area",
-    "expectedCount": 7,
+    "expectedCount": 9,
     "entries": [
       "dev.wildercord.party.RelayImpactTest",
       "dev.wildercord.cast.RelayCircleTest",
@@ -70,7 +70,9 @@
       "dev.wildercord.cast.BasinfillTest",
       "dev.wildercord.cast.FarmSoilTest",
       "dev.wildercord.ritual.RenamedReagentTest",
-      "dev.wildercord.guild.GuildFoundingTest"
+      "dev.wildercord.guild.GuildFoundingTest",
+      "dev.wildercord.guild.MentorTutelageTest",
+      "dev.wildercord.ritual.SanctuaryWardTest"
     ]
   },
   "area-regions-worldgen": {

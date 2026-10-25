@@ -309,9 +309,13 @@ public final class Rituals {
 	private static List<Mob> warded(ServerLevel level, Vec3 center) {
 		double r = RitualRules.SANCTUARY_RADIUS;
 		return level.getEntitiesOfClass(Mob.class, new net.minecraft.world.phys.AABB(center, center).inflate(r),
-			m -> m instanceof Enemy && m.isAlive() && !(m instanceof net.minecraft.world.entity.boss.wither.WitherBoss)
-				&& !(m instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon)
+			m -> m instanceof Enemy && m.isAlive() && !held(m)
 				&& m.position().distanceTo(center) <= r);
+	}
+
+	/** A Sanctuary turns aside the common monsters: no boss, and no Riftcaller, is pushed out of its own fight. */
+	private static boolean held(Mob mob) {
+		return dev.wildercord.cast.Spirits.isBoss(mob) || mob.entityTags().contains(dev.wildercord.cast.events.RiftSiege.RIFTCALLER_TAG);
 	}
 
 	/** Monsters inside the ward forget who they were after and are pushed back towards its edge. */
