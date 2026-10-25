@@ -130,15 +130,16 @@
     ]
   },
   "area-towns-guards": {
-    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; an inn raid belongs to its own dimension; camp pot, bounty board and sunder state is forgotten when a world closes; every network payload survives its own codec round trip; homes, warps and /back keep their warmup, cooldown, cancels and home limit.",
+    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; an inn raid belongs to its own dimension; camp pot, bounty board and sunder state is forgotten when a world closes; every network payload survives its own codec round trip; homes, warps and /back keep their warmup, cooldown, cancels and home limit; a named-elite bounty sets one marked champion loose 48 to 96 blocks out, and only the hunter's kill of it counts.",
     "purpose": "area",
-    "expectedCount": 5,
+    "expectedCount": 6,
     "entries": [
       "dev.wildercord.town.InnChestReachTest",
       "dev.wildercord.town.InnRaidDimensionTest",
       "dev.wildercord.town.SessionMapsClearTest",
       "dev.wildercord.net.PayloadCodecRoundTripTest",
-      "dev.wildercord.travel.TravelCommandsTest"
+      "dev.wildercord.travel.TravelCommandsTest",
+      "dev.wildercord.town.BountyHuntTest"
     ]
   }
 }
