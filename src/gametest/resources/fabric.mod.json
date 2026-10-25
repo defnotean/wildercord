@@ -33,6 +33,7 @@
       "dev.wildercord.travel.TravelCommandsTest",
       "dev.wildercord.town.BountyHuntTest",
       "dev.wildercord.town.BountyEscortTest",
+      "dev.wildercord.town.CaravanTest",
       "dev.wildercord.aura.world.CooldownRestartTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
