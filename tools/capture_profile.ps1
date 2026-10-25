@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory=$true)][ValidateRange(1,2147483647)][int]$GameProcessId,
     [ValidateRange(10,600)][int]$Seconds=60,
-    [string]$JdkDirectory='C:\Program Files\Java\jdk-25'
+    [string]$JdkDirectory=$(if($env:JAVA_HOME){$env:JAVA_HOME}else{'C:\Program Files\Java\jdk-25'})
 )
 $ErrorActionPreference='Stop'
 $taskRoot=Split-Path -Parent $PSScriptRoot
