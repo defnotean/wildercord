@@ -142,7 +142,14 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				check(m.distanceTo(p(s)) < MimicRules.FOLLOW_START, "It walks after its owner (" + m.distanceTo(p(s)) + " away)");
 			});
 			c.waitTicks(MimicRules.SETTLE_BESIDE + 20);
-			w.getServer().runOnServer(s -> check(mimic(s).disguised(), "Left beside its owner, it shuts up as a coffer"));
+			w.getServer().runOnServer(s -> {
+				var m = mimic(s);
+				check(m.disguised(), "Left beside its owner, it shuts up as a coffer");
+				// It settled behind the player, who faces south; turn round to look at it for the shot.
+				float yaw = (float) Math.toDegrees(Math.atan2(m.getZ() - p(s).getZ(), m.getX() - p(s).getX())) - 90F;
+				p(s).teleportTo(s.overworld(), p(s).getX(), p(s).getY(), p(s).getZ(), Set.<Relative>of(), yaw, 35, false);
+			});
+			c.waitTicks(3);
 			shot(c, "coffer_mimic_tamed_settled");
 			w.getServer().runOnServer(s -> stand(s, 0.5, 38.5));
 			c.waitTicks(60);
