@@ -40,7 +40,8 @@ public final class ResearchLibraryTest implements FabricClientGameTest {
     p.setAttached(SpellLibrary.BUILDS,List.of());Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));
     var at=p.blockPosition().offset(1,0,0);p.level().setBlockAndUpdate(at,dev.wildercord.content.WildercordBlocks.RUNIC_HEARTH.defaultBlockState());
     ((dev.wildercord.content.RunicHearthEntity)p.level().getBlockEntity(at)).use(p,new ItemStack(net.minecraft.world.item.Items.BOOK));
-   });context.waitTicks(5);
+   });
+   for(int i=0;i<60&&!context.computeOnClient(mc->mc.gui.screen() instanceof dev.wildercord.client.RuneNotebookScreen);i++)context.waitTicks(1);
    check(context.computeOnClient(mc->mc.gui.screen() instanceof dev.wildercord.client.RuneNotebookScreen),"hearth book opens the native notebook through its server payload");
    check(context.computeOnClient(mc->spoken(mc,"<")).contains("Previous Page")&&context.computeOnClient(mc->spoken(mc,">")).contains("Next Page"),"the notebook's arrow buttons are named for a screen reader");
    context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.options.guiScale().set(2);mc.resizeGui();
