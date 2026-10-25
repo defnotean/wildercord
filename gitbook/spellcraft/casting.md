@@ -160,4 +160,4 @@ The **spell panel** sits beside your hotbar while you wear a Cord.
 ![A Zone preparing at the ground point the caster aims at](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/group-formations/group_formation_zone.png)
 
 - **Short spells keep rhythm best**, because their beat comes round quickly.
-- Big impacts shake the camera. That follows the game's **Screen Effect Scale** setting.
+- Big impacts shake the camera. That follows the game's **Screen Effect Scale** setting. At 0% there is no shake and no strain vignette while you hold a charge. Reduced flash caps it at 15%.

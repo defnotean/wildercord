@@ -30,6 +30,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -46,6 +48,11 @@ public class BountyBoardBlock extends Block {
 	private static final VoxelShape EAST_WEST = Block.box(6, 0, 0, 10, 16, 16);
 	/** Who was last shown an offer at which board, and until when it can be taken. */
 	private static final Map<UUID, long[]> SHOWN = new HashMap<>();
+
+	static void init() {
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SHOWN.remove(handler.player.getUUID()));
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SHOWN.clear());
+	}
 
 	public BountyBoardBlock(Properties properties) {
 		super(properties);

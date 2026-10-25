@@ -56,6 +56,7 @@ public final class MethodArts {
 	public static void init() {
 		ArtFields.init();
 		ArtWards.init();
+		MethodsAFlavours.init();
 		AuraApi.registerArts(EmberArts.METHOD, EmberArts.arts());
 		AuraApi.registerArts(RimeArts.METHOD, RimeArts.arts());
 		AuraApi.registerArts(ThunderArts.METHOD, ThunderArts.arts());

@@ -30,6 +30,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -43,6 +45,11 @@ public class CampPotBlock extends Block {
 	private static final VoxelShape SHAPE = Shapes.or(Block.box(2, 0, 2, 14, 9, 14), Block.box(1, 9, 1, 15, 11, 15));
 	/** The meal each player last picked (forgotten on a restart, which only sends the pot back to the richest). */
 	private static final Map<UUID, String> CHOSEN = new HashMap<>();
+
+	static void init() {
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> CHOSEN.remove(handler.player.getUUID()));
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> CHOSEN.clear());
+	}
 
 	public CampPotBlock(Properties properties) {
 		super(properties);
