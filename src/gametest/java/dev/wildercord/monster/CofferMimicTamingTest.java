@@ -19,11 +19,14 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.phys.AABB;
 import java.util.Set;
 import java.util.UUID;
 /** Books tame a coffer mimic through the real use key; tamed, it follows, opens as a chest for its owner alone, keeps what it holds and spills it when it dies. */
 public final class CofferMimicTamingTest implements FabricClientGameTest {
 	private static UUID id;
+	/** Where it stood when it was killed. */
+	private static AABB fell;
 	private static void check(boolean x, String why) { if (!x) throw new AssertionError(why); }
 	private static ServerPlayer p(MinecraftServer s) { return s.getPlayerList().getPlayers().getFirst(); }
 	private static CofferMimic mimic(MinecraftServer s) { return (CofferMimic) s.overworld().getEntity(id); }
@@ -156,12 +159,14 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				check(restored.belly().getItem(0).getCount() == 3 && restored.belly().getItem(26).getCount() == 5, "Its belly survives a save");
 				restored.discard();
 
-				// Killed, it spills what it holds.
+				// Killed, it spills what it holds (its owner steps away first, so they don't pick it straight up).
+				stand(s, 0.5, 18.5);
+				fell = m.getBoundingBox();
 				m.kill(s.overworld());
 			});
 			c.waitTicks(5);
 			w.getServer().runOnServer(s -> {
-				var near = s.overworld().getEntitiesOfClass(ItemEntity.class, p(s).getBoundingBox().inflate(8));
+				var near = s.overworld().getEntitiesOfClass(ItemEntity.class, fell.inflate(6));
 				check(near.stream().anyMatch(e -> e.getItem().is(Items.DIAMOND) && e.getItem().getCount() == 3), "Its diamonds spill when it dies");
 				check(near.stream().anyMatch(e -> e.getItem().is(Items.GOLD_INGOT)), "Its gold spills when it dies");
 			});
