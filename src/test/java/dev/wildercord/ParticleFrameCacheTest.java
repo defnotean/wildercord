@@ -17,7 +17,7 @@ class ParticleFrameCacheTest {
 		for (String name : List.of("Camp", "Earth", "Life", "Void", "Material")) {
 			String source = Files.readString(CLIENT.resolve("fx/" + name + "Particle.java"));
 			assertTrue(source.contains("setSprite(frames["), name + "Particle no longer picks from its cached frames");
-			assertFalse(source.matches("(?s).*setSprite\(SpellCircleParticle\.particleSprite\(.*"), name + "Particle builds a sprite name every tick");
+			assertFalse(source.contains("setSprite(SpellCircleParticle.particleSprite("), name + "Particle builds a sprite name every tick");
 		}
 	}
 
