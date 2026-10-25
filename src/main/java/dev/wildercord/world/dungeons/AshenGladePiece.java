@@ -73,7 +73,11 @@ public final class AshenGladePiece extends DungeonPiece {
 		path(level,bb);
 		for(int i=0;i<14;i++)deadTree(level,bb,i);
 		for(int[] t:TRUNKS)trunk(level,bb,t[0],t[1]);
+		gateway(level,bb);
+		henge(level,bb);
+		scorch(level,bb);
 		stump(level,bb);
+		crown(level,bb);
 		remains(level,bb);
 		stag(level,bb);
 	}
@@ -170,6 +174,96 @@ public final class AshenGladePiece extends DungeonPiece {
 			// A splinter of the snapped trunk still pointing up off its tallest corner.
 			if(top==tallest && x==x0+1 && z==z0+1)set(level,bb,Blocks.DARK_OAK_FENCE.defaultBlockState(),x,top+1,z);
 		}
+	}
+
+	/**
+	 * The old stone gate the wooden one was hung in: two scorched blackstone pylons in the bank either side of the cut, braziers
+	 * still burning in their broken tops, and a half-fallen arch where the cut opens onto the glade.
+	 */
+	private void gateway(WorldGenLevel level,BoundingBox bb){
+		Palette stone=Palette.of(Blocks.POLISHED_BLACKSTONE_BRICKS,6,Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS,4,Blocks.BLACKSTONE,3,Blocks.BASALT,2);
+		BlockState footing=Blocks.BLACKSTONE.defaultBlockState();
+		for(int side:new int[]{-1,1}){
+			// The pylon: its corners stand tallest, the middle holds the brazier, the rest has cracked away.
+			int xa=CX+side*4,xb=CX+side*6,lo=Math.min(xa,xb),hi=Math.max(xa,xb),mid=CX+side*5;
+			for(int x=lo;x<=hi;x++)for(int z=7;z<=11;z++){
+				boolean corner=(x==xa || x==xb) && (z==7 || z==11);
+				int top=corner?F+9:x==mid && z==9?F+7:F+6+noise(x,z,side+2)%3;
+				fill(level,bb,x,0,z,x,F,z,footing);
+				for(int y=F+1;y<=top;y++)set(level,bb,stone.at(x,y,z),x,y,z);
+				fill(level,bb,x,top+1,z,x,F+10,z,AIR);
+			}
+			set(level,bb,Blocks.CAMPFIRE.defaultBlockState(),mid,F+8,9);
+			// A battered plinth and a corbelled string course along the face, a carved stone set between them.
+			for(int x=lo;x<=hi;x++){
+				fill(level,bb,x,0,6,x,F,6,footing);
+				set(level,bb,stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS,Direction.NORTH,false),x,F+1,6);
+				set(level,bb,stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS,Direction.NORTH,true),x,F+6,6);
+			}
+			set(level,bb,Blocks.CHISELED_POLISHED_BLACKSTONE.defaultBlockState(),mid,F+4,7);
+			// The inner arch's jamb, and the corbel under its lintel.
+			for(int y=F+1;y<=F+6;y++)set(level,bb,stone.at(CX+side*4,y,13),CX+side*4,y,13);
+			set(level,bb,stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS,side<0?Direction.WEST:Direction.EAST,true),CX+side*3,F+6,13);
+		}
+		// The arch's lintel, broken off on the east where a block of it lies in the cut, and its stepped crown.
+		for(int x=CX-4;x<=CX+1;x++)set(level,bb,stone.at(x,F+7,13),x,F+7,13);
+		set(level,bb,stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS,Direction.EAST,false),CX-1,F+8,13);
+		set(level,bb,Blocks.CHISELED_POLISHED_BLACKSTONE.defaultBlockState(),CX,F+8,13);
+		set(level,bb,stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS,Direction.WEST,false),CX+1,F+8,13);
+		set(level,bb,Blocks.POLISHED_BLACKSTONE_BRICK_SLAB.defaultBlockState(),CX+3,F+1,14);
+	}
+
+	/** Standing stones round the foot of the bank, older than the burning: a few whole with embers on top, most broken. */
+	private static final int[][] HENGE={{38,34},{35,41},{28,44},{20,44},{13,41},{10,34},{10,26},{13,19},{20,16},{28,16},{35,19},{38,26}};
+
+	/** The ring of basalt stones; the pair framing the way in and the pair behind the stump still stand whole, braziers burning on them. */
+	private void henge(WorldGenLevel level,BoundingBox bb){
+		BlockState base=Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState(),cap=Blocks.CHISELED_POLISHED_BLACKSTONE.defaultBlockState();
+		for(int i=0;i<HENGE.length;i++){
+			// Set back onto the bank's foot, clear of the floor the stag charges across.
+			double a=Math.atan2(HENGE[i][1]-CZ,HENGE[i][0]-CX);
+			int x=(int)Math.round(CX+Math.cos(a)*(R+1)),z=(int)Math.round(CZ+Math.sin(a)*(R+1)),foot=F+1+bank(dist(x,z,CX,CZ));
+			boolean whole=i==2 || i==3 || i==8 || i==9;
+			if(whole){
+				int top=(i<4?F+8:F+7)+foot-F-1;
+				pillar(level,bb,x,z,foot,top,base,CHAR,cap);
+				set(level,bb,Blocks.CAMPFIRE.defaultBlockState(),x,top+1,z);
+				continue;
+			}
+			// A broken stone: a stub of shaft, and its fallen top lying outward, away from the fight.
+			int top=foot+1+noise(x,z)%4;
+			set(level,bb,base,x,foot,z);
+			for(int y=foot+1;y<=top;y++)set(level,bb,noise(x,y,z)<40?Blocks.BLACKSTONE.defaultBlockState():CHAR,x,y,z);
+			int dx=x-CX,dz=z-CZ;
+			boolean alongX=Math.abs(dx)>=Math.abs(dz);
+			int ox=x+(alongX?Integer.signum(dx):0),oz=z+(alongX?0:Integer.signum(dz));
+			if(top<foot+3)set(level,bb,CHAR.setValue(RotatedPillarBlock.AXIS,alongX?Direction.Axis.X:Direction.Axis.Z),ox,F+1+bank(dist(ox,oz,CX,CZ)),oz);
+		}
+	}
+
+	/** The ground scorched black round the stump where the fire was hottest, laid before the stump's roots so they cross it. */
+	private void scorch(WorldGenLevel level,BoundingBox bb){
+		for(int x=CX-7;x<=CX+7;x++)for(int z=CZ-7;z<=CZ+7;z++){
+			double r=dist(x,z,CX,CZ);if(r<3.6 || r>6.8)continue;
+			int n=noise(x,F,z);
+			if(n>=60)continue;
+			set(level,bb,(n<20?Blocks.BLACKSTONE:n<40?Blocks.SMOOTH_BASALT:Blocks.BASALT).defaultBlockState(),x,F,z);
+		}
+	}
+
+	/** What is left of the great tree's trunk round its hollow: charred staves standing up off the stump's rim, tallest at the back. */
+	private void crown(WorldGenLevel level,BoundingBox bb){
+		int[][] staves={{CX,CZ+3,F+12},{CX-2,CZ+2,F+10},{CX+2,CZ+2,F+9},{CX-3,CZ,F+7},{CX+3,CZ,F+8}};
+		for(int[] s:staves){
+			for(int y=F+1;y<=s[2];y++)set(level,bb,noise(s[0],y,s[1])<30?CHAR:WOOD,s[0],y,s[1]);
+			set(level,bb,Blocks.DARK_OAK_FENCE.defaultBlockState(),s[0],s[2]+1,s[1]);
+		}
+		// Bare limbs off the tallest staves, reaching back over the glade.
+		set(level,bb,WOOD,CX,F+10,CZ+4);set(level,bb,WOOD,CX,F+11,CZ+5);
+		set(level,bb,Blocks.DARK_OAK_FENCE.defaultBlockState(),CX,F+12,CZ+5);
+		set(level,bb,WOOD,CX-3,F+8,CZ+3);set(level,bb,WOOD,CX-4,F+9,CZ+3);
+		set(level,bb,Blocks.DARK_OAK_FENCE.defaultBlockState(),CX-4,F+10,CZ+3);
+		set(level,bb,WOOD,CX+3,F+8,CZ+3);
 	}
 
 	/**

@@ -63,6 +63,8 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 	private static final BlockState GLASS = Blocks.GLASS.defaultBlockState();
 	private static final BlockState WATER = Blocks.WATER.defaultBlockState();
 	private static final BlockState SHELF = Blocks.BOOKSHELF.defaultBlockState();
+	/** Outer masonry: bricks with rough prismarine and dark courses worked in. */
+	private static final Palette ROOF = Palette.of(Blocks.PRISMARINE_BRICKS, 6, Blocks.PRISMARINE, 3, Blocks.DARK_PRISMARINE, 1);
 
 	public DrownedScriptoriumPiece(int x, int y, int z, Direction facing) {
 		super(DungeonWorldgen.DROWNED_SCRIPTORIUM_PIECE, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -95,6 +97,7 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 		foundation(level, bb, 36, 57, 41, 69, F - 1);
 		antechamber(level, bb);
 		tunnel(level, bb);
+		facade(level, bb);
 		hall(level, bb);
 		corridor(level, bb);
 		arena(level, bb);
@@ -183,8 +186,61 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 			fill(level, bb, 19, 7, z, 21, 8, z, AIR);
 			set(level, bb, LIGHT, 20, 9, z);
 		}
+		// Dark ribs ring the tunnel between the lanterns.
+		for (int z : new int[] {6, 11, 15}) {
+			fill(level, bb, 17, 3, z, 17, 7, z, DARK);
+			fill(level, bb, 23, 3, z, 23, 7, z, DARK);
+			fill(level, bb, 18, 7, z, 22, 7, z, DARK);
+		}
 		// The moon pool: up through the roof and the antechamber's floor. The water stops at the floor.
 		fill(level, bb, 19, 7, 16, 21, 8, 18, WATER);
+	}
+
+	/** The way in: a great gate over the tunnel's mouth between two crowned pylons, under a stepped pediment. */
+	private void facade(WorldGenLevel level, BoundingBox bb) {
+		for (int x0 : new int[] {13, 24}) {
+			// A pylon on a dark plinth, its crown overhanging the approach on a corbel course.
+			for (int x = x0; x <= x0 + 3; x++) {
+				for (int z = 4; z <= 6; z++) {
+					column(level, bb, x, z, 2);
+					for (int y = 3; y <= 15; y++) {
+						set(level, bb, y <= 4 ? DARK : ROOF.at(x, y, z), x, y, z);
+					}
+				}
+				set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, 13, 3);
+				fill(level, bb, x, 14, 3, x, 15, 3, DARK);
+			}
+			fill(level, bb, x0, 5, 4, x0, 15, 4, DARK);
+			fill(level, bb, x0 + 3, 5, 4, x0 + 3, 15, 4, DARK);
+			// A dark panel with a lit eye.
+			fill(level, bb, x0 + 1, 6, 4, x0 + 2, 11, 4, DARK);
+			fill(level, bb, x0 + 1, 10, 4, x0 + 2, 10, 4, LIGHT);
+			crenellate(level, bb, x0, 3, x0 + 3, 6, 16, DARK);
+			set(level, bb, LIGHT, x0, 17, 3);
+			set(level, bb, LIGHT, x0 + 3, 17, 3);
+		}
+		// Jambs and an arch head round the channel, which stays open.
+		fill(level, bb, 17, 3, 4, 17, 7, 4, DARK);
+		fill(level, bb, 23, 3, 4, 23, 7, 4, DARK);
+		fill(level, bb, 18, 7, 4, 22, 7, 4, DARK);
+		// The lintel, a corbel course under its face, and a stepped pediment over it.
+		fill(level, bb, 17, 8, 4, 23, 10, 6, ROOF);
+		set(level, bb, LIGHT, CX, 9, 4);
+		for (int x = 17; x <= 23; x++) {
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, 10, 3);
+		}
+		for (int k = 0; k <= 3; k++) {
+			fill(level, bb, 17 + k, 11 + k, 4, 23 - k, 11 + k, 5, k == 0 ? DARK : BRICKS);
+			if (k > 0) {
+				for (int z = 4; z <= 5; z++) {
+					set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.EAST, false), 16 + k, 11 + k, z);
+					set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.WEST, false), 24 - k, 11 + k, z);
+				}
+			}
+		}
+		set(level, bb, LIGHT, CX, 12, 4);
+		set(level, bb, DARK, CX, 15, 4);
+		set(level, bb, LIGHT, CX, 16, 4);
 	}
 
 	// ------------------------------------------------------------------ the antechamber
@@ -198,6 +254,24 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 			set(level, bb, LIGHT, 13, F + 3, z);
 			set(level, bb, LIGHT, 27, F + 3, z);
 		}
+		// Dark pilasters in the corners and a corbelled cornice round the ceiling.
+		for (int[] c : new int[][] {{13, 15}, {27, 15}, {13, 23}, {27, 23}}) {
+			fill(level, bb, c[0], F + 1, c[1], c[0], F + 6, c[1], DARK);
+		}
+		for (int x = 14; x <= 26; x++) {
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.SOUTH, true), x, F + 6, 15);
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, F + 6, 23);
+		}
+		for (int z = 16; z <= 22; z++) {
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.WEST, true), 13, F + 6, z);
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.EAST, true), 27, F + 6, z);
+		}
+		// Outside: dark pilasters up the front and merlons round the roof.
+		for (int x : new int[] {12, 16, 24, 28}) {
+			column(level, bb, x, 13, F - 1);
+			fill(level, bb, x, F, 13, x, F + 8, 13, DARK);
+		}
+		crenellate(level, bb, 12, 14, 28, 24, F + 8, DARK);
 	}
 
 	/** A seal door in the wall at {@code z}, framed in dark prismarine with a sea lantern above. */
@@ -240,16 +314,70 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 				}
 			}
 		}
-		for (int x = 11; x <= 29; x += 6) {
-			for (int z = 27; z <= 39; z += 6) {
-				set(level, bb, LIGHT, x, F + 9, z);
+		// A pointed vault over the hall, carved out of a prismarine shell thick enough to keep the sea out. Three
+		// dark transverse ribs cross it, sea lanterns set in each.
+		fill(level, bb, 8, F + 9, 24, 32, F + 14, 42, ROOF);
+		for (int x = 9; x <= 31; x++) {
+			int top = vaultTop(x);
+			for (int z = 25; z <= 41; z++) {
+				boolean rib = z == 27 || z == 33 || z == 39;
+				for (int y = F + 9; y <= top; y++) {
+					set(level, bb, rib && y == top ? (x == 14 || x == CX || x == 26 ? LIGHT : DARK) : AIR, x, y, z);
+				}
 			}
 		}
+		// The ribs come down onto dark pilasters over the wall shelves, with a lantern set in each and a corbel at the top.
+		for (int z : new int[] {27, 33, 39}) {
+			fill(level, bb, 9, F + 5, z, 9, F + 8, z, DARK);
+			fill(level, bb, 31, F + 5, z, 31, F + 8, z, DARK);
+			set(level, bb, LIGHT, 9, F + 6, z);
+			set(level, bb, LIGHT, 31, F + 6, z);
+			set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.WEST, true), 10, F + 8, z);
+			set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.EAST, true), 30, F + 8, z);
+		}
+		// A cornice along both walls between the pilasters, and windows onto the deep.
+		for (int z = 25; z <= 41; z++) {
+			if (z == 27 || z == 33 || z == 39) {
+				continue;
+			}
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.WEST, true), 9, F + 8, z);
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.EAST, true), 31, F + 8, z);
+		}
 		for (int z : new int[] {30, 36}) {
-			fill(level, bb, 20, F + 7, z, 20, F + 8, z, Blocks.IRON_CHAIN.defaultBlockState());
+			fill(level, bb, 8, F + 6, z, 8, F + 7, z, GLASS);
+			fill(level, bb, 32, F + 6, z, 32, F + 7, z, GLASS);
+		}
+		// Rose windows high in both end walls, a sea lantern at the heart of each.
+		for (int z : new int[] {24, 42}) {
+			fill(level, bb, 19, F + 10, z, 21, F + 12, z, GLASS);
+			set(level, bb, LIGHT, CX, F + 11, z);
+		}
+		for (int z : new int[] {30, 36}) {
+			fill(level, bb, 20, F + 7, z, 20, vaultTop(CX), z, Blocks.IRON_CHAIN.defaultBlockState());
 			set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 20, F + 6, z);
 		}
+		// Outside: stepped buttresses against the long walls, a parapet round the roof and a ridge down its middle.
+		for (int z : new int[] {27, 33, 39}) {
+			for (int x = 5; x <= 7; x++) {
+				column(level, bb, x, z, F - 1);
+				column(level, bb, 40 - x, z, F - 1);
+			}
+			buttress(level, bb, 7, z, F, 12, Direction.WEST, DARK, Blocks.PRISMARINE_BRICK_STAIRS);
+			buttress(level, bb, 33, z, F, 12, Direction.EAST, DARK, Blocks.PRISMARINE_BRICK_STAIRS);
+		}
+		crenellate(level, bb, 8, 24, 32, 42, F + 15, DARK);
+		fill(level, bb, 16, F + 15, 26, 24, F + 15, 40, ROOF);
+		fill(level, bb, 18, F + 16, 26, 22, F + 16, 40, DARK);
+		for (int z = 27; z <= 39; z += 6) {
+			set(level, bb, LIGHT, CX, F + 17, z);
+		}
 		chest(level, bb, 30, F + 1, 40, DungeonWorldgen.TIDE_HALL, Direction.WEST, 21);
+	}
+
+	/** The hall vault's highest open block over column x: the old ceiling line at the walls, five higher at the middle. */
+	private static int vaultTop(int x) {
+		double t = (x - CX) / 11.5;
+		return F + 8 + (int) Math.round(5 * (1 - t * t));
 	}
 
 	// ------------------------------------------------------------------ the corridor
@@ -259,6 +387,17 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 		fill(level, bb, 16, F, 43, 24, F, 47, DARK);
 		set(level, bb, LIGHT, 16, F + 3, 45);
 		set(level, bb, LIGHT, 24, F + 3, 45);
+		// Pilasters at both ends and a dark rib across the ceiling between the lanterns.
+		for (int z : new int[] {43, 47}) {
+			fill(level, bb, 16, F + 1, z, 16, F + 6, z, DARK);
+			fill(level, bb, 24, F + 1, z, 24, F + 6, z, DARK);
+		}
+		fill(level, bb, 16, F + 7, 45, 24, F + 7, 45, DARK);
+		set(level, bb, LIGHT, CX, F + 7, 45);
+		for (int z = 44; z <= 46; z++) {
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.WEST, true), 16, F + 6, z);
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.EAST, true), 24, F + 6, z);
+		}
 	}
 
 	// ------------------------------------------------------------------ the Arena
@@ -310,13 +449,15 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 						set(level, bb, AIR, x, y, z);
 					}
 				}
-				// The dome: air under the bowl, and a shell of glass wherever air would touch the sea.
+				// The dome: air under the bowl, and a shell wherever air would touch the sea: glass between eight
+				// dark prismarine ribs, a sea lantern at the crown.
+				boolean rib = onSpoke(x, z, CX, ARENA_Z, 8, 0.6);
 				for (int y = F + 7; y < HEIGHT; y++) {
 					if (domeAir(x, y, z)) {
 						set(level, bb, AIR, x, y, z);
 					} else if (domeAir(x + 1, y, z) || domeAir(x - 1, y, z) || domeAir(x, y, z + 1) || domeAir(x, y, z - 1)
 							|| domeAir(x, y - 1, z) || domeAir(x, y + 1, z)) {
-						set(level, bb, GLASS, x, y, z);
+						set(level, bb, x == CX && z == ARENA_Z ? LIGHT : rib ? DARK : GLASS, x, y, z);
 					}
 				}
 			}
@@ -329,11 +470,29 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 			fill(level, bb, px, PIT + 1, pz, px, F - 1, pz, BRICKS);
 			set(level, bb, LIGHT, px, F, pz);
 		}
+		// Dark columns round the balcony carry the dome's ribs down to the floor, a sea lantern in each; none stands in
+		// the way in (south) or before the vault door (east).
+		for (int k : new int[] {1, 2, 3, 4, 5, 7}) {
+			double a = Math.PI / 4 * k;
+			int px = CX + (int) Math.round(Math.cos(a) * 14);
+			int pz = ARENA_Z + (int) Math.round(Math.sin(a) * 14);
+			pillar(level, bb, px, pz, F + 1, F + 8, DARK, BRICKS, DARK);
+			set(level, bb, LIGHT, px, F + 4, pz);
+		}
+		// The conduit hangs on a chain from the crown.
+		fill(level, bb, CX, F + 6, ARENA_Z, CX, F + 15, ARENA_Z, Blocks.IRON_CHAIN.defaultBlockState());
 		// Steps down from the balcony, and the way in.
 		fill(level, bb, 19, PIT + 1, 51, 21, PIT + 2, 51, BRICKS);
 		fill(level, bb, 19, PIT + 1, 52, 21, PIT + 1, 52, BRICKS);
 		fill(level, bb, 18, F, 47, 22, F, 50, DARK);
 		fill(level, bb, 18, F + 1, 47, 22, F + 5, 50, AIR);
+		// A dark portal where the way in meets the balcony.
+		fill(level, bb, 17, F + 1, 50, 17, F + 6, 50, DARK);
+		fill(level, bb, 23, F + 1, 50, 23, F + 6, 50, DARK);
+		fill(level, bb, 18, F + 6, 50, 22, F + 6, 50, DARK);
+		set(level, bb, LIGHT, CX, F + 6, 50);
+		set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.WEST, true), 18, F + 5, 50);
+		set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.EAST, true), 22, F + 5, 50);
 		// The core: the altar on the pit floor, and a conduit hanging high over it.
 		altar(level, bb, DungeonAltarBlock.Kind.TIDE, CX, PIT + 1, ARENA_Z);
 		// Dry: a conduit is waterlogged by default, and would pour onto the altar before the tide ever rose.
@@ -368,6 +527,21 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 		set(level, bb, LIGHT, 39, F + 2, 63);
 		set(level, bb, LIGHT, 38, F + 7, 60);
 		set(level, bb, LIGHT, 38, F + 7, 66);
+		// Dark pilasters in the far corners and either side of the plinth, under a corbelled cornice.
+		for (int z : new int[] {58, 62, 64, 68}) {
+			fill(level, bb, 40, F + 1, z, 40, F + 6, z, DARK);
+		}
+		for (int z = 58; z <= 68; z++) {
+			if (z != 58 && z != 62 && z != 64 && z != 68) {
+				set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.EAST, true), 40, F + 6, z);
+			}
+		}
+		for (int x = 37; x <= 39; x++) {
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.SOUTH, true), x, F + 6, 58);
+			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, F + 6, 68);
+		}
+		set(level, bb, DARK, 39, F + 3, 63);
+		set(level, bb, LIGHT, 40, F + 4, 63);
 	}
 
 	// ------------------------------------------------------------------ guards

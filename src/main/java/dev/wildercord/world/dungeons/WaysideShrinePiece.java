@@ -32,13 +32,12 @@ import java.util.Optional;
  * <pre>
  *   z 0       the path's end, coarse dirt
  *   z 1-9     the footing, worn stone, ragged at its edges
- *   z 5-9     the shrine: posts at x 3 and 7, its roof from x 2 to 8, the stone at (5, 8)
+ *   z 5-9     the shrine: posts at x 3 and 7, its roof from x 2 to 8 and z 4 to 10, the stone at (5, 8)
  *   coffers   (4, 7) and (6, 7); the lone one by the path at (8, 2)
  * </pre>
  */
 public final class WaysideShrinePiece extends DungeonPiece {
-	public static final int WIDTH=11,HEIGHT=8,DEPTH=11;
-	private static final BlockState POST=Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState();
+	public static final int WIDTH=11,HEIGHT=10,DEPTH=11;
 	private static final BlockState PLANKS=Blocks.SPRUCE_PLANKS.defaultBlockState();
 	private static final BlockState CANDLE=Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.LIT,false);
 
@@ -99,9 +98,17 @@ public final class WaysideShrinePiece extends DungeonPiece {
 	}
 
 	private void shrine(WorldGenLevel level,BoundingBox bb){
-		for(int x:new int[]{3,7})for(int z:new int[]{6,8})fill(level,bb,x,1,z,x,3,z,POST);
-		// The gabled roof, its ridge running front to back.
-		for(int z=5;z<=9;z++){
+		var trim=Blocks.SPRUCE_STAIRS;var log=Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState();
+		// A dressed stone floor under the roof, the offering stone's spot carved.
+		for(int x=3;x<=7;x++)for(int z=5;z<=9;z++)set(level,bb,(x+z)%2==0?Blocks.STONE_BRICKS.defaultBlockState():Blocks.POLISHED_ANDESITE.defaultBlockState(),x,0,z);
+		// Posts of stripped spruce on stone bases, tied by beams under the roof.
+		for(int x:new int[]{3,7})for(int z:new int[]{6,8}){
+			set(level,bb,Blocks.MOSSY_STONE_BRICKS.defaultBlockState(),x,1,z);
+			fill(level,bb,x,2,z,x,3,z,log);
+		}
+		for(int z:new int[]{6,8})fill(level,bb,4,3,z,6,3,z,log.setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.X));
+		// The gabled roof, its ridge running front to back and its eaves overhanging a block at either end.
+		for(int z=4;z<=10;z++){
 			set(level,bb,stair(Direction.EAST),2,4,z);
 			set(level,bb,stair(Direction.WEST),8,4,z);
 			fill(level,bb,3,4,z,7,4,z,PLANKS);
@@ -112,13 +119,48 @@ public final class WaysideShrinePiece extends DungeonPiece {
 			set(level,bb,Blocks.SPRUCE_SLAB.defaultBlockState().setValue(net.minecraft.world.level.block.SlabBlock.TYPE,SlabType.BOTTOM),5,6,z);
 			set(level,bb,stair(Direction.WEST),6,6,z);
 		}
+		// Brackets under the eaves at each post, and upturned stairs along the gable ends.
+		for(int z:new int[]{6,8}){
+			set(level,bb,stair(trim,Direction.EAST,true),2,3,z);
+			set(level,bb,stair(trim,Direction.WEST,true),8,3,z);
+		}
+		for(int z:new int[]{4,10}){
+			set(level,bb,stair(trim,Direction.EAST,true),3,3,z);
+			set(level,bb,stair(trim,Direction.WEST,true),7,3,z);
+		}
+		// A carved ridge finial at the front with a lamp on a post, a plain one at the back.
+		set(level,bb,Blocks.SPRUCE_LOG.defaultBlockState(),5,6,4);
+		set(level,bb,Blocks.SPRUCE_FENCE.defaultBlockState(),5,7,4);
+		set(level,bb,Blocks.LANTERN.defaultBlockState(),5,8,4);
+		set(level,bb,Blocks.SPRUCE_LOG.defaultBlockState(),5,6,10);
+		set(level,bb,Blocks.SPRUCE_FENCE.defaultBlockState(),5,7,10);
 		// The back wall, low, and the stone the offerings were left on.
-		fill(level,bb,4,1,9,6,2,9,Blocks.MOSSY_STONE_BRICKS.defaultBlockState());
+		fill(level,bb,3,1,9,7,1,9,Blocks.MOSSY_STONE_BRICKS.defaultBlockState());
+		fill(level,bb,4,2,9,6,2,9,Blocks.MOSSY_STONE_BRICKS.defaultBlockState());
+		set(level,bb,Blocks.STONE_BRICK_SLAB.defaultBlockState(),3,2,9);
+		set(level,bb,Blocks.STONE_BRICK_SLAB.defaultBlockState(),7,2,9);
 		set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),5,1,8);
 		set(level,bb,CANDLE.setValue(CandleBlock.CANDLES,3),5,2,8);
 		set(level,bb,Blocks.POTTED_POPPY.defaultBlockState(),4,3,9);
 		set(level,bb,Blocks.POTTED_DANDELION.defaultBlockState(),6,3,9);
+		set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),5,3,9);
 		set(level,bb,Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING,true),5,3,7);
+		// Stone lantern posts either side of the track, and benches for the weary.
+		for(int x:new int[]{2,8}){
+			set(level,bb,Blocks.STONE_BRICKS.defaultBlockState(),x,1,3);
+			set(level,bb,Blocks.STONE_BRICK_WALL.defaultBlockState(),x,2,3);
+			set(level,bb,Blocks.LANTERN.defaultBlockState(),x,3,3);
+		}
+		for(int z:new int[]{6,7}){
+			set(level,bb,stair(Direction.WEST),2,1,z);
+			set(level,bb,stair(Direction.EAST),8,1,z);
+		}
+		// Ferns grown up round the footing's rim.
+		for(int x=1;x<=9;x++)for(int z=1;z<=9;z++){
+			boolean rim=x==1||x==9||z==1||z==9;
+			if(!rim||(z==1&&x>=4&&x<=6))continue;
+			if(noise(x+13,z)<30&&getBlock(level,x,0,z,bb).isSolid()&&getBlock(level,x,1,z,bb).isAir())set(level,bb,Blocks.FERN.defaultBlockState(),x,1,z);
+		}
 	}
 
 	private static BlockState stair(Direction facing){

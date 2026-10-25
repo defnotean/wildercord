@@ -11,17 +11,23 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.LecternBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBannerBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -123,6 +129,20 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		return noise(x * 3 + y, z) < 18 ? CRACKED : BRICKS;
 	}
 
+	/** A stair climbing toward {@code facing}; upside down for corbels and ribs, whose full side meets the wall. */
+	private static BlockState stair(Block block, Direction facing, boolean top) {
+		return block.defaultBlockState().setValue(StairBlock.FACING, facing).setValue(StairBlock.HALF, top ? Half.TOP : Half.BOTTOM);
+	}
+
+	private static BlockState topSlab(Block block) {
+		return block.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.TOP);
+	}
+
+	/** A purple wall banner of the Archive, hung from the wall behind (x, y, z). */
+	private void banner(WorldGenLevel level, BoundingBox bb, int x, int y, int z, Direction facing) {
+		set(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE).defaultBlockState().setValue(WallBannerBlock.FACING, facing), x, y, z);
+	}
+
 	// ------------------------------------------------------------------ the entrance and the stairway
 
 	private void stairway(WorldGenLevel level, BoundingBox bb) {
@@ -142,6 +162,14 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 				fill(level, bb, 18, step + 5, z, 22, step + 5, z, TILES);
 				if ((z - STAIR_START) % 5 == 2) {
 					set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 20, step + 4, z);
+					// A rib over each lantern: polished pilasters in the walls, corbels springing toward the roof.
+					for (int y = step; y <= step + 4; y++) {
+						set(level, bb, POLISHED, 18, y, z);
+						set(level, bb, POLISHED, 22, y, z);
+					}
+					set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.WEST, true), 19, step + 4, z);
+					set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.EAST, true), 21, step + 4, z);
+					set(level, bb, POLISHED, 20, step + 5, z);
 				}
 			} else {
 				// The mouth of the stairway is open to the sky.
@@ -181,6 +209,32 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		fill(level, bb, 17, SURFACE + 5, STAIR_START, 23, SURFACE + 5, STAIR_START, CHISELED);
 		set(level, bb, Blocks.CRYING_OBSIDIAN.defaultBlockState(), 20, SURFACE + 5, STAIR_START);
 		set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 20, SURFACE + 4, STAIR_START);
+		// A hood over the lintel and a stepped pediment above it.
+		for (int x = 17; x <= 23; x++) {
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.NORTH, true), x, SURFACE + 5, STAIR_START - 1);
+		}
+		set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.EAST, false), 17, SURFACE + 6, STAIR_START);
+		fill(level, bb, 18, SURFACE + 6, STAIR_START, 22, SURFACE + 6, STAIR_START, TILES);
+		set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.WEST, false), 23, SURFACE + 6, STAIR_START);
+		set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.EAST, false), 19, SURFACE + 7, STAIR_START);
+		set(level, bb, CHISELED, 20, SURFACE + 7, STAIR_START);
+		set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.WEST, false), 21, SURFACE + 7, STAIR_START);
+		// Stepped buttresses either side, the Archive's colours on the piers, lamps and a paved apron before the way down.
+		for (int x : new int[] {16, 24}) {
+			for (int y = SURFACE - 1; y <= SURFACE + 2; y++) {
+				set(level, bb, y == SURFACE - 1 ? POLISHED : wallBrick(x, y, STAIR_START), x, y, STAIR_START);
+			}
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, x < 20 ? Direction.EAST : Direction.WEST, false), x, SURFACE + 3, STAIR_START);
+			set(level, bb, Blocks.POLISHED_DEEPSLATE_WALL.defaultBlockState(), x, SURFACE, STAIR_START - 2);
+			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState(), x, SURFACE + 1, STAIR_START - 2);
+		}
+		banner(level, bb, 17, SURFACE + 3, STAIR_START - 1, Direction.SOUTH);
+		banner(level, bb, 23, SURFACE + 3, STAIR_START - 1, Direction.SOUTH);
+		for (int x = 18; x <= 22; x++) {
+			for (int z = STAIR_START - 3; z < STAIR_START; z++) {
+				set(level, bb, x == 18 || x == 22 ? POLISHED : noise(x, z) < 25 ? CRACKED : TILES, x, SURFACE - 1, z);
+			}
+		}
 	}
 
 	// ------------------------------------------------------------------ the Hall of Shelves
@@ -223,6 +277,27 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 			set(level, bb, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true), t[0] + 1, 4, t[1] + 1);
 		}
 		set(level, bb, Blocks.LECTERN.defaultBlockState().setValue(LecternBlock.FACING, Direction.NORTH), 20, 3, 44);
+		// A barrel vault springing from the shelf tops, a polished rib over every pillar and a ridge rib down the middle.
+		for (int x = 10; x <= 30; x++) {
+			int dx = Math.abs(x - 20);
+			int under = 11 - dx * dx * 3 / 100;
+			for (int z = 31; z <= 47; z++) {
+				for (int y = under + 1; y <= 11; y++) {
+					set(level, bb, TILES, x, y, z);
+				}
+				if (z % 4 == 2) {
+					set(level, bb, POLISHED, x, under, z);
+				}
+			}
+		}
+		fill(level, bb, 20, 11, 31, 20, 11, 47, POLISHED);
+		// Inlaid bands across the floor under the ribs, and the Archive's banners on the pillars.
+		for (int z = 34; z <= 46; z += 4) {
+			fill(level, bb, 10, 2, z, 18, 2, z, POLISHED);
+			fill(level, bb, 22, 2, z, 30, 2, z, POLISHED);
+			banner(level, bb, 10, 7, z, Direction.EAST);
+			banner(level, bb, 30, 7, z, Direction.WEST);
+		}
 		// Chandeliers.
 		for (int[] c : new int[][] {{14, 35}, {26, 35}, {14, 43}, {26, 43}, {20, 39}}) {
 			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), c[0], 11, c[1]);
@@ -266,6 +341,23 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		}
 		set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 20, 9, 54);
 		set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), 20, 10, 54);
+		// A blackstone skirting and a polished string course along the side walls.
+		for (int z = 49; z <= 59; z++) {
+			for (int x : new int[] {12, 28}) {
+				set(level, bb, Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState(), x, 3, z);
+				set(level, bb, POLISHED, x, 7, z);
+			}
+		}
+		// Two transverse arches on pilasters, between the braziers.
+		for (int z : new int[] {52, 56}) {
+			for (int y = 3; y <= 8; y++) {
+				set(level, bb, y == 3 || y == 8 ? CHISELED : POLISHED, 13, y, z);
+				set(level, bb, y == 3 || y == 8 ? CHISELED : POLISHED, 27, y, z);
+			}
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.WEST, true), 14, 8, z);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.EAST, true), 26, 8, z);
+			fill(level, bb, 13, 9, z, 27, 9, z, POLISHED);
+		}
 	}
 
 	private void corridor(WorldGenLevel level, BoundingBox bb) {
@@ -273,6 +365,17 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		fill(level, bb, 18, 2, 61, 22, 2, 64, POLISHED);
 		fill(level, bb, 18, 3, 61, 22, 6, 64, AIR);
 		set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 20, 7, 62);
+		// Ribs at either end of the passage, clear of the doorways' full width.
+		for (int z : new int[] {61, 63}) {
+			for (int y = 3; y <= 7; y++) {
+				set(level, bb, POLISHED, 17, y, z);
+				set(level, bb, POLISHED, 23, y, z);
+			}
+			fill(level, bb, 18, 7, z, 22, 7, z, POLISHED);
+			set(level, bb, CHISELED, 20, 7, z);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.WEST, true), 18, 6, z);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.EAST, true), 22, 6, z);
+		}
 	}
 
 	// ------------------------------------------------------------------ the Arena
@@ -326,10 +429,31 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 			int px = 20 + (int) Math.round(Math.cos(a) * 10);
 			int pz = ARENA_Z + (int) Math.round(Math.sin(a) * 10);
 			for (int y = 3; y <= ceiling(10); y++) {
-				set(level, bb, y == 8 ? Blocks.SHROOMLIGHT.defaultBlockState() : POLISHED, px, y, pz);
+				set(level, bb, y == 8 ? Blocks.SHROOMLIGHT.defaultBlockState() : y == 3 || y == ceiling(10) ? CHISELED : POLISHED, px, y, pz);
 			}
 			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState(), px + (px > 20 ? -1 : 1), 3, pz);
 		}
+		// A cornice ledge around the foot of the dome.
+		for (int x = 20 - ARENA_R; x <= 20 + ARENA_R; x++) {
+			for (int z = ARENA_Z - ARENA_R; z <= ARENA_Z + ARENA_R; z++) {
+				double d = Math.sqrt((x - 20) * (x - 20) + (z - ARENA_Z) * (z - ARENA_Z));
+				if (d > ARENA_R - 1 && d <= ARENA_R) {
+					set(level, bb, topSlab(Blocks.POLISHED_DEEPSLATE_SLAB), x, 10, z);
+				}
+			}
+		}
+		// Four soul lanterns on chains from the dome, over the hexagram's points.
+		int hang = ceiling(Math.sqrt(32));
+		for (int[] c : new int[][] {{16, ARENA_Z - 4}, {24, ARENA_Z - 4}, {16, ARENA_Z + 4}, {24, ARENA_Z + 4}}) {
+			for (int y = hang - 3; y <= hang; y++) {
+				set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), c[0], y, c[1]);
+			}
+			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), c[0], hang - 4, c[1]);
+		}
+		// The Archive's banners over the way in and on the far walls.
+		banner(level, bb, 20, 8, ARENA_Z - ARENA_R, Direction.NORTH);
+		banner(level, bb, 20, 8, ARENA_Z + ARENA_R, Direction.SOUTH);
+		banner(level, bb, 20 - ARENA_R, 8, ARENA_Z, Direction.EAST);
 		// The way in, and the Archivist's lectern at the centre.
 		fill(level, bb, 18, 3, 64, 22, 6, 66, AIR);
 		set(level, bb, WildercordBlocks.ARCHIVE_LECTERN.defaultBlockState(), 20, 3, ARENA_Z);
@@ -390,6 +514,18 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		set(level, bb, WildercordBlocks.WELLSTONE.defaultBlockState(), 38, 3, 77);
 		for (int z = 74; z <= 80; z += 3) {
 			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 36, 8, z);
+		}
+		// Pillars in the corners, a polished band at the springing and amethyst along the back wall.
+		for (int[] c : new int[][] {{33, 73}, {39, 73}, {33, 81}, {39, 81}}) {
+			for (int y = 3; y <= 8; y++) {
+				set(level, bb, y == 3 || y == 8 ? CHISELED : POLISHED, c[0], y, c[1]);
+			}
+		}
+		fill(level, bb, 40, 7, 73, 40, 7, 81, POLISHED);
+		fill(level, bb, 34, 7, 72, 38, 7, 72, POLISHED);
+		fill(level, bb, 34, 7, 82, 38, 7, 82, POLISHED);
+		for (int z : new int[] {75, 79}) {
+			set(level, bb, Blocks.AMETHYST_CLUSTER.defaultBlockState(), 39, 3, z);
 		}
 	}
 

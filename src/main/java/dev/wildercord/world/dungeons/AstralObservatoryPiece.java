@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -62,6 +63,8 @@ public class AstralObservatoryPiece extends DungeonPiece {
 	private static final BlockState ROD_UP = Blocks.END_ROD.defaultBlockState().setValue(EndRodBlock.FACING, Direction.UP);
 	private static final BlockState ROD_DOWN = Blocks.END_ROD.defaultBlockState().setValue(EndRodBlock.FACING, Direction.DOWN);
 	private static final BlockState TUBE = Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState();
+	private static final Palette MASONRY = Palette.of(Blocks.END_STONE_BRICKS, 8, Blocks.END_STONE, 1, Blocks.PURPUR_BLOCK, 1);
+	private static final Palette CLERESTORY = Palette.of(Blocks.PURPUR_BLOCK, 7, Blocks.END_STONE_BRICKS, 2);
 
 	/** The star map: three constellations, star by star (offsets from the dome's centre). */
 	private static final int[][][] CONSTELLATIONS = {
@@ -164,6 +167,57 @@ public class AstralObservatoryPiece extends DungeonPiece {
 				set(level, bb, ROD_UP, x, F + 4, z);
 			}
 		}
+		facade(level, bb);
+	}
+
+	/** The facade: two pylons of end stone flanking a tall corbelled portal under a stepped gable. */
+	private void facade(WorldGenLevel level, BoundingBox bb) {
+		for (int x0 : new int[] {8, 27}) {
+			foundation(level, bb, x0, 6, x0 + 5, 9);
+			fill(level, bb, x0, F, 6, x0 + 5, F, 6, BRICKS);
+			fill(level, bb, x0, F, 7, x0 + 5, F + 14, 9, MASONRY);
+			// A battered plinth, a string course and a cornice across the face, purpur shafts at the corners.
+			for (int x = x0; x <= x0 + 5; x++) {
+				set(level, bb, stair(Blocks.END_STONE_BRICK_STAIRS, Direction.NORTH, false), x, F + 1, 6);
+				set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.NORTH, true), x, F + 8, 6);
+				set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.NORTH, true), x, F + 14, 6);
+			}
+			for (int x : new int[] {x0, x0 + 5}) {
+				fill(level, bb, x, F + 2, 6, x, F + 13, 6, PILLAR);
+			}
+			// A purpur panel low on the face and a weeping eye of crying obsidian high on it.
+			fill(level, bb, x0 + 2, F + 3, 7, x0 + 3, F + 6, 7, PURPUR);
+			fill(level, bb, x0 + 2, F + 10, 7, x0 + 3, F + 11, 7, CRYING);
+			// Merlons on top, end rods on the corners and a purpur pinnacle in the middle.
+			crenellate(level, bb, x0, 7, x0 + 5, 9, F + 15, PURPUR);
+			for (int x : new int[] {x0, x0 + 5}) {
+				set(level, bb, ROD_UP, x, F + 16, 7);
+				set(level, bb, ROD_UP, x, F + 16, 9);
+			}
+			fill(level, bb, x0 + 2, F + 15, 8, x0 + 3, F + 16, 8, PILLAR);
+			set(level, bb, ROD_UP, x0 + 2, F + 17, 8);
+			set(level, bb, ROD_UP, x0 + 3, F + 17, 8);
+		}
+		// The portal: purpur jambs and a corbelled arch, the wall made up between it and the pylons.
+		fill(level, bb, 14, F + 1, 9, 15, F + 10, 9, MASONRY);
+		fill(level, bb, 25, F + 1, 9, 26, F + 10, 9, MASONRY);
+		fill(level, bb, 16, F + 1, 9, 16, F + 8, 9, PILLAR);
+		fill(level, bb, 24, F + 1, 9, 24, F + 8, 9, PILLAR);
+		fill(level, bb, 16, F + 9, 9, 24, F + 10, 9, BRICKS);
+		set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.WEST, true), 17, F + 8, 9);
+		set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.EAST, true), 23, F + 8, 9);
+		fill(level, bb, 18, F + 8, 9, 22, F + 8, 9, topSlab(Blocks.PURPUR_SLAB));
+		set(level, bb, CRYING, CX, F + 9, 9);
+		set(level, bb, ROD_DOWN, CX, F + 7, 9);
+		// A stepped gable over the portal, edged in purpur stairs, an end rod at its peak.
+		for (int k = 0; k <= 4; k++) {
+			int y = F + 11 + k;
+			fill(level, bb, 16 + k, y, 9, 24 - k, y, 9, MASONRY);
+			set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.EAST, false), 15 + k, y, 9);
+			set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.WEST, false), 25 - k, y, 9);
+		}
+		set(level, bb, CRYING, CX, F + 13, 9);
+		set(level, bb, ROD_UP, CX, F + 16, 9);
 	}
 
 	/** A seal door in the wall at {@code z}, framed in purpur pillars and crowned with crying obsidian. */
@@ -197,19 +251,74 @@ public class AstralObservatoryPiece extends DungeonPiece {
 				fill(level, bb, 31, F + 1, z, 31, F + 4, z, Blocks.BOOKSHELF.defaultBlockState());
 			}
 		}
-		for (int z : new int[] {14, 20, 26, 32}) {
-			fill(level, bb, 13, F + 1, z, 13, F + 10, z, PILLAR);
-			fill(level, bb, 27, F + 1, z, 27, F + 10, z, PILLAR);
+		// The nave: a clerestory over the middle, its pointed vault ribbed above every pair of columns.
+		fill(level, bb, 12, F + 11, 10, 28, F + 16, 34, CLERESTORY);
+		for (int z = 11; z <= 33; z++) {
+			boolean ribbed = z % 6 == 2;
+			for (int x = 13; x <= 27; x++) {
+				int top = vaultTop(x);
+				fill(level, bb, x, F + 11, z, x, ribbed ? top - 1 : top, z, AIR);
+				if (ribbed) {
+					set(level, bb, x == CX ? CRYING : BRICKS, x, top, z);
+					if (x == 13 || x == 27) {
+						set(level, bb, BRICKS, x, F + 11, z);
+					}
+				}
+			}
+			if (ribbed) {
+				set(level, bb, ROD_DOWN, CX, vaultTop(CX) - 1, z);
+			}
 		}
-		// Orreries: amethyst worlds hanging on chains, an end rod shining down from each.
+		// Lunette windows in the clerestory, one over each row of orreries.
+		for (int z : new int[] {17, 23, 29}) {
+			for (int y = F + 13; y <= F + 14; y++) {
+				set(level, bb, GLASS, 12, y, z);
+				set(level, bb, GLASS, 28, y, z);
+				fill(level, bb, 13, y, z, 14, y, z, AIR);
+				fill(level, bb, 26, y, z, 27, y, z, AIR);
+			}
+		}
+		// Columns on obsidian plinths, each with a capital of purpur corbels.
+		for (int z : new int[] {14, 20, 26, 32}) {
+			for (int x : new int[] {13, 27}) {
+				pillar(level, bb, x, z, F + 1, F + 10, OBSIDIAN, PILLAR, PURPUR);
+				set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.EAST, true), x - 1, F + 10, z);
+				set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.WEST, true), x + 1, F + 10, z);
+				set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.NORTH, true), x, F + 10, z - 1);
+				set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.SOUTH, true), x, F + 10, z + 1);
+			}
+		}
+		// Purple colours high on the aisle walls.
+		for (int z : new int[] {16, 24}) {
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE), 9, F + 7, z, Direction.EAST);
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE), 31, F + 7, z, Direction.WEST);
+		}
+		// Outside: buttresses down both long walls, pilasters on the clerestory, parapets on both roofs.
+		for (int z : new int[] {14, 20, 26, 32}) {
+			foundation(level, bb, 5, z, 7, z);
+			foundation(level, bb, 33, z, 35, z);
+			buttress(level, bb, 7, z, F, 10, Direction.WEST, BRICKS, Blocks.END_STONE_BRICK_STAIRS);
+			buttress(level, bb, 33, z, F, 10, Direction.EAST, BRICKS, Blocks.END_STONE_BRICK_STAIRS);
+			fill(level, bb, 12, F + 11, z, 12, F + 16, z, PILLAR);
+			fill(level, bb, 28, F + 11, z, 28, F + 16, z, PILLAR);
+		}
+		crenellate(level, bb, 8, 10, 32, 34, F + 12, BRICKS);
+		crenellate(level, bb, 12, 10, 28, 34, F + 17, BRICKS);
+		// Orreries: amethyst worlds hanging on chains from the vault, an end rod shining down from each.
 		for (int z : new int[] {17, 23, 29}) {
 			for (int x : new int[] {17, 23}) {
-				fill(level, bb, x, F + 8, z, x, F + 10, z, Blocks.IRON_CHAIN.defaultBlockState());
+				fill(level, bb, x, F + 8, z, x, vaultTop(x), z, Blocks.IRON_CHAIN.defaultBlockState());
 				set(level, bb, Blocks.AMETHYST_BLOCK.defaultBlockState(), x, F + 7, z);
 				set(level, bb, ROD_DOWN, x, F + 6, z);
 			}
 		}
 		chest(level, bb, 30, F + 1, 32, DungeonWorldgen.ASTRAL_HALL, Direction.WEST, 11);
+	}
+
+	/** The top of the nave's pointed vault over column x: one block over the aisle ceiling at the sides, four at the crown. */
+	private static int vaultTop(int x) {
+		double t = (x - CX) / 7.5;
+		return F + 11 + (int) Math.round(4 * (1 - t * t));
 	}
 
 	// ------------------------------------------------------------------ the corridor
@@ -226,6 +335,14 @@ public class AstralObservatoryPiece extends DungeonPiece {
 			} else {
 				set(level, bb, ROD_UP, 15, F + 1, z);
 				set(level, bb, ROD_UP, 25, F + 1, z);
+			}
+		}
+		// A purpur cornice under the ceiling, end rods hanging down the middle.
+		for (int z = 35; z <= 46; z++) {
+			set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.WEST, true), 15, F + 7, z);
+			set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.EAST, true), 25, F + 7, z);
+			if (z % 4 == 0) {
+				set(level, bb, ROD_DOWN, CX, F + 7, z);
 			}
 		}
 	}
@@ -252,7 +369,7 @@ public class AstralObservatoryPiece extends DungeonPiece {
 				boolean wall = d > DOME_R;
 				set(level, bb, wall ? PURPUR : floor(x, z, d), x, F, z);
 				for (int y = F + 1; y <= F + 6; y++) {
-					set(level, bb, wall ? (y == F + 6 ? BRICKS : PURPUR) : AIR, x, y, z);
+					set(level, bb, wall ? (y == F + 6 ? BRICKS : y == F + 1 ? OBSIDIAN : PURPUR) : AIR, x, y, z);
 				}
 				// The glass shell: an upturned bowl over the room, with a slit on the far side for the telescope.
 				boolean slit = Math.abs(x - CX) <= 1 && z > DOME_Z;
@@ -262,7 +379,9 @@ public class AstralObservatoryPiece extends DungeonPiece {
 					if (e <= 0.86) {
 						set(level, bb, AIR, x, y, z);
 					} else if (e <= 1.08) {
-						set(level, bb, slit && h >= 2 ? AIR : noise(x, y, z) < 22 ? DARK_GLASS : GLASS, x, y, z);
+						// Purpur ribs over the pillars, a froglight boss at the crown, glass between.
+						BlockState pane = d < 1.5 ? STAR : d > 2 && rib(x, z) ? PURPUR : noise(x, y, z) < 22 ? DARK_GLASS : GLASS;
+						set(level, bb, slit && h >= 2 ? AIR : pane, x, y, z);
 					}
 				}
 			}
@@ -272,8 +391,15 @@ public class AstralObservatoryPiece extends DungeonPiece {
 			double a = Math.PI * 2 * i / 8 + Math.PI / 8;
 			int px = CX + (int) Math.round(Math.cos(a) * 11.5);
 			int pz = DOME_Z + (int) Math.round(Math.sin(a) * 11.5);
-			fill(level, bb, px, F + 1, pz, px, F + 5, pz, PILLAR);
+			pillar(level, bb, px, pz, F + 1, F + 5, OBSIDIAN, PILLAR, PURPUR);
 			set(level, bb, ROD_UP, px, F + 6, pz);
+		}
+		// A star hangs over the altar from the dome's crown, its rays of end rods reaching out.
+		fill(level, bb, CX, F + 13, DOME_Z, CX, F + 16, DOME_Z, Blocks.IRON_CHAIN.defaultBlockState());
+		set(level, bb, STAR, CX, F + 12, DOME_Z);
+		set(level, bb, ROD_DOWN, CX, F + 11, DOME_Z);
+		for (Direction dir : Direction.Plane.HORIZONTAL) {
+			set(level, bb, Blocks.END_ROD.defaultBlockState().setValue(EndRodBlock.FACING, dir), CX + dir.getStepX(), F + 12, DOME_Z + dz(dir));
 		}
 		// The telescope: a mount, and a tube of old copper climbing toward the slit, a lens at its end.
 		fill(level, bb, CX, F + 1, 67, CX, F + 3, 67, PILLAR);
@@ -283,6 +409,14 @@ public class AstralObservatoryPiece extends DungeonPiece {
 		// The way in, and the altar at the heart of the star map.
 		fill(level, bb, 18, F, 45, 22, F, 49, PURPUR);
 		fill(level, bb, 18, F + 1, 45, 22, F + 5, 49, AIR);
+		// Its portal through the dome wall: purpur jambs, corbels and a lintel keyed with crying obsidian.
+		for (int x : new int[] {17, 23}) {
+			fill(level, bb, x, F + 1, 47, x, F + 6, 47, PILLAR);
+		}
+		fill(level, bb, 18, F + 6, 47, 22, F + 6, 47, BRICKS);
+		set(level, bb, CRYING, CX, F + 6, 47);
+		set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.WEST, true), 18, F + 5, 47);
+		set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.EAST, true), 22, F + 5, 47);
 		altar(level, bb, DungeonAltarBlock.Kind.ASTRAL, CX, F + 1, DOME_Z);
 	}
 
@@ -304,6 +438,13 @@ public class AstralObservatoryPiece extends DungeonPiece {
 		return noise(x, z) < 3 ? STAR : OBSIDIAN;
 	}
 
+	/** Whether a column lies under one of the dome's eight ribs, which spring from the pillars. */
+	private static boolean rib(int x, int z) {
+		double a = Math.atan2(z - DOME_Z, x - CX) - Math.PI / 8;
+		double off = Math.abs(Math.IEEEremainder(a, Math.PI / 4));
+		return dist(x, z, CX, DOME_Z) * Math.sin(off) < 0.6;
+	}
+
 	// ------------------------------------------------------------------ the Vault
 
 	private void vault(WorldGenLevel level, BoundingBox bb) {
@@ -320,6 +461,14 @@ public class AstralObservatoryPiece extends DungeonPiece {
 		set(level, bb, ROD_UP, 38, F + 2, 60);
 		set(level, bb, ROD_DOWN, 36, F + 7, 57);
 		set(level, bb, ROD_DOWN, 36, F + 7, 63);
+		// A cornice round the treasury and purpur pilasters against its back wall.
+		for (int z = 55; z <= 65; z++) {
+			set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.WEST, true), 34, F + 7, z);
+			set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.EAST, true), 39, F + 7, z);
+		}
+		for (int z : new int[] {58, 62}) {
+			pillar(level, bb, 39, z, F + 1, F + 6, OBSIDIAN, PILLAR, PURPUR);
+		}
 	}
 
 	// ------------------------------------------------------------------ guards

@@ -65,6 +65,14 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 				fill(level,bb,18,1,10,24,1,10,Blocks.DARK_OAK_FENCE.defaultBlockState());
 				for (int z=13;z<24;z++) set(level,bb,Blocks.PACKED_MUD.defaultBlockState(),10+z%3,0,z);
 				fill(level,bb,20,0,20,24,0,23,Blocks.BLACKSTONE.defaultBlockState());
+				// A line of stakes before the barricade, a few knocked flat in the charge.
+				for (int x=6;x<=24;x+=2) {
+					if (x>12 && x<18) continue;
+					if (noise(x,8)<30) set(level,bb,Blocks.STRIPPED_DARK_OAK_LOG.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.Z),x,1,7);
+					else fill(level,bb,x,1,7,x,1+noise(x,7)%2,7,Blocks.DARK_OAK_FENCE.defaultBlockState());
+				}
+				banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.RED),9,3,9,Direction.SOUTH);
+				banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.RED),21,3,9,Direction.SOUTH);
 			}
 			case 1 -> {
 				// The shelter's wall has an open doorway and a roof that has fallen into the garden.
@@ -76,6 +84,14 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 				}
 				fill(level,bb,8,0,12,10,0,15,Blocks.OAK_PLANKS.defaultBlockState());
 				set(level,bb,Blocks.COMPOSTER.defaultBlockState(),21,1,18);
+				// What is left of the roof: a broken sheet of it slid off into the garden, the wall heads capped and crumbling.
+				for (int x=8;x<=10;x++) {
+					set(level,bb,stair(Blocks.SPRUCE_STAIRS,Direction.NORTH,false),x,1,13);
+					if (noise(x,14)<70) set(level,bb,Blocks.SPRUCE_SLAB.defaultBlockState(),x,1,14);
+				}
+				for (int z=11;z<=23;z++) if (noise(7,z)<55) set(level,bb,Blocks.MOSSY_COBBLESTONE_SLAB.defaultBlockState(),7,4,z);
+				for (int x=8;x<=22;x++) if (noise(x,23)<55) set(level,bb,Blocks.MOSSY_COBBLESTONE_SLAB.defaultBlockState(),x,3,23);
+				for (int z=15;z<=23;z++) if (noise(23,z)<55) set(level,bb,Blocks.MOSSY_COBBLESTONE_SLAB.defaultBlockState(),23,5,z);
 			}
 			default -> {
 				// Paired cairns preserve a route; the last watchtower is broken, never a copy of the other ruins.
@@ -86,14 +102,43 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 				for (int x:new int[]{23,26}) for (int z:new int[]{6,9}) fill(level,bb,x,-6,z,x,3+(z%2),z,Blocks.SPRUCE_LOG.defaultBlockState());
 				fill(level,bb,23,3,6,26,3,7,Blocks.SPRUCE_PLANKS.defaultBlockState());
 				set(level,bb,Blocks.LANTERN.defaultBlockState(),25,4,7);
+				// A rail round the watch platform, and one of the tower's legs lying where it fell.
+				for (int x=23;x<=26;x++) if (x!=25) set(level,bb,Blocks.SPRUCE_FENCE.defaultBlockState(),x,4,6);
+				fill(level,bb,22,1,10,22,1,13,Blocks.SPRUCE_LOG.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.Z));
 			}
 		}
+		remembrance(level,bb);
 		BlockPos marker=localPosition(15,1,15);
 		if (bb.isInside(marker)) {
 			level.setBlock(marker,Battlefields.MEMORIAL.defaultBlockState().setValue(BattlefieldMemorial.KIND,variant()),2);
 			if (level.getBlockEntity(marker) instanceof BattlefieldMemoryEntity memory) memory.awaken();
 		}
 		chest(level,bb,18,1,18,DungeonWorldgen.BATTLEFIELD_SUPPLIES,Direction.NORTH,821);
+	}
+	/**
+	 * What every field keeps: a worn ring of paving round the memorial, two banner poles where the track comes up to it, and
+	 * a row of graves off to one side. The ground round the memorial itself is left open, so it can be stood at.
+	 */
+	private void remembrance(WorldGenLevel level,BoundingBox bb) {
+		for (int x=10;x<=20;x++) for (int z=10;z<=20;z++) {
+			double d=dist(x,z,15,15);if (d<2.6 || d>4.6) continue;
+			int n=noise(x,z);
+			if (n<18) continue;
+			set(level,bb,(n<55?Blocks.STONE_BRICKS:n<75?Blocks.MOSSY_STONE_BRICKS:n<90?Blocks.CRACKED_STONE_BRICKS:Blocks.MOSSY_COBBLESTONE).defaultBlockState(),x,0,z);
+		}
+		for (int x:new int[]{13,17}) {
+			fill(level,bb,x,1,12,x,3,12,Blocks.DARK_OAK_FENCE.defaultBlockState());
+			set(level,bb,Blocks.STONE_BRICK_SLAB.defaultBlockState(),x,4,12);
+			banner(level,bb,Blocks.WALL_BANNER.pick(x<15?net.minecraft.world.item.DyeColor.RED:net.minecraft.world.item.DyeColor.GRAY),x,3,11,Direction.SOUTH);
+		}
+		// The graves: a low mound and a marker each, some of the markers fallen.
+		for (int x:new int[]{3,5}) for (int z:new int[]{14,17,20}) {
+			fill(level,bb,x,-3,z,x,-1,z,Blocks.DIRT.defaultBlockState());
+			set(level,bb,Blocks.COARSE_DIRT.defaultBlockState(),x,0,z);
+			set(level,bb,Blocks.COARSE_DIRT.defaultBlockState(),x,0,z+1);
+			int n=noise(x,z);
+			set(level,bb,(n<25?Blocks.MOSSY_COBBLESTONE_SLAB:n<60?Blocks.COBBLESTONE_WALL:Blocks.MOSSY_STONE_BRICK_WALL).defaultBlockState(),x,1,z);
+		}
 	}
 	@Override public List<BoundingBox> wardedBoxes() { return List.of(); }
 }

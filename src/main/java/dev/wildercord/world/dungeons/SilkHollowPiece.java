@@ -114,6 +114,7 @@ public final class SilkHollowPiece extends DungeonPiece {
 		shaft(level,bb);
 		drift(level,bb);
 		remains(level,bb);
+		timbering(level,bb);
 		// Under the nest, a little behind where she comes down: the Weaver's Silk, a skein of her own silk wound round a bone.
 		set(level,bb,dev.wildercord.aura.world.WeaversSilk.BLOCK.defaultBlockState(),CX,FLOOR+1,CZ+3);
 		matron(level,bb);
@@ -306,6 +307,64 @@ public final class SilkHollowPiece extends DungeonPiece {
 		// The rails ran a little way into the hall before the miners stopped laying them.
 		for(int z=mouth;z<mouth+5;z++)if(noise(CX,z)<60)set(level,bb,Blocks.RAIL.defaultBlockState(),CX,FLOOR+1,z);
 		set(level,bb,Blocks.IRON_BARS.defaultBlockState(),CX+10,FLOOR+1,CZ+5);
+	}
+
+	/**
+	 * The miners' timbering: a heavy log portal where the drift breaks into the hall, plank lagging over the drift and studs
+	 * in its walls, props along the hall rim (two of them given way), and the headframe finished with knee braces, a sheave
+	 * wheel and a broken railing round the shaft lip.
+	 */
+	private void timbering(WorldGenLevel level,BoundingBox bb){
+		BlockState stripped=Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState();
+		BlockState across=LOG.setValue(RotatedPillarBlock.AXIS,Direction.Axis.X);
+		// The drift: lagging boards over its roof, a log stud in each wall at every timber set.
+		int from=SHAFT_Z+4,face=CZ-RADIUS+2;
+		for(int z=from;z<face;z++){
+			for(int x=CX-1;x<=CX+1;x++)set(level,bb,noise(x,FLOOR+4,z)<60?PLANK:stripped.setValue(RotatedPillarBlock.AXIS,Direction.Axis.X),x,FLOOR+4,z);
+			if(z%4==0)for(int x:new int[]{CX-2,CX+2})fill(level,bb,x,FLOOR+1,z,x,FLOOR+3,z,LOG);
+		}
+		// The portal in the hall's wall: two posts, a lintel and a plank header over it.
+		for(int x:new int[]{CX-2,CX+2})fill(level,bb,x,FLOOR+1,face,x,FLOOR+4,face,LOG);
+		fill(level,bb,CX-2,FLOOR+4,face,CX+2,FLOOR+4,face,across);
+		fill(level,bb,CX-3,FLOOR+5,face,CX+3,FLOOR+5,face,PLANK);
+		set(level,bb,stair(Blocks.SPRUCE_STAIRS,Direction.WEST,true),CX-1,FLOOR+3,face);
+		set(level,bb,stair(Blocks.SPRUCE_STAIRS,Direction.EAST,true),CX+1,FLOOR+3,face);
+		// Props the miners stood against the hall's wall; two have given way and lie where they fell.
+		int[][] props={{33,34,1},{38,49,0},{7,49,1},{11,34,0}};
+		for(int[] p:props){
+			int x=p[0],z=p[1],ceiling=dome(reach(x,z));if(ceiling<0)continue;
+			boolean alongZ=Math.abs(x-CX)>=Math.abs(z-CZ);
+			if(p[2]==1){
+				fill(level,bb,x,FLOOR+1,z,x,FLOOR+3+noise(x,z)%2,z,LOG);
+				int step=x<CX?1:-1;
+				for(int i=1;i<=3;i++)set(level,bb,across,x+step*i,FLOOR+1,z);
+				set(level,bb,WEB,x,FLOOR+4+noise(x,z)%2,z);
+			}else{
+				fill(level,bb,x,FLOOR+1,z,x,ceiling-1,z,LOG);
+				for(int t=-1;t<=1;t++){
+					int cx=alongZ?x:x+t,cz=alongZ?z+t:z;
+					set(level,bb,stripped.setValue(RotatedPillarBlock.AXIS,alongZ?Direction.Axis.Z:Direction.Axis.X),cx,ceiling,cz);
+				}
+				set(level,bb,WEB,alongZ?x:x+1,ceiling-1,alongZ?z+1:z);
+			}
+		}
+		// The headframe: knee braces under the beam, a sheave wheel over the shaft, slab caps along the beam.
+		if(column(bb,SHAFT_X-4,SHAFT_Z))set(level,bb,stair(Blocks.SPRUCE_STAIRS,Direction.WEST,true),SHAFT_X-4,top+3,SHAFT_Z);
+		if(column(bb,SHAFT_X+4,SHAFT_Z))set(level,bb,stair(Blocks.SPRUCE_STAIRS,Direction.EAST,true),SHAFT_X+4,top+3,SHAFT_Z);
+		for(int x=SHAFT_X-5;x<=SHAFT_X+5;x++){
+			if(!column(bb,x,SHAFT_Z))continue;
+			if(Math.abs(x-SHAFT_X)>=2)set(level,bb,Blocks.SPRUCE_SLAB.defaultBlockState(),x,top+5,SHAFT_Z);
+			else for(int y=top+5;y<=top+7;y++){
+				boolean hub=x==SHAFT_X && y==top+6;
+				set(level,bb,(hub?LOG:stripped).setValue(RotatedPillarBlock.AXIS,Direction.Axis.Z),x,y,SHAFT_Z);
+			}
+		}
+		// A railing of posts round the shaft lip, open at the head of the treads and broken here and there.
+		for(int x=SHAFT_X-6;x<=SHAFT_X+6;x++)for(int z=SHAFT_Z-6;z<=SHAFT_Z+6;z++){
+			double r=dist(x,z,SHAFT_X,SHAFT_Z);
+			if(r<4.6 || r>5.4 || Math.abs(z-SHAFT_Z)<=1 || !column(bb,x,z) || noise(z,x)<25)continue;
+			set(level,bb,POST,x,Math.min(top,surface(level,x,z)),z);
+		}
 	}
 
 	/** The hall, from below its floor to over its dome. */

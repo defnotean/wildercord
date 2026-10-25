@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
@@ -143,6 +144,45 @@ public class EmberSanctumPiece extends DungeonPiece {
 			set(level, bb, POLISHED, x, 3, 9);
 			set(level, bb, FIRE, x, 4, 9);
 		}
+		facade(level, bb);
+	}
+
+	/**
+	 * The temple front: two battered pylons with fire on their crowns flank the gate, a corbelled lintel spans
+	 * between them, and a stepped gable of black brick climbs over the door.
+	 */
+	private void facade(WorldGenLevel level, BoundingBox bb) {
+		Palette face = Palette.of(Blocks.POLISHED_BLACKSTONE_BRICKS, 8, Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS, 3, Blocks.BLACKSTONE, 1);
+		for (int x0 : new int[] {11, 25}) {
+			int mid = x0 + 2;
+			fill(level, bb, x0, 1, 7, x0 + 4, 16, 9, face);
+			// A sloped plinth, a gilded string course at the hall's floor line, and another under the crown.
+			for (int x = x0; x <= x0 + 4; x++) {
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.NORTH, false), x, 2, 6);
+				set(level, bb, x == mid ? GILDED : CHISELED, x, 8, 7);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.NORTH, true), x, 15, 6);
+			}
+			// Corner shafts of basalt and a magma eye glaring down the causeway.
+			for (int x : new int[] {x0, x0 + 4}) fill(level, bb, x, 3, 6, x, 14, 6, BASALT);
+			fill(level, bb, mid, 11, 7, mid, 12, 7, MAGMA);
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), mid, 6, 6, Direction.SOUTH);
+			// The crown: battlements round a fire.
+			fill(level, bb, x0, 16, 6, x0 + 4, 16, 9, POLISHED);
+			crenellate(level, bb, x0, 6, x0 + 4, 9, 17, BRICKS);
+			set(level, bb, GILDED, mid, 16, 8);
+			set(level, bb, FIRE, mid, 17, 8);
+		}
+		// A lintel on corbels between the pylons, lanterns hanging from it over the door.
+		for (int x = 16; x <= 24; x++) {
+			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.NORTH, true), x, 9, 9);
+			set(level, bb, x % 4 == 0 ? GILDED : CHISELED, x, 10, 9);
+		}
+		for (int x : new int[] {18, 22}) hangingLantern(level, bb, x, 8, 9, 1, false);
+		// The stepped gable over the gate, its peak a gilded block between two magma eyes.
+		for (int k = 0; k <= 4; k++) fill(level, bb, 15 + k, 11 + k, 9, 25 - k, 11 + k, 10, face);
+		set(level, bb, GILDED, CX, 16, 9);
+		set(level, bb, MAGMA, CX - 2, 13, 9);
+		set(level, bb, MAGMA, CX + 2, 13, 9);
 	}
 
 	/** A seal door in the wall at {@code z}, in a carved frame with a gilded keystone and magma eyes. */
@@ -187,6 +227,36 @@ public class EmberSanctumPiece extends DungeonPiece {
 		for (int z : new int[] {14, 20, 26, 32}) {
 			fill(level, bb, 10, 2, z, 10, 12, z, BASALT);
 			fill(level, bb, 30, 2, z, 30, 12, z, BASALT);
+			// Chiseled bases and capitals, corbels either side of each capital.
+			for (int x : new int[] {10, 30}) {
+				set(level, bb, CHISELED, x, 2, z);
+				set(level, bb, CHISELED, x, 10, z);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.NORTH, true), x, 10, z - 1);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.SOUTH, true), x, 10, z + 1);
+			}
+			// A pointed transverse arch across the nave from column to column, a lantern from its keystone.
+			for (int x = 11; x <= 29; x++) {
+				double t = Math.abs(x - CX) / 10.0;
+				int foot = 10 + (int) Math.round(2 * (1 - t * t));
+				fill(level, bb, x, foot, z, x, 12, z, BRICKS);
+				if (foot < 12) {
+					set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, x < CX ? Direction.WEST : Direction.EAST, true), x, foot, z);
+				}
+			}
+			set(level, bb, GILDED, CX, 12, z);
+			hangingLantern(level, bb, CX, 11, z, 1, false);
+			// Lower arches over the aisles, from the wall to the column.
+			for (int[] a : new int[][] {{7, 9}, {31, 33}}) {
+				fill(level, bb, a[0], 11, z, a[1], 12, z, BRICKS);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, a[0] == 7 ? Direction.WEST : Direction.EAST, true), a[0] == 7 ? 7 : 33, 10, z);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, a[0] == 7 ? Direction.EAST : Direction.WEST, true), a[0] == 7 ? 9 : 31, 10, z);
+			}
+		}
+		// Shroomlight bosses in the vault between the arches, and red banners down both walls.
+		for (int z : new int[] {17, 23, 29}) {
+			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), CX, 13, z);
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 7, 7, z, Direction.EAST);
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 33, 7, z, Direction.WEST);
 		}
 		for (int z : new int[] {17, 23, 29}) {
 			set(level, bb, POLISHED, 8, 2, z);
@@ -220,8 +290,28 @@ public class EmberSanctumPiece extends DungeonPiece {
 			fill(level, bb, 20, 7, z, 20, 8, z, CHAIN);
 			set(level, bb, LANTERN, 20, 6, z);
 		}
-		// The way on into the arena.
+		// A smoke hood over the furnaces on a course of corbels, magma glowing in its throat.
+		fill(level, bb, 14, 6, 37, 15, 8, 45, BRICKS);
+		for (int z = 37; z <= 45; z++) {
+			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.WEST, true), 16, 6, z);
+			if (z % 2 == 0) set(level, bb, MAGMA, 15, 6, z);
+		}
+		// Pilasters down the anvil wall and racked chains between them.
+		for (int z : new int[] {37, 45}) fill(level, bb, 26, 2, z, 26, 8, z, BASALT);
+		for (int z : new int[] {38, 44}) fill(level, bb, 26, 5, z, 26, 8, z, CHAIN);
+		// The way on into the arena, under a gilded arch with corbels in its corners.
 		fill(level, bb, 18, 2, 46, 22, 6, 50, AIR);
+	}
+
+	/** A carved arch over the five-wide passage at {@code z}: basalt jambs, corner corbels and a gilded lintel. */
+	private void portal(WorldGenLevel level, BoundingBox bb, int z) {
+		for (int x : new int[] {17, 23}) fill(level, bb, x, 2, z, x, 7, z, BASALT);
+		set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.WEST, true), 18, 6, z);
+		set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.EAST, true), 22, 6, z);
+		fill(level, bb, 17, 7, z, 23, 7, z, CHISELED);
+		set(level, bb, GILDED, CX, 7, z);
+		set(level, bb, MAGMA, 18, 8, z);
+		set(level, bb, MAGMA, 22, 8, z);
 	}
 
 	// ------------------------------------------------------------------ the Arena
@@ -260,6 +350,12 @@ public class EmberSanctumPiece extends DungeonPiece {
 				int n = noise(x, z);
 				set(level, bb, n < 5 ? Blocks.SHROOMLIGHT.defaultBlockState() : n < 14 ? MAGMA : BLACKSTONE, x, top + 1, z);
 				set(level, bb, BLACKSTONE, x, top + 2, z);
+				// Eight ribs spring from the pillars and meet in a gilded ring round the crown.
+				if (d > 2.5 && d < ARENA_R && rib(x, z)) {
+					set(level, bb, d > 11.5 ? GILDED : BRICKS, x, top, z);
+				} else if (Math.abs(d - 3) < 0.5) {
+					set(level, bb, GILDED, x, top, z);
+				}
 			}
 		}
 		// Four pools of lava between the pillars, walled by the floor around them.
@@ -278,8 +374,10 @@ public class EmberSanctumPiece extends DungeonPiece {
 			int px = CX + (int) Math.round(Math.cos(a) * 11);
 			int pz = ARENA_Z + (int) Math.round(Math.sin(a) * 11);
 			for (int y = 2; y <= ceiling(11); y++) {
-				set(level, bb, y == 8 ? Blocks.SHROOMLIGHT.defaultBlockState() : BASALT, px, y, pz);
+				set(level, bb, y == 8 ? Blocks.SHROOMLIGHT.defaultBlockState() : y == 2 || y == ceiling(11) ? CHISELED : BASALT, px, y, pz);
 			}
+			// A gilded collar under the capital.
+			set(level, bb, GILDED, px, ceiling(11) - 1, pz);
 			set(level, bb, Blocks.LANTERN.defaultBlockState(), px + (px > CX ? -1 : 1), 2, pz);
 		}
 		// Chains hanging from the dome.
@@ -290,10 +388,25 @@ public class EmberSanctumPiece extends DungeonPiece {
 			fill(level, bb, px, top - 3, pz, px, top, pz, CHAIN);
 			set(level, bb, LANTERN, px, top - 4, pz);
 		}
+		// A crown of lanterns over the altar, hung from the top of the dome.
+		fill(level, bb, CX, 15, ARENA_Z, CX, ceiling(0), ARENA_Z, CHAIN);
+		set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), CX, 14, ARENA_Z);
+		for (Direction d : Direction.Plane.HORIZONTAL) {
+			hangingLantern(level, bb, CX + d.getStepX() * 3, ceiling(3), ARENA_Z + dz(d) * 3, 5, false);
+		}
 		// The way in, and the Warden's altar at the centre.
 		fill(level, bb, 18, 1, 46, 22, 1, 50, BRICKS);
 		fill(level, bb, 18, 2, 46, 22, 6, 50, AIR);
+		portal(level, bb, 46);
+		portal(level, bb, 50);
 		altar(level, bb, DungeonAltarBlock.Kind.CINDER, CX, 2, ARENA_Z);
+	}
+
+	/** Whether a ceiling column lies on one of the eight ribs, which run out to the pillars (turned an eighth of a turn off the spokes). */
+	private static boolean rib(int x, int z) {
+		double a = Math.atan2(z - ARENA_Z, x - CX) - Math.PI / 8;
+		double off = Math.abs(Math.IEEEremainder(a, Math.PI / 4));
+		return dist(x, z, CX, ARENA_Z) * Math.sin(off) < 0.6;
 	}
 
 	/** The arena floor: a forge-circle in stone, with a ring of magma, a gilded ring and eight spokes. */
@@ -332,6 +445,12 @@ public class EmberSanctumPiece extends DungeonPiece {
 			set(level, bb, CHAIN, 37, 8, z);
 			set(level, bb, LANTERN, 37, 7, z);
 		}
+		// Basalt pilasters in the corners, a gilded cornice, and the treasury's banner over its brazier.
+		for (int[] c : new int[][] {{35, 57}, {40, 57}, {35, 67}, {40, 67}}) {
+			pillar(level, bb, c[0], c[1], 2, 8, CHISELED, BASALT, GILDED);
+		}
+		for (int z = 58; z <= 66; z++) set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.WEST, true), 40, 8, z);
+		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 40, 5, 62, Direction.WEST);
 	}
 
 	// ------------------------------------------------------------------ guards
