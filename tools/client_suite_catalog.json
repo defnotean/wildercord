@@ -118,12 +118,13 @@
     ]
   },
   "area-mounts-taming": {
-    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill) and berry-tamed thistle hedgehogs (sit, follow, heal, hoglets).",
+    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill) and berry-tamed thistle hedgehogs (sit, follow, heal, hoglets), and the first ride on a freshly tamed Ridgeback Stag (bond grows, remount starts fresh).",
     "purpose": "area",
-    "expectedCount": 2,
+    "expectedCount": 3,
     "entries": [
       "dev.wildercord.monster.CofferMimicTamingTest",
-      "dev.wildercord.wildlife.ThistleHedgehogTamingTest"
+      "dev.wildercord.wildlife.ThistleHedgehogTamingTest",
+      "dev.wildercord.wildlife.StagFirstRideTest"
     ]
   },
   "area-towns-guards": {

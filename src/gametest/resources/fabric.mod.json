@@ -50,6 +50,7 @@
       "dev.wildercord.aura.world.WeaversSilkStowTest",
       "dev.wildercord.monster.CofferMimicTamingTest",
       "dev.wildercord.wildlife.ThistleHedgehogTamingTest",
+      "dev.wildercord.wildlife.StagFirstRideTest",
       "dev.wildercord.aura.world.BossDamageTest",
       "dev.wildercord.wildlife.RainshieldFaultTest",
       "dev.wildercord.wildlife.SiltcrestPresentationTest",
