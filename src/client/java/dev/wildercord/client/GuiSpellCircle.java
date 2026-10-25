@@ -28,17 +28,24 @@ public final class GuiSpellCircle {
 	private static final Identifier LINE = Wildercord.id("textures/particle/sigil_band.png");
 	private static final Identifier GLOW = Wildercord.id("textures/particle/sigil_glow.png");
 
+	/** Built once per rune and part rather than every frame the circle is drawn. */
+	private static final java.util.Map<String, Identifier> TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
+
+	private static Identifier texture(String name) {
+		return TEXTURES.computeIfAbsent(name, n -> Wildercord.id("textures/particle/circle/" + n + ".png"));
+	}
+
 	private static Identifier mark(RuneDef rune) {
-		return Wildercord.id("textures/particle/circle/" + art(rune) + "_mark.png");
+		return texture(art(rune) + "_mark");
 	}
 
 	private static Identifier band(RuneDef rune) {
-		return Wildercord.id("textures/particle/circle/" + art(rune) + "_band.png");
+		return texture(art(rune) + "_band");
 	}
 
 	/** A fused rune's second half ({@code band2} or {@code mark2}), shown in {@link RuneColors#second}. */
 	private static Identifier second(RuneDef rune, String part) {
-		return Wildercord.id("textures/particle/circle/" + rune.path() + "_" + part + ".png");
+		return texture(rune.path() + "_" + part);
 	}
 
 	/**

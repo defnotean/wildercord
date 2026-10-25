@@ -28,6 +28,7 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	public static final ModelLayerLocation BAND = new ModelLayerLocation(Wildercord.id("cord"), "band");
 	public static final ModelLayerLocation SLIM_BAND = new ModelLayerLocation(Wildercord.id("cord"), "slim_band");
 	public static final ModelLayerLocation BEAD = new ModelLayerLocation(Wildercord.id("cord"), "bead");
+	private static final java.util.Map<String, Identifier> TIER_TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
 	private static final Identifier BEAD_TEXTURE = Wildercord.id("textures/entity/cord/bead.png");
 
 	/** Where the beads sit on the band, in the right arm's space (x, y, z in pixels). */
@@ -61,7 +62,7 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.pushPose();
 		if (!dev.wildercord.client.combat.ArticulatedCombat.legacyArm(getParentModel(), state, net.minecraft.world.entity.HumanoidArm.RIGHT, pose))
 			getParentModel().rightArm.translateAndRotate(pose);
-		Identifier texture = Wildercord.id("textures/entity/cord/" + cord.tier() + ".png");
+		Identifier texture = TIER_TEXTURES.computeIfAbsent(cord.tier(), tier -> Wildercord.id("textures/entity/cord/" + tier + ".png"));
 		boolean slim = state.skin != null && state.skin.model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
 		float[][] spots = slim ? SLIM_SPOTS : SPOTS;
 		// The colour goes in as the tint; the outline is the player's own (none unless they're Glowing), so the Cord

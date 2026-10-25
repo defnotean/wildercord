@@ -18,6 +18,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Every boss hits players harder: lair bosses, dungeon guardians, Masters, the Gravekeeper, the Archivist, the Glass Cartographer, the Reed-Crowned Ferryman, the Hollow Bell, the Kiln Widow and giants. Their blows (and their projectiles) land 35% harder, and at least 40% of what armour, Protection and Resistance would stop goes through anyway. A 10-damage blow on full diamond with Protection IV used to take about half a heart; it now takes about two and a half.
 
 ### Fixed
+- Less per-frame and per-tick work: the cord, cord-bead, Master, Runebound and spell-circle renderers reuse their texture names instead of rebuilding them every frame, and Cinnamon's recall check looks around its owner instead of across the whole dimension.
 - The `<` and `>` page buttons in the rune catalogue and the spell notebook now show "Previous Page"/"Next Page" on hover and say so to a screen reader, instead of reading out a bare arrow.
 - The Cord screen's "Unfinished … · cannot cast" header and its paste refusals, the Fusion Altar's two-effect line and the lesson screen's Circle line now come from the lang file, so a translation pack reaches them.
 - The eight spell-construct blocks (Wind Step, Cinder Bulwark, Lifted Water and the rest) have names, so the debug screen and block-info mods no longer show a raw `block.wildercord.*` key.
