@@ -19,7 +19,9 @@ public final class BossDamageTest implements FabricClientGameTest {
 	private static float taken(MinecraftServer s, String id) {
 		var p = p(s);
 		p.setHealth(p.getMaxHealth());
+		// The hit cooldown in hurtServer reads damageCooldownTime, which setInvulnerableTime leaves alone.
 		p.setInvulnerableTime(0);
+		p.damageCooldownTime = 0;
 		float before = p.getHealth();
 		p.hurtServer(s.overworld(), s.overworld().damageSources().mobAttack(mob(s, id)), 10);
 		return before - p.getHealth();
@@ -48,6 +50,9 @@ public final class BossDamageTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				check(BossDamage.boss(mob(s, "wildercord:cinder_warden")), "The Cinder Warden counts as a boss");
 				check(!BossDamage.boss(mob(s, "minecraft:zombie")), "A zombie does not count as a boss");
+				var bossHit = s.overworld().damageSources().mobAttack(mob(s, "wildercord:cinder_warden"));
+				float through = BossDamage.pierce(p(s), bossHit, 10, 0);
+				check(Math.abs(through - 10 * BossDamageRules.PIERCE) < 0.01f, "A boss's blow goes partly through what a defence stops: " + through);
 				float zombie = taken(s, "minecraft:zombie"), warden = taken(s, "wildercord:cinder_warden");
 				check(zombie > 0 && zombie < 1.5f, "An ordinary 10-damage blow barely scratches diamond and Protection IV: " + zombie);
 				check(warden >= 4f && warden <= 6.5f, "A boss's 10-damage blow lands hard through diamond and Protection IV: " + warden);
