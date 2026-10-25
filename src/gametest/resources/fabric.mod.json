@@ -27,6 +27,7 @@
       "dev.wildercord.world.dungeons.ArenaTreeClearingTest",
       "dev.wildercord.aura.world.GauntletRestartTest",
       "dev.wildercord.town.InnChestReachTest",
+      "dev.wildercord.net.PayloadCodecRoundTripTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
       "dev.wildercord.gametest.WildercordMonstersTest",

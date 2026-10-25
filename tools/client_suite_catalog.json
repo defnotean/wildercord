@@ -126,11 +126,12 @@
     ]
   },
   "area-towns-guards": {
-    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator.",
+    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; every network payload survives its own codec round trip.",
     "purpose": "area",
-    "expectedCount": 1,
+    "expectedCount": 2,
     "entries": [
-      "dev.wildercord.town.InnChestReachTest"
+      "dev.wildercord.town.InnChestReachTest",
+      "dev.wildercord.net.PayloadCodecRoundTripTest"
     ]
   }
 }
