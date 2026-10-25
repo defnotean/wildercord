@@ -6,6 +6,7 @@ import dev.wildercord.content.WildercordItems;
 import dev.wildercord.monster.MonsterContent;
 import dev.wildercord.party.Parties;
 import dev.wildercord.player.Heart;
+import dev.wildercord.player.Inventories;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.ritual.RitualRules.Ritual;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -189,7 +190,7 @@ public final class Rituals {
 		boolean sky = level.dimension() == Level.OVERWORLD;
 		if ((ritual == Ritual.CLEAR_SKIES || ritual == Ritual.CALL_STORM || ritual == Ritual.DAWN) && !sky) return Result.WRONG_PLACE;
 		if (ritual == Ritual.DAWN && level.isBrightOutside()) return Result.WRONG_PLACE;
-		if (!leader.isCreative() && leader.getInventory().findSlotMatchingItem(new ItemStack(reagent(ritual))) < 0) return Result.NO_REAGENT;
+		if (!leader.isCreative() && Inventories.slotOf(leader.getInventory(), reagent(ritual)) < 0) return Result.NO_REAGENT;
 		if (!leader.isCreative() && split(level, leader, ritual) == null) return Result.LOW_MANA;
 		return Result.DONE;
 	}
@@ -223,7 +224,7 @@ public final class Rituals {
 					caster.sendOverlayMessage(Component.translatable("message.wildercord.ritual.shared", (int) paid[i]).withColor(0xB8A8FF));
 				}
 			}
-			int slot = leader.getInventory().findSlotMatchingItem(new ItemStack(reagent(ritual)));
+			int slot = Inventories.slotOf(leader.getInventory(), reagent(ritual));
 			if (slot >= 0) leader.getInventory().removeItem(slot, 1);
 		}
 		level.playSound(null, leader.getX(), leader.getY(), leader.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 1.0F, 1.2F);

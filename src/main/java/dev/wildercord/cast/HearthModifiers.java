@@ -1,6 +1,7 @@
 package dev.wildercord.cast;
 
 import dev.wildercord.cast.feel.Feels;
+import dev.wildercord.player.Inventories;
 import dev.wildercord.spell.HearthLinkRules;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.SpellPlan;
@@ -776,7 +777,7 @@ public final class HearthModifiers {
 		if (!torch.canSurvive(level, at) || !Casters.mayEdit(player, level, at)) {
 			return;
 		}
-		int slot = player.getInventory().findSlotMatchingItem(new ItemStack(Items.TORCH));
+		int slot = Inventories.slotOf(player.getInventory(), Items.TORCH);
 		if (slot < 0 && !player.isCreative()) {
 			return;
 		}

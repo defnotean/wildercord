@@ -720,8 +720,8 @@ public final class Techniques {
 			return false;
 		}
 		if (!player.isCreative()) {
-			int paper = player.getInventory().findSlotMatchingItem(new ItemStack(Items.PAPER));
-			int shard = player.getInventory().findSlotMatchingItem(new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD));
+			int paper = dev.wildercord.player.Inventories.slotOf(player.getInventory(), Items.PAPER);
+			int shard = dev.wildercord.player.Inventories.slotOf(player.getInventory(), dev.wildercord.aura.world.AuraWorld.AURA_SHARD);
 			if (paper < 0 || shard < 0) {
 				player.sendOverlayMessage(new Refusal("message.wildercord.aura.technique.inscribe_needs").line());
 				return false;

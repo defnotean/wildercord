@@ -8,6 +8,7 @@
     "fabric-client-gametest": [
       "dev.wildercord.cast.BasinfillTest",
       "dev.wildercord.cast.FarmSoilTest",
+      "dev.wildercord.ritual.RenamedReagentTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.party.RelayImpactTest",
       "dev.wildercord.client.fx.LifeOutcomeQualityTest",
