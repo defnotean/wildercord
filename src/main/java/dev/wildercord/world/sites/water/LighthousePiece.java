@@ -80,7 +80,7 @@ public class LighthousePiece extends WaterPiece {
 	}
 
 	/** The way in toward the tower's axis from (x, z), for stairs that lean on the round wall. */
-	private static Direction inward(int x, int z) {
+	private static Direction towardShaft(int x, int z) {
 		int dx = CX - x, dz = CZ - z;
 		if (Math.abs(dx) >= Math.abs(dz)) {
 			return dx > 0 ? Direction.EAST : Direction.WEST;
@@ -130,7 +130,7 @@ public class LighthousePiece extends WaterPiece {
 			if (d <= rings[i]) {
 				set(level, bb, ROOF, x, GALLERY + 6 + i, z);
 			} else if (d <= outer) {
-				set(level, bb, stair(Blocks.DEEPSLATE_TILE_STAIRS, inward(x, z), false), x, GALLERY + 6 + i, z);
+				set(level, bb, stair(Blocks.DEEPSLATE_TILE_STAIRS, towardShaft(x, z), false), x, GALLERY + 6 + i, z);
 			}
 		}
 	}
@@ -251,7 +251,7 @@ public class LighthousePiece extends WaterPiece {
 				if (d <= 3.4 || d > 5.4) {
 					continue;
 				}
-				Direction in = inward(x, z);
+				Direction in = towardShaft(x, z);
 				if (d <= 4.4) {
 					set(level, bb, BRICKS, x, GALLERY - 1, z);
 					set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, in, true), x, GALLERY - 2, z);
