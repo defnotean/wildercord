@@ -1,6 +1,7 @@
 package dev.wildercord.town;
 
 import dev.wildercord.aura.arts.MethodsAFlavours;
+import dev.wildercord.cast.PracticeRoom;
 import dev.wildercord.cooking.CampPotBlock;
 import java.util.Map;
 import java.util.UUID;
@@ -8,7 +9,8 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 
 /**
- * The camp pot's chosen recipe, the bounty board's shown contract and a Method sunder's end time are per-session state.
+ * The camp pot's chosen recipe, the bounty board's shown contract, a Method sunder's end time and the practice room's entry
+ * cooldowns are per-session state.
  * Closing a world must forget them so the next world starts clean.
  */
 public final class SessionMapsClearTest implements FabricClientGameTest {
@@ -24,10 +26,13 @@ public final class SessionMapsClearTest implements FabricClientGameTest {
 				chosen.put(SOMEONE, "stew");
 				shown.put(SOMEONE, new long[] {0L, 1_000_000L});
 				sunder.put(SOMEONE, 1_000_000L);
+				Map<UUID, Long> entered = field(PracticeRoom.class, "ENTERED");
+				entered.put(SOMEONE, 1_000_000L);
 			});
 		}
-		for (var owner : new Class<?>[] {CampPotBlock.class, BountyBoardBlock.class, MethodsAFlavours.class}) {
-			String name = owner == CampPotBlock.class ? "CHOSEN" : owner == BountyBoardBlock.class ? "SHOWN" : "SUNDER_ENDS";
+		for (var owner : new Class<?>[] {CampPotBlock.class, BountyBoardBlock.class, MethodsAFlavours.class, PracticeRoom.class}) {
+			String name = owner == CampPotBlock.class ? "CHOSEN" : owner == BountyBoardBlock.class ? "SHOWN"
+				: owner == PracticeRoom.class ? "ENTERED" : "SUNDER_ENDS";
 			Map<UUID, Object> map = field(owner, name);
 			if (!map.isEmpty()) throw new AssertionError(owner.getSimpleName() + "." + name + " kept entries after the world closed: " + map.keySet());
 		}

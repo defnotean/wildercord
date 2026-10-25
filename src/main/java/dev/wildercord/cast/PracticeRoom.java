@@ -3,6 +3,7 @@ package dev.wildercord.cast;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -27,7 +28,11 @@ public final class PracticeRoom {
  /** When each player last stepped in (server ticks, not saved): entry has a cooldown. */
  private static final java.util.Map<java.util.UUID,Long> ENTERED=new java.util.HashMap<>();
  public static void init() {
+  // Entries past their cooldown say no more than no entry, so they're dropped; a new world starts with none.
+  ServerLifecycleEvents.SERVER_STOPPED.register(server -> ENTERED.clear());
   ServerTickEvents.END_SERVER_TICK.register(server -> {
+   long now=server.getTickCount();
+   if(now%1200==0) ENTERED.values().removeIf(t -> now<t || now-t>=PracticeRules.COOLDOWN_TICKS);
    for(ServerPlayer player:server.getPlayerList().getPlayers()) if(player.level().dimension().equals(DIMENSION) && player.getY()<78)
     player.teleportTo(player.level(),.5,81,.5,Set.<Relative>of(),0,0,false);
   });
