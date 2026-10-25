@@ -9207,5 +9207,13 @@
   "boss.wildercord.lantern_bearer.move.snagged": "Snagged",
   "boss.wildercord.lantern_bearer.move.rite": "Rite of Candles",
   "message.wildercord.giant.caught": "It has you in its grip! Strike it to break free.",
-  "message.wildercord.giant.free": "You tear free of its grip."
+  "message.wildercord.giant.free": "You tear free of its grip.",
+  "block.wildercord.raised_strata": "Raised Strata",
+  "block.wildercord.cinder_bulwark": "Cinder Bulwark",
+  "block.wildercord.root_bulwark": "Root Bulwark",
+  "block.wildercord.lifted_water": "Lifted Water",
+  "block.wildercord.water_reservation": "Held Water",
+  "block.wildercord.wind_step": "Wind Step",
+  "block.wildercord.rime_step": "Rime Step",
+  "block.wildercord.thunder_step": "Thunder Step"
 }

@@ -1222,6 +1222,8 @@ def write_lang(runes):
     import regional_biomes
     lang.update(regional_biomes.LANG)
     regional_biomes.write(sys.modules[__name__])
+    import physical_art
+    lang.update(physical_art.LANG)
     import boss_encounter_text
     for key in boss_encounter_text.RETIRED_KEYS:
         lang.pop(key, None)
