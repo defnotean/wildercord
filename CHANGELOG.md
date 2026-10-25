@@ -18,6 +18,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Every boss hits players harder: lair bosses, dungeon guardians, Masters, the Gravekeeper, the Archivist, the Glass Cartographer, the Reed-Crowned Ferryman, the Hollow Bell, the Kiln Widow and giants. Their blows (and their projectiles) land 35% harder, and at least 40% of what armour, Protection and Resistance would stop goes through anyway. A 10-damage blow on full diamond with Protection IV used to take about half a heart; it now takes about two and a half.
 
 ### Fixed
+- The `<` and `>` page buttons in the rune catalogue and the spell notebook now show "Previous Page"/"Next Page" on hover and say so to a screen reader, instead of reading out a bare arrow.
 
 - Reduced flash no longer turns screen shake and kicks back on when the game's Screen Effect Scale is at 0%, and at 0% the charge strain vignette is gone too. Before, reduced flash forced 15% and the vignette never dropped below 40%.
 - A Master gauntlet that was still running when you left a single-player world no longer carries on in the next world you open. Hamlet greetings, Duelist chatter and spell-residue cooldowns also start fresh with each world.

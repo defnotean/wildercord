@@ -18,6 +18,7 @@ import dev.wildercord.spell.WovenRunes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -219,8 +220,8 @@ public final class RuneCatalogScreen extends Screen {
 		detailX = listX + listW + m;
 		detailW = width - m - detailX;
 
-		prev = addRenderableWidget(Button.builder(Component.literal("<"), b -> turn(-1)).bounds(listX, bottom, BAR, BAR).build());
-		next = addRenderableWidget(Button.builder(Component.literal(">"), b -> turn(1)).bounds(listX + listW - BAR, bottom, BAR, BAR).build());
+		prev = addRenderableWidget(page(Button.builder(Component.literal("<"), b -> turn(-1)), "spectatorMenu.previous_page").bounds(listX, bottom, BAR, BAR).build());
+		next = addRenderableWidget(page(Button.builder(Component.literal(">"), b -> turn(1)), "spectatorMenu.next_page").bounds(listX + listW - BAR, bottom, BAR, BAR).build());
 		find = addRenderableWidget(Button.builder(t("find"), b -> showInCord()).bounds(detailX, bottom, Math.min(detailW, 120), BAR).build());
 		refresh();
 	}
@@ -285,6 +286,11 @@ public final class RuneCatalogScreen extends Screen {
 
 	private void cycleShow() {
 		setFilter(filter.withShow(step(List.of(RuneCatalog.Show.values()), filter.show())));
+	}
+
+	/** A bare arrow page button, given the vanilla "Previous Page"/"Next Page" as its tooltip and its spoken name. */
+	static Button.Builder page(Button.Builder arrow, String key) {
+		return arrow.tooltip(Tooltip.create(Component.translatable(key))).createNarration(plain -> Component.translatable(key));
 	}
 
 	private void turn(int by) {

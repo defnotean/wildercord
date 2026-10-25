@@ -21,8 +21,8 @@ public final class RuneNotebookScreen extends Screen {
   addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.notebook.slot",slot),b->{slot=slot%5+1;b.setMessage(Component.translatable("screen.wildercord.notebook.slot",slot));}).bounds(x+195,y+73,95,20).build());
   String[] actions={"save","load","delete"};for(int i=0;i<actions.length;i++){String action=actions[i];addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.notebook."+action),b->act(action)).bounds(x+i*98,y+98,94,20).build());}
   for(int i=page*3;i<Math.min(snapshot.builds().size(),page*3+3);i++){var entry=snapshot.builds().get(i);addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.notebook.build",entry.name(),entry.sockets()),b->name.setValue(entry.name())).bounds(x,y+124+(i%3)*21,290,20).build());}
-  addRenderableWidget(Button.builder(Component.literal("<"),b->{draft=name.getValue();page=Math.max(0,page-1);rebuildWidgets();}).bounds(x,y+192,25,20).build());
-  addRenderableWidget(Button.builder(Component.literal(">"),b->{draft=name.getValue();page=Math.min(Math.max(0,(snapshot.builds().size()-1)/3),page+1);rebuildWidgets();}).bounds(x+30,y+192,25,20).build());
+  addRenderableWidget(RuneCatalogScreen.page(Button.builder(Component.literal("<"),b->{draft=name.getValue();page=Math.max(0,page-1);rebuildWidgets();}),"spectatorMenu.previous_page").bounds(x,y+192,25,20).build());
+  addRenderableWidget(RuneCatalogScreen.page(Button.builder(Component.literal(">"),b->{draft=name.getValue();page=Math.min(Math.max(0,(snapshot.builds().size()-1)/3),page+1);rebuildWidgets();}),"spectatorMenu.next_page").bounds(x+30,y+192,25,20).build());
   addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.notebook.hint"),b->{command("runelab research");onClose();}).bounds(x+60,y+192,115,20).build());
   addRenderableWidget(Button.builder(Component.translatable("gui.done"),b->onClose()).bounds(x+180,y+192,110,20).build());
  }

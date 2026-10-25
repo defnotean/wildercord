@@ -42,6 +42,7 @@ public final class ResearchLibraryTest implements FabricClientGameTest {
     ((dev.wildercord.content.RunicHearthEntity)p.level().getBlockEntity(at)).use(p,new ItemStack(net.minecraft.world.item.Items.BOOK));
    });context.waitTicks(5);
    check(context.computeOnClient(mc->mc.gui.screen() instanceof dev.wildercord.client.RuneNotebookScreen),"hearth book opens the native notebook through its server payload");
+   check(context.computeOnClient(mc->spoken(mc,"<")).contains("Previous Page")&&context.computeOnClient(mc->spoken(mc,">")).contains("Next Page"),"the notebook's arrow buttons are named for a screen reader");
    context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.options.guiScale().set(2);mc.resizeGui();
     var screen=mc.gui.screen();screen.children().stream().filter(e->e instanceof net.minecraft.client.gui.components.EditBox).map(e->(net.minecraft.client.gui.components.EditBox)e).findFirst().orElseThrow().setValue("Warm breeze");});
    context.waitTicks(8);context.runOnClient(mc->mc.gui.toastManager().clear());context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("research_library_before").disableCounterPrefix());
@@ -70,5 +71,7 @@ public final class ResearchLibraryTest implements FabricClientGameTest {
   }
  }
  private static void check(boolean v,String label){if(!v)throw new AssertionError(label);}
+ /** What a screen reader says for the open screen's button labelled {@code label}. */
+ private static String spoken(net.minecraft.client.Minecraft mc,String label){var b=mc.gui.screen().children().stream().filter(e->e instanceof net.minecraft.client.gui.components.Button).map(e->(net.minecraft.client.gui.components.Button)e).filter(e->e.getMessage().getString().equals(label)).findFirst().orElseThrow();StringBuilder said=new StringBuilder();b.updateNarration((type,thunk)->thunk.getText(t->said.append(t).append(' ')));return said.toString();}
  private static void click(ClientGameTestContext c,String key){double[] point=c.computeOnClient(mc->{var b=mc.gui.screen().children().stream().filter(e->e instanceof net.minecraft.client.gui.components.Button).map(e->(net.minecraft.client.gui.components.Button)e).filter(e->e.getMessage().getString().equals(net.minecraft.network.chat.Component.translatable(key).getString())).findFirst().orElseThrow();double scale=mc.getWindow().getGuiScale();return new double[]{(b.getX()+b.getWidth()/2.0)*scale,(b.getY()+10)*scale};});c.getInput().setCursorPos(point[0],point[1]);c.waitTicks(3);c.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);c.waitTicks(5);c.getInput().releaseMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);}
 }
