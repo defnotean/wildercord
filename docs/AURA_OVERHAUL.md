@@ -78,7 +78,11 @@ and documented, not a first draft.
 | 9 | The bonded blade | done |
 | 10 | Masters, disciples, sparring and the clash | done; merged and tested |
 | 11 | The world of the sword | scoped features implemented: training, battlefields, tomb, sleeping blade, beasts, tournaments; broader verification open |
-| 12 | Mage and swordsman together | started: resonant damage strikes, rune-etched blades and Unity; final integration pending |
+| 12 | Mage and swordsman together | built: resonant damage strikes, rune-etched blades and Unity (each a first playable version); the final integration pass is still open |
+
+*Status note, 2026-10-24:* the ten methods of steps 3 and 4 have since grown to sixteen. The six later methods came in two packs
+(`MethodsA*` and `MethodsB*` in `aura/arts`), each with its five arts and awakenings; they are not separate steps here.
+Step 12's remaining work is the integration pass and its verification (restart, two real clients, balance and performance).
 
 ### 1. Sword strings: the input language
 
