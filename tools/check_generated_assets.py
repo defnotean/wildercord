@@ -3,6 +3,8 @@
 PNG compression varies across Pillow/zlib platforms. Compare decoded RGBA pixels,
 dimensions and frame count for PNGs, while JSON, recipes, sounds and other assets
 must remain byte-identical. Also reject added or removed generated paths.
+On a mismatch the changed paths are put back as committed, so the checkout stays
+clean and later checks of the same candidate can still run.
 """
 import hashlib
 import subprocess
@@ -31,6 +33,15 @@ def snapshot():
             value = hashlib.sha256(path.read_bytes()).hexdigest()
         result[path.relative_to(ROOT).as_posix()] = value
     return result
+
+
+def restore(changed, before):
+    """Put each changed path back as committed: check out what existed, delete what the generator added."""
+    for path in changed:
+        if path in before:
+            subprocess.run(["git", "checkout", "--", path], cwd=ROOT, check=True)
+        else:
+            (ROOT / path).unlink(missing_ok=True)
 
 
 def main():
