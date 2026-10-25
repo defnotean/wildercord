@@ -73,10 +73,11 @@
     ]
   },
   "area-regions-worldgen": {
-    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement, fungal nursery, reed refuge, rainshield.",
+    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield.",
     "purpose": "area",
-    "expectedCount": 8,
+    "expectedCount": 9,
     "entries": [
+      "dev.wildercord.wildlife.RootmoltEncounterTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
       "dev.wildercord.wildlife.RootmoltPlacementTest",
       "dev.wildercord.wildlife.SiltcrestEcologyTest",

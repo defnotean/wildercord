@@ -21,6 +21,7 @@
       "dev.wildercord.town.HamletStandingTest",
       "dev.wildercord.guild.GuildFoundingTest",
       "dev.wildercord.wildlife.MountBondPerksTest",
+      "dev.wildercord.wildlife.RootmoltEncounterTest",
       "dev.wildercord.gametest.WildercordMeditationTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
       "dev.wildercord.wildlife.RootmoltPlacementTest",
