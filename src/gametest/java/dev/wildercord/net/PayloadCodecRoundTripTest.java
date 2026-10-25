@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -35,6 +36,14 @@ public final class PayloadCodecRoundTripTest implements FabricClientGameTest {
 		}
 	}
 
+	/**
+	 * Payloads whose decoders reject or normalise out-of-range fields get a hand-made in-range sample; the generic
+	 * filler's values (a 64-block direction vector, say) are rightly refused.
+	 */
+	private static final Map<Class<?>, Object> VALID = Map.of(
+			FormationPayload.class, new FormationPayload(7, "orb", List.of("wildercord:flame"), List.of("fire"), 0xFF8800, 1.0F,
+					FormationPayload.AIMED, 24F, true, List.of("wildercord:flame"), new Vec3(1.5, 64.25, -3.75), new Vec3(0, 0, 1)));
+
 	private static String roundTrip(RegistryAccess registries) {
 		List<String> problems = new ArrayList<>(), skipped = new ArrayList<>();
 		int checked = 0;
@@ -42,7 +51,7 @@ public final class PayloadCodecRoundTripTest implements FabricClientGameTest {
 			StreamCodec<RegistryFriendlyByteBuf, Object> codec = codecOf(type);
 			if (codec == null) { problems.add(type.getName() + ": no static StreamCodec field"); continue; }
 			Object sample;
-			try { sample = sample(type, 0); } catch (Unsupported e) { skipped.add(type.getSimpleName() + " (" + e.getMessage() + ")"); continue; }
+			try { sample = VALID.containsKey(type) ? VALID.get(type) : sample(type, 0); } catch (Unsupported e) { skipped.add(type.getSimpleName() + " (" + e.getMessage() + ")"); continue; }
 			try {
 				var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), registries);
 				codec.encode(buf, sample);
