@@ -253,4 +253,17 @@ public final class BountyRules {
 	public static boolean ambushMayRoll(double moved, int ambushes) {
 		return moved >= AMBUSH_MOVED && ambushes < AMBUSH_MAX;
 	}
+
+	/** The road an escort is on, from where it set out and where it's bound: a llama carries it to tell one escort from the next. */
+	public static String escortRoad(int boardX, int boardZ, int destX, int destZ) {
+		return boardX + "_" + boardZ + "_" + destX + "_" + destZ;
+	}
+
+	/**
+	 * Whether a llama on road {@code llamaRoad} belongs to the hunter's current escort on {@code currentRoad} (null with none). A
+	 * llama from before roads were marked ({@code llamaRoad} null) is taken to be on it, so an escort under way keeps its llama.
+	 */
+	public static boolean sameEscort(String llamaRoad, String currentRoad) {
+		return currentRoad != null && (llamaRoad == null || llamaRoad.equals(currentRoad));
+	}
 }

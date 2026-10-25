@@ -57,6 +57,8 @@ public final class BountyEscorts {
 	}
 
 	private static final Map<UUID, Road> ROADS = new HashMap<>();
+	/** The tag naming which escort a llama was handed over for, so one left from an earlier escort is never taken for this one. */
+	private static final String ROAD_TAG = "wildercord.escort_road.";
 	/** Escort llamas loaded this tick, checked once the tick is over (a bounty being taken stores itself after its llama spawns). */
 	private static final List<Llama> LOADED = new ArrayList<>();
 
@@ -81,7 +83,8 @@ public final class BountyEscorts {
 					return;
 				}
 				ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
-				if (player == null) return;
+				// Only the llama of the escort under way loses it; one left from an earlier escort is no loss.
+				if (player == null || !(entity instanceof Llama llama) || !current(player, llama)) return;
 				ROADS.remove(owner);
 				Town.Standing standing = Town.standing(player);
 				if (standing.bounty().isPresent() && standing.bounty().get().type() == BountyRules.Kind.ESCORT) {
@@ -109,14 +112,22 @@ public final class BountyEscorts {
 				return;
 			}
 			ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
-			if (player != null && !escorting(player)) release(level, llama);
+			if (player != null && !current(player, llama)) release(level, llama);
 			return;
 		}
 	}
 
-	private static boolean escorting(ServerPlayer player) {
+	/** Whether {@code llama}, tagged as {@code player}'s, is the one for the escort they're on now. */
+	private static boolean current(ServerPlayer player, Llama llama) {
 		Optional<Town.Active> bounty = Town.standing(player).bounty();
-		return bounty.isPresent() && bounty.get().type() == BountyRules.Kind.ESCORT;
+		String road = bounty.isPresent() && bounty.get().type() == BountyRules.Kind.ESCORT ? road(bounty.get()) : null;
+		String llamaRoad = llama.entityTags().stream().filter(tag -> tag.startsWith(ROAD_TAG)).findFirst()
+			.map(tag -> tag.substring(ROAD_TAG.length())).orElse(null);
+		return BountyRules.sameEscort(llamaRoad, road);
+	}
+
+	private static String road(Town.Active bounty) {
+		return BountyRules.escortRoad(bounty.boardX(), bounty.boardZ(), bounty.destX(), bounty.destZ());
 	}
 
 	/** The traveller takes their llama back: what's in its chest falls where it stands, and it's gone. */
@@ -167,21 +178,34 @@ public final class BountyEscorts {
 		}
 		llama.setCustomName(Component.translatable("town.wildercord.pack_llama", bounty.name()).withColor(0xE8C870));
 		llama.setCustomNameVisible(true);
+		Town.Active bound = bounty.bound(destX, destZ);
 		llama.addTag(Town.ESCORT_TAG + player.getUUID());
+		llama.addTag(ROAD_TAG + road(bound));
 		level.addFreshEntity(llama);
 		llama.setLeashedTo(player, true);
 		ROADS.remove(player.getUUID());
-		return bounty.bound(destX, destZ);
+		return bound;
 	}
 
-	/** The escort's llama near {@code player}, if it's about. */
+	/** The llama of {@code player}'s escort under way near them, if it's about. */
 	public static Llama llama(ServerPlayer player) {
 		String tag = Town.ESCORT_TAG + player.getUUID();
-		List<Llama> found = player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64), l -> l.isAlive() && l.entityTags().contains(tag));
+		List<Llama> found = player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64),
+			l -> l.isAlive() && l.entityTags().contains(tag) && current(player, l));
 		return found.isEmpty() ? null : found.getFirst();
 	}
 
+	/** Llamas of {@code player}'s that belong to no escort under way (left behind out of reach) go back to their travellers. */
+	private static void sweep(ServerPlayer player) {
+		String tag = Town.ESCORT_TAG + player.getUUID();
+		for (Llama stale : player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64),
+				l -> l.isAlive() && l.entityTags().contains(tag) && !current(player, l))) {
+			release(player.level(), stale);
+		}
+	}
+
 	private static void tick(ServerPlayer player, int tickCount) {
+		if (tickCount % 100 == 0) sweep(player);
 		Town.Standing standing = Town.standing(player);
 		if (standing.bounty().isEmpty()) return;
 		Town.Active bounty = standing.bounty().get();

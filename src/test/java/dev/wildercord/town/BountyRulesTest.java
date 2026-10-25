@@ -119,4 +119,15 @@ class BountyRulesTest {
 		assertTrue(BountyRules.ambushMayRoll(6, BountyRules.AMBUSH_MAX - 1));
 		assertFalse(BountyRules.ambushMayRoll(6, BountyRules.AMBUSH_MAX));
 	}
+
+	@Test
+	void aLlamaBelongsOnlyToTheEscortItWasHandedOverFor() {
+		String road = BountyRules.escortRoad(10, -4, 170, 30);
+		assertEquals(road, BountyRules.escortRoad(10, -4, 170, 30));
+		assertTrue(BountyRules.sameEscort(road, road));
+		assertFalse(BountyRules.sameEscort(BountyRules.escortRoad(10, -4, -150, 90), road), "a llama from an earlier escort is not this one's");
+		assertFalse(BountyRules.sameEscort(road, null), "with no escort under way, no llama is the hunter's");
+		assertTrue(BountyRules.sameEscort(null, road), "a llama from before roads were marked keeps its escort");
+		assertFalse(BountyRules.sameEscort(null, null));
+	}
 }
