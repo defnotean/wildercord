@@ -15,6 +15,7 @@
       "dev.wildercord.client.fx.ScreenEffectSettingTest",
       "dev.wildercord.client.fx.SafeTelegraphsTest",
       "dev.wildercord.gametest.LifeJournalTest",
+      "dev.wildercord.loadout.LoadoutsTest",
       "dev.wildercord.gametest.WildercordMeditationTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
       "dev.wildercord.wildlife.RootmoltPlacementTest",
