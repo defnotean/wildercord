@@ -1,7 +1,8 @@
 # VPS testing
 
-> **Current policy (2026-10-15).** Native tests are only `release-smoke` (14 classes), run once
-> when a release is about to be cut:
+> **Policy.** During the 2026-10-24 polish loop, client tests run as the per-area suites in
+> `tools/client_suite_catalog.json` after each batch. `release-smoke` (16 classes, including a first ride after
+> taming and every payload codec) stays the check run once when a release is about to be cut:
 > `python tools/run_vps_checks.py suite --suite release-smoke --head <sha> --computer WIN-I2GBVRRD872 --batch 1 --accepted-eula C:\wildercord\eula.txt`.
 > Shard, Masters-part and articulated commands below no longer exist. Delete the VPS CI
 > checkout, artifacts and backups after each run (disk filled up 2026-10-15). Never touch the
