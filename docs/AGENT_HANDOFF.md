@@ -76,8 +76,8 @@ and the historical off-thread attachment save race.
   Belowkeepers and named people. Do not rewrite their identities casually.
 - [VPS testing](testing/vps.md): owned execution, source provenance, interrupted
   processes, evidence and complete-group commands.
-- [Full client plan](FULL_CLIENT_SHARD_PLAN.md): exact class membership, order,
-  source hashes and the distinction between focused and complete acceptance.
+- [Full client plan](archive/FULL_CLIENT_SHARD_PLAN.md) (retired): the old 349-class gate's membership
+  and order. Native tests now run as the per-area suites in `tools/client_suite_catalog.json`.
 - [Pause receipt](audit/evidence/2026-10-13-paused-vps-run.json): durable summary of
   the intentionally interrupted native run and its class-return boundaries.
 

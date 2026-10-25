@@ -22,9 +22,8 @@ cd wildercord
 In IntelliJ, open the folder as a Gradle project; Loom sets up run configurations for the client
 and server.
 The owned project runner runs on the isolated Windows VPS. See [VPS setup and
-commands](docs/testing/vps.md). Full/sharded Gradle plan selection uses a portable
-bounded configuration reader; [the explicit plan contract](docs/FULL_CLIENT_SHARD_PLAN.md)
-still governs its coverage. GitHub Actions remains disabled.
+commands](docs/testing/vps.md). Client tests run as the per-area suites in
+`tools/client_suite_catalog.json`. GitHub Actions remains disabled.
 
 ## Where things live
 

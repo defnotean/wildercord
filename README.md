@@ -295,10 +295,10 @@ Commands (operators, permission level 2):
 
 Requirements: **JDK 25** and Python 3.11+. **Pillow and NumPy** are used for generated art and image checks (`tools/requirements.txt`).
 Gradle comes with the wrapper.
-Full/sharded client test resources and launch preflight also require Python on PATH
+Client test resources and launch preflight also require Python on PATH
 as `python3` on macOS/Linux or `python` on Windows. Project checks run in the isolated
-Windows VPS checkout through [the owned VPS runner](docs/testing/vps.md). See
-[the explicit full-client plan](docs/FULL_CLIENT_SHARD_PLAN.md) for its fail-closed contract.
+Windows VPS checkout through [the owned VPS runner](docs/testing/vps.md); client tests are
+grouped into the per-area suites in `tools/client_suite_catalog.json`.
 
 ```bash
 git clone https://github.com/defnotean/wildercord.git

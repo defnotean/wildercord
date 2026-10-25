@@ -54,7 +54,7 @@ work "paused" or "unmerged" describe that earlier snapshot.
 3. [World-depth audit and roadmap](docs/audit/2026-10-13-world-depth.md) — findings,
    priorities and dated evidence; early sections describe the original baseline.
 4. [VPS testing](docs/testing/vps.md) and `tools/client_suite_catalog.json` (the native
-   suites). `FULL_CLIENT_SHARD_PLAN.md` describes the retired 349-class gate; do not follow it.
+   suites). `docs/archive/FULL_CLIENT_SHARD_PLAN.md` describes the retired 349-class gate; do not follow it.
 5. [Architecture](docs/ARCHITECTURE.md), [lore canon](docs/LORE_CANON.md),
    [design](docs/DESIGN.md), and [contributing](CONTRIBUTING.md) for the area being changed.
 
