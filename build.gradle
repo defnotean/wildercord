@@ -1,6 +1,5 @@
 plugins {
 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
-	id 'maven-publish'
 }
 
 // `-PaltBuild` uses build-alt/. Finish/stop every dev client before switching output folders:
@@ -50,20 +49,11 @@ fabricApi {
 		modId = "wildercord-gametest"
 		enableGameTests = false
 		enableClientGameTests = true
-		// Owner-approved Minecraft EULA acceptance applies only to the explicitly opted-in disposable CI runs.
-		// Loom writes clientGameTest/eula.txt after clearing that run directory. Locally, an owner who has accepted the
-		// EULA opts in with wildercord.eulaAccepted=true in their own ~/.gradle/gradle.properties (never committed).
-		eula = (System.getenv('GITHUB_ACTIONS') == 'true' && System.getenv('CI_MINECRAFT_EULA_ACCEPTED') == 'true') 			|| providers.gradleProperty('wildercord.eulaAccepted').getOrElse('false') == 'true'
+		// Loom writes clientGameTest/eula.txt after clearing that run directory. Only an owner who has accepted the
+		// Minecraft EULA opts in: -Pwildercord.eulaAccepted=true (the VPS runner passes it), or the same property in
+		// their own ~/.gradle/gradle.properties (never committed).
+		eula = providers.gradleProperty('wildercord.eulaAccepted').getOrElse('false') == 'true'
 	}
-}
-
-// A real OpenAL mixer without a physical device keeps sound-listener assertions valid in Linux CI.
-// This applies only to client game tests; an explicitly supplied backend remains authoritative.
-tasks.named('runClientGameTest') {
- if (System.getProperty('os.name').toLowerCase(java.util.Locale.ROOT).contains('linux')
-   && System.getenv('ALSOFT_DRIVERS') == null) {
-  environment 'ALSOFT_DRIVERS', 'null'
- }
 }
 
 dependencies {
@@ -254,14 +244,6 @@ java {
 // Carry the project's redistribution notice in the runtime and sources JARs.
 tasks.withType(Jar).configureEach {
 	from('LICENSE')
-}
-
-publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			from components.java
-		}
-	}
 }
 
 // Runtime registry inventory for the full presentation audit; never a substitute for native review.
