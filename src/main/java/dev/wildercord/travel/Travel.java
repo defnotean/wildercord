@@ -120,6 +120,11 @@ public final class Travel {
 		return label.copy().withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand(command)).withHoverEvent(new HoverEvent.ShowText(hover)));
 	}
 
+	/** {@code label}, putting {@code command} in the chat box when clicked (to finish, or to confirm with Enter). */
+	static MutableComponent suggest(Component label, String command, Component hover) {
+		return label.copy().withStyle(style -> style.withClickEvent(new ClickEvent.SuggestCommand(command)).withHoverEvent(new HoverEvent.ShowText(hover)));
+	}
+
 	/** Names laid out in a row, each a button: "home, base, mine". */
 	static MutableComponent row(Iterable<MutableComponent> buttons) {
 		MutableComponent line = Component.empty();

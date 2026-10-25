@@ -39,6 +39,16 @@ class TravelRulesTest {
 	}
 
 	@Test
+	void aHomeCanBeRenamedToAFreeName() {
+		assertEquals(TravelRules.RenameCheck.OK, TravelRules.renameHome(Set.of("a", "b"), "a", "c"));
+		assertEquals(TravelRules.RenameCheck.MISSING, TravelRules.renameHome(Set.of("a", "b"), "x", "c"));
+		assertEquals(TravelRules.RenameCheck.SAME, TravelRules.renameHome(Set.of("a", "b"), "a", "a"));
+		assertEquals(TravelRules.RenameCheck.TAKEN, TravelRules.renameHome(Set.of("a", "b"), "a", "b"));
+		// Renaming never adds a home, so it works at the limit.
+		assertEquals(TravelRules.RenameCheck.OK, TravelRules.renameHome(Set.of("a", "b", "c"), "c", "home"));
+	}
+
+	@Test
 	void theUsualHomeIsHomeOrTheOnlyOne() {
 		assertEquals("home", TravelRules.defaultHome(Set.of("home", "base")));
 		assertEquals("base", TravelRules.defaultHome(Set.of("base")));

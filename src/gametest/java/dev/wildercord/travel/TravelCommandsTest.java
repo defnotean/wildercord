@@ -118,6 +118,32 @@ public final class TravelCommandsTest implements FabricClientGameTest {
 				check(Warps.go(p(s), "plaza", true) == 0, "/warp to a removed warp fails");
 				Teleports.resetCooldowns(p(s));
 			});
+
+			// Managing homes through the typed commands: renaming keeps the spot, refuses a name in use, and
+			// /homes remove forgets one. Then /homes itself, with its rename and remove buttons, on screen.
+			check(Travel.config().maxHomes() >= 3, "the test expects room for three homes");
+			var spot = w.getServer().computeOnServer(s -> Travel.data(p(s)).homes().get("spare1"));
+			c.runOnClient(mc -> mc.player.connection.sendCommand("homes rename spare1 Mine"));
+			c.waitTicks(5);
+			w.getServer().runOnServer(s -> {
+				var homes = Travel.data(p(s)).homes();
+				check(!homes.containsKey("spare1") && spot.equals(homes.get("mine")), "/homes rename moves the name, not the home: " + homes.keySet());
+			});
+			c.runOnClient(mc -> mc.player.connection.sendCommand("renamehome mine spare2"));
+			c.runOnClient(mc -> mc.player.connection.sendCommand("renamehome nowhere elsewhere"));
+			c.runOnClient(mc -> mc.player.connection.sendCommand("renamehome mine bad.name"));
+			c.waitTicks(5);
+			w.getServer().runOnServer(s -> {
+				var homes = Travel.data(p(s)).homes();
+				check(spot.equals(homes.get("mine")) && homes.containsKey("spare2"), "a taken name, a missing home and a bad name change nothing: " + homes.keySet());
+				check(Homes.rename(p(s), "mine", "mine") == 0, "renaming a home to its own name does nothing");
+			});
+			c.runOnClient(mc -> mc.player.connection.sendCommand("homes remove spare2"));
+			c.waitTicks(5);
+			check(w.getServer().computeOnServer(s -> !Travel.data(p(s)).homes().containsKey("spare2")), "/homes remove forgets it");
+			c.runOnClient(mc -> mc.player.connection.sendCommand("homes"));
+			c.waitTicks(10);
+			c.takeScreenshot(TestScreenshotOptions.of("travel_homes_manager").withSize(854, 480));
 		}
 	}
 }

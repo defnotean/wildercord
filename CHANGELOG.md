@@ -12,6 +12,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Weaver's Silk can be put away and taken out again with `G` (rebindable) or `/silk`, so it stops catching you on walls while you jump around. The choice is kept through death and relogs.
 - Coffer mimics can be tamed with books (1 in 3 per book). A tamed mimic never bites its owner, follows them, shuts up as a coffer beside them when they stop and turns up beside them when left far behind. Its owner can open it as a 27-slot chest that only they can use, pet it by sneaking with an empty hand, and tell it to stay or follow by sneaking while holding something. A plain book heals its owner's mimic while it is hurt; any other book, or one at full health, opens it, so books can be stored in it. It spills what it holds if it dies. See the new Coffer Mimics guide page.
 - Thistle hedgehogs can be tamed with sweet berries (1 in 3 per handful). A tame hedgehog follows its owner, sits when told, never curls up at them, heals on berries and brings them a forage find every few minutes. A tame pair's hoglet belongs to the same owner.
+- Homes can be renamed with `/renamehome <name> <new name>`; the home stays where it is. `/homes` now lists one home per line with **[Rename]** and **[Remove]** buttons beside it (Remove waits for Enter, so a stray click deletes nothing), and takes `rename` and `remove` too. A full home list now points to `/homes`.
 
 ### Changed
 
@@ -21,8 +22,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ### Fixed
 - Weaver's Silk's wall grip runs out after six seconds off the ground again after a relog or respawn; before, it could hold you to a wall indefinitely.
 - Closing a world in single player now also forgets the spirit wolf packs and Weaver's Silk's landing marks, so a world opened afterwards starts clean.
-- Riding a mount for the first time after taming it no longer crashes the server.
 - Wayline's "hold forward to take the line" hint now comes from the lang file, so a translation can change it.
+- Riding a mount for the first time after taming it no longer crashes the server.
 - The Gravekeeper, Ashen Stag, Frost Wyrmling, Hollow Matron and Mojito no longer snap back to the start of a move they use twice in a row; they blend out of the last swing as they do between different moves. All seven animated bosses' blends no longer build new poses every frame.
 - Less per-frame and per-tick work: the cord, cord-bead, Master, Runebound and spell-circle renderers reuse their texture names instead of rebuilding them every frame, and Cinnamon's recall check looks around its owner instead of across the whole dimension.
 - The `<` and `>` page buttons in the rune catalogue and the spell notebook now show "Previous Page"/"Next Page" on hover and say so to a screen reader, instead of reading out a bare arrow.

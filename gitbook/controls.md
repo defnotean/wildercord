@@ -113,7 +113,7 @@ The screen doesn't pause the game. Full details on [The Cord Screen](spellcraft/
 | `/loadout save`, `load`, `delete`, `list` | Manage [loadouts](spellcraft/loadouts.md) |
 | `/runelab practice enter` / `leave` | Enter or leave the [practice arena](progression/practice.md) |
 | `/runelab research`, `notebook`, `trial`, `familiar`, `builds` | [Research](progression/research.md) and saved builds |
-| `/sethome`, `/home`, `/delhome`, `/homes`, `/warp`, `/warps`, `/spawn`, `/rtp`, `/back` | Travel. See [Getting Around](social/travel.md) |
+| `/sethome`, `/home`, `/renamehome`, `/delhome`, `/homes`, `/warp`, `/warps`, `/spawn`, `/rtp`, `/back` | Travel. See [Getting Around](social/travel.md) |
 | `/tpa`, `/tpahere`, `/tpaccept`, `/tpdeny`, `/tpcancel`, `/tptoggle` | Teleport requests |
 | `/waypoint add`, `remove`, `list`, `track`, `untrack`, `share` | Waypoints |
 

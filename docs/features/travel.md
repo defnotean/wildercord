@@ -8,7 +8,7 @@ player guide is [wiki/social/travel.md](../../wiki/social/travel.md).
 
 | Command | Who | Handler |
 |---|---|---|
-| `/sethome [name]`, `/home [name]`, `/delhome <name>`, `/homes` | everyone | `Homes` |
+| `/sethome [name]`, `/home [name]`, `/renamehome <name> <new name>`, `/delhome <name>`, `/homes [list | rename | remove]` | everyone | `Homes` |
 | `/warp <name>`, `/warps` (and `/warp` alone) | everyone | `Warps` |
 | `/setwarp <name>`, `/delwarp <name>` | operators | `Warps` |
 | `/waypoint add <name> [pos] [dimension]`, `remove`, `list`, `track`, `untrack`, `share <name> <player>` | everyone | `Waypoints` |

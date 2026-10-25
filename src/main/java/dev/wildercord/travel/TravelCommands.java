@@ -41,6 +41,7 @@ public final class TravelCommands {
 	private TravelCommands() {}
 
 	private static final String NAME = "name";
+	private static final String NEW_NAME = "new_name";
 
 	static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		if (!Travel.enabled()) {
@@ -54,7 +55,15 @@ public final class TravelCommands {
 			.then(argument(NAME, StringArgumentType.word()).suggests(HOMES).executes(ctx -> Homes.go(player(ctx), name(ctx), operator(ctx)))));
 		dispatcher.register(literal("delhome")
 			.then(argument(NAME, StringArgumentType.word()).suggests(HOMES).executes(ctx -> Homes.delete(player(ctx), name(ctx)))));
-		dispatcher.register(literal("homes").executes(ctx -> Homes.list(player(ctx))));
+		dispatcher.register(literal("renamehome")
+			.then(argument(NAME, StringArgumentType.word()).suggests(HOMES)
+				.then(argument(NEW_NAME, StringArgumentType.word()).executes(ctx -> Homes.rename(player(ctx), name(ctx), newName(ctx))))));
+		dispatcher.register(literal("homes")
+			.executes(ctx -> Homes.list(player(ctx)))
+			.then(literal("list").executes(ctx -> Homes.list(player(ctx))))
+			.then(literal("rename").then(argument(NAME, StringArgumentType.word()).suggests(HOMES)
+				.then(argument(NEW_NAME, StringArgumentType.word()).executes(ctx -> Homes.rename(player(ctx), name(ctx), newName(ctx))))))
+			.then(literal("remove").then(argument(NAME, StringArgumentType.word()).suggests(HOMES).executes(ctx -> Homes.delete(player(ctx), name(ctx))))));
 
 		dispatcher.register(literal("warp")
 			.executes(ctx -> Warps.list(player(ctx)))
@@ -159,6 +168,10 @@ public final class TravelCommands {
 
 	private static String name(CommandContext<CommandSourceStack> ctx) {
 		return StringArgumentType.getString(ctx, NAME);
+	}
+
+	private static String newName(CommandContext<CommandSourceStack> ctx) {
+		return StringArgumentType.getString(ctx, NEW_NAME);
 	}
 
 	/** Suggests names from the player running the command (none from the console). */
