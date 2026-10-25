@@ -30,6 +30,7 @@
       "dev.wildercord.town.InnRaidDimensionTest",
       "dev.wildercord.town.SessionMapsClearTest",
       "dev.wildercord.net.PayloadCodecRoundTripTest",
+      "dev.wildercord.travel.TravelCommandsTest",
       "dev.wildercord.aura.world.CooldownRestartTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
