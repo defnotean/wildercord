@@ -80,6 +80,12 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor each have a three phase boss. The Rootbound Maze in swamps and Storm Spire on peaks add custom bosses, guarded side caches, sealed vaults and reusable relics. Clockwork Crypt, Living Greenhouse and Moving Sky Ruin each add three layouts and a distinct handling relic. See [docs/features/dungeons.md](docs/features/dungeons.md). |
 | **World events** | Mana storms over the ley lines (faster mana, cheaper spells, wild surges), fallen stars that leave a guarded crater, and rift sieges that end with the Riftcaller. See [docs/features/world-events.md](docs/features/world-events.md). |
 | **Luminous Reedlands** | A custom wetland region with natural Moonreed, stilted survey houses and resident Reedkeepers. Their remembered stories lead through the Drowned Road's coastal ledger and working lighthouse to the optional Reed-Crowned Ferryman at the Last Crossing. Three marked attacks, dry escape paths and a return compass connect its encounter to river exploration. See the [regional guide](wiki/world/luminous-reedlands.md) and [Ferryman guide](wiki/world/reed-crowned-ferryman.md). |
+| **Three more regions** | The windswept [Windscar Highlands](wiki/world/windscar-highlands.md) with the Cairn Lodge and the Glass Cartographer, the underground [Belowkeeper Hollows](wiki/world/belowkeeper-hollows.md) with a Listening Station and the Hollow Bell, and the burnt [Emberwood Reach](wiki/world/emberwood-reach.md) with a Charcoal Yard and the Kiln Widow. Each has its own biome, building, resident, lore route and optional boss. |
+| **Towns and work** | A Wayfarer Inn bounty board with gathering, hunting, escort and delivery jobs, inn raids and rooms, hamlets on the road and wandering caravans that buy regional goods. See [contracts](wiki/social/contracts.md). |
+| **Mounts and bonds** | The Ridgeback Stag, plus flying, water and burrowing mounts that grow closer to the rider who keeps them. See [mount bonds](wiki/world/mount-bonds.md). |
+| **Guilds, covens and the arena** | Found a guild or coven with friends, share co-op tribulations, and settle things in a spell-duel [arena](wiki/social/arena.md). See [guilds](wiki/social/guilds.md). |
+| **Aura and the Sword Masters** | A swordsman's path beside the Cord: sixteen breathing methods, each with its own arts, momentum, stances and an awakening, and sixteen Sword Masters whose named techniques you learn to read. See [Aura](wiki/progression/aura.md). |
+| **Further to climb** | Heart Paths, Circle Vows, Ascension past the Twentieth Circle, a codex bestiary and a [stats page](wiki/progression/stats.md). |
 | **Magic that changes the world** | Fire lights the grass and boils water into blinding steam, frost freezes a pond you can walk on, storm arcs through water to everyone in it, wind knocks arrows back, earth heaves the ground and life makes flowers bloom. Real temporary walls, borrowed water attacks and wind stepping stones add terrain interactions. See [physical magic](docs/features/physical-magic.md) and [world magic](docs/features/world-magic.md). |
 | **The Fusion Altar** | Three of a rune make its next rank, any two elemental effects fuse into one of 55 fused runes (every pair of elements, and each element with itself) or, for forty particular pairs, a **signature fusion** of their own, and a Blank Rune and string tie a whole spell into one **Knot** that takes a single socket. Amethyst blocks weave up to eight exact elemental effects, including the owner’s imprinted innate at Tier IV. See [docs/features/fusion-altar.md](docs/features/fusion-altar.md). |
 | **Familiars** | Wisps of light rise from the ley lines at night. Tame one with its own element and it floats at your shoulder, quickens your mana, casts a little spell of its own and levels up as you fight together. Dress your Cord in beads and glow colours on the Cosmetics page. See [docs/features/familiars-and-cosmetics.md](docs/features/familiars-and-cosmetics.md). |
@@ -132,7 +138,7 @@ with every rune's numbers, is in [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Screenshots
 
-### New in 0.4: a fused rune for every pair of elements
+### A fused rune for every pair of elements
 
 | Singularity (Void + Void): a black hole that bursts | Stormclock (Storm + Time): lightning on the hour |
 |---|---|
@@ -140,7 +146,7 @@ with every rune's numbers, is in [docs/DESIGN.md](docs/DESIGN.md).
 | Riftbolt (Storm + Void): a black bolt that tears its target away | Cryostasis (Frost + Time): an ally sealed safe in ice |
 | <img src="docs/images/fused-riftbolt.jpg" alt="A black bolt with a violet core striking a husk, jagged cracks torn in the air at both ends" width="420"> | <img src="docs/images/fused-cryostasis.jpg" alt="A clear cocoon of ice standing over the caster, a tamed wolf beside it" width="420"> |
 
-### New in 0.3
+### Imbuing, glyphs and more
 
 | The Ember Sanctum: a reaction cracks the Cinder Warden's plates | The Astral Observatory: the Star-Eater throws a spell back |
 |---|---|

@@ -8,7 +8,20 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 **[Read the player guide](https://defnotean.github.io/wildercord/) · [Browse the changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md) · [Report an issue](https://github.com/defnotean/wildercord/issues)**
 
-## New in 0.12.0: Tempering
+## New in 0.13.0: Living world
+
+Four new regions, each with its own biome, a building, a resident, a lore route in your journal and an optional boss.
+
+- **Luminous Reedlands:** pale banks and Moonreed pools, the Tideward Reedkeeper Landing, the Drowned Road and the **Reed-Crowned Ferryman** at the Last Crossing.
+- **Windscar Highlands:** the Cairn Lodge and its keeper, the Paired Cairns and the **Glass Cartographer**.
+- **Belowkeeper Hollows:** a Listening Station, its Listener, the Empty Bell route and the **Hollow Bell**.
+- **Emberwood Reach:** a Charcoal Yard, its Kiln Keeper, the Eleven Winters route and the **Kiln Widow**.
+- **A busier world:** wider bounties and escort jobs, inn raids and rooms, hamlets and wandering caravans, flying, water and burrowing mounts, guilds and covens, co-op tribulations and a spell-duel arena.
+- **Further to climb:** ritual spells and flawed runes, Ascension past the Twentieth Circle, a codex bestiary and a stats page.
+
+0.12.x clients must update before joining, and the new regions need newly generated chunks. [Read the full 0.13.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.13.0-alpha).
+
+## Earlier in 0.12.0: Tempering
 
 Players had become gods. 0.12 rebalances power, makes the climb a real one, and makes the world push back.
 
@@ -108,11 +121,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.12.0-alpha
+## Install 0.13.0-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client: a 0.12.0 server needs 0.12.0 players. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.13.0 server needs 0.13.0 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 
