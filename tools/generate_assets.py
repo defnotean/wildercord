@@ -781,6 +781,7 @@ def write_lang(runes):
         "message.wildercord.soar_soaring_ally": "%s is already soaring",
         "message.wildercord.soar_resting": "Your wings need rest: %s s",
         "message.wildercord.soar_resting_ally": "%s's wings need rest: %s s",
+        "message.wildercord.wayline_hold": "Hold forward to take the line; crouch to release.",
         "entity.wildercord.shadow_hound": "Shadow Hound",
         "modmenu.descriptionTranslation.wildercord": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key.",
     }
