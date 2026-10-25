@@ -9,7 +9,6 @@ import re
 import uuid
 
 import client_suites as suites
-import full_client_ci as full
 from vps_identity import make_identity
 
 PREFIX = "WILDERCORD_VPS_NATIVE "
@@ -22,16 +21,16 @@ def suites_available(catalog=suites.CATALOG):
     return tuple(name for name, group in groups.items() if group.get("purpose", "release") in PURPOSES)
 
 
-def prepare(*, head, computer, batch, attempt, launch, environment, suite=None, shard=None):
-    if shard is not None or suite not in suites_available():
+def prepare(*, head, computer, batch, attempt, launch, environment, suite=None):
+    if suite not in suites_available():
         raise ValueError("Select one complete catalog suite: " + ", ".join(suites_available()))
-    selection = suites.select_entries(suite=suite, shard=shard)
+    selection = suites.select_entries(suite=suite)
     if str(uuid.UUID(launch)) != launch:
         raise ValueError("VPS launch must own a canonical UUID")
     identity = make_identity(head, computer, batch, attempt,
         "smoke-native")
     child = dict(environment)
-    child[full.LAUNCH_ENV] = launch
+    child[suites.LAUNCH_ENV] = launch
     profile = None
     flags = ["-PciSuite=" + suite]
     proof, prefix = {"schemaVersion": 1, **identity, "launchId": launch,
@@ -44,17 +43,17 @@ def prepare(*, head, computer, batch, attempt, launch, environment, suite=None, 
 
 
 def exit_markers(plan, code):
-    return [suites.EXIT_PREFIX + str(code), full.OWNED_EXIT_PREFIX + json.dumps(
+    return [suites.EXIT_PREFIX + str(code), suites.OWNED_EXIT_PREFIX + json.dumps(
         {"launchId": plan["launch"], "exitCode": code}, sort_keys=True)]
 
 
 def group_boundaries(log, plan):
-    """Every non-shard class must finish inside this one owned invocation."""
+    """Every selected class must finish inside this one owned invocation."""
     selection, launch = plan["selection"], plan["launch"]
     issues = []
     expected_markers = [(suites.SELECTION_PREFIX, selection), (plan["prefix"], plan["proof"]),
                         (suites.DESCRIPTOR_PREFIX, selection),
-                        (full.OWNED_EXIT_PREFIX, {"launchId": launch, "exitCode": 0})]
+                        (suites.OWNED_EXIT_PREFIX, {"launchId": launch, "exitCode": 0})]
     prefixes = [prefix for prefix, _ in expected_markers] + [suites.EXIT_PREFIX]
     for prefix, value in expected_markers:
         markers = [line[len(prefix):] for line in log.splitlines() if line.startswith(prefix)]
@@ -79,10 +78,10 @@ def group_boundaries(log, plan):
         if re.fullmatch(r"BUILD SUCCESSFUL(?: in .+)?", line):
             boundaries.append("build")
     expected = [prefix for prefix, _ in expected_markers[:3]] + ["scene"] * (selection["count"] * 4)
-    expected += ["build", suites.EXIT_PREFIX, full.OWNED_EXIT_PREFIX]
+    expected += ["build", suites.EXIT_PREFIX, suites.OWNED_EXIT_PREFIX]
     if boundaries != expected:
         issues.append("VPS group lacks ordered complete owned launch/lifecycle/exit boundaries")
-    if "[TEST SKIP]" in log or "BUILD FAILED" in log or suites.REQUEST_PREFIX in log or full.PROVENANCE_PREFIX in log:
+    if "[TEST SKIP]" in log or "BUILD FAILED" in log or suites.REQUEST_PREFIX in log or suites.PROVENANCE_PREFIX in log:
         issues.append("Failed, skipped or borrowed evidence cannot pass the VPS group")
     return issues
 

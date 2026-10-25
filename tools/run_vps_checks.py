@@ -20,14 +20,25 @@ import time
 import uuid
 import xml.etree.ElementTree as ET
 
-from client_suites import DESCRIPTOR, ROOT, _whole_class_completion, scene_marker
-from client_shard_plan import read_json
+from client_suites import DESCRIPTOR, ROOT, _whole_class_completion, read_json, scene_marker
 from native.launch_two_clients import supervisor_lock
-from run_client_ci import BackendFailures
 from native_evidence import read_text as read_completed_log
 import vps_native
 
 MAX_LOG = 32 * 1024 * 1024
+
+
+class BackendFailures:
+    """Watches the native log; a client with neither graphics backend can never pass."""
+
+    def __init__(self):
+        self.failed = set()
+
+    def observe(self, line):
+        for backend in ("OpenGL", "Vulkan"):
+            if f"Failed to create backend {backend}" in line:
+                self.failed.add(backend)
+        return len(self.failed) == 2
 JOB_HANDLE = None
 
 
@@ -185,12 +196,11 @@ def invoke(command, log, environment, deadline, *, plan=None):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("build", "focused", "suite", "shard"))
+    parser.add_argument("mode", choices=("build", "focused", "suite"))
     parser.add_argument("--head", required=True)
     parser.add_argument("--computer", required=True, help="Expected VPS COMPUTERNAME")
     parser.add_argument("--suite", help="Registered class in focused mode; complete catalog group in suite mode")
-    parser.add_argument("--shard", help="One pinned full-client group: 1/4, 2/4, 3/4 or 4/4")
-    parser.add_argument("--batch", help="Positive batch ID shared by parts/shards of this exact candidate")
+    parser.add_argument("--batch", help="Positive batch ID shared by the parts of this exact candidate")
     parser.add_argument("--attempt", default="1", help="Positive batch attempt, shared by all its parts")
     parser.add_argument("--accepted-eula", type=Path, help="Previously accepted server EULA file")
     parser.add_argument("--timeout", type=int, default=3600, help="Total seconds; maximum 10800")
@@ -207,17 +217,15 @@ def main(argv=None):
         parser.error("Inherited test filters or JVM injections are not accepted: " + ", ".join(sorted(overrides)))
     plan = None
     launch = str(uuid.uuid4())
-    if options.mode in ("suite", "shard"):
-        if (options.mode == "suite" and options.shard) or (options.mode == "shard" and options.suite):
-            parser.error("Suite and shard modes require their matching selector")
+    if options.mode == "suite":
         try:
             plan = vps_native.prepare(head=options.head, computer=options.computer, batch=options.batch,
                 attempt=options.attempt, launch=launch, environment=os.environ,
-                suite=options.suite, shard=options.shard)
+                suite=options.suite)
         except (ValueError, KeyError, TypeError) as error:
             parser.error(str(error))
-    elif options.shard or options.batch or options.attempt != "1":
-        parser.error("Batch/shard selectors apply only to suite or shard modes")
+    elif options.batch or options.attempt != "1":
+        parser.error("Batch selectors apply only to suite mode")
     if options.mode == "focused":
         if options.suite not in read_json(DESCRIPTOR)["entrypoints"]["fabric-client-gametest"]:
             parser.error("Focused suite must name one registered client class")

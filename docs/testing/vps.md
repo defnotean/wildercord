@@ -101,15 +101,9 @@ must equal the candidate source SHA. No GitHub environment is synthesized.
 Every class must complete in this launch's ordered boundaries, with a distinct
 launch nonce, matching processed descriptor and actual successful child exit.
 
-The existing `full_client_ci.py` and `masters_required_ci.py` aggregate commands
-accept `--executor windows-vps --computer WIN-I2GBVRRD872`. Supply the exact
-candidate as both `--head-sha` and `--workflow-sha`, the common `--run-id` batch
-and `--run-attempt`, and every retained manifest. The full aggregate additionally
-requires `--shards-result success --download-result success`; on the VPS these
-mean every required run succeeded and every retained input was retrieved, not
-that anything was uploaded to GitHub. Mixed providers, computers, candidates,
-batches, attempts, missing/duplicate groups and reused launches cannot pass.
-One group by itself still leaves full-client acceptance unverified.
+The full-client shard aggregate (`full_client_ci.py`) and its four-group plan were
+removed on 2026-10-24 with the retired 349-class gate. A suite run proves only the
+classes in that suite; it is not full-client acceptance.
 
 ## Acceptance still requiring execution or migration
 

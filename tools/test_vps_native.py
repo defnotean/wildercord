@@ -9,7 +9,6 @@ import uuid
 import json
 
 import client_suites as suites
-import full_client_ci as full
 import run_vps_checks as runner
 import vps_native as native
 from native_ci_diagnostics import SCENE_PREFIX
@@ -48,7 +47,7 @@ class VpsNativeTests(unittest.TestCase):
         good = log_for(p)
         lines = good.splitlines()
         required = [suites.SELECTION_PREFIX, p["prefix"], suites.DESCRIPTOR_PREFIX,
-                    SCENE_PREFIX, "BUILD SUCCESSFUL", suites.EXIT_PREFIX, full.OWNED_EXIT_PREFIX]
+                    SCENE_PREFIX, "BUILD SUCCESSFUL", suites.EXIT_PREFIX, suites.OWNED_EXIT_PREFIX]
         samples = [good + "[TEST SKIP] required class\n", good + "BUILD FAILED\n",
                    good.replace(p["launch"], str(uuid.uuid4())), "BUILD SUCCESSFUL\n",
                    good.replace('"phase": "cleanup"', '"phase": "thrown"', 1),
@@ -65,7 +64,7 @@ class VpsNativeTests(unittest.TestCase):
                 self.assertEqual(result["counts"]["passed"], 0)
 
     def test_only_the_smoke_selector_and_positive_batch_identity(self):
-        for selectors in ({}, {"suite": "masters"}, {"shard": "1/4"}, {"suite": "release-smoke", "shard": "1/4"}):
+        for selectors in ({}, {"suite": "masters"}, {"suite": "no-such-suite"}):
             with self.assertRaises((ValueError, KeyError)):
                 plan(**selectors)
         for computer, batch, attempt in (("", BATCH, "1"), ("bad/name", BATCH, "1"),

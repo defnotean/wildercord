@@ -88,19 +88,15 @@ processResources {
 	}
 }
 
-def clientCiContract = new GroovyClassLoader(getClass().classLoader).parseClass(file('tools/ClientCiContract.groovy'))
 // jdeps must read Java 25 class files, so take it from the build's own toolchain.
 def affectedJdeps = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(targetJavaVersion) }
 	.map { it.metadata.installationPath.file(System.getProperty('os.name').toLowerCase(Locale.ROOT).startsWith('windows') ? 'bin/jdeps.exe' : 'bin/jdeps') }
 
 // Client game tests: the descriptor lists the release-smoke classes and the per-area suites' classes; -PciSuite picks one group.
 tasks.named('processGametestResources') {
-    inputs.file('tools/ClientCiContract.groovy')
-    inputs.file('tools/client_shard_plan.py')
-    inputs.file('tools/client_shard_plan.json')
 	inputs.file('tools/client_suite_catalog.json')
 	// Presence matters too: an empty -PciSuite is invalid, not the absent/full selector.
-	inputs.property('selectorPresence', ['ciSuite', 'focusedSuite', 'affectedSince', 'ciShard', 'ciShards'].findAll { project.hasProperty(it) })
+	inputs.property('selectorPresence', ['ciSuite', 'focusedSuite', 'affectedSince'].findAll { project.hasProperty(it) })
 	inputs.property('ciSuite', project.findProperty('ciSuite') ?: '')
 	inputs.property('affectedSince', project.findProperty('affectedSince') ?: '')
 	// Impact selection reads compiled classes and the git working tree, so it always reruns.
@@ -109,26 +105,10 @@ tasks.named('processGametestResources') {
 		outputs.upToDateWhen { false }
 	}
 	inputs.property('focusedSuite', project.findProperty('focusedSuite') ?: '')
-	inputs.property('ciShard', project.findProperty('ciShard') ?: '')
-	inputs.property('ciShards', project.findProperty('ciShards') ?: '')
 	doLast {
-        def originalDescriptor = new groovy.json.JsonSlurper().parse(file("${destinationDir}/fabric.mod.json"))
-        def fullEntries = originalDescriptor.entrypoints['fabric-client-gametest']
-		def selectors = ['ciSuite', 'ciShard', 'focusedSuite', 'affectedSince']
+		def selectors = ['ciSuite', 'focusedSuite', 'affectedSince']
 		def active = selectors.findAll { project.hasProperty(it) }
 		if (active.size() > 1) throw new GradleException("Do not combine client suite selectors: ${active.join(', ')}")
-        // Full/shard selection has one Python authority and a pinned explicit four-group plan.
-        def fullSelection = clientCiContract.selection(fullEntries, project.properties,
-            file('tools/client_shard_plan.py'), file('tools/client_shard_plan.json'),
-            file('src/gametest/resources/fabric.mod.json'))
-        if (fullSelection != null) {
-            originalDescriptor.entrypoints['fabric-client-gametest'] = fullSelection.entries
-            originalDescriptor.custom = originalDescriptor.custom ?: [:]
-            originalDescriptor.custom['wildercord:clientShardPlan'] = fullSelection.plan
-            file("${destinationDir}/fabric.mod.json").text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(originalDescriptor))
-            return
-        }
-
 		// The catalog is also consumed by the launcher and evidence manifest. Keep this roster
 		// explicit: appending more tests to the full descriptor must not expand the focused gate.
 		if (project.hasProperty('ciSuite')) {
@@ -194,19 +174,7 @@ tasks.named('processGametestResources') {
 // resource processing is UP-TO-DATE. The manifest checks this evidence against the launcher.
 tasks.named('runClientGameTest') {
 	doFirst {
-        def sourceEntries = new groovy.json.JsonSlurper().parse(file('src/gametest/resources/fabric.mod.json')).entrypoints['fabric-client-gametest']
-        def resources = tasks.named('processGametestResources').get()
-        def expected = clientCiContract.selection(sourceEntries, project.properties,
-            file('tools/client_shard_plan.py'), file('tools/client_shard_plan.json'),
-            file('src/gametest/resources/fabric.mod.json'),
-            file("${resources.destinationDir}/fabric.mod.json"))
-        if (expected != null) {
-            // Use the actual JavaExec child environment, not manifest command-line claims.
-            def profile = clientCiContract.profile(environment, project.hasProperty('shaders'))
-            logger.lifecycle('WILDERCORD_CLIENT_DESCRIPTOR ' + groovy.json.JsonOutput.toJson(expected))
-            logger.lifecycle('WILDERCORD_CLIENT_PROFILE ' + groovy.json.JsonOutput.toJson(
-                [launchId: environment.WILDERCORD_FULL_CLIENT_LAUNCH_ID, profile: profile]))
-        }
+		def resources = tasks.named('processGametestResources').get()
 		if (project.hasProperty('affectedSince')) {
 			def entries = new groovy.json.JsonSlurper().parse(file("${resources.destinationDir}/fabric.mod.json")).entrypoints['fabric-client-gametest']
 			logger.lifecycle('WILDERCORD_AFFECTED_SELECTION ' + groovy.json.JsonOutput.toJson(

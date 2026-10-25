@@ -20,7 +20,7 @@ instead of the platform GL context API: [SDL3 EGL hint](https://wiki.libsdl.org/
 This is a targeted attempt to avoid the observed GLX visual failure; a Linux native run must
 confirm it. Local Windows rendering results cannot prove the Linux correction.
 
-`tools/run_client_ci.py` launches the same full descriptor, with animation gallery enabled by
+`tools/run_client_ci.py` (removed on 2026-10-24 with the retired GitHub gate) launched the same full descriptor, with animation gallery enabled by
 the workflow. It does not select a shorter suite. It retains the streaming log and returns a
 failure promptly if both backends fail. A single backend failure allows the normal fallback.
 Only its own started process group is terminated; no unrelated Java processes are enumerated

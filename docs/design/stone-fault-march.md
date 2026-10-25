@@ -30,7 +30,7 @@ Articulated support admits ID 10 through the existing hand socket, armor, funded
 
 ## Verification and native acceptance
 
-Three registered native classes are selectable with `python tools/run_client_ci.py --suite stone-fault-march`:
+Three registered native classes make up the diagnostic `stone-fault-march` suite in `tools/client_suite_catalog.json` (the VPS runner launches only release and area suites, so it has no current launcher):
 
 - `StoneMarchTest`: natural admission/payment/rest/phrase, solo and eight participants, held/side/inward/spent routes, a one-attempt zero-damage veto, real guard/parry/armor/absorption/Foresight, permanent initial thin-cover/gap clipping, new obstruction/support loss/body congestion/hazards, roster/spectator/owner changes, same-pulse death, callback entry/exit/cancellation, duplicate and bad-clock callbacks, and the full recovery reservation.
 - `StoneMarchPresentationTest`: one fresh natural acceptance per backend and view, capturing every original Classic/articulated front and side beat, plus whole-lane warning and spent-ground frames, each at its exact tick. Native socket/model and geometry receipts remain enforced.
