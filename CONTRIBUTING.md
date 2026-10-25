@@ -56,6 +56,7 @@ the underlying checks, not permission to resume GitHub CI.
 |---|---|
 | `./gradlew test` | Always. Fast, headless unit tests for the spell engine. |
 | `./gradlew runClientGameTest` | Before any PR that changes runtime behaviour or UI. Starts a real client, checks mechanics and saves screenshots to `build/run/clientGameTest/screenshots/`. Set `WILDERCORD_TOUR_ONLY=1` to run only the feature tour (`tour_*.png`), which is quicker when you changed a world feature. |
+| `python tools/run_vps_checks.py suite --suite <area> --head <sha> --computer <vps>` | On the VPS, for the areas your change touches. Client test classes are grouped into per-area suites in `tools/client_suite_catalog.json` (`area-combat-bosses`, `area-guis-hud`, ...). A new test class is registered in `src/gametest/resources/fabric.mod.json` and in its suite, with `expectedCount` raised. `release-smoke` is the pre-release check. |
 | `./gradlew runClientGameTest -PaffectedSince=origin/main` | While iterating. Runs only the client test classes your change statically reaches; never a substitute for the full suites. See [docs/testing/affected-client-tests.md](docs/testing/affected-client-tests.md). |
 
 Add tests with your change:

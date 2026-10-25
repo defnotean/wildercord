@@ -1,5 +1,14 @@
 # WilderCord development handoff
 
+> **Current status (2026-10-24).** This document is an October 13 snapshot. Since then
+> `living-world-expansion` was merged through PR #3 (2026-10-15) and released as
+> `v0.13.0-alpha`. Work continues on `0.14-connected-world` as a polish loop. Its findings and
+> evidence ledger are in [`docs/audit/2026-10-24-polish.md`](audit/2026-10-24-polish.md). The owner
+> replaced smoke-only native testing with per-area suites in `tools/client_suite_catalog.json`, and
+> asked for no pull requests: a VPS-confirmed fix is merged into `main` directly. §1 (state), §6
+> (stopped run), §9 (4-shard next steps) and §10 (nothing released) are historical. §3 (conventions)
+> and §7 (VPS environment) still apply.
+
 > **Superseded testing state (2026-10-15).** The owner asked to cut CI time and delete
 > redundant native tests. The 349-class gate, shards, Masters parts and every per-feature
 > native suite were removed at `d79a9ee1`/`38b10291`. Native testing is now only the
