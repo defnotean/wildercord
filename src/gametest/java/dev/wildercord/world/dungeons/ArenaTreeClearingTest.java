@@ -76,6 +76,9 @@ public final class ArenaTreeClearingTest implements FabricClientGameTest {
 				check(l.getBlockState(far).is(Blocks.OAK_LOG), "Its trunk stands there");
 
 				// The arena's own work: a post on grass under a placed (persistent) leaf. Then a tree that grew before the fix.
+				// The piece lays its own floor, so the soil each trunk stands on is put back first.
+				l.setBlock(new BlockPos(cx - 3, 100, cz - 3), Blocks.GRASS_BLOCK.defaultBlockState(), 2);
+				l.setBlock(new BlockPos(cx, 100, cz), Blocks.GRASS_BLOCK.defaultBlockState(), 2);
 				for (int y = 101; y <= 103; y++) l.setBlock(new BlockPos(cx - 3, y, cz - 3), Blocks.OAK_LOG.defaultBlockState(), 2);
 				l.setBlock(new BlockPos(cx - 3, 104, cz - 3), Blocks.OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true), 2);
 				var before = snapshot(l, box);
