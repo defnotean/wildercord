@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.Set;
 /**
  * Photographs every registered WilderCord structure in a normal world, for judging how the builds look: each is found in
  * its own biome through the registered generation path, placed with {@code place structure}, then shot from above at a
- * three-quarter angle and from inside at its middle. Split across a few classes so no single client runs for too long.
+ * three-quarter angle from two opposite corners, at eye level from the ground, straight down, and from inside at its middle. Split across a few classes so no single client runs for too long.
  */
 final class StructureGallery {
 	private StructureGallery() {}
@@ -63,9 +64,19 @@ final class StructureGallery {
 				log(id, "bounds " + b.minX() + "," + b.minY() + "," + b.minZ() + " to " + b.maxX() + "," + b.maxY() + "," + b.maxZ());
 				double cx = (b.minX() + b.maxX() + 1) / 2.0, cz = (b.minZ() + b.maxZ() + 1) / 2.0;
 				int span = Math.max(b.getXSpan(), b.getZSpan());
-				double d = span * 0.8 + 10, lift = Math.max(10, span * 0.5);
-				view(c, world, cx + d * 0.7, b.maxY() + lift, cz + d * 0.7, cx, b.minY() + b.getYSpan() * 0.4, cz);
+				double d = span * 0.8 + 10, lift = Math.max(10, span * 0.5), ty = b.minY() + b.getYSpan() * 0.4;
+				// Two aerial three-quarter views from opposite corners, so every face is seen once.
+				view(c, world, cx + d * 0.7, b.maxY() + lift, cz + d * 0.7, cx, ty, cz);
 				shot(c, "gallery_" + id);
+				view(c, world, cx - d * 0.7, b.maxY() + lift, cz - d * 0.7, cx, ty, cz);
+				shot(c, "gallery_" + id + "_back");
+				// Eye level from the ground beside it, as a player walking up would see it, and a plan from straight above.
+				double gx = cx - d * 0.75, gz = cz + d * 0.45;
+				int ground = world.getServer().computeOnServer(s -> s.overworld().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) Math.floor(gx), (int) Math.floor(gz)));
+				view(c, world, gx, ground + 0.5, gz, cx, Math.max(ground + 1.5, ty), cz);
+				shot(c, "gallery_" + id + "_ground");
+				view(c, world, cx + 0.01, b.maxY() + span * 0.9 + 8, cz + 0.01, cx, b.minY(), cz);
+				shot(c, "gallery_" + id + "_plan");
 				boolean alongX = b.getXSpan() >= b.getZSpan();
 				double y = b.minY() + Math.max(2, b.getYSpan() * 0.3);
 				view(c, world, alongX ? b.minX() + 2.5 : cx, y, alongX ? cz : b.minZ() + 2.5, alongX ? b.maxX() : cx, y - 2, alongX ? cz : b.maxZ());

@@ -159,12 +159,15 @@
     ]
   },
   "structure-gallery": {
-    "description": "Structure gallery: every registered WilderCord structure found in its own biome on a fixed normal-world seed, placed through the registered path and photographed from above and inside. Visual evidence for the building work; not part of the gameplay suites.",
-    "expectedCount": 3,
+    "description": "Structure gallery: every registered WilderCord structure found in its own biome on a fixed normal-world seed, placed through the registered path and photographed from two aerial corners, eye level, straight above and inside. Visual evidence for the building work; not part of the gameplay suites.",
+    "expectedCount": 6,
     "entries": [
       "dev.wildercord.world.dungeons.StructureGallery1Test",
       "dev.wildercord.world.dungeons.StructureGallery2Test",
-      "dev.wildercord.world.dungeons.StructureGallery3Test"
+      "dev.wildercord.world.dungeons.StructureGallery3Test",
+      "dev.wildercord.world.dungeons.StructureGallery4Test",
+      "dev.wildercord.world.dungeons.StructureGallery5Test",
+      "dev.wildercord.world.dungeons.StructureGallery6Test"
     ]
   }
 }
