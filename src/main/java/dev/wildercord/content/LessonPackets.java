@@ -30,6 +30,11 @@ public final class LessonPackets {
 		return allow(player.getUUID(), player.level().getServer().getTickCount());
 	}
 
+	/** Whether {@code player} has any allowance left, without spending it. */
+	public static boolean hasAllowance(ServerPlayer player) {
+		return THROTTLE.wouldAllow(player.getUUID(), player.level().getServer().getTickCount());
+	}
+
 	static boolean allow(UUID player, long tick) {
 		return THROTTLE.allow(player, tick);
 	}

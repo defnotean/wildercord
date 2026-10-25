@@ -53,6 +53,15 @@ public final class PacketThrottle {
 		return true;
 	}
 
+	/** Whether {@code player} could send one more now, without counting it. */
+	public boolean wouldAllow(UUID player, long tick) {
+		Bucket bucket = buckets.get(player);
+		if (bucket == null || tick < bucket.at) {
+			return true;
+		}
+		return Math.min(burst, bucket.tokens + (tick - bucket.at) / (double) ticksPerPacket) >= 1;
+	}
+
 	public void forget(UUID player) {
 		buckets.remove(player);
 	}
