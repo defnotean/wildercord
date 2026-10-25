@@ -1,6 +1,7 @@
 package dev.wildercord.backpack;
 
 import dev.wildercord.client.WildercordKeys;
+import dev.wildercord.content.WildercordItems;
 import dev.wildercord.menu.BackpackMenu;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -63,9 +64,9 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 				var inv = p(s).getInventory();
 				inv.clearContent();
 				inv.setSelectedSlot(0);
-				inv.setItem(0, new ItemStack(BackpackItem.BACKPACK));
+				inv.setItem(0, new ItemStack(WildercordItems.BACKPACK));
 				inv.setItem(1, new ItemStack(Items.COBBLESTONE, 16));
-				inv.setItem(2, new ItemStack(BackpackItem.REINFORCED_BACKPACK));
+				inv.setItem(2, new ItemStack(WildercordItems.REINFORCED_BACKPACK));
 				inv.setItem(3, new ItemStack(Items.BUNDLE));
 				inv.setItem(4, new ItemStack(Items.APPLE, 5));
 			});
@@ -92,14 +93,14 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 			click(c, hotbar(2), 0, ContainerInput.QUICK_MOVE);
 			click(c, hotbar(3), 0, ContainerInput.QUICK_MOVE);
 			server.runOnServer(s -> {
-				check(p(s).getInventory().getItem(2).is(BackpackItem.REINFORCED_BACKPACK), "No backpack goes in a backpack");
+				check(p(s).getInventory().getItem(2).is(WildercordItems.REINFORCED_BACKPACK), "No backpack goes in a backpack");
 				check(p(s).getInventory().getItem(3).is(Items.BUNDLE), "No bundle goes in a backpack");
 			});
 			click(c, hotbar(2), 0, ContainerInput.PICKUP);
 			click(c, 5, 0, ContainerInput.PICKUP);
 			click(c, hotbar(2), 0, ContainerInput.PICKUP);
 			server.runOnServer(s -> {
-				check(p(s).getInventory().getItem(2).is(BackpackItem.REINFORCED_BACKPACK) && menu(s).getCarried().isEmpty(),
+				check(p(s).getInventory().getItem(2).is(WildercordItems.REINFORCED_BACKPACK) && menu(s).getCarried().isEmpty(),
 					"A backpack put down on its slots goes back where it was");
 				check(Backpacks.used(p(s).getInventory().getItem(0)) == 1, "Only the cobblestone is inside");
 			});
@@ -109,7 +110,7 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 			click(c, 3, 0, ContainerInput.SWAP);
 			server.runOnServer(s -> {
 				check(menu(s).getCarried().isEmpty(), "The open backpack can't be picked up");
-				check(p(s).getInventory().getItem(0).is(BackpackItem.BACKPACK), "Nor swapped out by its number key");
+				check(p(s).getInventory().getItem(0).is(WildercordItems.BACKPACK), "Nor swapped out by its number key");
 			});
 			c.takeScreenshot(TestScreenshotOptions.of("backpack_open").disableCounterPrefix());
 
@@ -153,7 +154,7 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 			c.waitTicks(30);
 			w.getServer().runOnServer(s -> {
 				ItemStack worn = Backpacks.worn(p(s));
-				check(worn.is(BackpackItem.BACKPACK), "The worn backpack is kept through a save and reopen");
+				check(worn.is(WildercordItems.BACKPACK), "The worn backpack is kept through a save and reopen");
 				check(inside(worn, Items.APPLE) == 5 && inside(worn, Items.COBBLESTONE) == 16, "And so is what is in it");
 			});
 		}
