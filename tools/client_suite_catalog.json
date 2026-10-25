@@ -89,15 +89,16 @@
     ]
   },
   "area-items-crafting": {
-    "description": "Items and crafting: research library, learn-all fusion, familiar content systems, Weaver's Silk stow key, casting gear loot.",
+    "description": "Items and crafting: research library, learn-all fusion, familiar content systems, Weaver's Silk stow key, casting gear loot, the backpack menu.",
     "purpose": "area",
-    "expectedCount": 5,
+    "expectedCount": 6,
     "entries": [
       "dev.wildercord.player.ResearchLibraryTest",
       "dev.wildercord.command.LearnAllFusionTest",
       "dev.wildercord.familiar.ContentSystemsTest",
       "dev.wildercord.aura.world.WeaversSilkStowTest",
-      "dev.wildercord.gear.GearLootTest"
+      "dev.wildercord.gear.GearLootTest",
+      "dev.wildercord.backpack.BackpackMenuTest"
     ]
   },
   "area-guis-hud": {
