@@ -1,20 +1,27 @@
 package dev.wildercord.town;
 
 import dev.wildercord.aura.arts.MethodsAFlavours;
+import dev.wildercord.aura.world.WeaversSilk;
 import dev.wildercord.cast.PracticeRoom;
+import dev.wildercord.cast.Spirits;
 import dev.wildercord.cooking.CampPotBlock;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 
 /**
- * The camp pot's chosen recipe, the bounty board's shown contract, a Method sunder's end time and the practice room's entry
- * cooldowns are per-session state.
+ * The camp pot's chosen recipe, the bounty board's shown contract, a Method sunder's end time, the practice room's entry
+ * cooldowns, Weaver's Silk's last-grounded ticks and the spirit wolf packs are per-session state.
  * Closing a world must forget them so the next world starts clean.
  */
 public final class SessionMapsClearTest implements FabricClientGameTest {
 	private static final UUID SOMEONE = new UUID(0x1234L, 0x9abcL);
+	private static final Object[][] MAPS = {
+		{CampPotBlock.class, "CHOSEN"}, {BountyBoardBlock.class, "SHOWN"}, {MethodsAFlavours.class, "SUNDER_ENDS"},
+		{PracticeRoom.class, "ENTERED"}, {WeaversSilk.class, "GROUNDED"}, {Spirits.class, "PACKS"},
+	};
 
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
@@ -28,11 +35,15 @@ public final class SessionMapsClearTest implements FabricClientGameTest {
 				sunder.put(SOMEONE, 1_000_000L);
 				Map<UUID, Long> entered = field(PracticeRoom.class, "ENTERED");
 				entered.put(SOMEONE, 1_000_000L);
+				Map<UUID, Integer> grounded = field(WeaversSilk.class, "GROUNDED");
+				grounded.put(SOMEONE, 90_000);
+				Map<UUID, Object> packs = field(Spirits.class, "PACKS");
+				packs.put(SOMEONE, new ArrayList<>());
 			});
 		}
-		for (var owner : new Class<?>[] {CampPotBlock.class, BountyBoardBlock.class, MethodsAFlavours.class, PracticeRoom.class}) {
-			String name = owner == CampPotBlock.class ? "CHOSEN" : owner == BountyBoardBlock.class ? "SHOWN"
-				: owner == PracticeRoom.class ? "ENTERED" : "SUNDER_ENDS";
+		for (var entry : MAPS) {
+			Class<?> owner = (Class<?>) entry[0];
+			String name = (String) entry[1];
 			Map<UUID, Object> map = field(owner, name);
 			if (!map.isEmpty()) throw new AssertionError(owner.getSimpleName() + "." + name + " kept entries after the world closed: " + map.keySet());
 		}

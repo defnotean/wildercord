@@ -3,7 +3,9 @@ package dev.wildercord.aura.world;
 import dev.wildercord.Wildercord;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -71,7 +73,10 @@ public final class WeaversSilk {
 	private static int offGround(Player player) {
 		var seen = player.level().isClientSide() ? GROUNDED_CLIENT : GROUNDED;
 		if (player.onGround() || player.isInWater() || player.isInLava() || player.isPassenger()) seen.put(player.getUUID(), player.tickCount);
-		return player.tickCount - seen.getOrDefault(player.getUUID(), player.tickCount);
+		// No mark yet, or one from before the count restarted: start counting from now, so the grip still runs out.
+		int mark = seen.computeIfAbsent(player.getUUID(), id -> player.tickCount);
+		if (mark > player.tickCount) seen.put(player.getUUID(), mark = player.tickCount);
+		return (int) HollowMatronRules.offGround(player.tickCount, mark);
 	}
 
 	/** Whether a wall is right against this player: something solid just beside them, clear of the floor under their feet. */
@@ -95,6 +100,8 @@ public final class WeaversSilk {
 				toggle(ctx.getSource().getPlayerOrException());
 				return 1;
 			})));
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> GROUNDED.remove(handler.getPlayer().getUUID()));
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> GROUNDED.clear());
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			for (var player : server.getPlayerList().getPlayers()) {
 				if (!bound(player) || stowed(player)) continue;

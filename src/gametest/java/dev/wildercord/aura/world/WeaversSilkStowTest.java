@@ -11,7 +11,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import java.util.Arrays;
 import java.util.Set;
-/** The silk key and /silk put the Weaver's Silk away and take it out again: a stowed silk never holds its wearer to a wall, on either side. */
+/** The silk key and /silk put the Weaver's Silk away and take it out again: a stowed silk never holds its wearer to a wall, on either side, and a relog never makes the grip endless. */
 public final class WeaversSilkStowTest implements FabricClientGameTest {
 	private static void check(boolean x, String why) { if (!x) throw new AssertionError(why); }
 	private static ServerPlayer p(MinecraftServer s) { return s.getPlayerList().getPlayers().getFirst(); }
@@ -20,6 +20,14 @@ public final class WeaversSilkStowTest implements FabricClientGameTest {
 		var p = p(s);
 		p.teleportTo(s.overworld(), .7, 103, .5, Set.<Relative>of(), 90, 0, false);
 		p.setDeltaMovement(0, 0, 0);
+	}
+	@SuppressWarnings("unchecked")
+	private static java.util.Map<java.util.UUID, Integer> grounded() {
+		try {
+			var f = WeaversSilk.class.getDeclaredField("GROUNDED");
+			f.setAccessible(true);
+			return (java.util.Map<java.util.UUID, Integer>) f.get(null);
+		} catch (ReflectiveOperationException e) { throw new AssertionError(e); }
 	}
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
@@ -64,6 +72,18 @@ public final class WeaversSilkStowTest implements FabricClientGameTest {
 				check(!WeaversSilk.stowed(p(s)), "/silk takes the silk out again");
 				check(p(s).onClimbable(), "Out again, the silk holds its wearer to the wall again");
 			});
+
+			// A grounded mark from before a relog or respawn (a later tick count than now) must not give an endless grip.
+			w.getServer().runOnServer(s -> {
+				grounded().put(p(s).getUUID(), p(s).tickCount + 90_000);
+				hang(s);
+				check(p(s).onClimbable(), "A stale grounded mark counts as having just landed");
+			});
+			for (int t = 0; t < HollowMatronRules.SILK_GRIP + 20; t += 10) {
+				c.waitTicks(10);
+				w.getServer().runOnServer(WeaversSilkStowTest::hang);
+			}
+			w.getServer().runOnServer(s -> check(!p(s).onClimbable(), "After a relog the grip still runs out off the ground"));
 
 			w.getServer().runOnServer(s -> {
 				var p = p(s);

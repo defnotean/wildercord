@@ -19,6 +19,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - The boss models move with more weight: clearer wind-ups before their big moves, follow-through and secondary motion on tails, wings and cloth, a flinch when hurt, and staged deaths instead of a plain fall.
 
 ### Fixed
+- Weaver's Silk's wall grip runs out after six seconds off the ground again after a relog or respawn; before, it could hold you to a wall indefinitely.
+- Closing a world in single player now also forgets the spirit wolf packs and Weaver's Silk's landing marks, so a world opened afterwards starts clean.
 - Riding a mount for the first time after taming it no longer crashes the server.
 - The Gravekeeper, Ashen Stag, Frost Wyrmling, Hollow Matron and Mojito no longer snap back to the start of a move they use twice in a row; they blend out of the last swing as they do between different moves. All seven animated bosses' blends no longer build new poses every frame.
 - Less per-frame and per-tick work: the cord, cord-bead, Master, Runebound and spell-circle renderers reuse their texture names instead of rebuilding them every frame, and Cinnamon's recall check looks around its owner instead of across the whole dimension.
