@@ -120,12 +120,28 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			var probe=natural.getServer().computeOnServer(s->SleepingBladeGenerationProbe.begin(s.overworld().getSeed()))) {
 			c.waitTicks(40);natural.getServer().runCommand("gamerule spawn_mobs false");natural.getServer().runCommand("time set 6000");
 			BlockPos habitat=natural.getServer().computeOnServer(s->{
-				var cs=s.overworld().getChunkSource();var b=cs.getGenerator().getBiomeSource().findBiomeHorizontal(1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(77),true,cs.randomState());
+				// The biome is sampled above the ground, so a plains hit can lie over a lake or the sea: take the first whose
+				// candidate grid is at least half dry land, as the structure's own footing rule sees it.
+				var cs=s.overworld().getChunkSource();var gen=cs.getGenerator();
+				com.mojang.datafixers.util.Pair<BlockPos,net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome>> b=null;
+				for(int t=0;t<12 && b==null;t++) {
+					var hit=gen.getBiomeSource().findBiomeHorizontal(1024+t*4096,128,1024,t==0 ? 6400 : 2048,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(77+t),true,cs.randomState());
+					if(hit==null)continue;
+					int dry=0;
+					for(int i=0;i<16;i++) {
+						int x=hit.getFirst().getX()+(i%4)*48+9,z=hit.getFirst().getZ()+(i/4)*48+9;
+						int surface=gen.getBaseHeight(x,z,net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE_WG,s.overworld(),cs.randomState());
+						int floor=gen.getBaseHeight(x,z,net.minecraft.world.level.levelgen.Heightmap.Types.OCEAN_FLOOR_WG,s.overworld(),cs.randomState());
+						if(surface==floor && surface>=gen.getSeaLevel())dry++;
+					}
+					if(dry>=8)b=hit;
+				}
 				check(b!=null,"Normal world contains a dry landmark habitat");
+				var dryHit=b;
 				var registered=s.overworld().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
 					.get(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.Identifier.parse("wildercord:sleeping_blade")));
 				probe.habitat(b.getFirst(),b.getSecond().unwrapKey().map(key->key.identifier().toString()).orElse("unregistered"),
-					registered.map(value->value.value().getClass().getName()).orElse("unregistered"),registered.map(value->value.value().biomes().contains(b.getSecond())).orElse(false));
+					registered.map(value->value.value().getClass().getName()).orElse("unregistered"),registered.map(value->value.value().biomes().contains(dryHit.getSecond())).orElse(false));
 				return b.getFirst();
 			});
 			BlockPos found=null;
