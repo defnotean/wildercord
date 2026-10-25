@@ -169,6 +169,221 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 		level.addFreshEntityWithPassengers(mob);
 	}
 
+	// ------------------------------------------------------------------ architecture
+
+	/**
+	 * A weighted mix of blocks picked per spot, so a wall reads as worn masonry instead of one flat texture. Built from
+	 * pairs: {@code Palette.of(stoneBricks, 6, mossy, 2, cracked, 1)}.
+	 */
+	protected record Palette(BlockState[] blocks, int[] weights, int total) {
+		public static Palette of(Object... pairs) {
+			BlockState[] blocks = new BlockState[pairs.length / 2];
+			int[] weights = new int[blocks.length];
+			int total = 0;
+			for (int i = 0; i < blocks.length; i++) {
+				Object b = pairs[i * 2];
+				blocks[i] = b instanceof net.minecraft.world.level.block.Block block ? block.defaultBlockState() : (BlockState) b;
+				weights[i] = (Integer) pairs[i * 2 + 1];
+				total += weights[i];
+			}
+			return new Palette(blocks, weights, total);
+		}
+
+		public BlockState at(int x, int y, int z) {
+			int n = noise(x, y, z) * total / 100;
+			for (int i = 0; i < blocks.length; i++) {
+				if ((n -= weights[i]) < 0) return blocks[i];
+			}
+			return blocks[blocks.length - 1];
+		}
+	}
+
+	/** A solid box of a palette. */
+	protected void fill(WorldGenLevel level, BoundingBox bb, int x0, int y0, int z0, int x1, int y1, int z1, Palette p) {
+		for (int x = x0; x <= x1; x++) for (int y = y0; y <= y1; y++) for (int z = z0; z <= z1; z++) set(level, bb, p.at(x, y, z), x, y, z);
+	}
+
+	/** The four walls of a box in a palette, floor and ceiling left alone. */
+	protected void walls(WorldGenLevel level, BoundingBox bb, int x0, int y0, int z0, int x1, int y1, int z1, Palette p) {
+		fill(level, bb, x0, y0, z0, x1, y1, z0, p);
+		fill(level, bb, x0, y0, z1, x1, y1, z1, p);
+		fill(level, bb, x0, y0, z0 + 1, x0, y1, z1 - 1, p);
+		fill(level, bb, x1, y0, z0 + 1, x1, y1, z1 - 1, p);
+	}
+
+	/** A local-frame z step for a direction: NORTH is inward, +z. */
+	protected static int dz(Direction d) {
+		return -d.getStepZ();
+	}
+
+	/** A stair in the piece's frame climbing toward {@code facing}; {@code top} hangs it upside down (eaves, corbels, sills). */
+	protected static BlockState stair(net.minecraft.world.level.block.Block stairs, Direction facing, boolean top) {
+		return stairs.defaultBlockState().setValue(net.minecraft.world.level.block.StairBlock.FACING, facing)
+			.setValue(net.minecraft.world.level.block.StairBlock.HALF, top ? net.minecraft.world.level.block.state.properties.Half.TOP
+				: net.minecraft.world.level.block.state.properties.Half.BOTTOM);
+	}
+
+	/** A top slab, for ledges and string courses. */
+	protected static BlockState topSlab(net.minecraft.world.level.block.Block slab) {
+		return slab.defaultBlockState().setValue(net.minecraft.world.level.block.SlabBlock.TYPE, net.minecraft.world.level.block.state.properties.SlabType.TOP);
+	}
+
+	/** A column with a plinth and a capital: {@code base} at y0, {@code cap} at y1, {@code shaft} between. */
+	protected void pillar(WorldGenLevel level, BoundingBox bb, int x, int z, int y0, int y1, BlockState base, BlockState shaft, BlockState cap) {
+		set(level, bb, base, x, y0, z);
+		fill(level, bb, x, y0 + 1, z, x, y1 - 1, z, shaft);
+		set(level, bb, cap, x, y1, z);
+	}
+
+	/**
+	 * A stepped buttress against a wall at (x, z), standing out toward {@code out}: full height {@code h} at the wall, half
+	 * height one step out, a quarter two steps out, each step capped by a stair sloping back to the wall.
+	 */
+	protected void buttress(WorldGenLevel level, BoundingBox bb, int x, int z, int y0, int h, Direction out, BlockState body,
+			net.minecraft.world.level.block.Block stairs) {
+		int[] heights = {h, Math.max(1, h / 2), Math.max(1, h / 4)};
+		for (int i = 0; i < 3; i++) {
+			int sx = x + out.getStepX() * i, sz = z + dz(out) * i;
+			fill(level, bb, sx, y0, sz, sx, y0 + heights[i] - 1, sz, body);
+			if (i > 0) set(level, bb, stair(stairs, out.getOpposite(), false), sx, y0 + heights[i], sz);
+		}
+	}
+
+	/**
+	 * A hipped roof over x0..x1 by z0..z1, overhanging one block: rings of stairs climbing inward from {@code y}, outer
+	 * corners turned, the inside of each ring filled with {@code under} so nothing sees through, {@code cap} along the top.
+	 */
+	protected void hipRoof(WorldGenLevel level, BoundingBox bb, int x0, int z0, int x1, int z1, int y,
+			net.minecraft.world.level.block.Block stairs, BlockState under, BlockState cap) {
+		x0--; z0--; x1++; z1++;
+		for (int k = 0; ; k++) {
+			int a = x0 + k, b = x1 - k, c = z0 + k, d = z1 - k, yy = y + k;
+			if (a > b || c > d) break;
+			if (a == b || c == d) { fill(level, bb, a, yy, c, b, yy, d, cap); break; }
+			for (int x = a + 1; x < b; x++) {
+				set(level, bb, stair(stairs, Direction.NORTH, false), x, yy, c);
+				set(level, bb, stair(stairs, Direction.SOUTH, false), x, yy, d);
+			}
+			for (int z = c + 1; z < d; z++) {
+				set(level, bb, stair(stairs, Direction.EAST, false), a, yy, z);
+				set(level, bb, stair(stairs, Direction.WEST, false), b, yy, z);
+			}
+			var outer = net.minecraft.world.level.block.StairBlock.SHAPE;
+			set(level, bb, stair(stairs, Direction.NORTH, false).setValue(outer, net.minecraft.world.level.block.state.properties.StairsShape.OUTER_RIGHT), a, yy, c);
+			set(level, bb, stair(stairs, Direction.NORTH, false).setValue(outer, net.minecraft.world.level.block.state.properties.StairsShape.OUTER_LEFT), b, yy, c);
+			set(level, bb, stair(stairs, Direction.SOUTH, false).setValue(outer, net.minecraft.world.level.block.state.properties.StairsShape.OUTER_LEFT), a, yy, d);
+			set(level, bb, stair(stairs, Direction.SOUTH, false).setValue(outer, net.minecraft.world.level.block.state.properties.StairsShape.OUTER_RIGHT), b, yy, d);
+			if (k > 0 && b - a > 1 && d - c > 1) fill(level, bb, a + 1, yy, c + 1, b - 1, yy, d - 1, under);
+		}
+	}
+
+	/**
+	 * A steep gable roof over x0..x1 by z0..z1 whose eaves overhang a block and whose ends overhang a block too, with a row
+	 * of upside-down stairs under each eave. The ridge runs along x when {@code alongX}, along z otherwise; the gable ends
+	 * are filled from {@code gableFill}. Returns the ridge's height.
+	 */
+	protected int gableRoof(WorldGenLevel level, BoundingBox bb, int x0, int z0, int x1, int z1, int y, boolean alongX,
+			net.minecraft.world.level.block.Block stairs, BlockState ridge, Palette gableFill) {
+		int lo = alongX ? z0 - 1 : x0 - 1, hi = alongX ? z1 + 1 : x1 + 1;
+		int e0 = alongX ? x0 - 1 : z0 - 1, e1 = alongX ? x1 + 1 : z1 + 1;
+		Direction up = alongX ? Direction.NORTH : Direction.EAST;
+		int top = y;
+		for (int k = 0; lo + k <= hi - k; k++) {
+			int s = lo + k, n = hi - k, yy = y + k;
+			top = yy;
+			for (int e = e0; e <= e1; e++) {
+				if (s == n) {
+					put(level, bb, ridge, alongX, e, yy, s);
+				} else {
+					put(level, bb, stair(stairs, up, false), alongX, e, yy, s);
+					put(level, bb, stair(stairs, up.getOpposite(), false), alongX, e, yy, n);
+					if (k == 0) {
+						put(level, bb, stair(stairs, up, true), alongX, e, yy - 1, s);
+						put(level, bb, stair(stairs, up.getOpposite(), true), alongX, e, yy - 1, n);
+					}
+				}
+			}
+			for (int m = s + 1; m < n; m++) {
+				int[] ends = {alongX ? x0 : z0, alongX ? x1 : z1};
+				for (int e : ends) put(level, bb, alongX ? gableFill.at(e, yy, m) : gableFill.at(m, yy, e), alongX, e, yy, m);
+			}
+			if (s >= n) break;
+		}
+		return top;
+	}
+
+	/** Sets a block given along-the-ridge {@code e} and across-the-ridge {@code m} coordinates. */
+	private void put(WorldGenLevel level, BoundingBox bb, BlockState state, boolean alongX, int e, int y, int m) {
+		if (alongX) set(level, bb, state, e, y, m); else set(level, bb, state, m, y, e);
+	}
+
+	/** A square spire: a hipped cone of stairs from (cx±r, cz±r) at {@code y}, ending in {@code tip} one block over its peak. */
+	protected void spire(WorldGenLevel level, BoundingBox bb, int cx, int cz, int r, int y, net.minecraft.world.level.block.Block stairs,
+			BlockState under, BlockState peak, BlockState tip) {
+		for (int k = 0; k < r; k++) {
+			// Two courses per ring, for a needle rather than a tent.
+			for (int j = 0; j < 2; j++) {
+				int yy = y + k * 2 + j, s = r - k;
+				hipRing(level, bb, cx - s, cz - s, cx + s, cz + s, yy, stairs, under, j == 0);
+			}
+		}
+		set(level, bb, peak, cx, y + r * 2, cz);
+		set(level, bb, tip, cx, y + r * 2 + 1, cz);
+	}
+
+	private void hipRing(WorldGenLevel level, BoundingBox bb, int a, int c, int b, int d, int y, net.minecraft.world.level.block.Block stairs,
+			BlockState under, boolean solid) {
+		for (int x = a; x <= b; x++) for (int z = c; z <= d; z++) {
+			boolean edge = x == a || x == b || z == c || z == d;
+			if (!edge) { set(level, bb, under, x, y, z); continue; }
+			if (solid) { set(level, bb, under, x, y, z); continue; }
+			Direction f = z == c ? Direction.NORTH : z == d ? Direction.SOUTH : x == a ? Direction.EAST : Direction.WEST;
+			set(level, bb, stair(stairs, f, false), x, y, z);
+		}
+	}
+
+	/** Merlons on every other block of a rectangle's rim at {@code y}, the corners always raised. */
+	protected void crenellate(WorldGenLevel level, BoundingBox bb, int x0, int z0, int x1, int z1, int y, BlockState merlon) {
+		for (int x = x0; x <= x1; x++) for (int z = z0; z <= z1; z++) {
+			boolean rim = x == x0 || x == x1 || z == z0 || z == z1;
+			boolean corner = (x == x0 || x == x1) && (z == z0 || z == z1);
+			if (rim && (corner || (x + z) % 2 == 0)) set(level, bb, merlon, x, y, z);
+		}
+	}
+
+	/** A lantern hanging under (x, y, z) on {@code chain} blocks of chain. */
+	protected void hangingLantern(WorldGenLevel level, BoundingBox bb, int x, int y, int z, int chain, boolean soul) {
+		for (int i = 0; i < chain; i++) set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), x, y - i, z);
+		set(level, bb, (soul ? Blocks.SOUL_LANTERN : Blocks.LANTERN).defaultBlockState()
+			.setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true), x, y - chain, z);
+	}
+
+	/** A wall banner at (x, y, z) hung on the block behind it, facing {@code facing} in the piece's frame. */
+	protected void banner(WorldGenLevel level, BoundingBox bb, net.minecraft.world.level.block.Block wallBanner, int x, int y, int z, Direction facing) {
+		set(level, bb, wallBanner.defaultBlockState().setValue(net.minecraft.world.level.block.WallBannerBlock.FACING, facing), x, y, z);
+	}
+
+	/** A wall torch or wall lantern-like block on the wall behind (x, y, z), facing {@code facing}. */
+	protected void sconce(WorldGenLevel level, BoundingBox bb, int x, int y, int z, Direction facing, boolean soul) {
+		set(level, bb, (soul ? Blocks.SOUL_WALL_TORCH : Blocks.WALL_TORCH).defaultBlockState()
+			.setValue(net.minecraft.world.level.block.WallTorchBlock.FACING, facing), x, y, z);
+	}
+
+	/** Swaps some of the {@code from} blocks in a box for {@code to} ({@code chance} in 100), for moss, cracks and wear. */
+	protected void weather(WorldGenLevel level, BoundingBox bb, int x0, int y0, int z0, int x1, int y1, int z1, BlockState from, BlockState to, int chance) {
+		for (int x = x0; x <= x1; x++) for (int y = y0; y <= y1; y++) for (int z = z0; z <= z1; z++) {
+			if (noise(x + 101, y, z - 37) < chance && getBlock(level, x, y, z, bb).is(from.getBlock())) set(level, bb, to, x, y, z);
+		}
+	}
+
+	/** Puts {@code what} on some open tops in a box ({@code chance} in 100): air with a solid block beneath. */
+	protected void scatter(WorldGenLevel level, BoundingBox bb, int x0, int y0, int z0, int x1, int y1, int z1, BlockState what, int chance) {
+		for (int x = x0; x <= x1; x++) for (int y = y0; y <= y1; y++) for (int z = z0; z <= z1; z++) {
+			if (noise(x - 59, y, z + 83) >= chance) continue;
+			if (getBlock(level, x, y, z, bb).isAir() && getBlock(level, x, y - 1, z, bb).isSolid()) set(level, bb, what, x, y, z);
+		}
+	}
+
 	/** The distance from a column to a circle's centre. */
 	protected static double dist(int x, int z, int cx, int cz) {
 		return Math.sqrt((x - cx) * (x - cx) + (z - cz) * (z - cz));

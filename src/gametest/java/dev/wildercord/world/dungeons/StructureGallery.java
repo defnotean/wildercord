@@ -36,7 +36,7 @@ final class StructureGallery {
 			for (String rule : List.of("spawn_mobs false", "advance_time false", "advance_weather false")) world.getServer().runCommand("gamerule " + rule);
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");
-			c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.options.renderDistance().set(12); mc.options.fov().set(70); mc.resizeGui(); });
+			c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.options.renderDistance().set(8); mc.options.fov().set(70); mc.resizeGui(); });
 			world.getServer().runOnServer(s -> {
 				var p = s.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SPECTATOR);
@@ -105,11 +105,20 @@ final class StructureGallery {
 		float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
 		float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
 		world.getServer().runOnServer(s -> {
+			// Generate the ground around the camera first, so the client has nothing slow left to wait for.
+			int ccx = (int) Math.floor(x) >> 4, ccz = (int) Math.floor(z) >> 4;
+			for (int cx = ccx - 6; cx <= ccx + 6; cx++) for (int cz = ccz - 6; cz <= ccz + 6; cz++) s.overworld().getChunk(cx, cz);
 			var p = s.getPlayerList().getPlayers().getFirst();
 			p.teleportTo(s.overworld(), x, y, z, Set.<Relative>of(), yaw, pitch, false);
 		});
-		c.waitTicks(40);
-		world.getConnection().waitForChunksRender();
+		c.waitTicks(60);
+		try {
+			world.getConnection().waitForChunksRender();
+		} catch (AssertionError slow) {
+			// A far chunk still drawing only blurs the horizon; take the picture anyway.
+			log("view", "chunks still rendering at " + (int) x + "," + (int) z);
+			c.waitTicks(100);
+		}
 		c.waitTicks(10);
 	}
 
