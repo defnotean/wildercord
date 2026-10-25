@@ -1,7 +1,7 @@
 {
   "release-smoke": {
-    "description": "Pre-release smoke: one quick native class per major area (casting, party, client fx, journal, meditation, wildlife, content, research, commands, monsters, lore, world, mounts and taming, network payloads). A fast sanity check run once before a release; it does not replace the per-area suites.",
-    "expectedCount": 16,
+    "description": "Pre-release smoke: one quick native class per major area (casting, party, client fx, journal, meditation, wildlife, content, research, commands, monsters, lore, world, mounts and taming, network payloads, mixin targets). A fast sanity check run once before a release; it does not replace the per-area suites.",
+    "expectedCount": 17,
     "entries": [
       "dev.wildercord.cast.BasinfillTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
@@ -18,7 +18,8 @@
       "dev.wildercord.lore.LoreJournalGameTest",
       "dev.wildercord.world.dungeons.SwordTombTest",
       "dev.wildercord.wildlife.StagFirstRideTest",
-      "dev.wildercord.net.PayloadCodecRoundTripTest"
+      "dev.wildercord.net.PayloadCodecRoundTripTest",
+      "dev.wildercord.gametest.MixinTargetsTest"
     ]
   },
   "area-combat-bosses": {
