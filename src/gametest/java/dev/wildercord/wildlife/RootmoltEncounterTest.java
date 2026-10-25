@@ -133,7 +133,12 @@ public final class RootmoltEncounterTest implements FabricClientGameTest {
 			// Getting clear breaks the hold and the Rootmolt recovers.
 			server.runOnServer(s -> stand(s, 7));
 			check(await(c, server, s -> rootmolt(s).pose() == RootmoltStrider.RECOVERING, 5), "Getting clear ends the hold");
-			server.runOnServer(s -> check(!held(s), "Out of its reach nobody is held"));
+			server.runOnServer(s -> {
+				check(!held(s), "Out of its reach nobody is held");
+				// Recovering restarts the attack rest, so it is counted from here.
+				check(rootmolt(s).attackReady() >= rest, "Recovering never shortens the attack rest");
+				rest = rootmolt(s).attackReady();
+			});
 
 			// It settles back, and doesn't warn again before its rest is over.
 			check(await(c, server, s -> rootmolt(s).pose() == RootmoltStrider.IDLE, RootmoltRules.RECOVERY + 5), "It settles after recovering");
