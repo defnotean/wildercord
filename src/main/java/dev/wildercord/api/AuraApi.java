@@ -49,7 +49,7 @@ import java.util.function.Predicate;
  *       run of ordinary swings ({@link SwordString}), read by the player's client and checked and performed by the server.</li>
  *   <li><b>A method's arts</b> ({@link #registerArts}, {@link ArtSlot}, {@link #arts}, {@link #gateFinalArts}): each breathing
  *       method answers the five art strings (one a stage, the same for everyone) with arts of its own; a method without any
- *       plays the five common arts ({@code aura.PlaceholderArts}). Ember, Rime, Thunder, Gale and Stone have theirs
+ *       plays the five common arts ({@code aura.PlaceholderArts}). All sixteen built-in methods have their own
  *       ({@code aura.arts}).</li>
  *   <li><b>Momentum and openings</b> ({@link #momentum}, {@link #addMomentum}, {@link #holdMomentum}, {@link #onMomentum},
  *       {@link #openFinalArt}; {@link #onStance}, {@link #onStanceBroken}, {@link #onFinisher}, {@link #registerFinisher},
