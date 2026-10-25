@@ -132,9 +132,9 @@
     ]
   },
   "area-towns-guards": {
-    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; an inn raid belongs to its own dimension; camp pot, bounty board and sunder state is forgotten when a world closes; every network payload survives its own codec round trip; homes, warps and /back keep their warmup, cooldown, cancels and home limit; a named-elite bounty sets one marked champion loose 48 to 96 blocks out, and only the hunter's kill of it counts; an escort bounty hands over a tough, chested pack llama on a lead, abandoning it drops its cargo, arriving pays out and a dead llama loses the bounty; a wandering caravan camps 24 to 40 blocks off with its two pack llamas, sells a stranger two runes and saffron, keeps a traveller's stock, never camps beside another and moves on when its stay ends.",
+    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; an inn raid belongs to its own dimension; camp pot, bounty board and sunder state is forgotten when a world closes; every network payload survives its own codec round trip; homes, warps and /back keep their warmup, cooldown, cancels and home limit; a named-elite bounty sets one marked champion loose 48 to 96 blocks out, and only the hunter's kill of it counts; an escort bounty hands over a tough, chested pack llama on a lead, abandoning it drops its cargo, arriving pays out and a dead llama loses the bounty; a wandering caravan camps 24 to 40 blocks off with its two pack llamas, sells a stranger two runes and saffron, keeps a traveller's stock, never camps beside another and moves on when its stay ends; a Room Key lets a room only beside a keeper, a second adds its days, the traveller wakes there after dying with room and chest kept, and a stay that runs out ends.",
     "purpose": "area",
-    "expectedCount": 8,
+    "expectedCount": 9,
     "entries": [
       "dev.wildercord.town.InnChestReachTest",
       "dev.wildercord.town.InnRaidDimensionTest",
@@ -143,7 +143,8 @@
       "dev.wildercord.travel.TravelCommandsTest",
       "dev.wildercord.town.BountyHuntTest",
       "dev.wildercord.town.BountyEscortTest",
-      "dev.wildercord.town.CaravanTest"
+      "dev.wildercord.town.CaravanTest",
+      "dev.wildercord.town.InnRoomStayTest"
     ]
   }
 }
