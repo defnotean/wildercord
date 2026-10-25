@@ -23,6 +23,7 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 	private final ModelPart body,neck1,neck2,head,jaw,tail1,tail2,tail3;
 	private final ModelPart[] legs=new ModelPart[4],shins=new ModelPart[4],arms=new ModelPart[2],outers=new ModelPart[2];
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** The pose being built: each leg's thigh angle in the world and shin angle from the thigh; the body; the neck, head and jaw; the tail. */
 	private final float[] u=new float[4],l=new float[4],uz=new float[4];
 	private float pitch,roll,yaw,n1X,n1Y,n2X,n2Y,headX,headY,jawX,t1X,t2X,t3X,tY;
@@ -37,7 +38,7 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		for(int i=0;i<4;i++){legs[i]=body.getChild(names[i]);shins[i]=legs[i].getChild("shin");}
 		for(int i=0;i<2;i++){arms[i]=body.getChild(i==0?"wingL":"wingR");outers[i]=arms[i].getChild("outer");}
 		posed=new ModelPart[]{body,neck1,neck2,head,jaw,tail1,tail2,tail3,legs[0],legs[1],legs[2],legs[3],shins[0],shins[1],shins[2],shins[3],
-			arms[0],arms[1],outers[0],outers[1]};
+			arms[0],arms[1],outers[0],outers[1]};blender=new PoseBlend(posed);
 	}
 	public static LayerDefinition createLayer(){
 		var mesh=new MeshDefinition();var root=mesh.getRoot();
@@ -80,17 +81,12 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		super.setupAnim(s);
 		pose(s,s.move,s.elapsed,s.tell,s.side);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+		if(s.blend<1){
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,s.prevElapsed,s.prevTell,s.side);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose a=posed[i].storePose(),b=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,a.x(),b.x()),Mth.lerp(k,a.y(),b.y()),Mth.lerp(k,a.z(),b.z()),
-					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
-			}
+			blender.mix(k);
 		}
 		hurt(s);
 		die(s);

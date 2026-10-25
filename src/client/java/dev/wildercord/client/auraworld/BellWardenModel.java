@@ -18,6 +18,7 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 	private static final float HIPS=12,HUNCH=.32F;
 	private final ModelPart hips,body,bell,right,left,foreR,foreL,legR,legL,shinR,shinL,clapper,kelpL,kelpR,kelpB;
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** Whether its bell is torn open, for the moves it makes twice over then. */
 	private boolean cracked;
 	/** How far the kelp is flung by the move's last jolt (it hangs from the bell and swings after it), and the clock the kelp ripples on. */
@@ -26,7 +27,7 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 		super(root);hips=root.getChild("hips");body=hips.getChild("body");bell=body.getChild("bell");right=body.getChild("right");left=body.getChild("left");
 		foreR=right.getChild("fore");foreL=left.getChild("fore");legR=hips.getChild("legR");legL=hips.getChild("legL");shinR=legR.getChild("shin");shinL=legL.getChild("shin");
 		clapper=foreL.getChild("clapper");kelpL=bell.getChild("kelpL");kelpR=bell.getChild("kelpR");kelpB=bell.getChild("kelpB");
-		posed=new ModelPart[]{hips,body,bell,right,left,foreR,foreL,legR,legL,shinR,shinL,clapper,kelpL,kelpR,kelpB};
+		posed=new ModelPart[]{hips,body,bell,right,left,foreR,foreL,legR,legL,shinR,shinL,clapper,kelpL,kelpR,kelpB};blender=new PoseBlend(posed);
 	}
 	public static LayerDefinition createLayer(){
 		var mesh=new MeshDefinition();var root=mesh.getRoot();
@@ -59,16 +60,11 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 		pose(s,s.move,s.elapsed,s.tell);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
 		if(s.blend<1){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,s.prevElapsed,s.prevTell);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose a=posed[i].storePose(),b=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,a.x(),b.x()),Mth.lerp(k,a.y(),b.y()),Mth.lerp(k,a.z(),b.z()),
-					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
-			}
+			blender.mix(k);
 		}
 		hurt(s);
 		die(s);

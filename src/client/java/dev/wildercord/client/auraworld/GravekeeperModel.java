@@ -17,10 +17,11 @@ import net.minecraft.util.Mth;
 public final class GravekeeperModel extends EntityModel<GravekeeperRenderState> {
 	private final ModelPart body,head,blindfold,right,left,legR,legL,cloth,hem,crest,blade;
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	public GravekeeperModel(ModelPart root){
 		super(root);body=root.getChild("body");head=body.getChild("head");blindfold=head.getChild("blindfold");right=body.getChild("right");left=body.getChild("left");
 		legR=body.getChild("legR");legL=body.getChild("legL");cloth=body.getChild("cloth");hem=cloth.getChild("hem");crest=body.getChild("crest");blade=right.getChild("blade");
-		posed=new ModelPart[]{body,head,blindfold,right,left,legR,legL,cloth,hem,crest,blade};
+		posed=new ModelPart[]{body,head,blindfold,right,left,legR,legL,cloth,hem,crest,blade};blender=new PoseBlend(posed);
 	}
 	public static LayerDefinition createLayer(){
 		var mesh=new MeshDefinition();var root=mesh.getRoot();
@@ -48,17 +49,12 @@ public final class GravekeeperModel extends EntityModel<GravekeeperRenderState> 
 		super.setupAnim(s);
 		pose(s,s.move,s.elapsed,s.tell,s.prevMove);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+		if(s.blend<1){
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,s.prevElapsed,s.prevTell,s.prevMove);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose a=posed[i].storePose(),b=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,a.x(),b.x()),Mth.lerp(k,a.y(),b.y()),Mth.lerp(k,a.z(),b.z()),
-					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
-			}
+			blender.mix(k);
 		}
 		hurt(s);
 		die(s);

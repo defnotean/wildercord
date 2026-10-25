@@ -24,6 +24,7 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 	private final ModelPart body,neck,head,jaw,tongue,earL,earR,tail,sword,fallen,orbL,orbR,topknot,pom,beard,collar;
 	private final ModelPart[] legs=new ModelPart[4],shins=new ModelPart[4];
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** The pose being built: each leg's thigh angle in the world and shin angle from the thigh, the body, the neck, the head and so on. */
 	private final float[] u=new float[4],l=new float[4],uz=new float[4];
 	private float pitch,roll,yaw,neckX,neckY,headX,headZ,jawX,tongueX,earX,earZ,tailX,tailY,lying;
@@ -34,7 +35,7 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 		topknot=head.getChild("topknot");pom=tail.getChild("pom");beard=jaw.getChild("beard");collar=neck.getChild("collar");
 		String[] names={"legFL","legFR","legHL","legHR"};
 		for(int i=0;i<4;i++){legs[i]=body.getChild(names[i]);shins[i]=legs[i].getChild("shin");}
-		posed=new ModelPart[]{body,neck,head,jaw,tongue,earL,earR,tail,legs[0],legs[1],legs[2],legs[3],shins[0],shins[1],shins[2],shins[3]};
+		posed=new ModelPart[]{body,neck,head,jaw,tongue,earL,earR,tail,legs[0],legs[1],legs[2],legs[3],shins[0],shins[1],shins[2],shins[3]};blender=new PoseBlend(posed);
 	}
 	private static CubeListBuilder box(int tu,int tv,float x,float y,float z,float w,float h,float d){return CubeListBuilder.create().texOffs(tu,tv).addBox(x,y,z,w,h,d);}
 	/** The greatsword, its grip across the mouth, the guard at his right cheek and the blade running out past his right side. */
@@ -78,17 +79,12 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 		pose(s,s.move,hold(s.move,s.elapsed,s.tell),s.tell,s.side);
 		float lie=lying;
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+		if(s.blend<1){
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,hold(s.prevMove,s.prevElapsed,s.prevTell),s.prevTell,s.side);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose a=posed[i].storePose(),b=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,a.x(),b.x()),Mth.lerp(k,a.y(),b.y()),Mth.lerp(k,a.z(),b.z()),
-					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
-			}
+			blender.mix(k);
 			lie=Mth.lerp(k,lying,lie);
 		}
 		secondary(s);

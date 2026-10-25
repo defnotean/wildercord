@@ -25,6 +25,7 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 	private final ModelPart body,head,fangL,fangR,palpL,palpR,abdomen,spinner,thread;
 	private final ModelPart[] hips=new ModelPart[8],femurs=new ModelPart[8],tibias=new ModelPart[8];
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** The pose being built: each leg's femur lift, its tibia's bend from the femur, its fan; the body's pitch, roll and yaw; the head, fangs, palps and abdomen. */
 	private final float[] a=new float[8],b=new float[8],fan=new float[8];
 	private float pitch,roll,yaw,headX,headY,fangs,palps,abdX,abdY;
@@ -32,7 +33,7 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 		super(root);body=root.getChild("body");head=body.getChild("head");abdomen=body.getChild("abdomen");spinner=abdomen.getChild("spinner");
 		fangL=head.getChild("fangL");fangR=head.getChild("fangR");palpL=head.getChild("palpL");palpR=head.getChild("palpR");thread=root.getChild("thread");
 		for(int i=0;i<8;i++){hips[i]=body.getChild("hip"+i);femurs[i]=hips[i].getChild("femur");tibias[i]=femurs[i].getChild("tibia");}
-		posed=new ModelPart[8*3+7];
+		posed=new ModelPart[8*3+7];blender=new PoseBlend(posed);
 		posed[0]=body;posed[1]=head;posed[2]=abdomen;posed[3]=fangL;posed[4]=fangR;posed[5]=palpL;posed[6]=palpR;
 		for(int i=0;i<8;i++){posed[7+i]=hips[i];posed[15+i]=femurs[i];posed[23+i]=tibias[i];}
 	}
@@ -62,17 +63,12 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 		super.setupAnim(s);
 		pose(s,s.move,s.elapsed,s.tell,s.side);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+		if(s.blend<1){
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,s.prevElapsed,s.prevTell,s.side);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose pa=posed[i].storePose(),pb=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,pa.x(),pb.x()),Mth.lerp(k,pa.y(),pb.y()),Mth.lerp(k,pa.z(),pb.z()),
-					Mth.lerp(k,pa.xRot(),pb.xRot()),Mth.lerp(k,pa.yRot(),pb.yRot()),Mth.lerp(k,pa.zRot(),pb.zRot())));
-			}
+			blender.mix(k);
 		}
 		hurt(s);
 		die(s);

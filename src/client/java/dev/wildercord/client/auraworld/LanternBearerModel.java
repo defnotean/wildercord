@@ -21,6 +21,7 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 	private final ModelPart[] tatters=new ModelPart[10];
 	private final ModelPart body,head,skirt,cape,armR,foreR,spade,armL,foreL,crook,lantern;
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** The pose being built: the body's drop, lean, twist and sway; the head; each arm, its elbow, and the world pitch and slide of what it holds. */
 	private float by,bX,bY,bZ,hX,hY,rX,rY,rZ,rE,spadeW,spadeSlide,lX,lY,lZ,lE,crookW,crookSlide,swing,swingZ,skirtX,capeX;
 	/** How far the cape's lower piece swings past the upper (each move sets it a beat after the cape itself moves), and the same for the hem's tatters. */
@@ -32,7 +33,7 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		armL=body.getChild("armL");foreL=armL.getChild("fore");crook=foreL.getChild("crook");lantern=crook.getChild("tip").getChild("lantern");
 		capeTip=cape.getChild("capeTip");
 		for(int i=0;i<10;i++)tatters[i]=skirt.getChild("tatter"+i);
-		posed=new ModelPart[]{body,head,skirt,cape,capeTip,armR,foreR,spade,armL,foreL,crook,lantern};
+		posed=new ModelPart[]{body,head,skirt,cape,capeTip,armR,foreR,spade,armL,foreL,crook,lantern};blender=new PoseBlend(posed);
 	}
 	public static LayerDefinition createLayer(){
 		var mesh=new MeshDefinition();var root=mesh.getRoot();
@@ -78,16 +79,11 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 		pose(s,s.move,s.elapsed,s.tell,s.side);
 		// Blending out of the move before (or the same move begun again), so one blow flows into the next instead of snapping.
 		if(s.blend<1){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,s.prevElapsed,s.prevTell,s.side);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose a=posed[i].storePose(),b=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,a.x(),b.x()),Mth.lerp(k,a.y(),b.y()),Mth.lerp(k,a.z(),b.z()),
-					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
-			}
+			blender.mix(k);
 		}
 		lantern.visible=LanternBearerRules.holdsLantern(s.rise);
 	}
