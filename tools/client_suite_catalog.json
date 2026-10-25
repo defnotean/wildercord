@@ -130,16 +130,17 @@
     ]
   },
   "area-towns-guards": {
-    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; an inn raid belongs to its own dimension; camp pot, bounty board and sunder state is forgotten when a world closes; every network payload survives its own codec round trip; homes, warps and /back keep their warmup, cooldown, cancels and home limit; a named-elite bounty sets one marked champion loose 48 to 96 blocks out, and only the hunter's kill of it counts.",
+    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; an inn raid belongs to its own dimension; camp pot, bounty board and sunder state is forgotten when a world closes; every network payload survives its own codec round trip; homes, warps and /back keep their warmup, cooldown, cancels and home limit; a named-elite bounty sets one marked champion loose 48 to 96 blocks out, and only the hunter's kill of it counts; an escort bounty hands over a tough, chested pack llama on a lead, abandoning it drops its cargo, arriving pays out and a dead llama loses the bounty.",
     "purpose": "area",
-    "expectedCount": 6,
+    "expectedCount": 7,
     "entries": [
       "dev.wildercord.town.InnChestReachTest",
       "dev.wildercord.town.InnRaidDimensionTest",
       "dev.wildercord.town.SessionMapsClearTest",
       "dev.wildercord.net.PayloadCodecRoundTripTest",
       "dev.wildercord.travel.TravelCommandsTest",
-      "dev.wildercord.town.BountyHuntTest"
+      "dev.wildercord.town.BountyHuntTest",
+      "dev.wildercord.town.BountyEscortTest"
     ]
   }
 }
