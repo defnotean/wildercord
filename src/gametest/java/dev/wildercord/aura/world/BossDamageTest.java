@@ -26,6 +26,16 @@ public final class BossDamageTest implements FabricClientGameTest {
 		p.hurtServer(s.overworld(), s.overworld().damageSources().mobAttack(mob(s, id)), 10);
 		return before - p.getHealth();
 	}
+	/** What the player's own {@code method} defence leaves of a 10-damage blow. */
+	private static float absorbed(ServerPlayer p, net.minecraft.world.damagesource.DamageSource source, String method) {
+		try {
+			var m = net.minecraft.world.entity.LivingEntity.class.getDeclaredMethod(method, net.minecraft.world.damagesource.DamageSource.class, float.class);
+			m.setAccessible(true);
+			return (float) m.invoke(p, source, 10f);
+		} catch (ReflectiveOperationException e) {
+			throw new AssertionError("No " + method, e);
+		}
+	}
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
@@ -53,9 +63,10 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var bossHit = s.overworld().damageSources().mobAttack(mob(s, "wildercord:cinder_warden"));
 				float through = BossDamage.pierce(p(s), bossHit, 10, 0);
 				check(Math.abs(through - 10 * BossDamageRules.PIERCE) < 0.01f, "A boss's blow goes partly through what a defence stops: " + through);
+				float armoured = absorbed(p(s), bossHit, "getDamageAfterArmorAbsorb"), shielded = absorbed(p(s), bossHit, "getDamageAfterMagicAbsorb");
 				float zombie = taken(s, "minecraft:zombie"), warden = taken(s, "wildercord:cinder_warden");
 				check(zombie > 0 && zombie < 1.5f, "An ordinary 10-damage blow barely scratches diamond and Protection IV: " + zombie);
-				check(warden >= 4f && warden <= 6.5f, "A boss's 10-damage blow lands hard through diamond and Protection IV: " + warden);
+				check(warden >= 4f && warden <= 6.5f, "A boss's 10-damage blow lands hard through diamond and Protection IV: " + warden + " (armour leaves " + armoured + ", Protection leaves " + shielded + " of 10)");
 				check(warden > zombie * 3, "A boss's blow lands several times an ordinary mob's: " + warden + " against " + zombie);
 			});
 		}
