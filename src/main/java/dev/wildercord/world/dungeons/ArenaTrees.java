@@ -238,7 +238,7 @@ public final class ArenaTrees {
 	}
 
 	/**
-	 * The logs joined to {@code seed} inside {@code box}, if they make a tree the biome grew: rooted in dirt, under no
+	 * The logs joined to {@code seed} inside {@code box}, if they make a tree the biome grew: rooted in soil (grass, dirt, podzol, moss, mud), under no
 	 * placed (persistent) leaf, and no bigger than a tree gets. Null for anything else, such as a dungeon's beam.
 	 */
 	private static List<BlockPos> tree(ServerLevel level, BoundingBox box, BlockPos seed, Set<BlockPos> seen) {
@@ -250,7 +250,7 @@ public final class ArenaTrees {
 		while (!open.isEmpty()) {
 			BlockPos log = open.poll();
 			logs.add(log);
-			rooted |= level.getBlockState(log.below()).is(BlockTags.DIRT);
+			rooted |= level.getBlockState(log.below()).is(BlockTags.SUBSTRATE_OVERWORLD);
 			for (BlockPos near : BlockPos.betweenClosed(log.offset(-1, -1, -1), log.offset(1, 1, 1))) {
 				BlockState state = level.getBlockState(near);
 				if (state.getBlock() instanceof LeavesBlock && !wildLeaf(state)) {
