@@ -22,7 +22,8 @@ import java.util.UUID;
  * Founding a guild and a coven in the real game, through the player's own commands: refused before learning a breathing
  * method and short of emeralds (none taken), founded for the full cost, a bad or taken name refused for the coven, a coven
  * founded alongside the guild, an away member kicked by name, the leader leaving handing the guild to the longest-standing
- * member, and both kept through a save and reopen.
+ * member, both kept through a save and reopen, and an invitation
+ * joining only the kind it was for.
  */
 public final class GuildFoundingTest implements FabricClientGameTest {
 	private static final String GUILD = "Ashen Blades";
@@ -136,6 +137,10 @@ public final class GuildFoundingTest implements FabricClientGameTest {
 				// The last one out ends a coven.
 				run(s, "coven leave");
 				check(Guilds.ledger(s).roster().named(COVEN) == null, "The last member leaving ends the coven");
+
+				// An invitation names its kind: one to a coven can't land its guest in a guild of the same name.
+				check(Guilds.ledger(s).change(r -> r.join(ODA, GUILD, Kind.COVEN)) == GuildRules.Result.NO_SUCH, "A coven invitation doesn't join a guild");
+				check(!Guilds.ledger(s).roster().named(GUILD).has(ODA), "and Oda is still out of the guild");
 			});
 		}
 	}

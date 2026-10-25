@@ -87,4 +87,16 @@ class GuildRulesTest {
 		assertEquals(1.15, GuildRules.bonus(11), 1e-9);
 		assertEquals(1.0, GuildRules.bonus(-2), 1e-9);
 	}
+
+	/** An invitation to a guild that was disbanded can't land its guest in a coven later founded under the same name. */
+	@Test
+	void anInvitationOnlyJoinsTheKindItWasFor() {
+		Roster r = new Roster();
+		r.found(A, Kind.GUILD, "Iron Wake");
+		r.disband(A, Kind.GUILD);
+		r.found(C, Kind.COVEN, "Iron Wake");
+		assertEquals(Result.NO_SUCH, r.join(B, "Iron Wake", Kind.GUILD));
+		assertNull(r.of(B, Kind.COVEN));
+		assertEquals(Result.OK, r.join(B, "iron wake", Kind.COVEN));
+	}
 }
