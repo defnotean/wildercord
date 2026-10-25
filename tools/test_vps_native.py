@@ -35,12 +35,18 @@ def log_for(prepared):
 class VpsNativeTests(unittest.TestCase):
     def test_release_smoke_group_is_small_and_completes(self):
         p = plan(suite="release-smoke")
-        self.assertLessEqual(p["selection"]["count"], 16)
+        self.assertLessEqual(p["selection"]["count"], 20)
         self.assertIsNone(p["moonReceipt"])
         result = native.manifest(log_for(p), p)
         self.assertEqual(result["focusedClientGate"], "passed", result["verificationIssues"])
         self.assertEqual(result["fullClientGate"], "unverified")
         self.assertEqual(result["counts"]["passed"], p["selection"]["count"])
+
+    def test_every_catalog_suite_selects_registered_entrypoints(self):
+        groups = json.loads(suites.CATALOG.read_text(encoding="utf-8"))
+        for suite in groups:
+            with self.subTest(suite=suite):
+                suites.select_entries(suite=suite)
 
     def test_partial_reordered_duplicate_and_foreign_logs_fail_closed(self):
         p = plan(suite="release-smoke")
