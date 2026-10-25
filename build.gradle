@@ -226,6 +226,8 @@ tasks.named('runClientGameTest') {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = targetJavaVersion
+	// Warnings only: they show deprecated Minecraft API and raw generics as the code is touched.
+	it.options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
 }
 
 test {
