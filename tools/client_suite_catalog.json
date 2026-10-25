@@ -59,16 +59,17 @@
     ]
   },
   "area-rituals-parties": {
-    "description": "Rituals and parties: relay circles, party admission during release, excise, basinfill and farm-spell casts.",
+    "description": "Rituals and parties: relay circles, party admission during release, excise, basinfill and farm-spell casts, founding a guild and a coven.",
     "purpose": "area",
-    "expectedCount": 6,
+    "expectedCount": 7,
     "entries": [
       "dev.wildercord.party.RelayImpactTest",
       "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.ExcisePlayableTest",
       "dev.wildercord.cast.BasinfillTest",
       "dev.wildercord.cast.FarmSoilTest",
-      "dev.wildercord.ritual.RenamedReagentTest"
+      "dev.wildercord.ritual.RenamedReagentTest",
+      "dev.wildercord.guild.GuildFoundingTest"
     ]
   },
   "area-regions-worldgen": {
