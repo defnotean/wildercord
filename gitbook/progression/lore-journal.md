@@ -151,7 +151,8 @@ Aura Shard in total, once per player, without requiring combat or Aura rank.
 Highland wind mark, the Belowkeeper shutter and the Emberwood draft lamp. Sneak-use each regional
 keeper again (the Reedkeeper, Cairn Keeper, Listener and Kiln Keeper) to hear their answer. It pays
 120 XP, four Blank Runes, five Aura Shards and Aura experience, and ends with a **Lamplighter's
-Lantern**, a keepsake that is yours alone: held in either hand in the dark, it gives you night vision. The lead can be done once per player.
+Lantern**, a keepsake that is yours alone: held in either hand in the dark, it gives you night vision. The lead can be done once per player, and finishing it earns the
+**Four Lamps, One Road** advancement (a goal, 50 XP).
 
 Older boathouses retain their existing furnishings and lighthouse books retain their existing pages.
 Their structure discoveries and working lamps still count toward the route, so an older building

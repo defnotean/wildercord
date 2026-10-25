@@ -1,0 +1,35 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "four_lamps": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:lamplighters_lantern"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:lamplighters_lantern"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.four_lamps.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.four_lamps.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "four_lamps"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

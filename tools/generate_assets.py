@@ -3627,6 +3627,7 @@ feat_adv("ley_line", "root", rune("vein"), description="Stand on a ley line, whe
 feat_adv("wellstone", "world/ley_line", item("wellstone"), description="Wake a Wellstone by setting it on a ley line", xp=30)
 feat_adv("ley_crossing", "world/ley_line", rune("vein"), description="Stand where two ley lines cross, a place of power", xp=25)
 feat_adv("residue", "world/ley_line", item("everfrost_shard"), description="Harvest a residue that big magic left on the world", xp=20)
+adv("world/four_lamps", "world/ley_line", item("lamplighters_lantern"), "Four Lamps, One Road", "Light the four regional lamps and hear each keeper out", has_item("wildercord:lamplighters_lantern"), frame="goal", xp=50)
 adv("world/archive", "world/ley_line", item("minecraft:chiseled_bookshelf"), "The Buried Library", "Find an Archive", in_structure("wildercord:archive"), xp=25)
 feat_adv("seal", "world/archive", item("rune_seal"), description="Open a Rune Seal door in an Archive", xp=30)
 feat_adv("archivist", "world/seal", item("archive_lectern"), description="Defeat the Archivist", frame="challenge", xp=500, loot=["mana_crystals"])

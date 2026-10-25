@@ -6,7 +6,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Added
 
-- **Four Lamps, One Road**, a journal capstone that opens when the Reedlands, Highland, Belowkeeper and Emberwood lamps are all lit and each regional keeper has answered. It pays 120 XP, four Blank Runes, five Aura Shards and Aura experience, and ends with the Lamplighter's Lantern keepsake (night vision while held in the dark), a flare of end-rod light and a bell.
+- **Four Lamps, One Road**, a journal capstone that opens when the Reedlands, Highland, Belowkeeper and Emberwood lamps are all lit and each regional keeper has answered. It pays 120 XP, four Blank Runes, five Aura Shards and Aura experience, and ends with the Lamplighter's Lantern keepsake (night vision while held in the dark), a flare of end-rod light and a bell. Finishing it earns the Four Lamps, One Road advancement (a goal, 50 XP).
 - Gathering bounties can ask for Moonreed Floss, Dried Glowcap Gills and Ember Tuft.
 - Wandering caravaneers buy those three goods, four at a time, for an emerald each.
 - Weaver's Silk can be put away and taken out again with `G` (rebindable) or `/silk`, so it stops catching you on walls while you jump around. The choice is kept through death and relogs.

@@ -9215,5 +9215,7 @@
   "block.wildercord.water_reservation": "Held Water",
   "block.wildercord.wind_step": "Wind Step",
   "block.wildercord.rime_step": "Rime Step",
-  "block.wildercord.thunder_step": "Thunder Step"
+  "block.wildercord.thunder_step": "Thunder Step",
+  "advancements.wildercord.world.four_lamps.title": "Four Lamps, One Road",
+  "advancements.wildercord.world.four_lamps.description": "Light the four regional lamps and hear each keeper out"
 }
