@@ -64,6 +64,11 @@ public final class BossDamageTest implements FabricClientGameTest {
 				float through = BossDamage.pierce(p(s), bossHit, 10, 0);
 				check(Math.abs(through - 10 * BossDamageRules.PIERCE) < 0.01f, "A boss's blow goes partly through what a defence stops: " + through);
 				float armoured = absorbed(p(s), bossHit, "getDamageAfterArmorAbsorb"), shielded = absorbed(p(s), bossHit, "getDamageAfterMagicAbsorb");
+				var plainHit = s.overworld().damageSources().mobAttack(mob(s, "minecraft:zombie"));
+				for (var defence : new String[] {"getDamageAfterArmorAbsorb", "getDamageAfterMagicAbsorb"}) {
+					float plain = absorbed(p(s), plainHit, defence), boss = absorbed(p(s), bossHit, defence), expected = plain + (10 - plain) * (float) BossDamageRules.PIERCE;
+					check(plain < 10 && Math.abs(boss - expected) < 0.01f, defence + " lets a boss's blow partly through: " + boss + " of 10, against " + plain + " for a zombie (expected " + expected + ")");
+				}
 				float zombie = taken(s, "minecraft:zombie"), warden = taken(s, "wildercord:cinder_warden");
 				check(zombie > 0 && zombie < 1.5f, "An ordinary 10-damage blow barely scratches diamond and Protection IV: " + zombie);
 				check(warden >= 4f && warden <= 6.5f, "A boss's 10-damage blow lands hard through diamond and Protection IV: " + warden + " (armour leaves " + armoured + ", Protection leaves " + shielded + " of 10)");
