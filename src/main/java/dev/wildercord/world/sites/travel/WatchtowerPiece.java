@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -60,7 +61,7 @@ public final class WatchtowerPiece extends TravelPiece {
 		for (int y = 1; y <= TOP; y++) set(level, bb, b(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.SOUTH), 5, y, 7);
 		for (int y : new int[]{4, 10, 16}) set(level, bb, b(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 4, y + 1, 4);
 		// The Road Wardens' colours on the face that looks down the road.
-		for (int x : new int[]{4, 6}) banner(level, bb, Blocks.BLUE_WALL_BANNER, x, 14, 1, Direction.SOUTH);
+		for (int x : new int[]{4, 6}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), x, 14, 1, Direction.SOUTH);
 		// The top: an overhanging floor on a corbel course, crenellations, the cold signal fire and the watch chest.
 		ring(level, bb, 1, TOP - 1, Blocks.STONE_BRICK_STAIRS, true, false);
 		fill(level, bb, 1, TOP, 1, 9, TOP, 9, shaft);
