@@ -255,7 +255,8 @@ def main(argv=None):
             if options.mode == "build":
                 commands = [("build", gradle + ["build", "compileGametestJava", *flags]),
                             ("assets", [sys.executable, "tools/check_generated_assets.py"]),
-                            ("guide", [sys.executable, "tools/player_docs.py", "--check"])]
+                            ("guide", [sys.executable, "tools/player_docs.py", "--check"]),
+                            ("tools", [sys.executable, "-m", "unittest", "discover", "-s", "tools", "-p", "test_*.py"])]
             else:
                 environment["WILDERCORD_FULL_CLIENT_LAUNCH_ID"] = launch
                 environment.setdefault("ALSOFT_DRIVERS", "null")
