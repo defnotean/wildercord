@@ -7,6 +7,8 @@ import net.minecraft.util.RandomSource;
 
 /** Faceted stone, soil, roots, bone and crystals: all use the world's light, with physical debris motion. */
 public final class EarthParticle extends SingleQuadParticle implements SigilGroup.Extent {
+ /** Its two animation frames, looked up once instead of by name every tick. */
+ private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
  private final EarthOption material;
  EarthParticle(ClientLevel level,double x,double y,double z,EarthOption option) {
   super(level,x,y,z,SpellCircleParticle.particleSprite("earth_"+option.style()+"_0"));
@@ -30,7 +32,8 @@ public final class EarthParticle extends SingleQuadParticle implements SigilGrou
   alpha=Math.min(1,age*.8F)*Math.min(1,remaining*3);
   if(material.style()==EarthOption.DUST)alpha*=.62F;
   if(MagicQuality.reducedFlash)alpha*=.72F;
-  setSprite(SpellCircleParticle.particleSprite("earth_"+material.style()+"_"+(age<lifetime/2?0:1)));
+  if(frames==null)frames=new net.minecraft.client.renderer.texture.TextureAtlasSprite[]{SpellCircleParticle.particleSprite("earth_"+material.style()+"_0"),SpellCircleParticle.particleSprite("earth_"+material.style()+"_1")};
+  setSprite(frames[age<lifetime/2?0:1]);
  }
  @Override protected Layer getLayer(){return Layer.TRANSLUCENT;}
  @Override public int getLightCoords(float partial){return super.getLightCoords(partial);}

@@ -35,6 +35,10 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 	/** Texture size, the ring's sides, and how much wider than tall the body is. */
 	static final float TEX_W=128,TEX_H=64;
 	private static final int SIDES=8;
+	private static final double[] COS=new double[SIDES+1],SIN=new double[SIDES+1];
+	static{for(int k=0;k<=SIDES;k++){COS[k]=Math.cos(Math.PI*2*k/SIDES);SIN[k]=Math.sin(Math.PI*2*k/SIDES);}}
+	/** The tube's ring points and normals, x y z per point, reused frame to frame on the render thread. */
+	private static float[] rings=new float[0],normals=new float[0];
 	private static final double WIDE=1.15,TALL=0.9;
 	/** How many ticks of a recoil it takes to settle from where the body lay into the climb. */
 	private static final float SETTLE=12.5F;
@@ -202,7 +206,8 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 	/** The tube: a flattened ring round each joint, joined to the next. Columns of the band run round the ring, dorsal at a quarter. */
 	private static void body(SerpentRenderState state,PoseStack.Pose pose,VertexConsumer buffer,int overlay){
 		int n=state.joints.length/3;
-		float[][][] rings=new float[n][SIDES+1][],normals=new float[n][SIDES+1][];
+		int size=n*(SIDES+1)*3;
+		if(rings.length<size){rings=new float[size];normals=new float[size];}
 		float[][] sides=frames(state.joints,n);
 		for(int i=0;i<n;i++){
 			int a=Math.max(0,i-1),b=Math.min(n-1,i+1);
@@ -212,21 +217,22 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 			float[] u={s[1]*t[2]-s[2]*t[1],s[2]*t[0]-s[0]*t[2],s[0]*t[1]-s[1]*t[0]};
 			double r=SerpentSpine.radius(i);
 			for(int k=0;k<=SIDES;k++){
-				double ang=Math.PI*2*k/SIDES,c=Math.cos(ang),sn=Math.sin(ang);
+				double c=COS[k],sn=SIN[k];
 				float ox=(float)(s[0]*c*r*WIDE+u[0]*sn*r*TALL),oy=(float)(s[1]*c*r*WIDE+u[1]*sn*r*TALL),oz=(float)(s[2]*c*r*WIDE+u[2]*sn*r*TALL);
-				rings[i][k]=new float[]{state.joints[i*3]+ox,state.joints[i*3+1]+oy,state.joints[i*3+2]+oz};
-				float[] nn=norm((float)(s[0]*c+u[0]*sn),(float)(s[1]*c+u[1]*sn),(float)(s[2]*c+u[2]*sn));
-				normals[i][k]=nn==null?u:nn;
+				int at=(i*(SIDES+1)+k)*3;
+				rings[at]=state.joints[i*3]+ox;rings[at+1]=state.joints[i*3+1]+oy;rings[at+2]=state.joints[i*3+2]+oz;
+				float nx=(float)(s[0]*c+u[0]*sn),ny=(float)(s[1]*c+u[1]*sn),nz=(float)(s[2]*c+u[2]*sn),l=(float)Math.sqrt(nx*nx+ny*ny+nz*nz);
+				if(l<1e-6F){normals[at]=u[0];normals[at+1]=u[1];normals[at+2]=u[2];}else{normals[at]=nx/l;normals[at+1]=ny/l;normals[at+2]=nz/l;}
 			}
 		}
 		for(int i=0;i<n-1;i++){
 			float v0=(i%4)*16/TEX_H,v1=v0+16/TEX_H;
 			for(int k=0;k<SIDES;k++){
 				float u0=k*8/TEX_W,u1=(k+1)*8/TEX_W;
-				vertex(buffer,pose,rings[i][k],normals[i][k],u0,v0,overlay,state.lights[i]);
-				vertex(buffer,pose,rings[i+1][k],normals[i+1][k],u0,v1,overlay,state.lights[i+1]);
-				vertex(buffer,pose,rings[i+1][k+1],normals[i+1][k+1],u1,v1,overlay,state.lights[i+1]);
-				vertex(buffer,pose,rings[i][k+1],normals[i][k+1],u1,v0,overlay,state.lights[i]);
+				vertex(buffer,pose,(i*(SIDES+1)+k)*3,u0,v0,overlay,state.lights[i]);
+				vertex(buffer,pose,((i+1)*(SIDES+1)+k)*3,u0,v1,overlay,state.lights[i+1]);
+				vertex(buffer,pose,((i+1)*(SIDES+1)+k+1)*3,u1,v1,overlay,state.lights[i+1]);
+				vertex(buffer,pose,(i*(SIDES+1)+k+1)*3,u1,v0,overlay,state.lights[i]);
 			}
 		}
 	}
@@ -254,8 +260,8 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 		return sides;
 	}
 
-	private static void vertex(VertexConsumer buffer,PoseStack.Pose pose,float[] p,float[] n,float u,float v,int overlay,int light){
-		buffer.addVertex(pose,p[0],p[1],p[2]).setColor(0xFFFFFFFF).setUv(u,v).setOverlay(overlay).setLight(light).setNormal(pose,n[0],n[1],n[2]);
+	private static void vertex(VertexConsumer buffer,PoseStack.Pose pose,int at,float u,float v,int overlay,int light){
+		buffer.addVertex(pose,rings[at],rings[at+1],rings[at+2]).setColor(0xFFFFFFFF).setUv(u,v).setOverlay(overlay).setLight(light).setNormal(pose,normals[at],normals[at+1],normals[at+2]);
 	}
 
 	static float[] norm(float x,float y,float z){
