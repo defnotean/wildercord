@@ -19,7 +19,7 @@ Standing in one adds a Places entry to your [lore journal]({{ '/progression/lore
 
 **Town life (0.12).** Every inn has a **bounty board** by the door and three keepers who stay home, can’t be hurt and never leave. An inn generated before 0.12 gets its board and keepers the first time someone walks in (0.13).
 
-- **The bounty board** offers you one bounty a day. Click it to read the bounty, click again to take it, and click once it’s done to be paid. Sneak-click to give a bounty up. The better the keepers know you, the more kinds it offers (0.13):
+- **The bounty board** offers you one bounty a day. Click it to read the bounty, click again to take it, and click once it’s done to be paid. Sneak-click to give a bounty up. The board can’t be broken. The better the keepers know you, the more kinds it offers (0.13):
   - **Hunts** (from the start): 3 to 8 of one creature, slain within 256 blocks of the board, for up to 8 emeralds and 5 to 10 reputation.
   - **Gathering** (Known): bring the board 4 to 32 of one thing, such as leather, string, bone or amethyst. It's checked and taken from your pack when you click the board.
   - **The great bounty** (Known): once a week, your first bounty is a great hunt of 12 to 20 creatures, for 24 emeralds, 2 Mana Crystals and 20 reputation.
