@@ -18,6 +18,7 @@
       "dev.wildercord.loadout.LoadoutsTest",
       "dev.wildercord.gear.GearLootTest",
       "dev.wildercord.town.InnRoomStayTest",
+      "dev.wildercord.wildlife.MountBondPerksTest",
       "dev.wildercord.gametest.WildercordMeditationTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
       "dev.wildercord.wildlife.RootmoltPlacementTest",
