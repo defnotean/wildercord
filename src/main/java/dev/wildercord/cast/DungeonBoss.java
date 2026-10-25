@@ -274,8 +274,7 @@ public abstract class DungeonBoss extends Monster {
 		boss.snapTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
 		boss.home = altar.immutable();
 		boss.readyAt = level.getGameTime() + 60;
-		level.addFreshEntity(boss);
-		return boss;
+		return level.addFreshEntity(boss) ? boss : null;
 	}
 
 	/** Tells everyone near. */

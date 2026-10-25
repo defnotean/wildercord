@@ -77,9 +77,13 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 		}
 		for (ServerPlayer player : server.players()) {
 			if (!player.isSpectator() && player.position().distanceTo(Vec3.atCenterOf(pos)) <= kind.reach) {
-				level.setBlock(pos, state.setValue(DungeonAltarBlock.AWAKE, true), Block.UPDATE_ALL);
 				Entity woken = kind.wake(server, pos);
-				entity.boss = woken == null ? null : woken.getUUID();
+				if (woken == null) {
+					// It couldn't rise: stay asleep and try again, rather than standing awake with no boss to watch.
+					return;
+				}
+				level.setBlock(pos, state.setValue(DungeonAltarBlock.AWAKE, true), Block.UPDATE_ALL);
+				entity.boss = woken.getUUID();
 				entity.slain = false;
 				entity.missingSince = 0;
 				entity.setChanged();
