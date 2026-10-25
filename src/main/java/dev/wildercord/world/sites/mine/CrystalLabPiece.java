@@ -24,7 +24,7 @@ import java.util.Optional;
  * three-layer shell is set all round, so no cave water or lava gets in. Peaceful. Local y 33 is the ground.
  */
 public final class CrystalLabPiece extends MinePiece {
-	static final int WIDTH = 21, HEIGHT = 40, DEPTH = 21, SURFACE = 33, CX = 10, CY = 9, CZ = 10, PLATFORM = 6;
+	static final int WIDTH = 21, HEIGHT = 42, DEPTH = 21, SURFACE = 33, CX = 10, CY = 9, CZ = 10, PLATFORM = 6;
 
 	public CrystalLabPiece(int x, int y, int z, Direction facing) {
 		super(MineSites.CRYSTAL_LAB, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -62,6 +62,11 @@ public final class CrystalLabPiece extends MinePiece {
 		return d > 6.8 && d <= 7.7;
 	}
 
+	/** A platform cell on the rim, where a neighbour falls outside the hollow. */
+	private static boolean rim(int x, int z) {
+		return hollow(x, PLATFORM, z) && (!hollow(x + 1, PLATFORM, z) || !hollow(x - 1, PLATFORM, z) || !hollow(x, PLATFORM, z + 1) || !hollow(x, PLATFORM, z - 1));
+	}
+
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb, ChunkPos chunk,
 			BlockPos reference) {
@@ -74,8 +79,17 @@ public final class CrystalLabPiece extends MinePiece {
 				: y < PLATFORM && amethyst(x, y - 1, z) && noise(z, y, x) < 35 ? s(Blocks.AMETHYST_CLUSTER) : AIR;
 			set(level, bb, state, x, y, z);
 		}
-		// The surveyors' platform and their bench.
-		for (int x = 0; x < WIDTH; x++) for (int z = 0; z < DEPTH; z++) if (hollow(x, PLATFORM, z)) set(level, bb, s(Blocks.DARK_OAK_PLANKS), x, PLATFORM, z);
+		// The surveyors' platform: dark oak boards inside a stripped-log rim, a calcite cross laid into it, on four posts.
+		for (int x = 0; x < WIDTH; x++) for (int z = 0; z < DEPTH; z++) {
+			if (!hollow(x, PLATFORM, z)) continue;
+			boolean cross = (x == CX || z == CZ) && !(x == CX && z == CZ) && Math.abs(x - CX) + Math.abs(z - CZ) <= 3;
+			set(level, bb, rim(x, z) ? s(Blocks.STRIPPED_DARK_OAK_LOG) : cross ? s(Blocks.CALCITE) : s(Blocks.DARK_OAK_PLANKS), x, PLATFORM, z);
+			if (rim(x, z)) set(level, bb, s(Blocks.DARK_OAK_FENCE), x, PLATFORM + 1, z);
+		}
+		for (int dx : new int[] {-3, 3}) for (int dz : new int[] {-3, 3}) {
+			for (int y = 0; y < PLATFORM; y++) if (hollow(CX + dx, y, CZ + dz)) set(level, bb, s(Blocks.DARK_OAK_LOG), CX + dx, y, CZ + dz);
+		}
+		// The bench: lectern, table and stand where they always were, the survey's shelves along the west rim.
 		int y = PLATFORM + 1;
 		set(level, bb, s(Blocks.LECTERN), 7, y, 12);
 		set(level, bb, s(Blocks.CARTOGRAPHY_TABLE), 8, y, 7);
@@ -86,15 +100,45 @@ public final class CrystalLabPiece extends MinePiece {
 		set(level, bb, s(Blocks.LANTERN), 13, y, 12);
 		set(level, bb, s(Blocks.TINTED_GLASS), 6, y, 10);
 		set(level, bb, s(Blocks.AMETHYST_CLUSTER), 6, y + 1, 10);
-		// The shaft: a stone collar through the rock, a calcite post for the ladder below it.
+		for (int z : new int[] {8, 12}) {
+			set(level, bb, s(Blocks.BOOKSHELF), 5, y, z);
+			set(level, bb, s(Blocks.BOOKSHELF), 5, y + 1, z);
+			set(level, bb, s(Blocks.AMETHYST_CLUSTER), 5, y + 2, z);
+		}
+		// Lanterns on long chains from the crown of the geode, one over each quarter of the platform.
+		hangingLantern(level, bb, CX - 4, 14, CZ, 3, false);
+		hangingLantern(level, bb, CX + 4, 14, CZ, 3, false);
+		hangingLantern(level, bb, CX, 14, CZ - 4, 3, false);
+		hangingLantern(level, bb, CX, 14, CZ + 4, 3, false);
+		// The shaft: a stone collar through the rock with a lit course every few blocks, a calcite post for the ladder below it.
 		fill(level, bb, CX - 1, 15, CZ - 1, CX + 1, SURFACE - 1, CZ + 1, s(Blocks.STONE_BRICKS));
+		for (int sy = 18; sy < SURFACE - 1; sy += 5) set(level, bb, s(Blocks.GLOWSTONE), CX - 1, sy, CZ);
+		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), CX - 1, 15, CZ - 1);
+		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), CX + 1, 15, CZ - 1);
 		fill(level, bb, CX, y, CZ + 1, CX, 14, CZ + 1, s(Blocks.CALCITE));
 		fill(level, bb, CX, y, CZ, CX, SURFACE - 1, CZ, s(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.SOUTH));
-		// The cairn: a ring of cobble round a trapdoor, the survey pole and its crystal.
-		fill(level, bb, CX - 3, SURFACE + 1, CZ - 3, CX + 3, SURFACE + 6, CZ + 3, AIR);
+		// The surface: a stone plinth round the hatch, cleared ground and a flagstone path in from the south.
+		Palette flags = Palette.of(Blocks.STONE_BRICKS, 5, Blocks.MOSSY_STONE_BRICKS, 2, Blocks.CRACKED_STONE_BRICKS, 2, Blocks.COBBLESTONE, 1);
+		fill(level, bb, CX - 3, SURFACE + 1, CZ - 3, CX + 3, SURFACE + 8, CZ + 3, AIR);
+		footing(level, bb, CX - 2, CZ - 2, CX + 2, CZ + 2, SURFACE, s(Blocks.COBBLESTONE));
+		fill(level, bb, CX - 2, SURFACE, CZ - 2, CX + 2, SURFACE, CZ + 2, flags);
+		for (int z = CZ - 6; z <= CZ - 3; z++) set(level, bb, noise(CX, z) < 30 ? s(Blocks.DIRT_PATH) : flags.at(CX, SURFACE, z), CX, SURFACE, z);
+		// The cairn: a ring of cobble round a trapdoor.
 		fill(level, bb, CX - 1, SURFACE, CZ - 1, CX + 1, SURFACE, CZ + 1, s(Blocks.COBBLESTONE));
 		set(level, bb, s(Blocks.SPRUCE_TRAPDOOR).setValue(TrapDoorBlock.HALF, Half.TOP), CX, SURFACE, CZ);
 		for (int dx : new int[] {-1, 1}) for (int dz : new int[] {-1, 1}) set(level, bb, s(Blocks.MOSSY_COBBLESTONE_WALL), CX + dx, SURFACE + 1, CZ + dz);
+		// The survey pavilion over the hatch: basalt posts with calcite capitals under a hipped spruce roof crowned with amethyst.
+		for (int dx : new int[] {-2, 2}) for (int dz : new int[] {-2, 2}) {
+			pillar(level, bb, CX + dx, CZ + dz, SURFACE + 1, SURFACE + 4, s(Blocks.POLISHED_BASALT), s(Blocks.SMOOTH_BASALT), s(Blocks.CALCITE));
+		}
+		for (int dx = -1; dx <= 1; dx++) {
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, true), CX + dx, SURFACE + 4, CZ + 2);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, true), CX + dx, SURFACE + 4, CZ - 2);
+		}
+		hipRoof(level, bb, CX - 1, CZ - 1, CX + 1, CZ + 1, SURFACE + 5, Blocks.SPRUCE_STAIRS, s(Blocks.SPRUCE_PLANKS), s(Blocks.CALCITE));
+		set(level, bb, s(Blocks.AMETHYST_CLUSTER), CX, SURFACE + 8, CZ);
+		hangingLantern(level, bb, CX, SURFACE + 5, CZ, 1, false);
+		// The survey pole and the tinted sighting glass on either side.
 		set(level, bb, s(Blocks.COBBLESTONE), CX + 3, SURFACE, CZ);
 		fill(level, bb, CX + 3, SURFACE + 1, CZ, CX + 3, SURFACE + 3, CZ, s(Blocks.SPRUCE_FENCE));
 		set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), CX + 3, SURFACE + 4, CZ);
@@ -102,5 +146,6 @@ public final class CrystalLabPiece extends MinePiece {
 		set(level, bb, s(Blocks.TINTED_GLASS), CX - 3, SURFACE + 1, CZ);
 		set(level, bb, s(Blocks.AMETHYST_CLUSTER), CX - 3, SURFACE + 2, CZ);
 		set(level, bb, s(Blocks.LANTERN), CX, SURFACE + 1, CZ + 2);
+		barrel(level, bb, CX + 2, SURFACE + 1, CZ - 3, null, 0);
 	}
 }
