@@ -25,6 +25,7 @@ import dev.wildercord.player.Heart;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -73,6 +74,7 @@ public final class LoreJournal {
 			net.minecraft.core.registries.Registries.ITEM, Wildercord.id("lamplighters_lantern"))).stacksTo(1).rarity(Rarity.RARE)));
 
 	public static void init() {
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { LAST_TALK.clear(); TALKS.clear(); });
 		ServerTickEvents.END_SERVER_TICK.register(LoreJournal::tick);
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
 			if (hand == InteractionHand.MAIN_HAND && player instanceof ServerPlayer server && !player.isSpectator()) {

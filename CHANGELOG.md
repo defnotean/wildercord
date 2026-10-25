@@ -19,6 +19,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Fixed
 
+- A Master gauntlet that was still running when you left a single-player world no longer carries on in the next world you open. Hamlet greetings, Duelist chatter and spell-residue cooldowns also start fresh with each world.
 - A renamed item now counts as what it is: rituals take a renamed reagent, inscribing a technique scroll takes renamed paper and aura shards, and a Hearth lamp cast takes a renamed torch. They used to be refused as if you had none.
 - Sapling Sow, Coppice and Gourdcall work on grass, podzol and moss as well as dirt: Sapling Sow plants there, Coppice replants the stump of a tree that stood on grass, and Gourdcall sets fruit on a grassy side.
 - A Master's cut and a landing dungeon guardian's blow now really go partly through armour and Protection, as they were meant to. The part that should get through was being worked out from what the armour had already left, so it came to nothing.
