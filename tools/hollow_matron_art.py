@@ -29,7 +29,11 @@ for name, text in {'watch': 'Watching', 'bite': 'Biting', 'sweep': 'Sweeping', '
                    'tumble': 'Falling'}.items():
     LANG['boss.wildercord.hollow_matron.move.' + name] = text
 LANG['block.wildercord.weavers_silk'] = "Weaver's Silk"
-LANG['message.wildercord.weavers_silk.take'] = 'The silk winds round your wrists. Walk into a wall and you climb it; sneak and you cling.'
+LANG['key.wildercord.weavers_silk'] = "Put away / take out Weaver's Silk"
+LANG['message.wildercord.weavers_silk.take'] = 'The silk winds round your wrists. Walk into a wall and you climb it; sneak and you cling. Press G (or /silk) to put it away.'
+LANG['message.wildercord.weavers_silk.stowed'] = 'You wind the silk away. Walls no longer hold you.'
+LANG['message.wildercord.weavers_silk.unstowed'] = 'You let the silk out. Walls hold you again.'
+LANG['message.wildercord.weavers_silk.none'] = "You don't carry the Weaver's Silk."
 LANG['message.wildercord.weavers_silk.bound'] = 'Her silk is already wound round your wrists.'
 LANG['message.wildercord.weavers_silk.guarded'] = 'The Hollow Matron still keeps her hall.'
 LANG['message.wildercord.weavers_silk.slip'] = 'The silk lets go.'

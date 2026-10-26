@@ -297,6 +297,13 @@ QUESTS.update({
         "Return to an Emberwood Charcoal Yard in the Emberwood Reach and flip the lever on its eastern draft lamp.",
         "The draft lamp shines across the firebreak. Any burner walking the ash road at dusk will see the kiln is banked.",
     ),
+    "four_lights": (
+        "Four Lamps, One Road",
+        "Four regional lamps of yours now burn. Each region's keeper may have something to say.",
+        "Hear the answer of the Reedkeeper, Cairn Keeper, Listener and Kiln Keeper.",
+        "Sneak-use each regional keeper again now that every lamp is lit.",
+        "Four keepers, four lamps, one road. Whoever walks it at night is never wholly lost.",
+    ),
 })
 
 ENTRIES = {
@@ -357,6 +364,12 @@ LANG = {
     "dialogue.wildercord.speaker.master": "Master of %s",
 }
 
+LANG.update({
+    "item.wildercord.lamplighters_lantern": "Lamplighter's Lantern",
+    "item.wildercord.lamplighters_lantern.lore": "A small lantern that took its flame from four lamps on four roads.",
+    "item.wildercord.lamplighters_lantern.use": "Hold it in the dark and you can see the road. Keepsake of Four Lamps, One Road.",
+    "journal.wildercord.lamplighter": "The keepers' flames gather in a small lantern. It is yours, lamplighter.",
+})
 for _entry, _text in ENTRIES.items():
     LANG["journal.wildercord.entry." + _entry.replace(":", ".")] = _text
 for _form, _name in FORMS.items():

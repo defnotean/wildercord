@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import dev.wildercord.cast.RuneSeals;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -49,9 +50,9 @@ public class RuneSealBlock extends Block {
 
 	@Override
 	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-		// Not all lit in time: this one goes dark again.
+		// Not all lit in time: this one goes dark again (or, if its whole door is lit, it was opening and dissolves).
 		if (state.getValue(LIT)) {
-			level.setBlock(pos, state.setValue(LIT, false), Block.UPDATE_ALL);
+			RuneSeals.settle(level, pos);
 		}
 	}
 

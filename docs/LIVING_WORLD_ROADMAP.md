@@ -1,5 +1,9 @@
 # Wildercord: a living, handcrafted magical adventure
 
+> **Historical, 2026-10-24.** This roadmap was the active goal from 2026-10-02 until the living-world work merged
+> (PR #3, 2026-10-15) and shipped in 0.13.0-alpha. Its milestone statuses below were not updated after that and are not
+> current. Current work and open items: [polish audit](audit/2026-10-24-polish.md).
+
 Active user goal, started 2026-10-02. The full objective remains open until the requirements below are implemented and verified. This roadmap is a scope and evidence ledger, not evidence of completion.
 
 ## Baseline audit

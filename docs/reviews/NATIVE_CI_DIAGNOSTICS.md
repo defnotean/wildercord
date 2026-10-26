@@ -1,5 +1,8 @@
 # Native CI diagnostics
 
+> Historical: `tools/run_client_ci.py` and the GitHub jobs below were removed on 2026-10-24. The VPS runner
+> (`tools/run_vps_checks.py`) keeps the same both-backends-failed check.
+
 `tools/run_client_ci.py` keeps the existing launch command, test selections, process-group
 ownership, graphics-backend failure handling and exit code. The workflow still has 60-minute
 focused jobs and 180-minute full-shard jobs. Diagnostics do not stop a slow test or turn an

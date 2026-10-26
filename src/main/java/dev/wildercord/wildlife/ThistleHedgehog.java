@@ -14,17 +14,19 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.BreedGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -42,9 +44,10 @@ import java.util.UUID;
  * the grass and sneezes now and then. Run at it, or let something hostile come close, or hit it, and it curls into a ball of
  * quills; struck curled up it takes little and pricks back. After a while it peeks out, then uncurls.
  * <p>Sweet berries tempt it and breed it (its young are tiny hoglets). Feed one and it trusts you a while: hearts, it potters
- * after you, won't curl up at your running, and often brings you something it foraged.
+ * after you, won't curl up at your running, and often brings you something it foraged. Now and then a handful tames it for
+ * good: then it follows its owner (or sits, told to), never curls up at them, and brings them something every few minutes.
  */
-public class ThistleHedgehog extends Animal {
+public class ThistleHedgehog extends TamableAnimal {
 	/** Curled with this many ticks to go, 0 when it isn't. */
 	private static final EntityDataAccessor<Integer> CURL = SynchedEntityData.defineId(ThistleHedgehog.class, EntityDataSerializers.INT);
 	/** The entity event its sneeze is sent as. */
@@ -84,8 +87,10 @@ public class ThistleHedgehog extends Animal {
 	protected void registerGoals() {
 		goalSelector.addGoal(0, new Curled());
 		goalSelector.addGoal(1, new FloatGoal(this));
+		goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
 		goalSelector.addGoal(3, new BreedGoal(this, 1.0));
 		goalSelector.addGoal(4, new TemptGoal(this, 1.0, this::isFood, false));
+		goalSelector.addGoal(5, new FollowOwnerGoal(this, 1.15, 5.0F, 2.0F));
 		goalSelector.addGoal(5, new FollowTruster());
 		goalSelector.addGoal(6, new FollowParentGoal(this, 1.1));
 		goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.8));
@@ -104,7 +109,9 @@ public class ThistleHedgehog extends Animal {
 		if (level().isClientSide()) {
 			curlO = curl;
 			int left = curlLeft();
-			curl = WildlifeRules.approach(curl, left <= 0 ? 0 : HedgehogRules.peeking(left) ? 0.55F : 1, left > 0 && !HedgehogRules.peeking(left) ? 0.3F : 0.1F);
+			// Sitting, it half curls and peeks out, the way it does uncurling.
+			float to = left > 0 ? HedgehogRules.peeking(left) ? 0.55F : 1 : isInSittingPose() ? 0.55F : 0;
+			curl = WildlifeRules.approach(curl, to, left > 0 && !HedgehogRules.peeking(left) ? 0.3F : 0.1F);
 			sneezeO = sneeze;
 			sneeze = Math.max(0, sneeze - 0.12F);
 		}
@@ -147,11 +154,15 @@ public class ThistleHedgehog extends Animal {
 		getNavigation().stop();
 	}
 
+	/** Its owner, always; otherwise whoever fed it last, for a while. */
 	private boolean trusts(Player player) {
-		return player.getUUID().equals(truster) && HedgehogRules.trusts(level().getGameTime() - fedAt);
+		return isOwnedBy(player) || player.getUUID().equals(truster) && HedgehogRules.trusts(level().getGameTime() - fedAt);
 	}
 
 	private @Nullable Player truster() {
+		if (isTame()) {
+			return getOwner() instanceof Player owner && owner.isAlive() && !owner.isSpectator() ? owner : null;
+		}
 		if (truster == null || !HedgehogRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -159,20 +170,28 @@ public class ThistleHedgehog extends Animal {
 		return player != null && player.isAlive() && !player.isSpectator() ? player : null;
 	}
 
-	/** Its gift, when it's due: handed over once it's beside whoever fed it, and given up if the trust runs out first. */
+	/**
+	 * Its gift, when it's due: handed over once it's beside whoever fed it, and given up if the trust runs out first. A tame
+	 * one keeps bringing its owner things, waiting for them however long they're away.
+	 */
 	private void gift(ServerLevel level, long now) {
+		if (isTame() && giftAt < 0) {
+			giftAt = now + HedgehogRules.tameGiftDelay(random.nextDouble());
+		}
 		if (giftAt < 0 || now < giftAt || curled()) {
 			return;
 		}
 		Player player = truster();
 		if (player == null) {
-			giftAt = -1;
+			if (!isTame()) {
+				giftAt = -1;
+			}
 			return;
 		}
 		if (distanceTo(player) > HedgehogRules.GIFT_REACH) {
 			return;
 		}
-		giftAt = -1;
+		giftAt = isTame() ? now + HedgehogRules.tameGiftDelay(random.nextDouble()) : -1;
 		if (random.nextDouble() >= HedgehogRules.GIFT_CHANCE) {
 			return;
 		}
@@ -199,6 +218,25 @@ public class ThistleHedgehog extends Animal {
 	@Override
 	public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		ItemStack held = player.getItemInHand(hand);
+		if (isTame()) {
+			if (!isOwnedBy(player)) {
+				return super.mobInteract(player, hand);
+			}
+			// Its owner: berries heal it while it's hurt; otherwise it breeds as any animal, or sits and gets up again.
+			if (isFood(held) && getHealth() < getMaxHealth()) {
+				if (!level().isClientSide()) {
+					feed(player, hand, held, 1.0F, HedgehogRules.BERRY_HEAL);
+					entityData.set(CURL, 0);
+				}
+				return InteractionResult.SUCCESS;
+			}
+			InteractionResult result = super.mobInteract(player, hand);
+			if (!result.consumesAction()) {
+				setOrderedToSit(!isOrderedToSit());
+				return InteractionResult.SUCCESS;
+			}
+			return result;
+		}
 		if (!isFood(held)) {
 			return super.mobInteract(player, hand);
 		}
@@ -207,13 +245,20 @@ public class ThistleHedgehog extends Animal {
 			if (!result.consumesAction()) {
 				held.consume(1, player);
 			}
-			// Fed, it trusts you: it uncurls, and hearts.
+			// Fed, it trusts you: it uncurls, and hearts. Now and then it takes to you for good.
 			truster = player.getUUID();
 			fedAt = level().getGameTime();
 			giftAt = fedAt + HedgehogRules.giftDelay(random.nextDouble());
 			entityData.set(CURL, 0);
-			level().broadcastEntityEvent(this, (byte) 18);
 			playSound(SoundEvents.FOX_EAT, 0.7F, 1.6F);
+			if (HedgehogRules.tames(random.nextDouble())) {
+				tame(player);
+				setPersistenceRequired();
+				getNavigation().stop();
+				level().broadcastEntityEvent(this, (byte) 7);
+			} else {
+				level().broadcastEntityEvent(this, (byte) 18);
+			}
 		}
 		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 	}
@@ -234,7 +279,15 @@ public class ThistleHedgehog extends Animal {
 
 	@Override
 	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, EntitySpawnReason.BREEDING) instanceof ThistleHedgehog hoglet ? hoglet : null;
+		if (!(getType().create(level, EntitySpawnReason.BREEDING) instanceof ThistleHedgehog hoglet)) {
+			return null;
+		}
+		// A tame pair's hoglet is its owner's too.
+		if (isTame()) {
+			hoglet.setOwnerReference(getOwnerReference());
+			hoglet.setTame(true, true);
+		}
+		return hoglet;
 	}
 
 	// ------------------------------------------------------------------ sound: snuffles, squeaks
@@ -302,7 +355,7 @@ public class ThistleHedgehog extends Animal {
 		@Override
 		public boolean canUse() {
 			player = truster();
-			return player != null && !isBaby() && distanceTo(player) > HedgehogRules.FOLLOW_FAR && distanceTo(player) < 24;
+			return player != null && !isTame() && !isBaby() && distanceTo(player) > HedgehogRules.FOLLOW_FAR && distanceTo(player) < 24;
 		}
 
 		@Override

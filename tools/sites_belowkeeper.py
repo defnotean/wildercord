@@ -28,6 +28,7 @@ LANG = {
     "journal.wildercord.entry.person.belowkeeper_listener": "Belowkeeper Listener: tends the deep listening stations, Glowcap basins, and acoustic shutter logs in the Belowkeeper Hollows.",
     "journal.wildercord.entry.learned.belowkeeper_shutter": "Set a Belowkeeper Listening Station shutter lamp so its pressure reading stays visible down the tunnel.",
     "dialogue.wildercord.belowkeeper_listener.greet": "Step softly on the grates. Down here, the stone hears your boots before I do.",
+    "dialogue.wildercord.belowkeeper_listener.four_lights": "The shutter hums. Three lamps keep time above me, and I think a fourth is banked in the ash. Ask the Kiln Keeper.",
     "dialogue.wildercord.belowkeeper_listener.glowcap": "We keep a damp moss-and-clay basin along the west wall. Harvest only mature Glowcaps so the next watch has filter gills.",
     "dialogue.wildercord.belowkeeper_listener.pressure": "Mara taught us to listen for three things in the Hollows: dripping water, settling roofs, and the long hum of the deeper chambers.",
     "dialogue.wildercord.belowkeeper_listener.hollow_bell": "Beyond the older delves stands a copper-lined Bell Sanctum. Its Hollow Bell still tolls if you ring the Listening Belfry.",

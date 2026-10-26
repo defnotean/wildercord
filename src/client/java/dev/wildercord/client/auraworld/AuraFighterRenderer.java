@@ -62,6 +62,7 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 		state.drawn = fighter.pose(AuraFighter.DRAWN, partial);
 		state.sit = fighter.pose(AuraFighter.SIT, partial);
 		state.dash = fighter.pose(AuraFighter.DASH, partial);
+		state.hurt = fighter.hurtTime > 0 ? Mth.clamp((fighter.hurtTime - partial) / 10.0F, 0.0F, 1.0F) : 0.0F;
 		// Its drawn blade carries its aura as a player's does; brighter in its tell, braced in guard.
 		boolean blade = !fighter.isInvisible() && fighter.getMainHandItem().is(Aura.WEAPONS);
 		float strength = bladeStrength * (0.8F + 0.45F * state.windup);

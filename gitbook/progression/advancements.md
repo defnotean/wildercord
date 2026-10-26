@@ -161,6 +161,7 @@ See [The Fusion Altar](../fusion-altar/index.md) and
 | **Menagerie** | challenge | Kindred | Bond with a wisp of every element | 150 XP |
 | **Stormcaller** | task | Ley Walker | Cast 20 spells under a mana storm | 30 XP |
 | **Stargazer** | goal | Ley Walker | Loot a Fallen Star | 40 XP |
+| **Four Lamps, One Road** | goal | Ley Walker | Light the four regional lamps and hear each keeper out | 50 XP |
 | **Reeled In** | task | Ley Walker | Fish a rune out of open water | 20 XP |
 | **The Buried Library** | task | Ley Walker | Find an Archive | 25 XP |
 | **Sealbreaker** | task | The Buried Library | Open a Rune Seal door in an Archive | 30 XP |
@@ -312,14 +313,14 @@ See [Wild Places](../world/wilds-sites.md) and [Emberwood Reach](../world/emberw
 
 ## Totals
 
-162 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+163 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
 | Tasks | 116 |
-| Goals | 32 |
+| Goals | 33 |
 | Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 14,770 |
+| Experience for all of them | 14,820 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |

@@ -9,6 +9,8 @@ import net.minecraft.util.RandomSource;
 
 /** Living matter has material-specific movement; all silhouettes use the sampled world light. */
 public final class LifeParticle extends SingleQuadParticle implements SigilGroup.Extent {
+ /** Its two animation frames, looked up once instead of by name every tick. */
+ private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
  private final LifeOption material;
  private final java.util.UUID outcomeSource=LifeOwnerClearance.source();
  private final boolean outcomeOwner=LifeOwnerClearance.owner();
@@ -37,7 +39,8 @@ public final class LifeParticle extends SingleQuadParticle implements SigilGroup
   alpha=Math.min(1,age*.8F)*Math.min(1,(1-age/(float)lifetime)*3);
   if(material.style()==LifeOption.SPORE)alpha*=.65F;
   if(MagicQuality.reducedFlash)alpha*=.72F;
-  setSprite(SpellCircleParticle.particleSprite("life_"+material.style()+"_"+(age<lifetime/2?0:1)));
+  if(frames==null)frames=new net.minecraft.client.renderer.texture.TextureAtlasSprite[]{SpellCircleParticle.particleSprite("life_"+material.style()+"_0"),SpellCircleParticle.particleSprite("life_"+material.style()+"_1")};
+  setSprite(frames[age<lifetime/2?0:1]);
  }
  @Override protected Layer getLayer(){return Layer.TRANSLUCENT;}
  @Override public int getLightCoords(float partial){return super.getLightCoords(partial);}

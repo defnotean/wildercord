@@ -13,6 +13,7 @@ LANG = {
     p + 'taken_apprentice': '%s is now your mentor. Casting within %s blocks of them condenses a quarter more, until you form the %s circle.',
     p + 'taken_mentor': '%s is now your apprentice. Every circle they form pays you in Mana Crystals.',
     p + 'tutelage': '%s formed their %s circle: your tutelage earns you %s Mana Crystals.',
+    p + 'tutelage_owed': "While you were away, your apprentices' circles earned you %s Mana Crystals.",
     p + 'graduated': 'You have graduated: %s has nothing left to teach you.',
     p + 'graduated_mentor': '%s has graduated and goes on alone.',
     p + 'ended': 'You ended your apprenticeship with %s.',

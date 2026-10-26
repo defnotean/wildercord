@@ -74,6 +74,7 @@ public final class MojitoGrovePiece extends DungeonPiece {
 		path(level,bb);
 		for(int i=0;i<12;i++)oak(level,bb,i);
 		heart(level,bb);
+		henge(level,bb);
 		mojito(level,bb);
 	}
 
@@ -191,6 +192,48 @@ public final class MojitoGrovePiece extends DungeonPiece {
 			if(dist(x,z,REST_X,REST_Z)<=3.6)continue;
 			set(level,bb,FLOWERS[k%FLOWERS.length],x,F+1,z);
 		}
+	}
+
+	/**
+	 * The grove's old stonework: a broken ring of mossy standing stones under the oaks, half of them still holding a lamp; a flush
+	 * ring of worn paving round the heart stone and a stepped plinth at its foot; a lintel across the gate stones and lamp posts at
+	 * the path's mouth.
+	 */
+	private void henge(WorldGenLevel level,BoundingBox bb){
+		BlockState mossy=Blocks.MOSSY_STONE_BRICKS.defaultBlockState(),cobble=Blocks.MOSSY_COBBLESTONE.defaultBlockState();
+		for(int k=0;k<9;k++){
+			double a=-Math.PI/2+(k+0.5)*Math.PI*2/9;
+			if(Math.abs(Math.IEEEremainder(a+Math.PI/2,Math.PI*2))<0.5)continue;
+			// On the bank's foot, clear of the meadow he runs across.
+			int x=(int)Math.round(CX+Math.cos(a)*(R+1)),z=(int)Math.round(CZ+Math.sin(a)*(R+1)),foot=F+1+bank(dist(x,z,CX,CZ)),top=foot+1+noise(x,z)%3;
+			set(level,bb,Blocks.STONE_BRICKS.defaultBlockState(),x,foot-1,z);
+			for(int y=foot;y<=top;y++)set(level,bb,noise(x,y,z)<45?cobble:mossy,x,y,z);
+			set(level,bb,k%2==0?Blocks.LANTERN.defaultBlockState():Blocks.MOSS_CARPET.defaultBlockState(),x,top+1,z);
+		}
+		// Worn paving round the heart, flush with the grass, kept off his bed.
+		for(int x=CX-6;x<=CX+6;x++)for(int z=CZ-6;z<=CZ+6;z++){
+			double r=dist(x,z,CX,CZ);
+			if(r<4.6||r>5.6||dist(x,z,REST_X,REST_Z)<=4.1)continue;
+			int n=noise(x,z);
+			set(level,bb,(n<35?Blocks.MOSSY_STONE_BRICKS:n<60?Blocks.MOSSY_COBBLESTONE:Blocks.STONE_BRICKS).defaultBlockState(),x,F,z);
+		}
+		// A stepped plinth at the stone's foot, flush, wherever nothing is growing on it.
+		for(int x=CX-2;x<=CX+2;x++)for(int z=CZ-2;z<=CZ+1;z++){
+			BlockState over=getBlock(level,x,F+1,z,bb);
+			if(over.isAir()||over.is(Blocks.MOSS_CARPET)||over.is(MIST.getBlock()))set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),x,F,z);
+		}
+		// The gate's lintel, resting on the stones' caps, its ends cut back.
+		fill(level,bb,CX-3,F+6,9,CX+3,F+6,9,mossy);
+		set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.EAST,true),CX-4,F+6,9);
+		set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.WEST,true),CX+4,F+6,9);
+		set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),CX,F+6,9);
+		set(level,bb,Blocks.MOSS_CARPET.defaultBlockState(),CX,F+7,9);
+		// Lamp posts where the path leaves the woods, and kerb stones along it.
+		for(int x:new int[]{CX-3,CX+3}){
+			set(level,bb,Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState(),x,F+1,1);
+			set(level,bb,Blocks.LANTERN.defaultBlockState(),x,F+2,1);
+		}
+		for(int z=0;z<=8;z++)for(int x:new int[]{CX-2,CX+2})if(z%3!=2)set(level,bb,cobble,x,F,z);
 	}
 
 	/** The grove and its bank, from below its floor to over the tallest oak's crown. */

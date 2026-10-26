@@ -9,23 +9,28 @@ import re
 import uuid
 
 import client_suites as suites
-import full_client_ci as full
 from vps_identity import make_identity
 
-SUITES = ("release-smoke",)
 PREFIX = "WILDERCORD_VPS_NATIVE "
+# release-smoke runs before a release; "area" groups are the per-area suites of the polish loop.
+PURPOSES = ("release", "area")
 
 
-def prepare(*, head, computer, batch, attempt, launch, environment, suite=None, shard=None):
-    if shard is not None or suite not in SUITES:
-        raise ValueError("Select the complete release-smoke suite")
-    selection = suites.select_entries(suite=suite, shard=shard)
+def suites_available(catalog=suites.CATALOG):
+    groups = json.loads(catalog.read_text(encoding="utf-8"))
+    return tuple(name for name, group in groups.items() if group.get("purpose", "release") in PURPOSES)
+
+
+def prepare(*, head, computer, batch, attempt, launch, environment, suite=None):
+    if suite not in suites_available():
+        raise ValueError("Select one complete catalog suite: " + ", ".join(suites_available()))
+    selection = suites.select_entries(suite=suite)
     if str(uuid.UUID(launch)) != launch:
         raise ValueError("VPS launch must own a canonical UUID")
     identity = make_identity(head, computer, batch, attempt,
         "smoke-native")
     child = dict(environment)
-    child[full.LAUNCH_ENV] = launch
+    child[suites.LAUNCH_ENV] = launch
     profile = None
     flags = ["-PciSuite=" + suite]
     proof, prefix = {"schemaVersion": 1, **identity, "launchId": launch,
@@ -38,17 +43,17 @@ def prepare(*, head, computer, batch, attempt, launch, environment, suite=None, 
 
 
 def exit_markers(plan, code):
-    return [suites.EXIT_PREFIX + str(code), full.OWNED_EXIT_PREFIX + json.dumps(
+    return [suites.EXIT_PREFIX + str(code), suites.OWNED_EXIT_PREFIX + json.dumps(
         {"launchId": plan["launch"], "exitCode": code}, sort_keys=True)]
 
 
 def group_boundaries(log, plan):
-    """Every non-shard class must finish inside this one owned invocation."""
+    """Every selected class must finish inside this one owned invocation."""
     selection, launch = plan["selection"], plan["launch"]
     issues = []
     expected_markers = [(suites.SELECTION_PREFIX, selection), (plan["prefix"], plan["proof"]),
                         (suites.DESCRIPTOR_PREFIX, selection),
-                        (full.OWNED_EXIT_PREFIX, {"launchId": launch, "exitCode": 0})]
+                        (suites.OWNED_EXIT_PREFIX, {"launchId": launch, "exitCode": 0})]
     prefixes = [prefix for prefix, _ in expected_markers] + [suites.EXIT_PREFIX]
     for prefix, value in expected_markers:
         markers = [line[len(prefix):] for line in log.splitlines() if line.startswith(prefix)]
@@ -73,10 +78,10 @@ def group_boundaries(log, plan):
         if re.fullmatch(r"BUILD SUCCESSFUL(?: in .+)?", line):
             boundaries.append("build")
     expected = [prefix for prefix, _ in expected_markers[:3]] + ["scene"] * (selection["count"] * 4)
-    expected += ["build", suites.EXIT_PREFIX, full.OWNED_EXIT_PREFIX]
+    expected += ["build", suites.EXIT_PREFIX, suites.OWNED_EXIT_PREFIX]
     if boundaries != expected:
         issues.append("VPS group lacks ordered complete owned launch/lifecycle/exit boundaries")
-    if "[TEST SKIP]" in log or "BUILD FAILED" in log or suites.REQUEST_PREFIX in log or full.PROVENANCE_PREFIX in log:
+    if "[TEST SKIP]" in log or "BUILD FAILED" in log or suites.REQUEST_PREFIX in log or suites.PROVENANCE_PREFIX in log:
         issues.append("Failed, skipped or borrowed evidence cannot pass the VPS group")
     return issues
 
@@ -85,8 +90,8 @@ def manifest(log, plan):
     selection, identity, launch = plan["selection"], plan["identity"], plan["launch"]
     issues = suites.selection_issues(log, selection, launch_id=launch)
     issues.extend(group_boundaries(log, plan))
-    completed, extra = suites._whole_class_completion(log, selection["entries"], "VPS smoke", launch_id=launch)
-    proof = {"schemaVersion": 1, "scope": "vps-release-smoke", "provenance": plan["proof"],
+    completed, extra = suites._whole_class_completion(log, selection["entries"], "VPS suite", launch_id=launch)
+    proof = {"schemaVersion": 1, "scope": "vps-native:" + selection["name"], "provenance": plan["proof"],
              "completedEntries": completed}
     outcome = "focusedClientGate"
     results = [{"suite": entry, "status": "passed"} for entry in selection["entries"]]

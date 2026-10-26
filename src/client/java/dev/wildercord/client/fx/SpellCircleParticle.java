@@ -110,7 +110,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 
 	protected SpellCircleParticle(ClientLevel level, double x, double y, double z, SpellCircleOption option) {
 		super(level, x, y, z, particleSprite("sigil_band"));
-		this.color = option.color() & 0xFFFFFF;
+		this.color = (MagicQuality.safeTelegraphs ? dev.wildercord.presentation.SafeColourRules.safe(option.color()) : option.color()) & 0xFFFFFF;
 		this.baseColor = this.color;
 		this.look = option.rank() > 0 ? new MasteryAttachments.Look(0, option.rank(), option.sigil(), option.flags()) : MasteryAttachments.Look.NONE;
 		if (option.rank() > 0) {

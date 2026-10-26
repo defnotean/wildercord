@@ -41,6 +41,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 	/** The marks' colour this frame, as ARGB with the alpha as brightness; absent on anything that isn't Runebound. */
 	public static final RenderStateDataKey<Integer> MARKS = RenderStateDataKey.create(() -> "wildercord:rune_marks");
 
+	private static final java.util.Map<String, Identifier> LAYOUT_TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
 	/** How long a Runebound telegraphs, in ticks (as {@code Runebound.TELEGRAPH}). */
 	private static final float TELEGRAPH = 22;
 	/** Ticks the flare takes to reach full strength once the telegraph begins. */
@@ -131,7 +132,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 		} else {
 			return null;
 		}
-		return Wildercord.id("textures/entity/runebound/" + layout + ".png");
+		return LAYOUT_TEXTURES.computeIfAbsent(layout, name -> Wildercord.id("textures/entity/runebound/" + name + ".png"));
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})

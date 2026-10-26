@@ -38,8 +38,36 @@ public final class EchoPostPiece extends WildsPiece {
 		// The post.
 		room(level, bb, 3, 0, 3, 13, 6, 13, s(Blocks.DEEPSLATE_BRICKS));
 		fill(level, bb, 4, 0, 4, 12, 0, 12, Blocks.WOOL.gray().defaultBlockState());
+		weather(level, bb, 3, 1, 3, 13, 5, 13, s(Blocks.DEEPSLATE_BRICKS), s(Blocks.CRACKED_DEEPSLATE_BRICKS), 12);
 		for (int[] p : new int[][]{{3, 3}, {13, 3}, {3, 13}, {13, 13}}) fill(level, bb, p[0], 0, p[1], p[0], 7, p[1], s(Blocks.POLISHED_DEEPSLATE));
+		// Sculk creeping over the tiles outside, never inside the post.
+		for (int x = 0; x <= 16; x++) for (int z = 0; z <= 16; z++) {
+			boolean inside = x >= 2 && x <= 14 && z >= 2 && z <= 14;
+			if (!inside && noise(x + 7, z - 3) < 22) set(level, bb, s(Blocks.SCULK), x, 0, z);
+		}
+		// Pilasters with chiselled bases and capitals, between them iron-barred listening slits.
+		for (int[] p : new int[][]{{2, 5}, {2, 9}, {14, 5}, {14, 9}, {4, 2}, {12, 2}, {5, 14}, {11, 14}}) {
+			set(level, bb, s(Blocks.CHISELED_DEEPSLATE), p[0], 1, p[1]);
+			fill(level, bb, p[0], 2, p[1], p[0], 4, p[1], s(Blocks.POLISHED_DEEPSLATE));
+			set(level, bb, s(Blocks.CHISELED_DEEPSLATE), p[0], 5, p[1]);
+		}
+		for (int x : new int[]{3, 13}) fill(level, bb, x, 3, 7, x, 4, 7, s(Blocks.IRON_BARS));
+		// A corbelled cornice under the roof and a low parapet over it, soul lanterns on the corner posts.
+		for (int v = 3; v <= 13; v++) {
+			set(level, bb, stair(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.NORTH, true), v, 6, 2);
+			set(level, bb, stair(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.SOUTH, true), v, 6, 14);
+			set(level, bb, stair(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.EAST, true), 2, 6, v);
+			set(level, bb, stair(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.WEST, true), 14, 6, v);
+		}
+		for (int[] p : new int[][]{{2, 2}, {14, 2}, {2, 14}, {14, 14}}) set(level, bb, s(Blocks.POLISHED_DEEPSLATE), p[0], 6, p[1]);
+		for (int v = 4; v <= 12; v++) {
+			for (int[] p : new int[][]{{v, 3}, {v, 13}, {3, v}, {13, v}}) set(level, bb, s(Blocks.DEEPSLATE_BRICK_WALL), p[0], 7, p[1]);
+		}
+		for (int[] p : new int[][]{{3, 3}, {13, 3}, {3, 13}, {13, 13}}) set(level, bb, s(Blocks.SOUL_LANTERN), p[0], 8, p[1]);
 		clear(level, bb, 7, 1, 3, 9, 3, 3);
+		// A hood over the door, a chiselled keystone above it.
+		for (int x = 6; x <= 10; x++) set(level, bb, stair(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.NORTH, true), x, 4, 2);
+		set(level, bb, s(Blocks.CHISELED_DEEPSLATE), 8, 5, 2);
 		for (int x : new int[]{6, 10}) set(level, bb, s(Blocks.SOUL_LANTERN), x, 1, 2);
 		for (int x = 4; x <= 12; x++) for (int z = 4; z <= 12; z++) if (noise(x, z) < 18) set(level, bb, s(Blocks.AMETHYST_BLOCK), x, 6, z);
 		for (int[] p : new int[][]{{5, 5}, {11, 5}, {5, 11}, {11, 11}, {8, 8}}) {
@@ -54,6 +82,9 @@ public final class EchoPostPiece extends WildsPiece {
 		set(level, bb, s(Blocks.LECTERN).setValue(LecternBlock.FACING, Direction.SOUTH), 8, 1, 7);
 		set(level, bb, s(Blocks.SOUL_LANTERN).setValue(LanternBlock.HANGING, true), 8, 5, 6);
 		chest(level, bb, 4, 1, 8, WildsSites.ECHO_HALL, Direction.EAST, 1);
+		// The listeners' shelf of logs and two more lamps over the wool.
+		fill(level, bb, 12, 1, 6, 12, 2, 6, s(Blocks.BOOKSHELF));
+		for (int x : new int[]{5, 11}) hangingLantern(level, bb, x, 5, 7, 0, true);
 		// The records, behind the seal.
 		fill(level, bb, 4, 1, 10, 12, 5, 10, s(Blocks.DEEPSLATE_TILES));
 		sealDoorAcross(level, bb, 10, 7, 9, 1, 2, RuneSealBlock.Element.WIND, RuneSealBlock.Element.VOID);

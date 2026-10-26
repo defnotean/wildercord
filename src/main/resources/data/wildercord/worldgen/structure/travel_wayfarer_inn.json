@@ -3,6 +3,6 @@
   "site": "travel_wayfarer_inn",
   "biomes": "#wildercord:has_structure/travel_wayfarer_inn",
   "spawn_overrides": {},
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "terrain_adaptation": "beard_thin"
 }

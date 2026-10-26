@@ -75,6 +75,20 @@ public final class TravelRules {
 		return homes.size() >= max ? HomeCheck.FULL : HomeCheck.NEW;
 	}
 
+	/** What renaming a home would do. */
+	public enum RenameCheck { OK, MISSING, SAME, TAKEN }
+
+	/** Renaming home {@code from} to {@code to}: fine, no home by that name, the name it already has, or one of their other homes has the new name. */
+	public static RenameCheck renameHome(Collection<String> homes, String from, String to) {
+		if (!homes.contains(from)) {
+			return RenameCheck.MISSING;
+		}
+		if (from.equals(to)) {
+			return RenameCheck.SAME;
+		}
+		return homes.contains(to) ? RenameCheck.TAKEN : RenameCheck.OK;
+	}
+
 	/**
 	 * The home {@code /home} goes to without a name: the one called {@link #DEFAULT_HOME}, or the only
 	 * one there is. Null when there's none, or several and none of them is the default.

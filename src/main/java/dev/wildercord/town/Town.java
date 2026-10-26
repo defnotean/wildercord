@@ -170,6 +170,7 @@ public final class Town {
 			});
 		InnRooms.init();
 		Hamlets.init();
+		BountyBoardBlock.init();
 	}
 
 	/** The tag an escort's pack llama carries, before the escorting traveller's id. */

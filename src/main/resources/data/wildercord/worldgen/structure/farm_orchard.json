@@ -3,6 +3,6 @@
   "site": "farm_orchard",
   "biomes": "#wildercord:has_structure/farm_orchard",
   "spawn_overrides": {},
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "terrain_adaptation": "beard_thin"
 }

@@ -23,6 +23,6 @@
       ]
     }
   },
-  "step": "underground_structures",
+  "step": "top_layer_modification",
   "terrain_adaptation": "none"
 }

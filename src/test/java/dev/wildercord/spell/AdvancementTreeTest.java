@@ -202,4 +202,15 @@ class AdvancementTreeTest {
 		assertTrue(Runes.obtainable(Runes.CINDERBRAND), "a rune of the world is found in its place");
 		assertTrue(Runes.obtainable(Runes.BOLT));
 	}
+
+	@Test
+	void fourLampsIsEarnedByTheLanternTheQuestGives() {
+		// LoreJournal.lightRoad hands out the Lamplighter's Lantern only when Four Lamps, One Road completes.
+		JsonObject lamps = tree.get("wildercord:world/four_lamps");
+		assertNotNull(lamps, "Four Lamps, One Road has an advancement");
+		JsonObject criterion = criteria(lamps).getFirst();
+		assertEquals("minecraft:inventory_changed", criterion.get("trigger").getAsString());
+		assertEquals("wildercord:lamplighters_lantern", criterion.getAsJsonObject("conditions").getAsJsonArray("items").get(0).getAsJsonObject().get("items").getAsString());
+		assertTrue(lang.has("item.wildercord.lamplighters_lantern"));
+	}
 }

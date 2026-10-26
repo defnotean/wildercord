@@ -5,6 +5,8 @@
 	"mixins": [
 		"ExcisePlayerRemovalMixin",
 		"ReedlandPlacementMixin",
+		"ArenaTreeMixin",
+		"ArenaFallenTreeMixin",
 		"ReedlandSurfaceMixin",
 		"RelayLivingDamageMixin",
 		"RelayPlayerDamageMixin",
@@ -68,6 +70,8 @@
 		"BondedBladeIngredientMixin",
 		"BondedBladeSmeltingMixin",
 		"FoxAccessor",
+		"PackLlamaAccessor",
+		"HorseInventoryAccessor",
 		"FoxCompanionGoalsMixin",
         "NextChestPlacementMixin",
         "NextTeleportObserverMixin",

@@ -3,6 +3,6 @@
   "site": "master_waterfall_shrine",
   "biomes": "#wildercord:has_structure/master_waterfall_shrine",
   "spawn_overrides": {},
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "terrain_adaptation": "beard_thin"
 }

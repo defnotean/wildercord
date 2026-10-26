@@ -1,5 +1,10 @@
 # Masters of Tomorrow: development roadmap
 
+> **Historical, 2026-10-24.** The branch this describes has been merged and released; the "uncommitted" and
+> "draft pull request" notes below are from 8 October. The owner decisions still open (the shared BIND reward, Vow
+> balance and the `/vow` UI, Stone Hinge, the Tide, Iron and Dune poses) are tracked in the
+> [polish audit](audit/2026-10-24-polish.md), section 7.
+
 Updated 8 October 2026. This is the plan for the expanded update, not a claim that it is release-ready. The feature branch is still in a draft pull request. The [release checklist](reviews/RELEASE_READINESS.md) records evidence and remaining checks; the [living-world roadmap](LIVING_WORLD_ROADMAP.md) retains earlier exploration and ecosystem commitments.
 
 ## What is already on the development branch

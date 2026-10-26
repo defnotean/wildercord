@@ -28,6 +28,7 @@ LANG = {
     "journal.wildercord.entry.person.cairn_keeper": "Highland Cairn Keeper: tends the Windscar cairn lodges, leeward Windreed terraces and Marchkeeper route notes.",
     "journal.wildercord.entry.learned.scout_wind_mark": "Tended a Highland Cairn Lodge lamp so the ridge path stays readable through dusk and wind.",
     "dialogue.wildercord.cairn_keeper.greet": "Come in out of the ridge wind. Warm your hands by the hearth before you try the next shelf.",
+    "dialogue.wildercord.cairn_keeper.four_lights": "A green glimmer on the horizon, answering ours. Below the roots, the Listener says the shutter hums to the same count.",
     "dialogue.wildercord.cairn_keeper.windreed": "We plant Windreed in the lee of the north wall. Take the ripe tassels and leave the root for the next walker.",
     "dialogue.wildercord.cairn_keeper.cairns": "The Marchkeeper scout raised paired cairns along these heights: one stone for the road ahead, one for those carried home.",
     "dialogue.wildercord.cairn_keeper.cartographer": "Higher on the dry shelves stands a stone meridian ring. Its Glass Cartographer still sights the peaks if you wake its astrolabe.",

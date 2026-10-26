@@ -29,6 +29,8 @@ public final class Spirits {
 	private Spirits() {}
 
 	public static void init() {
+		// The packs hold the wolves themselves; drop them with the world they lived in.
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> PACKS.clear());
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			long now = level.getGameTime();
 			Long spiritUntil = entity.getAttached(WildercordAttachments.SPIRIT_UNTIL);

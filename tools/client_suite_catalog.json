@@ -1,7 +1,7 @@
 {
   "release-smoke": {
-    "description": "Pre-release smoke: one quick native class per major area (casting, party, client fx, journal, meditation, wildlife, content, research, commands, monsters, lore, world). A fast sanity check run once before a release; it does not replace the full 349-class native gate.",
-    "expectedCount": 14,
+    "description": "Pre-release smoke: one quick native class per major area (casting, party, client fx, journal, meditation, wildlife, content, research, commands, monsters, lore, world, mounts and taming, network payloads, mixin targets). A fast sanity check run once before a release; it does not replace the per-area suites.",
+    "expectedCount": 17,
     "entries": [
       "dev.wildercord.cast.BasinfillTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
@@ -16,7 +16,177 @@
       "dev.wildercord.command.LearnAllFusionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.lore.LoreJournalGameTest",
-      "dev.wildercord.world.dungeons.SwordTombTest"
+      "dev.wildercord.world.dungeons.SwordTombTest",
+      "dev.wildercord.wildlife.StagFirstRideTest",
+      "dev.wildercord.net.PayloadCodecRoundTripTest",
+      "dev.wildercord.gametest.MixinTargetsTest"
+    ]
+  },
+  "area-combat-bosses": {
+    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, monsters, aura beasts, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world.",
+    "purpose": "area",
+    "expectedCount": 11,
+    "entries": [
+      "dev.wildercord.cast.FortuneDamageAdmissionTest",
+      "dev.wildercord.monster.WildMonsterPressureTest",
+      "dev.wildercord.world.dungeons.SwordTombTest",
+      "dev.wildercord.world.dungeons.BattlefieldsTest",
+      "dev.wildercord.world.dungeons.SleepingBladeTest",
+      "dev.wildercord.world.dungeons.BarrowBearerGenerationTest",
+      "dev.wildercord.gametest.WildercordMonstersTest",
+      "dev.wildercord.aura.world.AuraBeastsTest",
+      "dev.wildercord.aura.world.BossDamageTest",
+      "dev.wildercord.world.dungeons.ArenaTreeClearingTest",
+      "dev.wildercord.aura.world.GauntletRestartTest"
+    ]
+  },
+  "area-combat-arts": {
+    "description": "Combat: all fifty sword arts end to end (about 12 minutes on its own).",
+    "purpose": "area",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.gametest.WildercordArtsTest"
+    ]
+  },
+  "area-combat-aura": {
+    "description": "Combat: aura wards, sword strings, momentum and aura effects; bound-beast cooldowns reset with the server.",
+    "purpose": "area",
+    "expectedCount": 5,
+    "entries": [
+      "dev.wildercord.aura.arts.ArtWardsHardeningTest",
+      "dev.wildercord.aura.world.CooldownRestartTest",
+      "dev.wildercord.gametest.WildercordSwordStringsTest",
+      "dev.wildercord.gametest.WildercordMomentumTest",
+      "dev.wildercord.gametest.WildercordAuraFxTest"
+    ]
+  },
+  "area-rituals-parties": {
+    "description": "Rituals and parties: relay circles, party admission during release, excise, basinfill and farm-spell casts, founding a guild and a coven, mentor tutelage while away, a Sanctuary sparing bosses.",
+    "purpose": "area",
+    "expectedCount": 9,
+    "entries": [
+      "dev.wildercord.party.RelayImpactTest",
+      "dev.wildercord.cast.RelayCircleTest",
+      "dev.wildercord.cast.ExcisePlayableTest",
+      "dev.wildercord.cast.BasinfillTest",
+      "dev.wildercord.cast.FarmSoilTest",
+      "dev.wildercord.ritual.RenamedReagentTest",
+      "dev.wildercord.guild.GuildFoundingTest",
+      "dev.wildercord.guild.MentorTutelageTest",
+      "dev.wildercord.ritual.SanctuaryWardTest"
+    ]
+  },
+  "area-regions-worldgen": {
+    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors.",
+    "purpose": "area",
+    "expectedCount": 10,
+    "entries": [
+      "dev.wildercord.wildlife.RootmoltEncounterTest",
+      "dev.wildercord.wildlife.SiltcrestWaterControlTest",
+      "dev.wildercord.wildlife.RootmoltPlacementTest",
+      "dev.wildercord.wildlife.SiltcrestEcologyTest",
+      "dev.wildercord.wildlife.SiltcrestBankReturnTest",
+      "dev.wildercord.wildlife.FungalNurseryTest",
+      "dev.wildercord.wildlife.ReedRefugeTest",
+      "dev.wildercord.wildlife.RainshieldAckTest",
+      "dev.wildercord.wildlife.RainshieldFaultTest",
+      "dev.wildercord.cast.RuneSealDoorTest"
+    ]
+  },
+  "area-items-crafting": {
+    "description": "Items and crafting: research library, learn-all fusion, familiar content systems, Weaver's Silk stow key, casting gear loot, the backpack menu, the fusion altar menu.",
+    "purpose": "area",
+    "expectedCount": 7,
+    "entries": [
+      "dev.wildercord.player.ResearchLibraryTest",
+      "dev.wildercord.command.LearnAllFusionTest",
+      "dev.wildercord.familiar.ContentSystemsTest",
+      "dev.wildercord.aura.world.WeaversSilkStowTest",
+      "dev.wildercord.gear.GearLootTest",
+      "dev.wildercord.backpack.BackpackMenuTest",
+      "dev.wildercord.menu.FusionAltarMenuTest"
+    ]
+  },
+  "area-guis-hud": {
+    "description": "GUIs and HUD: life journal, lore journal, quality settings, screen-effect setting and strain vignette, colour-blind-safe telegraphs, meditation, creature presentation, Cord loadouts.",
+    "purpose": "area",
+    "expectedCount": 8,
+    "entries": [
+      "dev.wildercord.gametest.LifeJournalTest",
+      "dev.wildercord.lore.LoreJournalGameTest",
+      "dev.wildercord.client.fx.LifeOutcomeQualityTest",
+      "dev.wildercord.client.fx.ScreenEffectSettingTest",
+      "dev.wildercord.client.fx.SafeTelegraphsTest",
+      "dev.wildercord.gametest.WildercordMeditationTest",
+      "dev.wildercord.wildlife.SiltcrestPresentationTest",
+      "dev.wildercord.loadout.LoadoutsTest"
+    ]
+  },
+  "area-feature-tour": {
+    "description": "Feature tour: broad screenshot walk through the mod's systems.",
+    "purpose": "area",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.gametest.WildercordFeatureTour"
+    ]
+  },
+  "area-mounts-taming": {
+    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill) and berry-tamed thistle hedgehogs (sit, follow, heal, hoglets), and the first ride on a freshly tamed Ridgeback Stag (bond grows, remount starts fresh), and mount bond perks (level speed and health, the sprint-key dash, the landing strike sparing pets, kept through reopen, a new rider starting over), and the bonded skyray (the bridle call and its cooldown, flying along the look, slow falling on stepping off, lingering then leaving, one at a time, kept through reopen, unhurt by its rider, the fallen cooldown).",
+    "purpose": "area",
+    "expectedCount": 5,
+    "entries": [
+      "dev.wildercord.monster.CofferMimicTamingTest",
+      "dev.wildercord.wildlife.ThistleHedgehogTamingTest",
+      "dev.wildercord.wildlife.StagFirstRideTest",
+      "dev.wildercord.wildlife.MountBondPerksTest",
+      "dev.wildercord.wildlife.SkyrayFlightTest"
+    ]
+  },
+  "area-towns-guards": {
+    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; an inn raid belongs to its own dimension; camp pot, bounty board, sunder and practice room entry state is forgotten when a world closes; every network payload survives its own codec round trip; homes, warps and /back keep their warmup, cooldown, cancels and home limit; a named-elite bounty sets one marked champion loose 48 to 96 blocks out, and only the hunter's kill of it counts; an escort bounty hands over a tough, chested pack llama on a lead, abandoning it drops its cargo, arriving pays out, a dead llama loses the bounty and one left from an earlier escort loses nothing and is taken back; a wandering caravan camps 24 to 40 blocks off with its two pack llamas, sells a stranger two runes and saffron, keeps a traveller's stock, never camps beside another and moves on when its stay ends; a Room Key lets a room only beside a keeper, a second adds its days, the traveller wakes there after dying with room and chest kept, and a stay that runs out ends; a bell is a hamlet only with three villagers about it, greets the traveller, earns standing from a trade and nearby kills up to a day's limit, makes them known with its favour and keeps it through a reopen.",
+    "purpose": "area",
+    "expectedCount": 10,
+    "entries": [
+      "dev.wildercord.town.InnChestReachTest",
+      "dev.wildercord.town.InnRaidDimensionTest",
+      "dev.wildercord.town.SessionMapsClearTest",
+      "dev.wildercord.net.PayloadCodecRoundTripTest",
+      "dev.wildercord.travel.TravelCommandsTest",
+      "dev.wildercord.town.BountyHuntTest",
+      "dev.wildercord.town.BountyEscortTest",
+      "dev.wildercord.town.CaravanTest",
+      "dev.wildercord.town.InnRoomStayTest",
+      "dev.wildercord.town.HamletStandingTest"
+    ]
+  },
+  "structure-gallery": {
+    "description": "Structure gallery: every registered WilderCord structure found in its own biome on a fixed normal-world seed, placed through the registered path and photographed from two aerial corners, eye level, straight above and inside. Visual evidence for the building work; not part of the gameplay suites.",
+    "expectedCount": 6,
+    "entries": [
+      "dev.wildercord.world.dungeons.StructureGallery1Test",
+      "dev.wildercord.world.dungeons.StructureGallery2Test",
+      "dev.wildercord.world.dungeons.StructureGallery3Test",
+      "dev.wildercord.world.dungeons.StructureGallery4Test",
+      "dev.wildercord.world.dungeons.StructureGallery5Test",
+      "dev.wildercord.world.dungeons.StructureGallery6Test"
+    ]
+  },
+  "structure-gallery-a": {
+    "description": "Structure gallery, first half (shards 1-3): the same photographs as structure-gallery, split so each half fits the 10800 s VPS run limit.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.world.dungeons.StructureGallery1Test",
+      "dev.wildercord.world.dungeons.StructureGallery2Test",
+      "dev.wildercord.world.dungeons.StructureGallery3Test"
+    ]
+  },
+  "structure-gallery-b": {
+    "description": "Structure gallery, second half (shards 4-6): the same photographs as structure-gallery, split so each half fits the 10800 s VPS run limit.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.world.dungeons.StructureGallery4Test",
+      "dev.wildercord.world.dungeons.StructureGallery5Test",
+      "dev.wildercord.world.dungeons.StructureGallery6Test"
     ]
   }
 }

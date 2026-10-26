@@ -37,6 +37,10 @@ public final class LoreQuestRules {
 	public static final String CAIRN_KEEPER = "cairn_keeper", CARTOGRAPHER_STORY = "cartographer_story", RIDGE_SITE = "ridge_site", CAIRN_LAMP = "cairn_lamp";
 	public static final String BELOWKEEPER_LISTENER = "belowkeeper_listener", HOLLOW_BELL_STORY = "hollow_bell_story", DEEP_SITE = "deep_site", BELOWKEEPER_SHUTTER = "belowkeeper_shutter";
 	public static final String KILN_KEEPER = "kiln_keeper", KILN_WIDOW_STORY = "kiln_widow_story", FORGE_SITE = "forge_site", EMBERWOOD_DRAFT = "emberwood_draft";
+	public static final String FOUR_LIGHTS = "four_lights", LIGHTS_ANSWERED = "lights_answered";
+	/** The four regional residents, each of whom gives one answer once all four lamps burn. */
+	public static final List<String> LIGHT_KEEPERS = List.of("reedkeeper", "cairn_keeper", "belowkeeper_listener", "kiln_keeper");
+	private static final List<String> LIGHT_ENTRIES = List.of("learned:coast_light", "learned:scout_wind_mark", "learned:belowkeeper_shutter", "learned:emberwood_draft");
 
 	/** A quest: what starts it, what finishes it, and what it pays (vanilla experience, Aura Shards, Blank Runes, Aura experience). */
 	public record Quest(String id, String trigger, String objective, int xp, int shards, int runes, int auraXp, String prerequisite) {
@@ -70,7 +74,8 @@ public final class LoreQuestRules {
 		new Quest("resonance_shutter", DEEP_SITE, BELOWKEEPER_SHUTTER, 40, 1, 2, 0, "pressure_records"),
 		new Quest("eleven_winters", KILN_KEEPER, KILN_WIDOW_STORY, 20, 0, 1, 0),
 		new Quest("forge_records", KILN_WIDOW_STORY, FORGE_SITE, 30, 0, 2, 0, "eleven_winters"),
-		new Quest("kiln_draft_lamp", FORGE_SITE, EMBERWOOD_DRAFT, 40, 1, 2, 0, "forge_records"));
+		new Quest("kiln_draft_lamp", FORGE_SITE, EMBERWOOD_DRAFT, 40, 1, 2, 0, "forge_records"),
+		new Quest("four_lights", FOUR_LIGHTS, LIGHTS_ANSWERED, 120, 5, 4, 150));
 
 	public static Quest byId(String id) {
 		for (Quest quest : ALL) if (quest.id().equals(id)) return quest;
@@ -113,6 +118,16 @@ public final class LoreQuestRules {
 	public static Quest firstActive(Map<String, Integer> stages) {
 		for (Quest quest : ALL) if (stages.getOrDefault(quest.id(), UNKNOWN) == ACTIVE) return quest;
 		return null;
+	}
+
+	/** True once the player has lit the Reedlands, Highland, Hollow and Emberwood lamps. */
+	public static boolean lightsLit(Collection<String> journal) {
+		return journal.containsAll(LIGHT_ENTRIES);
+	}
+
+	/** The journal line each regional keeper records when giving their answer. */
+	public static List<String> lightAnswers() {
+		return LIGHT_KEEPERS.stream().map(keeper -> "said:" + keeper + ".four_lights").toList();
 	}
 
 	/**
@@ -165,6 +180,8 @@ public final class LoreQuestRules {
 			}
 		}
 		if (trainingNow) facts.add(TRAINED);
+		if (lightsLit(journal)) facts.add(FOUR_LIGHTS);
+		if (journal.containsAll(lightAnswers())) facts.add(LIGHTS_ANSWERED);
 		return facts;
 	}
 }

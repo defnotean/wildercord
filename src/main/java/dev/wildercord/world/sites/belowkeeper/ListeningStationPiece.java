@@ -6,10 +6,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -92,6 +95,42 @@ public final class ListeningStationPiece extends BelowkeeperPiece {
 			set(level, clip, CHISELED, 8, DECK + 3, z);
 			set(level, clip, CHISELED, 12, DECK + 3, z);
 		}
+		// Haunches under each arch beam, so the ribs spring from the posts in a curve instead of a corner.
+		for (int z : new int[]{4, 10, 16}) {
+			set(level, clip, st(Blocks.DARK_OAK_STAIRS, Direction.WEST, true), 2, 7, z);
+			set(level, clip, st(Blocks.DARK_OAK_STAIRS, Direction.EAST, true), 18, 7, z);
+			set(level, clip, CHISELED, 10, 8, z);
+		}
+		// A tile ledge round the walls at the chiseled course, and a corbel table under the vault.
+		for (int i = 1; i <= 19; i++) {
+			set(level, clip, ledge(Blocks.DEEPSLATE_TILE_SLAB), i, DECK + 4, 1);
+			set(level, clip, ledge(Blocks.DEEPSLATE_TILE_SLAB), i, DECK + 4, 19);
+			set(level, clip, st(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.SOUTH, true), i, 8, 1);
+			set(level, clip, st(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.NORTH, true), i, 8, 19);
+			if (i % 6 == 4) continue;
+			set(level, clip, ledge(Blocks.DEEPSLATE_TILE_SLAB), 1, DECK + 4, i);
+			set(level, clip, ledge(Blocks.DEEPSLATE_TILE_SLAB), 19, DECK + 4, i);
+			set(level, clip, st(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.WEST, true), 1, 8, i);
+			set(level, clip, st(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.EAST, true), 19, 8, i);
+		}
+		for (int x : new int[]{1, 19}) for (int z : new int[]{1, 19}) set(level, clip, CHISELED, x, 8, z);
+		// Polished pilasters halfway between the arches on both long walls.
+		for (int x : new int[]{1, 19}) for (int z : new int[]{7, 13}) {
+			fill(level, clip, x, DECK + 1, z, x, 8, z, POLISHED);
+			set(level, clip, CHISELED, x, DECK + 1, z);
+			set(level, clip, CHISELED, x, 8, z);
+		}
+		// Each tunnel mouth gets a portal inside: polished jambs, a brick lintel with a chiseled keystone and corbelled shoulders.
+		for (int[] t : new int[][]{{1, 0}, {19, 0}}) {
+			int z = t[0];
+			for (int x : new int[]{8, 12}) fill(level, clip, x, DECK + 1, z, x, DECK + 3, z, POLISHED);
+			fill(level, clip, 8, DECK + 4, z, 12, DECK + 4, z, BRICK);
+			set(level, clip, CHISELED, 10, DECK + 4, z);
+			set(level, clip, st(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.WEST, true), 9, DECK + 3, z);
+			set(level, clip, st(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.EAST, true), 11, DECK + 3, z);
+			set(level, clip, Blocks.SOUL_LANTERN.defaultBlockState(), 8, DECK + 5, z);
+			set(level, clip, Blocks.SOUL_LANTERN.defaultBlockState(), 12, DECK + 5, z);
+		}
 
 		// Damp Belowkeeper Glowcap basin along the west side (x = 3..6, z = 6..13), watered by a lined gutter.
 		for (int z = 6; z <= 13; z++) {
@@ -121,6 +160,16 @@ public final class ListeningStationPiece extends BelowkeeperPiece {
 		set(level, clip, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 10, 8, 7);
 		set(level, clip, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 10, 8, 13);
 		set(level, clip, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 15, 7, 10);
+		// Lamps under the end arches, kept far enough from the basin that the Glowcaps stay in the dark.
+		for (int x : new int[]{6, 14}) for (int z : new int[]{4, 16}) {
+			set(level, clip, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), x, 7, z);
+		}
+		// The listener's corner: a rug by the desk, shelves of records on the east wall, stores by the bed.
+		fill(level, clip, 13, DECK + 1, 10, 14, DECK + 1, 12, Blocks.CARPET.pick(DyeColor.CYAN).defaultBlockState());
+		for (int z : new int[]{11, 12, 14, 15}) fill(level, clip, 19, DECK + 1, z, 19, DECK + 2, z, Blocks.BOOKSHELF.defaultBlockState());
+		set(level, clip, Blocks.BARREL.defaultBlockState(), 18, DECK + 1, 6);
+		set(level, clip, Blocks.BARREL.defaultBlockState(), 18, DECK + 2, 6);
+		set(level, clip, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true), 19, DECK + 3, 12);
 
 		// Acoustic Resonance Shutter pillar: copper-and-deepslate column with shuttered Redstone Lamp and Lever.
 		for (int y = DECK + 1; y <= LAMP_Y - 1; y++) {
@@ -137,7 +186,21 @@ public final class ListeningStationPiece extends BelowkeeperPiece {
 				.setValue(LeverBlock.POWERED, false), LEVER_X, LEVER_Y, LEVER_Z);
 		}
 
+		// A copper console behind the lever, so it has a face to hang on.
+		set(level, clip, COPPER, LEVER_X, DECK + 1, LEVER_Z + 1);
+		set(level, clip, CHISELED, LEVER_X, DECK + 2, LEVER_Z + 1);
+		set(level, clip, POLISHED, LEVER_X, LEVER_Y, LEVER_Z + 1);
+		set(level, clip, Blocks.POLISHED_DEEPSLATE_SLAB.defaultBlockState(), LEVER_X, LEVER_Y + 1, LEVER_Z + 1);
+
 		var home = localPosition(10, DECK + 1, 10);
 		if (!residentPlaced && clip.isInside(home)) residentPlaced = BelowkeeperResident.spawn(level, home);
+	}
+
+	private static BlockState st(Block stairs, Direction facing, boolean top) {
+		return stairs.defaultBlockState().setValue(StairBlock.FACING, facing).setValue(StairBlock.HALF, top ? Half.TOP : Half.BOTTOM);
+	}
+
+	private static BlockState ledge(Block slab) {
+		return slab.defaultBlockState().setValue(SlabBlock.TYPE, SlabType.TOP);
 	}
 }

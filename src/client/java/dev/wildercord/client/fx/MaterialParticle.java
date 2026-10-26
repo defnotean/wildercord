@@ -14,6 +14,8 @@ import net.minecraft.util.RandomSource;
 /** Twelve authored materials: flame curls, angular ice, forked sparks, wind ribbons, tumbling
  * stone, fluttering petals, contracting voids, rune fragments, clock gears, drops and vapour. */
 public final class MaterialParticle extends SingleQuadParticle implements SigilGroup.Extent {
+	/** Its two animation frames, looked up once instead of by name every tick. */
+	private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
 	private final int style;
 	private final float size, phase;
 	private final java.util.UUID outcomeSource=LifeOwnerClearance.source();
@@ -47,7 +49,8 @@ public final class MaterialParticle extends SingleQuadParticle implements SigilG
 		float t=age/(float)lifetime;
 		alpha=Math.min(1,t*5)*Math.min(1,(1-t)*3);
 		quadSize=size*(style==MaterialOption.VOID?1-t*.7F:style==MaterialOption.VAPOUR?.6F+t:1);
-		setSprite(SpellCircleParticle.particleSprite("material_"+style+"_"+(age/4%2)));
+		if(frames==null)frames=new net.minecraft.client.renderer.texture.TextureAtlasSprite[]{SpellCircleParticle.particleSprite("material_"+style+"_0"),SpellCircleParticle.particleSprite("material_"+style+"_1")};
+		setSprite(frames[age/4%2]);
 	}
 	@Override public void extract(QuadParticleRenderState state, Camera camera, float partial) {
 		if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))super.extract(state,camera,partial);

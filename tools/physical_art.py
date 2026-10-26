@@ -18,6 +18,8 @@ GLYPHS={
  'rime_causeway':['....#.#','....###','..#.#..','..###..','#.#....','###....','.......'],
  'thunder_walk':['....##.','...##..','....#..','..##.#.','.##....','..#....','##.....'],
 }
+# Names for the construct blocks (seen in the debug screen and block-info mods); generate_assets.py merges them into en_us.json.
+LANG={'block.wildercord.raised_strata':'Raised Strata','block.wildercord.cinder_bulwark':'Cinder Bulwark','block.wildercord.root_bulwark':'Root Bulwark','block.wildercord.lifted_water':'Lifted Water','block.wildercord.water_reservation':'Held Water','block.wildercord.wind_step':'Wind Step','block.wildercord.rime_step':'Rime Step','block.wildercord.thunder_step':'Thunder Step'}
 def write(path,value):
  path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8',newline='\n')
 def main():

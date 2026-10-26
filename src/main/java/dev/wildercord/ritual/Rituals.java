@@ -4,7 +4,9 @@ import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.monster.MonsterContent;
+import dev.wildercord.party.Parties;
 import dev.wildercord.player.Heart;
+import dev.wildercord.player.Inventories;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.ritual.RitualRules.Ritual;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -168,13 +170,13 @@ public final class Rituals {
 		};
 	}
 
-	/** The casters sharing the cost: the one channelling first, then every other Cord-wearer close by. */
+	/** The casters sharing the cost: the one channelling first, then every Cord-wearer of their party close by (see {@link RitualRules#joins}). */
 	public static List<ServerPlayer> circle(ServerLevel level, ServerPlayer leader) {
 		List<ServerPlayer> circle = new ArrayList<>();
 		circle.add(leader);
 		for (ServerPlayer other : level.players()) {
-			if (other != leader && other.isAlive() && !other.isSpectator() && Spellbooks.tier(other) != null
-				&& other.distanceTo(leader) <= RitualRules.CIRCLE_RANGE) {
+			if (other != leader && other.isAlive() && !other.isSpectator()
+				&& RitualRules.joins(Parties.sameParty(other, leader), Spellbooks.tier(other) != null, other.distanceTo(leader))) {
 				circle.add(other);
 			}
 		}
@@ -188,7 +190,7 @@ public final class Rituals {
 		boolean sky = level.dimension() == Level.OVERWORLD;
 		if ((ritual == Ritual.CLEAR_SKIES || ritual == Ritual.CALL_STORM || ritual == Ritual.DAWN) && !sky) return Result.WRONG_PLACE;
 		if (ritual == Ritual.DAWN && level.isBrightOutside()) return Result.WRONG_PLACE;
-		if (!leader.isCreative() && leader.getInventory().findSlotMatchingItem(new ItemStack(reagent(ritual))) < 0) return Result.NO_REAGENT;
+		if (!leader.isCreative() && Inventories.slotOf(leader.getInventory(), reagent(ritual)) < 0) return Result.NO_REAGENT;
 		if (!leader.isCreative() && split(level, leader, ritual) == null) return Result.LOW_MANA;
 		return Result.DONE;
 	}
@@ -222,7 +224,7 @@ public final class Rituals {
 					caster.sendOverlayMessage(Component.translatable("message.wildercord.ritual.shared", (int) paid[i]).withColor(0xB8A8FF));
 				}
 			}
-			int slot = leader.getInventory().findSlotMatchingItem(new ItemStack(reagent(ritual)));
+			int slot = Inventories.slotOf(leader.getInventory(), reagent(ritual));
 			if (slot >= 0) leader.getInventory().removeItem(slot, 1);
 		}
 		level.playSound(null, leader.getX(), leader.getY(), leader.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 1.0F, 1.2F);
@@ -307,9 +309,13 @@ public final class Rituals {
 	private static List<Mob> warded(ServerLevel level, Vec3 center) {
 		double r = RitualRules.SANCTUARY_RADIUS;
 		return level.getEntitiesOfClass(Mob.class, new net.minecraft.world.phys.AABB(center, center).inflate(r),
-			m -> m instanceof Enemy && m.isAlive() && !(m instanceof net.minecraft.world.entity.boss.wither.WitherBoss)
-				&& !(m instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon)
+			m -> m instanceof Enemy && m.isAlive() && !held(m)
 				&& m.position().distanceTo(center) <= r);
+	}
+
+	/** A Sanctuary turns aside the common monsters: no boss, and no Riftcaller, is pushed out of its own fight. */
+	private static boolean held(Mob mob) {
+		return dev.wildercord.cast.Spirits.isBoss(mob) || mob.entityTags().contains(dev.wildercord.cast.events.RiftSiege.RIFTCALLER_TAG);
 	}
 
 	/** Monsters inside the ward forget who they were after and are pushed back towards its edge. */

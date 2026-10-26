@@ -293,4 +293,28 @@ class LoreQuestRulesTest {
 		assertFalse(advance(stages, heard).changed(), "a completed emberwood route never pays again");
 		assertFalse(facts(List.of(), List.of("place:emberwood_charcoal_yard"), false).contains(EMBERWOOD_DRAFT), "an unlit charcoal yard is not a lit kiln draft lamp");
 	}
+
+	@Test
+	void fourLightsQuestNeedsEveryLampThenEveryKeeper() {
+		List<String> lamps = List.of("learned:coast_light", "learned:scout_wind_mark", "learned:belowkeeper_shutter", "learned:emberwood_draft");
+		for (String missing : lamps) {
+			List<String> three = lamps.stream().filter(l -> !l.equals(missing)).toList();
+			assertFalse(facts(List.of(), three, false).contains(FOUR_LIGHTS), "three lamps are not four");
+		}
+		Set<String> lit = facts(List.of(), lamps, false);
+		assertTrue(lit.contains(FOUR_LIGHTS));
+		Quest quest = quest("four_lights");
+		assertEquals(ACTIVE, step(quest, UNKNOWN, lit));
+		List<String> answers = lightAnswers();
+		assertEquals(4, answers.size());
+		for (int i = 0; i < answers.size() - 1; i++) {
+			List<String> heard = new java.util.ArrayList<>(lamps);
+			heard.addAll(answers.subList(0, i + 1));
+			assertFalse(facts(List.of(), heard, false).contains(LIGHTS_ANSWERED), "every keeper must answer");
+		}
+		List<String> all = new java.util.ArrayList<>(lamps);
+		all.addAll(answers);
+		assertEquals(DONE, step(quest, ACTIVE, facts(List.of(), all, false)));
+		assertTrue(quest.shards() > 0 && quest.xp() > 0);
+	}
 }

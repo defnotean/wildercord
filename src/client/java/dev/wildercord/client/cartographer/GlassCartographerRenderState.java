@@ -11,4 +11,5 @@ public final class GlassCartographerRenderState extends LivingEntityRenderState 
 	public float markZ;
 	public boolean acrossX = true;
 	public boolean second;
+	public float hurt;
 }

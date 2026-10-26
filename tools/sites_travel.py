@@ -108,6 +108,10 @@ def _runes(g, site):
     return entries
 
 
+# Sites that clear the trees over themselves, so they generate after vegetation.
+CLEARS_CANOPY = {"travel_wayfarer_inn", "travel_broken_bridge", "travel_rune_library"}
+
+
 def write(g):
     ids = list(SITES)
     targets = [f"wildercord:{s}" for s in ids if s != "travel_cartographer_hut"]
@@ -115,7 +119,7 @@ def write(g):
     for n, (site, (name, spacing, separation, biomes, desc, icon)) in enumerate(SITES.items()):
         g.write_json(g.DATA / f"worldgen/structure/{site}.json", {
             "type": "wildercord:site", "site": site, "biomes": f"#wildercord:has_structure/{site}", "spawn_overrides": {},
-            "step": "surface_structures", "terrain_adaptation": "beard_thin"})
+            "step": "top_layer_modification" if site in CLEARS_CANOPY else "surface_structures", "terrain_adaptation": "beard_thin"})
         g.write_json(g.DATA / f"worldgen/structure_set/{site}.json", {
             "placement": {"type": "minecraft:random_spread", "salt": SALT + n, "spacing": spacing, "separation": separation},
             "structures": [{"structure": f"wildercord:{site}", "weight": 1}]})

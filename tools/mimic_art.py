@@ -14,7 +14,14 @@ LANG = {
                                   'it and its lid flies open on rows of teeth. It bites up close, shoots out its long tongue to haul '
                                   'prey in, and from further off crouches, its lid chattering, and leaps; miss, and it lands on its '
                                   'back with its legs kicking, soft to blows. Hurt hard and fast, it clamps shut. Left alone, it walks '
-                                  'back to its spot and shuts. Its belly is full of gold.',
+                                  'back to its spot and shuts. Its belly is full of gold. Feed it books, though, and now and then '
+                                  'it takes to you: it follows you about, shuts up as a coffer beside you whenever you stop, and opens '
+                                  'like a chest for you alone.',
+ 'message.wildercord.coffer_mimic.tamed': 'The coffer mimic takes to you.',
+ 'message.wildercord.coffer_mimic.pet': 'The coffer mimic’s lid lifts happily.',
+ 'message.wildercord.coffer_mimic.stay': 'The coffer mimic stays put.',
+ 'message.wildercord.coffer_mimic.follow': 'The coffer mimic follows you.',
+ 'message.wildercord.coffer_mimic.not_yours': 'This coffer mimic won’t open for you.',
 }
 
 OAK = ramp("#4A2E14", "#62401E", "#7A5228", "#926434", "#A87640")

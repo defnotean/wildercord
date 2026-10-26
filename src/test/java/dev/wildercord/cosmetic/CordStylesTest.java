@@ -31,6 +31,18 @@ class CordStylesTest {
 	}
 
 	@Test
+	void everyFeatUnlockNamesARealFeat() {
+		for (String group : List.of(CordStyles.MATERIAL, CordStyles.GLOW, CordStyles.TRAIL)) {
+			for (Option option : CordStyles.group(group)) {
+				if (option.unlock().kind() == CordStyles.Kind.FEAT) {
+					String id = option.unlock().what();
+					assertTrue(dev.wildercord.spell.Feats.FEATS.stream().anyMatch(f -> f.id().equals(id)), option.key() + " is unlocked by unknown feat " + id);
+				}
+			}
+		}
+	}
+
+	@Test
 	void aNewPlayerHasTheDefaults() {
 		assertTrue(CordStyles.allowed(Style.DEFAULT, NEW));
 		for (String group : List.of(CordStyles.MATERIAL, CordStyles.GLOW, CordStyles.TRAIL)) {

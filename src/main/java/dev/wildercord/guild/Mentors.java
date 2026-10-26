@@ -48,7 +48,9 @@ public final class Mentors {
 		public static final Codec<Ledger> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, UUIDUtil.STRING_CODEC).optionalFieldOf("mentors", Map.of()).forGetter(l -> l.book.all()),
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING).optionalFieldOf("names", Map.of()).forGetter(l -> l.names),
-			Codec.unboundedMap(UUIDUtil.STRING_CODEC, OFFER).optionalFieldOf("offers", Map.of()).forGetter(l -> l.offers)
+			Codec.unboundedMap(UUIDUtil.STRING_CODEC, OFFER).optionalFieldOf("offers", Map.of()).forGetter(l -> l.offers),
+			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT).optionalFieldOf("paid", Map.of()).forGetter(l -> l.tutelage.paidThrough()),
+			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT).optionalFieldOf("owed", Map.of()).forGetter(l -> l.tutelage.owed())
 		).apply(i, Ledger::new));
 		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("mentors"), Ledger::new, CODEC, null);
 
@@ -58,14 +60,42 @@ public final class Mentors {
 		/** Offers waiting on each would-be apprentice. */
 		private final Map<UUID, Offer> offers;
 
+		/** Which circles have paid their mentor, and crystals held for mentors who were away. */
+		private final MentorRules.Tutelage tutelage;
+
 		public Ledger() {
-			this(Map.of(), Map.of(), Map.of());
+			this(Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
 		}
 
-		private Ledger(Map<UUID, UUID> mentors, Map<UUID, String> names, Map<UUID, Offer> offers) {
+		private Ledger(Map<UUID, UUID> mentors, Map<UUID, String> names, Map<UUID, Offer> offers, Map<UUID, Integer> paid, Map<UUID, Integer> owed) {
 			this.book = new MentorRules.Book(mentors);
 			this.names = new HashMap<>(names);
 			this.offers = new HashMap<>(offers);
+			this.tutelage = new MentorRules.Tutelage(paid, owed);
+		}
+
+		/** {@code apprentice} formed circle {@code n}: what it earns their mentor, nothing if that circle was paid for before. */
+		int earn(UUID apprentice, int n) {
+			int crystals = tutelage.earn(apprentice, n);
+			if (crystals > 0) setDirty();
+			return crystals;
+		}
+
+		/** Holds {@code crystals} for {@code mentor} until they log in. */
+		public void owe(UUID mentor, int crystals) {
+			tutelage.owe(mentor, crystals);
+			setDirty();
+		}
+
+		int collect(UUID mentor) {
+			int crystals = tutelage.collect(mentor);
+			if (crystals > 0) setDirty();
+			return crystals;
+		}
+
+		/** Crystals held for {@code mentor} until they log in. */
+		public int owedTo(UUID mentor) {
+			return tutelage.owed().getOrDefault(mentor, 0);
 		}
 
 		/** Holds {@code mentor}'s offer for {@code apprentice} for a minute, dropping any that have lapsed by {@code now}. */
@@ -117,8 +147,20 @@ public final class Mentors {
 
 	public static void init() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> register(dispatcher));
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
-			ledger(server).remember(handler.player.getUUID(), handler.player.getGameProfile().name()));
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			Ledger ledger = ledger(server);
+			ledger.remember(handler.player.getUUID(), handler.player.getGameProfile().name());
+			int owed = ledger.collect(handler.player.getUUID());
+			if (owed > 0) {
+				give(handler.player, owed);
+				handler.player.sendSystemMessage(text("tutelage_owed", owed).withStyle(ChatFormatting.AQUA));
+			}
+		});
+	}
+
+	private static void give(ServerPlayer player, int crystals) {
+		ItemStack stack = new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, crystals);
+		if (!player.getInventory().add(stack)) player.spawnAtLocation(player.level(), stack);
 	}
 
 	public static Ledger ledger(MinecraftServer server) {
@@ -139,16 +181,21 @@ public final class Mentors {
 		return MentorRules.gain(mentorNear(player));
 	}
 
-	/** {@code player} formed circle {@code n}: their mentor is paid, and at the last circle of it they graduate. */
+	/**
+	 * {@code player} formed circle {@code n}: their mentor is paid (once for each circle, and held for them if they're
+	 * away), and at the last circle of it they graduate.
+	 */
 	public static void formed(ServerPlayer player, int n) {
 		Ledger ledger = ledger(player.level().getServer());
 		UUID mentorId = ledger.book.mentorOf(player.getUUID());
 		if (mentorId == null) return;
 		ServerPlayer mentor = player.level().getServer().getPlayerList().getPlayer(mentorId);
-		if (mentor != null) {
-			ItemStack crystals = new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, MentorRules.tutelage(n));
-			if (!mentor.getInventory().add(crystals)) mentor.spawnAtLocation(mentor.level(), crystals);
-			mentor.sendSystemMessage(text("tutelage", player.getDisplayName(), dev.wildercord.spell.Circles.ordinal(n), MentorRules.tutelage(n)).withStyle(ChatFormatting.AQUA));
+		int crystals = ledger.earn(player.getUUID(), n);
+		if (crystals > 0 && mentor != null) {
+			give(mentor, crystals);
+			mentor.sendSystemMessage(text("tutelage", player.getDisplayName(), dev.wildercord.spell.Circles.ordinal(n), crystals).withStyle(ChatFormatting.AQUA));
+		} else if (crystals > 0) {
+			ledger.owe(mentorId, crystals);
 		}
 		if (MentorRules.graduates(n)) {
 			ledger.end(mentorId, player.getUUID());
@@ -237,7 +284,10 @@ public final class Mentors {
 
 	private static int end(ServerPlayer player, String name) {
 		Ledger ledger = ledger(player.level().getServer());
-		UUID other = bonds(player).stream().filter(id -> ledger.name(id).equalsIgnoreCase(name)).findFirst().orElse(null);
+		List<UUID> bonds = bonds(player);
+		// An exact name first, so two bonds whose names differ only in case can each be ended.
+		UUID other = bonds.stream().filter(id -> ledger.name(id).equals(name)).findFirst()
+			.orElseGet(() -> bonds.stream().filter(id -> ledger.name(id).equalsIgnoreCase(name)).findFirst().orElse(null));
 		if (other == null || !ledger.end(player.getUUID(), other)) return refuse(player, "not_bonded");
 		player.sendSystemMessage(text("ended", ledger.name(other)));
 		ServerPlayer them = player.level().getServer().getPlayerList().getPlayer(other);

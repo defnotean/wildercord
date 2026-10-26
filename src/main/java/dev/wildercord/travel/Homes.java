@@ -5,12 +5,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Homes: {@code /sethome [name]}, {@code /home [name]}, {@code /delhome <name>} and {@code /homes}.
+ * Homes: {@code /sethome [name]}, {@code /home [name]}, {@code /renamehome <name> <new name>}, {@code /delhome <name>} and {@code /homes}
+ * (which also takes {@code rename} and {@code remove}).
  * Each player keeps up to the server's {@code travel.max_homes} of them in their {@link TravelData};
  * setting one by a name they already use moves it.
  */
@@ -82,7 +81,42 @@ public final class Homes {
 		return 1;
 	}
 
-	/** {@code /homes}: every home, each a button that goes there. */
+	/** {@code /renamehome}: home {@code rawFrom}, kept where it is, is called {@code rawTo} from now on. */
+	public static int rename(ServerPlayer player, String rawFrom, String rawTo) {
+		if (!Travel.available(player)) {
+			return 0;
+		}
+		String from = TravelRules.name(rawFrom);
+		String to = TravelRules.name(rawTo);
+		Map<String, Spot> homes = Travel.data(player).homes();
+		if (from == null || !homes.containsKey(from)) {
+			Travel.fail(player, "home_missing", Travel.name(rawFrom));
+			return 0;
+		}
+		if (to == null) {
+			Travel.fail(player, "bad_name", TravelRules.MAX_NAME);
+			return 0;
+		}
+		switch (TravelRules.renameHome(homes.keySet(), from, to)) {
+			case SAME -> {
+				Travel.info(player, "home_same", Travel.name(to));
+				return 0;
+			}
+			case TAKEN -> {
+				Travel.fail(player, "home_taken", Travel.name(to));
+				return 0;
+			}
+			default -> {}
+		}
+		Travel.update(player, d -> d.withHomeRenamed(from, to));
+		Travel.good(player, "home_renamed", Travel.name(from), Travel.name(to));
+		return 1;
+	}
+
+	/**
+	 * {@code /homes}: every home on a line of its own; its name goes there, and beside it are buttons that
+	 * start {@code /renamehome} and {@code /delhome} in the chat box (removing still waits for Enter).
+	 */
 	public static int list(ServerPlayer player) {
 		if (!Travel.available(player)) {
 			return 0;
@@ -92,11 +126,14 @@ public final class Homes {
 			Travel.info(player, "homes_none");
 			return 0;
 		}
-		List<MutableComponent> buttons = new ArrayList<>();
-		homes.forEach((name, spot) -> buttons.add(Travel.button(Travel.name(name).withStyle(ChatFormatting.UNDERLINE), "/home " + name,
-			Travel.text("go_hover", where(name), spot.describe()))));
-		player.sendSystemMessage(Travel.text("homes_list", homes.size(), Travel.config().maxHomes()).withStyle(ChatFormatting.GRAY)
-			.append(Travel.row(buttons)));
+		MutableComponent message = Travel.text("homes_list", homes.size(), Travel.config().maxHomes()).withStyle(ChatFormatting.GRAY);
+		homes.forEach((name, spot) -> message.append(Component.literal("\n • ").withStyle(ChatFormatting.DARK_GRAY))
+			.append(Travel.button(Travel.name(name).withStyle(ChatFormatting.UNDERLINE), "/home " + name, Travel.text("go_hover", where(name), spot.describe())))
+			.append(Component.literal("  "))
+			.append(Travel.suggest(Travel.text("homes.rename").withStyle(ChatFormatting.YELLOW), "/renamehome " + name + " ", Travel.text("homes.rename_hover", Travel.name(name))))
+			.append(Component.literal(" "))
+			.append(Travel.suggest(Travel.text("homes.remove").withStyle(ChatFormatting.RED), "/delhome " + name, Travel.text("homes.remove_hover", Travel.name(name)))));
+		player.sendSystemMessage(message);
 		return homes.size();
 	}
 

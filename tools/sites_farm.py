@@ -102,12 +102,17 @@ LOOT = {
 }
 
 
+# Forest sites that clear the trees over themselves, so they generate after vegetation.
+CLEARS_CANOPY = {"farm_herbalist", "farm_apiary", "farm_orchard"}
+CANOPY_STEP = "top_layer_modification"
+
+
 def write(g):
     for site, (n, spacing, separation, terrain, biomes, icon, title, description) in SITES.items():
         g.write_json(g.DATA / f"worldgen/structure/{site}.json", {
             "type": "wildercord:site", "site": site, "biomes": f"#wildercord:has_structure/{site}",
             "spawn_overrides": NIGHT_GUARD if site == "farm_scarecrow" else {},
-            "step": "surface_structures", "terrain_adaptation": terrain})
+            "step": CANOPY_STEP if site in CLEARS_CANOPY else "surface_structures", "terrain_adaptation": terrain})
         g.write_json(g.DATA / f"worldgen/structure_set/{site}.json", {
             "placement": {"type": "minecraft:random_spread", "salt": SALT + n, "spacing": spacing, "separation": separation},
             "structures": [{"structure": f"wildercord:{site}", "weight": 1}]})

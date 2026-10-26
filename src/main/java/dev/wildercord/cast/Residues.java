@@ -465,7 +465,7 @@ public final class Residues {
 		}
 		LivingEntity owner = null;
 		if (!parent.owner().isEmpty()) {
-			owner = level.getServer().getPlayerList().getPlayer(UUID.fromString(parent.owner()));
+			owner = ResidueRules.ownerId(parent.owner()).map(level.getServer().getPlayerList()::getPlayer).orElse(null);
 			if (owner == null) {
 				return;
 			}

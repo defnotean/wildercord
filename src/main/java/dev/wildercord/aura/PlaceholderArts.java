@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * The common arts: the five a breathing method without arts of its own plays (an add-on's method that registers none; every
- * built-in method has its own). They step aside for a method's own ({@link AuraApi#registerArts}: all ten built-in methods have
+ * built-in method has its own). They step aside for a method's own ({@link AuraApi#registerArts}: all sixteen built-in methods have
  * theirs in {@code aura.arts}). They're
  * simple on purpose: a burst of aura off the blade, in the method's element, landing as projected aura (the slash's rules:
  * armour, and against a player the spell defences and the PvP scale), shaped a little differently a stage so each string can be

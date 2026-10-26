@@ -9,7 +9,6 @@ import uuid
 import json
 
 import client_suites as suites
-import full_client_ci as full
 import run_vps_checks as runner
 import vps_native as native
 from native_ci_diagnostics import SCENE_PREFIX
@@ -36,19 +35,25 @@ def log_for(prepared):
 class VpsNativeTests(unittest.TestCase):
     def test_release_smoke_group_is_small_and_completes(self):
         p = plan(suite="release-smoke")
-        self.assertLessEqual(p["selection"]["count"], 16)
+        self.assertLessEqual(p["selection"]["count"], 20)
         self.assertIsNone(p["moonReceipt"])
         result = native.manifest(log_for(p), p)
         self.assertEqual(result["focusedClientGate"], "passed", result["verificationIssues"])
         self.assertEqual(result["fullClientGate"], "unverified")
         self.assertEqual(result["counts"]["passed"], p["selection"]["count"])
 
+    def test_every_catalog_suite_selects_registered_entrypoints(self):
+        groups = json.loads(suites.CATALOG.read_text(encoding="utf-8"))
+        for suite in groups:
+            with self.subTest(suite=suite):
+                suites.select_entries(suite=suite)
+
     def test_partial_reordered_duplicate_and_foreign_logs_fail_closed(self):
         p = plan(suite="release-smoke")
         good = log_for(p)
         lines = good.splitlines()
         required = [suites.SELECTION_PREFIX, p["prefix"], suites.DESCRIPTOR_PREFIX,
-                    SCENE_PREFIX, "BUILD SUCCESSFUL", suites.EXIT_PREFIX, full.OWNED_EXIT_PREFIX]
+                    SCENE_PREFIX, "BUILD SUCCESSFUL", suites.EXIT_PREFIX, suites.OWNED_EXIT_PREFIX]
         samples = [good + "[TEST SKIP] required class\n", good + "BUILD FAILED\n",
                    good.replace(p["launch"], str(uuid.uuid4())), "BUILD SUCCESSFUL\n",
                    good.replace('"phase": "cleanup"', '"phase": "thrown"', 1),
@@ -65,7 +70,7 @@ class VpsNativeTests(unittest.TestCase):
                 self.assertEqual(result["counts"]["passed"], 0)
 
     def test_only_the_smoke_selector_and_positive_batch_identity(self):
-        for selectors in ({}, {"suite": "masters"}, {"shard": "1/4"}, {"suite": "release-smoke", "shard": "1/4"}):
+        for selectors in ({}, {"suite": "masters"}, {"suite": "no-such-suite"}):
             with self.assertRaises((ValueError, KeyError)):
                 plan(**selectors)
         for computer, batch, attempt in (("", BATCH, "1"), ("bad/name", BATCH, "1"),

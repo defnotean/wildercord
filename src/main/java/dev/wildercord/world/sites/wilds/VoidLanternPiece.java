@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -34,6 +35,13 @@ public final class VoidLanternPiece extends WildsPiece {
 
 	static boolean inside(int x, int z) { return dist(x, z, C, C) <= 2.5; }
 	static boolean ring(int x, int z) { double d = dist(x, z, C, C); return d > 2.5 && d <= 3.6; }
+	/** The dressing course just outside the shaft: plinth, bands and the crown overhang. */
+	private static boolean skirt(int x, int z) { double d = dist(x, z, C, C); return d > 3.6 && d <= 4.6; }
+	/** The horizontal direction from a skirt cell back toward the shaft. */
+	private static Direction toward(int x, int z) {
+		int dx = C - x, dz = C - z;
+		return Math.abs(dx) >= Math.abs(dz) ? (dx > 0 ? Direction.EAST : Direction.WEST) : (dz > 0 ? Direction.NORTH : Direction.SOUTH);
+	}
 
 	@Override public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
@@ -49,13 +57,40 @@ public final class VoidLanternPiece extends WildsPiece {
 			if (inside(x, z)) for (int y : new int[]{11, 22}) set(level, bb, s(Blocks.PURPUR_BLOCK), x, y, z);
 			if (d <= 3.6) set(level, bb, s(Blocks.PURPUR_BLOCK), x, 30, z);
 		}
+		// A battered plinth, ledges at each floor and a corbelled crown with a parapet round the roof.
+		for (int x = 0; x <= 14; x++) for (int z = 0; z <= 14; z++) {
+			if (!skirt(x, z)) continue;
+			if (x < 6 || x > 8 || z > C) {
+				fill(level, bb, x, 1, z, x, 2, z, s(Blocks.END_STONE_BRICKS));
+				set(level, bb, stair(Blocks.PURPUR_STAIRS, toward(x, z), false), x, 3, z);
+			}
+			for (int y : new int[]{11, 22}) set(level, bb, topSlab(Blocks.PURPUR_SLAB), x, y, z);
+			set(level, bb, stair(Blocks.PURPUR_STAIRS, toward(x, z), true), x, 29, z);
+			set(level, bb, s(Blocks.END_STONE_BRICKS), x, 30, z);
+			set(level, bb, s(Blocks.END_STONE_BRICKS), x, 31, z);
+			if ((x + z) % 3 == 0) set(level, bb, s(Blocks.PURPUR_PILLAR), x, 32, z);
+		}
+		// Pillar ribs down the shaft's flanks, clear of the door and the windows.
+		for (int[] r : new int[][]{{4, 4}, {10, 4}, {4, 10}, {10, 10}, {11, 7}, {7, 11}}) fill(level, bb, r[0], 1, r[1], r[0], 28, r[1], s(Blocks.PURPUR_PILLAR));
+		// Purple carpet on the ground floor; the lantern room's is laid around the ladder hatch.
+		for (int x = 0; x <= 14; x++) for (int z = 0; z <= 14; z++) if (inside(x, z)) {
+			set(level, bb, Blocks.CARPET.pick(DyeColor.PURPLE).defaultBlockState(), x, 1, z);
+			if (x != 7 || z != 9) set(level, bb, Blocks.CARPET.pick(DyeColor.PURPLE).defaultBlockState(), x, 23, z);
+		}
 		// The door, windows and lights.
 		clear(level, bb, 6, 1, 4, 8, 3, 4);
+		for (int x : new int[]{5, 9}) fill(level, bb, x, 1, 3, x, 4, 3, s(Blocks.PURPUR_PILLAR));
+		for (int x = 6; x <= 8; x++) set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.NORTH, true), x, 4, 3);
+		for (int x : new int[]{5, 9}) set(level, bb, s(Blocks.END_ROD), x, 5, 3);
+		for (int x : new int[]{6, 8}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE), x, 7, 3, Direction.SOUTH);
 		for (int y : new int[]{6, 7, 16, 17, 26, 27}) {
 			set(level, bb, Blocks.STAINED_GLASS.purple().defaultBlockState(), 4, y, 7);
 			set(level, bb, Blocks.STAINED_GLASS.purple().defaultBlockState(), 7, y, 4);
 		}
 		for (int y : new int[]{1, 12, 23}) { set(level, bb, s(Blocks.END_ROD), 5, y, 7); set(level, bb, s(Blocks.END_ROD), 8, y, 9); }
+		hangingLantern(level, bb, 7, 10, 7, 0, true);
+		hangingLantern(level, bb, 6, 21, 6, 0, true);
+		hangingLantern(level, bb, 7, 29, 7, 1, true);
 		// Ground floor: a ladder up through the first floor.
 		for (int y = 1; y <= 11; y++) set(level, bb, s(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.WEST), 9, y, 7);
 		chest(level, bb, 9, 1, 6, WildsSites.VOID_HALL, Direction.WEST, 1);
@@ -74,6 +109,7 @@ public final class VoidLanternPiece extends WildsPiece {
 		set(level, bb, s(Blocks.PEARLESCENT_FROGLIGHT), C, 32, C);
 		set(level, bb, s(Blocks.PEARLESCENT_FROGLIGHT), C, 33, C);
 		fill(level, bb, 5, 34, 5, 9, 34, 9, s(Blocks.PURPUR_SLAB));
+		set(level, bb, s(Blocks.END_ROD), C, 35, C);
 		guard(level, bb, EntityTypes.ENDERMAN, 6, 1, 6, List.of(Runes.BOLT, Runes.BLIND), false);
 		guard(level, bb, EntityTypes.ENDERMAN, 7, 12, 6, List.of(Runes.BOLT, Runes.PULL), true);
 	}

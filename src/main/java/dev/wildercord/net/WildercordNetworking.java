@@ -209,6 +209,17 @@ public final class WildercordNetworking {
 		}
 	}
 
+	/** The silk key: puts the Weaver's Silk away or takes it out again. */
+	public record ToggleSilk() implements CustomPacketPayload {
+		public static final Type<ToggleSilk> TYPE = new Type<>(Wildercord.id("toggle_silk"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, ToggleSilk> CODEC = StreamCodec.unit(new ToggleSilk());
+
+		@Override
+		public Type<ToggleSilk> type() {
+			return TYPE;
+		}
+	}
+
 	/** Spellbook rewrites (select, edit, rename, a passive's switch, loadouts) and inscribing: a burst of 20, then 10 a second. */
 	private static final PacketThrottle SPELLBOOK = new PacketThrottle(20, 2);
 
@@ -306,6 +317,12 @@ public final class WildercordNetworking {
 		ServerPlayNetworking.registerGlobalReceiver(OpenBackpack.TYPE, (payload, context) -> {
 			if (allowed(context)) {
 				dev.wildercord.backpack.Backpacks.openWorn(context.player());
+			}
+		});
+		PayloadTypeRegistry.serverboundPlay().register(ToggleSilk.TYPE, ToggleSilk.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(ToggleSilk.TYPE, (payload, context) -> {
+			if (allowed(context)) {
+				dev.wildercord.aura.world.WeaversSilk.toggle(context.player());
 			}
 		});
 		ServerPlayNetworking.registerGlobalReceiver(EditSpell.TYPE, (payload, context) -> {

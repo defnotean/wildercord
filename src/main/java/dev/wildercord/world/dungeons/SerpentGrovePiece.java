@@ -83,6 +83,7 @@ public final class SerpentGrovePiece extends DungeonPiece {
 		sinkhole(level,bb);
 		tunnel(level,bb);
 		ceiling(level,bb);
+		ruins(level,bb);
 		serpent(level,bb);
 	}
 
@@ -273,6 +274,84 @@ public final class SerpentGrovePiece extends DungeonPiece {
 				var vine=(end?Blocks.CAVE_VINES:Blocks.CAVE_VINES_PLANT).defaultBlockState().setValue(CaveVines.BERRIES,(n+i)%2==0);
 				set(level,bb,vine,x,y,z);
 			}
+		}
+	}
+
+	/**
+	 * What is left of the shrine the grove once was: a colonnade round the shore holding up the dome, four of its ten columns
+	 * fallen; worn kerbs round the island and the shore; a carved doorway where the tunnel opens; and lamp stones round the
+	 * sinkhole's lip, so the hole reads from the jungle.
+	 */
+	private void ruins(WorldGenLevel level,BoundingBox bb){
+		BlockState chiseled=Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),mossy=Blocks.MOSSY_STONE_BRICKS.defaultBlockState();
+		for(int k=0;k<10;k++){
+			double a=k*Math.PI/5+Math.PI/10-Math.PI/2;
+			int x=(int)Math.round(CX+Math.cos(a)*19.5),z=(int)Math.round(CZ+Math.sin(a)*19.5),roof=dome(dist(x,z,CX,CZ));
+			boolean fallen=k==2||k==5||k==6||k==8;
+			int cap=fallen?FLOOR+2+noise(x,z)%3:roof-1;
+			set(level,bb,chiseled,x,FLOOR+1,z);
+			for(int y=FLOOR+2;y<=cap;y++){
+				int n=noise(x,y,z);
+				set(level,bb,(n<35?Blocks.MOSSY_STONE_BRICKS:n<50?Blocks.CRACKED_STONE_BRICKS:Blocks.STONE_BRICKS).defaultBlockState(),x,y,z);
+			}
+			if(fallen){
+				// The broken drum lies where it fell, outward from the island.
+				int sx=Integer.signum(x-CX),sz=sx==0?Integer.signum(z-CZ):0;
+				set(level,bb,Blocks.MOSS_CARPET.defaultBlockState(),x,cap+1,z);
+				set(level,bb,mossy,x+sx,FLOOR+1,z+sz);set(level,bb,Blocks.MOSSY_COBBLESTONE.defaultBlockState(),x+2*sx,FLOOR+1,z+2*sz);
+				continue;
+			}
+			// A carved capital with corbels where the column meets the dome.
+			set(level,bb,chiseled,x,roof,z);
+			for(Direction d:Direction.Plane.HORIZONTAL)
+				set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,d.getOpposite(),true),x+d.getStepX(),roof,z+d.getStepZ());
+			set(level,bb,Blocks.HANGING_ROOTS.defaultBlockState(),x+1,roof-1,z);
+		}
+		// Worn kerbs, flush with the ground, round the island's edge and the shore, wherever nothing grows on them.
+		for(int x=CX-16;x<=CX+16;x++)for(int z=CZ-16;z<=CZ+16;z++){
+			double r=dist(x,z,CX,CZ);
+			boolean island=r>=7.6&&r<ISLAND,shore=r>=SHORE&&r<SHORE+0.9;
+			if(!island&&!shore||x==HERB_X&&z==HERB_Z)continue;
+			if(!getBlock(level,x,FLOOR+1,z,bb).isAir())continue;
+			BlockState under=getBlock(level,x,FLOOR,z,bb);
+			if(under.is(Blocks.MANGROVE_ROOTS)||under.is(Blocks.JUNGLE_WOOD))continue;
+			int n=noise(x,z);
+			set(level,bb,n<40?mossy:n<60?Blocks.MOSSY_COBBLESTONE.defaultBlockState():Blocks.STONE_BRICKS.defaultBlockState(),x,FLOOR,z);
+		}
+		// The doorway where the tunnel meets the cavern: two posts and a lintel with a carved keystone.
+		int door=CZ-RADIUS-1,bend=(int)Math.round(Math.sin(door*0.45)*1.2),mid=TUNNEL_X+bend;
+		for(int x:new int[]{mid-2,mid+2})for(int y=FLOOR+1;y<=FLOOR+3;y++)set(level,bb,y==FLOOR+2?chiseled:mossy,x,y,door);
+		fill(level,bb,mid-2,FLOOR+4,door,mid+2,FLOOR+4,door,mossy);
+		set(level,bb,chiseled,mid,FLOOR+4,door);
+		// Lamp stones round the sinkhole's lip.
+		for(Direction d:Direction.Plane.HORIZONTAL){
+			int x=SHAFT_X+d.getStepX()*5,z=SHAFT_Z+d.getStepZ()*5;
+			if(!column(bb,x,z))continue;
+			int ground=Math.min(top,surface(level,x,z));
+			set(level,bb,mossy,x,ground,z);
+			set(level,bb,Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState(),x,ground+1,z);
+			set(level,bb,Blocks.LANTERN.defaultBlockState(),x,ground+2,z);
+		}
+		// A broken ring of standing stones further out, so the hole reads as a place long before the lip does.
+		for(int k=0;k<12;k++){
+			double a=k*Math.PI/6+Math.PI/12;
+			int x=(int)Math.round(SHAFT_X+Math.cos(a)*8.5),z=(int)Math.round(SHAFT_Z+Math.sin(a)*8.5);
+			if(!column(bb,x,z))continue;
+			int ground=Math.min(top,surface(level,x,z)),n=noise(x,z);
+			if(n<20){
+				// Toppled: a stump and its drum in the grass.
+				set(level,bb,mossy,x,ground,z);
+				set(level,bb,Blocks.MOSSY_COBBLESTONE.defaultBlockState(),x+(int)Math.signum(Math.cos(a)),ground,z+(int)Math.signum(Math.sin(a)));
+				continue;
+			}
+			int cap=Math.min(HEIGHT-2,ground+2+n%3);
+			fill(level,bb,x,ground-2,z,x,ground-1,z,Blocks.COBBLESTONE.defaultBlockState());
+			for(int y=ground;y<cap;y++){
+				int m=noise(x,y,z);
+				set(level,bb,(m<40?Blocks.MOSSY_STONE_BRICKS:m<60?Blocks.CRACKED_STONE_BRICKS:Blocks.STONE_BRICKS).defaultBlockState(),x,y,z);
+			}
+			set(level,bb,chiseled,x,cap,z);
+			if(n%4==0)set(level,bb,Blocks.MOSS_CARPET.defaultBlockState(),x,cap+1,z);
 		}
 	}
 

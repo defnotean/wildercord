@@ -105,11 +105,13 @@ public final class BarrowFieldPiece extends DungeonPiece {
 		path(level,bb);
 		lychGate(level,bb);
 		stakes(level,bb);
+		gateway(level,bb);
 		for(int z:ROWS)for(int x=CX-12;x<=CX+12;x+=4)if(grave(x,z))grave(level,bb,x,z);
 		trench(level,bb);
 		spears(level,bb);
 		banners(level,bb);
 		gibbet(level,bb);
+		heart(level,bb);
 		bearer(level,bb);
 	}
 
@@ -207,6 +209,85 @@ public final class BarrowFieldPiece extends DungeonPiece {
 		set(level,bb,Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING,true),CX+2,F+3,z1);
 		set(level,bb,Blocks.COBWEB.defaultBlockState(),CX-2,F+3,z0);
 		set(level,bb,Blocks.COBWEB.defaultBlockState(),CX+3,F+5,z1+1);
+	}
+
+	/**
+	 * The gate's stonework: two ruined bastions flanking the cut, fieldstone revetments lining it up under the lych-gate's eaves,
+	 * and a stone arch where the cut opens onto the field, a skull set over its keystone.
+	 */
+	private void gateway(WorldGenLevel level,BoundingBox bb){
+		Palette stone=Palette.of(Blocks.STONE_BRICKS,6,Blocks.MOSSY_STONE_BRICKS,5,Blocks.CRACKED_STONE_BRICKS,3,Blocks.MOSSY_COBBLESTONE,2);
+		BlockState cobble=Blocks.COBBLESTONE.defaultBlockState();
+		for(int side:new int[]{-1,1}){
+			// The bastion, solid and broken-topped: its corners stand tallest, the rest has crumbled to different heights.
+			int xa=CX+side*5,xb=CX+side*7,lo=Math.min(xa,xb),hi=Math.max(xa,xb);
+			for(int x=lo;x<=hi;x++)for(int z=7;z<=11;z++){
+				boolean corner=(x==xa || x==xb) && (z==7 || z==11);
+				int top=corner?F+8:F+5+noise(x,z,side+2)%3;
+				fill(level,bb,x,0,z,x,F,z,cobble);
+				for(int y=F+1;y<=top;y++)set(level,bb,stone.at(x,y,z),x,y,z);
+			}
+			// A battered plinth along its front and outer faces.
+			for(int x=lo;x<=hi;x++){
+				fill(level,bb,x,0,6,x,F,6,cobble);
+				set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.NORTH,false),x,F+1,6);
+			}
+			int ox=CX+side*8;
+			for(int z=7;z<=11;z++){
+				fill(level,bb,ox,0,z,ox,F,z,cobble);
+				set(level,bb,stair(Blocks.MOSSY_STONE_BRICK_STAIRS,side<0?Direction.EAST:Direction.WEST,false),ox,F+1,z);
+			}
+			// A tattered black banner on each bastion's face, and a web in its broken top.
+			banner(level,bb,Blocks.WALL_BANNER.pick(DyeColor.BLACK),CX+side*6,F+4,6,Direction.SOUTH);
+			set(level,bb,Blocks.COBWEB.defaultBlockState(),CX+side*6,F+8,9);
+			// The revetment lining the cut from the bastion to the arch, holding up the lych-gate's eaves.
+			for(int z=7;z<=12;z++)for(int y=F+1;y<=F+4;y++)set(level,bb,stone.at(CX+side*4,y,z),CX+side*4,y,z);
+			// The arch's jambs, and a corbel under each end of its lintel.
+			for(int y=F+1;y<=F+5;y++)set(level,bb,stone.at(CX+side*3,y,12),CX+side*3,y,12);
+			set(level,bb,stone.at(CX+side*4,F+5,12),CX+side*4,F+5,12);
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,side<0?Direction.WEST:Direction.EAST,true),CX+side*2,F+5,12);
+		}
+		// The lintel, a stepped crown over it, and the skull on the keystone looking down the path.
+		for(int x=CX-4;x<=CX+4;x++)set(level,bb,stone.at(x,F+6,12),x,F+6,12);
+		set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.EAST,false),CX-1,F+7,12);
+		set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.WEST,false),CX+1,F+7,12);
+		set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),CX,F+7,12);
+		set(level,bb,Blocks.SKELETON_SKULL.defaultBlockState().setValue(SkullBlock.ROTATION,0),CX,F+8,12);
+		hangingLantern(level,bb,CX,F+5,12,0,true);
+	}
+
+	/**
+	 * The ground round the Bearer's grave: a broken stone kerb about the pit with cold soul braziers on its corners, a trilithon
+	 * behind the gibbet like a door for the dead, and standing stones out in the field, older than any grave.
+	 */
+	private void heart(WorldGenLevel level,BoundingBox bb){
+		Palette old=Palette.of(Blocks.STONE,5,Blocks.ANDESITE,4,Blocks.MOSSY_COBBLESTONE,3,Blocks.COBBLESTONE,2);
+		BlockState kerb=Blocks.STONE_BRICK_SLAB.defaultBlockState(),mossy=Blocks.MOSSY_STONE_BRICK_SLAB.defaultBlockState();
+		// The kerb, only a slab high so it never trips a fight, open toward the gate and where the gibbet stands, some stones gone.
+		for(int x=CX-3;x<=CX+3;x++)for(int z=CZ-3;z<=CZ+3;z++){
+			int dx=Math.abs(x-CX),dz=Math.abs(z-CZ);
+			if(Math.max(dx,dz)!=3 || dx==3 && dz==3 || dx<=1 && dz==3)continue;
+			if(noise(x,z,7)<18)continue;
+			set(level,bb,noise(z,x)<50?mossy:kerb,x,F+1,z);
+		}
+		// Cold braziers on the corners: soul campfires on carved plinths, never lit.
+		for(int[] c:new int[][]{{CX-3,CZ-3},{CX+3,CZ-3},{CX-3,CZ+3},{CX+3,CZ+3}}){
+			set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),c[0],F+1,c[1]);
+			set(level,bb,Blocks.SOUL_CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT,false),c[0],F+2,c[1]);
+		}
+		// The trilithon behind the gibbet: two weathered uprights and a capstone, framing the lantern seen from the gate.
+		int tz=CZ+9;
+		for(int x:new int[]{CX-3,CX-2,CX+2,CX+3})for(int y=F+1;y<=F+4;y++)set(level,bb,old.at(x,y,tz),x,y,tz);
+		for(int x=CX-3;x<=CX+3;x++)set(level,bb,old.at(x,F+5,tz),x,F+5,tz);
+		set(level,bb,stair(Blocks.MOSSY_COBBLESTONE_STAIRS,Direction.EAST,false),CX-4,F+5,tz);
+		set(level,bb,stair(Blocks.COBBLESTONE_STAIRS,Direction.WEST,false),CX+4,F+5,tz);
+		set(level,bb,Blocks.COBWEB.defaultBlockState(),CX+1,F+4,tz);
+		// Standing stones out in the field, clear of the rows, each capped with a mossy stub.
+		for(int[] m:new int[][]{{CX-6,CZ-8},{CX+6,CZ-8},{CX-9,CZ+9},{CX+9,CZ+9}}){
+			int tall=F+3+noise(m[0],m[1])%2;
+			for(int y=F+1;y<=tall;y++)set(level,bb,old.at(m[0],y,m[1]),m[0],y,m[1]);
+			set(level,bb,Blocks.MOSSY_COBBLESTONE_WALL.defaultBlockState(),m[0],tall+1,m[1]);
+		}
 	}
 
 	/** The sharpened stakes along the rampart's crest, leaning outward against a charge that came long ago; many are gone. */

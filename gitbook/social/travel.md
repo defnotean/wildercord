@@ -14,8 +14,9 @@ Words in `<angle brackets>` are needed; words in `[square brackets]` can be left
 |---|---|
 | `/sethome [name]` | Sets a home where you stand. No name means **home**. The same name again moves it. |
 | `/home [name]` | Teleports you to a home |
+| `/renamehome <name> <new name>` | Renames a home. It stays where it is. |
 | `/delhome <name>` | Removes a home |
-| `/homes` | Lists your homes. Click one to go there. |
+| `/homes` | Lists your homes, one per line. Click a name to go there, **[Rename]** to type a new name, or **[Remove]** and then Enter to remove it. `/homes rename` and `/homes remove` do the same. |
 | `/warp <name>` | Teleports you to a warp |
 | `/warps` | Lists the warps. Click one to go there. |
 | `/waypoint add <name> [x y z]` | Marks a waypoint here, or at the coordinates you give |

@@ -217,8 +217,12 @@ public final class Guilds {
 		Result check = !GuildRules.validName(name) ? Result.BAD_NAME : ledger.roster.named(name) != null ? Result.NAME_TAKEN
 			: ledger.roster.of(player.getUUID(), kind) != null ? Result.ALREADY_IN : Result.OK;
 		if (check != Result.OK) return refuse(player, kind, check);
-		if (!player.isCreative()) {
-			if (player.getInventory().countItem(Items.EMERALD) < GuildRules.FOUND_COST) return refuse(player, kind, "cost");
+		boolean pays = !player.isCreative();
+		if (pays && player.getInventory().countItem(Items.EMERALD) < GuildRules.FOUND_COST) return refuse(player, kind, "cost");
+		// Founded first and paid for after, so a refusal never costs anything.
+		Result founded = ledger.change(r -> r.found(player.getUUID(), kind, name));
+		if (founded != Result.OK) return refuse(player, kind, founded);
+		if (pays) {
 			int owed = GuildRules.FOUND_COST;
 			for (int i = 0; i < player.getInventory().getContainerSize() && owed > 0; i++) {
 				var stack = player.getInventory().getItem(i);
@@ -228,7 +232,6 @@ public final class Guilds {
 				owed -= take;
 			}
 		}
-		ledger.change(r -> r.found(player.getUUID(), kind, name));
 		player.sendSystemMessage(text(kind, "founded", name).withStyle(ChatFormatting.GOLD));
 		return 1;
 	}
@@ -255,7 +258,7 @@ public final class Guilds {
 		if (!eligible(player, kind)) return refuse(player, kind, "eligible");
 		Ledger ledger = ledger(player.level().getServer());
 		ledger.remember(player.getUUID(), player.getGameProfile().name());
-		Result result = ledger.change(r -> r.join(player.getUUID(), invite.guild()));
+		Result result = ledger.change(r -> r.join(player.getUUID(), invite.guild(), kind));
 		if (result != Result.OK) return refuse(player, kind, result);
 		announce(player, ledger.roster.named(invite.guild()), text(kind, "joined", player.getDisplayName(), invite.guild()));
 		return 1;
@@ -275,7 +278,9 @@ public final class Guilds {
 	private static int kick(ServerPlayer player, String member, Kind kind) {
 		Ledger ledger = ledger(player.level().getServer());
 		Guild guild = ledger.roster.of(player.getUUID(), kind);
-		UUID target = guild == null ? null : guild.members().stream().filter(id -> ledger.name(id).equalsIgnoreCase(member)).findFirst().orElse(null);
+		// An exact name first, so two members whose names differ only in case can each be kicked.
+		UUID target = guild == null ? null : guild.members().stream().filter(id -> ledger.name(id).equals(member)).findFirst()
+			.orElseGet(() -> guild.members().stream().filter(id -> ledger.name(id).equalsIgnoreCase(member)).findFirst().orElse(null));
 		if (guild != null && target == null) return refuse(player, kind, Result.NOT_MEMBER);
 		Result result = ledger.change(r -> target == null ? Result.NOT_IN : r.kick(player.getUUID(), target, kind));
 		if (result != Result.OK) return refuse(player, kind, result);

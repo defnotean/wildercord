@@ -19,6 +19,7 @@ public final class CordStyleLook {
 	/** The style to draw this frame; absent means the default glass beads that follow the spell. */
 	public static final RenderStateDataKey<CordStyles.Style> STYLE = RenderStateDataKey.create(() -> "wildercord:cord_style");
 
+	private static final java.util.Map<String, Identifier> BEADS = new java.util.concurrent.ConcurrentHashMap<>();
 	private static final Identifier CORE = Wildercord.id("textures/entity/cord/bead_core.png");
 
 	public static void extract(Avatar avatar, AvatarRenderState state) {
@@ -38,7 +39,7 @@ public final class CordStyleLook {
 
 	/** The bead's own texture: glass is the plain white bead the rune's colour tints. */
 	public static Identifier beadTexture(CordStyles.Style style, Identifier glass) {
-		return tinted(style) ? glass : Wildercord.id("textures/entity/cord/bead_" + style.material() + ".png");
+		return tinted(style) ? glass : BEADS.computeIfAbsent(style.material(), material -> Wildercord.id("textures/entity/cord/bead_" + material + ".png"));
 	}
 
 	/** What glows: the whole glass bead, or just the core showing through the other materials. */

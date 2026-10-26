@@ -43,4 +43,38 @@ class MimicRulesTest {
 		assertEquals(270.0F, MimicRules.snapYaw(-95));
 		assertEquals(0.0F, MimicRules.snapYaw(350));
 	}
+
+	@Test
+	void aBookTamesItAThirdOfTheTime() {
+		assertTrue(MimicRules.tames(0.0F));
+		assertTrue(MimicRules.tames(0.33F));
+		assertFalse(MimicRules.tames(0.34F));
+		assertFalse(MimicRules.tames(0.99F));
+	}
+
+	@Test
+	void onlyAPlainBookWhileHurtMendsIt() {
+		assertTrue(MimicRules.mends(true, false, 10.0F, 30.0F));
+		assertFalse(MimicRules.mends(true, false, 30.0F, 30.0F), "at full health the book goes in its chest");
+		assertFalse(MimicRules.mends(true, true, 10.0F, 30.0F), "sneaking opens it instead");
+		assertFalse(MimicRules.mends(false, false, 10.0F, 30.0F), "an enchanted or written book is never eaten");
+	}
+
+	@Test
+	void aTamedOneFollowsItsOwnerUnlessToldToStay() {
+		assertEquals(MimicRules.Heel.STAY, MimicRules.heel(4.0, false, false), "near enough: it keeps its spot");
+		assertEquals(MimicRules.Heel.WALK, MimicRules.heel(MimicRules.FOLLOW_START + 1, false, false));
+		assertEquals(MimicRules.Heel.WALK, MimicRules.heel(4.0, false, true), "once following it comes right up");
+		assertEquals(MimicRules.Heel.STAY, MimicRules.heel(2.0, false, true), "beside them it stops");
+		assertEquals(MimicRules.Heel.BLINK, MimicRules.heel(MimicRules.FOLLOW_BLINK + 1, false, true), "far behind it turns up beside them");
+		assertEquals(MimicRules.Heel.STAY, MimicRules.heel(40.0, true, false), "told to stay, it stays");
+	}
+
+	@Test
+	void itsBellyOpensOnlyForItsOwnerNearby() {
+		assertTrue(MimicRules.opensFor(true, true, 3.0));
+		assertFalse(MimicRules.opensFor(true, false, 3.0), "a stranger");
+		assertFalse(MimicRules.opensFor(true, true, MimicRules.STORAGE_REACH + 0.5), "walked off");
+		assertFalse(MimicRules.opensFor(false, true, 1.0), "dead");
+	}
 }

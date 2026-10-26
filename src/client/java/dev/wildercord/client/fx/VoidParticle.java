@@ -7,6 +7,8 @@ import net.minecraft.util.LightCoordsUtil;
 
 /** Original dark interiors, material edge contrast and timed spatial fragments; no screen overlay. */
 public final class VoidParticle extends SingleQuadParticle implements SigilGroup.Extent {
+ /** Its two animation frames, looked up once instead of by name every tick. */
+ private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
  private final VoidOption material;
  VoidParticle(ClientLevel level,double x,double y,double z,VoidOption option){
   super(level,x,y,z,SpellCircleParticle.particleSprite("void_material_"+option.style()+"_0"));
@@ -33,7 +35,8 @@ public final class VoidParticle extends SingleQuadParticle implements SigilGroup
   alpha=Math.min(1,age*.8F)*Math.min(1,(1-age/(float)lifetime)*3);
   if(material.style()==VoidOption.HAZE)alpha*=.65F;
   if(MagicQuality.reducedFlash)alpha*=.72F;
-  setSprite(SpellCircleParticle.particleSprite("void_material_"+material.style()+"_"+(age<lifetime/2?0:1)));
+  if(frames==null)frames=new net.minecraft.client.renderer.texture.TextureAtlasSprite[]{SpellCircleParticle.particleSprite("void_material_"+material.style()+"_0"),SpellCircleParticle.particleSprite("void_material_"+material.style()+"_1")};
+  setSprite(frames[age<lifetime/2?0:1]);
  }
  @Override protected Layer getLayer(){return Layer.TRANSLUCENT;}
  @Override public int getLightCoords(float partial){return material.style()==VoidOption.SCULK || material.style()==VoidOption.PRESSURE?LightCoordsUtil.FULL_BRIGHT:super.getLightCoords(partial);}

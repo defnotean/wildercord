@@ -5,12 +5,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LanternBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -31,6 +33,8 @@ public class PierBoathousePiece extends WaterPiece {
 
 	private static final BlockState PLANKS = Blocks.SPRUCE_PLANKS.defaultBlockState();
 	private static final BlockState LOG = Blocks.SPRUCE_LOG.defaultBlockState();
+	private static final BlockState BEAM_X = Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
+	private static final BlockState BEAM_Z = Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
 
 	public PierBoathousePiece(int x, int y, int z, Direction facing) {
 		super(WaterSites.PIER_BOATHOUSE, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -76,6 +80,13 @@ public class PierBoathousePiece extends WaterPiece {
 			post(level, bb, LOG, 7, z, DECK - 1);
 		}
 		fill(level, bb, 3, DECK, 2, 7, DECK, 19, PLANKS);
+		// Stringers under both edges of the deck, from post to post.
+		for (int z = 2; z <= 19; z++) {
+			if (z % 3 != 0) {
+				set(level, bb, BEAM_Z, 3, DECK - 1, z);
+				set(level, bb, BEAM_Z, 7, DECK - 1, z);
+			}
+		}
 		// Two steps up off the beach.
 		for (int x = 3; x <= 7; x++) {
 			post(level, bb, Blocks.SPRUCE_PLANKS.defaultBlockState(), x, 0, DECK - 2);
@@ -88,10 +99,20 @@ public class PierBoathousePiece extends WaterPiece {
 			set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), 3, DECK + 1, z);
 			set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), 7, DECK + 1, z);
 		}
+		// Lamp standards along the rails, log gateposts at the beach end, and cargo waiting to be carried in.
 		for (int z = 6; z <= 18; z += 6) {
-			set(level, bb, Blocks.LANTERN.defaultBlockState(), 3, DECK + 2, z);
-			set(level, bb, Blocks.LANTERN.defaultBlockState(), 7, DECK + 2, z);
+			for (int x : new int[] {3, 7}) {
+				set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), x, DECK + 2, z);
+				set(level, bb, Blocks.LANTERN.defaultBlockState(), x, DECK + 3, z);
+			}
 		}
+		for (int x : new int[] {3, 7}) {
+			fill(level, bb, x, DECK + 1, 2, x, DECK + 2, 2, LOG);
+			set(level, bb, Blocks.LANTERN.defaultBlockState(), x, DECK + 3, 2);
+		}
+		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 6, DECK + 1, 10);
+		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.NORTH), 6, DECK + 1, 11);
+		set(level, bb, Blocks.HAY_BLOCK.defaultBlockState(), 4, DECK + 1, 15);
 	}
 
 	private void boathouse(WorldGenLevel level, BoundingBox bb) {
@@ -129,13 +150,51 @@ public class PierBoathousePiece extends WaterPiece {
 				}
 			}
 		}
-		gable(level, bb, 0, 10, 20, 27, DECK + 5, Blocks.SPRUCE_STAIRS, PLANKS, PLANKS, 20, 27);
+		// Timber framing: a stripped log course at the floor line all round, jambs and a lintel at the door, a
+		// pilaster midway down each side and a lintel over the slip's mouth.
+		for (int z = 21; z <= 26; z++) {
+			set(level, bb, BEAM_Z, 0, DECK, z);
+			set(level, bb, BEAM_Z, 10, DECK, z);
+		}
+		for (int x : new int[] {0, 10}) {
+			fill(level, bb, x, BASE, 24, x, DECK + 4, 24, LOG);
+			for (int z : new int[] {22, 26}) {
+				set(level, bb, Blocks.GLASS.defaultBlockState(), x, DECK + 2, z);
+			}
+		}
+		fill(level, bb, 1, DECK + 3, 20, 9, DECK + 3, 20, BEAM_X);
+		for (int x : new int[] {3, 7}) {
+			fill(level, bb, x, DECK + 1, 20, x, DECK + 2, 20, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState());
+		}
+		fill(level, bb, 2, DECK + 2, 27, 8, DECK + 2, 27, BEAM_X);
+		// Front windows with sills.
+		for (int x : new int[] {1, 9}) {
+			set(level, bb, Blocks.GLASS.defaultBlockState(), x, DECK + 2, 20);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, true), x, DECK + 1, 19);
+		}
+		// A dark oak roof whose front end overhangs the landing, a round window high in the gable.
+		gable(level, bb, 0, 10, 19, 27, DECK + 5, Blocks.DARK_OAK_STAIRS, Blocks.DARK_OAK_PLANKS.defaultBlockState(), PLANKS, 20, 27);
+		set(level, bb, Blocks.GLASS.defaultBlockState(), 5, DECK + 7, 20);
+		for (int x : new int[] {3, 7}) {
+			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), x, DECK + 6, 19, Direction.SOUTH);
+		}
+		hangingLantern(level, bb, 5, DECK + 9, 19, 3, false);
+		// Tie beams across the loft, lanterns hung over each walkway.
+		for (int z : new int[] {21, 26}) {
+			fill(level, bb, 1, DECK + 5, z, 9, DECK + 5, z, BEAM_X);
+			hangingLantern(level, bb, 2, DECK + 4, z, 0, false);
+			hangingLantern(level, bb, 8, DECK + 4, z, 0, false);
+		}
 		fill(level, bb, 5, DECK + 5, 24, 5, DECK + 9, 24, Blocks.IRON_CHAIN.defaultBlockState());
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 5, DECK + 4, 24);
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 1, DECK + 1, 23);
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 9, DECK + 1, 22);
 		chest(level, bb, 9, DECK + 1, 26, WaterSites.BOATHOUSE_LOOT, Direction.WEST, 305);
 		set(level, bb, Blocks.CRAFTING_TABLE.defaultBlockState(), 1, DECK + 1, 26);
+		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 1, DECK + 1, 21);
+		set(level, bb, Blocks.FLOWER_POT.defaultBlockState(), 1, DECK + 2, 21);
+		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.EAST), 9, DECK + 1, 23);
+		set(level, bb, Blocks.LANTERN.defaultBlockState(), 9, DECK + 2, 22);
 		lectern(level, bb, 1, DECK + 1, 24, Direction.EAST, "The Second Count",
 			"book.wildercord.water_boathouse", 3, "Tideward boatkeepers");
 		spawn(level, bb, EntityTypes.SPRUCE_BOAT, 5, BASE, 24, 0.6);

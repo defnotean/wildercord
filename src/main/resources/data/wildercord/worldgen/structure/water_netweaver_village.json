@@ -3,6 +3,6 @@
   "site": "water_netweaver_village",
   "biomes": "#wildercord:has_structure/water_netweaver_village",
   "spawn_overrides": {},
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "terrain_adaptation": "none"
 }

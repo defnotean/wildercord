@@ -54,6 +54,7 @@ public final class ReedkeeperResident {
 
 	/** Finish the family account first, then answer what this visitor has actually learned. */
 	private static String nextLine(LoreJournalData data) {
+		if (data.stage("four_lights") == LoreQuestRules.ACTIVE && !data.has("said:reedkeeper.four_lights")) return "four_lights";
 		for (String line : LINES) if (!data.has("said:reedkeeper." + line)) return line;
 		if (data.has("learned:last_crossing")) return "crossing_kept";
 		if (data.stage("last_boat_light") == LoreQuestRules.DONE) return "lamp_return";

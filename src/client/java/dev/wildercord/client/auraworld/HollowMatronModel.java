@@ -25,14 +25,15 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 	private final ModelPart body,head,fangL,fangR,palpL,palpR,abdomen,spinner,thread;
 	private final ModelPart[] hips=new ModelPart[8],femurs=new ModelPart[8],tibias=new ModelPart[8];
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** The pose being built: each leg's femur lift, its tibia's bend from the femur, its fan; the body's pitch, roll and yaw; the head, fangs, palps and abdomen. */
 	private final float[] a=new float[8],b=new float[8],fan=new float[8];
-	private float pitch,roll,yaw,headX,headY,fangs,palps,abdX;
+	private float pitch,roll,yaw,headX,headY,fangs,palps,abdX,abdY;
 	public HollowMatronModel(ModelPart root){
 		super(root);body=root.getChild("body");head=body.getChild("head");abdomen=body.getChild("abdomen");spinner=abdomen.getChild("spinner");
 		fangL=head.getChild("fangL");fangR=head.getChild("fangR");palpL=head.getChild("palpL");palpR=head.getChild("palpR");thread=root.getChild("thread");
 		for(int i=0;i<8;i++){hips[i]=body.getChild("hip"+i);femurs[i]=hips[i].getChild("femur");tibias[i]=femurs[i].getChild("tibia");}
-		posed=new ModelPart[8*3+7];
+		posed=new ModelPart[8*3+7];blender=new PoseBlend(posed);
 		posed[0]=body;posed[1]=head;posed[2]=abdomen;posed[3]=fangL;posed[4]=fangR;posed[5]=palpL;posed[6]=palpR;
 		for(int i=0;i<8;i++){posed[7+i]=hips[i];posed[15+i]=femurs[i];posed[23+i]=tibias[i];}
 	}
@@ -62,17 +63,12 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 		super.setupAnim(s);
 		pose(s,s.move,s.elapsed,s.tell,s.side);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+		if(s.blend<1){
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,s.prevElapsed,s.prevTell,s.side);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose pa=posed[i].storePose(),pb=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,pa.x(),pb.x()),Mth.lerp(k,pa.y(),pb.y()),Mth.lerp(k,pa.z(),pb.z()),
-					Mth.lerp(k,pa.xRot(),pb.xRot()),Mth.lerp(k,pa.yRot(),pb.yRot()),Mth.lerp(k,pa.zRot(),pb.zRot())));
-			}
+			blender.mix(k);
 		}
 		hurt(s);
 		die(s);
@@ -80,6 +76,8 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 		// Off the ground through a pounce, highest halfway.
 		if(s.move==HollowMatronRules.POUNCE&&s.deathTime<=0&&s.elapsed>s.tell)
 			body.y-=4*Mth.sin(Mth.PI*Mth.clamp((s.elapsed-s.tell)/HollowMatronRules.POUNCE_TICKS,0,1));
+		// She lands on her back with a small bounce.
+		if(s.deathTime>12)body.y-=1.4F*(float)Math.exp(-(s.deathTime-12)*.45F)*Math.abs(Mth.sin((s.deathTime-12)*1.8F));
 		thread(s);
 	}
 
@@ -91,7 +89,7 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 	/** The whole pose for {@code move}, {@code el} ticks in: hanging or standing (or turning over between), walking, then the move itself. */
 	private void pose(HollowMatronRenderState s,int move,float el,int tell,int side){
 		float t=s.ageInTicks,d=HollowMatronRules.drop(move,el);
-		pitch=0;roll=0;yaw=0;headX=0;fangs=0;palps=0;abdX=.2F;
+		pitch=0;roll=0;yaw=0;headX=0;fangs=0;palps=0;abdX=.2F;abdY=0;
 		for(int i=0;i<8;i++){a[i]=STAND_A;b[i]=STAND_B;fan[i]=side(i)*FAN[i/2];}
 		hang(d,t);
 		float up=smooth(d,HollowMatronRules.FLIP_FROM,HollowMatronRules.FLIP_TO);
@@ -99,6 +97,9 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 		abdX+=Mth.sin(t*.07F)*.025F;
 		headY=Mth.clamp(s.yRot,-40,40)*Mth.DEG_TO_RAD*.4F*up;headX+=s.xRot*Mth.DEG_TO_RAD*.3F*up;
 		palps+=Mth.sin(t*.23F)*.12F+Mth.sin(t*.61F)*.05F;
+		// Her abdomen sways a little on its own time, a beat behind her breathing; each leg settles and shifts on a period of its own.
+		abdY+=Mth.sin(t*.045F+1)*.05F*up;abdX+=Mth.sin(t*.05F-.8F)*.015F;headX+=Mth.sin(t*.09F+2)*.02F*up;
+		for(int i=0;i<8;i++){a[i]+=Mth.sin(t*(.04F+.007F*i)+i*1.3F)*.02F*up;b[i]+=Mth.sin(t*(.05F+.006F*i)+i*.9F)*.02F*up;}
 		// Walking: alternating sets of four, each foot lifted as it swings forward.
 		float walk=Math.min(1,s.walkAnimationSpeed*1.5F)*up;
 		gait(s.walkAnimationPos*.9F,walk);
@@ -167,12 +168,19 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 				for(int i=6;i<8;i++){a[i]-=.15F*rear;}
 				fangs+=.65F*rear-.25F*strike;palps+=.5F*rear;headX+=-.2F*rear+.35F*strike;
 				abdX+=.15F*rear;
+				// Past the mark with the fangs snapping shut on contact, a tick's hold, then the abdomen swinging on behind the lunge.
+				float over=Mth.sin(Mth.PI*Mth.clamp((el-tell)/4F,0,1)),lag=Mth.sin(Mth.PI*Mth.clamp((el-tell-1.5F)/6F,0,1));
+				pitch+=.1F*over;fangs-=.3F*over;headX+=.12F*over;abdX-=.25F*lag;abdY+=side*.12F*lag;
+				for(int i=2;i<8;i++)a[i]+=.12F*Mth.sin(Mth.PI*Mth.clamp((el-tell-1)/5F,0,1));
 			}
 			case HollowMatronRules.SCYTHE->{
 				// Forelegs raised high and drawn back to one side, then scythed across at chest height.
-				float up=wind*(1-ramp(el,tell+HollowMatronRules.SCYTHE_TICKS,5));
+				float up=wind*(1-ramp(el,tell+HollowMatronRules.SCYTHE_TICKS+2,5));
 				float cross=smooth(el,tell,tell+HollowMatronRules.SCYTHE_TICKS);
-				float across=Mth.lerp(cross,side*.8F,-side*.9F)*up;
+				float stop=el-tell-HollowMatronRules.SCYTHE_TICKS;
+				// The two ticks held on contact, the forelegs overshooting the mark a little and coming back; the abdomen swings on after.
+				float across=(Mth.lerp(cross,side*.8F,-side*.9F)-side*.2F*Mth.sin(Mth.PI*Mth.clamp((stop+2)/6F,0,1)))*up;
+				abdY-=across*.3F+side*.2F*Mth.sin(Mth.PI*Mth.clamp((stop+1)/7F,0,1));abdX-=.15F*Mth.sin(Mth.PI*Mth.clamp((stop+1)/7F,0,1));
 				for(int i=0;i<4;i++){a[i]+=(i<2?1.3F:.8F)*up;b[i]-=(i<2?.9F:.5F)*up;fan[i]+=across;}
 				for(int i=6;i<8;i++){a[i]-=.15F*up;b[i]+=.2F*up;}
 				yaw=across*.4F;roll-=side*.08F*wind*(1-cross);pitch-=.22F*up;fangs+=.3F*up;palps+=.3F*wind*(1-cross);
@@ -188,6 +196,10 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 				}
 				for(int i=4;i<8;i++){a[i]-=.2F*rear-.25F*low;b[i]+=.3F*rear+.3F*low;}
 				fangs+=.45F*rear;palps+=.4F*rear+.2F*shake*rear;abdX+=.2F*rear-.15F*low;headX+=-.15F*rear+.2F*low;
+				// The slam jars her: a two-tick hold on the ground, the forelegs bouncing off it, the abdomen flopping down a beat behind.
+				float hit=el-tell,jar=hit>0?(float)Math.exp(-hit*.35F)*Mth.sin(hit*1.6F):0,jarLate=hit>1.5F?(float)Math.exp(-(hit-1.5F)*.3F)*Mth.sin((hit-1.5F)*1.4F):0;
+				for(int i=0;i<4;i++)a[i]+=.18F*jar;
+				pitch+=.05F*jar;abdX+=.2F*jarLate;headX+=.08F*jarLate;abdY+=.06F*Mth.sin(hit*1.1F)*(hit>0?(float)Math.exp(-hit*.25F):0);
 			}
 			case HollowMatronRules.REEL->{
 				// Abdomen curled right under her with the spinnerets aimed past her fangs, head low; jolted as the thread goes.
@@ -254,6 +266,13 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 			}
 			case HollowMatronRules.POUNCE->{
 				float crouch=wind*(1-go);
+				// Landing: she squashes onto bent legs and the abdomen comes down a beat after the rest of her.
+				float since=el-tell-HollowMatronRules.POUNCE_TICKS;
+				if(since>0){
+					float land=(float)Math.exp(-since*.45F),lateLand=since>1.5F?(float)Math.exp(-(since-1.5F)*.35F)*Mth.sin((since-1.5F)*1.5F):0;
+					for(int i=0;i<8;i++){a[i]+=.3F*land;b[i]+=.35F*land;}
+					pitch+=.1F*land;fangs+=.3F*land;abdX+=.25F*lateLand;
+				}
 				for(int i=0;i<8;i++){a[i]+=.45F*crouch;b[i]+=.45F*crouch;}
 				pitch+=.1F*crouch;abdX+=.2F*crouch;fangs+=.3F*crouch;
 				if(el>tell){
@@ -263,10 +282,11 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 						if(i<4){a[i]-=.3F*fly;b[i]-=.9F*fly;fan[i]+=sd*.3F*fly;}
 						else{b[i]-=.7F*fly;fan[i]-=sd*.3F*fly;}
 					}
-					pitch+=Mth.lerp(p,-.25F,.2F)*fly;fangs+=.6F*fly;
+					pitch+=Mth.lerp(p,-.25F,.2F)*fly;fangs+=.6F*fly;abdX-=.2F*fly;
 				}
 			}
 			case HollowMatronRules.SKITTER->{
+					abdY+=Mth.sin(el*1.2F-1F)*.1F;
 				gait(el*2.4F,1);
 				if(side==0){headX-=.3F;fangs+=.5F;pitch-=.15F;palps+=.3F;}
 				else roll+=side*.12F;
@@ -275,6 +295,10 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 				float k=ramp(el,0,4),heave=Mth.sin(el*.5F);
 				for(int i=0;i<8;i++){a[i]+=.3F*k;b[i]+=.45F*k;fan[i]*=1+.15F*k;}
 				abdX+=(.25F+.06F*heave)*k;pitch+=.03F*heave*k;palps-=.3F*k;fangs-=.05F*k;
+				// The stagger: her legs shuffle to catch her, her body rocking, the abdomen wobbling a beat behind.
+				float stag=(float)Math.exp(-el*.2F);
+				for(int i=0;i<8;i++)a[i]+=Mth.sin(el*1.1F+i*1.7F)*.1F*stag;
+				roll+=Mth.sin(el*.9F)*.04F*stag;abdY+=Mth.sin(el*.9F-1.2F)*.1F*stag;abdX+=Mth.sin(el*.8F-1.5F)*.08F*stag;headX+=Mth.sin(el*.8F-.7F)*.06F*stag;
 			}
 			case HollowMatronRules.HASTE->{
 				headX-=.15F;fangs+=.35F+Math.max(0,Mth.sin(t*.5F))*.15F;palps+=.3F;abdX+=.1F;
@@ -317,7 +341,7 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 	private void apply(){
 		body.xRot=pitch;body.zRot=roll;body.yRot=yaw;
 		head.xRot=headX;head.yRot=headY;
-		abdomen.xRot=abdX;
+		abdomen.xRot=abdX;abdomen.yRot=abdY;
 		fangL.zRot=-fangs;fangR.zRot=fangs;fangL.xRot=fangR.xRot=-.25F-.2F*fangs;
 		palpL.xRot=palpR.xRot=.3F-palps;
 		for(int i=0;i<8;i++){int s=side(i);hips[i].yRot=fan[i];femurs[i].zRot=-s*a[i];tibias[i].zRot=s*b[i];}
@@ -377,6 +401,11 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 		float k=s.hurt*s.hurt;
 		body.xRot-=.15F*k;body.zRot+=Mth.sin(s.hurt*18)*.05F*k;
 		for(int i=0;i<8;i++)tibias[i].zRot+=side(i)*.2F*k;
+		// The recoil runs back through her: the head snaps up, the fangs flare, the legs jerk in a beat apart, the abdomen whipping late.
+		float late=(float)Math.pow(Math.max(0,s.hurt-.12F),2);
+		head.xRot-=.25F*k;fangL.zRot-=.3F*k;fangR.zRot+=.3F*k;palpL.xRot-=.3F*k;palpR.xRot-=.3F*k;
+		abdomen.xRot+=.25F*late;abdomen.yRot+=Mth.sin(s.hurt*16-1F)*.15F*late;
+		for(int i=0;i<8;i++)femurs[i].zRot-=side(i)*(.12F+.05F*(i%3))*(i%2==0?k:late);
 	}
 
 	/** Dying: she shudders, rolls onto her back, and her legs curl in over her. */
@@ -393,5 +422,17 @@ public final class HollowMatronModel extends EntityModel<HollowMatronRenderState
 			hips[i].yRot=Mth.lerp(curl,hips[i].yRot,hips[i].yRot*.6F);
 		}
 		fangL.zRot=fangR.zRot=0;
+		// Before she goes over she staggers, her legs buckling out of step; once down the legs twitch and slowly stop, and the abdomen bounces.
+		float d=s.deathTime,stag=Mth.sin(d*1.8F)*.1F*(1-over),twitch=Mth.clamp((d-10)/6,0,1)*(float)Math.exp(-Math.max(0,d-16)*.25F);
+		head.xRot=Mth.lerp(over,head.xRot-.2F*(1-over),.2F);
+		body.zRot+=stag;body.yRot+=Mth.sin(d*1.3F)*.08F*(1-over);
+		float land=d>12?(float)Math.exp(-(d-12)*.4F)*Mth.sin((d-12)*1.8F):0,lateLand=d>13.5F?(float)Math.exp(-(d-13.5F)*.4F)*Mth.sin((d-13.5F)*1.8F):0;
+		abdomen.xRot+=.2F*lateLand;abdomen.yRot+=Mth.sin(d*1.1F)*.1F*(1-over);
+		for(int i=0;i<8;i++){
+			int sd=side(i);
+			femurs[i].zRot+=-sd*Mth.sin(d*1.7F+i*1.9F)*.15F*(twitch+(1-curl)*.6F);
+			tibias[i].zRot+=sd*Mth.sin(d*2.1F+i*1.1F)*.25F*twitch;
+		}
+		palpL.xRot+=.2F*lateLand;palpR.xRot+=.2F*lateLand;head.xRot+=.06F*land;
 	}
 }

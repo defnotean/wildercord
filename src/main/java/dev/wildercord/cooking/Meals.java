@@ -69,7 +69,9 @@ public final class Meals {
 		return block;
 	}
 
-	public static void init() {}
+	public static void init() {
+		CampPotBlock.init();
+	}
 
 	public static Holder<MobEffect> effect(String id) {
 		return BuiltInRegistries.MOB_EFFECT.get(Identifier.parse(id)).orElseThrow(() -> new IllegalStateException("no effect " + id));

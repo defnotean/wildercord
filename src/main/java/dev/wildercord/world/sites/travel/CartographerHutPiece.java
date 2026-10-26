@@ -11,6 +11,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,16 +29,46 @@ public final class CartographerHutPiece extends TravelPiece {
 	@Override public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
 		BlockState log = b(Blocks.STRIPPED_OAK_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
+		BlockState beamX = b(Blocks.SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
+		BlockState beamZ = b(Blocks.SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
+		BlockState pane = b(Blocks.GLASS_PANE);
+		Palette plinth = Palette.of(Blocks.COBBLESTONE, 5, Blocks.MOSSY_COBBLESTONE, 2, Blocks.STONE_BRICKS, 2);
+		Palette boards = Palette.of(Blocks.BIRCH_PLANKS, 1);
 		footing(level, bb, 0, 0, 10, 10, GRASS, DIRT, 10);
 		footing(level, bb, 1, 1, 9, 9, COBBLE, COBBLE, 0);
 		for (int x = 4; x <= 6; x++) set(level, bb, b(Blocks.DIRT_PATH), x, 0, 0);
+		// A fieldstone plinth under pale birch boards, framed in oak with a dark spruce wall plate.
 		room(level, bb, 1, 0, 1, 9, 4, 9, b(Blocks.BIRCH_PLANKS));
+		walls(level, bb, 1, 0, 1, 9, 1, 9, plinth);
 		fill(level, bb, 2, 0, 2, 8, 0, 8, b(Blocks.OAK_PLANKS));
-		for (int[] c : new int[][]{{1, 1}, {9, 1}, {1, 9}, {9, 9}}) fill(level, bb, c[0], 1, c[1], c[0], 3, c[1], log);
-		gable(level, bb, 1, 9, 1, 9, 4, Blocks.SPRUCE_STAIRS, b(Blocks.SPRUCE_PLANKS), b(Blocks.BIRCH_PLANKS));
+		for (int[] c : new int[][]{{1, 1}, {9, 1}, {1, 9}, {9, 9}, {1, 5}, {9, 5}}) fill(level, bb, c[0], 1, c[1], c[0], 3, c[1], log);
+		fill(level, bb, 1, 4, 1, 9, 4, 1, beamX); fill(level, bb, 1, 4, 9, 9, 4, 9, beamX);
+		fill(level, bb, 1, 4, 2, 1, 4, 8, beamZ); fill(level, bb, 9, 4, 2, 9, 4, 8, beamZ);
+		// A steep spruce roof with birch gables, a round of glass in each.
+		gableRoof(level, bb, 1, 1, 9, 9, 5, true, Blocks.SPRUCE_STAIRS, b(Blocks.SPRUCE_PLANKS), boards);
+		for (int x : new int[]{1, 9}) { set(level, bb, pane, x, 6, 5); set(level, bb, log, x, 5, 5); }
+		// The door between two sconces, the windows with oak sills and a pot of fern on each.
 		door(level, bb, Blocks.BIRCH_DOOR, 5, 1, 1, Direction.NORTH);
-		for (int z : new int[]{4, 6}) set(level, bb, b(Blocks.GLASS_PANE), 9, 2, z);
-		fill(level, bb, 3, 2, 1, 3, 2, 1, b(Blocks.GLASS_PANE)); fill(level, bb, 7, 2, 1, 7, 2, 1, b(Blocks.GLASS_PANE));
+		for (int x : new int[]{4, 6}) sconce(level, bb, x, 3, 0, Direction.SOUTH, false);
+		for (int x : new int[]{3, 7}) {
+			fill(level, bb, x, 2, 1, x, 3, 1, pane);
+			set(level, bb, stair(Blocks.OAK_STAIRS, Direction.NORTH, true), x, 1, 0);
+			set(level, bb, b(Blocks.POTTED_FERN), x, 2, 0);
+		}
+		for (int z : new int[]{4, 6}) {
+			fill(level, bb, 9, 2, z, 9, 3, z, pane);
+			set(level, bb, stair(Blocks.OAK_STAIRS, Direction.WEST, true), 10, 1, z);
+		}
+		// A lamp post at the path and a crate of rolled charts by the east wall.
+		fill(level, bb, 10, 1, 0, 10, 2, 0, b(Blocks.OAK_FENCE));
+		set(level, bb, b(Blocks.LANTERN), 10, 3, 0);
+		set(level, bb, b(Blocks.BARREL), 10, 1, 8); set(level, bb, b(Blocks.BARREL), 10, 1, 9);
+		// Inside: a beam across the ceiling, a blue rug, a second shelf and a candle at the drawing table.
+		fill(level, bb, 2, 4, 5, 8, 4, 5, beamX);
+		fill(level, bb, 3, 1, 3, 6, 1, 6, b(Blocks.CARPET.pick(DyeColor.LIGHT_BLUE)));
+		set(level, bb, b(Blocks.BOOKSHELF), 8, 2, 8);
+		set(level, bb, b(Blocks.POTTED_FERN), 8, 3, 8);
+		set(level, bb, b(Blocks.CANDLE).setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true), 2, 2, 8);
 		// The work: a cartography table, the desk chest, the survey notes, a lantern.
 		set(level, bb, b(Blocks.CARTOGRAPHY_TABLE), 2, 1, 8);
 		set(level, bb, b(Blocks.BOOKSHELF), 8, 1, 8);

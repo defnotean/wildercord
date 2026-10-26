@@ -109,10 +109,51 @@ public class TidepoolGrottoPiece extends WaterPiece {
 				post(level, bb, Blocks.GRAVEL.defaultBlockState(), x, z, BASE);
 			}
 		}
+		portal(level, bb);
+		oculus(level, bb);
 		pools(level, bb);
 		hermit(level, bb);
 		guard(level, bb, EntityTypes.DROWNED, POOL_X, BASE - 2, POOL_Z, List.of(Runes.BOLT, Runes.TIDEHOOK), false);
 		sentry(level, bb, EntityTypes.DROWNED, 6, BASE + 1, 10);
+	}
+
+	/** A dressed sea arch over the way in, buttressed, with a keystone and lamp posts on the shore. */
+	private void portal(WorldGenLevel level, BoundingBox bb) {
+		Palette dressed = Palette.of(Blocks.STONE_BRICKS, 5, Blocks.MOSSY_STONE_BRICKS, 3, Blocks.CRACKED_STONE_BRICKS, 2);
+		for (int x : new int[] {CX - 2, CX + 2}) {
+			fill(level, bb, x, BASE + 1, 1, x, BASE + 5, 1, dressed);
+			post(level, bb, Blocks.COBBLESTONE.defaultBlockState(), x, 0, BASE);
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, false), x, BASE + 1, 0);
+		}
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), CX - 1, BASE + 4, 1);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), CX + 1, BASE + 4, 1);
+		set(level, bb, Blocks.STONE_BRICKS.defaultBlockState(), CX - 1, BASE + 5, 1);
+		set(level, bb, Blocks.STONE_BRICKS.defaultBlockState(), CX + 1, BASE + 5, 1);
+		set(level, bb, Blocks.CHISELED_STONE_BRICKS.defaultBlockState(), CX, BASE + 5, 1);
+		fill(level, bb, CX - 2, BASE + 6, 1, CX + 2, BASE + 6, 1, Blocks.STONE_BRICK_SLAB.defaultBlockState());
+		hangingLantern(level, bb, CX, BASE + 4, 2, 0, false);
+		for (int x : new int[] {CX - 3, CX + 3}) {
+			post(level, bb, Blocks.COBBLESTONE.defaultBlockState(), x, 0, BASE);
+			set(level, bb, Blocks.STONE_BRICK_WALL.defaultBlockState(), x, BASE + 1, 0);
+			set(level, bb, Blocks.LANTERN.defaultBlockState(), x, BASE + 2, 0);
+		}
+	}
+
+	/** A ring of dressed stone round the hole in the top, and lanterns hung from the dome. */
+	private void oculus(WorldGenLevel level, BoundingBox bb) {
+		for (int x = CX - 3; x <= CX + 3; x++) {
+			for (int z = CZ - 3; z <= CZ + 3; z++) {
+				double d = dist(x, z, CX, CZ);
+				if (d > 1.2 && d <= 2.4) {
+					set(level, bb, Blocks.STONE_BRICKS.defaultBlockState(), x, BASE + 7, z);
+					set(level, bb, Blocks.STONE_BRICK_SLAB.defaultBlockState(), x, BASE + 8, z);
+				}
+			}
+		}
+		for (int[] l : new int[][] {{5, 9}, {13, 9}, {9, 5}}) {
+			hangingLantern(level, bb, l[0], BASE + 5, l[1], 1, false);
+		}
+		hangingLantern(level, bb, POOL_X, BASE + 6, POOL_Z, 2, false);
 	}
 
 	private void pools(WorldGenLevel level, BoundingBox bb) {
@@ -120,7 +161,12 @@ public class TidepoolGrottoPiece extends WaterPiece {
 		for (int[] p : new int[][] {{5, 7, 18}, {13, 7, 16}}) {
 			for (int x = p[0] - 2; x <= p[0] + 2; x++) {
 				for (int z = p[1] - 2; z <= p[1] + 2; z++) {
-					if (dist(x, z, p[0], p[1]) * 10 > p[2]) {
+					double r = dist(x, z, p[0], p[1]) * 10;
+					if (r > p[2]) {
+						// A worn kerb of dressed stone round each shallow pool.
+						if (r <= p[2] + 10) {
+							set(level, bb, noise(x, z) < 50 ? Blocks.MOSSY_STONE_BRICKS.defaultBlockState() : Blocks.STONE_BRICKS.defaultBlockState(), x, BASE, z);
+						}
 						continue;
 					}
 					set(level, bb, STONE, x, BASE - 1, z);
@@ -143,6 +189,7 @@ public class TidepoolGrottoPiece extends WaterPiece {
 					continue;
 				}
 				fill(level, bb, x, BASE - 4, z, x, BASE, z, STONE);
+				set(level, bb, noise(x, z) < 60 ? Blocks.POLISHED_ANDESITE.defaultBlockState() : Blocks.MOSSY_STONE_BRICKS.defaultBlockState(), x, BASE, z);
 				if (d <= 2.2) {
 					fill(level, bb, x, BASE - 3, z, x, BASE, z, WATER);
 					if (noise(x + boundingBox.minX(), z + boundingBox.minZ()) < 25 && (x != POOL_X || z != POOL_Z)) {
@@ -162,8 +209,14 @@ public class TidepoolGrottoPiece extends WaterPiece {
 		set(level, bb, Blocks.CAMPFIRE.defaultBlockState().setValue(net.minecraft.world.level.block.CampfireBlock.LIT, false), 6, BASE + 1, 15);
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 5, BASE + 1, 14);
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 12, BASE + 1, 5);
-		fill(level, bb, 13, BASE + 1, 11, 14, BASE + 2, 12, STONE);
-		set(level, bb, STONE, 12, BASE + 1, 11);
+		// The hermit's rug, a shelf of books and a pot on the barrel.
+		fill(level, bb, 6, BASE + 1, 13, 7, BASE + 1, 14, Blocks.CARPET.brown().defaultBlockState());
+		set(level, bb, Blocks.BOOKSHELF.defaultBlockState(), 4, BASE + 1, 13);
+		set(level, bb, Blocks.FLOWER_POT.defaultBlockState(), 4, BASE + 2, 12);
+		// The ledge, faced in dressed stone, a stair up to it and a lantern by the chest.
+		fill(level, bb, 13, BASE + 1, 11, 14, BASE + 2, 12, Palette.of(Blocks.MOSSY_STONE_BRICKS, 3, Blocks.STONE_BRICKS, 2, Blocks.CRACKED_STONE_BRICKS, 1));
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, false), 12, BASE + 1, 11);
+		set(level, bb, Blocks.LANTERN.defaultBlockState(), 13, BASE + 3, 11);
 		chest(level, bb, 14, BASE + 3, 12, WaterSites.GROTTO_LOOT, Direction.WEST, 308);
 	}
 }

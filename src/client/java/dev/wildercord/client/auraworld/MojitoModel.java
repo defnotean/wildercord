@@ -21,9 +21,10 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 	private static final float THIGH=6,FOOT=8;
 	/** How far through getting up he takes the sword up, and starts shaking his coat out. */
 	private static final float GRAB=MojitoRules.GRAB_AT/(float)MojitoRules.RISE_TICKS,SHAKE=MojitoRules.SHAKE_AT/(float)MojitoRules.RISE_TICKS;
-	private final ModelPart body,neck,head,jaw,tongue,earL,earR,tail,sword,fallen,orbL,orbR;
+	private final ModelPart body,neck,head,jaw,tongue,earL,earR,tail,sword,fallen,orbL,orbR,topknot,pom,beard,collar;
 	private final ModelPart[] legs=new ModelPart[4],shins=new ModelPart[4];
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** The pose being built: each leg's thigh angle in the world and shin angle from the thigh, the body, the neck, the head and so on. */
 	private final float[] u=new float[4],l=new float[4],uz=new float[4];
 	private float pitch,roll,yaw,neckX,neckY,headX,headZ,jawX,tongueX,earX,earZ,tailX,tailY,lying;
@@ -31,9 +32,10 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 		super(root);body=root.getChild("body");neck=body.getChild("neck");head=neck.getChild("head");jaw=head.getChild("jaw");tongue=jaw.getChild("tongue");
 		earL=head.getChild("earL");earR=head.getChild("earR");tail=body.getChild("tail");sword=head.getChild("sword");fallen=root.getChild("fallen");
 		orbL=body.getChild("orbL");orbR=body.getChild("orbR");
+		topknot=head.getChild("topknot");pom=tail.getChild("pom");beard=jaw.getChild("beard");collar=neck.getChild("collar");
 		String[] names={"legFL","legFR","legHL","legHR"};
 		for(int i=0;i<4;i++){legs[i]=body.getChild(names[i]);shins[i]=legs[i].getChild("shin");}
-		posed=new ModelPart[]{body,neck,head,jaw,tongue,earL,earR,tail,legs[0],legs[1],legs[2],legs[3],shins[0],shins[1],shins[2],shins[3]};
+		posed=new ModelPart[]{body,neck,head,jaw,tongue,earL,earR,tail,legs[0],legs[1],legs[2],legs[3],shins[0],shins[1],shins[2],shins[3]};blender=new PoseBlend(posed);
 	}
 	private static CubeListBuilder box(int tu,int tv,float x,float y,float z,float w,float h,float d){return CubeListBuilder.create().texOffs(tu,tv).addBox(x,y,z,w,h,d);}
 	/** The greatsword, its grip across the mouth, the guard at his right cheek and the blade running out past his right side. */
@@ -74,29 +76,73 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 
 	@Override public void setupAnim(MojitoRenderState s){
 		super.setupAnim(s);
-		pose(s,s.move,s.elapsed,s.tell,s.side);
+		pose(s,s.move,hold(s.move,s.elapsed,s.tell),s.tell,s.side);
 		float lie=lying;
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+		if(s.blend<1){
+			blender.store();
 			root().resetPose();
-			pose(s,s.prevMove,s.prevElapsed,s.prevTell,s.side);
+			pose(s,s.prevMove,hold(s.prevMove,s.prevElapsed,s.prevTell),s.prevTell,s.side);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose a=posed[i].storePose(),b=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,a.x(),b.x()),Mth.lerp(k,a.y(),b.y()),Mth.lerp(k,a.z(),b.z()),
-					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
-			}
+			blender.mix(k);
 			lie=Mth.lerp(k,lying,lie);
 		}
+		secondary(s);
 		hurt(s);
 		die(s);
 		ground();
 		// Rolled onto his side, flopped out or dead, he lies on his flank.
 		float down=Math.max(lie,s.deathTime>0?smooth(s.deathTime,6,18):0);
 		if(down>0)body.y=Mth.lerp(down,body.y,24-4.5F);
+		// The flank lands with a small bounce, then lies still.
+		if(s.deathTime>17)body.y-=2.0F*(float)(Math.exp(-.5F*(s.deathTime-17))*Math.abs(Mth.sin((s.deathTime-17)*.9F)));
 		props(s);
+	}
+
+	/** The hit-stop: the chop holds a beat on the ground with the blade stuck before the tugging starts. */
+	private static float hold(int move,float el,int tell){
+		if(move!=MojitoRules.CHOP)return el;
+		float at=Math.max(1,tell)+2;
+		return el<at?el:el<at+1.5F?at:el-1.5F;
+	}
+
+	/**
+	 * What swings loose from the body: the topknot, the tail's pom, the beard and the blade in his jaws each trail what carries them by
+	 * a different phase, so they whip after a turn and settle; his head and neck run on past a blow and ring out; his breath, his coat
+	 * and his weight each have their own period.
+	 */
+	private void secondary(MojitoRenderState s){
+		float t=s.ageInTicks,r=s.rise;
+		float walk=Math.min(1,s.walkAnimationSpeed)*r,step=s.walkAnimationPos*.7F;
+		boolean moving=s.move!=0&&s.tell>0;
+		float since=moving?s.elapsed-s.tell:-1;
+		float ring=since>=0?(float)(Math.exp(-.3F*since)*Mth.sin(since*.95F)):0;
+		// Topknot: bobs a beat behind the stride, tips against the head's turn, and bounces off a blow.
+		topknot.xRot=Mth.sin(step*2-1.1F)*.12F*walk+Mth.sin(t*.05F+.6F)*.03F-.25F*ring;
+		topknot.zRot=-neck.yRot*.25F+Mth.sin(t*.037F)*.04F;
+		// Pom: swings out behind a stride and a wag, a beat after the tail carrying it.
+		pom.xRot=Mth.sin(step-1.5F)*.35F*walk+Mth.sin(t*.1F-1.2F)*.1F+.5F*ring;
+		pom.zRot=-tail.yRot*.6F+Mth.sin(t*.3F-1.0F)*.2F*r;
+		// Beard and collar swing under the chin with the head.
+		beard.xRot=Mth.sin(step*2-.5F)*.15F*walk+Mth.sin(t*.07F+1.0F)*.04F+.3F*Math.max(0,head.xRot);
+		collar.zRot=Mth.sin(t*.06F+2.0F)*.015F;
+		// The greatsword in his jaws lags the head: its tip swings against a turn of the neck and wobbles with the trot.
+		sword.yRot=-neck.yRot*.2F+Mth.sin(step-.8F)*.05F*walk;
+		sword.zRot=Mth.sin(t*.09F-.6F)*.02F+.12F*ring+Mth.sin(step*2-1.4F)*.04F*walk;
+		// Follow-through: head and neck run on past the blow and settle; the body dips with it.
+		if(since>=0&&s.deathTime<=0&&s.move!=MojitoRules.RECOVER&&s.move!=MojitoRules.FLOP){
+			neck.xRot+=.12F*ring;head.xRot+=.2F*(float)(Math.exp(-.3F*Math.max(0,since-1))*Mth.sin(Math.max(0,since-1)*.95F));
+			body.xRot+=.05F*ring;
+		}
+		// Breathing on offset periods: the barrel, the neck and the head do not line up, and his weight drifts from side to side.
+		float calm=(1-walk)*(1-r*0)*r;
+		body.yScale=1+Mth.sin(t*.08F)*.01F*(1-walk);
+		neck.xRot+=Mth.sin(t*.047F+1.3F)*.02F*r;
+		head.zRot+=Mth.sin(t*.055F+2.4F)*.025F*r;
+		body.zRot+=Mth.sin(t*.031F)*.015F*calm;
+		earL.zRot+=Mth.sin(t*.12F+.4F)*.04F;earR.zRot+=Mth.sin(t*.12F+1.9F)*.04F;
+		// The hind legs give a little as the blow lands.
+		if(since>=0&&since<8)for(int i=2;i<4;i++)shins[i].xRot+=.12F*(float)(Math.exp(-.35F*since)*Mth.cos(since*.9F));
 	}
 
 	/** 0 to 1 over {@code ticks}, from {@code from}, eased out. */
@@ -346,6 +392,9 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 		if(s.hurt<=0||s.deathTime>0)return;
 		float k=s.hurt*s.hurt;
 		neck.xRot-=.25F*k;head.xRot-=.1F*k;body.zRot+=Mth.sin(s.hurt*18)*.04F*k;earL.xRot-=.5F*k;earR.xRot-=.5F*k;
+		body.xRot-=.07F*k;tail.xRot+=.5F*k;topknot.xRot+=.3F*k;pom.xRot+=.4F*k;jaw.xRot+=.2F*k;
+		for(int i=0;i<4;i++){legs[i].zRot+=(i%2==0?-1:1)*.1F*k;shins[i].xRot+=.18F*k;}
+		body.y+=1.2F*k;
 	}
 
 	/** Dying: his legs buckle under him and he sinks onto his belly, then rolls onto his side, legs gone slack, the sword still held. */
@@ -362,6 +411,8 @@ public final class MojitoModel extends EntityModel<MojitoRenderState> {
 		neck.xRot=Mth.lerp(buckle,neck.xRot,.9F);neck.yRot=Mth.lerp(fall,neck.yRot*(1-buckle),.25F);
 		head.xRot=Mth.lerp(fall,Mth.lerp(buckle,head.xRot,-.6F),-.2F);
 		tail.xRot=Mth.lerp(buckle,tail.xRot,-1.5F);tongue.xRot=Mth.lerp(fall,tongue.xRot,.5F);
+		topknot.zRot=Mth.lerp(fall,topknot.zRot,.4F);pom.xRot=Mth.lerp(buckle,pom.xRot,.9F);
+		earL.zRot=Mth.lerp(fall,earL.zRot,-1.2F);earR.zRot=Mth.lerp(fall,earR.zRot,1.2F);
 	}
 
 	/**

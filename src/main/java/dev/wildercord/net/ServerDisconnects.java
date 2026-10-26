@@ -81,7 +81,12 @@ public final class ServerDisconnects {
 
 	private static void dispatch(ServerGamePacketListenerImpl handler, MinecraftServer server) {
 		for (ServerPlayConnectionEvents.Disconnect listener : LISTENERS) {
-			listener.onPlayDisconnect(handler, server);
+			// One listener failing must not cost the rest their cleanup (a leaver's state would linger).
+			try {
+				listener.onPlayDisconnect(handler, server);
+			} catch (RuntimeException e) {
+				dev.wildercord.Wildercord.LOGGER.error("A disconnect listener ({}) failed", listener.getClass().getName(), e);
+			}
 		}
 	}
 }

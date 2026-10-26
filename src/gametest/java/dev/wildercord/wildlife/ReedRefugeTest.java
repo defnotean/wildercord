@@ -259,6 +259,8 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    var at=stuckVisitor.blockPosition();
    // Enclose this later test actor after admission without overlapping its body.
    // The original glass-detour fixture and arrival proof have already completed.
+   // A swimming body drifts off its cell's centre; centre it first so the glass cannot clip it.
+   stuckVisitor.setPos(at.getX()+.5,stuckVisitor.getY(),at.getZ()+.5);stuckVisitor.setDeltaMovement(Vec3.ZERO);
    for(var d:Direction.Plane.HORIZONTAL) {
     witness.observe("before_glass_"+d,stuckVisitor);
     s.overworld().setBlock(at.relative(d),Blocks.GLASS.defaultBlockState(),2);

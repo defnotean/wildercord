@@ -55,6 +55,14 @@ public final class RitualRules {
 		}
 	}
 
+	/**
+	 * Whether another player joins a leader's circle and pays a share: only one in the leader's party, wearing a Cord, within
+	 * {@link #CIRCLE_RANGE}. A stranger standing by is never drawn on.
+	 */
+	public static boolean joins(boolean sameParty, boolean wearsCord, double distance) {
+		return sameParty && wearsCord && distance <= CIRCLE_RANGE;
+	}
+
 	/** Whether a caster with {@code circles} formed can lead {@code ritual}. */
 	public static boolean canLead(Ritual ritual, int circles) {
 		return circles >= ritual.minCircle;

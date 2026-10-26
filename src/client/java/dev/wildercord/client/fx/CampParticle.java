@@ -5,6 +5,8 @@ import net.minecraft.client.particle.*;
 import net.minecraft.util.RandomSource;
 /** Physical paper hinges and copper; mana fibres tighten rather than billow as recolored light. */
 public final class CampParticle extends SingleQuadParticle implements SigilGroup.Extent {
+ /** Its two animation frames, looked up once instead of by name every tick. */
+ private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
  private final CampOption material;
  CampParticle(ClientLevel l,double x,double y,double z,CampOption m){super(l,x,y,z,SpellCircleParticle.particleSprite("camp_"+m.style()+"_0"));material=m;lifetime=m.lifetime();hasPhysics=false;quadSize=m.size();setColor((m.color()>>16&255)/255F,(m.color()>>8&255)/255F,(m.color()&255)/255F);xd=m.drift().x;yd=m.drift().y;zd=m.drift().z;roll=oRoll=m.spin();}
  @Override public void tick(){xo=x;yo=y;zo=z;oRoll=roll;if(age++>=lifetime){remove();return;}
@@ -17,7 +19,8 @@ public final class CampParticle extends SingleQuadParticle implements SigilGroup
    case CampOption.KNOT->{xd*=.86;yd*=.86;zd*=.86;roll+=material.spin()*.35;}
   }
   x+=xd;y+=yd;z+=zd;alpha=Math.min(1,age*.8F)*Math.min(1,(1-age/(float)lifetime)*3);if(MagicQuality.reducedFlash)alpha*=.72F;
-  setSprite(SpellCircleParticle.particleSprite("camp_"+material.style()+"_"+(age<lifetime/2?0:1)));
+  if(frames==null)frames=new net.minecraft.client.renderer.texture.TextureAtlasSprite[]{SpellCircleParticle.particleSprite("camp_"+material.style()+"_0"),SpellCircleParticle.particleSprite("camp_"+material.style()+"_1")};
+  setSprite(frames[age<lifetime/2?0:1]);
  }
  @Override protected Layer getLayer(){return Layer.TRANSLUCENT;}
  @Override public ParticleRenderType getGroup(){return SigilGroup.TYPE;}

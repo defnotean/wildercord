@@ -4,6 +4,60 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.14.0-alpha] — 2026-10-26
+
+**One road.** A capstone for the four regions, tame mimics and hedgehogs, harder-hitting bosses, and a building pass that makes the world's structures grander.
+
+### Added
+
+- **Four Lamps, One Road**, a journal capstone that opens when the Reedlands, Highland, Belowkeeper and Emberwood lamps are all lit and each regional keeper has answered. It pays 120 XP, four Blank Runes, five Aura Shards and Aura experience, and ends with the Lamplighter's Lantern keepsake (night vision while held in the dark), a flare of end-rod light and a bell. Finishing it earns the Four Lamps, One Road advancement (a goal, 50 XP).
+- Gathering bounties can ask for Moonreed Floss, Dried Glowcap Gills and Ember Tuft.
+- Wandering caravaneers buy those three goods, four at a time, for an emerald each.
+- Weaver's Silk can be put away and taken out again with `G` (rebindable) or `/silk`, so it stops catching you on walls while you jump around. The choice is kept through death and relogs.
+- Coffer mimics can be tamed with books (1 in 3 per book). A tamed mimic never bites its owner, follows them, shuts up as a coffer beside them when they stop and turns up beside them when left far behind. Its owner can open it as a 27-slot chest that only they can use, pet it by sneaking with an empty hand, and tell it to stay or follow by sneaking while holding something. A plain book heals its owner's mimic while it is hurt; any other book, or one at full health, opens it, so books can be stored in it. It spills what it holds if it dies. See the new Coffer Mimics guide page.
+- Thistle hedgehogs can be tamed with sweet berries (1 in 3 per handful). A tame hedgehog follows its owner, sits when told, never curls up at them, heals on berries and brings them a forage find every few minutes. A tame pair's hoglet belongs to the same owner.
+- Homes can be renamed with `/renamehome <name> <new name>`; the home stays where it is. `/homes` now lists one home per line with **[Rename]** and **[Remove]** buttons beside it (Remove waits for Enter, so a stray click deletes nothing), and takes `rename` and `remove` too. A full home list now points to `/homes`.
+
+### Changed
+
+- The world's buildings and dungeons got a visual pass, checked from five angles for each of the 76 sites. Among them: the Ember Sanctum has buttresses, red lancets, a battlemented clerestory, forge chimneys and a ribbed, crowned dome ringed by fire-topped pilasters; the root temple rises as a four-tier stepped pyramid; the clockwork crypt has a clock tower; the Archive stands on an octagonal forecourt with obelisks; the old battlefield has a breached ring wall and a wrecked trebuchet; the glacier den has a gate and twin blue-ice spires; the watermill wheel, hillside mine headframe, forge hall, broken bridge, venom ziggurat, standing stones, apiary, herbalist cottage, orchard, star terrace, crystal lab and waterfall shrine were rebuilt larger or given yards, towers and gardens. Forest sites clear the trees over themselves instead of being swallowed by them. Existing buildings stay as they are; the new versions appear in newly generated chunks.
+- Every boss hits players harder: lair bosses, dungeon guardians, Masters, the Gravekeeper, the Archivist, the Glass Cartographer, the Reed-Crowned Ferryman, the Hollow Bell, the Kiln Widow and giants. Their blows (and their projectiles) land 35% harder, and at least 40% of what armour, Protection and Resistance would stop goes through anyway. A 10-damage blow on full diamond with Protection IV used to take about half a heart; it now takes about two and a half.
+- The boss models move with more weight: clearer wind-ups before their big moves, follow-through and secondary motion on tails, wings and cloth, a flinch when hurt, and staged deaths instead of a plain fall.
+
+### Fixed
+- Weaver's Silk's wall grip runs out after six seconds off the ground again after a relog or respawn; before, it could hold you to a wall indefinitely.
+- Closing a world in single player now also forgets the spirit wolf packs and Weaver's Silk's landing marks, so a world opened afterwards starts clean.
+- Wayline's "hold forward to take the line" hint now comes from the lang file, so a translation can change it.
+- Riding a mount for the first time after taming it no longer crashes the server.
+- The Gravekeeper, Ashen Stag, Frost Wyrmling, Hollow Matron and Mojito no longer snap back to the start of a move they use twice in a row; they blend out of the last swing as they do between different moves. All seven animated bosses' blends no longer build new poses every frame.
+- Less per-frame and per-tick work: the cord, cord-bead, Master, Runebound and spell-circle renderers reuse their texture names instead of rebuilding them every frame, and Cinnamon's recall check looks around its owner instead of across the whole dimension.
+- The `<` and `>` page buttons in the rune catalogue and the spell notebook now show "Previous Page"/"Next Page" on hover and say so to a screen reader, instead of reading out a bare arrow.
+- The Cord screen's "Unfinished … · cannot cast" header and its paste refusals, the Fusion Altar's two-effect line and the lesson screen's Circle line now come from the lang file, so a translation pack reaches them.
+- The eight spell-construct blocks (Wind Step, Cinder Bulwark, Lifted Water and the rest) have names, so the debug screen and block-info mods no longer show a raw `block.wildercord.*` key.
+- Colour-blind-safe telegraphs now recolour spell circles, ward and shield rings and boss warning circles too. Before, the setting only reached rune sigils, so the circles that matter most in a fight kept their red and green.
+
+- Reduced flash no longer turns screen shake and kicks back on when the game's Screen Effect Scale is at 0%, and at 0% the charge strain vignette is gone too. Before, reduced flash forced 15% and the vignette never dropped below 40%.
+- A Master gauntlet that was still running when you left a single-player world no longer carries on in the next world you open. Hamlet greetings, Duelist chatter and spell-residue cooldowns also start fresh with each world. So do the Bell Shard, Rimescale and Cinder Antler cooldowns, which could look stuck for a while after reopening a world.
+- A renamed item now counts as what it is: rituals take a renamed reagent, inscribing a technique scroll takes renamed paper and aura shards, and a Hearth lamp cast takes a renamed torch. They used to be refused as if you had none.
+- Sapling Sow, Coppice and Gourdcall work on grass, podzol and moss as well as dirt: Sapling Sow plants there, Coppice replants the stump of a tree that stood on grass, and Gourdcall sets fruit on a grassy side.
+- A Master's cut and a landing dungeon guardian's blow now really go partly through armour and Protection, as they were meant to. The part that should get through was being worked out from what the armour had already left, so it came to nothing.
+- Trees no longer grow inside boss lairs and dungeons in the overworld, or close enough to hang over their edges. Trees that had already grown inside an existing lair are cut down once, the first time the whole lair is loaded; the lair's own build is left as it was. A sapling planted within 4 blocks of a lair won't grow.
+- A wildbloom residue whose saved owner is damaged no longer stops the server's residue tick.
+- An inn room chest now shuts once you walk more than 8 blocks from where you opened it, instead of staying open wherever you went. Its contents are kept.
+- The Cord screen no longer inscribes spell scrolls while you're dead or in spectator mode.
+- The official server no longer goes down every night around 4 a.m. The nightly backup zipped the whole world at full speed, which stalled the server until its watchdog killed it. It now saves the world first and refreshes a folder snapshot at idle priority, copying only what changed.
+- The official server's auto-installer only installs a build whose SHA-256 matches the checksum uploaded with it, so a half-uploaded or wrong jar is set aside instead of loaded.
+- Abandoning an escort bounty, or reaching its destination, sends the llama home and drops its cargo where it stands. An escort llama found after its escort ended (a relog, a server restart) is released the same way, so escorts no longer leave free llamas or duplicate cargo.
+- An escort's pack llama now really has a chest. It was spawned with no strength, so it had no slots for the traveller's goods.
+- Escort ambushes only roll while the caravan is moving, and stop after three per escort, so an idle escort can no longer be farmed for bandits.
+- The practice arena refuses entry during a duel, within ten seconds of taking damage, while falling, burning or riding, and within thirty seconds of the last entry. Leaving is always allowed.
+- Rituals draw mana only from members of the leader's party, never from strangers standing nearby.
+- Inn raid bandits carried into an unloaded chunk still count as fighting, so a raid can no longer be won by walking them out of range.
+- Runesmith contract tracking releases idle players instead of keeping them for the whole session.
+- Duel bookkeeping prunes old records on the server clock, a disconnect listener that throws no longer stops the others, and add-ons load after the core systems they hook into.
+- Lesson screens (Relay, Reweave, Excise and pack lessons) share a small allowance of page turns and reopenings per player, so a modified client flooding them can no longer make the server rebuild lesson pages hundreds of times a tick.
+- The field-form and Master-form lesson screens no longer try to open while the client has no world loaded.
+
 ## [0.13.0-alpha] — 2026-10-15
 
 **Living world.** New regions with their own buildings, residents, lore routes and bosses, plus bounties, mounts, guilds and a long list of fixes.

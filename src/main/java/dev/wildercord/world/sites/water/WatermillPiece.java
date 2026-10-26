@@ -35,6 +35,7 @@ public class WatermillPiece extends WaterPiece {
 	private static final BlockState LOG = Blocks.SPRUCE_LOG.defaultBlockState();
 	private static final BlockState COBBLE = Blocks.COBBLESTONE.defaultBlockState();
 	private static final BlockState AXLE = LOG.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
+	private static final BlockState STRIPPED = Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState();
 
 	public WatermillPiece(int x, int y, int z, Direction facing) {
 		super(WaterSites.WATERMILL, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -96,17 +97,73 @@ public class WatermillPiece extends WaterPiece {
 	}
 
 	private void house(WorldGenLevel level, BoundingBox bb, int hub) {
-		fill(level, bb, 2, BASE + 1, 1, 12, BASE + 1, 8, COBBLE);
+		// A fieldstone plinth with a battered course round it, then timber-framed plank walls over it.
+		fill(level, bb, 2, BASE + 1, 1, 12, BASE + 1, 8, Palette.of(Blocks.COBBLESTONE, 5, Blocks.MOSSY_COBBLESTONE, 3, Blocks.STONE_BRICKS, 2));
+		for (int z = 1; z <= 8; z++) {
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, false), 1, BASE + 1, z);
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, false), 13, BASE + 1, z);
+		}
+		for (int x = 2; x <= 12; x++) {
+			if (x < 6 || x > 8) {
+				set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, false), x, BASE + 1, 0);
+			}
+		}
+		for (int x : new int[] {1, 13}) {
+			set(level, bb, Blocks.STONE_BRICKS.defaultBlockState(), x, BASE + 1, 0);
+		}
 		fill(level, bb, 2, BASE + 2, 1, 12, BASE + 4, 8, PLANKS);
 		fill(level, bb, 3, BASE + 1, 2, 11, BASE + 4, 7, AIR);
 		for (int[] c : new int[][] {{2, 1}, {12, 1}, {2, 8}, {12, 8}}) {
 			fill(level, bb, c[0], BASE + 1, c[1], c[0], BASE + 4, c[1], LOG);
 		}
+		for (int x : new int[] {5, 9}) {
+			fill(level, bb, x, BASE + 2, 1, x, BASE + 4, 1, STRIPPED);
+			fill(level, bb, x, BASE + 2, 8, x, BASE + 4, 8, STRIPPED);
+		}
+		for (int z : new int[] {3, 6}) {
+			fill(level, bb, 2, BASE + 2, z, 2, BASE + 4, z, STRIPPED);
+			fill(level, bb, 12, BASE + 2, z, 12, BASE + 4, z, STRIPPED);
+		}
+		// A stripped log wall plate under the loft floor.
 		fill(level, bb, 2, BASE + 5, 1, 12, BASE + 5, 8, PLANKS);
-		gable(level, bb, 1, 13, 0, 9, BASE + 5, Blocks.SPRUCE_STAIRS, PLANKS, PLANKS, 1, 8);
+		fill(level, bb, 3, BASE + 5, 1, 11, BASE + 5, 1, STRIPPED.setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+		fill(level, bb, 3, BASE + 5, 8, 11, BASE + 5, 8, STRIPPED.setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+		fill(level, bb, 2, BASE + 5, 2, 2, BASE + 5, 7, STRIPPED.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z));
+		fill(level, bb, 12, BASE + 5, 2, 12, BASE + 5, 7, STRIPPED.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z));
+		// A dark oak roof over the spruce, glazed in each gable, a lantern under the front of the ridge.
+		gable(level, bb, 1, 13, 0, 9, BASE + 5, Blocks.DARK_OAK_STAIRS, Blocks.DARK_OAK_PLANKS.defaultBlockState(), PLANKS, 1, 8);
+		for (int z : new int[] {1, 8}) {
+			set(level, bb, LOG, 7, BASE + 6, z);
+			set(level, bb, Blocks.GLASS.defaultBlockState(), 7, BASE + 7, z);
+			set(level, bb, LOG, 7, BASE + 8, z);
+		}
+		hangingLantern(level, bb, 7, BASE + 10, 0, 1, false);
+		// A stone chimney up the east side.
+		fill(level, bb, 13, BASE + 1, 6, 13, BASE + 10, 6, Palette.of(Blocks.COBBLESTONE, 3, Blocks.STONE_BRICKS, 2, Blocks.MOSSY_COBBLESTONE, 1));
+		set(level, bb, Blocks.STONE_BRICK_SLAB.defaultBlockState(), 13, BASE + 11, 6);
+		// The door in a stripped log frame under a little canopy, lamp posts either side of the path.
 		fill(level, bb, 7, BASE + 1, 1, 7, BASE + 2, 1, AIR);
+		fill(level, bb, 6, BASE + 1, 1, 6, BASE + 3, 1, STRIPPED);
+		fill(level, bb, 8, BASE + 1, 1, 8, BASE + 3, 1, STRIPPED);
+		set(level, bb, STRIPPED.setValue(RotatedPillarBlock.AXIS, Direction.Axis.X), 7, BASE + 3, 1);
+		for (int x = 6; x <= 8; x++) {
+			set(level, bb, x == 7 ? topSlab(Blocks.SPRUCE_SLAB) : stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, true), x, BASE + 4, 0);
+		}
+		for (int x : new int[] {5, 9}) {
+			post(level, bb, COBBLE, x, 0, BASE);
+			fill(level, bb, x, BASE + 1, 0, x, BASE + 2, 0, Blocks.SPRUCE_FENCE.defaultBlockState());
+			set(level, bb, Blocks.LANTERN.defaultBlockState(), x, BASE + 3, 0);
+		}
+		// Glazed windows with sills under them and drip hoods over them.
 		for (int[] w : new int[][] {{2, 4}, {12, 4}, {4, 8}, {10, 8}, {4, 1}, {10, 1}}) {
 			set(level, bb, Blocks.GLASS.defaultBlockState(), w[0], BASE + 3, w[1]);
+			Direction in = w[0] == 2 ? Direction.EAST : w[0] == 12 ? Direction.WEST : w[1] == 1 ? Direction.NORTH : Direction.SOUTH;
+			int ox = w[0] == 2 ? -1 : w[0] == 12 ? 1 : 0, oz = w[1] == 1 ? -1 : w[1] == 8 ? 1 : 0;
+			if (w[0] == 2 || w[0] == 12) {
+				oz = 0;
+			}
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, in, true), w[0] + ox, BASE + 2, w[1] + oz);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, in, true), w[0] + ox, BASE + 4, w[1] + oz);
 		}
 		// The mill's work: a grindstone, a stonecutter, grain and flour.
 		set(level, bb, Blocks.GRINDSTONE.defaultBlockState().setValue(GrindstoneBlock.FACE, AttachFace.FLOOR), 4, BASE + 1, 3);
@@ -120,6 +177,10 @@ public class WatermillPiece extends WaterPiece {
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 11, BASE + 1, 3);
 		chest(level, bb, 11, BASE + 1, 5, WaterSites.WATERMILL_LOOT, Direction.WEST, 303);
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 7, BASE + 4, 4);
+		hangingLantern(level, bb, 4, BASE + 4, 6, 0, false);
+		hangingLantern(level, bb, 10, BASE + 4, 4, 0, false);
+		fill(level, bb, 6, BASE + 1, 3, 8, BASE + 1, 5, Blocks.CARPET.brown().defaultBlockState());
+		set(level, bb, Blocks.FLOWER_POT.defaultBlockState(), 11, BASE + 2, 2);
 		// The axle comes in through the back wall to a hub over the millstone.
 		for (int z = 7; z <= WHEEL_Z - 1; z++) {
 			if (z > 7 || hub > BASE && hub <= BASE + 4) {
@@ -129,25 +190,46 @@ public class WatermillPiece extends WaterPiece {
 		spawn(level, bb, EntityTypes.VILLAGER, 7, BASE + 1, 4, 0);
 	}
 
-	/** The wheel, upright in the river: a rim of stripped logs, eight spokes, paddles that dip into the stream. */
+	/**
+	 * The wheel, upright in the river and taller than the eaves: a rim of stripped logs, eight spokes, paddles at every
+	 * eighth that dip into the stream, and a flume on a trestle carrying the race over its crown.
+	 */
 	private void wheel(WorldGenLevel level, BoundingBox bb, int water, int hub) {
-		clear(level, bb, 2, water + 1, 9, 12, Math.min(HEIGHT - 1, hub + 5), 13);
+		int top = Math.min(HEIGHT - 1, hub + 7);
+		clear(level, bb, 1, water + 1, 9, 14, top, 13);
 		BlockState rim = Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
-		for (int x = 3; x <= 11; x++) {
-			for (int y = hub - 4; y <= hub + 4; y++) {
+		for (int x = 1; x <= 13; x++) {
+			for (int y = hub - 6; y <= hub + 6; y++) {
 				int dx = x - 7, dy = y - hub;
 				double d = Math.sqrt(dx * dx + dy * dy);
-				if (Math.abs(d - 3.8) < 0.6) {
+				boolean line = dx == 0 || dy == 0 || Math.abs(dx) == Math.abs(dy);
+				if (Math.abs(d - 5.3) < 0.6) {
 					set(level, bb, rim, x, y, WHEEL_Z);
-					if (dx == 0 || dy == 0) {
-						// A paddle either side of the rim at each quarter.
+					if (line) {
 						wet(level, bb, Blocks.SPRUCE_SLAB.defaultBlockState(), x, y, WHEEL_Z - 1);
 						wet(level, bb, Blocks.SPRUCE_SLAB.defaultBlockState(), x, y, WHEEL_Z + 1);
 					}
-				} else if (d < 3.3 && (dx == 0 || dy == 0 || Math.abs(dx) == Math.abs(dy))) {
-					set(level, bb, d < 0.5 ? AXLE : Blocks.SPRUCE_PLANKS.defaultBlockState(), x, y, WHEEL_Z);
+				} else if (d < 4.8 && line) {
+					set(level, bb, d < 0.5 ? AXLE : d < 1.5 ? Blocks.SPRUCE_LOG.defaultBlockState() : Blocks.SPRUCE_PLANKS.defaultBlockState(), x, y, WHEEL_Z);
 				}
 			}
+		}
+		// The axle runs on through the wheel to a bearing post standing in the river.
+		set(level, bb, AXLE, 7, hub, WHEEL_Z + 1);
+		post(level, bb, LOG, 7, WHEEL_Z + 2, hub);
+		// The flume: a water-filled trough on a trestle from the bank's edge to the wheel's crown.
+		int flume = hub + 6;
+		if (flume <= HEIGHT - 1) {
+			BlockState trough = Blocks.SPRUCE_SLAB.defaultBlockState().setValue(net.minecraft.world.level.block.SlabBlock.WATERLOGGED, true);
+			for (int x = 7; x <= 14; x++) {
+				set(level, bb, trough, x, flume, WHEEL_Z);
+				set(level, bb, Blocks.SPRUCE_TRAPDOOR.defaultBlockState().setValue(net.minecraft.world.level.block.TrapDoorBlock.OPEN, true)
+						.setValue(net.minecraft.world.level.block.TrapDoorBlock.FACING, Direction.NORTH), x, flume, WHEEL_Z + 1);
+				set(level, bb, Blocks.SPRUCE_TRAPDOOR.defaultBlockState().setValue(net.minecraft.world.level.block.TrapDoorBlock.OPEN, true)
+						.setValue(net.minecraft.world.level.block.TrapDoorBlock.FACING, Direction.SOUTH), x, flume, WHEEL_Z - 1);
+			}
+			post(level, bb, LOG, 14, WHEEL_Z, flume - 1);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.EAST, true), 13, flume - 1, WHEEL_Z);
 		}
 	}
 }

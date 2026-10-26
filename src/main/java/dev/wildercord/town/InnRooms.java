@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -74,7 +75,15 @@ public final class InnRooms {
 		}
 		int slots = InnRoomRules.CHEST_ROWS * 9;
 		List<ItemStack> saved = player.getAttachedOrElse(CHEST, List.of());
+		var level = player.level();
+		var openedAt = player.position();
 		SimpleContainer chest = new SimpleContainer(slots) {
+			@Override
+			public boolean stillValid(Player user) {
+				// It's the keeper's chest, not one you carry: walk away and it shuts.
+				return user == player && InnRoomRules.atChest(player.isAlive(), player.level() == level, player.position().distanceToSqr(openedAt));
+			}
+
 			@Override
 			public void setChanged() {
 				super.setChanged();

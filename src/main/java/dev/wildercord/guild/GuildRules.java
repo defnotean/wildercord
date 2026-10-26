@@ -114,7 +114,16 @@ public final class GuildRules {
 		/** {@code player} joins the one named {@code name} (their invitation already checked). */
 		public Result join(UUID player, String name) {
 			Guild g = named(name);
-			if (g == null) return Result.NO_SUCH;
+			return g == null ? Result.NO_SUCH : join(player, name, g.kind());
+		}
+
+		/**
+		 * {@code player} accepts an invitation to the {@code kind} named {@code name}: if that one is gone and something of
+		 * the other kind now has its name (a guild disbanded and a coven founded under it, say), there is no such one to join.
+		 */
+		public Result join(UUID player, String name, Kind kind) {
+			Guild g = named(name);
+			if (g == null || g.kind() != kind) return Result.NO_SUCH;
 			if (of(player, g.kind()) != null) return Result.ALREADY_IN;
 			if (g.members().size() >= MAX_MEMBERS) return Result.FULL;
 			List<UUID> members = new ArrayList<>(g.members());

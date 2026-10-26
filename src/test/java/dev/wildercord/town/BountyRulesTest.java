@@ -25,6 +25,12 @@ class BountyRulesTest {
 	}
 
 	@Test
+	void thePackLlamaIsAStrengthAVanillaLlamaCanHave() {
+		// Vanilla clamps llama strength to 1..5; three columns of chest hold the traveller's goods.
+		assertTrue(BountyRules.ESCORT_STRENGTH >= 1 && BountyRules.ESCORT_STRENGTH <= 5);
+	}
+
+	@Test
 	void everyBountyIsFairAndPaysWithinItsBounds() {
 		Set<String> seen = new HashSet<>();
 		for (long day = 0; day < 2000; day++) {
@@ -35,6 +41,16 @@ class BountyRulesTest {
 			assertTrue(bounty.reputation() >= BountyRules.REPUTATION_MIN && bounty.reputation() <= BountyRules.REPUTATION_MAX, bounty.toString());
 		}
 		assertEquals(BountyRules.TARGETS.size(), seen.size(), "every target comes up");
+	}
+
+	@Test
+	void gatheringBountiesAskForTheRegionsOwnGoods() {
+		Set<String> asked = new HashSet<>();
+		for (long day = 0; day < 4000; day++) {
+			Bounty bounty = BountyRules.offer(UUID.randomUUID(), day, day * 13, Tier.KNOWN, false);
+			if (bounty.kind() == BountyRules.Kind.GATHER) asked.add(bounty.target());
+		}
+		assertTrue(asked.containsAll(java.util.List.of("wildercord:moonreed_floss", "wildercord:dried_glowcap_gills", "wildercord:ember_tuft")), asked.toString());
 	}
 
 	@Test
@@ -93,5 +109,25 @@ class BountyRulesTest {
 		assertFalse(BountyRules.greatDue(BountyRules.week(15), 20), "done this week");
 		assertTrue(BountyRules.greatDue(BountyRules.week(15), 21), "a new week");
 		assertEquals(BountyRules.offer(PLAYER, 16, 99L, Tier.FRIEND, false), BountyRules.offer(PLAYER, 16, 99L, Tier.FRIEND, false), "the same all day");
+	}
+
+	@Test
+	void ambushesNeedTheEscortToMoveAndStopAtTheCap() {
+		assertFalse(BountyRules.ambushMayRoll(0, 0), "standing still farms nothing");
+		assertFalse(BountyRules.ambushMayRoll(BountyRules.AMBUSH_MOVED - 0.01, 0));
+		assertTrue(BountyRules.ambushMayRoll(BountyRules.AMBUSH_MOVED, 0));
+		assertTrue(BountyRules.ambushMayRoll(6, BountyRules.AMBUSH_MAX - 1));
+		assertFalse(BountyRules.ambushMayRoll(6, BountyRules.AMBUSH_MAX));
+	}
+
+	@Test
+	void aLlamaBelongsOnlyToTheEscortItWasHandedOverFor() {
+		String road = BountyRules.escortRoad(10, -4, 170, 30);
+		assertEquals(road, BountyRules.escortRoad(10, -4, 170, 30));
+		assertTrue(BountyRules.sameEscort(road, road));
+		assertFalse(BountyRules.sameEscort(BountyRules.escortRoad(10, -4, -150, 90), road), "a llama from an earlier escort is not this one's");
+		assertFalse(BountyRules.sameEscort(road, null), "with no escort under way, no llama is the hunter's");
+		assertTrue(BountyRules.sameEscort(null, road), "a llama from before roads were marked keeps its escort");
+		assertFalse(BountyRules.sameEscort(null, null));
 	}
 }

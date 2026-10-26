@@ -14,6 +14,9 @@ Seven bosses sleep in lairs of their own, each in its own kind of land. Wake one
   a way off. Move, and you change what comes.
 - **Every move has a tell.** A pose, a sound, and often a mark on the ground. Its boss bar names the move it's making.
 - **Openings.** Many moves leave it stuck, sprawled, dazed or panting. That's when it takes more.
+- **Armour only goes so far.** Every boss, not only these seven, hits players 35% harder than its numbers suggest, and
+  at least 40% of what armour, Protection and Resistance would stop gets through. Full diamond with Protection IV
+  still helps a lot, but it won't make you safe.
 - **Half beaten, it turns fiercer.** It stops for one big move, then fights on quicker, often with its moves in pairs.
 
 1. TOC
@@ -42,6 +45,10 @@ Roughly from easiest to hardest:
   sleeps again after 10, healed.
 - **It heals when left alone.** After 3 seconds without being hurt, it heals 1.5% of its health a second. Keep at it.
 - **Its blows bite through armour.** Part of every hit ignores armour.
+- **No trees in the arena.** The forest around a lair doesn't grow into it or hang over its edge. Trees that had
+  already grown inside an older lair are cut down the first time the whole lair is loaded. The lair's own dead trees,
+  posts and planted leaves stay. Saplings planted within 4 blocks of a lair (or a dungeon) won't grow, even with bone
+  meal.
 - **Not on Peaceful.** None of them wake.
 - **A chest and a boon.** Each lair has a chest. Six of the seven also guard a **boon**: a block in the lair you use to
   take its gift for good. You can't take it while its boss is alive nearby. Each player can take it once, and it stays
@@ -184,6 +191,7 @@ She throws herself wide, flinging everyone back and leaving web all about. Then 
 - Walk into a wall to climb it. Stop and you slide slowly down. Sneak to cling fast.
 - No fall damage while you cling.
 - The silk holds you for 6 seconds off the ground, then lets go until you've stood on the ground again.
+- If it keeps catching you on walls while you jump about, press `G` (or type `/silk`) to put it away. Press it again to take it out. It stays put away through death and relogs.
 
 ## Ashen Stag
 

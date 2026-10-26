@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -25,7 +26,7 @@ public final class ShepherdPiece extends FarmPiece {
 		fill(level, bb, 6, 0, 3, 14, 0, 3, s(Blocks.DIRT_PATH));
 		// The hut: a stone course, spruce above, a gable roof running across.
 		fill(level, bb, 2, 0, 12, 8, 0, 18, s(Blocks.COBBLESTONE));
-		walls(level, bb, 2, 1, 12, 8, 1, 18, s(Blocks.COBBLESTONE));
+		walls(level, bb, 2, 1, 12, 8, 1, 18, Palette.of(Blocks.COBBLESTONE, 5, Blocks.MOSSY_COBBLESTONE, 3, Blocks.STONE, 1));
 		walls(level, bb, 2, 2, 12, 8, 3, 18, s(Blocks.SPRUCE_PLANKS));
 		for (int x : new int[]{2, 8}) for (int z : new int[]{12, 18}) fill(level, bb, x, 1, z, x, 3, z, s(Blocks.SPRUCE_LOG));
 		for (int i = 0; i < 4; i++) {
@@ -50,6 +51,27 @@ public final class ShepherdPiece extends FarmPiece {
 		set(level, bb, s(Blocks.WOOL.white()), 3, 1, 17);
 		set(level, bb, s(Blocks.CARPET.white()), 5, 1, 16);
 		set(level, bb, hangingLantern(), 5, 6, 15);
+		// A porch on posts before the door, lanterns either side of it.
+		for (int x : new int[]{3, 7}) fill(level, bb, x, 1, 10, x, 2, 10, s(Blocks.SPRUCE_FENCE));
+		fill(level, bb, 3, 3, 10, 7, 3, 10, s(Blocks.SPRUCE_SLAB));
+		for (int x = 2; x <= 8; x++) set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, true), x, 3, 11);
+		set(level, bb, s(Blocks.LANTERN), 4, 1, 11); set(level, bb, s(Blocks.LANTERN), 6, 1, 11);
+		// Corbels under the back eave, glass in both gables, fence finials on the ridge.
+		for (int x = 2; x <= 8; x++) set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, true), x, 3, 19);
+		set(level, bb, s(Blocks.GLASS), 2, 5, 15); set(level, bb, s(Blocks.GLASS), 8, 5, 15);
+		set(level, bb, s(Blocks.SPRUCE_FENCE), 1, 9, 15); set(level, bb, s(Blocks.SPRUCE_FENCE), 9, 9, 15);
+		// Flowering shrubs under the windows and bales of fleece stacked by the wall.
+		for (int z : new int[]{14, 16}) { set(level, bb, s(Blocks.FLOWERING_AZALEA), 1, 1, z); set(level, bb, s(Blocks.AZALEA), 9, 1, z); }
+		set(level, bb, s(Blocks.FLOWERING_AZALEA), 4, 1, 19); set(level, bb, s(Blocks.FLOWERING_AZALEA), 6, 1, 19);
+		set(level, bb, s(Blocks.WOOL.white()), 9, 1, 18); set(level, bb, s(Blocks.WOOL.pick(DyeColor.BROWN)), 9, 1, 17);
+		set(level, bb, s(Blocks.WOOL.pick(DyeColor.LIGHT_GRAY)), 9, 2, 18);
+		// Boulders on the hillside.
+		for (int[] b : new int[][]{{1, 2}, {18, 1}, {1, 8}, {8, 7}, {19, 20}}) {
+			set(level, bb, s(Blocks.MOSSY_COBBLESTONE), b[0], 1, b[1]);
+			if (noise(b[0], b[1]) < 50) set(level, bb, s(Blocks.MOSSY_COBBLESTONE_SLAB), b[0] + 1, 1, b[1]);
+		}
+		// Lantern posts either side of the pen gate.
+		for (int x : new int[]{13, 15}) { set(level, bb, s(Blocks.COBBLESTONE_WALL), x, 1, 2); set(level, bb, s(Blocks.LANTERN), x, 2, 2); }
 		// The pen, its gate shut, with hay, a trough and the flock.
 		walls(level, bb, 10, 1, 4, 19, 1, 18, s(Blocks.OAK_FENCE));
 		set(level, bb, facing(Blocks.OAK_FENCE_GATE, Direction.SOUTH), 14, 1, 4);
@@ -61,5 +83,19 @@ public final class ShepherdPiece extends FarmPiece {
 		sentry(level, bb, EntityTypes.SHEEP, 13, 1, 9);
 		sentry(level, bb, EntityTypes.SHEEP, 16, 1, 12);
 		sentry(level, bb, EntityTypes.SHEEP, 14, 1, 14);
+		// A gabled byre over the hay in the far corner of the pen, a lantern hung inside.
+		for (int[] p : new int[][]{{15, 14}, {18, 14}, {15, 17}}) fill(level, bb, p[0], 1, p[1], p[0], 3, p[1], s(Blocks.SPRUCE_LOG));
+		set(level, bb, s(Blocks.SPRUCE_LOG), 18, 3, 17);
+		for (int x = 15; x <= 18; x++) {
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false), x, 4, 13);
+			fill(level, bb, x, 4, 14, x, 4, 17, s(Blocks.SPRUCE_PLANKS));
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, false), x, 4, 18);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false), x, 5, 14);
+			fill(level, bb, x, 5, 15, x, 5, 16, s(Blocks.SPRUCE_PLANKS));
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, false), x, 5, 17);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false), x, 6, 15);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, false), x, 6, 16);
+		}
+		hangingLantern(level, bb, 16, 3, 15, 0, false);
 	}
 }

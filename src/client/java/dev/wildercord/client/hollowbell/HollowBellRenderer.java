@@ -47,6 +47,7 @@ public final class HollowBellRenderer extends MobRenderer<HollowBell, HollowBell
 		s.markZ = entity.markZ();
 		s.acrossX = entity.acrossX();
 		s.second = entity.isSecondPhase();
+		s.hurt = entity.hurtTime > 0 ? Math.max(0, (entity.hurtTime - tickDelta) / 10F) : 0;
 		int total = tell(move);
 		s.tellProgress = total <= 0 ? 0 : Mth.clamp(s.elapsed / total, 0, 1);
 	}

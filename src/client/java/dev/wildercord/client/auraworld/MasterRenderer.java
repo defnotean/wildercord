@@ -32,12 +32,14 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		"tide", "iron", "dune", // ---- methods-a pack
 		"echo", "dawn", "venom"); // ---- methods-b pack
 
+	private static final java.util.Map<String, Identifier> SKINS = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final java.util.Map<String, Identifier> RIG_SKINS = new java.util.concurrent.ConcurrentHashMap<>();
 	private static final Identifier RIG_GLOW = Wildercord.id("textures/entity/master_rig/glow.png");
 	private static final Identifier RIG_BLADE = Wildercord.id("textures/entity/master_rig/blade_glow.png");
 
 	public MasterRenderer(EntityRendererProvider.Context context) {
 		super(context, new MasterModel(context.bakeLayer(AuraWorldClient.DUELIST)),
-			state -> Wildercord.id((MASTER_SKINS.contains(state.method) ? "textures/entity/master/" : "textures/entity/duelist/") + state.method + ".png"),
+			state -> SKINS.computeIfAbsent(state.method, method -> Wildercord.id((MASTER_SKINS.contains(method) ? "textures/entity/master/" : "textures/entity/duelist/") + method + ".png")),
 			Wildercord.id("textures/entity/duelist/glow.png"),
 			state -> AuraFighterRenderer.tint((.7F + .3F * state.windup) * AuraFighterRenderer.alive(state), state.color), 1);
 	}
@@ -95,7 +97,7 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		setupRotations(state, poseStack, state.bodyRot, state.scale);
 		poseStack.scale(mirror / 16, 1 / 16F, 1 / 16F);
 		Matrix4f[] placed = rig.matrices(frame.pose());
-		Identifier skin = Wildercord.id("textures/entity/master_rig/" + (MASTER_SKINS.contains(state.method) ? state.method : "base") + ".png");
+		Identifier skin = RIG_SKINS.computeIfAbsent(state.method, method -> Wildercord.id("textures/entity/master_rig/" + (MASTER_SKINS.contains(method) ? method : "base") + ".png"));
 		boolean whole = frame.alpha() >= 0.999F;
 		int body = (Math.round(frame.alpha() * 255) << 24) | 0xFFFFFF;
 		collector.order(0).submitCustomGeometry(poseStack, whole ? RenderTypes.entityCutout(skin) : RenderTypes.entityTranslucent(skin),

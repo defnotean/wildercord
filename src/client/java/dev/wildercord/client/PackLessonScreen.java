@@ -160,7 +160,7 @@ public final class PackLessonScreen extends Screen implements CordEditorParent {
 		graphics.fill(left, top, left + panelWidth, top + panelHeight, 0xF211242C);
 		graphics.fill(left + 1, top + 1, left + panelWidth - 1, top + 2, 0xFF62C8C0);
 		graphics.centeredText(font, title, width / 2, top + 10, 0xFF9FE1D5);
-		graphics.centeredText(font, Component.literal("Circle " + lesson.numeral + " · " + lesson.featName), width / 2, top + 24, 0xFFB4BCBB);
+		graphics.centeredText(font, Component.translatable("screen.wildercord.lesson_pack.circle", lesson.numeral, lesson.featName), width / 2, top + 24, 0xFFB4BCBB);
 		Component status = Component.translatable(learnedNow ? "screen.wildercord.lesson_pack.learned"
 			: studying ? "screen.wildercord.lesson_pack.reading" : "screen.wildercord.lesson_pack.saved", lesson.name, page + 1, 3);
 		graphics.centeredText(font, status, width / 2, top + 40, 0xFF70BFCF);

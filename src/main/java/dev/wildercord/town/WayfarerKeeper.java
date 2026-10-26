@@ -172,6 +172,10 @@ public class WayfarerKeeper extends WanderingTrader {
 				sell(offers, 2, new ItemStack(Items.GLOW_BERRIES, 8));
 				sell(offers, 2, new ItemStack(Items.COCOA_BEANS, 8));
 				buy(offers, Items.LEATHER, 8);
+				// Goods from the four regions: the caravan carries them between the lamps.
+				buy(offers, dev.wildercord.wildlife.WetlandGarden.FLOSS, 4);
+				buy(offers, dev.wildercord.wildlife.FungalGarden.GILLS, 4);
+				buy(offers, dev.wildercord.wildlife.Wildlife.EMBER_TUFT, 4);
 			}
 		}
 		return offers;

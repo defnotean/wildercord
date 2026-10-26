@@ -25,7 +25,12 @@ abstract class WildsPiece extends DungeonPiece {
 	static final int SINK = 6;
 
 	WildsPiece(StructurePieceType type, int x, int z, int width, int height, int depth, Direction facing) {
-		super(type, x, 0, z, width, height + SINK, depth, facing);
+		this(type, x, z, width, height, depth, facing, 0);
+	}
+
+	/** A site with {@code margin} blocks of its own ground on every side; the subclass's {@link #margin()} must agree. */
+	WildsPiece(StructurePieceType type, int x, int z, int width, int height, int depth, Direction facing, int margin) {
+		super(type, x, 0, z, width + 2 * margin, height + SINK, depth + 2 * margin, facing);
 	}
 
 	WildsPiece(StructurePieceType type, CompoundTag tag) {

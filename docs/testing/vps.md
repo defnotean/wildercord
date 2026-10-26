@@ -1,7 +1,8 @@
 # VPS testing
 
-> **Current policy (2026-10-15).** Native tests are only `release-smoke` (14 classes), run once
-> when a release is about to be cut:
+> **Policy.** During the 2026-10-24 polish loop, client tests run as the per-area suites in
+> `tools/client_suite_catalog.json` after each batch. `release-smoke` (16 classes, including a first ride after
+> taming and every payload codec) stays the check run once when a release is about to be cut:
 > `python tools/run_vps_checks.py suite --suite release-smoke --head <sha> --computer WIN-I2GBVRRD872 --batch 1 --accepted-eula C:\wildercord\eula.txt`.
 > Shard, Masters-part and articulated commands below no longer exist. Delete the VPS CI
 > checkout, artifacts and backups after each run (disk filled up 2026-10-15). Never touch the
@@ -23,7 +24,8 @@ through Actions is stopped as well.
 - Java: `C:\java\jdk-25.0.4.1+1`.
 - Python environment: `C:\wildercord-ci\venv` (Python 3.12 and pinned requirements).
 - Gradle cache: `C:\wildercord-ci\gradle`.
-- Live Minecraft server: `C:\wildercord`; never use its world as a test fixture.
+- Live Minecraft server: `C:\wildercord`; never use its world as a test fixture. Its backup, watchdog,
+  auto-install and deploy scripts live in [`tools/vps`](../../tools/vps/README.md) with their own tests.
 
 The checkout is detached at the exact candidate SHA. Inspect running jobs and
 checkout status before fetching/checking out another candidate. A local Git bundle
@@ -100,15 +102,9 @@ must equal the candidate source SHA. No GitHub environment is synthesized.
 Every class must complete in this launch's ordered boundaries, with a distinct
 launch nonce, matching processed descriptor and actual successful child exit.
 
-The existing `full_client_ci.py` and `masters_required_ci.py` aggregate commands
-accept `--executor windows-vps --computer WIN-I2GBVRRD872`. Supply the exact
-candidate as both `--head-sha` and `--workflow-sha`, the common `--run-id` batch
-and `--run-attempt`, and every retained manifest. The full aggregate additionally
-requires `--shards-result success --download-result success`; on the VPS these
-mean every required run succeeded and every retained input was retrieved, not
-that anything was uploaded to GitHub. Mixed providers, computers, candidates,
-batches, attempts, missing/duplicate groups and reused launches cannot pass.
-One group by itself still leaves full-client acceptance unverified.
+The full-client shard aggregate (`full_client_ci.py`) and its four-group plan were
+removed on 2026-10-24 with the retired 349-class gate. A suite run proves only the
+classes in that suite; it is not full-client acceptance.
 
 ## Acceptance still requiring execution or migration
 

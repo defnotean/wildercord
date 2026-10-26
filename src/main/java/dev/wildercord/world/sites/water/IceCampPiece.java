@@ -64,45 +64,75 @@ public class IceCampPiece extends WaterPiece {
 			ChunkPos chunkPos, BlockPos reference) {
 		for (int x = 0; x < WIDTH; x++) {
 			for (int z = 0; z < DEPTH; z++) {
-				if (dist(x, z, CX, CZ) > 7.5) {
+				// Packed ice, rimmed with blue ice and drifted with snow toward the edge.
+				double r = dist(x, z, CX, CZ);
+				if (r > 7.5) {
 					continue;
 				}
-				set(level, bb, ICE, x, BASE, z);
+				set(level, bb, r > 6.5 && noise(x, z) < 45 ? Blocks.BLUE_ICE.defaultBlockState() : ICE, x, BASE, z);
 				clear(level, bb, x, BASE + 1, z, x, HEIGHT - 1, z);
-				if (noise(x, z) < 30) {
+				if (r > 6 && noise(z, x) < 18) {
+					set(level, bb, Blocks.SNOW_BLOCK.defaultBlockState(), x, BASE + 1, z);
+				} else if (noise(x, z) < 30) {
 					set(level, bb, Blocks.SNOW.defaultBlockState(), x, BASE + 1, z);
 				}
 			}
 		}
-		// The fire ring, with logs to sit on.
+		// A swept path of planks from each shanty and the tent to the fire.
+		for (int x = 6; x <= 10; x++) set(level, bb, PLANKS, x, BASE, 4);
+		for (int z = 9; z <= 11; z++) set(level, bb, PLANKS, CX, BASE, z);
+		// The fire ring: a stone hearth, logs to sit on and firewood stacked beside it.
 		clear(level, bb, 5, BASE + 1, 6, 11, BASE + 1, 10);
+		for (int x = 7; x <= 9; x++) for (int z = 7; z <= 9; z++) set(level, bb, Blocks.COBBLESTONE.defaultBlockState(), x, BASE, z);
 		set(level, bb, Blocks.SOUL_CAMPFIRE.defaultBlockState(), CX, BASE + 1, CZ);
 		BlockState bench = Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
 		set(level, bb, bench, 6, BASE + 1, CZ);
 		set(level, bb, bench, 10, BASE + 1, CZ);
+		set(level, bb, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X), CX, BASE + 1, 6);
+		BlockState wood = Blocks.SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
+		fill(level, bb, 4, BASE + 1, 10, 5, BASE + 1, 10, wood);
+		set(level, bb, wood, 4, BASE + 2, 10);
+		// Tall lamp posts at the camp's edge, each with a soul lantern on a cross-arm.
 		for (int[] at : new int[][] {{8, 1}, {1, 8}, {15, 8}, {13, 12}}) {
-			set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), at[0], BASE + 1, at[1]);
-			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState(), at[0], BASE + 2, at[1]);
+			fill(level, bb, at[0], BASE + 1, at[1], at[0], BASE + 2, at[1], Blocks.SPRUCE_FENCE.defaultBlockState());
+			set(level, bb, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState(), at[0], BASE + 3, at[1]);
+			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState(), at[0], BASE + 4, at[1]);
 		}
 		shanty(level, bb, 2, false);
 		shanty(level, bb, 11, true);
 		tent(level, bb);
 	}
 
-	/** A shanty 4 wide from {@code x0}, its door toward the fire, its hole under its roof. */
+	/** A shanty 4 wide from {@code x0}, its door toward the fire, its hole under its pitched roof. */
 	private void shanty(WorldGenLevel level, BoundingBox bb, int x0, boolean east) {
 		int x1 = x0 + 3;
-		fill(level, bb, x0, BASE + 1, 3, x1, BASE + 3, 6, PLANKS);
+		// A dark sill course, plank walls in a log frame and a steep shingled gable with eaves on both sides.
+		fill(level, bb, x0, BASE + 1, 3, x1, BASE + 1, 6, Blocks.DARK_OAK_PLANKS.defaultBlockState());
+		fill(level, bb, x0, BASE + 2, 3, x1, BASE + 3, 6, PLANKS);
 		fill(level, bb, x0 + 1, BASE + 1, 4, x1 - 1, BASE + 3, 5, AIR);
-		fill(level, bb, x0, BASE + 4, 3, x1, BASE + 4, 6, Blocks.SPRUCE_SLAB.defaultBlockState());
+		for (int x : new int[] {x0, x1}) for (int z : new int[] {3, 6}) fill(level, bb, x, BASE + 1, z, x, BASE + 3, z, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState());
+		gable(level, bb, x0 - 1, x1 + 1, 2, 7, BASE + 4, Blocks.SPRUCE_STAIRS, PLANKS, PLANKS, 3, 6);
+		for (int z = 2; z <= 7; z++) {
+			wet(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.EAST, true), x0 - 1, BASE + 3, z);
+			wet(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.WEST, true), x1 + 1, BASE + 3, z);
+		}
+		fill(level, bb, x0, BASE + 4, 4, x1, BASE + 4, 4, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
 		int door = east ? x0 : x1;
 		fill(level, bb, door, BASE + 1, 4, door, BASE + 2, 4, AIR);
+		set(level, bb, Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z), door, BASE + 3, 4);
 		int hole = east ? x1 - 1 : x0 + 1, seat = east ? x0 + 1 : x1 - 1;
 		set(level, bb, Blocks.WATER.defaultBlockState(), hole, BASE, 4);
 		set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), hole, BASE + 3, 4);
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), hole, BASE + 1, 5);
 		set(level, bb, stair(Blocks.SPRUCE_STAIRS, east ? Direction.WEST : Direction.EAST), seat, BASE + 1, 5);
-		set(level, bb, Blocks.GLASS.defaultBlockState(), east ? x1 : x0, BASE + 2, 4);
+		set(level, bb, Blocks.FLOWER_POT.defaultBlockState(), hole, BASE + 2, 5);
+		// A back window with a sill, and a lantern on a barrel by the door.
+		int back = east ? x1 : x0;
+		set(level, bb, Blocks.GLASS.defaultBlockState(), back, BASE + 2, 4);
+		wet(level, bb, stair(Blocks.SPRUCE_STAIRS, east ? Direction.WEST : Direction.EAST, true), east ? x1 + 1 : x0 - 1, BASE + 1, 4);
+		int outside = east ? x0 - 1 : x1 + 1;
+		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), outside, BASE + 1, 6);
+		set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState(), outside, BASE + 2, 6);
 	}
 
 	/** A hide tent, an A-frame of wool open toward the fire, with the sled chest at its back. */
@@ -122,6 +152,17 @@ public class IceCampPiece extends WaterPiece {
 		set(level, bb, wool, 8, BASE + 2, 15);
 		set(level, bb, Blocks.CARPET.red().defaultBlockState(), 7, BASE + 1, 13);
 		set(level, bb, Blocks.CARPET.red().defaultBlockState(), 9, BASE + 1, 13);
+		// A ridge pole that runs out past both ends, crossed poles at the mouth, a lantern inside and a woodpile at its side.
+		BlockState pole = Blocks.SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
+		set(level, bb, pole, 8, BASE + 3, 11);
+		set(level, bb, pole, 8, BASE + 3, 16);
+		for (int x : new int[] {6, 10}) set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), x, BASE + 1, 11);
+		set(level, bb, Blocks.CARPET.brown().defaultBlockState(), 8, BASE + 1, 12);
+		set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 8, BASE + 2, 13);
+		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 5, BASE + 1, 13);
+		set(level, bb, pole, 5, BASE + 1, 14);
+		set(level, bb, pole, 4, BASE + 1, 12);
+		set(level, bb, Blocks.HAY_BLOCK.defaultBlockState(), 11, BASE + 1, 14);
 		chest(level, bb, 8, BASE + 1, 14, WaterSites.ICE_CAMP_LOOT, Direction.SOUTH, 304);
 	}
 }

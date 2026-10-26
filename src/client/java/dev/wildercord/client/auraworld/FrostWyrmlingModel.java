@@ -23,11 +23,14 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 	private final ModelPart body,neck1,neck2,head,jaw,tail1,tail2,tail3;
 	private final ModelPart[] legs=new ModelPart[4],shins=new ModelPart[4],arms=new ModelPart[2],outers=new ModelPart[2];
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** The pose being built: each leg's thigh angle in the world and shin angle from the thigh; the body; the neck, head and jaw; the tail. */
 	private final float[] u=new float[4],l=new float[4],uz=new float[4];
 	private float pitch,roll,yaw,n1X,n1Y,n2X,n2Y,headX,headY,jawX,t1X,t2X,t3X,tY;
 	/** The wings: how far folded (1 tucked along its flanks, 0 spread), how far raised past that, and how far swept forward. */
 	private float fold,up,fwd;
+	/** The tail's lag: how far its middle and tip swing past the root's turn, each a little behind it, and the clock the idle ripple runs on. */
+	private float midY,tipY,clock;
 	public FrostWyrmlingModel(ModelPart root){
 		super(root);body=root.getChild("body");neck1=body.getChild("neck1");neck2=neck1.getChild("neck2");head=neck2.getChild("head");jaw=head.getChild("jaw");
 		tail1=body.getChild("tail1");tail2=tail1.getChild("tail2");tail3=tail2.getChild("tail3");
@@ -35,7 +38,7 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		for(int i=0;i<4;i++){legs[i]=body.getChild(names[i]);shins[i]=legs[i].getChild("shin");}
 		for(int i=0;i<2;i++){arms[i]=body.getChild(i==0?"wingL":"wingR");outers[i]=arms[i].getChild("outer");}
 		posed=new ModelPart[]{body,neck1,neck2,head,jaw,tail1,tail2,tail3,legs[0],legs[1],legs[2],legs[3],shins[0],shins[1],shins[2],shins[3],
-			arms[0],arms[1],outers[0],outers[1]};
+			arms[0],arms[1],outers[0],outers[1]};blender=new PoseBlend(posed);
 	}
 	public static LayerDefinition createLayer(){
 		var mesh=new MeshDefinition();var root=mesh.getRoot();
@@ -78,17 +81,12 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		super.setupAnim(s);
 		pose(s,s.move,s.elapsed,s.tell,s.side);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+		if(s.blend<1){
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,s.prevElapsed,s.prevTell,s.side);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose a=posed[i].storePose(),b=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,a.x(),b.x()),Mth.lerp(k,a.y(),b.y()),Mth.lerp(k,a.z(),b.z()),
-					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
-			}
+			blender.mix(k);
 		}
 		hurt(s);
 		die(s);
@@ -103,7 +101,11 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 			body.y=Mth.lerp(smooth(Math.abs(body.zRot),.4F,1.35F),body.y,24-5);
 		}
 		// Rolled onto its side in death, it lies on its flank.
-		if(s.deathTime>0)body.y=Mth.lerp(smooth(s.deathTime,6,18),body.y,24-5);
+		if(s.deathTime>0){
+			body.y=Mth.lerp(smooth(s.deathTime,6,18),body.y,24-5);
+			// It lands with a small bounce.
+			if(s.deathTime>17)body.y-=1.2F*(float)Math.exp(-(s.deathTime-17)*.5F)*Math.abs(Mth.sin((s.deathTime-17)*1.7F));
+		}
 	}
 
 	/** 0 to 1 over {@code ticks}, from {@code from}, eased out. */
@@ -114,10 +116,13 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 	/** The whole pose for {@code move}, {@code el} ticks in: curled or standing (or between), walking, then the move itself. */
 	private void pose(FrostWyrmlingRenderState s,int move,float el,int tell,int side){
 		float r=s.rise,t=s.ageInTicks;
-		java.util.Arrays.fill(uz,0);roll=0;yaw=0;fwd=0;
+		java.util.Arrays.fill(uz,0);roll=0;yaw=0;fwd=0;midY=0;tipY=0;clock=t;
 		curl(r);
 		// Breathing, slow while it sleeps; its gaze followed once it is up, the turn shared down its neck; its tail never quite still.
 		pitch+=Mth.sin(t*.06F)*.01F;n1X+=Mth.sin(t*.06F+.5F)*.03F;
+		// Its chest, neck, head and wings each breathe on a period of their own, and the swell runs down its tail a beat behind.
+		n2X+=Mth.sin(t*.047F+1F)*.02F;headX+=Mth.sin(t*.083F+2F)*.025F;jawX+=Math.max(0,Mth.sin(t*.031F))*.04F*r;
+		t1X+=Mth.sin(t*.06F-.6F)*.02F;t2X+=Mth.sin(t*.06F-1.2F)*.03F;t3X+=Mth.sin(t*.06F-1.8F)*.04F;
 		float look=Mth.clamp(s.yRot,-60,60)*Mth.DEG_TO_RAD*r;
 		n1Y+=look*.3F;n2Y+=look*.3F;headY+=look*.2F;headX+=s.xRot*Mth.DEG_TO_RAD*.5F*r;
 		tY+=Mth.sin(t*.08F)*.12F*(.4F+.6F*r);
@@ -129,6 +134,8 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		l[0]+=Math.max(0,-Mth.sin(step))*walk*1.1F;l[3]+=Math.max(0,-Mth.sin(step))*walk*.7F;
 		l[1]+=Math.max(0,Mth.sin(step))*walk*1.1F;l[2]+=Math.max(0,Mth.sin(step))*walk*.7F;
 		n1X+=Mth.sin(step*2)*walk*.05F;tY+=Mth.cos(step)*walk*.15F;
+		midY+=Mth.cos(step-.9F)*walk*.12F;tipY+=Mth.cos(step-1.8F)*walk*.2F;
+		pitch+=Mth.sin(step*2)*walk*.015F;headX-=Mth.sin(step*2-.8F)*walk*.04F;
 		attack(move,el,tell,side);
 		apply();
 	}
@@ -168,11 +175,18 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 				float back=wind*(1-go),snap=go*(1-ramp(el,tell+1,1.5F));
 				n1X+=-.3F*back+.75F*go;n2X+=-.2F*back+.35F*go;headX+=-.2F*back+.25F*go;pitch+=.1F*go;
 				jawX+=.35F*back+snap;
+				// Past the mark and back, with a held beat on contact, the whole neck following a tick behind the head.
+				float over=Mth.sin(Mth.PI*Mth.clamp((el-tell)/4F,0,1));
+				n1X+=.18F*over;n2X+=.1F*over;headX+=.12F*Mth.sin(Mth.PI*Mth.clamp((el-tell-1)/4F,0,1));pitch+=.05F*over;
+				midY=side*.1F*over;
 				u[0]-=.2F*go;u[1]-=.2F*go;l[0]+=.2F*go;l[1]+=.2F*go;
 			}
 			case FrostWyrmlingRules.TAIL->{
 				float coil=wind*(1-go),sweep=ramp(el,tell,4);
 				tY+=side*.5F*coil-side*.7F*sweep;t1X+=.15F;
+				// The whip: the middle of the tail carries on a beat behind its root and the tip a beat behind that, past the mark and back.
+				midY=-side*.3F*Mth.sin(Mth.PI*Mth.clamp((el-tell-1)/6F,0,1))+side*.2F*coil;
+				tipY=-side*.55F*Mth.sin(Mth.PI*Mth.clamp((el-tell-2.5F)/7F,0,1))+side*.3F*coil;
 				yaw=side*.12F*coil-side*.35F*sweep;
 				n1Y+=side*.4F*wind;headY+=side*.2F*wind;
 				u[2]+=.15F*sweep;u[3]+=.15F*sweep;
@@ -314,7 +328,10 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		body.xRot=pitch;body.zRot=roll;body.yRot=yaw;
 		neck1.xRot=n1X;neck1.yRot=n1Y;neck2.xRot=n2X;neck2.yRot=n2Y;
 		head.xRot=headX-pitch-n1X-n2X;head.yRot=headY;jaw.xRot=jawX;
-		tail1.xRot=t1X-pitch;tail2.xRot=t2X;tail3.xRot=t3X;tail1.yRot=tY;tail2.yRot=tY;tail3.yRot=tY*1.2F;
+		tail1.xRot=t1X-pitch;tail2.xRot=t2X;tail3.xRot=t3X;tail1.yRot=tY;
+		// Each tail segment turns a little behind the one before it, so the tail ripples rather than swinging as one.
+		float ripple=Mth.sin(clock*.08F-1.1F)*.08F*(.4F+.6F*Mth.clamp(1-fold*.5F,0,1));
+		tail2.yRot=tY*.9F+midY+ripple;tail3.yRot=tY*1.1F+tipY+midY*.5F+Mth.sin(clock*.08F-2.2F)*.14F;
 		for(int i=0;i<4;i++){legs[i].xRot=u[i]-pitch;legs[i].zRot=uz[i];shins[i].xRot=l[i];}
 		float f=Mth.clamp(fold,0,1);
 		float ax=Mth.lerp(f,0,-1.4F),ay=Mth.lerp(f,-.2F,-1.3F)+fwd,az=Mth.lerp(f,-.4F,-.25F)-up,oz=Mth.lerp(f,-.1F,3.0F)-.3F*up*(1-f);
@@ -348,6 +365,12 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		float k=s.hurt*s.hurt;
 		neck1.xRot-=.2F*k;head.xRot-=.1F*k;body.zRot+=Mth.sin(s.hurt*18)*.04F*k;
 		arms[0].zRot-=.2F*k;arms[1].zRot+=.2F*k;
+		// The shock runs through it: the neck snaps back and the head a tick behind it, the jaw jerking open, the tail whipped out and the wings flung.
+		float lag=s.hurt*s.hurt*s.hurt,late=(float)Math.pow(Math.max(0,s.hurt-.1F),2);
+		neck2.xRot-=.15F*k;head.xRot-=.15F*late;jaw.xRot+=.5F*k;body.xRot-=.05F*k;
+		tail2.yRot+=Mth.sin(s.hurt*14)*.2F*late;tail3.yRot+=Mth.sin(s.hurt*14-1.2F)*.3F*lag;tail1.xRot-=.1F*k;
+		outers[0].zRot+=.25F*late;outers[1].zRot-=.25F*late;
+		for(int i=0;i<4;i++)shins[i].xRot+=.15F*k;
 	}
 
 	/**
@@ -375,5 +398,13 @@ public final class FrostWyrmlingModel extends EntityModel<FrostWyrmlingRenderSta
 		outers[0].zRot=Mth.lerp(buckle,outers[0].zRot,3.0F);
 		arms[1].xRot=Mth.lerp(fall,arms[1].xRot,-.2F);arms[1].yRot=Mth.lerp(fall,arms[1].yRot,.3F);arms[1].zRot=Mth.lerp(fall,arms[1].zRot,1.5F);
 		outers[1].zRot=Mth.lerp(fall,outers[1].zRot,.4F);
+		// The legs jerk as they give, and when it lands the neck, head and tail settle a beat behind the body with a last small bounce.
+		float d=s.deathTime,stag=Mth.sin(d*1.9F)*.08F*(1-buckle);
+		float land=d>17?(float)Math.exp(-(d-17)*.4F)*Mth.sin((d-17)*1.7F):0;
+		body.xRot+=stag;neck1.xRot+=stag*1.5F;head.xRot+=Mth.sin(d*1.9F-1)*.1F*(1-buckle);
+		neck1.xRot+=.12F*land;neck2.xRot+=.1F*Mth.sin((d-18.5F)*1.7F)*(d>18.5F?(float)Math.exp(-(d-18.5F)*.4F):0);
+		tail2.yRot+=.2F*land;tail3.yRot+=.3F*(d>19?(float)Math.exp(-(d-19)*.35F)*Mth.sin((d-19)*1.5F):0);
+		arms[1].zRot+=.12F*land;outers[1].zRot+=.2F*(d>19?(float)Math.exp(-(d-19)*.35F)*Mth.sin((d-19)*1.5F):0);
+		jaw.xRot+=.1F*land;
 	}
 }

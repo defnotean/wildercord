@@ -55,7 +55,24 @@ public final class MimicRules {
 	public static final int SETTLE_GIVE_UP = 600;
 	public static final double HOME_REACH = 0.6;
 
+	/** Fed a book, a third of the time it takes to whoever fed it. */
+	public static final float TAME_CHANCE = 1.0F / 3.0F;
+	/** A tamed one's belly holds as much as a chest. */
+	public static final int STORAGE_ROWS = 3;
+	/** How far off its owner may be while it's open: past this the lid shuts on them. */
+	public static final double STORAGE_REACH = 8.0;
+	/** Its owner further off than this, it gets up and follows; past the far mark, it skips the walk and turns up beside them. */
+	public static final double FOLLOW_START = 6.0;
+	public static final double FOLLOW_STOP = 2.5;
+	public static final double FOLLOW_BLINK = 16.0;
+	/** Beside its owner and left to itself this long, it shuts up as a coffer again. */
+	public static final int SETTLE_BESIDE = 40;
+	public static final float BOOK_HEAL = 4.0F;
+
 	public enum Move { BITE, LASH, LUNGE, CHASE }
+
+	/** What a tamed one does about its owner: nothing, walk over, or turn up beside them. */
+	public enum Heel { STAY, WALK, BLINK }
 
 	/** Whether someone standing this close (flat distance and height apart) for this many ticks wakes it. */
 	public static boolean wakes(double flat, double dy, int lingered) {
@@ -90,5 +107,34 @@ public final class MimicRules {
 	public static float snapYaw(float yaw) {
 		float wrapped = ((yaw % 360) + 360) % 360;
 		return (Math.round(wrapped / 90.0F) % 4) * 90.0F;
+	}
+
+	/** Whether a book fed to it with this roll (0 to 1) tames it. */
+	public static boolean tames(float roll) {
+		return roll < TAME_CHANCE;
+	}
+
+	/**
+	 * Whether its owner's book goes to mending it: only a plain book, used standing, while it is hurt. Any other book,
+	 * or one at full health, opens it like any other item, so a book bound for its chest is never eaten.
+	 */
+	public static boolean mends(boolean plainBook, boolean sneaking, float health, float maxHealth) {
+		return plainBook && !sneaking && health < maxHealth;
+	}
+
+	/** What a tamed one does with its owner this far off, if it's been told to stay put, or is busy already. */
+	public static Heel heel(double distance, boolean staying, boolean following) {
+		if (staying) {
+			return Heel.STAY;
+		}
+		if (distance > FOLLOW_BLINK) {
+			return Heel.BLINK;
+		}
+		return distance > (following ? FOLLOW_STOP : FOLLOW_START) ? Heel.WALK : Heel.STAY;
+	}
+
+	/** Whether its belly stays open for someone: only its living self, for its owner, near enough. */
+	public static boolean opensFor(boolean alive, boolean owner, double distance) {
+		return alive && owner && distance <= STORAGE_REACH;
 	}
 }

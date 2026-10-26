@@ -173,6 +173,7 @@
   * [Hollow Bell](world/hollow-bell.md)
   * [Emberwood Reach](world/emberwood-reach.md)
   * [Kiln Widow](world/kiln-widow.md)
+  * [Coffer Mimics](world/coffer-mimics.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)
   * [Cinnamon](companions/cinnamon.md)

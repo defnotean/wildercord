@@ -2,7 +2,8 @@
 
 Run the tour first (WILDERCORD_TOUR_ONLY=1 ./gradlew runClientGameTest), then from the project root:
     python tools/make_gif.py
-It reads build/run/clientGameTest/screenshots/tour_*.png and writes, in docs/images:
+It reads build/run/clientGameTest/screenshots/tour_*.png and writes, in docs/images (with a copy of each in
+wiki/assets/images, where the player guide shows them):
     hero.gif            charging a spell, the release, and a Domain unfolding (tour_hero_*)
     shield-block.gif    a strong Shield's circles spawning in and stopping a bolt (tour_gif_shield_block_*)
     shield-shatter.gif  a weaker Shield's circles shattering, front to back (tour_gif_shield_break_*)
@@ -16,6 +17,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parent.parent
 FRAMES = ROOT / "build/run/clientGameTest/screenshots"
 OUT = ROOT / "docs/images/hero.gif"
+GUIDE = ROOT / "wiki/assets/images"
 SIZE = (640, 360)
 # The three parts of the clip, by frame number: how much of the screen to keep (centred), where the
 # middle of the crop sits vertically, and how long each frame shows (ms).
@@ -62,6 +64,7 @@ def save(frames, durations, out):
     quantized = [f.quantize(palette=palette, dither=Image.Dither.NONE) for f in frames]
     quantized[0].save(out, save_all=True, append_images=quantized[1:], duration=durations, loop=0, optimize=True, disposal=1)
     print(f"{out.relative_to(ROOT)}: {len(frames)} frames, {out.stat().st_size // 1024} KB")
+    (GUIDE / out.name).write_bytes(out.read_bytes())
 
 
 def crop(im, cx, cy, keep):

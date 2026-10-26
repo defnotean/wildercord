@@ -28,6 +28,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -56,8 +57,10 @@ public final class InnRaid {
 	public static final String TAG = "wildercord.inn_raid";
 	private static final List<EntityType<? extends Mob>> BANDITS = List.of(EntityTypes.PILLAGER, EntityTypes.VINDICATOR, EntityTypes.PILLAGER);
 
-	/** Raids by the inn's middle. */
-	private static final Map<Long, InnRaid> ACTIVE = new HashMap<>();
+	/** Raids by the inn's dimension and middle, so two inns at the same spot in different dimensions stay apart. */
+	private static final Map<Key, InnRaid> ACTIVE = new HashMap<>();
+
+	private record Key(ResourceKey<Level> dimension, long centre) {}
 
 	private final ServerLevel level;
 	private final Vec3 centre;
@@ -149,9 +152,9 @@ public final class InnRaid {
 	/** The server is stopping: every raid's bandits go, and where each raid stood is saved for {@link #resume}. */
 	public static void suspend(MinecraftServer server) {
 		List<Saved> saved = new ArrayList<>();
-		for (Map.Entry<Long, InnRaid> e : ACTIVE.entrySet()) {
+		for (Map.Entry<Key, InnRaid> e : ACTIVE.entrySet()) {
 			InnRaid r = e.getValue();
-			saved.add(new Saved(r.level.dimension().identifier(), e.getKey(), r.tier.ordinal(), r.day, r.wave));
+			saved.add(new Saved(r.level.dimension().identifier(), e.getKey().centre(), r.tier.ordinal(), r.day, r.wave));
 			r.clear();
 		}
 		ACTIVE.clear();
@@ -176,26 +179,26 @@ public final class InnRaid {
 		BountyRules.Tier[] tiers = BountyRules.Tier.values();
 		for (Saved s : ledger.raids()) {
 			ServerLevel level = server.getLevel(ResourceKey.create(Registries.DIMENSION, s.dimension()));
-			if (level == null || ACTIVE.containsKey(s.centre())) continue;
+			if (level == null || ACTIVE.containsKey(new Key(level.dimension(), s.centre()))) continue;
 			BountyRules.Tier tier = tiers[Math.max(0, Math.min(tiers.length - 1, s.tier()))];
 			InnRaid raid = new InnRaid(level, Vec3.atBottomCenterOf(BlockPos.of(s.centre())), tier, s.day());
 			raid.wave = InnRaidRules.resumeFrom(tier, s.wave()) - 1;
 			raid.breathing = raid.wave > 0;
 			raid.graceUntil = level.getGameTime() + InnRaidRules.RESUME_GRACE;
-			ACTIVE.put(s.centre(), raid);
+			ACTIVE.put(new Key(level.dimension(), s.centre()), raid);
 		}
 		if (!ledger.raids().isEmpty()) ledger.set(List.of());
 	}
 
-	/** Whether the inn with its middle at {@code centre} is being raided. */
-	public static boolean active(BlockPos centre) {
-		return ACTIVE.containsKey(centre.asLong());
+	/** Whether the inn with its middle at {@code centre} in {@code level} is being raided. */
+	public static boolean active(ServerLevel level, BlockPos centre) {
+		return ACTIVE.containsKey(new Key(level.dimension(), centre.asLong()));
 	}
 
 	/** {@code player} is inside the inn with its middle at {@code centre}: at night, now and then, the bandits come. */
 	public static void chance(ServerPlayer player, BlockPos centre) {
 		ServerLevel level = player.level();
-		if (level.isBrightOutside() || level.getDifficulty() == Difficulty.PEACEFUL || player.isCreative() || active(centre)) return;
+		if (level.isBrightOutside() || level.getDifficulty() == Difficulty.PEACEFUL || player.isCreative() || active(level, centre)) return;
 		Town.Standing standing = Town.standing(player);
 		long today = level.getGameTime() / BountyRules.DAY;
 		if (!InnRaidRules.due(standing.tier(), standing.lastRaidDay(), today)) return;
@@ -205,10 +208,10 @@ public final class InnRaid {
 
 	/** Begins a raid on the inn with its middle at {@code centre}, sized to {@code player}'s standing. */
 	public static void begin(ServerPlayer player, BlockPos centre, long today) {
-		if (active(centre)) return;
+		if (active(player.level(), centre)) return;
 		InnRaid raid = new InnRaid(player.level(), Vec3.atBottomCenterOf(centre), BountyRules.Tier.of(Math.max(Town.standing(player).reputation(),
 			InnRaidRules.MIN_TIER.needs)), today);
-		ACTIVE.put(centre.asLong(), raid);
+		ACTIVE.put(new Key(player.level().dimension(), centre.asLong()), raid);
 		raid.open();
 	}
 
@@ -262,10 +265,11 @@ public final class InnRaid {
 		}
 		int alive = 0;
 		for (Mob mob : mobs) {
-			if (mob.isAlive() && !mob.isRemoved()) {
-				alive++;
-				if (mob.getTarget() == null || !mob.getTarget().isAlive()) mob.setTarget(nearest(defenders, mob));
-			}
+			Entity.RemovalReason reason = mob.getRemovalReason();
+			boolean unloaded = reason == Entity.RemovalReason.UNLOADED_TO_CHUNK || reason == Entity.RemovalReason.UNLOADED_WITH_PLAYER;
+			if (!InnRaidRules.stillFighting(mob.isAlive(), mob.isRemoved(), unloaded)) continue;
+			alive++;
+			if (!mob.isRemoved() && (mob.getTarget() == null || !mob.getTarget().isAlive())) mob.setTarget(nearest(defenders, mob));
 		}
 		if (now % 10 == 0 && wave > 0) {
 			int size = InnRaidRules.waveSize(tier, wave) + (InnRaidRules.lastWave(tier, wave) ? 1 : 0);

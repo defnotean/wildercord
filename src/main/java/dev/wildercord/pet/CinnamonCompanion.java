@@ -154,7 +154,7 @@ final class CinnamonCompanion {
 			|| player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player
 			|| DungeonWards.warded(player.level(), player.blockPosition())) return false;
 		var nearby = new java.util.ArrayList<SwordMaster>();
-		player.level().getEntities(EntityTypeTestHolder.MASTERS, master -> master.distanceToSqr(player) <= 96 * 96, nearby, 17);
+		player.level().getEntities(EntityTypeTestHolder.MASTERS, player.getBoundingBox().inflate(96), master -> master.distanceToSqr(player) <= 96 * 96, nearby, 17);
 		if (nearby.size() > 16) return false;
 		for (SwordMaster master : nearby) if (master.canHarmParticipant(player)) return false;
 		return true;

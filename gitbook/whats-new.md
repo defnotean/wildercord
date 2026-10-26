@@ -1,3 +1,19 @@
+# What's new in 0.14.0: One road
+
+Install `wildercord-0.14.0-alpha+mc26.3.jar` on the server and every client. This update adds an item, so it must match on both sides.
+
+- **Four Lamps, One Road**: light all four regional lamps, then sneak-use each regional keeper again to finish a [journal](progression/lore-journal.md) lead that ends with a Lamplighter's Lantern.
+- **Regional bounties**: gathering bounties can now ask for Moonreed Floss, Dried Glowcap Gills or Ember Tuft.
+- **Caravans buy regional goods**: a wandering caravaneer pays an emerald each for Moonreed Floss, Dried Glowcap Gills and Ember Tuft, four at a time.
+- **Put the Silk away**: press `G` (rebindable) or type `/silk` to stow Weaver's Silk so it stops catching you on walls while you jump; the same key brings it back. The choice survives death and relogs. See [Controls](controls.md).
+- **Tame a coffer mimic** with books. A tamed mimic follows you, becomes a 27-slot chest only you can open, and can be petted by sneaking with an empty hand. See [Coffer Mimics](world/coffer-mimics.md).
+- **Tame a thistle hedgehog** with sweet berries. It follows you, sits when told and brings you a forage find every few minutes. See [Creatures](world/creatures.md).
+- **Bosses hit harder**: every boss's blows and projectiles land 35% harder, and at least 40% of what armour and Protection would stop goes through anyway.
+- **Bosses move better**: richer warnings, strikes, follow-through and staged deaths, and a move used twice in a row now blends instead of snapping.
+- **No more trees in boss lairs**: trees no longer grow inside or over overworld lairs and dungeons, and ones already there are cut down the first time the lair loads.
+- **Grander buildings**: the dungeons and sites across the world were rebuilt bigger and richer, from the Ember Sanctum's crowned dome to the root temple's stepped pyramid, and forest sites now clear the trees over themselves. New versions appear in newly generated chunks.
+- **Fixed**: a mount no longer crashes the server on its first ride after taming.
+
 # What's new in 0.13.0: Living world
 
 Install `wildercord-0.13.0-alpha+mc26.3.jar` on the server and every client, with Fabric API 0.161.0+26.3 and Fabric Loader 0.19.5 or newer. This update adds blocks, items, entities and packets, so **0.12.x clients must update before joining**. Back up your worlds first.

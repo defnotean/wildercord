@@ -1,5 +1,8 @@
 # Living-world goal: outstanding work (2026-10-04)
 
+> **Historical, 2026-10-24.** A dated ledger from 4 October. The work it tracks shipped in 0.13.0-alpha; it is kept
+> as history and is not a list of open items. See the [polish audit](2026-10-24-polish.md).
+
 Current completion audit against the active goal and docs/LIVING_WORLD_ROADMAP.md. Counts are additions since baseline14efc61e. Existing content, appearance variants and supplied test scenes receive no automatic content or ecosystem credit.
 
 ## Accepted content ledger

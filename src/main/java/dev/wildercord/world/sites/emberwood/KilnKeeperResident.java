@@ -31,7 +31,7 @@ public final class KilnKeeperResident {
 	public static final String ENTRY = "person:kiln_keeper";
 	public static final int TALK_COOLDOWN = 100;
 	public static final List<String> LINES = List.of("greet", "cinder_fern", "firebreaks", "kiln_widow");
-	public static final List<String> PROGRESS_LINES = List.of("forge_ledger", "kiln_draft", "draft_return", "widow_return");
+	public static final List<String> PROGRESS_LINES = List.of("four_lights", "forge_ledger", "kiln_draft", "draft_return", "widow_return");
 	private static final AttachmentType<Integer> LAST_TALK = AttachmentRegistry.create(Wildercord.id("kiln_keeper_last_talk"));
 	private static final int SPEECH = 0xF0C999;
 
@@ -61,6 +61,7 @@ public final class KilnKeeperResident {
 	}
 
 	public static String lineFor(LoreJournalData data) {
+		if (data.stage("four_lights") == LoreQuestRules.ACTIVE && !data.has("said:kiln_keeper.four_lights")) return "four_lights";
 		for (String line : LINES) if (!data.has("said:kiln_keeper." + line)) return line;
 		if (data.has("learned:kiln_widow")) return "widow_return";
 		if (data.stage("kiln_draft_lamp") == LoreQuestRules.DONE) return "draft_return";

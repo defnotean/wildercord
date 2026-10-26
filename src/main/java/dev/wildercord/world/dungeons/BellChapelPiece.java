@@ -4,6 +4,7 @@ import dev.wildercord.config.Config;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
@@ -118,6 +119,15 @@ public final class BellChapelPiece extends DungeonPiece {
 			}
 			fill(level,bb,13,3,z,17,5,z,WATER);
 		}
+		// A dark portal over the tunnel's mouth: two jambs and a lintel, a sea lantern at its keystone.
+		for(int x:new int[]{12,18}){
+			int floor=seabed(level,bb,x,4,6);
+			fill(level,bb,x,floor+1,4,x,7,4,DARK);
+		}
+		fill(level,bb,13,6,4,17,7,4,DARK);
+		set(level,bb,LIGHT,CX,7,4);
+		set(level,bb,stair(Blocks.DARK_PRISMARINE_STAIRS,Direction.WEST,true),13,5,4);
+		set(level,bb,stair(Blocks.DARK_PRISMARINE_STAIRS,Direction.EAST,true),17,5,4);
 	}
 
 	/** Under the narthex: a flooded tunnel, rising through the moon pool. */
@@ -145,6 +155,32 @@ public final class BellChapelPiece extends DungeonPiece {
 		chest(level,bb,20,F+1,17,DungeonWorldgen.BELL_CHAPEL,Direction.WEST,31);
 		set(level,bb,Blocks.BARREL.defaultBlockState(),20,F+1,16);
 		set(level,bb,Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES,3).setValue(CandleBlock.LIT,true),10,F+1,17);
+		// A corbelled cornice round the room, dark at the corners, a lantern over the pool and the Warden's blue by the nave door.
+		for(int x=11;x<=19;x++){
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.SOUTH,true),x,F+6,10);
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.NORTH,true),x,F+6,17);
+		}
+		for(int z=11;z<=16;z++){
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.WEST,true),10,F+6,z);
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.EAST,true),20,F+6,z);
+		}
+		for(int x:new int[]{10,20})for(int z:new int[]{10,17})set(level,bb,DARK,x,F+6,z);
+		hangingLantern(level,bb,CX,F+6,13,1,false);
+		for(int x:new int[]{11,19})banner(level,bb,Blocks.WALL_BANNER.pick(DyeColor.BLUE),x,F+4,17,Direction.SOUTH);
+		// Outside: buttresses either side of the front, a parapet round the roof and a stepped gable over the front wall.
+		for(int x:new int[]{10,20}){
+			for(int z=6;z<=8;z++)foundation(level,bb,x,z);
+			buttress(level,bb,x,8,F,8,Direction.SOUTH,PILLAR,Blocks.DEEPSLATE_BRICK_STAIRS);
+		}
+		crenellate(level,bb,9,9,21,18,F+8,PILLAR);
+		for(int k=0;k<3;k++){
+			int lo=10+2*k,hi=20-2*k;
+			for(int x=lo;x<=hi;x++)set(level,bb,k==2?DARK:stone(x,F+8+k,9),x,F+8+k,9);
+			set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.EAST,false),lo-1,F+8+k,9);
+			set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.WEST,false),hi+1,F+8+k,9);
+		}
+		set(level,bb,LIGHT,CX,F+9,9);
+		set(level,bb,Blocks.CHISELED_DEEPSLATE.defaultBlockState(),CX,F+11,9);
 	}
 
 	/** The bell tower on the narthex's roof: four posts, a cap, and its bell, still hung, out in the sea. */
@@ -186,7 +222,14 @@ public final class BellChapelPiece extends DungeonPiece {
 		// The door from the narthex.
 		fill(level,bb,13,F+1,18,17,F+4,18,AIR);
 		fill(level,bb,12,F+5,18,18,F+5,18,DARK);
-		// Ribs across the vault over each pair of pillars, and the pillars, a lantern set in each.
+		// Dark jambs and a lit keystone frame the door; over it a small rose window looks back at the belfry.
+		fill(level,bb,12,F+1,18,12,F+4,18,DARK);
+		fill(level,bb,18,F+1,18,18,F+4,18,DARK);
+		set(level,bb,LIGHT,CX,F+6,18);
+		for(int dx=-1;dx<=1;dx++)for(int dy=-1;dy<=1;dy++)set(level,bb,dx==0 && dy==0?LIGHT:GLASS,CX+dx,F+10+dy,18);
+		for(int x:new int[]{11,19})banner(level,bb,Blocks.WALL_BANNER.pick(DyeColor.BLUE),x,F+5,19,Direction.NORTH);
+		// Ribs across the vault over each pair of pillars, and the pillars, a lantern set in each, on stepped plinths
+		// under corbelled capitals. Dark shafts on the walls carry the ribs' ends.
 		for(int z:PILLAR_Z){
 			for(int x=4;x<=26;x++)set(level,bb,DARK,x,ceiling(Math.abs(x-CX)),z);
 			for(int x:new int[]{8,22}){
@@ -194,8 +237,32 @@ public final class BellChapelPiece extends DungeonPiece {
 				fill(level,bb,x,F+1,z,x,top,z,PILLAR);
 				set(level,bb,Blocks.CHISELED_DEEPSLATE.defaultBlockState(),x,F+1,z);
 				set(level,bb,LIGHT,x,F+6,z);
+				for(int y:new int[]{F+1,F+7}){
+					boolean cap=y==F+7;
+					set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.EAST,cap),x-1,y,z);
+					set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.WEST,cap),x+1,y,z);
+					set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.NORTH,cap),x,y,z-1);
+					set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.SOUTH,cap),x,y,z+1);
+				}
 			}
+			for(int x:new int[]{4,26}){
+				fill(level,bb,x,F+1,z,x,F+7,z,DARK);
+				set(level,bb,LIGHT,x,F+4,z);
+			}
+			// Outside, a stepped buttress against each wall opposite the shafts.
+			for(int x=0;x<=2;x++){foundation(level,bb,x,z);foundation(level,bb,30-x,z);}
+			buttress(level,bb,2,z,F,10,Direction.WEST,PILLAR,Blocks.DEEPSLATE_BRICK_STAIRS);
+			buttress(level,bb,28,z,F,10,Direction.EAST,PILLAR,Blocks.DEEPSLATE_BRICK_STAIRS);
 		}
+		// A dark string course inside the long walls under the windows, an eave course along their tops outside, and a
+		// ridge of dark prismarine down the roof, lit over each rib.
+		for(int z=19;z<APSE_Z;z++){
+			set(level,bb,DARK,3,F+2,z);set(level,bb,DARK,27,F+2,z);
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.EAST,true),2,F+10,z);
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.WEST,true),28,F+10,z);
+			set(level,bb,DARK,CX,ceiling(0)+3,z);
+		}
+		for(int z:PILLAR_Z)set(level,bb,LIGHT,CX,ceiling(0)+3,z);
 		// Tall windows of blue glass in each bay.
 		for(int i=0;i<PILLAR_Z.length-1;i++){
 			int z=PILLAR_Z[i]+3;
@@ -247,14 +314,32 @@ public final class BellChapelPiece extends DungeonPiece {
 			foundation(level,bb,x,z);
 			int top=ceiling(r);
 			if(r>APSE_R){
-				for(int y=F;y<=F+10;y++)set(level,bb,y==F?DARK:rose(x,y,z),x,y,z);
+				for(int y=F;y<=F+10;y++)set(level,bb,y==F || y==F+10?DARK:rose(x,y,z),x,y,z);
 				continue;
 			}
 			boolean dais=z>=58;
 			set(level,bb,floor(x,z),x,F,z);
 			if(dais)set(level,bb,Blocks.POLISHED_DEEPSLATE.defaultBlockState(),x,F+1,z);
 			fill(level,bb,x,dais?F+2:F+1,z,x,top,z,AIR);
+			// Dark ribs fan out over the half dome from where it meets the nave.
+			if(r>2 && onSpoke(x,z,CX,APSE_Z,12,0.55))set(level,bb,DARK,x,top,z);
 			set(level,bb,DARK,x,top+1,z);set(level,bb,noise(x,z)<30?Blocks.PRISMARINE.defaultBlockState():DARK,x,top+2,z);
+		}
+		// A step up onto the dais across the apse's width.
+		for(int x=4;x<=26;x++){
+			if(dist(x,57,CX,APSE_Z)<=APSE_R && dist(x,58,CX,APSE_Z)<=APSE_R)set(level,bb,stair(Blocks.POLISHED_DEEPSLATE_STAIRS,Direction.NORTH,false),x,F+1,57);
+		}
+		// Four columns stand on the ribs round the dais, each with a lantern set in it, and two soul lanterns hang over the
+		// way up to the altar.
+		for(int k:new int[]{1,2,4,5}){
+			double a=Math.PI/6*k;
+			int px=CX+(int)Math.round(Math.cos(a)*10),pz=APSE_Z+(int)Math.round(Math.sin(a)*10);
+			pillar(level,bb,px,pz,F+2,ceiling(dist(px,pz,CX,APSE_Z)),Blocks.CHISELED_DEEPSLATE.defaultBlockState(),PILLAR,DARK);
+			set(level,bb,LIGHT,px,F+6,pz);
+		}
+		for(int x:new int[]{CX-4,CX+4}){
+			int top=ceiling(dist(x,58,CX,APSE_Z));
+			hangingLantern(level,bb,x,top,58,top-(F+7),true);
 		}
 		// The altar on the dais: the Bell Shard on it, the broken lip of the Warden's bell, and candles either side.
 		var candles=Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES,4).setValue(CandleBlock.LIT,true);

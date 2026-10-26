@@ -113,26 +113,42 @@ public final class RuneSeals {
 		}
 	}
 
+	/**
+	 * A lit seal's time is up. If every seal still joined to it is lit, its door was opening (and the
+	 * staggered dissolve was lost, say to a server stop), so it dissolves; otherwise it goes dark again.
+	 */
+	public static void settle(ServerLevel level, BlockPos pos) {
+		for (BlockPos part : door(level, pos)) {
+			if (!level.getBlockState(part).getValue(RuneSealBlock.LIT)) {
+				BlockState state = level.getBlockState(pos);
+				level.setBlock(pos, state.setValue(RuneSealBlock.LIT, false), Block.UPDATE_ALL);
+				return;
+			}
+		}
+		dissolve(level, pos);
+	}
+
+	private static void dissolve(ServerLevel level, BlockPos pos) {
+		BlockState state = level.getBlockState(pos);
+		if (!state.is(WildercordBlocks.RUNE_SEAL)) {
+			return;
+		}
+		int color = RuneColors.element(state.getValue(RuneSealBlock.ELEMENT).getSerializedName());
+		level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DEEPSLATE_TILES.defaultBlockState()), Vec3.atCenterOf(pos), 10, 0.35, 0.05);
+		Vfx.emit(level, new DustParticleOptions(color, 1.4F), Vec3.atCenterOf(pos), 6, 0.4, 0.0);
+		Vfx.emit(level, ParticleTypes.ENCHANT, Vec3.atCenterOf(pos), 8, 0.4, 0.4);
+	}
+
 	private static void open(ServerLevel level, List<BlockPos> door, ServerPlayer player) {
 		Vec3 middle = Vec3.ZERO;
 		for (BlockPos pos : door) {
 			middle = middle.add(Vec3.atCenterOf(pos));
 		}
 		middle = middle.scale(1.0 / door.size());
-		BlockParticleOption dust = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DEEPSLATE_TILES.defaultBlockState());
-		for (int i = 0; i < door.size(); i++) {
-			BlockPos pos = door.get(i);
-			BlockState state = level.getBlockState(pos);
-			int color = RuneColors.element(state.getValue(RuneSealBlock.ELEMENT).getSerializedName());
+		for (BlockPos pos : door) {
 			int delay = (int) Math.round(Vec3.atCenterOf(pos).distanceTo(middle) * 3);
-			Scheduler.later(1 + delay, () -> {
-				if (level.getBlockState(pos).is(WildercordBlocks.RUNE_SEAL)) {
-					level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-					Vfx.emit(level, dust, Vec3.atCenterOf(pos), 10, 0.35, 0.05);
-					Vfx.emit(level, new DustParticleOptions(color, 1.4F), Vec3.atCenterOf(pos), 6, 0.4, 0.0);
-					Vfx.emit(level, ParticleTypes.ENCHANT, Vec3.atCenterOf(pos), 8, 0.4, 0.4);
-				}
-			});
+			Scheduler.later(1 + delay, () -> dissolve(level, pos));
 		}
 		Vec3 facing = player.position().subtract(middle);
 		Sigils.circle(level, middle, new Vec3(facing.x, 0, facing.z).lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : new Vec3(facing.x, 0, facing.z),

@@ -22,6 +22,21 @@ class PacketThrottleTest {
 	}
 
 	@Test
+	void lookingAtTheAllowanceNeverSpendsIt() {
+		PacketThrottle throttle = new PacketThrottle(2, 4);
+		assertTrue(throttle.wouldAllow(A, 0), "a player never seen has the whole burst");
+		throttle.allow(A, 0);
+		for (int i = 0; i < 10; i++) {
+			assertTrue(throttle.wouldAllow(A, 0));
+		}
+		throttle.allow(A, 0);
+		assertFalse(throttle.wouldAllow(A, 3));
+		assertTrue(throttle.wouldAllow(A, 4), "one back after a refill");
+		assertTrue(throttle.allow(A, 4));
+		assertFalse(throttle.allow(A, 4));
+	}
+
+	@Test
 	void itRefillsOverTime() {
 		PacketThrottle throttle = new PacketThrottle(3, 2);
 		for (int i = 0; i < 3; i++) {

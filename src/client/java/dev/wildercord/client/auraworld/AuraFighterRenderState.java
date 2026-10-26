@@ -23,6 +23,8 @@ public class AuraFighterRenderState extends HumanoidRenderState {
 	public float sit;
 	/** Crouched for a dash. */
 	public float dash;
+	/** A blow just landed on it: 1 on the hit, running down to 0 over ten ticks (the flinch). */
+	public float hurt;
 	/** Which duelist it is (its method's id: its cloak's texture). */
 	public String method = "ember";
 }

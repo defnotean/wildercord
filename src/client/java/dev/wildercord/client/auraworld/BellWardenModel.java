@@ -18,13 +18,16 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 	private static final float HIPS=12,HUNCH=.32F;
 	private final ModelPart hips,body,bell,right,left,foreR,foreL,legR,legL,shinR,shinL,clapper,kelpL,kelpR,kelpB;
 	private final ModelPart[] posed;
+	private final PoseBlend blender;
 	/** Whether its bell is torn open, for the moves it makes twice over then. */
 	private boolean cracked;
+	/** How far the kelp is flung by the move's last jolt (it hangs from the bell and swings after it), and the clock the kelp ripples on. */
+	private float kelpKick,clock;
 	public BellWardenModel(ModelPart root){
 		super(root);hips=root.getChild("hips");body=hips.getChild("body");bell=body.getChild("bell");right=body.getChild("right");left=body.getChild("left");
 		foreR=right.getChild("fore");foreL=left.getChild("fore");legR=hips.getChild("legR");legL=hips.getChild("legL");shinR=legR.getChild("shin");shinL=legL.getChild("shin");
 		clapper=foreL.getChild("clapper");kelpL=bell.getChild("kelpL");kelpR=bell.getChild("kelpR");kelpB=bell.getChild("kelpB");
-		posed=new ModelPart[]{hips,body,bell,right,left,foreR,foreL,legR,legL,shinR,shinL,clapper,kelpL,kelpR,kelpB};
+		posed=new ModelPart[]{hips,body,bell,right,left,foreR,foreL,legR,legL,shinR,shinL,clapper,kelpL,kelpR,kelpB};blender=new PoseBlend(posed);
 	}
 	public static LayerDefinition createLayer(){
 		var mesh=new MeshDefinition();var root=mesh.getRoot();
@@ -56,17 +59,12 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 		super.setupAnim(s);cracked=s.cracked;
 		pose(s,s.move,s.elapsed,s.tell);
 		// Blending out of the move before, so one blow flows into the next instead of snapping.
-		if(s.blend<1&&s.prevMove!=s.move){
-			PartPose[] now=new PartPose[posed.length];
-			for(int i=0;i<posed.length;i++)now[i]=posed[i].storePose();
+		if(s.blend<1){
+			blender.store();
 			root().resetPose();
 			pose(s,s.prevMove,s.prevElapsed,s.prevTell);
 			float k=s.blend*s.blend*(3-2*s.blend);
-			for(int i=0;i<posed.length;i++){
-				PartPose a=posed[i].storePose(),b=now[i];
-				posed[i].loadPose(PartPose.offsetAndRotation(Mth.lerp(k,a.x(),b.x()),Mth.lerp(k,a.y(),b.y()),Mth.lerp(k,a.z(),b.z()),
-					Mth.lerp(k,a.xRot(),b.xRot()),Mth.lerp(k,a.yRot(),b.yRot()),Mth.lerp(k,a.zRot(),b.zRot())));
-			}
+			blender.mix(k);
 		}
 		hurt(s);
 		die(s);
@@ -75,12 +73,17 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 
 	/** 0 to 1 over {@code ticks}, from {@code from}, eased out. */
 	private static float ramp(float t,float from,float ticks){float k=Mth.clamp((t-from)/ticks,0,1);return 1-(1-k)*(1-k);}
+	/** Time held still for two ticks at {@code at}, the contact pose of a blow, then running on: the hit-stop. */
+	private static float stop(float el,float at){return el<at?el:el<at+2?at:el-2;}
+	/** The ring-down after a blow lands at {@code at}: a quick overshoot, decaying away. */
+	private static float ring(float el,float at){float q=el-at;return q<0?0:(float)Math.exp(-q*.3F)*Mth.sin(q*1.1F);}
 	/** 0 to 1 as {@code t} runs {@code from} to {@code to}, eased in and out. */
 	private static float smooth(float t,float from,float to){float k=Mth.clamp((t-from)/(to-from),0,1);return k*k*(3-2*k);}
 
 	/** The whole pose for {@code move}, {@code el} ticks in: kneeling or standing (or between), walking, then the move itself. */
 	private void pose(BellWardenRenderState s,int move,float el,int tell){
 		float r=s.rise,t=s.ageInTicks;
+		clock=t;kelpKick=0;
 		kneel(r);
 		// The bell follows its gaze a little once it is up, and settles on its shoulders with each breath.
 		bell.yRot=s.yRot*Mth.DEG_TO_RAD*.45F*r;bell.xRot+=s.xRot*Mth.DEG_TO_RAD*.3F*r;
@@ -94,6 +97,11 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 		// Kelp drifts as if still under water.
 		kelpL.xRot=-.08F+Mth.sin(t*.07F)*.08F+walk*.2F;kelpR.xRot=-.08F+Mth.sin(t*.07F+1.7F)*.08F+walk*.2F;kelpB.xRot=.08F-Mth.sin(t*.06F+.6F)*.08F-walk*.2F;
 		attack(move,el,tell);
+		// The kelp hangs from the bell, so it swings a beat behind whatever the bell does, each strand on its own period.
+		kelpL.xRot+=kelpKick+(bell.xRot+body.xRot)*.35F+Mth.sin(t*.21F-.9F)*.03F*walk;
+		kelpR.xRot+=kelpKick*.9F+(bell.xRot+body.xRot)*.35F+Mth.sin(t*.17F-2F)*.03F*walk;
+		kelpB.xRot-=kelpKick+(bell.xRot+body.xRot)*.35F;
+		kelpL.zRot=bell.zRot*.8F+Mth.sin(t*.09F-1.1F)*.05F;kelpR.zRot=bell.zRot*.8F+Mth.sin(t*.08F-2.3F)*.05F;kelpB.zRot=-bell.zRot*.8F+Mth.sin(t*.07F-.4F)*.05F;
 	}
 
 	/**
@@ -129,7 +137,9 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 	 */
 	private void attack(int move,float el,int tellTicks){
 		float tell=Math.max(1,tellTicks);
-		float wind=ramp(el,0,tell),go=ramp(el,tell,2);
+		float wind=ramp(el,0,tell),go=ramp(move==BellWardenRules.HAMMER||move==BellWardenRules.SLAM?stop(el,tell+2):el,tell,2);
+		// After a landed blow it rebounds past the mark and settles, the bell and kelp swinging on after it.
+		float hit=move==BellWardenRules.HAMMER||move==BellWardenRules.SLAM?ring(el,tell+2):0;
 		switch(move){
 			case BellWardenRules.SWING->{
 				// Feet planted and twisted far round, the clapper arm out level and trailing behind it; then all the way round in a
@@ -151,6 +161,7 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 				foreL.xRot=Mth.lerp(go,-1.1F*wind,-.1F);foreR.xRot=Mth.lerp(go,-1.0F*wind,-.15F);
 				body.xRot+=-.25F*wind*(1-go)+.5F*go;bell.xRot-=.2F*wind*(1-go);
 				clapper.xRot=Mth.lerp(go,-.2F,-1.1F);
+				body.xRot-=.1F*hit;left.xRot-=.12F*hit;right.xRot-=.12F*hit;bell.xRot-=.18F*hit;clapper.xRot+=.2F*hit;kelpKick+=.5F*hit;
 				bend(.3F*go);
 			}
 			case BellWardenRules.STUCK->{
@@ -169,6 +180,7 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 				left.xRot=right.xRot=arm;left.zRot=-.25F*(1-go);right.zRot=.25F*(1-go);
 				foreL.xRot=foreR.xRot=Mth.lerp(go,-.8F*wind,-.05F);
 				body.xRot+=-.3F*wind*(1-go)+.55F*go;
+				body.xRot-=.12F*hit;left.xRot-=.15F*hit;right.xRot-=.15F*hit;bell.xRot-=.2F*hit;kelpKick+=.55F*hit;
 				bend(.55F*go);
 			}
 			case BellWardenRules.CHARGE->{
@@ -221,7 +233,8 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 				clapper.xRot=.3F*raise-1.2F*strike;
 				right.zRot=.08F+.4F*wind;foreR.xRot=-.3F*wind;body.xRot-=.15F*wind;
 				bend(.2F*wind);
-				if(el>tell){float a=el-(g2>0?tell+BellWardenRules.TOLL_AGAIN:tell);bell.zRot=Mth.sin(a*1.6F)*.12F*(float)Math.exp(-a*.25F);}
+				if(el>tell){float a=el-(g2>0?tell+BellWardenRules.TOLL_AGAIN:tell);bell.zRot=Mth.sin(a*1.6F)*.12F*(float)Math.exp(-a*.25F);
+					kelpKick+=Mth.sin(a*1.6F-1F)*.25F*(float)Math.exp(-a*.25F);body.xRot+=.05F*(float)Math.exp(-a*.5F);}
 			}
 			case BellWardenRules.LASH->{
 				// The chain arm raised straight up, whirling the chain round overhead faster and faster; then flung out ahead at the
@@ -313,6 +326,8 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 		if(s.hurt<=0||s.deathTime>0)return;
 		float k=s.hurt*s.hurt;
 		body.xRot-=.18F*k;bell.zRot+=Mth.sin(s.hurt*20)*.1F*k;bell.xRot-=.08F*k;
+		// The shoulders flinch up, the head-bell lags behind the body's recoil, and the kelp is flung.
+		left.zRot-=.1F*k;right.zRot+=.1F*k;bell.xRot-=.1F*s.hurt*Mth.sin(s.hurt*7);kelpL.xRot+=.4F*k;kelpR.xRot+=.4F*k;kelpB.xRot-=.4F*k;
 	}
 
 	/** Dying: it sinks back onto its knees, then topples forward onto its bell, its arms gone slack. */
@@ -330,5 +345,11 @@ public final class BellWardenModel extends EntityModel<BellWardenRenderState> {
 		right.zRot=Mth.lerp(knees,right.zRot,.3F);left.zRot=Mth.lerp(knees,left.zRot,-.3F);
 		foreR.xRot=Mth.lerp(knees,foreR.xRot,-.1F);foreL.xRot=Mth.lerp(knees,foreL.xRot,-.1F);
 		clapper.xRot=Mth.lerp(fall,clapper.xRot,-.2F);
+		// A stagger back before it sinks, and a last rebound off the floor as it lands, the bell ringing dully on its head.
+		float stagger=smooth(s.deathTime,0,3)*(1-smooth(s.deathTime,3,8));
+		body.xRot-=.3F*stagger;bell.xRot-=.2F*stagger;
+		float q=Math.max(0,s.deathTime-19),land=(float)Math.exp(-q*.35F)*Mth.sin(q*1.3F)*fall;
+		body.xRot-=.1F*land;bell.xRot-=.15F*land;bell.zRot+=.08F*land;
+		kelpL.xRot+=.5F*land+.3F*fall*(1-fall);kelpR.xRot+=.5F*land+.3F*fall*(1-fall);kelpB.xRot-=.5F*land;
 	}
 }

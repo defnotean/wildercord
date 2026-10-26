@@ -1,11 +1,12 @@
 """Shared native CI selection and evidence helpers; no Minecraft or third-party imports."""
 import json
 import math
+import os
 from pathlib import Path
 import re
+import stat
 
 from native_ci_diagnostics import SCENE_PREFIX
-from client_shard_plan import selection as full_selection, read_json
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "tools/client_suite_catalog.json"
@@ -14,6 +15,57 @@ SELECTION_PREFIX = "WILDERCORD_CLIENT_SELECTION "
 DESCRIPTOR_PREFIX = "WILDERCORD_CLIENT_DESCRIPTOR "
 EXIT_PREFIX = "WILDERCORD_CLIENT_EXIT_CODE "
 REQUEST_PREFIX = "WILDERCORD_NATIVE_REQUEST "
+MAX_CONFIG_BYTES = 128 * 1024
+# Launch markers the VPS runner owns; the launch ID reaches Gradle and the client through this variable.
+LAUNCH_ENV = "WILDERCORD_FULL_CLIENT_LAUNCH_ID"
+OWNED_EXIT_PREFIX = "WILDERCORD_FULL_CLIENT_EXIT "
+PROVENANCE_PREFIX = "WILDERCORD_FULL_CLIENT "
+
+
+def unique_fields(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Duplicate configuration field: " + key)
+        result[key] = value
+    return result
+
+
+def parse_json(raw):
+    def invalid_constant(value):
+        raise ValueError("Non-finite configuration number: " + value)
+    return json.loads(raw, object_pairs_hook=unique_fields, parse_constant=invalid_constant)
+
+
+def file_identity(info):
+    # Windows reports creation time from lstat but change time from fstat, so st_ctime_ns never matches there.
+    keys = ("st_dev", "st_ino", "st_size", "st_mtime_ns") + (() if os.name == "nt" else ("st_ctime_ns",))
+    return tuple(getattr(info, key) for key in keys)
+
+
+def read_json(path):
+    """Bounded read of a checked-in configuration file; rejects links, devices and files changed mid-read."""
+    before_path = os.lstat(path)
+    if not stat.S_ISREG(before_path.st_mode) or before_path.st_size > MAX_CONFIG_BYTES:
+        raise ValueError("Configuration must be a bounded regular non-symlink file")
+    flags = os.O_RDONLY
+    for name in ("O_NOFOLLOW", "O_NONBLOCK", "O_BINARY"):
+        flags |= getattr(os, name, 0) or 0
+    fd = os.open(path, flags)
+    with os.fdopen(fd, "rb") as source:
+        before = os.fstat(source.fileno())
+        if not stat.S_ISREG(before.st_mode) or file_identity(before_path) != file_identity(before):
+            raise ValueError("Configuration path changed before read")
+        raw = source.read(MAX_CONFIG_BYTES + 1)
+        after = os.fstat(source.fileno())
+    after_path = os.lstat(path)
+    if (len(raw) > MAX_CONFIG_BYTES or not stat.S_ISREG(after_path.st_mode)
+            or file_identity(before) != file_identity(after)
+            or file_identity(after) != file_identity(after_path)):
+        raise ValueError("Configuration changed during read or exceeded its size bound")
+    return parse_json(raw.decode("utf-8"))
+
+
 PROGRESSION_ENTRIES = ("dev.wildercord.cast.ReweaveFeasibilityTest",
                        "dev.wildercord.aura.StoneHingeFeasibilityTest")
 REWEAVE_PLAYER_ENTRIES = ("dev.wildercord.cast.ReweavePlayableTest",)
@@ -82,15 +134,6 @@ LIFE_EXCISE_ENTRIES = (
 
 
 
-def parse_shard(value):
-    if not re.fullmatch(r"[0-9]+/[0-9]+", value):
-        raise ValueError("--shard must look like 2/4")
-    shard, shards = map(int, value.split("/"))
-    if not 1 <= shard <= shards:
-        raise ValueError("--shard must have 1 <= I <= N")
-    return shard, shards
-
-
 def validate_entries(entries, label):
     if not isinstance(entries, list) or not entries or any(
             not isinstance(entry, str) or not entry.strip() for entry in entries):
@@ -100,66 +143,59 @@ def validate_entries(entries, label):
     return entries
 
 
-def select_entries(*, suite=None, shard=None, descriptor=DESCRIPTOR, catalog=CATALOG):
-    if suite is not None and shard is not None:
-        raise ValueError("--suite and --shard cannot be combined")
-    data = (json.loads(descriptor.read_text(encoding="utf-8")) if suite is not None else read_json(descriptor))
+def select_entries(*, suite, descriptor=DESCRIPTOR, catalog=CATALOG):
+    data = json.loads(descriptor.read_text(encoding="utf-8"))
     entries = validate_entries(data["entrypoints"]["fabric-client-gametest"], "Full descriptor")
     if any(entry in entries for entry in LIFE_EXCISE_ENTRIES[:-1]) and LIFE_EXCISE_ENTRIES[-1] not in entries:
         raise ValueError("Life32 requires its separate Excise ordinary class in the full descriptor; generic31 is not complete coverage")
-    if suite is not None:
-        groups = json.loads(catalog.read_text(encoding="utf-8"))
-        if suite not in groups:
-            raise ValueError(f"Unknown client suite {suite!r}; choose from {', '.join(groups)}")
-        group = groups[suite]
-        selected = validate_entries(group["entries"], f"Suite {suite}")
-        expected = group["expectedCount"]
-        if type(expected) is not int or expected < 1 or len(selected) != expected:
-            raise ValueError(f"Suite {suite} must contain exactly {expected} entrypoints")
-        missing = [entry for entry in selected if entry not in entries]
-        if missing:
-            raise ValueError(f"Suite {suite} has unregistered entrypoints: {', '.join(missing)}")
-        purpose = group.get("purpose", "release")
-        if purpose not in ("release", "diagnostic", "required-part"):
-            raise ValueError(f"Suite {suite} has an unknown purpose")
-        if purpose == "required-part" and suite not in MASTERS_PART_NAMES:
-            raise ValueError("Unknown required Masters part")
-        if suite in MASTERS_PART_NAMES:
-            masters_parts(groups)
-        if suite == "diagnostic-life-excise" and (
-                purpose != "diagnostic" or selected != list(LIFE_EXCISE_ENTRIES)):
-            raise ValueError("Life32 requires all four unchanged generic suites and the separate Excise ordinary class in order")
-        if suite == "diagnostic-progression-feasibility" and (
-                purpose != "diagnostic" or selected != list(PROGRESSION_ENTRIES)):
-            raise ValueError("Progression feasibility requires exactly both complete diagnostic classes in order")
-        if suite == "diagnostic-stone-hinge-owner-negative" and (
-                purpose != "diagnostic" or selected != list(STONE_OWNER_NEGATIVE_ENTRIES)):
-            raise ValueError("Stone owner negative control requires its exact complete diagnostic class")
-        if suite == GALE_BALLISTIC_SUITE and (
-                purpose != "diagnostic" or selected != [GALE_BALLISTIC_ENTRY]):
-            raise ValueError("Gale Vault ballistic requires its exact complete diagnostic class")
-        if suite == "diagnostic-movement-foundations" and (
-                purpose != "diagnostic" or selected != list(MOVEMENT_FOUNDATION_ENTRIES)):
-            raise ValueError("Movement foundations requires exactly both whole diagnostic classes in order")
-        if suite == "diagnostic-excise" and (purpose != "diagnostic" or selected != list(EXCISE_ENTRIES)):
-            raise ValueError("Excise diagnostic requires its exact complete registered class")
-        if suite == "stone-fault-march" and (purpose != "diagnostic" or selected != list(STONE_MARCH_ENTRIES)):
-            raise ValueError("Stone Fault March requires exactly three complete diagnostic classes in order")
-        if suite in STONE_MARCH_DIAGNOSTICS and (
-                purpose != "diagnostic" or selected != list(STONE_MARCH_DIAGNOSTICS[suite])):
-            raise ValueError("Stone Fault March diagnostic requires exactly its complete selected classes in order")
-        return {"kind": purpose if purpose in ("diagnostic", "required-part") else "suite",
-                "name": suite, "count": len(selected), "entries": selected}
-    if shard is not None:
-        parse_shard(shard)
-    return full_selection(entries, shard=shard)
+    groups = json.loads(catalog.read_text(encoding="utf-8"))
+    if suite not in groups:
+        raise ValueError(f"Unknown client suite {suite!r}; choose from {', '.join(groups)}")
+    group = groups[suite]
+    selected = validate_entries(group["entries"], f"Suite {suite}")
+    expected = group["expectedCount"]
+    if type(expected) is not int or expected < 1 or len(selected) != expected:
+        raise ValueError(f"Suite {suite} must contain exactly {expected} entrypoints")
+    missing = [entry for entry in selected if entry not in entries]
+    if missing:
+        raise ValueError(f"Suite {suite} has unregistered entrypoints: {', '.join(missing)}")
+    purpose = group.get("purpose", "release")
+    if purpose not in ("release", "area", "diagnostic", "required-part"):
+        raise ValueError(f"Suite {suite} has an unknown purpose")
+    if purpose == "required-part" and suite not in MASTERS_PART_NAMES:
+        raise ValueError("Unknown required Masters part")
+    if suite in MASTERS_PART_NAMES:
+        masters_parts(groups)
+    if suite == "diagnostic-life-excise" and (
+            purpose != "diagnostic" or selected != list(LIFE_EXCISE_ENTRIES)):
+        raise ValueError("Life32 requires all four unchanged generic suites and the separate Excise ordinary class in order")
+    if suite == "diagnostic-progression-feasibility" and (
+            purpose != "diagnostic" or selected != list(PROGRESSION_ENTRIES)):
+        raise ValueError("Progression feasibility requires exactly both complete diagnostic classes in order")
+    if suite == "diagnostic-stone-hinge-owner-negative" and (
+            purpose != "diagnostic" or selected != list(STONE_OWNER_NEGATIVE_ENTRIES)):
+        raise ValueError("Stone owner negative control requires its exact complete diagnostic class")
+    if suite == GALE_BALLISTIC_SUITE and (
+            purpose != "diagnostic" or selected != [GALE_BALLISTIC_ENTRY]):
+        raise ValueError("Gale Vault ballistic requires its exact complete diagnostic class")
+    if suite == "diagnostic-movement-foundations" and (
+            purpose != "diagnostic" or selected != list(MOVEMENT_FOUNDATION_ENTRIES)):
+        raise ValueError("Movement foundations requires exactly both whole diagnostic classes in order")
+    if suite == "diagnostic-excise" and (purpose != "diagnostic" or selected != list(EXCISE_ENTRIES)):
+        raise ValueError("Excise diagnostic requires its exact complete registered class")
+    if suite == "stone-fault-march" and (purpose != "diagnostic" or selected != list(STONE_MARCH_ENTRIES)):
+        raise ValueError("Stone Fault March requires exactly three complete diagnostic classes in order")
+    if suite in STONE_MARCH_DIAGNOSTICS and (
+            purpose != "diagnostic" or selected != list(STONE_MARCH_DIAGNOSTICS[suite])):
+        raise ValueError("Stone Fault March diagnostic requires exactly its complete selected classes in order")
+    return {"kind": purpose if purpose in ("diagnostic", "required-part") else "suite",
+            "name": suite, "count": len(selected), "entries": selected}
 
 
 def selection_issues(log, selection, *, launch_id=None):
     """Focused evidence must come from this launcher's matching, completed invocation.
 
-    Full/shard evidence is also fail-closed. Catalog changes invalidate stale evidence;
-    whole-client acceptance additionally requires the separate all-four aggregate.
+    Catalog changes invalidate stale evidence.
     """
     issues = []
     for prefix, label in ((SELECTION_PREFIX, "Launcher selection"),
@@ -169,7 +205,7 @@ def selection_issues(log, selection, *, launch_id=None):
             try:
                 matches = len(markers) == 1 and (
                     exact_json_marker(markers[0], selection)
-                    if selection.get("name") in (*STONE_MARCH_DIAGNOSTICS, GALE_BALLISTIC_SUITE) or selection["kind"] in ("required-part", "full", "shard")
+                    if selection.get("name") in (*STONE_MARCH_DIAGNOSTICS, GALE_BALLISTIC_SUITE) or selection["kind"] == "required-part"
                     else json.loads(markers[0]) == selection)
             except ValueError:
                 matches = False
@@ -177,7 +213,7 @@ def selection_issues(log, selection, *, launch_id=None):
                 issues.append(f"{label} evidence does not match the requested selection")
         else:
             issues.append(f"Run is missing {label.lower()} evidence")
-    if selection["kind"] in ("suite", "diagnostic", "required-part", "full", "shard"):
+    if selection["kind"] in ("suite", "diagnostic", "required-part"):
         exits = [line[len(EXIT_PREFIX):] for line in log.splitlines() if line.startswith(EXIT_PREFIX)]
         if exits != ["0"]:
             issues.append("Run has no single successful launcher exit")

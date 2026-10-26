@@ -60,7 +60,8 @@ public final class MountBonds {
 	/** What riding is doing now, not saved: where it was a second ago, its last dash, the sprint key, how far it has fallen. */
 	private static final class Ride {
 		Vec3 last;
-		long seen = Long.MIN_VALUE;
+		// Halved like lastDash: now - Long.MIN_VALUE overflows negative, so a first ride never counted as fresh.
+		long seen = Long.MIN_VALUE / 2;
 		long lastDash = Long.MIN_VALUE / 2;
 		boolean sprint;
 		double fell;
@@ -143,7 +144,7 @@ public final class MountBonds {
 		Ride ride = RIDES.computeIfAbsent(mount, m -> new Ride());
 		long now = level.getGameTime();
 		Bond bond = bond(mount, player);
-		if (now - ride.seen > 1) {
+		if (ride.last == null || now - ride.seen > 1) {
 			// A fresh ride: start measuring from here, and say how the bond stands.
 			ride.last = mount.position();
 			ride.airborne = false;

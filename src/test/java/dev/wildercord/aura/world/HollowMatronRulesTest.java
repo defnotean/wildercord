@@ -15,6 +15,19 @@ class HollowMatronRulesTest {
 		assertFalse(HollowMatronRules.scripted(HollowMatronRules.WATCH));
 		assertFalse(HollowMatronRules.scripted(HollowMatronRules.RECOVER));
 	}
+	@Test void aStowedSilkNeverHoldsAndAnOutOneHoldsOnlyWhileItGrips(){
+		assertTrue(HollowMatronRules.holds(false,0));
+		assertTrue(HollowMatronRules.holds(false,HollowMatronRules.SILK_GRIP-1));
+		assertFalse(HollowMatronRules.holds(false,HollowMatronRules.SILK_GRIP));
+		assertFalse(HollowMatronRules.holds(true,0));
+		assertFalse(HollowMatronRules.holds(true,HollowMatronRules.SILK_GRIP-1));
+	}
+	@Test void aGroundedMarkFromBeforeARelogCountsAsJustLanded(){
+		assertEquals(30,HollowMatronRules.offGround(130,100));
+		assertEquals(0,HollowMatronRules.offGround(100,100));
+		assertEquals(0,HollowMatronRules.offGround(5,90000),"the count restarted: never a negative, endless grip");
+		assertFalse(HollowMatronRules.holds(false,HollowMatronRules.offGround(5+HollowMatronRules.SILK_GRIP,5)));
+	}
 	@Test void theDropRunsForwardAndClimbingRunsItBack(){
 		assertEquals(0,HollowMatronRules.drop(HollowMatronRules.DORMANT,30));
 		assertEquals(.5F,HollowMatronRules.drop(HollowMatronRules.DROP,HollowMatronRules.DROP_TICKS/2F),1e-6);

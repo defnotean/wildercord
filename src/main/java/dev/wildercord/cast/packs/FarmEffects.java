@@ -597,7 +597,7 @@ public final class FarmEffects {
 			for (Direction side : Direction.Plane.HORIZONTAL.shuffledCopy(cast.level.getRandom())) {
 				BlockPos spot = p.relative(side);
 				BlockState ground = cast.level.getBlockState(spot.below());
-				if (!cast.level.getBlockState(spot).isAir() || !(ground.is(BlockTags.DIRT) || ground.is(Blocks.FARMLAND))) {
+				if (!cast.level.getBlockState(spot).isAir() || !ground.is(BlockTags.SUPPORTS_STEM_FRUIT)) {
 					continue;
 				}
 				if (!Casters.mayEdit(cast.caster, cast.level, spot) || !cast.takeBlock()) {
@@ -1030,7 +1030,7 @@ public final class FarmEffects {
 				break;
 			}
 			BlockPos spot = p.above();
-			if (!cast.level.getBlockState(p).is(BlockTags.DIRT) || !cast.level.getBlockState(spot).isAir()
+			if (!cast.level.getBlockState(p).is(BlockTags.SUBSTRATE_OVERWORLD) || !cast.level.getBlockState(spot).isAir()
 				|| planted.stream().anyMatch(o -> !FarmRules.spaced(o.getX() - spot.getX(), o.getZ() - spot.getZ()))) {
 				continue;
 			}
@@ -1166,7 +1166,7 @@ public final class FarmEffects {
 		Vfx.emit(level, ParticleTypes.COMPOSTER, Vec3.atCenterOf(start), 10, 0.8, 0.03);
 		Fx.sound(level, Vec3.atCenterOf(start), SoundEvents.WOOD_BREAK, 1.0F, 0.8F);
 		// The stump is replanted from the caster's own saplings.
-		BlockPos stump = level.getBlockState(start).isAir() && level.getBlockState(start.below()).is(BlockTags.DIRT) ? start : null;
+		BlockPos stump = level.getBlockState(start).isAir() && level.getBlockState(start.below()).is(BlockTags.SUBSTRATE_OVERWORLD) ? start : null;
 		if (stump != null && cast.caster instanceof ServerPlayer player) {
 			BlockPos at = stump;
 			ItemStack sapling = find(player, s -> s.getItem() instanceof BlockItem bi && bi.getBlock().defaultBlockState().is(BlockTags.SAPLINGS)

@@ -1613,7 +1613,7 @@ public class CordScreen extends Screen {
         if (packLesson != null) {
             var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (raw.size() != spell.size() || !packLesson.valid(raw)) {
-                wrap(out, Component.literal("Unfinished " + packLesson.name + " · cannot cast"), 0, width, 0xFFE06060);
+                wrap(out, Component.translatable("screen.wildercord.cord.unfinished", packLesson.name), 0, width, 0xFFE06060);
                 wrap(out, Component.literal(packLesson.grammarProblem), 0, width, TEXT);
                 refusal(out, width); return out;
             }
@@ -1621,14 +1621,14 @@ public class CordScreen extends Screen {
         if (dev.wildercord.spell.ExciseRules.containsIds(spell)) {
             var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (raw.size() != spell.size() || !dev.wildercord.spell.ExciseRules.valid(raw)) {
-                wrap(out, Component.literal("Unfinished Excise · cannot cast"), 0, width, 0xFFE06060);
+                wrap(out, Component.translatable("screen.wildercord.cord.unfinished", "Excise"), 0, width, 0xFFE06060);
                 wrap(out, Component.literal(dev.wildercord.spell.ExciseRules.GRAMMAR_PROBLEM), 0, width, TEXT);
                 refusal(out, width); return out;
             }
         }        if (dev.wildercord.spell.ReweaveRules.containsIds(spell)) {
             var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (raw.size() != spell.size() || !dev.wildercord.spell.ReweaveRules.valid(raw)) {
-                wrap(out, Component.literal("Unfinished Reweave · cannot cast"), 0, width, 0xFFE06060);
+                wrap(out, Component.translatable("screen.wildercord.cord.unfinished", "Reweave"), 0, width, 0xFFE06060);
                 wrap(out, Component.literal(dev.wildercord.spell.ReweaveRules.GRAMMAR_PROBLEM), 0, width, TEXT);
                 refusal(out, width); return out;
             }
@@ -1636,7 +1636,7 @@ public class CordScreen extends Screen {
 		if (dev.wildercord.spell.RelayRules.containsIds(spell)) {
 			var raw = spell.stream().map(Runes::get).flatMap(Optional::stream).toList();
 			if (raw.size() != spell.size() || !dev.wildercord.spell.RelayRules.valid(raw)) {
-				wrap(out, Component.literal("Unfinished Relay · cannot cast"), 0, width, 0xFFE06060);
+				wrap(out, Component.translatable("screen.wildercord.cord.unfinished", "Relay"), 0, width, 0xFFE06060);
 				wrap(out, Component.literal(dev.wildercord.spell.RelayRules.GRAMMAR_PROBLEM), 0, width, TEXT);
 				refusal(out, width); return out;
 			}
@@ -2908,8 +2908,8 @@ public class CordScreen extends Screen {
             if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
                 || !pastedLesson.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
                 || !dev.wildercord.player.MasterStudies.knows(minecraft.player, pastedLesson) || !dev.wildercord.player.MasterStudies.eligible(minecraft.player, pastedLesson)) {
-                minecraft.player.sendOverlayMessage(Component.literal(pastedLesson.name + " needs " + pastedLesson.title + " study, active " + pastedLesson.numeral + ", "
-                    + pastedLesson.featName + ", Echo Cord and exactly " + pastedLesson.shape.name() + " + " + pastedLesson.name + ".").withColor(0xE06060));
+                minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.cord.lesson_needs", pastedLesson.name, pastedLesson.title, pastedLesson.numeral,
+                    pastedLesson.featName, pastedLesson.shape.name(), pastedLesson.name).withColor(0xE06060));
                 return;
             }
         }
@@ -2918,7 +2918,7 @@ public class CordScreen extends Screen {
             if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
                 || !dev.wildercord.spell.ExciseRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
                 || !dev.wildercord.player.MasterStudies.knowsExcise(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleExcise(minecraft.player)) {
-                minecraft.player.sendOverlayMessage(Component.literal("Excise needs Rootbound study, active XVI, Heartwood, Echo Cord and exactly Beam + Excise.").withColor(0xE06060));
+                minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.cord.excise_needs").withColor(0xE06060));
                 return;
             }
         }
@@ -2927,7 +2927,7 @@ public class CordScreen extends Screen {
             if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
                 || !dev.wildercord.spell.ReweaveRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
                 || !dev.wildercord.player.MasterStudies.knowsReweave(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleReweave(minecraft.player)) {
-                minecraft.player.sendOverlayMessage(Component.literal("Reweave needs Ebb Ledger study, active XII, Low Tide, Echo Cord and exactly Reweave + Harm.").withColor(0xE06060));
+                minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.cord.reweave_needs").withColor(0xE06060));
                 return;
             }
         }
@@ -2936,7 +2936,7 @@ public class CordScreen extends Screen {
 			if (passivePage || tier() != CordTier.ECHO || raw.size() != decoded.size()
 				|| !dev.wildercord.spell.RelayRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
 				|| !dev.wildercord.player.MasterStudies.knowsRelay(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleRelay(minecraft.player)) {
-				minecraft.player.sendOverlayMessage(Component.literal("Relay needs its Archive lesson, active VIII, Echo Cord and exactly Relay + Harm, Frost or Shock.").withColor(0xE06060));
+				minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.cord.relay_needs").withColor(0xE06060));
 				return;
 			}
 		}

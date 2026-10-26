@@ -1,5 +1,14 @@
 # WilderCord development handoff
 
+> **Current status (2026-10-24).** This document is an October 13 snapshot. Since then
+> `living-world-expansion` was merged through PR #3 (2026-10-15) and released as
+> `v0.13.0-alpha`. Work continues on `0.14-connected-world` as a polish loop. Its findings and
+> evidence ledger are in [`docs/audit/2026-10-24-polish.md`](audit/2026-10-24-polish.md). The owner
+> replaced smoke-only native testing with per-area suites in `tools/client_suite_catalog.json`, and
+> asked for no pull requests: a VPS-confirmed fix is merged into `main` directly. §1 (state), §6
+> (stopped run), §9 (4-shard next steps) and §10 (nothing released) are historical. §3 (conventions)
+> and §7 (VPS environment) still apply.
+
 > **Superseded testing state (2026-10-15).** The owner asked to cut CI time and delete
 > redundant native tests. The 349-class gate, shards, Masters parts and every per-feature
 > native suite were removed at `d79a9ee1`/`38b10291`. Native testing is now only the
@@ -67,8 +76,8 @@ and the historical off-thread attachment save race.
   Belowkeepers and named people. Do not rewrite their identities casually.
 - [VPS testing](testing/vps.md): owned execution, source provenance, interrupted
   processes, evidence and complete-group commands.
-- [Full client plan](FULL_CLIENT_SHARD_PLAN.md): exact class membership, order,
-  source hashes and the distinction between focused and complete acceptance.
+- [Full client plan](archive/FULL_CLIENT_SHARD_PLAN.md) (retired): the old 349-class gate's membership
+  and order. Native tests now run as the per-area suites in `tools/client_suite_catalog.json`.
 - [Pause receipt](audit/evidence/2026-10-13-paused-vps-run.json): durable summary of
   the intentionally interrupted native run and its class-return boundaries.
 
@@ -98,8 +107,8 @@ The public guide is not automatically updating while Actions is disabled.
 | `src/gametest/java/`, `src/gametest/resources/fabric.mod.json` | Real native-client tests and their exact registered entrypoints |
 | `tools/generate_assets.py` and `tools/*_art.py`, `sites_*.py` | Source of generated language, biome/structure data, recipes, textures and loot |
 | `tools/player_docs.py` | Validate authored wiki and export GitBook; `--check` rejects stale exports |
-| `tools/run_vps_checks.py` | Owned Windows VPS build/focused/suite/shard runner |
-| `tools/client_shard_plan.{py,json}` | Explicit native scheduling contract shared with Gradle |
+| `tools/run_vps_checks.py` | Owned Windows VPS build/focused/suite runner |
+| `tools/client_suite_catalog.json` | The native suites (release-smoke and the per-area suites) |
 | `profiles/`, packaging tools | Development JAR/profile verification; not release authorization |
 
 Minecraft 26.3 changed several data/API formats. Work from the actual mapped
@@ -503,7 +512,7 @@ of a live process; use process ownership plus interruption/completion records.
 
 1. **Restart `sshd` on `pandora-vps` (`192.168.1.110`)**:
    - Run `Restart-Service sshd` on `WIN-I2GBVRRD872` (`192.168.1.110`) to clear the wedged pre-auth `sshd.exe` child pipes.
-2. **Sync `710dc620` (or latest `HEAD`), delete `C:\wildercord-ci\dump.hprof`, and run the 4-shard full-client matrix (`1/4`–`4/4`) on `pandora-vps`**:
+2. **Sync `710dc620` (or latest `HEAD`), delete `C:\wildercord-ci\dump.hprof`, and run the native suites on `pandora-vps`** (the 4-shard full-client matrix this step once named was retired; its tools were removed on 2026-10-24):
    ```powershell
    Remove-Item -Force -ErrorAction SilentlyContinue C:\wildercord-ci\dump.hprof
    Set-Location C:\wildercord-ci\repo
@@ -519,12 +528,9 @@ of a live process; use process ownership plus interruption/completion records.
    $batch=[DateTimeOffset]::UtcNow.ToUnixTimeSeconds().ToString()
 
    python tools/run_vps_checks.py build --head $candidate --computer WIN-I2GBVRRD872
-   python tools/run_vps_checks.py shard --shard 1/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
-   python tools/run_vps_checks.py shard --shard 2/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
-   python tools/run_vps_checks.py shard --shard 3/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
-   python tools/run_vps_checks.py shard --shard 4/4 --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt --timeout 10800
+   python tools/run_vps_checks.py suite --suite release-smoke --batch $batch --head $candidate --computer WIN-I2GBVRRD872 --accepted-eula C:\wildercord\eula.txt
    ```
-3. **Aggregate all four shard manifests with `tools/full_client_ci.py` and record the final receipts.**
+3. **Record the candidate SHA, receipts and run times in the evidence ledger.**
 
 ## 10. Resolved & remaining risks
 

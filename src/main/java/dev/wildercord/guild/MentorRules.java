@@ -82,4 +82,46 @@ public final class MentorRules {
 			return mentorOf.remove(a, b) || mentorOf.remove(b, a);
 		}
 	}
+
+	/**
+	 * What mentors have earned: the highest circle each apprentice has paid out for (a circle formed again, after a
+	 * retempering say, pays nothing more), and crystals held for a mentor who was away when they were earned.
+	 */
+	public static final class Tutelage {
+		private final Map<UUID, Integer> paidThrough = new HashMap<>();
+		private final Map<UUID, Integer> owed = new HashMap<>();
+
+		public Tutelage() {}
+
+		public Tutelage(Map<UUID, Integer> paidThrough, Map<UUID, Integer> owed) {
+			this.paidThrough.putAll(paidThrough);
+			this.owed.putAll(owed);
+		}
+
+		public Map<UUID, Integer> paidThrough() {
+			return Map.copyOf(paidThrough);
+		}
+
+		public Map<UUID, Integer> owed() {
+			return Map.copyOf(owed);
+		}
+
+		/** {@code apprentice} formed circle {@code n}: the crystals it earns their mentor, nothing if it was paid for before. */
+		public int earn(UUID apprentice, int n) {
+			if (n <= paidThrough.getOrDefault(apprentice, 0)) return 0;
+			paidThrough.put(apprentice, n);
+			return tutelage(n);
+		}
+
+		/** Holds {@code crystals} for {@code mentor} until they're back. */
+		public void owe(UUID mentor, int crystals) {
+			if (crystals > 0) owed.merge(mentor, crystals, Integer::sum);
+		}
+
+		/** Takes what's held for {@code mentor}: zero if nothing. */
+		public int collect(UUID mentor) {
+			Integer held = owed.remove(mentor);
+			return held == null ? 0 : held;
+		}
+	}
 }

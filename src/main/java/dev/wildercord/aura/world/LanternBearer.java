@@ -115,7 +115,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	public void bind(BlockPos at,float yaw,BoundingBox field,BlockPos lantern,List<BlockPos> lights){
 		bound=true;grave=at.immutable();rest=yaw;hook=lantern.immutable();candles=new ArrayList<>(lights);
 		hallMin=new BlockPos(field.minX(),field.minY(),field.minZ());hallMax=new BlockPos(field.maxX(),field.maxY(),field.maxZ());
-		goDown();
+		lieDown();
 	}
 	/** Client side, for blending one move into the next: the move last drawn, the one before it, when it changed, and how far into it the last one was. */
 	public int shownMove=-1,shownTell,prevMove,prevTell;public float shownElapsed,prevElapsed,switchedAt=-100;
@@ -153,9 +153,16 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	}
 	/** Down in its grave again, whole and calm, the lantern back on its chain and the candles out. */
 	private void goDown(){
+		lieDown();
+		if(level() instanceof ServerLevel server){lantern(server,false);candles(server,false);}
+	}
+	/**
+	 * Whole and calm in its grave, touching nothing about it: binding runs while the barrow is still being generated, off the server
+	 * thread, where reaching into the level for the lantern or the candles would wait on the server for a chunk and hang it.
+	 */
+	private void lieDown(){
 		pose(LanternBearerRules.DORMANT,0);hold();setHealth(getMaxHealth());setTarget(null);bar.removeAllPlayers();quiet=0;light=0;
 		entityData.set(ROUSED,false);bar.setColor(BossEvent.BossBarColor.BLUE);forget();
-		if(level() instanceof ServerLevel server){lantern(server,false);candles(server,false);}
 	}
 	/** Forgets the fight: what it has made lately, and everything it has loosed. */
 	private void forget(){

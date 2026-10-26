@@ -123,6 +123,7 @@ public class StormSpirePiece extends DungeonPiece {
 			set(level,bb,LIGHT,at[0],38,at[1]);set(level,bb,Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(),at[0],39,at[1]);
 		}
 		set(level,bb,Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(),11,41,11);
+		dress(level,bb);
 		// Each floor has a guarded side cache. The upper chamber is warded and opened with magic.
 		chest(level, bb, 18, 8, 10, DungeonWorldgen.STORM_HALL, Direction.WEST, 201);
 		chest(level, bb, 4, 15, 17, DungeonWorldgen.STORM_HALL, Direction.EAST, 202);
@@ -135,6 +136,49 @@ public class StormSpirePiece extends DungeonPiece {
 		guard(level, bb, EntityTypes.STRAY, 6, 1, 16, List.of(Runes.BOLT, Runes.SHOCK), false);
 		guard(level, bb, EntityTypes.SKELETON, 16, 8, 5, List.of(Runes.ARC, Runes.WINDCUT), false);
 		guard(level, bb, EntityTypes.STRAY, 6, 15, 6, List.of(Runes.ORB, Runes.THUNDERCLAP), true);
+	}
+
+	/** The tower's dress: a plinth, ledges at each floor, a machicolated parapet, a pedimented portal and banners. */
+	private void dress(WorldGenLevel level,BoundingBox bb) {
+		var stairs=Blocks.DEEPSLATE_BRICK_STAIRS;
+		BlockState ledge=topSlab(Blocks.DEEPSLATE_BRICK_SLAB);
+		for (int x=0;x<=22;x++) for (int z=0;z<=22;z++) {
+			if (!inside(x,z,11,19)||inside(x,z,10,17)) continue;
+			// The ring one block outside the walls, facing back toward them.
+			int dx=x-11,dz=z-11;
+			Direction in=Math.abs(dx)>=Math.abs(dz)?(dx<0?Direction.EAST:Direction.WEST):(dz<0?Direction.NORTH:Direction.SOUTH);
+			boolean portal=z==0&&x>=7&&x<=15;
+			if (!portal) {
+				set(level,bb,noise(x,z)<25?Blocks.CRACKED_DEEPSLATE_BRICKS.defaultBlockState():DARK,x,1,z);
+				set(level,bb,stair(stairs,in,false),x,2,z);
+				set(level,bb,ledge,x,7,z);
+			}
+			set(level,bb,ledge,x,14,z);set(level,bb,ledge,x,21,z);
+			// Machicolations under the parapet.
+			set(level,bb,stair(stairs,in,true),x,27,z);
+		}
+		// A parapet of dark merlons round the observation deck.
+		for (int x=0;x<=22;x++) for (int z=0;z<=22;z++) {
+			if (boundary(x,z,10,17)&&(x+z)%2==0) set(level,bb,DARK,x,28,z);
+		}
+		// The portal: a stepped pediment over the copper lintel, a carved apex and standing lamps either side.
+		for (int k=0;k<3;k++) {
+			set(level,bb,stair(stairs,Direction.EAST,false),8+k,6+k,0);
+			set(level,bb,stair(stairs,Direction.WEST,false),14-k,6+k,0);
+			fill(level,bb,9+k,6+k,0,13-k,6+k,0,DARK);
+		}
+		set(level,bb,Blocks.CHISELED_DEEPSLATE.defaultBlockState(),11,9,0);
+		for (int x:new int[]{7,15}) {
+			fill(level,bb,x,1,0,x,2,0,Blocks.POLISHED_DEEPSLATE_WALL.defaultBlockState());
+			set(level,bb,Blocks.LANTERN.defaultBlockState(),x,3,0);
+		}
+		// Banners on the front and back walls, between the buttresses and the windows.
+		for (int x:new int[]{6,16}) {
+			banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.BLUE),x,12,0,Direction.SOUTH);
+			banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.BLUE),x,12,22,Direction.NORTH);
+		}
+		// Storm lamps hung in the vault.
+		for (int x:new int[]{8,14}) hangingLantern(level,bb,x,26,20,1,false);
 	}
 
 	/** Old saved pieces finish in their original 29-block box, including previously ungenerated chunks. */

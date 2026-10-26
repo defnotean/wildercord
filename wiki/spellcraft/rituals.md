@@ -10,8 +10,8 @@ description: Channel a Ritual Tablet to clear the sky, call a storm, ripen the f
 ## What it is
 
 A **Ritual Tablet** works great spells that no Cord can hold: it clears the sky, calls a storm, ripens the fields, wards
-a sanctuary against monsters or brings the dawn. A ritual costs far more mana than a spell, so the casters standing with
-you share the cost.
+a sanctuary against monsters or brings the dawn. A ritual costs far more mana than a spell, so the party members standing
+with you share the cost.
 
 ## How to get it
 
@@ -34,7 +34,8 @@ You need a Cord equipped, and your heart must hold enough circles to lead the ri
 
 ### The circle
 
-Every other player wearing a Cord within **8 blocks** of you joins the circle and pays part of the cost. Each pays an
+Every other member of your party wearing a Cord within **8 blocks** of you joins the circle and pays part of the cost.
+Players outside your party are never drawn on, however close they stand. Each pays an
 even share. Anyone who can't meet their share gives all they have, and the rest cover the difference. If the circle
 together holds too little mana, the ritual won't start.
 

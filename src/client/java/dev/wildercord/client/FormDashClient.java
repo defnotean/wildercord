@@ -29,7 +29,7 @@ public final class FormDashClient {
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(FormDash.Event.TYPE, (event, context) -> receive(context.client(), event));
 		ClientPlayNetworking.registerGlobalReceiver(FormDashLessons.Open.TYPE, (event, context) -> {
-			if (FormDashRules.form(event.form()))
+			if (FormDashRules.form(event.form()) && context.client().player != null && context.client().level != null)
 				context.client().gui.setScreen(new FormDashScreen(context.client().gui.screen(), event.form(), event.nonce(), true));
 		});
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> clear());

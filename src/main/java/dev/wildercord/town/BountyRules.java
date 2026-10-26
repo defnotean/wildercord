@@ -42,7 +42,11 @@ public final class BountyRules {
 		new Goods("minecraft:rabbit_hide", 4, 8),
 		new Goods("minecraft:honeycomb", 3, 6),
 		new Goods("minecraft:amethyst_shard", 6, 12),
-		new Goods("minecraft:sweet_berries", 16, 32));
+		new Goods("minecraft:sweet_berries", 16, 32),
+		// The four regions' own gatherables, so the boards ask for what the Reedlands, Hollows and Emberwood give.
+		new Goods("wildercord:moonreed_floss", 4, 8),
+		new Goods("wildercord:dried_glowcap_gills", 4, 8),
+		new Goods("wildercord:ember_tuft", 4, 8));
 
 	/** The creatures a named elite can be: Wildercord's own monsters. */
 	public static final List<String> ELITES = List.of("wildercord:bramblewalker", "wildercord:gloomstalker", "wildercord:geode_crawler",
@@ -102,6 +106,11 @@ public final class BountyRules {
 	public static final int ESCORT_EMERALDS = 6, ESCORT_BLOCKS_PER_EMERALD = 40, ESCORT_REPUTATION = 10;
 	/** What an escort names as its target: the pack llama. */
 	public static final String ESCORT_TARGET = "minecraft:llama";
+	/** How strong the pack llama is: three columns of chest, nine slots, for the traveller's goods. */
+	public static final int ESCORT_STRENGTH = 3;
+	/** How far the llama has to have moved since the last second for an ambush to roll, and how many one road can bring. */
+	public static final double AMBUSH_MOVED = 2;
+	public static final int AMBUSH_MAX = 3;
 
 	/** What a dungeon bounty names as its target. */
 	public static final String DUNGEON_GUARDIAN = "dungeon_guardian";
@@ -235,5 +244,26 @@ public final class BountyRules {
 	/** Whether the traveller can take another bounty today, having last turned one in on {@code lastDay} (-1 for never). */
 	public static boolean ready(long lastDay, long today) {
 		return lastDay < today;
+	}
+
+	/**
+	 * Whether an ambush may roll this second: the llama moved at least {@link #AMBUSH_MOVED} blocks since the last one and the
+	 * road hasn't brought {@link #AMBUSH_MAX} yet. A parked llama draws none, so an escort can't be left as a mob farm.
+	 */
+	public static boolean ambushMayRoll(double moved, int ambushes) {
+		return moved >= AMBUSH_MOVED && ambushes < AMBUSH_MAX;
+	}
+
+	/** The road an escort is on, from where it set out and where it's bound: a llama carries it to tell one escort from the next. */
+	public static String escortRoad(int boardX, int boardZ, int destX, int destZ) {
+		return boardX + "_" + boardZ + "_" + destX + "_" + destZ;
+	}
+
+	/**
+	 * Whether a llama on road {@code llamaRoad} belongs to the hunter's current escort on {@code currentRoad} (null with none). A
+	 * llama from before roads were marked ({@code llamaRoad} null) is taken to be on it, so an escort under way keeps its llama.
+	 */
+	public static boolean sameEscort(String llamaRoad, String currentRoad) {
+		return currentRoad != null && (llamaRoad == null || llamaRoad.equals(currentRoad));
 	}
 }

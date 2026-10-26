@@ -61,13 +61,15 @@ public final class PackLesson {
 		PayloadTypeRegistry.clientboundPlay().register(Show.TYPE, Show.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(Turn.TYPE, Turn.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(Retrieve.TYPE, Retrieve.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(Turn.TYPE, (packet, context) -> turn(context.player(), packet));
+		ServerPlayNetworking.registerGlobalReceiver(Turn.TYPE, (packet, context) -> {
+			if (packet.page() == -1 || LessonPackets.admit(context.player())) turn(context.player(), packet);
+		});
 		ServerPlayNetworking.registerGlobalReceiver(Retrieve.TYPE, (packet, context) -> {
 			if (packet.request() == 0 || packet.lesson() < 0 || packet.lesson() >= LessonPackRules.ALL.size()) return;
 			if (packet.close()) {
 				Reading reading = READINGS.get(context.player());
 				if (reading != null && reading.request() == packet.request()) READINGS.remove(context.player());
-			} else openSaved(context.player(), LessonPackRules.ALL.get(packet.lesson()), packet.request());
+			} else if (LessonPackets.admit(context.player())) openSaved(context.player(), LessonPackRules.ALL.get(packet.lesson()), packet.request());
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> RelayLesson.removeInvalid(READINGS, PackLesson::valid, PackLesson::interrupted));
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> READINGS.remove(handler.player));

@@ -46,6 +46,12 @@ public record TravelData(Map<String, Spot> homes, Map<String, Spot> waypoints, O
 		return new TravelData(remove(homes, name), waypoints, back, requestsOff, tracked);
 	}
 
+	/** Home {@code from}, kept where it is, under the name {@code to}. */
+	public TravelData withHomeRenamed(String from, String to) {
+		Spot spot = homes.get(from);
+		return spot == null ? this : new TravelData(put(remove(homes, from), to, spot), waypoints, back, requestsOff, tracked);
+	}
+
 	public TravelData withWaypoint(String name, Spot spot) {
 		return new TravelData(homes, put(waypoints, name, spot), back, requestsOff, tracked);
 	}

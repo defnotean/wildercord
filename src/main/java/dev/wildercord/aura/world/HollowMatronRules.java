@@ -197,6 +197,19 @@ public final class HollowMatronRules {
 		return offGround < SILK_GRIP;
 	}
 
+	/**
+	 * Ticks off the ground at tick {@code now}, last grounded at {@code grounded}. A mark from before the count restarted (a relog or a
+	 * respawn) is later than now and counts as having just landed, so it can never give an endless grip.
+	 */
+	public static long offGround(int now, int grounded) {
+		return grounded > now ? 0 : now - grounded;
+	}
+
+	/** Whether the silk holds its wearer to a wall: never while it is put away, otherwise while it still grips. */
+	public static boolean holds(boolean stowed, long offGround) {
+		return !stowed && grips(offGround);
+	}
+
 	/** The bar's name for what she is doing. */
 	public static String key(int move) {
 		return switch (move) {

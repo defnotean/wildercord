@@ -781,6 +781,7 @@ def write_lang(runes):
         "message.wildercord.soar_soaring_ally": "%s is already soaring",
         "message.wildercord.soar_resting": "Your wings need rest: %s s",
         "message.wildercord.soar_resting_ally": "%s's wings need rest: %s s",
+        "message.wildercord.wayline_hold": "Hold forward to take the line; crouch to release.",
         "entity.wildercord.shadow_hound": "Shadow Hound",
         "modmenu.descriptionTranslation.wildercord": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key.",
     }
@@ -1222,6 +1223,8 @@ def write_lang(runes):
     import regional_biomes
     lang.update(regional_biomes.LANG)
     regional_biomes.write(sys.modules[__name__])
+    import physical_art
+    lang.update(physical_art.LANG)
     import boss_encounter_text
     for key in boss_encounter_text.RETIRED_KEYS:
         lang.pop(key, None)
@@ -2340,6 +2343,12 @@ NEW_LANG = {
     "screen.wildercord.altar.how.3": "A Blank Rune and string: tie a spell into a Knot",
     "screen.wildercord.altar.upgrade_line": "+%s%% power at the same mana, in every spell it's threaded in",
     "screen.wildercord.altar.combine_line": "A new effect, born of %s and %s",
+    "screen.wildercord.altar.dual_line": "Both effects in one socket; costs the mana of both.",
+    "screen.wildercord.cord.unfinished": "Unfinished %s · cannot cast",
+    "screen.wildercord.cord.lesson_needs": "%s needs %s study, active %s, %s, Echo Cord and exactly %s + %s.",
+    "screen.wildercord.cord.excise_needs": "Excise needs Rootbound study, active XVI, Heartwood, Echo Cord and exactly Beam + Excise.",
+    "screen.wildercord.cord.reweave_needs": "Reweave needs Ebb Ledger study, active XII, Low Tide, Echo Cord and exactly Reweave + Harm.",
+    "screen.wildercord.cord.relay_needs": "Relay needs its Archive lesson, active VIII, Echo Cord and exactly Relay + Harm, Frost or Shock.",
     "screen.wildercord.altar.cost": "Costs %s XP levels",
     "screen.wildercord.altar.need_xp": "Needs %s XP levels",
     "screen.wildercord.altar.take_result": "Take the last result out first",
@@ -2986,13 +2995,20 @@ TRAVEL_LANG = {
     "message.wildercord.travel.home_set": "Home %1$s set! /home %1$s brings you back here",
     "message.wildercord.travel.home_moved_default": "Your home is here now",
     "message.wildercord.travel.home_moved": "Home %s is here now",
-    "message.wildercord.travel.homes_full": "You already have %s homes, the most you can have. Set one of them again to move it, or remove one with /delhome",
+    "message.wildercord.travel.homes_full": "You already have %s homes, the most you can have. Set one of them again to move it, or rename or remove one from /homes",
     "message.wildercord.travel.homes_off": "Homes are turned off on this server",
     "message.wildercord.travel.homes_none": "You haven't set a home yet. Stand where you'd like it and type /sethome",
     "message.wildercord.travel.home_missing": "You don't have a home called %s",
     "message.wildercord.travel.home_deleted": "Home %s removed",
+    "message.wildercord.travel.home_renamed": "Home %s is now called %s",
+    "message.wildercord.travel.home_taken": "You already have a home called %s",
+    "message.wildercord.travel.home_same": "That home is already called %s",
+    "message.wildercord.travel.homes.rename": "[Rename]",
+    "message.wildercord.travel.homes.rename_hover": "Rename %s: type the new name, then press Enter",
+    "message.wildercord.travel.homes.remove": "[Remove]",
+    "message.wildercord.travel.homes.remove_hover": "Remove %s: press Enter to confirm",
     "message.wildercord.travel.home_unsafe": "It isn't safe to land at %s any more, and there's no safe ground near it",
-    "message.wildercord.travel.homes_list": "Your homes (%s of %s): ",
+    "message.wildercord.travel.homes_list": "Your homes (%s of %s):",
     # Warps
     "message.wildercord.travel.warp_set": "Warp %1$s set here. Anyone can go to it with /warp %1$s",
     "message.wildercord.travel.warp_moved": "Warp %s moved here",
@@ -3069,6 +3085,12 @@ LOADOUT_LANG = {
     "message.wildercord.practice.restart": "The practice dimension is not loaded. Restart the world after installing this version.",
     "message.wildercord.practice.enter": "Practice arena: use your spells on the dummies. /wildercord practice moving, stress <1-24>, benchmark, or leave.",
     "message.wildercord.practice.benchmark": "Cast for 10 seconds. The result reports server particle deliveries, decorations limited, and plan cache work.",
+    "message.wildercord.practice.refused.duel": "You can't go to the practice arena during a duel.",
+    "message.wildercord.practice.refused.hurt": "You were hurt too recently to go to the practice arena.",
+    "message.wildercord.practice.refused.falling": "Stand on solid ground before going to the practice arena.",
+    "message.wildercord.practice.refused.burning": "Put the fire out before going to the practice arena.",
+    "message.wildercord.practice.refused.riding": "Dismount before going to the practice arena.",
+    "message.wildercord.practice.refused.cooldown": "You went to the practice arena moments ago. Wait a little before going again.",
     # The server's answers (above the hotbar, or in chat for /loadout)
     "message.wildercord.loadout.saved": "Saved your Cord as %s (%s of %s)",
     "message.wildercord.loadout.replaced": "Saved your Cord over %s",
@@ -3407,7 +3429,8 @@ def write_new_content(runes):
             {"type": "minecraft:skeleton", "weight": 3, "count": 1},
             {"type": "minecraft:zombie", "weight": 3, "count": 1},
             {"type": "minecraft:witch", "weight": 1, "count": 1}]}},
-        "step": "underground_structures",
+        # After trees, so the forecourt can clear the canopy that would otherwise swallow the gate.
+        "step": "top_layer_modification",
         "terrain_adaptation": "none"})
     write_json(DATA / "worldgen/structure_set/archives.json", {
         "placement": {"type": "minecraft:random_spread", "salt": 20260927, "separation": 14, "spacing": 44},
@@ -3619,6 +3642,7 @@ feat_adv("ley_line", "root", rune("vein"), description="Stand on a ley line, whe
 feat_adv("wellstone", "world/ley_line", item("wellstone"), description="Wake a Wellstone by setting it on a ley line", xp=30)
 feat_adv("ley_crossing", "world/ley_line", rune("vein"), description="Stand where two ley lines cross, a place of power", xp=25)
 feat_adv("residue", "world/ley_line", item("everfrost_shard"), description="Harvest a residue that big magic left on the world", xp=20)
+adv("world/four_lamps", "world/ley_line", item("lamplighters_lantern"), "Four Lamps, One Road", "Light the four regional lamps and hear each keeper out", has_item("wildercord:lamplighters_lantern"), frame="goal", xp=50)
 adv("world/archive", "world/ley_line", item("minecraft:chiseled_bookshelf"), "The Buried Library", "Find an Archive", in_structure("wildercord:archive"), xp=25)
 feat_adv("seal", "world/archive", item("rune_seal"), description="Open a Rune Seal door in an Archive", xp=30)
 feat_adv("archivist", "world/seal", item("archive_lectern"), description="Defeat the Archivist", frame="challenge", xp=500, loot=["mana_crystals"])

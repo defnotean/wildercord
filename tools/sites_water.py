@@ -34,6 +34,7 @@ LANG = {
     "dialogue.wildercord.speaker.reedkeeper": "Tideward Reedkeeper",
     "journal.wildercord.entry.person.reedkeeper": "Tideward Reedkeeper. A fisher and keeper of the bank's stories. Trade for fishing supplies, or sneak-use to listen. The keeper tends Moonreed beside the survey house and remembers the first crossing by its lights.",
     "dialogue.wildercord.reedkeeper.greet": "Welcome to the landing. Trade if your creel is empty; crouch and speak to me if you have time for a story. The banks have kept more names than the maps.",
+    "dialogue.wildercord.reedkeeper.four_lights": "Our lamp throws a line of light up the coast. The Cairn Keeper says they see it from the ridge. Go and ask them.",
     "dialogue.wildercord.reedkeeper.garden": "Leave the pale bud beside open water. Glimmerwings will find it when the light fades. Take the flower when it opens, and leave the root for the next visitor.",
     "dialogue.wildercord.reedkeeper.crossing": "The first Tideward crossed in a flood, passing one small light from boat to boat. They planted reeds where each boat reached land. A landing is a promise that someone will leave a light for you.",
     "dialogue.wildercord.reedkeeper.ferryman": "My grandmother called the last boatman the Reed-Crowned Ferryman. She said he counted every passenger twice, once aboard and once ashore. Whether he was a man or a river-story, I still make the second count.",
@@ -131,7 +132,8 @@ def write(g):
     for sid, (biomes, spacing, separation, salt, icon, title, desc) in SITES.items():
         g.write_json(g.DATA / f"worldgen/structure/{sid}.json", {
             "type": "wildercord:site", "site": sid, "biomes": f"#wildercord:has_structure/{sid}",
-            "spawn_overrides": {}, "step": "surface_structures", "terrain_adaptation": "none"})
+            "spawn_overrides": {}, "step": "top_layer_modification" if sid == "water_netweaver_village" else "surface_structures",
+            "terrain_adaptation": "none"})
         g.write_json(g.DATA / f"worldgen/structure_set/{sid}.json", {
             "placement": {"type": "minecraft:random_spread", "salt": salt, "separation": separation, "spacing": spacing},
             "structures": [{"structure": f"wildercord:{sid}", "weight": 1}]})

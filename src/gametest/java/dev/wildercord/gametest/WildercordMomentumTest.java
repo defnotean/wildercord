@@ -15,6 +15,7 @@ import dev.wildercord.aura.SwordStrings;
 import dev.wildercord.aura.arts.ArtKit;
 import dev.wildercord.aura.arts.EmberArts;
 import dev.wildercord.aura.arts.Finishers;
+import dev.wildercord.cast.Targets;
 import dev.wildercord.cast.TrainingDummy;
 import dev.wildercord.cast.WildercordEntities;
 import dev.wildercord.client.AuraBanners;
@@ -492,7 +493,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			Mob husk = spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 60);
 			husk.setHealth(30);
 			// Worn almost through: the next blow breaks it.
-			Stance.wear(player, husk, StanceRules.pool(StanceRules.Kind.CREATURE, 60, 0) - 2, StanceRules.Source.BLOW);
+			double worn = Stance.wear(player, husk, StanceRules.pool(StanceRules.Kind.CREATURE, 60, 0) - 2, StanceRules.Source.BLOW);
+			check(worn > 0, "the swordsman should wear the husk's stance (" + why(player, husk) + ")");
 			return null;
 		});
 		context.waitTicks(10);
@@ -502,7 +504,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		String open = on(world, player -> {
 			Mob husk = foes(player).getFirst();
 			if (!Stance.opened(husk)) {
-				return "the blow should have broken its stance";
+				return "the blow should have broken its stance (" + why(player, husk) + ")";
 			}
 			if (!husk.isNoAi() || !husk.hasAttached(WildercordAttachments.FROZEN_UNTIL)) {
 				return "an opened creature should be held";
@@ -551,6 +553,13 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		check(banner.equals("Pyrebrand"), "the finisher's banner should show its name (" + banner + ")");
 	}
 
+	/** Each check that lets a swordsman wear a foe's stance, for a failure's message. */
+	private static String why(ServerPlayer player, LivingEntity foe) {
+		return "eligible=" + Stance.eligible(player, foe) + " enabled=" + Aura.enabled(player) + " stage=" + Aura.stage(player)
+			+ " harmable=" + ArtKit.harmable(player, foe) + " unaimed=" + ArtKit.harmableWithoutAim(player, foe)
+			+ " canHarm=" + Targets.canHarm(player, foe) + " state=" + Stance.state(foe) + " now=" + player.level().getGameTime();
+	}
+
 	/** One method's finisher, landed with the keys on an opened husk: from inside it, then from behind and above. */
 	private static void finisher(ClientGameTestContext context, TestSingleplayerContext world, String method) {
 		String expected = AuraApi.finisher(method).id();
@@ -562,7 +571,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 				Mob husk = spawn(player.level(), EntityTypes.HUSK, at(0, 2.4), 80);
 				husk.setHealth(40);
 				// Its stance broken outright (by the swordsman: it's theirs to finish).
-				Stance.wear(player, husk, StanceRules.pool(StanceRules.Kind.CREATURE, 80, 0), StanceRules.Source.BLOW);
+				double worn = Stance.wear(player, husk, StanceRules.pool(StanceRules.Kind.CREATURE, 80, 0), StanceRules.Source.BLOW);
+				check(Stance.opened(husk), "wearing it whole should open the husk (wore " + worn + ", " + why(player, husk) + ")");
 				return null;
 			});
 			if (tp) {
@@ -988,6 +998,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		mob.snapTo(at.x, at.y, at.z, 180, 0);
 		mob.addTag(TAG);
 		mob.addTag("wildercord.rolled");
+		// Not tempered to the tester's aura, so its health, and its stance, are what the test sets.
+		mob.addTag(dev.wildercord.monster.Tempering.TAG);
 		mob.setPersistenceRequired();
 		AttributeInstance max = mob.getAttribute(Attributes.MAX_HEALTH);
 		if (max != null) {

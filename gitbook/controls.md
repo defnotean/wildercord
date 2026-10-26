@@ -17,6 +17,7 @@ A press counts as a **hold** once it's down for a quarter of a second. Anything 
 | Next spell (hold for the wheel) | `V` | **Tap** for your next spell. **Hold** for the spell wheel (with two or more spells). |
 | Open Cord | `K` | Opens the [Cord screen](spellcraft/cord-screen.md). |
 | Open backpack | `B` | Opens the backpack in your Backpack slot. Press it again (or `E`) to close. See [Backpacks](items/backpacks.md). |
+| Weaver's Silk | `G` | Puts the [Weaver's Silk](world/lair-bosses.md#what-it-gives-2) away so walls stop holding you, and takes it out again. `/silk` does the same. |
 | Aura | `Z` | Once you know a breathing method: **tap** for Aura Slash (from Edge), **sneak and press** for Aura Guard (from Flow), **double-tap** for Aura Step (from Form), **hold** for Dominion (Sovereign). **Tap, then press and hold** for Awakening (from Edge). See [Aura](progression/aura.md). |
 | Cast spell 1 to 4 | not set | Casts that spell straight away, without selecting it. Taps only, no charging. |
 | Cast spell 5 (the tome's) | not set | The same for the fifth spell, while the Tome of the Fifth Page counts. See [Casting Gear](gear.md#the-tome-of-the-fifth-page). |
@@ -112,7 +113,7 @@ The screen doesn't pause the game. Full details on [The Cord Screen](spellcraft/
 | `/loadout save`, `load`, `delete`, `list` | Manage [loadouts](spellcraft/loadouts.md) |
 | `/runelab practice enter` / `leave` | Enter or leave the [practice arena](progression/practice.md) |
 | `/runelab research`, `notebook`, `trial`, `familiar`, `builds` | [Research](progression/research.md) and saved builds |
-| `/sethome`, `/home`, `/delhome`, `/homes`, `/warp`, `/warps`, `/spawn`, `/rtp`, `/back` | Travel. See [Getting Around](social/travel.md) |
+| `/sethome`, `/home`, `/renamehome`, `/delhome`, `/homes`, `/warp`, `/warps`, `/spawn`, `/rtp`, `/back` | Travel. See [Getting Around](social/travel.md) |
 | `/tpa`, `/tpahere`, `/tpaccept`, `/tpdeny`, `/tpcancel`, `/tptoggle` | Teleport requests |
 | `/waypoint add`, `remove`, `list`, `track`, `untrack`, `share` | Waypoints |
 

@@ -43,6 +43,14 @@ class AltarReagentsTest {
 		assertTrue(AltarReagents.of("").isEmpty());
 	}
 
+	/** The altar menu looks up each residue reagent's effect without a fallback, so every kind needs one. */
+	@Test
+	void everyResidueKindHasAnAltarEffect() {
+		for (dev.wildercord.world.ResidueRules.Kind kind : dev.wildercord.world.ResidueRules.Kind.values()) {
+			assertTrue(AltarReagents.of(kind.element).isPresent(), kind + " (" + kind.element + ") has no altar effect");
+		}
+	}
+
 	@Test
 	void cinderAshKeepsTheHigherRank() {
 		Fusions.Plan plain = Fusions.plan(slots(FIRE_II, FROST_I), Catalyst.SHARD);

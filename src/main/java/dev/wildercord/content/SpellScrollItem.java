@@ -59,6 +59,8 @@ public class SpellScrollItem extends Item {
 
 	/** Inscribes one of the player's spells onto a new scroll. */
 	public static void inscribe(ServerPlayer player, int spell) {
+		// Sent from the Cord screen, which stays open on the death screen and in spectator: neither can write.
+		if (!player.isAlive() || player.isSpectator()) return;
         if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return;
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null || !dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {

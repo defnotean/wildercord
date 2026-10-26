@@ -136,6 +136,7 @@ public final class GlacierDenPiece extends DungeonPiece {
 		frozenDead(level,bb);
 		crevasse(level,bb);
 		camp(level,bb);
+		dress(level,bb);
 		// Stuck upright in the snow behind the crown of its mound, where it lies: the Rimescale, a scale it shed.
 		set(level,bb,dev.wildercord.aura.world.Rimescale.BLOCK.defaultBlockState(),NEST_X+2,FLOOR+1+mound(dist(NEST_X+2,NEST_Z+3,NEST_X,NEST_Z)),NEST_Z+3);
 		wyrmling(level,bb);
@@ -303,6 +304,95 @@ public final class GlacierDenPiece extends DungeonPiece {
 		set(level,bb,Blocks.BONE_BLOCK.defaultBlockState(),x0+2,FLOOR+1,z0+3);
 		set(level,bb,Blocks.SKELETON_SKULL.defaultBlockState().setValue(SkullBlock.ROTATION,12),x0+2,FLOOR+2,z0+3);
 		set(level,bb,Blocks.POWDER_SNOW.defaultBlockState(),x0,FLOOR+1,z0);
+	}
+
+	/**
+	 * The den's dressing: cairns the last party raised at the crevasse's head, ribs of old blue ice along the tunnel and a
+	 * portal of it where the tunnel opens into the hall, spikes of ice standing round the Wyrmling's mound, and the camp's
+	 * firewood and a barrel of stores.
+	 */
+	private void dress(WorldGenLevel level,BoundingBox bb){
+		gate(level,bb);
+		// Cairns either side of the gate, one with a skull on it, one with a lantern.
+		for(int x:new int[]{CX-9,CX+9}){
+			if(!column(bb,x,1))continue;
+			int y=surface(level,x,1);
+			fill(level,bb,x,y,1,x,y+2,1,Blocks.COBBLESTONE.defaultBlockState());
+			set(level,bb,Blocks.COBBLESTONE_WALL.defaultBlockState(),x,y+3,1);
+			set(level,bb,x<CX?Blocks.SKELETON_SKULL.defaultBlockState().setValue(SkullBlock.ROTATION,8):Blocks.LANTERN.defaultBlockState(),x,y+4,1);
+		}
+		// Ribs of blue ice along the level foot, clear of the camp's alcove; over the tunnel only where it is roofed.
+		for(int z:new int[]{RAMP_END+1,RAMP_END+4,RAMP_END+7}){
+			for(int y=FLOOR+1;y<=FLOOR+TUNNEL;y++){
+				set(level,bb,BLUE,CX-2,y,z);
+				if(y>FLOOR+3 || z>RAMP_END+5)set(level,bb,BLUE,CX+2,y,z);
+			}
+			if(column(bb,CX,z) && surface(level,CX,z)-FLOOR>OPEN)fill(level,bb,CX-2,FLOOR+TUNNEL+1,z,CX+2,FLOOR+TUNNEL+1,z,BLUE);
+		}
+		// The portal into the hall: posts and a lintel of blue ice, two icicles hanging inside it.
+		int gate=MOUTH-1;
+		fill(level,bb,CX-2,FLOOR+1,gate,CX-2,FLOOR+TUNNEL,gate,BLUE);
+		fill(level,bb,CX+2,FLOOR+1,gate,CX+2,FLOOR+TUNNEL,gate,BLUE);
+		fill(level,bb,CX-3,FLOOR+TUNNEL+1,gate,CX+3,FLOOR+TUNNEL+1,gate,BLUE);
+		set(level,bb,Blocks.CALCITE.defaultBlockState(),CX,FLOOR+TUNNEL+1,gate);
+		set(level,bb,BLUE,CX-1,FLOOR+TUNNEL,gate);
+		set(level,bb,BLUE,CX+1,FLOOR+TUNNEL,gate);
+		// Spikes of ice round the mound, open at the front where the Wyrmling looks out.
+		for(int k=0;k<8;k++){
+			if(k==5 || k==6)continue;
+			double a=Math.PI/8+k*Math.PI/4;
+			int x=(int)Math.round(NEST_X+Math.cos(a)*6.8),z=(int)Math.round(NEST_Z+Math.sin(a)*6.8);
+			if(reach(x,z)>RADIUS-1)continue;
+			int h=2+noise(x,z)%3;
+			fill(level,bb,x,FLOOR+1,z,x,FLOOR+h,z,BLUE);
+			set(level,bb,PACKED,x,FLOOR+h+1,z);
+			set(level,bb,snow(3+noise(z,x)%3),x,FLOOR+1,z+(z<NEST_Z?-1:1));
+		}
+		// The camp's stores: firewood stacked by the chest and a barrel by the bedroll.
+		set(level,bb,Blocks.SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS,Direction.Axis.X),CX+3,FLOOR+1,RAMP_END+5);
+		set(level,bb,Blocks.BARREL.defaultBlockState(),CX+4,FLOOR+1,RAMP_END+1);
+	}
+
+	/**
+	 * The gate at the crevasse's head, seen from far across the snow: two spires of old blue ice either side of the way down,
+	 * an arch of it between them hung with icicles and soul lanterns, frozen banners, and a field of ice spikes round about.
+	 * Each column reads its own surface, so the spires stand on the ground whichever chunk builds them.
+	 */
+	private void gate(WorldGenLevel level,BoundingBox bb){
+		int t=top,roof=HEIGHT-1;
+		for(int side=-1;side<=1;side+=2){
+			int sx=CX+side*5,sz=2,h=Math.min(roof,t+(side<0?13:11));
+			for(int x=sx-1;x<=sx+1;x++)for(int z=sz-1;z<=sz+1;z++){
+				if(!column(bb,x,z))continue;
+				int ground=Math.min(surface(level,x,z),t);
+				fill(level,bb,x,ground-3,z,x,t-1,z,PACKED);
+				boolean corner=x!=sx && z!=sz;
+				int up=corner?t+1:x==sx && z==sz?h:t+5-(noise(x,z)%2);
+				for(int y=t;y<=Math.min(up,roof);y++)set(level,bb,y%4==0?PACKED:noise(x,y,z)<20?CLEAR:BLUE,x,y,z);
+				if(corner)set(level,bb,snow(2+noise(z,x)%4),x,t+2,z);
+			}
+			if(column(bb,sx,sz))set(level,bb,Blocks.SOUL_LANTERN.defaultBlockState(),sx,Math.min(roof,h+1),sz);
+			banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.LIGHT_BLUE),sx,t+4,sz-2,Direction.SOUTH);
+		}
+		// The arch: rising from the spires to a crown over the way down, two blocks deep, icicles under it.
+		for(int x=CX-4;x<=CX+4;x++){
+			int off=Math.abs(x-CX),y=Math.min(roof-1,t+10-off*off/6);
+			for(int z=1;z<=3;z++){
+				set(level,bb,z==2?BLUE:PACKED,x,y,z);
+				set(level,bb,z==2?PACKED:SNOW,x,y+1,z);
+			}
+			if(off==0)set(level,bb,Blocks.CHISELED_QUARTZ_BLOCK.defaultBlockState(),x,y+1,2);
+			if(off==1 || off==3)set(level,bb,CLEAR,x,y-1,2);
+			if(off==2)set(level,bb,Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING,true),x,y-1,2);
+		}
+		// A field of spikes round the head, kept off the crevasse and the gate.
+		for(int x=CX-14;x<=CX+14;x++)for(int z=0;z<=12;z++){
+			int off=Math.abs(x-CX),n=noise(x,z);
+			if(off<8 || n>=9 || off==9 && z<=2 || !column(bb,x,z))continue;
+			int ground=surface(level,x,z),h=2+noise(z,x)%(off>11?6:4);
+			fill(level,bb,x,ground-1,z,x,Math.min(roof,ground+h),z,n<4?BLUE:PACKED);
+			if(n<3)set(level,bb,PACKED,x,Math.min(roof,ground+h+1),z);
+		}
 	}
 
 	/** The hall, from below its floor to over its dome. */

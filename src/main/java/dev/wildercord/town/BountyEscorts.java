@@ -1,6 +1,7 @@
 package dev.wildercord.town;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -13,24 +14,30 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.animal.equine.Llama;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.Heightmap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Escort bounties (0.13): the board hands you a traveller's pack llama on a lead, and you bring it to where they're bound, 160 to
  * 240 blocks off. Now and then an ambush comes for the llama on the road. It arrives and the traveller pays you there; it dies
- * and the bounty is lost. Only the hunter who took the bounty can lead it home.
+ * and the bounty is lost. Only the hunter who took the bounty can lead it home. Ambushes only come for a llama on the move, at
+ * most {@link BountyRules#AMBUSH_MAX} a road, and the traveller takes the llama back (dropping what's in its chest) when the
+ * escort is abandoned or done: it's never yours to keep.
  */
 public final class BountyEscorts {
 	private BountyEscorts() {}
@@ -43,9 +50,26 @@ public final class BountyEscorts {
 	private static final List<EntityType<? extends Mob>> AMBUSHERS = List.of(EntityTypes.ZOMBIE, EntityTypes.PILLAGER, EntityTypes.VINDICATOR,
 		EntityTypes.HUSK);
 
+	/** Each hunter's road so far, not saved: where their llama was a second ago and how many ambushes have come. */
+	private static final class Road {
+		double x = Double.NaN, z;
+		int ambushes;
+	}
+
+	private static final Map<UUID, Road> ROADS = new HashMap<>();
+	/** The tag naming which escort a llama was handed over for, so one left from an earlier escort is never taken for this one. */
+	private static final String ROAD_TAG = "wildercord.escort_road.";
+	/** Escort llamas loaded this tick, checked once the tick is over (a bounty being taken stores itself after its llama spawns). */
+	private static final List<Llama> LOADED = new ArrayList<>();
+
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			if (!LOADED.isEmpty()) {
+				for (Llama llama : List.copyOf(LOADED)) reclaim(llama);
+				LOADED.clear();
+			}
 			if (server.getTickCount() % 20 != 0) return;
+			ROADS.keySet().removeIf(id -> server.getPlayerList().getPlayer(id) == null);
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) tick(player, server.getTickCount());
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
@@ -59,7 +83,9 @@ public final class BountyEscorts {
 					return;
 				}
 				ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
-				if (player == null) return;
+				// Only the llama of the escort under way loses it; one left from an earlier escort is no loss.
+				if (player == null || !(entity instanceof Llama llama) || !current(player, llama)) return;
+				ROADS.remove(owner);
 				Town.Standing standing = Town.standing(player);
 				if (standing.bounty().isPresent() && standing.bounty().get().type() == BountyRules.Kind.ESCORT) {
 					Town.set(player, standing.with(Optional.empty()));
@@ -69,6 +95,59 @@ public final class BountyEscorts {
 				return;
 			}
 		});
+		// A llama whose escort was abandoned or lost while it was out of reach goes back to its traveller when it next loads.
+		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+			if (entity instanceof Llama llama && llama.entityTags().stream().anyMatch(tag -> tag.startsWith(Town.ESCORT_TAG))) LOADED.add(llama);
+		});
+	}
+
+	private static void reclaim(Llama llama) {
+		if (!llama.isAlive() || !(llama.level() instanceof ServerLevel level)) return;
+		for (String tag : llama.entityTags()) {
+			if (!tag.startsWith(Town.ESCORT_TAG)) continue;
+			UUID owner;
+			try {
+				owner = UUID.fromString(tag.substring(Town.ESCORT_TAG.length()));
+			} catch (IllegalArgumentException e) {
+				return;
+			}
+			ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
+			if (player != null && !current(player, llama)) release(level, llama);
+			return;
+		}
+	}
+
+	/** Whether {@code llama}, tagged as {@code player}'s, is the one for the escort they're on now. */
+	private static boolean current(ServerPlayer player, Llama llama) {
+		Optional<Town.Active> bounty = Town.standing(player).bounty();
+		String road = bounty.isPresent() && bounty.get().type() == BountyRules.Kind.ESCORT ? road(bounty.get()) : null;
+		String llamaRoad = llama.entityTags().stream().filter(tag -> tag.startsWith(ROAD_TAG)).findFirst()
+			.map(tag -> tag.substring(ROAD_TAG.length())).orElse(null);
+		return BountyRules.sameEscort(llamaRoad, road);
+	}
+
+	private static String road(Town.Active bounty) {
+		return BountyRules.escortRoad(bounty.boardX(), bounty.boardZ(), bounty.destX(), bounty.destZ());
+	}
+
+	/** The traveller takes their llama back: what's in its chest falls where it stands, and it's gone. */
+	public static void release(ServerLevel level, Llama llama) {
+		for (int i = 0; i < llama.getInventorySize(); i++) {
+			var slot = llama.getSlot(AbstractHorse.INVENTORY_SLOT_OFFSET + i);
+			ItemStack stack = slot.get();
+			if (stack.isEmpty()) continue;
+			llama.spawnAtLocation(level, stack.copy());
+			slot.set(ItemStack.EMPTY);
+		}
+		level.sendParticles(ParticleTypes.POOF, llama.getX(), llama.getY() + 0.8, llama.getZ(), 12, 0.5, 0.5, 0.5, 0.02);
+		llama.discard();
+	}
+
+	/** Abandons {@code player}'s escort: the traveller takes the llama back if it's about (or when it next loads). */
+	public static void abandon(ServerPlayer player) {
+		ROADS.remove(player.getUUID());
+		Llama llama = llama(player);
+		if (llama != null) release(player.level(), llama);
 	}
 
 	/** Hands {@code player} the escort's pack llama by the board; returns the bounty bound for its end, or null with no room. */
@@ -86,7 +165,10 @@ public final class BountyEscorts {
 		int destX = board.getX() + (int) Math.round(Math.cos(angle) * bounty.needed());
 		int destZ = board.getZ() + (int) Math.round(Math.sin(angle) * bounty.needed());
 		llama.setTamed(true);
+		// Made without a natural spawn, a llama has no strength and so no chest slots: give it both.
+		((dev.wildercord.mixin.PackLlamaAccessor) llama).wildercord$strength(BountyRules.ESCORT_STRENGTH);
 		llama.setChest(true);
+		((dev.wildercord.mixin.HorseInventoryAccessor) llama).wildercord$rebuildInventory();
 		llama.setPersistenceRequired();
 		var health = llama.getAttribute(Attributes.MAX_HEALTH);
 		if (health != null) {
@@ -96,20 +178,34 @@ public final class BountyEscorts {
 		}
 		llama.setCustomName(Component.translatable("town.wildercord.pack_llama", bounty.name()).withColor(0xE8C870));
 		llama.setCustomNameVisible(true);
+		Town.Active bound = bounty.bound(destX, destZ);
 		llama.addTag(Town.ESCORT_TAG + player.getUUID());
+		llama.addTag(ROAD_TAG + road(bound));
 		level.addFreshEntity(llama);
 		llama.setLeashedTo(player, true);
-		return bounty.bound(destX, destZ);
+		ROADS.remove(player.getUUID());
+		return bound;
 	}
 
-	/** The escort's llama near {@code player}, if it's about. */
+	/** The llama of {@code player}'s escort under way near them, if it's about. */
 	public static Llama llama(ServerPlayer player) {
 		String tag = Town.ESCORT_TAG + player.getUUID();
-		List<Llama> found = player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64), l -> l.isAlive() && l.entityTags().contains(tag));
+		List<Llama> found = player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64),
+			l -> l.isAlive() && l.entityTags().contains(tag) && current(player, l));
 		return found.isEmpty() ? null : found.getFirst();
 	}
 
+	/** Llamas of {@code player}'s that belong to no escort under way (left behind out of reach) go back to their travellers. */
+	private static void sweep(ServerPlayer player) {
+		String tag = Town.ESCORT_TAG + player.getUUID();
+		for (Llama stale : player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64),
+				l -> l.isAlive() && l.entityTags().contains(tag) && !current(player, l))) {
+			release(player.level(), stale);
+		}
+	}
+
 	private static void tick(ServerPlayer player, int tickCount) {
+		if (tickCount % 100 == 0) sweep(player);
 		Town.Standing standing = Town.standing(player);
 		if (standing.bounty().isEmpty()) return;
 		Town.Active bounty = standing.bounty().get();
@@ -128,12 +224,17 @@ public final class BountyEscorts {
 				Component.translatable("town.wildercord.way." + way.getSerializedName())).withStyle(ChatFormatting.YELLOW));
 		}
 		double fromBoard = Math.hypot(llama.getX() - bounty.boardX(), llama.getZ() - bounty.boardZ());
-		if (fromBoard > SAFE && toEnd > SAFE && level.getDifficulty() != Difficulty.PEACEFUL && level.getRandom().nextDouble() < AMBUSH_CHANCE) {
-			ambush(player, level, llama);
+		Road road = ROADS.computeIfAbsent(player.getUUID(), id -> new Road());
+		double moved = Double.isNaN(road.x) ? 0 : Math.hypot(llama.getX() - road.x, llama.getZ() - road.z);
+		road.x = llama.getX();
+		road.z = llama.getZ();
+		if (fromBoard > SAFE && toEnd > SAFE && level.getDifficulty() != Difficulty.PEACEFUL && BountyRules.ambushMayRoll(moved, road.ambushes)
+			&& level.getRandom().nextDouble() < AMBUSH_CHANCE && ambush(player, level, llama)) {
+			road.ambushes++;
 		}
 	}
 
-	private static void ambush(ServerPlayer player, ServerLevel level, Llama llama) {
+	private static boolean ambush(ServerPlayer player, ServerLevel level, Llama llama) {
 		RandomSource random = level.getRandom();
 		int count = 2 + random.nextInt(2);
 		double side = random.nextDouble() * Math.PI * 2;
@@ -162,12 +263,15 @@ public final class BountyEscorts {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.bounty.escort_ambush").withStyle(ChatFormatting.RED));
 			level.playSound(null, llama.blockPosition(), SoundEvents.LLAMA_ANGRY, SoundSource.NEUTRAL, 1F, 1F);
 		}
+		return spawned > 0;
 	}
 
-	private static void arrive(ServerPlayer player, ServerLevel level, Town.Standing standing, Town.Active bounty, Entity llama) {
+	private static void arrive(ServerPlayer player, ServerLevel level, Town.Standing standing, Town.Active bounty, Llama llama) {
 		level.sendParticles(ParticleTypes.HAPPY_VILLAGER, llama.getX(), llama.getY() + 1, llama.getZ(), 16, 0.6, 0.6, 0.6, 0);
 		player.sendSystemMessage(Component.translatable("message.wildercord.bounty.escort_arrived", Town.targetName(bounty)).withStyle(ChatFormatting.GOLD));
-		llama.discard();
-		BountyBoardBlock.turnIn(player, level, llama.blockPosition(), standing, bounty, level.getGameTime() / BountyRules.DAY);
+		ROADS.remove(player.getUUID());
+		BlockPos at = llama.blockPosition();
+		release(level, llama);
+		BountyBoardBlock.turnIn(player, level, at, standing, bounty, level.getGameTime() / BountyRules.DAY);
 	}
 }

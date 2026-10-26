@@ -14,6 +14,8 @@ public final class InnRoomRules {
 	public static final int CHEST_ROWS = 3;
 	/** How near a keeper a key must be used (blocks). */
 	public static final double NEAR_KEEPER = 16;
+	/** How far from where they opened it a traveller can wander before their room chest shuts (blocks). */
+	public static final double CHEST_REACH = 8;
 
 	/** What a key costs a traveller of {@code tier}, in emeralds: 6 for a stranger, down to 3 for the honoured. */
 	public static int price(BountyRules.Tier tier) {
@@ -33,5 +35,13 @@ public final class InnRoomRules {
 	/** Whole days left, rounded up, on a room let until {@code until}. */
 	public static int daysLeft(long until, long now) {
 		return until <= now ? 0 : (int) ((until - now + BountyRules.DAY - 1) / BountyRules.DAY);
+	}
+
+	/**
+	 * Whether a room chest opened by a keeper stays open: its traveller is alive, still in the same dimension, and within
+	 * {@link #CHEST_REACH} of where they opened it ({@code distanceSq} away, squared).
+	 */
+	public static boolean atChest(boolean alive, boolean sameLevel, double distanceSq) {
+		return alive && sameLevel && distanceSq <= CHEST_REACH * CHEST_REACH;
 	}
 }

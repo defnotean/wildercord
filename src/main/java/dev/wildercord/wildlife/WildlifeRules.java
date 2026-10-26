@@ -300,6 +300,14 @@ public final class WildlifeRules {
 		return clamp(turnDegrees * 0.12F, -0.7F, 0.7F);
 	}
 
+	/**
+	 * Whether an idle bittern may wander to a spot. A bittern already on a bank only strolls along banks, so its rest
+	 * between hunts never carries it inland; one that is off a bank may wander anywhere until its bank return runs.
+	 */
+	public static boolean bitternStroll(boolean onBank, boolean toBank) {
+		return !onBank || toBank;
+	}
+
 	/** Ticks until a skyray next sheds a membrane: seven and a half to fifteen minutes. */
 	public static int membraneInterval(double random) {
 		return 9000 + (int) (clamp((float) random, 0, 1) * 9000);

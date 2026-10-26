@@ -102,6 +102,16 @@ public final class RelayLessonChecks {
 			context.runOnClient(mc -> ClientPlayNetworking.send(new RelayLesson.Retrieve(71, false)));
 			context.waitTicks(3);
 			world.getServer().runOnServer(server -> check(!MasterStudies.hasRelayLesson(player(server)), "Retrieve packet cannot manufacture a copied receipt"));
+			// A flood of reopenings in one tick spends the shared lesson allowance instead of being worked through.
+			context.runOnClient(mc -> { for (int i = 0; i < 30; i++) ClientPlayNetworking.send(new RelayLesson.Retrieve(72, false)); });
+			// Wait for the flood to arrive (looking never spends the allowance): untouched, it would stay near the full burst.
+			boolean spent = false;
+			for (int tick = 0; tick < 40 && !spent; tick++) {
+				context.waitTicks(1);
+				spent = world.getServer().computeOnServer(server -> !LessonPackets.hasAllowance(player(server)));
+			}
+			check(spent, "Thirty reopenings in a tick use up the lesson allowance");
+			context.waitTicks(LessonPackets.BURST * LessonPackets.TICKS_PER_PACKET + 5);
 			world.getServer().runOnServer(server -> server.overworld().setBlock(LECTERN.north(), Blocks.STONE.defaultBlockState(), 3));
 			context.waitTicks(3);
 			use(context);

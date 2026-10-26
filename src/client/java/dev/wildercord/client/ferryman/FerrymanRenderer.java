@@ -33,6 +33,7 @@ public final class FerrymanRenderer extends MobRenderer<ReedCrownedFerryman,Ferr
 	}
 	@Override public void extractRenderState(ReedCrownedFerryman e,FerrymanRenderState s,float partial) {
 		super.extractRenderState(e,s,partial); s.move=e.move(); s.elapsed=e.elapsed(partial); s.aim=e.aim(); s.markX=e.markX(); s.markZ=e.markZ(); s.acrossX=e.acrossX(); s.second=e.secondPhase();
+		s.hurt=e.hurtTime>0?Math.max(0,(e.hurtTime-partial)/10F):0;
 	}
 	@Override public void submit(FerrymanRenderState s,PoseStack pose,SubmitNodeCollector collector,CameraRenderState camera) {
 		super.submit(s,pose,collector,camera);
