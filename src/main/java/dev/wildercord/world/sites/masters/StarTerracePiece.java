@@ -23,7 +23,7 @@ import java.util.List;
  * reading room sealed with arcane light.
  */
 public final class StarTerracePiece extends MasterSitePiece {
-	public StarTerracePiece(int x, int y, int z, Direction facing, boolean alt) { super(MasterSites.STAR_TERRACE, x, y, z, 17, 15, 18, facing, alt); }
+	public StarTerracePiece(int x, int y, int z, Direction facing, boolean alt) { super(MasterSites.STAR_TERRACE, x, y, z, 17, 19, 18, facing, alt); }
 	public StarTerracePiece(CompoundTag tag) { super(MasterSites.STAR_TERRACE, tag); }
 	@Override public String site() { return "master_star_terrace"; }
 	@Override public List<String> schools() { return List.of("starlit", "dawn"); }
@@ -40,6 +40,7 @@ public final class StarTerracePiece extends MasterSitePiece {
 			: Palette.of(Blocks.POLISHED_DEEPSLATE, 5, Blocks.DEEPSLATE_BRICKS, 3, Blocks.CRACKED_DEEPSLATE_BRICKS, 1);
 		Block trim = alt ? Blocks.QUARTZ_STAIRS : Blocks.POLISHED_DEEPSLATE_STAIRS;
 		Block roofStairs = alt ? Blocks.QUARTZ_STAIRS : Blocks.DEEPSLATE_TILE_STAIRS;
+		BlockState band = alt ? s(Blocks.SMOOTH_RED_SANDSTONE) : s(Blocks.CALCITE);
 		pad(level, bb, 0, 0, 16, 17, 14, s(Blocks.GRASS_BLOCK), s(Blocks.DIRT));
 		var flower = alt ? s(Blocks.DANDELION) : s(Blocks.CORNFLOWER);
 		for (int x = 0; x <= 16; x++) for (int z = 0; z <= 2; z++) if ((x < 6 || x > 10) && noise(x, z) < 40) set(level, bb, flower, x, 1, z);
@@ -69,6 +70,9 @@ public final class StarTerracePiece extends MasterSitePiece {
 			if (x < 6 || x > 10) { set(level, bb, stair(trim, Direction.NORTH, false), x, 1, 2); set(level, bb, stair(trim, Direction.NORTH, true), x, 3, 2); }
 		}
 		for (int[] c : new int[][]{{0, 2}, {16, 2}, {0, 17}, {16, 17}}) fill(level, bb, c[0], 1, c[1], c[0], 3, c[1], chiseled);
+		// A pale band between plinth and cornice, so the terrace reads light against the grass.
+		for (int z = 3; z <= 16; z++) if (z != 3 && z != 7 && z != 12 && z != 16) { set(level, bb, band, 0, 2, z); set(level, bb, band, 16, 2, z); }
+		for (int x = 1; x <= 15; x++) { set(level, bb, band, x, 2, 17); if (x < 6 || x > 10) set(level, bb, band, x, 2, 2); }
 		// The star map, ringed in carved stone.
 		for (int x = 2; x <= 14; x++) for (int z = 4; z <= 11; z++) {
 			double d = dist(x, z, 8, 8);
@@ -113,8 +117,17 @@ public final class StarTerracePiece extends MasterSitePiece {
 		stairRing(level, bb, 6, 13, 10, 15, 11, roofStairs, chiseled);
 		fill(level, bb, 7, 11, 14, 9, 11, 14, wall);
 		set(level, bb, glow, 8, 11, 14);
-		set(level, bb, chiseled, 8, 12, 14);
-		set(level, bb, alt ? s(Blocks.LANTERN) : s(Blocks.END_ROD), 8, 13, 14);
+		// A lit belvedere on the cupola: four columns under a hipped cap, an armillary of copper in the middle.
+		for (int[] c : new int[][]{{7, 13}, {9, 13}, {7, 15}, {9, 15}}) fill(level, bb, c[0], 12, c[1], c[0], 13, c[1], column);
+		set(level, bb, copper, 8, 12, 14);
+		set(level, bb, s(Blocks.LIGHTNING_ROD), 8, 13, 14);
+		hipRoof(level, bb, 7, 13, 9, 15, 14, roofStairs, wall, chiseled);
+		set(level, bb, alt ? s(Blocks.LANTERN) : s(Blocks.END_ROD), 8, 17, 14);
+		// Light through the reading room's flanks and back, so the building reads at dusk from the ground.
+		for (int z = 13; z <= 15; z++) { fill(level, bb, 4, 6, z, 4, 7, z, glass); fill(level, bb, 12, 6, z, 12, 7, z, glass); }
+		for (int x = 6; x <= 10; x += 2) fill(level, bb, x, 5, 16, x, 7, 16, glass);
+		for (int z : new int[]{13, 15}) { set(level, bb, stair(trim, Direction.WEST, true), 3, 5, z); set(level, bb, stair(trim, Direction.EAST, true), 13, 5, z); }
+		set(level, bb, rail, 3, 5, 14); set(level, bb, rail, 13, 5, 14);
 		// The portico before the sealed door: columns, a lintel, a hung lantern and the school's colours.
 		for (int x : new int[]{4, 6, 10, 12}) pillar(level, bb, x, 11, 4, 7, chiseled, column, chiseled);
 		for (int x = 7; x <= 9; x++) set(level, bb, stair(trim, Direction.NORTH, true), x, 7, 11);
