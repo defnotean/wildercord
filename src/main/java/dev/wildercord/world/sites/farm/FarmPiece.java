@@ -38,6 +38,11 @@ public abstract class FarmPiece extends DungeonPiece {
 		super(type, x, y, z, width, height, depth, facing);
 	}
 
+	/** A piece with a cleared ring {@code margin} blocks wide round its site; local (0, 0) stays the site's corner. */
+	protected FarmPiece(StructurePieceType type, int x, int y, int z, int width, int height, int depth, Direction facing, int margin) {
+		super(type, x, y, z, width + 2 * margin, height, depth + 2 * margin, facing);
+	}
+
 	protected FarmPiece(StructurePieceType type, CompoundTag tag) {
 		super(type, tag);
 	}
@@ -110,10 +115,11 @@ public abstract class FarmPiece extends DungeonPiece {
 
 	// ------------------------------------------------------------------ groundwork
 
-	/** Air over the whole footprint from {@code y0} up, and a solid {@code floor} under it with its gaps filled down to the ground. */
+	/** Air over the whole footprint (margin included) from {@code y0} up, and a solid {@code floor} under it with its gaps filled down to the ground. */
 	protected void site(WorldGenLevel level, BoundingBox bb, BlockState floor, int y0) {
-		fill(level, bb, 0, y0, 0, width - 1, height - 1, depth - 1, AIR);
-		for (int x = 0; x < width; x++) for (int z = 0; z < depth; z++) {
+		int m = margin();
+		fill(level, bb, -m, y0, -m, width - m - 1, height - 1, depth - m - 1, AIR);
+		for (int x = -m; x < width - m; x++) for (int z = -m; z < depth - m; z++) {
 			set(level, bb, floor, x, ground(), z);
 			prop(level, bb, x, ground() - 1, z, Blocks.DIRT.defaultBlockState());
 		}
