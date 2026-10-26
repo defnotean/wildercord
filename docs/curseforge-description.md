@@ -8,7 +8,16 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 **[Read the player guide](https://defnotean.github.io/wildercord/) · [Browse the changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md) · [Report an issue](https://github.com/defnotean/wildercord/issues)**
 
-## New in 0.13.0: Living world
+## New in 0.14.0: One road
+
+- **Four Lamps, One Road:** light all four regional lamps and answer each keeper to finish a journal capstone that ends with the Lamplighter's Lantern.
+- **New companions:** tame a coffer mimic with books (a walking 27-slot chest only you can open) or a thistle hedgehog with sweet berries.
+- **Bosses hit harder and move better**, with clearer wind-ups, follow-through and staged deaths.
+- **Grander buildings:** the world's dungeons and sites were rebuilt bigger and richer, and forest sites clear the trees over themselves.
+
+0.13.x clients must update before joining. [Read the full 0.14.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.14.0-alpha).
+
+## Earlier in 0.13.0: Living world
 
 Four new regions, each with its own biome, a building, a resident, a lore route in your journal and an optional boss.
 
@@ -121,11 +130,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.13.0-alpha
+## Install 0.14.0-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client: a 0.13.0 server needs 0.13.0 players. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.14.0 server needs 0.14.0 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 

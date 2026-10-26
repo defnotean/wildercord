@@ -4,6 +4,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.14.0-alpha] — 2026-10-26
+
+**One road.** A capstone for the four regions, tame mimics and hedgehogs, harder-hitting bosses, and a building pass that makes the world's structures grander.
+
 ### Added
 
 - **Four Lamps, One Road**, a journal capstone that opens when the Reedlands, Highland, Belowkeeper and Emberwood lamps are all lit and each regional keeper has answered. It pays 120 XP, four Blank Runes, five Aura Shards and Aura experience, and ends with the Lamplighter's Lantern keepsake (night vision while held in the dark), a flare of end-rod light and a bell. Finishing it earns the Four Lamps, One Road advancement (a goal, 50 XP).
@@ -16,6 +20,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Changed
 
+- The world's buildings and dungeons got a visual pass, checked from five angles for each of the 76 sites. Among them: the Ember Sanctum has buttresses, red lancets, a battlemented clerestory, forge chimneys and a ribbed, crowned dome ringed by fire-topped pilasters; the root temple rises as a four-tier stepped pyramid; the clockwork crypt has a clock tower; the Archive stands on an octagonal forecourt with obelisks; the old battlefield has a breached ring wall and a wrecked trebuchet; the glacier den has a gate and twin blue-ice spires; the watermill wheel, hillside mine headframe, forge hall, broken bridge, venom ziggurat, standing stones, apiary, herbalist cottage, orchard, star terrace, crystal lab and waterfall shrine were rebuilt larger or given yards, towers and gardens. Forest sites clear the trees over themselves instead of being swallowed by them. Existing buildings stay as they are; the new versions appear in newly generated chunks.
 - Every boss hits players harder: lair bosses, dungeon guardians, Masters, the Gravekeeper, the Archivist, the Glass Cartographer, the Reed-Crowned Ferryman, the Hollow Bell, the Kiln Widow and giants. Their blows (and their projectiles) land 35% harder, and at least 40% of what armour, Protection and Resistance would stop goes through anyway. A 10-damage blow on full diamond with Protection IV used to take about half a heart; it now takes about two and a half.
 - The boss models move with more weight: clearer wind-ups before their big moves, follow-through and secondary motion on tails, wings and cloth, a flinch when hurt, and staged deaths instead of a plain fall.
 

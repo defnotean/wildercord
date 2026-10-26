@@ -11,6 +11,7 @@ Install `wildercord-0.14.0-alpha+mc26.3.jar` on the server and every client. Thi
 - **Bosses hit harder**: every boss's blows and projectiles land 35% harder, and at least 40% of what armour and Protection would stop goes through anyway.
 - **Bosses move better**: richer warnings, strikes, follow-through and staged deaths, and a move used twice in a row now blends instead of snapping.
 - **No more trees in boss lairs**: trees no longer grow inside or over overworld lairs and dungeons, and ones already there are cut down the first time the lair loads.
+- **Grander buildings**: the dungeons and sites across the world were rebuilt bigger and richer, from the Ember Sanctum's crowned dome to the root temple's stepped pyramid, and forest sites now clear the trees over themselves. New versions appear in newly generated chunks.
 - **Fixed**: a mount no longer crashes the server on its first ride after taming.
 
 # What's new in 0.13.0: Living world
