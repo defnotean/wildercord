@@ -3429,7 +3429,8 @@ def write_new_content(runes):
             {"type": "minecraft:skeleton", "weight": 3, "count": 1},
             {"type": "minecraft:zombie", "weight": 3, "count": 1},
             {"type": "minecraft:witch", "weight": 1, "count": 1}]}},
-        "step": "underground_structures",
+        # After trees, so the forecourt can clear the canopy that would otherwise swallow the gate.
+        "step": "top_layer_modification",
         "terrain_adaptation": "none"})
     write_json(DATA / "worldgen/structure_set/archives.json", {
         "placement": {"type": "minecraft:random_spread", "salt": 20260927, "separation": 14, "spacing": 44},

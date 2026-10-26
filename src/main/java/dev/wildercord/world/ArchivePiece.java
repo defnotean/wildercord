@@ -6,6 +6,7 @@ import dev.wildercord.content.WildercordBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -89,6 +90,7 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb,
 			ChunkPos chunkPos, BlockPos reference) {
 		dev.wildercord.world.dungeons.DungeonWards.remember(level, this);
+		clearForecourt(level, bb);
 		terrace(level, bb);
 		stairway(level, bb);
 		shrine(level, bb);
@@ -145,6 +147,24 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 	}
 
 	// ------------------------------------------------------------------ the entrance and the stairway
+
+	/**
+	 * Fells the trees over and around the forecourt so the gate stands in the open: leaves, logs and vines from the
+	 * terrace's level up, across the front of the piece. The structure generates after vegetation for this.
+	 */
+	private void clearForecourt(WorldGenLevel level, BoundingBox bb) {
+		for (int x = 3; x <= WIDTH - 4; x++) {
+			for (int z = 0; z <= TERRACE_Z + 14; z++) {
+				for (int y = SURFACE - 3; y <= HEIGHT + 24; y++) {
+					BlockState state = getBlock(level, x, y, z, bb);
+					if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || state.is(Blocks.VINE) || state.is(Blocks.BEE_NEST)
+							|| state.is(Blocks.COCOA)) {
+						set(level, bb, AIR, x, y, z);
+					}
+				}
+			}
+		}
+	}
 
 	private void stairway(WorldGenLevel level, BoundingBox bb) {
 		// In a piece's own frame NORTH points down the stairway (+z), so steps climbing back up face SOUTH.
@@ -266,6 +286,22 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.NORTH, false), ox, SURFACE + 1, oz - 1);
 			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.SOUTH, false), ox, SURFACE + 1, oz + 1);
 			banner(level, bb, ox, SURFACE + 7, oz - 1, Direction.SOUTH);
+		}
+		// Two taller obelisks at the back corners, so the forecourt reads as a court from every side.
+		for (int ox : new int[] {14, 26}) {
+			int oz = TERRACE_Z + 6;
+			fill(level, bb, ox - 1, SURFACE, oz - 1, ox + 1, SURFACE, oz + 1, POLISHED);
+			for (int y = SURFACE + 1; y <= SURFACE + 12; y++) {
+				set(level, bb, y % 4 == 0 ? POLISHED : wallBrick(ox, y, oz), ox, y, oz);
+			}
+			set(level, bb, CHISELED, ox, SURFACE + 13, oz);
+			set(level, bb, Blocks.CRYING_OBSIDIAN.defaultBlockState(), ox, SURFACE + 14, oz);
+			set(level, bb, Blocks.AMETHYST_CLUSTER.defaultBlockState(), ox, SURFACE + 15, oz);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.WEST, false), ox + 1, SURFACE + 1, oz);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.EAST, false), ox - 1, SURFACE + 1, oz);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.NORTH, false), ox, SURFACE + 1, oz - 1);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.SOUTH, false), ox, SURFACE + 1, oz + 1);
+			banner(level, bb, ox, SURFACE + 8, oz - 1, Direction.SOUTH);
 		}
 		// The arch over the way down.
 		for (int y = SURFACE; y <= SURFACE + 4; y++) {
