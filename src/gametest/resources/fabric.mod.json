@@ -57,6 +57,7 @@
       "dev.wildercord.aura.world.CooldownRestartTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
+      "dev.wildercord.world.dungeons.BarrowBearerGenerationTest",
       "dev.wildercord.gametest.WildercordMonstersTest",
       "dev.wildercord.aura.world.AuraBeastsTest",
       "dev.wildercord.gametest.WildercordArtsTest",

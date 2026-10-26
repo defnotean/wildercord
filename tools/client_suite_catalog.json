@@ -25,13 +25,14 @@
   "area-combat-bosses": {
     "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, monsters, aura beasts, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world.",
     "purpose": "area",
-    "expectedCount": 10,
+    "expectedCount": 11,
     "entries": [
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.world.dungeons.SwordTombTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
+      "dev.wildercord.world.dungeons.BarrowBearerGenerationTest",
       "dev.wildercord.gametest.WildercordMonstersTest",
       "dev.wildercord.aura.world.AuraBeastsTest",
       "dev.wildercord.aura.world.BossDamageTest",
