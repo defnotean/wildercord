@@ -103,7 +103,7 @@ LOOT = {
 
 
 # Forest sites that clear the trees over themselves, so they generate after vegetation.
-CLEARS_CANOPY = {"farm_herbalist", "farm_apiary"}
+CLEARS_CANOPY = {"farm_herbalist", "farm_apiary", "farm_orchard"}
 CANOPY_STEP = "top_layer_modification"
 
 

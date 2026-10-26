@@ -17,14 +17,16 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 /**
  * A mossy walled orchard of oak, cherry and azalea round an overgrown rune garden. The garden's keeper buried a cache
- * under a mound of roots beside the old pedestal; the sign says where to dig.
+ * under a mound of roots beside the old pedestal; the sign says where to dig. A cider-press house with a smoking chimney
+ * stands in the back corner, and the wild wood is cleared back from the wall so the orchard shows from afar.
  */
 public final class OrchardPiece extends FarmPiece {
-	public OrchardPiece(int x, int z, Direction facing) { super(FarmSites.ORCHARD, x, 0, z, 25, 12, 25, facing); }
+	public OrchardPiece(int x, int z, Direction facing) { super(FarmSites.ORCHARD, x, 0, z, 25, 13, 25, facing); }
 	public OrchardPiece(CompoundTag tag) { super(FarmSites.ORCHARD, tag); }
 
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb, ChunkPos chunk, BlockPos reference) {
+		clearCanopy(level, bb);
 		site(level, bb, s(Blocks.GRASS_BLOCK), 1);
 		// The wall: two high, crumbled in places, coped where it still stands, a gate in the front.
 		for (int x = 0; x <= 24; x++) for (int z = 0; z <= 24; z++) {
@@ -78,14 +80,14 @@ public final class OrchardPiece extends FarmPiece {
 		for (int z = 1; z <= 8; z++) for (int x : new int[]{11, 13}) set(level, bb, s(noise(x, z) < 50 ? Blocks.MOSSY_STONE_BRICKS : Blocks.STONE_BRICKS), x, 0, z);
 		// The trees, kept in leaf.
 		for (int x : new int[]{4, 8, 16, 20}) for (int z : new int[]{4, 8, 16, 20}) {
-			if (x == 8 && z == 4 || x == 16 && z == 4) continue;
+			if (x == 8 && z == 4 || x == 16 && z == 4 || x >= 16 && z >= 16 && !(x == 16 && z == 16)) continue;
 			int kind = noise(x * 3, z * 5) % 3;
 			BlockState log = s(kind == 1 ? Blocks.CHERRY_LOG : Blocks.OAK_LOG);
 			BlockState leaf = leaves(kind == 0 ? Blocks.OAK_LEAVES : kind == 1 ? Blocks.CHERRY_LEAVES : Blocks.FLOWERING_AZALEA_LEAVES);
 			tree(level, bb, x, 1, z, 4, log, leaf);
 		}
 		for (int x = 1; x <= 23; x++) for (int z = 1; z <= 23; z++) {
-			if (x >= 9 && x <= 15 && z >= 9 && z <= 15 || x >= 11 && x <= 13 && z < 9) continue;
+			if (x >= 9 && x <= 15 && z >= 9 && z <= 15 || x >= 11 && x <= 13 && z < 9 || x >= 16 && z >= 17) continue;
 			int n = noise(x + 7, z);
 			if (n < 10) set(level, bb, s(Blocks.SHORT_GRASS), x, 1, z);
 			else if (n < 16) set(level, bb, s(Blocks.LEAF_LITTER), x, 1, z);
@@ -129,6 +131,36 @@ public final class OrchardPiece extends FarmPiece {
 		set(level, bb, s(Blocks.MOSS_CARPET), 11, 1, 14);
 		set(level, bb, s(Blocks.MOSS_CARPET), 13, 1, 14);
 		sign(level, bb, standingSign(), 12, 1, 10, "farm_orchard", 3);
+		// The cider-press house in the back corner: a cobbled sill, timber walls under a steep spruce gable, a smoking chimney.
+		fill(level, bb, 17, 0, 18, 23, 0, 23, s(Blocks.SPRUCE_PLANKS));
+		walls(level, bb, 17, 1, 18, 23, 1, 23, s(Blocks.MOSSY_COBBLESTONE));
+		walls(level, bb, 17, 2, 18, 23, 4, 23, s(Blocks.OAK_PLANKS));
+		for (int x : new int[]{17, 23}) for (int z : new int[]{18, 23}) fill(level, bb, x, 1, z, x, 4, z, s(Blocks.STRIPPED_SPRUCE_LOG));
+		gableRoof(level, bb, 17, 18, 23, 23, 5, false, Blocks.SPRUCE_STAIRS, s(Blocks.SPRUCE_PLANKS), Palette.of(Blocks.OAK_PLANKS, 3, Blocks.STRIPPED_OAK_LOG, 1));
+		set(level, bb, s(Blocks.GLASS_PANE), 20, 6, 18);
+		set(level, bb, s(Blocks.GLASS_PANE), 20, 6, 23);
+		for (int y = 2; y <= 3; y++) {
+			for (int z = 20; z <= 21; z++) { set(level, bb, s(Blocks.GLASS_PANE), 17, y, z); set(level, bb, s(Blocks.GLASS_PANE), 23, y, z); }
+			set(level, bb, s(Blocks.GLASS_PANE), 18, y, 18);
+			set(level, bb, s(Blocks.GLASS_PANE), 22, y, 18);
+		}
+		door(level, bb, Blocks.SPRUCE_DOOR, 20, 1, 18, Direction.SOUTH, false);
+		for (int x : new int[]{19, 21}) set(level, bb, s(Blocks.OAK_FENCE), x, 1, 17);
+		for (int x : new int[]{19, 21}) set(level, bb, lantern, x, 2, 17);
+		set(level, bb, s(Blocks.FLOWER_POT), 18, 1, 17);
+		set(level, bb, s(Blocks.POTTED_RED_TULIP), 22, 1, 17);
+		fill(level, bb, 22, 2, 22, 22, 10, 22, s(Blocks.COBBLESTONE));
+		set(level, bb, s(Blocks.SMOKER).setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST), 22, 1, 22);
+		set(level, bb, s(Blocks.CAMPFIRE), 22, 11, 22);
+		// Inside: the press (a cauldron under a piston), casks of cider and baskets of windfalls.
+		set(level, bb, s(Blocks.CAULDRON), 18, 1, 22);
+		set(level, bb, s(Blocks.PISTON).setValue(BlockStateProperties.FACING, Direction.DOWN), 18, 3, 22);
+		set(level, bb, s(Blocks.OAK_FENCE), 18, 2, 22);
+		for (int x = 19; x <= 21; x++) set(level, bb, s(Blocks.BARREL).setValue(BlockStateProperties.FACING, Direction.NORTH), x, 1, 22);
+		set(level, bb, s(Blocks.BARREL).setValue(BlockStateProperties.FACING, Direction.NORTH), 20, 2, 22);
+		set(level, bb, s(Blocks.COMPOSTER), 22, 1, 19);
+		set(level, bb, s(Blocks.CRAFTING_TABLE), 18, 1, 19);
+		hangingLantern(level, bb, 20, 8, 20, 2, false);
 		// The fruit stand by the gate.
 		fill(level, bb, 15, 1, 2, 15, 2, 2, s(Blocks.OAK_FENCE));
 		fill(level, bb, 18, 1, 2, 18, 2, 2, s(Blocks.OAK_FENCE));
