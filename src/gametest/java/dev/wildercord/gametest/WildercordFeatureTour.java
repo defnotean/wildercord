@@ -1342,14 +1342,15 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			});
 			context.waitTicks(40);
 			shot(context, "archive_from_above");
-			// Find its heart: the lectern.
+			// Find its heart: the lectern. The grander Archive puts it beyond the camera's loaded chunks,
+			// so the scan reads (and loads) the placed chunks rather than skipping them.
 			lectern = world.getServer().computeOnServer(server -> {
 				ServerLevel level = player(server).level();
 				for (int dx = -100; dx <= 100; dx++) {
 					for (int dz = -100; dz <= 100; dz++) {
 						for (int y = level.getMinY() + 1; y < origin.getY() + 10; y++) {
 							BlockPos pos = new BlockPos(origin.getX() + dx, y, origin.getZ() + dz);
-							if (level.isLoaded(pos) && level.getBlockState(pos).is(WildercordBlocks.ARCHIVE_LECTERN)) {
+							if (level.getBlockState(pos).is(WildercordBlocks.ARCHIVE_LECTERN)) {
 								return observation.scanned(level, pos);
 							}
 						}
