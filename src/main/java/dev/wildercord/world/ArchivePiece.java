@@ -60,6 +60,8 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 	private static final int STAIR_START = 6;
 	private static final int ARENA_Z = 77;
 	private static final int ARENA_R = 12;
+	/** Ground the box keeps in front of the terrace, so the trees there can be felled too; local z 0 stays the terrace's front. */
+	private static final int COURT = 8;
 
 	private static final BlockState TILES = Blocks.DEEPSLATE_TILES.defaultBlockState();
 	private static final BlockState BRICKS = Blocks.DEEPSLATE_BRICKS.defaultBlockState();
@@ -69,7 +71,7 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 	private static final BlockState AIR = Blocks.AIR.defaultBlockState();
 
 	public ArchivePiece(int x, int y, int z, Direction facing) {
-		super(WildercordWorldgen.ARCHIVE_PIECE, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
+		super(WildercordWorldgen.ARCHIVE_PIECE, x, y, z, WIDTH, HEIGHT, DEPTH + COURT, facing);
 	}
 
 	public ArchivePiece(CompoundTag tag) {
@@ -80,6 +82,9 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 	public BlockPos entrance() {
 		return getWorldPos(20, 0, STAIR_START);
 	}
+
+	@Override protected int getWorldX(int x, int z) { return super.getWorldX(x, z + COURT); }
+	@Override protected int getWorldZ(int x, int z) { return super.getWorldZ(x, z + COURT); }
 
 	@Override
 	protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tag) {
@@ -150,11 +155,11 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 
 	/**
 	 * Fells the trees over and around the forecourt so the gate stands in the open: leaves, logs and vines from the
-	 * terrace's level up, across the front of the piece. The structure generates after vegetation for this.
+	 * terrace's level up, across the front of the piece and the court before it. The structure generates after vegetation for this.
 	 */
 	private void clearForecourt(WorldGenLevel level, BoundingBox bb) {
 		for (int x = 3; x <= WIDTH - 4; x++) {
-			for (int z = 0; z <= TERRACE_Z + 14; z++) {
+			for (int z = -COURT; z <= TERRACE_Z + 14; z++) {
 				for (int y = SURFACE - 3; y <= HEIGHT + 24; y++) {
 					BlockState state = getBlock(level, x, y, z, bb);
 					if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || state.is(Blocks.VINE) || state.is(Blocks.BEE_NEST)
