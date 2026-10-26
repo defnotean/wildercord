@@ -52,7 +52,8 @@ public final class CairnLodgePiece extends HighlandPiece {
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox clip, ChunkPos chunk, BlockPos pivot) {
 		for (int x = 0; x <= 20; x++) for (int y = DECK + 1; y <= 14; y++) for (int z = 0; z <= 20; z++) {
-			if (!furniture(x, y, z)) set(level, clip, AIR, x, y, z);
+			// A replayed chunk must not blank its barrels, campfires and beds: the cleared block entity is left behind.
+			if (!furniture(x, y, z) && !holdsBlockEntity(level, clip, x, y, z)) set(level, clip, AIR, x, y, z);
 		}
 		// Broad dry-stone shelf and leeward courtyard footing.
 		footing(level, clip, 2, 2, 18, 18, DECK - 1);
@@ -233,13 +234,45 @@ public final class CairnLodgePiece extends HighlandPiece {
 		set(level, clip, Blocks.BARREL.defaultBlockState(), 12, DECK + 1, 16);
 		set(level, clip, Blocks.BARREL.defaultBlockState(), 13, DECK + 1, 16);
 		set(level, clip, Blocks.BARREL.defaultBlockState(), 13, DECK + 2, 16);
-		for (int[] c : new int[][]{{3, 3}, {17, 3}, {3, 17}, {17, 17}}) {
+		// A covered porch on spruce posts before the door.
+		for (int x : new int[]{8, 10}) fill(level, clip, x, DECK + 1, 16, x, DECK + 3, 16, Blocks.SPRUCE_FENCE.defaultBlockState());
+		for (int x = 7; x <= 11; x++) for (int z = 15; z <= 16; z++) {
+			if (x != 9 || z != 15) set(level, clip, Blocks.SPRUCE_SLAB.defaultBlockState(), x, DECK + 4, z);
+		}
+		// The great ridge cairn in the back corner: a tapering dry-stone tower with a carved band, a corbelled crown
+		// and a beacon fire on top, the first thing a traveller sees of the lodge across the moor.
+		for (int x = 16; x <= 18; x++) for (int z = 16; z <= 18; z++) {
+			fillColumnDown(level, ANDESITE, x, DECK - 1, z, clip);
+			for (int y = DECK; y <= DECK + 7; y++) {
+				int n = noise(x, y, z);
+				BlockState stone = y == DECK + 4 ? Blocks.CHISELED_STONE_BRICKS.defaultBlockState()
+					: n < 30 ? MOSSY_COBBLE : n < 60 ? COBBLE : n < 90 ? BRICK : MOSSY_BRICK;
+				set(level, clip, stone, x, y, z);
+			}
+		}
+		for (int i = 16; i <= 18; i++) {
+			set(level, clip, st(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 15, DECK + 7, i);
+			set(level, clip, st(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), 19, DECK + 7, i);
+			set(level, clip, st(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), i, DECK + 7, 15);
+			set(level, clip, st(Blocks.STONE_BRICK_STAIRS, Direction.SOUTH, true), i, DECK + 7, 19);
+		}
+		for (int x : new int[]{16, 18}) for (int z : new int[]{16, 18}) {
+			set(level, clip, Blocks.STONE_BRICK_WALL.defaultBlockState(), x, DECK + 8, z);
+			set(level, clip, Blocks.LANTERN.defaultBlockState(), x, DECK + 9, z);
+		}
+		set(level, clip, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), 17, DECK + 8, 17);
+		for (int[] c : new int[][]{{3, 3}, {17, 3}, {3, 17}}) {
 			fill(level, clip, c[0], DECK + 1, c[1], c[0], DECK + 2, c[1], Blocks.SPRUCE_FENCE.defaultBlockState());
 			set(level, clip, Blocks.LANTERN.defaultBlockState(), c[0], DECK + 3, c[1]);
 		}
 
 		var home = localPosition(9, DECK + 1, 11);
 		if (!residentPlaced && clip.isInside(home)) residentPlaced = CairnKeeperResident.spawn(level, home);
+	}
+
+	private boolean holdsBlockEntity(WorldGenLevel level, BoundingBox clip, int x, int y, int z) {
+		BlockPos p = world(x, y, z);
+		return clip.isInside(p) && level.getBlockState(p).hasBlockEntity();
 	}
 
 	private static BlockState st(Block stairs, Direction facing, boolean top) {
