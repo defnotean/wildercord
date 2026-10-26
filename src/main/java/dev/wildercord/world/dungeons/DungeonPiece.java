@@ -84,9 +84,9 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 
 	/** {@link #clearCanopy(WorldGenLevel, BoundingBox)} from local {@code y0} up, so roots under water stay put. */
 	protected void clearCanopy(WorldGenLevel level, BoundingBox bb, int y0) {
-		int w = boundingBox.getXSpan(), d = boundingBox.getZSpan(), top = boundingBox.getYSpan() + 30;
-		for (int x = 0; x < w; x++) {
-			for (int z = 0; z < d; z++) {
+		int m = margin(), w = boundingBox.getXSpan() - m, d = boundingBox.getZSpan() - m, top = boundingBox.getYSpan() + 30;
+		for (int x = -m; x < w; x++) {
+			for (int z = -m; z < d; z++) {
 				for (int y = y0; y <= top; y++) {
 					BlockState state = getBlock(level, x, y, z, bb);
 					if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || state.is(Blocks.VINE) || state.is(Blocks.MANGROVE_ROOTS)
@@ -96,6 +96,11 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 				}
 			}
 		}
+	}
+
+	/** Open ground the box keeps on every side of the site; local (0, 0) stays the site's own corner. */
+	protected int margin() {
+		return 0;
 	}
 
 	/** A deterministic 0-99 for a spot, so the same column always gets the same variation. */

@@ -25,7 +25,12 @@ abstract class WildsPiece extends DungeonPiece {
 	static final int SINK = 6;
 
 	WildsPiece(StructurePieceType type, int x, int z, int width, int height, int depth, Direction facing) {
-		super(type, x, 0, z, width, height + SINK, depth, facing);
+		this(type, x, z, width, height, depth, facing, 0);
+	}
+
+	/** A site with {@code margin} blocks of its own ground on every side; the subclass's {@link #margin()} must agree. */
+	WildsPiece(StructurePieceType type, int x, int z, int width, int height, int depth, Direction facing, int margin) {
+		super(type, x, 0, z, width + 2 * margin, height + SINK, depth + 2 * margin, facing);
 	}
 
 	WildsPiece(StructurePieceType type, CompoundTag tag) {
@@ -34,6 +39,8 @@ abstract class WildsPiece extends DungeonPiece {
 
 	/** Local y=0 is the floor: the box's lowest {@link #SINK} layers are footing. */
 	@Override protected int getWorldY(int y) { return super.getWorldY(y + SINK); }
+	@Override protected int getWorldX(int x, int z) { return super.getWorldX(x + margin(), z + margin()); }
+	@Override protected int getWorldZ(int x, int z) { return super.getWorldZ(x + margin(), z + margin()); }
 
 	static BlockState s(Block block) { return block.defaultBlockState(); }
 

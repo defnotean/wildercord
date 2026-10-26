@@ -23,14 +23,18 @@ import java.util.Optional;
 
 /**
  * A stepped jungle ziggurat. The front stair climbs to a shrine where venom-bound Bogged keep watch; a low tunnel in
- * the back runs past two tripwires (poison darts from both walls) to a vault behind a Life and Void seal.
+ * the back runs past two tripwires (poison darts from both walls) to a vault behind a Life and Void seal. It stands in
+ * its own cut clearing: a mossy plaza with lily pools either side of a processional avenue lined with smoking obelisks.
  */
 public final class VenomZigguratPiece extends WildsPiece {
-	public VenomZigguratPiece(int x, int z, Direction facing) { super(WildsSites.VENOM_ZIGGURAT, x, z, 23, 18, 23, facing); }
+	/** The plaza around the ziggurat. */
+	static final int MARGIN = 6;
+	public VenomZigguratPiece(int x, int z, Direction facing) { super(WildsSites.VENOM_ZIGGURAT, x, z, 23, 22, 23, facing, MARGIN); }
 	public VenomZigguratPiece(CompoundTag tag) { super(WildsSites.VENOM_ZIGGURAT, tag); }
 	static Optional<Structure.GenerationStub> locate(Structure.GenerationContext c) {
-		return surface(c, new VenomZigguratPiece(c.chunkPos().getMinBlockX(), c.chunkPos().getMinBlockZ(), facing(c)), 4);
+		return surface(c, new VenomZigguratPiece(c.chunkPos().getMinBlockX(), c.chunkPos().getMinBlockZ(), facing(c)), 5);
 	}
+	@Override protected int margin() { return MARGIN; }
 	/** The two tripwires across the tunnel. */
 	static final int[] TRAPS = {19, 16};
 
@@ -43,8 +47,9 @@ public final class VenomZigguratPiece extends WildsPiece {
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
 		clearCanopy(level, bb);
 		DungeonWards.remember(level, this);
-		footing(level, bb, 0, 0, 22, 22, s(Blocks.COBBLESTONE));
-		clear(level, bb, 0, 3, 0, 22, 17, 22);
+		footing(level, bb, -MARGIN, -MARGIN, 22 + MARGIN, 22 + MARGIN, s(Blocks.COBBLESTONE));
+		clear(level, bb, -MARGIN, 1, -MARGIN, 22 + MARGIN, 21, 22 + MARGIN);
+		plaza(level, bb);
 		// Four tiers, each two in and three up from the last.
 		for (int t = 0; t < 4; t++) for (int x = 2 * t; x <= 22 - 2 * t; x++) for (int z = 2 * t; z <= 22 - 2 * t; z++) for (int y = 3 * t; y <= 3 * t + 2; y++)
 			set(level, bb, stone(x, y, z), x, y, z);
@@ -87,6 +92,11 @@ public final class VenomZigguratPiece extends WildsPiece {
 		fill(level, bb, 9, 16, 9, 13, 16, 13, s(Blocks.MOSSY_STONE_BRICKS));
 		fill(level, bb, 10, 17, 10, 12, 17, 12, s(Blocks.CHISELED_STONE_BRICKS));
 		set(level, bb, s(Blocks.VERDANT_FROGLIGHT), 11, 17, 11);
+		// A stepped spire over the crown, its green fire seen above the jungle.
+		for (int[] c : new int[][]{{10, 10}, {12, 10}, {10, 12}, {12, 12}}) set(level, bb, s(Blocks.MOSSY_STONE_BRICK_WALL), c[0], 18, c[1]);
+		fill(level, bb, 11, 18, 11, 11, 19, 11, s(Blocks.CHISELED_STONE_BRICKS));
+		set(level, bb, s(Blocks.VERDANT_FROGLIGHT), 11, 20, 11);
+		set(level, bb, s(Blocks.MOSSY_STONE_BRICK_WALL), 11, 21, 11);
 		// The front stair, cut through the tiers into the shrine.
 		for (int step = 0; step <= 10; step++) {
 			clear(level, bb, 10, step + 2, step, 12, step + 4, step);
@@ -124,6 +134,37 @@ public final class VenomZigguratPiece extends WildsPiece {
 		guard(level, bb, EntityTypes.BOGGED, 9, 12, 12, List.of(Runes.BOLT, Runes.VENOM), false);
 		guard(level, bb, EntityTypes.BOGGED, 13, 12, 10, List.of(Runes.BOLT, Runes.VENOM), false);
 		guard(level, bb, EntityTypes.WITCH, 9, 1, 10, List.of(Runes.ZONE, Runes.VENOM), true);
+	}
+
+	/** The cut clearing: a worn mossy plaza, lily pools beside the avenue, smoking obelisks along it and at the corners. */
+	private void plaza(WorldGenLevel level, BoundingBox bb) {
+		for (int x = -MARGIN; x <= 22 + MARGIN; x++) for (int z = -MARGIN; z <= 22 + MARGIN; z++) {
+			int n = noise(x, 5, z);
+			boolean avenue = z < 0 && x >= 8 && x <= 14;
+			set(level, bb, avenue ? s(n < 30 ? Blocks.MOSSY_STONE_BRICKS : n < 40 ? Blocks.CRACKED_STONE_BRICKS : Blocks.STONE_BRICKS)
+				: s(n < 25 ? Blocks.MOSS_BLOCK : n < 45 ? Blocks.MOSSY_COBBLESTONE : n < 60 ? Blocks.COARSE_DIRT : n < 85 ? Blocks.GRASS_BLOCK : Blocks.MOSSY_STONE_BRICKS), x, 0, z);
+			if (!avenue && n < 25 && noise(z, 9, x) < 40) set(level, bb, s(Blocks.FERN), x, 1, z);
+		}
+		// The avenue's kerbs and the pools either side of it.
+		for (int z = -MARGIN; z < 0; z++) for (int x : new int[]{7, 15}) set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), x, 0, z);
+		for (int x0 : new int[]{1, 17}) {
+			walls(level, bb, x0, 0, -5, x0 + 4, 0, -1, Palette.of(Blocks.MOSSY_STONE_BRICKS, 1));
+			fill(level, bb, x0 + 1, -1, -4, x0 + 3, -1, -2, s(Blocks.MUD));
+			fill(level, bb, x0 + 1, 0, -4, x0 + 3, 0, -2, s(Blocks.WATER));
+			for (int[] p : new int[][]{{x0 + 1, -4}, {x0 + 3, -2}}) set(level, bb, s(Blocks.LILY_PAD), p[0], 1, p[1]);
+			set(level, bb, s(Blocks.STONE_BRICK_SLAB), x0, 1, -5);
+			set(level, bb, s(Blocks.STONE_BRICK_SLAB), x0 + 4, 1, -1);
+		}
+		// Obelisks: a chiselled plinth, a mossy shaft, a burning cap. Two pairs line the avenue, four mark the corners.
+		for (int[] o : new int[][]{{7, -5, 4}, {15, -5, 4}, {7, -2, 4}, {15, -2, 4}, {-4, -4, 7}, {26, -4, 7}, {-4, 26, 7}, {26, 26, 7}}) {
+			set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), o[0], 1, o[1]);
+			fill(level, bb, o[0], 2, o[1], o[0], o[2], o[1], s(Blocks.MOSSY_STONE_BRICKS));
+			set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), o[0], o[2] + 1, o[1]);
+			set(level, bb, s(Blocks.CAMPFIRE), o[0], o[2] + 2, o[1]);
+			if (o[2] > 4) for (Direction d : Direction.Plane.HORIZONTAL) {
+				set(level, bb, stair(Blocks.MOSSY_STONE_BRICK_STAIRS, d.getOpposite(), false), o[0] + d.getStepX(), 1, o[1] + dz(d));
+			}
+		}
 	}
 
 	@Override public List<BoundingBox> wardedBoxes() { return List.of(worldBox(6, 0, 6, 16, 5, 13)); }
