@@ -26,7 +26,7 @@ import java.util.Set;
 final class StructureGallery {
 	private StructureGallery() {}
 
-	private record Site(String id, BlockPos command, BoundingBox bounds) {}
+	private record Site(String id, ResourceKey<net.minecraft.world.level.Level> dimension, BlockPos command, BoundingBox bounds) {}
 
 	/** Shoots the structures whose sorted index is {@code shard} modulo {@code shards}. */
 	static void shoot(ClientGameTestContext c, int shard, int shards) {
@@ -49,14 +49,15 @@ final class StructureGallery {
 				if (i % shards != shard) continue;
 				String id = ids.get(i);
 				BlockPos origin = new BlockPos(((i % 8) - 4) * 2500, 64, ((i / 8) - 5) * 2500);
-				Site site = world.getServer().computeOnServer(s -> find(s.overworld(), id, origin));
+				Site site = world.getServer().computeOnServer(s -> find(home(s, id), id, origin));
 				if (site == null) { missing.add(id); log(id, "no valid start near " + origin); continue; }
 				boolean placed = world.getServer().computeOnServer(s -> {
 					var b = site.bounds();
-					for (int cx = (b.minX() >> 4) - 2; cx <= (b.maxX() >> 4) + 2; cx++) for (int cz = (b.minZ() >> 4) - 2; cz <= (b.maxZ() >> 4) + 2; cz++) s.overworld().getChunk(cx, cz);
+					var level = s.getLevel(site.dimension());
+					for (int cx = (b.minX() >> 4) - 2; cx <= (b.maxX() >> 4) + 2; cx++) for (int cz = (b.minZ() >> 4) - 2; cz <= (b.maxZ() >> 4) + 2; cz++) level.getChunk(cx, cz);
 					boolean[] ok = {false};
 					s.getCommands().performPrefixedCommand(s.createCommandSourceStack().withSuppressedOutput().withCallback((success, value) -> ok[0] = success && value == 1),
-						"place structure wildercord:" + id + " " + site.command().getX() + " " + site.command().getY() + " " + site.command().getZ());
+						"execute in " + site.dimension().identifier() + " run place structure wildercord:" + id + " " + site.command().getX() + " " + site.command().getY() + " " + site.command().getZ());
 					return ok[0];
 				});
 				if (!placed) { missing.add(id); log(id, "place structure refused at " + site.command()); continue; }
@@ -65,26 +66,46 @@ final class StructureGallery {
 				double cx = (b.minX() + b.maxX() + 1) / 2.0, cz = (b.minZ() + b.maxZ() + 1) / 2.0;
 				int span = Math.max(b.getXSpan(), b.getZSpan());
 				double d = span * 0.8 + 10, lift = Math.max(10, span * 0.5), ty = b.minY() + b.getYSpan() * 0.4;
+				var dim = site.dimension();
+				// Under the Nether's bedrock roof there is no sky to shoot from, so keep every camera below it.
+				double roof = dim == net.minecraft.world.level.Level.NETHER ? 120 : Double.MAX_VALUE;
 				// Two aerial three-quarter views from opposite corners, so every face is seen once.
-				view(c, world, cx + d * 0.7, b.maxY() + lift, cz + d * 0.7, cx, ty, cz);
+				view(c, world, dim, cx + d * 0.7, Math.min(roof, b.maxY() + lift), cz + d * 0.7, cx, ty, cz);
 				shot(c, "gallery_" + id);
-				view(c, world, cx - d * 0.7, b.maxY() + lift, cz - d * 0.7, cx, ty, cz);
+				view(c, world, dim, cx - d * 0.7, Math.min(roof, b.maxY() + lift), cz - d * 0.7, cx, ty, cz);
 				shot(c, "gallery_" + id + "_back");
 				// Eye level from the ground beside it, as a player walking up would see it, and a plan from straight above.
 				double gx = cx - d * 0.75, gz = cz + d * 0.45;
-				int ground = world.getServer().computeOnServer(s -> s.overworld().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) Math.floor(gx), (int) Math.floor(gz)));
-				view(c, world, gx, ground + 0.5, gz, cx, Math.max(ground + 1.5, ty), cz);
+				int ground = world.getServer().computeOnServer(s -> {
+					var level = s.getLevel(dim);
+					int x = (int) Math.floor(gx), z = (int) Math.floor(gz);
+					if (roof == Double.MAX_VALUE) return level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+					// The Nether's heightmap is its roof: walk up from the site's floor to the first open footing instead.
+					for (int y = b.minY(); y < roof - 2; y++)
+						if (level.getBlockState(new BlockPos(x, y, z)).isAir() && level.getBlockState(new BlockPos(x, y + 1, z)).isAir() && !level.getBlockState(new BlockPos(x, y - 1, z)).isAir()) return y;
+					return b.minY() + 1;
+				});
+				view(c, world, dim, gx, Math.min(roof - 2, ground + 0.5), gz, cx, Math.max(ground + 1.5, ty), cz);
 				shot(c, "gallery_" + id + "_ground");
-				view(c, world, cx + 0.01, b.maxY() + span * 0.9 + 8, cz + 0.01, cx, b.minY(), cz);
+				view(c, world, dim, cx + 0.01, Math.min(roof, b.maxY() + span * 0.9 + 8), cz + 0.01, cx, b.minY(), cz);
 				shot(c, "gallery_" + id + "_plan");
 				boolean alongX = b.getXSpan() >= b.getZSpan();
 				double y = b.minY() + Math.max(2, b.getYSpan() * 0.3);
-				view(c, world, alongX ? b.minX() + 2.5 : cx, y, alongX ? cz : b.minZ() + 2.5, alongX ? b.maxX() : cx, y - 2, alongX ? cz : b.maxZ());
+				view(c, world, dim, alongX ? b.minX() + 2.5 : cx, y, alongX ? cz : b.minZ() + 2.5, alongX ? b.maxX() : cx, y - 2, alongX ? cz : b.maxZ());
 				shot(c, "gallery_" + id + "_inside");
 			}
 		}
 		log("summary", "shard " + shard + "/" + shards + " missing=" + missing);
 		if (!missing.isEmpty()) throw new AssertionError("Structures that could not be found and placed near their search origins: " + missing);
+	}
+
+	/** The dimension whose biomes can host {@code id}: the overworld unless only the Nether's or the End's biomes are in its tag. */
+	private static ServerLevel home(net.minecraft.server.MinecraftServer server, String id) {
+		var biomes = server.overworld().registryAccess().lookupOrThrow(Registries.STRUCTURE).getValueOrThrow(ResourceKey.create(Registries.STRUCTURE,
+			net.minecraft.resources.Identifier.fromNamespaceAndPath("wildercord", id))).biomes();
+		for (ServerLevel level : server.getAllLevels())
+			if (level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes().stream().anyMatch(biomes::contains)) return level;
+		return server.overworld();
 	}
 
 	/** The nearest valid registered start of {@code id}, searched outward from its biome closest to {@code origin}. */
@@ -99,7 +120,7 @@ final class StructureGallery {
 		java.util.function.Function<ChunkPos, Site> at = chunk -> {
 			var start = structure.generate(holder, level.dimension(), level.registryAccess(), generator, generator.getBiomeSource(), sampler, randomState,
 				level.getStructureTemplateManager(), level.getSeed(), chunk, 0, level, structure.biomes()::contains);
-			return start.isValid() ? new Site(id, new BlockPos(chunk.getMinBlockX(), 70, chunk.getMinBlockZ()), start.getBoundingBox()) : null;
+			return start.isValid() ? new Site(id, level.dimension(), new BlockPos(chunk.getMinBlockX(), 70, chunk.getMinBlockZ()), start.getBoundingBox()) : null;
 		};
 		var biome = level.findClosestBiome3d(structure.biomes()::contains, origin, 6400, 32, 64);
 		if (biome != null) {
@@ -120,16 +141,17 @@ final class StructureGallery {
 
 	/** Puts the spectating player's eye at {@code (x, y, z)} looking at {@code (tx, ty, tz)}, and waits for the view to draw. */
 	private static void view(ClientGameTestContext c, net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext world,
-			double x, double y, double z, double tx, double ty, double tz) {
+			ResourceKey<net.minecraft.world.level.Level> dim, double x, double y, double z, double tx, double ty, double tz) {
 		double eye = 1.62, dx = tx - x, dy = ty - (y + eye), dz = tz - z;
 		float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
 		float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
 		world.getServer().runOnServer(s -> {
 			// Generate the ground around the camera first, so the client has nothing slow left to wait for.
 			int ccx = (int) Math.floor(x) >> 4, ccz = (int) Math.floor(z) >> 4;
-			for (int cx = ccx - 6; cx <= ccx + 6; cx++) for (int cz = ccz - 6; cz <= ccz + 6; cz++) s.overworld().getChunk(cx, cz);
+			var level = s.getLevel(dim);
+			for (int cx = ccx - 6; cx <= ccx + 6; cx++) for (int cz = ccz - 6; cz <= ccz + 6; cz++) level.getChunk(cx, cz);
 			var p = s.getPlayerList().getPlayers().getFirst();
-			p.teleportTo(s.overworld(), x, y, z, Set.<Relative>of(), yaw, pitch, false);
+			p.teleportTo(level, x, y, z, Set.<Relative>of(), yaw, pitch, false);
 		});
 		// A fixed wait: on the VPS waitForChunksRender always ran into its minute-long timeout over far horizon chunks,
 		// and the ground is already generated, so a few seconds draws everything near the camera.
