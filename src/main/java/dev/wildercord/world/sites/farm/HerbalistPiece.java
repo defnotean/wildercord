@@ -26,6 +26,7 @@ public final class HerbalistPiece extends FarmPiece {
 
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb, ChunkPos chunk, BlockPos reference) {
+		clearCanopy(level, bb);
 		site(level, bb, s(Blocks.GRASS_BLOCK), 1);
 		fill(level, bb, 8, 0, 0, 8, 0, 4, s(Blocks.DIRT_PATH));
 		// Flower beds either side of the path.

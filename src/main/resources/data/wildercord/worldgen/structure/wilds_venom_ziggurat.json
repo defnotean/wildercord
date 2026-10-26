@@ -3,6 +3,6 @@
   "site": "wilds_venom_ziggurat",
   "biomes": "#wildercord:has_structure/wilds_venom_ziggurat",
   "spawn_overrides": {},
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "terrain_adaptation": "none"
 }

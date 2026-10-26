@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -71,6 +72,30 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 
 	protected void set(WorldGenLevel level, BoundingBox bb, BlockState state, int x, int y, int z) {
 		placeBlock(level, state, x, y, z, bb);
+	}
+
+	/**
+	 * Clears trees over the piece's footprint, from local y 1 to 30 above its top: leaves, logs, vines and mangrove roots
+	 * become air, so a forest site stands in its own clearing. Sites that call this generate after vegetation.
+	 */
+	protected void clearCanopy(WorldGenLevel level, BoundingBox bb) {
+		clearCanopy(level, bb, 1);
+	}
+
+	/** {@link #clearCanopy(WorldGenLevel, BoundingBox)} from local {@code y0} up, so roots under water stay put. */
+	protected void clearCanopy(WorldGenLevel level, BoundingBox bb, int y0) {
+		int w = boundingBox.getXSpan(), d = boundingBox.getZSpan(), top = boundingBox.getYSpan() + 30;
+		for (int x = 0; x < w; x++) {
+			for (int z = 0; z < d; z++) {
+				for (int y = y0; y <= top; y++) {
+					BlockState state = getBlock(level, x, y, z, bb);
+					if (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || state.is(Blocks.VINE) || state.is(Blocks.MANGROVE_ROOTS)
+							|| state.is(Blocks.MUDDY_MANGROVE_ROOTS) || state.is(Blocks.COCOA) || state.is(Blocks.BEE_NEST)) {
+						set(level, bb, AIR, x, y, z);
+					}
+				}
+			}
+		}
 	}
 
 	/** A deterministic 0-99 for a spot, so the same column always gets the same variation. */

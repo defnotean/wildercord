@@ -6,7 +6,7 @@ SALT = 2026100900 + 600
 
 # id: (name, step, biomes, spacing, separation, advancement title, advancement text, icon item)
 SITES = {
-    "wilds_venom_ziggurat": ("Venom Ziggurat", "surface_structures",
+    "wilds_venom_ziggurat": ("Venom Ziggurat", "top_layer_modification",
                              ["minecraft:jungle", "minecraft:bamboo_jungle", "minecraft:sparse_jungle"], 36, 12,
                              "Poison Darts", "Find a Venom Ziggurat in the jungle", "minecraft:mossy_stone_bricks"),
     "wilds_dune_temple": ("Dune Temple", "surface_structures", ["minecraft:desert"], 34, 12,

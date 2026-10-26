@@ -41,6 +41,7 @@ public final class VenomZigguratPiece extends WildsPiece {
 
 	@Override public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
+		clearCanopy(level, bb);
 		DungeonWards.remember(level, this);
 		footing(level, bb, 0, 0, 22, 22, s(Blocks.COBBLESTONE));
 		clear(level, bb, 0, 3, 0, 22, 17, 22);

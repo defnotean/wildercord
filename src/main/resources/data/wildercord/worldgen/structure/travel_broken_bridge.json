@@ -3,6 +3,6 @@
   "site": "travel_broken_bridge",
   "biomes": "#wildercord:has_structure/travel_broken_bridge",
   "spawn_overrides": {},
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "terrain_adaptation": "beard_thin"
 }

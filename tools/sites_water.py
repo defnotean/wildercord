@@ -132,7 +132,8 @@ def write(g):
     for sid, (biomes, spacing, separation, salt, icon, title, desc) in SITES.items():
         g.write_json(g.DATA / f"worldgen/structure/{sid}.json", {
             "type": "wildercord:site", "site": sid, "biomes": f"#wildercord:has_structure/{sid}",
-            "spawn_overrides": {}, "step": "surface_structures", "terrain_adaptation": "none"})
+            "spawn_overrides": {}, "step": "top_layer_modification" if sid == "water_netweaver_village" else "surface_structures",
+            "terrain_adaptation": "none"})
         g.write_json(g.DATA / f"worldgen/structure_set/{sid}.json", {
             "placement": {"type": "minecraft:random_spread", "salt": salt, "separation": separation, "spacing": spacing},
             "structures": [{"structure": f"wildercord:{sid}", "weight": 1}]})

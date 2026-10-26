@@ -25,6 +25,7 @@ public final class ApiaryPiece extends FarmPiece {
 
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb, ChunkPos chunk, BlockPos reference) {
+		clearCanopy(level, bb);
 		site(level, bb, s(Blocks.GRASS_BLOCK), 1);
 		// The terraces: a worn stone lip at the front of each, grass on top, carved piers at the ends.
 		Palette lip = Palette.of(Blocks.MOSSY_STONE_BRICKS, 5, Blocks.STONE_BRICKS, 3, Blocks.CRACKED_STONE_BRICKS, 1);

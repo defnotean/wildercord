@@ -76,6 +76,7 @@ public class NetweaverVillagePiece extends WaterPiece {
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb,
 			ChunkPos chunkPos, BlockPos reference) {
+		clearCanopy(level, bb, BASE + 1);
 		walks(level, bb);
 		hut(level, bb, HUTS[0][0], HUTS[0][1], 1, 0);
 		hut(level, bb, HUTS[1][0], HUTS[1][1], -1, 0);

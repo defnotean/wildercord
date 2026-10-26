@@ -28,6 +28,7 @@ public final class BrokenBridgePiece extends TravelPiece {
 
 	@Override public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
+		clearCanopy(level, bb);
 		BlockState brick = b(Blocks.STONE_BRICKS), mossy = b(Blocks.MOSSY_STONE_BRICKS), cracked = b(Blocks.CRACKED_STONE_BRICKS);
 		// Both banks levelled, the creek cut between them: deep enough to fall into safely.
 		footing(level, bb, 0, 0, 14, 7, GRASS, DIRT, 9);

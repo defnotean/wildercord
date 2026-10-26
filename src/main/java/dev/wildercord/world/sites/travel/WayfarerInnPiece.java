@@ -38,6 +38,7 @@ public final class WayfarerInnPiece extends TravelPiece {
 
 	@Override public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
+		clearCanopy(level, bb);
 		BlockState planks = b(Blocks.SPRUCE_PLANKS), stone = b(Blocks.STONE_BRICKS), pane = b(Blocks.GLASS_PANE);
 		BlockState upright = b(Blocks.STRIPPED_SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
 		BlockState beamX = b(Blocks.DARK_OAK_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
