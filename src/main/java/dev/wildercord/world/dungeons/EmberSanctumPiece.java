@@ -542,6 +542,40 @@ public class EmberSanctumPiece extends DungeonPiece {
 		int crown = ceiling(0) + 3;
 		set(level, bb, GILDED, CX, crown, ARENA_Z);
 		set(level, bb, MAGMA, CX, crown + 1, ARENA_Z);
+		// Basalt pilasters round the drum in line with the ribs, each with a magma eye and fire on its capital
+		// (the two that would stand in the vault are left out).
+		int rim = ceiling(ARENA_R) + 2;
+		for (int i = 0; i < 8; i++) {
+			double a = Math.PI * 2 * i / 8 + Math.PI / 8;
+			int px = CX + (int) Math.round(Math.cos(a) * (ARENA_R + 2));
+			int pz = ARENA_Z + (int) Math.round(Math.sin(a) * (ARENA_R + 2));
+			if (px >= 33 && pz >= 55 && pz <= 69) continue;
+			pillar(level, bb, px, pz, 1, rim + 1, CHISELED, BASALT, GILDED);
+			set(level, bb, MAGMA, px, 8, pz);
+			set(level, bb, FIRE, px, rim + 2, pz);
+		}
+		vaultFaces(level, bb);
+	}
+
+	/** The treasury's outer walls: basalt pilasters, red lancets under gilded hoods, a gilded band and a burning parapet. */
+	private void vaultFaces(WorldGenLevel level, BoundingBox bb) {
+		for (int z : new int[] {56, 60, 64, 68}) pillar(level, bb, 41, z, 1, 9, CHISELED, BASALT, GILDED);
+		for (int x : new int[] {37, 38}) {
+			pillar(level, bb, x, 56, 1, 9, CHISELED, BASALT, GILDED);
+			pillar(level, bb, x, 68, 1, 9, CHISELED, BASALT, GILDED);
+		}
+		for (int z : new int[] {58, 62, 66}) {
+			fill(level, bb, 41, 3, z, 41, 6, z, Blocks.STAINED_GLASS.red().defaultBlockState());
+			set(level, bb, MAGMA, 41, 2, z);
+			set(level, bb, GILDED, 41, 7, z);
+		}
+		for (int z = 57; z <= 67; z++) if (z % 4 != 0 && z % 4 != 2) set(level, bb, CHISELED, 41, 8, z);
+		fill(level, bb, 35, 10, 57, 40, 10, 67, POLISHED);
+		crenellate(level, bb, 34, 56, 41, 68, 10, BRICKS);
+		for (int[] c : new int[][] {{41, 56}, {41, 68}}) {
+			set(level, bb, CHISELED, c[0], 11, c[1]);
+			set(level, bb, FIRE, c[0], 12, c[1]);
+		}
 	}
 
 	// ------------------------------------------------------------------ guards
