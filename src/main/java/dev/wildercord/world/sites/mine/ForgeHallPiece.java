@@ -21,10 +21,11 @@ import java.util.Optional;
 /**
  * A mountain forge hall where the Iron breath was taught: a deepslate hall with twin smoking chimneys, four anvils round the
  * master's anvil, a line of blast furnaces, a lava channel behind iron bars and a quench cauldron. Peaceful; its masterwork
- * chest keeps an Iron manual page.
+ * chest keeps an Iron manual page. A walled working yard off its east side holds the bloomery stack, the ore and wood stocks,
+ * a hoist and the quench trough.
  */
 public final class ForgeHallPiece extends MinePiece {
-	static final int WIDTH = 23, HEIGHT = 24, DEPTH = 27;
+	static final int WIDTH = 33, HEIGHT = 24, DEPTH = 27;
 
 	public ForgeHallPiece(int x, int y, int z, Direction facing) {
 		super(MineSites.FORGE_HALL, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -106,11 +107,13 @@ public final class ForgeHallPiece extends MinePiece {
 			room(level, bb, cx - 1, 11, 20, cx + 1, 16, 22, brick);
 			for (int x = cx - 1; x <= cx + 1; x++) for (int z = 20; z <= 22; z++) {
 				if (x == cx && z == 21) continue;
-				fill(level, bb, x, 17, z, x, 19, z, plinth);
-				set(level, bb, s(Blocks.DEEPSLATE_BRICK_SLAB), x, 20, z);
+				fill(level, bb, x, 17, z, x, 21, z, plinth);
+				set(level, bb, s(Blocks.DEEPSLATE_BRICK_SLAB), x, 22, z);
 			}
 			set(level, bb, s(Blocks.CAMPFIRE), cx, 15, 21);
 			set(level, bb, AIR, cx, 16, 21);
+			// A band of chiseled stone where the stack clears the roof.
+			for (int x = cx - 1; x <= cx + 1; x++) for (int z = 20; z <= 22; z++) if (x != cx || z != 21) set(level, bb, chiseled, x, 19, z);
 			fill(level, bb, cx - 1, 1, 21, cx + 1, 1, 21, s(Blocks.MAGMA_BLOCK));
 			fill(level, bb, cx - 1, 2, 21, cx + 1, 2, 21, s(Blocks.IRON_BARS));
 			// The chimney breast inside: a brick back and a corbelled hood over the hearth.
@@ -160,10 +163,57 @@ public final class ForgeHallPiece extends MinePiece {
 			fill(level, bb, x, 8, z, x, 10, z, s(Blocks.IRON_CHAIN));
 			hangingLantern(level, bb, x, 7, z);
 		}
+		yard(level, bb, brick, plinth, chiseled);
 		// Torches along both long walls, between the windows.
 		for (int z : new int[] {3, 9, 15}) {
 			sconce(level, bb, 2, 4, z, Direction.EAST, false);
 			sconce(level, bb, 20, 4, z, Direction.WEST, false);
 		}
+	}
+
+	/** The working yard east of the hall, reached by a side door, its low wall open to the road and the slope. */
+	private void yard(WorldGenLevel level, BoundingBox bb, BlockState brick, Palette plinth, BlockState chiseled) {
+		fill(level, bb, 23, 1, 0, 32, 23, 26, AIR);
+		footing(level, bb, 23, 1, 32, 25, 0, s(Blocks.COBBLED_DEEPSLATE));
+		fill(level, bb, 23, 0, 1, 32, 0, 25, Palette.of(Blocks.COBBLED_DEEPSLATE, 6, Blocks.GRAVEL, 3, Blocks.DEEPSLATE_TILES, 1));
+		BlockState low = s(Blocks.COBBLED_DEEPSLATE_WALL);
+		for (int z = 1; z <= 25; z++) if (z < 17 || z > 18) set(level, bb, low, 32, 1, z);
+		for (int x = 23; x <= 32; x++) if (x < 26 || x > 29) { set(level, bb, low, x, 1, 1); set(level, bb, low, x, 1, 25); }
+		for (int[] c : new int[][] {{32, 1}, {32, 25}, {23, 1}, {23, 25}}) {
+			set(level, bb, s(Blocks.DEEPSLATE_BRICKS), c[0], 1, c[1]);
+			set(level, bb, s(Blocks.LANTERN), c[0], 2, c[1]);
+		}
+		// The side door out of the hall, under a stair hood.
+		fill(level, bb, 21, 1, 10, 21, 3, 11, AIR);
+		for (int z = 10; z <= 11; z++) set(level, bb, stair(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.WEST, true), 22, 4, z);
+		// The bloomery: a free-standing brick stack over a furnace mouth, glowing at its foot and smoking from its crown.
+		room(level, bb, 28, 0, 12, 30, 17, 14, brick);
+		for (int y = 4; y <= 16; y += 6) fill(level, bb, 28, y, 12, 30, y, 14, chiseled);
+		for (int x = 28; x <= 30; x++) for (int z = 12; z <= 14; z++) if (x != 29 || z != 13) set(level, bb, s(Blocks.DEEPSLATE_BRICK_SLAB), x, 18, z);
+		set(level, bb, s(Blocks.MAGMA_BLOCK), 29, 0, 13);
+		set(level, bb, s(Blocks.CAMPFIRE), 29, 1, 13);
+		set(level, bb, s(Blocks.BLAST_FURNACE).setValue(BlastFurnaceBlock.FACING, Direction.WEST), 28, 1, 13);
+		for (int z : new int[] {12, 14}) set(level, bb, stair(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.WEST, false), 27, 1, z);
+		set(level, bb, s(Blocks.ANVIL).setValue(AnvilBlock.FACING, Direction.NORTH), 26, 1, 13);
+		// The ore stock: heaps of raw ore and slag against the north wall.
+		Palette ore = Palette.of(Blocks.COBBLED_DEEPSLATE, 4, Blocks.IRON_ORE, 2, Blocks.COAL_ORE, 2, Blocks.GRAVEL, 2);
+		fill(level, bb, 28, 1, 2, 31, 1, 6, ore);
+		fill(level, bb, 29, 2, 3, 31, 2, 5, ore);
+		set(level, bb, s(Blocks.RAW_IRON_BLOCK), 30, 3, 4);
+		// A hoist: a dark oak post and jib with a hook on a chain over the stock.
+		fill(level, bb, 26, 1, 4, 26, 7, 4, s(Blocks.DARK_OAK_LOG));
+		fill(level, bb, 27, 7, 4, 29, 7, 4, s(Blocks.STRIPPED_DARK_OAK_LOG).setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X));
+		set(level, bb, stair(Blocks.DARK_OAK_STAIRS, Direction.WEST, true), 27, 6, 4);
+		fill(level, bb, 29, 5, 4, 29, 6, 4, s(Blocks.IRON_CHAIN));
+		set(level, bb, s(Blocks.LANTERN).setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true), 29, 4, 4);
+		// The quench trough by the door, and the woodpile for the stack.
+		fill(level, bb, 24, 0, 15, 25, 0, 19, brick);
+		fill(level, bb, 24, 0, 16, 24, 0, 18, s(Blocks.WATER));
+		BlockState log = s(Blocks.STRIPPED_SPRUCE_LOG).setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.Z);
+		fill(level, bb, 28, 1, 20, 31, 2, 23, log);
+		fill(level, bb, 29, 3, 20, 30, 3, 23, log);
+		barrel(level, bb, 24, 1, 22, null, 0);
+		barrel(level, bb, 24, 1, 23, null, 0);
+		set(level, bb, s(Blocks.COAL_BLOCK), 25, 1, 23);
 	}
 }
