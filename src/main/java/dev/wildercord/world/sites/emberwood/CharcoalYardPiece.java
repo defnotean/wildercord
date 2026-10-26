@@ -18,6 +18,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
  * Emberwood Charcoal Yard: a brick-and-timber burner's yard in the Emberwood Reach.
  * Holds a cultivated Cinder Fern ash bed along a coarse-dirt firebreak, a kiln draft lamp and lever,
  * a lectern with Eleven Winters at the Gate, a supply chest, and a persistent Kiln Keeper resident.
+ * The great clamp smokes in the south-west corner: a turf-and-ash dome over a stacked log core, its stoke hole glowing.
  */
 public final class CharcoalYardPiece extends EmberwoodPiece {
 	public static final int DECK = 2;
@@ -219,11 +220,31 @@ public final class CharcoalYardPiece extends EmberwoodPiece {
 		set(level, clip, Blocks.BARREL.defaultBlockState(), 12, DECK + 1, 16);
 		set(level, clip, Blocks.BARREL.defaultBlockState(), 13, DECK + 1, 16);
 		set(level, clip, Blocks.BARREL.defaultBlockState(), 13, DECK + 2, 16);
-		for (int[] c : new int[][]{{3, 3}, {17, 3}, {3, 17}, {17, 17}}) {
+		for (int[] c : new int[][]{{3, 3}, {17, 3}, {2, 13}, {17, 17}}) {
 			fill(level, clip, c[0], DECK + 1, c[1], c[0], DECK + 2, c[1], Blocks.DARK_OAK_FENCE.defaultBlockState());
 			set(level, clip, Blocks.LANTERN.defaultBlockState(), c[0], DECK + 3, c[1]);
 		}
 
+		// The great clamp: a dome of turf, mud and ash banked over a log stack, a vent smoking at its crown, the stoke hole
+		// on the path side glowing, raked charcoal heaped beside it and a rake and shovel leaning on a stake.
+		for (int x = 1; x <= 7; x++) for (int z = 13; z <= 19; z++) {
+			double d = Math.sqrt((x - 4) * (x - 4) + (z - 16) * (z - 16));
+			for (int y = DECK + 1; y <= DECK + 3; y++) {
+				double r = y == DECK + 1 ? 2.5 : y == DECK + 2 ? 1.9 : 1.1;
+				if (d > r || (x >= 6 && z <= 14)) continue;
+				int n = noise(x, y, z);
+				set(level, clip, n < 30 ? Blocks.COARSE_DIRT.defaultBlockState() : n < 55 ? Blocks.PODZOL.defaultBlockState()
+					: n < 75 ? Blocks.MUD.defaultBlockState() : Blocks.ROOTED_DIRT.defaultBlockState(), x, y, z);
+			}
+		}
+		set(level, clip, Blocks.MUD_BRICK_WALL.defaultBlockState(), 4, DECK + 4, 16);
+		set(level, clip, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), 4, DECK + 5, 16);
+		set(level, clip, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), 6, DECK + 1, 16);
+		set(level, clip, Blocks.STRIPPED_DARK_OAK_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X), 6, DECK + 2, 16);
+		for (int[] c : new int[][]{{7, 17}, {7, 18}, {8, 18}}) set(level, clip, Blocks.COAL_BLOCK.defaultBlockState(), c[0], DECK + 1, c[1]);
+		set(level, clip, Blocks.COAL_BLOCK.defaultBlockState(), 7, DECK + 2, 18);
+		fill(level, clip, 8, DECK + 1, 17, 8, DECK + 2, 17, Blocks.DARK_OAK_FENCE.defaultBlockState());
+		set(level, clip, Blocks.LANTERN.defaultBlockState(), 8, DECK + 3, 17);
 		// Eastern Kiln Draft Lamp stack + shuttered Redstone Lamp and Lever, plus stacked charcoal/oak pile.
 		for (int y = DECK + 1; y <= DECK + 3; y++) {
 			set(level, clip, y == DECK + 2 ? COPPER : BRICKS, LAMP_X, y, LAMP_Z);
