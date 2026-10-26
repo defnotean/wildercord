@@ -42,6 +42,7 @@ public final class RuneLibraryPiece extends TravelPiece {
 		BlockState beamX = b(Blocks.DARK_OAK_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
 		Palette plinth = Palette.of(Blocks.DEEPSLATE_BRICKS, 6, Blocks.COBBLED_DEEPSLATE, 2, Blocks.CRACKED_DEEPSLATE_BRICKS, 1);
 		Palette stone = Palette.of(Blocks.STONE_BRICKS, 10, Blocks.MOSSY_STONE_BRICKS, 2, Blocks.CRACKED_STONE_BRICKS, 2);
+		clearCanopy(level, bb);
 		footing(level, bb, 0, 0, 14, 16, b(Blocks.STONE_BRICKS), COBBLE, 16);
 		for (int x = 5; x <= 9; x++) set(level, bb, b(Blocks.GRAVEL), x, 0, 0);
 		// A stone hall on a dark plinth, its walls banded at the shelf tops and the eaves.

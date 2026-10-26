@@ -109,7 +109,7 @@ def _runes(g, site):
 
 
 # Sites that clear the trees over themselves, so they generate after vegetation.
-CLEARS_CANOPY = {"travel_wayfarer_inn", "travel_broken_bridge"}
+CLEARS_CANOPY = {"travel_wayfarer_inn", "travel_broken_bridge", "travel_rune_library"}
 
 
 def write(g):

@@ -3,6 +3,6 @@
   "site": "travel_rune_library",
   "biomes": "#wildercord:has_structure/travel_rune_library",
   "spawn_overrides": {},
-  "step": "surface_structures",
+  "step": "top_layer_modification",
   "terrain_adaptation": "beard_thin"
 }
