@@ -103,6 +103,9 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 		return 0;
 	}
 
+	@Override protected int getWorldX(int x, int z) { return super.getWorldX(x + margin(), z + margin()); }
+	@Override protected int getWorldZ(int x, int z) { return super.getWorldZ(x + margin(), z + margin()); }
+
 	/** A deterministic 0-99 for a spot, so the same column always gets the same variation. */
 	protected static int noise(int x, int z) {
 		int h = x * 73856093 ^ z * 19349663;

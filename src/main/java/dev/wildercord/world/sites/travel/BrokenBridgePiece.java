@@ -17,30 +17,51 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 /**
  * An old arch bridge over a steep creek, its middle fallen in. Jump the two-block gap, or drop into the deep
- * water and climb a bank ladder. The toll keeper's booth on the far side still holds the takings.
+ * water and climb a bank ladder. A crenellated gatehouse arches over the near bridgehead, a lantern arch and a
+ * watchtower guard the far one, and the old road runs out through a cleared margin on both banks.
+ * The toll keeper's booth on the far side still holds the takings.
  */
 public final class BrokenBridgePiece extends TravelPiece {
 	/** The fallen span, in z: the deck is missing here. */
 	public static final int GAP0 = 12, GAP1 = 13;
 
-	public BrokenBridgePiece(int x, int y, int z, Direction facing) { super(TravelSites.BRIDGE_PIECE, x, y, z, 15, 10, 25, facing); }
+	/** Cleared ground kept on every side of the crossing. */
+	static final int MARGIN = 5;
+
+	public BrokenBridgePiece(int x, int y, int z, Direction facing) { super(TravelSites.BRIDGE_PIECE, x, y, z, 15, 14, 25, facing, MARGIN); }
 	public BrokenBridgePiece(CompoundTag tag) { super(TravelSites.BRIDGE_PIECE, tag); }
+
+	@Override protected int margin() { return MARGIN; }
 
 	@Override public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
 		clearCanopy(level, bb);
 		BlockState brick = b(Blocks.STONE_BRICKS), mossy = b(Blocks.MOSSY_STONE_BRICKS), cracked = b(Blocks.CRACKED_STONE_BRICKS);
 		// Both banks levelled, the creek cut between them: deep enough to fall into safely.
-		footing(level, bb, 0, 0, 14, 7, GRASS, DIRT, 9);
-		footing(level, bb, 0, 17, 14, 24, GRASS, DIRT, 9);
-		fill(level, bb, 0, -5, 8, 14, 0, 16, DIRT);
-		fill(level, bb, 0, 1, 8, 14, 9, 16, AIR);
-		fill(level, bb, 1, -5, 9, 13, -5, 15, b(Blocks.GRAVEL));
-		fill(level, bb, 1, -4, 9, 13, -2, 15, b(Blocks.WATER));
-		fill(level, bb, 1, -1, 9, 13, 0, 15, AIR);
-		for (int z : new int[]{0, 1, 2, 22, 23, 24}) for (int x = 6; x <= 8; x++) set(level, bb, noise(x, z) < 30 ? b(Blocks.COARSE_DIRT) : b(Blocks.GRAVEL), x, 0, z);
+		int m = MARGIN, x1 = 14 + m;
+		footing(level, bb, -m, -m, x1, 7, GRASS, DIRT, 12);
+		footing(level, bb, -m, 17, x1, 24 + m, GRASS, DIRT, 12);
+		fill(level, bb, -m, -5, 8, x1, 0, 16, DIRT);
+		fill(level, bb, -m, 1, 8, x1, 12, 16, AIR);
+		fill(level, bb, 1 - m, -5, 9, x1 - 1, -5, 15, b(Blocks.GRAVEL));
+		fill(level, bb, 1 - m, -4, 9, x1 - 1, -2, 15, b(Blocks.WATER));
+		fill(level, bb, 1 - m, -1, 9, x1 - 1, 0, 15, AIR);
+		// The old road out across both banks, worn to coarse dirt and gravel, with lantern posts at the clearing's edge.
+		for (int z = -m; z <= 24 + m; z++) {
+			if (z > 2 && z < 22) continue;
+			for (int x = 6; x <= 8; x++) set(level, bb, noise(x, z) < 30 ? b(Blocks.COARSE_DIRT) : noise(x, z) < 70 ? b(Blocks.GRAVEL) : b(Blocks.DIRT_PATH), x, 0, z);
+		}
+		for (int z : new int[]{-m + 1, 23 + m}) for (int x : new int[]{5, 9}) {
+			post(level, bb, b(Blocks.SPRUCE_FENCE), x, 2, z);
+			set(level, bb, b(Blocks.LANTERN), x, 3, z);
+		}
+		// Fallen stones from the span and the old gate lie in the grass.
+		for (int[] s : new int[][]{{-3, -2}, {16, 1}, {-2, 21}, {17, 26}, {13, -4}}) {
+			set(level, bb, b(Blocks.MOSSY_COBBLESTONE), s[0], 1, s[1]);
+			set(level, bb, noise(s[0], s[1]) < 50 ? b(Blocks.MOSSY_STONE_BRICK_SLAB) : cracked, s[0] + 1, 1, s[1]);
+		}
 		// Ferns along both banks and lily pads in the slack water by the walls.
-		for (int[] r : new int[][]{{0, 0, 3, 7}, {11, 0, 14, 7}, {0, 17, 3, 24}, {11, 17, 14, 24}}) scatter(level, bb, r[0], 1, r[1], r[2], 1, r[3], b(Blocks.FERN), 12);
+		for (int[] r : new int[][]{{-m, -m, 3, 7}, {11, -m, x1, 7}, {-m, 17, 3, 24 + m}, {11, 17, x1, 24 + m}}) scatter(level, bb, r[0], 1, r[1], r[2], 1, r[3], b(Blocks.FERN), 12);
 		for (int[] l : new int[][]{{2, 11}, {12, 12}, {1, 14}, {13, 10}}) set(level, bb, b(Blocks.LILY_PAD), l[0], -1, l[1]);
 		// Abutments, the arch's two surviving piers, and the deck with its fallen middle.
 		fill(level, bb, 5, -5, 4, 9, 1, 8, brick);
@@ -89,12 +110,36 @@ public final class BrokenBridgePiece extends TravelPiece {
 			set(level, bb, b(Blocks.CHISELED_STONE_BRICKS), x, 2, z);
 			set(level, bb, b(Blocks.STONE_BRICK_SLAB), x, 3, z);
 		}
-		// Bridgehead piers on both banks, lantern-topped, marking the crossing from far off.
-		for (int z : new int[]{8, 16}) for (int x : new int[]{4, 10}) {
-			post(level, bb, mossy, x, 0, z);
-			pillar(level, bb, x, z, 1, 3, mossy, brick, b(Blocks.CHISELED_STONE_BRICKS));
-			set(level, bb, b(Blocks.LANTERN), x, 4, z);
+		// Bridgehead piers by the water, lantern-topped, marking the crossing from far off.
+		for (int x : new int[]{4, 10}) {
+			post(level, bb, mossy, x, 0, 8);
+			pillar(level, bb, x, 8, 1, 3, mossy, brick, b(Blocks.CHISELED_STONE_BRICKS));
+			set(level, bb, b(Blocks.LANTERN), x, 4, 8);
 		}
+		// The near gatehouse: two crenellated towers with a vaulted arch carried over the deck between them.
+		tower(level, bb, 2, 4, 9);
+		tower(level, bb, 10, 4, 9);
+		fill(level, bb, 5, 7, 4, 9, 8, 6, brick);
+		for (int z = 4; z <= 6; z++) {
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), 5, 6, z);
+			set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 9, 6, z);
+			for (int x : new int[]{6, 8}) set(level, bb, topSlab(Blocks.STONE_BRICK_SLAB), x, 6, z);
+		}
+		fill(level, bb, 5, 7, 4, 9, 7, 4, b(Blocks.CHISELED_STONE_BRICKS));
+		for (int x : new int[]{5, 7, 9}) for (int z : new int[]{4, 6}) set(level, bb, mossy, x, 9, z);
+		hangingLantern(level, bb, 7, 6, 5, 0, false);
+		// The far bank: a lantern arch over the deck's end and a watchtower beside the road.
+		for (int x : new int[]{4, 10}) {
+			post(level, bb, mossy, x, 0, 16);
+			pillar(level, bb, x, 16, 1, 6, mossy, brick, b(Blocks.CHISELED_STONE_BRICKS));
+		}
+		fill(level, bb, 4, 7, 16, 10, 7, 16, brick);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), 5, 6, 16);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 9, 6, 16);
+		for (int x : new int[]{4, 7, 10}) set(level, bb, b(Blocks.STONE_BRICK_WALL), x, 8, 16);
+		for (int x : new int[]{4, 10}) set(level, bb, b(Blocks.LANTERN), x, 9, 16);
+		hangingLantern(level, bb, 7, 6, 16, 0, false);
+		tower(level, bb, 1, 18, 10);
 		// Ladders up both banks for anyone who falls.
 		for (int y = -4; y <= 0; y++) {
 			set(level, bb, b(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.NORTH), 3, y, 9);
@@ -118,5 +163,20 @@ public final class BrokenBridgePiece extends TravelPiece {
 		hangingLantern(level, bb, 11, 3, 20, 0, false);
 		chest(level, bb, 12, 1, 21, TravelSites.loot(TravelSites.BRIDGE), Direction.WEST, 3);
 		lectern(level, bb, 12, 1, 19, Direction.WEST, TravelSites.book("travel_toll", "Toll Notice", "The Bridge Keeper"));
+	}
+
+	/** A 3x3 stone tower from the ground to {@code top}: arrow slits, a chiselled band, merlons and a brazier on the roof. */
+	private void tower(WorldGenLevel level, BoundingBox bb, int x0, int z0, int top) {
+		Palette stone = Palette.of(Blocks.STONE_BRICKS, 5, Blocks.MOSSY_STONE_BRICKS, 3, Blocks.CRACKED_STONE_BRICKS, 1);
+		for (int x = x0; x <= x0 + 2; x++) for (int z = z0; z <= z0 + 2; z++) fillColumnDown(level, b(Blocks.STONE_BRICKS), x, 0, z, bb);
+		walls(level, bb, x0, 1, z0, x0 + 2, top, z0 + 2, stone);
+		fill(level, bb, x0, top - 2, z0, x0 + 2, top - 2, z0 + 2, b(Blocks.CHISELED_STONE_BRICKS));
+		fill(level, bb, x0, top, z0, x0 + 2, top, z0 + 2, b(Blocks.STONE_BRICKS));
+		for (int y : new int[]{3, top - 3}) {
+			set(level, bb, b(Blocks.IRON_BARS), x0 + 1, y, z0);
+			set(level, bb, b(Blocks.IRON_BARS), x0 + 1, y, z0 + 2);
+		}
+		crenellate(level, bb, x0, z0, x0 + 2, z0 + 2, top + 1, b(Blocks.MOSSY_STONE_BRICKS));
+		set(level, bb, b(Blocks.CAMPFIRE), x0 + 1, top + 1, z0 + 1);
 	}
 }

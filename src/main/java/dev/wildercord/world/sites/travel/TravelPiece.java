@@ -38,7 +38,12 @@ abstract class TravelPiece extends DungeonPiece {
 	static final BlockState DIRT = b(Blocks.DIRT), GRASS = b(Blocks.GRASS_BLOCK), COBBLE = b(Blocks.COBBLESTONE);
 
 	TravelPiece(StructurePieceType type, int x, int y, int z, int width, int height, int depth, Direction facing) {
-		super(type, x, y, z, width, height, depth, facing);
+		this(type, x, y, z, width, height, depth, facing, 0);
+	}
+
+	/** A site with {@code margin} blocks of its own ground on every side; the subclass's {@link #margin()} must agree. */
+	TravelPiece(StructurePieceType type, int x, int y, int z, int width, int height, int depth, Direction facing, int margin) {
+		super(type, x, y, z, width + 2 * margin, height, depth + 2 * margin, facing);
 	}
 
 	TravelPiece(StructurePieceType type, CompoundTag tag) {

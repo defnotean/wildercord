@@ -39,8 +39,6 @@ abstract class WildsPiece extends DungeonPiece {
 
 	/** Local y=0 is the floor: the box's lowest {@link #SINK} layers are footing. */
 	@Override protected int getWorldY(int y) { return super.getWorldY(y + SINK); }
-	@Override protected int getWorldX(int x, int z) { return super.getWorldX(x + margin(), z + margin()); }
-	@Override protected int getWorldZ(int x, int z) { return super.getWorldZ(x + margin(), z + margin()); }
 
 	static BlockState s(Block block) { return block.defaultBlockState(); }
 
