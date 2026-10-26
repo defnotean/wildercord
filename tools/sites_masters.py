@@ -13,7 +13,7 @@ SITES = {
     'master_quarry_hall': (('stone', 'iron'), 'Quarry Hall', 'Find a Master hall among the stony hills', 'minecraft:stonecutter',
         ['minecraft:windswept_gravelly_hills', 'minecraft:stony_peaks', 'minecraft:meadow'], 46, 16, 'surface_structures', 'beard_thin'),
     'master_waterfall_shrine': (('rime', 'tide'), 'Waterfall Shrine', 'Find the frozen fall of a Master shrine', 'minecraft:blue_ice',
-        ['minecraft:snowy_plains', 'minecraft:snowy_taiga', 'minecraft:grove', 'minecraft:snowy_slopes', 'minecraft:ice_spikes'], 48, 16, 'surface_structures', 'beard_thin'),
+        ['minecraft:snowy_plains', 'minecraft:snowy_taiga', 'minecraft:grove', 'minecraft:snowy_slopes', 'minecraft:ice_spikes'], 48, 16, 'top_layer_modification', 'beard_thin'),
     'master_root_temple': (('verdant', 'venom'), 'Root Temple', 'Find a Master temple wrapped in roots', 'minecraft:mangrove_roots',
         ['minecraft:jungle', 'minecraft:sparse_jungle', 'minecraft:bamboo_jungle', 'minecraft:dark_forest'], 44, 14, 'surface_structures', 'beard_thin'),
     'master_sundial_court': (('dune', 'hourglass'), 'Sundial Court', 'Find a Master court in the desert', 'minecraft:chiseled_sandstone',

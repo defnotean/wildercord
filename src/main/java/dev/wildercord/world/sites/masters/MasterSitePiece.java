@@ -42,6 +42,11 @@ public abstract class MasterSitePiece extends DungeonPiece {
 		this.alt = alt;
 	}
 
+	/** A hall with a cleared ring {@code margin} blocks wide round it; local (0, 0) stays the hall's own corner. */
+	protected MasterSitePiece(StructurePieceType type, int x, int y, int z, int w, int h, int d, Direction facing, boolean alt, int margin) {
+		this(type, x, y, z, w + 2 * margin, h, d + 2 * margin, facing, alt);
+	}
+
 	protected MasterSitePiece(StructurePieceType type, CompoundTag tag) {
 		super(type, tag);
 		alt = tag.getBooleanOr("MasterAlt", false);

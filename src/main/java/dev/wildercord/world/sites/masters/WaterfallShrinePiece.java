@@ -18,11 +18,15 @@ import java.util.List;
 
 /**
  * A snowfield shrine of the Rime or Tide school: a frozen waterfall down a cliff over a still pool. Its reward rests in an
- * alcove high in the cliff, reached by ledges hopping up over the pool (a fall lands in the water).
+ * alcove high in the cliff, reached by ledges hopping up over the pool (a fall lands in the water). It generates after the
+ * forest and fells the spruce round it, so the cliff and its fall stand clear, with a lantern-lit path leading in.
  */
 public final class WaterfallShrinePiece extends MasterSitePiece {
-	public WaterfallShrinePiece(int x, int y, int z, Direction facing, boolean alt) { super(MasterSites.WATERFALL_SHRINE, x, y, z, 17, 23, 17, facing, alt); }
+	private static final int MARGIN = 4;
+
+	public WaterfallShrinePiece(int x, int y, int z, Direction facing, boolean alt) { super(MasterSites.WATERFALL_SHRINE, x, y, z, 17, 23, 17, facing, alt, MARGIN); }
 	public WaterfallShrinePiece(CompoundTag tag) { super(MasterSites.WATERFALL_SHRINE, tag); }
+	@Override protected int margin() { return MARGIN; }
 	@Override public String site() { return "master_waterfall_shrine"; }
 	@Override public List<String> schools() { return List.of("rime", "tide"); }
 
@@ -43,6 +47,7 @@ public final class WaterfallShrinePiece extends MasterSitePiece {
 		Block roofStairs = alt ? Blocks.DARK_PRISMARINE_STAIRS : Blocks.SPRUCE_STAIRS;
 		BlockState roofUnder = alt ? s(Blocks.DARK_PRISMARINE) : s(Blocks.SPRUCE_PLANKS), roofCap = alt ? s(Blocks.DARK_PRISMARINE_SLAB) : s(Blocks.SPRUCE_SLAB);
 		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.CYAN : DyeColor.LIGHT_BLUE);
+		clearCanopy(level, bb);
 		pad(level, bb, 0, 0, 16, 16, 22, alt ? s(Blocks.PRISMARINE_BRICKS) : s(Blocks.STONE_BRICKS), s(Blocks.STONE));
 		// The yard is swept flagstone, worn and cracked here and there, so the shrine stands clear of the drifts around it.
 		if (!alt) for (int x = 0; x <= 16; x++) for (int z = 0; z <= 11; z++) {
@@ -133,6 +138,24 @@ public final class WaterfallShrinePiece extends MasterSitePiece {
 		var fence = s(Blocks.SPRUCE_FENCE);
 		dummy(level, bb, 0, 1, 5, fence); dummy(level, bb, 16, 1, 5, fence); target(level, bb, 0, 1, 9, fence); target(level, bb, 16, 1, 9, fence);
 		chest(level, bb, 15, 1, 1, MasterSites.supplies(site()), Direction.WEST, 1);
+		approach(level, bb, carved, chiseled, rim, light);
+	}
+
+	/** The path in from the cleared ring: flagstones to the gate between two stone lanterns. */
+	private void approach(WorldGenLevel level, BoundingBox bb, BlockState carved, BlockState chiseled, BlockState rim, BlockState light) {
+		for (int x = 6; x <= 10; x++) for (int z = -MARGIN; z <= -1; z++) {
+			if ((x == 6 || x == 10) && noise(x, 5, z) < 50) continue;
+			int n = noise(x, 4, z);
+			set(level, bb, alt ? s(Blocks.PRISMARINE_BRICKS) : n < 25 ? s(Blocks.CRACKED_STONE_BRICKS) : n < 45 ? s(Blocks.POLISHED_ANDESITE) : s(Blocks.STONE_BRICKS), x, 0, z);
+			fill(level, bb, x, 1, z, x, 3, z, AIR);
+		}
+		for (int x : new int[]{4, 12}) {
+			set(level, bb, carved, x, 0, -3);
+			set(level, bb, carved, x, 1, -3);
+			set(level, bb, chiseled, x, 2, -3);
+			set(level, bb, light, x, 3, -3);
+			set(level, bb, rim, x, 4, -3);
+		}
 	}
 
 	@Override public List<BoundingBox> wardedBoxes() { return List.of(); }
