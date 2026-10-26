@@ -8,6 +8,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BellAttachType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -15,17 +16,30 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 /**
- * A tall gabled barn full of hay and stores, two cows in their stall, and in the yard a harvest shrine: a cake on a
- * bale, a bell, carved pumpkins and candles, and an offering chest for whoever comes to share the feast.
+ * A walled farmstead round a tall gabled barn full of hay and stores, two cows in their stall: a round stone granary
+ * tower under a conical cap beside it, a cart shed against its flank, a threshing floor and haystacks behind it,
+ * watered fields and a sheep paddock before it, and in the yard a harvest shrine: a cake on a bale, a bell, carved
+ * pumpkins and candles, and an offering chest for whoever comes to share the feast.
  */
 public final class GranaryPiece extends FarmPiece {
-	public GranaryPiece(int x, int z, Direction facing) { super(FarmSites.GRANARY, x, 0, z, 21, 22, 25, facing); }
+	/** The farmyard round the barn, out to its dry-stone wall. */
+	private static final int MARGIN = 8;
+
+	public GranaryPiece(int x, int z, Direction facing) { super(FarmSites.GRANARY, x, 0, z, 21, 27, 25, facing, MARGIN); }
 	public GranaryPiece(CompoundTag tag) { super(FarmSites.GRANARY, tag); }
 
 	@Override
+	protected int margin() { return MARGIN; }
+
+	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb, ChunkPos chunk, BlockPos reference) {
+		clearCanopy(level, bb);
 		site(level, bb, s(Blocks.GRASS_BLOCK), 1);
-		fill(level, bb, 9, 0, 0, 11, 0, 5, s(Blocks.DIRT_PATH));
+		fill(level, bb, 9, 0, -MARGIN, 11, 0, 5, s(Blocks.DIRT_PATH));
+		yard(level, bb, MARGIN);
+		granaryTower(level, bb, 23, 12);
+		cartShed(level, bb);
+		threshingFloor(level, bb);
 		// Lantern posts at the head of the path.
 		for (int x : new int[]{8, 12}) { fill(level, bb, x, 1, 1, x, 2, 1, s(Blocks.SPRUCE_FENCE)); set(level, bb, s(Blocks.LANTERN), x, 3, 1); }
 		// The barn: spruce walls on a cobbled footing and a dark frame, a dark oak gable roof with its ridge down the middle.
@@ -129,9 +143,151 @@ public final class GranaryPiece extends FarmPiece {
 		set(level, bb, facing(Blocks.CARVED_PUMPKIN, Direction.SOUTH), 19, 1, 4);
 		chest(level, bb, 16, 1, 1, FarmSites.GRANARY_SHRINE, Direction.SOUTH, 2);
 		sign(level, bb, standingSign(), 18, 1, 1, "farm_granary", 3);
-		for (int x = 1; x <= 6; x++) for (int z = 1; z <= 4; z++) {
-			set(level, bb, farmland(false), x, 0, z);
-			set(level, bb, crop(noise(x, z) < 50 ? Blocks.WHEAT : Blocks.CARROTS, 7), x, 1, z);
+		// Fields before the barn, watered by a channel down their middle.
+		for (int x = -4; x <= 6; x++) for (int z = -4; z <= 4; z++) {
+			if (z == 0) { set(level, bb, s(Blocks.WATER), x, 0, z); continue; }
+			set(level, bb, farmland(true), x, 0, z);
+			Block crop = x < 1 ? (z < 0 ? Blocks.POTATOES : Blocks.BEETROOTS) : noise(x, z) < 50 ? Blocks.WHEAT : Blocks.CARROTS;
+			set(level, bb, crop == Blocks.BEETROOTS ? s(crop).setValue(BlockStateProperties.AGE_3, 3) : crop(crop, 4 + noise(x, z) % 4), x, 1, z);
+		}
+		set(level, bb, s(Blocks.COMPOSTER), -5, 1, 0);
+	}
+
+	/** A dry-stone wall round the farmyard, piers with lanterns at its corners, a stone gateway where the path comes in. */
+	private void yard(WorldGenLevel level, BoundingBox bb, int m) {
+		int x0 = -m, z0 = -m, x1 = 20 + m, z1 = 24 + m;
+		Palette stone = Palette.of(Blocks.COBBLESTONE, 4, Blocks.MOSSY_COBBLESTONE, 3, Blocks.STONE, 1);
+		walls(level, bb, x0, 1, z0, x1, 1, z1, stone);
+		for (int x = x0; x <= x1; x++) for (int z : new int[]{z0, z1}) set(level, bb, s(noise(x, z) < 40 ? Blocks.MOSSY_COBBLESTONE_WALL : Blocks.COBBLESTONE_WALL), x, 2, z);
+		for (int z = z0; z <= z1; z++) for (int x : new int[]{x0, x1}) set(level, bb, s(noise(x, z) < 40 ? Blocks.MOSSY_COBBLESTONE_WALL : Blocks.COBBLESTONE_WALL), x, 2, z);
+		for (int x : new int[]{x0, x1}) for (int z : new int[]{z0, z1}) {
+			fill(level, bb, x, 1, z, x, 3, z, s(Blocks.STONE_BRICKS));
+			set(level, bb, s(Blocks.LANTERN), x, 4, z);
+		}
+		// The gateway: tall piers, a timber lintel, a lantern hung over the way in.
+		fill(level, bb, 9, 1, z0, 11, 2, z0, AIR);
+		for (int x : new int[]{8, 12}) {
+			fill(level, bb, x, 1, z0, x, 4, z0, s(Blocks.STONE_BRICKS));
+			set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), x, 3, z0);
+			set(level, bb, s(Blocks.STONE_BRICK_SLAB), x, 6, z0);
+		}
+		fill(level, bb, 8, 5, z0, 12, 5, z0, s(Blocks.DARK_OAK_PLANKS));
+		fill(level, bb, 9, 6, z0, 11, 6, z0, s(Blocks.DARK_OAK_SLAB));
+		set(level, bb, s(Blocks.STRIPPED_DARK_OAK_LOG), 10, 6, z0);
+		hangingLantern(level, bb, 10, 4, z0, 0, false);
+		// The sheep paddock between the gate and the granary tower, a trough along its side.
+		walls(level, bb, 20, 1, -4, 25, 1, 6, s(Blocks.SPRUCE_FENCE));
+		set(level, bb, facing(Blocks.SPRUCE_FENCE_GATE, Direction.WEST), 20, 1, 0);
+		fill(level, bb, 24, 0, 2, 24, 0, 4, s(Blocks.WATER));
+		set(level, bb, s(Blocks.HAY_BLOCK), 24, 1, -3);
+		sentry(level, bb, EntityTypes.SHEEP, 22, 1, -1);
+		sentry(level, bb, EntityTypes.SHEEP, 22, 1, 3);
+	}
+
+	/**
+	 * A round stone granary tower beside the barn, banded and slit-windowed, corbelled out under a conical dark oak cap
+	 * with a rod on top. Its door faces the barn.
+	 */
+	private void granaryTower(WorldGenLevel level, BoundingBox bb, int cx, int cz) {
+		Palette stone = Palette.of(Blocks.STONE_BRICKS, 6, Blocks.MOSSY_STONE_BRICKS, 2, Blocks.CRACKED_STONE_BRICKS, 1);
+		var band = s(Blocks.POLISHED_ANDESITE);
+		for (int dx = -4; dx <= 4; dx++) for (int dz = -4; dz <= 4; dz++) {
+			int d2 = dx * dx + dz * dz, x = cx + dx, z = cz + dz;
+			if (d2 <= 12) {
+				set(level, bb, s(Blocks.COBBLESTONE), x, 0, z);
+				boolean wall = d2 > 6;
+				for (int y = 1; y <= 13; y++) {
+					if (!wall) set(level, bb, y <= 4 ? s(Blocks.HAY_BLOCK) : AIR, x, y, z);
+					else if (y == 5 || y == 10) set(level, bb, band, x, y, z);
+					else fill(level, bb, x, y, z, x, y, z, stone);
+				}
+			} else if (d2 <= 20) {
+				// A sloping footing round the base, corbels under the cap.
+				set(level, bb, stair(Blocks.COBBLESTONE_STAIRS, inward(dx, dz), false), x, 1, z);
+				set(level, bb, stair(Blocks.DARK_OAK_STAIRS, inward(dx, dz), true), x, 13, z);
+			}
+		}
+		// The cap: rings of stairs climbing inward to a point.
+		for (int k = 0; k <= 4; k++) {
+			int r = 4 - k, inner = r - 1;
+			for (int dx = -r; dx <= r; dx++) for (int dz = -r; dz <= r; dz++) {
+				int d2 = dx * dx + dz * dz;
+				if (d2 > r * r + r) continue;
+				boolean ring = r > 0 && (inner < 0 || d2 > inner * inner + inner);
+				set(level, bb, ring ? stair(Blocks.DARK_OAK_STAIRS, inward(dx, dz), false) : s(Blocks.DARK_OAK_PLANKS), cx + dx, 14 + k, cz + dz);
+			}
+		}
+		set(level, bb, s(Blocks.DARK_OAK_FENCE), cx, 19, cz);
+		set(level, bb, s(Blocks.LIGHTNING_ROD.waxed().unaffected()), cx, 20, cz);
+		// Slit windows round the shaft.
+		for (int y : new int[]{7, 11}) {
+			set(level, bb, s(Blocks.GLASS_PANE), cx, y, cz - 3);
+			set(level, bb, s(Blocks.GLASS_PANE), cx, y, cz + 3);
+			set(level, bb, s(Blocks.GLASS_PANE), cx + 3, y, cz);
+		}
+		// The door toward the barn under a little hood, and a loading hatch above it.
+		fill(level, bb, cx - 3, 1, cz, cx - 3, 2, cz, AIR);
+		fill(level, bb, cx - 2, 1, cz, cx - 2, 2, cz, AIR);
+		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), cx - 3, 3, cz);
+		set(level, bb, stair(Blocks.DARK_OAK_STAIRS, Direction.EAST, false), cx - 4, 3, cz);
+		fill(level, bb, cx - 3, 8, cz, cx - 3, 9, cz, s(Blocks.SPRUCE_PLANKS));
+		set(level, bb, stair(Blocks.DARK_OAK_STAIRS, Direction.EAST, false), cx - 4, 10, cz);
+		hangingLantern(level, bb, cx, 12, cz, 0, false);
+	}
+
+	/** The stair facing that climbs toward a ring's centre from offset (dx, dz). */
+	private static Direction inward(int dx, int dz) {
+		if (Math.abs(dx) >= Math.abs(dz)) return dx < 0 ? Direction.EAST : Direction.WEST;
+		return dz < 0 ? Direction.SOUTH : Direction.NORTH;
+	}
+
+	/** An open-fronted cart shed along the barn's west flank: a lean-to roof on posts, a hay cart, a woodpile and tools. */
+	private void cartShed(WorldGenLevel level, BoundingBox bb) {
+		var frame = s(Blocks.STRIPPED_DARK_OAK_LOG);
+		for (int z : new int[]{7, 11, 15, 19, 21}) fill(level, bb, -3, 1, z, -3, 3, z, frame);
+		for (int x = -4; x <= 1; x++) {
+			int y = 4 + (x + 4) / 2;
+			for (int z = 6; z <= 22; z++) set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.EAST, false), x, y, z);
+			// Boarded ends under the slope.
+			if (x > -3 && y > 4) for (int z : new int[]{7, 21}) fill(level, bb, x, 4, z, x, y - 1, z, s(Blocks.SPRUCE_PLANKS));
+		}
+		fill(level, bb, -3, 4, 7, -3, 4, 21, s(Blocks.DARK_OAK_PLANKS));
+		for (int z = 8; z <= 20; z++) set(level, bb, s(z % 3 == 0 ? Blocks.COARSE_DIRT : Blocks.DIRT_PATH), -2, 0, z);
+		// The hay cart: a bed of slabs on wheels, a load of hay on it.
+		fill(level, bb, -2, 1, 9, 0, 1, 11, s(Blocks.SPRUCE_SLAB));
+		fill(level, bb, -1, 2, 9, 0, 2, 11, s(Blocks.HAY_BLOCK));
+		set(level, bb, s(Blocks.HAY_BLOCK), 0, 3, 10);
+		set(level, bb, s(Blocks.DARK_OAK_FENCE), -2, 1, 12);
+		// A woodpile, barrels and a grindstone.
+		var log = s(Blocks.SPRUCE_LOG).setValue(BlockStateProperties.AXIS, Direction.Axis.Z);
+		fill(level, bb, 0, 1, 14, 1, 2, 17, log);
+		fill(level, bb, 1, 3, 15, 1, 3, 16, log);
+		var barrel = s(Blocks.BARREL).setValue(BlockStateProperties.FACING, Direction.UP);
+		set(level, bb, barrel, 1, 1, 19); set(level, bb, barrel, 0, 1, 20); set(level, bb, barrel, 1, 2, 19);
+		set(level, bb, floorAttached(Blocks.GRINDSTONE, Direction.EAST), -1, 1, 18);
+		hangingLantern(level, bb, -1, 4, 13, 0, false);
+	}
+
+	/** Behind the barn, a cobbled threshing floor round a millstone, haystacks along the back wall. */
+	private void threshingFloor(WorldGenLevel level, BoundingBox bb) {
+		int cx = 10, cz = 27;
+		for (int dx = -3; dx <= 3; dx++) for (int dz = -3; dz <= 3; dz++) {
+			int d2 = dx * dx + dz * dz;
+			if (d2 > 11) continue;
+			set(level, bb, s(d2 > 6 ? Blocks.POLISHED_ANDESITE : d2 > 2 ? Blocks.COBBLESTONE : Blocks.STONE_BRICKS), cx + dx, 0, cz + dz);
+		}
+		set(level, bb, s(Blocks.SMOOTH_STONE), cx, 1, cz);
+		set(level, bb, s(Blocks.STRIPPED_SPRUCE_LOG), cx, 2, cz);
+		set(level, bb, s(Blocks.SPRUCE_FENCE), cx, 3, cz);
+		set(level, bb, s(Blocks.HAY_BLOCK), cx + 2, 1, cz + 1);
+		// Haystacks: hay heaped in a dome, a pole through the crown.
+		for (int[] h : new int[][]{{3, 27}, {17, 27}, {-2, 27}, {22, 27}}) {
+			for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++)
+				if (dx * dz == 0 || noise(h[0] + dx, h[1] + dz) < 60) set(level, bb, s(Blocks.HAY_BLOCK), h[0] + dx, 1, h[1] + dz);
+			fill(level, bb, h[0], 2, h[1] - 1, h[0], 2, h[1] + 1, s(Blocks.HAY_BLOCK));
+			fill(level, bb, h[0] - 1, 2, h[1], h[0] + 1, 2, h[1], s(Blocks.HAY_BLOCK));
+			set(level, bb, s(Blocks.HAY_BLOCK), h[0], 3, h[1]);
+			set(level, bb, s(Blocks.SPRUCE_FENCE), h[0], 4, h[1]);
 		}
 	}
 }
