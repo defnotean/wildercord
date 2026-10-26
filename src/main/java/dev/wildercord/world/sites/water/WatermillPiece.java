@@ -190,28 +190,46 @@ public class WatermillPiece extends WaterPiece {
 		spawn(level, bb, EntityTypes.VILLAGER, 7, BASE + 1, 4, 0);
 	}
 
-	/** The wheel, upright in the river: a rim of stripped logs, eight spokes, paddles that dip into the stream. */
+	/**
+	 * The wheel, upright in the river and taller than the eaves: a rim of stripped logs, eight spokes, paddles at every
+	 * eighth that dip into the stream, and a flume on a trestle carrying the race over its crown.
+	 */
 	private void wheel(WorldGenLevel level, BoundingBox bb, int water, int hub) {
-		clear(level, bb, 2, water + 1, 9, 12, Math.min(HEIGHT - 1, hub + 5), 13);
+		int top = Math.min(HEIGHT - 1, hub + 7);
+		clear(level, bb, 1, water + 1, 9, 14, top, 13);
 		BlockState rim = Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
-		for (int x = 3; x <= 11; x++) {
-			for (int y = hub - 4; y <= hub + 4; y++) {
+		for (int x = 1; x <= 13; x++) {
+			for (int y = hub - 6; y <= hub + 6; y++) {
 				int dx = x - 7, dy = y - hub;
 				double d = Math.sqrt(dx * dx + dy * dy);
-				if (Math.abs(d - 3.8) < 0.6) {
+				boolean line = dx == 0 || dy == 0 || Math.abs(dx) == Math.abs(dy);
+				if (Math.abs(d - 5.3) < 0.6) {
 					set(level, bb, rim, x, y, WHEEL_Z);
-					if (dx == 0 || dy == 0) {
-						// A paddle either side of the rim at each quarter.
+					if (line) {
 						wet(level, bb, Blocks.SPRUCE_SLAB.defaultBlockState(), x, y, WHEEL_Z - 1);
 						wet(level, bb, Blocks.SPRUCE_SLAB.defaultBlockState(), x, y, WHEEL_Z + 1);
 					}
-				} else if (d < 3.3 && (dx == 0 || dy == 0 || Math.abs(dx) == Math.abs(dy))) {
-					set(level, bb, d < 0.5 ? AXLE : Blocks.SPRUCE_PLANKS.defaultBlockState(), x, y, WHEEL_Z);
+				} else if (d < 4.8 && line) {
+					set(level, bb, d < 0.5 ? AXLE : d < 1.5 ? Blocks.SPRUCE_LOG.defaultBlockState() : Blocks.SPRUCE_PLANKS.defaultBlockState(), x, y, WHEEL_Z);
 				}
 			}
 		}
 		// The axle runs on through the wheel to a bearing post standing in the river.
 		set(level, bb, AXLE, 7, hub, WHEEL_Z + 1);
 		post(level, bb, LOG, 7, WHEEL_Z + 2, hub);
+		// The flume: a water-filled trough on a trestle from the bank's edge to the wheel's crown.
+		int flume = hub + 6;
+		if (flume <= HEIGHT - 1) {
+			BlockState trough = Blocks.SPRUCE_SLAB.defaultBlockState().setValue(net.minecraft.world.level.block.SlabBlock.WATERLOGGED, true);
+			for (int x = 7; x <= 14; x++) {
+				set(level, bb, trough, x, flume, WHEEL_Z);
+				set(level, bb, Blocks.SPRUCE_TRAPDOOR.defaultBlockState().setValue(net.minecraft.world.level.block.TrapDoorBlock.OPEN, true)
+						.setValue(net.minecraft.world.level.block.TrapDoorBlock.FACING, Direction.NORTH), x, flume, WHEEL_Z + 1);
+				set(level, bb, Blocks.SPRUCE_TRAPDOOR.defaultBlockState().setValue(net.minecraft.world.level.block.TrapDoorBlock.OPEN, true)
+						.setValue(net.minecraft.world.level.block.TrapDoorBlock.FACING, Direction.SOUTH), x, flume, WHEEL_Z - 1);
+			}
+			post(level, bb, LOG, 14, WHEEL_Z, flume - 1);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.EAST, true), 13, flume - 1, WHEEL_Z);
+		}
 	}
 }
