@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * Photographs every registered WilderCord structure in a normal world, for judging how the builds look: each is found in
  * its own biome through the registered generation path, placed with {@code place structure}, then shot from above at a
- * three-quarter angle from two opposite corners, at eye level from the ground, straight down, and from inside at its middle. Split across a few classes so no single client runs for too long.
+ * three-quarter angle from two opposite corners (each turned until nothing outside the build hides it), at eye level from the ground, straight down, and from inside at its middle. Split across a few classes so no single client runs for too long.
  */
 final class StructureGallery {
 	private StructureGallery() {}
@@ -37,7 +37,8 @@ final class StructureGallery {
 			for (String rule : List.of("spawn_mobs false", "advance_time false", "advance_weather false")) world.getServer().runCommand("gamerule " + rule);
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");
-			c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.options.renderDistance().set(8); mc.options.fov().set(70); mc.resizeGui(); });
+			c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.options.renderDistance().set(8); mc.options.fov().set(70); mc.resizeGui();
+				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle(); });
 			world.getServer().runOnServer(s -> {
 				var p = s.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SPECTATOR);
@@ -65,33 +66,31 @@ final class StructureGallery {
 				log(id, "bounds " + b.minX() + "," + b.minY() + "," + b.minZ() + " to " + b.maxX() + "," + b.maxY() + "," + b.maxZ());
 				double cx = (b.minX() + b.maxX() + 1) / 2.0, cz = (b.minZ() + b.maxZ() + 1) / 2.0;
 				int span = Math.max(b.getXSpan(), b.getZSpan());
-				double d = span * 0.8 + 10, lift = Math.max(10, span * 0.5), ty = b.minY() + b.getYSpan() * 0.4;
+				double d = span * 0.6 + 8, lift = Math.max(8, span * 0.35 + 4), ty = b.minY() + b.getYSpan() * 0.4;
 				var dim = site.dimension();
 				// Under the Nether's bedrock roof there is no sky to shoot from, so keep every camera below it.
 				double roof = dim == net.minecraft.world.level.Level.NETHER ? 120 : Double.MAX_VALUE;
-				// Two aerial three-quarter views from opposite corners, so every face is seen once.
-				view(c, world, dim, cx + d * 0.7, Math.min(roof, b.maxY() + lift), cz + d * 0.7, cx, ty, cz);
+				double air = Math.min(roof, b.maxY() + lift);
+				// Two aerial three-quarter views from roughly opposite corners, so every face is seen once, each turned until
+				// no tree or hillside stands between the camera and the build.
+				double[] front = world.getServer().computeOnServer(s -> spot(s.getLevel(dim), b, Math.PI / 4, d, (x, z) -> air, cx, ty, cz));
+				view(c, world, dim, front[0], front[1], front[2], cx, ty, cz);
 				shot(c, "gallery_" + id);
-				view(c, world, dim, cx - d * 0.7, Math.min(roof, b.maxY() + lift), cz - d * 0.7, cx, ty, cz);
+				double[] back = world.getServer().computeOnServer(s -> spot(s.getLevel(dim), b, Math.atan2(front[2] - cz, front[0] - cx) + Math.PI, d, (x, z) -> air, cx, ty, cz));
+				view(c, world, dim, back[0], back[1], back[2], cx, ty, cz);
 				shot(c, "gallery_" + id + "_back");
 				// Eye level from the ground beside it, as a player walking up would see it, and a plan from straight above.
-				double gx = cx - d * 0.75, gz = cz + d * 0.45;
-				int ground = world.getServer().computeOnServer(s -> {
+				double[] ground = world.getServer().computeOnServer(s -> {
 					var level = s.getLevel(dim);
-					int x = (int) Math.floor(gx), z = (int) Math.floor(gz);
-					if (roof == Double.MAX_VALUE) return level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-					// The Nether's heightmap is its roof: walk up from the site's floor to the first open footing instead.
-					for (int y = b.minY(); y < roof - 2; y++)
-						if (level.getBlockState(new BlockPos(x, y, z)).isAir() && level.getBlockState(new BlockPos(x, y + 1, z)).isAir() && !level.getBlockState(new BlockPos(x, y - 1, z)).isAir()) return y;
-					return b.minY() + 1;
+					return spot(level, b, Math.PI * 0.83, d * 0.9, (x, z) -> footing(level, b, roof, x, z), cx, ty, cz);
 				});
-				view(c, world, dim, gx, Math.min(roof - 2, ground + 0.5), gz, cx, Math.max(ground + 1.5, ty), cz);
+				view(c, world, dim, ground[0], ground[1], ground[2], cx, Math.max(ground[1] + 1.5, ty), cz);
 				shot(c, "gallery_" + id + "_ground");
-				view(c, world, dim, cx + 0.01, Math.min(roof, b.maxY() + span * 0.9 + 8), cz + 0.01, cx, b.minY(), cz);
+				view(c, world, dim, cx + 0.01, Math.min(roof, b.maxY() + span * 0.75 + 6), cz + 0.01, cx, b.minY(), cz);
 				shot(c, "gallery_" + id + "_plan");
 				boolean alongX = b.getXSpan() >= b.getZSpan();
-				double y = b.minY() + Math.max(2, b.getYSpan() * 0.3);
-				view(c, world, dim, alongX ? b.minX() + 2.5 : cx, y, alongX ? cz : b.minZ() + 2.5, alongX ? b.maxX() : cx, y - 2, alongX ? cz : b.maxZ());
+				double[] in = world.getServer().computeOnServer(s -> inside(s.getLevel(dim), b, alongX));
+				view(c, world, dim, in[0], in[1], in[2], alongX ? b.maxX() : in[0], in[1] - 0.5, alongX ? in[2] : b.maxZ());
 				shot(c, "gallery_" + id + "_inside");
 			}
 		}
@@ -139,6 +138,69 @@ final class StructureGallery {
 		return at.apply(ChunkPos.containing(found));
 	}
 
+	/**
+	 * A camera spot {@code d} out from the middle of {@code b}, starting at {@code angle} and turning either way, then
+	 * stepping further out, until nothing outside the structure hides its middle. Falls back on the least hidden spot.
+	 */
+	private static double[] spot(ServerLevel level, BoundingBox b, double angle, double d, java.util.function.DoubleBinaryOperator feet,
+			double tx, double ty, double tz) {
+		double cx = (b.minX() + b.maxX() + 1) / 2.0, cz = (b.minZ() + b.maxZ() + 1) / 2.0;
+		double[] best = null;
+		int fewest = Integer.MAX_VALUE;
+		for (double scale : new double[] {1, 1.3, 0.85, 1.7}) for (int k = 0; k < 12; k++) {
+			double a = angle + ((k + 1) / 2) * (k % 2 == 0 ? 1 : -1) * Math.PI / 6;
+			double x = cx + Math.cos(a) * d * scale, z = cz + Math.sin(a) * d * scale, y = feet.applyAsDouble(x, z);
+			if (b.inflatedBy(1).isInside(BlockPos.containing(x, y + 1.62, z))) continue;
+			int n = blockers(level, b, x, y + 1.62, z, tx, ty, tz);
+			if (n == 0) return new double[] {x, y, z};
+			if (n < fewest) { fewest = n; best = new double[] {x, y, z}; }
+		}
+		return best != null ? best : new double[] {cx + d, feet.applyAsDouble(cx + d, cz), cz};
+	}
+
+	/** Solid blocks between the eye and the target that are not part of the structure itself. */
+	private static int blockers(ServerLevel level, BoundingBox b, double x, double y, double z, double tx, double ty, double tz) {
+		double dx = tx - x, dy = ty - y, dz = tz - z, len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+		var site = b.inflatedBy(1);
+		int n = 0;
+		BlockPos last = null;
+		for (double t = 0; t < len; t += 0.5) {
+			var pos = BlockPos.containing(x + dx * t / len, y + dy * t / len, z + dz * t / len);
+			if (pos.equals(last)) continue;
+			last = pos;
+			if (site.isInside(pos)) break;
+			if (!level.getBlockState(pos).isAir()) n++;
+		}
+		return n;
+	}
+
+	/** Where a player standing at {@code (x, z)} has their feet: the surface, or in the Nether the first open footing above the site's floor. */
+	private static double footing(ServerLevel level, BoundingBox b, double roof, double x, double z) {
+		int bx = (int) Math.floor(x), bz = (int) Math.floor(z);
+		if (roof == Double.MAX_VALUE) return level.getHeight(Heightmap.Types.MOTION_BLOCKING, bx, bz) + 0.5;
+		// The Nether's heightmap is its roof: walk up from the site's floor to the first open footing instead.
+		for (int y = b.minY(); y < roof - 2; y++)
+			if (level.getBlockState(new BlockPos(bx, y, bz)).isAir() && level.getBlockState(new BlockPos(bx, y + 1, bz)).isAir()
+					&& !level.getBlockState(new BlockPos(bx, y - 1, bz)).isAir()) return y;
+		return b.minY() + 1;
+	}
+
+	/** An open spot inside the structure, near one end of its longer axis, with a few blocks of air ahead to look down. */
+	private static double[] inside(ServerLevel level, BoundingBox b, boolean alongX) {
+		int span = alongX ? b.getXSpan() : b.getZSpan(), cross = alongX ? (b.minZ() + b.maxZ()) / 2 : (b.minX() + b.maxX()) / 2;
+		for (double frac : new double[] {0.1, 0.25, 0.4, 0.55}) for (int y = b.minY() + 1; y < b.maxY() - 1; y++) {
+			int along = (alongX ? b.minX() : b.minZ()) + (int) (span * frac);
+			boolean open = true;
+			for (int k = 0; k < 5 && open; k++) for (int h = 0; h < 2 && open; h++) {
+				var pos = alongX ? new BlockPos(along + k, y + h, cross) : new BlockPos(cross, y + h, along + k);
+				open = level.getBlockState(pos).isAir();
+			}
+			if (open) return alongX ? new double[] {along + 0.5, y, cross + 0.5} : new double[] {cross + 0.5, y, along + 0.5};
+		}
+		double y = b.minY() + Math.max(2, b.getYSpan() * 0.3);
+		return alongX ? new double[] {b.minX() + 2.5, y, cross + 0.5} : new double[] {cross + 0.5, y, b.minZ() + 2.5};
+	}
+
 	/** Puts the spectating player's eye at {@code (x, y, z)} looking at {@code (tx, ty, tz)}, and waits for the view to draw. */
 	private static void view(ClientGameTestContext c, net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext world,
 			ResourceKey<net.minecraft.world.level.Level> dim, double x, double y, double z, double tx, double ty, double tz) {
@@ -159,6 +221,8 @@ final class StructureGallery {
 	}
 
 	private static void shot(ClientGameTestContext c, String name) {
+		// Quest and advancement toasts still draw with the HUD hidden.
+		c.runOnClient(mc -> mc.gui.toastManager().clear());
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 
