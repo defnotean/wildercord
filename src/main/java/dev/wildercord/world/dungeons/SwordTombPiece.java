@@ -14,7 +14,7 @@ import java.util.*;
 
 /** A stair into a buried blade gallery, two intent thresholds and a spacious physical duel chamber. */
 public final class SwordTombPiece extends DungeonPiece {
-	public SwordTombPiece(int x,int y,int z,Direction facing){super(DungeonWorldgen.SWORD_TOMB_PIECE,x,y,z,41,21,55,facing);}
+	public SwordTombPiece(int x,int y,int z,Direction facing){super(DungeonWorldgen.SWORD_TOMB_PIECE,x,y,z,41,31,55,facing);}
 	public SwordTombPiece(CompoundTag tag){super(DungeonWorldgen.SWORD_TOMB_PIECE,tag);}
 	static Optional<Structure.GenerationStub> locate(Structure.GenerationContext c){
 		if(!Config.get().auraWorld().swordTombs())return Optional.empty();
@@ -23,6 +23,14 @@ public final class SwordTombPiece extends DungeonPiece {
 		int surface=c.chunkGenerator().getFirstOccupiedHeight(entrance.getX(),entrance.getZ(),Heightmap.Types.WORLD_SURFACE_WG,c.heightAccessor(),c.randomState());
 		int floor=c.chunkGenerator().getFirstOccupiedHeight(entrance.getX(),entrance.getZ(),Heightmap.Types.OCEAN_FLOOR_WG,c.heightAccessor(),c.randomState());
 		if(surface<c.chunkGenerator().getSeaLevel() || surface-floor>1)return Optional.empty();
+		// The halls run 55 blocks back under the barrow: every corner and the duel floor must lie under dry
+		// ground no lower than the entrance, or their roofs stand bare above a slope or a frozen lake.
+		for(int[] at:new int[][]{{4,2},{36,2},{4,52},{36,52},{20,36},{20,50},{6,26},{34,46}}){
+			var p=piece.localPosition(at[0],0,at[1]);
+			int top=c.chunkGenerator().getFirstOccupiedHeight(p.getX(),p.getZ(),Heightmap.Types.WORLD_SURFACE_WG,c.heightAccessor(),c.randomState());
+			int bed=c.chunkGenerator().getFirstOccupiedHeight(p.getX(),p.getZ(),Heightmap.Types.OCEAN_FLOOR_WG,c.heightAccessor(),c.randomState());
+			if(top<surface-1 || top-bed>1)return Optional.empty();
+		}
 		piece.move(0,surface-12,0);return Optional.of(new Structure.GenerationStub(entrance.atY(surface),b->b.addPiece(piece)));
 	}
 	@Override public void postProcess(WorldGenLevel level,StructureManager manager,ChunkGenerator generator,RandomSource random,BoundingBox bb,ChunkPos chunk,BlockPos ref){
@@ -37,12 +45,14 @@ public final class SwordTombPiece extends DungeonPiece {
 		// The roofed vestibule is marked at the surface by a broken arch and two carved blade stones.
 		for(int x:new int[]{16,24}){fill(level,bb,x,12,1,x,15,1,carved);set(level,bb,Blocks.STONE_BRICK_SLAB.defaultBlockState(),x,16,1);}
 		fill(level,bb,17,15,1,23,15,1,carved);fill(level,bb,18,13,0,22,14,1,AIR);
-		// A grass barrow covers the vestibule; keep the descending stair open to the sky.
+		// A grass barrow covers the vestibule, ringed by a kerb of old stones; keep the descending stair open to the sky.
 		for(int x=10;x<=30;x++)for(int z=0;z<=16;z++){
 			if(x>=18 && x<=22 && z<=14)continue;
 			double slope=(x-20)*(x-20)/100.0+(z-8)*(z-8)/64.0;
-			int top=13+(int)Math.max(0,3*(1-slope));
+			if(slope>=1.3){set(level,bb,Blocks.GRASS_BLOCK.defaultBlockState(),x,12,z);continue;}
+			int top=barrow(x,z);
 			fill(level,bb,x,12,z,x,top-1,z,Blocks.DIRT.defaultBlockState());set(level,bb,Blocks.GRASS_BLOCK.defaultBlockState(),x,top,z);
+			if(slope>=1.0 && (z>1 || x<15 || x>25))set(level,bb,(noise(x,z)<40?Blocks.MOSSY_STONE_BRICKS:noise(x,z)<75?Blocks.STONE_BRICKS:Blocks.CRACKED_STONE_BRICKS).defaultBlockState(),x,13,z);
 		}
 		// Each gallery bay has a grave plinth, steel blade and modest lamp, arranged away from the central route.
 		for(int x:new int[]{9,31})for(int z:new int[]{18,22}){
@@ -67,6 +77,7 @@ public final class SwordTombPiece extends DungeonPiece {
 		if(variant()==1){fill(level,bb,7,1,18,12,2,20,AIR);fill(level,bb,7,0,18,12,0,20,Blocks.MOSS_BLOCK.defaultBlockState());}
 		if(variant()==2){fill(level,bb,28,1,48,32,3,50,AIR);fill(level,bb,28,0,48,32,0,50,trim);}
 		dress(level,bb);
+		blades(level,bb,generator);
 		gate(level,bb,15,2);gate(level,bb,24,3);
 		chest(level,bb,7,1,23,DungeonWorldgen.TOMB_HALL,Direction.EAST,931);
 		chest(level,bb,29,1,51,DungeonWorldgen.TOMB_HALL,Direction.WEST,932);
@@ -154,7 +165,45 @@ public final class SwordTombPiece extends DungeonPiece {
 		for(int x:new int[]{18,22})set(level,bb,Blocks.CANDLE.defaultBlockState().setValue(net.minecraft.world.level.block.CandleBlock.CANDLES,x==18?3:2).setValue(net.minecraft.world.level.block.CandleBlock.LIT,true),x,2,51);
 	}
 	/** The barrow's turf height at a column, matching the mound built in postProcess. */
-	private static int barrow(int x,int z){double slope=(x-20)*(x-20)/100.0+(z-8)*(z-8)/64.0;return 13+(int)Math.max(0,3*(1-slope));}
+	private static int barrow(int x,int z){double slope=(x-20)*(x-20)/100.0+(z-8)*(z-8)/64.0;return 13+(int)Math.max(0,5*(1-slope));}
+	/** Planted swords: a greatsword at the head of the cut, a ring of lesser blades round the kerb and a file marking the buried halls. */
+	private void blades(WorldGenLevel level,BoundingBox bb,ChunkGenerator generator){
+		sword(level,bb,20,13,16,9,true,true);
+		var state=level.getLevel().getChunkSource().randomState();
+		for(int[] at:new int[][]{{6,3},{6,12},{34,3},{34,12},{3,22},{37,22},{3,32},{37,32},{3,42},{37,42},{12,53},{28,53}}){
+			int x=at[0],z=at[1];var p=getWorldPos(x,0,z);
+			int top=generator.getFirstOccupiedHeight(p.getX(),p.getZ(),Heightmap.Types.WORLD_SURFACE_WG,level,state);
+			int bed=generator.getFirstOccupiedHeight(p.getX(),p.getZ(),Heightmap.Types.OCEAN_FLOOR_WG,level,state);
+			int ground=top+1-getWorldY(0);
+			// Off the barrow the blades stand on generated ground; a pond, cliff or the test sky simply loses that blade.
+			if(top!=bed || Math.abs(ground-13)>3)continue;
+			int n=noise(x,z);sword(level,bb,x,ground,z,n<30?3:5,z<17,n>=30);
+		}
+	}
+	/** One sword driven point-first into the ground: a blade, a deepslate guard across {@code alongX} or along z, a grip and a pommel. */
+	private void sword(WorldGenLevel level,BoundingBox bb,int x,int y,int z,int blade,boolean alongX,boolean whole){
+		var core=Blocks.POLISHED_ANDESITE.defaultBlockState();var edge=Blocks.SMOOTH_STONE.defaultBlockState();var dark=Blocks.POLISHED_DEEPSLATE.defaultBlockState();
+		int dx=alongX?1:0,dz=alongX?0:1;boolean great=blade>=8;
+		fill(level,bb,x,y-1,z,x,y-1,z,Blocks.COARSE_DIRT.defaultBlockState());
+		for(int i=0;i<blade;i++){
+			set(level,bb,noise(x,y+i,z)<12?Blocks.ANDESITE.defaultBlockState():core,x,y+i,z);
+			if(great && i<blade-1){set(level,bb,edge,x-dx,y+i,z-dz);set(level,bb,edge,x+dx,y+i,z+dz);}
+		}
+		if(!whole)return;
+		int g=y+blade,reach=great?3:1;
+		for(int i=-reach+1;i<reach;i++)set(level,bb,dark,x+i*dx,g,z+i*dz);
+		Direction out=alongX?Direction.EAST:Direction.SOUTH;
+		set(level,bb,stair(Blocks.POLISHED_DEEPSLATE_STAIRS,out.getOpposite(),false),x+reach*dx,g,z+reach*dz);
+		set(level,bb,stair(Blocks.POLISHED_DEEPSLATE_STAIRS,out,false),x-reach*dx,g,z-reach*dz);
+		int grip=great?3:1;
+		fill(level,bb,x,g+1,z,x,g+grip,z,Blocks.STRIPPED_DARK_OAK_LOG.defaultBlockState());
+		set(level,bb,great?Blocks.CHISELED_POLISHED_BLACKSTONE.defaultBlockState():Blocks.POLISHED_BLACKSTONE_BUTTON.defaultBlockState().setValue(net.minecraft.world.level.block.ButtonBlock.FACE,net.minecraft.world.level.block.state.properties.AttachFace.FLOOR),x,g+grip+1,z);
+		if(great){
+			set(level,bb,Blocks.SOUL_LANTERN.defaultBlockState(),x,g+grip+2,z);
+			// Soul flames burn on the flat of the blade, front and back.
+			for(int s:new int[]{-1,1})sconce(level,bb,x+s*dz,g-3,z+s*dx,alongX?(s<0?Direction.NORTH:Direction.SOUTH):(s<0?Direction.WEST:Direction.EAST),true);
+		}
+	}
 	private void gate(WorldGenLevel level,BoundingBox bb,int z,int stage){for(int x=19;x<=21;x++)for(int y=1;y<=3;y++){
 		var p=localPosition(x,y,z);if(bb.isInside(p))level.setBlock(p,SwordTombs.GATE.defaultBlockState().setValue(IntentGate.STAGE,stage).setValue(IntentGate.FACING,inward(x,z)),2);
 	}}

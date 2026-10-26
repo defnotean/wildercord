@@ -332,6 +332,27 @@ public final class SerpentGrovePiece extends DungeonPiece {
 			set(level,bb,Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState(),x,ground+1,z);
 			set(level,bb,Blocks.LANTERN.defaultBlockState(),x,ground+2,z);
 		}
+		// A broken ring of standing stones further out, so the hole reads as a place long before the lip does.
+		for(int k=0;k<12;k++){
+			double a=k*Math.PI/6+Math.PI/12;
+			int x=(int)Math.round(SHAFT_X+Math.cos(a)*8.5),z=(int)Math.round(SHAFT_Z+Math.sin(a)*8.5);
+			if(!column(bb,x,z))continue;
+			int ground=Math.min(top,surface(level,x,z)),n=noise(x,z);
+			if(n<20){
+				// Toppled: a stump and its drum in the grass.
+				set(level,bb,mossy,x,ground,z);
+				set(level,bb,Blocks.MOSSY_COBBLESTONE.defaultBlockState(),x+(int)Math.signum(Math.cos(a)),ground,z+(int)Math.signum(Math.sin(a)));
+				continue;
+			}
+			int cap=Math.min(HEIGHT-2,ground+2+n%3);
+			fill(level,bb,x,ground-2,z,x,ground-1,z,Blocks.COBBLESTONE.defaultBlockState());
+			for(int y=ground;y<cap;y++){
+				int m=noise(x,y,z);
+				set(level,bb,(m<40?Blocks.MOSSY_STONE_BRICKS:m<60?Blocks.CRACKED_STONE_BRICKS:Blocks.STONE_BRICKS).defaultBlockState(),x,y,z);
+			}
+			set(level,bb,chiseled,x,cap,z);
+			if(n%4==0)set(level,bb,Blocks.MOSS_CARPET.defaultBlockState(),x,cap+1,z);
+		}
 	}
 
 	@Override public List<BoundingBox> wardedBoxes(){return List.of(worldBox(CX-RADIUS-2,0,CZ-RADIUS-2,CX+RADIUS+2,dome(0)+2,CZ+RADIUS+2));}

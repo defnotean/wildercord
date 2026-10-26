@@ -155,6 +155,20 @@ public final class WaysideShrinePiece extends DungeonPiece {
 			set(level,bb,stair(Direction.WEST),2,1,z);
 			set(level,bb,stair(Direction.EAST),8,1,z);
 		}
+		// A gateway over the track where it meets the footing: two posts, a tie beam, and a dark lintel swept up at both ends.
+		for(int x:new int[]{3,7}){
+			fill(level,bb,x,-3,1,x,-1,1,Blocks.DIRT.defaultBlockState());
+			set(level,bb,Blocks.MOSSY_STONE_BRICKS.defaultBlockState(),x,0,1);
+			fill(level,bb,x,1,1,x,4,1,Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState());
+		}
+		fill(level,bb,4,3,1,6,3,1,log.setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.X));
+		set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),5,4,1);
+		fill(level,bb,2,5,1,8,5,1,Blocks.DARK_OAK_PLANKS.defaultBlockState());
+		set(level,bb,stair(Blocks.DARK_OAK_STAIRS,Direction.EAST,true),1,5,1);
+		set(level,bb,stair(Blocks.DARK_OAK_STAIRS,Direction.WEST,true),9,5,1);
+		set(level,bb,Blocks.DARK_OAK_SLAB.defaultBlockState(),1,6,1);
+		set(level,bb,Blocks.DARK_OAK_SLAB.defaultBlockState(),9,6,1);
+		fill(level,bb,3,6,1,7,6,1,Blocks.DARK_OAK_SLAB.defaultBlockState());
 		// Ferns grown up round the footing's rim.
 		for(int x=1;x<=9;x++)for(int z=1;z<=9;z++){
 			boolean rim=x==1||x==9||z==1||z==9;

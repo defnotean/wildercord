@@ -131,6 +131,26 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 			set(level,bb,Blocks.STONE_BRICK_SLAB.defaultBlockState(),x,4,12);
 			banner(level,bb,Blocks.WALL_BANNER.pick(x<15?net.minecraft.world.item.DyeColor.RED:net.minecraft.world.item.DyeColor.GRAY),x,3,11,Direction.SOUTH);
 		}
+		// A tall obelisk behind the memorial on a stepped plinth, the fallen's banner hung on its face, a lamp kept at its top.
+		fill(level,bb,13,-6,18,17,-1,22,Blocks.DIRT.defaultBlockState());
+		fill(level,bb,13,0,18,17,0,22,Blocks.STONE_BRICKS.defaultBlockState());
+		for (int x=13;x<=17;x++) {
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.SOUTH,false),x,1,18);
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.NORTH,false),x,1,22);
+		}
+		for (int z=19;z<=21;z++) {
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.EAST,false),13,1,z);
+			set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.WEST,false),17,1,z);
+		}
+		fill(level,bb,14,1,19,16,1,21,Blocks.MOSSY_STONE_BRICKS.defaultBlockState());
+		fill(level,bb,14,2,19,16,2,21,Blocks.POLISHED_ANDESITE.defaultBlockState());
+		for (int x:new int[]{14,16}) for (int z:new int[]{19,21}) set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),x,2,z);
+		fill(level,bb,15,3,20,15,9,20,Blocks.POLISHED_ANDESITE.defaultBlockState());
+		set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),15,3,20);
+		set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),15,10,20);
+		set(level,bb,Blocks.LANTERN.defaultBlockState(),15,11,20);
+		banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.RED),15,7,19,Direction.NORTH);
+		weather(level,bb,13,0,18,17,2,22,Blocks.STONE_BRICKS.defaultBlockState(),Blocks.CRACKED_STONE_BRICKS.defaultBlockState(),20);
 		// The graves: a low mound and a marker each, some of the markers fallen.
 		for (int x:new int[]{3,5}) for (int z:new int[]{14,17,20}) {
 			fill(level,bb,x,-3,z,x,-1,z,Blocks.DIRT.defaultBlockState());

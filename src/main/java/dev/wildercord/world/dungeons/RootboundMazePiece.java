@@ -121,6 +121,18 @@ public class RootboundMazePiece extends DungeonPiece {
 		// The crossing gets a low parapet; the vault a steep gable along x, ridged in moss brick.
 		crenellate(level, bb, 8, 23, 22, 30, 9, BRICK);
 		gableRoof(level, bb, 7, 31, 23, 41, 11, true, Blocks.STONE_BRICK_STAIRS, BRICK, worn);
+		// A lantern tower over the crossing, barred windows on every face, a shroomlight burning between its merlons.
+		fill(level, bb, 12, 9, 24, 18, 13, 30, worn);
+		fill(level, bb, 13, 9, 25, 17, 12, 29, AIR);
+		for (int x : new int[] {12, 18}) for (int z : new int[] {24, 30}) pillar(level, bb, x, z, 9, 14, chiseled, STONE, chiseled);
+		fill(level, bb, 15, 10, 24, 15, 12, 24, Blocks.IRON_BARS.defaultBlockState());
+		fill(level, bb, 15, 10, 30, 15, 12, 30, Blocks.IRON_BARS.defaultBlockState());
+		fill(level, bb, 12, 10, 27, 12, 12, 27, Blocks.IRON_BARS.defaultBlockState());
+		fill(level, bb, 18, 10, 27, 18, 12, 27, Blocks.IRON_BARS.defaultBlockState());
+		crenellate(level, bb, 12, 24, 18, 30, 14, BRICK);
+		set(level, bb, LAMP, 15, 9, 27);
+		set(level, bb, LAMP, 15, 14, 27);
+		set(level, bb, Blocks.MOSS_CARPET.defaultBlockState(), 15, 15, 27);
 		for (int x : new int[] {7, 23}) {
 			fill(level, bb, x, 13, 35, x, 15, 37, Blocks.IRON_BARS.defaultBlockState());
 		}

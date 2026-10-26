@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -26,7 +27,7 @@ import java.util.Optional;
  * falls away at least 8 blocks past the shrine. Local y 1 is the floor.
  */
 public final class MinersRestPiece extends MinePiece {
-	static final int WIDTH = 11, HEIGHT = 12, DEPTH = 17, DROP = 8;
+	static final int WIDTH = 11, HEIGHT = 21, DEPTH = 17, DROP = 8;
 
 	public MinersRestPiece(int x, int y, int z, Direction facing) {
 		super(MineSites.MINERS_REST, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -65,7 +66,7 @@ public final class MinersRestPiece extends MinePiece {
 		BlockState brick = s(Blocks.STONE_BRICKS), plank = s(Blocks.SPRUCE_PLANKS), fence = s(Blocks.SPRUCE_FENCE);
 		BlockState chiseled = s(Blocks.CHISELED_STONE_BRICKS), polished = s(Blocks.POLISHED_ANDESITE);
 		Palette floor = Palette.of(Blocks.STONE_BRICKS, 7, Blocks.MOSSY_STONE_BRICKS, 2, Blocks.CRACKED_STONE_BRICKS, 1);
-		fill(level, bb, 1, 2, 0, 9, 11, 8, AIR);
+		fill(level, bb, 1, 2, 0, 9, 20, 8, AIR);
 		// The shrine: a worn brick floor on footings with an andesite aisle, and broad steps up from the path.
 		fill(level, bb, 2, 1, 1, 8, 1, 7, floor);
 		fill(level, bb, 5, 1, 1, 5, 1, 7, polished);
@@ -101,7 +102,24 @@ public final class MinersRestPiece extends MinePiece {
 		fill(level, bb, 2, 6, 1, 8, 6, 7, plank);
 		for (int z : new int[] {2, 6}) fill(level, bb, 3, 6, z, 7, 6, z, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
 		hipRoof(level, bb, 2, 1, 8, 7, 6, Blocks.STONE_BRICK_STAIRS, brick, chiseled);
-		set(level, bb, s(Blocks.LANTERN), 5, 11, 4);
+		// A belfry rising out of the roof: four posts round the great bell, arched on every face, under a needle spire.
+		fill(level, bb, 4, 9, 3, 6, 9, 5, brick);
+		fill(level, bb, 4, 10, 3, 6, 12, 5, AIR);
+		for (int x : new int[] {4, 6}) for (int z : new int[] {3, 5}) pillar(level, bb, x, z, 10, 12, chiseled, brick, brick);
+		set(level, bb, s(Blocks.STONE_BRICK_WALL), 5, 10, 3);
+		set(level, bb, s(Blocks.STONE_BRICK_WALL), 5, 10, 5);
+		set(level, bb, s(Blocks.STONE_BRICK_WALL), 4, 10, 4);
+		set(level, bb, s(Blocks.STONE_BRICK_WALL), 6, 10, 4);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), 5, 12, 3);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.SOUTH, true), 5, 12, 5);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), 4, 12, 4);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 6, 12, 4);
+		fill(level, bb, 4, 13, 3, 6, 13, 5, chiseled);
+		set(level, bb, s(Blocks.BELL).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING), 5, 12, 4);
+		spire(level, bb, 5, 4, 2, 14, Blocks.STONE_BRICK_STAIRS, brick, chiseled, s(Blocks.LIGHTNING_ROD));
+		// Lamps hung at the roof's four corners and banners on the front pillars.
+		for (int x : new int[] {1, 9}) for (int z : new int[] {0, 8}) hangingLantern(level, bb, x, 5, z, 0, false);
+		for (int x : new int[] {2, 8}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.ORANGE), x, 4, 0, Direction.NORTH);
 		// The bell, the candle altars, the bench and the offering chest.
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING), 5, 5, 3);
 		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), 7, 2, 5);
