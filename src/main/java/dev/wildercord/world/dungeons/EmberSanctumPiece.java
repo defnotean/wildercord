@@ -104,6 +104,7 @@ public class EmberSanctumPiece extends DungeonPiece {
 		forge(level, bb);
 		arena(level, bb);
 		vault(level, bb);
+		exterior(level, bb);
 		// The doors go in after the rooms: each room's box writes its end walls, which would wall them up.
 		gate(level, bb, 10, RuneSealBlock.Element.FIRE, RuneSealBlock.Element.EARTH);
 		gate(level, bb, 36, RuneSealBlock.Element.VOID, RuneSealBlock.Element.STORM);
@@ -340,6 +341,8 @@ public class EmberSanctumPiece extends DungeonPiece {
 					for (int y = 1; y <= ceiling(ARENA_R) + 1; y++) {
 						set(level, bb, y % 6 == 0 ? GILDED : brick(x, y, z), x, y, z);
 					}
+					// Battlements round the drum's rim.
+					if (d > ARENA_R + 0.5 && (x + z) % 2 == 0) set(level, bb, BRICKS, x, ceiling(ARENA_R) + 2, z);
 					continue;
 				}
 				set(level, bb, floor(x, z, d), x, 1, z);
@@ -353,6 +356,8 @@ public class EmberSanctumPiece extends DungeonPiece {
 				// Eight ribs spring from the pillars and meet in a gilded ring round the crown.
 				if (d > 2.5 && d < ARENA_R && rib(x, z)) {
 					set(level, bb, d > 11.5 ? GILDED : BRICKS, x, top, z);
+					// The same ribs stand proud on the outside of the dome.
+					set(level, bb, POLISHED, x, top + 3, z);
 				} else if (Math.abs(d - 3) < 0.5) {
 					set(level, bb, GILDED, x, top, z);
 				}
@@ -451,6 +456,45 @@ public class EmberSanctumPiece extends DungeonPiece {
 		}
 		for (int z = 58; z <= 66; z++) set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.WEST, true), 40, 8, z);
 		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 40, 5, 62, Direction.WEST);
+	}
+
+	// ------------------------------------------------------------------ the outside
+
+	/**
+	 * What shows where the cave opens onto the temple: buttresses down the hall, a battlemented roof with a raised
+	 * clerestory and burning corner turrets, smoking chimneys over the forge and a gilded finial on the arena dome.
+	 */
+	private void exterior(WorldGenLevel level, BoundingBox bb) {
+		for (int z : new int[] {13, 19, 25, 31}) {
+			buttress(level, bb, 5, z, 1, 12, Direction.WEST, BRICKS, Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS);
+			buttress(level, bb, 35, z, 1, 12, Direction.EAST, BRICKS, Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS);
+		}
+		fill(level, bb, 6, 14, 10, 34, 14, 36, POLISHED);
+		crenellate(level, bb, 6, 10, 34, 36, 15, BRICKS);
+		fill(level, bb, 16, 15, 11, 24, 16, 35, BRICKS);
+		fill(level, bb, 16, 17, 11, 24, 17, 35, POLISHED);
+		crenellate(level, bb, 16, 11, 24, 35, 18, BRICKS);
+		for (int z = 13; z <= 33; z += 4) {
+			set(level, bb, MAGMA, 16, 16, z);
+			set(level, bb, MAGMA, 24, 16, z);
+		}
+		for (int[] c : new int[][] {{6, 10}, {34, 10}, {6, 36}, {34, 36}}) {
+			pillar(level, bb, c[0], c[1], 14, 19, CHISELED, BASALT, GILDED);
+			set(level, bb, FIRE, c[0], 20, c[1]);
+		}
+		// Two chimneys over the forge's smoke hood; their campfires send smoke up through the cave.
+		for (int z : new int[] {39, 43}) {
+			fill(level, bb, 14, 10, z, 15, 17, z + 1, BRICKS);
+			set(level, bb, CHISELED, 14, 13, z);
+			set(level, bb, CHISELED, 15, 13, z + 1);
+			fill(level, bb, 14, 18, z, 15, 18, z + 1, FIRE);
+		}
+		fill(level, bb, 13, 10, 36, 27, 10, 46, POLISHED);
+		crenellate(level, bb, 13, 36, 27, 46, 11, BRICKS);
+		// The dome's crown: a gilded drum and a magma finial.
+		int crown = ceiling(0) + 3;
+		set(level, bb, GILDED, CX, crown, ARENA_Z);
+		set(level, bb, MAGMA, CX, crown + 1, ARENA_Z);
 	}
 
 	// ------------------------------------------------------------------ guards
