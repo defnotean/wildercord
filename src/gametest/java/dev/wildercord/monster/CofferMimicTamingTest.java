@@ -97,7 +97,8 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			use(c);
 			w.getServer().runOnServer(s -> {
 				check(p(s).getMainHandItem().is(Items.ENCHANTED_BOOK), "An enchanted book is never eaten");
-				check(mimic(s).getHealth() <= mimic(s).getMaxHealth() - 8.0F, "Nor does it mend it");
+				// Shut, it heals a point a second on its own, so only a book's worth counts as mending.
+				check(mimic(s).getHealth() < mimic(s).getMaxHealth() - 8.0F + MimicRules.BOOK_HEAL, "Nor does it mend it");
 			});
 			check(c.computeOnClient(mc -> mc.gui.screen() instanceof ContainerScreen), "An enchanted book opens it as a chest");
 			c.runOnClient(mc -> mc.player.closeContainer());
@@ -107,7 +108,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			use(c);
 			w.getServer().runOnServer(s -> {
 				check(p(s).getMainHandItem().getCount() == 1, "Hurt, its owner's plain book is eaten");
-				check(mimic(s).getHealth() > mimic(s).getMaxHealth() - 8.0F, "And mends it");
+				check(mimic(s).getHealth() >= mimic(s).getMaxHealth() - 8.0F + MimicRules.BOOK_HEAL, "And mends it");
 			});
 			check(c.computeOnClient(mc -> !(mc.gui.screen() instanceof ContainerScreen)), "Mending does not open the chest");
 
