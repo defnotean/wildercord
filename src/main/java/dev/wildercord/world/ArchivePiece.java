@@ -52,7 +52,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
  */
 public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercord.world.dungeons.WardedPiece {
 	public static final int WIDTH = 41;
-	public static final int HEIGHT = 34;
+	public static final int HEIGHT = 40;
 	public static final int DEPTH = 92;
 	/** Local y of the ground at the entrance (where you stand). */
 	public static final int SURFACE = 26;
@@ -89,6 +89,7 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb,
 			ChunkPos chunkPos, BlockPos reference) {
 		dev.wildercord.world.dungeons.DungeonWards.remember(level, this);
+		terrace(level, bb);
 		stairway(level, bb);
 		shrine(level, bb);
 		library(level, bb);
@@ -178,28 +179,93 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		}
 	}
 
-	/** Broken pillars in a ring around the stairway's mouth, each standing on its own patch of ground. */
+	private static final int TERRACE_Z = STAIR_START + 1;
+
+	private static boolean onTerrace(int x, int z) {
+		int dx = Math.abs(x - 20), dz = z - TERRACE_Z;
+		return z >= 0 && dx <= 9 && dz <= 9 && dx + Math.abs(dz) <= 14;
+	}
+
+	/**
+	 * An octagonal terrace of deepslate around the stairway's mouth, the old forecourt of the Archive. Each column is founded
+	 * down to the sea or lake floor beneath it, so over water it stands as a platform rather than floating, and over a slope
+	 * it reads as a raised plinth. Its rim is a broken balustrade; the front edge steps down to the ground.
+	 */
+	private void terrace(WorldGenLevel level, BoundingBox bb) {
+		BlockState wall = Blocks.POLISHED_DEEPSLATE_WALL.defaultBlockState();
+		for (int x = 11; x <= 29; x++) {
+			for (int z = 0; z <= TERRACE_Z + 9; z++) {
+				if (!onTerrace(x, z) || (x >= 18 && x <= 22 && z >= STAIR_START)) {
+					continue;
+				}
+				BlockPos world = getWorldPos(x, 0, z);
+				if (!bb.isInside(world.getX(), bb.minY(), world.getZ())) {
+					continue;
+				}
+				int floor = level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, world.getX(), world.getZ()) - boundingBox.minY();
+				for (int y = Math.max(floor - 1, SURFACE - 16); y <= SURFACE - 2; y++) {
+					set(level, bb, wallBrick(x, y, z), x, y, z);
+				}
+				int ring = Math.max(Math.abs(x - 20), Math.abs(z - TERRACE_Z));
+				BlockState top = ring % 3 == 0 ? POLISHED : noise(x, z) < 20 ? Blocks.CRACKED_DEEPSLATE_TILES.defaultBlockState() : TILES;
+				set(level, bb, top, x, SURFACE - 1, z);
+				fill(level, bb, x, SURFACE, z, x, SURFACE + 4, z, AIR);
+				boolean edge = !onTerrace(x - 1, z) || !onTerrace(x + 1, z) || !onTerrace(x, z - 1) || !onTerrace(x, z + 1);
+				if (z == 0) {
+					set(level, bb, stair(Blocks.DEEPSLATE_TILE_STAIRS, Direction.NORTH, false), x, SURFACE - 1, z);
+				} else if (edge && noise(x * 5, z) < 65) {
+					set(level, bb, wall, x, SURFACE, z);
+				}
+			}
+		}
+	}
+
+	/** Pillars in a ring around the stairway's mouth, standing on the terrace: some still whole and lit, most broken off. */
 	private void shrine(WorldGenLevel level, BoundingBox bb) {
 		for (int i = 0; i < 8; i++) {
 			double a = Math.PI * 2 * i / 8 + Math.PI / 8;
 			int px = 20 + (int) Math.round(Math.cos(a) * 6.5);
-			int pz = STAIR_START + 1 + (int) Math.round(Math.sin(a) * 6.5);
+			int pz = TERRACE_Z + (int) Math.round(Math.sin(a) * 6.5);
 			if (px >= 18 && px <= 22 && pz >= STAIR_START) {
 				continue;
 			}
-			BlockPos world = getWorldPos(px, 0, pz);
-			if (!bb.isInside(world.getX(), bb.minY(), world.getZ())) {
-				continue;
+			boolean whole = i % 3 == 1;
+			int height = whole ? 7 : 2 + (i * 7 + 3) % 4;
+			set(level, bb, POLISHED, px, SURFACE, pz);
+			for (int y = SURFACE + 1; y < SURFACE + height; y++) {
+				set(level, bb, wallBrick(px, y, pz), px, y, pz);
 			}
-			int ground = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, world.getX(), world.getZ());
-			int localGround = ground - boundingBox.minY();
-			int height = 2 + (i * 7 + 3) % 4;
-			for (int y = localGround - 2; y < localGround + height; y++) {
-				set(level, bb, y == localGround + height - 1 ? CHISELED : wallBrick(px, y, pz), px, y, pz);
+			set(level, bb, CHISELED, px, SURFACE + height, pz);
+			if (whole) {
+				set(level, bb, Blocks.POLISHED_DEEPSLATE_SLAB.defaultBlockState(), px, SURFACE + height + 1, pz);
+				set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState(), px, SURFACE + height + 2, pz);
+			} else {
+				if (i % 3 == 0) {
+					set(level, bb, Blocks.AMETHYST_CLUSTER.defaultBlockState(), px, SURFACE + height + 1, pz);
+				}
+				// The fallen drum lies beside its pillar.
+				int fx = px + (px < 20 ? -1 : 1);
+				if (onTerrace(fx, pz)) {
+					set(level, bb, CRACKED, fx, SURFACE, pz);
+				}
 			}
-			if (i % 3 == 0) {
-				set(level, bb, Blocks.AMETHYST_CLUSTER.defaultBlockState(), px, localGround + height, pz);
+		}
+		// Two obelisks at the terrace's front corners, banded, capped and lit, the Archive's colours hung on their faces.
+		for (int ox : new int[] {13, 27}) {
+			int oz = 2;
+			fill(level, bb, ox - 1, SURFACE, oz - 1, ox + 1, SURFACE, oz + 1, POLISHED);
+			for (int y = SURFACE + 1; y <= SURFACE + 9; y++) {
+				set(level, bb, y % 4 == 0 ? POLISHED : wallBrick(ox, y, oz), ox, y, oz);
 			}
+			set(level, bb, CHISELED, ox, SURFACE + 10, oz);
+			set(level, bb, Blocks.POLISHED_DEEPSLATE_WALL.defaultBlockState(), ox, SURFACE + 11, oz);
+			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState(), ox, SURFACE + 12, oz);
+			// A stepped skirt round the shaft; in this frame NORTH is +z (into the Archive) and SOUTH is back toward the entrance.
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.WEST, false), ox + 1, SURFACE + 1, oz);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.EAST, false), ox - 1, SURFACE + 1, oz);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.NORTH, false), ox, SURFACE + 1, oz - 1);
+			set(level, bb, stair(Blocks.POLISHED_DEEPSLATE_STAIRS, Direction.SOUTH, false), ox, SURFACE + 1, oz + 1);
+			banner(level, bb, ox, SURFACE + 7, oz - 1, Direction.SOUTH);
 		}
 		// The arch over the way down.
 		for (int y = SURFACE; y <= SURFACE + 4; y++) {
