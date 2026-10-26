@@ -234,7 +234,7 @@ public final class HerbalistPiece extends FarmPiece {
 			}
 		}
 		set(level, bb, s(Blocks.SPRUCE_PLANKS), 18, 11, 17);
-		set(level, bb, s(Blocks.LIGHTNING_ROD), 18, 12, 17);
+		set(level, bb, s(Blocks.LIGHTNING_ROD.waxed().unaffected()), 18, 12, 17);
 		for (int[] w : new int[][]{{18, z0}, {18, z1}, {x1, 16}}) {
 			set(level, bb, s(Blocks.GLASS_PANE), w[0], 2, w[1]);
 			set(level, bb, s(Blocks.GLASS_PANE), w[0], 5, w[1]);

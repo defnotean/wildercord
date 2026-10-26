@@ -149,10 +149,10 @@ public final class CrystalLabPiece extends MinePiece {
 		walls(level, bb, x0, SURFACE + 6, z0, x1, SURFACE + 6, z1, Palette.of(Blocks.STRIPPED_SPRUCE_LOG, 1));
 		for (int px : new int[] {x0, CX, x1}) for (int pz : new int[] {z0, z1}) fill(level, bb, px, SURFACE + 1, pz, px, SURFACE + 6, pz, s(Blocks.POLISHED_BASALT));
 		for (int pz : new int[] {z0, z1}) for (int wx : new int[] {7, 8, 12, 13}) {
-			fill(level, bb, wx, SURFACE + 3, pz, wx, SURFACE + 4, pz, s(Blocks.PURPLE_STAINED_GLASS));
+			fill(level, bb, wx, SURFACE + 3, pz, wx, SURFACE + 4, pz, s(Blocks.STAINED_GLASS.purple()));
 			set(level, bb, s(Blocks.STONE_BRICK_SLAB), wx, SURFACE + 2, pz == z0 ? pz - 1 : pz + 1);
 		}
-		for (int px : new int[] {x0, x1}) for (int wz : new int[] {10, 11}) fill(level, bb, px, SURFACE + 3, wz, px, SURFACE + 4, wz, s(Blocks.PURPLE_STAINED_GLASS));
+		for (int px : new int[] {x0, x1}) for (int wz : new int[] {10, 11}) fill(level, bb, px, SURFACE + 3, wz, px, SURFACE + 4, wz, s(Blocks.STAINED_GLASS.purple()));
 		fill(level, bb, CX, SURFACE + 1, z0, CX, SURFACE + 3, z0, AIR);
 		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), CX - 1, SURFACE + 4, z0 - 1);
 		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), CX + 1, SURFACE + 4, z0 - 1);
@@ -163,7 +163,7 @@ public final class CrystalLabPiece extends MinePiece {
 		int ridge = gableRoof(level, bb, x0, z0, x1, z1, SURFACE + 6, true, Blocks.DEEPSLATE_TILE_STAIRS, s(Blocks.DEEPSLATE_TILES),
 			Palette.of(Blocks.CALCITE, 4, Blocks.SMOOTH_BASALT, 1));
 		for (int ex : new int[] {x0 - 1, x1 + 1}) for (int ez : new int[] {10, 11}) set(level, bb, s(Blocks.AMETHYST_CLUSTER), ex, ridge + 1, ez);
-		for (int ex : new int[] {x0, x1}) for (int ez : new int[] {10, 11}) set(level, bb, s(Blocks.PURPLE_STAINED_GLASS), ex, SURFACE + 8, ez);
+		for (int ex : new int[] {x0, x1}) for (int ez : new int[] {10, 11}) set(level, bb, s(Blocks.STAINED_GLASS.purple()), ex, SURFACE + 8, ez);
 		// A chimney off the furnace corner, standing proud of the ridge.
 		fill(level, bb, x1 - 1, SURFACE + 1, z1 - 1, x1 - 1, ridge + 2, z1 - 1, Palette.of(Blocks.COBBLESTONE, 3, Blocks.MOSSY_COBBLESTONE, 1));
 		set(level, bb, s(Blocks.STONE_BRICK_WALL), x1 - 1, ridge + 3, z1 - 1);
@@ -194,8 +194,8 @@ public final class CrystalLabPiece extends MinePiece {
 		fill(level, bb, 17, SURFACE + 1, tz0, 17, SURFACE + 2, tz0, AIR);
 		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), 17, SURFACE + 3, tz0);
 		for (int wy : new int[] {SURFACE + 4, SURFACE + 8}) {
-			set(level, bb, s(Blocks.PURPLE_STAINED_GLASS), 17, wy, tz1);
-			set(level, bb, s(Blocks.PURPLE_STAINED_GLASS), tx1, wy, 16);
+			set(level, bb, s(Blocks.STAINED_GLASS.purple()), 17, wy, tz1);
+			set(level, bb, s(Blocks.STAINED_GLASS.purple()), tx1, wy, 16);
 		}
 		fill(level, bb, tx0 + 1, top - 1, tz0 + 1, tx1 - 1, top - 1, tz1 - 1, s(Blocks.SPRUCE_PLANKS));
 		fill(level, bb, 17, SURFACE + 1, 17, 17, top - 2, 17, s(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.SOUTH));

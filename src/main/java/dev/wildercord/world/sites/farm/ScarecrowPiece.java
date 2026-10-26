@@ -69,13 +69,13 @@ public final class ScarecrowPiece extends FarmPiece {
 		fill(level, bb, 10, 1, 9, 12, 8, 11, AIR);
 		fill(level, bb, 11, 1, 10, 11, 4, 10, s(Blocks.STRIPPED_SPRUCE_LOG));
 		fill(level, bb, 11, 5, 10, 11, 6, 10, s(Blocks.HAY_BLOCK));
-		set(level, bb, s(Blocks.BROWN_WOOL), 11, 5, 9);
+		set(level, bb, s(Blocks.WOOL.brown()), 11, 5, 9);
 		set(level, bb, facing(Blocks.JACK_O_LANTERN, Direction.SOUTH), 11, 7, 10);
-		set(level, bb, s(Blocks.BROWN_CARPET), 11, 8, 10);
+		set(level, bb, s(Blocks.CARPET.brown()), 11, 8, 10);
 		for (int x : new int[]{9, 10, 12, 13}) set(level, bb, s(Blocks.SPRUCE_FENCE), x, 6, 10);
 		set(level, bb, s(Blocks.SPRUCE_FENCE), 13, 5, 10);
 		hangingLantern(level, bb, 13, 4, 10, 0, true);
-		set(level, bb, s(Blocks.BROWN_WOOL), 9, 5, 10);
+		set(level, bb, s(Blocks.WOOL.brown()), 9, 5, 10);
 		// The old grain silo by the gate: a round fieldstone tower open to the sky, its top broken off at odd heights.
 		Palette silo = Palette.of(Blocks.COBBLESTONE, 4, Blocks.MOSSY_COBBLESTONE, 3, Blocks.ANDESITE, 1);
 		for (int dx = -2; dx <= 2; dx++) for (int dz = -2; dz <= 2; dz++) {

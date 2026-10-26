@@ -120,7 +120,7 @@ public final class StarTerracePiece extends MasterSitePiece {
 		// A lit belvedere on the cupola: four columns under a hipped cap, an armillary of copper in the middle.
 		for (int[] c : new int[][]{{7, 13}, {9, 13}, {7, 15}, {9, 15}}) fill(level, bb, c[0], 12, c[1], c[0], 13, c[1], column);
 		set(level, bb, copper, 8, 12, 14);
-		set(level, bb, s(Blocks.LIGHTNING_ROD), 8, 13, 14);
+		set(level, bb, s(Blocks.LIGHTNING_ROD.waxed().unaffected()), 8, 13, 14);
 		hipRoof(level, bb, 7, 13, 9, 15, 14, roofStairs, wall, chiseled);
 		set(level, bb, alt ? s(Blocks.LANTERN) : s(Blocks.END_ROD), 8, 17, 14);
 		// Light through the reading room's flanks and back, so the building reads at dusk from the ground.
