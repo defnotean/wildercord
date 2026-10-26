@@ -471,7 +471,8 @@ public class EmberSanctumPiece extends DungeonPiece {
 	// ------------------------------------------------------------------ the outside
 
 	/**
-	 * What shows where the cave opens onto the temple: buttresses down the hall, a battlemented roof with a raised
+	 * What shows where the cave opens onto the temple: buttresses down the hall and forge, red lancets between them on
+	 * a basalt plinth, a corbelled gilded band, a battlemented roof with a raised
 	 * clerestory and burning corner turrets, smoking chimneys over the forge and a gilded finial on the arena dome.
 	 */
 	private void exterior(WorldGenLevel level, BoundingBox bb) {
@@ -495,10 +496,34 @@ public class EmberSanctumPiece extends DungeonPiece {
 			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), 11, 14, z);
 			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), 29, 14, z);
 		}
-		// A gilded band round the hall's flanks under the battlements.
+		// A gilded band round the hall's flanks under the battlements, on a corbel table, over a basalt plinth.
 		for (int z = 10; z <= 36; z++) {
 			set(level, bb, GILDED, 5, 13, z);
 			set(level, bb, GILDED, 35, 13, z);
+			fill(level, bb, 5, 1, z, 5, 2, z, BASALT);
+			fill(level, bb, 35, 1, z, 35, 2, z, BASALT);
+			if (z % 2 == 0) {
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.EAST, true), 4, 13, z);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.WEST, true), 36, 13, z);
+			}
+		}
+		// Between the buttresses, tall red lancets lit from inside, framed in chiseled jambs under gilded hoods.
+		for (int z : new int[] {16, 22, 28}) {
+			for (int[] w : new int[][] {{6, 5}, {34, 35}}) {
+				fill(level, bb, w[0], 5, z, w[0], 9, z, Blocks.STAINED_GLASS.red().defaultBlockState());
+				fill(level, bb, w[1], 4, z - 1, w[1], 10, z - 1, CHISELED);
+				fill(level, bb, w[1], 4, z + 1, w[1], 10, z + 1, CHISELED);
+				set(level, bb, MAGMA, w[1], 3, z);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, w[1] < CX ? Direction.EAST : Direction.WEST, false), w[1], 4, z);
+				set(level, bb, GILDED, w[1], 11, z);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.NORTH, false), w[1], 11, z - 1);
+				set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.SOUTH, false), w[1], 11, z + 1);
+			}
+		}
+		// Buttresses down the forge's flanks too.
+		for (int z : new int[] {38, 44}) {
+			buttress(level, bb, 12, z, 1, 9, Direction.WEST, BRICKS, Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS);
+			buttress(level, bb, 28, z, 1, 9, Direction.EAST, BRICKS, Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS);
 		}
 		for (int[] c : new int[][] {{6, 10}, {34, 10}, {6, 36}, {34, 36}}) {
 			pillar(level, bb, c[0], c[1], 14, 19, CHISELED, BASALT, GILDED);
