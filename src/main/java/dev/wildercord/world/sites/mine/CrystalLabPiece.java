@@ -9,6 +9,7 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -19,12 +20,13 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import java.util.Optional;
 
 /**
- * A crystal survey lab: a cairn and survey pole on the surface over a trapdoor, a ladder shaft 24 blocks down, and a geode
- * of basalt, calcite and amethyst carved whole around a plank platform with the surveyors' lectern and chests. The geode's
- * three-layer shell is set all round, so no cave water or lava gets in. Peaceful. Local y 33 is the ground.
+ * A crystal survey lab: a calcite lab house and a watchtower in a walled forecourt broken by amethyst outcrops, the house
+ * floor's hatch over a ladder shaft 24 blocks down, and a geode of basalt, calcite and amethyst carved whole around a plank
+ * platform with the surveyors' lectern and chests. The geode's three-layer shell is set all round, so no cave water or lava
+ * gets in. Peaceful. Local y 33 is the ground.
  */
 public final class CrystalLabPiece extends MinePiece {
-	static final int WIDTH = 21, HEIGHT = 42, DEPTH = 21, SURFACE = 33, CX = 10, CY = 9, CZ = 10, PLATFORM = 6;
+	static final int WIDTH = 21, HEIGHT = 52, DEPTH = 21, SURFACE = 33, CX = 10, CY = 9, CZ = 10, PLATFORM = 6;
 
 	public CrystalLabPiece(int x, int y, int z, Direction facing) {
 		super(MineSites.CRYSTAL_LAB, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -117,35 +119,124 @@ public final class CrystalLabPiece extends MinePiece {
 		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), CX + 1, 15, CZ - 1);
 		fill(level, bb, CX, y, CZ + 1, CX, 14, CZ + 1, s(Blocks.CALCITE));
 		fill(level, bb, CX, y, CZ, CX, SURFACE - 1, CZ, s(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.SOUTH));
-		// The surface: a stone plinth round the hatch, cleared ground and a flagstone path in from the south.
+		// The surface: a walled flagstone forecourt cleared of trees, a path in from the south between lantern posts.
 		Palette flags = Palette.of(Blocks.STONE_BRICKS, 5, Blocks.MOSSY_STONE_BRICKS, 2, Blocks.CRACKED_STONE_BRICKS, 2, Blocks.COBBLESTONE, 1);
-		fill(level, bb, CX - 3, SURFACE + 1, CZ - 3, CX + 3, SURFACE + 8, CZ + 3, AIR);
-		footing(level, bb, CX - 2, CZ - 2, CX + 2, CZ + 2, SURFACE, s(Blocks.COBBLESTONE));
-		fill(level, bb, CX - 2, SURFACE, CZ - 2, CX + 2, SURFACE, CZ + 2, flags);
-		for (int z = CZ - 6; z <= CZ - 3; z++) set(level, bb, noise(CX, z) < 30 ? s(Blocks.DIRT_PATH) : flags.at(CX, SURFACE, z), CX, SURFACE, z);
-		// The cairn: a ring of cobble round a trapdoor.
-		fill(level, bb, CX - 1, SURFACE, CZ - 1, CX + 1, SURFACE, CZ + 1, s(Blocks.COBBLESTONE));
+		clearCanopy(level, bb, SURFACE + 1);
+		fill(level, bb, 1, SURFACE + 1, 0, 19, SURFACE + 18, 20, AIR);
+		footing(level, bb, 2, 1, 18, 19, SURFACE, s(Blocks.COBBLESTONE));
+		fill(level, bb, 2, SURFACE, 1, 18, SURFACE, 19, flags);
+		for (int x = 2; x <= 18; x++) for (int z = 1; z <= 19; z++) {
+			boolean edge = x == 2 || x == 18 || z == 1 || z == 19;
+			if (!edge || (z == 1 && Math.abs(x - CX) <= 2) || noise(x, z) < 25) continue;
+			set(level, bb, noise(z, x) < 40 ? s(Blocks.MOSSY_COBBLESTONE) : s(Blocks.COBBLESTONE), x, SURFACE + 1, z);
+			if (noise(x, SURFACE, z) < 30) set(level, bb, s(Blocks.STONE_BRICK_SLAB), x, SURFACE + 2, z);
+		}
+		for (int z = 0; z <= 6; z++) for (int x = CX - 1; x <= CX + 1; x++) {
+			set(level, bb, x == CX && noise(x, z) < 35 ? s(Blocks.DIRT_PATH) : s(Blocks.POLISHED_ANDESITE), x, SURFACE, z);
+		}
+		for (int dx : new int[] {-2, 2}) for (int z : new int[] {2, 5}) {
+			fill(level, bb, CX + dx, SURFACE + 1, z, CX + dx, SURFACE + 2, z, s(Blocks.SPRUCE_FENCE));
+			set(level, bb, s(Blocks.LANTERN), CX + dx, SURFACE + 3, z);
+		}
+		// The lab house round the hatch: a stone-brick plinth course, calcite walls between basalt posts, amethyst-glass
+		// windows over slab sills and a steep deepslate gable roof, the doorway on the south under a stair lintel.
+		int x0 = 5, z0 = 7, x1 = 15, z1 = 14;
+		footing(level, bb, x0, z0, x1, z1, SURFACE, s(Blocks.STONE_BRICKS));
+		fill(level, bb, x0, SURFACE, z0, x1, SURFACE, z1, s(Blocks.STONE_BRICKS));
+		fill(level, bb, x0 + 1, SURFACE, z0 + 1, x1 - 1, SURFACE, z1 - 1, s(Blocks.SPRUCE_PLANKS));
+		walls(level, bb, x0, SURFACE + 1, z0, x1, SURFACE + 1, z1, Palette.of(Blocks.STONE_BRICKS, 4, Blocks.MOSSY_STONE_BRICKS, 1));
+		walls(level, bb, x0, SURFACE + 2, z0, x1, SURFACE + 5, z1, Palette.of(Blocks.CALCITE, 1));
+		walls(level, bb, x0, SURFACE + 6, z0, x1, SURFACE + 6, z1, Palette.of(Blocks.STRIPPED_SPRUCE_LOG, 1));
+		for (int px : new int[] {x0, CX, x1}) for (int pz : new int[] {z0, z1}) fill(level, bb, px, SURFACE + 1, pz, px, SURFACE + 6, pz, s(Blocks.POLISHED_BASALT));
+		for (int pz : new int[] {z0, z1}) for (int wx : new int[] {7, 8, 12, 13}) {
+			fill(level, bb, wx, SURFACE + 3, pz, wx, SURFACE + 4, pz, s(Blocks.PURPLE_STAINED_GLASS));
+			set(level, bb, s(Blocks.STONE_BRICK_SLAB), wx, SURFACE + 2, pz == z0 ? pz - 1 : pz + 1);
+		}
+		for (int px : new int[] {x0, x1}) for (int wz : new int[] {10, 11}) fill(level, bb, px, SURFACE + 3, wz, px, SURFACE + 4, wz, s(Blocks.PURPLE_STAINED_GLASS));
+		fill(level, bb, CX, SURFACE + 1, z0, CX, SURFACE + 3, z0, AIR);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), CX - 1, SURFACE + 4, z0 - 1);
+		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.WEST, true), CX + 1, SURFACE + 4, z0 - 1);
+		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), CX, SURFACE + 4, z0 - 1);
+		set(level, bb, s(Blocks.AMETHYST_BLOCK), CX, SURFACE + 4, z0);
+		set(level, bb, s(Blocks.LANTERN), CX - 2, SURFACE + 1, z0 - 1);
+		set(level, bb, s(Blocks.LANTERN), CX + 2, SURFACE + 1, z0 - 1);
+		int ridge = gableRoof(level, bb, x0, z0, x1, z1, SURFACE + 6, true, Blocks.DEEPSLATE_TILE_STAIRS, s(Blocks.DEEPSLATE_TILES),
+			Palette.of(Blocks.CALCITE, 4, Blocks.SMOOTH_BASALT, 1));
+		for (int ex : new int[] {x0 - 1, x1 + 1}) for (int ez : new int[] {10, 11}) set(level, bb, s(Blocks.AMETHYST_CLUSTER), ex, ridge + 1, ez);
+		for (int ex : new int[] {x0, x1}) for (int ez : new int[] {10, 11}) set(level, bb, s(Blocks.PURPLE_STAINED_GLASS), ex, SURFACE + 8, ez);
+		// A chimney off the furnace corner, standing proud of the ridge.
+		fill(level, bb, x1 - 1, SURFACE + 1, z1 - 1, x1 - 1, ridge + 2, z1 - 1, Palette.of(Blocks.COBBLESTONE, 3, Blocks.MOSSY_COBBLESTONE, 1));
+		set(level, bb, s(Blocks.STONE_BRICK_WALL), x1 - 1, ridge + 3, z1 - 1);
+		set(level, bb, s(Blocks.BLAST_FURNACE), x1 - 1, SURFACE + 1, z1 - 2);
+		// Inside: the deepslate-ringed hatch over the ladder, crystal benches along the walls, lanterns from the tie beam.
+		fill(level, bb, CX - 1, SURFACE, CZ - 1, CX + 1, SURFACE, CZ + 1, s(Blocks.POLISHED_DEEPSLATE));
 		set(level, bb, s(Blocks.SPRUCE_TRAPDOOR).setValue(TrapDoorBlock.HALF, Half.TOP), CX, SURFACE, CZ);
-		for (int dx : new int[] {-1, 1}) for (int dz : new int[] {-1, 1}) set(level, bb, s(Blocks.MOSSY_COBBLESTONE_WALL), CX + dx, SURFACE + 1, CZ + dz);
-		// The survey pavilion over the hatch: basalt posts with calcite capitals under a hipped spruce roof crowned with amethyst.
-		for (int dx : new int[] {-2, 2}) for (int dz : new int[] {-2, 2}) {
-			pillar(level, bb, CX + dx, CZ + dz, SURFACE + 1, SURFACE + 4, s(Blocks.POLISHED_BASALT), s(Blocks.SMOOTH_BASALT), s(Blocks.CALCITE));
+		for (int bx = x0 + 1; bx <= x0 + 3; bx++) set(level, bb, topSlab(Blocks.SPRUCE_SLAB), bx, SURFACE + 1, z1 - 1);
+		set(level, bb, s(Blocks.AMETHYST_CLUSTER), x0 + 1, SURFACE + 2, z1 - 1);
+		set(level, bb, s(Blocks.TINTED_GLASS), x0 + 3, SURFACE + 2, z1 - 1);
+		set(level, bb, s(Blocks.SMITHING_TABLE), x0 + 1, SURFACE + 1, z0 + 1);
+		set(level, bb, s(Blocks.STONECUTTER), x0 + 2, SURFACE + 1, z0 + 1);
+		set(level, bb, s(Blocks.BOOKSHELF), x0 + 1, SURFACE + 1, 10);
+		set(level, bb, s(Blocks.BOOKSHELF), x0 + 1, SURFACE + 1, 11);
+		set(level, bb, s(Blocks.LECTERN), x1 - 1, SURFACE + 1, z0 + 1);
+		barrel(level, bb, x1 - 2, SURFACE + 1, z0 + 1, null, 0);
+		fill(level, bb, x0 + 1, SURFACE + 6, CZ, x1 - 1, SURFACE + 6, CZ, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+		hangingLantern(level, bb, 7, SURFACE + 5, CZ, 0, false);
+		hangingLantern(level, bb, 13, SURFACE + 5, CZ, 0, false);
+		// The watchtower at the north-east corner: stone brick on basalt quoins, a ladder to a railed lookout under an
+		// amethyst-crowned cap.
+		int tx0 = 15, tz0 = 14, tx1 = 19, tz1 = 18, top = SURFACE + 11;
+		footing(level, bb, tx0, tz0, tx1, tz1, SURFACE, s(Blocks.STONE_BRICKS));
+		fill(level, bb, tx0, SURFACE, tz0, tx1, SURFACE, tz1, s(Blocks.STONE_BRICKS));
+		walls(level, bb, tx0, SURFACE + 1, tz0, tx1, top - 1, tz1, Palette.of(Blocks.STONE_BRICKS, 5, Blocks.MOSSY_STONE_BRICKS, 1, Blocks.CRACKED_STONE_BRICKS, 1));
+		fill(level, bb, tx0 + 1, SURFACE + 1, tz0 + 1, tx1 - 1, top - 2, tz1 - 1, AIR);
+		for (int px : new int[] {tx0, tx1}) for (int pz : new int[] {tz0, tz1}) fill(level, bb, px, SURFACE + 1, pz, px, top + 2, pz, s(Blocks.POLISHED_BASALT));
+		fill(level, bb, 17, SURFACE + 1, tz0, 17, SURFACE + 2, tz0, AIR);
+		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), 17, SURFACE + 3, tz0);
+		for (int wy : new int[] {SURFACE + 4, SURFACE + 8}) {
+			set(level, bb, s(Blocks.PURPLE_STAINED_GLASS), 17, wy, tz1);
+			set(level, bb, s(Blocks.PURPLE_STAINED_GLASS), tx1, wy, 16);
 		}
-		for (int dx = -1; dx <= 1; dx++) {
-			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, true), CX + dx, SURFACE + 4, CZ + 2);
-			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, true), CX + dx, SURFACE + 4, CZ - 2);
+		fill(level, bb, tx0 + 1, top - 1, tz0 + 1, tx1 - 1, top - 1, tz1 - 1, s(Blocks.SPRUCE_PLANKS));
+		fill(level, bb, 17, SURFACE + 1, 17, 17, top - 2, 17, s(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.SOUTH));
+		set(level, bb, s(Blocks.SPRUCE_TRAPDOOR).setValue(TrapDoorBlock.HALF, Half.TOP), 17, top - 1, 17);
+		for (int x = tx0; x <= tx1; x++) for (int z = tz0; z <= tz1; z++) {
+			boolean corner = (x == tx0 || x == tx1) && (z == tz0 || z == tz1), edge = x == tx0 || x == tx1 || z == tz0 || z == tz1;
+			if (edge && !corner) set(level, bb, s(Blocks.SPRUCE_FENCE), x, top, z);
 		}
-		hipRoof(level, bb, CX - 1, CZ - 1, CX + 1, CZ + 1, SURFACE + 5, Blocks.SPRUCE_STAIRS, s(Blocks.SPRUCE_PLANKS), s(Blocks.CALCITE));
-		set(level, bb, s(Blocks.AMETHYST_CLUSTER), CX, SURFACE + 8, CZ);
-		hangingLantern(level, bb, CX, SURFACE + 5, CZ, 1, false);
-		// The survey pole and the tinted sighting glass on either side.
-		set(level, bb, s(Blocks.COBBLESTONE), CX + 3, SURFACE, CZ);
-		fill(level, bb, CX + 3, SURFACE + 1, CZ, CX + 3, SURFACE + 3, CZ, s(Blocks.SPRUCE_FENCE));
-		set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), CX + 3, SURFACE + 4, CZ);
-		set(level, bb, s(Blocks.COBBLESTONE), CX - 3, SURFACE, CZ);
-		set(level, bb, s(Blocks.TINTED_GLASS), CX - 3, SURFACE + 1, CZ);
-		set(level, bb, s(Blocks.AMETHYST_CLUSTER), CX - 3, SURFACE + 2, CZ);
-		set(level, bb, s(Blocks.LANTERN), CX, SURFACE + 1, CZ + 2);
-		barrel(level, bb, CX + 2, SURFACE + 1, CZ - 3, null, 0);
+		hipRoof(level, bb, tx0 + 1, tz0 + 1, tx1 - 1, tz1 - 1, top + 3, Blocks.DEEPSLATE_TILE_STAIRS, s(Blocks.DEEPSLATE_TILES), s(Blocks.CALCITE));
+		set(level, bb, s(Blocks.AMETHYST_CLUSTER), 17, top + 6, 16);
+		hangingLantern(level, bb, 17, top + 2, 16, 0, false);
+		// Crystal outcrops breaking up through the yard: basalt and calcite collars round amethyst spurs.
+		outcrop(level, bb, 4, 4, 4);
+		outcrop(level, bb, 16, 4, 3);
+		outcrop(level, bb, 4, 17, 5);
+		outcrop(level, bb, 12, 17, 2);
+		// The survey pole by the west wall, the sighting glass on its cairn to the east, and stores by the door.
+		set(level, bb, s(Blocks.COBBLESTONE), 3, SURFACE + 1, 10);
+		fill(level, bb, 3, SURFACE + 2, 10, 3, SURFACE + 5, 10, s(Blocks.SPRUCE_FENCE));
+		set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), 3, SURFACE + 6, 10);
+		set(level, bb, s(Blocks.COBBLESTONE), 17, SURFACE + 1, 10);
+		set(level, bb, s(Blocks.TINTED_GLASS), 17, SURFACE + 2, 10);
+		set(level, bb, s(Blocks.AMETHYST_CLUSTER), 17, SURFACE + 3, 10);
+		barrel(level, bb, CX + 3, SURFACE + 1, z0 - 1, null, 0);
+	}
+
+	/** An amethyst spur {@code h} high out of a basalt and calcite collar, with buds on its shoulders. */
+	private void outcrop(WorldGenLevel level, BoundingBox bb, int x, int z, int h) {
+		for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) {
+			if (dx == 0 && dz == 0) continue;
+			boolean side = dx == 0 || dz == 0;
+			set(level, bb, side ? s(Blocks.CALCITE) : s(Blocks.SMOOTH_BASALT), x + dx, SURFACE, z + dz);
+			if (side && noise(x + dx, z + dz) < 60) set(level, bb, s(Blocks.SMOOTH_BASALT), x + dx, SURFACE + 1, z + dz);
+		}
+		fill(level, bb, x, SURFACE, z, x, SURFACE + h, z, s(Blocks.AMETHYST_BLOCK));
+		set(level, bb, s(Blocks.AMETHYST_CLUSTER), x, SURFACE + h + 1, z);
+		if (h > 2) {
+			set(level, bb, s(Blocks.AMETHYST_BLOCK), x + 1, SURFACE + 2, z);
+			set(level, bb, s(Blocks.LARGE_AMETHYST_BUD), x + 1, SURFACE + 3, z);
+			set(level, bb, s(Blocks.AMETHYST_BLOCK), x, SURFACE + 2, z - 1);
+			set(level, bb, s(Blocks.MEDIUM_AMETHYST_BUD), x, SURFACE + 3, z - 1);
+		}
 	}
 }
