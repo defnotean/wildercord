@@ -20,9 +20,12 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import java.util.List;
 
-/** A gabled mountain hall of the Stone or Iron school around a sunken sparring ring, one Runebound sparring guard waiting in it. */
+/**
+ * A gabled mountain hall of the Stone or Iron school around a sunken sparring ring, one Runebound sparring guard waiting in it,
+ * with its working quarry beside it: a stepped pit, two timber derricks and stacks of cut blocks.
+ */
 public final class QuarryHallPiece extends MasterSitePiece {
-	public QuarryHallPiece(int x, int y, int z, Direction facing, boolean alt) { super(MasterSites.QUARRY_HALL, x, y, z, 19, 19, 19, facing, alt); }
+	public QuarryHallPiece(int x, int y, int z, Direction facing, boolean alt) { super(MasterSites.QUARRY_HALL, x, y, z, 29, 19, 19, facing, alt); }
 	public QuarryHallPiece(CompoundTag tag) { super(MasterSites.QUARRY_HALL, tag); }
 	@Override public String site() { return "master_quarry_hall"; }
 	@Override public List<String> schools() { return List.of("stone", "iron"); }
@@ -35,10 +38,10 @@ public final class QuarryHallPiece extends MasterSitePiece {
 		Palette masonry = alt ? Palette.of(Blocks.DEEPSLATE_BRICKS, 7, Blocks.CRACKED_DEEPSLATE_BRICKS, 2, Blocks.DEEPSLATE_TILES, 1)
 			: Palette.of(Blocks.STONE_BRICKS, 8, Blocks.CRACKED_STONE_BRICKS, 2, Blocks.MOSSY_STONE_BRICKS, 1);
 		Block trim = alt ? Blocks.POLISHED_DEEPSLATE_STAIRS : Blocks.STONE_BRICK_STAIRS;
-		Block roofStairs = alt ? Blocks.DEEPSLATE_TILE_STAIRS : Blocks.COBBLESTONE_STAIRS;
+		Block roofStairs = alt ? Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS : Blocks.DEEPSLATE_TILE_STAIRS;
 		BlockState timber = alt ? s(Blocks.STRIPPED_DARK_OAK_LOG) : s(Blocks.STRIPPED_SPRUCE_LOG);
 		BlockState wallTop = alt ? s(Blocks.POLISHED_DEEPSLATE_WALL) : s(Blocks.STONE_BRICK_WALL);
-		pad(level, bb, 0, 0, 18, 18, 18, s(Blocks.SMOOTH_STONE), s(Blocks.STONE));
+		pad(level, bb, 0, 0, 28, 18, 18, s(Blocks.SMOOTH_STONE), s(Blocks.STONE));
 		// The hall walls, open to the rafters.
 		room(level, bb, 1, 0, 1, 17, 7, 17, wall);
 		walls(level, bb, 1, 1, 1, 17, 7, 17, masonry);
@@ -51,7 +54,7 @@ public final class QuarryHallPiece extends MasterSitePiece {
 		for (int x : new int[]{5, 13}) fill(level, bb, x, 3, 1, x, 4, 1, s(Blocks.IRON_BARS));
 		// A steep gabled roof with deep eaves, its ridge running back from the entrance gable.
 		gableRoof(level, bb, 1, 1, 17, 17, 8, false, roofStairs, chiseled, masonry);
-		for (int z : new int[]{0, 18}) set(level, bb, wallTop, 9, 18, z);
+		for (int z : new int[]{0, 6, 12, 18}) set(level, bb, wallTop, 9, 18, z);
 		// The front gable: a carved roundel over the door.
 		for (int x = 8; x <= 10; x++) for (int y = 11; y <= 13; y++) {
 			boolean corner = x != 9 && y != 12;
@@ -99,6 +102,7 @@ public final class QuarryHallPiece extends MasterSitePiece {
 		for (int z : new int[]{5, 13}) { hangingLantern(level, bb, 5, 16 - 4, z, 1, false); hangingLantern(level, bb, 13, 16 - 4, z, 1, false); }
 		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.LIGHT_GRAY : DyeColor.BROWN);
 		banner(level, bb, banner, 5, 5, 16, Direction.SOUTH); banner(level, bb, banner, 13, 5, 16, Direction.SOUTH);
+		banner(level, bb, banner, 3, 5, 0, Direction.NORTH); banner(level, bb, banner, 15, 5, 0, Direction.NORTH);
 		// The sparring ring: a pit two blocks deep, lit, with a ladder out on the far side.
 		for (int x = 3; x <= 15; x++) for (int z = 4; z <= 16; z++) {
 			double d = dist(x, z, 9, 10);
@@ -122,6 +126,54 @@ public final class QuarryHallPiece extends MasterSitePiece {
 		set(level, bb, s(Blocks.BARREL), 14, 1, 2); set(level, bb, s(Blocks.BARREL), 4, 1, 16);
 		lectern(level, bb, 6, 1, 3);
 		chest(level, bb, 12, 1, 2, MasterSites.supplies(site()), Direction.SOUTH, 1);
+		quarry(level, bb, rim, timber, wallTop);
+	}
+
+	/** The working quarry east of the hall, reached through a side door: a stepped pit, two derricks and stockpiles of cut stone. */
+	private void quarry(WorldGenLevel level, BoundingBox bb, BlockState rim, BlockState timber, BlockState wallTop) {
+		BlockState raw = alt ? s(Blocks.DEEPSLATE) : s(Blocks.STONE), cut = alt ? s(Blocks.POLISHED_DEEPSLATE) : s(Blocks.SMOOTH_STONE);
+		BlockState cobble = alt ? s(Blocks.COBBLED_DEEPSLATE) : s(Blocks.COBBLESTONE);
+		fill(level, bb, 17, 1, 9, 18, 2, 9, AIR);
+		set(level, bb, rim, 18, 0, 9);
+		// A trodden yard of gravel, rubble and bare stone.
+		for (int x = 19; x <= 28; x++) for (int z = 0; z <= 18; z++) {
+			int n = noise(x, z);
+			set(level, bb, n < 30 ? s(Blocks.GRAVEL) : n < 55 ? cobble : n < 75 ? s(Blocks.COARSE_DIRT) : raw, x, 0, z);
+		}
+		// The pit, cut down in four benches, rainwater pooled at the bottom.
+		for (int x = 20; x <= 27; x++) for (int z = 3; z <= 15; z++) {
+			int d = 0;
+			for (int k = 1; k <= 4; k++) if (x >= 19 + k && x <= 28 - k && z >= 2 + k && z <= 16 - k) d = k;
+			if (d == 0) continue;
+			fill(level, bb, x, -d - 1, z, x, -1, z, raw);
+			fill(level, bb, x, -d, z, x, 0, z, AIR);
+			int n = noise(x, -d, z);
+			set(level, bb, d == 4 ? s(Blocks.WATER) : n < 25 ? s(Blocks.ANDESITE) : n < 40 ? s(Blocks.GRAVEL) : raw, x, -d, z);
+		}
+		// The great derrick: a mast at the back, its jib reaching out over the pit with a cut block on the chain.
+		BlockState mast = timber.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y), jib = timber.setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
+		set(level, bb, cut, 26, 0, 17);
+		fill(level, bb, 26, 1, 17, 26, 13, 17, mast);
+		fill(level, bb, 26, 12, 8, 26, 12, 18, jib);
+		set(level, bb, stair(alt ? Blocks.DARK_OAK_STAIRS : Blocks.SPRUCE_STAIRS, Direction.SOUTH, true), 26, 11, 16);
+		set(level, bb, cobble, 26, 11, 18);
+		fill(level, bb, 26, 3, 9, 26, 11, 9, s(Blocks.IRON_CHAIN));
+		set(level, bb, cut, 26, 2, 9);
+		hangingLantern(level, bb, 26, 11, 13, 1, false);
+		// A lesser derrick by the gate, lifting from the first bench.
+		set(level, bb, cut, 20, 0, 2);
+		fill(level, bb, 20, 1, 2, 20, 9, 2, mast);
+		fill(level, bb, 20, 9, 0, 20, 9, 7, jib);
+		set(level, bb, stair(alt ? Blocks.DARK_OAK_STAIRS : Blocks.SPRUCE_STAIRS, Direction.NORTH, true), 20, 8, 3);
+		fill(level, bb, 20, 3, 6, 20, 8, 6, s(Blocks.IRON_CHAIN));
+		set(level, bb, raw, 20, 2, 6);
+		// Stacks of dressed blocks waiting to be hauled, a cook fire and lantern posts at the pit's ends.
+		fill(level, bb, 27, 1, 0, 28, 2, 1, cut);
+		set(level, bb, AIR, 28, 2, 1);
+		fill(level, bb, 21, 1, 17, 22, 1, 18, rim);
+		set(level, bb, cut, 21, 2, 18);
+		set(level, bb, s(Blocks.CAMPFIRE), 23, 1, 1);
+		for (int x : new int[]{19, 28}) { fill(level, bb, x, 1, 9, x, 2, 9, wallTop); set(level, bb, s(Blocks.LANTERN), x, 3, 9); }
 	}
 
 	@Override public List<BoundingBox> wardedBoxes() { return List.of(); }

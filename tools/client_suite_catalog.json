@@ -169,5 +169,23 @@
       "dev.wildercord.world.dungeons.StructureGallery5Test",
       "dev.wildercord.world.dungeons.StructureGallery6Test"
     ]
+  },
+  "structure-gallery-a": {
+    "description": "Structure gallery, first half (shards 1-3): the same photographs as structure-gallery, split so each half fits the 10800 s VPS run limit.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.world.dungeons.StructureGallery1Test",
+      "dev.wildercord.world.dungeons.StructureGallery2Test",
+      "dev.wildercord.world.dungeons.StructureGallery3Test"
+    ]
+  },
+  "structure-gallery-b": {
+    "description": "Structure gallery, second half (shards 4-6): the same photographs as structure-gallery, split so each half fits the 10800 s VPS run limit.",
+    "expectedCount": 3,
+    "entries": [
+      "dev.wildercord.world.dungeons.StructureGallery4Test",
+      "dev.wildercord.world.dungeons.StructureGallery5Test",
+      "dev.wildercord.world.dungeons.StructureGallery6Test"
+    ]
   }
 }

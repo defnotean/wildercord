@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A deep resonance chamber of the Hollow or Echo school, found by the bell frame over its shaft: a long ladder down to a hall
+ * A deep resonance chamber of the Hollow or Echo school, found by the bell tower over its shaft: a long ladder down to a hall
  * of amethyst and sculk, and a vault sealed with the school's element. Local y=0 is the chamber floor; the ground is
  * {@link #surface()} above it.
  */
 public final class ResonanceChamberPiece extends MasterSitePiece {
-	/** Blocks of the piece above the ground: the bell frame. */
-	static final int ABOVE = 6;
+	/** Blocks of the piece above the ground: the campanile and its spire. */
+	static final int ABOVE = 22;
 
 	public ResonanceChamberPiece(int x, int y, int z, Direction facing, boolean alt, int height) {
 		super(MasterSites.RESONANCE_CHAMBER, x, y, z, 17, height, 17, facing, alt);
@@ -114,7 +114,22 @@ public final class ResonanceChamberPiece extends MasterSitePiece {
 		set(level, bb, chiseled, 7, 1, 3); set(level, bb, chiseled, 9, 1, 3); set(level, bb, chiseled, 8, 3, 3);
 		set(level, bb, stair(trimStairs, Direction.SOUTH, true), 8, 3, 4);
 		sconce(level, bb, 7, 2, 4, Direction.NORTH, true); sconce(level, bb, 9, 2, 4, Direction.NORTH, true);
-		// The bell pavilion over it: a stepped platform, four posts and a hipped stone roof.
+		// A paved court round the tower, ringed by standing tuning stones.
+		for (int x = 2; x <= 14; x++) for (int z = 0; z <= 8; z++) {
+			if (dist(x, z, 8, 2) > 6.2) continue;
+			int n = noise(x, z);
+			set(level, bb, n < 20 ? patch : n < 60 ? trim : wall, x, s, z);
+			fillColumnDown(level, wall, x, s - 1, z, bb);
+			fill(level, bb, x, s + 1, z, x, s + 3, z, AIR);
+		}
+		BlockState stone = alt ? s(Blocks.POLISHED_TUFF) : s(Blocks.POLISHED_DEEPSLATE), tip = alt ? s(Blocks.AMETHYST_CLUSTER) : s(Blocks.SCULK_SENSOR);
+		for (int[] p : new int[][]{{1, 0}, {15, 0}, {1, 6}, {15, 6}, {4, 10}, {12, 10}}) {
+			int h = 3 + noise(p[0], p[1]) % 3;
+			fillColumnDown(level, wall, p[0], s - 1, p[1], bb);
+			pillar(level, bb, p[0], p[1], s, s + h, chiseled, stone, chiseled);
+			set(level, bb, tip, p[0], s + h + 1, p[1]);
+		}
+		// The stepped platform over the shaft.
 		fill(level, bb, 5, s, 0, 11, s, 4, trim);
 		for (int x = 5; x <= 11; x++) for (int z = 0; z <= 4; z++) fillColumnDown(level, wall, x, s - 1, z, bb);
 		for (int z = 0; z <= 4; z++) {
@@ -125,28 +140,36 @@ public final class ResonanceChamberPiece extends MasterSitePiece {
 		for (int x = 5; x <= 11; x++) { set(level, bb, stair(trimStairs, Direction.SOUTH, false), x, s, 5); fillColumnDown(level, wall, x, s - 1, 5, bb); }
 		for (int x = 6; x <= 10; x++) set(level, bb, chiseled, x, s, 2);
 		set(level, bb, s(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.NORTH), 8, s, 2);
-		fill(level, bb, 5, s + 1, 0, 11, s + 5, 4, AIR);
-		for (int[] c : new int[][]{{5, 0}, {11, 0}, {5, 4}, {11, 4}}) pillar(level, bb, c[0], c[1], s + 1, s + 3, chiseled, wall, trim);
-		for (int z = 1; z <= 3; z++) { set(level, bb, slab, 5, s + 1, z); set(level, bb, slab, 11, s + 1, z); }
-		for (int x : new int[]{6, 10}) { set(level, bb, slab, x, s + 1, 0); set(level, bb, slab, x, s + 1, 4); }
-		fill(level, bb, 6, s + 1, 2, 6, s + 4, 2, wall); fill(level, bb, 10, s + 1, 2, 10, s + 4, 2, wall);
-		for (int x = 6; x <= 10; x++) {
-			set(level, bb, stair(roofStairs, Direction.NORTH, false), x, s + 4, 0);
-			set(level, bb, stair(roofStairs, Direction.SOUTH, false), x, s + 4, 4);
+		// The campanile: an open arcade round the old bell, a banded stone shaft, an open belfry and a needle spire.
+		fill(level, bb, 5, s + 1, 0, 11, s + ABOVE - 1, 4, AIR);
+		fill(level, bb, 6, s + 5, 0, 10, s + 10, 4, wall);
+		fill(level, bb, 7, s + 5, 1, 9, s + 10, 3, AIR);
+		fill(level, bb, 6, s + 4, 0, 10, s + 4, 4, trim);
+		fill(level, bb, 6, s + 11, 0, 10, s + 11, 4, trim);
+		fill(level, bb, 6, s + 8, 0, 10, s + 8, 4, chiseled);
+		fill(level, bb, 7, s + 8, 1, 9, s + 8, 3, AIR);
+		fill(level, bb, 6, s + 15, 0, 10, s + 15, 4, trim);
+		for (int[] c : new int[][]{{6, 0}, {10, 0}, {6, 4}, {10, 4}}) pillar(level, bb, c[0], c[1], s + 1, s + 15, chiseled, trim, chiseled);
+		for (int y : new int[]{s + 6, s + 7, s + 9, s + 10}) {
+			set(level, bb, AIR, 8, y, 0); set(level, bb, AIR, 8, y, 4); set(level, bb, AIR, 6, y, 2); set(level, bb, AIR, 10, y, 2);
 		}
-		for (int z = 1; z <= 3; z++) {
-			set(level, bb, stair(roofStairs, Direction.EAST, false), 5, s + 4, z);
-			set(level, bb, stair(roofStairs, Direction.WEST, false), 11, s + 4, z);
+		set(level, bb, light, 8, s + 5, 2);
+		// Round arch heads over the arcade and the belfry openings, a low parapet in the belfry.
+		for (int y : new int[]{s + 3, s + 14}) {
+			for (int z : new int[]{0, 4}) {
+				set(level, bb, stair(trimStairs, Direction.EAST, true), 7, y, z); set(level, bb, stair(trimStairs, Direction.WEST, true), 9, y, z);
+			}
+			for (int x : new int[]{6, 10}) {
+				set(level, bb, stair(trimStairs, Direction.SOUTH, true), x, y, 1); set(level, bb, stair(trimStairs, Direction.NORTH, true), x, y, 3);
+			}
 		}
-		for (int[] c : new int[][]{{5, 0}, {11, 0}, {5, 4}, {11, 4}}) set(level, bb, chiseled, c[0], s + 4, c[1]);
-		for (int x = 7; x <= 9; x++) {
-			set(level, bb, stair(roofStairs, Direction.NORTH, false), x, s + 5, 1);
-			set(level, bb, stair(roofStairs, Direction.SOUTH, false), x, s + 5, 3);
-		}
-		for (int[] c : new int[][]{{6, 1}, {10, 1}, {6, 3}, {10, 3}}) set(level, bb, trim, c[0], s + 5, c[1]);
-		fill(level, bb, 6, s + 5, 2, 10, s + 5, 2, trim);
-		set(level, bb, s(Blocks.BELL).setValue(BellBlock.FACING, Direction.EAST).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING), 8, s + 4, 2);
-		hangingLantern(level, bb, 8, s + 3, 0, 0, alt); hangingLantern(level, bb, 8, s + 3, 4, 0, alt);
+		for (int x = 7; x <= 9; x++) { set(level, bb, slab, x, s + 12, 0); set(level, bb, slab, x, s + 12, 4); }
+		for (int z = 1; z <= 3; z++) { set(level, bb, slab, 6, s + 12, z); set(level, bb, slab, 10, s + 12, z); }
+		BlockState bell = s(Blocks.BELL).setValue(BellBlock.FACING, Direction.EAST).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING);
+		set(level, bb, bell, 8, s + 3, 2);
+		set(level, bb, bell, 8, s + 14, 2);
+		spire(level, bb, 8, 2, 2, s + 16, roofStairs, wall, chiseled, alt ? s(Blocks.AMETHYST_CLUSTER) : Blocks.LIGHTNING_ROD.waxed().unaffected().defaultBlockState());
+		for (int[] c : new int[][]{{5, 0}, {11, 0}, {5, 4}, {11, 4}}) { set(level, bb, chiseled, c[0], s + 1, c[1]); set(level, bb, s(alt ? Blocks.LANTERN : Blocks.SOUL_LANTERN), c[0], s + 2, c[1]); }
 		// The vault, sealed with the school's element, behind a columned front.
 		room(level, bb, 5, 0, 11, 11, 5, 16, trim);
 		for (int x : new int[]{6, 10}) pillar(level, bb, x, 10, 1, 4, trim, chiseled, trim);
