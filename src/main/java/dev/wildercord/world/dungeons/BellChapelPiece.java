@@ -253,6 +253,7 @@ public final class BellChapelPiece extends DungeonPiece {
 			for(int x=0;x<=2;x++){foundation(level,bb,x,z);foundation(level,bb,30-x,z);}
 			buttress(level,bb,2,z,F,10,Direction.WEST,PILLAR,Blocks.DEEPSLATE_BRICK_STAIRS);
 			buttress(level,bb,28,z,F,10,Direction.EAST,PILLAR,Blocks.DEEPSLATE_BRICK_STAIRS);
+			for(int x:new int[]{2,28})pinnacle(level,bb,x,F+10,z);
 		}
 		// A dark string course inside the long walls under the windows, an eave course along their tops outside, and a
 		// ridge of dark prismarine down the roof, lit over each rib.
@@ -348,6 +349,22 @@ public final class BellChapelPiece extends DungeonPiece {
 		set(level,bb,dev.wildercord.aura.world.BellShard.BLOCK.defaultBlockState(),CX,F+3,63);
 		set(level,bb,candles.setValue(CandleBlock.CANDLES,2),CX-3,F+2,62);set(level,bb,candles.setValue(CandleBlock.CANDLES,2),CX+3,F+2,62);
 		for(int x:new int[]{CX-6,CX+6}){set(level,bb,LIGHT,x,F+2,60);}
+		// Outside, buttresses fan round the apse's wall like the nave's, each crowned by a lit pinnacle; none stands behind the rose window.
+		for(int k:new int[]{1,2,4,5}){
+			double a=Math.PI/6*k;
+			int bx=CX+(int)Math.round(Math.cos(a)*13),bz=APSE_Z+(int)Math.round(Math.sin(a)*13);
+			foundation(level,bb,bx,bz);
+			fill(level,bb,bx,F,bz,bx,F+9,bz,PILLAR);
+			pinnacle(level,bb,bx,F+10,bz);
+		}
+	}
+
+	/** A pinnacle on a buttress's head: a carved block, a slender shaft, a sea lantern and a dark cap, so the sunken walls show their line in the gloom. */
+	private void pinnacle(WorldGenLevel level,BoundingBox bb,int x,int y,int z){
+		set(level,bb,Blocks.CHISELED_DEEPSLATE.defaultBlockState(),x,y,z);
+		set(level,bb,Blocks.DEEPSLATE_BRICK_WALL.defaultBlockState(),x,y+1,z);
+		set(level,bb,LIGHT,x,y+2,z);
+		set(level,bb,Blocks.DARK_PRISMARINE_SLAB.defaultBlockState(),x,y+3,z);
 	}
 
 	/** The apse's wall: plain stone, but at its back a rose window, a ring of blue round spokes of cyan and a yellow heart. */
