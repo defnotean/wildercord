@@ -43,19 +43,53 @@ public final class WaterfallShrinePiece extends MasterSitePiece {
 		Block roofStairs = alt ? Blocks.DARK_PRISMARINE_STAIRS : Blocks.SPRUCE_STAIRS;
 		BlockState roofUnder = alt ? s(Blocks.DARK_PRISMARINE) : s(Blocks.SPRUCE_PLANKS), roofCap = alt ? s(Blocks.DARK_PRISMARINE_SLAB) : s(Blocks.SPRUCE_SLAB);
 		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.CYAN : DyeColor.LIGHT_BLUE);
-		pad(level, bb, 0, 0, 16, 16, 22, alt ? s(Blocks.PRISMARINE_BRICKS) : s(Blocks.SNOW_BLOCK), s(Blocks.STONE));
-		// The cliff and its frozen fall.
-		for (int x = 0; x <= 16; x++) for (int y = 1; y <= 16; y++) for (int z = 12; z <= 16; z++) set(level, bb, noise(x, y, z) < 40 ? rock2 : rock, x, y, z);
+		pad(level, bb, 0, 0, 16, 16, 22, alt ? s(Blocks.PRISMARINE_BRICKS) : s(Blocks.STONE_BRICKS), s(Blocks.STONE));
+		// The yard is swept flagstone, worn and cracked here and there, so the shrine stands clear of the drifts around it.
+		if (!alt) for (int x = 0; x <= 16; x++) for (int z = 0; z <= 11; z++) {
+			int n = noise(x, 3, z);
+			if (n < 18) set(level, bb, s(Blocks.CRACKED_STONE_BRICKS), x, 0, z);
+			else if (n < 30) set(level, bb, s(Blocks.POLISHED_ANDESITE), x, 0, z);
+			else if (n < 36) set(level, bb, s(Blocks.SNOW_BLOCK), x, 0, z);
+		}
+		// The cliff and its frozen fall. Rime's cliff is grey stone veined with old ice and capped with snow, so the blue fall
+		// stands out against it rather than vanishing into a white bank.
+		for (int x = 0; x <= 16; x++) for (int y = 1; y <= 16; y++) for (int z = 12; z <= 16; z++) {
+			int n = noise(x, y, z);
+			BlockState c = alt ? (n < 40 ? rock2 : rock) : y == 16 ? rock2 : n < 22 ? rock : n < 62 ? s(Blocks.STONE) : n < 85 ? s(Blocks.ANDESITE) : s(Blocks.TUFF);
+			set(level, bb, c, x, y, z);
+		}
 		// A carved face on the cliff: pilasters either side of the fall and the alcove, under a frieze.
 		for (int x : new int[]{1, 5, 11, 15}) { fill(level, bb, x, 1, 12, x, 15, 12, carved); set(level, bb, chiseled, x, 1, 12); set(level, bb, chiseled, x, 15, 12); }
 		fill(level, bb, 1, 16, 12, 15, 16, 12, carved);
+		// The fall cuts a channel two deep into the cliff, bulges out over the pool as it nears the bottom, and spreads in a
+		// frozen apron at its foot; icicles fringe its lip under the frieze.
+		BlockState fall = alt ? s(Blocks.WATER) : s(Blocks.BLUE_ICE), fall2 = alt ? s(Blocks.PRISMARINE) : s(Blocks.PACKED_ICE);
+		fill(level, bb, 6, 1, 13, 10, 15, 13, fall2);
 		fill(level, bb, 6, 1, 12, 10, 15, 12, s(Blocks.BLUE_ICE));
-		fill(level, bb, 7, 1, 11, 9, 2, 11, s(Blocks.BLUE_ICE));
+		fill(level, bb, 7, 16, 12, 9, 16, 13, s(Blocks.BLUE_ICE));
+		for (int x = 6; x <= 10; x++) {
+			int bulge = 3 + noise(x, 0, 11) % 3 - (x == 6 || x == 10 ? 2 : 0);
+			fill(level, bb, x, 1, 11, x, bulge, 11, s(Blocks.BLUE_ICE));
+			if (x >= 7 && x <= 9) set(level, bb, fall2, x, 1, 10);
+			if (noise(x, 15, 11) < 60) set(level, bb, s(Blocks.ICE), x, 15, 11);
+			if (x % 2 == 0) set(level, bb, s(Blocks.ICE), x, 14, 11);
+		}
+		if (alt) fill(level, bb, 7, 17, 13, 9, 17, 13, fall);
 		fill(level, bb, 2, 14, 12, 4, 15, 14, AIR);
 		// The still pool: water two deep in a stone basin, a few floes on it in Rime's cold.
 		fill(level, bb, 1, -2, 3, 15, 0, 11, rock2.is(Blocks.SNOW_BLOCK) ? s(Blocks.STONE) : rock2);
 		fill(level, bb, 2, -1, 4, 14, 0, 10, s(Blocks.WATER));
 		if (!alt) for (int x = 2; x <= 14; x++) for (int z = 4; z <= 9; z++) if (noise(x, z) < 18) set(level, bb, s(Blocks.ICE), x, 0, z);
+		// Where the fall meets the pool the water churns: a ring of broken ice and pale stones, packed ice floes heaped at the foot.
+		for (int x = 4; x <= 12; x++) for (int z = 8; z <= 10; z++) {
+			int d = Math.abs(x - 8) + (10 - z);
+			if (d < 2 || d > 5) continue;
+			int n = noise(x, 9, z);
+			if (alt) { if (n < 35) set(level, bb, s(Blocks.SEA_LANTERN), x, -1, z); }
+			else if (n < 30) set(level, bb, s(Blocks.PACKED_ICE), x, 0, z);
+			else if (n < 50) set(level, bb, s(Blocks.ICE), x, 0, z);
+		}
+		if (!alt) { set(level, bb, s(Blocks.PACKED_ICE), 6, 1, 10); set(level, bb, s(Blocks.PACKED_ICE), 10, 1, 10); set(level, bb, s(Blocks.BLUE_ICE), 6, 2, 10); }
 		// A low slab kerb round the pool, lit at its corners.
 		for (int z = 3; z <= 11; z++) { set(level, bb, rim, 1, 1, z); set(level, bb, rim, 15, 1, z); }
 		for (int x = 2; x <= 14; x++) set(level, bb, rim, x, 1, 3);
@@ -64,6 +98,10 @@ public final class WaterfallShrinePiece extends MasterSitePiece {
 		for (int[] l : ledges()) set(level, bb, ledge, l[0], l[2], l[1]);
 		chest(level, bb, 3, 14, 13, rewardLoot(), Direction.SOUTH, 2);
 		set(level, bb, alt ? s(Blocks.SEA_LANTERN) : s(Blocks.SOUL_LANTERN), 2, 14, 14);
+		// Ice spires rising from the cliff's shoulders either side of the pavilion.
+		for (int[] sp : new int[][]{{1, 15, 5}, {2, 13, 3}, {15, 14, 6}, {14, 16, 3}}) {
+			for (int y = 17; y < 17 + sp[2]; y++) set(level, bb, alt ? s(Blocks.PRISMARINE) : y < 17 + sp[2] - 1 ? s(Blocks.PACKED_ICE) : s(Blocks.BLUE_ICE), sp[0], y, sp[1]);
+		}
 		// A railed brow on the cliff top and a hipped pavilion over the source of the fall.
 		for (int x = 0; x <= 16; x++) {
 			boolean pier = x == 0 || x == 3 || x == 13 || x == 16;
