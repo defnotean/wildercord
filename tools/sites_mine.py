@@ -19,7 +19,7 @@ SITES = {
                          "minecraft:snowy_slopes"], "minecraft:anvil"),
     "mine_crystal_lab": ("Crystal Survey Lab", "Find a Crystal Survey Lab in a buried geode", 3, 40, 14, "underground_structures",
                          "none", LAND, "minecraft:amethyst_cluster"),
-    "mine_collapsed_delve": ("Collapsed Delve", "Find a Collapsed Delve", 4, 40, 14, "surface_structures", "none", LAND + HILLS[2:3],
+    "mine_collapsed_delve": ("Collapsed Delve", "Find a Collapsed Delve", 4, 40, 14, "top_layer_modification", "none", LAND + HILLS[2:3],
                              "minecraft:gravel"),
     "mine_basalt_foundry": ("Basalt Foundry", "Find a Basalt Foundry in the Nether", 5, 30, 10, "underground_decoration", "none",
                             ["minecraft:basalt_deltas"], "minecraft:blast_furnace"),
