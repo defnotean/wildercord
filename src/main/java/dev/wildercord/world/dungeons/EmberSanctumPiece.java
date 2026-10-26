@@ -118,8 +118,18 @@ public class EmberSanctumPiece extends DungeonPiece {
 	// ------------------------------------------------------------------ the approach
 
 	private void approach(WorldGenLevel level, BoundingBox bb) {
-		fill(level, bb, 12, 0, 0, 28, 1, 9, BLACKSTONE);
+		// A forecourt cut tall enough that the whole front shows, pylon crowns and gable included.
+		fill(level, bb, 8, 0, 0, 32, 1, 9, BLACKSTONE);
+		fill(level, bb, 8, 2, 0, 32, 20, 5, AIR);
 		fill(level, bb, 12, 2, 0, 28, 10, 9, AIR);
+		fill(level, bb, 16, 11, 6, 24, 20, 8, AIR);
+		// Shroomlight lamps set into the cut walls, so the black front stands against light.
+		for (int z = 1; z <= 5; z += 2) {
+			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), 8, 6, z);
+			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), 32, 6, z);
+			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), 8, 13, z);
+			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), 32, 13, z);
+		}
 		fill(level, bb, 17, 1, 0, 23, 1, 9, BRICKS);
 		fill(level, bb, 19, 1, 0, 21, 1, 9, POLISHED);
 		// Lava trenches either side of the causeway, walled in at both ends.
@@ -477,6 +487,18 @@ public class EmberSanctumPiece extends DungeonPiece {
 		for (int z = 13; z <= 33; z += 4) {
 			set(level, bb, MAGMA, 16, 16, z);
 			set(level, bb, MAGMA, 24, 16, z);
+		}
+		// A gilded ridge down the clerestory roof, skylights glowing along it, and lamps on the aisle roofs.
+		fill(level, bb, CX, 17, 11, CX, 17, 35, GILDED);
+		for (int z = 13; z <= 33; z += 4) set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), CX, 17, z);
+		for (int z = 13; z <= 33; z += 6) {
+			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), 11, 14, z);
+			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), 29, 14, z);
+		}
+		// A gilded band round the hall's flanks under the battlements.
+		for (int z = 10; z <= 36; z++) {
+			set(level, bb, GILDED, 5, 13, z);
+			set(level, bb, GILDED, 35, 13, z);
 		}
 		for (int[] c : new int[][] {{6, 10}, {34, 10}, {6, 36}, {34, 36}}) {
 			pillar(level, bb, c[0], c[1], 14, 19, CHISELED, BASALT, GILDED);
