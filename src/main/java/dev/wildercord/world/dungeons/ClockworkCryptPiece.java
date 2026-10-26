@@ -14,7 +14,7 @@ import java.util.*;
 
 /** A buried clock gallery with two optional side tombs and a controllable stored-attack trap. */
 public final class ClockworkCryptPiece extends DungeonPiece {
- public ClockworkCryptPiece(int x,int y,int z,Direction facing){super(DungeonWorldgen.CLOCKWORK_PIECE,x,y,z,27,12,35,facing);}
+ public ClockworkCryptPiece(int x,int y,int z,Direction facing){super(DungeonWorldgen.CLOCKWORK_PIECE,x,y,z,27,26,35,facing);}
  public ClockworkCryptPiece(CompoundTag tag){super(DungeonWorldgen.CLOCKWORK_PIECE,tag);}
  static Optional<Structure.GenerationStub> locate(Structure.GenerationContext c) {
   var chunk=c.chunkPos();var piece=new ClockworkCryptPiece(chunk.getMinBlockX(),0,chunk.getMinBlockZ(),Direction.Plane.HORIZONTAL.getRandomDirection(c.random()));
@@ -71,9 +71,38 @@ public final class ClockworkCryptPiece extends DungeonPiece {
   set(level,bb,stair(st,Direction.WEST,true),11,10,0);set(level,bb,stair(st,Direction.EAST,true),15,10,0);
   for(int x=6;x<=20;x++)for(int z=0;z<=12;z++){boolean rim=x==6||x==20||z==0||z==12;
    if(rim&&(x<9||x>17||z>0)&&(x+z)%2==0)set(level,bb,Blocks.DEEPSLATE_BRICKS.defaultBlockState(),x,11,z);}
+  belfry(level,bb,gold,polished,crown);
   // Age: cracked bricks through every wall, webs in the tomb corners.
-  weather(level,bb,0,0,0,26,11,34,Blocks.DEEPSLATE_BRICKS.defaultBlockState(),Blocks.CRACKED_DEEPSLATE_BRICKS.defaultBlockState(),16);
+  weather(level,bb,0,0,0,26,25,34,Blocks.DEEPSLATE_BRICKS.defaultBlockState(),Blocks.CRACKED_DEEPSLATE_BRICKS.defaultBlockState(),16);
   for(int[] c:new int[][]{{2,12},{2,23},{24,12},{24,23}})set(level,bb,Blocks.COBWEB.defaultBlockState(),c[0],6,c[1]);
+ }
+ /** What stands on the mesa: a clock tower over the stair with a belfry and a hipped spire, obelisks at the hall's corners, and the vault's great roof. */
+ private void belfry(WorldGenLevel level,BoundingBox bb,net.minecraft.world.level.block.state.BlockState gold,net.minecraft.world.level.block.state.BlockState polished,net.minecraft.world.level.block.state.BlockState crown) {
+  var wall=Blocks.DEEPSLATE_BRICKS.defaultBlockState();var tiles=Blocks.DEEPSLATE_TILES.defaultBlockState();
+  // The tower straddles the stair's far end, so the way down runs in under its face.
+  room(level,bb,10,11,6,16,17,12,wall);
+  for(int[] c:new int[][]{{10,6},{16,6},{10,12},{16,12}})pillar(level,bb,c[0],c[1],11,19,polished,polished,crown);
+  for(int x=11;x<=15;x++)set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.NORTH,true),x,17,5);
+  // The clock: a dark plate on the tower's face, gold hour marks at the quarters, end-rod hands from a carved hub.
+  fill(level,bb,11,12,5,15,16,5,polished);
+  for(int[] m:new int[][]{{13,16},{15,14},{13,12},{11,14}})set(level,bb,gold,m[0],m[1],5);
+  set(level,bb,crown,13,14,5);
+  set(level,bb,Blocks.END_ROD.defaultBlockState().setValue(net.minecraft.world.level.block.EndRodBlock.FACING,Direction.UP),13,15,5);
+  set(level,bb,Blocks.END_ROD.defaultBlockState().setValue(net.minecraft.world.level.block.EndRodBlock.FACING,Direction.EAST),14,14,5);
+  // An open belfry: the floor of the tower's top, a beam across, a bell hung from it, arches on every side.
+  fill(level,bb,11,18,7,15,19,11,AIR);
+  for(int x=11;x<=15;x++){set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.SOUTH,true),x,19,6);set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.NORTH,true),x,19,12);}
+  for(int z=7;z<=11;z++){set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.EAST,true),10,19,z);set(level,bb,stair(Blocks.DEEPSLATE_BRICK_STAIRS,Direction.WEST,true),16,19,z);}
+  fill(level,bb,11,19,9,15,19,9,polished);
+  set(level,bb,Blocks.BELL.defaultBlockState().setValue(net.minecraft.world.level.block.BellBlock.ATTACHMENT,net.minecraft.world.level.block.state.properties.BellAttachType.CEILING),13,18,9);
+  fill(level,bb,10,20,6,16,20,12,tiles);
+  hipRoof(level,bb,10,6,16,12,21,Blocks.DEEPSLATE_TILE_STAIRS,tiles,crown);
+  // Obelisks at the hall's four corners with soul fire on their tips.
+  for(int[] c:new int[][]{{6,0},{20,0},{6,12},{20,12}}){pillar(level,bb,c[0],c[1],11,14,polished,wall,gold);set(level,bb,Blocks.SOUL_LANTERN.defaultBlockState(),c[0],15,c[1]);}
+  // The vault's great hipped roof rises out of the rock behind.
+  fill(level,bb,6,11,23,20,11,34,tiles);
+  hipRoof(level,bb,7,24,19,33,12,Blocks.DEEPSLATE_TILE_STAIRS,tiles,crown);
+  for(int[] c:new int[][]{{6,23},{20,23},{6,34},{20,34}}){pillar(level,bb,c[0],c[1],11,13,polished,wall,crown);set(level,bb,Blocks.SOUL_LANTERN.defaultBlockState(),c[0],14,c[1]);}
  }
  @Override public List<BoundingBox> wardedBoxes(){return List.of(worldBox(6,0,23,20,10,34));}
 }
