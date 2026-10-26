@@ -21,7 +21,7 @@ import java.util.Optional;
  * crew's tally, and a rail line into a framed tunnel whose walls still show ore. Peaceful. Local y 4 is the yard.
  */
 public final class HillsideMinePiece extends MinePiece {
-	static final int WIDTH = 15, HEIGHT = 21, DEPTH = 34, YARD = 4;
+	static final int WIDTH = 15, HEIGHT = 24, DEPTH = 34, YARD = 4;
 
 	public HillsideMinePiece(int x, int y, int z, Direction facing) {
 		super(MineSites.HILLSIDE_MINE, x, y, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -58,7 +58,7 @@ public final class HillsideMinePiece extends MinePiece {
 		Palette masonry = Palette.of(Blocks.STONE_BRICKS, 8, Blocks.MOSSY_STONE_BRICKS, 3, Blocks.CRACKED_STONE_BRICKS, 2, Blocks.COBBLESTONE, 2);
 		Palette siding = Palette.of(Blocks.SPRUCE_PLANKS, 7, Blocks.STRIPPED_SPRUCE_LOG, 2);
 		// The yard, dug flat into the slope's foot, held back by dry-stone walls capped with slabs.
-		fill(level, bb, 0, YARD + 1, 0, 14, 20, 11, AIR);
+		fill(level, bb, 0, YARD + 1, 0, 14, HEIGHT - 1, 11, AIR);
 		fill(level, bb, 1, YARD, 0, 13, YARD, 11, deck);
 		for (int x : new int[] {1, 7, 13}) for (int z : new int[] {0, 5, 10}) footing(level, bb, x, z, x, z, YARD, log);
 		fill(level, bb, 1, YARD - 1, 0, 13, YARD - 1, 0, beam);
@@ -68,8 +68,13 @@ public final class HillsideMinePiece extends MinePiece {
 			fill(level, bb, x, YARD + 3, z0, x, YARD + 3, 11, s(Blocks.STONE_BRICK_SLAB));
 			footing(level, bb, x, z0, x, 11, YARD - 1, cobble);
 		}
-		fill(level, bb, 0, YARD + 1, 12, 2, YARD + 5, 12, masonry);
-		fill(level, bb, 12, YARD + 1, 12, 14, YARD + 5, 12, masonry);
+		// The hillside is faced in masonry either side of the portal, stepped up to a slab-capped breast wall.
+		for (int x : new int[] {0, 1, 2, 3, 11, 12, 13, 14}) {
+			int top = YARD + (x == 3 || x == 11 ? 6 : x == 2 || x == 12 ? 7 : 8);
+			fill(level, bb, x, YARD + 1, 12, x, top, 12, masonry);
+			set(level, bb, s(Blocks.STONE_BRICK_SLAB), x, top + 1, 12);
+		}
+		for (int x : new int[] {0, 14}) set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), x, YARD + 8, 12);
 		// Lantern posts at the yard's open corners.
 		for (int x : new int[] {1, 13}) {
 			fill(level, bb, x, YARD + 1, 0, x, YARD + 2, 0, fence);
@@ -79,23 +84,31 @@ public final class HillsideMinePiece extends MinePiece {
 		fill(level, bb, 2, 0, 3, 6, YARD, 7, cobble);
 		fill(level, bb, 3, 1, 4, 5, YARD, 6, AIR);
 		weather(level, bb, 2, 0, 3, 6, YARD, 7, cobble, s(Blocks.MOSSY_COBBLESTONE), 25);
-		for (int x : new int[] {2, 6}) for (int z : new int[] {3, 7}) fill(level, bb, x, YARD + 1, z, x, YARD + 9, z, log);
-		fill(level, bb, 2, YARD + 10, 3, 6, YARD + 10, 3, beam);
-		fill(level, bb, 2, YARD + 10, 7, 6, YARD + 10, 7, beam);
-		fill(level, bb, 4, YARD + 10, 3, 4, YARD + 10, 7, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, net.minecraft.core.Direction.Axis.Z));
-		// Knee braces under the beams and a mid-height tie between the legs.
+		// The headframe stands twelve high on four legs, tied at two heights and braced back against the hill by raking stays.
+		int head = YARD + 12;
+		for (int x : new int[] {2, 6}) for (int z : new int[] {3, 7}) fill(level, bb, x, YARD + 1, z, x, head, z, log);
+		fill(level, bb, 2, head + 1, 3, 6, head + 1, 3, beam);
+		fill(level, bb, 2, head + 1, 7, 6, head + 1, 7, beam);
+		fill(level, bb, 4, head + 1, 3, 4, head + 1, 7, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, net.minecraft.core.Direction.Axis.Z));
 		for (int z : new int[] {3, 7}) {
-			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.WEST, true), 3, YARD + 9, z);
-			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.EAST, true), 5, YARD + 9, z);
-			fill(level, bb, 3, YARD + 5, z, 5, YARD + 5, z, beam);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.WEST, true), 3, head, z);
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.EAST, true), 5, head, z);
+			for (int y : new int[] {YARD + 5, YARD + 9}) fill(level, bb, 3, y, z, 5, y, z, beam);
 		}
-		set(level, bb, fence, 4, YARD + 11, 5);
-		set(level, bb, fence, 3, YARD + 11, 5);
-		set(level, bb, fence, 5, YARD + 11, 5);
-		// A little hipped sheave house keeps the rain off the pulley.
-		for (int x : new int[] {2, 6}) for (int z : new int[] {3, 7}) set(level, bb, fence, x, YARD + 11, z);
-		hipRoof(level, bb, 2, 3, 6, 7, YARD + 12, Blocks.SPRUCE_STAIRS, plank, s(Blocks.SPRUCE_SLAB));
-		fill(level, bb, 4, 2, 5, 4, YARD + 9, 5, s(Blocks.IRON_CHAIN));
+		for (int x : new int[] {2, 6}) for (int y : new int[] {YARD + 5, YARD + 9}) fill(level, bb, x, y, 4, x, y, 6, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, net.minecraft.core.Direction.Axis.Z));
+		for (int x : new int[] {2, 6}) for (int i = 0; i <= 9; i++) {
+			int y = head - 1 - i, z = 8 + i / 3;
+			if (y > YARD + 1) set(level, bb, s(Blocks.SPRUCE_FENCE), x, y, z);
+		}
+		for (int x : new int[] {2, 6}) set(level, bb, log, x, YARD + 1, 11);
+		// The sheave house on top: a railed gallery, the pulley wheel showing through its gable, and a hipped roof.
+		for (int x = 2; x <= 6; x++) for (int z : new int[] {3, 7}) set(level, bb, fence, x, head + 2, z);
+		for (int z = 4; z <= 6; z++) for (int x : new int[] {2, 6}) set(level, bb, fence, x, head + 2, z);
+		fill(level, bb, 3, head + 2, 5, 5, head + 2, 5, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, net.minecraft.core.Direction.Axis.X));
+		set(level, bb, s(Blocks.SPRUCE_TRAPDOOR), 4, head + 2, 4);
+		hipRoof(level, bb, 2, 3, 6, 7, head + 3, Blocks.SPRUCE_STAIRS, plank, s(Blocks.SPRUCE_SLAB));
+		hangingLantern(level, bb, 3, head, 4);
+		fill(level, bb, 4, 2, 5, 4, head, 5, s(Blocks.IRON_CHAIN));
 		set(level, bb, s(Blocks.CAULDRON), 4, 1, 5);
 		for (int x : new int[] {3, 5}) set(level, bb, fence, x, YARD + 1, 4);
 		// Ore waiting for the cart: a spill of raw stone and barrels by the pit.
@@ -128,6 +141,10 @@ public final class HillsideMinePiece extends MinePiece {
 		barrel(level, bb, 12, YARD + 2, 7, null, 0);
 		chest(level, bb, 12, YARD + 1, 5, MineSites.HILLSIDE, Direction.WEST, 412);
 		set(level, bb, s(Blocks.LANTERN), 10, YARD + 1, 3);
+		// The forge chimney at the shed's back, smoking over the roof.
+		fill(level, bb, 14, YARD, 7, 14, YARD + 8, 7, masonry);
+		footing(level, bb, 14, 7, 14, 7, YARD - 1, cobble);
+		set(level, bb, s(Blocks.CAMPFIRE), 14, YARD + 9, 7);
 		hangingLantern(level, bb, 11, YARD + 3, 5);
 		// The tunnel: rock (some of it ore) around a framed bore, rails down its middle.
 		for (int x = 3; x <= 11; x++) for (int y = YARD - 1; y <= YARD + 6; y++) for (int z = 12; z <= DEPTH - 1; z++) set(level, bb, rock(x, y, z, stone, false), x, y, z);
