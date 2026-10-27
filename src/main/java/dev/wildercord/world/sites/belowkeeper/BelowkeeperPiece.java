@@ -46,6 +46,18 @@ public abstract class BelowkeeperPiece extends StructurePiece {
 	@Override
 	protected void addAdditionalSaveData(StructurePieceSerializationContext ctx, CompoundTag tag) {}
 
+	@Override
+	protected void placeBlock(WorldGenLevel level, BlockState state, int x, int y, int z, BoundingBox clip) {
+		BlockPos at = world(x, y, z);
+		if (!clip.isInside(at)) return;
+		if (!state.hasBlockEntity() && level.getBlockState(at).hasBlockEntity()) {
+			level.getBlockEntity(at);
+			level.getChunk(at).removeBlockEntity(at);
+		}
+		super.placeBlock(level, state, x, y, z, clip);
+		if (state.hasBlockEntity()) level.getBlockEntity(at);
+	}
+
 	protected final void set(WorldGenLevel level, BoundingBox clip, BlockState state, int x, int y, int z) {
 		placeBlock(level, state, x, y, z, clip);
 	}

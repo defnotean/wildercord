@@ -42,12 +42,20 @@ public abstract class HighlandPiece extends StructurePiece {
 	@Override
 	protected void addAdditionalSaveData(StructurePieceSerializationContext ctx, CompoundTag tag) {}
 
-	protected final void set(WorldGenLevel level, BoundingBox clip, BlockState state, int x, int y, int z) {
+	@Override
+	protected void placeBlock(WorldGenLevel level, BlockState state, int x, int y, int z, BoundingBox clip) {
 		BlockPos at = world(x, y, z);
 		if (!clip.isInside(at)) return;
-		if (state.isAir() && level.getBlockState(at).hasBlockEntity()) level.getBlockEntity(at);
-		placeBlock(level, state, x, y, z, clip);
+		if (!state.hasBlockEntity() && level.getBlockState(at).hasBlockEntity()) {
+			level.getBlockEntity(at);
+			level.getChunk(at).removeBlockEntity(at);
+		}
+		super.placeBlock(level, state, x, y, z, clip);
 		if (state.hasBlockEntity()) level.getBlockEntity(at);
+	}
+
+	protected final void set(WorldGenLevel level, BoundingBox clip, BlockState state, int x, int y, int z) {
+		placeBlock(level, state, x, y, z, clip);
 	}
 
 	protected final void fill(WorldGenLevel level, BoundingBox clip, int x0, int y0, int z0, int x1, int y1, int z1, BlockState state) {

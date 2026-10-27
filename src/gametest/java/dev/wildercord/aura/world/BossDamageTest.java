@@ -124,6 +124,12 @@ public final class BossDamageTest implements FabricClientGameTest {
 
 			// Verify all Tripo voxel weapon models (oathkeeper, lumenedge, bulwark_maul, skyrend_glaive, fetchblade, and staffs)
 			// in first-person, third-person front, third-person back, and mid-attack swing.
+			server.runOnServer(s -> {
+				var player = p(s);
+				player.removeAllEffects();
+				for (var e : s.overworld().getEntities(player, player.getBoundingBox().inflate(32))) e.discard();
+				player.teleportTo(0.5, 101, 0.5);
+			});
 			c.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1280, 720);
 				mc.options.guiScale().set(2);
@@ -147,7 +153,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 					player.setYRot(0);
 					player.setXRot(10);
 				});
-				c.waitTicks(4);
+				c.waitTicks(22);
 				c.runOnClient(mc -> {
 					for (var ctx : new net.minecraft.world.item.ItemDisplayContext[]{
 						net.minecraft.world.item.ItemDisplayContext.GUI,
@@ -172,7 +178,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				c.waitTicks(2);
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_front").disableCounterPrefix());
 				c.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK));
-				c.waitTicks(2);
+				c.waitTicks(6);
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_back").disableCounterPrefix());
 			}
 			c.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));

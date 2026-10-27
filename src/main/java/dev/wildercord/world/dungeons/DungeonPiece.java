@@ -70,12 +70,20 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 		generateBox(level, bb, x0, y0, z0, x1, y1, z1, wall, AIR, false);
 	}
 
-	protected void set(WorldGenLevel level, BoundingBox bb, BlockState state, int x, int y, int z) {
+	@Override
+	protected void placeBlock(WorldGenLevel level, BlockState state, int x, int y, int z, BoundingBox bb) {
 		BlockPos at = getWorldPos(x, y, z);
 		if (!bb.isInside(at)) return;
-		if (state.isAir() && level.getBlockState(at).hasBlockEntity()) level.getBlockEntity(at);
-		placeBlock(level, state, x, y, z, bb);
+		if (!state.hasBlockEntity() && level.getBlockState(at).hasBlockEntity()) {
+			level.getBlockEntity(at);
+			level.getChunk(at).removeBlockEntity(at);
+		}
+		super.placeBlock(level, state, x, y, z, bb);
 		if (state.hasBlockEntity()) level.getBlockEntity(at);
+	}
+
+	protected void set(WorldGenLevel level, BoundingBox bb, BlockState state, int x, int y, int z) {
+		placeBlock(level, state, x, y, z, bb);
 	}
 
 	/**

@@ -120,6 +120,18 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		generateBox(level, bb, x0, y0, z0, x1, y1, z1, wall, AIR, false);
 	}
 
+	@Override
+	protected void placeBlock(WorldGenLevel level, BlockState state, int x, int y, int z, BoundingBox bb) {
+		BlockPos at = getWorldPos(x, y, z);
+		if (!bb.isInside(at)) return;
+		if (!state.hasBlockEntity() && level.getBlockState(at).hasBlockEntity()) {
+			level.getBlockEntity(at);
+			level.getChunk(at).removeBlockEntity(at);
+		}
+		super.placeBlock(level, state, x, y, z, bb);
+		if (state.hasBlockEntity()) level.getBlockEntity(at);
+	}
+
 	private void set(WorldGenLevel level, BoundingBox bb, BlockState state, int x, int y, int z) {
 		placeBlock(level, state, x, y, z, bb);
 	}
@@ -148,7 +160,13 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 
 	/** A purple wall banner of the Archive, hung from the wall behind (x, y, z). */
 	private void banner(WorldGenLevel level, BoundingBox bb, int x, int y, int z, Direction facing) {
-		set(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE).defaultBlockState().setValue(WallBannerBlock.FACING, facing), x, y, z);
+		BlockPos at = getWorldPos(x, y, z);
+		if (!bb.isInside(at)) return;
+		BlockPos to = getWorldPos(x + facing.getStepX(), y, z - facing.getStepZ());
+		Direction worldDir = to.getX() > at.getX() ? Direction.EAST : to.getX() < at.getX() ? Direction.WEST
+			: to.getZ() > at.getZ() ? Direction.SOUTH : Direction.NORTH;
+		level.setBlock(at, Blocks.WALL_BANNER.pick(DyeColor.PURPLE).defaultBlockState().setValue(WallBannerBlock.FACING, worldDir), 2);
+		level.getBlockEntity(at);
 	}
 
 	// ------------------------------------------------------------------ the entrance and the stairway
