@@ -207,32 +207,34 @@ def bulwark_maul():
 
 
 def skyrend_glaive():
-    """A long-shafted storm-lacquered polearm with twin leather grip wraps, a storm-gold socket collar, and a sleek curved single-edged storm-crystal glaive blade."""
+    """A full-length storm-lacquered polearm with separated rear/lead grip wraps, exposed upper/middle/lower haft sections, a storm-gold socket collar, and a curved single-edged storm-crystal glaive blade."""
     parts = [
-        _b((7.55, -.6, 7.55), (8.45, .2, 8.45), "steel"), _b((7.15, .2, 7.15), (8.85, 1.3, 8.85), "gold"),
-        _b((7.48, 1.3, 7.48), (8.52, 15.8, 8.52), "haft"),
-        # Rear-hand and lead-hand polearm grip wraps along the shaft.
-        _b((7.28, 2.8, 7.28), (8.72, 3.2, 8.72), "gold"), _b((7.34, 3.2, 7.34), (8.66, 6.8, 8.66), "wrap"),
-        _b((7.28, 6.8, 7.28), (8.72, 7.2, 8.72), "gold"),
-        _b((7.28, 9.4, 7.28), (8.72, 9.8, 8.72), "gold"), _b((7.34, 9.8, 7.34), (8.66, 13.4, 8.66), "wrap"),
-        _b((7.28, 13.4, 7.28), (8.72, 13.8, 8.72), "gold"),
+        _b((7.55, -.6, 7.55), (8.45, .3, 8.45), "steel"), _b((7.15, .3, 7.15), (8.85, 1.5, 8.85), "gold"),
+        _b((7.48, 1.5, 7.48), (8.52, 11.8, 8.52), "haft"),
+        _b((7.48, 11.8, 7.48), (8.52, 22.0, 8.52), "haft"),
+        # Rear-hand grip wrap (y = 5.0..8.8), center shaft ring (y = 11.2..11.6), and lead-hand grip wrap (y = 14.0..17.8).
+        _b((7.28, 4.6, 7.28), (8.72, 5.0, 8.72), "gold"), _b((7.34, 5.0, 7.34), (8.66, 8.8, 8.66), "wrap"),
+        _b((7.28, 8.8, 7.28), (8.72, 9.2, 8.72), "gold"),
+        _b((7.30, 11.2, 7.30), (8.70, 11.6, 8.70), "gold"),
+        _b((7.28, 13.6, 7.28), (8.72, 14.0, 8.72), "gold"), _b((7.34, 14.0, 7.34), (8.66, 17.8, 8.66), "wrap"),
+        _b((7.28, 17.8, 7.28), (8.72, 18.2, 8.72), "gold"),
         # Storm-gold polearm socket collar, wind-gem, forward guard lip (-x), and rear counter-guard spur + tassel (+x).
-        _b((6.95, 15.6, 7.05), (9.05, 17.2, 8.95), "gold"), _b((7.45, 15.95, 6.85), (8.55, 16.85, 9.15), "spark"),
-        _b((5.85, 16.0, 7.45), (6.95, 17.0, 8.55), "gold"),
-        _b((9.05, 16.2, 7.45), (10.7, 17.3, 8.55), "gold"), _b((10.6, 15.4, 7.65), (11.5, 16.7, 8.35), "spark"),
-        _b((7.25, 17.2, 7.3), (8.75, 17.8, 8.7), "gold"),
+        _b((6.95, 22.0, 7.05), (9.05, 23.6, 8.95), "gold"), _b((7.45, 22.35, 6.85), (8.55, 23.25, 9.15), "spark"),
+        _b((5.85, 22.4, 7.45), (6.95, 23.4, 8.55), "gold"),
+        _b((9.05, 22.6, 7.45), (10.7, 23.7, 8.55), "gold"), _b((10.6, 21.8, 7.65), (11.5, 23.1, 8.35), "spark"),
+        _b((7.25, 23.6, 7.3), (8.75, 24.2, 8.7), "gold"),
         # Rear spine barb midway up the curved blade (+x side).
-        _b((8.90, 20.9, 7.76), (9.55, 21.9, 8.24), "steel"),
+        _b((8.90, 27.4, 7.76), (9.55, 28.4, 8.24), "steel"),
     ]
     # Sleek, curved single-edged glaive blade: forward cutting edge (-x) and reinforced storm-steel spine (+x).
-    blade = [(17.6, 19.1, 6.75, 8.65), (19.1, 20.6, 6.50, 8.75), (20.6, 22.1, 6.35, 8.90),
-             (22.1, 23.5, 6.55, 9.05), (23.5, 24.8, 6.95, 9.20), (24.8, 25.9, 7.55, 9.35)]
+    blade = [(24.0, 25.6, 6.75, 8.65), (25.6, 27.2, 6.50, 8.75), (27.2, 28.7, 6.35, 8.90),
+             (28.7, 30.1, 6.55, 9.05), (30.1, 31.4, 6.95, 9.20), (31.4, 32.5, 7.55, 9.35)]
     for lo, hi, x0, x1 in blade:
         parts.append(_b((x0, lo, 7.72), (x1, hi, 8.28), "steel", "blade"))
         parts.append(_b((x0 - .52, lo, 7.84), (x0, hi, 8.16), "edge"))
-    parts.append(_b((7.80, 25.9, 7.84), (9.45, 26.5, 8.16), "edge"))
-    parts.append(_b((8.50, 26.5, 7.88), (9.50, 26.8, 8.12), "edge"))
-    return parts, 26.8
+    parts.append(_b((7.80, 32.5, 7.84), (9.45, 33.1, 8.16), "edge"))
+    parts.append(_b((8.50, 33.1, 7.88), (9.50, 33.4, 8.12), "edge"))
+    return parts, 33.4
 
 
 def fetchblade():
@@ -344,10 +346,10 @@ HANDHELD = {
 }
 # Polearm display transforms: gripped on the rear shaft wrap so the long haft, forward wrap, collar, and curved glaive blade extend ahead.
 GLAIVE_DISPLAY = {
-    "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 7.2, .5], "scale": [.88, .88, .88]},
-    "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 7.2, .5], "scale": [.88, .88, .88]},
-    "firstperson_righthand": {"rotation": [0, -92, 42], "translation": [0, 2.2, -1.6], "scale": [.62, .62, .62]},
-    "firstperson_lefthand": {"rotation": [0, 88, -42], "translation": [0, 2.2, -1.6], "scale": [.62, .62, .62]},
+    "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 7.5, .5], "scale": [.90, .90, .90]},
+    "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 7.5, .5], "scale": [.90, .90, .90]},
+    "firstperson_righthand": {"rotation": [0, -92, 42], "translation": [0, .4, -1.6], "scale": [.60, .60, .60]},
+    "firstperson_lefthand": {"rotation": [0, 88, -42], "translation": [0, .4, -1.6], "scale": [.60, .60, .60]},
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
 }
 

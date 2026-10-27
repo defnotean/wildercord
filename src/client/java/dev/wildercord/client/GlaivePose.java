@@ -88,13 +88,13 @@ public final class GlaivePose {
 		float breathe = Mth.sin(state.ageInTicks * 0.09F) * 0.025F;
 
 		// Ready stance: main hand grips the rear shaft wrap at the right hip/waist; support hand reaches
-		// across the chest to grip the forward shaft wrap so the polearm projects diagonally up and left.
-		float idleMainX = -0.44F + pitch * 0.35F + walkBob + breathe;
-		float idleMainY = -0.08F * side + turn * 0.35F;
-		float idleMainZ = 0.12F * side;
+		// across the chest to grip the forward shaft wrap with visible exposed pole shaft between both hands.
+		float idleMainX = -0.34F + pitch * 0.35F + walkBob + breathe;
+		float idleMainY = 0.14F * side + turn * 0.35F;
+		float idleMainZ = 0.16F * side;
 
-		float idleOffX = -1.04F + pitch * 0.35F - walkBob * 0.5F + breathe;
-		float idleOffY = 0.58F * side + turn * 0.35F;
+		float idleOffX = -1.06F + pitch * 0.35F - walkBob * 0.5F + breathe;
+		float idleOffY = 0.44F * side + turn * 0.35F;
 		float idleOffZ = -0.08F * side;
 
 		float s = state.swingAnimation;
@@ -110,29 +110,29 @@ public final class GlaivePose {
 			return true;
 		}
 
-		// Active attack: 3-phase sweeping polearm cleave (windup -> wide diagonal-horizontal slash -> recovery).
+		// Active attack: 3-phase sweeping polearm cleave (windup -> wide horizontal-diagonal slash -> recovery).
 		float bodyYaw;
 		float bodyPitch;
 		float mainX, mainY, mainZ;
 		float offX, offY, offZ;
 
-		float chMainX = -0.78F + pitch * 0.25F;
-		float chMainY = -0.32F * side;
-		float chMainZ = 0.24F * side;
+		float chMainX = -0.75F + pitch * 0.25F;
+		float chMainY = 0.28F * side;
+		float chMainZ = 0.22F * side;
 		float chOffX = -1.08F + pitch * 0.25F;
-		float chOffY = 0.68F * side;
+		float chOffY = 0.62F * side;
 		float chOffZ = -0.10F * side;
 
-		float cutMainX = -0.90F + pitch * 0.25F;
-		float cutMainY = 0.44F * side;
-		float cutMainZ = 0.14F * side;
-		float cutOffX = -1.06F + pitch * 0.25F;
-		float cutOffY = 0.12F * side;
-		float cutOffZ = -0.22F * side;
+		float cutMainX = -1.08F + pitch * 0.25F;
+		float cutMainY = -0.42F * side;
+		float cutMainZ = 0.18F * side;
+		float cutOffX = -1.16F + pitch * 0.25F;
+		float cutOffY = 0.22F * side;
+		float cutOffZ = -0.24F * side;
 
-		if (s < 0.14F) {
-			float t = smooth(s / 0.14F);
-			bodyYaw = Mth.lerp(t, 0.0F, 0.36F * side);
+		if (s < 0.12F) {
+			float t = smooth(s / 0.12F);
+			bodyYaw = Mth.lerp(t, 0.0F, 0.34F * side);
 			bodyPitch = Mth.lerp(t, 0.0F, 0.06F);
 			mainX = Mth.lerp(t, idleMainX, chMainX);
 			mainY = Mth.lerp(t, idleMainY, chMainY);
@@ -140,10 +140,10 @@ public final class GlaivePose {
 			offX = Mth.lerp(t, idleOffX, chOffX);
 			offY = Mth.lerp(t, idleOffY, chOffY);
 			offZ = Mth.lerp(t, idleOffZ, chOffZ);
-		} else if (s < 0.54F) {
-			float t = smooth((s - 0.14F) / 0.40F);
-			bodyYaw = Mth.lerp(t, 0.36F * side, -0.38F * side);
-			bodyPitch = Mth.lerp(t, 0.06F, 0.14F);
+		} else if (s < 0.60F) {
+			float t = smooth(Mth.clamp((s - 0.12F) / 0.28F, 0.0F, 1.0F));
+			bodyYaw = Mth.lerp(t, 0.34F * side, -0.44F * side);
+			bodyPitch = Mth.lerp(t, 0.06F, 0.20F);
 			mainX = Mth.lerp(t, chMainX, cutMainX);
 			mainY = Mth.lerp(t, chMainY, cutMainY);
 			mainZ = Mth.lerp(t, chMainZ, cutMainZ);
@@ -151,9 +151,9 @@ public final class GlaivePose {
 			offY = Mth.lerp(t, chOffY, cutOffY);
 			offZ = Mth.lerp(t, chOffZ, cutOffZ);
 		} else {
-			float t = smooth((s - 0.54F) / 0.46F);
-			bodyYaw = Mth.lerp(t, -0.38F * side, 0.0F);
-			bodyPitch = Mth.lerp(t, 0.14F, 0.0F);
+			float t = smooth((s - 0.60F) / 0.40F);
+			bodyYaw = Mth.lerp(t, -0.44F * side, 0.0F);
+			bodyPitch = Mth.lerp(t, 0.20F, 0.0F);
 			mainX = Mth.lerp(t, cutMainX, idleMainX);
 			mainY = Mth.lerp(t, cutMainY, idleMainY);
 			mainZ = Mth.lerp(t, cutMainZ, idleMainZ);
@@ -199,8 +199,8 @@ public final class GlaivePose {
 		float side = state.mainArm == HumanoidArm.LEFT ? -1.0F : 1.0F;
 		// Positive pitch in submit-space lifts the polearm upward away from the camera axis (-Z_entity);
 		// positive cross tilts the shaft inward across the torso (-X_submit = +X_entity) through the support hand.
-		float idlePitch = 52.0F;
-		float idleCross = 44.0F * side;
+		float idlePitch = 56.0F;
+		float idleCross = 46.0F * side;
 		float idleTwist = 18.0F * side;
 
 		float pitch = idlePitch;
@@ -209,26 +209,26 @@ public final class GlaivePose {
 
 		float s = state.swingAnimation;
 		if (s > 0.0F) {
-			float chPitch = 34.0F;
-			float chCross = 16.0F * side;
-			float chTwist = -12.0F * side;
+			float chPitch = 36.0F;
+			float chCross = 18.0F * side;
+			float chTwist = -15.0F * side;
 
-			float cutPitch = 26.0F;
-			float cutCross = 68.0F * side;
-			float cutTwist = 28.0F * side;
+			float cutPitch = 18.0F;
+			float cutCross = 78.0F * side;
+			float cutTwist = 46.0F * side;
 
-			if (s < 0.14F) {
-				float t = smooth(s / 0.14F);
+			if (s < 0.12F) {
+				float t = smooth(s / 0.12F);
 				pitch = Mth.lerp(t, idlePitch, chPitch);
 				cross = Mth.lerp(t, idleCross, chCross);
 				twist = Mth.lerp(t, idleTwist, chTwist);
-			} else if (s < 0.54F) {
-				float t = smooth((s - 0.14F) / 0.40F);
+			} else if (s < 0.60F) {
+				float t = smooth(Mth.clamp((s - 0.12F) / 0.28F, 0.0F, 1.0F));
 				pitch = Mth.lerp(t, chPitch, cutPitch);
 				cross = Mth.lerp(t, chCross, cutCross);
 				twist = Mth.lerp(t, chTwist, cutTwist);
 			} else {
-				float t = smooth((s - 0.54F) / 0.46F);
+				float t = smooth((s - 0.60F) / 0.40F);
 				pitch = Mth.lerp(t, cutPitch, idlePitch);
 				cross = Mth.lerp(t, cutCross, idleCross);
 				twist = Mth.lerp(t, cutTwist, idleTwist);
@@ -260,31 +260,31 @@ public final class GlaivePose {
 		float dx, dy, dz;
 		float pitch, yaw, roll;
 
-		if (attack < 0.14F) {
-			float t = smooth(attack / 0.14F);
+		if (attack < 0.12F) {
+			float t = smooth(attack / 0.12F);
 			dx = Mth.lerp(t, 0.0F, 0.12F * s);
 			dy = Mth.lerp(t, 0.0F, 0.06F);
 			dz = Mth.lerp(t, 0.0F, 0.06F);
 			pitch = Mth.lerp(t, 0.0F, 8.0F);
 			yaw = Mth.lerp(t, 0.0F, -14.0F * s);
 			roll = Mth.lerp(t, 0.0F, -10.0F * s);
-		} else if (attack < 0.54F) {
-			float t = smooth((attack - 0.14F) / 0.40F);
+		} else if (attack < 0.60F) {
+			float t = smooth(Mth.clamp((attack - 0.12F) / 0.28F, 0.0F, 1.0F));
 			float arc = Mth.sin(t * Mth.PI);
-			dx = Mth.lerp(t, 0.12F * s, -0.46F * s);
-			dy = Mth.lerp(t, 0.06F, -0.10F) + 0.05F * arc;
-			dz = Mth.lerp(t, 0.06F, -0.08F) - 0.14F * arc;
-			pitch = Mth.lerp(t, 8.0F, -22.0F) - 8.0F * arc;
-			yaw = Mth.lerp(t, -14.0F * s, 34.0F * s);
-			roll = Mth.lerp(t, -10.0F * s, 52.0F * s);
+			dx = Mth.lerp(t, 0.12F * s, -0.54F * s);
+			dy = Mth.lerp(t, 0.06F, -0.12F) + 0.04F * arc;
+			dz = Mth.lerp(t, 0.06F, -0.14F) - 0.12F * arc;
+			pitch = Mth.lerp(t, 8.0F, -24.0F) - 6.0F * arc;
+			yaw = Mth.lerp(t, -14.0F * s, 38.0F * s);
+			roll = Mth.lerp(t, -10.0F * s, 64.0F * s);
 		} else {
-			float t = smooth((attack - 0.54F) / 0.46F);
-			dx = Mth.lerp(t, -0.46F * s, 0.0F);
-			dy = Mth.lerp(t, -0.10F, 0.0F);
-			dz = Mth.lerp(t, -0.08F, 0.0F);
-			pitch = Mth.lerp(t, -22.0F, 0.0F);
-			yaw = Mth.lerp(t, 34.0F * s, 0.0F);
-			roll = Mth.lerp(t, 52.0F * s, 0.0F);
+			float t = smooth((attack - 0.60F) / 0.40F);
+			dx = Mth.lerp(t, -0.54F * s, 0.0F);
+			dy = Mth.lerp(t, -0.12F, 0.0F);
+			dz = Mth.lerp(t, -0.14F, 0.0F);
+			pitch = Mth.lerp(t, -24.0F, 0.0F);
+			yaw = Mth.lerp(t, 38.0F * s, 0.0F);
+			roll = Mth.lerp(t, 64.0F * s, 0.0F);
 		}
 
 		pose.translate(dx, dy, dz);
