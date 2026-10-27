@@ -14,7 +14,7 @@
       "minecraft:rarity": "rare",
       "minecraft:attack_animation": {
         "type": "whack",
-        "duration": 8
+        "duration": 10
       }
     }
   }

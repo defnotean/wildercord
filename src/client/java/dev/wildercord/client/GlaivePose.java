@@ -31,7 +31,7 @@ import net.minecraft.world.item.component.SwingAnimation;
 public final class GlaivePose {
 	private GlaivePose() {}
 
-	private static final SwingAnimation GLAIVE_SWING = new SwingAnimation(SwingAnimationType.WHACK, 8);
+	private static final SwingAnimation GLAIVE_SWING = new SwingAnimation(SwingAnimationType.WHACK, 10);
 
 	public static boolean isGlaive(ItemStack stack) {
 		return stack != null && !stack.isEmpty() && ForgedGear.of(stack) == AuraWorldRules.Forged.SKYREND_GLAIVE;
@@ -63,7 +63,7 @@ public final class GlaivePose {
 			}
 		}
 		if (state.currentSwing != null && state.currentSwing.animation().type() == SwingAnimationType.STAB) {
-			state.currentSwing = new LivingEntity.SwingDescription(state.currentSwing.hand(), GLAIVE_SWING, 8);
+			state.currentSwing = new LivingEntity.SwingDescription(state.currentSwing.hand(), GLAIVE_SWING, 10);
 		}
 	}
 
@@ -140,8 +140,8 @@ public final class GlaivePose {
 			offX = Mth.lerp(t, idleOffX, chOffX);
 			offY = Mth.lerp(t, idleOffY, chOffY);
 			offZ = Mth.lerp(t, idleOffZ, chOffZ);
-		} else if (s < 0.60F) {
-			float t = smooth(Mth.clamp((s - 0.12F) / 0.28F, 0.0F, 1.0F));
+		} else if (s < 0.72F) {
+			float t = smooth(Mth.clamp((s - 0.12F) / 0.22F, 0.0F, 1.0F));
 			bodyYaw = Mth.lerp(t, 0.34F * side, -0.44F * side);
 			bodyPitch = Mth.lerp(t, 0.06F, 0.20F);
 			mainX = Mth.lerp(t, chMainX, cutMainX);
@@ -151,7 +151,7 @@ public final class GlaivePose {
 			offY = Mth.lerp(t, chOffY, cutOffY);
 			offZ = Mth.lerp(t, chOffZ, cutOffZ);
 		} else {
-			float t = smooth((s - 0.60F) / 0.40F);
+			float t = smooth((s - 0.72F) / 0.28F);
 			bodyYaw = Mth.lerp(t, -0.44F * side, 0.0F);
 			bodyPitch = Mth.lerp(t, 0.20F, 0.0F);
 			mainX = Mth.lerp(t, cutMainX, idleMainX);
@@ -222,13 +222,13 @@ public final class GlaivePose {
 				pitch = Mth.lerp(t, idlePitch, chPitch);
 				cross = Mth.lerp(t, idleCross, chCross);
 				twist = Mth.lerp(t, idleTwist, chTwist);
-			} else if (s < 0.60F) {
-				float t = smooth(Mth.clamp((s - 0.12F) / 0.28F, 0.0F, 1.0F));
+			} else if (s < 0.72F) {
+				float t = smooth(Mth.clamp((s - 0.12F) / 0.22F, 0.0F, 1.0F));
 				pitch = Mth.lerp(t, chPitch, cutPitch);
 				cross = Mth.lerp(t, chCross, cutCross);
 				twist = Mth.lerp(t, chTwist, cutTwist);
 			} else {
-				float t = smooth((s - 0.60F) / 0.40F);
+				float t = smooth((s - 0.72F) / 0.28F);
 				pitch = Mth.lerp(t, cutPitch, idlePitch);
 				cross = Mth.lerp(t, cutCross, idleCross);
 				twist = Mth.lerp(t, cutTwist, idleTwist);
@@ -268,21 +268,21 @@ public final class GlaivePose {
 			pitch = Mth.lerp(t, 0.0F, 8.0F);
 			yaw = Mth.lerp(t, 0.0F, -14.0F * s);
 			roll = Mth.lerp(t, 0.0F, -10.0F * s);
-		} else if (attack < 0.60F) {
-			float t = smooth(Mth.clamp((attack - 0.12F) / 0.28F, 0.0F, 1.0F));
+		} else if (attack < 0.72F) {
+			float t = smooth(Mth.clamp((attack - 0.12F) / 0.22F, 0.0F, 1.0F));
 			float arc = Mth.sin(t * Mth.PI);
 			dx = Mth.lerp(t, 0.12F * s, -0.54F * s);
 			dy = Mth.lerp(t, 0.06F, -0.12F) + 0.04F * arc;
-			dz = Mth.lerp(t, 0.06F, -0.14F) - 0.12F * arc;
-			pitch = Mth.lerp(t, 8.0F, -24.0F) - 6.0F * arc;
+			dz = Mth.lerp(t, 0.06F, -0.18F) - 0.08F * arc;
+			pitch = Mth.lerp(t, 8.0F, -26.0F) - 6.0F * arc;
 			yaw = Mth.lerp(t, -14.0F * s, 38.0F * s);
 			roll = Mth.lerp(t, -10.0F * s, 64.0F * s);
 		} else {
-			float t = smooth((attack - 0.60F) / 0.40F);
+			float t = smooth((attack - 0.72F) / 0.28F);
 			dx = Mth.lerp(t, -0.54F * s, 0.0F);
 			dy = Mth.lerp(t, -0.12F, 0.0F);
-			dz = Mth.lerp(t, -0.14F, 0.0F);
-			pitch = Mth.lerp(t, -24.0F, 0.0F);
+			dz = Mth.lerp(t, -0.18F, 0.0F);
+			pitch = Mth.lerp(t, -26.0F, 0.0F);
 			yaw = Mth.lerp(t, 38.0F * s, 0.0F);
 			roll = Mth.lerp(t, 64.0F * s, 0.0F);
 		}
