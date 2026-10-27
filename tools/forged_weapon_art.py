@@ -212,26 +212,26 @@ def skyrend_glaive():
         _b((7.55, -.6, 7.55), (8.45, .2, 8.45), "steel"), _b((7.15, .2, 7.15), (8.85, 1.3, 8.85), "gold"),
         _b((7.48, 1.3, 7.48), (8.52, 15.8, 8.52), "haft"),
         # Rear-hand and lead-hand polearm grip wraps along the shaft.
-        _b((7.28, 3.6, 7.28), (8.72, 4.0, 8.72), "gold"), _b((7.34, 4.0, 7.34), (8.66, 7.4, 8.66), "wrap"),
-        _b((7.28, 7.4, 7.28), (8.72, 7.8, 8.72), "gold"),
-        _b((7.28, 9.8, 7.28), (8.72, 10.2, 8.72), "gold"), _b((7.34, 10.2, 7.34), (8.66, 13.6, 8.66), "wrap"),
-        _b((7.28, 13.6, 7.28), (8.72, 14.0, 8.72), "gold"),
-        # Storm-gold polearm socket collar, wind-gem, and compact asymmetric guard spur + tassel.
+        _b((7.28, 2.8, 7.28), (8.72, 3.2, 8.72), "gold"), _b((7.34, 3.2, 7.34), (8.66, 6.8, 8.66), "wrap"),
+        _b((7.28, 6.8, 7.28), (8.72, 7.2, 8.72), "gold"),
+        _b((7.28, 9.4, 7.28), (8.72, 9.8, 8.72), "gold"), _b((7.34, 9.8, 7.34), (8.66, 13.4, 8.66), "wrap"),
+        _b((7.28, 13.4, 7.28), (8.72, 13.8, 8.72), "gold"),
+        # Storm-gold polearm socket collar, wind-gem, forward guard lip (-x), and rear counter-guard spur + tassel (+x).
         _b((6.95, 15.6, 7.05), (9.05, 17.2, 8.95), "gold"), _b((7.45, 15.95, 6.85), (8.55, 16.85, 9.15), "spark"),
-        _b((5.3, 16.2, 7.45), (6.95, 17.3, 8.55), "gold"), _b((4.5, 15.4, 7.65), (5.4, 16.7, 8.35), "spark"),
-        _b((9.05, 16.0, 7.45), (10.15, 17.0, 8.55), "gold"),
+        _b((5.85, 16.0, 7.45), (6.95, 17.0, 8.55), "gold"),
+        _b((9.05, 16.2, 7.45), (10.7, 17.3, 8.55), "gold"), _b((10.6, 15.4, 7.65), (11.5, 16.7, 8.35), "spark"),
         _b((7.25, 17.2, 7.3), (8.75, 17.8, 8.7), "gold"),
-        # Rear spine barb midway up the curved blade.
-        _b((6.45, 20.9, 7.76), (7.10, 21.9, 8.24), "steel"),
+        # Rear spine barb midway up the curved blade (+x side).
+        _b((8.90, 20.9, 7.76), (9.55, 21.9, 8.24), "steel"),
     ]
-    # Sleek, curved single-edged glaive blade: reinforced storm-steel spine (-x) and glowing cutting edge (+x).
-    blade = [(17.6, 19.1, 7.35, 9.25), (19.1, 20.6, 7.25, 9.50), (20.6, 22.1, 7.10, 9.65),
-             (22.1, 23.5, 6.95, 9.45), (23.5, 24.8, 6.80, 9.05), (24.8, 25.9, 6.65, 8.45)]
+    # Sleek, curved single-edged glaive blade: forward cutting edge (-x) and reinforced storm-steel spine (+x).
+    blade = [(17.6, 19.1, 6.75, 8.65), (19.1, 20.6, 6.50, 8.75), (20.6, 22.1, 6.35, 8.90),
+             (22.1, 23.5, 6.55, 9.05), (23.5, 24.8, 6.95, 9.20), (24.8, 25.9, 7.55, 9.35)]
     for lo, hi, x0, x1 in blade:
         parts.append(_b((x0, lo, 7.72), (x1, hi, 8.28), "steel", "blade"))
-        parts.append(_b((x1, lo, 7.84), (x1 + .52, hi, 8.16), "edge"))
-    parts.append(_b((6.55, 25.9, 7.84), (8.20, 26.5, 8.16), "edge"))
-    parts.append(_b((6.50, 26.5, 7.88), (7.50, 26.8, 8.12), "edge"))
+        parts.append(_b((x0 - .52, lo, 7.84), (x0, hi, 8.16), "edge"))
+    parts.append(_b((7.80, 25.9, 7.84), (9.45, 26.5, 8.16), "edge"))
+    parts.append(_b((8.50, 26.5, 7.88), (9.50, 26.8, 8.12), "edge"))
     return parts, 26.8
 
 
@@ -342,12 +342,12 @@ HANDHELD = {
     "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13], "scale": [.68, .68, .68]},
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
 }
-# Polearm display transforms: gripped along the lower-mid shaft so the long haft, collar, and curved glaive blade extend forward.
+# Polearm display transforms: gripped on the rear shaft wrap so the long haft, forward wrap, collar, and curved glaive blade extend ahead.
 GLAIVE_DISPLAY = {
-    "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4, .5], "scale": [.88, .88, .88]},
-    "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4, .5], "scale": [.88, .88, .88]},
-    "firstperson_righthand": {"rotation": [0, -100, 16], "translation": [.55, 1.75, 1.35], "scale": [.64, .64, .64]},
-    "firstperson_lefthand": {"rotation": [0, 80, -16], "translation": [.55, 1.75, 1.35], "scale": [.64, .64, .64]},
+    "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 7.2, .5], "scale": [.88, .88, .88]},
+    "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 7.2, .5], "scale": [.88, .88, .88]},
+    "firstperson_righthand": {"rotation": [0, -92, 42], "translation": [0, 2.2, -1.6], "scale": [.62, .62, .62]},
+    "firstperson_lefthand": {"rotation": [0, 88, -42], "translation": [0, 2.2, -1.6], "scale": [.62, .62, .62]},
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
 }
 
