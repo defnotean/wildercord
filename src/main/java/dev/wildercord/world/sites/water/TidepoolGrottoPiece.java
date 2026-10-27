@@ -14,7 +14,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DripstoneThickness;
+import net.minecraft.world.level.block.SpeleothemBlock;
+import net.minecraft.world.level.block.state.properties.SpeleothemThickness;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -248,7 +249,7 @@ public class TidepoolGrottoPiece extends WaterPiece {
 	/** Dripstone hanging from the vault, clear of the crown's hole and the lamps. */
 	private void dripstone(WorldGenLevel level, BoundingBox bb) {
 		int ox = boundingBox.minX(), oz = boundingBox.minZ();
-		BlockState down = Blocks.POINTED_DRIPSTONE.defaultBlockState().setValue(BlockStateProperties.VERTICAL_DIRECTION, Direction.DOWN);
+		BlockState down = Blocks.POINTED_DRIPSTONE.defaultBlockState().setValue(SpeleothemBlock.TIP_DIRECTION, Direction.DOWN);
 		for (int x = CX - 7; x <= CX + 7; x++) {
 			for (int z = CZ - 7; z <= CZ + 7; z++) {
 				double d = dist(x, z, CX, CZ);
@@ -261,10 +262,10 @@ public class TidepoolGrottoPiece extends WaterPiece {
 					continue;
 				}
 				if (n < 6 && getBlock(level, x, y - 1, z, bb).isAir()) {
-					set(level, bb, down.setValue(BlockStateProperties.DRIPSTONE_THICKNESS, DripstoneThickness.FRUSTUM), x, y, z);
-					set(level, bb, down.setValue(BlockStateProperties.DRIPSTONE_THICKNESS, DripstoneThickness.TIP), x, y - 1, z);
+					set(level, bb, down.setValue(SpeleothemBlock.THICKNESS, SpeleothemThickness.FRUSTUM), x, y, z);
+					set(level, bb, down.setValue(SpeleothemBlock.THICKNESS, SpeleothemThickness.TIP), x, y - 1, z);
 				} else {
-					set(level, bb, down.setValue(BlockStateProperties.DRIPSTONE_THICKNESS, DripstoneThickness.TIP), x, y, z);
+					set(level, bb, down.setValue(SpeleothemBlock.THICKNESS, SpeleothemThickness.TIP), x, y, z);
 				}
 			}
 		}

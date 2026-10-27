@@ -203,8 +203,8 @@ public final class GranaryPiece extends FarmPiece {
 				}
 			} else if (d2 <= 20) {
 				// A sloping footing round the base, corbels under the cap.
-				set(level, bb, stair(Blocks.COBBLESTONE_STAIRS, inward(dx, dz), false), x, 1, z);
-				set(level, bb, stair(Blocks.DARK_OAK_STAIRS, inward(dx, dz), true), x, 13, z);
+				set(level, bb, stair(Blocks.COBBLESTONE_STAIRS, towardCentre(dx, dz), false), x, 1, z);
+				set(level, bb, stair(Blocks.DARK_OAK_STAIRS, towardCentre(dx, dz), true), x, 13, z);
 			}
 		}
 		// The cap: rings of stairs climbing inward to a point.
@@ -214,7 +214,7 @@ public final class GranaryPiece extends FarmPiece {
 				int d2 = dx * dx + dz * dz;
 				if (d2 > r * r + r) continue;
 				boolean ring = r > 0 && (inner < 0 || d2 > inner * inner + inner);
-				set(level, bb, ring ? stair(Blocks.DARK_OAK_STAIRS, inward(dx, dz), false) : s(Blocks.DARK_OAK_PLANKS), cx + dx, 14 + k, cz + dz);
+				set(level, bb, ring ? stair(Blocks.DARK_OAK_STAIRS, towardCentre(dx, dz), false) : s(Blocks.DARK_OAK_PLANKS), cx + dx, 14 + k, cz + dz);
 			}
 		}
 		set(level, bb, s(Blocks.DARK_OAK_FENCE), cx, 19, cz);
@@ -236,7 +236,7 @@ public final class GranaryPiece extends FarmPiece {
 	}
 
 	/** The stair facing that climbs toward a ring's centre from offset (dx, dz). */
-	private static Direction inward(int dx, int dz) {
+	private static Direction towardCentre(int dx, int dz) {
 		if (Math.abs(dx) >= Math.abs(dz)) return dx < 0 ? Direction.EAST : Direction.WEST;
 		return dz < 0 ? Direction.SOUTH : Direction.NORTH;
 	}
