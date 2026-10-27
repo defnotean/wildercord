@@ -675,11 +675,7 @@ def write(g):
         g.save(icon(name), tex / f"{name}.png")
         g.item_model(name, name)
         g.write_json(g.ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}})
-    # The forged weapons' own looks (set by the forging's item_model component). Lumenedge is a drawn sword held like a tool;
-    # the Skyrend Glaive and Bulwark Maul are built in forged_weapon_art alongside Oathkeeper.
-    g.save(icon("lumenedge"), tex / "lumenedge.png")
-    g.write_json(g.ASSETS / "models/item/lumenedge.json", {"parent": "minecraft:item/handheld", "textures": {"layer0": "wildercord:item/lumenedge"}})
-    g.write_json(g.ASSETS / "items/lumenedge.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/lumenedge"}})
+    # The forged and boss weapons' own looks (set by item_model component) are built in forged_weapon_art.
     import forged_weapon_art
     forged_weapon_art.write(g)
     for kind in EGGS:

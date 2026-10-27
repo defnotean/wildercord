@@ -2315,8 +2315,8 @@ NEW_LANG = {
     "category.wildercord.effect.fusion": "Woven fusions",
     "item.wildercord.rootbound_relic": "Rootbound Relic",
     "item.wildercord.stormglass_relic": "Stormglass Relic",
-    "item.wildercord.rootbound_relic.desc": "Heal and root nearby monsters. Recharges in 30 seconds.",
-    "item.wildercord.stormglass_relic.desc": "A burst of wind repels monsters and grants speed and slow falling. Recharges in 30 seconds.",
+    "item.wildercord.rootbound_relic.desc": "Heal, restore 25 mana and 20 aura, and root nearby monsters. Recharges in 20 seconds.",
+    "item.wildercord.stormglass_relic.desc": "A burst of wind restores 25 mana and 20 aura, repels monsters, and grants speed and slow falling. Recharges in 20 seconds.",
     "item.wildercord.knot.named": "Knot: %s",
     "item.wildercord.rune.ranked": "%s Rune %s",
     "family.wildercord.knot": "Knot",
@@ -3876,6 +3876,8 @@ def write_gear_content():
         parent = "minecraft:item/handheld" if path.endswith("_staff") else "minecraft:item/generated"
         write_json(ASSETS / f"models/item/{path}.json", {"parent": parent, "textures": {"layer0": f"wildercord:item/{path}"}})
         write_json(ASSETS / f"items/{path}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{path}"}})
+    import forged_weapon_art
+    forged_weapon_art.write_staffs(sys.modules[__name__], GEAR_ELEMENTS)
 
     for element in GEAR_ELEMENTS:
         recipe_id = f"wildercord:{element}_staff"

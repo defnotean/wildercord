@@ -1,8 +1,9 @@
-"""Oathkeeper, the Bulwark Maul and the Skyrend Glaive: one authored 3D build per weapon.
+"""Forged and boss weapons (Oathkeeper, Lumenedge, Bulwark Maul, Skyrend Glaive, Mojito's Fetchblade) and held elemental
+staffs: one authored Minecraft-voxel 3D build per weapon, derived from Tripo 3D voxel reference meshes.
 
-Each weapon is a list of boxes standing upright (handle at the bottom, centred on x = z = 8). The held model tilts that
-build onto the same diagonal a vanilla sprite uses, so the vanilla hand poses hold it, and the inventory sprite is drawn
-from the same boxes. The icon and the blade in hand therefore always agree.
+Each weapon is a list of stepped voxel boxes standing upright (handle at the bottom, centred on x = z = 8). The held model
+tilts that build onto the same diagonal a vanilla sprite uses, so the vanilla hand poses hold it, and the inventory sprite
+is drawn from the same boxes. The icon and the blade in hand therefore always agree.
 """
 import math
 from PIL import Image
@@ -34,14 +35,21 @@ def _material(kind, dark, mid, light, seed=1):
             n = _noise(x, y, seed)
             if kind == "brushed":  # long-grain polished metal, brighter towards the top
                 t = .35 + .4 * (1 - y / 31) + (_noise(x, 0, seed) - .5) * .25 + (n - .5) * .08
-                c = _mix(m, l, max(0, t)) if t > .5 else _mix(d, m, t * 2)
+                c = _mix(m, l, max(0, min(1, t))) if t > .5 else _mix(d, m, max(0, t * 2))
             elif kind == "fuller":  # blade flat with a dark central groove and a lit ridge beside it
                 t = .45 + .35 * (1 - y / 31) + (n - .5) * .08
                 c = _mix(d, l, max(0, min(1, t)))
                 if x in (15, 16): c = _mix(d, m, .35)
                 elif x == 17: c = _mix(m, l, .85)
                 elif x == 14: c = _mix(d, m, .7)
-            elif kind == "edge":  # honed edge: bright, with a faint bevel line
+            elif kind == "rune":  # blade flat with a glowing stepped voxel rune fuller down the centre
+                t = .4 + .35 * (1 - y / 31) + (n - .5) * .08
+                c = _mix(d, m, max(0, min(1, t * 1.35)))
+                if x in (15, 16):
+                    c = l if (y % 4 != 0 or x == 15 + (y // 4) % 2) else _mix(m, l, .55)
+                elif x in (14, 17):
+                    c = _mix(m, l, .75) if (y + x) % 4 == 1 else _mix(d, m, .55)
+            elif kind == "edge":  # honed edge: bright, with a faint pixel bevel line
                 c = _mix(m, l, .55 + .45 * (1 - y / 31)) if x % 4 else _mix(d, m, .8)
             elif kind == "gilt":  # cast metal with worn high points
                 t = .5 + (n - .5) * .5
@@ -50,12 +58,16 @@ def _material(kind, dark, mid, light, seed=1):
             elif kind == "wrap":  # leather or silk bound diagonally
                 band = (x + y) % 6
                 c = l if band == 0 else d if band in (4, 5) else _mix(d, m, .6 + (n - .5) * .3)
+            elif kind == "bone":  # dark leather grip cross-strapped with ivory bone bands
+                band = (x + y) % 6
+                cross = (x - y) % 6
+                c = l if band in (0, 1) or cross == 0 else d if band == 4 else _mix(d, m, .55 + (n - .5) * .25)
             elif kind == "grain":  # long wood grain
                 t = .5 + .35 * math.sin(x * 1.3 + _noise(x // 3, y // 8, seed) * 2.5) + (n - .5) * .15
-                c = _mix(d, m, max(0, t)) if t < 1 else _mix(m, l, t - 1)
+                c = _mix(d, m, max(0, t)) if t < 1 else _mix(m, l, min(1, t - 1))
             elif kind == "stone":  # riven stone with dark seams
                 t = .55 + (n - .5) * .35 + (_noise(x // 4, y // 4, seed) - .5) * .3
-                c = _mix(d, m, t * 1.6) if t < .62 else _mix(m, l, (t - .62) * 2)
+                c = _mix(d, m, max(0, t * 1.6)) if t < .62 else _mix(m, l, min(1, (t - .62) * 2))
             elif kind == "iron":  # dark forged iron with rivet heads every eight texels
                 t = .4 + (n - .5) * .2
                 c = _mix(d, m, t * 2)
@@ -79,33 +91,49 @@ def _material(kind, dark, mid, light, seed=1):
 
 
 OATH = {
-    "steel": ("brushed", "#3b4a52", "#8fa2ab", "#e4eef0"),
-    "fuller": ("fuller", "#33424a", "#8a9ea8", "#dfe9ec"),
-    "edge": ("edge", "#7d929b", "#c9d8dc", "#ffffff"),
-    "brass": ("gilt", "#5e4521", "#b48a43", "#f2d58c"),
-    "wrap": ("wrap", "#14231f", "#2c4a41", "#4f7a68"),
-    "gem": ("crystal", "#0f4a3a", "#2fbf8a", "#b8ffe0"),
-    "dark": ("iron", "#20282b", "#3c4a4e", "#7c8e92"),
-    "stone": ("stone", "#4f5750", "#7a8073", "#a8ac98"),
+    "steel": ("brushed", "#232d32", "#566c75", "#b8cdd4"),
+    "fuller": ("rune", "#1b2428", "#2d7a7d", "#7ef9f5"),
+    "edge": ("edge", "#6c848e", "#bfd3da", "#f4fbfd"),
+    "brass": ("gilt", "#3a1d07", "#8c5823", "#e5b567"),
+    "wrap": ("wrap", "#1b0c04", "#3d200a", "#6b3d18"),
+    "gem": ("crystal", "#124e52", "#35b8b4", "#aefcf9"),
+    "dark": ("iron", "#1b2124", "#364449", "#6c8187"),
+    "stone": ("stone", "#4a524c", "#747b70", "#a3a896"),
+}
+LUMEN = {
+    "blade": ("brushed", "#966806", "#e4ac18", "#fff394"),
+    "fuller": ("rune", "#743f03", "#f3bd1a", "#ffffd6"),
+    "edge": ("edge", "#d7a51d", "#fbe76c", "#ffffff"),
+    "gold": ("gilt", "#573101", "#b87908", "#f3bd1a"),
+    "wrap": ("wrap", "#3d1800", "#7c3b04", "#c9740c"),
+    "sun": ("crystal", "#b86e00", "#ffd83d", "#ffffff"),
 }
 MAUL = {
-    "stone": ("stone", "#4a4d57", "#80848f", "#bfc3cc"),
-    "iron": ("iron", "#1c1d24", "#3d3f4a", "#8c8f9c"),
-    "geode": ("crystal", "#3a1f73", "#8a5ae0", "#efe2ff"),
-    "wood": ("grain", "#2e1d12", "#5a3c24", "#8a6440"),
-    "leather": ("wrap", "#1d130d", "#4a2f1e", "#7c5634"),
-    "brass": ("gilt", "#5e4521", "#b48a43", "#f2d58c"),
+    "stone": ("stone", "#2b231d", "#5c5049", "#9c8e86"),
+    "iron": ("iron", "#1a1614", "#3a3330", "#786c66"),
+    "geode": ("crystal", "#4b1f6e", "#b85ce6", "#ffe8a3"),
+    "wood": ("grain", "#3d220c", "#6e411c", "#a4673d"),
+    "leather": ("wrap", "#221308", "#4c2c16", "#82512e"),
+    "brass": ("gilt", "#4c2e16", "#966236", "#dda66a"),
 }
 GLAIVE = {
-    "blade": ("storm", "#2b3a5c", "#7f9fd4", "#fff3a0"),
-    "steel": ("brushed", "#283552", "#6f8cc0", "#cfe0ff"),
-    "edge": ("edge", "#9fb4d8", "#e8f2ff", "#fffbe0"),
-    "haft": ("grain", "#10141f", "#222b40", "#3a4766"),
-    "wrap": ("wrap", "#132447", "#2c4f8f", "#7fa6e6"),
-    "gold": ("gilt", "#5e4521", "#c29a3a", "#fff0a8"),
-    "spark": ("crystal", "#8a6a10", "#ffe066", "#ffffff"),
+    "blade": ("storm", "#1b2b3d", "#4990c2", "#b8f2ff"),
+    "steel": ("brushed", "#223244", "#587ea1", "#c2e2f8"),
+    "edge": ("edge", "#68c6f2", "#ccf4ff", "#ffffff"),
+    "haft": ("grain", "#1e1b18", "#38332e", "#595149"),
+    "wrap": ("wrap", "#16253b", "#2d4c75", "#6aa2d6"),
+    "gold": ("gilt", "#4c3803", "#a88224", "#ebdac0"),
+    "spark": ("crystal", "#246da6", "#68c6f2", "#ffffff"),
 }
-GLOW = {"gem", "geode", "spark"}
+FETCH = {
+    "ruby": ("brushed", "#420408", "#860b13", "#d92b32"),
+    "fuller": ("rune", "#2b0204", "#a8131d", "#ff7878"),
+    "edge": ("edge", "#9e141b", "#e84849", "#ffb8b8"),
+    "gold": ("gilt", "#553801", "#a67c0e", "#f0cb38"),
+    "bone": ("bone", "#2b2008", "#8c7b56", "#e6d8b5"),
+    "mint": ("crystal", "#145238", "#38bd7e", "#b8ffd8"),
+}
+GLOW = {"gem", "geode", "spark", "sun", "mint", "fuller", "crystal"}
 
 # ---------------------------------------------------------------- builds (upright, handle at y≈0)
 
@@ -114,76 +142,154 @@ def _b(lo, hi, mat, front=None):
 
 
 def oathkeeper():
-    """A Marchkeeper longsword: fullered blade, drooping gilt quillons, a green oath-stone in guard and pommel."""
+    """A Marchkeeper longsword: dark-iron stepped blade with glowing cyan rune fuller, stepped bronze quillons and oath-stone."""
     parts = [
-        _b((7, 0, 7), (9, 1.6, 9), "brass"), _b((7.5, .4, 6.8), (8.5, 1.2, 9.2), "gem"),
+        _b((6.9, 0, 6.9), (9.1, 1.6, 9.1), "brass"), _b((7.45, .35, 6.75), (8.55, 1.25, 9.25), "gem"),
         _b((7.3, 1.6, 7.35), (8.7, 5.4, 8.65), "wrap"),
-        _b((7.15, 1.6, 7.2), (8.85, 2, 8.8), "brass"), _b((7.2, 3.4, 7.25), (8.8, 3.6, 8.75), "brass"),
-        _b((7.15, 5, 7.2), (8.85, 5.4, 8.8), "brass"),
-        _b((6.6, 5.4, 7), (9.4, 6.6, 9), "brass"), _b((7.6, 5.6, 6.8), (8.4, 6.4, 9.2), "gem"),
-        _b((4.2, 5.7, 7.3), (11.8, 6.4, 8.7), "brass"),
-        _b((3.6, 4.7, 7.25), (4.6, 5.7, 8.75), "brass"), _b((11.4, 4.7, 7.25), (12.4, 5.7, 8.75), "brass"),
-        _b((7.4, 6.6, 7.1), (8.6, 7.6, 8.9), "brass"),
-        _b((7.1, 6.6, 7.7), (8.9, 17, 8.3), "steel", "fuller"),
-        _b((6.6, 6.6, 7.85), (7.1, 17, 8.15), "edge"), _b((8.9, 6.6, 7.85), (9.4, 17, 8.15), "edge"),
-        _b((7.3, 17, 7.72), (8.7, 19, 8.28), "steel", "fuller"),
-        _b((6.85, 17, 7.86), (7.3, 19, 8.14), "edge"), _b((8.7, 17, 7.86), (9.15, 19, 8.14), "edge"),
-        _b((7.5, 19, 7.75), (8.5, 20.2, 8.25), "steel"),
-        _b((7.15, 19, 7.87), (7.5, 20.2, 8.13), "edge"), _b((8.5, 19, 7.87), (8.85, 20.2, 8.13), "edge"),
-        _b((7.6, 20.2, 7.8), (8.4, 21, 8.2), "edge"),
+        _b((7.1, 1.6, 7.2), (8.9, 2.0, 8.8), "brass"), _b((7.18, 3.3, 7.25), (8.82, 3.7, 8.75), "brass"),
+        _b((7.1, 5.0, 7.2), (8.9, 5.4, 8.8), "brass"),
+        _b((6.5, 5.4, 6.95), (9.5, 6.6, 9.05), "brass"), _b((7.5, 5.55, 6.75), (8.5, 6.45, 9.25), "gem"),
+        _b((4.2, 5.65, 7.25), (11.8, 6.45, 8.75), "brass"),
+        _b((3.4, 4.9, 7.2), (4.5, 5.85, 8.8), "brass"), _b((11.5, 4.9, 7.2), (12.6, 5.85, 8.8), "brass"),
+        _b((7.3, 6.6, 7.1), (8.7, 7.7, 8.9), "brass"),
+        _b((7.05, 6.6, 7.68), (8.95, 16.8, 8.32), "steel", "fuller"),
+        _b((6.55, 6.6, 7.84), (7.05, 16.8, 8.16), "edge"), _b((8.95, 6.6, 7.84), (9.45, 16.8, 8.16), "edge"),
+        _b((7.25, 16.8, 7.72), (8.75, 18.8, 8.28), "steel", "fuller"),
+        _b((6.8, 16.8, 7.86), (7.25, 18.8, 8.14), "edge"), _b((8.75, 16.8, 7.86), (9.2, 18.8, 8.14), "edge"),
+        _b((7.45, 18.8, 7.75), (8.55, 20.1, 8.25), "steel"),
+        _b((7.1, 18.8, 7.87), (7.45, 20.1, 8.13), "edge"), _b((8.55, 18.8, 7.87), (8.9, 20.1, 8.13), "edge"),
+        _b((7.6, 20.1, 7.8), (8.4, 21.0, 8.2), "edge"),
     ]
     return parts, 21
 
 
-def bulwark_maul():
-    """A riven-stone maul bound in iron, a geode broken open in each striking face."""
+def lumenedge():
+    """A sun-forged greatsword: stepped sun-orb pommel, sweeping golden sun-wing crossguard, and blazing solar fuller."""
     parts = [
-        _b((7.5, -.6, 7.5), (8.5, 0, 8.5), "iron"), _b((7.1, 0, 7.1), (8.9, 1.2, 8.9), "iron"),
-        _b((7.3, 1.2, 7.3), (8.7, 5.6, 8.7), "leather"),
-        _b((7.4, 5.6, 7.4), (8.6, 14, 8.6), "wood"),
-        _b((7.2, 5.6, 7.2), (8.8, 6.1, 8.8), "brass"), _b((7.25, 9.5, 7.25), (8.75, 9.9, 8.75), "iron"),
-        _b((7.75, 10.5, 7.3), (8.25, 13, 8.7), "iron"),
-        _b((7, 13, 7), (9, 14.5, 9), "iron"),
-        _b((4.5, 14.5, 5.6), (11.5, 19.6, 10.4), "stone"),
-        _b((6.2, 14.3, 5.4), (6.9, 19.8, 10.6), "iron"), _b((9.1, 14.3, 5.4), (9.8, 19.8, 10.6), "iron"),
-        _b((3.7, 14.2, 5.3), (4.5, 19.9, 10.7), "iron"), _b((11.5, 14.2, 5.3), (12.3, 19.9, 10.7), "iron"),
-        _b((3.2, 15.6, 6.8), (3.7, 18.4, 9.2), "geode"), _b((12.3, 15.6, 6.8), (12.8, 18.4, 9.2), "geode"),
-        _b((2.9, 16.4, 7.5), (3.2, 17.6, 8.5), "geode"), _b((12.8, 16.4, 7.5), (13.1, 17.6, 8.5), "geode"),
-        _b((7.2, 15.8, 5.3), (8.8, 18.2, 5.6), "geode"), _b((7.2, 15.8, 10.4), (8.8, 18.2, 10.7), "geode"),
-        _b((7.3, 19.6, 7.2), (8.3, 21, 8.2), "geode"), _b((8.1, 19.6, 8), (8.8, 20.5, 8.7), "geode"),
+        _b((6.8, 0, 6.9), (9.2, 1.5, 9.1), "gold"), _b((7.4, .35, 6.75), (8.6, 1.15, 9.25), "sun"),
+        _b((7.25, 1.5, 7.3), (8.75, 5.4, 8.7), "wrap"),
+        _b((7.05, 1.5, 7.15), (8.95, 1.9, 8.85), "gold"), _b((7.15, 3.3, 7.2), (8.85, 3.65, 8.8), "gold"),
+        _b((7.05, 5.0, 7.15), (8.95, 5.4, 8.85), "gold"),
+        _b((6.4, 5.4, 6.9), (9.6, 6.8, 9.1), "gold"), _b((7.35, 5.55, 6.7), (8.65, 6.65, 9.3), "sun"),
+        _b((4.5, 5.65, 7.2), (11.5, 6.55, 8.8), "gold"),
+        _b((3.4, 6.0, 7.25), (4.7, 7.0, 8.75), "gold"), _b((11.3, 6.0, 7.25), (12.6, 7.0, 8.75), "gold"),
+        _b((2.9, 6.4, 7.35), (3.6, 7.4, 8.65), "sun"), _b((12.4, 6.4, 7.35), (13.1, 7.4, 8.65), "sun"),
+        _b((7.2, 6.8, 7.15), (8.8, 7.9, 8.85), "gold"),
+        _b((7.0, 6.8, 7.68), (9.0, 17.0, 8.32), "blade", "fuller"),
+        _b((6.5, 6.8, 7.84), (7.0, 17.0, 8.16), "edge"), _b((9.0, 6.8, 7.84), (9.5, 17.0, 8.16), "edge"),
+        _b((7.25, 17.0, 7.72), (8.75, 19.2, 8.28), "blade", "fuller"),
+        _b((6.8, 17.0, 7.86), (7.25, 19.2, 8.14), "edge"), _b((8.75, 17.0, 7.86), (9.2, 19.2, 8.14), "edge"),
+        _b((7.45, 19.2, 7.76), (8.55, 20.6, 8.24), "blade"),
+        _b((7.1, 19.2, 7.87), (7.45, 20.6, 8.13), "edge"), _b((8.55, 19.2, 7.87), (8.9, 20.6, 8.13), "edge"),
+        _b((7.55, 20.6, 7.82), (8.45, 21.6, 8.18), "edge"),
+    ]
+    return parts, 21.6
+
+
+def bulwark_maul():
+    """A riven-basalt double-headed war maul bound in bronze and iron, a glowing amethyst-amber geode broken open in its faces."""
+    parts = [
+        _b((7.4, -.6, 7.4), (8.6, 0, 8.6), "iron"), _b((7.0, 0, 7.0), (9.0, 1.2, 9.0), "brass"),
+        _b((7.25, 1.2, 7.25), (8.75, 5.6, 8.75), "leather"),
+        _b((7.35, 5.6, 7.35), (8.65, 14.0, 8.65), "wood"),
+        _b((7.15, 5.6, 7.15), (8.85, 6.1, 8.85), "brass"), _b((7.2, 9.5, 7.2), (8.8, 10.0, 8.8), "brass"),
+        _b((7.7, 10.5, 7.25), (8.3, 13.2, 8.75), "iron"),
+        _b((6.9, 13.0, 6.9), (9.1, 14.5, 9.1), "brass"),
+        _b((4.3, 14.4, 5.5), (11.7, 19.7, 10.5), "stone"),
+        _b((6.1, 14.2, 5.35), (6.9, 19.9, 10.65), "brass"), _b((9.1, 14.2, 5.35), (9.9, 19.9, 10.65), "brass"),
+        _b((3.5, 14.1, 5.25), (4.3, 20.0, 10.75), "iron"), _b((11.7, 14.1, 5.25), (12.5, 20.0, 10.75), "iron"),
+        _b((3.0, 15.4, 6.7), (3.5, 18.6, 9.3), "geode"), _b((12.5, 15.4, 6.7), (13.0, 18.6, 9.3), "geode"),
+        _b((2.7, 16.3, 7.4), (3.0, 17.7, 8.6), "geode"), _b((13.0, 16.3, 7.4), (13.3, 17.7, 8.6), "geode"),
+        _b((7.1, 15.6, 5.2), (8.9, 18.4, 5.5), "geode"), _b((7.1, 15.6, 10.5), (8.9, 18.4, 10.8), "geode"),
+        _b((7.2, 19.7, 7.1), (8.4, 21.0, 8.3), "geode"), _b((8.0, 19.7, 7.9), (8.9, 20.6, 8.8), "geode"),
     ]
     return parts, 21.6
 
 
 def skyrend_glaive():
-    """A long storm-lacquered haft and a broad crescent of storm-steel, its edge holding a caught lightning."""
+    """A storm-lacquered polearm with twin sweeping golden storm-wings and a glowing electric-blue storm crystal glaive blade."""
     parts = [
-        _b((7.6, -.8, 7.6), (8.4, 0, 8.4), "steel"), _b((7.2, 0, 7.2), (8.8, 1, 8.8), "gold"),
-        _b((7.45, 1, 7.45), (8.55, 14, 8.55), "haft"),
-        _b((7.25, 2.4, 7.25), (8.75, 2.7, 8.75), "gold"), _b((7.3, 2.7, 7.3), (8.7, 6.2, 8.7), "wrap"),
-        _b((7.25, 6.2, 7.25), (8.75, 6.5, 8.75), "gold"), _b((7.3, 9.6, 7.3), (8.7, 10.8, 8.7), "wrap"),
-        _b((7, 13.4, 7), (9, 15, 9), "gold"), _b((7.5, 13.8, 6.8), (8.5, 14.6, 9.2), "spark"),
-        _b((7.3, 15, 7.3), (8.7, 15.6, 8.7), "gold"),
-        # The back spike: a short hooked tooth behind the blade.
-        _b((5.4, 16.2, 7.8), (7, 17.2, 8.2), "steel"), _b((4.7, 16.7, 7.85), (5.4, 17.9, 8.15), "steel"),
-        _b((4.3, 17.6, 7.88), (4.9, 18.4, 8.12), "edge"),
+        _b((7.55, -.8, 7.55), (8.45, 0, 8.45), "steel"), _b((7.15, 0, 7.15), (8.85, 1.0, 8.85), "gold"),
+        _b((7.45, 1.0, 7.45), (8.55, 14.0, 8.55), "haft"),
+        _b((7.25, 2.4, 7.25), (8.75, 2.75, 8.75), "gold"), _b((7.3, 2.75, 7.3), (8.7, 6.2, 8.7), "wrap"),
+        _b((7.25, 6.2, 7.25), (8.75, 6.55, 8.75), "gold"), _b((7.3, 9.5, 7.3), (8.7, 11.0, 8.7), "wrap"),
+        _b((6.8, 13.4, 6.95), (9.2, 15.2, 9.05), "gold"), _b((7.45, 13.75, 6.75), (8.55, 14.75, 9.25), "spark"),
+        _b((7.2, 15.2, 7.25), (8.8, 15.8, 8.75), "gold"),
+        # Twin sweeping stepped golden storm-wings at the base of the blade.
+        _b((5.2, 14.1, 7.4), (6.8, 15.9, 8.6), "gold"), _b((9.2, 14.1, 7.4), (10.8, 15.9, 8.6), "gold"),
+        _b((4.1, 15.0, 7.55), (5.4, 17.2, 8.45), "gold"), _b((10.6, 15.0, 7.55), (11.9, 17.2, 8.45), "gold"),
+        _b((3.5, 16.2, 7.7), (4.4, 18.2, 8.3), "spark"),
     ]
-    # The crescent swells out to the cutting side (+x) and sweeps to a point.
-    blade = [(15.6, 17, 7, 10.4), (17, 18.5, 6.9, 11.4), (18.5, 20, 7, 12), (20, 21.5, 7.3, 12.2),
-             (21.5, 23, 7.8, 12), (23, 24.2, 8.5, 11.4), (24.2, 25.2, 9.3, 10.8)]
+    # The storm-crystal glaive blade swells out to the cutting side (+x) and sweeps to a razor point.
+    blade = [(15.6, 17.0, 6.9, 10.5), (17.0, 18.5, 6.8, 11.5), (18.5, 20.0, 6.9, 12.1), (20.0, 21.5, 7.2, 12.3),
+             (21.5, 23.0, 7.7, 12.0), (23.0, 24.2, 8.4, 11.4), (24.2, 25.2, 9.2, 10.8)]
     for lo, hi, x0, x1 in blade:
-        parts.append(_b((x0, lo, 7.75), (x1, hi, 8.25), "steel", "blade"))
-        parts.append(_b((x1, lo, 7.85), (x1 + .45, hi, 8.15), "edge"))
-    parts.append(_b((9.7, 25.2, 7.85), (10.6, 26, 8.15), "edge"))
-    parts.append(_b((10, 26, 7.9), (10.4, 26.6, 8.1), "edge"))
+        parts.append(_b((x0, lo, 7.72), (x1, hi, 8.28), "steel", "blade"))
+        parts.append(_b((x1, lo, 7.84), (x1 + .48, hi, 8.16), "edge"))
+    parts.append(_b((9.6, 25.2, 7.84), (10.6, 26.0, 8.16), "edge"))
+    parts.append(_b((9.95, 26.0, 7.88), (10.45, 26.6, 8.12), "edge"))
     return parts, 27.4
+
+
+def fetchblade():
+    """Mojito's Fetchblade: bone-wrapped grip, ornate royal-gold crossguard with a mint-emerald charm, and crimson ruby blade."""
+    parts = [
+        _b((6.85, 0, 6.85), (9.15, 1.6, 9.15), "gold"), _b((7.45, .35, 6.75), (8.55, 1.25, 9.25), "mint"),
+        _b((7.25, 1.6, 7.3), (8.75, 5.4, 8.7), "bone"),
+        _b((7.05, 1.6, 7.15), (8.95, 2.0, 8.85), "gold"), _b((7.15, 3.3, 7.2), (8.85, 3.7, 8.8), "gold"),
+        _b((7.05, 5.0, 7.15), (8.95, 5.4, 8.85), "gold"),
+        _b((6.4, 5.4, 6.9), (9.6, 6.7, 9.1), "gold"), _b((7.4, 5.55, 6.7), (8.6, 6.55, 9.3), "mint"),
+        _b((4.4, 5.6, 7.2), (11.6, 6.5, 8.8), "gold"),
+        _b((3.4, 5.9, 7.25), (4.6, 7.0, 8.75), "gold"), _b((11.4, 5.9, 7.25), (12.6, 7.0, 8.75), "gold"),
+        _b((7.2, 6.7, 7.1), (8.8, 7.8, 8.9), "gold"),
+        _b((7.0, 6.7, 7.66), (9.0, 17.2, 8.34), "ruby", "fuller"),
+        _b((6.5, 6.7, 7.84), (7.0, 17.2, 8.16), "edge"), _b((9.0, 6.7, 7.84), (9.5, 17.2, 8.16), "edge"),
+        _b((7.25, 17.2, 7.72), (8.75, 19.4, 8.28), "ruby", "fuller"),
+        _b((6.8, 17.2, 7.86), (7.25, 19.4, 8.14), "edge"), _b((8.75, 17.2, 7.86), (9.2, 19.4, 8.14), "edge"),
+        _b((7.45, 19.4, 7.76), (8.55, 20.8, 8.24), "ruby"),
+        _b((7.1, 19.4, 7.87), (7.45, 20.8, 8.13), "edge"), _b((8.55, 19.4, 7.87), (8.9, 20.8, 8.13), "edge"),
+        _b((7.55, 20.8, 7.82), (8.45, 21.8, 8.18), "edge"),
+    ]
+    return parts, 21.8
+
+
+def staff_build(greater=False):
+    """A stepped voxel elemental staff with a curved crook head cradling a floating faceted elemental crystal."""
+    parts = [
+        _b((7.2, 0, 7.2), (8.8, 1.0, 8.8), "metal"),
+        _b((7.4, 1.0, 7.4), (8.6, 13.8, 8.6), "shaft"),
+        _b((7.2, 2.0, 7.2), (8.8, 2.4, 8.8), "metal"),
+        _b((7.25, 2.4, 7.25), (8.75, 6.0, 8.75), "wrap"),
+        _b((7.2, 6.0, 7.2), (8.8, 6.4, 8.8), "metal"),
+        _b((7.25, 10.0, 7.25), (8.75, 10.5, 8.75), "metal"),
+        _b((6.9, 13.4, 6.9), (9.1, 14.6, 9.1), "metal"),
+        # Curved voxel crook sweeping left, arching over the top, and curling down above the crystal.
+        _b((5.8, 14.4, 7.35), (7.4, 16.2, 8.65), "shaft"),
+        _b((5.2, 15.8, 7.35), (6.6, 18.8, 8.65), "shaft"),
+        _b((5.6, 18.6, 7.35), (7.4, 20.0, 8.65), "shaft"),
+        _b((6.8, 19.4, 7.35), (9.6, 20.7, 8.65), "shaft"),
+        _b((9.0, 18.2, 7.4), (10.4, 19.8, 8.6), "metal"),
+        # Metal cradle prongs & floating faceted elemental crystal gem inside the crook.
+        _b((8.4, 14.4, 7.45), (9.5, 15.6, 8.55), "metal"),
+        _b((7.2, 15.5, 7.2), (9.2, 18.1, 8.8), "crystal"),
+        _b((7.6, 15.0, 7.5), (8.8, 18.6, 8.5), "crystal"),
+    ]
+    if greater:
+        parts.extend([
+            _b((4.6, 16.4, 7.5), (5.2, 18.4, 8.5), "metal"),
+            _b((7.2, 20.7, 7.5), (9.2, 21.3, 8.5), "metal"),
+            _b((6.9, 16.1, 6.9), (9.5, 17.5, 9.1), "crystal"),
+        ])
+    return parts, 21.4
 
 
 WEAPONS = {
     # name: (build, materials, texture prefix, diagonal: -45 = tip up-right like a sword, 45 = tip up-left like a spear)
     "oathkeeper": (oathkeeper, OATH, "oathkeeper", -45),
+    "lumenedge": (lumenedge, LUMEN, "lumenedge", -45),
     "bulwark_maul": (bulwark_maul, MAUL, "bulwark_maul", -45),
     "skyrend_glaive": (skyrend_glaive, GLAIVE, "skyrend_glaive", 45),
+    "fetchblade": (fetchblade, FETCH, "fetchblade", -45),
 }
 
 # ---------------------------------------------------------------- model JSON
@@ -365,6 +471,60 @@ def write(g):
             "cases": [{"when": ["gui", "fixed", "on_shelf"], "model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}}],
             "fallback": {"type": "minecraft:model", "model": f"wildercord:item/{name}_in_hand"}},
             **({"swap_animation_scale": 1.95} if angle > 0 else {})})
+
+
+STAFF_BASE_MATS = {
+    "wood": ("grain", "#4a2e16", "#7c522c", "#b47c48"),
+    "blaze": ("grain", "#96460c", "#e08e24", "#ffe078"),
+    "ebony": ("grain", "#24192e", "#463458", "#6e5684"),
+    "wrap": ("wrap", "#2b140c", "#54281c", "#824432"),
+    "wrap_gold": ("wrap", "#5e3e0c", "#a8781c", "#f4d47c"),
+    "silver": ("gilt", "#4e5060", "#989cb0", "#e2e4f0"),
+    "gold": ("gilt", "#5e3e0c", "#c69228", "#fff0a8"),
+}
+STAFF_GEMS = {
+    "fire": ("crystal", "#7a1c08", "#e85c18", "#ffe478"),
+    "frost": ("crystal", "#184a78", "#58b4e8", "#e8fcff"),
+    "storm": ("crystal", "#4a2478", "#9e68f0", "#fff4a8"),
+    "wind": ("crystal", "#1e5c54", "#68ccb8", "#e8fff8"),
+    "earth": ("crystal", "#3e2c18", "#88683e", "#c8b078"),
+    "life": ("crystal", "#185828", "#48c458", "#c8ffd0"),
+    "void": ("crystal", "#1c0c34", "#582c8c", "#c498ff"),
+    "arcane": ("crystal", "#4c1c68", "#b458dc", "#ffd8ff"),
+    "time": ("crystal", "#5c4210", "#cca038", "#fff4b8"),
+    "blood": ("crystal", "#480810", "#a81828", "#ff7880"),
+}
+
+
+def write_staffs(g, element_names):
+    """Write 3D held models for the ten elemental staffs and their ten greater versions."""
+    for i, (k, spec) in enumerate(STAFF_BASE_MATS.items()):
+        g.save(_material(*spec, seed=i + 31), g.ASSETS / f"textures/block/staff_{k}.png")
+    for i, el in enumerate(element_names):
+        g.save(_material(*STAFF_GEMS[el], seed=i + 51), g.ASSETS / f"textures/block/staff_gem_{el}.png")
+    display = dict(HANDHELD)
+    display["ground"] = {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [.5, .5, .5]}
+    display["fixed"] = {"rotation": [0, 180, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]}
+    for el in element_names:
+        for greater in (False, True):
+            name = f"greater_{el}_staff" if greater else f"{el}_staff"
+            parts, length = staff_build(greater)
+            shaft = "ebony" if greater else ("blaze" if el == "fire" else "wood")
+            metal = "gold" if greater else "silver"
+            wrap = "wrap_gold" if greater else "wrap"
+            tex = {
+                "shaft": f"wildercord:block/staff_{shaft}",
+                "metal": f"wildercord:block/staff_{metal}",
+                "wrap": f"wildercord:block/staff_{wrap}",
+                "crystal": f"wildercord:block/staff_gem_{el}",
+                "particle": f"wildercord:block/staff_gem_{el}",
+            }
+            g.write_json(g.ASSETS / f"models/item/{name}_in_hand.json", {
+                "textures": tex, "elements": elements(parts, length, -45), "display": display})
+            g.write_json(g.ASSETS / f"items/{name}.json", {"model": {
+                "type": "minecraft:select", "property": "minecraft:display_context",
+                "cases": [{"when": ["gui", "fixed", "on_shelf", "none"], "model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}}],
+                "fallback": {"type": "minecraft:model", "model": f"wildercord:item/{name}_in_hand"}}})
 
 
 def embedded_sword(lift=0.0):

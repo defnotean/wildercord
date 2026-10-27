@@ -71,7 +71,11 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 	}
 
 	protected void set(WorldGenLevel level, BoundingBox bb, BlockState state, int x, int y, int z) {
+		BlockPos at = getWorldPos(x, y, z);
+		if (!bb.isInside(at)) return;
+		if (state.isAir() && level.getBlockState(at).hasBlockEntity()) level.getBlockEntity(at);
 		placeBlock(level, state, x, y, z, bb);
+		if (state.hasBlockEntity()) level.getBlockEntity(at);
 	}
 
 	/**
@@ -391,15 +395,27 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 			.setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true), x, y - chain, z);
 	}
 
+	/** A local-frame direction turned into its true world direction for this piece's orientation. */
+	protected Direction worldDir(int x, int y, int z, Direction facing) {
+		BlockPos from = getWorldPos(x, y, z), to = getWorldPos(x + facing.getStepX(), y, z + dz(facing));
+		return to.getX() > from.getX() ? Direction.EAST : to.getX() < from.getX() ? Direction.WEST
+			: to.getZ() > from.getZ() ? Direction.SOUTH : Direction.NORTH;
+	}
+
 	/** A wall banner at (x, y, z) hung on the block behind it, facing {@code facing} in the piece's frame. */
 	protected void banner(WorldGenLevel level, BoundingBox bb, net.minecraft.world.level.block.Block wallBanner, int x, int y, int z, Direction facing) {
-		set(level, bb, wallBanner.defaultBlockState().setValue(net.minecraft.world.level.block.WallBannerBlock.FACING, facing), x, y, z);
+		BlockPos at = getWorldPos(x, y, z);
+		if (!bb.isInside(at)) return;
+		level.setBlock(at, wallBanner.defaultBlockState().setValue(net.minecraft.world.level.block.WallBannerBlock.FACING, worldDir(x, y, z, facing)), 2);
+		level.getBlockEntity(at);
 	}
 
 	/** A wall torch or wall lantern-like block on the wall behind (x, y, z), facing {@code facing}. */
 	protected void sconce(WorldGenLevel level, BoundingBox bb, int x, int y, int z, Direction facing, boolean soul) {
-		set(level, bb, (soul ? Blocks.SOUL_WALL_TORCH : Blocks.WALL_TORCH).defaultBlockState()
-			.setValue(net.minecraft.world.level.block.WallTorchBlock.FACING, facing), x, y, z);
+		BlockPos at = getWorldPos(x, y, z);
+		if (!bb.isInside(at)) return;
+		level.setBlock(at, (soul ? Blocks.SOUL_WALL_TORCH : Blocks.WALL_TORCH).defaultBlockState()
+			.setValue(net.minecraft.world.level.block.WallTorchBlock.FACING, worldDir(x, y, z, facing)), 2);
 	}
 
 	/** Swaps some of the {@code from} blocks in a box for {@code to} ({@code chance} in 100), for moss, cracks and wear. */

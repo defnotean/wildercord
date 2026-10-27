@@ -99,6 +99,7 @@ public final class AuraWorld {
 		if (forged == AuraWorldRules.Forged.FETCHBLADE) {
 			ItemStack stack = new ItemStack(Items.NETHERITE_SWORD);
 			stack.set(ForgedGear.FORGED, forged.id);
+			stack.set(DataComponents.ITEM_MODEL, Wildercord.id(forged.id));
 			stack.set(DataComponents.ITEM_NAME, Component.translatable("item.wildercord.mojito_fetchblade"));
 			stack.set(DataComponents.RARITY, Rarity.EPIC);
 			return stack;

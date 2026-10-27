@@ -47,27 +47,40 @@ public class DungeonRelicItem extends Item {
 		if (!(level instanceof ServerLevel server)) {
 			return InteractionResult.SUCCESS;
 		}
+		if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+			var caster = dev.wildercord.data.CasterData.get(sp);
+			caster.setMana(Math.min(caster.getMaxMana(sp), caster.getMana() + 25), sp);
+			var aura = dev.wildercord.aura.AuraData.get(sp);
+			if (aura.isAwakened()) {
+				aura.setAura(Math.min(aura.maxAura(sp), aura.aura() + 20));
+				aura.sync(sp);
+			}
+		}
 		if (kind == Kind.ROOT) {
-			player.heal(4);
-			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0));
-			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(5), m -> m instanceof Enemy)) {
-				mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 80, 1), player);
+			player.heal(6);
+			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 160, 1));
+			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 160, 0));
+			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(6), m -> m instanceof Enemy)) {
+				mob.hurtServer(server, server.damageSources().indirectMagic(player, player), 4.0F);
+				mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 120, 2), player);
 			}
 			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1, player.getZ(), 32, 2, 1, 2, 0.1);
 			level.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1, 0.75F);
 		} else {
-			player.addEffect(new MobEffectInstance(MobEffects.SPEED, 160, 1));
-			player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 160, 0));
-			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(5), m -> m instanceof Enemy)) {
+			player.addEffect(new MobEffectInstance(MobEffects.SPEED, 240, 1));
+			player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 240, 0));
+			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(6), m -> m instanceof Enemy)) {
+				mob.hurtServer(server, server.damageSources().indirectMagic(player, player), 5.0F);
+				mob.addEffect(new MobEffectInstance(MobEffects.GLOWING, 120, 0), player);
 				var away = mob.position().subtract(player.position());
 				if (away.horizontalDistanceSqr() > 0.01) {
-					mob.push(away.x / Math.sqrt(away.horizontalDistanceSqr()) * 1.1, 0.45, away.z / Math.sqrt(away.horizontalDistanceSqr()) * 1.1);
+					mob.push(away.x / Math.sqrt(away.horizontalDistanceSqr()) * 1.35, 0.5, away.z / Math.sqrt(away.horizontalDistanceSqr()) * 1.35);
 				}
 			}
 			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.END_ROD, player.getX(), player.getY() + 1, player.getZ(), 24, 2, 1, 2, 0.08);
 			level.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1, 1.25F);
 		}
-		player.getCooldowns().addCooldown(stack, 20 * 30);
+		player.getCooldowns().addCooldown(stack, 20 * 20);
 		return InteractionResult.SUCCESS;
 	}
 }

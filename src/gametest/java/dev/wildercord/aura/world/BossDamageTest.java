@@ -110,7 +110,76 @@ public final class BossDamageTest implements FabricClientGameTest {
 					&& player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION),
 					"Cinder Heart grants Fire Resistance, Strength, and Regeneration");
 				check(dev.wildercord.content.dungeons.TrophyItem.REST == 20 * 90, "Trophy cooldown is 90 seconds");
+
+				// Upgraded Dungeon Relics (Rootbound Relic & Stormglass Relic) restore 25 mana and 20 aura with a 20s cooldown.
+				var caster = dev.wildercord.data.CasterData.get(player);
+				caster.setMana(0, player);
+				var aura = dev.wildercord.aura.AuraData.get(player);
+				aura.setMethod("stone");
+				aura.setStage(dev.wildercord.aura.AuraRules.FLOW);
+				aura.setAura(0);
+				var relic = new net.minecraft.world.item.ItemStack(dev.wildercord.content.WildercordItems.ROOTBOUND_RELIC);
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, relic);
+				relic.use(s.overworld(), player, net.minecraft.world.InteractionHand.MAIN_HAND);
+				check(caster.getMana() >= 25f, "Rootbound Relic restores 25 mana");
+				check(aura.aura() >= 20.0, "Rootbound Relic restores 20 aura");
+				check(player.getCooldowns().isOnCooldown(relic), "Rootbound Relic enters cooldown");
 			});
+
+			// Verify all Tripo voxel weapon models (oathkeeper, lumenedge, bulwark_maul, skyrend_glaive, fetchblade, and staffs)
+			// in first-person, third-person front, third-person back, and mid-attack swing.
+			c.runOnClient(mc -> {
+				mc.getWindow().setWindowed(1280, 720);
+				mc.options.guiScale().set(2);
+				mc.resizeGui();
+			});
+			java.util.List<java.util.Map.Entry<String, net.minecraft.world.item.ItemStack>> showcase = java.util.List.of(
+				java.util.Map.entry("oathkeeper", new net.minecraft.world.item.ItemStack(dev.wildercord.world.dungeons.SleepingBlades.BLADE)),
+				java.util.Map.entry("lumenedge", AuraWorld.forged(AuraWorldRules.Forged.LUMENEDGE, true)),
+				java.util.Map.entry("bulwark_maul", AuraWorld.forged(AuraWorldRules.Forged.BULWARK_MAUL, true)),
+				java.util.Map.entry("skyrend_glaive", AuraWorld.forged(AuraWorldRules.Forged.SKYREND_GLAIVE, true)),
+				java.util.Map.entry("fetchblade", AuraWorld.forged(AuraWorldRules.Forged.FETCHBLADE, true)),
+				java.util.Map.entry("fire_staff", new net.minecraft.world.item.ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("wildercord:fire_staff")))),
+				java.util.Map.entry("greater_arcane_staff", new net.minecraft.world.item.ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("wildercord:greater_arcane_staff"))))
+			);
+			for (var entry : showcase) {
+				String name = entry.getKey();
+				var stack = entry.getValue();
+				server.runOnServer(s -> {
+					var player = p(s);
+					player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, stack.copy());
+					player.setYRot(0);
+					player.setXRot(10);
+				});
+				c.waitTicks(4);
+				c.runOnClient(mc -> {
+					for (var ctx : new net.minecraft.world.item.ItemDisplayContext[]{
+						net.minecraft.world.item.ItemDisplayContext.GUI,
+						net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND,
+						net.minecraft.world.item.ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
+						net.minecraft.world.item.ItemDisplayContext.GROUND
+					}) {
+						var state = new net.minecraft.client.renderer.item.ItemStackRenderState();
+						mc.getItemModelResolver().updateForLiving(state, mc.player.getMainHandItem(), ctx, mc.player);
+						check(!state.isEmpty(), name + " resolves a non-empty model in " + ctx);
+					}
+					mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
+					mc.gui.toastManager().clear();
+					mc.gui.hud.getChat().clearMessages(false);
+				});
+				c.waitTicks(2);
+				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person").disableCounterPrefix());
+				c.runOnClient(mc -> {
+					mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+					mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);
+				});
+				c.waitTicks(2);
+				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_front").disableCounterPrefix());
+				c.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK));
+				c.waitTicks(2);
+				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_back").disableCounterPrefix());
+			}
+			c.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
 		}
 	}
 }

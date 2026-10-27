@@ -188,6 +188,7 @@ def write(g):
             {'function': 'minecraft:set_name', 'target': 'item_name', 'name': {'translate': 'item.wildercord.mojito_fetchblade'}},
             {'function': 'minecraft:set_components', 'components': {
                 'wildercord:aura_forged': 'fetchblade',
+                'minecraft:item_model': 'wildercord:fetchblade',
                 'minecraft:rarity': 'epic',
             }},
         ]}]},

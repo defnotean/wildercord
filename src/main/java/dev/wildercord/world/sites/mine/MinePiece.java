@@ -64,6 +64,7 @@ abstract class MinePiece extends DungeonPiece {
 		BlockPos at = getWorldPos(x, y, z);
 		if (!bb.isInside(at)) return;
 		level.setBlock(at, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 2);
+		level.getBlockEntity(at);
 		if (loot != null) RandomizableContainer.setBlockEntityLootTable(level, RandomSource.create(boundingBox.minX() * 31L + boundingBox.minZ() * 17L + salt), at, loot);
 	}
 
