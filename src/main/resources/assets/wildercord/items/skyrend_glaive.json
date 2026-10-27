@@ -19,6 +19,5 @@
       "type": "minecraft:model",
       "model": "wildercord:item/skyrend_glaive_in_hand"
     }
-  },
-  "swap_animation_scale": 1.95
+  }
 }
