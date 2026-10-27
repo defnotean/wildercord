@@ -57,14 +57,74 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:netherite_sword",
+          "name": "wildercord:aura_shard",
           "modifier": {
-            "target": "item_name",
-            "name": {
-              "translate": "item.wildercord.mojito_fetchblade"
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 3
             },
-            "type": "minecraft:set_name"
+            "type": "minecraft:set_count"
           }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:mana_crystal",
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 3
+            },
+            "type": "minecraft:set_count"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:torn_page",
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 2
+            },
+            "type": "minecraft:set_count"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:netherite_sword",
+          "modifier": [
+            {
+              "target": "item_name",
+              "name": {
+                "translate": "item.wildercord.mojito_fetchblade"
+              },
+              "type": "minecraft:set_name"
+            },
+            {
+              "components": {
+                "wildercord:aura_forged": "fetchblade",
+                "minecraft:rarity": "epic"
+              },
+              "type": "minecraft:set_components"
+            }
+          ]
         }
       ]
     }

@@ -93,4 +93,8 @@ def write(g):
     g.write_json(g.DATA/'tags/worldgen/biome/has_structure/sword_tomb.json',{'replace':False,'values':['minecraft:meadow','minecraft:windswept_hills','minecraft:windswept_gravelly_hills','minecraft:plains','minecraft:snowy_plains']})
     g.write_json(g.DATA/'tags/worldgen/structure/sword_tomb.json',{'replace':False,'values':['wildercord:sword_tomb']})
     g.write_json(g.DATA/'loot_table/chests/sword_tomb_hall.json',{'type':'minecraft:chest','pools':[{'rolls':3,'entries':[{'type':'minecraft:item','name':item,'weight':w} for item,w in [('minecraft:iron_ingot',3),('minecraft:paper',4),('minecraft:bread',3),('minecraft:gold_nugget',2)] ]}]})
-    g.write_json(g.DATA/'loot_table/entities/gravekeeper.json',{'type':'minecraft:entity','pools':[]})
+    one = lambda item, lo, hi: {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': item, 'functions': [
+        {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': lo, 'max': hi}}]}]}
+    g.write_json(g.DATA/'loot_table/entities/gravekeeper.json',{'type':'minecraft:entity','pools':[
+        one('wildercord:aura_shard', 1, 2), one('wildercord:mana_crystal', 1, 2), one('wildercord:torn_page', 1, 1),
+    ]})

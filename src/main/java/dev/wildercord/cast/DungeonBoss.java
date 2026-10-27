@@ -704,13 +704,21 @@ public abstract class DungeonBoss extends Monster {
 		}
 		if (earned.isEmpty()) {
 			give(level, null, RuneItem.stack(fourthFor(level, null)));
+			give(level, null, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
 		}
+		var methods = dev.wildercord.aura.BreathingMethods.BUILT_IN;
 		for (ServerPlayer player : earned) {
 			give(level, player, RuneItem.stack(fourthFor(level, player)));
+			give(level, player, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
+			if (!methods.isEmpty()) {
+				var method = methods.get(level.getRandom().nextInt(methods.size()));
+				give(level, player, dev.wildercord.aura.world.ManualPageItem.of(dev.wildercord.aura.world.AuraWorld.MANUAL_PAGE, method.id()));
+			}
 		}
-		// Exclusive runes: this boss's own rune (from the location-exclusive rune set) is meant to drop here too; its
-		// loot table's "exclusive runes" pool carries it, so nothing extra is dropped in code for now.
-		ExperienceOrb.award(level, lootSpot(), 220);
+		// Now and then a greater staff, alongside its loot table's exclusive runes and treasures.
+		dev.wildercord.gear.GearLoot.bossStaff(level.getRandom(), 45, dev.wildercord.gear.GearDef.ELEMENTS)
+			.ifPresent(staff -> give(level, killer, staff));
+		ExperienceOrb.award(level, lootSpot(), 250);
 	}
 
 	/** A common Tier IV rune {@code player} doesn't know yet (any, if they know them all). */

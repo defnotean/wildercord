@@ -101,7 +101,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 
 	private static final class Wisp{Vec3 at,going;UUID prey;int age,unseen;Wisp(Vec3 at,Vec3 going,UUID prey){this.at=at;this.going=going;this.prey=prey;}}
 
-	public LanternBearer(EntityType<? extends LanternBearer> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
+	public LanternBearer(EntityType<? extends LanternBearer> type,Level level){super(type,level);xpReward=LanternBearerRules.TIER.xp;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
 		return createMobAttributes().add(Attributes.MAX_HEALTH,LanternBearerRules.HEALTH).add(Attributes.ARMOR,LanternBearerRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,LanternBearerRules.TIER.toughness)
 			.add(Attributes.MOVEMENT_SPEED,LanternBearerRules.SPEED).add(Attributes.ATTACK_DAMAGE,LanternBearerRules.TIER.melee).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
@@ -1109,7 +1109,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	}
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){
-			Feels.sound(server,head(),"aura_lantern_bearer_death",1.8F,1);bar.removeAllPlayers();wisps.clear();marks.clear();waves.clear();clods.clear();
+			Feels.sound(server,head(),"aura_lantern_bearer_death",1.8F,1);Guardians.reward(server,this,LanternBearerRules.TIER,bar,source);bar.removeAllPlayers();wisps.clear();marks.clear();waves.clear();clods.clear();
 			server.sendParticles(ParticleTypes.SOUL,getX(),getY()+1.6,getZ(),50,.8,1.2,.8,.05);
 			server.sendParticles(ParticleTypes.LARGE_SMOKE,getX(),getY()+1.6,getZ(),30,.6,1.2,.6,.03);
 			candles(server,false);lantern(server,false);

@@ -249,9 +249,12 @@ public final class Giants {
 		if (to != null) walker.getNavigation().moveTo(to.x, to.y, to.z, 0.8);
 	}
 
-	/** It falls: it drops its heart, and everyone near is told. */
+	/** It falls: it drops its heart, Aura Shards, and a Mana Crystal, and everyone near is told. */
 	private static void fall(ServerLevel level, Mob mob) {
 		mob.spawnAtLocation(level, new ItemStack(GIANT_HEART, GiantRules.hearts(level.getRandom().nextDouble())));
+		mob.spawnAtLocation(level, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
+		mob.spawnAtLocation(level, new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, 1));
+		net.minecraft.world.entity.ExperienceOrb.award(level, mob.position(), 150);
 		Component message = Component.translatable("message.wildercord.giant.falls", mob.getDisplayName()).withStyle(ChatFormatting.GOLD);
 		double range = GiantRules.BAR_RANGE * GiantRules.BAR_RANGE;
 		for (ServerPlayer player : level.players()) {

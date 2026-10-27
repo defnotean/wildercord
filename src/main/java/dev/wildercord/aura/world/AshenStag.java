@@ -104,7 +104,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	private long lockedAt;
 	private int lockBlows;
 
-	public AshenStag(EntityType<? extends AshenStag> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
+	public AshenStag(EntityType<? extends AshenStag> type,Level level){super(type,level);xpReward=AshenStagRules.TIER.xp;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
 		return createMobAttributes().add(Attributes.MAX_HEALTH,AshenStagRules.HEALTH).add(Attributes.ARMOR,AshenStagRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,AshenStagRules.TIER.toughness)
 			.add(Attributes.MOVEMENT_SPEED,AshenStagRules.SPEED).add(Attributes.ATTACK_DAMAGE,AshenStagRules.TIER.melee).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
@@ -993,7 +993,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){Feels.sound(server,head(),"aura_ashen_stag_death",1.8F,1);bar.removeAllPlayers();}
+		if(level() instanceof ServerLevel server){Feels.sound(server,head(),"aura_ashen_stag_death",1.8F,1);Guardians.reward(server,this,AshenStagRules.TIER,bar,source);bar.removeAllPlayers();}
 		super.die(source);
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}

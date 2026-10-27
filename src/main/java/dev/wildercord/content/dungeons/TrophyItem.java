@@ -27,7 +27,7 @@ public class TrophyItem extends Item {
 	/** One effect it grants: which, for how long, how strong. */
 	public record Boon(Holder<MobEffect> effect, int ticks, int amplifier) {}
 
-	private static final int REST = 20 * 60 * 5;
+	public static final int REST = 20 * 90;
 
 	private final List<Boon> boons;
 	private final SoundEvent sound;

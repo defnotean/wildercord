@@ -86,7 +86,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	/** Whoever this move has already caught. */
 	private final Set<UUID> struck=new HashSet<>();
 
-	public DrownedBellWarden(EntityType<? extends DrownedBellWarden> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
+	public DrownedBellWarden(EntityType<? extends DrownedBellWarden> type,Level level){super(type,level);xpReward=BellWardenRules.TIER.xp;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
 		return createMobAttributes().add(Attributes.MAX_HEALTH,BellWardenRules.HEALTH).add(Attributes.ARMOR,BellWardenRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,BellWardenRules.TIER.toughness)
 			.add(Attributes.MOVEMENT_SPEED,BellWardenRules.SPEED).add(Attributes.ATTACK_DAMAGE,BellWardenRules.TIER.melee).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
@@ -819,7 +819,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		if(source.getEntity() instanceof LivingEntity e && source.getDirectEntity()==e && e.distanceToSqr(this)<5*5){e.knockback(.8,getX()-e.getX(),getZ()-e.getZ(),level.damageSources().mobAttack(this),0);e.needsSync=true;}
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);bar.removeAllPlayers();}
+		if(level() instanceof ServerLevel server){Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);Guardians.reward(server,this,BellWardenRules.TIER,bar,source);bar.removeAllPlayers();}
 		super.die(source);
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}

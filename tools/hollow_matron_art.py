@@ -99,7 +99,12 @@ def glow():
 
 
 def write(g):
-    g.write_json(g.DATA / 'loot_table/entities/hollow_matron.json', {'type': 'minecraft:entity', 'pools': []})
+    one = lambda item, lo, hi: {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': item, 'functions': [
+        {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': lo, 'max': hi}}]}]}
+    g.write_json(g.DATA / 'loot_table/entities/hollow_matron.json', {'type': 'minecraft:entity', 'pools': [
+        one('wildercord:weavers_silk', 1, 2), one('wildercord:aura_shard', 2, 3), one('wildercord:mana_crystal', 1, 2),
+        one('wildercord:hollow_dust', 2, 4), one('minecraft:cobweb', 3, 6),
+    ]})
     g.save(skin(), g.ASSETS / 'textures/entity/hollow_matron/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/hollow_matron/glow.png')
     # Under the nest: a skein of her silk wound round a long bone lying on the floor, loose strands trailing off it.

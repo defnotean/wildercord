@@ -121,7 +121,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	private record Spot(double x,double y,double z,long until){}
 	private final List<Spot> trail=new ArrayList<>();
 
-	public Mojito(EntityType<? extends Mojito> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
+	public Mojito(EntityType<? extends Mojito> type,Level level){super(type,level);xpReward=MojitoRules.TIER.xp;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
 		return createMobAttributes().add(Attributes.MAX_HEALTH,MojitoRules.HEALTH).add(Attributes.ARMOR,MojitoRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,MojitoRules.TIER.toughness)
 			.add(Attributes.MOVEMENT_SPEED,MojitoRules.SPEED).add(Attributes.ATTACK_DAMAGE,MojitoRules.TIER.melee).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
@@ -1047,7 +1047,11 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){sound(server,head(),voice().deathSound().value(),2F,.5F);bar.removeAllPlayers();bolts.clear();trail.clear();waves.clear();clods.clear();entityData.set(THROWN,false);}
+		if(level() instanceof ServerLevel server){
+			sound(server,head(),voice().deathSound().value(),2F,.5F);
+			Guardians.reward(server,this,MojitoRules.TIER,bar,source);
+			bar.removeAllPlayers();bolts.clear();trail.clear();waves.clear();clods.clear();entityData.set(THROWN,false);
+		}
 		super.die(source);
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}

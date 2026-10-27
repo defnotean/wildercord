@@ -16,26 +16,31 @@ package dev.wildercord.aura.world;
  * </ol>
  */
 public enum BossTier {
-	APPRENTICE(200, 4, 2, 7, 0.6, 0.9),
-	JOURNEY(250, 6, 3, 9, 0.75, 0.95),
-	SEASONED(300, 8, 4, 11, 0.9, 1.0),
-	VETERAN(350, 10, 5, 13, 1.0, 1.05),
-	ELDER(410, 12, 6, 15, 1.1, 1.1),
-	HEROIC(440, 13, 7, 16, 1.15, 1.1),
-	DREAD(470, 14, 8, 17, 1.2, 1.1);
+	APPRENTICE(200, 4, 2, 7, 0.6, 0.9, 120, 1, 1),
+	JOURNEY(250, 6, 3, 9, 0.75, 0.95, 145, 1, 1),
+	SEASONED(300, 8, 4, 11, 0.9, 1.0, 170, 2, 2),
+	VETERAN(350, 10, 5, 13, 1.0, 1.05, 195, 2, 2),
+	ELDER(410, 12, 6, 15, 1.1, 1.1, 225, 3, 2),
+	HEROIC(440, 13, 7, 16, 1.15, 1.1, 260, 3, 3),
+	DREAD(470, 14, 8, 17, 1.2, 1.1, 300, 4, 3);
 
 	/** Its health, armour, armour toughness and plain melee hit. */
 	public final double health, armour, toughness, melee;
 	/** What every move's damage is scaled by, and its walking speed. */
 	public final double hits, pace;
+	/** Experience and guaranteed Aura Shards and Mana Crystals for defeating a guardian of this tier. */
+	public final int xp, shards, crystals;
 
-	BossTier(double health, double armour, double toughness, double melee, double hits, double pace) {
+	BossTier(double health, double armour, double toughness, double melee, double hits, double pace, int xp, int shards, int crystals) {
 		this.health = health;
 		this.armour = armour;
 		this.toughness = toughness;
 		this.melee = melee;
 		this.hits = hits;
 		this.pace = pace;
+		this.xp = xp;
+		this.shards = shards;
+		this.crystals = crystals;
 	}
 
 	/** A move's damage at this tier, to the nearest half heart. */

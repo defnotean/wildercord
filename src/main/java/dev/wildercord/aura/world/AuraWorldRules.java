@@ -213,14 +213,16 @@ public final class AuraWorldRules {
 
 	// ------------------------------------------------------------------ aura-forged gear
 
-	/** The three aura-forged weapons and what each does for aura. */
+	/** The aura-forged weapons and what each does for aura. */
 	public enum Forged {
 		/** A sword: more aura from every blow. */
 		LUMENEDGE("lumenedge"),
 		/** A spear: a stronger slash that flies further and wider. */
 		SKYREND_GLAIVE("skyrend_glaive"),
 		/** An axe: a cheaper guard. */
-		BULWARK_MAUL("bulwark_maul");
+		BULWARK_MAUL("bulwark_maul"),
+		/** Mojito's greatsword: more aura from every blow, a stronger and wider slash, and a bounding Fetch lunge on use. */
+		FETCHBLADE("fetchblade");
 
 		public final String id;
 
@@ -246,6 +248,13 @@ public final class AuraWorldRules {
 	public static final int SKYREND_TARGETS = 2;
 	/** Bulwark Maul: what the guard costs (raised and held), times this. */
 	public static final double BULWARK_GUARD_COST = 0.6;
+	/** Mojito's Fetchblade: a blow's aura and a slash's damage/reach/targets, plus its Fetch bound cooldown and crescent damage. */
+	public static final double FETCHBLADE_GAIN = 1.5;
+	public static final double FETCHBLADE_SLASH = 1.35;
+	public static final double FETCHBLADE_REACH = 1.25;
+	public static final int FETCHBLADE_TARGETS = 1;
+	public static final int FETCHBLADE_DASH_COOLDOWN = 120;
+	public static final double FETCHBLADE_DASH_DAMAGE = 12.0;
 
 	/** The Breath Sash: aura capacity times this (rounded down), the stance settling in this many ticks, its breath times this. */
 	public static final double SASH_CAPACITY = 1.25;

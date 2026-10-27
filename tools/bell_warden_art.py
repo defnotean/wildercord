@@ -138,7 +138,12 @@ def glow():
 
 
 def write(g):
-    g.write_json(g.DATA / 'loot_table/entities/drowned_bell_warden.json', {'type': 'minecraft:entity', 'pools': []})
+    one = lambda item, lo, hi: {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': item, 'functions': [
+        {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': lo, 'max': hi}}]}]}
+    g.write_json(g.DATA / 'loot_table/entities/drowned_bell_warden.json', {'type': 'minecraft:entity', 'pools': [
+        one('wildercord:bell_shard', 1, 2), one('wildercord:aura_shard', 3, 4), one('wildercord:mana_crystal', 2, 4),
+        one('wildercord:torn_page', 1, 2), one('minecraft:prismarine_crystals', 4, 8), one('minecraft:diamond', 2, 5),
+    ]})
     g.save(skin(), g.ASSETS / 'textures/entity/drowned_bell_warden/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/drowned_bell_warden/glow.png')
     # The shard on the altar: a curved piece of the bell's lip lying on its rim, a second piece leaning up against it.

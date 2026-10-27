@@ -119,7 +119,12 @@ def glow():
 
 
 def write(g):
-    g.write_json(g.DATA / 'loot_table/entities/ashen_stag.json', {'type': 'minecraft:entity', 'pools': []})
+    one = lambda item, lo, hi: {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': item, 'functions': [
+        {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': lo, 'max': hi}}]}]}
+    g.write_json(g.DATA / 'loot_table/entities/ashen_stag.json', {'type': 'minecraft:entity', 'pools': [
+        one('wildercord:cinder_antler', 1, 2), one('wildercord:aura_shard', 2, 3), one('wildercord:mana_crystal', 2, 3),
+        one('wildercord:cinder_ash', 2, 5), one('minecraft:blaze_powder', 2, 4),
+    ]})
     g.save(skin(), g.ASSETS / 'textures/entity/ashen_stag/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/ashen_stag/glow.png')
     # The antler by the stump: a shed beam lying in the ash, its burr at one end, three tines standing up off it, ember-tipped.

@@ -150,15 +150,27 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 	@Override public void die(DamageSource source) {
 		retire(); bar.removeAllPlayers();
 		if (level() instanceof ServerLevel server && bell != null && server.getBlockEntity(bell) instanceof CrossingBellEntity crossing && crossing.complete(getUUID())) {
+			var methods = dev.wildercord.aura.BreathingMethods.BUILT_IN;
 			for (var player : server.players()) if (contributors.contains(player.getUUID()) && eligible(player)) {
 				var compass = new ItemStack(Items.COMPASS);
 				compass.set(DataComponents.CUSTOM_NAME, Component.translatable("item.wildercord.crossing_compass"));
 				compass.set(DataComponents.LODESTONE_TRACKER, new LodestoneTracker(Optional.of(GlobalPos.of(server.dimension(), bell)), false));
-				if (!player.getInventory().add(compass)) player.drop(compass, false, net.minecraft.util.Prediction.SERVER_ONLY);
-				player.giveExperiencePoints(80); LoreJournal.record(player, "learned:last_crossing", true);
+				giveOrDrop(player, compass);
+				giveOrDrop(player, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
+				giveOrDrop(player, new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, 2));
+				giveOrDrop(player, new ItemStack(dev.wildercord.content.WildercordItems.TORN_PAGE, 1));
+				giveOrDrop(player, new ItemStack(dev.wildercord.content.Reagents.WILDBLOOM_PETAL, 3));
+				if (!methods.isEmpty()) {
+					var method = methods.get(server.getRandom().nextInt(methods.size()));
+					giveOrDrop(player, dev.wildercord.aura.world.ManualPageItem.of(dev.wildercord.aura.world.AuraWorld.MANUAL_PAGE, method.id()));
+				}
+				player.giveExperiencePoints(180); LoreJournal.record(player, "learned:last_crossing", true);
 			}
 		}
 		super.die(source);
+	}
+	private static void giveOrDrop(ServerPlayer player, ItemStack stack) {
+		if (!player.getInventory().add(stack)) player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
 	}
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }
 	@Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player); bar.removePlayer(player); }

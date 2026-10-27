@@ -1,12 +1,24 @@
 package dev.wildercord.aura.world;
 
 import dev.wildercord.Wildercord;
+import dev.wildercord.aura.BreathingMethods;
+import dev.wildercord.content.RuneItem;
+import dev.wildercord.content.WildercordItems;
+import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.FieldGuide;
+import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.*;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.item.ItemStack;
+import java.util.*;
 
 /** The guardians of the lairs: bosses bound to the place they were generated in, with no natural spawn entry. */
 public final class Guardians {
@@ -49,5 +61,57 @@ public final class Guardians {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:lantern_bearer",FieldGuide.Group.MONSTER,0x6FE8E0));
 		FabricDefaultAttributeRegistry.register(MOJITO,Mojito.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:mojito",FieldGuide.Group.MONSTER,0x7CFFB2));
+	}
+
+	/**
+	 * Award every fighter who faced {@code boss} (those on its boss bar, nearby in the lair, or the killer) with
+	 * tier-scaled Aura Shards, Mana Crystals, Torn Pages, Manual Pages, and an unlearned Tier III/IV rune.
+	 */
+	public static void reward(ServerLevel server, Mob boss, BossTier tier, ServerBossEvent bar, DamageSource source) {
+		Set<ServerPlayer> winners = new LinkedHashSet<>(bar.getPlayers());
+		for (ServerPlayer p : server.players()) {
+			if (p.isAlive() && !p.isCreative() && !p.isSpectator() && p.distanceToSqr(boss) <= 32 * 32) {
+				winners.add(p);
+			}
+		}
+		if (source.getEntity() instanceof ServerPlayer killer && killer.isAlive() && !killer.isSpectator()) {
+			winners.add(killer);
+		}
+		var methods = BreathingMethods.BUILT_IN;
+		int minRuneTier = tier.ordinal() >= BossTier.ELDER.ordinal() ? 4 : 3;
+		int pages = tier.ordinal() >= BossTier.HEROIC.ordinal() ? 2 : 1;
+		for (ServerPlayer p : winners) {
+			giveOrDrop(p, new ItemStack(AuraWorld.AURA_SHARD, tier.shards));
+			giveOrDrop(p, new ItemStack(WildercordItems.MANA_CRYSTAL, tier.crystals));
+			giveOrDrop(p, new ItemStack(WildercordItems.TORN_PAGE, pages));
+			for (int i = 0; i < pages && !methods.isEmpty(); i++) {
+				var method = methods.get(server.getRandom().nextInt(methods.size()));
+				giveOrDrop(p, ManualPageItem.of(AuraWorld.MANUAL_PAGE, method.id()));
+			}
+			giveOrDrop(p, RuneItem.stack(pickRune(server, p, minRuneTier)));
+		}
+	}
+
+	private static void giveOrDrop(ServerPlayer player, ItemStack stack) {
+		if (!player.getInventory().add(stack)) {
+			player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+		}
+	}
+
+	private static RuneDef pickRune(ServerLevel level, ServerPlayer player, int minTier) {
+		List<RuneDef> pool = new ArrayList<>();
+		for (RuneDef rune : Runes.all()) {
+			if (rune.tier() >= minTier && Runes.common(rune) && (player == null || !Spellbooks.knows(player, rune.id()))) {
+				pool.add(rune);
+			}
+		}
+		if (pool.isEmpty()) {
+			for (RuneDef rune : Runes.all()) {
+				if (rune.tier() >= minTier && Runes.common(rune)) {
+					pool.add(rune);
+				}
+			}
+		}
+		return pool.isEmpty() ? Runes.BOLT : pool.get(level.getRandom().nextInt(pool.size()));
 	}
 }

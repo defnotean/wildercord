@@ -36,6 +36,10 @@ public final class MasterVictories {
 		boolean learned = Techniques.teach(player, part, "master_trial");
 		player.sendSystemMessage(Component.translatable(learned ? "message.wildercord.master.first_clear" : "message.wildercord.master.first_clear_known",
 			schoolName(school)));
+		var shards = new net.minecraft.world.item.ItemStack(AuraWorld.AURA_SHARD, 2);
+		if (!player.getInventory().add(shards)) player.drop(shards, false, net.minecraft.util.Prediction.SERVER_ONLY);
+		var crystal = new net.minecraft.world.item.ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, 1);
+		if (!player.getInventory().add(crystal)) player.drop(crystal, false, net.minecraft.util.Prediction.SERVER_ONLY);
 		// ---- lore pack: the Master's parting line, kept in the lore journal.
 		dev.wildercord.lore.LoreJournal.masterWon(player, school);
 		return true;

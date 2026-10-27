@@ -102,7 +102,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		Clod(Display.BlockDisplay shown,BlockState state,Vec3 at,Vec3 vel,Quaternionf spin){this.shown=shown;this.state=state;this.at=at;this.vel=vel;this.spin=spin;}
 	}
 
-	public RootcoilSerpent(EntityType<? extends RootcoilSerpent> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();Arrays.fill(lastMade,-9999);}
+	public RootcoilSerpent(EntityType<? extends RootcoilSerpent> type,Level level){super(type,level);xpReward=SerpentRules.TIER.xp;setPersistenceRequired();Arrays.fill(lastMade,-9999);}
 	public static AttributeSupplier.Builder createAttributes(){
 		return createMobAttributes().add(Attributes.MAX_HEALTH,SerpentRules.HEALTH).add(Attributes.ARMOR,SerpentRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,SerpentRules.TIER.toughness)
 			.add(Attributes.MOVEMENT_SPEED,SerpentRules.SPEED).add(Attributes.ATTACK_DAMAGE,SerpentRules.TIER.melee).add(Attributes.FOLLOW_RANGE,32).add(Attributes.KNOCKBACK_RESISTANCE,1)
@@ -1001,7 +1001,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	}
 	@Override public void die(DamageSource source){
 		letGo(false);dropClods();dropSpikes();roots.clear();rippleAge=-1;
-		if(level() instanceof ServerLevel server){Feels.sound(server,position().add(0,2,0),"aura_serpent_death",1.6F,1);bar.removeAllPlayers();}
+		if(level() instanceof ServerLevel server){Feels.sound(server,position().add(0,2,0),"aura_serpent_death",1.6F,1);Guardians.reward(server,this,SerpentRules.TIER,bar,source);bar.removeAllPlayers();}
 		super.die(source);
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}

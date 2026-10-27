@@ -1,5 +1,6 @@
 package dev.wildercord.aura;
 
+import dev.wildercord.aura.world.AuraWorldRules;
 import dev.wildercord.aura.world.ForgedGear;
 import dev.wildercord.cast.Targets;
 import dev.wildercord.config.Config;
@@ -134,5 +135,18 @@ public final class AuraSlash {
 			}
 			return taken;
 		};
+	}
+
+	/** Mojito's Fetchblade: a mint-green crescent loosed as its bearer bounds ahead. */
+	public static void fetchCrescent(ServerPlayer player, double damage) {
+		Vec3 aim = player.getViewVector(1.0F);
+		Vec3 flat = new Vec3(aim.x, aim.y * 0.5, aim.z).normalize();
+		Vec3 origin = player.getEyePosition().subtract(0, 0.45, 0);
+		int color = 0x7CFFB2;
+		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		AuraVfx.slashStart(player.level(), origin, flat, color);
+		Crescents.launch(player, origin, flat, color, damage, 1.0, AuraRules.SLASH_SPEED * 1.1,
+			AuraRules.SLASH_RANGE * AuraWorldRules.FETCHBLADE_REACH, AuraRules.SLASH_WIDTH * AuraWorldRules.FETCHBLADE_REACH,
+			AuraRules.SLASH_TARGETS + AuraWorldRules.FETCHBLADE_TARGETS, false, e -> Targets.canHarm(player, e), cutter(player));
 	}
 }

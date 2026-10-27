@@ -59,8 +59,13 @@ def write(g):
                                     ('minecraft:melon_slice', 3, 2, 6), ('minecraft:gold_nugget', 3, 3, 9), ('minecraft:emerald', 2, 1, 3),
                                     ('minecraft:string', 3, 2, 5), ('minecraft:golden_apple', 1, 1, 1)]]},
         {'rolls': {'type': 'minecraft:uniform', 'min': 0, 'max': 1}, 'entries': [{'type': 'minecraft:item', 'name': 'wildercord:aura_shard'}]}]})
-    # The serpent drops nothing itself: what it guards is the herb.
-    g.write_json(g.DATA / 'loot_table/entities/rootcoil_serpent.json', {'type': 'minecraft:entity', 'pools': []})
+    # The serpent drops its own guardian spoils alongside the Coilroot it guards.
+    one = lambda item, lo, hi: {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': item, 'functions': [
+        {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': lo, 'max': hi}}]}]}
+    g.write_json(g.DATA / 'loot_table/entities/rootcoil_serpent.json', {'type': 'minecraft:entity', 'pools': [
+        one('wildercord:coilroot', 1, 2), one('wildercord:aura_shard', 1, 2), one('wildercord:mana_crystal', 1, 2),
+        one('wildercord:wildbloom_petal', 2, 4), one('minecraft:emerald', 2, 5),
+    ]})
     g.save(skin(), g.ASSETS / 'textures/entity/rootcoil_serpent/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/rootcoil_serpent/glow.png')
     # The herb it guards: a cross plant, cut out, that drops nothing (it stays for whoever comes after).

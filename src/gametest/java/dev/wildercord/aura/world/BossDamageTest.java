@@ -73,6 +73,43 @@ public final class BossDamageTest implements FabricClientGameTest {
 				check(zombie > 0 && zombie < 1.5f, "An ordinary 10-damage blow barely scratches diamond and Protection IV: " + zombie);
 				check(warden >= 4f && warden <= 6.5f, "A boss's 10-damage blow lands hard through diamond and Protection IV: " + warden + " (armour leaves " + armoured + ", Protection leaves " + shielded + " of 10)");
 				check(warden > zombie * 3, "A boss's blow lands several times an ordinary mob's: " + warden + " against " + zombie);
+
+				// Mojito's reward & Fetchblade forging: defeating Mojito rewards shards, crystals, pages, a rune, and an Epic Fetchblade that bounds on use.
+				var player = p(s);
+				player.getInventory().clearContent();
+				var mojito = new Mojito(Guardians.MOJITO, s.overworld());
+				mojito.setPos(0.5, 101, 3.5);
+				s.overworld().addFreshEntity(mojito);
+				mojito.die(s.overworld().damageSources().playerAttack(player));
+				int shards = player.getInventory().countItem(AuraWorld.AURA_SHARD);
+				int crystals = player.getInventory().countItem(dev.wildercord.content.WildercordItems.MANA_CRYSTAL);
+				int tornPages = player.getInventory().countItem(dev.wildercord.content.WildercordItems.TORN_PAGE);
+				int manualPages = player.getInventory().countItem(AuraWorld.MANUAL_PAGE);
+				int runes = player.getInventory().countItem(dev.wildercord.content.WildercordItems.RUNE);
+				check(shards >= MojitoRules.TIER.shards, "Mojito awards at least " + MojitoRules.TIER.shards + " Aura Shards, got " + shards);
+				check(crystals >= MojitoRules.TIER.crystals, "Mojito awards at least " + MojitoRules.TIER.crystals + " Mana Crystals, got " + crystals);
+				check(tornPages >= 2 && manualPages >= 2 && runes >= 1, "Mojito awards Torn Pages, Manual Pages, and a rune");
+
+				var fetchblade = AuraWorld.forged(AuraWorldRules.Forged.FETCHBLADE, true);
+				check(ForgedGear.of(fetchblade) == AuraWorldRules.Forged.FETCHBLADE, "Fetchblade carries the fetchblade forging");
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, fetchblade);
+				check(ForgedGear.slashBonus(player) == AuraWorldRules.FETCHBLADE_SLASH, "Fetchblade boosts Aura Slash damage");
+				check(ForgedGear.slashReach(player) == AuraWorldRules.FETCHBLADE_REACH, "Fetchblade boosts Aura Slash reach");
+				check(ForgedGear.slashTargets(player) == AuraWorldRules.FETCHBLADE_TARGETS, "Fetchblade adds an extra Aura Slash target");
+				var res = net.fabricmc.fabric.api.event.player.UseItemCallback.EVENT.invoker().interact(player, s.overworld(), net.minecraft.world.InteractionHand.MAIN_HAND);
+				check(res.consumesAction(), "Using Mojito's Fetchblade triggers its Fetch bound");
+				check(player.getCooldowns().isOnCooldown(fetchblade), "Fetchblade enters cooldown after bounding");
+				check(player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "Fetchblade bound grants Speed II");
+
+				// Upgraded Dungeon Boss Trophy: Cinder Heart grants Fire Resistance, Strength, and Regeneration on a 90s rest.
+				var heart = new net.minecraft.world.item.ItemStack(dev.wildercord.content.dungeons.DungeonItems.CINDER_HEART);
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, heart);
+				heart.use(s.overworld(), player, net.minecraft.world.InteractionHand.MAIN_HAND);
+				check(player.hasEffect(net.minecraft.world.effect.MobEffects.FIRE_RESISTANCE)
+					&& player.hasEffect(net.minecraft.world.effect.MobEffects.STRENGTH)
+					&& player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION),
+					"Cinder Heart grants Fire Resistance, Strength, and Regeneration");
+				check(dev.wildercord.content.dungeons.TrophyItem.REST == 20 * 90, "Trophy cooldown is 90 seconds");
 			});
 		}
 	}

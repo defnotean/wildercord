@@ -99,7 +99,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 		Icicle(Vec3 at,long marked,long drop,double top){this.at=at;this.marked=marked;this.drop=drop;this.top=top;}}
 	private final List<Icicle> icicles=new ArrayList<>();
 
-	public FrostWyrmling(EntityType<? extends FrostWyrmling> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
+	public FrostWyrmling(EntityType<? extends FrostWyrmling> type,Level level){super(type,level);xpReward=FrostWyrmlingRules.TIER.xp;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
 		return createMobAttributes().add(Attributes.MAX_HEALTH,FrostWyrmlingRules.HEALTH).add(Attributes.ARMOR,FrostWyrmlingRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,FrostWyrmlingRules.TIER.toughness)
 			.add(Attributes.MOVEMENT_SPEED,FrostWyrmlingRules.SPEED).add(Attributes.ATTACK_DAMAGE,FrostWyrmlingRules.TIER.melee).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
@@ -1026,7 +1026,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	}
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){
-			Feels.sound(server,head(),"aura_frost_wyrmling_death",1.8F,1);bar.removeAllPlayers();
+			Feels.sound(server,head(),"aura_frost_wyrmling_death",1.8F,1);Guardians.reward(server,this,FrostWyrmlingRules.TIER,bar,source);bar.removeAllPlayers();
 			server.sendParticles(ParticleTypes.SNOWFLAKE,getX(),getY()+1.2,getZ(),60,1.6,.8,1.6,.04);
 		}
 		super.die(source);

@@ -182,7 +182,13 @@ def write(g):
         **({'conditions': [{'condition': 'minecraft:random_chance', 'chance': chance}]} if chance else {})}
     g.write_json(g.DATA / 'loot_table/entities/mojito.json', {'type': 'minecraft:entity', 'pools': [
         one('minecraft:bone', 6, 12), one('minecraft:emerald', 4, 9), one('minecraft:diamond', 2, 4),
-        # His sword, every time.
+        one('wildercord:aura_shard', 2, 3), one('wildercord:mana_crystal', 2, 3), one('wildercord:torn_page', 1, 2),
+        # His sword, every time: aura-forged with Fetchblade so it gains more aura, cuts wider, and bounds ahead on use.
         {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': 'minecraft:netherite_sword', 'functions': [
-            {'function': 'minecraft:set_name', 'target': 'item_name', 'name': {'translate': 'item.wildercord.mojito_fetchblade'}}]}]},
+            {'function': 'minecraft:set_name', 'target': 'item_name', 'name': {'translate': 'item.wildercord.mojito_fetchblade'}},
+            {'function': 'minecraft:set_components', 'components': {
+                'wildercord:aura_forged': 'fetchblade',
+                'minecraft:rarity': 'epic',
+            }},
+        ]}]},
     ]})
