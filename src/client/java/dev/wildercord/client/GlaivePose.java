@@ -116,24 +116,27 @@ public final class GlaivePose {
 		float mainX, mainY, mainZ;
 		float offX, offY, offZ;
 
-		float chMainX = -0.75F + pitch * 0.25F;
-		float chMainY = 0.28F * side;
-		float chMainZ = 0.22F * side;
-		float chOffX = -1.08F + pitch * 0.25F;
-		float chOffY = 0.62F * side;
-		float chOffZ = -0.10F * side;
+		// Windup: chamber the blade higher on the right before uncoiling.
+		float chMainX = -0.30F + pitch * 0.25F;
+		float chMainY = 0.06F * side;
+		float chMainZ = 0.06F * side;
+		float chOffX = -1.18F + pitch * 0.25F;
+		float chOffY = 0.54F * side;
+		float chOffZ = -0.06F * side;
 
-		float cutMainX = -1.08F + pitch * 0.25F;
-		float cutMainY = -0.42F * side;
-		float cutMainZ = 0.18F * side;
-		float cutOffX = -1.16F + pitch * 0.25F;
-		float cutOffY = 0.22F * side;
-		float cutOffZ = -0.24F * side;
+		// Peak cleave: rear hand levers up to chest height while lead hand drives the forward shaft
+		// down and across in a wide horizontal-diagonal polearm slash, keeping both hands on the shaft.
+		float cutMainX = -0.84F + pitch * 0.25F;
+		float cutMainY = -0.52F * side;
+		float cutMainZ = -0.06F * side;
+		float cutOffX = -0.68F + pitch * 0.25F;
+		float cutOffY = -0.34F * side;
+		float cutOffZ = -0.06F * side;
 
 		if (s < 0.12F) {
 			float t = smooth(s / 0.12F);
-			bodyYaw = Mth.lerp(t, 0.0F, 0.34F * side);
-			bodyPitch = Mth.lerp(t, 0.0F, 0.06F);
+			bodyYaw = Mth.lerp(t, 0.0F, -0.16F * side);
+			bodyPitch = Mth.lerp(t, 0.0F, 0.05F);
 			mainX = Mth.lerp(t, idleMainX, chMainX);
 			mainY = Mth.lerp(t, idleMainY, chMainY);
 			mainZ = Mth.lerp(t, idleMainZ, chMainZ);
@@ -142,8 +145,8 @@ public final class GlaivePose {
 			offZ = Mth.lerp(t, idleOffZ, chOffZ);
 		} else if (s < 0.72F) {
 			float t = smooth(Mth.clamp((s - 0.12F) / 0.22F, 0.0F, 1.0F));
-			bodyYaw = Mth.lerp(t, 0.34F * side, -0.44F * side);
-			bodyPitch = Mth.lerp(t, 0.06F, 0.20F);
+			bodyYaw = Mth.lerp(t, -0.16F * side, 0.34F * side);
+			bodyPitch = Mth.lerp(t, 0.05F, 0.18F);
 			mainX = Mth.lerp(t, chMainX, cutMainX);
 			mainY = Mth.lerp(t, chMainY, cutMainY);
 			mainZ = Mth.lerp(t, chMainZ, cutMainZ);
@@ -152,8 +155,8 @@ public final class GlaivePose {
 			offZ = Mth.lerp(t, chOffZ, cutOffZ);
 		} else {
 			float t = smooth((s - 0.72F) / 0.28F);
-			bodyYaw = Mth.lerp(t, -0.44F * side, 0.0F);
-			bodyPitch = Mth.lerp(t, 0.20F, 0.0F);
+			bodyYaw = Mth.lerp(t, 0.34F * side, 0.0F);
+			bodyPitch = Mth.lerp(t, 0.18F, 0.0F);
 			mainX = Mth.lerp(t, cutMainX, idleMainX);
 			mainY = Mth.lerp(t, cutMainY, idleMainY);
 			mainZ = Mth.lerp(t, cutMainZ, idleMainZ);
@@ -209,13 +212,13 @@ public final class GlaivePose {
 
 		float s = state.swingAnimation;
 		if (s > 0.0F) {
-			float chPitch = 36.0F;
-			float chCross = 18.0F * side;
-			float chTwist = -15.0F * side;
+			float chPitch = 47.0F;
+			float chCross = 35.0F * side;
+			float chTwist = 6.0F * side;
 
-			float cutPitch = 18.0F;
-			float cutCross = 78.0F * side;
-			float cutTwist = 46.0F * side;
+			float cutPitch = -74.0F;
+			float cutCross = 59.0F * side;
+			float cutTwist = -70.0F * side;
 
 			if (s < 0.12F) {
 				float t = smooth(s / 0.12F);
@@ -262,29 +265,29 @@ public final class GlaivePose {
 
 		if (attack < 0.12F) {
 			float t = smooth(attack / 0.12F);
-			dx = Mth.lerp(t, 0.0F, 0.12F * s);
+			dx = Mth.lerp(t, 0.0F, 0.10F * s);
 			dy = Mth.lerp(t, 0.0F, 0.06F);
-			dz = Mth.lerp(t, 0.0F, 0.06F);
+			dz = Mth.lerp(t, 0.0F, 0.04F);
 			pitch = Mth.lerp(t, 0.0F, 8.0F);
-			yaw = Mth.lerp(t, 0.0F, -14.0F * s);
+			yaw = Mth.lerp(t, 0.0F, -12.0F * s);
 			roll = Mth.lerp(t, 0.0F, -10.0F * s);
 		} else if (attack < 0.72F) {
 			float t = smooth(Mth.clamp((attack - 0.12F) / 0.22F, 0.0F, 1.0F));
 			float arc = Mth.sin(t * Mth.PI);
-			dx = Mth.lerp(t, 0.12F * s, -0.54F * s);
-			dy = Mth.lerp(t, 0.06F, -0.12F) + 0.04F * arc;
-			dz = Mth.lerp(t, 0.06F, -0.18F) - 0.08F * arc;
-			pitch = Mth.lerp(t, 8.0F, -26.0F) - 6.0F * arc;
-			yaw = Mth.lerp(t, -14.0F * s, 38.0F * s);
-			roll = Mth.lerp(t, -10.0F * s, 64.0F * s);
+			dx = Mth.lerp(t, 0.10F * s, -0.32F * s);
+			dy = Mth.lerp(t, 0.06F, 0.16F) + 0.04F * arc;
+			dz = Mth.lerp(t, 0.04F, -0.10F) - 0.06F * arc;
+			pitch = Mth.lerp(t, 8.0F, -14.0F) - 4.0F * arc;
+			yaw = Mth.lerp(t, -12.0F * s, 22.0F * s);
+			roll = Mth.lerp(t, -10.0F * s, 58.0F * s);
 		} else {
 			float t = smooth((attack - 0.72F) / 0.28F);
-			dx = Mth.lerp(t, -0.54F * s, 0.0F);
-			dy = Mth.lerp(t, -0.12F, 0.0F);
-			dz = Mth.lerp(t, -0.18F, 0.0F);
-			pitch = Mth.lerp(t, -26.0F, 0.0F);
-			yaw = Mth.lerp(t, 38.0F * s, 0.0F);
-			roll = Mth.lerp(t, 64.0F * s, 0.0F);
+			dx = Mth.lerp(t, -0.32F * s, 0.0F);
+			dy = Mth.lerp(t, 0.16F, 0.0F);
+			dz = Mth.lerp(t, -0.10F, 0.0F);
+			pitch = Mth.lerp(t, -14.0F, 0.0F);
+			yaw = Mth.lerp(t, 22.0F * s, 0.0F);
+			roll = Mth.lerp(t, 58.0F * s, 0.0F);
 		}
 
 		pose.translate(dx, dy, dz);
