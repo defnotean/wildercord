@@ -622,7 +622,7 @@ def _smithing(name, template, base, addition, result_id, forged, rarity="rare"):
         "minecraft:rarity": rarity,
     }
     if forged == "skyrend_glaive":
-        components["minecraft:swing_animation"] = {"type": "whack", "duration": 8}
+        components["minecraft:attack_animation"] = {"type": "whack", "duration": 8}
     return {"type": "minecraft:smithing_transform", "template": template, "base": base, "addition": addition,
             "result": {"id": result_id, "components": components}}
 

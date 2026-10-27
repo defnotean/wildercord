@@ -12,7 +12,7 @@
         "translate": "item.wildercord.skyrend_glaive"
       },
       "minecraft:rarity": "rare",
-      "minecraft:swing_animation": {
+      "minecraft:attack_animation": {
         "type": "whack",
         "duration": 8
       }

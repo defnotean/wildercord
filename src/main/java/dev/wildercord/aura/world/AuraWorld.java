@@ -118,7 +118,7 @@ public final class AuraWorld {
 		stack.set(DataComponents.ITEM_NAME, Component.translatable("item.wildercord." + forged.id));
 		stack.set(DataComponents.RARITY, Rarity.RARE);
 		if (forged == AuraWorldRules.Forged.SKYREND_GLAIVE) {
-			stack.set(DataComponents.SWING_ANIMATION, new SwingAnimation(SwingAnimationType.WHACK, 8));
+			stack.set(DataComponents.ATTACK_ANIMATION, new SwingAnimation(SwingAnimationType.WHACK, 8));
 		}
 		return stack;
 	}
