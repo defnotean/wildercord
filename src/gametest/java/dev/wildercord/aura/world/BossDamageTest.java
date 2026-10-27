@@ -172,7 +172,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				c.waitTicks(2);
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person").disableCounterPrefix());
 				if ("skyrend_glaive".equals(name)) {
-					c.runOnClient(mc -> mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND));
+					c.runOnClient(mc -> mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND,
+						mc.player.getMainHandItem().getOrDefault(net.minecraft.core.component.DataComponents.ATTACK_ANIMATION, net.minecraft.world.item.component.SwingAnimation.DEFAULT), true));
 					c.waitTicks(3);
 					c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person_swing").disableCounterPrefix());
 					c.waitTicks(10);
@@ -181,7 +182,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 					c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_idle").disableCounterPrefix());
 				}
 				c.runOnClient(mc -> {
-					mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+					mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND,
+						mc.player.getMainHandItem().getOrDefault(net.minecraft.core.component.DataComponents.ATTACK_ANIMATION, net.minecraft.world.item.component.SwingAnimation.DEFAULT), true);
 					mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);
 				});
 				c.waitTicks(3);
