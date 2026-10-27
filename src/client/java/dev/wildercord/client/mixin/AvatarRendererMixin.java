@@ -28,6 +28,7 @@ public abstract class AvatarRendererMixin {
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V",
 		at = @At("TAIL"))
 	private void wildercord$castingPose(Avatar avatar, AvatarRenderState state, float partial, CallbackInfo ci) {
+		dev.wildercord.client.GlaivePose.extract(avatar, state);
 		dev.wildercord.client.MastersArtPose.extract(avatar, state, partial);
 		dev.wildercord.client.combat.ArticulatedCombat.extract(avatar, state, partial);
 		CastingPose pose = (CastingPose) state;

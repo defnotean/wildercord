@@ -615,12 +615,16 @@ def egg_icon(kind):
 # ============================================================== data
 
 def _smithing(name, template, base, addition, result_id, forged, rarity="rare"):
+    components = {
+        "wildercord:aura_forged": forged,
+        "minecraft:item_model": f"wildercord:{forged}",
+        "minecraft:item_name": {"translate": f"item.wildercord.{forged}"},
+        "minecraft:rarity": rarity,
+    }
+    if forged == "skyrend_glaive":
+        components["minecraft:swing_animation"] = {"type": "whack", "duration": 8}
     return {"type": "minecraft:smithing_transform", "template": template, "base": base, "addition": addition,
-            "result": {"id": result_id, "components": {
-                "wildercord:aura_forged": forged,
-                "minecraft:item_model": f"wildercord:{forged}",
-                "minecraft:item_name": {"translate": f"item.wildercord.{forged}"},
-                "minecraft:rarity": rarity}}}
+            "result": {"id": result_id, "components": components}}
 
 
 FORGINGS = {

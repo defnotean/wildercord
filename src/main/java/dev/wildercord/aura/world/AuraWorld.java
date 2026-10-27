@@ -24,7 +24,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.SwingAnimationType;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.ArrayList;
@@ -115,6 +117,9 @@ public final class AuraWorld {
 		stack.set(DataComponents.ITEM_MODEL, Wildercord.id(forged.id));
 		stack.set(DataComponents.ITEM_NAME, Component.translatable("item.wildercord." + forged.id));
 		stack.set(DataComponents.RARITY, Rarity.RARE);
+		if (forged == AuraWorldRules.Forged.SKYREND_GLAIVE) {
+			stack.set(DataComponents.SWING_ANIMATION, new SwingAnimation(SwingAnimationType.WHACK, 8));
+		}
 		return stack;
 	}
 

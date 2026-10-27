@@ -26,6 +26,7 @@ public abstract class ItemInHandLayerAuraMixin {
 		target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"))
 	private void wildercord$thrustGrip(ArmedEntityRenderState state, ItemStackRenderState item, ItemStack stack, HumanoidArm arm, PoseStack pose,
 			SubmitNodeCollector collector, int light, CallbackInfo ci) {
+		dev.wildercord.client.GlaivePose.heldItem(state, arm, stack, pose);
 		dev.wildercord.client.MastersArtPose.heldSword(state, arm, stack, pose);
 		dev.wildercord.client.auraworld.MasterModel.heldSword(state, arm, stack, pose);
 	}

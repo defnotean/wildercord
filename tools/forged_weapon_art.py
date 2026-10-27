@@ -207,28 +207,32 @@ def bulwark_maul():
 
 
 def skyrend_glaive():
-    """A storm-lacquered polearm with twin sweeping golden storm-wings and a glowing electric-blue storm crystal glaive blade."""
+    """A long-shafted storm-lacquered polearm with twin leather grip wraps, a storm-gold socket collar, and a sleek curved single-edged storm-crystal glaive blade."""
     parts = [
-        _b((7.55, -.8, 7.55), (8.45, 0, 8.45), "steel"), _b((7.15, 0, 7.15), (8.85, 1.0, 8.85), "gold"),
-        _b((7.45, 1.0, 7.45), (8.55, 14.0, 8.55), "haft"),
-        _b((7.25, 2.4, 7.25), (8.75, 2.75, 8.75), "gold"), _b((7.3, 2.75, 7.3), (8.7, 6.2, 8.7), "wrap"),
-        _b((7.25, 6.2, 7.25), (8.75, 6.55, 8.75), "gold"), _b((7.3, 9.5, 7.3), (8.7, 11.0, 8.7), "wrap"),
-        _b((6.8, 13.4, 6.95), (9.2, 15.2, 9.05), "gold"), _b((7.45, 13.75, 6.75), (8.55, 14.75, 9.25), "spark"),
-        _b((7.2, 15.2, 7.25), (8.8, 15.8, 8.75), "gold"),
-        # Twin sweeping stepped golden storm-wings at the base of the blade.
-        _b((5.2, 14.1, 7.4), (6.8, 15.9, 8.6), "gold"), _b((9.2, 14.1, 7.4), (10.8, 15.9, 8.6), "gold"),
-        _b((4.1, 15.0, 7.55), (5.4, 17.2, 8.45), "gold"), _b((10.6, 15.0, 7.55), (11.9, 17.2, 8.45), "gold"),
-        _b((3.5, 16.2, 7.7), (4.4, 18.2, 8.3), "spark"),
+        _b((7.55, -.6, 7.55), (8.45, .2, 8.45), "steel"), _b((7.15, .2, 7.15), (8.85, 1.3, 8.85), "gold"),
+        _b((7.48, 1.3, 7.48), (8.52, 15.8, 8.52), "haft"),
+        # Rear-hand and lead-hand polearm grip wraps along the shaft.
+        _b((7.28, 3.6, 7.28), (8.72, 4.0, 8.72), "gold"), _b((7.34, 4.0, 7.34), (8.66, 7.4, 8.66), "wrap"),
+        _b((7.28, 7.4, 7.28), (8.72, 7.8, 8.72), "gold"),
+        _b((7.28, 9.8, 7.28), (8.72, 10.2, 8.72), "gold"), _b((7.34, 10.2, 7.34), (8.66, 13.6, 8.66), "wrap"),
+        _b((7.28, 13.6, 7.28), (8.72, 14.0, 8.72), "gold"),
+        # Storm-gold polearm socket collar, wind-gem, and compact asymmetric guard spur + tassel.
+        _b((6.95, 15.6, 7.05), (9.05, 17.2, 8.95), "gold"), _b((7.45, 15.95, 6.85), (8.55, 16.85, 9.15), "spark"),
+        _b((5.3, 16.2, 7.45), (6.95, 17.3, 8.55), "gold"), _b((4.5, 15.4, 7.65), (5.4, 16.7, 8.35), "spark"),
+        _b((9.05, 16.0, 7.45), (10.15, 17.0, 8.55), "gold"),
+        _b((7.25, 17.2, 7.3), (8.75, 17.8, 8.7), "gold"),
+        # Rear spine barb midway up the curved blade.
+        _b((6.45, 20.9, 7.76), (7.10, 21.9, 8.24), "steel"),
     ]
-    # The storm-crystal glaive blade swells out to the cutting side (+x) and sweeps to a razor point.
-    blade = [(15.6, 17.0, 6.9, 10.5), (17.0, 18.5, 6.8, 11.5), (18.5, 20.0, 6.9, 12.1), (20.0, 21.5, 7.2, 12.3),
-             (21.5, 23.0, 7.7, 12.0), (23.0, 24.2, 8.4, 11.4), (24.2, 25.2, 9.2, 10.8)]
+    # Sleek, curved single-edged glaive blade: reinforced storm-steel spine (-x) and glowing cutting edge (+x).
+    blade = [(17.6, 19.1, 7.35, 9.25), (19.1, 20.6, 7.25, 9.50), (20.6, 22.1, 7.10, 9.65),
+             (22.1, 23.5, 6.95, 9.45), (23.5, 24.8, 6.80, 9.05), (24.8, 25.9, 6.65, 8.45)]
     for lo, hi, x0, x1 in blade:
         parts.append(_b((x0, lo, 7.72), (x1, hi, 8.28), "steel", "blade"))
-        parts.append(_b((x1, lo, 7.84), (x1 + .48, hi, 8.16), "edge"))
-    parts.append(_b((9.6, 25.2, 7.84), (10.6, 26.0, 8.16), "edge"))
-    parts.append(_b((9.95, 26.0, 7.88), (10.45, 26.6, 8.12), "edge"))
-    return parts, 27.4
+        parts.append(_b((x1, lo, 7.84), (x1 + .52, hi, 8.16), "edge"))
+    parts.append(_b((6.55, 25.9, 7.84), (8.20, 26.5, 8.16), "edge"))
+    parts.append(_b((6.50, 26.5, 7.88), (7.50, 26.8, 8.12), "edge"))
+    return parts, 26.8
 
 
 def fetchblade():
@@ -284,11 +288,11 @@ def staff_build(greater=False):
 
 
 WEAPONS = {
-    # name: (build, materials, texture prefix, diagonal: -45 = tip up-right like a sword, 45 = tip up-left like a spear)
+    # name: (build, materials, texture prefix, diagonal: -45 = tip up-right)
     "oathkeeper": (oathkeeper, OATH, "oathkeeper", -45),
     "lumenedge": (lumenedge, LUMEN, "lumenedge", -45),
     "bulwark_maul": (bulwark_maul, MAUL, "bulwark_maul", -45),
-    "skyrend_glaive": (skyrend_glaive, GLAIVE, "skyrend_glaive", 45),
+    "skyrend_glaive": (skyrend_glaive, GLAIVE, "skyrend_glaive", -45),
     "fetchblade": (fetchblade, FETCH, "fetchblade", -45),
 }
 
@@ -338,12 +342,12 @@ HANDHELD = {
     "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13], "scale": [.68, .68, .68]},
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
 }
-# The vanilla spear poses, scaled to the glaive's longer build so it reaches as far as a diamond spear does.
-SPEAR = {
-    "firstperson_righthand": {"rotation": [-20, 90, -35], "translation": [3.13, 2, .13], "scale": [1.1, 1.1, 1.1]},
-    "firstperson_lefthand": {"rotation": [-20, -90, 35], "translation": [3.13, 2, .13], "scale": [1.1, 1.1, 1.1]},
-    "thirdperson_righthand": {"rotation": [5, 270, -40], "translation": [0, 2, 2], "scale": [1.4, 1.4, 1.4]},
-    "thirdperson_lefthand": {"rotation": [5, -270, 40], "translation": [0, 2, 2], "scale": [1.4, 1.4, 1.4]},
+# Polearm display transforms: gripped along the lower-mid shaft so the long haft, collar, and curved glaive blade extend forward.
+GLAIVE_DISPLAY = {
+    "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4, .5], "scale": [.88, .88, .88]},
+    "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4, .5], "scale": [.88, .88, .88]},
+    "firstperson_righthand": {"rotation": [0, -100, 16], "translation": [.55, 1.75, 1.35], "scale": [.64, .64, .64]},
+    "firstperson_lefthand": {"rotation": [0, 80, -16], "translation": [.55, 1.75, 1.35], "scale": [.64, .64, .64]},
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
 }
 
@@ -451,7 +455,7 @@ def held_model(name):
     parts, length = build()
     tex = textures(name)
     tex["particle"] = tex[next(iter(mats))]
-    display = dict(SPEAR if angle > 0 else HANDHELD)
+    display = dict(GLAIVE_DISPLAY if name == "skyrend_glaive" else HANDHELD)
     display["ground"] = {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [.5, .5, .5]}
     display["fixed"] = {"rotation": [0, 180, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]}
     return {"textures": tex, "elements": elements(parts, length, angle), "display": display}

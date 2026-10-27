@@ -80,6 +80,7 @@ public abstract class PlayerModelMixin {
 		}
 		float p = pose.wildercord$progress();
 		if (p < 0) {
+			dev.wildercord.client.GlaivePose.applyPlayer(model, state);
 			return;
 		}
 		// In fast, held, then eased back to rest.

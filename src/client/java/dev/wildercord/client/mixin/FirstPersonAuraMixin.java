@@ -50,7 +50,11 @@ public abstract class FirstPersonAuraMixin {
 			Operation<Void> original, @Local(argsOnly = true) PlayerRenderState player,
 			@Local(argsOnly = true) FirstPersonHandsAndItemsRenderState state, @Local(argsOnly = true) InteractionHand hand) {
 		float ownership = MastersArtPose.firstPersonOwnership(hand, player.avatarRenderState, state);
-		if (ownership <= 0) { original.call(renderer, attack, pose, side, arm); return; }
+		if (ownership <= 0) {
+			if (dev.wildercord.client.GlaivePose.firstPersonSwing(attack, pose, side, arm, player.avatarRenderState, hand)) return;
+			original.call(renderer, attack, pose, side, arm);
+			return;
+		}
 		if (ownership >= 1) return;
 		// Capture the native delta at its real phase, then fade its amplitude. Scaling the phase
 		// would turn a nearly finished neutral swing into a large mid-swing during recovery.
