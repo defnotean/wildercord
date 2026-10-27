@@ -119,10 +119,14 @@ class AuraWorldRulesTest {
 	void theForgedGearAndTheSashDoWhatTheySay() {
 		assertNotNull(AuraWorldRules.Forged.byId("lumenedge"));
 		assertSame(AuraWorldRules.Forged.BULWARK_MAUL, AuraWorldRules.Forged.byId("bulwark_maul"));
+		assertSame(AuraWorldRules.Forged.FETCHBLADE, AuraWorldRules.Forged.byId("fetchblade"));
 		assertNull(AuraWorldRules.Forged.byId("excalibur"));
 		assertTrue(AuraWorldRules.LUMENEDGE_GAIN > 1);
 		assertTrue(AuraWorldRules.SKYREND_SLASH > 1 && AuraWorldRules.SKYREND_REACH > 1);
 		assertTrue(AuraWorldRules.BULWARK_GUARD_COST < 1);
+		assertTrue(AuraWorldRules.FETCHBLADE_GAIN >= AuraWorldRules.LUMENEDGE_GAIN);
+		assertTrue(AuraWorldRules.FETCHBLADE_SLASH > 1 && AuraWorldRules.FETCHBLADE_REACH > 1 && AuraWorldRules.FETCHBLADE_TARGETS >= 1);
+		assertTrue(AuraWorldRules.FETCHBLADE_DASH_COOLDOWN >= 60 && AuraWorldRules.FETCHBLADE_DASH_DAMAGE >= 10.0);
 		assertEquals(25, AuraWorldRules.sashCapacity(20, 1.25));
 		assertEquals(87, AuraWorldRules.sashCapacity(70, 1.25), "rounded down");
 		assertEquals(70, AuraWorldRules.sashCapacity(70, 0.5), "never less than without it");

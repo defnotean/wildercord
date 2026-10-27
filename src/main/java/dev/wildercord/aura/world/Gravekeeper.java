@@ -54,7 +54,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 	private Vec3 direction=new Vec3(0,0,1),leapFrom=Vec3.ZERO,leapTo=Vec3.ZERO,charge=Vec3.ZERO;
 	private UUID quarry;
 	private boolean fought,roused;
-	public Gravekeeper(EntityType<? extends Gravekeeper> type,Level level){super(type,level);xpReward=35;setPersistenceRequired();}
+	public Gravekeeper(EntityType<? extends Gravekeeper> type,Level level){super(type,level);xpReward=100;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){return createMobAttributes().add(Attributes.MAX_HEALTH,160).add(Attributes.ARMOR,8).add(Attributes.MOVEMENT_SPEED,.23).add(Attributes.ATTACK_DAMAGE,6).add(Attributes.FOLLOW_RANGE,28).add(Attributes.KNOCKBACK_RESISTANCE,.8);}
 	public void bind(BlockPos altar,BlockPos arena){reliquary=altar.immutable();home=arena.immutable();}
 	public BlockPos home(){return home;}
@@ -425,7 +425,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){var t=tomb(server);if(t!=null){if(source.getEntity() instanceof ServerPlayer killer && !killer.isCreative() && !killer.isSpectator())fought=true;if(fought)for(var p:server.players())t.participant(p);t.defeated(getUUID());}Feels.sound(server,position(),"aura_tomb_fall",1,1);bar.removeAllPlayers();}
+		if(level() instanceof ServerLevel server){var t=tomb(server);if(t!=null){if(source.getEntity() instanceof ServerPlayer killer && !killer.isCreative() && !killer.isSpectator())fought=true;if(fought)for(var p:server.players())t.participant(p);t.defeated(getUUID());}Guardians.reward(server,this,BossTier.APPRENTICE,bar,source);Feels.sound(server,position(),"aura_tomb_fall",1,1);bar.removeAllPlayers();}
 		super.die(source);
 	}
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}

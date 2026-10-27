@@ -141,8 +141,14 @@ def glow():
 
 
 def write(g):
+    one = lambda item, lo, hi: {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': item, 'functions': [
+        {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': lo, 'max': hi}}]}]}
     g.write_json(g.DATA / 'loot_table/entities/lantern_bearer.json',
-                 {'type': 'minecraft:entity', 'pools': [], 'random_sequence': 'wildercord:entities/lantern_bearer'})
+                 {'type': 'minecraft:entity', 'pools': [
+                     one('wildercord:bearers_lantern', 1, 1), one('wildercord:aura_shard', 1, 2),
+                     one('wildercord:mana_crystal', 1, 2), one('wildercord:hollow_dust', 2, 4),
+                     one('minecraft:soul_lantern', 1, 3),
+                 ], 'random_sequence': 'wildercord:entities/lantern_bearer'})
     g.save(skin(), g.ASSETS / 'textures/entity/lantern_bearer/skin.png')
     # The lantern it leaves is a soul lantern, standing at the gibbet's foot and carried in hand.
     g.write_json(g.ASSETS / 'blockstates/barrow_lantern.json', {'variants': {'': {'model': 'minecraft:block/soul_lantern'}}})

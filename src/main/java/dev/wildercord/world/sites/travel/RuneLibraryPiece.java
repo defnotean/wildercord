@@ -30,8 +30,13 @@ public final class RuneLibraryPiece extends TravelPiece {
 	static final boolean[] BLUE = {true, false, true};
 	static final int[] COLUMN = {3, 5, 8};
 
-	public RuneLibraryPiece(int x, int y, int z, Direction facing) { super(TravelSites.LIBRARY_PIECE, x, y, z, 15, 17, 17, facing); }
+	/** Cleared lawn round the hall, so the forest stands back from its walls. */
+	static final int MARGIN = 4;
+
+	public RuneLibraryPiece(int x, int y, int z, Direction facing) { super(TravelSites.LIBRARY_PIECE, x, y, z, 15, 17, 17, facing, MARGIN); }
 	public RuneLibraryPiece(CompoundTag tag) { super(TravelSites.LIBRARY_PIECE, tag); }
+
+	@Override protected int margin() { return MARGIN; }
 
 	/** The nook's chest, in local coordinates. */
 	public int[] nook() { int v = variant(); return new int[]{BLUE[v] ? 13 : 1, 1, 2 + COLUMN[v]}; }
@@ -42,9 +47,16 @@ public final class RuneLibraryPiece extends TravelPiece {
 		BlockState beamX = b(Blocks.DARK_OAK_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
 		Palette plinth = Palette.of(Blocks.DEEPSLATE_BRICKS, 6, Blocks.COBBLED_DEEPSLATE, 2, Blocks.CRACKED_DEEPSLATE_BRICKS, 1);
 		Palette stone = Palette.of(Blocks.STONE_BRICKS, 10, Blocks.MOSSY_STONE_BRICKS, 2, Blocks.CRACKED_STONE_BRICKS, 2);
+		int m = MARGIN;
 		clearCanopy(level, bb);
+		footing(level, bb, -m, -m, 14 + m, 16 + m, GRASS, DIRT, 16);
 		footing(level, bb, 0, 0, 14, 16, b(Blocks.STONE_BRICKS), COBBLE, 16);
-		for (int x = 5; x <= 9; x++) set(level, bb, b(Blocks.GRAVEL), x, 0, 0);
+		// A gravel walk from the road to the portal, between two lamp posts.
+		for (int z = -m; z <= 0; z++) for (int x = 5; x <= 9; x++) set(level, bb, b(z < 0 && (x == 5 || x == 9) ? Blocks.COARSE_DIRT : Blocks.GRAVEL), x, 0, z);
+		for (int x : new int[]{3, 11}) {
+			post(level, bb, b(Blocks.DEEPSLATE_BRICK_WALL), x, 2, -m + 1);
+			set(level, bb, b(Blocks.LANTERN), x, 3, -m + 1);
+		}
 		// A stone hall on a dark plinth, its walls banded at the shelf tops and the eaves.
 		room(level, bb, 0, 0, 1, 14, 7, 15, b(Blocks.STONE_BRICKS));
 		walls(level, bb, 0, 2, 1, 14, 7, 15, stone);

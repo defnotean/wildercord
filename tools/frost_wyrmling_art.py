@@ -109,7 +109,12 @@ def glow():
 
 
 def write(g):
-    g.write_json(g.DATA / 'loot_table/entities/frost_wyrmling.json', {'type': 'minecraft:entity', 'pools': []})
+    one = lambda item, lo, hi: {'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': item, 'functions': [
+        {'function': 'minecraft:set_count', 'count': {'type': 'minecraft:uniform', 'min': lo, 'max': hi}}]}]}
+    g.write_json(g.DATA / 'loot_table/entities/frost_wyrmling.json', {'type': 'minecraft:entity', 'pools': [
+        one('wildercord:rimescale', 1, 2), one('wildercord:aura_shard', 2, 3), one('wildercord:mana_crystal', 2, 3),
+        one('wildercord:everfrost_shard', 2, 5), one('minecraft:diamond', 2, 4),
+    ]})
     g.save(skin(), g.ASSETS / 'textures/entity/frost_wyrmling/skin.png')
     g.save(glow(), g.ASSETS / 'textures/entity/frost_wyrmling/glow.png')
     g.save(scale(), g.ASSETS / 'textures/block/rimescale.png')

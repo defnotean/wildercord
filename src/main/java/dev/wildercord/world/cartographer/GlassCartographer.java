@@ -11,6 +11,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.Vec3;
@@ -216,14 +217,26 @@ public final class GlassCartographer extends PathfinderMob implements Enemy {
 		retire();
 		bar.removeAllPlayers();
 		if (level() instanceof ServerLevel server && astrolabe != null && server.getBlockEntity(astrolabe) instanceof SurveyAstrolabeEntity entity && entity.complete(getUUID())) {
+			var methods = dev.wildercord.aura.BreathingMethods.BUILT_IN;
 			for (var player : server.players()) if (contributors.contains(player.getUUID()) && eligible(player)) {
 				var compass = CartographerContent.compassTo(server, astrolabe);
-				if (!player.getInventory().add(compass)) player.drop(compass, false, net.minecraft.util.Prediction.SERVER_ONLY);
-				player.giveExperiencePoints(80);
+				giveOrDrop(player, compass);
+				giveOrDrop(player, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
+				giveOrDrop(player, new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, 2));
+				giveOrDrop(player, new ItemStack(dev.wildercord.content.WildercordItems.TORN_PAGE, 1));
+				giveOrDrop(player, new ItemStack(dev.wildercord.content.Reagents.BOTTLED_GALE, 3));
+				if (!methods.isEmpty()) {
+					var method = methods.get(server.getRandom().nextInt(methods.size()));
+					giveOrDrop(player, dev.wildercord.aura.world.ManualPageItem.of(dev.wildercord.aura.world.AuraWorld.MANUAL_PAGE, method.id()));
+				}
+				player.giveExperiencePoints(180);
 				LoreJournal.record(player, "learned:glass_cartographer", true);
 			}
 		}
 		super.die(source);
+	}
+	private static void giveOrDrop(ServerPlayer player, ItemStack stack) {
+		if (!player.getInventory().add(stack)) player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
 	}
 
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }

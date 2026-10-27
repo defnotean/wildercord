@@ -4,20 +4,32 @@ import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.AuraRules;
+import dev.wildercord.aura.AuraSlash;
 import dev.wildercord.config.Config;
 import dev.wildercord.gear.Gear;
 import dev.wildercord.gear.GearDef;
 import dev.wildercord.gear.GearSlot;
 import dev.wildercord.gear.GearSlots;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -43,20 +55,49 @@ public final class ForgedGear {
 	public static final DataComponentType<String> FORGED = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Wildercord.id("aura_forged"),
 		DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build());
 
+	private static final DustParticleOptions FETCH_MINT = new DustParticleOptions(0x7CFFB2, 1.4F);
+
 	public static void init() {
-		// Lumenedge: a blow's aura, more of it. The sash: the stance's breath, more of it.
+		// Lumenedge & Mojito's Fetchblade: a blow's aura, more of it. The sash: the stance's breath, more of it.
 		AuraApi.onGain((player, amount, source) -> {
 			if (!Config.forgedGear(player)) {
 				return amount;
 			}
 			double a = amount;
-			if (source.equals("hit") && held(player) == AuraWorldRules.Forged.LUMENEDGE) {
+			AuraWorldRules.Forged main = held(player);
+			if (source.equals("hit") && main == AuraWorldRules.Forged.LUMENEDGE) {
 				a *= Config.get().auraWorld().lumenedgeGain();
+			} else if (source.equals("hit") && main == AuraWorldRules.Forged.FETCHBLADE) {
+				a *= AuraWorldRules.FETCHBLADE_GAIN;
 			}
 			if ((source.equals("stance") || source.equals("beat")) && sash(player)) {
 				a *= AuraWorldRules.SASH_BREATH;
 			}
 			return a;
+		});
+		// Mojito's Fetchblade: right-click to bound ahead in a burst of mint-green magic and loose a wide crescent slash.
+		UseItemCallback.EVENT.register((player, world, hand) -> {
+			if (hand != InteractionHand.MAIN_HAND || !Config.forgedGear(player)) {
+				return InteractionResult.PASS;
+			}
+			ItemStack stack = player.getItemInHand(hand);
+			if (of(stack) != AuraWorldRules.Forged.FETCHBLADE || player.getCooldowns().isOnCooldown(stack)) {
+				return InteractionResult.PASS;
+			}
+			player.getCooldowns().addCooldown(stack, AuraWorldRules.FETCHBLADE_DASH_COOLDOWN);
+			Vec3 look = player.getLookAngle();
+			Vec3 flat = new Vec3(look.x, 0, look.z);
+			Vec3 dir = flat.lengthSqr() > 1.0E-4 ? flat.normalize() : Vec3.ZERO;
+			player.setDeltaMovement(player.getDeltaMovement().multiply(0.3, 0.5, 0.3).add(dir.x * 0.95, 0.25, dir.z * 0.95));
+			player.needsSync = true;
+			player.fallDistance = 0;
+			if (world instanceof ServerLevel server && player instanceof ServerPlayer sp) {
+				sp.addEffect(new MobEffectInstance(MobEffects.SPEED, 80, 1, false, true));
+				server.sendParticles(FETCH_MINT, sp.getX(), sp.getY() + 0.9, sp.getZ(), 24, 0.5, 0.4, 0.5, 0);
+				server.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), SoundSource.PLAYERS, 1.0F, 1.15F);
+				AuraSlash.fetchCrescent(sp, AuraWorldRules.FETCHBLADE_DASH_DAMAGE);
+			}
+			return InteractionResult.SUCCESS;
 		});
 	}
 
@@ -75,19 +116,37 @@ public final class ForgedGear {
 		return entity instanceof Player player && Config.forgedGear(player) && held(player) == forged;
 	}
 
-	/** Skyrend Glaive: what a slash's harm is multiplied by (with its element, under the cap against a player). */
+	/** Skyrend Glaive & Fetchblade: what a slash's harm is multiplied by (with its element, under the cap against a player). */
 	public static double slashBonus(LivingEntity player) {
-		return working(player, AuraWorldRules.Forged.SKYREND_GLAIVE) ? Config.get().auraWorld().skyrendSlash() : 1.0;
+		if (working(player, AuraWorldRules.Forged.SKYREND_GLAIVE)) {
+			return Config.get().auraWorld().skyrendSlash();
+		}
+		if (working(player, AuraWorldRules.Forged.FETCHBLADE)) {
+			return AuraWorldRules.FETCHBLADE_SLASH;
+		}
+		return 1.0;
 	}
 
-	/** Skyrend Glaive: how much further and wider a slash flies. */
+	/** Skyrend Glaive & Fetchblade: how much further and wider a slash flies. */
 	public static double slashReach(LivingEntity player) {
-		return working(player, AuraWorldRules.Forged.SKYREND_GLAIVE) ? AuraWorldRules.SKYREND_REACH : 1.0;
+		if (working(player, AuraWorldRules.Forged.SKYREND_GLAIVE)) {
+			return AuraWorldRules.SKYREND_REACH;
+		}
+		if (working(player, AuraWorldRules.Forged.FETCHBLADE)) {
+			return AuraWorldRules.FETCHBLADE_REACH;
+		}
+		return 1.0;
 	}
 
-	/** Skyrend Glaive: how many more foes a slash cuts. */
+	/** Skyrend Glaive & Fetchblade: how many more foes a slash cuts. */
 	public static int slashTargets(LivingEntity player) {
-		return working(player, AuraWorldRules.Forged.SKYREND_GLAIVE) ? AuraWorldRules.SKYREND_TARGETS : 0;
+		if (working(player, AuraWorldRules.Forged.SKYREND_GLAIVE)) {
+			return AuraWorldRules.SKYREND_TARGETS;
+		}
+		if (working(player, AuraWorldRules.Forged.FETCHBLADE)) {
+			return AuraWorldRules.FETCHBLADE_TARGETS;
+		}
+		return 0;
 	}
 
 	/** Bulwark Maul: what the guard costs, raised and held, times this. */
@@ -136,6 +195,7 @@ public final class ForgedGear {
 			case LUMENEDGE -> pct(Config.get().auraWorld().lumenedgeGain() - 1);
 			case SKYREND_GLAIVE -> pct(Config.get().auraWorld().skyrendSlash() - 1);
 			case BULWARK_MAUL -> pct(1 - Config.get().auraWorld().bulwarkGuardCost());
+			case FETCHBLADE -> pct(AuraWorldRules.FETCHBLADE_GAIN - 1);
 		};
 		return List.of(
 			Component.translatable("tooltip.wildercord.aura_forged." + forged.id + ".lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8),

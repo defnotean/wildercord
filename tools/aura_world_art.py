@@ -736,6 +736,8 @@ LANG = {
     "tooltip.wildercord.aura_forged.skyrend_glaive.lore": "Storm-glass in the edge. Its crescents carry like thunder.",
     "tooltip.wildercord.aura_forged.bulwark_maul": "Aura-forged: Aura Guard costs %s%% less",
     "tooltip.wildercord.aura_forged.bulwark_maul.lore": "Riven stone in its head. It stands like a wall.",
+    "tooltip.wildercord.aura_forged.fetchblade": "Aura-forged: %s%% more aura from every blow, wider Aura Slashes, and Use to bound ahead with a mint crescent",
+    "tooltip.wildercord.aura_forged.fetchblade.lore": "Carried crosswise in Mojito's jaws through the misty grove. It still wants to play fetch.",
     "tooltip.wildercord.aura_forged.from": "Forged from a %s",
     "message.wildercord.duelist.challenge": "%1$s, who breathes %2$s, looks you over: \"You carry a blade. Will you cross it with mine?\"",
     "message.wildercord.duelist.challenge_how": "Use the duelist again within ten seconds to accept. It will meet you at %s. Nobody dies: brought low, you're knocked out, and it yields.",

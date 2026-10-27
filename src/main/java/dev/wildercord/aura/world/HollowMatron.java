@@ -122,7 +122,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	private long lastAmbush=-99999,lastStrike=-99;
 	private ServerPlayer cutBy;
 
-	public HollowMatron(EntityType<? extends HollowMatron> type,Level level){super(type,level);xpReward=80;setPersistenceRequired();}
+	public HollowMatron(EntityType<? extends HollowMatron> type,Level level){super(type,level);xpReward=HollowMatronRules.TIER.xp;setPersistenceRequired();}
 	public static AttributeSupplier.Builder createAttributes(){
 		return createMobAttributes().add(Attributes.MAX_HEALTH,HollowMatronRules.HEALTH).add(Attributes.ARMOR,HollowMatronRules.ARMOUR).add(Attributes.ARMOR_TOUGHNESS,HollowMatronRules.TIER.toughness)
 			.add(Attributes.MOVEMENT_SPEED,HollowMatronRules.SPEED).add(Attributes.ATTACK_DAMAGE,HollowMatronRules.TIER.melee).add(Attributes.FOLLOW_RANGE,40).add(Attributes.KNOCKBACK_RESISTANCE,1)
@@ -1123,7 +1123,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){Feels.sound(server,head(),"aura_hollow_matron_death",1.8F,1);bar.removeAllPlayers();setNoGravity(false);}
+		if(level() instanceof ServerLevel server){Feels.sound(server,head(),"aura_hollow_matron_death",1.8F,1);Guardians.reward(server,this,HollowMatronRules.TIER,bar,source);bar.removeAllPlayers();setNoGravity(false);}
 		reeled=null;super.die(source);
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}

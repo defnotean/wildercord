@@ -99,6 +99,7 @@ public class EmberSanctumPiece extends DungeonPiece {
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb,
 			ChunkPos chunkPos, BlockPos reference) {
 		dev.wildercord.world.dungeons.DungeonWards.remember(level, this);
+		cavern(level, bb);
 		approach(level, bb);
 		hall(level, bb);
 		forge(level, bb);
@@ -113,6 +114,36 @@ public class EmberSanctumPiece extends DungeonPiece {
 
 	private BlockState brick(int x, int y, int z) {
 		return noise(x, y, z) < 20 ? CRACKED : BRICKS;
+	}
+
+	// ------------------------------------------------------------------ the cavern
+
+	/**
+	 * A cavern hollowed round the whole temple, so its buttresses, roofs and dome stand free in firelight instead of
+	 * vanishing into the rock: a vault of rough stone that slopes down to the walls, a floor of blackstone and basalt
+	 * propped down to whatever lies below, shroomlight bosses in the ceiling and basalt columns along the edges.
+	 * Built first; the temple is laid over it.
+	 */
+	private void cavern(WorldGenLevel level, BoundingBox bb) {
+		for (int x = 1; x <= WIDTH - 2; x++) {
+			for (int z = 0; z <= DEPTH - 3; z++) {
+				int edge = Math.min(Math.min(x - 1, WIDTH - 2 - x), DEPTH - 3 - z);
+				int n = noise(x, z);
+				int top = HEIGHT - 2 - n % 3 - 2 * Math.max(0, 4 - edge);
+				fill(level, bb, x, 2, z, x, top, z, AIR);
+				fillColumnDown(level, BLACKSTONE, x, 0, z, bb);
+				set(level, bb, n < 5 ? MAGMA : n < 40 ? Blocks.BASALT.defaultBlockState() : BLACKSTONE, x, 1, z);
+				// Light hangs from the vault, and the rock round the edge stands in columns.
+				if (n > 95 && edge > 3) {
+					set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), x, top + 1, z);
+					set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), x, top, z);
+				} else if (n > 90 && edge <= 2) {
+					fill(level, bb, x, 2, z, x, top, z, BASALT);
+				} else if (n > 84 && edge <= 3) {
+					fill(level, bb, x, top - 1 - n % 3, z, x, top, z, Blocks.BASALT.defaultBlockState());
+				}
+			}
+		}
 	}
 
 	// ------------------------------------------------------------------ the approach

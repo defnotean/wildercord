@@ -1424,10 +1424,16 @@ public class Archivist extends SpellcasterIllager {
 		drop(level, RuneItem.stack(fourth.get(level.getRandom().nextInt(fourth.size()))));
 		drop(level, new ItemStack(WildercordItems.TORN_PAGE, 2));
 		drop(level, new ItemStack(WildercordItems.MANA_CRYSTAL, 3));
+		drop(level, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
+		var methods = dev.wildercord.aura.BreathingMethods.BUILT_IN;
+		if (!methods.isEmpty()) {
+			var method = methods.get(level.getRandom().nextInt(methods.size()));
+			drop(level, dev.wildercord.aura.world.ManualPageItem.of(dev.wildercord.aura.world.AuraWorld.MANUAL_PAGE, method.id()));
+		}
 		// Now and then a greater staff.
 		dev.wildercord.gear.GearLoot.bossStaff(level.getRandom(), dev.wildercord.gear.GearLoot.ARCHIVIST_CHANCE, dev.wildercord.gear.GearDef.ELEMENTS)
 			.ifPresent(staff -> drop(level, staff));
-		ExperienceOrb.award(level, position(), 200);
+		ExperienceOrb.award(level, position(), 250);
 	}
 
 	private void drop(ServerLevel level, ItemStack stack) {

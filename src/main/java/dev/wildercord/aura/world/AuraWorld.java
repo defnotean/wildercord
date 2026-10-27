@@ -96,10 +96,18 @@ public final class AuraWorld {
 
 	/** A diamond weapon carrying a forging, as the smithing table makes it (for the creative tab, the tests and the guide). */
 	public static ItemStack forged(AuraWorldRules.Forged forged, boolean netherite) {
+		if (forged == AuraWorldRules.Forged.FETCHBLADE) {
+			ItemStack stack = new ItemStack(Items.NETHERITE_SWORD);
+			stack.set(ForgedGear.FORGED, forged.id);
+			stack.set(DataComponents.ITEM_NAME, Component.translatable("item.wildercord.mojito_fetchblade"));
+			stack.set(DataComponents.RARITY, Rarity.EPIC);
+			return stack;
+		}
 		Item base = switch (forged) {
 			case LUMENEDGE -> netherite ? Items.NETHERITE_SWORD : Items.DIAMOND_SWORD;
 			case SKYREND_GLAIVE -> netherite ? Items.NETHERITE_SPEAR : Items.DIAMOND_SPEAR;
 			case BULWARK_MAUL -> netherite ? Items.NETHERITE_AXE : Items.DIAMOND_AXE;
+			case FETCHBLADE -> Items.NETHERITE_SWORD;
 		};
 		ItemStack stack = new ItemStack(base);
 		stack.set(ForgedGear.FORGED, forged.id);
@@ -147,8 +155,12 @@ public final class AuraWorld {
 			output.accept(SleepingBlades.history());
 			output.accept(VillageTournaments.history());
 			for (AuraWorldRules.Forged forged : AuraWorldRules.Forged.values()) {
-				output.accept(forged(forged, false));
-				output.accept(forged(forged, true));
+				if (forged == AuraWorldRules.Forged.FETCHBLADE) {
+					output.accept(forged(forged, true));
+				} else {
+					output.accept(forged(forged, false));
+					output.accept(forged(forged, true));
+				}
 			}
 			SPAWN_EGGS.forEach(output::accept);
 		});
