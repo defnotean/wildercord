@@ -130,7 +130,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				mc.resizeGui();
 			});
 			java.util.List<java.util.Map.Entry<String, net.minecraft.world.item.ItemStack>> showcase = java.util.List.of(
-				java.util.Map.entry("oathkeeper", new net.minecraft.world.item.ItemStack(dev.wildercord.world.dungeons.SleepingBlades.BLADE)),
+				java.util.Map.entry("oathkeeper", new net.minecraft.world.item.ItemStack(SleepingBlades.BLADE)),
 				java.util.Map.entry("lumenedge", AuraWorld.forged(AuraWorldRules.Forged.LUMENEDGE, true)),
 				java.util.Map.entry("bulwark_maul", AuraWorld.forged(AuraWorldRules.Forged.BULWARK_MAUL, true)),
 				java.util.Map.entry("skyrend_glaive", AuraWorld.forged(AuraWorldRules.Forged.SKYREND_GLAIVE, true)),
@@ -166,7 +166,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				c.waitTicks(2);
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person").disableCounterPrefix());
 				c.runOnClient(mc -> {
-					mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+					mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 					mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);
 				});
 				c.waitTicks(2);
