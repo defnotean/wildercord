@@ -112,17 +112,13 @@ public final class BossDamageTest implements FabricClientGameTest {
 				check(dev.wildercord.content.dungeons.TrophyItem.REST == 20 * 90, "Trophy cooldown is 90 seconds");
 
 				// Upgraded Dungeon Relics (Rootbound Relic & Stormglass Relic) restore 25 mana and 20 aura with a 20s cooldown.
-				var caster = dev.wildercord.data.CasterData.get(player);
-				caster.setMana(0, player);
-				var aura = dev.wildercord.aura.AuraData.get(player);
-				aura.setMethod("stone");
-				aura.setStage(dev.wildercord.aura.AuraRules.FLOW);
-				aura.setAura(0);
+				player.setAttached(dev.wildercord.player.WildercordAttachments.MANA, 0.0F);
+				player.setAttached(dev.wildercord.aura.AuraAttachments.AURA, new dev.wildercord.aura.AuraAttachments.Data("stone", dev.wildercord.aura.AuraRules.FLOW, 0, 0, 0));
 				var relic = new net.minecraft.world.item.ItemStack(dev.wildercord.content.WildercordItems.ROOTBOUND_RELIC);
 				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, relic);
 				relic.use(s.overworld(), player, net.minecraft.world.InteractionHand.MAIN_HAND);
-				check(caster.getMana() >= 25f, "Rootbound Relic restores 25 mana");
-				check(aura.aura() >= 20.0, "Rootbound Relic restores 20 aura");
+				check(player.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.MANA, 0.0F) >= 25f, "Rootbound Relic restores 25 mana");
+				check(dev.wildercord.aura.Aura.aura(player) >= 20.0f, "Rootbound Relic restores 20 aura");
 				check(player.getCooldowns().isOnCooldown(relic), "Rootbound Relic enters cooldown");
 			});
 

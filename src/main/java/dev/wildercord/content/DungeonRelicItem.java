@@ -48,13 +48,10 @@ public class DungeonRelicItem extends Item {
 			return InteractionResult.SUCCESS;
 		}
 		if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
-			var caster = dev.wildercord.data.CasterData.get(sp);
-			caster.setMana(Math.min(caster.getMaxMana(sp), caster.getMana() + 25), sp);
-			var aura = dev.wildercord.aura.AuraData.get(sp);
-			if (aura.isAwakened()) {
-				aura.setAura(Math.min(aura.maxAura(sp), aura.aura() + 20));
-				aura.sync(sp);
-			}
+			int maxMana = Math.max(100, dev.wildercord.player.Mana.of(sp).max());
+			float curMana = sp.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.MANA, 0.0F);
+			sp.setAttached(dev.wildercord.player.WildercordAttachments.MANA, Math.min((float) maxMana, curMana + 25.0F));
+			dev.wildercord.aura.Aura.gain(sp, 20.0, "relic");
 		}
 		if (kind == Kind.ROOT) {
 			player.heal(6);
