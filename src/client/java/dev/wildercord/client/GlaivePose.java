@@ -274,19 +274,19 @@ public final class GlaivePose {
 		} else if (attack < 0.72F) {
 			float t = smooth(Mth.clamp((attack - 0.12F) / 0.22F, 0.0F, 1.0F));
 			float arc = Mth.sin(t * Mth.PI);
-			dx = Mth.lerp(t, 0.10F * s, -0.32F * s);
-			dy = Mth.lerp(t, 0.06F, 0.16F) + 0.04F * arc;
+			dx = Mth.lerp(t, 0.10F * s, -0.26F * s);
+			dy = Mth.lerp(t, 0.06F, 0.14F) + 0.04F * arc;
 			dz = Mth.lerp(t, 0.04F, -0.10F) - 0.06F * arc;
-			pitch = Mth.lerp(t, 8.0F, -14.0F) - 4.0F * arc;
-			yaw = Mth.lerp(t, -12.0F * s, 22.0F * s);
+			pitch = Mth.lerp(t, 8.0F, -10.0F) - 4.0F * arc;
+			yaw = Mth.lerp(t, -12.0F * s, 64.0F * s);
 			roll = Mth.lerp(t, -10.0F * s, 58.0F * s);
 		} else {
 			float t = smooth((attack - 0.72F) / 0.28F);
-			dx = Mth.lerp(t, -0.32F * s, 0.0F);
-			dy = Mth.lerp(t, 0.16F, 0.0F);
+			dx = Mth.lerp(t, -0.26F * s, 0.0F);
+			dy = Mth.lerp(t, 0.14F, 0.0F);
 			dz = Mth.lerp(t, -0.10F, 0.0F);
-			pitch = Mth.lerp(t, -14.0F, 0.0F);
-			yaw = Mth.lerp(t, 22.0F * s, 0.0F);
+			pitch = Mth.lerp(t, -10.0F, 0.0F);
+			yaw = Mth.lerp(t, 64.0F * s, 0.0F);
 			roll = Mth.lerp(t, 58.0F * s, 0.0F);
 		}
 
