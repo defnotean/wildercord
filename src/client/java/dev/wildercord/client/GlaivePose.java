@@ -63,7 +63,7 @@ public final class GlaivePose {
 			}
 		}
 		if (state.currentSwing != null && state.currentSwing.animation().type() == SwingAnimationType.STAB) {
-			state.currentSwing = new LivingEntity.SwingDescription(state.currentSwing.hand(), GLAIVE_SWING);
+			state.currentSwing = new LivingEntity.SwingDescription(state.currentSwing.hand(), GLAIVE_SWING, 8);
 		}
 	}
 
