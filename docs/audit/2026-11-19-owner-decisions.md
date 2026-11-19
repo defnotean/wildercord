@@ -71,3 +71,19 @@ clashes with vanilla's *Save Toolbar Activator* in creative.
 - **Leave both** as they are.
 
 Pick: rebind to `X` and merge `master_forms` into `masters_arts`; keep `lore` separate.
+
+## 7. Party bounty escorts
+
+`town/BountyEscorts.java`. The escort bounty is strictly solo: the llama is tagged to one UUID,
+only that player can start it, and a party member walking the llama home earns nothing (and can
+even lose the bounty for the owner if the llama dies on their watch). The Ferryman fight went
+cooperative this round; escorts are the other party-shaped activity.
+
+- **Party-share the escort:** any party member may escort, arrival credits the owner (or splits
+  coin), and the llama is lost only if no party member is around to save it.
+- **Companion credit:** keep ownership solo but pay a small coin share to members within range at
+  arrival.
+- **Leave it solo:** escorts are a personal ledger; parties have the Ferryman and dungeons.
+
+Pick: companion credit first (small change, no ownership rewrite), party-share later if players
+actually run escorts in parties.
