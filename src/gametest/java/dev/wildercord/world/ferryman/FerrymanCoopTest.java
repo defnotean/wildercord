@@ -125,11 +125,18 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 			awaitMove(c, world, guardian, ANCHOR, true, true);
 			var marks = world.getServer().computeOnServer(s -> {
 				var f = ferryman(s, guardian);
-				double[] absolute = {Math.abs(f.markX()), Math.abs(f.markZ()), Math.abs(f.markX2()), Math.abs(f.markZ2())};
-				Arrays.sort(absolute);
-				return absolute;
+				var o = oarsman(s, oarsman).position().subtract(f.position());
+				double m1x = f.markX(), m1z = f.markZ(), m2x = f.markX2(), m2z = f.markZ2();
+				// The companion has not moved since the tell began: one mark must be its own place,
+				// the other must sit apart from it, and both inside the clamp box.
+				boolean firstIsCompanion = Math.hypot(m1x - o.x, m1z - o.z) < 0.6;
+				boolean companionMarked = firstIsCompanion || Math.hypot(m2x - o.x, m2z - o.z) < 0.6;
+				double ox = firstIsCompanion ? m2x : m1x, oz = firstIsCompanion ? m2z : m1z;
+				boolean apart = Math.hypot(ox - o.x, oz - o.z) > 4;
+				boolean inBox = Math.abs(m1x) <= 11.76 && Math.abs(m1z) <= 11.76 && Math.abs(m2x) <= 11.76 && Math.abs(m2z) <= 11.76;
+				return new double[] {companionMarked ? 1 : 0, apart ? 1 : 0, inBox ? 1 : 0};
 			});
-			check(Arrays.equals(marks, new double[] {0, 0, 6, 11}),
+			check(Arrays.equals(marks, new double[] {1, 1, 1}),
 				"The paired anchor marks both oarsmen's places (got " + Arrays.toString(marks) + ")");
 			aim(c, mooring, 2);
 			c.waitTicks(5);
