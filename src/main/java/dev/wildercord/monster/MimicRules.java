@@ -137,4 +137,12 @@ public final class MimicRules {
 	public static boolean opensFor(boolean alive, boolean owner, double distance) {
 		return alive && owner && distance <= STORAGE_REACH;
 	}
+
+	/**
+	 * Whether it and the village's golems leave each other be. A tamed coffer is someone's coffer, not a monster
+	 * standing in their square; an untamed one is still a mimic, and the golems still take it up.
+	 */
+	public static boolean sparesGolems(boolean tamed) {
+		return tamed;
+	}
 }

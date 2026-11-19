@@ -71,6 +71,12 @@ class MimicRulesTest {
 	}
 
 	@Test
+	void onlyATamedCofferIsLeftToTheGolems() {
+		assertTrue(MimicRules.sparesGolems(true), "a tamed one is someone's coffer");
+		assertFalse(MimicRules.sparesGolems(false), "an untamed one is still a monster in their square");
+	}
+
+	@Test
 	void itsBellyOpensOnlyForItsOwnerNearby() {
 		assertTrue(MimicRules.opensFor(true, true, 3.0));
 		assertFalse(MimicRules.opensFor(true, false, 3.0), "a stranger");

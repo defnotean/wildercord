@@ -10,7 +10,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +27,8 @@ import java.util.UUID;
 /** Books tame a coffer mimic through the real use key; tamed, it follows, opens as a chest for its owner alone, keeps what it holds and spills it when it dies. */
 public final class CofferMimicTamingTest implements FabricClientGameTest {
 	private static UUID id;
+	/** The untamed coffer and the golem stood together for the golem's manners. */
+	private static UUID wildId, golemId;
 	/** Where it stood when it was killed. */
 	private static AABB fell;
 	private static void check(boolean x, String why) { if (!x) throw new AssertionError(why); }
@@ -182,6 +186,48 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> stand(s, 0.5, 38.5));
 			c.waitTicks(60);
 			w.getServer().runOnServer(s -> check(mimic(s).distanceTo(p(s)) < 5, "Left far behind, it turns up beside its owner (" + mimic(s).distanceTo(p(s)) + " away)"));
+
+			// The village's golems pass a tamed coffer by, and still take up with an untamed one beside it.
+			w.getServer().runOnServer(s -> {
+				var l = s.overworld();
+				for (int x = 18; x <= 24; x++) for (int z = 18; z <= 24; z++) {
+					l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
+					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+				}
+				var wild = MonsterContent.COFFER_MIMIC.create(l, EntitySpawnReason.COMMAND);
+				wild.setPos(20.5, 101, 20.5);
+				wild.settleHere(180);
+				l.addFreshEntity(wild);
+				wildId = wild.getUUID();
+				var golem = EntityType.IRON_GOLEM.create(l, EntitySpawnReason.COMMAND);
+				golem.setPos(20.5, 101, 23.5);
+				l.addFreshEntity(golem);
+				golemId = golem.getUUID();
+				stand(s, 21.5, 24.5); // its owner close by, so the tamed one keeps its spot between the two
+				mimic(s).setPos(21.5, 101, 20.5);
+			});
+			for (int i = 0; i < 20; i++) {
+				w.getServer().runOnServer(s -> {
+					mimic(s).setPos(21.5, 101, 20.5);
+					var wild = (CofferMimic) s.overworld().getEntity(wildId);
+					if (wild.isAlive()) wild.setHealth(wild.getMaxHealth());
+					if (p(s).getHealth() < 12) p(s).setHealth(20);
+				});
+				c.waitTicks(5);
+			}
+			w.getServer().runOnServer(s -> {
+				var golem = (IronGolem) s.overworld().getEntity(golemId);
+				var tamed = mimic(s);
+				var wild = (CofferMimic) s.overworld().getEntity(wildId);
+				check(golem != null && wild.isAlive(), "The golem and the untamed coffer are both still standing");
+				check(golem.distanceTo(tamed) <= 6 && golem.distanceTo(wild) <= 6,
+					"The golem stands within reach of both coffers (" + golem.distanceTo(tamed) + ", " + golem.distanceTo(wild) + ")");
+				check(golem.canAttack(wild), "A golem still takes up with an untamed coffer");
+				check(!golem.canAttack(tamed), "A golem passes a tamed coffer by");
+				check(golem.getTarget() != tamed, "The golem never takes the tamed one for its quarry");
+				check(!tamed.canAttack(golem) && tamed.getTarget() != golem, "And the tamed one leaves the golem be");
+			});
+			shot(c, "coffer_mimic_golem_passes_by");
 
 			// It keeps its owner, its orders and its belly through a save.
 			w.getServer().runOnServer(s -> {

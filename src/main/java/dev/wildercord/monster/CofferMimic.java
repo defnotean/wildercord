@@ -38,6 +38,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
@@ -70,7 +71,8 @@ import java.util.Optional;
  * <p>It is fond of books. Feed it one (shut or awake) and now and then it takes to whoever fed it: it never bites its owner,
  * follows them about, shutting up as a coffer beside them whenever they stop, and turns up at their side if left far
  * behind. Its owner can open it like a chest (it keeps what's put in it, and spills it all if it dies), stroke it by
- * sneaking up to it empty-handed, or tell it to stay put by sneaking up to it holding something else.</p>
+ * sneaking up to it empty-handed, or tell it to stay put by sneaking up to it holding something else. A tamed one is
+ * someone's coffer rather than a monster in the square: the village's iron golems pass it by, and it leaves them be.</p>
  */
 public class CofferMimic extends WildMonster implements OwnableEntity {
 	private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_OWNER =
@@ -197,7 +199,15 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 
 	@Override
 	public boolean canAttack(LivingEntity target) {
-		return !(target instanceof Player player && isOwnedBy(player)) && super.canAttack(target);
+		if (target instanceof Player player && isOwnedBy(player)) return false;
+		// A tamed one leaves the village's golems to their own business.
+		return !(MimicRules.sparesGolems(tamed()) && target instanceof IronGolem) && super.canAttack(target);
+	}
+
+	@Override
+	public void setTarget(@Nullable LivingEntity target) {
+		// Nor does it take one up in retaliation: a golem it has never crossed has no reason to come at it.
+		super.setTarget(MimicRules.sparesGolems(tamed()) && target instanceof IronGolem ? null : target);
 	}
 
 	@Override

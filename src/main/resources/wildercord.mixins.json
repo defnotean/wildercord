@@ -39,6 +39,7 @@
 		"HamletTradeMixin",
 		"SwapOfferMixin",
 		"MobConversionMixin",
+		"IronGolemCofferKinMixin",
 		"ItemEntityAccessor",
 		"TemporaryBlockDropsMixin",
 		"EvokerFangsMixin",
