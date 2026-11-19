@@ -190,7 +190,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			// The village's golems pass a tamed coffer by, and still take up with an untamed one beside it.
 			w.getServer().runOnServer(s -> {
 				var l = s.overworld();
-				for (int x = 18; x <= 24; x++) for (int z = 18; z <= 24; z++) {
+				for (int x = 18; x <= 24; x++) for (int z = 18; z <= 28; z++) {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
@@ -228,6 +228,10 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				check(golem.getTarget() != tamed, "The golem never takes the tamed one for its quarry");
 				check(!tamed.canAttack(golem) && tamed.getTarget() != golem, "And the tamed one leaves the golem be");
 			});
+			// Turn to face the two coffers and the golem between them: the camera was left looking the other way.
+			w.getServer().runOnServer(s -> p(s).teleportTo(s.overworld(), p(s).getX(), p(s).getY(), p(s).getZ(),
+				Set.<Relative>of(), 180F, 15F, false));
+			c.waitTicks(3);
 			shot(c, "coffer_mimic_golem_passes_by");
 
 			// It keeps its owner, its orders and its belly through a save.
