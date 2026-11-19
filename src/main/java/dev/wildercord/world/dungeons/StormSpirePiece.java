@@ -236,6 +236,8 @@ public class StormSpirePiece extends DungeonPiece {
 
 	@Override
 	public List<BoundingBox> wardedBoxes() {
-		return List.of(worldBox(2, 21, 15, 20, 27, 21));
+		// Around the arena's own shell: the room's walls stand at x=1 and x=21 and its top at y=27, so a ward
+		// that began at x=2 and stopped at y=27 left both to be taken apart from outside.
+		return List.of(worldBox(1, 20, 14, 21, 28, 22));
 	}
 }

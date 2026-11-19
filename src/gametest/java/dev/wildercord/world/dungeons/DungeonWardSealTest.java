@@ -1,8 +1,18 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.world.ArchivePiece;
+import dev.wildercord.world.sites.masters.ForgeDojoPiece;
+import dev.wildercord.world.sites.masters.ResonanceChamberPiece;
+import dev.wildercord.world.sites.masters.StarTerracePiece;
+import dev.wildercord.world.sites.masters.SundialCourtPiece;
 import dev.wildercord.world.sites.mine.DeepVaultPiece;
+import dev.wildercord.world.sites.wilds.DuneTemplePiece;
+import dev.wildercord.world.sites.wilds.EchoPostPiece;
+import dev.wildercord.world.sites.wilds.EmberOutpostPiece;
 import dev.wildercord.world.sites.wilds.IronGatehousePiece;
+import dev.wildercord.world.sites.wilds.RimeMonasteryPiece;
 import dev.wildercord.world.sites.wilds.VenomZigguratPiece;
+import dev.wildercord.world.sites.wilds.VoidLanternPiece;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.core.BlockPos;
@@ -37,7 +47,10 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 	private static final int CORE = 2;
 
 	private static final List<String> NAMES = List.of("rootbound maze", "sword tomb", "clockwork crypt", "bell chapel",
-		"storm spire", "deep vault", "iron gatehouse", "venom ziggurat");
+		"storm spire", "deep vault", "archive", "astral observatory", "ashen glade", "barrow field", "glacier den",
+		"living greenhouse", "mojito grove", "moving sky ruin", "serpent grove", "silk hollow", "forge dojo",
+		"resonance chamber", "star terrace", "sundial court", "iron gatehouse", "venom ziggurat", "dune temple",
+		"echo post", "ember outpost", "rime monastery", "void lantern");
 	private static final List<IntFunction<StructurePiece>> PIECES = List.of(
 		x -> new RootboundMazePiece(x, 120, 0, Direction.NORTH),
 		x -> new SwordTombPiece(x, 120, 0, Direction.NORTH),
@@ -45,8 +58,27 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		x -> new BellChapelPiece(x, 120, 0, Direction.NORTH),
 		x -> new StormSpirePiece(x, 120, 0, Direction.NORTH),
 		x -> new DeepVaultPiece(x, 120, 0, 12, Direction.NORTH),
+		x -> new ArchivePiece(x, 120, 0, Direction.NORTH),
+		x -> new AstralObservatoryPiece(x, 120, 0, Direction.NORTH),
+		x -> new AshenGladePiece(x, 120, 0, Direction.NORTH),
+		x -> new BarrowFieldPiece(x, 120, 0, Direction.NORTH),
+		x -> new GlacierDenPiece(x, 120, 0, Direction.NORTH, 0),
+		x -> new LivingGreenhousePiece(x, 120, 0, Direction.NORTH),
+		x -> new MojitoGrovePiece(x, 120, 0, Direction.NORTH),
+		x -> new MovingSkyRuinPiece(x, 120, 0, Direction.NORTH),
+		x -> new SerpentGrovePiece(x, 120, 0, Direction.NORTH, 0),
+		x -> new SilkHollowPiece(x, 120, 0, Direction.NORTH, 0),
+		x -> new ForgeDojoPiece(x, 120, 0, Direction.NORTH, false),
+		x -> new ResonanceChamberPiece(x, 120, 0, Direction.NORTH, false, 22),
+		x -> new StarTerracePiece(x, 120, 0, Direction.NORTH, false),
+		x -> new SundialCourtPiece(x, 120, 0, Direction.NORTH, false),
 		x -> new IronGatehousePiece(x, 0, Direction.NORTH),
-		x -> new VenomZigguratPiece(x, 0, Direction.NORTH));
+		x -> new VenomZigguratPiece(x, 0, Direction.NORTH),
+		x -> new DuneTemplePiece(x, 0, Direction.NORTH),
+		x -> new EchoPostPiece(x, 0, Direction.NORTH),
+		x -> new EmberOutpostPiece(x, 0, Direction.NORTH),
+		x -> new RimeMonasteryPiece(x, 0, Direction.NORTH),
+		x -> new VoidLanternPiece(x, 0, Direction.NORTH));
 
 	@Override public void runTest(ClientGameTestContext c) {
 		try (var world = c.worldBuilder().create()) {
@@ -88,7 +120,8 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 				}
 				return found;
 			});
-			check(holes.isEmpty(), "Warded rooms a survival player can break into:\n" + String.join("\n", holes));
+			check(holes.isEmpty(), "Warded rooms a survival player can break into (" + holes.size() + "):\n"
+				+ String.join("\n", holes.subList(0, Math.min(80, holes.size()))));
 		}
 	}
 

@@ -37,7 +37,8 @@ import java.util.UUID;
  *
  * <p>The warded rooms come from the dungeon pieces themselves ({@link WardedPiece}): each piece writes its rooms down as
  * it's built (so a dungeon put down with {@code /place} is warded too), and the world's own record of which structures
- * stand where covers dungeons built before the ward existed.</p>
+ * stand where covers dungeons built before the ward existed. A room has to be written down around its own walls: a ward
+ * that stops one block short of the shell it guards leaves the shell to be taken apart from outside.</p>
  */
 public final class DungeonWards extends SavedData {
 	/** Blocks players placed inside a ward, by position: these they may break again. */
@@ -134,7 +135,13 @@ public final class DungeonWards extends SavedData {
 	 */
 	public static boolean admits(ServerLevel level, Player player, BlockPos pos,
 		net.minecraft.world.level.block.state.BlockState state, boolean taking) {
-		if (player == null || player.isCreative() || state.canBeReplaced() || !warded(level, pos)) {
+		if (player == null || player.isCreative() || !warded(level, pos)) {
+			return true;
+		}
+		// Air and water are nobody's to keep. Everything else in the room was put there by the dungeon,
+		// including the hanging roots and carpets it decorates itself with: those used to slip through
+		// because the world lets anything replace them.
+		if (state.isAir() || !state.getFluidState().isEmpty()) {
 			return true;
 		}
 		if (TemporaryBlocks.recorded(level, pos)) {
