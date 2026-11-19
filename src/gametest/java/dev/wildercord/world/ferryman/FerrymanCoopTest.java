@@ -108,14 +108,15 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				s.overworld().addNewPlayer(fake);
 				return fake.getUUID();
 			});
-			// Both stand on the crossing while the ferryman is brought to its second count, one blow per tick.
+			// Both stand on the crossing while the ferryman is brought to its second count, one blow per tick,
+			// the two of them taking turns so each earns a place among its contributors.
 			for (int i = 0; i < 60; i++) {
 				boolean phaseTwo = world.getServer().computeOnServer(s -> {
 					var f = ferryman(s, guardian);
-					var p = s.getPlayerList().getPlayers().getFirst();
-					if (p.getHealth() < 12) p.setHealth(20);
+					var striker = (i & 1) == 0 ? traveller(s, oarsman) : oarsman(s, oarsman);
+					if (striker.getHealth() < 12) striker.setHealth(striker.getMaxHealth());
 					if (!f.isAlive() || second(f.getHealth(), f.getMaxHealth())) return true;
-					f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(p), 40);
+					f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(striker), 40);
 					return false;
 				});
 				if (phaseTwo) break;
@@ -233,8 +234,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 					&& (!paired || k.pairedMark()) && k.elapsed(0) < tell(move);
 			})) return;
 			w.getServer().runOnServer(s -> {
-				var p = s.getPlayerList().getPlayers().getFirst();
-				if (p.getHealth() < 12) p.setHealth(20);
+				for (var p : s.getPlayerList().getPlayers()) if (p.getHealth() < 12) p.setHealth(p.getMaxHealth());
 			});
 			c.waitTicks(1);
 		}
