@@ -108,6 +108,12 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				s.overworld().addNewPlayer(fake);
 				return fake.getUUID();
 			});
+			// The companion lands a blow of its own first, whatever the phase timing does afterwards.
+			world.getServer().runOnServer(s -> {
+				var f = ferryman(s, guardian);
+				dev.wildercord.cast.Effects.readyToHurt(f);
+				f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(oarsman(s, oarsman)), 20);
+			});
 			// Both stand on the crossing while the ferryman is brought to its second count, one blow per tick,
 			// the two of them taking turns so each earns a place among its contributors.
 			for (int i = 0; i < 60; i++) {
@@ -117,6 +123,9 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 					var striker = (turn & 1) == 0 ? traveller(s, oarsman) : oarsman(s, oarsman);
 					if (striker.getHealth() < 12) striker.setHealth(striker.getMaxHealth());
 					if (!f.isAlive() || second(f.getHealth(), f.getMaxHealth())) return true;
+					// Its moment of invulnerability after the last blow would swallow this one, and a
+					// blow that does not land takes the striker off the contributors again.
+					dev.wildercord.cast.Effects.readyToHurt(f);
 					f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(striker), 40);
 					return false;
 				});
@@ -189,6 +198,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				p.setHealth(20);
 				p.teleportTo(s.overworld(), mooring.getX() + .5, mooring.getY(), mooring.getZ() - 3.5, Set.<Relative>of(), 0, 0, false);
 				f.setHealth(1);
+				dev.wildercord.cast.Effects.readyToHurt(f);
 				f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(p), 20);
 				check(s.overworld().getBlockEntity(bell) instanceof CrossingBellEntity keep && keep.slain(),
 					"The saved guardian marks its bell slain");
