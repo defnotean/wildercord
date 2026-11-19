@@ -57,10 +57,16 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 					net.minecraft.util.RandomSource.create(77), b, new ChunkPos(b.minX() >> 4, b.minZ() >> 4), BlockPos.ZERO);
 				var structure = l.registryAccess().lookupOrThrow(Registries.STRUCTURE)
 					.getOrThrow(ResourceKey.create(Registries.STRUCTURE, Identifier.parse("wildercord:water_last_crossing"))).value();
-				var start = new StructureStart(structure, new ChunkPos(b.minX() >> 4, b.minZ() >> 4), 0,
-					new PiecesContainer(List.<StructurePiece>of(piece)));
+				var startChunk = new ChunkPos(b.minX() >> 4, b.minZ() >> 4);
+				var start = new StructureStart(structure, startChunk, 0, new PiecesContainer(List.<StructurePiece>of(piece)));
+				// The lookup path is references-then-starts: every chunk in the footprint points at the
+				// start's chunk, and that chunk carries the start itself.
 				for (int cx = b.minX() >> 4; cx <= b.maxX() >> 4; cx++)
-					for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) l.getChunk(cx, cz).setStartForStructure(structure, start);
+					for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) {
+						var chunk = l.getChunk(cx, cz);
+						chunk.addReferenceForStructure(structure, startChunk.asLong());
+						chunk.setStartForStructure(structure, start);
+					}
 				var at = piece.bellPosition();
 				check(l.getBlockState(at).is(FerrymanContent.BELL), "The placed crossing carries its bell");
 				var found = l.structureManager().getStructureWithPieceAt(at,
