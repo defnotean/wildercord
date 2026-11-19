@@ -16,6 +16,7 @@ public final class ExciseRules {
 
     public static final String GRAMMAR_PROBLEM = "Excise needs exactly Beam then Excise in one active spell: no modifiers, links, extra groups, Knots or woven runes.";
     public static final String STORAGE_PROBLEM = "Excise is an active master lesson: it cannot be stored, imbued, inscribed on a scroll or sustained as a passive.";
+    public static final String GRAMMAR_KEY = "message.wildercord.excise_grammar", STORAGE_KEY = "message.wildercord.excise_storage";
 
     /** Only the original registered definitions are accepted, never altered definitions with the same ids. */
     public static boolean valid(List<RuneDef> runes) { return RUNES.equals(runes); }

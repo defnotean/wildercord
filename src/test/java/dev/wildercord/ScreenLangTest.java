@@ -28,7 +28,7 @@ class ScreenLangTest {
 	@Test
 	void noScreenHardCodesThem() throws Exception {
 		String cord = Files.readString(CLIENT.resolve("CordScreen.java"));
-		for (String english : List.of("Component.literal(\"Unfinished", " needs \" +", "needs Rootbound study", "needs Ebb Ledger study", "needs its Archive lesson")) {
+		for (String english : List.of("Component.literal(\"Unfinished", " needs \" +", "needs Rootbound study", "needs Ebb Ledger study", "needs its Archive lesson", "Component.literal(\"! \" +")) {
 			assertFalse(cord.contains(english), "CordScreen still hard-codes " + english);
 		}
 		assertFalse(Files.readString(CLIENT.resolve("FusionAltarScreen.java")).contains("\"Both effects in one socket"));

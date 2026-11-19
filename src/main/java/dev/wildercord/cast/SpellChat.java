@@ -78,7 +78,7 @@ public final class SpellChat {
 		hover.append("\n").append(Component.translatable("chat.wildercord.spell_cost", compiled.manaCost(),
 			String.format(java.util.Locale.ROOT, "%.1f", compiled.cooldownTicks() / 20.0)).withColor(0x7FE0F0));
 		for (String line : compiled.lines()) {
-			hover.append("\n").append(Component.literal(line).withColor(0xC8C4D8));
+			hover.append("\n").append(dev.wildercord.spell.LessonText.problem(line).withColor(0xC8C4D8));
 		}
 		hover.append("\n").append(Component.translatable("chat.wildercord.spell_copy").withColor(0x8A84A0));
 		return Component.literal("[✦ " + SpellNames.auto(runes) + "]").withStyle(Style.EMPTY.withColor(color)

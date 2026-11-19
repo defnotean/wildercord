@@ -19,6 +19,7 @@ public final class RelayRules {
 	public static final double PLACE_RANGE = 8;
 	public static final String GRAMMAR_PROBLEM = "Relay needs exactly Relay then Harm, Frost or Shock in one active spell: no modifiers, links, extra groups, Knots or woven runes.";
 	public static final String STORAGE_PROBLEM = "Relay is an active Archive lesson: it cannot be stored, imbued, inscribed on a scroll or sustained as a passive.";
+	public static final String GRAMMAR_KEY = "message.wildercord.relay_grammar", STORAGE_KEY = "message.wildercord.relay_storage";
 
 	/** Only the two original registered runes are accepted; no expanded or altered definitions. */
 	public static boolean valid(List<RuneDef> runes) {

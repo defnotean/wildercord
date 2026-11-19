@@ -18,7 +18,7 @@ public final class LessonPackRules {
         LIFELINE("lifeline", Runes.BEAM, Runes.LIFELINE, 14, Feats.STAR_EATER, "Starbreaker", 28, 200, "The Thread Between Stars", "XIV"),
         CONDUIT("conduit", Runes.PILLAR, Runes.CONDUIT, 18, Feats.STORM_CONDUCTOR, "Grounded", 32, 300, "Notes on a Grounded Storm", "XVIII");
 
-        public final String path, id, name, study, copied, practice, feat, featName, title, numeral, grammarProblem, storageProblem;
+        public final String path, id, name, study, copied, practice, feat, featName, title, numeral, grammarProblem, storageProblem, grammarKey, storageKey;
         public final RuneDef shape, rune;
         public final List<RuneDef> runes;
         public final List<String> ids;
@@ -31,6 +31,8 @@ public final class LessonPackRules {
             this.runes = List.of(shape, rune); this.ids = List.of(shape.id(), rune.id());
             this.grammarProblem = name + " needs exactly " + shape.name() + " then " + name + " in one active spell: no modifiers, links, extra groups, Knots or woven runes.";
             this.storageProblem = name + " is an active master lesson: it cannot be stored, imbued, inscribed on a scroll or sustained as a passive.";
+            this.grammarKey = "message.wildercord.lesson_" + path + "_grammar";
+            this.storageKey = "message.wildercord.lesson_" + path + "_storage";
         }
         /** Only the original registered definitions are accepted, never altered definitions with the same ids. */
         public boolean valid(List<RuneDef> row) { return runes.equals(row); }

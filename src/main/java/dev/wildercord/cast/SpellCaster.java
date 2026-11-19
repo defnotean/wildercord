@@ -112,26 +112,26 @@ public final class SpellCaster {
         if (ExciseCasting.contains(player, requested)) {
             int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
             String problem = ExciseCasting.problem(player, slot);
-            fail(player, Component.literal(problem == null ? "Hold your Cast key to cut one hostile Zone knot." : problem));
+            fail(player, dev.wildercord.spell.LessonText.problem(problem == null ? "Hold your Cast key to cut one hostile Zone knot." : problem));
             return;
         }
         if (LessonPackCasting.contains(player, requested)) {
             int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
             String problem = LessonPackCasting.problem(player, slot);
-            fail(player, Component.literal(problem == null ? "Master lessons use fresh cast-key presses; sneak and press to cancel." : problem));
+            fail(player, dev.wildercord.spell.LessonText.problem(problem == null ? "Master lessons use fresh cast-key presses; sneak and press to cancel." : problem));
             return;
         }
 		if (dev.wildercord.aura.MastersArts.committed(player) || RelayCircles.committed(player)) return;
         if (ReweaveFields.contains(player, requested)) {
             int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
             String problem = ReweaveFields.problem(player, slot);
-            fail(player, Component.literal(problem == null ? "Reweave uses fresh cast-key presses: place, release the key, then rewrite." : problem));
+            fail(player, dev.wildercord.spell.LessonText.problem(problem == null ? "Reweave uses fresh cast-key presses: place, release the key, then rewrite." : problem));
             return;
         }
 		if (RelayCircles.contains(player, requested)) {
 			int slot = requested < 0 ? Spellbooks.get(player).selected() : requested;
 			String problem = RelayCircles.problem(player, slot);
-			fail(player, Component.literal(problem == null ? "Relay Circle uses fresh cast-key presses: place, release the key, then press again." : problem));
+			fail(player, dev.wildercord.spell.LessonText.problem(problem == null ? "Relay Circle uses fresh cast-key presses: place, release the key, then press again." : problem));
 			return;
 		}
 		if (!player.isAlive() || player.isSpectator()) {
@@ -522,7 +522,7 @@ public final class SpellCaster {
             if (raw.size() != runeIds.size()) return Component.literal("This Excise draft contains unreadable runes.");
             Spellbooks.set(player, Spellbooks.get(player).withSpell(spell, List.copyOf(runeIds)));
             ExciseCasting.cancel(player);
-            return dev.wildercord.spell.ExciseRules.valid(raw) ? null : Component.literal(dev.wildercord.spell.ExciseRules.GRAMMAR_PROBLEM);
+            return dev.wildercord.spell.ExciseRules.valid(raw) ? null : dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.ExciseRules.GRAMMAR_PROBLEM);
         }
         ExciseCasting.cancel(player);
 		RelayCircles.cancel(player);
@@ -537,7 +537,7 @@ public final class SpellCaster {
             var raw = runeIds.stream().map(Runes::get).flatMap(Optional::stream).toList();
             if (raw.size() != runeIds.size()) return Component.literal("This Reweave draft contains unreadable runes.");
             Spellbooks.set(player, Spellbooks.get(player).withSpell(spell, List.copyOf(runeIds)));
-            return dev.wildercord.spell.ReweaveRules.valid(raw) ? null : Component.literal(dev.wildercord.spell.ReweaveRules.GRAMMAR_PROBLEM);
+            return dev.wildercord.spell.ReweaveRules.valid(raw) ? null : dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.ReweaveRules.GRAMMAR_PROBLEM);
         }
 		if (dev.wildercord.spell.RelayRules.containsIds(runeIds)) {
 			if (runeIds.size() > CordTier.MAX_SOCKETS)
@@ -552,7 +552,7 @@ public final class SpellCaster {
 			if (runes.size() != runeIds.size()) return Component.literal("This Relay draft contains unreadable runes; the accepted row is restored.");
 			// An entitled in-progress draft stays exactly as written and cannot cast until the whole grammar is valid.
 			Spellbooks.set(player, Spellbooks.get(player).withSpell(spell, List.copyOf(runeIds)));
-			return dev.wildercord.spell.RelayRules.valid(runes) ? null : Component.literal(dev.wildercord.spell.RelayRules.GRAMMAR_PROBLEM);
+			return dev.wildercord.spell.RelayRules.valid(runes) ? null : dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.RelayRules.GRAMMAR_PROBLEM);
 		}
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null) {
@@ -597,7 +597,7 @@ public final class SpellCaster {
 	 * @return null if everything was accepted, otherwise why something was left out
 	 */
 	public static Component editPassive(ServerPlayer player, int slot, List<String> runeIds) {
-        if (dev.wildercord.spell.ExciseRules.containsIds(runeIds)) return Component.literal(dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM);
+        if (dev.wildercord.spell.ExciseRules.containsIds(runeIds)) return dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM);
         if (dev.wildercord.spell.LessonPackRules.containsIds(runeIds)) return Component.literal(dev.wildercord.spell.LessonPackRules.lessonOfIds(runeIds).storageProblem);
 		if (dev.wildercord.spell.RelayRules.containsIds(runeIds)) return Component.literal("Relay Circle cannot be sustained as a passive.");
 		CordTier tier = Spellbooks.tier(player);

@@ -20,6 +20,7 @@ public final class ReweaveRules {
 
     public static final String GRAMMAR_PROBLEM = "Reweave needs exactly Reweave then Harm in one active spell: no modifiers, links, extra groups, Knots or woven runes.";
     public static final String STORAGE_PROBLEM = "Reweave is an active master lesson: it cannot be stored, imbued, inscribed on a scroll or sustained as a passive.";
+    public static final String GRAMMAR_KEY = "message.wildercord.reweave_grammar", STORAGE_KEY = "message.wildercord.reweave_storage";
 
     /** Only the original registered definitions are accepted, never altered definitions with the same ids. */
     public static boolean valid(List<RuneDef> runes) { return RUNES.equals(runes); }

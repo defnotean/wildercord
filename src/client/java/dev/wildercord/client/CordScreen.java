@@ -1694,7 +1694,7 @@ public class CordScreen extends Screen {
 				: Component.translatable("screen.wildercord.too_costly", maxMana), 0, width, WARN);
 		}
 		for (String warning : compiled.warnings()) {
-			wrap(out, Component.literal("! " + warning), 0, width, WARN);
+			wrap(out, Component.literal("! ").append(dev.wildercord.spell.LessonText.problem(warning)), 0, width, WARN);
 		}
 		return out;
 	}
@@ -1798,10 +1798,10 @@ public class CordScreen extends Screen {
 			wrap(out, Component.literal(text.substring(spaces)), font.width(text.substring(0, spaces)), width, TEXT);
 		}
 		if (problem != null) {
-			wrap(out, Component.literal("! " + problem), 0, width, WARN);
+			wrap(out, Component.literal("! ").append(dev.wildercord.spell.LessonText.problem(problem)), 0, width, WARN);
 		}
 		for (String warning : compiled.warnings()) {
-			wrap(out, Component.literal("! " + warning), 0, width, WARN);
+			wrap(out, Component.literal("! ").append(dev.wildercord.spell.LessonText.problem(warning)), 0, width, WARN);
 		}
 		return out;
 	}
