@@ -47,4 +47,18 @@ class FerrymanRulesTest {
 		}
 		assertFalse(hits(IDLE, 0, 0, 0, 0, 0, 0, false));
 	}
+	@Test void pairedAnchorStrikesInsideEitherMarkOnlyWhenPaired() {
+		assertTrue(pairedAnchor(2)); assertFalse(pairedAnchor(1));
+		assertTrue(anchorAny(8, -4, 8, -4, -6, 6)); assertFalse(anchorAny(0, 0, 8, -4, -6, 6));
+		// The same geometry unpaired follows only the first mark.
+		assertTrue(hits(ANCHOR, 8, 0, -4, 0, 8, -4, -6, 6, false, false));
+		assertFalse(hits(ANCHOR, -6, 0, 6, 0, 8, -4, -6, 6, false, false));
+		// Paired, either mark takes its oarsman; outside both stays dry.
+		assertTrue(hits(ANCHOR, -6, 0, 6, 0, 8, -4, -6, 6, true, false));
+		assertFalse(hits(ANCHOR, 0, 0, 0, 0, 8, -4, -6, 6, true, false));
+	}
+	@Test void aSharedVictoryNeedsTwoContributors() {
+		assertFalse(sharedVictory(0)); assertFalse(sharedVictory(1));
+		assertTrue(sharedVictory(2)); assertTrue(sharedVictory(8));
+	}
 }

@@ -33,6 +33,7 @@ public final class FerrymanRenderer extends MobRenderer<ReedCrownedFerryman,Ferr
 	}
 	@Override public void extractRenderState(ReedCrownedFerryman e,FerrymanRenderState s,float partial) {
 		super.extractRenderState(e,s,partial); s.move=e.move(); s.elapsed=e.elapsed(partial); s.aim=e.aim(); s.markX=e.markX(); s.markZ=e.markZ(); s.acrossX=e.acrossX(); s.second=e.secondPhase();
+		s.markX2=e.markX2(); s.markZ2=e.markZ2(); s.paired=e.pairedMark();
 		s.hurt=e.hurtTime>0?Math.max(0,(e.hurtTime-partial)/10F):0;
 	}
 	@Override public void submit(FerrymanRenderState s,PoseStack pose,SubmitNodeCollector collector,CameraRenderState camera) {
@@ -50,11 +51,8 @@ public final class FerrymanRenderer extends MobRenderer<ReedCrownedFerryman,Ferr
 			}
 			for(double edge:new double[]{s.aim-SWEEP_HALF_ANGLE,s.aim+SWEEP_HALF_ANGLE}) line(p,b,0,0,Math.sin(edge)*SWEEP_REACH,Math.cos(edge)*SWEEP_REACH,.09,danger);
 		} else if(s.move==ANCHOR) {
-			for(int i=0;i<40;i++) {
-				double a=i*Math.PI*2/40,c=(i+1)*Math.PI*2/40;
-				line(p,b,s.markX+Math.sin(a)*ANCHOR_RADIUS,s.markZ+Math.cos(a)*ANCHOR_RADIUS,s.markX+Math.sin(c)*ANCHOR_RADIUS,s.markZ+Math.cos(c)*ANCHOR_RADIUS,.10,danger);
-			}
-			line(p,b,s.markX-.6,s.markZ,s.markX+.6,s.markZ,.08,danger); line(p,b,s.markX,s.markZ-.6,s.markX,s.markZ+.6,.08,danger);
+			anchorRing(p,b,s.markX,s.markZ,danger);
+			if(s.paired) anchorRing(p,b,s.markX2,s.markZ2,danger);
 		} else {
 			for(int sign:new int[]{-1,1}) {
 				double side=sign*SAFE_HALF_WIDTH;
@@ -69,6 +67,13 @@ public final class FerrymanRenderer extends MobRenderer<ReedCrownedFerryman,Ferr
 				}
 			}
 		}
+	}
+	private static void anchorRing(PoseStack.Pose p,VertexConsumer b,double mx,double mz,int color) {
+		for(int i=0;i<40;i++) {
+			double a=i*Math.PI*2/40,c=(i+1)*Math.PI*2/40;
+			line(p,b,mx+Math.sin(a)*ANCHOR_RADIUS,mz+Math.cos(a)*ANCHOR_RADIUS,mx+Math.sin(c)*ANCHOR_RADIUS,mz+Math.cos(c)*ANCHOR_RADIUS,.10,color);
+		}
+		line(p,b,mx-.6,mz,mx+.6,mz,.08,color); line(p,b,mx,mz-.6,mx,mz+.6,.08,color);
 	}
 	private static void line(PoseStack.Pose p,VertexConsumer b,double x0,double z0,double x1,double z1,double width,int color) {
 		double length=Math.hypot(x1-x0,z1-z0); if(length<.0001)return;

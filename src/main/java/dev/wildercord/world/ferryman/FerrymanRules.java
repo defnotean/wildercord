@@ -29,15 +29,26 @@ public final class FerrymanRules {
 	public static boolean anchor(double x, double z, double markX, double markZ) {
 		return Math.hypot(x - markX, z - markZ) <= ANCHOR_RADIUS;
 	}
+	/** Phase two marks two oarsmen when a group of at least this many stands on the crossing. */
+	public static boolean pairedAnchor(int announced) { return announced >= 2; }
+	/** A paired anchor strikes inside either marked place. */
+	public static boolean anchorAny(double x, double z, double ax, double az, double bx, double bz) {
+		return anchor(x, z, ax, az) || anchor(x, z, bx, bz);
+	}
+	/** A victory kept by two or more contributors pays each of them a little extra. */
+	public static boolean sharedVictory(int contributors) { return contributors >= 2; }
 	/** The crossing remains at least 3.5 blocks wide for the whole tell and impact. */
 	public static boolean wake(double x, double z, boolean acrossX) {
 		return Math.abs(x) <= ARENA && Math.abs(z) <= ARENA && Math.abs(acrossX ? z : x) > SAFE_HALF_WIDTH;
 	}
 	public static boolean hits(int move, double x, double y, double z, double yaw, double markX, double markZ, boolean acrossX) {
+		return hits(move, x, y, z, yaw, markX, markZ, markX, markZ, false, acrossX);
+	}
+	public static boolean hits(int move, double x, double y, double z, double yaw, double markX, double markZ, double markX2, double markZ2, boolean paired, boolean acrossX) {
 		if (!within(x, y, z)) return false;
 		return switch (move) {
 			case SWEEP -> sweep(x, z, yaw);
-			case ANCHOR -> anchor(x, z, markX, markZ);
+			case ANCHOR -> paired ? anchorAny(x, z, markX, markZ, markX2, markZ2) : anchor(x, z, markX, markZ);
 			case WAKE -> wake(x, z, acrossX);
 			default -> false;
 		};

@@ -14,6 +14,7 @@ LANG = {
     "message.wildercord.ferryman.finished": "The second count is complete. The crossing is yours to keep.",
     "message.wildercord.ferryman.quiet": "The bell rests. Its challenge needs a survival traveller, guardians enabled, and a world beyond Peaceful.",
     "message.wildercord.ferryman.active": "The Ferryman is already keeping this crossing.",
+    "message.wildercord.ferryman.shared": "The crossing was kept by more than one pair of hands. The ferry shares its second count with you all.",
     "message.wildercord.ferryman.waiting": "The mooring remembers its Ferryman. Wait for the crossing to return to view.",
     "journal.wildercord.entry.learned.last_crossing": "The Last Crossing. A guardian of reeds and old timber answered the bell. Its compass remembers this landing. The boatkeepers' promise survives in whoever leaves the way clear for the next traveller.",
     "book.wildercord.last_crossing.1": "THE LAST CROSSING\n\nThe road ends here. The duty does not.\n\nRest without ringing the bell. The guardian answers a deliberate challenge.\n\nFour dry paths lead back to shore.",

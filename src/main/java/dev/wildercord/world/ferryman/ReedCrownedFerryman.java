@@ -29,6 +29,9 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Float> MARK_Z = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> ACROSS = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> SECOND = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> MARK_X2 = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> MARK_Z2 = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Boolean> PAIRED = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.BOOLEAN);
 	private final ServerBossEvent bar = new ServerBossEvent(getUUID(), getType().getDescription(), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.NOTCHED_10);
 	private BlockPos mooring, bell;
 	private UUID lockedTarget;
@@ -52,12 +55,16 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 	@Override protected void defineSynchedData(SynchedEntityData.Builder b) {
 		super.defineSynchedData(b); b.define(MOVE, IDLE); b.define(BEGAN, 0L); b.define(AIM, 0F);
 		b.define(MARK_X, 0F); b.define(MARK_Z, 0F); b.define(ACROSS, false); b.define(SECOND, false);
+		b.define(MARK_X2, 0F); b.define(MARK_Z2, 0F); b.define(PAIRED, false);
 	}
 	public int move() { return entityData.get(MOVE); }
 	public float elapsed(float partial) { return level().getGameTime() - entityData.get(BEGAN) + partial; }
 	public float aim() { return entityData.get(AIM); }
 	public float markX() { return entityData.get(MARK_X); }
 	public float markZ() { return entityData.get(MARK_Z); }
+	public float markX2() { return entityData.get(MARK_X2); }
+	public float markZ2() { return entityData.get(MARK_Z2); }
+	public boolean pairedMark() { return entityData.get(PAIRED); }
 	public boolean acrossX() { return entityData.get(ACROSS); }
 	public boolean secondPhase() { return entityData.get(SECOND); }
 	public boolean active() { return active; }
@@ -101,11 +108,18 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 				if (elapsed(0) >= tell(move()) + recovery(move())) { retire(); readyAt = now; }
 				return;
 			}
-			// Losing the announced target cancels the entire impact, even if another challenger remains.
-			var target = server.getPlayerByUUID(lockedTarget);
-			if (!(target instanceof ServerPlayer player) || !eligible(player)) { retire(); readyAt = now + RETIRE; return; }
+			// A group keeps the announced impact alive: it re-aims at the nearest warned challenger and
+			// is called off only when no warned challenger remains on the crossing.
+			var target = nearestAnnounced(players);
+			if (target == null) { retire(); readyAt = now + RETIRE; return; }
+			lockedTarget = target.getUUID();
 			if (elapsed(0) >= tell(move())) { impact(server, players); return; }
 		} else if (now >= readyAt) begin(server, players);
+	}
+	/** The nearest still-eligible player among those the current tell was announced against. */
+	private ServerPlayer nearestAnnounced(List<ServerPlayer> players) {
+		return players.stream().filter(p -> announced.contains(p.getUUID()))
+			.min(Comparator.comparingDouble(p -> p.distanceToSqr(this))).orElse(null);
 	}
 	private void begin(ServerLevel server, List<ServerPlayer> players) {
 		impacted = false;
@@ -117,6 +131,17 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 		entityData.set(AIM, (float)Math.atan2(d.x, d.z));
 		entityData.set(MARK_X, (float)Math.clamp(d.x, -ARENA + ANCHOR_RADIUS, ARENA - ANCHOR_RADIUS));
 		entityData.set(MARK_Z, (float)Math.clamp(d.z, -ARENA + ANCHOR_RADIUS, ARENA - ANCHOR_RADIUS));
+		// Phase two anchors two oarsmen at once when a group holds the crossing.
+		boolean paired = move == ANCHOR && secondPhase() && pairedAnchor(players.size());
+		if (paired) {
+			var secondD = players.stream().sorted(Comparator.comparingDouble(p -> p.distanceToSqr(this))).skip(1).findFirst()
+				.orElse(target).position().subtract(position());
+			entityData.set(MARK_X2, (float)Math.clamp(secondD.x, -ARENA + ANCHOR_RADIUS, ARENA - ANCHOR_RADIUS));
+			entityData.set(MARK_Z2, (float)Math.clamp(secondD.z, -ARENA + ANCHOR_RADIUS, ARENA - ANCHOR_RADIUS));
+		} else {
+			entityData.set(MARK_X2, entityData.get(MARK_X)); entityData.set(MARK_Z2, entityData.get(MARK_Z));
+		}
+		entityData.set(PAIRED, paired);
 		entityData.set(ACROSS, secondPhase() && (completed / 3) % 2 == 0);
 		entityData.set(BEGAN, server.getGameTime()); entityData.set(MOVE, move);
 		setYRot((float)-Math.toDegrees(aim())); setYHeadRot(getYRot()); yBodyRot = getYRot();
@@ -128,7 +153,7 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 		int move = move();
 		for (var player : players) {
 			var d = player.position().subtract(position());
-			if (!announced.contains(player.getUUID()) || !hits(move, d.x, d.y, d.z, aim(), markX(), markZ(), acrossX())) continue;
+			if (!announced.contains(player.getUUID()) || !hits(move, d.x, d.y, d.z, aim(), markX(), markZ(), markX2(), markZ2(), pairedMark(), acrossX())) continue;
 			if (player.hurtServer(server, damageSources().mobAttack(this), damage(move)) && move == ANCHOR) {
 				var pull = position().subtract(player.position()).multiply(1, 0, 1).normalize().scale(.35);
 				player.push(pull.x, .08, pull.z); player.needsSync = true;
@@ -157,6 +182,11 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 				compass.set(DataComponents.LODESTONE_TRACKER, new LodestoneTracker(Optional.of(GlobalPos.of(server.dimension(), bell)), false));
 				giveOrDrop(player, compass);
 				giveOrDrop(player, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
+				if (sharedVictory(contributors.size())) {
+					// A crossing kept by more than one pair of hands shares its second count.
+					giveOrDrop(player, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD));
+					player.sendSystemMessage(Component.translatable("message.wildercord.ferryman.shared"), true);
+				}
 				giveOrDrop(player, new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, 2));
 				giveOrDrop(player, new ItemStack(dev.wildercord.content.WildercordItems.TORN_PAGE, 1));
 				giveOrDrop(player, new ItemStack(dev.wildercord.content.Reagents.WILDBLOOM_PETAL, 3));
