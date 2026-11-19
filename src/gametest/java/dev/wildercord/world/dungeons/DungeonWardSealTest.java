@@ -114,9 +114,12 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 				var p = s.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SURVIVAL);
 				List<String> found = new ArrayList<>();
-				for (Room room : rooms) {
-					if (room.box() == null) found.add(room.name() + ": no warded room to guard");
-					else audit(l, p, room.name(), room.box(), found);
+				Map<String, List<BoundingBox>> byPiece = new java.util.LinkedHashMap<>();
+				for (Room room : rooms) byPiece.computeIfAbsent(room.name(), k -> new ArrayList<>()).add(room.box());
+				for (var entry : byPiece.entrySet()) {
+					List<BoundingBox> boxes = entry.getValue();
+					if (boxes.size() == 1 && boxes.get(0) == null) found.add(entry.getKey() + ": no warded room to guard");
+					else audit(l, p, entry.getKey(), boxes, found);
 				}
 				return found;
 			});
@@ -125,8 +128,15 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		}
 	}
 
-	/** One warded room: what it covers must not break, and no dug way may lead where an open way does not. */
-	private static void audit(ServerLevel l, ServerPlayer p, String name, BoundingBox box, List<String> holes) {
+	/** One dungeon: what its wards cover must not break, and no dug way may lead where an open way does not. */
+	private static void audit(ServerLevel l, ServerPlayer p, String name, List<BoundingBox> boxes, List<String> holes) {
+		for (BoundingBox box : boxes) room(l, p, name, box, holes);
+		ownTheirBlock(l, p, name, boxes.get(0), holes);
+		wardStopsAtTheWall(l, p, name, boxes, holes);
+	}
+
+	/** One warded room of a dungeon. */
+	private static void room(ServerLevel l, ServerPlayer p, String name, BoundingBox box, List<String> holes) {
 		BoundingBox region = box.inflatedBy(DIG);
 		for (int cx = region.minX() >> 4; cx <= region.maxX() >> 4; cx++) {
 			for (int cz = region.minZ() >> 4; cz <= region.maxZ() >> 4; cz++) l.getChunk(cx, cz);
@@ -152,8 +162,6 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 				holes.add(name + " can be dug into at " + at + " through " + broken(l, digging, here));
 			}
 		}
-		ownTheirBlock(l, p, name, box, holes);
-		wardStopsAtTheWall(l, p, name, box, region, holes);
 	}
 
 	/** A block the player put inside the ward is theirs to take back. */
@@ -170,12 +178,26 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		}
 	}
 
-	/** The ward guards its room, not the country around it. */
-	private static void wardStopsAtTheWall(ServerLevel l, ServerPlayer p, String name, BoundingBox box, BoundingBox region, List<String> holes) {
-		BlockPos out = new BlockPos(region.minX() + 1, box.minY(), region.minZ() + 1);
+	/** The ward guards its rooms, not the country around them. */
+	private static void wardStopsAtTheWall(ServerLevel l, ServerPlayer p, String name, List<BoundingBox> boxes, List<String> holes) {
+		BoundingBox union = null;
+		for (BoundingBox box : boxes) union = union == null ? box : union.encapsulate(box);
+		BoundingBox region = union.inflatedBy(DIG);
+		for (int cx = region.minX() >> 4; cx <= region.maxX() >> 4; cx++) {
+			for (int cz = region.minZ() >> 4; cz <= region.maxZ() >> 4; cz++) l.getChunk(cx, cz);
+		}
+		// Anywhere on the ground around the whole building that no ward of this dungeon reaches.
+		BlockPos out = null;
+		for (BlockPos at : span(region)) {
+			if (!(at.getX() == region.minX() || at.getX() == region.maxX() || at.getZ() == region.minZ() || at.getZ() == region.maxZ())) continue;
+			if (boxes.stream().anyMatch(b -> b.isInside(at))) continue;
+			out = at.immutable();
+			break;
+		}
+		if (out == null) return;
 		l.setBlock(out, Blocks.STONE.defaultBlockState(), 3, 3);
 		if (!DungeonWards.admits(l, p, out, l.getBlockState(out), true)) {
-			holes.add(name + " wards the ground " + DIG + " blocks outside its room");
+			holes.add(name + " wards the ground at " + out + ", outside every room it declares");
 		}
 		l.setBlock(out, Blocks.AIR.defaultBlockState(), 3, 3);
 	}
