@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -83,7 +84,7 @@ public final class DungeonWards extends SavedData {
 			if (admits(level, player, pos, state, !dev.wildercord.cast.Casters.probing())) {
 				return true;
 			}
-			refuse(level, player, pos);
+			refuse(level, player, pos, state);
 			return false;
 		});
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(server -> {
@@ -278,7 +279,10 @@ public final class DungeonWards extends SavedData {
 		return wards != null && wards.placed.contains(pos.asLong());
 	}
 
-	private static void refuse(ServerLevel level, Player player, BlockPos pos) {
+	private static void refuse(ServerLevel level, Player player, BlockPos pos, BlockState state) {
+		// The client has already taken the block down on its own: without this it stays a hole in the wall
+		// until the chunk is reloaded, which is what makes a ward look like it lets some blocks through.
+		level.sendBlockUpdated(pos, state, state, 3);
 		dev.wildercord.cast.Fx.sendParticles(level, ParticleTypes.ENCHANT, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 12, 0.35, 0.35, 0.35, 0.4);
 		long now = level.getGameTime();
 		Long last = TOLD.get(player.getUUID());
