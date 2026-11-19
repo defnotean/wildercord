@@ -87,8 +87,28 @@ public final class BelowkeeperSites {
 		OptionalInt yOpt = findVaultY(ctx, x, z, 34, 12, cx, cz);
 		if (yOpt.isEmpty()) return Optional.empty();
 		int y = yOpt.getAsInt();
-		return Optional.of(new Structure.GenerationStub(new BlockPos(cx, y, cz),
-			b -> b.addPiece(new BellSanctumPiece(x, y - BellSanctumPiece.DECK, z, Direction.SOUTH))));
+		var probe = new BellSanctumPiece(x, y - BellSanctumPiece.DECK, z, Direction.SOUTH);
+		int height = BellSanctumRules.ROOM;
+		var top = probe.localPosition(17, 0, 25);
+		int surface = ctx.chunkGenerator().getFirstOccupiedHeight(top.getX(), top.getZ(), Heightmap.Types.WORLD_SURFACE_WG,
+			ctx.heightAccessor(), ctx.randomState());
+		if (BellSanctumRules.towerHeight(surface, y) != BellSanctumRules.ROOM && belfryGroundFits(ctx, probe, top, surface))
+			height = BellSanctumRules.towerHeight(surface, y);
+		var piece = height == BellSanctumRules.ROOM ? probe : new BellSanctumPiece(x, y - BellSanctumPiece.DECK, z, Direction.SOUTH, height);
+		return Optional.of(new Structure.GenerationStub(new BlockPos(cx, y, cz), b -> b.addPiece(piece)));
+	}
+
+	/** The belfry stands where its ground is dry and level enough for a 7x7 court. */
+	private static boolean belfryGroundFits(Structure.GenerationContext ctx, BellSanctumPiece probe, BlockPos top, int surface) {
+		var col = ctx.chunkGenerator().getBaseColumn(top.getX(), top.getZ(), ctx.heightAccessor(), ctx.randomState());
+		if (col.getBlock(surface).is(Blocks.WATER) || col.getBlock(surface - 1).is(Blocks.WATER)) return false;
+		for (int[] k : new int[][]{{14, 22}, {20, 22}, {14, 28}, {20, 28}}) {
+			var p = probe.localPosition(k[0], 0, k[1]);
+			int h = ctx.chunkGenerator().getFirstOccupiedHeight(p.getX(), p.getZ(), Heightmap.Types.WORLD_SURFACE_WG,
+				ctx.heightAccessor(), ctx.randomState());
+			if (Math.abs(h - surface) > 3) return false;
+		}
+		return true;
 	}
 
 	private static OptionalInt findVaultY(Structure.GenerationContext ctx, int x, int z, int span, int height, int cx, int cz) {

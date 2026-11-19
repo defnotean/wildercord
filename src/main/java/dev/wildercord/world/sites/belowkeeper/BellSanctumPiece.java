@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BellAttachType;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -16,13 +17,17 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 /**
  * Belowkeeper Bell Sanctum: a vaulted underground resonance court in the Belowkeeper Hollows where The Hollow Bell waits.
  * Four copper-and-deepslate acoustic causeways meet at a central resonance plinth; the north listening gallery holds the
- * Listening Belfry, a lectern with The Quiet Eye, and a supply chest.
+ * Listening Belfry, a lectern with The Quiet Eye, and a supply chest. Where the ground is within reach, a lined shaft runs
+ * up the south causeway to a ruined wayside belfry above {@link BellSanctumRules}, so the sanctum shows in the world.
  */
 public final class BellSanctumPiece extends BelowkeeperPiece {
 	public static final int DECK = 2;
 
 	public BellSanctumPiece(int x, int y, int z, Direction facing) {
-		super(BelowkeeperSites.SANCTUM_PIECE, x, y, z, 35, 12, 35, facing);
+		this(x, y, z, facing, BellSanctumRules.ROOM);
+	}
+	public BellSanctumPiece(int x, int y, int z, Direction facing, int height) {
+		super(BelowkeeperSites.SANCTUM_PIECE, x, y, z, 35, height, 35, facing);
 	}
 	public BellSanctumPiece(CompoundTag tag) { super(BelowkeeperSites.SANCTUM_PIECE, tag); }
 
@@ -160,6 +165,81 @@ public final class BellSanctumPiece extends BelowkeeperPiece {
 		lectern(level, clip, 15, DECK + 1, 4, Direction.SOUTH,
 			BelowkeeperSites.book("bell_sanctum", "The Quiet Eye", "Mara, Belowkeeper"));
 		chest(level, clip, 19, DECK + 1, 4, Direction.SOUTH, BelowkeeperSites.loot(BelowkeeperSites.BELL_SANCTUM), 53L);
+
+		// Where the locate found the ground within reach, the piece was built tall: dig the shaft and raise the belfry.
+		int span = getBoundingBox().getYSpan();
+		if (span > BellSanctumRules.ROOM) tower(level, clip, span - BellSanctumRules.ABOVE);
+	}
+
+	/**
+	 * The ruined belfry over the shaft: the vault roof opens above the south causeway, a lined 3x3 shaft with a ladder
+	 * climbs to the ground, and a small broken wayside tower with the old bell on its beam marks the way down.
+	 * {@code s} is the ground's height in this piece's local frame.
+	 */
+	private void tower(WorldGenLevel level, BoundingBox clip, int s) {
+		// Broken vault: the roof opens over the south causeway, stair rubble on the lips of the hole.
+		for (int x = 16; x <= 18; x++) for (int z = 24; z <= 26; z++) set(level, clip, AIR, x, 11, z);
+		for (int z = 24; z <= 26; z++) {
+			set(level, clip, st(Blocks.DEEPSLATE_TILE_STAIRS, Direction.EAST, true), 15, 11, z);
+			set(level, clip, st(Blocks.DEEPSLATE_TILE_STAIRS, Direction.WEST, true), 19, 11, z);
+		}
+		for (int x = 16; x <= 18; x++) {
+			set(level, clip, st(Blocks.DEEPSLATE_TILE_STAIRS, Direction.SOUTH, true), x, 11, 23);
+			set(level, clip, st(Blocks.DEEPSLATE_TILE_STAIRS, Direction.NORTH, true), x, 11, 27);
+		}
+		// The shaft's masonry continues down the causeway as a stub wall, so the ladder always has stone behind it.
+		fill(level, clip, 17, DECK + 1, 23, 17, 10, 23, BRICK);
+		set(level, clip, CHISELED, 17, DECK + 1, 23);
+		// The shaft: a lined 3x3 rise from the vault to the surface.
+		for (int y = 12; y <= s; y++) for (int x = 15; x <= 19; x++) for (int z = 23; z <= 27; z++) {
+			boolean inner = x >= 16 && x <= 18 && z >= 24 && z <= 26;
+			if (inner) set(level, clip, AIR, x, y, z);
+			else {
+				int n = noise(x, y, z);
+				set(level, clip, n < 18 ? CRACKED_BRICK : n < 40 ? MOSSY_BRICK : TILE, x, y, z);
+			}
+		}
+		for (int y = DECK + 1; y <= s; y++) set(level, clip, Blocks.LADDER.defaultBlockState().setValue(LadderBlock.FACING, Direction.SOUTH), 17, y, 24);
+		// The tower floor: a flagged court at the ground, open over the shaft, packed under its outer ring.
+		for (int x = 14; x <= 20; x++) for (int z = 22; z <= 28; z++) {
+			boolean inner = x >= 16 && x <= 18 && z >= 24 && z <= 26;
+			int n = noise(x, s, z);
+			set(level, clip, inner ? AIR : n < 25 ? COBBLED : n < 55 ? BRICK : MOSSY_BRICK, x, s, z);
+			if (!inner && (x == 14 || x == 20 || z == 22 || z == 28)) fillColumnDown(level, n < 50 ? COBBLED : DEEPSLATE, x, s - 1, z, clip);
+			fill(level, clip, x, s + 1, z, x, s + BellSanctumRules.ABOVE - 1, z, AIR); // shrug off hillside and trees
+		}
+		// The tower: a 5x5 ring of brick, chiseled at the plinth, its top course kept only on the north and west,
+		// the south-east corner collapsed, and a door with a stair arch on the south.
+		for (int y = s + 1; y <= s + 4; y++) for (int x = 15; x <= 19; x++) for (int z = 23; z <= 27; z++) {
+			if (!(x == 15 || x == 19 || z == 23 || z == 27)) continue;
+			if (x == 17 && z == 27 && (y == s + 1 || y == s + 2)) continue; // the doorway
+			if (y == s + 4 && !(x == 15 || z == 23)) continue; // the cornice survives on two sides
+			if (y >= s + 3 && x >= 18 && z >= 26) continue; // the collapsed corner
+			int n = noise(x, y, z);
+			set(level, clip, y == s + 1 ? CHISELED : n < 15 ? CRACKED_BRICK : n < 35 ? MOSSY_BRICK : BRICK, x, y, z);
+		}
+		set(level, clip, CHISELED, 17, s + 3, 27); // lintel over the door
+		set(level, clip, st(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.EAST, true), 16, s + 2, 27);
+		set(level, clip, st(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.WEST, true), 18, s + 2, 27);
+		// The two north corners stand whole, capped and lit.
+		for (int[] c : new int[][]{{15, 23}, {19, 23}}) {
+			fill(level, clip, c[0], s + 5, c[1], c[0], s + 6, c[1], BRICK);
+			set(level, clip, CHISELED, c[0], s + 6, c[1]);
+			set(level, clip, Blocks.LANTERN.defaultBlockState(), c[0], s + 7, c[1]);
+		}
+		// The bell beam over the shaft and the old bell hung from it.
+		fill(level, clip, 15, s + 4, 25, 19, s + 4, 25, POLISHED);
+		set(level, clip, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, Direction.EAST).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING), 17, s + 3, 25);
+		set(level, clip, Blocks.COBWEB.defaultBlockState(), 16, s + 1, 26);
+		set(level, clip, Blocks.COBWEB.defaultBlockState(), 18, s + 1, 26);
+		set(level, clip, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 17, s + 2, 27);
+		// A flagged approach south from the door.
+		for (int x = 16; x <= 18; x++) for (int z = 28; z <= 31; z++) {
+			int n = noise(x, s, z);
+			set(level, clip, n < 30 ? MOSSY_BRICK : n < 60 ? COBBLED : BRICK, x, s, z);
+			fillColumnDown(level, COBBLED, x, s - 1, z, clip);
+			fill(level, clip, x, s + 1, z, x, s + 2, z, AIR);
+		}
 	}
 
 	private static boolean furniture(int x, int y, int z) {
