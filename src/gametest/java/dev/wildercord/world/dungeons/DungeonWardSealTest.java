@@ -67,9 +67,8 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 						}
 						piece.postProcess(l, l.structureManager(), l.getChunkSource().getGenerator(),
 							RandomSource.create(1000 + i), b, new ChunkPos(b.minX() >> 4, b.minZ() >> 4), BlockPos.ZERO);
-						var boxes = ((WardedPiece) piece).wardedBoxes();
-						if (boxes.isEmpty()) built.add(new Room(name, null));
-						for (var box : boxes) built.add(new Room(name, box));
+						for (var box : ((WardedPiece) piece).wardedBoxes()) built.add(new Room(name, box));
+						if (((WardedPiece) piece).wardedBoxes().isEmpty()) built.add(new Room(name, null));
 					} catch (Throwable t) {
 						built.add(new Room(name + " (" + t + ")", null));
 					}
@@ -95,7 +94,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 
 	/** One warded room: what it covers must not break, and no dug way may lead where an open way does not. */
 	private static void audit(ServerLevel l, ServerPlayer p, String name, BoundingBox box, List<String> holes) {
-		BoundingBox region = box.inflate(DIG);
+		BoundingBox region = box.inflatedBy(DIG);
 		for (int cx = region.minX() >> 4; cx <= region.maxX() >> 4; cx++) {
 			for (int cz = region.minZ() >> 4; cz <= region.maxZ() >> 4; cz++) l.getChunk(cx, cz);
 		}
@@ -103,21 +102,21 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		Map<Long, Long> walking = reach(l, p, region, asked, false);
 		Map<Long, Long> digging = reach(l, p, region, asked, true);
 		int own = 0;
-		for (BlockPos at : box) {
+		for (BlockPos at : span(box)) {
 			BlockState st = l.getBlockState(at);
 			if (st.isAir() || !st.getFluidState().isEmpty()) continue;
 			own++;
-			if (st.getHardness() >= 0 && DungeonWards.admits(l, p, at, st, false)) {
-				holes.add(name + " lets " + block(l, st) + " at " + at.toShortString() + " break inside its ward");
+			if (st.getDestroySpeed(l, at) >= 0 && DungeonWards.admits(l, p, at, st, false)) {
+				holes.add(name + " lets " + block(l, st) + " at " + at + " break inside its ward");
 			}
 		}
 		if (own == 0) holes.add(name + " leaves nothing of its own inside the warded room to guard");
-		BoundingBox core = box.inflate(-CORE);
-		for (BlockPos at : box) {
+		BoundingBox core = box.inflatedBy(-CORE);
+		for (BlockPos at : span(box)) {
 			if (!core.isInside(at) || !standable(l.getBlockState(at))) continue;
 			long here = at.asLong();
 			if (digging.containsKey(here) && !walking.containsKey(here)) {
-				holes.add(name + " can be dug into at " + at.toShortString() + " through " + broken(l, digging, here));
+				holes.add(name + " can be dug into at " + at + " through " + broken(l, digging, here));
 			}
 		}
 		ownTheirBlock(l, p, name, box, holes);
@@ -126,14 +125,14 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 
 	/** A block the player put inside the ward is theirs to take back. */
 	private static void ownTheirBlock(ServerLevel l, ServerPlayer p, String name, BoundingBox box, List<String> holes) {
-		for (BlockPos at : box) {
+		for (BlockPos at : span(box)) {
 			if (!standable(l.getBlockState(at))) continue;
-			l.setBlock(at, Blocks.DIRT.defaultBlockState(), 3);
+			l.setBlock(at, Blocks.DIRT.defaultBlockState(), 3, 3);
 			DungeonWards.placedBy(l, p, at);
 			if (!DungeonWards.admits(l, p, at, l.getBlockState(at), true)) {
 				holes.add(name + " will not let the player take the block they set down themselves");
 			}
-			l.setBlock(at, Blocks.AIR.defaultBlockState(), 3);
+			l.setBlock(at, Blocks.AIR.defaultBlockState(), 3, 3);
 			return;
 		}
 	}
@@ -141,11 +140,11 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 	/** The ward guards its room, not the country around it. */
 	private static void wardStopsAtTheWall(ServerLevel l, ServerPlayer p, String name, BoundingBox box, BoundingBox region, List<String> holes) {
 		BlockPos out = new BlockPos(region.minX() + 1, box.minY(), region.minZ() + 1);
-		l.setBlock(out, Blocks.STONE.defaultBlockState(), 3);
+		l.setBlock(out, Blocks.STONE.defaultBlockState(), 3, 3);
 		if (!DungeonWards.admits(l, p, out, l.getBlockState(out), true)) {
 			holes.add(name + " wards the ground " + DIG + " blocks outside its room");
 		}
-		l.setBlock(out, Blocks.AIR.defaultBlockState(), 3);
+		l.setBlock(out, Blocks.AIR.defaultBlockState(), 3, 3);
 	}
 
 	/**
@@ -155,7 +154,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 	private static Map<Long, Long> reach(ServerLevel l, ServerPlayer p, BoundingBox region, Map<Long, Boolean> asked, boolean digging) {
 		Map<Long, Long> from = new HashMap<>();
 		ArrayDeque<BlockPos> queue = new ArrayDeque<>();
-		for (BlockPos at : region) {
+		for (BlockPos at : span(region)) {
 			if (!(at.getX() == region.minX() || at.getX() == region.maxX() || at.getY() == region.minY()
 				|| at.getY() == region.maxY() || at.getZ() == region.minZ() || at.getZ() == region.maxZ())
 				|| !standable(l.getBlockState(at))) continue;
@@ -179,7 +178,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 	}
 
 	private static boolean mayTake(ServerLevel l, ServerPlayer p, BlockPos pos, BlockState st, Map<Long, Boolean> asked) {
-		if (st.getHardness() < 0) return false;
+		if (st.getDestroySpeed(l, pos) < 0) return false;
 		return asked.computeIfAbsent(pos.asLong(), k -> DungeonWards.admits(l, p, pos, st, false));
 	}
 
@@ -190,7 +189,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		while (at != null && path.size() < 3) {
 			BlockPos pos = BlockPos.of(at);
 			BlockState st = l.getBlockState(pos);
-			if (!standable(st)) path.add(block(l, st) + " at " + pos.toShortString());
+			if (!standable(st)) path.add(block(l, st) + " at " + pos);
 			at = from.get(at);
 		}
 		return path.isEmpty() ? "an open way" : String.join(", ", path);
@@ -200,12 +199,16 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		return st.canBeReplaced() || !st.getFluidState().isEmpty();
 	}
 
-	/** One warded room of one dungeon, as it was built. */
-	private record Room(String name, BoundingBox box) { }
+	private static Iterable<BlockPos> span(BoundingBox box) {
+		return BlockPos.betweenClosed(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ());
+	}
 
 	private static String block(ServerLevel l, BlockState st) {
 		return String.valueOf(l.registryAccess().lookupOrThrow(Registries.BLOCK).getKey(st.getBlock()));
 	}
+
+	/** One warded room of one dungeon, as it was built. */
+	private record Room(String name, BoundingBox box) { }
 
 	private static void check(boolean ok, String why) { if (!ok) throw new AssertionError(why); }
 }
