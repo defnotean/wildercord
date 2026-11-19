@@ -146,6 +146,8 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 			awaitMove(c, world, guardian, ANCHOR, true, true);
 			// The lone survivor keeps the announced impact: the first challenger walks off mid-tell.
 			world.getServer().runOnServer(s -> {
+				// The fake player holds no chunk ticket: force the crossing to keep ticking while the traveller is away.
+				for (int cx = -1; cx <= 3; cx++) for (int cz = -1; cz <= 3; cz++) s.overworld().setChunkForced(cx, cz, true);
 				var companion = oarsman(s, oarsman);
 				companion.setHealth(500);
 				// The fake player isn't ticked by the world: its moment of invulnerability is let go by hand.
