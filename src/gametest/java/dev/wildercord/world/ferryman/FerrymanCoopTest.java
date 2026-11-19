@@ -47,7 +47,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 			world.getServer().runCommand("gamerule spawn_mobs false");
 			world.getServer().runCommand("difficulty normal");
 			world.getServer().runCommand("time set 6000");
-			BlockPos[] site = world.getServer().computeOnServer(s -> {
+			BlockPos[] crossing = world.getServer().computeOnServer(s -> {
 				var l = s.overworld();
 				var piece = new LastCrossingPiece(0, 60, 0, Direction.NORTH);
 				BoundingBox b = piece.getBoundingBox();
@@ -57,7 +57,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 					net.minecraft.util.RandomSource.create(77), b, new ChunkPos(b.minX() >> 4, b.minZ() >> 4), BlockPos.ZERO);
 				var structure = l.registryAccess().lookupOrThrow(Registries.STRUCTURE)
 					.getOrThrow(ResourceKey.create(Registries.STRUCTURE, Identifier.parse("wildercord:water_last_crossing"))).value();
-				var start = new StructureStart(structure, new ChunkPos(piece.getPosition()), 0,
+				var start = new StructureStart(structure, new ChunkPos(b.minX() >> 4, b.minZ() >> 4), 0,
 					new PiecesContainer(List.<StructurePiece>of(piece)));
 				for (int cx = b.minX() >> 4; cx <= b.maxX() >> 4; cx++)
 					for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) l.getChunk(cx, cz).setStartForStructure(structure, start);
@@ -71,8 +71,8 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				return new BlockPos[] {at, piece.mooringPosition(), piece.localPosition(17, LastCrossingPiece.DECK + 1, 6),
 					piece.localPosition(17, LastCrossingPiece.DECK + 1, 23)};
 			});
-			BlockPos bell = site[0], mooring = site[1];
-			stand(world, site[2]);
+			BlockPos bell = crossing[0], mooring = crossing[1];
+			stand(world, crossing[2]);
 			c.waitTicks(15);
 			use(c, bell);
 			c.waitTicks(10);
@@ -94,7 +94,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				var fake = new Oarsman(s.overworld());
 				fake.getAttribute(Attributes.MAX_HEALTH).setBaseValue(500);
 				fake.setHealth(500);
-				fake.snapTo(site[3].getX() + .5, site[3].getY(), site[3].getZ() + .5, 0, 0);
+				fake.snapTo(crossing[3].getX() + .5, crossing[3].getY(), crossing[3].getZ() + .5, 0, 0);
 				fake.setOnGround(true);
 				fake.setGameMode(GameType.SURVIVAL);
 				p.connection.send(net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(fake)));
@@ -162,12 +162,12 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 		}
 	}
 
-	private static ReedCrownedFerryman ferryman(ServerLevel s, UUID id) {
+	private static ReedCrownedFerryman ferryman(net.minecraft.server.MinecraftServer s, UUID id) {
 		var f = (ReedCrownedFerryman) s.overworld().getEntity(id);
 		check(f != null, "The Ferryman is still keeping the crossing");
 		return f;
 	}
-	private static ServerPlayer oarsman(ServerLevel s, UUID id) {
+	private static ServerPlayer oarsman(net.minecraft.server.MinecraftServer s, UUID id) {
 		var p = s.overworld().getPlayerByUUID(id);
 		check(p != null, "The companion is still on the crossing");
 		return p;
