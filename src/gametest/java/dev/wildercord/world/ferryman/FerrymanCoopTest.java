@@ -165,17 +165,17 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				var diag = world.getServer().computeOnServer(s -> {
 					var f = s.overworld().getEntity(guardian);
 					var o = s.overworld().getPlayerByUUID(oarsman);
-					return new double[] {
-						f instanceof ReedCrownedFerryman k ? k.move() : -1,
-						f instanceof ReedCrownedFerryman k ? k.elapsed(0) : -1,
-						f instanceof ReedCrownedFerryman k ? (k.secondPhase() ? 1 : 0) : -1,
-						f instanceof ReedCrownedFerryman k ? (k.pairedMark() ? 1 : 0) : -1,
-						o != null ? o.getHealth() : -1,
-						o != null && f != null ? o.position().distanceTo(f.position()) : -1};
+					if (!(f instanceof ReedCrownedFerryman k) || o == null) return new double[] {-1,-1,-1,-1,-1,-1,-1,-1};
+					var d = o.position().subtract(k.position());
+					boolean wouldHit = hits(k.move(), d.x, d.y, d.z, k.aim(), k.markX(), k.markZ(), k.markX2(), k.markZ2(), k.pairedMark(), k.acrossX());
+					double before = o.getHealth();
+					boolean accepted = o.hurtServer(s.overworld(), s.overworld().damageSources().mobAttack(k), 5);
+					return new double[] {k.move(), k.elapsed(0), k.pairedMark() ? 1 : 0, o.getHealth(),
+						d.x, d.z, wouldHit ? 1 : 0, accepted ? 1 : 0};
 				});
 				check(false, "The tell stays announced against the companion who remained warned (move=" + diag[0]
-					+ " elapsed=" + diag[1] + " second=" + diag[2] + " paired=" + diag[3]
-					+ " companionHealth=" + diag[4] + " range=" + diag[5] + ")");
+					+ " elapsed=" + diag[1] + " paired=" + diag[2] + " companionHealth=" + diag[3]
+					+ " dx=" + diag[4] + " dz=" + diag[5] + " wouldHit=" + diag[6] + " probeAccepted=" + diag[7] + ")");
 			}
 
 			// Both keepers are paid by the shared second count.
