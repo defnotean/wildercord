@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -199,21 +199,22 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				wild.settleHere(180);
 				l.addFreshEntity(wild);
 				wildId = wild.getUUID();
-				var golem = EntityType.IRON_GOLEM.create(l, EntitySpawnReason.COMMAND);
+				var golem = EntityTypes.IRON_GOLEM.create(l, EntitySpawnReason.COMMAND);
+				check(golem != null, "A real iron golem stands in the square");
 				golem.setPos(20.5, 101, 23.5);
 				l.addFreshEntity(golem);
 				golemId = golem.getUUID();
 				stand(s, 21.5, 24.5); // its owner close by, so the tamed one keeps its spot between the two
 				mimic(s).setPos(21.5, 101, 20.5);
 			});
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 40; i++) {
 				w.getServer().runOnServer(s -> {
 					mimic(s).setPos(21.5, 101, 20.5);
 					var wild = (CofferMimic) s.overworld().getEntity(wildId);
-					if (wild.isAlive()) wild.setHealth(wild.getMaxHealth());
+					if (wild != null && wild.isAlive()) wild.setHealth(wild.getMaxHealth());
 					if (p(s).getHealth() < 12) p(s).setHealth(20);
 				});
-				c.waitTicks(5);
+				c.waitTicks(2);
 			}
 			w.getServer().runOnServer(s -> {
 				var golem = (IronGolem) s.overworld().getEntity(golemId);
