@@ -73,9 +73,10 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 					h -> h.value() instanceof SiteStructure site && site.site().equals("water_last_crossing"));
 				check(found.isValid() && found.getPieces().stream().anyMatch(p -> p instanceof LastCrossingPiece),
 					"The bell finds its own registered crossing start");
-				// Dry deck columns beside the bell and six blocks past the mooring, both inside the arena.
+				// Dry deck columns beside the bell and six blocks past the mooring, both inside the arena,
+				// plus a quay column fifteen blocks out: off the arena but close enough to keep the world ticking.
 				return new BlockPos[] {at, piece.mooringPosition(), piece.localPosition(17, LastCrossingPiece.DECK + 1, 6),
-					piece.localPosition(17, LastCrossingPiece.DECK + 1, 23)};
+					piece.localPosition(17, LastCrossingPiece.DECK + 1, 23), piece.localPosition(17, LastCrossingPiece.DECK + 1, 32)};
 			});
 			BlockPos bell = crossing[0], mooring = crossing[1];
 			stand(world, crossing[2]);
@@ -153,7 +154,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				// The fake player isn't ticked by the world: its moment of invulnerability is let go by hand.
 				dev.wildercord.cast.Effects.readyToHurt(companion);
 				var p = s.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(s.overworld(), 400, 200, 400, Set.<Relative>of(), 0, 0, false);
+				p.teleportTo(s.overworld(), crossing[4].getX() + .5, crossing[4].getY(), crossing[4].getZ() + .5, Set.<Relative>of(), 0, 0, false);
 			});
 			boolean struck = false;
 			for (int i = 0; i < 55 && !struck; i++) {
