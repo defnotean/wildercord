@@ -196,7 +196,9 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 		for (int i = 0; i < 1200; i++) {
 			if (w.getServer().computeOnServer(s -> {
 				var f = s.overworld().getEntity(id);
-				return f instanceof ReedCrownedFerryman k && k.move() == move && k.secondPhase() == second && (!paired || k.pairedMark());
+				// Catch the tell while it is still announced: before its impact has landed.
+				return f instanceof ReedCrownedFerryman k && k.move() == move && k.secondPhase() == second
+					&& (!paired || k.pairedMark()) && k.elapsed(0) < tell(move);
 			})) return;
 			w.getServer().runOnServer(s -> {
 				var p = s.getPlayerList().getPlayers().getFirst();
