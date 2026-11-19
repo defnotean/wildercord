@@ -153,12 +153,15 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				companion.setHealth(500);
 				// The fake player isn't ticked by the world: its moment of invulnerability is let go by hand.
 				dev.wildercord.cast.Effects.readyToHurt(companion);
-				var p = s.getPlayerList().getPlayers().getFirst();
+				// The traveller steps out as an observer: nothing can drop them to a death screen, which would stall the clock.
+				var p = traveller(s, oarsman);
+				p.setGameMode(GameType.SPECTATOR);
 				p.teleportTo(s.overworld(), crossing[4].getX() + .5, crossing[4].getY(), crossing[4].getZ() + .5, Set.<Relative>of(), 0, 0, false);
 			});
+			blows = 0;
 			boolean struck = false;
-			for (int i = 0; i < 55 && !struck; i++) {
-				struck = world.getServer().computeOnServer(s -> oarsman(s, oarsman).getHealth() < 500);
+			for (int i = 0; i < 80 && !struck; i++) {
+				struck = blows > 0;
 				if (!struck) c.waitTicks(1);
 			}
 			if (!struck) {
@@ -168,20 +171,20 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 					if (!(f instanceof ReedCrownedFerryman k) || o == null) return new double[] {-1,-1,-1,-1,-1,-1,-1,-1};
 					var d = o.position().subtract(k.position());
 					boolean wouldHit = hits(k.move(), d.x, d.y, d.z, k.aim(), k.markX(), k.markZ(), k.markX2(), k.markZ2(), k.pairedMark(), k.acrossX());
-					double before = o.getHealth();
-					boolean accepted = o.hurtServer(s.overworld(), s.overworld().damageSources().mobAttack(k), 5);
-					return new double[] {k.move(), k.elapsed(0), k.pairedMark() ? 1 : 0, o.getHealth(),
-						d.x, d.z, wouldHit ? 1 : 0, accepted ? 1 : 0};
+					return new double[] {k.move(), k.elapsed(0), k.pairedMark() ? 1 : 0, s.overworld().getGameTime(),
+						d.x, d.z, wouldHit ? 1 : 0, s.getPlayerList().getPlayers().stream().filter(p -> !p.getUUID().equals(oarsman)).count()};
 				});
 				check(false, "The tell stays announced against the companion who remained warned (move=" + diag[0]
-					+ " elapsed=" + diag[1] + " paired=" + diag[2] + " companionHealth=" + diag[3]
-					+ " dx=" + diag[4] + " dz=" + diag[5] + " wouldHit=" + diag[6] + " probeAccepted=" + diag[7] + ")");
+					+ " elapsed=" + diag[1] + " paired=" + diag[2] + " clock=" + diag[3]
+					+ " dx=" + diag[4] + " dz=" + diag[5] + " wouldHit=" + diag[6] + " watchers=" + diag[7] + ")");
 			}
 
 			// Both keepers are paid by the shared second count.
 			world.getServer().runOnServer(s -> {
 				var f = ferryman(s, guardian);
-				var p = s.getPlayerList().getPlayers().getFirst();
+				var p = traveller(s, oarsman);
+				p.setGameMode(GameType.SURVIVAL);
+				p.setHealth(20);
 				p.teleportTo(s.overworld(), mooring.getX() + .5, mooring.getY(), mooring.getZ() - 3.5, Set.<Relative>of(), 0, 0, false);
 				f.setHealth(1);
 				f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(p), 20);
@@ -214,6 +217,12 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 		var p = s.overworld().getPlayerByUUID(id);
 		check(p instanceof ServerPlayer, "The companion is still on the crossing");
 		return (ServerPlayer) p;
+	}
+	/** The player who rang the bell, as opposed to the companion standing the other side. */
+	private static ServerPlayer traveller(net.minecraft.server.MinecraftServer s, UUID companion) {
+		var p = s.getPlayerList().getPlayers().stream().filter(x -> !x.getUUID().equals(companion)).findFirst().orElse(null);
+		check(p != null, "The traveller is still standing the crossing");
+		return p;
 	}
 	private static void awaitMove(ClientGameTestContext c, TestSingleplayerContext w, UUID id, int move, boolean second, boolean paired) {
 		for (int i = 0; i < 1200; i++) {
@@ -256,10 +265,19 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 		c.runOnClient(mc -> mc.gui.toastManager().clear());
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
+	/** Blows the Ferryman has landed on the companion, counted by the companion itself. */
+	private static volatile int blows;
 	private static final class Oarsman extends net.fabricmc.fabric.api.entity.FakePlayer {
 		Oarsman(ServerLevel level) {
 			super(level, new com.mojang.authlib.GameProfile(
 				UUID.nameUUIDFromBytes("ferryman-coop-oarsman".getBytes(java.nio.charset.StandardCharsets.UTF_8)), "Oarsman"));
+		}
+		// A fake player is not run by the world's damage rules: it keeps its own account of the Ferryman's blows.
+		@Override public boolean hurtServer(ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
+			if (!(source.getEntity() instanceof ReedCrownedFerryman)) return false;
+			blows++;
+			setHealth(Math.max(1f, getHealth() - amount));
+			return true;
 		}
 	}
 	private static void check(boolean ok, String why) { if (!ok) throw new AssertionError(why); }
