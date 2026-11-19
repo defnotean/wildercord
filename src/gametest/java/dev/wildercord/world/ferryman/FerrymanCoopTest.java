@@ -146,7 +146,10 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 			awaitMove(c, world, guardian, ANCHOR, true, true);
 			// The lone survivor keeps the announced impact: the first challenger walks off mid-tell.
 			world.getServer().runOnServer(s -> {
-				oarsman(s, oarsman).setHealth(500);
+				var companion = oarsman(s, oarsman);
+				companion.setHealth(500);
+				// The fake player isn't ticked by the world: its moment of invulnerability is let go by hand.
+				dev.wildercord.cast.Effects.readyToHurt(companion);
 				var p = s.getPlayerList().getPlayers().getFirst();
 				p.teleportTo(s.overworld(), 400, 200, 400, Set.<Relative>of(), 0, 0, false);
 			});
