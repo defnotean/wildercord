@@ -75,14 +75,12 @@ public final class DungeonWards extends SavedData {
 
 	public static void init() {
 		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
-			if (!(world instanceof ServerLevel level) || player.isCreative() || state.canBeReplaced() || !warded(level, pos)) {
+			if (!(world instanceof ServerLevel level)) {
 				return true;
 			}
-			if (dev.wildercord.cast.Casters.probing()) {
-				// Only a question (a survey, an in-place harvest): nothing is broken, so remember the block and stay quiet.
-				return TemporaryBlocks.recorded(level, pos) || placedHere(level, pos);
-			}
-			if (TemporaryBlocks.recorded(level, pos) || forgetPlaced(level, pos)) {
+			// Only a question (a survey, an in-place harvest): nothing is broken, so the record of a placed
+			// block is read, never spent.
+			if (admits(level, player, pos, state, !dev.wildercord.cast.Casters.probing())) {
 				return true;
 			}
 			refuse(level, player, pos);
@@ -125,6 +123,23 @@ public final class DungeonWards extends SavedData {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * The ward's own answer to "may this player take that block down": creative goes anywhere, a block the world
+	 * lets anything replace (grass, water, air) is nobody's to keep, and inside a ward only what a player put there
+	 * or a spell left behind may go. {@code taking} says whether the block is really coming down: a question about
+	 * it (a survey, a spell checking its footing) must not spend the record of a placed block.
+	 */
+	public static boolean admits(ServerLevel level, Player player, BlockPos pos,
+		net.minecraft.world.level.block.state.BlockState state, boolean taking) {
+		if (player == null || player.isCreative() || state.canBeReplaced() || !warded(level, pos)) {
+			return true;
+		}
+		if (TemporaryBlocks.recorded(level, pos)) {
+			return true;
+		}
+		return taking ? forgetPlaced(level, pos) : placedHere(level, pos);
 	}
 
 	/** Immutable room identity keeps adjacent or overlapping warded rooms from becoming one traversable region. */

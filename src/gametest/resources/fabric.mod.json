@@ -58,6 +58,7 @@
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
       "dev.wildercord.world.ferryman.FerrymanCoopTest",
+      "dev.wildercord.world.dungeons.DungeonWardSealTest",
       "dev.wildercord.world.dungeons.BarrowBearerGenerationTest",
       "dev.wildercord.gametest.WildercordMonstersTest",
       "dev.wildercord.aura.world.AuraBeastsTest",

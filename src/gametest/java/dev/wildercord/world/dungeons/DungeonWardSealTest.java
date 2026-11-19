@@ -1,0 +1,211 @@
+package dev.wildercord.world.dungeons;
+
+import dev.wildercord.world.sites.mine.DeepVaultPiece;
+import dev.wildercord.world.sites.wilds.IronGatehousePiece;
+import dev.wildercord.world.sites.wilds.VenomZigguratPiece;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.IntFunction;
+
+/**
+ * Nothing to dig through. Each dungeon below is built in the open, so every face of its warded room is exposed,
+ * and then asked two things: that a survival player may not break anything the ward covers, and that digging
+ * reaches no corner of the room that walking does not already let them into. A room whose walls fall outside its
+ * own ward fails the second; a ward that lets one of its own blocks go fails the first.
+ */
+public final class DungeonWardSealTest implements FabricClientGameTest {
+	/** How far around a room the dig is tried. */
+	private static final int DIG = 6;
+	/** How deep into the room a dug path has to get before it counts as a break in. */
+	private static final int CORE = 2;
+
+	private static final List<String> NAMES = List.of("rootbound maze", "sword tomb", "clockwork crypt", "bell chapel",
+		"storm spire", "deep vault", "iron gatehouse", "venom ziggurat");
+	private static final List<IntFunction<StructurePiece>> PIECES = List.of(
+		x -> new RootboundMazePiece(x, 120, 0, Direction.NORTH),
+		x -> new SwordTombPiece(x, 120, 0, Direction.NORTH),
+		x -> new ClockworkCryptPiece(x, 120, 0, Direction.NORTH),
+		x -> new BellChapelPiece(x, 120, 0, Direction.NORTH),
+		x -> new StormSpirePiece(x, 120, 0, Direction.NORTH),
+		x -> new DeepVaultPiece(x, 120, 0, 12, Direction.NORTH),
+		x -> new IronGatehousePiece(x, 0, Direction.NORTH),
+		x -> new VenomZigguratPiece(x, 0, Direction.NORTH));
+
+	@Override public void runTest(ClientGameTestContext c) {
+		try (var world = c.worldBuilder().create()) {
+			c.waitTicks(40);
+			world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runCommand("difficulty peaceful");
+			world.getServer().runCommand("time set 6000");
+			List<Room> rooms = world.getServer().computeOnServer(s -> {
+				var l = s.overworld();
+				List<Room> built = new ArrayList<>();
+				for (int i = 0; i < PIECES.size(); i++) {
+					String name = NAMES.get(i);
+					try {
+						var piece = PIECES.get(i).apply(i * 160);
+						BoundingBox b = piece.getBoundingBox();
+						for (int cx = b.minX() >> 4; cx <= b.maxX() >> 4; cx++) {
+							for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) l.getChunk(cx, cz);
+						}
+						piece.postProcess(l, l.structureManager(), l.getChunkSource().getGenerator(),
+							RandomSource.create(1000 + i), b, new ChunkPos(b.minX() >> 4, b.minZ() >> 4), BlockPos.ZERO);
+						var boxes = ((WardedPiece) piece).wardedBoxes();
+						if (boxes.isEmpty()) built.add(new Room(name, null));
+						for (var box : boxes) built.add(new Room(name, box));
+					} catch (Throwable t) {
+						built.add(new Room(name + " (" + t + ")", null));
+					}
+				}
+				return built;
+			});
+			// The rooms a piece wrote down as it was built are filed into the world's record on the next tick.
+			c.waitTicks(10);
+			List<String> holes = world.getServer().computeOnServer(s -> {
+				var l = s.overworld();
+				var p = s.getPlayerList().getPlayers().getFirst();
+				p.setGameMode(GameType.SURVIVAL);
+				List<String> found = new ArrayList<>();
+				for (Room room : rooms) {
+					if (room.box() == null) found.add(room.name() + ": no warded room to guard");
+					else audit(l, p, room.name(), room.box(), found);
+				}
+				return found;
+			});
+			check(holes.isEmpty(), "Warded rooms a survival player can break into:\n" + String.join("\n", holes));
+		}
+	}
+
+	/** One warded room: what it covers must not break, and no dug way may lead where an open way does not. */
+	private static void audit(ServerLevel l, ServerPlayer p, String name, BoundingBox box, List<String> holes) {
+		BoundingBox region = box.inflate(DIG);
+		for (int cx = region.minX() >> 4; cx <= region.maxX() >> 4; cx++) {
+			for (int cz = region.minZ() >> 4; cz <= region.maxZ() >> 4; cz++) l.getChunk(cx, cz);
+		}
+		Map<Long, Boolean> asked = new HashMap<>();
+		Map<Long, Long> walking = reach(l, p, region, asked, false);
+		Map<Long, Long> digging = reach(l, p, region, asked, true);
+		int own = 0;
+		for (BlockPos at : box) {
+			BlockState st = l.getBlockState(at);
+			if (st.isAir() || !st.getFluidState().isEmpty()) continue;
+			own++;
+			if (st.getHardness() >= 0 && DungeonWards.admits(l, p, at, st, false)) {
+				holes.add(name + " lets " + block(l, st) + " at " + at.toShortString() + " break inside its ward");
+			}
+		}
+		if (own == 0) holes.add(name + " leaves nothing of its own inside the warded room to guard");
+		BoundingBox core = box.inflate(-CORE);
+		for (BlockPos at : box) {
+			if (!core.isInside(at) || !standable(l.getBlockState(at))) continue;
+			long here = at.asLong();
+			if (digging.containsKey(here) && !walking.containsKey(here)) {
+				holes.add(name + " can be dug into at " + at.toShortString() + " through " + broken(l, digging, here));
+			}
+		}
+		ownTheirBlock(l, p, name, box, holes);
+		wardStopsAtTheWall(l, p, name, box, region, holes);
+	}
+
+	/** A block the player put inside the ward is theirs to take back. */
+	private static void ownTheirBlock(ServerLevel l, ServerPlayer p, String name, BoundingBox box, List<String> holes) {
+		for (BlockPos at : box) {
+			if (!standable(l.getBlockState(at))) continue;
+			l.setBlock(at, Blocks.DIRT.defaultBlockState(), 3);
+			DungeonWards.placedBy(l, p, at);
+			if (!DungeonWards.admits(l, p, at, l.getBlockState(at), true)) {
+				holes.add(name + " will not let the player take the block they set down themselves");
+			}
+			l.setBlock(at, Blocks.AIR.defaultBlockState(), 3);
+			return;
+		}
+	}
+
+	/** The ward guards its room, not the country around it. */
+	private static void wardStopsAtTheWall(ServerLevel l, ServerPlayer p, String name, BoundingBox box, BoundingBox region, List<String> holes) {
+		BlockPos out = new BlockPos(region.minX() + 1, box.minY(), region.minZ() + 1);
+		l.setBlock(out, Blocks.STONE.defaultBlockState(), 3);
+		if (!DungeonWards.admits(l, p, out, l.getBlockState(out), true)) {
+			holes.add(name + " wards the ground " + DIG + " blocks outside its room");
+		}
+		l.setBlock(out, Blocks.AIR.defaultBlockState(), 3);
+	}
+
+	/**
+	 * Where can a player get to, starting from open ground around the room? Walking takes them through air and
+	 * water only; digging takes them through anything the ward lets them break as well.
+	 */
+	private static Map<Long, Long> reach(ServerLevel l, ServerPlayer p, BoundingBox region, Map<Long, Boolean> asked, boolean digging) {
+		Map<Long, Long> from = new HashMap<>();
+		ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+		for (BlockPos at : region) {
+			if (!(at.getX() == region.minX() || at.getX() == region.maxX() || at.getY() == region.minY()
+				|| at.getY() == region.maxY() || at.getZ() == region.minZ() || at.getZ() == region.maxZ())
+				|| !standable(l.getBlockState(at))) continue;
+			from.put(at.asLong(), null);
+			queue.add(at.immutable());
+		}
+		while (!queue.isEmpty()) {
+			BlockPos at = queue.poll();
+			for (Direction d : Direction.values()) {
+				BlockPos to = at.relative(d);
+				if (!region.isInside(to)) continue;
+				long here = to.asLong();
+				if (from.containsKey(here)) continue;
+				BlockState st = l.getBlockState(to);
+				if (!standable(st) && !(digging && mayTake(l, p, to, st, asked))) continue;
+				from.put(here, at.asLong());
+				queue.add(to.immutable());
+			}
+		}
+		return from;
+	}
+
+	private static boolean mayTake(ServerLevel l, ServerPlayer p, BlockPos pos, BlockState st, Map<Long, Boolean> asked) {
+		if (st.getHardness() < 0) return false;
+		return asked.computeIfAbsent(pos.asLong(), k -> DungeonWards.admits(l, p, pos, st, false));
+	}
+
+	/** The blocks a dug path had to come through, nearest first. */
+	private static String broken(ServerLevel l, Map<Long, Long> from, long here) {
+		List<String> path = new ArrayList<>();
+		Long at = here;
+		while (at != null && path.size() < 3) {
+			BlockPos pos = BlockPos.of(at);
+			BlockState st = l.getBlockState(pos);
+			if (!standable(st)) path.add(block(l, st) + " at " + pos.toShortString());
+			at = from.get(at);
+		}
+		return path.isEmpty() ? "an open way" : String.join(", ", path);
+	}
+
+	private static boolean standable(BlockState st) {
+		return st.canBeReplaced() || !st.getFluidState().isEmpty();
+	}
+
+	/** One warded room of one dungeon, as it was built. */
+	private record Room(String name, BoundingBox box) { }
+
+	private static String block(ServerLevel l, BlockState st) {
+		return String.valueOf(l.registryAccess().lookupOrThrow(Registries.BLOCK).getKey(st.getBlock()));
+	}
+
+	private static void check(boolean ok, String why) { if (!ok) throw new AssertionError(why); }
+}
