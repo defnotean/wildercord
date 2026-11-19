@@ -23,15 +23,16 @@
     ]
   },
   "area-combat-bosses": {
-    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, monsters, aura beasts, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world.",
+    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, a cooperative Ferryman crossing, monsters, aura beasts, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world.",
     "purpose": "area",
-    "expectedCount": 11,
+    "expectedCount": 12,
     "entries": [
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
       "dev.wildercord.world.dungeons.SwordTombTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
+      "dev.wildercord.world.ferryman.FerrymanCoopTest",
       "dev.wildercord.world.dungeons.BarrowBearerGenerationTest",
       "dev.wildercord.gametest.WildercordMonstersTest",
       "dev.wildercord.aura.world.AuraBeastsTest",
@@ -157,6 +158,13 @@
       "dev.wildercord.town.CaravanTest",
       "dev.wildercord.town.InnRoomStayTest",
       "dev.wildercord.town.HamletStandingTest"
+    ]
+  },
+  "ferryman-coop": {
+    "description": "The cooperative Ferryman: a registered crossing start whose bell rings its guardian, a lone anchor that stays unpaired, a phase-two anchor that marks both oarsmen, a tell that keeps its impact after losing one challenger, and a shared second count that pays every contributor.",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.world.ferryman.FerrymanCoopTest"
     ]
   },
   "structure-gallery": {
