@@ -142,7 +142,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				p.teleportTo(s.overworld(), mooring.getX() + .5, mooring.getY(), mooring.getZ() - 3.5, Set.<Relative>of(), 0, 0, false);
 				f.setHealth(1);
 				f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(p), 20);
-				check(s.overworld().getBlockEntity(bell) instanceof CrossingBellEntity crossing && crossing.slain(),
+				check(s.overworld().getBlockEntity(bell) instanceof CrossingBellEntity keep && keep.slain(),
 					"The saved guardian marks its bell slain");
 			});
 			c.waitTicks(10);
@@ -169,8 +169,8 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 	}
 	private static ServerPlayer oarsman(net.minecraft.server.MinecraftServer s, UUID id) {
 		var p = s.overworld().getPlayerByUUID(id);
-		check(p != null, "The companion is still on the crossing");
-		return p;
+		check(p instanceof ServerPlayer, "The companion is still on the crossing");
+		return (ServerPlayer) p;
 	}
 	private static void awaitMove(ClientGameTestContext c, TestSingleplayerContext w, UUID id, int move, boolean second, boolean paired) {
 		for (int i = 0; i < 1200; i++) {
