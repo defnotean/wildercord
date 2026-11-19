@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 /**
  * The lesson grammar and storage problems as language keys. The compiler and the server keep the
@@ -31,7 +32,7 @@ public final class LessonText {
     public static String key(String problem) { return KEYS.get(problem); }
 
     /** A known lesson problem renders from the language file with the English as fallback; anything else stays as written. */
-    public static Component problem(String problem) {
+    public static MutableComponent problem(String problem) {
         String key = key(problem);
         return key == null ? Component.literal(problem) : Component.translatableWithFallback(key, problem);
     }
