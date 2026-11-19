@@ -142,6 +142,8 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 			c.waitTicks(5);
 			shot(c, "ferryman_coop_paired_anchor");
 
+			// The screenshot spent ticks the photographed tell did not have: re-arm on a fresh one.
+			awaitMove(c, world, guardian, ANCHOR, true, true);
 			// The lone survivor keeps the announced impact: the first challenger walks off mid-tell.
 			world.getServer().runOnServer(s -> {
 				oarsman(s, oarsman).setHealth(500);
