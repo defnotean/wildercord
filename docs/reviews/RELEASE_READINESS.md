@@ -2,7 +2,7 @@
 
 This is a release gate, not a declaration of readiness. Keep the pull request in draft until the open checks below have evidence against the final release candidate. A source review, unit pass, or earlier commit's native pass cannot substitute for that candidate's results.
 
-The [player-facing development roadmap](../MASTERS_OF_TOMORROW_ROADMAP.md) records the expanded requested content scope and priorities. Planned spells, movement, lore and hundreds of distinct boss attacks are not completed by the current foundation.
+The [player-facing development roadmap](../archive/MASTERS_OF_TOMORROW_ROADMAP.md) records the expanded requested content scope and priorities. Planned spells, movement, lore and hundreds of distinct boss attacks are not completed by the current foundation.
 
 ## 0.11.0-alpha candidate: 48 sites and CI repairs (2026-10-09)
 

@@ -37,6 +37,6 @@ Remaining additions should predominantly equipment/relics. New plants/materials 
 
 ## Source and evidence references
 
-Existing accepted increments are recorded in [the living-world roadmap](../LIVING_WORLD_ROADMAP.md), [Sporeback acceptance](sporeback-snails.md), and [the outstanding-work audit](living-world-remaining.md). Main category sources are `aura/world/SleepingBlades.java`, `aura/world/AuraBeasts.java`, `wildlife/HighlandContent.java`, `wildlife/WetlandContent.java`, `wildlife/WetlandGarden.java`, `wildlife/WetlandShelters.java`, `wildlife/ReedRattle.java` and `wildlife/SporebackContent.java` beneath `src/main/java/dev/wildercord`.
+Existing accepted increments are recorded in [the living-world roadmap](../archive/LIVING_WORLD_ROADMAP.md), [Sporeback acceptance](sporeback-snails.md), and [the outstanding-work audit](living-world-remaining.md). Main category sources are `aura/world/SleepingBlades.java`, `aura/world/AuraBeasts.java`, `wildlife/HighlandContent.java`, `wildlife/WetlandContent.java`, `wildlife/WetlandGarden.java`, `wildlife/WetlandShelters.java`, `wildlife/ReedRattle.java` and `wildlife/SporebackContent.java` beneath `src/main/java/dev/wildercord`.
 
 Category sources and actual recipes are `wildlife/FungalGarden.java`, `tools/fungal_art.py` and generated `data/wildercord/recipe/{fungal_nursery,cave_breather}.json`. Native evidence is recorded in `glowcap-nursery-native.md`. This ledger is a category audit, not completion evidence for the larger item target or connected ecosystem.

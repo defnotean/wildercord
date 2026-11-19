@@ -517,7 +517,7 @@ Feature guides: [expeditions](docs/features/expeditions.md), [elemental armour](
 
 Current work is the polish loop on `0.14-connected-world`, tracked with findings and evidence in
 the [polish audit](docs/audit/2026-10-24-polish.md). The
-[Masters of Tomorrow roadmap](docs/MASTERS_OF_TOMORROW_ROADMAP.md) and its
+[Masters of Tomorrow roadmap](docs/archive/MASTERS_OF_TOMORROW_ROADMAP.md) and its
 [release checklist](docs/reviews/RELEASE_READINESS.md) are dated records of earlier rounds.
 
 - More dungeons, bosses and runes of the world.

@@ -81,7 +81,7 @@ and the historical off-thread attachment save race.
 - [Pause receipt](audit/evidence/2026-10-13-paused-vps-run.json): durable summary of
   the intentionally interrupted native run and its class-return boundaries.
 
-`docs/audit/` and `docs/LIVING_WORLD_ROADMAP.md` contain many older milestones.
+`docs/audit/` and `docs/archive/LIVING_WORLD_ROADMAP.md` contain many older milestones.
 They are useful history, not evidence that their tests ran on today's HEAD.
 `wiki/` contains authored player pages; `gitbook/` is their generated export.
 The public guide is not automatically updating while Actions is disabled.
