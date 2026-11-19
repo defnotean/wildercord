@@ -158,7 +158,22 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				struck = world.getServer().computeOnServer(s -> oarsman(s, oarsman).getHealth() < 500);
 				if (!struck) c.waitTicks(1);
 			}
-			check(struck, "The tell stays announced against the companion who remained warned");
+			if (!struck) {
+				var diag = world.getServer().computeOnServer(s -> {
+					var f = s.overworld().getEntity(guardian);
+					var o = s.overworld().getPlayerByUUID(oarsman);
+					return new double[] {
+						f instanceof ReedCrownedFerryman k ? k.move() : -1,
+						f instanceof ReedCrownedFerryman k ? k.elapsed(0) : -1,
+						f instanceof ReedCrownedFerryman k ? (k.secondPhase() ? 1 : 0) : -1,
+						f instanceof ReedCrownedFerryman k ? (k.pairedMark() ? 1 : 0) : -1,
+						o != null ? o.getHealth() : -1,
+						o != null && f != null ? o.position().distanceTo(f.position()) : -1};
+				});
+				check(false, "The tell stays announced against the companion who remained warned (move=" + diag[0]
+					+ " elapsed=" + diag[1] + " second=" + diag[2] + " paired=" + diag[3]
+					+ " companionHealth=" + diag[4] + " range=" + diag[5] + ")");
+			}
 
 			// Both keepers are paid by the shared second count.
 			world.getServer().runOnServer(s -> {
