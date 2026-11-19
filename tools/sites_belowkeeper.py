@@ -22,7 +22,7 @@ LANG = {
     "advancements.wildercord.world.belowkeeper_bell_sanctum.title": "The Quiet Eye",
     "advancements.wildercord.world.belowkeeper_bell_sanctum.description": "Find a Belowkeeper Bell Sanctum in the Belowkeeper Hollows",
     "journal.wildercord.entry.place.belowkeeper_listening_station": "Belowkeeper Listening Station: a vaulted deepslate chamber with a damp Glowcap basin and acoustic shutter lamp.",
-    "journal.wildercord.entry.place.belowkeeper_bell_sanctum": "Belowkeeper Bell Sanctum: a copper-and-deepslate resonance court where The Hollow Bell waits.",
+    "journal.wildercord.entry.place.belowkeeper_bell_sanctum": "Belowkeeper Bell Sanctum: a copper-and-deepslate resonance court where The Hollow Bell waits. A ruined belfry marks the shaft that drops to the court.",
     "entity.wildercord.belowkeeper_listener": "Belowkeeper Listener",
     "dialogue.wildercord.speaker.belowkeeper_listener": "Belowkeeper Listener",
     "journal.wildercord.entry.person.belowkeeper_listener": "Belowkeeper Listener: tends the deep listening stations, Glowcap basins, and acoustic shutter logs in the Belowkeeper Hollows.",
