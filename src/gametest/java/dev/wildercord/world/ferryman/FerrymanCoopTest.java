@@ -107,14 +107,21 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				s.overworld().addNewPlayer(fake);
 				return fake.getUUID();
 			});
-			// Both stand on the crossing while the ferryman is brought to its second count.
-			world.getServer().runOnServer(s -> {
-				var f = ferryman(s, guardian);
-				var p = s.getPlayerList().getPlayers().getFirst();
-				for (int i = 0; i < 8 && !second(f.getHealth(), f.getMaxHealth()); i++)
+			// Both stand on the crossing while the ferryman is brought to its second count, one blow per tick.
+			for (int i = 0; i < 60; i++) {
+				boolean phaseTwo = world.getServer().computeOnServer(s -> {
+					var f = ferryman(s, guardian);
+					var p = s.getPlayerList().getPlayers().getFirst();
+					if (p.getHealth() < 12) p.setHealth(20);
+					if (!f.isAlive() || second(f.getHealth(), f.getMaxHealth())) return true;
 					f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(p), 40);
-				check(second(f.getHealth(), f.getMaxHealth()), "Damage from a challenger brings the second count");
-			});
+					return false;
+				});
+				if (phaseTwo) break;
+				c.waitTicks(5);
+			}
+			world.getServer().runOnServer(s -> check(second(ferryman(s, guardian).getHealth(), ferryman(s, guardian).getMaxHealth()),
+				"Damage from a challenger brings the second count"));
 			awaitMove(c, world, guardian, ANCHOR, true, true);
 			var marks = world.getServer().computeOnServer(s -> {
 				var f = ferryman(s, guardian);
