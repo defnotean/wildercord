@@ -111,9 +111,10 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 			// Both stand on the crossing while the ferryman is brought to its second count, one blow per tick,
 			// the two of them taking turns so each earns a place among its contributors.
 			for (int i = 0; i < 60; i++) {
+				int turn = i;
 				boolean phaseTwo = world.getServer().computeOnServer(s -> {
 					var f = ferryman(s, guardian);
-					var striker = (i & 1) == 0 ? traveller(s, oarsman) : oarsman(s, oarsman);
+					var striker = (turn & 1) == 0 ? traveller(s, oarsman) : oarsman(s, oarsman);
 					if (striker.getHealth() < 12) striker.setHealth(striker.getMaxHealth());
 					if (!f.isAlive() || second(f.getHealth(), f.getMaxHealth())) return true;
 					f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(striker), 40);
