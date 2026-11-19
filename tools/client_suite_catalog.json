@@ -78,9 +78,9 @@
     ]
   },
   "area-regions-worldgen": {
-    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors.",
+    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, and every dungeon's wards holding their rooms against a survival player.",
     "purpose": "area",
-    "expectedCount": 10,
+    "expectedCount": 11,
     "entries": [
       "dev.wildercord.wildlife.RootmoltEncounterTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
@@ -91,7 +91,8 @@
       "dev.wildercord.wildlife.ReedRefugeTest",
       "dev.wildercord.wildlife.RainshieldAckTest",
       "dev.wildercord.wildlife.RainshieldFaultTest",
-      "dev.wildercord.cast.RuneSealDoorTest"
+      "dev.wildercord.cast.RuneSealDoorTest",
+      "dev.wildercord.world.dungeons.DungeonWardSealTest"
     ]
   },
   "area-items-crafting": {
