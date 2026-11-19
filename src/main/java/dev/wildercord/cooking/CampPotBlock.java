@@ -30,8 +30,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import dev.wildercord.ServerState;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -47,8 +46,8 @@ public class CampPotBlock extends Block {
 	private static final Map<UUID, String> CHOSEN = new HashMap<>();
 
 	static void init() {
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> CHOSEN.remove(handler.player.getUUID()));
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> CHOSEN.clear());
+		ServerState.forgetOnDisconnect(CHOSEN);
+		ServerState.resetOnStop(CHOSEN);
 	}
 
 	public CampPotBlock(Properties properties) {

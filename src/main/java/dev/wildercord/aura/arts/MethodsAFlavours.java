@@ -1,5 +1,6 @@
 package dev.wildercord.aura.arts;
 
+import dev.wildercord.ServerState;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.DuneRules;
 import dev.wildercord.aura.IronRules;
@@ -24,7 +25,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,7 +75,7 @@ public final class MethodsAFlavours {
 
 	/** World game times from the last world mean nothing in the next one. */
 	static void init() {
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SUNDER_ENDS.clear());
+		ServerState.resetOnStop(SUNDER_ENDS);
 	}
 
 	/** Sunders {@code armour} of {@code foe}'s armour for {@code ticks} (held to {@link IronRules#SUNDER_MAX} in all). Returns what it took. */

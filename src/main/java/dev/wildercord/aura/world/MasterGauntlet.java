@@ -1,10 +1,10 @@
 package dev.wildercord.aura.world;
 
 import com.mojang.serialization.Codec;
+import dev.wildercord.ServerState;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
@@ -57,7 +57,7 @@ public final class MasterGauntlet {
 	private static final Map<UUID, Run> RUNS = new HashMap<>();
 
 	public static void init() {
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> RUNS.clear());
+		ServerState.resetOnStop(RUNS);
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (server.getTickCount() % 10 == 0 && !RUNS.isEmpty()) tick(server);
 		});

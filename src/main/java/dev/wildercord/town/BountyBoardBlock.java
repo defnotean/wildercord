@@ -30,8 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import dev.wildercord.ServerState;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -50,8 +49,8 @@ public class BountyBoardBlock extends Block {
 	private static final Map<UUID, long[]> SHOWN = new HashMap<>();
 
 	static void init() {
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SHOWN.remove(handler.player.getUUID()));
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SHOWN.clear());
+		ServerState.forgetOnDisconnect(SHOWN);
+		ServerState.resetOnStop(SHOWN);
 	}
 
 	public BountyBoardBlock(Properties properties) {

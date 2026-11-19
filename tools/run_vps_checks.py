@@ -264,6 +264,7 @@ def main(argv=None):
                 commands = [("build", gradle + ["build", "compileGametestJava", *flags]),
                             ("assets", [sys.executable, "tools/check_generated_assets.py"]),
                             ("guide", [sys.executable, "tools/player_docs.py", "--check"]),
+                            ("ticks", [sys.executable, "tools/lint_ticks.py"]),
                             ("tools", [sys.executable, "-m", "unittest", "discover", "-s", "tools", "-p", "test_*.py"])]
             else:
                 environment["WILDERCORD_FULL_CLIENT_LAUNCH_ID"] = launch

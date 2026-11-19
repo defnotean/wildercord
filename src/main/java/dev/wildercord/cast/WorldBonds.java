@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.ServerState;
 import dev.wildercord.api.SpellMasteryApi;
 import dev.wildercord.config.Config;
 import dev.wildercord.spell.Attunements;
@@ -8,7 +9,6 @@ import dev.wildercord.spell.Resonance;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneQuirks;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -56,7 +56,7 @@ public final class WorldBonds {
 	private static final Map<UUID, Long> HINTED = new HashMap<>();
 
 	public static void init() {
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { MARKED.clear(); HINTED.clear(); });
+		ServerState.resetOnStop(MARKED, HINTED);
 		SpellMasteryApi.setResidueSink(WorldBonds::lingeringMark);
 		SpellMasteryApi.addCircumstance(QUIRK, (caster, spell) -> quirkHolds(caster, spell));
 		SpellMasteryApi.registerTrait(WORLD_TUNED);

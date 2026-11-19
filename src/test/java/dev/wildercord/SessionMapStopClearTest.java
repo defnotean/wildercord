@@ -13,13 +13,16 @@ class SessionMapStopClearTest {
 	@Test
 	void mapsClearOnStop() throws Exception {
 		var maps = Map.of(
-				"cooking/CampPotBlock", "CHOSEN.clear()",
-				"town/BountyBoardBlock", "SHOWN.clear()",
-				"aura/arts/MethodsAFlavours", "SUNDER_ENDS.clear()");
+				"cooking/CampPotBlock", "ServerState.resetOnStop(CHOSEN)",
+				"town/BountyBoardBlock", "ServerState.resetOnStop(SHOWN)",
+				"aura/arts/MethodsAFlavours", "ServerState.resetOnStop(SUNDER_ENDS)");
 		for (var e : maps.entrySet()) {
 			String source = Files.readString(Path.of("src/main/java/dev/wildercord/" + e.getKey() + ".java"));
-			assertTrue(source.contains("SERVER_STOPPED.register(server -> " + e.getValue()), e.getKey() + " keeps its map after the server stops");
+			assertTrue(source.contains(e.getValue()), e.getKey() + " keeps its map after the server stops");
 		}
+		// The two boards' picks are per player, so a leaver's entry should go with them.
+		assertTrue(Files.readString(Path.of("src/main/java/dev/wildercord/cooking/CampPotBlock.java")).contains("ServerState.forgetOnDisconnect(CHOSEN)"));
+		assertTrue(Files.readString(Path.of("src/main/java/dev/wildercord/town/BountyBoardBlock.java")).contains("ServerState.forgetOnDisconnect(SHOWN)"));
 		assertTrue(Files.readString(Path.of("src/main/java/dev/wildercord/cooking/Meals.java")).contains("CampPotBlock.init();"));
 		assertTrue(Files.readString(Path.of("src/main/java/dev/wildercord/town/Town.java")).contains("BountyBoardBlock.init();"));
 		assertTrue(Files.readString(Path.of("src/main/java/dev/wildercord/aura/arts/MethodArts.java")).contains("MethodsAFlavours.init();"));

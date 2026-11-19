@@ -2,12 +2,12 @@ package dev.wildercord.town;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.wildercord.ServerState;
 import dev.wildercord.Wildercord;
 import dev.wildercord.town.BountyRules.Tier;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -54,7 +54,7 @@ public final class Hamlets {
 	private static final Map<UUID, String> IN = new HashMap<>();
 
 	public static void init() {
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> IN.clear());
+		ServerState.resetOnStop(IN);
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof Enemy && source.getEntity() instanceof ServerPlayer player && entity.level() instanceof ServerLevel level) {
 				BlockPos bell = bell(level, entity.blockPosition());
