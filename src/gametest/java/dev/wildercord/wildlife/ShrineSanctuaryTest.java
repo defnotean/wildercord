@@ -4,6 +4,7 @@ import dev.wildercord.aura.world.RootcoilSerpent;
 import dev.wildercord.aura.world.SerpentRules;
 import dev.wildercord.cast.Archivist;
 import dev.wildercord.cast.CastEngine;
+import dev.wildercord.cast.Effects;
 import dev.wildercord.cast.Reactions;
 import dev.wildercord.content.RuneSealBlock;
 import dev.wildercord.content.WildercordBlocks;
@@ -751,7 +752,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					"Suzu Chime applied WINDSWEPT mark");
 				check(player.hasEffect(MobEffects.ABSORPTION), "Ofuda Ward granted Absorption I");
 
-				player.invulnerableTime = 0;
+				Effects.readyToHurt(player);
 				boolean hurt = player.hurtServer(l, l.damageSources().mobAttack(thornsAttacker), 2.0F);
 				check(hurt, "Hostile strike registered against Ofuda Ward");
 			});

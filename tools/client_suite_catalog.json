@@ -181,7 +181,7 @@
   },
   "shrine-sanctuary": {
     "description": "Full Shrine Sanctuary & polish verification suite: Yuki/Odie/Freya/Kuro models & loaf poses, Sakura Villager NPCs & custom mobs, Sakura Village courtyard, 4-floor Cat Sanctuary pagoda trials/buffs/taming/companion powers, Lantern Bathhouse onsen & Fire+Wind RuneSeal, Ricochet (5/2 + decay)/Suzu Chime/Ofuda Ward, Archivist & Rootcoil Serpent anti-cheese, all 9 block-variant recipe tags, plus 32-structure DungeonWardSealTest.",
-    "purpose": "diagnostic",
+    "purpose": "area",
     "expectedCount": 2,
     "entries": [
       "dev.wildercord.wildlife.ShrineSanctuaryTest",
