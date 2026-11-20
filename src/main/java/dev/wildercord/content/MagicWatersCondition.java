@@ -35,11 +35,11 @@ public record MagicWatersCondition(double multiplier) implements LootItemConditi
 
 	@Override
 	public boolean test(LootContext context) {
-		Vec3 origin = context.getOptional(LootContextParams.ORIGIN);
+		Vec3 origin = context.getOptionalParameter(LootContextParams.ORIGIN);
 		if (origin == null) {
 			return false;
 		}
-		double chance = Fishing.magicWatersChance(context.getLevel(), origin, context.getOptional(LootContextParams.THIS_ENTITY), multiplier);
+		double chance = Fishing.magicWatersChance(context.getLevel(), origin, context.getOptionalParameter(LootContextParams.THIS_ENTITY), multiplier);
 		return chance > 0 && context.getRandom().nextDouble() < chance;
 	}
 }

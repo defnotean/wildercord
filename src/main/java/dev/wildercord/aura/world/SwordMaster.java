@@ -1190,7 +1190,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		Vec3 aim = lockedAim == null ? flatLook() : lockedAim;
 		Vec3 origin = released == MastersRules.Move.CINDER_WAKE && lockedOrigin != null ? lockedOrigin : position();
 		setState(WINDUP, false);
-		swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		swing(InteractionHand.MAIN_HAND, true);
 		if (released == MastersRules.Move.CRESCENT) {
 			Feels.sound(level, position(), "aura_slash", 1, 0.9F);
 			AuraFx.trail(this, AuraFxRules.Stroke.SWEEP, false, auraColor(), stage(), 1.2F);
@@ -1326,7 +1326,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		if (signature == MethodsBSignatureRules.Signature.TOLL && techniqueStrike > 0 && lockedOrigin != null) origin = lockedOrigin;
 		else if (signature != null) lockedOrigin = origin;
 		setState(WINDUP, false);
-		swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		swing(InteractionHand.MAIN_HAND, true);
 		AuraFx.trail(this, strike.shape() == MasterTechniques.Shape.LANE ? AuraFxRules.Stroke.THRUST : AuraFxRules.Stroke.SWEEP,
 			strike.mirrored(), auraColor(), stage(), strike.heavy() ? 1.4F : 1.2F);
 		Feels.sound(level, origin, "aura_slash", 1, strike.heavy() ? 0.75F : strike.quick() ? 1.15F : 0.95F);

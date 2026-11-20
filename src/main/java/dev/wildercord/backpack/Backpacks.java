@@ -216,7 +216,7 @@ public final class Backpacks {
 		if (player.openMenu(provider).isEmpty() || opened[0] == null) {
 			return false;
 		}
-		player.level().playSound(null, player, SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 0.8F, 1.1F + player.getRandom().nextFloat() * 0.1F);
+		player.level().playSound(null, player, SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 0.8F, 1.1F + player.getRandom().nextFloat() * 0.1F);
 		if (opened[0] == BackpackTier.RUNEWOVEN) {
 			player.level().playSound(null, player, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.7F, 1.3F);
 		}
@@ -244,15 +244,15 @@ public final class Backpacks {
 	private static void spillOverflow(ServerPlayer player, ItemStack backpack) {
 		BackpackTier tier = tierOf(backpack);
 		ItemContainerContents contents = backpack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-		if (tier == null || contents.size() <= tier.slots()) {
+		List<ItemStack> all = contents.allItemsCopyStream().toList();
+		if (tier == null || all.size() <= tier.slots()) {
 			return;
 		}
-		List<ItemStack> all = contents.itemCopies().toList();
 		List<ItemStack> kept = new ArrayList<>(all.subList(0, tier.slots()));
 		backpack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(kept));
 		for (ItemStack extra : all.subList(tier.slots(), all.size())) {
 			if (!extra.isEmpty()) {
-				player.getInventory().placeItemBackInInventory(extra, net.minecraft.util.Prediction.SERVER_ONLY);
+				player.getInventory().placeItemBackInInventory(extra);
 			}
 		}
 	}
@@ -273,10 +273,7 @@ public final class Backpacks {
 		if (EnchantmentHelper.has(worn, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
 			return;
 		}
-		ItemEntity drop = player.createItemStackToDrop(worn, true, false);
-		if (drop != null) {
-			player.level().addFreshEntity(drop);
-		}
+		player.drop(worn, true, false);
 	}
 
 	public static void init() {

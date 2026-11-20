@@ -98,7 +98,7 @@ public final class WildlifeSpawns {
 			context -> {
 				WildercordConfig.WildlifeSettings settings = Config.get().wildlife();
 				if (settings.spawns(kind.id())) {
-					context.getMobSpawnSettings().addSpawn(category(kind), new MobSpawnSettings.SpawnerData(type, UniformInt.of(kind.minGroup(), kind.maxGroup())),
+					context.getMobSpawnSettings().addSpawn(category(kind), new MobSpawnSettings.SpawnerData(type, kind.minGroup(), kind.maxGroup()),
 						WildlifeRules.weight(kind, settings.spawnMultiplier()));
 				}
 			});

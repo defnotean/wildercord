@@ -40,7 +40,7 @@ public final class RuneResearch {
   if(s.garden&&(reward&4)==0){reward|=4;give(p,new ItemStack(WildercordItems.MANA_CRYSTAL));p.sendSystemMessage(Component.translatable("message.wildercord.research_garden"));}
   var next=new Notebook(s.shapes,s.fusions,s.garden,reward);if(!next.equals(p.getAttachedOrElse(NOTES,Notebook.EMPTY)))p.setAttached(NOTES,next);
  }
- private static void give(ServerPlayer p,ItemStack stack){p.getInventory().add(stack);if(!stack.isEmpty())p.drop(stack,false,net.minecraft.util.Prediction.SERVER_ONLY);}
+ private static void give(ServerPlayer p,ItemStack stack){p.getInventory().add(stack);if(!stack.isEmpty())p.drop(stack, false);}
  public static int show(ServerPlayer p) {
   var s=p.getAttachedOrElse(NOTES,Notebook.EMPTY);p.sendSystemMessage(Component.translatable("message.wildercord.research_board",Math.min(5,s.shapes.size()),Math.min(3,s.fusions.size()),s.garden?"✓":"—"));
   // Offer one recipe the player can explore with learned ingredients, rather than spoil the entire journal.

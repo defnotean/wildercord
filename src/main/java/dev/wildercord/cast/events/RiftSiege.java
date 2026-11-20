@@ -199,7 +199,7 @@ public final class RiftSiege {
 		stand.snapTo(base.x, base.y + 0.2, base.z);
 		stand.setInvisible(true);
 		stand.setNoGravity(true);
-		stand.setPermanentlyInvulnerable(true);
+		stand.setInvulnerable(true);
 		stand.setSilent(true);
 		stand.setNoBasePlate(true);
 		stand.addTag(ANCHOR_TAG);

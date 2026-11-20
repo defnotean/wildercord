@@ -75,7 +75,7 @@ public final class AuraBeasts {
 		SpawnPlacements.register(type,SpawnPlacementTypes.ON_GROUND,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(t,l,r,p,random)->maySpawn(t,l,r,p));
 		var biomes=Arrays.stream(ids).map(s->ResourceKey.create(Registries.BIOME,Identifier.parse(s))).collect(java.util.stream.Collectors.toSet());
 		BiomeModifications.create(Wildercord.id("aura_beasts/"+id)).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(biomes),c->{
-			if(Config.get().auraWorld().auraBeasts()) c.getMobSpawnSettings().addSpawn(MobCategory.CREATURE,new MobSpawnSettings.SpawnerData(type,UniformInt.of(1,1)),weight);
+			if(Config.get().auraWorld().auraBeasts()) c.getMobSpawnSettings().addSpawn(MobCategory.CREATURE,new MobSpawnSettings.SpawnerData(type, 1, 1),weight);
 		});
 	}
 	public static void init() {

@@ -652,7 +652,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			var h=head().add(0,1.2,0);
 			level.sendParticles(ParticleTypes.SOUL,getX(),getY()+.2,getZ(),1,1.4,.05,1.4,.01);
 			if(el%3==0)level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,h.x,h.y,h.z,1,.15,.1,.15,.005);
-			if(el==tell-6)sound(level,h,SoundEvents.SHOVEL_FLATTEN.value(),1.2F,.5F);
+			if(el==tell-6)sound(level,h,SoundEvents.SHOVEL_FLATTEN,1.2F,.5F);
 			return;
 		}
 		if(el==tell){

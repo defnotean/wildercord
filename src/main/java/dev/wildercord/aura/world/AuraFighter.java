@@ -261,7 +261,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 			Light.ring(level, at, look, AuraVfx.hot(auraColor(), 0.5), 0.1, 0.6, 0.03, 6);
 			Feels.sound(level, position().add(0, 1, 0), "aura_guard", 0.8F, 0.95F);
 		}
-		swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		swing(InteractionHand.MAIN_HAND, true);
 		return true;
 	}
 
@@ -471,7 +471,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 			flat = flatLook();
 		}
 		flat = flat.normalize();
-		swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		swing(InteractionHand.MAIN_HAND, true);
 		Feels.sound(level, origin, "aura_slash", 1.0F, 0.92F);
 		AuraVfx.slashStart(level, origin, flat, auraColor());
 		Crescents.launch(this, origin, flat, auraColor(), slashDamage(), 1.0, slashSpeed(), slashRange(), slashWidth(), AuraRules.SLASH_TARGETS, false,

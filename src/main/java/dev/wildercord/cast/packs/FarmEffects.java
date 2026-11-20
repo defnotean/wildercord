@@ -86,6 +86,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class FarmEffects {
 	private FarmEffects() {}
 
+	private static final net.minecraft.tags.TagKey<Block> SAPLINGS = net.minecraft.tags.TagKey.create(
+		net.minecraft.core.registries.Registries.BLOCK, Identifier.withDefaultNamespace("saplings"));
+
 	/** When each hen was last hurried along (Henhouse), and each hive (Hive Hum), by game time. */
 	private static final Map<UUID, Long> HENS = new ConcurrentHashMap<>();
 	private static final Map<GlobalPos, Long> HIVES = new ConcurrentHashMap<>();
@@ -439,7 +442,7 @@ public final class FarmEffects {
 				int ticked = 0;
 				for (BlockPos p : patch(center, r, 1)) {
 					BlockState state = cast.level.getBlockState(p);
-					if (!(isPlant(state) || state.is(BlockTags.SAPLINGS)) || !state.isRandomlyTicking() || !mayChange(cast, p)) {
+					if (!(isPlant(state) || state.is(SAPLINGS)) || !state.isRandomlyTicking() || !mayChange(cast, p)) {
 						continue;
 					}
 					if (ticked++ >= FarmRules.CLOCHE_PLANTS) {
@@ -1005,7 +1008,7 @@ public final class FarmEffects {
 				break;
 			}
 			BlockState state = cast.level.getBlockState(p);
-			boolean young = state.is(BlockTags.SAPLINGS) || state.is(Blocks.RED_MUSHROOM) || state.is(Blocks.BROWN_MUSHROOM);
+			boolean young = state.is(SAPLINGS) || state.is(Blocks.RED_MUSHROOM) || state.is(Blocks.BROWN_MUSHROOM);
 			if (!young || !Casters.mayEdit(cast.caster, cast.level, p) || !cast.takeBlock()) {
 				continue;
 			}
@@ -1034,7 +1037,7 @@ public final class FarmEffects {
 				|| planted.stream().anyMatch(o -> !FarmRules.spaced(o.getX() - spot.getX(), o.getZ() - spot.getZ()))) {
 				continue;
 			}
-			ItemStack sapling = find(player, s -> s.getItem() instanceof BlockItem bi && bi.getBlock().defaultBlockState().is(BlockTags.SAPLINGS)
+			ItemStack sapling = find(player, s -> s.getItem() instanceof BlockItem bi && bi.getBlock().defaultBlockState().is(SAPLINGS)
 				&& bi.getBlock().defaultBlockState().canSurvive(cast.level, spot));
 			if (sapling.isEmpty()) {
 				break;
@@ -1169,7 +1172,7 @@ public final class FarmEffects {
 		BlockPos stump = level.getBlockState(start).isAir() && level.getBlockState(start.below()).is(BlockTags.SUBSTRATE_OVERWORLD) ? start : null;
 		if (stump != null && cast.caster instanceof ServerPlayer player) {
 			BlockPos at = stump;
-			ItemStack sapling = find(player, s -> s.getItem() instanceof BlockItem bi && bi.getBlock().defaultBlockState().is(BlockTags.SAPLINGS)
+			ItemStack sapling = find(player, s -> s.getItem() instanceof BlockItem bi && bi.getBlock().defaultBlockState().is(SAPLINGS)
 				&& bi.getBlock().defaultBlockState().canSurvive(level, at));
 			if (!sapling.isEmpty() && Casters.mayEdit(player, level, at)) {
 				level.setBlockAndUpdate(at, ((BlockItem) sapling.getItem()).getBlock().defaultBlockState());

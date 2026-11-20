@@ -313,7 +313,7 @@ public final class Spars {
 		ServerLevel level = from.level();
 		int color = colour(from);
 		Vec3 blade = BladeCeremony.hand(from).add(0, 0.35, 0);
-		from.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		from.swing(InteractionHand.MAIN_HAND, true);
 		AuraFx.burst(level, from, blade, Vec3.ZERO, color, 0.55F, AuraFx.Burst.FLASH | AuraFx.Burst.STAR);
 		Vec3 chest = to.position().add(0, 1.1, 0);
 		ArtLight.spectacle(from).ray(blade, chest, color, 0.035, 10).bare().ray(blade, chest, AuraVfx.hot(color, 0.6), 0.012, 8);

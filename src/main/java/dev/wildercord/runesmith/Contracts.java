@@ -311,7 +311,7 @@ public final class Contracts {
 				RuneItem.runeName(rune).withColor(RuneColors.of(rune))).withStyle(ChatFormatting.GOLD)));
 		}
 		if (!player.getInventory().add(stack)) {
-			player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+			player.drop(stack, false);
 		}
 	}
 }

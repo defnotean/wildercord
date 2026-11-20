@@ -63,7 +63,6 @@ import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
-import net.minecraft.world.level.block.entity.SignTextSlot;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.entity.TrialSpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -625,7 +624,7 @@ public final class WayfarerEffects {
 				THRIFT.remove(player.getUUID());
 				ItemStack lapis = new ItemStack(Items.LAPIS_LAZULI);
 				if (!player.getInventory().add(lapis)) {
-					player.drop(lapis, false, net.minecraft.util.Prediction.SERVER_ONLY);
+					player.drop(lapis, false);
 				}
 				Casters.tell(player, Component.translatable("message.wildercord.wayfarer.lapis_thrift.refund"));
 				Fx.sound(level, player.position(), SoundEvents.ENCHANTMENT_TABLE_USE, 0.6f, 1.4f);
@@ -856,12 +855,12 @@ public final class WayfarerEffects {
 			tell(cast, sign == null ? "glyph_carve.none" : "glyph_carve.sealed");
 			return;
 		}
-		SignTextSlot slot = sign.getSlotPlayerIsFacing(player);
-		SignText text = sign.getText(slot);
-		List<Component> lines = text.getMessages(false);
+		boolean front = sign.isFacingFrontText(player);
+		SignText text = sign.getText(front);
+		Component[] lines = text.getMessages(false);
 		int blank = -1;
-		for (int i = 0; i < lines.size(); i++) {
-			if (lines.get(i).getString().isBlank()) {
+		for (int i = 0; i < lines.length; i++) {
+			if (lines[i].getString().isBlank()) {
 				blank = i;
 				break;
 			}
@@ -873,7 +872,7 @@ public final class WayfarerEffects {
 		Vec3 look = player.getLookAngle();
 		Component glyph = Component.literal("✦ ").append(Component.translatable("direction.wildercord."
 			+ WayfarerRules.COMPASS[WayfarerRules.compass(look.x, look.z)])).append(" ✦");
-		sign.setText(text.asMutable().setLine(blank, glyph).setTextGlowing(true).asImmutable(), slot);
+		sign.setText(text.setMessage(blank, glyph).setHasGlowingText(true), front);
 		refresh(cast.level, sign);
 		tell(cast, "glyph_carve");
 		Fx.send(cast.level, ParticleTypes.WAX_OFF, Vec3.atCenterOf(sign.getBlockPos()), 8, 0.3, 0.02);
@@ -887,8 +886,8 @@ public final class WayfarerEffects {
 			if (sign.isWaxed() || !mayEdit(cast, sign.getBlockPos())) {
 				continue;
 			}
-			for (SignTextSlot slot : List.of(SignTextSlot.FRONT, SignTextSlot.BACK)) {
-				sign.setText(sign.getText(slot).withGlowingText(true), slot);
+			for (boolean front : List.of(true, false)) {
+				sign.setText(sign.getText(front).setHasGlowingText(true), front);
 			}
 			refresh(cast.level, sign);
 			Fx.send(cast.level, ParticleTypes.GLOW, Vec3.atCenterOf(sign.getBlockPos()), 4, 0.3, 0.01);

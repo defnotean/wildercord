@@ -449,7 +449,7 @@ public final class AuraCombat {
 					Vec3 toward = c.subtract(e.position());
 					if (toward.lengthSqr() > 0.25) {
 						e.push(toward.normalize().scale(pull));
-						e.syncVelocity = true;
+						e.hurtMarked = true;
 					}
 				}
 			}

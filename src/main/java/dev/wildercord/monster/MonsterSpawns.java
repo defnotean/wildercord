@@ -235,89 +235,89 @@ public final class MonsterSpawns {
 		if (FIELDS.contains(key)) {
 			int weight = MonsterRules.weight(STRAWMAN_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.STRAWMAN, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.STRAWMAN, 1, 1), weight);
 			}
 		}
 		if (DESERTS.contains(key)) {
 			int weight = MonsterRules.weight(DUNESTINGER_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.DUNESTINGER, UniformInt.of(2, 4)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.DUNESTINGER, 2, 4), weight);
 			}
 		}
 		if (JUNGLES.contains(key)) {
 			int weight = MonsterRules.weight(GULPER_PITCHER_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.GULPER_PITCHER, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.GULPER_PITCHER, 1, 1), weight);
 			}
 		}
 		if (SAVANNAS.contains(key)) {
 			int weight = MonsterRules.weight(CACKLING_HYENA_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.CACKLING_HYENA, UniformInt.of(3, 5)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.CACKLING_HYENA, 3, 5), weight);
 			}
 		}
 		if (TAIGAS.contains(key)) {
 			int weight = MonsterRules.weight(PITCHBACK_BEETLE_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.PITCHBACK_BEETLE, UniformInt.of(1, 2)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.PITCHBACK_BEETLE, 1, 2), weight);
 			}
 			int bear = MonsterRules.weight(TIMBERMAUL_BEAR_WEIGHT, rate);
 			if (bear > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.TIMBERMAUL_BEAR, UniformInt.of(1, 1)), bear);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.TIMBERMAUL_BEAR, 1, 1), bear);
 			}
 		}
 		if (SNOWS.contains(key)) {
 			int weight = MonsterRules.weight(RIMECOAT_WOLVERINE_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.RIMECOAT_WOLVERINE, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.RIMECOAT_WOLVERINE, 1, 1), weight);
 			}
 		}
 		if (RIVERS.contains(key)) {
 			int weight = MonsterRules.weight(SNAPJAW_TURTLE_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.SNAPJAW_TURTLE, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.SNAPJAW_TURTLE, 1, 1), weight);
 			}
 		}
 		if (SEAS.contains(key)) {
 			int weight = MonsterRules.weight(REEFGRASP_OCTOPUS_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.REEFGRASP_OCTOPUS, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.REEFGRASP_OCTOPUS, 1, 1), weight);
 			}
 		}
 		if (CHERRY.contains(key)) {
 			int weight = MonsterRules.weight(FOXFIRE_KITSUNE_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.FOXFIRE_KITSUNE, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.FOXFIRE_KITSUNE, 1, 1), weight);
 			}
 		}
 		if (CRAGS.contains(key)) {
 			int weight = MonsterRules.weight(CRAGCLEAVER_RAM_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.CRAGCLEAVER_RAM, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.CRAGCLEAVER_RAM, 1, 1), weight);
 			}
 		}
 		if (DRIPSTONE.contains(key)) {
 			int weight = MonsterRules.weight(DRIPFANG_LURKER_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.DRIPFANG_LURKER, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.DRIPFANG_LURKER, 1, 1), weight);
 			}
 		}
 		if (LUSH.contains(key)) {
 			int weight = MonsterRules.weight(GLOWLURE_ANGLER_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.GLOWLURE_ANGLER, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.GLOWLURE_ANGLER, 1, 1), weight);
 			}
 		}
 		if (BLOOMS.contains(key)) {
 			int weight = MonsterRules.weight(BLOOMCLAW_MANTIS_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.BLOOMCLAW_MANTIS, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.BLOOMCLAW_MANTIS, 1, 1), weight);
 			}
 		}
 		if (DESERTS.contains(key)) {
 			int weight = MonsterRules.weight(SANDMAW_WYRM_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.SANDMAW_WYRM, UniformInt.of(1, 1)), weight);
+				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.SANDMAW_WYRM, 1, 1), weight);
 			}
 		}
 		if (!QUIET.contains(key)) {
@@ -330,7 +330,7 @@ public final class MonsterSpawns {
 	private static void add(BiomeModificationContext.MobSpawnSettingsContext spawns, MonsterRules.Kind kind, double share, double rate) {
 		int weight = MonsterRules.weight((int) Math.round(kind.weight * share), rate);
 		if (weight > 0) {
-			spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.type(kind), UniformInt.of(kind.min, kind.max)), weight);
+			spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.type(kind), kind.min, kind.max), weight);
 		}
 	}
 

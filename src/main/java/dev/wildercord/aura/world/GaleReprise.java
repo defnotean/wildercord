@@ -93,7 +93,7 @@ final class GaleReprise {
 			released = true;
 			finished = true; // Consume the one strike before guard/parry callbacks can re-enter AI.
 			if (replyOrigin == null) return false;
-			master.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+			master.swing(InteractionHand.MAIN_HAND, true);
 			AuraFx.trail(master, AuraFxRules.Stroke.THRUST, false, master.auraColor(), master.stage(), 1);
 			Feels.sound(level, replyOrigin, "aura_slash", 1, 1.2F);
 			Vec3 delta = target.position().subtract(replyOrigin), side = new Vec3(-aim.z, 0, aim.x);

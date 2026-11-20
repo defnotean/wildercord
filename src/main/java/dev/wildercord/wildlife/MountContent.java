@@ -110,7 +110,7 @@ public final class MountContent {
 			context -> {
 				if (Config.get().wildlife().enabled() && Config.get().wildlife().spawnMultiplier() > 0) {
 					context.getMobSpawnSettings().addSpawn(MobCategory.CREATURE,
-						new MobSpawnSettings.SpawnerData(RIDGEBACK_STAG, UniformInt.of(MIN_GROUP, MAX_GROUP)), WEIGHT);
+						new MobSpawnSettings.SpawnerData(RIDGEBACK_STAG, MIN_GROUP, MAX_GROUP), WEIGHT);
 				}
 			});
 		FieldGuide.add(new FieldGuide.Entry("wildercord:ridgeback_stag", FieldGuide.Group.WILDLIFE, 0x8A5A34));

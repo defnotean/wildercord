@@ -35,7 +35,7 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.zombie.ZombieVillager;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -560,7 +560,7 @@ public final class WorldMagic {
 			if (!edit(cast, pos)) {
 				return false;
 			}
-			CampfireBlock.douse(cast.caster, level, pos, state);
+			CampfireBlock.dowse(cast.caster, level, pos, state);
 			level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, false));
 			Motes.smoke(level, Vec3.atCenterOf(pos).add(0, 0.3, 0), 3, 0.2);
 			return true;
@@ -1224,7 +1224,7 @@ public final class WorldMagic {
 		int grown = 0;
 		BlockPos plant = hit.block() != null ? hit.block() : centre;
 		BlockState crop = level.getBlockState(plant);
-		if ((crop.is(BlockTags.CROPS) || crop.is(BlockTags.SAPLINGS)) && edit(cast, plant)) {
+		if ((crop.is(BlockTags.CROPS) || crop.is(SAPLINGS)) && edit(cast, plant)) {
 			BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level, plant);
 			level.levelEvent(net.minecraft.world.level.block.LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, plant, 15);
 			grown++;
@@ -1325,10 +1325,13 @@ public final class WorldMagic {
 	 * Void on an enderman anchors it where it stands for {@link WorldRules#ANCHOR_TICKS}: it can't
 	 * teleport away (from a spell, the rain or an arrow), and a ring of darkness turns at its feet.
 	 */
+	private static final net.minecraft.tags.TagKey<net.minecraft.world.level.block.Block> SAPLINGS = net.minecraft.tags.TagKey.create(
+		net.minecraft.core.registries.Registries.BLOCK, net.minecraft.resources.Identifier.withDefaultNamespace("saplings"));
+
 	private static void anchor(Cast cast, Cast.Hit hit) {
 		ServerLevel level = cast.level;
 		for (Entity e : hit.entities()) {
-			if (!(e instanceof Enderman enderman) || !enderman.isAlive() || !Targets.canHarm(cast.caster, e)) {
+			if (!(e instanceof EnderMan enderman) || !enderman.isAlive() || !Targets.canHarm(cast.caster, e)) {
 				continue;
 			}
 			// An enderman still in the list has its ring going already (the ring crosses it off when the anchor lets go).
@@ -1342,7 +1345,7 @@ public final class WorldMagic {
 	}
 
 	/** The ring of darkness round an anchored enderman's feet, renewed while the anchor holds. */
-	private static void anchorRing(ServerLevel level, Enderman enderman) {
+	private static void anchorRing(ServerLevel level, EnderMan enderman) {
 		if (!anchored(enderman) || enderman.isRemoved() || !enderman.isAlive() || enderman.level() != level) {
 			ANCHORED.remove(enderman.getUUID());
 			return;

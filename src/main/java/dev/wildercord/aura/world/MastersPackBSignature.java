@@ -211,7 +211,7 @@ final class MastersPackBSignature {
 	}
 
 	private boolean done() { finished = true; released = true; return false; }
-	private void swing() { master.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true); }
+	private void swing() { master.swing(InteractionHand.MAIN_HAND, true); }
 
 	private boolean validOwner() {
 		return master.canMaintainPackB(this) && master.level() == level && roster.equals(master.challengers())

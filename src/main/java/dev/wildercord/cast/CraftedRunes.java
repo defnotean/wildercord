@@ -364,7 +364,7 @@ public final class CraftedRunes {
 	}
 
 	private static boolean isOre(BlockState state) {
-		return state.is(BlockTags.ORES) || state.is(ConventionalBlockTags.ORES);
+		return state.is(ConventionalBlockTags.ORES);
 	}
 
 	/** Each ore glows in the colour of what it gives (by vanilla's metal tags, then by its name, so another mod's ores match too). */

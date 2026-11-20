@@ -1,7 +1,6 @@
 package dev.wildercord.mixin;
 
 import dev.wildercord.aura.BondedBlades;
-import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -16,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(LivingEntity.class)
 public abstract class BondedBladeDropMixin {
-	@Inject(method = "drop", at = @At("HEAD"), cancellable = true)
-	private void wildercord$keepFromDead(ItemStack stack, boolean thrownFromHand, Prediction prediction, CallbackInfoReturnable<ItemEntity> cir) {
+	@Inject(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At("HEAD"), cancellable = true)
+	private void wildercord$keepFromDead(ItemStack stack, boolean dropAround, boolean includeThrowerName, CallbackInfoReturnable<ItemEntity> cir) {
 		if (BondedBlades.bonded(stack) && BondedBlades.keepFromDead((LivingEntity) (Object) this, stack)) {
 			cir.setReturnValue(null);
 		}

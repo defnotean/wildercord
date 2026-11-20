@@ -133,10 +133,7 @@ public final class GearSlots {
 			if (stack.isEmpty() || EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
 				continue;
 			}
-			ItemEntity drop = player.createItemStackToDrop(stack, true, false);
-			if (drop != null) {
-				player.level().addFreshEntity(drop);
-			}
+			player.drop(stack, true, false);
 		}
 	}
 

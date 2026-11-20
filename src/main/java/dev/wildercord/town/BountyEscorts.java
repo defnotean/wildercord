@@ -284,7 +284,7 @@ public final class BountyEscorts {
 				ServerPlayer ally = level.getServer().getPlayerList().getPlayer(id);
 				if (ally != null && ally.isAlive() && !ally.isSpectator() && ally.level() == level && ally.distanceToSqr(llama) <= maxSq) {
 					ItemStack pay = new ItemStack(net.minecraft.world.item.Items.EMERALD, share);
-					if (!ally.getInventory().add(pay)) ally.drop(pay, false, net.minecraft.util.Prediction.SERVER_ONLY);
+					if (!ally.getInventory().add(pay)) ally.drop(pay, false);
 					ally.sendSystemMessage(Component.translatableWithFallback("message.wildercord.bounty.escort_companion_paid",
 						"The traveller pays you %s emeralds for helping see %s home.", share, Town.targetName(bounty)).withStyle(ChatFormatting.GOLD));
 				}

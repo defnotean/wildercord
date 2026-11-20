@@ -91,7 +91,7 @@ final class StoneMarch {
 		consumed |= 1 << pulse;
 		resolvingPulse = pulse;
 		draw(pulse, now, false);
-		master.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		master.swing(InteractionHand.MAIN_HAND, true);
 		Feels.sound(level, origin.add(aim.scale(StoneMarchRules.start(pulse))), "aura_slash", 1, .6F + pulse * .08F);
 		// Preserve Kiln's simultaneous-pulse fairness: callbacks may remove a snapshot victim, never add one.
 		List<ServerPlayer> victims = roster.stream().sorted(Comparator.naturalOrder()).map(bodies::get)

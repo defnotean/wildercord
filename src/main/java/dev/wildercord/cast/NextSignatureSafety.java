@@ -28,7 +28,7 @@ final class NextSignatureSafety {
  }
  static boolean target(Cast c,LivingEntity t,boolean hostile) {
   if(!c.alive() || !t.isAlive() || t.isRemoved() || t.level()!=c.level || !loaded(c,t.blockPosition())
-   || DungeonWards.warded(c.level,t.blockPosition()) || hostile && t.isPermanentlyInvulnerable())return false;
+   || DungeonWards.warded(c.level,t.blockPosition()) || hostile && t.isInvulnerable())return false;
   if(t instanceof ServerPlayer p && (p.isSpectator() || p.isCreative()))return false;
   return hostile?Targets.canHarm(c.caster,t):Targets.canHelp(c.caster,t);
  }

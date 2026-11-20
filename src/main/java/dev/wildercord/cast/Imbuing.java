@@ -217,7 +217,7 @@ public final class Imbuing {
 			target.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 		}
 		if (target != held && !player.getInventory().add(target)) {
-			player.drop(target, false, net.minecraft.util.Prediction.SERVER_ONLY);
+			player.drop(target, false);
 		}
 		ServerLevel level = player.level();
 		Vec3 at = hand(player, hand);
@@ -716,7 +716,7 @@ public final class Imbuing {
 				return InteractionResult.FAIL;
 			}
 			if (!release(server, stack, imbued, at)) return InteractionResult.FAIL;
-			server.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+			server.swing(hand, true);
 			return InteractionResult.SUCCESS;
 		}
 	}

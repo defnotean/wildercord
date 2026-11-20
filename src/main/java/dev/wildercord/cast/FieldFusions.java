@@ -146,7 +146,7 @@ public final class FieldFusions {
     }
     private static boolean mobile(Cast c,LivingEntity t,boolean hostile) {
         return c.alive() && t.isAlive() && !t.isRemoved() && t.level()==c.level && loaded(c,t.blockPosition()) && !t.isPassenger() && !Spirits.isBoss(t)
-            && (!hostile || !t.isPermanentlyInvulnerable() && !(t instanceof dev.wildercord.pet.CinnamonDog))
+            && (!hostile || !t.isInvulnerable() && !(t instanceof dev.wildercord.pet.CinnamonDog))
             && !VoidTime.anchored(t) && !(t instanceof Player p && (p.isCreative() || p.isSpectator()))
             && !DungeonWards.warded(c.level,t.blockPosition()) && (hostile?Targets.canHarm(c.caster,t):Targets.canHelp(c.caster,t));
     }

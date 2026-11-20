@@ -517,11 +517,11 @@ public final class WildercordLoot {
 		};
 	}
 
-	private static net.minecraft.world.level.storage.loot.entries.UniformContainerBase.Builder<?> runeEntry(RuneDef rune) {
+	private static net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer.Builder<?> runeEntry(RuneDef rune) {
 		return LootItem.lootTableItem(WildercordItems.RUNE).apply(SetComponentsFunction.setComponent(WildercordComponents.RUNE, rune.id()));
 	}
 
-	private static LootPool.Builder chance(int chance, net.minecraft.world.level.storage.loot.entries.UniformContainerBase.Builder<?> entry) {
+	private static LootPool.Builder chance(int chance, net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer.Builder<?> entry) {
 		LootPool.Builder builder = LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(entry.setWeight(chance));
 		if (chance < 100) {
 			builder.add(EmptyLootItem.emptyItem().setWeight(100 - chance));

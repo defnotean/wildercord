@@ -50,10 +50,10 @@ public final class DefensiveFoci {
      float due = Math.min(owed,s.installment);
      // Pay an already reduced hit without passing through the focus or mod armour a second time.
      // These installments ignore vanilla's recent-hit timer but retain Resistance and absorption.
-     int old = player.getInvulnerableTime(), hurtCooldown = player.damageCooldownTime;
+     int old = player.invulnerableTime;
      Effects.readyToHurt(player);
      try { SpellDefence.guarded(player, () -> player.hurtServer(player.level(),source(player),due)); }
-     finally { player.setInvulnerableTime(old); player.damageCooldownTime = hurtCooldown; }
+     finally { player.invulnerableTime = old; }
      owed = Math.max(0,owed-due); delay = owed > 0 ? 10 : 0;
      player.sendOverlayMessage(Component.translatable("message.wildercord.reprieve.debt", String.format(java.util.Locale.ROOT,"%.1f",owed)));
     }

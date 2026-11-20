@@ -281,7 +281,7 @@ public final class SpellCaster {
 		// The element the caster's magic leans toward (their deepest affinity), for the record of what was cast.
 		String leaning = Heart.leaning(player);
 		int castNumber = COMBO.computeIfAbsent(player.getUUID(), k -> new int[dev.wildercord.gear.SpellSlots.ALL])[spell] += 1;
-		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		player.swing(InteractionHand.MAIN_HAND, true);
 		Vfx.Theme theme = secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst()));
 		if (!compiled.root().groups.isEmpty()) {
 			// The spell's feel (its scale sizes the circle), worked out as the cast will.

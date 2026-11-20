@@ -72,7 +72,7 @@ public final class SleepingBlades {
 	}
 	private static void history(ServerPlayer p) {
 		if (!Grimoire.unlock(p, "aura:sleeping_blade")) return;
-		var book = history(); if (!p.getInventory().add(book)) p.drop(book, false, net.minecraft.util.Prediction.SERVER_ONLY);
+		var book = history(); if (!p.getInventory().add(book)) p.drop(book, false);
 	}
 	public static void begin(ServerPlayer p, BlockPos at) {
 		if (!Config.get().auraWorld().sleepingBlades() || !p.isAlive() || p.isSpectator() || !p.level().hasChunkAt(at)

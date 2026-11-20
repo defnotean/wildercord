@@ -80,7 +80,7 @@ public final class BearersLantern {
 	}
 
 	private static void give(ServerPlayer player, ItemStack stack) {
-		if (!player.getInventory().add(stack)) player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+		if (!player.getInventory().add(stack)) player.drop(stack, false);
 	}
 
 	/** The gravedigger's book: what happened on the Barrow Field, and what still walks it. */
@@ -107,7 +107,7 @@ public final class BearersLantern {
 		horse.setTamed(true);
 		horse.setOwner(player);
 		horse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
-		horse.setPermanentlyInvulnerable(true);
+		horse.setInvulnerable(true);
 		horse.setPersistenceRequired();
 		horse.setCustomName(Component.translatable("entity.wildercord.barrow_steed"));
 		var speed = horse.getAttribute(Attributes.MOVEMENT_SPEED);

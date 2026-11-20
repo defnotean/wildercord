@@ -765,23 +765,26 @@ public final class BondedBlades {
 	private static void deep(ServerPlayer player, BladeRegistry registry, ItemStack box) {
 		UUID me = player.getUUID();
 		ItemContainerContents contents = box.get(DataComponents.CONTAINER);
-		if (contents != null && contents.size() > 0) {
-			// The box's slots as copies: a blade going home leaves its slot empty, and the box takes the rest back as they were.
-			List<ItemStack> slots = new ArrayList<>();
-			List<ItemStack> home = new ArrayList<>();
-			for (ItemStack inside : contents.itemCopies().toList()) {
-				BladeBond b = bond(inside);
-				if (b != null && !b.ownedBy(me) && registry.active(b.id())) {
-					home.add(inside);
-					slots.add(ItemStack.EMPTY);
-				} else {
-					slots.add(inside);
+		if (contents != null) {
+			List<ItemStack> all = contents.allItemsCopyStream().toList();
+			if (!all.isEmpty()) {
+				// The box's slots as copies: a blade going home leaves its slot empty, and the box takes the rest back as they were.
+				List<ItemStack> slots = new ArrayList<>();
+				List<ItemStack> home = new ArrayList<>();
+				for (ItemStack inside : all) {
+					BladeBond b = bond(inside);
+					if (b != null && !b.ownedBy(me) && registry.active(b.id())) {
+						home.add(inside);
+						slots.add(ItemStack.EMPTY);
+					} else {
+						slots.add(inside);
+					}
 				}
-			}
-			if (!home.isEmpty()) {
-				box.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(slots));
-				for (ItemStack blade : home) {
-					homeward(player, blade, bond(blade));
+				if (!home.isEmpty()) {
+					box.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(slots));
+					for (ItemStack blade : home) {
+						homeward(player, blade, bond(blade));
+					}
 				}
 			}
 		}
@@ -789,7 +792,7 @@ public final class BondedBlades {
 		if (bundle != null && !bundle.isEmpty()) {
 			List<ItemStack> keep = new ArrayList<>();
 			List<ItemStack> home = new ArrayList<>();
-			for (ItemStack inside : bundle.itemCopies().toList()) {
+			for (ItemStack inside : bundle.itemCopyStream().toList()) {
 				BladeBond b = bond(inside);
 				if (b != null && !b.ownedBy(me) && registry.active(b.id())) {
 					home.add(inside);
@@ -798,7 +801,7 @@ public final class BondedBlades {
 				}
 			}
 			if (!home.isEmpty()) {
-				box.set(DataComponents.BUNDLE_CONTENTS, bundle.copyWithContents(keep.stream()));
+				box.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(keep.stream().map(net.minecraft.world.item.ItemStackTemplate::fromNonEmptyStack).toList()));
 				for (ItemStack blade : home) {
 					homeward(player, blade, bond(blade));
 				}

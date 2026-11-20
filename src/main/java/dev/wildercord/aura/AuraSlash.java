@@ -74,7 +74,7 @@ public final class AuraSlash {
 		int[] carried = {0};
 		Entity[] first = {null};
 		int edge = carrying ? spell.color() : -1;
-		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		player.swing(InteractionHand.MAIN_HAND, true);
 		Aura.sound(player, "aura_slash", 1.0F, weak ? 0.8F : 1.0F);
 		if (carrying) {
 			Aura.sound(player, "aura_spellblade", 1.0F, 1.25F);
@@ -143,7 +143,7 @@ public final class AuraSlash {
 		Vec3 flat = new Vec3(aim.x, aim.y * 0.5, aim.z).normalize();
 		Vec3 origin = player.getEyePosition().subtract(0, 0.45, 0);
 		int color = 0x7CFFB2;
-		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		player.swing(InteractionHand.MAIN_HAND, true);
 		AuraVfx.slashStart(player.level(), origin, flat, color);
 		Crescents.launch(player, origin, flat, color, damage, 1.0, AuraRules.SLASH_SPEED * 1.1,
 			AuraRules.SLASH_RANGE * AuraWorldRules.FETCHBLADE_REACH, AuraRules.SLASH_WIDTH * AuraWorldRules.FETCHBLADE_REACH,

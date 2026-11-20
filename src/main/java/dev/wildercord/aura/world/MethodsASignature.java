@@ -188,7 +188,7 @@ final class MethodsASignature {
 	}
 
 	private boolean done() { finished = true; released = true; return false; }
-	private void swing() { master.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true); }
+	private void swing() { master.swing(InteractionHand.MAIN_HAND, true); }
 
 	private boolean validOwner() {
 		return master.canMaintainMethodsA(this) && master.level() == level && roster.equals(master.challengers())

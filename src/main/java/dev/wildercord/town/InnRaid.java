@@ -375,7 +375,7 @@ public final class InnRaid {
 		for (ServerPlayer player : defenders) {
 			Town.set(player, Town.standing(player).plus(reputation));
 			ItemStack stack = new ItemStack(Items.EMERALD, emeralds);
-			if (!player.getInventory().add(stack)) player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+			if (!player.getInventory().add(stack)) player.drop(stack, false);
 			player.sendSystemMessage(Component.translatable("message.wildercord.inn_raid.won", emeralds, reputation).withColor(COLOR));
 		}
 	}

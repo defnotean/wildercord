@@ -91,7 +91,7 @@ final class EmberKiln {
 		}
 		finished = true; released = true; // Consume before damage/parry callbacks can re-enter.
 		draw(true, now);
-		master.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		master.swing(InteractionHand.MAIN_HAND, true);
 		Feels.sound(level, origin, "aura_slash", 1, .7F);
 		// Snapshot eligible victims before the first reaction. A callback cannot move a previously safe
 		// player into this already-resolving pulse, while a later escape or new cover still prevents harm.

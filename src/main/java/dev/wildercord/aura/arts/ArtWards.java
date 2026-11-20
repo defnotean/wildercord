@@ -185,7 +185,7 @@ public final class ArtWards {
 					projectile.setOwner(player);
 				}
 			});
-			return (turned, by, random, power) -> {
+			return (turned, by, random) -> {
 				if (!mirror.owner.valid() || turned != projectile || turned.isRemoved() || turned.level() != mirror.owner.level()) return;
 				Vec3 at = turned.position();
 				Vec3 aim = shooter != null && shooter.isAlive() && shooter.level() == turned.level() && shooter.distanceTo(player) < 32
@@ -199,7 +199,7 @@ public final class ArtWards {
 		}
 		if (inEye(player)) {
 			GaleArts.eyeTurns(player, projectile.position());
-			return (turned, by, random, power) -> {
+			return (turned, by, random) -> {
 				Vec3 v = turned.getDeltaMovement();
 				Vec3 flat = new Vec3(v.x, 0, v.z);
 				if (flat.lengthSqr() < 1.0E-4) {
