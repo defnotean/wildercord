@@ -134,7 +134,6 @@ public final class CounterPeerRenderProbe {
             mc.gameRenderer.update(delta, true);extractBegin(delta);boolean extracted=false;
             try{mc.gameRenderer.extract(delta,true);extracted=true;}finally{extractEnd(extracted);}
             renderBegin();boolean rendered=false;try{GametestCompat.renderFrame(mc,delta);rendered=true;}finally{renderEnd(rendered);}
-            com.mojang.blaze3d.systems.
             screenshot(mc.getMainRenderTarget(),image->{try(image){
                 var path=FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name+".png");
                 Files.createDirectories(path.getParent());if(Files.exists(path))throw new AssertionError("Counter image cannot be replaced");
