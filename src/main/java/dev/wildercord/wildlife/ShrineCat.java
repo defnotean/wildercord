@@ -112,12 +112,23 @@ public class ShrineCat extends TamableAnimal {
 	protected void registerGoals() {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
-		goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.42F));
+		goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.42F) {
+			@Override
+			public boolean canUse() {
+				return !isOrderedToSit() && !isLoafing() && super.canUse();
+			}
+		});
 		goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.15, true) {
 			@Override
 			public boolean canUse() {
 				int r = getRole();
-				return (r == ShrineCatRules.ROLE_GUARDIAN || r == ShrineCatRules.ROLE_TAMED) && super.canUse();
+				return !isOrderedToSit() && !isLoafing()
+					&& (r == ShrineCatRules.ROLE_GUARDIAN || r == ShrineCatRules.ROLE_TAMED) && super.canUse();
+			}
+
+			@Override
+			public boolean canContinueToUse() {
+				return !isOrderedToSit() && !isLoafing() && super.canContinueToUse();
 			}
 		});
 		goalSelector.addGoal(5, new FollowOwnerGoal(this, 1.05, 10.0F, 2.5F));
@@ -130,17 +141,28 @@ public class ShrineCat extends TamableAnimal {
 		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 10.0F));
 		goalSelector.addGoal(9, new RandomLookAroundGoal(this));
 
-		targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
-		targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
+		targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this) {
+			@Override
+			public boolean canUse() {
+				return !isLoafing() && super.canUse();
+			}
+		});
+		targetSelector.addGoal(2, new OwnerHurtTargetGoal(this) {
+			@Override
+			public boolean canUse() {
+				return !isLoafing() && super.canUse();
+			}
+		});
 		targetSelector.addGoal(3, new HurtByTargetGoal(this) {
 			@Override
 			public boolean canUse() {
 				int r = getRole();
-				return (r == ShrineCatRules.ROLE_GUARDIAN || r == ShrineCatRules.ROLE_TAMED) && super.canUse();
+				return !isOrderedToSit() && !isLoafing()
+					&& (r == ShrineCatRules.ROLE_GUARDIAN || r == ShrineCatRules.ROLE_TAMED) && super.canUse();
 			}
 		});
 		targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Monster.class, 10, true, false,
-			(target, lvl) -> getRole() == ShrineCatRules.ROLE_TAMED && isTame()));
+			(target, lvl) -> !isOrderedToSit() && !isLoafing() && getRole() == ShrineCatRules.ROLE_TAMED && isTame()));
 	}
 
 	public ShrineCatRules.Variant variant() {

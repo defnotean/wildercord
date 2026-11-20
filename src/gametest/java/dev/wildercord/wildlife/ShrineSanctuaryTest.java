@@ -42,6 +42,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.zombie.Husk;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -146,6 +147,11 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 		husk.snapTo(x, y, z, 0.0F, 0.0F);
 		husk.setNoAi(noAi);
 		husk.setPersistenceRequired();
+		var maxHp = husk.getAttribute(Attributes.MAX_HEALTH);
+		if (maxHp != null) {
+			maxHp.setBaseValue(60.0);
+		}
+		husk.setHealth(60.0F);
 		l.addFreshEntity(husk);
 		return husk;
 	}
@@ -558,20 +564,15 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				Husk huskB = spawnHusk(l, 185.0, 111.0, 0.5, true);
 				Husk huskC = spawnHusk(l, 180.5, 111.0, 5.5, true);
 
-				yuki.setLoafing(false);
-				yuki.setOrderedToSit(true);
+				for (ShrineCat cat : new ShrineCat[]{yuki, kuro, freya, odie}) {
+					cat.setTarget(null);
+					cat.setLoafing(false);
+					cat.setOrderedToSit(true);
+					cat.setInSittingPose(true);
+				}
 				yuki.teleportTo(177.5, 111.0, 0.5);
-
-				kuro.setLoafing(false);
-				kuro.setOrderedToSit(true);
 				kuro.teleportTo(183.5, 111.0, 0.5);
-
-				freya.setLoafing(false);
-				freya.setOrderedToSit(true);
 				freya.teleportTo(180.5, 111.0, 4.0);
-
-				odie.setLoafing(false);
-				odie.setOrderedToSit(true);
 				odie.teleportTo(180.5, 111.0, -1.0);
 
 				player.setLastHurtByMob(huskA);
