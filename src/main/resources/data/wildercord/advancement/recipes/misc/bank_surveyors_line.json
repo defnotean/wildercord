@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:bank_surveyors_line"
+        "recipe": "wildercord:bank_surveyors_line"
       }
     }
   },

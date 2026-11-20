@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:lumenedge_from_diamond"
+        "recipe": "wildercord:lumenedge_from_diamond"
       }
     }
   },

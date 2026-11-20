@@ -9,9 +9,11 @@
           "name": "wildercord:reed_refuge"
         }
       ],
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      }
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
   ]
 }

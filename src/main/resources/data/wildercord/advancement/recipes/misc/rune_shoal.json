@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_shoal"
+        "recipe": "wildercord:rune_shoal"
       }
     }
   },

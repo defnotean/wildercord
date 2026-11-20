@@ -12,56 +12,66 @@
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:wind_steps"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:wind_steps"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:feather_fall"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:feather_fall"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:surefoot"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:surefoot"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 2,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:waymark"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:waymark"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 2,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:land_reading"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:land_reading"
+              }
+            }
+          ]
         }
       ]
     },
@@ -76,66 +86,76 @@
           "type": "minecraft:item",
           "name": "minecraft:bread",
           "weight": 12,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 6
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 6
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:cooked_mutton",
           "weight": 10,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:coal",
           "weight": 10,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 6
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 6
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:string",
           "weight": 10,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 6
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 6
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:leather",
           "weight": 8,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -146,14 +166,16 @@
           "type": "minecraft:item",
           "name": "wildercord:windreed",
           "weight": 12,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
         }
       ]
     }

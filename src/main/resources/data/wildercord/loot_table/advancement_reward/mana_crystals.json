@@ -7,10 +7,12 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:mana_crystal",
-          "modifier": {
-            "count": 3,
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 3
+            }
+          ]
         }
       ]
     }

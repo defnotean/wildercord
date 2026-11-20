@@ -424,7 +424,7 @@ def write(g):
         "ingredients": ["minecraft:leather_boots", "minecraft:copper_ingot", "wildercord:dried_glowcap_gills", "wildercord:mycelial_dew"],
         "result": {"id": "wildercord:rootbound_greaves", "count": 1}})
     g.unlock_advancement("wildercord:rootbound_greaves", "wildercord:dried_glowcap_gills")
-    g.write_json(g.DATA / "worldgen/feature/belowkeeper_drainhouse.json", {"type": "wildercord:belowkeeper_drainhouse"})
+    g.write_json(g.DATA / "worldgen/configured_feature/belowkeeper_drainhouse.json", {"type": "wildercord:belowkeeper_drainhouse", "config": {}})
     g.write_json(g.DATA / "worldgen/placed_feature/belowkeeper_drainhouse.json", {"feature": "wildercord:belowkeeper_drainhouse", "placement": [
         {"type": "minecraft:rarity_filter", "chance": 48}, {"type": "minecraft:in_square"},
         {"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"absolute": -32}, "max_inclusive": {"absolute": 40}}}]})

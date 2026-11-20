@@ -4,15 +4,17 @@
     "farm_shepherd": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:farm_shepherd"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:farm_shepherd"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_ofuda_ward"
+        "recipe": "wildercord:rune_ofuda_ward"
       }
     }
   },

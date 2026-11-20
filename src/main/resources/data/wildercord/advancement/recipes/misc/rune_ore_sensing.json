@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_ore_sensing"
+        "recipe": "wildercord:rune_ore_sensing"
       }
     }
   },

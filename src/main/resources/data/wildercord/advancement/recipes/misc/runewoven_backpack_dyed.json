@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:runewoven_backpack_dyed"
+        "recipe": "wildercord:runewoven_backpack_dyed"
       }
     }
   },

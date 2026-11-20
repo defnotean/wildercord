@@ -4,15 +4,17 @@
     "emberwood_kiln_court": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:emberwood_kiln_court"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:emberwood_kiln_court"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

@@ -4,15 +4,17 @@
     "water_last_crossing": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:water_last_crossing"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:water_last_crossing"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

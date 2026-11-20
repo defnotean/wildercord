@@ -421,7 +421,7 @@ def trade(wants, gives, max_uses, xp, also=None, modifier=None):
     if also:
         data["additional_wants"] = also
     if modifier:
-        data["given_item_modifier"] = modifier
+        m = dict(modifier); m["function"] = m.pop("type"); data["given_item_modifiers"] = [m]
     return data
 
 

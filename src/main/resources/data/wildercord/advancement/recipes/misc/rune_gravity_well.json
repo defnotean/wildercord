@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_gravity_well"
+        "recipe": "wildercord:rune_gravity_well"
       }
     }
   },

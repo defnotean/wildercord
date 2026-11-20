@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:mirror_thread_mantle"
+        "recipe": "wildercord:mirror_thread_mantle"
       }
     }
   },

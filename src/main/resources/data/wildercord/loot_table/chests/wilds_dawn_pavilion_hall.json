@@ -8,34 +8,40 @@
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:light"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:light"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:waymark"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:waymark"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:heal"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:heal"
+              }
+            }
+          ]
         }
       ]
     },
@@ -50,53 +56,61 @@
           "type": "minecraft:item",
           "name": "minecraft:cherry_sapling",
           "weight": 3,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:pink_petals",
           "weight": 3,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 6
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:bread",
           "weight": 2,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:blank_rune",
           "weight": 3,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -107,14 +121,16 @@
           "type": "minecraft:item",
           "name": "minecraft:torch",
           "weight": 2,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 6
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              }
+            }
+          ]
         }
       ]
     }

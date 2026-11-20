@@ -4,15 +4,17 @@
     "travel_watchtower": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:travel_watchtower"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:travel_watchtower"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

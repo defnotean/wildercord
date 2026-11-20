@@ -7,111 +7,113 @@
         "sound": "minecraft:music.overworld.meadow"
       }
     },
-    "minecraft:gameplay/natural_mob_spawns": {
-      "modifier": "overlay",
-      "argument": {
-        "spawn_costs": {},
-        "spawns_by_category": {
-          "ambient": [
-            {
-              "type": "minecraft:bat",
-              "weight": 10,
-              "count": 8
-            }
-          ],
-          "creature": [
-            {
-              "type": "minecraft:sheep",
-              "weight": 12,
-              "count": 4
-            },
-            {
-              "type": "minecraft:pig",
-              "weight": 10,
-              "count": 4
-            },
-            {
-              "type": "minecraft:chicken",
-              "weight": 10,
-              "count": 4
-            },
-            {
-              "type": "minecraft:cow",
-              "weight": 8,
-              "count": 4
-            },
-            {
-              "type": "minecraft:llama",
-              "weight": 5,
-              "count": {
-                "type": "minecraft:uniform",
-                "min_inclusive": 4,
-                "max_inclusive": 6
-              }
-            }
-          ],
-          "monster": [
-            {
-              "type": "minecraft:spider",
-              "weight": 100,
-              "count": 4
-            },
-            {
-              "type": "minecraft:zombie",
-              "weight": 95,
-              "count": 4
-            },
-            {
-              "type": "minecraft:zombie_villager",
-              "weight": 5,
-              "count": 1
-            },
-            {
-              "type": "minecraft:skeleton",
-              "weight": 100,
-              "count": 4
-            },
-            {
-              "type": "minecraft:creeper",
-              "weight": 100,
-              "count": 4
-            },
-            {
-              "type": "minecraft:slime",
-              "weight": 100,
-              "count": 4
-            },
-            {
-              "type": "minecraft:enderman",
-              "weight": 10,
-              "count": {
-                "type": "minecraft:uniform",
-                "min_inclusive": 1,
-                "max_inclusive": 4
-              }
-            },
-            {
-              "type": "minecraft:witch",
-              "weight": 5,
-              "count": 1
-            }
-          ],
-          "underground_water_creature": [
-            {
-              "type": "minecraft:glow_squid",
-              "weight": 10,
-              "count": {
-                "type": "minecraft:uniform",
-                "min_inclusive": 4,
-                "max_inclusive": 6
-              }
-            }
-          ]
-        }
-      }
-    },
     "minecraft:visual/sky_color": "#91afc5",
     "minecraft:visual/water_fog_color": "#344b50"
+  },
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [
+      {
+        "type": "minecraft:bat",
+        "weight": 10,
+        "minCount": 8,
+        "maxCount": 8
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:sheep",
+        "weight": 12,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:pig",
+        "weight": 10,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:chicken",
+        "weight": 10,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:cow",
+        "weight": 8,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:llama",
+        "weight": 5,
+        "minCount": 4,
+        "maxCount": 6
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "minecraft:spider",
+        "weight": 100,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:zombie",
+        "weight": 95,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:zombie_villager",
+        "weight": 5,
+        "minCount": 1,
+        "maxCount": 1
+      },
+      {
+        "type": "minecraft:skeleton",
+        "weight": 100,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:creeper",
+        "weight": 100,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:slime",
+        "weight": 100,
+        "minCount": 4,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:enderman",
+        "weight": 10,
+        "minCount": 1,
+        "maxCount": 4
+      },
+      {
+        "type": "minecraft:witch",
+        "weight": 5,
+        "minCount": 1,
+        "maxCount": 1
+      }
+    ],
+    "underground_water_creature": [
+      {
+        "type": "minecraft:glow_squid",
+        "weight": 10,
+        "minCount": 4,
+        "maxCount": 6
+      }
+    ],
+    "water_ambient": [],
+    "water_creature": []
   },
   "carvers": [
     "minecraft:cave",

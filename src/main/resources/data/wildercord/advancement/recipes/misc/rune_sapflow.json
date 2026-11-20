@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_sapflow"
+        "recipe": "wildercord:rune_sapflow"
       }
     }
   },

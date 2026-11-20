@@ -4,15 +4,17 @@
     "master_sundial_court": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:master_sundial_court"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:master_sundial_court"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

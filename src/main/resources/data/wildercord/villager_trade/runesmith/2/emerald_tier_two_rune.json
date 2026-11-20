@@ -9,9 +9,11 @@
   "max_uses": 3,
   "xp": 10,
   "reputation_discount": 0.05,
-  "given_item_modifier": {
-    "type": "wildercord:random_rune",
-    "min_tier": 2,
-    "max_tier": 2
-  }
+  "given_item_modifiers": [
+    {
+      "min_tier": 2,
+      "max_tier": 2,
+      "function": "wildercord:random_rune"
+    }
+  ]
 }

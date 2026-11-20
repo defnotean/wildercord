@@ -4,15 +4,17 @@
     "wilds_void_lantern": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:wilds_void_lantern"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:wilds_void_lantern"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

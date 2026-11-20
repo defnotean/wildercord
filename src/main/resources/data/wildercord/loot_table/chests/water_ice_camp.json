@@ -8,34 +8,40 @@
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:ice_auger"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:ice_auger"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:water_reading"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:water_reading"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:school_sight"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:school_sight"
+              }
+            }
+          ]
         }
       ]
     },
@@ -55,14 +61,16 @@
           "type": "minecraft:item",
           "name": "minecraft:cooked_cod",
           "weight": 3,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 5
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -83,14 +91,16 @@
           "type": "minecraft:item",
           "name": "minecraft:snowball",
           "weight": 2,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 8
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 8
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",

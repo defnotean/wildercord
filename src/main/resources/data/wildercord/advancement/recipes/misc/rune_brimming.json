@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_brimming"
+        "recipe": "wildercord:rune_brimming"
       }
     }
   },

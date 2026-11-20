@@ -8,12 +8,14 @@
           "type": "minecraft:item",
           "name": "wildercord:manual_page",
           "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:breathing_method": "iron"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:breathing_method": "iron"
+              }
+            }
+          ]
         }
       ]
     },
@@ -48,14 +50,16 @@
           "type": "minecraft:item",
           "name": "wildercord:blank_rune",
           "weight": 3,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
         }
       ]
     }

@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:time_staff"
+        "recipe": "wildercord:time_staff"
       }
     }
   },

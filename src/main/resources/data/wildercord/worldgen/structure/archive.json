@@ -8,17 +8,20 @@
         {
           "type": "minecraft:skeleton",
           "weight": 3,
-          "count": 1
+          "minCount": 1,
+          "maxCount": 1
         },
         {
           "type": "minecraft:zombie",
           "weight": 3,
-          "count": 1
+          "minCount": 1,
+          "maxCount": 1
         },
         {
           "type": "minecraft:witch",
           "weight": 1,
-          "count": 1
+          "minCount": 1,
+          "maxCount": 1
         }
       ]
     }

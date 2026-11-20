@@ -10,9 +10,11 @@
           "name": "wildercord:camp_pot"
         }
       ],
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      }
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
     }
   ],
   "random_sequence": "wildercord:blocks/camp_pot"

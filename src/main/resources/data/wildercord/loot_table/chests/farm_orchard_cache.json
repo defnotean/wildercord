@@ -12,14 +12,16 @@
           "type": "minecraft:item",
           "name": "minecraft:apple",
           "weight": 5,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -30,40 +32,46 @@
           "type": "minecraft:item",
           "name": "minecraft:azalea",
           "weight": 3,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:flowering_azalea",
           "weight": 3,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald",
           "weight": 3,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
         }
       ]
     },
@@ -78,45 +86,53 @@
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 4,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:saplingrise"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:saplingrise"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 4,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:barkhide"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:barkhide"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 4,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:feastday"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:feastday"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 4,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:leafshade"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:leafshade"
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",

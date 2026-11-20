@@ -4,15 +4,17 @@
     "belowkeeper_bell_sanctum": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:belowkeeper_bell_sanctum"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:belowkeeper_bell_sanctum"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

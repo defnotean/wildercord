@@ -4,15 +4,17 @@
     "farm_mushroom_ring": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:farm_mushroom_ring"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:farm_mushroom_ring"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

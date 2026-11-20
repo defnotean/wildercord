@@ -467,7 +467,7 @@ def render(out_dir):
         elif recipe["type"] == "minecraft:smithing_transform":
             smithing(recipe).save(out_dir / f"{f.stem}.png")
             made[f.stem] = recipe
-    for f in sorted((RECIPES / "brewing").glob("*.json")):
+    for f in sorted((ROOT / "src/main/resources/data/wildercord/brewing").glob("*.json")):
         recipe = json.loads(f.read_text(encoding="utf-8"))
         brewing(recipe).save(out_dir / f"brewing_{f.stem}.png")
         made["brewing_" + f.stem] = recipe

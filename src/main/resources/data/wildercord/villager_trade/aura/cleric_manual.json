@@ -2,10 +2,12 @@
   "additional_wants": {
     "id": "minecraft:book"
   },
-  "given_item_modifier": {
-    "type": "wildercord:random_breathing_method",
-    "source": "cleric"
-  },
+  "given_item_modifiers": [
+    {
+      "function": "wildercord:random_breathing_method",
+      "source": "cleric"
+    }
+  ],
   "gives": {
     "id": "wildercord:breathing_manual"
   },

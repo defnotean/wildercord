@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rootbound_greaves"
+        "recipe": "wildercord:rootbound_greaves"
       }
     }
   },

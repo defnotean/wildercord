@@ -4,15 +4,17 @@
     "water_tidepool_grotto": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:water_tidepool_grotto"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:water_tidepool_grotto"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

@@ -4,15 +4,17 @@
     "wilds_dune_temple": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:wilds_dune_temple"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:wilds_dune_temple"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

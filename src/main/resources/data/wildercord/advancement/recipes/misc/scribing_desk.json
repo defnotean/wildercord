@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:scribing_desk"
+        "recipe": "wildercord:scribing_desk"
       }
     }
   },

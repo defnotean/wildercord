@@ -13,8 +13,12 @@ LANG = {
 
 
 def _spawn(kind, weight, low, high=None):
-    count = low if high is None else {"type": "minecraft:uniform", "min_inclusive": low, "max_inclusive": high}
-    return {"type": "minecraft:" + kind, "weight": weight, "count": count}
+    return {"type": "minecraft:" + kind, "weight": weight, "minCount": low, "maxCount": low if high is None else high}
+
+
+def _spawners(**categories):
+    names = ("ambient", "axolotls", "creature", "misc", "monster", "underground_water_creature", "water_ambient", "water_creature")
+    return {name: categories.get(name, []) for name in names}
 
 
 def reedlands():
@@ -28,23 +32,21 @@ def reedlands():
             "minecraft:audio/background_music": {"default": {
                 "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.swamp"}},
             "minecraft:gameplay/increased_fire_burnout": True,
-            "minecraft:gameplay/natural_mob_spawns": {"modifier": "overlay", "argument": {
-                "spawn_costs": {},
-                "spawns_by_category": {
-                    "ambient": [_spawn("bat", 10, 8)],
-                    "creature": [_spawn("frog", 10, 2, 5)],
-                    "monster": [_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
-                                _spawn("zombie_villager", 5, 1), _spawn("skeleton", 70, 4),
-                                _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
-                                _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1),
-                                _spawn("slime", 1, 1)],
-                    "underground_water_creature": [_spawn("glow_squid", 10, 4, 6)],
-                },
-            }},
             "minecraft:visual/sky_color": "#84acc3",
             "minecraft:visual/water_fog_color": "#245257",
             "minecraft:visual/water_fog_end_distance": {"argument": 0.85, "modifier": "multiply"},
         },
+        "spawn_costs": {},
+        "spawners": _spawners(
+            ambient=[_spawn("bat", 10, 8)],
+            creature=[_spawn("frog", 10, 2, 5)],
+            monster=[_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
+                     _spawn("zombie_villager", 5, 1), _spawn("skeleton", 70, 4),
+                     _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
+                     _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1),
+                     _spawn("slime", 1, 1)],
+            underground_water_creature=[_spawn("glow_squid", 10, 4, 6)],
+        ),
         "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
         "downfall": 0.95,
         "effects": {
@@ -88,22 +90,20 @@ def windscar():
         "attributes": {
             "minecraft:audio/background_music": {"default": {
                 "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.meadow"}},
-            "minecraft:gameplay/natural_mob_spawns": {"modifier": "overlay", "argument": {
-                "spawn_costs": {},
-                "spawns_by_category": {
-                    "ambient": [_spawn("bat", 10, 8)],
-                    "creature": [_spawn("sheep", 12, 4), _spawn("pig", 10, 4),
-                                 _spawn("chicken", 10, 4), _spawn("cow", 8, 4), _spawn("llama", 5, 4, 6)],
-                    "monster": [_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
-                                _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
-                                _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
-                                _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1)],
-                    "underground_water_creature": [_spawn("glow_squid", 10, 4, 6)],
-                },
-            }},
             "minecraft:visual/sky_color": "#91afc5",
             "minecraft:visual/water_fog_color": "#344b50",
         },
+        "spawn_costs": {},
+        "spawners": _spawners(
+            ambient=[_spawn("bat", 10, 8)],
+            creature=[_spawn("sheep", 12, 4), _spawn("pig", 10, 4),
+                      _spawn("chicken", 10, 4), _spawn("cow", 8, 4), _spawn("llama", 5, 4, 6)],
+            monster=[_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
+                     _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
+                     _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
+                     _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1)],
+            underground_water_creature=[_spawn("glow_squid", 10, 4, 6)],
+        ),
         "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
         "downfall": 0.25,
         "effects": {
@@ -147,22 +147,19 @@ def belowkeeper():
         "attributes": {
             "minecraft:audio/background_music": {"default": {
                 "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.dripstone_caves"}},
-            "minecraft:gameplay/natural_mob_spawns": {"modifier": "overlay", "argument": {
-                "spawn_costs": {},
-                "spawns_by_category": {
-                    "ambient": [_spawn("bat", 10, 8)],
-                    "creature": [],
-                    "monster": [_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
-                                _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
-                                _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
-                                _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1),
-                                _spawn("drowned", 95, 4)],
-                    "underground_water_creature": [_spawn("glow_squid", 10, 4, 6)],
-                },
-            }},
             "minecraft:visual/sky_color": "#7ba4ff",
             "minecraft:visual/water_fog_color": "#284a4e",
         },
+        "spawn_costs": {},
+        "spawners": _spawners(
+            ambient=[_spawn("bat", 10, 8)],
+            monster=[_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
+                     _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
+                     _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
+                     _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1),
+                     _spawn("drowned", 95, 4)],
+            underground_water_creature=[_spawn("glow_squid", 10, 4, 6)],
+        ),
         "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
         "downfall": 0.6,
         "effects": {
@@ -207,23 +204,21 @@ def emberwood():
         "attributes": {
             "minecraft:audio/background_music": {"default": {
                 "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.forest"}},
-            "minecraft:gameplay/natural_mob_spawns": {"modifier": "overlay", "argument": {
-                "spawn_costs": {},
-                "spawns_by_category": {
-                    "ambient": [_spawn("bat", 10, 8)],
-                    "creature": [_spawn("sheep", 12, 4), _spawn("pig", 10, 4),
-                                 _spawn("chicken", 10, 4), _spawn("cow", 8, 4),
-                                 _spawn("wolf", 5, 4)],
-                    "monster": [_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
-                                _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
-                                _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
-                                _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1)],
-                    "underground_water_creature": [_spawn("glow_squid", 10, 4, 6)],
-                },
-            }},
             "minecraft:visual/sky_color": "#b49774",
             "minecraft:visual/water_fog_color": "#3d332a",
         },
+        "spawn_costs": {},
+        "spawners": _spawners(
+            ambient=[_spawn("bat", 10, 8)],
+            creature=[_spawn("sheep", 12, 4), _spawn("pig", 10, 4),
+                      _spawn("chicken", 10, 4), _spawn("cow", 8, 4),
+                      _spawn("wolf", 5, 4)],
+            monster=[_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
+                     _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
+                     _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
+                     _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1)],
+            underground_water_creature=[_spawn("glow_squid", 10, 4, 6)],
+        ),
         "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
         "downfall": 0.35,
         "effects": {

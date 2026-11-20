@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:breathing_manual_from_pages"
+        "recipe": "wildercord:breathing_manual_from_pages"
       }
     }
   },

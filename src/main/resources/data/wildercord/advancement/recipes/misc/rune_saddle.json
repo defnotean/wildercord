@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_saddle"
+        "recipe": "wildercord:rune_saddle"
       }
     }
   },

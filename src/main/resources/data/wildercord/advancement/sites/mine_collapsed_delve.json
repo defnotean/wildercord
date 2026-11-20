@@ -4,15 +4,17 @@
     "mine_collapsed_delve": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:mine_collapsed_delve"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:mine_collapsed_delve"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

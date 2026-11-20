@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_wayfarer_hymn"
+        "recipe": "wildercord:rune_wayfarer_hymn"
       }
     }
   },

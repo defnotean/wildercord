@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_bubble"
+        "recipe": "wildercord:rune_bubble"
       }
     }
   },

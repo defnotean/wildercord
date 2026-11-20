@@ -114,9 +114,8 @@ final class StructureGallery {
 		var source = level.getChunkSource();
 		var generator = source.getGenerator();
 		var randomState = source.randomState();
-		var sampler = randomState.sampler();
 		java.util.function.Function<ChunkPos, Site> at = chunk -> {
-			var start = structure.generate(holder, level.dimension(), level.registryAccess(), generator, generator.getBiomeSource(), sampler, randomState,
+			var start = structure.generate(holder, level.dimension(), level.registryAccess(), generator, generator.getBiomeSource(), randomState,
 				level.getStructureManager(), level.getSeed(), chunk, 0, level, structure.biomes()::contains);
 			return start.isValid() ? new Site(id, level.dimension(), new BlockPos(chunk.getMinBlockX(), 70, chunk.getMinBlockZ()), start.getBoundingBox()) : null;
 		};

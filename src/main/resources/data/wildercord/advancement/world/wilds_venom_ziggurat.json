@@ -4,15 +4,17 @@
     "wilds_venom_ziggurat": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:wilds_venom_ziggurat"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:wilds_venom_ziggurat"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

@@ -7,14 +7,16 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:bone",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 6,
-              "max": 12
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 6,
+                "max": 12
+              }
+            }
+          ]
         }
       ]
     },
@@ -24,14 +26,16 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:emerald",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 4,
-              "max": 9
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 9
+              }
+            }
+          ]
         }
       ]
     },
@@ -41,14 +45,16 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              }
+            }
+          ]
         }
       ]
     },
@@ -58,14 +64,16 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:aura_shard",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 3
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 3
+              }
+            }
+          ]
         }
       ]
     },
@@ -75,14 +83,16 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:mana_crystal",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 3
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 3
+              }
+            }
+          ]
         }
       ]
     },
@@ -92,14 +102,16 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:torn_page",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
         }
       ]
     },
@@ -109,21 +121,21 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:netherite_sword",
-          "modifier": [
+          "functions": [
             {
+              "function": "minecraft:set_name",
               "target": "item_name",
               "name": {
                 "translate": "item.wildercord.mojito_fetchblade"
-              },
-              "type": "minecraft:set_name"
+              }
             },
             {
+              "function": "minecraft:set_components",
               "components": {
                 "wildercord:aura_forged": "fetchblade",
                 "minecraft:item_model": "wildercord:fetchblade",
                 "minecraft:rarity": "epic"
-              },
-              "type": "minecraft:set_components"
+              }
             }
           ]
         }

@@ -110,7 +110,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 		for(int radius=0;radius<=32;radius++)for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++){
 			if(Math.max(Math.abs(dx),Math.abs(dz))!=radius)continue;
 			var chunk=new ChunkPos(origin.x()+dx,origin.z()+dz);
-			var start=tomb.value().generate(tomb,level.dimension(),level.registryAccess(),generator,generator.getBiomeSource(),sampler,randomState,
+			var start=tomb.value().generate(tomb,level.dimension(),level.registryAccess(),generator,generator.getBiomeSource(),randomState,
 				level.getStructureManager(),level.getSeed(),chunk,0,level,tomb.value().biomes()::contains);
 			if(!start.isValid())continue;
 			check(start.getPieces().size()==1 && start.getPieces().getFirst() instanceof SwordTombPiece,"Registered tomb start contains its authored piece");

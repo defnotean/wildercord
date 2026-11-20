@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_headhunting"
+        "recipe": "wildercord:rune_headhunting"
       }
     }
   },

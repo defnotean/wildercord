@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:leather_from_rime_fur"
+        "recipe": "wildercord:leather_from_rime_fur"
       }
     }
   },

@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_needle_circle"
+        "recipe": "wildercord:rune_needle_circle"
       }
     }
   },

@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_bleed"
+        "recipe": "wildercord:rune_bleed"
       }
     }
   },

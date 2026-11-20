@@ -239,11 +239,9 @@ CORDS = {
 
 def loot_format(x):
     """
-    A loot table written the older way ({@code "functions": [{"function": ...}]},
-    {@code "conditions": [{"condition": ...}]}) in the form Minecraft 26.3 reads: one {@code "modifier"}
-    (or a list of them) and one {@code "condition"} (several joined by {@code minecraft:all_of}), each
-    named by {@code "type"}. 26.3 silently ignores the old keys, so a rune's set_components would never
-    run and the rune would come out blank.
+    Normalizes loot tables to Minecraft 26.2's schema: {@code "functions"} (each entry named by
+    {@code "function"}) and {@code "conditions"} (a list of condition objects named by {@code "condition"},
+    flattening {@code minecraft:all_of} wrappers).
     """
     if isinstance(x, list):
         return [loot_format(v) for v in x]
@@ -251,22 +249,36 @@ def loot_format(x):
         return x
     out = {}
     for key, value in x.items():
-        if key == "functions":
-            mods = [_typed(f, "function") for f in value]
+        if key == "modifier":
+            mods = value if isinstance(value, list) else [value]
             if mods:
-                out["modifier"] = mods[0] if len(mods) == 1 else mods
-        elif key == "conditions":
-            conds = [_typed(c, "condition") for c in value]
+                out["functions"] = [_to_262_loot(m, "function") for m in mods]
+        elif key == "condition" and isinstance(value, (dict, list)):
+            conds = _flatten_conditions(value)
             if conds:
-                out["condition"] = conds[0] if len(conds) == 1 else {"type": "minecraft:all_of", "terms": conds}
+                out["conditions"] = [_to_262_loot(c, "condition") for c in conds]
         else:
             out[key] = loot_format(value)
     return out
 
 
-def _typed(entry, old_key):
+def _flatten_conditions(value):
+    if isinstance(value, list):
+        out = []
+        for item in value:
+            out.extend(_flatten_conditions(item))
+        return out
+    if isinstance(value, dict) and value.get("type") == "minecraft:all_of":
+        return _flatten_conditions(value.get("terms", []))
+    return [value]
+
+
+def _to_262_loot(entry, name_key):
+    if not isinstance(entry, dict):
+        return entry
     entry = dict(entry)
-    entry["type"] = entry.pop(old_key)
+    if "type" in entry and name_key not in entry:
+        entry[name_key] = entry.pop("type")
     return loot_format(entry)
 
 
@@ -2112,7 +2124,7 @@ def unlock_advancement(recipe_id, trigger_item):
         "parent": "minecraft:recipes/root",
         "criteria": {
             "has_item": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": trigger_item}]}},
-            "has_the_recipe": {"trigger": "minecraft:recipe_unlocked", "conditions": {"recipes": recipe_id}},
+            "has_the_recipe": {"trigger": "minecraft:recipe_unlocked", "conditions": {"recipe": recipe_id}},
         },
         "requirements": [["has_the_recipe", "has_item"]],
         "rewards": {"recipes": [recipe_id]},
@@ -2206,7 +2218,7 @@ WARDING = {
 
 
 def brewing(name, container_in, potion_in, reagent, container_out, potion_out):
-    write_json(DATA / f"recipe/brewing/{name}.json", {
+    write_json(DATA / f"brewing/{name}.json", {
         "type": "minecraft:brewing",
         "input": {"item": container_in, "potion_contents": {"potions": potion_in}},
         "output": {"components": {"minecraft:potion_contents": {"potion": potion_out}}, "id": container_out},
@@ -3614,9 +3626,9 @@ def write_new_content(runes):
         "type": "wildercord:archive",
         "biomes": "#wildercord:has_structure/archive",
         "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": [
-            {"type": "minecraft:skeleton", "weight": 3, "count": 1},
-            {"type": "minecraft:zombie", "weight": 3, "count": 1},
-            {"type": "minecraft:witch", "weight": 1, "count": 1}]}},
+            {"type": "minecraft:skeleton", "weight": 3, "minCount": 1, "maxCount": 1},
+            {"type": "minecraft:zombie", "weight": 3, "minCount": 1, "maxCount": 1},
+            {"type": "minecraft:witch", "weight": 1, "minCount": 1, "maxCount": 1}]}},
         # After trees, so the forecourt can clear the canopy that would otherwise swallow the gate.
         "step": "top_layer_modification",
         "terrain_adaptation": "none"})
@@ -3706,8 +3718,8 @@ def has_item(item_id):
 
 
 def in_structure(structure):
-    return {"trigger": "minecraft:location", "conditions": {"player": {
-        "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:location": {"structures": structure}}}}}
+    return {"trigger": "minecraft:location", "conditions": {"player": [{
+        "condition": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:location": {"structures": structure}}}]}}
 
 
 # Rewards: experience always; the big ones add a loot table from ADVANCEMENT_REWARDS.

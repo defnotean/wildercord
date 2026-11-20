@@ -28,8 +28,8 @@ SITES = {
 
 # The night guard of the scarecrow field: the dead that rise from its furrows after dark.
 NIGHT_GUARD = {"monster": {"bounding_box": "piece", "spawns": [
-    {"type": "minecraft:zombie", "weight": 3, "count": 1},
-    {"type": "minecraft:skeleton", "weight": 2, "count": 1},
+    {"type": "minecraft:zombie", "weight": 3, "minCount": 1, "maxCount": 1},
+    {"type": "minecraft:skeleton", "weight": 2, "minCount": 1, "maxCount": 1},
 ]}}
 
 LANG = {

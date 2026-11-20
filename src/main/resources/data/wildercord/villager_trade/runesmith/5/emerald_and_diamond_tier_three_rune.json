@@ -12,9 +12,11 @@
   "additional_wants": {
     "id": "minecraft:diamond"
   },
-  "given_item_modifier": {
-    "type": "wildercord:random_rune",
-    "min_tier": 3,
-    "max_tier": 3
-  }
+  "given_item_modifiers": [
+    {
+      "min_tier": 3,
+      "max_tier": 3,
+      "function": "wildercord:random_rune"
+    }
+  ]
 }

@@ -86,7 +86,8 @@
         "TemperedBlowMixin",
         "FxSupportMobMixin",
         "FxSupportExplosionMixin",
-        "SignBlockEntityMixin"
+        "SignBlockEntityMixin",
+        "PotionBrewingMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

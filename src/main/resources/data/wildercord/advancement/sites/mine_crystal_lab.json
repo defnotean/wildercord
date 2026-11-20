@@ -4,15 +4,17 @@
     "mine_crystal_lab": {
       "trigger": "minecraft:location",
       "conditions": {
-        "player": {
-          "type": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "minecraft:location": {
-              "structures": "wildercord:mine_crystal_lab"
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:mine_crystal_lab"
+              }
             }
           }
-        }
+        ]
       }
     }
   },

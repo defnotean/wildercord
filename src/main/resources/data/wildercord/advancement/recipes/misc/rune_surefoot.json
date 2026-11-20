@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:rune_surefoot"
+        "recipe": "wildercord:rune_surefoot"
       }
     }
   },

@@ -9,12 +9,14 @@
         {
           "type": "minecraft:magma_cube",
           "weight": 2,
-          "count": 1
+          "minCount": 1,
+          "maxCount": 1
         },
         {
           "type": "minecraft:blaze",
           "weight": 1,
-          "count": 1
+          "minCount": 1,
+          "maxCount": 1
         }
       ]
     }

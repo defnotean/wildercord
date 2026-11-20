@@ -435,7 +435,7 @@ def write(g):
         g.write_json(g.ASSETS / f'items/{name}.json', {'model': {'type': 'minecraft:model', 'model': f'wildercord:item/{name}'}})
     g.write_json(g.DATA / 'loot_table/entities/cinder_bailiff.json', {'type': 'minecraft:entity', 'pools': []})
     g.write_json(g.DATA / 'loot_table/blocks/cinder_fern.json', {'type': 'minecraft:block', 'pools': [{'rolls': 1, 'entries': [{'type': 'minecraft:item', 'name': 'wildercord:cinder_fern'}], 'conditions': [{'condition': 'minecraft:survives_explosion'}]}]})
-    g.write_json(g.DATA / 'worldgen/feature/cinder_fern_patch.json', {'type': 'wildercord:cinder_fern_patch'})
+    g.write_json(g.DATA / 'worldgen/configured_feature/cinder_fern_patch.json', {'type': 'wildercord:cinder_fern_patch', 'config': {}})
     g.write_json(g.DATA / 'worldgen/placed_feature/cinder_fern_patch.json', {'feature': 'wildercord:cinder_fern_patch', 'placement': [{'type': 'minecraft:rarity_filter', 'chance': 8}, {'type': 'minecraft:in_square'}, {'type': 'minecraft:heightmap', 'heightmap': 'MOTION_BLOCKING_NO_LEAVES'}, {'type': 'minecraft:biome'}]})
 
     # Ordinary crafting supplies an existing-world route without replacing explored chunks.

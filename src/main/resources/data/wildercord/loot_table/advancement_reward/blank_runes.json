@@ -7,10 +7,12 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:blank_rune",
-          "modifier": {
-            "count": 8,
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 8
+            }
+          ]
         }
       ]
     }

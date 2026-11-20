@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:mana_crystal_from_lumen_antler"
+        "recipe": "wildercord:mana_crystal_from_lumen_antler"
       }
     }
   },
