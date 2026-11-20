@@ -765,6 +765,14 @@ class JarInspector:
                     if sig not in seen:
                         seen.add(sig)
                         out.append(sig)
+        if not out:
+            own = self._cache.get(binary_name)
+            if own:
+                for (name, desc) in sorted(own["methods"]):
+                    if name not in ("<init>", "<clinit>") and not name.startswith("lambda$"):
+                        out.append(f"{binary_name}#{name}{desc}")
+                        if len(out) >= limit:
+                            break
         return out[:limit]
 
     def suggest_fields(self, binary_name: str, missing_name: str, limit: int = 6) -> list[str]:
@@ -794,6 +802,14 @@ class JarInspector:
                     if label not in seen:
                         seen.add(label)
                         out.append(label)
+        if not out:
+            own = self._cache.get(binary_name)
+            if own:
+                for fname in sorted(own["fields"]):
+                    desc = own.get("field_descs", {}).get(fname, "")
+                    out.append(f"{binary_name}.{fname}:{desc}" if desc else f"{binary_name}.{fname}")
+                    if len(out) >= limit:
+                        break
         return out[:limit]
 
 
