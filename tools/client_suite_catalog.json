@@ -1,7 +1,7 @@
 {
   "release-smoke": {
-    "description": "Pre-release smoke: one quick native class per major area (casting, party, client fx, journal, meditation, wildlife, content, research, commands, monsters, lore, world, mounts and taming, network payloads, mixin targets). A fast sanity check run once before a release; it does not replace the per-area suites.",
-    "expectedCount": 17,
+    "description": "Pre-release smoke: one quick native class per major area (casting, party, client fx, journal, meditation, wildlife, content, research, commands, monsters, lore, world, mounts and taming, network payloads, mixin targets, shrine sanctuary). A fast sanity check run once before a release; it does not replace the per-area suites.",
+    "expectedCount": 18,
     "entries": [
       "dev.wildercord.cast.BasinfillTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
@@ -18,6 +18,7 @@
       "dev.wildercord.lore.LoreJournalGameTest",
       "dev.wildercord.world.dungeons.SwordTombTest",
       "dev.wildercord.wildlife.StagFirstRideTest",
+      "dev.wildercord.wildlife.ShrineSanctuaryTest",
       "dev.wildercord.net.PayloadCodecRoundTripTest",
       "dev.wildercord.gametest.MixinTargetsTest"
     ]
@@ -176,6 +177,15 @@
     "expectedCount": 1,
     "entries": [
       "dev.wildercord.world.ferryman.FerrymanCoopTest"
+    ]
+  },
+  "shrine-sanctuary": {
+    "description": "Full Shrine Sanctuary & polish verification suite: Yuki/Odie/Freya/Kuro models & loaf poses, Sakura Villager NPCs & custom mobs, Sakura Village courtyard, 4-floor Cat Sanctuary pagoda trials/buffs/taming/companion powers, Lantern Bathhouse onsen & Fire+Wind RuneSeal, Ricochet (5/2 + decay)/Suzu Chime/Ofuda Ward, Archivist & Rootcoil Serpent anti-cheese, all 9 block-variant recipe tags, plus 32-structure DungeonWardSealTest.",
+    "purpose": "diagnostic",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.wildlife.ShrineSanctuaryTest",
+      "dev.wildercord.world.dungeons.DungeonWardSealTest"
     ]
   },
   "structure-gallery": {
