@@ -244,7 +244,7 @@ public final class CrimsonMoonRenderProbe {
         s.token.observe("actualArmor",armor(a));s.token.observe("actualShell",shell);s.token.observe("articulation",ArticulatedCombat.enabled());
         s.token.observe("shellAdapter",ArticulatedAuraShellRenderer.enabled());s.token.observe("originalTexture",source.texture());
     }
-    public static void renderBegin(){var s=CURRENT.get();if(s!=null){s.rendering=true;s.target=Minecraft.getInstance().gameRenderer.mainRenderTarget();s.texture=s.target.getColorTexture();}}
+    public static void renderBegin(){var s=CURRENT.get();if(s!=null){s.rendering=true;s.target=Minecraft.getInstance().getMainRenderTarget();s.texture=s.target.getColorTexture();}}
     public static void renderEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.rendering=false;if(completed)s.token.rendered=SEQ.incrementAndGet();}}
     private static Scope rendering(){var s=CURRENT.get();return s!=null&&s.rendering?s:null;}
     public static DeferredCall deferredEnter(Model<?> model,Object state){var s=rendering();if(s==null)return null;var call=new DeferredCall(model,state,s.deferred);s.deferred=call;return call;}

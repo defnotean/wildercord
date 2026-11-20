@@ -93,7 +93,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 			BlockPos at=site.altar();
 			BlockPos entrance=natural.getServer().computeOnServer(s->at.relative(s.overworld().getBlockState(at).getValue(TombReliquary.FACING).getOpposite(),42).above(12));
 			natural.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),entrance.getX()+7.5,entrance.getY()+5,entrance.getZ()+7.5,Set.<Relative>of(),0,25,false);p.getAbilities().flying=true;p.onUpdateAbilities();});
-			c.waitTicks(30);aim(c,entrance,0);c.waitTicks(30);natural.getConnection().waitForChunksRender();shot(c,"sword_tomb_natural_entrance");
+			c.waitTicks(30);aim(c,entrance,0);c.waitTicks(30);natural.getClientLevel().waitForChunksRender();shot(c,"sword_tomb_natural_entrance");
 		}
 	}
 	private record NaturalTombSite(BlockPos command,BoundingBox bounds,BlockPos altar){}

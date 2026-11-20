@@ -113,7 +113,7 @@ final class ScoutLegendChecks {
 	}
 
 	private static void await(ClientGameTestContext c, TestSingleplayerContext world, String quest, int stage) {
-		world.getServer().waitFor(s -> LoreJournal.data(s.getPlayerList().getPlayers().getFirst()).stage(quest) == stage, 240);
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), s -> LoreJournal.data(s.getPlayerList().getPlayers().getFirst()).stage(quest) == stage, 240);
 		c.waitFor(mc -> LoreJournal.data(mc.player).stage(quest) == stage, 100);
 	}
 

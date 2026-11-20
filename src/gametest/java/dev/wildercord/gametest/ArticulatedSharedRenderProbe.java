@@ -228,7 +228,7 @@ public final class ArticulatedSharedRenderProbe {
 		Scope scope = CURRENT.get(); if (scope == null) return;
 		scope.rendering = true;
 		guard(scope.token, () -> {
-			scope.renderedTarget = Minecraft.getInstance().gameRenderer.mainRenderTarget();
+			scope.renderedTarget = Minecraft.getInstance().getMainRenderTarget();
 			scope.renderedTexture = scope.renderedTarget.getColorTexture();
 			scope.renderWidth = scope.renderedTarget.width; scope.renderHeight = scope.renderedTarget.height;
 			scope.token.session.observe("renderTargetGeneration", identity(scope.renderedTarget));

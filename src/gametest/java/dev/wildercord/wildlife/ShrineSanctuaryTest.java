@@ -1206,7 +1206,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				// 9. #wildercord:glass_pane_variants -> dewglass_spectacles
 				craftCheck(l, s, 3, 1, List.of(
-					new ItemStack(Items.STAINED_GLASS_PANE.blue()), new ItemStack(Items.COPPER_INGOT), new ItemStack(item("wildercord:moonreed_floss"))
+					new ItemStack(Items.BLUE_STAINED_GLASS_PANE), new ItemStack(Items.COPPER_INGOT), new ItemStack(item("wildercord:moonreed_floss"))
 				), item("wildercord:dewglass_spectacles"), 1, null, "dewglass_spectacles accepts blue_stained_glass_pane");
 
 				// Vanilla wood/wool/log tags -> rune_barnwarmth, rune_fleece, rune_barkhide
@@ -1216,7 +1216,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				), WildercordItems.RUNE, 1, Runes.BARNWARMTH.id(), "rune_barnwarmth accepts cherry_planks");
 
 				craftCheck(l, s, 3, 2, List.of(
-					new ItemStack(WildercordItems.BLANK_RUNE), new ItemStack(Items.SHEARS), new ItemStack(Items.WOOL.pink()),
+					new ItemStack(WildercordItems.BLANK_RUNE), new ItemStack(Items.SHEARS), new ItemStack(Items.PINK_WOOL),
 					new ItemStack(Items.FEATHER), ItemStack.EMPTY, ItemStack.EMPTY
 				), WildercordItems.RUNE, 1, Runes.FLEECE.id(), "rune_fleece accepts pink_wool");
 

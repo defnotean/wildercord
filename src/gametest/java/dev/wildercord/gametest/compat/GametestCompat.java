@@ -3,6 +3,7 @@ package dev.wildercord.gametest.compat;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -19,6 +20,7 @@ import net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.network.protocol.game.VecDeltaCodec;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -42,6 +44,27 @@ import java.util.function.Predicate;
 /** Version-specific gametest harness helpers for Minecraft 26.2. */
 public final class GametestCompat {
 	private GametestCompat() {}
+
+	/**
+	 * Polls a server condition until it holds or the tick budget runs out, returning the ticks
+	 * waited. 26.1.2's TestServerContext has no waitFor; this polls through computeOnServer with a
+	 * ~tick pause between attempts.
+	 */
+	public static int waitFor(TestServerContext server, Predicate<MinecraftServer> condition, int timeoutTicks) {
+		int waited = 0;
+		try {
+			while (waited < timeoutTicks) {
+				if (Boolean.TRUE.equals(server.computeOnServer(condition::test))) {
+					return waited;
+				}
+				Thread.sleep(50L);
+				waited++;
+			}
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		}
+		return waited;
+	}
 
 	public static InputConstants.Key keyboardKey(int keyCode) {
 		return InputConstants.Type.KEYSYM.getOrCreate(keyCode);

@@ -39,7 +39,7 @@ final class StoneMarchFixture {
 	void await(TestSingleplayerContext world) {
 		double[] before = {master.auraRemaining()};
 		long[] ordinal = {0};
-		world.getServer().waitFor(server -> {
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
 			if (master.marchPending()) {
 				check(master.attackAnimation() == 10 && master.attackElapsed(0) <= 1, "Natural ordinary fallback admits the appended ID10");
 				began = level.getGameTime() - (long) master.attackElapsed(0); accepted = (StoneMarch) field(master, "march");
@@ -68,7 +68,7 @@ final class StoneMarchFixture {
 		check(master.position().distanceToSqr(origin) < .003 && master.onGround() && !master.guarding(), "Acceptance belongs to a naturally grounded, exposed native body");
 	}
 	void at(TestSingleplayerContext world, int age, Runnable action) {
-		world.getServer().waitFor(server -> {
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
 			long now = level.getGameTime(); if (now < began + age) return false;
 			check(now == began + age, "Observe exact native March tick " + age + ", actual " + (now - began)); action.run(); return true;
 		}, age + 20);

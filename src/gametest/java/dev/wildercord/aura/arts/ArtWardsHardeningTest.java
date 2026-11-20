@@ -377,7 +377,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 			ward(player, false);
 			active = new Plan(name, player); body.accept(active);
 		});
-		world.getServer().waitFor(server -> active.done, 150);
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> active.done, 150);
 		world.getServer().runOnServer(server -> {
 			if (active.failure != null) throw new AssertionError("Native hardening scenario failed: " + name, active.failure);
 			check(active.checks.isEmpty(), "All native hardening checks ran: " + name);

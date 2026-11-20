@@ -74,7 +74,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
             server.runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.cast.ExcisePlayableTest\",\"seed\":\"{}\"}", s.overworld().getSeed()));
             var connection = server.connect();
             try {
-                connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+                connection.getClientLevel().waitForChunksDownload();
                 server.runCommand("gamerule spawn_mobs false"); server.runCommand("gamerule fall_damage false");
                 server.runCommand("gamerule natural_health_regeneration false"); server.runCommand("gamerule keep_inventory true");
                 server.runOnServer(s -> {
@@ -283,7 +283,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                 });
                 try {
                     connection.close(); context.waitFor(mc -> mc.level == null, 200); context.setScreen(TitleScreen::new);
-                    connection = server.connect(); connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+                    connection = server.connect(); connection.getClientLevel().waitForChunksDownload();
                     server.runOnServer(s -> {
                         var fresh = player(s);
                         check(fresh != probe.player && ExciseCasting.now(fresh) == probe.cancelledAt, "Actual reconnect replaces the connected body at the frozen lifecycle clock");
@@ -296,7 +296,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                 context.waitTicks(14);
                 server.runOnServer(s -> check(!ExciseCasting.committed(probe.player) && ExciseCasting.recoveryUntil(probe.player) == 0, "Recovery expires against advancing server time"));
                 connection.close(); context.waitFor(mc -> mc.level == null, 200); context.setScreen(TitleScreen::new);
-                connection = server.connect(); connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+                connection = server.connect(); connection.getClientLevel().waitForChunksDownload();
                 server.runOnServer(s -> check(!ExciseCasting.committed(player(s)) && !player(s).hasAttached(ExciseState.VIEW) && ExciseCasting.rest(player(s)) == probe.rest,
                     "Reconnect after the deadline cannot renew recovery or restore an old target"));
                 server.runOnServer(s -> probe.player = player(s)); context.waitTicks(2);
@@ -307,7 +307,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                 });
                 try {
                     connection.close(); context.waitFor(mc -> mc.level == null, 200); context.setScreen(TitleScreen::new);
-                    connection = server.connect(); connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+                    connection = server.connect(); connection.getClientLevel().waitForChunksDownload();
                     server.runOnServer(s -> {
                         var fresh=player(s);
                         check(fresh != probe.player && ExciseCasting.now(fresh)==probe.cancelledAt && ExciseCasting.recoveryUntil(fresh)==probe.recovery,

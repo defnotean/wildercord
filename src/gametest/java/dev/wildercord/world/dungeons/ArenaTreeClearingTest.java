@@ -100,7 +100,7 @@ public final class ArenaTreeClearingTest implements FabricClientGameTest {
 				p.onUpdateAbilities();
 			});
 			c.waitTicks(40);
-			w.getConnection().waitForChunksRender();
+			w.getClientLevel().waitForChunksRender();
 			c.runOnClient(mc -> mc.gui.getChat().clearMessages(false));
 			c.takeScreenshot(TestScreenshotOptions.of("arena_trees_kept_out").disableCounterPrefix());
 		}

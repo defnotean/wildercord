@@ -70,7 +70,7 @@ public final class MasterSchoolMotionChecks {
 			});
 			context.runOnClient(MastersNpcCaptureProbe::configure);
 			context.waitTicks(10);
-			world.getConnection().waitForChunksRender();
+			world.getClientLevel().waitForChunksRender();
 			for (int school : new int[] {MastersRules.GALE, MastersRules.STONE}) {
 				boolean gale = school == MastersRules.GALE;
 				List<Beat> beats = gale
@@ -115,7 +115,7 @@ public final class MasterSchoolMotionChecks {
 						check(shot != null, "Native client must observe the requested phase");
 						// Observe release before waiting for readback; GPU latency may advance real ticks.
 						// A capture does not replace the real release/damage contract.
-						world.getServer().waitFor(server -> {
+						dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
 							if (level.getGameTime() < began + (gale ? GaleRepriseRules.TELL : StoneFractureRules.TELL)) return false;
 							observe(school);
 							return true;
@@ -169,7 +169,7 @@ public final class MasterSchoolMotionChecks {
 			master.setTarget(target);
 		});
 		var opening = school == MastersRules.GALE ? MastersRules.Move.CRESCENT : MastersRules.Move.THRUST;
-		world.getServer().waitFor(server -> {
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
 			if (!master.state(AuraFighter.WINDUP)) return false;
 			check(master.attackAnimation() == opening.ordinal() + 1 && master.attackElapsed(0) <= 1,
 				"Ordinary AI must select its real sequence-zero opening");
@@ -177,7 +177,7 @@ public final class MasterSchoolMotionChecks {
 			return true;
 		}, 45);
 		long resetAt = began + opening.tell + opening.recovery - 1;
-		world.getServer().waitFor(server -> {
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
 			if (level.getGameTime() < resetAt) return false;
 			check(level.getGameTime() == resetAt && !master.state(AuraFighter.WINDUP)
 				&& Math.abs(master.auraRemaining() - (MastersRules.AURA_MAX - MastersRules.ATTACK_COST)) < .01, "Opening and its paid recovery must complete naturally");
@@ -188,7 +188,7 @@ public final class MasterSchoolMotionChecks {
 			master.setTarget(target);
 			return true;
 		}, opening.tell + opening.recovery + 10);
-		world.getServer().waitFor(server -> {
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
 			if (!(school == MastersRules.GALE ? master.reprisePending() : master.fracturePending())) return false;
 			check(master.attackAnimation() == (school == MastersRules.GALE ? 7 : 8) && master.attackElapsed(0) <= 1,
 				"Ordinary AI must naturally admit the school form");

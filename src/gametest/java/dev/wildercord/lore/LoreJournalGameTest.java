@@ -66,7 +66,7 @@ public final class LoreJournalGameTest implements FabricClientGameTest {
 
 			// Trigger: the tournament board's real discovery. The journal's own poll writes the clue.
 			world.getServer().runOnServer(s -> Grimoire.unlock(player(s), "aura:tournament"));
-			world.getServer().waitFor(s -> LoreJournal.data(player(s)).stage(QUEST) == LoreQuestRules.ACTIVE, 200);
+			dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), s -> LoreJournal.data(player(s)).stage(QUEST) == LoreQuestRules.ACTIVE, 200);
 			c.waitFor(mc -> LoreJournal.data(mc.player).stage(QUEST) == LoreQuestRules.ACTIVE, 100);
 			check(world.getServer().computeOnServer(s -> LoreJournal.data(player(s)).has("place:tournament")), "The place is written in the journal");
 			check(world.getServer().computeOnServer(s -> player(s).getInventory().countItem(AuraWorld.AURA_SHARD)) == before[0],
@@ -74,7 +74,7 @@ public final class LoreJournalGameTest implements FabricClientGameTest {
 
 			// Objective: a duel won, recorded as the real Grimoire entry.
 			world.getServer().runOnServer(s -> Grimoire.unlock(player(s), "aura:duelist"));
-			world.getServer().waitFor(s -> LoreJournal.data(player(s)).stage(QUEST) == LoreQuestRules.DONE, 200);
+			dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), s -> LoreJournal.data(player(s)).stage(QUEST) == LoreQuestRules.DONE, 200);
 			int[] after = world.getServer().computeOnServer(s -> {
 				ServerPlayer p = player(s);
 				return new int[] {p.getInventory().countItem(AuraWorld.AURA_SHARD), p.getInventory().countItem(WildercordItems.BLANK_RUNE), p.totalExperience};

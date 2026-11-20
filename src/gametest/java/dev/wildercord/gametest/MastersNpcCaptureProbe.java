@@ -227,7 +227,7 @@ public final class MastersNpcCaptureProbe {
 		bodies = models = 0; rays.clear(); modelReceipts.clear(); handReceipts.clear(); articulatedFrame = null;
 		handEntry = null; enteringHand = null;
 		bodyEntry = viewProjection = null; bodyBounds = new BoundsAccumulator(); bladeBounds = new BoundsAccumulator();
-		zeroToOneDepth = RenderSystem.getDevice().getDeviceInfo().isZZeroToOne();
+		zeroToOneDepth = RenderSystem.getDevice().isZZeroToOne();
 		boolean fullWarningCoverage = !closeBody;
 		var result = new CompletableFuture<Evidence>();
 		try {
@@ -238,8 +238,8 @@ public final class MastersNpcCaptureProbe {
 					mc.level.getLevelData().setGameTime(gameTime);
 				}
 			}
-			mc.gameRenderer.update(DELTA); mc.gameRenderer.extract(DELTA, true); dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA);
-			RenderSystem.getDevice().createCommandEncoder().submit();
+			mc.gameRenderer.update(DELTA, true); mc.gameRenderer.extract(DELTA, true); dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA);
+			
 			Vec3 eye = mc.gameRenderer.getMainCamera().position();
 			ProjectedBounds capturedBodyBounds = articulated ? bodyBounds.snapshot() : null;
 			ProjectedBounds capturedBladeBounds = articulated ? bladeBounds.snapshot() : null;
@@ -316,7 +316,7 @@ public final class MastersNpcCaptureProbe {
 			var projectedRays = capturedRays.stream().map(ray -> projectRay(mc, ray, fullWarningCoverage)).toList();
 			String renderFailure = failure;
 			Double capturedBodyProbeHeight = bodyProbeHeightPixels;
-			net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image -> {
+			net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget(), image -> {
 				try (image) {
 					var path = FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name + ".png");
 					Files.createDirectories(path.getParent());
@@ -355,7 +355,7 @@ public final class MastersNpcCaptureProbe {
 					result.complete(evidence);
 				} catch (Throwable problem) { result.completeExceptionally(problem); }
 			});
-			RenderSystem.getDevice().createCommandEncoder().submit();
+			
 			for (int spin = 0; spin < 200 && !result.isDone(); spin++) {
 				RenderSystem.executePendingTasks();
 				if (!result.isDone()) {

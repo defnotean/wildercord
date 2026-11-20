@@ -15,7 +15,7 @@ import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.MasterStudyRules;
 import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerConnection;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -60,9 +60,9 @@ public final class ExciseLessonChecks {
 		try (var server = context.worldBuilder().createServer(properties)) {
 			server.runOnServer(s -> Wildercord.LOGGER.info(
 				"WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.cast.ExcisePlayableTest#lesson\",\"seed\":\"{}\"}", s.overworld().getSeed()));
-			TestDedicatedServerConnection connection = server.connect();
+			TestServerConnection connection = server.connect();
 			try {
-				connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+				connection.getClientLevel().waitForChunksDownload();
 				server.runCommand("gamerule spawn_mobs false");
 				server.runCommand("gamerule fall_damage false");
             server.runCommand("gamerule keep_inventory true");
@@ -153,7 +153,7 @@ public final class ExciseLessonChecks {
 				retrieve(context); long disconnected = nonce(context); advance(context); page(context, 1, true);
 				ServerPlayer original = server.computeOnServer(ExciseLessonChecks::player);
 				connection.close(); context.waitFor(mc -> mc.level == null, 200); context.setScreen(TitleScreen::new);
-				connection = server.connect(); connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+				connection = server.connect(); connection.getClientLevel().waitForChunksDownload();
 				server.runOnServer(s -> check(player(s) != original && MasterStudies.hasExciseLesson(player(s)) && !MasterStudies.knowsExcise(player(s)), "Actual reconnect persists unfinished Heartwood recovery with a distinct connected body"));
 				send(context, disconnected, 2); send(context, disconnected, 3);
 				retrieve(context); long completed = nonce(context);
@@ -184,7 +184,7 @@ public final class ExciseLessonChecks {
 				server.runOnServer(s -> check(books(player(s)) == 0 && MasterStudies.knowsExcise(player(s)), "Further losses cannot farm copies or remove the permanent lesson"));
 				close(context);
 				connection.close(); context.waitFor(mc -> mc.level == null, 200); context.setScreen(TitleScreen::new);
-				connection = server.connect(); connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+				connection = server.connect(); connection.getClientLevel().waitForChunksDownload();
 				server.runOnServer(s -> {
 					var p = player(s);
 					check(MasterStudies.knowsExcise(p) && Spellbooks.knows(p, Runes.EXCISE.id()) && Heart.discovered(p, MasterStudyRules.EXCISE_REPLACEMENT), "Reconnect persists learned rune and both physical-copy receipts");

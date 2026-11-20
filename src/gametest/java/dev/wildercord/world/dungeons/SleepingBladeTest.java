@@ -167,7 +167,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			}
 			check(found!=null,"Registered normal-terrain structure placement creates the authentic blade; "+probe.summary());BlockPos landmark=found;
 			natural.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),landmark.getX()+4,landmark.getY()+3,landmark.getZ()+5,Set.<Relative>of(),0,0,false);p.getAbilities().flying=true;p.onUpdateAbilities();});
-			c.waitTicks(30);aim(c,landmark);c.waitTicks(30);natural.getConnection().waitForChunksRender();shot(c,"sleeping_blade_natural_landmark");
+			c.waitTicks(30);aim(c,landmark);c.waitTicks(30);natural.getClientLevel().waitForChunksRender();shot(c,"sleeping_blade_natural_landmark");
 		}
 	}
 	private static void stand(TestSingleplayerContext w,BlockPos at,int stage) {

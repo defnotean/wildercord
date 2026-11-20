@@ -352,7 +352,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		check(comingOut == 0, "coming out of the practice arena should empty momentum (" + comingOut + ")");
 		context.waitTicks(30);
 		try {
-			world.getConnection().waitForChunksRender();
+			world.getClientLevel().waitForChunksRender();
 		} catch (RuntimeException e) {
 			// Slow chunks only make the next scene's first frames bare; the checks don't need them.
 		}

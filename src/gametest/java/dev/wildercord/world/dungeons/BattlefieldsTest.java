@@ -171,7 +171,7 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 				var p=server.getPlayerList().getPlayers().getFirst();p.teleportTo(p.level(),at.getX()+.5,at.getY()+9,at.getZ()-14.5,Set.<Relative>of(),0,27,false);
 				p.getAbilities().flying=true;p.onUpdateAbilities();
 			});
-			context.waitTicks(50);natural.getConnection().waitForChunksRender();shot(context,"battlefield_natural_terrain");
+			context.waitTicks(50);natural.getClientLevel().waitForChunksRender();shot(context,"battlefield_natural_terrain");
 		}
 	}
 	static void requireRepresentativeAdmission(BattlefieldsGenerationProbe.Admission observed) {

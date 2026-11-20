@@ -148,11 +148,11 @@ public final class MastersCaptureProbe {
 				}
 			}
 			BraceNullCaptureProbe.begin(mc, name);
-			mc.gameRenderer.update(DELTA);
+			mc.gameRenderer.update(DELTA, true);
 			mc.gameRenderer.extract(DELTA, true);
 			BraceNullCaptureProbe.rendering(true);
 			try { dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA); } finally { BraceNullCaptureProbe.rendering(false); }
-			RenderSystem.getDevice().createCommandEncoder().submit();
+			
 			verifyRender(mc, name);
 			var counterPhase = BraceNullCaptureProbe.finish(name);
 			boolean first = mc.options.getCameraType().isFirstPerson();
@@ -162,7 +162,7 @@ public final class MastersCaptureProbe {
 			float[] capturedProjection = handProjection;
 			HandMotion capturedMotion = handMotion;
 			int capturedHands = hands, capturedBodies = bodies;
-			net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image -> {
+			net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget(), image -> {
 				try (image) {
 					var path = FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name + ".png");
 					Files.createDirectories(path.getParent());
@@ -178,7 +178,7 @@ public final class MastersCaptureProbe {
 					result.complete(null);
 				} catch (Throwable failure) { result.completeExceptionally(failure); }
 			});
-			RenderSystem.getDevice().createCommandEncoder().submit();
+			
 			for (int spin = 0; spin < 200 && !result.isDone(); spin++) {
 				RenderSystem.executePendingTasks();
 				if (!result.isDone()) {

@@ -131,11 +131,11 @@ public final class CounterPeerRenderProbe {
         DeltaTracker delta=new DeltaTracker(){public float getGameTimeDeltaTicks(){return .5F;}public float getGameTimeDeltaPartialTick(boolean paused){return .5F;}public float getRealtimeDeltaTicks(){return .5F;}};
         try{
             scope=enter((TestScreenshotCommonOptionsImpl<?>)options,mc);
-            mc.gameRenderer.update(delta);extractBegin(delta);boolean extracted=false;
+            mc.gameRenderer.update(delta, true);extractBegin(delta);boolean extracted=false;
             try{mc.gameRenderer.extract(delta,true);extracted=true;}finally{extractEnd(extracted);}
             renderBegin();boolean rendered=false;try{GametestCompat.renderFrame(mc,delta);rendered=true;}finally{renderEnd(rendered);}
-            com.mojang.blaze3d.systems.RenderSystem.getDevice().createCommandEncoder().submit();
-            screenshot(mc.gameRenderer.mainRenderTarget(),image->{try(image){
+            com.mojang.blaze3d.systems.
+            screenshot(mc.getMainRenderTarget(),image->{try(image){
                 var path=FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name+".png");
                 Files.createDirectories(path.getParent());if(Files.exists(path))throw new AssertionError("Counter image cannot be replaced");
                 image.writeToFile(path);output.complete(path);
@@ -325,7 +325,7 @@ public final class CounterPeerRenderProbe {
         s.token.observe("actualArmor",armor(a));s.token.observe("actualShell",shell);s.token.observe("articulation",ArticulatedCombat.enabled());
         s.token.observe("shellAdapter",ArticulatedAuraShellRenderer.enabled());s.token.observe("originalTexture",source.texture());
     }
-    public static void renderBegin(){var s=CURRENT.get();if(s!=null){s.rendering=true;s.target=Minecraft.getInstance().gameRenderer.mainRenderTarget();s.texture=s.target.getColorTexture();}}
+    public static void renderBegin(){var s=CURRENT.get();if(s!=null){s.rendering=true;s.target=Minecraft.getInstance().getMainRenderTarget();s.texture=s.target.getColorTexture();}}
     public static void renderEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.rendering=false;if(completed){try{s.nativeBody.requireHealthy();if(s.token.expected.view().equals("remote")){s.nativeBody.requireComplete();s.token.observe("exactPrimaryBodySubmitVerified",true);}}catch(Throwable failure){s.token.reject("native_body_observer:"+failure);}s.token.rendered=SEQ.incrementAndGet();}}}
     public static <T> T passive(java.util.function.Supplier<T> observer,T fallback){var s=CURRENT.get();return s==null?fallback:s.nativeBody.observe(observer,fallback);}
     public static void passive(Runnable observer){var s=CURRENT.get();if(s!=null)s.nativeBody.observe(observer);}

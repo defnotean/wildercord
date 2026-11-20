@@ -12,7 +12,7 @@ import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.MasterStudyRules;
 import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerConnection;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.core.BlockPos;
@@ -286,9 +286,9 @@ public final class RelayLessonChecks {
 		properties.setProperty("online-mode", "false"); properties.setProperty("enforce-secure-profile", "false");
 		properties.setProperty("pause-when-empty-seconds", "-1"); properties.setProperty("view-distance", "3"); properties.setProperty("simulation-distance", "3");
 		try (var server = context.worldBuilder().createServer(properties)) {
-			TestDedicatedServerConnection connection = server.connect();
+			TestServerConnection connection = server.connect();
 			try {
-				connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+				connection.getClientLevel().waitForChunksDownload();
 				server.runCommand("gamerule spawn_mobs false"); server.runCommand("gamerule fall_damage false");
 				ServerPlayer original = server.computeOnServer(s -> {
 					var level = s.overworld();
@@ -309,7 +309,7 @@ public final class RelayLessonChecks {
 				advance(context); assertPage(context, 1, true);
 				connection.close(); context.waitFor(mc -> mc.level == null, 200); context.setScreen(TitleScreen::new);
 				server.runOnServer(s -> s.overworld().setBlock(LECTERN, Blocks.STONE.defaultBlockState(), 3));
-				connection = server.connect(); connection.waitForChunksDownload(); connection.waitForClientboundPackets();
+				connection = server.connect(); connection.getClientLevel().waitForChunksDownload();
 				server.runOnServer(s -> {
 					var joined = player(s);
 					check(joined != original && joined.getUUID().equals(original.getUUID()), "Reconnect creates a distinct connected body");
@@ -429,7 +429,7 @@ public final class RelayLessonChecks {
 			if (createdStats == null) createdStats = stats.get(probeId);
 			if (createdAdvancements == null) createdAdvancements = (net.minecraft.server.PlayerAdvancements) advancements.get(probeId);
 			if (createdAdvancements != null) {
-				createdAdvancements.clearTriggers();
+				createdAdvancements.stopListening();
 				advancements.remove(probeId, createdAdvancements);
 			}
 			if (createdStats != null) stats.remove(probeId, createdStats);
