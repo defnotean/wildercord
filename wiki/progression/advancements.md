@@ -10,7 +10,7 @@ nav_order: 3
 <img src="{{ '/assets/images/b-advancements.jpg' | relative_url }}" alt="The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows" class="shot">
 
 Wildercord has its own advancement tab. It leads you from your first Blank Rune to the 20th Heart
-Circle, the dungeon bosses and the 57 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
+Circle, the dungeon bosses and the 60 sites of the wider world. Most advancements give experience; some also give Blank Runes and Mana
 Crystals.
 
 1. TOC
@@ -317,19 +317,22 @@ See [Water Sites]({{ '/world/water-sites/' | relative_url }}).
 | **Poison Darts** | The Buried Library | Find a Venom Ziggurat in the jungle | 20 XP |
 | **Light at the Edge** | The Buried Library | Find a Void Lantern on the End's outer islands | 20 XP |
 | **Blossom Lanterns** | The Buried Library | Find a peaceful Japanese Sakura Village | 20 XP |
+| **Lantern Canals** | The Buried Library | Find a Sakura Canal & Lantern Harbor Village | 20 XP |
+| **Steaming Blossoms** | The Buried Library | Find a Sakura Mountain Onsen Resort Village | 20 XP |
+| **Blossom Citadel** | The Buried Library | Find a Sakura Feudal Castle-Town & Dojo Village | 20 XP |
 
 See [Wild Places]({{ '/world/wilds-sites/' | relative_url }}) and [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }}).
 
 ## Totals
 
-164 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+167 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 117 |
+| Tasks | 120 |
 | Goals | 33 |
 | Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 14,840 |
+| Experience for all of them | 14,900 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |

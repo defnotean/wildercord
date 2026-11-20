@@ -12,43 +12,65 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 /**
- * Custom 128x128 Japanese NPC rig for {@code Tea Master} and {@code Shrine Maiden (Miko)} matching
- * their turnaround &amp; pose sheets: hip-hinged kimono torso, brocade obi &amp; rear bow, pleated
- * hakama, 2-segment draped kimono sleeves, conical woven amigasa hat / 3D sakura kanzashi with
- * tabane-noshi ribbon, wooden tea tray &amp; matcha cup / gohei blessing wand.
+ * Custom 128x128 Japanese NPC rig supporting all six {@link SakuraVillager} professions:
+ * Tea Master, Shrine Maiden, Katana Swordsmith, Lantern Artisan, Onsen Hostess, and Koi Canal
+ * Fisherman — with role-specific headwear (amigasa/kasa hat, kanzashi, hachimaki, artisan cap &amp;
+ * brass spectacles), aprons/baskets, and level-stabilized handheld props.
  */
 public class SakuraVillagerModel extends EntityModel<SakuraVillagerRenderState> {
 	private final ModelPart body;
+	private final ModelPart smithApron;
+	private final ModelPart creelBasket;
 	private final ModelPart head;
 	private final ModelPart hairBun;
 	private final ModelPart ponytail;
 	private final ModelPart hat;
 	private final ModelPart kanzashi;
+	private final ModelPart onsenKanzashi;
+	private final ModelPart hachimaki;
+	private final ModelPart artisanCap;
 	private final ModelPart sideLocks;
 	private final ModelPart rightArm;
 	private final ModelPart rightForearm;
 	private final ModelPart gohei;
+	private final ModelPart smithHammer;
+	private final ModelPart fishingRod;
+	private final ModelPart rodLine;
 	private final ModelPart leftArm;
 	private final ModelPart leftForearm;
 	private final ModelPart teaTray;
+	private final ModelPart lanternPole;
+	private final ModelPart lanternHang;
+	private final ModelPart bathBucket;
 	private final ModelPart rightLeg;
 	private final ModelPart leftLeg;
 
 	public SakuraVillagerModel(ModelPart root) {
 		super(root);
 		this.body = root.getChild("body");
+		this.smithApron = this.body.getChild("smith_apron");
+		this.creelBasket = this.body.getChild("creel_basket");
 		this.head = this.body.getChild("head");
 		this.hairBun = this.head.getChild("hair_bun");
 		this.ponytail = this.head.getChild("ponytail");
 		this.hat = this.head.getChild("hat");
 		this.kanzashi = this.head.getChild("kanzashi");
+		this.onsenKanzashi = this.head.getChild("onsen_kanzashi");
+		this.hachimaki = this.head.getChild("hachimaki");
+		this.artisanCap = this.head.getChild("artisan_cap");
 		this.sideLocks = this.head.getChild("side_locks");
 		this.rightArm = this.body.getChild("right_arm");
 		this.rightForearm = this.rightArm.getChild("right_forearm");
 		this.gohei = this.rightForearm.getChild("gohei");
+		this.smithHammer = this.rightForearm.getChild("smith_hammer");
+		this.fishingRod = this.rightForearm.getChild("fishing_rod");
+		this.rodLine = this.fishingRod.getChild("rod_line");
 		this.leftArm = this.body.getChild("left_arm");
 		this.leftForearm = this.leftArm.getChild("left_forearm");
 		this.teaTray = this.leftForearm.getChild("tea_tray");
+		this.lanternPole = this.leftForearm.getChild("lantern_pole");
+		this.lanternHang = this.lanternPole.getChild("lantern_hang");
+		this.bathBucket = this.leftForearm.getChild("bath_bucket");
 		this.rightLeg = root.getChild("right_leg");
 		this.leftLeg = root.getChild("left_leg");
 	}
@@ -70,6 +92,12 @@ public class SakuraVillagerModel extends EntityModel<SakuraVillagerRenderState> 
 		body.addOrReplaceChild("hakama_waist",
 			CubeListBuilder.create().texOffs(72, 18).addBox(-4.5F, 0.0F, -2.5F, 9, 4, 5, new CubeDeformation(0.10F)),
 			PartPose.offset(0.0F, -1.0F, 0.0F));
+		body.addOrReplaceChild("smith_apron",
+			CubeListBuilder.create().texOffs(102, 18).addBox(-3.5F, -9.5F, -2.55F, 7, 10, 1),
+			PartPose.ZERO);
+		body.addOrReplaceChild("creel_basket",
+			CubeListBuilder.create().texOffs(98, 96).addBox(4.1F, -3.5F, -2.0F, 3, 4, 4),
+			PartPose.ZERO);
 
 		// Head & role-specific headwear/hair accessories.
 		PartDefinition head = body.addOrReplaceChild("head",
@@ -102,7 +130,32 @@ public class SakuraVillagerModel extends EntityModel<SakuraVillagerRenderState> 
 				.texOffs(54, 62).addBox(-2.5F, -6.4F, 4.1F, 5, 2, 1),
 			PartPose.ZERO);
 
-		// Articulated 2-segment arms with draped kimono sleeves + Tea Tray & Gohei props.
+		// Onsen Hostess: twin pink temple kanzashi + dual golden crown pins behind bun.
+		head.addOrReplaceChild("onsen_kanzashi",
+			CubeListBuilder.create()
+				.texOffs(34, 62).addBox(-5.2F, -7.4F, -1.8F, 2, 3, 3)
+				.texOffs(34, 62).mirror().addBox(3.2F, -7.4F, -1.8F, 2, 3, 3)
+				.texOffs(102, 67).addBox(-3.2F, -8.3F, 3.0F, 2, 3, 2)
+				.texOffs(102, 67).mirror().addBox(1.2F, -8.3F, 3.0F, 2, 3, 2),
+			PartPose.ZERO);
+
+		// Katana Swordsmith: white hachimaki headband + knotted tails behind head.
+		head.addOrReplaceChild("hachimaki",
+			CubeListBuilder.create()
+				.texOffs(68, 0).addBox(-4.0F, -7.2F, -4.0F, 8, 2, 8, new CubeDeformation(0.32F))
+				.texOffs(102, 0).addBox(-1.0F, -7.2F, 4.1F, 2, 2, 2)
+				.texOffs(112, 0).addBox(-1.7F, -5.6F, 4.4F, 1, 4, 1)
+				.texOffs(112, 0).mirror().addBox(0.7F, -5.6F, 4.4F, 1, 4, 1),
+			PartPose.ZERO);
+
+		// Lantern Artisan: flat dark artisan cap + round brass spectacles.
+		head.addOrReplaceChild("artisan_cap",
+			CubeListBuilder.create()
+				.texOffs(68, 62).addBox(-4.0F, -9.2F, -4.0F, 8, 3, 8, new CubeDeformation(0.34F))
+				.texOffs(102, 62).addBox(-3.0F, -5.4F, -4.45F, 6, 2, 1),
+			PartPose.ZERO);
+
+		// Articulated 2-segment arms with draped kimono sleeves + right/left hand props.
 		PartDefinition rightArm = body.addOrReplaceChild("right_arm",
 			CubeListBuilder.create().texOffs(0, 78).addBox(-3.0F, -1.0F, -2.0F, 4, 5, 4),
 			PartPose.offset(-5.0F, -11.0F, 0.0F));
@@ -117,6 +170,17 @@ public class SakuraVillagerModel extends EntityModel<SakuraVillagerRenderState> 
 				.texOffs(76, 92).addBox(-2.0F, 4.0F, -9.0F, 2, 5, 2)
 				.texOffs(86, 92).addBox(-2.0F, 5.0F, -7.2F, 2, 4, 2),
 			PartPose.ZERO);
+		rightFore.addOrReplaceChild("smith_hammer",
+			CubeListBuilder.create()
+				.texOffs(36, 108).addBox(-1.5F, 3.2F, -6.5F, 1, 1, 8)
+				.texOffs(56, 108).addBox(-2.5F, 2.2F, -8.5F, 3, 3, 2),
+			PartPose.ZERO);
+		PartDefinition fishingRod = rightFore.addOrReplaceChild("fishing_rod",
+			CubeListBuilder.create().texOffs(120, 78).addBox(-0.5F, -13.0F, -0.5F, 1, 14, 1),
+			PartPose.offset(-1.5F, 3.6F, -1.5F));
+		fishingRod.addOrReplaceChild("rod_line",
+			CubeListBuilder.create().texOffs(120, 95).addBox(-0.5F, 0.0F, -0.5F, 1, 6, 1),
+			PartPose.offset(0.0F, -12.8F, 0.0F));
 
 		PartDefinition leftArm = body.addOrReplaceChild("left_arm",
 			CubeListBuilder.create().texOffs(0, 78).mirror().addBox(-1.0F, -1.0F, -2.0F, 4, 5, 4),
@@ -131,6 +195,21 @@ public class SakuraVillagerModel extends EntityModel<SakuraVillagerRenderState> 
 				.texOffs(0, 108).addBox(-4.5F, -0.5F, -5.0F, 6, 1, 5)
 				.texOffs(24, 108).addBox(-2.5F, -2.5F, -3.5F, 2, 2, 2),
 			PartPose.offset(0.0F, 4.2F, -1.5F));
+		PartDefinition lanternPole = leftFore.addOrReplaceChild("lantern_pole",
+			CubeListBuilder.create().texOffs(68, 108).addBox(0.5F, 3.0F, -9.0F, 1, 1, 10),
+			PartPose.ZERO);
+		lanternPole.addOrReplaceChild("lantern_hang",
+			CubeListBuilder.create()
+				.texOffs(92, 108).addBox(-1.5F, 0.0F, -1.5F, 3, 1, 3)
+				.texOffs(106, 108).addBox(-2.0F, 1.0F, -2.0F, 4, 5, 4)
+				.texOffs(92, 108).addBox(-1.5F, 6.0F, -1.5F, 3, 1, 3)
+				.texOffs(92, 114).addBox(-0.5F, 7.0F, -0.5F, 1, 3, 1),
+			PartPose.offset(1.0F, 3.8F, -8.5F));
+		leftFore.addOrReplaceChild("bath_bucket",
+			CubeListBuilder.create()
+				.texOffs(98, 78).addBox(-2.5F, -2.0F, -3.5F, 5, 4, 5)
+				.texOffs(98, 89).addBox(-2.0F, -3.4F, -2.5F, 4, 2, 3),
+			PartPose.offset(0.5F, 4.0F, -2.2F));
 
 		// Pleated hakama trouser legs & white tabi / wooden geta sandals (ground Y = 24.0).
 		root.addOrReplaceChild("right_leg",
@@ -150,14 +229,31 @@ public class SakuraVillagerModel extends EntityModel<SakuraVillagerRenderState> 
 	@Override
 	public void setupAnim(SakuraVillagerRenderState state) {
 		super.setupAnim(state);
-		boolean maiden = state.role == SakuraVillager.SHRINE_MAIDEN;
-		hat.visible = !maiden;
-		hairBun.visible = true;
+		int role = Math.floorMod(state.role, SakuraVillager.ROLE_COUNT);
+		boolean tea = role == SakuraVillager.TEA_MASTER;
+		boolean maiden = role == SakuraVillager.SHRINE_MAIDEN;
+		boolean smith = role == SakuraVillager.SWORDSMITH;
+		boolean lantern = role == SakuraVillager.LANTERN_MAKER;
+		boolean onsen = role == SakuraVillager.ONSEN_KEEPER;
+		boolean fisher = role == SakuraVillager.FISHERMAN;
+
+		hat.visible = tea || fisher;
+		hairBun.visible = tea || maiden || onsen;
 		ponytail.visible = maiden;
-		sideLocks.visible = maiden;
+		sideLocks.visible = maiden || onsen;
 		kanzashi.visible = maiden;
+		onsenKanzashi.visible = onsen;
+		hachimaki.visible = smith;
+		artisanCap.visible = lantern;
+		smithApron.visible = smith;
+		creelBasket.visible = fisher;
+
 		gohei.visible = maiden;
-		teaTray.visible = !maiden;
+		smithHammer.visible = smith;
+		fishingRod.visible = fisher;
+		teaTray.visible = tea;
+		lanternPole.visible = lantern;
+		bathBucket.visible = onsen;
 
 		float t = state.ageInTicks;
 		float breathe = Mth.sin(t * 0.08F);
@@ -173,11 +269,40 @@ public class SakuraVillagerModel extends EntityModel<SakuraVillagerRenderState> 
 		rightLeg.xRot = walk;
 		leftLeg.xRot = -walk;
 
-		// Tea Master cradles wooden tea tray with left forearm; Shrine Maiden holds gohei with gentle sway.
+		teaTray.xRot = 0.0F;
+		lanternHang.xRot = 0.0F;
+		bathBucket.xRot = 0.0F;
+		fishingRod.xRot = 0.0F;
+		rodLine.xRot = 0.0F;
+
 		if (maiden) {
 			rightArm.xRot = -walk * 0.45F - 0.38F + bow * 0.22F + Mth.sin(t * 0.09F) * 0.05F;
 			rightForearm.xRot = -0.35F + Mth.sin(t * 0.09F - 0.6F) * 0.07F;
 			leftArm.xRot = walk * 0.45F - 0.14F + bow * 0.22F;
+			leftForearm.xRot = -0.18F;
+		} else if (smith) {
+			rightArm.xRot = -walk * 0.40F - 0.55F + bow * 0.22F;
+			rightForearm.xRot = -0.62F + Mth.sin(t * 0.14F) * 0.14F;
+			leftArm.xRot = walk * 0.45F - 0.18F + bow * 0.22F;
+			leftForearm.xRot = -0.25F;
+		} else if (lantern) {
+			rightArm.xRot = -walk * 0.45F - 0.12F + bow * 0.22F;
+			rightForearm.xRot = -0.18F;
+			leftArm.xRot = -0.56F + bow * 0.18F + Mth.sin(t * 0.08F) * 0.04F;
+			leftForearm.xRot = -0.34F - bow * 0.12F;
+			lanternHang.xRot = -(body.xRot + leftArm.xRot + leftForearm.xRot) + Mth.sin(t * 0.11F) * 0.06F;
+		} else if (onsen) {
+			rightArm.xRot = -walk * 0.40F - 0.18F + bow * 0.22F;
+			rightForearm.xRot = -0.24F;
+			leftArm.xRot = -0.46F + bow * 0.18F + Mth.sin(t * 0.07F) * 0.03F;
+			leftForearm.xRot = -0.48F - bow * 0.16F;
+			bathBucket.xRot = -(body.xRot + leftArm.xRot + leftForearm.xRot);
+		} else if (fisher) {
+			rightArm.xRot = -walk * 0.35F - 0.40F + bow * 0.20F;
+			rightForearm.xRot = -0.28F;
+			fishingRod.xRot = 0.92F + Mth.sin(t * 0.08F) * 0.05F;
+			rodLine.xRot = -(body.xRot + rightArm.xRot + rightForearm.xRot + fishingRod.xRot);
+			leftArm.xRot = walk * 0.45F - 0.12F + bow * 0.22F;
 			leftForearm.xRot = -0.18F;
 		} else {
 			rightArm.xRot = -walk * 0.45F - 0.14F + bow * 0.22F;

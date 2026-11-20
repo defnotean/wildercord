@@ -14,8 +14,8 @@ LANG = {
     "guide.wildercord.shrine_cat": "Four unique cats named Yuki, Odie, Freya, and Kuro. Each guards a floor of the Cat Sanctuary with a gentle trial, grants a shrine buff upon yielding, and may be tamed once Kuro's fourth-floor trial is complete.",
     "entity.wildercord.sakura_villager": "Sakura Villager",
     "item.wildercord.sakura_villager_spawn_egg": "Sakura Villager Spawn Egg",
-    "guide.wildercord.sakura_villager.hint": "Kimono-clad Tea Masters and Shrine Maidens tending cherry-blossom villages.",
-    "guide.wildercord.sakura_villager": "Peaceful residents of Japanese Sakura Villages who bow to visitors and trade Suzu Cat-Bell Charms and cooked salmon for emeralds.",
+    "guide.wildercord.sakura_villager.hint": "Six custom kimono-clad residents — Tea Masters, Shrine Maidens, Katana Swordsmiths, Lantern Artisans, Onsen Hostesses, and Koi Canal Fishermen — tending Sakura Villages.",
+    "guide.wildercord.sakura_villager": "Peaceful residents of Japanese Sakura Villages across six professions who bow to visitors and trade Suzu Cat-Bell Charms, Blank Runes, lanterns, golden carrots, and salmon for emeralds.",
     "entity.wildercord.karakuri_sentinel": "Karakuri Sentinel",
     "item.wildercord.karakuri_sentinel_spawn_egg": "Karakuri Sentinel Spawn Egg",
     "guide.wildercord.karakuri_sentinel.hint": "Lacquered clockwork automata patrolling pagoda halls and cedar bathhouses.",
@@ -165,55 +165,121 @@ def _cat_skin(variant: str) -> Image.Image:
     return im
 
 
-def _villager_skin(maiden: bool) -> Image.Image:
+def _villager_skin(role: str) -> Image.Image:
     im = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
     draw = ImageDraw.Draw(im)
-    rng = random.Random(2026 if maiden else 1013)
+    rng = random.Random(int.from_bytes(role.encode("utf-8"), "big"))
 
-    skin = (238, 196, 164)
-    hair = (26, 22, 28) if maiden else (40, 32, 32)
-    robe = (244, 242, 238) if maiden else (88, 126, 92)
-    trim = (196, 48, 54) if maiden else (240, 232, 212)
-    hakama = (182, 42, 48) if maiden else (56, 78, 58)
-    obi = (224, 178, 56) if maiden else (222, 206, 160)
+    palettes = {
+        "tea": dict(
+            skin=(238, 196, 164), hair=(40, 32, 32), robe=(88, 126, 92), trim=(240, 232, 212),
+            hakama=(56, 78, 58), obi=(222, 206, 160), eye=(28, 24, 30), hat=(208, 174, 106),
+        ),
+        "shrine": dict(
+            skin=(238, 196, 164), hair=(26, 22, 28), robe=(244, 242, 238), trim=(196, 48, 54),
+            hakama=(182, 42, 48), obi=(224, 178, 56), eye=(28, 24, 30), hat=(208, 174, 106),
+        ),
+        "smith": dict(
+            skin=(224, 176, 142), hair=(166, 126, 100), robe=(44, 48, 60), trim=(196, 202, 212),
+            hakama=(36, 40, 52), obi=(94, 62, 42), eye=(52, 128, 62), hat=(208, 174, 106),
+        ),
+        "lantern": dict(
+            skin=(226, 178, 144), hair=(178, 134, 104), robe=(196, 106, 42), trim=(232, 164, 64),
+            hakama=(92, 62, 42), obi=(232, 186, 60), eye=(52, 128, 62), hat=(208, 174, 106),
+        ),
+        "onsen": dict(
+            skin=(238, 198, 168), hair=(26, 22, 30), robe=(196, 152, 212), trim=(232, 118, 164),
+            hakama=(146, 104, 168), obi=(234, 188, 68), eye=(128, 56, 146), hat=(208, 174, 106),
+        ),
+        "fisher": dict(
+            skin=(218, 170, 134), hair=(52, 40, 36), robe=(40, 82, 104), trim=(228, 238, 244),
+            hakama=(34, 52, 74), obi=(198, 168, 106), eye=(52, 128, 62), hat=(166, 134, 78),
+        ),
+    }
+    p = palettes[role]
+    skin, hair, robe, trim = p["skin"], p["hair"], p["robe"], p["trim"]
+    hakama, obi, eye_col, hat_col = p["hakama"], p["obi"], p["eye"], p["hat"]
 
     # Head (0,0: 8x8x8) -> front face (8,8..15,15)
-    _cube(draw, rng, 0, 0, 8, 8, 8, hair, fur=False)
+    head_base = skin if role in ("smith", "lantern") else hair
+    _cube(draw, rng, 0, 0, 8, 8, 8, head_base, fur=False)
+    if role in ("smith", "lantern"):
+        # Subtle short-cropped hair stubble cap on top/back while keeping clear warm face.
+        draw.rectangle((8, 0, 15, 7), fill=_px(hair))
+        draw.rectangle((16, 8, 31, 10), fill=_px(hair))
+        draw.rectangle((0, 8, 7, 10), fill=_px(hair))
     _face(draw, rng, (8, 8, 16, 16), skin, fur=False, light=4)
-    # Hair fringe & expressive face
-    draw.line((8, 8, 15, 8), fill=_px(hair))
-    draw.line((8, 9, 15, 9), fill=_px(hair))
-    if maiden:
+    if role not in ("smith", "lantern"):
+        draw.line((8, 8, 15, 8), fill=_px(hair))
+        draw.line((8, 9, 15, 9), fill=_px(hair))
+    if role in ("shrine", "onsen"):
         draw.point((9, 10), fill=_px(hair))
         draw.point((14, 10), fill=_px(hair))
         draw.point((9, 12), fill=(236, 162, 158, 255))
         draw.point((14, 12), fill=(236, 162, 158, 255))
-    draw.point((10, 11), fill=(28, 24, 30, 255))
-    draw.point((13, 11), fill=(28, 24, 30, 255))
+    draw.point((10, 11), fill=_px(eye_col))
+    draw.point((13, 11), fill=_px(eye_col))
     draw.point((10, 10), fill=(52, 40, 38, 255))
     draw.point((13, 10), fill=(52, 40, 38, 255))
     draw.line((11, 14, 12, 14), fill=(186, 134, 114, 255))
+    if role == "lantern":
+        # Painted upper brass spectacles bridge accents complementing 3D lower rim.
+        draw.point((9, 11), fill=(218, 176, 68, 255))
+        draw.point((11, 11), fill=(218, 176, 68, 255))
+        draw.point((12, 11), fill=(218, 176, 68, 255))
+        draw.point((14, 11), fill=(218, 176, 68, 255))
+
     # Rear bun (34,0), ponytail (48,0), side locks (58,0)
     _cube(draw, rng, 34, 0, 4, 4, 2, hair, fur=False)
     _cube(draw, rng, 48, 0, 3, 5, 1, hair, fur=False)
     _cube(draw, rng, 58, 0, 1, 6, 2, hair, fur=False)
 
+    # Swordsmith white hachimaki headband (68,0), rear knot (102,0), twin tails (112,0)
+    _cube(draw, rng, 68, 0, 8, 2, 8, (244, 242, 238), fur=False)
+    _cube(draw, rng, 102, 0, 2, 2, 2, (238, 236, 232), fur=False)
+    _cube(draw, rng, 112, 0, 1, 4, 1, (232, 230, 226), fur=False)
+
     # Kimono torso (0,18: 8x12x4) -> front chest (4..11, 22..33)
     _cube(draw, rng, 0, 18, 8, 12, 4, robe, fur=False)
-    # Crossed kimono lapels on chest front!
     for dy in range(6):
         lx = 5 + dy // 2
         rx = 10 - dy // 2
-        draw.line((lx, 22 + dy, rx, 22 + dy), fill=_px((244, 238, 226) if not maiden else (255, 255, 255)))
+        lapel_fill = (255, 255, 255) if role == "shrine" else (
+            (238, 234, 224) if role == "tea" else _px(robe, 24)
+        )
+        draw.line((lx, 22 + dy, rx, 22 + dy), fill=lapel_fill if isinstance(lapel_fill, tuple) and len(lapel_fill) == 4 else _px(lapel_fill))
         draw.point((lx, 22 + dy), fill=_px(trim))
         draw.point((rx, 22 + dy), fill=_px(trim))
-    if not maiden:
-        # Inner cream undershirt V-triangle for Tea Master.
-        draw.rectangle((7, 22, 8, 24), fill=(242, 236, 220, 255))
+    if role in ("tea", "smith", "fisher"):
+        inner = (242, 236, 220, 255) if role == "tea" else (_px(skin) if role == "fisher" else (62, 66, 78, 255))
+        draw.rectangle((7, 22, 8, 24), fill=inner)
     else:
-        draw.rectangle((7, 22, 8, 23), fill=(232, 192, 162, 255))
+        draw.rectangle((7, 22, 8, 23), fill=_px(skin))
 
-    # Obi sash (26,18), rear bow knot (52,18), pleated hakama waist (72,18)
+    if role == "lantern":
+        # Woven orange-gold lattice hem panel on kimono skirt & back.
+        for bx in range(4, 12):
+            for by in range(29, 34):
+                if (bx + by) % 2 == 0:
+                    draw.point((bx, by), fill=(228, 148, 56, 255))
+        for bx in range(16, 24):
+            for by in range(29, 34):
+                if (bx + by) % 2 == 0:
+                    draw.point((bx, by), fill=(224, 142, 52, 255))
+    elif role == "onsen":
+        # Scatter delicate pink & ivory sakura petals over the wisteria yukata.
+        for sx, sy in ((5, 23), (9, 25), (6, 29), (10, 31), (18, 24), (21, 28), (17, 32), (2, 26), (13, 30)):
+            draw.point((sx, sy), fill=(246, 174, 206, 255))
+            draw.point((sx + 1, sy), fill=(252, 228, 238, 255))
+    elif role == "fisher":
+        # Swelling white sea-wave crests around bottom happi hem.
+        for wx in range(0, 24):
+            crest_y = 32 if (wx % 4 in (1, 2)) else 33
+            draw.line((wx, crest_y, wx, 33), fill=(238, 242, 246, 255))
+            if wx % 4 == 2:
+                draw.point((wx, 31), fill=(238, 242, 246, 255))
+
+    # Obi sash (26,18), rear bow knot (52,18), pleated hakama waist (72,18), smith leather apron (102,18)
     _cube(draw, rng, 26, 18, 8, 4, 4, obi, fur=False)
     draw.line((30, 23, 37, 23), fill=_px(trim))
     _cube(draw, rng, 52, 18, 7, 4, 2, obi, fur=False)
@@ -221,43 +287,93 @@ def _villager_skin(maiden: bool) -> Image.Image:
     _cube(draw, rng, 72, 18, 9, 4, 5, hakama, fur=False)
     for px in range(77, 86, 2):
         draw.line((px, 23, px, 26), fill=_px(hakama, -26))
+    if role == "fisher":
+        for wx in range(72, 100):
+            if wx % 3 == 0:
+                draw.point((wx, 23), fill=(236, 242, 246, 255))
+    _cube(draw, rng, 102, 18, 7, 10, 1, (58, 36, 26), fur=False)
+    draw.point((103, 20), fill=(224, 178, 62, 255))
+    draw.point((109, 20), fill=(224, 178, 62, 255))
+    draw.line((103, 24, 109, 24), fill=(88, 56, 38, 255))
 
-    # Woven conical amigasa bamboo hat tiers for Tea Master (0,42 / 58,42 / 98,42)
+    # Woven conical amigasa / kasa bamboo hat tiers (0,42 / 58,42 / 98,42)
     for (u, v, w, h, d) in ((0, 42, 14, 1, 14), (58, 42, 10, 2, 10), (98, 42, 5, 2, 5)):
-        _cube(draw, rng, u, v, w, h, d, (208, 174, 106), fur=True)
+        _cube(draw, rng, u, v, w, h, d, hat_col, fur=True)
         for ry in range(v, v + d + h, 2):
-            draw.line((u + d, ry, u + d + w - 1, ry), fill=(176, 140, 78, 255))
+            draw.line((u + d, ry, u + d + w - 1, ry), fill=_px(hat_col, -32))
 
-    # Shrine Maiden white tabane-noshi hair band (0,62), 3D pink sakura kanzashi (34,62), ribbon (46,62), rear bow (54,62)
+    # White tabane-noshi hair band (0,62), 3D sakura kanzashi (34,62), ribbon (46,62), rear bow (54,62)
     _cube(draw, rng, 0, 62, 8, 1, 8, (246, 244, 242), fur=False)
     _cube(draw, rng, 34, 62, 2, 3, 3, (246, 148, 188), fur=False)
     draw.point((38, 66), fill=(252, 214, 88, 255))
     _cube(draw, rng, 46, 62, 1, 4, 2, (244, 182, 206), fur=False)
     _cube(draw, rng, 54, 62, 5, 2, 1, (246, 244, 242), fur=False)
+    # Lantern Artisan flat cap (68,62), spectacles rim (102,62) & Onsen dual gold hairpins (102,67)
+    _cube(draw, rng, 68, 62, 8, 3, 8, (34, 34, 40), fur=False)
+    draw.line((76, 72, 83, 72), fill=(54, 54, 62, 255))
+    # Transparent lenses with brass bridge & lower rim at (102,62..116,65)
+    draw.line((105, 63, 106, 63), fill=(224, 182, 72, 255))
+    draw.line((103, 64, 104, 64), fill=(224, 182, 72, 255))
+    draw.line((107, 64, 108, 64), fill=(224, 182, 72, 255))
+    draw.point((102, 63), fill=(192, 152, 54, 255))
+    draw.point((109, 63), fill=(192, 152, 54, 255))
+    _cube(draw, rng, 102, 67, 2, 3, 2, (238, 194, 72), fur=False)
+    draw.point((104, 69), fill=(246, 148, 188, 255))
 
     # Articulated 2-segment arms (0,78), forearms (18,78) & hanging kimono sleeves (18,92)
     _cube(draw, rng, 0, 78, 4, 5, 4, robe, fur=False)
     _cube(draw, rng, 18, 78, 4, 5, 4, robe, fur=False)
     draw.rectangle((22, 85, 25, 86), fill=_px(skin))
     _cube(draw, rng, 18, 92, 4, 7, 4, robe, fur=False)
-    if maiden:
+    if role in ("shrine", "onsen"):
         draw.line((22, 96, 22, 102), fill=_px(trim))
         draw.line((22, 102, 25, 102), fill=_px(trim))
+    elif role == "lantern":
+        draw.point((23, 98), fill=(228, 148, 56, 255))
+        draw.point((24, 99), fill=(228, 148, 56, 255))
 
     # Hakama legs (38,78) with crisp pleats + white tabi socks & geta sandals (38,94)
     _cube(draw, rng, 38, 78, 4, 8, 5, hakama, fur=False)
     for px in (44, 46, 51, 53):
         draw.line((px, 83, px, 90), fill=_px(hakama, -26))
-    _cube(draw, rng, 38, 94, 4, 2, 5, (244, 244, 242), fur=False)
+    sock_col = (244, 244, 242) if role != "smith" else (78, 82, 94)
+    _cube(draw, rng, 38, 94, 4, 2, 5, sock_col, fur=False)
     draw.rectangle((43, 100, 46, 100), fill=(96, 60, 38, 255))
 
-    # Gohei wand (70,78 shaft + 76,92 / 86,92 white shide) & Tea Tray (0,108 tray + 24,108 cup)
+    # Gohei wand (70,78 shaft + 76,92 / 86,92 white shide)
     _cube(draw, rng, 70, 78, 1, 1, 10, (144, 96, 56), fur=False)
     _cube(draw, rng, 76, 92, 2, 5, 2, (246, 246, 244), fur=False)
     _cube(draw, rng, 86, 92, 2, 4, 2, (238, 238, 236), fur=False)
+
+    # Onsen cedar bath bucket (98,78) + folded white towel (98,89), Fisherman wicker creel (98,96) + fishing rod (120,78 / 120,95)
+    _cube(draw, rng, 98, 78, 5, 4, 5, (186, 126, 74), fur=False)
+    draw.line((98, 84, 117, 84), fill=(96, 88, 84, 255))
+    draw.line((98, 86, 117, 86), fill=(96, 88, 84, 255))
+    _cube(draw, rng, 98, 89, 4, 2, 3, (246, 246, 244), fur=False)
+    _cube(draw, rng, 98, 96, 3, 4, 4, (168, 122, 68), fur=True)
+    for cx in range(98, 112, 2):
+        draw.line((cx, 100, cx, 103), fill=(122, 84, 44, 255))
+    _cube(draw, rng, 120, 78, 1, 14, 1, (172, 142, 70), fur=False)
+    for ry in range(79, 93, 3):
+        draw.line((120, ry, 123, ry), fill=(116, 90, 42, 255))
+    _cube(draw, rng, 120, 95, 1, 6, 1, (236, 240, 244), fur=False)
+    draw.rectangle((120, 100, 123, 101), fill=(214, 58, 48, 255))
+
+    # Tea Tray (0,108 + 24,108), Swordsmith Hammer (36,108 handle + 56,108 steel head),
+    # Lantern Artisan Pole (68,108) + Hanging Chochin Lantern (92,108 caps, 106,108 glowing body, 92,114 tassel)
     _cube(draw, rng, 0, 108, 6, 1, 5, (112, 68, 40), fur=False)
     _cube(draw, rng, 24, 108, 2, 2, 2, (84, 134, 78), fur=False)
     draw.rectangle((26, 108, 27, 109), fill=(116, 186, 94, 255))
+    _cube(draw, rng, 36, 108, 1, 1, 8, (124, 78, 42), fur=False)
+    _cube(draw, rng, 56, 108, 3, 3, 2, (132, 142, 156), fur=False)
+    draw.line((58, 110, 60, 110), fill=(182, 194, 208, 255))
+    _cube(draw, rng, 68, 108, 1, 1, 10, (182, 152, 76), fur=False)
+    _cube(draw, rng, 92, 108, 3, 1, 3, (34, 30, 34), fur=False)
+    _cube(draw, rng, 92, 114, 1, 3, 1, (196, 46, 46), fur=False)
+    _cube(draw, rng, 106, 108, 4, 5, 4, (226, 62, 44), fur=False)
+    for side_x in (106, 110, 114, 118):
+        draw.rectangle((side_x + 1, 113, side_x + 2, 115), fill=(255, 214, 96, 255))
+        draw.point((side_x + 1, 114), fill=(255, 244, 178, 255))
     return im
 
 
@@ -397,13 +513,19 @@ def validate_uv_layouts() -> None:
         ],
         "sakura_villager": [
             (0, 0, 8, 8, 8), (34, 0, 4, 4, 2), (48, 0, 3, 5, 1), (58, 0, 1, 6, 2),
-            (0, 18, 8, 12, 4), (26, 18, 8, 4, 4), (52, 18, 7, 4, 2), (72, 18, 9, 4, 5),
+            (68, 0, 8, 2, 8), (102, 0, 2, 2, 2), (112, 0, 1, 4, 1),
+            (0, 18, 8, 12, 4), (26, 18, 8, 4, 4), (52, 18, 7, 4, 2), (72, 18, 9, 4, 5), (102, 18, 7, 10, 1),
             (0, 42, 14, 1, 14), (58, 42, 10, 2, 10), (98, 42, 5, 2, 5),
             (0, 62, 8, 1, 8), (34, 62, 2, 3, 3), (46, 62, 1, 4, 2), (54, 62, 5, 2, 1),
+            (68, 62, 8, 3, 8), (102, 62, 6, 2, 1), (102, 67, 2, 3, 2),
             (0, 78, 4, 5, 4), (18, 78, 4, 5, 4), (18, 92, 4, 7, 4),
             (38, 78, 4, 8, 5), (38, 94, 4, 2, 5),
             (70, 78, 1, 1, 10), (76, 92, 2, 5, 2), (86, 92, 2, 4, 2),
+            (98, 78, 5, 4, 5), (98, 89, 4, 2, 3), (98, 96, 3, 4, 4),
+            (120, 78, 1, 14, 1), (120, 95, 1, 6, 1),
             (0, 108, 6, 1, 5), (24, 108, 2, 2, 2),
+            (36, 108, 1, 1, 8), (56, 108, 3, 3, 2),
+            (68, 108, 1, 1, 10), (92, 108, 3, 1, 3), (92, 114, 1, 3, 1), (106, 108, 4, 5, 4),
         ],
         "karakuri_sentinel": [
             (0, 0, 8, 10, 6), (30, 0, 5, 5, 1), (44, 0, 3, 3, 1), (54, 0, 1, 1, 3), (66, 0, 3, 5, 1), (78, 0, 9, 4, 7),
@@ -435,8 +557,8 @@ def write(g):
     tex = g.ASSETS / "textures"
     for name in ("yuki", "odie", "freya", "kuro"):
         g.save(_cat_skin(name), tex / f"entity/shrine_cat_{name}.png")
-    g.save(_villager_skin(False), tex / "entity/sakura_villager_tea.png")
-    g.save(_villager_skin(True), tex / "entity/sakura_villager_shrine.png")
+    for role in ("tea", "shrine", "smith", "lantern", "onsen", "fisher"):
+        g.save(_villager_skin(role), tex / f"entity/sakura_villager_{role}.png")
     g.save(_karakuri_skin(), tex / "entity/karakuri_sentinel.png")
     g.save(_lantern_spirit_skin(), tex / "entity/paper_lantern_spirit.png")
 

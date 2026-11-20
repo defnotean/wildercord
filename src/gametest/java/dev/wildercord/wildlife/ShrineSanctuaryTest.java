@@ -23,6 +23,9 @@ import dev.wildercord.world.dungeons.CatSanctuaryPiece;
 import dev.wildercord.world.dungeons.DungeonWards;
 import dev.wildercord.world.dungeons.LanternBathhousePiece;
 import dev.wildercord.world.dungeons.SerpentGrovePiece;
+import dev.wildercord.world.sites.wilds.SakuraCanalTownPiece;
+import dev.wildercord.world.sites.wilds.SakuraCastleTownPiece;
+import dev.wildercord.world.sites.wilds.SakuraOnsenVillagePiece;
 import dev.wildercord.world.sites.wilds.SakuraVillagePiece;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -74,8 +77,10 @@ import java.util.UUID;
  * Full end-to-end in-game verification suite for:
  * <ol>
  *   <li>Four real Shrine Cats ({@code Yuki}, {@code Odie}, {@code Freya}, {@code Kuro}) standing &amp; loafing silhouettes</li>
- *   <li>Sakura Villagers ({@code Tea Master}, {@code Shrine Maiden}) + {@code KarakuriSentinel} &amp; {@code PaperLanternSpirit} AI</li>
- *   <li>Sakura Village overview &amp; street-level courtyard</li>
+ *   <li>Six custom Sakura Villagers ({@code Tea Master}, {@code Shrine Maiden}, {@code Katana Swordsmith},
+ *       {@code Lantern Artisan}, {@code Onsen Hostess}, {@code Koi Canal Fisherman}) + {@code KarakuriSentinel} &amp; {@code PaperLanternSpirit} AI</li>
+ *   <li>All four Sakura Village archetypes ({@code Sakura Village}, {@code Canal Harbor}, {@code Onsen Resort},
+ *       {@code Castle-Town}) and dry-interior assertions</li>
  *   <li>Cat Sanctuary 4-floor pagoda exterior, all 4 floor interiors, wards, non-lethal yields, buffs, taming, all 4 companion powers &amp; persistence</li>
  *   <li>Lantern Bathhouse exterior, onsen interior, sentries, wards, and {@code Fire + Wind} {@code RuneSeal} vault</li>
  *   <li>Ricochet ({@code 5} solo / {@code 2} Split, {@code 15%} decay), {@code Suzu Chime} bounce hit, and {@code Ofuda Ward} thorns retaliation</li>
@@ -193,6 +198,16 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 		throw new AssertionError("Expected solid breakable block in warded box " + box);
 	}
 
+	private static void assertNoWaterInBox(ServerLevel l, BlockPos a, BlockPos b, String area) {
+		BoundingBox box = BoundingBox.fromCorners(a, b);
+		for (BlockPos pos : BlockPos.betweenClosed(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ())) {
+			BlockState st = l.getBlockState(pos);
+			boolean wet = st.is(Blocks.WATER)
+				|| (st.hasProperty(BlockStateProperties.WATERLOGGED) && st.getValue(BlockStateProperties.WATERLOGGED));
+			check(!wet, "Unexpected water or waterlogged block " + st + " inside dry interior " + area + " at " + pos);
+		}
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
@@ -257,8 +272,29 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			shot(c, "shrine_cats_loaf_and_rear_silhouettes");
 
 			// =========================================================================
-			// Scene 2: Custom Residents, Trades, Bow/Immunity & Mobs Active Combat AI
+			// Scene 2: All 6 Sakura Villagers, Trades, Bow/Immunity & Mobs Active Combat AI
 			// =========================================================================
+			UUID[] sixVillagerIds = w.getServer().computeOnServer(s -> {
+				ServerLevel l = s.overworld();
+				UUID[] ids = new UUID[SakuraVillager.ROLE_COUNT];
+				double[] vx = {-4.5, -2.7, -0.9, 0.9, 2.7, 4.5};
+				for (int role = 0; role < SakuraVillager.ROLE_COUNT; role++) {
+					SakuraVillager v = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
+					check(v != null, "SakuraVillager role " + role + " created");
+					v.snapTo(vx[role], 101.0, 6.8, 180.0F, 0.0F);
+					v.configure(role);
+					face(v, 180.0F);
+					v.setNoAi(true);
+					l.addFreshEntity(v);
+					ids[role] = v.getUUID();
+				}
+				p(s).setGameMode(GameType.SPECTATOR);
+				p(s).teleportTo(l, 0.0, 100.3, 0.2, Set.<Relative>of(), 0.0F, 6.0F, false);
+				return ids;
+			});
+			c.waitTicks(14);
+			shot(c, "shrine_villagers_all_six");
+
 			UUID[] duoIds = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
 				SakuraVillager tea = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
@@ -276,6 +312,12 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				face(maiden, 180.0F);
 				maiden.setNoAi(true);
 				l.addFreshEntity(maiden);
+
+				for (UUID id : sixVillagerIds) {
+					if (l.getEntity(id) instanceof SakuraVillager v) {
+						v.setPos(v.getX(), 101.0, -25.0);
+					}
+				}
 
 				KarakuriSentinel karakuri = MonsterContent.KARAKURI_SENTINEL.create(l, EntitySpawnReason.COMMAND);
 				check(karakuri != null, "KarakuriSentinel created");
@@ -346,6 +388,22 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(player.getInventory().hasAnyOf(Set.of(Items.COOKED_SALMON)),
 					"Shrine Maiden emerald trade gives Cooked Salmon");
 
+				SakuraVillager smith = (SakuraVillager) l.getEntity(sixVillagerIds[SakuraVillager.SWORDSMITH]);
+				SakuraVillager lanternMaker = (SakuraVillager) l.getEntity(sixVillagerIds[SakuraVillager.LANTERN_MAKER]);
+				SakuraVillager onsen = (SakuraVillager) l.getEntity(sixVillagerIds[SakuraVillager.ONSEN_KEEPER]);
+				SakuraVillager fisher = (SakuraVillager) l.getEntity(sixVillagerIds[SakuraVillager.FISHERMAN]);
+				check(smith != null && lanternMaker != null && onsen != null && fisher != null, "All 4 new Sakura villager roles present");
+
+				hold(s, new ItemStack(Items.EMERALD, 4));
+				smith.mobInteract(player, InteractionHand.MAIN_HAND);
+				check(player.getInventory().hasAnyOf(Set.of(WildercordItems.BLANK_RUNE)), "Swordsmith trades Blank Runes");
+				lanternMaker.mobInteract(player, InteractionHand.MAIN_HAND);
+				check(player.getInventory().hasAnyOf(Set.of(Items.LANTERN)), "Lantern Artisan trades Lanterns");
+				onsen.mobInteract(player, InteractionHand.MAIN_HAND);
+				check(player.getInventory().hasAnyOf(Set.of(Items.GOLDEN_CARROT)), "Onsen Hostess trades Golden Carrots");
+				fisher.mobInteract(player, InteractionHand.MAIN_HAND);
+				check(player.getInventory().hasAnyOf(Set.of(Items.SALMON)), "Koi Fisherman trades fresh Salmon");
+
 				var savedV = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
 				maiden.saveWithoutId(savedV);
 				SakuraVillager loadedV = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.LOAD);
@@ -353,6 +411,20 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				loadedV.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), savedV.buildResult()));
 				check(loadedV.role() == SakuraVillager.SHRINE_MAIDEN, "SakuraVillager role persisted via NBT");
 				loadedV.discard();
+
+				var savedF = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
+				fisher.saveWithoutId(savedF);
+				SakuraVillager loadedF = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.LOAD);
+				check(loadedF != null, "Restored fisherman created");
+				loadedF.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), savedF.buildResult()));
+				check(loadedF.role() == SakuraVillager.FISHERMAN, "SakuraVillager fisherman role persisted via NBT");
+				loadedF.discard();
+
+				for (UUID id : sixVillagerIds) {
+					if (l.getEntity(id) instanceof SakuraVillager v) {
+						v.discard();
+					}
+				}
 
 				// Active combat AI ring for KarakuriSentinel + PaperLanternSpirit at x = -34..-22.
 				for (int x = -34; x <= -22; x++) {
@@ -393,7 +465,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			});
 
 			// =========================================================================
-			// Scene 3: Sakura Village Overview & Street-Level Courtyard
+			// Scene 3: All 4 Sakura Village Archetypes, Dry Interiors & Residents
 			// =========================================================================
 			SakuraVillagePiece village = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
@@ -403,15 +475,19 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				AABB area = AABB.of(piece.getBoundingBox()).inflate(4.0);
 				List<SakuraVillager> villagers = l.getEntitiesOfClass(SakuraVillager.class, area);
 				List<ShrineCat> cats = l.getEntitiesOfClass(ShrineCat.class, area);
-				check(villagers.size() == 2, "Sakura Village has 2 villagers (" + villagers.size() + ")");
+				check(villagers.size() == 4, "Sakura Village has 4 villagers (" + villagers.size() + ")");
 				check(villagers.stream().anyMatch(v -> v.role() == SakuraVillager.TEA_MASTER)
-					&& villagers.stream().anyMatch(v -> v.role() == SakuraVillager.SHRINE_MAIDEN),
-					"Sakura Village has both Tea Master and Shrine Maiden");
+					&& villagers.stream().anyMatch(v -> v.role() == SakuraVillager.SHRINE_MAIDEN)
+					&& villagers.stream().anyMatch(v -> v.role() == SakuraVillager.SWORDSMITH)
+					&& villagers.stream().anyMatch(v -> v.role() == SakuraVillager.LANTERN_MAKER),
+					"Sakura Village has Tea Master, Shrine Maiden, Swordsmith, and Lantern Artisan");
 				check(cats.size() == 4, "Sakura Village has all 4 Shrine Cats (" + cats.size() + ")");
 				check(cats.stream().allMatch(cat -> cat.getRole() == ShrineCatRules.ROLE_VILLAGE),
 					"Sakura Village cats hold ROLE_VILLAGE");
 				check(cats.stream().anyMatch(cat -> cat.variant() == ShrineCatRules.Variant.FREYA && cat.isOrderedToSit()),
 					"Sakura Village Freya sits cleanly on her shrine dais");
+				assertNoWaterInBox(l, piece.localPosition(6, 2, 23), piece.localPosition(22, 11, 41), "Sakura Village Tea House");
+				assertNoWaterInBox(l, piece.localPosition(25, 1, 24), piece.localPosition(29, 4, 30), "Sakura Village Dango Stall");
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = piece.getBoundingBox();
 				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 26.0, b.minZ() - 14.0,
@@ -429,6 +505,67 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			});
 			c.waitTicks(12);
 			shot(c, "shrine_sakura_village_courtyard");
+
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				var canal = new SakuraCanalTownPiece(64, 180, Direction.SOUTH);
+				canal.move(0, 94, 0);
+				placePiece(l, canal, 102L);
+				AABB area = AABB.of(canal.getBoundingBox()).inflate(4.0);
+				List<SakuraVillager> villagers = l.getEntitiesOfClass(SakuraVillager.class, area);
+				List<ShrineCat> cats = l.getEntitiesOfClass(ShrineCat.class, area);
+				check(villagers.size() == 4, "Sakura Canal Harbor has 4 villagers (" + villagers.size() + ")");
+				check(cats.size() == 2, "Sakura Canal Harbor has 2 shrine cats (" + cats.size() + ")");
+				assertNoWaterInBox(l, canal.localPosition(7, 4, 24), canal.localPosition(20, 7, 39), "Canal Watermill");
+				assertNoWaterInBox(l, canal.localPosition(7, 4, 49), canal.localPosition(19, 8, 60), "Canal Lantern Workshop");
+				p(s).setGameMode(GameType.SPECTATOR);
+				var b = canal.getBoundingBox();
+				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 26.0, b.minZ() - 14.0,
+					Set.<Relative>of(), 0.0F, 22.0F, false);
+			});
+			c.waitTicks(45);
+			shot(c, "shrine_sakura_canal_town");
+
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				var onsen = new SakuraOnsenVillagePiece(180, 180, Direction.SOUTH);
+				onsen.move(0, 94, 0);
+				placePiece(l, onsen, 103L);
+				AABB area = AABB.of(onsen.getBoundingBox()).inflate(4.0);
+				List<SakuraVillager> villagers = l.getEntitiesOfClass(SakuraVillager.class, area);
+				List<ShrineCat> cats = l.getEntitiesOfClass(ShrineCat.class, area);
+				check(villagers.size() == 4, "Sakura Onsen Village has 4 villagers (" + villagers.size() + ")");
+				check(cats.size() == 2, "Sakura Onsen Village has 2 shrine cats (" + cats.size() + ")");
+				assertNoWaterInBox(l, onsen.localPosition(7, 4, 25), onsen.localPosition(22, 12, 42), "Onsen Ryokan Inn");
+				assertNoWaterInBox(l, onsen.localPosition(40, 3, 20), onsen.localPosition(54, 6, 28), "Onsen Ramen Pavilion");
+				p(s).setGameMode(GameType.SPECTATOR);
+				var b = onsen.getBoundingBox();
+				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 27.0, b.minZ() - 14.0,
+					Set.<Relative>of(), 0.0F, 22.0F, false);
+			});
+			c.waitTicks(45);
+			shot(c, "shrine_sakura_onsen_village");
+
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				var castle = new SakuraCastleTownPiece(296, 180, Direction.SOUTH);
+				castle.move(0, 94, 0);
+				placePiece(l, castle, 104L);
+				AABB area = AABB.of(castle.getBoundingBox()).inflate(4.0);
+				List<SakuraVillager> villagers = l.getEntitiesOfClass(SakuraVillager.class, area);
+				List<ShrineCat> cats = l.getEntitiesOfClass(ShrineCat.class, area);
+				check(villagers.size() == 4, "Sakura Castle-Town has 4 villagers (" + villagers.size() + ")");
+				check(cats.size() == 2, "Sakura Castle-Town has 2 shrine cats (" + cats.size() + ")");
+				assertNoWaterInBox(l, castle.localPosition(7, 2, 19), castle.localPosition(20, 6, 41), "Castle-Town Kendo Dojo");
+				assertNoWaterInBox(l, castle.localPosition(42, 1, 17), castle.localPosition(57, 5, 39), "Castle-Town Market Arcade");
+				assertNoWaterInBox(l, castle.localPosition(22, 1, 50), castle.localPosition(38, 5, 60), "Castle-Town Herbalist Cottage");
+				p(s).setGameMode(GameType.SPECTATOR);
+				var b = castle.getBoundingBox();
+				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 28.0, b.minZ() - 14.0,
+					Set.<Relative>of(), 0.0F, 22.0F, false);
+			});
+			c.waitTicks(45);
+			shot(c, "shrine_sakura_castle_town");
 
 			// =========================================================================
 			// Scene 4: Cat Sanctuary 4-Floor Pagoda (Exterior, 4 Floors, Wards, Trials,
@@ -469,7 +606,9 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(spirits == 18 && sentinels == 18,
 					"Cat Sanctuary spawned 18 PaperLanternSpirits & 18 KarakuriSentinels (" + spirits + "/" + sentinels + ")");
 
-				// Verify Survival ward refuses breaking Cat Sanctuary walls.
+				// Verify Survival ward refuses breaking Cat Sanctuary walls & Floor 2 tatami is 100% dry.
+				assertNoWaterInBox(l, sanctuary.localPosition(18, CatSanctuaryPiece.F2 + 1, 30),
+					sanctuary.localPosition(38, CatSanctuaryPiece.F2 + 4, 54), "Cat Sanctuary Floor 2 Odie tatami hall");
 				ServerPlayer player = p(s);
 				player.setGameMode(GameType.SURVIVAL);
 				BlockPos wall = sanctuary.localPosition(6, CatSanctuaryPiece.F1 + 2, 30);

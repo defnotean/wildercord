@@ -17,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class WildsSitesTest {
 	static final Path DATA = Path.of("src/main/resources/data/wildercord");
 	static final List<String> IDS = List.of("wilds_venom_ziggurat", "wilds_dune_temple", "wilds_rime_monastery", "wilds_iron_gatehouse",
-		"wilds_dawn_pavilion", "wilds_echo_post", "wilds_ember_outpost", "wilds_void_lantern", "wilds_sakura_village");
+		"wilds_dawn_pavilion", "wilds_echo_post", "wilds_ember_outpost", "wilds_void_lantern", "wilds_sakura_village",
+		"wilds_sakura_canal_town", "wilds_sakura_onsen_village", "wilds_sakura_castle_town");
 
 	static JsonObject json(Path path) throws IOException {
 		assertTrue(Files.isRegularFile(path), "missing " + path);
@@ -78,8 +79,14 @@ class WildsSitesTest {
 				assertNull(before, "salt shared by " + before + " and " + f.getFileName());
 			}
 		}
+		Map<String, Long> overrides = Map.of(
+			"wilds_sakura_village", 20261121L,
+			"wilds_sakura_canal_town", 20261122L,
+			"wilds_sakura_onsen_village", 20261123L,
+			"wilds_sakura_castle_town", 20261124L
+		);
 		for (int n = 0; n < IDS.size(); n++) {
-			long expected = IDS.get(n).equals("wilds_sakura_village") ? 20261121L : 2026100900L + 600 + n + 1;
+			long expected = overrides.getOrDefault(IDS.get(n), 2026100900L + 600 + n + 1);
 			assertEquals(expected, json(DATA.resolve("worldgen/structure_set/" + IDS.get(n) + ".json"))
 				.getAsJsonObject("placement").get("salt").getAsLong(), IDS.get(n));
 		}

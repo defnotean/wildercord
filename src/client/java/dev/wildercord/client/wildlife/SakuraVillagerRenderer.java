@@ -7,12 +7,18 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 
-/** Renders {@link SakuraVillager} as either a Tea Master or a Shrine Maiden. */
+/** Renders {@link SakuraVillager} across all six custom Sakura Village NPC professions. */
 public class SakuraVillagerRenderer extends MobRenderer<SakuraVillager, SakuraVillagerRenderState, SakuraVillagerModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("sakura_villager"), "main");
 
-	private static final Identifier TEA = Wildercord.id("textures/entity/sakura_villager_tea.png");
-	private static final Identifier SHRINE = Wildercord.id("textures/entity/sakura_villager_shrine.png");
+	private static final Identifier[] TEXTURES = {
+		Wildercord.id("textures/entity/sakura_villager_tea.png"),
+		Wildercord.id("textures/entity/sakura_villager_shrine.png"),
+		Wildercord.id("textures/entity/sakura_villager_smith.png"),
+		Wildercord.id("textures/entity/sakura_villager_lantern.png"),
+		Wildercord.id("textures/entity/sakura_villager_onsen.png"),
+		Wildercord.id("textures/entity/sakura_villager_fisher.png")
+	};
 
 	public SakuraVillagerRenderer(EntityRendererProvider.Context context) {
 		super(context, new SakuraVillagerModel(context.bakeLayer(LAYER)), 0.45F);
@@ -20,7 +26,7 @@ public class SakuraVillagerRenderer extends MobRenderer<SakuraVillager, SakuraVi
 
 	@Override
 	public Identifier getTextureLocation(SakuraVillagerRenderState state) {
-		return state.role == SakuraVillager.SHRINE_MAIDEN ? SHRINE : TEA;
+		return TEXTURES[Math.floorMod(state.role, TEXTURES.length)];
 	}
 
 	@Override

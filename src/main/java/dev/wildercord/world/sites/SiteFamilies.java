@@ -44,6 +44,9 @@ public final class SiteFamilies {
 		worldgen("wildercord:wilds_ember_outpost", "Nether cave outpost; carves its own yard, so new chunks only.");
 		worldgen("wildercord:wilds_void_lantern", "End island spire; new chunks only.");
 		worldgen("wildercord:wilds_sakura_village", "Peaceful cherry-blossom village with kimono villagers and all four shrine cats; new chunks only.");
+		worldgen("wildercord:wilds_sakura_canal_town", "Peaceful Sakura canal harbor village with watermill, pier, five-Torii hill shrine, residents, and shrine cats; new chunks only.");
+		worldgen("wildercord:wilds_sakura_onsen_village", "Peaceful mountain onsen resort village with ryokan inn, steaming rotenburo baths, residents, and shrine cats; new chunks only.");
+		worldgen("wildercord:wilds_sakura_castle_town", "Peaceful feudal Sakura castle-town with Shirakabe walls, bell-pagoda, kendo dojo, forge, market arcade, residents, and shrine cats; new chunks only.");
 		// ---- sites-travel pack
 		worldgen("wildercord:travel_wayfarer_inn", "Crossroads inn with beds, a ledger and a pantry chest; new chunks only so no inn is built into existing land.");
 		worldgen("wildercord:travel_watchtower", "Hilltop tower with a signal fire and watch chest; new chunks only.");

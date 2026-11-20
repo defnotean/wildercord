@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.content.WildercordItems;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -7,12 +8,15 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -23,31 +27,78 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Custom Japanese Sakura Village resident ({@code Tea Master} or {@code Shrine Maiden}) wearing traditional
- * kimono &amp; obi attire. Greets travellers with a bow and exchanges emeralds for {@code Suzu Cat-Bell Charms}
- * and warm fish treats for Yuki, Odie, Freya, and Kuro.
+ * Custom Japanese Sakura Village residents across six professions ({@code Tea Master},
+ * {@code Shrine Maiden}, {@code Katana Swordsmith}, {@code Lantern Artisan},
+ * {@code Onsen Hostess}, and {@code Koi Canal Fisherman}). Greets travellers with a bow
+ * and trades role-themed supplies for emeralds.
  */
 public class SakuraVillager extends PathfinderMob {
 	public static final int TEA_MASTER = 0;
 	public static final int SHRINE_MAIDEN = 1;
+	public static final int SWORDSMITH = 2;
+	public static final int LANTERN_MAKER = 3;
+	public static final int ONSEN_KEEPER = 4;
+	public static final int FISHERMAN = 5;
+	public static final int ROLE_COUNT = 6;
 
 	private static final EntityDataAccessor<Integer> DATA_ROLE = SynchedEntityData.defineId(SakuraVillager.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_BOW_TICK = SynchedEntityData.defineId(SakuraVillager.class, EntityDataSerializers.INT);
 
-	private static final String[] TEA_LINES = {
-		"Matcha is steeped and the lanterns are lit. Yuki sleeps best by the mossy brook.",
-		"Odie will nap on any sunbeam floorboard in the Cat Sanctuary — bring fish, not fury.",
-		"Offer me an emerald if you need a Suzu Cat-Bell Charm for the four shrine cats!"
+	private static final String[] FULL_NAMES = {
+		"Sakura Tea Master",
+		"Sakura Shrine Maiden",
+		"Sakura Swordsmith",
+		"Sakura Lantern Artisan",
+		"Sakura Onsen Hostess",
+		"Sakura Koi Fisherman"
 	};
 
-	private static final String[] MAIDEN_LINES = {
-		"Freya's pink collar bell guards the third floor of the Cat Sanctuary; listen for her chime.",
-		"Kuro's notched left ear is the mark of the roof's Shadow Sentinel. Best him gently to earn all four cats' trust.",
-		"Our Sakura Village welcomes all casters seeking peace between battles."
+	private static final String[] SHORT_NAMES = {
+		"Tea Master",
+		"Shrine Maiden",
+		"Swordsmith",
+		"Lantern Artisan",
+		"Onsen Hostess",
+		"Koi Fisherman"
+	};
+
+	private static final String[][] ROLE_LINES = {
+		{
+			"Matcha is steeped and the lanterns are lit. Yuki sleeps best by the mossy brook.",
+			"Odie will nap on any sunbeam floorboard in the Cat Sanctuary — bring fish, not fury.",
+			"Offer me an emerald if you need a Suzu Cat-Bell Charm for the four shrine cats!"
+		},
+		{
+			"Freya's pink collar bell guards the third floor of the Cat Sanctuary; listen for her chime.",
+			"Kuro's notched left ear is the mark of the roof's Shadow Sentinel. Best him gently to earn all four cats' trust.",
+			"Our Sakura Villages welcome all casters seeking peace between battles."
+		},
+		{
+			"White steel folded under cherry petals keeps both blade and rune tablet true.",
+			"I trade Blank Runes tempered at the Castle-Town dojo forge — one emerald for four!",
+			"Beware the Karakuri Sentinels in the Cat Sanctuary; their clockwork shields blunt careless strikes."
+		},
+		{
+			"Every Paper Lantern Spirit remembers the craft of old chochin-makers gone astray.",
+			"Bring an emerald and I will string fresh iron lanterns for your camp or canal pier.",
+			"From the Canal Harbor to the Castle-Town arcade, warm paper light keeps the mist away."
+		},
+		{
+			"Step into the steaming rotenburo pools of our Onsen Village to wash away long travel.",
+			"Towel folded, cedar tub filled — offer an emerald for crisp golden carrots from the garden.",
+			"Odie loves napping beside the warm bath stones while steam rises into the blossoms."
+		},
+		{
+			"The koi swim thick below the crimson Taiko-bashi bridges of our Canal Harbor.",
+			"Fresh raw salmon is every shrine cat's favorite — trade me an emerald if your creel is empty!",
+			"Keep an eye out by the watermill wheel; Yuki often watches the ripples from the pier."
+		}
 	};
 
 	private int greetingLine;
@@ -78,13 +129,24 @@ public class SakuraVillager extends PathfinderMob {
 		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 	}
 
+	@Override
+	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			@Nullable SpawnGroupData data) {
+		SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
+		if ((reason == EntitySpawnReason.SPAWN_ITEM_USE || reason == EntitySpawnReason.COMMAND) && !hasCustomName()) {
+			configure(random.nextInt(ROLE_COUNT));
+		}
+		return out;
+	}
+
 	public int role() {
-		return entityData.get(DATA_ROLE);
+		return Math.floorMod(entityData.get(DATA_ROLE), ROLE_COUNT);
 	}
 
 	public void configure(int role) {
-		entityData.set(DATA_ROLE, role == SHRINE_MAIDEN ? SHRINE_MAIDEN : TEA_MASTER);
-		setCustomName(Component.literal(role == SHRINE_MAIDEN ? "Sakura Shrine Maiden" : "Sakura Tea Master"));
+		int r = Math.floorMod(role, ROLE_COUNT);
+		entityData.set(DATA_ROLE, r);
+		setCustomName(Component.literal(FULL_NAMES[r]));
 		setPersistenceRequired();
 	}
 
@@ -108,26 +170,36 @@ public class SakuraVillager extends PathfinderMob {
 		return false;
 	}
 
+	private static ItemStack emeraldReward(int role) {
+		return switch (role) {
+			case TEA_MASTER -> new ItemStack(ShrineCatContent.CAT_BELL_CHARM, 1);
+			case SHRINE_MAIDEN -> new ItemStack(Items.COOKED_SALMON, 4);
+			case SWORDSMITH -> new ItemStack(WildercordItems.BLANK_RUNE, 4);
+			case LANTERN_MAKER -> new ItemStack(Items.LANTERN, 4);
+			case ONSEN_KEEPER -> new ItemStack(Items.GOLDEN_CARROT, 3);
+			default -> new ItemStack(Items.SALMON, 4);
+		};
+	}
+
 	@Override
 	public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		if (!level().isClientSide()) {
 			entityData.set(DATA_BOW_TICK, 26);
+			int r = role();
 			ItemStack held = player.getItemInHand(hand);
 			if (held.is(Items.EMERALD)) {
 				held.consume(1, player);
-				ItemStack reward = role() == TEA_MASTER
-					? new ItemStack(ShrineCatContent.CAT_BELL_CHARM, 1)
-					: new ItemStack(Items.COOKED_SALMON, 4);
+				ItemStack reward = emeraldReward(r);
 				if (!player.getInventory().add(reward)) {
 					spawnAtLocation((ServerLevel) level(), reward);
 				}
 				level().playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL, 0.9F, 1.35F);
-				player.sendSystemMessage(Component.literal("[" + (role() == TEA_MASTER ? "Tea Master" : "Shrine Maiden") + "] Please take this gift with our blessings."));
+				player.sendSystemMessage(Component.literal("[" + SHORT_NAMES[r] + "] Please take this gift with our blessings."));
 			} else {
-				String[] lines = role() == SHRINE_MAIDEN ? MAIDEN_LINES : TEA_LINES;
+				String[] lines = ROLE_LINES[r];
 				String line = lines[greetingLine++ % lines.length];
 				level().playSound(null, blockPosition(), SoundEvents.VILLAGER_AMBIENT, SoundSource.NEUTRAL, 0.7F, 1.15F);
-				player.sendSystemMessage(Component.literal("[" + (role() == TEA_MASTER ? "Tea Master" : "Shrine Maiden") + "] " + line));
+				player.sendSystemMessage(Component.literal("[" + SHORT_NAMES[r] + "] " + line));
 			}
 		}
 		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;

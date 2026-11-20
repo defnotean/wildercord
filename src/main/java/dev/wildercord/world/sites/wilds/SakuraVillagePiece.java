@@ -1,8 +1,6 @@
 package dev.wildercord.world.sites.wilds;
 
 import dev.wildercord.wildlife.SakuraVillager;
-import dev.wildercord.wildlife.ShrineCat;
-import dev.wildercord.wildlife.ShrineCatContent;
 import dev.wildercord.wildlife.ShrineCatRules;
 import dev.wildercord.world.dungeons.JapaneseArchitecture;
 import dev.wildercord.world.dungeons.JapaneseArchitecture.BlockPlacer;
@@ -10,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -21,7 +18,6 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.ChiseledBookShelfBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -38,7 +34,7 @@ import java.util.Optional;
  * footbridge; two-story Matcha Tea House &amp; Ryokan Inn; Grand Cat Shrine Pavilion (Neko-Jinja)
  * housing elevated altar shrines and perched {@code Freya}; festival market Yatai stalls with
  * overhead lantern festoons; Artisan Kura storehouse, smithy, Karesansui Zen rock garden, eight
- * weeping sakura trees, Tea Master, Shrine Maiden, and all four Shrine Cats.
+ * weeping sakura trees, Tea Master, Shrine Maiden, Swordsmith, Lantern Artisan, and all four Shrine Cats.
  */
 public final class SakuraVillagePiece extends WildsPiece {
 	private static final int WIDTH = 64, HEIGHT = 26, DEPTH = 68;
@@ -85,9 +81,11 @@ public final class SakuraVillagePiece extends WildsPiece {
 			JapaneseArchitecture.weepingCherryTree(p, t[0], 1, t[1], t[2], true);
 		}
 
-		// Peaceful Tea Master, Shrine Maiden & all four cats anchored in the village compound.
+		// Peaceful Tea Master, Shrine Maiden, Swordsmith, Lantern Artisan & all four cats anchored in the village compound.
 		spawnVillager(level, bb, 12, 2, 32, SakuraVillager.TEA_MASTER);
 		spawnVillager(level, bb, 42, 2, 30, SakuraVillager.SHRINE_MAIDEN);
+		spawnVillager(level, bb, 30, 1, 52, SakuraVillager.SWORDSMITH);
+		spawnVillager(level, bb, 36, 1, 27, SakuraVillager.LANTERN_MAKER);
 		spawnVillageCat(level, bb, 18, 2, 31, ShrineCatRules.Variant.YUKI);
 		spawnVillageCat(level, bb, 15, 2, 28, ShrineCatRules.Variant.ODIE);
 		spawnVillageCat(level, bb, 41, 3, 32, ShrineCatRules.Variant.FREYA);
@@ -243,7 +241,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 		// Three Chabudai Tea Tables with matcha cups & cushions + Irori Kettle Hearth + Tea Bar Counter.
 		for (int tz : new int[]{25, 30, 35}) {
 			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 17, 2, tz);
-			set(level, bb, s(Blocks.SEA_PICKLE).setValue(SeaPickleBlock.PICKLES, 2), 17, 3, tz);
+			set(level, bb, SakuraVillageHelper.dryTeaCups(2), 17, 3, tz);
 			set(level, bb, s(Blocks.CARPET.red()), 16, 2, tz);
 			set(level, bb, s(Blocks.CARPET.red()), 18, 2, tz);
 		}
@@ -276,7 +274,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 			set(level, bb, s(Blocks.SPRUCE_FENCE), 22, 8, z);
 		}
 		set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 14, 8, 30);
-		set(level, bb, s(Blocks.SEA_PICKLE).setValue(SeaPickleBlock.PICKLES, 2), 14, 9, 30);
+		set(level, bb, SakuraVillageHelper.dryTeaCups(2), 14, 9, 30);
 		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 14, 11, 30);
 
 		hipRoof(level, bb, 6, 23, 22, 41, 12, Blocks.DARK_OAK_STAIRS, cherry, s(Blocks.STRIPPED_CHERRY_LOG));
@@ -356,7 +354,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 		// West Dango & Matcha Yatai Stall (x = 26..28, z = 25..29).
 		fill(level, bb, 26, 1, 25, 26, 1, 29, s(Blocks.OAK_PLANKS));
 		set(level, bb, s(Blocks.BARREL), 26, 1, 25);
-		set(level, bb, s(Blocks.SEA_PICKLE).setValue(SeaPickleBlock.PICKLES, 3), 26, 2, 27);
+		set(level, bb, SakuraVillageHelper.dryTeaCups(3), 26, 2, 27);
 		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 26, 2, 29);
 		for (int[] p : new int[][]{{26, 25}, {28, 25}, {26, 29}, {28, 29}}) {
 			fill(level, bb, p[0], 1, p[1], p[0], 3, p[1], spruceFence);
@@ -438,30 +436,10 @@ public final class SakuraVillagePiece extends WildsPiece {
 	}
 
 	private void spawnVillager(WorldGenLevel level, BoundingBox bb, int x, int y, int z, int role) {
-		BlockPos pos = getWorldPos(x, y, z);
-		if (!bb.isInside(pos)) {
-			return;
-		}
-		SakuraVillager v = ShrineCatContent.SAKURA_VILLAGER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
-		if (v == null) {
-			return;
-		}
-		v.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0F, 0.0F);
-		v.configure(role);
-		level.addFreshEntityWithPassengers(v);
+		SakuraVillageHelper.spawnVillager(level, bb, getWorldPos(x, y, z), role);
 	}
 
 	private void spawnVillageCat(WorldGenLevel level, BoundingBox bb, int x, int y, int z, ShrineCatRules.Variant variant) {
-		BlockPos pos = getWorldPos(x, y, z);
-		if (!bb.isInside(pos)) {
-			return;
-		}
-		ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
-		if (cat == null) {
-			return;
-		}
-		cat.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0F, 0.0F);
-		cat.configureVillage(variant, pos);
-		level.addFreshEntityWithPassengers(cat);
+		SakuraVillageHelper.spawnCat(level, bb, getWorldPos(x, y, z), variant);
 	}
 }

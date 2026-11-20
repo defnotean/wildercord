@@ -15,7 +15,8 @@ public final class WildsSites {
 	private WildsSites() {}
 
 	public static final List<String> IDS = List.of("wilds_venom_ziggurat", "wilds_dune_temple", "wilds_rime_monastery", "wilds_iron_gatehouse",
-		"wilds_dawn_pavilion", "wilds_echo_post", "wilds_ember_outpost", "wilds_void_lantern", "wilds_sakura_village");
+		"wilds_dawn_pavilion", "wilds_echo_post", "wilds_ember_outpost", "wilds_void_lantern", "wilds_sakura_village",
+		"wilds_sakura_canal_town", "wilds_sakura_onsen_village", "wilds_sakura_castle_town");
 
 	public static final StructurePieceType VENOM_ZIGGURAT = Sites.piece("wilds_venom_ziggurat", VenomZigguratPiece::new);
 	public static final StructurePieceType DUNE_TEMPLE = Sites.piece("wilds_dune_temple", DuneTemplePiece::new);
@@ -26,6 +27,9 @@ public final class WildsSites {
 	public static final StructurePieceType EMBER_OUTPOST = Sites.piece("wilds_ember_outpost", EmberOutpostPiece::new);
 	public static final StructurePieceType VOID_LANTERN = Sites.piece("wilds_void_lantern", VoidLanternPiece::new);
 	public static final StructurePieceType SAKURA_VILLAGE = Sites.piece("wilds_sakura_village", SakuraVillagePiece::new);
+	public static final StructurePieceType SAKURA_CANAL_TOWN = Sites.piece("wilds_sakura_canal_town", SakuraCanalTownPiece::new);
+	public static final StructurePieceType SAKURA_ONSEN_VILLAGE = Sites.piece("wilds_sakura_onsen_village", SakuraOnsenVillagePiece::new);
+	public static final StructurePieceType SAKURA_CASTLE_TOWN = Sites.piece("wilds_sakura_castle_town", SakuraCastleTownPiece::new);
 
 	static final ResourceKey<LootTable> ZIGGURAT_VAULT = Sites.loot("chests/wilds_venom_ziggurat"), ZIGGURAT_HALL = Sites.loot("chests/wilds_venom_ziggurat_hall"),
 		ZIGGURAT_DARTS = Sites.loot("chests/wilds_venom_ziggurat_darts");
@@ -38,6 +42,9 @@ public final class WildsSites {
 	static final ResourceKey<LootTable> EMBER_VAULT = Sites.loot("chests/wilds_ember_outpost"), EMBER_HALL = Sites.loot("chests/wilds_ember_outpost_hall");
 	static final ResourceKey<LootTable> VOID_VAULT = Sites.loot("chests/wilds_void_lantern"), VOID_HALL = Sites.loot("chests/wilds_void_lantern_hall");
 	static final ResourceKey<LootTable> SAKURA_VAULT = Sites.loot("chests/wilds_sakura_village"), SAKURA_HALL = Sites.loot("chests/wilds_sakura_village_hall");
+	static final ResourceKey<LootTable> SAKURA_CANAL_VAULT = Sites.loot("chests/wilds_sakura_canal_town"), SAKURA_CANAL_HALL = Sites.loot("chests/wilds_sakura_canal_town_hall");
+	static final ResourceKey<LootTable> SAKURA_ONSEN_VAULT = Sites.loot("chests/wilds_sakura_onsen_village"), SAKURA_ONSEN_HALL = Sites.loot("chests/wilds_sakura_onsen_village_hall");
+	static final ResourceKey<LootTable> SAKURA_CASTLE_VAULT = Sites.loot("chests/wilds_sakura_castle_town"), SAKURA_CASTLE_HALL = Sites.loot("chests/wilds_sakura_castle_town_hall");
 
 	public static void init() {
 		Sites.register("wilds_venom_ziggurat", VenomZigguratPiece::locate);
@@ -49,5 +56,8 @@ public final class WildsSites {
 		Sites.register("wilds_ember_outpost", EmberOutpostPiece::locate);
 		Sites.register("wilds_void_lantern", VoidLanternPiece::locate);
 		Sites.register("wilds_sakura_village", SakuraVillagePiece::locate);
+		Sites.register("wilds_sakura_canal_town", SakuraCanalTownPiece::locate);
+		Sites.register("wilds_sakura_onsen_village", SakuraOnsenVillagePiece::locate);
+		Sites.register("wilds_sakura_castle_town", SakuraCastleTownPiece::locate);
 	}
 }

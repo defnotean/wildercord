@@ -3,7 +3,12 @@ the End too. Writes each site's structure, structure set, biome tag, loot and ad
 src/main/java/dev/wildercord/world/sites/wilds/."""
 
 SALT = 2026100900 + 600
-SALT_OVERRIDES = {"wilds_sakura_village": 20261121}
+SALT_OVERRIDES = {
+    "wilds_sakura_village": 20261121,
+    "wilds_sakura_canal_town": 20261122,
+    "wilds_sakura_onsen_village": 20261123,
+    "wilds_sakura_castle_town": 20261124,
+}
 
 # id: (name, step, biomes, spacing, separation, advancement title, advancement text, icon item)
 SITES = {
@@ -31,6 +36,15 @@ SITES = {
     "wilds_sakura_village": ("Sakura Village", "surface_structures",
                              ["minecraft:cherry_grove", "minecraft:meadow", "minecraft:birch_forest", "minecraft:forest"], 34, 12,
                              "Blossom Lanterns", "Find a peaceful Japanese Sakura Village", "minecraft:pink_petals"),
+    "wilds_sakura_canal_town": ("Sakura Canal Harbor", "surface_structures",
+                                ["minecraft:cherry_grove", "minecraft:river", "minecraft:flower_forest", "minecraft:meadow", "minecraft:birch_forest"], 36, 12,
+                                "Lantern Canals", "Find a Sakura Canal & Lantern Harbor Village", "minecraft:lantern"),
+    "wilds_sakura_onsen_village": ("Sakura Onsen Village", "surface_structures",
+                                   ["minecraft:cherry_grove", "minecraft:meadow", "minecraft:grove", "minecraft:windswept_hills", "minecraft:flower_forest"], 36, 12,
+                                   "Steaming Blossoms", "Find a Sakura Mountain Onsen Resort Village", "minecraft:campfire"),
+    "wilds_sakura_castle_town": ("Sakura Castle-Town", "surface_structures",
+                                 ["minecraft:cherry_grove", "minecraft:plains", "minecraft:meadow", "minecraft:forest", "minecraft:birch_forest"], 36, 12,
+                                 "Blossom Citadel", "Find a Sakura Feudal Castle-Town & Dojo Village", "minecraft:bell"),
 }
 
 # id: (breathing method, vault runes, hall runes, vault extras, hall extras)
@@ -63,6 +77,15 @@ LOOT = {
     "wilds_sakura_village": ("dawn", ["suzu_chime", "ofuda_ward", "bellward", "sanctuary", "grace", "hearthglow"], ["suzu_chime", "ofuda_ward", "soothe"],
                              [("wildercord:cat_bell_charm", 3, 1, 2), ("minecraft:cooked_salmon", 3, 3, 6), ("minecraft:emerald", 2, 2, 4)],
                              [("minecraft:cherry_sapling", 3, 1, 3), ("minecraft:cooked_cod", 3, 2, 5), ("minecraft:honey_bottle", 2, 1, 3)]),
+    "wilds_sakura_canal_town": ("tide", ["suzu_chime", "ofuda_ward", "cleanse", "grace", "glidewind", "bellward"], ["suzu_chime", "soothe", "fair_wind"],
+                                [("wildercord:cat_bell_charm", 3, 1, 2), ("minecraft:salmon", 3, 4, 8), ("minecraft:lantern", 2, 2, 4)],
+                                [("minecraft:cherry_sapling", 3, 1, 3), ("minecraft:cooked_salmon", 3, 2, 5), ("minecraft:emerald", 2, 1, 3)]),
+    "wilds_sakura_onsen_village": ("dawn", ["suzu_chime", "hearthglow", "remedy", "soothe", "sanctuary", "grace"], ["hearthglow", "cleanse", "suzu_chime"],
+                                   [("wildercord:cat_bell_charm", 3, 1, 2), ("minecraft:golden_carrot", 3, 2, 4), ("minecraft:honey_bottle", 2, 1, 3)],
+                                   [("minecraft:cherry_sapling", 3, 1, 3), ("minecraft:cooked_salmon", 3, 2, 5), ("minecraft:emerald", 2, 1, 3)]),
+    "wilds_sakura_castle_town": ("iron", ["ofuda_ward", "shield", "bellward", "keenkeep", "magnetize", "galvanize"], ["ofuda_ward", "suzu_chime", "shield"],
+                                 [("wildercord:cat_bell_charm", 2, 1, 2), ("minecraft:iron_ingot", 3, 3, 6), ("minecraft:emerald", 3, 2, 5)],
+                                 [("minecraft:cherry_sapling", 3, 1, 3), ("minecraft:cooked_salmon", 3, 2, 5), ("minecraft:lantern", 2, 2, 4)]),
 }
 
 LANG = {}

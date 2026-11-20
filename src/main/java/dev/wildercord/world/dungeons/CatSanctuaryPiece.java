@@ -354,7 +354,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		// Tokonoma South Scroll Alcove + Four flanking Chabudai Tea Tables around Odie's central Kotatsu.
 		for (int[] td : new int[][]{{21, 35}, {35, 35}, {21, 49}, {35, 49}}) {
 			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), td[0], F2 + 1, td[1]);
-			set(level, bb, Blocks.SEA_PICKLE.defaultBlockState().setValue(SeaPickleBlock.PICKLES, 2), td[0], F2 + 2, td[1]);
+			set(level, bb, Blocks.SEA_PICKLE.defaultBlockState().setValue(SeaPickleBlock.PICKLES, 2).setValue(SeaPickleBlock.WATERLOGGED, false), td[0], F2 + 2, td[1]);
 			set(level, bb, Blocks.CARPET.yellow().defaultBlockState(), td[0] - 1, F2 + 1, td[1]);
 			set(level, bb, Blocks.CARPET.orange().defaultBlockState(), td[0] + 1, F2 + 1, td[1]);
 		}
