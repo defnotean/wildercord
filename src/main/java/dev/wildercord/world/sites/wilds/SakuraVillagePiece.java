@@ -349,9 +349,9 @@ public final class SakuraVillagePiece extends WildsPiece {
 
 	private void festivalMarket(WorldGenLevel level, BoundingBox bb) {
 		BlockState spruceFence = s(Blocks.SPRUCE_FENCE);
-		BlockState redWool = s(Blocks.RED_WOOL);
-		BlockState whiteWool = s(Blocks.WHITE_WOOL);
-		BlockState pinkWool = s(Blocks.PINK_WOOL);
+		BlockState redWool = s(Blocks.WOOL.red());
+		BlockState whiteWool = s(Blocks.WOOL.white());
+		BlockState pinkWool = s(Blocks.WOOL.pink());
 
 		// West Dango & Matcha Yatai Stall (x = 26..28, z = 25..29).
 		fill(level, bb, 26, 1, 25, 26, 1, 29, s(Blocks.OAK_PLANKS));
