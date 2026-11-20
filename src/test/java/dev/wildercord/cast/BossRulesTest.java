@@ -3,6 +3,7 @@ package dev.wildercord.cast;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** The dungeon bosses' phases, and no blow carrying one past the start of its next. */
@@ -43,5 +44,13 @@ class BossRulesTest {
 			assertEquals(phase + 1, BossRules.phaseFor(held, max));
 		}
 		assertTrue(BossRules.STRAND_IMMUNE_TICKS >= 60);
+	}
+
+	@Test
+	void bossesResetOnlyAfterSustainedEmptyArenaWhileEngaged() {
+		assertFalse(BossRules.shouldReset(false, false, BossRules.WIPE_RESET_TICKS), "an unengaged boss does not reset");
+		assertFalse(BossRules.shouldReset(true, true, BossRules.WIPE_RESET_TICKS), "a challenger present prevents reset");
+		assertFalse(BossRules.shouldReset(true, false, BossRules.WIPE_RESET_TICKS - 1), "brief absence does not reset");
+		assertTrue(BossRules.shouldReset(true, false, BossRules.WIPE_RESET_TICKS), "full wipe resets after the grace window");
 	}
 }

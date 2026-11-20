@@ -1173,6 +1173,12 @@ public final class WayfarerEffects {
 		});
 	}
 
+	/** Forgets all locate cooldowns and thrift marks when the server stops. */
+	static void clear() {
+		LOCATED.clear();
+		THRIFT.clear();
+	}
+
 	/** A player left: their Thrift goes; their locate rest only once it has run, so a relog never skips it. */
 	static void forget(UUID player, long now) {
 		THRIFT.remove(player);

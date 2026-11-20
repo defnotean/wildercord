@@ -6,6 +6,7 @@ import dev.wildercord.world.sites.masters.ResonanceChamberPiece;
 import dev.wildercord.world.sites.masters.StarTerracePiece;
 import dev.wildercord.world.sites.masters.SundialCourtPiece;
 import dev.wildercord.world.sites.mine.DeepVaultPiece;
+import dev.wildercord.world.sites.wilds.DawnPavilionPiece;
 import dev.wildercord.world.sites.wilds.DuneTemplePiece;
 import dev.wildercord.world.sites.wilds.EchoPostPiece;
 import dev.wildercord.world.sites.wilds.EmberOutpostPiece;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import java.util.ArrayDeque;
@@ -50,7 +52,8 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		"storm spire", "deep vault", "archive", "astral observatory", "ashen glade", "barrow field", "glacier den",
 		"living greenhouse", "mojito grove", "moving sky ruin", "serpent grove", "silk hollow", "forge dojo",
 		"resonance chamber", "star terrace", "sundial court", "iron gatehouse", "venom ziggurat", "dune temple",
-		"echo post", "ember outpost", "rime monastery", "void lantern");
+		"echo post", "ember outpost", "rime monastery", "void lantern", "drowned scriptorium", "ember sanctum",
+		"dawn pavilion");
 	private static final List<IntFunction<StructurePiece>> PIECES = List.of(
 		x -> new RootboundMazePiece(x, 120, 0, Direction.NORTH),
 		x -> new SwordTombPiece(x, 120, 0, Direction.NORTH),
@@ -78,7 +81,10 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		x -> new EchoPostPiece(x, 0, Direction.NORTH),
 		x -> new EmberOutpostPiece(x, 0, Direction.NORTH),
 		x -> new RimeMonasteryPiece(x, 0, Direction.NORTH),
-		x -> new VoidLanternPiece(x, 0, Direction.NORTH));
+		x -> new VoidLanternPiece(x, 0, Direction.NORTH),
+		x -> new DrownedScriptoriumPiece(x, 120, 0, Direction.NORTH),
+		x -> new EmberSanctumPiece(x, 120, 0, Direction.NORTH),
+		x -> new DawnPavilionPiece(x, 0, Direction.NORTH));
 
 	@Override public void runTest(ClientGameTestContext c) {
 		try (var world = c.worldBuilder().create()) {
@@ -147,7 +153,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		int own = 0;
 		for (BlockPos at : span(box)) {
 			BlockState st = l.getBlockState(at);
-			if (st.isAir() || !st.getFluidState().isEmpty()) continue;
+			if (st.isAir() || st.liquid()) continue;
 			own++;
 			if (st.getDestroySpeed(l, at) >= 0 && DungeonWards.admits(l, p, at, st, false)) {
 				holes.add(name + " lets " + block(l, st) + " at " + at + " break inside its ward");
@@ -164,7 +170,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		}
 	}
 
-	/** A block the player put inside the ward is theirs to take back. */
+	/** A block the player put inside the ward is theirs to take back; an unrecorded waterlogged block stays sealed. */
 	private static void ownTheirBlock(ServerLevel l, ServerPlayer p, String name, BoundingBox box, List<String> holes) {
 		for (BlockPos at : span(box)) {
 			if (!standable(l.getBlockState(at))) continue;
@@ -172,6 +178,11 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 			DungeonWards.placedBy(l, p, at);
 			if (!DungeonWards.admits(l, p, at, l.getBlockState(at), true)) {
 				holes.add(name + " will not let the player take the block they set down themselves");
+			}
+			BlockState waterlogged = Blocks.STONE_BRICK_STAIRS.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true);
+			l.setBlock(at, waterlogged, 3, 3);
+			if (DungeonWards.admits(l, p, at, l.getBlockState(at), false)) {
+				holes.add(name + " lets an unrecorded waterlogged block break inside its ward");
 			}
 			l.setBlock(at, Blocks.AIR.defaultBlockState(), 3, 3);
 			return;
@@ -251,7 +262,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 	}
 
 	private static boolean standable(BlockState st) {
-		return st.canBeReplaced() || !st.getFluidState().isEmpty();
+		return st.canBeReplaced() || st.liquid();
 	}
 
 	private static Iterable<BlockPos> span(BoundingBox box) {

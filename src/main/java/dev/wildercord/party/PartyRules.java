@@ -1,5 +1,6 @@
 package dev.wildercord.party;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * Server-owned, Minecraft-free party membership. An invitation never joins its recipient: only
@@ -18,9 +20,18 @@ public final class PartyRules {
 	public static final int INVITE_TICKS = 20 * 60;
 	public static final int INVITE_COOLDOWN_TICKS = 20;
 	public static final int MAX_PENDING_INVITES = 8;
+	/** How long a leader may stay offline before leadership passes automatically (3 days of game time). */
+	public static final int LEADER_OFFLINE_TICKS = 20 * 60 * 60 * 72;
 
 	public enum Result {
 		OK, SELF, NO_PARTY, NOT_LEADER, ALREADY_GROUPED, NO_INVITE, FULL, INVITE_LIMIT, WAIT, NOT_MEMBER
+	}
+
+	/** An automatic succession after the leader stayed offline past {@link #LEADER_OFFLINE_TICKS}. */
+	public record Promotion(UUID party, UUID oldLeader, UUID newLeader, List<UUID> members) {
+		public Promotion {
+			members = List.copyOf(members);
+		}
 	}
 
 	/** Immutable snapshot; member order is join order, used for deterministic leadership succession. */
@@ -54,6 +65,7 @@ public final class PartyRules {
 	private final Map<UUID, Group> byMember = new HashMap<>();
 	private final Map<UUID, Map<UUID, Invite>> invitations = new HashMap<>();
 	private final Map<UUID, Long> lastInvite = new HashMap<>();
+	private final Map<UUID, Long> offlineSince = new HashMap<>();
 
 	public Party party(UUID member) {
 		Group group = byMember.get(member);
@@ -146,10 +158,18 @@ public final class PartyRules {
 		Group group = byMember.get(actor);
 		if (group == null) return Result.NO_PARTY;
 		if (!group.leader.equals(actor)) return Result.NOT_LEADER;
-		for (UUID member : group.members) byMember.remove(member);
+		for (UUID member : group.members) {
+			byMember.remove(member);
+			offlineSince.remove(member);
+		}
 		cancelInvitations(group.id);
 		lastInvite.remove(actor);
 		return Result.OK;
+	}
+
+	/** Marks a member back online so their offline leader clock clears. */
+	public void reconnect(UUID member) {
+		offlineSince.remove(member);
 	}
 
 	/** Disconnect keeps membership for reconnect, but cancels incoming and outgoing invitations. */
@@ -158,6 +178,12 @@ public final class PartyRules {
 		invitations.values().forEach(map -> map.remove(member));
 		invitations.values().removeIf(Map::isEmpty);
 		lastInvite.remove(member);
+	}
+
+	/** Disconnect with the game time, so an offline leader can be succeeded after {@link #LEADER_OFFLINE_TICKS}. */
+	public void disconnect(UUID member, long now) {
+		disconnect(member);
+		if (byMember.containsKey(member)) offlineSince.put(member, now);
 	}
 
 	public void prune(long now) {
@@ -169,10 +195,39 @@ public final class PartyRules {
 		lastInvite.entrySet().removeIf(entry -> now < entry.getValue() || now - entry.getValue() >= INVITE_COOLDOWN_TICKS);
 	}
 
+	/** Prunes expired invitations and promotes the earliest-joined online member if a leader is offline past the cutoff. */
+	public List<Promotion> prune(long now, Predicate<UUID> online) {
+		prune(now);
+		for (UUID member : byMember.keySet()) {
+			if (online.test(member)) offlineSince.remove(member);
+		}
+		List<Promotion> promotions = new ArrayList<>();
+		for (Group group : new LinkedHashSet<>(byMember.values())) {
+			if (online.test(group.leader)) continue;
+			offlineSince.putIfAbsent(group.leader, now);
+			long since = offlineSince.get(group.leader);
+			if (now < since || now - since < LEADER_OFFLINE_TICKS) continue;
+			UUID next = null;
+			for (UUID member : group.members) {
+				if (!member.equals(group.leader) && online.test(member)) {
+					next = member;
+					break;
+				}
+			}
+			if (next == null) continue;
+			UUID old = group.leader;
+			group.leader = next;
+			cancelInvitations(group.id);
+			promotions.add(new Promotion(group.id, old, next, List.copyOf(group.members)));
+		}
+		return promotions;
+	}
+
 	public void clear() {
 		byMember.clear();
 		invitations.clear();
 		lastInvite.clear();
+		offlineSince.clear();
 	}
 
 	private Invite invitation(UUID recipient, UUID inviter) {
@@ -190,6 +245,7 @@ public final class PartyRules {
 
 	private void removeMember(Group group, UUID member) {
 		byMember.remove(member);
+		offlineSince.remove(member);
 		group.members.remove(member);
 		disconnect(member);
 		if (group.leader.equals(member)) {

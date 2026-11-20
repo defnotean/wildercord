@@ -130,4 +130,12 @@ class BountyRulesTest {
 		assertTrue(BountyRules.sameEscort(null, road), "a llama from before roads were marked keeps its escort");
 		assertFalse(BountyRules.sameEscort(null, null));
 	}
+
+	@Test
+	void escortCompanionSharePaysAThirdWithinBounds() {
+		assertEquals(0, BountyRules.escortCompanionPay(0));
+		assertEquals(1, BountyRules.escortCompanionPay(2));
+		assertEquals(3, BountyRules.escortCompanionPay(10));
+		assertEquals(4, BountyRules.escortCompanionPay(12));
+	}
 }

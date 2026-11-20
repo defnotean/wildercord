@@ -11,6 +11,15 @@ public final class BossRules {
 
 	/** Ticks a stranded Tide Scribe can't be stranded again after it breaks free. */
 	public static final int STRAND_IMMUNE_TICKS = 100;
+	/** Ticks without an active challenger in the arena before a boss resets to full health. */
+	public static final int WIPE_RESET_TICKS = 200;
+	/** Short re-engagement pause after a full-party wipe reset. */
+	public static final int WIPE_COOLDOWN_TICKS = 100;
+
+	/** Whether an engaged boss has waited long enough with no challenger present to reset to phase 1 and full health. */
+	public static boolean shouldReset(boolean engaged, boolean challengerPresent, int emptyTicks) {
+		return engaged && !challengerPresent && emptyTicks >= WIPE_RESET_TICKS;
+	}
 
 	/** The phase (1 to 3) a boss is in at {@code health} of {@code max}: the second at two thirds, the third at one third. */
 	public static int phaseFor(float health, float max) {

@@ -2,6 +2,7 @@ package dev.wildercord.town;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -98,6 +99,10 @@ public final class BountyEscorts {
 		// A llama whose escort was abandoned or lost while it was out of reach goes back to its traveller when it next loads.
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			if (entity instanceof Llama llama && llama.entityTags().stream().anyMatch(tag -> tag.startsWith(Town.ESCORT_TAG))) LOADED.add(llama);
+		});
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			ROADS.clear();
+			LOADED.clear();
 		});
 	}
 
@@ -271,6 +276,20 @@ public final class BountyEscorts {
 		player.sendSystemMessage(Component.translatable("message.wildercord.bounty.escort_arrived", Town.targetName(bounty)).withStyle(ChatFormatting.GOLD));
 		ROADS.remove(player.getUUID());
 		BlockPos at = llama.blockPosition();
+		int share = BountyRules.escortCompanionPay(bounty.emeralds());
+		if (share > 0) {
+			double maxSq = BountyRules.ESCORT_COMPANION_RANGE * BountyRules.ESCORT_COMPANION_RANGE;
+			for (UUID id : dev.wildercord.party.Parties.members(player)) {
+				if (id.equals(player.getUUID())) continue;
+				ServerPlayer ally = level.getServer().getPlayerList().getPlayer(id);
+				if (ally != null && ally.isAlive() && !ally.isSpectator() && ally.level() == level && ally.distanceToSqr(llama) <= maxSq) {
+					ItemStack pay = new ItemStack(net.minecraft.world.item.Items.EMERALD, share);
+					if (!ally.getInventory().add(pay)) ally.drop(pay, false, net.minecraft.util.Prediction.SERVER_ONLY);
+					ally.sendSystemMessage(Component.translatableWithFallback("message.wildercord.bounty.escort_companion_paid",
+						"The traveller pays you %s emeralds for helping see %s home.", share, Town.targetName(bounty)).withStyle(ChatFormatting.GOLD));
+				}
+			}
+		}
 		release(level, llama);
 		BountyBoardBlock.turnIn(player, level, at, standing, bounty, level.getGameTime() / BountyRules.DAY);
 	}

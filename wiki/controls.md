@@ -14,7 +14,7 @@ description: "Every Wildercord key with its default, the controls inside the Cor
 
 ## Keys
 
-All keys are in **Options > Controls > Key Binds**, and you can change every one. They sit under four headings: **Wildercord**, **Wildercord: Master's Arts**, **Wildercord: Master forms** and **Wildercord: Lore**. The **?** badge in the Cord screen always shows your current keys.
+All keys are in **Options > Controls > Key Binds**, and you can change every one. They sit under three headings: **Wildercord**, **Wildercord: Master's Arts** and **Wildercord: Lore**. The **?** badge in the Cord screen always shows your current keys.
 
 A press counts as a **hold** once it's down for a quarter of a second. Anything shorter is a tap.
 
@@ -37,19 +37,14 @@ A double tap of the Aura key means two taps close together (within about 0.4 sec
 
 ### Wildercord: Master's Arts
 
-These need a blade in your main hand, a breathing method, and the aura stage shown. See [Aura]({{ '/progression/aura/' | relative_url }}#the-masters-arts).
+These need a blade in your main hand, a breathing method, and the aura stage shown. See [Aura]({{ '/progression/aura/' | relative_url }}#the-masters-arts) and [Master Forms]({{ '/masters/master-forms/' | relative_url }}).
 
 | Key | Default | What it does |
 |---|---|---|
 | Spellcut | `U` | Edge. After a short windup, cuts down up to 3 hostile bolts in front of you and slashes foes nearby. 14 aura, 3 second rest. |
 | Rising Break | `Y` | Form. A rising strike that breaks extra stance and lifts ordinary foes. 20 aura, 5 second rest. |
 | Driving Cut | `J` | Form. A committed 5-block thrust that breaks a damaged held spell and seals the caster's casting for 1 second. 18 aura, 4 second rest. |
-
-### Wildercord: Master forms
-
-| Key | Default | What it does |
-|---|---|---|
-| Equipped Master form | `C` | Uses the [Master form]({{ '/masters/master-forms/' | relative_url }}) you have equipped. It does nothing in Creative, so the game's Save Toolbar (`C` + a number) still works there. |
+| Equipped Master form | `X` | Uses the [Master form]({{ '/masters/master-forms/' | relative_url }}) you have equipped. |
 
 ### Wildercord: Lore
 

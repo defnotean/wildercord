@@ -269,6 +269,31 @@ class PartyRulesTest {
 		}
 	}
 
+	@Test
+	void offlineLeaderPassesLeadershipAfterCutoffToEarliestOnlineMember() {
+		PartyRules rules = pair();
+		rules.invite(A, C, 30);
+		assertEquals(OK, rules.accept(C, A, 31));
+		long t0 = 1000L;
+		rules.disconnect(A, t0);
+		// Before the cutoff, leadership remains with A even while offline.
+		assertTrue(rules.prune(t0 + PartyRules.LEADER_OFFLINE_TICKS - 1, id -> !id.equals(A)).isEmpty());
+		assertEquals(A, rules.party(B).leader());
+		// If A reconnects before the cutoff, the timer clears.
+		rules.reconnect(A);
+		assertTrue(rules.prune(t0 + PartyRules.LEADER_OFFLINE_TICKS + 100, id -> true).isEmpty());
+		assertEquals(A, rules.party(B).leader());
+		// Once A and B are offline and only C is online past the cutoff, C takes leadership.
+		long t1 = t0 + PartyRules.LEADER_OFFLINE_TICKS + 200;
+		rules.disconnect(A, t1);
+		rules.disconnect(B, t1);
+		List<PartyRules.Promotion> promotions = rules.prune(t1 + PartyRules.LEADER_OFFLINE_TICKS, id -> id.equals(C));
+		assertEquals(1, promotions.size());
+		assertEquals(A, promotions.getFirst().oldLeader());
+		assertEquals(C, promotions.getFirst().newLeader());
+		assertEquals(C, rules.party(C).leader());
+	}
+
 	private static PartyRules pair() {
 		PartyRules rules = new PartyRules();
 		assertEquals(OK, rules.invite(A, B, 0));

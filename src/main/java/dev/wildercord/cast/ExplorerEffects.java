@@ -244,6 +244,7 @@ public final class ExplorerEffects {
 	static void clear() {
 		BITES.clear();
 		SHELLS.clear();
+		SHELL_BEFORE.clear();
 		BRANDED.clear();
 		TIDES.clear();
 		ECLIPSED.clear();
@@ -251,6 +252,8 @@ public final class ExplorerEffects {
 		LINGERING.clear();
 		BLOODLUST.clear();
 		HEARTS.clear();
+		DelveEffects.clear();
+		WayfarerEffects.clear();
 	}
 
 	/**

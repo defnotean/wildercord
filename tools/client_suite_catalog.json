@@ -163,6 +163,7 @@
   },
   "dungeon-ward-seal": {
     "description": "Dungeon wards: each warded vault and arena built in the open, so nothing its ward covers breaks to a survival player, no dug way reaches a corner the open way does not, the player still takes back what they set down inside, and the ward stops at its own wall.",
+    "purpose": "diagnostic",
     "expectedCount": 1,
     "entries": [
       "dev.wildercord.world.dungeons.DungeonWardSealTest"
@@ -170,6 +171,7 @@
   },
   "ferryman-coop": {
     "description": "The cooperative Ferryman: a registered crossing start whose bell rings its guardian, a lone anchor that stays unpaired, a phase-two anchor that marks both oarsmen, a tell that keeps its impact after losing one challenger, and a shared second count that pays every contributor.",
+    "purpose": "diagnostic",
     "expectedCount": 1,
     "entries": [
       "dev.wildercord.world.ferryman.FerrymanCoopTest"

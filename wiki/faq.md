@@ -151,8 +151,8 @@ From Form, a double tap is Aura Step, so a single tap waits a moment to be sure.
 ### How do I call a Sword Master?
 Reach **Aura Form** or **Heart Circle VIII**. Then sneak and use a Wandering Duelist twice (within 10 seconds), or type `/master challenge <name>` with any of the 16 Masters' names, such as `ember`, `tide` or `venom`. Friends nearby can `/master join`. See [Sword Masters]({{ '/masters/' | relative_url }}).
 
-### What does the `C` key do?
-It uses your equipped [Master form]({{ '/masters/master-forms/' | relative_url }}). It does nothing in Creative, so Save Toolbar still works there.
+### What does the `X` key do?
+It uses your equipped [Master form]({{ '/masters/master-forms/' | relative_url }}). See [Controls]({{ '/controls/' | relative_url }}#wildercord-masters-arts).
 
 ### What are `U`, `Y` and `J`?
 The Master's Arts: Spellcut (from Edge), Rising Break and Driving Cut (from Form). See [Controls]({{ '/controls/' | relative_url }}#wildercord-masters-arts).

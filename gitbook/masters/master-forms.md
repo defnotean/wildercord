@@ -68,7 +68,7 @@ Open the Cord screen (**K**), click the **Aura** badge, then **Master form**. Th
 
 You can only equip or switch on safe ground, out of combat, when nothing else is in progress, and after the shared rest is over. Switching never skips a rest you still owe.
 
-All forms use the **Equipped Master form** key, **C** by default, except Spell Cut, which uses your normal attack. You can rebind the key under **Wildercord: Master forms** in Minecraft's Controls. A small line above the hotbar shows the form's state and rest.
+All forms use the **Equipped Master form** key, **X** by default, except Spell Cut, which uses your normal attack. You can rebind the key under **Wildercord: Master's Arts** in Minecraft's Controls. A small line above the hotbar shows the form's state and rest.
 
 Every form needs a held Aura weapon and free movement. You cannot start one while flying, riding, swimming, climbing, guarding, frozen, pulled, or during another art. **Sneak** cancels a form. A hit that lands interrupts it. Nothing is refunded.
 
@@ -77,8 +77,8 @@ Every form needs a held Aura weapon and free movement. You cannot start one whil
 An air kick off a wall.
 
 1. Jump so you are in the air beside a solid wall with room for your body.
-2. Press **C** to brace. You stop against the wall for up to half a second.
-3. Let go, then press **C** again to kick away. Hold a movement key to steer. The kick always leaves the wall, up to 4 blocks across and 1.25 blocks up.
+2. Press **X** to brace. You stop against the wall for up to half a second.
+3. Let go, then press **X** again to kick away. Hold a movement key to steer. The kick always leaves the wall, up to 4 blocks across and 1.25 blocks up.
 4. Land on safe, solid ground. You get one Wall Turn per jump.
 
 Other Aura arts wait until you land. Falling still hurts.
@@ -87,7 +87,7 @@ Other Aura arts wait until you land. Falling still hurts.
 
 A short charge that ends in one cut.
 
-1. On solid ground, look where you want to go and press **C**.
+1. On solid ground, look where you want to go and press **X**.
 2. You plant for a quarter second, then dash up to 5 blocks.
 3. The dash stops when it reaches a foe. You then cut the nearest foe ahead, for more than an ordinary swing.
 
@@ -97,7 +97,7 @@ If a wall, ledge, hazard or ward stops the dash early, there is no cut and the r
 
 A quick side step that keeps you facing your foe.
 
-1. On solid ground, hold a strafe or back key and press **C**.
+1. On solid ground, hold a strafe or back key and press **X**.
 2. You slide 2.5 blocks that way. With no key held, you step straight back. It never moves you forward.
 
 During the recovery you cannot guard, step or use arts.
@@ -107,17 +107,17 @@ During the recovery you cannot guard, step or use arts.
 One extra step on the wind.
 
 1. Jump or fall. You must be in the air, not in water.
-2. Press **C**. You rise a little (less than a block) in the direction you look.
+2. Press **X**. You rise a little (less than a block) in the direction you look.
 3. Land. You get one Air Step each time you leave the ground.
 
 Ceilings and wards stop it. You still take any fall damage you owe. Landing in water ends it with a short splash recovery.
 
 ### Stone Hinge
 
-A planted stance that turns a frontal shove to one side.
+A planted stance that turns a frontal shove to one side *(still in testing; an operator enables it with `aura.experimental_stone_hinge`)*.
 
 1. Stand on firm ground (not sneaking). Hold **exactly one** strafe key, left or right.
-2. Press **C**. You plant for 0.3 seconds, then catch for 0.6 seconds. You can barely move while planted.
+2. Press **X**. You plant for 0.3 seconds, then catch for 0.6 seconds. You can barely move while planted.
 3. The first melee blow that comes from in front of where you planted (within about 60 degrees) pushes you toward the side you held, at the same strength, instead of backwards.
 
 The damage still lands. Only the shove turns. Turning your camera after planting does not change which way counts as "in front". The 6-second rest starts at the plant, even if nothing hits you.
@@ -129,14 +129,14 @@ The plant is refused before you pay if that side is unsafe: a drop, hazard, ward
 A dive from the air that strikes all around where you land.
 
 1. Get into the air with at least 2 clear blocks below you.
-2. Press **C**. You hang for a moment with your blade high (sneak to stop).
+2. Press **X**. You hang for a moment with your blade high (sneak to stop).
 3. You drive straight down. Landing on solid ground strikes every foe within 2.5 blocks.
 
 Water splashes it out with no strike. Hazards or a very long fall stall it. Fall damage still counts.
 
 ### The guard answers: Ember Riposte, Gale Shove and Stone Break
 
-These three answer a blow you have just caught. When a **perfect guard** catches a hit from a living attacker, the HUD shows **Opening!** and you have about 0.8 seconds to press **C**. The movement key you hold picks the answer:
+These three answer a blow you have just caught. When a **perfect guard** catches a hit from a living attacker, the HUD shows **Opening!** and you have about 0.8 seconds to press **X**. The movement key you hold picks the answer:
 
 | Hold | Answer | What it does |
 |---|---|---|

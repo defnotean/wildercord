@@ -120,6 +120,7 @@ public abstract class DungeonBoss extends Monster {
 	private final Set<UUID> fighters = new LinkedHashSet<>();
 	/** The keepers it called up (saved), sent away when it falls. */
 	private final List<UUID> minions = new ArrayList<>();
+	private int emptyTicks;
 
 	private float castPose;
 	private float castPoseO;
@@ -327,6 +328,10 @@ public abstract class DungeonBoss extends Monster {
 		if (now % 10 == 0) {
 			updateViewers(level);
 		}
+		if (resetIfWiped(level, now)) {
+			updateName(null);
+			return;
+		}
 		if (shifting > 0) {
 			shifting--;
 			getNavigation().stop();
@@ -430,6 +435,47 @@ public abstract class DungeonBoss extends Monster {
 				bossEvent.addPlayer(player);
 			}
 		}
+	}
+
+	private boolean resetIfWiped(ServerLevel level, long now) {
+		boolean engaged = getHealth() < getMaxHealth() || phase > 1 || !fighters.isEmpty();
+		if (!engaged) {
+			emptyTicks = 0;
+			return false;
+		}
+		Vec3 heart = Vec3.atCenterOf(home);
+		boolean challenger = level.players().stream().anyMatch(p ->
+			p.isAlive() && !p.isSpectator() && p.position().distanceTo(heart) <= BAR_RANGE);
+		if (challenger) {
+			emptyTicks = 0;
+			return false;
+		}
+		emptyTicks++;
+		if (!BossRules.shouldReset(true, false, emptyTicks)) {
+			return false;
+		}
+		emptyTicks = 0;
+		phase = 1;
+		shifting = 0;
+		setState(SHIFTING, false);
+		setState(GUARDED, false);
+		setState(EXPOSED, false);
+		setState(SLAMMING, false);
+		interrupt();
+		setHealth(getMaxHealth());
+		fighters.clear();
+		deck.clear();
+		setTarget(null);
+		for (UUID id : minions) {
+			if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
+				mob.discard();
+			}
+		}
+		minions.clear();
+		returnHome(level);
+		readyAt = now + BossRules.WIPE_COOLDOWN_TICKS;
+		bossEvent.setProgress(1.0F);
+		return true;
 	}
 
 	private void fire(ServerLevel level) {

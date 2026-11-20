@@ -2000,6 +2000,11 @@ public final class Effects {
 	static void clearWards() {
 		WARDS.clear();
 		VENOM.clear();
+		RENT.clear();
+		BRACED.clear();
+		GLIDES.clear();
+		CHILLS.clear();
+		HEXED.clear();
 	}
 
 	/**

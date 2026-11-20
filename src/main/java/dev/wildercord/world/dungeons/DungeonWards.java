@@ -33,7 +33,7 @@ import java.util.UUID;
  * The dungeons' boss arenas and vaults are warded: nobody tunnels, blasts or spells their way in from outside, so the
  * fight and its reward are reached through the dungeon. The halls on the way may still be dug into. Inside a ward,
  * what isn't part of the dungeon can still go: something a player put there (a torch, a block to stand on), a spell's
- * temporary block, or anything easily replaced (grass, water). Players in creative mode aren't stopped.
+ * temporary block, or air and pure liquid (water, lava). Players in creative mode aren't stopped.
  *
  * <p>The warded rooms come from the dungeon pieces themselves ({@link WardedPiece}): each piece writes its rooms down as
  * it's built (so a dungeon put down with {@code /place} is warded too), and the world's own record of which structures
@@ -103,10 +103,9 @@ public final class DungeonWards extends SavedData {
 				}
 			}
 		});
-		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			TOLD.clear();
-			BUILT.clear();
-		});
+		dev.wildercord.ServerState.forgetOnDisconnect(TOLD);
+		dev.wildercord.ServerState.resetOnStop(TOLD);
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> BUILT.clear());
 	}
 
 	/** Whether {@code pos} is inside a dungeon's warded room (its boss arena or vault). */
@@ -128,20 +127,19 @@ public final class DungeonWards extends SavedData {
 	}
 
 	/**
-	 * The ward's own answer to "may this player take that block down": creative goes anywhere, a block the world
-	 * lets anything replace (grass, water, air) is nobody's to keep, and inside a ward only what a player put there
-	 * or a spell left behind may go. {@code taking} says whether the block is really coming down: a question about
-	 * it (a survey, a spell checking its footing) must not spend the record of a placed block.
+	 * The ward's own answer to "may this player take that block down": creative goes anywhere, air and pure
+	 * liquid (water, lava) are nobody's to keep, and inside a ward only what a player put there or a spell
+	 * left behind may go. {@code taking} says whether the block is really coming down: a question about it
+	 * (a survey, a spell checking its footing) must not spend the record of a placed block.
 	 */
 	public static boolean admits(ServerLevel level, Player player, BlockPos pos,
 		net.minecraft.world.level.block.state.BlockState state, boolean taking) {
 		if (player == null || player.isCreative() || !warded(level, pos)) {
 			return true;
 		}
-		// Air and water are nobody's to keep. Everything else in the room was put there by the dungeon,
-		// including the hanging roots and carpets it decorates itself with: those used to slip through
-		// because the world lets anything replace them.
-		if (state.isAir() || !state.getFluidState().isEmpty()) {
+		// Air and pure liquid (water, lava) are nobody's to keep. Waterlogged stairs/walls/bars (which have a
+		// non-empty fluid state but are not liquids) and dungeon decorations stay protected.
+		if (state.isAir() || state.liquid()) {
 			return true;
 		}
 		if (TemporaryBlocks.recorded(level, pos)) {

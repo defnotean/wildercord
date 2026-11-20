@@ -4,6 +4,28 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+- **Mojito's Fetchblade**: Epic aura-forged greatsword dropped by Mojito (`+50%` hit aura, `+35%` Aura Slash damage, `+25%` slash reach/width, `+1` target, and right-click **Fetch Bound** lunge + crescent).
+- **3D voxel held models** for all 5 forged/boss weapons (`oathkeeper`, `lumenedge`, `bulwark_maul`, `skyrend_glaive`, `fetchblade`) and all 20 elemental staffs, plus keylined 2D sprites.
+- **Cooperative Reed-Crowned Ferryman**: tells re-aim to surviving challengers in range, phase two marks paired anchors across two oarsmen, and a shared second count rewards every contributor with Aura Shards.
+- **Belowkeeper Bell Sanctum belfry**: adds a ruined surface brick belfry and 3x3 ladder shaft over vaults sitting 3–41 blocks below ground (`BellSanctumRules`).
+- **Party & escort quality-of-life**: automatic party leadership succession when a leader stays offline for 3 days (`PartyRules.LEADER_OFFLINE_TICKS`), online member counts on `/guild` and `/coven`, and a companion emerald payout for party members within 24 blocks when an escort llama arrives (`BountyRules.escortCompanionPay`).
+- **Dungeon boss wipe reset**: engaged dungeon bosses reset to full health and phase 1 if all challengers leave or die for 10 seconds, with a 5-second re-engagement pause (`BossRules`).
+- **Server-state & tick tooling**: `ServerState` session-map registry, `Ticks` saturating sentinel helper, `tools/lint_ticks.py`, `tools/make_icon.py` (640x640 pixel icon), and `tools/release.py`.
+
+### Changed
+- **Boss & Dungeon Relic rewards**: lair guardians scale shards, Mana Crystals, Torn/Manual Pages, and Tier III/IV runes by `BossTier`; regional bosses, dungeon bosses, giants, Archivist, and Sword Master clears award Aura Shards and Mana Crystals; Dungeon Relics restore 25 mana and 20 aura on a 20-second cooldown.
+- **Skyrend Glaive polearm combat**: 33.4-unit polearm model, two-handed cross-body guard stance, and 3-phase lever-action cleave animation in first and third person (`GlaivePose`).
+- **Structure rebuilds**: upgraded Shepherd's Steading, Tidepool Grotto, Granary Farmstead, Bell Chapel pinnacles, Rune Library lawn, Archive forecourt, and Ember Sanctum cavern.
+- **Master form keybind**: changed default from `C` to `X` and merged `Wildercord: Master forms` into `Wildercord: Master's Arts` to avoid Creative's Save Toolbar clash.
+
+### Fixed
+- **Dungeon wards**: warded arenas and vaults block survival players from breaking walls, dungeon decorations, and waterlogged blocks (`state.liquid()`), re-sync refused blocks to the client, and cover Storm Spire's walls and roof; verified across all 30 warded structures (`DungeonWardSealTest`).
+- **Iron golems & tamed Coffer Mimics**: golems no longer attack tamed mimics, and tamed mimics leave golems alone.
+- **Structure block entities**: promoted and cleared pending `"DUMMY"` block entities across all five root piece classes and corrected north/south wall-banner orientation.
+- **Lesson localization**: moved all 12 lesson grammar and storage problem messages through `LessonText` translation keys.
+- **Session-map leaks**: cleared `DelveEffects.MARKS`/`RETURNING`, `ExplorerEffects.SHELL_BEFORE`, `WayfarerEffects`, `Effects` ward/effect maps, `TrainingGrounds.SAMPLES`, `DungeonWards.TOLD`, and `BountyEscorts` session state on stop/disconnect.
+
 ## [0.14.0-alpha] — 2026-10-26
 
 **One road.** A capstone for the four regions, tame mimics and hedgehogs, harder-hitting bosses, and a building pass that makes the world's structures grander.

@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,12 +46,19 @@ public final class Parties {
 			session(server).remember(handler.player.getUUID(), handler.player.getGameProfile().name()));
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			PartySession state = SESSIONS.get(server);
-			if (state != null) state.disconnect(handler.player.getUUID());
+			if (state != null) state.disconnect(handler.player.getUUID(), now(server));
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			PartySession state = SESSIONS.get(server);
 			if (state != null && server.getTickCount() % 20 == 0) {
-				state.prune(now(server), player -> server.getPlayerList().getPlayer(player) != null);
+				for (PartyRules.Promotion promotion : state.prune(now(server), player -> server.getPlayerList().getPlayer(player) != null)) {
+					Component notice = Component.translatableWithFallback("message.wildercord.party.promoted",
+						"%s is now the party leader.", state.name(promotion.newLeader())).withStyle(ChatFormatting.GOLD);
+					for (UUID member : promotion.members()) {
+						ServerPlayer online = server.getPlayerList().getPlayer(member);
+						if (online != null) online.sendSystemMessage(notice);
+					}
+				}
 			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SESSIONS.remove(server));

@@ -16,7 +16,7 @@ LANG = {
     "screen.wildercord.field_forms.back": "Back",
     "screen.wildercord.field_forms.overview": "Overview",
     "screen.wildercord.field_forms.source": "Find a teacher",
-    "screen.wildercord.field_forms.source_help": "Cinder Lunge: reach Sovereign and record an Ember Master clear, then sneak-use a wandering Ember teacher with an empty hand. Reed Slip: reach Form and record a Gale Master clear, then ask a Gale teacher (after Wall Turn, if you can learn that first). Old clears count; any breathing method works. Lessons stay here and in the Grimoire.\n\nRebind the key in Options > Controls > Key Binds > Wildercord: Master forms.",
+    "screen.wildercord.field_forms.source_help": "Cinder Lunge: reach Sovereign and record an Ember Master clear, then sneak-use a wandering Ember teacher with an empty hand. Reed Slip: reach Form and record a Gale Master clear, then ask a Gale teacher (after Wall Turn, if you can learn that first). Old clears count; any breathing method works. Lessons stay here and in the Grimoire.\n\nRebind the key in Options > Controls > Key Binds > Wildercord: Master's Arts.",
     "screen.wildercord.field_forms.page": "Page %s / %s",
     "screen.wildercord.field_forms.practice": "Practice on open, flat ground. Press %s. Costs real Aura; no XP.",
     "screen.wildercord.field_forms.cinder_lunge.locked": "Learn at Sovereign after a recorded Ember Master clear, from a wandering Ember teacher.",

@@ -1762,6 +1762,12 @@ final class DelveEffects {
 		Scheduler.later(DelveRules.MARK_WARMUP + 5, () -> RETURNING.remove(id));
 	}
 
+	/** Forgets every mark and in-flight return when the server stops. */
+	static void clear() {
+		MARKS.clear();
+		RETURNING.clear();
+	}
+
 	/** Forgets a player's mark (for tests). */
 	static void forgetMark(Entity player) {
 		MARKS.remove(player.getUUID());

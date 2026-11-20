@@ -104,6 +104,12 @@ public final class BountyRules {
 	public static final int ESCORT_NEAR = 160, ESCORT_FAR = 240;
 	/** What an escort pays: emeralds for each this many blocks of road, on top of a base. */
 	public static final int ESCORT_EMERALDS = 6, ESCORT_BLOCKS_PER_EMERALD = 40, ESCORT_REPUTATION = 10;
+	/** How close a party member must be to the escort llama at arrival to earn a companion emerald share. */
+	public static final double ESCORT_COMPANION_RANGE = 24.0;
+	/** How many emeralds a nearby party member earns when an escort arrives (a third of the main payout, at least 1). */
+	public static int escortCompanionPay(int emeralds) {
+		return emeralds <= 0 ? 0 : Math.max(1, emeralds / 3);
+	}
 	/** What an escort names as its target: the pack llama. */
 	public static final String ESCORT_TARGET = "minecraft:llama";
 	/** How strong the pack llama is: three columns of chest, nine slots, for the traveller's goods. */

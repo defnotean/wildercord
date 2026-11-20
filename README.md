@@ -279,7 +279,7 @@ learn it.
 | `G` | Stow or draw the Weaver's Silk (`/silk` does the same) |
 | `Z` | Aura: tap for Aura Slash, sneak+press for Aura Guard, double-tap for Aura Step, hold for Dominion |
 | `U` / `Y` / `J` | Spell Cut, Rising Break and Driving Cut (once you know the Edge and Form methods) |
-| `C` | Use your equipped Master form |
+| `X` | Use your equipped Master form |
 | `H` | Open the lore journal |
 | *(unbound)* | "Cast spell 1-4": bind these to cast a spell directly |
 | Sneak + stand still | Meditate: double mana regeneration, and form a Heart Circle when ready |

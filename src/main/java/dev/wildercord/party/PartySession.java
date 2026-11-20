@@ -1,6 +1,7 @@
 package dev.wildercord.party;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -12,21 +13,23 @@ final class PartySession {
 
 	void remember(UUID player, String name) {
 		names.put(player, name);
+		rules.reconnect(player);
 	}
 
 	String name(UUID player) {
 		return names.getOrDefault(player, player.toString());
 	}
 
-	void disconnect(UUID player) {
+	void disconnect(UUID player, long now) {
 		// Cancel invitations first; membership and its authenticated offline name survive reconnect.
-		rules.disconnect(player);
+		rules.disconnect(player, now);
 		if (!rules.references(player)) names.remove(player);
 	}
 
-	void prune(long now, Predicate<UUID> online) {
-		rules.prune(now);
+	List<PartyRules.Promotion> prune(long now, Predicate<UUID> online) {
+		List<PartyRules.Promotion> promotions = rules.prune(now, online);
 		// Also collects offline names after kick/disband, once command feedback has used them.
 		names.keySet().removeIf(player -> !online.test(player) && !rules.references(player));
+		return promotions;
 	}
 }

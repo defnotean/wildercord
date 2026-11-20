@@ -31,8 +31,8 @@ public final class MasterFormsClient {
 	public record Playback(MasterForms.Event event, long received) {}
 	private static final Map<Integer, Playback> EVENTS = new HashMap<>();
 	public static void init() {
-		key = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.master_form", InputConstants.KEY_C,
-			KeyMapping.Category.register(Wildercord.id("master_forms"))));
+		key = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.master_form", InputConstants.KEY_X,
+			MastersArtsClient.CATEGORY));
 		ClientPlayNetworking.registerGlobalReceiver(MasterForms.Event.TYPE, (event, context) -> receive(context.client(), event));
 		ClientPlayNetworking.registerGlobalReceiver(MasterFormLessons.Open.TYPE, (event, context) -> {
 			if (context.client().player != null && context.client().level != null)
@@ -62,7 +62,7 @@ public final class MasterFormsClient {
 		});
 	}
 	public static KeyMapping mapping() { return key; }
-	public static Component binding() { return key == null ? Component.literal("C") : key.getTranslatedKeyMessage(); }
+	public static Component binding() { return key == null ? Component.literal("X") : key.getTranslatedKeyMessage(); }
 	public static void send(int action) {
 		if (FormDashClient.route(action)) return;
 		Minecraft client = Minecraft.getInstance();

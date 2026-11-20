@@ -1,3 +1,14 @@
+# What's new since 0.14.0
+
+- **Mojito's Fetchblade & boss rewards**: Mojito now drops **Mojito's Fetchblade**, an Epic aura-forged greatsword with **Fetch Bound**; lair guardians, dungeon bosses, regional bosses, Sword Masters, giants, and the Archivist award scaled Aura Shards, Mana Crystals, Torn/Manual Pages, and runes, and Dungeon Relics restore mana and aura on a shorter cooldown.
+- **3D weapon & staff models and Skyrend Glaive polearm combat**: forged weapons (`Oathkeeper`, `Lumenedge`, `Bulwark Maul`, `Skyrend Glaive`, `Fetchblade`) and all 20 elemental staffs have stepped 3D held models; `Skyrend Glaive` uses a two-handed cross-body guard stance and lever-action cleave.
+- **Cooperative Ferryman**: the Reed-Crowned Ferryman now re-aims tells onto surviving challengers, marks two oarsmen with paired anchors in phase two, and shares extra Aura Shards among every contributor.
+- **Tamed Coffer Mimics & Iron Golems**: iron golems leave tamed Coffer Mimics alone, and tamed mimics do not attack golems.
+- **Dungeon wards & boss resets**: dungeon wards seal walls, decorations, and waterlogged blocks so survival players cannot tunnel into boss rooms or vaults; engaged dungeon bosses reset to full health if every challenger leaves or falls.
+- **Parties, guilds & escorts**: an offline party leader automatically passes leadership after 3 days offline, `/guild` and `/coven` show how many members are online, and nearby party members earn a companion emerald share when an escort llama reaches its destination.
+- **Master form default key**: the **Equipped Master form** key now defaults to `X` under **Wildercord: Master's Arts** (avoiding Creative's `C` Save Toolbar clash).
+- **World & structure polish**: Shepherd's Steading, Tidepool Grotto, Granary Farmstead, Bell Chapel, Rune Library, Archive forecourt, Ember Sanctum cavern, and Belowkeeper Bell Sanctum's surface ruined belfry were rebuilt or expanded.
+
 # What's new in 0.14.0: One road
 
 Install `wildercord-0.14.0-alpha+mc26.3.jar` on the server and every client. This update adds an item, so it must match on both sides.
@@ -109,7 +120,7 @@ Three player arts: **Spellcut** (U), **Rising Break** (Y) and **Driving Cut** (J
 
 ## Master forms and field forms
 
-Equip one Master form and use it with **C**. The field forms move your real body, stop at walls and ledges and end in a short recovery: **Cinder Lunge**, **Reed Slip**, **Air Step**, **Plunging Strike**, **Wall Turn** and **Stone Hinge**. Masters and their teachers teach them. See [Master Forms](masters/master-forms.md).
+Equip one Master form and use it with **X**. The field forms move your real body, stop at walls and ledges and end in a short recovery: **Cinder Lunge**, **Reed Slip**, **Air Step**, **Plunging Strike**, **Wall Turn**, and **Stone Hinge** *(experimental; enabled via `aura.experimental_stone_hinge`)*. Masters and their teachers teach them. See [Master Forms](masters/master-forms.md).
 
 **Spell Cut** is a learned swing that cuts a hostile spell bolt out of the air just as it reaches you. It needs no slot and no extra key. See [Spell Cut](masters/spell-cut.md).
 

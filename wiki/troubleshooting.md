@@ -44,7 +44,7 @@ See [Sword Masters]({{ '/masters/' | relative_url }}).
 
 ## The Master form key does nothing
 
-The Master form key (`C`) does nothing in Creative, so the game's Save Toolbar still works there. You also need a [Master form]({{ '/masters/master-forms/' | relative_url }}) equipped. Check the key isn't clashing with another in **Options > Controls > Key Binds**.
+You need a [Master form]({{ '/masters/master-forms/' | relative_url }}) equipped and a blade in hand, and the form key (default `X`) must not be clashing with another key in **Options > Controls > Key Binds**.
 
 ## A new dungeon, site or the practice arena is missing
 

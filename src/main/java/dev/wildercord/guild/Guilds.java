@@ -196,14 +196,17 @@ public final class Guilds {
 			return 0;
 		}
 		MutableComponent members = Component.empty();
+		int onlineCount = 0;
 		for (int i = 0; i < guild.members().size(); i++) {
 			UUID id = guild.members().get(i);
 			boolean online = player.level().getServer().getPlayerList().getPlayer(id) != null;
+			if (online) onlineCount++;
 			if (i > 0) members.append(Component.literal(", ").withStyle(ChatFormatting.GRAY));
 			members.append(Component.literal(ledger.name(id) + (id.equals(guild.leader()) ? " ★" : ""))
 				.withStyle(online ? ChatFormatting.WHITE : ChatFormatting.DARK_GRAY));
 		}
-		player.sendSystemMessage(text(kind, "show", guild.name(), guild.members().size(), GuildRules.MAX_MEMBERS).withStyle(ChatFormatting.GOLD));
+		player.sendSystemMessage(text(kind, "show", guild.name(), guild.members().size(), GuildRules.MAX_MEMBERS).withStyle(ChatFormatting.GOLD)
+			.append(Component.literal(" (" + onlineCount + " of " + guild.members().size() + " online)").withStyle(ChatFormatting.GRAY)));
 		player.sendSystemMessage(members);
 		int near = nearby(player, kind);
 		player.sendSystemMessage(text(kind, "near", near, Math.round((GuildRules.bonus(near) - 1) * 100)).withStyle(ChatFormatting.GRAY));

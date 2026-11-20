@@ -12,27 +12,33 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.server.level.ServerLevel;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.UUID;
 
 /** Bounded habitat sampling, only while actually breathing. No chunk loads; samples expire after two seconds or movement. */
 public final class TrainingGrounds {
 	private TrainingGrounds() {}
 
 	private record Sample(ServerLevel level, BlockPos feet, long at, TrainingRules.Ground ground) {}
-	private static final Map<ServerPlayer, Sample> SAMPLES = new WeakHashMap<>();
+	private static final Map<UUID, Sample> SAMPLES = new HashMap<>();
 
-	public static void broken(ServerPlayer player) { SAMPLES.remove(player); }
+	static {
+		dev.wildercord.ServerState.forgetOnDisconnect(SAMPLES);
+		dev.wildercord.ServerState.resetOnStop(SAMPLES);
+	}
+
+	public static void broken(ServerPlayer player) { SAMPLES.remove(player.getUUID()); }
 
 	public static TrainingRules.Ground ground(ServerPlayer player) {
 		if (!Config.get().auraWorld().trainingGrounds() || !player.onGround() || player.isInWater() || player.isInLava())
 			return TrainingRules.Ground.NONE;
-		var old = SAMPLES.get(player);
+		var old = SAMPLES.get(player.getUUID());
 		long now = player.level().getGameTime();
 		if (old != null && old.level() == player.level() && old.feet().equals(player.blockPosition())
 			&& now >= old.at() && now - old.at() < TrainingRules.CHECK_TICKS) return old.ground();
 		var ground = inspect(player);
-		SAMPLES.put(player, new Sample(player.level(), player.blockPosition(), now, ground));
+		SAMPLES.put(player.getUUID(), new Sample(player.level(), player.blockPosition(), now, ground));
 		return ground;
 	}
 

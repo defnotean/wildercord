@@ -21,7 +21,7 @@ LANG = {
     "screen.wildercord.master_forms.back": "Back",
     "screen.wildercord.master_forms.source": "Find a teacher",
     "screen.wildercord.master_forms.overview": "Overview",
-    "screen.wildercord.master_forms.source_help": "Reach Sovereign and record a legitimate Gale Master clear; old clears count. Sneak-use a wandering teacher with an empty main hand, read the illustrated lesson and accept it. Any breathing method works. Your story remains here and in the Grimoire, even with a full inventory.\n\nOrdinary admitted swings and spells end an active brace or kick. Aura arts wait through landing plus 0.5s recovery. If landing is impossible, art commitment ends after at most 6s plus 0.5s recovery; Wall Turn itself still needs a true safe landing. Rebind the form in Options > Controls > Key Binds > Wildercord: Master forms.",
+    "screen.wildercord.master_forms.source_help": "Reach Sovereign and record a legitimate Gale Master clear; old clears count. Sneak-use a wandering teacher with an empty main hand, read the illustrated lesson and accept it. Any breathing method works. Your story remains here and in the Grimoire, even with a full inventory.\n\nOrdinary admitted swings and spells end an active brace or kick. Aura arts wait through landing plus 0.5s recovery. If landing is impossible, art commitment ends after at most 6s plus 0.5s recovery; Wall Turn itself still needs a true safe landing. Rebind the form in Options > Controls > Key Binds > Wildercord: Master's Arts.",
     "screen.wildercord.master_forms.accept": "Accept the Wall Turn lesson",
     "screen.wildercord.master_forms.page": "Page %s / %s",
     "screen.wildercord.master_forms.practice": "Practice: jump by a safe wall. %s, release, press, land. Costs real Aura; no XP.",
