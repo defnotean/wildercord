@@ -43,7 +43,7 @@ class AdvancementGuideTest {
 						assertEquals(1, p.getAsJsonArray("entries").size(), "Only deterministic item rewards can be summed");
 						var entry = p.getAsJsonArray("entries").get(0).getAsJsonObject();
 						assertEquals("minecraft:item", entry.get("type").getAsString());
-						int count = entry.has("modifier") ? entry.getAsJsonObject("modifier").get("count").getAsInt() : 1;
+						int count = entry.has("functions") ? entry.getAsJsonArray("functions").get(0).getAsJsonObject().get("count").getAsInt() : 1;
 						items.merge(entry.get("name").getAsString(), p.get("rolls").getAsInt() * count, Integer::sum);
 					}
 				}

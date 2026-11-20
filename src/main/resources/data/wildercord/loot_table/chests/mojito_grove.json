@@ -2,22 +2,117 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "rolls": {"type": "minecraft:uniform", "min": 3, "max": 6},
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 6
+      },
       "entries": [
-        {"type": "minecraft:item", "name": "minecraft:bone", "weight": 5, "modifier": {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 3, "max": 9}}},
-        {"type": "minecraft:item", "name": "minecraft:cooked_beef", "weight": 4, "modifier": {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 6}}},
-        {"type": "minecraft:item", "name": "minecraft:lead", "weight": 3, "modifier": {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}}},
-        {"type": "minecraft:item", "name": "minecraft:name_tag", "weight": 2},
-        {"type": "minecraft:item", "name": "minecraft:gold_nugget", "weight": 3, "modifier": {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 4, "max": 12}}},
-        {"type": "minecraft:item", "name": "minecraft:emerald", "weight": 2, "modifier": {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 4}}}
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bone",
+          "weight": 5,
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 9
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:cooked_beef",
+          "weight": 4,
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 6
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:lead",
+          "weight": 3,
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:name_tag",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_nugget",
+          "weight": 3,
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 12
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:emerald",
+          "weight": 2,
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
+        }
       ]
     },
     {
       "rolls": 1,
       "entries": [
-        {"type": "minecraft:item", "name": "minecraft:wolf_armor", "weight": 1},
-        {"type": "minecraft:item", "name": "minecraft:golden_apple", "weight": 2},
-        {"type": "minecraft:item", "name": "minecraft:iron_sword", "weight": 3, "modifier": {"type": "minecraft:enchant_randomly"}}
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:wolf_armor",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_apple",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_sword",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly"
+            }
+          ]
+        }
       ]
     }
   ]
