@@ -457,7 +457,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					"Barnwarmth crafts with cherry planks");
 
 				var fleeceIn = CraftingInput.of(3, 2, List.of(
-					new ItemStack(WildercordItems.BLANK_RUNE), new ItemStack(Items.SHEARS), new ItemStack(Items.PINK_WOOL),
+					new ItemStack(WildercordItems.BLANK_RUNE), new ItemStack(Items.SHEARS), new ItemStack(Items.WOOL.pink()),
 					new ItemStack(Items.FEATHER), ItemStack.EMPTY, ItemStack.EMPTY
 				));
 				var fleece = s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, fleeceIn, l);
