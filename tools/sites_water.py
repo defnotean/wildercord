@@ -69,10 +69,9 @@ def _tide_page():
             "functions": [{"function": "minecraft:set_components", "components": {"wildercord:breathing_method": "tide"}}]}
 
 
-def _treasure_map(weight):
+def _treasure_map(g, weight):
     return {"type": "minecraft:item", "name": "minecraft:map", "weight": weight, "functions": [
-        {"function": "minecraft:exploration_map", "destination": "#minecraft:on_treasure_maps", "decoration": "minecraft:red_x",
-         "zoom": 1, "skip_existing_chunks": False},
+        g.profile.exploration_map("#minecraft:on_treasure_maps", "minecraft:red_x", zoom=1, skip_existing_chunks=False),
         {"function": "minecraft:set_name", "name": {"translate": "filled_map.buried_treasure"}, "target": "item_name"}]}
 
 
@@ -105,7 +104,7 @@ def write(g):
         "water_lighthouse": _loot(g, [("tide_lantern", 3), ("storm_glass", 3), ("shore_sense", 3), ("tide_marker", 2), ("fathom", 2), ("wreck_sense", 2)], [
             e("minecraft:spyglass", 2), e("minecraft:compass", 2), e("minecraft:glowstone_dust", 3, 2, 6),
             e("minecraft:candle", 3, 1, 3), e("minecraft:paper", 3, 2, 5), e("minecraft:emerald", 2, 1, 3)],
-            extra=[_chance({"rolls": 1, "entries": [_treasure_map(1)]}, 0.5)]),
+            extra=[_chance({"rolls": 1, "entries": [_treasure_map(g, 1)]}, 0.5)]),
         "water_watermill": _loot(g, [("spring_draw", 3), ("brimming", 3), ("sluice", 3), ("wring", 2), ("reed_cut", 2)], [
             e("minecraft:bread", 4, 2, 5), e("minecraft:wheat", 3, 3, 8), e("minecraft:bucket", 2),
             e("minecraft:sugar", 2, 1, 4), e("minecraft:fishing_rod", 1), e("minecraft:emerald", 2, 1, 2)]),
@@ -116,7 +115,7 @@ def write(g):
         "water_pier_boathouse": _loot(g, [("mooring_call", 3), ("drift_net", 3), ("lily_path", 3), ("sandbar", 2), ("dolphin_call", 2)], [
             e("minecraft:lead", 2), e("minecraft:oak_boat", 1), e("minecraft:string", 3, 2, 6),
             e("minecraft:fishing_rod", 2), e("minecraft:cooked_salmon", 3, 2, 4), e("minecraft:nautilus_shell", 1)],
-            extra=[_chance({"rolls": 1, "entries": [_treasure_map(1)]}, 0.35)]),
+            extra=[_chance({"rolls": 1, "entries": [_treasure_map(g, 1)]}, 0.35)]),
         "water_sunken_shrine": _loot(g, [("oceans_favor", 2), ("diving_bell", 3), ("tidebreath", 3), ("kelpsong", 3), ("coral_mend", 2)], [
             e("minecraft:prismarine_shard", 3, 2, 6), e("minecraft:prismarine_crystals", 3, 2, 5), e("minecraft:nautilus_shell", 2),
             e("minecraft:heart_of_the_sea", 1), e("minecraft:sea_lantern", 2, 1, 2), e("wildercord:aura_shard", 2)],

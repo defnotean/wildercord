@@ -149,7 +149,7 @@ public final class MasterGauntlet {
 		for (ServerPlayer other : server.getPlayerList().getPlayers()) if (other != player) other.sendSystemMessage(shout);
 		if (!first) return;
 		ItemStack blade = blade(player);
-		if (!player.getInventory().add(blade)) player.drop(blade, false, net.minecraft.util.Prediction.SERVER_ONLY);
+		if (!player.getInventory().add(blade)) dev.wildercord.compat.McEntities.drop(player, blade, false);
 		dev.wildercord.cast.Grimoire.unlock(player, "aura:gauntlet");
 	}
 

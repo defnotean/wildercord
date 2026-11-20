@@ -146,7 +146,7 @@ public final class ArticulatedCombat {
 				&& !schoolFootworkCompatible(frame)
 			|| !ArticulatedArmorRenderer.compatible(humanoid) || !view && frame.pose().weight() <= 0
 			|| view && frame.move() != -1 && !ArticulatedCombatPose.supportsPlayer(frame.move()) && !wallTurn(frame)
-			|| view && frame.move() == -1 && state.swingAnimation > 0) return null;
+			|| view && frame.move() == -1 && dev.wildercord.client.compat.RenderCompat.swingProgress(state) > 0) return null;
 		ItemStack off = state.mainArm == HumanoidArm.RIGHT ? state.leftHandItemStack : state.rightHandItemStack;
 		if (off != null && !off.isEmpty()) return null;
 		if (state instanceof AvatarRenderState avatar) {
@@ -250,8 +250,8 @@ public final class ArticulatedCombat {
 
 	/** Canonical third-person display hilt; first person deliberately uses the same resolved item. */
 	public static void orientItemAtSocket(PoseStack stack) {
-		stack.rotateDegrees(Axis.XP, -90);
-		stack.rotateDegrees(Axis.YP, 180);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.XP, -90);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.YP, 180);
 		stack.translate(0, 1.327F / 16, -1.439F / 16);
 	}
 

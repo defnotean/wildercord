@@ -230,7 +230,7 @@ public final class Incantations {
 			float y, int color, float alpha) {
 		pose.pushPose();
 		pose.translate(at.x - camera.pos.x, at.y - camera.pos.y, at.z - camera.pos.z);
-		pose.rotate(camera.orientation);
+		dev.wildercord.client.compat.RenderCompat.rotate(pose, camera.orientation);
 		pose.scale(SCALE, -SCALE, SCALE);
 		int a = Mth.clamp((int) (alpha * 255), 4, 255);
 		int fill = (a << 24) | lighter(color, 0.55F);

@@ -14,7 +14,7 @@ public final class FungalInvestigation {
  public static boolean remember(ServerPlayer p,String key) {if(knows(p,key))return false;var entries=new ArrayList<>(Heart.grimoire(p));entries.add(key);p.setAttached(WildercordAttachments.GRIMOIRE,List.copyOf(entries));return true;}
  private static boolean actor(ServerPlayer p) {return p.isAlive() && !p.isSpectator() && !p.getAbilities().instabuild;}
  private static boolean visible(ServerPlayer p,BlockPos at) {var hit=p.level().clip(new net.minecraft.world.level.ClipContext(p.getEyePosition(),net.minecraft.world.phys.Vec3.atCenterOf(at),net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,p));return hit.getType()==net.minecraft.world.phys.HitResult.Type.MISS || hit.getBlockPos().equals(at);}
- private static void give(ServerPlayer p,ItemStack stack) {p.getInventory().placeItemBackInInventory(stack,net.minecraft.util.Prediction.SERVER_ONLY);}
+ private static void give(ServerPlayer p,ItemStack stack) {dev.wildercord.compat.McEntities.placeItemBackInInventory(p, stack);}
  public static void read(ServerPlayer p,BlockPos at) {
   if(!actor(p) || !p.level().hasChunkAt(at) || p.distanceToSqr(at.getX()+.5,at.getY()+.5,at.getZ()+.5)>16 || !p.level().mayInteract(p,at) || !visible(p,at))return;
   if(!(p.level().getBlockEntity(at) instanceof BreathmarkEntity e) || !e.authentic()) {p.sendOverlayMessage(Component.translatable("message.wildercord.fungal.replica"));return;}

@@ -4,10 +4,10 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.RootcoilSerpent;
 import dev.wildercord.aura.world.SerpentRules;
 import dev.wildercord.aura.world.SerpentSpine;
+import dev.wildercord.client.compat.CullableEntityRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -30,7 +30,7 @@ import java.util.WeakHashMap;
  * facing and the rest of the body trails after it, lying along the ground (or floating on the water) and sliding off the
  * tree when nothing holds it up.
  */
-public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,SerpentRenderState> {
+public final class SerpentRenderer extends CullableEntityRenderer<RootcoilSerpent,SerpentRenderState> {
 	private static final Identifier SKIN=Wildercord.id("textures/entity/rootcoil_serpent/skin.png"),GLOW=Wildercord.id("textures/entity/rootcoil_serpent/glow.png");
 	/** Texture size, the ring's sides, and how much wider than tall the body is. */
 	static final float TEX_W=128,TEX_H=64;
@@ -54,7 +54,7 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 	public SerpentRenderer(EntityRendererProvider.Context context){super(context);shadowRadius=2.2F;}
 
 	@Override public SerpentRenderState createRenderState(){return new SerpentRenderState();}
-	@Override protected AABB getBoundingBoxForCulling(RootcoilSerpent serpent,float partial){
+	@Override protected AABB cullingBounds(RootcoilSerpent serpent,float partial){
 		return serpent.getBoundingBox().minmax(AABB.ofSize(serpent.trunk().add(0,4,0),8,10,8)).inflate(SerpentSpine.LENGTH*.6);
 	}
 

@@ -16,7 +16,6 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
@@ -81,7 +80,7 @@ public final class GearLoot {
 			if (chance <= 0) {
 				return;
 			}
-			LootPool.Builder builder = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
+			LootPool.Builder builder = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1));
 			// The chance is shared out evenly, ten weight per point so small shares still round well.
 			int each = Math.max(1, Math.round(chance * 10.0F / pool.pieces().size()));
 			for (GearDef piece : pool.pieces()) {

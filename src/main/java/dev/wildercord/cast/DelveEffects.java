@@ -682,7 +682,7 @@ final class DelveEffects {
 	/** Gives the player a stack, dropping at their feet whatever doesn't fit. */
 	private static void give(ServerPlayer player, ItemStack stack) {
 		if (!player.getInventory().add(stack) && !stack.isEmpty()) {
-			player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+			dev.wildercord.compat.McEntities.drop(player, stack, false);
 		}
 	}
 
@@ -1292,7 +1292,7 @@ final class DelveEffects {
 				}
 			} else if (CampfireBlock.isLitCampfire(state)) {
 				if (mayChange(cast, p)) {
-					CampfireBlock.douse(player, level, p, state);
+					dev.wildercord.compat.McBlocksAndItems.douseCampfire(player, level, p, state);
 					level.setBlockAndUpdate(p, state.setValue(CampfireBlock.LIT, false));
 					out++;
 				}

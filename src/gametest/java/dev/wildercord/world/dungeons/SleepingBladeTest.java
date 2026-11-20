@@ -104,7 +104,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				float health=p.getHealth();p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
 				check(p.getHealth()==health,"Actual perfect guard turns the blow aside");check(Math.abs(Momentum.value(p)-MomentumRules.PERFECT_GUARD*MomentumRules.temper("stone").guard()*1.3)<.01,"Perfect guard actually builds 30% more momentum");
 				var guardPaid=new double[]{-1};var playerId=p.getUUID();AuraApi.onSpend((who,paid,reason,backlash)->{if(who.getUUID().equals(playerId) && reason.equals("guard"))guardPaid[0]=paid;});
-				p.setInvulnerableTime(0);p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
+				dev.wildercord.compat.McEntities.clearHurtCooldown(p);p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
 				double absorbed=4*dev.wildercord.config.Config.get().aura().guardShare();
 				check(p.getHealth()<health,"Held guard still admits damage after the perfect moment");
 				check(Math.abs(guardPaid[0]-absorbed*AuraRules.GUARD_COST_PER_POINT*.85)<.01,"Actual held guard pays the reduced cost for absorbed damage: "+guardPaid[0]);
@@ -125,7 +125,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				var cs=s.overworld().getChunkSource();var gen=cs.getGenerator();
 				com.mojang.datafixers.util.Pair<BlockPos,net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome>> b=null;
 				for(int t=0;t<12 && b==null;t++) {
-					var hit=gen.getBiomeSource().findBiomeHorizontal(1024+t*4096,128,1024,t==0 ? 6400 : 2048,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(77+t),true,cs.randomState());
+					var hit=dev.wildercord.gametest.compat.GametestCompat.findBiomeHorizontal(gen.getBiomeSource(),1024+t*4096,128,1024,t==0 ? 6400 : 2048,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(77+t),true,cs.randomState());
 					if(hit==null)continue;
 					int dry=0;
 					for(int i=0;i<16;i++) {

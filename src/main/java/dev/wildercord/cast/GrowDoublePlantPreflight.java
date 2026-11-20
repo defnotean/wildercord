@@ -2,7 +2,6 @@ package dev.wildercord.cast;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.TallGrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -22,7 +21,7 @@ final class GrowDoublePlantPreflight {
   if(!Casters.mayEdit(cast.caster,level,lower)||!Casters.mayEdit(cast.caster,level,upper))return false;
   if(!cast.alive()||!level.getBlockState(lower).equals(source))return false;
   var grass=(TallGrassBlock)source.getBlock();
-  if(!grass.isValidBonemealTarget(level,lower,source,BonemealSource.INTERACTION))return false;
+  if(!dev.wildercord.compat.McBlocksAndItems.isValidBonemealTarget(grass,level,lower,source))return false;
   // Atomic shared Cast reservation: one remaining block cannot pay for half a plant.
   return cast.takeBlocks(2);
  }

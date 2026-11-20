@@ -4,17 +4,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
+import dev.wildercord.compat.McLootAndTriggers;
 import dev.wildercord.content.CordTier;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.Fusions;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Collection;
 import java.util.List;
@@ -58,46 +57,43 @@ public final class WildercordTriggers {
 
 	// ------------------------------------------------------------------ feats
 
-	public static final class FeatTrigger extends SimpleCriterionTrigger<FeatTrigger.Instance> {
+	public static final class FeatTrigger extends SimpleCriterionTrigger<McLootAndTriggers.TriggerPayload<FeatTrigger.Data>> {
 		@Override
-		public Codec<Instance> codec() {
-			return Instance.CODEC;
+		public Codec<McLootAndTriggers.TriggerPayload<Data>> codec() {
+			return Data.CODEC;
 		}
 
 		public void trigger(ServerPlayer player, Collection<String> grimoire) {
-			trigger(player, instance -> grimoire.contains("feat:" + instance.feat()));
+			trigger(player, instance -> grimoire.contains("feat:" + instance.data().feat()));
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, String feat) implements SimpleCriterionTrigger.SimpleInstance {
-			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
-				Codec.STRING.fieldOf("feat").forGetter(Instance::feat)
-			).apply(i, Instance::new));
+		public record Data(String feat) {
+			public static final Codec<McLootAndTriggers.TriggerPayload<Data>> CODEC = McLootAndTriggers.simpleTriggerCodec(
+				RecordCodecBuilder.mapCodec(i -> i.group(Codec.STRING.fieldOf("feat").forGetter(Data::feat)).apply(i, Data::new)));
 		}
 	}
 
 	// ------------------------------------------------------------------ the Grimoire
 
-	public static final class GrimoireTrigger extends SimpleCriterionTrigger<GrimoireTrigger.Instance> {
+	public static final class GrimoireTrigger extends SimpleCriterionTrigger<McLootAndTriggers.TriggerPayload<GrimoireTrigger.Data>> {
 		@Override
-		public Codec<Instance> codec() {
-			return Instance.CODEC;
+		public Codec<McLootAndTriggers.TriggerPayload<Data>> codec() {
+			return Data.CODEC;
 		}
 
 		public void trigger(ServerPlayer player, Collection<String> grimoire) {
-			trigger(player, instance -> instance.matches(grimoire));
+			trigger(player, instance -> instance.data().matches(grimoire));
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, Optional<String> entry, String prefix, int count, boolean all, int signatures)
-				implements SimpleCriterionTrigger.SimpleInstance {
-			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
-				Codec.STRING.optionalFieldOf("entry").forGetter(Instance::entry),
-				Codec.STRING.optionalFieldOf("prefix", "").forGetter(Instance::prefix),
-				Codec.INT.optionalFieldOf("count", 1).forGetter(Instance::count),
-				Codec.BOOL.optionalFieldOf("all", false).forGetter(Instance::all),
-				Codec.INT.optionalFieldOf("signatures", 0).forGetter(Instance::signatures)
-			).apply(i, Instance::new));
+		public record Data(Optional<String> entry, String prefix, int count, boolean all, int signatures) {
+			public static final Codec<McLootAndTriggers.TriggerPayload<Data>> CODEC = McLootAndTriggers.simpleTriggerCodec(
+				RecordCodecBuilder.mapCodec(i -> i.group(
+					Codec.STRING.optionalFieldOf("entry").forGetter(Data::entry),
+					Codec.STRING.optionalFieldOf("prefix", "").forGetter(Data::prefix),
+					Codec.INT.optionalFieldOf("count", 1).forGetter(Data::count),
+					Codec.BOOL.optionalFieldOf("all", false).forGetter(Data::all),
+					Codec.INT.optionalFieldOf("signatures", 0).forGetter(Data::signatures)
+				).apply(i, Data::new)));
 
 			public boolean matches(Collection<String> grimoire) {
 				if (entry.isPresent()) {
@@ -117,37 +113,35 @@ public final class WildercordTriggers {
 
 	// ------------------------------------------------------------------ Heart Circles
 
-	public static final class HeartCircleTrigger extends SimpleCriterionTrigger<HeartCircleTrigger.Instance> {
+	public static final class HeartCircleTrigger extends SimpleCriterionTrigger<McLootAndTriggers.TriggerPayload<HeartCircleTrigger.Data>> {
 		@Override
-		public Codec<Instance> codec() {
-			return Instance.CODEC;
+		public Codec<McLootAndTriggers.TriggerPayload<Data>> codec() {
+			return Data.CODEC;
 		}
 
 		public void trigger(ServerPlayer player, int circles) {
-			trigger(player, instance -> circles >= instance.level());
+			trigger(player, instance -> circles >= instance.data().level());
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, int level) implements SimpleCriterionTrigger.SimpleInstance {
-			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
-				Codec.INT.fieldOf("level").forGetter(Instance::level)
-			).apply(i, Instance::new));
+		public record Data(int level) {
+			public static final Codec<McLootAndTriggers.TriggerPayload<Data>> CODEC = McLootAndTriggers.simpleTriggerCodec(
+				RecordCodecBuilder.mapCodec(i -> i.group(Codec.INT.fieldOf("level").forGetter(Data::level)).apply(i, Data::new)));
 		}
 	}
 
 	// ------------------------------------------------------------------ runes known
 
-	public static final class RunesKnownTrigger extends SimpleCriterionTrigger<RunesKnownTrigger.Instance> {
+	public static final class RunesKnownTrigger extends SimpleCriterionTrigger<McLootAndTriggers.TriggerPayload<RunesKnownTrigger.Data>> {
 		@Override
-		public Codec<Instance> codec() {
-			return Instance.CODEC;
+		public Codec<McLootAndTriggers.TriggerPayload<Data>> codec() {
+			return Data.CODEC;
 		}
 
 		/** @param innate the player's own innate rune's id ("" before it wakes) */
 		public void trigger(ServerPlayer player, List<String> learned, String innate) {
 			java.util.Set<String> known = new java.util.HashSet<>(learned);
 			int count = Runes.countKnown(known);
-			trigger(player, instance -> instance.all() ? knowsEveryRune(known, innate) : count >= instance.count());
+			trigger(player, instance -> instance.data().all() ? knowsEveryRune(known, innate) : count >= instance.data().count());
 		}
 
 		/**
@@ -164,18 +158,18 @@ public final class WildercordTriggers {
 			return true;
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, int count, boolean all) implements SimpleCriterionTrigger.SimpleInstance {
-			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
-				Codec.INT.optionalFieldOf("count", 1).forGetter(Instance::count),
-				Codec.BOOL.optionalFieldOf("all", false).forGetter(Instance::all)
-			).apply(i, Instance::new));
+		public record Data(int count, boolean all) {
+			public static final Codec<McLootAndTriggers.TriggerPayload<Data>> CODEC = McLootAndTriggers.simpleTriggerCodec(
+				RecordCodecBuilder.mapCodec(i -> i.group(
+					Codec.INT.optionalFieldOf("count", 1).forGetter(Data::count),
+					Codec.BOOL.optionalFieldOf("all", false).forGetter(Data::all)
+				).apply(i, Data::new)));
 		}
 	}
 
 	// ------------------------------------------------------------------ Cords
 
-	public static final class CordTrigger extends SimpleCriterionTrigger<CordTrigger.Instance> {
+	public static final class CordTrigger extends SimpleCriterionTrigger<McLootAndTriggers.TriggerPayload<CordTrigger.Data>> {
 		/** A Cord tier by its key ({@code "twine"} ... {@code "echo"}); a typo fails the advancement's loading, loudly. */
 		private static final Codec<CordTier> TIER = Codec.STRING.comapFlatMap(key -> {
 			for (CordTier tier : CordTier.values()) {
@@ -187,43 +181,39 @@ public final class WildercordTriggers {
 		}, tier -> tier.key);
 
 		@Override
-		public Codec<Instance> codec() {
-			return Instance.CODEC;
+		public Codec<McLootAndTriggers.TriggerPayload<Data>> codec() {
+			return Data.CODEC;
 		}
 
 		/** @param worn the worn Cord's tier, or null for none */
 		public void trigger(ServerPlayer player, CordTier worn) {
 			if (worn != null) {
-				trigger(player, instance -> worn.ordinal() >= instance.tier().ordinal());
+				trigger(player, instance -> worn.ordinal() >= instance.data().tier().ordinal());
 			}
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, CordTier tier) implements SimpleCriterionTrigger.SimpleInstance {
-			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
-				TIER.fieldOf("tier").forGetter(Instance::tier)
-			).apply(i, Instance::new));
+		public record Data(CordTier tier) {
+			public static final Codec<McLootAndTriggers.TriggerPayload<Data>> CODEC = McLootAndTriggers.simpleTriggerCodec(
+				RecordCodecBuilder.mapCodec(i -> i.group(TIER.fieldOf("tier").forGetter(Data::tier)).apply(i, Data::new)));
 		}
 	}
 
 	// ------------------------------------------------------------------ moments
 
-	public static final class MomentTrigger extends SimpleCriterionTrigger<MomentTrigger.Instance> {
+	public static final class MomentTrigger extends SimpleCriterionTrigger<McLootAndTriggers.TriggerPayload<MomentTrigger.Data>> {
 		@Override
-		public Codec<Instance> codec() {
-			return Instance.CODEC;
+		public Codec<McLootAndTriggers.TriggerPayload<Data>> codec() {
+			return Data.CODEC;
 		}
 
 		public void trigger(ServerPlayer player, String moment) {
 			String id = moment.toLowerCase(Locale.ROOT);
-			trigger(player, instance -> instance.moment().equals(id));
+			trigger(player, instance -> instance.data().moment().equals(id));
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, String moment) implements SimpleCriterionTrigger.SimpleInstance {
-			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
-				Codec.STRING.fieldOf("moment").forGetter(Instance::moment)
-			).apply(i, Instance::new));
+		public record Data(String moment) {
+			public static final Codec<McLootAndTriggers.TriggerPayload<Data>> CODEC = McLootAndTriggers.simpleTriggerCodec(
+				RecordCodecBuilder.mapCodec(i -> i.group(Codec.STRING.fieldOf("moment").forGetter(Data::moment)).apply(i, Data::new)));
 		}
 	}
 }

@@ -1499,7 +1499,7 @@ public class StarEater extends DungeonBoss {
 	/** Whether someone knocks this shard back: a swing of a blade (or a fist) just as it arrives, or a bolt of their own. */
 	private boolean parried(ServerLevel level, Shard shard) {
 		for (Player player : level.getEntitiesOfClass(Player.class, new AABB(shard.pos, shard.pos).inflate(3.0))) {
-			if (!player.isAlive() || player.isSpectator() || !player.isSwinging() || player.getSwingAnimation(1.0F) > 0.6F) {
+			if (!player.isAlive() || player.isSpectator() || !dev.wildercord.compat.McEntities.isSwinging(player) || dev.wildercord.compat.McEntities.swingProgress(player, 1.0F) > 0.6F) {
 				continue;
 			}
 			Vec3 toShard = shard.pos.subtract(player.getEyePosition());

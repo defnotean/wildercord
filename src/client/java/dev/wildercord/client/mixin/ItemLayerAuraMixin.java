@@ -28,6 +28,6 @@ public abstract class ItemLayerAuraMixin {
 
 	@Inject(method = "submit", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
 	private void wildercord$aura(PoseStack pose, SubmitNodeCollector collector, int light, int overlay, int outline, CallbackInfo ci) {
-		AuraBlade.layer(pose, collector, quads, extents);
+		AuraBlade.layer(pose, collector, quads.all(), extents);
 	}
 }

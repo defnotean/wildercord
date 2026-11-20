@@ -74,7 +74,7 @@ final class StoneFracture {
 		if (beat == StoneFractureRules.Beat.REPLY) {
 			finished = released = true; // Consume first: parry callbacks must not replay a strike.
 			if (!warned) return false;
-			master.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+			dev.wildercord.compat.McEntities.swing(master, InteractionHand.MAIN_HAND, true);
 			AuraFx.trail(master, AuraFxRules.Stroke.THRUST, false, master.auraColor(), master.stage(), 1.1F);
 			Feels.sound(level, origin, "aura_slash", 1, .75F);
 			Vec3 delta = target.position().subtract(origin), side = new Vec3(-aim.z, 0, aim.x);

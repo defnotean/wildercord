@@ -1,5 +1,6 @@
 package dev.wildercord.world.upgrade;
 
+import dev.wildercord.TestDataProfile;
 import dev.wildercord.world.upgrade.UpgradeCatalog.Site;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -16,7 +17,7 @@ class UpgradeCatalogTest {
 
 	@Test void everyWorldgenStructureAndFeatureHasAnIndividualDecision() throws Exception {
 		var ids=new HashSet<String>();
-		for(var dir:List.of("structure","feature"))try(var files=Files.list(WORLDGEN.resolve(dir))) {
+		for(var dir:List.of("structure",TestDataProfile.featureDirName()))try(var files=Files.list(WORLDGEN.resolve(dir))) {
 			files.forEach(f->ids.add("wildercord:"+f.getFileName().toString().replace(".json","")));
 		}
 		assertTrue(ids.size()>=18,"Worldgen inventory read");

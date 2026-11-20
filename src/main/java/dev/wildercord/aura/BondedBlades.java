@@ -765,11 +765,12 @@ public final class BondedBlades {
 	private static void deep(ServerPlayer player, BladeRegistry registry, ItemStack box) {
 		UUID me = player.getUUID();
 		ItemContainerContents contents = box.get(DataComponents.CONTAINER);
-		if (contents != null && contents.size() > 0) {
+		List<ItemStack> all = dev.wildercord.compat.McBlocksAndItems.containerItems(contents);
+		if (!all.isEmpty()) {
 			// The box's slots as copies: a blade going home leaves its slot empty, and the box takes the rest back as they were.
 			List<ItemStack> slots = new ArrayList<>();
 			List<ItemStack> home = new ArrayList<>();
-			for (ItemStack inside : contents.itemCopies().toList()) {
+			for (ItemStack inside : all) {
 				BladeBond b = bond(inside);
 				if (b != null && !b.ownedBy(me) && registry.active(b.id())) {
 					home.add(inside);
@@ -789,7 +790,7 @@ public final class BondedBlades {
 		if (bundle != null && !bundle.isEmpty()) {
 			List<ItemStack> keep = new ArrayList<>();
 			List<ItemStack> home = new ArrayList<>();
-			for (ItemStack inside : bundle.itemCopies().toList()) {
+			for (ItemStack inside : dev.wildercord.compat.McBlocksAndItems.bundleItems(bundle)) {
 				BladeBond b = bond(inside);
 				if (b != null && !b.ownedBy(me) && registry.active(b.id())) {
 					home.add(inside);
@@ -798,7 +799,7 @@ public final class BondedBlades {
 				}
 			}
 			if (!home.isEmpty()) {
-				box.set(DataComponents.BUNDLE_CONTENTS, bundle.copyWithContents(keep.stream()));
+				box.set(DataComponents.BUNDLE_CONTENTS, dev.wildercord.compat.McBlocksAndItems.bundleWith(bundle, keep));
 				for (ItemStack blade : home) {
 					homeward(player, blade, bond(blade));
 				}

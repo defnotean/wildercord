@@ -185,7 +185,7 @@ public final class ArtWards {
 					projectile.setOwner(player);
 				}
 			});
-			return (turned, by, random, power) -> {
+			return dev.wildercord.compat.McEntities.projectileDeflection((turned, by, random) -> {
 				if (!mirror.owner.valid() || turned != projectile || turned.isRemoved() || turned.level() != mirror.owner.level()) return;
 				Vec3 at = turned.position();
 				Vec3 aim = shooter != null && shooter.isAlive() && shooter.level() == turned.level() && shooter.distanceTo(player) < 32
@@ -195,11 +195,11 @@ public final class ArtWards {
 				}
 				turned.setDeltaMovement(aim.normalize().scale(speed));
 				turned.needsSync = true;
-			};
+			});
 		}
 		if (inEye(player)) {
 			GaleArts.eyeTurns(player, projectile.position());
-			return (turned, by, random, power) -> {
+			return dev.wildercord.compat.McEntities.projectileDeflection((turned, by, random) -> {
 				Vec3 v = turned.getDeltaMovement();
 				Vec3 flat = new Vec3(v.x, 0, v.z);
 				if (flat.lengthSqr() < 1.0E-4) {
@@ -210,7 +210,7 @@ public final class ArtWards {
 				double speed = Math.max(0.3, v.length() * 0.6);
 				turned.setDeltaMovement(side.scale(speed).add(flat.normalize().scale(speed * 0.4)).add(0, 0.25, 0));
 				turned.needsSync = true;
-			};
+			});
 		}
 		return null;
 	}

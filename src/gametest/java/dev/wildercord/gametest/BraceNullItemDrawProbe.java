@@ -7,7 +7,8 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.cuboid.ItemTransform;
-import net.minecraft.client.resources.model.geometry.ItemQuads;
+import java.util.List;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +24,7 @@ public final class BraceNullItemDrawProbe {
 	private static ItemStackRenderState boundItem;
 	private BraceNullItemDrawProbe() {}
 	public static final class Call {
-		final AvatarRenderState state; final Object model; final ItemStackRenderState item; final PoseStack stack; final SubmitNodeCollector collector;
+		final AvatarRenderState state; final Object model; ItemStackRenderState item; final PoseStack stack; final SubmitNodeCollector collector;
 		final MastersArtPose.Frame frame; final boolean first; final float[] expectedPre;
 		boolean pre, drawing, drawn, closed;
 		Call(AvatarRenderState state, Object model, ItemStackRenderState item, PoseStack stack, SubmitNodeCollector collector, boolean first, float[] expectedPre) {
@@ -43,19 +44,22 @@ public final class BraceNullItemDrawProbe {
 			&& sword.is(Items.DIAMOND_SWORD) && ItemStack.isSameItemSameComponents(sword, state.getMainHandItemStack())
 			&& !state.isUsingItem && !state.isBaby && state.ticksUsingItem(arm) == 0,
 			"Wrong world item/hand or unsupported use state");
-		check(state.currentSwing == null || state.currentSwing.animation().type() != net.minecraft.world.item.SwingAnimationType.STAB, "Unsupported native stabbing item motion");
+		check(!dev.wildercord.client.compat.RenderCompat.isStabSwingType(state), "Unsupported native stabbing item motion");
 		float[] body = BraceNullCaptureProbe.worldBody((PlayerModel) model, state, stack);
 		float[] expected = BraceNullTransformOracle.worldItem(stack.last().pose().get(new float[16]), body, id.left(), ((BraceNullPlayerWidth) model).wildercord$braceNullSlim(), state.getData(MastersArtPose.FRAME).bladeTilt());
 		return begin(new Call(state, model, item, stack, collector, false, expected));
 	}
-	public static Call firstBegin(AvatarRenderState state, ItemStackRenderState item, PoseStack stack, SubmitNodeCollector collector) {
+	public static Call firstBegin(AvatarRenderState state, PoseStack stack, SubmitNodeCollector collector) {
 		var id = BraceNullCaptureProbe.identity(); if (id == null || !id.firstPerson() || state.id != id.owner()) return null;
-		check(!item.isEmpty(), "Empty first-person item"); return begin(new Call(state, null, item, stack, collector, true, null));
+		return begin(new Call(state, null, null, stack, collector, true, null));
 	}
 	private static Call begin(Call call) { check(failure == null && active == null && finished == null, "Duplicate or nested owner item scope"); active = call; boundItem = call.item; return call; }
 	public static void firstPre(AvatarRenderState state, ItemStackRenderState item, PoseStack stack, SubmitNodeCollector collector, float[] wanted) {
 		var id = BraceNullCaptureProbe.identity(); if (id == null || !id.firstPerson()) return;
-		check(active != null && active.first && active.state == state && active.item == item && active.stack == stack && active.collector == collector, "Detached first-person item entry");
+		check(!item.isEmpty(), "Empty first-person item");
+		check(active != null && active.first && active.state == state && active.stack == stack && active.collector == collector
+			&& (active.item == null || active.item == item), "Detached first-person item entry");
+		if (active.item == null) { active.item = item; boundItem = item; }
 		pre(active, wanted, stack.last().pose().get(new float[16]));
 	}
 	public static void worldPre(Call call, Object model, ItemStackRenderState item, PoseStack stack, SubmitNodeCollector collector) {
@@ -78,12 +82,12 @@ public final class BraceNullItemDrawProbe {
 		check(active.item == item && active.drawing && completed && active.drawn, "Missing native displayed item submission"); active.drawing = false;
 	}
 	public static void drawn(ItemStackRenderState owner, PoseStack stack, SubmitNodeCollector collector, ItemDisplayContext context,
-		ItemTransform display, Matrix4fc local, ItemQuads quads, Matrix4fc submittedMatrix) {
+		ItemTransform display, Matrix4fc local, List<BakedQuad> quads, Matrix4fc submittedMatrix) {
 		try { drawnChecked(owner, stack, collector, context, display, local, quads, submittedMatrix); }
 		catch (AssertionError rejected) { if (failure == null) failure = rejected.getMessage(); throw rejected; }
 	}
 	private static void drawnChecked(ItemStackRenderState owner, PoseStack stack, SubmitNodeCollector collector, ItemDisplayContext context,
-		ItemTransform display, Matrix4fc local, ItemQuads quads, Matrix4fc submittedMatrix) {
+		ItemTransform display, Matrix4fc local, List<BakedQuad> quads, Matrix4fc submittedMatrix) {
 		if (active == null) { check(owner != boundItem || BraceNullCaptureProbe.identity() == null, "Late detached owner draw"); return; }
 		var call = active; var id = BraceNullCaptureProbe.identity();
 		check(id != null && call.pre && call.drawing && !call.drawn && !call.closed && call.item == owner && call.stack == stack && call.collector == collector,
@@ -91,9 +95,9 @@ public final class BraceNullItemDrawProbe {
 		check(call.frame.equals(call.state.getData(MastersArtPose.FRAME)), "Displayed item frame changed"); BraceNullCaptureProbe.observeFrame(call.state);
 		ItemDisplayContext expectedContext = call.first ? (id.left() ? ItemDisplayContext.FIRST_PERSON_LEFT_HAND : ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
 			: (id.left() ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
-		check(context == expectedContext && quads != null && !quads.isEmpty() && !quads.all().isEmpty(), "Wrong display context or missing actual quads");
+		check(context == expectedContext && quads != null && !quads.isEmpty(), "Wrong display context or missing actual quads");
 		var vertices = new java.util.ArrayList<Float>();
-		for (var quad : quads.all()) for (int vertex = 0; vertex < 4; vertex++) {
+		for (var quad : quads) for (int vertex = 0; vertex < 4; vertex++) {
 			var position = quad.position(vertex);
 			for (float component : new float[] {position.x(), position.y(), position.z()}) {
 				check(Float.isFinite(component), "Nonfinite actual item quad"); vertices.add(component);
@@ -108,7 +112,7 @@ public final class BraceNullItemDrawProbe {
 		float[] wanted = BraceNullTransformOracle.displayed(array(preExpected), call.first, id.left()); float[] actual = submittedMatrix.get(new float[16]);
 		try { BraceNullTransformOracle.requireDisplayed(wanted, actual); } catch (AssertionError mismatch) { failure = mismatch.getMessage(); throw mismatch; }
 		finished = new Report(call.first, BraceNullCaptureProbe.stateIdentity(call.state), System.identityHashCode(owner), System.identityHashCode(call.model), System.identityHashCode(stack),
-			context.name(), quads.all().size(), List.copyOf(vertices), preExpected, preActual, list(wanted), list(actual), list(BraceNullTransformOracle.displayedHilt(wanted)), list(BraceNullTransformOracle.displayedHilt(actual)));
+			context.name(), quads.size(), List.copyOf(vertices), preExpected, preActual, list(wanted), list(actual), list(BraceNullTransformOracle.displayedHilt(wanted)), list(BraceNullTransformOracle.displayedHilt(actual)));
 		call.drawn = true;
 	}
 	public static void end(Call call, boolean completed) {

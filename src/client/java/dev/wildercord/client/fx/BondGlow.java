@@ -446,7 +446,7 @@ public final class BondGlow {
 		// A soft glow round it, turned to whoever looks, so a blade lying in the grass is seen from a way off.
 		pose.pushPose();
 		pose.translate(0, 0.3F, 0);
-		pose.rotate(facing);
+		dev.wildercord.client.compat.RenderCompat.rotate(pose, facing);
 		collector.order(1).submitCustomGeometry(pose, soft, (p, buffer) -> aura(p, buffer, look, time));
 		pose.popPose();
 		if (look.tier() >= BladeRules.SOULFORGED) {

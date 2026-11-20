@@ -24,7 +24,7 @@ public record KnightLoot() implements LootItemFunction {
 
 	@Override
 	public ItemStack apply(ItemStack stack, LootContext context) {
-		Entity entity = context.getOptional(LootContextParams.THIS_ENTITY);
+		Entity entity = dev.wildercord.compat.McLootAndTriggers.getOptionalParam(context, LootContextParams.THIS_ENTITY);
 		String method = entity instanceof AuraFighter fighter ? fighter.method().id()
 			: BreathingMethods.BUILT_IN.get(context.getRandom().nextInt(BreathingMethods.BUILT_IN.size())).id();
 		stack.set(BreathingManualItem.METHOD, method);

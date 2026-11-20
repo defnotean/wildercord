@@ -58,7 +58,7 @@ public final class AshenStagRenderer extends MobRenderer<AshenStag,AshenStagRend
 			if(s.move==AshenStagRules.STALK)alpha*=.3F;
 			if(s.deathTime>0)alpha*=Math.max(0,1-s.deathTime/20F);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
-			collector.order(1).submitModel(getParentModel(),s,pose,type,light,OverlayTexture.NO_OVERLAY,(a<<24)|0xFFFFFF,null,s.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, s.outlineColor);
 		}
 	}
 }

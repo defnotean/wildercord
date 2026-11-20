@@ -23,7 +23,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.HashMap;
 import java.util.List;
@@ -299,7 +298,7 @@ public final class WildercordLoot {
 	 * tier, each fishing rune {@code worldWeight} times as likely as a sea rune of its tier.
 	 */
 	private static LootTable fishedRunes(int worldWeight) {
-		LootPool.Builder pool = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
+		LootPool.Builder pool = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1));
 		for (RuneDef rune : SEA) {
 			pool.add(runeEntry(rune).setWeight(tierWeight(rune.tier())));
 		}
@@ -345,7 +344,7 @@ public final class WildercordLoot {
 
 	/** A loot pool of one rune found at {@code source} (tier-weighted), rolled {@code chance} times in 100. */
 	public static LootPool.Builder foundRunePool(String source, int chance) {
-		LootPool.Builder builder = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
+		LootPool.Builder builder = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1));
 		List<RuneDef> runes = RuneSources.forSource(source);
 		int total = chance * 10;
 		int weights = Math.max(1, runes.stream().mapToInt(r -> tierWeight(r.tier())).sum());
@@ -415,7 +414,7 @@ public final class WildercordLoot {
 			RunePool pool = listed == null || scaled(listed.chance(), config.runeLootChance()) <= 0 ? null
 				: new RunePool(scaled(listed.chance(), config.runeLootChance()), listed.runes());
 			if (pool != null) {
-				LootPool.Builder builder = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
+				LootPool.Builder builder = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1));
 				// The pool's chance of a rune is shared out by tier: high tiers are much rarer finds.
 				int total = pool.chance() * 10;
 				int weights = pool.runes().stream().mapToInt(r -> tierWeight(r.tier())).sum();
@@ -477,7 +476,7 @@ public final class WildercordLoot {
 			// Magic waters: where magic runs strong at the bobber, a rune comes up tangled in the line, on top of the catch.
 			if (key.equals(BuiltInLootTables.FISHING) && config.runeLootChance() > 0) {
 				double multiplier = config.runeLootChance();
-				table.withPool(LootPool.lootPool().setRolls(ContextIntProviders.exactly(1))
+				table.withPool(LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1))
 					.add(NestedLootTable.inlineLootTable(fishedRunes(FishingRules.WORLD_WEIGHT_MAGIC)))
 					.when(() -> new MagicWatersCondition(multiplier))
 					.apply(() -> new FishedRuneFunction(true)));
@@ -517,12 +516,12 @@ public final class WildercordLoot {
 		};
 	}
 
-	private static net.minecraft.world.level.storage.loot.entries.UniformContainerBase.Builder<?> runeEntry(RuneDef rune) {
+	private static net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer.Builder<?> runeEntry(RuneDef rune) {
 		return LootItem.lootTableItem(WildercordItems.RUNE).apply(SetComponentsFunction.setComponent(WildercordComponents.RUNE, rune.id()));
 	}
 
-	private static LootPool.Builder chance(int chance, net.minecraft.world.level.storage.loot.entries.UniformContainerBase.Builder<?> entry) {
-		LootPool.Builder builder = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1)).add(entry.setWeight(chance));
+	private static LootPool.Builder chance(int chance, net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer.Builder<?> entry) {
+		LootPool.Builder builder = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1)).add(entry.setWeight(chance));
 		if (chance < 100) {
 			builder.add(EmptyLootItem.emptyItem().setWeight(100 - chance));
 		}

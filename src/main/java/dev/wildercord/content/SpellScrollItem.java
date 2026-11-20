@@ -107,7 +107,7 @@ public class SpellScrollItem extends Item {
 		// An Adept spell carries its traits and sigil with it (see cast.Inscriptions).
 		boolean mastered = dev.wildercord.cast.Inscriptions.inscribe(player, runes, scroll);
 		if (!player.getInventory().add(scroll)) {
-			player.drop(scroll, false, net.minecraft.util.Prediction.SERVER_ONLY);
+			dev.wildercord.compat.McEntities.drop(player, scroll, false);
 		}
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.0F);
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.PLAYERS, 0.8F, 1.2F);

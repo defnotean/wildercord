@@ -100,7 +100,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 		player.sendOverlayMessage(Component.translatable(harvest?"message.wildercord.garden_harvest":"message.wildercord.garden_cleanse"));setChanged();
 	}
 	private void stage(int value){if(level!=null)level.setBlock(worldPosition,getBlockState().setValue(ExpeditionMechanism.STAGE,value),Block.UPDATE_ALL);}
-	private static void give(Player player,ItemStack stack){player.getInventory().add(stack);if(!stack.isEmpty())player.drop(stack,false,net.minecraft.util.Prediction.SERVER_ONLY);}
+	private static void give(Player player,ItemStack stack){player.getInventory().add(stack);if(!stack.isEmpty())dev.wildercord.compat.McEntities.drop(player, stack, false);}
 	public boolean shiftPlatforms(ServerLevel server) {
 		if(level!=server||kind()!=ExpeditionMechanism.Kind.SKY)return false;
 		int old=skyStep,nextStep=(skyStep+1)%3;

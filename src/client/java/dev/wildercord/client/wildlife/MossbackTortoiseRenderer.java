@@ -91,9 +91,9 @@ public final class MossbackTortoiseRenderer extends WildlifeRenderer<MossbackTor
 				poseStack.translate(plant.x() / 16F, 0, plant.z() / 16F);
 				// Upright again (the model is drawn upside down), sized, and rooted at its base.
 				poseStack.scale(-plant.size(), -plant.size(), plant.size());
-				poseStack.rotateDegrees(Axis.YP, plant.turn());
+				dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.YP, plant.turn());
 				// A plant sways a little on the walking shell.
-				poseStack.rotateDegrees(Axis.ZP, Mth.sin(state.ageInTicks * 0.08F + i * 2) * 3);
+				dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.ZP, Mth.sin(state.ageInTicks * 0.08F + i * 2) * 3);
 				poseStack.translate(-0.5F, 0, -0.5F);
 				state.garden[i].submit(poseStack, collector, light, overlay, state.outlineColor);
 				poseStack.popPose();

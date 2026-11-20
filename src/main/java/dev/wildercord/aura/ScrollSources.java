@@ -16,7 +16,6 @@ import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,7 +169,7 @@ public final class ScrollSources {
 
 	/** A pool holding a scroll {@code chance} times in 100, its part drawn by the source's weights. */
 	static LootPool.Builder pool(Source source, int chance) {
-		LootPool.Builder builder = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
+		LootPool.Builder builder = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1));
 		int total = source.weights().values().stream().mapToInt(w -> Math.max(0, w)).sum();
 		if (total <= 0) {
 			return builder;

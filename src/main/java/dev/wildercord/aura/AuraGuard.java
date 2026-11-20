@@ -59,7 +59,7 @@ public final class AuraGuard {
 		Aura.state(player, Aura.state(player).guard(now, now + AuraRules.GUARD_TICKS));
 		Aura.sound(player, "aura_guard", 0.8F, 1.0F);
 		AuraVfx.guard(player, Aura.color(player));
-		player.swing(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+		dev.wildercord.compat.McEntities.swing(player, net.minecraft.world.InteractionHand.MAIN_HAND, true);
 		return true;
 	}
 
@@ -157,7 +157,7 @@ public final class AuraGuard {
 				projectile.setOwner(player);
 			}
 		});
-		return (turned, by, random, power) -> {
+		return dev.wildercord.compat.McEntities.projectileDeflection((turned, by, random) -> {
 			Vec3 at = turned.position();
 			Vec3 aim = shooter != null && shooter.isAlive() && shooter.level() == turned.level() && shooter.distanceTo(player) < Parry.COUNTER_RANGE
 				? shooter.getBoundingBox().getCenter().subtract(at)
@@ -167,7 +167,7 @@ public final class AuraGuard {
 			}
 			turned.setDeltaMovement(aim.normalize().scale(speed));
 			turned.needsSync = true;
-		};
+		});
 	}
 
 	/**
@@ -307,7 +307,7 @@ public final class AuraGuard {
 		Vec3 flat = new Vec3(away.x, 0, away.z);
 		if (knock && flat.lengthSqr() > 1.0E-4) {
 			attacker.knockback(0.9, -flat.x, -flat.z, player.damageSources().playerAttack(player), 0.0F);
-			attacker.syncVelocity = true;
+			dev.wildercord.compat.McEntities.syncVelocity(attacker);
 		}
 		attacker.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, AuraRules.STAGGER_TICKS, Spirits.isBoss(attacker) ? 0 : 2, false, true), player);
 		if (!Spirits.isBoss(attacker)) {
@@ -342,7 +342,7 @@ public final class AuraGuard {
 			}
 			projectile.setDeltaMovement(aim.normalize().scale(Math.min(3.0, speed)));
 			projectile.needsSync = true;
-			projectile.syncVelocity = true;
+			dev.wildercord.compat.McEntities.syncVelocity(projectile);
 		});
 	}
 

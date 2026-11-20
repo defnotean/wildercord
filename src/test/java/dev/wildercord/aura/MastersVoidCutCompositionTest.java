@@ -33,7 +33,7 @@ class MastersVoidCutCompositionTest {
         var projection = new Matrix4f().zero().m00((float) (1 / Math.tan(Math.toRadians(35)) / (1280D / 720)))
             .m11((float) (1 / Math.tan(Math.toRadians(35)))).m22(NEAR / (2048 - NEAR))
             .m32(NEAR * 2048 / (2048 - NEAR)).m23(-1);
-        var actualCamera = projection.invert(new Matrix4f()).mul(new Matrix4f(FAILED_NATIVE_PROJECTION));
+        var actualCamera = projection.invert(new Matrix4f()).mul(new Matrix4f().set(FAILED_NATIVE_PROJECTION));
         var originalItem = new Matrix4f(actualCamera).mul(item(false));
         var broken = metrics(texture, originalItem, LAYOUTS[1]);
         assertEquals(-.0350332F, faceDistance(originalItem), .00001F);

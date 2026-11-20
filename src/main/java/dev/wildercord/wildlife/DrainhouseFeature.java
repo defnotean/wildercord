@@ -1,18 +1,15 @@
 package dev.wildercord.wildlife;
-import com.mojang.serialization.MapCodec;
+import dev.wildercord.compat.SimpleWorldFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 /** Three distinct rooms in a pre-existing covered cave, with one contained damp garden and authentic ledgers. */
-public record DrainhouseFeature() implements Feature {
- public static final MapCodec<DrainhouseFeature> CODEC=MapCodec.unit(new DrainhouseFeature());
- public MapCodec<DrainhouseFeature> codec(){return CODEC;}
+public class DrainhouseFeature extends SimpleWorldFeature {
  /** Nullable test-only observer. Production retains no worlds, histories or counters. */
  @FunctionalInterface interface Observer {void event(WorldGenLevel level,String event,int index,BlockPos origin,BlockPos cell,BlockState state,String reason);}
  static volatile Observer observer;

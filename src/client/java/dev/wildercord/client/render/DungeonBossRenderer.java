@@ -100,8 +100,7 @@ public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends Entit
 			if ((argb >>> 24) < 4) {
 				return;
 			}
-			collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, null,
-				state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
 		}
 	}
 }

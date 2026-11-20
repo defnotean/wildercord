@@ -202,9 +202,8 @@ public final class StoneHingePeerProbe {
             || packet instanceof ClientboundEntityPositionSyncPacket sync && sync.id() == owner.getId();
     }
     private static Vec3 target(Packet<?> packet, Vec3 base) {
-        if (packet instanceof ClientboundEntityPositionSyncPacket sync) return sync.position().endPosition();
-        VecDeltaCodec codec = new VecDeltaCodec(); codec.setBase(base);
-        return ((ClientboundMoveEntityPacket) packet).getPositionDelta().decode(codec).endPosition();
+        if (packet instanceof ClientboundEntityPositionSyncPacket sync) return dev.wildercord.gametest.compat.GametestCompat.entityPositionSyncTarget(sync);
+        return dev.wildercord.gametest.compat.GametestCompat.moveEntityDeltaTarget((ClientboundMoveEntityPacket) packet, base);
     }
     /** Hash each original codec payload including entity ID, preserving every path step and rotation bit. */
     private static String digest(Packet<?> packet) {

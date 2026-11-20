@@ -28,10 +28,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.item.enchantment.Repairable;
-import net.minecraft.world.level.storage.loot.providers.number.floats.ResolvableFloat;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -78,8 +75,8 @@ public final class Wildlife {
 	/** A plate of a mossback's shell: brews the Turtle Master, and mends a turtle shell. */
 	public static final Item MOSSBACK_SCUTE = item("mossback_scute", new Item.Properties());
 	/** A tuft of a cinderfox's tail: brews Fire Resistance, and burns a long while in a furnace (eight items). */
-	public static final Item EMBER_TUFT = item("ember_tuft", new Item.Properties()
-		.component(DataComponents.COOKING_FUEL, new CookingFuel(new ResolvableInt.Constant(1600), new ResolvableFloat.Constant(1.0F))));
+	public static final Item EMBER_TUFT = item("ember_tuft",
+		dev.wildercord.compat.McBlocksAndItems.cookingFuelProperties(new Item.Properties(), 1600, 1.0F));
 	/** A skyray's membrane: brews Slow Falling, and mends an elytra as a phantom's does. */
 	public static final Item SKYRAY_MEMBRANE = item("skyray_membrane", new Item.Properties());
 	/** A rimehare's frosted fur: weaves Rimebound armour in place of packed ice, and four make leather. */
@@ -136,6 +133,7 @@ public final class Wildlife {
 		FabricDefaultAttributeRegistry.register(SKYRAY, Skyray.createAttributes());
 		FabricDefaultAttributeRegistry.register(RIMEHARE, Rimehare.createAttributes());
 		WildlifeSpawns.init();
+		dev.wildercord.compat.McBlocksAndItems.registerFuel(EMBER_TUFT, 1600);
 
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> {
 			DROPS.forEach(output::accept);

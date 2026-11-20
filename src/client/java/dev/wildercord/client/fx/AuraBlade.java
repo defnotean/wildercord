@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
@@ -26,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3fc;
 
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -137,7 +136,7 @@ public final class AuraBlade {
 	 * One layer of the item's model has been submitted, with the pose still on it (in the model's own space: a flat item
 	 * fills x and y from 0 to 1 at z 0.5). The aura is drawn once, round the first layer.
 	 */
-	public static void layer(PoseStack pose, SubmitNodeCollector collector, ItemQuads quads, Supplier<Vector3fc[]> extents) {
+	public static void layer(PoseStack pose, SubmitNodeCollector collector, List<BakedQuad> quads, Supplier<Vector3fc[]> extents) {
 		Glow glow = current;
 		BondGlow.Look bond = BondGlow.current();
 		if (glow == null && bond == null || drawn || ShaderCompat.shadowPass()) {
@@ -249,9 +248,9 @@ public final class AuraBlade {
 	 */
 	record Shape(float[] edges, float baseX, float baseY, float axisX, float axisY, float length, float spread, float z, boolean flat) {}
 
-	private static final Map<ItemQuads, Shape> SHAPES = new IdentityHashMap<>();
+	private static final Map<List<BakedQuad>, Shape> SHAPES = new HashMap<>();
 
-	private static Shape shape(ItemQuads quads) {
+	private static Shape shape(List<BakedQuad> quads) {
 		Shape cached = SHAPES.get(quads);
 		if (cached != null || SHAPES.containsKey(quads)) {
 			return cached;
@@ -259,8 +258,8 @@ public final class AuraBlade {
 		if (SHAPES.size() > 128) {
 			SHAPES.clear();
 		}
-		Shape made = trace(quads.all());
-		SHAPES.put(quads, made);
+		Shape made = trace(quads);
+		SHAPES.put(List.copyOf(quads), made);
 		return made;
 	}
 

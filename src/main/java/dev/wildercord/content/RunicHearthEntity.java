@@ -62,7 +62,7 @@ public final class RunicHearthEntity extends BlockEntity {
    dev.wildercord.cast.Fx.sendParticles(s, ParticleTypes.ENCHANT,pos.getX()+.5,pos.getY()+1.1,pos.getZ()+.5,8,.8,.5,.8,.05);
    if(h.charge>=3&&now>=h.ritualFinish-(active>=2?200:0)) {
     for(var p:nearby)if(h.contributors.contains(p.getStringUUID())){p.addEffect(new MobEffectInstance(MobEffects.REGENERATION,200,0));p.sendSystemMessage(Component.translatable("message.wildercord.hearth_complete"));}
-    ItemStack reward=new ItemStack(WildercordItems.TORN_PAGE);owner.getInventory().add(reward);if(!reward.isEmpty())owner.drop(reward,false,net.minecraft.util.Prediction.SERVER_ONLY);
+    ItemStack reward=new ItemStack(WildercordItems.TORN_PAGE);owner.getInventory().add(reward);if(!reward.isEmpty())dev.wildercord.compat.McEntities.drop(owner, reward, false);
     h.ritualFinish=0;h.charge=0;h.ritualReadyAt=now+1200;h.ingredients.clear();h.contributors.clear();h.sync();h.setChanged();
    }return;
   }

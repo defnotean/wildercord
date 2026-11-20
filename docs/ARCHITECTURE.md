@@ -22,6 +22,7 @@ asset pipeline and testing. For *what* each rune does and why, see [DESIGN.md](D
 - [Hooks for other systems](#hooks-for-other-systems)
 - [10. Rules that keep it safe](#10-rules-that-keep-it-safe)
 - [11. Minecraft 26.x notes](#11-minecraft-26x-notes)
+- [Cross-version porting architecture](PORTING.md)
 
 ## The big picture
 
@@ -1981,6 +1982,8 @@ To give a resonance's riddle a line about its condition, a system can keep its o
   and teach only a spell the reader has no record of.
 
 ## 11. Minecraft 26.x notes
+
+Version-specific APIs, compatibility seams (`dev.wildercord.compat`, `dev.wildercord.client.compat`, `dev.wildercord.gametest.compat`), versioned datapack profiles (`tools/datapack_profile.py`), and static Mixin/datapack port verification (`tools/verify_port.py`) are documented in [PORTING.md](PORTING.md).
 
 26.x is unobfuscated (no mappings), and several APIs differ from older versions. Things that are
 easy to trip over:

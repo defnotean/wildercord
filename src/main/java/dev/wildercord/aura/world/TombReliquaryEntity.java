@@ -69,7 +69,7 @@ public final class TombReliquaryEntity extends BlockEntity {
 		Feels.sound(p.level(),p.position(),"aura_tomb_reward",.8F,1);
 		p.sendSystemMessage(Component.translatable("message.wildercord.tomb.reward"));
 	}
-	private static void give(ServerPlayer p,ItemStack s){if(!p.getInventory().add(s))p.drop(s,false,net.minecraft.util.Prediction.SERVER_ONLY);}
+	private static void give(ServerPlayer p,ItemStack s){if(!p.getInventory().add(s))dev.wildercord.compat.McEntities.drop(p, s, false);}
 	private void state(int value){if(level!=null)level.setBlock(worldPosition,getBlockState().setValue(TombReliquary.STATE,value),3);}
 	public static void tick(Level level,BlockPos pos,BlockState state,TombReliquaryEntity self){
 		if(!(level instanceof ServerLevel server) || self.guardian==null || server.getGameTime()%20!=0)return;

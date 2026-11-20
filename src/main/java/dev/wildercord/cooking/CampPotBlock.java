@@ -151,7 +151,7 @@ public class CampPotBlock extends Block {
 	}
 
 	private static void give(ServerPlayer player, ItemStack stack) {
-		if (!player.getInventory().add(stack)) player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+		if (!player.getInventory().add(stack)) dev.wildercord.compat.McEntities.drop(player, stack, false);
 	}
 
 	private static void take(ServerPlayer player, Item item, int count) {

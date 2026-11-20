@@ -112,7 +112,7 @@ final class MasterPursuit {
 			released = true;
 			finished = true; // Consume before damage/parry callbacks can re-enter AI.
 			if (strikeOrigin == null) return false;
-			master.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+			dev.wildercord.compat.McEntities.swing(master, InteractionHand.MAIN_HAND, true);
 			AuraFx.trail(master, AuraFxRules.Stroke.THRUST, false, master.auraColor(), master.stage(), 1.1F);
 			Feels.sound(level, strikeOrigin, "aura_slash", 1, .95F);
 			Vec3 delta = target.position().subtract(strikeOrigin), side = new Vec3(-aim.z, 0, aim.x);

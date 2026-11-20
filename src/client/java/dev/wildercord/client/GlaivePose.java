@@ -13,11 +13,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwingAnimationType;
-import net.minecraft.world.item.component.SwingAnimation;
 
 /**
  * Polearm stance and sweeping cleave animation for the Skyrend Glaive.
@@ -30,8 +28,6 @@ import net.minecraft.world.item.component.SwingAnimation;
  */
 public final class GlaivePose {
 	private GlaivePose() {}
-
-	private static final SwingAnimation GLAIVE_SWING = new SwingAnimation(SwingAnimationType.WHACK, 10);
 
 	public static boolean isGlaive(ItemStack stack) {
 		return stack != null && !stack.isEmpty() && ForgedGear.of(stack) == AuraWorldRules.Forged.SKYREND_GLAIVE;
@@ -62,9 +58,7 @@ public final class GlaivePose {
 				state.leftArmPose = HumanoidModel.ArmPose.ITEM;
 			}
 		}
-		if (state.currentSwing != null && state.currentSwing.animation().type() == SwingAnimationType.STAB) {
-			state.currentSwing = new LivingEntity.SwingDescription(state.currentSwing.hand(), GLAIVE_SWING, 10);
-		}
+		dev.wildercord.client.compat.RenderCompat.overrideStabWithWhackGlaive(state);
 	}
 
 	/**
@@ -97,7 +91,7 @@ public final class GlaivePose {
 		float idleOffY = 0.44F * side + turn * 0.35F;
 		float idleOffZ = -0.08F * side;
 
-		float s = state.swingAnimation;
+		float s = dev.wildercord.client.compat.RenderCompat.swingProgress(state);
 		if (s <= 0.0F) {
 			main.xRot = idleMainX;
 			main.yRot = idleMainY;
@@ -210,7 +204,7 @@ public final class GlaivePose {
 		float cross = idleCross;
 		float twist = idleTwist;
 
-		float s = state.swingAnimation;
+		float s = dev.wildercord.client.compat.RenderCompat.swingProgress(state);
 		if (s > 0.0F) {
 			float chPitch = 47.0F;
 			float chCross = 35.0F * side;
@@ -241,9 +235,9 @@ public final class GlaivePose {
 		float y = -1.327F / 16.0F;
 		float z = 1.439F / 16.0F;
 		stack.translate(0.0F, y, z);
-		stack.rotateDegrees(Axis.XP, pitch);
-		stack.rotateDegrees(Axis.ZP, cross);
-		stack.rotateDegrees(Axis.YP, twist);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.XP, pitch);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.ZP, cross);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.YP, twist);
 		stack.translate(0.0F, -y, -z);
 	}
 
@@ -291,9 +285,9 @@ public final class GlaivePose {
 		}
 
 		pose.translate(dx, dy, dz);
-		pose.rotateDegrees(Axis.ZP, roll);
-		pose.rotateDegrees(Axis.YP, yaw);
-		pose.rotateDegrees(Axis.XP, pitch);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, roll);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, yaw);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.XP, pitch);
 		return true;
 	}
 

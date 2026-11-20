@@ -116,8 +116,7 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 			if ((argb >>> 24) < 4) {
 				return;
 			}
-			collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, null,
-				state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
 		}
 	}
 }

@@ -1,7 +1,5 @@
 package dev.wildercord.client.compat;
 
-import dev.wildercord.client.familiar.WispRenderer;
-import dev.wildercord.client.fx.GlowLayers;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.irisshaders.iris.api.v0.IrisProgram;
 import net.irisshaders.iris.api.v0.IrisShadowProgram;
@@ -21,15 +19,15 @@ final class IrisBridge {
 		if (api.getMinorApiRevision() < 3) {
 			return;
 		}
-		api.assignPipeline(GlowLayers.GLOW_PIPELINE, IrisProgram.PARTICLES_TRANSLUCENT);
-		api.assignPipeline(GlowLayers.DARK_PIPELINE, IrisProgram.PARTICLES_TRANSLUCENT);
-		api.assignPipeline(WispRenderer.GLOW_PIPELINE, IrisProgram.EMISSIVE_ENTITIES);
-		api.assignPipeline(dev.wildercord.client.render.AuraBodyLayer.GLOW_PIPELINE, IrisProgram.EMISSIVE_ENTITIES);
+		api.assignPipeline(RenderCompat.glowParticlePipeline(), IrisProgram.PARTICLES_TRANSLUCENT);
+		api.assignPipeline(RenderCompat.darkParticlePipeline(), IrisProgram.PARTICLES_TRANSLUCENT);
+		api.assignPipeline(RenderCompat.wispGlowPipeline(), IrisProgram.EMISSIVE_ENTITIES);
+		api.assignPipeline(RenderCompat.auraBodyGlowPipeline(), IrisProgram.EMISSIVE_ENTITIES);
 		if (api.getMinorApiRevision() >= 4) {
-			api.assignPipelineShadow(GlowLayers.GLOW_PIPELINE, IrisShadowProgram.SHADOW);
-			api.assignPipelineShadow(GlowLayers.DARK_PIPELINE, IrisShadowProgram.SHADOW);
-			api.assignPipelineShadow(WispRenderer.GLOW_PIPELINE, IrisShadowProgram.SHADOW_ENTITIES);
-			api.assignPipelineShadow(dev.wildercord.client.render.AuraBodyLayer.GLOW_PIPELINE, IrisShadowProgram.SHADOW_ENTITIES);
+			api.assignPipelineShadow(RenderCompat.glowParticlePipeline(), IrisShadowProgram.SHADOW);
+			api.assignPipelineShadow(RenderCompat.darkParticlePipeline(), IrisShadowProgram.SHADOW);
+			api.assignPipelineShadow(RenderCompat.wispGlowPipeline(), IrisShadowProgram.SHADOW_ENTITIES);
+			api.assignPipelineShadow(RenderCompat.auraBodyGlowPipeline(), IrisShadowProgram.SHADOW_ENTITIES);
 		}
 	}
 

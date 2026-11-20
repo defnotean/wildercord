@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
-import net.minecraft.world.level.block.entity.SignTextSlot;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -171,10 +170,9 @@ public abstract class FarmPiece extends DungeonPiece {
 		if (!bb.isInside(at)) return;
 		set(level, bb, state, x, y, z);
 		if (level.getBlockEntity(at) instanceof SignBlockEntity sign) {
-			var text = SignText.EMPTY.asMutable();
-			for (int i = 0; i < lines; i++) text.setLine(i, Component.translatable("sign.wildercord." + key + "." + (i + 1)));
-			sign.setText(text.asImmutable(), SignTextSlot.FRONT);
-			sign.setWaxed(true);
+			var list = new java.util.ArrayList<Component>(lines);
+			for (int i = 0; i < lines; i++) list.add(Component.translatable("sign.wildercord." + key + "." + (i + 1)));
+			dev.wildercord.compat.McBlocksAndItems.writeWaxedSign(sign, list);
 		}
 	}
 

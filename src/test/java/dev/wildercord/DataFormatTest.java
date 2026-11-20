@@ -20,29 +20,26 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Minecraft reads data files through codecs that skip keys they don't know, so a file written in an
- * older format still loads and quietly does less (26.3 renamed loot tables' {@code "functions"} and
- * {@code "conditions"}, and every chest rune came out blank). Every kind of file the mod ships is
- * held here to the keys Minecraft 26.3's own codecs read (taken from the game's codecs and checked
- * against vanilla's data files) and to the keys they require. A new kind of file must be added here.
+ * Minecraft reads data files through codecs that skip keys they don't know, so a file written in another
+ * version's format can still load and quietly do less. Every kind of file the mod ships is held here to
+ * the keys read by the active {@link TestDataProfile#MC_VERSION} codecs and to the keys they require. A new
+ * kind of file must be added here.
  */
 class DataFormatTest {
 	private static final Path DATA = Path.of("src/main/resources/data");
-
-	/** The keys of a loot condition or modifier's name: 26.3 names each by "type". */
 	private static final Set<String> OLD_NAMES = Set.of("condition", "function");
 
-	private static final Map<String, Set<String>> TRIGGER_CONDITIONS = Map.of(
-		"wildercord:feat", Set.of("player", "feat"),
-		"wildercord:grimoire", Set.of("player", "entry", "prefix", "count", "all", "signatures"),
-		"wildercord:heart_circle", Set.of("player", "level"),
-		"wildercord:runes_known", Set.of("player", "count", "all"),
-		"wildercord:cord", Set.of("player", "tier"),
-		"wildercord:moment", Set.of("player", "moment"),
-		"minecraft:inventory_changed", Set.of("player", "slots", "items"),
-		"minecraft:consume_item", Set.of("player", "item"),
-		"minecraft:recipe_unlocked", Set.of("player", "recipes"),
-		"minecraft:location", Set.of("player"));
+	private static final Map<String, Set<String>> TRIGGER_CONDITIONS = Map.ofEntries(
+		Map.entry("wildercord:feat", Set.of("player", "feat")),
+		Map.entry("wildercord:grimoire", Set.of("player", "entry", "prefix", "count", "all", "signatures")),
+		Map.entry("wildercord:heart_circle", Set.of("player", "level")),
+		Map.entry("wildercord:runes_known", Set.of("player", "count", "all")),
+		Map.entry("wildercord:cord", Set.of("player", "tier")),
+		Map.entry("wildercord:moment", Set.of("player", "moment")),
+		Map.entry("minecraft:inventory_changed", Set.of("player", "slots", "items")),
+		Map.entry("minecraft:consume_item", Set.of("player", "item")),
+		Map.entry("minecraft:recipe_unlocked", TestDataProfile.is26_2() ? Set.of("player", "recipe") : Set.of("player", "recipes")),
+		Map.entry("minecraft:location", Set.of("player")));
 
 	@Test
 	void advancements() throws IOException {
@@ -62,7 +59,13 @@ class DataFormatTest {
 					JsonObject conditions = criterion.getAsJsonObject("conditions");
 					allowed(conditions, where, keys.toArray(String[]::new));
 					if (conditions.has("player")) {
-						condition(conditions.get("player"), where + " player");
+						JsonElement player = conditions.get("player");
+						if (TestDataProfile.is26_2()) {
+							assertTrue(player.isJsonArray(), where + " player: 26.2 expects a condition list");
+							conditionList(player, where + " player", "condition");
+						} else {
+							condition(player, where + " player");
+						}
 					}
 				}
 			}
@@ -80,26 +83,54 @@ class DataFormatTest {
 
 	@Test
 	void lootTables() throws IOException {
+		boolean is262 = TestDataProfile.is26_2();
 		for (Path file : files("wildercord/loot_table")) {
 			JsonObject table = read(file);
-			allowed(table, file, "type", "random_sequence", "pools", "modifier");
+			if (is262) {
+				allowed(table, file, "type", "random_sequence", "pools", "functions");
+				if (table.has("functions")) {
+					conditionList(table.get("functions"), file + " table functions", "function");
+				}
+			} else {
+				allowed(table, file, "type", "random_sequence", "pools", "modifier");
+			}
 			required(table, file, "type", "pools");
 			for (JsonElement p : table.getAsJsonArray("pools")) {
 				JsonObject pool = p.getAsJsonObject();
-				allowed(pool, file + " pool", "entries", "condition", "modifier", "rolls", "bonus_rolls");
-				required(pool, file + " pool", "entries", "rolls");
-				if (pool.has("condition")) {
-					condition(pool.get("condition"), file + " pool condition");
+				if (is262) {
+					allowed(pool, file + " pool", "entries", "conditions", "functions", "rolls", "bonus_rolls");
+					if (pool.has("conditions")) {
+						conditionList(pool.get("conditions"), file + " pool conditions", "condition");
+					}
+					if (pool.has("functions")) {
+						conditionList(pool.get("functions"), file + " pool functions", "function");
+					}
+				} else {
+					allowed(pool, file + " pool", "entries", "condition", "modifier", "rolls", "bonus_rolls");
+					if (pool.has("condition")) {
+						condition(pool.get("condition"), file + " pool condition");
+					}
 				}
+				required(pool, file + " pool", "entries", "rolls");
 				for (JsonElement e : pool.getAsJsonArray("entries")) {
 					JsonObject entry = e.getAsJsonObject();
-					allowed(entry, file + " entry", "type", "name", "weight", "quality", "condition", "modifier");
 					required(entry, file + " entry", "type", "name");
-					if (entry.has("modifier")) {
-						condition(entry.get("modifier"), file + " entry modifier");
-					}
-					if (entry.has("condition")) {
-						condition(entry.get("condition"), file + " entry condition");
+					if (is262) {
+						allowed(entry, file + " entry", "type", "name", "weight", "quality", "conditions", "functions");
+						if (entry.has("functions")) {
+							conditionList(entry.get("functions"), file + " entry functions", "function");
+						}
+						if (entry.has("conditions")) {
+							conditionList(entry.get("conditions"), file + " entry conditions", "condition");
+						}
+					} else {
+						allowed(entry, file + " entry", "type", "name", "weight", "quality", "condition", "modifier");
+						if (entry.has("modifier")) {
+							condition(entry.get("modifier"), file + " entry modifier");
+						}
+						if (entry.has("condition")) {
+							condition(entry.get("condition"), file + " entry condition");
+						}
 					}
 				}
 			}
@@ -154,13 +185,8 @@ class DataFormatTest {
 					stack(recipe.getAsJsonObject("result"), file + " result");
 				}
 				case "minecraft:brewing" -> {
-					allowed(recipe, file, "type", "input", "reagent", "output");
-					required(recipe, file, "input", "reagent", "output");
-					for (String part : List.of("input", "reagent")) {
-						allowed(recipe.getAsJsonObject(part), file + " " + part, "item", "potion_contents");
-						required(recipe.getAsJsonObject(part), file + " " + part, "item");
-					}
-					stack(recipe.getAsJsonObject("output"), file + " output");
+					assertFalse(TestDataProfile.is26_2(), file + ": brewing lives under data/wildercord/brewing in 26.2");
+					checkBrewingRecipe(file, recipe);
 				}
 				default -> fail(file + ": no format known for the recipe type " + recipe.get("type").getAsString() + ", add it here once checked");
 			}
@@ -168,11 +194,35 @@ class DataFormatTest {
 	}
 
 	@Test
+	void brewing() throws IOException {
+		if (!TestDataProfile.is26_2()) {
+			return;
+		}
+		for (Path file : files("wildercord/brewing")) {
+			JsonObject recipe = read(file);
+			checkBrewingRecipe(file, recipe);
+		}
+	}
+
+	private static void checkBrewingRecipe(Path file, JsonObject recipe) {
+		allowed(recipe, file, "type", "input", "reagent", "output");
+		required(recipe, file, "type", "input", "reagent", "output");
+		assertEquals("minecraft:brewing", recipe.get("type").getAsString(), file + " type");
+		for (String part : List.of("input", "reagent")) {
+			allowed(recipe.getAsJsonObject(part), file + " " + part, "item", "potion_contents");
+			required(recipe.getAsJsonObject(part), file + " " + part, "item");
+		}
+		stack(recipe.getAsJsonObject("output"), file + " output");
+	}
+
+	@Test
 	void villagerTrades() throws IOException {
+		boolean is262 = TestDataProfile.is26_2();
+		String modifierKey = is262 ? "given_item_modifiers" : "given_item_modifier";
 		for (Path file : files("wildercord/villager_trade")) {
 			JsonObject trade = read(file);
 			allowed(trade, file, "wants", "additional_wants", "gives", "max_uses", "xp", "reputation_discount", "merchant_predicate",
-				"given_item_modifier", "double_trade_price_enchantments");
+				modifierKey, "double_trade_price_enchantments");
 			required(trade, file, "wants", "gives");
 			for (String cost : List.of("wants", "additional_wants")) {
 				if (trade.has(cost)) {
@@ -181,8 +231,12 @@ class DataFormatTest {
 				}
 			}
 			stack(trade.getAsJsonObject("gives"), file + " gives");
-			if (trade.has("given_item_modifier")) {
-				condition(trade.get("given_item_modifier"), file + " given_item_modifier");
+			if (trade.has(modifierKey)) {
+				if (is262) {
+					conditionList(trade.get(modifierKey), file + " " + modifierKey, "function");
+				} else {
+					condition(trade.get(modifierKey), file + " " + modifierKey);
+				}
 			}
 		}
 		for (Path file : files("wildercord/trade_set")) {
@@ -194,6 +248,7 @@ class DataFormatTest {
 
 	@Test
 	void worldgen() throws IOException {
+		boolean is262 = TestDataProfile.is26_2();
 		for (Path file : files("wildercord/worldgen/structure")) {
 			JsonObject structure = read(file);
 			required(structure, file, "type", "biomes", "spawn_overrides", "step");
@@ -211,8 +266,13 @@ class DataFormatTest {
 				allowed(override, file + " " + category.getKey(), "bounding_box", "spawns");
 				required(override, file + " " + category.getKey(), "bounding_box", "spawns");
 				for (JsonElement spawn : override.getAsJsonArray("spawns")) {
-					allowed(spawn.getAsJsonObject(), file + " spawn", "type", "count", "weight");
-					required(spawn.getAsJsonObject(), file + " spawn", "type", "count", "weight");
+					if (is262) {
+						allowed(spawn.getAsJsonObject(), file + " spawn", "type", "minCount", "maxCount", "weight");
+						required(spawn.getAsJsonObject(), file + " spawn", "type", "minCount", "maxCount", "weight");
+					} else {
+						allowed(spawn.getAsJsonObject(), file + " spawn", "type", "count", "weight");
+						required(spawn.getAsJsonObject(), file + " spawn", "type", "count", "weight");
+					}
 				}
 			}
 		}
@@ -261,18 +321,43 @@ class DataFormatTest {
 	/** Every data file is one of the kinds checked above. */
 	@Test
 	void vegetationFeatureFormats() throws IOException {
-		// Compared with 26.3's feature/berry_bush.json and placed_feature/patch_berry_common.json.
-		for(Path file:files("wildercord/worldgen/feature")) {
-			var feature=read(file);required(feature,file,"type");
-            switch(feature.get("type").getAsString()) {
-                case "minecraft:simple_block" -> {
-                    allowed(feature,file,"type","to_place","schedule_tick");required(feature,file,"to_place");
-                    var state=feature.getAsJsonObject("to_place");allowed(state,file+" state","id","properties");required(state,file,"id");
-                }
-                // These features use MapCodec.unit; native tests load their registries and execute placement.
-                case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site", "wildercord:belowkeeper_drainhouse", "wildercord:cinder_fern_patch" -> allowed(feature,file,"type");
-                default -> fail(file+": unsupported vegetation feature "+feature);
-            }
+		boolean is262 = TestDataProfile.is26_2();
+		for (Path file : files("wildercord/worldgen/" + TestDataProfile.featureDirName())) {
+			var feature = read(file);
+			String type = feature.get("type").getAsString();
+			if (is262) {
+				allowed(feature, file, "type", "config");
+				required(feature, file, "type", "config");
+				var cfg = feature.getAsJsonObject("config");
+				switch (type) {
+					case "minecraft:simple_block" -> {
+						allowed(cfg, file, "to_place", "schedule_tick");
+						required(cfg, file, "to_place");
+						var provider = cfg.getAsJsonObject("to_place");
+						allowed(provider, file + " provider", "type", "state");
+						required(provider, file + " provider", "type", "state");
+						assertEquals("minecraft:simple_state_provider", provider.get("type").getAsString(), file + " provider");
+						var state = provider.getAsJsonObject("state");
+						allowed(state, file + " state", "Name", "Properties");
+						required(state, file, "Name");
+					}
+					case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site", "wildercord:belowkeeper_drainhouse", "wildercord:cinder_fern_patch" -> allowed(cfg, file + " config");
+					default -> fail(file + ": unsupported vegetation feature " + feature);
+				}
+			} else {
+				required(feature, file, "type");
+				switch (type) {
+					case "minecraft:simple_block" -> {
+						allowed(feature, file, "type", "to_place", "schedule_tick");
+						required(feature, file, "to_place");
+						var state = feature.getAsJsonObject("to_place");
+						allowed(state, file + " state", "id", "properties");
+						required(state, file, "id");
+					}
+					case "wildercord:moonreed_patch", "wildercord:glowcap_patch", "wildercord:breathmark_site", "wildercord:belowkeeper_drainhouse", "wildercord:cinder_fern_patch" -> allowed(feature, file, "type");
+					default -> fail(file + ": unsupported vegetation feature " + feature);
+				}
+			}
 		}
 		for(Path file:files("wildercord/worldgen/placed_feature")) {
 			var feature=read(file);allowed(feature,file,"feature","placement");required(feature,file,"feature","placement");
@@ -292,7 +377,13 @@ class DataFormatTest {
 						assertTrue(low.get("absolute").getAsInt()<=high.get("absolute").getAsInt(),file+" inverted height bounds");
 					}
 					case "minecraft:count" -> {allowed(modifier,file,"type","count");required(modifier,file,"count");assertTrue(modifier.get("count").getAsInt()>0);}
+					case "minecraft:random_offset" -> {
+						assertTrue(is262, file + ": minecraft:random_offset belongs to 26.2");
+						allowed(modifier,file,"type","xz_spread","y_spread");required(modifier,file,"xz_spread","y_spread");
+						for(String axis:List.of("xz_spread","y_spread")) {var provider=modifier.getAsJsonObject(axis);allowed(provider,file,"type","min","max","plateau");required(provider,file,"type","min","max","plateau");assertEquals("minecraft:trapezoid",provider.get("type").getAsString());assertTrue(provider.get("min").getAsInt()<=provider.get("max").getAsInt());}
+					}
 					case "minecraft:offset" -> {
+						assertFalse(is262, file + ": minecraft:offset belongs to 26.3");
 						allowed(modifier,file,"type","x","y","z");required(modifier,file,"x","y","z");
 						for(String axis:List.of("x","y","z")) {var provider=modifier.getAsJsonObject(axis);allowed(provider,file,"type","min","max","plateau");required(provider,file,"type","min","max","plateau");assertEquals("minecraft:trapezoid",provider.get("type").getAsString());assertTrue(provider.get("min").getAsInt()<=provider.get("max").getAsInt());}
 					}
@@ -314,12 +405,17 @@ class DataFormatTest {
 	/** Every data file is one of the kinds checked above. */
 	@Test
 	void regionalBiomesUseTheAttributeBasedFormat() throws IOException {
-		// Biome, BiomeSpecialEffects and MobSpawnSettings codecs in the pinned 26.3 sources.
-		// Native registry/terrain checks resolve all named features, carvers and entity types.
+		boolean is262 = TestDataProfile.is26_2();
 		for (Path file : files("wildercord/worldgen/biome")) {
 			var biome = read(file);
-			allowed(biome, file, "attributes", "carvers", "downfall", "effects", "features", "has_precipitation", "temperature", "temperature_modifier");
-			required(biome, file, "effects", "features", "carvers", "has_precipitation", "temperature", "downfall");
+			if (is262) {
+				allowed(biome, file, "attributes", "carvers", "downfall", "effects", "features", "has_precipitation",
+					"spawn_costs", "spawners", "temperature", "temperature_modifier");
+				required(biome, file, "effects", "features", "carvers", "has_precipitation", "spawn_costs", "spawners", "temperature", "downfall");
+			} else {
+				allowed(biome, file, "attributes", "carvers", "downfall", "effects", "features", "has_precipitation", "temperature", "temperature_modifier");
+				required(biome, file, "effects", "features", "carvers", "has_precipitation", "temperature", "downfall");
+			}
 			assertTrue(biome.get("has_precipitation").getAsJsonPrimitive().isBoolean());
 			assertTrue(Double.isFinite(biome.get("temperature").getAsDouble()));
 			assertTrue(biome.get("downfall").getAsDouble() >= 0 && biome.get("downfall").getAsDouble() <= 1);
@@ -335,25 +431,41 @@ class DataFormatTest {
 				for (var feature : stage.getAsJsonArray()) assertTrue(feature.getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
 			}
 			var attributes = biome.getAsJsonObject("attributes");
-			allowed(attributes, file, "minecraft:audio/background_music", "minecraft:gameplay/increased_fire_burnout",
-				"minecraft:gameplay/natural_mob_spawns", "minecraft:visual/sky_color", "minecraft:visual/water_fog_color", "minecraft:visual/water_fog_end_distance");
-			var spawns = attributes.getAsJsonObject("minecraft:gameplay/natural_mob_spawns");
-			allowed(spawns, file, "modifier", "argument"); required(spawns, file, "modifier", "argument");
-			assertEquals("overlay", spawns.get("modifier").getAsString());
-			var argument = spawns.getAsJsonObject("argument");
-			allowed(argument, file, "spawns_by_category", "spawn_costs"); required(argument, file, "spawns_by_category", "spawn_costs");
-			for (var pool : argument.getAsJsonObject("spawns_by_category").entrySet()) for (var value : pool.getValue().getAsJsonArray()) {
-				var spawn = value.getAsJsonObject();
-				allowed(spawn, file, "type", "weight", "count"); required(spawn, file, "type", "weight", "count");
-				assertTrue(spawn.get("type").getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
-				assertTrue(spawn.get("weight").getAsInt() > 0);
-				var count = spawn.get("count");
-				if (count.isJsonPrimitive()) assertTrue(count.getAsInt() > 0);
-				else {
-					var range = count.getAsJsonObject();
-					allowed(range, file, "type", "min_inclusive", "max_inclusive"); required(range, file, "type", "min_inclusive", "max_inclusive");
-					assertEquals("minecraft:uniform", range.get("type").getAsString());
-					assertTrue(range.get("min_inclusive").getAsInt() > 0 && range.get("max_inclusive").getAsInt() >= range.get("min_inclusive").getAsInt());
+			if (is262) {
+				allowed(attributes, file, "minecraft:audio/background_music", "minecraft:gameplay/increased_fire_burnout",
+					"minecraft:visual/sky_color", "minecraft:visual/water_fog_color", "minecraft:visual/water_fog_end_distance");
+				var spawners = biome.getAsJsonObject("spawners");
+				allowed(spawners, file, "ambient", "axolotls", "creature", "misc", "monster", "underground_water_creature", "water_ambient", "water_creature");
+				for (var pool : spawners.entrySet()) for (var value : pool.getValue().getAsJsonArray()) {
+					var spawn = value.getAsJsonObject();
+					allowed(spawn, file, "type", "weight", "minCount", "maxCount"); required(spawn, file, "type", "weight", "minCount", "maxCount");
+					assertTrue(spawn.get("type").getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
+					assertTrue(spawn.get("weight").getAsInt() > 0);
+					int minCount = spawn.get("minCount").getAsInt();
+					int maxCount = spawn.get("maxCount").getAsInt();
+					assertTrue(minCount > 0 && maxCount >= minCount, file + " spawn count range");
+				}
+			} else {
+				allowed(attributes, file, "minecraft:audio/background_music", "minecraft:gameplay/increased_fire_burnout",
+					"minecraft:gameplay/natural_mob_spawns", "minecraft:visual/sky_color", "minecraft:visual/water_fog_color", "minecraft:visual/water_fog_end_distance");
+				var spawns = attributes.getAsJsonObject("minecraft:gameplay/natural_mob_spawns");
+				allowed(spawns, file, "modifier", "argument"); required(spawns, file, "modifier", "argument");
+				assertEquals("overlay", spawns.get("modifier").getAsString());
+				var argument = spawns.getAsJsonObject("argument");
+				allowed(argument, file, "spawns_by_category", "spawn_costs"); required(argument, file, "spawns_by_category", "spawn_costs");
+				for (var pool : argument.getAsJsonObject("spawns_by_category").entrySet()) for (var value : pool.getValue().getAsJsonArray()) {
+					var spawn = value.getAsJsonObject();
+					allowed(spawn, file, "type", "weight", "count"); required(spawn, file, "type", "weight", "count");
+					assertTrue(spawn.get("type").getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
+					assertTrue(spawn.get("weight").getAsInt() > 0);
+					var count = spawn.get("count");
+					if (count.isJsonPrimitive()) assertTrue(count.getAsInt() > 0);
+					else {
+						var range = count.getAsJsonObject();
+						allowed(range, file, "type", "min_inclusive", "max_inclusive"); required(range, file, "type", "min_inclusive", "max_inclusive");
+						assertEquals("minecraft:uniform", range.get("type").getAsString());
+						assertTrue(range.get("min_inclusive").getAsInt() > 0 && range.get("max_inclusive").getAsInt() >= range.get("min_inclusive").getAsInt());
+					}
 				}
 			}
 		}
@@ -362,10 +474,13 @@ class DataFormatTest {
 	/** Every data file is one of the kinds checked above. */
 	@Test
 	void everyKindOfDataIsChecked() throws IOException {
-		Set<String> checked = Set.of("wildercord/advancement", "wildercord/loot_table", "wildercord/enchantment", "wildercord/recipe",
+		Set<String> checked = new java.util.HashSet<>(Set.of("wildercord/advancement", "wildercord/loot_table", "wildercord/enchantment", "wildercord/recipe",
 			"wildercord/villager_trade", "wildercord/trade_set", "wildercord/worldgen/structure", "wildercord/worldgen/structure_set",
-			"wildercord/worldgen/feature", "wildercord/worldgen/placed_feature", "wildercord/worldgen/biome",
-			"wildercord/tags", "minecraft/tags", "wildercord/dimension", "wildercord/damage_type");
+			"wildercord/worldgen/" + TestDataProfile.featureDirName(), "wildercord/worldgen/placed_feature", "wildercord/worldgen/biome",
+			"wildercord/tags", "minecraft/tags", "wildercord/dimension", "wildercord/damage_type"));
+		if (TestDataProfile.is26_2()) {
+			checked.add("wildercord/brewing");
+		}
 		List<Path> all = files("");
 		assertTrue(!all.isEmpty(), "there should be data files to check");
 		for (Path file : all) {
@@ -417,7 +532,7 @@ class DataFormatTest {
 				unknown.add(key);
 			}
 		}
-		assertTrue(unknown.isEmpty(), where + ": Minecraft 26.3 ignores the keys " + unknown);
+		assertTrue(unknown.isEmpty(), where + ": Minecraft " + TestDataProfile.MC_VERSION + " ignores the keys " + unknown);
 	}
 
 	private static void required(JsonObject object, Object where, String... keys) {
@@ -426,10 +541,10 @@ class DataFormatTest {
 		}
 	}
 
-	/** A loot condition or modifier (one, or a list of them): named by "type", never the older names. */
+	/** A loot condition or modifier in 26.3+ schema: named by "type", never the older names. */
 	private static void condition(JsonElement element, String where) {
 		if (element.isJsonPrimitive()) {
-			return; // a reference to a predicate or item modifier file
+			return;
 		}
 		if (element.isJsonArray()) {
 			element.getAsJsonArray().forEach(e -> condition(e, where));
@@ -439,6 +554,17 @@ class DataFormatTest {
 		required(object, where, "type");
 		for (String old : OLD_NAMES) {
 			assertTrue(!object.has(old) || !object.get(old).isJsonPrimitive(), where + ": named by \"" + old + "\", which 26.3 no longer reads");
+		}
+	}
+
+	/** A list of loot conditions or functions: each named by {@code key} ("condition" or "function"), never "type". */
+	private static void conditionList(JsonElement element, String where, String key) {
+		assertTrue(element.isJsonArray(), where + ": 26.2 expects a JSON array");
+		for (JsonElement entry : element.getAsJsonArray()) {
+			if (entry.isJsonPrimitive()) continue;
+			JsonObject object = entry.getAsJsonObject();
+			required(object, where, key);
+			assertTrue(!object.has("type"), where + ": unexpected \"type\" key in 26.2");
 		}
 	}
 
@@ -454,6 +580,6 @@ class DataFormatTest {
 			ingredient.getAsJsonArray().forEach(e -> ingredient(e, where));
 			return;
 		}
-		assertTrue(ingredient.isJsonPrimitive(), where + ": an ingredient is an item id or #tag in 26.3, not " + ingredient);
+		assertTrue(ingredient.isJsonPrimitive(), where + ": an ingredient is an item id or #tag in " + TestDataProfile.MC_VERSION + ", not " + ingredient);
 	}
 }

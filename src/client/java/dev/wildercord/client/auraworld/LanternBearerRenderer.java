@@ -4,11 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.LanternBearer;
 import dev.wildercord.aura.world.LanternBearerRules;
+import dev.wildercord.client.compat.CullableMobRenderer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -22,7 +22,7 @@ import net.minecraft.util.Mth;
  * The Lantern-Bearer (see {@link LanternBearerModel}), well over a head taller than a player: lit by its own lantern whatever the dark,
  * a little see-through as a spirit is, gone to smoke when it fades, and not there at all while it lies in its grave.
  */
-public final class LanternBearerRenderer extends MobRenderer<LanternBearer,LanternBearerRenderState,LanternBearerModel> {
+public final class LanternBearerRenderer extends CullableMobRenderer<LanternBearer,LanternBearerRenderState,LanternBearerModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("lantern_bearer"),"main");
 	private static final Identifier SKIN=Wildercord.id("textures/entity/lantern_bearer/skin.png");
 	private static final Identifier GLOW=Wildercord.id("textures/entity/lantern_bearer/glow.png");
@@ -33,8 +33,8 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 	@Override public LanternBearerRenderState createRenderState(){return new LanternBearerRenderState();}
 	@Override public Identifier getTextureLocation(LanternBearerRenderState s){return SKIN;}
 	/** Down in its grave, or out in the dark with its lantern out, it is not there to see. */
-	@Override public boolean shouldRender(LanternBearer e,Frustum frustum,double x,double y,double z,float partial){
-		return e.move()!=LanternBearerRules.DORMANT&&!e.unseen()&&super.shouldRender(e,frustum,x,y,z,partial);
+	@Override protected boolean shouldRenderEntity(LanternBearer e,Frustum frustum,double x,double y,double z,float partial){
+		return e.move()!=LanternBearerRules.DORMANT&&!e.unseen()&&superShouldRenderEntity(e,frustum,x,y,z,partial);
 	}
 	@Override protected int getBlockLightLevel(LanternBearer e,BlockPos pos){return 15;}
 	@Override public void extractRenderState(LanternBearer e,LanternBearerRenderState s,float partial){
@@ -79,7 +79,7 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 			float lit=LanternBearerRules.holdsLantern(s.rise)?Mth.clamp((s.rise-(float)LanternBearerRules.HOOK_AT/LanternBearerRules.RISE_TICKS)*8,0,1):0;
 			float alpha=(.75F+.25F*Mth.sin(s.ageInTicks*.31F)*Mth.sin(s.ageInTicks*.17F))*lit*Math.min(1,s.solid*1.2F)*lights(s);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
-			collector.order(1).submitModel(getParentModel(),s,pose,type,light,OverlayTexture.NO_OVERLAY,(a<<24)|0xFFFFFF,null,s.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, s.outlineColor);
 		}
 		private static float lights(LanternBearerRenderState s){
 			// Burning hot and steady as it gathers the souls for a flare, breathes, or holds its rite.

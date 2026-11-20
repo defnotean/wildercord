@@ -12,7 +12,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.Heightmap;
 
@@ -109,8 +107,7 @@ public final class MountContent {
 			BiomeSelectors.includeByKey(BIOMES.stream().map(id -> ResourceKey.create(Registries.BIOME, net.minecraft.resources.Identifier.parse(id))).toList()),
 			context -> {
 				if (Config.get().wildlife().enabled() && Config.get().wildlife().spawnMultiplier() > 0) {
-					context.getMobSpawnSettings().addSpawn(MobCategory.CREATURE,
-						new MobSpawnSettings.SpawnerData(RIDGEBACK_STAG, UniformInt.of(MIN_GROUP, MAX_GROUP)), WEIGHT);
+					dev.wildercord.compat.McWorldgen.addSpawn(context.getMobSpawnSettings(), MobCategory.CREATURE, RIDGEBACK_STAG, MIN_GROUP, MAX_GROUP, WEIGHT);
 				}
 			});
 		FieldGuide.add(new FieldGuide.Entry("wildercord:ridgeback_stag", FieldGuide.Group.WILDLIFE, 0x8A5A34));

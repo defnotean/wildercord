@@ -1,15 +1,13 @@
 package dev.wildercord.wildlife;
-import com.mojang.serialization.MapCodec;
+import dev.wildercord.compat.SimpleWorldFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.block.Block;
 /** One tiny authored field marker, never a dungeon or a source of repeatable site rewards. */
-public record BreathmarkFeature() implements Feature {
- public static final MapCodec<BreathmarkFeature> CODEC=MapCodec.unit(new BreathmarkFeature());
- public MapCodec<BreathmarkFeature> codec() {return CODEC;}
+public class BreathmarkFeature extends SimpleWorldFeature {
+ @Override
  public boolean place(WorldGenLevel l,ChunkGenerator generator,RandomSource r,BlockPos origin) {
   int kind=r.nextInt(2);
   for(int i=0;i<12;i++) {

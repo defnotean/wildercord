@@ -170,7 +170,7 @@ final class FieldShapes {
 	}
 
 	private static boolean ore(BlockState state) {
-		return state.is(BlockTags.ORES) || state.is(ConventionalBlockTags.ORES);
+		return dev.wildercord.compat.McBlocksAndItems.isOre(state);
 	}
 
 	private static boolean besideWater(ServerLevel level, BlockPos p) {

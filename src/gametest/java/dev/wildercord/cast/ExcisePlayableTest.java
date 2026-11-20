@@ -99,9 +99,9 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                 });
                 context.runOnClient(mc -> {
                     key[0] = WildercordKeys.castMapping(); original[0] = KeyMappingHelper.getBoundKeyOf(key[0]);
-                    key[0].setKey(InputConstants.Type.KEYBOARD.getOrCreate(InputConstants.KEY_F8));
+                    key[0].setKey(dev.wildercord.gametest.compat.GametestCompat.keyboardKey(InputConstants.KEY_F8));
                     key[1] = java.util.Arrays.stream(mc.options.keyMappings).filter(k -> k.getName().equals("key.wildercord.cast_1")).findFirst().orElseThrow();
-                    original[1] = KeyMappingHelper.getBoundKeyOf(key[1]); key[1].setKey(InputConstants.Type.KEYBOARD.getOrCreate(InputConstants.KEY_F9)); KeyMapping.resetMapping();
+                    original[1] = KeyMappingHelper.getBoundKeyOf(key[1]); key[1].setKey(dev.wildercord.gametest.compat.GametestCompat.keyboardKey(InputConstants.KEY_F9)); KeyMapping.resetMapping();
                     check(WildercordKeys.castKey().getString().contains("F8"), "Lesson/HUD read the rebound Cast control");
                 });
                 context.waitTicks(4);

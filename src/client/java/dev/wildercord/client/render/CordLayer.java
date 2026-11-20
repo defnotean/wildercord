@@ -67,8 +67,7 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		float[][] spots = slim ? SLIM_SPOTS : SPOTS;
 		// The colour goes in as the tint; the outline is the player's own (none unless they're Glowing), so the Cord
 		// never carries a glowing outline of its own.
-		nodes.submitModel(slim ? slimBand : band, Unit.INSTANCE, pose, RenderTypes.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, -1, null,
-			state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(nodes, slim ? slimBand : band, Unit.INSTANCE, pose, RenderTypes.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
 		float glow = ((CastingPose) state).wildercord$glow();
 		// The player's chosen style (see CordStyleLook): the beads' material, and a fixed glow colour or the runes' own.
 		dev.wildercord.cosmetic.CordStyles.Style style = dev.wildercord.client.cosmetic.CordStyleLook.of(state);
@@ -85,11 +84,10 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.translate(spot[0] / 16F, spot[1] / 16F, spot[2] / 16F);
 			int rgb = dev.wildercord.client.cosmetic.CordStyleLook.glowColor(style, cord.beads().get(i)) & 0xFFFFFF;
 			int color = (alpha << 24) | rgb;
-			nodes.submitModel(bead, Unit.INSTANCE, pose, RenderTypes.entityCutout(beadTexture), light, OverlayTexture.NO_OVERLAY, tinted ? 0xFF000000 | rgb : -1,
-				null, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(nodes, bead, Unit.INSTANCE, pose, RenderTypes.entityCutout(beadTexture), light, OverlayTexture.NO_OVERLAY, tinted ? 0xFF000000 | rgb : -1, state.outlineColor);
 			// The glow is light, not a thing: a shader pack's shadows leave it out.
 			if (alpha > 0 && !dev.wildercord.client.compat.ShaderCompat.shadowPass()) {
-				nodes.submitModel(bead, Unit.INSTANCE, pose, RenderTypes.eyes(glowTexture), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color, null, 0);
+				dev.wildercord.client.compat.RenderCompat.submitModel(nodes, bead, Unit.INSTANCE, pose, RenderTypes.eyes(glowTexture), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color, 0);
 			}
 			pose.popPose();
 		}

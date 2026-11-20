@@ -248,7 +248,7 @@ public final class DungeonWards extends SavedData {
 	/** The start of {@code structure} whose bounds reach {@code pos}'s column, even if {@code pos} is above or below it. */
 	private static StructureStart findStart(ServerLevel level, BlockPos pos, Structure structure) {
 		ChunkPos chunk = ChunkPos.containing(pos);
-		for (StructureStart start : level.structureManager().startsForStructure(chunk.x(), chunk.z(), structure)) {
+		for (StructureStart start : dev.wildercord.compat.McWorldgen.startsForStructure(level.structureManager(), chunk, structure)) {
 			BoundingBox bb = start.getBoundingBox();
 			if (start.isValid() && pos.getX() >= bb.minX() && pos.getX() <= bb.maxX() && pos.getZ() >= bb.minZ() && pos.getZ() <= bb.maxZ()) {
 				return start;

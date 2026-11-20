@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dev.wildercord.TestDataProfile;
 import dev.wildercord.world.upgrade.UpgradeCatalog;
 import org.junit.jupiter.api.Test;
 
@@ -65,10 +66,15 @@ class WaterSitesTest {
 				}
 			}
 			assertTrue(runeEntries >= 3, id + " has too few runes");
-			// An exploration map's destination is a structure tag; a bare id stops the whole data pack from loading.
+			// ExplorationMapFunction uses bare TagKey in 26.2 and '#'-prefixed RegistryEntryList tags in 26.3.
 			var destination = java.util.regex.Pattern.compile("\"destination\":\"([^\"]*)\"").matcher(loot.toString());
 			while (destination.find()) {
-				assertTrue(destination.group(1).startsWith("#"), id + " map destination must be a tag: " + destination.group(1));
+				String dest = destination.group(1);
+				if (TestDataProfile.is26_2()) {
+					assertTrue(!dest.startsWith("#") && dest.contains(":"), id + " map destination must be a 26.2 bare tag id: " + dest);
+				} else {
+					assertTrue(dest.startsWith("#"), id + " map destination must be a tag: " + dest);
+				}
 			}
 
 			JsonObject adv = json(DATA.resolve("advancement/world/" + id + ".json"));

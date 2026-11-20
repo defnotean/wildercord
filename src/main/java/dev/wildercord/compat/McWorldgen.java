@@ -1,0 +1,114 @@
+package dev.wildercord.compat;
+
+import dev.wildercord.Wildercord;
+import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.QuartPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+
+/**
+ * Version seam for worldgen feature registration, biome spawn additions, biome lookup and structure queries (Minecraft 26.3).
+ */
+public final class McWorldgen {
+	private McWorldgen() {}
+
+	/** Registers a zero-config {@link SimpleWorldFeature} under {@code wildercord:<path>}. */
+	public static void registerFeature(String path, SimpleWorldFeature feature) {
+		Registry.register(BuiltInRegistries.FEATURE_TYPE, Wildercord.id(path), feature.codec());
+	}
+
+	/** Adds a mob spawn entry via Fabric biome modification API. */
+	public static void addSpawn(BiomeModificationContext context, MobCategory category, EntityType<?> type,
+			int minGroup, int maxGroup, int weight) {
+		addSpawn(context.getMobSpawnSettings(), category, type, minGroup, maxGroup, weight);
+	}
+
+	/** Adds a mob spawn entry directly onto a {@link BiomeModificationContext.MobSpawnSettingsContext}. */
+	public static void addSpawn(BiomeModificationContext.MobSpawnSettingsContext spawns, MobCategory category,
+			EntityType<?> type, int minGroup, int maxGroup, int weight) {
+		spawns.addSpawn(category, new MobSpawnSettings.SpawnerData(type, UniformInt.of(minGroup, maxGroup)), weight);
+	}
+
+	/** Returns natural spawn entity types registered in {@code biome} for {@code category}. */
+	public static List<EntityType<?>> biomeSpawnTypes(Holder<Biome> biome, MobCategory category) {
+		MobSpawnSettings settings = biome.value().getAttributes().applyModifier(EnvironmentAttributes.NATURAL_MOB_SPAWNS, MobSpawnSettings.EMPTY);
+		List<EntityType<?>> types = new ArrayList<>();
+		settings.getMobsToSpawn(category).unwrap().forEach(w -> types.add(w.value().type()));
+		return types;
+	}
+
+	/** Optional {@code Biomes.DAPPLED_FOREST} key when present in the active MC version. */
+	public static Optional<ResourceKey<Biome>> dappledForestBiome() {
+		return Optional.of(Biomes.DAPPLED_FOREST);
+	}
+
+	/** Returns an unmodifiable set combining {@code base} with {@code extra} if present. */
+	@SafeVarargs
+	public static Set<ResourceKey<Biome>> biomeSetWithOptional(Set<ResourceKey<Biome>> base, Optional<ResourceKey<Biome>>... extras) {
+		Set<ResourceKey<Biome>> combined = new HashSet<>(base);
+		for (Optional<ResourceKey<Biome>> extra : extras) {
+			extra.ifPresent(combined::add);
+		}
+		return Set.copyOf(combined);
+	}
+
+	/**
+	 * Quick precheck for whether a valid structure biome exists at the chunk center surface.
+	 * Keeping this outside {@code ArchiveStructure.findGenerationPoint} preserves a single
+	 * {@code getFirstOccupiedHeight} call site for test Mixins.
+	 */
+	public static boolean canValidBiomeExistAtChunkCenter(Structure.GenerationContext context) {
+		return context.couldValidBiomeExistOnTopOfChunkCenter();
+	}
+
+	/** Looks up the biome at block coordinates inside structure generation. */
+	public static Holder<Biome> getNoiseBiome(Structure.GenerationContext context, int blockX, int blockY, int blockZ) {
+		return context.biomeResolver().getNoiseBiome(
+			QuartPos.fromBlock(blockX), QuartPos.fromBlock(blockY), QuartPos.fromBlock(blockZ));
+	}
+
+	/** Lists structure starts matching {@code predicate} in chunk {@code (chunkX, chunkZ)}. */
+	public static List<StructureStart> startsForStructure(StructureManager manager, ChunkPos chunk, Predicate<Structure> predicate) {
+		return manager.startsForStructure(chunk.x(), chunk.z(), predicate);
+	}
+
+	/** Lists structure starts matching {@code structure} in chunk {@code (chunkX, chunkZ)}. */
+	public static List<StructureStart> startsForStructure(StructureManager manager, ChunkPos chunk, Structure structure) {
+		return manager.startsForStructure(chunk.x(), chunk.z(), structure);
+	}
+
+	/** Finds the nearest structure matching a {@link TagKey} or {@link HolderSet}. */
+	@SuppressWarnings("unchecked")
+	public static @Nullable BlockPos findNearestStructure(ServerLevel level, Object target, BlockPos origin,
+			int radiusCells, boolean skipKnown) {
+		if (target instanceof TagKey<?> tag) {
+			return level.findNearestMapStructure((TagKey<Structure>) tag, origin, radiusCells, skipKnown);
+		}
+		return level.findNearestMapStructure((HolderSet<Structure>) target, origin, radiusCells, skipKnown);
+	}
+}

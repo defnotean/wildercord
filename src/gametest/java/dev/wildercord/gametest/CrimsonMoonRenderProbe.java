@@ -4,9 +4,10 @@ import com.google.gson.GsonBuilder;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.renderpearl.api.textures.GpuTexture;
 import dev.wildercord.aura.*;
 import dev.wildercord.client.*;
+import dev.wildercord.client.compat.FirstPersonHandView;
+import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.client.combat.*;
 import dev.wildercord.client.render.AuraShellLayer;
 import dev.wildercord.gametest.CrimsonMoonRenderMath.*;
@@ -18,13 +19,11 @@ import net.minecraft.client.*;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.renderer.entity.state.*;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.*;
@@ -78,16 +77,17 @@ public final class CrimsonMoonRenderProbe {
     private record World(AvatarRenderState avatar,PlayerModel model,Matrix4f root,Matrix4f modelRoot,boolean modelRootVisible,RenderType material){}
     public record WorldItem(AvatarRenderState avatar,PlayerModel model,ItemStackRenderState item,Matrix4f expected,WorldItem previous){}
     public static final class FallbackView {
-        final AvatarRenderState avatar;final FirstPersonHandsAndItemsRenderState hands;final FirstPersonHandsAndItemsRenderer renderer;
-        final Matrix4f before,expectedItem;final float inverse,ownership;final ItemStackRenderState item;final FallbackView previous;
+        final AvatarRenderState avatar;final FirstPersonHandView hands;
+        final Matrix4f before,expectedItem;final float inverse,ownership;ItemStackRenderState item;final FallbackView previous;
         boolean transform;
-        FallbackView(AvatarRenderState a,FirstPersonHandsAndItemsRenderState h,FirstPersonHandsAndItemsRenderer r,Matrix4f b,
+        FallbackView(AvatarRenderState a,FirstPersonHandView h,Matrix4f b,
             Matrix4f expected,float inverse,float ownership,FallbackView previous){
-            avatar=a;hands=h;renderer=r;before=b;expectedItem=expected;this.inverse=inverse;this.ownership=ownership;item=h.mainHandRenderState;this.previous=previous;
+            avatar=a;hands=h;before=b;expectedItem=expected;this.inverse=inverse;this.ownership=ownership;item=h.initialMainHandRenderState();this.previous=previous;
         }
+        public void bindItem(ItemStackRenderState item){if(this.item==null)this.item=item;}
     }
     public record ClassicCall(FallbackView owner,Matrix4f expected){}
-    private record CopyCall(Token token,RenderTarget target,GpuTexture texture,Consumer<NativeImage> consumer){}
+    private record CopyCall(Token token,RenderTarget target,Object texture,Consumer<NativeImage> consumer){}
     public static final class Token {
         final Expected expected;final List<String> failures=new ArrayList<>();final Map<String,String> observations=new LinkedHashMap<>();
         final List<Pass> passes=new ArrayList<>();long extracted,rendered;Copy copy;ArticulatedRenderReceipt.Pixels pixels;ArticulatedRenderReceipt.Binding image;
@@ -98,7 +98,7 @@ public final class CrimsonMoonRenderProbe {
         synchronized void pass(Pass value){if(copy!=null||ended)reject("late_pass");else passes.add(value);}
     }
     public static final class Scope {
-        final Token token;final Scope previous;boolean extracting,rendering;RenderTarget target;GpuTexture texture;
+        final Token token;final Scope previous;boolean extracting,rendering;RenderTarget target;Object texture;
         PlayerSkin originalSkin;PlayerModel originalModel;
         final IdentityHashMap<Object,Long> ids=new IdentityHashMap<>();
         final IdentityHashMap<AvatarRenderState,Extracted> sources=new IdentityHashMap<>();
@@ -304,7 +304,7 @@ public final class CrimsonMoonRenderProbe {
         var model=source.model();boolean same=ItemStack.isSameItemSameComponents(stack,source.main())&&stack.getCount()==source.main().getCount();
         boolean eligible=CrimsonMoonRenderMath.item(id(s,source.item()),id(s,item),stack.is(Items.DIAMOND_SWORD),offhand(a).isEmpty(),same)
             &&!item.isEmpty()&&!a.isUsingItem&&!a.isBaby&&a.ticksUsingItem(arm)==0
-            &&(a.currentSwing==null||a.currentSwing.animation().type()!=SwingAnimationType.STAB)&&ArticulatedCombat.frame(a)==source.articulated();
+            &&!RenderCompat.hasActiveStabSwing(a)&&ArticulatedCombat.frame(a)==source.articulated();
         s.token.observe("worldHandEligible",eligible);if(!eligible)s.token.reject("ineligible_ordinary_world_hand");
         if(!CrimsonMoonRenderMath.compare("world_item_root",CrimsonMoonRenderMath.values(world.root()),CrimsonMoonRenderMath.values(pose.last().pose())).matched())s.token.reject("changed_world_item_root");
         var rig=((ArticulatedModelAccess)model).wildercord$rig();
@@ -326,12 +326,12 @@ public final class CrimsonMoonRenderProbe {
         var s=rendering();if(s==null||a.id!=s.token.expected.owner())return null;var call=new ViewCall(a,hand,new Matrix4f(stack.last().pose()),s.view);s.view=call;return call;
     }
     public static void viewLeave(ViewCall call,boolean submitted){var s=rendering();if(s!=null&&call!=null)s.view=call.previous();}
-    public static void viewAttempt(AvatarRenderState a,FirstPersonHandsAndItemsRenderState h,float partial,InteractionHand hand){
+    public static void viewAttempt(AvatarRenderState a,FirstPersonHandView hands,float partial,InteractionHand hand){
         var s=rendering();if(s==null||a==null||a.id!=s.token.expected.owner()||hand!=InteractionHand.MAIN_HAND)return;
-        var source=s.sources.get(a);boolean known=h instanceof MastersHandMotionState;
-        boolean equipping=known&&((MastersHandMotionState)h).wildercord$mainHandEquipping();
-        boolean same=source!=null&&ItemStack.isSameItemSameComponents(source.main(),h.mainHandItem);
-        float height=net.minecraft.util.Mth.lerp(partial,h.oldMainHandHeight,h.mainHandHeight);
+        var source=s.sources.get(a);
+        boolean known=hands.equipKnown();boolean equipping=known&&hands.mainHandEquipping();
+        boolean same=source!=null&&known&&ItemStack.isSameItemSameComponents(source.main(),hands.mainHandItem());
+        float height=known?net.minecraft.util.Mth.lerp(partial,hands.oldMainHandHeight(),hands.mainHandHeight()):0F;
         boolean active=source!=null&&!source.palette().phase().equals("NONE")&&source.expectedBody().weight()>0;
         if(!CrimsonMoonRenderMath.handEligible(active,height,same,known,equipping))s.token.reject("ordinary_hand_admission_is_not_eligible");
         s.token.observe("handEquipKnown",known);s.token.observe("handEquipping",equipping);s.token.observe("handSameItem",same);
@@ -368,17 +368,17 @@ public final class CrimsonMoonRenderProbe {
         var expected=CrimsonMoonRenderMath.sword(view.root(),CrimsonMoonRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
         pass(s,"view_item",a,view.model(),item,CrimsonMoonRenderMath.compare("actual_socket_item_matrix",CrimsonMoonRenderMath.values(expected),CrimsonMoonRenderMath.values(actual)),true,false);
     }
-    public static FallbackView fallbackViewBegin(FirstPersonHandsAndItemsRenderer renderer,AvatarRenderState a,FirstPersonHandsAndItemsRenderState hands,
+    public static FallbackView fallbackViewBegin(FirstPersonHandView hands,AvatarRenderState a,
         InteractionHand hand,ItemStack stack,float attack,float inverse,PoseStack pose){
         var s=rendering();if(s==null||a==null||a.id!=s.token.expected.owner()||hand!=InteractionHand.MAIN_HAND)return null;
         var source=s.sources.get(a);if(source==null){s.token.reject("native_without_extraction");return null;}
-        if(!stack.is(Items.DIAMOND_SWORD)||!ItemStack.isSameItemSameComponents(stack,hands.mainHandItem)||!ItemStack.isSameItemSameComponents(stack,source.main()))s.token.reject("wrong_native_stack");
-        var c=source.classic();boolean equipping=!(hands instanceof MastersHandMotionState motion)||motion.wildercord$mainHandEquipping();
+        if(!stack.is(Items.DIAMOND_SWORD)||!hands.equipKnown()||!ItemStack.isSameItemSameComponents(stack,hands.mainHandItem())||!ItemStack.isSameItemSameComponents(stack,source.main()))s.token.reject("wrong_native_stack");
+        var c=source.classic();boolean equipping=hands.mainHandEquipping();
         float ownership=c==null||equipping?0:MastersViewMotion.ownership(c.pose().weight(),true);
-        boolean whack=a.currentSwing!=null&&a.currentSwing.hand()==InteractionHand.MAIN_HAND&&a.currentSwing.animation().type()==SwingAnimationType.WHACK;
-        if(a.isUsingItem||a.isAutoSpinAttack||hands.isScoping||a.currentSwing!=null&&a.currentSwing.animation().type()==SwingAnimationType.STAB)s.token.reject("unsupported_native_item_motion");
+        boolean whack=RenderCompat.activeMainHandSwingType(a)==SwingAnimationType.WHACK;
+        if(a.isUsingItem||a.isAutoSpinAttack||hands.isScoping()||RenderCompat.hasActiveStabSwing(a))s.token.reject("unsupported_native_item_motion");
         var before=new Matrix4f(pose.last().pose());var expected=CrimsonMoonRenderMath.nativeSword(before,c==null?null:c.pose(),a.mainArm==HumanoidArm.LEFT,inverse,c==null?0:c.yawDelta(),c==null?0:c.pitchDelta(),ownership,attack,whack);
-        var call=new FallbackView(a,hands,renderer,before,expected,inverse,ownership,s.fallback);s.fallback=call;return call;
+        var call=new FallbackView(a,hands,before,expected,inverse,ownership,s.fallback);s.fallback=call;return call;
     }
     public static ClassicCall classicBegin(PoseStack pose,InteractionHand hand,AvatarRenderState a,float inverse){
         var s=rendering();if(s==null||s.fallback==null||s.fallback.avatar!=a||hand!=InteractionHand.MAIN_HAND)return null;var call=s.fallback;var source=s.sources.get(a);var c=source==null?null:source.classic();
@@ -388,15 +388,16 @@ public final class CrimsonMoonRenderProbe {
     }
     public static void classicEnd(ClassicCall call,PoseStack pose){
         var s=rendering();if(s==null||call==null)return;var owner=call.owner();if(owner.transform)s.token.reject("duplicate_classic_transform");owner.transform=true;
-        pass(s,"classic_transform",owner.avatar,owner.renderer,null,CrimsonMoonRenderMath.compare("observed_classic_before_after",
+        pass(s,"classic_transform",owner.avatar,owner.hands.rendererObject(),null,CrimsonMoonRenderMath.compare("observed_classic_before_after",
             CrimsonMoonRenderMath.values(call.expected()),CrimsonMoonRenderMath.values(pose.last().pose())),false,true);
     }
     public static void fallbackViewItem(FallbackView call,ItemStackRenderState item,Matrix4fc actual){
         var s=rendering();if(s==null||call==null)return;var source=s.sources.get(call.avatar);
+        var held=call.hands.mainHandItem();
         if(source==null||!CrimsonMoonRenderMath.item(id(s,call.item),id(s,item),call.avatar.getMainHandItemStack().is(Items.DIAMOND_SWORD),
-            offhand(call.avatar).isEmpty(),ItemStack.isSameItemSameComponents(source.main(),call.hands.mainHandItem))||item.isEmpty())s.token.reject("wrong_native_item");
+            offhand(call.avatar).isEmpty(),ItemStack.isSameItemSameComponents(source.main(),held))||item.isEmpty())s.token.reject("wrong_native_item");
         if(!call.transform)s.token.reject("skipped_classic_transform");
-        pass(s,"native_item",call.avatar,call.renderer,item,CrimsonMoonRenderMath.compare("actual_native_item_matrix",CrimsonMoonRenderMath.values(call.expectedItem),CrimsonMoonRenderMath.values(actual)),false,true);
+        pass(s,"native_item",call.avatar,call.hands.rendererObject(),item,CrimsonMoonRenderMath.compare("actual_native_item_matrix",CrimsonMoonRenderMath.values(call.expectedItem),CrimsonMoonRenderMath.values(actual)),false,true);
     }
     public static void fallbackViewEnd(FallbackView call,boolean completed){var s=rendering();if(s!=null&&call!=null){if(!completed)s.token.reject("incomplete_native_call");s.fallback=call.previous;}}
     private static void pass(Scope s,String kind,AvatarRenderState a,Object model,Object item,Comparison proof,boolean segmented,boolean rigid){
@@ -470,7 +471,7 @@ public final class CrimsonMoonRenderProbe {
         Consumer<NativeImage> wrapped=image->{synchronized(token){if(++token.callbacks!=1||token.ended)token.reject("duplicate_or_late_readback");token.pixels=ArticulatedRenderReceipt.pixels(image.getWidth(),image.getHeight(),image::getPixel);}consumer.accept(image);};
         var previous=COPYING.get();COPYING.set(new CopyCall(token,target,target.getColorTexture(),wrapped));try{original.accept(target,wrapped);}finally{COPYING.set(previous);}
     }
-    public static void copyEnqueued(GpuTexture texture,int mip,RenderTarget target,Consumer<NativeImage> consumer){
+    public static void copyEnqueued(Object texture,int mip,RenderTarget target,Consumer<NativeImage> consumer){
         var call=COPYING.get();if(call==null||call.target()!=target||call.consumer()!=consumer)return;var t=call.token();
         if(texture!=call.texture()||target.getColorTexture()!=texture||mip!=0)t.reject("changed_copy_texture");
         synchronized(t){if(t.copy!=null)t.reject("duplicate_copy");else t.copy=new Copy(t.extracted,t.rendered,SEQ.incrementAndGet(),target.width,target.height,Map.copyOf(t.observations),List.copyOf(t.passes));}

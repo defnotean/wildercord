@@ -236,7 +236,7 @@ public final class GlassCartographer extends PathfinderMob implements Enemy {
 		super.die(source);
 	}
 	private static void giveOrDrop(ServerPlayer player, ItemStack stack) {
-		if (!player.getInventory().add(stack)) player.drop(stack, false, net.minecraft.util.Prediction.SERVER_ONLY);
+		if (!player.getInventory().add(stack)) dev.wildercord.compat.McEntities.drop(player, stack, false);
 	}
 
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }

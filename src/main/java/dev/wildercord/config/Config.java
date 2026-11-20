@@ -75,12 +75,29 @@ public final class Config {
 			ByteBufCodecs.BOOL, WildercordConfig.DefenceSettings::spellguard, ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::spellguardHealth,
 			ByteBufCodecs.VAR_INT, WildercordConfig.DefenceSettings::spellguardRechargeSeconds, ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::maxBonus,
 			ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::armourRate, WildercordConfig.DefenceSettings::new);
-		public static final StreamCodec<RegistryFriendlyByteBuf, Sync> CODEC = StreamCodec.composite(
-			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity,
-			DEFENCE_CODEC, Sync::defence, ByteBufCodecs.BOOL, Sync::mastery, ByteBufCodecs.BOOL, Sync::masteryTraits, ByteBufCodecs.BOOL,
-			Sync::unreadRunes, ByteBufCodecs.BOOL, Sync::aura, ByteBufCodecs.FLOAT, Sync::slashCost, ByteBufCodecs.BOOL, Sync::forgedGear,
-			ByteBufCodecs.FLOAT, Sync::sashCapacity, ByteBufCodecs.BOOL, Sync::strings, ByteBufCodecs.VAR_INT, Sync::stringWindow, ByteBufCodecs.VAR_INT,
-			Sync::combat, Sync::new).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, Sync> CODEC = StreamCodec.of(
+			(buf, sync) -> {
+				ByteBufCodecs.FLOAT.encode(buf, sync.costMultiplier());
+				ByteBufCodecs.FLOAT.encode(buf, sync.regenMultiplier());
+				ByteBufCodecs.BOOL.encode(buf, sync.playerAffinity());
+				DEFENCE_CODEC.encode(buf, sync.defence());
+				ByteBufCodecs.BOOL.encode(buf, sync.mastery());
+				ByteBufCodecs.BOOL.encode(buf, sync.masteryTraits());
+				ByteBufCodecs.BOOL.encode(buf, sync.unreadRunes());
+				ByteBufCodecs.BOOL.encode(buf, sync.aura());
+				ByteBufCodecs.FLOAT.encode(buf, sync.slashCost());
+				ByteBufCodecs.BOOL.encode(buf, sync.forgedGear());
+				ByteBufCodecs.FLOAT.encode(buf, sync.sashCapacity());
+				ByteBufCodecs.BOOL.encode(buf, sync.strings());
+				ByteBufCodecs.VAR_INT.encode(buf, sync.stringWindow());
+				ByteBufCodecs.VAR_INT.encode(buf, sync.combat());
+			},
+			buf -> new Sync(
+				ByteBufCodecs.FLOAT.decode(buf), ByteBufCodecs.FLOAT.decode(buf), ByteBufCodecs.BOOL.decode(buf),
+				DEFENCE_CODEC.decode(buf), ByteBufCodecs.BOOL.decode(buf), ByteBufCodecs.BOOL.decode(buf),
+				ByteBufCodecs.BOOL.decode(buf), ByteBufCodecs.BOOL.decode(buf), ByteBufCodecs.FLOAT.decode(buf),
+				ByteBufCodecs.BOOL.decode(buf), ByteBufCodecs.FLOAT.decode(buf), ByteBufCodecs.BOOL.decode(buf),
+				ByteBufCodecs.VAR_INT.decode(buf), ByteBufCodecs.VAR_INT.decode(buf)));
 
 		static Sync of(WildercordConfig config) {
 			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity(), config.defence(),

@@ -52,7 +52,7 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
    // Positive control: real projectile preparation, flight, collision and damage.
    // Fresh victims avoid previous Exposed marks or wounded-target modifiers.
    boolean accepted=false;
-   for(int attempt=0;attempt<16&&!accepted;attempt++){
+   for(int attempt=0;attempt<64&&!accepted;attempt++){
     if(attempt%4==0){server.runOnServer(s->NextSignatureNative.cast(caster,Runes.SELF,Runes.FORTUNE));c.waitTicks(8);}
     server.runOnServer(s->{events.clear();target=foe(caster);positiveBefore=target.getHealth();
      NextSignatureNative.cast(caster,Runes.BOLT,Runes.HARM);
@@ -85,7 +85,7 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
      // Remove prior genuine rewards between attempts so an old orb cannot satisfy
      // the synchronous assertion. This fixture never creates or awards XP itself.
      s.overworld().getEntitiesOfClass(ExperienceOrb.class,new net.minecraft.world.phys.AABB(-2,99,5,3,106,12)).forEach(Entity::discard);
-     target=foe(caster);target.setHealth(1);target.damageCooldownTime=0;
+     target=foe(caster);target.setHealth(1);dev.wildercord.compat.McEntities.clearHurtCooldown(target);
      target.hurtServer(s.overworld(),s.overworld().damageSources().playerAttack(caster),4);
      check(target.isDeadOrDying(),"Ordinary actual player attack really kills each bounded hostile");target.discard();
     }

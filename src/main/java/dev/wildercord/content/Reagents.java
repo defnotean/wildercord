@@ -17,10 +17,7 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.Consumable;
-import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
-import net.minecraft.world.level.storage.loot.providers.number.floats.ResolvableFloat;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -40,9 +37,8 @@ public final class Reagents {
 
 	private static final Map<Kind, Item> BY_KIND = new EnumMap<>(Kind.class);
 
-	public static final Item CINDER_ASH = register(Kind.SMOULDERING_ASH, new Item.Properties()
-		// Ash that never quite went out: it burns in a furnace, briefly but hot (four items, a quarter faster).
-		.component(DataComponents.COOKING_FUEL, new CookingFuel(new ResolvableInt.Constant(800), new ResolvableFloat.Constant(1.25F))));
+	public static final Item CINDER_ASH = register(Kind.SMOULDERING_ASH,
+		dev.wildercord.compat.McBlocksAndItems.cookingFuelProperties(new Item.Properties(), 800, 1.25F));
 	public static final Item EVERFROST_SHARD = register(Kind.EVERFROST, new Item.Properties());
 	public static final Item FULGURITE_SHARD = register(Kind.FULGURITE, new Item.Properties());
 	public static final Item BOTTLED_GALE = register(Kind.LINGERING_EDDY, new Item.Properties().stacksTo(16)
@@ -83,5 +79,6 @@ public final class Reagents {
 	}
 
 	public static void init() {
+		dev.wildercord.compat.McBlocksAndItems.registerFuel(CINDER_ASH, 800);
 	}
 }

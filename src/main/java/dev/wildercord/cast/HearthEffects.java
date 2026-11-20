@@ -41,7 +41,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.animal.Animal;
@@ -620,9 +619,10 @@ public final class HearthEffects {
 			}
 			int since = mob.getLastHurtByMob() == p ? mob.tickCount - mob.getLastHurtByMobTimestamp() : Integer.MAX_VALUE;
 			boolean targeting = mob.getTarget() == p;
-			if (hush && mob instanceof Enderman man && (targeting || man.isAngryAt(p, level)) && since > HearthRules.GRUDGE_TICKS) {
-				man.stopBeingAngry();
-				man.setTarget(null);
+			if (hush && dev.wildercord.compat.McEntities.isEnderman(mob)
+					&& (targeting || dev.wildercord.compat.McEntities.isEndermanAngryAt(mob, p, level))
+					&& since > HearthRules.GRUDGE_TICKS) {
+				dev.wildercord.compat.McEntities.pacifyEnderman(mob);
 				continue;
 			}
 			if (!targeting) {

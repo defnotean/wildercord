@@ -72,7 +72,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 			InputConstants.Key[] original = new InputConstants.Key[1];
 			context.runOnClient(mc -> {
 				var key = WildercordKeys.castMapping(); original[0] = net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.getBoundKeyOf(key);
-				key.setKey(InputConstants.Type.KEYBOARD.getOrCreate(InputConstants.KEY_F8)); KeyMapping.resetMapping();
+				key.setKey(dev.wildercord.gametest.compat.GametestCompat.keyboardKey(InputConstants.KEY_F8)); KeyMapping.resetMapping();
 				check(WildercordKeys.castKey().getString().contains("F8"), "Lesson and focus help name the rebound cast key");
 			});
 			try {

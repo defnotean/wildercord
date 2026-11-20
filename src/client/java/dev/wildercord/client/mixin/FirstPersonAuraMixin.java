@@ -25,18 +25,19 @@ public abstract class FirstPersonAuraMixin {
 	@Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraBegin(PlayerRenderState player, FirstPersonHandsAndItemsRenderState state, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector, int light, CallbackInfo ci) {
+		var view = dev.wildercord.client.compat.FirstPersonHandView.of((FirstPersonHandsAndItemsRenderer) (Object) this, state);
 		if (dev.wildercord.client.combat.ArticulatedCombat.viewFrame(player.avatarRenderState) != null) {
 			AuraBlade.beginFirstPerson(hand == InteractionHand.MAIN_HAND, stack);
 			boolean rendered;
 			try {
-				rendered = dev.wildercord.client.combat.ArticulatedViewModel.submit(player.avatarRenderState, state, partial, hand, pose, collector, light);
+				rendered = dev.wildercord.client.combat.ArticulatedViewModel.submit(player.avatarRenderState, view, partial, hand, pose, collector, light);
 			} finally {
 				AuraBlade.end();
 			}
 			if (rendered) { ci.cancel(); return; }
 		}
 		pose.pushPose();
-		float ownership = MastersArtPose.firstPersonOwnership(hand, player.avatarRenderState, state);
+		float ownership = MastersArtPose.firstPersonOwnership(hand, player.avatarRenderState, view);
 		// The same-item attack ticker lowers the vanilla grip just like an equip. Compensate only
 		// its owned fraction in camera space, keeping the original grip conjugation and argument.
 		if (ownership > 0) pose.translate(0, MastersViewMotion.heightCompensation(inverseArmHeight, ownership), 0);
@@ -49,7 +50,8 @@ public abstract class FirstPersonAuraMixin {
 	private void wildercord$blendAttack(FirstPersonHandsAndItemsRenderer renderer, float attack, PoseStack pose, int side, HumanoidArm arm,
 			Operation<Void> original, @Local(argsOnly = true) PlayerRenderState player,
 			@Local(argsOnly = true) FirstPersonHandsAndItemsRenderState state, @Local(argsOnly = true) InteractionHand hand) {
-		float ownership = MastersArtPose.firstPersonOwnership(hand, player.avatarRenderState, state);
+		float ownership = MastersArtPose.firstPersonOwnership(hand, player.avatarRenderState,
+			dev.wildercord.client.compat.FirstPersonHandView.of(renderer, state));
 		if (ownership <= 0) {
 			if (dev.wildercord.client.GlaivePose.firstPersonSwing(attack, pose, side, arm, player.avatarRenderState, hand)) return;
 			original.call(renderer, attack, pose, side, arm);

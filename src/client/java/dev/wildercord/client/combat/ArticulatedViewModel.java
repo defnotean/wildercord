@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.MastersViewMotion;
-import dev.wildercord.client.MastersHandMotionState;
-import net.minecraft.client.Minecraft;
+import dev.wildercord.client.compat.FirstPersonHandView;
+import dev.wildercord.client.compat.RenderCompat;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -33,12 +33,12 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 	}
 
 	/** True means this backend owns both arms and the sword, including the otherwise-empty offhand. */
-	public static boolean submit(AvatarRenderState avatar, net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands,
+	public static boolean submit(AvatarRenderState avatar, FirstPersonHandView hands,
 			float partial, InteractionHand hand, PoseStack stack, SubmitNodeCollector collector, int light) {
 		ArticulatedCombat.Frame combat = ArticulatedCombat.viewFrame(avatar);
 		if (combat == null || !handAdmission(combat, avatar, hands, partial).admitted()) return false;
-		PlayerModel playerModel = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar).getModel();
-		if (playerModel.getClass() != PlayerModel.class || !(playerModel instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
+		if (!(RenderCompat.livingModel(avatar) instanceof PlayerModel playerModel)
+			|| playerModel.getClass() != PlayerModel.class || !(playerModel instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
 		if (hand != InteractionHand.MAIN_HAND) return true;
 		var view = ArticulatedCombatPose.view(combat.pose(), combat.leftHanded());
 		Frame frame = new Frame(view, avatar.showLeftSleeve, avatar.showRightSleeve);
@@ -52,11 +52,10 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 			stack.translate(view.origin().x(), view.origin().y() - .8F * clearance, view.origin().z() - clearance);
 			// Keep the game camera completely free. Only the viewmodel acknowledges a bounded
 			// difference between accepted aim and free look; large turns use the existing aim cue.
-			stack.rotateDegrees(Axis.YP, -yaw);
-			stack.rotateDegrees(Axis.XP, -pitch);
+			dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.YP, -yaw);
+			dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.XP, -pitch);
 			stack.scale(-1, -1, 1);
-			collector.submitModel(model, frame, stack, RenderTypes.entityTranslucent(avatar.skin.body().texturePath()), light,
-				OverlayTexture.NO_OVERLAY, -1, null, 0);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector, model, frame, stack, RenderTypes.entityTranslucent(avatar.skin.body().texturePath()), light, OverlayTexture.NO_OVERLAY, -1, 0);
 			// The same immutable palette sets the hand at submission and deferred model rendering.
 			model.setupAnim(frame);
 			if (access.wildercord$armor() != null) access.wildercord$armor().submitView(model.rig, avatar, stack, collector, light);
@@ -73,13 +72,14 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 
 	/** Reads the extracted state only; also used by passive native admission diagnostics. */
 	public static MastersViewMotion.HandAdmission handAdmission(ArticulatedCombat.Frame combat, AvatarRenderState avatar,
-			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands, float partial) {
+			FirstPersonHandView hands, float partial) {
 		boolean acceptedArt = combat.move() != -1 && combat.activation() != Long.MIN_VALUE && combat.pose().weight() > 0;
-		boolean known = hands instanceof MastersHandMotionState;
+		boolean known = hands.equipKnown();
+		if (!known) return MastersViewMotion.articulatedHandAdmission(acceptedArt, 0.0F, false, false, false);
 		return MastersViewMotion.articulatedHandAdmission(acceptedArt,
-			net.minecraft.util.Mth.lerp(partial, hands.oldMainHandHeight, hands.mainHandHeight),
-			net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem, avatar.getMainHandItemStack()),
-			known, known && ((MastersHandMotionState) hands).wildercord$mainHandEquipping());
+			net.minecraft.util.Mth.lerp(partial, hands.oldMainHandHeight(), hands.mainHandHeight()),
+			net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem(), avatar.getMainHandItemStack()),
+			true, hands.mainHandEquipping());
 	}
 
 	public ArticulatedRig rig() { return rig; }

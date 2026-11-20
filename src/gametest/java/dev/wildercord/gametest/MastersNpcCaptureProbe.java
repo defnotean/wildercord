@@ -52,7 +52,7 @@ public final class MastersNpcCaptureProbe {
 			mc.gui.setScreen(null);
 			mc.options.setCameraType(camera); mc.options.guiScale().set(scale); mc.options.fov().set(fov);
 			mc.options.bobView().set(bob); mc.options.particles().set(particles);
-			mc.getWindow().setWindowed(width, height); mc.getWindow().setFullscreen(fullscreen); mc.resizeGui();
+			mc.getWindow().setWindowed(width, height); dev.wildercord.gametest.compat.GametestCompat.setFullscreen(mc.getWindow(), fullscreen); mc.resizeGui();
 			if (mc.gui.hud.isHidden() != hidden) mc.gui.hud.toggle();
 			MagicQuality.reducedFlash = reducedFlash; MagicQuality.cameraShake = cameraShake;
 		}
@@ -180,7 +180,7 @@ public final class MastersNpcCaptureProbe {
 		if (subject == null || state != renderedState || ArticulatedCombat.frame(state) == null) return;
 		check(handEntry != null && enteringHand == arm, "Every native hand receipt needs its actual incoming matrix");
 		PoseStack actual = new PoseStack(); actual.last().pose().set(stack.last().pose());
-		actual.rotateDegrees(Axis.XP, -90); actual.rotateDegrees(Axis.YP, 180);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(actual, Axis.XP, -90); dev.wildercord.client.compat.RenderCompat.rotateDegrees(actual, Axis.YP, 180);
 		actual.translate((arm == HumanoidArm.LEFT ? -1 : 1) / 16F, 2F / 16, -10F / 16);
 		PoseStack expected = new PoseStack(); expected.last().pose().set(handEntry);
 		model.root().translateAndRotate(expected); model.articulatedRig().socket(arm, expected);
@@ -238,7 +238,7 @@ public final class MastersNpcCaptureProbe {
 					mc.level.getLevelData().setGameTime(gameTime);
 				}
 			}
-			mc.gameRenderer.update(DELTA); mc.gameRenderer.extract(DELTA, true); mc.gameRenderer.render();
+			mc.gameRenderer.update(DELTA); mc.gameRenderer.extract(DELTA, true); dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA);
 			RenderSystem.getDevice().createCommandEncoder().submit();
 			Vec3 eye = mc.gameRenderer.mainCamera().position();
 			ProjectedBounds capturedBodyBounds = articulated ? bodyBounds.snapshot() : null;

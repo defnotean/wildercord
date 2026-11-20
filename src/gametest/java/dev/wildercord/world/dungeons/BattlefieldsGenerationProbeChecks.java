@@ -165,8 +165,7 @@ public final class BattlefieldsGenerationProbeChecks {
   check(!(Boolean)invoke("wildercord$footing",70,70,neighbours,63,footing),"actual false footing return preserved rather than recomputed");
   neighbours[0]=200;
   check(calls[0]==4,"each original handler operation called exactly once");
-  var context=new net.minecraft.world.level.levelgen.structure.Structure.GenerationContext(null,null,null,null,null,null,null,null,
-    721,new net.minecraft.world.level.ChunkPos(0,0),net.minecraft.world.level.LevelHeightAccessor.create(0,256),biome -> true);
+  var context=dev.wildercord.gametest.compat.GametestCompat.dummyStructureContext(new net.minecraft.world.level.ChunkPos(0,0),net.minecraft.world.level.LevelHeightAccessor.create(0,256));
   var result=java.util.Optional.of(new net.minecraft.world.level.levelgen.structure.Structure.GenerationStub(BlockPos.ZERO,builder -> {}));
   Operation<java.util.Optional<net.minecraft.world.level.levelgen.structure.Structure.GenerationStub>> locate=args -> {
    calls[0]++;check(args[0]==context,"same locate context");return result;

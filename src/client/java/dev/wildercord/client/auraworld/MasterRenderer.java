@@ -51,8 +51,7 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		dev.wildercord.client.combat.ArticulatedCombat.extractMaster(master, state, partial);
 		// This rig owns the entire swipe, including cancellation. A vanilla swing may not survive
 		// the server clearing an attack during its active tick.
-		state.swingAnimation = 0;
-		state.currentSwing = null;
+		dev.wildercord.client.compat.RenderCompat.clearSwingForCustomRig(state);
 		if (!state.isUpsideDown) MasterMotion.extract(master, state, partial);
 		else state.setData(MasterMotion.RIG, null);
 		if (!master.isAlive() || master.isRemoved() || state.deathTime > 0 || state.isUpsideDown) return;

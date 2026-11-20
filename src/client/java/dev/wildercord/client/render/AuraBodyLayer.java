@@ -3,10 +3,6 @@ package dev.wildercord.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.mojang.renderpearl.api.pipeline.BlendFunction;
-import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraAttachments;
@@ -16,18 +12,16 @@ import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.Awakening;
 import dev.wildercord.aura.AwakeningRules;
 import dev.wildercord.client.AuraFxClient;
+import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.MagicQuality;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.oit.OitPipelineSet;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -69,15 +63,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	private static final Identifier TEXTURE = Wildercord.id("textures/entity/aura/body.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spells' and the wisps' glows. */
-	public static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENERGY_SWIRL_SNIPPET)
-		.withLocation(Wildercord.id("pipeline/aura_body_glow"))
-		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
-		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
-		.build();
-	private static final OitPipelineSet GLOW_OIT = OitPipelineSet.builder("wildercord_aura_body_glow",
-		RenderPipeline.builder(RenderPipelines.ENERGY_SWIRL_SNIPPET).withShaderDefine("OIT_ADDITIVE")).build();
-	private static final RenderType GLOW_TYPE = RenderType.create("wildercord_aura_body_glow",
-		RenderSetup.builder(GLOW_PIPELINE).setOitPipelines(GLOW_OIT).withTexture("Sampler0", TEXTURE).sortOnUpload().createRenderSetup());
+	private static final RenderType GLOW_TYPE = RenderCompat.auraBodyGlowRenderType(TEXTURE);
 	/** Under a shader pack, which can't add light: vanilla's glowing eyes, laid over what's behind. */
 	private static final RenderType PLAIN_TYPE = RenderTypes.eyes(TEXTURE);
 	private static final int FULL = LightCoordsUtil.FULL_BRIGHT;
@@ -169,7 +155,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.translate(0.0F, 1.501F, 0.0F);
 		pose.scale(1 / 0.9375F, 1 / 0.9375F, 1 / 0.9375F);
 		pose.scale(-1.0F, -1.0F, 1.0F);
-		pose.rotateDegrees(Axis.YP, -(180.0F - state.bodyRot));
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, -(180.0F - state.bodyRot));
 		Minecraft mc = Minecraft.getInstance();
 		var camera = mc.gameRenderer.mainCamera();
 		Vec3 cam = camera.position();

@@ -575,7 +575,7 @@ public final class TwistMagic {
 		horse.setTamed(true);
 		horse.setOwner(player);
 		horse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
-		horse.setPermanentlyInvulnerable(true);
+		dev.wildercord.compat.McEntities.setPermanentlyInvulnerable(horse, true);
 		horse.setPersistenceRequired();
 		var speed = horse.getAttribute(Attributes.MOVEMENT_SPEED);
 		if (speed != null) {

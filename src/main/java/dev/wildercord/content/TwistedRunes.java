@@ -19,7 +19,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.Optional;
 import java.util.Random;
@@ -79,7 +78,7 @@ public final class TwistedRunes {
 			if (!source.isBuiltin() || !CHESTS.contains(key)) return;
 			int chance = dev.wildercord.config.WildercordConfig.scaledChance(RuneTwistRules.CHEST_CHANCE, dev.wildercord.config.Config.get().runeLootChance());
 			if (chance <= 0) return;
-			LootPool.Builder pool = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1))
+			LootPool.Builder pool = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1))
 				.add(LootItem.lootTableItem(WildercordItems.RUNE).apply(Function::new).setWeight(chance));
 			if (chance < 100) pool.add(EmptyLootItem.emptyItem().setWeight(100 - chance));
 			table.withPool(pool);

@@ -148,7 +148,7 @@ def write(g):
     for sid, (name, find, n, spacing, separation, step, adaptation, biomes, icon) in SITES.items():
         overrides = {}
         if sid in SPAWNS:
-            overrides = {"monster": {"bounding_box": "piece", "spawns": [{"type": t, "weight": w, "count": 1} for t, w in SPAWNS[sid]]}}
+            overrides = {"monster": {"bounding_box": "piece", "spawns": [g.profile.spawner_entry(t, w, 1) for t, w in SPAWNS[sid]]}}
         g.write_json(g.DATA / f"worldgen/structure/{sid}.json", {"type": "wildercord:site", "site": sid,
                      "biomes": f"#wildercord:has_structure/{sid}", "spawn_overrides": overrides, "step": step,
                      "terrain_adaptation": adaptation})

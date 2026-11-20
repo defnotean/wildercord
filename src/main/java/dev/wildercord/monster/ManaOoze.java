@@ -1,6 +1,7 @@
 package dev.wildercord.monster;
 
 import dev.wildercord.cast.ElementFx;
+import dev.wildercord.compat.CompatCubeMob;
 import dev.wildercord.cast.Motes;
 import dev.wildercord.cast.Targets;
 import dev.wildercord.player.Spellbooks;
@@ -32,7 +33,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.cubemob.AbstractCubeMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -56,7 +56,7 @@ import java.util.UUID;
  * <p>So meet it with a blade, an arrow or fire: fire's spells and flames boil it (it's weak to fire) and are never drunk.
  * Unlike a plain slime it doesn't split when it dies, only when it's overfed.</p>
  */
-public class ManaOoze extends AbstractCubeMob implements Enemy, RuneboundKin {
+public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	private static final EntityDataAccessor<Float> DATA_FULLNESS = SynchedEntityData.defineId(ManaOoze.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Long> DATA_DRANK = SynchedEntityData.defineId(ManaOoze.class, EntityDataSerializers.LONG);
 	static final float TOUCH_DRAIN = 4.0F;
@@ -83,7 +83,7 @@ public class ManaOoze extends AbstractCubeMob implements Enemy, RuneboundKin {
 
 	@Override
 	protected void addBehaviourGoals() {
-		goalSelector.addGoal(2, new AbstractCubeMob.CubeMobAttackGoal(this));
+		goalSelector.addGoal(2, cubeAttackGoal());
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class ManaOoze extends AbstractCubeMob implements Enemy, RuneboundKin {
 	}
 
 	@Override
-	protected void setCubeMobHealth(int size) {
+	protected void applyCubeMobHealth(int size) {
 		getAttribute(Attributes.MAX_HEALTH).setBaseValue(MonsterRules.oozeHealth(size));
 	}
 
@@ -302,7 +302,7 @@ public class ManaOoze extends AbstractCubeMob implements Enemy, RuneboundKin {
 
 	/** Unused by the game: a Mana Ooze never breeds. */
 	@Override
-	public @Nullable AbstractCubeMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public @Nullable CompatCubeMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return null;
 	}
 }

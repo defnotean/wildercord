@@ -614,7 +614,7 @@ def egg_icon(kind):
 
 # ============================================================== data
 
-def _smithing(name, template, base, addition, result_id, forged, rarity="rare"):
+def _smithing(name, template, base, addition, result_id, forged, rarity="rare", profile=None):
     components = {
         "wildercord:aura_forged": forged,
         "minecraft:item_model": f"wildercord:{forged}",
@@ -622,7 +622,8 @@ def _smithing(name, template, base, addition, result_id, forged, rarity="rare"):
         "minecraft:rarity": rarity,
     }
     if forged == "skyrend_glaive":
-        components["minecraft:attack_animation"] = {"type": "whack", "duration": 10}
+        comp_key, comp_val = profile.glaive_swing_component()
+        components[comp_key] = comp_val
     return {"type": "minecraft:smithing_transform", "template": template, "base": base, "addition": addition,
             "result": {"id": result_id, "components": components}}
 
@@ -692,8 +693,10 @@ def write(g):
         for base in bases:
             tier = base.split(":")[1].split("_")[0]
             name = f"{forged}_from_{tier}"
-            g.write_json(g.DATA / f"recipe/{name}.json", _smithing(name, "wildercord:aura_shard", base, reagent, base, forged))
+            g.write_json(g.DATA / f"recipe/{name}.json", _smithing(name, "wildercord:aura_shard", base, reagent, base, forged, profile=g.profile))
             g.unlock_advancement(f"wildercord:{name}", "wildercord:aura_shard")
+    import aura_site_loot
+    aura_site_loot.write(g)
     g.write_json(g.DATA / "recipe/breathing_manual_from_pages.json", {
         "type": "wildercord:manual_pages", "category": "misc",
         "ingredients": ["wildercord:manual_page"] * 4 + ["minecraft:book"], "result": {"id": "wildercord:breathing_manual"}})

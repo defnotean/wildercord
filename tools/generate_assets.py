@@ -21,11 +21,13 @@ import sigil_art  # Magic circles and the GUI sprites that came with them.
 import world_art  # Scrolls, pages, the dummy, the Wellstone, Rune Seals, the lectern and the two skins.
 import dungeon_assets  # The dimension dungeons: their bosses' skins, trophies, altar, loot and worldgen.
 import affinity_data  # Creature affinities (entity type tags) and elemental climate: their tags and text.
+import datapack_profile
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "src/main/resources"
 ASSETS = RES / "assets/wildercord"
 DATA = RES / "data/wildercord"
+profile = datapack_profile.DataPackProfile.from_gradle(ROOT)
 
 FAMILY_COLOR = {"shape": (0x40, 0xC8, 0xBE), "modifier": (0xF0, 0xC4, 0x40), "link": (0xA0, 0x64, 0xF0)}
 ELEMENT_COLOR = {
@@ -238,36 +240,8 @@ CORDS = {
 
 
 def loot_format(x):
-    """
-    A loot table written the older way ({@code "functions": [{"function": ...}]},
-    {@code "conditions": [{"condition": ...}]}) in the form Minecraft 26.3 reads: one {@code "modifier"}
-    (or a list of them) and one {@code "condition"} (several joined by {@code minecraft:all_of}), each
-    named by {@code "type"}. 26.3 silently ignores the old keys, so a rune's set_components would never
-    run and the rune would come out blank.
-    """
-    if isinstance(x, list):
-        return [loot_format(v) for v in x]
-    if not isinstance(x, dict):
-        return x
-    out = {}
-    for key, value in x.items():
-        if key == "functions":
-            mods = [_typed(f, "function") for f in value]
-            if mods:
-                out["modifier"] = mods[0] if len(mods) == 1 else mods
-        elif key == "conditions":
-            conds = [_typed(c, "condition") for c in value]
-            if conds:
-                out["condition"] = conds[0] if len(conds) == 1 else {"type": "minecraft:all_of", "terms": conds}
-        else:
-            out[key] = loot_format(value)
-    return out
-
-
-def _typed(entry, old_key):
-    entry = dict(entry)
-    entry["type"] = entry.pop(old_key)
-    return loot_format(entry)
+    """Normalizes loot table JSON according to the active Minecraft datapack profile."""
+    return profile.loot_table(x)
 
 
 def _normalize_recipe_variants(data):
@@ -314,6 +288,8 @@ def item_model(path, texture):
 
 
 def main():
+    profile.clean_stale_feature_dir(DATA)
+    profile.clean_stale_brewing_dir(DATA)
     import cinnamon_art  # Rebuild both companion skins and her hand-painted red toy with the rest of the pack.
     item_model("cinnamon_toy", "cinnamon_toy")
     write_json(ASSETS / "items/cinnamon_toy.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/cinnamon_toy"}})
@@ -2108,15 +2084,7 @@ def rune_ingredients(rune):
 def unlock_advancement(recipe_id, trigger_item):
     """Puts a recipe in the recipe book once the player holds trigger_item, like vanilla's."""
     name = recipe_id.split(":")[1]
-    write_json(DATA / f"advancement/recipes/misc/{name}.json", {
-        "parent": "minecraft:recipes/root",
-        "criteria": {
-            "has_item": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": trigger_item}]}},
-            "has_the_recipe": {"trigger": "minecraft:recipe_unlocked", "conditions": {"recipes": recipe_id}},
-        },
-        "requirements": [["has_the_recipe", "has_item"]],
-        "rewards": {"recipes": [recipe_id]},
-    })
+    write_json(DATA / f"advancement/recipes/misc/{name}.json", profile.recipe_unlock_advancement(recipe_id, trigger_item))
 
 
 def write_recipes(runes):
@@ -2206,7 +2174,7 @@ WARDING = {
 
 
 def brewing(name, container_in, potion_in, reagent, container_out, potion_out):
-    write_json(DATA / f"recipe/brewing/{name}.json", {
+    write_json(DATA / f"{profile.brewing_subdir}/{name}.json", {
         "type": "minecraft:brewing",
         "input": {"item": container_in, "potion_contents": {"potions": potion_in}},
         "output": {"components": {"minecraft:potion_contents": {"potion": potion_out}}, "id": container_out},
@@ -3614,9 +3582,9 @@ def write_new_content(runes):
         "type": "wildercord:archive",
         "biomes": "#wildercord:has_structure/archive",
         "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": [
-            {"type": "minecraft:skeleton", "weight": 3, "count": 1},
-            {"type": "minecraft:zombie", "weight": 3, "count": 1},
-            {"type": "minecraft:witch", "weight": 1, "count": 1}]}},
+            profile.spawner_entry("minecraft:skeleton", 3, 1),
+            profile.spawner_entry("minecraft:zombie", 3, 1),
+            profile.spawner_entry("minecraft:witch", 1, 1)]}},
         # After trees, so the forecourt can clear the canopy that would otherwise swallow the gate.
         "step": "top_layer_modification",
         "terrain_adaptation": "none"})
@@ -3706,8 +3674,7 @@ def has_item(item_id):
 
 
 def in_structure(structure):
-    return {"trigger": "minecraft:location", "conditions": {"player": {
-        "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:location": {"structures": structure}}}}}
+    return profile.in_structure_criterion(structure)
 
 
 # Rewards: experience always; the big ones add a loot table from ADVANCEMENT_REWARDS.
