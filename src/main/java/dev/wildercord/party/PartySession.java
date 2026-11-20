@@ -20,9 +20,18 @@ final class PartySession {
 		return names.getOrDefault(player, player.toString());
 	}
 
-	void disconnect(UUID player, long now) {
+	void disconnect(UUID player) {
 		// Cancel invitations first; membership and its authenticated offline name survive reconnect.
+		rules.disconnect(player);
+		dropUnreferenced(player);
+	}
+
+	void disconnect(UUID player, long now) {
 		rules.disconnect(player, now);
+		dropUnreferenced(player);
+	}
+
+	private void dropUnreferenced(UUID player) {
 		if (!rules.references(player)) names.remove(player);
 	}
 

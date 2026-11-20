@@ -183,6 +183,19 @@ class PartySessionTest {
 		assertTrue(first.rules.sameParty(A, B));
 	}
 
+	@Test
+	void timedDisconnectPromotesAnOnlineSuccessorAfterCutoffAndKeepsNames() {
+		PartySession state = pair();
+		long t0 = 1_000L;
+		state.disconnect(A, t0);
+		assertTrue(state.prune(t0 + PartyRules.LEADER_OFFLINE_TICKS - 1, B::equals).isEmpty());
+		List<PartyRules.Promotion> promotions = state.prune(t0 + PartyRules.LEADER_OFFLINE_TICKS, B::equals);
+		assertEquals(1, promotions.size());
+		assertEquals(B, promotions.getFirst().to());
+		assertEquals("Ash", state.name(A));
+		assertEquals("Birch", state.name(B));
+	}
+
 	private static PartySession pair() {
 		PartySession state = new PartySession();
 		state.remember(A, "Ash");
