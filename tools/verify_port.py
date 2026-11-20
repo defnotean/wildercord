@@ -724,6 +724,12 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                     parsed = parse_jvm_target(ts)
                     if parsed and is_mc_class(parsed[1]):
                         needed_classes.append(parsed[1])
+                    elif ts.startswith("(") and ")" in ts:
+                        ret_part = ts.split(")", 1)[1].strip()
+                        if ret_part.startswith("L") and ";" in ret_part:
+                            owner = ret_part[1:ret_part.index(";")]
+                            if is_mc_class(owner):
+                                needed_classes.append(owner)
                     elif ts.startswith("L") and ";" in ts:
                         owner = ts[1:ts.index(";")]
                         if is_mc_class(owner):
@@ -745,13 +751,20 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
             ann_kind = sm.group(1)
             pos = sm.end()
             explicit = None
+            ann_args = {}
             while pos < len(src) and src[pos].isspace():
                 pos += 1
             if pos < len(src) and src[pos] == "(":
                 ann_body, end_p = extract_balanced(src, pos, "(", ")")
-                explicit_strs = unquote_strings(ann_body)
-                if explicit_strs:
-                    explicit = explicit_strs[0]
+                ann_args = parse_named_args(ann_body)
+                if "value" in ann_args:
+                    explicit_strs = unquote_strings(ann_args["value"])
+                    if explicit_strs:
+                        explicit = explicit_strs[0]
+                elif not ann_args:
+                    explicit_strs = unquote_strings(ann_body)
+                    if explicit_strs:
+                        explicit = explicit_strs[0]
                 pos = end_p + 1
             rest = src[pos:pos + 400]
             decl_chunk = re.split(r"[;{]", rest, maxsplit=1)[0]
@@ -769,6 +782,8 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                         member_name = before_eq.split()[-1]
                         if not any(inspector.has_field(t, member_name) for t in mc_targets):
                             errors.append(f"{rel}: @Shadow field {member_name} not found on {mc_targets}")
+            elif ann_args.get("remap") == "false":
+                continue
             elif ann_kind == "Accessor":
                 if "(" in cleaned:
                     mname = cleaned.split("(", 1)[0].strip().split()[-1]
@@ -807,6 +822,7 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
             require_val = int(args["require"]) if "require" in args and args["require"].lstrip("-").isdigit() else default_req
             expect_val = int(args["expect"]) if "expect" in args and args["expect"].isdigit() else None
             allow_val = int(args["allow"]) if "allow" in args and args["allow"].isdigit() else None
+            remap_false = args.get("remap") == "false"
 
             method_specs = unquote_strings(args.get("method", ""))
             if not method_specs:
@@ -819,7 +835,7 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                 for t in mc_targets:
                     found_for_spec.extend(inspector.find_methods(t, m_name, m_desc))
                 if not found_for_spec:
-                    if require_val != 0:
+                    if require_val != 0 and not remap_false:
                         errors.append(f"{rel}: injector target method '{spec}' not found on {mc_targets}")
                 else:
                     matched_methods.extend(found_for_spec)
@@ -841,6 +857,34 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                     continue
                 t_raw = target_strs[0]
                 if at_val == "NEW":
+                    if t_raw.startswith("(") and ")" in t_raw:
+                        args_part, ret_part = t_raw.split(")", 1)
+                        new_owner = ret_part.strip()
+                        if new_owner.startswith("L"):
+                            new_owner = new_owner[1:]
+                        new_owner = new_owner.rstrip(";").replace(".", "/")
+                        ctor_desc = args_part + ")V"
+                        if is_mc_class(new_owner):
+                            if not inspector.has_class(new_owner):
+                                errors.append(f"{rel}: @At(\"NEW\") target class missing from MC JAR: {new_owner}")
+                                continue
+                            inspector.ensure_loaded([new_owner])
+                            if not inspector.find_methods(new_owner, "<init>", ctor_desc):
+                                errors.append(f"{rel}: @At(\"NEW\") constructor missing in JAR: {new_owner}.<init>{ctor_desc}")
+                                continue
+                        if matched_methods:
+                            cnt = sum(
+                                1 for _, _, _, insns in matched_methods
+                                for ik, iowner, iname, idesc in insns
+                                if ik == "INVOKE" and iowner == new_owner and iname == "<init>" and idesc == ctor_desc
+                            )
+                            if cnt == 0 and require_val != 0:
+                                errors.append(f"{rel}: @At(\"NEW\", target=\"{t_raw}\") matched 0 instructions in {method_specs}")
+                            if expect_val is not None and cnt < expect_val:
+                                errors.append(f"{rel}: @At(\"NEW\") count {cnt} < expect {expect_val} in {method_specs}")
+                            if allow_val is not None and cnt > allow_val:
+                                errors.append(f"{rel}: @At(\"NEW\") count {cnt} > allow {allow_val} in {method_specs}")
+                        continue
                     new_owner = t_raw.split(";", 1)[0]
                     if new_owner.startswith("L"):
                         new_owner = new_owner[1:]

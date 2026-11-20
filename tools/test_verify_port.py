@@ -34,13 +34,13 @@ def build_synthetic_mc_jar(tmp: Path) -> Path:
     files = {
         "net/minecraft/world/Helper.java": (
             "package net.minecraft.world;\n"
-            "public class Helper { public void ping(int v) {} }\n"
+            "public class Helper { public Helper() {} public Helper(int x) {} public void ping(int v) {} }\n"
         ),
         "net/minecraft/world/Target.java": (
             "package net.minecraft.world;\n"
             "public class Target {\n"
             "    private int secretValue;\n"
-            "    public void oneCall(Helper h) { h.ping(1); }\n"
+            "    public void oneCall(Helper h) { h.ping(1); new Helper(3); }\n"
             "    public void twoCalls(Helper h) { h.ping(1); h.ping(2); }\n"
             "    public void twoInts(int a, int b) {}\n"
             "    private void hiddenCall(String s) {}\n"
@@ -225,6 +225,23 @@ class VerifyPortTests(unittest.TestCase):
             write_fixture_repo(repo, bad)
             errors = verify_port.verify(repo, mc_jars=[self.jar])
             self.assertTrue(any("ambiguous" in e for e in errors), errors)
+
+    def test_new_constructor_descriptor_checked(self):
+        good = VALID_MIXIN + """
+    @Inject(method = "oneCall", at = @At(value = "NEW", target = "(I)Lnet/minecraft/world/Helper;"), require = 1, expect = 1, allow = 1)
+    static void wrapNew() {}
+"""
+        bad = VALID_MIXIN + """
+    @Inject(method = "oneCall", at = @At(value = "NEW", target = "(Ljava/lang/String;)Lnet/minecraft/world/Helper;"), require = 1)
+    static void wrapBadNew() {}
+"""
+        with tempfile.TemporaryDirectory() as d:
+            repo = Path(d)
+            write_fixture_repo(repo, good)
+            self.assertEqual(verify_port.verify(repo, mc_jars=[self.jar]), [])
+            write_fixture_repo(repo, bad)
+            errors = verify_port.verify(repo, mc_jars=[self.jar])
+            self.assertTrue(any("constructor missing" in e for e in errors), errors)
 
     def test_stale_feature_dir_hash_map_and_unknown_modifier_fail(self):
         with tempfile.TemporaryDirectory() as d:
