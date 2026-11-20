@@ -68,7 +68,7 @@ public final class MonsterSpawns {
 	private MonsterSpawns() {}
 
 	private static final Set<ResourceKey<Biome>> FORESTS = Set.of(Biomes.FOREST, Biomes.FLOWER_FOREST, Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST,
-		Biomes.DAPPLED_FOREST, Biomes.DARK_FOREST, Biomes.PALE_GARDEN, Biomes.SNOWY_TAIGA, Biomes.GROVE);
+		Biomes.DARK_FOREST, Biomes.PALE_GARDEN, Biomes.SNOWY_TAIGA, Biomes.GROVE);
 	/** Where the woods are darkest: more Bramblewalkers, and Gloomstalkers on the surface. */
 	private static final Set<ResourceKey<Biome>> DARK_WOODS = Set.of(Biomes.DARK_FOREST, Biomes.PALE_GARDEN);
 	private static final Set<ResourceKey<Biome>> PEAKS = Set.of(Biomes.JAGGED_PEAKS, Biomes.FROZEN_PEAKS, Biomes.STONY_PEAKS, Biomes.SNOWY_SLOPES,
@@ -382,9 +382,9 @@ public final class MonsterSpawns {
 
 	/** The monsters a biome spawns (its natural spawns, as the world reads them): for the tests, and the guide's numbers. */
 	public static List<EntityType<?>> monstersIn(Holder<Biome> biome) {
-		MobSpawnSettings settings = biome.value().getAttributes().applyModifier(EnvironmentAttributes.NATURAL_MOB_SPAWNS, MobSpawnSettings.EMPTY);
+		MobSpawnSettings settings = biome.value().getMobSettings();
 		List<EntityType<?>> types = new ArrayList<>();
-		settings.getMobsToSpawn(MobCategory.MONSTER).unwrap().forEach(w -> types.add(w.value().type()));
+		settings.getMobs(MobCategory.MONSTER).unwrap().forEach(w -> types.add(w.value().type()));
 		return types;
 	}
 

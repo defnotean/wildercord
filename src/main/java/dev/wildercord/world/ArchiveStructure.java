@@ -23,7 +23,14 @@ public class ArchiveStructure extends Structure {
 
 	@Override
 	protected Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
-		if (!context.couldValidBiomeExistOnTopOfChunkCenter()) {
+		int cx = context.chunkPos().getMiddleBlockX();
+		int cz = context.chunkPos().getMiddleBlockZ();
+		int surface = context.chunkGenerator().getFirstOccupiedHeight(cx, cz, Heightmap.Types.WORLD_SURFACE_WG,
+			context.heightAccessor(), context.randomState());
+		var centerBiome = context.biomeSource().getNoiseBiome(
+			net.minecraft.core.QuartPos.fromBlock(cx), net.minecraft.core.QuartPos.fromBlock(surface), net.minecraft.core.QuartPos.fromBlock(cz),
+			context.randomState().sampler());
+		if (!context.validBiome().test(centerBiome)) {
 			return Optional.empty();
 		}
 		Direction facing = Direction.Plane.HORIZONTAL.getRandomDirection(context.random());

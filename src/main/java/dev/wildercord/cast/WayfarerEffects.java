@@ -368,7 +368,9 @@ public final class WayfarerEffects {
 		LOCATED.put(player.getUUID(), now);
 		int cells = WayfarerRules.locateCells(radius);
 		BlockPos found = what instanceof TagKey<?> tag ? level.findNearestMapStructure((TagKey<Structure>) tag, player.blockPosition(), cells, false)
-			: level.findNearestMapStructure((HolderSet<Structure>) what, player.blockPosition(), cells, false);
+			: java.util.Optional.ofNullable(level.getChunkSource().getGenerator().findNearestMapStructure(
+				level, (HolderSet<Structure>) what, player.blockPosition(), cells, false))
+				.map(com.mojang.datafixers.util.Pair::getFirst).orElse(null);
 		if (found == null) {
 			tell(cast, path + ".none");
 			chime(level, player.position(), SoundEvents.LODESTONE_COMPASS_LOCK, 0.6f);
@@ -778,9 +780,9 @@ public final class WayfarerEffects {
 	// ------------------------------------------------------------------ decoration
 
 	/** The dyed families a dye recolours, each one block per colour. */
-	private static final List<ColorCollection<Block>> DYED = List.of(Blocks.WOOL, Blocks.WOOL_STAIRS, Blocks.WOOL_SLAB, Blocks.STAINED_GLASS,
-		Blocks.DYED_TERRACOTTA, Blocks.STAINED_GLASS_PANE, Blocks.CARPET, Blocks.GLAZED_TERRACOTTA, Blocks.CONCRETE, Blocks.CONCRETE_STAIRS,
-		Blocks.CONCRETE_SLAB, Blocks.CONCRETE_POWDER, Blocks.DYED_CANDLE);
+	private static final List<ColorCollection<Block>> DYED = List.of(Blocks.WOOL, Blocks.STAINED_GLASS,
+		Blocks.DYED_TERRACOTTA, Blocks.STAINED_GLASS_PANE, Blocks.CARPET, Blocks.GLAZED_TERRACOTTA, Blocks.CONCRETE,
+		Blocks.CONCRETE_POWDER, Blocks.DYED_CANDLE);
 
 	/** {@code state} recoloured to {@code color}, or null when it isn't dyeable or already is that colour. */
 	static BlockState recolour(BlockState state, DyeColor color) {

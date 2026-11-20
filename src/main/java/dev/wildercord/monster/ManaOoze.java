@@ -108,7 +108,7 @@ public class ManaOoze extends AbstractCubeMob implements Enemy, RuneboundKin {
 	}
 
 	@Override
-	protected void setCubeMobHealth(int size) {
+	protected void setcubeMobHealth(int size) {
 		getAttribute(Attributes.MAX_HEALTH).setBaseValue(MonsterRules.oozeHealth(size));
 	}
 

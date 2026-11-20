@@ -379,9 +379,13 @@ public final class WorldMagic {
 		ServerLevel level = cast.level;
 		BlockState state = level.getBlockState(pos);
 		if (state.is(Blocks.TNT)) {
-			if (!TntBlock.prime(level, pos, cast.caster, ItemStack.EMPTY)) {
+			if (!level.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.TNT_EXPLODES)) {
 				return false;
 			}
+			var tnt = new net.minecraft.world.entity.item.PrimedTnt(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, cast.caster);
+			level.addFreshEntity(tnt);
+			level.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 1.0F);
+			level.gameEvent(cast.caster, GameEvent.PRIME_FUSE, pos);
 			level.removeBlock(pos, false);
 			ElementFx.embers(level, Vec3.atCenterOf(pos), 0.4, 6);
 			return true;
@@ -782,7 +786,7 @@ public final class WorldMagic {
 		BlockState state = level.getBlockState(pos);
 		level.destroyBlockProgress(crackId(pos), pos, -1);
 		if (broken) {
-			level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, pos, Block.getId(state));
+			level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
 		}
 		level.setBlockAndUpdate(pos, placed.replaced());
 		TemporaryBlocks.remove(level, pos);
