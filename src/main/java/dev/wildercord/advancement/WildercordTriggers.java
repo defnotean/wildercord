@@ -14,7 +14,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
 
 import java.util.Collection;
 import java.util.List;
@@ -68,9 +68,9 @@ public final class WildercordTriggers {
 			trigger(player, instance -> grimoire.contains("feat:" + instance.feat()));
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, String feat) implements SimpleCriterionTrigger.SimpleInstance {
+		public record Instance(Optional<ContextAwarePredicate> player, String feat) implements SimpleCriterionTrigger.SimpleInstance {
 			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				Codec.STRING.fieldOf("feat").forGetter(Instance::feat)
 			).apply(i, Instance::new));
 		}
@@ -88,10 +88,10 @@ public final class WildercordTriggers {
 			trigger(player, instance -> instance.matches(grimoire));
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, Optional<String> entry, String prefix, int count, boolean all, int signatures)
+		public record Instance(Optional<ContextAwarePredicate> player, Optional<String> entry, String prefix, int count, boolean all, int signatures)
 				implements SimpleCriterionTrigger.SimpleInstance {
 			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				Codec.STRING.optionalFieldOf("entry").forGetter(Instance::entry),
 				Codec.STRING.optionalFieldOf("prefix", "").forGetter(Instance::prefix),
 				Codec.INT.optionalFieldOf("count", 1).forGetter(Instance::count),
@@ -127,9 +127,9 @@ public final class WildercordTriggers {
 			trigger(player, instance -> circles >= instance.level());
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, int level) implements SimpleCriterionTrigger.SimpleInstance {
+		public record Instance(Optional<ContextAwarePredicate> player, int level) implements SimpleCriterionTrigger.SimpleInstance {
 			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				Codec.INT.fieldOf("level").forGetter(Instance::level)
 			).apply(i, Instance::new));
 		}
@@ -164,9 +164,9 @@ public final class WildercordTriggers {
 			return true;
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, int count, boolean all) implements SimpleCriterionTrigger.SimpleInstance {
+		public record Instance(Optional<ContextAwarePredicate> player, int count, boolean all) implements SimpleCriterionTrigger.SimpleInstance {
 			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				Codec.INT.optionalFieldOf("count", 1).forGetter(Instance::count),
 				Codec.BOOL.optionalFieldOf("all", false).forGetter(Instance::all)
 			).apply(i, Instance::new));
@@ -198,9 +198,9 @@ public final class WildercordTriggers {
 			}
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, CordTier tier) implements SimpleCriterionTrigger.SimpleInstance {
+		public record Instance(Optional<ContextAwarePredicate> player, CordTier tier) implements SimpleCriterionTrigger.SimpleInstance {
 			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				TIER.fieldOf("tier").forGetter(Instance::tier)
 			).apply(i, Instance::new));
 		}
@@ -219,9 +219,9 @@ public final class WildercordTriggers {
 			trigger(player, instance -> instance.moment().equals(id));
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, String moment) implements SimpleCriterionTrigger.SimpleInstance {
+		public record Instance(Optional<ContextAwarePredicate> player, String moment) implements SimpleCriterionTrigger.SimpleInstance {
 			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
+				ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				Codec.STRING.fieldOf("moment").forGetter(Instance::moment)
 			).apply(i, Instance::new));
 		}

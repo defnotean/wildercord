@@ -41,7 +41,7 @@ public final class Rimescale {
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("rimescale"));
 	public static final RimescaleBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new RimescaleBlock(BlockBehaviour.Properties.of()
 		.setId(KEY).noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.GLASS).lightLevel(state -> 5)
-		.pushReaction(PushReaction.IMMOVEABLE)));
+		.pushReaction(PushReaction.BLOCK)));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("rimescale"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
 		new BlockItem(BLOCK, new Item.Properties().setId(ITEM_KEY).useBlockDescriptionPrefix().rarity(Rarity.EPIC)));

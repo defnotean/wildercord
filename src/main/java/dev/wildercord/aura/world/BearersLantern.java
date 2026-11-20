@@ -55,7 +55,7 @@ public final class BearersLantern {
 	/** The lantern as it stands at the gibbet's foot, there for the taking. */
 	public static final BarrowLanternBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new BarrowLanternBlock(BlockBehaviour.Properties.of()
 		.setId(KEY).noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.LANTERN).lightLevel(state -> 10)
-		.pushReaction(PushReaction.IMMOVEABLE)));
+		.pushReaction(PushReaction.BLOCK)));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bearers_lantern"));
 	/** The lantern as it is carried: lit, it calls up the Barrow Steed. */
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,

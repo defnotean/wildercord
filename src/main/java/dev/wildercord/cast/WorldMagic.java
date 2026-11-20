@@ -46,7 +46,6 @@ import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.CandleBlock;
@@ -1444,7 +1443,7 @@ public final class WorldMagic {
 		}
 		if ((block instanceof SaplingBlock || block instanceof SweetBerryBushBlock || block instanceof CocoaBlock || state.is(BlockTags.CROPS))
 				&& block instanceof BonemealableBlock plant) {
-			return plant.isValidBonemealTarget(level, pos, state, BonemealSource.INTERACTION);
+			return plant.isValidBonemealTarget(level, pos, state);
 		}
 		return block instanceof WeatheringCopper copper && copper.getNext(state).isPresent();
 	}
@@ -1462,7 +1461,7 @@ public final class WorldMagic {
 		} else if (block instanceof SaplingBlock sapling) {
 			sapling.advanceTree(level, pos, state, level.getRandom());
 		} else if (block instanceof BonemealableBlock plant) {
-			plant.performBonemeal(level, level.getRandom(), pos, state, BonemealSource.INTERACTION);
+			plant.performBonemeal(level, level.getRandom(), pos, state);
 		}
 		level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, pos, 8);
 	}
@@ -1563,7 +1562,7 @@ public final class WorldMagic {
 			return state.getValue(NetherWartBlock.AGE) < NetherWartBlock.MAX_AGE;
 		}
 		return state.is(Blocks.CRIMSON_FUNGUS) && state.getBlock() instanceof BonemealableBlock fungus
-			&& fungus.isValidBonemealTarget(level, pos, state, BonemealSource.INTERACTION);
+			&& fungus.isValidBonemealTarget(level, pos, state);
 	}
 
 	// ------------------------------------------------------------------ helpers

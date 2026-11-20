@@ -49,7 +49,7 @@ public final class ResidueBlocks {
 
 	private static ResidueBlock register(Kind kind, BlockBehaviour.Properties properties) {
 		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Wildercord.id(kind.path));
-		properties.setId(key).pushReaction(kind.placement == dev.wildercord.world.ResidueRules.Placement.COVER ? PushReaction.IMMOVEABLE : PushReaction.POPPED);
+		properties.setId(key).pushReaction(kind.placement == dev.wildercord.world.ResidueRules.Placement.COVER ? PushReaction.BLOCK : PushReaction.DESTROY);
 		ResidueBlock block = Registry.register(BuiltInRegistries.BLOCK, key, new ResidueBlock(kind, properties));
 		BY_KIND.put(kind, block);
 		return block;

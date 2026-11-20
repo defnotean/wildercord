@@ -38,7 +38,7 @@ public final class CinderAntler {
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("cinder_antler"));
 	public static final CinderAntlerBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new CinderAntlerBlock(BlockBehaviour.Properties.of()
 		.setId(KEY).noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.BONE_BLOCK).lightLevel(state -> 6)
-		.pushReaction(PushReaction.IMMOVEABLE)));
+		.pushReaction(PushReaction.BLOCK)));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinder_antler"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
 		new BlockItem(BLOCK, new Item.Properties().setId(ITEM_KEY).useBlockDescriptionPrefix().rarity(Rarity.EPIC)));

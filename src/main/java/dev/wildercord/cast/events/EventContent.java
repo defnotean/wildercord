@@ -26,7 +26,7 @@ public final class EventContent {
 		.strength(-1.0F, 3600000.0F)
 		.noLootTable()
 		.noOcclusion()
-		.pushReaction(PushReaction.IMMOVEABLE)
+		.pushReaction(PushReaction.BLOCK)
 		.lightLevel(state -> 15));
 
 	public static final BlockEntityType<FallenStarBlockEntity> FALLEN_STAR_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
