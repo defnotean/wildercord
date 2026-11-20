@@ -191,7 +191,7 @@ class PartySessionTest {
 		assertTrue(state.prune(t0 + PartyRules.LEADER_OFFLINE_TICKS - 1, B::equals).isEmpty());
 		List<PartyRules.Promotion> promotions = state.prune(t0 + PartyRules.LEADER_OFFLINE_TICKS, B::equals);
 		assertEquals(1, promotions.size());
-		assertEquals(B, promotions.getFirst().to());
+		assertEquals(B, promotions.getFirst().newLeader());
 		assertEquals("Ash", state.name(A));
 		assertEquals("Birch", state.name(B));
 	}
