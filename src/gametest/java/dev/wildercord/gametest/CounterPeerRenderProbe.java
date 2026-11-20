@@ -535,7 +535,7 @@ public final class CounterPeerRenderProbe {
             a=s.view.avatar();var source=s.sources.get(a);if(source==null||source.item()!=item)return;
             var views=s.views.values().stream().filter(v->v.avatar()==a).toList();if(views.size()!=1){s.token.reject("deep_draw_without_unique_view");return;}
             var view=views.getFirst();model=view.model();articulated=true;entryStack=s.view.stack();entryCollector=s.view.collector();entry=CounterPeerRenderMath.sword(view.root(),CounterPeerRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
-        }else{var call=s.fallback;if(call==null||call.item!=item)return;a=call.avatar;model=call.renderer;entry=call.expectedItem;entryStack=call.stack;entryCollector=call.collector;}
+        }else{var call=s.fallback;if(call==null||call.item!=item)return;a=call.avatar;model=call.hands.rendererObject();entry=call.expectedItem;entryStack=call.stack;entryCollector=call.collector;}
         if(entryStack!=stack||entryCollector!=collector)s.token.reject("substituted_deep_draw_stack_or_collector");
         // The articulated viewmodel deliberately draws the body's resolved third-person item (ArticulatedCombat.orientItemAtSocket).
         boolean third=remote||articulated;

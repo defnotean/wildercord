@@ -57,9 +57,9 @@ public final class GametestCompat {
 		mc.gameRenderer.render(delta, true);
 	}
 
-	public static void extractMainCamera(GameRenderer gameRenderer, CameraRenderState camera, float partial) {
+	public static void extractMainCamera(GameRenderer gameRenderer, CameraRenderState camera, DeltaTracker delta) {
 		var mainCam = gameRenderer.mainCamera();
-		mainCam.extractRenderState(camera, mainCam.getCameraEntityPartialTicks(partial));
+		mainCam.extractRenderState(camera, mainCam.getCameraEntityPartialTicks(delta));
 	}
 
 	public static BlockPos findNearestStructure(ServerLevel level, Holder<Structure> structure, BlockPos origin,

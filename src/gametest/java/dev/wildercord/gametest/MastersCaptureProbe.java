@@ -83,7 +83,7 @@ public final class MastersCaptureProbe {
 			avatar.getData(dev.wildercord.client.MastersArtPose.FRAME));
 		Minecraft mc = Minecraft.getInstance();
 		var camera = new CameraRenderState();
-		dev.wildercord.gametest.compat.GametestCompat.extractMainCamera(mc.gameRenderer, camera, PARTIAL);
+		dev.wildercord.gametest.compat.GametestCompat.extractMainCamera(mc.gameRenderer, camera, DELTA);
 		var projection = new Projection();
 		projection.setupPerspective(.05F, camera.depthFar, camera.hudFov, mc.getWindow().getWidth(), mc.getWindow().getHeight());
 		var matrix = projection.getMatrix(new org.joml.Matrix4f()).mul(RenderSystem.getModelViewStack()).mul(pose.last().pose());
