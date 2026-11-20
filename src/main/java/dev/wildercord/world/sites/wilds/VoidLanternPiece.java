@@ -74,15 +74,15 @@ public final class VoidLanternPiece extends WildsPiece {
 		for (int[] r : new int[][]{{4, 4}, {10, 4}, {4, 10}, {10, 10}, {11, 7}, {7, 11}}) fill(level, bb, r[0], 1, r[1], r[0], 28, r[1], s(Blocks.PURPUR_PILLAR));
 		// Purple carpet on the ground floor; the lantern room's is laid around the ladder hatch.
 		for (int x = 0; x <= 14; x++) for (int z = 0; z <= 14; z++) if (inside(x, z)) {
-			set(level, bb, Blocks.CARPET.pick(DyeColor.PURPLE).defaultBlockState(), x, 1, z);
-			if (x != 7 || z != 9) set(level, bb, Blocks.CARPET.pick(DyeColor.PURPLE).defaultBlockState(), x, 23, z);
+			set(level, bb, Blocks.PURPLE_CARPET.defaultBlockState(), x, 1, z);
+			if (x != 7 || z != 9) set(level, bb, Blocks.PURPLE_CARPET.defaultBlockState(), x, 23, z);
 		}
 		// The door, windows and lights.
 		clear(level, bb, 6, 1, 4, 8, 3, 4);
 		for (int x : new int[]{5, 9}) fill(level, bb, x, 1, 3, x, 4, 3, s(Blocks.PURPUR_PILLAR));
 		for (int x = 6; x <= 8; x++) set(level, bb, stair(Blocks.PURPUR_STAIRS, Direction.NORTH, true), x, 4, 3);
 		for (int x : new int[]{5, 9}) set(level, bb, s(Blocks.END_ROD), x, 5, 3);
-		for (int x : new int[]{6, 8}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE), x, 7, 3, Direction.SOUTH);
+		for (int x : new int[]{6, 8}) banner(level, bb, Blocks.PURPLE_WALL_BANNER, x, 7, 3, Direction.SOUTH);
 		for (int y : new int[]{6, 7, 16, 17, 26, 27}) {
 			set(level, bb, Blocks.PURPLE_STAINED_GLASS.defaultBlockState(), 4, y, 7);
 			set(level, bb, Blocks.PURPLE_STAINED_GLASS.defaultBlockState(), 7, y, 4);

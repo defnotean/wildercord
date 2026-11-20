@@ -108,7 +108,7 @@ public final class WindmillPiece extends FarmPiece {
 		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, false), 7, 1, 15);
 		// The door under a pent hood, a harvest banner over it and lanterns either side.
 		for (int x = 10; x <= 12; x++) set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false), x, 3, 9);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.YELLOW), 11, 4, 9, Direction.SOUTH);
+		banner(level, bb, Blocks.YELLOW_WALL_BANNER, 11, 4, 9, Direction.SOUTH);
 		for (int x : new int[]{9, 13}) { set(level, bb, s(Blocks.COBBLESTONE_WALL), x, 1, 9); set(level, bb, s(Blocks.LANTERN), x, 2, 9); }
 		// A hoist beam out over the yard, a bale on its chain.
 		fill(level, bb, 15, 11, 15, 16, 11, 15, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(BlockStateProperties.AXIS, Direction.Axis.X));

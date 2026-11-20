@@ -31,7 +31,7 @@ public abstract class EmberwoodPiece extends StructurePiece {
 	protected static final BlockState COARSE_DIRT = Blocks.COARSE_DIRT.defaultBlockState();
 	protected static final BlockState PODZOL = Blocks.PODZOL.defaultBlockState();
 	protected static final BlockState DARK_OAK = Blocks.DARK_OAK_PLANKS.defaultBlockState();
-	protected static final BlockState COPPER = Blocks.CUT_COPPER.waxed().exposed().defaultBlockState();
+	protected static final BlockState COPPER = Blocks.WAXED_EXPOSED_CUT_COPPER.defaultBlockState();
 
 	protected EmberwoodPiece(StructurePieceType type, int x, int y, int z, int width, int height, int depth, Direction facing) {
 		super(type, 0, StructurePiece.makeBoundingBox(x, y, z, facing, width, height, depth));

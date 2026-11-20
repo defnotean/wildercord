@@ -39,7 +39,7 @@ final class SiltcrestPresentationPathProbe implements AutoCloseable {
    key.addProperty("standingBank",BitternHabitat.standingBank(bird));key.addProperty("hungry",bird.hungry());key.addProperty("forageReady",bird.forageReady());
    key.addProperty("pathSequence",pathSequence);key.addProperty("navigationDone",bird.getNavigation().isDone());key.addProperty("pathNext",path==null?-1:path.getNextNodeIndex());
    var goals=new JsonArray();
-   for(var wrapped:bird.getGoalSelector().getAvailableGoals().stream().limit(MAX_GOALS).toList()){
+   for(var wrapped:dev.wildercord.compat.McEntities.goalSelector(bird).getAvailableGoals().stream().limit(MAX_GOALS).toList()){
     var goal=wrapped.getGoal();var row=new JsonObject();row.addProperty("goal",goal.getClass().getSimpleName());row.addProperty("running",wrapped.isRunning());
     if(goal instanceof BitternHuntGoal||goal instanceof BitternBankReturnGoal){
      row.addProperty("origin",String.valueOf(read(goal,"origin")));row.addProperty("bank",String.valueOf(read(goal,"bank")));
@@ -70,7 +70,7 @@ final class SiltcrestPresentationPathProbe implements AutoCloseable {
   var move=bird.getMoveControl();var control=new JsonObject();control.addProperty("hasWanted",move.hasWanted());control.add("wanted",vector(new Vec3(move.getWantedX(),move.getWantedY(),move.getWantedZ())));control.addProperty("speedModifier",move.getSpeedModifier());control.addProperty("entitySpeed",bird.getSpeed());out.add("moveControl",control);
   out.add("goalTransitions",transitionGoals.deepCopy());
   var detailed=new JsonArray();int count=0;
-  for(var wrapped:bird.getGoalSelector().getAvailableGoals()){
+  for(var wrapped:dev.wildercord.compat.McEntities.goalSelector(bird).getAvailableGoals()){
    count++;if(detailed.size()>=MAX_GOALS)continue;var goal=wrapped.getGoal();var row=new JsonObject();row.addProperty("goal",goal.getClass().getSimpleName());row.addProperty("running",wrapped.isRunning());
    if(goal instanceof BitternHuntGoal||goal instanceof BitternBankReturnGoal){
     var origin=(BlockPos)read(goal,"origin");var target=(BlockPos)read(goal,"bank");

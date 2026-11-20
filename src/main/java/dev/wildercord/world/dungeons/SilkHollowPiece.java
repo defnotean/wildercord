@@ -45,7 +45,7 @@ public final class SilkHollowPiece extends DungeonPiece {
 	private static final String TOP="hollow_top";
 	private int top;
 
-	private static final BlockState SILK=Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.WHITE).defaultBlockState();
+	private static final BlockState SILK=Blocks.WHITE_WOOL.defaultBlockState();
 	private static final BlockState WEB=Blocks.COBWEB.defaultBlockState();
 	private static final BlockState PLANK=Blocks.SPRUCE_PLANKS.defaultBlockState();
 	private static final BlockState POST=Blocks.SPRUCE_FENCE.defaultBlockState();
@@ -205,7 +205,7 @@ public final class SilkHollowPiece extends DungeonPiece {
 			int ceiling=dome(reach(x,z));
 			for(int y=ceiling-depth+1;y<=ceiling;y++){
 				int n=noise(x,y,z);
-				set(level,bb,n<58?SILK:n<70?Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.LIGHT_GRAY).defaultBlockState():n<90?WEB:Blocks.MUSHROOM_STEM.defaultBlockState(),x,y,z);
+				set(level,bb,n<58?SILK:n<70?Blocks.LIGHT_GRAY_WOOL.defaultBlockState():n<90?WEB:Blocks.MUSHROOM_STEM.defaultBlockState(),x,y,z);
 			}
 			if(r>3 && noise(x,z)<30)set(level,bb,WEB,x,ceiling-depth,z);
 		}

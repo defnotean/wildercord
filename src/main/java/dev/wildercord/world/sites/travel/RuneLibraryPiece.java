@@ -108,10 +108,10 @@ public final class RuneLibraryPiece extends TravelPiece {
 		// Shelf walls with solid backing; carpets mark which wall is which.
 		for (int x : new int[]{1, 13}) fill(level, bb, x, 1, 3, x, 3, 13, b(Blocks.DARK_OAK_PLANKS));
 		for (int x : new int[]{2, 12}) fill(level, bb, x, 1, 3, x, 3, 13, b(Blocks.BOOKSHELF));
-		fill(level, bb, 3, 0, 3, 3, 0, 13, b(Blocks.WOOL.pick(DyeColor.RED)));
-		fill(level, bb, 11, 0, 3, 11, 0, 13, b(Blocks.WOOL.pick(DyeColor.BLUE)));
-		fill(level, bb, 3, 1, 3, 3, 1, 13, b(Blocks.CARPET.pick(DyeColor.RED)));
-		fill(level, bb, 11, 1, 3, 11, 1, 13, b(Blocks.CARPET.pick(DyeColor.BLUE)));
+		fill(level, bb, 3, 0, 3, 3, 0, 13, b(Blocks.RED_WOOL));
+		fill(level, bb, 11, 0, 3, 11, 0, 13, b(Blocks.BLUE_WOOL));
+		fill(level, bb, 3, 1, 3, 3, 1, 13, b(Blocks.RED_CARPET));
+		fill(level, bb, 11, 1, 3, 11, 1, 13, b(Blocks.BLUE_CARPET));
 		// Reading tables between the lecterns.
 		for (int z : new int[]{7, 9}) for (int x : new int[]{6, 8}) {
 			set(level, bb, b(Blocks.DARK_OAK_FENCE), x, 1, z);
@@ -124,8 +124,8 @@ public final class RuneLibraryPiece extends TravelPiece {
 		for (int x : new int[]{4, 10}) set(level, bb, b(Blocks.CANDLE).setValue(CandleBlock.CANDLES, 3).setValue(CandleBlock.LIT, true), x, 3, 14);
 		for (int z : new int[]{4, 8, 12}) for (int x : new int[]{2, 12})
 			set(level, bb, b(Blocks.CANDLE).setValue(CandleBlock.CANDLES, 1 + (z + x) % 3).setValue(CandleBlock.LIT, true), x, 4, z);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 4, 5, 14, Direction.SOUTH);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), 10, 5, 14, Direction.SOUTH);
+		banner(level, bb, Blocks.RED_WALL_BANNER, 4, 5, 14, Direction.SOUTH);
+		banner(level, bb, Blocks.BLUE_WALL_BANNER, 10, 5, 14, Direction.SOUTH);
 		for (int x : new int[]{2, 12}) set(level, bb, b(Blocks.POTTED_FERN), x, 1, 2);
 		int v = variant();
 		lectern(level, bb, 7, 1, 5, Direction.SOUTH, TravelSites.written("A Reader's Riddle", "The Librarian",

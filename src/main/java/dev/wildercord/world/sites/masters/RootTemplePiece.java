@@ -132,7 +132,7 @@ public final class RootTemplePiece extends MasterSitePiece {
 		fill(level, bb, 11, 1, 29, 15, 6, 29, chiseled);
 		fill(level, bb, 12, 2, 29, 14, 2, 29, wall);
 		set(level, bb, light, 12, 4, 29); set(level, bb, light, 14, 4, 29);
-		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.LIME : DyeColor.GREEN);
+		Block banner = dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", alt ? DyeColor.LIME : DyeColor.GREEN);
 		for (int x : new int[]{9, 17}) banner(level, bb, banner, x, 4, 28, Direction.SOUTH);
 		for (int z : new int[]{18, 24}) { banner(level, bb, banner, 4, 4, z, Direction.EAST); banner(level, bb, banner, 22, 4, z, Direction.WEST); }
 		hangingLantern(level, bb, 13, 6, 21, 2, false);

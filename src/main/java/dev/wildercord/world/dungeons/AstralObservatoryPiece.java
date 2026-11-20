@@ -62,7 +62,7 @@ public class AstralObservatoryPiece extends DungeonPiece {
 	private static final BlockState STAR = Blocks.PEARLESCENT_FROGLIGHT.defaultBlockState();
 	private static final BlockState ROD_UP = Blocks.END_ROD.defaultBlockState().setValue(EndRodBlock.FACING, Direction.UP);
 	private static final BlockState ROD_DOWN = Blocks.END_ROD.defaultBlockState().setValue(EndRodBlock.FACING, Direction.DOWN);
-	private static final BlockState TUBE = Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState();
+	private static final BlockState TUBE = Blocks.WAXED_OXIDIZED_CUT_COPPER.defaultBlockState();
 	private static final Palette MASONRY = Palette.of(Blocks.END_STONE_BRICKS, 8, Blocks.END_STONE, 1, Blocks.PURPUR_BLOCK, 1);
 	private static final Palette CLERESTORY = Palette.of(Blocks.PURPUR_BLOCK, 7, Blocks.END_STONE_BRICKS, 2);
 
@@ -290,8 +290,8 @@ public class AstralObservatoryPiece extends DungeonPiece {
 		}
 		// Purple colours high on the aisle walls.
 		for (int z : new int[] {16, 24}) {
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE), 9, F + 7, z, Direction.EAST);
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE), 31, F + 7, z, Direction.WEST);
+			banner(level, bb, Blocks.PURPLE_WALL_BANNER, 9, F + 7, z, Direction.EAST);
+			banner(level, bb, Blocks.PURPLE_WALL_BANNER, 31, F + 7, z, Direction.WEST);
 		}
 		// Outside: buttresses down both long walls, pilasters on the clerestory, parapets on both roofs.
 		for (int z : new int[] {14, 20, 26, 32}) {

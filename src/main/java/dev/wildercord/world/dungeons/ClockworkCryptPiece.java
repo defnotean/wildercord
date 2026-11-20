@@ -63,8 +63,8 @@ public final class ClockworkCryptPiece extends DungeonPiece {
   fill(level,bb,13,6,11,13,9,11,Blocks.DEEPSLATE_BRICKS.defaultBlockState());
   for(int x=10;x<=16;x++){set(level,bb,stair(st,Direction.NORTH,true),x,5,10);set(level,bb,stair(st,Direction.SOUTH,true),x,5,24);}
   // Banners of the old order flank the hall's far doorway and the vault's chest.
-  for(int x:new int[]{8,18})banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.BLUE),x,4,10,Direction.SOUTH);
-  for(int x:new int[]{11,15})banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.BLUE),x,4,33,Direction.SOUTH);
+  for(int x:new int[]{8,18})banner(level,bb,Blocks.BLUE_WALL_BANNER,x,4,10,Direction.SOUTH);
+  for(int x:new int[]{11,15})banner(level,bb,Blocks.BLUE_WALL_BANNER,x,4,33,Direction.SOUTH);
   // Above ground: a portal of dark pilasters and a gold-keyed lintel at the stair's head, merlons along the hall's roof.
   fill(level,bb,10,8,0,10,11,0,polished);fill(level,bb,16,8,0,16,11,0,polished);fill(level,bb,11,11,0,15,11,0,polished);
   set(level,bb,gold,13,11,0);set(level,bb,crown,10,11,0);set(level,bb,crown,16,11,0);

@@ -15,7 +15,7 @@ public class DrainhouseFeature extends SimpleWorldFeature {
  static volatile Observer observer;
  private static void observe(WorldGenLevel l,String event,int index,BlockPos origin,BlockPos cell,BlockState state,String reason){var current=observer;if(current!=null)current.event(l,event,index,origin,cell,state,reason);}
 
- private static boolean writable(WorldGenLevel l,BlockPos p){return !l.isOutsideBuildHeight(p) && (!(l instanceof net.minecraft.server.level.WorldGenRegion region) || region.isWithinWriteZone(p));}
+ private static boolean writable(WorldGenLevel l,BlockPos p){return !l.isOutsideBuildHeight(p) && dev.wildercord.compat.McWorldgen.withinWriteZone(l, p);}
  private static boolean foundation(WorldGenLevel l,BlockPos p){var state=l.getBlockState(p);return state.isSolidRender() && state.getDestroySpeed(l,p)>=0 && !state.hasBlockEntity() && state.getFluidState().isEmpty();}
  /** Narrow three-room embedded station; guarded ordinary terrain only, with real existing cave access. */
  static final int MAX_CARVES=256,MAX_DECORATION=96,MAX_SUPPORTS=32,MAX_CLEARS=MAX_DECORATION;
@@ -146,7 +146,7 @@ public class DrainhouseFeature extends SimpleWorldFeature {
    put(plan,p.offset(x,-1,z),(x+z)%4==0?Blocks.MOSSY_STONE_BRICKS:Blocks.DEEPSLATE_BRICKS);
    boolean edge=x==-9 || x==9 || Math.abs(z)==3;
    for(int y=0;y<4;y++)if(edge && !((x==-9 && Math.abs(z)<=1 && y<=2) || (z==-3 && x>=-7 && x<=-5 && y<=2) || (z==3 && Math.abs(x)<=1 && y<=2) || (x==9 && Math.abs(z)<=1 && y<=2)))put(plan,p.offset(x,y,z),y==3?Blocks.CHISELED_DEEPSLATE:((x+z+y)%5==0?Blocks.CRACKED_DEEPSLATE_BRICKS:Blocks.DEEPSLATE_BRICKS));
-   put(plan,p.offset(x,4,z),Math.abs(z)==0 && x%3==0?Blocks.COPPER_GRATE.waxed().oxidized():Blocks.DEEPSLATE_TILES);
+   put(plan,p.offset(x,4,z),Math.abs(z)==0 && x%3==0?Blocks.WAXED_OXIDIZED_COPPER_GRATE:Blocks.DEEPSLATE_TILES);
   }
   for(int wall:new int[]{-3,3})for(int z=-2;z<=2;z++)for(int y=0;y<=3;y++)if(Math.abs(z)>1 || y==3)put(plan,p.offset(wall,y,z),y==3?Blocks.CHISELED_STONE_BRICKS:Blocks.MOSSY_STONE_BRICKS);
   // Ribbed threshold, low gutter and a raised restoration alcove give each room a different silhouette.
@@ -155,10 +155,10 @@ public class DrainhouseFeature extends SimpleWorldFeature {
   // three-high standing room; the raised alcove retains two-high space above its copper floor.
   // Replace only existing blueprint AIR: existing ribs/partition caps retain their authored material.
   for(int x=-8;x<=8;x++)for(int z=-2;z<=2;z++){var ceiling=p.offset(x,3,z);if(plan.get(ceiling).isAir())put(plan,ceiling,x%3==0?Blocks.CHISELED_DEEPSLATE:Blocks.DEEPSLATE_TILES);}
-  for(int x=-2;x<=2;x++){put(plan,p.offset(x,-1,-4),Blocks.DEEPSLATE_BRICKS);put(plan,p.offset(x,-2,-3),Blocks.DEEPSLATE_BRICKS);put(plan,p.offset(x,-1,-3),Blocks.WATER);put(plan,p.offset(x,-1,-2),Blocks.MOSS_BLOCK);put(plan,p.offset(x,0,-3),Blocks.CUT_COPPER.waxed().oxidized());}
+  for(int x=-2;x<=2;x++){put(plan,p.offset(x,-1,-4),Blocks.DEEPSLATE_BRICKS);put(plan,p.offset(x,-2,-3),Blocks.DEEPSLATE_BRICKS);put(plan,p.offset(x,-1,-3),Blocks.WATER);put(plan,p.offset(x,-1,-2),Blocks.MOSS_BLOCK);put(plan,p.offset(x,0,-3),Blocks.WAXED_OXIDIZED_CUT_COPPER);}
   for(int x:new int[]{-1,1})plan.put(p.offset(x,0,-2),FungalGarden.GLOWCAP.defaultBlockState().setValue(GlowcapBlock.AGE,0));
-  for(int x=5;x<=7;x++)for(int z=-2;z<=2;z++)put(plan,p.offset(x,0,z),Blocks.CUT_COPPER.waxed().unaffected());
-  for(int z=-2;z<=2;z++)plan.put(p.offset(4,0,z),Blocks.CUT_COPPER_SLAB.waxed().unaffected().defaultBlockState().setValue(SlabBlock.TYPE,SlabType.BOTTOM));
+  for(int x=5;x<=7;x++)for(int z=-2;z<=2;z++)put(plan,p.offset(x,0,z),Blocks.WAXED_CUT_COPPER);
+  for(int z=-2;z<=2;z++)plan.put(p.offset(4,0,z),Blocks.WAXED_CUT_COPPER_SLAB.defaultBlockState().setValue(SlabBlock.TYPE,SlabType.BOTTOM));
   plan.put(p.offset(-6,0,1),DrainhouseContent.MARK.defaultBlockState().setValue(DrainhouseMark.KIND,0));
   plan.put(p.offset(0,0,1),DrainhouseContent.MARK.defaultBlockState().setValue(DrainhouseMark.KIND,1));
   plan.put(p.offset(6,1,1),DrainhouseContent.MARK.defaultBlockState().setValue(DrainhouseMark.KIND,2));

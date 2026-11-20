@@ -165,7 +165,7 @@ public final class ListeningStationPiece extends BelowkeeperPiece {
 			set(level, clip, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), x, 7, z);
 		}
 		// The listener's corner: a rug by the desk, shelves of records on the east wall, stores by the bed.
-		fill(level, clip, 13, DECK + 1, 10, 14, DECK + 1, 12, Blocks.CARPET.pick(DyeColor.CYAN).defaultBlockState());
+		fill(level, clip, 13, DECK + 1, 10, 14, DECK + 1, 12, Blocks.CYAN_CARPET.defaultBlockState());
 		for (int z : new int[]{11, 12, 14, 15}) fill(level, clip, 19, DECK + 1, z, 19, DECK + 2, z, Blocks.BOOKSHELF.defaultBlockState());
 		set(level, clip, Blocks.BARREL.defaultBlockState(), 18, DECK + 1, 6);
 		set(level, clip, Blocks.BARREL.defaultBlockState(), 18, DECK + 2, 6);

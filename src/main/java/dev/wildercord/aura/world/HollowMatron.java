@@ -109,7 +109,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	private long lastSnap=-99;
 	private static final DustParticleOptions SILK_DUST=new DustParticleOptions(0xEDEDE4,1.4F),VENOM=new DustParticleOptions(0x8CC63F,.9F),HAIR=new DustParticleOptions(0xA08060,.7F);
 	/** The spiderlings that hatch from her sacs carry this, so she spares them while she fights. */
-	private static final BlockState SILK=Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.WHITE).defaultBlockState();
+	private static final BlockState SILK=Blocks.WHITE_WOOL.defaultBlockState();
 	public static final String BROOD="wildercord_hollow_brood";
 	/** The feet of the silk pillars she climbs, and the egg sacs her brood hatch from. */
 	private List<BlockPos> pillars=List.of(),sacs=List.of();
@@ -1079,7 +1079,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** A blow landing on {@code p}, through part of its armour, knocking it {@code shove} away from {@code from} and {@code lift} up. */
 	private void hit(ServerLevel level,LivingEntity p,double damage,double shove,Vec3 from,double lift){
 		if(!GuardianBite.land(level,this,p,(float)damage,HollowMatronRules.PIERCE))return;
-		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ(),level.damageSources().mobAttack(this),0);
+		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
 		p.needsSync=true;
 	}

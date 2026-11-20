@@ -30,9 +30,9 @@ public abstract class BelowkeeperPiece extends StructurePiece {
 	protected static final BlockState CHISELED = Blocks.CHISELED_DEEPSLATE.defaultBlockState();
 	protected static final BlockState MOSSY_BRICK = Blocks.MOSSY_STONE_BRICKS.defaultBlockState();
 	protected static final BlockState DARK_OAK = Blocks.DARK_OAK_PLANKS.defaultBlockState();
-	protected static final BlockState COPPER = Blocks.CUT_COPPER.waxed().unaffected().defaultBlockState();
-	protected static final BlockState OXIDIZED_COPPER = Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState();
-	protected static final BlockState COPPER_GRATE = Blocks.COPPER_GRATE.waxed().oxidized().defaultBlockState();
+	protected static final BlockState COPPER = Blocks.WAXED_CUT_COPPER.defaultBlockState();
+	protected static final BlockState OXIDIZED_COPPER = Blocks.WAXED_OXIDIZED_CUT_COPPER.defaultBlockState();
+	protected static final BlockState COPPER_GRATE = Blocks.WAXED_OXIDIZED_COPPER_GRATE.defaultBlockState();
 
 	protected BelowkeeperPiece(StructurePieceType type, int x, int y, int z, int width, int height, int depth, Direction facing) {
 		super(type, 0, StructurePiece.makeBoundingBox(x, y, z, facing, width, height, depth));

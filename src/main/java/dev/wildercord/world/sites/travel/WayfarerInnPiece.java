@@ -98,7 +98,7 @@ public final class WayfarerInnPiece extends TravelPiece {
 		for (int x : new int[]{9, 13}) set(level, bb, upright, x, 6, 4);
 		set(level, bb, pane, 11, 7, 4);
 		hangingLantern(level, bb, 11, 4, 4, 0, false);
-		for (int x : new int[]{8, 14}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), x, 3, 3, Direction.SOUTH);
+		for (int x : new int[]{8, 14}) banner(level, bb, Blocks.BLUE_WALL_BANNER, x, 3, 3, Direction.SOUTH);
 		set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false), 13, 1, 4);
 		// A steep dark roof with plaster gables, each with a king post and two small windows.
 		int ridge = gableRoof(level, bb, 4, 6, 18, 18, 6, true, Blocks.DARK_OAK_STAIRS, b(Blocks.DARK_OAK_PLANKS), plaster);
@@ -125,8 +125,8 @@ public final class WayfarerInnPiece extends TravelPiece {
 		for (int x : new int[]{9, 13}) set(level, bb, b(Blocks.CANDLE).setValue(CandleBlock.CANDLES, 3).setValue(CandleBlock.LIT, true), x, 4, 16);
 		// Dark beams across the ceiling with lanterns under them, and a runner from the door.
 		for (int z : new int[]{9, 12, 15}) fill(level, bb, 5, 5, z, 17, 5, z, beamX);
-		fill(level, bb, 11, 1, 7, 11, 1, 10, b(Blocks.CARPET.pick(DyeColor.RED)));
-		fill(level, bb, 10, 1, 14, 12, 1, 14, b(Blocks.CARPET.pick(DyeColor.BROWN)));
+		fill(level, bb, 11, 1, 7, 11, 1, 10, b(Blocks.RED_CARPET));
+		fill(level, bb, 10, 1, 14, 12, 1, 14, b(Blocks.BROWN_CARPET));
 		for (int z : new int[]{9, 15}) hangingLantern(level, bb, 11, 4, z, 0, false);
 		// Tables and benches, barrels along the west wall, beds along the east wall.
 		for (int[] t : new int[][]{{7, 10}, {7, 14}, {11, 12}}) {
@@ -137,7 +137,7 @@ public final class WayfarerInnPiece extends TravelPiece {
 		}
 		for (int z = 8; z <= 16; z += 2) set(level, bb, b(Blocks.BARREL), 5, 1, z);
 		for (int z : new int[]{10, 14}) set(level, bb, b(Blocks.BARREL), 5, 2, z);
-		Block[] beds = {Blocks.BED.pick(DyeColor.RED), Blocks.BED.pick(DyeColor.GREEN), Blocks.BED.pick(DyeColor.BLUE)};
+		Block[] beds = {Blocks.RED_BED, Blocks.GREEN_BED, Blocks.BLUE_BED};
 		for (int i = 0; i < 3; i++) bed(level, bb, beds[(i + variant()) % 3], 16, 1, 8 + i * 3, Direction.EAST);
 		for (int[] l : new int[][]{{8, 12}, {14, 12}}) set(level, bb, b(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), l[0], 4, l[1]);
 		lectern(level, bb, 8, 1, 8, Direction.SOUTH, TravelSites.book("travel_ledger", "Guest Ledger", "The Innkeeper"));

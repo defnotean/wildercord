@@ -148,7 +148,7 @@ public final class SakuraOnsenVillagePiece extends WildsPiece {
 		fill(level, bb, 24, 4, 30, 24, 6, 36, AIR);
 		// Warm paper screen ambient glow anchors + blue noren curtain banners at main Ryokan entry.
 		for (int z : new int[]{27, 32, 34, 39}) {
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), 25, 6, z, Direction.EAST);
+			banner(level, bb, Blocks.BLUE_WALL_BANNER, 25, 6, z, Direction.EAST);
 		}
 		set(level, bb, s(Blocks.OCHRE_FROGLIGHT), 7, 6, 26);
 		set(level, bb, s(Blocks.OCHRE_FROGLIGHT), 7, 6, 40);
@@ -158,8 +158,8 @@ public final class SakuraOnsenVillagePiece extends WildsPiece {
 		for (int tz : new int[]{28, 34, 39}) {
 			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 17, 4, tz);
 			set(level, bb, SakuraVillageHelper.dryTeaCups(2), 17, 5, tz);
-			set(level, bb, s(Blocks.CARPET.pick(DyeColor.BLUE)), 16, 4, tz);
-			set(level, bb, s(Blocks.CARPET.pick(DyeColor.BLUE)), 18, 4, tz);
+			set(level, bb, s(Blocks.BLUE_CARPET), 16, 4, tz);
+			set(level, bb, s(Blocks.BLUE_CARPET), 18, 4, tz);
 		}
 		set(level, bb, s(Blocks.BARREL), 8, 4, 25);
 		chest(level, bb, 9, 4, 25, WildsSites.SAKURA_ONSEN_HALL, Direction.SOUTH, 53L);
@@ -287,8 +287,8 @@ public final class SakuraOnsenVillagePiece extends WildsPiece {
 	private void ramenTeaPavilion(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
 		BlockState cherry = s(Blocks.CHERRY_PLANKS);
 		BlockState darkLog = s(Blocks.STRIPPED_DARK_OAK_LOG);
-		BlockState redWool = s(Blocks.WOOL.pick(DyeColor.RED));
-		BlockState whiteWool = s(Blocks.WOOL.pick(DyeColor.WHITE));
+		BlockState redWool = s(Blocks.RED_WOOL);
+		BlockState whiteWool = s(Blocks.WHITE_WOOL);
 
 		// Raised terrace deck on SE lower foreground (x = 37..57, z = 10..29, deck y = 2).
 		fill(level, bb, 37, 1, 10, 57, 1, 29, s(Blocks.STONE_BRICKS));

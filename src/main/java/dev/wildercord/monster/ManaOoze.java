@@ -82,12 +82,9 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	}
 
 	@Override
-	protected void addBehaviourGoals() {
+	protected void registerGoals() {
+		super.registerGoals();
 		goalSelector.addGoal(2, cubeAttackGoal());
-	}
-
-	@Override
-	protected void addTargetingGoals() {
 		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target, level) -> Math.abs(target.getY() - getY()) <= 4.0));
 		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 	}
@@ -127,14 +124,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 		return entityData.get(DATA_DRANK);
 	}
 
-	@Override
-	protected void setSpawnSize(ServerLevelAccessor level, DifficultyInstance difficulty) {
-		// Mostly small, sometimes middling, now and then big.
-		float roll = level.getRandom().nextFloat();
-		setSize(roll < 0.35F ? 1 : roll < 0.85F ? 2 : 3, true);
-	}
-
-	@Override
+	/** 26.1.2 Slime has no baby hook; kept for callers that ask. */
 	protected boolean canBeABaby() {
 		return false;
 	}
@@ -142,10 +132,14 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	@Override
 	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
 			@Nullable SpawnGroupData groupData) {
+		// 26.1.2 has no setSpawnSize hook: roll the size here, before the vanilla finalise pass.
+		// Mostly small, sometimes middling, now and then big.
+		float roll = level.getRandom().nextFloat();
+		setSize(roll < 0.35F ? 1 : roll < 0.85F ? 2 : 3, true);
 		return super.finalizeSpawn(level, difficulty, reason, groupData == null ? new AgeableMob.AgeableMobGroupData(false) : groupData);
 	}
 
-	@Override
+	/** 26.1.2 Slime splits on death natively; Mana Ooze only splits from overfeeding (see burst()). */
 	protected int getSplitCount() {
 		// Death doesn't split it: only overfeeding does.
 		return 0;
@@ -301,7 +295,6 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	}
 
 	/** Unused by the game: a Mana Ooze never breeds. */
-	@Override
 	public @Nullable CompatCubeMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return null;
 	}

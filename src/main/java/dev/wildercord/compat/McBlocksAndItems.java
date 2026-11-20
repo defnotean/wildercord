@@ -211,18 +211,36 @@ public final class McBlocksAndItems {
 
 	/** Base blocks of every dyeable family available for spell recolouring in the active MC version. */
 	public static List<Block> dyedBlockFamilies() {
-		return List.of(Blocks.WHITE_WOOL, Blocks.STAINED_GLASS, Blocks.TERRACOTTA, Blocks.STAINED_GLASS_PANE,
+		return List.of(Blocks.WHITE_WOOL, Blocks.WHITE_STAINED_GLASS, Blocks.TERRACOTTA, Blocks.WHITE_STAINED_GLASS_PANE,
 			Blocks.WHITE_CARPET, Blocks.WHITE_GLAZED_TERRACOTTA, Blocks.WHITE_CONCRETE, Blocks.WHITE_CONCRETE_POWDER, Blocks.CANDLE);
+	}
+
+	/** Block of the dyed family {@code suffix} (e.g. {@code "wall_banner"}) in {@code color}, or null when absent. */
+	public static @Nullable Block dyedBlock(String suffix, DyeColor color) {
+		Block block = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(color.getName() + "_" + suffix));
+		return block == Blocks.AIR ? null : block;
+	}
+
+	/** All sixteen members of the dyed family {@code suffix}, skipping any the version lacks. */
+	public static List<Block> dyedFamily(String suffix) {
+		List<Block> blocks = new java.util.ArrayList<>();
+		for (DyeColor color : DyeColor.values()) {
+			Block block = dyedBlock(suffix, color);
+			if (block != null) {
+				blocks.add(block);
+			}
+		}
+		return blocks;
 	}
 
 	/** {@code block} recoloured to {@code color} within its dyed family, or null when it isn't dyeable or already is that colour. */
 	public static @Nullable Block recoloured(Block block, DyeColor color) {
-		if (block == Blocks.GLASS) {
-			block = Blocks.STAINED_GLASS;
-		} else if (block == Blocks.GLASS_PANE) {
-			block = Blocks.STAINED_GLASS_PANE;
-		}
 		String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+		if (block == Blocks.GLASS) {
+			name = "stained_glass";
+		} else if (block == Blocks.GLASS_PANE) {
+			name = "stained_glass_pane";
+		}
 		for (String suffix : DYED_SUFFIXES) {
 			String prefix = name.equals(suffix) ? "" : name.endsWith("_" + suffix)
 				? name.substring(0, name.length() - suffix.length() - 1) : null;
@@ -241,8 +259,8 @@ public final class McBlocksAndItems {
 					continue;
 				}
 			}
-			Block member = BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace(color.getName() + "_" + suffix));
-			return member == block || member == Blocks.AIR ? null : member;
+			Block member = dyedBlock(suffix, color);
+			return member == null || member == block ? null : member;
 		}
 		return null;
 	}

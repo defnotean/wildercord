@@ -127,8 +127,8 @@ public final class SwordTombPiece extends DungeonPiece {
 		fill(level,bb,7,6,20,33,6,20,dark);
 		for(int z:new int[]{17,21}){
 			var colour=z==17?net.minecraft.world.item.DyeColor.BLACK:net.minecraft.world.item.DyeColor.GRAY;
-			banner(level,bb,Blocks.WALL_BANNER.pick(colour),7,4,z,Direction.EAST);
-			banner(level,bb,Blocks.WALL_BANNER.pick(colour),33,4,z,Direction.WEST);
+			banner(level,bb,dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", colour),7,4,z,Direction.EAST);
+			banner(level,bb,dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", colour),33,4,z,Direction.WEST);
 		}
 		weather(level,bb,6,1,15,34,7,25,tiles,Blocks.CRACKED_DEEPSLATE_TILES.defaultBlockState(),12);
 		// Duel chamber: a cornice along both walls, bases and capitals on the piers, and transverse ribs on corbels.
@@ -157,8 +157,8 @@ public final class SwordTombPiece extends DungeonPiece {
 		fill(level,bb,17,6,45,23,6,45,dark);
 		set(level,bb,stair(Blocks.POLISHED_DEEPSLATE_STAIRS,Direction.WEST,true),18,5,45);
 		set(level,bb,stair(Blocks.POLISHED_DEEPSLATE_STAIRS,Direction.EAST,true),22,5,45);
-		banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.BLACK),18,3,45,Direction.SOUTH);
-		banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.BLACK),22,3,45,Direction.SOUTH);
+		banner(level,bb,Blocks.BLACK_WALL_BANNER,18,3,45,Direction.SOUTH);
+		banner(level,bb,Blocks.BLACK_WALL_BANNER,22,3,45,Direction.SOUTH);
 		weather(level,bb,4,1,24,36,10,47,tiles,Blocks.CRACKED_DEEPSLATE_TILES.defaultBlockState(),12);
 		// Crypt: soul lamps over the bier and candles left burning on it.
 		for(int x:new int[]{14,20,26})hangingLantern(level,bb,x,6,50,1,true);

@@ -37,7 +37,7 @@ public final class WindGatePiece extends MasterSitePiece {
 	@Override public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
 		BlockState pillar = alt ? s(Blocks.POLISHED_DEEPSLATE) : s(Blocks.STRIPPED_OAK_LOG);
-		BlockState beam = alt ? s(Blocks.CUT_COPPER.waxed().unaffected()) : s(Blocks.SPRUCE_PLANKS);
+		BlockState beam = alt ? s(Blocks.WAXED_CUT_COPPER) : s(Blocks.SPRUCE_PLANKS);
 		BlockState cloth = alt ? s(Blocks.YELLOW_WOOL) : s(Blocks.WHITE_WOOL);
 		BlockState chiseled = s(Blocks.CHISELED_STONE_BRICKS);
 		Block plinth = Blocks.STONE_BRICK_STAIRS, bracket = alt ? Blocks.POLISHED_DEEPSLATE_STAIRS : Blocks.SPRUCE_STAIRS;
@@ -64,7 +64,7 @@ public final class WindGatePiece extends MasterSitePiece {
 		fill(level, bb, 0, 15, 6, 14, 15, 8, beam);
 		fill(level, bb, 3, 13, 7, 11, 13, 7, beam);
 		for (int x = 3; x <= 11; x += 2) { set(level, bb, cloth, x, 14, 6); set(level, bb, cloth, x, 14, 8); }
-		var rod = s(Blocks.LIGHTNING_ROD.waxed().unaffected());
+		var rod = s(Blocks.WAXED_LIGHTNING_ROD);
 		set(level, bb, rod, 0, 16, 7); set(level, bb, rod, 14, 16, 7);
 		if (alt) { set(level, bb, rod, 4, 16, 6); set(level, bb, rod, 10, 16, 8); }
 		// A hipped roof raised over the beam on short posts, lanterns hung beneath, rods on its ridge.
@@ -74,7 +74,7 @@ public final class WindGatePiece extends MasterSitePiece {
 		hangingLantern(level, bb, 4, 18, 7, 0, false); hangingLantern(level, bb, 10, 18, 7, 0, false);
 		set(level, bb, rod, 1, 21, 7); set(level, bb, rod, 13, 21, 7); set(level, bb, chiseled, 7, 21, 7);
 		// The school's colours on the faces of the pillars.
-		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.YELLOW : DyeColor.WHITE);
+		Block banner = dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", alt ? DyeColor.YELLOW : DyeColor.WHITE);
 		for (int x : new int[]{1, 2, 12, 13}) banner(level, bb, banner, x, 11, 6, Direction.SOUTH);
 		// Stone lanterns at the corners of the yard.
 		for (int[] c : new int[][]{{0, 0}, {14, 0}, {0, 13}, {14, 13}}) { fill(level, bb, c[0], 1, c[1], c[0], 2, c[1], s(Blocks.STONE_BRICKS)); set(level, bb, chiseled, c[0], 3, c[1]); set(level, bb, s(Blocks.LANTERN), c[0], 4, c[1]); }

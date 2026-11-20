@@ -38,6 +38,8 @@ import org.jspecify.annotations.Nullable;
  * berries raise a leveret.
  */
 public class Rimehare extends Animal {
+	// 26.1.2 PathNavigation has no vertical waypoint tolerance; vanilla ground following settles within half a block.
+	private static final float MAX_VERTICAL_WAYPOINT = 0.5F;
 	private final RimehareBoundCooldown boundCooldown = new RimehareBoundCooldown();
 	/** A grounded move-control tick must orient this bound before travel starts. */
 	private boolean groundedMove;
@@ -112,7 +114,7 @@ public class Rimehare extends Animal {
 			// step next tick, instead of launching a new bound after the route has effectively ended.
 			if (recovered && groundedMove && navigation.isInProgress() && getSpeed() > 0
 				&& getDeltaMovement().y <= 0 && !RimehareBoundArrival.isAtFinalWaypoint(navigation.getPath(),
-					getX(), getY(), getZ(), navigation.getMaxDistanceToWaypoint(), navigation.getMaxVerticalDistanceToWaypoint())) {
+					getX(), getY(), getZ(), navigation.getMaxDistanceToWaypoint(), MAX_VERTICAL_WAYPOINT)) {
 				jumpFromGround();
 				boundCooldown.launched(3 + random.nextInt(4));
 			}
@@ -137,7 +139,7 @@ public class Rimehare extends Animal {
 					mob.setXxa(0);
 					return;
 				}
-				if (mob.canCoastToFinalWaypoint(wantedY)) {
+				if (((Rimehare) mob).canCoastToFinalWaypoint(wantedY)) {
 					// Existing momentum can already settle at the native endpoint. Consume this input
 					// without changing speed or velocity; navigation and real collision still run.
 					operation = Operation.WAIT;
@@ -146,7 +148,7 @@ public class Rimehare extends Animal {
 					return;
 				}
 				double requestedSpeed = speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
-				if (mob.boundCooldown.shouldBrake(mob.getDeltaMovement().horizontalDistance(), requestedSpeed)) {
+				if (((Rimehare) mob).boundCooldown.shouldBrake(mob.getDeltaMovement().horizontalDistance(), requestedSpeed)) {
 					operation = Operation.WAIT;
 					// Shed excess momentum during recovery before a full-speed input could skip a
 					// waypoint cell. Slower steps keep their requested movement input.
@@ -155,7 +157,7 @@ public class Rimehare extends Animal {
 					mob.setXxa(0);
 					return;
 				}
-				mob.groundedMove = true;
+				((Rimehare) mob).groundedMove = true;
 			}
 			// This also retains the native JUMPING operation for steps, and FloatGoal in water.
 			super.tick();
@@ -178,11 +180,12 @@ public class Rimehare extends Animal {
 		BlockState support = level().getBlockState(getBlockPosBelowThatAffectsMyMovement());
 		// Slime's step callback adds damping beyond its friction coefficient.
 		if (feetState.is(Blocks.SLIME_BLOCK) || support.is(Blocks.SLIME_BLOCK)) return false;
-		float drag = RimehareBoundArrival.groundDrag(support.getBlock().getFriction(),
-			getAttributeValue(Attributes.FRICTION_MODIFIER), getAttributeValue(Attributes.AIR_DRAG_MODIFIER));
+		// 26.1.2 has no friction/air-drag modifier attributes: vanilla travel multiplies block
+		// friction by the fixed 0.91 ground drag, which the neutral modifiers below reproduce.
+		float drag = RimehareBoundArrival.groundDrag(support.getBlock().getFriction(), 1.0, 1.0);
 		return RimehareBoundArrival.canCoastToFinalWaypoint(path, getX(), getY(), getZ(),
 			getDeltaMovement().x, getDeltaMovement().z, navigation.getMaxDistanceToWaypoint(),
-			navigation.getMaxVerticalDistanceToWaypoint(), drag);
+			MAX_VERTICAL_WAYPOINT, drag);
 	}
 
 	/** Low, quick bounds rather than leaps. */

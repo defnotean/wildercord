@@ -176,7 +176,7 @@ public class PierBoathousePiece extends WaterPiece {
 		gable(level, bb, 0, 10, 19, 27, DECK + 5, Blocks.DARK_OAK_STAIRS, Blocks.DARK_OAK_PLANKS.defaultBlockState(), PLANKS, 20, 27);
 		set(level, bb, Blocks.GLASS.defaultBlockState(), 5, DECK + 7, 20);
 		for (int x : new int[] {3, 7}) {
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), x, DECK + 6, 19, Direction.SOUTH);
+			banner(level, bb, Blocks.BLUE_WALL_BANNER, x, DECK + 6, 19, Direction.SOUTH);
 		}
 		hangingLantern(level, bb, 5, DECK + 9, 19, 3, false);
 		// Tie beams across the loft, lanterns hung over each walkway.

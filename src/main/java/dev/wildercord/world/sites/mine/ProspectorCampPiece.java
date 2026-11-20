@@ -50,8 +50,8 @@ public final class ProspectorCampPiece extends MinePiece {
 			fill(level, bb, x0 + 6 - k, 1 + k, 3, x0 + 6 - k, 1 + k, 9, canvas);
 		}
 		for (int k = 0; k <= 2; k++) fill(level, bb, x0 + k + 1, 1 + k, 9, x0 + 5 - k, 1 + k, 9, canvas);
-		set(level, bb, Blocks.CARPET.pick(DyeColor.BROWN).defaultBlockState(), x0 + 2, 1, 6);
-		set(level, bb, Blocks.CARPET.pick(DyeColor.BROWN).defaultBlockState(), x0 + 2, 1, 7);
+		set(level, bb, Blocks.BROWN_CARPET.defaultBlockState(), x0 + 2, 1, 6);
+		set(level, bb, Blocks.BROWN_CARPET.defaultBlockState(), x0 + 2, 1, 7);
 		// A ridge pole on a pole at each end, guy stakes at the corners and a lamp hung from the ridge inside.
 		fill(level, bb, x0 + 3, 5, 2, x0 + 3, 5, 10, s(Blocks.SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z));
 		fill(level, bb, x0 + 3, 1, 2, x0 + 3, 4, 2, s(Blocks.SPRUCE_FENCE));
@@ -76,8 +76,8 @@ public final class ProspectorCampPiece extends MinePiece {
 			set(level, bb, s(Blocks.LANTERN), x, 4, 1);
 		}
 		// Two tents, the crew's chest in the first.
-		tent(level, bb, 2, Blocks.WOOL.pick(DyeColor.WHITE).defaultBlockState());
-		tent(level, bb, 16, Blocks.WOOL.pick(DyeColor.LIGHT_GRAY).defaultBlockState());
+		tent(level, bb, 2, Blocks.WHITE_WOOL.defaultBlockState());
+		tent(level, bb, 16, Blocks.LIGHT_GRAY_WOOL.defaultBlockState());
 		chest(level, bb, 5, 1, 8, MineSites.CAMP, Direction.SOUTH, 471);
 		barrel(level, bb, 19, 1, 8, null, 0);
 		// Stores stacked by the second tent.
@@ -133,6 +133,6 @@ public final class ProspectorCampPiece extends MinePiece {
 		hangingLantern(level, bb, 20, 13, 16, 2, false);
 		// The flag on its pole, standing through the roof where it can be seen across the badlands.
 		fill(level, bb, 21, 12, 18, 21, 17, 18, s(Blocks.SPRUCE_FENCE));
-		fill(level, bb, 22, 16, 18, 23, 17, 18, Blocks.WOOL.pick(DyeColor.RED).defaultBlockState());
+		fill(level, bb, 22, 16, 18, 23, 17, 18, Blocks.RED_WOOL.defaultBlockState());
 	}
 }

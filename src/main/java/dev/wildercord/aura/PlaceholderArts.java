@@ -184,7 +184,7 @@ public final class PlaceholderArts {
 			hits.raw(foe, damage(player, StringRules.FINAL_FACTOR), AuraFxRules.Weight.GRAND);
 			Vec3 away = foe.position().subtract(player.position());
 			if (foe.isAlive() && !Spirits.isBoss(foe) && away.horizontalDistanceSqr() > 1.0E-4) {
-				foe.knockback(0.9, -away.x, -away.z, player.damageSources().playerAttack(player), 0.0F);
+				foe.knockback(0.9, -away.x, -away.z);
 				dev.wildercord.compat.McEntities.syncVelocity(foe);
 			}
 		}

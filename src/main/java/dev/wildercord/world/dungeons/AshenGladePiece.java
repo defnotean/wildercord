@@ -41,7 +41,7 @@ public final class AshenGladePiece extends DungeonPiece {
 	private static final BlockState LOG=Blocks.DARK_OAK_LOG.defaultBlockState();
 	private static final BlockState WOOD=Blocks.DARK_OAK_WOOD.defaultBlockState();
 	private static final BlockState CHAR=Blocks.BASALT.defaultBlockState();
-	private static final BlockState ASH=Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.LIGHT_GRAY).defaultBlockState();
+	private static final BlockState ASH=Blocks.LIGHT_GRAY_CARPET.defaultBlockState();
 
 	public AshenGladePiece(int x,int y,int z,Direction facing){super(DungeonWorldgen.ASHEN_GLADE_PIECE,x,y,z,WIDTH,HEIGHT,DEPTH,facing);}
 	public AshenGladePiece(CompoundTag tag){super(DungeonWorldgen.ASHEN_GLADE_PIECE,tag);}

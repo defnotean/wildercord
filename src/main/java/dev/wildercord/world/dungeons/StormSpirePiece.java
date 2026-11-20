@@ -26,7 +26,7 @@ public class StormSpirePiece extends DungeonPiece {
 	private final boolean modern;
 	private static final BlockState STONE = Blocks.POLISHED_ANDESITE.defaultBlockState();
 	private static final BlockState BRICK = Blocks.STONE_BRICKS.defaultBlockState();
-	private static final BlockState COPPER = Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState();
+	private static final BlockState COPPER = Blocks.WAXED_OXIDIZED_CUT_COPPER.defaultBlockState();
 	private static final BlockState DARK = Blocks.DEEPSLATE_BRICKS.defaultBlockState();
 	private static final BlockState GLASS = Blocks.CYAN_STAINED_GLASS.defaultBlockState();
 	private static final BlockState LIGHT = Blocks.SEA_LANTERN.defaultBlockState();
@@ -174,8 +174,8 @@ public class StormSpirePiece extends DungeonPiece {
 		}
 		// Banners on the front and back walls, between the buttresses and the windows.
 		for (int x:new int[]{6,16}) {
-			banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.BLUE),x,12,0,Direction.SOUTH);
-			banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.BLUE),x,12,22,Direction.NORTH);
+			banner(level,bb,Blocks.BLUE_WALL_BANNER,x,12,0,Direction.SOUTH);
+			banner(level,bb,Blocks.BLUE_WALL_BANNER,x,12,22,Direction.NORTH);
 		}
 		// Storm lamps hung in the vault.
 		for (int x:new int[]{8,14}) hangingLantern(level,bb,x,26,20,1,false);

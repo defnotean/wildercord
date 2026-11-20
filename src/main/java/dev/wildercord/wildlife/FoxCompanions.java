@@ -51,7 +51,7 @@ public final class FoxCompanions {
   return InteractionResult.PASS;
  }
  private static void wake(Fox f) {((FoxAccessor)f).wildercord$sleep(false);((FoxAccessor)f).wildercord$defend(false);f.setIsCrouching(false);}
- public static void goals(Fox f) {f.getGoalSelector().addGoal(1,new Sit(f));f.getGoalSelector().addGoal(3,new Follow(f));}
+ public static void goals(Fox f) {dev.wildercord.compat.McEntities.goalSelector(f).addGoal(1,new Sit(f));dev.wildercord.compat.McEntities.goalSelector(f).addGoal(3,new Follow(f));}
  private static final class Sit extends Goal {
   private final Fox f;
   Sit(Fox f) {this.f=f;setFlags(EnumSet.of(Flag.MOVE,Flag.JUMP,Flag.LOOK));}

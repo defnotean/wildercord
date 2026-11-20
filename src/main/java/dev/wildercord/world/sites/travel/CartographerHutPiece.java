@@ -65,7 +65,7 @@ public final class CartographerHutPiece extends TravelPiece {
 		set(level, bb, b(Blocks.BARREL), 10, 1, 8); set(level, bb, b(Blocks.BARREL), 10, 1, 9);
 		// Inside: a beam across the ceiling, a blue rug, a second shelf and a candle at the drawing table.
 		fill(level, bb, 2, 4, 5, 8, 4, 5, beamX);
-		fill(level, bb, 3, 1, 3, 6, 1, 6, b(Blocks.CARPET.pick(DyeColor.LIGHT_BLUE)));
+		fill(level, bb, 3, 1, 3, 6, 1, 6, b(Blocks.LIGHT_BLUE_CARPET));
 		set(level, bb, b(Blocks.BOOKSHELF), 8, 2, 8);
 		set(level, bb, b(Blocks.POTTED_FERN), 8, 3, 8);
 		set(level, bb, b(Blocks.CANDLE).setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true), 2, 2, 8);
@@ -84,6 +84,6 @@ public final class CartographerHutPiece extends TravelPiece {
 		// The flag pole at the front corner, seen over the treetops.
 		footing(level, bb, 0, 0, 0, 0, COBBLE, COBBLE, 0);
 		fill(level, bb, 0, 1, 0, 0, 10, 0, b(Blocks.OAK_FENCE));
-		fill(level, bb, 1, 8, 0, 2, 9, 0, b(Blocks.WOOL.pick(DyeColor.LIGHT_BLUE)));
+		fill(level, bb, 1, 8, 0, 2, 9, 0, b(Blocks.LIGHT_BLUE_WOOL));
 	}
 }

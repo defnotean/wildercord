@@ -253,7 +253,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(ChiseledBookShelfBlock.FACING, Direction.EAST), 6, 2, 27);
 		set(level, bb, s(Blocks.BARREL), 6, 2, 29);
 		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 6, 3, 28);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.GREEN), 6, 5, 31, Direction.EAST);
+		banner(level, bb, Blocks.GREEN_WALL_BANNER, 6, 5, 31, Direction.EAST);
 		set(level, bb, s(Blocks.LANTERN), 23, 3, 25);
 		set(level, bb, s(Blocks.LANTERN), 23, 3, 38);
 		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 15, 6, 32);
@@ -318,11 +318,11 @@ public final class SakuraVillagePiece extends WildsPiece {
 		for (int z = 28; z <= 36; z++) {
 			set(level, bb, s(Blocks.HAY_BLOCK), 40, 5, z);
 			if (z == 29 || z == 35) {
-				banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.WHITE), 39, 5, z, Direction.WEST);
+				banner(level, bb, Blocks.WHITE_WALL_BANNER, 39, 5, z, Direction.WEST);
 			}
 		}
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), 39, 4, 22, Direction.WEST);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), 39, 4, 42, Direction.WEST);
+		banner(level, bb, Blocks.PINK_WALL_BANNER, 39, 4, 22, Direction.WEST);
+		banner(level, bb, Blocks.PINK_WALL_BANNER, 39, 4, 42, Direction.WEST);
 
 		// Four elevated Cat Altar Shrines inside Neko-Jinja + central hanging bronze Suzu Bell.
 		for (int[] c : new int[][]{{47, 26}, {53, 26}, {47, 37}, {53, 37}}) {

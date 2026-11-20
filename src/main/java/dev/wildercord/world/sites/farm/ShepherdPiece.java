@@ -99,19 +99,19 @@ public final class ShepherdPiece extends FarmPiece {
 		// Within: the loom and spinning corner, the hearth, the chest, fleece, a rug and hanging lamps.
 		set(level, bb, facing(Blocks.LOOM, Direction.EAST), 3, 1, 14);
 		set(level, bb, s(Blocks.WHITE_WOOL), 3, 1, 18);
-		set(level, bb, s(Blocks.WOOL.pick(DyeColor.LIGHT_GRAY)), 3, 2, 18);
+		set(level, bb, s(Blocks.LIGHT_GRAY_WOOL), 3, 2, 18);
 		set(level, bb, s(Blocks.BARREL), 4, 1, 18);
 		set(level, bb, facing(Blocks.SMOKER, Direction.WEST), 11, 1, 16);
 		set(level, bb, s(Blocks.HAY_BLOCK), 11, 1, 14);
 		chest(level, bb, 11, 1, 18, FarmSites.SHEPHERD_HUT, Direction.WEST, 1);
 		fill(level, bb, 6, 1, 16, 8, 1, 17, s(Blocks.WHITE_CARPET));
-		set(level, bb, s(Blocks.CARPET.pick(DyeColor.BROWN)), 7, 1, 16);
+		set(level, bb, s(Blocks.BROWN_CARPET), 7, 1, 16);
 		set(level, bb, hangingLantern(), 5, 6, 16);
 		set(level, bb, hangingLantern(), 9, 6, 16);
 		// Shrubs under the windows, fleece stacked against the west wall.
 		for (int z : new int[]{14, 18}) set(level, bb, s(z == 14 ? Blocks.FLOWERING_AZALEA : Blocks.AZALEA), 1, 1, z);
 		for (int x : new int[]{4, 10}) set(level, bb, s(Blocks.FLOWERING_AZALEA), x, 1, 20);
-		set(level, bb, s(Blocks.WHITE_WOOL), 1, 1, 17); set(level, bb, s(Blocks.WOOL.pick(DyeColor.BROWN)), 1, 1, 15);
+		set(level, bb, s(Blocks.WHITE_WOOL), 1, 1, 17); set(level, bb, s(Blocks.BROWN_WOOL), 1, 1, 15);
 	}
 
 	/** The pen: a dry-stone wall with lamp piers, a gate shut on the flock, a trough, and a gabled byre over the hay. */

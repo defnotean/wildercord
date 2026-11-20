@@ -99,7 +99,7 @@ public final class ScavengerFoodProbe {
   row.addProperty("forageModulo",Math.floorMod(actor.tickCount,40));row.addProperty("home",String.valueOf(actor.home()));row.addProperty("noAi",actor.isNoAi());row.add("target",entity(session,actor.getTarget()));
   row.addProperty("wantsCover",HighlandRules.wantsCover(true,level.getOverworldClockTime(),level.isRaining()));
   row.add("navigation",navigation(actor.getNavigation()));var goals=new JsonArray();int count=0;
-  for(var wrapped:actor.getGoalSelector().getAvailableGoals()){
+  for(var wrapped:dev.wildercord.compat.McEntities.goalSelector(actor).getAvailableGoals()){
    if(count++>=MAX_GOALS)continue;var goal=wrapped.getGoal();var item=new JsonObject();item.addProperty("class",goal.getClass().getName());item.addProperty("priority",wrapped.getPriority());item.addProperty("running",wrapped.isRunning());if(goal instanceof HighlandShelterGoal shelter)item.addProperty("shelterRunning",shelter.running());goals.add(item);
   }
   row.add("goals",goals);row.addProperty("goalsOmitted",Math.max(0,count-MAX_GOALS));return row;

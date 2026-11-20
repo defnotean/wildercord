@@ -79,7 +79,7 @@ public final class EmberOutpostPiece extends WildsPiece {
 			fill(level, bb, p[0], 1, p[1], p[0], 3, p[1], s(Blocks.POLISHED_BLACKSTONE_BRICKS));
 			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, wall, false), p[0], 4, p[1]);
 		}
-		for (int x : new int[]{6, 12}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), x, 3, 1, Direction.NORTH);
+		for (int x : new int[]{6, 12}) banner(level, bb, Blocks.RED_WALL_BANNER, x, 3, 1, Direction.NORTH);
 		// A dressed road from the gate to the tower, swept of wart.
 		for (int x = 8; x <= 10; x++) for (int z = 1; z <= 9; z++) {
 			set(level, bb, s(Blocks.POLISHED_BLACKSTONE_BRICKS), x, 0, z);
@@ -105,7 +105,7 @@ public final class EmberOutpostPiece extends WildsPiece {
 			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.EAST, true), 6, y, 12);
 			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.WEST, true), 12, y, 12);
 		}
-		for (int x : new int[]{8, 10}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), x, 12, 9, Direction.SOUTH);
+		for (int x : new int[]{8, 10}) banner(level, bb, Blocks.RED_WALL_BANNER, x, 12, 9, Direction.SOUTH);
 		hangingLantern(level, bb, 9, 15, 12, 3, false);
 		set(level, bb, s(Blocks.MAGMA_BLOCK), 9, 16, 12);
 		set(level, bb, s(Blocks.CAMPFIRE), 9, 17, 12);

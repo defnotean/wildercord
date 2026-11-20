@@ -67,7 +67,7 @@ public final class ForgeDojoPiece extends MasterSitePiece {
 		// A recessed porch: two chiseled piers, a hanging lantern and the school's colours either side.
 		for (int x : new int[]{6, 10}) pillar(level, bb, x, 1, 1, 4, chiseled, dark, chiseled);
 		hangingLantern(level, bb, 8, 4, 1, 0, false);
-		Block banner = alt ? Blocks.WALL_BANNER.red() : Blocks.WALL_BANNER.orange();
+		Block banner = alt ? Blocks.RED_WALL_BANNER : Blocks.ORANGE_WALL_BANNER;
 		banner(level, bb, banner, 5, 4, 1, Direction.SOUTH); banner(level, bb, banner, 11, 4, 1, Direction.SOUTH);
 		fill(level, bb, 7, 0, 0, 9, 0, 1, dark);
 		// Interior: smoke-dark beams with lanterns, banners flanking the vault door.

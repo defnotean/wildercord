@@ -60,7 +60,7 @@ public final class BarrowFieldPiece extends DungeonPiece {
 	private static final BlockState POST=Blocks.DARK_OAK_LOG.defaultBlockState();
 	private static final BlockState FENCE=Blocks.DARK_OAK_FENCE.defaultBlockState();
 	private static final BlockState STAKE=Blocks.SPRUCE_FENCE.defaultBlockState();
-	private static final BlockState SPEAR=Blocks.LIGHTNING_ROD.waxed().pick(WeatheringCopper.WeatherState.WEATHERED).defaultBlockState();
+	private static final BlockState SPEAR=Blocks.WAXED_WEATHERED_LIGHTNING_ROD.defaultBlockState();
 	private static final BlockState CANDLE=Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.LIT,false);
 
 	public BarrowFieldPiece(int x,int y,int z,Direction facing){super(DungeonWorldgen.BARROW_FIELD_PIECE,x,y,z,WIDTH,HEIGHT,DEPTH,facing);}
@@ -238,7 +238,7 @@ public final class BarrowFieldPiece extends DungeonPiece {
 				set(level,bb,stair(Blocks.MOSSY_STONE_BRICK_STAIRS,side<0?Direction.EAST:Direction.WEST,false),ox,F+1,z);
 			}
 			// A tattered black banner on each bastion's face, and a web in its broken top.
-			banner(level,bb,Blocks.WALL_BANNER.pick(DyeColor.BLACK),CX+side*6,F+4,6,Direction.SOUTH);
+			banner(level,bb,Blocks.BLACK_WALL_BANNER,CX+side*6,F+4,6,Direction.SOUTH);
 			set(level,bb,Blocks.COBWEB.defaultBlockState(),CX+side*6,F+8,9);
 			// The revetment lining the cut from the bastion to the arch, holding up the lych-gate's eaves.
 			for(int z=7;z<=12;z++)for(int y=F+1;y<=F+4;y++)set(level,bb,stone.at(CX+side*4,y,z),CX+side*4,y,z);
@@ -366,7 +366,7 @@ public final class BarrowFieldPiece extends DungeonPiece {
 			if(noise(x,z)<15)continue;
 			fill(level,bb,x,F+1,z,x,F+2,z,FENCE);
 			DyeColor colour=i%3==0?DyeColor.BLACK:i%3==1?DyeColor.GRAY:DyeColor.LIGHT_GRAY;
-			set(level,bb,Blocks.BANNER.pick(colour).defaultBlockState().setValue(BannerBlock.ROTATION,(i*5+3)%16),x,F+3,z);
+			set(level,bb,dev.wildercord.compat.McBlocksAndItems.dyedBlock("banner", colour).defaultBlockState().setValue(BannerBlock.ROTATION,(i*5+3)%16),x,F+3,z);
 			if(noise(z,x)<30)set(level,bb,Blocks.COBWEB.defaultBlockState(),x,F+1,z+1);
 		}
 	}

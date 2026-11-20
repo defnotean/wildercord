@@ -77,7 +77,7 @@ public final class IronGatehousePiece extends WildsPiece {
 			clear(level, bb, 3, 13, z, 3, 14, z);
 		}
 		corbels(level, bb, 0, 6, 15);
-		for (int x : new int[]{1, 5}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), x, 12, 0, Direction.SOUTH);
+		for (int x : new int[]{1, 5}) banner(level, bb, Blocks.RED_WALL_BANNER, x, 12, 0, Direction.SOUTH);
 		// The gate hall, portcullis down at the front, an open arch at the back, the rampart on its roof.
 		walls(level, bb, 7, 0, 2, 17, 10, 8);
 		fill(level, bb, 8, 0, 3, 16, 0, 7, s(Blocks.STONE_BRICKS));
@@ -93,7 +93,7 @@ public final class IronGatehousePiece extends WildsPiece {
 		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), 12, 7, 1);
 		for (int x = 8; x <= 16; x++) set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), x, 9, 1);
 		for (int x : new int[]{8, 16}) {
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), x, 5, 1, Direction.SOUTH);
+			banner(level, bb, Blocks.RED_WALL_BANNER, x, 5, 1, Direction.SOUTH);
 			fill(level, bb, x, 1, 0, x, 2, 0, s(Blocks.STONE_BRICK_WALL));
 			set(level, bb, s(Blocks.LANTERN), x, 3, 0);
 		}

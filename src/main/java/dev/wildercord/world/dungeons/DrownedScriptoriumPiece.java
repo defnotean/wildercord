@@ -290,7 +290,7 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 	private void hall(WorldGenLevel level, BoundingBox bb) {
 		room(level, bb, 8, F, 24, 32, F + 9, 42, BRICKS);
 		fill(level, bb, 9, F, 25, 31, F, 41, DARK);
-		fill(level, bb, 19, F + 1, 25, 21, F + 1, 41, Blocks.CARPET.pick(DyeColor.CYAN).defaultBlockState());
+		fill(level, bb, 19, F + 1, 25, 21, F + 1, 41, Blocks.CYAN_CARPET.defaultBlockState());
 		for (int z = 25; z <= 41; z++) {
 			boolean tank = z % 4 == 0 && z >= 28;
 			for (int y = F + 1; y <= F + 4; y++) {

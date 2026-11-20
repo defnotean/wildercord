@@ -130,7 +130,7 @@ public final class ReedkeeperLandingPiece extends WaterPiece {
 		fill(level, clip, 3, DECK + 4, 6, 10, DECK + 4, 6, beamX);
 		set(level, clip, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 5, DECK + 3, 6);
 		set(level, clip, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 8, DECK + 3, 6);
-		for (int x : new int[] {5, 10}) banner(level, clip, Blocks.WALL_BANNER.pick(DyeColor.BLUE), x, DECK + 3, 7, Direction.SOUTH);
+		for (int x : new int[] {5, 10}) banner(level, clip, Blocks.BLUE_WALL_BANNER, x, DECK + 3, 7, Direction.SOUTH);
 		set(level, clip, Blocks.FLOWER_POT.defaultBlockState(), 5, DECK + 2, 5);
 		for (int z : new int[] {4, 5, 6}) set(level, clip, stair(Blocks.SPRUCE_STAIRS, Direction.EAST), 14, DECK + 1, z);
 		set(level, clip, Blocks.SPRUCE_SLAB.defaultBlockState(), 13, DECK + 1, 5);

@@ -82,7 +82,7 @@ public final class DawnPavilionPiece extends WildsPiece {
 			int ix = p[0] < 9 ? 1 : -1, iz = p[1] < 9 ? 1 : -1;
 			set(level, bb, stair(Blocks.CHERRY_STAIRS, ix > 0 ? Direction.WEST : Direction.EAST, true), p[0] + ix, 5, p[1]);
 			set(level, bb, stair(Blocks.CHERRY_STAIRS, iz > 0 ? Direction.SOUTH : Direction.NORTH, true), p[0], 5, p[1] + iz);
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), p[0] - ix, 4, p[1], ix > 0 ? Direction.WEST : Direction.EAST);
+			banner(level, bb, Blocks.PINK_WALL_BANNER, p[0] - ix, 4, p[1], ix > 0 ? Direction.WEST : Direction.EAST);
 		}
 		for (int v = 6; v <= 12; v++) {
 			for (int z : new int[]{4, 14}) set(level, bb, s(Blocks.STRIPPED_CHERRY_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X), v, 5, z);

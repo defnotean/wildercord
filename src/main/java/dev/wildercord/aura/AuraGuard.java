@@ -306,7 +306,7 @@ public final class AuraGuard {
 		Vec3 away = attacker.position().subtract(player.position());
 		Vec3 flat = new Vec3(away.x, 0, away.z);
 		if (knock && flat.lengthSqr() > 1.0E-4) {
-			attacker.knockback(0.9, -flat.x, -flat.z, player.damageSources().playerAttack(player), 0.0F);
+			attacker.knockback(0.9, -flat.x, -flat.z);
 			dev.wildercord.compat.McEntities.syncVelocity(attacker);
 		}
 		attacker.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, AuraRules.STAGGER_TICKS, Spirits.isBoss(attacker) ? 0 : 2, false, true), player);

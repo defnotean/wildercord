@@ -359,7 +359,7 @@ final class DelveEffects {
 	}
 
 	private static boolean loose(BlockState state) {
-		return !state.hasBlockEntity() && (state.is(BlockTags.SAND) || state.is(Blocks.GRAVEL) || Blocks.CONCRETE_POWDER.asList().contains(state.getBlock()));
+		return !state.hasBlockEntity() && (state.is(BlockTags.SAND) || state.is(Blocks.GRAVEL) || dev.wildercord.compat.McBlocksAndItems.dyedFamily("concrete_powder").contains(state.getBlock()));
 	}
 
 	/** Siftfall: loose blocks hanging over air above the point come down, as items. */
@@ -1124,8 +1124,8 @@ final class DelveEffects {
 	private static void concreteset(Cast cast, Cast.Hit hit, double scale) {
 		ServerLevel level = cast.level;
 		BlockPos center = target(cast, hit);
-		List<Block> powders = Blocks.CONCRETE_POWDER.asList();
-		List<Block> concrete = Blocks.CONCRETE.asList();
+		List<Block> powders = dev.wildercord.compat.McBlocksAndItems.dyedFamily("concrete_powder");
+		List<Block> concrete = dev.wildercord.compat.McBlocksAndItems.dyedFamily("concrete");
 		int set = 0;
 		for (BlockPos p : around(center, DelveRules.radius(2, scale))) {
 			if (set >= DelveRules.SET_MAX) {

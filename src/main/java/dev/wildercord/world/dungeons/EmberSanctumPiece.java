@@ -207,7 +207,7 @@ public class EmberSanctumPiece extends DungeonPiece {
 			// Corner shafts of basalt and a magma eye glaring down the causeway.
 			for (int x : new int[] {x0, x0 + 4}) fill(level, bb, x, 3, 6, x, 14, 6, BASALT);
 			fill(level, bb, mid, 11, 7, mid, 12, 7, MAGMA);
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), mid, 6, 6, Direction.SOUTH);
+			banner(level, bb, Blocks.RED_WALL_BANNER, mid, 6, 6, Direction.SOUTH);
 			// The crown: battlements round a fire.
 			fill(level, bb, x0, 16, 6, x0 + 4, 16, 9, POLISHED);
 			crenellate(level, bb, x0, 6, x0 + 4, 9, 17, BRICKS);
@@ -297,8 +297,8 @@ public class EmberSanctumPiece extends DungeonPiece {
 		// Shroomlight bosses in the vault between the arches, and red banners down both walls.
 		for (int z : new int[] {17, 23, 29}) {
 			set(level, bb, Blocks.SHROOMLIGHT.defaultBlockState(), CX, 13, z);
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 7, 7, z, Direction.EAST);
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 33, 7, z, Direction.WEST);
+			banner(level, bb, Blocks.RED_WALL_BANNER, 7, 7, z, Direction.EAST);
+			banner(level, bb, Blocks.RED_WALL_BANNER, 33, 7, z, Direction.WEST);
 		}
 		for (int z : new int[] {17, 23, 29}) {
 			set(level, bb, POLISHED, 8, 2, z);
@@ -496,7 +496,7 @@ public class EmberSanctumPiece extends DungeonPiece {
 			pillar(level, bb, c[0], c[1], 2, 8, CHISELED, BASALT, GILDED);
 		}
 		for (int z = 58; z <= 66; z++) set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.WEST, true), 40, 8, z);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 40, 5, 62, Direction.WEST);
+		banner(level, bb, Blocks.RED_WALL_BANNER, 40, 5, 62, Direction.WEST);
 	}
 
 	// ------------------------------------------------------------------ the outside

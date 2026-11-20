@@ -116,10 +116,10 @@ public final class MinersRestPiece extends MinePiece {
 		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 6, 12, 4);
 		fill(level, bb, 4, 13, 3, 6, 13, 5, chiseled);
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING), 5, 12, 4);
-		spire(level, bb, 5, 4, 2, 14, Blocks.STONE_BRICK_STAIRS, brick, chiseled, s(Blocks.LIGHTNING_ROD.waxed().unaffected()));
+		spire(level, bb, 5, 4, 2, 14, Blocks.STONE_BRICK_STAIRS, brick, chiseled, s(Blocks.WAXED_LIGHTNING_ROD));
 		// Lamps hung at the roof's four corners and banners on the front pillars.
 		for (int x : new int[] {1, 9}) for (int z : new int[] {0, 8}) hangingLantern(level, bb, x, 5, z, 0, false);
-		for (int x : new int[] {2, 8}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.ORANGE), x, 4, 0, Direction.NORTH);
+		for (int x : new int[] {2, 8}) banner(level, bb, Blocks.ORANGE_WALL_BANNER, x, 4, 0, Direction.NORTH);
 		// The bell, the candle altars, the bench and the offering chest.
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING), 5, 5, 3);
 		set(level, bb, s(Blocks.CHISELED_STONE_BRICKS), 7, 2, 5);

@@ -104,6 +104,19 @@ public final class McWorldgen {
 		return manager.startsForStructure(new ChunkPos(chunkX, chunkZ), predicate);
 	}
 
+	/**
+	 * Whether {@code pos} sits inside a worldgen region's writable area. 26.1.2 has no
+	 * {@code isWithinWriteZone}: vanilla allows writes within one chunk of the region centre.
+	 */
+	public static boolean withinWriteZone(net.minecraft.world.level.WorldGenLevel level, BlockPos pos) {
+		if (!(level instanceof net.minecraft.server.level.WorldGenRegion region)) {
+			return true;
+		}
+		ChunkPos centre = region.getCenter();
+		ChunkPos at = new ChunkPos(pos);
+		return Math.abs(at.x - centre.x) <= 1 && Math.abs(at.z - centre.z) <= 1;
+	}
+
 	/** Lists structure starts matching {@code structure} at {@code chunk}. */
 	public static List<StructureStart> startsForStructure(StructureManager manager, ChunkPos chunk, Structure structure) {
 		return manager.startsForStructure(chunk, s -> s == structure);

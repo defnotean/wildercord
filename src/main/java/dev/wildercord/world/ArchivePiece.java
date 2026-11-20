@@ -164,7 +164,7 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		BlockPos to = getWorldPos(x + facing.getStepX(), y, z - facing.getStepZ());
 		Direction worldDir = to.getX() > at.getX() ? Direction.EAST : to.getX() < at.getX() ? Direction.WEST
 			: to.getZ() > at.getZ() ? Direction.SOUTH : Direction.NORTH;
-		level.setBlock(at, Blocks.WALL_BANNER.pick(DyeColor.PURPLE).defaultBlockState().setValue(WallBannerBlock.FACING, worldDir), 2);
+		level.setBlock(at, Blocks.PURPLE_WALL_BANNER.defaultBlockState().setValue(WallBannerBlock.FACING, worldDir), 2);
 		level.getBlockEntity(at);
 	}
 
@@ -369,7 +369,7 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		fill(level, bb, 9, 2, 31, 31, 2, 31, POLISHED);
 		fill(level, bb, 9, 2, 47, 31, 2, 47, POLISHED);
 		fill(level, bb, 19, 2, 31, 21, 2, 47, Blocks.POLISHED_DEEPSLATE.defaultBlockState());
-		fill(level, bb, 19, 3, 32, 21, 3, 46, Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.PURPLE).defaultBlockState());
+		fill(level, bb, 19, 3, 32, 21, 3, 46, Blocks.PURPLE_CARPET.defaultBlockState());
 		fill(level, bb, 19, 3, 30, 21, 6, 30, AIR);
 		for (int z = 32; z <= 46; z++) {
 			boolean pillar = z % 4 == 2;

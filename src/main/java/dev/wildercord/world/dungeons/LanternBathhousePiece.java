@@ -220,7 +220,7 @@ public final class LanternBathhousePiece extends DungeonPiece {
 			set(level, bb, DARK_OAK, x, F + 4, 7);
 		}
 		for (int x = 16; x <= 22; x += 2) {
-			banner(level, bb, Blocks.WALL_BANNER.pick(x == 18 || x == 20 ? DyeColor.BLUE : DyeColor.RED),
+			banner(level, bb, dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", x == 18 || x == 20 ? DyeColor.BLUE : DyeColor.RED),
 				x, F + 4, 6, Direction.SOUTH);
 		}
 	}
@@ -296,7 +296,7 @@ public final class LanternBathhousePiece extends DungeonPiece {
 				fill(level, bb, x, F + 1, z, x, F + 6, z, CYPRESS);
 				set(level, bb, stair(Blocks.DARK_OAK_STAIRS, x < 19 ? Direction.EAST : Direction.WEST, true),
 					x + (x < 19 ? 1 : -1), F + 6, z);
-				banner(level, bb, Blocks.WALL_BANNER.pick(z == 21 ? DyeColor.RED : DyeColor.BLUE),
+				banner(level, bb, dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", z == 21 ? DyeColor.RED : DyeColor.BLUE),
 					x + (x < 19 ? 1 : -1), F + 4, z, x < 19 ? Direction.EAST : Direction.WEST);
 			}
 			fill(level, bb, 5, F + 7, z, 33, F + 7, z, DARK_OAK);

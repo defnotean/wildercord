@@ -126,4 +126,9 @@ public final class McEntities {
 	public static ProjectileDeflection projectileDeflection(ProjectileRedirect redirect) {
 		return redirect::deflect;
 	}
+
+	/** The mob's behaviour goal selector (a protected field on 26.1.2, exposed via mixin). */
+	public static net.minecraft.world.entity.ai.goal.GoalSelector goalSelector(Mob mob) {
+		return ((dev.wildercord.mixin.MobGoalSelectorMixin) mob).wildercord$goalSelector();
+	}
 }

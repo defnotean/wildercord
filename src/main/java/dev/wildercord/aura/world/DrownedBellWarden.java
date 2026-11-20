@@ -769,7 +769,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	/** A blow landing on {@code p}, through part of its armour, knocking it {@code shove} away from {@code from} and {@code lift} up; whether it landed. */
 	private boolean hit(ServerLevel level,LivingEntity p,double damage,double shove,Vec3 from,double lift){
 		if(!GuardianBite.land(level,this,p,(float)damage,BellWardenRules.PIERCE))return false;
-		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ(),level.damageSources().mobAttack(this),0);
+		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
 		p.needsSync=true;return true;
 	}
@@ -816,7 +816,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		long now=level.getGameTime();if(now-lastRing<4)return;lastRing=now;
 		var b=bell();Feels.sound(level,b,"aura_bell_warden_ring",1.4F,.95F+random.nextFloat()*.1F);
 		level.sendParticles(ParticleTypes.GLOW,b.x,b.y-.5,b.z,10,1,.6,1,.05);
-		if(source.getEntity() instanceof LivingEntity e && source.getDirectEntity()==e && e.distanceToSqr(this)<5*5){e.knockback(.8,getX()-e.getX(),getZ()-e.getZ(),level.damageSources().mobAttack(this),0);e.needsSync=true;}
+		if(source.getEntity() instanceof LivingEntity e && source.getDirectEntity()==e && e.distanceToSqr(this)<5*5){e.knockback(.8,getX()-e.getX(),getZ()-e.getZ());e.needsSync=true;}
 	}
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);Guardians.reward(server,this,BellWardenRules.TIER,bar,source);bar.removeAllPlayers();}

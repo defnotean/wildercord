@@ -215,7 +215,7 @@ public class SunkenShrinePiece extends WaterPiece {
 		set(level, bb, Blocks.CANDLE.defaultBlockState(), 8, HALL + 2, 14);
 		set(level, bb, LIGHT, 8, HALL + 2, 15);
 		for (int x : new int[] {6, 10}) {
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.CYAN), x, HALL + 3, 14, Direction.SOUTH);
+			banner(level, bb, Blocks.CYAN_WALL_BANNER, x, HALL + 3, 14, Direction.SOUTH);
 		}
 		set(level, bb, Blocks.PRISMARINE_STAIRS.defaultBlockState(), 5, HALL + 1, 9);
 		set(level, bb, Blocks.PRISMARINE_STAIRS.defaultBlockState(), 11, HALL + 1, 9);

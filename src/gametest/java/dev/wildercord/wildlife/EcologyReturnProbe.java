@@ -64,7 +64,7 @@ public final class EcologyReturnProbe {
   var s=active;if(s==null)return;
   try{if(owner()!=s)return;if(selected(suite(),mob.level(),mob,Thread.currentThread())!=s)return;
    boolean expired=mob instanceof SiltcrestBittern b&&b.huntReady()>0&&b.level().getGameTime()>=b.huntReady();
-   String goals=mob.getGoalSelector().getAvailableGoals().stream().filter(g->g.isRunning()).map(g->g.getGoal().getClass().getSimpleName()).toList().toString();
+   String goals=dev.wildercord.compat.McEntities.goalSelector(mob).getAvailableGoals().stream().filter(g->g.isRunning()).map(g->g.getGoal().getClass().getSimpleName()).toList().toString();
    String key=goals+" "+routeKey(mob.getNavigation().getPath())+" "+(mob instanceof LanternNewt n?n.resting():((SiltcrestBittern)mob).pose());
    boolean expiry=expired&&!s.expired;s.expired=expired;
    if(!expiry&&key.equals(s.bodyKey)&&mob.tickCount%20!=0)return;s.bodyKey=key;

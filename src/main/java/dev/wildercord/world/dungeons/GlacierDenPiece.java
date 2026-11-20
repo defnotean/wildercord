@@ -296,9 +296,9 @@ public final class GlacierDenPiece extends DungeonPiece {
 		fill(level,bb,x0,FLOOR,z0,x1,FLOOR,z1,SNOW);
 		fill(level,bb,x0,FLOOR+1,z0,x1,FLOOR+3,z1,AIR);
 		set(level,bb,Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT,false),x0+1,FLOOR+1,z0+2);
-		set(level,bb,Blocks.WOOL.pick(net.minecraft.world.item.DyeColor.BROWN).defaultBlockState(),x1,FLOOR+1,z0);
-		set(level,bb,Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.BROWN).defaultBlockState(),x1,FLOOR+1,z0+1);
-		set(level,bb,Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.GRAY).defaultBlockState(),x1,FLOOR+1,z1-1);
+		set(level,bb,Blocks.BROWN_WOOL.defaultBlockState(),x1,FLOOR+1,z0);
+		set(level,bb,Blocks.BROWN_CARPET.defaultBlockState(),x1,FLOOR+1,z0+1);
+		set(level,bb,Blocks.GRAY_CARPET.defaultBlockState(),x1,FLOOR+1,z1-1);
 		chest(level,bb,x1,FLOOR+1,z1,DungeonWorldgen.GLACIER_DEN,Direction.WEST,1501);
 		set(level,bb,Blocks.SOUL_LANTERN.defaultBlockState(),x0,FLOOR+1,z1);
 		set(level,bb,Blocks.BONE_BLOCK.defaultBlockState(),x0+2,FLOOR+1,z0+3);
@@ -372,7 +372,7 @@ public final class GlacierDenPiece extends DungeonPiece {
 				if(corner)set(level,bb,snow(2+noise(z,x)%4),x,t+2,z);
 			}
 			if(column(bb,sx,sz))set(level,bb,Blocks.SOUL_LANTERN.defaultBlockState(),sx,Math.min(roof,h+1),sz);
-			banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.LIGHT_BLUE),sx,t+4,sz-2,Direction.SOUTH);
+			banner(level,bb,Blocks.LIGHT_BLUE_WALL_BANNER,sx,t+4,sz-2,Direction.SOUTH);
 		}
 		// The arch: rising from the spires to a crown over the way down, two blocks deep, icicles under it.
 		for(int x=CX-4;x<=CX+4;x++){

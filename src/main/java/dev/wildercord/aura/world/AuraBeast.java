@@ -137,7 +137,7 @@ public abstract class AuraBeast extends PathfinderMob {
 		if(!attackActive(level,epoch,phase) || !valid(target) || struck.size()>=BeastRules.VICTIMS || !struck.add(target.getUUID()))return null;
 		var source=level.damageSources().mobAttack(this);float health=target.getHealth();boolean admitted=target.hurtServer(level,source,damage);
 		if(admitted && target.getLastDamageSource()==source && attackActive(level,epoch,phase) && valid(target)) {
-			target.knockback(knock,-direction.x,-direction.z,source,0);
+			target.knockback(knock,-direction.x,-direction.z);
 			if(target.getLastDamageSource()==source && attackActive(level,epoch,phase) && valid(target))AuraFx.groundScar(level,target.position(),1.5,35,2);
 		}
 		return admitted && attackActive(level,epoch,phase) && target.level()==level && !target.isRemoved() && target.getHealth()<health ? source : null;

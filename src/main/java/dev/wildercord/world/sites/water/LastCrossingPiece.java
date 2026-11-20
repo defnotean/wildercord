@@ -115,7 +115,7 @@ public final class LastCrossingPiece extends WaterPiece {
 		hipRoof(level, clip, 14, 2, 21, 5, DECK + 5, Blocks.DARK_PRISMARINE_STAIRS, Blocks.DARK_PRISMARINE.defaultBlockState(), Blocks.PRISMARINE_BRICK_SLAB.defaultBlockState());
 		for (int x : new int[] {14,21}) set(level, clip, stair(Blocks.SPRUCE_STAIRS, x == 14 ? Direction.WEST : Direction.EAST, true), x, DECK + 4, 4);
 		for (int x : new int[] {15,19}) hangingLantern(level, clip, x, DECK + 4, 4, 0, false);
-		for (int x : new int[] {14,21}) banner(level, clip, Blocks.WALL_BANNER.pick(DyeColor.BLUE), x, DECK + 3, 2, Direction.SOUTH);
+		for (int x : new int[] {14,21}) banner(level, clip, Blocks.BLUE_WALL_BANNER, x, DECK + 3, 2, Direction.SOUTH);
 		// The boatkeepers' clutter under the eaves, off the path.
 		set(level, clip, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 13, DECK + 1, 3);
 		set(level, clip, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.EAST), 13, DECK + 1, 4);

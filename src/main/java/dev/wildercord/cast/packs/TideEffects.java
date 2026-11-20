@@ -545,7 +545,7 @@ public final class TideEffects {
 			return;
 		}
 		long due = level.getGameTime() + ticks;
-		BlockState pane = Blocks.STAINED_GLASS.lightBlue().defaultBlockState();
+		BlockState pane = Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState();
 		for (BlockPos w : glass) {
 			TemporaryBlocks.put(level, w, pane, level.getBlockState(w), due);
 			level.setBlockAndUpdate(w, pane);

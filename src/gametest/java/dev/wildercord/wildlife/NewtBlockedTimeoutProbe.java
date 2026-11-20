@@ -199,7 +199,7 @@ public final class NewtBlockedTimeoutProbe {
 		private BlockState floor;
 		NativeCapture(LanternNewt actor, BlockPos destination, IntSupplier pearls) {
 			this.actor = actor; navigation = actor.getNavigation(); this.destination = destination.immutable(); this.pearls = pearls;
-			goal = actor.getGoalSelector().getAvailableGoals().stream()
+			goal = dev.wildercord.compat.McEntities.goalSelector(actor).getAvailableGoals().stream()
 				.filter(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter"))
 				.findFirst().orElseThrow().getGoal();
 			check(read(navigation, "mob") == actor && destination.equals(read(goal, "roof"))
@@ -220,7 +220,7 @@ public final class NewtBlockedTimeoutProbe {
 		@Override public Snapshot get() {
 			return new Snapshot(actor.level(), read(navigation, "mob"), actor.getNavigation(), goal, navigation.getPath(),
 				read(goal, "route"), read(goal, "roof"), actor.tickCount, (int) read(goal, "travelLeft"),
-				actor.getGoalSelector().getAvailableGoals().stream().anyMatch(g -> g.getGoal() == goal && g.isRunning()),
+				dev.wildercord.compat.McEntities.goalSelector(actor).getAvailableGoals().stream().anyMatch(g -> g.getGoal() == goal && g.isRunning()),
 				enclosed(), (boolean) read(goal, "arrived"), actor.resting(), actor.beneathRefuge(destination), (int) read(goal, "settled"),
 				actor.refugeReady(), actor.pearlReady(), actor.responseReady(), (long) read(actor, "browseReady"), pearls.getAsInt(), actor.getHealth(),
 				navigation.isDone(), ((NewtPathNavigation) navigation).followingRefuge(), navigation.isStuck(),

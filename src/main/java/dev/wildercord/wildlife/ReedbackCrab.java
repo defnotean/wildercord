@@ -93,7 +93,7 @@ public final class ReedbackCrab extends PathfinderMob {
    var source=damageSources().mobAttack(this);boolean admitted=e.hurtServer(l,source,5);
    // Native damage callbacks can remove, move, transfer, calm or replace either actor.
    if(!current(l,action,origin,quarry))return;
-   if(admitted&&valid(e)&&e.position().equals(victim))e.knockback(.45,-direction.x,-direction.z,source,0);
+   if(admitted&&valid(e)&&e.position().equals(victim))e.knockback(.45,-direction.x,-direction.z);
   }
  }
  @Override protected SoundEvent getAmbientSound() {return dev.wildercord.content.WildercordSounds.kit("wetland_crab_call");}

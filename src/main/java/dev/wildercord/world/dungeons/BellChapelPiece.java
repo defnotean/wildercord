@@ -166,7 +166,7 @@ public final class BellChapelPiece extends DungeonPiece {
 		}
 		for(int x:new int[]{10,20})for(int z:new int[]{10,17})set(level,bb,DARK,x,F+6,z);
 		hangingLantern(level,bb,CX,F+6,13,1,false);
-		for(int x:new int[]{11,19})banner(level,bb,Blocks.WALL_BANNER.pick(DyeColor.BLUE),x,F+4,17,Direction.SOUTH);
+		for(int x:new int[]{11,19})banner(level,bb,Blocks.BLUE_WALL_BANNER,x,F+4,17,Direction.SOUTH);
 		// Outside: buttresses either side of the front, a parapet round the roof and a stepped gable over the front wall.
 		for(int x:new int[]{10,20}){
 			for(int z=6;z<=8;z++)foundation(level,bb,x,z);
@@ -227,7 +227,7 @@ public final class BellChapelPiece extends DungeonPiece {
 		fill(level,bb,18,F+1,18,18,F+4,18,DARK);
 		set(level,bb,LIGHT,CX,F+6,18);
 		for(int dx=-1;dx<=1;dx++)for(int dy=-1;dy<=1;dy++)set(level,bb,dx==0 && dy==0?LIGHT:GLASS,CX+dx,F+10+dy,18);
-		for(int x:new int[]{11,19})banner(level,bb,Blocks.WALL_BANNER.pick(DyeColor.BLUE),x,F+5,19,Direction.NORTH);
+		for(int x:new int[]{11,19})banner(level,bb,Blocks.BLUE_WALL_BANNER,x,F+5,19,Direction.NORTH);
 		// Ribs across the vault over each pair of pillars, and the pillars, a lantern set in each, on stepped plinths
 		// under corbelled capitals. Dark shafts on the walls carry the ribs' ends.
 		for(int z:PILLAR_Z){
@@ -376,7 +376,7 @@ public final class BellChapelPiece extends DungeonPiece {
 		if(d<0.8)return Blocks.YELLOW_STAINED_GLASS.defaultBlockState();
 		if(Math.abs(d-3)<0.6)return GLASS;
 		if(dx==0 || dy==0 || Math.abs(dx)==Math.abs(dy))return Blocks.CYAN_STAINED_GLASS.defaultBlockState();
-		return Blocks.STAINED_GLASS.lightBlue().defaultBlockState();
+		return Blocks.LIGHT_BLUE_STAINED_GLASS.defaultBlockState();
 	}
 
 	/** The broken bell frame where nave meets apse: two posts, a beam snapped short, the chains that held the bell hanging empty. */

@@ -46,18 +46,18 @@ public final class CaravanCampPiece extends TravelPiece {
 		set(level, bb, b(Blocks.CAULDRON), 13, 1, 11);
 		// The trader's stall: a striped awning on posts over rugs, a counter either side of the way in.
 		for (int[] p : new int[][]{{8, 3}, {14, 3}, {8, 6}, {14, 6}}) fill(level, bb, p[0], 1, p[1], p[0], 3, p[1], b(Blocks.SPRUCE_FENCE));
-		Block[] stripes = {Blocks.WOOL.pick(DyeColor.RED), Blocks.WOOL.pick(DyeColor.WHITE)};
+		Block[] stripes = {Blocks.RED_WOOL, Blocks.WHITE_WOOL};
 		for (int x = 8; x <= 14; x++) fill(level, bb, x, 4, 3, x, 4, 6, b(stripes[x % 2]));
 		for (int x = 8; x <= 14; x++) set(level, bb, b(Blocks.SPRUCE_TRAPDOOR).setValue(TrapDoorBlock.FACING, Direction.SOUTH)
 			.setValue(TrapDoorBlock.OPEN, true), x, 3, 2);
-		for (int x = 9; x <= 13; x++) for (int z = 4; z <= 6; z++) set(level, bb, b(Blocks.CARPET.pick(x == 11 ? DyeColor.ORANGE : DyeColor.BROWN)), x, 1, z);
+		for (int x = 9; x <= 13; x++) for (int z = 4; z <= 6; z++) set(level, bb, b(dev.wildercord.compat.McBlocksAndItems.dyedBlock("carpet", x == 11 ? DyeColor.ORANGE : DyeColor.BROWN)), x, 1, z);
 		for (int x : new int[]{9, 13}) { set(level, bb, b(Blocks.BARREL), x, 1, 3); set(level, bb, b(Blocks.SPRUCE_SLAB), x, 2, 3); }
 		set(level, bb, b(Blocks.BARREL), 10, 1, 3); set(level, bb, b(Blocks.BARREL), 12, 1, 3);
 		hangingLantern(level, bb, 11, 3, 4, 0, false);
 		// Firewood stacked by the second wagon.
 		fill(level, bb, 19, 1, 13, 20, 1, 14, b(Blocks.OAK_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
 		set(level, bb, b(Blocks.OAK_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.X), 19, 2, 13);
-		Block[] covers = {Blocks.WOOL.pick(DyeColor.WHITE), Blocks.WOOL.pick(DyeColor.BROWN), Blocks.WOOL.pick(DyeColor.LIGHT_GRAY)};
+		Block[] covers = {Blocks.WHITE_WOOL, Blocks.BROWN_WOOL, Blocks.LIGHT_GRAY_WOOL};
 		for (int i = 0; i < WAGONS.length; i++) wagon(level, bb, WAGONS[i][0], WAGONS[i][1], b(covers[(i + variant()) % 3]), i);
 		// Hay and crates by the third wagon, a lantern post at the road.
 		set(level, bb, b(Blocks.HAY_BLOCK), 15, 1, 14); set(level, bb, b(Blocks.HAY_BLOCK), 15, 1, 15); set(level, bb, b(Blocks.HAY_BLOCK), 15, 2, 14);

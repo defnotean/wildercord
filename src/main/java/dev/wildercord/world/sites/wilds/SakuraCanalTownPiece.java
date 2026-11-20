@@ -233,11 +233,11 @@ public final class SakuraCanalTownPiece extends WildsPiece {
 		}
 		set(level, bb, s(Blocks.LOOM), 8, 4, 51);
 		set(level, bb, s(Blocks.CRAFTING_TABLE), 8, 4, 53);
-		set(level, bb, s(Blocks.WOOL.pick(DyeColor.RED)), 8, 4, 55);
-		set(level, bb, s(Blocks.WOOL.pick(DyeColor.YELLOW)), 8, 4, 56);
+		set(level, bb, s(Blocks.RED_WOOL), 8, 4, 55);
+		set(level, bb, s(Blocks.YELLOW_WOOL), 8, 4, 56);
 		set(level, bb, s(Blocks.BARREL), 8, 4, 58);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 19, 6, 50, Direction.EAST);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.YELLOW), 19, 6, 59, Direction.EAST);
+		banner(level, bb, Blocks.RED_WALL_BANNER, 19, 6, 50, Direction.EAST);
+		banner(level, bb, Blocks.YELLOW_WALL_BANNER, 19, 6, 59, Direction.EAST);
 
 		JapaneseArchitecture.upturnedEaveSkirt(p, 5, 47, 21, 62, 9, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, darkLog, true);
 		hipRoof(level, bb, 6, 48, 20, 61, 10, Blocks.DEEPSLATE_TILE_STAIRS, spruce, s(Blocks.GOLD_BLOCK));

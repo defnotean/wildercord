@@ -27,7 +27,7 @@ public final class MovingSkyRuinPiece extends DungeonPiece {
   fill(level,bb,8,6,2,16,6,8,stone);fill(level,bb,8,6,19,16,6,26,stone);
   for(int x:new int[]{8,16})for(int z:new int[]{2,8,19,26}){fill(level,bb,x,7,z,x,12,z,stone);set(level,bb,Blocks.SEA_LANTERN.defaultBlockState(),x,13,z);}
   // Weathered copper borders, carved column bands and broken high arches give the ruin a silhouette.
-  var copper=Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState();
+  var copper=Blocks.WAXED_OXIDIZED_CUT_COPPER.defaultBlockState();
   var carved=Blocks.CHISELED_QUARTZ_BLOCK.defaultBlockState();
   for(int x=2;x<=22;x++){set(level,bb,copper,x,0,2);set(level,bb,copper,x,0,26);}
   for(int z=3;z<26;z++){set(level,bb,copper,2,0,z);set(level,bb,copper,22,0,z);}
@@ -45,7 +45,7 @@ public final class MovingSkyRuinPiece extends DungeonPiece {
   for(int y=1;y<=7;y++)set(level,bb,Blocks.SCAFFOLDING.defaultBlockState(),12,y,3);
   // Optional outer route uses physical scaffolding, while the central moving puzzle stays available.
   if(variant()!=0){for(int z=8;z<=19;z++)set(level,bb,Blocks.SMOOTH_QUARTZ_SLAB.defaultBlockState(),5,6,z);for(int y=1;y<=7;y++)set(level,bb,Blocks.SCAFFOLDING.defaultBlockState(),5,y,8);fill(level,bb,5,6,19,8,6,19,stone);}
-  if(variant()==2){fill(level,bb,19,6,8,19,6,19,Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState());fill(level,bb,16,6,19,19,6,19,stone);for(int y=1;y<=7;y++)set(level,bb,Blocks.SCAFFOLDING.defaultBlockState(),19,y,8);}
+  if(variant()==2){fill(level,bb,19,6,8,19,6,19,Blocks.WAXED_OXIDIZED_CUT_COPPER.defaultBlockState());fill(level,bb,16,6,19,19,6,19,stone);for(int y=1;y<=7;y++)set(level,bb,Blocks.SCAFFOLDING.defaultBlockState(),19,y,8);}
   // The anchor is y7. Its collision stones lie at y6, with empty landing positions beside them.
   mechanism(level,bb,DungeonBlocks.SKY,12,7,7);
   for(int distance:new int[]{3,6,9}) {

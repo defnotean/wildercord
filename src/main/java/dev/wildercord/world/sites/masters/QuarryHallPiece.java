@@ -100,7 +100,7 @@ public final class QuarryHallPiece extends MasterSitePiece {
 		}
 		for (int[] p : new int[][]{{5, 7}, {13, 7}, {5, 15}, {13, 15}}) set(level, bb, light, p[0], 7, p[1]);
 		for (int z : new int[]{5, 13}) { hangingLantern(level, bb, 5, 16 - 4, z, 1, false); hangingLantern(level, bb, 13, 16 - 4, z, 1, false); }
-		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.LIGHT_GRAY : DyeColor.BROWN);
+		Block banner = dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", alt ? DyeColor.LIGHT_GRAY : DyeColor.BROWN);
 		banner(level, bb, banner, 5, 5, 16, Direction.SOUTH); banner(level, bb, banner, 13, 5, 16, Direction.SOUTH);
 		banner(level, bb, banner, 3, 5, 0, Direction.NORTH); banner(level, bb, banner, 15, 5, 0, Direction.NORTH);
 		// The sparring ring: a pit two blocks deep, lit, with a ladder out on the far side.

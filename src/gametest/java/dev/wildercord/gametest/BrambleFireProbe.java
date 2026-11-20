@@ -159,7 +159,7 @@ public final class BrambleFireProbe {
 		if (s.bodies.size() >= BODY_LIMIT) { s.omittedBodies++; return; }
 		ServerPlayer player = (ServerPlayer) s.player;
 		var move = actor.getMoveControl();
-		var goals = actor.getGoalSelector().getAvailableGoals().stream().filter(g -> g.isRunning())
+		var goals = dev.wildercord.compat.McEntities.goalSelector(actor).getAvailableGoals().stream().filter(g -> g.isRunning())
 			.map(g -> g.getGoal().getClass().getSimpleName()).toList();
 		s.lastTime = actor.level().getGameTime();
 		s.bodies.add("event=" + event + " now=" + s.lastTime + " elapsed=" + (s.lastTime - s.start)

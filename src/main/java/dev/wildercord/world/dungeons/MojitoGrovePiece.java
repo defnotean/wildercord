@@ -40,7 +40,7 @@ public final class MojitoGrovePiece extends DungeonPiece {
 	private static final BlockState LOG=Blocks.OAK_LOG.defaultBlockState();
 	private static final BlockState WOOD=Blocks.OAK_WOOD.defaultBlockState();
 	private static final BlockState LEAVES=Blocks.OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT,true);
-	private static final BlockState MIST=Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.WHITE).defaultBlockState();
+	private static final BlockState MIST=Blocks.WHITE_CARPET.defaultBlockState();
 	private static final BlockState[] FLOWERS={Blocks.OXEYE_DAISY.defaultBlockState(),Blocks.AZURE_BLUET.defaultBlockState(),
 		Blocks.LILY_OF_THE_VALLEY.defaultBlockState(),Blocks.CORNFLOWER.defaultBlockState(),Blocks.WHITE_TULIP.defaultBlockState()};
 

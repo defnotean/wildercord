@@ -19,9 +19,9 @@ public abstract class CompatCubeMob extends Slime {
 	@Override
 	public void setSize(int size, boolean heal) {
 		super.setSize(size, heal);
-		if (!isConstructing) {
-			applyCubeMobHealth(size);
-		}
+		// 26.1.2 has no Entity#isConstructing; Slime's own constructor call happens after
+		// LivingEntity initialised the attribute map, so the hook is safe to run immediately.
+		applyCubeMobHealth(size);
 	}
 
 	protected Goal cubeAttackGoal() {

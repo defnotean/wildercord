@@ -185,7 +185,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 			Vec3 delta=p.position().subtract(position());
 			if(!SwordTombRules.hit(attack,delta.dot(direction),delta.dot(side),delta.y) || !hasLineOfSight(p))continue;
 			if(p.hurtServer(level,level.damageSources().mobAttack(this),(float)SwordTombRules.damage(attack))){
-				p.knockback(.35,-direction.x,-direction.z,level.damageSources().mobAttack(this),0);AuraFx.impact(this,p,0xBDA879,4,AuraFxRules.Weight.FULL);
+				p.knockback(.35,-direction.x,-direction.z);AuraFx.impact(this,p,0xBDA879,4,AuraFxRules.Weight.FULL);
 			}
 		}
 		AuraFx.groundScar(level,position().add(direction.scale(attack==SwordTombRules.SWEEP?2:4)),attack==SwordTombRules.SWEEP?2.4:1,70,2);
@@ -438,7 +438,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 	private List<ServerPlayer> prey(ServerLevel level){var c=home==null?position():Vec3.atCenterOf(home);return level.getEntitiesOfClass(ServerPlayer.class,new AABB(c,c).inflate(20,8,20),p->p.isAlive() && !p.isCreative() && !p.isSpectator());}
 	private boolean hit(ServerLevel level,ServerPlayer p,double damage,double shove,Vec3 from,double lift){
 		if(!p.hurtServer(level,level.damageSources().mobAttack(this),(float)damage))return false;
-		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ(),level.damageSources().mobAttack(this),0);
+		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
 		p.needsSync=true;AuraFx.impact(this,p,0xBDA879,4,AuraFxRules.Weight.FULL);
 		return true;

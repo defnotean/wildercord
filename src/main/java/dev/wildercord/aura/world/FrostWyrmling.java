@@ -445,7 +445,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 				struck.add(p.getUUID());
 				hit(level,p,FrostWyrmlingRules.GALE_DAMAGE,0,position(),0);
 				double shove=FrostWyrmlingRules.GALE_SHOVE*(p.isShiftKeyDown()?FrostWyrmlingRules.GALE_CROUCH:1);
-				p.knockback(shove,-f.x,-f.z,level.damageSources().mobAttack(this),0);p.needsSync=true;
+				p.knockback(shove,-f.x,-f.z);p.needsSync=true;
 			}
 		}
 		if(k>=(beats-1)*FrostWyrmlingRules.GALE_EVERY+4)after(level,FrostWyrmlingRules.GALE,FrostWyrmlingRules.GALE_RECOVER);
@@ -701,7 +701,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 				// Flung off to whichever side of the strip they were on.
 				double side=(p.getX()-at.x)*r.x+(p.getZ()-at.z)*r.z;var away=r.scale(side>=0?1:-1);
 				hit(level,p,FrostWyrmlingRules.SLIDE_DAMAGE,0,at,.4);
-				p.knockback(1.3,-away.x,-away.z,level.damageSources().mobAttack(this),0);p.needsSync=true;
+				p.knockback(1.3,-away.x,-away.z);p.needsSync=true;
 			}
 			return;
 		}
@@ -983,7 +983,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	/** A blow landing on {@code p}, through part of its armour, knocking it {@code shove} away from {@code from} and {@code lift} up. */
 	private void hit(ServerLevel level,LivingEntity p,double damage,double shove,Vec3 from,double lift){
 		if(!GuardianBite.land(level,this,p,(float)damage,FrostWyrmlingRules.PIERCE))return;
-		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ(),level.damageSources().mobAttack(this),0);
+		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
 		p.needsSync=true;
 	}

@@ -171,7 +171,7 @@ public final class CollapsedDelvePiece extends MinePiece {
 		fill(level, bb, 5, FLOOR + 4, 22, 11, FLOOR + 4, 24, s(Blocks.SPRUCE_PLANKS));
 		set(level, bb, s(Blocks.LANTERN), 5, FLOOR + 1, 24);
 		chest(level, bb, 11, FLOOR + 1, 24, MineSites.DELVE_CACHE, Direction.WEST, 442);
-		set(level, bb, Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.WHITE).defaultBlockState(), 6, FLOOR + 1, 23);
+		set(level, bb, Blocks.WHITE_CARPET.defaultBlockState(), 6, FLOOR + 1, 23);
 		barrel(level, bb, 11, FLOOR + 1, 22, null, 0);
 		set(level, bb, s(Blocks.COBWEB), 5, FLOOR + 3, 22);
 		sentry(level, bb, EntityType.VILLAGER, 8, FLOOR + 1, 23);

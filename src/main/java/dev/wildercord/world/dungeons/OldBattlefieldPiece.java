@@ -78,8 +78,8 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 					if (noise(x,8)<30) set(level,bb,Blocks.STRIPPED_DARK_OAK_LOG.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.Z),x,1,7);
 					else fill(level,bb,x,1,7,x,1+noise(x,7)%2,7,Blocks.DARK_OAK_FENCE.defaultBlockState());
 				}
-				banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.RED),9,3,9,Direction.SOUTH);
-				banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.RED),21,3,9,Direction.SOUTH);
+				banner(level,bb,Blocks.RED_WALL_BANNER,9,3,9,Direction.SOUTH);
+				banner(level,bb,Blocks.RED_WALL_BANNER,21,3,9,Direction.SOUTH);
 			}
 			case 1 -> {
 				// The shelter's wall has an open doorway and a roof that has fallen into the garden.
@@ -137,7 +137,7 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 		for (int x:new int[]{13,17}) {
 			fill(level,bb,x,1,12,x,3,12,Blocks.DARK_OAK_FENCE.defaultBlockState());
 			set(level,bb,Blocks.STONE_BRICK_SLAB.defaultBlockState(),x,4,12);
-			banner(level,bb,Blocks.WALL_BANNER.pick(x<15?net.minecraft.world.item.DyeColor.RED:net.minecraft.world.item.DyeColor.GRAY),x,3,11,Direction.SOUTH);
+			banner(level,bb,dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", x<15?net.minecraft.world.item.DyeColor.RED:net.minecraft.world.item.DyeColor.GRAY),x,3,11,Direction.SOUTH);
 		}
 		// A tall obelisk behind the memorial on a stepped plinth, the fallen's banner hung on its face, a lamp kept at its top.
 		fill(level,bb,13,-6,18,17,-1,22,Blocks.DIRT.defaultBlockState());
@@ -168,9 +168,9 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 		for (int y:new int[]{9,16}) set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),15,y,20);
 		set(level,bb,Blocks.CHISELED_STONE_BRICKS.defaultBlockState(),15,20,20);
 		set(level,bb,Blocks.CAMPFIRE.defaultBlockState(),15,21,20);
-		banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.RED),15,11,18,Direction.SOUTH);
-		banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.GRAY),13,11,20,Direction.WEST);
-		banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.GRAY),17,11,20,Direction.EAST);
+		banner(level,bb,Blocks.RED_WALL_BANNER,15,11,18,Direction.SOUTH);
+		banner(level,bb,Blocks.GRAY_WALL_BANNER,13,11,20,Direction.WEST);
+		banner(level,bb,Blocks.GRAY_WALL_BANNER,17,11,20,Direction.EAST);
 		weather(level,bb,13,0,18,17,13,22,Blocks.STONE_BRICKS.defaultBlockState(),Blocks.CRACKED_STONE_BRICKS.defaultBlockState(),20);
 		weather(level,bb,13,0,18,17,8,22,Blocks.STONE_BRICKS.defaultBlockState(),Blocks.MOSSY_STONE_BRICKS.defaultBlockState(),18);
 		// The graves: a low mound and a marker each, some of the markers fallen.
@@ -210,7 +210,7 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 			if (t==0) {
 				for (int x=x0;x<=x0+2;x++) for (int z=1;z<=3;z++) if ((x+z)%2==0) set(level,bb,Blocks.STONE_BRICK_WALL.defaultBlockState(),x,top+1,z);
 				set(level,bb,Blocks.AIR.defaultBlockState(),x0+1,5,1);
-				banner(level,bb,Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.RED),x0+1,6,0,Direction.SOUTH);
+				banner(level,bb,Blocks.RED_WALL_BANNER,x0+1,6,0,Direction.SOUTH);
 				// What is left of the arch: a corbelled spring off the standing tower, reaching half across the gate.
 				set(level,bb,stair(Blocks.STONE_BRICK_STAIRS,Direction.WEST,true),x0+3,6,2);
 				set(level,bb,Blocks.STONE_BRICKS.defaultBlockState(),x0+3,7,2);
@@ -300,7 +300,7 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 			} else if (n<5) {
 				if (getBlock(level,x,2,z,bb).isAir() && getBlock(level,x,3,z,bb).isAir() && getBlock(level,x,2,z-1,bb).isAir()) {
 					fill(level,bb,x,1,z,x,3,z,Blocks.DARK_OAK_FENCE.defaultBlockState());
-					banner(level,bb,Blocks.WALL_BANNER.pick(noise(x,z)<50?net.minecraft.world.item.DyeColor.RED:net.minecraft.world.item.DyeColor.BLACK),x,2,z-1,Direction.SOUTH);
+					banner(level,bb,dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", noise(x,z)<50?net.minecraft.world.item.DyeColor.RED:net.minecraft.world.item.DyeColor.BLACK),x,2,z-1,Direction.SOUTH);
 				}
 			} else if (n<7) {
 				set(level,bb,Blocks.SPRUCE_TRAPDOOR.defaultBlockState(),x,1,z);

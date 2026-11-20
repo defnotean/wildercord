@@ -88,7 +88,7 @@ public final class SundialCourtPiece extends MasterSitePiece {
 		// Inside: two columns, a sun set in the ceiling and a runner to the reward.
 		for (int x : new int[]{7, 11}) pillar(level, bb, x, 17, 1, 5, ring, stone, ring);
 		set(level, bb, s(Blocks.GLOWSTONE), 9, 6, 17);
-		fill(level, bb, 9, 1, 16, 9, 1, 17, Blocks.CARPET.pick(alt ? DyeColor.YELLOW : DyeColor.ORANGE).defaultBlockState());
+		fill(level, bb, 9, 1, 16, 9, 1, 17, dev.wildercord.compat.McBlocksAndItems.dyedBlock("carpet", alt ? DyeColor.YELLOW : DyeColor.ORANGE).defaultBlockState());
 		// A pylon gateway: two battered towers flank the sealed door under a carved lintel with a sun disc.
 		for (int x0 : new int[]{4, 11}) {
 			int x1 = x0 + 3;
@@ -107,7 +107,7 @@ public final class SundialCourtPiece extends MasterSitePiece {
 		set(level, bb, s(Blocks.LANTERN), 4, 11, 14); set(level, bb, s(Blocks.LANTERN), 14, 11, 14);
 		fill(level, bb, 8, 4, 14, 10, 4, 14, stone);
 		set(level, bb, wall, 8, 5, 14); set(level, bb, cap, 9, 5, 14); set(level, bb, wall, 10, 5, 14);
-		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.YELLOW : DyeColor.ORANGE);
+		Block banner = dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", alt ? DyeColor.YELLOW : DyeColor.ORANGE);
 		for (int x : new int[]{5, 6, 12, 13}) banner(level, bb, banner, x, 7, 13, Direction.SOUTH);
 		var e = element(school());
 		sealDoorAcross(level, bb, 15, 8, 10, 1, 3, e, e);

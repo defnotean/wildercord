@@ -197,7 +197,7 @@ public class NetweaverVillagePiece extends WaterPiece {
 		hangingLantern(level, bb, cx + sx * 3 + px, DECK + 3, cz + sz * 3 + pz, 0, false);
 		hangingLantern(level, bb, cx + sx * 3 - px, DECK + 3, cz + sz * 3 - pz, 0, false);
 		Direction out = sx > 0 ? Direction.EAST : sx < 0 ? Direction.WEST : sz > 0 ? Direction.NORTH : Direction.SOUTH;
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), cx + sx * 3 + px / 2, DECK + 3, cz + sz * 3 + pz / 2, out);
+		banner(level, bb, Blocks.BLUE_WALL_BANNER, cx + sx * 3 + px / 2, DECK + 3, cz + sz * 3 + pz / 2, out);
 	}
 
 	/** What's in each hut, the nets in the middle, and the two weavers who are home. */

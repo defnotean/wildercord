@@ -63,7 +63,7 @@ public final class RimeMonasteryPiece extends WildsPiece {
 			fill(level, bb, 2, 0, z0 + 1, 4, 0, z0 + 3, s(Blocks.SPRUCE_PLANKS));
 			clear(level, bb, 5, 1, z0 + 2, 5, 2, z0 + 2);
 			for (int x = 2; x <= 4; x++) for (int z = z0 + 1; z <= z0 + 3; z++) if (noise(x, z0, z) < 30) set(level, bb, s(Blocks.SNOW), x, 4, z);
-			set(level, bb, s(Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.LIGHT_BLUE)), 2, 1, z0 + 3);
+			set(level, bb, s(Blocks.LIGHT_BLUE_CARPET), 2, 1, z0 + 3);
 		}
 		// One hipped spruce roof over both cells, its eaves past their doors; snow still lies on the broken ceilings below.
 		hipRoof(level, bb, 1, 2, 5, 11, 5, Blocks.SPRUCE_STAIRS, s(Blocks.SPRUCE_PLANKS), s(Blocks.SPRUCE_SLAB));
@@ -94,7 +94,7 @@ public final class RimeMonasteryPiece extends WildsPiece {
 		set(level, bb, s(Blocks.LANTERN), 7, 2, 20);
 		// Candles and the order's pale banners by the altar.
 		for (int x : new int[]{5, 8}) set(level, bb, s(Blocks.CANDLE), x, 1, 20);
-		for (int x : new int[]{4, 9}) banner(level, bb, Blocks.WALL_BANNER.pick(net.minecraft.world.item.DyeColor.LIGHT_BLUE), x, 3, 20, Direction.SOUTH);
+		for (int x : new int[]{4, 9}) banner(level, bb, Blocks.LIGHT_BLUE_WALL_BANNER, x, 3, 20, Direction.SOUTH);
 		// The chapel's front: chiselled jambs, a hood, a glazed lancet over the door; buttresses down its long sides.
 		for (int x : new int[]{5, 8}) fill(level, bb, x, 1, 13, x, 4, 13, s(Blocks.CHISELED_STONE_BRICKS));
 		for (int x = 5; x <= 8; x++) set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, true), x, 4, 12);

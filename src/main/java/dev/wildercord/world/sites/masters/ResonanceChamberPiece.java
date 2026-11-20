@@ -168,7 +168,7 @@ public final class ResonanceChamberPiece extends MasterSitePiece {
 		BlockState bell = s(Blocks.BELL).setValue(BellBlock.FACING, Direction.EAST).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING);
 		set(level, bb, bell, 8, s + 3, 2);
 		set(level, bb, bell, 8, s + 14, 2);
-		spire(level, bb, 8, 2, 2, s + 16, roofStairs, wall, chiseled, alt ? s(Blocks.AMETHYST_CLUSTER) : Blocks.LIGHTNING_ROD.waxed().unaffected().defaultBlockState());
+		spire(level, bb, 8, 2, 2, s + 16, roofStairs, wall, chiseled, alt ? s(Blocks.AMETHYST_CLUSTER) : Blocks.WAXED_LIGHTNING_ROD.defaultBlockState());
 		for (int[] c : new int[][]{{5, 0}, {11, 0}, {5, 4}, {11, 4}}) { set(level, bb, chiseled, c[0], s + 1, c[1]); set(level, bb, s(alt ? Blocks.LANTERN : Blocks.SOUL_LANTERN), c[0], s + 2, c[1]); }
 		// The vault, sealed with the school's element, behind a columned front.
 		room(level, bb, 5, 0, 11, 11, 5, 16, trim);

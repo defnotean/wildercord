@@ -65,7 +65,7 @@ public class BogBubble extends Projectile {
 		return MonsterRules.BUBBLE_GRAVITY;
 	}
 
-	@Override
+	// 26.1.2 Projectile has no getAirDrag hook; the tick below applies drag itself, and the bubble flies undamped.
 	protected float getAirDrag() {
 		// No drag: the frog aims its lob for exactly this flight (MonsterRules.lob).
 		return 1.0F;

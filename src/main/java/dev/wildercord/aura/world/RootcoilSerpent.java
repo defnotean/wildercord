@@ -751,7 +751,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 				if(hits>=SerpentRules.DEBRIS_HITS)continue;
 				if(GuardianBite.land(level,this,p,(float)SerpentRules.DEBRIS_DAMAGE,SerpentRules.SLAM_PIERCE)){
 					pelted.put(p.getUUID(),hits+1);
-					var push=c.vel.multiply(1,0,1).normalize();p.knockback(.6,-push.x,-push.z,level.damageSources().mobAttack(this),0);p.needsSync=true;
+					var push=c.vel.multiply(1,0,1).normalize();p.knockback(.6,-push.x,-push.z);p.needsSync=true;
 				}
 				next=p.position().add(0,p.getBbHeight()/2,0);done=true;break;
 			}
@@ -831,7 +831,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var p=caught;caught=null;
 		if(p==null || !p.isAlive())return;
 		var out=ahead(aim);
-		p.knockback(broke?.5:.9,-out.x,-out.z,damageSources().mobAttack(this),0);p.needsSync=true;
+		p.knockback(broke?.5:.9,-out.x,-out.z);p.needsSync=true;
 		if(broke){
 			p.sendOverlayMessage(Component.translatable("message.wildercord.rootcoil_serpent.free").withColor(0xA8E070));
 			if(level() instanceof ServerLevel server)Feels.sound(server,position().add(0,1.5,0),"aura_serpent_hurt",1.2F,.8F);
@@ -886,7 +886,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			for(var p:prey(level)){
 				if(p.distanceToSqr(this)>4.5*4.5)continue;
 				var out=outward(p.position(),position());
-				p.knockback(1.4,-out.x,-out.z,level.damageSources().mobAttack(this),0);p.push(0,.5,0);p.needsSync=true;
+				p.knockback(1.4,-out.x,-out.z);p.push(0,.5,0);p.needsSync=true;
 			}
 		}
 		int start=tell+(rousing?4:0),span=SerpentRules.DIVE_TICKS-start;
@@ -989,7 +989,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	/** A blow landing on {@code p}, knocking it {@code shove} along {@code dir}; whether it hurt. */
 	private boolean hit(ServerLevel level,LivingEntity p,double damage,double shove,Vec3 dir){
 		boolean hurt=GuardianBite.land(level,this,p,(float)damage,SerpentRules.PIERCE);
-		if(hurt && shove>0){p.knockback(shove,-dir.x,-dir.z,level.damageSources().mobAttack(this),0);p.needsSync=true;}
+		if(hurt && shove>0){p.knockback(shove,-dir.x,-dir.z);p.needsSync=true;}
 		return hurt;
 	}
 	private void sound(ServerLevel level,Vec3 at,SoundEvent s,float volume,float pitch){level.playSound(null,at.x,at.y,at.z,s,SoundSource.HOSTILE,volume,pitch);}

@@ -169,7 +169,7 @@ public class LighthousePiece extends WaterPiece {
 		for (int x : new int[] {CX - 1, CX + 1}) {
 			fill(level, bb, x, BASE + 1, 2, x, BASE + 3, 2, pier);
 			set(level, bb, Blocks.LANTERN.defaultBlockState(), x, BASE + 4, 2);
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.BLUE), x, BASE + 7, 2, Direction.SOUTH);
+			banner(level, bb, Blocks.BLUE_WALL_BANNER, x, BASE + 7, 2, Direction.SOUTH);
 		}
 		set(level, bb, stair(Blocks.DEEPSLATE_BRICK_STAIRS, Direction.NORTH, true), CX, BASE + 3, 2);
 		// Rope coils and floats left by the door.
@@ -274,6 +274,6 @@ public class LighthousePiece extends WaterPiece {
 		set(level, bb, Blocks.GLOWSTONE.defaultBlockState(), CX, GALLERY + 4, CZ);
 		set(level, bb, Blocks.LEVER.defaultBlockState().setValue(LeverBlock.FACE, AttachFace.FLOOR).setValue(LeverBlock.FACING, Direction.SOUTH), CX, GALLERY + 1, 7);
 		set(level, bb, Blocks.CHISELED_STONE_BRICKS.defaultBlockState(), CX, GALLERY + 9, CZ);
-		set(level, bb, Blocks.LIGHTNING_ROD.waxed().unaffected().defaultBlockState(), CX, GALLERY + 10, CZ);
+		set(level, bb, Blocks.WAXED_LIGHTNING_ROD.defaultBlockState(), CX, GALLERY + 10, CZ);
 	}
 }

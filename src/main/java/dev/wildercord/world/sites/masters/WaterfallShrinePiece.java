@@ -46,7 +46,7 @@ public final class WaterfallShrinePiece extends MasterSitePiece {
 		BlockState rim = alt ? s(Blocks.PRISMARINE_BRICK_SLAB) : s(Blocks.SMOOTH_STONE_SLAB), light = alt ? s(Blocks.SEA_LANTERN) : s(Blocks.SOUL_LANTERN);
 		Block roofStairs = alt ? Blocks.DARK_PRISMARINE_STAIRS : Blocks.SPRUCE_STAIRS;
 		BlockState roofUnder = alt ? s(Blocks.DARK_PRISMARINE) : s(Blocks.SPRUCE_PLANKS), roofCap = alt ? s(Blocks.DARK_PRISMARINE_SLAB) : s(Blocks.SPRUCE_SLAB);
-		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.CYAN : DyeColor.LIGHT_BLUE);
+		Block banner = dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", alt ? DyeColor.CYAN : DyeColor.LIGHT_BLUE);
 		clearCanopy(level, bb);
 		pad(level, bb, 0, 0, 16, 16, 22, alt ? s(Blocks.PRISMARINE_BRICKS) : s(Blocks.STONE_BRICKS), s(Blocks.STONE));
 		// The yard is swept flagstone, worn and cracked here and there, so the shrine stands clear of the drifts around it.

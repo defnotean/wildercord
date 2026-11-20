@@ -29,7 +29,7 @@ final class FungalNurseryProbe {
   if(!terminal&&rows>=MAX_ROWS)return;
   String row=observe(()->{
    if(snail==null)return "visitor=none";
-   var wrapped=snail.getGoalSelector().getAvailableGoals().stream()
+   var wrapped=dev.wildercord.compat.McEntities.goalSelector(snail).getAvailableGoals().stream()
     .filter(g->g.getGoal().getClass().getName().equals(SporebackSnail.class.getName()+"$Visit")).findFirst().orElse(null);
    Object goal=wrapped==null?null:wrapped.getGoal();
    var visit=visit(goal,wrapped!=null&&wrapped.isRunning());
@@ -75,7 +75,7 @@ final class FungalNurseryProbe {
    +" velocity="+snail.getDeltaMovement()+" ground="+snail.onGround()+" horizontalCollision="+snail.horizontalCollision+" verticalCollision="+snail.verticalCollision
    +" controlWanted="+control.hasWanted()+" controlTarget="+new Vec3(control.getWantedX(),control.getWantedY(),control.getWantedZ())
    +" controlOperation="+read(control,MoveControl.class,"operation")+" visit={"+visit.fields()+"} path={"+path(snail)+"}"
-   +" activeGoals="+snail.getGoalSelector().getAvailableGoals().stream().filter(WrappedGoal::isRunning).limit(8).map(g->g.getGoal().getClass().getSimpleName()).toList();
+   +" activeGoals="+dev.wildercord.compat.McEntities.goalSelector(snail).getAvailableGoals().stream().filter(WrappedGoal::isRunning).limit(8).map(g->g.getGoal().getClass().getSimpleName()).toList();
   // The margin covers cover(p.above(1..3)), the nursery occupancy AABB, collider neighbors,
   // and the entire ray. getChunkNow observes completed FULL residency without requesting it.
   var destination=visit.destination();

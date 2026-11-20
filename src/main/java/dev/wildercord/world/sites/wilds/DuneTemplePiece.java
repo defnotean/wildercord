@@ -86,8 +86,8 @@ public final class DuneTemplePiece extends WildsPiece {
 			if (v % 2 == 1) set(level, bb, s(Blocks.SMOOTH_SANDSTONE_SLAB), c[0], 9, c[1]);
 		}
 		// Banners of the order inside, and lamps hung over the floor.
-		for (int[] b : new int[][]{{4, 10}, {16, 10}}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.ORANGE), b[0], 4, b[1], b[0] < 10 ? Direction.EAST : Direction.WEST);
-		for (int x : new int[]{8, 12}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.ORANGE), x, 4, 16, Direction.SOUTH);
+		for (int[] b : new int[][]{{4, 10}, {16, 10}}) banner(level, bb, Blocks.ORANGE_WALL_BANNER, b[0], 4, b[1], b[0] < 10 ? Direction.EAST : Direction.WEST);
+		for (int x : new int[]{8, 12}) banner(level, bb, Blocks.ORANGE_WALL_BANNER, x, 4, 16, Direction.SOUTH);
 		for (int x : new int[]{7, 13}) hangingLantern(level, bb, x, 6, 10, 1, false);
 		// The loose square, ringed in carved stone, and the sand cap over the ladder.
 		for (int x = 8; x <= 12; x++) for (int z = 8; z <= 12; z++) set(level, bb, s(plug(x, z) ? Blocks.SAND : Blocks.CHISELED_SANDSTONE), x, 0, z);

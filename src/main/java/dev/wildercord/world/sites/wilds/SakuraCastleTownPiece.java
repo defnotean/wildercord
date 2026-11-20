@@ -201,8 +201,8 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 		set(level, bb, s(Blocks.OCHRE_FROGLIGHT), 32, 3, 32);
 		set(level, bb, s(Blocks.IRON_CHAIN), 32, 6, 32);
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.FACING, Direction.SOUTH), 32, 5, 32);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 28, 6, 27, Direction.SOUTH);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 36, 6, 27, Direction.SOUTH);
+		banner(level, bb, Blocks.RED_WALL_BANNER, 28, 6, 27, Direction.SOUTH);
+		banner(level, bb, Blocks.RED_WALL_BANNER, 36, 6, 27, Direction.SOUTH);
 		JapaneseArchitecture.upturnedEaveSkirt(p, 26, 26, 38, 38, 8, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, cherry, true);
 
 		// Tier 2 Shrine Story (y = 9..14).
@@ -236,8 +236,8 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 		fill(level, bb, 6, 1, 19, 21, 1, 41, bamboo);
 		JapaneseArchitecture.shojiPerimeter(p, 6, 2, 18, 21, 6, 42, red, red, spruce, plaster, 4);
 		fill(level, bb, 21, 2, 26, 21, 5, 34, AIR);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), 22, 5, 25, Direction.EAST);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.YELLOW), 22, 5, 35, Direction.EAST);
+		banner(level, bb, Blocks.RED_WALL_BANNER, 22, 5, 25, Direction.EAST);
+		banner(level, bb, Blocks.YELLOW_WALL_BANNER, 22, 5, 35, Direction.EAST);
 
 		// Weapon & armor display racks along front veranda & inside Dojo hall.
 		for (int rz : new int[]{21, 23, 37, 39}) {
@@ -272,9 +272,9 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 	}
 
 	private void coveredMarketArcade(WorldGenLevel level, BoundingBox bb) {
-		BlockState redWool = s(Blocks.WOOL.pick(DyeColor.RED));
-		BlockState yellowWool = s(Blocks.WOOL.pick(DyeColor.YELLOW));
-		BlockState pinkWool = s(Blocks.WOOL.pick(DyeColor.PINK));
+		BlockState redWool = s(Blocks.RED_WOOL);
+		BlockState yellowWool = s(Blocks.YELLOW_WOOL);
+		BlockState pinkWool = s(Blocks.PINK_WOOL);
 		BlockState darkLog = s(Blocks.STRIPPED_DARK_OAK_LOG);
 		BlockState spruce = s(Blocks.SPRUCE_PLANKS);
 
@@ -308,8 +308,8 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 		set(level, bb, s(Blocks.LECTERN), 43, 2, 29);
 		set(level, bb, SakuraVillageHelper.dryTeaCups(3), 56, 2, 32);
 		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 43, 2, 35);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), 49, 5, 16, Direction.SOUTH);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.YELLOW), 49, 5, 40, Direction.NORTH);
+		banner(level, bb, Blocks.PINK_WALL_BANNER, 49, 5, 16, Direction.SOUTH);
+		banner(level, bb, Blocks.YELLOW_WALL_BANNER, 49, 5, 40, Direction.NORTH);
 		chest(level, bb, 56, 1, 20, WildsSites.SAKURA_CASTLE_HALL, Direction.WEST, 83L);
 	}
 

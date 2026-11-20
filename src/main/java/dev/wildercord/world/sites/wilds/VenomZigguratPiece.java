@@ -72,7 +72,7 @@ public final class VenomZigguratPiece extends WildsPiece {
 		set(level, bb, s(Blocks.CAULDRON), 11, 12, 13);
 		for (int[] p : new int[][]{{8, 8}, {14, 8}, {8, 14}}) set(level, bb, s(Blocks.LANTERN), p[0], 12, p[1]);
 		hangingLantern(level, bb, 11, 14, 9, 0, false);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.GREEN), 11, 14, 14, Direction.SOUTH);
+		banner(level, bb, Blocks.GREEN_WALL_BANNER, 11, 14, 14, Direction.SOUTH);
 		// Its outside: corner piers and pilasters, window sills, a corbelled cornice, merlons and a stepped crown.
 		for (int[] p : new int[][]{{6, 6}, {16, 6}, {6, 16}, {16, 16}, {6, 11}, {16, 11}, {11, 16}}) fill(level, bb, p[0], 12, p[1], p[0], 13, p[1], s(Blocks.CHISELED_STONE_BRICKS));
 		for (int z : new int[]{9, 13}) {

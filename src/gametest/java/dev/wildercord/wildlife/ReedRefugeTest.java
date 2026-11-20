@@ -165,7 +165,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<Relative>of(),180,0,false);
   });
   boolean tempted=false;
-  for(int i=0;i<100;i++) {c.waitTicks(2);if(w.getServer().computeOnServer(s -> walker.getZ()>3.5 && !walker.isInWater() && walker.getGoalSelector().getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal() instanceof net.minecraft.world.entity.ai.goal.TemptGoal))) {tempted=true;break;}}
+  for(int i=0;i<100;i++) {c.waitTicks(2);if(w.getServer().computeOnServer(s -> walker.getZ()>3.5 && !walker.isInWater() && dev.wildercord.compat.McEntities.goalSelector(walker).getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal() instanceof net.minecraft.world.entity.ai.goal.TemptGoal))) {tempted=true;break;}}
   check(tempted,"An ordinary TemptGoal still walks the newt across dry land using native amphibious navigation");
   w.getServer().runOnServer(s -> {walker.setNoAi(true);checkNativeSwimControl(walker,true,"actual dry-land TemptGoal");p(s).setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);});
   verifyStuckLookRestoration(c,w);
@@ -238,9 +238,9 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   void restore(LanternNewt n) {n.setDeltaMovement(velocity);n.setSpeed(speed);n.xxa=sideways;n.yya=vertical;n.zza=forward;n.setXRot(pitch);n.setYRot(yaw);n.yHeadRot=headYaw;n.yBodyRot=bodyYaw;}
  }
 
- private static boolean shelterRunning(LanternNewt n) {return n.getGoalSelector().getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter"));}
+ private static boolean shelterRunning(LanternNewt n) {return dev.wildercord.compat.McEntities.goalSelector(n).getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter"));}
  private static int shelterTicksLeft(LanternNewt n) {
-  var goal=n.getGoalSelector().getAvailableGoals().stream().filter(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter")).findFirst().orElseThrow().getGoal();
+  var goal=dev.wildercord.compat.McEntities.goalSelector(n).getAvailableGoals().stream().filter(g -> g.isRunning() && g.getGoal().getClass().getSimpleName().equals("Shelter")).findFirst().orElseThrow().getGoal();
   try{var field=goal.getClass().getDeclaredField("travelLeft");field.setAccessible(true);return field.getInt(goal);}
   catch(ReflectiveOperationException failure){throw new AssertionError("Cannot observe the actual Shelter journey counter",failure);}
  }
@@ -301,7 +301,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   void observe(String phase,LanternNewt n) {
    try {
     var navigation=(NewtPathNavigation)n.getNavigation();var path=navigation.getPath();
-    var shelter=n.getGoalSelector().getAvailableGoals().stream().filter(g -> g.getGoal().getClass().getSimpleName().equals("Shelter")).findFirst().orElseThrow();var goal=shelter.getGoal();
+    var shelter=dev.wildercord.compat.McEntities.goalSelector(n).getAvailableGoals().stream().filter(g -> g.getGoal().getClass().getSimpleName().equals("Shelter")).findFirst().orElseThrow();var goal=shelter.getGoal();
     var nativeTick=observedField(navigation,"tick");var stuckCheck=observedField(navigation,"lastStuckCheck");var recompute=observedField(navigation,"timeLastRecompute");
     String route=EcologyReturnProbe.path(path);
     String key=route+" "+navigation.isStuck()+" "+navigation.followingRefuge()+" "+shelter.isRunning()+" "+stuckCheck+" "+recompute;

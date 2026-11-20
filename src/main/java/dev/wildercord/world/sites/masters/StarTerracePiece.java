@@ -93,7 +93,7 @@ public final class StarTerracePiece extends MasterSitePiece {
 			set(level, bb, alt ? s(Blocks.LANTERN) : s(Blocks.END_ROD), p[0], 9, p[1]);
 		}
 		// The telescope, on a stepped mount.
-		var copper = s(Blocks.COPPER_BLOCK.waxed().unaffected());
+		var copper = s(Blocks.WAXED_COPPER_BLOCK);
 		fill(level, bb, 8, 4, 8, 8, 6, 8, wall);
 		set(level, bb, stair(trim, Direction.EAST, false), 7, 4, 8); set(level, bb, stair(trim, Direction.WEST, false), 9, 4, 8);
 		set(level, bb, stair(trim, Direction.NORTH, false), 8, 4, 7); set(level, bb, stair(trim, Direction.SOUTH, false), 8, 4, 9);
@@ -104,7 +104,7 @@ public final class StarTerracePiece extends MasterSitePiece {
 		set(level, bb, glow, 8, 8, 14);
 		fill(level, bb, 5, 4, 13, 5, 5, 15, s(Blocks.BOOKSHELF)); fill(level, bb, 11, 4, 13, 11, 5, 15, s(Blocks.BOOKSHELF));
 		set(level, bb, s(Blocks.LANTERN), 5, 6, 14); set(level, bb, s(Blocks.LANTERN), 11, 6, 14);
-		fill(level, bb, 6, 4, 13, 10, 4, 14, Blocks.CARPET.pick(alt ? DyeColor.ORANGE : DyeColor.PURPLE).defaultBlockState());
+		fill(level, bb, 6, 4, 13, 10, 4, 14, dev.wildercord.compat.McBlocksAndItems.dyedBlock("carpet", alt ? DyeColor.ORANGE : DyeColor.PURPLE).defaultBlockState());
 		// A corbelled cornice, a stepped roof and a glass cupola over the reading room.
 		for (int z = 12; z <= 16; z++) { set(level, bb, stair(trim, Direction.EAST, true), 3, 8, z); set(level, bb, stair(trim, Direction.WEST, true), 13, 8, z); }
 		for (int x = 4; x <= 12; x++) { set(level, bb, stair(trim, Direction.NORTH, true), x, 8, 11); set(level, bb, stair(trim, Direction.SOUTH, true), x, 8, 17); }
@@ -120,7 +120,7 @@ public final class StarTerracePiece extends MasterSitePiece {
 		// A lit belvedere on the cupola: four columns under a hipped cap, an armillary of copper in the middle.
 		for (int[] c : new int[][]{{7, 13}, {9, 13}, {7, 15}, {9, 15}}) fill(level, bb, c[0], 12, c[1], c[0], 13, c[1], column);
 		set(level, bb, copper, 8, 12, 14);
-		set(level, bb, s(Blocks.LIGHTNING_ROD.waxed().unaffected()), 8, 13, 14);
+		set(level, bb, s(Blocks.WAXED_LIGHTNING_ROD), 8, 13, 14);
 		hipRoof(level, bb, 7, 13, 9, 15, 14, roofStairs, wall, chiseled);
 		set(level, bb, alt ? s(Blocks.LANTERN) : s(Blocks.END_ROD), 8, 17, 14);
 		// Light through the reading room's flanks and back, so the building reads at dusk from the ground.
@@ -132,7 +132,7 @@ public final class StarTerracePiece extends MasterSitePiece {
 		for (int x : new int[]{4, 6, 10, 12}) pillar(level, bb, x, 11, 4, 7, chiseled, column, chiseled);
 		for (int x = 7; x <= 9; x++) set(level, bb, stair(trim, Direction.NORTH, true), x, 7, 11);
 		hangingLantern(level, bb, 8, 6, 11, 0, false);
-		Block banner = Blocks.WALL_BANNER.pick(alt ? DyeColor.ORANGE : DyeColor.BLUE);
+		Block banner = dev.wildercord.compat.McBlocksAndItems.dyedBlock("wall_banner", alt ? DyeColor.ORANGE : DyeColor.BLUE);
 		banner(level, bb, banner, 5, 6, 11, Direction.SOUTH); banner(level, bb, banner, 11, 6, 11, Direction.SOUTH);
 		var e = element(school());
 		sealDoorAcross(level, bb, 12, 7, 9, 4, 6, e, e);

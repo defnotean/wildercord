@@ -85,7 +85,7 @@ public final class CinderAntler {
 		var level = player.level();
 		LAST.put(player.getUUID(), (long) level.getServer().getTickCount());
 		SPRINT.remove(player.getUUID());
-		mob.knockback(AshenStagRules.ANTLER_SHOVE, player.getX() - mob.getX(), player.getZ() - mob.getZ(), source(player), 0.0F);
+		mob.knockback(AshenStagRules.ANTLER_SHOVE, player.getX() - mob.getX(), player.getZ() - mob.getZ());
 		mob.setDeltaMovement(mob.getDeltaMovement().add(0, .35, 0));
 		mob.needsSync = true;
 		mob.igniteForTicks(AshenStagRules.ANTLER_BURN);

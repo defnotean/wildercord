@@ -335,8 +335,8 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		// Cherry colonnade, coffered ceiling beams, warm lanterns & amber/gold banners.
 		interiorColonnade(level, bb, 14, 40, new int[]{28, 37, 46, 56}, F2 + 1, F3 - 1, CHERRY_LOG, DARK_LOG);
 		ceilingCrossbeams(level, bb, 9, 47, new int[]{28, 37, 46, 56}, F3 - 1, DARK_LOG, 28);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.YELLOW), 14, F2 + 5, 36, Direction.SOUTH);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.ORANGE), 40, F2 + 5, 36, Direction.SOUTH);
+		banner(level, bb, Blocks.YELLOW_WALL_BANNER, 14, F2 + 5, 36, Direction.SOUTH);
+		banner(level, bb, Blocks.ORANGE_WALL_BANNER, 40, F2 + 5, 36, Direction.SOUTH);
 
 		// Zig-zag folding Byobu shoji screens with azalea bonsai pots creating multi-lane dojo skirmish lanes.
 		for (int sz : new int[]{33, 49}) {
@@ -405,7 +405,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 			set(level, bb, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, x < 28 ? Direction.EAST : Direction.WEST),
 				x, F3 + 3, z);
 			set(level, bb, Blocks.LANTERN.defaultBlockState(), x, F3 + 6, z);
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), x < 28 ? x + 2 : x - 2, F3 + 4, z - 1,
+			banner(level, bb, Blocks.PINK_WALL_BANNER, x < 28 ? x + 2 : x - 2, F3 + 4, z - 1,
 				x < 28 ? Direction.EAST : Direction.WEST);
 			set(level, bb, Blocks.POTTED_FLOWERING_AZALEA.defaultBlockState(), x, F3 + 1, z - 2);
 		}
@@ -456,7 +456,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 			set(level, bb, Blocks.SOUL_CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), tx, F4 + 6, tz);
 			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true),
 				tx < 28 ? tx + 1 : tx - 1, F4 + 4, tz);
-			banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.RED), tx, F4 + 4, tz < 41 ? tz + 1 : tz - 1,
+			banner(level, bb, Blocks.RED_WALL_BANNER, tx, F4 + 4, tz < 41 ? tz + 1 : tz - 1,
 				tz < 41 ? Direction.NORTH : Direction.SOUTH);
 		}
 
