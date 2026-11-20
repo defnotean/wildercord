@@ -61,7 +61,7 @@ public final class WindmillPiece extends FarmPiece {
 				set(level, bb, stair(Blocks.DARK_OAK_STAIRS, Direction.WEST, false), x1, y, z);
 			}
 		}
-		set(level, bb, s(Blocks.LIGHTNING_ROD.weathering().unaffected()), 11, 17, 13);
+		set(level, bb, s(Blocks.LIGHTNING_ROD), 11, 17, 13);
 		// Timber beams across the plank storey, where it meets the stone and under the eaves.
 		for (int y : new int[]{6, 12}) {
 			for (int z : new int[]{10, 16}) fill(level, bb, 9, y, z, 13, y, z, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(BlockStateProperties.AXIS, Direction.Axis.X));

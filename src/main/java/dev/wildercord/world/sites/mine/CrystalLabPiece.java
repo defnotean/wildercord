@@ -215,7 +215,7 @@ public final class CrystalLabPiece extends MinePiece {
 		// The survey pole by the west wall, the sighting glass on its cairn to the east, and stores by the door.
 		set(level, bb, s(Blocks.COBBLESTONE), 3, SURFACE + 1, 10);
 		fill(level, bb, 3, SURFACE + 2, 10, 3, SURFACE + 5, 10, s(Blocks.SPRUCE_FENCE));
-		set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), 3, SURFACE + 6, 10);
+		set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState(), 3, SURFACE + 6, 10);
 		set(level, bb, s(Blocks.COBBLESTONE), 17, SURFACE + 1, 10);
 		set(level, bb, s(Blocks.TINTED_GLASS), 17, SURFACE + 2, 10);
 		set(level, bb, s(Blocks.AMETHYST_CLUSTER), 17, SURFACE + 3, 10);

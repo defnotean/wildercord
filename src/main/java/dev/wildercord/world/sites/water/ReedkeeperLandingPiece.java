@@ -149,7 +149,7 @@ public final class ReedkeeperLandingPiece extends WaterPiece {
 		set(level, clip, Blocks.CANDLE.defaultBlockState(), 10, DECK + 1, 14);
 		lectern(level, clip, 5, DECK + 1, 14, Direction.SOUTH, "The First Crossing", "book.wildercord.reedkeeper", 4, "Tideward surveyors");
 		chest(level, clip, 10, DECK + 1, 10, WaterSites.REEDKEEPER_LOOT, Direction.WEST, 309);
-		var bed = Blocks.BED.cyan().defaultBlockState().setValue(BedBlock.FACING, Direction.NORTH);
+		var bed = Blocks.CYAN_BED.defaultBlockState().setValue(BedBlock.FACING, Direction.NORTH);
 		set(level, clip, bed.setValue(BedBlock.PART, BedPart.FOOT), 9, DECK + 1, 13);
 		set(level, clip, bed.setValue(BedBlock.PART, BedPart.HEAD), 9, DECK + 1, 14);
 		// A deliberately cultivated open-sky garden, distinct from natural biome decoration, with a log kerb and a composter.

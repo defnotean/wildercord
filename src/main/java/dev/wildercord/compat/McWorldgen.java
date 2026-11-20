@@ -113,8 +113,9 @@ public final class McWorldgen {
 			return true;
 		}
 		ChunkPos centre = region.getCenter();
-		ChunkPos at = new ChunkPos(pos);
-		return Math.abs(at.x - centre.x) <= 1 && Math.abs(at.z - centre.z) <= 1;
+		// ChunkPos is a record on 26.1.2 with private fields; compare via the block-coordinate getters.
+		return Math.abs((pos.getX() >> 4) - (centre.getMinBlockX() >> 4)) <= 1
+			&& Math.abs((pos.getZ() >> 4) - (centre.getMinBlockZ() >> 4)) <= 1;
 	}
 
 	/** Lists structure starts matching {@code structure} at {@code chunk}. */

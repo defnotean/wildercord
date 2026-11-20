@@ -151,7 +151,7 @@ public final class ListeningStationPiece extends BelowkeeperPiece {
 
 		// Acoustic Listening Desk, cyan bed, workbenches, lectern, and supply chest on the east side.
 		fill(level, clip, 12, DECK, 6, 18, DECK, 14, DARK_OAK);
-		bed(level, clip, Blocks.BED.cyan(), 17, DECK + 1, 8, Direction.NORTH);
+		bed(level, clip, Blocks.CYAN_BED, 17, DECK + 1, 8, Direction.NORTH);
 		set(level, clip, Blocks.CARTOGRAPHY_TABLE.defaultBlockState(), 17, DECK + 1, 11);
 		set(level, clip, Blocks.CRAFTING_TABLE.defaultBlockState(), 17, DECK + 1, 12);
 		lectern(level, clip, 15, DECK + 1, 9, Direction.WEST,

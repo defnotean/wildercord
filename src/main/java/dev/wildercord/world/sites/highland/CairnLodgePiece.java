@@ -193,7 +193,7 @@ public final class CairnLodgePiece extends HighlandPiece {
 		}
 		for (int x : new int[]{10, 12}) for (int z = 5; z <= 6; z++) set(level, clip, Blocks.STONE_BRICK_WALL.defaultBlockState(), x, DECK + 10, z);
 		set(level, clip, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), 11, DECK + 10, 5);
-		bed(level, clip, Blocks.BED.red(), 7, DECK + 1, 8, Direction.NORTH);
+		bed(level, clip, Blocks.RED_BED, 7, DECK + 1, 8, Direction.NORTH);
 		set(level, clip, Blocks.CARTOGRAPHY_TABLE.defaultBlockState(), 7, DECK + 1, 11);
 		set(level, clip, Blocks.CRAFTING_TABLE.defaultBlockState(), 7, DECK + 1, 12);
 		chest(level, clip, 12, DECK + 1, 12, Direction.WEST, HighlandSites.loot(HighlandSites.CAIRN_LODGE), 19L);

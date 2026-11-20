@@ -197,7 +197,7 @@ public final class CharcoalYardPiece extends EmberwoodPiece {
 		for (int x : new int[]{10, 12}) for (int z = 5; z <= 6; z++) set(level, clip, Blocks.MUD_BRICK_WALL.defaultBlockState(), x, DECK + 11, z);
 		set(level, clip, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), 11, DECK + 11, 5);
 		set(level, clip, CHISELED_BRICK, 11, DECK + 7, 5);
-		bed(level, clip, Blocks.BED.orange(), 7, DECK + 1, 8, Direction.NORTH);
+		bed(level, clip, Blocks.ORANGE_BED, 7, DECK + 1, 8, Direction.NORTH);
 		set(level, clip, Blocks.SMITHING_TABLE.defaultBlockState(), 7, DECK + 1, 11);
 		set(level, clip, Blocks.CRAFTING_TABLE.defaultBlockState(), 7, DECK + 1, 12);
 		// Stores and light in the shed: barrels by the bench and chest, candles on the bench, a lamp by the kiln.

@@ -234,7 +234,7 @@ public class NetweaverVillagePiece extends WaterPiece {
 
 	/** A bed with its foot at {@code (x, z)}, its head one block toward {@code facing} (in the piece's frame NORTH is +z). */
 	private void bed(WorldGenLevel level, BoundingBox bb, int x, int z, Direction facing) {
-		BlockState bed = Blocks.BED.cyan().defaultBlockState().setValue(BedBlock.FACING, facing);
+		BlockState bed = Blocks.CYAN_BED.defaultBlockState().setValue(BedBlock.FACING, facing);
 		set(level, bb, bed.setValue(BedBlock.PART, BedPart.FOOT), x, DECK + 1, z);
 		set(level, bb, bed.setValue(BedBlock.PART, BedPart.HEAD), x + facing.getStepX(), DECK + 1, z - facing.getStepZ());
 	}

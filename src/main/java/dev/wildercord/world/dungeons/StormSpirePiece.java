@@ -120,9 +120,9 @@ public class StormSpirePiece extends DungeonPiece {
 		for(int y=28;y<=40;y++) set(level,bb,y==36?LIGHT:COPPER,11,y,11);
 		for(int x=5;x<=17;x++) {set(level,bb,COPPER,x,37,11);set(level,bb,COPPER,11,37,x);}
 		for(int[] at:new int[][]{{5,11},{17,11},{11,5},{11,17}}) {
-			set(level,bb,LIGHT,at[0],38,at[1]);set(level,bb,Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(),at[0],39,at[1]);
+			set(level,bb,LIGHT,at[0],38,at[1]);set(level,bb,Blocks.LIGHTNING_ROD.defaultBlockState(),at[0],39,at[1]);
 		}
-		set(level,bb,Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(),11,41,11);
+		set(level,bb,Blocks.LIGHTNING_ROD.defaultBlockState(),11,41,11);
 		dress(level,bb);
 		// Each floor has a guarded side cache. The upper chamber is warded and opened with magic.
 		chest(level, bb, 18, 8, 10, DungeonWorldgen.STORM_HALL, Direction.WEST, 201);
@@ -132,7 +132,7 @@ public class StormSpirePiece extends DungeonPiece {
 		chest(level, bb, 6, 22, 19, DungeonWorldgen.STORM_VAULT, Direction.EAST, 203);
 		chest(level, bb, 17, 22, 19, DungeonWorldgen.STORM_VAULT, Direction.WEST, 204);
 		altar(level, bb, dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.STORM, 11, 22, 18);
-		for (int x : new int[] {6, 11, 16}) set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), x, 22, 17);
+		for (int x : new int[] {6, 11, 16}) set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState(), x, 22, 17);
 		guard(level, bb, EntityType.STRAY, 6, 1, 16, List.of(Runes.BOLT, Runes.SHOCK), false);
 		guard(level, bb, EntityType.SKELETON, 16, 8, 5, List.of(Runes.ARC, Runes.WINDCUT), false);
 		guard(level, bb, EntityType.STRAY, 6, 15, 6, List.of(Runes.ORB, Runes.THUNDERCLAP), true);
@@ -214,9 +214,9 @@ public class StormSpirePiece extends DungeonPiece {
 		chest(level, bb, 6, 22, 19, DungeonWorldgen.STORM_VAULT, Direction.EAST, 203);
 		chest(level, bb, 17, 22, 19, DungeonWorldgen.STORM_VAULT, Direction.WEST, 204);
 		altar(level, bb, dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.STORM, 11, 22, 18);
-		for (int x : new int[] {6, 11, 16}) set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), x, 22, 17);
+		for (int x : new int[] {6, 11, 16}) set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState(), x, 22, 17);
 		for (int x : new int[] {5, 11, 17}) {
-			set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), x, 28, 11);
+			set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState(), x, 28, 11);
 		}
 		guard(level, bb, EntityType.STRAY, 6, 1, 16, List.of(Runes.BOLT, Runes.SHOCK), false);
 		guard(level, bb, EntityType.SKELETON, 16, 8, 5, List.of(Runes.ARC, Runes.WINDCUT), false);
