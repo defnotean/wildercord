@@ -44,8 +44,8 @@ public final class LoreJournalGameTest implements FabricClientGameTest {
 
 	private static void shot(ClientGameTestContext c, String name) {
 		c.runOnClient(mc -> {
-			mc.gui.toastManager().clear();
-			mc.gui.hud.getChat().clearMessages(false);
+			mc.getToastManager().clear();
+			mc.gui.getChat().clearMessages(false);
 		});
 		c.waitTicks(3);
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
@@ -90,20 +90,20 @@ public final class LoreJournalGameTest implements FabricClientGameTest {
 			c.waitFor(mc -> LoreJournal.data(mc.player).stage(QUEST) == LoreQuestRules.DONE, 100);
 
 			// The journal opens on its real key and shows the finished lead.
-			c.runOnClient(mc -> mc.gui.setScreen(null));
+			c.runOnClient(mc -> mc.setScreen(null));
 			c.waitTicks(3);
 			press(c, InputConstants.KEY_H);
 			c.waitForScreen(LoreJournalScreen.class);
-			c.runOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).showTab("quests"));
+			c.runOnClient(mc -> ((LoreJournalScreen) mc.screen).showTab("quests"));
 			c.waitTicks(3);
 			String done = Component.translatable("screen.wildercord.lore_journal.done", Component.translatable(quest.key("title"))).getString();
-			List<String> leads = c.computeOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).text("quests"));
+			List<String> leads = c.computeOnClient(mc -> ((LoreJournalScreen) mc.screen).text("quests"));
 			check(leads.contains(done), "The lead shows as done: " + leads);
 			check(!done.contains("journal.wildercord"), "The lead's English is loaded: " + done);
 			shot(c, "lore_journal_leads");
 			press(c, InputConstants.KEY_RIGHT);
-			check(c.computeOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).tab()).equals("places"), "Arrow keys switch tabs");
-			List<String> places = c.computeOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).text("places"));
+			check(c.computeOnClient(mc -> ((LoreJournalScreen) mc.screen).tab()).equals("places"), "Arrow keys switch tabs");
+			List<String> places = c.computeOnClient(mc -> ((LoreJournalScreen) mc.screen).text("places"));
 			check(places.contains(Component.translatable("journal.wildercord.entry.place.tournament").getString()), "The place entry is listed: " + places);
 			shot(c, "lore_journal_places");
 
@@ -119,8 +119,8 @@ public final class LoreJournalGameTest implements FabricClientGameTest {
 				}
 			});
 			c.waitFor(mc -> schools.stream().allMatch(method -> LoreJournal.data(mc.player).has("victory:" + method)), 100);
-			c.runOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).showTab("people"));
-			List<String> people = c.computeOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).text("people"));
+			c.runOnClient(mc -> ((LoreJournalScreen) mc.screen).showTab("people"));
+			List<String> people = c.computeOnClient(mc -> ((LoreJournalScreen) mc.screen).text("people"));
 			for (String method : schools) {
 				String victory = Component.translatable("journal.wildercord.entry.victory", LoreJournal.methodName(method)).getString();
 				check(people.contains(victory), "People tab names the " + method + " Master: " + people);
@@ -147,11 +147,11 @@ public final class LoreJournalGameTest implements FabricClientGameTest {
 			});
 			c.waitFor(mc -> LoreJournal.data(mc.player).has("victory:tide") && !LoreJournal.data(mc.player).has("victory:venom"), 100);
 			press(c, InputConstants.KEY_H);
-			check(c.computeOnClient(mc -> mc.gui.screen() == null), "The journal key closes the journal");
+			check(c.computeOnClient(mc -> mc.screen == null), "The journal key closes the journal");
 			ScoutLegendChecks.run(c, world);
 		} finally {
 			c.getInput().releaseKey(InputConstants.KEY_H);
-			c.runOnClient(mc -> mc.gui.setScreen(null));
+			c.runOnClient(mc -> mc.setScreen(null));
 		}
 	}
 }

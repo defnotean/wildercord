@@ -73,7 +73,7 @@ public final class MastersArtsClient {
 			PLAYING.values().removeIf(move -> now - move.startTick() >= move.windup() + move.recovery() || now - move.startTick() < -40);
 		}
 		boolean playing = client.player != null && client.level != null && client.player.isAlive() && !client.player.isSpectator()
-			&& client.gui.screen() == null && !client.isPaused();
+			&& client.screen == null && !client.isPaused();
 		for (int move = 0; move < KEYS.length; move++) {
 			boolean pressed = false;
 			while (KEYS[move].consumeClick()) {
@@ -107,7 +107,7 @@ public final class MastersArtsClient {
 	/** A large free-look turn gets a brief direction cue instead of dragging the player's camera back. */
 	private static void aimHint(net.minecraft.client.gui.GuiGraphicsExtractor graphics, net.minecraft.client.DeltaTracker delta) {
 		Minecraft client = Minecraft.getInstance();
-		if (client.player == null || client.gui.screen() != null || client.gui.hud.isHidden() || !client.options.getCameraType().isFirstPerson()) return;
+		if (client.player == null || client.screen != null || client.options.hideGui || !client.options.getCameraType().isFirstPerson()) return;
 		var timeline = timeline(client.player);
 		if (timeline == null) return;
 		float partial = delta.getGameTimeDeltaPartialTick(false);

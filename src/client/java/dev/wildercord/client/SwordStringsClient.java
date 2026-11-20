@@ -94,7 +94,7 @@ public final class SwordStringsClient {
 
 	/** Whether the player's swings are read toward strings now. */
 	static boolean reading(Minecraft mc, LocalPlayer player) {
-		return player != null && player.isAlive() && !player.isSpectator() && mc.gui.screen() == null && Aura.enabled(player) && Config.strings(player)
+		return player != null && player.isAlive() && !player.isSpectator() && mc.screen == null && Aura.enabled(player) && Config.strings(player)
 			&& Aura.stage(player) >= AuraRules.GLOW && Aura.holdsWeapon(player) && !player.isUsingItem()
 			&& player.getAttached(WildercordAttachments.CHARGE) == null;
 	}

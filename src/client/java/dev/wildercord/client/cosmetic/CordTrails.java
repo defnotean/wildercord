@@ -32,7 +32,7 @@ public final class CordTrails {
 			return;
 		}
 		long now = mc.level.getGameTime();
-		Vec3 camera = mc.gameRenderer.mainCamera().position();
+		Vec3 camera = mc.gameRenderer.getMainCamera().position();
 		for (AbstractClientPlayer player : mc.level.players()) {
 			if (player.isInvisible() || player.position().distanceToSqr(camera) > 48 * 48) {
 				continue;

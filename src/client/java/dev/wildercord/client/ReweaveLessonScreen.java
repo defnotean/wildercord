@@ -52,7 +52,7 @@ public final class ReweaveLessonScreen extends Screen implements CordEditorParen
 
 	public static void register() {
 		ClientPlayNetworking.registerGlobalReceiver(ReweaveLesson.Show.TYPE, (shown, context) -> {
-			Screen previous = context.client().gui.screen();
+			Screen previous = context.client().screen;
 			if (shown.request() != 0 && (!(previous instanceof ReweaveLessonScreen lesson)
 				|| !lesson.requesting || lesson.request != shown.request())) return;
 			if (shown.nonce() != 0 && shown.nonce() == closedNonce) return;
@@ -63,7 +63,7 @@ public final class ReweaveLessonScreen extends Screen implements CordEditorParen
 			}
 			if (shown.page() > 0 && (!(previous instanceof ReweaveLessonScreen lesson) || lesson.nonce != shown.nonce())) return;
 			Screen parent = previous instanceof ReweaveLessonScreen lesson ? lesson.parent : previous;
-			context.client().gui.setScreen(new ReweaveLessonScreen(parent, shown));
+			context.client().setScreen(new ReweaveLessonScreen(parent, shown));
 		});
 	}
 
@@ -211,6 +211,6 @@ public final class ReweaveLessonScreen extends Screen implements CordEditorParen
 		if (requesting) ClientPlayNetworking.send(new ReweaveLesson.Retrieve(request, true));
 		if (nonce != 0) closedNonce = nonce;
 		if (studying) ClientPlayNetworking.send(new ReweaveLesson.Turn(nonce, -1));
-		minecraft.gui.setScreen(parent);
+		minecraft.setScreen(parent);
 	}
 }

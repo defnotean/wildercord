@@ -105,7 +105,7 @@ public final class FormDashScreen extends Screen implements CordEditorParent {
 	@Override public boolean isPauseScreen() { return false; }
 	@Override public boolean isInGameUi() { return true; }
 	@Override public Screen cordEditorParent() { return parent; }
-	@Override public void onClose() { minecraft.gui.setScreen(parent); }
+	@Override public void onClose() { minecraft.setScreen(parent); }
 	@Override public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
 		g.pose().pushMatrix(); g.pose().translate(left(), top()); g.pose().scale(scale(), scale());
 		g.fill(0, 0, W, H, 0xF0241A16); g.fill(1, 1, W - 1, 3, GOLD);

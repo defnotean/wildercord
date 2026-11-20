@@ -276,7 +276,7 @@ public final class WildercordKeys {
 	}
 
 	private static void tick(Minecraft client) {
-		while (magicSettings.consumeClick()) if (client.player != null) client.gui.setScreen(new MagicSettingsScreen());
+		while (magicSettings.consumeClick()) if (client.player != null) client.setScreen(new MagicSettingsScreen());
 		if (client.player == null || !client.player.isAlive()) {
 			// Dead or out of the world: whatever was held is dropped, and nothing is cast.
 			castHeld = -1;
@@ -292,7 +292,7 @@ public final class WildercordKeys {
 				// Discarded.
 			}
 		}
-		boolean playing = client.player != null && client.player.isAlive() && client.gui.screen() == null;
+		boolean playing = client.player != null && client.player.isAlive() && client.screen == null;
 		RelayClient.beginTick(client);
 		ReweaveClient.beginTick(client);
         ExciseClient.beginTick(client);
@@ -349,7 +349,7 @@ public final class WildercordKeys {
 				// The wheel needs two spells to choose between: the Cord's, and the tome's while it's held.
 				if (nextHeld == HOLD && tier != null
 						&& dev.wildercord.gear.SpellSlots.open(tier.spells, dev.wildercord.gear.Gear.tome(client.player)).size() > 1) {
-					client.gui.setScreen(new SpellWheelScreen(next));
+					client.setScreen(new SpellWheelScreen(next));
 					nextHeld = -1;
 				}
 			} else {
@@ -361,8 +361,8 @@ public final class WildercordKeys {
 		}
 		auraKey(client, playing);
 		while (open.consumeClick()) {
-			if (client.player != null && client.gui.screen() == null) {
-				client.gui.setScreen(new CordScreen());
+			if (client.player != null && client.screen == null) {
+				client.setScreen(new CordScreen());
 			}
 		}
 		while (backpack.consumeClick()) {

@@ -48,7 +48,7 @@ public final class SoarWings {
 			return !model.isAlive();
 		});
 		long now = level.getGameTime();
-		Vec3 camera = mc.gameRenderer.mainCamera().position();
+		Vec3 camera = mc.gameRenderer.getMainCamera().position();
 		for (AbstractClientPlayer flier : level.players()) {
 			WildercordAttachments.Soaring note = flier.getAttached(WildercordAttachments.SOARING);
 			boolean own = flier == mc.getCameraEntity() && mc.options.getCameraType().isFirstPerson();

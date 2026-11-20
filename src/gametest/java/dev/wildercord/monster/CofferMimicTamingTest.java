@@ -42,7 +42,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 	private static void hold(MinecraftServer s, ItemStack stack) { p(s).setItemInHand(InteractionHand.MAIN_HAND, stack); }
 	private static void use(ClientGameTestContext c) { c.getInput().pressKey(o -> o.keyUse); c.waitTicks(4); }
 	private static void shot(ClientGameTestContext c, String name) {
-		c.runOnClient(mc -> mc.gui.hud.getChat().clearMessages(false));
+		c.runOnClient(mc -> mc.gui.getChat().clearMessages(false));
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 	public void runTest(ClientGameTestContext c) {
@@ -88,7 +88,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			// At full health its owner's book is kept and the chest opens, so books can be stored in it.
 			use(c);
 			w.getServer().runOnServer(s -> check(p(s).getMainHandItem().getCount() == 64 - books, "At full health, its owner's book is not eaten"));
-			check(c.computeOnClient(mc -> mc.gui.screen() instanceof ContainerScreen), "At full health, a book opens it as a chest");
+			check(c.computeOnClient(mc -> mc.screen instanceof ContainerScreen), "At full health, a book opens it as a chest");
 			c.runOnClient(mc -> mc.player.closeContainer());
 			c.waitTicks(3);
 
@@ -104,7 +104,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				// Shut, it heals a point a second on its own, so only a book's worth counts as mending.
 				check(mimic(s).getHealth() < mimic(s).getMaxHealth() - 8.0F + MimicRules.BOOK_HEAL, "Nor does it mend it");
 			});
-			check(c.computeOnClient(mc -> mc.gui.screen() instanceof ContainerScreen), "An enchanted book opens it as a chest");
+			check(c.computeOnClient(mc -> mc.screen instanceof ContainerScreen), "An enchanted book opens it as a chest");
 			c.runOnClient(mc -> mc.player.closeContainer());
 			c.waitTicks(3);
 			w.getServer().runOnServer(s -> hold(s, new ItemStack(Items.BOOK, 2)));
@@ -114,13 +114,13 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				check(p(s).getMainHandItem().getCount() == 1, "Hurt, its owner's plain book is eaten");
 				check(mimic(s).getHealth() >= mimic(s).getMaxHealth() - 8.0F + MimicRules.BOOK_HEAL, "And mends it");
 			});
-			check(c.computeOnClient(mc -> !(mc.gui.screen() instanceof ContainerScreen)), "Mending does not open the chest");
+			check(c.computeOnClient(mc -> !(mc.screen instanceof ContainerScreen)), "Mending does not open the chest");
 
 			// Its owner opens it as a chest.
 			w.getServer().runOnServer(s -> hold(s, ItemStack.EMPTY));
 			c.waitTicks(2);
 			use(c);
-			check(c.computeOnClient(mc -> mc.gui.screen() instanceof ContainerScreen), "Its owner opens it as a chest");
+			check(c.computeOnClient(mc -> mc.screen instanceof ContainerScreen), "Its owner opens it as a chest");
 			w.getServer().runOnServer(s -> {
 				check(p(s).containerMenu instanceof ChestMenu chest && chest.getRowCount() == MimicRules.STORAGE_ROWS, "A three-row chest");
 				p(s).containerMenu.getSlot(0).set(new ItemStack(Items.DIAMOND, 3));
@@ -140,7 +140,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			c.getInput().holdKey(o -> o.keyShift);
 			c.waitTicks(3);
 			use(c);
-			check(c.computeOnClient(mc -> mc.gui.screen() == null), "Sneaking with an empty hand pets it rather than opening it");
+			check(c.computeOnClient(mc -> mc.screen == null), "Sneaking with an empty hand pets it rather than opening it");
 			w.getServer().runOnServer(s -> {
 				check(!mimic(s).staying(), "Petting gives no order");
 				hold(s, new ItemStack(Items.STICK));

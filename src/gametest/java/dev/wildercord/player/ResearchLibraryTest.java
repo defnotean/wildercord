@@ -41,12 +41,12 @@ public final class ResearchLibraryTest implements FabricClientGameTest {
     var at=p.blockPosition().offset(1,0,0);p.level().setBlockAndUpdate(at,dev.wildercord.content.WildercordBlocks.RUNIC_HEARTH.defaultBlockState());
     ((dev.wildercord.content.RunicHearthEntity)p.level().getBlockEntity(at)).use(p,new ItemStack(net.minecraft.world.item.Items.BOOK));
    });
-   for(int i=0;i<60&&!context.computeOnClient(mc->mc.gui.screen() instanceof dev.wildercord.client.RuneNotebookScreen);i++)context.waitTicks(1);
-   check(context.computeOnClient(mc->mc.gui.screen() instanceof dev.wildercord.client.RuneNotebookScreen),"hearth book opens the native notebook through its server payload");
+   for(int i=0;i<60&&!context.computeOnClient(mc->mc.screen instanceof dev.wildercord.client.RuneNotebookScreen);i++)context.waitTicks(1);
+   check(context.computeOnClient(mc->mc.screen instanceof dev.wildercord.client.RuneNotebookScreen),"hearth book opens the native notebook through its server payload");
    check(context.computeOnClient(mc->spoken(mc,"<")).contains("Previous Page")&&context.computeOnClient(mc->spoken(mc,">")).contains("Next Page"),"the notebook's arrow buttons are named for a screen reader");
    context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.options.guiScale().set(2);mc.resizeGui();
-    var screen=mc.gui.screen();screen.children().stream().filter(e->e instanceof net.minecraft.client.gui.components.EditBox).map(e->(net.minecraft.client.gui.components.EditBox)e).findFirst().orElseThrow().setValue("Warm breeze");});
-   context.waitTicks(8);context.runOnClient(mc->mc.gui.toastManager().clear());context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("research_library_before").disableCounterPrefix());
+    var screen=mc.screen;screen.children().stream().filter(e->e instanceof net.minecraft.client.gui.components.EditBox).map(e->(net.minecraft.client.gui.components.EditBox)e).findFirst().orElseThrow().setValue("Warm breeze");});
+   context.waitTicks(8);context.runOnClient(mc->mc.getToastManager().clear());context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("research_library_before").disableCounterPrefix());
    click(context,"screen.wildercord.notebook.save");context.waitTicks(15);
    world.getServer().runOnServer(server->{var p=server.getPlayerList().getPlayers().getFirst();check(SpellLibrary.list(p).size()==1,"native save button reaches the authoritative library");Spellbooks.set(p,Spellbooks.get(p).withSpell(0,List.of(Runes.SELF.id(),Runes.HEAL.id())));});
    click(context,"screen.wildercord.notebook.load");context.waitTicks(5);
@@ -57,22 +57,22 @@ public final class ResearchLibraryTest implements FabricClientGameTest {
    click(context,"screen.wildercord.notebook.delete");context.waitTicks(5);
    world.getServer().runOnServer(server->check(SpellLibrary.list(server.getPlayerList().getPlayers().getFirst()).isEmpty(),"native delete button removes just its named build"));
    context.setScreen(dev.wildercord.client.CordScreen::new);context.waitTicks(5);
-   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.gui.screen()).savedSpellCount().getString().equals("Saved spells: 0 / 24")),"creation screen reflects native library deletion");
+   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.screen).savedSpellCount().getString().equals("Saved spells: 0 / 24")),"creation screen reflects native library deletion");
    world.getServer().runOnServer(server->check(SpellLibrary.save(server.getPlayerList().getPlayers().getFirst(),"Counter build",0)==1,"save while creation screen remains open"));context.waitTicks(10);
-   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.gui.screen()).savedSpellCount().getString().equals("Saved spells: 1 / 24")),"live owner sync updates creation counter");
-   context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.resizeGui();mc.gui.toastManager().clear();});context.waitTicks(5);
+   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.screen).savedSpellCount().getString().equals("Saved spells: 1 / 24")),"live owner sync updates creation counter");
+   context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.resizeGui();mc.getToastManager().clear();});context.waitTicks(5);
    context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("saved_spell_counter").disableCounterPrefix());
    world.getServer().runOnServer(server->SpellLibrary.save(server.getPlayerList().getPlayers().getFirst(),"COUNTER BUILD",0));context.waitTicks(5);
    check(context.computeOnClient(mc->SpellLibrary.list(mc.player).size()==1),"replacing a named build does not inflate saved count");
    context.runOnClient(mc->{mc.getWindow().setWindowed(854,480);mc.resizeGui();});context.waitTicks(5);
    context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("saved_spell_counter_854x480").disableCounterPrefix());
    world.getServer().runOnServer(server->SpellLibrary.delete(server.getPlayerList().getPlayers().getFirst(),"Counter build"));context.waitTicks(5);
-   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.gui.screen()).savedSpellCount().getString().equals("Saved spells: 0 / 24")),"counter updates after deletion while open");
+   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.screen).savedSpellCount().getString().equals("Saved spells: 0 / 24")),"counter updates after deletion while open");
    context.setScreen(()->null);
   }
  }
  private static void check(boolean v,String label){if(!v)throw new AssertionError(label);}
  /** What a screen reader says for the open screen's button labelled {@code label}. */
- private static String spoken(net.minecraft.client.Minecraft mc,String label){var b=mc.gui.screen().children().stream().filter(e->e instanceof net.minecraft.client.gui.components.Button).map(e->(net.minecraft.client.gui.components.Button)e).filter(e->e.getMessage().getString().equals(label)).findFirst().orElseThrow();StringBuilder said=new StringBuilder();b.updateNarration(dev.wildercord.gametest.compat.GametestCompat.narrationOutput(said));return said.toString();}
- private static void click(ClientGameTestContext c,String key){double[] point=c.computeOnClient(mc->{var b=mc.gui.screen().children().stream().filter(e->e instanceof net.minecraft.client.gui.components.Button).map(e->(net.minecraft.client.gui.components.Button)e).filter(e->e.getMessage().getString().equals(net.minecraft.network.chat.Component.translatable(key).getString())).findFirst().orElseThrow();double scale=mc.getWindow().getGuiScale();return new double[]{(b.getX()+b.getWidth()/2.0)*scale,(b.getY()+10)*scale};});c.getInput().setCursorPos(point[0],point[1]);c.waitTicks(3);c.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);c.waitTicks(5);c.getInput().releaseMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);}
+ private static String spoken(net.minecraft.client.Minecraft mc,String label){var b=mc.screen.children().stream().filter(e->e instanceof net.minecraft.client.gui.components.Button).map(e->(net.minecraft.client.gui.components.Button)e).filter(e->e.getMessage().getString().equals(label)).findFirst().orElseThrow();StringBuilder said=new StringBuilder();b.updateNarration(dev.wildercord.gametest.compat.GametestCompat.narrationOutput(said));return said.toString();}
+ private static void click(ClientGameTestContext c,String key){double[] point=c.computeOnClient(mc->{var b=mc.screen.children().stream().filter(e->e instanceof net.minecraft.client.gui.components.Button).map(e->(net.minecraft.client.gui.components.Button)e).filter(e->e.getMessage().getString().equals(net.minecraft.network.chat.Component.translatable(key).getString())).findFirst().orElseThrow();double scale=mc.getWindow().getGuiScale();return new double[]{(b.getX()+b.getWidth()/2.0)*scale,(b.getY()+10)*scale};});c.getInput().setCursorPos(point[0],point[1]);c.waitTicks(3);c.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);c.waitTicks(5);c.getInput().releaseMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);}
 }

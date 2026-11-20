@@ -273,7 +273,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 		});
 	}
 	private static void shot(ClientGameTestContext c, String name) {
-		c.runOnClient(mc -> mc.gui.toastManager().clear());
+		c.runOnClient(mc -> mc.getToastManager().clear());
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 	/** Blows the Ferryman has landed on the companion, counted by the companion itself. */

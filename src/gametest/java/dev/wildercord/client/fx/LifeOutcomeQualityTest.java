@@ -58,9 +58,9 @@ public final class LifeOutcomeQualityTest implements FabricClientGameTest {
    c.waitTicks(2);c.runOnClient(mc->{
     var live=particles(mc.particleEngine).stream().filter(p->p.isAlive()&&(p instanceof LifeParticle||p instanceof MaterialParticle)).toList();
     check(live.size()==3&&live.stream().anyMatch(p->p instanceof MaterialParticle),"Diagnostic owner packet keeps both Life and Time recipe ingredients in native third person");
-    for(var p:live){var state=new QuadParticleRenderState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.mainCamera(),1);check(!state.isEmpty(),"Actual native third-person extracts original recipe ingredient");}
+    for(var p:live){var state=new QuadParticleRenderState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.getMainCamera(),1);check(!state.isEmpty(),"Actual native third-person extracts original recipe ingredient");}
     mc.options.setCameraType(CameraType.FIRST_PERSON);
-    for(var p:live){var state=new QuadParticleRenderState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.mainCamera(),1);check(state.isEmpty(),"Immediate first-person switch suppresses surviving Life and Time support alike");check(p.getLifetime()==(p instanceof LifeParticle?10:8),"Mode switches retain original recipe lifetimes");}
+    for(var p:live){var state=new QuadParticleRenderState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.getMainCamera(),1);check(state.isEmpty(),"Immediate first-person switch suppresses surviving Life and Time support alike");check(p.getLifetime()==(p instanceof LifeParticle?10:8),"Mode switches retain original recipe lifetimes");}
    });
   }finally{c.runOnClient(mc->{MagicQuality.own=oldOwn;MagicQuality.others=oldOthers;mc.options.setCameraType(oldCamera);});}
  }

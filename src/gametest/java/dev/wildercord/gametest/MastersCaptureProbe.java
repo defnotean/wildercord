@@ -47,7 +47,7 @@ public final class MastersCaptureProbe {
 	private MastersCaptureProbe() {}
 
 	public static void begin(Minecraft mc) {
-		check(!mc.gui.hud.isHidden(), "HUD must remain visible: Minecraft skips first-person hands when it is hidden");
+		check(!mc.options.hideGui, "HUD must remain visible: Minecraft skips first-person hands when it is hidden");
 		owner = mc.player.getId();
 		hands = bodies = 0;
 		blade = null;
@@ -109,7 +109,7 @@ public final class MastersCaptureProbe {
 		boolean first = mc.options.getCameraType().isFirstPerson();
 		check(first ? hands > 0 : bodies > 0, "Native screenshot must submit the owner's " + (first ? "main-hand sword" : "body") + ": " + name);
 		if (!first) {
-			var camera = mc.gameRenderer.mainCamera();
+			var camera = mc.gameRenderer.getMainCamera();
 			Vec3 eye = camera.position();
 			check(eye.distanceTo(mc.player.getEyePosition()) > 2, "Third-person camera must not collapse into the fighter");
 			var torso = mc.player.position().add(0, 1, 0).subtract(eye);

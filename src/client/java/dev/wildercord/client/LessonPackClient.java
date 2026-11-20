@@ -24,7 +24,7 @@ public final class LessonPackClient {
     private static KeyMapping lastBinding;
 
     public static void beginTick(Minecraft client) {
-        boolean active = client.player != null && client.player.isAlive() && !client.player.isSpectator() && client.gui.screen() == null && client.isWindowActive();
+        boolean active = client.player != null && client.player.isAlive() && !client.player.isSpectator() && client.screen == null && client.isWindowActive();
         if (body != client.player || world != client.level) {
             body = client.player; world = client.level;
             java.util.Arrays.fill(DOWN, false); java.util.Arrays.fill(BLOCKED, true);

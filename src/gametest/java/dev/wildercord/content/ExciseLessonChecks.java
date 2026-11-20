@@ -117,7 +117,7 @@ public final class ExciseLessonChecks {
 				page(context, 0, true);
 				advance(context); page(context, 1, true);
 				send(context, first, 1); page(context, 1, true);
-				context.runOnClient(mc -> mc.gui.screen().onClose()); context.waitTicks(3);
+				context.runOnClient(mc -> mc.screen.onClose()); context.waitTicks(3);
 				send(context, first, 2); send(context, first, 3);
 				server.runOnServer(s -> check(!MasterStudies.knowsExcise(player(s)), "Skipped, wrong-nonce, repeated and closed-session packets cannot finish study"));
 
@@ -205,7 +205,7 @@ public final class ExciseLessonChecks {
 		advance(context); page(context, 1, true);
 		advance(context); page(context, 2, true);
 		advance(context); page(context, 2, false);
-		context.runOnClient(mc -> mc.gui.screen().onClose());
+		context.runOnClient(mc -> mc.screen.onClose());
 		context.waitTicks(3);
 	}
 
@@ -216,17 +216,17 @@ public final class ExciseLessonChecks {
 	}
 	private static void retrieve(ClientGameTestContext context) {
 		context.setScreen(CordScreen::new); context.waitTicks(3);
-		click(context, context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).pagePoint(2)));
-		click(context, context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).exciseLessonPoint()));
+		click(context, context.computeOnClient(mc -> ((CordScreen) mc.screen).pagePoint(2)));
+		click(context, context.computeOnClient(mc -> ((CordScreen) mc.screen).exciseLessonPoint()));
 		context.waitTicks(3);
 	}
-	private static long nonce(ClientGameTestContext context) { page(context, 0, true); return context.computeOnClient(mc -> ((ExciseLessonScreen) mc.gui.screen()).sessionNonce()); }
+	private static long nonce(ClientGameTestContext context) { page(context, 0, true); return context.computeOnClient(mc -> ((ExciseLessonScreen) mc.screen).sessionNonce()); }
 	private static void send(ClientGameTestContext context, long nonce, int page) {
 		context.runOnClient(mc -> ClientPlayNetworking.send(new ExciseLesson.Turn(nonce, page))); context.waitTicks(3);
 	}
 	private static void advance(ClientGameTestContext context) {
 		context.getInput().pressKey(InputConstants.KEY_END); context.waitTicks(2);
-		click(context, context.computeOnClient(mc -> ((ExciseLessonScreen) mc.gui.screen()).nextPagePoint()));
+		click(context, context.computeOnClient(mc -> ((ExciseLessonScreen) mc.screen).nextPagePoint()));
 	}
 	private static void click(ClientGameTestContext context, double[] point) {
 		check(point != null, "Requested Grimoire or ledger control is visible");
@@ -235,18 +235,18 @@ public final class ExciseLessonChecks {
 		context.getInput().pressMouse(InputConstants.MOUSE_BUTTON_LEFT); context.waitTicks(5);
 	}
 	private static void page(ClientGameTestContext context, int page, boolean studying) {
-		context.runOnClient(mc -> check(mc.gui.screen() instanceof ExciseLessonScreen lesson && lesson.pageNumber() == page && lesson.isStudying() == studying, "Expected Excise page " + page + ", studying=" + studying));
+		context.runOnClient(mc -> check(mc.screen instanceof ExciseLessonScreen lesson && lesson.pageNumber() == page && lesson.isStudying() == studying, "Expected Excise page " + page + ", studying=" + studying));
 	}
-	private static void notReading(ClientGameTestContext context, String reason) { context.runOnClient(mc -> check(!(mc.gui.screen() instanceof ExciseLessonScreen), reason)); }
+	private static void notReading(ClientGameTestContext context, String reason) { context.runOnClient(mc -> check(!(mc.screen instanceof ExciseLessonScreen), reason)); }
 	private static void refused(ClientGameTestContext context, String reason) {
-		context.waitFor(mc -> mc.gui.screen() instanceof ExciseLessonScreen lesson && lesson.isRefused(), 100);
+		context.waitFor(mc -> mc.screen instanceof ExciseLessonScreen lesson && lesson.isRefused(), 100);
 		context.runOnClient(mc -> {
-			var lesson = (ExciseLessonScreen) mc.gui.screen();
+			var lesson = (ExciseLessonScreen) mc.screen;
 			check(lesson.isRefused() && !lesson.isStudying() && lesson.sessionNonce() == 0 && lesson.pageNumber() == 0, reason);
 		});
 	}
 	private static void close(ClientGameTestContext context) {
-		context.runOnClient(mc -> { if (mc.gui.screen() != null) mc.gui.screen().onClose(); mc.gui.setScreen(null); }); context.waitTicks(3);
+		context.runOnClient(mc -> { if (mc.screen != null) mc.screen.onClose(); mc.setScreen(null); }); context.waitTicks(3);
 	}
 	private static int books(ServerPlayer player) {
 		int count = 0;

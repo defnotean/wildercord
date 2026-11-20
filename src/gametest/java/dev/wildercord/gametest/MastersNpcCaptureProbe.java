@@ -46,14 +46,14 @@ public final class MastersNpcCaptureProbe {
 		boolean bob, ParticleStatus particles, boolean reducedFlash, boolean cameraShake) {
 		public static Options save(Minecraft mc) {
 			return new Options(mc.options.getCameraType(), mc.options.guiScale().get(), mc.getWindow().getWidth(), mc.getWindow().getHeight(),
-				mc.options.fov().get(), mc.gui.hud.isHidden(), mc.options.fullscreen().get(), mc.options.bobView().get(), mc.options.particles().get(), MagicQuality.reducedFlash, MagicQuality.cameraShake);
+				mc.options.fov().get(), mc.options.hideGui, mc.options.fullscreen().get(), mc.options.bobView().get(), mc.options.particles().get(), MagicQuality.reducedFlash, MagicQuality.cameraShake);
 		}
 		public void restore(Minecraft mc) {
-			mc.gui.setScreen(null);
+			mc.setScreen(null);
 			mc.options.setCameraType(camera); mc.options.guiScale().set(scale); mc.options.fov().set(fov);
 			mc.options.bobView().set(bob); mc.options.particles().set(particles);
 			mc.getWindow().setWindowed(width, height); dev.wildercord.gametest.compat.GametestCompat.setFullscreen(mc.getWindow(), fullscreen); mc.resizeGui();
-			if (mc.gui.hud.isHidden() != hidden) mc.gui.hud.toggle();
+			if (mc.options.hideGui != hidden) mc.options.hideGui = !mc.options.hideGui;
 			MagicQuality.reducedFlash = reducedFlash; MagicQuality.cameraShake = cameraShake;
 		}
 	}
@@ -101,8 +101,8 @@ public final class MastersNpcCaptureProbe {
 	public static void configure(Minecraft mc) {
 		mc.getWindow().setWindowed(1280, 720); mc.options.guiScale().set(2); mc.options.fov().set(60);
 		mc.options.bobView().set(false); mc.options.particles().set(ParticleStatus.ALL);
-		mc.options.setCameraType(CameraType.FIRST_PERSON); mc.gui.setScreen(null); mc.resizeGui();
-		if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+		mc.options.setCameraType(CameraType.FIRST_PERSON); mc.setScreen(null); mc.resizeGui();
+		if (mc.options.hideGui) mc.options.hideGui = !mc.options.hideGui;
 		MagicQuality.reducedFlash = false; MagicQuality.cameraShake = false;
 	}
 	public static void end() {
@@ -134,7 +134,7 @@ public final class MastersNpcCaptureProbe {
 			if (ArticulatedCombat.frame(renderedState) != null) {
 				// This is the native body submit matrix, before root/part transforms, in camera-relative world space.
 				bodyEntry = new Matrix4f(stack.last().pose());
-				viewProjection = Minecraft.getInstance().gameRenderer.mainCamera().getViewRotationProjectionMatrix(new Matrix4f());
+				viewProjection = Minecraft.getInstance().gameRenderer.getMainCamera().getViewRotationProjectionMatrix(new Matrix4f());
 			}
 		}
 	}
@@ -240,14 +240,14 @@ public final class MastersNpcCaptureProbe {
 			}
 			mc.gameRenderer.update(DELTA); mc.gameRenderer.extract(DELTA, true); dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA);
 			RenderSystem.getDevice().createCommandEncoder().submit();
-			Vec3 eye = mc.gameRenderer.mainCamera().position();
+			Vec3 eye = mc.gameRenderer.getMainCamera().position();
 			ProjectedBounds capturedBodyBounds = articulated ? bodyBounds.snapshot() : null;
 			ProjectedBounds capturedBladeBounds = articulated ? bladeBounds.snapshot() : null;
 			float[] capturedBodyMatrix = bodyEntry == null ? null : bodyEntry.get(new float[16]);
-			Matrix4f actualCameraMatrix = mc.gameRenderer.mainCamera().getViewRotationProjectionMatrix(new Matrix4f());
+			Matrix4f actualCameraMatrix = mc.gameRenderer.getMainCamera().getViewRotationProjectionMatrix(new Matrix4f());
 			float[] capturedProjection = actualCameraMatrix.get(new float[16]);
 			Double effectiveProjectionFov = projectionFov(actualCameraMatrix);
-			float cameraReportedFov = mc.gameRenderer.mainCamera().getFov();
+			float cameraReportedFov = mc.gameRenderer.getMainCamera().getFov();
 			Double bodyProbeHeightPixels = null;
 			int capturedFov = mc.options.fov().get();
 			List<Point> bodyPoints = new ArrayList<>();
@@ -467,7 +467,7 @@ public final class MastersNpcCaptureProbe {
 		return actual.from.distanceToSqr(expected[0]) < .0001 && actual.to.distanceToSqr(expected[1]) < .0001;
 	}
 	private static Point project(Minecraft mc, Vec3 point) {
-		var camera = mc.gameRenderer.mainCamera();
+		var camera = mc.gameRenderer.getMainCamera();
 		Vec3 relative = point.subtract(camera.position());
 		var clip = camera.getViewRotationProjectionMatrix(new org.joml.Matrix4f())
 			.transform(new org.joml.Vector4f((float) relative.x, (float) relative.y, (float) relative.z, 1));
@@ -477,7 +477,7 @@ public final class MastersNpcCaptureProbe {
 	}
 	/** Close views retain offscreen endpoints; behind-camera/depth-clipped endpoints have no screen sample. */
 	private static Point projectUnclamped(Minecraft mc, Vec3 point) {
-		var camera = mc.gameRenderer.mainCamera();
+		var camera = mc.gameRenderer.getMainCamera();
 		Vec3 relative = point.subtract(camera.position());
 		var clip = camera.getViewRotationProjectionMatrix(new Matrix4f())
 			.transform(new org.joml.Vector4f((float) relative.x, (float) relative.y, (float) relative.z, 1));

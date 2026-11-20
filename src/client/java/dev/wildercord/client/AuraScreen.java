@@ -105,7 +105,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		// Register the existing label as a native control. Its established painting remains below.
 		masterFormsEntry = addWidget(net.minecraft.client.gui.components.Button.builder(forms.copy().append(". ")
 			.append(Component.translatable("screen.wildercord.master_forms.open", MasterFormsClient.binding())),
-			ignored -> minecraft.gui.setScreen(new MasterFormsScreen(this)))
+			ignored -> minecraft.setScreen(new MasterFormsScreen(this)))
 			.bounds(left() + Math.round((formsX() - 2) * s), top() + Math.round(8 * s), Math.round((font.width(forms) + 4) * s), Math.max(1, Math.round(12 * s))).build());
 		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here (and the blade's).
 		dev.wildercord.client.compat.RenderCompat.startTextInput(minecraft, this);
@@ -119,7 +119,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 
 	@Override
 	public void onClose() {
-		minecraft.gui.setScreen(parent);
+		minecraft.setScreen(parent);
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 			int my = (int) Math.floor((event.y() - top()) / s);
 			if (!lineage && !bladeOpen() && !writingOpen() && inside(mx,my,14,86,W-28,14) && minecraft.player!=null) {
 				net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(new dev.wildercord.aura.Unity.Activate());
-				minecraft.gui.setScreen(null);
+				minecraft.setScreen(null);
 				return true;
 			}
 			if (my >= tabsY - 2 && my < tabsY + 10) {

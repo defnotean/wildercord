@@ -321,13 +321,13 @@ public final class RuneCatalogScreen extends Screen {
 	private void showInCord() {
 		if (picked != null && parent instanceof CordScreen cord) {
 			cord.searchFor(RuneItem.runeName(picked).getString());
-			minecraft.gui.setScreen(parent);
+			minecraft.setScreen(parent);
 		}
 	}
 
 	@Override
 	public void onClose() {
-		minecraft.gui.setScreen(parent);
+		minecraft.setScreen(parent);
 	}
 
 	// ------------------------------------------------------------------ drawing

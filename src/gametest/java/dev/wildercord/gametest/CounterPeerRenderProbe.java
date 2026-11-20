@@ -223,9 +223,9 @@ public final class CounterPeerRenderProbe {
         if(mc.getCameraEntity()!=mc.player)token.reject("substituted_camera");
         if(!mc.options.getCameraType().isFirstPerson())token.reject("wrong_owner_or_observer_camera");
         if(remote){
-            var eye=mc.gameRenderer.mainCamera().position();
+            var eye=mc.gameRenderer.getMainCamera().position();
             if(eye.distanceTo(actor.getEyePosition())<2)token.reject("observer_camera_overlaps_actor");
-            var projection=mc.gameRenderer.mainCamera().getViewRotationProjectionMatrix(new Matrix4f());
+            var projection=mc.gameRenderer.getMainCamera().getViewRotationProjectionMatrix(new Matrix4f());
             var torso=actor.position().add(0,1,0).subtract(eye);var projected=projection.transform(new org.joml.Vector4f((float)torso.x,(float)torso.y,(float)torso.z,1));
             if(!projected.isFinite()||projected.w<=0||Math.abs(projected.x/projected.w)>=.85||Math.abs(projected.y/projected.w)>=.85)token.reject("original_actor_outside_viewport");
             for(double y:new double[]{.25,.9,1.55})for(double x:new double[]{-.15,0,.15}){

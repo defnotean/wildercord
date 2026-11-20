@@ -24,7 +24,7 @@ public abstract class GameRendererMixin {
 	private void wildercord$extractHandsAvatar(net.minecraft.client.DeltaTracker delta, boolean renderLevel, CallbackInfo ci) {
 		Minecraft mc = Minecraft.getInstance();
 		if (renderLevel && mc.isGameLoadFinished() && mc.level != null && mc.player != null
-				&& mc.options.getCameraType().isFirstPerson() && !mc.player.isSleeping() && !mc.gui.hud.isHidden()
+				&& mc.options.getCameraType().isFirstPerson() && !mc.player.isSleeping() && !mc.options.hideGui
 				&& mc.gameMode != null && mc.gameMode.getPlayerMode() != net.minecraft.world.level.GameType.SPECTATOR) {
 			float partial = delta.getGameTimeDeltaPartialTick(false);
 			((dev.wildercord.client.FirstPersonAvatarState) this.itemInHandRenderer).wildercord$prepareHandsAvatar(mc.player, partial);

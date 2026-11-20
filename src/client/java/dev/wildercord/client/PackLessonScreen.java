@@ -56,7 +56,7 @@ public final class PackLessonScreen extends Screen implements CordEditorParent {
 	public static void register() {
 		ClientPlayNetworking.registerGlobalReceiver(PackLesson.Show.TYPE, (shown, context) -> {
 			if (shown.lesson() < 0 || shown.lesson() >= LessonPackRules.ALL.size()) return;
-			Screen previous = context.client().gui.screen();
+			Screen previous = context.client().screen;
 			if (shown.request() != 0 && (!(previous instanceof PackLessonScreen lesson)
 				|| !lesson.requesting || lesson.request != shown.request())) return;
 			if (shown.nonce() != 0 && shown.nonce() == closedNonce) return;
@@ -67,7 +67,7 @@ public final class PackLessonScreen extends Screen implements CordEditorParent {
 			}
 			if (shown.page() > 0 && (!(previous instanceof PackLessonScreen lesson) || lesson.nonce != shown.nonce())) return;
 			Screen parent = previous instanceof PackLessonScreen lesson ? lesson.parent : previous;
-			context.client().gui.setScreen(new PackLessonScreen(parent, shown));
+			context.client().setScreen(new PackLessonScreen(parent, shown));
 		});
 	}
 
@@ -212,6 +212,6 @@ public final class PackLessonScreen extends Screen implements CordEditorParent {
 		if (requesting) ClientPlayNetworking.send(new PackLesson.Retrieve(lesson.ordinal(), request, true));
 		if (nonce != 0) closedNonce = nonce;
 		if (studying) ClientPlayNetworking.send(new PackLesson.Turn(nonce, -1));
-		minecraft.gui.setScreen(parent);
+		minecraft.setScreen(parent);
 	}
 }

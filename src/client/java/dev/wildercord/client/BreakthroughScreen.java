@@ -46,11 +46,11 @@ public final class BreakthroughScreen extends Screen {
 
 	public static void register() {
 		ClientPlayNetworking.registerGlobalReceiver(BreakthroughPayload.TYPE, (payload, context) -> {
-			if (context.client().gui.screen() == null) open(context.client(), payload);
+			if (context.client().screen == null) open(context.client(), payload);
 			else waiting = payload;
 		});
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (waiting != null && client.player != null && client.gui.screen() == null) {
+			if (waiting != null && client.player != null && client.screen == null) {
 				BreakthroughPayload payload = waiting;
 				waiting = null;
 				open(client, payload);
@@ -61,7 +61,7 @@ public final class BreakthroughScreen extends Screen {
 	}
 
 	private static void open(Minecraft client, BreakthroughPayload payload) {
-		client.gui.setScreen(new BreakthroughScreen(payload.circle(), payload.tribulation()));
+		client.setScreen(new BreakthroughScreen(payload.circle(), payload.tribulation()));
 	}
 
 	@Override public boolean isPauseScreen() { return false; }

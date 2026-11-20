@@ -94,13 +94,13 @@ final class ScoutLegendChecks {
 			check(p.getInventory().countItem(WildercordItems.BLANK_RUNE) == before[1] + quest.runes(), "Final chapter pays runes once");
 		});
 		c.runOnClient(mc -> {
-			mc.gui.setScreen(new LoreJournalScreen());
-			((LoreJournalScreen) mc.gui.screen()).showTab("quests");
-			mc.gui.hud.getChat().clearMessages(false);
-			mc.gui.toastManager().clear();
+			mc.setScreen(new LoreJournalScreen());
+			((LoreJournalScreen) mc.screen).showTab("quests");
+			mc.gui.getChat().clearMessages(false);
+			mc.getToastManager().clear();
 		});
 		c.waitTicks(3);
-		List<String> lines = c.computeOnClient(mc -> ((LoreJournalScreen) mc.gui.screen()).text("quests"));
+		List<String> lines = c.computeOnClient(mc -> ((LoreJournalScreen) mc.screen).text("quests"));
 		for (String title : List.of("The Scout's Last Cairn", "The Road Before Roads", "An Oath at Rest")) {
 			check(lines.contains("Done: " + title), "Completed chapter is readable: " + title);
 		}
@@ -109,7 +109,7 @@ final class ScoutLegendChecks {
 		c.getInput().releaseKey(com.mojang.blaze3d.platform.InputConstants.KEY_END);
 		c.waitTicks(3);
 		c.takeScreenshot(TestScreenshotOptions.of("lore_scout_last_cairn").disableCounterPrefix());
-		c.runOnClient(mc -> mc.gui.setScreen(null));
+		c.runOnClient(mc -> mc.setScreen(null));
 	}
 
 	private static void await(ClientGameTestContext c, TestSingleplayerContext world, String quest, int stage) {

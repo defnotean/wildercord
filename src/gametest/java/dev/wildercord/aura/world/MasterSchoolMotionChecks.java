@@ -98,7 +98,7 @@ public final class MasterSchoolMotionChecks {
 						for (int tick = 0; tick < beat.age + 10; tick++) {
 							ServerFrame serverFrame = world.getServer().computeOnServer(server -> observe(school));
 							shot = context.computeOnClient(mc -> {
-								check(!mc.isPaused() && mc.gui.screen() == null && mc.player.isSpectator(), "The real observer stays unpaused and outside the roster");
+								check(!mc.isPaused() && mc.screen == null && mc.player.isSpectator(), "The real observer stays unpaused and outside the roster");
 								if (!(mc.level.getEntity(id) instanceof SwordMaster live) || live.attackAnimation() != attack) return null;
 								float age = live.attackElapsed(MastersNpcCaptureProbe.PARTIAL);
 								if (age < beat.age) return null;

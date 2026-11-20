@@ -57,7 +57,7 @@ public final class LifeOutcomeClient {
    int count=pieces.size(),spent=own?ownSpent:otherSpent;
    if(invalid[0]||total+count>512||spent+count>cap(quality)){dropped++;continue;}
    total+=count;if(own)ownSpent+=count;else otherSpent+=count;
-   var camera=mc.gameRenderer.mainCamera();
+   var camera=mc.gameRenderer.getMainCamera();
    for(var piece:pieces){var at=piece.at();
     if(!mc.level.hasChunkAt(BlockPos.containing(at))||mc.player.blockPosition().distToCenterSqr(at.x,at.y,at.z)>=32*32
      ||!LifeOwnerClearance.clear(mc,camera,at,own))continue;

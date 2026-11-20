@@ -25,7 +25,7 @@ public final class LoreJournalClient {
 
 	private static void tick(Minecraft client) {
 		while (key.consumeClick()) {
-			if (client.player != null && client.gui.screen() == null) client.gui.setScreen(new LoreJournalScreen());
+			if (client.player != null && client.screen == null) client.setScreen(new LoreJournalScreen());
 		}
 	}
 }

@@ -394,7 +394,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 			if (page != 3) {
 				click();
 				parent.showPage(page);
-				minecraft.gui.setScreen(parent);
+				minecraft.setScreen(parent);
 			}
 			return true;
 		}

@@ -108,7 +108,7 @@ public final class AuraBodyMoteProbe {
 		if (mc.level == null || mc.player == null || mc.isPaused() || mc.getCameraEntity() != mc.player
 				|| mc.options.getCameraType() != CameraType.THIRD_PERSON_FRONT || MagicQuality.bodyAura != MagicQuality.BodyAura.FULL
 				|| mc.player.isInvisible() || mc.player.isSpectator()
-				|| mc.player.position().distanceToSqr(mc.gameRenderer.mainCamera().position()) > 1600) return false;
+				|| mc.player.position().distanceToSqr(mc.gameRenderer.getMainCamera().position()) > 1600) return false;
 		var look = Aura.look(mc.player);
 		long now = mc.level.getGameTime();
 		return mc.level.players().size() == 1 && mc.level.players().contains(mc.player)
@@ -154,7 +154,7 @@ public final class AuraBodyMoteProbe {
 		var look = Aura.look(s.player);
 		long now = s.world.getGameTime();
 		s.pending = new Tick(now, mc.options.getCameraType().name(), mc.isPaused(), s.player.isInvisible(), s.player.isSpectator(),
-			mc.getCameraEntity() == s.player, s.player.position().distanceToSqr(mc.gameRenderer.mainCamera().position()),
+			mc.getCameraEntity() == s.player, s.player.position().distanceToSqr(mc.gameRenderer.getMainCamera().position()),
 			MagicQuality.bodyAura.name(), look.stage(), look.lit(), AuraFxClient.bodyIntensity(s.player, now),
 			AuraPresence.look(s.player).fighting(now), AuraPresence.look(s.player).momentum(), AuraFxClient.surge(s.entityId, now),
 			Awakening.state(s.player).stage() == AwakeningRules.Phase.AWAKENED, Awakening.spent(s.player), s.world.players().size(), budget, budget, 0, 0);
@@ -269,7 +269,7 @@ public final class AuraBodyMoteProbe {
 		if (mc.level == null || mc.player == null) return "world=" + (mc.level != null) + ", player=" + (mc.player != null);
 		var player = mc.player;
 		return "time=" + mc.level.getGameTime() + ", camera=" + mc.options.getCameraType() + ", cameraOwn=" + (mc.getCameraEntity() == player)
-			+ ", distanceSquared=" + player.position().distanceToSqr(mc.gameRenderer.mainCamera().position())
+			+ ", distanceSquared=" + player.position().distanceToSqr(mc.gameRenderer.getMainCamera().position())
 			+ ", paused=" + mc.isPaused() + ", invisible=" + player.isInvisible() + ", spectator=" + player.isSpectator()
 			+ ", quality=" + MagicQuality.bodyAura + ", look=" + Aura.look(player) + ", presence=" + AuraPresence.look(player)
 			+ ", intensity=" + AuraFxClient.bodyIntensity(player, mc.level.getGameTime()) + ", awakening=" + Awakening.state(player)

@@ -106,17 +106,17 @@ public final class LoadoutsTest implements FabricClientGameTest {
 				check(data.size() == LoadoutRules.MAX - 1 && data.names().contains("Mining") && data.names().contains("Flame"), "The loadouts reach the player's client: " + data.names());
 				mc.getWindow().setWindowed(1280, 720);
 				mc.resizeGui();
-				mc.gui.toastManager().clear();
+				mc.getToastManager().clear();
 			});
 
 			// The Cord screen: open the panel and load Flame (its last row) with its own button.
 			c.setScreen(CordScreen::new);
 			c.waitTicks(3);
-			click(c, c.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).loadoutsPoint()));
-			check(c.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).loadoutsOpen()), "The list badge opens the loadouts panel");
+			click(c, c.computeOnClient(mc -> ((CordScreen) mc.screen).loadoutsPoint()));
+			check(c.computeOnClient(mc -> ((CordScreen) mc.screen).loadoutsOpen()), "The list badge opens the loadouts panel");
 			c.takeScreenshot(TestScreenshotOptions.of("loadouts_panel").disableCounterPrefix());
 			int flame = c.computeOnClient(mc -> Loadouts.data(mc.player).names().indexOf("Flame"));
-			click(c, c.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).loadoutPoint(flame, 0)));
+			click(c, c.computeOnClient(mc -> ((CordScreen) mc.screen).loadoutPoint(flame, 0)));
 			c.waitTicks(4);
 			w.getServer().runOnServer(s -> {
 				ServerPlayer p = s.getPlayerList().getPlayers().getFirst();

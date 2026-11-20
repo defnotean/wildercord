@@ -21,7 +21,7 @@ public final class RainshieldAckTest implements FabricClientGameTest {
  public static boolean hold(RainshieldFx.Event e,Minecraft mc){if(!delaying||mc.player==null||expected==null||!expected.equals(e.carrier())||!mc.player.getUUID().equals(e.carrier()))return false;if(e.beat()==0)RECEIPT.compareAndSet(null,e);return true;}
  private static void check(boolean x,String why){if(!x)throw new AssertionError(why);}
  private static ServerPlayer p(MinecraftServer s){return s.getPlayerList().getPlayers().getFirst();}
- private static void use(ClientGameTestContext c){c.runOnClient(mc->{mc.gui.setScreen(null);mc.options.keyUse.setDown(true);mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND);});}
+ private static void use(ClientGameTestContext c){c.runOnClient(mc->{mc.setScreen(null);mc.options.keyUse.setDown(true);mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND);});}
  private static void deliver(RainshieldFx.Event e,Minecraft mc){try{var method=RainshieldClient.class.getDeclaredMethod("receive",RainshieldFx.Event.class,Minecraft.class);method.setAccessible(true);method.invoke(null,e,mc);}catch(ReflectiveOperationException error){throw new AssertionError(error);}}
  private static UUID armed(){try{var field=RainshieldClient.class.getDeclaredField("armed");field.setAccessible(true);return (UUID)field.get(null);}catch(ReflectiveOperationException error){throw new AssertionError(error);}}
  public void runTest(ClientGameTestContext c){try(var settings=new TidewardNative(c);var w=c.worldBuilder().create()){

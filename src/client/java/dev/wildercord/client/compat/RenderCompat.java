@@ -4,8 +4,6 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.BlendFactor;
-import com.mojang.blaze3d.platform.BlendOp;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.wildercord.Wildercord;
@@ -58,7 +56,9 @@ public final class RenderCompat {
 
 	private static final RenderPipeline DARK_PARTICLE_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())
 		.withLocation(Wildercord.id("pipeline/dark_particle"))
-		.withColorTargetState(new ColorTargetState(new BlendFunction(BlendFactor.SRC_ALPHA, BlendFactor.ONE, BlendOp.REVERSE_SUBTRACT)))
+		// 26.1.2 BlendFunction carries only factors, no blend op: vanilla's INVERT is the
+		// closest darkening blend to the 26.2 SRC_ALPHA/ONE REVERSE_SUBTRACT.
+		.withColorTargetState(new ColorTargetState(BlendFunction.INVERT))
 		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
 		.build();
 

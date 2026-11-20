@@ -24,7 +24,7 @@ public final class LifeJournalTest implements FabricClientGameTest {
  private static final int LEFT=InputConstants.MOUSE_BUTTON_LEFT;
  private static void check(boolean ok,String message){if(!ok)throw new AssertionError(message);}
  private static ServerPlayer player(MinecraftServer s){return s.getPlayerList().getPlayers().getFirst();}
- private static CordScreen cord(ClientGameTestContext c){return c.computeOnClient(mc -> mc.gui.screen() instanceof CordScreen s?s:null);}
+ private static CordScreen cord(ClientGameTestContext c){return c.computeOnClient(mc -> mc.screen instanceof CordScreen s?s:null);}
  private static void click(ClientGameTestContext c,double[] point){
   check(point!=null,"The actual link must be fully visible before clicking");
   double scale=c.computeOnClient(mc -> mc.getWindow().getGuiScale());
@@ -32,11 +32,11 @@ public final class LifeJournalTest implements FabricClientGameTest {
   try{c.getInput().pressMouse(LEFT);c.waitTicks(3);}finally{c.getInput().releaseMouse(LEFT);}
   c.waitTicks(2);
  }
- private static void shot(ClientGameTestContext c,String name){c.runOnClient(mc -> {mc.gui.toastManager().clear();mc.gui.hud.getChat().clearMessages(false);});c.waitTicks(3);c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
+ private static void shot(ClientGameTestContext c,String name){c.runOnClient(mc -> {mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);});c.waitTicks(3);c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
  private static void size(ClientGameTestContext c,int w,int h){c.runOnClient(mc -> {mc.getWindow().setWindowed(w,h);mc.options.guiScale().set(2);mc.resizeGui();});c.waitTicks(5);}
  private static void settingsLayout(ClientGameTestContext c){
   check(c.computeOnClient(mc -> {
-   if(!(mc.gui.screen() instanceof MagicSettingsScreen s))return false;
+   if(!(mc.screen instanceof MagicSettingsScreen s))return false;
    boolean own=false,other=false,done=false;
    for(var child:s.children())if(child instanceof Button b){
     if(b.getX()<0||b.getY()<0||b.getX()+b.getWidth()>s.width||b.getY()+b.getHeight()>s.height)return false;
@@ -63,15 +63,15 @@ public final class LifeJournalTest implements FabricClientGameTest {
    c.waitFor(mc -> mc.player!=null&&Spellbooks.get(mc.player).knows(Runes.HEAL.id())&&Spellbooks.get(mc.player).knows(Runes.RESTORE.id())&&!Spellbooks.get(mc.player).knows(Runes.REMEDY.id()));
    List<List<String>> saved=world.getServer().computeOnServer(s -> Spellbooks.get(player(s)).spells().stream().map(List::copyOf).toList());
    size(c,1920,1080);c.setScreen(CordScreen::new);c.waitTicks(3);
-   click(c,c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).pagePoint(2)));
-   check(c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).lifeJournalKnown().equals(List.of(Runes.HEAL.id(),Runes.RESTORE.id()))),"Only the two actually synced known Life runes render named notes");
-   check(c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).lifeJournalPoint(Runes.REMEDY.id())==null),"An unknown rune has no visible link");
-   check(c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).lifeJournalPoint("wildercord:ashen_mercy")==null&&!Spellbooks.get(mc.player).knows("wildercord:ashen_mercy")),"An undiscovered secret fusion does not leak a named note or clickable link");
-   double[] heal=c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).lifeJournalPoint(Runes.HEAL.id()));
+   click(c,c.computeOnClient(mc -> ((CordScreen)mc.screen).pagePoint(2)));
+   check(c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalKnown().equals(List.of(Runes.HEAL.id(),Runes.RESTORE.id()))),"Only the two actually synced known Life runes render named notes");
+   check(c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalPoint(Runes.REMEDY.id())==null),"An unknown rune has no visible link");
+   check(c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalPoint("wildercord:ashen_mercy")==null&&!Spellbooks.get(mc.player).knows("wildercord:ashen_mercy")),"An undiscovered secret fusion does not leak a named note or clickable link");
+   double[] heal=c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalPoint(Runes.HEAL.id()));
    check(heal!=null,"Known Heal note is on screen");
    double scale=c.computeOnClient(mc -> mc.getWindow().getGuiScale());c.getInput().setCursorPos(heal[0]*scale,heal[1]*scale);
    shot(c,"life_journal_learned_only_1920");click(c,heal);
-   check(c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).codexPoint(Runes.HEAL.id())!=null),"Actual journal click navigates to the known Heal Codex entry");
+   check(c.computeOnClient(mc -> ((CordScreen)mc.screen).codexPoint(Runes.HEAL.id())!=null),"Actual journal click navigates to the known Heal Codex entry");
    check(c.computeOnClient(mc -> {
     String cost=Component.translatable("screen.wildercord.cost",12,"0.6",300).getString();
     String shape=Component.translatable("screen.wildercord.rune_cost_shape",1,"2").getString();
@@ -80,7 +80,7 @@ public final class LifeJournalTest implements FabricClientGameTest {
    }),"Real loaded Codex cost and multiplier translations contain intended punctuation without mojibake");
    shot(c,"life_journal_heal_codex_1920");
    check(saved.equals(world.getServer().computeOnServer(s -> Spellbooks.get(player(s)).spells().stream().map(List::copyOf).toList())),"Journal navigation leaves server saved spells unchanged");
-   click(c,c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).pagePoint(2)));
+   click(c,c.computeOnClient(mc -> ((CordScreen)mc.screen).pagePoint(2)));
    c.getInput().scroll(-1);c.waitTicks(4);
    CordScreen parent=cord(c);int scroll=c.computeOnClient(mc -> parent.lifeJournalScroll());check(scroll>0,"The actual input event scrolls the journal");
    click(c,c.computeOnClient(mc -> parent.lifeJournalPoint("settings")));c.waitForScreen(MagicSettingsScreen.class);settingsLayout(c);shot(c,"life_journal_magic_visuals_1920");
@@ -111,7 +111,7 @@ public final class LifeJournalTest implements FabricClientGameTest {
    check(saved.equals(world.getServer().computeOnServer(s -> Spellbooks.get(player(s)).spells().stream().map(List::copyOf).toList())),"Settings and learning do not mutate the saved spell rows");
   }finally{
    c.getInput().releaseMouse(LEFT);c.getInput().releaseKey(InputConstants.KEY_ESCAPE);
-   c.runOnClient(mc -> {mc.gui.setScreen(null);mc.getWindow().setWindowed(original[0],original[1]);mc.options.guiScale().set(original[2]);mc.resizeGui();});
+   c.runOnClient(mc -> {mc.setScreen(null);mc.getWindow().setWindowed(original[0],original[1]);mc.options.guiScale().set(original[2]);mc.resizeGui();});
   }
  }
 }

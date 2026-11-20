@@ -423,7 +423,7 @@ public final class AuraFxClient {
 		if (MagicQuality.bodyAura != MagicQuality.BodyAura.FULL) {
 			return;
 		}
-		Vec3 camera = mc.gameRenderer.mainCamera().position();
+		Vec3 camera = mc.gameRenderer.getMainCamera().position();
 		for (AbstractClientPlayer player : level.players()) {
 			if (player.isInvisible() || player.isSpectator() || player.position().distanceToSqr(camera) > 40 * 40) {
 				continue;

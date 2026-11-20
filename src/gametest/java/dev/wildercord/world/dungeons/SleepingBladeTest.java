@@ -113,7 +113,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			// A newly placed socket cannot issue the legendary item, even with the right intent.
 			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var fresh=p.blockPosition().offset(2,0,0);s.overworld().setBlock(fresh,SleepingBlades.STONE.defaultBlockState(),3);check(!((SleepingBladeEntity)s.overworld().getBlockEntity(fresh)).authentic(),"New sockets have no provenance");SleepingBlades.begin(p,fresh);});
 			c.runOnClient(mc->mc.options.keyShift.setDown(false));world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var blade=p.getMainHandItem();p.setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);p.getInventory().setItem(8,blade);for(int i=0;i<p.getInventory().getContainerSize();i++){var stack=p.getInventory().getItem(i);if(stack.has(DataComponents.WRITTEN_BOOK_CONTENT)){p.setItemInHand(InteractionHand.MAIN_HAND,stack);p.getInventory().setItem(i,ItemStack.EMPTY);break;}}});
-			c.waitTicks(10);c.runOnClient(mc->mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND));c.waitTicks(10);c.runOnClient(mc->check(mc.gui.screen() instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen,"Actual awarded lore opens for reading"));shot(c,"sleeping_blade_last_oath");
+			c.waitTicks(10);c.runOnClient(mc->mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND));c.waitTicks(10);c.runOnClient(mc->check(mc.screen instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen,"Actual awarded lore opens for reading"));shot(c,"sleeping_blade_last_oath");
 		}
 		dev.wildercord.Wildercord.LOGGER.info("SLEEPING_BLADE_GENERATION PRIOR_CHECKS completed=12_rotated_variants,persisted_provenance,draw_interruptions,unique_claim,bond_ownership,guard_tradeoff,unprovenanced_socket_false,book_screen");
 		try(var natural=c.worldBuilder().setUseConsistentSettings(false).create();
@@ -178,7 +178,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 	private static int books(net.minecraft.server.level.ServerPlayer p) {int n=0;for(int i=0;i<p.getInventory().getContainerSize();i++)if(p.getInventory().getItem(i).has(DataComponents.WRITTEN_BOOK_CONTENT))n++;return n;}
 	private static void use(ClientGameTestContext c,BlockPos at) {c.runOnClient(mc->mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(Vec3.atCenterOf(at),Direction.UP,at,false)));}
 	private static void aim(ClientGameTestContext c,BlockPos at) {c.runOnClient(mc->{var d=Vec3.atCenterOf(at).subtract(mc.player.getEyePosition());mc.player.setYRot((float)Math.toDegrees(Math.atan2(-d.x,d.z)));mc.player.setXRot((float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())));});}
-	private static void shot(ClientGameTestContext c,String name) {c.runOnClient(mc->{mc.gui.toastManager().clear();mc.gui.hud.getChat().clearMessages(false);});c.waitTicks(1);c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
+	private static void shot(ClientGameTestContext c,String name) {c.runOnClient(mc->{mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);});c.waitTicks(1);c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
 	private static final class Rival extends net.fabricmc.fabric.api.entity.FakePlayer {
 		Rival(net.minecraft.server.level.ServerLevel level) { super(level,new com.mojang.authlib.GameProfile(java.util.UUID.nameUUIDFromBytes("sleeping-blade-rival".getBytes(java.nio.charset.StandardCharsets.UTF_8)),"Rival")); }
 	}

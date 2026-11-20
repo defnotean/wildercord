@@ -79,7 +79,7 @@ public final class StanceHud {
 		float partial = delta.getGameTimeDeltaPartialTick(false);
 		long now = level.getGameTime();
 		float time = now + partial;
-		Camera camera = mc.gameRenderer.mainCamera();
+		Camera camera = mc.gameRenderer.getMainCamera();
 		Vec3 cam = camera.position();
 		boolean firstPerson = mc.getCameraEntity() == player && mc.options.getCameraType().isFirstPerson();
 		Entity target = mc.crosshairPickEntity;

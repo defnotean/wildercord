@@ -116,19 +116,19 @@ public final class WildercordClient implements ClientModInitializer {
 		Tooltips.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
-			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
+			context.client().getToastManager().addToast(new GrimoireToast(payload.key())));
 		// This world's magic revealed (a resonance found, a quirk met): a toast with the name just shown.
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.cast.WorldResonances.Revealed.TYPE, (payload, context) ->
-			context.client().gui.toastManager().addToast(GrimoireToast.revealed(payload.kind(), payload.name(), payload.color())));
+			context.client().getToastManager().addToast(GrimoireToast.revealed(payload.kind(), payload.name(), payload.color())));
 		// A rune's text, everywhere it's shown, only as far as the player has read it.
 		RuneReadingText.init();
 		// An affinity reached a new level: a toast in its element's colour.
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.cast.PlayerAffinities.Rise.TYPE, (payload, context) ->
-			context.client().gui.toastManager().addToast(GrimoireToast.affinity(payload.element(), payload.level())));
+			context.client().getToastManager().addToast(GrimoireToast.affinity(payload.element(), payload.level())));
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) -> LeyMotes.setSeed(payload.seed()));
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.net.NotebookPayload.TYPE, (payload, context) -> {
-			var previous = context.client().gui.screen() instanceof RuneNotebookScreen board ? board : null;
-			context.client().gui.setScreen(new RuneNotebookScreen(payload, previous));
+			var previous = context.client().screen instanceof RuneNotebookScreen board ? board : null;
+			context.client().setScreen(new RuneNotebookScreen(payload, previous));
 		});
 		// The server's Wildercord version: a word in chat if it isn't ours (runes one of us doesn't know go silent).
 		VersionWatch.init();
@@ -136,7 +136,7 @@ public final class WildercordClient implements ClientModInitializer {
 			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
 		// The server's cost and regeneration multipliers, for the Cord screen and HUD; forgotten on leaving.
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.config.Config.Sync.TYPE, (payload, context) -> dev.wildercord.config.Config.receive(payload));
-		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.runesmith.Contracts.ShowBoard.TYPE, (payload, context) -> context.client().gui.setScreen(new ContractBoardScreen(payload)));
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.runesmith.Contracts.ShowBoard.TYPE, (payload, context) -> context.client().setScreen(new ContractBoardScreen(payload)));
 		// The elemental climate where the player stands, for the HUD's marks and the Grimoire.
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.cast.Climate.Sync.TYPE, (payload, context) -> dev.wildercord.cast.Climate.receive(payload));
 		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {

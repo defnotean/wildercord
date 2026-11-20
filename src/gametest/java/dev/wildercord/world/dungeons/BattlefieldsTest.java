@@ -109,7 +109,7 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 			context.waitTicks(15);
 			context.runOnClient(mc -> mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND));
 			context.waitTicks(10);
-			context.runOnClient(mc -> check(mc.gui.screen() instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen,"Recovered book opens the actual reading screen"));
+			context.runOnClient(mc -> check(mc.screen instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen,"Recovered book opens the actual reading screen"));
 			shot(context,"battlefield_lore_book");
 		}
 		dev.wildercord.Wildercord.LOGGER.info("BATTLEFIELD_GENERATION PRIOR_CHECKS completed=12_rotated_variants,persisted_provenance,standing_cancellation,three_discoveries,finite_repeat_rewards,unprovenanced_marker_false,book_screen");

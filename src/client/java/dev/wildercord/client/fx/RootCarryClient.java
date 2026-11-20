@@ -19,7 +19,7 @@ public final class RootCarryClient {
   if(mc.level==null||mc.player==null){ACTIVE.clear();return;}if(mc.isPaused())return;int[] spent={0};
   ACTIVE.removeIf(p->{long age=playbackTick-p.received();var e=p.event();if(p.world()!=mc.level||age<0||age>12||!mc.level.hasChunkAt(e.from())||!mc.level.hasChunkAt(e.to()))return true;
    if(age%6==0&&(e.moved()||age==0)){boolean minimal=(e.source().equals(mc.player.getUUID())?MagicQuality.own:MagicQuality.others)==MagicQuality.Level.MINIMAL;int count=minimal?2:6;if(spent[0]+count>96)return false;spent[0]+=count;
-    RootCarryPictures.transfer(e,(int)(age/6),minimal,(option,at)->{if(at.distanceToSqr(mc.player.position())<=48*48&&at.distanceToSqr(mc.player.getEyePosition())>=1.21&&at.distanceToSqr(mc.gameRenderer.mainCamera().position())>=1.21)mc.level.addParticle(option,at.x,at.y,at.z,0,0,0);});
+    RootCarryPictures.transfer(e,(int)(age/6),minimal,(option,at)->{if(at.distanceToSqr(mc.player.position())<=48*48&&at.distanceToSqr(mc.player.getEyePosition())>=1.21&&at.distanceToSqr(mc.gameRenderer.getMainCamera().position())>=1.21)mc.level.addParticle(option,at.x,at.y,at.z,0,0,0);});
    }return false;
   });playbackTick++;
  }

@@ -19,6 +19,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import java.util.Map;
@@ -85,7 +86,9 @@ public final class SerpentRenderer extends CullableEntityRenderer<RootcoilSerpen
 		var at=new BlockPos.MutableBlockPos();
 		for(int i=0;i<world.length;i++){
 			state.joints[i*3]=(float)(world[i][0]-ox);state.joints[i*3+1]=(float)(world[i][1]-oy);state.joints[i*3+2]=(float)(world[i][2]-oz);
-			state.lights[i]=LightCoordsUtil.getLightCoords(level,at.set(world[i][0],world[i][1]+.3,world[i][2]));
+			at.set(world[i][0],world[i][1]+.3,world[i][2]);
+			// 26.1.2 LightCoordsUtil has no Level overload: pack the two layers by hand.
+			state.lights[i]=LightCoordsUtil.pack(level.getBrightness(LightLayer.BLOCK,at),level.getBrightness(LightLayer.SKY,at));
 		}
 		if(SerpentRules.scripted(move)){
 			double x=world[0][0]-world[1][0],y=world[0][1]-world[1][1],z=world[0][2]-world[1][2],l=Math.max(1e-6,Math.sqrt(x*x+y*y+z*z));

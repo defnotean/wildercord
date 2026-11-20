@@ -88,7 +88,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 				p(s).setAttached(InnRooms.CHEST, List.of(new ItemStack(Items.DIAMOND, 3)));
 			});
 			c.waitTicks(3);
-			c.runOnClient(mc -> mc.gui.hud.getChat().clearMessages(false));
+			c.runOnClient(mc -> mc.gui.getChat().clearMessages(false));
 			c.takeScreenshot(TestScreenshotOptions.of("inn_room_rented").disableCounterPrefix());
 
 			// Dying far off, the traveller wakes in their room, with the room and its chest kept.

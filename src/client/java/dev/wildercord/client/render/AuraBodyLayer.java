@@ -157,7 +157,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.scale(-1.0F, -1.0F, 1.0F);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, -(180.0F - state.bodyRot));
 		Minecraft mc = Minecraft.getInstance();
-		var camera = mc.gameRenderer.mainCamera();
+		var camera = mc.gameRenderer.getMainCamera();
 		Vec3 cam = camera.position();
 		Vector3f camRight = camera.leftVector().negate(new Vector3f());
 		Vector3f camUp = new Vector3f(camera.upVector());

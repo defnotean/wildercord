@@ -5,9 +5,9 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.monster.ManaOoze;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.AbstractCubeMobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -19,14 +19,15 @@ import net.minecraft.util.Mth;
  * vanilla's translucent entity pass (as a slime's outer jelly is), and its core and mote glowing through the glowing-eyes
  * pass, brighter the fuller it is and flaring each time it drinks a spell.
  */
-public class ManaOozeRenderer extends AbstractCubeMobRenderer<ManaOoze, ManaOozeModel.State, ManaOozeModel> {
+public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State, ManaOozeModel> {
 	public static final ModelLayerLocation INNER = new ModelLayerLocation(Wildercord.id("mana_ooze"), "main");
 	public static final ModelLayerLocation OUTER = new ModelLayerLocation(Wildercord.id("mana_ooze"), "outer");
 	private static final Identifier TEXTURE = Wildercord.id("textures/entity/mana_ooze.png");
 	private static final Identifier GLOW = Wildercord.id("textures/entity/mana_ooze_glow.png");
 
 	public ManaOozeRenderer(EntityRendererProvider.Context context) {
-		super(context, new ManaOozeModel(context.bakeLayer(INNER)));
+		// 26.1.2 has no AbstractCubeMobRenderer: a plain MobRenderer with the slime shadow radius.
+		super(context, new ManaOozeModel(context.bakeLayer(INNER)), 0.5F);
 		ManaOozeModel outer = new ManaOozeModel(context.bakeLayer(OUTER));
 		// The heart glows: brighter the fuller it is, flaring as it drinks.
 		addLayer(new RenderLayer<>(this) {
@@ -66,6 +67,9 @@ public class ManaOozeRenderer extends AbstractCubeMobRenderer<ManaOoze, ManaOoze
 	@Override
 	public void extractRenderState(ManaOoze ooze, ManaOozeModel.State state, float partial) {
 		super.extractRenderState(ooze, state, partial);
+		// The cube-mob superclass is gone on 26.1.2: carry the slime's squash and size by hand.
+		state.squish = Mth.lerp(partial, ooze.oSquish, ooze.squish);
+		state.size = ooze.getSize();
 		state.fill = ooze.fill();
 		long since = ooze.level().getGameTime() - ooze.drankAt();
 		state.flash = since >= 0 && since < 10 ? 1 - (since + partial) / 10.0F : 0;
@@ -73,8 +77,12 @@ public class ManaOozeRenderer extends AbstractCubeMobRenderer<ManaOoze, ManaOoze
 
 	@Override
 	protected void scale(ManaOozeModel.State state, PoseStack poseStack) {
+		// Mirrors 26.1.2 SlimeRenderer#scale: near-full-size to dodge z-fighting, then the squish stretch.
 		poseStack.scale(0.999F, 0.999F, 0.999F);
 		poseStack.translate(0.0F, 0.001F, 0.0F);
-		super.scale(state, poseStack);
+		float size = (float) state.size;
+		float squish = state.squish * size * 0.5F + 1.0F;
+		float stretch = 1.0F / (squish + 1.0F);
+		poseStack.scale(stretch * size, size / stretch, stretch * size);
 	}
 }

@@ -485,7 +485,7 @@ public class CordScreen extends Screen {
 
 	/** Opens the Aura page, coming back here when it closes. */
 	private void openAura() {
-		minecraft.gui.setScreen(new AuraScreen(this));
+		minecraft.setScreen(new AuraScreen(this));
 	}
 
 	/**
@@ -1253,7 +1253,7 @@ public class CordScreen extends Screen {
 	/** Opens the rune catalog over this screen. */
 	public void openCatalog() {
 		click();
-		minecraft.gui.setScreen(new RuneCatalogScreen(this));
+		minecraft.setScreen(new RuneCatalogScreen(this));
 	}
 
 	private static final int CHIP_GAP = 2;
@@ -2261,7 +2261,7 @@ public class CordScreen extends Screen {
 			if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && dev.wildercord.player.MasterStudies.hasRelayLesson(minecraft.player)
 				&& inside(mx, my, 14, H / 2 + 22, W - 28, 16)) {
 				click();
-				minecraft.gui.setScreen(new RelayLessonScreen(this));
+				minecraft.setScreen(new RelayLessonScreen(this));
 				return true;
 			}
 			return super.mouseClicked(event, doubleClick);
@@ -2318,7 +2318,7 @@ public class CordScreen extends Screen {
 			if (page == 3) {
 				// Cosmetics is its own screen, drawn as a page of this one.
 				click();
-				minecraft.gui.setScreen(new dev.wildercord.client.cosmetic.CordStyleScreen(this));
+				minecraft.setScreen(new dev.wildercord.client.cosmetic.CordStyleScreen(this));
 				return true;
 			}
 			if (page() != page) {
@@ -2348,27 +2348,27 @@ public class CordScreen extends Screen {
             for (var lesson : dev.wildercord.spell.LessonPackRules.ALL) if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && packLessonY[lesson.ordinal()] >= 0
                 && dev.wildercord.player.MasterStudies.hasLesson(minecraft.player, lesson)
                 && inside(mx, my, TEXT_X + 8, packLessonY[lesson.ordinal()] - 1, W - 32 - TEXT_X, LINE)) {
-                click(); minecraft.gui.setScreen(new PackLessonScreen(this, lesson)); return true;
+                click(); minecraft.setScreen(new PackLessonScreen(this, lesson)); return true;
             }
             if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && exciseLessonY >= 0
                 && dev.wildercord.player.MasterStudies.hasExciseLesson(minecraft.player)
                 && inside(mx, my, TEXT_X + 8, exciseLessonY - 1, W - 32 - TEXT_X, LINE)) {
-                click(); minecraft.gui.setScreen(new ExciseLessonScreen(this)); return true;
+                click(); minecraft.setScreen(new ExciseLessonScreen(this)); return true;
             }
             if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && reweaveLessonY >= 0
                 && dev.wildercord.player.MasterStudies.hasReweaveLesson(minecraft.player)
                 && inside(mx, my, TEXT_X + 8, reweaveLessonY - 1, W - 32 - TEXT_X, LINE)) {
-                click(); minecraft.gui.setScreen(new ReweaveLessonScreen(this)); return true;
+                click(); minecraft.setScreen(new ReweaveLessonScreen(this)); return true;
             }
 			if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && relayLessonY >= 0
 				&& dev.wildercord.player.MasterStudies.hasRelayLesson(minecraft.player)
 				&& inside(mx, my, TEXT_X + 8, relayLessonY - 1, W - 32 - TEXT_X, LINE)) {
 				click();
-				minecraft.gui.setScreen(new RelayLessonScreen(this));
+				minecraft.setScreen(new RelayLessonScreen(this));
 				return true;
 			}
    if(event.button()==InputConstants.MOUSE_BUTTON_LEFT)for(var link:visibleLifeJournalLinks)if(inside(mx,my,TEXT_X+8,link.y()-1,W-32-TEXT_X,LINE)){
-    click();if(link.target().equals("settings"))minecraft.gui.setScreen(new MagicSettingsScreen(this));
+    click();if(link.target().equals("settings"))minecraft.setScreen(new MagicSettingsScreen(this));
     else Runes.get(link.target()).filter(r -> book().knows(r.id())).ifPresent(r -> {showPage(0);query=RuneItem.runeName(r).getString();filter=null;category=null;codexScroll=0;searchFocused=true;});
     return true;
    }

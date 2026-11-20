@@ -278,10 +278,10 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			if (camera != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(camera);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!mc.options.hideGui) {
+					mc.options.hideGui = !mc.options.hideGui;
 				}
-				mc.gui.toastManager().clear();
+				mc.getToastManager().clear();
 			}
 		});
 	}
@@ -290,8 +290,8 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		context.runOnClient(mc -> {
 			mc.setCameraEntity(mc.player);
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (mc.options.hideGui) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 	}

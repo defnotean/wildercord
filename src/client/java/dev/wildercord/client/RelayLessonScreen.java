@@ -52,7 +52,7 @@ public final class RelayLessonScreen extends Screen implements CordEditorParent 
 
 	public static void register() {
 		ClientPlayNetworking.registerGlobalReceiver(RelayLesson.Show.TYPE, (shown, context) -> {
-			Screen previous = context.client().gui.screen();
+			Screen previous = context.client().screen;
 			if (shown.request() != 0 && (!(previous instanceof RelayLessonScreen lesson)
 				|| !lesson.requesting || lesson.request != shown.request())) return;
 			if (shown.nonce() != 0 && shown.nonce() == closedNonce) return;
@@ -63,7 +63,7 @@ public final class RelayLessonScreen extends Screen implements CordEditorParent 
 			}
 			if (shown.page() > 0 && (!(previous instanceof RelayLessonScreen lesson) || lesson.nonce != shown.nonce())) return;
 			Screen parent = previous instanceof RelayLessonScreen lesson ? lesson.parent : previous;
-			context.client().gui.setScreen(new RelayLessonScreen(parent, shown));
+			context.client().setScreen(new RelayLessonScreen(parent, shown));
 		});
 	}
 
@@ -207,6 +207,6 @@ public final class RelayLessonScreen extends Screen implements CordEditorParent 
 		if (requesting) ClientPlayNetworking.send(new RelayLesson.Retrieve(request, true));
 		if (nonce != 0) closedNonce = nonce;
 		if (studying) ClientPlayNetworking.send(new RelayLesson.Turn(nonce, -1));
-		minecraft.gui.setScreen(parent);
+		minecraft.setScreen(parent);
 	}
 }

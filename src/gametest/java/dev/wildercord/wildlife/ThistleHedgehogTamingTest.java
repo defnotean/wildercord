@@ -106,7 +106,7 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 			final int netId = w.getServer().computeOnServer(s -> hog(s).getId());
 			check(c.computeOnClient(mc -> mc.level.getEntity(netId) instanceof ThistleHedgehog h && h.isInSittingPose()), "The client sees it sitting");
 			c.waitTicks(20);
-			c.runOnClient(mc -> mc.gui.hud.getChat().clearMessages(false));
+			c.runOnClient(mc -> mc.gui.getChat().clearMessages(false));
 			c.takeScreenshot(TestScreenshotOptions.of("thistle_hedgehog_tame_sitting").disableCounterPrefix());
 
 			// A stranger gives it no orders.

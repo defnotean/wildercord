@@ -149,8 +149,8 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				MagicQuality.stringIndicator = MagicQuality.StringIndicator.CROSSHAIR;
 				AuraScreen.listArts(false);
-				if (mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (mc.options.hideGui) {
+					mc.options.hideGui = !mc.options.hideGui;
 				}
 			});
 			context.getInput().releaseKey(o -> o.keyShift);
@@ -725,7 +725,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		// The Aura page: its Sword strings tab (clicked as a player would) lists the arts, with their strings drawn.
 		context.setScreen(() -> new AuraScreen(null));
 		context.waitTicks(3);
-		double[] tab = context.computeOnClient(mc -> ((AuraScreen) mc.gui.screen()).artsTabPoint());
+		double[] tab = context.computeOnClient(mc -> ((AuraScreen) mc.screen).artsTabPoint());
 		check(tab != null, "the Aura page should draw its Sword strings tab");
 		double guiScale = context.computeOnClient(mc -> mc.getWindow().getGuiScale());
 		context.getInput().setCursorPos(tab[0] * guiScale, tab[1] * guiScale);
@@ -787,8 +787,8 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 				});
 				context.runOnClient(mc -> {
 					mc.options.setCameraType(firstPerson ? CameraType.FIRST_PERSON : CameraType.THIRD_PERSON_BACK);
-					if (mc.gui.hud.isHidden() != !firstPerson) {
-						mc.gui.hud.toggle();
+					if (mc.options.hideGui != !firstPerson) {
+						mc.options.hideGui = !mc.options.hideGui;
 					}
 				});
 				context.waitTicks(12);
@@ -810,8 +810,8 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		world.getServer().runCommand("time set 3000");
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (mc.options.hideGui) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 	}
@@ -915,7 +915,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 	}
 
 	private static void shot(ClientGameTestContext context, String name) {
-		context.runOnClient(mc -> mc.gui.toastManager().clear());
+		context.runOnClient(mc -> mc.getToastManager().clear());
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 

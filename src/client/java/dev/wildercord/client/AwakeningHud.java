@@ -42,7 +42,7 @@ public final class AwakeningHud {
 	static void charge(GuiGraphicsExtractor g, DeltaTracker delta) {
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
-		if (player == null || mc.level == null || mc.gui.screen() != null) {
+		if (player == null || mc.level == null || mc.screen != null) {
 			return;
 		}
 		float partial = delta.getGameTimeDeltaPartialTick(false);

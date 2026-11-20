@@ -37,7 +37,7 @@ final class StructureGallery {
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");
 			c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.options.renderDistance().set(8); mc.options.fov().set(70); mc.resizeGui();
-				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle(); });
+				if (!mc.options.hideGui) mc.options.hideGui = !mc.options.hideGui; });
 			world.getServer().runOnServer(s -> {
 				var p = s.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SPECTATOR);
@@ -219,7 +219,7 @@ final class StructureGallery {
 
 	private static void shot(ClientGameTestContext c, String name) {
 		// Quest and advancement toasts still draw with the HUD hidden.
-		c.runOnClient(mc -> mc.gui.toastManager().clear());
+		c.runOnClient(mc -> mc.getToastManager().clear());
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 

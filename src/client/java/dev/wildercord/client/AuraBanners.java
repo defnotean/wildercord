@@ -203,7 +203,7 @@ public final class AuraBanners {
 
 	/** Where above {@code entity}'s head is on the screen, or null when it's out of view (or the camera itself, or far). */
 	private static float[] above(Minecraft mc, Entity entity, float partial, int width, int height) {
-		var camera = mc.gameRenderer.mainCamera();
+		var camera = mc.gameRenderer.getMainCamera();
 		if (entity == mc.getCameraEntity() && !camera.isDetached()) {
 			return null;
 		}

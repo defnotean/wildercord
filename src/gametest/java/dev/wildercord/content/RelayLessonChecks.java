@@ -78,7 +78,7 @@ public final class RelayLessonChecks {
 				check(!MasterStudies.knowsRelay(player(server)) && !Spellbooks.knows(player(server), Runes.RELAY.id()), "A forged book cannot teach");
 				player(server).setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 			});
-			context.runOnClient(mc -> mc.gui.setScreen(null));
+			context.runOnClient(mc -> mc.setScreen(null));
 			context.waitTicks(5);
 			use(context);
 			checkNotReading(context, "Below VIII cannot begin study");
@@ -142,7 +142,7 @@ public final class RelayLessonChecks {
 					&& afterCopy.innate().equals(beforeCopy.innate()) && afterCopy.starterGiven() == beforeCopy.starterGiven(),
 					"First copying changes only the verified lesson receipt");
 			});
-			context.runOnClient(mc -> mc.gui.screen().onClose()); context.waitTicks(3);
+			context.runOnClient(mc -> mc.screen.onClose()); context.waitTicks(3);
 			Rewards beforeRepeat = world.getServer().computeOnServer(server -> rewards(player(server), "before_repeat_copy"));
 			use(context);
 			long first = nonce(context);
@@ -246,7 +246,7 @@ public final class RelayLessonChecks {
 			openGrimoireLesson(context);
 			assertPage(context, 0, false);
 			context.takeScreenshot(TestScreenshotOptions.of("relay_grimoire_retrieval").disableCounterPrefix());
-			context.runOnClient(mc -> mc.gui.setScreen(null));
+			context.runOnClient(mc -> mc.setScreen(null));
 			world.getServer().runOnServer(server -> {
 				player(server).getInventory().setItem(9, ItemStack.EMPTY);
 				for (var keeper : server.overworld().getEntitiesOfClass(dev.wildercord.cast.Archivist.class,
@@ -261,7 +261,7 @@ public final class RelayLessonChecks {
 				check(books(player) == 1 && Heart.discovered(player, MasterStudyRules.RELAY_COPY), "Lectern supplies original copy once there is room");
 				removeBooks(player);
 			});
-			context.runOnClient(mc -> mc.gui.setScreen(null));
+			context.runOnClient(mc -> mc.setScreen(null));
 			context.waitTicks(5);
 			use(context);
 			world.getServer().runOnServer(server -> {
@@ -269,12 +269,12 @@ public final class RelayLessonChecks {
 				check(books(player) == 1 && Heart.discovered(player, MasterStudyRules.RELAY_REPLACEMENT), "Lost copy can be replaced once");
 				removeBooks(player);
 			});
-			context.runOnClient(mc -> mc.gui.setScreen(null));
+			context.runOnClient(mc -> mc.setScreen(null));
 			context.waitTicks(5);
 			use(context);
 			assertPage(context, 0, false);
 			world.getServer().runOnServer(server -> check(books(player(server)) == 0 && MasterStudies.knowsRelay(player(server)), "Further losses retain readable lesson without farming book copies"));
-			context.runOnClient(mc -> mc.gui.setScreen(null));
+			context.runOnClient(mc -> mc.setScreen(null));
 		}
 		reconnect(context);
 	}
@@ -345,7 +345,7 @@ public final class RelayLessonChecks {
 
 	private static long nonce(ClientGameTestContext context) {
 		assertPage(context, 0, true);
-		return context.computeOnClient(mc -> ((RelayLessonScreen) mc.gui.screen()).sessionNonce());
+		return context.computeOnClient(mc -> ((RelayLessonScreen) mc.screen).sessionNonce());
 	}
 	private static void send(ClientGameTestContext context, long nonce, int page) {
 		context.runOnClient(mc -> ClientPlayNetworking.send(new RelayLesson.Turn(nonce, page)));
@@ -354,7 +354,7 @@ public final class RelayLessonChecks {
 	private static void advance(ClientGameTestContext context) {
 		context.getInput().pressKey(InputConstants.KEY_END);
 		context.waitTicks(2);
-		click(context, context.computeOnClient(mc -> ((RelayLessonScreen) mc.gui.screen()).nextPagePoint()));
+		click(context, context.computeOnClient(mc -> ((RelayLessonScreen) mc.screen).nextPagePoint()));
 	}
 	private static void click(ClientGameTestContext context, double[] point) {
 		check(point != null, "Requested lesson control is visible");
@@ -365,11 +365,11 @@ public final class RelayLessonChecks {
 		context.waitTicks(5);
 	}
 	private static void assertPage(ClientGameTestContext context, int page, boolean studying) {
-		context.runOnClient(mc -> check(mc.gui.screen() instanceof RelayLessonScreen lesson
+		context.runOnClient(mc -> check(mc.screen instanceof RelayLessonScreen lesson
 			&& lesson.pageNumber() == page && lesson.isStudying() == studying, "Expected Relay page " + page + ", studying=" + studying));
 	}
 	private static void checkNotReading(ClientGameTestContext context, String reason) {
-		context.runOnClient(mc -> check(!(mc.gui.screen() instanceof RelayLessonScreen), reason));
+		context.runOnClient(mc -> check(!(mc.screen instanceof RelayLessonScreen), reason));
 	}
 	private static int books(ServerPlayer player) {
 		int count = 0;
@@ -481,20 +481,20 @@ public final class RelayLessonChecks {
 
 	private static void openGrimoireLesson(ClientGameTestContext context) {
 		context.runOnClient(mc -> lessonControl(mc, "before_grimoire_click"));
-		click(context, context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).pagePoint(2)));
+		click(context, context.computeOnClient(mc -> ((CordScreen) mc.screen).pagePoint(2)));
 		double[] point = context.computeOnClient(mc -> lessonControl(mc, "after_grimoire_click"));
 		if (point == null) context.takeScreenshot(TestScreenshotOptions.of("relay_lesson_missing_control").disableCounterPrefix());
-		context.runOnClient(mc -> check(grimoirePage((CordScreen) mc.gui.screen()), "The real Grimoire tab click selects its page"));
+		context.runOnClient(mc -> check(grimoirePage((CordScreen) mc.screen), "The real Grimoire tab click selects its page"));
 		click(context, point);
 	}
 	private static double[] lessonControl(net.minecraft.client.Minecraft mc, String phase) {
 		var value = new com.google.gson.JsonObject();
 		value.addProperty("phase", phase); value.addProperty("thread", Thread.currentThread().getName());
-		value.addProperty("screen", mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName());
+		value.addProperty("screen", mc.screen == null ? "none" : mc.screen.getClass().getName());
 		value.addProperty("copied", MasterStudies.hasRelayLesson(mc.player)); value.addProperty("learned", MasterStudies.knowsRelay(mc.player));
 		var found = new com.google.gson.JsonArray(); Heart.grimoire(mc.player).stream().limit(32).forEach(found::add); value.add("grimoire", found);
 		double[] point = null;
-		if (mc.gui.screen() instanceof CordScreen cord) {
+		if (mc.screen instanceof CordScreen cord) {
 			value.addProperty("grimoirePage", grimoirePage(cord)); value.addProperty("scroll", cord.lifeJournalScroll());
 			value.addProperty("width", cord.width); value.addProperty("height", cord.height); value.addProperty("guiScale", mc.getWindow().getGuiScale());
 			point = cord.relayLessonPoint();

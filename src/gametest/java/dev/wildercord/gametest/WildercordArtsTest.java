@@ -176,8 +176,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				AuraScreen.listArts(false);
 				AuraScreen.browse(null);
-				if (mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (mc.options.hideGui) {
+					mc.options.hideGui = !mc.options.hideGui;
 				}
 			});
 			context.getInput().releaseKey(o -> o.keyShift);
@@ -1023,8 +1023,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			});
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!mc.options.hideGui) {
+					mc.options.hideGui = !mc.options.hideGui;
 				}
 			});
 			context.waitTicks(12);
@@ -1085,8 +1085,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		world.getServer().runCommand("time set 3000");
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (mc.options.hideGui) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 	}
@@ -1534,7 +1534,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		context.waitTicks(3);
 		shot(context, "art_page_own");
 		// Another method's arts, chosen by its swatch as a player would.
-		double[] chip = context.computeOnClient(mc -> ((AuraScreen) mc.gui.screen()).chipPoint("thunder"));
+		double[] chip = context.computeOnClient(mc -> ((AuraScreen) mc.screen).chipPoint("thunder"));
 		check(chip != null, "the page should draw Thunder's swatch");
 		double guiScale = context.computeOnClient(mc -> mc.getWindow().getGuiScale());
 		context.getInput().setCursorPos(chip[0] * guiScale, chip[1] * guiScale);
@@ -1724,7 +1724,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	}
 
 	private static void shot(ClientGameTestContext context, String name) {
-		context.runOnClient(mc -> mc.gui.toastManager().clear());
+		context.runOnClient(mc -> mc.getToastManager().clear());
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 

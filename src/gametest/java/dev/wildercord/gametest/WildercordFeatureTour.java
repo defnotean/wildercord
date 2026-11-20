@@ -176,10 +176,10 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				beforeDirector = mc.options.getCameraType();
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(camera);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!mc.options.hideGui) {
+					mc.options.hideGui = !mc.options.hideGui;
 				}
-				mc.gui.toastManager().clear();
+				mc.getToastManager().clear();
 			}
 		});
 	}
@@ -191,8 +191,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		context.runOnClient(mc -> {
 			mc.setCameraEntity(mc.player);
 			mc.options.setCameraType(beforeDirector);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (mc.options.hideGui) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 	}
@@ -325,10 +325,10 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		context.getInput().setCursorPos(960, 540);
 		context.getInput().holdKey(WildercordKeys.nextMapping());
 		context.waitTicks(8);
-		check(context.computeOnClient(mc -> mc.gui.screen() instanceof SpellWheelScreen), "holding the switch key opens the wheel");
+		check(context.computeOnClient(mc -> mc.screen instanceof SpellWheelScreen), "holding the switch key opens the wheel");
 		context.getInput().releaseKey(WildercordKeys.nextMapping());
 		context.waitTicks(4);
-		check(context.computeOnClient(mc -> mc.gui.screen() instanceof SpellWheelScreen wheel && wheel.toggled()),
+		check(context.computeOnClient(mc -> mc.screen instanceof SpellWheelScreen wheel && wheel.toggled()),
 			"let go without pointing, the wheel stays open");
 		context.getInput().setCursorPos(960 + 120, 540);
 		context.waitTicks(3);
@@ -336,7 +336,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		// A number picks that spell and closes it.
 		context.getInput().pressKey(com.mojang.blaze3d.platform.InputConstants.KEY_3);
 		context.waitTicks(4);
-		check(context.computeOnClient(mc -> mc.gui.screen() == null), "a number key chooses and closes the wheel");
+		check(context.computeOnClient(mc -> mc.screen == null), "a number key chooses and closes the wheel");
 		check(world.getServer().computeOnServer(server -> Spellbooks.get(player(server)).selected() == 2), "pressing 3 selects the third spell");
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
@@ -356,7 +356,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			try {
 				var field = CordScreen.class.getDeclaredField("grimoirePage");
 				field.setAccessible(true);
-				field.set(mc.gui.screen(), true);
+				field.set(mc.screen, true);
 			} catch (ReflectiveOperationException e) {
 				throw new AssertionError(e);
 			}

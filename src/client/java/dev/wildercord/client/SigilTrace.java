@@ -74,7 +74,7 @@ public final class SigilTrace {
 			}
 		}
 		boolean was = steadying;
-		steadying = !glyph.isEmpty() && mc.gui.screen() == null && player.isAlive() && mc.options.keyShift.isDown();
+		steadying = !glyph.isEmpty() && mc.screen == null && player.isAlive() && mc.options.keyShift.isDown();
 		if (steadying) {
 			everSteadied = true;
 		}

@@ -50,7 +50,7 @@ public final class MasteryClient {
 
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(MasteryChoices.Rise.TYPE, (payload, context) -> {
-			context.client().gui.toastManager().addToast(new RankToast(payload));
+			context.client().getToastManager().addToast(new RankToast(payload));
 			if (payload.choice()) {
 				prompt = true;
 			}
@@ -201,7 +201,7 @@ public final class MasteryClient {
 
 		/** Where above {@code caster}'s head is on the screen, or null when they're out of view (or the camera itself). */
 		private static float[] above(Minecraft mc, Entity caster, float partial, int width, int height) {
-			var camera = mc.gameRenderer.mainCamera();
+			var camera = mc.gameRenderer.getMainCamera();
 			if (caster == mc.getCameraEntity() && !camera.isDetached()) {
 				return null;
 			}

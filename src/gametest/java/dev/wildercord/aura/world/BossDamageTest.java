@@ -164,8 +164,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 						check(!state.isEmpty(), name + " resolves a non-empty model in " + ctx);
 					}
 					mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
-					mc.gui.toastManager().clear();
-					mc.gui.hud.getChat().clearMessages(false);
+					mc.getToastManager().clear();
+					mc.gui.getChat().clearMessages(false);
 				});
 				c.waitTicks(2);
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person").disableCounterPrefix());

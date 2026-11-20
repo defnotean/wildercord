@@ -121,7 +121,7 @@ public final class FarmSoilTest implements FabricClientGameTest {
     }
 
     private static void shot(ClientGameTestContext c, String name) {
-        c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.resizeGui(); mc.gui.toastManager().clear(); mc.gui.hud.getChat().clearMessages(false); });
+        c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.resizeGui(); mc.getToastManager().clear(); mc.gui.getChat().clearMessages(false); });
         c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
     }
 

@@ -168,7 +168,7 @@ public final class ArticulatedSharedRenderProbe {
 				s.observe("shellAdapterEnabled", ArticulatedAuraShellRenderer.enabled());
 				s.observe("bannerClassification", "unclassified:not_observed");
 				s.observe("nativeMainHandCalled", false); s.observe("viewSubmitCalled", false); s.observe("viewSubmitReturned", "not_called");
-				s.observe("hudHidden", mc.gui.hud.isHidden()); s.observe("screen", mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName());
+				s.observe("hudHidden", mc.options.hideGui); s.observe("screen", mc.screen == null ? "none" : mc.screen.getClass().getName());
 				if (token.expected != null) {
 					s.observe("expectedOwnerId", token.expected.owner()); s.observe("expectedOwnerUuid", token.expected.ownerUuid());
 					s.observe("expectedMove", token.expected.move()); s.observe("expectedStartTick", token.expected.startTick());

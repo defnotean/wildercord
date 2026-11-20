@@ -28,9 +28,9 @@ public final class SiltcrestEcologyTest implements FabricClientGameTest {
  private SiltcrestEcologyProbe probe;
  public void runTest(ClientGameTestContext c) {
   SiltcrestEcologyWitnessChecks.verify();
-  var camera=c.computeOnClient(mc->mc.options.getCameraType());boolean hud=c.computeOnClient(mc->mc.gui.hud.isHidden());TestWorldSave save;
+  var camera=c.computeOnClient(mc->mc.options.getCameraType());boolean hud=c.computeOnClient(mc->mc.options.hideGui);TestWorldSave save;
   try {
-   c.runOnClient(mc->{mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();});
+   c.runOnClient(mc->{mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);if(!mc.options.hideGui)mc.options.hideGui = !mc.options.hideGui;});
    try(var w=c.worldBuilder().create()) {
     c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
     long started=w.getServer().computeOnServer(s->{
@@ -81,7 +81,7 @@ public final class SiltcrestEcologyTest implements FabricClientGameTest {
    }
   }finally {
    if(probe!=null){probe.close();probe=null;}
-   c.runOnClient(mc->{mc.options.setCameraType(camera);if(mc.gui.hud.isHidden()!=hud)mc.gui.hud.toggle();});
+   c.runOnClient(mc->{mc.options.setCameraType(camera);if(mc.options.hideGui!=hud)mc.options.hideGui = !mc.options.hideGui;});
   }
  }
  private int hunt(ClientGameTestContext c,TestSingleplayerContext w,long started) {

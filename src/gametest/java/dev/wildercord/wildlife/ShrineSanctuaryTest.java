@@ -101,9 +101,9 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 	private static void shot(ClientGameTestContext c, String name) {
 		c.runOnClient(mc -> {
-			mc.gui.hud.getChat().clearMessages(false);
-			if (!mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			mc.gui.getChat().clearMessages(false);
+			if (!mc.options.hideGui) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());

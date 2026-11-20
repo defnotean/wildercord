@@ -58,7 +58,7 @@ public final class GametestCompat {
 	}
 
 	public static void extractMainCamera(GameRenderer gameRenderer, CameraRenderState camera, DeltaTracker delta) {
-		var mainCam = gameRenderer.mainCamera();
+		var mainCam = gameRenderer.getMainCamera();
 		mainCam.extractRenderState(camera, mainCam.getCameraEntityPartialTicks(delta));
 	}
 

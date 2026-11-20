@@ -52,7 +52,7 @@ public final class WaypointHud {
 		Waypoints.Track track = tracked;
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
-		if (track == null || player == null || mc.gui.hud.getDebugOverlay().showDebugScreen()) {
+		if (track == null || player == null || mc.getDebugOverlay().showDebugScreen()) {
 			return;
 		}
 		Font font = mc.font;
@@ -77,7 +77,7 @@ public final class WaypointHud {
 		int x = 6;
 		int textX = x + 12;
 		int width = 12 + font.width(name) + 6 + font.width(info);
-		int bosses = ((dev.wildercord.client.mixin.BossHealthOverlayAccessor) mc.gui.hud.getBossOverlay()).wildercord$events().size();
+		int bosses = ((dev.wildercord.client.mixin.BossHealthOverlayAccessor) mc.gui.getBossOverlay()).wildercord$events().size();
 		int y = lineY(g.guiWidth(), g.guiHeight(), x + width + 3, bosses);
 		g.fill(x - 3, y - 3, x + width + 3, y + font.lineHeight + 1, BACKDROP);
 		if (here && !arrived) {

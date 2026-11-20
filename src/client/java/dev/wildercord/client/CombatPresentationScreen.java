@@ -18,7 +18,7 @@ public final class CombatPresentationScreen extends Screen implements CordEditor
  public CombatPresentationScreen(Screen returnTo){super(text("title"));this.returnTo=returnTo;draft=new Draft(CombatPresentation.saved());}
  private static Component text(String key,Object...args){return Component.translatable("screen.wildercord.combat."+key,args);}
  private static Component value(Enum<?> value){return text(value.name().toLowerCase(Locale.ROOT));}
- @Override public void onClose(){minecraft.gui.setScreen(returnTo);}
+ @Override public void onClose(){minecraft.setScreen(returnTo);}
  @Override protected void init(){
   int w=Math.min(360,width-24),x=(width-w)/2;
   Launch launch=CombatPresentation.launch();
@@ -26,7 +26,7 @@ public final class CombatPresentationScreen extends Screen implements CordEditor
   animation.active=!launch.master().present()&&CombatPresentation.warning()!=Warning.FUTURE_VERSION;
   var camera=addRenderableWidget(Button.builder(text("camera",value(draft.camera())),b->{draft.toggleCamera();failed=false;rebuildWidgets();}).bounds(x,50,w,20).build());
   camera.active=!launch.camera().present()&&CombatPresentation.warning()!=Warning.FUTURE_VERSION;
-  addRenderableWidget(Button.builder(text("help"),b->minecraft.gui.setScreen(new Help(this))).bounds(x,height-74,w,20).build());
+  addRenderableWidget(Button.builder(text("help"),b->minecraft.setScreen(new Help(this))).bounds(x,height-74,w,20).build());
   var reset=addRenderableWidget(Button.builder(text("reset"),b->{draft.reset();failed=false;rebuildWidgets();}).bounds(x,height-50,w,20).build());
   reset.active=CombatPresentation.warning()!=Warning.FUTURE_VERSION;
   int half=(w-4)/2;
@@ -79,7 +79,7 @@ public final class CombatPresentationScreen extends Screen implements CordEditor
    addRenderableWidget(Button.builder(text("next"),b->{page=(page+1)%PAGES;rebuildWidgets();}).bounds(x+half+4,height-50,w-half-4,20).build());
    addRenderableWidget(Button.builder(text("back_choices"),b->onClose()).bounds(x,height-26,w,20).build());
   }
-  @Override public void onClose(){minecraft.gui.setScreen(parent);}
+  @Override public void onClose(){minecraft.setScreen(parent);}
   @Override public Component getNarrationMessage(){return title.copy().append(". ").append(body());}
   @Override public void extractRenderState(GuiGraphicsExtractor g,int mouseX,int mouseY,float partial){
    super.extractRenderState(g,mouseX,mouseY,partial);g.centeredText(font,text("page",page+1,PAGES),width/2,12,0xFFE8C46A);

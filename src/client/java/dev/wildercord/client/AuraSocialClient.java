@@ -86,7 +86,7 @@ public final class AuraSocialClient {
     public static boolean press() {
         Minecraft mc = Minecraft.getInstance();
         Lock lock = own();
-        if (lock == null || lock.outcome >= 0 || mc.player == null || mc.level == null || mc.gui.screen() != null) return false;
+        if (lock == null || lock.outcome >= 0 || mc.player == null || mc.level == null || mc.screen != null) return false;
         if (mc.level.getGameTime() - lock.cue.start() > ClashRules.serverLength()) return false;
         ClientPlayNetworking.send(new Clashes.Press(lock.cue.id()));
         int side = lock.cue.a() == mc.player.getId() ? 0 : 1;
@@ -108,7 +108,7 @@ public final class AuraSocialClient {
 
     private static void draw(GuiGraphicsExtractor g, DeltaTracker delta) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.level == null || mc.gui.screen() != null || mc.player.isSpectator()) return;
+        if (mc.player == null || mc.level == null || mc.screen != null || mc.player.isSpectator()) return;
         Lock lock = own();
         int width = Math.min(238, g.guiWidth() - 16), x = (g.guiWidth() - width) / 2;
         // Clear the vanilla action bar as well as the hotbar and aiming area.

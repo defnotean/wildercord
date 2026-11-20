@@ -83,7 +83,7 @@ public final class MasterFormsScreen extends Screen implements CordEditorParent 
 		control("back", 214, H - 49, 89, parent != null ? text("back") : Component.translatable("gui.done"), this::onClose);
 		// Field forms share this slot; their page is reached from here once one is learned.
 		if (field) control("field", fieldX, H - 76, w, text("field"),
-			() -> minecraft.gui.setScreen(new FormDashScreen(this, FormDashScreen.preferred(minecraft.player))));
+			() -> minecraft.setScreen(new FormDashScreen(this, FormDashScreen.preferred(minecraft.player))));
 	}
 	/** Screen calls this after both initial construction and a rebuild; choosing in init would advance focus twice. */
 	@Override protected void setInitialFocus() {
@@ -116,7 +116,7 @@ public final class MasterFormsScreen extends Screen implements CordEditorParent 
 	@Override public boolean isPauseScreen() { return false; }
 	@Override public boolean isInGameUi() { return true; }
 	@Override public Screen cordEditorParent() { return parent; }
-	@Override public void onClose() { minecraft.gui.setScreen(parent); }
+	@Override public void onClose() { minecraft.setScreen(parent); }
 	@Override public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
 		g.pose().pushMatrix(); g.pose().translate(left(), top()); g.pose().scale(scale(), scale());
 		g.fill(0, 0, W, H, 0xF0182428); g.fill(1, 1, W - 1, 3, GOLD);

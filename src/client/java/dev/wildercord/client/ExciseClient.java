@@ -34,7 +34,7 @@ public final class ExciseClient {
     private static final java.util.Map<java.util.UUID, Long> OUTCOMES = new java.util.HashMap<>();
 
     public static void beginTick(Minecraft client) {
-        boolean active = client.player != null && client.player.isAlive() && !client.player.isSpectator() && client.gui.screen() == null && client.isWindowActive();
+        boolean active = client.player != null && client.player.isAlive() && !client.player.isSpectator() && client.screen == null && client.isWindowActive();
         if (body != client.player || world != client.level) {
             body = client.player; world = client.level;
             cores = java.util.List.of(); OUTCOMES.clear();

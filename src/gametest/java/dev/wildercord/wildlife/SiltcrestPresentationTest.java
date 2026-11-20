@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 /** Actual unpaused model poses. Full/Minimal spell settings do not substitute for this creature's own rig. */
 public final class SiltcrestPresentationTest implements FabricClientGameTest {
  private SiltcrestBittern source;private int entityId;private SiltcrestPresentationProbe.Session observation;
- public void runTest(ClientGameTestContext c){var camera=c.computeOnClient(mc->mc.options.getCameraType());boolean hud=c.computeOnClient(mc->mc.gui.hud.isHidden());int[] size=c.computeOnClient(mc->new int[]{mc.getWindow().getWidth(),mc.getWindow().getHeight()});var own=MagicQuality.own;var others=MagicQuality.others;boolean flash=MagicQuality.reducedFlash;
+ public void runTest(ClientGameTestContext c){var camera=c.computeOnClient(mc->mc.options.getCameraType());boolean hud=c.computeOnClient(mc->mc.options.hideGui);int[] size=c.computeOnClient(mc->new int[]{mc.getWindow().getWidth(),mc.getWindow().getHeight()});var own=MagicQuality.own;var others=MagicQuality.others;boolean flash=MagicQuality.reducedFlash;
   try{
    SiltcrestPresentationProbeChecks.verify();
    SiltcrestPresentationWitnessChecks.verify();
@@ -35,7 +35,7 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
     w.getServer().runOnServer(s->check(source.onGround()&&source.shelter()!=null&&BitternHabitat.shelter(s.overworld(),source.shelter())&&source.distanceToSqr(source.shelter().getX()+.5,source.shelter().getY(),source.shelter().getZ()+.5)<=.36&&source.huntReady()==meal,"Actual grounded canopy rest retains earned appetite"));finish(c,capture(c,prefix+"_actual_shelter",SiltcrestBittern.SHELTERING));
     }finally{if(observation!=null){try{observation.close();}finally{observation=null;}}}
    }
-  }finally{source=null;c.runOnClient(mc->{MagicQuality.own=own;MagicQuality.others=others;MagicQuality.reducedFlash=flash;mc.options.setCameraType(camera);if(mc.gui.hud.isHidden()!=hud)mc.gui.hud.toggle();mc.getWindow().setWindowed(size[0],size[1]);mc.resizeGui();});}
+  }finally{source=null;c.runOnClient(mc->{MagicQuality.own=own;MagicQuality.others=others;MagicQuality.reducedFlash=flash;mc.options.setCameraType(camera);if(mc.options.hideGui!=hud)mc.options.hideGui = !mc.options.hideGui;mc.getWindow().setWindowed(size[0],size[1]);mc.resizeGui();});}
  }
  private record HuntState(long clock,int pose,long huntReady,SiltcrestPresentationWitness.Candidate candidate) {}
  private record HuntFrames(List<CompletableFuture<Void>> frames,String coil) {}
@@ -117,6 +117,6 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
    return drawn.thenCombine(background,(a,z)->{check(a.length==z.length&&a.length==width*height,"Matched native rig framebuffer dimensions");int changed=0;for(int py=Math.max(0,height/2-ry);py<Math.min(height,height/2+ry);py++)for(int px=Math.max(0,width/2-rx);px<Math.min(width,width/2+rx);px++){int i=py*width+px,x=a[i],y=z[i];int delta=Math.abs((x>>16&255)-(y>>16&255))+Math.abs((x>>8&255)-(y>>8&255))+Math.abs((x&255)-(y&255));if(delta>20)changed++;}check(changed>100,"Actual authored torso-centered model region changes visible native pixels: "+name+" changed="+changed);return (Void)null;});
   });return done;}
  private static void finish(ClientGameTestContext c,CompletableFuture<Void> done){c.waitFor(mc->done.isDone());done.join();}
- private static void clean(Minecraft mc){mc.gui.setScreen(null);mc.gui.toastManager().clear();mc.gui.hud.getChat().clearMessages(false);if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();}
+ private static void clean(Minecraft mc){mc.setScreen(null);mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);if(!mc.options.hideGui)mc.options.hideGui = !mc.options.hideGui;}
  private static CompletableFuture<int[]> pixels(Minecraft mc,String name){var result=new CompletableFuture<int[]>();mc.gameRenderer.update(DeltaTracker.ONE);mc.gameRenderer.extract(DeltaTracker.ONE,true);dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc,DeltaTracker.ONE);com.mojang.blaze3d.systems.RenderSystem.getDevice().createCommandEncoder().submit();net.minecraft.client.Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(),image->{try(image){var p=java.nio.file.Path.of("screenshots",name+".png");java.nio.file.Files.createDirectories(p.getParent());image.writeToFile(p);result.complete(image.getPixels());}catch(Throwable error){result.completeExceptionally(error);}});return result;}
 }

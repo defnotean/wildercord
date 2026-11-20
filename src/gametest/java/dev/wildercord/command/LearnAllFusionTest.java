@@ -26,13 +26,13 @@ public final class LearnAllFusionTest implements FabricClientGameTest {
    });
    w.getServer().runCommand("execute as @p run wildercord learnall");c.waitTicks(8);
    w.getServer().runOnServer(s -> verify(s.getPlayerList().getPlayers().getFirst(),spell));
-   c.runOnClient(mc -> {verify(mc.player,spell);mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.gui.toastManager().clear();});
+   c.runOnClient(mc -> {verify(mc.player,spell);mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.getToastManager().clear();});
    c.takeScreenshot(TestScreenshotOptions.of("learnall_fusion_command").disableCounterPrefix());
    w.getServer().runCommand("execute as @p run wildercord learnall");c.waitTicks(4);
    w.getServer().runOnServer(s -> verify(s.getPlayerList().getPlayers().getFirst(),spell));
-   c.runOnClient(mc -> {var screen=new CordScreen();mc.gui.setScreen(screen);screen.showPage(2);});c.waitTicks(3);
+   c.runOnClient(mc -> {var screen=new CordScreen();mc.setScreen(screen);screen.showPage(2);});c.waitTicks(3);
    c.takeScreenshot(TestScreenshotOptions.of("learnall_fusion_grimoire").disableCounterPrefix());
-   c.runOnClient(mc -> mc.gui.setScreen(null));save=w.getWorldSave();
+   c.runOnClient(mc -> mc.setScreen(null));save=w.getWorldSave();
   }
   try(var w=save.open()) {c.waitTicks(30);w.getServer().runOnServer(s -> verify(s.getPlayerList().getPlayers().getFirst(),spell));c.runOnClient(mc -> verify(mc.player,spell));}
  }

@@ -98,7 +98,7 @@ public final class BasinfillTest implements FabricClientGameTest {
         for(int i=0;i<width;i++)for(int j=0;j<length;j++)check(p.level().getBlockState(new BlockPos(x+i,101,j)).isAir(),"Refusal places no partial water");
     }
     private static void shot(ClientGameTestContext c,String name) {
-        c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.gui.toastManager().clear();mc.gui.hud.getChat().clearMessages(false);});
+        c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);});
         c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
     }
     private static void check(boolean yes,String why) {if(!yes)throw new AssertionError(why);}

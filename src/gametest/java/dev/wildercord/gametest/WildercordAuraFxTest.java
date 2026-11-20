@@ -126,8 +126,8 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				saved.restore();
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
-				if (mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (mc.options.hideGui) {
+					mc.options.hideGui = !mc.options.hideGui;
 				}
 			});
 			context.getInput().releaseKey(o -> o.keyShift);
@@ -215,8 +215,8 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			});
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!mc.options.hideGui) {
+					mc.options.hideGui = !mc.options.hideGui;
 				}
 			});
 			world.getServer().runCommand("time set 3000");
@@ -248,8 +248,8 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		// In first person, at Sovereign in a fight: none of it round your own eyes, only the whisper at the bottom of the screen.
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (mc.options.hideGui) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 		on(world, player -> {
@@ -829,8 +829,8 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		});
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (mc.options.hideGui) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 		context.waitTicks(StringRules.ENGAGED_TICKS / 2);
@@ -878,7 +878,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 	}
 
 	private static void shot(ClientGameTestContext context, String name) {
-		context.runOnClient(mc -> mc.gui.toastManager().clear());
+		context.runOnClient(mc -> mc.getToastManager().clear());
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 

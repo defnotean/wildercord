@@ -36,7 +36,7 @@ public final class MasterFormsClient {
 		ClientPlayNetworking.registerGlobalReceiver(MasterForms.Event.TYPE, (event, context) -> receive(context.client(), event));
 		ClientPlayNetworking.registerGlobalReceiver(MasterFormLessons.Open.TYPE, (event, context) -> {
 			if (context.client().player != null && context.client().level != null)
-				context.client().gui.setScreen(new MasterFormsScreen(context.client().gui.screen(), event.nonce(), true, event.form()));
+				context.client().setScreen(new MasterFormsScreen(context.client().screen, event.nonce(), true, event.form()));
 		});
 		net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.BEFORE_INIT.register((client, screen, width, height) -> {
 			send(WallTurnRules.CANCEL); suppressed = true;
@@ -45,7 +45,7 @@ public final class MasterFormsClient {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> clear());
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("master_form_state"), (graphics, delta) -> {
 			Minecraft client = Minecraft.getInstance();
-			if (client.player == null || client.gui.screen() != null || client.gui.hud.isHidden() || MasterForms.data(client.player).equipped() == 0) return;
+			if (client.player == null || client.screen != null || client.options.hideGui || MasterForms.data(client.player).equipped() == 0) return;
 			Component line = state();
 			int x = graphics.guiWidth() / 2, y = graphics.guiHeight() - 66;
 			var lines = client.font.split(line, Math.max(80, graphics.guiWidth() - 12));
@@ -75,7 +75,7 @@ public final class MasterFormsClient {
 	private static void tick(Minecraft client) {
 		if (client.level != level) { clear(); level = client.level; suppressed = true; }
 		boolean playing = client.player != null && client.player.isAlive() && !client.player.isSpectator() && !client.player.isCreative()
-			&& client.gui.screen() == null && !client.isPaused();
+			&& client.screen == null && !client.isPaused();
 		boolean clicked = false;
 		while (key.consumeClick()) clicked = true;
 		boolean down = key.isDown();

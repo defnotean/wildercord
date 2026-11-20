@@ -169,11 +169,11 @@ public final class RelayCircleTest implements FabricClientGameTest {
 	private static void editor(ClientGameTestContext c, java.util.function.Consumer<java.util.function.Consumer<MinecraftServer>> onServer) {
 		onServer.accept(server -> { reset(probe.owner, Runes.HARM); Spellbooks.learn(probe.owner, Runes.AMPLIFY.id()); });
 		c.waitTicks(3); c.setScreen(CordScreen::new); c.waitTicks(3);
-		click(c, c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).socketPoint(0, 1)));
+		click(c, c.computeOnClient(mc -> ((CordScreen)mc.screen).socketPoint(0, 1)));
 		onServer.accept(server -> check(Spellbooks.get(probe.owner).spells().getFirst().equals(List.of(RelayRules.ID)), "Removing a Relay payload saves the noncastable draft instead of leaving the previous spell armed"));
-		c.runOnClient(mc -> ((CordScreen)mc.gui.screen()).searchFor("Amplify")); c.waitTicks(2);
-		click(c, c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).codexPoint(Runes.AMPLIFY.id())));
-		c.runOnClient(mc -> check(((CordScreen)mc.gui.screen()).rowRunes(0).equals(List.of(RelayRules.ID, Runes.AMPLIFY.id())), "Editor retains the exact unfinished row"));
+		c.runOnClient(mc -> ((CordScreen)mc.screen).searchFor("Amplify")); c.waitTicks(2);
+		click(c, c.computeOnClient(mc -> ((CordScreen)mc.screen).codexPoint(Runes.AMPLIFY.id())));
+		c.runOnClient(mc -> check(((CordScreen)mc.screen).rowRunes(0).equals(List.of(RelayRules.ID, Runes.AMPLIFY.id())), "Editor retains the exact unfinished row"));
 		onServer.accept(server -> check(Spellbooks.get(probe.owner).spells().getFirst().equals(List.of(RelayRules.ID, Runes.AMPLIFY.id())) && RelayCircles.problem(probe.owner, 0)!=null, "Server and visible invalid draft agree and cannot cast"));
 		c.setScreen(() -> null); c.waitTicks(3);
 		int payments = probe.payments;
@@ -181,30 +181,30 @@ public final class RelayCircleTest implements FabricClientGameTest {
 		onServer.accept(server -> check(probe.payments==payments&&!RelayCircles.pending(probe.owner), "Closing an invalid draft never revives the old accepted Relay"));
 		onServer.accept(server -> reset(probe.owner, Runes.HARM)); c.waitTicks(3); c.setScreen(CordScreen::new); c.waitTicks(3);
 		onServer.accept(server -> probe.owner.setAttached(WildercordAttachments.CIRCLES, 7)); c.waitTicks(3);
-		c.runOnClient(mc -> ((CordScreen)mc.gui.screen()).searchFor("Amplify")); c.waitTicks(2);
-		click(c, c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).codexPoint(Runes.AMPLIFY.id())));
-		c.runOnClient(mc -> check(((CordScreen)mc.gui.screen()).rowRunes(0).equals(List.of(RelayRules.ID, Runes.HARM.id())) && ((CordScreen)mc.gui.screen()).lastRefusal()!=null, "Unauthorized edit explicitly restores the accepted row and explains refusal"));
+		c.runOnClient(mc -> ((CordScreen)mc.screen).searchFor("Amplify")); c.waitTicks(2);
+		click(c, c.computeOnClient(mc -> ((CordScreen)mc.screen).codexPoint(Runes.AMPLIFY.id())));
+		c.runOnClient(mc -> check(((CordScreen)mc.screen).rowRunes(0).equals(List.of(RelayRules.ID, Runes.HARM.id())) && ((CordScreen)mc.screen).lastRefusal()!=null, "Unauthorized edit explicitly restores the accepted row and explains refusal"));
 		// Receive an actual rejection while a nested settings child retains the editor.
 		CordScreen[] retained = new CordScreen[1];
 		c.runOnClient(mc -> {
-			retained[0] = (CordScreen) mc.gui.screen();
+			retained[0] = (CordScreen) mc.screen;
 			retained[0].searchFor("Amplify");
 			clickNow(retained[0], retained[0].codexPoint(Runes.AMPLIFY.id()));
-			mc.gui.setScreen(new dev.wildercord.client.CombatPresentationScreen(new dev.wildercord.client.MagicSettingsScreen(retained[0])));
+			mc.setScreen(new dev.wildercord.client.CombatPresentationScreen(new dev.wildercord.client.MagicSettingsScreen(retained[0])));
 		}); c.waitTicks(5);
 		c.runOnClient(mc -> {
 			check(retained[0].rowRunes(0).equals(List.of(RelayRules.ID, Runes.HARM.id())), "Rejected editor row reconciles through the exact nested retained parent");
-			mc.gui.screen().onClose(); mc.gui.screen().onClose();
-			check(mc.gui.screen()==retained[0], "Returning through children keeps the reconciled editor instance");
+			mc.screen.onClose(); mc.screen.onClose();
+			check(mc.screen==retained[0], "Returning through children keeps the reconciled editor instance");
 		});
 		c.runOnClient(mc -> {
 			retained[0].searchFor("Amplify"); clickNow(retained[0], retained[0].codexPoint(Runes.AMPLIFY.id()));
-			mc.gui.setScreen(new dev.wildercord.client.MasterFormsScreen(new dev.wildercord.client.AuraScreen(retained[0])));
+			mc.setScreen(new dev.wildercord.client.MasterFormsScreen(new dev.wildercord.client.AuraScreen(retained[0])));
 		}); c.waitTicks(5);
 		c.runOnClient(mc -> {
 			check(retained[0].rowRunes(0).equals(List.of(RelayRules.ID, Runes.HARM.id())), "A real rejected editor reply traverses the retained Master form and Aura parents");
-			mc.gui.screen().onClose(); mc.gui.screen().onClose();
-			check(mc.gui.screen() == retained[0], "Leaving Wall Turn lore preserves the exact reconciled Cord editor session");
+			mc.screen.onClose(); mc.screen.onClose();
+			check(mc.screen == retained[0], "Leaving Wall Turn lore preserves the exact reconciled Cord editor session");
 		});
 		onServer.accept(server -> probe.owner.setAttached(WildercordAttachments.CIRCLES,8)); c.waitTicks(3);
 		dev.wildercord.net.RelayEditorReply[] stale = new dev.wildercord.net.RelayEditorReply[1];
@@ -217,7 +217,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 		c.runOnClient(mc -> check(retained[0].rowRunes(0).equals(List.of(RelayRules.ID)), "An older reply cannot overwrite a newer edit even when the row returns to the same contents"));
 		c.setScreen(CordScreen::new);c.waitTicks(3);
 		onServer.accept(server -> net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(probe.owner,stale[0])); c.waitTicks(3);
-		c.runOnClient(mc -> check(((CordScreen)mc.gui.screen()).rowRunes(0).equals(List.of(RelayRules.ID)) && retained[0].rowRunes(0).equals(List.of(RelayRules.ID)), "Closed editor replies cannot mutate either the replacement editor or the abandoned parent"));
+		c.runOnClient(mc -> check(((CordScreen)mc.screen).rowRunes(0).equals(List.of(RelayRules.ID)) && retained[0].rowRunes(0).equals(List.of(RelayRules.ID)), "Closed editor replies cannot mutate either the replacement editor or the abandoned parent"));
 		onServer.accept(server -> { probe.owner.setAttached(WildercordAttachments.CIRCLES,8); chatCopies(); });
 		c.setScreen(() -> null);c.waitTicks(3);
 	}

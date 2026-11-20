@@ -28,7 +28,7 @@ public final class RelayClient {
 	private static KeyMapping lastBinding;
 
 	public static void beginTick(Minecraft client) {
-		boolean playing = client.player != null && client.player.isAlive() && client.gui.screen() == null && client.isWindowActive();
+		boolean playing = client.player != null && client.player.isAlive() && client.screen == null && client.isWindowActive();
 		if (body != client.player || world != client.level) {
 			body = client.player; world = client.level;
 			java.util.Arrays.fill(DOWN, false); java.util.Arrays.fill(RELAY, false); java.util.Arrays.fill(BLOCKED, true);
@@ -80,7 +80,7 @@ public final class RelayClient {
 
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.net.RelayEditorReply.TYPE, (reply, context) -> {
-			var screen = context.client().gui.screen();
+			var screen = context.client().screen;
 			for (int depth = 0; screen != null && depth < 8; depth++) {
 				if (screen instanceof CordScreen editor) { editor.reconcileRelay(reply); break; }
 				if (!(screen instanceof CordEditorParent child)) break;

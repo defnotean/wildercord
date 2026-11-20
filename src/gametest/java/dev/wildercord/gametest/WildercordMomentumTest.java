@@ -138,8 +138,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				AuraScreen.listArts(false);
-				if (mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (mc.options.hideGui) {
+					mc.options.hideGui = !mc.options.hideGui;
 				}
 			});
 			context.getInput().releaseKey(o -> o.keyShift);
@@ -879,8 +879,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		});
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
-			if (mc.gui.hud.isHidden() == hud) {
-				mc.gui.hud.toggle();
+			if (mc.options.hideGui == hud) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 		context.waitTicks(2);
@@ -894,8 +894,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		});
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (mc.options.hideGui) {
+				mc.options.hideGui = !mc.options.hideGui;
 			}
 		});
 	}
@@ -1096,7 +1096,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	}
 
 	private static void shot(ClientGameTestContext context, String name) {
-		context.runOnClient(mc -> mc.gui.toastManager().clear());
+		context.runOnClient(mc -> mc.getToastManager().clear());
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 

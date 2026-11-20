@@ -30,7 +30,7 @@ public final class FormDashClient {
 		ClientPlayNetworking.registerGlobalReceiver(FormDash.Event.TYPE, (event, context) -> receive(context.client(), event));
 		ClientPlayNetworking.registerGlobalReceiver(FormDashLessons.Open.TYPE, (event, context) -> {
 			if (FormDashRules.form(event.form()) && context.client().player != null && context.client().level != null)
-				context.client().gui.setScreen(new FormDashScreen(context.client().gui.screen(), event.form(), event.nonce(), true));
+				context.client().setScreen(new FormDashScreen(context.client().screen, event.form(), event.nonce(), true));
 		});
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> clear());
 		net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -39,7 +39,7 @@ public final class FormDashClient {
 		});
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("field_form_state"), (graphics, delta) -> {
 			Minecraft client = Minecraft.getInstance();
-			if (client.player == null || client.gui.screen() != null || client.gui.hud.isHidden() || !shown(client)) return;
+			if (client.player == null || client.screen != null || client.options.hideGui || !shown(client)) return;
 			int x = graphics.guiWidth() / 2, y = graphics.guiHeight() - 66;
 			var lines = client.font.split(state(), Math.max(80, graphics.guiWidth() - 12));
 			int lineY = y - (lines.size() - 1) * 10;

@@ -435,11 +435,11 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
         });
     }
     private static void equip(ClientGameTestContext c) {
-        c.setScreen(CordScreen::new); c.waitTicks(3); click(c,c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).pagePoint(0)));
-        click(c,c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).rowPoint(0)));
+        c.setScreen(CordScreen::new); c.waitTicks(3); click(c,c.computeOnClient(mc -> ((CordScreen)mc.screen).pagePoint(0)));
+        click(c,c.computeOnClient(mc -> ((CordScreen)mc.screen).rowPoint(0)));
         for (String id : ExciseRules.IDS) {
-            c.runOnClient(mc -> ((CordScreen)mc.gui.screen()).searchFor(id.equals(ExciseRules.ID) ? "Excise" : "Beam")); c.waitTicks(2);
-            click(c,c.computeOnClient(mc -> ((CordScreen)mc.gui.screen()).codexPoint(id)));
+            c.runOnClient(mc -> ((CordScreen)mc.screen).searchFor(id.equals(ExciseRules.ID) ? "Excise" : "Beam")); c.waitTicks(2);
+            click(c,c.computeOnClient(mc -> ((CordScreen)mc.screen).codexPoint(id)));
         }
         c.takeScreenshot(TestScreenshotOptions.of("excise_learned_equipped_row").disableCounterPrefix()); c.setScreen(() -> null); c.waitTicks(3);
     }

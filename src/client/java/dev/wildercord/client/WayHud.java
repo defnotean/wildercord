@@ -37,7 +37,7 @@ public final class WayHud {
 	static void draw(GuiGraphicsExtractor g, DeltaTracker delta) {
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
-		if (player == null || mc.level == null || mc.gui.screen() != null || mc.gui.hud.isHidden()) {
+		if (player == null || mc.level == null || mc.screen != null || mc.options.hideGui) {
 			return;
 		}
 		Crossroads.State s = Crossroads.state(player);
