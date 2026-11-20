@@ -1493,7 +1493,7 @@ def _loot_sources():
         places = found.setdefault(consts[c], [])
         if fishing not in places:
             places.insert(0, fishing)
-    for mob, drops in re.findall(r"Map\.entry\(EntityTypes\.(\w+), List\.of\((.*?)\)\)(?=,\s*\n|\s*\n\s*\);)", src, re.S):
+    for mob, drops in re.findall(r"Map\.entry\(EntityType(?:s)?\.(\w+), List\.of\((.*?)\)\)(?=,\s*\n|\s*\n\s*\);)", src, re.S):
         for chance, c in re.findall(r"Map\.entry\((\d+), Runes\.(\w+)\)", drops):
             add(c, mob_source(mob, int(chance)))
     dragon = re.search(r"for \(RuneDef rune : List\.of\((.*?)\)\)", src, re.S)
