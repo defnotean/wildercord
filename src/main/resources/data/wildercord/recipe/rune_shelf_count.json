@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:book",
-    "minecraft:oak_planks"
+    "#minecraft:planks"
   ],
   "result": {
     "id": "wildercord:rune",

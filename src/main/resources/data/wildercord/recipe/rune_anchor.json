@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:iron_chain",
-    "minecraft:cobblestone"
+    "#wildercord:cobblestone_variants"
   ],
   "result": {
     "id": "wildercord:rune",

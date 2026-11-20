@@ -3,9 +3,9 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:dirt",
-    "minecraft:cobblestone",
-    "minecraft:oak_planks"
+    "#minecraft:dirt",
+    "#wildercord:cobblestone_variants",
+    "#minecraft:planks"
   ],
   "result": {
     "id": "wildercord:rune",

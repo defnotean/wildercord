@@ -3,8 +3,8 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:oak_fence",
-    "minecraft:oak_fence_gate",
+    "#minecraft:wooden_fences",
+    "#minecraft:fence_gates",
     "minecraft:string",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:shears",
-    "minecraft:white_wool",
+    "#minecraft:wool",
     "minecraft:feather"
   ],
   "result": {

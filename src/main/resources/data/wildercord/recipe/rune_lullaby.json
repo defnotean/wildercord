@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:white_bed",
+    "#minecraft:beds",
     "minecraft:phantom_membrane",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

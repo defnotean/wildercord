@@ -9,7 +9,7 @@
   "key": {
     "G": "minecraft:gold_ingot",
     "A": "minecraft:amethyst_shard",
-    "B": "minecraft:polished_deepslate",
+    "B": "#wildercord:deepslate_variants",
     "E": "minecraft:ender_pearl"
   },
   "result": {

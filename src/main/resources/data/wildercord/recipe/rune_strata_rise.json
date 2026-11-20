@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:stone",
+    "#wildercord:cobblestone_variants",
     "minecraft:packed_mud",
     "minecraft:flint",
     "minecraft:lapis_lazuli",

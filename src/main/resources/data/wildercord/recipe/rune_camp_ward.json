@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:campfire",
-    "minecraft:white_wool",
+    "#minecraft:wool",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",
     "minecraft:gold_ingot"

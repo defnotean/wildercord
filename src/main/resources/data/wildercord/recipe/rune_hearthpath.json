@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:compass",
-    "minecraft:red_bed"
+    "#minecraft:beds"
   ],
   "result": {
     "id": "wildercord:rune",

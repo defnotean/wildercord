@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:stone_stairs",
+    "#wildercord:stone_stair_variants",
     "minecraft:iron_pickaxe",
     "minecraft:torch",
     "minecraft:lapis_lazuli",

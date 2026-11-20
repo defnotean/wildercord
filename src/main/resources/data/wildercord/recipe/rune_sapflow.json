@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:honey_bottle",
-    "minecraft:oak_sapling",
+    "#minecraft:saplings",
     "minecraft:glistering_melon_slice",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

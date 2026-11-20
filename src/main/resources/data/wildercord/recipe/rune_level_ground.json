@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:stone_slab",
+    "#wildercord:stone_slab_variants",
     "minecraft:compass"
   ],
   "result": {

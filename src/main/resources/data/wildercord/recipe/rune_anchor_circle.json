@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:iron_ingot",
-    "minecraft:stone",
+    "#wildercord:cobblestone_variants",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",
     "minecraft:gold_ingot"

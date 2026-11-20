@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:gravel",
-    "minecraft:cobblestone"
+    "#wildercord:cobblestone_variants"
   ],
   "result": {
     "id": "wildercord:rune",

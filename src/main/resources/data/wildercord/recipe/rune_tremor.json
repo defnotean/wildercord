@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:deepslate_bricks",
+    "#wildercord:deepslate_variants",
     "minecraft:tnt",
     "wildercord:mana_crystal",
     "minecraft:diamond"

@@ -3,8 +3,8 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:sandstone",
-    "minecraft:sand",
+    "#wildercord:sandstone_variants",
+    "#minecraft:smelts_to_glass",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",
     "minecraft:gold_ingot"

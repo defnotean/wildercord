@@ -3,9 +3,9 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:oak_sapling",
+    "#minecraft:saplings",
     "minecraft:bone_meal",
-    "minecraft:oak_log",
+    "#minecraft:logs",
     "wildercord:mana_crystal",
     "minecraft:diamond"
   ],

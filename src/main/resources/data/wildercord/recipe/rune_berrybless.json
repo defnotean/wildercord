@@ -5,7 +5,7 @@
     "wildercord:blank_rune",
     "minecraft:sweet_berries",
     "minecraft:bone_meal",
-    "minecraft:oak_leaves"
+    "#minecraft:leaves"
   ],
   "result": {
     "id": "wildercord:rune",

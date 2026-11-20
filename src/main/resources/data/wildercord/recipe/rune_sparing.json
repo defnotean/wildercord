@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:white_banner",
+    "#minecraft:banners",
     "minecraft:feather"
   ],
   "result": {

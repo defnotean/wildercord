@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:cobblestone",
+    "#wildercord:cobblestone_variants",
     "minecraft:clock"
   ],
   "result": {

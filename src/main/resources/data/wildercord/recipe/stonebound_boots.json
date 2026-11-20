@@ -3,7 +3,7 @@
   "category": "equipment",
   "ingredients": [
     "minecraft:leather_boots",
-    "minecraft:mossy_cobblestone",
+    "#wildercord:mossy_stone_variants",
     "wildercord:mana_crystal"
   ],
   "result": {

@@ -5,7 +5,7 @@
     "wildercord:moonreed_floss",
     "wildercord:dusk_pearl",
     "minecraft:copper_ingot",
-    "minecraft:glass"
+    "#wildercord:glass_variants"
   ],
   "result": {
     "id": "wildercord:dewglass_lens"

@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:iron_hoe",
-    "minecraft:dirt",
+    "#minecraft:dirt",
     "minecraft:string",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": "minecraft:amethyst_shard",
-    "G": "minecraft:glass_pane",
+    "G": "#wildercord:glass_pane_variants",
     "L": "minecraft:lantern"
   },
   "pattern": [

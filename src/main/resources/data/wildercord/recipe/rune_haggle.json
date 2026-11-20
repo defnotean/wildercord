@@ -5,7 +5,7 @@
     "wildercord:blank_rune",
     "minecraft:emerald",
     "minecraft:emerald",
-    "minecraft:white_banner",
+    "#minecraft:banners",
     "wildercord:mana_crystal",
     "minecraft:diamond"
   ],

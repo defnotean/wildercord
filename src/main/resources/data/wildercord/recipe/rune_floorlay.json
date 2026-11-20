@@ -3,9 +3,9 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:smooth_stone",
-    "minecraft:smooth_stone",
-    "minecraft:oak_planks",
+    "#wildercord:cobblestone_variants",
+    "#wildercord:cobblestone_variants",
+    "#minecraft:planks",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",
     "minecraft:gold_ingot"

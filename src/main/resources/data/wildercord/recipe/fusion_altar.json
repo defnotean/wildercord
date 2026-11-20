@@ -4,7 +4,7 @@
   "key": {
     "A": "minecraft:amethyst_block",
     "L": "minecraft:lodestone",
-    "T": "minecraft:deepslate_tiles"
+    "T": "#wildercord:deepslate_variants"
   },
   "pattern": [
     "TAT",

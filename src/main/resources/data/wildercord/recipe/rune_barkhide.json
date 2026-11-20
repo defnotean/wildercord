@@ -3,8 +3,8 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:oak_log",
-    "minecraft:spruce_log",
+    "#minecraft:logs",
+    "#minecraft:logs",
     "minecraft:iron_ingot",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

@@ -3,8 +3,8 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:oak_planks",
-    "minecraft:oak_planks",
+    "#minecraft:planks",
+    "#minecraft:planks",
     "minecraft:string"
   ],
   "result": {

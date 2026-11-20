@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:stone_pickaxe",
-    "minecraft:cobblestone_stairs",
+    "#wildercord:stone_stair_variants",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",
     "minecraft:gold_ingot"

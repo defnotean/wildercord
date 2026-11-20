@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    "minecraft:glass_pane",
+    "#wildercord:glass_pane_variants",
     "minecraft:copper_ingot",
     "wildercord:moonreed_floss"
   ],

@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:cobblestone_slab",
+    "#wildercord:stone_slab_variants",
     "minecraft:iron_shovel",
     "minecraft:rail",
     "minecraft:lapis_lazuli",

@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:stone_button"
+    "#minecraft:buttons"
   ],
   "result": {
     "id": "wildercord:rune",

@@ -4,8 +4,8 @@
   "key": {
     "A": "minecraft:amethyst_block",
     "M": "wildercord:mana_crystal",
-    "D": "minecraft:polished_deepslate",
-    "T": "minecraft:deepslate_tiles"
+    "D": "#wildercord:deepslate_variants",
+    "T": "#wildercord:deepslate_variants"
   },
   "pattern": [
     "DAD",

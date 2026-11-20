@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:dusk_pearl",
-    "minecraft:glass",
+    "#wildercord:glass_variants",
     "minecraft:string",
     "minecraft:seagrass"
   ],

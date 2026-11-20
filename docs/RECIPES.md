@@ -8,61 +8,61 @@ a **Blank Rune** plus the items below, plus a cost that grows with the tier:
 - Tier III: a Mana Crystal and a Diamond
 
 Recipes appear in the crafting recipe book once you hold a Blank Rune
-(Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.
+(Blank Rune: 4 Cobblestone or Deepslate around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.
 
 ## Tier I (232 runes, + nothing extra)
 
 | Rune | Family | Items |
 |---|---|---|
 | Air Pocket | Effect | Glass Bottle, Kelp |
-| Anchor | Effect | Iron Chain, Cobblestone |
+| Anchor | Effect | Iron Chain, any cobblestone or deepslate |
 | Angler's Lure | Effect | String, Cod |
-| Appraise | Effect | Emerald, Glass Pane |
+| Appraise | Effect | Emerald, any glass pane |
 | Bait Blessing | Effect | Rabbit Foot, Salmon |
 | Bakehouse | Effect | Furnace, Wheat, Sugar |
-| Barkstrip | Effect | Iron Axe, Oak Log, Flint |
-| Barnwarmth | Effect | Campfire, Hay Block, Oak Planks |
-| Barrier | Effect | Glass, Amethyst Shard |
+| Barkstrip | Effect | Iron Axe, any logs, Flint |
+| Barnwarmth | Effect | Campfire, Hay Block, any planks |
+| Barrier | Effect | any glass, Amethyst Shard |
 | Basinfill | Effect | Clay Ball, Water Bucket |
 | Beastguard | Effect | Bone, Leather |
-| Berrybless | Effect | Sweet Berries, Bone Meal, Oak Leaves |
+| Berrybless | Effect | Sweet Berries, Bone Meal, any leaves |
 | Blind | Effect | Ink Sac |
 | Block Pack | Effect | Crafting Table, Iron Nugget |
 | Bobber Bell | Effect | String, Gold Nugget, Feather |
-| Brace | Effect | Cobblestone, Iron Ingot |
+| Brace | Effect | any cobblestone or deepslate, Iron Ingot |
 | Bramble | Effect | Sweet Berries, Cactus |
 | Brimming | Effect | Cauldron, Kelp |
-| Button Push | Effect | Stone Button |
-| Calm Smoke | Effect | Campfire, Honeycomb, Oak Leaves |
+| Button Push | Effect | any buttons |
+| Calm Smoke | Effect | Campfire, Honeycomb, any leaves |
 | Chalk Line | Effect | Bone Meal, String |
 | Chill | Effect | Ice |
 | Chisel | Effect | Stone Pickaxe |
 | Clot | Effect | Milk Bucket, Spider Eye |
 | Collect | Effect | Hopper |
 | Compost | Effect | Composter, Rotten Flesh, Wheat Seeds |
-| Concrete Set | Effect | White Concrete Powder, Water Bucket |
+| Concrete Set | Effect | any concrete powder, Water Bucket |
 | Countdown | Effect | Clock, Gunpowder |
 | Cushion | Effect | any wool, Feather |
 | Deepsound | Effect | Note Block |
 | Deepwarn | Effect | Magma Cream, Spyglass |
-| Depth Sounding | Effect | Pointed Dripstone, String, Cobbled Deepslate |
+| Depth Sounding | Effect | Pointed Dripstone, String, any cobblestone or deepslate |
 | Dew Drink | Effect | Glass Bottle, Lily Pad |
 | Dewcatch | Effect | Glass Bottle, Fern |
-| Dewfall | Effect | Water Bucket, Dirt, Wheat Seeds |
+| Dewfall | Effect | Water Bucket, any dirt, Wheat Seeds |
 | Diver's Hands | Effect | Prismarine Shard, Iron Pickaxe |
-| Doorcall | Effect | Oak Door, Redstone |
+| Doorcall | Effect | any wooden doors, Redstone |
 | Douse | Effect | Candle, Feather |
 | Dust Line | Effect | Bone Meal, String, Flint |
 | Dye Wash | Effect | Red Dye, Yellow Dye, Blue Dye |
 | Ember | Effect | Coal, Flint |
 | Emberguard | Effect | Magma Cream, Iron Nugget |
-| Fallow | Effect | Dirt, Bone Meal, Short Grass |
+| Fallow | Effect | any dirt, Bone Meal, Short Grass |
 | Fathom | Effect | String, Iron Nugget |
 | Feather Fall | Effect | 2x Feather |
 | Field Sense | Effect | Spyglass, Wheat, Carrot |
 | Fieldstride | Effect | Leather Boots, Wheat, Feather |
 | Firebreak | Effect | Snowball, Water Bucket |
-| Fleece | Effect | Shears, White Wool, Feather |
+| Fleece | Effect | Shears, any wool, Feather |
 | Fodder | Effect | Hay Block, Carrot, Wheat Seeds |
 | Folk Call | Effect | Emerald, Note Block |
 | Folk Census | Effect | Emerald, Paper |
@@ -71,7 +71,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Gentle Hand | Effect | Apple, Wheat, Feather |
 | Glimmer | Effect | Glow Lichen |
 | Gloomsight | Effect | Spider Eye, Glow Ink Sac |
-| Glyph Carve | Effect | Oak Sign, Flint |
+| Glyph Carve | Effect | any signs, Flint |
 | Gravefinder | Effect | Bone, Compass |
 | Grow | Effect | 2x Bone Meal |
 | Harm | Effect | Fermented Spider Eye |
@@ -79,25 +79,25 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Haste | Effect | Golden Pickaxe |
 | Hayloft | Effect | Hay Block, Slime Ball, Feather |
 | Heal | Effect | Glistering Melon Slice |
-| Hearthpath | Effect | Compass, Red Bed |
+| Hearthpath | Effect | Compass, any beds |
 | Herdcall | Effect | Lead, Wheat, Stick |
 | Herdsense | Effect | Spyglass, Lead, Leather |
 | Hex | Effect | Fermented Spider Eye, Ink Sac |
 | Hobble | Effect | Cobweb, String |
-| Holefill | Effect | Dirt, Cobblestone, Oak Planks |
+| Holefill | Effect | any dirt, any cobblestone or deepslate, any planks |
 | Hollow Sense | Effect | Echo Shard |
-| Home Bearing | Effect | Compass, White Wool |
+| Home Bearing | Effect | Compass, any wool |
 | Honeydew | Effect | Honey Bottle, Sugar, Feather |
 | Ice Auger | Effect | Ice, Flint |
 | Icepath | Effect | Packed Ice |
 | Icicle | Effect | Ice, Pointed Dripstone |
 | Kelpsong | Effect | Kelp, Bone Meal |
 | Lamplighter | Effect | Candle, Flint |
-| Land Reading | Effect | Dirt, Compass |
-| Landread | Effect | Dirt, Spyglass |
+| Land Reading | Effect | any dirt, Compass |
+| Landread | Effect | any dirt, Spyglass |
 | Lantern Soul | Effect | Lantern, Soul Torch |
 | Lava Sense | Effect | Magma Cream, Spider Eye |
-| Leaffall | Effect | Oak Leaves, Shears, Feather |
+| Leaffall | Effect | any leaves, Shears, Feather |
 | Leap | Effect | Slime Ball |
 | Leech | Effect | Spider Eye, Redstone |
 | Lever Flip | Effect | Lever |
@@ -106,21 +106,21 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Lore Reading | Effect | Book, Feather |
 | Lostfind | Effect | Gold Nugget, Spyglass |
 | Luckcharm | Effect | Rabbit Foot, Emerald |
-| Lux Reading | Effect | Torch, Glass Pane |
+| Lux Reading | Effect | Torch, any glass pane |
 | Milkmaid | Effect | Bucket, Wheat, Snowball |
 | Millstone | Effect | Grindstone |
 | Moon Reading | Effect | Clock, Glow Ink Sac |
-| Nest Tend | Effect | Seagrass, Sand |
+| Nest Tend | Effect | Seagrass, any sand |
 | Night Eye | Effect | Glow Berries |
 | Nourish | Effect | Bread |
 | Nudge | Effect | Feather, Slime Ball |
 | Orbcall | Effect | Experience Bottle |
 | Pack Tidy | Effect | Bundle |
-| Pelt | Effect | Gravel, Cobblestone |
-| Picnic | Effect | Bread, Apple, White Carpet |
-| Plankway | Effect | 2x Oak Planks, String |
-| Plumb Line | Effect | String, Iron Nugget, Cobblestone |
-| Polish | Effect | Polished Andesite, Sand |
+| Pelt | Effect | Gravel, any cobblestone or deepslate |
+| Picnic | Effect | Bread, Apple, any wool carpet |
+| Plankway | Effect | 2x any planks, String |
+| Plumb Line | Effect | String, Iron Nugget, any cobblestone or deepslate |
+| Polish | Effect | Polished Andesite, any sand |
 | Portal Reckoning | Effect | Obsidian, Map |
 | Prospect | Effect | Stone Pickaxe, Amethyst Shard |
 | Prune | Effect | Shears, any saplings |
@@ -129,21 +129,21 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Reed Cut | Effect | Sugar Cane, Flint |
 | Reeling Tide | Effect | String, Stick, Kelp |
 | Refloat | Effect | Kelp, Lily Pad |
-| Relic Sense | Effect | Brush, Sand |
+| Relic Sense | Effect | Brush, any sand |
 | Rend | Effect | Iron Nugget, Bone |
 | Reveal | Effect | Glow Ink Sac |
 | Salve | Effect | Honey Bottle, Snowball |
-| Sapling Sow | Effect | Oak Sapling, Birch Sapling, Dirt |
+| Sapling Sow | Effect | 2x any saplings, any dirt |
 | Savor | Effect | Cooked Beef, Honey Bottle |
 | Sentry | Effect | Spyglass, Glowstone Dust |
-| Shelf Count | Effect | Book, Oak Planks |
+| Shelf Count | Effect | Book, any planks |
 | Shoal Herd | Effect | Kelp, Cod, Salmon |
 | Shock | Effect | Lightning Rod |
-| Shore Sense | Effect | Compass, Sand |
-| Shore Up | Effect | Oak Log, Gravel |
+| Shore Sense | Effect | Compass, any sand |
+| Shore Up | Effect | any logs, Gravel |
 | Shrug Off | Effect | Milk Bucket, Feather |
-| Siftfall | Effect | Gravel, Sand |
-| Sign Glow | Effect | Oak Sign, Glow Ink Sac |
+| Siftfall | Effect | Gravel, any sand |
+| Sign Glow | Effect | any signs, Glow Ink Sac |
 | Skater's Edge | Effect | Ice, Sugar |
 | Sky Reading | Effect | Feather, Glass Bottle |
 | Skyread | Effect | Feather, Clock |
@@ -152,7 +152,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Sluice | Effect | Kelp, Clay Ball, Charcoal |
 | Smoke Signal | Effect | Campfire, Hay Block |
 | Snuff Out | Effect | Water Bucket, Ink Sac |
-| Soak Through | Effect | Clay Ball, Sand |
+| Soak Through | Effect | Clay Ball, any sand |
 | Softsole | Effect | Feather, Wheat Seeds |
 | Sounding | Effect | Magma Block, Kelp |
 | Sow | Effect | Wheat Seeds, Beetroot Seeds, Carrot |
@@ -170,17 +170,17 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Stoutheart | Effect | Iron Ingot, Apple |
 | Sun Reading | Effect | Clock, Sunflower, Paper |
 | Sunbask | Effect | Sunflower, Glowstone Dust |
-| Surefoot | Effect | Leather Boots, Cobblestone Stairs |
+| Surefoot | Effect | Leather Boots, any stone or deepslate stairs |
 | Swift | Effect | 2x Sugar |
 | Tackle Mend | Effect | 2x String, Bone Meal |
 | Taunt | Effect | Rotten Flesh, Redstone |
 | Tend | Effect | Wheat, Bone Meal |
-| Thawfield | Effect | Torch, Snowball, Dirt |
+| Thawfield | Effect | Torch, Snowball, any dirt |
 | Tide Lantern | Effect | Sea Pickle, Glowstone Dust |
 | Tide Marker | Effect | Sea Pickle, String |
 | Tidebreath | Effect | Pufferfish |
-| Tillage | Effect | Wooden Hoe, Dirt, Wheat Seeds |
-| Tilth | Effect | Coarse Dirt, Bone Meal, Flint |
+| Tillage | Effect | Wooden Hoe, any dirt, Wheat Seeds |
+| Tilth | Effect | any dirt, Bone Meal, Flint |
 | Trail Blaze | Effect | Torch, Stick, Flint |
 | Trailblaze | Effect | Bread, Lime Dye |
 | Umbra | Effect | Ink Sac, Flint |
@@ -199,7 +199,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | If In Fields | Link | Wheat, Clock |
 | If Night | Link | Ink Sac, Clock |
 | If Raining | Link | Water Bucket, Clock |
-| If Underground | Link | Cobblestone, Clock |
+| If Underground | Link | any cobblestone or deepslate, Clock |
 | On Harvest | Link | Wheat, Tripwire Hook |
 | On Mine | Link | Iron Pickaxe, Tripwire Hook |
 | Amplify | Modifier | Gold Ingot |
@@ -207,11 +207,11 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Damp | Modifier | Wet Sponge, Clay Ball |
 | Extend | Modifier | 2x Redstone |
 | Fetching | Modifier | Lead, Bone |
-| Fleecing | Modifier | Shears, White Wool |
+| Fleecing | Modifier | Shears, any wool |
 | Frugal | Modifier | Emerald |
-| Furrowing | Modifier | Iron Hoe, Dirt |
+| Furrowing | Modifier | Iron Hoe, any dirt |
 | Gentle | Modifier | Wheat, Lead |
-| Level Ground | Modifier | Stone Slab, Compass |
+| Level Ground | Modifier | any stone or deepslate slab, Compass |
 | Magnetic | Modifier | Iron Ingot, Redstone |
 | Matchmaking | Modifier | Wheat, Carrot, Poppy |
 | Nourishing | Modifier | Bread, Apple |
@@ -219,7 +219,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Reservoir Circle | Modifier | Glass Bottle, Lapis Lazuli |
 | Soothing | Modifier | Honey Bottle, Note Block |
 | Sowing | Modifier | Wheat Seeds, Beetroot Seeds |
-| Sparing | Modifier | White Banner, Feather |
+| Sparing | Modifier | any banners, Feather |
 | Steady | Modifier | Obsidian, Iron Nugget |
 | Tidy | Modifier | Bundle, String |
 | Torchset | Modifier | Torch, Coal |
@@ -228,9 +228,9 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Bobber | Shape | Fishing Rod, Cod |
 | Bolt | Shape | Arrow |
 | Fan | Shape | Feather, 2x Arrow |
-| Footing | Shape | Cobblestone, Leather Boots |
+| Footing | Shape | any cobblestone or deepslate, Leather Boots |
 | Furrow | Shape | Wooden Hoe, Wheat Seeds |
-| Hedgerow | Shape | Oak Sapling, Sweet Berries, Oak Leaves |
+| Hedgerow | Shape | any saplings, Sweet Berries, any leaves |
 | Herd | Shape | Wheat, Lead, Hay Block |
 | Imprint | Shape | Clay Ball, Gunpowder |
 | Lamplit | Shape | Lantern, Glowstone Dust |
@@ -238,13 +238,13 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Nursery | Shape | Egg, Milk Bucket |
 | Packbond | Shape | Bone, Lead, Name Tag |
 | Pit | Shape | Iron Shovel, Gravel |
-| Plot | Shape | Dirt, Wheat Seeds, Stick |
-| Ray | Shape | Glass Pane, Glowstone Dust |
+| Plot | Shape | any dirt, Wheat Seeds, Stick |
+| Ray | Shape | any glass pane, Glowstone Dust |
 | Saddle | Shape | Saddle |
 | Seam | Shape | Stone Pickaxe, Coal |
-| Self | Shape | Glass Pane |
+| Self | Shape | any glass pane |
 | Spark | Shape | Flint, Glowstone Dust |
-| Stepstones | Shape | Cobblestone, Lily Pad |
+| Stepstones | Shape | any cobblestone or deepslate, Lily Pad |
 | Touch | Shape | Leather |
 
 ## Tier II (257 runes, + 2 Lapis Lazuli and a Gold Ingot)
@@ -252,19 +252,19 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Rune | Family | Items |
 |---|---|---|
 | Aftercare | Effect | Glistering Melon Slice, Clock |
-| Aftershock | Effect | Piston, Cobblestone |
-| Agestone | Effect | Moss Block, Cracked Stone Bricks |
+| Aftershock | Effect | Piston, any cobblestone or deepslate |
+| Agestone | Effect | Moss Block, any stone or deepslate bricks |
 | Arrowveil | Effect | Arrow, Phantom Membrane |
 | Axolotl Kinship | Effect | Tropical Fish, Clay Ball |
 | Banish | Effect | Ender Pearl, Popped Chorus Fruit |
-| Barkhide | Effect | Oak Log, Spruce Log, Iron Ingot |
+| Barkhide | Effect | 2x any logs, Iron Ingot |
 | Beeline | Effect | Honeycomb, Feather, Sugar |
 | Blastward | Effect | Gunpowder, Obsidian |
 | Bleed | Effect | Shears, Redstone |
 | Break | Effect | Iron Pickaxe |
 | Brickwork | Effect | Stonecutter, Brick |
 | Bubble | Effect | Water Bucket, Slime Ball |
-| Camp Ward | Effect | Campfire, White Wool |
+| Camp Ward | Effect | Campfire, any wool |
 | Checker Dye | Effect | White Dye, Black Dye |
 | Chest Sort | Effect | Chest, Comparator |
 | Cleanse | Effect | Milk Bucket |
@@ -275,7 +275,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Dash | Effect | Rabbit Foot |
 | Decree | Effect | Writable Book |
 | Deflect | Effect | Shield, Wind Charge |
-| Dewkeep | Effect | Water Bucket, White Wool, Wheat Seeds |
+| Dewkeep | Effect | Water Bucket, any wool, Wheat Seeds |
 | Disarm | Effect | Wind Charge, Fishing Rod |
 | Dismantle | Effect | Shears |
 | Ditchwater | Effect | Iron Shovel, Water Bucket, Clay Ball |
@@ -288,14 +288,14 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Enderhush | Effect | Carved Pumpkin, Ender Pearl |
 | Evade | Effect | Rabbit Foot, Feather |
 | Excavate | Effect | Iron Shovel |
-| Fair Wind | Effect | White Wool, Feather |
+| Fair Wind | Effect | any wool, Feather |
 | Fell | Effect | Iron Axe, any logs |
 | Fire | Effect | Blaze Powder |
 | Fireward | Effect | Magma Cream |
 | Flash Freeze | Effect | Packed Ice, Water Bucket |
 | Flashfire | Effect | Blaze Powder, Gunpowder |
-| Floorlay | Effect | 2x Smooth Stone, Oak Planks |
-| Frame Veil | Effect | Item Frame, Glass Pane |
+| Floorlay | Effect | 2x any cobblestone or deepslate, any planks |
+| Frame Veil | Effect | Item Frame, any glass pane |
 | Frost | Effect | Powder Snow Bucket |
 | Gash | Effect | Flint, Rotten Flesh |
 | Gold Parley | Effect | Gold Ingot, Gold Nugget, Porkchop |
@@ -320,20 +320,20 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Launch | Effect | Wind Charge |
 | Lava Crust | Effect | Basalt, Snowball, Magma Cream |
 | Lava Seal | Effect | Water Bucket, Obsidian |
-| Leafshade | Effect | Oak Leaves, Oak Log, Vine |
+| Leafshade | Effect | any leaves, any logs, Vine |
 | Levelground | Effect | Iron Shovel, Iron Pickaxe |
 | Levitate | Effect | Phantom Membrane |
 | Lodepull | Effect | Lodestone, Hopper |
 | Lodestar | Effect | Lodestone |
 | Long Arm | Effect | 2x Stick, String, Iron Nugget |
-| Lullaby | Effect | White Bed, Phantom Membrane |
+| Lullaby | Effect | any beds, Phantom Membrane |
 | Lumen Path | Effect | 2x Glowstone Dust, String |
 | Lure | Effect | Fishing Rod, Ender Pearl |
 | Manabraid | Effect | Lapis Lazuli, Amethyst Shard, String |
 | Managift | Effect | Amethyst Shard, Lapis Lazuli |
 | Mending Mist | Effect | Glistering Melon Slice, Glass Bottle |
-| Mooring Call | Effect | Oak Boat, Lead |
-| Morale | Effect | Golden Apple, White Banner |
+| Mooring Call | Effect | any boats, Lead |
+| Morale | Effect | Golden Apple, any banners |
 | Nightwatch | Effect | Bell, Spider Eye |
 | Ofuda Ward | Effect | Paper, Amethyst Shard |
 | Ore Tally | Effect | Raw Iron, Coal, Paper |
@@ -342,15 +342,15 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Pearl Sight | Effect | Prismarine Crystals, Nautilus Shell |
 | Petward | Effect | Bone, Shield |
 | Pit Floor | Effect | 2x Packed Mud, Scaffolding |
-| Plowline | Effect | Iron Hoe, Dirt, String |
+| Plowline | Effect | Iron Hoe, any dirt, String |
 | Pollinate | Effect | Honeycomb, Dandelion, Poppy |
 | Porpoise Leap | Effect | Cod, Feather |
 | Portal Sense | Effect | Map, Obsidian |
 | Potion Steep | Effect | Glass Bottle, Nether Wart, Redstone |
 | Pull | Effect | Fishing Rod |
 | Quickbrew | Effect | Blaze Powder, Glass Bottle, Sugar |
-| Raincloud | Effect | White Wool, Kelp |
-| Rally | Effect | White Banner, Sugar |
+| Raincloud | Effect | any wool, Kelp |
+| Rally | Effect | any banners, Sugar |
 | Rampart | Effect | 2x Packed Mud |
 | Regrowth | Effect | Ghast Tear |
 | Repel | Effect | 2x Wind Charge |
@@ -359,29 +359,29 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Ripple | Effect | Sunflower, Glowstone Dust |
 | Riser | Effect | Stone Pickaxe, Ladder |
 | Root | Effect | 2x Vine |
-| Root Carry | Effect | Rooted Dirt, Bone Meal, String |
+| Root Carry | Effect | any dirt, Bone Meal, String |
 | Ruin Sense | Effect | Map, Brush |
-| Sandbar | Effect | Sandstone, Sand |
-| Sapflow | Effect | Honey Bottle, Oak Sapling, Glistering Melon Slice |
+| Sandbar | Effect | any sandstone, any sand |
+| Sapflow | Effect | Honey Bottle, any saplings, Glistering Melon Slice |
 | School Sight | Effect | Tropical Fish, Glow Ink Sac |
 | Sea Breeze | Effect | Feather, Milk Bucket |
 | Searing Edge | Effect | Iron Sword, Blaze Powder |
 | Shackle | Effect | 2x Iron Chain |
 | Shellback | Effect | Turtle Scute, Kelp |
 | Shield | Effect | Shield |
-| Shieldwall | Effect | Shield, Cobblestone |
-| Shipwreck Sense | Effect | Map, Oak Boat |
+| Shieldwall | Effect | Shield, any cobblestone or deepslate |
+| Shipwreck Sense | Effect | Map, any boats |
 | Silence | Effect | any wool |
 | Silklift | Effect | 2x String, Iron Pickaxe |
 | Skimstep | Effect | Lily Pad, Feather |
 | Smelt | Effect | Furnace, Blaze Powder |
-| Softfoot | Effect | White Wool, Ender Pearl |
+| Softfoot | Effect | any wool, Ender Pearl |
 | Soothe | Effect | Honeycomb, Poppy |
-| Span | Effect | 2x Magenta Stained Glass |
+| Span | Effect | 2x any glass |
 | Spawner Sense | Effect | Rotten Flesh, Iron Bars |
 | Spellbrand | Effect | Book, Gunpowder |
 | Spook | Effect | Bone, Carved Pumpkin |
-| Stair Delve | Effect | Stone Pickaxe, Cobblestone Stairs |
+| Stair Delve | Effect | Stone Pickaxe, any stone or deepslate stairs |
 | Stalkrise | Effect | Sugar Cane, Cactus, Bone Meal |
 | Steady Brush | Effect | Brush, Feather, Gravel |
 | Steedsong | Effect | Saddle, Sugar |
@@ -389,7 +389,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Stillwell | Effect | Water Bucket, Lapis Lazuli |
 | Stoneskin | Effect | Armadillo Scute |
 | Stow | Effect | Chest, Hopper |
-| Strata Rise | Effect | Stone, Packed Mud, Flint |
+| Strata Rise | Effect | any cobblestone or deepslate, Packed Mud, Flint |
 | Suzu Chime | Effect | Bell, Feather |
 | Swap | Effect | 2x Ender Pearl |
 | Tarry | Effect | Clock, Honey Bottle |
@@ -426,10 +426,10 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | On Mount | Link | Saddle, Tripwire Hook |
 | On Splash | Link | Water Bucket, Tripwire Hook |
 | On Sprint | Link | Sugar, Tripwire Hook |
-| On Wake | Link | White Bed, Tripwire Hook |
+| On Wake | Link | any beds, Tripwire Hook |
 | On Weakness | Link | Fermented Spider Eye, Target |
 | Pulse | Link | Repeater |
-| Anchor Circle | Modifier | Iron Ingot, Stone |
+| Anchor Circle | Modifier | Iron Ingot, any cobblestone or deepslate |
 | Belated | Modifier | Clock, Cobweb |
 | Bloom Circle | Modifier | Pink Petals, Bone Meal |
 | Bounce | Modifier | Slime Block |
@@ -438,10 +438,10 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Culling | Modifier | Rotten Flesh, Iron Sword |
 | Execute | Modifier | Iron Axe |
 | Fertile | Modifier | 2x Bone Meal, Moss Block |
-| Focus | Modifier | Glass Pane, Gold Nugget |
+| Focus | Modifier | any glass pane, Gold Nugget |
 | Gyre Circle | Modifier | Feather, Copper Ingot |
 | Hallowed | Modifier | Golden Apple, Bone |
-| Inward | Modifier | Glass Pane, Amethyst Shard |
+| Inward | Modifier | any glass pane, Amethyst Shard |
 | Kilned | Modifier | Furnace, Coal |
 | Kindred | Modifier | Cake |
 | Linger | Modifier | Honey Bottle |
@@ -456,11 +456,11 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Quicken | Modifier | Breeze Rod |
 | Rapid | Modifier | Sugar, Redstone |
 | Selfless | Modifier | Poppy, Gold Nugget |
-| Silken | Modifier | String, White Wool |
+| Silken | Modifier | String, any wool |
 | Sunlit | Modifier | Sunflower, Gold Ingot |
 | Tapering | Modifier | Arrow, Flint |
 | Thirst | Modifier | Spider Eye, Glass Bottle |
-| Timbering | Modifier | Iron Axe, Oak Log |
+| Timbering | Modifier | Iron Axe, any logs |
 | Triage | Modifier | Glistering Melon Slice, Paper |
 | Veinfollow | Modifier | Raw Iron, Raw Copper |
 | Vigil Circle | Modifier | Spider Eye, Iron Nugget |
@@ -470,15 +470,15 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Beam | Shape | Spyglass |
 | Blitz | Shape | Rabbit Foot, Sugar |
 | Burst | Shape | 2x Gunpowder |
-| Canopy | Shape | Oak Slab, Oak Leaves, Oak Fence |
-| Causeway | Shape | Cobblestone Slab, Iron Shovel, Rail |
+| Canopy | Shape | any wooden slabs, any leaves, any wooden fences |
+| Causeway | Shape | any stone or deepslate slab, Iron Shovel, Rail |
 | Cluster | Shape | 2x Gunpowder, Amethyst Shard |
 | Comet | Shape | Fire Charge, Gunpowder |
 | Cone | Shape | Fire Charge |
 | Corridor | Shape | Iron Pickaxe, Rail, Torch |
 | Crescent | Shape | Iron Sword, Feather |
 | Crossway | Shape | Compass, Gravel, Stick |
-| Facade | Shape | Bricks, Glass Pane, Stone Bricks |
+| Facade | Shape | Bricks, any glass pane, any stone or deepslate bricks |
 | Fellowship | Shape | Cake, Golden Apple, Emerald |
 | Fissure | Shape | Flint, Iron Pickaxe, TNT |
 | Flock | Shape | Feather, Phantom Membrane, Wheat Seeds |
@@ -486,12 +486,12 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Grudge | Shape | Rotten Flesh, Iron Sword, Ink Sac |
 | Lance | Shape | Spyglass, Blaze Rod |
 | Latch | Shape | Lead, Amethyst Shard |
-| Lattice | Shape | Iron Bars, White Carpet, Black Carpet |
+| Lattice | Shape | Iron Bars, 2x any wool carpet |
 | Lodeseek | Shape | Compass, Raw Iron, Raw Copper, Raw Gold |
 | Mine | Shape | Tripwire Hook |
-| Perimeter | Shape | Oak Fence, Oak Fence Gate, String |
+| Perimeter | Shape | any wooden fences, any fence gates, String |
 | Pillar | Shape | 2x Pointed Dripstone |
-| Prism | Shape | Prismarine Crystals, Glass |
+| Prism | Shape | Prismarine Crystals, any glass |
 | Rearguard | Shape | Shield, Arrow, Spyglass |
 | Ricochet | Shape | Slime Ball, Snowball |
 | Ring | Shape | Bell |
@@ -499,9 +499,9 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Seedbed | Shape | Iron Hoe, Wheat Seeds, Beetroot Seeds, Bone Meal |
 | Shaft | Shape | Iron Pickaxe, Ladder |
 | Shoal | Shape | Tropical Fish, Salmon, Prismarine Shard |
-| Shoreline | Shape | Sand, Water Bucket, Sugar Cane |
-| Spire | Shape | Cobblestone Wall, End Rod |
-| Stairwell | Shape | Stone Stairs, Iron Pickaxe, Torch |
+| Shoreline | Shape | any sand, Water Bucket, Sugar Cane |
+| Spire | Shape | any stone wall, End Rod |
+| Stairwell | Shape | any stone or deepslate stairs, Iron Pickaxe, Torch |
 | Stream | Shape | Spyglass, Redstone Torch |
 | Sweep | Shape | Spyglass, String |
 | Tether | Shape | Lead, Ender Pearl, String |
@@ -519,24 +519,24 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Blackflame | Effect | Soul Campfire, Black Dye |
 | Blackspark | Effect | Black Dye, Glowstone |
 | Blink | Effect | Ender Pearl, Chorus Fruit |
-| Caveward | Effect | Turtle Helmet, Sand, Gravel |
+| Caveward | Effect | Turtle Helmet, any sand, Gravel |
 | Cleave | Effect | Diamond Axe |
-| Coppice | Effect | Iron Axe, Oak Sapling, Oak Log |
-| Corral | Effect | Oak Fence, Lead |
+| Coppice | Effect | Iron Axe, any saplings, any logs |
+| Corral | Effect | any wooden fences, Lead |
 | Courtship | Effect | Wheat, Carrot, Poppy |
 | Deepway | Effect | Diamond Pickaxe, Torch, Rail |
-| Diving Bell | Effect | 2x Glass, Heart Of The Sea |
+| Diving Bell | Effect | 2x any glass, Heart Of The Sea |
 | Drowse | Effect | Spore Blossom, Honey Bottle |
 | Explode | Effect | TNT, Fire Charge |
 | Faithful | Effect | Bone, Golden Apple |
 | Foresight | Effect | Spyglass |
 | Fortress Sense | Effect | Map, Nether Bricks, Blaze Powder |
 | Freeze | Effect | 2x Blue Ice |
-| Gangue | Effect | Iron Pickaxe, Tuff, Raw Iron |
+| Gangue | Effect | Iron Pickaxe, any cobblestone or deepslate, Raw Iron |
 | Glidewind | Effect | Phantom Membrane, Wind Charge |
 | Gravity Well | Effect | Ender Eye, Crying Obsidian |
 | Guardlink | Effect | Iron Chain, Iron Ingot |
-| Haggle | Effect | 2x Emerald, White Banner |
+| Haggle | Effect | 2x Emerald, any banners |
 | Hearthbond | Effect | Golden Apple, String |
 | Hearthcook | Effect | Smoker, Coal, Beef |
 | Hexguard | Effect | Fermented Spider Eye, Shield |
@@ -551,11 +551,11 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Primer | Effect | TNT, Pink Dye |
 | Prolong | Effect | Clock, 2x Redstone |
 | Rally Light | Effect | Beacon |
-| Reflect | Effect | Shield, Glass Pane |
+| Reflect | Effect | Shield, any glass pane |
 | Resonance | Effect | Iron Nugget, Hay Block |
 | Restore | Effect | Iron Ingot, Glistering Melon Slice |
 | Sanctuary | Effect | Candle, Glowstone Dust |
-| Sapling Rise | Effect | Oak Sapling, Bone Meal, Oak Log |
+| Sapling Rise | Effect | any saplings, Bone Meal, any logs |
 | Scarecrow | Effect | Carved Pumpkin, Hay Block, Stick |
 | Shades | Effect | 2x Bone, Black Dye |
 | Shadowstep | Effect | Ender Pearl, Ink Sac |
@@ -566,8 +566,8 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Thunderbird | Effect | Feather, Lightning Rod |
 | Time Skip | Effect | Clock, Ender Pearl |
 | Trade Renew | Effect | Emerald, Clock, Barrel |
-| Tremor | Effect | Deepslate Bricks, TNT |
-| Truce | Effect | White Wool, Poppy |
+| Tremor | Effect | any deepslate, TNT |
+| Truce | Effect | any wool, Poppy |
 | Wayfarer's Hymn | Effect | Note Block, Sugar, Rabbit Hide |
 | Withdraw | Effect | Fermented Spider Eye, Sugar |
 | Combo | Link | 2x Repeater |
@@ -587,7 +587,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Vow | Modifier | Paper, Gold Block |
 | Windfall | Modifier | Emerald, Rabbit Foot |
 | Collapse | Shape | Anvil, TNT, Gravel |
-| Dome | Shape | 2x Glass, Smooth Stone, Amethyst Shard |
+| Dome | Shape | 2x any glass, any cobblestone or deepslate, Amethyst Shard |
 | Orb | Shape | Slime Block |
 | Orbit | Shape | Ender Eye |
 | Rain | Shape | Pointed Dripstone, Water Bucket |

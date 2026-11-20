@@ -3,9 +3,9 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:oak_slab",
-    "minecraft:oak_leaves",
-    "minecraft:oak_fence",
+    "#minecraft:wooden_slabs",
+    "#minecraft:leaves",
+    "#minecraft:wooden_fences",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",
     "minecraft:gold_ingot"

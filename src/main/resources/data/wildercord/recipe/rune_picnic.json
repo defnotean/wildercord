@@ -5,7 +5,7 @@
     "wildercord:blank_rune",
     "minecraft:bread",
     "minecraft:apple",
-    "minecraft:white_carpet"
+    "#minecraft:wool_carpets"
   ],
   "result": {
     "id": "wildercord:rune",

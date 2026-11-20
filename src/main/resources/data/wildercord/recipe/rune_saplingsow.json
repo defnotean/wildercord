@@ -3,9 +3,9 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:oak_sapling",
-    "minecraft:birch_sapling",
-    "minecraft:dirt"
+    "#minecraft:saplings",
+    "#minecraft:saplings",
+    "#minecraft:dirt"
   ],
   "result": {
     "id": "wildercord:rune",

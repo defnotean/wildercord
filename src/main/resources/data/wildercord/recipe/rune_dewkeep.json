@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:water_bucket",
-    "minecraft:white_wool",
+    "#minecraft:wool",
     "minecraft:wheat_seeds",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

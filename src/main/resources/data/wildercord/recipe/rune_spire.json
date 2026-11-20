@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:cobblestone_wall",
+    "#minecraft:walls",
     "minecraft:end_rod",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

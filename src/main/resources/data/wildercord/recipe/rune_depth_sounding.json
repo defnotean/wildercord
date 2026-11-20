@@ -5,7 +5,7 @@
     "wildercord:blank_rune",
     "minecraft:pointed_dripstone",
     "minecraft:string",
-    "minecraft:cobbled_deepslate"
+    "#wildercord:cobblestone_variants"
   ],
   "result": {
     "id": "wildercord:rune",

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "minecraft:cobblestone",
+    "C": "#wildercord:cobblestone_variants",
     "L": "minecraft:lapis_lazuli"
   },
   "pattern": [

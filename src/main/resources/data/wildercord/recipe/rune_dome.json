@@ -3,9 +3,9 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:glass",
-    "minecraft:glass",
-    "minecraft:smooth_stone",
+    "#wildercord:glass_variants",
+    "#wildercord:glass_variants",
+    "#wildercord:cobblestone_variants",
     "minecraft:amethyst_shard",
     "wildercord:mana_crystal",
     "minecraft:diamond"

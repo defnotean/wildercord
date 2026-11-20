@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:water_bucket",
-    "minecraft:dirt",
+    "#minecraft:dirt",
     "minecraft:wheat_seeds"
   ],
   "result": {

@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:moss_block",
-    "minecraft:cracked_stone_bricks",
+    "#wildercord:stone_brick_variants",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",
     "minecraft:gold_ingot"

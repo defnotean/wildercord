@@ -3,8 +3,8 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:magenta_stained_glass",
-    "minecraft:magenta_stained_glass",
+    "#wildercord:glass_variants",
+    "#wildercord:glass_variants",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",
     "minecraft:gold_ingot"

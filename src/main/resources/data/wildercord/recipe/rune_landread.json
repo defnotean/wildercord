@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:dirt",
+    "#minecraft:dirt",
     "minecraft:spyglass"
   ],
   "result": {

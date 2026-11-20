@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:coarse_dirt",
+    "#minecraft:dirt",
     "minecraft:bone_meal",
     "minecraft:flint"
   ],

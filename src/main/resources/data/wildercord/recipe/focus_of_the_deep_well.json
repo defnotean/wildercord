@@ -4,7 +4,7 @@
   "key": {
     "C": "wildercord:mana_crystal",
     "L": "minecraft:lapis_block",
-    "D": "minecraft:polished_deepslate"
+    "D": "#wildercord:deepslate_variants"
   },
   "pattern": [
     " L ",

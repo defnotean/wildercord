@@ -5,7 +5,7 @@
     "wildercord:blank_rune",
     "minecraft:torch",
     "minecraft:snowball",
-    "minecraft:dirt"
+    "#minecraft:dirt"
   ],
   "result": {
     "id": "wildercord:rune",

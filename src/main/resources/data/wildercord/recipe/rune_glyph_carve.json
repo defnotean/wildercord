@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:oak_sign",
+    "#minecraft:signs",
     "minecraft:flint"
   ],
   "result": {

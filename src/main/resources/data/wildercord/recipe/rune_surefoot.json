@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:leather_boots",
-    "minecraft:cobblestone_stairs"
+    "#wildercord:stone_stair_variants"
   ],
   "result": {
     "id": "wildercord:rune",

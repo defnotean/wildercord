@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:white_wool",
+    "#minecraft:wool",
     "minecraft:feather",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

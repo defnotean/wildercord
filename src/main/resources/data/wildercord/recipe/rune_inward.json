@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:glass_pane",
+    "#wildercord:glass_pane_variants",
     "minecraft:amethyst_shard",
     "minecraft:lapis_lazuli",
     "minecraft:lapis_lazuli",

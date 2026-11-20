@@ -5,7 +5,7 @@
     "wildercord:blank_rune",
     "minecraft:campfire",
     "minecraft:hay_block",
-    "minecraft:oak_planks"
+    "#minecraft:planks"
   ],
   "result": {
     "id": "wildercord:rune",

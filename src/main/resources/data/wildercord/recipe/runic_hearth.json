@@ -9,7 +9,7 @@
   "key": {
     "G": "minecraft:gold_ingot",
     "B": "minecraft:book",
-    "S": "minecraft:stone_bricks",
+    "S": "#wildercord:stone_brick_variants",
     "M": "wildercord:mana_crystal"
   },
   "result": {

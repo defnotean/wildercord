@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "C": "wildercord:mana_crystal",
-    "E": "minecraft:mossy_cobblestone",
+    "E": "#wildercord:mossy_stone_variants",
     "R": "minecraft:stick"
   },
   "pattern": [

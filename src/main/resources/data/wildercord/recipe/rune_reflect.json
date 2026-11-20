@@ -4,7 +4,7 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:shield",
-    "minecraft:glass_pane",
+    "#wildercord:glass_pane_variants",
     "wildercord:mana_crystal",
     "minecraft:diamond"
   ],

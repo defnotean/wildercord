@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": "minecraft:amethyst_shard",
-    "S": "minecraft:polished_deepslate",
+    "S": "#wildercord:deepslate_variants",
     "B": "minecraft:book",
     "G": "minecraft:gold_ingot"
   },

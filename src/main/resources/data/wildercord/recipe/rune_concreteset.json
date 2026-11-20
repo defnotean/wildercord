@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:white_concrete_powder",
+    "#minecraft:concrete_powders",
     "minecraft:water_bucket"
   ],
   "result": {

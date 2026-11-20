@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:sand",
+    "#minecraft:smelts_to_glass",
     "minecraft:water_bucket",
     "minecraft:sugar_cane",
     "minecraft:lapis_lazuli",

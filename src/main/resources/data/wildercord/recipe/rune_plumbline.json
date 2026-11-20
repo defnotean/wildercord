@@ -5,7 +5,7 @@
     "wildercord:blank_rune",
     "minecraft:string",
     "minecraft:iron_nugget",
-    "minecraft:cobblestone"
+    "#wildercord:cobblestone_variants"
   ],
   "result": {
     "id": "wildercord:rune",

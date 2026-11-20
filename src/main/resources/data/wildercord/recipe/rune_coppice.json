@@ -4,8 +4,8 @@
   "ingredients": [
     "wildercord:blank_rune",
     "minecraft:iron_axe",
-    "minecraft:oak_sapling",
-    "minecraft:oak_log",
+    "#minecraft:saplings",
+    "#minecraft:logs",
     "wildercord:mana_crystal",
     "minecraft:diamond"
   ],

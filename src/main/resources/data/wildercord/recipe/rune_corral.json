@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:oak_fence",
+    "#minecraft:wooden_fences",
     "minecraft:lead",
     "wildercord:mana_crystal",
     "minecraft:diamond"

@@ -3,8 +3,8 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:glass",
-    "minecraft:glass",
+    "#wildercord:glass_variants",
+    "#wildercord:glass_variants",
     "minecraft:heart_of_the_sea",
     "wildercord:mana_crystal",
     "minecraft:diamond"

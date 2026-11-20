@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "wildercord:blank_rune",
-    "minecraft:glass",
+    "#wildercord:glass_variants",
     "minecraft:amethyst_shard"
   ],
   "result": {

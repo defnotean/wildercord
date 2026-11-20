@@ -1,0 +1,27 @@
+{
+  "values": [
+    "#minecraft:stone_crafting_materials",
+    "minecraft:deepslate",
+    "minecraft:polished_deepslate",
+    "minecraft:deepslate_bricks",
+    "minecraft:cracked_deepslate_bricks",
+    "minecraft:deepslate_tiles",
+    "minecraft:cracked_deepslate_tiles",
+    "minecraft:chiseled_deepslate",
+    "minecraft:stone",
+    "minecraft:smooth_stone",
+    "minecraft:mossy_cobblestone",
+    "#minecraft:stone_bricks",
+    "minecraft:polished_blackstone",
+    "minecraft:polished_blackstone_bricks",
+    "minecraft:cracked_polished_blackstone_bricks",
+    "minecraft:andesite",
+    "minecraft:polished_andesite",
+    "minecraft:diorite",
+    "minecraft:polished_diorite",
+    "minecraft:granite",
+    "minecraft:polished_granite",
+    "minecraft:tuff",
+    "minecraft:polished_tuff"
+  ]
+}
