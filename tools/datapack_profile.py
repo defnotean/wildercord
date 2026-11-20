@@ -31,6 +31,24 @@ def read_mc_version(root=None):
     raise ValueError(f"minecraft_version not found in {props_path}")
 
 
+def parse_mc_tuple(mc_version: str) -> tuple[int, ...]:
+    """Parse a supported release Minecraft version string into a numeric tuple."""
+    clean = mc_version.strip()
+    if not clean or any(not part.isdigit() for part in clean.split(".")):
+        raise ValueError(f"Unsupported minecraft_version '{mc_version}'; expected numeric dot-separated version")
+    parts = tuple(int(part) for part in clean.split("."))
+    if len(parts) < 2:
+        raise ValueError(f"Unsupported minecraft_version '{mc_version}'; expected major.minor")
+    major, minor = parts[0], parts[1]
+    if major >= 26 and minor >= 1:
+        return parts
+    if major == 1 and minor in (20, 21):
+        return parts
+    raise ValueError(
+        f"Unsupported minecraft_version '{mc_version}'; expected 26.1+ or 1.20.x/1.21.x"
+    )
+
+
 def _flatten_conditions(value):
     if isinstance(value, list):
         out = []
@@ -44,7 +62,7 @@ def _flatten_conditions(value):
 
 @dataclass(frozen=True)
 class DataPackProfile:
-    """Datapack schema adapter for a target Minecraft release (e.g. '26.2', '26.3')."""
+    """Datapack schema adapter for a target Minecraft release (e.g. '1.21.11', '26.1', '26.2', '26.3')."""
 
     version: str
 
@@ -52,11 +70,11 @@ class DataPackProfile:
     def for_version(cls, mc_version):
         """Return the profile matching an exact or patch-prefixed Minecraft version string."""
         clean = mc_version.strip()
-        if clean == "26.2" or clean.startswith("26.2."):
-            return cls("26.2")
-        if clean == "26.3" or clean.startswith("26.3."):
-            return cls("26.3")
-        raise ValueError(f"Unsupported minecraft_version '{mc_version}'; expected 26.2 or 26.3")
+        parts = parse_mc_tuple(clean)
+        major, minor = parts[0], parts[1]
+        if major >= 26:
+            return cls(f"{major}.{minor}")
+        return cls(clean)
 
     @classmethod
     def from_gradle(cls, root=None):
@@ -64,8 +82,24 @@ class DataPackProfile:
         return cls.for_version(read_mc_version(root))
 
     @property
+    def version_tuple(self) -> tuple[int, ...]:
+        return parse_mc_tuple(self.version)
+
+    @property
+    def before_26_3(self) -> bool:
+        return self.version_tuple[:2] < (26, 3)
+
+    @property
+    def before_26_2(self) -> bool:
+        return self.version_tuple[:2] < (26, 2)
+
+    @property
+    def is_obfuscated(self) -> bool:
+        return self.version_tuple[:2] < (26, 1)
+
+    @property
     def is_26_2(self):
-        return self.version == "26.2"
+        return self.before_26_3
 
     # ---------------------------------------------------------------- loot tables
 

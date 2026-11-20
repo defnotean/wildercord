@@ -254,6 +254,134 @@ class VerifyPortTests(unittest.TestCase):
             self.assertIn("must not start with '#'", joined)
             self.assertIn("bogus_modifier", joined)
 
+    def test_candidate_hints_on_renamed_targets(self):
+        bad_method = VALID_MIXIN.replace('method = "oneCall"', 'method = "oneCal"')
+        with tempfile.TemporaryDirectory() as d:
+            repo = Path(d)
+            write_fixture_repo(repo, bad_method)
+            errors = verify_port.verify(repo, mc_jars=[self.jar])
+            joined = "\n".join(errors)
+            self.assertIn("candidates:", joined)
+            self.assertIn("Target#oneCall", joined)
+
+        bad_field = VALID_MIXIN.replace("int secretValue = 0;", "int secretVal = 0;")
+        with tempfile.TemporaryDirectory() as d:
+            repo = Path(d)
+            write_fixture_repo(repo, bad_field)
+            errors = verify_port.verify(repo, mc_jars=[self.jar])
+            joined = "\n".join(errors)
+            self.assertIn("secretValue", joined)
+
+    def test_mod_targeted_mixin_verified_when_compiled(self):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            mod_src = tmp / "mod_src" / "dev/wildercord/client/ViewModel.java"
+            mod_cls = tmp / "mod_cls"
+            mod_cls.mkdir(parents=True, exist_ok=True)
+            mod_src.parent.mkdir(parents=True, exist_ok=True)
+            mod_src.write_text(
+                "package dev.wildercord.client;\n"
+                "import net.minecraft.world.Helper;\n"
+                "public class ViewModel { public void render(Helper h) { h.ping(7); } }\n",
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [JAVAC, "-cp", str(self.jar), "-d", str(mod_cls), str(mod_src)],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+
+            repo = tmp / "repo"
+            mod_mixin = """package dev.wildercord.mixin;
+
+import dev.wildercord.client.ViewModel;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+
+@Mixin(value = ViewModel.class, remap = false)
+public interface SampleMixin {
+    @WrapOperation(method = "render", at = @At(value = "INVOKE",
+        target = "Lnet/minecraft/world/Helper;ping(I)V"), require = 1, expect = 1, allow = 1)
+    static void wrapPing() {}
+}
+"""
+            write_fixture_repo(repo, mod_mixin)
+            self.assertEqual(
+                verify_port.verify(repo, mc_jars=[self.jar], mod_classes=[mod_cls]),
+                [],
+            )
+
+            broken_mod_mixin = mod_mixin.replace('method = "render"', 'method = "draw"')
+            write_fixture_repo(repo, broken_mod_mixin)
+            errors = verify_port.verify(repo, mc_jars=[self.jar], mod_classes=[mod_cls])
+            self.assertTrue(any("draw" in e and "ViewModel#render" in e for e in errors), errors)
+
+
+class VerifyPortStaticTests(unittest.TestCase):
+    def test_find_mc_jars_loom_maven_layouts(self):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            gh = tmp / "gradle_home"
+            merged_dir = gh / "caches/fabric-loom/minecraftMaven/net/minecraft/minecraft-merged-abc/1.21.11-loom.mappings.1_21_11-named"
+            merged_dir.mkdir(parents=True)
+            sources = merged_dir / "minecraft-merged-abc-1.21.11-sources.jar"
+            jar = merged_dir / "minecraft-merged-abc-1.21.11.jar"
+            sources.write_bytes(b"src")
+            jar.write_bytes(b"jar")
+            prev = os.environ.get("GRADLE_USER_HOME")
+            try:
+                os.environ["GRADLE_USER_HOME"] = str(gh)
+                found = verify_port.find_mc_jars(tmp / "repo", "1.21.11")
+            finally:
+                if prev is None:
+                    os.environ.pop("GRADLE_USER_HOME", None)
+                else:
+                    os.environ["GRADLE_USER_HOME"] = prev
+            self.assertEqual(found, [jar])
+
+    def test_compat_contract_and_descriptor_alignment_checks(self):
+        with tempfile.TemporaryDirectory() as d:
+            repo = Path(d)
+            (repo / "gradle.properties").write_text(
+                "minecraft_version=26.2\nloader_version=0.19.5\njava_version=25\n"
+                "fabric_api_version=0.161.0+26.2\nsodium_version=mc26.2-0.9.2\niris_version=1.11.4+26.2\n",
+                encoding="utf-8",
+            )
+            fmod = repo / "src/main/resources/fabric.mod.json"
+            fmod.parent.mkdir(parents=True, exist_ok=True)
+            fmod.write_text(json.dumps({
+                "schemaVersion": 1, "id": "wildercord", "version": "${version}",
+                "depends": {"fabricloader": ">=0.19.5", "minecraft": "~26.2", "java": ">=25", "fabric-api": ">=0.161.0+26.2"},
+            }), encoding="utf-8")
+            mjson = repo / "src/main/resources/wildercord.mixins.json"
+            mjson.write_text(json.dumps({"required": True, "package": "dev.wildercord.mixin", "compatibilityLevel": "JAVA_25", "mixins": []}), encoding="utf-8")
+            lock = repo / "profiles/dependencies.lock.json"
+            lock.parent.mkdir(parents=True, exist_ok=True)
+            lock.write_text(json.dumps({
+                "minecraft": "26.2", "fabric_loader": "0.19.5",
+                "dependencies": [
+                    {"project": "fabric-api", "version": "0.161.0+26.2", "game_versions": ["26.2"]},
+                    {"project": "sodium", "version": "mc26.2-0.9.2", "game_versions": ["26.2"]},
+                    {"project": "iris", "version": "1.11.4+26.2", "game_versions": ["26.2"]},
+                ],
+            }), encoding="utf-8")
+            self.assertEqual(verify_port.verify_descriptor_alignment(repo), [])
+
+            mjson.write_text(json.dumps({"required": True, "package": "dev.wildercord.mixin", "compatibilityLevel": "JAVA_21", "mixins": []}), encoding="utf-8")
+            errs = verify_port.verify_descriptor_alignment(repo)
+            self.assertTrue(any("compatibilityLevel" in e for e in errs), errs)
+
+            compat_file = repo / "src/main/java/dev/wildercord/compat/McEntities.java"
+            compat_file.parent.mkdir(parents=True, exist_ok=True)
+            compat_file.write_text(
+                "package dev.wildercord.compat;\npublic final class McEntities { private static int leakedCache; }\n",
+                encoding="utf-8",
+            )
+            cerrs = verify_port.verify_compat_contract(repo)
+            self.assertTrue(any("mutable non-final static field" in e for e in cerrs), cerrs)
+            self.assertTrue(any("Missing required compat seam file" in e for e in cerrs), cerrs)
+
 
 if __name__ == "__main__":
     unittest.main()
