@@ -6,6 +6,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -44,11 +46,12 @@ public class KarakuriSentinel extends WildMonster {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return Monster.createMonsterAttributes()
-			.add(Attributes.MAX_HEALTH, 28.0)
-			.add(Attributes.ARMOR, 4.0)
-			.add(Attributes.MOVEMENT_SPEED, 0.24)
-			.add(Attributes.ATTACK_DAMAGE, 4.0)
-			.add(Attributes.FOLLOW_RANGE, 20.0);
+			.add(Attributes.MAX_HEALTH, 52.0)
+			.add(Attributes.ARMOR, 10.0)
+			.add(Attributes.KNOCKBACK_RESISTANCE, 0.55)
+			.add(Attributes.MOVEMENT_SPEED, 0.29)
+			.add(Attributes.ATTACK_DAMAGE, 7.5)
+			.add(Attributes.FOLLOW_RANGE, 24.0);
 	}
 
 	@Override
@@ -80,13 +83,18 @@ public class KarakuriSentinel extends WildMonster {
 				setState(WINDUP, false);
 				setState(ACTING, true);
 				level.playSound(null, blockPosition(), SoundEvents.PISTON_EXTEND, SoundSource.HOSTILE, 0.75F, 1.3F);
-				level.sendParticles(ParticleTypes.CRIT, getX(), getY() + 1.0, getZ(), 10, 0.9, 0.3, 0.9, 0.08);
-				if (distanceToSqr(target) <= 10.5) {
-					target.hurtServer(level, damageSources().mobAttack(this), 4.5F);
+				level.sendParticles(ParticleTypes.CRIT, getX(), getY() + 1.0, getZ(), 14, 1.0, 0.3, 1.0, 0.08);
+				Vec3 lunge = target.position().subtract(position()).multiply(1, 0, 1);
+				if (lunge.lengthSqr() > 0.01) {
+					setDeltaMovement(lunge.normalize().scale(0.45).add(0, 0.14, 0));
+				}
+				if (distanceToSqr(target) <= 13.0) {
+					target.hurtServer(level, damageSources().mobAttack(this), 9.0F);
+					target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 0, false, true));
 					Vec3 push = target.position().subtract(position()).multiply(1, 0, 1);
 					if (push.lengthSqr() > 0.01) {
-						Vec3 v = push.normalize().scale(0.5);
-						target.push(v.x, 0.2, v.z);
+						Vec3 v = push.normalize().scale(0.55);
+						target.push(v.x, 0.22, v.z);
 					}
 				}
 			}
@@ -95,9 +103,9 @@ public class KarakuriSentinel extends WildMonster {
 		setState(ACTING, false);
 		if (spinCooldown > 0) {
 			spinCooldown--;
-		} else if (distanceToSqr(target) <= 9.0) {
-			spinCooldown = 75;
-			windupTicks = 16;
+		} else if (distanceToSqr(target) <= 12.0) {
+			spinCooldown = 45;
+			windupTicks = 14;
 			level.playSound(null, blockPosition(), SoundEvents.NOTE_BLOCK_CHIME.value(), SoundSource.HOSTILE, 0.8F, 1.1F);
 		}
 	}

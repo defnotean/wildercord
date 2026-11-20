@@ -1,6 +1,9 @@
 package dev.wildercord.wildlife;
 
 import dev.wildercord.cast.Targets;
+import dev.wildercord.monster.KarakuriSentinel;
+import dev.wildercord.monster.MonsterContent;
+import dev.wildercord.monster.PaperLanternSpirit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -21,9 +24,11 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -41,6 +46,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.zombie.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -52,7 +58,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The four Shrine Cats modeled after real companions:
@@ -81,9 +89,12 @@ public class ShrineCat extends TamableAnimal {
 	private @Nullable BlockPos homePos;
 	private @Nullable BlockPos sanctuaryHeart;
 	private boolean sanctuaryFinished;
-	private int specialCooldown = 50;
+	private boolean wave1Summoned;
+	private boolean wave2Summoned;
+	private int specialCooldown = 36;
 	private int perkCooldown = 20;
 	private int companionPowerCooldown = 80;
+	private int quartetCheckCooldown = 60;
 	private int earFlickTicks;
 
 	public ShrineCat(EntityType<? extends ShrineCat> type, Level level) {
@@ -101,7 +112,8 @@ public class ShrineCat extends TamableAnimal {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return createAnimalAttributes()
-			.add(Attributes.MAX_HEALTH, 36.0)
+			.add(Attributes.MAX_HEALTH, 80.0)
+			.add(Attributes.ARMOR, 10.0)
 			.add(Attributes.MOVEMENT_SPEED, 0.30)
 			.add(Attributes.ATTACK_DAMAGE, 4.0)
 			.add(Attributes.FOLLOW_RANGE, 24.0)
@@ -211,6 +223,8 @@ public class ShrineCat extends TamableAnimal {
 		this.homePos = home.immutable();
 		this.sanctuaryHeart = floor4Heart.immutable();
 		this.sanctuaryFinished = false;
+		this.wave1Summoned = false;
+		this.wave2Summoned = false;
 		setPersistenceRequired();
 		var maxHp = getAttribute(Attributes.MAX_HEALTH);
 		if (maxHp != null) {
@@ -220,9 +234,18 @@ public class ShrineCat extends TamableAnimal {
 		if (atk != null) {
 			atk.setBaseValue(v.baseDamage);
 		}
+		var armor = getAttribute(Attributes.ARMOR);
+		if (armor != null) {
+			armor.setBaseValue(8.0);
+		}
+		var speed = getAttribute(Attributes.MOVEMENT_SPEED);
+		if (speed != null) {
+			speed.setBaseValue(0.34);
+		}
 		setHealth(getMaxHealth());
 		setLoafing(v == ShrineCatRules.Variant.ODIE);
 		setOrderedToSit(v == ShrineCatRules.Variant.FREYA);
+		setInSittingPose(v == ShrineCatRules.Variant.FREYA);
 	}
 
 	/** Configures this cat as a peaceful inhabitant of the Japanese Sakura Village. */
@@ -233,6 +256,8 @@ public class ShrineCat extends TamableAnimal {
 		this.sanctuaryFinished = true;
 		setPersistenceRequired();
 		setLoafing(v == ShrineCatRules.Variant.ODIE);
+		setOrderedToSit(v == ShrineCatRules.Variant.FREYA);
+		setInSittingPose(v == ShrineCatRules.Variant.FREYA);
 	}
 
 	private void refreshBossBarIdentity(ShrineCatRules.Variant v) {
@@ -284,6 +309,18 @@ public class ShrineCat extends TamableAnimal {
 		} else {
 			bossBar.removeAllPlayers();
 		}
+		if (role == ShrineCatRules.ROLE_VILLAGE && homePos != null) {
+			double distSq = distanceToSqr(Vec3.atCenterOf(homePos));
+			if (distSq > 64.0) {
+				teleportTo(homePos.getX() + 0.5, homePos.getY(), homePos.getZ() + 0.5);
+				if (variant() == ShrineCatRules.Variant.FREYA) {
+					setOrderedToSit(true);
+					setInSittingPose(true);
+				}
+			} else if (distSq > 16.0 && !isOrderedToSit()) {
+				getNavigation().moveTo(homePos.getX() + 0.5, homePos.getY(), homePos.getZ() + 0.5, 1.0);
+			}
+		}
 		if (ShrineCatRules.grantsDungeonPerk(role) && !sanctuaryFinished && sanctuaryHeart != null) {
 			checkHeartFinished(level);
 		}
@@ -293,14 +330,34 @@ public class ShrineCat extends TamableAnimal {
 		}
 		if (role == ShrineCatRules.ROLE_TAMED && isTame() && getOwner() instanceof LivingEntity owner) {
 			tickTamedPower(level, owner);
+			if (sanctuaryFinished && owner instanceof Player pl
+					&& (Math.abs(pl.getX()) > 500.0 || Math.abs(pl.getZ()) > 500.0)
+					&& distanceToSqr(pl) <= 64.0 && --quartetCheckCooldown <= 0) {
+				quartetCheckCooldown = 100;
+				ensureQuartetReunited(level, pl, false);
+			}
 		}
 	}
 
 	private void tickGuardianTrial(ServerLevel level) {
 		bossBar.setProgress(Math.max(0.0F, Math.min(1.0F, getHealth() / getMaxHealth())));
-		Player challenger = level.getNearestPlayer(getX(), getY(), getZ(), 18.0, p -> p instanceof Player pl && pl.isAlive() && !pl.isCreative() && !pl.isSpectator());
+		for (ServerPlayer sp : level.players()) {
+			if (!sp.isAlive() || sp.isCreative() || sp.isSpectator()) {
+				continue;
+			}
+			double horizSq = (sp.getX() - getX()) * (sp.getX() - getX()) + (sp.getZ() - getZ()) * (sp.getZ() - getZ());
+			if (horizSq <= 24.0 * 24.0 && sp.getY() > getY() + 5.5 && sp.getY() < getY() + 26.0) {
+				sp.teleportTo(level, getX(), getY(), getZ() - 3.0, Set.of(), sp.getYRot(), sp.getXRot(), false);
+				level.playSound(null, sp.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 0.9F, 0.85F);
+				level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, sp.getX(), sp.getY() + 1.0, sp.getZ(), 14, 0.4, 0.4, 0.4, 0.04);
+				sp.sendOverlayMessage(Component.literal("Floor " + variant().sanctuaryFloor + " is sealed! Defeat "
+					+ variant().displayName + " and her floor sentries before ascending!"));
+			}
+		}
+		Player challenger = level.getNearestPlayer(getX(), getY(), getZ(), 22.0,
+			p -> p instanceof Player pl && pl.isAlive() && !pl.isCreative() && !pl.isSpectator() && Math.abs(pl.getY() - getY()) < 5.5);
 		for (ServerPlayer player : level.players()) {
-			boolean sameFloor = Math.abs(player.getY() - getY()) < 5.5 && player.distanceToSqr(this) <= 22.0 * 22.0;
+			boolean sameFloor = Math.abs(player.getY() - getY()) < 5.5 && player.distanceToSqr(this) <= 24.0 * 24.0;
 			if (sameFloor) {
 				bossBar.addPlayer(player);
 			} else {
@@ -319,12 +376,13 @@ public class ShrineCat extends TamableAnimal {
 		}
 		setLoafing(false);
 		setOrderedToSit(false);
+		setInSittingPose(false);
 		setTarget(challenger);
 		if (specialCooldown > 0) {
 			specialCooldown--;
 			return;
 		}
-		specialCooldown = 65;
+		specialCooldown = 36;
 		performVariantTrialMove(level, challenger);
 	}
 
@@ -336,52 +394,110 @@ public class ShrineCat extends TamableAnimal {
 			case YUKI -> {
 				level.playSound(null, blockPosition(), SoundEvents.OCELOT_AMBIENT, SoundSource.HOSTILE, 0.9F, 1.35F);
 				level.sendParticles(ParticleTypes.CLOUD, getX(), getY() + 0.4, getZ(), 14, 1.4, 0.3, 1.4, 0.04);
+				level.sendParticles(ParticleTypes.SNOWFLAKE, getX(), getY() + 0.6, getZ(), 18, 2.0, 0.4, 2.0, 0.03);
 				Vec3 leap = challenger.position().subtract(position()).multiply(1, 0, 1);
 				if (leap.lengthSqr() > 0.01) {
-					setDeltaMovement(leap.normalize().scale(0.65).add(0, 0.25, 0));
+					setDeltaMovement(leap.normalize().scale(0.75).add(0, 0.28, 0));
 				}
-				if (distanceToSqr(challenger) <= 16.0) {
+				if (distanceToSqr(challenger) <= 25.0) {
 					challenger.hurtServer(level, damageSources().mobAttack(this), dmg);
-					challenger.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 0, false, true));
+					challenger.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 1, false, true));
 				}
 			}
 			case ODIE -> {
 				level.playSound(null, blockPosition(), SoundEvents.CAT_PURR_BABY.value(), SoundSource.HOSTILE, 1.0F, 0.85F);
-				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.4, getZ(), 16, 1.6, 0.25, 1.6, 0.03);
-				if (distanceToSqr(challenger) <= 20.0) {
+				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.4, getZ(), 20, 1.8, 0.3, 1.8, 0.04);
+				level.sendParticles(ParticleTypes.LAVA, getX(), getY() + 0.5, getZ(), 8, 1.2, 0.2, 1.2, 0.02);
+				if (distanceToSqr(challenger) <= 25.0) {
 					challenger.hurtServer(level, damageSources().mobAttack(this), dmg);
+					challenger.setRemainingFireTicks(60);
 					Vec3 push = challenger.position().subtract(position()).multiply(1, 0, 1);
 					if (push.lengthSqr() > 0.01) {
-						Vec3 p = push.normalize().scale(0.55);
-						challenger.push(p.x, 0.28, p.z);
+						Vec3 p = push.normalize().scale(0.65);
+						challenger.push(p.x, 0.34, p.z);
 					}
 				}
 			}
 			case FREYA -> {
-				level.playSound(null, blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 1.0F, 1.45F);
-				level.sendParticles(ParticleTypes.NOTE, getX(), getY() + 0.7, getZ(), 12, 1.8, 0.4, 1.8, 0.1);
-				if (distanceToSqr(challenger) <= 24.0) {
+				level.playSound(null, blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 1.1F, 1.45F);
+				level.sendParticles(ParticleTypes.NOTE, getX(), getY() + 0.7, getZ(), 16, 2.2, 0.4, 2.2, 0.1);
+				level.sendParticles(ParticleTypes.CHERRY_LEAVES, getX(), getY() + 0.9, getZ(), 18, 2.0, 0.5, 2.0, 0.05);
+				level.sendParticles(ParticleTypes.END_ROD, getX(), getY() + 0.6, getZ(), 10, 1.4, 0.3, 1.4, 0.04);
+				addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 60, 0, true, false));
+				addEffect(new MobEffectInstance(MobEffects.SPEED, 60, 0, true, false));
+				if (distanceToSqr(challenger) <= 28.0) {
 					challenger.hurtServer(level, damageSources().indirectMagic(this, this), dmg);
+					challenger.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 0, false, true));
 					Vec3 away = challenger.position().subtract(position()).multiply(1, 0, 1);
 					if (away.lengthSqr() > 0.01) {
-						Vec3 push = away.normalize().scale(0.75);
-						challenger.push(push.x, 0.25, push.z);
+						Vec3 push = away.normalize().scale(0.85);
+						challenger.push(push.x, 0.30, push.z);
 					}
 				}
 			}
 			case KURO -> {
 				level.playSound(null, blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.HOSTILE, 0.8F, 1.4F);
-				level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 0.4, getZ(), 14, 0.5, 0.3, 0.5, 0.04);
-				Vec3 behind = challenger.position().subtract(challenger.getLookAngle().multiply(1, 0, 1).normalize().scale(1.8));
+				level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 0.4, getZ(), 18, 0.7, 0.3, 0.7, 0.04);
+				level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 0.5, getZ(), 12, 0.6, 0.3, 0.6, 0.03);
+				Vec3 look = challenger.getLookAngle().multiply(1, 0, 1);
+				Vec3 behind = look.lengthSqr() > 0.01
+					? challenger.position().subtract(look.normalize().scale(1.8))
+					: position();
 				BlockPos dst = BlockPos.containing(behind);
 				if (level.getBlockState(dst).isAir() && level.getBlockState(dst.above()).isAir() && !level.getBlockState(dst.below()).isAir()) {
 					teleportTo(behind.x, dst.getY(), behind.z);
 				}
-				if (distanceToSqr(challenger) <= 14.0) {
+				if (distanceToSqr(challenger) <= 20.0) {
 					challenger.hurtServer(level, damageSources().mobAttack(this), dmg);
+					challenger.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0, false, true));
 				}
 			}
 		}
+	}
+
+	private int countFloorSentries(ServerLevel level) {
+		AABB floorBox = new AABB(getX() - 24.0, getY() - 4.5, getZ() - 24.0, getX() + 24.0, getY() + 4.5, getZ() + 24.0);
+		int count = 0;
+		for (Monster m : level.getEntitiesOfClass(Monster.class, floorBox, LivingEntity::isAlive)) {
+			if (m instanceof KarakuriSentinel || m instanceof PaperLanternSpirit) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	private void summonReinforcements(ServerLevel level) {
+		level.playSound(null, blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 1.0F, 0.9F);
+		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 0.8, getZ(), 20, 1.4, 0.4, 1.4, 0.05);
+		BlockPos sentinelPos = findOpenNearby(level, blockPosition().offset(3, 0, 0));
+		BlockPos spiritPos = findOpenNearby(level, blockPosition().offset(-3, 0, 0));
+		KarakuriSentinel sentinel = MonsterContent.KARAKURI_SENTINEL.create(level, EntitySpawnReason.REINFORCEMENT);
+		if (sentinel != null) {
+			sentinel.snapTo(sentinelPos.getX() + 0.5, sentinelPos.getY(), sentinelPos.getZ() + 0.5, getYRot(), 0.0F);
+			sentinel.finalizeSpawn(level, level.getCurrentDifficultyAt(sentinelPos), EntitySpawnReason.REINFORCEMENT, null);
+			level.addFreshEntity(sentinel);
+		}
+		PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(level, EntitySpawnReason.REINFORCEMENT);
+		if (spirit != null) {
+			spirit.snapTo(spiritPos.getX() + 0.5, spiritPos.getY() + 0.5, spiritPos.getZ() + 0.5, getYRot(), 0.0F);
+			spirit.finalizeSpawn(level, level.getCurrentDifficultyAt(spiritPos), EntitySpawnReason.REINFORCEMENT, null);
+			level.addFreshEntity(spirit);
+		}
+		for (ServerPlayer player : level.players()) {
+			if (player.distanceToSqr(this) <= 32.0 * 32.0) {
+				player.sendSystemMessage(Component.literal("[" + variant().displayName + "] Summons Shrine Reinforcements!"));
+			}
+		}
+	}
+
+	private BlockPos findOpenNearby(ServerLevel level, BlockPos target) {
+		for (int dy = 0; dy <= 1; dy++) {
+			BlockPos p = target.above(dy);
+			if (level.getBlockState(p).isAir() && level.getBlockState(p.above()).isAir()) {
+				return p;
+			}
+		}
+		return blockPosition();
 	}
 
 	@Override
@@ -397,12 +513,57 @@ public class ShrineCat extends TamableAnimal {
 		if (role == ShrineCatRules.ROLE_CLEARED || role == ShrineCatRules.ROLE_VILLAGE) {
 			return false;
 		}
+		if (role == ShrineCatRules.ROLE_TAMED) {
+			Entity attacker = source.getEntity();
+			LivingEntity owner = getOwner();
+			if (attacker != null && owner != null && attacker.getUUID().equals(owner.getUUID())) {
+				return false;
+			}
+			if (source.is(DamageTypes.THORNS) || source.is(DamageTypes.CAMPFIRE)
+					|| source.is(DamageTypes.HOT_FLOOR) || source.is(DamageTypes.CACTUS)
+					|| source.is(DamageTypes.SWEET_BERRY_BUSH)) {
+				return false;
+			}
+			float floorHp = Math.max(12.0F, getMaxHealth() * 0.35F);
+			if (getHealth() - amount <= 2.0F) {
+				setHealth(Math.max(getHealth(), floorHp));
+				level.playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL, 0.7F, 1.4F);
+				level.sendParticles(ParticleTypes.END_ROD, getX(), getY() + 0.5, getZ(), 8, 0.3, 0.3, 0.3, 0.04);
+				return false;
+			}
+		}
 		if (role == ShrineCatRules.ROLE_GUARDIAN) {
+			boolean bypassAegis = amount >= getMaxHealth() * 0.75F;
+			if (!bypassAegis) {
+				int sentries = countFloorSentries(level);
+				if (sentries > 0) {
+					amount *= 0.15F;
+					level.playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.HOSTILE, 0.7F, 1.35F);
+					level.sendParticles(ParticleTypes.ENCHANT, getX(), getY() + 0.6, getZ(), 10, 0.5, 0.3, 0.5, 0.05);
+					if (source.getEntity() instanceof ServerPlayer sp) {
+						sp.sendOverlayMessage(Component.literal("[" + variant().displayName
+							+ "'s Shrine Aegis] Protected while " + sentries + " floor defender(s) remain!"));
+					}
+				}
+			}
 			float nextHealth = getHealth() - amount;
 			if (ShrineCatRules.shouldYieldInTrial(nextHealth, getMaxHealth())) {
 				yieldInTrial(level);
 				return true;
 			}
+			if (!bypassAegis) {
+				float frac = nextHealth / Math.max(1.0F, getMaxHealth());
+				if (!wave1Summoned && frac <= 0.65F) {
+					wave1Summoned = true;
+					summonReinforcements(level);
+				} else if (!wave2Summoned && frac <= 0.40F) {
+					wave2Summoned = true;
+					summonReinforcements(level);
+				}
+			}
+			boolean hit = super.hurtServer(level, source, amount);
+			bossBar.setProgress(Math.max(0.0F, Math.min(1.0F, getHealth() / getMaxHealth())));
+			return hit;
 		}
 		return super.hurtServer(level, source, amount);
 	}
@@ -509,22 +670,40 @@ public class ShrineCat extends TamableAnimal {
 				if (owner.getHealth() < owner.getMaxHealth()) {
 					owner.heal(2.0F);
 				}
-				owner.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 80, 0, true, false));
-				owner.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 140, 0, true, false));
+				owner.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, true, false));
+				owner.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 160, 0, true, false));
 				level.sendParticles(ParticleTypes.HEART, owner.getX(), owner.getY() + 1.1, owner.getZ(), 4, 0.3, 0.2, 0.3, 0.02);
+				for (Monster mob : level.getEntitiesOfClass(Monster.class, owner.getBoundingBox().inflate(8.0), LivingEntity::isAlive)) {
+					boolean hostile = mob == owner.getLastHurtByMob() || mob == owner.getLastHurtMob()
+						|| mob.getTarget() == owner || mob.getTarget() == this;
+					if (hostile && Targets.canHarm(owner, mob)) {
+						mob.setRemainingFireTicks(60);
+						mob.hurtServer(level, damageSources().indirectMagic(this, owner), 4.0F);
+						level.sendParticles(ParticleTypes.FLAME, mob.getX(), mob.getY() + 0.9, mob.getZ(), 10, 0.3, 0.3, 0.3, 0.03);
+						break;
+					}
+				}
 			}
 			case FREYA -> {
 				triggerAction();
 				level.playSound(null, blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.NEUTRAL, 0.6F, 1.6F);
-				owner.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 160, 0, true, false));
+				owner.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 160, 1, true, false));
+				owner.addEffect(new MobEffectInstance(MobEffects.HASTE, 160, 0, true, false));
+				owner.removeEffect(MobEffects.SLOWNESS);
+				owner.removeEffect(MobEffects.WEAKNESS);
 				level.sendParticles(ParticleTypes.NOTE, getX(), getY() + 0.6, getZ(), 6, 0.7, 0.2, 0.7, 0.05);
-				for (Monster mob : level.getEntitiesOfClass(Monster.class, getBoundingBox().inflate(4.5), LivingEntity::isAlive)) {
+				for (Monster mob : level.getEntitiesOfClass(Monster.class, getBoundingBox().inflate(5.0), LivingEntity::isAlive)) {
+					boolean hostile = mob == owner.getLastHurtByMob() || mob == owner.getLastHurtMob()
+						|| mob.getTarget() == owner || mob.getTarget() == this || mob instanceof Husk;
+					if (!hostile || !Targets.canHarm(owner, mob)) {
+						continue;
+					}
 					Vec3 away = mob.position().subtract(position()).multiply(1, 0, 1);
 					if (away.lengthSqr() > 0.01) {
-						Vec3 push = away.normalize().scale(0.5);
-						mob.push(push.x, 0.2, push.z);
+						Vec3 push = away.normalize().scale(0.55);
+						mob.push(push.x, 0.22, push.z);
 					}
-					mob.hurtServer(level, damageSources().indirectMagic(this, owner), 3.0F);
+					mob.hurtServer(level, owner instanceof Player pl ? damageSources().playerAttack(pl) : damageSources().mobAttack(this), 3.5F);
 				}
 			}
 			case KURO -> {
@@ -573,7 +752,17 @@ public class ShrineCat extends TamableAnimal {
 					setRole(ShrineCatRules.ROLE_TAMED);
 					setLoafing(false);
 					setOrderedToSit(false);
+					setInSittingPose(false);
 					setTarget(null);
+					var maxHp = getAttribute(Attributes.MAX_HEALTH);
+					if (maxHp != null) {
+						maxHp.setBaseValue(80.0);
+					}
+					var armor = getAttribute(Attributes.ARMOR);
+					if (armor != null) {
+						armor.setBaseValue(10.0);
+					}
+					setHealth(getMaxHealth());
 					triggerAction();
 					server.broadcastEntityEvent(this, (byte) 7);
 					server.playSound(null, blockPosition(), SoundEvents.CAT_PURR_BABY.value(), SoundSource.NEUTRAL, 1.0F, 1.2F);
@@ -638,6 +827,8 @@ public class ShrineCat extends TamableAnimal {
 		output.putInt("ShrineCatRole", getRole());
 		output.putBoolean("ShrineCatLoafing", isLoafing());
 		output.putBoolean("SanctuaryFinished", sanctuaryFinished);
+		output.putBoolean("Wave1Summoned", wave1Summoned);
+		output.putBoolean("Wave2Summoned", wave2Summoned);
 		if (homePos != null) {
 			output.store("ShrineCatHome", BlockPos.CODEC, homePos);
 		}
@@ -654,10 +845,81 @@ public class ShrineCat extends TamableAnimal {
 		setRole(input.getIntOr("ShrineCatRole", isTame() ? ShrineCatRules.ROLE_TAMED : ShrineCatRules.ROLE_VILLAGE));
 		setLoafing(input.getBooleanOr("ShrineCatLoafing", false));
 		sanctuaryFinished = input.getBooleanOr("SanctuaryFinished", isTame());
+		wave1Summoned = input.getBooleanOr("Wave1Summoned", false);
+		wave2Summoned = input.getBooleanOr("Wave2Summoned", false);
 		homePos = input.read("ShrineCatHome", BlockPos.CODEC).orElse(null);
 		sanctuaryHeart = input.read("SanctuaryHeart", BlockPos.CODEC).orElse(null);
+		if (isTame() && getRole() == ShrineCatRules.ROLE_TAMED) {
+			var maxHp = getAttribute(Attributes.MAX_HEALTH);
+			if (maxHp != null && maxHp.getBaseValue() < 80.0) {
+				maxHp.setBaseValue(80.0);
+			}
+			var armor = getAttribute(Attributes.ARMOR);
+			if (armor != null && armor.getBaseValue() < 10.0) {
+				armor.setBaseValue(10.0);
+			}
+			if (getHealth() < getMaxHealth() * 0.35F) {
+				setHealth(getMaxHealth());
+			}
+		}
 		if (getRole() != ShrineCatRules.ROLE_GUARDIAN) {
 			bossBar.removeAllPlayers();
 		}
+	}
+
+	/**
+	 * Restores any missing member of the quartet ({@code Yuki}, {@code Odie}, {@code Freya}, {@code Kuro}) beside
+	 * {@code owner} when a tamed cat is lost or when the owner calls them with the Suzu Cat-Bell Charm.
+	 */
+	public static int ensureQuartetReunited(ServerLevel level, Player owner, boolean forceIfAnyTamed) {
+		List<ShrineCat> mine = level.getEntitiesOfClass(ShrineCat.class, owner.getBoundingBox().inflate(128.0),
+			cat -> cat.isAlive() && cat.isTame() && cat.isOwnedBy(owner));
+		if (mine.isEmpty()) {
+			return 0;
+		}
+		EnumSet<ShrineCatRules.Variant> have = EnumSet.noneOf(ShrineCatRules.Variant.class);
+		boolean anyFinished = false;
+		for (ShrineCat cat : mine) {
+			have.add(cat.variant());
+			anyFinished |= cat.sanctuaryFinished;
+		}
+		if (!forceIfAnyTamed && (!anyFinished || have.size() < 3)) {
+			return 0;
+		}
+		int restored = 0;
+		for (ShrineCatRules.Variant v : ShrineCatRules.Variant.values()) {
+			if (have.contains(v)) {
+				continue;
+			}
+			ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level, EntitySpawnReason.COMMAND);
+			if (cat == null) {
+				continue;
+			}
+			double ox = (restored - 1) * 1.1;
+			cat.snapTo(owner.getX() + ox, owner.getY(), owner.getZ() + 1.2, owner.getYRot(), 0.0F);
+			cat.setVariant(v);
+			cat.tame(owner);
+			cat.setRole(ShrineCatRules.ROLE_TAMED);
+			cat.sanctuaryFinished = true;
+			cat.setPersistenceRequired();
+			cat.setLoafing(false);
+			cat.setOrderedToSit(false);
+			cat.setInSittingPose(false);
+			var maxHp = cat.getAttribute(Attributes.MAX_HEALTH);
+			if (maxHp != null) {
+				maxHp.setBaseValue(80.0);
+			}
+			var armor = cat.getAttribute(Attributes.ARMOR);
+			if (armor != null) {
+				armor.setBaseValue(10.0);
+			}
+			cat.setHealth(cat.getMaxHealth());
+			cat.triggerAction();
+			level.addFreshEntity(cat);
+			level.playSound(null, cat.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.NEUTRAL, 0.85F, 1.35F);
+			owner.sendSystemMessage(Component.literal("[" + v.displayName + "] Rings her Suzu bell and rejoins your side!"));
+			restored++;
+		}
+		return restored;
 	}
 }

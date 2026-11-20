@@ -410,10 +410,12 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(cats.size() == 4, "Sakura Village has all 4 Shrine Cats (" + cats.size() + ")");
 				check(cats.stream().allMatch(cat -> cat.getRole() == ShrineCatRules.ROLE_VILLAGE),
 					"Sakura Village cats hold ROLE_VILLAGE");
+				check(cats.stream().anyMatch(cat -> cat.variant() == ShrineCatRules.Variant.FREYA && cat.isOrderedToSit()),
+					"Sakura Village Freya sits cleanly on her shrine dais");
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = piece.getBoundingBox();
-				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 22.0, b.minZ() - 10.0,
-					Set.<Relative>of(), 0.0F, 18.0F, false);
+				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 26.0, b.minZ() - 14.0,
+					Set.<Relative>of(), 0.0F, 22.0F, false);
 				return piece;
 			});
 			c.waitTicks(50);
@@ -422,8 +424,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				p(s).setGameMode(GameType.SPECTATOR);
-				lookAt(l, p(s), Vec3.atBottomCenterOf(village.localPosition(22, 1, 1)),
-					Vec3.atCenterOf(village.localPosition(22, 2, 24)));
+				lookAt(l, p(s), Vec3.atBottomCenterOf(village.localPosition(32, 1, 2)),
+					Vec3.atCenterOf(village.localPosition(32, 3, 32)));
 			});
 			c.waitTicks(12);
 			shot(c, "shrine_sakura_village_courtyard");
@@ -438,8 +440,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				placePiece(l, piece, 202L);
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = piece.getBoundingBox();
-				p(s).teleportTo(l, b.minX() - 16.0, b.minY() + 34.0, b.minZ() - 14.0,
-					Set.<Relative>of(), -40.0F, 12.0F, false);
+				p(s).teleportTo(l, b.minX() - 18.0, b.minY() + 40.0, b.minZ() - 18.0,
+					Set.<Relative>of(), -42.0F, 14.0F, false);
 				return piece;
 			});
 			c.waitTicks(50);
@@ -464,8 +466,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					"Cat Sanctuary has welcoming entry Tea Master");
 				int spirits = l.getEntitiesOfClass(PaperLanternSpirit.class, area).size();
 				int sentinels = l.getEntitiesOfClass(KarakuriSentinel.class, area).size();
-				check(spirits == 3 && sentinels == 3,
-					"Cat Sanctuary spawned 3 PaperLanternSpirits & 3 KarakuriSentinels (" + spirits + "/" + sentinels + ")");
+				check(spirits == 18 && sentinels == 18,
+					"Cat Sanctuary spawned 18 PaperLanternSpirits & 18 KarakuriSentinels (" + spirits + "/" + sentinels + ")");
 
 				// Verify Survival ward refuses breaking Cat Sanctuary walls.
 				ServerPlayer player = p(s);
@@ -486,7 +488,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				CatSanctuaryPiece.F1 + 1, CatSanctuaryPiece.F2 + 1,
 				CatSanctuaryPiece.F3 + 1, CatSanctuaryPiece.F4 + 1
 			};
-			int[] camFloorZ = {21, 22, 24, 25};
+			int[] camFloorZ = {21, 23, 25, 27};
 			String[] floorShots = {
 				"shrine_cat_sanctuary_floor1_yuki",
 				"shrine_cat_sanctuary_floor2_odie",
@@ -501,27 +503,42 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 200, 0, true, false));
 					ShrineCat cat = (ShrineCat) l.getEntity(guardianIds.get(floorVariants[idx]));
 					check(cat != null, "Floor guardian present for interior view: " + floorVariants[idx].displayName);
-					lookAt(l, player, Vec3.atBottomCenterOf(sanctuary.localPosition(24, camFloorY[idx], camFloorZ[idx])),
+					lookAt(l, player, Vec3.atBottomCenterOf(sanctuary.localPosition(28, camFloorY[idx], camFloorZ[idx])),
 						cat.getEyePosition());
 				});
 				c.waitTicks(12);
 				shot(c, floorShots[i]);
 			}
 
-			// Run non-lethal guardian yields, floor perks, taming unlock, and tame all 4 cats.
+			// Verify Floor Progression Seal prevents skipping Floor 1 while Yuki is undefeated.
 			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				ServerPlayer player = p(s);
+				ShrineCat odie = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.ODIE));
+				check(odie != null, "Odie present for floor seal check");
 				player.removeAllEffects();
 				player.setGameMode(GameType.SURVIVAL);
+				player.teleportTo(l, odie.getX(), odie.getY(), odie.getZ(), Set.<Relative>of(), 0.0F, 0.0F, false);
+			});
+			c.waitTicks(4);
 
+			// Verify Guardian Shrine Aegis & non-lethal guardian yields, floor perks, taming unlock, and tame all 4 cats.
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				ServerPlayer player = p(s);
 				ShrineCat yuki = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.YUKI));
 				ShrineCat odie = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.ODIE));
 				ShrineCat freya = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.FREYA));
 				ShrineCat kuro = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.KURO));
 				check(yuki != null && odie != null && freya != null && kuro != null, "All 4 sanctuary cats present");
+				check(player.getY() < yuki.getY() + 4.0,
+					"Floor Progression Seal returned player trying to skip Floor 1 (y=" + player.getY() + ")");
 
 				player.teleportTo(l, yuki.getX(), yuki.getY(), yuki.getZ() - 2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				float preAegisHp = yuki.getHealth();
+				yuki.hurtServer(l, l.damageSources().playerAttack(player), 10.0F);
+				check(yuki.getHealth() > preAegisHp - 3.5F,
+					"Guardian Shrine Aegis mitigates normal damage while Floor 1 sentries live (" + yuki.getHealth() + "/" + preAegisHp + ")");
 				hold(s, new ItemStack(Items.COOKED_SALMON, 4));
 				yuki.mobInteract(player, InteractionHand.MAIN_HAND);
 				check(!yuki.isTame() && yuki.getRole() == ShrineCatRules.ROLE_GUARDIAN, "Guardian Yuki refuses taming mid-fight");
@@ -648,7 +665,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					"Tamed Kuro grants Speed and Strength");
 				check(huskB.getHealth() < huskB.getMaxHealth(), "Tamed Kuro strikes owner's prey");
 
-				// Heal hurt tamed Freya with salmon, toggle loaf pose, and round-trip NBT save/load.
+				// Heal hurt tamed Freya with salmon, verify tamed immortality against thorns/lethal hits, toggle loaf, and NBT save/load.
 				ShrineCat freya = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.FREYA));
 				check(freya != null, "Freya present for heal & NBT test");
 				freya.setHealth(18.0F);
@@ -656,6 +673,10 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				freya.mobInteract(player, InteractionHand.MAIN_HAND);
 				check(freya.getHealth() >= 24.0F && player.getMainHandItem().getCount() == 1,
 					"Feeding cooked salmon heals hurt tamed ShrineCat (+6 HP)");
+				freya.hurtServer(l, l.damageSources().thorns(player), 500.0F);
+				freya.hurtServer(l, l.damageSources().magic(), 500.0F);
+				check(freya.isAlive() && freya.getHealth() >= 10.0F,
+					"Tamed Freya cannot die from thorns or lethal non-/kill damage (" + freya.getHealth() + ")");
 
 				hold(s, ItemStack.EMPTY);
 				player.setShiftKeyDown(true);
@@ -703,8 +724,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				AABB area = AABB.of(bath.getBoundingBox()).inflate(2.0);
 				int spirits = l.getEntitiesOfClass(PaperLanternSpirit.class, area).size();
 				int sentinels = l.getEntitiesOfClass(KarakuriSentinel.class, area).size();
-				check(spirits == 2 && sentinels == 1,
-					"Lantern Bathhouse spawned 2 PaperLanternSpirits & 1 KarakuriSentinel (" + spirits + "/" + sentinels + ")");
+				check(spirits == 7 && sentinels == 7,
+					"Lantern Bathhouse spawned 7 PaperLanternSpirits & 7 KarakuriSentinels (" + spirits + "/" + sentinels + ")");
 
 				BlockState sealA = l.getBlockState(bath.localPosition(18, LanternBathhousePiece.F + 2, 34));
 				BlockState sealB = l.getBlockState(bath.localPosition(19, LanternBathhousePiece.F + 2, 34));

@@ -226,10 +226,10 @@ public class ShrineCatModel extends EntityModel<ShrineCatRenderState> {
 		fluffyCoat.visible = v.fluffyCoat;
 		chestRuff.visible = v.fluffyCoat;
 		chinTuft.visible = v.fluffyCoat;
-		leftCheekRuff.visible = v.fluffyCoat;
-		rightCheekRuff.visible = v.fluffyCoat;
-		whiskersLeft.visible = v.fluffyCoat;
-		whiskersRight.visible = v.fluffyCoat;
+		leftCheekRuff.visible = v.fluffyCoat || v == ShrineCatRules.Variant.FREYA;
+		rightCheekRuff.visible = v.fluffyCoat || v == ShrineCatRules.Variant.FREYA;
+		whiskersLeft.visible = true;
+		whiskersRight.visible = true;
 		collar.visible = v.bellCollar || state.tamed;
 		collarKnot.visible = v.bellCollar || state.tamed;
 		bell.visible = v.bellCollar || state.tamed;

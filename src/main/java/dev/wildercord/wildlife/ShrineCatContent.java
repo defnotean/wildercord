@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -105,9 +106,12 @@ public final class ShrineCatContent {
 				return InteractionResult.SUCCESS;
 			}
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.85F, 1.5F);
+			int recalled = 0;
+			if (level instanceof ServerLevel server) {
+				recalled += ShrineCat.ensureQuartetReunited(server, player, player.isShiftKeyDown());
+			}
 			List<ShrineCat> mine = level.getEntitiesOfClass(ShrineCat.class, player.getBoundingBox().inflate(48.0),
 				cat -> cat.isTame() && cat.isOwnedBy(player));
-			int recalled = 0;
 			for (ShrineCat cat : mine) {
 				if (cat.isOrderedToSit()) {
 					cat.setOrderedToSit(false);

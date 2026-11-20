@@ -18,6 +18,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.ChiseledBookShelfBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
@@ -31,14 +32,16 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Peaceful Japanese Sakura Village modeled 1:1 from the village reference sheet: perimeter stone &amp;
- * bamboo garden wall with corner ishidoro lanterns, grand Myojin Torii gate, koi brook crossed by an
- * arched crimson Taiko-bashi drum bridge, Matcha Tea House with raised engawa veranda &amp; chabudai
- * tables, Cat Shrine Pavilion with chozuya basin, shimenawa rope, shide banners, Suzu bell &amp;
- * four elevated cat shrines, weeping sakura blossom trees, Tea Master, Shrine Maiden, and all four cats.
+ * Detailed Japanese Sakura Village compound modeled after village architecture references:
+ * white-plaster perimeter castle wall with twin corner Yagura watchtowers and grand Myojin
+ * Torii gate; winding koi river crossed by a crimson Taiko-bashi drum bridge &amp; stepping-stone
+ * footbridge; two-story Matcha Tea House &amp; Ryokan Inn; Grand Cat Shrine Pavilion (Neko-Jinja)
+ * housing elevated altar shrines and perched {@code Freya}; festival market Yatai stalls with
+ * overhead lantern festoons; Artisan Kura storehouse, smithy, Karesansui Zen rock garden, eight
+ * weeping sakura trees, Tea Master, Shrine Maiden, and all four Shrine Cats.
  */
 public final class SakuraVillagePiece extends WildsPiece {
-	private static final int WIDTH = 45, HEIGHT = 20, DEPTH = 50;
+	private static final int WIDTH = 64, HEIGHT = 26, DEPTH = 68;
 
 	public SakuraVillagePiece(int x, int z, Direction facing) {
 		super(WildsSites.SAKURA_VILLAGE, x, z, WIDTH, HEIGHT, DEPTH, facing);
@@ -67,55 +70,60 @@ public final class SakuraVillagePiece extends WildsPiece {
 		clear(level, bb, 0, 1, 0, WIDTH - 1, HEIGHT - 1, DEPTH - 1);
 
 		perimeterWall(level, bb, p);
-		gardenPathAndStream(level, bb, p);
-		JapaneseArchitecture.toriiGate(p, 22, 1, 4, 3, 6, true);
-		for (int[] l : new int[][]{{17, 2}, {27, 2}, {17, 8}, {27, 8}}) {
+		gardenPathAndRiver(level, bb, p);
+		JapaneseArchitecture.toriiGate(p, 32, 1, 4, 3, 6, true);
+		for (int[] l : new int[][]{{26, 2}, {38, 2}, {26, 9}, {38, 9}, {16, 12}, {46, 12}, {25, 22}, {38, 22}, {25, 39}, {38, 39}, {10, 44}, {54, 44}}) {
 			JapaneseArchitecture.ishidoro(p, l[0], 1, l[1]);
 		}
 
-		teaHouse(level, bb, p);
+		teaHouseInn(level, bb, p);
 		catShrine(level, bb, p);
+		festivalMarket(level, bb);
+		northQuarterAndZenGarden(level, bb, p);
 
-		for (int[] t : new int[][]{{6, 6, 4}, {38, 6, 4}, {7, 41, 5}, {22, 43, 5}, {37, 41, 5}}) {
+		for (int[] t : new int[][]{{8, 9, 4}, {55, 9, 4}, {7, 45, 5}, {57, 45, 5}, {5, 62, 5}, {32, 62, 5}, {59, 61, 5}, {19, 19, 4}}) {
 			JapaneseArchitecture.weepingCherryTree(p, t[0], 1, t[1], t[2], true);
 		}
 
-		// Peaceful Tea Master, Shrine Maiden & all four cats enjoying the village grounds.
-		spawnVillager(level, bb, 10, 2, 28, SakuraVillager.TEA_MASTER);
-		spawnVillager(level, bb, 30, 2, 27, SakuraVillager.SHRINE_MAIDEN);
-		spawnVillageCat(level, bb, 18, 2, 26, ShrineCatRules.Variant.YUKI);
-		spawnVillageCat(level, bb, 11, 2, 25, ShrineCatRules.Variant.ODIE);
-		spawnVillageCat(level, bb, 32, 3, 24, ShrineCatRules.Variant.FREYA);
-		spawnVillageCat(level, bb, 26, 1, 29, ShrineCatRules.Variant.KURO);
+		// Peaceful Tea Master, Shrine Maiden & all four cats anchored in the village compound.
+		spawnVillager(level, bb, 12, 2, 32, SakuraVillager.TEA_MASTER);
+		spawnVillager(level, bb, 42, 2, 30, SakuraVillager.SHRINE_MAIDEN);
+		spawnVillageCat(level, bb, 18, 2, 31, ShrineCatRules.Variant.YUKI);
+		spawnVillageCat(level, bb, 15, 2, 28, ShrineCatRules.Variant.ODIE);
+		spawnVillageCat(level, bb, 41, 3, 32, ShrineCatRules.Variant.FREYA);
+		spawnVillageCat(level, bb, 31, 1, 36, ShrineCatRules.Variant.KURO);
 	}
 
 	private void perimeterWall(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
-		BlockState wall = s(Blocks.STONE_BRICKS);
+		BlockState plinth = s(Blocks.STONE_BRICKS);
 		BlockState mossy = s(Blocks.MOSSY_STONE_BRICKS);
-		BlockState cap = JapaneseArchitecture.slab(Blocks.STONE_BRICK_SLAB, SlabType.BOTTOM);
-		BlockState bamboo = s(Blocks.BAMBOO_BLOCK);
+		BlockState plaster = s(Blocks.CALCITE);
+		BlockState cap = JapaneseArchitecture.slab(Blocks.DEEPSLATE_TILE_SLAB, SlabType.BOTTOM);
 
 		for (int x = 1; x <= WIDTH - 2; x++) {
-			if (x >= 19 && x <= 25) {
-				continue;
+			if (x < 28 || x > 36) {
+				set(level, bb, noise(x, 1) < 35 ? mossy : plinth, x, 1, 1);
+				set(level, bb, plaster, x, 2, 1);
+				set(level, bb, cap, x, 3, 1);
 			}
-			set(level, bb, noise(x, 1) < 35 ? mossy : wall, x, 1, 1);
-			set(level, bb, cap, x, 2, 1);
-			set(level, bb, noise(x, 48) < 35 ? mossy : wall, x, 1, DEPTH - 2);
-			set(level, bb, bamboo, x, 2, DEPTH - 2);
+			set(level, bb, noise(x, 66) < 35 ? mossy : plinth, x, 1, DEPTH - 2);
+			set(level, bb, plaster, x, 2, DEPTH - 2);
+			set(level, bb, cap, x, 3, DEPTH - 2);
 		}
 		for (int z = 2; z < DEPTH - 2; z++) {
-			set(level, bb, noise(1, z) < 35 ? mossy : wall, 1, 1, z);
-			set(level, bb, z % 2 == 0 ? bamboo : cap, 1, 2, z);
-			set(level, bb, noise(43, z) < 35 ? mossy : wall, WIDTH - 2, 1, z);
-			set(level, bb, z % 2 == 0 ? bamboo : cap, WIDTH - 2, 2, z);
+			set(level, bb, noise(1, z) < 35 ? mossy : plinth, 1, 1, z);
+			set(level, bb, plaster, 1, 2, z);
+			set(level, bb, cap, 1, 3, z);
+			set(level, bb, noise(62, z) < 35 ? mossy : plinth, WIDTH - 2, 1, z);
+			set(level, bb, plaster, WIDTH - 2, 2, z);
+			set(level, bb, cap, WIDTH - 2, 3, z);
 		}
-		for (int[] c : new int[][]{{1, 1}, {WIDTH - 2, 1}, {1, DEPTH - 2}, {WIDTH - 2, DEPTH - 2}}) {
-			JapaneseArchitecture.ishidoro(p, c[0], 1, c[1]);
-		}
+		// Twin South Corner Yagura Watchtowers.
+		cornerYagura(level, bb, 1, 1);
+		cornerYagura(level, bb, 58, 1);
 		for (int x = 2; x < WIDTH - 2; x++) {
 			for (int z = 2; z < DEPTH - 2; z++) {
-				if (noise(x, z) < 16) {
+				if (noise(x, z) < 15) {
 					set(level, bb, s(Blocks.PINK_PETALS), x, 1, z);
 				} else if (noise(x + 9, z - 5) < 5) {
 					set(level, bb, s(Blocks.MOSS_CARPET), x, 1, z);
@@ -124,111 +132,155 @@ public final class SakuraVillagePiece extends WildsPiece {
 		}
 	}
 
-	private void gardenPathAndStream(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
-		for (int z = 0; z < DEPTH - 4; z++) {
-			for (int x = 20; x <= 24; x++) {
+	private void cornerYagura(WorldGenLevel level, BoundingBox bb, int x0, int z0) {
+		int x1 = x0 + 4, z1 = z0 + 4;
+		BlockState darkLog = s(Blocks.STRIPPED_DARK_OAK_LOG);
+		fill(level, bb, x0, 1, z0, x1, 3, z1, s(Blocks.STONE_BRICKS));
+		for (int y = 4; y <= 6; y++) {
+			for (int x = x0; x <= x1; x++) {
+				for (int z = z0; z <= z1; z++) {
+					if (x == x0 || x == x1 || z == z0 || z == z1) {
+						boolean corner = (x == x0 || x == x1) && (z == z0 || z == z1);
+						set(level, bb, corner ? darkLog : s(Blocks.CALCITE), x, y, z);
+					}
+				}
+			}
+		}
+		set(level, bb, s(Blocks.LANTERN), x0 + 2, 4, z0);
+		hipRoof(level, bb, x0, z0, x1, z1, 7, Blocks.DEEPSLATE_TILE_STAIRS, s(Blocks.DARK_OAK_PLANKS), s(Blocks.GOLD_BLOCK));
+	}
+
+	private void gardenPathAndRiver(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
+		for (int z = 0; z < DEPTH - 12; z++) {
+			for (int x = 29; x <= 35; x++) {
 				BlockState stone = noise(x, z) < 30 ? s(Blocks.MOSSY_STONE_BRICKS)
 					: (noise(x + 4, z) < 40 ? s(Blocks.POLISHED_ANDESITE) : s(Blocks.SMOOTH_STONE));
 				set(level, bb, stone, x, 0, z);
 			}
 		}
-		// Landscaped koi stream with mossy boulder banks, sea lanterns, lily pads & bamboo clusters.
+		// Winding Koi River across z = 13..17 with glowing sea lanterns, lily pads, mossy banks & bamboo grove.
 		for (int x = 2; x <= WIDTH - 3; x++) {
-			for (int z = 11; z <= 15; z++) {
+			for (int z = 13; z <= 17; z++) {
 				set(level, bb, s(Blocks.SAND), x, -1, z);
 				set(level, bb, s(Blocks.WATER), x, 0, z);
 				set(level, bb, AIR, x, 1, z);
-				if ((x == 8 || x == 16 || x == 28 || x == 36) && z == 13) {
+				if (x % 8 == 0 && z == 15) {
 					set(level, bb, s(Blocks.SEA_LANTERN), x, -1, z);
-				} else if (noise(x, z) < 14 && Math.abs(x - 22) > 4) {
+				} else if (Math.abs(x - 32) > 4 && Math.abs(x - 49) > 2 && noise(x, z) < 14) {
 					set(level, bb, s(Blocks.LILY_PAD), x, 1, z);
 				}
 			}
-			if (Math.abs(x - 22) > 3 && noise(x * 3, 10) < 32) {
-				set(level, bb, noise(x, 2) < 50 ? s(Blocks.MOSSY_COBBLESTONE) : s(Blocks.MOSS_BLOCK), x, 1, 10);
+			if (Math.abs(x - 32) > 4 && Math.abs(x - 49) > 2 && noise(x * 3, 12) < 34) {
+				set(level, bb, noise(x, 2) < 50 ? s(Blocks.MOSSY_COBBLESTONE) : s(Blocks.MOSS_BLOCK), x, 1, 12);
 			}
-			if (Math.abs(x - 22) > 3 && noise(x * 5, 16) < 32) {
-				set(level, bb, noise(x, 7) < 50 ? s(Blocks.MOSSY_STONE_BRICKS) : s(Blocks.MOSS_BLOCK), x, 1, 16);
+			if (Math.abs(x - 32) > 4 && Math.abs(x - 49) > 2 && noise(x * 5, 18) < 34) {
+				set(level, bb, noise(x, 7) < 50 ? s(Blocks.MOSSY_STONE_BRICKS) : s(Blocks.MOSS_BLOCK), x, 1, 18);
 			}
 		}
-		for (int[] b : new int[][]{{9, 10, 4}, {11, 16, 3}, {33, 16, 4}, {36, 10, 4}}) {
+		for (int[] b : new int[][]{{12, 12, 4}, {14, 18, 3}, {44, 18, 4}, {52, 12, 4}}) {
 			for (int y = 1; y <= b[2]; y++) {
 				set(level, bb, s(Blocks.BAMBOO_BLOCK), b[0], y, b[1]);
 			}
 		}
-		// Arched crimson Taiko-bashi drum bridge across z = 11..15.
-		for (int x = 20; x <= 24; x++) {
-			set(level, bb, stair(Blocks.CRIMSON_STAIRS, Direction.NORTH, false), x, 1, 11);
-			set(level, bb, s(Blocks.CRIMSON_PLANKS), x, 1, 12);
-			set(level, bb, s(Blocks.CRIMSON_SLAB), x, 2, 13);
+		// Central Arched Crimson Taiko-bashi Drum Bridge across z = 13..17.
+		for (int x = 29; x <= 35; x++) {
+			set(level, bb, stair(Blocks.CRIMSON_STAIRS, Direction.NORTH, false), x, 1, 13);
 			set(level, bb, s(Blocks.CRIMSON_PLANKS), x, 1, 14);
-			set(level, bb, stair(Blocks.CRIMSON_STAIRS, Direction.SOUTH, false), x, 1, 15);
+			set(level, bb, s(Blocks.CRIMSON_SLAB), x, 2, 15);
+			set(level, bb, s(Blocks.CRIMSON_PLANKS), x, 1, 16);
+			set(level, bb, stair(Blocks.CRIMSON_STAIRS, Direction.SOUTH, false), x, 1, 17);
 		}
-		for (int z = 11; z <= 15; z++) {
-			set(level, bb, s(Blocks.CRIMSON_FENCE), 20, 2, z);
-			set(level, bb, s(Blocks.CRIMSON_FENCE), 24, 2, z);
+		for (int z = 13; z <= 17; z++) {
+			set(level, bb, s(Blocks.CRIMSON_FENCE), 29, 2, z);
+			set(level, bb, s(Blocks.CRIMSON_FENCE), 35, 2, z);
 		}
-		for (int[] lp : new int[][]{{20, 11}, {24, 11}, {20, 15}, {24, 15}}) {
+		for (int[] lp : new int[][]{{29, 13}, {35, 13}, {29, 17}, {35, 17}}) {
 			set(level, bb, s(Blocks.STRIPPED_DARK_OAK_LOG), lp[0], 2, lp[1]);
 			set(level, bb, s(Blocks.LANTERN), lp[0], 3, lp[1]);
 		}
-		// Stepping-stone plazas linking bridge to West Tea House and East Cat Shrine.
-		for (int x = 18; x <= 27; x++) {
-			for (int z = 25; z <= 30; z++) {
+		// East Stepping-Stone Footbridge toward Cat Shrine.
+		for (int z = 13; z <= 17; z++) {
+			for (int x = 48; x <= 50; x++) {
+				set(level, bb, s(Blocks.POLISHED_ANDESITE_SLAB), x, 1, z);
+			}
+		}
+		// Main courtyard flagstone plaza linking Tea House, Market Stalls & Cat Shrine.
+		for (int x = 23; x <= 40; x++) {
+			for (int z = 20; z <= 42; z++) {
 				set(level, bb, (x + z) % 2 == 0 ? s(Blocks.SMOOTH_STONE) : s(Blocks.POLISHED_ANDESITE), x, 0, z);
 			}
 		}
 	}
 
-	private void teaHouse(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
+	private void teaHouseInn(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
 		BlockState spruce = s(Blocks.SPRUCE_PLANKS);
 		BlockState bamboo = s(Blocks.BAMBOO_PLANKS);
 		BlockState darkLog = s(Blocks.STRIPPED_DARK_OAK_LOG);
 		BlockState cherry = s(Blocks.CHERRY_PLANKS);
 		BlockState paper = s(Blocks.CALCITE);
 
-		// Raised engawa wooden veranda deck & step from main stone courtyard.
-		fill(level, bb, 3, 1, 20, 18, 1, 35, spruce);
-		for (int z = 26; z <= 29; z++) {
-			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.WEST, false), 18, 1, z);
+		// Raised engawa wooden veranda deck + eastern veranda steps.
+		fill(level, bb, 4, 1, 21, 24, 1, 43, spruce);
+		for (int z = 29; z <= 34; z++) {
+			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.WEST, false), 24, 1, z);
 		}
-		fill(level, bb, 5, 1, 22, 16, 1, 33, bamboo);
-		for (int z = 22; z <= 33; z++) {
-			set(level, bb, darkLog, 10, 1, z);
-		}
-		// Framing shoji walls with wide open east veranda entry.
-		JapaneseArchitecture.shojiPerimeter(p, 4, 2, 21, 17, 6, 34, darkLog, darkLog, spruce, paper, 4);
-		fill(level, bb, 17, 2, 25, 17, 4, 30, AIR);
-		for (int z : new int[]{24, 31}) {
-			set(level, bb, JapaneseArchitecture.openTrapdoor(Blocks.SPRUCE_TRAPDOOR, Direction.EAST), 16, 2, z);
-		}
-		for (int x : new int[]{7, 11, 14}) {
-			set(level, bb, JapaneseArchitecture.openTrapdoor(Blocks.SPRUCE_TRAPDOOR, Direction.SOUTH), x, 3, 21);
-			set(level, bb, JapaneseArchitecture.openTrapdoor(Blocks.SPRUCE_TRAPDOOR, Direction.NORTH), x, 3, 34);
+		fill(level, bb, 6, 1, 23, 22, 1, 41, bamboo);
+		for (int z = 23; z <= 41; z++) {
+			set(level, bb, darkLog, 13, 1, z);
 		}
 
-		// Two low chabudai tea tables with matcha teacups & cushions + north-west kettle hearth counter.
-		for (int tz : new int[]{25, 30}) {
-			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 9, 2, tz);
-			set(level, bb, s(Blocks.SEA_PICKLE).setValue(SeaPickleBlock.PICKLES, 2), 9, 3, tz);
-			set(level, bb, s(Blocks.CARPET.red()), 8, 2, tz);
-			set(level, bb, s(Blocks.CARPET.red()), 10, 2, tz);
+		// Ground-floor framing shoji walls with open eastern entrance and lattice windows.
+		JapaneseArchitecture.shojiPerimeter(p, 5, 2, 22, 23, 6, 42, darkLog, darkLog, spruce, paper, 4);
+		fill(level, bb, 23, 2, 28, 23, 5, 35, AIR);
+		for (int z : new int[]{27, 36}) {
+			set(level, bb, JapaneseArchitecture.openTrapdoor(Blocks.SPRUCE_TRAPDOOR, Direction.EAST), 22, 2, z);
 		}
-		fill(level, bb, 5, 2, 22, 7, 2, 24, s(Blocks.STONE_BRICKS));
-		set(level, bb, s(Blocks.CAMPFIRE).setValue(CampfireBlock.LIT, true), 6, 2, 23);
-		set(level, bb, s(Blocks.CAULDRON), 6, 4, 23);
-		set(level, bb, s(Blocks.IRON_CHAIN), 6, 5, 23);
-		set(level, bb, s(Blocks.BOOKSHELF), 5, 2, 26);
-		set(level, bb, s(Blocks.BARREL), 5, 2, 28);
-		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 5, 3, 26);
-		set(level, bb, s(Blocks.LANTERN), 17, 3, 23);
-		set(level, bb, s(Blocks.LANTERN), 17, 3, 32);
-		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 11, 6, 28);
+		for (int x : new int[]{8, 12, 16, 20}) {
+			set(level, bb, JapaneseArchitecture.openTrapdoor(Blocks.SPRUCE_TRAPDOOR, Direction.SOUTH), x, 3, 22);
+			set(level, bb, JapaneseArchitecture.openTrapdoor(Blocks.SPRUCE_TRAPDOOR, Direction.NORTH), x, 3, 42);
+		}
 
-		// Curved irimoya roof with upturned corners & warm under-eave cherry trim.
-		JapaneseArchitecture.upturnedEaveSkirt(p, 3, 20, 18, 35, 7, Blocks.DARK_OAK_STAIRS, Blocks.DARK_OAK_SLAB, cherry, true);
-		hipRoof(level, bb, 4, 21, 17, 34, 7, Blocks.DARK_OAK_STAIRS, cherry, s(Blocks.STRIPPED_CHERRY_LOG));
-		chest(level, bb, 6, 2, 32, WildsSites.SAKURA_HALL, Direction.NORTH, 17L);
+		// Three Chabudai Tea Tables with matcha cups & cushions + Irori Kettle Hearth + Tea Bar Counter.
+		for (int tz : new int[]{25, 30, 35}) {
+			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 17, 2, tz);
+			set(level, bb, s(Blocks.SEA_PICKLE).setValue(SeaPickleBlock.PICKLES, 2), 17, 3, tz);
+			set(level, bb, s(Blocks.CARPET.red()), 16, 2, tz);
+			set(level, bb, s(Blocks.CARPET.red()), 18, 2, tz);
+		}
+		fill(level, bb, 6, 2, 23, 9, 2, 26, s(Blocks.STONE_BRICKS));
+		set(level, bb, s(Blocks.CAMPFIRE).setValue(CampfireBlock.LIT, true), 7, 2, 24);
+		set(level, bb, s(Blocks.CAULDRON), 7, 4, 24);
+		set(level, bb, s(Blocks.IRON_CHAIN), 7, 5, 24);
+		fill(level, bb, 6, 2, 28, 6, 2, 33, darkLog);
+		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(ChiseledBookShelfBlock.FACING, Direction.EAST), 6, 2, 27);
+		set(level, bb, s(Blocks.BARREL), 6, 2, 29);
+		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 6, 3, 28);
+		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.GREEN), 6, 5, 31, Direction.EAST);
+		set(level, bb, s(Blocks.LANTERN), 23, 3, 25);
+		set(level, bb, s(Blocks.LANTERN), 23, 3, 38);
+		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 15, 6, 32);
+
+		// Tier 1 Upturned Eave Skirt + 2nd-Story Tatami Tea Balcony (reachable via interior stairs at x = 7..8, z = 34..39).
+		JapaneseArchitecture.upturnedEaveSkirt(p, 4, 21, 24, 43, 7, Blocks.DARK_OAK_STAIRS, Blocks.DARK_OAK_SLAB, cherry, true);
+		fill(level, bb, 7, 7, 24, 21, 7, 40, bamboo);
+		for (int step = 0; step < 6; step++) {
+			int z = 34 + step;
+			int sy = 2 + step;
+			fill(level, bb, 8, 2, z, 9, sy - 1, z, spruce);
+			fill(level, bb, 8, sy, z, 9, sy, z, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false));
+			fill(level, bb, 8, sy + 1, z, 9, 9, z, AIR);
+		}
+		JapaneseArchitecture.shojiPerimeter(p, 7, 8, 24, 21, 11, 40, darkLog, darkLog, spruce, paper, 4);
+		fill(level, bb, 21, 8, 29, 21, 10, 35, AIR);
+		for (int z = 25; z <= 39; z++) {
+			set(level, bb, s(Blocks.SPRUCE_FENCE), 22, 8, z);
+		}
+		set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 14, 8, 30);
+		set(level, bb, s(Blocks.SEA_PICKLE).setValue(SeaPickleBlock.PICKLES, 2), 14, 9, 30);
+		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 14, 11, 30);
+
+		hipRoof(level, bb, 6, 23, 22, 41, 12, Blocks.DARK_OAK_STAIRS, cherry, s(Blocks.STRIPPED_CHERRY_LOG));
+		chest(level, bb, 10, 2, 40, WildsSites.SAKURA_HALL, Direction.NORTH, 17L);
 	}
 
 	private void catShrine(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
@@ -237,58 +289,152 @@ public final class SakuraVillagePiece extends WildsPiece {
 		BlockState darkFloor = s(Blocks.DARK_OAK_PLANKS);
 		BlockState andesite = s(Blocks.POLISHED_ANDESITE);
 
-		// Chozuya purification water basin & steps before the shrine approach.
-		fill(level, bb, 25, 1, 21, 27, 1, 23, andesite);
-		set(level, bb, s(Blocks.WATER_CAULDRON).setValue(LayeredCauldronBlock.LEVEL, LayeredCauldronBlock.MAX_FILL_LEVEL), 26, 2, 22);
-		for (int[] cp : new int[][]{{25, 21}, {27, 21}, {25, 23}, {27, 23}}) {
+		// Chozuya purification water basin pavilion before the shrine approach.
+		fill(level, bb, 36, 1, 19, 38, 1, 21, andesite);
+		set(level, bb, s(Blocks.WATER_CAULDRON).setValue(LayeredCauldronBlock.LEVEL, LayeredCauldronBlock.MAX_FILL_LEVEL), 37, 2, 20);
+		for (int[] cp : new int[][]{{36, 19}, {38, 19}, {36, 21}, {38, 21}}) {
 			set(level, bb, s(Blocks.SPRUCE_FENCE), cp[0], 2, cp[1]);
 			set(level, bb, s(Blocks.SPRUCE_FENCE), cp[0], 3, cp[1]);
 		}
-		fill(level, bb, 25, 4, 21, 27, 4, 23, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM));
+		fill(level, bb, 36, 4, 19, 38, 4, 21, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM));
 
-		// Shrine plinth floor, vermilion colonnade & front steps + saisen-bako offering box.
-		fill(level, bb, 27, 1, 21, 40, 1, 34, andesite);
-		fill(level, bb, 29, 1, 23, 38, 1, 32, darkFloor);
-		for (int z = 26; z <= 29; z++) {
-			set(level, bb, stair(Blocks.POLISHED_ANDESITE_STAIRS, Direction.EAST, false), 27, 1, z);
+		// Shrine plinth floor, vermilion colonnade, entry steps & saisen-bako offering box.
+		fill(level, bb, 39, 1, 21, 59, 1, 43, andesite);
+		fill(level, bb, 42, 1, 24, 57, 1, 40, darkFloor);
+		for (int z = 29; z <= 35; z++) {
+			set(level, bb, stair(Blocks.POLISHED_ANDESITE_STAIRS, Direction.EAST, false), 39, 1, z);
 		}
-		set(level, bb, s(Blocks.BARREL), 28, 2, 28);
-		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 28, 2, 24);
-		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 28, 2, 31);
+		set(level, bb, s(Blocks.BARREL), 40, 2, 34);
+		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 40, 2, 27);
+		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 40, 2, 37);
 
-		for (int[] col : new int[][]{{28, 22}, {39, 22}, {28, 33}, {39, 33}, {28, 25}, {28, 30}}) {
+		// Freya's elevated royal pink-cushion shrine dais right at the west shrine threshold (41, 3, 32).
+		set(level, bb, andesite, 41, 2, 32);
+		set(level, bb, s(Blocks.CARPET.pink()), 41, 3, 32);
+
+		for (int[] col : new int[][]{{40, 22}, {58, 22}, {40, 42}, {58, 42}, {40, 28}, {40, 36}}) {
 			fill(level, bb, col[0], 2, col[1], col[0], 6, col[1], red);
 		}
-		// Enclosed north, south & east shrine walls + shimenawa front lintel & white shide banners.
-		JapaneseArchitecture.shojiPerimeter(p, 29, 2, 22, 39, 6, 33, red, cherry, andesite, s(Blocks.CALCITE), 5);
-		fill(level, bb, 29, 2, 25, 29, 5, 30, AIR);
-		for (int z = 25; z <= 30; z++) {
-			set(level, bb, s(Blocks.HAY_BLOCK), 28, 5, z);
-			if (z == 26 || z == 29) {
-				banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.WHITE), 27, 5, z, Direction.WEST);
+		JapaneseArchitecture.shojiPerimeter(p, 42, 2, 22, 58, 6, 42, red, cherry, andesite, s(Blocks.CALCITE), 5);
+		fill(level, bb, 42, 2, 28, 42, 5, 36, AIR);
+		for (int z = 28; z <= 36; z++) {
+			set(level, bb, s(Blocks.HAY_BLOCK), 40, 5, z);
+			if (z == 29 || z == 35) {
+				banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.WHITE), 39, 5, z, Direction.WEST);
 			}
 		}
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), 27, 4, 22, Direction.WEST);
-		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), 27, 4, 33, Direction.WEST);
+		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), 39, 4, 22, Direction.WEST);
+		banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PINK), 39, 4, 42, Direction.WEST);
 
-		// Four elevated Cat Cushion Shrines + central hanging Suzu bell.
-		for (int[] c : new int[][]{{32, 24}, {36, 24}, {32, 31}, {36, 31}}) {
+		// Four elevated Cat Altar Shrines inside Neko-Jinja + central hanging bronze Suzu Bell.
+		for (int[] c : new int[][]{{47, 26}, {53, 26}, {47, 37}, {53, 37}}) {
 			set(level, bb, andesite, c[0], 2, c[1]);
 			set(level, bb, s(Blocks.CARPET.pink()), c[0], 3, c[1]);
+			set(level, bb, s(Blocks.LANTERN), c[0] + 1, 2, c[1]);
+			set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), c[0] - 1, 2, c[1]);
 		}
-		fill(level, bb, 33, 5, 27, 34, 5, 28, cherry);
-		set(level, bb, s(Blocks.IRON_CHAIN), 33, 4, 27);
-		set(level, bb, s(Blocks.BELL).setValue(BellBlock.FACING, Direction.WEST), 33, 3, 27);
-		for (int[] sl : new int[][]{{31, 22}, {37, 22}, {31, 33}, {37, 33}}) {
+		fill(level, bb, 49, 5, 31, 51, 5, 33, cherry);
+		set(level, bb, s(Blocks.IRON_CHAIN), 50, 4, 32);
+		set(level, bb, s(Blocks.BELL).setValue(BellBlock.FACING, Direction.WEST), 50, 3, 32);
+		for (int[] sl : new int[][]{{45, 24}, {55, 24}, {45, 40}, {55, 40}}) {
 			set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), sl[0], 6, sl[1]);
 		}
 
-		// Curved cherry & deepslate irimoya roof with upturned eaves & gold finials.
-		JapaneseArchitecture.upturnedEaveSkirt(p, 27, 20, 41, 35, 7, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, cherry, true);
-		hipRoof(level, bb, 27, 21, 40, 34, 7, Blocks.CHERRY_STAIRS, cherry, s(Blocks.GOLD_BLOCK));
-		set(level, bb, s(Blocks.GOLD_BLOCK), 30, 14, 27);
-		set(level, bb, s(Blocks.GOLD_BLOCK), 37, 14, 27);
-		chest(level, bb, 38, 2, 32, WildsSites.SAKURA_VAULT, Direction.NORTH, 91L);
+		JapaneseArchitecture.upturnedEaveSkirt(p, 38, 20, 60, 44, 7, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, cherry, true);
+		hipRoof(level, bb, 40, 22, 58, 42, 8, Blocks.CHERRY_STAIRS, cherry, s(Blocks.GOLD_BLOCK));
+		set(level, bb, s(Blocks.GOLD_BLOCK), 47, 17, 32);
+		set(level, bb, s(Blocks.GOLD_BLOCK), 51, 17, 32);
+		chest(level, bb, 56, 2, 40, WildsSites.SAKURA_VAULT, Direction.NORTH, 91L);
+	}
+
+	private void festivalMarket(WorldGenLevel level, BoundingBox bb) {
+		BlockState spruceFence = s(Blocks.SPRUCE_FENCE);
+		BlockState redWool = s(Blocks.RED_WOOL);
+		BlockState whiteWool = s(Blocks.WHITE_WOOL);
+		BlockState pinkWool = s(Blocks.PINK_WOOL);
+
+		// West Dango & Matcha Yatai Stall (x = 26..28, z = 25..29).
+		fill(level, bb, 26, 1, 25, 26, 1, 29, s(Blocks.OAK_PLANKS));
+		set(level, bb, s(Blocks.BARREL), 26, 1, 25);
+		set(level, bb, s(Blocks.SEA_PICKLE).setValue(SeaPickleBlock.PICKLES, 3), 26, 2, 27);
+		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 26, 2, 29);
+		for (int[] p : new int[][]{{26, 25}, {28, 25}, {26, 29}, {28, 29}}) {
+			fill(level, bb, p[0], 1, p[1], p[0], 3, p[1], spruceFence);
+		}
+		for (int x = 26; x <= 28; x++) {
+			for (int z = 25; z <= 29; z++) {
+				set(level, bb, (z % 2 == 0) ? whiteWool : redWool, x, 4, z);
+			}
+		}
+		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 28, 3, 27);
+
+		// East Suzu & Charm Yatai Stall (x = 36..38, z = 25..29).
+		fill(level, bb, 38, 1, 25, 38, 1, 29, s(Blocks.OAK_PLANKS));
+		set(level, bb, s(Blocks.LECTERN), 38, 2, 27);
+		set(level, bb, s(Blocks.LANTERN), 38, 2, 25);
+		for (int[] p : new int[][]{{36, 25}, {38, 25}, {36, 29}, {38, 29}}) {
+			fill(level, bb, p[0], 1, p[1], p[0], 3, p[1], spruceFence);
+		}
+		for (int x = 36; x <= 38; x++) {
+			for (int z = 25; z <= 29; z++) {
+				set(level, bb, (z % 2 == 0) ? whiteWool : pinkWool, x, 4, z);
+			}
+		}
+		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 36, 3, 27);
+
+		// Overhead Lantern Festoon Arches spanning the central boulevard (x = 26..38, z = 22, 32, 41).
+		BlockState beam = s(Blocks.STRIPPED_DARK_OAK_LOG);
+		for (int fz : new int[]{22, 32, 41}) {
+			fill(level, bb, 26, 1, fz, 26, 5, fz, beam);
+			fill(level, bb, 38, 1, fz, 38, 5, fz, beam);
+			fill(level, bb, 26, 5, fz, 38, 5, fz, beam);
+			for (int lx : new int[]{29, 32, 35}) {
+				set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), lx, 4, fz);
+			}
+		}
+	}
+
+	private void northQuarterAndZenGarden(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
+		BlockState deepslate = s(Blocks.DEEPSLATE_TILES);
+		BlockState plaster = s(Blocks.CALCITE);
+		BlockState darkLog = s(Blocks.STRIPPED_DARK_OAK_LOG);
+
+		// NW Artisan Kura Storehouse (x = 10..22, z = 49..59) with white-plaster walls & dark tile hip roof.
+		fill(level, bb, 10, 0, 49, 22, 1, 59, deepslate);
+		JapaneseArchitecture.shojiPerimeter(p, 10, 2, 49, 22, 6, 59, darkLog, darkLog, deepslate, plaster, 4);
+		fill(level, bb, 22, 2, 53, 22, 4, 55, AIR);
+		set(level, bb, s(Blocks.IRON_BARS), 14, 3, 49);
+		set(level, bb, s(Blocks.IRON_BARS), 18, 3, 49);
+		set(level, bb, s(Blocks.BARREL), 12, 2, 57);
+		set(level, bb, s(Blocks.CHEST), 13, 2, 57);
+		set(level, bb, s(Blocks.LANTERN), 21, 3, 52);
+		hipRoof(level, bb, 9, 48, 23, 60, 7, Blocks.DEEPSLATE_TILE_STAIRS, deepslate, s(Blocks.GOLD_BLOCK));
+
+		// North-Center Open-Air Artisan Smithy Veranda (x = 25..34, z = 50..57).
+		fill(level, bb, 25, 0, 50, 34, 0, 57, s(Blocks.POLISHED_ANDESITE));
+		for (int[] c : new int[][]{{25, 50}, {34, 50}, {25, 57}, {34, 57}}) {
+			fill(level, bb, c[0], 1, c[1], c[0], 4, c[1], darkLog);
+		}
+		fill(level, bb, 25, 5, 50, 34, 5, 57, s(Blocks.SPRUCE_PLANKS));
+		set(level, bb, s(Blocks.BLAST_FURNACE), 27, 1, 55);
+		set(level, bb, s(Blocks.ANVIL), 30, 1, 53);
+		set(level, bb, s(Blocks.GRINDSTONE), 32, 1, 55);
+		set(level, bb, s(Blocks.WATER_CAULDRON).setValue(LayeredCauldronBlock.LEVEL, LayeredCauldronBlock.MAX_FILL_LEVEL), 26, 1, 52);
+		set(level, bb, s(Blocks.LANTERN), 29, 2, 50);
+
+		// NE Karesansui Zen Rock Garden (x = 38..56, z = 48..60): raked gravel/diorite waves + mossy boulders.
+		for (int x = 38; x <= 56; x++) {
+			for (int z = 48; z <= 60; z++) {
+				boolean edge = x == 38 || x == 56 || z == 48 || z == 60;
+				set(level, bb, edge ? s(Blocks.STONE_BRICKS) : ((x % 2 == 0) ? s(Blocks.GRAVEL) : s(Blocks.DIORITE)), x, 0, z);
+			}
+		}
+		for (int[] rock : new int[][]{{43, 52}, {50, 55}, {45, 57}}) {
+			set(level, bb, s(Blocks.MOSS_BLOCK), rock[0], 1, rock[1]);
+			set(level, bb, s(Blocks.MOSSY_COBBLESTONE), rock[0] + 1, 1, rock[1]);
+			set(level, bb, s(Blocks.MOSSY_STONE_BRICK_WALL), rock[0], 2, rock[1]);
+		}
+		JapaneseArchitecture.ishidoro(p, 54, 1, 50);
 	}
 
 	private void spawnVillager(WorldGenLevel level, BoundingBox bb, int x, int y, int z, int role) {

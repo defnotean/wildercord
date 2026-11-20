@@ -25,8 +25,8 @@ public final class ShrineCatRules {
 			"Yuki",
 			"Yuki, the Whispering Tabby",
 			1,
-			46.0F,
-			3.5F,
+			140.0F,
+			6.5F,
 			"Whisker Ward (Resistance I & steadied footing)",
 			"Chilling gust swipes that slow attackers and steady her owner",
 			false,
@@ -39,8 +39,8 @@ public final class ShrineCatRules {
 			"Odie",
 			"Odie, the Sunbeam Tabby",
 			2,
-			56.0F,
-			4.0F,
+			180.0F,
+			7.5F,
 			"Sunbeam Loaf (Regeneration I & Fire Resistance)",
 			"Warm hearth purr that heals his owner and lobs solar sparks",
 			false,
@@ -53,8 +53,8 @@ public final class ShrineCatRules {
 			"Freya",
 			"Freya, the Silver-Bell Sentinel",
 			3,
-			68.0F,
-			4.5F,
+			220.0F,
+			8.5F,
 			"Silver-Bell Chime (Absorption I & Haste I)",
 			"Ringing pink-collar silver bell that grants Absorption and repels foes",
 			true,
@@ -67,8 +67,8 @@ public final class ShrineCatRules {
 			"Kuro",
 			"Kuro, the Notched-Ear Shadow",
 			4,
-			84.0F,
-			5.5F,
+			280.0F,
+			10.0F,
 			"Night-Stalker Grace (Speed II, Strength I & Night Vision)",
 			"Shadow-step pounce and agility cloak for his owner",
 			false,
@@ -144,8 +144,8 @@ public final class ShrineCatRules {
 		return sanctuaryFinished || hasCharm;
 	}
 
-	/** Friendly combat damage cap so the Cat Sanctuary stays chill and fair. */
+	/** Trial combat damage tuned for guardian encounters. */
 	public static float chillTrialDamage(Variant variant, boolean specialAttack) {
-		return specialAttack ? variant.baseDamage + 1.5F : variant.baseDamage;
+		return specialAttack ? variant.baseDamage + 2.5F : variant.baseDamage;
 	}
 }

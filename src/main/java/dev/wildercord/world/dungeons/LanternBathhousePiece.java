@@ -12,10 +12,13 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.ChiseledBookShelfBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -29,11 +32,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The Lantern Bathhouse: Japanese Onsen Ryokan dungeon modeled 1:1 from exterior &amp; interior
- * reference sheets. Features a stone terrace, weeping sakura &amp; bamboo garden with ishidoro
- * lanterns, karahafu entrance porch with noren curtain banners, sweeping irimoya roof &amp; steaming
- * lantern cupola, interior cypress bridge &amp; washing stations flanking magma-heated pools,
- * hanging lantern rafters, and an indoor vermilion Torii Shrine Portal sealing the gilded vault.
+ * The Lantern Bathhouse: Japanese Onsen Ryokan dungeon modeled after exterior &amp; interior
+ * reference sheets. Features a stone terrace with an outdoor steaming footbath &amp; bamboo
+ * shishi-odoshi water spout, weeping sakura &amp; bamboo garden with ishidoro lanterns, karahafu
+ * entrance porch with noren curtain banners, reception counter &amp; carved wooden entry screen,
+ * sweeping irimoya roof &amp; steaming cupola, central cypress bridge &amp; twin washing walkways
+ * flanking mineral pools, indoor vermilion Torii Portal sealing the Fire + Wind vault, and
+ * a fortified 14-mob garrison.
  */
 public final class LanternBathhousePiece extends DungeonPiece {
 	public static final int WIDTH = 39, HEIGHT = 32, DEPTH = 48;
@@ -97,9 +102,22 @@ public final class LanternBathhousePiece extends DungeonPiece {
 		roofAndCupola(level, bb, p);
 
 		if (Config.get().monsters().spawnRate() > 0) {
-			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 10, F + 2, 16);
-			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 28, F + 2, 24);
+			// 14 Dungeon Defenders (7 PaperLanternSpirits + 7 KarakuriSentinels) guarding approach, bridge & pools.
+			sentry(level, bb, MonsterContent.KARAKURI_SENTINEL, 16, F + 1, 5);
+			sentry(level, bb, MonsterContent.KARAKURI_SENTINEL, 22, F + 1, 5);
+			sentry(level, bb, MonsterContent.KARAKURI_SENTINEL, 19, F + 2, 16);
 			sentry(level, bb, MonsterContent.KARAKURI_SENTINEL, 19, F + 2, 24);
+			sentry(level, bb, MonsterContent.KARAKURI_SENTINEL, 19, F + 2, 29);
+			sentry(level, bb, MonsterContent.KARAKURI_SENTINEL, 6, F + 1, 18);
+			sentry(level, bb, MonsterContent.KARAKURI_SENTINEL, 32, F + 1, 18);
+
+			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 12, F + 2, 6);
+			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 26, F + 2, 6);
+			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 10, F + 2, 15);
+			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 28, F + 2, 15);
+			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 10, F + 2, 25);
+			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 28, F + 2, 25);
+			sentry(level, bb, MonsterContent.PAPER_LANTERN_SPIRIT, 19, F + 3, 21);
 		}
 	}
 
@@ -117,12 +135,30 @@ public final class LanternBathhousePiece extends DungeonPiece {
 				set(level, bb, noise(x, z) < 28 ? MOSSY : Blocks.POLISHED_ANDESITE.defaultBlockState(), x, F, z);
 			}
 		}
-		for (int[] il : new int[][]{{14, 2}, {24, 2}, {14, 6}, {24, 6}}) {
+		for (int[] il : new int[][]{{14, 1}, {24, 1}, {14, 5}, {24, 5}, {4, 2}, {34, 2}}) {
 			JapaneseArchitecture.ishidoro(p, il[0], F + 1, il[1]);
 		}
-		JapaneseArchitecture.weepingCherryTree(p, 6, F + 1, 4, 4, false);
-		JapaneseArchitecture.weepingCherryTree(p, 32, F + 1, 4, 4, false);
-		for (int[] bm : new int[][]{{10, 3, 5}, {11, 5, 4}, {27, 5, 5}, {28, 3, 4}}) {
+		// Outdoor Steaming Hot-Spring Footbath Pool (west forecourt) & Bamboo Shishi-Odoshi Spout (east forecourt).
+		for (int x = 8; x <= 12; x++) {
+			for (int z = 2; z <= 5; z++) {
+				boolean rim = x == 8 || x == 12 || z == 2 || z == 5;
+				if (rim) {
+					set(level, bb, MOSSY, x, F + 1, z);
+				} else {
+					set(level, bb, Blocks.MAGMA_BLOCK.defaultBlockState(), x, F - 1, z);
+					set(level, bb, Blocks.WATER.defaultBlockState(), x, F, z);
+				}
+			}
+		}
+		set(level, bb, JapaneseArchitecture.slab(Blocks.SPRUCE_SLAB, SlabType.BOTTOM), 10, F + 1, 6);
+		fill(level, bb, 26, F, 2, 29, F, 5, POLISHED);
+		set(level, bb, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, LayeredCauldronBlock.MAX_FILL_LEVEL), 28, F + 1, 4);
+		set(level, bb, Blocks.BAMBOO_BLOCK.defaultBlockState(), 29, F + 1, 4);
+		set(level, bb, Blocks.BAMBOO_BLOCK.defaultBlockState(), 29, F + 2, 4);
+
+		JapaneseArchitecture.weepingCherryTree(p, 5, F + 1, 4, 4, false);
+		JapaneseArchitecture.weepingCherryTree(p, 33, F + 1, 4, 4, false);
+		for (int[] bm : new int[][]{{6, 6, 5}, {7, 5, 4}, {31, 6, 5}, {32, 5, 4}}) {
 			for (int y = F + 1; y <= F + bm[2]; y++) {
 				set(level, bb, Blocks.BAMBOO_BLOCK.defaultBlockState(), bm[0], y, bm[1]);
 			}
@@ -190,14 +226,25 @@ public final class LanternBathhousePiece extends DungeonPiece {
 	}
 
 	private void onsenInterior(WorldGenLevel level, BoundingBox bb) {
-		// Left & right steaming magma/sea-lantern heated pools enclosed by mossy/polished deepslate kerbs.
+		// Genkan Reception Desk (west lobby), Tsuitate Privacy Screen (center) & Cedar Robe Shelves (east lobby).
+		fill(level, bb, 9, F + 1, 10, 12, F + 1, 10, DARK_OAK);
+		set(level, bb, Blocks.LECTERN.defaultBlockState().setValue(LecternBlock.FACING, Direction.SOUTH), 10, F + 2, 10);
+		set(level, bb, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, Direction.SOUTH), 12, F + 2, 10);
+		fill(level, bb, 26, F + 1, 9, 29, F + 1, 9, Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(ChiseledBookShelfBlock.FACING, Direction.SOUTH));
+		set(level, bb, Blocks.POTTED_FLOWERING_AZALEA.defaultBlockState(), 25, F + 1, 9);
+		for (int x = 18; x <= 20; x++) {
+			set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), x, F + 1, 10);
+			set(level, bb, Blocks.SPRUCE_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.BOTTOM), x, F + 2, 10);
+		}
+
+		// Left & right steaming magma/sea-lantern heated mineral pools (dry side walkways at x = 6..7 and x = 31..32).
 		for (int z = 12; z <= 30; z++) {
-			for (int x = 7; x <= 14; x++) {
+			for (int x = 8; x <= 14; x++) {
 				set(level, bb, (x + z) % 3 == 0 ? Blocks.MAGMA_BLOCK.defaultBlockState()
 					: (x == 11 && z % 6 == 0 ? Blocks.SEA_LANTERN.defaultBlockState() : POLISHED), x, F - 1, z);
 				set(level, bb, Blocks.WATER.defaultBlockState(), x, F, z);
 			}
-			for (int x = 24; x <= 31; x++) {
+			for (int x = 24; x <= 30; x++) {
 				set(level, bb, (x + z) % 3 == 0 ? Blocks.MAGMA_BLOCK.defaultBlockState()
 					: (x == 27 && z % 6 == 0 ? Blocks.SEA_LANTERN.defaultBlockState() : POLISHED), x, F - 1, z);
 				set(level, bb, Blocks.WATER.defaultBlockState(), x, F, z);
@@ -206,11 +253,11 @@ public final class LanternBathhousePiece extends DungeonPiece {
 			set(level, bb, z % 4 == 0 ? MOSSY : POLISHED, 23, F, z);
 		}
 		// Floating cedar onsen bath tubs in pools.
-		for (int[] tub : new int[][]{{9, 15}, {12, 26}, {26, 16}, {29, 27}}) {
+		for (int[] tub : new int[][]{{9, 15}, {12, 20}, {10, 27}, {26, 16}, {29, 21}, {27, 27}}) {
 			set(level, bb, Blocks.SPRUCE_TRAPDOOR.defaultBlockState().setValue(TrapDoorBlock.HALF, Half.TOP), tub[0], F, tub[1]);
 		}
 
-		// Central arched hinoki-cypress bridge deck with fence railings & corner lantern posts.
+		// Central arched hinoki-cypress bridge deck with fence railings, banners & corner lantern posts.
 		fill(level, bb, 16, F + 1, 12, 22, F + 1, 30, SPRUCE);
 		for (int x = 16; x <= 22; x++) {
 			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false), x, F + 1, 11);
@@ -226,7 +273,7 @@ public final class LanternBathhousePiece extends DungeonPiece {
 			}
 		}
 
-		// Side-wall bath washing stations (filled water cauldrons, spruce stools, barrels & towel shelves).
+		// Side-wall bath washing stations & mossy waterfall boulders (filled water cauldrons, stools, barrels & towel shelves).
 		for (int wz : new int[]{14, 21, 28}) {
 			for (int sideX : new int[]{5, 33}) {
 				set(level, bb, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, LayeredCauldronBlock.MAX_FILL_LEVEL),
@@ -237,14 +284,20 @@ public final class LanternBathhousePiece extends DungeonPiece {
 					sideX, F + 3, wz);
 			}
 		}
+		for (int[] wr : new int[][]{{5, 17}, {33, 17}, {5, 24}, {33, 24}}) {
+			set(level, bb, MOSSY, wr[0], F + 1, wr[1]);
+			set(level, bb, Blocks.POTTED_FLOWERING_AZALEA.defaultBlockState(), wr[0], F + 2, wr[1]);
+		}
 		chest(level, bb, 6, F + 1, 10, DungeonWorldgen.LANTERN_BATHHOUSE_HALL, Direction.EAST, 101);
 
-		// Towering cypress pillars with bracketed overhead ceiling rafters & rows of hanging golden lanterns.
+		// Towering cypress pillars with bracketed overhead ceiling rafters, banners & rows of hanging golden lanterns.
 		for (int z : new int[]{14, 21, 28}) {
 			for (int x : new int[]{15, 23}) {
 				fill(level, bb, x, F + 1, z, x, F + 6, z, CYPRESS);
 				set(level, bb, stair(Blocks.DARK_OAK_STAIRS, x < 19 ? Direction.EAST : Direction.WEST, true),
 					x + (x < 19 ? 1 : -1), F + 6, z);
+				banner(level, bb, Blocks.WALL_BANNER.pick(z == 21 ? DyeColor.RED : DyeColor.BLUE),
+					x + (x < 19 ? 1 : -1), F + 4, z, x < 19 ? Direction.EAST : Direction.WEST);
 			}
 			fill(level, bb, 5, F + 7, z, 33, F + 7, z, DARK_OAK);
 			for (int lx : new int[]{11, 17, 21, 27}) {
@@ -260,6 +313,8 @@ public final class LanternBathhousePiece extends DungeonPiece {
 		for (int px : new int[]{15, 23}) {
 			fill(level, bb, px, F + 1, 33, px, F + 6, 33, red);
 			set(level, bb, Blocks.GOLD_BLOCK.defaultBlockState(), px, F + 1, 33);
+			set(level, bb, Blocks.GOLD_BLOCK.defaultBlockState(), px, F + 1, 32);
+			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState(), px, F + 2, 32);
 		}
 		fill(level, bb, 14, F + 5, 33, 24, F + 5, 33, red);
 		fill(level, bb, 14, F + 6, 33, 24, F + 6, 33, red);
@@ -281,11 +336,9 @@ public final class LanternBathhousePiece extends DungeonPiece {
 	}
 
 	private void roofAndCupola(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
-		// Sweeping irimoya hipped roof above the sealed F + 8 hall ceiling, topped by steaming cupola.
 		JapaneseArchitecture.upturnedEaveSkirt(p, 3, 7, 35, 35, F + 9, Blocks.DARK_OAK_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, DEEPSLATE, true);
 		hipRoof(level, bb, 4, 8, 34, 34, F + 9, Blocks.DARK_OAK_STAIRS, DEEPSLATE, POLISHED);
 
-		// Rooftop steaming lantern cupola perched cleanly atop the F + 23 roof ridge.
 		fill(level, bb, 17, F + 23, 19, 21, F + 23, 23, POLISHED);
 		for (int[] cp : new int[][]{{17, 19}, {21, 19}, {17, 23}, {21, 23}}) {
 			fill(level, bb, cp[0], F + 24, cp[1], cp[0], F + 25, cp[1], CYPRESS);
