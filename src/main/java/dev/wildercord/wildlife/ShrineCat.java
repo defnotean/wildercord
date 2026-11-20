@@ -660,7 +660,7 @@ public class ShrineCat extends TamableAnimal {
 				LivingEntity foe = owner.getLastHurtByMob();
 				if (foe != null && foe.isAlive() && foe.distanceToSqr(this) <= 36.0 && Targets.canHarm(owner, foe)) {
 					triggerAction();
-					foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 1, false, true));
+					foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 120, 1, false, true));
 					foe.hurtServer(level, damageSources().mobAttack(this), 3.0F);
 					level.sendParticles(ParticleTypes.SNOWFLAKE, foe.getX(), foe.getEyeY(), foe.getZ(), 8, 0.3, 0.3, 0.3, 0.02);
 				}
