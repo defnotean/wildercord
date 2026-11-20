@@ -93,11 +93,11 @@ public final class McWorldgen {
 	}
 
 	/** Lists structure starts matching {@code predicate} in chunk {@code (chunkX, chunkZ)}. */
-	public static List<StructureStart> startsForStructure(StructureManager manager, ChunkPos chunk, Predicate<Structure> predicate) {
-		return manager.startsForStructure(chunk.x(), chunk.z(), predicate);
+	public static List<StructureStart> startsForStructure(StructureManager manager, int chunkX, int chunkZ, Predicate<Structure> predicate) {
+		return manager.startsForStructure(chunkX, chunkZ, predicate);
 	}
 
-	/** Lists structure starts matching {@code structure} in chunk {@code (chunkX, chunkZ)}. */
+	/** Lists structure starts matching {@code structure} at {@code chunk}. */
 	public static List<StructureStart> startsForStructure(StructureManager manager, ChunkPos chunk, Structure structure) {
 		return manager.startsForStructure(chunk.x(), chunk.z(), structure);
 	}
