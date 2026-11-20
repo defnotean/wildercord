@@ -14,7 +14,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -288,14 +287,29 @@ class JarInspector:
         return binary_name in self.class_entries
 
     def _run_javap(self, dotted_classes: list[str], extra_flags=("-c", "-p", "-s")) -> str:
-        with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".txt", delete=False) as tf:
-            argfile = Path(tf.name)
-            for cls in dotted_classes:
-                # Quote class names with '$' cleanly for javap @argfile
-                tf.write(f'"{cls}"\n' if "$" in cls else f"{cls}\n")
-        try:
+        outputs = []
+        chunk = []
+        chunk_chars = 0
+        # Keep each command line well below Windows CreateProcess 32 KiB limit.
+        for cls in dotted_classes:
+            if chunk and chunk_chars + len(cls) + 1 > 12000:
+                proc = subprocess.run(
+                    [self.javap, *extra_flags, "-cp", self.classpath, *chunk],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
+                if proc.returncode != 0:
+                    raise RuntimeError(f"javap failed: {proc.stderr.strip()}")
+                outputs.append(proc.stdout)
+                chunk = []
+                chunk_chars = 0
+            chunk.append(cls)
+            chunk_chars += len(cls) + 1
+        if chunk:
             proc = subprocess.run(
-                [self.javap, *extra_flags, "-cp", self.classpath, f"@{argfile}"],
+                [self.javap, *extra_flags, "-cp", self.classpath, *chunk],
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
@@ -303,9 +317,8 @@ class JarInspector:
             )
             if proc.returncode != 0:
                 raise RuntimeError(f"javap failed: {proc.stderr.strip()}")
-            return proc.stdout
-        finally:
-            argfile.unlink(missing_ok=True)
+            outputs.append(proc.stdout)
+        return "\n".join(outputs)
 
     def ensure_loaded(self, binary_names: list[str], include_interfaces: bool = True):
         pending = []
