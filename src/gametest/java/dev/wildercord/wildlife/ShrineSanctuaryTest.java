@@ -472,12 +472,14 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				int idx = i;
 				w.getServer().runOnServer(s -> {
 					ServerLevel l = s.overworld();
+					ServerPlayer player = p(s);
+					player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 200, 0, true, false));
 					ShrineCat cat = (ShrineCat) l.getEntity(guardianIds.get(floorVariants[idx]));
 					check(cat != null, "Floor guardian present for interior view: " + floorVariants[idx].displayName);
-					lookAt(l, p(s), Vec3.atBottomCenterOf(sanctuary.localPosition(24, camFloorY[idx], camFloorZ[idx])),
+					lookAt(l, player, Vec3.atBottomCenterOf(sanctuary.localPosition(24, camFloorY[idx], camFloorZ[idx])),
 						cat.getEyePosition());
 				});
-				c.waitTicks(8);
+				c.waitTicks(12);
 				shot(c, floorShots[i]);
 			}
 
@@ -485,6 +487,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				ServerPlayer player = p(s);
+				player.removeAllEffects();
 				player.setGameMode(GameType.SURVIVAL);
 
 				ShrineCat yuki = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.YUKI));
@@ -703,6 +706,26 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			// =========================================================================
 			// Scene 6: Ricochet (5/2 + 15% Decay), Suzu Chime Wall-Bounce Hit & Ofuda Ward
 			// =========================================================================
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				ServerPlayer player = p(s);
+				loadArea(l, new BoundingBox(-16, 96, -48, 16, 112, -16));
+				for (int x = -5; x <= 5; x++) {
+					for (int z = -44; z <= -24; z++) {
+						l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
+						l.setBlock(new BlockPos(x, 106, z), Blocks.AIR.defaultBlockState(), 2);
+						for (int y = 101; y <= 105; y++) {
+							boolean wall = Math.abs(x) == 5 || z == -44 || z == -24 || (z == -35 && x >= 0 && x <= 4);
+							l.setBlock(new BlockPos(x, y, z), wall ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), 2);
+						}
+					}
+				}
+				player.setGameMode(GameType.SURVIVAL);
+				player.teleportTo(l, 1.0, 101.0, -30.5, Set.<Relative>of(), 125.0F, -11.0F, false);
+				player.setYHeadRot(125.0F);
+			});
+			c.waitTicks(30);
+
 			UUID[] scene6Husks = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
 				ServerPlayer player = p(s);
@@ -723,20 +746,12 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					&& Math.abs(SpellNumbers.ricochetBounceScale(5) - 0.25) < 1e-6,
 					"Ricochet loses 15% power per bounce down to 0.25 floor");
 
-				for (int x = -5; x <= 5; x++) {
-					for (int z = -44; z <= -24; z++) {
-						l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
-						l.setBlock(new BlockPos(x, 106, z), Blocks.STONE.defaultBlockState(), 2);
-						for (int y = 101; y <= 105; y++) {
-							boolean wall = Math.abs(x) == 5 || z == -44 || z == -24 || (z == -35 && x >= 0 && x <= 4);
-							l.setBlock(new BlockPos(x, y, z), wall ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), 2);
-						}
-					}
-				}
 				Husk bounceTarget = spawnHusk(l, 1.56, 101.0, -37.89, true);
 				Husk thornsAttacker = spawnHusk(l, 2.0, 101.0, -29.0, true);
 
 				player.teleportTo(l, 1.0, 101.0, -30.5, Set.<Relative>of(), 125.0F, -11.0F, false);
+				player.setYRot(125.0F);
+				player.setXRot(-11.0F);
 				player.setYHeadRot(125.0F);
 				CastEngine.cast(player, soloRicochet.root());
 				CastEngine.cast(player, SpellCompiler.compile(List.of(Runes.SELF, Runes.OFUDA_WARD)).root());
@@ -782,11 +797,15 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			// =========================================================================
 			ArchivePiece archive = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
+				ServerPlayer player = p(s);
 				var piece = new ArchivePiece(-240, 74, 120, Direction.SOUTH);
 				placePiece(l, piece, 505L);
+				player.setGameMode(GameType.SPECTATOR);
+				player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300, 0, true, false));
+				player.teleportTo(l, -230.0, 80.0, 130.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				return piece;
 			});
-			c.waitTicks(4);
+			c.waitTicks(30);
 
 			UUID archivistId = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
@@ -854,15 +873,24 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				lookAt(l, player, Vec3.atBottomCenterOf(lectern.offset(0, 2, -8)), archivist.getEyePosition());
 				return archivist.getUUID();
 			});
-			c.waitTicks(8);
+			c.waitTicks(20);
 			shot(c, "shrine_archivist_anti_cheese");
 			w.getServer().runOnServer(s -> {
 				if (s.overworld().getEntity(archivistId) instanceof Archivist a) {
 					a.discard();
 				}
+				p(s).removeAllEffects();
 			});
 
 			// RootcoilSerpent tree navigation & uncoil sanity check.
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				ServerPlayer player = p(s);
+				loadArea(l, new BoundingBox(-112, 70, 48, -48, 120, 112));
+				player.setGameMode(GameType.SPECTATOR);
+				player.teleportTo(l, -80.0, 88.0, 80.0, Set.<Relative>of(), 180.0F, 15.0F, false);
+			});
+			c.waitTicks(25);
 			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				ServerPlayer player = p(s);
@@ -890,7 +918,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				player.setGameMode(GameType.SPECTATOR);
 				lookAt(l, player, Vec3.atBottomCenterOf(trunk.offset(10, 5, 10)), serpent.getEyePosition());
 			});
-			c.waitTicks(8);
+			c.waitTicks(20);
 			shot(c, "shrine_serpent_grove_anti_cheese");
 
 			// =========================================================================
