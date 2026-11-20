@@ -4,6 +4,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.15.0-alpha] — 2026-11-20
+
+**Shrine & Sakura.** Four custom Shrine Cats, the four-tier Cat Sanctuary pagoda and Lantern Bathhouse dungeons, four Sakura Village settlements with six kimono villager professions, new runes, deepslate and block-variant crafting, 3D forged weapons, and dungeon ward hardening.
+
 ### Added
 - **Four Shrine Cats (`Yuki`, `Odie`, `Freya`, `Kuro`)**: custom `128x128` modeled, photo-inspired cats with unique coats, geometry (fluffy ruffs & 3D whiskers across all four, pink collar & swinging silver bell on Freya, notched left ear on Kuro), and animations. Defeat each hardened floor guardian cleanly (`140`/`180`/`220`/`280` health with Guardian Shrine Aegis `85%` damage reduction while floor sentries live, Floor Progression Seals, and reinforcement waves at 65%/40% health) to unlock dungeon buffs (`Resistance I`, `Regeneration I + Fire Resistance`, `Absorption I + Haste I`, `Speed II + Strength I + Night Vision`), then tame them with fish or a **Suzu Cat-Bell Charm** once the fourth-floor trial completes. Tamed quartet cats are immortal against owner hits, thorns, and hazards, and ringing a **Suzu Cat-Bell Charm** automatically reunites any missing quartet member.
 - **Cat Sanctuary & Lantern Bathhouse dungeons**: expanded four-level Japanese pagoda sanctuary guarded in order by Yuki, Odie, Freya, and Kuro with tea-house checkpoints and 36 custom floor defenders (`Karakuri Sentinel`, `Paper Lantern Spirit`), plus a steaming hinoki onsen bathhouse (14 defenders, outdoor footbath, Genkan lobby, and a `Fire + Wind` Rune Seal vault).

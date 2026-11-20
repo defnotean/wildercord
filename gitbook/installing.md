@@ -2,7 +2,7 @@
 
 Wildercord runs on **Minecraft Java 26.3** with **Fabric**. Install the same Wildercord version on the server and on every player's game.
 
-The current version is **0.11.2-alpha**. Players still on 0.10 must update before they can join a 0.11 server, and server and players should all run the same 0.11 build.
+The current version is **0.15.0-alpha**. Players still on 0.14 must update before they can join a 0.15 server, and server and players should all run the same 0.15 build.
 
 ## What you need
 
@@ -15,7 +15,7 @@ The current version is **0.11.2-alpha**. Players still on 0.10 must update befor
 
 ## Pick your download
 
-Download from [GitHub Releases](https://github.com/defnotean/wildercord/releases). The mod file for this version is `wildercord-0.11.2-alpha+mc26.3.jar`. The `-sources` jar is for developers; don't put it in your mods folder.
+Download from [GitHub Releases](https://github.com/defnotean/wildercord/releases). The mod file for this version is `wildercord-0.15.0-alpha+mc26.3.jar`. The `-sources` jar is for developers; don't put it in your mods folder.
 
 | Download | Use it when | Also includes |
 |---|---|---|
@@ -49,7 +49,7 @@ Your existing chunks stay as they are. Wandering Duelists, wildlife and world ev
 |---|---|
 | Dependency error | Minecraft, Fabric Loader, Fabric API and Java versions match the table above |
 | Duplicate mod error | Remove the old jar and any `-sources` jar from `mods` |
-| Server refuses you | Your Wildercord version matches the server's. A 0.10 game can't join a 0.11 server |
+| Server refuses you | Your Wildercord version matches the server's. A 0.14 game can't join a 0.15 server |
 | Low frame rate | Open Magic visual settings and lower other players' effects first: see [Performance](performance.md) |
 
 For other problems see [Troubleshooting](troubleshooting.md). When you report a crash, include your Minecraft and Wildercord versions and `logs/latest.log`.

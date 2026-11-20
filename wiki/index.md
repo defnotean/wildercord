@@ -15,7 +15,15 @@ Wear a Cord, thread runes from left to right, and cast the whole sequence with o
 
 ![The Cord editor previews a magic circle while explaining the spell.]({{ '/assets/images/circle-editor.jpg' | relative_url }})
 
-## The current update: 0.13, Living world
+## The current update: 0.15, Shrine & Sakura
+
+- **Cat Sanctuary & four Shrine Cats**: conquer the four-tier Japanese pagoda behind **Karakuri Sentinels** and **Paper Lantern Spirits** to earn sanctuary buffs and tame **Yuki**, **Odie**, **Freya**, and **Kuro**, plus explore the steaming **Lantern Bathhouse**.
+- **Four Sakura Villages & six kimono NPCs**: visit **Sakura Village**, **Sakura Canal Harbor**, **Sakura Onsen Village**, and **Sakura Castle-Town**, and trade with six themed Sakura Villagers.
+- **New runes, weapons & crafting variants**: craft **Suzu Chime** and **Ofuda Ward**, unlock **Mojito's Fetchblade** and 3D forged weapons/staffs, and craft **Blank Runes** and recipes with cobbled deepslate and matching block variants.
+
+Read [What's New]({{ '/whats-new/' | relative_url }}) for everything in the update.
+
+## Earlier: 0.13, Living world
 
 - **Four new regions**, each with its own biome, building, resident, lore route and optional boss:
   [Luminous Reedlands]({{ '/world/luminous-reedlands/' | relative_url }}),

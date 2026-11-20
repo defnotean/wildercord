@@ -3,7 +3,9 @@ title: What's New
 nav_order: 1.1
 ---
 
-# What's new since 0.14.0
+# What's new in 0.15.0: Shrine & Sakura
+
+Install `wildercord-0.15.0-alpha+mc26.3.jar` on the server and every client, with Fabric API 0.161.0+26.3 and Fabric Loader 0.19.5 or newer. This update adds entities, structures, items and runes, so **0.14.x clients must update before joining**. Back up your worlds first.
 
 - **Shrine Cats (`Yuki`, `Odie`, `Freya`, `Kuro`), Cat Sanctuary & Lantern Bathhouse**: conquer the four-tier Japanese **Cat Sanctuary** pagoda—facing hardened **Karakuri Sentinels**, hovering **Paper Lantern Spirits**, Floor Progression Seals, and Guardian Shrine Aegis—to unlock sanctuary buffs and tame all four unique cats with fish or a **Suzu Cat-Bell Charm**. Clear the steaming **Lantern Bathhouse** (`Fire + Wind` Rune Seal vault) for shrine treasures.
 

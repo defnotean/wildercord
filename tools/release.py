@@ -115,7 +115,7 @@ def main(argv=None):
     def do_smoke():
         head = git("rev-parse", "HEAD", capture=True).stdout.strip()
         subprocess.run([sys.executable, "tools/run_vps_checks.py", "suite", "--suite", "release-smoke",
-                        "--head", head, "--computer", args.computer,
+                        "--batch", "1", "--head", head, "--computer", args.computer,
                         "--accepted-eula", str(Path(args.server_root) / "eula.txt")], check=True, cwd=ROOT)
 
     def do_upload():

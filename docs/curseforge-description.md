@@ -8,7 +8,16 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 **[Read the player guide](https://defnotean.github.io/wildercord/) · [Browse the changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md) · [Report an issue](https://github.com/defnotean/wildercord/issues)**
 
-## New in 0.14.0: One road
+## New in 0.15.0: Shrine & Sakura
+
+- **Four Shrine Cats (`Yuki`, `Odie`, `Freya`, `Kuro`), Cat Sanctuary & Lantern Bathhouse:** conquer the four-tier Japanese pagoda dungeon behind 36 **Karakuri Sentinels** and **Paper Lantern Spirits**, Floor Progression Seals, and Guardian Shrine Aegis to unlock sanctuary buffs and tame all four immortal companion cats with fish or a **Suzu Cat-Bell Charm**, plus clear the steaming **Lantern Bathhouse**.
+- **Four Sakura Villages & six kimono NPCs:** explore **Sakura Village**, **Sakura Canal Harbor**, **Sakura Onsen Village**, and **Sakura Castle-Town**, and trade emeralds with **Tea Masters**, **Shrine Maidens**, **Katana Swordsmiths**, **Lantern Artisans**, **Onsen Hostesses**, and **Koi Canal Fishermen**.
+- **New runes & crafting variants:** craft **Suzu Chime** and **Ofuda Ward**, bounce **Ricochet** up to 5 times solo (2 with Split), and craft **Blank Runes** and recipes across deepslate, stone, wood, sandstone, glass and wool variants.
+- **Mojito's Fetchblade, 3D weapons & co-op polish:** Mojito drops the Epic **Fetchblade** greatsword, forged weapons and all 20 elemental staffs have stepped 3D held models, the Reed-Crowned Ferryman supports cooperative phase-two anchors and shared shards, and dungeon wards seal all 32 warded structures cleanly.
+
+0.14.x clients must update before joining. [Read the full 0.15.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.15.0-alpha).
+
+## Earlier in 0.14.0: One road
 
 - **Four Lamps, One Road:** light all four regional lamps and answer each keeper to finish a journal capstone that ends with the Lamplighter's Lantern.
 - **New companions:** tame a coffer mimic with books (a walking 27-slot chest only you can open) or a thistle hedgehog with sweet berries.
@@ -99,7 +108,7 @@ The Cord editor describes your spell while you build it, shows where modifiers a
 
 ![Build and preview a spell in the Cord editor](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/circle-editor.jpg)
 
-- **756 named runes:** 82 shapes, 568 effects, 72 modifiers and 34 links. Craft 571 runes, find 59 world runes, and discover 95 named fusion recipes.
+- **758 named runes:** 82 shapes, 570 effects, 72 modifiers and 34 links. Craft 573 runes, find 59 world runes, and discover 95 named fusion recipes.
 - **Ten elements:** Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, with their own reactions, creature affinities and visual materials.
 - **Your spell has its own presentation:** 297 authored shape/effect casting sequences, readable rune circles, custom sounds and mixed-element effects.
 - **Twelve circle disciplines:** change coverage, speed, duration, support and power, with meaningful tradeoffs. Movement, crouching, rain and night can affect your spell.
@@ -130,11 +139,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.14.0-alpha
+## Install 0.15.0-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client: a 0.14.0 server needs 0.14.0 players. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.15.0 server needs 0.15.0 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 
