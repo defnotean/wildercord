@@ -4,6 +4,8 @@ import dev.wildercord.aura.world.RootcoilSerpent;
 import dev.wildercord.aura.world.SerpentRules;
 import dev.wildercord.cast.Archivist;
 import dev.wildercord.cast.CastEngine;
+import dev.wildercord.content.WildercordBlocks;
+import dev.wildercord.content.WildercordComponents;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.monster.KarakuriSentinel;
 import dev.wildercord.monster.MonsterContent;
@@ -31,8 +33,11 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -416,6 +421,57 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				List<RootcoilSerpent> serpents = l.getEntitiesOfClass(RootcoilSerpent.class, new AABB(-100, 75, 55, -20, 140, 140));
 				check(!serpents.isEmpty(), "RootcoilSerpent active in grove");
 				check(serpents.getFirst().move() != SerpentRules.DORMANT, "RootcoilSerpent woke cleanly when player entered grove");
+
+				// Verify Blank Rune & block-variant recipes craft in-game with deepslate, cherry planks, wool, and tiles.
+				Item lapis = Items.LAPIS_LAZULI;
+				for (Item[] cross : new Item[][]{
+					{Items.COBBLED_DEEPSLATE, Items.COBBLED_DEEPSLATE, Items.COBBLED_DEEPSLATE, Items.COBBLED_DEEPSLATE},
+					{Items.DEEPSLATE, Items.DEEPSLATE, Items.DEEPSLATE, Items.DEEPSLATE},
+					{Items.COBBLESTONE, Items.COBBLED_DEEPSLATE, Items.DEEPSLATE, Items.BLACKSTONE}
+				}) {
+					var blankInput = CraftingInput.of(3, 3, List.of(
+						ItemStack.EMPTY, new ItemStack(cross[0]), ItemStack.EMPTY,
+						new ItemStack(cross[1]), new ItemStack(lapis), new ItemStack(cross[2]),
+						ItemStack.EMPTY, new ItemStack(cross[3]), ItemStack.EMPTY
+					));
+					var matched = s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, blankInput, l);
+					check(matched.isPresent(), "Blank Rune recipe matches stone/deepslate variant " + cross[0]);
+					ItemStack out = matched.get().value().assemble(blankInput);
+					check(out.is(WildercordItems.BLANK_RUNE) && out.getCount() == 4, "Blank Rune crafts 4 with variant blocks");
+				}
+
+				// Variant rune crafts: rune_brace (cobbled_deepslate), rune_barnwarmth (cherry_planks), rune_fleece (pink_wool).
+				var braceIn = CraftingInput.of(3, 1, List.of(
+					new ItemStack(WildercordItems.BLANK_RUNE), new ItemStack(Items.COBBLED_DEEPSLATE), new ItemStack(Items.IRON_INGOT)
+				));
+				var brace = s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, braceIn, l);
+				check(brace.isPresent() && Runes.BRACE.id().equals(brace.get().value().assemble(braceIn).get(WildercordComponents.RUNE)),
+					"Brace crafts with cobbled deepslate");
+
+				var barnIn = CraftingInput.of(3, 2, List.of(
+					new ItemStack(WildercordItems.BLANK_RUNE), new ItemStack(Items.CAMPFIRE), new ItemStack(Items.HAY_BLOCK),
+					new ItemStack(Items.CHERRY_PLANKS), ItemStack.EMPTY, ItemStack.EMPTY
+				));
+				var barn = s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, barnIn, l);
+				check(barn.isPresent() && Runes.BARNWARMTH.id().equals(barn.get().value().assemble(barnIn).get(WildercordComponents.RUNE)),
+					"Barnwarmth crafts with cherry planks");
+
+				var fleeceIn = CraftingInput.of(3, 2, List.of(
+					new ItemStack(WildercordItems.BLANK_RUNE), new ItemStack(Items.SHEARS), new ItemStack(Items.PINK_WOOL),
+					new ItemStack(Items.FEATHER), ItemStack.EMPTY, ItemStack.EMPTY
+				));
+				var fleece = s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, fleeceIn, l);
+				check(fleece.isPresent() && Runes.FLEECE.id().equals(fleece.get().value().assemble(fleeceIn).get(WildercordComponents.RUNE)),
+					"Fleece crafts with pink wool");
+
+				var arenaIn = CraftingInput.of(3, 3, List.of(
+					new ItemStack(Items.GOLD_INGOT), new ItemStack(Items.AMETHYST_SHARD), new ItemStack(Items.GOLD_INGOT),
+					new ItemStack(Items.DEEPSLATE_TILES), new ItemStack(Items.ENDER_PEARL), new ItemStack(Items.DEEPSLATE_TILES),
+					new ItemStack(Items.DEEPSLATE_TILES), new ItemStack(Items.DEEPSLATE_TILES), new ItemStack(Items.DEEPSLATE_TILES)
+				));
+				var arena = s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, arenaIn, l);
+				check(arena.isPresent() && arena.get().value().assemble(arenaIn).is(WildercordBlocks.ARENA_STONE.asItem()),
+					"Arena Stone crafts with deepslate tiles variant");
 			});
 		}
 	}

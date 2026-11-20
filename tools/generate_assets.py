@@ -270,10 +270,24 @@ def _typed(entry, old_key):
     return loot_format(entry)
 
 
+def _normalize_recipe_variants(data):
+    """Map single-block ingredients in shaped/shapeless crafting recipes to their variant tags."""
+    if not isinstance(data, dict) or data.get("type") not in ("minecraft:crafting_shaped", "minecraft:crafting_shapeless"):
+        return data
+    out = dict(data)
+    if isinstance(out.get("ingredients"), list):
+        out["ingredients"] = [RECIPE_VARIANT_TAGS.get(x, x) if isinstance(x, str) else x for x in out["ingredients"]]
+    if isinstance(out.get("key"), dict):
+        out["key"] = {k: (RECIPE_VARIANT_TAGS.get(v, v) if isinstance(v, str) else v) for k, v in out["key"].items()}
+    return out
+
+
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     if "loot_table" in path.parts:
         data = loot_format(data)
+    elif "recipe" in path.parts:
+        data = _normalize_recipe_variants(data)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
@@ -1260,7 +1274,158 @@ LOOT_TABLE_NAMES.update({
 })
 
 
-ITEM_NAMES = {"minecraft:tnt": "TNT"}
+_DYE_COLORS = (
+    "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
+    "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black",
+)
+# Tag name -> (English item-tag name, human prose label, tag values).
+CUSTOM_RECIPE_ITEM_TAGS = {
+    "cobblestone_variants": (
+        "Cobblestone, Deepslate, or Stone",
+        "any cobblestone or deepslate",
+        [
+            "#minecraft:stone_crafting_materials",
+            "minecraft:deepslate", "minecraft:polished_deepslate", "minecraft:deepslate_bricks",
+            "minecraft:cracked_deepslate_bricks", "minecraft:deepslate_tiles", "minecraft:cracked_deepslate_tiles",
+            "minecraft:chiseled_deepslate", "minecraft:stone", "minecraft:smooth_stone", "minecraft:mossy_cobblestone",
+            "#minecraft:stone_bricks", "minecraft:polished_blackstone", "minecraft:polished_blackstone_bricks",
+            "minecraft:cracked_polished_blackstone_bricks", "minecraft:andesite", "minecraft:polished_andesite",
+            "minecraft:diorite", "minecraft:polished_diorite", "minecraft:granite", "minecraft:polished_granite",
+            "minecraft:tuff", "minecraft:polished_tuff",
+        ],
+    ),
+    "deepslate_variants": (
+        "Any Deepslate",
+        "any deepslate",
+        [
+            "minecraft:deepslate", "minecraft:cobbled_deepslate", "minecraft:polished_deepslate",
+            "minecraft:deepslate_bricks", "minecraft:cracked_deepslate_bricks", "minecraft:deepslate_tiles",
+            "minecraft:cracked_deepslate_tiles", "minecraft:chiseled_deepslate",
+        ],
+    ),
+    "stone_brick_variants": (
+        "Any Stone or Deepslate Bricks",
+        "any stone or deepslate bricks",
+        [
+            "#minecraft:stone_bricks", "minecraft:deepslate_bricks", "minecraft:cracked_deepslate_bricks",
+            "minecraft:deepslate_tiles", "minecraft:cracked_deepslate_tiles", "minecraft:polished_deepslate",
+            "minecraft:chiseled_deepslate", "minecraft:polished_blackstone_bricks",
+            "minecraft:cracked_polished_blackstone_bricks", "minecraft:tuff_bricks",
+            "minecraft:end_stone_bricks", "minecraft:mud_bricks",
+        ],
+    ),
+    "mossy_stone_variants": (
+        "Any Mossy Stone or Cobblestone",
+        "any mossy stone or cobblestone",
+        [
+            "minecraft:mossy_cobblestone", "minecraft:mossy_stone_bricks", "minecraft:cobblestone",
+            "minecraft:cobbled_deepslate", "minecraft:deepslate",
+        ],
+    ),
+    "stone_slab_variants": (
+        "Any Stone or Deepslate Slab",
+        "any stone or deepslate slab",
+        [
+            "minecraft:stone_slab", "minecraft:smooth_stone_slab", "minecraft:cobblestone_slab",
+            "minecraft:mossy_cobblestone_slab", "minecraft:stone_brick_slab", "minecraft:mossy_stone_brick_slab",
+            "minecraft:cobbled_deepslate_slab", "minecraft:polished_deepslate_slab", "minecraft:deepslate_brick_slab",
+            "minecraft:deepslate_tile_slab", "minecraft:blackstone_slab", "minecraft:polished_blackstone_slab",
+            "minecraft:polished_blackstone_brick_slab", "minecraft:andesite_slab", "minecraft:polished_andesite_slab",
+            "minecraft:diorite_slab", "minecraft:polished_diorite_slab", "minecraft:granite_slab",
+            "minecraft:polished_granite_slab", "minecraft:tuff_slab", "minecraft:polished_tuff_slab",
+            "minecraft:tuff_brick_slab",
+        ],
+    ),
+    "stone_stair_variants": (
+        "Any Stone or Deepslate Stairs",
+        "any stone or deepslate stairs",
+        [
+            "minecraft:cobblestone_stairs", "minecraft:mossy_cobblestone_stairs", "minecraft:stone_stairs",
+            "minecraft:stone_brick_stairs", "minecraft:mossy_stone_brick_stairs", "minecraft:cobbled_deepslate_stairs",
+            "minecraft:polished_deepslate_stairs", "minecraft:deepslate_brick_stairs", "minecraft:deepslate_tile_stairs",
+            "minecraft:blackstone_stairs", "minecraft:polished_blackstone_stairs",
+            "minecraft:polished_blackstone_brick_stairs", "minecraft:andesite_stairs",
+            "minecraft:polished_andesite_stairs", "minecraft:diorite_stairs", "minecraft:polished_diorite_stairs",
+            "minecraft:granite_stairs", "minecraft:polished_granite_stairs", "minecraft:tuff_stairs",
+            "minecraft:polished_tuff_stairs", "minecraft:tuff_brick_stairs",
+        ],
+    ),
+    "sandstone_variants": (
+        "Any Sandstone",
+        "any sandstone",
+        [
+            "minecraft:sandstone", "minecraft:chiseled_sandstone", "minecraft:cut_sandstone", "minecraft:smooth_sandstone",
+            "minecraft:red_sandstone", "minecraft:chiseled_red_sandstone", "minecraft:cut_red_sandstone",
+            "minecraft:smooth_red_sandstone",
+        ],
+    ),
+    "glass_variants": (
+        "Any Glass",
+        "any glass",
+        ["minecraft:glass", "minecraft:tinted_glass"] + [f"minecraft:{c}_stained_glass" for c in _DYE_COLORS],
+    ),
+    "glass_pane_variants": (
+        "Any Glass Pane",
+        "any glass pane",
+        ["minecraft:glass_pane"] + [f"minecraft:{c}_stained_glass_pane" for c in _DYE_COLORS],
+    ),
+}
+RECIPE_VARIANT_TAGS = {
+    "minecraft:cobblestone": "#wildercord:cobblestone_variants",
+    "minecraft:cobbled_deepslate": "#wildercord:cobblestone_variants",
+    "minecraft:stone": "#wildercord:cobblestone_variants",
+    "minecraft:smooth_stone": "#wildercord:cobblestone_variants",
+    "minecraft:tuff": "#wildercord:cobblestone_variants",
+    "minecraft:polished_deepslate": "#wildercord:deepslate_variants",
+    "minecraft:deepslate_tiles": "#wildercord:deepslate_variants",
+    "minecraft:deepslate_bricks": "#wildercord:deepslate_variants",
+    "minecraft:stone_bricks": "#wildercord:stone_brick_variants",
+    "minecraft:cracked_stone_bricks": "#wildercord:stone_brick_variants",
+    "minecraft:mossy_cobblestone": "#wildercord:mossy_stone_variants",
+    "minecraft:cobblestone_slab": "#wildercord:stone_slab_variants",
+    "minecraft:stone_slab": "#wildercord:stone_slab_variants",
+    "minecraft:smooth_stone_slab": "#wildercord:stone_slab_variants",
+    "minecraft:cobblestone_stairs": "#wildercord:stone_stair_variants",
+    "minecraft:stone_stairs": "#wildercord:stone_stair_variants",
+    "minecraft:cobblestone_wall": "#minecraft:walls",
+    "minecraft:sandstone": "#wildercord:sandstone_variants",
+    "minecraft:glass": "#wildercord:glass_variants",
+    "minecraft:magenta_stained_glass": "#wildercord:glass_variants",
+    "minecraft:glass_pane": "#wildercord:glass_pane_variants",
+    "minecraft:oak_planks": "#minecraft:planks",
+    "minecraft:oak_log": "#minecraft:logs",
+    "minecraft:spruce_log": "#minecraft:logs",
+    "minecraft:oak_sapling": "#minecraft:saplings",
+    "minecraft:birch_sapling": "#minecraft:saplings",
+    "minecraft:oak_leaves": "#minecraft:leaves",
+    "minecraft:oak_slab": "#minecraft:wooden_slabs",
+    "minecraft:oak_fence": "#minecraft:wooden_fences",
+    "minecraft:oak_fence_gate": "#minecraft:fence_gates",
+    "minecraft:oak_door": "#minecraft:wooden_doors",
+    "minecraft:oak_sign": "#minecraft:signs",
+    "minecraft:oak_boat": "#minecraft:boats",
+    "minecraft:white_wool": "#minecraft:wool",
+    "minecraft:white_carpet": "#minecraft:wool_carpets",
+    "minecraft:black_carpet": "#minecraft:wool_carpets",
+    "minecraft:white_bed": "#minecraft:beds",
+    "minecraft:red_bed": "#minecraft:beds",
+    "minecraft:white_banner": "#minecraft:banners",
+    "minecraft:white_concrete_powder": "#minecraft:concrete_powders",
+    "minecraft:stone_button": "#minecraft:buttons",
+    "minecraft:sand": "#minecraft:smelts_to_glass",
+    "minecraft:dirt": "#minecraft:dirt",
+    "minecraft:coarse_dirt": "#minecraft:dirt",
+    "minecraft:rooted_dirt": "#minecraft:dirt",
+}
+
+ITEM_NAMES = {
+    "minecraft:tnt": "TNT",
+    "#minecraft:smelts_to_glass": "any sand",
+    "#minecraft:walls": "any stone wall",
+    "#minecraft:wool_carpets": "any wool carpet",
+    "#minecraft:concrete_powders": "any concrete powder",
+    **{f"#wildercord:{k}": prose for k, (_, prose, _) in CUSTOM_RECIPE_ITEM_TAGS.items()},
+}
 BOSSES = {"WARDEN", "WITHER", "ELDER_GUARDIAN", "ENDER_DRAGON"}
 MOB_PLURALS = {"ENDERMAN": "Endermen", "WITCH": "Witches"}
 
@@ -1372,7 +1537,7 @@ def write_recipe_doc(runes):
     for tier in (1, 2, 3):
         lines.append(f"- Tier {'I' * tier if tier < 4 else 'IV'}: {extras[tier]}")
     lines += ["", "Recipes appear in the crafting recipe book once you hold a Blank Rune",
-              "(Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.", ""]
+              "(Blank Rune: 4 Cobblestone or Deepslate around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.", ""]
     world = found_only()
     for tier in (1, 2, 3):
         rs = [r for r in runes if r["tier"] == tier and r["path"] not in INNATE and r["path"] not in FUSED and r["path"] not in world]
@@ -1921,6 +2086,8 @@ RUNE_RECIPES.update({
     "suzu_chime": ["minecraft:bell", "minecraft:feather"],
     "ofuda_ward": ["minecraft:paper", "minecraft:amethyst_shard"],
 })
+for _path, _items in RUNE_RECIPES.items():
+    RUNE_RECIPES[_path] = [RECIPE_VARIANT_TAGS.get(i, i) for i in _items]
 
 def rune_result(path):
     return {"id": "wildercord:rune", "components": {"wildercord:rune": f"wildercord:{path}"}}
@@ -1956,6 +2123,8 @@ def write_recipes(runes):
     import armor_art
     armor_art.write(sys.modules[__name__])
     out = DATA / "recipe"
+    for tag_name, (_, _, values) in CUSTOM_RECIPE_ITEM_TAGS.items():
+        write_json(DATA / f"tags/item/{tag_name}.json", {"values": values})
     by_path = {r["path"]: r for r in runes}
     # The runes of the world are found only in their own places (RuneSources.java): never crafted.
     world = found_only()
@@ -1979,7 +2148,7 @@ def write_recipes(runes):
     unlock_advancement("wildercord:mana_crystal", "minecraft:amethyst_shard")
     write_json(out / "blank_rune.json", {
         "type": "minecraft:crafting_shaped", "category": "misc",
-        "key": {"C": "minecraft:cobblestone", "L": "minecraft:lapis_lazuli"},
+        "key": {"C": "#wildercord:cobblestone_variants", "L": "minecraft:lapis_lazuli"},
         "pattern": [" C ", "CLC", " C "], "result": {"id": "wildercord:blank_rune", "count": 4}})
     write_json(out / "twine_cord.json", {
         "type": "minecraft:crafting_shaped", "category": "equipment",
@@ -2398,6 +2567,7 @@ NEW_LANG = {
     "subtitles.wildercord.altar_knot": "Knot is tied",
     # Tags, named for recipe viewers.
     "tag.item.wildercord.enchantable.cord": "Enchantable Cords",
+    **{f"tag.item.wildercord.{k}": title for k, (title, _, _) in CUSTOM_RECIPE_ITEM_TAGS.items()},
     "message.wildercord.overcast_too_costly": "Too costly to overcast: %s mana is more than %s times what your Cord holds",
     "command.wildercord.innate": "Your innate rune is now %s",
     "command.wildercord.runebound": "Bound a Cord to the nearest monster",

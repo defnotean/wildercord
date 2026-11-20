@@ -29,7 +29,23 @@ SLOT_LIGHT = (255, 255, 255, 255)
 # A tag in a recipe is shown as one of its items.
 TAG_ITEMS = {"#minecraft:logs": "minecraft:oak_log", "#minecraft:saplings": "minecraft:oak_sapling",
              "#minecraft:wool": "minecraft:white_wool", "#minecraft:planks": "minecraft:oak_planks",
-             "#minecraft:wooden_slabs": "minecraft:oak_slab"}
+             "#minecraft:wooden_slabs": "minecraft:oak_slab", "#minecraft:leaves": "minecraft:oak_leaves",
+             "#minecraft:wooden_fences": "minecraft:oak_fence", "#minecraft:fence_gates": "minecraft:oak_fence_gate",
+             "#minecraft:wooden_doors": "minecraft:oak_door", "#minecraft:signs": "minecraft:oak_sign",
+             "#minecraft:boats": "minecraft:oak_boat", "#minecraft:wool_carpets": "minecraft:white_carpet",
+             "#minecraft:beds": "minecraft:white_bed", "#minecraft:banners": "minecraft:white_banner",
+             "#minecraft:concrete_powders": "minecraft:white_concrete_powder",
+             "#minecraft:buttons": "minecraft:stone_button", "#minecraft:walls": "minecraft:cobblestone_wall",
+             "#minecraft:smelts_to_glass": "minecraft:sand", "#minecraft:dirt": "minecraft:dirt",
+             "#wildercord:cobblestone_variants": "minecraft:cobblestone",
+             "#wildercord:deepslate_variants": "minecraft:cobbled_deepslate",
+             "#wildercord:stone_brick_variants": "minecraft:stone_bricks",
+             "#wildercord:mossy_stone_variants": "minecraft:mossy_cobblestone",
+             "#wildercord:stone_slab_variants": "minecraft:stone_slab",
+             "#wildercord:stone_stair_variants": "minecraft:cobblestone_stairs",
+             "#wildercord:sandstone_variants": "minecraft:sandstone",
+             "#wildercord:glass_variants": "minecraft:glass",
+             "#wildercord:glass_pane_variants": "minecraft:glass_pane"}
 # Items whose inventory sprite isn't item/<name> (animated, or drawn from a block or entity texture).
 SPRITES = {"minecraft:clock": "item/clock_00", "minecraft:compass": "item/compass_00", "minecraft:crossbow": "item/crossbow_standby",
            "minecraft:glass_pane": "block/glass", "minecraft:sunflower": "block/sunflower_front"}
