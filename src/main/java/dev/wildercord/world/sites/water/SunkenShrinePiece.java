@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -89,8 +89,8 @@ public class SunkenShrinePiece extends WaterPiece {
 		}
 		court(level, bb);
 		hall(level, bb);
-		sentry(level, bb, EntityTypes.DROWNED, 4, FLOOR + 1, 3);
-		sentry(level, bb, EntityTypes.DROWNED, 12, FLOOR + 1, 5);
+		sentry(level, bb, EntityType.DROWNED, 4, FLOOR + 1, 3);
+		sentry(level, bb, EntityType.DROWNED, 12, FLOOR + 1, 5);
 	}
 
 	/** The court: the conduit in its ring of sixteen, pillars at the corners, coral and sea pickles round it. */
@@ -209,7 +209,7 @@ public class SunkenShrinePiece extends WaterPiece {
 			set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, HALL + 4, 14);
 		}
 		for (int z = 11; z <= 13; z++) {
-			set(level, bb, Blocks.CARPET.cyan().defaultBlockState(), 8, HALL + 1, z);
+			set(level, bb, Blocks.CYAN_CARPET.defaultBlockState(), 8, HALL + 1, z);
 		}
 		set(level, bb, DARK, 8, HALL + 1, 14);
 		set(level, bb, Blocks.CANDLE.defaultBlockState(), 8, HALL + 2, 14);

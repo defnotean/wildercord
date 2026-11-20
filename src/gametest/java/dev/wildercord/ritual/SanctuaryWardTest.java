@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.GameType;
 
@@ -44,10 +43,10 @@ public final class SanctuaryWardTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				ServerPlayer player = p(s);
 				player.setGameMode(GameType.SURVIVAL);
-				Mob common = spawn(player, EntityTypes.ZOMBIE, -3);
-				Mob riftcaller = spawn(player, EntityTypes.PILLAGER, 0);
+				Mob common = spawn(player, EntityType.ZOMBIE, -3);
+				Mob riftcaller = spawn(player, EntityType.PILLAGER, 0);
 				riftcaller.addTag(RiftSiege.RIFTCALLER_TAG);
-				Mob boss = spawn(player, EntityTypes.ELDER_GUARDIAN, 3);
+				Mob boss = spawn(player, EntityType.ELDER_GUARDIAN, 3);
 				try {
 					Rituals.sanctuary(player.level(), player.position());
 					check(common.hasEffect(MobEffects.WEAKNESS) && common.getTarget() == null, "a common monster is weakened and forgets the player");

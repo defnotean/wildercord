@@ -137,7 +137,7 @@ public class IceCampPiece extends WaterPiece {
 
 	/** A hide tent, an A-frame of wool open toward the fire, with the sled chest at its back. */
 	private void tent(WorldGenLevel level, BoundingBox bb) {
-		var wool = Blocks.WOOL.brown().defaultBlockState();
+		var wool = Blocks.BROWN_WOOL.defaultBlockState();
 		var stairs = dev.wildercord.compat.McBlocksAndItems.brownWoolStairs();
 		for (int z = 12; z <= 15; z++) {
 			set(level, bb, stair(stairs, Direction.EAST), 6, BASE + 1, z);
@@ -150,14 +150,14 @@ public class IceCampPiece extends WaterPiece {
 		clear(level, bb, 8, BASE + 2, 12, 8, BASE + 2, 14);
 		fill(level, bb, 7, BASE + 1, 15, 9, BASE + 1, 15, wool);
 		set(level, bb, wool, 8, BASE + 2, 15);
-		set(level, bb, Blocks.CARPET.red().defaultBlockState(), 7, BASE + 1, 13);
-		set(level, bb, Blocks.CARPET.red().defaultBlockState(), 9, BASE + 1, 13);
+		set(level, bb, Blocks.RED_CARPET.defaultBlockState(), 7, BASE + 1, 13);
+		set(level, bb, Blocks.RED_CARPET.defaultBlockState(), 9, BASE + 1, 13);
 		// A ridge pole that runs out past both ends, crossed poles at the mouth, a lantern inside and a woodpile at its side.
 		BlockState pole = Blocks.SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z);
 		set(level, bb, pole, 8, BASE + 3, 11);
 		set(level, bb, pole, 8, BASE + 3, 16);
 		for (int x : new int[] {6, 10}) set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), x, BASE + 1, 11);
-		set(level, bb, Blocks.CARPET.brown().defaultBlockState(), 8, BASE + 1, 12);
+		set(level, bb, Blocks.BROWN_CARPET.defaultBlockState(), 8, BASE + 1, 12);
 		set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 8, BASE + 2, 13);
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 5, BASE + 1, 13);
 		set(level, bb, pole, 5, BASE + 1, 14);

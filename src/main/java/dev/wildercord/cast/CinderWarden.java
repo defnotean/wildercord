@@ -24,7 +24,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -1355,7 +1354,7 @@ public class CinderWarden extends DungeonBoss {
 		announce(level, "message.wildercord.cinder_warden_phase." + phase, COLOR);
 		// Two of its keepers climb out of the forge: Runebound, carrying fire (Adepts the second time).
 		for (int i = 0; i < 2; i++) {
-			Mob guard = EntityTypes.WITHER_SKELETON.create(level, EntitySpawnReason.MOB_SUMMONED);
+			Mob guard = EntityType.WITHER_SKELETON.create(level, EntitySpawnReason.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}

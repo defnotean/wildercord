@@ -55,7 +55,6 @@ import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.ColorCollection;
 import net.minecraft.world.level.block.EnchantingTableBlock;
 import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -777,21 +776,8 @@ public final class WayfarerEffects {
 
 	/** {@code state} recoloured to {@code color}, or null when it isn't dyeable or already is that colour. */
 	static BlockState recolour(BlockState state, DyeColor color) {
-		Block block = state.getBlock();
-		ColorCollection<Block> family = block == Blocks.GLASS ? Blocks.STAINED_GLASS : block == Blocks.GLASS_PANE ? Blocks.STAINED_GLASS_PANE
-			: block == Blocks.TERRACOTTA ? Blocks.DYED_TERRACOTTA : block == Blocks.CANDLE ? Blocks.DYED_CANDLE : null;
-		if (family == null) {
-			for (ColorCollection<Block> dyed : dev.wildercord.compat.McBlocksAndItems.dyedBlockFamilies()) {
-				if (dyed.asList().contains(block)) {
-					family = dyed;
-					break;
-				}
-			}
-		}
-		if (family == null || family.pick(color) == block) {
-			return null;
-		}
-		return family.pick(color).withPropertiesOf(state);
+		Block recoloured = dev.wildercord.compat.McBlocksAndItems.recoloured(state.getBlock(), color);
+		return recoloured == null ? null : recoloured.withPropertiesOf(state);
 	}
 
 	private static void dye(Cast cast, Cast.Hit hit, double radius, boolean checker) {

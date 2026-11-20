@@ -142,8 +142,8 @@ public final class Tempering {
 	/** A boss with no phases of its own: these get the one second phase the tempering gives them. */
 	static boolean phaseless(Mob mob) {
 		return mob instanceof dev.wildercord.aura.world.Gravekeeper
-			|| mob.getType() == net.minecraft.world.entity.EntityTypes.WARDEN
-			|| mob.getType() == net.minecraft.world.entity.EntityTypes.ELDER_GUARDIAN;
+			|| mob.getType() == net.minecraft.world.entity.EntityType.WARDEN
+			|| mob.getType() == net.minecraft.world.entity.EntityType.ELDER_GUARDIAN;
 	}
 
 	/** Its second phase: faster, harder, a shield of absorption, and everyone near is told. */

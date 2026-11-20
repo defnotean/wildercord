@@ -35,7 +35,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
@@ -199,7 +198,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -276,7 +275,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "verdant", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -315,7 +314,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -376,7 +375,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 		// In a fight, a whiff counts: strike a husk, then swing past it.
 		on(world, player -> {
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(10);
@@ -415,7 +414,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		// Looking down a little more, so the leaping swing still finds the husk from the top of the jump.
@@ -453,7 +452,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 1.6), 200).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 1.6), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -505,7 +504,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			// Past where the step lands (six blocks on), a line of husks for the cut ahead.
 			for (int i = 0; i < 3; i++) {
-				spawn(player.level(), EntityTypes.HUSK, at(0, 8 + 1.5 * i), 200).addTag("wildercord.string_line");
+				spawn(player.level(), EntityType.HUSK, at(0, 8 + 1.5 * i), 200).addTag("wildercord.string_line");
 			}
 			return null;
 		});
@@ -547,9 +546,9 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			player.setAttached(dev.wildercord.aura.Momentum.MOMENTUM,
 				new dev.wildercord.aura.Momentum.State(100, player.level().getGameTime() + 100000, 0, 0, 0));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400).addTag("wildercord.string_target");
-			spawn(player.level(), EntityTypes.HUSK, at(-2.5, 0.5), 200).addTag("wildercord.string_ring");
-			spawn(player.level(), EntityTypes.HUSK, at(2.5, -1.5), 200).addTag("wildercord.string_ring");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(-2.5, 0.5), 200).addTag("wildercord.string_ring");
+			spawn(player.level(), EntityType.HUSK, at(2.5, -1.5), 200).addTag("wildercord.string_ring");
 			return null;
 		});
 		// Filmed at night, where its light reads.
@@ -659,7 +658,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		boolean off = context.computeOnClient(mc -> !dev.wildercord.config.Config.strings(mc.player));
 		check(off, "the client should learn strings are off");
 		on(world, player -> {
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(10);
@@ -693,7 +692,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "hollow", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN) * 0.6F);
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.runOnClient(mc -> MagicQuality.stringIndicator = MagicQuality.StringIndicator.HOTBAR);
@@ -773,12 +772,12 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 					player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 					player.removeAttached(SwordStrings.COOLDOWNS);
 					if (line) {
-						spawn(player.level(), EntityTypes.HUSK, at(0.3, 2.6), 400);
-						spawn(player.level(), EntityTypes.HUSK, at(-0.3, 4.4), 400);
+						spawn(player.level(), EntityType.HUSK, at(0.3, 2.6), 400);
+						spawn(player.level(), EntityType.HUSK, at(-0.3, 4.4), 400);
 					} else {
-						spawn(player.level(), EntityTypes.HUSK, at(-1.7, 2.3), 400);
-						spawn(player.level(), EntityTypes.HUSK, at(1.7, 2.3), 400);
-						spawn(player.level(), EntityTypes.HUSK, at(0, 3.0), 400);
+						spawn(player.level(), EntityType.HUSK, at(-1.7, 2.3), 400);
+						spawn(player.level(), EntityType.HUSK, at(1.7, 2.3), 400);
+						spawn(player.level(), EntityType.HUSK, at(0, 3.0), 400);
 					}
 					player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.0);
 					// Looking down on the platform from behind (the camera follows the view); in first person, ahead as in a fight.

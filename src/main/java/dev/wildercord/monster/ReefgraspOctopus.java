@@ -61,7 +61,7 @@ public class ReefgraspOctopus extends WildMonster {
 	public ReefgraspOctopus(EntityType<? extends ReefgraspOctopus> type, Level level) {
 		super(type, level);
 		this.xpReward = 9;
-		moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.5F, 0.1F, true);
+		moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.5F, 0.1F, true);
 		setPathfindingMalus(PathType.WATER, 0);
 	}
 

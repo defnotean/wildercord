@@ -767,7 +767,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	}
 	/** An icicle growing down out of the dome at {@code top} over {@code at}. */
 	private Display.BlockDisplay hang(ServerLevel level,Vec3 at,double top){
-		var d=EntityTypes.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
+		var d=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(d==null)return null;
 		d.snapTo(at.x,top,at.z);d.setBlockState(Blocks.BLUE_ICE.defaultBlockState());d.setTransformation(spike(.05F,.05F,0));
 		BlockFx.fresh(d);level.addFreshEntity(d);

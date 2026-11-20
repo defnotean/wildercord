@@ -12,7 +12,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -235,7 +235,7 @@ public final class FusedEffects {
 			case "nullify" -> {
 				harmed.forEach(t -> {
 					// Magic-made creatures unravel: vexes, and spirits and shades that aren't the caster's.
-					if (t.getType() == EntityTypes.VEX || t.hasAttached(dev.wildercord.player.WildercordAttachments.SPIRIT_UNTIL)) {
+					if (t.getType() == EntityType.VEX || t.hasAttached(dev.wildercord.player.WildercordAttachments.SPIRIT_UNTIL)) {
 						FusionVfx.nullify(level, t, false);
 						t.discard();
 						return;

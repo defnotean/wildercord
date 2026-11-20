@@ -308,7 +308,7 @@ public final class LanternBathhousePiece extends DungeonPiece {
 	}
 
 	private void vaultAndToriiPortal(WorldGenLevel level, BoundingBox bb) {
-		BlockState red = Blocks.DYED_TERRACOTTA.red().defaultBlockState();
+		BlockState red = Blocks.RED_TERRACOTTA.defaultBlockState();
 		// Monumental indoor vermilion-and-gold Torii Shrine Portal framing the Fire + Wind RuneSeal doorway.
 		for (int px : new int[]{15, 23}) {
 			fill(level, bb, px, F + 1, 33, px, F + 6, 33, red);

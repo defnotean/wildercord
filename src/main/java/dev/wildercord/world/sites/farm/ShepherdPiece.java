@@ -5,7 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -98,20 +98,20 @@ public final class ShepherdPiece extends FarmPiece {
 		set(level, bb, s(Blocks.LANTERN), 6, 1, 12); set(level, bb, s(Blocks.LANTERN), 8, 1, 12);
 		// Within: the loom and spinning corner, the hearth, the chest, fleece, a rug and hanging lamps.
 		set(level, bb, facing(Blocks.LOOM, Direction.EAST), 3, 1, 14);
-		set(level, bb, s(Blocks.WOOL.white()), 3, 1, 18);
+		set(level, bb, s(Blocks.WHITE_WOOL), 3, 1, 18);
 		set(level, bb, s(Blocks.WOOL.pick(DyeColor.LIGHT_GRAY)), 3, 2, 18);
 		set(level, bb, s(Blocks.BARREL), 4, 1, 18);
 		set(level, bb, facing(Blocks.SMOKER, Direction.WEST), 11, 1, 16);
 		set(level, bb, s(Blocks.HAY_BLOCK), 11, 1, 14);
 		chest(level, bb, 11, 1, 18, FarmSites.SHEPHERD_HUT, Direction.WEST, 1);
-		fill(level, bb, 6, 1, 16, 8, 1, 17, s(Blocks.CARPET.white()));
+		fill(level, bb, 6, 1, 16, 8, 1, 17, s(Blocks.WHITE_CARPET));
 		set(level, bb, s(Blocks.CARPET.pick(DyeColor.BROWN)), 7, 1, 16);
 		set(level, bb, hangingLantern(), 5, 6, 16);
 		set(level, bb, hangingLantern(), 9, 6, 16);
 		// Shrubs under the windows, fleece stacked against the west wall.
 		for (int z : new int[]{14, 18}) set(level, bb, s(z == 14 ? Blocks.FLOWERING_AZALEA : Blocks.AZALEA), 1, 1, z);
 		for (int x : new int[]{4, 10}) set(level, bb, s(Blocks.FLOWERING_AZALEA), x, 1, 20);
-		set(level, bb, s(Blocks.WOOL.white()), 1, 1, 17); set(level, bb, s(Blocks.WOOL.pick(DyeColor.BROWN)), 1, 1, 15);
+		set(level, bb, s(Blocks.WHITE_WOOL), 1, 1, 17); set(level, bb, s(Blocks.WOOL.pick(DyeColor.BROWN)), 1, 1, 15);
 	}
 
 	/** The pen: a dry-stone wall with lamp piers, a gate shut on the flock, a trough, and a gabled byre over the hay. */
@@ -134,10 +134,10 @@ public final class ShepherdPiece extends FarmPiece {
 		fill(level, bb, 16, 0, 8, 16, 0, 11, s(Blocks.WATER));
 		for (int z = 8; z <= 11; z++) set(level, bb, s(Blocks.SPRUCE_SLAB), 17, 1, z);
 		for (int x = 16; x <= 24; x++) for (int z = 5; z <= 19; z++) if (noise(x, z) < 15 && x != 16) set(level, bb, s(Blocks.SHORT_GRASS), x, 1, z);
-		sentry(level, bb, EntityTypes.SHEEP, 19, 1, 8);
-		sentry(level, bb, EntityTypes.SHEEP, 22, 1, 11);
-		sentry(level, bb, EntityTypes.SHEEP, 19, 1, 13);
-		sentry(level, bb, EntityTypes.SHEEP, 23, 1, 7);
+		sentry(level, bb, EntityType.SHEEP, 19, 1, 8);
+		sentry(level, bb, EntityType.SHEEP, 22, 1, 11);
+		sentry(level, bb, EntityType.SHEEP, 19, 1, 13);
+		sentry(level, bb, EntityType.SHEEP, 23, 1, 7);
 		// The byre in the far corner, open toward the pen.
 		for (int[] p : new int[][]{{19, 15}, {24, 15}, {19, 19}, {24, 19}}) fill(level, bb, p[0], 1, p[1], p[0], 3, p[1], s(Blocks.SPRUCE_LOG));
 		fill(level, bb, 20, 1, 19, 23, 3, 19, s(Blocks.SPRUCE_PLANKS));

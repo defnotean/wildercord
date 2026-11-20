@@ -145,7 +145,7 @@ public final class ReedkeeperLandingPiece extends WaterPiece {
 		fill(level, clip, 4, DECK + 2, 13, 4, DECK + 2, 14, Blocks.BOOKSHELF.defaultBlockState());
 		set(level, clip, Blocks.FLOWER_POT.defaultBlockState(), 4, DECK + 2, 10);
 		set(level, clip, Blocks.LOOM.defaultBlockState(), 4, DECK + 1, 11);
-		fill(level, clip, 6, DECK + 1, 10, 8, DECK + 1, 12, Blocks.CARPET.blue().defaultBlockState());
+		fill(level, clip, 6, DECK + 1, 10, 8, DECK + 1, 12, Blocks.BLUE_CARPET.defaultBlockState());
 		set(level, clip, Blocks.CANDLE.defaultBlockState(), 10, DECK + 1, 14);
 		lectern(level, clip, 5, DECK + 1, 14, Direction.SOUTH, "The First Crossing", "book.wildercord.reedkeeper", 4, "Tideward surveyors");
 		chest(level, clip, 10, DECK + 1, 10, WaterSites.REEDKEEPER_LOOT, Direction.WEST, 309);

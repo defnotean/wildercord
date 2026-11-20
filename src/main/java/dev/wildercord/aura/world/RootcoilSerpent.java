@@ -582,7 +582,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 
 	/** A root stands up out of the ground at {@code base}, leaning out along {@code yaw}, holds a moment and sinks back. */
 	private void spike(ServerLevel level,Vec3 base,float yaw,float h,float w,int hold){
-		var shown=EntityTypes.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
+		var shown=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(shown==null)return;
 		var turn=new Quaternionf().rotateY((float)Math.toRadians(-yaw)).rotateX(.2F+random.nextFloat()*.35F).rotateY(random.nextFloat()*1.6F);
 		shown.snapTo(base.x,base.y-.1,base.z);shown.setBlockState(Blocks.MANGROVE_ROOTS.defaultBlockState());shown.setTransformation(stand(turn,w,.02F));
@@ -722,7 +722,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 
 	private static final float CLOD=.8F;
 	private void throwClod(ServerLevel level,Vec3 from,Vec3 vel,BlockState state){
-		var shown=EntityTypes.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
+		var shown=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(shown==null)return;
 		var spin=new Quaternionf().rotateXYZ(random.nextFloat()*6.28F,random.nextFloat()*6.28F,random.nextFloat()*6.28F);
 		shown.snapTo(from.x,from.y,from.z);shown.setBlockState(state);shown.setTransformation(clod(spin));shown.setPosRotInterpolationDuration(1);

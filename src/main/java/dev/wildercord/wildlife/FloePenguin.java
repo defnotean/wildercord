@@ -74,7 +74,7 @@ public class FloePenguin extends Animal {
 
 	public FloePenguin(EntityType<? extends FloePenguin> type, Level level) {
 		super(type, level);
-		moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.6F, 1.0F, false);
+		moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.6F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0);
 	}
 

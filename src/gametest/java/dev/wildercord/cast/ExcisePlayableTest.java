@@ -31,7 +31,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.item.ItemStack;
@@ -342,7 +342,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
         Spellbooks.set(p, Spellbooks.get(p).withSelected(0).withSpell(0,ExciseRules.IDS).withSpell(1,List.of(Runes.BEAM.id(),Runes.HARM.id())));
         Spellbooks.setMana(p,200); Mastery.flush(p); probe.masteryBefore = mastery();
         probe.target = new TrainingDummy(WildercordEntities.TRAINING_DUMMY,p.level()); probe.target.snapTo(.5,150,6.5,0,0); probe.target.setNoGravity(true); p.level().addFreshEntity(probe.target);
-        probe.witch = EntityTypes.WITCH.create(p.level(), EntitySpawnReason.COMMAND); check(probe.witch != null,"Native Witch exists");
+        probe.witch = EntityType.WITCH.create(p.level(), EntitySpawnReason.COMMAND); check(probe.witch != null,"Native Witch exists");
         probe.witch.setNoAi(true); probe.witch.setNoGravity(true); probe.witch.addTag("wildercord.rolled"); probe.witch.snapTo(8.5,150,6.5,90,0);
         probe.witch.setTarget(probe.target); p.level().addFreshEntity(probe.witch);
         Vec3 delta = probe.target.position().subtract(probe.witch.getEyePosition());

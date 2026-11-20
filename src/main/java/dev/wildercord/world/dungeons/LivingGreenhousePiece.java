@@ -4,7 +4,7 @@ import dev.wildercord.spell.Runes;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -52,8 +52,8 @@ public final class LivingGreenhousePiece extends DungeonPiece {
   mechanism(level,bb,DungeonBlocks.GARDEN,14,1,13);
   chest(level,bb,4,1,17,DungeonWorldgen.GARDEN_HALL,Direction.EAST,401);chest(level,bb,24,1,17,DungeonWorldgen.GARDEN_HALL,Direction.WEST,402);
   chest(level,bb,14,1,32,DungeonWorldgen.GARDEN_VAULT,Direction.NORTH,403);
-  guard(level,bb,EntityTypes.BOGGED,7,1,10,List.of(Runes.BOLT,Runes.VENOM),false);
-  guard(level,bb,EntityTypes.WITCH,21,1,27,List.of(Runes.ZONE,Runes.MIRE),true);
+  guard(level,bb,EntityType.BOGGED,7,1,10,List.of(Runes.BOLT,Runes.VENOM),false);
+  guard(level,bb,EntityType.WITCH,21,1,27,List.of(Runes.ZONE,Runes.MIRE),true);
  }
  /** The roof's height over column {@code x}: a glass barrel vault from the eaves at y 10 to its crown at y 16. */
  private static int crown(int x){double d=Math.abs(x-14)/13.5;return 10+(int)Math.round(6*Math.sqrt(Math.max(0,1-d*d)));}

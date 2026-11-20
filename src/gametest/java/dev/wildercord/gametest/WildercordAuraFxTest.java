@@ -33,7 +33,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
@@ -288,7 +287,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -403,9 +402,9 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "gale", AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_AXE));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.0), 400).addTag("wildercord.aurafx_target");
-			spawn(player.level(), EntityTypes.HUSK, at(-1.6, 2.3), 400);
-			spawn(player.level(), EntityTypes.HUSK, at(1.6, 2.3), 400);
+			spawn(player.level(), EntityType.HUSK, at(0, 2.0), 400).addTag("wildercord.aurafx_target");
+			spawn(player.level(), EntityType.HUSK, at(-1.6, 2.3), 400);
+			spawn(player.level(), EntityType.HUSK, at(1.6, 2.3), 400);
 			return null;
 		});
 		context.waitTicks(30);
@@ -443,7 +442,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "thunder", AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 1.6), 400).addTag("wildercord.aurafx_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 1.6), 400).addTag("wildercord.aurafx_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -492,7 +491,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			setAura(player, "hollow", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 			for (int i = 0; i < 3; i++) {
-				spawn(player.level(), EntityTypes.HUSK, at(-2 + 2 * i, 7), 400);
+				spawn(player.level(), EntityType.HUSK, at(-2 + 2 * i, 7), 400);
 			}
 			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.5);
 			return null;
@@ -596,9 +595,9 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 				setAura(player, method, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 				player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 				player.removeAttached(SwordStrings.COOLDOWNS);
-				spawn(player.level(), EntityTypes.HUSK, at(-1.6, 2.4), 400);
-				spawn(player.level(), EntityTypes.HUSK, at(1.6, 2.4), 400);
-				spawn(player.level(), EntityTypes.HUSK, at(0, 3.0), 400);
+				spawn(player.level(), EntityType.HUSK, at(-1.6, 2.4), 400);
+				spawn(player.level(), EntityType.HUSK, at(1.6, 2.4), 400);
+				spawn(player.level(), EntityType.HUSK, at(0, 3.0), 400);
 				player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.0);
 				player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 30.0F, false);
 				return null;
@@ -658,7 +657,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 	private static void others(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
 			setAura(player, "stone", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
-			Mob husk = spawn(player.level(), EntityTypes.HUSK, at(0.6, 3.2), 400);
+			Mob husk = spawn(player.level(), EntityType.HUSK, at(0.6, 3.2), 400);
 			husk.addTag("wildercord.aurafx_other");
 			husk.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.NETHERITE_SWORD));
 			husk.snapTo(husk.getX(), husk.getY(), husk.getZ(), 150, 0);
@@ -691,7 +690,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "verdant", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -784,7 +783,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 	private static void freshSwingTarget(TestSingleplayerContext world) {
 		on(world, player -> {
 			kill(player, "wildercord.aurafx_target");
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
 			return null;
 		});
 	}

@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -115,8 +115,8 @@ public final class QuarryHallPiece extends MasterSitePiece {
 		// Four lantern posts at the ring's corners.
 		for (int[] p : new int[][]{{5, 6}, {13, 6}, {5, 14}, {13, 14}}) { set(level, bb, wallTop, p[0], 1, p[1]); set(level, bb, s(Blocks.LANTERN), p[0], 2, p[1]); }
 		chest(level, bb, 9, -2, 7, rewardLoot(), Direction.NORTH, 2);
-		if (alt) guard(level, bb, EntityTypes.VINDICATOR, 9, -2, 10, List.of(Runes.ARC, Runes.TREMOR), false);
-		else guard(level, bb, EntityTypes.HUSK, 9, -2, 10, List.of(Runes.NOVA, Runes.TREMOR), false);
+		if (alt) guard(level, bb, EntityType.VINDICATOR, 9, -2, 10, List.of(Runes.ARC, Runes.TREMOR), false);
+		else guard(level, bb, EntityType.HUSK, 9, -2, 10, List.of(Runes.NOVA, Runes.TREMOR), false);
 		// Practice around the ring.
 		var post = alt ? s(Blocks.IRON_BARS) : s(Blocks.OAK_FENCE);
 		dummy(level, bb, 3, 1, 4, post); dummy(level, bb, 15, 1, 4, post); dummy(level, bb, 3, 1, 15, post);

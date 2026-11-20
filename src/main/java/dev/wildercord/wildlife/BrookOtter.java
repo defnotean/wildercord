@@ -77,7 +77,7 @@ public class BrookOtter extends Animal {
 
 	public BrookOtter(EntityType<? extends BrookOtter> type, Level level) {
 		super(type, level);
-		moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.55F, 1.0F, false);
+		moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.55F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0);
 	}
 

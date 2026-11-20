@@ -167,7 +167,7 @@ public class StiltSmokehousePiece extends WaterPiece {
 		set(level, bb, Blocks.CRAFTING_TABLE.defaultBlockState(), 10, DECK + 1, 9);
 		chest(level, bb, 10, DECK + 1, 5, WaterSites.SMOKEHOUSE_LOOT, Direction.WEST, 301);
 		// A rug, a candle on the bench, kelp drying from the plate and a wall light either side.
-		fill(level, bb, 6, DECK + 1, 6, 8, DECK + 1, 8, Blocks.CARPET.brown().defaultBlockState());
+		fill(level, bb, 6, DECK + 1, 6, 8, DECK + 1, 8, Blocks.BROWN_CARPET.defaultBlockState());
 		set(level, bb, Blocks.CANDLE.defaultBlockState(), 10, DECK + 2, 9);
 		set(level, bb, Blocks.HAY_BLOCK.defaultBlockState(), 10, DECK + 1, 7);
 		for (int x : new int[] {5, 9}) {

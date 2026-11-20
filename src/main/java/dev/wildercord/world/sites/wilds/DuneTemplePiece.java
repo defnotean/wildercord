@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -137,9 +137,9 @@ public final class DuneTemplePiece extends WildsPiece {
 		}
 		for (int[] p : new int[][]{{4, 4}, {16, 4}, {4, 16}}) set(level, bb, s(Blocks.DECORATED_POT), p[0], 1, p[1]);
 		chest(level, bb, 15, 1, 14, WildsSites.DUNE_HALL, Direction.WEST, 1);
-		guard(level, bb, EntityTypes.HUSK, 6, 1, 8, List.of(Runes.BOLT, Runes.MIRE), false);
-		guard(level, bb, EntityTypes.HUSK, 14, 1, 10, List.of(Runes.BOLT, Runes.MIRE), false);
-		guard(level, bb, EntityTypes.HUSK, 13, -5, 7, List.of(Runes.ZONE, Runes.SANDSTORM), true);
+		guard(level, bb, EntityType.HUSK, 6, 1, 8, List.of(Runes.BOLT, Runes.MIRE), false);
+		guard(level, bb, EntityType.HUSK, 14, 1, 10, List.of(Runes.BOLT, Runes.MIRE), false);
+		guard(level, bb, EntityType.HUSK, 13, -5, 7, List.of(Runes.ZONE, Runes.SANDSTORM), true);
 	}
 
 	/** A sandstone pilaster standing proud of the wall, chiselled at foot and head. */

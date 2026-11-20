@@ -224,7 +224,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
 
  /** Compares one control tick only on disposable/retired actors, restoring all inputs afterward. */
  private static void checkNativeSwimControl(LanternNewt n,boolean buoyancy,String scenario) {
-  var actual=n.getMoveControl();var reference=new net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl<>(n,85,10,.7F,.65F,buoyancy);
+  var actual=n.getMoveControl();var reference=new net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl(n,85,10,.7F,.65F,buoyancy);
   if(actual.hasWanted())reference.setWantedPosition(actual.getWantedX(),actual.getWantedY(),actual.getWantedZ(),actual.getSpeedModifier());
   var initial=SwimControlState.capture(n);
   try {

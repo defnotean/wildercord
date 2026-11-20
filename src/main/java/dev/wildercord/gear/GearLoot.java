@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -57,9 +56,9 @@ public final class GearLoot {
 		CHESTS.put(BuiltInLootTables.STRONGHOLD_LIBRARY, new Pool(10, tomeAndFoci));
 		CHESTS.put(BuiltInLootTables.ANCIENT_CITY, new Pool(12, foci));
 		CHESTS.put(BuiltInLootTables.WOODLAND_MANSION, new Pool(8, foci));
-		BOSSES.put(EntityTypes.WITHER, new Pool(35, List.of(GearDef.greaterStaff("void"), GearDef.greaterStaff("blood"))));
-		BOSSES.put(EntityTypes.WARDEN, new Pool(35, List.of(GearDef.greaterStaff("earth"), GearDef.greaterStaff("storm"))));
-		BOSSES.put(EntityTypes.ELDER_GUARDIAN, new Pool(35, List.of(GearDef.greaterStaff("frost"), GearDef.greaterStaff("life"))));
+		BOSSES.put(EntityType.WITHER, new Pool(35, List.of(GearDef.greaterStaff("void"), GearDef.greaterStaff("blood"))));
+		BOSSES.put(EntityType.WARDEN, new Pool(35, List.of(GearDef.greaterStaff("earth"), GearDef.greaterStaff("storm"))));
+		BOSSES.put(EntityType.ELDER_GUARDIAN, new Pool(35, List.of(GearDef.greaterStaff("frost"), GearDef.greaterStaff("life"))));
 	}
 
 	/** The Ender Dragon's greater staffs, dropped by the killer (it has no loot table). */

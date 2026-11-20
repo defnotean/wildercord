@@ -32,7 +32,7 @@ final class NextSignatureNative {
   Spellbooks.setReadyAt(p,0,0);Spellbooks.setMana(p,100);float before=Spellbooks.mana(p);SpellCaster.cast(p,0);
   check(Spellbooks.mana(p)<before,"Actual Survival cast pays "+rune.path());
  }
- static Mob foe(ServerPlayer p,double x,double z){var t=EntityTypes.HUSK.create(p.level(),EntitySpawnReason.COMMAND);
+ static Mob foe(ServerPlayer p,double x,double z){var t=EntityType.HUSK.create(p.level(),EntitySpawnReason.COMMAND);
   check(t instanceof Mob,"Husk fixture");var mob=(Mob)t;mob.setNoAi(true);mob.snapTo(x,101,z,0,0);p.level().addFreshEntity(mob);return mob;}
  static ServerPlayer guest(ServerPlayer p,String name,boolean ally){
   check(name.length()<=16,"Native player profile name fits packet limit: "+name);

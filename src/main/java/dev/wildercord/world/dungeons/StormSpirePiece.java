@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -28,7 +28,7 @@ public class StormSpirePiece extends DungeonPiece {
 	private static final BlockState BRICK = Blocks.STONE_BRICKS.defaultBlockState();
 	private static final BlockState COPPER = Blocks.CUT_COPPER.waxed().oxidized().defaultBlockState();
 	private static final BlockState DARK = Blocks.DEEPSLATE_BRICKS.defaultBlockState();
-	private static final BlockState GLASS = Blocks.STAINED_GLASS.cyan().defaultBlockState();
+	private static final BlockState GLASS = Blocks.CYAN_STAINED_GLASS.defaultBlockState();
 	private static final BlockState LIGHT = Blocks.SEA_LANTERN.defaultBlockState();
 
 	public StormSpirePiece(int x, int y, int z, Direction facing) {
@@ -133,9 +133,9 @@ public class StormSpirePiece extends DungeonPiece {
 		chest(level, bb, 17, 22, 19, DungeonWorldgen.STORM_VAULT, Direction.WEST, 204);
 		altar(level, bb, dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.STORM, 11, 22, 18);
 		for (int x : new int[] {6, 11, 16}) set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), x, 22, 17);
-		guard(level, bb, EntityTypes.STRAY, 6, 1, 16, List.of(Runes.BOLT, Runes.SHOCK), false);
-		guard(level, bb, EntityTypes.SKELETON, 16, 8, 5, List.of(Runes.ARC, Runes.WINDCUT), false);
-		guard(level, bb, EntityTypes.STRAY, 6, 15, 6, List.of(Runes.ORB, Runes.THUNDERCLAP), true);
+		guard(level, bb, EntityType.STRAY, 6, 1, 16, List.of(Runes.BOLT, Runes.SHOCK), false);
+		guard(level, bb, EntityType.SKELETON, 16, 8, 5, List.of(Runes.ARC, Runes.WINDCUT), false);
+		guard(level, bb, EntityType.STRAY, 6, 15, 6, List.of(Runes.ORB, Runes.THUNDERCLAP), true);
 	}
 
 	/** The tower's dress: a plinth, ledges at each floor, a machicolated parapet, a pedimented portal and banners. */
@@ -218,9 +218,9 @@ public class StormSpirePiece extends DungeonPiece {
 		for (int x : new int[] {5, 11, 17}) {
 			set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), x, 28, 11);
 		}
-		guard(level, bb, EntityTypes.STRAY, 6, 1, 16, List.of(Runes.BOLT, Runes.SHOCK), false);
-		guard(level, bb, EntityTypes.SKELETON, 16, 8, 5, List.of(Runes.ARC, Runes.WINDCUT), false);
-		guard(level, bb, EntityTypes.STRAY, 6, 15, 6, List.of(Runes.ORB, Runes.THUNDERCLAP), true);
+		guard(level, bb, EntityType.STRAY, 6, 1, 16, List.of(Runes.BOLT, Runes.SHOCK), false);
+		guard(level, bb, EntityType.SKELETON, 16, 8, 5, List.of(Runes.ARC, Runes.WINDCUT), false);
+		guard(level, bb, EntityType.STRAY, 6, 15, 6, List.of(Runes.ORB, Runes.THUNDERCLAP), true);
 	}
 
 	@Override protected void addAdditionalSaveData(net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext context,CompoundTag tag) {

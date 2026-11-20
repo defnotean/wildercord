@@ -162,7 +162,7 @@ public final class WindmillPiece extends FarmPiece {
 		// The sails: a hub on the front wall and four cloth arms turning one way.
 		fill(level, bb, 11, 10, 8, 11, 10, 9, s(Blocks.SPRUCE_LOG).setValue(BlockStateProperties.AXIS, Direction.Axis.Z));
 		var arm = s(Blocks.SPRUCE_FENCE);
-		var cloth = s(Blocks.WOOL.white());
+		var cloth = s(Blocks.WHITE_WOOL);
 		fill(level, bb, 11, 11, 8, 11, 17, 8, arm);
 		fill(level, bb, 12, 13, 8, 12, 17, 8, cloth);
 		fill(level, bb, 12, 10, 8, 18, 10, 8, arm);

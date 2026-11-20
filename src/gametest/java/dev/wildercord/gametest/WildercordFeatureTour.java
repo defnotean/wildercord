@@ -41,7 +41,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.InteractionHand;
@@ -158,7 +158,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, player(server).getBoundingBox().inflate(128),
 				e -> e.entityTags().contains("wildercord.camera")).forEach(net.minecraft.world.entity.Entity::discard);
-			net.minecraft.world.entity.Display.TextDisplay camera = EntityTypes.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
+			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
 			Vec3 d = target.subtract(eye);
 			float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
 			float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
@@ -389,7 +389,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				}
 				// A few targets out in front.
 				for (int i = 0; i < 4; i++) {
-					Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+					Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 					if (husk != null) {
 						Vec3 spot = secret.id().equals("glacial_lance")
 							? new Vec3(at.x + (i % 2 == 0 ? -0.3 : 0.3), at.y, at.z + 6 + i * 3)
@@ -459,7 +459,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				Vec3 at = stage.add(0, 0, -8);
 				place(player, at, 0, 12);
 				for (int i = 0; i < 3; i++) {
-					Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+					Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 					if (husk != null) {
 						// Close up for the shapes that strike what's in front of you, further for the rest.
 						double near = far == 0 ? 1.8 : 6;
@@ -535,7 +535,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			ServerLevel level = player.level();
 			for (int i = 0; i < 3; i++) {
-				Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+				Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 				if (husk != null) {
 					// Beside and behind the caster (who faces the camera), never between them and it.
 					double a = Math.PI * (0.12 + 0.38 * i);
@@ -562,7 +562,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerLevel level = player.level();
 			place(player, stage.add(0, 0, -8), 0, 20);
 			for (int i = 0; i < 3; i++) {
-				Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+				Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 				if (husk != null) {
 					husk.snapTo(stage.x + (i - 1) * 2.2, stage.y, stage.z - 2 + (i % 2) * 2, 180, 0);
 					husk.setNoAi(true);
@@ -597,7 +597,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			ServerLevel level = player.level();
 			place(player, stage.add(0, 0, -10), 0, 0);
-			Mob zombie = EntityTypes.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
+			Mob zombie = EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
 			if (zombie != null) {
 				zombie.snapTo(stage.x, stage.y, stage.z, 200, 0);
 				zombie.setNoAi(true);
@@ -625,7 +625,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			player.setTicksFrozen(0);
 			Vec3 at = stage.add(0, 0, -6);
 			place(player, at, 0, 0);
-			Mob caster = EntityTypes.PILLAGER.create(level, EntitySpawnReason.COMMAND);
+			Mob caster = EntityType.PILLAGER.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, 9);
 			caster.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			caster.addTag("wildercord.tour");
@@ -717,7 +717,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			Vec3 at = stage.add(SHIELD_SPOT);
 			place(player, at, 0, 0);
 			level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(30), m -> m.entityTags().contains("wildercord.tour")).forEach(Mob::discard);
-			Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, SHIELD_RANGE);
 			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			husk.setYHeadRot(180);
@@ -891,7 +891,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.HEAL));
 			Spellbooks.setReadyAt(player, 0, 0);
 			SpellCaster.cast(player, 0);
-			Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = player.position().add(player.getLookAngle().multiply(1, 0, 1).normalize().scale(1.6));
 			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			husk.setNoAi(true);
@@ -981,7 +981,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			ServerLevel level = player.level();
-			Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, 1.6);
 			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			husk.setNoAi(true);
@@ -1084,7 +1084,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		shot(context, "imbue_glyph");
 		world.getServer().runOnServer(server -> {
 			ServerLevel level = player(server).level();
-			Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			husk.snapTo(top.x, top.y, top.z, 200, 0);
 			husk.setNoAi(true);
 			husk.addTag("wildercord.tour");
@@ -1122,7 +1122,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerLevel level = player.level();
 			Vec3 at = stage.add(0, 0, -12);
 			place(player, at, 0, -6);
-			Mob witch = EntityTypes.WITCH.create(level, EntitySpawnReason.COMMAND);
+			Mob witch = EntityType.WITCH.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, 15);
 			witch.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			witch.setNoAi(true);
@@ -1486,7 +1486,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			boolean again = archivist.hurtServer(level, level.damageSources().playerAttack(player), max * 10);
 			check(!again && Math.abs(archivist.getHealth() - max * 2 / 3) < 0.01F, "the Archivist shouldn't be hurt while it rewrites its Cord");
 			// Nothing leads it out of the Archive: no boat, no portal.
-			Entity boat = EntityTypes.OAK_BOAT.create(level, EntitySpawnReason.COMMAND);
+			Entity boat = EntityType.OAK_BOAT.create(level, EntitySpawnReason.COMMAND);
 			check(boat != null, "a boat should spawn");
 			boat.snapTo(archivist.getX(), archivist.getY(), archivist.getZ(), 0, 0);
 			level.addFreshEntity(boat);
@@ -1495,7 +1495,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			boat.discard();
 			// The allies it called from the stacks as it began rewriting.
 			List<Mob> allies = level.getEntitiesOfClass(Mob.class, archivist.getBoundingBox().inflate(10),
-				m -> m != archivist && m.isAlive() && (m.getType() == EntityTypes.SKELETON || m.getType() == EntityTypes.PILLAGER));
+				m -> m != archivist && m.isAlive() && (m.getType() == EntityType.SKELETON || m.getType() == EntityType.PILLAGER));
 			// A command's kill goes through even while it rewrites; its allies go with it, and its lectern goes quiet for good.
 			archivist.kill(level);
 			check(archivist.isDeadOrDying(), "a command's kill should go through while the Archivist rewrites its Cord");

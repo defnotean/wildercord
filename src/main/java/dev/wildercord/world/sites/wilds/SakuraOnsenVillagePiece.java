@@ -337,7 +337,7 @@ public final class SakuraOnsenVillagePiece extends WildsPiece {
 			set(level, bb, s(Blocks.CRIMSON_FENCE), px, 4, 15);
 			set(level, bb, s(Blocks.CRIMSON_FENCE), px, 5, 15);
 			fill(level, bb, px - 1, 6, 14, px + 1, 6, 16, redWool);
-			fill(level, bb, px - 1, 7, 14, px + 1, 7, 16, s(Blocks.CARPET.red()));
+			fill(level, bb, px - 1, 7, 14, px + 1, 7, 16, s(Blocks.RED_CARPET));
 			set(level, bb, JapaneseArchitecture.slab(Blocks.SPRUCE_SLAB, SlabType.BOTTOM), px - 1, 3, 14);
 			set(level, bb, SakuraVillageHelper.dryTeaCups(2), px - 1, 4, 14);
 		}

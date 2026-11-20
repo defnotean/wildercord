@@ -38,7 +38,7 @@ public final class WindGatePiece extends MasterSitePiece {
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
 		BlockState pillar = alt ? s(Blocks.POLISHED_DEEPSLATE) : s(Blocks.STRIPPED_OAK_LOG);
 		BlockState beam = alt ? s(Blocks.CUT_COPPER.waxed().unaffected()) : s(Blocks.SPRUCE_PLANKS);
-		BlockState cloth = alt ? s(Blocks.WOOL.yellow()) : s(Blocks.WOOL.white());
+		BlockState cloth = alt ? s(Blocks.YELLOW_WOOL) : s(Blocks.WHITE_WOOL);
 		BlockState chiseled = s(Blocks.CHISELED_STONE_BRICKS);
 		Block plinth = Blocks.STONE_BRICK_STAIRS, bracket = alt ? Blocks.POLISHED_DEEPSLATE_STAIRS : Blocks.SPRUCE_STAIRS;
 		Block roofStairs = alt ? Blocks.DEEPSLATE_TILE_STAIRS : Blocks.SPRUCE_STAIRS;

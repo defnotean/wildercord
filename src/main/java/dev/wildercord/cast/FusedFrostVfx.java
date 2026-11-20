@@ -13,7 +13,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Items;
@@ -222,7 +222,7 @@ final class FusedFrostVfx {
 		Vec3 c = centre(t);
 		double w = width(t);
 		if (encasable(t)) {
-			shell(level, t, ticks, Blocks.TINTED_GLASS.defaultBlockState(), Blocks.STAINED_GLASS.purple().defaultBlockState(), true);
+			shell(level, t, ticks, Blocks.TINTED_GLASS.defaultBlockState(), Blocks.PURPLE_STAINED_GLASS.defaultBlockState(), true);
 		}
 		ElementFx.implode(level, c, w + 1.3, 8);
 		RandomSource r = level.getRandom();
@@ -234,7 +234,7 @@ final class FusedFrostVfx {
 		}
 		ElementFx.flatSigil(level, feet, SigilOption.STAR, BLACK_ICE, 0.7 + w * 0.6, ticks + 12, 0.01);
 		ElementFx.groundRing(level, feet, ElementFx.VOID.primary(), 0.2, 1.0 + w * 0.6, 0.035, 12);
-		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STAINED_GLASS.black().defaultBlockState()), c, 10, 0.18);
+		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BLACK_STAINED_GLASS.defaultBlockState()), c, 10, 0.18);
 		Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, c, 8, 0.3, 0.02);
 		Feels.sound(level, feet, "frost_lock", 1.0F, 0.75F);
 	}
@@ -268,8 +268,8 @@ final class FusedFrostVfx {
 			ElementFx.ray(level, from, to, BLACK_ICE, 0.08, 9);
 			ElementFx.ray(level, from, to, VIOLET_ICE, 0.02, 8);
 		}
-		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STAINED_GLASS.black().defaultBlockState()), at, 20, 0.35);
-		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STAINED_GLASS.purple().defaultBlockState()), at, 10, 0.3);
+		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BLACK_STAINED_GLASS.defaultBlockState()), at, 20, 0.35);
+		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.PURPLE_STAINED_GLASS.defaultBlockState()), at, 10, 0.3);
 		ScreenFx.shake(level, at, 0.35F, 12);
 		Feels.sound(level, at, "frost_break", 1.0F, 0.7F);
 	}
@@ -279,7 +279,7 @@ final class FusedFrostVfx {
 		Vec3 b = centre(to);
 		ElementFx.ray(level, from, b, BLACK_ICE, 0.07, 8);
 		ElementFx.ray(level, from, b, VIOLET_ICE, 0.02, 7);
-		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STAINED_GLASS.black().defaultBlockState()), b, 6, 0.15);
+		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BLACK_STAINED_GLASS.defaultBlockState()), b, 6, 0.15);
 	}
 
 	// ------------------------------------------------------------------ Rime Seal (frost and arcane)
@@ -486,7 +486,7 @@ final class FusedFrostVfx {
 		Vec3 c = centre(t);
 		double w = width(t);
 		if (encasable(t)) {
-			shell(level, t, ticks, Blocks.ICE.defaultBlockState(), Blocks.STAINED_GLASS.red().defaultBlockState(), true);
+			shell(level, t, ticks, Blocks.ICE.defaultBlockState(), Blocks.RED_STAINED_GLASS.defaultBlockState(), true);
 		}
 		ElementFx.shatterRing(level, c, w + 1.0);
 		ElementFx.ring(level, c, ElementFx.tilted(0.7, level.getRandom().nextDouble() * Math.PI * 2), ElementFx.BLOOD.primary(), 0.2, w + 0.8, 0.04, 9);
@@ -724,7 +724,7 @@ final class FusedFrostVfx {
 		if (Fx.muted()) {
 			return null;
 		}
-		Display.BlockDisplay display = EntityTypes.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
 		if (display == null) {
 			return null;
 		}

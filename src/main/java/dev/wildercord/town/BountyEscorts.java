@@ -17,7 +17,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -48,8 +47,8 @@ public final class BountyEscorts {
 	/** The chance each second on the road that an ambush comes, and how far from the board and the end the road is safe. */
 	public static final double AMBUSH_CHANCE = 1.0 / 45;
 	public static final double SAFE = 32;
-	private static final List<EntityType<? extends Mob>> AMBUSHERS = List.of(EntityTypes.ZOMBIE, EntityTypes.PILLAGER, EntityTypes.VINDICATOR,
-		EntityTypes.HUSK);
+	private static final List<EntityType<? extends Mob>> AMBUSHERS = List.of(EntityType.ZOMBIE, EntityType.PILLAGER, EntityType.VINDICATOR,
+		EntityType.HUSK);
 
 	/** Each hunter's road so far, not saved: where their llama was a second ago and how many ambushes have come. */
 	private static final class Road {
@@ -157,7 +156,7 @@ public final class BountyEscorts {
 
 	/** Hands {@code player} the escort's pack llama by the board; returns the bounty bound for its end, or null with no room. */
 	public static Town.Active start(ServerPlayer player, ServerLevel level, BlockPos board, Town.Active bounty) {
-		Llama llama = EntityTypes.LLAMA.create(level, EntitySpawnReason.EVENT);
+		Llama llama = EntityType.LLAMA.create(level, EntitySpawnReason.EVENT);
 		if (llama == null) return null;
 		BlockPos at = player.blockPosition();
 		llama.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, player.getYRot(), 0);

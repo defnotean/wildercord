@@ -31,7 +31,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -55,7 +54,7 @@ import java.util.UUID;
 public final class InnRaid {
 	private static final int COLOR = 0xE0A060;
 	public static final String TAG = "wildercord.inn_raid";
-	private static final List<EntityType<? extends Mob>> BANDITS = List.of(EntityTypes.PILLAGER, EntityTypes.VINDICATOR, EntityTypes.PILLAGER);
+	private static final List<EntityType<? extends Mob>> BANDITS = List.of(EntityType.PILLAGER, EntityType.VINDICATOR, EntityType.PILLAGER);
 
 	/** Raids by the inn's dimension and middle, so two inns at the same spot in different dimensions stay apart. */
 	private static final Map<Key, InnRaid> ACTIVE = new HashMap<>();
@@ -324,7 +323,7 @@ public final class InnRaid {
 			EntityType<? extends Mob> type = BANDITS.get((i + n) % BANDITS.size());
 			dev.wildercord.cast.Scheduler.later(1 + i * 6, () -> emerge(type, side, false));
 		}
-		if (last) dev.wildercord.cast.Scheduler.later(20 + size * 6, () -> emerge(EntityTypes.VINDICATOR, side, true));
+		if (last) dev.wildercord.cast.Scheduler.later(20 + size * 6, () -> emerge(EntityType.VINDICATOR, side, true));
 	}
 
 	private void emerge(EntityType<? extends Mob> type, double side, boolean captain) {

@@ -38,7 +38,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
@@ -123,7 +122,7 @@ public final class PlayerAffinities {
 	private static final Map<UUID, Long> LAST_REACTION = new ConcurrentHashMap<>();
 	private static final Map<UUID, Long> LAST_STRUCK = new ConcurrentHashMap<>();
 
-	private static final Set<EntityType<?>> OF_THE_END = Set.of(EntityTypes.ENDERMAN, EntityTypes.ENDERMITE, EntityTypes.SHULKER);
+	private static final Set<EntityType<?>> OF_THE_END = Set.of(EntityType.ENDERMAN, EntityType.ENDERMITE, EntityType.SHULKER);
 
 	// ------------------------------------------------------------------ what affinities give
 

@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class CounterPeerFallbackMixin {
 	@Unique private static final ThreadLocal<CounterPeerRenderProbe.FallbackView> wildercord$counter$openingFallback = new ThreadLocal<>();
 
-	@WrapMethod(method = "submitArmWithItem", require = 1, expect = 1, allow = 1)
+	@WrapMethod(method = "renderArmWithItem", require = 1, expect = 1, allow = 1)
 	private void wildercord$counter$fallback(AbstractClientPlayer player, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector,
 			int light, Operation<Void> original) {

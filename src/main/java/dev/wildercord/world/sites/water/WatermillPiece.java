@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -179,7 +179,7 @@ public class WatermillPiece extends WaterPiece {
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 7, BASE + 4, 4);
 		hangingLantern(level, bb, 4, BASE + 4, 6, 0, false);
 		hangingLantern(level, bb, 10, BASE + 4, 4, 0, false);
-		fill(level, bb, 6, BASE + 1, 3, 8, BASE + 1, 5, Blocks.CARPET.brown().defaultBlockState());
+		fill(level, bb, 6, BASE + 1, 3, 8, BASE + 1, 5, Blocks.BROWN_CARPET.defaultBlockState());
 		set(level, bb, Blocks.FLOWER_POT.defaultBlockState(), 11, BASE + 2, 2);
 		// The axle comes in through the back wall to a hub over the millstone.
 		for (int z = 7; z <= WHEEL_Z - 1; z++) {
@@ -187,7 +187,7 @@ public class WatermillPiece extends WaterPiece {
 				set(level, bb, AXLE, 7, hub, z);
 			}
 		}
-		spawn(level, bb, EntityTypes.VILLAGER, 7, BASE + 1, 4, 0);
+		spawn(level, bb, EntityType.VILLAGER, 7, BASE + 1, 4, 0);
 	}
 
 	/**

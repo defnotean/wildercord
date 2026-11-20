@@ -4,7 +4,7 @@ import dev.wildercord.spell.Runes;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -53,7 +53,7 @@ public final class MovingSkyRuinPiece extends DungeonPiece {
    if(bb.isInside(stonePos))level.setBlock(stonePos,Blocks.IRON_BLOCK.defaultBlockState(),2);
   }
   chest(level,bb,9,7,5,DungeonWorldgen.SKY_HALL,Direction.EAST,501);chest(level,bb,12,7,24,DungeonWorldgen.SKY_VAULT,Direction.NORTH,502);
-  guard(level,bb,EntityTypes.STRAY,14,7,23,List.of(Runes.ARC,Runes.WINDCUT),true);
+  guard(level,bb,EntityType.STRAY,14,7,23,List.of(Runes.ARC,Runes.WINDCUT),true);
  }
  private void ruin(WorldGenLevel level,BoundingBox bb,net.minecraft.world.level.block.state.BlockState copper,net.minecraft.world.level.block.state.BlockState carved) {
   var shaft=Blocks.QUARTZ_PILLAR.defaultBlockState();var bricks=Blocks.QUARTZ_BRICKS.defaultBlockState();

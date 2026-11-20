@@ -11,7 +11,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -310,7 +309,7 @@ public final class WildercordLoot {
 
 	/** Ocean monuments have no chests: their Elder Guardians carry the monument's runes (chance out of 100). */
 	private static final Map<EntityType<?>, SourcePool> SOURCE_GUARDIANS = Map.of(
-		EntityTypes.ELDER_GUARDIAN, new SourcePool(50, RuneSources.OCEAN_MONUMENT)
+		EntityType.ELDER_GUARDIAN, new SourcePool(50, RuneSources.OCEAN_MONUMENT)
 	);
 
 	/** A chance in 100 that a slain Runebound Adept's Cord gives up a rune of the world. */
@@ -359,20 +358,20 @@ public final class WildercordLoot {
 
 	/** Mob drops: chance out of 100, and the rune. Bosses always drop their first. */
 	private static final Map<EntityType<?>, List<Map.Entry<Integer, RuneDef>>> MOB_DROPS = Map.ofEntries(
-		Map.entry(EntityTypes.CREEPER, List.of(Map.entry(1, Runes.EXPLODE))),
-		Map.entry(EntityTypes.ENDERMAN, List.of(Map.entry(2, Runes.BLINK), Map.entry(1, Runes.TIME_SKIP))),
-		Map.entry(EntityTypes.SHULKER, List.of(Map.entry(5, Runes.HOMING_MOD))),
-		Map.entry(EntityTypes.EVOKER, List.of(Map.entry(15, Runes.SUMMON), Map.entry(10, Runes.DECREE))),
-		Map.entry(EntityTypes.VINDICATOR, List.of(Map.entry(4, Runes.CLEAVE))),
-		Map.entry(EntityTypes.WITCH, List.of(Map.entry(5, Runes.BUBBLE))),
-		Map.entry(EntityTypes.PHANTOM, List.of(Map.entry(5, Runes.IF_AIRBORNE))),
-		Map.entry(EntityTypes.BREEZE, List.of(Map.entry(8, Runes.REPEL))),
-		Map.entry(EntityTypes.WARDEN, List.of(Map.entry(100, Runes.SONIC_BOOM), Map.entry(35, Runes.DOMAIN))),
-		Map.entry(EntityTypes.WITHER, List.of(Map.entry(100, Runes.WITHER), Map.entry(50, Runes.HOLLOW))),
-		Map.entry(EntityTypes.ELDER_GUARDIAN, List.of(Map.entry(100, Runes.STARFALL), Map.entry(25, Runes.STASIS))),
+		Map.entry(EntityType.CREEPER, List.of(Map.entry(1, Runes.EXPLODE))),
+		Map.entry(EntityType.ENDERMAN, List.of(Map.entry(2, Runes.BLINK), Map.entry(1, Runes.TIME_SKIP))),
+		Map.entry(EntityType.SHULKER, List.of(Map.entry(5, Runes.HOMING_MOD))),
+		Map.entry(EntityType.EVOKER, List.of(Map.entry(15, Runes.SUMMON), Map.entry(10, Runes.DECREE))),
+		Map.entry(EntityType.VINDICATOR, List.of(Map.entry(4, Runes.CLEAVE))),
+		Map.entry(EntityType.WITCH, List.of(Map.entry(5, Runes.BUBBLE))),
+		Map.entry(EntityType.PHANTOM, List.of(Map.entry(5, Runes.IF_AIRBORNE))),
+		Map.entry(EntityType.BREEZE, List.of(Map.entry(8, Runes.REPEL))),
+		Map.entry(EntityType.WARDEN, List.of(Map.entry(100, Runes.SONIC_BOOM), Map.entry(35, Runes.DOMAIN))),
+		Map.entry(EntityType.WITHER, List.of(Map.entry(100, Runes.WITHER), Map.entry(50, Runes.HOLLOW))),
+		Map.entry(EntityType.ELDER_GUARDIAN, List.of(Map.entry(100, Runes.STARFALL), Map.entry(25, Runes.STASIS))),
 		// ---- fx-support pack: raiders carry the Tier IV wards.
-		Map.entry(EntityTypes.RAVAGER, List.of(Map.entry(8, Runes.CITADEL), Map.entry(5, Runes.AEGIS))),
-		Map.entry(EntityTypes.PILLAGER, List.of(Map.entry(1, Runes.ACCORD), Map.entry(1, Runes.GRACE)))
+		Map.entry(EntityType.RAVAGER, List.of(Map.entry(8, Runes.CITADEL), Map.entry(5, Runes.AEGIS))),
+		Map.entry(EntityType.PILLAGER, List.of(Map.entry(1, Runes.ACCORD), Map.entry(1, Runes.GRACE)))
 	);
 
 	public static void init() {

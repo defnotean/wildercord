@@ -51,17 +51,17 @@ public abstract class FirstPersonAuraMixin implements dev.wildercord.client.Firs
 		return null;
 	}
 
-	@Inject(method = "submitHandsWithItems", at = @At("HEAD"))
+	@Inject(method = "renderHandsWithItems", at = @At("HEAD"))
 	private void wildercord$extractHandsAvatar(float partial, PoseStack pose, SubmitNodeCollector collector, LocalPlayer player, int light, CallbackInfo ci) {
 		if (wildercord$avatar == null) wildercord$prepareHandsAvatar(player, partial);
 	}
 
-	@Inject(method = "submitHandsWithItems", at = @At("RETURN"))
+	@Inject(method = "renderHandsWithItems", at = @At("RETURN"))
 	private void wildercord$clearHandsAvatar(float partial, PoseStack pose, SubmitNodeCollector collector, LocalPlayer player, int light, CallbackInfo ci) {
 		wildercord$avatar = null;
 	}
 
-	@Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "renderArmWithItem", at = @At("HEAD"), cancellable = true)
 	private void wildercord$auraBegin(AbstractClientPlayer player, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector, int light, CallbackInfo ci) {
 		ItemInHandRenderer renderer = (ItemInHandRenderer) (Object) this;
@@ -86,7 +86,7 @@ public abstract class FirstPersonAuraMixin implements dev.wildercord.client.Firs
 		AuraBlade.beginFirstPerson(hand == InteractionHand.MAIN_HAND, stack);
 	}
 
-	@WrapOperation(method = "submitArmWithItem", at = @At(value = "INVOKE",
+	@WrapOperation(method = "renderArmWithItem", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;swingArm(FLcom/mojang/blaze3d/vertex/PoseStack;ILnet/minecraft/world/entity/HumanoidArm;)V"))
 	private void wildercord$blendAttack(ItemInHandRenderer renderer, float attack, PoseStack pose, int side, HumanoidArm arm,
 			Operation<Void> original, @Local(argsOnly = true) AbstractClientPlayer player,
@@ -106,7 +106,7 @@ public abstract class FirstPersonAuraMixin implements dev.wildercord.client.Firs
 		pose.mulPose(MastersViewMotion.fadeSwing(delta.last().pose(), ownership));
 	}
 
-	@Inject(method = "submitArmWithItem", at = @At("RETURN"))
+	@Inject(method = "renderArmWithItem", at = @At("RETURN"))
 	private void wildercord$auraEnd(AbstractClientPlayer player, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector, int light, CallbackInfo ci) {
 		AuraBlade.end();

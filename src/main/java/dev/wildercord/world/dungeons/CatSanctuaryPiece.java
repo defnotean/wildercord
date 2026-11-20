@@ -58,7 +58,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 	private static final BlockState MOSSY_BRICKS = Blocks.MOSSY_STONE_BRICKS.defaultBlockState();
 	private static final BlockState DEEPSLATE_TILES = Blocks.DEEPSLATE_TILES.defaultBlockState();
 	private static final BlockState POLISHED_ANDESITE = Blocks.POLISHED_ANDESITE.defaultBlockState();
-	private static final BlockState VERMILION = Blocks.DYED_TERRACOTTA.red().defaultBlockState();
+	private static final BlockState VERMILION = Blocks.RED_TERRACOTTA.defaultBlockState();
 	private static final BlockState PAPER_WALL = Blocks.CALCITE.defaultBlockState();
 
 	public CatSanctuaryPiece(int x, int y, int z, Direction facing) {
@@ -314,7 +314,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 
 		// NE Tea-House Checkpoint Pavilion.
 		JapaneseArchitecture.teaCheckpointPavilion(p, 40, F1, 57, 48, 65, BAMBOO_BLOCK, DARK_OAK,
-			Blocks.CARPET.red().defaultBlockState(), Direction.SOUTH);
+			Blocks.RED_CARPET.defaultBlockState(), Direction.SOUTH);
 		chest(level, bb, 47, F1 + 1, 64, DungeonWorldgen.CAT_SANCTUARY_HALL, Direction.WEST, 11);
 
 		// Eave skirt & 2nd-story exterior balcony railing.
@@ -355,14 +355,14 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		for (int[] td : new int[][]{{21, 35}, {35, 35}, {21, 49}, {35, 49}}) {
 			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), td[0], F2 + 1, td[1]);
 			set(level, bb, Blocks.SEA_PICKLE.defaultBlockState().setValue(SeaPickleBlock.PICKLES, 2).setValue(SeaPickleBlock.WATERLOGGED, false), td[0], F2 + 2, td[1]);
-			set(level, bb, Blocks.CARPET.yellow().defaultBlockState(), td[0] - 1, F2 + 1, td[1]);
-			set(level, bb, Blocks.CARPET.orange().defaultBlockState(), td[0] + 1, F2 + 1, td[1]);
+			set(level, bb, Blocks.YELLOW_CARPET.defaultBlockState(), td[0] - 1, F2 + 1, td[1]);
+			set(level, bb, Blocks.ORANGE_CARPET.defaultBlockState(), td[0] + 1, F2 + 1, td[1]);
 		}
 
 		// Odie's central Sunbeam Kotatsu & Hearth Pavilion (suspended kettle above center carpet at (28, F2, 42)).
 		fill(level, bb, 24, F2, 38, 32, F2, 46, CHERRY_PLANKS);
-		fill(level, bb, 25, F2 + 1, 39, 31, F2 + 1, 45, Blocks.CARPET.yellow().defaultBlockState());
-		fill(level, bb, 27, F2 + 1, 41, 29, F2 + 1, 43, Blocks.CARPET.orange().defaultBlockState());
+		fill(level, bb, 25, F2 + 1, 39, 31, F2 + 1, 45, Blocks.YELLOW_CARPET.defaultBlockState());
+		fill(level, bb, 27, F2 + 1, 41, 29, F2 + 1, 43, Blocks.ORANGE_CARPET.defaultBlockState());
 		set(level, bb, Blocks.GLOWSTONE.defaultBlockState(), 28, F2, 42);
 		set(level, bb, Blocks.CAULDRON.defaultBlockState(), 28, F2 + 6, 42);
 		set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), 28, F2 + 7, 42);
@@ -373,7 +373,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 
 		// NW Tea-House Checkpoint Pavilion.
 		JapaneseArchitecture.teaCheckpointPavilion(p, 10, F2, 22, 17, 29, BAMBOO_BLOCK, CHERRY_PLANKS,
-			Blocks.CARPET.yellow().defaultBlockState(), Direction.NORTH);
+			Blocks.YELLOW_CARPET.defaultBlockState(), Direction.NORTH);
 		chest(level, bb, 11, F2 + 1, 23, DungeonWorldgen.CAT_SANCTUARY_HALL, Direction.EAST, 22);
 
 		JapaneseArchitecture.upturnedEaveSkirt(p, 7, 19, 49, 67, F3, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, CHERRY_PLANKS, true);
@@ -386,8 +386,8 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		fill(level, bb, 11, F3, 23, 45, F3, 63, CHERRY_PLANKS);
 
 		// Ceremonial pink & magenta silk carpet runner through Freya's bell court.
-		fill(level, bb, 26, F3 + 1, 25, 30, F3 + 1, 46, Blocks.CARPET.magenta().defaultBlockState());
-		fill(level, bb, 27, F3 + 1, 25, 29, F3 + 1, 46, Blocks.CARPET.pink().defaultBlockState());
+		fill(level, bb, 26, F3 + 1, 25, 30, F3 + 1, 46, Blocks.MAGENTA_CARPET.defaultBlockState());
+		fill(level, bb, 27, F3 + 1, 25, 29, F3 + 1, 46, Blocks.PINK_CARPET.defaultBlockState());
 
 		// Vaulted vermilion colonnade, coffered beams & hanging lanterns (kept clear of F2->F3 & F3->F4 stairwells).
 		interiorColonnade(level, bb, 12, 39, new int[]{26, 38, 46, 58}, F3 + 1, F4 - 1, VERMILION, DARK_LOG);
@@ -423,7 +423,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 
 		// SE Tea-House Checkpoint Pavilion.
 		JapaneseArchitecture.teaCheckpointPavilion(p, 36, F3, 54, 44, 62, CHERRY_LOG, CHERRY_PLANKS,
-			Blocks.CARPET.pink().defaultBlockState(), Direction.SOUTH);
+			Blocks.PINK_CARPET.defaultBlockState(), Direction.SOUTH);
 		chest(level, bb, 43, F3 + 1, 61, DungeonWorldgen.CAT_SANCTUARY_HALL, Direction.WEST, 33);
 
 		JapaneseArchitecture.upturnedEaveSkirt(p, 9, 21, 47, 65, F4, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, VERMILION, true);

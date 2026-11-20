@@ -38,7 +38,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -489,7 +488,7 @@ public class Archivist extends SpellcasterIllager {
 		}
 		// Allies from the stacks: Runebound, woken to defend the Archive.
 		for (int i = 0; i < 2; i++) {
-			Mob guard = (i == 0 ? EntityTypes.SKELETON : EntityTypes.PILLAGER).create(level, EntitySpawnReason.MOB_SUMMONED);
+			Mob guard = (i == 0 ? EntityType.SKELETON : EntityType.PILLAGER).create(level, EntitySpawnReason.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}

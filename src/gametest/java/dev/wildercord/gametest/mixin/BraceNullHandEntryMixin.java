@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 /** Outer native-method entry precedes the production art/height HEAD transforms. */
 @Mixin(ItemInHandRenderer.class)
 public abstract class BraceNullHandEntryMixin {
-	@WrapMethod(method = "submitArmWithItem", require = 1, expect = 1, allow = 1)
+	@WrapMethod(method = "renderArmWithItem", require = 1, expect = 1, allow = 1)
 	private void wildercord$braceNullEntry(AbstractClientPlayer player, float partial, float xRot,
 		InteractionHand hand, float attack, ItemStack item, float inverseHeight, PoseStack pose, SubmitNodeCollector collector, int light, Operation<Void> original) {
 		AvatarRenderState avatar = ((dev.wildercord.client.FirstPersonAvatarState) this).wildercord$handsAvatar(player, partial);

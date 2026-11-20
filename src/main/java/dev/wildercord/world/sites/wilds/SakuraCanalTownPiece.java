@@ -184,7 +184,7 @@ public final class SakuraCanalTownPiece extends WildsPiece {
 		for (int z = 28; z <= 35; z += 3) {
 			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 16, 4, z);
 			set(level, bb, SakuraVillageHelper.dryTeaCups(2), 16, 5, z);
-			set(level, bb, s(Blocks.CARPET.green()), 15, 4, z);
+			set(level, bb, s(Blocks.GREEN_CARPET), 15, 4, z);
 		}
 		set(level, bb, s(Blocks.BARREL), 8, 4, 37);
 		set(level, bb, s(Blocks.BARREL), 9, 4, 37);
@@ -279,7 +279,7 @@ public final class SakuraCanalTownPiece extends WildsPiece {
 	private void hillsideToriiAndShrine(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
 		BlockState stone = s(Blocks.STONE_BRICKS);
 		BlockState mossy = s(Blocks.MOSSY_STONE_BRICKS);
-		BlockState red = s(Blocks.DYED_TERRACOTTA.red());
+		BlockState red = s(Blocks.RED_TERRACOTTA);
 		BlockState cherry = s(Blocks.CHERRY_PLANKS);
 
 		// Ascending stepped grassy & stone hillside on SE corner rising from y = 3 to summit y = 7.

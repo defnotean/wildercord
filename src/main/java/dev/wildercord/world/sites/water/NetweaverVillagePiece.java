@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -215,11 +215,11 @@ public class NetweaverVillagePiece extends WaterPiece {
 		set(level, bb, barrel, 13, DECK + 1, 21);
 		set(level, bb, Blocks.COMPOSTER.defaultBlockState(), 13, DECK + 1, 20);
 		// Rugs, a pot and candles, so each room looks lived in.
-		fill(level, bb, 6, DECK + 1, 5, 7, DECK + 1, 5, Blocks.CARPET.brown().defaultBlockState());
+		fill(level, bb, 6, DECK + 1, 5, 7, DECK + 1, 5, Blocks.BROWN_CARPET.defaultBlockState());
 		set(level, bb, Blocks.CANDLE.defaultBlockState(), 5, DECK + 2, 7);
-		set(level, bb, Blocks.CARPET.blue().defaultBlockState(), 19, DECK + 1, 9);
+		set(level, bb, Blocks.BLUE_CARPET.defaultBlockState(), 19, DECK + 1, 9);
 		set(level, bb, Blocks.POTTED_ALLIUM.defaultBlockState(), 21, DECK + 2, 9);
-		set(level, bb, Blocks.CARPET.blue().defaultBlockState(), 12, DECK + 1, 21);
+		set(level, bb, Blocks.BLUE_CARPET.defaultBlockState(), 12, DECK + 1, 21);
 		set(level, bb, Blocks.CANDLE.defaultBlockState(), 13, DECK + 2, 21);
 		// The middle: nets spread to dry, kelp drying, a cauldron of water.
 		for (int x = 12; x <= 14; x++) {
@@ -228,8 +228,8 @@ public class NetweaverVillagePiece extends WaterPiece {
 		set(level, bb, Blocks.WATER_CAULDRON.defaultBlockState().setValue(net.minecraft.world.level.block.LayeredCauldronBlock.LEVEL, 3), 14, DECK + 1, 12);
 		set(level, bb, Blocks.DRIED_KELP_BLOCK.defaultBlockState(), 12, DECK + 1, 12);
 		set(level, bb, barrel, 15, DECK + 1, 13);
-		spawn(level, bb, EntityTypes.VILLAGER, 6, DECK + 1, 6, 0);
-		spawn(level, bb, EntityTypes.VILLAGER, 20, DECK + 1, 8, 0);
+		spawn(level, bb, EntityType.VILLAGER, 6, DECK + 1, 6, 0);
+		spawn(level, bb, EntityType.VILLAGER, 20, DECK + 1, 8, 0);
 	}
 
 	/** A bed with its foot at {@code (x, z)}, its head one block toward {@code facing} (in the piece's frame NORTH is +z). */

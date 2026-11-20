@@ -22,7 +22,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import org.jspecify.annotations.Nullable;
@@ -125,7 +124,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 			layout = "zombie_villager";
 		} else if (model instanceof SkeletonModel<?>) {
 			// The parched is a skeleton with a second, looser body over the first, on a taller skin.
-			layout = type == EntityTypes.PARCHED ? "parched" : "skeleton";
+			layout = type == EntityType.PARCHED ? "parched" : "skeleton";
 		} else if (model instanceof HumanoidModel<?>) {
 			layout = "humanoid";
 		} else {

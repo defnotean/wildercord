@@ -10,7 +10,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
@@ -671,11 +670,11 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 	// ------------------------------------------------------------------ guards
 
 	private void guards(WorldGenLevel level, BoundingBox bb) {
-		guard(level, bb, EntityTypes.SKELETON, 13, 3, 38, false);
-		guard(level, bb, EntityTypes.WITCH, 27, 3, 44, false);
-		guard(level, bb, EntityTypes.PILLAGER, 20, 3, 36, false);
-		guard(level, bb, EntityTypes.VINDICATOR, 20, 3, 54, true);
-		guard(level, bb, EntityTypes.SKELETON, 15, 3, 56, false);
+		guard(level, bb, EntityType.SKELETON, 13, 3, 38, false);
+		guard(level, bb, EntityType.WITCH, 27, 3, 44, false);
+		guard(level, bb, EntityType.PILLAGER, 20, 3, 36, false);
+		guard(level, bb, EntityType.VINDICATOR, 20, 3, 54, true);
+		guard(level, bb, EntityType.SKELETON, 15, 3, 56, false);
 	}
 
 	/** A Runebound guard, placed once: by the chunk its feet are in. */

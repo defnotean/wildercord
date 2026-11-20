@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -169,8 +169,8 @@ public final class BasaltFoundryPiece extends MinePiece {
 		for (int x : new int[] {6, 12}) for (int z : new int[] {6, 13}) hangingLantern(level, bb, x, 8, z);
 		// Chains hang from the ceiling over the troughs, where the crucibles were swung.
 		for (int x : new int[] {4, 14}) for (int z : new int[] {6, 12}) fill(level, bb, x, 6, z, x, 8, z, s(Blocks.IRON_CHAIN));
-		guard(level, bb, EntityTypes.WITHER_SKELETON, 9, 1, 12, List.of(Runes.BOLT, Runes.EMBER), true);
-		sentry(level, bb, EntityTypes.BLAZE, 12, 2, 4);
-		sentry(level, bb, EntityTypes.MAGMA_CUBE, 6, 1, 15);
+		guard(level, bb, EntityType.WITHER_SKELETON, 9, 1, 12, List.of(Runes.BOLT, Runes.EMBER), true);
+		sentry(level, bb, EntityType.BLAZE, 12, 2, 4);
+		sentry(level, bb, EntityType.MAGMA_CUBE, 6, 1, 15);
 	}
 }

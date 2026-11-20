@@ -44,7 +44,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
@@ -1381,7 +1380,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			ServerLevel level = player.level();
 			boolean step = scene.slot == AuraApi.ArtSlot.FOURTH;
 			for (double[] f : scene.foes) {
-				spawn(level, EntityTypes.HUSK, at(f[0], f[1]), 400);
+				spawn(level, EntityType.HUSK, at(f[0], f[1]), 400);
 			}
 			if (scene.id.equals(RimeArts.SKATE)) {
 				// The first husk in the way stands frozen, for the glide to shatter; and water lies under the way, for its frost.
@@ -1401,7 +1400,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (scene.id.equals(VerdantArts.BLOSSOM_FALL) || scene.id.equals(VerdantArts.WILD_GROWTH) || scene.id.equals(VerdantArts.GROVES_HEART)) {
 				// An ally, hurt, where the art mends: on the blossom, beside the way through the brambles, inside the grove.
 				Vec3 spot = scene.id.equals(VerdantArts.BLOSSOM_FALL) ? at(-1.2, 1.6) : scene.id.equals(VerdantArts.WILD_GROWTH) ? at(0.8, 10.0) : at(-1.5, -1.0);
-				Wolf ally = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
+				Wolf ally = EntityType.WOLF.create(level, EntitySpawnReason.COMMAND);
 				if (ally != null) {
 					ally.snapTo(spot.x, spot.y, spot.z, 180, 0);
 					ally.tame(player);
@@ -1416,7 +1415,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				ArtWards.star(player, foes(player).get(1));
 			}
 			if (scene.id.equals(GaleArts.TAILWIND)) {
-				Wolf wolf = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
+				Wolf wolf = EntityType.WOLF.create(level, EntitySpawnReason.COMMAND);
 				if (wolf != null) {
 					Vec3 p = at(2.5, 9.0);
 					wolf.snapTo(p.x, p.y, p.z, 180, 0);
@@ -1462,9 +1461,9 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			ServerLevel level = player.level();
 			// A skeleton off to the left loosed it (the mirror sends it back at whoever loosed it), from in front and aside, clear of
 			// the husks.
-			Mob archer = spawn(level, EntityTypes.SKELETON, player.position().add(-4.5, 0, 9), 40);
+			Mob archer = spawn(level, EntityType.SKELETON, player.position().add(-4.5, 0, 9), 40);
 			archer.setNoAi(true);
-			Arrow arrow = new Arrow(EntityTypes.ARROW, level);
+			Arrow arrow = new Arrow(EntityType.ARROW, level);
 			Vec3 from = player.getEyePosition().add(-1.6, -0.3, 2.6);
 			Vec3 aim = player.getEyePosition().subtract(0, 0.3, 0).subtract(from).normalize();
 			arrow.snapTo(from.x, from.y, from.z);
@@ -1499,7 +1498,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	private static String arrowSlowed(ClientGameTestContext context, TestSingleplayerContext world) {
 		Object[] shot = on(world, player -> {
 			ServerLevel level = player.level();
-			Arrow arrow = new Arrow(EntityTypes.ARROW, level);
+			Arrow arrow = new Arrow(EntityType.ARROW, level);
 			Vec3 from = player.getEyePosition().add(1.0, 0.2, 4.2);
 			Vec3 aim = player.getEyePosition().subtract(0, 0.3, 0).subtract(from).normalize();
 			arrow.snapTo(from.x, from.y, from.z);

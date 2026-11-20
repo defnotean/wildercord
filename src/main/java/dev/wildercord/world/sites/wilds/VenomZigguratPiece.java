@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -131,9 +131,9 @@ public final class VenomZigguratPiece extends WildsPiece {
 		chest(level, bb, 11, 1, 8, WildsSites.ZIGGURAT_VAULT, Direction.NORTH, 2);
 		for (int x : new int[]{8, 14}) set(level, bb, s(Blocks.LANTERN), x, 1, 7);
 		for (int[] p : new int[][]{{7, 7}, {15, 7}, {7, 12}, {15, 12}}) pillar(level, bb, p[0], p[1], 1, 4, s(Blocks.CHISELED_STONE_BRICKS), s(Blocks.MOSSY_STONE_BRICKS), s(Blocks.CHISELED_STONE_BRICKS));
-		guard(level, bb, EntityTypes.BOGGED, 9, 12, 12, List.of(Runes.BOLT, Runes.VENOM), false);
-		guard(level, bb, EntityTypes.BOGGED, 13, 12, 10, List.of(Runes.BOLT, Runes.VENOM), false);
-		guard(level, bb, EntityTypes.WITCH, 9, 1, 10, List.of(Runes.ZONE, Runes.VENOM), true);
+		guard(level, bb, EntityType.BOGGED, 9, 12, 12, List.of(Runes.BOLT, Runes.VENOM), false);
+		guard(level, bb, EntityType.BOGGED, 13, 12, 10, List.of(Runes.BOLT, Runes.VENOM), false);
+		guard(level, bb, EntityType.WITCH, 9, 1, 10, List.of(Runes.ZONE, Runes.VENOM), true);
 	}
 
 	/** The cut clearing: a worn mossy plaza, lily pools beside the avenue, smoking obelisks along it and at the corners. */

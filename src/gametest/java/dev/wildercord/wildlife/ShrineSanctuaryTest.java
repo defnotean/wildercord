@@ -43,7 +43,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -148,7 +148,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 	}
 
 	private static Husk spawnHusk(ServerLevel l, double x, double y, double z, boolean noAi) {
-		Husk husk = EntityTypes.HUSK.create(l, EntitySpawnReason.COMMAND);
+		Husk husk = EntityType.HUSK.create(l, EntitySpawnReason.COMMAND);
 		check(husk != null, "Husk created");
 		husk.snapTo(x, y, z, 0.0F, 0.0F);
 		husk.setNoAi(noAi);

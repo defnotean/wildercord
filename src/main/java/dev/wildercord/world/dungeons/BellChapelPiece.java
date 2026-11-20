@@ -47,7 +47,7 @@ public final class BellChapelPiece extends DungeonPiece {
 	private static final BlockState LIGHT=Blocks.SEA_LANTERN.defaultBlockState();
 	private static final BlockState WATER=Blocks.WATER.defaultBlockState();
 	private static final BlockState PILLAR=Blocks.DEEPSLATE_BRICKS.defaultBlockState();
-	private static final BlockState GLASS=Blocks.STAINED_GLASS.blue().defaultBlockState();
+	private static final BlockState GLASS=Blocks.BLUE_STAINED_GLASS.defaultBlockState();
 
 	public BellChapelPiece(int x,int y,int z,Direction facing){super(DungeonWorldgen.BELL_CHAPEL_PIECE,x,y,z,WIDTH,HEIGHT,DEPTH,facing);}
 	public BellChapelPiece(CompoundTag tag){super(DungeonWorldgen.BELL_CHAPEL_PIECE,tag);}
@@ -373,9 +373,9 @@ public final class BellChapelPiece extends DungeonPiece {
 		if(z<62 || Math.abs(dx)>3)return stone(x,y,z);
 		double d=Math.sqrt(dx*dx+dy*dy);
 		if(d>3.6)return stone(x,y,z);
-		if(d<0.8)return Blocks.STAINED_GLASS.yellow().defaultBlockState();
+		if(d<0.8)return Blocks.YELLOW_STAINED_GLASS.defaultBlockState();
 		if(Math.abs(d-3)<0.6)return GLASS;
-		if(dx==0 || dy==0 || Math.abs(dx)==Math.abs(dy))return Blocks.STAINED_GLASS.cyan().defaultBlockState();
+		if(dx==0 || dy==0 || Math.abs(dx)==Math.abs(dy))return Blocks.CYAN_STAINED_GLASS.defaultBlockState();
 		return Blocks.STAINED_GLASS.lightBlue().defaultBlockState();
 	}
 

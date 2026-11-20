@@ -46,7 +46,7 @@ public final class JapaneseArchitecture {
 
 	/** Grand vermilion Myojin Torii gate with stone plinths, twin lintels, upturned deepslate wings & optional gold tablet. */
 	public static void toriiGate(BlockPlacer p, int cx, int baseY, int z, int halfSpan, int topY, boolean goldTablet) {
-		BlockState red = Blocks.DYED_TERRACOTTA.red().defaultBlockState();
+		BlockState red = Blocks.RED_TERRACOTTA.defaultBlockState();
 		BlockState plinth = Blocks.DEEPSLATE_TILES.defaultBlockState();
 		BlockState cap = Blocks.POLISHED_ANDESITE.defaultBlockState();
 		int lx = cx - halfSpan;

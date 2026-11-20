@@ -32,7 +32,7 @@ public final class StarTerracePiece extends MasterSitePiece {
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
 		DungeonWards.remember(level, this);
 		BlockState base = alt ? s(Blocks.CALCITE) : s(Blocks.POLISHED_DEEPSLATE), wall = alt ? s(Blocks.QUARTZ_BRICKS) : s(Blocks.DEEPSLATE_TILES);
-		BlockState glass = alt ? s(Blocks.STAINED_GLASS.orange()) : s(Blocks.STAINED_GLASS.purple()), glow = alt ? s(Blocks.GLOWSTONE) : s(Blocks.SEA_LANTERN);
+		BlockState glass = alt ? s(Blocks.ORANGE_STAINED_GLASS) : s(Blocks.PURPLE_STAINED_GLASS), glow = alt ? s(Blocks.GLOWSTONE) : s(Blocks.SEA_LANTERN);
 		BlockState chiseled = alt ? s(Blocks.CHISELED_QUARTZ_BLOCK) : s(Blocks.CHISELED_DEEPSLATE);
 		BlockState rail = alt ? s(Blocks.QUARTZ_SLAB) : s(Blocks.POLISHED_DEEPSLATE_SLAB);
 		BlockState column = alt ? s(Blocks.QUARTZ_PILLAR) : s(Blocks.POLISHED_DEEPSLATE);

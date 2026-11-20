@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -197,6 +197,6 @@ public class PierBoathousePiece extends WaterPiece {
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 9, DECK + 2, 22);
 		lectern(level, bb, 1, DECK + 1, 24, Direction.EAST, "The Second Count",
 			"book.wildercord.water_boathouse", 3, "Tideward boatkeepers");
-		spawn(level, bb, EntityTypes.SPRUCE_BOAT, 5, BASE, 24, 0.6);
+		spawn(level, bb, EntityType.SPRUCE_BOAT, 5, BASE, 24, 0.6);
 	}
 }

@@ -37,7 +37,7 @@ public final class EchoPostPiece extends WildsPiece {
 		clear(level, bb, 0, 1, 0, 16, 8, 16);
 		// The post.
 		room(level, bb, 3, 0, 3, 13, 6, 13, s(Blocks.DEEPSLATE_BRICKS));
-		fill(level, bb, 4, 0, 4, 12, 0, 12, Blocks.WOOL.gray().defaultBlockState());
+		fill(level, bb, 4, 0, 4, 12, 0, 12, Blocks.GRAY_WOOL.defaultBlockState());
 		weather(level, bb, 3, 1, 3, 13, 5, 13, s(Blocks.DEEPSLATE_BRICKS), s(Blocks.CRACKED_DEEPSLATE_BRICKS), 12);
 		for (int[] p : new int[][]{{3, 3}, {13, 3}, {3, 13}, {13, 13}}) fill(level, bb, p[0], 0, p[1], p[0], 7, p[1], s(Blocks.POLISHED_DEEPSLATE));
 		// Sculk creeping over the tiles outside, never inside the post.

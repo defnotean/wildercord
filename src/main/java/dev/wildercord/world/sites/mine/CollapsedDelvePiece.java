@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -164,7 +164,7 @@ public final class CollapsedDelvePiece extends MinePiece {
 		set(level, bb, gravel, 5, FLOOR + 1, 19);
 		set(level, bb, s(Blocks.COBBLESTONE_SLAB), 12, FLOOR + 1, 19);
 		for (int[] w : new int[][] {{3, 19}, {13, 19}, {3, 13}, {5, 19}, {11, 19}}) set(level, bb, s(Blocks.COBWEB), w[0], FLOOR + 5, w[1]);
-		guard(level, bb, EntityTypes.ZOMBIE, 10, FLOOR + 1, 15, List.of(Runes.BOLT, Runes.MIRE), false);
+		guard(level, bb, EntityType.ZOMBIE, 10, FLOOR + 1, 15, List.of(Runes.BOLT, Runes.MIRE), false);
 		// The pocket the miner waited in: a solid roof, a lamp, the cache.
 		room(level, bb, 4, FLOOR, 21, 12, FLOOR + 4, 25, brick);
 		walls(level, bb, 4, FLOOR + 1, 21, 12, FLOOR + 3, 25, masonry);
@@ -174,7 +174,7 @@ public final class CollapsedDelvePiece extends MinePiece {
 		set(level, bb, Blocks.CARPET.pick(net.minecraft.world.item.DyeColor.WHITE).defaultBlockState(), 6, FLOOR + 1, 23);
 		barrel(level, bb, 11, FLOOR + 1, 22, null, 0);
 		set(level, bb, s(Blocks.COBWEB), 5, FLOOR + 3, 22);
-		sentry(level, bb, EntityTypes.VILLAGER, 8, FLOOR + 1, 23);
+		sentry(level, bb, EntityType.VILLAGER, 8, FLOOR + 1, 23);
 		// The fall: gravel from the floor through the roof, between the last beams. Dug from below, the rest drops in.
 		fill(level, bb, 6, FLOOR + 1, 20, 10, FLOOR + 3, 21, gravel);
 		fill(level, bb, 6, FLOOR + 4, 19, 10, FLOOR + 8, 21, gravel);

@@ -10,7 +10,7 @@ import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.Fusions;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
-import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;

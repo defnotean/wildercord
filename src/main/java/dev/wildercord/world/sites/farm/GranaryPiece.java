@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -129,8 +129,8 @@ public final class GranaryPiece extends FarmPiece {
 		set(level, bb, facing(Blocks.OAK_FENCE_GATE, Direction.WEST), 12, 1, 19);
 		set(level, bb, s(Blocks.HAY_BLOCK), 16, 1, 21);
 		set(level, bb, s(Blocks.WATER_CAULDRON).setValue(BlockStateProperties.LEVEL_CAULDRON, 3), 16, 1, 18);
-		sentry(level, bb, EntityTypes.COW, 14, 1, 19);
-		sentry(level, bb, EntityTypes.COW, 14, 1, 20);
+		sentry(level, bb, EntityType.COW, 14, 1, 19);
+		sentry(level, bb, EntityType.COW, 14, 1, 20);
 		// The harvest shrine in the yard.
 		set(level, bb, s(Blocks.STONE_BRICKS), 14, 1, 3);
 		set(level, bb, facing(Blocks.BELL, Direction.SOUTH).setValue(BlockStateProperties.BELL_ATTACHMENT, BellAttachType.FLOOR), 14, 2, 3);
@@ -180,8 +180,8 @@ public final class GranaryPiece extends FarmPiece {
 		set(level, bb, facing(Blocks.SPRUCE_FENCE_GATE, Direction.WEST), 20, 1, 0);
 		fill(level, bb, 24, 0, 2, 24, 0, 4, s(Blocks.WATER));
 		set(level, bb, s(Blocks.HAY_BLOCK), 24, 1, -3);
-		sentry(level, bb, EntityTypes.SHEEP, 22, 1, -1);
-		sentry(level, bb, EntityTypes.SHEEP, 22, 1, 3);
+		sentry(level, bb, EntityType.SHEEP, 22, 1, -1);
+		sentry(level, bb, EntityType.SHEEP, 22, 1, 3);
 	}
 
 	/**

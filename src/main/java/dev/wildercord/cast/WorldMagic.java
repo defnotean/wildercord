@@ -30,7 +30,7 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -1174,7 +1174,7 @@ public final class WorldMagic {
 
 	/** One slab of ground: a block display that tilts up out of the floor, holds, and sinks back. */
 	private static void slab(ServerLevel level, Vec3 base, BlockState state, float yaw, int delay) {
-		Display.BlockDisplay display = EntityTypes.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
 		if (display == null) {
 			return;
 		}

@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -113,9 +113,9 @@ public final class EmberOutpostPiece extends WildsPiece {
 		set(level, bb, s(Blocks.SHROOMLIGHT), 8, 0, 11);
 		set(level, bb, s(Blocks.SHROOMLIGHT), 10, 0, 11);
 		chest(level, bb, 9, 1, 13, WildsSites.EMBER_VAULT, Direction.SOUTH, 2);
-		guard(level, bb, EntityTypes.WITHER_SKELETON, 5, 1, 6, List.of(Runes.BOLT, Runes.EMBER), false);
-		guard(level, bb, EntityTypes.WITHER_SKELETON, 13, 1, 6, List.of(Runes.BOLT, Runes.EMBER), false);
-		guard(level, bb, EntityTypes.WITHER_SKELETON, 9, 1, 8, List.of(Runes.BURST, Runes.FIRE), true);
+		guard(level, bb, EntityType.WITHER_SKELETON, 5, 1, 6, List.of(Runes.BOLT, Runes.EMBER), false);
+		guard(level, bb, EntityType.WITHER_SKELETON, 13, 1, 6, List.of(Runes.BOLT, Runes.EMBER), false);
+		guard(level, bb, EntityType.WITHER_SKELETON, 9, 1, 8, List.of(Runes.BURST, Runes.FIRE), true);
 	}
 
 	/** Upside-down stairs around the tower's outside at {@code y}, each leaning on the wall, solid at the corners. */

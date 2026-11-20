@@ -90,7 +90,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 
 	public Wisp(EntityType<? extends Wisp> type, Level level) {
 		super(type, level);
-		this.moveControl = new FlyingMoveControl<>(this, 20, true);
+		this.moveControl = new FlyingMoveControl(this, 20, true);
 		setNoGravity(true);
 	}
 

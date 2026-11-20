@@ -34,7 +34,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -576,7 +576,7 @@ public final class Innates {
 
 	private static void afterimage(Cast cast, ServerPlayer player, int ticks, double power) {
 		ServerLevel level = cast.level;
-		Mannequin body = Mannequin.create(EntityTypes.MANNEQUIN, level);
+		Mannequin body = Mannequin.create(EntityType.MANNEQUIN, level);
 		if (body == null) {
 			return;
 		}

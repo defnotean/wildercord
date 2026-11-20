@@ -985,7 +985,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			var c=spot();var in=new Vec3(c.x-(sac.getX()+.5),0,c.z-(sac.getZ()+.5));
 			in=in.lengthSqr()<1e-4?Vec3.ZERO:in.normalize();
 			var at=new Vec3(sac.getX()+.5+in.x*2,sac.getY(),sac.getZ()+.5+in.z*2);
-			var spider=EntityTypes.CAVE_SPIDER.create(level,EntitySpawnReason.MOB_SUMMONED);if(spider==null)continue;
+			var spider=EntityType.CAVE_SPIDER.create(level,EntitySpawnReason.MOB_SUMMONED);if(spider==null)continue;
 			spider.snapTo(at.x,at.y,at.z,random.nextFloat()*360,0);
 			spider.finalizeSpawn(level,level.getCurrentDifficultyAt(BlockPos.containing(at)),EntitySpawnReason.MOB_SUMMONED,null);
 			spider.addTag(BROOD);

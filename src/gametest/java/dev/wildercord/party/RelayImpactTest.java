@@ -18,7 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -94,7 +94,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 			LivingEntity[] targets = new LivingEntity[2];
 			world.getServer().runOnServer(server -> {
 				for(int i=0;i<2;i++) {
-					var target=EntityTypes.HUSK.create(owner.level(), EntitySpawnReason.MOB_SUMMONED); RelayCircleTest.check(target!=null,"Shock witness creates");
+					var target=EntityType.HUSK.create(owner.level(), EntitySpawnReason.MOB_SUMMONED); RelayCircleTest.check(target!=null,"Shock witness creates");
 					target.snapTo(.5+i*2,150,6.5,180,0);target.setNoAi(true);target.setNoGravity(true);owner.level().addFreshEntity(target);targets[i]=target;
 				}
 				RelayCircleTest.reset(owner,Runes.SHOCK);RelayCircleTest.directDown(owner);

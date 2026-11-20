@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -14,8 +14,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.SpeleothemBlock;
-import net.minecraft.world.level.block.state.properties.SpeleothemThickness;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
+import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -147,8 +147,8 @@ public class TidepoolGrottoPiece extends WaterPiece {
 		pools(level, bb);
 		hermit(level, bb);
 		cairns(level, bb, tops);
-		guard(level, bb, EntityTypes.DROWNED, POOL_X, BASE - 2, POOL_Z, List.of(Runes.BOLT, Runes.TIDEHOOK), false);
-		sentry(level, bb, EntityTypes.DROWNED, 10, BASE + 1, 14);
+		guard(level, bb, EntityType.DROWNED, POOL_X, BASE - 2, POOL_Z, List.of(Runes.BOLT, Runes.TIDEHOOK), false);
+		sentry(level, bb, EntityType.DROWNED, 10, BASE + 1, 14);
 	}
 
 	/** Sea stacks standing off the headland, tapering to points, weed and pickles round their feet. */
@@ -249,7 +249,7 @@ public class TidepoolGrottoPiece extends WaterPiece {
 	/** Dripstone hanging from the vault, clear of the crown's hole and the lamps. */
 	private void dripstone(WorldGenLevel level, BoundingBox bb) {
 		int ox = boundingBox.minX(), oz = boundingBox.minZ();
-		BlockState down = Blocks.POINTED_DRIPSTONE.defaultBlockState().setValue(SpeleothemBlock.TIP_DIRECTION, Direction.DOWN);
+		BlockState down = Blocks.POINTED_DRIPSTONE.defaultBlockState().setValue(PointedDripstoneBlock.TIP_DIRECTION, Direction.DOWN);
 		for (int x = CX - 7; x <= CX + 7; x++) {
 			for (int z = CZ - 7; z <= CZ + 7; z++) {
 				double d = dist(x, z, CX, CZ);
@@ -262,10 +262,10 @@ public class TidepoolGrottoPiece extends WaterPiece {
 					continue;
 				}
 				if (n < 6 && getBlock(level, x, y - 1, z, bb).isAir()) {
-					set(level, bb, down.setValue(SpeleothemBlock.THICKNESS, SpeleothemThickness.FRUSTUM), x, y, z);
-					set(level, bb, down.setValue(SpeleothemBlock.THICKNESS, SpeleothemThickness.TIP), x, y - 1, z);
+					set(level, bb, down.setValue(PointedDripstoneBlock.THICKNESS, DripstoneThickness.FRUSTUM), x, y, z);
+					set(level, bb, down.setValue(PointedDripstoneBlock.THICKNESS, DripstoneThickness.TIP), x, y - 1, z);
 				} else {
-					set(level, bb, down.setValue(SpeleothemBlock.THICKNESS, SpeleothemThickness.TIP), x, y, z);
+					set(level, bb, down.setValue(PointedDripstoneBlock.THICKNESS, DripstoneThickness.TIP), x, y, z);
 				}
 			}
 		}
@@ -325,7 +325,7 @@ public class TidepoolGrottoPiece extends WaterPiece {
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 9, BASE + 1, 18);
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 16, BASE + 1, 9);
 		// The hermit's rug, a shelf of books and a pot on the barrel.
-		fill(level, bb, 10, BASE + 1, 17, 11, BASE + 1, 18, Blocks.CARPET.brown().defaultBlockState());
+		fill(level, bb, 10, BASE + 1, 17, 11, BASE + 1, 18, Blocks.BROWN_CARPET.defaultBlockState());
 		set(level, bb, Blocks.BOOKSHELF.defaultBlockState(), 8, BASE + 1, 17);
 		set(level, bb, Blocks.FLOWER_POT.defaultBlockState(), 8, BASE + 2, 16);
 		// The ledge, faced in dressed stone, a stair up to it and a lantern by the chest.

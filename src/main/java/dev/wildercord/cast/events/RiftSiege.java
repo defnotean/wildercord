@@ -31,7 +31,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -80,9 +79,9 @@ public final class RiftSiege {
 	private static final ResourceKey<LootTable> RIFTCALLER_LOOT = ResourceKey.create(Registries.LOOT_TABLE, Wildercord.id("entities/riftcaller"));
 
 	private static final List<List<EntityType<? extends Mob>>> WAVE_TYPES = List.of(
-		List.of(EntityTypes.ZOMBIE, EntityTypes.SKELETON, EntityTypes.ZOMBIE, EntityTypes.HUSK, EntityTypes.SKELETON),
-		List.of(EntityTypes.VINDICATOR, EntityTypes.SKELETON, EntityTypes.ZOMBIE, EntityTypes.PILLAGER, EntityTypes.STRAY, EntityTypes.ZOMBIE),
-		List.of(EntityTypes.VINDICATOR, EntityTypes.PILLAGER, EntityTypes.SKELETON, EntityTypes.WITCH, EntityTypes.ZOMBIE, EntityTypes.SKELETON));
+		List.of(EntityType.ZOMBIE, EntityType.SKELETON, EntityType.ZOMBIE, EntityType.HUSK, EntityType.SKELETON),
+		List.of(EntityType.VINDICATOR, EntityType.SKELETON, EntityType.ZOMBIE, EntityType.PILLAGER, EntityType.STRAY, EntityType.ZOMBIE),
+		List.of(EntityType.VINDICATOR, EntityType.PILLAGER, EntityType.SKELETON, EntityType.WITCH, EntityType.ZOMBIE, EntityType.SKELETON));
 
 	final ServerLevel level;
 	/** The ground at the tear's foot, and its middle. */
@@ -192,7 +191,7 @@ public final class RiftSiege {
 		if (!level.isPositionEntityTicking(net.minecraft.core.BlockPos.containing(base))) {
 			return;
 		}
-		ArmorStand stand = EntityTypes.ARMOR_STAND.create(level, EntitySpawnReason.EVENT);
+		ArmorStand stand = EntityType.ARMOR_STAND.create(level, EntitySpawnReason.EVENT);
 		if (stand == null) {
 			return;
 		}
@@ -461,7 +460,7 @@ public final class RiftSiege {
 			Scheduler.later(1 + i * 6, () -> emerge(n, type, adept, target, null));
 		}
 		if (n == EventRules.WAVES) {
-			Scheduler.later(12 + size * 6, () -> emerge(n, EntityTypes.VINDICATOR, true, target, List.of(Runes.BOLT, Runes.BLACKFLAME, Runes.SPLIT_MOD)));
+			Scheduler.later(12 + size * 6, () -> emerge(n, EntityType.VINDICATOR, true, target, List.of(Runes.BOLT, Runes.BLACKFLAME, Runes.SPLIT_MOD)));
 		}
 	}
 

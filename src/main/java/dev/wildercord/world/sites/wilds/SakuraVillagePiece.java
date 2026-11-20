@@ -242,8 +242,8 @@ public final class SakuraVillagePiece extends WildsPiece {
 		for (int tz : new int[]{25, 30, 35}) {
 			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 17, 2, tz);
 			set(level, bb, SakuraVillageHelper.dryTeaCups(2), 17, 3, tz);
-			set(level, bb, s(Blocks.CARPET.red()), 16, 2, tz);
-			set(level, bb, s(Blocks.CARPET.red()), 18, 2, tz);
+			set(level, bb, s(Blocks.RED_CARPET), 16, 2, tz);
+			set(level, bb, s(Blocks.RED_CARPET), 18, 2, tz);
 		}
 		fill(level, bb, 6, 2, 23, 9, 2, 26, s(Blocks.STONE_BRICKS));
 		set(level, bb, s(Blocks.CAMPFIRE).setValue(CampfireBlock.LIT, true), 7, 2, 24);
@@ -283,7 +283,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 
 	private void catShrine(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
 		BlockState cherry = s(Blocks.CHERRY_PLANKS);
-		BlockState red = s(Blocks.DYED_TERRACOTTA.red());
+		BlockState red = s(Blocks.RED_TERRACOTTA);
 		BlockState darkFloor = s(Blocks.DARK_OAK_PLANKS);
 		BlockState andesite = s(Blocks.POLISHED_ANDESITE);
 
@@ -308,7 +308,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 
 		// Freya's elevated royal pink-cushion shrine dais right at the west shrine threshold (41, 3, 32).
 		set(level, bb, andesite, 41, 2, 32);
-		set(level, bb, s(Blocks.CARPET.pink()), 41, 3, 32);
+		set(level, bb, s(Blocks.PINK_CARPET), 41, 3, 32);
 
 		for (int[] col : new int[][]{{40, 22}, {58, 22}, {40, 42}, {58, 42}, {40, 28}, {40, 36}}) {
 			fill(level, bb, col[0], 2, col[1], col[0], 6, col[1], red);
@@ -327,7 +327,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 		// Four elevated Cat Altar Shrines inside Neko-Jinja + central hanging bronze Suzu Bell.
 		for (int[] c : new int[][]{{47, 26}, {53, 26}, {47, 37}, {53, 37}}) {
 			set(level, bb, andesite, c[0], 2, c[1]);
-			set(level, bb, s(Blocks.CARPET.pink()), c[0], 3, c[1]);
+			set(level, bb, s(Blocks.PINK_CARPET), c[0], 3, c[1]);
 			set(level, bb, s(Blocks.LANTERN), c[0] + 1, 2, c[1]);
 			set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), c[0] - 1, 2, c[1]);
 		}
@@ -347,9 +347,9 @@ public final class SakuraVillagePiece extends WildsPiece {
 
 	private void festivalMarket(WorldGenLevel level, BoundingBox bb) {
 		BlockState spruceFence = s(Blocks.SPRUCE_FENCE);
-		BlockState redWool = s(Blocks.WOOL.red());
-		BlockState whiteWool = s(Blocks.WOOL.white());
-		BlockState pinkWool = s(Blocks.WOOL.pink());
+		BlockState redWool = s(Blocks.RED_WOOL);
+		BlockState whiteWool = s(Blocks.WHITE_WOOL);
+		BlockState pinkWool = s(Blocks.PINK_WOOL);
 
 		// West Dango & Matcha Yatai Stall (x = 26..28, z = 25..29).
 		fill(level, bb, 26, 1, 25, 26, 1, 29, s(Blocks.OAK_PLANKS));

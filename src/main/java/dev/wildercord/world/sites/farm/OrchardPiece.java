@@ -171,7 +171,7 @@ public final class OrchardPiece extends FarmPiece {
 		set(level, bb, s(Blocks.MELON), 17, 1, 4);
 		set(level, bb, s(Blocks.BARREL).setValue(BlockStateProperties.FACING, Direction.UP), 18, 1, 4);
 		// A striped awning over the stand, a lit post and the overflow stacked beside it.
-		for (int x = 15; x <= 18; x++) set(level, bb, s(x % 2 == 0 ? Blocks.WOOL.pick(DyeColor.RED) : Blocks.WOOL.white()), x, 3, 1);
+		for (int x = 15; x <= 18; x++) set(level, bb, s(x % 2 == 0 ? Blocks.WOOL.pick(DyeColor.RED) : Blocks.WHITE_WOOL), x, 3, 1);
 		set(level, bb, s(Blocks.OAK_FENCE), 19, 1, 2); set(level, bb, s(Blocks.LANTERN), 19, 2, 2);
 		set(level, bb, s(Blocks.HAY_BLOCK), 19, 1, 4); set(level, bb, s(Blocks.PUMPKIN), 19, 1, 3);
 		set(level, bb, s(Blocks.MELON), 14, 1, 3);

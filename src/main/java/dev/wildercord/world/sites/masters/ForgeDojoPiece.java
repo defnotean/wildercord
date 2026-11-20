@@ -30,7 +30,7 @@ public final class ForgeDojoPiece extends MasterSitePiece {
 		BlockState wall = alt ? s(Blocks.RED_NETHER_BRICKS) : s(Blocks.BRICKS), dark = s(Blocks.POLISHED_BLACKSTONE_BRICKS);
 		BlockState chiseled = s(Blocks.CHISELED_POLISHED_BLACKSTONE);
 		Palette brick = alt ? Palette.of(Blocks.RED_NETHER_BRICKS, 8, Blocks.NETHER_BRICKS, 2, Blocks.CRACKED_NETHER_BRICKS, 1)
-			: Palette.of(Blocks.BRICKS, 9, Blocks.DYED_TERRACOTTA.red(), 2, Blocks.GRANITE, 1);
+			: Palette.of(Blocks.BRICKS, 9, Blocks.RED_TERRACOTTA, 2, Blocks.GRANITE, 1);
 		Palette stone = Palette.of(Blocks.POLISHED_BLACKSTONE_BRICKS, 7, Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS, 2, Blocks.BLACKSTONE, 1);
 		Block trimStairs = Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS;
 		Block roofStairs = alt ? Blocks.NETHER_BRICK_STAIRS : Blocks.DEEPSLATE_TILE_STAIRS;
@@ -47,7 +47,7 @@ public final class ForgeDojoPiece extends MasterSitePiece {
 		fill(level, bb, 6, 4, 2, 10, 4, 2, dark);
 		for (int z : new int[]{5, 8}) { fill(level, bb, 1, 3, z, 1, 4, z, s(Blocks.IRON_BARS)); fill(level, bb, 15, 3, z, 15, 4, z, s(Blocks.IRON_BARS)); }
 		set(level, bb, s(Blocks.SHROOMLIGHT), 5, 7, 7); set(level, bb, s(Blocks.SHROOMLIGHT), 11, 7, 7);
-		fill(level, bb, 8, 1, 3, 8, 1, 11, alt ? s(Blocks.CARPET.red()) : s(Blocks.CARPET.orange()));
+		fill(level, bb, 8, 1, 3, 8, 1, 11, alt ? s(Blocks.RED_CARPET) : s(Blocks.ORANGE_CARPET));
 		// Battered plinth stairs around the walls, sills under the windows and a string course that hoods them.
 		for (int z = 3; z <= 11; z++) {
 			set(level, bb, stair(trimStairs, Direction.EAST, false), 0, 1, z);

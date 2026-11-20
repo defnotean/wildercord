@@ -30,7 +30,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -2933,7 +2933,7 @@ public final class Effects {
 
 	/** Span bridges still standing, and what each of their blocks replaced. */
 	private static final Map<GlobalPos, BlockState> SPAN = new HashMap<>();
-	private static final BlockState SPAN_BLOCK = Blocks.STAINED_GLASS.magenta().defaultBlockState();
+	private static final BlockState SPAN_BLOCK = Blocks.MAGENTA_STAINED_GLASS.defaultBlockState();
 
 	/**
 	 * Registered when the mod starts (see {@link #init()}): a Span's glass broken by hand drops

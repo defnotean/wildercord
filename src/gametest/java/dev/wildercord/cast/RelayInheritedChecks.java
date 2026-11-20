@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -195,7 +195,7 @@ public final class RelayInheritedChecks {
 				LivingEntity[] pet=new LivingEntity[1];TrainingDummy[] behind=new TrainingDummy[1];
 				world.getServer().runOnServer(s->{
 					RelayCircleTest.prepare(owner,Runes.HARM);behind[0]=dummy(owner,.5,6.5);
-					var wolf=EntityTypes.WOLF.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.snapTo(.5,150,4.5,0,0);owner.level().addFreshEntity(wolf);pet[0]=wolf;
+					var wolf=EntityType.WOLF.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.snapTo(.5,150,4.5,0,0);owner.level().addFreshEntity(wolf);pet[0]=wolf;
 					RelayCircleTest.directDown(owner);owner.teleportTo(owner.level(),-1.5,150,.5,Set.of(),0,0,false);
 				});c.waitTicks(2);
 				world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,behind[0].getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);

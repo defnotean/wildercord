@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -57,8 +57,8 @@ public class AstralObservatoryPiece extends DungeonPiece {
 	private static final BlockState END_STONE = Blocks.END_STONE.defaultBlockState();
 	private static final BlockState OBSIDIAN = Blocks.OBSIDIAN.defaultBlockState();
 	private static final BlockState CRYING = Blocks.CRYING_OBSIDIAN.defaultBlockState();
-	private static final BlockState GLASS = Blocks.STAINED_GLASS.purple().defaultBlockState();
-	private static final BlockState DARK_GLASS = Blocks.STAINED_GLASS.black().defaultBlockState();
+	private static final BlockState GLASS = Blocks.PURPLE_STAINED_GLASS.defaultBlockState();
+	private static final BlockState DARK_GLASS = Blocks.BLACK_STAINED_GLASS.defaultBlockState();
 	private static final BlockState STAR = Blocks.PEARLESCENT_FROGLIGHT.defaultBlockState();
 	private static final BlockState ROD_UP = Blocks.END_ROD.defaultBlockState().setValue(EndRodBlock.FACING, Direction.UP);
 	private static final BlockState ROD_DOWN = Blocks.END_ROD.defaultBlockState().setValue(EndRodBlock.FACING, Direction.DOWN);
@@ -474,9 +474,9 @@ public class AstralObservatoryPiece extends DungeonPiece {
 	// ------------------------------------------------------------------ guards
 
 	private void guards(WorldGenLevel level, BoundingBox bb) {
-		guard(level, bb, EntityTypes.STRAY, 14, F + 1, 18, List.of(Runes.SPARK, Runes.HARM), false);
-		guard(level, bb, EntityTypes.SKELETON, 26, F + 1, 22, List.of(Runes.BOLT, Runes.BLIND), false);
-		guard(level, bb, EntityTypes.STRAY, 20, F + 1, 28, List.of(Runes.ORB, Runes.PULL), true);
-		guard(level, bb, EntityTypes.WITCH, 24, F + 1, 31, List.of(Runes.BOLT, Runes.HEX), false);
+		guard(level, bb, EntityType.STRAY, 14, F + 1, 18, List.of(Runes.SPARK, Runes.HARM), false);
+		guard(level, bb, EntityType.SKELETON, 26, F + 1, 22, List.of(Runes.BOLT, Runes.BLIND), false);
+		guard(level, bb, EntityType.STRAY, 20, F + 1, 28, List.of(Runes.ORB, Runes.PULL), true);
+		guard(level, bb, EntityType.WITCH, 24, F + 1, 31, List.of(Runes.BOLT, Runes.HEX), false);
 	}
 }

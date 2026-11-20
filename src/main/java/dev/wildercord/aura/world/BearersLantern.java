@@ -21,7 +21,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.equine.SkeletonHorse;
@@ -100,7 +100,7 @@ public final class BearersLantern {
 	 */
 	static boolean steed(ServerPlayer player) {
 		ServerLevel level = player.level();
-		SkeletonHorse horse = EntityTypes.SKELETON_HORSE.create(level, EntitySpawnReason.TRIGGERED);
+		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, EntitySpawnReason.TRIGGERED);
 		if (horse == null) return false;
 		horse.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 		horse.setTamed(true);

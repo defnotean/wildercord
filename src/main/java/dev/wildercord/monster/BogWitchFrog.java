@@ -32,7 +32,7 @@ import net.minecraft.world.entity.animal.rabbit.Rabbit;
 import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Silverfish;
-import net.minecraft.world.entity.monster.cubemob.AbstractCubeMob;
+import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -300,7 +300,7 @@ public class BogWitchFrog extends WildMonster {
 		if (mob.hasCustomName() || mob.isPersistenceRequired() || mob instanceof OwnableEntity owned && owned.getOwnerReference() != null) {
 			return false;
 		}
-		if (mob instanceof AbstractCubeMob cube) {
+		if (mob instanceof Slime cube) {
 			return cube.isTiny() && !(cube instanceof ManaOoze);
 		}
 		return mob instanceof Chicken || mob instanceof Rabbit || mob instanceof Bat || mob instanceof Silverfish || mob instanceof Endermite;

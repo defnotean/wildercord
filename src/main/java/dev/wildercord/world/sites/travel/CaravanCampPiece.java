@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -63,9 +63,9 @@ public final class CaravanCampPiece extends TravelPiece {
 		set(level, bb, b(Blocks.HAY_BLOCK), 15, 1, 14); set(level, bb, b(Blocks.HAY_BLOCK), 15, 1, 15); set(level, bb, b(Blocks.HAY_BLOCK), 15, 2, 14);
 		set(level, bb, b(Blocks.BARREL), 7, 1, 14); set(level, bb, b(Blocks.BARREL), 7, 1, 15);
 		fill(level, bb, 11, 1, 1, 11, 2, 1, b(Blocks.OAK_FENCE)); set(level, bb, b(Blocks.LANTERN), 11, 3, 1);
-		resident(level, bb, EntityTypes.WANDERING_TRADER, 11, 1, 5, 6);
-		resident(level, bb, EntityTypes.LLAMA, 6, 1, 11, 6);
-		resident(level, bb, EntityTypes.LLAMA, 17, 1, 11, 6);
+		resident(level, bb, EntityType.WANDERING_TRADER, 11, 1, 5, 6);
+		resident(level, bb, EntityType.LLAMA, 6, 1, 11, 6);
+		resident(level, bb, EntityType.LLAMA, 17, 1, 11, 6);
 	}
 
 	/** Wheels, a plank bed, a wool cover open at the low-z end; the first two carry a chest just inside. */

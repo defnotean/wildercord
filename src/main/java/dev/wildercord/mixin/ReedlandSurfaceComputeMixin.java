@@ -6,8 +6,9 @@ import dev.wildercord.world.biome.BelowkeeperClimate;
 import dev.wildercord.world.biome.EmberwoodClimate;
 import dev.wildercord.world.biome.ReedlandClimate;
 import dev.wildercord.world.biome.WindscarClimate;
+import java.util.function.Predicate;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(targets = "net.minecraft.world.level.levelgen.SurfaceRules$BiomeConditionSource$1BiomeCondition")
 abstract class ReedlandSurfaceComputeMixin {
 	@WrapOperation(method = "compute()Z", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/core/HolderSet;contains(Lnet/minecraft/core/Holder;)Z"))
-	private boolean wildercord$regionalSurfaceContains(HolderSet<Biome> biomes, Holder<Biome> current, Operation<Boolean> original) {
-		if (original.call(biomes, current)) return true;
-		if (current.is(ReedlandClimate.REEDLANDS) && biomes.stream().anyMatch(b -> b.is(Biomes.SWAMP))) return true;
-		if (current.is(WindscarClimate.WINDSCAR) && biomes.stream().anyMatch(b -> b.is(Biomes.WINDSWEPT_HILLS))) return true;
-		if (current.is(BelowkeeperClimate.HOLLOWS) && biomes.stream().anyMatch(b -> b.is(Biomes.DRIPSTONE_CAVES))) return true;
-		if (current.is(EmberwoodClimate.EMBERWOOD) && biomes.stream().anyMatch(b -> b.is(Biomes.OLD_GROWTH_PINE_TAIGA))) return true;
+		target = "Lnet/minecraft/core/Holder;is(Ljava/util/function/Predicate;)Z"))
+	private boolean wildercord$regionalSurfaceContains(Holder<Biome> current, Predicate<Biome> nameTest, Operation<Boolean> original) {
+		if (original.call(current, nameTest)) return true;
+		if (current.is(ReedlandClimate.REEDLANDS) && nameTest.test(BuiltInRegistries.BIOME.getValue(Biomes.SWAMP))) return true;
+		if (current.is(WindscarClimate.WINDSCAR) && nameTest.test(BuiltInRegistries.BIOME.getValue(Biomes.WINDSWEPT_HILLS))) return true;
+		if (current.is(BelowkeeperClimate.HOLLOWS) && nameTest.test(BuiltInRegistries.BIOME.getValue(Biomes.DRIPSTONE_CAVES))) return true;
+		if (current.is(EmberwoodClimate.EMBERWOOD) && nameTest.test(BuiltInRegistries.BIOME.getValue(Biomes.OLD_GROWTH_PINE_TAIGA))) return true;
 		return false;
 	}
 }

@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.level.WorldGenLevel;
@@ -72,7 +72,7 @@ public final class KilnKeeperResident {
 
 	/** The owning structure chunk calls this once, then persists its successful spawn flag. */
 	public static boolean spawn(WorldGenLevel level, BlockPos at) {
-		Villager resident = EntityTypes.VILLAGER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		Villager resident = EntityType.VILLAGER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 		if (resident == null) return false;
 		resident.snapTo(at.getX() + .5, at.getY(), at.getZ() + .5, 0, 0);
 		resident.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);

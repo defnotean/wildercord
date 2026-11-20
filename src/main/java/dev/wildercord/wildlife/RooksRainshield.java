@@ -85,7 +85,7 @@ public final class RooksRainshield {
  /** Called only at actual Projectile.onHit HEAD before imbued-arrow release; false leaves vanilla collision unchanged. */
  public static boolean intercept(AbstractArrow arrow,EntityHitResult hit){
   if(!(arrow.level() instanceof ServerLevel l)||!l.getServer().isSameThread()||!(hit.getEntity() instanceof ServerPlayer r)||!arrow.isAlive()||arrow.isRemoved()||l.getEntity(arrow.getUUID())!=arrow||arrow.hasAttached(WildercordAttachments.IMBUED_SHOT))return false;
-  if(!(arrow.getType()==EntityTypes.ARROW&&arrow.getClass()==Arrow.class||arrow.getType()==EntityTypes.SPECTRAL_ARROW&&arrow.getClass()==SpectralArrow.class))return false;
+  if(!(arrow.getType()==EntityType.ARROW&&arrow.getClass()==Arrow.class||arrow.getType()==EntityType.SPECTRAL_ARROW&&arrow.getClass()==SpectralArrow.class))return false;
   var f=r.getAttached(COVER);if(!bound(f)||f.level!=l||f.recipient!=r||now(f.carrier)<f.start+PREP||f.carrier.getTicksUsingItem()<PREP||now(f.carrier)<f.carrier.getAttachedOrElse(READY,0L)||now(r)<r.getAttachedOrElse(READY,0L))return false;
   var velocity=arrow.getDeltaMovement();if(velocity.lengthSqr()<.0001||velocity.normalize().dot(f.normal)>-FRONT_COS||arrow.getOwner()==r||arrow.getOwner()==f.carrier)return false;
   var position=arrow.position();var owner=arrow.getOwner();var recipientAt=r.position();var carrierAt=f.carrier.position();var carrierVelocity=f.carrier.getDeltaMovement();var recipientVelocity=r.getDeltaMovement();float carrierHealth=f.carrier.getHealth(),recipientHealth=r.getHealth();var collision=hit.getLocation();if(collision.distanceToSqr(r.getBoundingBox().getCenter())>4||!l.hasChunkAt(net.minecraft.core.BlockPos.containing(collision)))return false;

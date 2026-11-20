@@ -54,7 +54,7 @@ public final class SundialCourtPiece extends MasterSitePiece {
 		for (int[] c : new int[][]{{8, 8}, {10, 8}, {8, 10}, {10, 10}}) set(level, bb, stone, c[0], 2, c[1]);
 		fill(level, bb, 9, 3, 9, 9, 12, 9, stone);
 		set(level, bb, cap, 9, 13, 9);
-		fill(level, bb, 9, 0, 11, 9, 0, 16, s(Blocks.DYED_TERRACOTTA.brown()));
+		fill(level, bb, 9, 0, 11, 9, 0, 16, s(Blocks.BROWN_TERRACOTTA));
 		// A low court wall with lantern posts, and a gate where the path comes in.
 		for (int x = 1; x <= 17; x++) {
 			if (x >= 7 && x <= 11) continue;

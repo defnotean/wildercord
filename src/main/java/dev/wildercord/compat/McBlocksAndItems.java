@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -34,7 +36,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.ColorCollection;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
@@ -53,9 +54,10 @@ import java.util.function.Predicate;
  */
 public final class McBlocksAndItems {
 	private static final TagKey<Block> SAPLINGS = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("saplings"));
-	private static final List<ColorCollection<Block>> DYED_FAMILIES = List.of(
-		Blocks.WOOL, Blocks.STAINED_GLASS, Blocks.DYED_TERRACOTTA, Blocks.STAINED_GLASS_PANE,
-		Blocks.CARPET, Blocks.GLAZED_TERRACOTTA, Blocks.CONCRETE, Blocks.CONCRETE_POWDER, Blocks.DYED_CANDLE);
+	// 26.1.2 has no vanilla colour-collection holders; dyed families are resolved by registry name.
+	private static final List<String> DYED_SUFFIXES = List.of(
+		"stained_glass_pane", "stained_glass", "glazed_terracotta", "concrete_powder",
+		"terracotta", "carpet", "concrete", "wool", "candle");
 
 	private McBlocksAndItems() {}
 
@@ -207,9 +209,42 @@ public final class McBlocksAndItems {
 		}
 	}
 
-	/** Vanilla dyed block families available for spell recolouring in the active MC version. */
-	public static List<ColorCollection<Block>> dyedBlockFamilies() {
-		return DYED_FAMILIES;
+	/** Base blocks of every dyeable family available for spell recolouring in the active MC version. */
+	public static List<Block> dyedBlockFamilies() {
+		return List.of(Blocks.WHITE_WOOL, Blocks.STAINED_GLASS, Blocks.TERRACOTTA, Blocks.STAINED_GLASS_PANE,
+			Blocks.WHITE_CARPET, Blocks.WHITE_GLAZED_TERRACOTTA, Blocks.WHITE_CONCRETE, Blocks.WHITE_CONCRETE_POWDER, Blocks.CANDLE);
+	}
+
+	/** {@code block} recoloured to {@code color} within its dyed family, or null when it isn't dyeable or already is that colour. */
+	public static @Nullable Block recoloured(Block block, DyeColor color) {
+		if (block == Blocks.GLASS) {
+			block = Blocks.STAINED_GLASS;
+		} else if (block == Blocks.GLASS_PANE) {
+			block = Blocks.STAINED_GLASS_PANE;
+		}
+		String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+		for (String suffix : DYED_SUFFIXES) {
+			String prefix = name.equals(suffix) ? "" : name.endsWith("_" + suffix)
+				? name.substring(0, name.length() - suffix.length() - 1) : null;
+			if (prefix == null) {
+				continue;
+			}
+			if (!prefix.isEmpty()) {
+				boolean dyedMember = false;
+				for (DyeColor dye : DyeColor.values()) {
+					if (dye.getName().equals(prefix)) {
+						dyedMember = true;
+						break;
+					}
+				}
+				if (!dyedMember) {
+					continue;
+				}
+			}
+			Block member = BuiltInRegistries.BLOCK.get(Identifier.withDefaultNamespace(color.getName() + "_" + suffix));
+			return member == block || member == Blocks.AIR ? null : member;
+		}
+		return null;
 	}
 
 	/** Tent roof stair block used in Ice Camp structures. */

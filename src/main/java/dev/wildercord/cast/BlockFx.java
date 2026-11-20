@@ -7,11 +7,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SpeleothemBlock;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.SpeleothemThickness;
+import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -44,7 +44,7 @@ public final class BlockFx {
 	}
 
 	private static Display.BlockDisplay display(ServerLevel level, Vec3 at, BlockState state, Transformation start) {
-		Display.BlockDisplay display = EntityTypes.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
 		if (display == null) {
 			return null;
 		}
@@ -81,7 +81,7 @@ public final class BlockFx {
 		float tip = height - body;
 		Display.BlockDisplay column = display(level, base, Blocks.DRIPSTONE_BLOCK.defaultBlockState(), box(-w / 2, -0.05F, -w / 2, w, 0.02F, w));
 		BlockState tipState = Blocks.POINTED_DRIPSTONE.defaultBlockState()
-			.setValue(SpeleothemBlock.TIP_DIRECTION, Direction.UP).setValue(SpeleothemBlock.THICKNESS, SpeleothemThickness.TIP);
+			.setValue(PointedDripstoneBlock.TIP_DIRECTION, Direction.UP).setValue(PointedDripstoneBlock.THICKNESS, DripstoneThickness.TIP);
 		float tw = w * 1.7F;
 		Display.BlockDisplay crown = display(level, base, tipState, box(-tw / 2, -0.05F, -tw / 2, tw, 0.02F, tw));
 		if (column == null || crown == null) {

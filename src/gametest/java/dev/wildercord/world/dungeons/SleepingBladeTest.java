@@ -15,7 +15,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -100,7 +100,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				p.getInventory().setItem(8,ItemStack.EMPTY);p.setItemInHand(InteractionHand.MAIN_HAND,blade);
 				p.setAttached(AuraAttachments.STATE,AuraAttachments.State.NONE);p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",4,0,100,0));
 				check(AuraGuard.raise(p),"Oathkeeper raises guard");check(Math.abs((100-Aura.aura(p))-ordinary*.85)<.001,"Actual guard raise costs 15% less");
-				Momentum.reset(p);p.setYRot(0);p.setXRot(0);var enemy=EntityTypes.ZOMBIE.create(s.overworld(),EntitySpawnReason.COMMAND);enemy.snapTo(p.getX(),p.getY(),p.getZ()+2,0,0);enemy.setNoAi(true);s.overworld().addFreshEntity(enemy);
+				Momentum.reset(p);p.setYRot(0);p.setXRot(0);var enemy=EntityType.ZOMBIE.create(s.overworld(),EntitySpawnReason.COMMAND);enemy.snapTo(p.getX(),p.getY(),p.getZ()+2,0,0);enemy.setNoAi(true);s.overworld().addFreshEntity(enemy);
 				float health=p.getHealth();p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
 				check(p.getHealth()==health,"Actual perfect guard turns the blow aside");check(Math.abs(Momentum.value(p)-MomentumRules.PERFECT_GUARD*MomentumRules.temper("stone").guard()*1.3)<.01,"Perfect guard actually builds 30% more momentum");
 				var guardPaid=new double[]{-1};var playerId=p.getUUID();AuraApi.onSpend((who,paid,reason,backlash)->{if(who.getUUID().equals(playerId) && reason.equals("guard"))guardPaid[0]=paid;});

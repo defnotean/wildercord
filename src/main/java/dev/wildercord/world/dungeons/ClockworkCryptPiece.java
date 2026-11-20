@@ -4,7 +4,7 @@ import dev.wildercord.spell.Runes;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -45,8 +45,8 @@ public final class ClockworkCryptPiece extends DungeonPiece {
   mechanism(level,bb,DungeonBlocks.CLOCK,13,1,23);
   chest(level,bb,3,1,17,DungeonWorldgen.CLOCK_HALL,Direction.EAST,301);chest(level,bb,23,1,17,DungeonWorldgen.CLOCK_HALL,Direction.WEST,302);
   chest(level,bb,13,1,32,DungeonWorldgen.CLOCK_VAULT,Direction.NORTH,303);
-  guard(level,bb,EntityTypes.HUSK,8,1,17,List.of(Runes.BOLT,Runes.COUNTDOWN),false);
-  guard(level,bb,EntityTypes.SKELETON,18,1,29,List.of(Runes.ARC,Runes.AFTERSHOCK),true);
+  guard(level,bb,EntityType.HUSK,8,1,17,List.of(Runes.BOLT,Runes.COUNTDOWN),false);
+  guard(level,bb,EntityType.SKELETON,18,1,29,List.of(Runes.ARC,Runes.AFTERSHOCK),true);
  }
  private void dressing(WorldGenLevel level,BoundingBox bb,net.minecraft.world.level.block.state.BlockState gold,net.minecraft.world.level.block.state.BlockState polished,net.minecraft.world.level.block.state.BlockState crown,net.minecraft.world.level.block.Block st) {
   // A stepped vault over the clock hall: two courses of corbels climbing in from each long wall, ribs across every few rows.

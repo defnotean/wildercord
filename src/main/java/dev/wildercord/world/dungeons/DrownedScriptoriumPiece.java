@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -548,9 +548,9 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 	// ------------------------------------------------------------------ guards
 
 	private void guards(WorldGenLevel level, BoundingBox bb) {
-		guard(level, bb, EntityTypes.DROWNED, 11, F + 1, 30, List.of(Runes.BOLT, Runes.SHOCK), false);
-		guard(level, bb, EntityTypes.DROWNED, 29, F + 1, 34, List.of(Runes.WAVE, Runes.FROST), false);
-		guard(level, bb, EntityTypes.WITCH, 20, F + 1, 30, List.of(Runes.BOLT, Runes.BUBBLE), false);
-		guard(level, bb, EntityTypes.DROWNED, 20, F + 1, 38, List.of(Runes.RING, Runes.SHOCK), true);
+		guard(level, bb, EntityType.DROWNED, 11, F + 1, 30, List.of(Runes.BOLT, Runes.SHOCK), false);
+		guard(level, bb, EntityType.DROWNED, 29, F + 1, 34, List.of(Runes.WAVE, Runes.FROST), false);
+		guard(level, bb, EntityType.WITCH, 20, F + 1, 30, List.of(Runes.BOLT, Runes.BUBBLE), false);
+		guard(level, bb, EntityType.DROWNED, 20, F + 1, 38, List.of(Runes.RING, Runes.SHOCK), true);
 	}
 }

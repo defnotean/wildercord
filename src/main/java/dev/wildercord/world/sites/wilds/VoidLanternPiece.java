@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -84,8 +84,8 @@ public final class VoidLanternPiece extends WildsPiece {
 		for (int x : new int[]{5, 9}) set(level, bb, s(Blocks.END_ROD), x, 5, 3);
 		for (int x : new int[]{6, 8}) banner(level, bb, Blocks.WALL_BANNER.pick(DyeColor.PURPLE), x, 7, 3, Direction.SOUTH);
 		for (int y : new int[]{6, 7, 16, 17, 26, 27}) {
-			set(level, bb, Blocks.STAINED_GLASS.purple().defaultBlockState(), 4, y, 7);
-			set(level, bb, Blocks.STAINED_GLASS.purple().defaultBlockState(), 7, y, 4);
+			set(level, bb, Blocks.PURPLE_STAINED_GLASS.defaultBlockState(), 4, y, 7);
+			set(level, bb, Blocks.PURPLE_STAINED_GLASS.defaultBlockState(), 7, y, 4);
 		}
 		for (int y : new int[]{1, 12, 23}) { set(level, bb, s(Blocks.END_ROD), 5, y, 7); set(level, bb, s(Blocks.END_ROD), 8, y, 9); }
 		hangingLantern(level, bb, 7, 10, 7, 0, true);
@@ -110,8 +110,8 @@ public final class VoidLanternPiece extends WildsPiece {
 		set(level, bb, s(Blocks.PEARLESCENT_FROGLIGHT), C, 33, C);
 		fill(level, bb, 5, 34, 5, 9, 34, 9, s(Blocks.PURPUR_SLAB));
 		set(level, bb, s(Blocks.END_ROD), C, 35, C);
-		guard(level, bb, EntityTypes.ENDERMAN, 6, 1, 6, List.of(Runes.BOLT, Runes.BLIND), false);
-		guard(level, bb, EntityTypes.ENDERMAN, 7, 12, 6, List.of(Runes.BOLT, Runes.PULL), true);
+		guard(level, bb, EntityType.ENDERMAN, 6, 1, 6, List.of(Runes.BOLT, Runes.BLIND), false);
+		guard(level, bb, EntityType.ENDERMAN, 7, 12, 6, List.of(Runes.BOLT, Runes.PULL), true);
 	}
 
 	@Override public List<BoundingBox> wardedBoxes() { return List.of(worldBox(3, 11, 8, 11, 21, 11), worldBox(3, 22, 3, 11, 30, 11)); }

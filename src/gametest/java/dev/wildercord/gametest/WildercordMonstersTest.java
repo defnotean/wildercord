@@ -42,7 +42,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.SpawnPlacementTypes;
@@ -266,7 +265,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, new AABB(base, base).inflate(400),
 				e -> e.entityTags().contains("wildercord.camera")).forEach(Entity::discard);
-			net.minecraft.world.entity.Display.TextDisplay camera = EntityTypes.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
+			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
 			camera.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			camera.addTag("wildercord.camera");
 			camera.addTag("wildercord.rolled");
@@ -755,7 +754,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			ServerLevel level = level(server);
 			((BogWitchFrog) level.getEntity(id)).holdPose(0);
 			((BogWitchFrog) level.getEntity(id)).setNoAi(false);
-			Chicken snack = EntityTypes.CHICKEN.create(level, EntitySpawnReason.COMMAND);
+			Chicken snack = EntityType.CHICKEN.create(level, EntitySpawnReason.COMMAND);
 			snack.snapTo(spot.x + 3, spot.y, spot.z, 0, 0);
 			snack.setNoAi(true);
 			level.addFreshEntity(snack);

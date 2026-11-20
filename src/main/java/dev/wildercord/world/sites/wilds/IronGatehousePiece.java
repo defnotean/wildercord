@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -38,7 +38,7 @@ public final class IronGatehousePiece extends WildsPiece {
 
 	private static BlockState stone(int x, int y, int z) {
 		int n = noise(x, y, z);
-		return n < 14 ? Blocks.DYED_TERRACOTTA.red().defaultBlockState() : n < 32 ? s(Blocks.CRACKED_STONE_BRICKS) : s(Blocks.STONE_BRICKS);
+		return n < 14 ? Blocks.RED_TERRACOTTA.defaultBlockState() : n < 32 ? s(Blocks.CRACKED_STONE_BRICKS) : s(Blocks.STONE_BRICKS);
 	}
 
 	private void walls(WorldGenLevel level, BoundingBox bb, int x0, int y0, int z0, int x1, int y1, int z1) {
@@ -132,9 +132,9 @@ public final class IronGatehousePiece extends WildsPiece {
 				set(level, bb, s(Blocks.LANTERN), c[0], t[2] + 1, c[1]);
 			}
 		}
-		guard(level, bb, EntityTypes.SKELETON, 9, 11, 5, List.of(Runes.BOLT, Runes.SHACKLE), false);
-		guard(level, bb, EntityTypes.SKELETON, 15, 11, 5, List.of(Runes.BOLT, Runes.SHACKLE), false);
-		guard(level, bb, EntityTypes.VINDICATOR, 20, 1, 3, List.of(Runes.BURST, Runes.TREMOR), true);
+		guard(level, bb, EntityType.SKELETON, 9, 11, 5, List.of(Runes.BOLT, Runes.SHACKLE), false);
+		guard(level, bb, EntityType.SKELETON, 15, 11, 5, List.of(Runes.BOLT, Runes.SHACKLE), false);
+		guard(level, bb, EntityType.VINDICATOR, 20, 1, 3, List.of(Runes.BURST, Runes.TREMOR), true);
 	}
 
 	/** Upside-down stairs under a tower's battlements on its front and back faces, from x0 to x1 at {@code y}. */

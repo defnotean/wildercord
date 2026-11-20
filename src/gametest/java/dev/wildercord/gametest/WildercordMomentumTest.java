@@ -40,7 +40,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -167,7 +166,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200);
+			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200);
 			return null;
 		});
 		context.waitTicks(20);
@@ -212,7 +211,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			spawn(player.level(), EntityTypes.HUSK, at(0, 1.6), 200);
+			spawn(player.level(), EntityType.HUSK, at(0, 1.6), 200);
 			long now = player.level().getGameTime();
 			player.setAttached(Momentum.MOMENTUM, new Momentum.State(80, now + 40, (float) (MomentumRules.EBB / 20.0 * 1.4), 0, 0));
 			return null;
@@ -260,7 +259,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			reset(context, world);
 			on(world, player -> {
 				setAura(player, "ember", AuraRules.SOVEREIGN);
-				Mob husk = spawn(player.level(), EntityTypes.HUSK, at(0, 2.0), 300);
+				Mob husk = spawn(player.level(), EntityType.HUSK, at(0, 2.0), 300);
 				husk.getAttribute(Attributes.ARMOR).setBaseValue(0);
 				setMomentumNow(player, pass == 0 ? 0 : 100);
 				return null;
@@ -283,7 +282,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			steady(spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400));
+			steady(spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400));
 			setMomentumNow(player, 50);
 			return null;
 		});
@@ -362,11 +361,11 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			reset(context, world);
 			on(world, player -> {
 				setAura(player, "ember", AuraRules.SOVEREIGN);
-				Mob husk = spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200);
+				Mob husk = spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200);
 				if (which.equals("mindless")) {
 					husk.setNoAi(true);
 				} else {
-					Entity boat = EntityTypes.OAK_BOAT.create(player.level(), EntitySpawnReason.COMMAND);
+					Entity boat = EntityType.OAK_BOAT.create(player.level(), EntitySpawnReason.COMMAND);
 					Vec3 p = at(0, 2.4);
 					boat.snapTo(p.x, p.y, p.z, 180, 0);
 					boat.addTag(TAG);
@@ -399,7 +398,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.SOVEREIGN);
-			steady(spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 600));
+			steady(spawn(player.level(), EntityType.HUSK, at(0, 2.2), 600));
 			return null;
 		});
 		context.waitTicks(20);
@@ -423,7 +422,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			reset(context, world);
 			on(world, player -> {
 				setAura(player, methods[pass], AuraRules.SOVEREIGN);
-				spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 100);
+				spawn(player.level(), EntityType.HUSK, at(0, 2.2), 100);
 				return null;
 			});
 			context.waitTicks(20);
@@ -464,7 +463,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			spawn(player.level(), EntityTypes.HUSK, at(0, 2.0), 100);
+			spawn(player.level(), EntityType.HUSK, at(0, 2.0), 100);
 			return null;
 		});
 		context.waitTicks(10);
@@ -490,7 +489,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
 			// Half a pool, so the aura a finisher gives back has room to land.
 			player.setAttached(AuraAttachments.AURA, Aura.data(player).withAura(60));
-			Mob husk = spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 60);
+			Mob husk = spawn(player.level(), EntityType.HUSK, at(0, 2.2), 60);
 			husk.setHealth(30);
 			// Worn almost through: the next blow breaks it.
 			double worn = Stance.wear(player, husk, StanceRules.pool(StanceRules.Kind.CREATURE, 60, 0) - 2, StanceRules.Source.BLOW);
@@ -568,7 +567,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			reset(context, world);
 			on(world, player -> {
 				setAura(player, method, AuraRules.SOVEREIGN);
-				Mob husk = spawn(player.level(), EntityTypes.HUSK, at(0, 2.4), 80);
+				Mob husk = spawn(player.level(), EntityType.HUSK, at(0, 2.4), 80);
 				husk.setHealth(40);
 				// Its stance broken outright (by the swordsman: it's theirs to finish).
 				double worn = Stance.wear(player, husk, StanceRules.pool(StanceRules.Kind.CREATURE, 80, 0), StanceRules.Source.BLOW);
@@ -608,14 +607,14 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "stone", AuraRules.SOVEREIGN);
-			Mob guardian = spawn(player.level(), EntityTypes.ELDER_GUARDIAN, at(0, 3.2), 80);
+			Mob guardian = spawn(player.level(), EntityType.ELDER_GUARDIAN, at(0, 3.2), 80);
 			guardian.setNoAi(true);
 			guardian.setHealth(40);
 			return null;
 		});
 		context.waitTicks(10);
 		String boss = on(world, player -> {
-			Mob guardian = foes(player, EntityTypes.ELDER_GUARDIAN).getFirst();
+			Mob guardian = foes(player, EntityType.ELDER_GUARDIAN).getFirst();
 			if (Stance.kind(guardian) != StanceRules.Kind.BOSS) {
 				return "an elder guardian should stand as a boss";
 			}
@@ -639,11 +638,11 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		});
 		context.waitTicks(4);
 		shot(context, "opened_boss_fp");
-		Object[] before = on(world, player -> new Object[] {foes(player, EntityTypes.ELDER_GUARDIAN).getFirst().getHealth(), Stance.finishers()});
+		Object[] before = on(world, player -> new Object[] {foes(player, EntityType.ELDER_GUARDIAN).getFirst().getHealth(), Stance.finishers()});
 		swing(context);
 		context.waitTicks(4);
 		String finished = on(world, player -> {
-			Mob guardian = foes(player, EntityTypes.ELDER_GUARDIAN).getFirst();
+			Mob guardian = foes(player, EntityType.ELDER_GUARDIAN).getFirst();
 			if (Stance.finishers() != (int) before[1] + 1) {
 				return "the swing should have been a finisher";
 			}
@@ -1021,7 +1020,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 
 	/** The scene's husks, in the order they were spawned. */
 	private static List<Mob> foes(ServerPlayer player) {
-		return foes(player, EntityTypes.HUSK);
+		return foes(player, EntityType.HUSK);
 	}
 
 	private static List<Mob> foes(ServerPlayer player, EntityType<?> type) {

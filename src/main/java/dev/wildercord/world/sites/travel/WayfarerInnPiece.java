@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.DyeColor;
@@ -145,7 +145,7 @@ public final class WayfarerInnPiece extends TravelPiece {
 		// The notice board outside: notes and a blank map for the road.
 		frame(level, bb, 9, 2, 5, Direction.SOUTH, new ItemStack(Items.PAPER));
 		frame(level, bb, 13, 2, 5, Direction.SOUTH, new ItemStack(Items.MAP));
-		resident(level, bb, EntityTypes.CAT, 9, 1, 13, 6);
+		resident(level, bb, EntityType.CAT, 9, 1, 13, 6);
 		// 0.12: the bounty board under the notices, and the inn's keepers: the cook by the hearth, the Master's emissary
 		// at the tables, the stablemaster out on the road.
 		set(level, bb, Town.BOUNTY_BOARD.defaultBlockState().setValue(BountyBoardBlock.FACING, Direction.SOUTH), 9, 1, 5);

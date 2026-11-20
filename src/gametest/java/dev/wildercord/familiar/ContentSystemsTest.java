@@ -25,7 +25,7 @@ public final class ContentSystemsTest implements FabricClientGameTest {
    p.setItemSlot(EquipmentSlot.OFFHAND,new ItemStack(WildercordItems.LIVING_SEEDPOD));var seed=Heart.bonuses(p);check(close(seed.cost(),base.cost()*.9)&&close(seed.cooldown(),base.cooldown()*1.1),"seedpod tradeoffs");
    p.setItemSlot(EquipmentSlot.OFFHAND,new ItemStack(WildercordItems.SKY_FEATHER));var sky=Heart.bonuses(p);check(close(sky.cost(),base.cost()*1.15)&&close(sky.cooldown(),base.cooldown()*.85),"feather tradeoffs");p.setItemSlot(EquipmentSlot.OFFHAND,ItemStack.EMPTY);
    var wisp=FamiliarContent.WISP.create(level,EntitySpawnReason.COMMAND);wisp.snapTo(p.position());
-   var mob=EntityTypes.ZOMBIE.create(level,EntitySpawnReason.COMMAND);mob.setNoAi(true);mob.snapTo(p.getX()+3,p.getY(),p.getZ());level.addFreshEntity(mob);
+   var mob=EntityType.ZOMBIE.create(level,EntitySpawnReason.COMMAND);mob.setNoAi(true);mob.snapTo(p.getX()+3,p.getY(),p.getZ());level.addFreshEntity(mob);
    check(FamiliarRoles.choose(p,"scout")==1&&FamiliarRoles.help(p,wisp)&&mob.hasEffect(MobEffects.GLOWING),"scout reveals nearest threat");
    p.setLastHurtByMob(mob);FamiliarRoles.choose(p,"guardian");check(FamiliarRoles.help(p,wisp)&&p.hasEffect(MobEffects.ABSORPTION),"guardian gives short emergency shield");
    var crop=at.offset(1,0,0);level.setBlockAndUpdate(crop.below(),Blocks.FARMLAND.defaultBlockState());level.setBlockAndUpdate(crop,((CropBlock)Blocks.WHEAT).getStateForAge(7));FamiliarRoles.choose(p,"gardener");check(FamiliarRoles.help(p,wisp)&&((CropBlock)Blocks.WHEAT).isMaxAge(level.getBlockState(crop)),"gardener marks crop without harvesting");

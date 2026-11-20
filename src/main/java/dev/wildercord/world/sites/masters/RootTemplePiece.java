@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -148,7 +148,7 @@ public final class RootTemplePiece extends MasterSitePiece {
 		set(level, bb, light, 9, -2, 21); set(level, bb, light, 17, -2, 21);
 		fill(level, bb, 13, -2, 24, 13, 0, 24, s(Blocks.LADDER).setValue(LadderBlock.FACING, Direction.SOUTH));
 		chest(level, bb, 13, -2, 18, rewardLoot(), Direction.NORTH, 2);
-		guard(level, bb, EntityTypes.BOGGED, 13, -2, 21, alt ? List.of(Runes.ARC, Runes.VENOM) : List.of(Runes.BOLT, Runes.ROOTSNARE), false);
+		guard(level, bb, EntityType.BOGGED, 13, -2, 21, alt ? List.of(Runes.ARC, Runes.VENOM) : List.of(Runes.BOLT, Runes.ROOTSNARE), false);
 		// Practice, the lectern and the supplies.
 		var post = s(Blocks.JUNGLE_FENCE);
 		dummy(level, bb, 5, 1, 16, post); dummy(level, bb, 21, 1, 16, post);

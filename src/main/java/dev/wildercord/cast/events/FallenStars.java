@@ -31,7 +31,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -405,7 +404,7 @@ public final class FallenStars {
 			if (Math.abs(y - cell.getY()) > 2) {
 				continue;
 			}
-			Display.BlockDisplay mark = EntityTypes.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+			Display.BlockDisplay mark = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
 			if (mark == null) {
 				continue;
 			}
@@ -487,7 +486,7 @@ public final class FallenStars {
 		}
 	}
 
-	private static final List<EntityType<? extends Mob>> GUARDS = List.of(EntityTypes.SKELETON, EntityTypes.ZOMBIE, EntityTypes.SKELETON, EntityTypes.ZOMBIE);
+	private static final List<EntityType<? extends Mob>> GUARDS = List.of(EntityType.SKELETON, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.ZOMBIE);
 
 	/** {@code count} Runebound (two to four, at first) rise round the star, the first an Adept illager. */
 	private static void wakeGuards(ServerLevel level, BlockPos pos, ServerPlayer near, int count) {
@@ -502,7 +501,7 @@ public final class FallenStars {
 				continue;
 			}
 			boolean adept = i == 0;
-			Mob guard = WorldEvents.spawnRunebound(level, adept ? EntityTypes.VINDICATOR : GUARDS.get(i % GUARDS.size()), at, adept, near);
+			Mob guard = WorldEvents.spawnRunebound(level, adept ? EntityType.VINDICATOR : GUARDS.get(i % GUARDS.size()), at, adept, near);
 			if (guard != null) {
 				risen++;
 				star.guards.put(guard.getUUID(), guard.blockPosition());

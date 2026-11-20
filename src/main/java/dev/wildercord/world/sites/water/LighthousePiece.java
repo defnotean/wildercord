@@ -35,8 +35,8 @@ public class LighthousePiece extends WaterPiece {
 	static final int CX = 6, CZ = 6;
 
 	private static final BlockState BRICKS = Blocks.STONE_BRICKS.defaultBlockState();
-	private static final BlockState WHITE = Blocks.CONCRETE.white().defaultBlockState();
-	private static final BlockState RED = Blocks.CONCRETE.red().defaultBlockState();
+	private static final BlockState WHITE = Blocks.WHITE_CONCRETE.defaultBlockState();
+	private static final BlockState RED = Blocks.RED_CONCRETE.defaultBlockState();
 	private static final BlockState ROOF = Blocks.DEEPSLATE_TILES.defaultBlockState();
 	private static final Palette PLINTH = Palette.of(Blocks.STONE_BRICKS, 6, Blocks.MOSSY_STONE_BRICKS, 3, Blocks.CRACKED_STONE_BRICKS, 1);
 
@@ -191,7 +191,7 @@ public class LighthousePiece extends WaterPiece {
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 5, BASE + 2, 8);
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 5, BASE + 1, 4);
 		// A rug, a pot on a barrel and wall torches up the shaft so the climb is never dark.
-		fill(level, bb, 5, BASE + 1, 5, 7, BASE + 1, 6, Blocks.CARPET.blue().defaultBlockState());
+		fill(level, bb, 5, BASE + 1, 5, 7, BASE + 1, 6, Blocks.BLUE_CARPET.defaultBlockState());
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 7, BASE + 1, 8);
 		set(level, bb, Blocks.POTTED_ALLIUM.defaultBlockState(), 7, BASE + 2, 8);
 		for (int y : new int[] {BASE + 4, BASE + 16}) {

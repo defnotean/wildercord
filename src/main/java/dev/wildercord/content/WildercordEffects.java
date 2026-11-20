@@ -9,7 +9,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.InstantaneousMobEffect;
+import net.minecraft.world.effect.InstantenousMobEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -107,7 +107,7 @@ public final class WildercordEffects {
 		}
 	}
 
-	private static final class ManaEffect extends InstantaneousMobEffect {
+	private static final class ManaEffect extends InstantenousMobEffect {
 		ManaEffect() {
 			super(MobEffectCategory.BENEFICIAL, 0x7C5CFF);
 		}
@@ -119,7 +119,7 @@ public final class WildercordEffects {
 		}
 
 		@Override
-		public void applyInstantaneousEffect(ServerLevel level, Entity source, Entity owner, LivingEntity mob, int amplification, double scale) {
+		public void applyInstantenousEffect(ServerLevel level, Entity source, Entity owner, LivingEntity mob, int amplification, double scale) {
 			restore(mob, amplification, scale);
 		}
 

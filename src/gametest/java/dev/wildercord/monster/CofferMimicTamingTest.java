@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -199,7 +199,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				wild.settleHere(180);
 				l.addFreshEntity(wild);
 				wildId = wild.getUUID();
-				var golem = EntityTypes.IRON_GOLEM.create(l, EntitySpawnReason.COMMAND);
+				var golem = EntityType.IRON_GOLEM.create(l, EntitySpawnReason.COMMAND);
 				check(golem != null, "A real iron golem stands in the square");
 				golem.setPos(20.5, 101, 23.5);
 				l.addFreshEntity(golem);

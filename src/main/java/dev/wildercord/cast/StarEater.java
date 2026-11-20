@@ -27,7 +27,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -1635,7 +1634,7 @@ public class StarEater extends DungeonBoss {
 		ElementFx.blackCore(level, c, 1.5, SHIFT_TICKS);
 		announce(level, "message.wildercord.star_eater_phase." + phase, COLOR);
 		for (int i = 0; i < 2; i++) {
-			Mob guard = (i == 0 ? EntityTypes.STRAY : EntityTypes.SKELETON).create(level, EntitySpawnReason.MOB_SUMMONED);
+			Mob guard = (i == 0 ? EntityType.STRAY : EntityType.SKELETON).create(level, EntitySpawnReason.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}

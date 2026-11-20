@@ -89,7 +89,7 @@ public final class DawnPavilionPiece extends WildsPiece {
 			for (int x : new int[]{4, 14}) set(level, bb, s(Blocks.STRIPPED_CHERRY_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z), x, 5, v);
 		}
 		// Cushions round the sunken centre for the watchers.
-		for (int v = 7; v <= 11; v += 2) for (int[] c : new int[][]{{6, v}, {12, v}, {v, 6}, {v, 12}}) set(level, bb, Blocks.CARPET.red().defaultBlockState(), c[0], 1, c[1]);
+		for (int v = 7; v <= 11; v += 2) for (int[] c : new int[][]{{6, v}, {12, v}, {v, 6}, {v, 12}}) set(level, bb, Blocks.RED_CARPET.defaultBlockState(), c[0], 1, c[1]);
 		// A four-tier roof with a lantern at every eave corner.
 		int[][] tiers = {{3, 15}, {5, 13}, {7, 11}, {8, 10}};
 		for (int t = 0; t < tiers.length; t++) {
@@ -123,7 +123,7 @@ public final class DawnPavilionPiece extends WildsPiece {
 			set(level, bb, s(Blocks.LANTERN), p[0], 3, p[1]);
 		}
 		for (int k = 7; k <= 8; k++) for (int j = -1; j <= 1; j++) for (int y = 1; y <= 3; y++) { int[] p = at(k, j); set(level, bb, AIR, p[0], y, p[1]); }
-		for (int j = -1; j <= 1; j++) for (int y = 2; y <= 3; y++) { int[] p = at(9, j); set(level, bb, Blocks.STAINED_GLASS.orange().defaultBlockState(), p[0], y, p[1]); }
+		for (int j = -1; j <= 1; j++) for (int y = 2; y <= 3; y++) { int[] p = at(9, j); set(level, bb, Blocks.ORANGE_STAINED_GLASS.defaultBlockState(), p[0], y, p[1]); }
 		int[] door = at(6, 0), d = towardSunrise();
 		if (d[0] == 0) sealDoorAcross(level, bb, door[1], CENTRE - 1, CENTRE + 1, 1, 3, RuneSealBlock.Element.ARCANE, RuneSealBlock.Element.LIFE);
 		else sealDoorAlong(level, bb, door[0], CENTRE - 1, CENTRE + 1, 1, 3, RuneSealBlock.Element.ARCANE, RuneSealBlock.Element.LIFE);

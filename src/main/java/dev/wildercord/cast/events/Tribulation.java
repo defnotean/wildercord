@@ -26,7 +26,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -62,12 +61,12 @@ public final class Tribulation {
 	private static final int SHADOW = 0x9A6CD8;
 
 	private static final List<List<EntityType<? extends Mob>>> TYPES = List.of(
-		List.of(EntityTypes.ZOMBIE, EntityTypes.SKELETON, EntityTypes.HUSK, EntityTypes.STRAY),
-		List.of(EntityTypes.VINDICATOR, EntityTypes.SKELETON, EntityTypes.PILLAGER, EntityTypes.HUSK, EntityTypes.WITCH),
-		List.of(EntityTypes.VINDICATOR, EntityTypes.WITHER_SKELETON, EntityTypes.PILLAGER, EntityTypes.STRAY, EntityTypes.WITCH),
-		List.of(EntityTypes.VINDICATOR, EntityTypes.WITHER_SKELETON, EntityTypes.EVOKER, EntityTypes.BLAZE, EntityTypes.PILLAGER));
+		List.of(EntityType.ZOMBIE, EntityType.SKELETON, EntityType.HUSK, EntityType.STRAY),
+		List.of(EntityType.VINDICATOR, EntityType.SKELETON, EntityType.PILLAGER, EntityType.HUSK, EntityType.WITCH),
+		List.of(EntityType.VINDICATOR, EntityType.WITHER_SKELETON, EntityType.PILLAGER, EntityType.STRAY, EntityType.WITCH),
+		List.of(EntityType.VINDICATOR, EntityType.WITHER_SKELETON, EntityType.EVOKER, EntityType.BLAZE, EntityType.PILLAGER));
 	private static final List<EntityType<? extends Mob>> HERALDS = List.of(
-		EntityTypes.VINDICATOR, EntityTypes.EVOKER, EntityTypes.RAVAGER, EntityTypes.RAVAGER);
+		EntityType.VINDICATOR, EntityType.EVOKER, EntityType.RAVAGER, EntityType.RAVAGER);
 
 	private static final Map<UUID, Tribulation> ACTIVE = new HashMap<>();
 	private static final Map<UUID, Long> RESTING = new HashMap<>();
@@ -214,7 +213,7 @@ public final class Tribulation {
 
 	/** A bolt of light that burns nothing. */
 	private void strike(Vec3 at) {
-		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
+		LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
 		if (bolt == null) return;
 		bolt.snapTo(at.x, at.y, at.z);
 		bolt.setVisualOnly(true);
@@ -301,7 +300,7 @@ public final class Tribulation {
 			dev.wildercord.cast.Scheduler.later(1 + i * 8, () -> emerge(type, adept, false));
 		}
 		if (last) {
-			EntityType<? extends Mob> leader = TribulationRules.rival(circle) ? EntityTypes.ZOMBIE : HERALDS.get(tier - 1);
+			EntityType<? extends Mob> leader = TribulationRules.rival(circle) ? EntityType.ZOMBIE : HERALDS.get(tier - 1);
 			dev.wildercord.cast.Scheduler.later(20 + size * 8, () -> emerge(leader, true, true));
 		}
 	}

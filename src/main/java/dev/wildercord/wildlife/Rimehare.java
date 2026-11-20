@@ -120,7 +120,7 @@ public class Rimehare extends Animal {
 	}
 
 	/** Keep vanilla path following and obstacle jumps, but never accelerate through an unfinished ground turn. */
-	private static final class BoundMoveControl extends MoveControl<Rimehare> {
+	private static final class BoundMoveControl extends MoveControl {
 		private BoundMoveControl(Rimehare hare) {
 			super(hare);
 		}

@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -97,8 +97,8 @@ public final class DeepVaultPiece extends MinePiece {
 			sconce(level, bb, 13, 3, z, Direction.WEST, true);
 		}
 		chest(level, bb, 13, 1, 8, MineSites.VAULT_ANTECHAMBER, Direction.WEST, 461);
-		guard(level, bb, EntityTypes.SKELETON, 5, 1, 9, List.of(Runes.BOLT, Runes.EMBER), false);
-		guard(level, bb, EntityTypes.SKELETON, 11, 1, 9, List.of(Runes.BOLT, Runes.MIRE), true);
+		guard(level, bb, EntityType.SKELETON, 5, 1, 9, List.of(Runes.BOLT, Runes.EMBER), false);
+		guard(level, bb, EntityType.SKELETON, 11, 1, 9, List.of(Runes.BOLT, Runes.MIRE), true);
 		// The vault, its walls seamed with ore, behind a door of earth and fire.
 		for (int x = 4; x <= 12; x++) for (int y = 0; y <= 6; y++) for (int z = 14; z <= 26; z++) {
 			boolean shell = x == 4 || x == 12 || y == 0 || y == 6 || z == 14 || z == 26;

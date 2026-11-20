@@ -13,7 +13,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -137,7 +136,7 @@ public class TrainingDummy extends LivingEntity {
 
 	/** A number that pops out of the dummy, drifts up and fades. */
 	private void number(ServerLevel level, float amount, int color) {
-		Display.TextDisplay text = EntityTypes.TEXT_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.TextDisplay text = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
 		if (text == null) {
 			return;
 		}

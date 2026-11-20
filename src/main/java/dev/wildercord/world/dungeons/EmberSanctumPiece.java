@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.NoiseColumn;
@@ -541,7 +541,7 @@ public class EmberSanctumPiece extends DungeonPiece {
 		// Between the buttresses, tall red lancets lit from inside, framed in chiseled jambs under gilded hoods.
 		for (int z : new int[] {16, 22, 28}) {
 			for (int[] w : new int[][] {{6, 5}, {34, 35}}) {
-				fill(level, bb, w[0], 5, z, w[0], 9, z, Blocks.STAINED_GLASS.red().defaultBlockState());
+				fill(level, bb, w[0], 5, z, w[0], 9, z, Blocks.RED_STAINED_GLASS.defaultBlockState());
 				fill(level, bb, w[1], 4, z - 1, w[1], 10, z - 1, CHISELED);
 				fill(level, bb, w[1], 4, z + 1, w[1], 10, z + 1, CHISELED);
 				set(level, bb, MAGMA, w[1], 3, z);
@@ -596,7 +596,7 @@ public class EmberSanctumPiece extends DungeonPiece {
 			pillar(level, bb, x, 68, 1, 9, CHISELED, BASALT, GILDED);
 		}
 		for (int z : new int[] {58, 62, 66}) {
-			fill(level, bb, 41, 3, z, 41, 6, z, Blocks.STAINED_GLASS.red().defaultBlockState());
+			fill(level, bb, 41, 3, z, 41, 6, z, Blocks.RED_STAINED_GLASS.defaultBlockState());
 			set(level, bb, MAGMA, 41, 2, z);
 			set(level, bb, GILDED, 41, 7, z);
 		}
@@ -612,9 +612,9 @@ public class EmberSanctumPiece extends DungeonPiece {
 	// ------------------------------------------------------------------ guards
 
 	private void guards(WorldGenLevel level, BoundingBox bb) {
-		guard(level, bb, EntityTypes.WITHER_SKELETON, 12, 2, 18, List.of(Runes.BOLT, Runes.FIRE), false);
-		guard(level, bb, EntityTypes.WITHER_SKELETON, 28, 2, 24, List.of(Runes.ARC, Runes.FIRE), false);
-		guard(level, bb, EntityTypes.SKELETON, 26, 2, 31, List.of(Runes.BOLT, Runes.FROST), false);
-		guard(level, bb, EntityTypes.PIGLIN_BRUTE, 14, 2, 30, List.of(Runes.CONE, Runes.FLASHFIRE), true);
+		guard(level, bb, EntityType.WITHER_SKELETON, 12, 2, 18, List.of(Runes.BOLT, Runes.FIRE), false);
+		guard(level, bb, EntityType.WITHER_SKELETON, 28, 2, 24, List.of(Runes.ARC, Runes.FIRE), false);
+		guard(level, bb, EntityType.SKELETON, 26, 2, 31, List.of(Runes.BOLT, Runes.FROST), false);
+		guard(level, bb, EntityType.PIGLIN_BRUTE, 14, 2, 30, List.of(Runes.CONE, Runes.FLASHFIRE), true);
 	}
 }

@@ -66,7 +66,7 @@ public class SnapjawTurtle extends WildMonster {
 	public SnapjawTurtle(EntityType<? extends SnapjawTurtle> type, Level level) {
 		super(type, level);
 		this.xpReward = 10;
-		moveControl = new SmoothSwimmingMoveControl<>(this, 85, 10, 0.6F, 1.0F, false);
+		moveControl = new SmoothSwimmingMoveControl(this, 85, 10, 0.6F, 1.0F, false);
 		setPathfindingMalus(PathType.WATER, 0);
 	}
 

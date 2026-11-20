@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 /** Records the native knockback write for an armed Stone Hinge catch. The write itself always happens unchanged. */
 @Mixin(LivingEntity.class)
 public abstract class LivingStoneHingeMixin {
-	@WrapOperation(method = "knockback(DDDLnet/minecraft/world/damagesource/DamageSource;FZ)V",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;setDeltaMovement(DDD)V"))
+	@WrapOperation(method = "hurtServer", at = @At(value = "INVOKE",
+		target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"))
 	private void wildercord$stoneHingeImpulse(LivingEntity entity, double x, double y, double z, Operation<Void> original,
 			@Local(argsOnly = true) DamageSource source) {
 		Vec3 before = entity.getDeltaMovement(); boolean grounded = entity.onGround();

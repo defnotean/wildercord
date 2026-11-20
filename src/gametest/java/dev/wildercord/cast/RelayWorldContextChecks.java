@@ -18,7 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -72,7 +72,7 @@ public final class RelayWorldContextChecks {
                         if(dryResidueSite)entry=entry.withTrait(0,MasteryTraits.LINGERING_MARK.id(),false);
                         owner.setAttached(MasteryAttachments.MASTERY,new MasteryBook(List.of(entry)));
                         for(int x=-1;x<=7;x++) for(int z=5;z<=7;z++) owner.level().setBlock(new BlockPos(x,150,z),Blocks.WATER.defaultBlockState(),2);
-                        primary[0]=EntityTypes.CREEPER.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);
+                        primary[0]=EntityType.CREEPER.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);
                         RelayCircleTest.check(primary[0]!=null,"Native primary creeper creates");primary[0].snapTo(.5,150,6.5,180,0);primary[0].setNoAi(true);primary[0].setNoGravity(true);owner.level().addFreshEntity(primary[0]);
                         secondary=dryResidueSite?WildercordEntities.TRAINING_DUMMY.create(owner.level(),EntitySpawnReason.MOB_SUMMONED)
                             :new ChargeWitness(owner.level());

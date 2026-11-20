@@ -397,7 +397,7 @@ final class FusedLifeVfx {
 			int color = i % 3 == 0 ? TIME.primary() : i % 3 == 1 ? LIFE.primary() : LIFE.secondary();
 			ElementFx.ray(level, c.add(dir.scale(0.25)), c.add(dir.scale(length)), color, 0.04, 7 + r.nextInt(3));
 		}
-		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STAINED_GLASS.lime().defaultBlockState()), c, 10, 0.25);
+		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.LIME_STAINED_GLASS.defaultBlockState()), c, 10, 0.25);
 		Sigils.flash(level, c, LIFE.secondary(), 2.6F);
 		Sigils.flash(level, c, TIME.secondary(), 1.2F);
 		ElementFx.ring(level, c, UP, TIME.primary(), 0.3, 2.4, 0.06, 10);

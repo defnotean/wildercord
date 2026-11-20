@@ -92,7 +92,7 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 		BlockState stone = s(Blocks.STONE_BRICKS);
 		BlockState mossy = s(Blocks.MOSSY_STONE_BRICKS);
 		BlockState plaster = s(Blocks.CALCITE);
-		BlockState red = s(Blocks.DYED_TERRACOTTA.red());
+		BlockState red = s(Blocks.RED_TERRACOTTA);
 		BlockState cap = JapaneseArchitecture.slab(Blocks.DEEPSLATE_TILE_SLAB, SlabType.BOTTOM);
 
 		for (int x = 1; x <= WIDTH - 2; x++) {
@@ -163,7 +163,7 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 
 	private void castleYagura(WorldGenLevel level, BoundingBox bb, BlockPlacer p, int x0, int z0) {
 		int x1 = x0 + 6, z1 = z0 + 6;
-		BlockState red = s(Blocks.DYED_TERRACOTTA.red());
+		BlockState red = s(Blocks.RED_TERRACOTTA);
 		fill(level, bb, x0, 1, z0, x1, 4, z1, s(Blocks.STONE_BRICKS));
 		for (int y = 5; y <= 8; y++) {
 			for (int x = x0 + 1; x <= x1 - 1; x++) {
@@ -182,7 +182,7 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 
 	private void bellPagodaCenterpiece(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
 		BlockState stone = s(Blocks.POLISHED_ANDESITE);
-		BlockState red = s(Blocks.DYED_TERRACOTTA.red());
+		BlockState red = s(Blocks.RED_TERRACOTTA);
 		BlockState plaster = s(Blocks.CALCITE);
 		BlockState cherry = s(Blocks.CHERRY_PLANKS);
 
@@ -222,7 +222,7 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 	}
 
 	private void kendoDojoAndForge(WorldGenLevel level, BoundingBox bb, BlockPlacer p) {
-		BlockState red = s(Blocks.DYED_TERRACOTTA.red());
+		BlockState red = s(Blocks.RED_TERRACOTTA);
 		BlockState spruce = s(Blocks.SPRUCE_PLANKS);
 		BlockState bamboo = s(Blocks.BAMBOO_PLANKS);
 		BlockState plaster = s(Blocks.CALCITE);

@@ -2,25 +2,37 @@ package dev.wildercord.compat;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.monster.cubemob.AbstractCubeMob;
+import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.level.Level;
 
 /**
- * Bridges {@code AbstractCubeMob#setcubeMobHealth(int)} (26.2) vs {@code setCubeMobHealth(int)} (26.3)
- * and {@code AbstractCubeMob.CubeMobAttackGoal} visibility/inheritance.
+ * Bridges 26.2's {@code AbstractCubeMob} health/attack hooks onto 26.1.2's {@link Slime}:
+ * size changes arrive through {@code setSize(int, boolean)} instead of {@code setcubeMobHealth(int)},
+ * and the package-private slime attack goal is built reflectively so ManaOoze keeps the native
+ * hop-and-bite cadence.
  */
-public abstract class CompatCubeMob extends AbstractCubeMob {
-	protected CompatCubeMob(EntityType<? extends AbstractCubeMob> type, Level level) {
+public abstract class CompatCubeMob extends Slime {
+	protected CompatCubeMob(EntityType<? extends CompatCubeMob> type, Level level) {
 		super(type, level);
 	}
 
 	@Override
-	protected void setcubeMobHealth(int size) {
-		applyCubeMobHealth(size);
+	public void setSize(int size, boolean heal) {
+		super.setSize(size, heal);
+		if (!isConstructing) {
+			applyCubeMobHealth(size);
+		}
 	}
 
 	protected Goal cubeAttackGoal() {
-		return new AbstractCubeMob.CubeMobAttackGoal(this);
+		try {
+			var attackGoal = Class.forName("net.minecraft.world.entity.monster.Slime$SlimeAttackGoal")
+				.getDeclaredConstructor(Slime.class);
+			attackGoal.setAccessible(true);
+			return (Goal) attackGoal.newInstance(this);
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalStateException("Slime attack goal missing on this Minecraft version", e);
+		}
 	}
 
 	protected abstract void applyCubeMobHealth(int size);

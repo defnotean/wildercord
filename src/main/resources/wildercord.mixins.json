@@ -7,7 +7,6 @@
 		"ReedlandPlacementMixin",
 		"ArenaTreeMixin",
 		"ArenaFallenTreeMixin",
-		"ReedlandSurfaceMixin",
 		"ReedlandSurfaceComputeMixin",
 		"RelayLivingDamageMixin",
 		"RelayPlayerDamageMixin",
