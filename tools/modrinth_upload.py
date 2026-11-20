@@ -38,6 +38,11 @@ if not token:
 with zipfile.ZipFile(args.file) as archive:
     full_version = json.loads(archive.read("fabric.mod.json"))["version"]
 version = full_version.split("+mc")[0]
+if "+mc" in full_version:
+    mc_version = full_version.split("+mc", 1)[1]
+else:
+    props = (root / "gradle.properties").read_text(encoding="utf-8")
+    mc_version = next(line.split("=", 1)[1].strip() for line in props.splitlines() if line.startswith("minecraft_version="))
 import requests  # only needed once the guards above have passed
 
 session = requests.Session()
@@ -81,7 +86,7 @@ data = {
     "version_number": full_version,
     "changelog": (root / f"docs/releases/{version}.md").read_text(encoding="utf-8"),
     "dependencies": [{"project_id": FABRIC_API, "dependency_type": "required"}],
-    "game_versions": ["26.3"],
+    "game_versions": [mc_version],
     "version_type": "alpha",
     "loaders": ["fabric"],
     "featured": True,
