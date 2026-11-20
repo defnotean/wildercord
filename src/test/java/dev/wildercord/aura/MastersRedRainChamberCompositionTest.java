@@ -31,7 +31,7 @@ class MastersRedRainChamberCompositionTest {
 	@Test
 	void recordedNativeFailureHasNoVisibleBroadFaceAndCorrectedChamberRestoresIt() throws Exception {
 		var texture = texture();
-		var observed = new Matrix4f(FAILED_NATIVE_PROJECTION);
+		var observed = new Matrix4f().set(FAILED_NATIVE_PROJECTION);
 		// Native hand projection uses reversed depth. Separate the camera prefix from the
 		// residual swing so both retain their actual side of the authored hand.
 		var projection = new Matrix4f().zero().m00((float) (1 / Math.tan(Math.toRadians(35)) / (1280D / 720)))
