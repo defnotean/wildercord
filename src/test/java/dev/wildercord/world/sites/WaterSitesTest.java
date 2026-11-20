@@ -65,10 +65,11 @@ class WaterSitesTest {
 				}
 			}
 			assertTrue(runeEntries >= 3, id + " has too few runes");
-			// An exploration map's destination is a structure tag; a bare id stops the whole data pack from loading.
+			// Minecraft 26.2 reads ExplorationMapFunction destinations through TagKey.codec (no '#' prefix).
 			var destination = java.util.regex.Pattern.compile("\"destination\":\"([^\"]*)\"").matcher(loot.toString());
 			while (destination.find()) {
-				assertTrue(destination.group(1).startsWith("#"), id + " map destination must be a tag: " + destination.group(1));
+				String dest = destination.group(1);
+				assertTrue(!dest.startsWith("#") && dest.contains(":"), id + " map destination must be a 26.2 bare tag id: " + dest);
 			}
 
 			JsonObject adv = json(DATA.resolve("advancement/world/" + id + ".json"));
