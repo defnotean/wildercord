@@ -101,7 +101,7 @@ public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends Entit
 				return;
 			}
 			collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, null,
-				state.outlineColor);
+				state.outlineColor, null);
 		}
 	}
 }

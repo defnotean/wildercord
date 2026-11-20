@@ -8,6 +8,7 @@ import dev.wildercord.client.MastersHandMotionState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -33,7 +34,7 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 	}
 
 	/** True means this backend owns both arms and the sword, including the otherwise-empty offhand. */
-	public static boolean submit(AvatarRenderState avatar, net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands,
+	public static boolean submit(AvatarRenderState avatar, ItemInHandRenderer hands,
 			float partial, InteractionHand hand, PoseStack stack, SubmitNodeCollector collector, int light) {
 		ArticulatedCombat.Frame combat = ArticulatedCombat.viewFrame(avatar);
 		if (combat == null || !handAdmission(combat, avatar, hands, partial).admitted()) return false;
@@ -52,11 +53,11 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 			stack.translate(view.origin().x(), view.origin().y() - .8F * clearance, view.origin().z() - clearance);
 			// Keep the game camera completely free. Only the viewmodel acknowledges a bounded
 			// difference between accepted aim and free look; large turns use the existing aim cue.
-			stack.rotateDegrees(Axis.YP, -yaw);
-			stack.rotateDegrees(Axis.XP, -pitch);
+			stack.mulPose(Axis.YP.rotationDegrees(-yaw));
+			stack.mulPose(Axis.XP.rotationDegrees(-pitch));
 			stack.scale(-1, -1, 1);
 			collector.submitModel(model, frame, stack, RenderTypes.entityTranslucent(avatar.skin.body().texturePath()), light,
-				OverlayTexture.NO_OVERLAY, -1, null, 0);
+				OverlayTexture.NO_OVERLAY, -1, null, 0, null);
 			// The same immutable palette sets the hand at submission and deferred model rendering.
 			model.setupAnim(frame);
 			if (access.wildercord$armor() != null) access.wildercord$armor().submitView(model.rig, avatar, stack, collector, light);
@@ -73,13 +74,15 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 
 	/** Reads the extracted state only; also used by passive native admission diagnostics. */
 	public static MastersViewMotion.HandAdmission handAdmission(ArticulatedCombat.Frame combat, AvatarRenderState avatar,
-			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands, float partial) {
+			ItemInHandRenderer hands, float partial) {
 		boolean acceptedArt = combat.move() != -1 && combat.activation() != Long.MIN_VALUE && combat.pose().weight() > 0;
 		boolean known = hands instanceof MastersHandMotionState;
+		if (!known) return MastersViewMotion.articulatedHandAdmission(acceptedArt, 0.0F, false, false, false);
+		MastersHandMotionState motion = (MastersHandMotionState) hands;
 		return MastersViewMotion.articulatedHandAdmission(acceptedArt,
-			net.minecraft.util.Mth.lerp(partial, hands.oldMainHandHeight, hands.mainHandHeight),
-			net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem, avatar.getMainHandItemStack()),
-			known, known && ((MastersHandMotionState) hands).wildercord$mainHandEquipping());
+			net.minecraft.util.Mth.lerp(partial, motion.wildercord$oldMainHandHeight(), motion.wildercord$mainHandHeight()),
+			net.minecraft.world.item.ItemStack.isSameItemSameComponents(motion.wildercord$mainHandItem(), avatar.getMainHandItemStack()),
+			true, motion.wildercord$mainHandEquipping());
 	}
 
 	public ArticulatedRig rig() { return rig; }

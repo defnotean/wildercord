@@ -2,10 +2,10 @@ package dev.wildercord.client.familiar;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.renderpearl.api.pipeline.BlendFunction;
-import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.wildercord.Wildercord;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.Glimmer;
@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.oit.OitPipelineSet;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -65,10 +64,8 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
 		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
 		.build();
-	private static final OitPipelineSet GLOW_OIT = OitPipelineSet.builder("wildercord_wisp_glow",
-		RenderPipeline.builder(RenderPipelines.ENERGY_SWIRL_SNIPPET).withShaderDefine("OIT_ADDITIVE")).build();
 	private static final RenderType GLOW_TYPE = RenderType.create("wildercord_wisp_glow",
-		RenderSetup.builder(GLOW_PIPELINE).setOitPipelines(GLOW_OIT).withTexture("Sampler0", GLOW).sortOnUpload().createRenderSetup());
+		RenderSetup.builder(GLOW_PIPELINE).withTexture("Sampler0", GLOW).sortOnUpload().createRenderSetup());
 	private static final RenderType BODY_TYPE = RenderTypes.entityTranslucentEmissive(BODY);
 	/** The glow under a shader pack, which can't add light (see ShaderCompat): vanilla's glowing eyes, laid over what's behind. */
 	private static final RenderType PLAIN_GLOW_TYPE = RenderTypes.eyes(GLOW);
@@ -211,7 +208,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 		float alpha = state.looked || state.distanceToCameraSq < 25 ? 1.0F : 0.55F;
 		poseStack.pushPose();
 		poseStack.translate(state.nameTagAttachment.x, state.nameTagAttachment.y + 0.3, state.nameTagAttachment.z);
-		poseStack.rotate(camera.orientation);
+		poseStack.mulPose(camera.orientation);
 		poseStack.scale(0.017F, -0.017F, 0.017F);
 		float x = -font.width(name) / 2.0F;
 		collector.submitText(poseStack, x, 0, name.getVisualOrderText(), true, Font.DisplayMode.NORMAL, FULL,

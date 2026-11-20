@@ -21,7 +21,7 @@ public final class FerrymanRenderer extends MobRenderer<ReedCrownedFerryman,Ferr
 		super(c,new FerrymanModel(c.bakeLayer(LAYER)),1.7F);
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<FerrymanRenderState,FerrymanModel>(this) {
 			@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,FerrymanRenderState state,float yRot,float xRot) {
-				if(!state.isInvisible && state.deathTime<=0) collector.order(1).submitModel(getParentModel(),state,pose,RenderTypes.eyes(GLOW),light,OverlayTexture.NO_OVERLAY,0xFFFFFFFF,null,state.outlineColor);
+				if(!state.isInvisible && state.deathTime<=0) collector.order(1).submitModel(getParentModel(),state,pose,RenderTypes.eyes(GLOW),light,OverlayTexture.NO_OVERLAY,0xFFFFFFFF,null,state.outlineColor,null);
 			}
 		});
 	}

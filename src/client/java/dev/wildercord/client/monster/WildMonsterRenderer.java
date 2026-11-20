@@ -110,7 +110,7 @@ public class WildMonsterRenderer<T extends WildMonster, M extends EntityModel<Mo
 				return;
 			}
 			collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, null,
-				state.outlineColor);
+				state.outlineColor, null);
 		}
 	}
 }

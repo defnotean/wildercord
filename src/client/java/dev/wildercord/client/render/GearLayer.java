@@ -182,8 +182,8 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
 	/** A backpack part: its leather (or cloth) in the backpack's colour, then what isn't dyed over it. */
 	private static void leather(BackpackModel model, Identifier[] textures, int color, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state) {
-		nodes.order(0).submitModel(model, Unit.INSTANCE, pose, RenderTypes.entityCutout(textures[0]), light, overlay, color, null, state.outlineColor);
-		nodes.order(1).submitModel(model, Unit.INSTANCE, pose, RenderTypes.entityCutout(textures[1]), light, overlay, -1, null, state.outlineColor);
+		nodes.order(0).submitModel(model, Unit.INSTANCE, pose, RenderTypes.entityCutout(textures[0]), light, overlay, color, null, state.outlineColor, null);
+		nodes.order(1).submitModel(model, Unit.INSTANCE, pose, RenderTypes.entityCutout(textures[1]), light, overlay, -1, null, state.outlineColor, null);
 	}
 
 	/** The staff, strapped across the back. In item space: +x to the wearer's right, +y up, +z out of the back, in pixels of 1/16. */
@@ -192,10 +192,10 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		// The middle of the staff: its low end (leaning towards the body) stays just clear of the back.
 		float rise = STAFF_HALF * 0.894F * sin;
 		float z = surface.back() + 0.9F + rise;
-		pose.rotateDegrees(Axis.ZP, 180.0F);
+		pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
 		pose.translate(0.4F / 16, -4.5F / 16, z / 16);
-		pose.rotateDegrees(Axis.XP, STAFF_LEAN);
-		pose.rotateDegrees(Axis.ZP, STAFF_TURN);
+		pose.mulPose(Axis.XP.rotationDegrees(STAFF_LEAN));
+		pose.mulPose(Axis.ZP.rotationDegrees(STAFF_TURN));
 		piece.item().submit(pose, nodes, light, overlay, state.outlineColor);
 		// Two ties round the shaft, reaching in to the back.
 		for (float along : new float[]{-6.6F, -0.6F}) {
@@ -204,9 +204,9 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			float depth = reach + 0.75F;
 			pose.pushPose();
 			pose.translate(along * SIN45 / 16, along * SIN45 / 16, (0.75F - depth / 2) / 16);
-			pose.rotateDegrees(Axis.ZP, -45.0F);
+			pose.mulPose(Axis.ZP.rotationDegrees(-45.0F));
 			pose.scale(1.0F, 1.0F, depth);
-			nodes.submitModel(tie, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor);
+			nodes.submitModel(tie, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor, null);
 			pose.popPose();
 		}
 	}
@@ -215,10 +215,10 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	private void shoulder(GearLook.Piece piece, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state) {
 		float age = state.ageInTicks;
 		float bob = Mth.sin(age * 0.09F) * 1.0F;
-		pose.rotateDegrees(Axis.ZP, 180.0F);
+		pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
 		pose.translate(-6.8F / 16, (3.8F + bob) / 16, 0.4F / 16);
 		pose.pushPose();
-		pose.rotateDegrees(Axis.YP, age * 2.6F);
+		pose.mulPose(Axis.YP.rotationDegrees(age * 2.6F));
 		pose.scale(0.42F, 0.42F, 0.42F);
 		piece.item().submit(pose, nodes, light, overlay, state.outlineColor);
 		pose.popPose();
@@ -230,26 +230,26 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.scale(0.7F, 0.7F, 0.7F);
 			float fade = 0.35F + 0.25F * Mth.sin(age * 0.2F + i * 2.0F);
 			int alpha = Mth.clamp(Math.round(255 * fade), 0, 255);
-			nodes.submitModel(mote, Unit.INSTANCE, pose, RenderTypes.eyes(MOTE_TEXTURE), LightCoordsUtil.FULL_BRIGHT, overlay, (alpha << 24) | 0xE4DCFF, null, state.outlineColor);
+			nodes.submitModel(mote, Unit.INSTANCE, pose, RenderTypes.eyes(MOTE_TEXTURE), LightCoordsUtil.FULL_BRIGHT, overlay, (alpha << 24) | 0xE4DCFF, null, state.outlineColor, null);
 			pose.popPose();
 		}
 	}
 
 	/** The tome, hung from a strap on a belt at the left hip. In body space: y down, the front at -z, the wearer's left at +x. */
 	private void hip(GearLook.Piece piece, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state, Surface surface) {
-		nodes.submitModel(surface.armored() ? armoredBelt : belt, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor);
+		nodes.submitModel(surface.armored() ? armoredBelt : belt, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor, null);
 		float outer = surface.armored() ? BELT_ARMORED_OUTER : BELT_OUTER;
 		float top = GearModel.BELT_TOP + GearModel.BELT_HEIGHT;
 		// Swings a little with the wearer's stride, from where the strap meets the belt.
 		float swing = Mth.cos(state.walkAnimationPos * 0.6662F) * 9.0F * Math.min(1.0F, state.walkAnimationSpeed * 1.5F);
 		pose.pushPose();
 		pose.translate(TOME_X / 16, top / 16, -(outer + 0.5F) / 16);
-		pose.rotateDegrees(Axis.XP, swing);
-		nodes.submitModel(loop, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor);
+		pose.mulPose(Axis.XP.rotationDegrees(swing));
+		nodes.submitModel(loop, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor, null);
 		// Below the strap, the book hangs with its cover out (item space, turned to face the front).
 		pose.translate(0, (LOOP_LENGTH + 0.2F + TOME_SIZE * 8) / 16, -0.75F / 16);
-		pose.rotateDegrees(Axis.ZP, 180.0F);
-		pose.rotateDegrees(Axis.YP, 180.0F);
+		pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
+		pose.mulPose(Axis.YP.rotationDegrees(180.0F));
 		pose.scale(TOME_SIZE, TOME_SIZE, TOME_SIZE);
 		piece.item().submit(pose, nodes, light, overlay, state.outlineColor);
 		pose.popPose();

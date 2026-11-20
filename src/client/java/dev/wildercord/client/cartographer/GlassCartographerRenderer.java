@@ -24,7 +24,7 @@ public final class GlassCartographerRenderer extends MobRenderer<GlassCartograph
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<GlassCartographerRenderState, GlassCartographerModel>(this) {
 			@Override public void submit(PoseStack pose, SubmitNodeCollector collector, int light, GlassCartographerRenderState state, float yRot, float xRot) {
 				if (!state.isInvisible && state.deathTime <= 0) {
-					collector.order(1).submitModel(getParentModel(), state, pose, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, null, state.outlineColor);
+					collector.order(1).submitModel(getParentModel(), state, pose, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, null, state.outlineColor, null);
 				}
 			}
 		});

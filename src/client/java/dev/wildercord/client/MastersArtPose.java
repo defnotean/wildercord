@@ -105,12 +105,12 @@ public final class MastersArtPose {
 
 	/** The same extracted palette owns residual attack motion; genuine equip/use retains vanilla. */
 	public static float firstPersonOwnership(InteractionHand hand, AvatarRenderState state,
-			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands) {
+			net.minecraft.client.renderer.ItemInHandRenderer hands) {
 		Frame frame = frame(state);
 		boolean owns = hand == InteractionHand.MAIN_HAND && frame != null
 			&& hands instanceof MastersHandMotionState motion && !motion.wildercord$mainHandEquipping()
-			&& !hands.mainHandItem.isEmpty()
-			&& net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem, state.getMainHandItemStack());
+			&& !motion.wildercord$mainHandItem().isEmpty()
+			&& net.minecraft.world.item.ItemStack.isSameItemSameComponents(motion.wildercord$mainHandItem(), state.getMainHandItemStack());
 		return dev.wildercord.aura.MastersViewMotion.ownership(frame == null ? 0 : frame.pose().weight(), owns);
 	}
 
@@ -126,9 +126,9 @@ public final class MastersArtPose {
 		// Vanilla adds the hand translation after this hook. Conjugation turns about that hilt,
 		// rather than rotating the entire hand behind the camera during a high guard or uppercut.
 		stack.translate(grip.x(), grip.y(), grip.z());
-		stack.rotateDegrees(Axis.YP, move.yaw());
-		stack.rotateDegrees(Axis.XP, move.pitch());
-		stack.rotateDegrees(Axis.ZP, move.roll());
+		stack.mulPose(Axis.YP.rotationDegrees(move.yaw()));
+		stack.mulPose(Axis.XP.rotationDegrees(move.pitch()));
+		stack.mulPose(Axis.ZP.rotationDegrees(move.roll()));
 		stack.translate(-grip.x(), -grip.y(), -grip.z());
 	}
 
@@ -141,7 +141,7 @@ public final class MastersArtPose {
 		// Vanilla handheld display's hilt centre, in the pre-item-submit coordinate frame.
 		float y = -1.327F / 16, z = 1.439F / 16;
 		stack.translate(0, y, z);
-		stack.rotateDegrees(Axis.XP, frame.bladeTilt());
+		stack.mulPose(Axis.XP.rotationDegrees(frame.bladeTilt()));
 		stack.translate(0, -y, -z);
 	}
 

@@ -117,7 +117,7 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 				return;
 			}
 			collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, null,
-				state.outlineColor);
+				state.outlineColor, null);
 		}
 	}
 }

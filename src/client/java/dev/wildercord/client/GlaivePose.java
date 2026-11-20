@@ -241,9 +241,9 @@ public final class GlaivePose {
 		float y = -1.327F / 16.0F;
 		float z = 1.439F / 16.0F;
 		stack.translate(0.0F, y, z);
-		stack.rotateDegrees(Axis.XP, pitch);
-		stack.rotateDegrees(Axis.ZP, cross);
-		stack.rotateDegrees(Axis.YP, twist);
+		stack.mulPose(Axis.XP.rotationDegrees(pitch));
+		stack.mulPose(Axis.ZP.rotationDegrees(cross));
+		stack.mulPose(Axis.YP.rotationDegrees(twist));
 		stack.translate(0.0F, -y, -z);
 	}
 
@@ -291,9 +291,9 @@ public final class GlaivePose {
 		}
 
 		pose.translate(dx, dy, dz);
-		pose.rotateDegrees(Axis.ZP, roll);
-		pose.rotateDegrees(Axis.YP, yaw);
-		pose.rotateDegrees(Axis.XP, pitch);
+		pose.mulPose(Axis.ZP.rotationDegrees(roll));
+		pose.mulPose(Axis.YP.rotationDegrees(yaw));
+		pose.mulPose(Axis.XP.rotationDegrees(pitch));
 		return true;
 	}
 

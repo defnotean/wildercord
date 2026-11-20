@@ -71,7 +71,7 @@ public abstract class WildlifeRenderer<T extends Mob, M extends EntityModel<Wild
 				return;
 			}
 			collector.order(1).submitModel(getParentModel(), state, poseStack, RenderTypes.eyes(texture.apply(state)), light, OverlayTexture.NO_OVERLAY,
-				(alpha << 24) | 0xFFFFFF, null, state.outlineColor);
+				(alpha << 24) | 0xFFFFFF, null, state.outlineColor, null);
 		}
 	}
 }

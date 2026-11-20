@@ -250,8 +250,8 @@ public final class ArticulatedCombat {
 
 	/** Canonical third-person display hilt; first person deliberately uses the same resolved item. */
 	public static void orientItemAtSocket(PoseStack stack) {
-		stack.rotateDegrees(Axis.XP, -90);
-		stack.rotateDegrees(Axis.YP, 180);
+		stack.mulPose(Axis.XP.rotationDegrees(-90));
+		stack.mulPose(Axis.YP.rotationDegrees(180));
 		stack.translate(0, 1.327F / 16, -1.439F / 16);
 	}
 

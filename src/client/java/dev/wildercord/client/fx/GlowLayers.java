@@ -1,16 +1,14 @@
 package dev.wildercord.client.fx;
 
-import com.mojang.renderpearl.api.pipeline.BlendFactor;
-import com.mojang.renderpearl.api.pipeline.BlendFunction;
-import com.mojang.renderpearl.api.pipeline.BlendOp;
-import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.BlendFactor;
+import com.mojang.blaze3d.platform.BlendOp;
 import dev.wildercord.Wildercord;
 import dev.wildercord.client.mixin.RenderPipelinesAccessor;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.oit.OitPipelineSet;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 
 /**
@@ -36,15 +34,8 @@ public final class GlowLayers {
 		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
 		.build();
 
-	/**
-	 * The same added light under Improved Transparency (order-independent transparency), which draws
-	 * translucent particles in its own passes and needs a pipeline for each: without one the game
-	 * stops with "OIT pipeline set for particle layer not specified". Vanilla's lightning does the same.
-	 */
-	public static final OitPipelineSet GLOW_OIT = OitPipelineSet.builder("wildercord_glow_particle",
-		RenderPipeline.builder(RenderPipelines.OIT_PARTICLE_SNIPPET).withShaderDefine("OIT_ADDITIVE")).build();
-
-	public static final SingleQuadParticle.Layer GLOW = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, GLOW_PIPELINE, GLOW_OIT);
+	/** Added light: source × alpha + destination. */
+	public static final SingleQuadParticle.Layer GLOW = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, GLOW_PIPELINE);
 	/**
 	 * Darkness is drawn with the solid particles: Improved Transparency can only add light, never take
 	 * it away, so a translucent darkness layer would have no pipeline there. It writes no depth, so it

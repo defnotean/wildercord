@@ -59,8 +59,8 @@ public class RimecoatWolverineRenderer extends WildMonsterRenderer<RimecoatWolve
 			}
 			poseStack.pushPose();
 			getParentModel().toMouth(poseStack);
-			poseStack.rotateDegrees(Axis.XP, 90);
-			poseStack.rotateDegrees(Axis.ZP, 90);
+			poseStack.mulPose(Axis.XP.rotationDegrees(90));
+			poseStack.mulPose(Axis.ZP.rotationDegrees(90));
 			poseStack.scale(0.8F, 0.8F, 0.8F);
 			mouth.submit(poseStack, collector, light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
 			poseStack.popPose();

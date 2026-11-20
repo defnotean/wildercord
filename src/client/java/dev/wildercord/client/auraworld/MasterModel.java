@@ -117,7 +117,7 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 		// The vanilla handheld display's hilt centre before ItemStackRenderState.submit.
 		float y = -1.327F / 16, z = 1.439F / 16;
 		stack.translate(0, y, z);
-		stack.rotateDegrees(Axis.XP, tilt);
+		stack.mulPose(Axis.XP.rotationDegrees(tilt));
 		stack.translate(0, -y, -z);
 	}
 

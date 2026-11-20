@@ -63,7 +63,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 			return;
 		}
 		collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, marks, null,
-			state.outlineColor);
+			state.outlineColor, null);
 	}
 
 	/** Reads the synced marks into the render state (called as every living entity's state is extracted). */

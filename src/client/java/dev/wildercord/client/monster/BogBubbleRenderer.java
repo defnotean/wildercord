@@ -52,12 +52,12 @@ public class BogBubbleRenderer extends EntityRenderer<BogBubble, BogBubbleRender
 		float wobble = Mth.sin(t * 0.9F) * 0.08F;
 		poseStack.translate(0.0F, 0.18F * size, 0.0F);
 		poseStack.scale(size * (1 + wobble), size * (1 - wobble), size * (1 + wobble));
-		poseStack.rotateDegrees(Axis.YP, t * 9.0F);
-		poseStack.rotateDegrees(Axis.XP, t * 5.0F);
+		poseStack.mulPose(Axis.YP.rotationDegrees(t * 9.0F));
+		poseStack.mulPose(Axis.XP.rotationDegrees(t * 5.0F));
 		poseStack.translate(0.0F, -1.5F, 0.0F);
-		collector.submitModel(model, state, poseStack, RenderTypes.entityTranslucent(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+		collector.submitModel(model, state, poseStack, RenderTypes.entityTranslucent(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
 		collector.order(1).submitModel(model, state, poseStack, RenderTypes.eyes(GLOW), state.lightCoords, OverlayTexture.NO_OVERLAY, 0xE0FFFFFF, null,
-			state.outlineColor);
+			state.outlineColor, null);
 		poseStack.popPose();
 		super.submit(state, poseStack, collector, camera);
 	}

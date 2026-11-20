@@ -104,7 +104,7 @@ public class ArchivistRenderer extends MobRenderer<Archivist, ArchivistRenderSta
 				return;
 			}
 			collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, null,
-				state.outlineColor);
+				state.outlineColor, null);
 		}
 	}
 }

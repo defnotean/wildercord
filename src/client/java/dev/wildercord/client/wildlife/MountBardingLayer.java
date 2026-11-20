@@ -60,7 +60,7 @@ public final class MountBardingLayer<M extends EntityModel<WildlifeRenderState>>
 		poseStack.scale(GROW, GROW, GROW);
 		poseStack.translate(0, -middle, 0);
 		collector.order(1).submitModel(getParentModel(), state, poseStack, RenderTypes.entityCutout(texture), light,
-			LivingEntityRenderer.getOverlayCoords(state, 0.0F), 0xFF000000 | state.barding, null, state.outlineColor);
+			LivingEntityRenderer.getOverlayCoords(state, 0.0F), 0xFF000000 | state.barding, null, state.outlineColor, null);
 		poseStack.popPose();
 	}
 }
