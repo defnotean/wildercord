@@ -17,7 +17,8 @@ import net.minecraft.world.phys.AABB;
  * of it is in plain sight. Here each circle is culled by its whole extent instead.
  */
 public class SigilGroup extends ParticleGroup<SingleQuadParticle> {
-	public static final ParticleRenderType TYPE = new ParticleRenderType(Wildercord.id("sigils").toString(), "WS");
+	// 26.1.2 ParticleRenderType is a name-only record; the shader mode string is a 26.2 addition.
+	public static final ParticleRenderType TYPE = new ParticleRenderType(Wildercord.id("sigils").toString());
 
 	/** A particle that knows its whole extent: a circle's centre and how far it reaches from it. */
 	public interface Extent {
