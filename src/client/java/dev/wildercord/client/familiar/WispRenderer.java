@@ -2,11 +2,8 @@ package dev.wildercord.client.familiar;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.wildercord.Wildercord;
+import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.Glimmer;
 import dev.wildercord.familiar.Wisp;
@@ -14,11 +11,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -59,17 +54,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	private static final Identifier GLOW = Wildercord.id("textures/entity/wisp_glow.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spell glows. */
-	public static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENTITY_EMISSIVE_SNIPPET)
-		.withLocation(Wildercord.id("pipeline/wisp_glow"))
-		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
-		.withShaderDefine("NO_OVERLAY")
-		.withShaderDefine("NO_CARDINAL_LIGHTING")
-		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
-		.withCull(false)
-		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
-		.build();
-	private static final RenderType GLOW_TYPE = RenderType.create("wildercord_wisp_glow",
-		RenderSetup.builder(GLOW_PIPELINE).withTexture("Sampler0", GLOW).sortOnUpload().createRenderSetup());
+	private static final RenderType GLOW_TYPE = RenderCompat.wispGlowRenderType(GLOW);
 	private static final RenderType BODY_TYPE = RenderTypes.entityTranslucentEmissive(BODY);
 	/** The glow under a shader pack, which can't add light (see ShaderCompat): vanilla's glowing eyes, laid over what's behind. */
 	private static final RenderType PLAIN_GLOW_TYPE = RenderTypes.eyes(GLOW);
@@ -212,7 +197,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 		float alpha = state.looked || state.distanceToCameraSq < 25 ? 1.0F : 0.55F;
 		poseStack.pushPose();
 		poseStack.translate(state.nameTagAttachment.x, state.nameTagAttachment.y + 0.3, state.nameTagAttachment.z);
-		poseStack.mulPose(camera.orientation);
+		dev.wildercord.client.compat.RenderCompat.rotate(poseStack, camera.orientation);
 		poseStack.scale(0.017F, -0.017F, 0.017F);
 		float x = -font.width(name) / 2.0F;
 		collector.submitText(poseStack, x, 0, name.getVisualOrderText(), true, Font.DisplayMode.NORMAL, FULL,

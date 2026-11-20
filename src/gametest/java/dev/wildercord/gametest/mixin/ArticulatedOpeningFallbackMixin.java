@@ -26,11 +26,11 @@ public abstract class ArticulatedOpeningFallbackMixin {
 	private void wildercord$fallback(AbstractClientPlayer player, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector,
 			int light, Operation<Void> original) {
-		ItemInHandRenderer renderer = (ItemInHandRenderer) (Object) this;
+		var hands = dev.wildercord.client.compat.FirstPersonHandView.of((ItemInHandRenderer) (Object) this, player);
 		AvatarRenderState avatar = ((FirstPersonAvatarState) this).wildercord$handsAvatar(player, partial);
-		ArticulatedSharedRenderProbe.viewAttempt(avatar, renderer, player, partial, hand);
+		ArticulatedSharedRenderProbe.viewAttempt(avatar, hands, partial, hand);
 		var previous = wildercord$openingFallback.get();
-		var call = ArticulatedSharedRenderProbe.fallbackViewBegin(renderer, avatar, player, hand, stack);
+		var call = ArticulatedSharedRenderProbe.fallbackViewBegin(hands, avatar, hand, stack);
 		wildercord$openingFallback.set(call);
 		boolean completed = false;
 		try {

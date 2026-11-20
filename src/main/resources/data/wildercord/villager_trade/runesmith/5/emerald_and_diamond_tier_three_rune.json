@@ -14,9 +14,9 @@
   },
   "given_item_modifiers": [
     {
+      "function": "wildercord:random_rune",
       "min_tier": 3,
-      "max_tier": 3,
-      "function": "wildercord:random_rune"
+      "max_tier": 3
     }
   ]
 }

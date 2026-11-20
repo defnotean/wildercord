@@ -148,7 +148,7 @@ public final class ArenaTrees {
 		int minZ = (origin.getZ() - OVERHANG) >> 4, maxZ = (origin.getZ() + OVERHANG) >> 4;
 		for (int cx = minX; cx <= maxX; cx++) {
 			for (int cz = minZ; cz <= maxZ; cz++) {
-				for (StructureStart start : structures.startsForStructure(new net.minecraft.world.level.ChunkPos(cx, cz), ArenaTrees::dungeon)) {
+				for (StructureStart start : dev.wildercord.compat.McWorldgen.startsForStructure(structures, cx, cz, ArenaTrees::dungeon)) {
 					for (StructurePiece piece : start.getPieces()) {
 						if (piece instanceof DungeonPiece && reaches(piece.getBoundingBox(), origin)) {
 							return true;

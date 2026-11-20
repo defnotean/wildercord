@@ -14,7 +14,7 @@ import net.minecraft.util.Mth;
 
 import static dev.wildercord.world.cartographer.CartographerRules.*;
 
-public final class GlassCartographerRenderer extends MobRenderer<GlassCartographer, GlassCartographerRenderState, GlassCartographerModel> {
+public final class GlassCartographerRenderer extends dev.wildercord.client.compat.CullableMobRenderer<GlassCartographer, GlassCartographerRenderState, GlassCartographerModel> {
 	private static final Identifier TEXTURE = Wildercord.id("textures/entity/glass_cartographer.png");
 	private static final Identifier GLOW = Wildercord.id("textures/entity/glass_cartographer_glow.png");
 	private static final Identifier MARK = Wildercord.id("textures/entity/glass_cartographer_mark.png");
@@ -24,7 +24,7 @@ public final class GlassCartographerRenderer extends MobRenderer<GlassCartograph
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<GlassCartographerRenderState, GlassCartographerModel>(this) {
 			@Override public void submit(PoseStack pose, SubmitNodeCollector collector, int light, GlassCartographerRenderState state, float yRot, float xRot) {
 				if (!state.isInvisible && state.deathTime <= 0) {
-					collector.order(1).submitModel(getParentModel(), state, pose, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, null, state.outlineColor, null);
+					dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 				}
 			}
 		});
@@ -33,8 +33,8 @@ public final class GlassCartographerRenderer extends MobRenderer<GlassCartograph
 	@Override public GlassCartographerRenderState createRenderState() { return new GlassCartographerRenderState(); }
 	@Override public Identifier getTextureLocation(GlassCartographerRenderState state) { return TEXTURE; }
 	@Override protected float getFlipDegrees() { return 0; }
-	@Override public boolean shouldRender(GlassCartographer e, Frustum frustum, double x, double y, double z) {
-		return super.shouldRender(e, frustum, x, y, z) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
+	@Override protected boolean shouldRenderEntity(GlassCartographer e, Frustum frustum, double x, double y, double z, float partial) {
+		return superShouldRenderEntity(e, frustum, x, y, z, partial) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
 	}
 
 	@Override public void extractRenderState(GlassCartographer entity, GlassCartographerRenderState s, float tickDelta) {

@@ -111,7 +111,7 @@ public final class Battlefields {
 				it.remove();var memory=BattlefieldRules.memory(rite.kind());
 				if (!Grimoire.unlock(p,memory.key())) continue;
 				AuraApi.teachPart(p,memory.part(),"battlefield");
-				var book=book(rite.kind());if (!p.getInventory().add(book)) p.drop(book, false);
+				var book=book(rite.kind());if (!p.getInventory().add(book)) dev.wildercord.compat.McEntities.drop(p, book, false);
 				AuraFx.groundScar(rite.level(),Vec3.atCenterOf(rite.at()).add(0,-0.5,0),2.8,100,2);
 				Feels.sound(rite.level(),Vec3.atCenterOf(rite.at()),switch (rite.kind()) {case 0 -> "aura_memory_broken_line"; case 1 -> "aura_memory_last_shelter"; default -> "aura_memory_returned_step";},0.7F,1);
 				p.sendSystemMessage(Component.translatable("message.wildercord.battlefield.remembered",Component.literal(memory.title())));

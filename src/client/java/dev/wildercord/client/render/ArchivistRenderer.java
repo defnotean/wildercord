@@ -103,8 +103,7 @@ public class ArchivistRenderer extends MobRenderer<Archivist, ArchivistRenderSta
 			if ((argb >>> 24) < 4) {
 				return;
 			}
-			collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, null,
-				state.outlineColor, null);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
 		}
 	}
 }

@@ -15,7 +15,7 @@ final class GrowMossCarpetPreflight {
    ||!level.getWorldBorder().isWithinBounds(base)||!level.getWorldBorder().isWithinBounds(upper))return false;
   if(!Casters.mayEdit(cast.caster,level,base)||!Casters.mayEdit(cast.caster,level,upper))return false;
   if(!cast.alive()||!level.getBlockState(base).equals(source))return false;
-  if(!((MossyCarpetBlock)source.getBlock()).isValidBonemealTarget(level,base,source))return false;
+  if(!dev.wildercord.compat.McBlocksAndItems.isValidBonemealTarget((MossyCarpetBlock)source.getBlock(),level,base,source))return false;
   // performBonemeal writes upper only; reserve the actual single destination, not base again.
   return cast.takeBlocks(1);
  }

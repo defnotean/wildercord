@@ -37,7 +37,8 @@ public final class Reagents {
 
 	private static final Map<Kind, Item> BY_KIND = new EnumMap<>(Kind.class);
 
-	public static final Item CINDER_ASH = register(Kind.SMOULDERING_ASH, new Item.Properties());
+	public static final Item CINDER_ASH = register(Kind.SMOULDERING_ASH,
+		dev.wildercord.compat.McBlocksAndItems.cookingFuelProperties(new Item.Properties(), 800, 1.25F));
 	public static final Item EVERFROST_SHARD = register(Kind.EVERFROST, new Item.Properties());
 	public static final Item FULGURITE_SHARD = register(Kind.FULGURITE, new Item.Properties());
 	public static final Item BOTTLED_GALE = register(Kind.LINGERING_EDDY, new Item.Properties().stacksTo(16)
@@ -78,6 +79,6 @@ public final class Reagents {
 	}
 
 	public static void init() {
-		net.fabricmc.fabric.api.registry.FuelValueEvents.BUILD.register((builder, context) -> builder.add(CINDER_ASH, 800));
+		dev.wildercord.compat.McBlocksAndItems.registerFuel(CINDER_ASH, 800);
 	}
 }

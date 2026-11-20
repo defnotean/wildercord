@@ -43,7 +43,7 @@ public final class HitStop {
 				walkSpeed = living.walkAnimationSpeed;
 			}
 			if (state instanceof ArmedEntityRenderState armed) {
-				swing = armed.attackTime;
+				swing = dev.wildercord.client.compat.RenderCompat.swingProgress(armed);
 			}
 			return new Pose(state.x, state.y, state.z, state.ageInTicks, bodyRot, yRot, xRot, walk, walkSpeed, swing,
 				state.getData(dev.wildercord.client.MastersArtPose.FRAME), state.getData(dev.wildercord.client.auraworld.MasterModel.FRAME),
@@ -79,7 +79,7 @@ public final class HitStop {
 				living.walkAnimationSpeed = walkSpeed;
 			}
 			if (state instanceof ArmedEntityRenderState armed) {
-				armed.attackTime = swing;
+				dev.wildercord.client.compat.RenderCompat.setSwingProgress(armed, swing);
 			}
 		}
 	}

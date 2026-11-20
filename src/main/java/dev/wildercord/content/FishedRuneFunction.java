@@ -35,7 +35,7 @@ public record FishedRuneFunction(boolean magic) implements LootItemFunction {
 	@Override
 	public ItemStack apply(ItemStack stack, LootContext context) {
 		if (!stack.isEmpty()) {
-			Fishing.caught(context.getOptionalParameter(LootContextParams.THIS_ENTITY), magic);
+			Fishing.caught(dev.wildercord.compat.McLootAndTriggers.getOptionalParam(context, LootContextParams.THIS_ENTITY), magic);
 		}
 		return stack;
 	}

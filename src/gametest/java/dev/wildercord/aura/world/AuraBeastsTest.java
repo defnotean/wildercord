@@ -33,8 +33,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 				for(var habitat:Map.of(AuraBeasts.STONEHORN,List.of("meadow","windswept_hills","windswept_gravelly_hills","stony_peaks"),AuraBeasts.GALECLAW,List.of("windswept_hills","windswept_forest","jagged_peaks","frozen_peaks","snowy_slopes","grove")).entrySet()) {
 					for(var name:habitat.getValue()) {
 						var biome=biomeRegistry.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.BIOME,net.minecraft.resources.Identifier.withDefaultNamespace(name))).value();
-						var spawns=biome.getMobSettings().getMobs(MobCategory.CREATURE);
-						check(spawns.unwrap().stream().anyMatch(e->e.value().type()==habitat.getKey()),"Natural spawn entry exists in "+name);
+						check(dev.wildercord.gametest.compat.GametestCompat.biomeHasMob(biome,MobCategory.CREATURE,habitat.getKey()),"Natural spawn entry exists in "+name);
 					}
 				}
 				for(var parts:List.of(List.of(AuraBeasts.STONEHORN_PLATE,Items.CLAY_BALL,Items.WHEAT,AuraBeasts.BASTION_POULTICE),List.of(AuraBeasts.GALECLAW_PLUME,Items.COPPER_INGOT,Items.STRING,AuraBeasts.RIDGE_WHISTLE))) {
@@ -50,13 +49,13 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 				check(!AuraBeasts.maySpawn(AuraBeasts.STONEHORN,l,EntitySpawnReason.NATURAL,new BlockPos(0,101,0)),"Two local animals cap the natural population");extra.discard();
 				var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(l,0,101,-9,Set.<Relative>of(),0,0,false);
 				for(var beast:List.of(stone,gale)) {
-					beast.pose(BeastRules.IDLE,0);float full=beast.getMaxHealth();beast.setHealth(full);beast.invulnerableTime=0;
+					beast.pose(BeastRules.IDLE,0);float full=beast.getMaxHealth();beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);
 					SpellDefence.hurt(l,beast,l.damageSources().source(DamageTypes.FREEZE,p),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Elemental spell is resisted through the shared pipeline");
-					beast.setHealth(full);beast.invulnerableTime=0;SpellDefence.hurt(l,beast,l.damageSources().source(DamageTypes.IN_FIRE,p),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Fire spell follows the same resistance: "+(full-beast.getHealth())+" expected "+10*BeastRules.spell(beast.gale(),false));
-					beast.setHealth(full);beast.invulnerableTime=0;beast.hurtServer(l,l.damageSources().magic(),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Direct magic is resisted once");
-					beast.setHealth(full);beast.invulnerableTime=0;beast.hurtServer(l,l.damageSources().playerAttack(p),10);check(close(full-beast.getHealth(),10),"Physical blades retain their damage");
-					beast.setHealth(full);beast.invulnerableTime=0;beast.hurtServer(l,l.damageSources().source(Aura.DAMAGE,p,p),10);check(close(full-beast.getHealth(),10),"Aura damage retains its identity");
-					beast.pose(BeastRules.RECOVER,50);beast.setHealth(full);beast.invulnerableTime=0;SpellDefence.hurt(l,beast,l.damageSources().magic(),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),true)),"Recovery opens an opportunity for supporting spells");
+					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);SpellDefence.hurt(l,beast,l.damageSources().source(DamageTypes.IN_FIRE,p),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Fire spell follows the same resistance: "+(full-beast.getHealth())+" expected "+10*BeastRules.spell(beast.gale(),false));
+					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurtServer(l,l.damageSources().magic(),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),false)),"Direct magic is resisted once");
+					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurtServer(l,l.damageSources().playerAttack(p),10);check(close(full-beast.getHealth(),10),"Physical blades retain their damage");
+					beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);beast.hurtServer(l,l.damageSources().source(Aura.DAMAGE,p,p),10);check(close(full-beast.getHealth(),10),"Aura damage retains its identity");
+					beast.pose(BeastRules.RECOVER,50);beast.setHealth(full);dev.wildercord.compat.McEntities.clearHurtCooldown(beast);SpellDefence.hurt(l,beast,l.damageSources().magic(),10);check(close(full-beast.getHealth(),10*BeastRules.spell(beast.gale(),true)),"Recovery opens an opportunity for supporting spells");
 					beast.pose(BeastRules.IDLE,0);beast.aggression=0;beast.setTarget(null);beast.setHealth(full);
 				}
 				return new int[]{stone.getId(),gale.getId()};
@@ -74,7 +73,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 			check(w.getServer().computeOnServer(s->((Stonehorn)s.overworld().getEntity(ids[0])).pose()==BeastRules.WARN),"Charge begins with a full warning");shot(c,"stonehorn_warning");
 			w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(s.overworld(),p.getX()+6,101,p.getZ(),Set.<Relative>of(),180,0,false);});c.waitTicks(58);
 			w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var stone=(Stonehorn)s.overworld().getEntity(ids[0]);check(p.getHealth()==20,"Sideways evasion avoids the committed charge");check(stone.pose()==BeastRules.RECOVER,"Charge leaves a recovery opening");stone.setNoAi(true);stone.setTarget(null);});
-			w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var stone=(Stonehorn)s.overworld().getEntity(ids[0]);stone.pose(BeastRules.IDLE,0);stone.setTarget(p);stone.setNoAi(false);p.setHealth(20);p.invulnerableTime=0;p.teleportTo(s.overworld(),stone.getX(),101,stone.getZ()+6,Set.<Relative>of(),180,0,false);});c.waitTicks(65);
+			w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var stone=(Stonehorn)s.overworld().getEntity(ids[0]);stone.pose(BeastRules.IDLE,0);stone.setTarget(p);stone.setNoAi(false);p.setHealth(20);dev.wildercord.compat.McEntities.clearHurtCooldown(p);p.teleportTo(s.overworld(),stone.getX(),101,stone.getZ()+6,Set.<Relative>of(),180,0,false);});c.waitTicks(65);
 			w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var stone=(Stonehorn)s.overworld().getEntity(ids[0]);check(p.getHealth()<20,"A player remaining in the charge lane takes actual harm");stone.setNoAi(true);stone.setTarget(null);});
 			w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.pose(BeastRules.IDLE,0);gale.calm=0;gale.aggression=0;gale.setTarget(p);gale.setNoAi(false);p.setHealth(20);p.teleportTo(s.overworld(),gale.getX(),101,gale.getZ()+6,Set.<Relative>of(),180,0,false);});c.waitTicks(5);
 			var landing=w.getServer().computeOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);check(gale.pose()==BeastRules.WARN && !gale.distract(gale.position()),"Whistle cannot cancel committed leap preparation");return gale.landing();});shot(c,"galeclaw_warning");

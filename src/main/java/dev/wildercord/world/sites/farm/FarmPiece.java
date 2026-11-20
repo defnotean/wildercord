@@ -170,10 +170,9 @@ public abstract class FarmPiece extends DungeonPiece {
 		if (!bb.isInside(at)) return;
 		set(level, bb, state, x, y, z);
 		if (level.getBlockEntity(at) instanceof SignBlockEntity sign) {
-			var text = new SignText();
-			for (int i = 0; i < lines; i++) text = text.setMessage(i, Component.translatable("sign.wildercord." + key + "." + (i + 1)));
-			sign.setText(text, true);
-			sign.setWaxed(true);
+			var list = new java.util.ArrayList<Component>(lines);
+			for (int i = 0; i < lines; i++) list.add(Component.translatable("sign.wildercord." + key + "." + (i + 1)));
+			dev.wildercord.compat.McBlocksAndItems.writeWaxedSign(sign, list);
 		}
 	}
 

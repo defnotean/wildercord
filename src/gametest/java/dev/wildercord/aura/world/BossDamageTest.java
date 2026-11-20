@@ -19,7 +19,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 	private static float taken(MinecraftServer s, String id) {
 		var p = p(s);
 		p.setHealth(p.getMaxHealth());
-		p.invulnerableTime = 0;
+		dev.wildercord.compat.McEntities.clearHurtCooldown(p);
 		float before = p.getHealth();
 		p.hurtServer(s.overworld(), s.overworld().damageSources().mobAttack(mob(s, id)), 10);
 		return before - p.getHealth();
@@ -179,7 +179,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 					c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_idle").disableCounterPrefix());
 				}
 				c.runOnClient(mc -> {
-					mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND, true);
+					dev.wildercord.gametest.compat.GametestCompat.swingMainHandWithItem(mc.player);
 					mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);
 				});
 				c.waitTicks(6);

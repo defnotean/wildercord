@@ -273,7 +273,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 			case BOSS -> Component.translatable("screen.wildercord.cosmetics.need_boss").withColor(DIM);
 			case CRAFT -> {
 				Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(unlock.what()));
-				int have = minecraft.player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), 0,
+				int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(minecraft.player.getInventory(), stack -> stack.is(item),
 					minecraft.player.inventoryMenu.getCraftSlots());
 				yield Component.translatable("screen.wildercord.cosmetics.buy", unlock.amount(), item.getName(new ItemStack(item)), have)
 					.withColor(have >= unlock.amount() ? GOLD : 0xFFE06060);
@@ -415,7 +415,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		if (unlock.kind() != CordStyles.Kind.CRAFT) return false;
 		Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(unlock.what()));
 		if (item == null) return false;
-		int have = minecraft.player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), 0,
+		int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(minecraft.player.getInventory(), stack -> stack.is(item),
 			minecraft.player.inventoryMenu.getCraftSlots());
 		return have >= unlock.amount();
 	}

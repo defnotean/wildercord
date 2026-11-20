@@ -133,7 +133,7 @@ public final class GearSlots {
 			if (stack.isEmpty() || EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
 				continue;
 			}
-			player.drop(stack, true, false);
+			dev.wildercord.compat.McEntities.dropSilently(player, stack);
 		}
 	}
 

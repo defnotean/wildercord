@@ -95,7 +95,7 @@ abstract class MinePiece extends DungeonPiece {
 
 	/** Whether the deep dark (and so, perhaps, an ancient city) is at this spot: underground sites stay out of it. */
 	static boolean deepDark(Structure.GenerationContext c, int x, int y, int z) {
-		return c.biomeSource().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z), c.randomState().sampler()).is(Biomes.DEEP_DARK);
+		return dev.wildercord.compat.McWorldgen.getNoiseBiome(c, x, y, z).is(Biomes.DEEP_DARK);
 	}
 
 	/** Whether the ground's own water or lava (an aquifer) fills any of a column from {@code y0} to {@code y1}. */

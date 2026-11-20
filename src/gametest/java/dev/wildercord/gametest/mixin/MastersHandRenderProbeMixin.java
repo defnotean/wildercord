@@ -22,6 +22,6 @@ public abstract class MastersHandRenderProbeMixin {
 			@com.llamalad7.mixinextras.sugar.Local net.minecraft.client.renderer.item.ItemStackRenderState itemState) {
 		var entry = dev.wildercord.gametest.BraceNullCaptureProbe.currentHand();
 		if (entry != null && entry.hand() == net.minecraft.world.InteractionHand.MAIN_HAND && stack.is(Items.DIAMOND_SWORD) && !itemState.isEmpty())
-			MastersCaptureProbe.hand(entry.avatar().id, itemState, pose, entry.avatar(), (ItemInHandRenderer) (Object) this, entry.attack(), entry.inverseHeight(), collector);
+			MastersCaptureProbe.hand(entry.avatar().id, itemState, pose, entry.avatar(), dev.wildercord.client.compat.FirstPersonHandView.of((ItemInHandRenderer) (Object) this), entry.attack(), entry.inverseHeight(), collector);
 	}
 }

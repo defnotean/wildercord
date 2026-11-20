@@ -2,6 +2,7 @@ package dev.wildercord.world.sites;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dev.wildercord.TestDataProfile;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -40,7 +41,9 @@ class FarmSitesTest {
 			assertTrue(spacing >= 28 && spacing <= 60 && separation >= 8 && separation <= 20 && separation < spacing, id + " spacing");
 			assertFalse(read(DATA.resolve("tags/worldgen/biome/has_structure/" + id + ".json")).getAsJsonArray("values").isEmpty(), id + " biomes");
 			String chest = Files.readString(DATA.resolve("loot_table/chests/" + id + ".json"));
-			assertTrue(chest.contains("\"wildercord:rune\"") && chest.contains("\"functions\"") && !chest.contains("\"modifier\""), id + " loot gives runes in 26.2 form");
+			assertTrue(chest.contains("\"wildercord:rune\"") && (TestDataProfile.is26_2()
+				? (chest.contains("\"functions\"") && !chest.contains("\"modifier\""))
+				: !chest.contains("\"functions\"")), id + " loot gives runes in " + TestDataProfile.MC_VERSION + " form");
 			JsonObject advancement = read(DATA.resolve("advancement/world/" + id + ".json"));
 			assertEquals("wildercord:world/farm_sites", advancement.get("parent").getAsString(), id);
 			assertTrue(advancement.toString().contains("wildercord:" + id), id + " advancement finds the site");

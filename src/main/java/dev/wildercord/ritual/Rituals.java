@@ -327,7 +327,7 @@ public final class Rituals {
 			if (flat.lengthSqr() < 1.0E-4) flat = new Vec3(1, 0, 0);
 			flat = flat.normalize().scale(0.6);
 			mob.push(flat.x, 0.1, flat.z);
-			mob.hurtMarked = true;
+			dev.wildercord.compat.McEntities.syncVelocity(mob);
 		}
 		// The ward's edge, a few motes at a time.
 		for (int i = 0; i < 8; i++) {

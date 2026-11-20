@@ -16,7 +16,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.PushReaction;
 
 /**
  * The Coilroot: the herb the Rootcoil Serpent guards, growing between the roots of its tree. Once the serpent is dead, anyone may
@@ -29,7 +28,7 @@ public final class Coilroot {
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("coilroot"));
 	public static final CoilrootBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new CoilrootBlock(BlockBehaviour.Properties.of()
 		.setId(KEY).noCollision().noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.AZALEA).lightLevel(state -> 6)
-		.pushReaction(PushReaction.BLOCK)));
+		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("coilroot"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
 		new BlockItem(BLOCK, new Item.Properties().setId(ITEM_KEY).useBlockDescriptionPrefix().rarity(Rarity.EPIC)));

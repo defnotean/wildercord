@@ -485,7 +485,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		if(k>=MojitoRules.CHOP_STUCK){
 			// Wrenched back out of the ground.
 			var at=bladeAt(0,MojitoRules.CHOP_LENGTH*.6);
-			sound(level,at,SoundEvents.SHOVEL_FLATTEN,1.6F,.5F);
+			sound(level,at,dev.wildercord.compat.McBlocksAndItems.sound(SoundEvents.SHOVEL_FLATTEN),1.6F,.5F);
 			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,at)),at.x,at.y,at.z,12,.6,.2,.6,.1);
 			after(level,MojitoRules.CHOP,MojitoRules.CHOP_RECOVER);
 		}

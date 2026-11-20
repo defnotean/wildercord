@@ -72,20 +72,18 @@ public final class MastersCaptureProbe {
 
 	public static void hand(int id, ItemStackRenderState item, PoseStack pose,
 			net.minecraft.client.renderer.entity.state.AvatarRenderState avatar,
-			net.minecraft.client.renderer.ItemInHandRenderer hands, float attack, float inverseHeight, net.minecraft.client.renderer.SubmitNodeCollector collector) {
+			dev.wildercord.client.compat.FirstPersonHandView hands, float attack, float inverseHeight, net.minecraft.client.renderer.SubmitNodeCollector collector) {
 		if (!armed || id != owner) return;
 		MastersCaptureProbe.hands++;
 		BraceNullCaptureProbe.handConsumed(avatar, hands, item, pose, attack, inverseHeight, collector);
-		var motion = (dev.wildercord.client.MastersHandMotionState) hands;
-		handMotion = new HandMotion(attack, inverseHeight, motion.wildercord$oldMainHandHeight(), motion.wildercord$mainHandHeight(),
-			Minecraft.getInstance().getItemModelResolver().swapAnimationScale(motion.wildercord$mainHandItem()),
-			motion.wildercord$mainHandEquipping(),
+		handMotion = new HandMotion(attack, inverseHeight, hands.oldMainHandHeight(), hands.mainHandHeight(),
+			hands.mainHandSwapScale(),
+			hands.mainHandEquipping(),
 			dev.wildercord.client.MastersArtPose.firstPersonOwnership(net.minecraft.world.InteractionHand.MAIN_HAND, avatar, hands),
 			avatar.getData(dev.wildercord.client.MastersArtPose.FRAME));
 		Minecraft mc = Minecraft.getInstance();
 		var camera = new CameraRenderState();
-		var mainCam = mc.gameRenderer.mainCamera();
-		mainCam.extractRenderState(camera, mainCam.getCameraEntityPartialTicks(DELTA));
+		dev.wildercord.gametest.compat.GametestCompat.extractMainCamera(mc.gameRenderer, camera, PARTIAL);
 		var projection = new Projection();
 		projection.setupPerspective(.05F, camera.depthFar, camera.hudFov, mc.getWindow().getWidth(), mc.getWindow().getHeight());
 		var matrix = projection.getMatrix(new org.joml.Matrix4f()).mul(RenderSystem.getModelViewStack()).mul(pose.last().pose());
@@ -153,7 +151,7 @@ public final class MastersCaptureProbe {
 			mc.gameRenderer.update(DELTA);
 			mc.gameRenderer.extract(DELTA, true);
 			BraceNullCaptureProbe.rendering(true);
-			try { mc.gameRenderer.render(DELTA, true); } finally { BraceNullCaptureProbe.rendering(false); }
+			try { dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA); } finally { BraceNullCaptureProbe.rendering(false); }
 			RenderSystem.getDevice().createCommandEncoder().submit();
 			verifyRender(mc, name);
 			var counterPhase = BraceNullCaptureProbe.finish(name);

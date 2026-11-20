@@ -27,10 +27,7 @@ SITES = {
 }
 
 # The night guard of the scarecrow field: the dead that rise from its furrows after dark.
-NIGHT_GUARD = {"monster": {"bounding_box": "piece", "spawns": [
-    {"type": "minecraft:zombie", "weight": 3, "minCount": 1, "maxCount": 1},
-    {"type": "minecraft:skeleton", "weight": 2, "minCount": 1, "maxCount": 1},
-]}}
+NIGHT_GUARD_SPAWNS = [("minecraft:zombie", 3, 1), ("minecraft:skeleton", 2, 1)]
 
 LANG = {
     "advancements.wildercord.world.farm_sites.title": "Country Roads",
@@ -111,7 +108,8 @@ def write(g):
     for site, (n, spacing, separation, terrain, biomes, icon, title, description) in SITES.items():
         g.write_json(g.DATA / f"worldgen/structure/{site}.json", {
             "type": "wildercord:site", "site": site, "biomes": f"#wildercord:has_structure/{site}",
-            "spawn_overrides": NIGHT_GUARD if site == "farm_scarecrow" else {},
+            "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": [
+                g.profile.spawner_entry(*s) for s in NIGHT_GUARD_SPAWNS]}} if site == "farm_scarecrow" else {},
             "step": CANOPY_STEP if site in CLEARS_CANOPY else "surface_structures", "terrain_adaptation": terrain})
         g.write_json(g.DATA / f"worldgen/structure_set/{site}.json", {
             "placement": {"type": "minecraft:random_spread", "salt": SALT + n, "spacing": spacing, "separation": separation},

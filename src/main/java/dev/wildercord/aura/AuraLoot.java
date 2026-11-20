@@ -15,7 +15,6 @@ import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.util.Map;
 import java.util.Random;
@@ -70,7 +69,7 @@ public final class AuraLoot {
 
 	/** A pool holding a manual {@code chance} times in 100, its method drawn by the source's weights. */
 	static LootPool.Builder pool(MethodSources.Source source, int chance) {
-		LootPool.Builder builder = LootPool.lootPool().setRolls(ConstantValue.exactly(1));
+		LootPool.Builder builder = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1));
 		int total = source.weights().values().stream().mapToInt(w -> Math.max(0, w)).sum();
 		if (total <= 0) {
 			return builder;

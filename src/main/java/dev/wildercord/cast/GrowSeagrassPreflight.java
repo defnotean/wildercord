@@ -18,7 +18,7 @@ final class GrowSeagrassPreflight {
    ||!level.getWorldBorder().isWithinBounds(lower)||!level.getWorldBorder().isWithinBounds(upper))return false;
   if(!Casters.mayEdit(cast.caster,level,lower)||!Casters.mayEdit(cast.caster,level,upper))return false;
   if(!cast.alive()||!level.getBlockState(lower).equals(source))return false;
-  if(!((SeagrassBlock)source.getBlock()).isValidBonemealTarget(level,lower,source))return false;
+  if(!dev.wildercord.compat.McBlocksAndItems.isValidBonemealTarget((SeagrassBlock)source.getBlock(),level,lower,source))return false;
   return cast.takeBlocks(2);
  }
 }

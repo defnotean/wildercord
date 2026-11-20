@@ -151,12 +151,12 @@ public final class CordCosmetics {
 		if (!CordStyles.unlocked(option, progress)) {
 			Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(option.unlock().what()));
 			int need = option.unlock().amount();
-			int have = player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), 0, player.inventoryMenu.getCraftSlots());
+			int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(player.getInventory(), stack -> stack.is(item), player.inventoryMenu.getCraftSlots());
 			if (have < need) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.cosmetic.need", need, item.getName(new net.minecraft.world.item.ItemStack(item))).withStyle(ChatFormatting.RED));
 				return false;
 			}
-			player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), need, player.inventoryMenu.getCraftSlots());
+			dev.wildercord.compat.McBlocksAndItems.removeMatchingItems(player.getInventory(), stack -> stack.is(item), need, player.inventoryMenu.getCraftSlots());
 			player.inventoryMenu.broadcastChanges();
 			List<String> bought = new ArrayList<>(player.getAttachedOrElse(BOUGHT, List.of()));
 			bought.add(option.key());

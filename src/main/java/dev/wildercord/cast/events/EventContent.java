@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 
 /**
  * The world events' blocks: only the Fallen Star, which has no item (it's found, never carried) and
@@ -26,7 +25,7 @@ public final class EventContent {
 		.strength(-1.0F, 3600000.0F)
 		.noLootTable()
 		.noOcclusion()
-		.pushReaction(PushReaction.BLOCK)
+		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())
 		.lightLevel(state -> 15));
 
 	public static final BlockEntityType<FallenStarBlockEntity> FALLEN_STAR_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,

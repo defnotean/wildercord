@@ -1,16 +1,13 @@
 package dev.wildercord.wildlife;
+import dev.wildercord.compat.SimpleWorldFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.block.Block;
 /** Twenty-four bounded attempts at a damp bank; never replaces an existing plant or water. */
-public class MoonreedFeature extends Feature<NoneFeatureConfiguration> {
- public MoonreedFeature() {super(NoneFeatureConfiguration.CODEC);}
- @Override public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {return place(context.level(),context.chunkGenerator(),context.random(),context.origin());}
+public class MoonreedFeature extends SimpleWorldFeature {
+ @Override
  public boolean place(WorldGenLevel l,ChunkGenerator generator,RandomSource r,BlockPos origin) {
   int placed=0;
   for(int i=0;i<24;i++) {

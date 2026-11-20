@@ -13,7 +13,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -23,7 +22,6 @@ import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
@@ -98,7 +96,7 @@ public final class WildlifeSpawns {
 			context -> {
 				WildercordConfig.WildlifeSettings settings = Config.get().wildlife();
 				if (settings.spawns(kind.id())) {
-					context.getMobSpawnSettings().addSpawn(category(kind), new MobSpawnSettings.SpawnerData(type, kind.minGroup(), kind.maxGroup()),
+					dev.wildercord.compat.McWorldgen.addSpawn(context, category(kind), type, kind.minGroup(), kind.maxGroup(),
 						WildlifeRules.weight(kind, settings.spawnMultiplier()));
 				}
 			});

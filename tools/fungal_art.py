@@ -470,7 +470,7 @@ def write(g):
     for name in ['glowcap','fungal_nursery']:
         g.write_json(g.DATA/f'loot_table/blocks/{name}.json',{'type':'minecraft:block','pools':[{'rolls':1,'entries':[{'type':'minecraft:item','name':'wildercord:'+name}],'conditions':[{'condition':'minecraft:survives_explosion'}]}]})
     for name,rarity in [('glowcap_patch',3),('breathmark_site',4)]:
-        g.write_json(g.DATA/f'worldgen/configured_feature/{name}.json',{'type':'wildercord:'+name,'config':{}})
+        g.write_json(g.DATA/f'{g.profile.feature_subdir}/{name}.json',g.profile.unit_feature_json('wildercord:'+name))
         placement=[{'type':'minecraft:count','count':2},{'type':'minecraft:rarity_filter','chance':rarity},{'type':'minecraft:in_square'},{'type':'minecraft:height_range','height':{'type':'minecraft:uniform','min_inclusive':{'absolute':-32},'max_inclusive':{'absolute':40}}}]
         if name=='breathmark_site': placement.append({'type':'minecraft:biome'})
         g.write_json(g.DATA/f'worldgen/placed_feature/{name}.json',{'feature':'wildercord:'+name,'placement':placement})

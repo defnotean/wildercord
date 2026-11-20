@@ -14,7 +14,7 @@ public final class StoneHingeVelocityExperiment {
 		boolean needsSync, boolean syncVelocity) {
 		public static State of(ServerPlayer player) {
 			return new State(player.position(), player.getDeltaMovement(), player.fallDistance, player.onGround(),
-				player.getHealth(), player.getAbsorptionAmount(), player.needsSync, player.hurtMarked);
+				player.getHealth(), player.getAbsorptionAmount(), player.needsSync, dev.wildercord.gametest.compat.GametestCompat.syncVelocityFlag(player));
 		}
 	}
 	public static final class Strike {

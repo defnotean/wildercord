@@ -14,22 +14,22 @@ import net.minecraft.resources.Identifier;
 import static dev.wildercord.world.ferryman.FerrymanRules.*;
 
 /** The attack marks are world geometry, so Minimal particles never removes an essential tell. */
-public final class FerrymanRenderer extends MobRenderer<ReedCrownedFerryman,FerrymanRenderState,FerrymanModel> {
+public final class FerrymanRenderer extends dev.wildercord.client.compat.CullableMobRenderer<ReedCrownedFerryman,FerrymanRenderState,FerrymanModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("reed_crowned_ferryman"),"main");
 	private static final Identifier SKIN=Wildercord.id("textures/entity/ferryman.png"), MARK=Wildercord.id("textures/entity/ferryman_mark.png"), GLOW=Wildercord.id("textures/entity/ferryman_glow.png");
 	public FerrymanRenderer(EntityRendererProvider.Context c) {
 		super(c,new FerrymanModel(c.bakeLayer(LAYER)),1.7F);
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<FerrymanRenderState,FerrymanModel>(this) {
 			@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,FerrymanRenderState state,float yRot,float xRot) {
-				if(!state.isInvisible && state.deathTime<=0) collector.order(1).submitModel(getParentModel(),state,pose,RenderTypes.eyes(GLOW),light,OverlayTexture.NO_OVERLAY,0xFFFFFFFF,null,state.outlineColor,null);
+				if(!state.isInvisible && state.deathTime<=0) dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 			}
 		});
 	}
 	@Override public FerrymanRenderState createRenderState() { return new FerrymanRenderState(); }
 	@Override public Identifier getTextureLocation(FerrymanRenderState state) { return SKIN; }
 	@Override protected float getFlipDegrees() { return 0; }
-	@Override public boolean shouldRender(ReedCrownedFerryman e, Frustum frustum, double x, double y, double z) {
-		return super.shouldRender(e,frustum,x,y,z) || frustum.isVisible(e.getBoundingBox().inflate(16,2,16));
+	@Override protected boolean shouldRenderEntity(ReedCrownedFerryman e, Frustum frustum, double x, double y, double z, float partial) {
+		return superShouldRenderEntity(e,frustum,x,y,z,partial) || frustum.isVisible(e.getBoundingBox().inflate(16,2,16));
 	}
 	@Override public void extractRenderState(ReedCrownedFerryman e,FerrymanRenderState s,float partial) {
 		super.extractRenderState(e,s,partial); s.move=e.move(); s.elapsed=e.elapsed(partial); s.aim=e.aim(); s.markX=e.markX(); s.markZ=e.markZ(); s.acrossX=e.acrossX(); s.second=e.secondPhase();

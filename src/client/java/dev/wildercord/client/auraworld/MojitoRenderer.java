@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.MojitoRules;
 import dev.wildercord.aura.world.Mojito;
+import dev.wildercord.client.compat.CullableMobRenderer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 
 /** Mojito (see {@link MojitoModel}), his head nearly three times a player's height, with his eyes, the runes down his blade and the magic at his sides lit whatever the light. */
-public final class MojitoRenderer extends MobRenderer<Mojito,MojitoRenderState,MojitoModel> {
+public final class MojitoRenderer extends CullableMobRenderer<Mojito,MojitoRenderState,MojitoModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("mojito"),"main");
 	private static final Identifier SKIN=Wildercord.id("textures/entity/mojito/skin.png");
 	private static final Identifier GLOW=Wildercord.id("textures/entity/mojito/glow.png");
@@ -29,9 +29,8 @@ public final class MojitoRenderer extends MobRenderer<Mojito,MojitoRenderState,M
 	@Override public MojitoRenderState createRenderState(){return new MojitoRenderState();}
 	@Override public Identifier getTextureLocation(MojitoRenderState s){return SKIN;}
 	/** Thrown, his sword can be well off from him, and he should not vanish from view when it is in sight and he isn't, nor it. */
-	@Override protected AABB getBoundingBoxForCulling(Mojito e){
-		var box=super.getBoundingBoxForCulling(e);
-		float partial=net.minecraft.client.Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+	@Override protected AABB cullingBounds(Mojito e,float partial){
+		var box=superCullingBounds(e,partial);
 		return e.thrown()?box.minmax(AABB.ofSize(e.swordAt(partial),6,3,6)):box;
 	}
 	@Override public void extractRenderState(Mojito e,MojitoRenderState s,float partial){
@@ -69,7 +68,7 @@ public final class MojitoRenderer extends MobRenderer<Mojito,MojitoRenderState,M
 			float alpha=.25F+.1F*Mth.sin(s.ageInTicks*.08F)+.65F*s.rise;
 			if(s.deathTime>0)alpha*=Math.max(0,1-s.deathTime/20F);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
-			collector.order(1).submitModel(getParentModel(),s,pose,type,light,OverlayTexture.NO_OVERLAY,(a<<24)|0xFFFFFF,null,s.outlineColor,null);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, s.outlineColor);
 		}
 	}
 }

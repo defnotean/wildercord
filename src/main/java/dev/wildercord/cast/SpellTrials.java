@@ -28,7 +28,7 @@ public final class SpellTrials {
  private static boolean valid(ServerPlayer p,Attempt a){if(p.isAlive()&&!p.isRemoved()&&!p.isCreative()&&!p.isSpectator()&&p.level().dimension().equals(PracticeRoom.DIMENSION)&&p.level().getGameTime()<=a.until)return true;RUNNING.remove(p);p.sendSystemMessage(Component.translatable("message.wildercord.trial_ended"));return false;}
  private static void check(ServerPlayer p,Attempt a){if(a.mana>100){RUNNING.remove(p);p.sendSystemMessage(Component.translatable("message.wildercord.trial_mana_failed"));return;}
   boolean won=a.hits>=5&&switch(a.kind){case "variety"->a.shapes.size()>=4;case "fusion"->a.fusions.size()>=3;default->a.casts>=5;};
-  if(!won)return;RUNNING.remove(p);var done=new ArrayList<>(p.getAttachedOrElse(COMPLETED,List.of()));if(!done.contains(a.kind)){done.add(a.kind);p.setAttached(COMPLETED,List.copyOf(done));var reward=new ItemStack(WildercordItems.TORN_PAGE);p.getInventory().add(reward);if(!reward.isEmpty())p.drop(reward, false);}
+  if(!won)return;RUNNING.remove(p);var done=new ArrayList<>(p.getAttachedOrElse(COMPLETED,List.of()));if(!done.contains(a.kind)){done.add(a.kind);p.setAttached(COMPLETED,List.copyOf(done));var reward=new ItemStack(WildercordItems.TORN_PAGE);p.getInventory().add(reward);if(!reward.isEmpty())dev.wildercord.compat.McEntities.drop(p, reward, false);}
   p.sendSystemMessage(Component.translatable("message.wildercord.trial_won",Component.translatable("trial.wildercord."+a.kind),String.format(java.util.Locale.ROOT,"%.1f",a.mana)));
  }
 }

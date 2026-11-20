@@ -756,7 +756,7 @@ def main(g, runes):
         g.write_json(data / f"worldgen/structure/{key}.json", {
             "type": "wildercord:dungeon", "dungeon": key, "biomes": f"#wildercord:has_structure/{key}",
             "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": [
-                {"type": t, "weight": w, "minCount": 1, "maxCount": 1} for t, w in d["spawns"]]}} if d["spawns"] else {},
+                g.profile.spawner_entry(t, w, 1) for t, w in d["spawns"]]}} if d["spawns"] else {},
             "step": d["step"], "terrain_adaptation": "none"})
         placement = {"type": "minecraft:random_spread", "salt": d["salt"], "separation": d["separation"], "spacing": d["spacing"]}
         if "exclusion" in d:

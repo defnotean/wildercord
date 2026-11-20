@@ -14,7 +14,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -26,7 +25,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -67,8 +65,10 @@ import java.util.function.Predicate;
 public final class MonsterSpawns {
 	private MonsterSpawns() {}
 
-	private static final Set<ResourceKey<Biome>> FORESTS = Set.of(Biomes.FOREST, Biomes.FLOWER_FOREST, Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST,
-		Biomes.DARK_FOREST, Biomes.PALE_GARDEN, Biomes.SNOWY_TAIGA, Biomes.GROVE);
+	private static final Set<ResourceKey<Biome>> FORESTS = dev.wildercord.compat.McWorldgen.biomeSetWithOptional(
+		Set.of(Biomes.FOREST, Biomes.FLOWER_FOREST, Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST,
+			Biomes.DARK_FOREST, Biomes.PALE_GARDEN, Biomes.SNOWY_TAIGA, Biomes.GROVE),
+		dev.wildercord.compat.McWorldgen.dappledForestBiome());
 	/** Where the woods are darkest: more Bramblewalkers, and Gloomstalkers on the surface. */
 	private static final Set<ResourceKey<Biome>> DARK_WOODS = Set.of(Biomes.DARK_FOREST, Biomes.PALE_GARDEN);
 	private static final Set<ResourceKey<Biome>> PEAKS = Set.of(Biomes.JAGGED_PEAKS, Biomes.FROZEN_PEAKS, Biomes.STONY_PEAKS, Biomes.SNOWY_SLOPES,
@@ -235,89 +235,89 @@ public final class MonsterSpawns {
 		if (FIELDS.contains(key)) {
 			int weight = MonsterRules.weight(STRAWMAN_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.STRAWMAN, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.STRAWMAN, 1, 1, weight);
 			}
 		}
 		if (DESERTS.contains(key)) {
 			int weight = MonsterRules.weight(DUNESTINGER_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.DUNESTINGER, 2, 4), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.DUNESTINGER, 2, 4, weight);
 			}
 		}
 		if (JUNGLES.contains(key)) {
 			int weight = MonsterRules.weight(GULPER_PITCHER_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.GULPER_PITCHER, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.GULPER_PITCHER, 1, 1, weight);
 			}
 		}
 		if (SAVANNAS.contains(key)) {
 			int weight = MonsterRules.weight(CACKLING_HYENA_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.CACKLING_HYENA, 3, 5), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.CACKLING_HYENA, 3, 5, weight);
 			}
 		}
 		if (TAIGAS.contains(key)) {
 			int weight = MonsterRules.weight(PITCHBACK_BEETLE_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.PITCHBACK_BEETLE, 1, 2), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.PITCHBACK_BEETLE, 1, 2, weight);
 			}
 			int bear = MonsterRules.weight(TIMBERMAUL_BEAR_WEIGHT, rate);
 			if (bear > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.TIMBERMAUL_BEAR, 1, 1), bear);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.TIMBERMAUL_BEAR, 1, 1, bear);
 			}
 		}
 		if (SNOWS.contains(key)) {
 			int weight = MonsterRules.weight(RIMECOAT_WOLVERINE_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.RIMECOAT_WOLVERINE, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.RIMECOAT_WOLVERINE, 1, 1, weight);
 			}
 		}
 		if (RIVERS.contains(key)) {
 			int weight = MonsterRules.weight(SNAPJAW_TURTLE_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.SNAPJAW_TURTLE, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.SNAPJAW_TURTLE, 1, 1, weight);
 			}
 		}
 		if (SEAS.contains(key)) {
 			int weight = MonsterRules.weight(REEFGRASP_OCTOPUS_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.REEFGRASP_OCTOPUS, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.REEFGRASP_OCTOPUS, 1, 1, weight);
 			}
 		}
 		if (CHERRY.contains(key)) {
 			int weight = MonsterRules.weight(FOXFIRE_KITSUNE_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.FOXFIRE_KITSUNE, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.FOXFIRE_KITSUNE, 1, 1, weight);
 			}
 		}
 		if (CRAGS.contains(key)) {
 			int weight = MonsterRules.weight(CRAGCLEAVER_RAM_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.CRAGCLEAVER_RAM, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.CRAGCLEAVER_RAM, 1, 1, weight);
 			}
 		}
 		if (DRIPSTONE.contains(key)) {
 			int weight = MonsterRules.weight(DRIPFANG_LURKER_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.DRIPFANG_LURKER, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.DRIPFANG_LURKER, 1, 1, weight);
 			}
 		}
 		if (LUSH.contains(key)) {
 			int weight = MonsterRules.weight(GLOWLURE_ANGLER_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.GLOWLURE_ANGLER, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.GLOWLURE_ANGLER, 1, 1, weight);
 			}
 		}
 		if (BLOOMS.contains(key)) {
 			int weight = MonsterRules.weight(BLOOMCLAW_MANTIS_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.BLOOMCLAW_MANTIS, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.BLOOMCLAW_MANTIS, 1, 1, weight);
 			}
 		}
 		if (DESERTS.contains(key)) {
 			int weight = MonsterRules.weight(SANDMAW_WYRM_WEIGHT, rate);
 			if (weight > 0) {
-				spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.SANDMAW_WYRM, 1, 1), weight);
+				dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.SANDMAW_WYRM, 1, 1, weight);
 			}
 		}
 		if (!QUIET.contains(key)) {
@@ -330,7 +330,7 @@ public final class MonsterSpawns {
 	private static void add(BiomeModificationContext.MobSpawnSettingsContext spawns, MonsterRules.Kind kind, double share, double rate) {
 		int weight = MonsterRules.weight((int) Math.round(kind.weight * share), rate);
 		if (weight > 0) {
-			spawns.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(MonsterContent.type(kind), kind.min, kind.max), weight);
+			dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.type(kind), kind.min, kind.max, weight);
 		}
 	}
 

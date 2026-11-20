@@ -52,12 +52,11 @@ public class BogBubbleRenderer extends EntityRenderer<BogBubble, BogBubbleRender
 		float wobble = Mth.sin(t * 0.9F) * 0.08F;
 		poseStack.translate(0.0F, 0.18F * size, 0.0F);
 		poseStack.scale(size * (1 + wobble), size * (1 - wobble), size * (1 + wobble));
-		poseStack.mulPose(Axis.YP.rotationDegrees(t * 9.0F));
-		poseStack.mulPose(Axis.XP.rotationDegrees(t * 5.0F));
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.YP, t * 9.0F);
+		dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.XP, t * 5.0F);
 		poseStack.translate(0.0F, -1.5F, 0.0F);
-		collector.submitModel(model, state, poseStack, RenderTypes.entityTranslucent(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
-		collector.order(1).submitModel(model, state, poseStack, RenderTypes.eyes(GLOW), state.lightCoords, OverlayTexture.NO_OVERLAY, 0xE0FFFFFF, null,
-			state.outlineColor, null);
+		dev.wildercord.client.compat.RenderCompat.submitModel(collector, model, state, poseStack, RenderTypes.entityTranslucent(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), model, state, poseStack, RenderTypes.eyes(GLOW), state.lightCoords, OverlayTexture.NO_OVERLAY, 0xE0FFFFFF, state.outlineColor);
 		poseStack.popPose();
 		super.submit(state, poseStack, collector, camera);
 	}

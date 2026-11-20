@@ -214,7 +214,7 @@ public class CordScreen extends Screen {
 		// Since 26.x (SDL input) typed characters only arrive while a screen asks for text input.
 		// Typing anywhere searches the Codex, so ask for the whole time the screen is open; the
 		// game turns it off again when the screen closes. The IME window sits by the search box.
-		minecraft.textInputManager().startTextInput();
+		dev.wildercord.client.compat.RenderCompat.startTextInput(minecraft, this);
 		float s = scale();
 		int sx = Math.round(left() + searchX() * s);
 		int sy = Math.round(top() + TABS_TOP * s);
@@ -347,7 +347,7 @@ public class CordScreen extends Screen {
 
 	@Override
 	public void removed() {
-		minecraft.textInputManager().stopTextInput();
+		dev.wildercord.client.compat.RenderCompat.stopTextInput(minecraft, this);
 		super.removed();
 	}
 

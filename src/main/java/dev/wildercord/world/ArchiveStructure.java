@@ -1,6 +1,7 @@
 package dev.wildercord.world;
 
 import com.mojang.serialization.MapCodec;
+import dev.wildercord.compat.McWorldgen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -23,14 +24,7 @@ public class ArchiveStructure extends Structure {
 
 	@Override
 	protected Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
-		int cx = context.chunkPos().getMiddleBlockX();
-		int cz = context.chunkPos().getMiddleBlockZ();
-		int surface = context.chunkGenerator().getFirstOccupiedHeight(cx, cz, Heightmap.Types.WORLD_SURFACE_WG,
-			context.heightAccessor(), context.randomState());
-		var centerBiome = context.biomeSource().getNoiseBiome(
-			net.minecraft.core.QuartPos.fromBlock(cx), net.minecraft.core.QuartPos.fromBlock(surface), net.minecraft.core.QuartPos.fromBlock(cz),
-			context.randomState().sampler());
-		if (!context.validBiome().test(centerBiome)) {
+		if (!McWorldgen.canValidBiomeExistAtChunkCenter(context)) {
 			return Optional.empty();
 		}
 		Direction facing = Direction.Plane.HORIZONTAL.getRandomDirection(context.random());

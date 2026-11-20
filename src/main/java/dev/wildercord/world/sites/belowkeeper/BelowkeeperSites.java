@@ -119,7 +119,7 @@ public final class BelowkeeperSites {
 		if (centerCol.getBlock(surface).is(Blocks.WATER) || centerCol.getBlock(surface - 1).is(Blocks.WATER)) return OptionalInt.empty();
 		for (int y = 24; y >= -24; y -= 8) {
 			if (surface < y + height + 10) continue;
-			var biome = ctx.biomeSource().getNoiseBiome(QuartPos.fromBlock(cx), QuartPos.fromBlock(y), QuartPos.fromBlock(cz), ctx.randomState().sampler());
+			var biome = dev.wildercord.compat.McWorldgen.getNoiseBiome(ctx, cx, y, cz);
 			if (!ctx.validBiome().test(biome)) continue;
 			if (drySpan(ctx, x, z, span, y - 2, y + height)) return OptionalInt.of(y);
 		}

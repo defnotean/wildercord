@@ -68,7 +68,7 @@ public final class BlossomTanukiRenderer extends WildlifeRenderer<BlossomTanuki,
 			// Down to the ground (model space is upside down, its feet at 24 pixels), then upright again and rooted at its base.
 			poseStack.translate(0, 1.501F, 0);
 			poseStack.scale(-size, -size, size);
-			poseStack.mulPose(Axis.ZP.rotationDegrees(shiver));
+			dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.ZP, shiver);
 			poseStack.translate(-0.5F, 0, -0.5F);
 			state.garden[0].submit(poseStack, collector, light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
 			poseStack.popPose();

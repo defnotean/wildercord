@@ -62,7 +62,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.entity.TrialSpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -367,10 +366,7 @@ public final class WayfarerEffects {
 		}
 		LOCATED.put(player.getUUID(), now);
 		int cells = WayfarerRules.locateCells(radius);
-		BlockPos found = what instanceof TagKey<?> tag ? level.findNearestMapStructure((TagKey<Structure>) tag, player.blockPosition(), cells, false)
-			: java.util.Optional.ofNullable(level.getChunkSource().getGenerator().findNearestMapStructure(
-				level, (HolderSet<Structure>) what, player.blockPosition(), cells, false))
-				.map(com.mojang.datafixers.util.Pair::getFirst).orElse(null);
+		BlockPos found = dev.wildercord.compat.McWorldgen.findNearestStructure(level, what, player.blockPosition(), cells, false);
 		if (found == null) {
 			tell(cast, path + ".none");
 			chime(level, player.position(), SoundEvents.LODESTONE_COMPASS_LOCK, 0.6f);
@@ -626,7 +622,7 @@ public final class WayfarerEffects {
 				THRIFT.remove(player.getUUID());
 				ItemStack lapis = new ItemStack(Items.LAPIS_LAZULI);
 				if (!player.getInventory().add(lapis)) {
-					player.drop(lapis, false);
+					dev.wildercord.compat.McEntities.drop(player, lapis, false);
 				}
 				Casters.tell(player, Component.translatable("message.wildercord.wayfarer.lapis_thrift.refund"));
 				Fx.sound(level, player.position(), SoundEvents.ENCHANTMENT_TABLE_USE, 0.6f, 1.4f);
@@ -779,18 +775,13 @@ public final class WayfarerEffects {
 
 	// ------------------------------------------------------------------ decoration
 
-	/** The dyed families a dye recolours, each one block per colour. */
-	private static final List<ColorCollection<Block>> DYED = List.of(Blocks.WOOL, Blocks.STAINED_GLASS,
-		Blocks.DYED_TERRACOTTA, Blocks.STAINED_GLASS_PANE, Blocks.CARPET, Blocks.GLAZED_TERRACOTTA, Blocks.CONCRETE,
-		Blocks.CONCRETE_POWDER, Blocks.DYED_CANDLE);
-
 	/** {@code state} recoloured to {@code color}, or null when it isn't dyeable or already is that colour. */
 	static BlockState recolour(BlockState state, DyeColor color) {
 		Block block = state.getBlock();
 		ColorCollection<Block> family = block == Blocks.GLASS ? Blocks.STAINED_GLASS : block == Blocks.GLASS_PANE ? Blocks.STAINED_GLASS_PANE
 			: block == Blocks.TERRACOTTA ? Blocks.DYED_TERRACOTTA : block == Blocks.CANDLE ? Blocks.DYED_CANDLE : null;
 		if (family == null) {
-			for (ColorCollection<Block> dyed : DYED) {
+			for (ColorCollection<Block> dyed : dev.wildercord.compat.McBlocksAndItems.dyedBlockFamilies()) {
 				if (dyed.asList().contains(block)) {
 					family = dyed;
 					break;
@@ -857,24 +848,13 @@ public final class WayfarerEffects {
 			tell(cast, sign == null ? "glyph_carve.none" : "glyph_carve.sealed");
 			return;
 		}
-		boolean front = sign.isFacingFrontText(player);
-		SignText text = sign.getText(front);
-		Component[] lines = text.getMessages(false);
-		int blank = -1;
-		for (int i = 0; i < lines.length; i++) {
-			if (lines[i].getString().isBlank()) {
-				blank = i;
-				break;
-			}
-		}
-		if (blank < 0) {
-			tell(cast, "glyph_carve.full");
-			return;
-		}
 		Vec3 look = player.getLookAngle();
 		Component glyph = Component.literal("✦ ").append(Component.translatable("direction.wildercord."
 			+ WayfarerRules.COMPASS[WayfarerRules.compass(look.x, look.z)])).append(" ✦");
-		sign.setText(text.setMessage(blank, glyph).setHasGlowingText(true), front);
+		if (!dev.wildercord.compat.McBlocksAndItems.appendFacingSignLineAndGlow(sign, player, glyph)) {
+			tell(cast, "glyph_carve.full");
+			return;
+		}
 		refresh(cast.level, sign);
 		tell(cast, "glyph_carve");
 		Fx.send(cast.level, ParticleTypes.WAX_OFF, Vec3.atCenterOf(sign.getBlockPos()), 8, 0.3, 0.02);
@@ -888,9 +868,7 @@ public final class WayfarerEffects {
 			if (sign.isWaxed() || !mayEdit(cast, sign.getBlockPos())) {
 				continue;
 			}
-			for (boolean front : List.of(true, false)) {
-				sign.setText(sign.getText(front).setHasGlowingText(true), front);
-			}
+			dev.wildercord.compat.McBlocksAndItems.setBothSidesGlowing(sign);
 			refresh(cast.level, sign);
 			Fx.send(cast.level, ParticleTypes.GLOW, Vec3.atCenterOf(sign.getBlockPos()), 4, 0.3, 0.01);
 			lit++;

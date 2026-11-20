@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathType;
 
 import java.util.EnumMap;
@@ -49,7 +48,9 @@ public final class ResidueBlocks {
 
 	private static ResidueBlock register(Kind kind, BlockBehaviour.Properties properties) {
 		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Wildercord.id(kind.path));
-		properties.setId(key).pushReaction(kind.placement == dev.wildercord.world.ResidueRules.Placement.COVER ? PushReaction.BLOCK : PushReaction.DESTROY);
+		properties.setId(key).pushReaction(kind.placement == dev.wildercord.world.ResidueRules.Placement.COVER
+			? dev.wildercord.compat.McBlocksAndItems.immovablePushReaction()
+			: dev.wildercord.compat.McBlocksAndItems.poppedPushReaction());
 		ResidueBlock block = Registry.register(BuiltInRegistries.BLOCK, key, new ResidueBlock(kind, properties));
 		BY_KIND.put(kind, block);
 		return block;

@@ -100,7 +100,7 @@ public final class TournamentBoardEntity extends BlockEntity {
 		give(p,AuraApi.techniqueScroll(chosen));give(p,new ItemStack(AuraWorld.AURA_SHARD,3));give(p,VillageTournaments.history());
 		Feels.sound(p.level(),p.position(),"aura_tournament_prize",.8F,1);say(p,"reward",Component.translatable(TechniqueRules.nameKey(chosen)));
 	}
-	private static void give(ServerPlayer p,ItemStack stack){if(!p.getInventory().add(stack))p.drop(stack, false);}
+	private static void give(ServerPlayer p,ItemStack stack){if(!p.getInventory().add(stack))dev.wildercord.compat.McEntities.drop(p, stack, false);}
 	private void reset(){challenger=null;wins=0;dirty=false;betweenUntil=0;setChanged();}
 	private void cancel(ServerLevel s){var p=challenger==null?null:s.getServer().getPlayerList().getPlayer(challenger);if(p!=null)DuelistDuels.cancelHosted(p);reset();}
 	private void close(ServerLevel s){cancel(s);for(int i=0;i<3;i++){if(roster[i]!=null && s.getEntity(roster[i]) instanceof Duelist d)d.vanish(s);roster[i]=null;}setChanged();}

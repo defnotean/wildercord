@@ -35,7 +35,6 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.zombie.ZombieVillager;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -379,13 +378,9 @@ public final class WorldMagic {
 		ServerLevel level = cast.level;
 		BlockState state = level.getBlockState(pos);
 		if (state.is(Blocks.TNT)) {
-			if (!level.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.TNT_EXPLODES)) {
+			if (!dev.wildercord.compat.McBlocksAndItems.primeTnt(level, pos, cast.caster)) {
 				return false;
 			}
-			var tnt = new net.minecraft.world.entity.item.PrimedTnt(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, cast.caster);
-			level.addFreshEntity(tnt);
-			level.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 1.0F);
-			level.gameEvent(cast.caster, GameEvent.PRIME_FUSE, pos);
 			level.removeBlock(pos, false);
 			ElementFx.embers(level, Vec3.atCenterOf(pos), 0.4, 6);
 			return true;
@@ -564,7 +559,7 @@ public final class WorldMagic {
 			if (!edit(cast, pos)) {
 				return false;
 			}
-			CampfireBlock.dowse(cast.caster, level, pos, state);
+			dev.wildercord.compat.McBlocksAndItems.douseCampfire(cast.caster, level, pos, state);
 			level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, false));
 			Motes.smoke(level, Vec3.atCenterOf(pos).add(0, 0.3, 0), 3, 0.2);
 			return true;
@@ -786,7 +781,7 @@ public final class WorldMagic {
 		BlockState state = level.getBlockState(pos);
 		level.destroyBlockProgress(crackId(pos), pos, -1);
 		if (broken) {
-			level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+			level.levelEvent(dev.wildercord.compat.McBlocksAndItems.destroyBlockLevelEvent(), pos, Block.getId(state));
 		}
 		level.setBlockAndUpdate(pos, placed.replaced());
 		TemporaryBlocks.remove(level, pos);
@@ -1228,7 +1223,7 @@ public final class WorldMagic {
 		int grown = 0;
 		BlockPos plant = hit.block() != null ? hit.block() : centre;
 		BlockState crop = level.getBlockState(plant);
-		if ((crop.is(BlockTags.CROPS) || crop.is(SAPLINGS)) && edit(cast, plant)) {
+		if ((crop.is(BlockTags.CROPS) || dev.wildercord.compat.McBlocksAndItems.isSapling(crop)) && edit(cast, plant)) {
 			BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level, plant);
 			level.levelEvent(net.minecraft.world.level.block.LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, plant, 15);
 			grown++;
@@ -1329,13 +1324,11 @@ public final class WorldMagic {
 	 * Void on an enderman anchors it where it stands for {@link WorldRules#ANCHOR_TICKS}: it can't
 	 * teleport away (from a spell, the rain or an arrow), and a ring of darkness turns at its feet.
 	 */
-	private static final net.minecraft.tags.TagKey<net.minecraft.world.level.block.Block> SAPLINGS = net.minecraft.tags.TagKey.create(
-		net.minecraft.core.registries.Registries.BLOCK, net.minecraft.resources.Identifier.withDefaultNamespace("saplings"));
-
 	private static void anchor(Cast cast, Cast.Hit hit) {
 		ServerLevel level = cast.level;
 		for (Entity e : hit.entities()) {
-			if (!(e instanceof EnderMan enderman) || !enderman.isAlive() || !Targets.canHarm(cast.caster, e)) {
+			if (!dev.wildercord.compat.McEntities.isEnderman(e) || !(e instanceof LivingEntity enderman)
+					|| !enderman.isAlive() || !Targets.canHarm(cast.caster, e)) {
 				continue;
 			}
 			// An enderman still in the list has its ring going already (the ring crosses it off when the anchor lets go).
@@ -1349,7 +1342,7 @@ public final class WorldMagic {
 	}
 
 	/** The ring of darkness round an anchored enderman's feet, renewed while the anchor holds. */
-	private static void anchorRing(ServerLevel level, EnderMan enderman) {
+	private static void anchorRing(ServerLevel level, LivingEntity enderman) {
 		if (!anchored(enderman) || enderman.isRemoved() || !enderman.isAlive() || enderman.level() != level) {
 			ANCHORED.remove(enderman.getUUID());
 			return;
@@ -1450,7 +1443,7 @@ public final class WorldMagic {
 		}
 		if ((block instanceof SaplingBlock || block instanceof SweetBerryBushBlock || block instanceof CocoaBlock || state.is(BlockTags.CROPS))
 				&& block instanceof BonemealableBlock plant) {
-			return plant.isValidBonemealTarget(level, pos, state);
+			return dev.wildercord.compat.McBlocksAndItems.isValidBonemealTarget(plant, level, pos, state);
 		}
 		return block instanceof WeatheringCopper copper && copper.getNext(state).isPresent();
 	}
@@ -1468,7 +1461,7 @@ public final class WorldMagic {
 		} else if (block instanceof SaplingBlock sapling) {
 			sapling.advanceTree(level, pos, state, level.getRandom());
 		} else if (block instanceof BonemealableBlock plant) {
-			plant.performBonemeal(level, level.getRandom(), pos, state);
+			dev.wildercord.compat.McBlocksAndItems.performBonemeal(plant, level, level.getRandom(), pos, state);
 		}
 		level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, pos, 8);
 	}
@@ -1569,7 +1562,7 @@ public final class WorldMagic {
 			return state.getValue(NetherWartBlock.AGE) < NetherWartBlock.MAX_AGE;
 		}
 		return state.is(Blocks.CRIMSON_FUNGUS) && state.getBlock() instanceof BonemealableBlock fungus
-			&& fungus.isValidBonemealTarget(level, pos, state);
+			&& dev.wildercord.compat.McBlocksAndItems.isValidBonemealTarget(fungus, level, pos, state);
 	}
 
 	// ------------------------------------------------------------------ helpers

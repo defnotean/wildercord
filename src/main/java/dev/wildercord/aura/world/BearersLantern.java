@@ -38,7 +38,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.PushReaction;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -55,7 +54,7 @@ public final class BearersLantern {
 	/** The lantern as it stands at the gibbet's foot, there for the taking. */
 	public static final BarrowLanternBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new BarrowLanternBlock(BlockBehaviour.Properties.of()
 		.setId(KEY).noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.LANTERN).lightLevel(state -> 10)
-		.pushReaction(PushReaction.BLOCK)));
+		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bearers_lantern"));
 	/** The lantern as it is carried: lit, it calls up the Barrow Steed. */
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
@@ -80,7 +79,7 @@ public final class BearersLantern {
 	}
 
 	private static void give(ServerPlayer player, ItemStack stack) {
-		if (!player.getInventory().add(stack)) player.drop(stack, false);
+		if (!player.getInventory().add(stack)) dev.wildercord.compat.McEntities.drop(player, stack, false);
 	}
 
 	/** The gravedigger's book: what happened on the Barrow Field, and what still walks it. */
@@ -107,7 +106,7 @@ public final class BearersLantern {
 		horse.setTamed(true);
 		horse.setOwner(player);
 		horse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
-		horse.setInvulnerable(true);
+		dev.wildercord.compat.McEntities.setPermanentlyInvulnerable(horse, true);
 		horse.setPersistenceRequired();
 		horse.setCustomName(Component.translatable("entity.wildercord.barrow_steed"));
 		var speed = horse.getAttribute(Attributes.MOVEMENT_SPEED);

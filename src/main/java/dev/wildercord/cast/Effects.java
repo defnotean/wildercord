@@ -1021,7 +1021,7 @@ public final class Effects {
 	 * the living entity's {@code damageCooldownTime}; {@code invulnerableTime} alone no longer covers it.
 	 */
 	public static void readyToHurt(net.minecraft.world.entity.Entity target) {
-		target.invulnerableTime = 0;
+		dev.wildercord.compat.McEntities.clearHurtCooldown(target);
 	}
 
 	/** Set while soul fire burns: water can't dull it (see {@link #hurt}). */
@@ -2676,7 +2676,7 @@ public final class Effects {
 	}
 
 	private static boolean isOre(BlockState state) {
-		return state.is(ConventionalBlockTags.ORES);
+		return dev.wildercord.compat.McBlocksAndItems.isOre(state);
 	}
 
 	/** The same ore: the same block, its deepslate twin, or a metal sharing one of vanilla's ore tags. */

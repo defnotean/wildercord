@@ -200,7 +200,7 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 		super.die(source);
 	}
 	private static void giveOrDrop(ServerPlayer player, ItemStack stack) {
-		if (!player.getInventory().add(stack)) player.drop(stack, false);
+		if (!player.getInventory().add(stack)) dev.wildercord.compat.McEntities.drop(player, stack, false);
 	}
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }
 	@Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player); bar.removePlayer(player); }

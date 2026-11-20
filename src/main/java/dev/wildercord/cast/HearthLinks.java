@@ -275,6 +275,6 @@ public final class HearthLinks {
 
 	/** Whether {@code state} is an ore of any kind (vanilla's tag and the common one). */
 	static boolean ore(BlockState state) {
-		return state.is(net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.ORES);
+		return dev.wildercord.compat.McBlocksAndItems.isOre(state);
 	}
 }

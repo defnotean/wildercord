@@ -100,7 +100,7 @@ public class ReagentItem extends Item {
 				if (!level.isClientSide()) {
 					level.setBlockAndUpdate(pos, scraped.get());
 					level.levelEvent(null, LevelEvent.PARTICLES_SCRAPE, pos, 0);
-					level.playSound(null, pos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.3F);
+					level.playSound(null, pos, dev.wildercord.compat.McBlocksAndItems.sound(SoundEvents.AXE_SCRAPE), SoundSource.BLOCKS, 1.0F, 1.3F);
 					use(stack, player);
 				}
 				return InteractionResult.SUCCESS;

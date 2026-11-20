@@ -1,4 +1,4 @@
-package dev.wildercord.content;
+package dev.wildercord.compat;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;

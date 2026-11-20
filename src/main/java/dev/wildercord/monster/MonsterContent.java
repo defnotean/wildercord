@@ -108,7 +108,8 @@ public final class MonsterContent {
 
 	// ------------------------------------------------------------------ what they drop
 
-	public static final Item LIVING_BRAMBLE = item("living_bramble", p -> new MonsterDropItem.LivingBramble(p.stacksTo(16)));
+	public static final Item LIVING_BRAMBLE = item("living_bramble", p -> new MonsterDropItem.LivingBramble(
+		dev.wildercord.compat.McBlocksAndItems.compostableMediumProperties(p.stacksTo(16))));
 	public static final Item SHADOW_PELT = item("shadow_pelt", p -> new MonsterDropItem("shadow_pelt", p.rarity(Rarity.UNCOMMON)));
 	public static final Item STORM_FEATHER = item("storm_feather", p -> new MonsterDropItem.StormFeather(p.stacksTo(16)));
 	public static final Item BOG_GLAND = item("bog_gland", p -> new MonsterDropItem("bog_gland", p));
@@ -176,7 +177,7 @@ public final class MonsterContent {
 	}
 
 	public static void init() {
-		net.minecraft.world.level.block.ComposterBlock.COMPOSTABLES.put(LIVING_BRAMBLE, 0.5F);
+		dev.wildercord.compat.McBlocksAndItems.registerCompostable(LIVING_BRAMBLE, 0.5F);
 		FabricDefaultAttributeRegistry.register(BRAMBLEWALKER, Bramblewalker.createAttributes());
 		FabricDefaultAttributeRegistry.register(GLOOMSTALKER, Gloomstalker.createAttributes());
 		FabricDefaultAttributeRegistry.register(THUNDERWING_HARPY, ThunderwingHarpy.createAttributes());

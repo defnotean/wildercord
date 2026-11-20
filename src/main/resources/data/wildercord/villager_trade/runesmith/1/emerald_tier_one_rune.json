@@ -11,9 +11,9 @@
   "reputation_discount": 0.05,
   "given_item_modifiers": [
     {
+      "function": "wildercord:random_rune",
       "min_tier": 1,
-      "max_tier": 1,
-      "function": "wildercord:random_rune"
+      "max_tier": 1
     }
   ]
 }

@@ -26,11 +26,11 @@ public abstract class CrimsonMoonFallbackMixin {
 	private void wildercord$moon$fallback(AbstractClientPlayer player, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector,
 			int light, Operation<Void> original) {
-		ItemInHandRenderer renderer = (ItemInHandRenderer) (Object) this;
+		var hands = dev.wildercord.client.compat.FirstPersonHandView.of((ItemInHandRenderer) (Object) this, player);
 		AvatarRenderState avatar = ((FirstPersonAvatarState) this).wildercord$handsAvatar(player, partial);
-		CrimsonMoonRenderProbe.viewAttempt(avatar, renderer, player, partial, hand);
+		CrimsonMoonRenderProbe.viewAttempt(avatar, hands, partial, hand);
 		var previous = wildercord$moon$openingFallback.get();
-		var call = CrimsonMoonRenderProbe.fallbackViewBegin(renderer, avatar, player, hand, stack, attack, inverseArmHeight, pose);
+		var call = CrimsonMoonRenderProbe.fallbackViewBegin(hands, avatar, hand, stack, attack, inverseArmHeight, pose);
 		wildercord$moon$openingFallback.set(call);
 		boolean completed = false;
 		try {

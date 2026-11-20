@@ -422,7 +422,7 @@ def write(g):
     for profession, emeralds in (("weaponsmith", 24), ("cleric", 22)):
         g.write_json(g.DATA / f"villager_trade/aura/{profession}_manual.json", {
             "additional_wants": {"id": "minecraft:book"},
-            "given_item_modifiers": [{"function": "wildercord:random_breathing_method", "source": profession}],
+            **g.profile.villager_item_modifier_field({"type": "wildercord:random_breathing_method", "source": profession}),
             "gives": {"id": "wildercord:breathing_manual"},
             "max_uses": 2,
             "reputation_discount": 0.05,

@@ -1,4 +1,4 @@
-"""Authored regional biome data for Minecraft 26.3's attribute-based biome format."""
+"""Authored regional biome data, formatted for the active Minecraft version via DataPackProfile."""
 
 LANG = {
     "biome.wildercord.luminous_reedlands": "Luminous Reedlands",
@@ -12,22 +12,17 @@ LANG = {
 }
 
 
-def _spawn(kind, weight, low, high=None):
-    return {"type": "minecraft:" + kind, "weight": weight, "minCount": low, "maxCount": low if high is None else high}
+def _spawn(profile, kind, weight, low, high=None):
+    return profile.spawner_entry("minecraft:" + kind, weight, low, high)
 
 
-def _spawners(**categories):
-    names = ("ambient", "axolotls", "creature", "misc", "monster", "underground_water_creature", "water_ambient", "water_creature")
-    return {name: categories.get(name, []) for name in names}
-
-
-def reedlands():
+def reedlands(profile):
     """Swamp terrain and feature order, with cool water, pale banks and wetland fauna.
 
     Wildercord's existing biome modifiers add moonreeds, newts, crabs and bitterns.
     Reusing the same placed features avoids reseeding decoration across other biomes.
     """
-    return {
+    return profile.apply_biome_spawns({
         "attributes": {
             "minecraft:audio/background_music": {"default": {
                 "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.swamp"}},
@@ -36,17 +31,6 @@ def reedlands():
             "minecraft:visual/water_fog_color": "#245257",
             "minecraft:visual/water_fog_end_distance": {"argument": 0.85, "modifier": "multiply"},
         },
-        "spawn_costs": {},
-        "spawners": _spawners(
-            ambient=[_spawn("bat", 10, 8)],
-            creature=[_spawn("frog", 10, 2, 5)],
-            monster=[_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
-                     _spawn("zombie_villager", 5, 1), _spawn("skeleton", 70, 4),
-                     _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
-                     _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1),
-                     _spawn("slime", 1, 1)],
-            underground_water_creature=[_spawn("glow_squid", 10, 4, 6)],
-        ),
         "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
         "downfall": 0.95,
         "effects": {
@@ -77,33 +61,31 @@ def reedlands():
         ],
         "has_precipitation": True,
         "temperature": 0.65,
-    }
+    }, {
+        "ambient": [_spawn(profile, "bat", 10, 8)],
+        "creature": [_spawn(profile, "frog", 10, 2, 5)],
+        "monster": [_spawn(profile, "spider", 100, 4), _spawn(profile, "zombie", 95, 4),
+                    _spawn(profile, "zombie_villager", 5, 1), _spawn(profile, "skeleton", 70, 4),
+                    _spawn(profile, "creeper", 100, 4), _spawn(profile, "slime", 100, 4),
+                    _spawn(profile, "enderman", 10, 1, 4), _spawn(profile, "witch", 5, 1),
+                    _spawn(profile, "slime", 1, 1)],
+        "underground_water_creature": [_spawn(profile, "glow_squid", 10, 4, 6)],
+    })
 
 
-def windscar():
+def windscar(profile):
     """Dry hill country with the parent's ordered ores, sparse trees and open grass.
 
     Windreed and native highland animals join through their existing biome modifiers.
     Keeping shared features in vanilla order prevents cross-biome decoration cycles.
     """
-    return {
+    return profile.apply_biome_spawns({
         "attributes": {
             "minecraft:audio/background_music": {"default": {
                 "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.meadow"}},
             "minecraft:visual/sky_color": "#91afc5",
             "minecraft:visual/water_fog_color": "#344b50",
         },
-        "spawn_costs": {},
-        "spawners": _spawners(
-            ambient=[_spawn("bat", 10, 8)],
-            creature=[_spawn("sheep", 12, 4), _spawn("pig", 10, 4),
-                      _spawn("chicken", 10, 4), _spawn("cow", 8, 4), _spawn("llama", 5, 4, 6)],
-            monster=[_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
-                     _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
-                     _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
-                     _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1)],
-            underground_water_creature=[_spawn("glow_squid", 10, 4, 6)],
-        ),
         "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
         "downfall": 0.25,
         "effects": {
@@ -134,32 +116,31 @@ def windscar():
         ],
         "has_precipitation": True,
         "temperature": 0.35,
-    }
+    }, {
+        "ambient": [_spawn(profile, "bat", 10, 8)],
+        "creature": [_spawn(profile, "sheep", 12, 4), _spawn(profile, "pig", 10, 4),
+                     _spawn(profile, "chicken", 10, 4), _spawn(profile, "cow", 8, 4), _spawn(profile, "llama", 5, 4, 6)],
+        "monster": [_spawn(profile, "spider", 100, 4), _spawn(profile, "zombie", 95, 4),
+                    _spawn(profile, "zombie_villager", 5, 1), _spawn(profile, "skeleton", 100, 4),
+                    _spawn(profile, "creeper", 100, 4), _spawn(profile, "slime", 100, 4),
+                    _spawn(profile, "enderman", 10, 1, 4), _spawn(profile, "witch", 5, 1)],
+        "underground_water_creature": [_spawn(profile, "glow_squid", 10, 4, 6)],
+    })
 
 
-def belowkeeper():
+def belowkeeper(profile):
     """Subterranean dripstone-and-clay vaults with damp moss floors for Glowcap beds.
 
     Keeps vanilla dripstone cave ores/clusters and lush clay/moss features in exact vanilla
     order so cross-biome chunk decoration never cycles.
     """
-    return {
+    return profile.apply_biome_spawns({
         "attributes": {
             "minecraft:audio/background_music": {"default": {
                 "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.dripstone_caves"}},
             "minecraft:visual/sky_color": "#7ba4ff",
             "minecraft:visual/water_fog_color": "#284a4e",
         },
-        "spawn_costs": {},
-        "spawners": _spawners(
-            ambient=[_spawn("bat", 10, 8)],
-            monster=[_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
-                     _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
-                     _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
-                     _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1),
-                     _spawn("drowned", 95, 4)],
-            underground_water_creature=[_spawn("glow_squid", 10, 4, 6)],
-        ),
         "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
         "downfall": 0.6,
         "effects": {
@@ -190,35 +171,32 @@ def belowkeeper():
         ],
         "has_precipitation": True,
         "temperature": 0.7,
-    }
+    }, {
+        "ambient": [_spawn(profile, "bat", 10, 8)],
+        "creature": [],
+        "monster": [_spawn(profile, "spider", 100, 4), _spawn(profile, "zombie", 95, 4),
+                    _spawn(profile, "zombie_villager", 5, 1), _spawn(profile, "skeleton", 100, 4),
+                    _spawn(profile, "creeper", 100, 4), _spawn(profile, "slime", 100, 4),
+                    _spawn(profile, "enderman", 10, 1, 4), _spawn(profile, "witch", 5, 1),
+                    _spawn(profile, "drowned", 95, 4)],
+        "underground_water_creature": [_spawn(profile, "glow_squid", 10, 4, 6)],
+    })
 
 
-def emberwood():
+def emberwood(profile):
     """Warm scorched oak-and-ash woodland with vanilla forest decoration order.
 
     Cinder Fern patches, Cinder Bailiffs, Cinderfoxes and Dune Cougars join through their
     existing biome modifiers. Keeping shared features in vanilla forest order prevents
     cross-biome decoration cycles.
     """
-    return {
+    return profile.apply_biome_spawns({
         "attributes": {
             "minecraft:audio/background_music": {"default": {
                 "max_delay": 24000, "min_delay": 12000, "sound": "minecraft:music.overworld.forest"}},
             "minecraft:visual/sky_color": "#b49774",
             "minecraft:visual/water_fog_color": "#3d332a",
         },
-        "spawn_costs": {},
-        "spawners": _spawners(
-            ambient=[_spawn("bat", 10, 8)],
-            creature=[_spawn("sheep", 12, 4), _spawn("pig", 10, 4),
-                      _spawn("chicken", 10, 4), _spawn("cow", 8, 4),
-                      _spawn("wolf", 5, 4)],
-            monster=[_spawn("spider", 100, 4), _spawn("zombie", 95, 4),
-                     _spawn("zombie_villager", 5, 1), _spawn("skeleton", 100, 4),
-                     _spawn("creeper", 100, 4), _spawn("slime", 100, 4),
-                     _spawn("enderman", 10, 1, 4), _spawn("witch", 5, 1)],
-            underground_water_creature=[_spawn("glow_squid", 10, 4, 6)],
-        ),
         "carvers": ["minecraft:cave", "minecraft:cave_extra_underground", "minecraft:canyon"],
         "downfall": 0.35,
         "effects": {
@@ -249,14 +227,24 @@ def emberwood():
         ],
         "has_precipitation": True,
         "temperature": 0.9,
-    }
+    }, {
+        "ambient": [_spawn(profile, "bat", 10, 8)],
+        "creature": [_spawn(profile, "sheep", 12, 4), _spawn(profile, "pig", 10, 4),
+                     _spawn(profile, "chicken", 10, 4), _spawn(profile, "cow", 8, 4),
+                     _spawn(profile, "wolf", 5, 4)],
+        "monster": [_spawn(profile, "spider", 100, 4), _spawn(profile, "zombie", 95, 4),
+                    _spawn(profile, "zombie_villager", 5, 1), _spawn(profile, "skeleton", 100, 4),
+                    _spawn(profile, "creeper", 100, 4), _spawn(profile, "slime", 100, 4),
+                    _spawn(profile, "enderman", 10, 1, 4), _spawn(profile, "witch", 5, 1)],
+        "underground_water_creature": [_spawn(profile, "glow_squid", 10, 4, 6)],
+    })
 
 
 def write(g):
-    g.write_json(g.DATA / "worldgen/biome/luminous_reedlands.json", reedlands())
-    g.write_json(g.DATA / "worldgen/biome/windscar_highlands.json", windscar())
-    g.write_json(g.DATA / "worldgen/biome/belowkeeper_hollows.json", belowkeeper())
-    g.write_json(g.DATA / "worldgen/biome/emberwood_reach.json", emberwood())
+    g.write_json(g.DATA / "worldgen/biome/luminous_reedlands.json", reedlands(g.profile))
+    g.write_json(g.DATA / "worldgen/biome/windscar_highlands.json", windscar(g.profile))
+    g.write_json(g.DATA / "worldgen/biome/belowkeeper_hollows.json", belowkeeper(g.profile))
+    g.write_json(g.DATA / "worldgen/biome/emberwood_reach.json", emberwood(g.profile))
     # Appending to these tags preserves vanilla members and other packs' additions.
     for name, members in {
         "is_overworld": ["wildercord:luminous_reedlands", "wildercord:windscar_highlands", "wildercord:belowkeeper_hollows", "wildercord:emberwood_reach"],

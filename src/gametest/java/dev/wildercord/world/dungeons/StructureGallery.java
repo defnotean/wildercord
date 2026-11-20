@@ -115,8 +115,7 @@ final class StructureGallery {
 		var generator = source.getGenerator();
 		var randomState = source.randomState();
 		java.util.function.Function<ChunkPos, Site> at = chunk -> {
-			var start = structure.generate(holder, level.dimension(), level.registryAccess(), generator, generator.getBiomeSource(), randomState,
-				level.getStructureManager(), level.getSeed(), chunk, 0, level, structure.biomes()::contains);
+			var start = dev.wildercord.gametest.compat.GametestCompat.generateStructureStart(level, holder, chunk);
 			return start.isValid() ? new Site(id, level.dimension(), new BlockPos(chunk.getMinBlockX(), 70, chunk.getMinBlockZ()), start.getBoundingBox()) : null;
 		};
 		var biome = level.findClosestBiome3d(structure.biomes()::contains, origin, 6400, 32, 64);
@@ -130,8 +129,7 @@ final class StructureGallery {
 		}
 		// Picky sites (a wide flat footprint, say) may find no room near the closest patch of their biome: fall back on the
 		// game's own locate, which walks the real placement grid and only answers with a start that generates.
-		var hit = generator.findNearestMapStructure(level, net.minecraft.core.HolderSet.direct(holder), origin, 100, false);
-		BlockPos found = hit == null ? null : hit.getFirst();
+		BlockPos found = dev.wildercord.gametest.compat.GametestCompat.findNearestStructure(level, holder, origin, 100, false);
 		if (found == null) return null;
 		log(id, "found by locate at " + found);
 		return at.apply(ChunkPos.containing(found));

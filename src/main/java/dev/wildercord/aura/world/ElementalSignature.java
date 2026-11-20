@@ -128,7 +128,7 @@ final class ElementalSignature {
 	}
 
 	private void release(Vec3 at) {
-		master.swing(InteractionHand.MAIN_HAND, true);
+		dev.wildercord.compat.McEntities.swing(master, InteractionHand.MAIN_HAND, true);
 		Feels.sound(level, at, "aura_slash", 1, .7F);
 	}
 

@@ -517,7 +517,7 @@ final class FusedLife {
 		if (splitting || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || !bond.holds(now)) {
 			return true;
 		}
-		if (e.invulnerableTime > 10 && !source.is(DamageTypeTags.BYPASSES_COOLDOWN)) {
+		if (dev.wildercord.compat.McEntities.damageCooldownTicks(e) > 10 && !source.is(DamageTypeTags.BYPASSES_COOLDOWN)) {
 			return true;
 		}
 		if (!canShare(bond.other(side))) {

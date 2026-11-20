@@ -58,7 +58,7 @@ public final class CounterSignatures {
    SCREENS.remove(t.getUUID());CounterSignatureFx.release(c.level,t,s.quiet());return;
   }
   if(c.level.getGameTime()>=s.opened())for(var p:batch.candidates()){
-   if(!(p.getOwner() instanceof LivingEntity owner) || !owner.isAlive() || owner.level()!=c.level || Spirits.isBoss(owner) || owner.isInvulnerable()
+   if(!(p.getOwner() instanceof LivingEntity owner) || !owner.isAlive() || owner.level()!=c.level || Spirits.isBoss(owner) || dev.wildercord.compat.McEntities.isPermanentlyInvulnerable(owner)
     || !NextSignatureSafety.loaded(c,owner.blockPosition()) || DungeonSafety.warded(c,owner)
     || !NextSignatureSafety.open(c,p.position(),t.getEyePosition(),4))continue;
    if(s.quiet()){

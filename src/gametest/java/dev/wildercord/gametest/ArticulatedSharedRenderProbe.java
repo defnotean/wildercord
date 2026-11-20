@@ -3,10 +3,11 @@ package dev.wildercord.gametest;
 import com.google.gson.GsonBuilder;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.textures.GpuTexture;
 import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.MastersArts;
 import dev.wildercord.client.combat.ArticulatedAuraShellRenderer;
+import dev.wildercord.client.compat.FirstPersonHandView;
+import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.client.render.AuraShellLayer;
 import dev.wildercord.client.MastersArtsClient;
 import dev.wildercord.client.combat.ArticulatedCombat;
@@ -23,9 +24,6 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
@@ -78,7 +76,7 @@ public final class ArticulatedSharedRenderProbe {
 		int owner;
 		boolean extracting, rendering;
 		RenderTarget renderedTarget;
-		GpuTexture renderedTexture;
+		Object renderedTexture;
 		int renderWidth, renderHeight;
 		ViewCall viewCall;
 		DeferredCall deferredCall;
@@ -89,16 +87,18 @@ public final class ArticulatedSharedRenderProbe {
 	private record Expected(int owner, String ownerUuid, int move, long startTick) {}
 	private record Extracted(int owner, String ownerUuid, long stateId, ArticulatedRenderReceipt.Palette palette) {}
 	public static final class FallbackView {
-		private final ItemInHandRenderer renderer;
+		private final FirstPersonHandView hands;
 		private final AvatarRenderState avatar;
 		private final ArticulatedRenderReceipt.Palette palette;
 		private final Map<String, String> attributes;
 		private ItemStackRenderState item;
-		FallbackView(ItemInHandRenderer renderer, AvatarRenderState avatar,
+		FallbackView(FirstPersonHandView hands, AvatarRenderState avatar,
 				ArticulatedRenderReceipt.Palette palette, Map<String, String> attributes) {
-			this.renderer = renderer; this.avatar = avatar; this.palette = palette; this.attributes = attributes;
+			this.hands = hands; this.avatar = avatar; this.palette = palette; this.attributes = attributes;
+			bindItem(hands.initialMainHandRenderState());
 		}
-		public ItemInHandRenderer renderer() { return renderer; }
+		public FirstPersonHandView hands() { return hands; }
+		public Object renderer() { return hands.rendererObject(); }
 		public AvatarRenderState avatar() { return avatar; }
 		public ArticulatedRenderReceipt.Palette palette() { return palette; }
 		public Map<String, String> attributes() { return Map.copyOf(attributes); }
@@ -113,7 +113,7 @@ public final class ArticulatedSharedRenderProbe {
 	private record Body(Model<?> model, long stateId) {}
 	private record View(ArticulatedViewModel model, AvatarRenderState avatar, ArticulatedRenderReceipt.Palette palette,
 			long stateId, Map<String, String> appearance) {}
-	private record CopyCall(Token token, RenderTarget target, Consumer<NativeImage> consumer, GpuTexture texture, long targetId, long textureId,
+	private record CopyCall(Token token, RenderTarget target, Consumer<NativeImage> consumer, Object texture, long targetId, long textureId,
 			int width, int height, CopyCall previous) {}
 	private record WeakIdentity(WeakReference<Object> reference, long sequence) {}
 
@@ -280,25 +280,24 @@ public final class ArticulatedSharedRenderProbe {
 		scope.viewCall = call.previous();
 	}
 	/** The real hand callback, including unsupported/fallback attempts; observations never count as passes. */
-	public static void viewAttempt(AvatarRenderState avatar, ItemInHandRenderer hands, AbstractClientPlayer player, float partial, InteractionHand hand) {
+	public static void viewAttempt(AvatarRenderState avatar, FirstPersonHandView hands, float partial, InteractionHand hand) {
 		Scope scope = rendering();
 		if (scope == null || !opening(scope) || avatar == null || avatar.id != scope.owner || hand != InteractionHand.MAIN_HAND) return;
 		guard(scope.token, () -> {
 			var s = scope.token.session; var combat = ArticulatedCombat.viewFrame(avatar);
-			var motion = hands instanceof dev.wildercord.client.MastersHandMotionState m ? m : null;
-			float oldHeight = motion == null ? 0F : motion.wildercord$oldMainHandHeight();
-			float mainHeight = motion == null ? 0F : motion.wildercord$mainHandHeight();
-			ItemStack mainItem = motion == null ? ItemStack.EMPTY : motion.wildercord$mainHandItem();
+			float oldHeight = hands.oldMainHandHeight();
+			float mainHeight = hands.mainHandHeight();
+			ItemStack mainItem = hands.mainHandItem();
 			s.observe("nativeMainHandCalled", true);
 			s.observe("viewHandAdmission", combat == null ? "UNSUPPORTED_POSE" : ArticulatedViewModel.handAdmission(combat, avatar, hands, partial));
 			s.observe("viewOldMainHandHeight", oldHeight); s.observe("viewMainHandHeight", mainHeight);
 			s.observe("viewInterpolatedHeight", net.minecraft.util.Mth.lerp(partial, oldHeight, mainHeight));
-			s.observe("viewEquipKnown", motion != null);
-			s.observe("viewEquipping", motion != null ? String.valueOf(motion.wildercord$mainHandEquipping()) : "unknown");
+			s.observe("viewEquipKnown", hands.equipKnown());
+			s.observe("viewEquipping", hands.equipKnown() ? String.valueOf(hands.mainHandEquipping()) : "unknown");
 			s.observe("viewSameItem", ItemStack.isSameItemSameComponents(mainItem, avatar.getMainHandItemStack()));
-			s.observe("viewSwing", avatar.swingAnimationType); s.observe("viewCrouching", avatar.isCrouching); s.observe("viewUsingItem", avatar.isUsingItem);
-			var model = ((LivingEntityRenderer<?, ?, ?>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar)).getModel();
-			s.observe("viewModelSupported", model.getClass() == PlayerModel.class && model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned());
+			s.observe("viewSwing", RenderCompat.swingObservation(avatar)); s.observe("viewCrouching", avatar.isCrouching); s.observe("viewUsingItem", avatar.isUsingItem);
+			var model = RenderCompat.livingModel(avatar);
+			s.observe("viewModelSupported", model != null && model.getClass() == PlayerModel.class && model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned());
 		});
 	}
 	public static void viewSubmitted(Model<?> model, Object renderState) {
@@ -351,31 +350,29 @@ public final class ArticulatedSharedRenderProbe {
 	}
 
 	/** The real vanilla sword path has no arm model. Preserve that fact instead of inventing a deferred pass. */
-	public static FallbackView fallbackViewBegin(ItemInHandRenderer renderer, AvatarRenderState avatar,
-			AbstractClientPlayer player, InteractionHand hand, ItemStack stack) {
+	public static FallbackView fallbackViewBegin(FirstPersonHandView hands, AvatarRenderState avatar,
+			InteractionHand hand, ItemStack stack) {
 		Scope scope = rendering();
 		if (scope == null || !opening(scope) || !ArticulatedRenderReceipt.fallback(scope.token.session.identity().trial())
 			|| avatar == null || avatar.id != scope.owner || hand != InteractionHand.MAIN_HAND) return null;
 		try {
 			if (!ItemStack.isSameItemSameComponents(stack, avatar.getMainHandItemStack())
-				|| !(renderer instanceof dev.wildercord.client.MastersHandMotionState motion)
-				|| !ItemStack.isSameItemSameComponents(stack, motion.wildercord$mainHandItem())
-				|| player.isScoping()) {
+				|| hands.isFallbackItemInvalid(stack)) {
 				scope.token.session.reject("wrong_native_fallback_item"); return null;
 			}
-			var model = ((LivingEntityRenderer<?, ?, ?>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar)).getModel();
+			var model = RenderCompat.livingModel(avatar);
 			Map<String, String> attributes = appearance(avatar, model);
 			attributes.put("fallbackFrameCompatible", String.valueOf(ArticulatedCombat.viewFrame(avatar) != null));
 			attributes.put("segmentedVisible", "false");
-			attributes.put("nativeRenderer", renderer.getClass().getName());
-			return new FallbackView(renderer, avatar, palette(avatar.getData(ArticulatedCombat.FRAME)), new LinkedHashMap<>(attributes));
+			attributes.put("nativeRenderer", hands.rendererClassName());
+			return new FallbackView(hands, avatar, palette(avatar.getData(ArticulatedCombat.FRAME)), new LinkedHashMap<>(attributes));
 		} catch (Throwable failure) { scope.token.session.reject("fallback_observer_failed:" + failure); return null; }
 	}
 	public static void fallbackViewItem(FallbackView call, ItemStackRenderState item) {
 		Scope scope = rendering(); if (scope == null || call == null) return;
 		guard(scope.token, () -> {
 			if (item == null || item != call.item() || item.isEmpty()) { scope.token.session.reject("wrong_native_fallback_submission"); return; }
-			scope.token.session.pass(new ArticulatedRenderReceipt.Pass("view_fallback_item", identity(call.renderer()), identity(call.renderer()),
+			scope.token.session.pass(new ArticulatedRenderReceipt.Pass("view_fallback_item", identity(call.hands().stateObject()), identity(call.renderer()),
 				call.avatar().id, call.palette(), call.attributes()));
 		});
 	}
@@ -383,7 +380,7 @@ public final class ArticulatedSharedRenderProbe {
 		Scope scope = rendering(); if (scope == null || call == null) return;
 		guard(scope.token, () -> {
 			if (!completed) { scope.token.session.reject("incomplete_native_fallback"); return; }
-			scope.token.session.pass(new ArticulatedRenderReceipt.Pass("view_fallback_submit", identity(call.renderer()), identity(call.renderer()),
+			scope.token.session.pass(new ArticulatedRenderReceipt.Pass("view_fallback_submit", identity(call.hands().stateObject()), identity(call.renderer()),
 				call.avatar().id, call.palette(), call.attributes()));
 		});
 	}
@@ -408,7 +405,7 @@ public final class ArticulatedSharedRenderProbe {
 		try { originalCall.accept(target, wrapped); }
 		finally { COPYING.set(previous); }
 	}
-	public static void copyEnqueued(GpuTexture texture, int mip, RenderTarget target, Consumer<NativeImage> consumer) {
+	public static void copyEnqueued(Object texture, int mip, RenderTarget target, Consumer<NativeImage> consumer) {
 		CopyCall call = COPYING.get();
 		if (call == null || target != call.target() || consumer != call.consumer()) return;
 		guard(call.token(), () -> {

@@ -138,7 +138,7 @@ public class IceCampPiece extends WaterPiece {
 	/** A hide tent, an A-frame of wool open toward the fire, with the sled chest at its back. */
 	private void tent(WorldGenLevel level, BoundingBox bb) {
 		var wool = Blocks.WOOL.brown().defaultBlockState();
-		var stairs = Blocks.SPRUCE_STAIRS;
+		var stairs = dev.wildercord.compat.McBlocksAndItems.brownWoolStairs();
 		for (int z = 12; z <= 15; z++) {
 			set(level, bb, stair(stairs, Direction.EAST), 6, BASE + 1, z);
 			set(level, bb, stair(stairs, Direction.WEST), 10, BASE + 1, z);

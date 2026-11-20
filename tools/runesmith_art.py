@@ -16,7 +16,7 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from item_art import Canvas, hexc, mix  # noqa: E402
 from world_art import AM, DO, DS, GLOW, Sheet, box, face, noise, sprite  # noqa: E402
-from generate_assets import ASSETS, DATA, RES, save, unlock_advancement, write_json  # noqa: E402
+from generate_assets import ASSETS, DATA, RES, profile, save, unlock_advancement, write_json  # noqa: E402
 
 # ============================================================== the Scribing Desk
 
@@ -421,7 +421,7 @@ def trade(wants, gives, max_uses, xp, also=None, modifier=None):
     if also:
         data["additional_wants"] = also
     if modifier:
-        m = dict(modifier); m["function"] = m.pop("type"); data["given_item_modifiers"] = [m]
+        data.update(profile.villager_item_modifier_field(modifier))
     return data
 
 

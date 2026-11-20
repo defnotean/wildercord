@@ -807,7 +807,7 @@ public abstract class DungeonBoss extends Monster {
 		ItemEntity item = new ItemEntity(level, at.x, at.y, at.z, stack);
 		item.setDeltaMovement(level.getRandom().nextGaussian() * 0.02, 0.2, level.getRandom().nextGaussian() * 0.02);
 		// Nothing in the arena may take it: no fire, no lava, no blast.
-		item.setInvulnerable(true);
+		dev.wildercord.compat.McEntities.setPermanentlyInvulnerable(item, true);
 		item.setUnlimitedLifetime();
 		item.setGlowingTag(true);
 		level.addFreshEntity(item);

@@ -85,7 +85,7 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
      // Remove prior genuine rewards between attempts so an old orb cannot satisfy
      // the synchronous assertion. This fixture never creates or awards XP itself.
      s.overworld().getEntitiesOfClass(ExperienceOrb.class,new net.minecraft.world.phys.AABB(-2,99,5,3,106,12)).forEach(Entity::discard);
-     target=foe(caster);target.setHealth(1);target.invulnerableTime=0;
+     target=foe(caster);target.setHealth(1);dev.wildercord.compat.McEntities.clearHurtCooldown(target);
      target.hurtServer(s.overworld(),s.overworld().damageSources().playerAttack(caster),4);
      check(target.isDeadOrDying(),"Ordinary actual player attack really kills each bounded hostile");target.discard();
     }

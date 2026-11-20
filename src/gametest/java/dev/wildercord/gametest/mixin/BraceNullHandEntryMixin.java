@@ -21,7 +21,7 @@ public abstract class BraceNullHandEntryMixin {
 		AvatarRenderState avatar = ((dev.wildercord.client.FirstPersonAvatarState) this).wildercord$handsAvatar(player, partial);
 		dev.wildercord.gametest.BraceNullItemDrawProbe.Call call = null;
 		if (hand == InteractionHand.MAIN_HAND && avatar != null)
-			call = BraceNullCaptureProbe.handBefore(avatar, (ItemInHandRenderer) (Object) this, player, item, attack, inverseHeight, pose, collector);
+			call = BraceNullCaptureProbe.handBefore(avatar, dev.wildercord.client.compat.FirstPersonHandView.of((ItemInHandRenderer) (Object) this, player), item, attack, inverseHeight, pose, collector);
 		var previous = BraceNullCaptureProbe.pushHand(avatar, hand, item, attack, inverseHeight);
 		boolean complete = false;
 		try { original.call(player, partial, xRot, hand, attack, item, inverseHeight, pose, collector, light); complete = true; }

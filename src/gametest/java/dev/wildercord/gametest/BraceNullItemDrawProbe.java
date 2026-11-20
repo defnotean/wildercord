@@ -44,7 +44,7 @@ public final class BraceNullItemDrawProbe {
 			&& sword.is(Items.DIAMOND_SWORD) && ItemStack.isSameItemSameComponents(sword, state.getMainHandItemStack())
 			&& !state.isUsingItem && !state.isBaby && state.ticksUsingItem(arm) == 0,
 			"Wrong world item/hand or unsupported use state");
-		check(state.swingAnimationType != net.minecraft.world.item.SwingAnimationType.STAB, "Unsupported native stabbing item motion");
+		check(!dev.wildercord.client.compat.RenderCompat.isStabSwingType(state), "Unsupported native stabbing item motion");
 		float[] body = BraceNullCaptureProbe.worldBody((PlayerModel) model, state, stack);
 		float[] expected = BraceNullTransformOracle.worldItem(stack.last().pose().get(new float[16]), body, id.left(), ((BraceNullPlayerWidth) model).wildercord$braceNullSlim(), state.getData(MastersArtPose.FRAME).bladeTilt());
 		return begin(new Call(state, model, item, stack, collector, false, expected));

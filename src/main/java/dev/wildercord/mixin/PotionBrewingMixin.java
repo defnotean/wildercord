@@ -1,6 +1,6 @@
 package dev.wildercord.mixin;
 
-import dev.wildercord.content.WildercordBrewing;
+import dev.wildercord.compat.WildercordBrewing;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -3,13 +3,15 @@ package dev.wildercord.gametest;
 import com.google.gson.GsonBuilder;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.aura.*;
 import dev.wildercord.client.*;
+import dev.wildercord.client.compat.FirstPersonHandView;
+import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.client.combat.*;
 import dev.wildercord.client.render.AuraShellLayer;
 import dev.wildercord.gametest.CounterPeerRenderMath.*;
+import dev.wildercord.gametest.compat.GametestCompat;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCommonOptionsImpl;
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotOptionsImpl;
@@ -18,8 +20,6 @@ import net.minecraft.client.*;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -87,17 +87,17 @@ public final class CounterPeerRenderProbe {
     private record World(AvatarRenderState avatar,PlayerModel model,Matrix4f root,Matrix4f modelRoot,boolean modelRootVisible,RenderType material){}
     public record WorldItem(AvatarRenderState avatar,PlayerModel model,ItemStackRenderState item,Matrix4f expected,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector,WorldItem previous){}
     public static final class FallbackView {
-        final AvatarRenderState avatar;final AbstractClientPlayer player;final ItemInHandRenderer renderer;
+        final AvatarRenderState avatar;final FirstPersonHandView hands;
         final Matrix4f before,expectedItem;final PoseStack stack;final net.minecraft.client.renderer.SubmitNodeCollector collector;final float inverse,ownership;ItemStackRenderState item;final FallbackView previous;
         boolean transform;
-        FallbackView(AvatarRenderState a,AbstractClientPlayer p,ItemInHandRenderer r,Matrix4f b,
+        FallbackView(AvatarRenderState a,FirstPersonHandView h,Matrix4f b,
             Matrix4f expected,float inverse,float ownership,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector,FallbackView previous){
-            avatar=a;player=p;renderer=r;before=b;expectedItem=expected;this.stack=stack;this.collector=collector;this.inverse=inverse;this.ownership=ownership;item=null;this.previous=previous;
+            avatar=a;hands=h;before=b;expectedItem=expected;this.stack=stack;this.collector=collector;this.inverse=inverse;this.ownership=ownership;item=h.initialMainHandRenderState();this.previous=previous;
         }
         public void bindItem(ItemStackRenderState item){if(this.item==null)this.item=item;}
     }
     public record ClassicCall(FallbackView owner,Matrix4f expected){}
-    private record CopyCall(Token token,RenderTarget target,GpuTexture texture,Consumer<NativeImage> consumer){}
+    private record CopyCall(Token token,RenderTarget target,Object texture,Consumer<NativeImage> consumer){}
     public static final class Token {
         final Expected expected;final List<String> failures=new ArrayList<>();final Map<String,String> observations=new LinkedHashMap<>();
         final List<Pass> passes=new ArrayList<>();final List<ItemDraw> draws=new ArrayList<>();long extracted,rendered;Copy copy;ArticulatedRenderReceipt.Pixels pixels;ArticulatedRenderReceipt.Binding image;
@@ -109,7 +109,7 @@ public final class CounterPeerRenderProbe {
         synchronized void draw(ItemDraw value){if(copy!=null||ended)reject("late_item_draw");else draws.add(value);}
     }
     public static final class Scope {
-        final Token token;final Scope previous;boolean extracting,rendering;RenderTarget target;GpuTexture texture;
+        final Token token;final Scope previous;boolean extracting,rendering;RenderTarget target;Object texture;
         PlayerSkin originalSkin;PlayerModel originalModel;
         final NativeBodySubmission nativeBody=new NativeBodySubmission();
         final IdentityHashMap<Object,Long> ids=new IdentityHashMap<>();
@@ -133,7 +133,7 @@ public final class CounterPeerRenderProbe {
             scope=enter((TestScreenshotCommonOptionsImpl<?>)options,mc);
             mc.gameRenderer.update(delta);extractBegin(delta);boolean extracted=false;
             try{mc.gameRenderer.extract(delta,true);extracted=true;}finally{extractEnd(extracted);}
-            renderBegin();boolean rendered=false;try{mc.gameRenderer.render(delta,true);rendered=true;}finally{renderEnd(rendered);}
+            renderBegin();boolean rendered=false;try{GametestCompat.renderFrame(mc,delta);rendered=true;}finally{renderEnd(rendered);}
             com.mojang.blaze3d.systems.RenderSystem.getDevice().createCommandEncoder().submit();
             screenshot(mc.gameRenderer.mainRenderTarget(),image->{try(image){
                 var path=FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name+".png");
@@ -415,7 +415,7 @@ public final class CounterPeerRenderProbe {
         var model=source.model();boolean same=ItemStack.isSameItemSameComponents(stack,source.main())&&stack.getCount()==source.main().getCount();
         boolean eligible=CounterPeerRenderMath.item(id(s,source.item()),id(s,item),stack.is(Items.DIAMOND_SWORD),offhand(a).isEmpty(),same)
             &&!item.isEmpty()&&!a.isUsingItem&&!a.isBaby&&a.ticksUsingItem(arm)==0
-            &&(a.attackTime<=0||a.swingAnimationType!=SwingAnimationType.STAB)&&ArticulatedCombat.frame(a)==source.articulated();
+            &&!RenderCompat.hasActiveStabSwing(a)&&ArticulatedCombat.frame(a)==source.articulated();
         s.token.observe("worldHandEligible",eligible);if(!eligible)s.token.reject("ineligible_ordinary_world_hand");
         if(!CounterPeerRenderMath.compare("world_item_root",CounterPeerRenderMath.values(world.root()),CounterPeerRenderMath.values(pose.last().pose())).matched())s.token.reject("changed_world_item_root");
         if(!CounterPeerRenderMath.compare("world_item_retained_model_root",CounterPeerRenderMath.outerRoot(world.modelRoot(),world.modelRootVisible()),
@@ -442,12 +442,12 @@ public final class CounterPeerRenderProbe {
         var s=rendering();if(s==null||a.id!=s.token.expected.owner())return null;var call=new ViewCall(a,hand,new Matrix4f(stack.last().pose()),stack,collector,s.view);s.view=call;return call;
     }
     public static void viewLeave(ViewCall call,boolean submitted){var s=rendering();if(s!=null&&call!=null)s.view=call.previous();}
-    public static void viewAttempt(AvatarRenderState a,ItemInHandRenderer h,AbstractClientPlayer player,float partial,InteractionHand hand){
+    public static void viewAttempt(AvatarRenderState a,FirstPersonHandView hands,float partial,InteractionHand hand){
         var s=rendering();if(s==null||a==null||a.id!=s.token.expected.owner()||hand!=InteractionHand.MAIN_HAND)return;
-        var source=s.sources.get(a);var motion=h instanceof MastersHandMotionState m?m:null;
-        boolean known=motion!=null;boolean equipping=known&&motion.wildercord$mainHandEquipping();
-        boolean same=source!=null&&motion!=null&&ItemStack.isSameItemSameComponents(source.main(),motion.wildercord$mainHandItem());
-        float height=motion==null?0F:net.minecraft.util.Mth.lerp(partial,motion.wildercord$oldMainHandHeight(),motion.wildercord$mainHandHeight());
+        var source=s.sources.get(a);
+        boolean known=hands.equipKnown();boolean equipping=known&&hands.mainHandEquipping();
+        boolean same=source!=null&&known&&ItemStack.isSameItemSameComponents(source.main(),hands.mainHandItem());
+        float height=known?net.minecraft.util.Mth.lerp(partial,hands.oldMainHandHeight(),hands.mainHandHeight()):0F;
         boolean active=source!=null&&!source.palette().phase().equals("NONE")&&source.expectedBody().weight()>0;
         if(!CounterPeerRenderMath.handEligible(active,height,same,known,equipping))s.token.reject("ordinary_hand_admission_is_not_eligible");
         s.token.observe("handEquipKnown",known);s.token.observe("handEquipping",equipping);s.token.observe("handSameItem",same);
@@ -484,18 +484,17 @@ public final class CounterPeerRenderProbe {
         var expected=CounterPeerRenderMath.sword(view.root(),CounterPeerRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
         pass(s,"view_item",a,view.model(),item,CounterPeerRenderMath.compare("actual_socket_item_matrix",CounterPeerRenderMath.values(expected),CounterPeerRenderMath.values(actual)),true,false);
     }
-    public static FallbackView fallbackViewBegin(ItemInHandRenderer renderer,AvatarRenderState a,AbstractClientPlayer player,
+    public static FallbackView fallbackViewBegin(FirstPersonHandView hands,AvatarRenderState a,
         InteractionHand hand,ItemStack stack,float attack,float inverse,PoseStack pose,net.minecraft.client.renderer.SubmitNodeCollector collector){
         var s=rendering();if(s==null||a==null||a.id!=s.token.expected.owner()||hand!=InteractionHand.MAIN_HAND)return null;
         var source=s.sources.get(a);if(source==null){s.token.reject("native_without_extraction");return null;}
-        var motion=renderer instanceof MastersHandMotionState m?m:null;
-        if(!stack.is(Items.DIAMOND_SWORD)||motion==null||!ItemStack.isSameItemSameComponents(stack,motion.wildercord$mainHandItem())||!ItemStack.isSameItemSameComponents(stack,source.main()))s.token.reject("wrong_native_stack");
-        var c=source.classic();boolean equipping=motion==null||motion.wildercord$mainHandEquipping();
+        if(!stack.is(Items.DIAMOND_SWORD)||!hands.equipKnown()||!ItemStack.isSameItemSameComponents(stack,hands.mainHandItem())||!ItemStack.isSameItemSameComponents(stack,source.main()))s.token.reject("wrong_native_stack");
+        var c=source.classic();boolean equipping=hands.mainHandEquipping();
         float ownership=c==null||equipping?0:MastersViewMotion.ownership(c.pose().weight(),true);
-        boolean whack=a.attackTime>0&&a.attackArm==a.mainArm&&a.swingAnimationType==SwingAnimationType.WHACK;
-        if(a.isUsingItem||a.isAutoSpinAttack||player.isScoping()||(a.attackTime>0&&a.swingAnimationType==SwingAnimationType.STAB))s.token.reject("unsupported_native_item_motion");
+        boolean whack=RenderCompat.activeMainHandSwingType(a)==SwingAnimationType.WHACK;
+        if(a.isUsingItem||a.isAutoSpinAttack||hands.isScoping()||RenderCompat.hasActiveStabSwing(a))s.token.reject("unsupported_native_item_motion");
         var before=new Matrix4f(pose.last().pose());var expected=CounterPeerRenderMath.nativeSword(before,c==null?null:c.pose(),a.mainArm==HumanoidArm.LEFT,inverse,c==null?0:c.yawDelta(),c==null?0:c.pitchDelta(),ownership,attack,whack);
-        var call=new FallbackView(a,player,renderer,before,expected,inverse,ownership,pose,collector,s.fallback);s.fallback=call;return call;
+        var call=new FallbackView(a,hands,before,expected,inverse,ownership,pose,collector,s.fallback);s.fallback=call;return call;
     }
     public static ClassicCall classicBegin(PoseStack pose,InteractionHand hand,AvatarRenderState a,float inverse){
         var s=rendering();if(s==null||s.fallback==null||s.fallback.avatar!=a||hand!=InteractionHand.MAIN_HAND)return null;var call=s.fallback;var source=s.sources.get(a);var c=source==null?null:source.classic();
@@ -505,16 +504,16 @@ public final class CounterPeerRenderProbe {
     }
     public static void classicEnd(ClassicCall call,PoseStack pose){
         var s=rendering();if(s==null||call==null)return;var owner=call.owner();if(owner.transform)s.token.reject("duplicate_classic_transform");owner.transform=true;
-        pass(s,"classic_transform",owner.avatar,owner.renderer,null,CounterPeerRenderMath.compare("observed_classic_before_after",
+        pass(s,"classic_transform",owner.avatar,owner.hands.rendererObject(),null,CounterPeerRenderMath.compare("observed_classic_before_after",
             CounterPeerRenderMath.values(call.expected()),CounterPeerRenderMath.values(pose.last().pose())),false,true);
     }
     public static void fallbackViewItem(FallbackView call,ItemStackRenderState item,Matrix4fc actual){
         var s=rendering();if(s==null||call==null)return;var source=s.sources.get(call.avatar);
-        var held=call.renderer instanceof MastersHandMotionState m?m.wildercord$mainHandItem():ItemStack.EMPTY;
+        var held=call.hands.mainHandItem();
         if(source==null||!CounterPeerRenderMath.item(id(s,call.item),id(s,item),call.avatar.getMainHandItemStack().is(Items.DIAMOND_SWORD),
             offhand(call.avatar).isEmpty(),ItemStack.isSameItemSameComponents(source.main(),held))||item.isEmpty())s.token.reject("wrong_native_item");
         if(!call.transform)s.token.reject("skipped_classic_transform");
-        pass(s,"native_item",call.avatar,call.renderer,item,CounterPeerRenderMath.compare("actual_native_item_matrix",CounterPeerRenderMath.values(call.expectedItem),CounterPeerRenderMath.values(actual)),false,true);
+        pass(s,"native_item",call.avatar,call.hands.rendererObject(),item,CounterPeerRenderMath.compare("actual_native_item_matrix",CounterPeerRenderMath.values(call.expectedItem),CounterPeerRenderMath.values(actual)),false,true);
     }
     public static void fallbackViewEnd(FallbackView call,boolean completed){var s=rendering();if(s!=null&&call!=null){if(!completed)s.token.reject("incomplete_native_call");s.fallback=call.previous;}}
     private static void pass(Scope s,String kind,AvatarRenderState a,Object model,Object item,Comparison proof,boolean segmented,boolean rigid){
@@ -643,7 +642,7 @@ public final class CounterPeerRenderProbe {
         }consumer.accept(image);};
         var previous=COPYING.get();COPYING.set(new CopyCall(token,target,target.getColorTexture(),wrapped));try{original.accept(target,wrapped);}finally{COPYING.set(previous);}
     }
-    public static void copyEnqueued(GpuTexture texture,int mip,RenderTarget target,Consumer<NativeImage> consumer){
+    public static void copyEnqueued(Object texture,int mip,RenderTarget target,Consumer<NativeImage> consumer){
         var call=COPYING.get();if(call==null||call.target()!=target||call.consumer()!=consumer)return;var t=call.token();
         if(texture!=call.texture()||target.getColorTexture()!=texture||mip!=0)t.reject("changed_copy_texture");
         synchronized(t){if(t.copy!=null)t.reject("duplicate_copy");else t.copy=new Copy(t.extracted,t.rendered,SEQ.incrementAndGet(),target.width,target.height,Map.copyOf(t.observations),List.copyOf(t.passes),List.copyOf(t.draws));}

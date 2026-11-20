@@ -26,11 +26,11 @@ public abstract class CounterPeerFallbackMixin {
 	private void wildercord$counter$fallback(AbstractClientPlayer player, float partial, float xRot, InteractionHand hand,
 			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector,
 			int light, Operation<Void> original) {
-		ItemInHandRenderer renderer = (ItemInHandRenderer) (Object) this;
+		var hands = dev.wildercord.client.compat.FirstPersonHandView.of((ItemInHandRenderer) (Object) this, player);
 		AvatarRenderState avatar = ((FirstPersonAvatarState) this).wildercord$handsAvatar(player, partial);
-		CounterPeerRenderProbe.viewAttempt(avatar, renderer, player, partial, hand);
+		CounterPeerRenderProbe.viewAttempt(avatar, hands, partial, hand);
 		var previous = wildercord$counter$openingFallback.get();
-		var call = CounterPeerRenderProbe.fallbackViewBegin(renderer, avatar, player, hand, stack, attack, inverseArmHeight, pose, collector);
+		var call = CounterPeerRenderProbe.fallbackViewBegin(hands, avatar, hand, stack, attack, inverseArmHeight, pose, collector);
 		wildercord$counter$openingFallback.set(call);
 		boolean completed = false;
 		try {

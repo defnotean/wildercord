@@ -1,16 +1,12 @@
 package dev.wildercord.wildlife;
+import dev.wildercord.compat.SimpleWorldFeature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.block.Block;
 /** Twelve bounded columns across the finite underground band; no terrain replacement or spread. */
-public class GlowcapFeature extends Feature<NoneFeatureConfiguration> {
- public GlowcapFeature() {super(NoneFeatureConfiguration.CODEC);}
- @Override public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {return place(context.level(),context.chunkGenerator(),context.random(),context.origin());}
+public class GlowcapFeature extends SimpleWorldFeature {
  /** Natural decoration samples one column in each of twelve disjoint current-chunk strata.
   * It does not rely on a neighboring chunk having already acquired its lush floor and water.
   * Direct/manual placement deliberately keeps its supplied origin's local nine-block square.

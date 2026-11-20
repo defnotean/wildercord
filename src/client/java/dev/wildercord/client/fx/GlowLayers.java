@@ -1,15 +1,7 @@
 package dev.wildercord.client.fx;
 
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.BlendFactor;
-import com.mojang.blaze3d.platform.BlendOp;
-import dev.wildercord.Wildercord;
-import dev.wildercord.client.mixin.RenderPipelinesAccessor;
+import dev.wildercord.client.compat.RenderCompat;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 
 /**
  * How magic is blended into the world. {@link #GLOW}: light that adds to what's behind it
@@ -21,27 +13,13 @@ public final class GlowLayers {
 	private GlowLayers() {}
 
 	/** Added light: source × alpha + destination. */
-	public static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())
-		.withLocation(Wildercord.id("pipeline/glow_particle"))
-		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
-		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
-		.build();
-
-	/** Taken light: destination − source × alpha. */
-	public static final RenderPipeline DARK_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())
-		.withLocation(Wildercord.id("pipeline/dark_particle"))
-		.withColorTargetState(new ColorTargetState(new BlendFunction(BlendFactor.SRC_ALPHA, BlendFactor.ONE, BlendOp.REVERSE_SUBTRACT)))
-		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
-		.build();
-
-	/** Added light: source × alpha + destination. */
-	public static final SingleQuadParticle.Layer GLOW = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, GLOW_PIPELINE);
+	public static final SingleQuadParticle.Layer GLOW = RenderCompat.glowParticleLayer();
 	/**
 	 * Darkness is drawn with the solid particles: Improved Transparency can only add light, never take
 	 * it away, so a translucent darkness layer would have no pipeline there. It writes no depth, so it
 	 * still never hides what's behind it.
 	 */
-	public static final SingleQuadParticle.Layer DARK = new SingleQuadParticle.Layer(false, TextureAtlas.LOCATION_PARTICLES, DARK_PIPELINE);
+	public static final SingleQuadParticle.Layer DARK = RenderCompat.darkParticleLayer();
 
 	/** The colour flag (see {@code Light.DARK}) that marks a light as darkness. */
 	public static final int DARK_FLAG = 0x01000000;

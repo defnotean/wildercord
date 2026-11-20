@@ -59,8 +59,7 @@ public final class MountBardingLayer<M extends EntityModel<WildlifeRenderState>>
 		poseStack.translate(0, middle, 0);
 		poseStack.scale(GROW, GROW, GROW);
 		poseStack.translate(0, -middle, 0);
-		collector.order(1).submitModel(getParentModel(), state, poseStack, RenderTypes.entityCutout(texture), light,
-			LivingEntityRenderer.getOverlayCoords(state, 0.0F), 0xFF000000 | state.barding, null, state.outlineColor, null);
+		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderTypes.entityCutout(texture), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), 0xFF000000 | state.barding, state.outlineColor);
 		poseStack.popPose();
 	}
 }

@@ -216,7 +216,7 @@ public final class Backpacks {
 		if (player.openMenu(provider).isEmpty() || opened[0] == null) {
 			return false;
 		}
-		player.level().playSound(null, player, SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 0.8F, 1.1F + player.getRandom().nextFloat() * 0.1F);
+		player.level().playSound(null, player, dev.wildercord.compat.McBlocksAndItems.sound(SoundEvents.ARMOR_EQUIP_LEATHER), SoundSource.PLAYERS, 0.8F, 1.1F + player.getRandom().nextFloat() * 0.1F);
 		if (opened[0] == BackpackTier.RUNEWOVEN) {
 			player.level().playSound(null, player, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.7F, 1.3F);
 		}
@@ -244,7 +244,7 @@ public final class Backpacks {
 	private static void spillOverflow(ServerPlayer player, ItemStack backpack) {
 		BackpackTier tier = tierOf(backpack);
 		ItemContainerContents contents = backpack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-		List<ItemStack> all = contents.allItemsCopyStream().toList();
+		List<ItemStack> all = dev.wildercord.compat.McBlocksAndItems.containerItems(contents);
 		if (tier == null || all.size() <= tier.slots()) {
 			return;
 		}
@@ -252,7 +252,7 @@ public final class Backpacks {
 		backpack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(kept));
 		for (ItemStack extra : all.subList(tier.slots(), all.size())) {
 			if (!extra.isEmpty()) {
-				player.getInventory().placeItemBackInInventory(extra);
+				dev.wildercord.compat.McEntities.placeItemBackInInventory(player, extra);
 			}
 		}
 	}
@@ -273,7 +273,7 @@ public final class Backpacks {
 		if (EnchantmentHelper.has(worn, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
 			return;
 		}
-		player.drop(worn, true, false);
+		dev.wildercord.compat.McEntities.dropSilently(player, worn);
 	}
 
 	public static void init() {

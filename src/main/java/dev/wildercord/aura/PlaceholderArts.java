@@ -109,7 +109,7 @@ public final class PlaceholderArts {
 			if (foe.isAlive() && !Spirits.isBoss(foe)) {
 				Vec3 v = foe.getDeltaMovement();
 				foe.setDeltaMovement(v.x * 0.5, Math.max(v.y, StringRules.SECOND_LIFT), v.z * 0.5);
-				foe.hurtMarked = true;
+				dev.wildercord.compat.McEntities.syncVelocity(foe);
 			}
 		}
 		return true;
@@ -185,7 +185,7 @@ public final class PlaceholderArts {
 			Vec3 away = foe.position().subtract(player.position());
 			if (foe.isAlive() && !Spirits.isBoss(foe) && away.horizontalDistanceSqr() > 1.0E-4) {
 				foe.knockback(0.9, -away.x, -away.z, player.damageSources().playerAttack(player), 0.0F);
-				foe.hurtMarked = true;
+				dev.wildercord.compat.McEntities.syncVelocity(foe);
 			}
 		}
 		return true;
