@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Minecraft.class)
 public abstract class MinecraftSpellCutMixin {
 	@Inject(method = "startAttack", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;send(Lnet/minecraft/network/protocol/Packet;)V", shift = At.Shift.AFTER))
+		target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;)V",
+		ordinal = 1, shift = At.Shift.AFTER))
 	private void wildercord$spellCut(CallbackInfoReturnable<Boolean> cir) {
 		FormDashClient.swing();
 	}

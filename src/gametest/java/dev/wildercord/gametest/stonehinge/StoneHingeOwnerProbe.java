@@ -322,4 +322,13 @@ public final class StoneHingeOwnerProbe {
 		Event event = trace.record("server-owner-position-processed", "sendOrdinal=" + sent.ordinal + " requested=" + new Vec3(x, y, z), before, trace.snapshot(player));
 		if (event != null) synchronized (trace) { trace.positions.add(new PositionReceipt(sent, event)); }
 	}
+	public static Runnable beginOwnerPosition(ServerPlayer player, double x, double y, double z) {
+		Trace trace = serverTrace(player); PositionSend sent = MOVEMENT.get();
+		if (trace == null || sent == null) return null;
+		Body before = trace.snapshot(player);
+		return () -> {
+			Event event = trace.record("server-owner-position-processed", "sendOrdinal=" + sent.ordinal + " requested=" + new Vec3(x, y, z), before, trace.snapshot(player));
+			if (event != null) synchronized (trace) { trace.positions.add(new PositionReceipt(sent, event)); }
+		};
+	}
 }
