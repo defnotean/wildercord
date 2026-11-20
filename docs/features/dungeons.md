@@ -131,3 +131,15 @@ inward; every ebb clears all the ice and water from the pit.
   world (Cinderbrand, Ashen Veil or Kindled; Constellation or Eclipse; If Wet or Drowning Word),
   and a 35% chance of a second; and two to four of Mana Crystals, a Torn Page, diamonds, gold, an
   echo shard and the place's own treasure.
+
+## The Cat Sanctuary & The Lantern Bathhouse
+
+<img src="../images/cat-sanctuary.jpg" alt="The four-tier Japanese Cat Sanctuary pagoda with dark deepslate eaves, vermilion-and-cherry trim, wall gate, koi pond and arched crimson bridge" width="520">
+
+- **The Cat Sanctuary (`/place structure wildercord:cat_sanctuary`):** a grand four-story Japanese pagoda compound guarded in ascending order by **Yuki** (Floor 1, `140` health — grants *Whisker Ward*: `Resistance I`), **Odie** (Floor 2, `180` health — grants *Sunbeam Loaf*: `Regeneration I + Fire Resistance`), **Freya** (Floor 3, `220` health — grants *Silver-Bell Chime*: `Absorption I + Haste I`), and **Kuro** (Floor 4 Obsidian & Crimson Sanctum, `280` health — grants *Night-Stalker Grace*: `Speed II, Strength I, Night Vision`).
+  - **Progression Seals & Aegis:** **Floor Progression Seals** prevent skipping past an undefeated floor guardian, while living **Karakuri Sentinels** (`52` health, `10` armor) and **Paper Lantern Spirits** (`38` health, `4` armor) project a **Guardian Shrine Aegis** (`85%` damage reduction) onto the floor guardian, accompanied by reinforcement waves at 65% and 40% health. Clear Kuro's trial to unlock taming for all four Shrine Cats with fish or a **Suzu Cat-Bell Charm**.
+- **The Lantern Bathhouse (`/place structure wildercord:lantern_bathhouse`):** a steamed cedar *hinoki* onsen dungeon featuring outdoor footbaths, a Genkan lantern lobby, soaking halls defended by 14 `Karakuri Sentinels` and `Paper Lantern Spirits`, and a `Fire + Wind` Rune Seal vault holding shrine treasures and the Tea Master's charms.
+
+| Inside Odie's Floor 2 Tatami Hall | The Lantern Bathhouse Exterior |
+|---|---|
+| <img src="../images/cat-sanctuary-floor2.jpg" alt="Odie's dry second-floor bamboo tatami hall with chabudai tea tables, central kotatsu and Karakuri Sentinels" width="420"> | <img src="../images/lantern-bathhouse.jpg" alt="The steaming wooden Lantern Bathhouse onsen with wide dark-oak hipped roof, cupola and Torii gate" width="420"> |

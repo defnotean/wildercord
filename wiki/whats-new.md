@@ -5,6 +5,15 @@ nav_order: 1.1
 
 # What's new since 0.14.0
 
+- **Shrine Cats (`Yuki`, `Odie`, `Freya`, `Kuro`), Cat Sanctuary & Lantern Bathhouse**: conquer the four-tier Japanese **Cat Sanctuary** pagoda—facing hardened **Karakuri Sentinels**, hovering **Paper Lantern Spirits**, Floor Progression Seals, and Guardian Shrine Aegis—to unlock sanctuary buffs and tame all four unique cats with fish or a **Suzu Cat-Bell Charm**. Clear the steaming **Lantern Bathhouse** (`Fire + Wind` Rune Seal vault) for shrine treasures.
+
+<img src="{{ '/assets/images/cat-sanctuary.jpg' | relative_url }}" alt="The four-tier Japanese Cat Sanctuary pagoda with dark deepslate eaves, koi pond, Torii gate and bridge" class="shot">
+
+- **Four Sakura Village archetypes & six custom Sakura Villagers**: explore **Sakura Village** (tea house & Neko-Jinja shrine), **Sakura Canal Harbor** (sea-lantern canal, twin crimson bridges, watermill wheel & five-Torii hillside path), **Sakura Onsen Village** (two-story Ryokan Inn & steaming Rotenburo baths), and **Sakura Castle-Town** (Shirakabe walls, 3-tier Bell-Pagoda, Kendo Dojo & Katana Forge). Meet and trade with **Tea Masters**, **Shrine Maidens**, **Katana Swordsmiths**, **Lantern Artisans**, **Onsen Hostesses**, and **Koi Canal Fishermen**.
+
+<img src="{{ '/assets/images/shrine-cats.jpg' | relative_url }}" alt="All four custom-modeled Shrine Cats: Kuro, Freya, Odie and Yuki" class="shot">
+
+- **Ricochet, Suzu Chime, Ofuda Ward & block-variant crafting**: **Ricochet** now bounces up to 5 times solo (2 with Split, 15% decay); craft new runes **Suzu Chime** and **Ofuda Ward**; and craft **Blank Runes** and block recipes with cobbled deepslate, stone, wood and glass variants.
 - **Mojito's Fetchblade & boss rewards**: Mojito now drops **Mojito's Fetchblade**, an Epic aura-forged greatsword with **Fetch Bound**; lair guardians, dungeon bosses, regional bosses, Sword Masters, giants, and the Archivist award scaled Aura Shards, Mana Crystals, Torn/Manual Pages, and runes, and Dungeon Relics restore mana and aura on a shorter cooldown.
 - **3D weapon & staff models and Skyrend Glaive polearm combat**: forged weapons (`Oathkeeper`, `Lumenedge`, `Bulwark Maul`, `Skyrend Glaive`, `Fetchblade`) and all 20 elemental staffs have stepped 3D held models; `Skyrend Glaive` uses a two-handed cross-body guard stance and lever-action cleave.
 - **Cooperative Ferryman**: the Reed-Crowned Ferryman now re-aims tells onto surviving challengers, marks two oarsmen with paired anchors in phase two, and shares extra Aura Shards among every contributor.

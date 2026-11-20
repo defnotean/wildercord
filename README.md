@@ -16,9 +16,9 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 [VPS testing and evidence](docs/testing/vps.md) · [Current development audit](docs/audit/2026-10-24-polish.md)
 
 **For agents and contributors:** read [AGENTS.md](AGENTS.md) and the
-[development handoff](docs/AGENT_HANDOFF.md) before continuing. Work runs as a
-polish loop on `0.14-connected-world`; the [polish audit](docs/audit/2026-10-24-polish.md)
-records current findings, the evidence ledger and what is still open.
+[development handoff](docs/AGENT_HANDOFF.md) before continuing. Feature development from
+`0.14-connected-world` has been merged directly into `main`; the [polish audit](docs/audit/2026-10-24-polish.md)
+records findings, the evidence ledger and what is still open.
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
@@ -65,7 +65,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 
 | | |
 |---|---|
-| **756 named runes** | 82 shapes, 568 effects, 72 modifiers and 34 links across four tiers. Every Tier I-III rune is craftable, **59 runes of the world** come from their particular places, and the remaining ordinary Tier IV runes come from bosses and rare treasure. Some 300 are everyday runes for farming, fishing, mining, building and support; `Ctrl+B` opens a searchable Rune Catalog with pairing hints. The Fusion Altar makes **55 elemental fusions** and **40 signature fusions**; exact weaves of two to eight effects extend these further. Ten effects are **innate runes**: one wakes in each caster's heart. Each named rune has its own icon; Tier III, Tier IV and innate icons are animated. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **758 named runes** | 82 shapes, 570 effects, 72 modifiers and 34 links across four tiers. Every Tier I-III rune is craftable (including cobbled deepslate & stone variant recipes for Blank Runes), **59 runes of the world** come from their particular places, and the remaining ordinary Tier IV runes come from bosses and rare treasure. Some 300 are everyday runes for farming, fishing, mining, building and support; `Ctrl+B` opens a searchable Rune Catalog with pairing hints. The Fusion Altar makes **55 elemental fusions** and **40 signature fusions**; exact weaves of two to eight effects extend these further. Ten effects are **innate runes**: one wakes in each caster's heart. Each named rune has its own icon; Tier III, Tier IV and innate icons are animated. See [docs/RECIPES.md](docs/RECIPES.md). |
 | **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle assembles behind your shoulders and a shape-specific focus forms ahead, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
 | **Magic circles you can read and build around** | Twelve animated mechanisms give different shapes their own casting circles, preserving rune script and illustrated roundels. Twelve craftable [circle disciplines](docs/features/circle-disciplines.md) change coverage, flight speed, effect duration, support power, elemental fusion, movement, stance, weather or night bonuses with explicit costs. Circles follow the caster's rear plane; the outgoing spell retains its shape and materials. |
 | **Spells drawn in light** | All magic glows: light adds to what's behind it, and void magic is drawn as darkness. Beams with a white-hot core fired through a magic circle, bolts that glide as comets, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. Every element has its own visual language, from branching lightning to imploding darkness. |
@@ -80,7 +80,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Runebound and the Archive** | Some monsters carry Cords and cast real spells, glowing with rune marks in their spell's colour and telegraphed by the spell's own circle and a readable nameplate. Deep underground, the Archive holds Rune Seal doors, the Archivist (a hooded, hovering three-phase boss with a floating tome, who rewrites its Cord) and a vault of Tier IV runes. |
 | **Bosses that bite** | Boss blows land harder with armour penetration, clearer wind-ups, follow-through and staged deaths; tempered creatures scale to the strongest player nearby, five elite kinds roam, and bosses grow with challengers and enrage at half health. |
 | **Runes of the world** | Fifty-nine runes nobody can craft: in vanilla structures' chests, on bosses, in fallen-star craters and rift sieges, or taken from the land itself by **Attunement** (meditate with a Blank Rune in the right biome at the right moment). The Grimoire lists where each is found, with a riddle for the ones you haven't learned. See [docs/features/new-runes.md](docs/features/new-runes.md). |
-| **Dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor each have a three phase boss. The Rootbound Maze in swamps and Storm Spire on peaks add custom bosses, guarded side caches, sealed vaults and reusable relics. Clockwork Crypt, Living Greenhouse and Moving Sky Ruin each add three layouts and a distinct handling relic. Sword Tombs, Sleeping Blades and Marchkeeper battlefields carry the Aura's history, and forest sites clear their own trees: 76 structures in all, rebuilt grander for 0.14. See [docs/features/dungeons.md](docs/features/dungeons.md). |
+| **Dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor each have a three phase boss. The Rootbound Maze in swamps and Storm Spire on peaks add custom bosses, guarded side caches, sealed vaults and reusable relics. Clockwork Crypt, Living Greenhouse and Moving Sky Ruin each add three layouts and a distinct handling relic. The four-tier **Cat Sanctuary** pagoda and steaming **Lantern Bathhouse** guard the four Shrine Cats behind **Karakuri Sentinels** and **Paper Lantern Spirits**, while four **Sakura Villages** dot cherry groves, rivers, plains and hills; forest sites clear their own trees: 82 structures in all, rebuilt grander for 0.14. See [docs/features/dungeons.md](docs/features/dungeons.md). |
 | **World events** | Mana storms over the ley lines (faster mana, cheaper spells, wild surges), fallen stars that leave a guarded crater, and rift sieges that end with the Riftcaller. See [docs/features/world-events.md](docs/features/world-events.md). |
 | **Roaming giants and mage-hunters** | A Frost Matriarch, Ash Colossus or Elder Bramblewalker can wake near you with a boss bar of its own and a Giant's Heart to show for it; from your fifth Circle, hooded mage-hunters come for you by night, their bolts falling apart close in. |
 | **Luminous Reedlands** | A custom wetland region with natural Moonreed, stilted survey houses and resident Reedkeepers. Their remembered stories lead through the Drowned Road's coastal ledger and working lighthouse to the optional Reed-Crowned Ferryman at the Last Crossing. Three marked attacks, dry escape paths and a return compass connect its encounter to river exploration. See the [regional guide](wiki/world/luminous-reedlands.md) and [Ferryman guide](wiki/world/reed-crowned-ferryman.md). |
@@ -98,6 +98,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Familiars** | Wisps of light rise from the ley lines at night. Tame one with its own element and it floats at your shoulder, quickens your mana, casts a little spell of its own and levels up as you fight together. Dress your Cord in beads and glow colours on the Cosmetics page. See [docs/features/familiars-and-cosmetics.md](docs/features/familiars-and-cosmetics.md). |
 | **Cinnamon** | A small, immortal companion with her own model and skin. The server chooses her one owner in `config/wildercord-cinnamon.json`; she arrives already tamed and follows or sits on that player's click. See [docs/features/cinnamon.md](docs/features/cinnamon.md). |
 | **Companions** | Tame a coffer mimic with books (a 27-slot chest only you can open) or a thistle hedgehog with sweet berries (it brings you forage); tameable black bobcats, frost lynx and dune cougars fight beside you. |
+| **Shrine Cats, Sakura Villages & Cat Sanctuary** | Four custom-modeled cats (**Yuki**, **Odie**, **Freya** and **Kuro**) preside over the four-story **Cat Sanctuary** pagoda beside **Karakuri Sentinels**, **Paper Lantern Spirits** and the **Lantern Bathhouse**, and stroll four distinct Japanese **Sakura Villages** tended by six kimono villager professions (**Tea Master**, **Shrine Maiden**, **Katana Swordsmith**, **Lantern Artisan**, **Onsen Hostess**, **Koi Canal Fisherman**). Clear Kuro's fourth-floor trial to befriend all four cats with fish or a **Suzu Cat-Bell Charm**. |
 | **Parry and wild magic** | A Shield raised at the last moment turns a flying spell back at its caster. An overcast may surge into something wild. See [docs/features/parry-and-wild-magic.md](docs/features/parry-and-wild-magic.md). |
 | **The Runesmith, duels and chorus** | A villager who sells runes, buys your duplicates or swaps them for runes you don't know, and posts daily contracts; formal duels that put everything back afterwards; and allies casting together in a chorus. See [docs/features/runesmith-duels-chorus.md](docs/features/runesmith-duels-chorus.md). |
 | **Travel commands** | For servers: homes, public warps, personal waypoints with an arrow on screen and a beam only you can see, teleport requests with clickable answers, `/back`, `/spawn` and `/rtp`. Every teleport is a short warmup in a forming magic circle, with a cooldown and a safe landing. See [docs/features/travel.md](docs/features/travel.md). |
@@ -155,6 +156,22 @@ with every rune's numbers, is in [docs/DESIGN.md](docs/DESIGN.md).
 | <img src="docs/images/fused-singularity.jpg" alt="At night, a black sphere inside a tilted disk of white and violet rings, pulling husks into it" width="420"> | <img src="docs/images/fused-stormclock.jpg" alt="A gold clock face hanging in the sky over a husk, lightning falling from it onto a target mark" width="420"> |
 | Riftbolt (Storm + Void): a black bolt that tears its target away | Cryostasis (Frost + Time): an ally sealed safe in ice |
 | <img src="docs/images/fused-riftbolt.jpg" alt="A black bolt with a violet core striking a husk, jagged cracks torn in the air at both ends" width="420"> | <img src="docs/images/fused-cryostasis.jpg" alt="A clear cocoon of ice standing over the caster, a tamed wolf beside it" width="420"> |
+
+### Shrine Cats, Sakura Villages and the Cat Sanctuary
+
+| The four Shrine Cats: Kuro, Freya, Odie and Yuki | Six kimono Sakura Villager professions |
+|---|---|
+| <img src="docs/images/shrine-cats.jpg" alt="All four custom-modeled Shrine Cats standing on cherry planks: black ear-notched Kuro, plush grey Freya with her pink collar and silver bell, orange tabby Odie, and grey-white fluffy Yuki" width="420"> | <img src="docs/images/sakura-villagers.jpg" alt="All six Sakura Villager professions standing behind the four Shrine Cats: Koi Fisherman, Onsen Hostess, Lantern Artisan, Katana Swordsmith, Shrine Maiden and Tea Master" width="420"> |
+| Cat Sanctuary pagoda compound | Second-floor tatami hall & Kotatsu shrine |
+| <img src="docs/images/cat-sanctuary.jpg" alt="The four-tier Japanese Cat Sanctuary pagoda with dark deepslate eaves, vermilion-and-cherry trim, wall gate, koi pond and arched crimson bridge" width="420"> | <img src="docs/images/cat-sanctuary-floor2.jpg" alt="Inside Odie's dry bamboo tatami hall on the second floor of the Cat Sanctuary, with chabudai tea tables, yellow-and-orange kotatsu hearth and Karakuri Sentinels" width="420"> |
+| Fourth-floor Shadow Sentinel hall (Kuro) | Karakuri Sentinel & Paper Lantern Spirit in combat poses |
+| <img src="docs/images/cat-sanctuary-floor4.jpg" alt="Kuro's fourth-floor Obsidian and Crimson sanctuary hall beneath a golden altar Torii gate, guarded by Karakuri Sentinels and Paper Lantern Spirits" width="420"> | <img src="docs/images/sakura-mobs.jpg" alt="Paper Lantern Spirit and Karakuri Sentinel in active combat poses behind the Shrine Maiden, Tea Master and Shrine Cats" width="420"> |
+| Lantern Bathhouse onsen exterior | Lantern Bathhouse cedar interior |
+| <img src="docs/images/lantern-bathhouse.jpg" alt="The steaming wooden Lantern Bathhouse onsen with wide dark-oak hipped roof, rooftop cupola, entry Torii gate and stone lanterns" width="420"> | <img src="docs/images/lantern-bathhouse-interior.jpg" alt="Inside the Lantern Bathhouse along the cedar plank walkway over steaming mineral pools beneath hanging lanterns" width="420"> |
+| Sakura Courtyard & Neko-Jinja Village | Sakura Canal & Lantern Harbor Village |
+| <img src="docs/images/sakura-village.jpg" alt="The walled Sakura Village compound with two-story Tea House Inn, vermilion Cat Shrine Pavilion, striped festival stalls, koi river and arched crimson drum bridge" width="420"> | <img src="docs/images/sakura-canal-town.jpg" alt="Sakura Canal and Lantern Harbor Village with central sea-lantern canal, twin crimson Taiko-bashi bridges, timber watermill wheel, bamboo pier and five-Torii hillside shrine" width="420"> |
+| Sakura Mountain Onsen Resort Village | Sakura Feudal Castle-Town & Dojo Village |
+| <img src="docs/images/sakura-onsen-village.jpg" alt="Sakura Mountain Onsen Village with a two-story Ryokan Inn, Ramen Pavilion with red parasols, cedar soaking tubs and steaming open-air Rotenburo baths" width="420"> | <img src="docs/images/sakura-castle-town.jpg" alt="Sakura Feudal Castle-Town enclosed by white Shirakabe walls and corner Yagura towers around a three-tier Bell-Pagoda, two-story Kendo Dojo, forge and striped market arcade" width="420"> |
 
 ### Imbuing, glyphs and more
 
@@ -263,8 +280,8 @@ of script and as a seal) and ring pattern, generated by `tools/circle_art.py`.
 
 The mod must be on both the server and every client.
 
-**Getting started in survival:** craft a Blank Rune (4 cobblestone around 1 lapis lazuli), then a
-Twine Cord (3 string over a Blank Rune), and put it on in the new slot above your offhand. You
+**Getting started in survival:** craft a Blank Rune (4 cobblestone, cobbled deepslate, or stone variants around 1 lapis lazuli), then a
+Twine Cord (3 string over a Blank Rune), and put it on in the new slot above your offhand. Crafting recipes across Wildercord accept matching block variants (stone, deepslate, wood, glass and wool). You
 learn Self, Bolt and Push, and your first spell is threaded for you. Right-click any rune item to
 learn it.
 
@@ -515,8 +532,8 @@ Feature guides: [expeditions](docs/features/expeditions.md), [elemental armour](
 
 ## Roadmap
 
-Current work is the polish loop on `0.14-connected-world`, tracked with findings and evidence in
-the [polish audit](docs/audit/2026-10-24-polish.md). The
+Feature work from `0.14-connected-world` has been merged directly into `main`; the
+[polish audit](docs/audit/2026-10-24-polish.md) records the evidence ledger and history. The
 [Masters of Tomorrow roadmap](docs/archive/MASTERS_OF_TOMORROW_ROADMAP.md) and its
 [release checklist](docs/reviews/RELEASE_READINESS.md) are dated records of earlier rounds.
 

@@ -7,11 +7,11 @@ permalink: /world/wilds-sites/
 
 # Wild Places
 
-Ten old ruins, firing courts and lonely posts across the wild corners of the world, the Nether and the End included. Eight
+Fourteen distinctive sites across the wild corners of the world, from the jungle, the Nether and the End to peaceful Japanese cherry-blossom settlements. Eight old ruins
 guard a vault behind an **element rune seal**: open it with the matching rune magic. Vaults hold a breathing method manual page, runes of that place's elements, and Wildercord
 materials: an Aura Shard, a Blank Rune, a Mana Crystal and a Spell Scroll. Each site also has a hall chest that anyone
-can open, with Torn Pages among its finds. Two additional Emberwood Reach landmarks—the **Emberwood Charcoal Yard** and
-the **Emberwood Kiln Court**—appear in warm border woodlands without a rune seal.
+can open, with Torn Pages among its finds. Two Emberwood Reach landmarks—the **Emberwood Charcoal Yard** and
+the **Emberwood Kiln Court**—appear in warm border woodlands without a rune seal, while four peaceful **Sakura Villages** house kimono villagers and roaming Shrine Cats.
 
 | Site | Where | Seal / Feature | Manual / Focus |
 |---|---|---|---|
@@ -25,6 +25,10 @@ the **Emberwood Kiln Court**—appear in warm border woodlands without a rune se
 | Void Lantern | End outer islands | Void and Arcane | Hollow |
 | Emberwood Charcoal Yard | [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }}), wooded badlands, forests | Kiln Keeper resident, Cinder Fern ash bed & kiln draft lamp | [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }}) |
 | Emberwood Kiln Court | [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }}), wooded badlands | Optional [Kiln Widow]({{ '/world/kiln-widow/' | relative_url }}) heartstone challenge | [Kiln Widow]({{ '/world/kiln-widow/' | relative_url }}) |
+| Sakura Village | Cherry groves, meadows, birch forests, forests | Peace compound, Tea House, Neko-Jinja, Kura, Zen garden, 4 residents & 4 Shrine Cats | Dawn |
+| Sakura Canal Harbor | Cherry groves, rivers, flower forests, meadows, birch forests | Stone sea-lantern canal, twin crimson bridges, watermill, pier, 5-Torii hill shrine | Tide |
+| Sakura Onsen Village | Cherry groves, meadows, groves, windswept hills, flower forests | Terraced Ryokan Inn, steaming Rotenburo hot springs, Ramen pavilion, Calligraphy gazebo | Dawn |
+| Sakura Castle-Town | Cherry groves, plains, meadows, forests, birch forests | Shirakabe castle walls, Yagura towers, 3-tier Bell-Pagoda, Kendo Dojo & Forge, Market arcade | Iron |
 
 ## Venom Ziggurat
 
@@ -79,6 +83,38 @@ In the [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }}), **Embe
 Cinder Fern ash bed, a kiln draft lamp and lever, *Eleven Winters at the Gate*, and a resident **Emberwood Kiln Keeper**.
 Nearby **Emberwood Kiln Courts** hold the optional [Kiln Widow]({{ '/world/kiln-widow/' | relative_url }}) challenge.
 
+## Sakura Villages (Four Archetypes)
+
+Four distinct peaceful Japanese settlements generate in cherry groves and neighboring biomes, each populated by friendly kimono [Sakura Villagers]({{ '/world/creatures/' | relative_url }}#sakura-villagers) and roaming [Shrine Cats]({{ '/world/creatures/' | relative_url }}#shrine-cats), with two supply chests (`Dawn`, `Tide`, or `Iron` manual pages and shrine runes).
+
+### Sakura Village
+
+<img src="{{ '/assets/images/sakura-village.jpg' | relative_url }}" alt="Walled Sakura Village compound with two-story Tea House Inn, vermilion Neko-Jinja cat shrine, festival stalls and arched bridge" class="shot">
+<span class="caption">Sakura Village courtyard compound.</span>
+
+A white-plaster compound with twin South Yagura watchtowers, a Myojin Torii entrance, arched crimson Taiko-bashi drum bridge over a koi brook, two-story Tea House & Inn, **Neko-Jinja** Cat Shrine Pavilion (where **Freya** perches on her pink cushion dais), festival market stalls, Artisan Kura storehouse, open-air smithy, and Karesansui Zen rock garden.
+
+### Sakura Canal Harbor
+
+<img src="{{ '/assets/images/sakura-canal-town.jpg' | relative_url }}" alt="Sakura Canal and Lantern Harbor Village with glowing sea-lantern canal, twin crimson bridges, timber watermill wheel and five-Torii hill shrine" class="shot">
+<span class="caption">Sakura Canal & Lantern Harbor Village.</span>
+
+A water-front trading town built along a sunken stone sea-lantern canal spanned by twin arched crimson bridges and hanging lantern garlands. Features a two-story **Watermill & Tea Brewery** with a timber paddle wheel, a **Bamboo Dockhouse & Fishing Pier** with a moored wooden skiff, a glowing **Chochin Lantern Workshop**, and a stepped hillside path framed by five vermilion Torii gates climbing to an Inari Shrine.
+
+### Sakura Onsen Village
+
+<img src="{{ '/assets/images/sakura-onsen-village.jpg' | relative_url }}" alt="Sakura Mountain Onsen Resort Village with two-story wooden Ryokan Inn, Ramen Pavilion with red parasols and steaming Rotenburo baths" class="shot">
+<span class="caption">Sakura Mountain Onsen Resort Village.</span>
+
+A three-tier terraced mountain hot-spring retreat housing a grand two-story **Wooden Ryokan Inn** with wrap-around balconies and blue *noren* curtains, steaming open-air **Rotenburo** rock pools and bamboo-screened cedar soaking tubs, a foreground **Ramen & Tea Pavilion** with red parasol umbrellas, and an upper cliffside **Calligraphy Gazebo**.
+
+### Sakura Castle-Town
+
+<img src="{{ '/assets/images/sakura-castle-town.jpg' | relative_url }}" alt="Sakura Feudal Castle-Town enclosed by Shirakabe walls and Yagura towers around a three-tier Bell-Pagoda, Kendo Dojo and market arcade" class="shot">
+<span class="caption">Sakura Feudal Castle-Town & Dojo Market Village.</span>
+
+A fortified *Shirakabe* walled castle-town with a front moat bridge, Ote-mon gatehouse, and three corner Yagura watchtowers surrounding a centerpiece **Three-Tier Village Bell-Pagoda** with a golden spire, a **Two-Story Kendo Dojo & Katana Swordsmith Forge** with a smoking stone blast chimney, a **Covered Lantern Market Arcade**, and a north **Herbalist & Apothecary Cottage**.
+
 ## Tips
 
 - The vault walls are protected: you cannot dig around a seal in Survival.
@@ -94,6 +130,10 @@ Nearby **Emberwood Kiln Courts** hold the optional [Kiln Widow]({{ '/world/kiln-
 | Emberwood Kiln Court | The Cooled Kiln |
 | Iron Gatehouse | The Last Gate |
 | Rime Monastery | The Cold Bell |
+| Sakura Village | Blossom Lanterns |
+| Sakura Canal Harbor | Lantern Canals |
+| Sakura Onsen Village | Steaming Blossoms |
+| Sakura Castle-Town | Blossom Citadel |
 | Venom Ziggurat | Poison Darts |
 | Void Lantern | Light at the Edge |
 

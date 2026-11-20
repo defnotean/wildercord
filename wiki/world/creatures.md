@@ -37,6 +37,9 @@ For wetland, cave and highland wildlife, see [Lights Along the Bank]({{ '/world/
 | [Skyray](#skyray) | Windswept hills and forests, meadows, peaks, snowy slopes | Very rare, high up | Skyray Membrane | Slow Falling potions, mending elytra |
 | [Rimehare](#rimehare) | Snowy plains and taigas, ice spikes, snowy slopes, groves | 2 or 3 | Rime Fur | Rimebound armour, leather |
 | [Wandering Duelist](#wandering-duelist) | Near villages and roads, by day | Rare | Its breathing method | Learning aura |
+| [Black Bobcat](#black-bobcat) | Dark forests, old taigas | Rare | Fight beside you | Feeding fish tames it |
+| [Shrine Cats](#shrine-cats) | Cat Sanctuary, Sakura Villages | 4 unique guardians (`Yuki`, `Odie`, `Freya`, `Kuro`) | Sanctuary buffs & unique companion powers | Yield on Sanctuary floors, then tame with fish or Suzu Cat-Bell Charm |
+| [Sakura Villagers](#sakura-villagers) | Cat Sanctuary, Sakura Villages | 2 to 4 per village | Suzu Cat-Bell Charms, Blank Runes, lanterns, golden carrots, salmon | Use an emerald to trade |
 | [Thistle Hedgehog](#thistle-hedgehog) | Meadows, plains and forests | 1 to 3 | Nothing; brings you finds | A tameable pet that forages for you |
 
 Glimmer Dust, Mossback Scutes, Ember Tufts and Skyray Membranes each brew their potion from an Awkward Potion.
@@ -170,6 +173,38 @@ struck it. It peeks out after a few seconds, then uncurls.
   anything but berries to make it sit (it half curls and peeks out), and again to make it follow. Berries heal it
   while it's hurt. Every few minutes it brings you another find.
 - Two tame hedgehogs fed berries raise a hoglet that is yours too.
+
+## Shrine Cats
+{: #shrine-cats }
+
+<img src="{{ '/assets/images/shrine-cats.jpg' | relative_url }}" alt="All four custom-modeled Shrine Cats: Kuro, Freya, Odie and Yuki" class="shot">
+<span class="caption">From left to right: Kuro, Freya, Odie, and Yuki.</span>
+
+Four custom-modeled guardian cats preside over the **Cat Sanctuary** pagoda and stroll peacefully through the four **Sakura Villages**:
+
+- **Yuki** (Floor 1, fluffy charcoal-and-cream longhair with whiskers): yields non-lethally to grant **Whisker Ward** (`Resistance I`), and when tamed bolsters nearby combat defence and leaps on foes.
+- **Odie** (Floor 2, sleepy longhair orange tabby who loafs beside kotatsu hearths): grants **Sunbeam Loaf** (`Regeneration I + Fire Resistance`), and when tamed warms and regenerates nearby owners.
+- **Freya** (Floor 3, plush grey shorthair with rose-pink collar and swinging silver Suzu bell): grants **Silver-Bell Chime** (`Absorption I + Haste I`), and when tamed boosts attack/casting tempo and chimes near allies.
+- **Kuro** (Floor 4 roof master, notched left ear & golden eyes): grants **Night-Stalker Grace** (`Speed II, Strength I, Night Vision`) and unlocks taming for all four cats!
+
+Tame any cleared quartet cat with cooked salmon/cod or a **Suzu Cat-Bell Charm** (which also rings to call tamed cats back and reunites lost quartet companions). Sneak-click a tamed cat to toggle between loafing/sitting and following; tamed quartet cats never permanently die to owner hits, thorns, or dungeon hazards.
+
+## Sakura Villagers
+{: #sakura-villagers }
+
+<img src="{{ '/assets/images/sakura-villagers.jpg' | relative_url }}" alt="Six kimono Sakura Villager professions standing behind the Shrine Cats: Koi Fisherman, Onsen Hostess, Lantern Artisan, Katana Swordsmith, Shrine Maiden and Tea Master" class="shot">
+<span class="caption">All six Sakura Villager professions in their traditional garb.</span>
+
+Six peaceful kimono-clad NPCs bow when greeted and trade role supplies for a single emerald:
+
+| Profession | Attire & Craft | Emerald Trade |
+|---|---|---|
+| **Sakura Tea Master** | Sage hakama, woven *amigasa* hat, lacquered tea tray | `1x Suzu Cat-Bell Charm` |
+| **Sakura Shrine Maiden** | Crimson & white *miko* garb, pink *kanzashi*, *gohei* wand | `4x Cooked Salmon` |
+| **Sakura Swordsmith** | Charcoal *samue*, riveted leather apron, *hachimaki* headband, iron hammer | `4x Blank Rune` |
+| **Sakura Lantern Artisan** | Vermilion kimono, flat cap, brass spectacles, glowing dangling *chochin* pole | `4x Lantern` |
+| **Sakura Onsen Hostess** | Wisteria-blush *yukata*, gold obi bow, cedar towel bucket | `3x Golden Carrot` |
+| **Sakura Koi Fisherman** | Indigo wave-hem *happi*, weathered *kasa* hat, creel basket, bamboo rod | `4x Raw Salmon` |
 
 ## Camp cooking
 

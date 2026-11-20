@@ -22,6 +22,8 @@ Six magical monsters live beside the zombies and skeletons, and **fallen knights
 | [Geode Crawler](#geode-crawler) | Caves, near amethyst geodes | It curls up and rattles | Mace, pickaxe, blasts, storm | Geode Grit, amethyst |
 | [Bog Witch-Frog](#bog-witch-frog) | Swamps at night | Its throat swells and glows | Pop the bubble; raise a shield | Bog Gland |
 | [Mana Ooze](#mana-ooze) | Deep caves, caves under ley lines | It drinks spells and swells | Blades, arrows, fire | Mana Gel |
+| [Karakuri Sentinel](#karakuri-sentinel) | Cat Sanctuary, Lantern Bathhouse | Brass chest gears spin & it winds back a naginata lunge | Heavy strikes, lightning or fire; stagger between swings | Gold Nuggets |
+| [Paper Lantern Spirit](#paper-lantern-spirit) | Cat Sanctuary, Lantern Bathhouse | It unhinges its ember jaw and charges a flame burst | Shoot before detonation or dodge the flame pulse | Lanterns |
 | [Fallen Knight](#fallen-knight) | Strongholds, ancient cities, expeditions, dungeons | Blade raised, a line of light on the ground | Step off the line; break its guard with an axe | Manual Pages, Aura Shards |
 
 Any of the six can also be [Runebound]({{ '/world/runebound/' | relative_url }}). Their magic counts as spells, so
@@ -96,6 +98,26 @@ A pink jelly slime that **eats spells**. Found in deep caves below height 0, and
   Full at its biggest, it bursts into two.
 - **Beat it:** don't cast at it. Use blades, arrows or **fire**, which hurts it extra. It doesn't split when it dies.
 - **Drops:** **Mana Gel**. Eat one for 15 mana.
+
+## Karakuri Sentinel
+{: #karakuri-sentinel }
+
+<img src="{{ '/assets/images/sakura-mobs.jpg' | relative_url }}" alt="Paper Lantern Spirit and Karakuri Sentinel in active wind-up and flare poses behind the Shrine Maiden, Tea Master and Shrine Cats" class="shot">
+<span class="caption">A Paper Lantern Spirit and a Karakuri Sentinel alongside Sakura Village guardians.</span>
+
+Clockwork wood-and-crimson-lacquer samurai automata guarding every floor of the **Cat Sanctuary** and the halls of the **Lantern Bathhouse**. Equipped with an interlocking spinning brass chest gear, hinged sode pauldrons, a steel naginata, and a buckler shield (`52` health, `10` armor).
+
+- **How it fights:** casts Runebound shrine spells, shields living floor bosses via the Guardian Shrine Aegis, and winds up a heavy lunging naginata sweep.
+- **Beat it:** clear Sentinels first to drop a floor boss's Aegis reduction, and punish their recovery window after a wind-up lunge.
+- **Drops:** **Gold Nuggets**.
+
+## Paper Lantern Spirit
+{: #paper-lantern-spirit }
+
+Floating crimson-and-gold *chochin-obake* spirits drifting through upper pagoda galleries and bamboo bathhouses (`38` health). Their articulated upper/lower lacquer rims unhinge to expose a blazing ember crystal core and fluttering paper *ofuda* arms before releasing a ranged flame burst or radial ember ring.
+
+- **Beat it:** interrupt or weave behind pillars as the ember core flares open.
+- **Drops:** **Lanterns**.
 
 ## Fallen Knight
 {: #fallen-knight }

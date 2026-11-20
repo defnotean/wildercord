@@ -5,16 +5,16 @@ Read the current user request first; it takes precedence over this file. Then re
 [docs/AGENT_HANDOFF.md](docs/AGENT_HANDOFF.md) for VPS setup, implemented content and commands
 (its branch and release status sections predate 0.13).
 
-## Current state: polish loop (2026-10-24)
+## Current state: merged to `main` (2026-11-20)
 
-The owner started a polish loop on branch `0.14-connected-world`: audit, fix, test and refine in
-rounds until they say "stop" (then finish the current edit, let VPS tests end, commit, push, clean up
-and report). **No pull requests:** once a fix is confirmed on the VPS and implemented, merge the branch
-into `main` directly (owner, 2026-10-24). Findings and status live in `docs/audit/2026-10-24-polish.md`.
+Work from the `0.14-connected-world` polish loop (Rounds 1–14: audit, fixes, in-game verification on
+`pandora-vps`, Shrine Cats & Sakura Villages expansion, recipe block-variant tags, and documentation/image
+updates) was verified on `pandora-vps`, merged directly into `main` (no pull request per owner instruction),
+and `0.14-connected-world` was deleted. Findings and full VPS evidence live in
+`docs/audit/2026-10-24-polish.md`.
 
 History: `living-world-expansion` was merged through PR #3 on 2026-10-15 and released as `v0.13.0-alpha`.
-The October 13 pause has ended; development resumed on `0.14-connected-world`. Older docs that call the
-work "paused" or "unmerged" describe that earlier snapshot.
+`0.14.0-alpha` and subsequent connected-world / Japanese Sanctuary polish rounds landed through `main`.
 
 ## Requirements
 
