@@ -3,7 +3,9 @@ package dev.wildercord.world;
 import dev.wildercord.world.ResidueLedger.Caps;
 import dev.wildercord.world.ResidueLedger.Entry;
 import dev.wildercord.world.ResidueLedger.Refusal;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.world.level.ChunkPos;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** The record of a dimension's residues: its caps, and a decay schedule that never looks at every residue. */
 class ResidueLedgerTest {
+	static {
+		// 26.1.2 ChunkPos initialises ChunkPyramid -> ChunkStatus -> BuiltInRegistries, which wants vanilla bootstrapped.
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
+	}
+
 	private static Entry<String> at(int x, int y, int z, long due, String owner) {
 		return new Entry<>(x, y, z, "everfrost", 0, due, 0, owner, "data");
 	}
