@@ -210,7 +210,7 @@ public final class ArtWards {
 				double speed = Math.max(0.3, v.length() * 0.6);
 				turned.setDeltaMovement(side.scale(speed).add(flat.normalize().scale(speed * 0.4)).add(0, 0.25, 0));
 				turned.needsSync = true;
-			};
+			});
 		}
 		return null;
 	}

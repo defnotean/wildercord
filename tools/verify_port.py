@@ -14,8 +14,10 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from datapack_profile import DataPackProfile, read_mc_version
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -79,8 +81,7 @@ def find_javap():
             cand = Path(java_home) / "bin" / name
             if cand.is_file():
                 return str(cand)
-    found = shutil.which("javap")
-    return found
+    return shutil.which("javap")
 
 
 def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
@@ -140,6 +141,21 @@ def strip_comments(source: str) -> str:
         else:
             out.append(ch)
             i += 1
+    return "".join(out)
+
+
+def _strip_angle_generics(text: str) -> str:
+    """Remove balanced <...> type argument clauses from class headers."""
+    out = []
+    depth = 0
+    for ch in text:
+        if ch == "<":
+            depth += 1
+        elif ch == ">":
+            if depth > 0:
+                depth -= 1
+        elif depth == 0:
+            out.append(ch)
     return "".join(out)
 
 
@@ -253,7 +269,7 @@ def unquote_strings(expr: str) -> list[str]:
 
 
 class JarInspector:
-    """Lazy batched `javap -c -p -s` inspector backed by one or more JARs."""
+    """Batched `javap -c -p -s` inspector backed by one or more JARs."""
 
     def __init__(self, jars: list[Path], javap_bin: str):
         self.jars = jars
@@ -266,30 +282,20 @@ class JarInspector:
                     if entry.endswith(".class"):
                         self.class_entries.add(entry[:-6])
         self._cache: dict[str, dict] = {}
-        self._strings_cache: dict[str, list[str]] = {}
+        self._strings_cache: dict[str, set[str]] = {}
 
     def has_class(self, binary_name: str) -> bool:
         return binary_name in self.class_entries
 
-    def ensure_loaded(self, binary_names: list[str]):
-        missing = []
-        seen = set()
-        for name in binary_names:
-            b = name.replace(".", "/")
-            if b not in self._cache and self.has_class(b) and b not in seen:
-                seen.add(b)
-                missing.append(b)
-        if not missing:
-            return
-        # Load in batches to keep command lines short on Windows.
-        batch_size = 30
-        i = 0
-        while i < len(missing):
-            batch = missing[i:i + batch_size]
-            i += batch_size
-            dotted = [b.replace("/", ".") for b in batch]
+    def _run_javap(self, dotted_classes: list[str], extra_flags=("-c", "-p", "-s")) -> str:
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".txt", delete=False) as tf:
+            argfile = Path(tf.name)
+            for cls in dotted_classes:
+                # Quote class names with '$' cleanly for javap @argfile
+                tf.write(f'"{cls}"\n' if "$" in cls else f"{cls}\n")
+        try:
             proc = subprocess.run(
-                [self.javap, "-c", "-p", "-s", "-cp", self.classpath, *dotted],
+                [self.javap, *extra_flags, "-cp", self.classpath, f"@{argfile}"],
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
@@ -297,32 +303,48 @@ class JarInspector:
             )
             if proc.returncode != 0:
                 raise RuntimeError(f"javap failed: {proc.stderr.strip()}")
-            self._parse_javap_output(proc.stdout)
-            # Load newly discovered superclasses recursively so hierarchy lookups stay fast.
-            supers = []
+            return proc.stdout
+        finally:
+            argfile.unlink(missing_ok=True)
+
+    def ensure_loaded(self, binary_names: list[str], include_interfaces: bool = True):
+        pending = []
+        seen = set()
+        for name in binary_names:
+            b = name.replace(".", "/")
+            if b not in self._cache and self.has_class(b) and b not in seen:
+                seen.add(b)
+                pending.append(b)
+        while pending:
+            batch = pending
+            pending = []
+            out = self._run_javap([b.replace("/", ".") for b in batch])
+            self._parse_javap_output(out)
+            # Mark any class whose output was skipped cleanly so we never re-query
             for b in batch:
                 meta = self._cache.get(b)
-                if meta:
-                    for sup in ([meta["super"]] if meta["super"] else []) + meta["interfaces"]:
-                        if sup not in self._cache and self.has_class(sup) and sup not in seen:
-                            seen.add(sup)
-                            supers.append(sup)
-            if supers:
-                missing.extend(supers)
+                if not meta:
+                    continue
+                parents = ([meta["super"]] if meta["super"] else []) + (meta["interfaces"] if include_interfaces else [])
+                for sup in parents:
+                    if sup not in self._cache and self.has_class(sup) and sup not in seen:
+                        seen.add(sup)
+                        pending.append(sup)
 
     def _parse_javap_output(self, output: str):
         cur_binary = None
         cur_dotted = None
         cur_method = None
-        pending_member = None  # ("field"|"method", name, header_line)
+        pending_member = None
         in_code = False
 
         header_re = re.compile(
-            r"^(?:public|protected|private|abstract|final|static|strictfp|sealed|non-sealed|\s)*"
-            r"(?:class|interface|enum|record|@interface)\s+([^\s<{]+)(?:\s+extends\s+([^\s{<]+))?(?:\s+implements\s+([^{]+))?\s*\{"
+            r"^(?:(?:public|protected|private|abstract|final|static|strictfp|sealed|non-sealed)\s+)*"
+            r"(?:class|interface|enum|@interface)\s+(\S+)(?:\s+extends\s+(\S+))?(?:\s+implements\s+([^{]+))?\s*\{"
         )
-        member_re = re.compile(r"^\s{2}(?!(?:static|synchronized|\}|\{))(.+);\s*$")
-        desc_re = re.compile(r"^\s{4}descriptor:\s+(\S+)\s*$")
+        # Strict 2-space indent ensures 4-space `    descriptor: Lfoo/Bar;` lines never match member_re!
+        member_re = re.compile(r"^  (?=\S)(?!(?:static|synchronized|\}|\{))(.+);\s*$")
+        desc_re = re.compile(r"^    descriptor:\s+(\S+)\s*$")
         method_insn_re = re.compile(
             r'//\s+(?:Interface)?Method\s+(?:([A-Za-z0-9_/$]+)\.)?(?:"?(<init>|<clinit>)"?|"([^"]+)"|([A-Za-z0-9_$]+)):(\([^)]*\)\S+)'
         )
@@ -335,24 +357,29 @@ class JarInspector:
             line = raw.rstrip("\r\n")
             if line.startswith("Compiled from "):
                 continue
-            hm = header_re.match(line)
-            if hm:
-                cur_dotted = hm.group(1)
-                cur_binary = cur_dotted.replace(".", "/")
-                sup = hm.group(2).split("<", 1)[0].replace(".", "/") if hm.group(2) else None
-                ifaces = []
-                if hm.group(3):
-                    for part in split_top_level(hm.group(3), ","):
-                        ifaces.append(part.strip().split("<", 1)[0].replace(".", "/"))
-                self._cache[cur_binary] = {
-                    "super": sup,
-                    "interfaces": ifaces,
-                    "fields": set(),
-                    "methods": {},  # (name, desc) -> list[insns]
-                }
-                cur_method = None
-                pending_member = None
-                in_code = False
+            if line and not line[0].isspace() and line.endswith("{"):
+                clean_header = _strip_angle_generics(line)
+                hm = header_re.match(clean_header)
+                if hm:
+                    cur_dotted = hm.group(1)
+                    cur_binary = cur_dotted.replace(".", "/")
+                    sup = hm.group(2).replace(".", "/") if hm.group(2) else None
+                    ifaces = []
+                    if hm.group(3):
+                        for part in hm.group(3).split(","):
+                            p = part.strip().replace(".", "/")
+                            if p:
+                                ifaces.append(p)
+                    self._cache[cur_binary] = {
+                        "super": sup,
+                        "interfaces": ifaces,
+                        "fields": set(),
+                        "methods": {},
+                        "strings": set(),
+                    }
+                    cur_method = None
+                    pending_member = None
+                    in_code = False
                 continue
             if cur_binary is None:
                 continue
@@ -375,7 +402,7 @@ class JarInspector:
                 in_code = False
                 cur_method = None
                 if "(" in sig:
-                    before_paren = sig.split("(", 1)[0].strip()
+                    before_paren = _strip_angle_generics(sig.split("(", 1)[0]).strip()
                     tok = before_paren.split()[-1]
                     if tok == cur_dotted or tok.endswith("." + cur_dotted.rsplit(".", 1)[-1]):
                         mname = "<init>"
@@ -383,8 +410,7 @@ class JarInspector:
                         mname = tok.rsplit(".", 1)[-1]
                     pending_member = ("method", mname)
                 else:
-                    # field declaration (may drop modifiers)
-                    before_eq = sig.split("=", 1)[0].strip()
+                    before_eq = _strip_angle_generics(sig.split("=", 1)[0]).strip()
                     fname = before_eq.split()[-1]
                     pending_member = ("field", fname)
                 continue
@@ -413,6 +439,8 @@ class JarInspector:
                     in_code = False
                     continue
                 meta = self._cache[cur_binary]
+                if "// String " in line:
+                    meta["strings"].add(line.split("// String ", 1)[1].strip())
                 insns = meta["methods"][cur_method]
                 mi = method_insn_re.search(line)
                 if mi:
@@ -435,7 +463,8 @@ class JarInspector:
 
     def supertypes(self, binary_name: str) -> list[str]:
         """BFS over class and its superclasses/interfaces present in the JAR."""
-        self.ensure_loaded([binary_name])
+        if binary_name not in self._cache and self.has_class(binary_name):
+            self.ensure_loaded([binary_name])
         order = []
         seen = set()
         queue = [binary_name]
@@ -445,7 +474,8 @@ class JarInspector:
                 continue
             seen.add(cur)
             order.append(cur)
-            self.ensure_loaded([cur])
+            if cur not in self._cache:
+                self.ensure_loaded([cur])
             meta = self._cache.get(cur)
             if meta:
                 if meta["super"]:
@@ -480,26 +510,15 @@ class JarInspector:
                         matches.append((sup, name, desc, insns))
         return matches
 
+    def preload_string_constants(self, dotted_classes: list[str]):
+        missing = [c for c in dotted_classes if c.replace(".", "/") not in self._cache and self.has_class(c.replace(".", "/"))]
+        if missing:
+            self.ensure_loaded([c.replace(".", "/") for c in missing], include_interfaces=False)
+
     def string_constants(self, dotted_class: str) -> set[str]:
-        if dotted_class in self._strings_cache:
-            return set(self._strings_cache[dotted_class])
         binary = dotted_class.replace(".", "/")
-        if not self.has_class(binary):
-            self._strings_cache[dotted_class] = []
-            return set()
-        proc = subprocess.run(
-            [self.javap, "-c", "-p", "-cp", self.classpath, dotted_class],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-        )
-        found = []
-        for line in proc.stdout.splitlines():
-            if "// String " in line:
-                found.append(line.split("// String ", 1)[1].strip())
-        self._strings_cache[dotted_class] = found
-        return set(found)
+        meta = self._cache.get(binary)
+        return set(meta["strings"]) if meta else set()
 
 
 def parse_imports(source: str):
@@ -521,7 +540,6 @@ def parse_imports(source: str):
 def resolve_java_type_binary(type_expr: str, pkg: str, exact: dict[str, str], wildcards: list[str], inspector: JarInspector | None) -> str:
     clean = type_expr.replace(" ", "").rstrip(".")
     parts = clean.split(".")
-    # Already qualified package name (starts lowercase)
     first_upper = next((idx for idx, p in enumerate(parts) if p and p[0].isupper()), None)
     if first_upper is not None and first_upper > 0:
         pkg_part = "/".join(parts[:first_upper])
@@ -565,7 +583,6 @@ def resolve_mixin_targets(source: str, pkg: str, exact: dict[str, str], wildcard
 
 
 def parse_method_spec(spec: str) -> tuple[str, str | None]:
-    # Strip optional explicit owner prefix "Lfoo/Bar;"
     s = spec.strip()
     if s.startswith("L") and ";" in s and ("(" not in s or s.index(";") < s.index("(")):
         s = s.split(";", 1)[1]
@@ -580,10 +597,7 @@ def parse_jvm_target(target: str):
     if ";" not in target:
         return None
     owner_part, rest = target.split(";", 1)
-    if owner_part.startswith("L"):
-        owner = owner_part[1:]
-    else:
-        owner = owner_part
+    owner = owner_part[1:] if owner_part.startswith("L") else owner_part
     if "(" in rest:
         idx = rest.index("(")
         return ("INVOKE", owner, rest[:idx], rest[idx:])
@@ -611,7 +625,7 @@ def parse_param_descriptors(method_desc: str) -> list[str]:
 
 
 def java_param_matches_jvm_desc(java_type: str, jvm_desc: str, pkg: str, exact: dict[str, str], wildcards: list[str], inspector: JarInspector | None) -> bool:
-    clean = re.sub(r"<.*>", "", java_type).strip()
+    clean = _strip_angle_generics(java_type).strip()
     arrays = 0
     while clean.endswith("[]"):
         arrays += 1
@@ -685,7 +699,6 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
     if inspector is None:
         return errors
 
-    # Pre-scan @At targets so javap can load them as well
     for src_path, src, *_ in mixin_records:
         for atm in re.finditer(r"@At\s*\(", src):
             try:
@@ -709,11 +722,12 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
 
     inj_pattern = re.compile(r"@(" + "|".join(INJECTOR_NAMES) + r")\s*\(")
     shadow_pattern = re.compile(r"@(Shadow|Accessor|Invoker)\b")
+    local_ann_re = re.compile(r"@(?:[A-Za-z0-9_.]+\.)?Local\s*\(")
+    strip_ann_re = re.compile(r"@[A-Za-z0-9_.]+\s*(?:\([^)]*\))?")
 
     for src_path, src, file_pkg, exact, wildcards, mc_targets, default_req in mixin_records:
         rel = str(src_path.relative_to(root))
 
-        # 1. @Shadow / @Accessor / @Invoker
         for sm in shadow_pattern.finditer(src):
             ann_kind = sm.group(1)
             pos = sm.end()
@@ -726,11 +740,10 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                 if explicit_strs:
                     explicit = explicit_strs[0]
                 pos = end_p + 1
-            # Skip stacked annotations/modifiers until declaration
             rest = src[pos:pos + 400]
-            # Strip chained annotations like @Final, @Mutable
             decl_chunk = re.split(r"[;{]", rest, maxsplit=1)[0]
-            cleaned = re.sub(r"@[A-Za-z0-9_]+(?:\s*\([^)]*\))?", " ", decl_chunk)
+            cleaned = strip_ann_re.sub(" ", decl_chunk)
+            cleaned = _strip_angle_generics(cleaned)
             if ann_kind == "Shadow":
                 if "(" in cleaned:
                     before_p = cleaned.split("(", 1)[0].strip()
@@ -775,7 +788,6 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                     if not any(any(inspector.find_methods(t, c) for c in cands) for t in mc_targets):
                         errors.append(f"{rel}: @Invoker method {cands[0]}() not found on {mc_targets}")
 
-        # 2. Injectors & @At & @Local(argsOnly = true)
         for im in inj_pattern.finditer(src):
             body, close_idx = extract_balanced(src, im.end() - 1, "(", ")")
             args = parse_named_args(body)
@@ -799,7 +811,6 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                 else:
                     matched_methods.extend(found_for_spec)
 
-            # Collect primary `at = ...` (separate from `@Slice` `from`/`to` so counts only apply to primary `at`)
             primary_ats = []
             if "at" in args:
                 at_expr = args["at"]
@@ -874,7 +885,6 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                     if allow_val is not None and cnt > allow_val:
                         errors.append(f"{rel}: @At(\"{at_val}\", target=\"{t_raw}\") count {cnt} > allow {allow_val} in {method_specs}")
 
-            # 3. @Local(argsOnly = true) ambiguity check on handler parameters
             after_ann = src[close_idx + 1:close_idx + 1200]
             paren_m = re.search(r"\(", after_ann)
             if paren_m and matched_methods:
@@ -883,19 +893,16 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                 except ValueError:
                     param_text = ""
                 for param in split_top_level(param_text, ","):
-                    if "@Local" not in param:
-                        continue
-                    lm = re.search(r"@Local\s*\(", param)
+                    lm = local_ann_re.search(param)
                     if not lm:
                         continue
-                    lbody, lend = extract_balanced(param, lm.end() - 1, "(", ")")
+                    lbody, _ = extract_balanced(param, lm.end() - 1, "(", ")")
                     largs = parse_named_args(lbody)
                     if largs.get("argsOnly") != "true":
                         continue
                     if "ordinal" in largs or "index" in largs:
                         continue
-                    # Extract Java type after stripping annotations and 'final'
-                    p_rem = re.sub(r"@[A-Za-z0-9_.]+\s*(?:\([^)]*\))?", " ", param)
+                    p_rem = strip_ann_re.sub(" ", param)
                     p_rem = re.sub(r"\bfinal\b", " ", p_rem).strip()
                     tokens = p_rem.rsplit(None, 1)
                     if len(tokens) < 2:
@@ -919,7 +926,7 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
 def _walk_loot_functions(node, errors, rel):
     if isinstance(node, list):
         for item in node:
-            _walk_loot_functions(item, errors, rel)
+            yield from _walk_loot_functions(item, errors, rel)
         return
     if not isinstance(node, dict):
         return
@@ -946,7 +953,7 @@ def _walk_loot_functions(node, errors, rel):
         conds.append(node["condition"])
     elif isinstance(node.get("condition"), list):
         conds.extend(node["condition"])
-    if isinstance(node.get("terms"), list) and "type" in node or "condition" in node:
+    if isinstance(node.get("terms"), list) and ("type" in node or "condition" in node):
         conds.extend(node.get("terms", []))
     if isinstance(node.get("term"), dict):
         conds.append(node["term"])
@@ -987,7 +994,6 @@ def verify_datapacks(root: Path, profile: DataPackProfile, inspector: JarInspect
     if not data_dir.is_dir():
         return errors
 
-    # 1. Stale directory checks
     expected_feat = data_dir / profile.feature_subdir
     stale_feat = data_dir / profile.stale_feature_subdir
     if stale_feat.exists():
@@ -999,7 +1005,6 @@ def verify_datapacks(root: Path, profile: DataPackProfile, inspector: JarInspect
     if stale_brew.exists():
         errors.append(f"Stale brewing directory present for {profile.version}: {stale_brew.relative_to(root)}")
 
-    # 2. exploration_map destination '#' check + loot functions/conditions/components collection
     loot_ids = []
     loot_dirs = [data_dir / "loot_table", data_dir / "villager_trade"]
     for ldir in loot_dirs:
@@ -1027,6 +1032,8 @@ def verify_datapacks(root: Path, profile: DataPackProfile, inspector: JarInspect
     if inspector is None:
         return errors
 
+    all_reg_classes = [cls for cls_list in REGISTRY_SOURCES.values() for cls in cls_list]
+    inspector.preload_string_constants(all_reg_classes)
     reg_sets = {}
     for key, cls_list in REGISTRY_SOURCES.items():
         s = set()
@@ -1034,7 +1041,6 @@ def verify_datapacks(root: Path, profile: DataPackProfile, inspector: JarInspect
             s |= inspector.string_constants(cls)
         reg_sets[key] = s
 
-    # Validate loot functions / conditions / components
     for kind, ident, rel in loot_ids:
         if kind == "function" and reg_sets["loot_function"] and ident not in reg_sets["loot_function"]:
             errors.append(f"{rel}: unknown minecraft:{ident} loot function for {profile.version}")
@@ -1043,7 +1049,6 @@ def verify_datapacks(root: Path, profile: DataPackProfile, inspector: JarInspect
         elif kind == "component" and reg_sets["data_component"] and ident not in reg_sets["data_component"]:
             errors.append(f"{rel}: unknown minecraft:{ident} data component for {profile.version}")
 
-    # Validate placed_feature placement modifiers + block predicates
     placed_dir = data_dir / "worldgen" / "placed_feature"
     if placed_dir.is_dir():
         for p in sorted(placed_dir.rglob("*.json")):
@@ -1062,7 +1067,6 @@ def verify_datapacks(root: Path, profile: DataPackProfile, inspector: JarInspect
                         if reg_sets["block_predicate"] and bid not in reg_sets["block_predicate"]:
                             errors.append(f"{brel}: unknown block predicate minecraft:{bid} for {profile.version}")
 
-    # Validate recipes (serializer types + item data components; exclude brewing directory)
     recipe_dir = data_dir / "recipe"
     if recipe_dir.is_dir():
         for p in sorted(recipe_dir.rglob("*.json")):
