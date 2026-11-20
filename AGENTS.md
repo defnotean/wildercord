@@ -57,6 +57,8 @@ History: `living-world-expansion` was merged through PR #3 on 2026-10-15 and rel
    suites). `docs/archive/FULL_CLIENT_SHARD_PLAN.md` describes the retired 349-class gate; do not follow it.
 5. [Architecture](docs/ARCHITECTURE.md), [lore canon](docs/LORE_CANON.md),
    [design](docs/DESIGN.md), and [contributing](CONTRIBUTING.md) for the area being changed.
+6. [Cross-version porting](docs/PORTING.md) — version seams, `tools/port_helper.py` workflow,
+   and verification steps when backporting or forward-porting Minecraft versions.
 
 The existing mod is large. Prefer completing connected gameplay journeys over
 adding disconnected content. A regional addition needs actual world placement,

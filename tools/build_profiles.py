@@ -63,5 +63,9 @@ if __name__ == "__main__":
     parser.add_argument("--jar", type=Path, required=True, help="Release jar produced by gradlew build")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/profiles")
     args = parser.parse_args()
+    out_dir = args.output.resolve()
+    if out_dir.is_dir():
+        for stale in out_dir.glob("wildercord-*.mrpack"):
+            stale.unlink()
     for preset in PROFILES:
-        build(preset, args.jar.resolve(), args.output.resolve())
+        build(preset, args.jar.resolve(), out_dir)

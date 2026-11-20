@@ -7,6 +7,7 @@ references against DataPackProfile and the Minecraft JAR's registered IDs.
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import os
 from pathlib import Path
@@ -17,7 +18,7 @@ import sys
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from datapack_profile import DataPackProfile, read_mc_version
+from datapack_profile import DataPackProfile, parse_mc_tuple, read_mc_version
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -33,7 +34,8 @@ INJECTOR_NAMES = (
 )
 
 MC_OWNERS = ("net/minecraft/", "com/mojang/blaze3d/", "com/mojang/math/", "com/mojang/renderpearl/")
-EXTERNAL_SKIP_PREFIXES = ("dev/wildercord/", "net/fabricmc/")
+EXTERNAL_SKIP_PREFIXES = ("net/fabricmc/",)
+MOD_PREFIX = "dev/wildercord/"
 
 PRIMITIVE_DESCS = {
     "boolean": "Z",
@@ -72,6 +74,84 @@ REGISTRY_SOURCES = {
     ),
 }
 
+COMPAT_CONTRACT: dict[str, tuple[tuple[str, int], ...]] = {
+    "src/main/java/dev/wildercord/compat/McEntities.java": (
+        ("drop", 3), ("giveOrDrop", 2), ("dropSilently", 2),
+        ("placeItemBackInInventory", 2), ("swing", 3), ("isSwinging", 1),
+        ("swingProgress", 2), ("syncVelocity", 1), ("setPermanentlyInvulnerable", 2),
+        ("isPermanentlyInvulnerable", 1), ("saveHurtCooldown", 1),
+        ("restoreHurtCooldown", 2), ("clearHurtCooldown", 1),
+        ("damageCooldownTicks", 1), ("isEnderman", 1), ("isEndermanAngryAt", 3),
+        ("pacifyEnderman", 1), ("projectileDeflection", 1),
+    ),
+    "src/main/java/dev/wildercord/compat/CompatCubeMob.java": (
+        ("applyCubeMobHealth", 1), ("cubeAttackGoal", 0),
+    ),
+    "src/main/java/dev/wildercord/compat/McBlocksAndItems.java": (
+        ("immovablePushReaction", 0), ("poppedPushReaction", 0), ("isOre", 1),
+        ("isSapling", 1), ("isValidBonemealTarget", 4), ("performBonemeal", 5),
+        ("douseCampfire", 4), ("primeTnt", 3), ("destroyBlockLevelEvent", 0),
+        ("sound", 1), ("cookingFuelProperties", 3), ("registerFuel", 2),
+        ("compostableMediumProperties", 1), ("registerCompostable", 2),
+        ("containerItems", 1), ("containerCount", 1), ("bundleItems", 1),
+        ("bundleWith", 2), ("countMatchingItems", 3), ("removeMatchingItems", 4),
+        ("writeWaxedSign", 2), ("appendFacingSignLineAndGlow", 3),
+        ("setBothSidesGlowing", 1), ("dyedBlockFamilies", 0),
+        ("brownWoolStairs", 0), ("setGlaiveSwingAnimation", 2),
+    ),
+    "src/main/java/dev/wildercord/compat/SimpleWorldFeature.java": (
+        ("place", 4),
+    ),
+    "src/main/java/dev/wildercord/compat/McWorldgen.java": (
+        ("registerFeature", 2), ("addSpawn", 6), ("biomeSpawnTypes", 2),
+        ("dappledForestBiome", 0), ("biomeSetWithOptional", 2),
+        ("canValidBiomeExistAtChunkCenter", 1), ("getNoiseBiome", 4),
+        ("startsForStructure", 4), ("startsForStructure", 3),
+        ("findNearestStructure", 5),
+    ),
+    "src/main/java/dev/wildercord/compat/McLootAndTriggers.java": (
+        ("exactPoolRolls", 1), ("getOptionalParam", 2), ("simpleTriggerCodec", 1),
+    ),
+    "src/main/java/dev/wildercord/compat/WildercordBrewing.java": (),
+    "src/client/java/dev/wildercord/client/compat/RenderCompat.java": (
+        ("submitModel", 8), ("submitModel", 9), ("rotate", 2), ("rotateDegrees", 3),
+        ("startTextInput", 2), ("stopTextInput", 2), ("swingProgress", 1),
+        ("setSwingProgress", 2), ("overrideStabWithWhackGlaive", 1),
+        ("clearSwingForCustomRig", 1), ("swingObservation", 1),
+        ("isStabSwingType", 1), ("hasActiveStabSwing", 1),
+        ("activeMainHandSwingType", 1), ("livingModel", 1),
+        ("wispGlowPipeline", 0), ("auraBodyGlowPipeline", 0),
+        ("glowParticlePipeline", 0), ("darkParticlePipeline", 0),
+        ("wispGlowRenderType", 1), ("auraBodyGlowRenderType", 1),
+        ("glowParticleLayer", 0), ("darkParticleLayer", 0),
+    ),
+    "src/client/java/dev/wildercord/client/compat/CullableMobRenderer.java": (
+        ("shouldRenderEntity", 6), ("superShouldRenderEntity", 6),
+        ("cullingBounds", 2), ("superCullingBounds", 2),
+    ),
+    "src/client/java/dev/wildercord/client/compat/CullableEntityRenderer.java": (
+        ("shouldRenderEntity", 6), ("superShouldRenderEntity", 6),
+        ("cullingBounds", 2), ("superCullingBounds", 2),
+    ),
+    "src/client/java/dev/wildercord/client/compat/FirstPersonHandView.java": (
+        ("of", 2), ("of", 1), ("equipKnown", 0), ("mainHandEquipping", 0),
+        ("mainHandItem", 0), ("mainHandHeight", 0), ("oldMainHandHeight", 0),
+        ("mainHandSwapScale", 0), ("isScoping", 0), ("hasMainHandMapData", 1),
+        ("isFallbackItemInvalid", 1), ("initialMainHandRenderState", 0),
+        ("rendererObject", 0), ("stateObject", 0), ("rendererClassName", 0),
+    ),
+    "src/gametest/java/dev/wildercord/gametest/compat/GametestCompat.java": (
+        ("keyboardKey", 1), ("setFullscreen", 2), ("renderFrame", 2),
+        ("extractMainCamera", 3), ("findNearestStructure", 5),
+        ("generateStructureStart", 3), ("findBiomeHorizontal", 10),
+        ("biomeHasMob", 3), ("configuredFeatureValue", 1),
+        ("dummyStructureContext", 2), ("entityPositionSyncTarget", 1),
+        ("moveEntityDeltaTarget", 2), ("syncVelocityFlag", 1),
+        ("narrationOutput", 1), ("particlePacketCount", 1),
+        ("swingMainHandWithItem", 1),
+    ),
+}
+
 
 def find_javap():
     java_home = os.environ.get("JAVA_HOME")
@@ -83,22 +163,113 @@ def find_javap():
     return shutil.which("javap")
 
 
+def read_gradle_properties(root: Path) -> dict[str, str]:
+    props_path = root / "gradle.properties"
+    out: dict[str, str] = {}
+    if not props_path.is_file():
+        return out
+    for raw in props_path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        out[k.strip()] = v.strip()
+    return out
+
+
+def _gradle_bases() -> list[Path]:
+    raw_bases = []
+    if os.environ.get("GRADLE_USER_HOME"):
+        raw_bases.append(Path(os.environ["GRADLE_USER_HOME"]))
+    raw_bases.append(Path.home() / ".gradle")
+    bases: list[Path] = []
+    seen = set()
+    for base in raw_bases:
+        res = base.resolve()
+        if res not in seen:
+            seen.add(res)
+            bases.append(base)
+    return bases
+
+
+def _valid_mc_jar(path: Path) -> bool:
+    name = path.name
+    return (
+        path.is_file()
+        and name.endswith(".jar")
+        and not name.endswith(("-sources.jar", "-javadoc.jar", "-javadocs.jar"))
+    )
+
+
 def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
     if explicit_jars:
-        return [Path(j) for j in explicit_jars if Path(j).is_file()]
-    candidates = []
-    gradle_home = Path(os.environ.get("GRADLE_USER_HOME") or (Path.home() / ".gradle"))
-    for base in (gradle_home, Path.home() / ".gradle"):
+        return [Path(j) for j in explicit_jars if Path(j).exists()]
+
+    bases = _gradle_bases()
+    for base in bases:
         merged = base / "caches" / "fabric-loom" / mc_version / "minecraft-client.jar"
-        if merged.is_file() and merged not in candidates:
-            candidates.append(merged)
-            return candidates
+        if merged.is_file():
+            return [merged]
+
+    for base in bases:
+        mc_root = base / "caches" / "fabric-loom" / "minecraftMaven" / "net" / "minecraft"
+        if not mc_root.is_dir():
+            continue
+        merged_dirs = sorted(mc_root.glob("minecraft-merged*"))
+        merged_jars = []
+        for mdir in merged_dirs:
+            for ver_dir in sorted(mdir.glob(f"{mc_version}*")):
+                if not ver_dir.is_dir():
+                    continue
+                for jar in sorted(ver_dir.glob("*.jar")):
+                    if _valid_mc_jar(jar):
+                        merged_jars.append(jar)
+        if merged_jars:
+            named = [j for j in merged_jars if "named" in str(j) or "loom.mappings" in str(j)]
+            return [named[0]] if named else [merged_jars[0]]
+
     loom_maven = root / ".gradle" / "loom-cache" / "minecraftMaven"
     if loom_maven.is_dir():
-        for jar in sorted(loom_maven.rglob(f"minecraft-*-{mc_version}.jar")):
-            if not jar.name.endswith("-sources.jar"):
-                candidates.append(jar)
+        project_jars = []
+        for jar in sorted(loom_maven.rglob("*.jar")):
+            if not _valid_mc_jar(jar):
+                continue
+            if jar.name.startswith("minecraft-") and (
+                f"-{mc_version}" in jar.name or jar.parent.name.startswith(mc_version)
+            ):
+                project_jars.append(jar)
+        if project_jars:
+            merged_proj = [j for j in project_jars if "minecraft-merged" in j.name]
+            if merged_proj:
+                named = [j for j in merged_proj if "named" in str(j)]
+                return [named[0]] if named else [merged_proj[0]]
+            return project_jars
+
+    candidates = []
+    for base in bases:
+        mc_root = base / "caches" / "fabric-loom" / "minecraftMaven" / "net" / "minecraft"
+        if not mc_root.is_dir():
+            continue
+        for prefix in ("minecraft-common*", "minecraft-clientonly*"):
+            for pdir in sorted(mc_root.glob(prefix)):
+                for ver_dir in sorted(pdir.glob(f"{mc_version}*")):
+                    if not ver_dir.is_dir():
+                        continue
+                    for jar in sorted(ver_dir.glob("*.jar")):
+                        if _valid_mc_jar(jar) and jar not in candidates:
+                            candidates.append(jar)
     return candidates
+
+
+def find_mod_class_dirs(root: Path, explicit_dirs=None) -> list[Path]:
+    if explicit_dirs is not None:
+        return [Path(d) for d in explicit_dirs if Path(d).exists()]
+    dirs = []
+    for source_set in ("main", "client", "gametest"):
+        cls_dir = root / "build" / "classes" / "java" / source_set
+        if cls_dir.is_dir():
+            dirs.append(cls_dir)
+    return dirs
 
 
 def strip_comments(source: str) -> str:
@@ -268,18 +439,23 @@ def unquote_strings(expr: str) -> list[str]:
 
 
 class JarInspector:
-    """Batched `javap -c -p -s` inspector backed by one or more JARs."""
+    """Batched `javap -c -p -s` inspector backed by JARs and/or compiled class directories."""
 
     def __init__(self, jars: list[Path], javap_bin: str):
         self.jars = jars
         self.classpath = os.pathsep.join(str(j) for j in jars)
         self.javap = javap_bin
         self.class_entries: set[str] = set()
-        for jar in jars:
-            with zipfile.ZipFile(jar) as zf:
-                for entry in zf.namelist():
-                    if entry.endswith(".class"):
-                        self.class_entries.add(entry[:-6])
+        for entry_path in jars:
+            if entry_path.is_dir():
+                for cls in entry_path.rglob("*.class"):
+                    self.class_entries.add(cls.relative_to(entry_path).as_posix()[:-6])
+            elif entry_path.is_file():
+                with zipfile.ZipFile(entry_path) as zf:
+                    for entry in zf.namelist():
+                        if entry.endswith(".class"):
+                            self.class_entries.add(entry[:-6])
+        self.has_mod_classes = any(c.startswith(MOD_PREFIX) for c in self.class_entries)
         self._cache: dict[str, dict] = {}
         self._strings_cache: dict[str, set[str]] = {}
 
@@ -387,6 +563,7 @@ class JarInspector:
                         "super": sup,
                         "interfaces": ifaces,
                         "fields": set(),
+                        "field_descs": {},
                         "methods": {},
                         "strings": set(),
                     }
@@ -435,6 +612,7 @@ class JarInspector:
                 meta = self._cache[cur_binary]
                 if kind == "field":
                     meta["fields"].add(name)
+                    meta["field_descs"][name] = desc
                     cur_method = None
                 else:
                     key = (name, desc)
@@ -532,6 +710,92 @@ class JarInspector:
         binary = dotted_class.replace(".", "/")
         meta = self._cache.get(binary)
         return set(meta["strings"]) if meta else set()
+
+    def suggest_classes(self, missing_binary: str, limit: int = 5) -> list[str]:
+        simple = missing_binary.replace(".", "/").rsplit("/", 1)[-1].rsplit("$", 1)[-1].lower()
+        visible = [c for c in sorted(self.class_entries) if not re.search(r"\$\d+$", c)]
+        exact_or_sub = []
+        for c in visible:
+            csimple = c.rsplit("/", 1)[-1].rsplit("$", 1)[-1].lower()
+            if csimple == simple or simple in csimple:
+                exact_or_sub.append(c)
+        if len(exact_or_sub) < limit:
+            by_simple: dict[str, list[str]] = {}
+            for c in visible:
+                csimple = c.rsplit("/", 1)[-1].rsplit("$", 1)[-1].lower()
+                by_simple.setdefault(csimple, []).append(c)
+            for match in difflib.get_close_matches(simple, list(by_simple), n=limit, cutoff=0.55):
+                for c in by_simple[match]:
+                    if c not in exact_or_sub:
+                        exact_or_sub.append(c)
+        return exact_or_sub[:limit]
+
+    def suggest_methods(self, binary_name: str, missing_name: str, limit: int = 6) -> list[str]:
+        out: list[str] = []
+        seen: set[str] = set()
+        candidates_by_name: dict[str, list[str]] = {}
+        low = missing_name.lower()
+        for sup in self.supertypes(binary_name):
+            if sup == "java/lang/Object":
+                continue
+            meta = self._cache.get(sup)
+            if not meta:
+                continue
+            for (name, desc) in sorted(meta["methods"]):
+                sig = f"{sup}#{name}{desc}"
+                if name == missing_name and sig not in seen:
+                    seen.add(sig)
+                    out.append(sig)
+                candidates_by_name.setdefault(name.lower(), []).append(sig)
+        if len(out) < limit:
+            for lname, sigs in candidates_by_name.items():
+                if low in lname or lname in low:
+                    for sig in sigs:
+                        if sig not in seen:
+                            seen.add(sig)
+                            out.append(sig)
+        if len(out) < limit:
+            for match in difflib.get_close_matches(low, list(candidates_by_name), n=limit, cutoff=0.5):
+                for sig in candidates_by_name[match]:
+                    if sig not in seen:
+                        seen.add(sig)
+                        out.append(sig)
+        return out[:limit]
+
+    def suggest_fields(self, binary_name: str, missing_name: str, limit: int = 6) -> list[str]:
+        out: list[str] = []
+        seen: set[str] = set()
+        candidates_by_name: dict[str, list[str]] = {}
+        low = missing_name.lower()
+        for sup in self.supertypes(binary_name):
+            if sup == "java/lang/Object":
+                continue
+            meta = self._cache.get(sup)
+            if not meta:
+                continue
+            for fname in sorted(meta["fields"]):
+                desc = meta.get("field_descs", {}).get(fname, "")
+                label = f"{sup}.{fname}:{desc}" if desc else f"{sup}.{fname}"
+                candidates_by_name.setdefault(fname.lower(), []).append(label)
+        for lname, labels in candidates_by_name.items():
+            if low == lname or low in lname or lname in low:
+                for label in labels:
+                    if label not in seen:
+                        seen.add(label)
+                        out.append(label)
+        if len(out) < limit:
+            for match in difflib.get_close_matches(low, list(candidates_by_name), n=limit, cutoff=0.5):
+                for label in candidates_by_name[match]:
+                    if label not in seen:
+                        seen.add(label)
+                        out.append(label)
+        return out[:limit]
+
+
+def _with_candidates(message: str, candidates: list[str]) -> str:
+    if not candidates:
+        return message
+    return f"{message} (candidates: {', '.join(candidates)})"
 
 
 def parse_imports(source: str):
@@ -666,6 +930,30 @@ def is_mc_class(binary_name: str) -> bool:
     return any(binary_name.startswith(p) for p in MC_OWNERS)
 
 
+def is_inspectable_class(binary_name: str, inspector: JarInspector) -> bool:
+    return is_mc_class(binary_name) or (
+        binary_name.startswith(MOD_PREFIX) and inspector.has_mod_classes
+    )
+
+
+def _method_candidates(inspector: JarInspector, targets: list[str], missing_name: str) -> list[str]:
+    out: list[str] = []
+    for t in targets:
+        for cand in inspector.suggest_methods(t, missing_name):
+            if cand not in out:
+                out.append(cand)
+    return out[:6]
+
+
+def _field_candidates(inspector: JarInspector, targets: list[str], missing_name: str) -> list[str]:
+    out: list[str] = []
+    for t in targets:
+        for cand in inspector.suggest_fields(t, missing_name):
+            if cand not in out:
+                out.append(cand)
+    return out[:6]
+
+
 def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
     errors = []
     mixin_cfgs = sorted((root / "src").rglob("*.mixins.json"))
@@ -697,17 +985,23 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                 if not targets:
                     errors.append(f"{src_path.relative_to(root)}: could not resolve @Mixin target")
                     continue
-                mc_targets = []
+                active_targets = []
                 for t in targets:
                     if t.startswith(EXTERNAL_SKIP_PREFIXES):
                         continue
+                    if t.startswith(MOD_PREFIX) and not inspector.has_mod_classes:
+                        continue
                     if not inspector.has_class(t):
-                        errors.append(f"{src_path.relative_to(root)}: @Mixin target class missing from MC JAR: {t}")
+                        where = "MC JAR" if is_mc_class(t) else "JAR/compiled classes"
+                        errors.append(_with_candidates(
+                            f"{src_path.relative_to(root)}: @Mixin target class missing from {where}: {t}",
+                            inspector.suggest_classes(t),
+                        ))
                     else:
-                        mc_targets.append(t)
+                        active_targets.append(t)
                         needed_classes.append(t)
-                if mc_targets:
-                    mixin_records.append((src_path, src, file_pkg, exact, wildcards, mc_targets, default_req))
+                if active_targets:
+                    mixin_records.append((src_path, src, file_pkg, exact, wildcards, active_targets, default_req))
 
     if inspector is None:
         return errors
@@ -722,19 +1016,22 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
             if "target" in at_args:
                 for ts in unquote_strings(at_args["target"]):
                     parsed = parse_jvm_target(ts)
-                    if parsed and is_mc_class(parsed[1]):
+                    if parsed and is_inspectable_class(parsed[1], inspector):
                         needed_classes.append(parsed[1])
                     elif ts.startswith("(") and ")" in ts:
                         ret_part = ts.split(")", 1)[1].strip()
                         if ret_part.startswith("L") and ";" in ret_part:
                             owner = ret_part[1:ret_part.index(";")]
-                            if is_mc_class(owner):
+                            if is_inspectable_class(owner, inspector):
                                 needed_classes.append(owner)
                     elif ts.startswith("L") and ";" in ts:
                         owner = ts[1:ts.index(";")]
-                        if is_mc_class(owner):
+                        if is_inspectable_class(owner, inspector):
                             needed_classes.append(owner)
-                    elif "/" in ts and ts.startswith(MC_OWNERS):
+                    elif "/" in ts and (
+                        ts.startswith(MC_OWNERS)
+                        or (ts.startswith(MOD_PREFIX) and inspector.has_mod_classes)
+                    ):
                         needed_classes.append(ts.replace(".", "/"))
 
     inspector.ensure_loaded(needed_classes)
@@ -744,8 +1041,9 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
     local_ann_re = re.compile(r"@(?:[A-Za-z0-9_.]+\.)?Local\s*\(")
     strip_ann_re = re.compile(r"@[A-Za-z0-9_.]+\s*(?:\([^)]*\))?")
 
-    for src_path, src, file_pkg, exact, wildcards, mc_targets, default_req in mixin_records:
+    for src_path, src, file_pkg, exact, wildcards, target_classes, default_req in mixin_records:
         rel = str(src_path.relative_to(root))
+        all_mod_targets = all(t.startswith(MOD_PREFIX) for t in target_classes)
 
         for sm in shadow_pattern.finditer(src):
             ann_kind = sm.group(1)
@@ -774,15 +1072,21 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                 if "(" in cleaned:
                     before_p = cleaned.split("(", 1)[0].strip()
                     member_name = before_p.split()[-1]
-                    if not any(inspector.find_methods(t, member_name) for t in mc_targets):
-                        errors.append(f"{rel}: @Shadow method {member_name}() not found on {mc_targets}")
+                    if not any(inspector.find_methods(t, member_name) for t in target_classes):
+                        errors.append(_with_candidates(
+                            f"{rel}: @Shadow method {member_name}() not found on {target_classes}",
+                            _method_candidates(inspector, target_classes, member_name),
+                        ))
                 else:
                     before_eq = cleaned.split("=", 1)[0].strip()
                     if before_eq:
                         member_name = before_eq.split()[-1]
-                        if not any(inspector.has_field(t, member_name) for t in mc_targets):
-                            errors.append(f"{rel}: @Shadow field {member_name} not found on {mc_targets}")
-            elif ann_args.get("remap") == "false":
+                        if not any(inspector.has_field(t, member_name) for t in target_classes):
+                            errors.append(_with_candidates(
+                                f"{rel}: @Shadow field {member_name} not found on {target_classes}",
+                                _field_candidates(inspector, target_classes, member_name),
+                            ))
+            elif ann_args.get("remap") == "false" and not all_mod_targets:
                 continue
             elif ann_kind == "Accessor":
                 if "(" in cleaned:
@@ -797,8 +1101,11 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                         else:
                             stem = mname
                         cands = [stem[0].lower() + stem[1:], stem] if stem else [mname]
-                    if not any(any(inspector.has_field(t, c) for c in cands) for t in mc_targets):
-                        errors.append(f"{rel}: @Accessor field {cands[0]} not found on {mc_targets}")
+                    if not any(any(inspector.has_field(t, c) for c in cands) for t in target_classes):
+                        errors.append(_with_candidates(
+                            f"{rel}: @Accessor field {cands[0]} not found on {target_classes}",
+                            _field_candidates(inspector, target_classes, cands[0]),
+                        ))
             elif ann_kind == "Invoker":
                 if "(" in cleaned:
                     mname = cleaned.split("(", 1)[0].strip().split()[-1]
@@ -813,8 +1120,11 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                             cands = [stem[0].lower() + stem[1:], stem]
                         else:
                             cands = [mname]
-                    if not any(any(inspector.find_methods(t, c) for c in cands) for t in mc_targets):
-                        errors.append(f"{rel}: @Invoker method {cands[0]}() not found on {mc_targets}")
+                    if not any(any(inspector.find_methods(t, c) for c in cands) for t in target_classes):
+                        errors.append(_with_candidates(
+                            f"{rel}: @Invoker method {cands[0]}() not found on {target_classes}",
+                            _method_candidates(inspector, target_classes, cands[0]),
+                        ))
 
         for im in inj_pattern.finditer(src):
             body, close_idx = extract_balanced(src, im.end() - 1, "(", ")")
@@ -832,11 +1142,14 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
             for spec in method_specs:
                 m_name, m_desc = parse_method_spec(spec)
                 found_for_spec = []
-                for t in mc_targets:
+                for t in target_classes:
                     found_for_spec.extend(inspector.find_methods(t, m_name, m_desc))
                 if not found_for_spec:
-                    if require_val != 0 and not remap_false:
-                        errors.append(f"{rel}: injector target method '{spec}' not found on {mc_targets}")
+                    if require_val != 0 and (all_mod_targets or not remap_false):
+                        errors.append(_with_candidates(
+                            f"{rel}: injector target method '{spec}' not found on {target_classes}",
+                            _method_candidates(inspector, target_classes, m_name),
+                        ))
                 else:
                     matched_methods.extend(found_for_spec)
 
@@ -864,13 +1177,19 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                             new_owner = new_owner[1:]
                         new_owner = new_owner.rstrip(";").replace(".", "/")
                         ctor_desc = args_part + ")V"
-                        if is_mc_class(new_owner):
+                        if is_inspectable_class(new_owner, inspector):
                             if not inspector.has_class(new_owner):
-                                errors.append(f"{rel}: @At(\"NEW\") target class missing from MC JAR: {new_owner}")
+                                errors.append(_with_candidates(
+                                    f"{rel}: @At(\"NEW\") target class missing from MC JAR: {new_owner}",
+                                    inspector.suggest_classes(new_owner),
+                                ))
                                 continue
                             inspector.ensure_loaded([new_owner])
                             if not inspector.find_methods(new_owner, "<init>", ctor_desc):
-                                errors.append(f"{rel}: @At(\"NEW\") constructor missing in JAR: {new_owner}.<init>{ctor_desc}")
+                                errors.append(_with_candidates(
+                                    f"{rel}: @At(\"NEW\") constructor missing in JAR: {new_owner}.<init>{ctor_desc}",
+                                    inspector.suggest_methods(new_owner, "<init>"),
+                                ))
                                 continue
                         if matched_methods:
                             cnt = sum(
@@ -879,7 +1198,10 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                                 if ik == "INVOKE" and iowner == new_owner and iname == "<init>" and idesc == ctor_desc
                             )
                             if cnt == 0 and require_val != 0:
-                                errors.append(f"{rel}: @At(\"NEW\", target=\"{t_raw}\") matched 0 instructions in {method_specs}")
+                                errors.append(_with_candidates(
+                                    f"{rel}: @At(\"NEW\", target=\"{t_raw}\") matched 0 instructions in {method_specs}",
+                                    inspector.suggest_methods(new_owner, "<init>") if inspector.has_class(new_owner) else [],
+                                ))
                             if expect_val is not None and cnt < expect_val:
                                 errors.append(f"{rel}: @At(\"NEW\") count {cnt} < expect {expect_val} in {method_specs}")
                             if allow_val is not None and cnt > allow_val:
@@ -889,8 +1211,11 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                     if new_owner.startswith("L"):
                         new_owner = new_owner[1:]
                     new_owner = new_owner.replace(".", "/")
-                    if is_mc_class(new_owner) and not inspector.has_class(new_owner):
-                        errors.append(f"{rel}: @At(\"NEW\") target class missing from MC JAR: {new_owner}")
+                    if is_inspectable_class(new_owner, inspector) and not inspector.has_class(new_owner):
+                        errors.append(_with_candidates(
+                            f"{rel}: @At(\"NEW\") target class missing from MC JAR: {new_owner}",
+                            inspector.suggest_classes(new_owner),
+                        ))
                     if matched_methods:
                         cnt = sum(
                             1 for _, _, _, insns in matched_methods
@@ -909,18 +1234,27 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                 if not parsed:
                     continue
                 _, t_owner, t_name, t_desc = parsed
-                if is_mc_class(t_owner):
+                if is_inspectable_class(t_owner, inspector):
                     if not inspector.has_class(t_owner):
-                        errors.append(f"{rel}: @At target owner missing from MC JAR: {t_owner}")
+                        errors.append(_with_candidates(
+                            f"{rel}: @At target owner missing from MC JAR: {t_owner}",
+                            inspector.suggest_classes(t_owner),
+                        ))
                         continue
                     inspector.ensure_loaded([t_owner])
                     if at_val == "INVOKE":
                         if not inspector.find_methods(t_owner, t_name, t_desc):
-                            errors.append(f"{rel}: @At(\"INVOKE\") target missing in JAR: {t_raw}")
+                            errors.append(_with_candidates(
+                                f"{rel}: @At(\"INVOKE\") target missing in JAR: {t_raw}",
+                                inspector.suggest_methods(t_owner, t_name),
+                            ))
                             continue
                     elif at_val == "FIELD":
                         if not inspector.has_field(t_owner, t_name):
-                            errors.append(f"{rel}: @At(\"FIELD\") target missing in JAR: {t_raw}")
+                            errors.append(_with_candidates(
+                                f"{rel}: @At(\"FIELD\") target missing in JAR: {t_raw}",
+                                inspector.suggest_fields(t_owner, t_name),
+                            ))
                             continue
 
                 if matched_methods:
@@ -936,7 +1270,17 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                                         and (inspector.is_subtype(iowner, t_owner) or inspector.is_subtype(t_owner, iowner)))):
                                 cnt += 1
                     if cnt == 0 and require_val != 0:
-                        errors.append(f"{rel}: @At(\"{at_val}\", target=\"{t_raw}\") matched 0 instructions in {method_specs}")
+                        hint = (
+                            inspector.suggest_methods(t_owner, t_name)
+                            if at_val == "INVOKE" and inspector.has_class(t_owner)
+                            else inspector.suggest_fields(t_owner, t_name)
+                            if at_val == "FIELD" and inspector.has_class(t_owner)
+                            else []
+                        )
+                        errors.append(_with_candidates(
+                            f"{rel}: @At(\"{at_val}\", target=\"{t_raw}\") matched 0 instructions in {method_specs}",
+                            hint,
+                        ))
                     if expect_val is not None and cnt < expect_val:
                         errors.append(f"{rel}: @At(\"{at_val}\", target=\"{t_raw}\") count {cnt} < expect {expect_val} in {method_specs}")
                     if allow_val is not None and cnt > allow_val:
@@ -1154,22 +1498,193 @@ def verify_datapacks(root: Path, profile: DataPackProfile, inspector: JarInspect
     return errors
 
 
-def verify(root: Path | None = None, mc_jars=None, allow_missing_jar: bool = False) -> list[str]:
+COMPAT_METHOD_DECL_RE = re.compile(
+    r"^\s*(?:(?:public|protected|private|static|final|abstract|synchronized|native|default)\s+)*"
+    r"(?:@[A-Za-z0-9_.]+\s+)*[A-Za-z0-9_$.\[\]]+\s+([A-Za-z0-9_$]+)\s*\("
+)
+FORBIDDEN_CACHE_RE = re.compile(r"\b(?:WeakHashMap|IdentityHashMap|ConcurrentHashMap|HashMap|WeakReference)\b")
+
+
+def _depth_one_statements(src: str) -> list[str]:
+    """Extract top-level class member headers at brace depth 1 (method/nested bodies omitted)."""
+    statements = []
+    buf: list[str] = []
+    depth = 0
+    in_str: str | None = None
+    i = 0
+    n = len(src)
+    while i < n:
+        ch = src[i]
+        if in_str:
+            if ch == "\\" and i + 1 < n:
+                i += 2
+                continue
+            if ch == in_str:
+                in_str = None
+        elif ch in ('"', "'"):
+            in_str = ch
+        elif ch == "{":
+            if depth == 1:
+                stmt = "".join(buf).strip()
+                if stmt:
+                    statements.append(stmt)
+                buf = []
+            depth += 1
+        elif ch == "}":
+            if depth > 0:
+                depth -= 1
+            if depth == 1:
+                buf = []
+        elif ch == ";" and depth == 1:
+            stmt = "".join(buf).strip()
+            if stmt:
+                statements.append(stmt)
+            buf = []
+        elif depth == 1:
+            buf.append(ch)
+        i += 1
+    return statements
+
+
+def verify_compat_contract(root: Path) -> list[str]:
+    compat_main = root / "src" / "main" / "java" / "dev" / "wildercord" / "compat"
+    if not compat_main.is_dir():
+        return []
+    errors: list[str] = []
+    for path in sorted((root / "src").rglob("compat/*.java")):
+        src = strip_comments(path.read_text(encoding="utf-8"))
+        m = FORBIDDEN_CACHE_RE.search(src)
+        if m:
+            errors.append(
+                f"{path.relative_to(root)}: forbidden static/map cache reference '{m.group(0)}' in compat/"
+            )
+
+    strip_param_ann_re = re.compile(r"@[A-Za-z0-9_.]+(?:\([^)]*\))?\s*")
+    for rel_path, expected_sigs in COMPAT_CONTRACT.items():
+        path = root / rel_path
+        if not path.is_file():
+            errors.append(f"Missing required compat seam file: {rel_path}")
+            continue
+        src = strip_comments(path.read_text(encoding="utf-8"))
+        found_sigs: set[tuple[str, int]] = set()
+        for stmt in _depth_one_statements(src):
+            before_eq = _strip_angle_generics(stmt.split("=", 1)[0]).strip()
+            if "(" not in before_eq:
+                if re.search(r"\b(?:class|interface|enum|record)\b", before_eq):
+                    continue
+                if re.search(r"\bstatic\b", before_eq) and not re.search(r"\bfinal\b", before_eq):
+                    errors.append(
+                        f"{rel_path}: mutable non-final static field not allowed in core compat seam: {before_eq}"
+                    )
+                continue
+            cleaned_header = _strip_angle_generics(strip_param_ann_re.sub(" ", stmt))
+            if not re.search(r"\b(?:public|protected)\b", cleaned_header.split("(", 1)[0]):
+                continue
+            m = COMPAT_METHOD_DECL_RE.match(cleaned_header)
+            if m:
+                name = m.group(1)
+                try:
+                    body, _ = extract_balanced(cleaned_header, m.end() - 1, "(", ")")
+                except ValueError:
+                    continue
+                arity = len(split_top_level(body, ",")) if body.strip() else 0
+                found_sigs.add((name, arity))
+        for req_name, req_arity in expected_sigs:
+            if (req_name, req_arity) not in found_sigs:
+                errors.append(
+                    f"{rel_path}: missing required compat seam method {req_name}({req_arity} args)"
+                )
+    return errors
+
+
+def verify_descriptor_alignment(root: Path) -> list[str]:
+    props = read_gradle_properties(root)
+    if not props:
+        return []
+    errors: list[str] = []
+    java_ver = props.get("java_version")
+    if java_ver:
+        expected_compat = f"JAVA_{java_ver}"
+        for mf in sorted((root / "src").rglob("*.mixins.json")):
+            cfg = json.loads(mf.read_text(encoding="utf-8"))
+            if cfg.get("compatibilityLevel") != expected_compat:
+                errors.append(
+                    f"{mf.relative_to(root)}: compatibilityLevel '{cfg.get('compatibilityLevel')}' "
+                    f"!= '{expected_compat}' from gradle.properties"
+                )
+
+    fmod_path = root / "src" / "main" / "resources" / "fabric.mod.json"
+    if fmod_path.is_file() and {"minecraft_version", "loader_version", "java_version", "fabric_api_version"} <= props.keys():
+        fmod = json.loads(fmod_path.read_text(encoding="utf-8"))
+        deps = fmod.get("depends", {})
+        expected_deps = {
+            "fabricloader": ">=" + props["loader_version"],
+            "minecraft": "~" + props["minecraft_version"],
+            "java": ">=" + props["java_version"],
+            "fabric-api": ">=" + props["fabric_api_version"],
+        }
+        for key, exp in expected_deps.items():
+            if deps.get(key) != exp:
+                errors.append(
+                    f"src/main/resources/fabric.mod.json: depends.{key} is '{deps.get(key)}', expected '{exp}'"
+                )
+
+    lock_path = root / "profiles" / "dependencies.lock.json"
+    if lock_path.is_file() and {
+        "minecraft_version", "loader_version", "fabric_api_version", "sodium_version", "iris_version"
+    } <= props.keys():
+        lock = json.loads(lock_path.read_text(encoding="utf-8-sig"))
+        if lock.get("minecraft") != props["minecraft_version"]:
+            errors.append(
+                f"profiles/dependencies.lock.json: minecraft '{lock.get('minecraft')}' "
+                f"!= '{props['minecraft_version']}'"
+            )
+        if lock.get("fabric_loader") != props["loader_version"]:
+            errors.append(
+                f"profiles/dependencies.lock.json: fabric_loader '{lock.get('fabric_loader')}' "
+                f"!= '{props['loader_version']}'"
+            )
+        pins = {entry.get("project"): entry for entry in lock.get("dependencies", []) if isinstance(entry, dict)}
+        for proj, prop_key in (
+            ("fabric-api", "fabric_api_version"),
+            ("sodium", "sodium_version"),
+            ("iris", "iris_version"),
+        ):
+            pin = pins.get(proj)
+            if not pin:
+                errors.append(f"profiles/dependencies.lock.json: missing '{proj}' entry")
+                continue
+            if pin.get("version") != props[prop_key]:
+                errors.append(
+                    f"profiles/dependencies.lock.json: {proj} version '{pin.get('version')}' != '{props[prop_key]}'"
+                )
+            if props["minecraft_version"] not in pin.get("game_versions", []):
+                errors.append(
+                    f"profiles/dependencies.lock.json: {proj} game_versions {pin.get('game_versions')} "
+                    f"does not include {props['minecraft_version']}"
+                )
+    return errors
+
+
+def verify(root: Path | None = None, mc_jars=None, allow_missing_jar: bool = False, mod_classes=None) -> list[str]:
     base = ROOT if root is None else Path(root)
     mc_version = read_mc_version(base)
     profile = DataPackProfile.for_version(mc_version)
 
     jars = find_mc_jars(base, mc_version, mc_jars)
+    mod_dirs = find_mod_class_dirs(base, mod_classes)
     javap = find_javap()
     inspector = None
 
     if jars and javap:
-        inspector = JarInspector(jars, javap)
+        inspector = JarInspector(jars + mod_dirs, javap)
     elif not allow_missing_jar:
         missing_what = "Minecraft Loom JAR" if not jars else "javap executable"
         return [f"Missing {missing_what} for {mc_version}; pass --mc-jar or run with Loom cache populated"]
 
     errors = []
+    errors.extend(verify_descriptor_alignment(base))
+    errors.extend(verify_compat_contract(base))
     errors.extend(verify_mixins(base, inspector))
     errors.extend(verify_datapacks(base, profile, inspector))
     return errors
@@ -1179,16 +1694,30 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--mc-jar", action="append", dest="mc_jars", help="Path to merged MC client JAR (repeatable)")
+    parser.add_argument("--mod-classes", action="append", dest="mod_classes", help="Compiled mod class directory (repeatable)")
     parser.add_argument("--allow-missing-jar", action="store_true",
                         help="Skip bytecode checks when no local Loom JAR or javap is present")
     args = parser.parse_args(argv)
-    errors = verify(args.root, mc_jars=args.mc_jars, allow_missing_jar=args.allow_missing_jar)
+    errors = verify(
+        args.root,
+        mc_jars=args.mc_jars,
+        mod_classes=args.mod_classes,
+        allow_missing_jar=args.allow_missing_jar,
+    )
     if errors:
         for err in errors:
             print("ERROR:", err, file=sys.stderr)
         return 1
-    mode = "bytecode + datapack" if find_mc_jars(args.root, read_mc_version(args.root), args.mc_jars) and find_javap() else "structural datapack"
-    print(f"Port verification passed ({read_mc_version(args.root)}, {mode}).")
+    mc_version = read_mc_version(args.root)
+    has_jar = bool(find_mc_jars(args.root, mc_version, args.mc_jars) and find_javap())
+    has_mod = bool(find_mod_class_dirs(args.root, args.mod_classes))
+    if has_jar and has_mod:
+        mode = "bytecode (mc + mod) + datapack"
+    elif has_jar:
+        mode = "bytecode + datapack"
+    else:
+        mode = "structural datapack"
+    print(f"Port verification passed ({mc_version}, {mode}).")
     return 0
 
 
