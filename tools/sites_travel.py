@@ -131,7 +131,7 @@ def write(g):
                  {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 4}, "entries": [g.item_entry(*goods) for goods in GOODS[site]]}]
         if site == "travel_cartographer_hut":
             pools.append({"rolls": 1, "entries": [{"type": "minecraft:item", "name": "minecraft:map", "functions": [
-                {"function": "minecraft:exploration_map", "destination": "#wildercord:travel_map_targets", "decoration": "minecraft:target_x",
+                {"function": "minecraft:exploration_map", "destination": "wildercord:travel_map_targets", "decoration": "minecraft:target_x",
                  "zoom": 2, "search_radius": 50, "skip_existing_chunks": True}]}]})
         g.write_json(g.DATA / f"loot_table/chests/{site}.json", {"type": "minecraft:chest", "pools": pools})
         # Through g.adv: write_advancements runs after this and clears any advancement it did not list.

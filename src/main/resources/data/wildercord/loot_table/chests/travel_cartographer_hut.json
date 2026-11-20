@@ -189,7 +189,7 @@
           "functions": [
             {
               "function": "minecraft:exploration_map",
-              "destination": "#wildercord:travel_map_targets",
+              "destination": "wildercord:travel_map_targets",
               "decoration": "minecraft:target_x",
               "zoom": 2,
               "search_radius": 50,

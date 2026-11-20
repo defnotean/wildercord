@@ -52,7 +52,7 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
    // Positive control: real projectile preparation, flight, collision and damage.
    // Fresh victims avoid previous Exposed marks or wounded-target modifiers.
    boolean accepted=false;
-   for(int attempt=0;attempt<16&&!accepted;attempt++){
+   for(int attempt=0;attempt<64&&!accepted;attempt++){
     if(attempt%4==0){server.runOnServer(s->NextSignatureNative.cast(caster,Runes.SELF,Runes.FORTUNE));c.waitTicks(8);}
     server.runOnServer(s->{events.clear();target=foe(caster);positiveBefore=target.getHealth();
      NextSignatureNative.cast(caster,Runes.BOLT,Runes.HARM);

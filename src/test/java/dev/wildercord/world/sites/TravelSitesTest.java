@@ -104,7 +104,7 @@ class TravelSitesTest {
 			assertTrue(count >= 5, site + ": too few runes");
 		}
 		String hut = Files.readString(DATA.resolve("loot_table/chests/travel_cartographer_hut.json"));
-		assertTrue(hut.contains("minecraft:exploration_map") && hut.contains("#wildercord:travel_map_targets"), "the hut's map leads somewhere");
+		assertTrue(hut.contains("minecraft:exploration_map") && hut.contains("wildercord:travel_map_targets"), "the hut's map leads somewhere");
 		assertTrue(Files.readString(DATA.resolve("loot_table/chests/travel_watchtower.json")).contains("minecraft:flint_and_steel"), "the tower gives a way to light its fire");
 		List<String> targets = new ArrayList<>();
 		json(DATA.resolve("tags/worldgen/structure/travel_map_targets.json")).getAsJsonArray("values").forEach(v -> targets.add(v.getAsString()));

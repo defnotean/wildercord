@@ -173,7 +173,7 @@
           "functions": [
             {
               "function": "minecraft:exploration_map",
-              "destination": "#minecraft:on_treasure_maps",
+              "destination": "minecraft:on_treasure_maps",
               "decoration": "minecraft:red_x",
               "zoom": 1,
               "skip_existing_chunks": false

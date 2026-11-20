@@ -71,7 +71,7 @@ def _tide_page():
 
 def _treasure_map(weight):
     return {"type": "minecraft:item", "name": "minecraft:map", "weight": weight, "functions": [
-        {"function": "minecraft:exploration_map", "destination": "#minecraft:on_treasure_maps", "decoration": "minecraft:red_x",
+        {"function": "minecraft:exploration_map", "destination": "minecraft:on_treasure_maps", "decoration": "minecraft:red_x",
          "zoom": 1, "skip_existing_chunks": False},
         {"function": "minecraft:set_name", "name": {"translate": "filled_map.buried_treasure"}, "target": "item_name"}]}
 
