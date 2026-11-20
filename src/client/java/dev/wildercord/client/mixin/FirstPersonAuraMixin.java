@@ -89,7 +89,7 @@ public abstract class FirstPersonAuraMixin implements dev.wildercord.client.Firs
 		target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;swingArm(FLcom/mojang/blaze3d/vertex/PoseStack;ILnet/minecraft/world/entity/HumanoidArm;)V"))
 	private void wildercord$blendAttack(ItemInHandRenderer renderer, float attack, PoseStack pose, int side, HumanoidArm arm,
 			Operation<Void> original, @Local(argsOnly = true) AbstractClientPlayer player,
-			@Local(argsOnly = true) float partial, @Local(argsOnly = true) InteractionHand hand) {
+			@Local(argsOnly = true, ordinal = 0) float partial, @Local(argsOnly = true) InteractionHand hand) {
 		AvatarRenderState avatar = wildercord$state(player, partial);
 		float ownership = MastersArtPose.firstPersonOwnership(hand, avatar, renderer);
 		if (ownership <= 0) {
