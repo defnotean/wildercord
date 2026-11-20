@@ -413,10 +413,11 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 		return d <= BALCONY_R && e <= 0.9;
 	}
 
-	/** The arena, from under its pit to its glass dome, and the vault off the balcony (with the door between). */
+	/** The sealed corridor from its gate at z 42, the arena from under its pit to its dome, and the vault off the balcony. */
 	@Override
 	public java.util.List<BoundingBox> wardedBoxes() {
 		return java.util.List.of(
+			worldBox(15, 0, 42, 25, F + 7, 48),
 			worldBox(CX - WALL_R - 2, 0, ARENA_Z - WALL_R - 2, CX + WALL_R + 2, HEIGHT - 1, Math.min(DEPTH - 1, ARENA_Z + WALL_R + 2)),
 			worldBox(32, 0, 56, WIDTH - 1, F + 9, 70));
 	}
