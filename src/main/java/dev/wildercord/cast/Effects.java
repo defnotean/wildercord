@@ -935,6 +935,8 @@ public final class Effects {
 				"sanctuary", "arrowveil", "blastward", "firebreak", "pacify", "lure", "stillbind", "taunt", "nudge", "hobble", "corral", "truce",
 				"spook", "aegis", "accord", "citadel", "shieldwall", "staunch", "sentry", "tend", "soothe", "withdraw", "keepsafe", "faithful" ->
 				dev.wildercord.cast.packs.WardEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
+			case "suzu_chime" -> suzuChime(cast, hit.self() ? caster.position() : hit.point(), 4.0 * SpellNumbers.effectRadius(node), power, duration, amplify);
+			case "ofuda_ward" -> helped.forEach(t -> ofudaWard(cast, t, ticks(15, duration), power, amplify));
 			default -> {
 				if (Runes.fused(rune)) {
 					// The fused effects, made only at the Fusion Altar.
@@ -2152,6 +2154,76 @@ public final class Effects {
 			fresh.memory = t.getLastHurtByMobTimestamp();
 		}
 		LifeOwnerEvents.admitted(cast,"bramble",t,fresh!=null?LifeOwnerEvents.Moment.APPLY:LifeOwnerEvents.Moment.RENEW,fresh!=null?fresh.charges:0,null);
+	}
+
+	/** Suzu Chime: rings a shrine bell at {@code centre}, harming and pushing enemies within {@code radius} and hastening allies there. */
+	private static void suzuChime(Cast cast, Vec3 centre, double radius, double power, double duration, int amplify) {
+		ServerLevel level = cast.level;
+		Fx.sound(level, centre, net.minecraft.sounds.SoundEvents.BELL_BLOCK, 0.9F, 1.35F);
+		Fx.sound(level, centre, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.5F);
+		Vfx.Theme theme = Vfx.theme("wind");
+		Light.groundRing(level, CastEngine.ground(level, centre), theme.primary(), 0.3, radius, 0.08, 10);
+		Sigils.flash(level, centre.add(0, 0.4, 0), theme.secondary(), (float) Math.min(4.0, radius));
+		Vfx.radial(level, theme.spark(), centre.add(0, 0.6, 0), 12, 0.22);
+		AABB area = new AABB(centre, centre).inflate(radius + 1.0);
+		List<LivingEntity> foes = new ArrayList<>();
+		for (Entity e : level.getEntities((Entity) null, area, e -> e instanceof LivingEntity && e.isAlive())) {
+			LivingEntity living = (LivingEntity) e;
+			if (living.getBoundingBox().getCenter().distanceTo(centre) > radius + living.getBbWidth() / 2.0) {
+				continue;
+			}
+			if (Targets.canHarm(cast.caster, living) && cast.admits(living)) {
+				foes.add(living);
+			}
+			if (Targets.canHelp(cast.caster, living)) {
+				living.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks(6, duration), Math.min(2, amplify), false, true));
+				Vfx.swift(level, living);
+			}
+		}
+		if (!foes.isEmpty()) {
+			foes = Shields.screen(cast, foes, new Cast.Hit(List.copyOf(foes), centre, UP, centre, null, null, false));
+			for (LivingEntity foe : foes) {
+				Vec3 away = horizontal(foe.position().subtract(centre), cast.caster.getLookAngle());
+				hurt(cast, foe, level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), 6.0 * power);
+				Statuses.windPush(foe, away.scale(0.95 * Math.sqrt(power)).add(0, 0.3, 0));
+				Reactions.mark(foe, Reactions.Mark.WINDSWEPT);
+				if (foe.isAlive()) {
+					Statuses.interrupt(foe);
+				}
+			}
+		}
+	}
+
+	/** Ofuda Ward: binds a paper talisman granting Absorption I and returning arcane damage to the next 3 attackers. */
+	private static void ofudaWard(Cast cast, LivingEntity t, int ticks, double power, int amplify) {
+		t.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, ticks, Math.min(2, amplify), false, true));
+		Fx.sound(cast.level, t.position(), net.minecraft.sounds.SoundEvents.ENCHANTMENT_TABLE_USE, 0.7F, 1.4F);
+		Ward fresh = ward(cast, t, "ofuda_ward", ticks, power, 2, w -> {
+			int stamp = t.getLastHurtByMobTimestamp();
+			if (stamp == (int) w.memory) {
+				return;
+			}
+			w.memory = stamp;
+			if (w.refill > 0 && w.charges <= 0) {
+				return;
+			}
+			LivingEntity attacker = t.getLastHurtByMob();
+			DamageSource last = t.getLastDamageSource();
+			if (attacker == null || attacker == t || !attacker.isAlive() || attacker.distanceTo(t) > 12.0
+					|| (last != null && last.is(DamageTypes.THORNS)) || !Targets.canHarm(w.cast.caster, attacker)) {
+				return;
+			}
+			w.charges--;
+			hurt(w.cast, attacker, w.cast.level.damageSources().thorns(t), 3.0 * w.power);
+			Vfx.Theme arcane = Vfx.theme("arcane");
+			Sigils.flash(w.cast.level, attacker.getBoundingBox().getCenter(), arcane.primary(), 0.9F);
+			Fx.sound(w.cast.level, attacker.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME, 0.6F, 1.6F);
+		}, () -> {});
+		if (fresh != null) {
+			fresh.charges = fresh.refill = 3;
+			fresh.memory = t.getLastHurtByMobTimestamp();
+		}
+		ExpansionVfx.barrier(cast.level, t, Vfx.theme("arcane"));
 	}
 
 	// ------------------------------------------------------------------ frost and wind mechanics

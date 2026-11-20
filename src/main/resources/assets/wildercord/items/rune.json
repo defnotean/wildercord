@@ -5295,6 +5295,20 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/faithful"
         }
+      },
+      {
+        "when": "wildercord:suzu_chime",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/suzu_chime"
+        }
+      },
+      {
+        "when": "wildercord:ofuda_ward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ofuda_ward"
+        }
       }
     ],
     "fallback": {

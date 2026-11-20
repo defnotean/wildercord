@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class WildsSitesTest {
 	static final Path DATA = Path.of("src/main/resources/data/wildercord");
 	static final List<String> IDS = List.of("wilds_venom_ziggurat", "wilds_dune_temple", "wilds_rime_monastery", "wilds_iron_gatehouse",
-		"wilds_dawn_pavilion", "wilds_echo_post", "wilds_ember_outpost", "wilds_void_lantern");
+		"wilds_dawn_pavilion", "wilds_echo_post", "wilds_ember_outpost", "wilds_void_lantern", "wilds_sakura_village");
 
 	static JsonObject json(Path path) throws IOException {
 		assertTrue(Files.isRegularFile(path), "missing " + path);

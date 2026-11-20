@@ -176,16 +176,16 @@ public final class SerpentGrovePiece extends DungeonPiece {
 		int ground=FLOOR+2,crown=ground+11;
 		for(int x=CX-2;x<=CX+2;x++)for(int z=CZ-2;z<=CZ+2;z++){
 			double r=dist(x,z,CX,CZ);
-			int height=r<1.2?crown:r<1.9?crown-2-noise(x,z)%3:r<2.5?ground+2+noise(x,z)%3:-1;
+			int height=r<1.2?crown:r<1.9?crown-2-noise(x,z)%3:r<2.1?ground+2+noise(x,z)%2:-1;
 			if(height>0)fill(level,bb,x,ground,z,x,height,z,r<1.2?log:wood);
 		}
-		// Six roots run out across the island and down into the water's edge.
+		// Six roots run flush through the island surface and down into the water's edge so the serpent never snags on raised blocks.
 		for(int i=0;i<6;i++){
 			double a=i*Math.PI/3+0.4;
 			for(double d=2.5;d<=ISLAND+0.6;d+=0.5){
 				int x=(int)Math.round(CX+Math.cos(a+d*0.08)*d),z=(int)Math.round(CZ+Math.sin(a+d*0.08)*d);
 				if(x==HERB_X && z==HERB_Z)continue;
-				int y=d<4.5?ground:d<6?FLOOR+1:FLOOR;
+				int y=d<4.5?ground-1:FLOOR;
 				set(level,bb,d<5?wood:Blocks.MANGROVE_ROOTS.defaultBlockState(),x,y,z);
 			}
 		}

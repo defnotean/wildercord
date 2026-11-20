@@ -669,3 +669,5 @@ soothe|WAVE|PETAL|MIST
 withdraw|MIST|STEP|CLOUD
 keepsafe|GATE|CHAIN|SEAL
 faithful|TETHER|HEART|HALO
+suzu_chime|CROWN|WAVE|HALO
+ofuda_ward|SEAL|DIAMOND|CROWN

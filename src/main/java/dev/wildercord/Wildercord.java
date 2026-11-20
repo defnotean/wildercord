@@ -105,6 +105,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.familiar.FamiliarContent.init();
 		dev.wildercord.familiar.Familiars.init();
 		dev.wildercord.pet.CinnamonContent.init();
+		dev.wildercord.wildlife.ShrineCatContent.init();
 		// The magical monsters of the wilds (after the config, which their spawns read).
 		dev.wildercord.monster.Monsters.init();
 		dev.wildercord.monster.Tempering.init();

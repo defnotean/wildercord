@@ -56,7 +56,7 @@ public final class Runes {
 	public static final RuneDef NOVA = shape("nova", "Nova", 1, 3, 1.3, "A small nova bursts from you, hitting everything within 2.5 blocks.", RADIUS);
 	public static final RuneDef WISP = shape("wisp", "Wisp", 2, 4, 1.3, "A wisp drifts out and chases the nearest enemy within 16 blocks for up to 4 seconds, striking the first thing it touches.", SPEED, SPLIT);
 	public static final RuneDef COMET = shape("comet", "Comet", 2, 5, 1.6, "A heavy ball of energy flies up to 24 blocks and bursts on the first thing it touches, hitting everything within 3 blocks.", RADIUS, SPEED, SPLIT, VOLLEY);
-	public static final RuneDef RICOCHET = shape("ricochet", "Ricochet", 2, 5, 1.5, "An orb that bounces off the ground and walls 4 times, passing through creatures and hitting each once.", BOUNCE, SPEED, SPLIT);
+	public static final RuneDef RICOCHET = shape("ricochet", "Ricochet", 2, 5, 1.5, "An orb that bounces off the ground and walls up to 5 times (2 with Split), losing 15% power on each bounce and passing through creatures, hitting each once.", BOUNCE, SPEED, SPLIT);
 	public static final RuneDef CLUSTER = shape("cluster", "Cluster", 2, 6, 1.5, "A ball of energy that breaks into five shards where it hits; each shard strikes everything within 1.5 blocks of where it lands.", RADIUS, SPEED, SPLIT);
 	public static final RuneDef LANCE = shape("lance", "Lance", 2, 5, 1.5, "A thick lance of light drives 16 blocks forward, through every creature in its path.", RADIUS, SPLIT);
 	public static final RuneDef SWEEP = shape("sweep", "Sweep", 2, 5, 1.8, "A 10-block beam sweeps across in front of you in half a second, hitting everything it crosses once.", RADIUS, SPEED);
@@ -860,6 +860,8 @@ public final class Runes {
 	public static final RuneDef WITHDRAW = effect("withdraw", "Withdraw", 3, 14, "wind", EffectKind.HELPFUL, "An ally below half health turns invisible with Speed II for 4 seconds, and its hunters lose track of it.", DURATION);
 	public static final RuneDef KEEPSAFE = effect("keepsafe", "Keepsafe", 2, 8, "earth", EffectKind.WORLD, "For 10 minutes the block hit can't be broken by anyone outside your party, nor by explosions.", DURATION);
 	public static final RuneDef FAITHFUL = effect("faithful", "Faithful", 3, 16, "arcane", EffectKind.HELPFUL, "For 5 minutes, a killing blow leaves your pet at 1 health beside you. Once per 10 minutes each.", DURATION);
+	public static final RuneDef SUZU_CHIME = effect("suzu_chime", "Suzu Chime", 2, 8, "wind", EffectKind.HARMFUL, "Rings a shrine bell at the point: 6 wind damage to enemies within 4 blocks, pushing them back, and allies there gain Speed I for 6 seconds.", POWER, RADIUS, DURATION);
+	public static final RuneDef OFUDA_WARD = effect("ofuda_ward", "Ofuda Ward", 2, 10, "arcane", EffectKind.HELPFUL, "Binds a paper talisman to the target for 15 seconds: Absorption I, and the next 3 attackers take 3 arcane damage back.", POWER, DURATION);
 
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());

@@ -5,6 +5,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ## [Unreleased]
 
 ### Added
+- **Four Shrine Cats (`Yuki`, `Odie`, `Freya`, `Kuro`)**: custom-modeled, photo-inspired cats with unique coats, geometry (fluffy ruffs & whiskers on Yuki & Odie, pink collar & swinging silver bell on Freya, notched left ear on Kuro), and animations. Defeat each guardian cat cleanly on its Cat Sanctuary floor to unlock dungeon buffs (`Resistance I`, `Regeneration I + Fire Resistance`, `Absorption I + Haste I`, `Speed II + Strength I + Night Vision`), then tame them with fish or a **Suzu Cat-Bell Charm** once the fourth-floor trial completes so they follow you with their unique companion powers.
+- **Cat Sanctuary & Lantern Bathhouse dungeons**: a massive four-level Japanese pagoda sanctuary guarded in order by Yuki, Odie, Freya, and Kuro with tea-house checkpoints and custom enemies (`Karakuri Sentinel`, `Paper Lantern Spirit`), plus a steaming hinoki onsen bathhouse with a Rune Seal vault.
+- **Sakura Village & Custom NPCs**: a standalone Japanese cherry-blossom village with a vermilion Torii gate, arched bridge over a koi brook, kimono `Sakura Villager` Tea Masters and Shrine Maidens (emerald trades for Suzu Cat-Bell Charms and salmon), and all four Shrine Cats roaming peacefully.
+- **New runes**: added **Suzu Chime** (Tier II wind control — rings a bell damaging/knocking enemies and hastening allies) and **Ofuda Ward** (Tier II arcane support — Absorption I and 3 retaliation charges).
 - **Mojito's Fetchblade**: Epic aura-forged greatsword dropped by Mojito (`+50%` hit aura, `+35%` Aura Slash damage, `+25%` slash reach/width, `+1` target, and right-click **Fetch Bound** lunge + crescent).
 - **3D voxel held models** for all 5 forged/boss weapons (`oathkeeper`, `lumenedge`, `bulwark_maul`, `skyrend_glaive`, `fetchblade`) and all 20 elemental staffs, plus keylined 2D sprites.
 - **Cooperative Reed-Crowned Ferryman**: tells re-aim to surviving challengers in range, phase two marks paired anchors across two oarsmen, and a shared second count rewards every contributor with Aura Shards.
@@ -14,13 +18,15 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Server-state & tick tooling**: `ServerState` session-map registry, `Ticks` saturating sentinel helper, `tools/lint_ticks.py`, `tools/make_icon.py` (640x640 pixel icon), and `tools/release.py`.
 
 ### Changed
+- **Ricochet rune**: now bounces up to **5 times** by default, loses 15% power on each bounce (down to 25% floor), and caps at **2 bounces** when paired with **Split**.
 - **Boss & Dungeon Relic rewards**: lair guardians scale shards, Mana Crystals, Torn/Manual Pages, and Tier III/IV runes by `BossTier`; regional bosses, dungeon bosses, giants, Archivist, and Sword Master clears award Aura Shards and Mana Crystals; Dungeon Relics restore 25 mana and 20 aura on a 20-second cooldown.
 - **Skyrend Glaive polearm combat**: 33.4-unit polearm model, two-handed cross-body guard stance, and 3-phase lever-action cleave animation in first and third person (`GlaivePose`).
 - **Structure rebuilds**: upgraded Shepherd's Steading, Tidepool Grotto, Granary Farmstead, Bell Chapel pinnacles, Rune Library lawn, Archive forecourt, and Ember Sanctum cavern.
 - **Master form keybind**: changed default from `C` to `X` and merged `Wildercord: Master forms` into `Wildercord: Master's Arts` to avoid Creative's Save Toolbar clash.
 
 ### Fixed
-- **Dungeon wards**: warded arenas and vaults block survival players from breaking walls, dungeon decorations, and waterlogged blocks (`state.liquid()`), re-sync refused blocks to the client, and cover Storm Spire's walls and roof; verified across all 30 warded structures (`DungeonWardSealTest`).
+- **Rootcoil Serpent & Archivist anti-cheese**: recessed the Serpent Grove's surface roots and tightened trunk navigation + tangential lunge deflection so the Rootcoil Serpent no longer snags on the central tree; extended Archive wards across the Hall of Shelves, Hall of Braziers, both Rune Seal doors, corridor, and dome rim gap while rejecting Archivist damage from attackers outside the arena chamber.
+- **Dungeon wards**: warded arenas and vaults block survival players from breaking walls, dungeon decorations, and waterlogged blocks (`state.liquid()`), re-sync refused blocks to the client, and cover Storm Spire's walls and roof; verified across all 32 warded structures (`DungeonWardSealTest`).
 - **Iron golems & tamed Coffer Mimics**: golems no longer attack tamed mimics, and tamed mimics leave golems alone.
 - **Structure block entities**: promoted and cleared pending `"DUMMY"` block entities across all five root piece classes and corrected north/south wall-banner orientation.
 - **Lesson localization**: moved all 12 lesson grammar and storage problem messages through `LessonText` translation keys.

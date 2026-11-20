@@ -146,8 +146,8 @@ public final class RuneCategories {
 				// ---- fx-support pack
 				case "worst_first", "salve", "mending_mist", "hearthglow", "aftercare", "hearthsong", "grace", "managift", "manawell", "guardlink", "rally",
 					"morale", "shrug_off", "hexguard", "stoutheart", "ironhold", "evade", "emberguard", "beastguard", "hearthguard", "heel", "aegis",
-					"shieldwall", "staunch", "sentry", "tend", "withdraw", "faithful" -> "support";
-				case "pacify", "lure", "stillbind", "taunt", "nudge", "hobble", "corral", "truce", "spook", "soothe" -> "control";
+					"shieldwall", "staunch", "sentry", "tend", "withdraw", "faithful", "ofuda_ward" -> "support";
+				case "pacify", "lure", "stillbind", "taunt", "nudge", "hobble", "corral", "truce", "spook", "soothe", "suzu_chime" -> "control";
 				case "bellward", "sanctuary", "arrowveil", "blastward", "firebreak", "accord", "citadel", "keepsafe" -> "world";
 				default -> "damage";
 			};

@@ -90,4 +90,12 @@ public final class DungeonWorldgen {
 	public static final StructurePieceType WAYSIDE_SHRINE_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("wayside_shrine"),
 		(StructurePieceType.ContextlessType)WaysideShrinePiece::new);
 	public static final ResourceKey<LootTable> WAYSIDE_SHRINE=loot("chests/wayside_shrine");
+	public static final StructurePieceType CAT_SANCTUARY_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("cat_sanctuary"),
+		(StructurePieceType.ContextlessType)CatSanctuaryPiece::new);
+	public static final ResourceKey<LootTable> CAT_SANCTUARY_HALL=loot("chests/cat_sanctuary_hall");
+	public static final ResourceKey<LootTable> CAT_SANCTUARY_VAULT=loot("chests/cat_sanctuary_vault");
+	public static final StructurePieceType LANTERN_BATHHOUSE_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("lantern_bathhouse"),
+		(StructurePieceType.ContextlessType)LanternBathhousePiece::new);
+	public static final ResourceKey<LootTable> LANTERN_BATHHOUSE_HALL=loot("chests/lantern_bathhouse_hall");
+	public static final ResourceKey<LootTable> LANTERN_BATHHOUSE_VAULT=loot("chests/lantern_bathhouse_vault");
 }

@@ -304,14 +304,34 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		int pick=-1;
 		if(left<=0){
 			pick=SerpentRules.choose(deck,d,behind(target),ages(level.getGameTime()),dived,random.nextDouble());
-			// A long chase ends in roots driven at its prey from afar, or a lunge.
-			if(pick<0 && chased>=60)pick=d<=SerpentRules.ROOT_REACH && deck.last()!=SerpentRules.ROOT_LINE?SerpentRules.ROOT_LINE:d<=SerpentRules.LUNGE_REACH+5?SerpentRules.LUNGE:-1;
+			// A long or tree-snagged chase ends in roots driven at its prey from afar (which pierce the trunk) or a lunge.
+			if(pick<0 && (chased>=30 || (horizontalCollision && chased>=12)))pick=d<=SerpentRules.ROOT_REACH && deck.last()!=SerpentRules.ROOT_LINE?SerpentRules.ROOT_LINE:d<=SerpentRules.LUNGE_REACH+5?SerpentRules.LUNGE:-1;
 		}
 		if(pick>=0){links=0;begin(level,pick,target,false);return;}
 		if(d>SerpentRules.CLOSE){
 			chased++;
-			if(!getNavigation().moveTo(target,1))getMoveControl().setWantedPosition(target.getX(),target.getY(),target.getZ(),1);
+			if(!steerAroundTree(target.position(),1.0) && !getNavigation().moveTo(target,1))getMoveControl().setWantedPosition(target.getX(),target.getY(),target.getZ(),1);
 		}else{chased=0;getNavigation().stop();}
+	}
+
+	/** Steers tangentially around the central tree trunk when moving directly toward {@code goal} would wedge on its bark or roots. */
+	private boolean steerAroundTree(Vec3 goal,double speed){
+		Vec3 t=trunk();
+		double rx=getX()-t.x,rz=getZ()-t.z;
+		double r2=rx*rx+rz*rz;
+		if(r2>4.8*4.8 && !horizontalCollision)return false;
+		double rLen=Math.sqrt(Math.max(0.01,r2));
+		Vec3 radial=new Vec3(rx/rLen,0,rz/rLen);
+		Vec3 tangentA=new Vec3(-radial.z,0,radial.x);
+		Vec3 toGoal=goal.subtract(position()).multiply(1,0,1);
+		Vec3 tangent=toGoal.dot(tangentA)>=0?tangentA:tangentA.scale(-1);
+		Vec3 steer=tangent.scale(0.8).add(radial.scale(0.35)).normalize();
+		Vec3 waypoint=position().add(steer.scale(3.0));
+		getNavigation().stop();
+		getMoveControl().setWantedPosition(waypoint.x,goal.y,waypoint.z,speed);
+		Vec3 v=getDeltaMovement();
+		setDeltaMovement(v.x*0.4+steer.x*0.18,v.y,v.z*0.4+steer.z*0.18);
+		return true;
 	}
 
 	/** Ticks since it last made each move, by move. */
@@ -400,7 +420,18 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			return;
 		}
 		if(el==tell)Feels.sound(level,position().add(0,1,0),"aura_serpent_lunge",1.4F,1);
-		move(MoverType.SELF,ahead(aim).scale(SerpentRules.LUNGE_REACH/SerpentRules.LUNGE_TICKS));setDeltaMovement(Vec3.ZERO);
+		Vec3 lungeStep=ahead(aim).scale(SerpentRules.LUNGE_REACH/SerpentRules.LUNGE_TICKS);
+		Vec3 t=trunk();
+		if(Math.hypot(getX()-t.x,getZ()-t.z)<4.2){
+			Vec3 radial=new Vec3(getX()-t.x,0,getZ()-t.z);
+			if(radial.lengthSqr()>0.01){
+				radial=radial.normalize();
+				Vec3 tan=new Vec3(-radial.z,0,radial.x);
+				if(tan.dot(lungeStep)<0)tan=tan.scale(-1);
+				lungeStep=tan.scale(0.65).add(radial.scale(0.45)).normalize().scale(lungeStep.length());
+			}
+		}
+		move(MoverType.SELF,lungeStep);setDeltaMovement(Vec3.ZERO);
 		level.sendParticles(ParticleTypes.CLOUD,getX(),getY()+.3,getZ(),3,.6,.1,.6,.02);
 		for(var p:prey(level))if(!struck.contains(p.getUUID()) && reaches(SerpentRules.LUNGE,p)){struck.add(p.getUUID());if(hit(level,p,SerpentRules.LUNGE_DAMAGE,.9))landed=true;}
 		if(el<tell+SerpentRules.LUNGE_TICKS-1)return;

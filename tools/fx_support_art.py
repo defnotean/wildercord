@@ -465,4 +465,24 @@ GLYPHS: dict[str, str] = {
         ..#+#..
         ...#...
     """,
+    # Suzu Chime: a round shrine bell with tassel slit.
+    "suzu_chime": """
+        ..###..
+        .#+*+#.
+        #+***+#
+        #++#++#
+        .#+*+#.
+        ..###..
+        ...*...
+    """,
+    # Ofuda Ward: a vertical paper talisman with red seal.
+    "ofuda_ward": """
+        .#####.
+        .#+*+#.
+        .#.*.#.
+        .#+*+#.
+        .#.#.#.
+        .##.##.
+        .#...#.
+    """,
 }

@@ -43,6 +43,7 @@ public final class SiteFamilies {
 		worldgen("wildercord:wilds_echo_post", "Deep dark cave building; carves its own room, so new chunks only.");
 		worldgen("wildercord:wilds_ember_outpost", "Nether cave outpost; carves its own yard, so new chunks only.");
 		worldgen("wildercord:wilds_void_lantern", "End island spire; new chunks only.");
+		worldgen("wildercord:wilds_sakura_village", "Peaceful cherry-blossom village with kimono villagers and all four shrine cats; new chunks only.");
 		// ---- sites-travel pack
 		worldgen("wildercord:travel_wayfarer_inn", "Crossroads inn with beds, a ledger and a pantry chest; new chunks only so no inn is built into existing land.");
 		worldgen("wildercord:travel_watchtower", "Hilltop tower with a signal fire and watch chest; new chunks only.");

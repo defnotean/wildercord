@@ -35,7 +35,9 @@ public class DungeonStructure extends Structure {
 		SILK_HOLLOW,
 		GLACIER_DEN,
 		BARROW_FIELD,
-		WAYSIDE_SHRINE;
+		WAYSIDE_SHRINE,
+		CAT_SANCTUARY,
+		LANTERN_BATHHOUSE;
 
 		public static final Codec<Kind> CODEC = StringRepresentable.fromEnum(Kind::values);
 
@@ -79,6 +81,8 @@ public class DungeonStructure extends Structure {
 			case SILK_HOLLOW -> SilkHollowPiece.locate(context);
 			case GLACIER_DEN -> GlacierDenPiece.locate(context);
 			case WAYSIDE_SHRINE -> WaysideShrinePiece.locate(context);
+			case CAT_SANCTUARY -> CatSanctuaryPiece.locate(context);
+			case LANTERN_BATHHOUSE -> LanternBathhousePiece.locate(context);
 		};
 	}
 

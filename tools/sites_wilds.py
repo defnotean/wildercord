@@ -27,6 +27,9 @@ SITES = {
     "wilds_void_lantern": ("Void Lantern", "surface_structures",
                            ["minecraft:end_highlands", "minecraft:end_midlands", "minecraft:end_barrens"], 40, 14,
                            "Light at the Edge", "Find a Void Lantern on the End's outer islands", "minecraft:end_rod"),
+    "wilds_sakura_village": ("Sakura Village", "surface_structures",
+                             ["minecraft:cherry_grove", "minecraft:meadow", "minecraft:birch_forest", "minecraft:forest"], 34, 12,
+                             "Blossom Lanterns", "Find a peaceful Japanese Sakura Village", "minecraft:pink_petals"),
 }
 
 # id: (breathing method, vault runes, hall runes, vault extras, hall extras)
@@ -56,6 +59,9 @@ LOOT = {
     "wilds_void_lantern": ("hollow", ["blink", "pull", "void_step", "spire_sense", "hollow_pocket", "starlight_tether"], ["hex", "anchor", "warp_step"],
                            [("minecraft:ender_pearl", 3, 2, 4), ("minecraft:chorus_fruit", 2, 2, 6)],
                            [("minecraft:chorus_fruit", 3, 2, 5), ("minecraft:ender_pearl", 2, 1, 2), ("minecraft:popped_chorus_fruit", 2, 2, 6)]),
+    "wilds_sakura_village": ("dawn", ["suzu_chime", "ofuda_ward", "bellward", "sanctuary", "grace", "hearthglow"], ["suzu_chime", "ofuda_ward", "soothe"],
+                             [("wildercord:cat_bell_charm", 3, 1, 2), ("minecraft:cooked_salmon", 3, 3, 6), ("minecraft:emerald", 2, 2, 4)],
+                             [("minecraft:cherry_sapling", 3, 1, 3), ("minecraft:cooked_cod", 3, 2, 5), ("minecraft:honey_bottle", 2, 1, 3)]),
 }
 
 LANG = {}

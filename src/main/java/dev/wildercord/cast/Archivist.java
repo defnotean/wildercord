@@ -1349,6 +1349,15 @@ public class Archivist extends SpellcasterIllager {
 		if (rewriting > 0 || source.is(DamageTypes.FALL) || source.getEntity() instanceof Mob && !(source.getEntity() instanceof Player)) {
 			return false;
 		}
+		if (home != null && source.getEntity() instanceof LivingEntity attacker && !(attacker instanceof Player p && p.isCreative())) {
+			double dx = attacker.getX() - (home.getX() + 0.5);
+			double dz = attacker.getZ() - (home.getZ() + 0.5);
+			double dy = Math.abs(attacker.getY() - home.getY());
+			double dist = Math.hypot(dx, dz);
+			if (dist > 14.5 || dy > 16.0 || (dist > 12.6 && !hasLineOfSight(attacker))) {
+				return false;
+			}
+		}
 		// Caught shut, wiped blank or leafing for its place, it takes more from every blow.
 		boolean hurt = super.hurtServer(level, source, damage * (float) ArchivistRules.taken(move));
 		// A blow that reached its next phase starts the rewriting now, before anything else can land.

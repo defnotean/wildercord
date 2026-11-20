@@ -15,7 +15,7 @@ public final class WildsSites {
 	private WildsSites() {}
 
 	public static final List<String> IDS = List.of("wilds_venom_ziggurat", "wilds_dune_temple", "wilds_rime_monastery", "wilds_iron_gatehouse",
-		"wilds_dawn_pavilion", "wilds_echo_post", "wilds_ember_outpost", "wilds_void_lantern");
+		"wilds_dawn_pavilion", "wilds_echo_post", "wilds_ember_outpost", "wilds_void_lantern", "wilds_sakura_village");
 
 	public static final StructurePieceType VENOM_ZIGGURAT = Sites.piece("wilds_venom_ziggurat", VenomZigguratPiece::new);
 	public static final StructurePieceType DUNE_TEMPLE = Sites.piece("wilds_dune_temple", DuneTemplePiece::new);
@@ -25,6 +25,7 @@ public final class WildsSites {
 	public static final StructurePieceType ECHO_POST = Sites.piece("wilds_echo_post", EchoPostPiece::new);
 	public static final StructurePieceType EMBER_OUTPOST = Sites.piece("wilds_ember_outpost", EmberOutpostPiece::new);
 	public static final StructurePieceType VOID_LANTERN = Sites.piece("wilds_void_lantern", VoidLanternPiece::new);
+	public static final StructurePieceType SAKURA_VILLAGE = Sites.piece("wilds_sakura_village", SakuraVillagePiece::new);
 
 	static final ResourceKey<LootTable> ZIGGURAT_VAULT = Sites.loot("chests/wilds_venom_ziggurat"), ZIGGURAT_HALL = Sites.loot("chests/wilds_venom_ziggurat_hall"),
 		ZIGGURAT_DARTS = Sites.loot("chests/wilds_venom_ziggurat_darts");
@@ -36,6 +37,7 @@ public final class WildsSites {
 	static final ResourceKey<LootTable> ECHO_VAULT = Sites.loot("chests/wilds_echo_post"), ECHO_HALL = Sites.loot("chests/wilds_echo_post_hall");
 	static final ResourceKey<LootTable> EMBER_VAULT = Sites.loot("chests/wilds_ember_outpost"), EMBER_HALL = Sites.loot("chests/wilds_ember_outpost_hall");
 	static final ResourceKey<LootTable> VOID_VAULT = Sites.loot("chests/wilds_void_lantern"), VOID_HALL = Sites.loot("chests/wilds_void_lantern_hall");
+	static final ResourceKey<LootTable> SAKURA_VAULT = Sites.loot("chests/wilds_sakura_village"), SAKURA_HALL = Sites.loot("chests/wilds_sakura_village_hall");
 
 	public static void init() {
 		Sites.register("wilds_venom_ziggurat", VenomZigguratPiece::locate);
@@ -46,5 +48,6 @@ public final class WildsSites {
 		Sites.register("wilds_echo_post", EchoPostPiece::locate);
 		Sites.register("wilds_ember_outpost", EmberOutpostPiece::locate);
 		Sites.register("wilds_void_lantern", VoidLanternPiece::locate);
+		Sites.register("wilds_sakura_village", SakuraVillagePiece::locate);
 	}
 }

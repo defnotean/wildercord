@@ -509,10 +509,17 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		return 13 + (int) Math.floor(Math.sqrt(Math.max(0, ARENA_R * ARENA_R - d * d)) * 0.55);
 	}
 
-	/** The Archivist's arena, from under its floor to over its dome, and the vault off it (with the door between). */
+	/**
+	 * The Hall of Shelves, Hall of Braziers, connecting corridor, the Archivist's arena (from under its floor
+	 * to over its dome), and the vault off it — keeping players on the intended path instead of tunnelling
+	 * around the seal doors or carving peepholes into the arena.
+	 */
 	@Override
 	public java.util.List<BoundingBox> wardedBoxes() {
 		return java.util.List.of(
+			worldBox(8, 0, 30, 32, 12, 48),
+			worldBox(12, 0, 48, 28, 10, 60),
+			worldBox(17, 0, 60, 23, 8, 66),
 			worldBox(20 - ARENA_R - 3, 0, ARENA_Z - ARENA_R - 3, 20 + ARENA_R + 3, SURFACE - 2, Math.min(DEPTH - 1, ARENA_Z + ARENA_R + 3)),
 			worldBox(30, 0, 71, WIDTH - 1, 11, 83));
 	}
@@ -533,8 +540,9 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 				}
 				set(level, bb, TILES, x, 1, z);
 				if (d > ARENA_R) {
-					// The wall.
-					for (int y = 2; y <= ceiling(ARENA_R) + 1; y++) {
+					// The wall rises slightly above the outer dome skirt so no diagonal rim gap opens at y = 15.
+					int wallTop = Math.max(ceiling(ARENA_R) + 1, ceiling(Math.max(0, d - 1.5)) + 2);
+					for (int y = 2; y <= wallTop; y++) {
 						set(level, bb, y % 5 == 0 ? CHISELED : wallBrick(x, y, z), x, y, z);
 					}
 					continue;

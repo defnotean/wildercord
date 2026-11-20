@@ -644,6 +644,20 @@ DUNGEONS = {
         "extras": [("minecraft:lightning_rod", 4, 1, 3), ("minecraft:amethyst_shard", 4, 2, 8),
                    ("minecraft:amethyst_block", 2, 1, 2), ("minecraft:emerald", 2, 1, 3)],
     },
+    "cat_sanctuary": {
+        "elements": ("wind", "arcane"), "name": "the Cat Sanctuary",
+        "step": "surface_structures", "biomes": ["minecraft:cherry_grove", "minecraft:meadow", "minecraft:birch_forest", "minecraft:forest"],
+        "spacing": 38, "separation": 14, "salt": 20261119, "spawns": [],
+        "extras": [("minecraft:cooked_salmon", 4, 2, 5), ("wildercord:cat_bell_charm", 2, 1, 1),
+                   ("minecraft:emerald", 3, 2, 5), ("minecraft:lantern", 3, 2, 4)],
+    },
+    "lantern_bathhouse": {
+        "elements": ("fire", "frost"), "name": "the Lantern Bathhouse",
+        "step": "surface_structures", "biomes": ["minecraft:bamboo_jungle", "minecraft:cherry_grove", "minecraft:dark_forest", "minecraft:taiga"],
+        "spacing": 36, "separation": 12, "salt": 20261120, "spawns": [],
+        "extras": [("minecraft:magma_block", 3, 2, 5), ("minecraft:spruce_sapling", 3, 2, 4),
+                   ("minecraft:gold_ingot", 3, 2, 5), ("wildercord:cat_bell_charm", 1, 1, 1)],
+    },
 }
 
 

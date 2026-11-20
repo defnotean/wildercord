@@ -265,7 +265,8 @@ public final class WildercordLoot {
 
 	static {
 		supportPool(BuiltInLootTables.VILLAGE_TEMPLE, 35, Runes.WORST_FIRST, Runes.SALVE, Runes.MENDING_MIST, Runes.AFTERCARE, Runes.HEARTHSONG,
-			Runes.MANAGIFT, Runes.MANAWELL, Runes.HEXGUARD, Runes.STAUNCH, Runes.SANCTUARY, Runes.SOOTHE, Runes.TRUCE, Runes.GRACE);
+			Runes.MANAGIFT, Runes.MANAWELL, Runes.HEXGUARD, Runes.STAUNCH, Runes.SANCTUARY, Runes.SOOTHE, Runes.TRUCE, Runes.GRACE,
+			Runes.SUZU_CHIME, Runes.OFUDA_WARD);
 		supportPool(BuiltInLootTables.VILLAGE_PLAINS_HOUSE, 12, Runes.HEARTHGLOW, Runes.TEND, Runes.BEASTGUARD, Runes.HEEL, Runes.FAITHFUL,
 			Runes.KEEPSAFE, Runes.FIREBREAK, Runes.HEARTHGUARD, Runes.BELLWARD);
 		supportPool(BuiltInLootTables.VILLAGE_WEAPONSMITH, 20, Runes.GUARDLINK, Runes.RALLY, Runes.MORALE, Runes.STOUTHEART, Runes.IRONHOLD,

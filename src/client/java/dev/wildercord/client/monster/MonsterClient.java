@@ -51,6 +51,8 @@ public final class MonsterClient {
 		ModelLayerRegistry.registerModelLayer(BloomclawMantisRenderer.LAYER, BloomclawMantisModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(SandmawWyrmRenderer.LAYER, SandmawWyrmModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(TimbermaulBearRenderer.LAYER, TimbermaulBearModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(KarakuriSentinelRenderer.LAYER, KarakuriSentinelModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(PaperLanternSpiritRenderer.LAYER, PaperLanternSpiritModel::createLayer);
 
 		EntityRendererRegistry.register(MonsterContent.BRAMBLEWALKER, MonsterClient::bramblewalker);
 		EntityRendererRegistry.register(MonsterContent.GLOOMSTALKER, GloomstalkerRenderer::new);
@@ -78,6 +80,8 @@ public final class MonsterClient {
 		EntityRendererRegistry.register(MonsterContent.BLOOMCLAW_MANTIS, BloomclawMantisRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.SANDMAW_WYRM, SandmawWyrmRenderer::new);
 		EntityRendererRegistry.register(MonsterContent.TIMBERMAUL_BEAR, TimbermaulBearRenderer::new);
+		EntityRendererRegistry.register(MonsterContent.KARAKURI_SENTINEL, KarakuriSentinelRenderer::new);
+		EntityRendererRegistry.register(MonsterContent.PAPER_LANTERN_SPIRIT, PaperLanternSpiritRenderer::new);
 	}
 
 	/** Its eyes, and the green veins in its vines, which blaze as it rears for the lash (a giant's, through every tell). */

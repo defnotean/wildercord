@@ -247,7 +247,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Stepstones | Shape | Cobblestone, Lily Pad |
 | Touch | Shape | Leather |
 
-## Tier II (255 runes, + 2 Lapis Lazuli and a Gold Ingot)
+## Tier II (257 runes, + 2 Lapis Lazuli and a Gold Ingot)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -335,6 +335,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Mooring Call | Effect | Oak Boat, Lead |
 | Morale | Effect | Golden Apple, White Banner |
 | Nightwatch | Effect | Bell, Spider Eye |
+| Ofuda Ward | Effect | Paper, Amethyst Shard |
 | Ore Tally | Effect | Raw Iron, Coal, Paper |
 | Overdrive | Effect | Blaze Powder, Redstone |
 | Pacify | Effect | Poppy, Lapis Lazuli |
@@ -389,6 +390,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Stoneskin | Effect | Armadillo Scute |
 | Stow | Effect | Chest, Hopper |
 | Strata Rise | Effect | Stone, Packed Mud, Flint |
+| Suzu Chime | Effect | Bell, Feather |
 | Swap | Effect | 2x Ender Pearl |
 | Tarry | Effect | Clock, Honey Bottle |
 | Thunderclap | Effect | Goat Horn |

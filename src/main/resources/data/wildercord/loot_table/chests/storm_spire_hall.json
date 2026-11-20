@@ -381,6 +381,17 @@
             },
             "type": "minecraft:set_components"
           }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:suzu_chime"
+            },
+            "type": "minecraft:set_components"
+          }
         }
       ]
     },

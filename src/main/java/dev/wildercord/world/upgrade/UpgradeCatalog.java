@@ -29,6 +29,8 @@ public final class UpgradeCatalog {
 		worldgen("wildercord:clockwork_crypt","Underground multi-chunk; terrain excavation and generation-time guards/loot"),
 		worldgen("wildercord:living_greenhouse","Multi-chunk; generation-time guards/loot"),
 		worldgen("wildercord:moving_sky_ruin","Multi-chunk floating ruin; generation-time guards/loot"),
+		worldgen("wildercord:cat_sanctuary","Four-tier Japanese pagoda sanctuary guarded by Yuki, Odie, Freya, and Kuro; old worlds find it only in new chunks"),
+		worldgen("wildercord:lantern_bathhouse","Steaming hinoki onsen bathhouse with sealed spirit vault; old worlds find it only in new chunks"),
 		worldgen("wildercord:old_battlefield","Full 31x31 site carries a loot chest; old worlds get the bounded memorial adapter instead"),
 		worldgen("wildercord:sword_tomb","Full 41x55 underground tomb needs excavation, intent gates and loot; old worlds get the bounded duel ring instead"),
 		worldgen("wildercord:sleeping_blade","Full 19x19 site; old worlds get the bounded rest instead"),

@@ -262,6 +262,8 @@ public record WildercordConfig(
 				case "bloomclaw_mantis" -> true;
 				case "sandmaw_wyrm" -> true;
 				case "timbermaul_bear" -> true;
+				case "karakuri_sentinel" -> true;
+				case "paper_lantern_spirit" -> true;
 				default -> false;
 			};
 		}

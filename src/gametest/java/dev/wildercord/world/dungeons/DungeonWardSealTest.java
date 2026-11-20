@@ -53,7 +53,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		"living greenhouse", "mojito grove", "moving sky ruin", "serpent grove", "silk hollow", "forge dojo",
 		"resonance chamber", "star terrace", "sundial court", "iron gatehouse", "venom ziggurat", "dune temple",
 		"echo post", "ember outpost", "rime monastery", "void lantern", "drowned scriptorium", "ember sanctum",
-		"dawn pavilion");
+		"dawn pavilion", "cat sanctuary", "lantern bathhouse");
 	private static final List<IntFunction<StructurePiece>> PIECES = List.of(
 		x -> new RootboundMazePiece(x, 120, 0, Direction.NORTH),
 		x -> new SwordTombPiece(x, 120, 0, Direction.NORTH),
@@ -84,7 +84,9 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 		x -> new VoidLanternPiece(x, 0, Direction.NORTH),
 		x -> new DrownedScriptoriumPiece(x, 120, 0, Direction.NORTH),
 		x -> new EmberSanctumPiece(x, 120, 0, Direction.NORTH),
-		x -> new DawnPavilionPiece(x, 0, Direction.NORTH));
+		x -> new DawnPavilionPiece(x, 0, Direction.NORTH),
+		x -> new CatSanctuaryPiece(x, 120, 0, Direction.NORTH),
+		x -> new LanternBathhousePiece(x, 120, 0, Direction.NORTH));
 
 	@Override public void runTest(ClientGameTestContext c) {
 		try (var world = c.worldBuilder().create()) {

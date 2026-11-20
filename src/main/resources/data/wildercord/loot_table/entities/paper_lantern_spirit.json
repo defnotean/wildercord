@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:lantern"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "wildercord:entities/paper_lantern_spirit"
+}

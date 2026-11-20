@@ -869,7 +869,9 @@ final class ShapeRunners {
 	static void ricochet(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 origin, Vec3 dir, Vfx.Theme theme) {
 		Vec3[] pos = {origin};
 		Vec3[] velocity = {dir.normalize().scale(SpellNumbers.ricochetSpeed(g)).add(0, 0.12, 0)};
-		int[] bounces = {SpellNumbers.ricochetBounces(g)};
+		int totalBounces = SpellNumbers.ricochetBounces(g);
+		int[] bounces = {totalBounces};
+		int[] bounced = {0};
 		Set<UUID> hit = new java.util.HashSet<>();
 		ExpansionVfx.ricochetLaunch(cast.level, origin, theme);
 		each(cast, 140, tick -> {
@@ -883,12 +885,13 @@ final class ShapeRunners {
 			}
 			net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
 			Vec3 end = missed(block) ? to : block.getLocation();
+			double powerScale = SpellNumbers.ricochetBounceScale(bounced[0]);
 			List<Entity> passed = along(cast, from, end, 0.45, hit);
 			if (!passed.isEmpty()) {
 				passed.forEach(e -> hit.add(e.getUUID()));
 				Vec3 at = passed.getFirst().getBoundingBox().getCenter();
 				ExpansionVfx.ricochetHit(cast.level, at, theme);
-				CastEngine.onHit(cast, g, new Cast.Hit(passed, at, velocity[0].normalize(), from, null, null, false), anchored);
+				CastEngine.onHit(cast, g, new Cast.Hit(passed, at, velocity[0].normalize(), from, null, null, false).times(powerScale), anchored);
 			}
 			if (visible(cast, from, end)) {
 				ExpansionVfx.ricochetTick(cast.level, from, end, theme, tick);
@@ -900,13 +903,14 @@ final class ShapeRunners {
 			Vec3 normal = Vec3.atLowerCornerOf(block.getDirection().getUnitVec3i());
 			if (bounces[0]-- <= 0 || velocity[0].length() < 0.2) {
 				ExpansionVfx.ricochetEnd(cast.level, end, theme);
-				CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, velocity[0].normalize(), end, block.getBlockPos(), block.getDirection(), false), anchored);
+				CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, velocity[0].normalize(), end, block.getBlockPos(), block.getDirection(), false).times(powerScale), anchored);
 				return false;
 			}
-			velocity[0] = velocity[0].subtract(normal.scale(2 * velocity[0].dot(normal))).scale(0.82);
+			bounced[0]++;
+			velocity[0] = velocity[0].subtract(normal.scale(2 * velocity[0].dot(normal))).scale(0.85);
 			pos[0] = end.add(normal.scale(0.05));
 			ExpansionVfx.ricochetBounce(cast.level, end, normal, theme);
-			dev.wildercord.cast.feel.Feels.sound(cast.level, end, "note_shape", 0.4F, dev.wildercord.cast.feel.Feels.step(SpellNumbers.ricochetBounces(g) - bounces[0]));
+			dev.wildercord.cast.feel.Feels.sound(cast.level, end, "note_shape", 0.4F, dev.wildercord.cast.feel.Feels.step(totalBounces - bounces[0]));
 			return true;
 		});
 	}

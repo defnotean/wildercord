@@ -975,6 +975,9 @@ def write_lang(runes):
     import kitsune_art
     lang.update(kitsune_art.LANG)
     kitsune_art.write(sys.modules[__name__])
+    import shrine_cat_art
+    lang.update(shrine_cat_art.LANG)
+    shrine_cat_art.write(sys.modules[__name__])
     import ram_art
     lang.update(ram_art.LANG)
     ram_art.write(sys.modules[__name__])
@@ -1915,6 +1918,8 @@ RUNE_RECIPES.update({
     "withdraw": ["minecraft:fermented_spider_eye", "minecraft:sugar"],
     "keepsafe": ["minecraft:iron_ingot", "minecraft:tripwire_hook"],
     "faithful": ["minecraft:bone", "minecraft:golden_apple"],
+    "suzu_chime": ["minecraft:bell", "minecraft:feather"],
+    "ofuda_ward": ["minecraft:paper", "minecraft:amethyst_shard"],
 })
 
 def rune_result(path):

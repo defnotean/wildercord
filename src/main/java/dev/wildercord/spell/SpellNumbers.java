@@ -229,9 +229,17 @@ public final class SpellNumbers {
 		return 1.2 * quickened(g, 1.5);
 	}
 
-	/** Bounces before a Ricochet stops: 4, and each Bounce adds 3. */
+	/** Bounces before a Ricochet stops: 5 (or 2 when paired with Split), and each Bounce adds 3 when not Split. */
 	public static int ricochetBounces(SpellPlan.Group g) {
-		return 4 + bounces(g);
+		if (g.count(Runes.SPLIT_MOD) > 0) {
+			return 2;
+		}
+		return 5 + bounces(g);
+	}
+
+	/** Power multiplier left to a Ricochet orb after {@code bounced} wall or ground bounces (loses 15% per bounce, floor 25%). */
+	public static double ricochetBounceScale(int bounced) {
+		return Math.max(0.25, 1.0 - 0.15 * Math.max(0, bounced));
 	}
 
 	/** Cluster speed in blocks per tick. */
