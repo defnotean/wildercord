@@ -73,7 +73,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 			high = Math.max(high, floor);
 			low = Math.min(low, floor);
 		}
-		if (high - low > 6) return Optional.empty();
+		if (high - low > 10) return Optional.empty();
 		int ground = (high + low) / 2;
 		piece.move(0, ground - 1 - F1, 0);
 		var entry = piece.getWorldPos(24, F1 + 1, 2);

@@ -21,6 +21,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,7 +42,12 @@ public final class SakuraVillagePiece extends WildsPiece {
 	}
 
 	static Optional<Structure.GenerationStub> locate(Structure.GenerationContext c) {
-		return surface(c, new SakuraVillagePiece(c.chunkPos().getMinBlockX(), c.chunkPos().getMinBlockZ(), facing(c)), 6);
+		return surface(c, new SakuraVillagePiece(c.chunkPos().getMinBlockX(), c.chunkPos().getMinBlockZ(), facing(c)), 10);
+	}
+
+	@Override
+	public List<BoundingBox> wardedBoxes() {
+		return List.of();
 	}
 
 	@Override
