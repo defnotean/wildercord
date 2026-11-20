@@ -300,10 +300,10 @@ public final class WildercordLoot {
 	private static LootTable fishedRunes(int worldWeight) {
 		LootPool.Builder pool = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1));
 		for (RuneDef rune : SEA) {
-			pool.add(runeEntry(rune).setWeight(tierWeight(rune.tier())));
+			pool.add(runeEntry(rune, tierWeight(rune.tier())));
 		}
 		for (RuneDef rune : RuneSources.FISHING.runes()) {
-			pool.add(runeEntry(rune).setWeight(tierWeight(rune.tier()) * worldWeight));
+			pool.add(runeEntry(rune, tierWeight(rune.tier()) * worldWeight));
 		}
 		return LootTable.lootTable().setParamSet(LootContextParamSets.FISHING).withPool(pool).build();
 	}
@@ -349,7 +349,7 @@ public final class WildercordLoot {
 		int total = chance * 10;
 		int weights = Math.max(1, runes.stream().mapToInt(r -> tierWeight(r.tier())).sum());
 		for (RuneDef rune : runes) {
-			builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
+			builder.add(runeEntry(rune, Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
 		}
 		if (chance < 100) {
 			builder.add(EmptyLootItem.emptyItem().setWeight(Math.max(1, (100 - chance) * 10)));
@@ -391,11 +391,11 @@ public final class WildercordLoot {
 			dev.wildercord.config.WildercordConfig config = dev.wildercord.config.Config.get();
 			Integer page = PAGE_CHANCE.get(key);
 			if (page != null && scaled(page, config.pageLootChance()) > 0) {
-				table.withPool(chance(scaled(page, config.pageLootChance()), LootItem.lootTableItem(WildercordItems.TORN_PAGE)));
+				table.withPool(chance(scaled(page, config.pageLootChance()), w -> LootItem.lootTableItem(WildercordItems.TORN_PAGE).setWeight(w)));
 			}
 			Integer crystal = CRYSTAL_CHANCE.get(key);
 			if (crystal != null && scaled(crystal, config.crystalLootChance()) > 0) {
-				table.withPool(chance(scaled(crystal, config.crystalLootChance()), LootItem.lootTableItem(WildercordItems.MANA_CRYSTAL)));
+				table.withPool(chance(scaled(crystal, config.crystalLootChance()), w -> LootItem.lootTableItem(WildercordItems.MANA_CRYSTAL).setWeight(w)));
 			}
 			RunePool found = ARCHAEOLOGY_POOLS.get(key);
 			RunePool dig = found == null || scaled(found.chance(), config.runeLootChance()) <= 0 ? null
@@ -406,7 +406,7 @@ public final class WildercordLoot {
 				int weights = dig.runes().stream().mapToInt(r -> tierWeight(r.tier())).sum();
 				table.modifyPools(builder -> {
 					for (RuneDef rune : dig.runes()) {
-						builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
+						builder.add(runeEntry(rune, Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
 					}
 				});
 			}
@@ -419,7 +419,7 @@ public final class WildercordLoot {
 				int total = pool.chance() * 10;
 				int weights = pool.runes().stream().mapToInt(r -> tierWeight(r.tier())).sum();
 				for (RuneDef rune : pool.runes()) {
-					builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
+					builder.add(runeEntry(rune, Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
 				}
 				if (pool.chance() < 100) {
 					builder.add(EmptyLootItem.emptyItem().setWeight((100 - pool.chance()) * 10));
@@ -430,7 +430,7 @@ public final class WildercordLoot {
 				// A boss's sure drop stays sure; everything else follows the multiplier.
 				int odds = drop.getKey() >= 100 ? 100 : scaled(drop.getKey(), config.runeLootChance());
 				if (odds > 0) {
-					table.withPool(chance(odds, runeEntry(drop.getValue())));
+					table.withPool(chance(odds, w -> runeEntry(drop.getValue(), w)));
 				}
 			}
 			// The runes of the world: found only in these places, as often as the rune multiplier says.
@@ -453,7 +453,7 @@ public final class WildercordLoot {
 				int weights = runes.stream().mapToInt(r -> tierWeight(r.tier())).sum();
 				table.modifyPools(builder -> {
 					for (RuneDef rune : runes) {
-						builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
+						builder.add(runeEntry(rune, Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
 					}
 				});
 			}
@@ -516,12 +516,12 @@ public final class WildercordLoot {
 		};
 	}
 
-	private static net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer.Builder<?> runeEntry(RuneDef rune) {
-		return LootItem.lootTableItem(WildercordItems.RUNE).apply(SetComponentsFunction.setComponent(WildercordComponents.RUNE, rune.id()));
+	private static net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer.Builder<?> runeEntry(RuneDef rune, int weight) {
+		return LootItem.lootTableItem(WildercordItems.RUNE).apply(SetComponentsFunction.setComponent(WildercordComponents.RUNE, rune.id())).setWeight(weight);
 	}
 
-	private static LootPool.Builder chance(int chance, net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer.Builder<?> entry) {
-		LootPool.Builder builder = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1)).add(entry.setWeight(chance));
+	private static LootPool.Builder chance(int chance, java.util.function.IntFunction<net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer.Builder<?>> entry) {
+		LootPool.Builder builder = LootPool.lootPool().setRolls(dev.wildercord.compat.McLootAndTriggers.exactPoolRolls(1)).add(entry.apply(chance));
 		if (chance < 100) {
 			builder.add(EmptyLootItem.emptyItem().setWeight(100 - chance));
 		}

@@ -765,18 +765,33 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				player.setLastHurtMob(huskB);
 				return new UUID[]{huskA.getUUID(), huskB.getUUID(), huskC.getUUID()};
 			});
-			c.waitTicks(50);
-			w.getServer().runOnServer(s -> {
-				ServerLevel l = s.overworld();
-				// Refresh owner combat memory stamps before companionPowerCooldown completes.
-				if (l.getEntity(powerHusks[0]) instanceof LivingEntity a) {
-					p(s).setLastHurtByMob(a);
+			for (int step = 0; step < 16; step++) {
+				c.waitTicks(10);
+				boolean ready = w.getServer().computeOnServer(s -> {
+					ServerLevel l = s.overworld();
+					ServerPlayer player = p(s);
+					var huskA = (LivingEntity) l.getEntity(powerHusks[0]);
+					var huskB = (LivingEntity) l.getEntity(powerHusks[1]);
+					var huskC = (LivingEntity) l.getEntity(powerHusks[2]);
+					if (huskA != null) {
+						player.setLastHurtByMob(huskA);
+					}
+					if (huskB != null) {
+						player.setLastHurtMob(huskB);
+					}
+					return player.hasEffect(MobEffects.RESISTANCE)
+						&& huskA != null && huskA.hasEffect(MobEffects.SLOWNESS) && huskA.getHealth() < huskA.getMaxHealth()
+						&& player.hasEffect(MobEffects.REGENERATION) && player.hasEffect(MobEffects.FIRE_RESISTANCE)
+						&& player.getHealth() > 12.0F
+						&& player.hasEffect(MobEffects.ABSORPTION)
+						&& huskC != null && huskC.getHealth() < huskC.getMaxHealth()
+						&& player.hasEffect(MobEffects.SPEED) && player.hasEffect(MobEffects.STRENGTH)
+						&& huskB != null && huskB.getHealth() < huskB.getMaxHealth();
+				});
+				if (ready) {
+					break;
 				}
-				if (l.getEntity(powerHusks[1]) instanceof LivingEntity b) {
-					p(s).setLastHurtMob(b);
-				}
-			});
-			c.waitTicks(55);
+			}
 			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				ServerPlayer player = p(s);

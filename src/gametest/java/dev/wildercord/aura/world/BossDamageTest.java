@@ -170,7 +170,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				c.waitTicks(2);
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person").disableCounterPrefix());
 				if ("skyrend_glaive".equals(name)) {
-					c.runOnClient(mc -> mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND, true));
+					c.runOnClient(mc -> dev.wildercord.gametest.compat.GametestCompat.swingMainHandWithItem(mc.player));
 					c.waitTicks(6);
 					c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person_swing").disableCounterPrefix());
 					c.waitTicks(10);
