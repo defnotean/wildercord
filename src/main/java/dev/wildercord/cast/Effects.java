@@ -2181,7 +2181,7 @@ public final class Effects {
 			}
 		}
 		if (!foes.isEmpty()) {
-			foes = Shields.screen(cast, foes, new Cast.Hit(List.copyOf(foes), centre, UP, centre, null, null, false));
+			foes = Shields.screen(cast, foes, new Cast.Hit(List.copyOf(foes), centre, new Vec3(0, 1, 0), centre, null, null, false));
 			for (LivingEntity foe : foes) {
 				Vec3 away = horizontal(foe.position().subtract(centre), cast.caster.getLookAngle());
 				hurt(cast, foe, level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), 6.0 * power);

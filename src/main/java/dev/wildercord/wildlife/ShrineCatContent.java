@@ -113,8 +113,8 @@ public final class ShrineCatContent {
 					cat.setOrderedToSit(false);
 				}
 				if (cat.distanceToSqr(player) > 25.0) {
-					cat.teleportTo(player.getX() + (level.random.nextDouble() - 0.5) * 1.5, player.getY(),
-						player.getZ() + (level.random.nextDouble() - 0.5) * 1.5);
+					cat.teleportTo(player.getX() + (level.getRandom().nextDouble() - 0.5) * 1.5, player.getY(),
+						player.getZ() + (level.getRandom().nextDouble() - 0.5) * 1.5);
 				}
 				recalled++;
 			}

@@ -67,9 +67,9 @@ public final class SakuraVillagePiece extends WildsPiece {
 			}
 		}
 		for (int x : new int[]{19, 25}) {
-			fill(level, bb, x, 1, 4, x, 5, 4, s(Blocks.RED_CONCRETE));
+			fill(level, bb, x, 1, 4, x, 5, 4, s(Blocks.DYED_TERRACOTTA.red()));
 		}
-		fill(level, bb, 18, 4, 4, 26, 4, 4, s(Blocks.RED_CONCRETE));
+		fill(level, bb, 18, 4, 4, 26, 4, 4, s(Blocks.DYED_TERRACOTTA.red()));
 		fill(level, bb, 17, 6, 4, 27, 6, 4, s(Blocks.DEEPSLATE_TILES));
 
 		// Koi stream & arched crimson bridge across z = 11..15.
@@ -125,7 +125,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 		fill(level, bb, 5, 1, 21, 16, 4, 21, paper);
 		fill(level, bb, 5, 1, 34, 16, 4, 34, paper);
 		fill(level, bb, 4, 1, 22, 4, 4, 33, paper);
-		fill(level, bb, 9, 1, 26, 12, 1, 29, s(Blocks.RED_CARPET));
+		fill(level, bb, 9, 1, 26, 12, 1, 29, s(Blocks.CARPET.red()));
 		set(level, bb, s(Blocks.LANTERN), 17, 2, 24);
 		set(level, bb, s(Blocks.LANTERN), 17, 2, 31);
 		hipRoof(level, bb, 4, 21, 17, 34, 6, Blocks.DARK_OAK_STAIRS, cherry, cherry);
@@ -137,12 +137,12 @@ public final class SakuraVillagePiece extends WildsPiece {
 		fill(level, bb, 27, 0, 21, 40, 0, 34, cherry);
 		fill(level, bb, 30, 0, 24, 37, 0, 31, gold);
 		for (int[] p : new int[][]{{28, 22}, {39, 22}, {28, 33}, {39, 33}}) {
-			fill(level, bb, p[0], 1, p[1], p[0], 5, p[1], s(Blocks.RED_CONCRETE));
+			fill(level, bb, p[0], 1, p[1], p[0], 5, p[1], s(Blocks.DYED_TERRACOTTA.red()));
 			set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), p[0], 5, p[1]);
 		}
 		// Cushions for Yuki, Odie, Freya, and Kuro + central Suzu shrine bell.
 		for (int[] c : new int[][]{{31, 25}, {36, 25}, {31, 30}, {36, 30}}) {
-			set(level, bb, s(Blocks.PINK_CARPET), c[0], 1, c[1]);
+			set(level, bb, s(Blocks.CARPET.pink()), c[0], 1, c[1]);
 		}
 		fill(level, bb, 33, 4, 27, 34, 4, 27, cherry);
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.FACING, Direction.WEST), 33, 3, 27);

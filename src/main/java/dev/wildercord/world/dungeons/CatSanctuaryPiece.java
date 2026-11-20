@@ -48,7 +48,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 	private static final BlockState BAMBOO_PLANKS = Blocks.BAMBOO_PLANKS.defaultBlockState();
 	private static final BlockState STONE_BRICKS = Blocks.STONE_BRICKS.defaultBlockState();
 	private static final BlockState DEEPSLATE_TILES = Blocks.DEEPSLATE_TILES.defaultBlockState();
-	private static final BlockState VERMILION = Blocks.RED_CONCRETE.defaultBlockState();
+	private static final BlockState VERMILION = Blocks.DYED_TERRACOTTA.red().defaultBlockState();
 	private static final BlockState PAPER_WALL = Blocks.CALCITE.defaultBlockState();
 
 	public CatSanctuaryPiece(int x, int y, int z, Direction facing) {
@@ -165,12 +165,12 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 	}
 
 	private void floor2(WorldGenLevel level, BoundingBox bb) {
-		Palette shojiWalls = Palette.of(PAPER_WALL, 6, BAMBOO_PLANKS, 3, Blocks.WHITE_WOOL, 1);
+		Palette shojiWalls = Palette.of(PAPER_WALL, 6, BAMBOO_PLANKS, 3, Blocks.WOOL.white(), 1);
 		room(level, bb, 8, F2, 18, 40, F3, 54, DARK_OAK);
 		walls(level, bb, 8, F2 + 1, 18, 40, F3 - 1, 54, shojiWalls);
 		fill(level, bb, 9, F2, 19, 39, F2, 53, BAMBOO_PLANKS);
 		// Sunlit carpet centerpiece where Odie loafs.
-		fill(level, bb, 21, F2 + 1, 31, 27, F2 + 1, 37, Blocks.YELLOW_CARPET.defaultBlockState());
+		fill(level, bb, 21, F2 + 1, 31, 27, F2 + 1, 37, Blocks.CARPET.yellow().defaultBlockState());
 		// Decorative open shoji arches on sides (always >= 3 blocks wide).
 		for (int x : new int[]{16, 32}) {
 			fill(level, bb, x, F2 + 1, 24, x, F2 + 5, 26, BAMBOO_PLANKS);
@@ -186,7 +186,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		room(level, bb, 10, F3, 20, 38, F4, 52, DARK_OAK);
 		walls(level, bb, 10, F3 + 1, 20, 38, F4 - 1, 52, bellWalls);
 		fill(level, bb, 11, F3, 21, 37, F3, 51, CHERRY_PLANKS);
-		fill(level, bb, 22, F3 + 1, 24, 26, F3 + 1, 46, Blocks.PINK_CARPET.defaultBlockState());
+		fill(level, bb, 22, F3 + 1, 24, 26, F3 + 1, 46, Blocks.CARPET.pink().defaultBlockState());
 		// Four Suzu bell chimes hanging along the gallery.
 		for (int[] b : new int[][]{{16, 28}, {32, 28}, {16, 40}, {32, 40}}) {
 			fill(level, bb, b[0], F3 + 1, b[1], b[0], F3 + 4, b[1], Blocks.STRIPPED_CHERRY_LOG.defaultBlockState());
@@ -232,7 +232,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 	}
 
 	private void teaCheckpoint(WorldGenLevel level, BoundingBox bb, int x0, int y, int z0, int x1, int z1) {
-		fill(level, bb, x0, y, z0, x1, y, z1, Blocks.RED_CARPET.defaultBlockState());
+		fill(level, bb, x0, y, z0, x1, y, z1, Blocks.CARPET.red().defaultBlockState());
 		int cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
 		set(level, bb, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), cx, y, cz);
 		set(level, bb, Blocks.CAULDRON.defaultBlockState(), cx + 1, y, cz);

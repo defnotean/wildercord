@@ -276,7 +276,7 @@ public class ShrineCat extends TamableAnimal {
 
 	private void tickGuardianTrial(ServerLevel level) {
 		bossBar.setProgress(Math.max(0.0F, Math.min(1.0F, getHealth() / getMaxHealth())));
-		Player challenger = level.getNearestPlayer(getX(), getY(), getZ(), 18.0, p -> p.isAlive() && !p.isCreative() && !p.isSpectator());
+		Player challenger = level.getNearestPlayer(getX(), getY(), getZ(), 18.0, p -> p instanceof Player pl && pl.isAlive() && !pl.isCreative() && !pl.isSpectator());
 		for (ServerPlayer player : level.players()) {
 			boolean sameFloor = Math.abs(player.getY() - getY()) < 5.5 && player.distanceToSqr(this) <= 22.0 * 22.0;
 			if (sameFloor) {
@@ -312,7 +312,7 @@ public class ShrineCat extends TamableAnimal {
 		float dmg = ShrineCatRules.chillTrialDamage(v, true);
 		switch (v) {
 			case YUKI -> {
-				level.playSound(null, blockPosition(), SoundEvents.CAT_HISS, SoundSource.HOSTILE, 0.9F, 1.25F);
+				level.playSound(null, blockPosition(), SoundEvents.OCELOT_AMBIENT, SoundSource.HOSTILE, 0.9F, 1.35F);
 				level.sendParticles(ParticleTypes.CLOUD, getX(), getY() + 0.4, getZ(), 14, 1.4, 0.3, 1.4, 0.04);
 				Vec3 leap = challenger.position().subtract(position()).multiply(1, 0, 1);
 				if (leap.lengthSqr() > 0.01) {
@@ -324,7 +324,7 @@ public class ShrineCat extends TamableAnimal {
 				}
 			}
 			case ODIE -> {
-				level.playSound(null, blockPosition(), SoundEvents.CAT_PURR, SoundSource.HOSTILE, 1.0F, 0.85F);
+				level.playSound(null, blockPosition(), SoundEvents.CAT_PURR_BABY.value(), SoundSource.HOSTILE, 1.0F, 0.85F);
 				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.4, getZ(), 16, 1.6, 0.25, 1.6, 0.03);
 				if (distanceToSqr(challenger) <= 20.0) {
 					challenger.hurtServer(level, damageSources().mobAttack(this), dmg);
@@ -394,7 +394,7 @@ public class ShrineCat extends TamableAnimal {
 		setLoafing(variant() == ShrineCatRules.Variant.ODIE);
 		setOrderedToSit(variant() != ShrineCatRules.Variant.ODIE);
 		triggerAction();
-		level.playSound(null, blockPosition(), SoundEvents.CAT_PURREOW, SoundSource.NEUTRAL, 1.1F, 1.0F);
+		level.playSound(null, blockPosition(), SoundEvents.CAT_PURR_BABY.value(), SoundSource.NEUTRAL, 1.1F, 1.1F);
 		level.sendParticles(ParticleTypes.HEART, getX(), getY() + 0.7, getZ(), 16, 0.6, 0.4, 0.6, 0.05);
 		ShrineCatRules.Variant v = variant();
 		for (ServerPlayer player : level.players()) {
@@ -554,7 +554,7 @@ public class ShrineCat extends TamableAnimal {
 					setTarget(null);
 					triggerAction();
 					server.broadcastEntityEvent(this, (byte) 7);
-					server.playSound(null, blockPosition(), SoundEvents.CAT_PURREOW, SoundSource.NEUTRAL, 1.0F, 1.15F);
+					server.playSound(null, blockPosition(), SoundEvents.CAT_PURR_BABY.value(), SoundSource.NEUTRAL, 1.0F, 1.2F);
 					player.sendSystemMessage(Component.literal("You tamed " + variant().displayName + "! Unique Power: " + variant().tamedPower));
 				}
 				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;

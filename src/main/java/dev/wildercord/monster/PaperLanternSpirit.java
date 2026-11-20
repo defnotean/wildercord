@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.Runes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -19,6 +21,8 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 /**
  * A hovering chochin paper-lantern spirit guarding Japanese shrines, Cat Sanctuary halls, and onsen bathhouses.
  * Pulses a gentle glowing ember ring that can be stepped back from before expanding.
@@ -30,6 +34,11 @@ public class PaperLanternSpirit extends WildMonster {
 	public PaperLanternSpirit(EntityType<? extends PaperLanternSpirit> type, Level level) {
 		super(type, level);
 		this.xpReward = 6;
+	}
+
+	@Override
+	public List<List<RuneDef>> runeboundSpells() {
+		return List.of(List.of(Runes.BOLT, Runes.FIRE), List.of(Runes.BURST, Runes.EMBER));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -60,19 +69,19 @@ public class PaperLanternSpirit extends WildMonster {
 		LivingEntity target = getTarget();
 		if (target == null || !target.isAlive()) {
 			telegraphTicks = 0;
-			setFlag(WINDUP, false);
-			setFlag(ACTING, false);
+			setState(WINDUP, false);
+			setState(ACTING, false);
 			return;
 		}
 		if (telegraphTicks > 0) {
 			telegraphTicks--;
-			setFlag(WINDUP, true);
+			setState(WINDUP, true);
 			if (telegraphTicks % 4 == 0) {
 				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.8, getZ(), 4, 0.5, 0.3, 0.5, 0.01);
 			}
 			if (telegraphTicks == 0) {
-				setFlag(WINDUP, false);
-				setFlag(ACTING, true);
+				setState(WINDUP, false);
+				setState(ACTING, true);
 				level.playSound(null, blockPosition(), SoundEvents.BLAZE_SHOOT, SoundSource.HOSTILE, 0.55F, 1.6F);
 				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.7, getZ(), 14, 1.4, 0.2, 1.4, 0.04);
 				if (distanceToSqr(target) <= 12.25) {
@@ -81,7 +90,7 @@ public class PaperLanternSpirit extends WildMonster {
 			}
 			return;
 		}
-		setFlag(ACTING, false);
+		setState(ACTING, false);
 		if (pulseCooldown > 0) {
 			pulseCooldown--;
 		} else if (distanceToSqr(target) <= 16.0) {

@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.Runes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -20,6 +22,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
+
 /**
  * Clockwork wooden-and-brass shrine automaton patrolling Cat Sanctuary floors and Lantern Bathhouse halls.
  * Winds its spring arm briefly before delivering a measured sweeping blow so the fight remains readable and chill.
@@ -31,6 +35,11 @@ public class KarakuriSentinel extends WildMonster {
 	public KarakuriSentinel(EntityType<? extends KarakuriSentinel> type, Level level) {
 		super(type, level);
 		this.xpReward = 7;
+	}
+
+	@Override
+	public List<List<RuneDef>> runeboundSpells() {
+		return List.of(List.of(Runes.BOLT, Runes.SUZU_CHIME), List.of(Runes.SELF, Runes.OFUDA_WARD));
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -59,17 +68,17 @@ public class KarakuriSentinel extends WildMonster {
 		LivingEntity target = getTarget();
 		if (target == null || !target.isAlive()) {
 			windupTicks = 0;
-			setFlag(WINDUP, false);
-			setFlag(ACTING, false);
+			setState(WINDUP, false);
+			setState(ACTING, false);
 			return;
 		}
 		if (windupTicks > 0) {
 			windupTicks--;
 			getNavigation().stop();
-			setFlag(WINDUP, true);
+			setState(WINDUP, true);
 			if (windupTicks == 0) {
-				setFlag(WINDUP, false);
-				setFlag(ACTING, true);
+				setState(WINDUP, false);
+				setState(ACTING, true);
 				level.playSound(null, blockPosition(), SoundEvents.PISTON_EXTEND, SoundSource.HOSTILE, 0.75F, 1.3F);
 				level.sendParticles(ParticleTypes.CRIT, getX(), getY() + 1.0, getZ(), 10, 0.9, 0.3, 0.9, 0.08);
 				if (distanceToSqr(target) <= 10.5) {
@@ -83,7 +92,7 @@ public class KarakuriSentinel extends WildMonster {
 			}
 			return;
 		}
-		setFlag(ACTING, false);
+		setState(ACTING, false);
 		if (spinCooldown > 0) {
 			spinCooldown--;
 		} else if (distanceToSqr(target) <= 9.0) {
