@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = ArchiveStructure.class, remap = false)
 public abstract class ArchiveTerrainProbeMixin {
-	@WrapOperation(method = "findGenerationPoint", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/ChunkGenerator;getFirstOccupiedHeight(IILnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/level/LevelHeightAccessor;Lnet/minecraft/world/level/levelgen/RandomState;)I"), require = 1, expect = 1, allow = 1)
+	@WrapOperation(method = "findGenerationPoint", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/ChunkGenerator;getFirstOccupiedHeight(IILnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/level/LevelHeightAccessor;Lnet/minecraft/world/level/levelgen/RandomState;)I", ordinal = 1), require = 1, expect = 1, allow = 1)
 	private int wildercord$height(ChunkGenerator generator, int x, int z, Heightmap.Types map, LevelHeightAccessor height, RandomState random, Operation<Integer> original) {
 		int result = original.call(generator, x, z, map, height, random);
 		ArchivePlacementProbe.terrain(x, z, map, result);

@@ -305,9 +305,9 @@ class DataFormatTest {
 						assertTrue(low.get("absolute").getAsInt()<=high.get("absolute").getAsInt(),file+" inverted height bounds");
 					}
 					case "minecraft:count" -> {allowed(modifier,file,"type","count");required(modifier,file,"count");assertTrue(modifier.get("count").getAsInt()>0);}
-					case "minecraft:offset" -> {
-						allowed(modifier,file,"type","x","y","z");required(modifier,file,"x","y","z");
-						for(String axis:List.of("x","y","z")) {var provider=modifier.getAsJsonObject(axis);allowed(provider,file,"type","min","max","plateau");required(provider,file,"type","min","max","plateau");assertEquals("minecraft:trapezoid",provider.get("type").getAsString());assertTrue(provider.get("min").getAsInt()<=provider.get("max").getAsInt());}
+					case "minecraft:random_offset" -> {
+						allowed(modifier,file,"type","xz_spread","y_spread");required(modifier,file,"xz_spread","y_spread");
+						for(String axis:List.of("xz_spread","y_spread")) {var provider=modifier.getAsJsonObject(axis);allowed(provider,file,"type","min","max","plateau");required(provider,file,"type","min","max","plateau");assertEquals("minecraft:trapezoid",provider.get("type").getAsString());assertTrue(provider.get("min").getAsInt()<=provider.get("max").getAsInt());}
 					}
 					case "minecraft:block_predicate_filter" -> {allowed(modifier,file,"type","predicate");required(modifier,file,"predicate");vegetationPredicate(modifier.getAsJsonObject("predicate"),file);}
 					default -> fail(file+": unsupported vegetation placement modifier "+modifier);
