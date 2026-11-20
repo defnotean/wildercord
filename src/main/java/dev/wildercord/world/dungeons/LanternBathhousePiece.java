@@ -84,10 +84,33 @@ public final class LanternBathhousePiece extends DungeonPiece {
 		}
 		// Stone walk from entry to bathhouse gate.
 		fill(level, bb, 16, F, 0, 22, F, 8, Blocks.POLISHED_ANDESITE.defaultBlockState());
-		// Main Onsen Hall.
+		// Main Onsen Hall framed in stripped cypress logs with shoji clerestory panels & entrance lanterns.
 		room(level, bb, 4, F, 8, 34, F + 8, 34, DEEPSLATE);
+		BlockState cypress = Blocks.STRIPPED_SPRUCE_LOG.defaultBlockState();
+		BlockState shoji = Blocks.CALCITE.defaultBlockState();
+		for (int y = F + 1; y <= F + 7; y++) {
+			for (int x = 4; x <= 34; x++) {
+				for (int z = 8; z <= 34; z++) {
+					boolean onX = x == 4 || x == 34;
+					boolean onZ = z == 8 || z == 34;
+					if (!onX && !onZ) {
+						continue;
+					}
+					boolean pillar = (onX && (z - 8) % 5 == 0) || (onZ && (x - 4) % 5 == 0) || (onX && onZ);
+					if (pillar) {
+						set(level, bb, cypress, x, y, z);
+					} else if (y >= F + 3 && y <= F + 5) {
+						set(level, bb, shoji, x, y, z);
+					}
+				}
+			}
+		}
 		fill(level, bb, 5, F, 9, 33, F, 33, SPRUCE);
 		fill(level, bb, 17, F + 1, 8, 21, F + 4, 8, AIR);
+		for (int x : new int[]{15, 23}) {
+			fill(level, bb, x, F + 1, 7, x, F + 4, 7, cypress);
+			set(level, bb, Blocks.LANTERN.defaultBlockState(), x, F + 5, 7);
+		}
 		// Left and right steaming soaking basins with magma/soul-sand under water.
 		for (int z = 12; z <= 30; z++) {
 			for (int x = 7; x <= 14; x++) {

@@ -40,7 +40,7 @@ import java.util.Optional;
  * </ol>
  */
 public final class CatSanctuaryPiece extends DungeonPiece {
-	public static final int WIDTH = 49, HEIGHT = 52, DEPTH = 64;
+	public static final int WIDTH = 49, HEIGHT = 56, DEPTH = 64;
 	public static final int F1 = 4, F2 = 11, F3 = 18, F4 = 25;
 
 	private static final BlockState CHERRY_PLANKS = Blocks.CHERRY_PLANKS.defaultBlockState();
@@ -143,9 +143,8 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 	}
 
 	private void floor1(WorldGenLevel level, BoundingBox bb) {
-		Palette walls = Palette.of(PAPER_WALL, 6, CHERRY_PLANKS, 2, Blocks.STRIPPED_DARK_OAK_LOG, 2);
 		room(level, bb, 6, F1, 16, 42, F2, 56, DARK_OAK);
-		walls(level, bb, 6, F1 + 1, 16, 42, F2 - 1, 56, walls);
+		pagodaWalls(level, bb, 6, F1 + 1, 16, 42, F2 - 1, 56, Blocks.STRIPPED_DARK_OAK_LOG.defaultBlockState(), VERMILION);
 		fill(level, bb, 7, F1, 17, 41, F1, 55, CHERRY_PLANKS);
 		// Main entrance doorway (7x4 open air so walking/delving starts cleanly).
 		fill(level, bb, 21, F1 + 1, 16, 27, F1 + 4, 16, AIR);
@@ -165,9 +164,8 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 	}
 
 	private void floor2(WorldGenLevel level, BoundingBox bb) {
-		Palette shojiWalls = Palette.of(PAPER_WALL, 6, BAMBOO_PLANKS, 3, Blocks.WOOL.white(), 1);
 		room(level, bb, 8, F2, 18, 40, F3, 54, DARK_OAK);
-		walls(level, bb, 8, F2 + 1, 18, 40, F3 - 1, 54, shojiWalls);
+		pagodaWalls(level, bb, 8, F2 + 1, 18, 40, F3 - 1, 54, Blocks.BAMBOO_BLOCK.defaultBlockState(), Blocks.STRIPPED_CHERRY_LOG.defaultBlockState());
 		fill(level, bb, 9, F2, 19, 39, F2, 53, BAMBOO_PLANKS);
 		// Sunlit carpet centerpiece where Odie loafs.
 		fill(level, bb, 21, F2 + 1, 31, 27, F2 + 1, 37, Blocks.CARPET.yellow().defaultBlockState());
@@ -182,9 +180,8 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 	}
 
 	private void floor3(WorldGenLevel level, BoundingBox bb) {
-		Palette bellWalls = Palette.of(CHERRY_PLANKS, 5, PAPER_WALL, 4, Blocks.STRIPPED_CHERRY_LOG, 1);
 		room(level, bb, 10, F3, 20, 38, F4, 52, DARK_OAK);
-		walls(level, bb, 10, F3 + 1, 20, 38, F4 - 1, 52, bellWalls);
+		pagodaWalls(level, bb, 10, F3 + 1, 20, 38, F4 - 1, 52, CHERRY_PLANKS, VERMILION);
 		fill(level, bb, 11, F3, 21, 37, F3, 51, CHERRY_PLANKS);
 		fill(level, bb, 22, F3 + 1, 24, 26, F3 + 1, 46, Blocks.CARPET.pink().defaultBlockState());
 		// Four Suzu bell chimes hanging along the gallery.
@@ -201,16 +198,43 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 
 	private void floor4(WorldGenLevel level, BoundingBox bb) {
 		room(level, bb, 12, F4, 22, 36, F4 + 9, 50, DEEPSLATE_TILES);
+		pagodaWalls(level, bb, 12, F4 + 1, 22, 36, F4 + 8, 50, DEEPSLATE_TILES, VERMILION);
 		fill(level, bb, 13, F4, 23, 35, F4, 49, Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState());
 		fill(level, bb, 20, F4, 32, 28, F4, 40, Blocks.GILDED_BLACKSTONE.defaultBlockState());
 		set(level, bb, Blocks.CRYING_OBSIDIAN.defaultBlockState(), 24, F4, 36);
 		for (int[] l : new int[][]{{15, 25}, {33, 25}, {15, 47}, {33, 47}}) {
 			set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), l[0], F4 + 8, l[1]);
 		}
-		// Skylight amethyst ring and pagoda hipped crown roof.
+		// Skylight amethyst ring and pagoda hipped crown roof with golden sorin finial spire.
 		fill(level, bb, 22, F4 + 9, 34, 26, F4 + 9, 38, Blocks.TINTED_GLASS.defaultBlockState());
 		hipRoof(level, bb, 11, 21, 37, 51, F4 + 10, Blocks.DEEPSLATE_TILE_STAIRS, DEEPSLATE_TILES, Blocks.GOLD_BLOCK.defaultBlockState());
+		set(level, bb, Blocks.GOLD_BLOCK.defaultBlockState(), 24, F4 + 25, 36);
+		set(level, bb, VERMILION, 24, F4 + 26, 36);
+		set(level, bb, VERMILION, 24, F4 + 27, 36);
+		set(level, bb, Blocks.GOLD_BLOCK.defaultBlockState(), 24, F4 + 28, 36);
+		set(level, bb, Blocks.LANTERN.defaultBlockState(), 24, F4 + 29, 36);
 		chest(level, bb, 24, F4 + 1, 48, DungeonWorldgen.CAT_SANCTUARY_VAULT, Direction.NORTH, 44);
+	}
+
+	/** Structured Japanese timber-and-shoji pagoda facade with vermilion/wood pillars, horizontal rails, and solid calcite panels. */
+	private void pagodaWalls(WorldGenLevel level, BoundingBox bb, int x0, int y0, int z0, int x1, int y1, int z1, BlockState frame, BlockState pillar) {
+		for (int y = y0; y <= y1; y++) {
+			for (int x = x0; x <= x1; x++) {
+				for (int z = z0; z <= z1; z++) {
+					boolean onXEdge = x == x0 || x == x1;
+					boolean onZEdge = z == z0 || z == z1;
+					if (!onXEdge && !onZEdge) {
+						continue;
+					}
+					boolean corner = onXEdge && onZEdge;
+					boolean bayPillar = (onZEdge && (x - x0) % 4 == 0) || (onXEdge && (z - z0) % 4 == 0);
+					BlockState chosen = corner || bayPillar
+						? pillar
+						: (y == y0 || y == y1 || y == y0 + 3) ? frame : PAPER_WALL;
+					set(level, bb, chosen, x, y, z);
+				}
+			}
+		}
 	}
 
 	/** Connects all four pagoda floors cleanly with solid under-stair fill and open headroom so no closed cavity forms. */
@@ -247,6 +271,9 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		for (int z = z0 + 1; z < z1; z++) {
 			set(level, bb, stair(Blocks.DEEPSLATE_TILE_STAIRS, Direction.EAST, false), x0, y, z);
 			set(level, bb, stair(Blocks.DEEPSLATE_TILE_STAIRS, Direction.WEST, false), x1, y, z);
+		}
+		for (int[] c : new int[][]{{x0, z0}, {x1, z0}, {x0, z1}, {x1, z1}}) {
+			set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), c[0], y - 1, c[1]);
 		}
 	}
 

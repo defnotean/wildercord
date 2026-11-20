@@ -29,6 +29,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -94,6 +95,15 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 		p(s).setItemInHand(InteractionHand.MAIN_HAND, stack);
 	}
 
+	private static void face(LivingEntity entity, float yaw) {
+		entity.setYRot(yaw);
+		entity.setYBodyRot(yaw);
+		entity.setYHeadRot(yaw);
+		entity.yRotO = yaw;
+		entity.yBodyRotO = yaw;
+		entity.yHeadRotO = yaw;
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
@@ -103,9 +113,9 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			w.getServer().runCommand("time set 6000");
 			w.getServer().runCommand("weather clear");
 
-			// 1. Clean lineup court at (0, 100, 0) showing Yuki, Odie, Freya, Kuro, Sakura Villagers & custom mobs.
+			// 1. Clean lineup court at (0, 100, 0) showing Yuki, Odie, Freya, Kuro front-on first, then NPCs & mobs.
 			Map<ShrineCatRules.Variant, UUID> lineupIds = new EnumMap<>(ShrineCatRules.Variant.class);
-			UUID teaId = w.getServer().computeOnServer(s -> {
+			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				for (int x = -10; x <= 10; x++) {
 					for (int z = -8; z <= 12; z++) {
@@ -115,56 +125,68 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 						}
 					}
 				}
-				double[] xs = {-3.0, -1.0, 1.0, 3.0};
+				double[] xs = {-2.1, -0.7, 0.7, 2.1};
 				ShrineCatRules.Variant[] order = ShrineCatRules.Variant.values();
 				for (int i = 0; i < order.length; i++) {
 					ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.COMMAND);
 					check(cat != null, "ShrineCat created");
-					cat.snapTo(xs[i], 101.0, 3.5, 180.0F, 0.0F);
+					cat.snapTo(xs[i], 101.0, 3.2, 180.0F, 0.0F);
 					cat.configureVillage(order[i], new BlockPos((int) xs[i], 101, 3));
+					face(cat, 180.0F);
 					cat.setNoAi(true);
 					l.addFreshEntity(cat);
 					lineupIds.put(order[i], cat.getUUID());
 				}
+				p(s).setGameMode(GameType.SPECTATOR);
+				p(s).teleportTo(l, 0.0, 100.1, -0.2, Set.<Relative>of(), 0.0F, 10.0F, false);
+			});
+			c.waitTicks(14);
+			shot(c, "shrine_cats_lineup_yuki_odie_freya_kuro");
+
+			UUID teaId = w.getServer().computeOnServer(s -> {
+				ServerLevel l = s.overworld();
 				SakuraVillager tea = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
 				check(tea != null, "Tea Master created");
-				tea.snapTo(-4.8, 101.0, 6.0, 180.0F, 0.0F);
+				tea.snapTo(-3.0, 101.0, 5.5, 180.0F, 0.0F);
 				tea.configure(SakuraVillager.TEA_MASTER);
+				face(tea, 180.0F);
 				tea.setNoAi(true);
 				l.addFreshEntity(tea);
 
 				SakuraVillager maiden = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
 				check(maiden != null, "Shrine Maiden created");
-				maiden.snapTo(-1.5, 101.0, 6.0, 180.0F, 0.0F);
+				maiden.snapTo(-1.0, 101.0, 5.5, 180.0F, 0.0F);
 				maiden.configure(SakuraVillager.SHRINE_MAIDEN);
+				face(maiden, 180.0F);
 				maiden.setNoAi(true);
 				l.addFreshEntity(maiden);
 
 				KarakuriSentinel karakuri = MonsterContent.KARAKURI_SENTINEL.create(l, EntitySpawnReason.COMMAND);
 				check(karakuri != null, "KarakuriSentinel created");
-				karakuri.snapTo(1.8, 101.0, 6.0, 180.0F, 0.0F);
+				karakuri.snapTo(1.0, 101.0, 5.5, 180.0F, 0.0F);
+				face(karakuri, 180.0F);
 				karakuri.setNoAi(true);
 				l.addFreshEntity(karakuri);
 
 				PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, EntitySpawnReason.COMMAND);
 				check(spirit != null, "PaperLanternSpirit created");
-				spirit.snapTo(4.8, 101.5, 6.0, 180.0F, 0.0F);
+				spirit.snapTo(3.0, 101.5, 5.5, 180.0F, 0.0F);
+				face(spirit, 180.0F);
 				spirit.setNoAi(true);
 				l.addFreshEntity(spirit);
 
 				check(karakuri.runeboundSpells().size() == 2, "KarakuriSentinel runeboundSpells defined");
 				check(spirit.runeboundSpells().size() == 2, "PaperLanternSpirit runeboundSpells defined");
 
-				p(s).setGameMode(GameType.CREATIVE);
-				p(s).teleportTo(l, 0.0, 101.0, -1.2, Set.<Relative>of(), 0.0F, 16.0F, false);
+				p(s).setGameMode(GameType.SPECTATOR);
+				p(s).teleportTo(l, 0.0, 100.3, 0.6, Set.<Relative>of(), 0.0F, 6.0F, false);
 				return tea.getUUID();
 			});
-			c.waitTicks(12);
-			shot(c, "shrine_cats_lineup_yuki_odie_freya_kuro");
+			c.waitTicks(14);
+			shot(c, "shrine_villagers_and_mobs");
 
 			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
-				p(s).teleportTo(l, 0.0, 102.2, 0.5, Set.<Relative>of(), 0.0F, 14.0F, false);
 				// Verify Tea Master emerald trade yields Cat Bell Charm.
 				p(s).setGameMode(GameType.SURVIVAL);
 				SakuraVillager tea = (SakuraVillager) l.getEntity(teaId);
@@ -174,13 +196,11 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(p(s).getInventory().hasAnyOf(Set.of(ShrineCatContent.CAT_BELL_CHARM)),
 					"Tea Master emerald trade gives Suzu Cat-Bell Charm");
 			});
-			c.waitTicks(10);
-			shot(c, "shrine_villagers_and_mobs");
 
-			// 2. Sakura Village placement & inhabitants verification.
+			// 2. Sakura Village placement & inhabitants verification (Direction.SOUTH puts Torii/bridge in front).
 			BoundingBox villageBox = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
-				var village = new SakuraVillagePiece(64, 64, Direction.NORTH);
+				var village = new SakuraVillagePiece(64, 64, Direction.SOUTH);
 				village.move(0, 94, 0);
 				placePiece(l, village, 101L);
 				AABB area = AABB.of(village.getBoundingBox()).inflate(4.0);
@@ -190,25 +210,25 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(cats.size() == 4, "Sakura Village has all 4 Shrine Cats (" + cats.size() + ")");
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = village.getBoundingBox();
-				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 26.0, b.minZ() - 12.0,
-					Set.<Relative>of(), 0.0F, 34.0F, false);
+				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 22.0, b.minZ() - 10.0,
+					Set.<Relative>of(), 0.0F, 18.0F, false);
 				return b;
 			});
-			c.waitTicks(10);
+			c.waitTicks(50);
 			shot(c, "shrine_sakura_village_overview");
 
 			// 3. Cat Sanctuary 4-floor dungeon: non-lethal yield, floor perks, taming unlock, companion power, persistence.
 			BoundingBox sanctuaryBox = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
-				var sanctuary = new CatSanctuaryPiece(192, 96, 64, Direction.NORTH);
+				var sanctuary = new CatSanctuaryPiece(192, 96, 64, Direction.SOUTH);
 				placePiece(l, sanctuary, 202L);
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = sanctuary.getBoundingBox();
-				p(s).teleportTo(l, b.minX() - 14.0, b.minY() + 28.0, b.minZ() - 10.0,
-					Set.<Relative>of(), -45.0F, 24.0F, false);
+				p(s).teleportTo(l, b.minX() - 16.0, b.minY() + 34.0, b.minZ() - 14.0,
+					Set.<Relative>of(), -40.0F, 12.0F, false);
 				return b;
 			});
-			c.waitTicks(10);
+			c.waitTicks(50);
 			shot(c, "shrine_cat_sanctuary_pagoda");
 
 			Map<ShrineCatRules.Variant, UUID> guardianIds = w.getServer().computeOnServer(s -> {
@@ -322,14 +342,14 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			// 4. Lantern Bathhouse placement & screenshot.
 			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
-				var bath = new LanternBathhousePiece(320, 96, 64, Direction.NORTH);
+				var bath = new LanternBathhousePiece(320, 96, 64, Direction.SOUTH);
 				placePiece(l, bath, 303L);
 				var b = bath.getBoundingBox();
 				p(s).setGameMode(GameType.SPECTATOR);
-				p(s).teleportTo(l, b.minX() - 10.0, b.minY() + 18.0, b.minZ() - 8.0,
-					Set.<Relative>of(), -45.0F, 26.0F, false);
+				p(s).teleportTo(l, b.minX() - 8.0, b.minY() + 18.0, b.minZ() - 10.0,
+					Set.<Relative>of(), -40.0F, 16.0F, false);
 			});
-			c.waitTicks(10);
+			c.waitTicks(50);
 			shot(c, "shrine_lantern_bathhouse_onsen");
 
 			// 5. Ricochet rune bounce count (5 solo vs 2 with Split), Suzu Chime, Ofuda Ward, and Archivist/Serpent anti-cheese.
