@@ -529,10 +529,10 @@ class JarInspector:
 
         header_re = re.compile(
             r"^(?:(?:public|protected|private|abstract|final|static|strictfp|sealed|non-sealed)\s+)*"
-            r"(?:class|interface|enum|@interface)\s+(\S+)(?:\s+extends\s+(\S+))?(?:\s+implements\s+([^{]+))?\s*\{"
+            r"(?:class|interface|enum|@interface)\s+(\S+)(.*)\{\s*$"
         )
         # Strict 2-space indent ensures 4-space `    descriptor: Lfoo/Bar;` lines never match member_re!
-        member_re = re.compile(r"^  (?=\S)(?!(?:static|synchronized|\}|\{))(.+);\s*$")
+        member_re = re.compile(r"^  (?=\S)(?!(?:static\s*\{|\}|\{))(.+);\s*$")
         desc_re = re.compile(r"^    descriptor:\s+(\S+)\s*$")
         method_insn_re = re.compile(
             r'//\s+(?:Interface)?Method\s+(?:([A-Za-z0-9_/$]+)\.)?(?:"?(<init>|<clinit>)"?|"([^"]+)"|([A-Za-z0-9_$]+)):(\([^)]*\)\S+)'
@@ -552,13 +552,18 @@ class JarInspector:
                 if hm:
                     cur_dotted = hm.group(1)
                     cur_binary = cur_dotted.replace(".", "/")
-                    sup = hm.group(2).replace(".", "/") if hm.group(2) else None
-                    ifaces = []
-                    if hm.group(3):
-                        for part in hm.group(3).split(","):
-                            p = part.strip().replace(".", "/")
-                            if p:
-                                ifaces.append(p)
+                    tail = hm.group(2).strip()
+                    ext_part = ""
+                    impl_part = ""
+                    if re.search(r"\bimplements\b", tail):
+                        ext_part, impl_part = re.split(r"\bimplements\b", tail, maxsplit=1)
+                    else:
+                        ext_part = tail
+                    ext_part = re.sub(r"^extends\s+", "", ext_part.strip())
+                    ext_types = [p.strip().replace(".", "/") for p in ext_part.split(",") if p.strip()]
+                    impl_types = [p.strip().replace(".", "/") for p in impl_part.split(",") if p.strip()]
+                    sup = ext_types[0] if ext_types else None
+                    ifaces = ext_types[1:] + impl_types
                     self._cache[cur_binary] = {
                         "super": sup,
                         "interfaces": ifaces,
@@ -954,6 +959,12 @@ def _field_candidates(inspector: JarInspector, targets: list[str], missing_name:
     return out[:6]
 
 
+def _effective_at_count(per_method_counts: list[int], ordinal_val: int | None) -> int:
+    if ordinal_val is None:
+        return sum(per_method_counts)
+    return sum(1 for c in per_method_counts if c > ordinal_val)
+
+
 def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
     errors = []
     mixin_cfgs = sorted((root / "src").rglob("*.mixins.json"))
@@ -1169,6 +1180,8 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                 if not target_strs:
                     continue
                 t_raw = target_strs[0]
+                ord_raw = at_args.get("ordinal", "").strip()
+                ordinal_val = int(ord_raw) if ord_raw.isdigit() else None
                 if at_val == "NEW":
                     if t_raw.startswith("(") and ")" in t_raw:
                         args_part, ret_part = t_raw.split(")", 1)
@@ -1192,11 +1205,14 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                                 ))
                                 continue
                         if matched_methods:
-                            cnt = sum(
-                                1 for _, _, _, insns in matched_methods
-                                for ik, iowner, iname, idesc in insns
-                                if ik == "INVOKE" and iowner == new_owner and iname == "<init>" and idesc == ctor_desc
-                            )
+                            per_counts = [
+                                sum(
+                                    1 for ik, iowner, iname, idesc in insns
+                                    if ik == "INVOKE" and iowner == new_owner and iname == "<init>" and idesc == ctor_desc
+                                )
+                                for _, _, _, insns in matched_methods
+                            ]
+                            cnt = _effective_at_count(per_counts, ordinal_val)
                             if cnt == 0 and require_val != 0:
                                 errors.append(_with_candidates(
                                     f"{rel}: @At(\"NEW\", target=\"{t_raw}\") matched 0 instructions in {method_specs}",
@@ -1217,11 +1233,14 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                             inspector.suggest_classes(new_owner),
                         ))
                     if matched_methods:
-                        cnt = sum(
-                            1 for _, _, _, insns in matched_methods
-                            for ik, iowner, _, _ in insns
-                            if ik == "NEW" and iowner == new_owner
-                        )
+                        per_counts = [
+                            sum(
+                                1 for ik, iowner, _, _ in insns
+                                if ik == "NEW" and iowner == new_owner
+                            )
+                            for _, _, _, insns in matched_methods
+                        ]
+                        cnt = _effective_at_count(per_counts, ordinal_val)
                         if cnt == 0 and require_val != 0:
                             errors.append(f"{rel}: @At(\"NEW\", target=\"{t_raw}\") matched 0 instructions in {method_specs}")
                         if expect_val is not None and cnt < expect_val:
@@ -1258,8 +1277,9 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                             continue
 
                 if matched_methods:
-                    cnt = 0
+                    per_counts = []
                     for _, _, _, insns in matched_methods:
+                        mcnt = 0
                         for ik, iowner, iname, idesc in insns:
                             if ik != at_val or iname != t_name:
                                 continue
@@ -1268,7 +1288,9 @@ def verify_mixins(root: Path, inspector: JarInspector | None) -> list[str]:
                             if (iowner == t_owner
                                     or (inspector.has_class(iowner) and inspector.has_class(t_owner)
                                         and (inspector.is_subtype(iowner, t_owner) or inspector.is_subtype(t_owner, iowner)))):
-                                cnt += 1
+                                mcnt += 1
+                        per_counts.append(mcnt)
+                    cnt = _effective_at_count(per_counts, ordinal_val)
                     if cnt == 0 and require_val != 0:
                         hint = (
                             inspector.suggest_methods(t_owner, t_name)

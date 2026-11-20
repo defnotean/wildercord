@@ -317,8 +317,138 @@ public interface SampleMixin {
             errors = verify_port.verify(repo, mc_jars=[self.jar], mod_classes=[mod_cls])
             self.assertTrue(any("draw" in e and "ViewModel#render" in e for e in errors), errors)
 
+    def test_ordinal_package_private_static_and_multi_interface_extends(self):
+        with tempfile.TemporaryDirectory() as d:
+            tmp = Path(d)
+            mc_src = tmp / "mc2_src"
+            mc_cls = tmp / "mc2_cls"
+            mc_cls.mkdir(parents=True, exist_ok=True)
+            iface_files = {
+                "net/minecraft/world/LeftIfc.java": "package net.minecraft.world;\npublic interface LeftIfc { boolean leftCheck(); }\n",
+                "net/minecraft/world/RightIfc.java": "package net.minecraft.world;\npublic interface RightIfc { boolean rightCheck(); }\n",
+                "net/minecraft/world/JoinedIfc.java": "package net.minecraft.world;\npublic interface JoinedIfc extends LeftIfc, RightIfc {}\n",
+                "net/minecraft/world/UseJoined.java": (
+                    "package net.minecraft.world;\n"
+                    "public class UseJoined {\n"
+                    "    public boolean probe(JoinedIfc j, Helper h) { h.ping(1); h.ping(2); return j.leftCheck() && j.rightCheck(); }\n"
+                    "}\n"
+                ),
+            }
+            paths = []
+            for rel, code in iface_files.items():
+                p = mc_src / rel
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(code, encoding="utf-8")
+                paths.append(str(p))
+            proc = subprocess.run([JAVAC, "-g", "-d", str(mc_cls), *paths], capture_output=True, text=True)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            extra_jar = tmp / "extra-mc.jar"
+            with zipfile.ZipFile(extra_jar, "w") as zf:
+                for cls in mc_cls.rglob("*.class"):
+                    zf.write(cls, cls.relative_to(mc_cls).as_posix())
+
+            mod_src = tmp / "mod_src" / "dev/wildercord/cast/PkgHelper.java"
+            mod_cls = tmp / "mod_cls"
+            mod_cls.mkdir(parents=True, exist_ok=True)
+            mod_src.parent.mkdir(parents=True, exist_ok=True)
+            mod_src.write_text(
+                "package dev.wildercord.cast;\n"
+                "public final class PkgHelper { static void step() {} }\n",
+                encoding="utf-8",
+            )
+            proc = subprocess.run([JAVAC, "-d", str(mod_cls), str(mod_src)], capture_output=True, text=True)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+
+            repo = tmp / "repo"
+            mixin_code = """package dev.wildercord.mixin;
+
+import net.minecraft.world.UseJoined;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+
+@Mixin(UseJoined.class)
+public interface SampleMixin {
+    @WrapOperation(method = "probe", at = @At(value = "INVOKE",
+        target = "Lnet/minecraft/world/Helper;ping(I)V", ordinal = 0), require = 1, expect = 1, allow = 1)
+    static void wrapFirstPing() {}
+
+    @WrapOperation(method = "probe", at = @At(value = "INVOKE",
+        target = "Lnet/minecraft/world/JoinedIfc;rightCheck()Z"), require = 1, expect = 1, allow = 1)
+    static boolean wrapRight() { return true; }
+}
+"""
+            write_fixture_repo(repo, mixin_code)
+            pkg_mixin = repo / "src/main/java/dev/wildercord/mixin/PkgMixin.java"
+            pkg_mixin.write_text(
+                "package dev.wildercord.mixin;\n"
+                "import dev.wildercord.cast.PkgHelper;\n"
+                "import org.spongepowered.asm.mixin.Mixin;\n"
+                "import org.spongepowered.asm.mixin.injection.At;\n"
+                "import org.spongepowered.asm.mixin.injection.Inject;\n"
+                "@Mixin(value = PkgHelper.class, remap = false)\n"
+                "public interface PkgMixin { @Inject(method = \"step\", at = @At(\"HEAD\"), require = 1) static void onStep() {} }\n",
+                encoding="utf-8",
+            )
+            mjson = repo / "src/main/resources/wildercord.mixins.json"
+            mjson.write_text(json.dumps({
+                "required": True, "package": "dev.wildercord.mixin",
+                "mixins": ["SampleMixin", "PkgMixin"], "injectors": {"defaultRequire": 1},
+            }), encoding="utf-8")
+            self.assertEqual(
+                verify_port.verify(repo, mc_jars=[self.jar, extra_jar], mod_classes=[mod_cls]),
+                [],
+            )
+
+            out_of_range_ord = mixin_code.replace("ordinal = 0", "ordinal = 5")
+            write_fixture_repo(repo, out_of_range_ord)
+            mjson.write_text(json.dumps({
+                "required": True, "package": "dev.wildercord.mixin",
+                "mixins": ["SampleMixin"], "injectors": {"defaultRequire": 1},
+            }), encoding="utf-8")
+            errors = verify_port.verify(repo, mc_jars=[self.jar, extra_jar], mod_classes=[mod_cls])
+            self.assertTrue(any("matched 0 instructions" in e for e in errors), errors)
+
 
 class VerifyPortStaticTests(unittest.TestCase):
+    def test_parse_javap_handles_multi_interface_extends_and_package_private_static(self):
+        inspector = verify_port.JarInspector.__new__(verify_port.JarInspector)
+        inspector.class_entries = {
+            "net/minecraft/world/level/LevelReader",
+            "net/minecraft/world/level/BlockAndLightGetter",
+            "net/minecraft/world/level/CollisionGetter",
+            "dev/wildercord/cast/Wards",
+        }
+        inspector._cache = {}
+        inspector._parse_javap_output("""
+Compiled from "LevelReader.java"
+public interface net.minecraft.world.level.LevelReader extends net.minecraft.world.level.BlockAndLightGetter,net.minecraft.world.level.CollisionGetter {
+  public default boolean isEmptyBlock(net.minecraft.core.BlockPos);
+    descriptor: (Lnet/minecraft/core/BlockPos;)Z
+}
+public final class dev.wildercord.cast.Wards {
+  static void foresight(dev.wildercord.cast.Cast, net.minecraft.world.entity.LivingEntity, int, int);
+    descriptor: (Ldev/wildercord/cast/Cast;Lnet/minecraft/world/entity/LivingEntity;II)V
+  static {};
+    descriptor: ()V
+}
+""")
+        lr = inspector._cache["net/minecraft/world/level/LevelReader"]
+        self.assertEqual(lr["super"], "net/minecraft/world/level/BlockAndLightGetter")
+        self.assertIn("net/minecraft/world/level/CollisionGetter", lr["interfaces"])
+        wards = inspector._cache["dev/wildercord/cast/Wards"]
+        self.assertIn(
+            ("foresight", "(Ldev/wildercord/cast/Cast;Lnet/minecraft/world/entity/LivingEntity;II)V"),
+            wards["methods"],
+        )
+        self.assertEqual(
+            verify_port._effective_at_count([2], 0),
+            1,
+        )
+        self.assertEqual(
+            verify_port._effective_at_count([2], 2),
+            0,
+        )
     def test_find_mc_jars_loom_maven_layouts(self):
         with tempfile.TemporaryDirectory() as d:
             tmp = Path(d)
