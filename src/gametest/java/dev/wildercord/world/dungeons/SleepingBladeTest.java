@@ -125,7 +125,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				var cs=s.overworld().getChunkSource();var gen=cs.getGenerator();
 				com.mojang.datafixers.util.Pair<BlockPos,net.minecraft.core.Holder<net.minecraft.world.level.biome.Biome>> b=null;
 				for(int t=0;t<12 && b==null;t++) {
-					var hit=gen.getBiomeSource().findBiomeHorizontal(1024+t*4096,128,1024,t==0 ? 6400 : 2048,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(77+t),true,cs.randomState());
+					var hit=gen.getBiomeSource().findBiomeHorizontal(1024+t*4096,128,1024,t==0 ? 6400 : 2048,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(77+t),true,cs.randomState().sampler());
 					if(hit==null)continue;
 					int dry=0;
 					for(int i=0;i<16;i++) {

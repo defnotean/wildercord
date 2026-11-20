@@ -61,7 +61,7 @@ public final class WetlandGenerationProbe {
 
  public static Source beginPlacement(WorldGenLevel level,ChunkGenerator generator,PlacedFeature feature,boolean biomeCheck) {
   var session=active;
-  if(session==null || !biomeCheck || !(feature.feature().value() instanceof MoonreedFeature) || !inScope(session,level))return null;
+  if(session==null || !biomeCheck || !(feature.feature().value().feature() instanceof MoonreedFeature) || !inScope(session,level))return null;
   String placedKey=String.valueOf(level.registryAccess().lookupOrThrow(Registries.PLACED_FEATURE).getKey(feature));
   if(!FEATURE.equals(placedKey))return null;
   var center=((WorldGenRegion)level).getCenter();

@@ -31,7 +31,8 @@ public final class BarrowBearerGenerationTest implements FabricClientGameTest {
 				var level = s.overworld();
 				var holder = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,
 					Identifier.fromNamespaceAndPath("wildercord", "barrow_field")));
-				return level.findNearestMapStructure(HolderSet.direct(holder), BlockPos.ZERO, 100, false);
+				var hit = level.getChunkSource().getGenerator().findNearestMapStructure(level, HolderSet.direct(holder), BlockPos.ZERO, 100, false);
+				return hit == null ? null : hit.getFirst();
 			});
 			check(found != null, "A barrow field generates somewhere near spawn on the representative seed");
 			world.getServer().runOnServer(s -> {

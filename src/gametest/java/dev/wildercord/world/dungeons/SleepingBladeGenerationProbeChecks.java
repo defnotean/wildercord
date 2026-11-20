@@ -154,7 +154,7 @@ public final class SleepingBladeGenerationProbeChecks {
   check(!(Boolean)invoke("wildercord$footing",70,70,63,neighbours,footing),"actual false footing return preserved rather than recomputed");
   neighbours[0]=200;
   check(calls[0]==4,"each original handler operation called exactly once");
-  var context=new net.minecraft.world.level.levelgen.structure.Structure.GenerationContext(null,null,null,null,null,null,null,null,
+  var context=new net.minecraft.world.level.levelgen.structure.Structure.GenerationContext((net.minecraft.core.RegistryAccess)null,null,null,null,null,(net.minecraft.world.level.levelgen.WorldgenRandom)null,
     721,new net.minecraft.world.level.ChunkPos(0,0),net.minecraft.world.level.LevelHeightAccessor.create(0,256),biome -> true);
   var result=java.util.Optional.of(new net.minecraft.world.level.levelgen.structure.Structure.GenerationStub(BlockPos.ZERO,builder -> {}));
   Operation<java.util.Optional<net.minecraft.world.level.levelgen.structure.Structure.GenerationStub>> locate=args -> {

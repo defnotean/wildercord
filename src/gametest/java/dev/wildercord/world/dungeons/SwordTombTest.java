@@ -18,7 +18,6 @@ import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.*;
 import java.util.*;
@@ -101,18 +100,18 @@ public final class SwordTombTest implements FabricClientGameTest {
 	private static NaturalTombSite findNaturalTombSite(ServerLevel level){
 		check(dev.wildercord.config.Config.get().auraWorld().swordTombs(),"Natural tomb generation is enabled");
 		var source=level.getChunkSource();var generator=source.getGenerator();var randomState=source.randomState();
-		var habitat=generator.getBiomeSource().findBiomeHorizontal(1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(811),true,randomState);
+		var sampler=randomState.sampler();
+		var habitat=generator.getBiomeSource().findBiomeHorizontal(1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(811),true,sampler);
 		check(habitat!=null,"Normal world has a surface tomb habitat");
 		var origin=ChunkPos.containing(habitat.getFirst());
 		var tomb=level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,Identifier.parse("wildercord:sword_tomb")));
-		var sampler=randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED);
 		// A plains biome sample need not put the rotated entrance on dry ground. Probe the
 		// registered generation path first; load only the successful start's actual footprint.
 		for(int radius=0;radius<=32;radius++)for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++){
 			if(Math.max(Math.abs(dx),Math.abs(dz))!=radius)continue;
 			var chunk=new ChunkPos(origin.x()+dx,origin.z()+dz);
 			var start=tomb.value().generate(tomb,level.dimension(),level.registryAccess(),generator,generator.getBiomeSource(),sampler,randomState,
-				level.getStructureTemplateManager(),level.getSeed(),chunk,0,level,tomb.value().biomes()::contains);
+				level.getStructureManager(),level.getSeed(),chunk,0,level,tomb.value().biomes()::contains);
 			if(!start.isValid())continue;
 			check(start.getPieces().size()==1 && start.getPieces().getFirst() instanceof SwordTombPiece,"Registered tomb start contains its authored piece");
 			var piece=(SwordTombPiece)start.getPieces().getFirst();

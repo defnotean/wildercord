@@ -52,7 +52,7 @@ public final class MastersNpcCaptureProbe {
 			mc.gui.setScreen(null);
 			mc.options.setCameraType(camera); mc.options.guiScale().set(scale); mc.options.fov().set(fov);
 			mc.options.bobView().set(bob); mc.options.particles().set(particles);
-			mc.getWindow().setWindowed(width, height); mc.getWindow().setFullscreen(fullscreen); mc.resizeGui();
+			mc.getWindow().setWindowed(width, height); if (mc.getWindow().isFullscreen() != fullscreen) mc.getWindow().toggleFullScreen(); mc.resizeGui();
 			if (mc.gui.hud.isHidden() != hidden) mc.gui.hud.toggle();
 			MagicQuality.reducedFlash = reducedFlash; MagicQuality.cameraShake = cameraShake;
 		}

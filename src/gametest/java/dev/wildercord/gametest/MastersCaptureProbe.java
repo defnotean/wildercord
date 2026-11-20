@@ -153,7 +153,7 @@ public final class MastersCaptureProbe {
 			mc.gameRenderer.update(DELTA);
 			mc.gameRenderer.extract(DELTA, true);
 			BraceNullCaptureProbe.rendering(true);
-			try { mc.gameRenderer.render(); } finally { BraceNullCaptureProbe.rendering(false); }
+			try { mc.gameRenderer.render(DELTA, true); } finally { BraceNullCaptureProbe.rendering(false); }
 			RenderSystem.getDevice().createCommandEncoder().submit();
 			verifyRender(mc, name);
 			var counterPhase = BraceNullCaptureProbe.finish(name);

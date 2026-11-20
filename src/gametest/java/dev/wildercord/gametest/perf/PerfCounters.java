@@ -19,6 +19,6 @@ public final class PerfCounters {
 		if (!on) return;
 		if (packet instanceof BundlePacket<?> bundle) { for (Packet<?> sub : bundle.subPackets()) sent(sub, fake); return; }
 		(fake ? FAKE_PACKETS : PACKETS).incrementAndGet();
-		if (packet instanceof ClientboundLevelParticlesPacket particles) { PARTICLE_PACKETS.incrementAndGet(); PARTICLES.addAndGet(Math.max(1, particles.count())); }
+		if (packet instanceof ClientboundLevelParticlesPacket particles) { PARTICLE_PACKETS.incrementAndGet(); PARTICLES.addAndGet(Math.max(1, particles.getCount())); }
 	}
 }
