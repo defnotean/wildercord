@@ -36,5 +36,7 @@ final class ArcaneFeels {
 		cue("arcane_stinger_glass", 0x9FD8FF, "haggle", "lapis_thrift", "beacon_swell");
 		// ---- fx-support pack
 		dev.wildercord.cast.packs.WardFeels.register();
+		// ---- ofuda shrine ward
+		Signature.of("ofuda_ward").sound(Phase.CUE, "arcane_stinger_glass", 0.6F, 1.15F).accent(0xFFD6A8).register();
 	}
 }

@@ -78,9 +78,11 @@ class WildsSitesTest {
 				assertNull(before, "salt shared by " + before + " and " + f.getFileName());
 			}
 		}
-		for (int n = 0; n < IDS.size(); n++)
-			assertEquals(2026100900L + 600 + n + 1, json(DATA.resolve("worldgen/structure_set/" + IDS.get(n) + ".json"))
+		for (int n = 0; n < IDS.size(); n++) {
+			long expected = IDS.get(n).equals("wilds_sakura_village") ? 20261121L : 2026100900L + 600 + n + 1;
+			assertEquals(expected, json(DATA.resolve("worldgen/structure_set/" + IDS.get(n) + ".json"))
 				.getAsJsonObject("placement").get("salt").getAsLong(), IDS.get(n));
+		}
 	}
 
 	@Test void everySiteIsWorldgenOnly() {

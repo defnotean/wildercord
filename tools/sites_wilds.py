@@ -3,6 +3,7 @@ the End too. Writes each site's structure, structure set, biome tag, loot and ad
 src/main/java/dev/wildercord/world/sites/wilds/."""
 
 SALT = 2026100900 + 600
+SALT_OVERRIDES = {"wilds_sakura_village": 20261121}
 
 # id: (name, step, biomes, spacing, separation, advancement title, advancement text, icon item)
 SITES = {
@@ -104,7 +105,8 @@ def write(g):
             "type": "wildercord:site", "site": site_id, "biomes": f"#wildercord:has_structure/{site_id}",
             "spawn_overrides": {}, "step": step, "terrain_adaptation": "none"})
         n = list(SITES).index(site_id) + 1
-        placement = {"type": "minecraft:random_spread", "salt": SALT + n, "separation": separation, "spacing": spacing}
+        salt = SALT_OVERRIDES.get(site_id, SALT + n)
+        placement = {"type": "minecraft:random_spread", "salt": salt, "separation": separation, "spacing": spacing}
         if site_id == "wilds_echo_post":
             # Keep the listening post well clear of ancient cities and their shriekers.
             placement["exclusion_zone"] = {"other_set": "minecraft:ancient_cities", "chunk_count": 8}

@@ -62,5 +62,7 @@ final class WindFeels {
 		Signature.of("village_sense").accent(GUST).sound(Phase.CUE, "wind_eddy", 0.35F, 1.1F).register();
 		Signature.of("folk_call").accent(SAND).sound(Phase.CUE, "wind_feather", 0.3F, 1.2F).register();
 		Signature.of("snuff_out").accent(HEAVY).sound(Phase.CUE, "wind_muffle", 0.35F, 1.0F).register();
+		// ---- sanctuary chime
+		wind("suzu_chime", 1.0, 0xFFB8D9, "wind_glyph", 0.35F, 1.35F).register();
 	}
 }
