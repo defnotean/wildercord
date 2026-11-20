@@ -121,27 +121,42 @@ public final class BraceNullCaptureProbe {
 		bodyPalette = list(actual); expectedBody = list(wanted); bodyBaseline = list(basis.baseline()); bodyBind = list(basis.bind());
 		NATIVE_BODY.palette(deferred.visit(), model, state, frames(state));
 	}
+	public record HandEntry(AvatarRenderState avatar, net.minecraft.world.InteractionHand hand,
+		net.minecraft.world.item.ItemStack stack, float attack, float inverseHeight) {}
+	private static final ThreadLocal<HandEntry> HAND_ENTRY = new ThreadLocal<>();
+	public static HandEntry pushHand(AvatarRenderState avatar, net.minecraft.world.InteractionHand hand,
+		net.minecraft.world.item.ItemStack stack, float attack, float inverseHeight) {
+		var prev = HAND_ENTRY.get();
+		if (avatar == null) HAND_ENTRY.remove();
+		else HAND_ENTRY.set(new HandEntry(avatar, hand, stack, attack, inverseHeight));
+		return prev;
+	}
+	public static void popHand(HandEntry prev) { if (prev == null) HAND_ENTRY.remove(); else HAND_ENTRY.set(prev); }
+	public static HandEntry currentHand() { return HAND_ENTRY.get(); }
+
 	/** The outer native submitArmWithItem wrapper runs before any production HEAD injection. */
-	public static BraceNullItemDrawProbe.Call handBefore(AvatarRenderState state, net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands,
-		net.minecraft.world.item.ItemStack item, float attack, float inverseHeight, com.mojang.blaze3d.vertex.PoseStack stack, net.minecraft.client.renderer.SubmitNodeCollector collector) {
+	public static BraceNullItemDrawProbe.Call handBefore(AvatarRenderState state, net.minecraft.client.renderer.ItemInHandRenderer hands,
+		net.minecraft.client.player.AbstractClientPlayer player, net.minecraft.world.item.ItemStack item, float attack, float inverseHeight,
+		com.mojang.blaze3d.vertex.PoseStack stack, net.minecraft.client.renderer.SubmitNodeCollector collector) {
 		if (expected == null || !rendering || !expected.firstPerson() || state.id != expected.owner()) return null;
 		observe(state);
-		check(!state.isUsingItem && !state.isAutoSpinAttack && !hands.isScoping && !hands.hasMainHandMapData
+		check(!state.isUsingItem && !state.isAutoSpinAttack && !player.isScoping()
+			&& !item.has(net.minecraft.core.component.DataComponents.MAP_ID)
 			&& item.is(net.minecraft.world.item.Items.DIAMOND_SWORD)
 			&& net.minecraft.world.item.ItemStack.isSameItemSameComponents(item, state.getMainHandItemStack())
 			&& hands instanceof dev.wildercord.client.MastersHandMotionState motion && !motion.wildercord$mainHandEquipping(),
 			"Pair hand oracle requires the genuine same-item Classic sword path, without equip/use overrides");
-		boolean swing = state.currentSwing != null && state.currentSwing.hand() == net.minecraft.world.InteractionHand.MAIN_HAND;
+		boolean swing = state.attackTime > 0 && state.attackArm == state.mainArm;
 		if (swing) {
-			var type = state.currentSwing.animation().type();
+			var type = state.swingAnimationType;
 			check(type == net.minecraft.world.item.SwingAnimationType.NONE || type == net.minecraft.world.item.SwingAnimationType.WHACK, "Unsupported native swing path");
 			swing = type == net.minecraft.world.item.SwingAnimationType.WHACK;
 		}
 		check(!HAND_BASES.containsKey(state), "Duplicate native main-hand entry");
 		HAND_BASES.put(state, new HandBasis(state.getData(MastersArtPose.FRAME), hands, stack, attack, inverseHeight, swing, stack.last().pose().get(new float[16])));
-		return BraceNullItemDrawProbe.firstBegin(state, hands.mainHandRenderState, stack, collector);
+		return BraceNullItemDrawProbe.firstBegin(state, stack, collector);
 	}
-	public static void handConsumed(AvatarRenderState state, net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands,
+	public static void handConsumed(AvatarRenderState state, net.minecraft.client.renderer.ItemInHandRenderer hands,
 		net.minecraft.client.renderer.item.ItemStackRenderState item, com.mojang.blaze3d.vertex.PoseStack stack, float attack, float inverseHeight, net.minecraft.client.renderer.SubmitNodeCollector collector) {
 		if (expected == null || !rendering || !expected.firstPerson() || state.id != expected.owner()) return;
 		observe(state);

@@ -72,17 +72,20 @@ public final class MastersCaptureProbe {
 
 	public static void hand(int id, ItemStackRenderState item, PoseStack pose,
 			net.minecraft.client.renderer.entity.state.AvatarRenderState avatar,
-			net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState hands, float attack, float inverseHeight, net.minecraft.client.renderer.SubmitNodeCollector collector) {
+			net.minecraft.client.renderer.ItemInHandRenderer hands, float attack, float inverseHeight, net.minecraft.client.renderer.SubmitNodeCollector collector) {
 		if (!armed || id != owner) return;
 		MastersCaptureProbe.hands++;
 		BraceNullCaptureProbe.handConsumed(avatar, hands, item, pose, attack, inverseHeight, collector);
-		handMotion = new HandMotion(attack, inverseHeight, hands.oldMainHandHeight, hands.mainHandHeight, hands.mainHandSwapScale,
-			((dev.wildercord.client.MastersHandMotionState) hands).wildercord$mainHandEquipping(),
+		var motion = (dev.wildercord.client.MastersHandMotionState) hands;
+		handMotion = new HandMotion(attack, inverseHeight, motion.wildercord$oldMainHandHeight(), motion.wildercord$mainHandHeight(),
+			Minecraft.getInstance().getItemModelResolver().swapAnimationScale(motion.wildercord$mainHandItem()),
+			motion.wildercord$mainHandEquipping(),
 			dev.wildercord.client.MastersArtPose.firstPersonOwnership(net.minecraft.world.InteractionHand.MAIN_HAND, avatar, hands),
 			avatar.getData(dev.wildercord.client.MastersArtPose.FRAME));
 		Minecraft mc = Minecraft.getInstance();
 		var camera = new CameraRenderState();
-		mc.gameRenderer.mainCamera().extractRenderState(camera, DELTA);
+		var mainCam = mc.gameRenderer.mainCamera();
+		mainCam.extractRenderState(camera, mainCam.getCameraEntityPartialTicks(DELTA));
 		var projection = new Projection();
 		projection.setupPerspective(.05F, camera.depthFar, camera.hudFov, mc.getWindow().getWidth(), mc.getWindow().getHeight());
 		var matrix = projection.getMatrix(new org.joml.Matrix4f()).mul(RenderSystem.getModelViewStack()).mul(pose.last().pose());

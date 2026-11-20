@@ -104,7 +104,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				float health=p.getHealth();p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
 				check(p.getHealth()==health,"Actual perfect guard turns the blow aside");check(Math.abs(Momentum.value(p)-MomentumRules.PERFECT_GUARD*MomentumRules.temper("stone").guard()*1.3)<.01,"Perfect guard actually builds 30% more momentum");
 				var guardPaid=new double[]{-1};var playerId=p.getUUID();AuraApi.onSpend((who,paid,reason,backlash)->{if(who.getUUID().equals(playerId) && reason.equals("guard"))guardPaid[0]=paid;});
-				p.setInvulnerableTime(0);p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
+				p.invulnerableTime = 0;p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
 				double absorbed=4*dev.wildercord.config.Config.get().aura().guardShare();
 				check(p.getHealth()<health,"Held guard still admits damage after the perfect moment");
 				check(Math.abs(guardPaid[0]-absorbed*AuraRules.GUARD_COST_PER_POINT*.85)<.01,"Actual held guard pays the reduced cost for absorbed damage: "+guardPaid[0]);

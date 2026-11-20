@@ -19,9 +19,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 	private static float taken(MinecraftServer s, String id) {
 		var p = p(s);
 		p.setHealth(p.getMaxHealth());
-		// The hit cooldown in hurtServer reads damageCooldownTime, which setInvulnerableTime leaves alone.
-		p.setInvulnerableTime(0);
-		p.damageCooldownTime = 0;
+		p.invulnerableTime = 0;
 		float before = p.getHealth();
 		p.hurtServer(s.overworld(), s.overworld().damageSources().mobAttack(mob(s, id)), 10);
 		return before - p.getHealth();
@@ -172,8 +170,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				c.waitTicks(2);
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person").disableCounterPrefix());
 				if ("skyrend_glaive".equals(name)) {
-					c.runOnClient(mc -> mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND,
-						mc.player.getMainHandItem().getOrDefault(net.minecraft.core.component.DataComponents.ATTACK_ANIMATION, net.minecraft.world.item.component.SwingAnimation.DEFAULT), true));
+					c.runOnClient(mc -> mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND, true));
 					c.waitTicks(6);
 					c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_first_person_swing").disableCounterPrefix());
 					c.waitTicks(10);
@@ -182,8 +179,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 					c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_idle").disableCounterPrefix());
 				}
 				c.runOnClient(mc -> {
-					mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND,
-						mc.player.getMainHandItem().getOrDefault(net.minecraft.core.component.DataComponents.ATTACK_ANIMATION, net.minecraft.world.item.component.SwingAnimation.DEFAULT), true);
+					mc.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND, true);
 					mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT);
 				});
 				c.waitTicks(6);

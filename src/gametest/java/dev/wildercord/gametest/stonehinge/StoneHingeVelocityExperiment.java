@@ -14,7 +14,7 @@ public final class StoneHingeVelocityExperiment {
 		boolean needsSync, boolean syncVelocity) {
 		public static State of(ServerPlayer player) {
 			return new State(player.position(), player.getDeltaMovement(), player.fallDistance, player.onGround(),
-				player.getHealth(), player.getAbsorptionAmount(), player.needsSync, player.syncVelocity);
+				player.getHealth(), player.getAbsorptionAmount(), player.needsSync, player.hurtMarked);
 		}
 	}
 	public static final class Strike {

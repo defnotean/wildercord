@@ -36,7 +36,7 @@ public abstract class CrimsonMoonScreenshotMixin {
 		} finally { CrimsonMoonRenderProbe.unregister(options, token); }
 	}
 
-	@WrapMethod(method = "lambda$doTakeScreenshot$2(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;", require = 1, expect = 1, allow = 1)
+	@WrapMethod(method = "lambda$doTakeScreenshot$1(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;", require = 1, expect = 1, allow = 1)
 	private static CompletableFuture<?> wildercord$moon$scope(TestScreenshotCommonOptionsImpl<?> options,
 			Function<NativeImage, ?> save, Minecraft mc, Operation<CompletableFuture<?>> original) {
 		var scope = CrimsonMoonRenderProbe.enter(options, mc);
@@ -44,7 +44,7 @@ public abstract class CrimsonMoonScreenshotMixin {
 		finally { CrimsonMoonRenderProbe.leave(scope); }
 	}
 
-	@WrapOperation(method = "lambda$doTakeScreenshot$2(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
+	@WrapOperation(method = "lambda$doTakeScreenshot$1(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;extract(Lnet/minecraft/client/DeltaTracker;Z)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$moon$extract(GameRenderer renderer, DeltaTracker delta, boolean renderLevel, Operation<Void> original) {
 		CrimsonMoonRenderProbe.extractBegin(delta);
@@ -53,16 +53,16 @@ public abstract class CrimsonMoonScreenshotMixin {
 		finally { CrimsonMoonRenderProbe.extractEnd(completed); }
 	}
 
-	@WrapOperation(method = "lambda$doTakeScreenshot$2(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;render()V"), require = 1, expect = 1, allow = 1)
-	private static void wildercord$moon$render(GameRenderer renderer, Operation<Void> original) {
+	@WrapOperation(method = "lambda$doTakeScreenshot$1(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;render(Lnet/minecraft/client/DeltaTracker;Z)V"), require = 1, expect = 1, allow = 1)
+	private static void wildercord$moon$render(GameRenderer renderer, DeltaTracker delta, boolean renderLevel, Operation<Void> original) {
 		CrimsonMoonRenderProbe.renderBegin();
 		boolean completed = false;
-		try { original.call(renderer); completed = true; }
+		try { original.call(renderer, delta, renderLevel); completed = true; }
 		finally { CrimsonMoonRenderProbe.renderEnd(completed); }
 	}
 
-	@WrapOperation(method = "lambda$doTakeScreenshot$2(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
+	@WrapOperation(method = "lambda$doTakeScreenshot$1(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Screenshot;takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;Ljava/util/function/Consumer;)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$moon$readback(RenderTarget target, Consumer<NativeImage> consumer, Operation<Void> original) {
 		CrimsonMoonRenderProbe.screenshot(target, consumer, (unchangedTarget, wrappedConsumer) -> original.call(unchangedTarget, wrappedConsumer));
