@@ -152,6 +152,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			maxHp.setBaseValue(60.0);
 		}
 		husk.setHealth(60.0F);
+		husk.addTag("wildercord.rolled");
+		husk.addTag(dev.wildercord.monster.Tempering.TAG);
 		l.addFreshEntity(husk);
 		return husk;
 	}
@@ -721,21 +723,21 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					&& Math.abs(SpellNumbers.ricochetBounceScale(5) - 0.25) < 1e-6,
 					"Ricochet loses 15% power per bounce down to 0.25 floor");
 
-				for (int x = -4; x <= 4; x++) {
-					for (int z = -42; z <= -24; z++) {
+				for (int x = -5; x <= 5; x++) {
+					for (int z = -44; z <= -24; z++) {
 						l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
-						l.setBlock(new BlockPos(x, 105, z), Blocks.STONE.defaultBlockState(), 2);
-						for (int y = 101; y <= 104; y++) {
-							boolean wall = Math.abs(x) == 4 || z == -42 || z == -24 || (z == -35 && x >= -1 && x <= 2);
+						l.setBlock(new BlockPos(x, 106, z), Blocks.STONE.defaultBlockState(), 2);
+						for (int y = 101; y <= 105; y++) {
+							boolean wall = Math.abs(x) == 5 || z == -44 || z == -24 || (z == -35 && x >= 0 && x <= 4);
 							l.setBlock(new BlockPos(x, y, z), wall ? Blocks.STONE.defaultBlockState() : Blocks.AIR.defaultBlockState(), 2);
 						}
 					}
 				}
-				Husk bounceTarget = spawnHusk(l, 0.8, 101.0, -37.2, true);
+				Husk bounceTarget = spawnHusk(l, 1.56, 101.0, -37.89, true);
 				Husk thornsAttacker = spawnHusk(l, 2.0, 101.0, -29.0, true);
 
-				player.teleportTo(l, 0.5, 101.0, -30.5, Set.<Relative>of(), 132.0F, 2.0F, false);
-				player.setYHeadRot(132.0F);
+				player.teleportTo(l, 1.0, 101.0, -30.5, Set.<Relative>of(), 125.0F, -11.0F, false);
+				player.setYHeadRot(125.0F);
 				CastEngine.cast(player, soloRicochet.root());
 				CastEngine.cast(player, SpellCompiler.compile(List.of(Runes.SELF, Runes.OFUDA_WARD)).root());
 				return new UUID[]{bounceTarget.getUUID(), thornsAttacker.getUUID()};
@@ -750,7 +752,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				var thornsAttacker = (LivingEntity) l.getEntity(scene6Husks[1]);
 				check(bounceTarget != null && thornsAttacker != null, "Scene 6 targets present");
 				check(bounceTarget.getHealth() < bounceTarget.getMaxHealth(),
-					"Ricochet + Suzu Chime bounced around stone baffle and damaged target");
+					"Ricochet + Suzu Chime bounced around stone baffle and damaged target (hp="
+						+ bounceTarget.getHealth() + "/" + bounceTarget.getMaxHealth() + ")");
 				check(Reactions.has(bounceTarget, Reactions.Mark.WINDSWEPT),
 					"Suzu Chime applied WINDSWEPT mark");
 				check(player.hasEffect(MobEffects.ABSORPTION), "Ofuda Ward granted Absorption I");
