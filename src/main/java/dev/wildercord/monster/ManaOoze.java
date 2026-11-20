@@ -109,6 +109,14 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 		getAttribute(Attributes.MAX_HEALTH).setBaseValue(MonsterRules.oozeHealth(size));
 	}
 
+	@Override
+	public void remove(Entity.RemovalReason reason) {
+		// 26.1.2 Slime splits on death from remove(); a Mana Ooze only splits when overfed (burst()).
+		// Collapse the size first so the native split loop finds nothing to spawn.
+		super.setSize(1, false);
+		super.remove(reason);
+	}
+
 	/** How much spell it has drunk toward its next size, 0 to its capacity. */
 	public float fullness() {
 		return entityData.get(DATA_FULLNESS);
