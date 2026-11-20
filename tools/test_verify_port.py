@@ -292,6 +292,7 @@ class VerifyPortTests(unittest.TestCase):
             self.assertEqual(proc.returncode, 0, proc.stderr)
 
             repo = tmp / "repo"
+            repo.mkdir(parents=True, exist_ok=True)
             mod_mixin = """package dev.wildercord.mixin;
 
 import dev.wildercord.client.ViewModel;
@@ -340,7 +341,7 @@ public interface SampleMixin {
                 p.parent.mkdir(parents=True, exist_ok=True)
                 p.write_text(code, encoding="utf-8")
                 paths.append(str(p))
-            proc = subprocess.run([JAVAC, "-g", "-d", str(mc_cls), *paths], capture_output=True, text=True)
+            proc = subprocess.run([JAVAC, "-cp", str(self.jar), "-g", "-d", str(mc_cls), *paths], capture_output=True, text=True)
             self.assertEqual(proc.returncode, 0, proc.stderr)
             extra_jar = tmp / "extra-mc.jar"
             with zipfile.ZipFile(extra_jar, "w") as zf:
@@ -360,6 +361,7 @@ public interface SampleMixin {
             self.assertEqual(proc.returncode, 0, proc.stderr)
 
             repo = tmp / "repo"
+            repo.mkdir(parents=True, exist_ok=True)
             mixin_code = """package dev.wildercord.mixin;
 
 import net.minecraft.world.UseJoined;
