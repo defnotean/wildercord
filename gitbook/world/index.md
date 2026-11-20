@@ -44,9 +44,9 @@ Cord, good armour and a plan.
 | 12 | [The Drowned Scriptorium](drowned-scriptorium.md) | The deep ocean floor | The Drowned Quill trophy |
 | 13 | [The Astral Observatory](astral-observatory.md) | The End's outer islands | The Astral Lens trophy |
 
-## 56 places to explore
+## 60 places to explore
 
-Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands, the Cairn Lodge and Survey Ring in the Windscar Highlands, the Listening Station and Bell Sanctum in the Belowkeeper Hollows, and the Charcoal Yard and Kiln Court in the Emberwood Reach. Most are peaceful; a few hide a guard, a seal or a
+Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands, the Cairn Lodge and Survey Ring in the Windscar Highlands, the Listening Station and Bell Sanctum in the Belowkeeper Hollows, the Charcoal Yard and Kiln Court in the Emberwood Reach, and four peaceful Japanese Sakura Village archetypes. Most are peaceful; a few hide a guard, a seal or a
 small puzzle in front of their best chest. Walking into one earns its advancement, and many add an entry to your
 [lore journal](../progression/lore-journal.md).
 
@@ -60,7 +60,7 @@ upgrade tool doesn't add them either, so head out past the edge of your map to f
 | [Mines, Forges and Crystals](mine-sites.md) | Hills, meadows, underground, Belowkeeper Hollows, badlands, the Nether | Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry, Deepslate Vault, Prospector's Camp, Miner's Rest, Belowkeeper Listening Station, Belowkeeper Bell Sanctum |
 | [Roadside Sites](travel-sites.md) | Flat ground and highland shelves across the Overworld | Wayfarer Inn, Watchtower, Broken Bridge, Rune Library, Standing Stones, Caravan Camp, Cartographer's Hut, Vow Circle, Highland Cairn Lodge, Highland Survey Ring |
 | [Water Sites](water-sites.md) | Rivers, swamps, Luminous Reedlands, coasts, warm seas, frozen water | Tideward Reedkeeper Landing, The Last Crossing, Stilt Smokehouse, Lighthouse, Watermill, Ice Fishing Camp, Pier and Boathouse, Sunken Shrine, Net-Weavers' Huts, Tidepool Grotto |
-| [Wild Places](wilds-sites.md) | Jungle, desert, snow, badlands, Emberwood Reach, cherry groves, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern, Emberwood Charcoal Yard, Emberwood Kiln Court |
+| [Wild Places](wilds-sites.md) | Jungle, desert, snow, badlands, Emberwood Reach, cherry groves, plains, rivers, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern, Emberwood Charcoal Yard, Emberwood Kiln Court, Sakura Village, Sakura Canal Harbor, Sakura Onsen Village, Sakura Castle-Town |
 
 ## Sword Masters
 
