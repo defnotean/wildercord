@@ -299,15 +299,17 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					&& !maiden.hurtServer(l, l.damageSources().playerAttack(player), 10.0F),
 					"Sakura villagers are protected from player harm");
 
-				hold(s, new ItemStack(Items.EMERALD, 1));
+				hold(s, new ItemStack(Items.EMERALD, 2));
 				tea.mobInteract(player, InteractionHand.MAIN_HAND);
-				check(player.getMainHandItem().isEmpty(), "Tea Master trade consumes emerald");
+				check(player.getMainHandItem().is(Items.EMERALD) && player.getMainHandItem().getCount() == 1,
+					"Tea Master trade consumes 1 emerald");
 				check(player.getInventory().hasAnyOf(Set.of(ShrineCatContent.CAT_BELL_CHARM)),
 					"Tea Master emerald trade gives Suzu Cat-Bell Charm");
 
-				hold(s, new ItemStack(Items.EMERALD, 1));
+				hold(s, new ItemStack(Items.EMERALD, 2));
 				maiden.mobInteract(player, InteractionHand.MAIN_HAND);
-				check(player.getMainHandItem().isEmpty(), "Shrine Maiden trade consumes emerald");
+				check(player.getMainHandItem().is(Items.EMERALD) && player.getMainHandItem().getCount() == 1,
+					"Shrine Maiden trade consumes 1 emerald");
 				check(player.getInventory().hasAnyOf(Set.of(Items.COOKED_SALMON)),
 					"Shrine Maiden emerald trade gives Cooked Salmon");
 
@@ -728,7 +730,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 						}
 					}
 				}
-				Husk bounceTarget = spawnHusk(l, -1.0, 101.0, -38.0, true);
+				Husk bounceTarget = spawnHusk(l, 0.8, 101.0, -37.2, true);
 				Husk thornsAttacker = spawnHusk(l, 2.0, 101.0, -29.0, true);
 
 				player.teleportTo(l, 0.5, 101.0, -30.5, Set.<Relative>of(), 132.0F, 2.0F, false);
@@ -829,8 +831,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(!archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
 					"Archivist rejects overhead roof attack at dy > 16.0");
 
-				// (c) Wall-occluded outer-rim peephole cheese (dist ~ 13.5 > 12.6 with !hasLineOfSight) rejected.
-				for (int dy = 1; dy <= 3; dy++) {
+				// (c) Wall-occluded outer-rim peephole cheese (dist ~ 13.1 > 12.6 with !hasLineOfSight) rejected.
+				for (int dy = 1; dy <= 4; dy++) {
 					l.setBlock(lectern.offset(11, dy, 0), Blocks.DEEPSLATE_BRICKS.defaultBlockState(), 2);
 					l.setBlock(lectern.offset(13, dy, 0), Blocks.AIR.defaultBlockState(), 2);
 				}
