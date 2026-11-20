@@ -108,14 +108,14 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 			context.waitTicks(30);
 			world.getServer().runCommand("gamerule minecraft:spawn_mobs false");
 			try {
-				setterCaptureBarrier(world);
+				setterCaptureBarrier(context, world);
 				scenario(context, world, "same_level_setter_keeps_generation", plan -> {
 					ReleasedArtOwner original = ReleasedArtOwner.capture(plan.player); ArtWards.Hardened originalWard = grant(plan.player);
 					plan.at(1, () -> { plan.player.setServerLevel(plan.level); check(original.valid() && originalWard.active(), "Same-level native setter preserves original generation and deadline"); ward(plan.player, true); });
 				});
-				destinationGrant(world);
-				nestedRoundTrip(world, false);
-				nestedRoundTrip(world, true);
+				destinationGrant(context, world);
+				nestedRoundTrip(context, world, false);
+				nestedRoundTrip(context, world, true);
 				scenario(context, world, "disconnect_event_retires_original_generation", plan -> {
 					ReleasedArtOwner owner = ReleasedArtOwner.capture(plan.player);
 					ArtWards.Hardened ward = grant(plan.player);
@@ -261,7 +261,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 		} finally { active = null; earlyTransition = null; lateTransition = null; earlyRespawn = null; lateRespawn = null; setterProbe = null; }
 	}
 
-	private void setterCaptureBarrier(TestSingleplayerContext world) {
+	private void setterCaptureBarrier(ClientGameTestContext context, TestSingleplayerContext world) {
 		scenario(context, world, "capture_inside_native_setter_scope", plan -> {
 			ReleasedArtOwner old = ReleasedArtOwner.capture(plan.player); ArtWards.Hardened oldWard = grant(plan.player);
 			ReleasedArtOwner[] outgoing = {null}, incoming = {null}; ArtWards.Hardened[] freshWard = {null};
@@ -290,7 +290,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 		});
 	}
 
-	private void destinationGrant(TestSingleplayerContext world) {
+	private void destinationGrant(ClientGameTestContext context, TestSingleplayerContext world) {
 		scenario(context, world, "early_destination_grant_survives_late_origin_event", plan -> {
 			ReleasedArtOwner original = ReleasedArtOwner.capture(plan.player);
 			ArtWards.Hardened oldWard = grant(plan.player);
@@ -312,7 +312,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 		});
 	}
 
-	private void nestedRoundTrip(TestSingleplayerContext world, boolean captureIntermediate) {
+	private void nestedRoundTrip(ClientGameTestContext context, TestSingleplayerContext world, boolean captureIntermediate) {
 		scenario(context, world, "nested_round_trip_intermediate_capture_" + captureIntermediate, plan -> {
 			ReleasedArtOwner oldA = ReleasedArtOwner.capture(plan.player);
 			ArtWards.Hardened oldWard = grant(plan.player);
