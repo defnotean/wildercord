@@ -108,12 +108,12 @@ public class AuraScreen extends Screen implements CordEditorParent {
 			ignored -> minecraft.gui.setScreen(new MasterFormsScreen(this)))
 			.bounds(left() + Math.round((formsX() - 2) * s), top() + Math.round(8 * s), Math.round((font.width(forms) + 4) * s), Math.max(1, Math.round(12 * s))).build());
 		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here (and the blade's).
-		minecraft.textInputManager().startTextInput(this);
+		minecraft.textInputManager().startTextInput();
 	}
 
 	@Override
 	public void removed() {
-		minecraft.textInputManager().stopTextInput(this);
+		minecraft.textInputManager().stopTextInput();
 		super.removed();
 	}
 

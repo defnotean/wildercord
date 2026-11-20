@@ -59,9 +59,13 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	private static final Identifier GLOW = Wildercord.id("textures/entity/wisp_glow.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spell glows. */
-	public static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENERGY_SWIRL_SNIPPET)
+	public static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENTITY_EMISSIVE_SNIPPET)
 		.withLocation(Wildercord.id("pipeline/wisp_glow"))
+		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
+		.withShaderDefine("NO_OVERLAY")
+		.withShaderDefine("NO_CARDINAL_LIGHTING")
 		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+		.withCull(false)
 		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
 		.build();
 	private static final RenderType GLOW_TYPE = RenderType.create("wildercord_wisp_glow",

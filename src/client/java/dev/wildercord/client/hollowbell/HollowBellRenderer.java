@@ -33,8 +33,8 @@ public final class HollowBellRenderer extends MobRenderer<HollowBell, HollowBell
 	@Override public HollowBellRenderState createRenderState() { return new HollowBellRenderState(); }
 	@Override public Identifier getTextureLocation(HollowBellRenderState state) { return TEXTURE; }
 	@Override protected float getFlipDegrees() { return 0; }
-	@Override public boolean shouldRender(HollowBell e, Frustum frustum, double x, double y, double z, float partial) {
-		return super.shouldRender(e, frustum, x, y, z, partial) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
+	@Override public boolean shouldRender(HollowBell e, Frustum frustum, double x, double y, double z) {
+		return super.shouldRender(e, frustum, x, y, z) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
 	}
 
 	@Override public void extractRenderState(HollowBell entity, HollowBellRenderState s, float tickDelta) {

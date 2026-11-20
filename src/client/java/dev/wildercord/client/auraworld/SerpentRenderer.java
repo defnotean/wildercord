@@ -54,7 +54,7 @@ public final class SerpentRenderer extends EntityRenderer<RootcoilSerpent,Serpen
 	public SerpentRenderer(EntityRendererProvider.Context context){super(context);shadowRadius=2.2F;}
 
 	@Override public SerpentRenderState createRenderState(){return new SerpentRenderState();}
-	@Override protected AABB getBoundingBoxForCulling(RootcoilSerpent serpent,float partial){
+	@Override protected AABB getBoundingBoxForCulling(RootcoilSerpent serpent){
 		return serpent.getBoundingBox().minmax(AABB.ofSize(serpent.trunk().add(0,4,0),8,10,8)).inflate(SerpentSpine.LENGTH*.6);
 	}
 

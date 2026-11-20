@@ -33,8 +33,8 @@ public final class LanternBearerRenderer extends MobRenderer<LanternBearer,Lante
 	@Override public LanternBearerRenderState createRenderState(){return new LanternBearerRenderState();}
 	@Override public Identifier getTextureLocation(LanternBearerRenderState s){return SKIN;}
 	/** Down in its grave, or out in the dark with its lantern out, it is not there to see. */
-	@Override public boolean shouldRender(LanternBearer e,Frustum frustum,double x,double y,double z,float partial){
-		return e.move()!=LanternBearerRules.DORMANT&&!e.unseen()&&super.shouldRender(e,frustum,x,y,z,partial);
+	@Override public boolean shouldRender(LanternBearer e,Frustum frustum,double x,double y,double z){
+		return e.move()!=LanternBearerRules.DORMANT&&!e.unseen()&&super.shouldRender(e,frustum,x,y,z);
 	}
 	@Override protected int getBlockLightLevel(LanternBearer e,BlockPos pos){return 15;}
 	@Override public void extractRenderState(LanternBearer e,LanternBearerRenderState s,float partial){

@@ -33,8 +33,8 @@ public final class GlassCartographerRenderer extends MobRenderer<GlassCartograph
 	@Override public GlassCartographerRenderState createRenderState() { return new GlassCartographerRenderState(); }
 	@Override public Identifier getTextureLocation(GlassCartographerRenderState state) { return TEXTURE; }
 	@Override protected float getFlipDegrees() { return 0; }
-	@Override public boolean shouldRender(GlassCartographer e, Frustum frustum, double x, double y, double z, float partial) {
-		return super.shouldRender(e, frustum, x, y, z, partial) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
+	@Override public boolean shouldRender(GlassCartographer e, Frustum frustum, double x, double y, double z) {
+		return super.shouldRender(e, frustum, x, y, z) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
 	}
 
 	@Override public void extractRenderState(GlassCartographer entity, GlassCartographerRenderState s, float tickDelta) {

@@ -13,11 +13,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwingAnimationType;
-import net.minecraft.world.item.component.SwingAnimation;
 
 /**
  * Polearm stance and sweeping cleave animation for the Skyrend Glaive.
@@ -30,8 +28,6 @@ import net.minecraft.world.item.component.SwingAnimation;
  */
 public final class GlaivePose {
 	private GlaivePose() {}
-
-	private static final SwingAnimation GLAIVE_SWING = new SwingAnimation(SwingAnimationType.WHACK, 10);
 
 	public static boolean isGlaive(ItemStack stack) {
 		return stack != null && !stack.isEmpty() && ForgedGear.of(stack) == AuraWorldRules.Forged.SKYREND_GLAIVE;
@@ -62,8 +58,8 @@ public final class GlaivePose {
 				state.leftArmPose = HumanoidModel.ArmPose.ITEM;
 			}
 		}
-		if (state.currentSwing != null && state.currentSwing.animation().type() == SwingAnimationType.STAB) {
-			state.currentSwing = new LivingEntity.SwingDescription(state.currentSwing.hand(), GLAIVE_SWING, 10);
+		if (state.swingAnimationType == SwingAnimationType.STAB) {
+			state.swingAnimationType = SwingAnimationType.WHACK;
 		}
 	}
 
@@ -97,7 +93,7 @@ public final class GlaivePose {
 		float idleOffY = 0.44F * side + turn * 0.35F;
 		float idleOffZ = -0.08F * side;
 
-		float s = state.swingAnimation;
+		float s = state.attackTime;
 		if (s <= 0.0F) {
 			main.xRot = idleMainX;
 			main.yRot = idleMainY;
@@ -210,7 +206,7 @@ public final class GlaivePose {
 		float cross = idleCross;
 		float twist = idleTwist;
 
-		float s = state.swingAnimation;
+		float s = state.attackTime;
 		if (s > 0.0F) {
 			float chPitch = 47.0F;
 			float chCross = 35.0F * side;

@@ -33,8 +33,8 @@ public final class KilnWidowRenderer extends MobRenderer<KilnWidow, KilnWidowRen
 	@Override public KilnWidowRenderState createRenderState() { return new KilnWidowRenderState(); }
 	@Override public Identifier getTextureLocation(KilnWidowRenderState state) { return TEXTURE; }
 	@Override protected float getFlipDegrees() { return 0; }
-	@Override public boolean shouldRender(KilnWidow e, Frustum frustum, double x, double y, double z, float partial) {
-		return super.shouldRender(e, frustum, x, y, z, partial) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
+	@Override public boolean shouldRender(KilnWidow e, Frustum frustum, double x, double y, double z) {
+		return super.shouldRender(e, frustum, x, y, z) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
 	}
 
 	@Override public void extractRenderState(KilnWidow entity, KilnWidowRenderState s, float tickDelta) {

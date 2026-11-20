@@ -38,8 +38,9 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 			float partial, InteractionHand hand, PoseStack stack, SubmitNodeCollector collector, int light) {
 		ArticulatedCombat.Frame combat = ArticulatedCombat.viewFrame(avatar);
 		if (combat == null || !handAdmission(combat, avatar, hands, partial).admitted()) return false;
-		PlayerModel playerModel = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar).getModel();
-		if (playerModel.getClass() != PlayerModel.class || !(playerModel instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
+		if (!(Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(avatar) instanceof net.minecraft.client.renderer.entity.LivingEntityRenderer<?, ?, ?> livingRenderer)
+			|| !(livingRenderer.getModel() instanceof PlayerModel playerModel)
+			|| playerModel.getClass() != PlayerModel.class || !(playerModel instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned()) return false;
 		if (hand != InteractionHand.MAIN_HAND) return true;
 		var view = ArticulatedCombatPose.view(combat.pose(), combat.leftHanded());
 		Frame frame = new Frame(view, avatar.showLeftSleeve, avatar.showRightSleeve);

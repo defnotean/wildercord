@@ -28,8 +28,8 @@ public final class FerrymanRenderer extends MobRenderer<ReedCrownedFerryman,Ferr
 	@Override public FerrymanRenderState createRenderState() { return new FerrymanRenderState(); }
 	@Override public Identifier getTextureLocation(FerrymanRenderState state) { return SKIN; }
 	@Override protected float getFlipDegrees() { return 0; }
-	@Override public boolean shouldRender(ReedCrownedFerryman e, Frustum frustum, double x, double y, double z, float partial) {
-		return super.shouldRender(e,frustum,x,y,z,partial) || frustum.isVisible(e.getBoundingBox().inflate(16,2,16));
+	@Override public boolean shouldRender(ReedCrownedFerryman e, Frustum frustum, double x, double y, double z) {
+		return super.shouldRender(e,frustum,x,y,z) || frustum.isVisible(e.getBoundingBox().inflate(16,2,16));
 	}
 	@Override public void extractRenderState(ReedCrownedFerryman e,FerrymanRenderState s,float partial) {
 		super.extractRenderState(e,s,partial); s.move=e.move(); s.elapsed=e.elapsed(partial); s.aim=e.aim(); s.markX=e.markX(); s.markZ=e.markZ(); s.acrossX=e.acrossX(); s.second=e.secondPhase();

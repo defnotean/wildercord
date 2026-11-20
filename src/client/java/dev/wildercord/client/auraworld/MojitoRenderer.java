@@ -29,8 +29,9 @@ public final class MojitoRenderer extends MobRenderer<Mojito,MojitoRenderState,M
 	@Override public MojitoRenderState createRenderState(){return new MojitoRenderState();}
 	@Override public Identifier getTextureLocation(MojitoRenderState s){return SKIN;}
 	/** Thrown, his sword can be well off from him, and he should not vanish from view when it is in sight and he isn't, nor it. */
-	@Override protected AABB getBoundingBoxForCulling(Mojito e,float partial){
-		var box=super.getBoundingBoxForCulling(e,partial);
+	@Override protected AABB getBoundingBoxForCulling(Mojito e){
+		var box=super.getBoundingBoxForCulling(e);
+		float partial=net.minecraft.client.Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		return e.thrown()?box.minmax(AABB.ofSize(e.swordAt(partial),6,3,6)):box;
 	}
 	@Override public void extractRenderState(Mojito e,MojitoRenderState s,float partial){

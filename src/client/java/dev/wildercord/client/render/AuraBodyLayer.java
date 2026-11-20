@@ -68,9 +68,13 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	private static final Identifier TEXTURE = Wildercord.id("textures/entity/aura/body.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spells' and the wisps' glows. */
-	public static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENERGY_SWIRL_SNIPPET)
+	public static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENTITY_EMISSIVE_SNIPPET)
 		.withLocation(Wildercord.id("pipeline/aura_body_glow"))
+		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
+		.withShaderDefine("NO_OVERLAY")
+		.withShaderDefine("NO_CARDINAL_LIGHTING")
 		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+		.withCull(false)
 		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
 		.build();
 	private static final RenderType GLOW_TYPE = RenderType.create("wildercord_aura_body_glow",

@@ -6,6 +6,7 @@ import dev.wildercord.world.LeyLines;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -88,6 +89,21 @@ public final class StormSky {
 	}
 
 	// ------------------------------------------------------------------ the tint
+
+	public static int tintSky(int argb) {
+		Vector3fc c = tintSky(ARGB.vector3fFromRGB24(argb));
+		return ARGB.colorFromFloat(ARGB.alphaFloat(argb), c.x(), c.y(), c.z());
+	}
+
+	public static int tintFog(int argb) {
+		Vector3fc c = tintFog(ARGB.vector3fFromRGB24(argb));
+		return ARGB.colorFromFloat(ARGB.alphaFloat(argb), c.x(), c.y(), c.z());
+	}
+
+	public static int tintCloud(int argb) {
+		Vector4fc c = tintCloud(ARGB.vector4fFromARGB32(argb));
+		return ARGB.colorFromFloat(c.w(), c.x(), c.y(), c.z());
+	}
 
 	public static Vector3fc tintSky(Vector3fc color) {
 		Vector3fc tinted = lean(color, amount * SKY);
