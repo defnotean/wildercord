@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,10 +37,10 @@ final class StoneMarchFixture {
 		master.setTarget(party.getFirst());
 	}
 
-	void await(TestSingleplayerContext world) {
+	void await(ClientGameTestContext client, TestSingleplayerContext world) {
 		double[] before = {master.auraRemaining()};
 		long[] ordinal = {0};
-		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(client, world.getServer(), server -> {
 			if (master.marchPending()) {
 				check(master.attackAnimation() == 10 && master.attackElapsed(0) <= 1, "Natural ordinary fallback admits the appended ID10");
 				began = level.getGameTime() - (long) master.attackElapsed(0); accepted = (StoneMarch) field(master, "march");
@@ -67,8 +68,8 @@ final class StoneMarchFixture {
 		}, 2400);
 		check(master.position().distanceToSqr(origin) < .003 && master.onGround() && !master.guarding(), "Acceptance belongs to a naturally grounded, exposed native body");
 	}
-	void at(TestSingleplayerContext world, int age, Runnable action) {
-		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
+	void at(ClientGameTestContext client, TestSingleplayerContext world, int age, Runnable action) {
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(client, world.getServer(), server -> {
 			long now = level.getGameTime(); if (now < began + age) return false;
 			check(now == began + age, "Observe exact native March tick " + age + ", actual " + (now - began)); action.run(); return true;
 		}, age + 20);

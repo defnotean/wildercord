@@ -637,7 +637,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			caster.setTarget(player);
 		});
 		// Wait for it to start a telegraph, then catch the circle and the lit nameplate.
-		int waited = dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
+		int waited = dev.wildercord.gametest.compat.GametestCompat.waitFor(context, world.getServer(), server -> {
 			List<Mob> mobs = player(server).level().getEntitiesOfClass(Mob.class, player(server).getBoundingBox().inflate(20), m -> m.entityTags().contains("wildercord.tour"));
 			return !mobs.isEmpty() && mobs.getFirst().getCustomName() != null && mobs.getFirst().getCustomName().getString().startsWith("»");
 		}, 400);
@@ -792,7 +792,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		});
 		context.waitTicks(4);
 		shot(context, "shield_appear");
-		int blocked = dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
+		int blocked = dev.wildercord.gametest.compat.GametestCompat.waitFor(context, world.getServer(), server -> {
 			Mob mob = tourHusk(server);
 			return mob != null && !mob.hasAttached(WildercordAttachments.SPELL_SHIELD);
 		}, 60);
@@ -811,7 +811,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			Spellbooks.setReadyAt(player(server), 3, 0);
 			SpellCaster.cast(player(server), 3);
 		});
-		int broke = dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
+		int broke = dev.wildercord.gametest.compat.GametestCompat.waitFor(context, world.getServer(), server -> {
 			Mob mob = tourHusk(server);
 			return mob != null && !mob.hasAttached(WildercordAttachments.SPELL_SHIELD);
 		}, 60);
@@ -1429,7 +1429,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 2400, 4, false, false));
 			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2400, 3, false, false));
 		});
-		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> {
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(context, world.getServer(), server -> {
 			for (Archivist boss : player(server).level().getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40))) {
 				if (boss.isCastingSpell()) {
 					return true;

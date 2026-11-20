@@ -109,14 +109,14 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 			world.getServer().runCommand("gamerule minecraft:spawn_mobs false");
 			try {
 				setterCaptureBarrier(world);
-				scenario(world, "same_level_setter_keeps_generation", plan -> {
+				scenario(context, world, "same_level_setter_keeps_generation", plan -> {
 					ReleasedArtOwner original = ReleasedArtOwner.capture(plan.player); ArtWards.Hardened originalWard = grant(plan.player);
 					plan.at(1, () -> { plan.player.setServerLevel(plan.level); check(original.valid() && originalWard.active(), "Same-level native setter preserves original generation and deadline"); ward(plan.player, true); });
 				});
 				destinationGrant(world);
 				nestedRoundTrip(world, false);
 				nestedRoundTrip(world, true);
-				scenario(world, "disconnect_event_retires_original_generation", plan -> {
+				scenario(context, world, "disconnect_event_retires_original_generation", plan -> {
 					ReleasedArtOwner owner = ReleasedArtOwner.capture(plan.player);
 					ArtWards.Hardened ward = grant(plan.player);
 					plan.at(1, () -> {
@@ -126,7 +126,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 						ward(plan.player, false);
 					});
 				});
-				scenario(world, "mountain_then_unmoved", plan -> {
+				scenario(context, world, "mountain_then_unmoved", plan -> {
 					ServerPlayer player = plan.player;
 					ArtWards.harden(player, 25); ward(player, true);
 					ArtWards.Hardened[] unmoved = new ArtWards.Hardened[1];
@@ -136,7 +136,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					plan.at(90, () -> { check(unmoved[0].active(), "Unmoved retains acceptedAt + 80 inclusive"); ward(player, true); });
 					plan.at(91, () -> { ward(player, false); check(!unmoved[0].active(), "Unmoved expires on its own original clock"); });
 				});
-				scenario(world, "unmoved_then_mountain", plan -> {
+				scenario(context, world, "unmoved_then_mountain", plan -> {
 					ServerPlayer player = plan.player;
 					ArtWards.Hardened unmoved = grant(player);
 					plan.at(10, () -> { ArtWards.harden(player, 25); ward(player, true); });
@@ -147,7 +147,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					plan.at(95, () -> ward(player, true));
 					plan.at(96, () -> ward(player, false));
 				});
-				scenario(world, "retire_unmoved_preserves_mountain_and_resistance", plan -> {
+				scenario(context, world, "retire_unmoved_preserves_mountain_and_resistance", plan -> {
 					ServerPlayer player = plan.player;
 					ArtWards.Hardened unmoved = grant(player);
 					ArtWards.harden(player, 25);
@@ -166,7 +166,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 						check(player.hasEffect(MobEffects.RESISTANCE), "Vanilla Resistance may naturally outlive both knockback leases");
 					});
 				});
-				scenario(world, "replay_never_refreshes", plan -> {
+				scenario(context, world, "replay_never_refreshes", plan -> {
 					ServerPlayer player = plan.player;
 					ArtWards.Hardened unmoved = grant(player);
 					plan.at(10, () -> {
@@ -182,7 +182,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 						check(!unmoved.grant() && !player.hasEffect(MobEffects.RESISTANCE), "Expired replay never rearms either effect");
 					});
 				});
-				scenario(world, "stronger_longer_resistance_survives", plan -> {
+				scenario(context, world, "stronger_longer_resistance_survives", plan -> {
 					ServerPlayer player = plan.player;
 					player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 240, 2));
 					MobEffectInstance stronger = player.getEffect(MobEffects.RESISTANCE);
@@ -201,7 +201,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					});
 					plan.at(26, () -> { ward(player, false); check(player.getEffect(MobEffects.RESISTANCE) == stronger, "Mountain expiry also leaves stronger Resistance intact"); });
 				});
-				scenario(world, "original_world_round_trip", plan -> {
+				scenario(context, world, "original_world_round_trip", plan -> {
 					ServerPlayer player = plan.player;
 					ArtWards.Hardened unmoved = grant(player);
 					ArtWards.harden(player, 25);
@@ -219,7 +219,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					});
 					plan.at(36, () -> ward(player, false));
 				});
-				scenario(world, "real_death_and_same_uuid_respawn", plan -> {
+				scenario(context, world, "real_death_and_same_uuid_respawn", plan -> {
 					ServerPlayer oldPlayer = plan.player;
 					ArtWards.Hardened oldUnmoved = grant(oldPlayer);
 					ReleasedArtOwner oldRelease = ReleasedArtOwner.capture(oldPlayer);
@@ -262,7 +262,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 	}
 
 	private void setterCaptureBarrier(TestSingleplayerContext world) {
-		scenario(world, "capture_inside_native_setter_scope", plan -> {
+		scenario(context, world, "capture_inside_native_setter_scope", plan -> {
 			ReleasedArtOwner old = ReleasedArtOwner.capture(plan.player); ArtWards.Hardened oldWard = grant(plan.player);
 			ReleasedArtOwner[] outgoing = {null}, incoming = {null}; ArtWards.Hardened[] freshWard = {null};
 			ServerLevel next = plan.level.getServer().getLevel(Level.NETHER);
@@ -291,7 +291,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 	}
 
 	private void destinationGrant(TestSingleplayerContext world) {
-		scenario(world, "early_destination_grant_survives_late_origin_event", plan -> {
+		scenario(context, world, "early_destination_grant_survives_late_origin_event", plan -> {
 			ReleasedArtOwner original = ReleasedArtOwner.capture(plan.player);
 			ArtWards.Hardened oldWard = grant(plan.player);
 			ReleasedArtOwner[] destination = {null}; ArtWards.Hardened[] freshWard = {null};
@@ -313,7 +313,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 	}
 
 	private void nestedRoundTrip(TestSingleplayerContext world, boolean captureIntermediate) {
-		scenario(world, "nested_round_trip_intermediate_capture_" + captureIntermediate, plan -> {
+		scenario(context, world, "nested_round_trip_intermediate_capture_" + captureIntermediate, plan -> {
 			ReleasedArtOwner oldA = ReleasedArtOwner.capture(plan.player);
 			ArtWards.Hardened oldWard = grant(plan.player);
 			ArtWards.Mirror oldMirror = ArtWards.mirror(plan.player, oldA, 80);
@@ -364,7 +364,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 		});
 	}
 
-	private void scenario(TestSingleplayerContext world, String name, Consumer<Plan> body) {
+	private void scenario(ClientGameTestContext context, TestSingleplayerContext world, String name, Consumer<Plan> body) {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 			check(player.connection != null && player.connection.player == player
@@ -377,7 +377,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 			ward(player, false);
 			active = new Plan(name, player); body.accept(active);
 		});
-		dev.wildercord.gametest.compat.GametestCompat.waitFor(world.getServer(), server -> active.done, 150);
+		dev.wildercord.gametest.compat.GametestCompat.waitFor(context, world.getServer(), server -> active.done, 150);
 		world.getServer().runOnServer(server -> {
 			if (active.failure != null) throw new AssertionError("Native hardening scenario failed: " + name, active.failure);
 			check(active.checks.isEmpty(), "All native hardening checks ran: " + name);

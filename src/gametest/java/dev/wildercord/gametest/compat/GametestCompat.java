@@ -3,6 +3,7 @@ package dev.wildercord.gametest.compat;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -47,17 +48,18 @@ public final class GametestCompat {
 
 	/**
 	 * Polls a server condition until it holds or the tick budget runs out, returning the ticks
-	 * waited. 26.1.2's TestServerContext has no waitFor; this polls through computeOnServer with a
-	 * ~tick pause between attempts.
+	 * waited. 26.1.2's TestServerContext has no waitFor, and the integrated server only ticks
+	 * while the harness is inside a client-side wait, so each attempt advances the world with
+	 * ClientGameTestContext.waitTicks before the next check.
 	 */
-	public static int waitFor(TestServerContext server, Predicate<MinecraftServer> condition, int timeoutTicks) {
+	public static int waitFor(ClientGameTestContext client, TestServerContext server, Predicate<MinecraftServer> condition, int timeoutTicks) {
 		int waited = 0;
 		try {
 			while (waited < timeoutTicks) {
 				if (Boolean.TRUE.equals(server.computeOnServer(condition::test))) {
 					return waited;
 				}
-				Thread.sleep(50L);
+				client.waitTicks(1);
 				waited++;
 			}
 		} catch (Throwable t) {
