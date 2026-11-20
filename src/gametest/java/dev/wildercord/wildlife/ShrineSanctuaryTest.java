@@ -13,6 +13,7 @@ import dev.wildercord.content.WildercordItems;
 import dev.wildercord.monster.KarakuriSentinel;
 import dev.wildercord.monster.MonsterContent;
 import dev.wildercord.monster.PaperLanternSpirit;
+import dev.wildercord.monster.WildMonster;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
@@ -238,9 +239,16 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 			w.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
-				for (UUID id : lineupIds.values()) {
-					if (l.getEntity(id) instanceof ShrineCat cat) {
-						cat.setLoafing(true);
+				for (var e : lineupIds.entrySet()) {
+					if (l.getEntity(e.getValue()) instanceof ShrineCat cat) {
+						switch (e.getKey()) {
+							case YUKI, ODIE -> cat.setLoafing(true);
+							case FREYA -> {
+								cat.setOrderedToSit(true);
+								cat.setInSittingPose(true);
+							}
+							case KURO -> face(cat, 125.0F);
+						}
 					}
 				}
 				lookAt(l, p(s), new Vec3(-2.5, 100.3, 0.2), new Vec3(0.0, 101.2, 3.2));
@@ -292,6 +300,19 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 			});
 			c.waitTicks(14);
 			shot(c, "shrine_villagers_and_mobs");
+
+			w.getServer().runOnServer(s -> {
+				ServerLevel l = s.overworld();
+				AABB box = new AABB(-8.0, 99.0, -2.0, 8.0, 108.0, 8.0);
+				for (KarakuriSentinel k : l.getEntitiesOfClass(KarakuriSentinel.class, box)) {
+					k.holdPose(WildMonster.WINDUP);
+				}
+				for (PaperLanternSpirit sp : l.getEntitiesOfClass(PaperLanternSpirit.class, box)) {
+					sp.holdPose(WildMonster.ACTING);
+				}
+			});
+			c.waitTicks(12);
+			shot(c, "shrine_villagers_and_mobs_action_poses");
 
 			UUID[] combatMobIds = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
