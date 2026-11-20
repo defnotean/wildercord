@@ -23,6 +23,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,14 @@ public final class McWorldgen {
 	public static void addSpawn(BiomeModificationContext.MobSpawnSettingsContext spawns, MobCategory category,
 			EntityType<?> type, int minGroup, int maxGroup, int weight) {
 		spawns.addSpawn(category, new MobSpawnSettings.SpawnerData(type, minGroup, maxGroup), weight);
+	}
+
+	/** Returns natural spawn entity types registered in {@code biome} for {@code category}. */
+	public static List<EntityType<?>> biomeSpawnTypes(Holder<Biome> biome, MobCategory category) {
+		MobSpawnSettings settings = biome.value().getMobSettings();
+		List<EntityType<?>> types = new ArrayList<>();
+		settings.getMobs(category).unwrap().forEach(w -> types.add(w.value().type()));
+		return types;
 	}
 
 	/** Optional {@code Biomes.DAPPLED_FOREST} key when present in the active MC version (empty in 26.2). */

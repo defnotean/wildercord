@@ -83,7 +83,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 
 	@Override
 	protected void addBehaviourGoals() {
-		goalSelector.addGoal(2, new AbstractCubeMob.CubeMobAttackGoal(this));
+		goalSelector.addGoal(2, cubeAttackGoal());
 	}
 
 	@Override
@@ -302,7 +302,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 
 	/** Unused by the game: a Mana Ooze never breeds. */
 	@Override
-	public @Nullable AbstractCubeMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public @Nullable CompatCubeMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return null;
 	}
 }

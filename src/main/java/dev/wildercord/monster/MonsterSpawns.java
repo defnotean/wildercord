@@ -382,10 +382,7 @@ public final class MonsterSpawns {
 
 	/** The monsters a biome spawns (its natural spawns, as the world reads them): for the tests, and the guide's numbers. */
 	public static List<EntityType<?>> monstersIn(Holder<Biome> biome) {
-		MobSpawnSettings settings = biome.value().getMobSettings();
-		List<EntityType<?>> types = new ArrayList<>();
-		settings.getMobs(MobCategory.MONSTER).unwrap().forEach(w -> types.add(w.value().type()));
-		return types;
+		return dev.wildercord.compat.McWorldgen.biomeSpawnTypes(biome, MobCategory.MONSTER);
 	}
 
 	/** Whether one of the six is in the biome's monsters. */

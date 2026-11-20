@@ -50,7 +50,7 @@ public final class McEntities {
 	}
 
 	/** Returns {@code stack} to {@code player}'s inventory or drops excess cleanly. */
-	public static void placeItemBackInInventory(ServerPlayer player, ItemStack stack) {
+	public static void placeItemBackInInventory(Player player, ItemStack stack) {
 		player.getInventory().placeItemBackInInventory(stack);
 	}
 
