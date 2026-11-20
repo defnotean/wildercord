@@ -4,7 +4,7 @@
 
 The Codex in your Cord screen sorts each rune family into categories by what the rune is *for*. This page uses the same sorting, so you can find, say, every World effect or every Condition link in one place. Each name links to the rune's full entry.
 
-756 runes in all.
+758 runes in all.
 
 ## Shapes
 
@@ -143,8 +143,8 @@ Waits on the ground or in the air and works over time.
 | Category | Runes |
 |---|---|
 | [Damage](#effect-damage) | 121 |
-| [Control](#effect-control) | 59 |
-| [Support](#effect-support) | 146 |
+| [Control](#effect-control) | 60 |
+| [Support](#effect-support) | 147 |
 | [Movement](#effect-movement) | 27 |
 | [Time](#effect-time) | 7 |
 | [World](#effect-world) | 195 |
@@ -313,6 +313,7 @@ Waits on the ground or in the air and works over time.
 - [Spook](effects/void.md#spook) (Tier II, Void)
 - [Sporebloom](world.md#sporebloom) (Tier II, Life)
 - [Stillbind](effects/void.md#stillbind) (Tier II, Void)
+- [Suzu Chime](effects/wind.md#suzu_chime) (Tier II, Wind)
 - [Tidehook](world.md#tidehook) (Tier II, Frost)
 - [Undertow](world.md#undertow) (Tier II, Frost)
 - [Weigh](effects/earth.md#weigh) (Tier II, Earth)
@@ -427,6 +428,7 @@ Waits on the ground or in the air and works over time.
 - [Mending Mist](effects/frost.md#mending_mist) (Tier II, Frost)
 - [Morale](effects/fire.md#morale) (Tier II, Fire)
 - [Nightwatch](effects/arcane.md#nightwatch) (Tier II, Arcane)
+- [Ofuda Ward](effects/arcane.md#ofuda_ward) (Tier II, Arcane)
 - [Overdrive](effects/blood.md#overdrive) (Tier II, Blood)
 - [Pearl Sight](effects/arcane.md#pearl_sight) (Tier II, Arcane)
 - [Petward](effects/life.md#petward) (Tier II, Life)

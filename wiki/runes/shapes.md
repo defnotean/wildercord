@@ -86,9 +86,9 @@ Strikes five spokes of ground 3 to 6 blocks ahead of you in a 90-degree fan, and
 
 Strikes the 3x3 ground under your feet, and you and whatever stands on it, at 90% power.
 
-**How to get it:** Craft: a Blank Rune, Cobblestone and Leather Boots. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any cobblestone or deepslate and Leather Boots. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_footing.png' | relative_url }}" alt="Crafting Footing: a Blank Rune and Cobblestone and Leather Boots" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_footing.png' | relative_url }}" alt="Crafting Footing: a Blank Rune and any cobblestone or deepslate and Leather Boots" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -112,9 +112,9 @@ Strikes a row of 9 ground blocks running ahead of you, and whatever stands on th
 
 Strikes a 9-block line of ground across where you look, side to side, and whatever stands on it, at 90% power.
 
-**How to get it:** Craft: a Blank Rune, Oak Sapling, Sweet Berries and Oak Leaves. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any saplings, Sweet Berries and any leaves. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_hedgerow.png' | relative_url }}" alt="Crafting Hedgerow: a Blank Rune and Oak Sapling, Sweet Berries and Oak Leaves" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_hedgerow.png' | relative_url }}" alt="Crafting Hedgerow: a Blank Rune and any saplings, Sweet Berries and any leaves" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -216,9 +216,9 @@ Strikes a 3x3 pit 2 deep where you look, and whatever stands over it, at 90% pow
 
 Strikes a 3x3 patch of ground where you look, and whatever stands on it, at 80% power.
 
-**How to get it:** Craft: a Blank Rune, Dirt, Wheat Seeds and Stick. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any dirt, Wheat Seeds and Stick. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_plot.png' | relative_url }}" alt="Crafting Plot: a Blank Rune and Dirt, Wheat Seeds and Stick" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_plot.png' | relative_url }}" alt="Crafting Plot: a Blank Rune and any dirt, Wheat Seeds and Stick" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -229,9 +229,9 @@ Strikes a 3x3 patch of ground where you look, and whatever stands on it, at 80% 
 
 An instant, short ray that hits the first thing within 10 blocks.
 
-**How to get it:** Craft: a Blank Rune, Glass Pane and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any glass pane and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_ray.png' | relative_url }}" alt="Crafting Ray: a Blank Rune and Glass Pane and Glowstone Dust" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_ray.png' | relative_url }}" alt="Crafting Ray: a Blank Rune and any glass pane and Glowstone Dust" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Pierce, Chain
 
@@ -266,9 +266,9 @@ Strikes a 7-block line across the block you look at, side to side, and what stan
 
 Targets you.
 
-**How to get it:** Craft: a Blank Rune, Glass Pane. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any glass pane. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_self.png' | relative_url }}" alt="Crafting Self: a Blank Rune and Glass Pane" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_self.png' | relative_url }}" alt="Crafting Self: a Blank Rune and any glass pane" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/spark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spark
 {: #spark}
@@ -290,9 +290,9 @@ A quick spark darts up to 16 blocks and hits the first thing in its path, at 75%
 
 Strikes 5 stepping stones of ground, every second block ahead of you, at 80% power: a path across water or dark.
 
-**How to get it:** Craft: a Blank Rune, Cobblestone and Lily Pad. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any cobblestone or deepslate and Lily Pad. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_stepstones.png' | relative_url }}" alt="Crafting Stepstones: a Blank Rune and Cobblestone and Lily Pad" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_stepstones.png' | relative_url }}" alt="Crafting Stepstones: a Blank Rune and any cobblestone or deepslate and Lily Pad" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -368,9 +368,9 @@ Hits everything within 4 blocks.
 
 Strikes a 3x3 layer of blocks 3 above where you look (leaves, a roof), and whatever is beneath, at 90% power.
 
-**How to get it:** Craft: a Blank Rune, Oak Slab, Oak Leaves and Oak Fence, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any wooden slabs, any leaves and any wooden fences, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_canopy.png' | relative_url }}" alt="Crafting Canopy: a Blank Rune and Oak Slab, Oak Leaves and Oak Fence, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_canopy.png' | relative_url }}" alt="Crafting Canopy: a Blank Rune and any wooden slabs, any leaves and any wooden fences, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -381,9 +381,9 @@ Strikes a 3x3 layer of blocks 3 above where you look (leaves, a roof), and whate
 
 Strikes a road of ground 3 wide and 8 long ahead of you, and whatever stands on it, at 70% power.
 
-**How to get it:** Craft: a Blank Rune, Cobblestone Slab, Iron Shovel and Rail, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any stone or deepslate slab, Iron Shovel and Rail, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_causeway.png' | relative_url }}" alt="Crafting Causeway: a Blank Rune and Cobblestone Slab, Iron Shovel and Rail, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_causeway.png' | relative_url }}" alt="Crafting Causeway: a Blank Rune and any stone or deepslate slab, Iron Shovel and Rail, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -472,9 +472,9 @@ Strikes a cross of ground with arms of 4 where you look, and whatever stands on 
 
 Strikes a 5-wide, 3-high face of blocks where you look, and whatever stands at it, at 80% power.
 
-**How to get it:** Craft: a Blank Rune, Bricks, Glass Pane and Stone Bricks, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Bricks, any glass pane and any stone or deepslate bricks, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_facade.png' | relative_url }}" alt="Crafting Facade: a Blank Rune and Bricks, Glass Pane and Stone Bricks, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_facade.png' | relative_url }}" alt="Crafting Facade: a Blank Rune and Bricks, any glass pane and any stone or deepslate bricks, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -576,9 +576,9 @@ A thread of light latches onto the first creature within 16 blocks of your aim a
 
 Strikes every other block of a 5x5 square where you look (13 in a checkerboard), at 80% power: spacing for crops or lights.
 
-**How to get it:** Craft: a Blank Rune, Iron Bars, White Carpet and Black Carpet, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Bars and 2x any wool carpet, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_lattice.png' | relative_url }}" alt="Crafting Lattice: a Blank Rune and Iron Bars, White Carpet and Black Carpet, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_lattice.png' | relative_url }}" alt="Crafting Lattice: a Blank Rune and Iron Bars and 2x any wool carpet, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -615,9 +615,9 @@ Hides a rune where you look. It fires when an enemy steps near (lasts 30 seconds
 
 Strikes the 24-block edge of a 7x7 square where you look, and whatever stands on it, at 80% power: a fence line of light or thorns.
 
-**How to get it:** Craft: a Blank Rune, Oak Fence, Oak Fence Gate and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any wooden fences, any fence gates and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_perimeter.png' | relative_url }}" alt="Crafting Perimeter: a Blank Rune and Oak Fence, Oak Fence Gate and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_perimeter.png' | relative_url }}" alt="Crafting Perimeter: a Blank Rune and any wooden fences, any fence gates and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -641,9 +641,9 @@ A column erupts where you look: hits everything within 1.5 blocks, 6 high.
 
 A beam that splits into three at the first thing it hits, each ray striking the next creature behind it.
 
-**How to get it:** Craft: a Blank Rune, Prismarine Crystals and Glass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Prismarine Crystals and any glass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_prism.png' | relative_url }}" alt="Crafting Prism: a Blank Rune and Prismarine Crystals and Glass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_prism.png' | relative_url }}" alt="Crafting Prism: a Blank Rune and Prismarine Crystals and any glass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Split
 
@@ -665,7 +665,7 @@ Strikes everything behind you within 8 blocks, at 110% power.
 
 *Tier II · 5 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
-An orb that bounces off the ground and walls 4 times, passing through creatures and hitting each once.
+An orb that bounces off the ground and walls up to 5 times (2 with Split), losing 15% power on each bounce and passing through creatures, hitting each once.
 
 **How to get it:** Craft: a Blank Rune, Slimeball and Snowball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -745,9 +745,9 @@ Strikes every creature in water within 10 blocks of you, at 90% power: fish, squ
 
 Strikes the water and the banks beside it within 4 blocks of where you look, and what wades there, at 70% power.
 
-**How to get it:** Craft: a Blank Rune, Sand, Water Bucket and Sugar Cane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any sand, Water Bucket and Sugar Cane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_shoreline.png' | relative_url }}" alt="Crafting Shoreline: a Blank Rune and Sand, Water Bucket and Sugar Cane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_shoreline.png' | relative_url }}" alt="Crafting Shoreline: a Blank Rune and any sand, Water Bucket and Sugar Cane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -758,9 +758,9 @@ Strikes the water and the banks beside it within 4 blocks of where you look, and
 
 Strikes a column 6 high rising from the block you look at, and whatever stands in it: a trunk, a pillar, a stack of cactus.
 
-**How to get it:** Craft: a Blank Rune, Cobblestone Wall and End Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any stone wall and End Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_spire.png' | relative_url }}" alt="Crafting Spire: a Blank Rune and Cobblestone Wall and End Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_spire.png' | relative_url }}" alt="Crafting Spire: a Blank Rune and any stone wall and End Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -771,9 +771,9 @@ Strikes a column 6 high rising from the block you look at, and whatever stands i
 
 Strikes a stair of 8 steps going down ahead of you, three blocks high at each step, at 70% power: dig your way down and walk it.
 
-**How to get it:** Craft: a Blank Rune, Stone Stairs, Iron Pickaxe and Torch, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any stone or deepslate stairs, Iron Pickaxe and Torch, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_stairwell.png' | relative_url }}" alt="Crafting Stairwell: a Blank Rune and Stone Stairs, Iron Pickaxe and Torch, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_stairwell.png' | relative_url }}" alt="Crafting Stairwell: a Blank Rune and any stone or deepslate stairs, Iron Pickaxe and Torch, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -875,9 +875,9 @@ Strikes a 3x3 slab two blocks thick at the block you look at, and everything up 
 
 Strikes the shell of a dome of radius 2 over where you look, and everything under it, at 90% power: carve a room or light a shelter.
 
-**How to get it:** Craft: a Blank Rune, 2x Glass, Smooth Stone and Amethyst Shard, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x any glass, any cobblestone or deepslate and Amethyst Shard, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_dome.png' | relative_url }}" alt="Crafting Dome: a Blank Rune and 2x Glass, Smooth Stone and Amethyst Shard, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_dome.png' | relative_url }}" alt="Crafting Dome: a Blank Rune and 2x any glass, any cobblestone or deepslate and Amethyst Shard, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 

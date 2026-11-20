@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "wilds_sakura_onsen_village": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:wilds_sakura_onsen_village"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:campfire"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wilds_sakura_onsen_village.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wilds_sakura_onsen_village.description"
+    }
+  },
+  "requirements": [
+    [
+      "wilds_sakura_onsen_village"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

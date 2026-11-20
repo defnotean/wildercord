@@ -81,9 +81,9 @@ The rest fires only while rain or snow falls on you.
 
 The rest fires only with no open sky above you.
 
-**How to get it:** Craft: a Blank Rune, Cobblestone and Clock. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any cobblestone or deepslate and Clock. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting If Underground: a Blank Rune and Cobblestone and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_underground.png)
+![Crafting If Underground: a Blank Rune and any cobblestone or deepslate and Clock](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_if_underground.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_harvest.png) On Harvest
 
@@ -268,9 +268,9 @@ The rest waits up to 15 seconds for you to start sprinting, then fires from you.
 
 The rest waits up to 10 minutes for you to wake from a bed, then fires from you.
 
-**How to get it:** Craft: a Blank Rune, White Bed and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any beds and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting On Wake: a Blank Rune and White Bed and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_wake.png)
+![Crafting On Wake: a Blank Rune and any beds and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_on_wake.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/on_weakness.png) On Weakness
 

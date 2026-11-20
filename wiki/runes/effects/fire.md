@@ -33,9 +33,9 @@ Bakes from your inventory: three wheat into bread, then a pumpkin, sugar and an 
 
 A hearth's warmth heals the farm animals and your pets within 5 blocks by 4 (more with power).
 
-**How to get it:** Craft: a Blank Rune, Campfire, Hay Bale and Oak Planks. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Campfire, Hay Bale and any planks. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_barnwarmth.png' | relative_url }}" alt="Crafting Barnwarmth: a Blank Rune and Campfire, Hay Bale and Oak Planks" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_barnwarmth.png' | relative_url }}" alt="Crafting Barnwarmth: a Blank Rune and Campfire, Hay Bale and any planks" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -46,9 +46,9 @@ A hearth's warmth heals the farm animals and your pets within 5 blocks by 4 (mor
 
 A puff of campfire smoke settles the angry bees within 6 blocks: they forget their quarrel and go back to work.
 
-**How to get it:** Craft: a Blank Rune, Campfire, Honeycomb and Oak Leaves. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Campfire, Honeycomb and any leaves. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_calmsmoke.png' | relative_url }}" alt="Crafting Calm Smoke: a Blank Rune and Campfire, Honeycomb and Oak Leaves" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_calmsmoke.png' | relative_url }}" alt="Crafting Calm Smoke: a Blank Rune and Campfire, Honeycomb and any leaves" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -150,9 +150,9 @@ For 10 minutes, open daylight heals you a point every 6 seconds while nothing hu
 
 A warm breath melts the snow layers in a 5-by-5 patch away from crops and soil. Snow blocks and ice are left alone.
 
-**How to get it:** Craft: a Blank Rune, Torch, Snowball and Dirt. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Torch, Snowball and any dirt. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_thawfield.png' | relative_url }}" alt="Crafting Thawfield: a Blank Rune and Torch, Snowball and Dirt" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_thawfield.png' | relative_url }}" alt="Crafting Thawfield: a Blank Rune and Torch, Snowball and any dirt" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -189,7 +189,7 @@ You can't freeze for 10 minutes, even in powder snow. Can be a passive.
 
 Kindles a resting fire for 5 minutes: allies within 6 blocks regenerate and stay warm. One per caster.
 
-**How to get it:** Craft: a Blank Rune, Campfire and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Campfire and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_ember_rest.png' | relative_url }}" alt="Crafting Ember Rest: a Blank Rune and Campfire and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -202,7 +202,7 @@ Kindles a resting fire for 5 minutes: allies within 6 blocks regenerate and stay
 
 5 fire damage and sets alight for 6 seconds.
 
-**How to get it:** Craft: a Blank Rune, Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Desert pyramids; Trial vaults; Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Desert pyramids; Trial vaults; Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_fire.png' | relative_url }}" alt="Crafting Fire: a Blank Rune and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -215,7 +215,7 @@ Kindles a resting fire for 5 minutes: allies within 6 blocks regenerate and stay
 
 Fire resistance for 30 seconds.
 
-**How to get it:** Craft: a Blank Rune, Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_fireward.png' | relative_url }}" alt="Crafting Fireward: a Blank Rune and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -228,7 +228,7 @@ Fire resistance for 30 seconds.
 
 A flash of heat: 5 fire damage to every enemy within 3 blocks, setting them alight for 4 seconds. Allies in it are thawed and dried.
 
-**How to get it:** Craft: a Blank Rune, Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_flashfire.png' | relative_url }}" alt="Crafting Flashfire: a Blank Rune and Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -241,7 +241,7 @@ A flash of heat: 5 fire damage to every enemy within 3 blocks, setting them alig
 
 Piglins within 12 blocks forget their anger at you. Brutes stay angry.
 
-**How to get it:** Craft: a Blank Rune, Gold Ingot, Gold Nugget and Raw Porkchop, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Gold Ingot, Gold Nugget and Raw Porkchop, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_gold_parley.png' | relative_url }}" alt="Crafting Gold Parley: a Blank Rune and Gold Ingot, Gold Nugget and Raw Porkchop, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -254,7 +254,7 @@ Piglins within 12 blocks forget their anger at you. Brutes stay angry.
 
 A 4-block glow for 12 seconds: allies inside are thawed and kept at Regeneration I.
 
-**How to get it:** Craft: a Blank Rune, Campfire and Golden Carrot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Campfire and Golden Carrot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_hearthglow.png' | relative_url }}" alt="Crafting Hearthglow: a Blank Rune and Campfire and Golden Carrot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -267,7 +267,7 @@ A 4-block glow for 12 seconds: allies inside are thawed and kept at Regeneration
 
 Heals each ally within 6 blocks for 2, plus 1 for every ally there (up to 6).
 
-**How to get it:** Craft: a Blank Rune, Note Block and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Note Block and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_hearthsong.png' | relative_url }}" alt="Crafting Hearthsong: a Blank Rune and Note Block and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -280,7 +280,7 @@ Heals each ally within 6 blocks for 2, plus 1 for every ally there (up to 6).
 
 Blocks near the point bake in place when a furnace makes a block of them, like sand to glass. 9 at most.
 
-**How to get it:** Craft: a Blank Rune, Furnace, Coal and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Furnace, Coal and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_kilnbake.png' | relative_url }}" alt="Crafting Kiln Bake: a Blank Rune and Furnace, Coal and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -293,7 +293,7 @@ Blocks near the point bake in place when a furnace makes a block of them, like s
 
 Lava within 3 blocks of the point sets: still lava to obsidian, flowing lava to cobblestone. 16 at most.
 
-**How to get it:** Craft: a Blank Rune, Water Bucket and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Water Bucket and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_lavaseal.png' | relative_url }}" alt="Crafting Lava Seal: a Blank Rune and Water Bucket and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -306,9 +306,9 @@ Lava within 3 blocks of the point sets: still lava to obsidian, flowing lava to 
 
 Allies within 6 blocks get Absorption for 20 seconds, one level for each ally there (up to III).
 
-**How to get it:** Craft: a Blank Rune, Golden Apple and White Banner, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Golden Apple and any banners, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
-<img src="{{ '/assets/recipes/rune_morale.png' | relative_url }}" alt="Crafting Morale: a Blank Rune and Golden Apple and White Banner, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_morale.png' | relative_url }}" alt="Crafting Morale: a Blank Rune and Golden Apple and any banners, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -319,7 +319,7 @@ Allies within 6 blocks get Absorption for 20 seconds, one level for each ally th
 
 Senses the nearest ruined portal and tells which way and roughly how far. Structure senses share a 30-second rest.
 
-**How to get it:** Craft: a Blank Rune, Empty Map and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Empty Map and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_portal_sense.png' | relative_url }}" alt="Crafting Portal Sense: a Blank Rune and Empty Map and Obsidian, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -332,7 +332,7 @@ Senses the nearest ruined portal and tells which way and roughly how far. Struct
 
 Brewing stands within 6 blocks brew twice as fast for 20 seconds.
 
-**How to get it:** Craft: a Blank Rune, Blaze Powder, Glass Bottle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Blaze Powder, Glass Bottle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_quickbrew.png' | relative_url }}" alt="Crafting Quickbrew: a Blank Rune and Blaze Powder, Glass Bottle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -345,7 +345,7 @@ Brewing stands within 6 blocks brew twice as fast for 20 seconds.
 
 For 15 seconds the target's weapon sears: each melee hit it lands sets the foe alight for 4 seconds and deals 2 more fire damage.
 
-**How to get it:** Craft: a Blank Rune, Iron Sword and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Iron Sword and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_searing_edge.png' | relative_url }}" alt="Crafting Searing Edge: a Blank Rune and Iron Sword and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -358,7 +358,7 @@ For 15 seconds the target's weapon sears: each melee hit it lands sets the foe a
 
 Mines the block that was hit and drops it smelted, as a furnace would (iron-pickaxe hardness; Amplify for diamond).
 
-**How to get it:** Craft: a Blank Rune, Furnace and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Furnace and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_smelt.png' | relative_url }}" alt="Crafting Smelt: a Blank Rune and Furnace and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -371,7 +371,7 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 
 Sets up to 6 torches from your pack on the darkest floor near the point, 5 blocks apart.
 
-**How to get it:** Craft: a Blank Rune, 2x Torch and Coal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, 2x Torch and Coal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_torchfall.png' | relative_url }}" alt="Crafting Torchfall: a Blank Rune and 2x Torch and Coal, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -384,7 +384,7 @@ Sets up to 6 torches from your pack on the darkest floor near the point, 5 block
 
 12 damage in a 3.5-block blast that throws what it hits. Blasts of one cast never stack on one enemy. Never breaks blocks.
 
-**How to get it:** Craft: a Blank Rune, TNT and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Creepers (1%); Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, TNT and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Creepers (1%); Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_explode.png' | relative_url }}" alt="Crafting Explode: a Blank Rune and TNT and Fire Charge, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -397,7 +397,7 @@ Sets up to 6 torches from your pack on the darkest floor near the point, 5 block
 
 In the Nether, senses the nearest fortress and tells which way and roughly how far. Structure senses share a 30-second rest.
 
-**How to get it:** Craft: a Blank Rune, Empty Map, Nether Bricks and Blaze Powder, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Empty Map, Nether Bricks and Blaze Powder, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_fortress_sense.png' | relative_url }}" alt="Crafting Fortress Sense: a Blank Rune and Empty Map, Nether Bricks and Blaze Powder, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -410,7 +410,7 @@ In the Nether, senses the nearest fortress and tells which way and roughly how f
 
 Cooks the raw food in your own inventory as a smoker would: up to 8 pieces (16 at double power). Only food; the rest of your pack is left alone.
 
-**How to get it:** Craft: a Blank Rune, Smoker, Coal and Raw Beef, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Smoker, Coal and Raw Beef, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_hearthcook.png' | relative_url }}" alt="Crafting Hearthcook: a Blank Rune and Smoker, Coal and Raw Beef, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -423,7 +423,7 @@ Cooks the raw food in your own inventory as a smoker would: up to 8 pieces (16 a
 
 Everything within 4 blocks burns: 3 fire damage a second for 4 seconds.
 
-**How to get it:** Craft: a Blank Rune, Blaze Rod and Magma Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Blaze Rod and Magma Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_inferno.png' | relative_url }}" alt="Crafting Inferno: a Blank Rune and Blaze Rod and Magma Block, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -436,7 +436,7 @@ Everything within 4 blocks burns: 3 fire damage a second for 4 seconds.
 
 A burning meteor falls on each target (two at most) 1.2 seconds later: 12 damage in a 3.5-block blast, and the crater burns on for a moment.
 
-**How to get it:** Craft: a Blank Rune, Magma Block and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, Magma Block and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_meteor.png' | relative_url }}" alt="Crafting Meteor: a Blank Rune and Magma Block and Fire Charge, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -449,7 +449,7 @@ A burning meteor falls on each target (two at most) 1.2 seconds later: 12 damage
 
 Turns each target into a bomb that goes off 2 seconds later, or the moment it dies: 10 damage within 3 blocks (an enemy takes only the strongest bomb). Never breaks blocks.
 
-**How to get it:** Craft: a Blank Rune, TNT and Pink Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Trial vaults; Ember Sanctum.
+**How to get it:** Craft: a Blank Rune, TNT and Pink Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Trial vaults; Ember Sanctum; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_primer.png' | relative_url }}" alt="Crafting Primer: a Blank Rune and TNT and Pink Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

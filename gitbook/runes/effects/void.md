@@ -13,9 +13,9 @@ Darkness, gravity and space. Void pulls, blinks, withers and swallows light.
 
 Holds you fast for 15 seconds: blows and blasts can't knock you back, no spell can move you, and 4 more armour (8 once you've stood still a second).
 
-**How to get it:** Craft: a Blank Rune, Iron Chain and Cobblestone. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Chain and any cobblestone or deepslate. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Anchor: a Blank Rune and Iron Chain and Cobblestone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_anchor.png)
+![Crafting Anchor: a Blank Rune and Iron Chain and any cobblestone or deepslate](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_anchor.png)
 
 **Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -156,9 +156,9 @@ For 10 minutes, endermen you haven't hurt forget their anger at you. Can be a pa
 
 Item frames holding an item within 6 blocks turn invisible. Cast again to show them.
 
-**How to get it:** Craft: a Blank Rune, Item Frame and Glass Pane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Item Frame and any glass pane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
 
-![Crafting Frame Veil: a Blank Rune and Item Frame and Glass Pane, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_frame_veil.png)
+![Crafting Frame Veil: a Blank Rune and Item Frame and any glass pane, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_frame_veil.png)
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -260,9 +260,9 @@ Tops up your hotbar stacks from the chest hit.
 
 For 5 minutes, monsters more than 8 blocks away lose track of you, unless you struck them in the last 10 seconds. Can be a passive.
 
-**How to get it:** Craft: a Blank Rune, White Wool and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+**How to get it:** Craft: a Blank Rune, any wool and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
 
-![Crafting Softfoot: a Blank Rune and White Wool and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_softfoot.png)
+![Crafting Softfoot: a Blank Rune and any wool and Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_softfoot.png)
 
 **Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

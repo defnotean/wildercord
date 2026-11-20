@@ -11,7 +11,7 @@ nav_order: 8
 
 Pure magic. Arcane strikes, reveals, silences, summons and bends the rules.
 
-76 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
+77 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/appraise.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Appraise
 {: #appraise}
@@ -20,9 +20,9 @@ Pure magic. Arcane strikes, reveals, silences, summons and bends the rules.
 
 Reads a villager: their trade, their level, and how many of their trades are sold out.
 
-**How to get it:** Craft: a Blank Rune, Emerald and Glass Pane. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Emerald and any glass pane. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_appraise.png' | relative_url }}" alt="Crafting Appraise: a Blank Rune and Emerald and Glass Pane" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_appraise.png' | relative_url }}" alt="Crafting Appraise: a Blank Rune and Emerald and any glass pane" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -46,9 +46,9 @@ Luck for 60 seconds, Luck II with Amplify. Fishing reads your luck, so better ca
 
 A thin barrier of light: 2 absorption hearts for 20 seconds.
 
-**How to get it:** Craft: a Blank Rune, Glass and Amethyst Shard. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any glass and Amethyst Shard. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_barrier.png' | relative_url }}" alt="Crafting Barrier: a Blank Rune and Glass and Amethyst Shard" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_barrier.png' | relative_url }}" alt="Crafting Barrier: a Blank Rune and any glass and Amethyst Shard" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -202,9 +202,9 @@ Haste II for 30 seconds: mine and swing faster, and a charged cast fills 30% soo
 
 For a minute, warm motes point the way to your bed or spawn.
 
-**How to get it:** Craft: a Blank Rune, Compass and Red Bed. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Compass and any beds. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_hearthpath.png' | relative_url }}" alt="Crafting Hearthpath: a Blank Rune and Compass and Red Bed" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_hearthpath.png' | relative_url }}" alt="Crafting Hearthpath: a Blank Rune and Compass and any beds" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -280,9 +280,9 @@ For 30 seconds, gold motes point to the nearest loose items within 32 blocks.
 
 Reads the light where it lands, from blocks and from the sky, and whether monsters may spawn there.
 
-**How to get it:** Craft: a Blank Rune, Torch and Glass Pane. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Torch and any glass pane. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_lux_reading.png' | relative_url }}" alt="Crafting Lux Reading: a Blank Rune and Torch and Glass Pane" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_lux_reading.png' | relative_url }}" alt="Crafting Lux Reading: a Blank Rune and Torch and any glass pane" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -345,9 +345,9 @@ Monsters within 16 blocks of the target glow for 10 seconds.
 
 At an enchanting table: how many bookshelves feed it, out of 15, and how many are blocked.
 
-**How to get it:** Craft: a Blank Rune, Book and Oak Planks. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Book and any planks. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_shelf_count.png' | relative_url }}" alt="Crafting Shelf Count: a Blank Rune and Book and Oak Planks" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_shelf_count.png' | relative_url }}" alt="Crafting Shelf Count: a Blank Rune and Book and any planks" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -358,9 +358,9 @@ At an enchanting table: how many bookshelves feed it, out of 15, and how many ar
 
 Points to the nearest dry land within 48 blocks.
 
-**How to get it:** Craft: a Blank Rune, Compass and Sand. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Compass and any sand. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_shore_sense.png' | relative_url }}" alt="Crafting Shore Sense: a Blank Rune and Compass and Sand" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_shore_sense.png' | relative_url }}" alt="Crafting Shore Sense: a Blank Rune and Compass and any sand" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -488,9 +488,9 @@ Heals the most hurt ally within 8 blocks of where it lands (you too) for 6.
 
 Wards an 8-block camp for 5 minutes: monsters that appear inside fade at once, and phantoms nearby lose their prey. One per caster.
 
-**How to get it:** Craft: a Blank Rune, Campfire and White Wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Campfire and any wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
-<img src="{{ '/assets/recipes/rune_camp_ward.png' | relative_url }}" alt="Crafting Camp Ward: a Blank Rune and Campfire and White Wool, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_camp_ward.png' | relative_url }}" alt="Crafting Camp Ward: a Blank Rune and Campfire and any wool, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -501,7 +501,7 @@ Wards an 8-block camp for 5 minutes: monsters that appear inside fade at once, a
 
 A spoken command: everything hit is stunned for 2 seconds and condemned: your next 2 spell hits on it deal 40% more. Speaking it costs you 2 health, unless it holds 3 or more.
 
-**How to get it:** Craft: a Blank Rune, Book and Quill, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Evokers (10%); Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Book and Quill, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Evokers (10%); Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_decree.png' | relative_url }}" alt="Crafting Decree: a Blank Rune and Book and Quill, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -514,7 +514,7 @@ A spoken command: everything hit is stunned for 2 seconds and condemned: your ne
 
 Strength II for 10 seconds, then Weakness I for 4 (a passive carries only Strength I).
 
-**How to get it:** Craft: a Blank Rune, Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Bastions; Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Bastions; Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_empower.png' | relative_url }}" alt="Crafting Empower: a Blank Rune and Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -527,7 +527,7 @@ Strength II for 10 seconds, then Weakness I for 4 (a passive carries only Streng
 
 A light follows the target for 60 seconds.
 
-**How to get it:** Craft: a Blank Rune, Lantern and Leather Cap, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Lantern and Leather Cap, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_headlamp.png' | relative_url }}" alt="Crafting Headlamp: a Blank Rune and Lantern and Leather Cap, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -540,7 +540,7 @@ A light follows the target for 60 seconds.
 
 For 60 seconds, your next enchantment at a table gives one lapis back.
 
-**How to get it:** Craft: a Blank Rune, Lapis Lazuli and Book, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Lapis Lazuli and Book, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_lapis_thrift.png' | relative_url }}" alt="Crafting Lapis Thrift: a Blank Rune and Lapis Lazuli and Book, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -553,7 +553,7 @@ For 60 seconds, your next enchantment at a table gives one lapis back.
 
 Sets your lodestar where it lands, or at your feet. Homeward takes you back to it.
 
-**How to get it:** Craft: a Blank Rune, Lodestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Lodestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_lodestar.png' | relative_url }}" alt="Crafting Lodestar: a Blank Rune and Lodestone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -566,7 +566,7 @@ Sets your lodestar where it lands, or at your feet. Homeward takes you back to i
 
 Hangs a light every 4 blocks from you to the point, 6 at most, for 120 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Glowstone Dust and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, 2x Glowstone Dust and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_lumenpath.png' | relative_url }}" alt="Crafting Lumen Path: a Blank Rune and 2x Glowstone Dust and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -579,7 +579,7 @@ Hangs a light every 4 blocks from you to the point, 6 at most, for 120 seconds.
 
 Offers an allied connected caster a three-second mana gift. They must release and freshly crouch to accept. After the spell price, spends at most twenty-four extra mana to restore at most sixteen, keeping two. Donor rests thirty seconds; receiver ten.
 
-**How to get it:** Craft: a Blank Rune, Lapis Lazuli, Amethyst Shard and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Lapis Lazuli, Amethyst Shard and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_manabraid.png' | relative_url }}" alt="Crafting Manabraid: a Blank Rune and Lapis Lazuli, Amethyst Shard and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -592,7 +592,7 @@ Offers an allied connected caster a three-second mana gift. They must release an
 
 Gives up to 20 of your mana to each ally player hit; they get three quarters of it. Never yourself.
 
-**How to get it:** Craft: a Blank Rune, Amethyst Shard and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Amethyst Shard and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_managift.png' | relative_url }}" alt="Crafting Managift: a Blank Rune and Amethyst Shard and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -605,11 +605,24 @@ Gives up to 20 of your mana to each ally player hit; they get three quarters of 
 
 For 10 minutes, a bell warns you when a monster within 16 blocks starts hunting you. Can be a passive.
 
-**How to get it:** Craft: a Blank Rune, Bell and Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Bell and Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_nightwatch.png' | relative_url }}" alt="Crafting Nightwatch: a Blank Rune and Bell and Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/ofuda_ward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ofuda Ward
+{: #ofuda_ward}
+
+*Tier II · Arcane · Helps you and your allies · 10 mana · needs a Copper Cord or better*
+
+Binds a paper talisman to the target for 15 seconds: Absorption I, and the next 3 attackers take 3 arcane damage back.
+
+**How to get it:** Craft: a Blank Rune, Paper and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
+
+<img src="{{ '/assets/recipes/rune_ofuda_ward.png' | relative_url }}" alt="Crafting Ofuda Ward: a Blank Rune and Paper and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/pacify.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pacify
 {: #pacify}
@@ -618,7 +631,7 @@ For 10 minutes, a bell warns you when a monster within 16 blocks starts hunting 
 
 The creature forgets its target and picks none for 6 seconds; harming it ends this. Players get Weakness instead. Not bosses.
 
-**How to get it:** Craft: a Blank Rune, Poppy and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Poppy and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_pacify.png' | relative_url }}" alt="Crafting Pacify: a Blank Rune and Poppy and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -631,7 +644,7 @@ The creature forgets its target and picks none for 6 seconds; harming it ends th
 
 Conduit Power for 30 seconds.
 
-**How to get it:** Craft: a Blank Rune, Prismarine Crystals and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Prismarine Crystals and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_pearl_sight.png' | relative_url }}" alt="Crafting Pearl Sight: a Blank Rune and Prismarine Crystals and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -644,7 +657,7 @@ Conduit Power for 30 seconds.
 
 Fish, squid, dolphins, turtles and axolotls within 16 blocks of the point glow for 12 seconds.
 
-**How to get it:** Craft: a Blank Rune, Tropical Fish and Glow Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Tropical Fish and Glow Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_school_sight.png' | relative_url }}" alt="Crafting School Sight: a Blank Rune and Tropical Fish and Glow Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -657,7 +670,7 @@ Fish, squid, dolphins, turtles and axolotls within 16 blocks of the point glow f
 
 Casters can't cast: a cast in hand is cut short and none can follow for 4 seconds (3 on players). Monsters are weakened for 6 seconds.
 
-**How to get it:** Craft: a Blank Rune, any wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, any wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_silence.png' | relative_url }}" alt="Crafting Silence: a Blank Rune and any wool, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -670,7 +683,7 @@ Casters can't cast: a cast in hand is cut short and none can follow for 4 second
 
 Mines the block hit whole, as Silk Touch would. Never a chest or anything with contents.
 
-**How to get it:** Craft: a Blank Rune, 2x String and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, 2x String and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_silklift.png' | relative_url }}" alt="Crafting Silklift: a Blank Rune and 2x String and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -683,7 +696,7 @@ Mines the block hit whole, as Silk Touch would. Never a chest or anything with c
 
 A neutral creature forgets its anger and its target.
 
-**How to get it:** Craft: a Blank Rune, Honeycomb and Poppy, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Honeycomb and Poppy, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_soothe.png' | relative_url }}" alt="Crafting Soothe: a Blank Rune and Honeycomb and Poppy, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -696,9 +709,9 @@ A neutral creature forgets its anger and its target.
 
 A bridge of glass grows from your feet toward the point, up to 16 blocks, and shatters 30 seconds later.
 
-**How to get it:** Craft: a Blank Rune, 2x Magenta Stained Glass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, 2x any glass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
-<img src="{{ '/assets/recipes/rune_span.png' | relative_url }}" alt="Crafting Span: a Blank Rune and 2x Magenta Stained Glass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_span.png' | relative_url }}" alt="Crafting Span: a Blank Rune and 2x any glass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -709,7 +722,7 @@ A bridge of glass grows from your feet toward the point, up to 16 blocks, and sh
 
 Brands each target with a sigil for 8 seconds. The next time your magic hurts it, the sigil bursts for 7 damage of the element of the spell that set it off.
 
-**How to get it:** Craft: a Blank Rune, Book and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Book and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_spellbrand.png' | relative_url }}" alt="Crafting Spellbrand: a Blank Rune and Book and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -722,7 +735,7 @@ Brands each target with a sigil for 8 seconds. The next time your magic hurts it
 
 For 5 minutes, standing still for 3 seconds slowly refills your mana, up to 12.
 
-**How to get it:** Craft: a Blank Rune, Water Bucket and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Water Bucket and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_stillwell.png' | relative_url }}" alt="Crafting Stillwell: a Blank Rune and Water Bucket and Lapis Lazuli, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -735,7 +748,7 @@ For 5 minutes, standing still for 3 seconds slowly refills your mana, up to 12.
 
 You and the first creature hit trade places, instantly.
 
-**How to get it:** Craft: a Blank Rune, 2x Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts; Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, 2x Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts; Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_swap.png' | relative_url }}" alt="Crafting Swap: a Blank Rune and 2x Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -748,7 +761,7 @@ You and the first creature hit trade places, instantly.
 
 Mends the tool in the target's hand with its repair material from your pack: a quarter for each, 4 at most.
 
-**How to get it:** Craft: a Blank Rune, Anvil, Iron Ingot and Grindstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Anvil, Iron Ingot and Grindstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_toolmend.png' | relative_url }}" alt="Crafting Tool Mend: a Blank Rune and Anvil, Iron Ingot and Grindstone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -761,7 +774,7 @@ Mends the tool in the target's hand with its repair material from your pack: a q
 
 Watches a visible dry floor for forty-five seconds. Gives its owner one private warning only after a visible monster targeting them crosses into three blocks in consecutive complete samples. Remain within sixteen blocks; ninety-second rest.
 
-**How to get it:** Craft: a Blank Rune, Feather, String and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Feather, String and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_watchweft.png' | relative_url }}" alt="Crafting Watchweft: a Blank Rune and Feather, String and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -774,7 +787,7 @@ Watches a visible dry floor for forty-five seconds. Gives its owner one private 
 
 Chests and barrels under water and suspicious sand and gravel within 20 blocks shine for 15 seconds, up to 12.
 
-**How to get it:** Craft: a Blank Rune, Prismarine Shard and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Prismarine Shard and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_wreck_sense.png' | relative_url }}" alt="Crafting Wreck Sense: a Blank Rune and Prismarine Shard and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -787,7 +800,7 @@ Chests and barrels under water and suspicious sand and gravel within 20 blocks s
 
 Beacons within 16 blocks reach half again as far for 60 seconds.
 
-**How to get it:** Craft: a Blank Rune, Glowstone Dust, Iron Ingot and Prismarine Crystals, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Glowstone Dust, Iron Ingot and Prismarine Crystals, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_beacon_swell.png' | relative_url }}" alt="Crafting Beacon Swell: a Blank Rune and Glowstone Dust, Iron Ingot and Prismarine Crystals, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -800,7 +813,7 @@ Beacons within 16 blocks reach half again as far for 60 seconds.
 
 For 2 minutes villagers within 12 blocks take 60% less damage from monsters, and monsters there glow.
 
-**How to get it:** Craft: a Blank Rune, Bell and Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Bell and Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_bellward.png' | relative_url }}" alt="Crafting Bellward: a Blank Rune and Bell and Emerald, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -813,7 +826,7 @@ For 2 minutes villagers within 12 blocks take 60% less damage from monsters, and
 
 Up to 6 grown farm animals within 5 blocks fall in love at once, as if you'd fed them. Animals that aren't ready yet (or belong to someone else) are left alone.
 
-**How to get it:** Craft: a Blank Rune, Wheat Crops, Carrot and Poppy, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Wheat Crops, Carrot and Poppy, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_courtship.png' | relative_url }}" alt="Crafting Courtship: a Blank Rune and Wheat Crops, Carrot and Poppy, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -826,7 +839,7 @@ Up to 6 grown farm animals within 5 blocks fall in love at once, as if you'd fed
 
 For 5 minutes, a killing blow leaves your pet at 1 health beside you. Once per 10 minutes each.
 
-**How to get it:** Craft: a Blank Rune, Bone and Golden Apple, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Bone and Golden Apple, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_faithful.png' | relative_url }}" alt="Crafting Faithful: a Blank Rune and Bone and Golden Apple, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -839,9 +852,9 @@ For 5 minutes, a killing blow leaves your pet at 1 health beside you. Once per 1
 
 For 20 seconds villagers give you their Hero of the Village prices.
 
-**How to get it:** Craft: a Blank Rune, 2x Emerald and White Banner, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, 2x Emerald and any banners, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
-<img src="{{ '/assets/recipes/rune_haggle.png' | relative_url }}" alt="Crafting Haggle: a Blank Rune and 2x Emerald and White Banner, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_haggle.png' | relative_url }}" alt="Crafting Haggle: a Blank Rune and 2x Emerald and any banners, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -852,7 +865,7 @@ For 20 seconds villagers give you their Hero of the Village prices.
 
 A 3-block well for 10 seconds: allies inside regain 2 mana each second.
 
-**How to get it:** Craft: a Blank Rune, Amethyst Shard and Cauldron, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Amethyst Shard and Cauldron, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_manawell.png' | relative_url }}" alt="Crafting Manawell: a Blank Rune and Amethyst Shard and Cauldron, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -865,7 +878,7 @@ A 3-block well for 10 seconds: allies inside regain 2 mana each second.
 
 Raises a beacon for 3 minutes: allies within 10 blocks get Haste I and Speed I. One per caster.
 
-**How to get it:** Craft: a Blank Rune, Beacon, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Beacon, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_rally_light.png' | relative_url }}" alt="Crafting Rally Light: a Blank Rune and Beacon, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -878,9 +891,9 @@ Raises a beacon for 3 minutes: allies within 10 blocks get Haste I and Speed I. 
 
 For 10 seconds, whatever hurts the target takes 60% of the damage back as arcane damage that ignores armour. Each reflection cracks it (6 at most).
 
-**How to get it:** Craft: a Blank Rune, Shield and Glass Pane, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Shield and any glass pane, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
-<img src="{{ '/assets/recipes/rune_reflect.png' | relative_url }}" alt="Crafting Reflect: a Blank Rune and Shield and Glass Pane, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_reflect.png' | relative_url }}" alt="Crafting Reflect: a Blank Rune and Shield and any glass pane, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -891,7 +904,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back as arcane
 
 5 damage and a cursed mark for 10 seconds. Up to 4 other marked enemies within 16 blocks take half of it too, once each per cast.
 
-**How to get it:** Craft: a Blank Rune, Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Stronghold libraries; Woodland mansions; Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Stronghold libraries; Woodland mansions; Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_resonance.png' | relative_url }}" alt="Crafting Resonance: a Blank Rune and Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -904,7 +917,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back as arcane
 
 A 6-block circle for 30 seconds: no monster spawns there, and monsters inside are nudged out.
 
-**How to get it:** Craft: a Blank Rune, Candle and Glowstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Candle and Glowstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_sanctuary.png' | relative_url }}" alt="Crafting Sanctuary: a Blank Rune and Candle and Glowstone Dust, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -917,7 +930,7 @@ A 6-block circle for 30 seconds: no monster spawns there, and monsters inside ar
 
 A ring closes at the target's feet; 0.7 seconds later a column of light deals 13 holy damage (doubled against undead) and strips Absorption.
 
-**How to get it:** Craft: a Blank Rune, Glowstone and Golden Carrot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Stronghold libraries; Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, Glowstone and Golden Carrot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Stronghold libraries; Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_smite.png' | relative_url }}" alt="Crafting Smite: a Blank Rune and Glowstone and Golden Carrot, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -930,9 +943,9 @@ A ring closes at the target's feet; 0.7 seconds later a column of light deals 13
 
 Every enemy within 8 blocks is pacified for 4 seconds. Not bosses.
 
-**How to get it:** Craft: a Blank Rune, White Wool and Poppy, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory.
+**How to get it:** Craft: a Blank Rune, any wool and Poppy, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Clockwork Crypt; Astral Observatory; Cat Sanctuary.
 
-<img src="{{ '/assets/recipes/rune_truce.png' | relative_url }}" alt="Crafting Truce: a Blank Rune and White Wool and Poppy, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_truce.png' | relative_url }}" alt="Crafting Truce: a Blank Rune and any wool and Poppy, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

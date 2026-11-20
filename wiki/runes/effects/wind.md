@@ -11,7 +11,7 @@ nav_order: 4
 
 Air and motion. Wind throws, lifts, dashes, turns arrows aside and carries you through the sky.
 
-48 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
+49 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/cushion.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cushion
 {: #cushion}
@@ -72,9 +72,9 @@ A farmhand's long stride: Speed I and Jump Boost I for 20 seconds.
 
 Shears every woolly sheep within 5 blocks, as shears would, and the wool falls at their feet.
 
-**How to get it:** Craft: a Blank Rune, Shears, White Wool and Feather. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Shears, any wool and Feather. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_fleece.png' | relative_url }}" alt="Crafting Fleece: a Blank Rune and Shears, White Wool and Feather" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_fleece.png' | relative_url }}" alt="Crafting Fleece: a Blank Rune and Shears, any wool and Feather" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -150,9 +150,9 @@ Points you to the nearest open cave within 12 blocks of the point.
 
 Tells which way your bed or respawn anchor lies and roughly how far, when it is in this world.
 
-**How to get it:** Craft: a Blank Rune, Compass and White Wool. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Compass and any wool. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_home_bearing.png' | relative_url }}" alt="Crafting Home Bearing: a Blank Rune and Compass and White Wool" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_home_bearing.png' | relative_url }}" alt="Crafting Home Bearing: a Blank Rune and Compass and any wool" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -176,9 +176,9 @@ Sweet as a honey bottle: cures Poison and heals 3 (more with power).
 
 The wild leaves in a 5-by-5-by-5 block around the point drop now, as if they'd decayed, with what decay would drop. Leaves placed by hand stay.
 
-**How to get it:** Craft: a Blank Rune, Oak Leaves, Shears and Feather. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any leaves, Shears and Feather. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_leaffall.png' | relative_url }}" alt="Crafting Leaffall: a Blank Rune and Oak Leaves, Shears and Feather" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_leaffall.png' | relative_url }}" alt="Crafting Leaffall: a Blank Rune and any leaves, Shears and Feather" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -319,7 +319,7 @@ A cutting wind: 4 damage and a light shove, and it breaks what the target is win
 
 A 4-block dome for 10 seconds: enemy missiles inside drop out of the air.
 
-**How to get it:** Craft: a Blank Rune, Arrow and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Arrow and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_arrowveil.png' | relative_url }}" alt="Crafting Arrowveil: a Blank Rune and Arrow and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -332,7 +332,7 @@ A 4-block dome for 10 seconds: enemy missiles inside drop out of the air.
 
 You zip straight ahead like a bee to a flower, about 6 blocks, and land without a fall.
 
-**How to get it:** Craft: a Blank Rune, Honeycomb, Feather and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Honeycomb, Feather and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_beeline.png' | relative_url }}" alt="Crafting Beeline: a Blank Rune and Honeycomb, Feather and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -345,7 +345,7 @@ You zip straight ahead like a bee to a flower, about 6 blocks, and land without 
 
 A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, then flings them all the way you were facing for 3 damage.
 
-**How to get it:** Craft: a Blank Rune, Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_cyclone.png' | relative_url }}" alt="Crafting Cyclone: a Blank Rune and Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -358,7 +358,7 @@ A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, th
 
 Shoves targets the way you're facing. On Self it's a precise dash of about ten blocks: level, and it stops where it should.
 
-**How to get it:** Craft: a Blank Rune, Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_dash.png' | relative_url }}" alt="Crafting Dash: a Blank Rune and Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -371,7 +371,7 @@ Shoves targets the way you're facing. On Self it's a precise dash of about ten b
 
 For 8 seconds a whirl of wind sends arrows and other projectiles coming at the target back at whoever shot them.
 
-**How to get it:** Craft: a Blank Rune, Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_deflect.png' | relative_url }}" alt="Crafting Deflect: a Blank Rune and Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -384,7 +384,7 @@ For 8 seconds a whirl of wind sends arrows and other projectiles coming at the t
 
 A snatching gust tears the weapon from each creature's hand for 5 seconds, then it drifts back. Bosses keep hold; a player keeps hold too, but can't use what they're holding for 3 seconds.
 
-**How to get it:** Craft: a Blank Rune, Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_disarm.png' | relative_url }}" alt="Crafting Disarm: a Blank Rune and Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -397,7 +397,7 @@ A snatching gust tears the weapon from each creature's hand for 5 seconds, then 
 
 For 10 seconds the next melee blow misses and the target slips aside.
 
-**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_evade.png' | relative_url }}" alt="Crafting Evade: a Blank Rune and Rabbit's Foot and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -410,9 +410,9 @@ For 10 seconds the next melee blow misses and the target slips aside.
 
 In a boat: sail the way you look for 10 seconds.
 
-**How to get it:** Craft: a Blank Rune, White Wool and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, any wool and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
-<img src="{{ '/assets/recipes/rune_fair_wind.png' | relative_url }}" alt="Crafting Fair Wind: a Blank Rune and White Wool and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_fair_wind.png' | relative_url }}" alt="Crafting Fair Wind: a Blank Rune and any wool and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -423,7 +423,7 @@ In a boat: sail the way you look for 10 seconds.
 
 Your pets within 32 blocks that are not sitting come to your side.
 
-**How to get it:** Craft: a Blank Rune, Goat Horn and Bone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Goat Horn and Bone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_heel.png' | relative_url }}" alt="Crafting Heel: a Blank Rune and Goat Horn and Bone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -436,7 +436,7 @@ Your pets within 32 blocks that are not sitting come to your side.
 
 Flings targets high into the air, where every spell hits them harder. On Self it rockets you up and forward.
 
-**How to get it:** Craft: a Blank Rune, Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_launch.png' | relative_url }}" alt="Crafting Launch: a Blank Rune and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -449,7 +449,7 @@ Flings targets high into the air, where every spell hits them harder. On Self it
 
 Targets hang in the air for 3 seconds, their drift stopped, and every spell hits them harder while they're off the ground. On Self you float.
 
-**How to get it:** Craft: a Blank Rune, Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; End cities; Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; End cities; Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_levitate.png' | relative_url }}" alt="Crafting Levitate: a Blank Rune and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -462,7 +462,7 @@ Targets hang in the air for 3 seconds, their drift stopped, and every spell hits
 
 The bees within 8 blocks dust the crops around the point: one crop in a 5-by-5 patch grows a stage for each bee, 2 per bee at double power. No bees, no help.
 
-**How to get it:** Craft: a Blank Rune, Honeycomb, Dandelion and Poppy, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Honeycomb, Dandelion and Poppy, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_pollinate.png' | relative_url }}" alt="Crafting Pollinate: a Blank Rune and Honeycomb, Dandelion and Poppy, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -475,9 +475,9 @@ The bees within 8 blocks dust the crops around the point: one crop in a 5-by-5 p
 
 Allies within 8 blocks get Speed I and Jump Boost I for 12 seconds.
 
-**How to get it:** Craft: a Blank Rune, White Banner and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, any banners and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
-<img src="{{ '/assets/recipes/rune_rally.png' | relative_url }}" alt="Crafting Rally: a Blank Rune and White Banner and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_rally.png' | relative_url }}" alt="Crafting Rally: a Blank Rune and any banners and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -488,7 +488,7 @@ Allies within 8 blocks get Speed I and Jump Boost I for 12 seconds.
 
 A violent outward blast: 4 damage and hurls everything within 3 blocks away (light creatures far, heavy ones barely). On enemies just pulled in, it sets off Collapse.
 
-**How to get it:** Craft: a Blank Rune, 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Breezes (8%); Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Breezes (8%); Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_repel.png' | relative_url }}" alt="Crafting Repel: a Blank Rune and 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -501,7 +501,7 @@ A violent outward blast: 4 damage and hurls everything within 3 blocks away (lig
 
 Clears Mining Fatigue, Nausea and Hunger.
 
-**How to get it:** Craft: a Blank Rune, Feather and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Feather and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_sea_breeze.png' | relative_url }}" alt="Crafting Sea Breeze: a Blank Rune and Feather and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -514,11 +514,24 @@ Clears Mining Fatigue, Nausea and Hunger.
 
 Your mount, or the animal it touches, gets Speed II and Jump Boost II for 3 minutes.
 
-**How to get it:** Craft: a Blank Rune, Saddle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Saddle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_steedsong.png' | relative_url }}" alt="Crafting Steedsong: a Blank Rune and Saddle and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
+
+### <img src="{{ '/assets/runes/suzu_chime.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Suzu Chime
+{: #suzu_chime}
+
+*Tier II · Wind · Harms enemies · 8 mana · needs a Copper Cord or better*
+
+Rings a shrine bell at the point: 6 wind damage to enemies within 4 blocks, pushing them back, and allies there gain Speed I for 6 seconds.
+
+**How to get it:** Craft: a Blank Rune, Bell and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
+
+<img src="{{ '/assets/recipes/rune_suzu_chime.png' | relative_url }}" alt="Crafting Suzu Chime: a Blank Rune and Bell and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
 ### <img src="{{ '/assets/runes/trot.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Trot
 {: #trot}
@@ -527,7 +540,7 @@ Your mount, or the animal it touches, gets Speed II and Jump Boost II for 3 minu
 
 Your mount (or the horse you strike) gets Speed II and Jump Boost I for 20 seconds. Cast on yourself while riding.
 
-**How to get it:** Craft: a Blank Rune, Saddle, Carrot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Saddle, Carrot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_trot.png' | relative_url }}" alt="Crafting Trot: a Blank Rune and Saddle, Carrot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -540,7 +553,7 @@ Your mount (or the horse you strike) gets Speed II and Jump Boost I for 20 secon
 
 Senses the nearest village and tells which way and roughly how far. Structure senses share a 30-second rest.
 
-**How to get it:** Craft: a Blank Rune, Empty Map and Emerald, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Empty Map and Emerald, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_village_sense.png' | relative_url }}" alt="Crafting Village Sense: a Blank Rune and Empty Map and Emerald, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -553,7 +566,7 @@ Senses the nearest village and tells which way and roughly how far. Structure se
 
 Forms five real wind platforms ahead, ascending one block every two steps. Lasts eight seconds; allies standing on expiring steps get three seconds of slow falling.
 
-**How to get it:** Craft: a Blank Rune, Feather, Breeze Rod and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Feather, Breeze Rod and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_wind_steps.png' | relative_url }}" alt="Crafting Wind Steps: a Blank Rune and Feather, Breeze Rod and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -566,9 +579,9 @@ Forms five real wind platforms ahead, ascending one block every two steps. Lasts
 
 Enemies within 5 blocks are kept inside the ring for 6 seconds.
 
-**How to get it:** Craft: a Blank Rune, Oak Fence and Lead, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, any wooden fences and Lead, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
-<img src="{{ '/assets/recipes/rune_corral.png' | relative_url }}" alt="Crafting Corral: a Blank Rune and Oak Fence and Lead, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_corral.png' | relative_url }}" alt="Crafting Corral: a Blank Rune and any wooden fences and Lead, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -579,7 +592,7 @@ Enemies within 5 blocks are kept inside the ring for 6 seconds.
 
 For 2 minutes, a tailwind keeps your elytra glide from slowing down, up to a steady cruise.
 
-**How to get it:** Craft: a Blank Rune, Phantom Membrane and Wind Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Phantom Membrane and Wind Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_glidewind.png' | relative_url }}" alt="Crafting Glidewind: a Blank Rune and Phantom Membrane and Wind Charge, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -592,7 +605,7 @@ For 2 minutes, a tailwind keeps your elytra glide from slowing down, up to a ste
 
 Stands a ward of rustling wind on the spot for 20 seconds: rabbits, foxes and monsters within 5 blocks are shooed out of it once a second. Pets and farm animals stay put.
 
-**How to get it:** Craft: a Blank Rune, Carved Pumpkin, Hay Bale and Stick, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Carved Pumpkin, Hay Bale and Stick, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_scarecrow.png' | relative_url }}" alt="Crafting Scarecrow: a Blank Rune and Carved Pumpkin, Hay Bale and Stick, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -605,7 +618,7 @@ Stands a ward of rustling wind on the spot for 20 seconds: rabbits, foxes and mo
 
 Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump and sneak to rise and sink. It can't be renewed mid-flight, and when the wind fades it sets you down gently, then your wings need 30 seconds' rest. A pull or a grounding wind tears it away, and it won't lift anyone in a warded arena.
 
-**How to get it:** Craft: a Blank Rune, Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; End cities; Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; End cities; Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_soar.png' | relative_url }}" alt="Crafting Soar: a Blank Rune and Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -618,7 +631,7 @@ Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump
 
 You and allies within 10 blocks get Speed I and Jump Boost I for 3 minutes. It ends for anyone who strikes.
 
-**How to get it:** Craft: a Blank Rune, Note Block, Sugar and Rabbit Hide, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Note Block, Sugar and Rabbit Hide, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_wayfarer_hymn.png' | relative_url }}" alt="Crafting Wayfarer's Hymn: a Blank Rune and Note Block, Sugar and Rabbit Hide, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -631,7 +644,7 @@ You and allies within 10 blocks get Speed I and Jump Boost I for 3 minutes. It e
 
 An ally below half health turns invisible with Speed II for 4 seconds, and its hunters lose track of it.
 
-**How to get it:** Craft: a Blank Rune, Fermented Spider Eye and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Fermented Spider Eye and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire; Cat Sanctuary.
 
 <img src="{{ '/assets/recipes/rune_withdraw.png' | relative_url }}" alt="Crafting Withdraw: a Blank Rune and Fermented Spider Eye and Sugar, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

@@ -319,9 +319,9 @@ Puts out fire, campfires and candles within 4 blocks of the point.
 
 Concrete powder within 2 blocks of the point sets and dirt turns to mud, up to 12 blocks.
 
-**How to get it:** Craft: a Blank Rune, Clay Ball and Sand. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Clay Ball and any sand. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_soak_through.png' | relative_url }}" alt="Crafting Soak Through: a Blank Rune and Clay Ball and Sand" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_soak_through.png' | relative_url }}" alt="Crafting Soak Through: a Blank Rune and Clay Ball and any sand" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -410,7 +410,7 @@ In water: rush up toward the surface.
 
 Axolotls within 12 blocks are healed and follow you for 30 seconds.
 
-**How to get it:** Craft: a Blank Rune, Tropical Fish and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Tropical Fish and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_axolotl_kinship.png' | relative_url }}" alt="Crafting Axolotl Kinship: a Blank Rune and Tropical Fish and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -423,7 +423,7 @@ Axolotls within 12 blocks are healed and follow you for 30 seconds.
 
 Traps targets in a floating bubble that pops for 4 damage and leaves them soaked. It holds small creatures 2.5 seconds, bigger ones 2, the largest 1.5.
 
-**How to get it:** Craft: a Blank Rune, Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Witches (5%); Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Witches (5%); Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_bubble.png' | relative_url }}" alt="Crafting Bubble: a Blank Rune and Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -436,7 +436,7 @@ Traps targets in a floating bubble that pops for 4 damage and leaves them soaked
 
 A cold snap racing out from the point: 4 freeze damage and Slowness II for 4 seconds to every enemy within 3 blocks, all left brittle for Shatter for 4 seconds.
 
-**How to get it:** Craft: a Blank Rune, Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_coldsnap.png' | relative_url }}" alt="Crafting Coldsnap: a Blank Rune and Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -449,7 +449,7 @@ A cold snap racing out from the point: 4 freeze damage and Slowness II for 4 sec
 
 Dead coral touching water within 3 blocks of the point comes back to life, up to 8.
 
-**How to get it:** Craft: a Blank Rune, Bone Meal and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Bone Meal and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_coral_mend.png' | relative_url }}" alt="Crafting Coral Mend: a Blank Rune and Bone Meal and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -462,7 +462,7 @@ Dead coral touching water within 3 blocks of the point comes back to life, up to
 
 Swim with the dolphins' grace for 3 minutes. Can be a passive.
 
-**How to get it:** Craft: a Blank Rune, Raw Cod and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Raw Cod and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_currentkin.png' | relative_url }}" alt="Crafting Currentkin: a Blank Rune and Raw Cod and Prismarine Crystals, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -475,7 +475,7 @@ Swim with the dolphins' grace for 3 minutes. Can be a passive.
 
 Dolphins within 24 blocks swim to you. If any come, you get Dolphin's Grace for 20 seconds.
 
-**How to get it:** Craft: a Blank Rune, Raw Cod and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Raw Cod and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_dolphin_call.png' | relative_url }}" alt="Crafting Dolphin Call: a Blank Rune and Raw Cod and Nautilus Shell, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -488,7 +488,7 @@ Dolphins within 24 blocks swim to you. If any come, you get Dolphin's Grace for 
 
 Up to 16 items floating in water within 6 blocks of the point drift to you. Others' drops stay put.
 
-**How to get it:** Craft: a Blank Rune, 2x String and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, 2x String and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_drift_net.png' | relative_url }}" alt="Crafting Drift Net: a Blank Rune and 2x String and Kelp, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -501,7 +501,7 @@ Up to 16 items floating in water within 6 blocks of the point drift to you. Othe
 
 For 60 seconds your air refills when it runs low, up to 3 times.
 
-**How to get it:** Craft: a Blank Rune, Pufferfish and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Pufferfish and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_drown_ward.png' | relative_url }}" alt="Crafting Drown Ward: a Blank Rune and Pufferfish and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -514,7 +514,7 @@ For 60 seconds your air refills when it runs low, up to 3 times.
 
 4 freeze damage. A soaked target (in water, or after a water rune or Bubble) freezes solid for 3 seconds (1.5 on players), one only rained on for 2 (1); a dry one is slowed and left brittle.
 
-**How to get it:** Craft: a Blank Rune, Packed Ice and Water Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Packed Ice and Water Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_flash_freeze.png' | relative_url }}" alt="Crafting Flash Freeze: a Blank Rune and Packed Ice and Water Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -527,7 +527,7 @@ For 60 seconds your air refills when it runs low, up to 3 times.
 
 5 freeze damage and Slowness III for 4 seconds; the frost leaves it brittle for Shatter for 4 seconds.
 
-**How to get it:** Craft: a Blank Rune, Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_frost.png' | relative_url }}" alt="Crafting Frost: a Blank Rune and Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -540,7 +540,7 @@ For 60 seconds your air refills when it runs low, up to 3 times.
 
 Invisible for 10 seconds in water, 3 on land.
 
-**How to get it:** Craft: a Blank Rune, 2x Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, 2x Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_inkveil.png' | relative_url }}" alt="Crafting Inkveil: a Blank Rune and 2x Ink Sac, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -553,7 +553,7 @@ Invisible for 10 seconds in water, 3 on land.
 
 The lava top around the point hardens to basalt for 20 seconds, a safe place to land.
 
-**How to get it:** Craft: a Blank Rune, Basalt, Snowball and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Basalt, Snowball and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_lava_crust.png' | relative_url }}" alt="Crafting Lava Crust: a Blank Rune and Basalt, Snowball and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -566,7 +566,7 @@ The lava top around the point hardens to basalt for 20 seconds, a safe place to 
 
 A 4-block mist for 8 seconds: allies inside heal 1 each second.
 
-**How to get it:** Craft: a Blank Rune, Glistering Melon Slice and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Glistering Melon Slice and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_mending_mist.png' | relative_url }}" alt="Crafting Mending Mist: a Blank Rune and Glistering Melon Slice and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -579,9 +579,9 @@ A 4-block mist for 8 seconds: allies inside heal 1 each second.
 
 The nearest empty boat within 24 blocks comes to your side.
 
-**How to get it:** Craft: a Blank Rune, Oak Boat and Lead, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, any boats and Lead, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
-<img src="{{ '/assets/recipes/rune_mooring_call.png' | relative_url }}" alt="Crafting Mooring Call: a Blank Rune and Oak Boat and Lead, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_mooring_call.png' | relative_url }}" alt="Crafting Mooring Call: a Blank Rune and any boats and Lead, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -592,7 +592,7 @@ The nearest empty boat within 24 blocks comes to your side.
 
 In water: leap forward like a dolphin, with no fall damage from the leap.
 
-**How to get it:** Craft: a Blank Rune, Raw Cod and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Raw Cod and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_porpoise.png' | relative_url }}" alt="Crafting Porpoise Leap: a Blank Rune and Raw Cod and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -605,9 +605,9 @@ In water: leap forward like a dolphin, with no fall damage from the leap.
 
 Senses the nearest shipwreck and tells which way and roughly how far. Structure senses share a 30-second rest.
 
-**How to get it:** Craft: a Blank Rune, Empty Map and Oak Boat, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Empty Map and any boats, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
-<img src="{{ '/assets/recipes/rune_shipwreck_sense.png' | relative_url }}" alt="Crafting Shipwreck Sense: a Blank Rune and Empty Map and Oak Boat, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_shipwreck_sense.png' | relative_url }}" alt="Crafting Shipwreck Sense: a Blank Rune and Empty Map and any boats, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -618,7 +618,7 @@ Senses the nearest shipwreck and tells which way and roughly how far. Structure 
 
 Run across water for 15 seconds. Crouch to sink.
 
-**How to get it:** Craft: a Blank Rune, Lily Pad and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Lily Pad and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_skimstep.png' | relative_url }}" alt="Crafting Skimstep: a Blank Rune and Lily Pad and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -631,7 +631,7 @@ Run across water for 15 seconds. Crouch to sink.
 
 Borrows up to three real water sources within four blocks, lifts them along a ten-block arc, then returns them. Each enemy takes 4 damage once and is soaked for five seconds. Needs nearby source water.
 
-**How to get it:** Craft: a Blank Rune, Prismarine Shard, Kelp and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Prismarine Shard, Kelp and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_tidal_lift.png' | relative_url }}" alt="Crafting Tidal Lift: a Blank Rune and Prismarine Shard, Kelp and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -644,7 +644,7 @@ Borrows up to three real water sources within four blocks, lifts them along a te
 
 Soaks up water like a sponge within 2 blocks of the point, up to 24 blocks.
 
-**How to get it:** Craft: a Blank Rune, Sponge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Sponge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_wring.png' | relative_url }}" alt="Crafting Wring: a Blank Rune and Sponge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -657,9 +657,9 @@ Soaks up water like a sponge within 2 blocks of the point, up to 24 blocks.
 
 Under water: a 1-by-2 pocket of air at the point, walled in glass, for 15 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Glass and Heart of the Sea, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, 2x any glass and Heart of the Sea, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium; Lantern Bathhouse.
 
-<img src="{{ '/assets/recipes/rune_diving_bell.png' | relative_url }}" alt="Crafting Diving Bell: a Blank Rune and 2x Glass and Heart of the Sea, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_diving_bell.png' | relative_url }}" alt="Crafting Diving Bell: a Blank Rune and 2x any glass and Heart of the Sea, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -670,7 +670,7 @@ Under water: a 1-by-2 pocket of air at the point, walled in glass, for 15 second
 
 Freezes targets solid for 2.5 seconds: they can't move or fight back.
 
-**How to get it:** Craft: a Blank Rune, 2x Blue Ice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Trial vaults; Ominous vaults; Ancient cities; Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, 2x Blue Ice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Trial vaults; Ominous vaults; Ancient cities; Drowned Scriptorium; Lantern Bathhouse.
 
 <img src="{{ '/assets/recipes/rune_freeze.png' | relative_url }}" alt="Crafting Freeze: a Blank Rune and 2x Blue Ice, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

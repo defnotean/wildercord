@@ -3,7 +3,7 @@
 ![A grid of rune icons: round shapes, eight-sided gem effects, square modifiers and hexagonal links](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/rune-icons.png)
 
 A **rune** is a small tablet you thread onto your Cord. Each one does one simple thing, and a spell is simply the
-runes in its sockets, read from left to right. There are **756** of them.
+runes in its sockets, read from left to right. There are **758** of them.
 
 ## The four families
 

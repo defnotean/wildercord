@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20261123,
+    "separation": 12,
+    "spacing": 36
+  },
+  "structures": [
+    {
+      "structure": "wildercord:wilds_sakura_onsen_village",
+      "weight": 1
+    }
+  ]
+}

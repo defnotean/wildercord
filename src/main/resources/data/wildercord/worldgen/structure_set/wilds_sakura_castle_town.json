@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20261124,
+    "separation": 12,
+    "spacing": 36
+  },
+  "structures": [
+    {
+      "structure": "wildercord:wilds_sakura_castle_town",
+      "weight": 1
+    }
+  ]
+}

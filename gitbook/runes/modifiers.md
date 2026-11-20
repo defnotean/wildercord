@@ -72,9 +72,9 @@ The loot of creatures it kills lands at your feet.
 
 Sheep it reaches are shorn; the wool lands at your feet.
 
-**How to get it:** Craft: a Blank Rune, Shears and White Wool. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Shears and any wool. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Fleecing: a Blank Rune and Shears and White Wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fleecing.png)
+![Crafting Fleecing: a Blank Rune and Shears and any wool](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_fleecing.png)
 
 **Attaches to:** the closest rune on its left that is any effect.
 
@@ -98,9 +98,9 @@ Half the mana, but 40% weaker and shorter.
 
 Tills grass and dirt within 2 blocks of where it lands into farmland.
 
-**How to get it:** Craft: a Blank Rune, Iron Hoe and Dirt. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Hoe and any dirt. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Furrowing: a Blank Rune and Iron Hoe and Dirt](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_furrowing.png)
+![Crafting Furrowing: a Blank Rune and Iron Hoe and any dirt](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_furrowing.png)
 
 **Attaches to:** the closest rune on its left that is any effect.
 
@@ -122,9 +122,9 @@ Passes over farm animals, pets and villagers.
 
 Never breaks a block below your feet, so you can't dig yourself a pit.
 
-**How to get it:** Craft: a Blank Rune, Stone Slab and Compass. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any stone or deepslate slab and Compass. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Level Ground: a Blank Rune and Stone Slab and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_level_ground.png)
+![Crafting Level Ground: a Blank Rune and any stone or deepslate slab and Compass](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_level_ground.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/magnetic.png) Magnetic
 
@@ -216,9 +216,9 @@ Plants seeds from your pack on bare farmland within 3 blocks of where it lands.
 
 Passes over other players and their pets.
 
-**How to get it:** Craft: a Blank Rune, White Banner and Feather. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any banners and Feather. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Sparing: a Blank Rune and White Banner and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sparing.png)
+![Crafting Sparing: a Blank Rune and any banners and Feather](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_sparing.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/steady.png) Steady
 
@@ -264,9 +264,9 @@ If it lands somewhere dark, sets a torch there from your pack.
 
 A locked square lattice: effect durations last 40% longer at 15% less power. Costs 25% more mana; terrain lifetime caps still apply.
 
-**How to get it:** Craft: a Blank Rune, Iron Ingot and Stone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Ingot and any cobblestone or deepslate, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Anchor Circle: a Blank Rune and Iron Ingot and Stone, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_anchor_circle.png)
+![Crafting Anchor Circle: a Blank Rune and Iron Ingot and any cobblestone or deepslate, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_anchor_circle.png)
 
 **Attaches to:** the closest rune on its left that is any shape (one circle discipline per shape).
 
@@ -377,9 +377,9 @@ Crops and saplings within 3 blocks of where it lands grow a stage.
 
 Half the radius, +50% power. At most two per target rune.
 
-**How to get it:** Craft: a Blank Rune, Glass Pane and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
+**How to get it:** Craft: a Blank Rune, any glass pane and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
-![Crafting Focus: a Blank Rune and Glass Pane and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_focus.png)
+![Crafting Focus: a Blank Rune and any glass pane and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_focus.png)
 
 **Attaches to:** the closest rune on its left that is anything with an area.
 
@@ -414,9 +414,9 @@ Twice as strong on the undead; the living are passed over.
 
 Lands on you alone, 40% stronger. Not with Selfless.
 
-**How to get it:** Craft: a Blank Rune, Glass Pane and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any glass pane and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Inward: a Blank Rune and Glass Pane and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_inward.png)
+![Crafting Inward: a Blank Rune and any glass pane and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_inward.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/kilned.png) Kilned
 
@@ -597,9 +597,9 @@ Skips you and lands on the others 30% stronger. Not with Inward.
 
 Blocks it breaks drop themselves, as with Silk Touch. Only one drop rule per effect.
 
-**How to get it:** Craft: a Blank Rune, String and White Wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, String and any wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Silken: a Blank Rune and String and White Wool, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_silken.png)
+![Crafting Silken: a Blank Rune and String and any wool, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_silken.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sunlit.png) Sunlit
 
@@ -645,9 +645,9 @@ You heal for a quarter of the damage the effect deals.
 
 Breaking a log fells up to 24 more logs of the tree above it.
 
-**How to get it:** Craft: a Blank Rune, Iron Axe and Oak Log, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Timbering: a Blank Rune and Iron Axe and Oak Log, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_timbering.png)
+![Crafting Timbering: a Blank Rune and Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_timbering.png)
 
 ### ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/triage.png) Triage
 

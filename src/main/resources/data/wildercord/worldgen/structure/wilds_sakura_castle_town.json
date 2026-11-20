@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "wilds_sakura_castle_town",
+  "biomes": "#wildercord:has_structure/wilds_sakura_castle_town",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

@@ -10,7 +10,7 @@ nav_order: 8
 
 The Codex in your Cord screen sorts each rune family into categories by what the rune is *for*. This page uses the same sorting, so you can find, say, every World effect or every Condition link in one place. Each name links to the rune's full entry.
 
-756 runes in all.
+758 runes in all.
 
 ## Shapes
 
@@ -149,8 +149,8 @@ Waits on the ground or in the air and works over time.
 | Category | Runes |
 |---|---|
 | [Damage](#effect-damage) | 121 |
-| [Control](#effect-control) | 59 |
-| [Support](#effect-support) | 146 |
+| [Control](#effect-control) | 60 |
+| [Support](#effect-support) | 147 |
 | [Movement](#effect-movement) | 27 |
 | [Time](#effect-time) | 7 |
 | [World](#effect-world) | 195 |
@@ -319,6 +319,7 @@ Waits on the ground or in the air and works over time.
 - [Spook]({{ '/runes/effects/void/' | relative_url }}#spook) (Tier II, Void)
 - [Sporebloom]({{ '/runes/world/' | relative_url }}#sporebloom) (Tier II, Life)
 - [Stillbind]({{ '/runes/effects/void/' | relative_url }}#stillbind) (Tier II, Void)
+- [Suzu Chime]({{ '/runes/effects/wind/' | relative_url }}#suzu_chime) (Tier II, Wind)
 - [Tidehook]({{ '/runes/world/' | relative_url }}#tidehook) (Tier II, Frost)
 - [Undertow]({{ '/runes/world/' | relative_url }}#undertow) (Tier II, Frost)
 - [Weigh]({{ '/runes/effects/earth/' | relative_url }}#weigh) (Tier II, Earth)
@@ -433,6 +434,7 @@ Waits on the ground or in the air and works over time.
 - [Mending Mist]({{ '/runes/effects/frost/' | relative_url }}#mending_mist) (Tier II, Frost)
 - [Morale]({{ '/runes/effects/fire/' | relative_url }}#morale) (Tier II, Fire)
 - [Nightwatch]({{ '/runes/effects/arcane/' | relative_url }}#nightwatch) (Tier II, Arcane)
+- [Ofuda Ward]({{ '/runes/effects/arcane/' | relative_url }}#ofuda_ward) (Tier II, Arcane)
 - [Overdrive]({{ '/runes/effects/blood/' | relative_url }}#overdrive) (Tier II, Blood)
 - [Pearl Sight]({{ '/runes/effects/arcane/' | relative_url }}#pearl_sight) (Tier II, Arcane)
 - [Petward]({{ '/runes/effects/life/' | relative_url }}#petward) (Tier II, Life)

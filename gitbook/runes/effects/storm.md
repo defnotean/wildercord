@@ -13,9 +13,9 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 
 Presses up to 4 buttons near the point.
 
-**How to get it:** Craft: a Blank Rune, Stone Button. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any buttons. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Button Push: a Blank Rune and Stone Button](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_buttonpush.png)
+![Crafting Button Push: a Blank Rune and any buttons](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_buttonpush.png)
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -26,9 +26,9 @@ Presses up to 4 buttons near the point.
 
 A soft dew wets every farmland block in a 5-by-5 patch around the point to full moisture.
 
-**How to get it:** Craft: a Blank Rune, Water Bucket, Dirt and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Water Bucket, any dirt and Wheat Seeds. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Dewfall: a Blank Rune and Water Bucket, Dirt and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewfall.png)
+![Crafting Dewfall: a Blank Rune and Water Bucket, any dirt and Wheat Seeds](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewfall.png)
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -39,9 +39,9 @@ A soft dew wets every farmland block in a 5-by-5 patch around the point to full 
 
 Opens or shuts up to 4 doors, trapdoors and gates near the point. Iron ones stay put.
 
-**How to get it:** Craft: a Blank Rune, Oak Door and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any wooden doors and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
 
-![Crafting Doorcall: a Blank Rune and Oak Door and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_doorcall.png)
+![Crafting Doorcall: a Blank Rune and any wooden doors and Redstone Dust](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_doorcall.png)
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -130,9 +130,9 @@ Tells how long until the weather turns.
 
 Hangs a mist over a 5-by-5 patch for 60 seconds: its farmland is wetted now and again every 5 seconds, so a field far from water never dries. Lovely from a Totem or a Zone.
 
-**How to get it:** Craft: a Blank Rune, Water Bucket, White Wool and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+**How to get it:** Craft: a Blank Rune, Water Bucket, any wool and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
 
-![Crafting Dewkeep: a Blank Rune and Water Bucket, White Wool and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewkeep.png)
+![Crafting Dewkeep: a Blank Rune and Water Bucket, any wool and Wheat Seeds, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_dewkeep.png)
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Linger, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -182,9 +182,9 @@ For 5 minutes, every 24 blocks you walk gives back 2 mana, up to 12.
 
 A small cloud rains on the point: farmland within 4 blocks is soaked, up to 8 crops grow, fires go out and a cauldron gains water.
 
-**How to get it:** Craft: a Blank Rune, White Wool and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
+**How to get it:** Craft: a Blank Rune, any wool and Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
 
-![Crafting Raincloud: a Blank Rune and White Wool and Kelp, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rain_cloud.png)
+![Crafting Raincloud: a Blank Rune and any wool and Kelp, plus 2 Lapis Lazuli and a Gold Ingot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/recipes/rune_rain_cloud.png)
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 

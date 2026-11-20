@@ -139,9 +139,9 @@ Restores 6 hunger and some saturation, and ends Hunger. Fed pets heal 6 and are 
 
 Makes the writing on signs within 6 blocks glow, front and back.
 
-**How to get it:** Craft: a Blank Rune, Oak Sign and Glow Ink Sac. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, any signs and Glow Ink Sac. The recipe is shapeless: any layout, any crafting grid.
 
-<img src="{{ '/assets/recipes/rune_sign_glow.png' | relative_url }}" alt="Crafting Sign Glow: a Blank Rune and Oak Sign and Glow Ink Sac" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_sign_glow.png' | relative_url }}" alt="Crafting Sign Glow: a Blank Rune and any signs and Glow Ink Sac" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Frugal, Focus, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -243,9 +243,9 @@ Raises living leaf shutters across a 4-block haven for 8 seconds: enemies inside
 
 You and allies within 8 blocks count as rested, so phantoms leave you be. Tells you how many are asleep.
 
-**How to get it:** Craft: a Blank Rune, White Bed and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+**How to get it:** Craft: a Blank Rune, any beds and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
 
-<img src="{{ '/assets/recipes/rune_lullaby.png' | relative_url }}" alt="Crafting Lullaby: a Blank Rune and White Bed and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_lullaby.png' | relative_url }}" alt="Crafting Lullaby: a Blank Rune and any beds and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Kindred, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
@@ -295,9 +295,9 @@ Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 heal
 
 Two separate casts select and move one unchanged young Cinder Fern onto nearby visible soil. Selection lasts fifteen seconds; successful relocation starts a twenty-second rest. Refuses grown, changed, hidden, protected or unloaded roots.
 
-**How to get it:** Craft: a Blank Rune, Rooted Dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
+**How to get it:** Craft: a Blank Rune, any dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
 
-<img src="{{ '/assets/recipes/rune_root_carry.png' | relative_url }}" alt="Crafting Root Carry: a Blank Rune and Rooted Dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+<img src="{{ '/assets/recipes/rune_root_carry.png' | relative_url }}" alt="Crafting Root Carry: a Blank Rune and any dirt, Bone Meal and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal, Steady, Magnetic, Sowing, Furrowing, Fertile, Torchset, Ore Sensing, Sunlit, Fleecing
 
