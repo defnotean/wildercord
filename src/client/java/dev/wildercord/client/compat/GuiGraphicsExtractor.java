@@ -6,6 +6,7 @@ import java.util.Optional;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -96,7 +97,10 @@ public final class GuiGraphicsExtractor {
 	}
 
 	public void textHighlight(int x, int y, int width, int height, boolean below) {
-		g.textHighlight(x, y, width, height);
+		// 1.21.6 has no GuiGraphics#textHighlight and no GUI_INVERT pipeline. The blue fill is the
+		// half of the newer vanilla call that carries the selection itself; the invert pass only
+		// reversed what was underneath, which this version has no pipeline for.
+		g.fill(RenderPipelines.GUI_TEXT_HIGHLIGHT, x, y, x + width, y + height, 0xFF0000FF);
 	}
 
 	public void text(Font font, String text, int x, int y, int color) {

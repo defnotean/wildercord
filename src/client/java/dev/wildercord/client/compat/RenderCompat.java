@@ -4,6 +4,8 @@ import java.util.function.BiConsumer;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DestFactor;
+import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -67,11 +69,18 @@ public final class RenderCompat {
 		.withDepthWrite(false)
 		.build();
 
+	/**
+	 * Vanilla's INVERT blend. 1.21.6's BlendFunction has no constant for it, so it is built from the
+	 * factors 1.21.8 declares it with: ONE_MINUS_DST_COLOR/ONE_MINUS_SRC_COLOR, ONE/ZERO. Like every
+	 * blend here it carries factors only, no blend op, which is the closest darkening to the
+	 * SRC_ALPHA/ONE REVERSE_SUBTRACT the newer versions use.
+	 */
+	private static final BlendFunction INVERT = new BlendFunction(
+		SourceFactor.ONE_MINUS_DST_COLOR, DestFactor.ONE_MINUS_SRC_COLOR, SourceFactor.ONE, DestFactor.ZERO);
+
 	private static final RenderPipeline DARK_PARTICLE_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())
 		.withLocation(Wildercord.id("pipeline/dark_particle"))
-		// 1.21.8's BlendFunction carries only factors, no blend op: vanilla's INVERT is the closest
-		// darkening blend to the SRC_ALPHA/ONE REVERSE_SUBTRACT the newer versions use.
-		.withBlend(BlendFunction.INVERT)
+		.withBlend(INVERT)
 		.withDepthWrite(false)
 		.build();
 
