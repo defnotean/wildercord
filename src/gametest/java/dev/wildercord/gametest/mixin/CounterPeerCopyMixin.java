@@ -20,7 +20,7 @@ public abstract class CounterPeerCopyMixin {
 	@WrapOperation(method = "takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V",
 		at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;ILjava/lang/Runnable;I)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$counter$copy(CommandEncoder encoder, GpuTexture texture, GpuBuffer buffer,
-			long offset, Runnable callback, int mip, Operation<Void> original,
+			int offset, Runnable callback, int mip, Operation<Void> original,
 			@Local(argsOnly = true) RenderTarget target, @Local(argsOnly = true) Consumer<NativeImage> consumer) {
 		CounterPeerRenderProbe.copyEnqueued(texture, mip, target, consumer);
 		original.call(encoder, texture, buffer, offset, callback, mip);
