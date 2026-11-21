@@ -129,7 +129,7 @@ public class ResidueBlock extends Block {
 	// ------------------------------------------------------------------ what it does
 
 	@Override
-	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effects, boolean precise) {
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effects) {
 		switch (kind) {
 			case SMOULDERING_ASH -> {
 				// Still warm: nothing standing in the ash freezes.
