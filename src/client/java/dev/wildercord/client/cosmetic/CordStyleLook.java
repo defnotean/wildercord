@@ -7,7 +7,7 @@ import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * How a player's Cord style reaches the Cord layer: read from the synced attachment into the

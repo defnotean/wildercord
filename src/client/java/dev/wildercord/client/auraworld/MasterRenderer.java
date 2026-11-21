@@ -16,7 +16,7 @@ import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.joml.Matrix4f;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * Captures a complete immutable master frame from the synced server clock, including recovery. Where the Sword Master rig

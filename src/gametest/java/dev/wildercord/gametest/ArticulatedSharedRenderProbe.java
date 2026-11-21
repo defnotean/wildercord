@@ -44,7 +44,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** Passive GameTest-only observer. It never updates, extracts, renders, samples or changes game state. */
 public final class ArticulatedSharedRenderProbe {

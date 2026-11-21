@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * Casting gear in its slots, seen on the wearer by everyone (and in the inventory's paper doll). Each

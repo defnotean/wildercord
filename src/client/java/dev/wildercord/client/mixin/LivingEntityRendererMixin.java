@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * Carries a Runebound's rune marks into its render state, where {@link RuneMarksLayer} draws them.

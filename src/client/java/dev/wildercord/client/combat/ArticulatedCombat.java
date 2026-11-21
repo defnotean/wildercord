@@ -19,7 +19,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * Opt-in vertical slice. Owns a complete body/hands/item presentation only when every supported

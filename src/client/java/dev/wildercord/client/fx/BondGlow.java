@@ -28,7 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import java.util.UUID;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * A bonded blade's own glow, in the colour of its swordsman's aura, growing by its tier: drawn on the blade itself wherever it's drawn

@@ -32,7 +32,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * The body's aura, by stage, for everyone to see (see {@code tools/aura_art.py}, {@code body.png}, for its shapes):

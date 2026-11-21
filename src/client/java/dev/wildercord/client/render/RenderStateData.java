@@ -1,11 +1,11 @@
-package dev.wildercord.client.compat;
+package dev.wildercord.client.render;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Where the values behind {@link RenderStateDataKey} live on 1.21.7. Fabric attaches them to the
+ * Where the values behind {@link dev.wildercord.client.compat.RenderStateDataKey} live on 1.21.7. Fabric attaches them to the
  * render states themselves on newer versions; here they are kept beside them, keyed by the state
  * instance and dropped with it, so a state that goes out of frame takes its data with it.
  */

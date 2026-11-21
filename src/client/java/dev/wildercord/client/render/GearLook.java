@@ -16,7 +16,7 @@ import net.minecraft.world.item.component.DyedItemColor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * The casting gear a player wears in its slots, and their worn backpack, carried from the entity into the

@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.resources.PlayerSkin.Model;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** One reload-owned shell adapter belonging to exactly one primary player body. */
 public final class ArticulatedAuraShellRenderer {

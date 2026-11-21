@@ -18,7 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import java.util.EnumMap;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * Renderer-owned armor geometry with vanilla's complete material submission path. The independent

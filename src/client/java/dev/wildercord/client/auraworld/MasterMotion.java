@@ -12,7 +12,7 @@ import org.joml.Quaternionf;
 
 import java.util.Map;
 import java.util.WeakHashMap;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * Picks the Sword Master's rig pose each frame from what the server syncs: its idle breathing and its walk (matched to the

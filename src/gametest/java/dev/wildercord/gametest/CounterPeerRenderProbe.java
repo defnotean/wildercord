@@ -36,7 +36,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** Counter-only passive renderer proof. Shared/opening receipt scopes and their acceptance gates are untouched. */
 public final class CounterPeerRenderProbe {

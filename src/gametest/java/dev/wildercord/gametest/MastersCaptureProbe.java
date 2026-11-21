@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** Test-only observations of the screenshot's native submit paths and unmodified framebuffer. */
 public final class MastersCaptureProbe {

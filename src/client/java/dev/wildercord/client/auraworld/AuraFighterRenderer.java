@@ -17,7 +17,7 @@ import net.minecraft.util.Mth;
 
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * Draws a duelist or a fallen knight: its model on its skin, a glow layer of only what glows (a duelist's sash emblem, a

@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.InteractionHand;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** Actual skin-textured upper arms, forearms and hands, authored independently of the world camera. */
 public final class ArticulatedViewModel extends McModel<ArticulatedViewModel.Frame> {

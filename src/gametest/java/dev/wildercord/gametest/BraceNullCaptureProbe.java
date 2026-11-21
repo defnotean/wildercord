@@ -11,7 +11,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** Pair-only passive receipt inside MastersCaptureProbe's one native extract/render/readback. */
 public final class BraceNullCaptureProbe {

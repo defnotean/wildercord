@@ -38,7 +38,7 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * The Cord screen's Cosmetics page: how your Cord looks to everyone. Pick the beads' material, their

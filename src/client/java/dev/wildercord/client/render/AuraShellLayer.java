@@ -35,7 +35,7 @@ import net.minecraft.client.resources.PlayerSkin.Model;
 
 import java.util.ArrayList;
 import java.util.List;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * What the top stages of aura look like on a player, for everyone:

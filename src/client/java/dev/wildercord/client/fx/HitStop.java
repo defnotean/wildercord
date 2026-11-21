@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
 import java.util.Map;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /**
  * Aura's hit-stop, on the client only: as a heavy blow lands, the striker and the one struck hold still on this screen for a few

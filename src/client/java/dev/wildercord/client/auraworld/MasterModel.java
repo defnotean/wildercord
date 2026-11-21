@@ -11,7 +11,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** The authored travelling rig, with original, server-timed master combat rather than a held windup. */
 public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {

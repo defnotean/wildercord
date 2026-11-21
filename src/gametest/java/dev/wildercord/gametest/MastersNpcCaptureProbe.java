@@ -33,7 +33,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** Read-only native NPC submit/model/particle and unmodified framebuffer evidence. No pose injection. */
 public final class MastersNpcCaptureProbe {

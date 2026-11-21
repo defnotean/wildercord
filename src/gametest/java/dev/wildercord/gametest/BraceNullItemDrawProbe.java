@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix4fc;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** Binds the real item-entry and displayed-quad submission to one owner/frame/stack/model scope. */
 public final class BraceNullItemDrawProbe {

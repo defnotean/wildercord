@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
-import dev.wildercord.client.compat.RenderStateData;
+import dev.wildercord.client.render.RenderStateData;
 
 /** The accepted art's full-body and first-person animation, layered on the existing player rig. */
 public final class MastersArtPose {
