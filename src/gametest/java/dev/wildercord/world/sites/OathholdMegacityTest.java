@@ -3,6 +3,7 @@ package dev.wildercord.world.sites;
 import dev.wildercord.Wildercord;
 import dev.wildercord.compat.McWorldgen;
 import dev.wildercord.world.sites.oathhold.OathholdOrigin;
+import dev.wildercord.world.sites.oathhold.OathholdSites;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -31,7 +32,7 @@ import java.util.Set;
  * and captures six reference screenshots for 1:1 visual review.</p>
  */
 public final class OathholdMegacityTest implements FabricClientGameTest {
-	private static final long TEST_SEED = 20261121L;
+	private static final String TEST_SEED = "20261121";
 
 	private static void check(boolean cond, String msg) {
 		if (!cond) throw new AssertionError(msg);
