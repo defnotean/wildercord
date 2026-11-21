@@ -183,7 +183,7 @@ public final class ArticulatedSharedRenderProbe {
 			s.observe("firstPerson", mc.options.getCameraType().isFirstPerson());
 			s.observe("viewportWidth", mc.getWindow().getWidth()); s.observe("viewportHeight", mc.getWindow().getHeight());
 			s.observe("guiWidth", mc.getWindow().getGuiScaledWidth()); s.observe("guiHeight", mc.getWindow().getGuiScaledHeight());
-			s.observe("guiScale", mc.options.guiScale().get()); s.observe("optionsDeltaTicks", options.deltaTicks);
+			s.observe("guiScale", mc.options.guiScale().get()); s.observe("optionsDeltaTicks", options.tickDelta);
 			s.observe("renderedAgeBasis", "unknown:submitted_palette_after_hitstop");
 			if (timeline == null) s.reject("missing_accepted_activation");
 		});

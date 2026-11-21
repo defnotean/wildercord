@@ -33,7 +33,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    w.getServer().runOnServer(s -> {
     var l=s.overworld();dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.ReedRefugeTest\",\"seed\":\"{}\"}",l.getSeed());for(int x=-12;x<=12;x++)for(int z=-8;z<=12;z++) {l.setBlock(new BlockPos(x,100,z),Blocks.DIRT.defaultBlockState(),2);l.setBlock(new BlockPos(x,101,z),x>=-5 && x<=7 && z>=0 && z<=8?Blocks.WATER.defaultBlockState():Blocks.GRASS_BLOCK.defaultBlockState(),2);l.setBlock(new BlockPos(x,102,z),Blocks.AIR.defaultBlockState(),2);}
     for(var row:List.of(List.of(Items.BAMBOO,Items.BAMBOO,Items.BAMBOO,WetlandGarden.FLOSS,Items.STRING,Items.SEAGRASS,WetlandShelters.REFUGE_ITEM),List.of(Items.BOOK,WetlandGarden.FLOSS,Items.SEAGRASS,WetlandShelters.NOTES))) {
-     var input=CraftingInput.of(3,2,java.util.stream.IntStream.range(0,6).mapToObj(i -> i<row.size()-1?new ItemStack(row.get(i)):ItemStack.EMPTY).toList());var r=s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING,input,l);check(r.isPresent() && r.get().value().assemble(input, level.registryAccess()).is(row.getLast()),"Native refuge/notes recipe");
+     var input=CraftingInput.of(3,2,java.util.stream.IntStream.range(0,6).mapToObj(i -> i<row.size()-1?new ItemStack(row.get(i)):ItemStack.EMPTY).toList());var r=s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING,input,l);check(r.isPresent() && r.get().value().assemble(input, l.registryAccess()).is(row.getLast()),"Native refuge/notes recipe");
     }
     p(s).setGameMode(GameType.SURVIVAL);p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(WetlandShelters.REFUGE_ITEM,2));aim(s,new Vec3(3.5,101,3.5),3);
    });c.waitTicks(5);place(c,ROOF.below());c.waitTicks(5);

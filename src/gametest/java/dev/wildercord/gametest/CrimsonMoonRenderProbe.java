@@ -166,7 +166,7 @@ public final class CrimsonMoonRenderProbe {
         if(e.phase().equals("NONE")){if(timeline!=null)token.reject("neutral_timeline_present");}
         else if(timeline==null||timeline.entity()!=e.owner()||timeline.move()!=19||timeline.startTick()!=e.activation()||timeline.windup()!=10||timeline.recovery()!=20)token.reject("wrong_accepted_timeline");
         token.observe("timeline",timeline);token.observe("camera",mc.options.getCameraType());token.observe("observerCoverage",remote);
-        token.observe("tick",mc.level.getGameTime());token.observe("partial",options.deltaTicks);token.observe("owner",actor.getUUID());
+        token.observe("tick",mc.level.getGameTime());token.observe("partial",options.tickDelta);token.observe("owner",actor.getUUID());
         token.observe("observerUuid",mc.player.getUUID());token.observe("observerEntity",mc.player.getId());
         if(!(actor instanceof net.minecraft.client.player.AbstractClientPlayer connectedActor))throw new AssertionError("Actor is not an actual connected client player");
         s.originalSkin=connectedActor.getSkin();

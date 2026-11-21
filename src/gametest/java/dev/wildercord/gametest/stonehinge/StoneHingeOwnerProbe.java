@@ -66,7 +66,7 @@ public final class StoneHingeOwnerProbe {
 		MotionSend(int ordinal, ClientboundSetEntityMotionPacket packet, boolean expected, boolean manual, boolean originalTracker) {
 			this.ordinal = ordinal; this.raw = packet.getMovement(); this.expected = expected; this.manual = manual; this.originalTracker = originalTracker;
 			var buffer = new FriendlyByteBuf(Unpooled.buffer());
-			try { ClientboundSetEntityMotionPacket.STREAM_CODEC.encode(buffer, packet); wire = ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(buffer).movement(); }
+			try { ClientboundSetEntityMotionPacket.STREAM_CODEC.encode(buffer, packet); wire = ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(buffer).getMovement(); }
 			finally { buffer.release(); }
 		}
 		boolean matches(Vec3 vector) { return raw.equals(vector) || wire.equals(vector); }
@@ -246,7 +246,7 @@ public final class StoneHingeOwnerProbe {
             dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.contaminate(player, "Correction or teleport during natural dispatch");
         if (packet instanceof ClientboundSetEntityMotionPacket motion)
             dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.otherMotion(player, motion);
-		MotionSend sent = packet instanceof ClientboundSetEntityMotionPacket motion && motion.id() == player.getId()
+		MotionSend sent = packet instanceof ClientboundSetEntityMotionPacket motion && motion.getId() == player.getId()
 			? trace.observe(() -> trace.sendingMotion(motion)) : null;
 		dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.originalSend(player, original);
 		if (sent != null) {

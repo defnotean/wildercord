@@ -244,7 +244,7 @@ public final class CounterPeerRenderProbe {
         token.observe("receivedOwnerUuid",actor.getUUID());token.observe("receivedOwnerEntity",actor.getId());token.observe("receivedLevel",mc.level.dimension().identifier());
         token.observe("receivedConnectionIdentity",Integer.toUnsignedString(System.identityHashCode(mc.getConnection())));
         token.observe("timeline",timeline);token.observe("camera",mc.options.getCameraType());token.observe("observerCoverage",remote);
-        token.observe("tick",mc.level.getGameTime());token.observe("partial",options.deltaTicks);token.observe("owner",actor.getUUID());
+        token.observe("tick",mc.level.getGameTime());token.observe("partial",options.tickDelta);token.observe("owner",actor.getUUID());
         token.observe("observerUuid",mc.player.getUUID());token.observe("observerEntity",mc.player.getId());
         if(!(actor instanceof net.minecraft.client.player.AbstractClientPlayer connectedActor))throw new AssertionError("Actor is not an actual connected client player");
         s.originalSkin=connectedActor.getSkin();
