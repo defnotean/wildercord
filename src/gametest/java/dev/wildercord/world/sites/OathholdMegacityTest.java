@@ -143,7 +143,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				check(!eastSeaGate.isAir(), "East Harbor Sea-Gate Bastion missing at x=+960: " + eastSeaGate);
 
 				// Inner Citadel: South Gatehouse, Fountain Plaza, Canal, Forge, Sovereign Great Hall, Cathedral Spire
-				var southInnerTower = blockAt(l, ox + 22, by + 20, oz + 224);
+				var southInnerTower = blockAt(l, ox + 23, by + 20, oz + 224);
 				check(!southInnerTower.isAir(), "South Inner Gatehouse Tower missing at z=+224: " + southInnerTower);
 				var fountainWater = blockAt(l, ox, by + 1, oz + 182);
 				check(fountainWater.is(Blocks.WATER) || fountainWater.is(Blocks.ICE), "Fountain Plaza water missing at z=+182: " + fountainWater);
