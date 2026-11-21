@@ -4107,8 +4107,9 @@ def write_backpack_content():
                                                              "tints": [{"type": "minecraft:dye", "default": (0xFF000000 | colour) - (1 << 32)}]}})
         # Dyed like leather armour, keeping what's inside; a cauldron washes the dye out.
         write_json(DATA / f"recipe/{path}_dyed.json", {
-            "type": "minecraft:crafting_dye", "category": "equipment", "group": "dyed_backpack",
-            "dye": "#minecraft:dyes", "target": f"wildercord:{path}", "result": {"id": f"wildercord:{path}"}})
+            "type": "minecraft:crafting_shaped", "category": "equipment", "group": f"dyed_{path}",
+            "pattern": ["XD"], "key": {"X": {"tag": "minecraft:dyes"}, "D": {"item": f"wildercord:{path}"}},
+            "result": {"count": 1, "id": f"wildercord:{path}"}})
         unlock_advancement(f"wildercord:{path}_dyed", f"wildercord:{path}")
     write_json(DATA / "recipe/backpack.json", {
         "type": "minecraft:crafting_shaped", "category": "equipment",

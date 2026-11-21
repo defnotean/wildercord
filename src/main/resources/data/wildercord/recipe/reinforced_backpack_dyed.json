@@ -1,10 +1,20 @@
 {
-  "type": "minecraft:crafting_dye",
+  "type": "minecraft:crafting_shaped",
   "category": "equipment",
-  "group": "dyed_backpack",
-  "dye": "#minecraft:dyes",
-  "target": "wildercord:reinforced_backpack",
+  "group": "dyed_reinforced_backpack",
+  "pattern": [
+    "XD"
+  ],
+  "key": {
+    "X": {
+      "tag": "minecraft:dyes"
+    },
+    "D": {
+      "item": "wildercord:reinforced_backpack"
+    }
+  },
   "result": {
+    "count": 1,
     "id": "wildercord:reinforced_backpack"
   }
 }

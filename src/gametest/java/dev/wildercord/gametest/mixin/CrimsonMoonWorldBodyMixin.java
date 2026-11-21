@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 /** Exact vanilla body material and root submitted for the actual connected remote actor. */
 @Mixin(LivingEntityRenderer.class)
 public abstract class CrimsonMoonWorldBodyMixin {
-    @WrapOperation(method="submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V",
+    @WrapOperation(method="submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
         at=@At(value="INVOKE",target="Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"),require=1,expect=1,allow=1)
     private void moon$body(SubmitNodeCollector collector,Model<?> model,Object state,PoseStack pose,RenderType material,
         int light,int overlay,int color,TextureAtlasSprite uv,int outline,ModelFeatureRenderer.CrumblingOverlay crumbling,Operation<Void> original){
