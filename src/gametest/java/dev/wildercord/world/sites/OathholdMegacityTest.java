@@ -182,6 +182,22 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				var porticoSolar = blockAt(l, ox, by + OathholdOrigin.ACROPOLIS_Y + 24, oz - 86);
 				check(porticoSolar.is(Blocks.OCHRE_FROGLIGHT), "Great Hall South Portico gilded pediment solar disk missing: " + porticoSolar);
 
+				// Living-City streetscape, furnishing, interior & quay probes
+				var sidewalk = blockAt(l, ox + 8, by + 1, oz + 320);
+				check(!sidewalk.isAir(), "Causeway raised sidewalk missing at (ox+8, by+1, oz+320): " + sidewalk);
+				var carriagewayAir = blockAt(l, ox, by + 1, oz + 320);
+				check(carriagewayAir.isAir(), "Causeway carriageway should remain sunken at (ox, by+1, oz+320): " + carriagewayAir);
+				var innFloor2Deck = blockAt(l, ox + 44, by + 5, oz + 106);
+				check(!innFloor2Deck.isAir(), "Grand Inn Floor 2 deck missing at (ox+44, by+5, oz+106): " + innFloor2Deck);
+				var innFloor2Table = blockAt(l, ox + 44, by + 6, oz + 106);
+				check(!innFloor2Table.isAir(), "Grand Inn Floor 2 furnishing missing at (ox+44, by+6, oz+106): " + innFloor2Table);
+				var cathedralPew = blockAt(l, ox + 141, by + OathholdOrigin.ACROPOLIS_Y + 1, oz - 142);
+				check(cathedralPew.is(Blocks.DARK_OAK_STAIRS), "Cathedral nave pew missing at (ox+141, AY+1, oz-142): " + cathedralPew);
+				var acropolisHedge = blockAt(l, ox - 32, by + OathholdOrigin.ACROPOLIS_Y + 1, oz - 68);
+				check(!acropolisHedge.isAir(), "Acropolis Esplanade boxwood hedge missing at (ox-32, AY+1, oz-68): " + acropolisHedge);
+				var harborStall = blockAt(l, ox + 542, by + 4, oz - 32);
+				check(!harborStall.isAir(), "Harbor Quay market stall furnishing missing at (ox+542, by+4, oz-32): " + harborStall);
+
 				// Pre-warm full Inner Citadel + Acropolis grid so shot 01 renders the whole skyline
 				for (int wx = ox - 208; wx <= ox + 208; wx += 16) {
 					for (int wz = oz - 224; wz <= oz + 272; wz += 16) {
@@ -190,7 +206,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				}
 			});
 
-			// 3. Capture 6 showcase screenshots for 1:1 visual inspection against concept art
+			// 3. Capture 11 showcase screenshots for 1:1 visual inspection against Master Map & Stage 2 concepts
 			lookAt(context, world, ox, by + 92, oz + 96, ox, by + 26, oz - 115, 18, 86);
 			shot(context, "oathhold_01_aerial_overview");
 
@@ -206,8 +222,23 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			lookAt(context, world, ox - 546, by + 50, oz + 64, ox - 612, by + 10, oz, 10, 72);
 			shot(context, "oathhold_05_outer_metropolis_colosseum");
 
-			lookAt(context, world, ox + 740, by + 46, oz + 12, ox + 885, by + 18, oz - 92, 16, 74);
+			lookAt(context, world, ox + 528, by + 22, oz + 88, ox + 760, by + 10, oz - 58, 16, 74);
 			shot(context, "oathhold_06_harbor_and_outer_gate");
+
+			lookAt(context, world, ox + 2.5, by + 3.0, oz + 340, ox, by + 8, oz + 250, 12, 74);
+			shot(context, "oathhold_07_causeway_boulevard_sidewalk");
+
+			lookAt(context, world, ox + 15.5, by + 3.0, oz + 102, ox - 4, by + 6, oz + 12, 12, 74);
+			shot(context, "oathhold_08_canal_promenade_alley");
+
+			lookAt(context, world, ox - 24, by + OathholdOrigin.ACROPOLIS_Y + 4.0, oz - 52, ox + 8, by + OathholdOrigin.ACROPOLIS_Y + 18, oz - 118, 12, 76);
+			shot(context, "oathhold_09_acropolis_esplanade");
+
+			lookAt(context, world, ox + 60, by + 2.0, oz + 123, ox + 40, by + 4.0, oz + 100, 8, 76);
+			shot(context, "oathhold_10_townhouse_shop_interior");
+
+			lookAt(context, world, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 3.0, oz - 96, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 8, oz - 182, 8, 76);
+			shot(context, "oathhold_11_cathedral_nave_interior");
 		}
 	}
 }

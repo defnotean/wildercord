@@ -7,15 +7,19 @@ import dev.wildercord.town.WayfarerKeeper;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
 
 /**
  * Dense 1:1 implementation of the Lower Sovereign City inside the Inner Wall:
- * Circular Statue Fountain Plaza, Central Grand Canal with 3 Arched Stone Bridges & Canal Skiffs,
- * Grand Market Hall & Vibrant Cloth Bazaar Square, Smoking Great Forge Hall, Arched Stone Aqueduct,
- * Copper-Roofed Twin-Spire Guildhall, Gilded Lantern Grand Inn, and Multi-Story Medieval Townhouses.
+ * Landscaped Circular Statue Fountain Plaza with Raised Sidewalks, Central Canal Promenade & Cafes,
+ * Vibrant Grand Market Hall & Bazaar, Blacksmiths' Great Forge Yard, Arched Stone Aqueduct,
+ * Two-Story Atrium Guildhall, Gilded Lantern Grand Inn + Beer-Garden, and Multi-Story Furnished Shops.
  */
 public final class OathholdInnerCore {
 	private OathholdInnerCore() {}
@@ -37,9 +41,9 @@ public final class OathholdInnerCore {
 
 	private static void buildFountainPlaza(OathholdCanvas c) {
 		int cx = 0, cz = 176;
-		if (!c.intersects(cx - 26, cz - 26, cx + 26, cz + 38)) return;
+		if (!c.intersects(cx - 28, cz - 28, cx + 28, cz + 40)) return;
 
-		// Processional avenue links South Gatehouse (z=214) to Fountain Plaza to South Canal Quay (z=149)
+		// Processional carriageway (y=0) flanked by raised sidewalks (y=1) skirting the central Statue Fountain
 		for (int x = Math.max(-24, c.clipMinLx()); x <= Math.min(24, c.clipMaxLx()); x++) {
 			for (int z = Math.max(149, c.clipMinLz()); z <= Math.min(213, c.clipMaxLz()); z++) {
 				double d = Math.sqrt((x - cx) * (x - cx) + (z - cz) * (z - cz));
@@ -54,51 +58,92 @@ public final class OathholdInnerCore {
 						c.set(x, 0, z, OathholdCanvas.STONE_BRICKS);
 						c.set(x, 1, z, OathholdCanvas.WATER);
 					}
-				} else if (d <= 22.0 || Math.abs(x) <= 9) {
+				} else if (Math.abs(x) >= 12 && z <= 208) {
+					c.set(x, 1, z, ((x + z) & 1) == 0 ? OathholdCanvas.STONE_BRICKS : OathholdCanvas.POLISHED_ANDESITE);
+				} else if (Math.abs(x) == 11 && z <= 208 && z >= 152) {
+					c.set(x, 1, z, OathholdCanvas.stair(Blocks.STONE_BRICK_STAIRS, x < 0 ? Direction.WEST : Direction.EAST, false));
+				} else if (d <= 22.0 || Math.abs(x) <= 10) {
 					c.set(x, 0, z, Math.floorMod(Math.round(d), 4) == 0 ? OathholdCanvas.TUFF_BRICKS : OathholdCanvas.POLISHED_ANDESITE);
 				}
 			}
 		}
 
-		// Central Gilded Knight Statue Pedestal & Jetting Water
+		// Central Gilded Knight Statue Pedestal
 		c.fill(cx - 1, 1, cz - 1, cx + 1, 5, cz + 1, OathholdCanvas.STONE_BRICKS);
 		c.fill(cx - 1, 6, cz - 1, cx + 1, 9, cz + 1, OathholdCanvas.TUFF_BRICKS);
 		c.set(cx, 10, cz, OathholdCanvas.CHISELED_STONE_BRICKS);
 		c.set(cx, 11, cz, OathholdCanvas.GOLD);
 		c.set(cx, 12, cz, OathholdCanvas.LANTERN);
-		for (int[] l : new int[][]{{-12, 164}, {12, 164}, {-12, 188}, {12, 188}, {-10, 152}, {10, 152}, {-10, 206}, {10, 206}}) {
-			c.streetLamp(l[0], 1, l[1]);
+
+		// Corner boxwood hedges, ornate lamps, benches, stalls & supply wagons
+		OathholdStreetscape.hedgePlanter(c, -23, 2, 152, -17, 158);
+		OathholdStreetscape.hedgePlanter(c, 17, 2, 152, 23, 158);
+		OathholdStreetscape.hedgePlanter(c, -23, 2, 194, -17, 200);
+		OathholdStreetscape.hedgePlanter(c, 17, 2, 194, 23, 200);
+		for (int[] l : new int[][]{{-13, 162}, {13, 162}, {-13, 190}, {13, 190}, {-14, 176}, {14, 176}, {-13, 206}, {13, 206}}) {
+			OathholdStreetscape.ornateStreetLamp(c, l[0], 2, l[1], false);
 		}
+		OathholdStreetscape.parkBench(c, -13, 2, 170, Direction.EAST);
+		OathholdStreetscape.parkBench(c, 13, 2, 170, Direction.WEST);
+		OathholdStreetscape.parkBench(c, -13, 2, 182, Direction.EAST);
+		OathholdStreetscape.parkBench(c, 13, 2, 182, Direction.WEST);
+
+		OathholdStreetscape.marketStall(c, -20, 2, 176, Blocks.WOOL.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), 1);
+		OathholdStreetscape.marketStall(c, 20, 2, 176, Blocks.WOOL.blue().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), 2);
+		OathholdStreetscape.merchantWagon(c, -6, 1, 200, true, 3);
+		OathholdStreetscape.merchantWagon(c, 6, 1, 156, true, 4);
+
+		c.spawnMob(-4, 1, 196, EntityTypes.VILLAGER, 0.0F, true);
+		c.spawnMob(4, 1, 164, EntityTypes.VILLAGER, 180.0F, true);
+		c.spawnMob(-7, 1, 160, AuraWorld.OATHBOUND_HALBERDIER, 45.0F, true);
+		c.spawnMob(7, 1, 194, AuraWorld.OATHBOUND_BLADE_CHAMPION, -135.0F, true);
 	}
 
 	private static void buildCentralCanalAndBridges(OathholdCanvas c) {
-		if (!c.intersects(-14, -44, 14, 150)) return;
+		if (!c.intersects(-24, -44, 24, 150)) return;
 
 		for (int z = Math.max(-42, c.clipMinLz()); z <= Math.min(148, c.clipMaxLz()); z++) {
 			c.fill(-11, -3, z, -10, 1, z, OathholdCanvas.STONE_BRICKS);
 			c.fill(10, -3, z, 11, 1, z, OathholdCanvas.STONE_BRICKS);
-			if (Math.floorMod(z, 14) == 0) {
-				c.set(-10, 2, z, OathholdCanvas.TUFF_BRICKS);
-				c.set(10, 2, z, OathholdCanvas.TUFF_BRICKS);
-				c.set(-10, 3, z, OathholdCanvas.LANTERN);
-				c.set(10, 3, z, OathholdCanvas.LANTERN);
+			boolean bridgeGap = Math.abs(z - 116) <= 4 || Math.abs(z - 56) <= 4 || Math.abs(z + 4) <= 4;
+			if (!bridgeGap) {
+				if (Math.floorMod(z, 8) == 0) {
+					OathholdStreetscape.chainRailingBollard(c, -10, 2, z, Math.floorMod(z, 16) == 0);
+					OathholdStreetscape.chainRailingBollard(c, 10, 2, z, Math.floorMod(z, 16) == 0);
+				} else {
+					c.set(-10, 2, z, OathholdStreetscape.horizontalChain(true));
+					c.set(10, 2, z, OathholdStreetscape.horizontalChain(true));
+				}
 			}
 		}
-		// Three Arched Stone Footbridges across the Central Canal (matches aerial_overview & districts_courtyard!)
+
+		// Three Arched Stone Footbridges across the Central Canal
 		for (int bz : new int[]{116, 56, -4}) {
 			buildCanalBridge(c, bz);
 		}
-		// Two Wooden Canal Cargo Skiffs moored in water
-		for (int[] boat : new int[][]{{0, 86}, {0, 26}}) {
-			int bx = boat[0], bz = boat[1];
-			c.fill(bx - 1, -1, bz - 4, bx + 1, -1, bz + 4, OathholdCanvas.SPRUCE);
-			c.set(bx - 1, 0, bz - 3, OathholdCanvas.SPRUCE);
-			c.set(bx + 1, 0, bz - 3, OathholdCanvas.SPRUCE);
-			c.set(bx - 1, 0, bz + 3, OathholdCanvas.SPRUCE);
-			c.set(bx + 1, 0, bz + 3, OathholdCanvas.SPRUCE);
-			c.set(bx, 0, bz + 2, Blocks.BARREL.defaultBlockState());
-			c.set(bx, 1, bz - 4, OathholdCanvas.LANTERN);
+
+		// Four Wooden Canal Cargo Barges moored in water (leaving z = 80 clear open water)
+		for (int[] boat : new int[][]{{0, 132}, {0, 86}, {0, 26}, {0, -22}}) {
+			OathholdStreetscape.canalBarge(c, boat[0], -1, boat[1], true);
 		}
+
+		// Canal-Side Promenade Cafe Patios, Benches, Planters & Villagers
+		BlockState redCarpet = Blocks.CARPET.red().defaultBlockState();
+		BlockState cyanCarpet = Blocks.CARPET.cyan().defaultBlockState();
+		BlockState greenCarpet = Blocks.CARPET.green().defaultBlockState();
+		BlockState whiteWool = Blocks.WOOL.white().defaultBlockState();
+		for (int cz : new int[]{138, 102, 74, 40, 12}) {
+			OathholdStreetscape.patioTable(c, -15, 1, cz, cz % 2 == 0 ? redCarpet : greenCarpet, whiteWool);
+			OathholdStreetscape.patioTable(c, 15, 1, cz, cz % 2 == 0 ? cyanCarpet : redCarpet, whiteWool);
+		}
+		for (int tz : new int[]{128, 92, 66, 30, -16}) {
+			OathholdStreetscape.treePlanter(c, -19, 0, tz, tz > 60);
+			OathholdStreetscape.treePlanter(c, 19, 0, tz, tz <= 60);
+			OathholdStreetscape.parkBench(c, -13, 1, tz - 2, Direction.EAST);
+			OathholdStreetscape.parkBench(c, 13, 1, tz - 2, Direction.WEST);
+		}
+		c.spawnMob(-14, 1, 70, EntityTypes.VILLAGER, 90.0F, true);
+		c.spawnMob(14, 1, 100, EntityTypes.VILLAGER, -90.0F, true);
 	}
 
 	/** Arched stone footbridge over the Central Canal centered at local Z = {@code bz}. */
@@ -120,8 +165,7 @@ public final class OathholdInnerCore {
 	}
 
 	private static void buildWestAqueduct(OathholdCanvas c) {
-		if (!c.intersects(-216, -34, -120, 30)) return;
-		// Long arched East-West stone viaduct (lx [-212..-126], lz [16..24]) + turn North toward Inner Wall
+		if (!c.intersects(-216, -34, -120, 34)) return;
 		for (int x = Math.max(-212, c.clipMinLx()); x <= Math.min(-126, c.clipMaxLx()); x++) {
 			int mod = Math.floorMod(x, 10);
 			boolean pier = mod <= 2;
@@ -131,7 +175,6 @@ public final class OathholdInnerCore {
 				int archBase = 10 - Math.max(0, 4 - Math.abs(mod - 6));
 				c.fillWeatheredStone(x, archBase, 16, x, 13, 24);
 			}
-			// Elevated Aqueduct Water Trough at ly = 14..15
 			c.fill(x, 14, 16, x, 15, 17, OathholdCanvas.STONE_BRICKS);
 			c.fill(x, 14, 23, x, 15, 24, OathholdCanvas.STONE_BRICKS);
 			c.fill(x, 14, 18, x, 14, 22, OathholdCanvas.MOSSY_STONE_BRICKS);
@@ -151,6 +194,12 @@ public final class OathholdInnerCore {
 			c.fill(-200, 14, z, -196, 14, z, OathholdCanvas.MOSSY_STONE_BRICKS);
 			c.fill(-200, 15, z, -196, 15, z, OathholdCanvas.WATER);
 		}
+		// Shaded arcade stalls, benches & greenery under and alongside the Aqueduct arches
+		OathholdStreetscape.marketStall(c, -184, 1, 20, Blocks.WOOL.cyan().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), 11);
+		OathholdStreetscape.marketStall(c, -154, 1, 20, Blocks.WOOL.orange().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), 12);
+		OathholdStreetscape.parkBench(c, -168, 1, 14, Direction.NORTH);
+		OathholdStreetscape.cargoCluster(c, -142, 1, 13, 13);
+		OathholdStreetscape.hedgePlanter(c, -190, 0, 27, -172, 31);
 	}
 
 	private static void buildGrandMarketHall(OathholdCanvas c) {
@@ -159,7 +208,6 @@ public final class OathholdInnerCore {
 
 		c.clear(x0 + 1, 1, z0 + 1, x1 - 1, 18, z1 - 1);
 		c.fill(x0, 0, z0, x1, 0, z1, OathholdCanvas.POLISHED_ANDESITE);
-		// Open Stone-Arched Ground Colonnade (ly = 1..7)
 		c.fillWeatheredStone(x0, 1, z0, x1, 8, z0 + 1);
 		c.fillWeatheredStone(x0, 1, z1 - 1, x1, 8, z1);
 		c.fillWeatheredStone(x0, 1, z0, x0 + 1, 8, z1);
@@ -173,7 +221,6 @@ public final class OathholdInnerCore {
 			c.gothicArchX(x1 - 1, x1, 1, gz, 3, 4, 2, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
 		}
 
-		// Upper Half-Timbered Clerestory + Vaulted Timber Roof (concept_city_aerial_overview & districts_courtyard)
 		c.fill(x0, 9, z0, x1, 14, z0, OathholdCanvas.CALCITE);
 		c.fill(x0, 9, z1, x1, 14, z1, OathholdCanvas.CALCITE);
 		c.fill(x0, 9, z0, x0, 14, z1, OathholdCanvas.CALCITE);
@@ -189,7 +236,6 @@ public final class OathholdInnerCore {
 		}
 		c.pitchedRoofX(x0, 15, z0, x1, z1, Blocks.SPRUCE_STAIRS, Blocks.SPRUCE_SLAB, OathholdCanvas.CALCITE, OathholdCanvas.DARK_OAK);
 
-		// Interior market counters, barrels, chests, hanging lanterns & Villagers
 		for (int mx = x0 + 6; mx <= x1 - 6; mx += 12) {
 			c.fill(mx - 2, 1, 64, mx + 2, 1, 68, OathholdCanvas.SPRUCE);
 			c.set(mx, 2, 65, OathholdCanvas.LANTERN);
@@ -201,7 +247,7 @@ public final class OathholdInnerCore {
 	}
 
 	private static void buildBazaarSquare(OathholdCanvas c) {
-		if (!c.intersects(-120, 88, -40, 150)) return;
+		if (!c.intersects(-124, 88, -36, 154)) return;
 		BlockState[] awnings = {
 			Blocks.WOOL.red().defaultBlockState(),
 			Blocks.WOOL.blue().defaultBlockState(),
@@ -227,29 +273,39 @@ public final class OathholdInnerCore {
 					c.fill(ax, 4, sz - 2, ax, 4, sz + 2, stripe);
 				}
 				c.set(sx + 2, 2, sz - 1, Blocks.BARREL.defaultBlockState());
+				c.set(sx - 1, 2, sz - 1, (idx & 1) == 0 ? Blocks.LOOM.defaultBlockState() : Blocks.CRAFTING_TABLE.defaultBlockState());
 				c.set(sx - 2, 3, sz + 1, OathholdCanvas.HANGING_LANTERN);
 				if ((idx & 1) == 0) {
 					c.spawnMob(sx, 1, sz + 1, EntityTypes.VILLAGER, 180.0F, true);
 				}
 			}
 		}
+		// Bazaar wagons, crate clusters, outdoor cafe tables & perimeter streetlamps
+		OathholdStreetscape.merchantWagon(c, -80, 1, 132, false, 21);
+		OathholdStreetscape.merchantWagon(c, -96, 1, 104, false, 22);
+		OathholdStreetscape.cargoCluster(c, -44, 1, 96, 23);
+		OathholdStreetscape.cargoCluster(c, -118, 1, 118, 24);
+		OathholdStreetscape.patioTable(c, -44, 1, 108, Blocks.CARPET.orange().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+		OathholdStreetscape.patioTable(c, -44, 1, 134, Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+		for (int lx : new int[]{-116, -80, -44}) {
+			OathholdStreetscape.ornateStreetLamp(c, lx, 1, 90, false);
+			OathholdStreetscape.ornateStreetLamp(c, lx, 1, 148, false);
+		}
 	}
 
 	private static void buildGreatForgeHall(OathholdCanvas c) {
 		int x0 = -186, x1 = -138, z0 = 54, z1 = 92;
-		if (!c.intersects(x0 - 4, z0 - 4, x1 + 4, z1 + 4)) return;
+		if (!c.intersects(x0 - 6, 32, x1 + 16, z1 + 6)) return;
 
 		c.fillWeatheredStone(x0, 1, z0, x1, 10, z1);
 		c.clear(x0 + 2, 1, z0 + 2, x1 - 2, 9, z1 - 2);
 		c.gothicArchX(x1 - 2, x1 + 1, 1, 73, 4, 4, 2, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
 		c.pitchedRoofX(x0, 11, z0, x1, z1, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, OathholdCanvas.BRICKS, OathholdCanvas.DARK_OAK);
 
-		// Twin 32-block tall smoking red-brick blast chimneys (matches aerial_overview left!)
 		for (int cx : new int[]{-174, -154}) {
 			c.fill(cx - 2, 1, 60, cx + 2, 30, 64, OathholdCanvas.BRICKS);
 			c.fill(cx - 1, 2, 61, cx + 1, 31, 63, OathholdCanvas.BRICKS);
 			c.set(cx, 32, 62, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
-			// Glowing ground forge hearth + magma + lava pit inside
 			c.clear(cx - 1, 1, 63, cx + 1, 4, 65);
 			c.set(cx, 1, 63, Blocks.MAGMA_BLOCK.defaultBlockState());
 			c.set(cx, 2, 63, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
@@ -261,6 +317,20 @@ public final class OathholdInnerCore {
 		c.set(-152, 1, 84, Blocks.GRINDSTONE.defaultBlockState());
 		c.chest(-144, 1, 60, Direction.WEST, OathholdSites.LOOT_ARMORY, 311L);
 		c.spawnMob(-160, 1, 72, EntityTypes.VILLAGER, -90.0F, true);
+
+		// Open-Air Blacksmiths' Yard (z = 36..52): quenching basin, anvils, ore piles, wagon & armorer
+		c.fill(-176, 1, 38, -170, 1, 42, OathholdCanvas.TUFF_BRICKS);
+		c.fill(-175, 1, 39, -171, 1, 41, OathholdCanvas.WATER);
+		for (int ax : new int[]{-164, -156, -148}) {
+			c.set(ax, 1, 44, Blocks.ANVIL.defaultBlockState());
+			c.set(ax + 2, 1, 44, Blocks.SMITHING_TABLE.defaultBlockState());
+		}
+		c.fill(-182, 1, 38, -179, 2, 41, Blocks.RAW_IRON_BLOCK.defaultBlockState());
+		c.fill(-164, 1, 36, -160, 2, 38, Blocks.COAL_BLOCK.defaultBlockState());
+		OathholdStreetscape.merchantWagon(c, -132, 1, 46, true, 31);
+		OathholdStreetscape.ornateStreetLamp(c, -132, 1, 56, false);
+		OathholdStreetscape.ornateStreetLamp(c, -132, 1, 88, false);
+		c.spawnMob(-152, 1, 40, EntityTypes.VILLAGER, 0.0F, true);
 	}
 
 	private static void buildCopperGuildhall(OathholdCanvas c) {
@@ -275,7 +345,54 @@ public final class OathholdInnerCore {
 		c.fill(x0 + 2, 10, z0 + 2, x1 - 2, 10, z1 - 2, OathholdCanvas.DARK_OAK);
 		c.gothicArchX(x0 - 1, x0 + 2, 1, 63, 3, 4, 2, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
 
-		// Steep oxidized/weathered copper roof & twin green-copper spires (matches aerial_overview right!)
+		// Checkered ground hall floor & crimson guild runner
+		for (int x = Math.max(x0 + 2, c.clipMinLx()); x <= Math.min(x1 - 2, c.clipMaxLx()); x++) {
+			for (int z = Math.max(z0 + 2, c.clipMinLz()); z <= Math.min(z1 - 2, c.clipMaxLz()); z++) {
+				if (z >= 61 && z <= 65) {
+					c.set(x, 0, z, OathholdCanvas.POLISHED_DEEPSLATE);
+					c.set(x, 1, z, Blocks.CARPET.red().defaultBlockState());
+				} else {
+					boolean even = ((x + z) & 1) == 0;
+					c.set(x, 0, z, even ? OathholdCanvas.CALCITE : OathholdCanvas.POLISHED_DEEPSLATE);
+				}
+			}
+		}
+
+		// Central open atrium looking up through 2nd floor gallery (x=128..146, z=56..70)
+		c.clear(128, 10, 56, 146, 17, 70);
+		c.fill(127, 11, 55, 147, 11, 55, OathholdCanvas.TUFF_BRICKS);
+		c.fill(127, 11, 71, 147, 11, 71, OathholdCanvas.TUFF_BRICKS);
+		c.fill(127, 11, 55, 127, 11, 71, OathholdCanvas.TUFF_BRICKS);
+		c.fill(147, 11, 55, 147, 11, 71, OathholdCanvas.TUFF_BRICKS);
+
+		// Internal Spruce Staircase climbing North to the 2nd floor gallery (x = 120, z = 48..57)
+		for (int step = 0; step <= 9; step++) {
+			int sz = 57 - step;
+			int sy = 1 + step;
+			c.fill(119, 1, sz, 121, sy - 1, sz, OathholdCanvas.STONE_BRICKS);
+			c.fill(119, sy, sz, 121, sy, sz, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false));
+			c.clear(119, sy + 1, sz, 121, 15, sz);
+		}
+
+		// Ground guild counters, bookshelves, mezzanine study desks & 2nd floor windows
+		for (int gx = 126; gx <= 146; gx += 10) {
+			c.fill(gx - 2, 1, 51, gx + 2, 1, 51, OathholdCanvas.DARK_OAK);
+			c.fill(gx - 2, 1, 75, gx + 2, 1, 75, OathholdCanvas.DARK_OAK);
+			c.set(gx, 2, 51, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3).setValue(CandleBlock.LIT, true));
+			c.set(gx, 2, 75, OathholdCanvas.LANTERN);
+		}
+		c.fill(152, 1, 48, 153, 5, 78, Blocks.BOOKSHELF.defaultBlockState());
+		c.lecternBook(150, 1, 63, Direction.WEST,
+			"Guild Ledger of Oathhold", "Grand Bursar",
+			List.of("Every merchant ship docking at East Harbor registers bullion and cloth with the Exchange."));
+		for (int sx = 124; sx <= 148; sx += 12) {
+			OathholdStreetscape.windowWithShuttersAndBox(c, sx, 13, z0, Direction.NORTH, sx);
+			OathholdStreetscape.windowWithShuttersAndBox(c, sx, 13, z1, Direction.SOUTH, sx + 1);
+			c.set(sx, 11, 49, Blocks.OAK_FENCE.defaultBlockState());
+			c.set(sx, 12, 49, Blocks.SPRUCE_PRESSURE_PLATE.defaultBlockState());
+			c.set(sx - 1, 11, 49, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.EAST, false));
+		}
+
 		c.pitchedRoofZ(x0 + 1, 19, z0 + 1, x1 - 1, z1 - 1,
 			Blocks.CUT_COPPER_STAIRS.waxed().weathered(), Blocks.CUT_COPPER_SLAB.waxed().weathered(),
 			OathholdCanvas.CALCITE, OathholdCanvas.COPPER_OXIDIZED);
@@ -283,39 +400,69 @@ public final class OathholdInnerCore {
 		c.bastionTower(x1 - 4, 0, z0 + 4, 4, 24, 12, OathholdCanvas.COPPER_WEATHERED, false);
 		c.chest(148, 1, 76, Direction.NORTH, OathholdSites.LOOT_TREASURY, 321L);
 		c.chandelier(136, 17, 4, 63);
+		c.spawnMob(138, 1, 63, EntityTypes.VILLAGER, -90.0F, true);
+		c.spawnMob(130, 11, 49, EntityTypes.VILLAGER, 0.0F, true);
 	}
 
 	private static void buildGrandInn(OathholdCanvas c) {
 		int x0 = 36, x1 = 74, z0 = 96, z1 = 130;
-		if (!c.intersects(x0 - 4, z0 - 4, x1 + 4, z1 + 4)) return;
+		if (!c.intersects(x0 - 4, z0 - 4, x1 + 4, 152)) return;
 
-		buildMedievalBuilding(c, x0, z0, x1, z1, 3, Blocks.SPRUCE_STAIRS, Blocks.SPRUCE_SLAB, false, 401);
-		// Inn Tavern hearth, common tables, Bounty Board & Wayfarer Keeper
-		c.fill(44, 1, 104, 48, 2, 104, OathholdCanvas.BRICKS);
+		OathholdBuildings.build(c, 0, x0, z0, x1, z1, 3, Blocks.SPRUCE_STAIRS, Blocks.SPRUCE_SLAB,
+			false, OathholdBuildings.Theme.CITADEL, true, 401);
+
+		// Ground Tavern hearth, common tables, Bounty Board & Wayfarer Keeper
+		c.fill(44, 1, 104, 48, 3, 104, OathholdCanvas.BRICKS);
 		c.set(46, 1, 104, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
 		c.fill(52, 1, 108, 60, 1, 112, OathholdCanvas.DARK_OAK);
 		c.set(54, 2, 110, OathholdCanvas.LANTERN);
 		c.set(58, 2, 110, OathholdCanvas.LANTERN);
+
+		// Furnished 2nd-Story Inn Lounge & Guest Suites (Floor deck at y = 5, furnishings at y = 6)
+		for (int gx = 42; gx <= 66; gx += 12) {
+			c.fill(gx, 6, 104, gx + 4, 6, 107, OathholdCanvas.SPRUCE);
+			c.set(gx + 2, 7, 106, OathholdCanvas.LANTERN);
+			c.set(gx - 1, 6, 106, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.EAST, false));
+			c.set(gx + 5, 6, 106, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.WEST, false));
+			c.bed(gx, 6, 120, DyeColor.RED, Direction.EAST);
+		}
+		// Ensure exact Floor 2 Inn lounge furnishing at (ox+44, by+6, oz+106)
+		c.fill(43, 6, 105, 45, 6, 107, OathholdCanvas.DARK_OAK);
+		c.set(44, 7, 106, OathholdCanvas.LANTERN);
+
+		// Enclosed Tavern Beer-Garden Patio south of Grand Inn (z = 132..148)
+		OathholdStreetscape.hedgePlanter(c, 36, 0, 132, 42, 148);
+		OathholdStreetscape.hedgePlanter(c, 68, 0, 132, 74, 148);
+		for (int px : new int[]{48, 56, 63}) {
+			OathholdStreetscape.patioTable(c, px, 1, 138, Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+			OathholdStreetscape.patioTable(c, px, 1, 145, Blocks.CARPET.green().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+			c.set(px, 5, 141, OathholdStreetscape.horizontalChain(false));
+		}
 		c.set(54, 1, 132, Town.BOUNTY_BOARD.defaultBlockState().setValue(BountyBoardBlock.FACING, Direction.SOUTH));
 		WayfarerKeeper cook = c.spawnMob(50, 1, 118, Town.KEEPER, 0.0F, true);
 		if (cook != null) cook.setRole(WayfarerKeeper.Role.COOK);
+		c.spawnMob(52, 1, 141, EntityTypes.VILLAGER, 0.0F, true);
 	}
 
 	private static void buildLowerCityTownhouses(OathholdCanvas c) {
 		for (int gx = -192; gx <= 160; gx += 32) {
 			for (int gz = -32; gz <= 160; gz += 32) {
 				int x0 = gx + 3, x1 = gx + 29, z0 = gz + 3, z1 = gz + 29;
-				if (!c.intersects(x0 - 2, z0 - 2, x1 + 2, z1 + 2)) continue;
+				if (!c.intersects(x0 - 3, z0 - 3, x1 + 3, z1 + 3)) continue;
 				if (overlapsInnerLandmark(x0, z0, x1, z1)) continue;
 
 				int h = OathholdCanvas.hash(gx, 11, gz);
-				// Subdivide each 26x26 urban block into two crisp townhouses separated by a cobblestone alley
-				c.streetLamp(gx + 16, 1, gz + 1);
+				OathholdStreetscape.ornateStreetLamp(c, gx + 16, 1, gz + 1, false);
+				OathholdStreetscape.parkBench(c, gx + 12, 1, gz + 1, Direction.SOUTH);
+				OathholdStreetscape.cargoCluster(c, gx + 20, 1, gz + 1, h);
+
 				if (h < 20) {
-					// Lush inner city courtyard square with cherry/oak tree & fountain well
-					c.tree(gx + 16, 0, gz + 16, h < 10);
+					OathholdStreetscape.treePlanter(c, gx + 16, 0, gz + 16, h < 10);
 					c.fill(gx + 14, 1, gz + 8, gx + 18, 1, gz + 10, OathholdCanvas.STONE_BRICKS);
 					c.set(gx + 16, 1, gz + 9, OathholdCanvas.WATER);
+					OathholdStreetscape.patioTable(c, gx + 9, 1, gz + 16,
+						Blocks.CARPET.yellow().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+					OathholdStreetscape.parkBench(c, gx + 22, 1, gz + 16, Direction.WEST);
 				} else {
 					buildMedievalBuilding(c, x0, z0, gx + 14, gz + 14, 2 + (h % 2),
 						h < 50 ? Blocks.SPRUCE_STAIRS : Blocks.DEEPSLATE_TILE_STAIRS,
@@ -333,67 +480,20 @@ public final class OathholdInnerCore {
 	}
 
 	private static boolean overlapsInnerLandmark(int x0, int z0, int x1, int z1) {
-		if (x0 <= 26 && x1 >= -26 && z1 >= -44) return true; // Central canal & Fountain Plaza & South Avenue
-		if (z1 <= -36) return true; // Acropolis wall buffer
-		if (x1 >= -124 && x0 <= -36 && z1 >= 42 && z0 <= 152) return true; // Grand Market Hall & Bazaar
-		if (x1 >= -190 && x0 <= -134 && z1 >= 50 && z0 <= 96) return true; // Great Forge Hall
-		if (x1 >= -216 && x0 <= -120 && z1 >= 10 && z0 <= 32) return true; // West Aqueduct
-		if (x1 >= 112 && x0 <= 160 && z1 >= 40 && z0 <= 86) return true; // Copper Guildhall
-		if (x1 >= 32 && x0 <= 78 && z1 >= 92 && z0 <= 134) return true; // Grand Inn
+		if (x0 <= 26 && x1 >= -26 && z1 >= -44) return true;
+		if (z1 <= -36) return true;
+		if (x1 >= -124 && x0 <= -36 && z1 >= 42 && z0 <= 152) return true;
+		if (x1 >= -190 && x0 <= -134 && z1 >= 50 && z0 <= 96) return true;
+		if (x1 >= -216 && x0 <= -120 && z1 >= 10 && z0 <= 32) return true;
+		if (x1 >= 112 && x0 <= 160 && z1 >= 40 && z0 <= 86) return true;
+		if (x1 >= 32 && x0 <= 78 && z1 >= 92 && z0 <= 152) return true;
 		return false;
 	}
 
-	/** Reusable detailed half-timbered stone-and-calcite medieval building with pitched roof & furnished interior. */
+	/** Reusable detailed half-timbered stone-and-calcite medieval shop-house with furnished interior. */
 	public static void buildMedievalBuilding(OathholdCanvas c, int x0, int z0, int x1, int z1, int stories,
-			net.minecraft.world.level.block.Block roofStair, net.minecraft.world.level.block.Block roofSlab,
-			boolean copperAccent, int seed) {
-		if (!c.intersects(x0 - 2, z0 - 2, x1 + 2, z1 + 2)) return;
-		int roofY = stories * 5 + 1;
-		c.clear(x0 + 1, 1, z0 + 1, x1 - 1, roofY - 1, z1 - 1);
-
-		for (int s = 0; s < stories; s++) {
-			int fy = s * 5 + 1;
-			boolean ground = s == 0;
-			BlockState wall = ground ? OathholdCanvas.STONE_BRICKS : OathholdCanvas.CALCITE;
-			c.fill(x0, fy, z0, x1, fy + 4, z0, wall);
-			c.fill(x0, fy, z1, x1, fy + 4, z1, wall);
-			c.fill(x0, fy, z0, x0, fy + 4, z1, wall);
-			c.fill(x1, fy, z0, x1, fy + 4, z1, wall);
-			if (!ground) {
-				c.fill(x0 + 1, fy - 1, z0 + 1, x1 - 1, fy - 1, z1 - 1, OathholdCanvas.SPRUCE);
-			}
-			// Dark-oak half-timber corner posts & horizontal beams
-			c.fill(x0, fy, z0, x0, fy + 4, z0, OathholdCanvas.DARK_OAK_LOG);
-			c.fill(x1, fy, z0, x1, fy + 4, z0, OathholdCanvas.DARK_OAK_LOG);
-			c.fill(x0, fy, z1, x0, fy + 4, z1, OathholdCanvas.DARK_OAK_LOG);
-			c.fill(x1, fy, z1, x1, fy + 4, z1, OathholdCanvas.DARK_OAK_LOG);
-			// Warm glass windows
-			int mx = (x0 + x1) / 2;
-			int mz = (z0 + z1) / 2;
-			c.set(mx, fy + 2, z0, Blocks.GLASS_PANE.defaultBlockState());
-			c.set(mx, fy + 2, z1, Blocks.GLASS_PANE.defaultBlockState());
-			c.set(x0, fy + 2, mz, Blocks.GLASS_PANE.defaultBlockState());
-			c.set(x1, fy + 2, mz, Blocks.GLASS_PANE.defaultBlockState());
-		}
-
-		// Front door + hanging lantern + interior bed, table & chimney
-		int mx = (x0 + x1) / 2;
-		c.door(mx, 1, z1, Blocks.SPRUCE_DOOR, Direction.NORTH);
-		c.set(mx + 1, 3, z1 + 1, OathholdCanvas.HANGING_LANTERN);
-		c.fill(x0 + 2, 1, z0 + 1, x0 + 2, roofY + 3, z0 + 1, OathholdCanvas.COBBLESTONE);
-		if (x1 - x0 >= 8 && z1 - z0 >= 8) {
-			c.bed(x1 - 3, 1, z0 + 2, DyeColor.RED, Direction.EAST);
-			c.set(x1 - 2, 1, z0 + 4, Blocks.BARREL.defaultBlockState());
-			c.set(mx, 4, (z0 + z1) / 2, OathholdCanvas.HANGING_LANTERN);
-		}
-		if (copperAccent) {
-			c.pitchedRoofZ(x0, roofY, z0, x1, z1,
-				Blocks.CUT_COPPER_STAIRS.waxed().weathered(), Blocks.CUT_COPPER_SLAB.waxed().weathered(),
-				OathholdCanvas.CALCITE, OathholdCanvas.DARK_OAK);
-		} else if ((seed & 1) == 0) {
-			c.pitchedRoofZ(x0, roofY, z0, x1, z1, roofStair, roofSlab, OathholdCanvas.CALCITE, OathholdCanvas.DARK_OAK);
-		} else {
-			c.pitchedRoofX(x0, roofY, z0, x1, z1, roofStair, roofSlab, OathholdCanvas.CALCITE, OathholdCanvas.DARK_OAK);
-		}
+			Block roofStair, Block roofSlab, boolean copperAccent, int seed) {
+		OathholdBuildings.build(c, 0, x0, z0, x1, z1, stories, roofStair, roofSlab, copperAccent,
+			OathholdBuildings.Theme.CITADEL, (seed & 1) == 0, seed);
 	}
 }

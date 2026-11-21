@@ -71,6 +71,10 @@ class OathholdSitesTest {
 	void registrationsAndOldWorldPolicyArePresent() throws IOException {
 		String sitesSrc = Files.readString(Path.of("src/main/java/dev/wildercord/world/sites/Sites.java"));
 		assertTrue(sitesSrc.contains("OathholdSites.init();"), "Sites.java must initialize OathholdSites");
+		for (String file : List.of("OathholdStreetscape.java", "OathholdBuildings.java")) {
+			assertTrue(Files.isRegularFile(Path.of("src/main/java/dev/wildercord/world/sites/oathhold/" + file)),
+				file + " missing from oathhold package");
+		}
 		for (String id : List.of("oathhold", "oathhold_sector")) {
 			Family family = SiteFamilies.ALL.stream().filter(f -> f.id().equals("wildercord:" + id)).findFirst().orElse(null);
 			assertNotNull(family, id + " missing from SiteFamilies");
