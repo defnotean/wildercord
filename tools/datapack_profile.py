@@ -275,6 +275,14 @@ class DataPackProfile:
     def apply_biome_spawns(self, biome, spawns_by_category, spawn_costs=None):
         """Attach mob spawns either at top level (26.2) or via natural_mob_spawns attribute (26.3)."""
         costs = {} if spawn_costs is None else dict(spawn_costs)
+        if not self.has_biome_attributes:
+            # Before 1.21.11 biomes have no attributes block: fold the visual/audio attributes
+            # into the effects codec (int colors, music) and keep spawns at top level.
+            out = {k: v for k, v in biome.items() if k != "attributes"}
+            out["effects"] = self._legacy_biome_effects(biome)
+            out["spawn_costs"] = costs
+            out["spawners"] = {cat: list(spawns_by_category.get(cat, [])) for cat in SPAWNER_CATEGORIES}
+            return out
         if self.is_26_2:
             out = {}
             for key, value in biome.items():
@@ -325,6 +333,31 @@ class DataPackProfile:
     def has_spear_base(self):
         """Spear base items and the swing/attack animation component only exist from 1.21.11 on."""
         return self.version_tuple >= (1, 21, 11)
+
+    @property
+    def has_biome_attributes(self) -> bool:
+        """The namespaced attributes biome format arrived with 1.21.11."""
+        return self.version_tuple >= (1, 21, 11)
+
+    @staticmethod
+    def _hex_color(value):
+        if isinstance(value, str) and value.startswith("#") and len(value) == 7:
+            return int(value[1:], 16)
+        return value
+
+    def _legacy_biome_effects(self, biome):
+        """Fold the authored attributes into the pre-1.21.11 effects codec: int colors plus music."""
+        effects = {k: self._hex_color(v) for k, v in biome.get("effects", {}).items()}
+        attrs = biome.get("attributes", {})
+        for key in ("sky_color", "water_fog_color", "water_color", "fog_color"):
+            value = attrs.get("minecraft:visual/" + key)
+            if value is not None:
+                effects[key] = self._hex_color(value)
+        effects.setdefault("fog_color", effects.get("water_fog_color", 12638463))
+        music = attrs.get("minecraft:audio/background_music")
+        if isinstance(music, dict) and isinstance(music.get("default"), dict):
+            effects["music"] = music["default"]
+        return effects
 
     @property
     def brewing_subdir(self):

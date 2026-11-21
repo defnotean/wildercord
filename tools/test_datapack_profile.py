@@ -170,6 +170,27 @@ class DataPackProfileTests(unittest.TestCase):
             ["minecraft:audio/background_music", "minecraft:gameplay/natural_mob_spawns", "minecraft:visual/sky_color"],
         )
 
+        p12110 = dp.DataPackProfile.for_version("1.21.10")
+        legacy_biome = {
+            "attributes": {
+                "minecraft:audio/background_music": {"default": {"sound": "minecraft:music.overworld.swamp"}},
+                "minecraft:visual/sky_color": "#84acc3",
+                "minecraft:visual/water_fog_color": "#245257",
+                "minecraft:gameplay/increased_fire_burnout": True,
+            },
+            "carvers": ["minecraft:cave"],
+            "downfall": 0.95,
+            "effects": {"grass_color": "#78a994", "water_color": "#3c8b91"},
+        }
+        b12110 = p12110.apply_biome_spawns(legacy_biome, spawns)
+        self.assertNotIn("attributes", b12110)
+        self.assertEqual(tuple(b12110["spawners"].keys()), dp.SPAWNER_CATEGORIES)
+        self.assertEqual(b12110["effects"]["sky_color"], 0x84ACC3)
+        self.assertEqual(b12110["effects"]["water_fog_color"], 0x245257)
+        self.assertEqual(b12110["effects"]["grass_color"], 0x78A994)
+        self.assertEqual(b12110["effects"]["fog_color"], 0x245257)
+        self.assertEqual(b12110["effects"]["music"], {"sound": "minecraft:music.overworld.swamp"})
+
         mod = {"type": "wildercord:random_rune", "min_tier": 1, "max_tier": 2}
         self.assertEqual(p262.villager_item_modifier_field(mod), {"given_item_modifiers": [{"function": "wildercord:random_rune", "min_tier": 1, "max_tier": 2}]})
         self.assertEqual(p263.villager_item_modifier_field(mod), {"given_item_modifier": mod})
