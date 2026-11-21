@@ -3,6 +3,7 @@ package dev.wildercord.client.compat;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.irisshaders.iris.api.v0.IrisProgram;
 import net.irisshaders.iris.api.v0.IrisShadowProgram;
+import net.minecraft.client.renderer.RenderPipeline;
 
 /** The calls into Iris's API. Only loaded when Iris is installed (see ShaderCompat). */
 final class IrisBridge {
@@ -24,10 +25,23 @@ final class IrisBridge {
 		api.assignPipeline(RenderCompat.wispGlowPipeline(), IrisProgram.EMISSIVE_ENTITIES);
 		api.assignPipeline(RenderCompat.auraBodyGlowPipeline(), IrisProgram.EMISSIVE_ENTITIES);
 		if (api.getMinorApiRevision() >= 4) {
-			api.assignPipelineShadow(RenderCompat.glowParticlePipeline(), IrisShadowProgram.SHADOW);
-			api.assignPipelineShadow(RenderCompat.darkParticlePipeline(), IrisShadowProgram.SHADOW);
-			api.assignPipelineShadow(RenderCompat.wispGlowPipeline(), IrisShadowProgram.SHADOW_ENTITIES);
-			api.assignPipelineShadow(RenderCompat.auraBodyGlowPipeline(), IrisShadowProgram.SHADOW_ENTITIES);
+			assignShadow(api, RenderCompat.glowParticlePipeline(), IrisShadowProgram.SHADOW);
+			assignShadow(api, RenderCompat.darkParticlePipeline(), IrisShadowProgram.SHADOW);
+			assignShadow(api, RenderCompat.wispGlowPipeline(), IrisShadowProgram.SHADOW_ENTITIES);
+			assignShadow(api, RenderCompat.auraBodyGlowPipeline(), IrisShadowProgram.SHADOW_ENTITIES);
+		}
+	}
+
+	/**
+	 * 26.1 pins Iris 1.10.9, whose compile API predates assignPipelineShadow; the call is reflective so
+	 * the seam compiles against the pinned jar and still assigns shadow programs on newer Iris.
+	 */
+	private static void assignShadow(IrisApi api, RenderPipeline pipeline, IrisShadowProgram program) {
+		try {
+			api.getClass().getMethod("assignPipelineShadow", RenderPipeline.class, IrisShadowProgram.class)
+				.invoke(api, pipeline, program);
+		} catch (ReflectiveOperationException absent) {
+			// Iris without the shadow-pass API draws the pipeline with no shadow program.
 		}
 	}
 
