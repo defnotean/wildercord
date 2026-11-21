@@ -1,9 +1,9 @@
 package dev.wildercord.client.compat;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.irisshaders.iris.api.v0.IrisProgram;
 import net.irisshaders.iris.api.v0.IrisShadowProgram;
-import net.minecraft.client.renderer.RenderPipeline;
 
 /** The calls into Iris's API. Only loaded when Iris is installed (see ShaderCompat). */
 final class IrisBridge {
