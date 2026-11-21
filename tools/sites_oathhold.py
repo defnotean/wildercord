@@ -72,7 +72,7 @@ def write(gen):
         "site": "oathhold",
         "biomes": "#wildercord:has_structure/oathhold",
         "spawn_overrides": {},
-        "step": "surface_structures",
+        "step": "top_layer_modification",
         "terrain_adaptation": "none",
     })
     gen.write_json(gen.DATA / "worldgen/structure_set/oathhold.json", {
@@ -95,7 +95,7 @@ def write(gen):
         "site": "oathhold_sector",
         "biomes": "#wildercord:has_structure/oathhold_sector",
         "spawn_overrides": {},
-        "step": "surface_structures",
+        "step": "top_layer_modification",
         "terrain_adaptation": "none",
     })
     gen.write_json(gen.DATA / "worldgen/structure_set/oathhold_sector.json", {

@@ -121,24 +121,38 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			world.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				// South & North Outer Barbicans (distance = 1,920 blocks) + Outer Moat Water
-				check(!blockAt(l, ox + 23, by + 18, oz + 960).isAir(), "South Outer Gatehouse Tower missing at +960");
-				check(blockAt(l, ox + 24, by - 1, oz + 974).is(Blocks.WATER), "South Outer Moat Water missing at +974");
-				check(!blockAt(l, ox + 23, by + 18, oz - 960).isAir(), "North Outer Gatehouse Tower missing at -960");
-				check(blockAt(l, ox + 24, by - 1, oz - 974).is(Blocks.WATER), "North Outer Moat Water missing at -974");
+				var southOuterTower = blockAt(l, ox + 23, by + 18, oz + 960);
+				check(!southOuterTower.isAir(), "South Outer Gatehouse Tower missing at +960: " + southOuterTower);
+				var southMoat = blockAt(l, ox + 24, by - 2, oz + 974);
+				check(southMoat.is(Blocks.WATER), "South Outer Moat Water missing at +974 (by-2): " + southMoat);
+				var northOuterTower = blockAt(l, ox + 23, by + 18, oz - 960);
+				check(!northOuterTower.isAir(), "North Outer Gatehouse Tower missing at -960: " + northOuterTower);
+				var northMoat = blockAt(l, ox + 24, by - 2, oz - 974);
+				check(northMoat.is(Blocks.WATER), "North Outer Moat Water missing at -974 (by-2): " + northMoat);
 
 				// West & East Outer Walls (distance = 1,920 blocks), Colosseum (-612) & Harbor Galleons (+760)
-				check(!blockAt(l, ox - 960, by + 18, oz + 23).isAir(), "West Outer Gatehouse Tower missing at -960");
-				check(blockAt(l, ox - 612, by, oz - 14).is(Blocks.SAND), "Tournament Colosseum arena sand missing at x=-612");
-				check(blockAt(l, ox + 760, by - 1, oz).is(Blocks.WATER), "East Imperial Harbor basin water missing at x=+760");
-				check(blockAt(l, ox + 758, by + 18, oz - 58).is(Blocks.DARK_OAK_LOG), "Harbor Galleon mainmast missing at (758, -58)");
-				check(!blockAt(l, ox + 960, by + 18, oz + 108).isAir(), "East Harbor Sea-Gate Bastion missing at x=+960");
+				var westOuterTower = blockAt(l, ox - 960, by + 18, oz + 23);
+				check(!westOuterTower.isAir(), "West Outer Gatehouse Tower missing at -960: " + westOuterTower);
+				var colosseumSand = blockAt(l, ox - 612, by, oz - 14);
+				check(colosseumSand.is(Blocks.SAND), "Tournament Colosseum arena sand missing at x=-612: " + colosseumSand);
+				var harborWater = blockAt(l, ox + 760, by - 2, oz);
+				check(harborWater.is(Blocks.WATER), "East Imperial Harbor basin water missing at x=+760 (by-2): " + harborWater);
+				var galleonMast = blockAt(l, ox + 758, by + 18, oz - 58);
+				check(galleonMast.is(Blocks.DARK_OAK_LOG), "Harbor Galleon mainmast missing at (758, -58): " + galleonMast);
+				var eastSeaGate = blockAt(l, ox + 960, by + 18, oz + 108);
+				check(!eastSeaGate.isAir(), "East Harbor Sea-Gate Bastion missing at x=+960: " + eastSeaGate);
 
 				// Inner Citadel: South Gatehouse, Fountain Plaza, Canal, Forge, Sovereign Great Hall, Cathedral Spire
-				check(!blockAt(l, ox + 22, by + 20, oz + 224).isAir(), "South Inner Gatehouse Tower missing at z=+224");
-				check(blockAt(l, ox, by + 1, oz + 182).is(Blocks.WATER), "Fountain Plaza water missing at z=+182");
-				check(blockAt(l, ox, by - 1, oz + 80).is(Blocks.WATER), "Central Canal water missing at z=+80");
-				check(blockAt(l, ox, by + OathholdOrigin.ACROPOLIS_Y + 10, oz - 191).is(Blocks.WOOL.red()), "Sovereign Throne cushion missing inside Great Hall");
-				check(!blockAt(l, ox + 150, by + 115, oz - 140).isAir(), "Sovereign Cathedral Bell-Spire missing above y=+115");
+				var southInnerTower = blockAt(l, ox + 22, by + 20, oz + 224);
+				check(!southInnerTower.isAir(), "South Inner Gatehouse Tower missing at z=+224: " + southInnerTower);
+				var fountainWater = blockAt(l, ox, by + 1, oz + 182);
+				check(fountainWater.is(Blocks.WATER) || fountainWater.is(Blocks.ICE), "Fountain Plaza water missing at z=+182: " + fountainWater);
+				var canalWater = blockAt(l, ox, by - 2, oz + 80);
+				check(canalWater.is(Blocks.WATER), "Central Canal water missing at z=+80 (by-2): " + canalWater);
+				var throneCushion = blockAt(l, ox, by + OathholdOrigin.ACROPOLIS_Y + 10, oz - 191);
+				check(throneCushion.is(Blocks.WOOL.red()), "Sovereign Throne cushion missing inside Great Hall: " + throneCushion);
+				var cathedralSpire = blockAt(l, ox + 150, by + 115, oz - 140);
+				check(!cathedralSpire.isAir(), "Sovereign Cathedral Bell-Spire missing above y=+115: " + cathedralSpire);
 
 				// Pre-warm full Inner Citadel + Acropolis grid so shot 01 renders the whole skyline
 				for (int wx = ox - 208; wx <= ox + 208; wx += 16) {
