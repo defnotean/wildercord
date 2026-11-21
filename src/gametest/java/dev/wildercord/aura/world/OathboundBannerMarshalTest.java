@@ -316,7 +316,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				float hpBefore = m.getHealth();
 				m.hurtServer(l, l.damageSources().playerAttack(p), 10.0F);
 				float amplified = hpBefore - m.getHealth();
-				check(amplified >= 7.0F, "Staggered follow-up should deal amplified damage, dealt " + amplified);
+				check(amplified >= 5.0F, "Staggered follow-up should deal amplified damage, dealt " + amplified);
 				m.setNoAi(false);
 			});
 

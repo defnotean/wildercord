@@ -284,16 +284,20 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 
 		// Panel 1 (SOVEREIGN MARCH): Sunblade angled proudly forward-down at right, Sun-shield angled outward on left
 		right.xRot = -0.45F - Mth.cos(step) * walk * 0.20F;
-		right.zRot = 0.22F;
+		right.yRot = -0.14F;
+		right.zRot = -0.12F;
 		foreR.xRot = -0.35F;
-		sunblade.xRot = 1.95F;
-		sunblade.zRot = -0.10F;
+		sunblade.xRot = 1.85F;
+		sunblade.yRot = 0.0F;
+		sunblade.zRot = 0.0F;
 
 		left.xRot = -0.42F + Mth.cos(step) * walk * 0.18F;
-		left.yRot = 0.52F;
-		left.zRot = -0.14F;
+		left.yRot = 0.42F;
+		left.zRot = -0.10F;
 		foreL.xRot = -0.48F;
-		aegisShield.yRot = -0.35F;
+		aegisShield.xRot = 0.55F;
+		aegisShield.yRot = 0.0F;
+		aegisShield.zRot = 0.28F;
 
 		float tell = Math.max(1.0F, tellTicks);
 		switch (move) {
@@ -307,13 +311,16 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 				legL.zRot = -0.18F * k;
 				legR.zRot = 0.18F * k;
 				body.xRot = Mth.lerp(k, body.xRot, -0.10F);
-				right.xRot = Mth.lerp(k, right.xRot, -2.35F);
+				right.xRot = Mth.lerp(k, right.xRot, -2.45F);
+				right.yRot = Mth.lerp(k, right.yRot, 0.0F);
 				right.zRot = Mth.lerp(k, right.zRot, -0.22F);
-				foreR.xRot = Mth.lerp(k, foreR.xRot, -0.25F);
-				sunblade.xRot = Mth.lerp(k, sunblade.xRot, 0.55F);
+				foreR.xRot = Mth.lerp(k, foreR.xRot, -0.35F);
+				sunblade.xRot = Mth.lerp(k, sunblade.xRot, 3.00F);
 
-				left.xRot = Mth.lerp(k, left.xRot, -0.22F);
-				left.yRot = Mth.lerp(k, left.yRot, 0.28F);
+				left.xRot = Mth.lerp(k, left.xRot, -0.35F);
+				left.yRot = Mth.lerp(k, left.yRot, 0.35F);
+				aegisShield.xRot = Mth.lerp(k, aegisShield.xRot, 0.45F);
+				aegisShield.zRot = Mth.lerp(k, aegisShield.zRot, 0.25F);
 				bannerCloth.xRot = 0.18F + 0.18F * k;
 			}
 			case OathboundBannerMarshalRules.SOLAR_AEGIS_GUARD -> {
@@ -326,16 +333,19 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 					body.yRot = Mth.lerp(in, body.yRot, 0.24F);
 
 					// Positive yRot swings left forearm inward (-X) to front chest center
-					left.xRot = Mth.lerp(in, left.xRot, -0.82F);
-					left.yRot = Mth.lerp(in, left.yRot, 0.88F);
-					left.zRot = Mth.lerp(in, left.zRot, -0.06F);
-					foreL.xRot = Mth.lerp(in, foreL.xRot, -0.62F);
-					aegisShield.yRot = Mth.lerp(in, aegisShield.yRot, -0.58F);
+					left.xRot = Mth.lerp(in, left.xRot, -0.78F);
+					left.yRot = Mth.lerp(in, left.yRot, 0.85F);
+					left.zRot = Mth.lerp(in, left.zRot, 0.0F);
+					foreL.xRot = Mth.lerp(in, foreL.xRot, -0.58F);
+					aegisShield.xRot = Mth.lerp(in, aegisShield.xRot, 0.85F);
+					aegisShield.yRot = 0.0F;
+					aegisShield.zRot = Mth.lerp(in, aegisShield.zRot, 0.45F);
 
-					right.xRot = Mth.lerp(in, right.xRot, -0.85F);
-					right.zRot = Mth.lerp(in, right.zRot, 0.42F);
+					right.xRot = Mth.lerp(in, right.xRot, -0.38F);
+					right.yRot = Mth.lerp(in, right.yRot, -0.25F);
+					right.zRot = Mth.lerp(in, right.zRot, -0.28F);
 					foreR.xRot = Mth.lerp(in, foreR.xRot, -0.52F);
-					sunblade.xRot = Mth.lerp(in, sunblade.xRot, 1.35F);
+					sunblade.xRot = Mth.lerp(in, sunblade.xRot, 1.85F);
 				} else {
 					// Counter-thrust!
 					float thrust = ramp(counterEl, 0.0F, 4.0F);
@@ -343,8 +353,8 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 					body.yRot = Mth.lerp(rec, Mth.lerp(thrust, 0.24F, -0.55F), 0.0F);
 					right.xRot = Mth.lerp(rec, -1.45F, -0.45F);
 					foreR.xRot = Mth.lerp(rec, -0.15F, -0.35F);
-					sunblade.xRot = Mth.lerp(rec, 1.57F, 1.95F);
-					left.yRot = Mth.lerp(rec, 0.25F, 0.52F);
+					sunblade.xRot = Mth.lerp(rec, 1.57F, 1.85F);
+					left.yRot = Mth.lerp(rec, 0.25F, 0.42F);
 				}
 			}
 			case OathboundBannerMarshalRules.RADIANT_SUNBLADE_CLEAVE -> {
@@ -353,15 +363,16 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 				float swing = ramp(el, tell, 4.0F);
 				float rec = smooth(el, tell + 6.0F, OathboundBannerMarshalRules.CLEAVE_DURATION);
 
-				body.yRot = Mth.lerp(rec, Mth.lerp(swing, -0.65F * wind, 0.85F), 0.0F);
-				body.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.08F * wind, 0.26F), 0.0F);
+				body.yRot = Mth.lerp(rec, Mth.lerp(swing, -0.55F * wind, 0.65F), 0.0F);
+				body.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.08F * wind, 0.22F), 0.0F);
 				bend(0.28F * Math.max(wind * 0.4F, swing) * (1.0F - rec));
 
-				right.xRot = Mth.lerp(rec, Mth.lerp(swing, -2.05F * wind, 0.25F), -0.45F);
-				right.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.35F * wind, -0.78F), 0.0F);
-				right.zRot = Mth.lerp(rec, 0.45F, 0.22F);
-				foreR.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.45F, -0.25F), -0.35F);
-				sunblade.xRot = Mth.lerp(rec, Mth.lerp(swing, 1.25F, 1.65F), 1.95F);
+				right.xRot = Mth.lerp(rec, Mth.lerp(swing, -1.65F * wind, -0.75F), -0.45F);
+				right.yRot = Mth.lerp(rec, Mth.lerp(swing, -0.35F * wind, -0.55F), -0.14F);
+				right.zRot = Mth.lerp(rec, Mth.lerp(swing, -0.35F * wind, -0.42F), -0.12F);
+				foreR.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.45F, -0.35F), -0.35F);
+				sunblade.xRot = Mth.lerp(rec, Mth.lerp(swing, 2.25F, 2.15F), 1.85F);
+				sunblade.zRot = Mth.lerp(rec, Mth.lerp(swing, 0.15F * wind, -0.55F), 0.0F);
 			}
 			case OathboundBannerMarshalRules.SOVEREIGN_JUDGMENT -> {
 				// Panels 5 & 6: HEAVEN'S LANCE WINDUP -> SOVEREIGN JUDGMENT DOWNWARD THRUST
@@ -376,14 +387,14 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 				body.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.14F * wind, 0.30F), 0.0F);
 
 				// Panel 5: Sword hoisted high above golden crown -> Panel 6: Driven forward-down in command lunge
-				right.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.45F, -2.65F), -0.72F), -0.45F);
-				right.yRot = Mth.lerp(rec, Mth.lerp(slam, -0.20F * wind, -0.35F), 0.0F);
-				right.zRot = Mth.lerp(rec, Mth.lerp(slam, -0.15F * wind, 0.25F), 0.22F);
-				foreR.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.25F, -0.25F), -0.35F);
-				sunblade.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 1.95F, 1.85F), 2.10F), 1.95F);
+				right.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.45F, -2.55F), -0.65F), -0.45F);
+				right.yRot = Mth.lerp(rec, Mth.lerp(slam, 0.0F, -0.15F), -0.14F);
+				right.zRot = Mth.lerp(rec, Mth.lerp(slam, -0.25F * wind, -0.18F), -0.12F);
+				foreR.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.30F, -0.25F), -0.35F);
+				sunblade.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 1.85F, 2.95F), 2.95F), 1.85F);
 
 				left.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.35F, -0.75F), -0.42F);
-				left.yRot = Mth.lerp(rec, 0.45F, 0.52F);
+				left.yRot = Mth.lerp(rec, 0.45F, 0.42F);
 				bannerCloth.xRot = 0.08F + 0.25F * Math.max(wind, slam) * (1.0F - rec);
 			}
 			case OathboundBannerMarshalRules.STAGGERED -> {
