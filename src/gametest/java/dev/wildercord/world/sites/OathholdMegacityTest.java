@@ -105,7 +105,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				BlockPos found = McWorldgen.findNearestStructure(level, HolderSet.direct(holder), BlockPos.ZERO, 200, false);
 				check(found != null, "Could not locate wildercord:oathhold within 200 cells on seed " + TEST_SEED);
 				level.getChunk(found.getX() >> 4, found.getZ() >> 4);
-				var starts = McWorldgen.startsForStructure(level.structureManager(), found.getX() >> 4, found.getZ() >> 4, holder.value());
+				var starts = McWorldgen.startsForStructure(level.structureManager(), found.getX() >> 4, found.getZ() >> 4, st -> st == holder.value());
 				check(!starts.isEmpty(), "Located chunk has no valid wildercord:oathhold StructureStart at " + found);
 				StructureStart start = starts.getFirst();
 				BoundingBox box = start.getBoundingBox();
