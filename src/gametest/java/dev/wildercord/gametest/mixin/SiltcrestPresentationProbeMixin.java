@@ -25,7 +25,7 @@ public abstract class SiltcrestPresentationProbeMixin {
  @Shadow private int left;
  @Shadow private boolean pendingPreen;
 
- @WrapMethod(method="beginCoil(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/animal/fish/AbstractFish;)Z",require=1,expect=1,allow=1)
+ @WrapMethod(method="beginCoil(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/animal/AbstractFish;)Z",require=1,expect=1,allow=1)
  private boolean wildercord$coil(ServerLevel level,AbstractFish fish,Operation<Boolean> original) {
   boolean result=original.call(level,fish);if(result)wildercord$receipt("coil_admitted",null,null,null,null,null,false);return result;
  }
@@ -36,7 +36,7 @@ public abstract class SiltcrestPresentationProbeMixin {
  }
  @Inject(method="cancel(I)V",at=@At("HEAD"),require=1,expect=1,allow=1)
  private void wildercord$cancel(int pause,CallbackInfo ci){wildercord$receipt("cancel_enter",pause,null,null,null,null,false);}
- @WrapOperation(method="strike(Lnet/minecraft/server/level/ServerLevel;)V",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/animal/fish/AbstractFish;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"),require=1,expect=1,allow=1)
+ @WrapOperation(method="strike(Lnet/minecraft/server/level/ServerLevel;)V",at=@At(value="INVOKE",target="Lnet/minecraft/world/entity/animal/AbstractFish;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"),require=1,expect=1,allow=1)
  private boolean wildercord$damage(AbstractFish fish,ServerLevel level,DamageSource damage,float amount,Operation<Boolean> original) {
   wildercord$receipt("damage_call",null,fish,damage,amount,null,false);Boolean result=null;
   try{result=original.call(fish,level,damage,amount);return result;}

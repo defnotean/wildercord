@@ -101,7 +101,7 @@ public final class StormSky {
 	}
 
 	public static int tintCloud(int argb) {
-		Vector4fc c = tintCloud(ARGB.vector4fFromARGB32(argb));
+		Vector4fc c = tintCloud(new Vector4f(ARGB.redFloat(argb), ARGB.greenFloat(argb), ARGB.blueFloat(argb), ARGB.alphaFloat(argb)));
 		return ARGB.colorFromFloat(c.w(), c.x(), c.y(), c.z());
 	}
 
