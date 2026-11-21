@@ -4,7 +4,7 @@ import dev.wildercord.cast.*;
 import dev.wildercord.config.Config;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.*;
@@ -37,7 +37,7 @@ public final class EmberContent {
   });
   var biomes=Set.of(Biomes.FOREST,Biomes.WOODED_BADLANDS,dev.wildercord.world.biome.EmberwoodClimate.EMBERWOOD);BiomeModifications.create(Wildercord.id("ember_bailiffs")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(biomes),c->{var s=Config.get().wildlife();if(s.spawns("cinder_bailiff"))dev.wildercord.compat.McWorldgen.addSpawn(c.getMobSpawnSettings(), MobCategory.MONSTER, BAILIFF, 1, 1, Math.max(1,(int)(2*Math.max(1,s.spawnMultiplier()))));});
   BiomeModifications.addFeature(BiomeSelectors.includeByKey(biomes),GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("cinder_fern_patch")));
-  FieldGuide.add(new FieldGuide.Entry("wildercord:cinder_bailiff",FieldGuide.Group.WILDLIFE,0xA16D48));CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->{o.accept(FERN_ITEM);o.accept(EGG);});CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(o->o.accept(EGG));
+  FieldGuide.add(new FieldGuide.Entry("wildercord:cinder_bailiff",FieldGuide.Group.WILDLIFE,0xA16D48));ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->{o.accept(FERN_ITEM);o.accept(EGG);});ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o->o.accept(EGG));
  }
  /** Successful actual cooling owns one Warning interruption per shared payment. */
  public static boolean cool(Cast cast,LivingEntity target){if(!cast.alive()||cast.passive||!(cast.caster instanceof net.minecraft.server.level.ServerPlayer player)||player.isCreative()||player.isSpectator()||!(target instanceof CinderBailiff bailiff)||bailiff.pose()!=CinderBailiff.WARNING||target.level()!=cast.level||!target.isAlive()||target.isRemoved()||player.distanceToSqr(target)>=64||!player.hasLineOfSight(target))return false;if(!cast.once("ember_bailiff_cooling"))return false;return bailiff.cool(player);}

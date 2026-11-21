@@ -57,7 +57,7 @@ public final class WaypointHud {
 		}
 		Font font = mc.font;
 		float partial = delta.getGameTimeDeltaPartialTick(true);
-		boolean here = track.dimension().equals(player.level().dimension().identifier().toString());
+		boolean here = track.dimension().equals(player.level().dimension().location().toString());
 		Component info;
 		double turn = 0;
 		boolean arrived = false;

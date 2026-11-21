@@ -89,8 +89,8 @@ public final class HearthEffects {
 	public static final AttachmentType<List<ItemStack>> POCKET = AttachmentRegistry.create(Wildercord.id("hollow_pocket"),
 		b -> b.persistent(ItemStack.OPTIONAL_CODEC.listOf()).copyOnDeath());
 
-	private static final net.minecraft.resources.Identifier STEP_ID = Wildercord.id("surefoot");
-	private static final net.minecraft.resources.Identifier REACH_ID = Wildercord.id("long_arm");
+	private static final net.minecraft.resources.ResourceLocation STEP_ID = Wildercord.id("surefoot");
+	private static final net.minecraft.resources.ResourceLocation REACH_ID = Wildercord.id("long_arm");
 
 	/** creature -> rune path -> the server tick it ends. */
 	private static final Map<UUID, Map<String, Long>> TIMERS = new HashMap<>();
@@ -1007,7 +1007,7 @@ public final class HearthEffects {
 	}
 
 	private static void landread(ServerPlayer caster, ServerLevel level, BlockPos pos) {
-		String biome = level.getBiome(pos).unwrapKey().map(k -> k.identifier().getPath().replace('_', ' ')).orElse("?");
+		String biome = level.getBiome(pos).unwrapKey().map(k -> k.location().getPath().replace('_', ' ')).orElse("?");
 		int light = level.getMaxLocalRawBrightness(pos);
 		caster.sendSystemMessage(Component.translatable("message.wildercord.hearth.land", biome, pos.getY(), light));
 		if (level.dimension() == Level.OVERWORLD
@@ -1060,7 +1060,7 @@ public final class HearthEffects {
 		if (attr == null) {
 			return;
 		}
-		net.minecraft.resources.Identifier id = step ? STEP_ID : REACH_ID;
+		net.minecraft.resources.ResourceLocation id = step ? STEP_ID : REACH_ID;
 		if (on) {
 			if (!attr.hasModifier(id)) {
 				attr.addTransientModifier(new AttributeModifier(id, step ? 0.45 : 2.0, AttributeModifier.Operation.ADD_VALUE));

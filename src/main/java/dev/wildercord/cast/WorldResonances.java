@@ -441,7 +441,7 @@ public final class WorldResonances {
 	}
 
 	public static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Revealed.TYPE, Revealed.CODEC);
+		PayloadTypeRegistry.playS2C().register(Revealed.TYPE, Revealed.CODEC);
 		// Drawn as the server starts, so the first cast doesn't wait for it.
 		ServerLifecycleEvents.SERVER_STARTED.register(WorldResonances::ledger);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {

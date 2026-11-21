@@ -18,7 +18,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -92,7 +92,7 @@ import java.util.function.BooleanSupplier;
 public final class TideEffects {
 	private TideEffects() {}
 
-	private static final Identifier DIVERS_HANDS = Wildercord.id("divers_hands");
+	private static final ResourceLocation DIVERS_HANDS = Wildercord.id("divers_hands");
 	/** Bobbers Angler's Lure already hurried (once each). */
 	private static final Set<FishingHook> LURED = Collections.newSetFromMap(new WeakHashMap<>());
 	/** Each caster's one Tide Marker. */
@@ -614,7 +614,7 @@ public final class TideEffects {
 			BlockState into = null;
 			String concrete = TideRules.concreteFor(BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath());
 			if (concrete != null) {
-				Block b = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(concrete));
+				Block b = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(concrete));
 				if (b != Blocks.AIR) into = b.defaultBlockState();
 			} else if (s.is(Blocks.DIRT)) {
 				into = Blocks.MUD.defaultBlockState();
@@ -705,7 +705,7 @@ public final class TideEffects {
 			BlockState s = level.getBlockState(p);
 			String living = TideRules.livingCoral(BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath());
 			if (living == null || !touchesWater(level, p, s)) continue;
-			Block b = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(living));
+			Block b = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(living));
 			if (b == Blocks.AIR || !take(cast, p)) continue;
 			level.setBlockAndUpdate(p, b.withPropertiesOf(s));
 			emit(level, ParticleTypes.BUBBLE, Vec3.atCenterOf(p), 6, 0.3);

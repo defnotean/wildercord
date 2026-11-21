@@ -302,8 +302,8 @@ public final class FormDash {
 		SESSIONS.remove(player); player.removeAttached(VIEW);
 	}
 	public static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(Action.TYPE, Action.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Event.TYPE, Event.CODEC);
+		PayloadTypeRegistry.playC2S().register(Action.TYPE, Action.CODEC);
+		PayloadTypeRegistry.playS2C().register(Event.TYPE, Event.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Action.TYPE, (packet, context) -> request(context.player(), packet));
 		ServerTickEvents.END_SERVER_TICK.register(server -> { for (ServerPlayer player : server.getPlayerList().getPlayers()) tick(player); });
 		// Damage, stance breaks and knockback leases already reach cancel() through MasterForms.cancel.
@@ -314,7 +314,7 @@ public final class FormDash {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SESSIONS.clear());
 		FormDashLessons.init();
 		// ---- moves pack
-		PayloadTypeRegistry.serverboundPlay().register(Counter.TYPE, Counter.CODEC);
+		PayloadTypeRegistry.playC2S().register(Counter.TYPE, Counter.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Counter.TYPE, (packet, context) -> counter(context.player(), packet));
 	}
 

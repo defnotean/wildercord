@@ -5,7 +5,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.TechniqueRules;
 import dev.wildercord.aura.Techniques;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -18,7 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemGroup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -125,8 +125,8 @@ public class TechniqueScrollItem extends Item {
 	}
 
 	public static void init() {
-		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
-		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
+		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> {
 			for (String part : TechniqueRules.scrollParts()) {
 				output.accept(of(part));
 			}

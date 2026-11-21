@@ -7,7 +7,7 @@ import dev.wildercord.cast.Casters;
 import dev.wildercord.cast.feel.Feels;
 import net.fabricmc.fabric.api.attachment.v1.*;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.*;
@@ -73,7 +73,7 @@ public final class WetlandGarden {
   });
   dev.wildercord.compat.McWorldgen.registerFeature("moonreed_patch", new MoonreedFeature());
   BiomeModifications.addFeature(BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP,dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)),GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("moonreed_patch")));
-  CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(CUTTING,FLOSS,LENS).forEach(o::accept));
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(CUTTING,FLOSS,LENS).forEach(o::accept));
   UseEntityCallback.EVENT.register((p,l,h,e,hit) -> {
    if(!(e instanceof LanternNewt n) || !p.getItemInHand(h).is(LENS) || p.isSpectator())return InteractionResult.PASS;
    if(p instanceof ServerPlayer sp && begin(sp,h)) {

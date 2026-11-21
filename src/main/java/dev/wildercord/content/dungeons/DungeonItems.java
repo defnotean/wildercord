@@ -2,13 +2,13 @@ package dev.wildercord.content.dungeons;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordBlocks;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemGroup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
@@ -42,8 +42,8 @@ public final class DungeonItems {
 	}
 
 	public static void init() {
-		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
-		CreativeModeTabEvents.modifyOutputEvent(tab).register(output ->
+		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ItemGroupEvents.modifyEntriesEvent(tab).register(output ->
 			output.insertAfter(WildercordBlocks.ARCHIVE_LECTERN, DungeonBlocks.ALTAR, CINDER_HEART, ASTRAL_LENS, DROWNED_QUILL));
 	}
 }

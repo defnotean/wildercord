@@ -8,7 +8,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -53,7 +53,7 @@ import java.util.function.Predicate;
  * Version seam for blocks, items, tags, sounds, signs, containers, compostables and fuels.
  */
 public final class McBlocksAndItems {
-	private static final TagKey<Block> SAPLINGS = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("saplings"));
+	private static final TagKey<Block> SAPLINGS = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("saplings"));
 	// 26.1.2 has no vanilla colour-collection holders; dyed families are resolved by registry name.
 	private static final List<String> DYED_SUFFIXES = List.of(
 		"stained_glass_pane", "stained_glass", "glazed_terracotta", "concrete_powder",
@@ -217,7 +217,7 @@ public final class McBlocksAndItems {
 
 	/** Block of the dyed family {@code suffix} (e.g. {@code "wall_banner"}) in {@code color}, or null when absent. */
 	public static @Nullable Block dyedBlock(String suffix, DyeColor color) {
-		Block block = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(color.getName() + "_" + suffix));
+		Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(color.getName() + "_" + suffix));
 		return block == Blocks.AIR ? null : block;
 	}
 

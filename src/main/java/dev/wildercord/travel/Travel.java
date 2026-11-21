@@ -51,7 +51,7 @@ public final class Travel {
 
 	public static void init() {
 		// Registered whatever the config says, so both sides always agree on the payload.
-		PayloadTypeRegistry.clientboundPlay().register(Waypoints.Track.TYPE, Waypoints.Track.CODEC);
+		PayloadTypeRegistry.playS2C().register(Waypoints.Track.TYPE, Waypoints.Track.CODEC);
 		// Read each time commands are built (at start and on /reload), so switching the feature off takes the commands away.
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TravelCommands.register(dispatcher));
 		Teleports.init();

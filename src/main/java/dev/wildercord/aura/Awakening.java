@@ -18,7 +18,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -110,8 +110,8 @@ public final class Awakening {
 			.copyOnDeath()
 	);
 
-	private static final Identifier SPEED = Wildercord.id("aura_awakened_speed");
-	private static final Identifier ATTACK_SPEED = Wildercord.id("aura_awakened_attack");
+	private static final ResourceLocation SPEED = Wildercord.id("aura_awakened_speed");
+	private static final ResourceLocation ATTACK_SPEED = Wildercord.id("aura_awakened_attack");
 
 	// ------------------------------------------------------------------ reading (both sides)
 
@@ -333,7 +333,7 @@ public final class Awakening {
 			AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 	}
 
-	private static void modifier(ServerPlayer player, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation operation) {
+	private static void modifier(ServerPlayer player, Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
 		AttributeInstance instance = player.getAttribute(attribute);
 		if (instance == null) {
 			return;

@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -97,8 +97,8 @@ public final class CordCosmetics {
 	private static final RequestLimit LIMIT = new RequestLimit(REQUESTS_PER_SECOND, 20);
 
 	public static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(SetStyle.TYPE, SetStyle.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(BuyStyle.TYPE, BuyStyle.CODEC);
+		PayloadTypeRegistry.playC2S().register(SetStyle.TYPE, SetStyle.CODEC);
+		PayloadTypeRegistry.playC2S().register(BuyStyle.TYPE, BuyStyle.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(SetStyle.TYPE, (payload, context) -> {
 			if (allowed(context.player())) {
 				wear(context.player(), new Style(payload.material(), payload.glow(), payload.trail()));
@@ -149,7 +149,7 @@ public final class CordCosmetics {
 		}
 		CordStyles.Progress progress = progress(player);
 		if (!CordStyles.unlocked(option, progress)) {
-			Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(option.unlock().what()));
+			Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(option.unlock().what()));
 			int need = option.unlock().amount();
 			int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(player.getInventory(), stack -> stack.is(item), player.inventoryMenu.getCraftSlots());
 			if (have < need) {

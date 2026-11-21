@@ -5,7 +5,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.cast.feel.Feels;
 import net.fabricmc.fabric.api.attachment.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.Registry;
@@ -51,7 +51,7 @@ public final class ReedRattle {
     }
 
     public static void init() {
-        CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+        ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
             .register(output -> output.accept(ITEM));
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var p = handler.player;

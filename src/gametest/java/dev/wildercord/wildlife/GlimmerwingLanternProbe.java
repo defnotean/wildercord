@@ -235,7 +235,7 @@ public final class GlimmerwingLanternProbe {
 
 	private static String body(Session session, ServerLevel level, Glimmerwing moth) {
 		return "elapsedServerTicks=" + (level.getGameTime() - session.started) + " entityTick=" + moth.tickCount
-			+ " id=" + moth.getId() + " uuid=" + moth.getUUID() + " world=" + moth.level().dimension().identifier()
+			+ " id=" + moth.getId() + " uuid=" + moth.getUUID() + " world=" + moth.level().dimension().location()
 			+ " sameWorld=" + (moth.level() == level) + " tracked=" + (level.getEntity(moth.getUUID()) == moth)
 			+ " alive=" + moth.isAlive() + " removed=" + moth.isRemoved() + " position=" + moth.position()
 			+ " distance=" + moth.position().distanceTo(Vec3.atCenterOf(session.lamp)) + " velocity=" + moth.getDeltaMovement()

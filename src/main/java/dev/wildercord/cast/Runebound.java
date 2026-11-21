@@ -24,7 +24,7 @@ import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.objects.AtlasSprite;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -67,7 +67,7 @@ import java.util.UUID;
 public final class Runebound {
 	private Runebound() {}
 
-	private static final Identifier HEALTH = Wildercord.id("runebound_health");
+	private static final ResourceLocation HEALTH = Wildercord.id("runebound_health");
 	private static final int TELEGRAPH = 22;
 
 	/** A Runebound's state between ticks: when it may cast again, and the cast it's preparing. */

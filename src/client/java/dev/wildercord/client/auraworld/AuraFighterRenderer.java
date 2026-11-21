@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.util.function.Function;
@@ -26,11 +26,11 @@ import java.util.function.ToIntFunction;
  * glowing eyes.
  */
 public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<AuraFighterRenderState>> extends HumanoidMobRenderer<T, AuraFighterRenderState, M> {
-	private final Function<AuraFighterRenderState, Identifier> texture;
+	private final Function<AuraFighterRenderState, ResourceLocation> texture;
 	/** How strongly its blade's aura shows (a fallen knight's is dim and smoky). */
 	private final float bladeStrength;
 
-	public AuraFighterRenderer(EntityRendererProvider.Context context, M model, Function<AuraFighterRenderState, Identifier> texture, Identifier glow,
+	public AuraFighterRenderer(EntityRendererProvider.Context context, M model, Function<AuraFighterRenderState, ResourceLocation> texture, ResourceLocation glow,
 			ToIntFunction<AuraFighterRenderState> glowAlpha, float bladeStrength) {
 		super(context, model, 0.5F);
 		this.texture = texture;
@@ -39,7 +39,7 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 	}
 
 	@Override
-	public Identifier getTextureLocation(AuraFighterRenderState state) {
+	public ResourceLocation getTextureLocation(AuraFighterRenderState state) {
 		return texture.apply(state);
 	}
 
@@ -101,7 +101,7 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 		private final net.minecraft.client.renderer.rendertype.RenderType renderType;
 		private final ToIntFunction<AuraFighterRenderState> color;
 
-		Glow(RenderLayerParent<AuraFighterRenderState, M> parent, Identifier texture, ToIntFunction<AuraFighterRenderState> color) {
+		Glow(RenderLayerParent<AuraFighterRenderState, M> parent, ResourceLocation texture, ToIntFunction<AuraFighterRenderState> color) {
 			super(parent);
 			this.renderType = RenderTypes.eyes(texture);
 			this.color = color;

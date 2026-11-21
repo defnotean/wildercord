@@ -4,14 +4,14 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.backpack.BackpackItem;
 import dev.wildercord.backpack.BackpackTier;
 import dev.wildercord.spell.Runes;
-import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemGroup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -48,10 +48,10 @@ public final class WildercordItems {
 	public static final BackpackItem REINFORCED_BACKPACK = backpack(BackpackTier.REINFORCED, Rarity.COMMON);
 	public static final BackpackItem RUNEWOVEN_BACKPACK = backpack(BackpackTier.RUNEWOVEN, Rarity.UNCOMMON);
 
-	public static final CreativeModeTab TAB = Registry.register(
+	public static final ItemGroup TAB = Registry.register(
 		BuiltInRegistries.CREATIVE_MODE_TAB,
 		Wildercord.id("wildercord"),
-		FabricCreativeModeTab.builder()
+		FabricItemGroup.builder()
 			.title(Component.translatable("itemGroup.wildercord"))
 			.icon(() -> RuneItem.stack(Runes.LIGHTNING))
 			.displayItems((parameters, output) -> {

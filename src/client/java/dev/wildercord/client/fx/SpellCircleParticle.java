@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -171,7 +171,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	/** A rune's pattern ({@code band}) or emblem ({@code mark}), drawn by tools/circle_art.py; add-ons get their family's. */
 	static TextureAtlasSprite runeSprite(String rune, RuneDef def, String part) {
 		TextureAtlas atlas = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES);
-		Identifier id = Identifier.tryParse(rune);
+		ResourceLocation id = ResourceLocation.tryParse(rune);
 		if (id != null && id.getNamespace().equals(Wildercord.MOD_ID)) {
 			TextureAtlasSprite own = atlas.getSprite(Wildercord.id("circle/" + id.getPath() + "_" + part));
 			if (own != atlas.missingSprite()) {

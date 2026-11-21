@@ -10,13 +10,13 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import static dev.wildercord.world.ferryman.FerrymanRules.*;
 
 /** The attack marks are world geometry, so Minimal particles never removes an essential tell. */
 public final class FerrymanRenderer extends dev.wildercord.client.compat.CullableMobRenderer<ReedCrownedFerryman,FerrymanRenderState,FerrymanModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("reed_crowned_ferryman"),"main");
-	private static final Identifier SKIN=Wildercord.id("textures/entity/ferryman.png"), MARK=Wildercord.id("textures/entity/ferryman_mark.png"), GLOW=Wildercord.id("textures/entity/ferryman_glow.png");
+	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/ferryman.png"), MARK=Wildercord.id("textures/entity/ferryman_mark.png"), GLOW=Wildercord.id("textures/entity/ferryman_glow.png");
 	public FerrymanRenderer(EntityRendererProvider.Context c) {
 		super(c,new FerrymanModel(c.bakeLayer(LAYER)),1.7F);
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<FerrymanRenderState,FerrymanModel>(this) {
@@ -26,7 +26,7 @@ public final class FerrymanRenderer extends dev.wildercord.client.compat.Cullabl
 		});
 	}
 	@Override public FerrymanRenderState createRenderState() { return new FerrymanRenderState(); }
-	@Override public Identifier getTextureLocation(FerrymanRenderState state) { return SKIN; }
+	@Override public ResourceLocation getTextureLocation(FerrymanRenderState state) { return SKIN; }
 	@Override protected float getFlipDegrees() { return 0; }
 	@Override protected boolean shouldRenderEntity(ReedCrownedFerryman e, Frustum frustum, double x, double y, double z, float partial) {
 		return superShouldRenderEntity(e,frustum,x,y,z,partial) || frustum.isVisible(e.getBoundingBox().inflate(16,2,16));

@@ -1,22 +1,20 @@
 {
-  "minecraft": "26.1",
+  "minecraft": "1.21.11",
   "fabric_loader": "0.20.1",
   "dependencies": [
     {
       "project": "fabric-api",
-      "version": "0.155.3+26.1.2",
-      "version_id": "3dM0X6ou",
-      "filename": "fabric-api-0.155.3+26.1.2.jar",
-      "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/3dM0X6ou/fabric-api-0.155.3%2B26.1.2.jar",
-      "size": 2521340,
+      "version": "0.141.6+1.21.11",
+      "version_id": "6qAuTtLR",
+      "filename": "fabric-api-0.141.6+1.21.11.jar",
+      "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/6qAuTtLR/fabric-api-0.141.6%2B1.21.11.jar",
+      "size": 2426039,
       "hashes": {
-        "sha512": "fa0308b42e9cd0dc3ff946f246d199d74547e0c946d7e3c9780a2537155307baf25129f69bd1349273babf879ffb4608b7e4af0740938f9c0f7b371b1c67d6ca",
-        "sha1": "16c30dfcceaed1ac3b6ac84cbd348a906dc5093e"
+        "sha512": "852d3682c4f353fd0ca86546af8578513e8bcf628377fa9d49c556bc59c5024c69ab56c92fc6dfba11fed19e4316a3f5636e7e07fd3d96f7043b531aef59b637",
+        "sha1": "c98467cbbaf4d197377266795ae015f4130d65b6"
       },
       "game_versions": [
-        "26.1",
-        "26.1.1",
-        "26.1.2"
+        "1.21.11"
       ],
       "loaders": [
         "fabric"
@@ -25,19 +23,17 @@
     },
     {
       "project": "sodium",
-      "version": "mc26.1.1-0.8.9-fabric",
-      "version_id": "uGvVQBnw",
-      "filename": "sodium-fabric-0.8.9+mc26.1.1.jar",
-      "url": "https://cdn.modrinth.com/data/AANobbMI/versions/uGvVQBnw/sodium-fabric-0.8.9%2Bmc26.1.1.jar",
-      "size": 1810286,
+      "version": "mc1.21.11-0.8.14-fabric",
+      "version_id": "rkdTcxoT",
+      "filename": "sodium-fabric-0.8.14+mc1.21.11.jar",
+      "url": "https://cdn.modrinth.com/data/AANobbMI/versions/rkdTcxoT/sodium-fabric-0.8.14%2Bmc1.21.11.jar",
+      "size": 1909150,
       "hashes": {
-        "sha512": "74f9dc8963b5258226837cc361ba6b525da734ab4fa5f05d1862bc6e9175f4fa81ca3d49443e2fb85be144d06042f0d65cbcceefc391043af857b38aa2614ae8",
-        "sha1": "48b949ec71365788dfd4e89d489f7abd504aa709"
+        "sha512": "04c43f9e8534b87a52c42ffd51b0e344d4ef92dc9cc52da33d13af6a18bf74b05380d2027f1e0db982698d0aff274c42741c1e21b313b0cd75ed3af005fc98d9",
+        "sha1": "4a8733fe544168068d12fa94b2ab03e6c0c7bf91"
       },
       "game_versions": [
-        "26.1",
-        "26.1.1",
-        "26.1.2"
+        "1.21.11"
       ],
       "loaders": [
         "fabric"
@@ -46,25 +42,23 @@
     },
     {
       "project": "iris",
-      "version": "1.10.9+26.1-fabric",
-      "version_id": "MwcLS51S",
-      "filename": "iris-fabric-1.10.9+mc26.1.1.jar",
-      "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/MwcLS51S/iris-fabric-1.10.9%2Bmc26.1.1.jar",
-      "size": 2803860,
+      "version": "1.10.8+1.21.11-fabric",
+      "version_id": "ka9PDlsN",
+      "filename": "iris-fabric-1.10.8+mc1.21.11.jar",
+      "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/ka9PDlsN/iris-fabric-1.10.8%2Bmc1.21.11.jar",
+      "size": 2807718,
       "hashes": {
-        "sha512": "01714943b36e7b78618bf133a20da489197322e20ebc2d9858f15bb57ac198fdab23dac6c917d6239ad3fe2e7c47f53fb387d475805eb7269fbfc16e30664155",
-        "sha1": "c30e04509a1b284372cb9037b07714d4223ae91a"
+        "sha512": "f0cad4b6af593b6fc25738c4ef5a2b346125f9693d25a0d486858e54798d2ea87b24d1497e1bb4391729d7d9e490f42771f7fb468d4e1420e372d8643f9e2055",
+        "sha1": "acfbe6d065b6c35d85c14da04d35e073363f3acf"
       },
       "game_versions": [
-        "26.1",
-        "26.1.1",
-        "26.1.2"
+        "1.21.11"
       ],
       "loaders": [
         "fabric"
       ],
       "required_versions": [
-        "uGvVQBnw"
+        "rkdTcxoT"
       ]
     }
   ]

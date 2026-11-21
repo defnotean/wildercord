@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordBlocks;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -18,7 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemGroup;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -109,8 +109,8 @@ public final class Arena {
 	public static final DuelRules.Terms TERMS = new DuelRules.Terms(ArenaRules.RADIUS, DuelRules.COUNTDOWN_TICKS, ArenaRules.BOUT_TICKS, 0F, 1.0F, false);
 
 	public static void init() {
-		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
-		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> output.accept(WildercordBlocks.ARENA_STONE));
+		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> output.accept(WildercordBlocks.ARENA_STONE));
 		ServerLifecycleEvents.SERVER_STOPPING.register(Arena::suspendWaiting);
 		ServerLifecycleEvents.SERVER_STARTED.register(Arena::resumeWaiting);
 	}

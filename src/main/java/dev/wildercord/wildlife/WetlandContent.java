@@ -6,7 +6,7 @@ import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.config.Config;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.*;
@@ -48,8 +48,8 @@ public final class WetlandContent {
 			var settings=Config.get().wildlife();if(settings.spawns("lantern_newt"))dev.wildercord.compat.McWorldgen.addSpawn(c.getMobSpawnSettings(), MobCategory.CREATURE, NEWT, 1, 2, Math.max(1,(int)(5*Math.max(1,settings.spawnMultiplier()))));
 		});
 		FieldGuide.add(new FieldGuide.Entry("wildercord:lantern_newt",FieldGuide.Group.WILDLIFE,0xAAD5AE));
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(DUSK_PEARL,MARSHLIGHT_ITEM,NEWT_EGG,FIELD_NOTES).forEach(o::accept));
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(o -> o.accept(NEWT_EGG));
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(DUSK_PEARL,MARSHLIGHT_ITEM,NEWT_EGG,FIELD_NOTES).forEach(o::accept));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o -> o.accept(NEWT_EGG));
 		WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {
 			if(effects.stream().noneMatch(e -> e.id().equals(dev.wildercord.spell.Runes.TIDEBREATH.id()) || e.element().equals("life")))return;
 			for(var target:targets)if(target instanceof LanternNewt newt)newt.answerMagic();

@@ -2,7 +2,7 @@ package dev.wildercord.aura.world;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
@@ -12,7 +12,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 	private static void check(boolean x, String why) { if (!x) throw new AssertionError(why); }
 	private static ServerPlayer p(MinecraftServer s) { return s.getPlayerList().getPlayers().getFirst(); }
 	private static Mob mob(MinecraftServer s, String id) {
-		var type = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse(id));
+		var type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse(id));
 		return (Mob) s.overworld().getEntities(type, e -> true).getFirst();
 	}
 	/** What a 10-damage blow from {@code id}'s creature takes off the player. */
@@ -139,8 +139,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				java.util.Map.entry("bulwark_maul", AuraWorld.forged(AuraWorldRules.Forged.BULWARK_MAUL, true)),
 				java.util.Map.entry("skyrend_glaive", AuraWorld.forged(AuraWorldRules.Forged.SKYREND_GLAIVE, true)),
 				java.util.Map.entry("fetchblade", AuraWorld.forged(AuraWorldRules.Forged.FETCHBLADE, true)),
-				java.util.Map.entry("fire_staff", new net.minecraft.world.item.ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("wildercord:fire_staff")))),
-				java.util.Map.entry("greater_arcane_staff", new net.minecraft.world.item.ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse("wildercord:greater_arcane_staff"))))
+				java.util.Map.entry("fire_staff", new net.minecraft.world.item.ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse("wildercord:fire_staff")))),
+				java.util.Map.entry("greater_arcane_staff", new net.minecraft.world.item.ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse("wildercord:greater_arcane_staff"))))
 			);
 			for (var entry : showcase) {
 				String name = entry.getKey();

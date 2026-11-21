@@ -26,5 +26,5 @@ public record ExciseCores(List<Core> cores) implements CustomPacketPayload {
         return new ExciseCores(cores);
     });
     @Override public Type<ExciseCores> type() { return TYPE; }
-    public static void init() { PayloadTypeRegistry.clientboundPlay().register(TYPE, CODEC); }
+    public static void init() { PayloadTypeRegistry.playS2C().register(TYPE, CODEC); }
 }

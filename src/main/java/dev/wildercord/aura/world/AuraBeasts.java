@@ -5,7 +5,7 @@ import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.config.Config;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.*;
@@ -72,7 +72,7 @@ public final class AuraBeasts {
 	}
 	private static <T extends AuraBeast> void spawn(EntityType<T> type,String id,int weight,String... ids) {
 		SpawnPlacements.register(type,SpawnPlacementTypes.ON_GROUND,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(t,l,r,p,random)->maySpawn(t,l,r,p));
-		var biomes=Arrays.stream(ids).map(s->ResourceKey.create(Registries.BIOME,Identifier.parse(s))).collect(java.util.stream.Collectors.toSet());
+		var biomes=Arrays.stream(ids).map(s->ResourceKey.create(Registries.BIOME,ResourceLocation.parse(s))).collect(java.util.stream.Collectors.toSet());
 		BiomeModifications.create(Wildercord.id("aura_beasts/"+id)).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(biomes),c->{
 			if(Config.get().auraWorld().auraBeasts()) dev.wildercord.compat.McWorldgen.addSpawn(c.getMobSpawnSettings(), MobCategory.CREATURE, type, 1, 1, weight);
 		});
@@ -83,7 +83,7 @@ public final class AuraBeasts {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:galeclaw",FieldGuide.Group.MONSTER,0x8FAAB8));
 		spawn(STONEHORN,"stonehorn",3,"meadow","windswept_hills","windswept_gravelly_hills","stony_peaks","wildercord:windscar_highlands");
 		spawn(GALECLAW,"galeclaw",2,"windswept_hills","windswept_forest","jagged_peaks","frozen_peaks","snowy_slopes","grove","wildercord:windscar_highlands");
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->List.of(STONEHORN_PLATE,GALECLAW_PLUME,BASTION_POULTICE,RIDGE_WHISTLE,STONE_EGG,GALE_EGG).forEach(o::accept));
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(o->{o.accept(STONE_EGG);o.accept(GALE_EGG);});
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->List.of(STONEHORN_PLATE,GALECLAW_PLUME,BASTION_POULTICE,RIDGE_WHISTLE,STONE_EGG,GALE_EGG).forEach(o::accept));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o->{o.accept(STONE_EGG);o.accept(GALE_EGG);});
 	}
 }

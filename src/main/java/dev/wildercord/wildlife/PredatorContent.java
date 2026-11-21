@@ -2,7 +2,7 @@ package dev.wildercord.wildlife;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.spell.FieldGuide;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,8 +13,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.ItemGroups;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.Block;
@@ -63,9 +63,9 @@ public final class PredatorContent {
 		WildlifeSpawns.join(WildlifeRules.DUNE_COUGAR, DUNE_COUGAR);
 		FieldGuide.add(new FieldGuide.Entry("wildercord:frost_lynx", FieldGuide.Group.WILDLIFE, 0xB8B4AC));
 		FieldGuide.add(new FieldGuide.Entry("wildercord:dune_cougar", FieldGuide.Group.WILDLIFE, 0xB8864E));
-		for (ResourceKey<CreativeModeTab> tab : List.of(CreativeModeTabs.SPAWN_EGGS,
+		for (ResourceKey<ItemGroup> tab : List.of(ItemGroups.SPAWN_EGGS,
 			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))) {
-			CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
+			ItemGroupEvents.modifyEntriesEvent(tab).register(output -> {
 				output.accept(LYNX_EGG);
 				output.accept(COUGAR_EGG);
 			});

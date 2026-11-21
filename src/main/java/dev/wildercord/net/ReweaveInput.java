@@ -16,7 +16,7 @@ public record ReweaveInput(int action, int slot, long nonce, long fieldId) imple
     }, b -> new ReweaveInput(b.readVarInt(), b.readVarInt(), b.readLong(), b.readLong()));
     @Override public Type<ReweaveInput> type() { return TYPE; }
     public static void init() {
-        PayloadTypeRegistry.serverboundPlay().register(TYPE, CODEC);
+        PayloadTypeRegistry.playC2S().register(TYPE, CODEC);
         ServerPlayNetworking.registerGlobalReceiver(TYPE, (p,c) -> ReweaveFields.input(c.player(), p.action, p.slot, p.nonce, p.fieldId));
     }
 }

@@ -5,13 +5,13 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.MastersArtAnimation;
 import dev.wildercord.aura.MastersArts;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
@@ -29,17 +29,17 @@ import java.util.Map;
 public final class MastersArtsClient {
 	private MastersArtsClient() {}
 
-	static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Wildercord.id("masters_arts"));
+	static final KeyBinding.Category CATEGORY = KeyBinding.Category.register(Wildercord.id("masters_arts"));
 	private static final String[] IDS = {"spellcut", "rising_break", "driving_cut"};
 	private static final int[] DEFAULTS = {InputConstants.KEY_U, InputConstants.KEY_Y, InputConstants.KEY_J};
-	private static final KeyMapping[] KEYS = new KeyMapping[IDS.length];
+	private static final KeyBinding[] KEYS = new KeyBinding[IDS.length];
 	private static final boolean[] HELD = new boolean[IDS.length];
 	private static final Map<Integer, MastersArts.Performed> PLAYING = new HashMap<>();
 	private static ClientLevel playbackLevel;
 
 	public static void init() {
 		for (int move = 0; move < KEYS.length; move++) {
-			KEYS[move] = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord." + IDS[move], DEFAULTS[move], CATEGORY));
+			KEYS[move] = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord." + IDS[move], DEFAULTS[move], CATEGORY));
 		}
 		ClientPlayNetworking.registerGlobalReceiver(MastersArts.Performed.TYPE, (payload, context) -> receive(context.client(), payload));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> clear());
@@ -48,7 +48,7 @@ public final class MastersArtsClient {
 	}
 
 	/** The registered mapping, also used by the client game tests to press the real combat controls. */
-	public static KeyMapping mapping(int move) {
+	public static KeyBinding mapping(int move) {
 		if (move < 0 || move >= KEYS.length) throw new IllegalArgumentException("Unknown Master's Art: " + move);
 		return KEYS[move];
 	}

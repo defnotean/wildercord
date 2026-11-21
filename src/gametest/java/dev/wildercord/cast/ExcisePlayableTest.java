@@ -21,9 +21,9 @@ import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
@@ -69,7 +69,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
     @Override public void runTest(ClientGameTestContext context) {
         ExciseLessonChecks.run(context);
         listen();
-        KeyMapping[] key = new KeyMapping[2]; InputConstants.Key[] original = new InputConstants.Key[2];
+        KeyBinding[] key = new KeyBinding[2]; InputConstants.Key[] original = new InputConstants.Key[2];
         try (var server = context.worldBuilder().createServer(properties())) {
             server.runOnServer(s -> dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.cast.ExcisePlayableTest\",\"seed\":\"{}\"}", s.overworld().getSeed()));
             var connection = server.connect();
@@ -98,10 +98,10 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                     newField(true);
                 });
                 context.runOnClient(mc -> {
-                    key[0] = WildercordKeys.castMapping(); original[0] = KeyMappingHelper.getBoundKeyOf(key[0]);
+                    key[0] = WildercordKeys.castMapping(); original[0] = KeyBindingHelper.getBoundKeyOf(key[0]);
                     key[0].setKey(dev.wildercord.gametest.compat.GametestCompat.keyboardKey(InputConstants.KEY_F8));
                     key[1] = java.util.Arrays.stream(mc.options.keyMappings).filter(k -> k.getName().equals("key.wildercord.cast_1")).findFirst().orElseThrow();
-                    original[1] = KeyMappingHelper.getBoundKeyOf(key[1]); key[1].setKey(dev.wildercord.gametest.compat.GametestCompat.keyboardKey(InputConstants.KEY_F9)); KeyMapping.resetMapping();
+                    original[1] = KeyBindingHelper.getBoundKeyOf(key[1]); key[1].setKey(dev.wildercord.gametest.compat.GametestCompat.keyboardKey(InputConstants.KEY_F9)); KeyBinding.resetMapping();
                     check(WildercordKeys.castKey().getString().contains("F8"), "Lesson/HUD read the rebound Cast control");
                 });
                 context.waitTicks(4);
@@ -324,7 +324,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
 
 
             } finally {
-                context.runOnClient(mc -> { for (int i=0;i<key.length;i++) if(key[i]!=null) key[i].setKey(original[i]); KeyMapping.resetMapping(); });
+                context.runOnClient(mc -> { for (int i=0;i<key.length;i++) if(key[i]!=null) key[i].setKey(original[i]); KeyBinding.resetMapping(); });
                 if (context.computeOnClient(mc -> mc.level != null)) connection.close();
                 probe = null;
             }
@@ -470,7 +470,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
             assertNotLoaded();
             var structure = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
                 .getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,
-                    net.minecraft.resources.Identifier.parse("wildercord:sword_tomb"))).value();
+                    net.minecraft.resources.ResourceLocation.parse("wildercord:sword_tomb"))).value();
             try {
                 chunk.addReferenceForStructure(structure, net.minecraft.world.level.ChunkPos.pack(FAR, FAR));
                 if (failAfterInsert != null) throw failAfterInsert;

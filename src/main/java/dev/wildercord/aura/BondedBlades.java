@@ -168,7 +168,7 @@ public final class BondedBlades {
 
 		State with(Shown shown, boolean away, Level where, BlockPos pos) {
 			return where == null ? new State(bond, shown, lastDim, lastX, lastY, lastZ, away)
-				: new State(bond, shown, where.dimension().identifier().toString(), pos.getX(), pos.getY(), pos.getZ(), away);
+				: new State(bond, shown, where.dimension().location().toString(), pos.getX(), pos.getY(), pos.getZ(), away);
 		}
 	}
 
@@ -1064,15 +1064,15 @@ public final class BondedBlades {
 		}
 		ServerLevel level = player.level();
 		BlockPos at = player.blockPosition();
-		String biome = level.getBiome(at).unwrapKey().map(k -> k.identifier().toString()).orElse("");
-		BladeBond.Origin origin = new BladeBond.Origin(day(level), biome, level.dimension().identifier().toString(), at.getX(), at.getY(), at.getZ(),
+		String biome = level.getBiome(at).unwrapKey().map(k -> k.location().toString()).orElse("");
+		BladeBond.Origin origin = new BladeBond.Origin(day(level), biome, level.dimension().location().toString(), at.getX(), at.getY(), at.getZ(),
 			Aura.data(player).method(), how);
 		UUID id = UUID.randomUUID();
 		BladeBond b = BladeBond.fresh(id, player.getUUID(), player.getGameProfile().name(), Aura.color(player), origin);
 		stack.remove(FORMER);
 		stack.set(BOND, b);
 		BladeRegistry.of(level.getServer()).register(id, player.getUUID(), player.getGameProfile().name(), level.getGameTime());
-		player.setAttached(STATE, new State(id.toString(), Shown.NONE, level.dimension().identifier().toString(), at.getX(), at.getY(), at.getZ(), false));
+		player.setAttached(STATE, new State(id.toString(), Shown.NONE, level.dimension().location().toString(), at.getX(), at.getY(), at.getZ(), false));
 		PENDING.remove(player.getUUID());
 		FOES.remove(player.getUUID());
 		Grimoire.unlock(player, "aura:bond");
@@ -1433,9 +1433,9 @@ public final class BondedBlades {
 	// ------------------------------------------------------------------ lifecycle
 
 	static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(Name.TYPE, Name.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Choose.TYPE, Choose.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Release.TYPE, Release.CODEC);
+		PayloadTypeRegistry.playC2S().register(Name.TYPE, Name.CODEC);
+		PayloadTypeRegistry.playC2S().register(Choose.TYPE, Choose.CODEC);
+		PayloadTypeRegistry.playC2S().register(Release.TYPE, Release.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Name.TYPE, (payload, context) -> {
 			if (REQUESTS.allow(context.player().getUUID(), context.server().getTickCount())) {
 				rename(context.player(), payload.name());

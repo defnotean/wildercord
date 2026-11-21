@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -27,7 +27,7 @@ public final class BountyHunts {
 
 	/** Sets the bounty's named elite loose near the board; returns which way it lies from the board, or null if no spot was found. */
 	public static Direction loose(ServerPlayer player, ServerLevel level, BlockPos board, Town.Active bounty) {
-		Identifier id = Identifier.tryParse(bounty.target());
+		ResourceLocation id = ResourceLocation.tryParse(bounty.target());
 		if (id == null) return null;
 		var type = BuiltInRegistries.ENTITY_TYPE.getOptional(id);
 		if (type.isEmpty()) return null;

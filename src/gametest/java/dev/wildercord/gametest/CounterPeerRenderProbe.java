@@ -241,7 +241,7 @@ public final class CounterPeerRenderProbe {
         else if(timeline==null||timeline.entity()!=e.owner()||timeline.move()!=e.move()||timeline.startTick()!=e.activation()||timeline.windup()!=e.windup()||timeline.recovery()!=e.recovery())token.reject("wrong_accepted_timeline");
         token.observe("acceptedSourceIdentity",requireSource(timeline,e.activation()));
         CounterPeerAdmissionProbe.sourceFields(timeline,"receivedSource").forEach(token::observe);
-        token.observe("receivedOwnerUuid",actor.getUUID());token.observe("receivedOwnerEntity",actor.getId());token.observe("receivedLevel",mc.level.dimension().identifier());
+        token.observe("receivedOwnerUuid",actor.getUUID());token.observe("receivedOwnerEntity",actor.getId());token.observe("receivedLevel",mc.level.dimension().location());
         token.observe("receivedConnectionIdentity",Integer.toUnsignedString(System.identityHashCode(mc.getConnection())));
         token.observe("timeline",timeline);token.observe("camera",mc.options.getCameraType());token.observe("observerCoverage",remote);
         token.observe("tick",mc.level.getGameTime());token.observe("partial",options.deltaTicks);token.observe("owner",actor.getUUID());

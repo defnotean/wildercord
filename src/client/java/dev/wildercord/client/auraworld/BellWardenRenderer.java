@@ -13,20 +13,20 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /** The Drowned Bell-Warden (see {@link BellWardenModel}), near twice a player's size, with the eyes in its bell's crack lit whatever the light. */
 public final class BellWardenRenderer extends MobRenderer<DrownedBellWarden,BellWardenRenderState,BellWardenModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("drowned_bell_warden"),"main");
-	private static final Identifier SKIN=Wildercord.id("textures/entity/drowned_bell_warden/skin.png");
-	private static final Identifier GLOW=Wildercord.id("textures/entity/drowned_bell_warden/glow.png");
+	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/drowned_bell_warden/skin.png");
+	private static final ResourceLocation GLOW=Wildercord.id("textures/entity/drowned_bell_warden/glow.png");
 	static final float SCALE=1.85F;
 	/** How long one move takes to blend into the next, in ticks. */
 	private static final float BLEND_TICKS=4;
 	public BellWardenRenderer(EntityRendererProvider.Context c){super(c,new BellWardenModel(c.bakeLayer(LAYER)),1.3F);addLayer(new Eyes(this));}
 	@Override public BellWardenRenderState createRenderState(){return new BellWardenRenderState();}
-	@Override public Identifier getTextureLocation(BellWardenRenderState s){return SKIN;}
+	@Override public ResourceLocation getTextureLocation(BellWardenRenderState s){return SKIN;}
 	@Override public void extractRenderState(DrownedBellWarden e,BellWardenRenderState s,float partial){
 		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.elapsed=e.elapsed(partial);s.rise=BellWardenRules.rise(s.move,s.elapsed);
 		// Blending out of the move before over a few ticks; out of kneeling or into it the rise does that itself.

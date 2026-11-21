@@ -768,7 +768,7 @@ public final class Lineage {
 	private static final PacketThrottle ENDS = new PacketThrottle(2, 10);
 
 	public static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(End.TYPE, End.CODEC);
+		PayloadTypeRegistry.playC2S().register(End.TYPE, End.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(End.TYPE, (payload, context) -> {
 			if (ENDS.allow(context.player().getUUID(), context.server().getTickCount())) {
 				end(context.player(), payload.other());

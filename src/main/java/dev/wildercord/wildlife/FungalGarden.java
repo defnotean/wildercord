@@ -6,7 +6,7 @@ import dev.wildercord.cast.Casters;
 import dev.wildercord.cast.feel.Feels;
 import net.fabricmc.fabric.api.attachment.v1.*;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.*;
@@ -57,7 +57,7 @@ public final class FungalGarden {
   var biomes=BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS));
   BiomeModifications.addFeature(biomes,GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("glowcap_patch")));
   BiomeModifications.addFeature(biomes,GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("breathmark_site")));
-  CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(CUTTING,GILLS,NURSERY_ITEM,BREATHER,ROOT_NOTES,AIR_NOTES,CONCLUSION).forEach(o::accept));
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(CUTTING,GILLS,NURSERY_ITEM,BREATHER,ROOT_NOTES,AIR_NOTES,CONCLUSION).forEach(o::accept));
   ServerPlayConnectionEvents.JOIN.register((handler,sender,server) -> {var p=handler.player;long left=p.getAttachedOrElse(BREATHER_READY,0L)-clock(p);if(left>0)p.getCooldowns().addCooldown(new ItemStack(BREATHER),(int)Math.min(200,left));});
   WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {
    if(!(caster instanceof ServerPlayer p) || !Casters.mayBuild(p) || effects.stream().noneMatch(e -> e.element().equals("life")))return;

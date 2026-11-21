@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleGroupRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 
 /** Client entrypoint: keybinds, HUD, screens, renderers, the magic circle particle and the Grimoire toasts. */
@@ -40,25 +40,25 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.fx.CampConcordClient.init();
 		// Bolts are drawn entirely with particles sent from the server.
 		EntityRendererRegistry.register(WildercordEntities.RUNE_BOLT, NoopRenderer::new);
-		ModelLayerRegistry.registerModelLayer(ArchivistRenderer.LAYER, ArchivistModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(ArchivistRenderer.LAYER, ArchivistModel::createLayer);
 		EntityRendererRegistry.register(WildercordEntities.ARCHIVIST, ArchivistRenderer::new);
-		ModelLayerRegistry.registerModelLayer(TrainingDummyRenderer.LAYER, DummyModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(TrainingDummyRenderer.LAYER, DummyModel::createLayer);
 		// The Cord on every player's wrist.
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BAND, dev.wildercord.client.render.CordModel::createBand);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.SLIM_BAND, dev.wildercord.client.render.CordModel::createSlimBand);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BEAD, dev.wildercord.client.render.CordModel::createBead);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BAND, dev.wildercord.client.render.CordModel::createBand);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.SLIM_BAND, dev.wildercord.client.render.CordModel::createSlimBand);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BEAD, dev.wildercord.client.render.CordModel::createBead);
 		// Casting gear in its slots, worn on the back, off a shoulder and at the hip.
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BELT, dev.wildercord.client.render.GearModel::createBelt);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.ARMORED_BELT, dev.wildercord.client.render.GearModel::createArmoredBelt);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.TIE, dev.wildercord.client.render.GearModel::createTie);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.LOOP, dev.wildercord.client.render.GearModel::createLoop);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.MOTE, dev.wildercord.client.render.GearModel::createMote);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BELT, dev.wildercord.client.render.GearModel::createBelt);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.ARMORED_BELT, dev.wildercord.client.render.GearModel::createArmoredBelt);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.TIE, dev.wildercord.client.render.GearModel::createTie);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.LOOP, dev.wildercord.client.render.GearModel::createLoop);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.MOTE, dev.wildercord.client.render.GearModel::createMote);
 		// A worn backpack, on the back with its straps down the chest.
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BACKPACK, dev.wildercord.client.render.BackpackModel::createPack);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BACKPACK_STRAP, dev.wildercord.client.render.BackpackModel::createStrap);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BACKPACK, dev.wildercord.client.render.BackpackModel::createPack);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BACKPACK_STRAP, dev.wildercord.client.render.BackpackModel::createStrap);
 		// Aura armour's shell, the body drawn again a little larger.
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SHELL, dev.wildercord.client.render.AuraShellLayer::createShell);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SLIM_SHELL, dev.wildercord.client.render.AuraShellLayer::createSlimShell);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SHELL, dev.wildercord.client.render.AuraShellLayer::createShell);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SLIM_SHELL, dev.wildercord.client.render.AuraShellLayer::createSlimShell);
 		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
 			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
 				helper.register(new dev.wildercord.client.render.CordLayer(avatar, context));
@@ -71,11 +71,11 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.render.DungeonRenderers.register();
 		RuneMarksLayer.register();
 		dev.wildercord.client.familiar.FamiliarClient.init();
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.pet.CinnamonRenderer.LAYER, dev.wildercord.client.pet.CinnamonModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.pet.CinnamonRenderer.LAYER, dev.wildercord.client.pet.CinnamonModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.pet.CinnamonContent.CINNAMON, dev.wildercord.client.pet.CinnamonRenderer::new);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.ShrineCatRenderer.LAYER, dev.wildercord.client.wildlife.ShrineCatModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.ShrineCatRenderer.LAYER, dev.wildercord.client.wildlife.ShrineCatModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT, dev.wildercord.client.wildlife.ShrineCatRenderer::new);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.SakuraVillagerRenderer.LAYER, dev.wildercord.client.wildlife.SakuraVillagerModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.SakuraVillagerRenderer.LAYER, dev.wildercord.client.wildlife.SakuraVillagerModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.wildlife.ShrineCatContent.SAKURA_VILLAGER, dev.wildercord.client.wildlife.SakuraVillagerRenderer::new);
 		// The magical monsters of the wilds.
 		dev.wildercord.client.monster.MonsterClient.init();

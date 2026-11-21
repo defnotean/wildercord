@@ -191,14 +191,14 @@ public final class AuraFx {
 	}
 
 	public static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Trail.TYPE, Trail.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Impact.TYPE, Impact.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Banner.TYPE, Banner.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Standard.TYPE, Standard.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(GroundScar.TYPE, GroundScar.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(BurstCue.TYPE, BurstCue.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Flare.TYPE, Flare.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Shown.TYPE, Shown.CODEC);
+		PayloadTypeRegistry.playS2C().register(Trail.TYPE, Trail.CODEC);
+		PayloadTypeRegistry.playS2C().register(Impact.TYPE, Impact.CODEC);
+		PayloadTypeRegistry.playS2C().register(Banner.TYPE, Banner.CODEC);
+		PayloadTypeRegistry.playS2C().register(Standard.TYPE, Standard.CODEC);
+		PayloadTypeRegistry.playS2C().register(GroundScar.TYPE, GroundScar.CODEC);
+		PayloadTypeRegistry.playS2C().register(BurstCue.TYPE, BurstCue.CODEC);
+		PayloadTypeRegistry.playS2C().register(Flare.TYPE, Flare.CODEC);
+		PayloadTypeRegistry.playS2C().register(Shown.TYPE, Shown.CODEC);
 		// Every art: its name, the body's aura blazing up and the method's technique sound (an art adds its own on top).
 		AuraApi.onString((player, art, context) -> performed(player, art));
 	}

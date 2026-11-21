@@ -72,9 +72,9 @@ public final class ExciseLesson {
 	}
 
 	public static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Show.TYPE, Show.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Turn.TYPE, Turn.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Retrieve.TYPE, Retrieve.CODEC);
+		PayloadTypeRegistry.playS2C().register(Show.TYPE, Show.CODEC);
+		PayloadTypeRegistry.playC2S().register(Turn.TYPE, Turn.CODEC);
+		PayloadTypeRegistry.playC2S().register(Retrieve.TYPE, Retrieve.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Turn.TYPE, (packet, context) -> {
 			if (packet.page() == -1 || LessonPackets.admit(context.player())) turn(context.player(), packet);
 		});

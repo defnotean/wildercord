@@ -16,7 +16,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -164,7 +164,7 @@ public final class WayfarerEffects {
 		ServerLevel level = cast.level;
 		BlockPos pos = ground(hit);
 		Holder<Biome> biome = level.getBiome(pos);
-		Component name = biome.unwrapKey().map(k -> (Component) Component.translatable(Util.makeDescriptionId("biome", k.identifier())))
+		Component name = biome.unwrapKey().map(k -> (Component) Component.translatable(Util.makeDescriptionId("biome", k.location())))
 			.orElse(Component.literal("?"));
 		float warmth = biome.value().getBaseTemperature();
 		String feel = warmth < 0.15f ? "frozen" : warmth < 0.5f ? "cool" : warmth < 1.0f ? "mild" : "hot";
@@ -768,7 +768,7 @@ public final class WayfarerEffects {
 	}
 
 	private static Optional<Holder.Reference<MobEffect>> effect(String id) {
-		Identifier parsed = Identifier.tryParse(id);
+		ResourceLocation parsed = ResourceLocation.tryParse(id);
 		return parsed == null ? Optional.empty() : BuiltInRegistries.MOB_EFFECT.get(parsed);
 	}
 

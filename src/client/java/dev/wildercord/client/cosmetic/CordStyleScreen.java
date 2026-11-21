@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -67,11 +67,11 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 	private static final int FAINT = 0xFF5A5470;
 	private static final int GREEN = 0xFF9CE08C;
 
-	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
-	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
-	private static final Identifier SPR_SOCKET = Wildercord.id("cord/socket");
-	private static final Identifier SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
-	private static final Identifier SPR_LOCK = Wildercord.id("cord/lock");
+	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
+	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
+	private static final ResourceLocation SPR_SOCKET = Wildercord.id("cord/socket");
+	private static final ResourceLocation SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
+	private static final ResourceLocation SPR_LOCK = Wildercord.id("cord/lock");
 
 	private static final String[] GROUPS = {CordStyles.MATERIAL, CordStyles.GLOW, CordStyles.TRAIL};
 
@@ -160,7 +160,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 
 	// ------------------------------------------------------------------ drawing
 
-	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 
@@ -272,7 +272,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 				Feats.feat(unlock.what()).description()).withColor(DIM);
 			case BOSS -> Component.translatable("screen.wildercord.cosmetics.need_boss").withColor(DIM);
 			case CRAFT -> {
-				Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(unlock.what()));
+				Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(unlock.what()));
 				int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(minecraft.player.getInventory(), stack -> stack.is(item),
 					minecraft.player.inventoryMenu.getCraftSlots());
 				yield Component.translatable("screen.wildercord.cosmetics.buy", unlock.amount(), item.getName(new ItemStack(item)), have)
@@ -366,7 +366,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 
 	/** A few of the trail's motes drifting out from around the wrist, over the figure. */
 	private void drawTrailPreview(GuiGraphicsExtractor g, String trail, int cx, int cy, float seconds, float size) {
-		Identifier icon = Wildercord.id("cord/trail_" + trail);
+		ResourceLocation icon = Wildercord.id("cord/trail_" + trail);
 		for (int i = 0; i < 7; i++) {
 			float t = (seconds * 0.6F + i / 7F) % 1F;
 			float angle = i * 2.4F;
@@ -413,7 +413,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		if (minecraft.player == null) return false;
 		CordStyles.Unlock unlock = option.unlock();
 		if (unlock.kind() != CordStyles.Kind.CRAFT) return false;
-		Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(unlock.what()));
+		Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(unlock.what()));
 		if (item == null) return false;
 		int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(minecraft.player.getInventory(), stack -> stack.is(item),
 			minecraft.player.inventoryMenu.getCraftSlots());

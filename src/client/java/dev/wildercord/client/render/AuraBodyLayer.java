@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Avatar;
@@ -60,7 +60,7 @@ import org.joml.Vector3f;
  * (see {@link ShaderCompat}). The player's "Body aura" setting calms it or switches it off.</p>
  */
 public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/aura/body.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/aura/body.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spells' and the wisps' glows. */
 	private static final RenderType GLOW_TYPE = RenderCompat.auraBodyGlowRenderType(TEXTURE);

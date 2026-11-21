@@ -17,7 +17,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -1099,12 +1099,12 @@ public final class FarmEffects {
 		if (!state.is(BlockTags.LOGS)) {
 			return null;
 		}
-		Identifier id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+		ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
 		String path = FarmRules.strippedPath(id.getPath());
 		if (path == null) {
 			return null;
 		}
-		Block bare = BuiltInRegistries.BLOCK.getOptional(Identifier.fromNamespaceAndPath(id.getNamespace(), path)).orElse(null);
+		Block bare = BuiltInRegistries.BLOCK.getOptional(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), path)).orElse(null);
 		if (bare == null || bare == Blocks.AIR || bare == state.getBlock()) {
 			return null;
 		}

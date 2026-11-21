@@ -139,8 +139,8 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				check(b!=null,"Normal world contains a dry landmark habitat");
 				var dryHit=b;
 				var registered=s.overworld().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
-					.get(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.Identifier.parse("wildercord:sleeping_blade")));
-				probe.habitat(b.getFirst(),b.getSecond().unwrapKey().map(key->key.identifier().toString()).orElse("unregistered"),
+					.get(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.ResourceLocation.parse("wildercord:sleeping_blade")));
+				probe.habitat(b.getFirst(),b.getSecond().unwrapKey().map(key->key.location().toString()).orElse("unregistered"),
 					registered.map(value->value.value().getClass().getName()).orElse("unregistered"),registered.map(value->value.value().biomes().contains(dryHit.getSecond())).orElse(false));
 				return b.getFirst();
 			});

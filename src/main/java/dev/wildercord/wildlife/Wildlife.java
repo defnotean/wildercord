@@ -6,7 +6,7 @@ import dev.wildercord.cast.Grimoire;
 import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.player.Heart;
 import dev.wildercord.spell.FieldGuide;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
@@ -23,7 +23,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemGroups;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
@@ -135,11 +135,11 @@ public final class Wildlife {
 		WildlifeSpawns.init();
 		dev.wildercord.compat.McBlocksAndItems.registerFuel(EMBER_TUFT, 1600);
 
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> {
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> {
 			DROPS.forEach(output::accept);
 			EGGS.forEach(output::accept);
 		});
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> EGGS.forEach(output::accept));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(output -> EGGS.forEach(output::accept));
 
 		// A skyray's membrane mends an elytra as well as a phantom's does.
 		DefaultItemComponentEvents.MODIFY.register(context -> context.modify(Items.ELYTRA, builder ->

@@ -3,7 +3,7 @@ package dev.wildercord.menu;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.CordItem;
 import dev.wildercord.player.Spellbooks;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -23,7 +23,7 @@ public class CordSlot extends Slot implements PlacedSlot {
 	/** Vanilla's InventoryMenu builds slots 0-45, so the Cord slot is index 46. */
 	public static final int MENU_INDEX = 46;
 
-	private static final Identifier EMPTY_ICON = Wildercord.id("container/slot/cord");
+	private static final ResourceLocation EMPTY_ICON = Wildercord.id("container/slot/cord");
 
 	public CordSlot(Player player, int x, int y) {
 		super(new CordContainer(player), 0, x, y);
@@ -40,7 +40,7 @@ public class CordSlot extends Slot implements PlacedSlot {
 	}
 
 	@Override
-	public Identifier getNoItemIcon() {
+	public ResourceLocation getNoItemIcon() {
 		return EMPTY_ICON;
 	}
 

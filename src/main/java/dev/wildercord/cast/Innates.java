@@ -23,7 +23,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -158,7 +158,7 @@ public final class Innates {
 	private static final String AFTERIMAGE_TAG = "wildercord.afterimage";
 	private static final Map<UUID, Long> STORMHEART = new HashMap<>();
 	private static final Map<UUID, Long> STORM_LAST = new HashMap<>();
-	private static final Identifier STONE_KNOCKBACK = Wildercord.id("stoneform");
+	private static final ResourceLocation STONE_KNOCKBACK = Wildercord.id("stoneform");
 	/** Set while shared or bonus damage is being dealt, so it never shares or bonuses itself again. */
 	private static boolean echoing;
 	/** Set while Borrowed Time's debt is being paid: a payment is never borrowed again. */

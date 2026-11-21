@@ -13,20 +13,20 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /** The Ashen Stag (see {@link AshenStagModel}), its shoulder above a player's head, with its eyes, the cracks in its hide and its antler tips lit whatever the light. */
 public final class AshenStagRenderer extends MobRenderer<AshenStag,AshenStagRenderState,AshenStagModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("ashen_stag"),"main");
-	private static final Identifier SKIN=Wildercord.id("textures/entity/ashen_stag/skin.png");
-	private static final Identifier GLOW=Wildercord.id("textures/entity/ashen_stag/glow.png");
+	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/ashen_stag/skin.png");
+	private static final ResourceLocation GLOW=Wildercord.id("textures/entity/ashen_stag/glow.png");
 	static final float SCALE=1.8F;
 	/** How long one move takes to blend into the next, in ticks. */
 	private static final float BLEND_TICKS=4;
 	public AshenStagRenderer(EntityRendererProvider.Context c){super(c,new AshenStagModel(c.bakeLayer(LAYER)),1.5F);addLayer(new Eyes(this));}
 	@Override public AshenStagRenderState createRenderState(){return new AshenStagRenderState();}
-	@Override public Identifier getTextureLocation(AshenStagRenderState s){return SKIN;}
+	@Override public ResourceLocation getTextureLocation(AshenStagRenderState s){return SKIN;}
 	@Override public void extractRenderState(AshenStag e,AshenStagRenderState s,float partial){
 		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.rise=AshenStagRules.rise(s.move,s.elapsed);s.kindled=e.kindled();
 		// Blending out of the move before over a few ticks; out of its bed or into it the rise does that itself.

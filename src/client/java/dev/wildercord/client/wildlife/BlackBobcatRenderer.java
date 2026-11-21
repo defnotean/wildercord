@@ -5,7 +5,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.wildlife.BlackBobcat;
 import dev.wildercord.wildlife.BobcatContent;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -33,7 +33,7 @@ public final class BlackBobcatRenderer extends WildlifeRenderer<BlackBobcat, Bla
 	}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(LAYER, BlackBobcatModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(LAYER, BlackBobcatModel::createLayer);
 		EntityRendererRegistry.register(BobcatContent.BLACK_BOBCAT, BlackBobcatRenderer::new);
 	}
 }

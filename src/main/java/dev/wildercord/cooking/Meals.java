@@ -8,7 +8,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -55,7 +55,7 @@ public final class Meals {
 	public static final Item WAYFARER_SAFFRON = saffron();
 
 	private static Item saffron() {
-		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Identifier.parse(CookingRules.SAFFRON));
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, ResourceLocation.parse(CookingRules.SAFFRON));
 		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key).rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
 	}
 
@@ -74,7 +74,7 @@ public final class Meals {
 	}
 
 	public static Holder<MobEffect> effect(String id) {
-		return BuiltInRegistries.MOB_EFFECT.get(Identifier.parse(id)).orElseThrow(() -> new IllegalStateException("no effect " + id));
+		return BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(id)).orElseThrow(() -> new IllegalStateException("no effect " + id));
 	}
 
 	public static List<MobEffectInstance> effects(CookingRules.Recipe recipe) {

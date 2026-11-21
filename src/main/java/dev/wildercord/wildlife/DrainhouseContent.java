@@ -4,7 +4,7 @@ import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.cast.feel.Feels;
 import net.fabricmc.fabric.api.attachment.v1.*;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.*;
@@ -29,6 +29,6 @@ public final class DrainhouseContent {
  public static void init(){
   BelowkeeperEquipment.init();dev.wildercord.compat.McWorldgen.registerFeature("belowkeeper_drainhouse", new DrainhouseFeature());
   BiomeModifications.addFeature(BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)),GenerationStep.Decoration.TOP_LAYER_MODIFICATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("belowkeeper_drainhouse")));
-  CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(ENTRANCE_NOTES,GARDEN_NOTES,ALCOVE_NOTES).forEach(o::accept));
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(ENTRANCE_NOTES,GARDEN_NOTES,ALCOVE_NOTES).forEach(o::accept));
  }
 }

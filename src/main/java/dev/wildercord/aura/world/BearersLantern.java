@@ -4,7 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.player.WildercordAttachments;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
@@ -26,7 +26,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.equine.SkeletonHorse;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemGroup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -152,8 +152,8 @@ public final class BearersLantern {
 	}
 
 	public static void init() {
-		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
-		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> output.accept(ITEM));
+		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> output.accept(ITEM));
 	}
 
 	/** The lantern carried: lit, it calls up the Barrow Steed, then must rest. */

@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
@@ -32,7 +32,7 @@ import java.util.WeakHashMap;
  * tree when nothing holds it up.
  */
 public final class SerpentRenderer extends CullableEntityRenderer<RootcoilSerpent,SerpentRenderState> {
-	private static final Identifier SKIN=Wildercord.id("textures/entity/rootcoil_serpent/skin.png"),GLOW=Wildercord.id("textures/entity/rootcoil_serpent/glow.png");
+	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/rootcoil_serpent/skin.png"),GLOW=Wildercord.id("textures/entity/rootcoil_serpent/glow.png");
 	/** Texture size, the ring's sides, and how much wider than tall the body is. */
 	static final float TEX_W=128,TEX_H=64;
 	private static final int SIDES=8;

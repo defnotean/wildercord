@@ -52,7 +52,7 @@ public final class VersionCheck {
 	}
 
 	public static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(ServerVersion.TYPE, ServerVersion.CODEC);
+		PayloadTypeRegistry.playS2C().register(ServerVersion.TYPE, ServerVersion.CODEC);
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			String mine = version();
 			if (ServerPlayNetworking.canSend(handler.player, ServerVersion.TYPE)) {

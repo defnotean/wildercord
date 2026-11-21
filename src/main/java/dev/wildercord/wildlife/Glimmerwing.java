@@ -98,7 +98,7 @@ public class Glimmerwing extends AmbientCreature {
 			setVariant(swarm.variant());
 		} else {
 			var biome = level.getBiome(blockPosition());
-			String id = biome.unwrapKey().map(k -> k.identifier().toString()).orElse("");
+			String id = biome.unwrapKey().map(k -> k.location().toString()).orElse("");
 			int variant = switch (id) {
 				case "minecraft:flower_forest", "minecraft:cherry_grove" -> ROSE;
 				case "minecraft:meadow", "minecraft:sunflower_plains" -> AMBER;

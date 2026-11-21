@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +40,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 	/** The marks' colour this frame, as ARGB with the alpha as brightness; absent on anything that isn't Runebound. */
 	public static final RenderStateDataKey<Integer> MARKS = RenderStateDataKey.create(() -> "wildercord:rune_marks");
 
-	private static final java.util.Map<String, Identifier> LAYOUT_TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final java.util.Map<String, ResourceLocation> LAYOUT_TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
 	/** How long a Runebound telegraphs, in ticks (as {@code Runebound.TELEGRAPH}). */
 	private static final float TELEGRAPH = 22;
 	/** Ticks the flare takes to reach full strength once the telegraph begins. */
@@ -50,7 +50,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 
 	private final RenderType renderType;
 
-	public RuneMarksLayer(RenderLayerParent<S, M> parent, Identifier texture) {
+	public RuneMarksLayer(RenderLayerParent<S, M> parent, ResourceLocation texture) {
 		super(parent);
 		this.renderType = RenderTypes.eyes(texture);
 	}
@@ -105,7 +105,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 			if (type.getCategory() != MobCategory.MONSTER) {
 				return;
 			}
-			Identifier texture = textureFor(type, renderer);
+			ResourceLocation texture = textureFor(type, renderer);
 			if (texture != null) {
 				add(renderer, helper, texture);
 			}
@@ -113,7 +113,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 	}
 
 	/** The marks drawn for a model's skin layout, or null for a model that has none. */
-	private static @Nullable Identifier textureFor(EntityType<?> type, LivingEntityRenderer<?, ?, ?> renderer) {
+	private static @Nullable ResourceLocation textureFor(EntityType<?> type, LivingEntityRenderer<?, ?, ?> renderer) {
 		EntityModel<?> model = renderer.getModel();
 		String layout;
 		if (model instanceof IllagerModel<?>) {
@@ -135,7 +135,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private static void add(LivingEntityRenderer<?, ?, ?> renderer, LivingEntityRenderLayerRegistrationCallback.RegistrationHelper helper,
-			Identifier texture) {
+			ResourceLocation texture) {
 		helper.register(new RuneMarksLayer((RenderLayerParent) renderer, texture));
 	}
 }

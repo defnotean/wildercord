@@ -73,7 +73,7 @@ public final class Contracts {
 	private static final Map<UUID, ContractRules.Credit> CREDIT = new HashMap<>();
 
 	public static void init() {
-		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.clientboundPlay().register(ShowBoard.TYPE, ShowBoard.CODEC);
+		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playS2C().register(ShowBoard.TYPE, ShowBoard.CODEC);
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			SpellHit hit = LAST_HIT.remove(entity.getUUID());
 			if (hit == null || !(entity.level() instanceof ServerLevel level) || level.getGameTime() - hit.time() > 100) {

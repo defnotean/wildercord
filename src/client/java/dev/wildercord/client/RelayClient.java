@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
@@ -25,7 +25,7 @@ public final class RelayClient {
 	private static net.minecraft.client.multiplayer.ClientLevel world;
 	private static long nonce;
 	private static boolean wasPlaying;
-	private static KeyMapping lastBinding;
+	private static KeyBinding lastBinding;
 
 	public static void beginTick(Minecraft client) {
 		boolean playing = client.player != null && client.player.isAlive() && client.screen == null && client.isWindowActive();
@@ -42,7 +42,7 @@ public final class RelayClient {
 	}
 
 	/** Called for selected and direct-slot bindings even when no click event was queued. */
-	public static boolean key(Minecraft client, KeyMapping binding, int requested) {
+	public static boolean key(Minecraft client, KeyBinding binding, int requested) {
 		int index = requested + 1;
 		boolean down = binding.isDown(), previous = DOWN[index];
 		DOWN[index] = down;

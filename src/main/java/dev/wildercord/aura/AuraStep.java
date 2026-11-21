@@ -64,7 +64,7 @@ public final class AuraStep {
 	private static final Map<UUID, Long> UNTOUCHABLE = new HashMap<>();
 
 	static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Stepped.TYPE, Stepped.CODEC);
+		PayloadTypeRegistry.playS2C().register(Stepped.TYPE, Stepped.CODEC);
 	}
 
 	static void forget(UUID id) {

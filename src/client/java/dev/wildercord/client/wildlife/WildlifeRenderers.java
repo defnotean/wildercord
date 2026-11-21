@@ -14,7 +14,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
@@ -51,7 +51,7 @@ public final class WildlifeRenderers {
 		return new ModelLayerLocation(Wildercord.id(name), "main");
 	}
 
-	static Identifier texture(String name) {
+	static ResourceLocation texture(String name) {
 		return Wildercord.id("textures/entity/wildlife/" + name + ".png");
 	}
 
@@ -63,8 +63,8 @@ public final class WildlifeRenderers {
 	// ------------------------------------------------------------------ the glimmerwing
 
 	public static final class GlimmerwingRenderer extends WildlifeRenderer<Glimmerwing, GlimmerwingModel> {
-		private static final Identifier[] SKINS = {texture("glimmerwing_moonlit"), texture("glimmerwing_rose"), texture("glimmerwing_amber")};
-		private static final Identifier[] GLOWS = {texture("glimmerwing_moonlit_glow"), texture("glimmerwing_rose_glow"), texture("glimmerwing_amber_glow")};
+		private static final ResourceLocation[] SKINS = {texture("glimmerwing_moonlit"), texture("glimmerwing_rose"), texture("glimmerwing_amber")};
+		private static final ResourceLocation[] GLOWS = {texture("glimmerwing_moonlit_glow"), texture("glimmerwing_rose_glow"), texture("glimmerwing_amber_glow")};
 
 		public GlimmerwingRenderer(EntityRendererProvider.Context context) {
 			super(context, new GlimmerwingModel(context.bakeLayer(GLIMMERWING)), 0.12F, SKINS[0]);
@@ -72,7 +72,7 @@ public final class WildlifeRenderers {
 		}
 
 		@Override
-		public Identifier getTextureLocation(WildlifeRenderState state) {
+		public ResourceLocation getTextureLocation(WildlifeRenderState state) {
 			return SKINS[state.variant];
 		}
 
@@ -103,7 +103,7 @@ public final class WildlifeRenderers {
 	public static final class LumenStagRenderer extends WildlifeRenderer<LumenStag, LumenStagModel> {
 		public LumenStagRenderer(EntityRendererProvider.Context context) {
 			super(context, new LumenStagModel(context.bakeLayer(LUMEN_STAG)), 0.6F, texture("lumen_stag"));
-			Identifier glow = texture("lumen_stag_glow");
+			ResourceLocation glow = texture("lumen_stag_glow");
 			glow(state -> glow);
 		}
 
@@ -123,7 +123,7 @@ public final class WildlifeRenderers {
 	public static final class CinderfoxRenderer extends WildlifeRenderer<Cinderfox, CinderfoxModel> {
 		public CinderfoxRenderer(EntityRendererProvider.Context context) {
 			super(context, new CinderfoxModel(context.bakeLayer(CINDERFOX)), 0.32F, texture("cinderfox"));
-			Identifier glow = texture("cinderfox_glow");
+			ResourceLocation glow = texture("cinderfox_glow");
 			glow(state -> glow);
 		}
 
@@ -141,7 +141,7 @@ public final class WildlifeRenderers {
 	public static final class SkyrayRenderer extends WildlifeRenderer<Skyray, SkyrayModel> {
 		public SkyrayRenderer(EntityRendererProvider.Context context) {
 			super(context, new SkyrayModel(context.bakeLayer(SKYRAY)), 0.0F, texture("skyray"));
-			Identifier glow = texture("skyray_glow");
+			ResourceLocation glow = texture("skyray_glow");
 			glow(state -> glow);
 		}
 
@@ -162,7 +162,7 @@ public final class WildlifeRenderers {
 	public static final class RimehareRenderer extends WildlifeRenderer<Rimehare, RimehareModel> {
 		public RimehareRenderer(EntityRendererProvider.Context context) {
 			super(context, new RimehareModel(context.bakeLayer(RIMEHARE)), 0.22F, texture("rimehare"));
-			Identifier glow = texture("rimehare_glow");
+			ResourceLocation glow = texture("rimehare_glow");
 			glow(state -> glow);
 		}
 

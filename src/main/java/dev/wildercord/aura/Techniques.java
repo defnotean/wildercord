@@ -988,10 +988,10 @@ public final class Techniques {
 	// ------------------------------------------------------------------ lifecycle
 
 	static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(Write.TYPE, Write.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Erase.TYPE, Erase.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Choose.TYPE, Choose.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Inscribe.TYPE, Inscribe.CODEC);
+		PayloadTypeRegistry.playC2S().register(Write.TYPE, Write.CODEC);
+		PayloadTypeRegistry.playC2S().register(Erase.TYPE, Erase.CODEC);
+		PayloadTypeRegistry.playC2S().register(Choose.TYPE, Choose.CODEC);
+		PayloadTypeRegistry.playC2S().register(Inscribe.TYPE, Inscribe.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Write.TYPE, (payload, context) -> {
 			if (REQUESTS.allow(context.player().getUUID(), context.server().getTickCount())) {
 				write(context.player(), payload);

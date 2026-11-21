@@ -32,7 +32,7 @@ public record RelayEditorReply(int slot, String request, List<String> accepted, 
 			return java.util.HexFormat.of().formatHex(digest.digest());
 		} catch (java.security.NoSuchAlgorithmException impossible) { throw new IllegalStateException(impossible); }
 	}
-	public static void init() { PayloadTypeRegistry.clientboundPlay().register(TYPE, CODEC); }
+	public static void init() { PayloadTypeRegistry.playS2C().register(TYPE, CODEC); }
 	public static void reply(ServerPlayer player, WildercordNetworking.EditSpell edit, net.minecraft.network.chat.Component problem) {
 		int slot = edit.spell();
 		if (slot < 0 || slot >= dev.wildercord.gear.SpellSlots.ALL) return;

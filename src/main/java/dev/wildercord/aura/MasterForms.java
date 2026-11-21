@@ -316,7 +316,7 @@ public final class MasterForms {
 			Math.max(p.recoveryUntil(), now(player) + StoneHingeRules.RECOVERY_TICKS), p.landingUntil(), p.hingeLearned()));
 		emit(player, s, phase, StoneHingeRules.RECOVERY_TICKS, s.hingeYaw);
 	}
-	private static final net.minecraft.resources.Identifier PLANT = Wildercord.id("stone_hinge_plant");
+	private static final net.minecraft.resources.ResourceLocation PLANT = Wildercord.id("stone_hinge_plant");
 	/** The plant: a heavy, transient slow while braced and catching. Never saved, always removed on any exit. */
 	private static void plant(ServerPlayer player, boolean on) {
 		var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
@@ -399,8 +399,8 @@ public final class MasterForms {
 		SESSIONS.remove(player); player.removeAttached(VIEW); MasterFormMovement.forget(player);
 	}
 	public static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(Action.TYPE, Action.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Event.TYPE, Event.CODEC);
+		PayloadTypeRegistry.playC2S().register(Action.TYPE, Action.CODEC);
+		PayloadTypeRegistry.playS2C().register(Event.TYPE, Event.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Action.TYPE, (packet, context) -> request(context.player(), packet));
 		ServerTickEvents.END_SERVER_TICK.register(server -> { for (ServerPlayer player : server.getPlayerList().getPlayers()) tick(player); });
 		dev.wildercord.api.AuraApi.onStanceBroken((attacker, target) -> { if (target instanceof ServerPlayer player) cancel(player); });

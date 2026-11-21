@@ -4,7 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.wildlife.CapybaraContent;
 import dev.wildercord.wildlife.MirebathCapybara;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -25,7 +25,7 @@ public final class MirebathCapybaraRenderer extends WildlifeRenderer<MirebathCap
 	}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(LAYER, MirebathCapybaraModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(LAYER, MirebathCapybaraModel::createLayer);
 		EntityRendererRegistry.register(CapybaraContent.MIREBATH_CAPYBARA, MirebathCapybaraRenderer::new);
 	}
 }

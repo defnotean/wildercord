@@ -5,16 +5,16 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.wildlife.MeerkatContent;
 import dev.wildercord.wildlife.SunwatchMeerkat;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /** The sunwatch meerkat, sandy and banded, dark round the eyes. */
 public final class SunwatchMeerkatRenderer extends WildlifeRenderer<SunwatchMeerkat, SunwatchMeerkatModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("sunwatch_meerkat"), "main");
-	private static final Identifier TEXTURE = WildlifeRenderers.texture("sunwatch_meerkat");
+	private static final ResourceLocation TEXTURE = WildlifeRenderers.texture("sunwatch_meerkat");
 	static final float SIZE = 0.9F;
 
 	public SunwatchMeerkatRenderer(EntityRendererProvider.Context context) {
@@ -39,7 +39,7 @@ public final class SunwatchMeerkatRenderer extends WildlifeRenderer<SunwatchMeer
 	}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(LAYER, SunwatchMeerkatModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(LAYER, SunwatchMeerkatModel::createLayer);
 		EntityRendererRegistry.register(MeerkatContent.SUNWATCH_MEERKAT, SunwatchMeerkatRenderer::new);
 	}
 }

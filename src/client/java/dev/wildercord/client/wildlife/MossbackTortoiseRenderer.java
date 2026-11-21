@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -53,7 +53,7 @@ public final class MossbackTortoiseRenderer extends WildlifeRenderer<MossbackTor
 		super(context, new MossbackTortoiseModel(context.bakeLayer(WildlifeRenderers.MOSSBACK_TORTOISE)), 0.95F,
 			WildlifeRenderers.texture("mossback_tortoise"));
 		this.blocks = context.getBlockModelResolver();
-		Identifier glow = WildlifeRenderers.texture("mossback_tortoise_glow");
+		ResourceLocation glow = WildlifeRenderers.texture("mossback_tortoise_glow");
 		glow(state -> glow);
 		addLayer(new GardenLayer(this));
 	}

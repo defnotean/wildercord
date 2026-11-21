@@ -6,9 +6,9 @@ import dev.wildercord.content.CordTier;
 import dev.wildercord.net.WildercordNetworking;
 import dev.wildercord.player.Spellbooks;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -21,25 +21,25 @@ import net.minecraft.client.Minecraft;
 public final class WildercordKeys {
 	private WildercordKeys() {}
 
-	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Wildercord.id("wildercord"));
+	private static final KeyBinding.Category CATEGORY = KeyBinding.Category.register(Wildercord.id("wildercord"));
 	/** Held this many ticks, a key press becomes a hold (a charge, or the wheel). */
 	private static final int HOLD = 5;
 
-	private static KeyMapping cast;
-	private static KeyMapping next;
-	private static KeyMapping open;
+	private static KeyBinding cast;
+	private static KeyBinding next;
+	private static KeyBinding open;
 	/** Opens the worn backpack (the server opens it, or says there's none). */
-	private static KeyMapping backpack;
+	private static KeyBinding backpack;
 	/** Loads the next saved loadout (the server checks it may, and names it above the hotbar). */
-	private static KeyMapping nextLoadout;
-	private static KeyMapping magicSettings;
+	private static KeyBinding nextLoadout;
+	private static KeyBinding magicSettings;
 	/** Puts the Weaver's Silk away or takes it out again (the server checks the player has it). */
-	private static KeyMapping silk;
+	private static KeyBinding silk;
 	/** "Cast spell N": the Cord's four, and the tome's fifth. */
-	private static final KeyMapping[] CAST_N = new KeyMapping[dev.wildercord.gear.SpellSlots.ALL];
+	private static final KeyBinding[] CAST_N = new KeyBinding[dev.wildercord.gear.SpellSlots.ALL];
 
 	/** The Aura key: its ways of being pressed go to the server as {@code aura.Aura.Key}. */
-	private static KeyMapping aura;
+	private static KeyBinding aura;
 	/** Two taps of the Aura key this close together (ticks) are a double tap. */
 	private static final int DOUBLE_TAP = 8;
 	private static int auraHeld = -1;
@@ -69,7 +69,7 @@ public final class WildercordKeys {
 	}
 
 	/** The cast key itself (tests hold it to charge, as a player would). */
-	public static KeyMapping castMapping() {
+	public static KeyBinding castMapping() {
 		return cast;
 	}
 
@@ -78,7 +78,7 @@ public final class WildercordKeys {
 	}
 
 	/** The switch-spell key, which the spell wheel watches to know when it's let go. */
-	public static KeyMapping nextMapping() {
+	public static KeyBinding nextMapping() {
 		return next;
 	}
 
@@ -87,7 +87,7 @@ public final class WildercordKeys {
 	}
 
 	/** The backpack key, which the backpack screen and the inventory watch too. */
-	public static KeyMapping backpackMapping() {
+	public static KeyBinding backpackMapping() {
 		return backpack;
 	}
 
@@ -101,7 +101,7 @@ public final class WildercordKeys {
 	}
 
 	/** The Aura key itself (tests press it as a player would). */
-	public static KeyMapping auraMapping() {
+	public static KeyBinding auraMapping() {
 		return aura;
 	}
 
@@ -131,21 +131,21 @@ public final class WildercordKeys {
 	}
 
 	public static void init() {
-		magicSettings = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.magic_settings",
+		magicSettings = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.magic_settings",
 			InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
-		cast = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.cast", InputConstants.KEY_R, CATEGORY));
-		next = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.next_spell", InputConstants.KEY_V, CATEGORY));
-		open = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.open_cord", InputConstants.KEY_K, CATEGORY));
-		backpack = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.open_backpack", InputConstants.KEY_B, CATEGORY));
+		cast = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.cast", InputConstants.KEY_R, CATEGORY));
+		next = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.next_spell", InputConstants.KEY_V, CATEGORY));
+		open = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.open_cord", InputConstants.KEY_K, CATEGORY));
+		backpack = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.open_backpack", InputConstants.KEY_B, CATEGORY));
 		// Z, not V: V is already the spell key (tap to switch, hold for the wheel).
-		aura = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.aura", InputConstants.KEY_Z, CATEGORY));
+		aura = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.aura", InputConstants.KEY_Z, CATEGORY));
 		for (int i = 0; i < CAST_N.length; i++) {
-			CAST_N[i] = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.cast_" + (i + 1),
+			CAST_N[i] = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.cast_" + (i + 1),
 				InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
 		}
-		nextLoadout = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.next_loadout",
+		nextLoadout = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.next_loadout",
 			InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
-		silk = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.weavers_silk", InputConstants.KEY_G, CATEGORY));
+		silk = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.weavers_silk", InputConstants.KEY_G, CATEGORY));
 		ClientTickEvents.END_CLIENT_TICK.register(WildercordKeys::tick);
 	}
 

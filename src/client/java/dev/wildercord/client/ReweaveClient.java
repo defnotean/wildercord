@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
@@ -26,7 +26,7 @@ public final class ReweaveClient {
     private static net.minecraft.client.multiplayer.ClientLevel world;
     private static boolean playing;
     private static long nonce;
-    private static KeyMapping lastBinding;
+    private static KeyBinding lastBinding;
     private static final int INK = 0xB9A0EE, WARNING = 0xF0D6A0;
 
     public static void beginTick(Minecraft client) {
@@ -42,7 +42,7 @@ public final class ReweaveClient {
         }
         playing = active;
     }
-    public static boolean key(Minecraft client, KeyMapping binding, int requested) {
+    public static boolean key(Minecraft client, KeyBinding binding, int requested) {
         int index = requested + 1;
         boolean down = binding.isDown(), previous = DOWN[index];
         DOWN[index] = down;

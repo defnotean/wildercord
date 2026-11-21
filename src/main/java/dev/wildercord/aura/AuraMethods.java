@@ -1,7 +1,7 @@
 package dev.wildercord.aura;
 
 import dev.wildercord.cast.Grimoire;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
@@ -10,7 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemGroup;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +34,13 @@ public final class AuraMethods {
 	static void init() {
 		BreathingManualItem.init();
 		// Every method's manual in the mod's creative tab, after the Torn Page.
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, dev.wildercord.Wildercord.id("wildercord")))
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, dev.wildercord.Wildercord.id("wildercord")))
 			.register(output -> {
 				java.util.List<net.minecraft.world.item.ItemStack> manuals = new java.util.ArrayList<>();
 				for (BreathingMethod method : BreathingMethods.all()) {
 					manuals.add(BreathingManualItem.of(method.id()));
 				}
-				output.insertAfter(dev.wildercord.content.WildercordItems.TORN_PAGE, manuals, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+				output.insertAfter(dev.wildercord.content.WildercordItems.TORN_PAGE, manuals, ItemGroup.TabVisibility.PARENT_AND_SEARCH_TABS);
 			});
 	}
 

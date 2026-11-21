@@ -96,7 +96,7 @@ public final class Unity {
 	}
 	public static void stop(ServerPlayer p) { var s=state(p);if(s.since()>=0 && s.until()>s.since())p.setAttached(STATE,s.stop()); }
 	public static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(Activate.TYPE,Activate.STREAM_CODEC);
+		PayloadTypeRegistry.playC2S().register(Activate.TYPE,Activate.STREAM_CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Activate.TYPE,(payload,ctx) -> { if(packets.allow(ctx.player().getUUID(),ctx.server().getTickCount()))begin(ctx.player()); });
 		AuraApi.onSpend(Unity::auraSpent);
 		ServerTickEvents.END_SERVER_TICK.register(server -> {

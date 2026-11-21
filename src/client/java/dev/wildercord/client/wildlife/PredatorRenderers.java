@@ -5,7 +5,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.wildlife.BlackBobcat;
 import dev.wildercord.wildlife.PredatorContent;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -43,8 +43,8 @@ public final class PredatorRenderers {
 	}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(LYNX, BlackBobcatModel::createLayer);
-		ModelLayerRegistry.registerModelLayer(COUGAR, BlackBobcatModel::createLongTailLayer);
+		EntityModelLayerRegistry.registerModelLayer(LYNX, BlackBobcatModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(COUGAR, BlackBobcatModel::createLongTailLayer);
 		EntityRendererRegistry.register(PredatorContent.FROST_LYNX, context -> new BigCat<>(context, LYNX, "frost_lynx", 1.08F));
 		EntityRendererRegistry.register(PredatorContent.DUNE_COUGAR, context -> new BigCat<>(context, COUGAR, "dune_cougar", 1.25F));
 	}

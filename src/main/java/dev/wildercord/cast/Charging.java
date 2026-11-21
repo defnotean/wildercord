@@ -16,7 +16,7 @@ import dev.wildercord.spell.SpellCompiler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -59,7 +59,7 @@ public final class Charging {
 	private static final double RELEASE_FROM = 0.2;
 	/** A charge held this long fizzles. */
 	private static final int MAX_HOLD = 20 * 12;
-	private static final Identifier SLOW = Wildercord.id("charging");
+	private static final ResourceLocation SLOW = Wildercord.id("charging");
 	/** A charge can start at most this often (a modified client could otherwise flood everyone nearby with circles). */
 	private static final int MIN_BEGIN_GAP = 4;
 

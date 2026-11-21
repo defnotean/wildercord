@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -30,12 +30,12 @@ public record Spot(String dimension, double x, double y, double z, float yaw, fl
 
 	/** Where {@code entity} is standing, and the way it faces. */
 	public static Spot of(Entity entity) {
-		return new Spot(entity.level().dimension().identifier().toString(), entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
+		return new Spot(entity.level().dimension().location().toString(), entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
 	}
 
 	/** A point in {@code level}, facing south. */
 	public static Spot at(Level level, Vec3 pos) {
-		return new Spot(level.dimension().identifier().toString(), pos.x, pos.y, pos.z, 0F, 0F);
+		return new Spot(level.dimension().location().toString(), pos.x, pos.y, pos.z, 0F, 0F);
 	}
 
 	public Vec3 pos() {
@@ -44,12 +44,12 @@ public record Spot(String dimension, double x, double y, double z, float yaw, fl
 
 	/** The world it's in, or null if that world doesn't exist (any more). */
 	public ServerLevel level(MinecraftServer server) {
-		Identifier id = Identifier.tryParse(dimension);
+		ResourceLocation id = ResourceLocation.tryParse(dimension);
 		return id == null ? null : server.getLevel(ResourceKey.create(Registries.DIMENSION, id));
 	}
 
 	public boolean in(Level level) {
-		return dimension.equals(level.dimension().identifier().toString());
+		return dimension.equals(level.dimension().location().toString());
 	}
 
 	/** "120, 64, -35 in the Nether". */
@@ -62,7 +62,7 @@ public record Spot(String dimension, double x, double y, double z, float yaw, fl
 	 * datapack or another mod, its id's path in words ("Deep Dark Caverns" for {@code mod:deep_dark_caverns}).
 	 */
 	public static Component dimensionName(String dimension) {
-		Identifier id = Identifier.tryParse(dimension);
+		ResourceLocation id = ResourceLocation.tryParse(dimension);
 		if (id == null) {
 			return Component.literal(dimension);
 		}

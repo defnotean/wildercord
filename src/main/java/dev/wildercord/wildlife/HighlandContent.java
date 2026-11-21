@@ -6,7 +6,7 @@ import dev.wildercord.api.WildercordEvents;
 import dev.wildercord.cast.Casters;
 import dev.wildercord.cast.feel.Feels;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.attachment.v1.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.*;
@@ -77,7 +77,7 @@ public final class HighlandContent {
 		});
 		var feature=ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("windreed_patch"));
 		BiomeModifications.addFeature(BiomeSelectors.includeByKey(Set.of(net.minecraft.world.level.biome.Biomes.MEADOW,net.minecraft.world.level.biome.Biomes.WINDSWEPT_HILLS,net.minecraft.world.level.biome.Biomes.WINDSWEPT_FOREST,net.minecraft.world.level.biome.Biomes.WINDSWEPT_GRAVELLY_HILLS,dev.wildercord.world.biome.WindscarClimate.WINDSCAR)),GenerationStep.Decoration.VEGETAL_DECORATION,feature);
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(WINDREED,DRAFT_KITE,WINDREED_BRAID).forEach(o::accept));
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(WINDREED,DRAFT_KITE,WINDREED_BRAID).forEach(o::accept));
 		WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {
 			if(!(caster instanceof ServerPlayer p) || !(caster.level() instanceof ServerLevel l) || !Casters.mayBuild(p))return;
 			boolean life=effects.stream().anyMatch(e -> e.element().equals("life"));

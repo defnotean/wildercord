@@ -741,10 +741,10 @@ public final class Clashes {
 	// ------------------------------------------------------------------ lifecycle
 
 	public static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Begin.TYPE, Begin.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Mark.TYPE, Mark.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(End.TYPE, End.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Press.TYPE, Press.CODEC);
+		PayloadTypeRegistry.playS2C().register(Begin.TYPE, Begin.CODEC);
+		PayloadTypeRegistry.playS2C().register(Mark.TYPE, Mark.CODEC);
+		PayloadTypeRegistry.playS2C().register(End.TYPE, End.CODEC);
+		PayloadTypeRegistry.playC2S().register(Press.TYPE, Press.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Press.TYPE, (payload, context) -> {
 			if (PRESSES.allow(context.player().getUUID(), context.server().getTickCount())) {
 				press(context.player(), payload.id());

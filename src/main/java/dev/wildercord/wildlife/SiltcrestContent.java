@@ -3,7 +3,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.config.Config;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.*;
@@ -27,6 +27,6 @@ public final class SiltcrestContent {
   SpawnPlacements.register(BITTERN,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(type,l,reason,p,r)->{if(reason==EntitySpawnReason.CHUNK_GENERATION)return false;if(reason!=EntitySpawnReason.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;var cfg=Config.get().wildlife();return level.dimension().equals(Level.OVERWORLD)&&cfg.spawns("siltcrest_bittern")&&r.nextDouble()<Math.min(1,.12*cfg.spawnMultiplier())&&BitternHabitat.bank(l,p)&&l.canSeeSky(p.above())&&room(level,p);});
   BiomeModifications.create(Wildercord.id("siltcrest_banks")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP,dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)),c->{var cfg=Config.get().wildlife();if(cfg.spawns("siltcrest_bittern"))dev.wildercord.compat.McWorldgen.addSpawn(c.getMobSpawnSettings(), MobCategory.CREATURE, BITTERN, 1, 1, Math.max(1,(int)(2*Math.max(1,cfg.spawnMultiplier()))));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:siltcrest_bittern",FieldGuide.Group.WILDLIFE,0xAD9570));
-  CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(o->o.accept(EGG));CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->o.accept(EGG));
+  ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o->o.accept(EGG));ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->o.accept(EGG));
  }
 }

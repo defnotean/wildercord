@@ -54,7 +54,7 @@ public final class EventLedger extends SavedData {
 	}
 
 	private static String world(ResourceKey<Level> level) {
-		return level.identifier().toString();
+		return level.location().toString();
 	}
 
 	static String star(ResourceKey<Level> level) {

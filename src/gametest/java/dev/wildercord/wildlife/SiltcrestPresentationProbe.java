@@ -65,7 +65,7 @@ public final class SiltcrestPresentationProbe {
    var level=(ServerLevel)bird.level();var out=new JsonObject();
    out.addProperty("event",event);out.addProperty("suite",s.suite);out.addProperty("trial",s.trial);
    out.addProperty("clock",SiltcrestBittern.clock(level));out.addProperty("entityTick",bird.tickCount);
-   out.addProperty("world",level.dimension().identifier().toString());out.addProperty("sourceId",bird.getId());
+   out.addProperty("world",level.dimension().location().toString());out.addProperty("sourceId",bird.getId());
    out.addProperty("sourceUuid",bird.getUUID().toString());out.add("sourcePosition",vector(bird.position()));
    out.addProperty("sourceAlive",bird.isAlive());out.addProperty("sourceRemoved",bird.isRemoved());out.addProperty("sourceHealth",bird.getHealth());
    out.addProperty("sourceTracked",level.getEntity(bird.getUUID())==bird);out.addProperty("ground",bird.onGround());out.addProperty("water",bird.isInWater());

@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.util.function.ToIntFunction;
@@ -26,9 +26,9 @@ import java.util.function.ToIntFunction;
  */
 public class ArchivistRenderer extends MobRenderer<Archivist, ArchivistRenderState, ArchivistModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("archivist"), "main");
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/archivist.png");
-	private static final Identifier EYES = Wildercord.id("textures/entity/archivist_eyes.png");
-	private static final Identifier RUNES = Wildercord.id("textures/entity/archivist_runes.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/archivist.png");
+	private static final ResourceLocation EYES = Wildercord.id("textures/entity/archivist_eyes.png");
+	private static final ResourceLocation RUNES = Wildercord.id("textures/entity/archivist_runes.png");
 
 	public ArchivistRenderer(EntityRendererProvider.Context context) {
 		super(context, new ArchivistModel(context.bakeLayer(LAYER)), 0.6F);
@@ -55,7 +55,7 @@ public class ArchivistRenderer extends MobRenderer<Archivist, ArchivistRenderSta
 	}
 
 	@Override
-	public Identifier getTextureLocation(ArchivistRenderState state) {
+	public ResourceLocation getTextureLocation(ArchivistRenderState state) {
 		return TEXTURE;
 	}
 
@@ -88,7 +88,7 @@ public class ArchivistRenderer extends MobRenderer<Archivist, ArchivistRenderSta
 		private final RenderType renderType;
 		private final ToIntFunction<ArchivistRenderState> color;
 
-		Glow(RenderLayerParent<ArchivistRenderState, ArchivistModel> parent, Identifier texture, ToIntFunction<ArchivistRenderState> color) {
+		Glow(RenderLayerParent<ArchivistRenderState, ArchivistModel> parent, ResourceLocation texture, ToIntFunction<ArchivistRenderState> color) {
 			super(parent);
 			this.renderType = RenderTypes.eyes(texture);
 			this.color = color;

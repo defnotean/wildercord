@@ -4,14 +4,14 @@ import dev.wildercord.Wildercord;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.VindicatorRenderer;
 import net.minecraft.client.renderer.entity.state.IllagerRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * A mage-hunter: a vindicator's frame in its own skin (tools/magic_art.py), a deep hood over the hat layer and a grey coat
  * stitched with broken runes.
  */
 public class MageHunterRenderer extends VindicatorRenderer {
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/mage_hunter.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/mage_hunter.png");
 
 	public MageHunterRenderer(EntityRendererProvider.Context context) {
 		super(context);
@@ -20,7 +20,7 @@ public class MageHunterRenderer extends VindicatorRenderer {
 	}
 
 	@Override
-	public Identifier getTextureLocation(IllagerRenderState state) {
+	public ResourceLocation getTextureLocation(IllagerRenderState state) {
 		return TEXTURE;
 	}
 }

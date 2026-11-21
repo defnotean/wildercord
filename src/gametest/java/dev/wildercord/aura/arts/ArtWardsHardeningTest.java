@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 
 /** Native ward adapter checks on the actual connected body; admission/payment is covered separately. */
 public final class ArtWardsHardeningTest implements FabricClientGameTest {
-	private static final Identifier MODIFIER = Wildercord.id("art_unmoved");
+	private static final ResourceLocation MODIFIER = Wildercord.id("art_unmoved");
 	private Plan active;
 	private static SetterProbe setterProbe;
 	private static final class SetterProbe {
@@ -83,7 +83,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 	}
 
 	@Override public void runTest(ClientGameTestContext context) {
-		Identifier early = Wildercord.id("hardening_test_early"), late = Wildercord.id("hardening_test_late");
+		ResourceLocation early = Wildercord.id("hardening_test_early"), late = Wildercord.id("hardening_test_late");
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.addPhaseOrdering(early, Event.DEFAULT_PHASE);
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.addPhaseOrdering(Event.DEFAULT_PHASE, late);
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register(early, (player, origin, destination) -> {

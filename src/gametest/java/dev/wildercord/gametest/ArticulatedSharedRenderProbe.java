@@ -157,7 +157,7 @@ public final class ArticulatedSharedRenderProbe {
 			s.observe("nativeLaunchNonce", launchNonce == null ? "unbound" : launchNonce);
 			scope.owner = mc.player.getId();
 			var timeline = MastersArtsClient.timeline(mc.player);
-			s.observe("worldSession", identity(mc.level)); s.observe("dimension", mc.level.dimension().identifier());
+			s.observe("worldSession", identity(mc.level)); s.observe("dimension", mc.level.dimension().location());
 			s.observe("ownerUuid", mc.player.getUUID()); s.observe("ownerId", scope.owner);
 			s.observe("clientGameTick", mc.level.getGameTime()); s.observe("ownerTickCount", mc.player.tickCount);
 			s.observe("acceptedMove", timeline == null ? -1 : timeline.move());

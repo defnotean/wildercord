@@ -523,9 +523,9 @@ public final class SwordStrings {
 	// ------------------------------------------------------------------ lifecycle
 
 	static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(Perform.TYPE, Perform.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Cue.TYPE, Cue.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Refused.TYPE, Refused.CODEC);
+		PayloadTypeRegistry.playC2S().register(Perform.TYPE, Perform.CODEC);
+		PayloadTypeRegistry.playS2C().register(Cue.TYPE, Cue.CODEC);
+		PayloadTypeRegistry.playS2C().register(Refused.TYPE, Refused.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Perform.TYPE, (payload, context) -> {
 			if (REQUESTS.allow(context.player().getUUID(), context.server().getTickCount())) {
 				request(context.player(), payload);

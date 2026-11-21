@@ -4,7 +4,7 @@ import dev.wildercord.api.WildercordEvents;
 import dev.wildercord.config.Config;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.*;
@@ -32,8 +32,8 @@ public final class ReedbackContent {
   });
   BiomeModifications.create(Wildercord.id("reedback_banks")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP,dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)),c -> {if(Config.get().wildlife().spawns("reedback_crab"))dev.wildercord.compat.McWorldgen.addSpawn(c.getMobSpawnSettings(), MobCategory.CREATURE, CRAB, 1, 1, Math.max(1,(int)(3*Math.max(1,Config.get().wildlife().spawnMultiplier()))));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:reedback_crab",FieldGuide.Group.WILDLIFE,0x87906A));
-  CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(o -> o.accept(EGG));
-  CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(EGG));
+  ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o -> o.accept(EGG));
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(EGG));
   WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {boolean water=effects.stream().anyMatch(e -> e.id().equals(dev.wildercord.spell.Runes.TIDEBREATH.id())),wind=effects.stream().anyMatch(e -> e.element().equals("wind"));if(!water && !wind)return;for(var target:targets)if(target instanceof ReedbackCrab crab)crab.answerMagic(water);});
  }
 }

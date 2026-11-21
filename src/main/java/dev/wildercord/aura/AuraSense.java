@@ -45,7 +45,7 @@ public final class AuraSense {
 	}
 
 	static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Sensed.TYPE, Sensed.CODEC);
+		PayloadTypeRegistry.playS2C().register(Sensed.TYPE, Sensed.CODEC);
 	}
 
 	/** The hostile creatures a breath would sense round {@code player} now. */

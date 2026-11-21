@@ -115,8 +115,8 @@ public final class WorldQuirks {
 	/** Everything a quirk can ask about where an effect lands (as {@link Attunement#placeOf} does for a player). */
 	static Attunements.Place placeAt(ServerLevel level, Vec3 at) {
 		BlockPos pos = BlockPos.containing(at);
-		String biome = level.getBiome(pos).unwrapKey().map(k -> k.identifier().toString()).orElse("");
-		String dimension = level.dimension().identifier().toString();
+		String biome = level.getBiome(pos).unwrapKey().map(k -> k.location().toString()).orElse("");
+		String dimension = level.dimension().location().toString();
 		long time = Math.floorMod(level.getOverworldClockTime(), 24000L);
 		int moon = level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, pos).index();
 		Biome.Precipitation falling = level.precipitationAt(pos.above());

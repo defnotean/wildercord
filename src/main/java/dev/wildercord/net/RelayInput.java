@@ -16,7 +16,7 @@ public record RelayInput(int action, int slot, long nonce) implements CustomPack
 		b -> new RelayInput(b.readVarInt(), b.readVarInt(), b.readVarLong()));
 	@Override public Type<RelayInput> type() { return TYPE; }
 	public static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(TYPE, CODEC);
+		PayloadTypeRegistry.playC2S().register(TYPE, CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(TYPE, (p, c) -> RelayCircles.input(c.player(), p.action, p.slot, p.nonce));
 	}
 }

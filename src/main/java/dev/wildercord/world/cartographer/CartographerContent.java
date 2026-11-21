@@ -3,7 +3,7 @@ package dev.wildercord.world.cartographer;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.spell.FieldGuide;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.*;
@@ -44,7 +44,7 @@ public final class CartographerContent {
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(CARTOGRAPHER, GlassCartographer.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:glass_cartographer", FieldGuide.Group.MONSTER, 0xD8B46A));
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(o -> {
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(o -> {
 			o.accept(ASTROLABE_ITEM);
 			o.accept(COMPASS);
 		});

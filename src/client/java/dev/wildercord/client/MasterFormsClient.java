@@ -7,12 +7,12 @@ import dev.wildercord.aura.MasterFormLessons;
 import dev.wildercord.aura.StoneHingeRules;
 import dev.wildercord.aura.WallTurnRules;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
@@ -24,14 +24,14 @@ import java.util.Map;
 /** Fresh key edges and bounded playback from actual movement events; menus never queue a future activation. */
 public final class MasterFormsClient {
 	private MasterFormsClient() {}
-	private static KeyMapping key;
+	private static KeyBinding key;
 	private static boolean held, suppressed, playingBefore;
 	private static long epoch, sequence;
 	private static ClientLevel level;
 	public record Playback(MasterForms.Event event, long received) {}
 	private static final Map<Integer, Playback> EVENTS = new HashMap<>();
 	public static void init() {
-		key = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.master_form", InputConstants.KEY_X,
+		key = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.master_form", InputConstants.KEY_X,
 			MastersArtsClient.CATEGORY));
 		ClientPlayNetworking.registerGlobalReceiver(MasterForms.Event.TYPE, (event, context) -> receive(context.client(), event));
 		ClientPlayNetworking.registerGlobalReceiver(MasterFormLessons.Open.TYPE, (event, context) -> {
@@ -61,7 +61,7 @@ public final class MasterFormsClient {
 			}
 		});
 	}
-	public static KeyMapping mapping() { return key; }
+	public static KeyBinding mapping() { return key; }
 	public static Component binding() { return key == null ? Component.literal("X") : key.getTranslatedKeyMessage(); }
 	public static void send(int action) {
 		if (FormDashClient.route(action)) return;

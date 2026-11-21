@@ -92,9 +92,9 @@ public final class MasteryChoices {
 	private static final PacketThrottle THROTTLE = new PacketThrottle(10, 4);
 
 	static void init() {
-		PayloadTypeRegistry.serverboundPlay().register(Request.TYPE, Request.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Rise.TYPE, Rise.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Title.TYPE, Title.CODEC);
+		PayloadTypeRegistry.playC2S().register(Request.TYPE, Request.CODEC);
+		PayloadTypeRegistry.playS2C().register(Rise.TYPE, Rise.CODEC);
+		PayloadTypeRegistry.playS2C().register(Title.TYPE, Title.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Request.TYPE, (payload, context) -> {
 			if (!THROTTLE.allow(context.player().getUUID(), context.server().getTickCount())) {
 				return;

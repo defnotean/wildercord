@@ -58,7 +58,7 @@ public final class AuraLoot {
 				return;
 			}
 			WildercordConfig config = dev.wildercord.config.Config.get();
-			for (MethodSources.Source found : MethodSources.forLootTable(key.identifier().toString())) {
+			for (MethodSources.Source found : MethodSources.forLootTable(key.location().toString())) {
 				int chance = WildercordConfig.scaledChance(found.chance(), config.runeLootChance());
 				if (chance > 0) {
 					table.withPool(pool(found, chance));

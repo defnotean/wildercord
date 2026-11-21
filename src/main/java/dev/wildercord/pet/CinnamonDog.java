@@ -6,7 +6,7 @@ import dev.wildercord.cast.Targets;
 import dev.wildercord.duel.Duels;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
@@ -73,8 +73,8 @@ public final class CinnamonDog extends TamableAnimal {
 		java.util.List.of(dev.wildercord.spell.Runes.BOLT, dev.wildercord.spell.Runes.SHOCK),
 		java.util.List.of(dev.wildercord.spell.Runes.BOLT, dev.wildercord.spell.Runes.HARM));
 	private static final java.util.List<dev.wildercord.spell.RuneDef> MENDING = java.util.List.of(dev.wildercord.spell.Runes.BEAM, dev.wildercord.spell.Runes.HEAL);
-	private static final Identifier GROWTH_MODIFIER = Wildercord.id("cinnamon_growth");
-	private static final Identifier STRENGTH_MODIFIER = Wildercord.id("cinnamon_strength");
+	private static final ResourceLocation GROWTH_MODIFIER = Wildercord.id("cinnamon_growth");
+	private static final ResourceLocation STRENGTH_MODIFIER = Wildercord.id("cinnamon_strength");
 	/** How long a jingle lasts, and when in it each of its three little dings sounds. */
 	private static final int RING_TICKS = 12;
 	private int settled, playTicks, greeting, ringTicks, tongueTicks, lickTicks;

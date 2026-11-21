@@ -5,16 +5,16 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.wildlife.SnowcapStoat;
 import dev.wildercord.wildlife.StoatContent;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /** The snowcap stoat, in its white winter coat where it is cold enough to snow and its brown summer coat elsewhere. */
 public final class SnowcapStoatRenderer extends WildlifeRenderer<SnowcapStoat, SnowcapStoatModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("snowcap_stoat"), "main");
-	private static final Identifier WINTER = WildlifeRenderers.texture("snowcap_stoat"), SUMMER = WildlifeRenderers.texture("snowcap_stoat_summer");
+	private static final ResourceLocation WINTER = WildlifeRenderers.texture("snowcap_stoat"), SUMMER = WildlifeRenderers.texture("snowcap_stoat_summer");
 	static final float SIZE = 0.9F;
 
 	public SnowcapStoatRenderer(EntityRendererProvider.Context context) {
@@ -31,7 +31,7 @@ public final class SnowcapStoatRenderer extends WildlifeRenderer<SnowcapStoat, S
 	}
 
 	@Override
-	public Identifier getTextureLocation(WildlifeRenderState state) {
+	public ResourceLocation getTextureLocation(WildlifeRenderState state) {
 		return state.variant == 0 ? WINTER : SUMMER;
 	}
 
@@ -42,7 +42,7 @@ public final class SnowcapStoatRenderer extends WildlifeRenderer<SnowcapStoat, S
 	}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(LAYER, SnowcapStoatModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(LAYER, SnowcapStoatModel::createLayer);
 		EntityRendererRegistry.register(StoatContent.SNOWCAP_STOAT, SnowcapStoatRenderer::new);
 	}
 }

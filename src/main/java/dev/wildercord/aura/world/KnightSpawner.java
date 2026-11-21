@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -89,7 +89,7 @@ public final class KnightSpawner {
 	public static @Nullable Haunt haunt(ServerLevel level, BlockPos pos) {
 		StructureStart start = level.structureManager().getStructureWithPieceAt(pos, HAUNTS);
 		if (start.isValid()) {
-			Identifier id = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(start.getStructure());
+			ResourceLocation id = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(start.getStructure());
 			String path = id == null ? "" : id.getPath();
 			boolean stronghold = path.equals("stronghold");
 			// A structure's own chests' source when it has one (the ancient city's, each expedition's), else any method.

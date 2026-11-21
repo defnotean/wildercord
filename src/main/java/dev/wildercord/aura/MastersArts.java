@@ -110,8 +110,8 @@ public final class MastersArts {
 
 	public static void init() {
 		dev.wildercord.aura.arts.ReleasedArtOwner.init();
-		PayloadTypeRegistry.serverboundPlay().register(Activate.TYPE, Activate.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Performed.TYPE, Performed.CODEC);
+		PayloadTypeRegistry.playC2S().register(Activate.TYPE, Activate.CODEC);
+		PayloadTypeRegistry.playS2C().register(Performed.TYPE, Performed.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Activate.TYPE, (payload, context) -> {
 			if (REQUESTS.allow(context.player().getUUID(), context.server().getTickCount())) activate(context.player(), payload.move());
 		});

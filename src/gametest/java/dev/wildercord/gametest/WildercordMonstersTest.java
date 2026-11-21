@@ -347,7 +347,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 				EntityType<? extends Mob> type = (EntityType<? extends Mob>) row[1];
 				boolean in = MonsterSpawns.spawnsIn(biome.apply(key), type);
 				if (in != (Boolean) row[2]) {
-					return EntityType.getKey(type) + (in ? " shouldn't" : " should") + " be among " + key.identifier() + "'s monsters (it has "
+					return EntityType.getKey(type) + (in ? " shouldn't" : " should") + " be among " + key.location() + "'s monsters (it has "
 						+ MonsterSpawns.monstersIn(biome.apply(key)) + ")";
 				}
 			}

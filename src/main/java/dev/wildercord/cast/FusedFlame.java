@@ -6,7 +6,7 @@ import dev.wildercord.spell.SpellPlan;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -68,7 +68,7 @@ final class FusedFlame {
 	private static final int MAX_MAGNETS = 6;
 	/** Bloodboil answers at most this many hurts. */
 	static final int BOILS = 5;
-	private static final Identifier SINKHOLE_ID = Wildercord.id("sinkhole");
+	private static final ResourceLocation SINKHOLE_ID = Wildercord.id("sinkhole");
 
 	/** Registers anything these effects listen for (damage, deaths, ticks); called once at startup. */
 	static void init() {

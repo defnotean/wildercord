@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -29,8 +29,8 @@ import net.minecraft.util.Mth;
  */
 public class BogBubbleRenderer extends EntityRenderer<BogBubble, BogBubbleRenderer.State> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("bog_bubble"), "main");
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/bog_bubble.png");
-	private static final Identifier GLOW = Wildercord.id("textures/entity/bog_bubble_glow.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/bog_bubble.png");
+	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/bog_bubble_glow.png");
 
 	public static class State extends EntityRenderState {
 		public boolean engorged;

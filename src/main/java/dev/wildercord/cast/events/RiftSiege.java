@@ -19,7 +19,7 @@ import dev.wildercord.spell.Runes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -70,7 +70,7 @@ public final class RiftSiege {
 	private static final int TEAR = 0xA060FF;
 	private static final int RIM = 0xEADCFF;
 	private static final double HEIGHT = 3.6;
-	private static final Identifier RIFTCALLER_HEALTH = Wildercord.id("riftcaller_health");
+	private static final ResourceLocation RIFTCALLER_HEALTH = Wildercord.id("riftcaller_health");
 	/** On the Riftcaller, so anything can tell it from the rest. */
 	public static final String RIFTCALLER_TAG = "wildercord.riftcaller";
 	/** On the tear's invisible stand, so nobody can use it. */

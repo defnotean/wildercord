@@ -16,7 +16,7 @@ public record LessonPackInput(int action, int slot, long nonce) implements Custo
     }, b -> new LessonPackInput(b.readVarInt(), b.readVarInt(), b.readLong()));
     @Override public Type<LessonPackInput> type() { return TYPE; }
     public static void init() {
-        PayloadTypeRegistry.serverboundPlay().register(TYPE, CODEC);
+        PayloadTypeRegistry.playC2S().register(TYPE, CODEC);
         ServerPlayNetworking.registerGlobalReceiver(TYPE, (p,c) -> LessonPackCasting.input(c.player(), p.action, p.slot, p.nonce));
     }
 }

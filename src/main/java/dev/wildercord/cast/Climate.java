@@ -127,13 +127,13 @@ public final class Climate {
 		long clock = level.getOverworldClockTime();
 		long time = Math.floorMod(clock, 24000L);
 		int moon = fixedTime ? -1 : ClimateRules.moonPhase(clock);
-		return new ClimateRules.Surroundings(level.dimension().identifier().toString(), !fixedTime, time, level.canSeeSky(head),
+		return new ClimateRules.Surroundings(level.dimension().location().toString(), !fixedTime, time, level.canSeeSky(head),
 			level.isRaining(), level.isThundering(), level.isRainingAt(head), biome.coldEnoughToSnow(feet, level.getSeaLevel()),
 			biome.getBaseTemperature(), !biome.hasPrecipitation(), feet.getY(), ley, crossing, moon, Config.get().power().celestial());
 	}
 
 	public static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Sync.TYPE, Sync.CODEC);
+		PayloadTypeRegistry.playS2C().register(Sync.TYPE, Sync.CODEC);
 		ServerTickEvents.END_SERVER_TICK.register(Climate::tick);
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			CACHE.remove(handler.player.getUUID());

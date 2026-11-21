@@ -11,7 +11,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
 public final class WayHud {
 	private WayHud() {}
 
-	private static final Identifier ID = Wildercord.id("aura_crossroads");
+	private static final ResourceLocation ID = Wildercord.id("aura_crossroads");
 	/** The frames a standard's label was drawn, and the last Way named (the game tests read them). */
 	private static int labelFrames;
 	private static String lastNamed = "";

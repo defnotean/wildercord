@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,7 +60,7 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 	}
 
 	/** Holds the real sprint key a few ticks with the stag standing still and returns how far it went along its heading. */
-	private static double sprint(ClientGameTestContext c, TestServerContext server, KeyMapping key) {
+	private static double sprint(ClientGameTestContext c, TestServerContext server, KeyBinding key) {
 		double from = server.computeOnServer(s -> stag(s).getZ());
 		c.getInput().holdKey(key);
 		c.waitTicks(5);
@@ -101,7 +101,7 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 			});
 			c.waitTicks(5);
 			TestServerContext server = w.getServer();
-			KeyMapping sprintKey = c.computeOnClient(mc -> mc.options.keySprint);
+			KeyBinding sprintKey = c.computeOnClient(mc -> mc.options.keySprint);
 
 			double still = sprint(c, server, sprintKey);
 			check(Math.abs(still) < 0.5, "Below bond 3 the sprint key doesn't dash, moved " + still);

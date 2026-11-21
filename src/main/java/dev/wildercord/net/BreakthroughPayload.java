@@ -15,5 +15,5 @@ public record BreakthroughPayload(int circle, boolean tribulation) implements Cu
 
 	@Override public Type<BreakthroughPayload> type() { return TYPE; }
 
-	public static void init() { PayloadTypeRegistry.clientboundPlay().register(TYPE, CODEC); }
+	public static void init() { PayloadTypeRegistry.playS2C().register(TYPE, CODEC); }
 }

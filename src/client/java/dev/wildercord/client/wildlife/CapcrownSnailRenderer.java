@@ -4,7 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.wildlife.CapcrownSnail;
 import dev.wildercord.wildlife.SnailContent;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -25,7 +25,7 @@ public final class CapcrownSnailRenderer extends WildlifeRenderer<CapcrownSnail,
 	}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(LAYER, CapcrownSnailModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(LAYER, CapcrownSnailModel::createLayer);
 		EntityRendererRegistry.register(SnailContent.CAPCROWN_SNAIL, CapcrownSnailRenderer::new);
 	}
 }

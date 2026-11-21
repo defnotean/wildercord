@@ -32,7 +32,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 				var biomeRegistry=s.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.BIOME);
 				for(var habitat:Map.of(AuraBeasts.STONEHORN,List.of("meadow","windswept_hills","windswept_gravelly_hills","stony_peaks"),AuraBeasts.GALECLAW,List.of("windswept_hills","windswept_forest","jagged_peaks","frozen_peaks","snowy_slopes","grove")).entrySet()) {
 					for(var name:habitat.getValue()) {
-						var biome=biomeRegistry.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.BIOME,net.minecraft.resources.Identifier.withDefaultNamespace(name))).value();
+						var biome=biomeRegistry.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.BIOME,net.minecraft.resources.ResourceLocation.withDefaultNamespace(name))).value();
 						check(dev.wildercord.gametest.compat.GametestCompat.biomeHasMob(biome,MobCategory.CREATURE,habitat.getKey()),"Natural spawn entry exists in "+name);
 					}
 				}

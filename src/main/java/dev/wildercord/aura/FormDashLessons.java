@@ -45,8 +45,8 @@ public final class FormDashLessons {
 	private static final Map<ServerPlayer, Offer> OFFERS = new IdentityHashMap<>();
 	private static long nonces;
 	static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Open.TYPE, Open.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(Accept.TYPE, Accept.CODEC);
+		PayloadTypeRegistry.playS2C().register(Open.TYPE, Open.CODEC);
+		PayloadTypeRegistry.playC2S().register(Accept.TYPE, Accept.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Accept.TYPE, (packet, context) -> accept(context.player(), packet.nonce()));
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> OFFERS.remove(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> OFFERS.clear());

@@ -11,7 +11,7 @@ import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
 import dev.wildercord.spell.WardRules;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -49,7 +49,7 @@ import java.util.List;
 public final class WardEffects {
 	private WardEffects() {}
 
-	private static final Identifier SHIELDWALL = Identifier.fromNamespaceAndPath("wildercord", "fxs_shieldwall");
+	private static final ResourceLocation SHIELDWALL = ResourceLocation.fromNamespaceAndPath("wildercord", "fxs_shieldwall");
 
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, List<LivingEntity> helped, List<LivingEntity> harmed,
 			double power, double duration, int amplify) {

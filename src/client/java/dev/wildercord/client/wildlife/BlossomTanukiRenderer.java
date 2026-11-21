@@ -6,7 +6,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.wildlife.BlossomTanuki;
 import dev.wildercord.wildlife.TanukiContent;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelResolver;
@@ -76,7 +76,7 @@ public final class BlossomTanukiRenderer extends WildlifeRenderer<BlossomTanuki,
 	}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(LAYER, BlossomTanukiModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(LAYER, BlossomTanukiModel::createLayer);
 		EntityRendererRegistry.register(TanukiContent.BLOSSOM_TANUKI, BlossomTanukiRenderer::new);
 	}
 }

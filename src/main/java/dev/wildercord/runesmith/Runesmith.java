@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordItems;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PoiHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -61,7 +61,7 @@ public final class Runesmith {
 	}
 
 	public static void init() {
-		PoiHelper.register(POI.identifier(), 1, 1, SCRIBING_DESK);
+		PoiHelper.register(POI.location(), 1, 1, SCRIBING_DESK);
 		Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, PROFESSION, new VillagerProfession(
 			Component.translatable("entity.wildercord.villager.runesmith"),
 			poi -> poi.is(POI),
@@ -76,7 +76,7 @@ public final class Runesmith {
 				Int2ObjectMap.entry(4, trades(4)),
 				Int2ObjectMap.entry(5, trades(5)))));
 		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_rune"), RandomRuneFunction.MAP_CODEC);
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(output -> output.insertAfter(WildercordItems.TRAINING_DUMMY, SCRIBING_DESK));
 		DuplicateSwap.init();
 		Contracts.init();

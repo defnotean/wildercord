@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -50,8 +50,8 @@ import java.util.WeakHashMap;
  */
 public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("wisp"), "main");
-	private static final Identifier BODY = Wildercord.id("textures/entity/wisp.png");
-	private static final Identifier GLOW = Wildercord.id("textures/entity/wisp_glow.png");
+	private static final ResourceLocation BODY = Wildercord.id("textures/entity/wisp.png");
+	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/wisp_glow.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spell glows. */
 	private static final RenderType GLOW_TYPE = RenderCompat.wispGlowRenderType(GLOW);
@@ -74,7 +74,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	}
 
 	@Override
-	public Identifier getTextureLocation(WispRenderState state) {
+	public ResourceLocation getTextureLocation(WispRenderState state) {
 		return BODY;
 	}
 

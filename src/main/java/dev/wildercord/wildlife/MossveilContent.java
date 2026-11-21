@@ -3,7 +3,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.config.Config;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.biome.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.registries.*;
 import net.minecraft.resources.ResourceKey;
@@ -33,7 +33,7 @@ public final class MossveilContent{
   });
   BiomeModifications.create(Wildercord.id("mossveil_caves")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)),c->{var cfg=Config.get().wildlife();if(cfg.spawns("mossveil_dormouse"))dev.wildercord.compat.McWorldgen.addSpawn(c.getMobSpawnSettings(), MobCategory.CREATURE, DORMOUSE, 1, 1, Math.max(1,(int)Math.ceil(2*cfg.spawnMultiplier())));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:mossveil_dormouse",FieldGuide.Group.WILDLIFE,0x8C9870));
-  CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(o->o.accept(EGG));
-  CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->{o.accept(EGG);o.accept(MossveilCowl.ITEM);});
+  ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o->o.accept(EGG));
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o->{o.accept(EGG);o.accept(MossveilCowl.ITEM);});
  }
 }

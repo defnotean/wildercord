@@ -7,11 +7,11 @@ import dev.wildercord.aura.world.FallenKnight;
 import dev.wildercord.aura.world.ForgedGear;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.util.HashMap;
@@ -29,41 +29,41 @@ public final class AuraWorldClient {
 	public static final ModelLayerLocation FALLEN_KNIGHT = new ModelLayerLocation(Wildercord.id("fallen_knight"), "main");
 
 	/** Each duelist's skin, by its method: its cloak's trim, its sash and its scabbard's tassel in its element's colours. */
-	private static final Map<String, Identifier> DUELIST_SKINS = new HashMap<>();
+	private static final Map<String, ResourceLocation> DUELIST_SKINS = new HashMap<>();
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.ferryman.FerrymanRenderer.LAYER, dev.wildercord.client.ferryman.FerrymanModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.ferryman.FerrymanRenderer.LAYER, dev.wildercord.client.ferryman.FerrymanModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.ferryman.FerrymanContent.FERRYMAN, dev.wildercord.client.ferryman.FerrymanRenderer::new);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.cartographer.GlassCartographerModel.LAYER, dev.wildercord.client.cartographer.GlassCartographerModel::createBodyLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.cartographer.GlassCartographerModel.LAYER, dev.wildercord.client.cartographer.GlassCartographerModel::createBodyLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.cartographer.CartographerContent.CARTOGRAPHER, dev.wildercord.client.cartographer.GlassCartographerRenderer::new);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.hollowbell.HollowBellModel.LAYER, dev.wildercord.client.hollowbell.HollowBellModel::createBodyLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.hollowbell.HollowBellModel.LAYER, dev.wildercord.client.hollowbell.HollowBellModel::createBodyLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.hollowbell.HollowBellContent.BELL, dev.wildercord.client.hollowbell.HollowBellRenderer::new);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.kilnwidow.KilnWidowModel.LAYER, dev.wildercord.client.kilnwidow.KilnWidowModel::createBodyLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.kilnwidow.KilnWidowModel.LAYER, dev.wildercord.client.kilnwidow.KilnWidowModel::createBodyLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.kilnwidow.KilnWidowContent.WIDOW, dev.wildercord.client.kilnwidow.KilnWidowRenderer::new);
-		ModelLayerRegistry.registerModelLayer(DUELIST, DuelistModel::createLayer);
-		ModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(DUELIST, DuelistModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
 		EntityRendererRegistry.register(AuraWorld.DUELIST, AuraWorldClient::duelist);
 		EntityRendererRegistry.register(AuraWorld.SWORD_MASTER, MasterRenderer::new);
 		EntityRendererRegistry.register(AuraWorld.FALLEN_KNIGHT, AuraWorldClient::knight);
-		ModelLayerRegistry.registerModelLayer(GravekeeperRenderer.LAYER,GravekeeperModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(GravekeeperRenderer.LAYER,GravekeeperModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.SwordTombs.KEEPER,GravekeeperRenderer::new);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.SERPENT,SerpentRenderer::new);
-		ModelLayerRegistry.registerModelLayer(BellWardenRenderer.LAYER,BellWardenModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(BellWardenRenderer.LAYER,BellWardenModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.BELL_WARDEN,BellWardenRenderer::new);
-		ModelLayerRegistry.registerModelLayer(AshenStagRenderer.LAYER,AshenStagModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(AshenStagRenderer.LAYER,AshenStagModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.ASHEN_STAG,AshenStagRenderer::new);
-		ModelLayerRegistry.registerModelLayer(MojitoRenderer.LAYER,MojitoModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(MojitoRenderer.LAYER,MojitoModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.MOJITO,MojitoRenderer::new);
-		ModelLayerRegistry.registerModelLayer(HollowMatronRenderer.LAYER,HollowMatronModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(HollowMatronRenderer.LAYER,HollowMatronModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.HOLLOW_MATRON,HollowMatronRenderer::new);
-		ModelLayerRegistry.registerModelLayer(FrostWyrmlingRenderer.LAYER,FrostWyrmlingModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(FrostWyrmlingRenderer.LAYER,FrostWyrmlingModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.FROST_WYRMLING,FrostWyrmlingRenderer::new);
-		ModelLayerRegistry.registerModelLayer(LanternBearerRenderer.LAYER,LanternBearerModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(LanternBearerRenderer.LAYER,LanternBearerModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.LANTERN_BEARER,LanternBearerRenderer::new);
 		var stonehorn=new ModelLayerLocation(Wildercord.id("stonehorn"),"main");
 		var galeclaw=new ModelLayerLocation(Wildercord.id("galeclaw"),"main");
-		ModelLayerRegistry.registerModelLayer(stonehorn,StonehornModel::createLayer);
-		ModelLayerRegistry.registerModelLayer(galeclaw,GaleclawModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(stonehorn,StonehornModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(galeclaw,GaleclawModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.AuraBeasts.STONEHORN,c->new BeastRenderer<>(c,new StonehornModel(c.bakeLayer(stonehorn)),"stonehorn",.65F));
 		EntityRendererRegistry.register(dev.wildercord.aura.world.AuraBeasts.GALECLAW,c->new BeastRenderer<>(c,new GaleclawModel(c.bakeLayer(galeclaw)),"galeclaw",.45F));
 		// An aura-forged weapon says what it carries, under its name.
@@ -75,7 +75,7 @@ public final class AuraWorldClient {
 		});
 	}
 
-	private static Identifier duelistSkin(String method) {
+	private static ResourceLocation duelistSkin(String method) {
 		return DUELIST_SKINS.computeIfAbsent(method, m -> Wildercord.id("textures/entity/duelist/" + m + ".png"));
 	}
 

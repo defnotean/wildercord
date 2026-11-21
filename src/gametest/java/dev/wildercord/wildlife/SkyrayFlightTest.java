@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -80,7 +80,7 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 
 			// The forward key flies it along the rider's look: north, and up while they look up.
 			var from = server.computeOnServer(s -> ray(s).position());
-			KeyMapping forward = c.computeOnClient(mc -> mc.options.keyUp);
+			KeyBinding forward = c.computeOnClient(mc -> mc.options.keyUp);
 			c.getInput().holdKey(forward);
 			c.waitTicks(40);
 			c.takeScreenshot(TestScreenshotOptions.of("skyray_flight").disableCounterPrefix());
@@ -93,7 +93,7 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 			});
 
 			// Sneaking off in the air leaves the rider slow-falling and the skyray riderless.
-			KeyMapping sneak = c.computeOnClient(mc -> mc.options.keyShift);
+			KeyBinding sneak = c.computeOnClient(mc -> mc.options.keyShift);
 			c.getInput().holdKey(sneak);
 			c.waitTicks(3);
 			c.getInput().releaseKey(sneak);

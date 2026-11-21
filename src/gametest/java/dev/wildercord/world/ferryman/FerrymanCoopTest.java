@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +56,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				piece.postProcess(l, l.structureManager(), l.getChunkSource().getGenerator(),
 					net.minecraft.util.RandomSource.create(77), b, new ChunkPos(b.minX() >> 4, b.minZ() >> 4), BlockPos.ZERO);
 				var structure = l.registryAccess().lookupOrThrow(Registries.STRUCTURE)
-					.getOrThrow(ResourceKey.create(Registries.STRUCTURE, Identifier.parse("wildercord:water_last_crossing"))).value();
+					.getOrThrow(ResourceKey.create(Registries.STRUCTURE, ResourceLocation.parse("wildercord:water_last_crossing"))).value();
 				var startChunk = new ChunkPos(b.minX() >> 4, b.minZ() >> 4);
 				var start = new StructureStart(structure, startChunk, 0, new PiecesContainer(List.<StructurePiece>of(piece)));
 				// The lookup path is references-then-starts: every chunk in the footprint points at the

@@ -24,7 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -88,7 +88,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	private static final EntityDataAccessor<Byte> DATA_POSE = SynchedEntityData.defineId(AuraFighter.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Byte> DATA_METHOD = SynchedEntityData.defineId(AuraFighter.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Byte> DATA_STAGE = SynchedEntityData.defineId(AuraFighter.class, EntityDataSerializers.BYTE);
-	private static final Identifier COAT = Wildercord.id("aura_coat");
+	private static final ResourceLocation COAT = Wildercord.id("aura_coat");
 
 	private final float[] pose = new float[FLAGS];
 	private final float[] poseO = new float[FLAGS];

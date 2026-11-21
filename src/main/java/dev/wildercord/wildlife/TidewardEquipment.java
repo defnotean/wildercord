@@ -6,7 +6,7 @@ import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.net.TidewardCue;
 import net.fabricmc.fabric.api.attachment.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.*;
@@ -36,7 +36,7 @@ public final class TidewardEquipment {
  private static AttachmentType<Long> rest(String name){return AttachmentRegistry.create(Wildercord.id(name),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());}
  public static final AttachmentType<Long> WALK_READY=rest("tideward_walk_ready"),SIGHT_READY=rest("tideward_sight_ready");
  public static final AttachmentType<Integer> WALK_PROGRESS=AttachmentRegistry.create(Wildercord.id("tideward_walk_progress"),b -> b.initializer(() -> 0).persistent(Codec.intRange(0,WALK_WINDOW-1)).copyOnDeath());
- private static final Identifier WALK_ID=Wildercord.id("reedwater_walk");
+ private static final ResourceLocation WALK_ID=Wildercord.id("reedwater_walk");
  private static final AttributeModifier WALK_MODIFIER=new AttributeModifier(WALK_ID,.25,AttributeModifier.Operation.ADD_VALUE);
  private static final class Walk {ItemStack worn=ItemStack.EMPTY;ServerLevel world;Vec3 at=Vec3.ZERO;}
  private static final class Sight {ItemStack worn=ItemStack.EMPTY;ServerLevel world;UUID target;int ticks;}
@@ -112,6 +112,6 @@ public final class TidewardEquipment {
  public static void init(){
   ServerTickEvents.END_SERVER_TICK.register(s -> s.getPlayerList().getPlayers().forEach(p -> {walk(p);sight(p);}));
   dev.wildercord.net.ServerDisconnects.register((handler,server) -> removeWalk(handler.player));
-  CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> {o.accept(WADERS);o.accept(SPECTACLES);});
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> {o.accept(WADERS);o.accept(SPECTACLES);});
  }
 }

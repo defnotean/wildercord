@@ -16,7 +16,7 @@ public record ExciseInput(int action, int slot, long nonce) implements CustomPac
     }, b -> new ExciseInput(b.readVarInt(), b.readVarInt(), b.readLong()));
     @Override public Type<ExciseInput> type() { return TYPE; }
     public static void init() {
-        PayloadTypeRegistry.serverboundPlay().register(TYPE, CODEC);
+        PayloadTypeRegistry.playC2S().register(TYPE, CODEC);
         ServerPlayNetworking.registerGlobalReceiver(TYPE, (p,c) -> ExciseCasting.input(c.player(), p.action, p.slot, p.nonce));
     }
 }

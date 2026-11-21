@@ -6,7 +6,7 @@ import dev.wildercord.familiar.Familiars;
 import dev.wildercord.familiar.WispRules;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -16,7 +16,7 @@ public final class FamiliarClient {
 	private FamiliarClient() {}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(WispRenderer.LAYER, WispModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(WispRenderer.LAYER, WispModel::createLayer);
 		EntityRendererRegistry.register(FamiliarContent.WISP, WispRenderer::new);
 		// Only on the game's thread: creative search builds its index from tooltips in the background, and the
 		// player's familiars aren't safe to read from there.

@@ -92,7 +92,7 @@ public final class ScavengerFoodProbe {
 
  private static JsonObject snapshot(Session session){
   var actor=(Galeclaw)session.actor;var level=(ServerLevel)session.world;var row=new JsonObject();
-  row.addProperty("serverThread",level.getServer().isSameThread());row.addProperty("gameTime",level.getGameTime());row.addProperty("overworldClockTime",level.getOverworldClockTime());row.addProperty("dimension",level.dimension().identifier().toString());
+  row.addProperty("serverThread",level.getServer().isSameThread());row.addProperty("gameTime",level.getGameTime());row.addProperty("overworldClockTime",level.getOverworldClockTime());row.addProperty("dimension",level.dimension().location().toString());
   row.addProperty("raining",level.isRaining());row.addProperty("difficulty",level.getDifficulty().toString());row.addProperty("beastsEnabled",Config.get().auraWorld().auraBeasts());
   row.add("actor",entity(session,actor));row.add("fixtureFood",entity(session,(Entity)session.food));row.addProperty("fixtureDistanceSqr",actor.position().distanceToSqr(((Entity)session.food).position()));
   row.addProperty("pose",actor.pose());row.addProperty("left",actor.left);row.addProperty("calm",actor.calm);row.addProperty("aggression",actor.aggression);row.addProperty("fedUntil",actor.fedUntil());row.addProperty("hungry",HighlandRules.hungry(level.getGameTime(),actor.fedUntil()));

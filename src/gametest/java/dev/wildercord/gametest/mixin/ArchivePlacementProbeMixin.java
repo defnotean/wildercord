@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class ArchivePlacementProbeMixin {
 	@WrapMethod(method = "placeStructure", require = 1, expect = 1, allow = 1)
 	private static int wildercord$place(CommandSourceStack source, Holder.Reference<Structure> structure, BlockPos origin, Operation<Integer> original) throws CommandSyntaxException {
-		var scope = ArchivePlacementProbe.placement(source.getLevel(), structure.key().identifier().toString(), origin);
+		var scope = ArchivePlacementProbe.placement(source.getLevel(), structure.key().location().toString(), origin);
 		Integer result = null;
 		try { result = original.call(source, structure, origin); return result; }
 		finally { scope.finish(result, source.getLevel()); }

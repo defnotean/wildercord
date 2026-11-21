@@ -20,7 +20,7 @@ public class DrainhouseFeature extends SimpleWorldFeature {
  /** Narrow three-room embedded station; guarded ordinary terrain only, with real existing cave access. */
  static final int MAX_CARVES=256,MAX_DECORATION=96,MAX_SUPPORTS=32,MAX_CLEARS=MAX_DECORATION;
  private static final Set<Block> ORES=Set.of(Blocks.COAL_ORE,Blocks.DEEPSLATE_COAL_ORE,Blocks.COPPER_ORE,Blocks.DEEPSLATE_COPPER_ORE,Blocks.IRON_ORE,Blocks.DEEPSLATE_IRON_ORE,Blocks.GOLD_ORE,Blocks.DEEPSLATE_GOLD_ORE,Blocks.LAPIS_ORE,Blocks.DEEPSLATE_LAPIS_ORE,Blocks.REDSTONE_ORE,Blocks.DEEPSLATE_REDSTONE_ORE,Blocks.DIAMOND_ORE,Blocks.DEEPSLATE_DIAMOND_ORE,Blocks.EMERALD_ORE,Blocks.DEEPSLATE_EMERALD_ORE);
- private static final net.minecraft.tags.TagKey<Block> EXTRA_ORES=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.BLOCK,net.minecraft.resources.Identifier.parse("c:ores"));
+ private static final net.minecraft.tags.TagKey<Block> EXTRA_ORES=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.BLOCK,net.minecraft.resources.ResourceLocation.parse("c:ores"));
  private static boolean ore(BlockState s){return ORES.contains(s.getBlock()) || s.is(EXTRA_ORES);}
  private static boolean ordinaryRock(BlockState s){return !ore(s) && (s.is(net.minecraft.tags.BlockTags.BASE_STONE_OVERWORLD) || s.is(Blocks.MOSS_BLOCK) || s.is(Blocks.CLAY) || s.is(Blocks.DRIPSTONE_BLOCK));}
  private static boolean naturalFoundation(WorldGenLevel l,BlockPos p){return foundation(l,p) && (ordinaryRock(l.getBlockState(p)) || ore(l.getBlockState(p)));}

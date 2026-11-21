@@ -5,7 +5,7 @@ import dev.wildercord.compat.McBlocksAndItems;
 import dev.wildercord.aura.BreathingMethod;
 import dev.wildercord.aura.BreathingMethods;
 import dev.wildercord.spell.FieldGuide;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
@@ -13,13 +13,13 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.ItemGroups;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -145,8 +145,8 @@ public final class AuraWorld {
 		// Into the field guide: the duelist among the wanderers, the knight among the monsters.
 		FieldGuide.add(new FieldGuide.Entry("wildercord:duelist", FieldGuide.Group.WANDERER, 0xE8D8B0));
 		FieldGuide.add(new FieldGuide.Entry("wildercord:fallen_knight", FieldGuide.Group.MONSTER, 0x9AA8D0));
-		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
-		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
+		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> {
 			for (BreathingMethod method : BreathingMethods.BUILT_IN) {
 				output.accept(ManualPageItem.of(MANUAL_PAGE, method.id()));
 			}
@@ -169,7 +169,7 @@ public final class AuraWorld {
 			}
 			SPAWN_EGGS.forEach(output::accept);
 		});
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> SPAWN_EGGS.forEach(output::accept));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(output -> SPAWN_EGGS.forEach(output::accept));
 		ForgedGear.init();
 		DuelistDuels.init();
 		DuelistSpawner.init();
@@ -177,7 +177,7 @@ public final class AuraWorld {
 	}
 
 	/** The id of a world-of-aura texture or model. */
-	public static Identifier id(String path) {
+	public static ResourceLocation id(String path) {
 		return Wildercord.id(path);
 	}
 }

@@ -524,7 +524,7 @@ public final class PlayerAffinities {
 	}
 
 	public static void init() {
-		PayloadTypeRegistry.clientboundPlay().register(Rise.TYPE, Rise.CODEC);
+		PayloadTypeRegistry.playS2C().register(Rise.TYPE, Rise.CODEC);
 		PlayerBlockBreakEvents.AFTER.register(PlayerAffinities::afterBreak);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> afterDamage(entity, source, damage));
 		ServerLivingEntityEvents.AFTER_DEATH.register(PlayerAffinities::afterDeath);

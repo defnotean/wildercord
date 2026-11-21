@@ -3,7 +3,7 @@ package dev.wildercord.world.kilnwidow;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.spell.FieldGuide;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.*;
@@ -44,7 +44,7 @@ public final class KilnWidowContent {
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(WIDOW, KilnWidow.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:kiln_widow", FieldGuide.Group.MONSTER, 0xC86B3C));
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(o -> {
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(o -> {
 			o.accept(HEARTSTONE_ITEM);
 			o.accept(COMPASS);
 		});

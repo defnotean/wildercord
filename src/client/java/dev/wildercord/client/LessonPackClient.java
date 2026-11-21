@@ -9,7 +9,7 @@ import dev.wildercord.spell.RelayInputRules;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyBinding;
 import net.minecraft.client.Minecraft;
 
 /** Fresh physical edges for the pack lessons, and the owner's readout of the object they placed. */
@@ -21,7 +21,7 @@ public final class LessonPackClient {
     private static net.minecraft.client.multiplayer.ClientLevel world;
     private static boolean playing;
     private static long nonce;
-    private static KeyMapping lastBinding;
+    private static KeyBinding lastBinding;
 
     public static void beginTick(Minecraft client) {
         boolean active = client.player != null && client.player.isAlive() && !client.player.isSpectator() && client.screen == null && client.isWindowActive();
@@ -33,7 +33,7 @@ public final class LessonPackClient {
         playing = active;
     }
     /** Presses only: a placed gate, thread or rod outlives the key, so each press is sent whole and focus loss sends nothing. */
-    public static boolean key(Minecraft client, KeyMapping binding, int requested) {
+    public static boolean key(Minecraft client, KeyBinding binding, int requested) {
         int index = requested + 1;
         boolean down = binding.isDown(), previous = DOWN[index];
         DOWN[index] = down;

@@ -21,7 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -63,18 +63,18 @@ public final class Aura {
 	/** Aura projected off a blade (the slash and a Thunder spark): armour applies, and against players the spell defences do. */
 	public static final ResourceKey<DamageType> DAMAGE = ResourceKey.create(Registries.DAMAGE_TYPE, Wildercord.id("aura"));
 
-	private static final Identifier REACH = Wildercord.id("aura_reach");
-	private static final Identifier SWEEP = Wildercord.id("aura_sweep");
-	private static final Identifier STEADY = Wildercord.id("aura_stone");
-	private static final Identifier HASTE = Wildercord.id("aura_hourglass");
-	private static final Identifier SWIFT = Wildercord.id("aura_gale");
+	private static final ResourceLocation REACH = Wildercord.id("aura_reach");
+	private static final ResourceLocation SWEEP = Wildercord.id("aura_sweep");
+	private static final ResourceLocation STEADY = Wildercord.id("aura_stone");
+	private static final ResourceLocation HASTE = Wildercord.id("aura_hourglass");
+	private static final ResourceLocation SWIFT = Wildercord.id("aura_gale");
 
 	/**
 	 * A phase of {@code ServerPlayerEvents.AFTER_RESPAWN} after the default one. Fabric copies a player's copy-on-death attachments to
 	 * the new body in the default phase, and not always before a mod's own listener there: anything that changes such an attachment on
 	 * the new body (the aura held emptied, an awakening ended) must run after the copy, in this phase, or the copy undoes it.
 	 */
-	public static final Identifier AFTER_COPY = Wildercord.id("after_attachments_copied");
+	public static final ResourceLocation AFTER_COPY = Wildercord.id("after_attachments_copied");
 
 	// ------------------------------------------------------------------ reading (both sides)
 
@@ -370,7 +370,7 @@ public final class Aura {
 
 	// ------------------------------------------------------------------ what each stage and method gives
 
-	private static void modifier(ServerPlayer player, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation operation) {
+	private static void modifier(ServerPlayer player, Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
 		AttributeInstance instance = player.getAttribute(attribute);
 		if (instance == null) {
 			return;
@@ -510,7 +510,7 @@ public final class Aura {
 	public static void init() {
 		AuraAttachments.init();
 		AuraPresence.init();
-		PayloadTypeRegistry.serverboundPlay().register(Key.TYPE, Key.CODEC);
+		PayloadTypeRegistry.playC2S().register(Key.TYPE, Key.CODEC);
 		AuraSense.init();
 		AuraStep.init();
 		AuraDominion.init();

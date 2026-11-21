@@ -6,7 +6,7 @@ import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.net.TidewardCue;
 import net.fabricmc.fabric.api.attachment.v1.*;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -111,6 +111,6 @@ public final class TidewardSurvey {
    var p=handler.player;long remaining=p.getAttachedOrElse(READY,0L)-TidewardEquipment.clock(p);
    if(remaining>0)p.getCooldowns().addCooldown(new ItemStack(ITEM),(int)Math.min(REST,remaining));
   });
-  CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(ITEM));
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(ITEM));
  }
 }

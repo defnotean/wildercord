@@ -240,13 +240,13 @@ public final class WildercordNetworking {
 			SPELLBOOK.clear();
 			CASTING.clear();
 		});
-		PayloadTypeRegistry.clientboundPlay().register(ScreenFx.TYPE, ScreenFx.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(FormationPayload.TYPE, FormationPayload.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(LifeOutcomePayload.TYPE, LifeOutcomePayload.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(TidewardCue.TYPE, TidewardCue.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(NotebookPayload.TYPE, NotebookPayload.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(EditPassive.TYPE, EditPassive.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(TogglePassive.TYPE, TogglePassive.CODEC);
+		PayloadTypeRegistry.playS2C().register(ScreenFx.TYPE, ScreenFx.CODEC);
+		PayloadTypeRegistry.playS2C().register(FormationPayload.TYPE, FormationPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(LifeOutcomePayload.TYPE, LifeOutcomePayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(TidewardCue.TYPE, TidewardCue.CODEC);
+		PayloadTypeRegistry.playS2C().register(NotebookPayload.TYPE, NotebookPayload.CODEC);
+		PayloadTypeRegistry.playC2S().register(EditPassive.TYPE, EditPassive.CODEC);
+		PayloadTypeRegistry.playC2S().register(TogglePassive.TYPE, TogglePassive.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(TogglePassive.TYPE, (payload, context) -> {
 			if (allowed(context)) {
 				SpellCaster.togglePassive(context.player(), payload.slot());
@@ -261,9 +261,9 @@ public final class WildercordNetworking {
 				context.player().sendOverlayMessage(problem.copy().withStyle(net.minecraft.ChatFormatting.RED));
 			}
 		});
-		PayloadTypeRegistry.serverboundPlay().register(CastSpell.TYPE, CastSpell.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(SelectSpell.TYPE, SelectSpell.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(EditSpell.TYPE, EditSpell.CODEC);
+		PayloadTypeRegistry.playC2S().register(CastSpell.TYPE, CastSpell.CODEC);
+		PayloadTypeRegistry.playC2S().register(SelectSpell.TYPE, SelectSpell.CODEC);
+		PayloadTypeRegistry.playC2S().register(EditSpell.TYPE, EditSpell.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(CastSpell.TYPE, (payload, context) -> {
 			if (CASTING.allow(context.player().getUUID(), context.server().getTickCount())) {
 				SpellCaster.cast(context.player(), payload.spell());
@@ -274,17 +274,17 @@ public final class WildercordNetworking {
 				SpellCaster.select(context.player(), payload.spell());
 			}
 		});
-		PayloadTypeRegistry.serverboundPlay().register(ChargeSpell.TYPE, ChargeSpell.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(RenameSpell.TYPE, RenameSpell.CODEC);
-		PayloadTypeRegistry.serverboundPlay().register(InscribeScroll.TYPE, InscribeScroll.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(Discovery.TYPE, Discovery.CODEC);
-		PayloadTypeRegistry.clientboundPlay().register(LeySeed.TYPE, LeySeed.CODEC);
+		PayloadTypeRegistry.playC2S().register(ChargeSpell.TYPE, ChargeSpell.CODEC);
+		PayloadTypeRegistry.playC2S().register(RenameSpell.TYPE, RenameSpell.CODEC);
+		PayloadTypeRegistry.playC2S().register(InscribeScroll.TYPE, InscribeScroll.CODEC);
+		PayloadTypeRegistry.playS2C().register(Discovery.TYPE, Discovery.CODEC);
+		PayloadTypeRegistry.playS2C().register(LeySeed.TYPE, LeySeed.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ChargeSpell.TYPE, (payload, context) -> {
 			if (CASTING.allow(context.player().getUUID(), context.server().getTickCount())) {
 				dev.wildercord.cast.Charging.request(context.player(), payload.spell(), payload.start());
 			}
 		});
-		PayloadTypeRegistry.serverboundPlay().register(TraceSpell.TYPE, TraceSpell.CODEC);
+		PayloadTypeRegistry.playC2S().register(TraceSpell.TYPE, TraceSpell.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(TraceSpell.TYPE, (payload, context) -> {
 			if (CASTING.allow(context.player().getUUID(), context.server().getTickCount())) {
 				dev.wildercord.cast.Charging.trace(context.player(), payload.chargeStart(), payload.accuracy());
@@ -301,7 +301,7 @@ public final class WildercordNetworking {
 				dev.wildercord.content.SpellScrollItem.inscribe(context.player(), payload.spell());
 			}
 		});
-		PayloadTypeRegistry.serverboundPlay().register(LoadoutRequest.TYPE, LoadoutRequest.CODEC);
+		PayloadTypeRegistry.playC2S().register(LoadoutRequest.TYPE, LoadoutRequest.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(LoadoutRequest.TYPE, (payload, context) -> {
 			if (!allowed(context)) {
 				return;
@@ -312,14 +312,14 @@ public final class WildercordNetworking {
 					: result.message().copy().withStyle(net.minecraft.ChatFormatting.RED));
 			}
 		});
-		PayloadTypeRegistry.serverboundPlay().register(OpenBackpack.TYPE, OpenBackpack.CODEC);
+		PayloadTypeRegistry.playC2S().register(OpenBackpack.TYPE, OpenBackpack.CODEC);
 		// Limited like the rest: each opening closes and reopens the menu, reading and writing the backpack.
 		ServerPlayNetworking.registerGlobalReceiver(OpenBackpack.TYPE, (payload, context) -> {
 			if (allowed(context)) {
 				dev.wildercord.backpack.Backpacks.openWorn(context.player());
 			}
 		});
-		PayloadTypeRegistry.serverboundPlay().register(ToggleSilk.TYPE, ToggleSilk.CODEC);
+		PayloadTypeRegistry.playC2S().register(ToggleSilk.TYPE, ToggleSilk.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ToggleSilk.TYPE, (payload, context) -> {
 			if (allowed(context)) {
 				dev.wildercord.aura.world.WeaversSilk.toggle(context.player());

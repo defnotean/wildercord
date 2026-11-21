@@ -6,7 +6,7 @@ import dev.wildercord.wildlife.BrookOtter;
 import dev.wildercord.wildlife.OtterContent;
 import dev.wildercord.wildlife.OtterRules;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -44,7 +44,7 @@ public final class BrookOtterRenderer extends WildlifeRenderer<BrookOtter, Brook
 	}
 
 	public static void init() {
-		ModelLayerRegistry.registerModelLayer(LAYER, BrookOtterModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(LAYER, BrookOtterModel::createLayer);
 		EntityRendererRegistry.register(OtterContent.BROOK_OTTER, BrookOtterRenderer::new);
 	}
 }

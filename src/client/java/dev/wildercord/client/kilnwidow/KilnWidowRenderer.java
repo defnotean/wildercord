@@ -9,15 +9,15 @@ import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import static dev.wildercord.world.kilnwidow.KilnWidowRules.*;
 
 public final class KilnWidowRenderer extends dev.wildercord.client.compat.CullableMobRenderer<KilnWidow, KilnWidowRenderState, KilnWidowModel> {
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/kiln_widow.png");
-	private static final Identifier GLOW = Wildercord.id("textures/entity/kiln_widow_glow.png");
-	private static final Identifier MARK = Wildercord.id("textures/entity/kiln_widow_mark.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/kiln_widow.png");
+	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/kiln_widow_glow.png");
+	private static final ResourceLocation MARK = Wildercord.id("textures/entity/kiln_widow_mark.png");
 
 	public KilnWidowRenderer(EntityRendererProvider.Context context) {
 		super(context, new KilnWidowModel(context.bakeLayer(KilnWidowModel.LAYER)), 1.3F);
@@ -31,7 +31,7 @@ public final class KilnWidowRenderer extends dev.wildercord.client.compat.Cullab
 	}
 
 	@Override public KilnWidowRenderState createRenderState() { return new KilnWidowRenderState(); }
-	@Override public Identifier getTextureLocation(KilnWidowRenderState state) { return TEXTURE; }
+	@Override public ResourceLocation getTextureLocation(KilnWidowRenderState state) { return TEXTURE; }
 	@Override protected float getFlipDegrees() { return 0; }
 	@Override protected boolean shouldRenderEntity(KilnWidow e, Frustum frustum, double x, double y, double z, float partial) {
 		return superShouldRenderEntity(e, frustum, x, y, z, partial) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));

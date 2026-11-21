@@ -76,7 +76,7 @@ public final class MoonreedSourceProbe {
    var out=new JsonObject();out.addProperty("event",event);out.addProperty("elapsedTicks",level.getGameTime()-s.started);
    out.addProperty("entityTick",moth.tickCount);out.addProperty("id",moth.getId());out.addProperty("uuid",moth.getUUID().toString());
    out.addProperty("alive",moth.isAlive());out.addProperty("removed",moth.isRemoved());out.addProperty("sameWorld",moth.level()==level);
-   out.addProperty("world",moth.level().dimension().identifier().toString());out.addProperty("tracked",level.getEntity(moth.getUUID())==moth);
+   out.addProperty("world",moth.level().dimension().location().toString());out.addProperty("tracked",level.getEntity(moth.getUUID())==moth);
    out.addProperty("sourceChunkLoaded",moth.level().hasChunkAt(here));out.add("position",vector(moth.position()));out.add("velocity",vector(moth.getDeltaMovement()));
    out.addProperty("rootDistanceSquared",moth.position().distanceToSqr(Vec3.atCenterOf(root).add(0,.4,0)));
    out.addProperty("rootInSearchBox",Math.abs(here.getX()-root.getX())<=3&&Math.abs(here.getY()-root.getY())<=1&&Math.abs(here.getZ()-root.getZ())<=3);

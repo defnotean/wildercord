@@ -2,7 +2,7 @@ package dev.wildercord.wildlife;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.spell.FieldGuide;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,8 +18,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.ItemGroups;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
@@ -82,13 +82,13 @@ public final class ShrineCatContent {
 		FabricDefaultAttributeRegistry.register(SAKURA_VILLAGER, SakuraVillager.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:shrine_cat", FieldGuide.Group.WILDLIFE, 0xE6A15C));
 		FieldGuide.add(new FieldGuide.Entry("wildercord:sakura_villager", FieldGuide.Group.WANDERER, 0xF2B8C6));
-		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
-		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
+		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> {
 			output.accept(CAT_BELL_CHARM);
 			output.accept(SHRINE_CAT_EGG);
 			output.accept(SAKURA_VILLAGER_EGG);
 		});
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> {
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(output -> {
 			output.accept(SHRINE_CAT_EGG);
 			output.accept(SAKURA_VILLAGER_EGG);
 		});

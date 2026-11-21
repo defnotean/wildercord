@@ -2,7 +2,7 @@ package dev.wildercord.aura;
 
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -43,7 +43,7 @@ public final class BladeSmithing {
 	}
 
 	public static void init() {
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(output -> output.accept(MASTER_STEEL));
 	}
 
