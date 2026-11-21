@@ -40,7 +40,7 @@ public class ResinGlob extends ThrowableItemProjectile {
 	@Override
 	public void handleEntityEvent(byte id) {
 		if (id == 3) {
-			ItemParticleOption resin = new ItemParticleOption(ParticleTypes.ITEM, ItemStack.fromNonEmptyStack(new ItemStack(getDefaultItem())));
+			ItemParticleOption resin = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(getDefaultItem()));
 			for (int i = 0; i < 12; i++) {
 				level().addParticle(resin, getX(), getY(), getZ(), (random.nextDouble() - 0.5) * 0.2, random.nextDouble() * 0.12,
 					(random.nextDouble() - 0.5) * 0.2);

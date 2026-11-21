@@ -64,7 +64,7 @@ public final class ArenaTrees {
 	}
 
 	public static void init() {
-		ServerChunkEvents.CHUNK_LOAD.register((level, chunk, fresh) -> {
+		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
 			if (chunk.getAllReferences().keySet().stream().anyMatch(ArenaTrees::dungeon)) {
 				WAITING.add(Map.entry(level.dimension(), chunk.getPos().asLong()));
 			}

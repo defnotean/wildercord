@@ -138,7 +138,7 @@ public final class Residues {
 		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
 		// 1.21.11 has no full-chunk-status hook: chunk load is when a resident chunk is accessible again.
 			Record record = level.getDataStorage().get(Record.TYPE);
-			long key = chunk.getPos().asLong();
+			long key = ChunkPos.asLong(chunk.getPos().x, chunk.getPos().z);
 			if (record != null && record.ledger.inChunk(key) > 0) {
 				// Include scheduled records: one may become due before this future completes.
 				LOADED.computeIfAbsent(level.dimension(), k -> new LinkedHashSet<>()).add(key);

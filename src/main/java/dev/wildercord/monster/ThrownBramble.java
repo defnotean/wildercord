@@ -37,7 +37,7 @@ public class ThrownBramble extends ThrowableItemProjectile {
 	@Override
 	public void handleEntityEvent(byte id) {
 		if (id == 3) {
-			ItemParticleOption leaves = new ItemParticleOption(ParticleTypes.ITEM, ItemStack.fromNonEmptyStack(new ItemStack(getDefaultItem())));
+			ItemParticleOption leaves = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(getDefaultItem()));
 			for (int i = 0; i < 10; i++) {
 				level().addParticle(leaves, getX(), getY(), getZ(), (random.nextDouble() - 0.5) * 0.15, random.nextDouble() * 0.15,
 					(random.nextDouble() - 0.5) * 0.15);

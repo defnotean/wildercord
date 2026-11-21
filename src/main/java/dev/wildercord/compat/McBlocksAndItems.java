@@ -145,12 +145,12 @@ public final class McBlocksAndItems {
 
 	/** Copies all slots held inside an {@link ItemContainerContents} component. */
 	public static List<ItemStack> containerItems(@Nullable ItemContainerContents contents) {
-		return contents == null ? List.of() : contents.allItemsCopyStream().toList();
+		return contents == null ? List.of() : contents.stream().map(ItemStack::copy).toList();
 	}
 
 	/** Number of slot entries inside an {@link ItemContainerContents} component. */
 	public static int containerCount(@Nullable ItemContainerContents contents) {
-		return contents == null ? 0 : contents.allItemsCopyStream().toList().size();
+		return contents == null ? 0 : contents.stream().map(ItemStack::copy).toList().size();
 	}
 
 	/** Copies all stacks held inside a {@link BundleContents} component. */
@@ -160,7 +160,7 @@ public final class McBlocksAndItems {
 
 	/** Replaces the items inside a {@link BundleContents} with {@code items}. */
 	public static BundleContents bundleWith(BundleContents previous, List<ItemStack> items) {
-		return new BundleContents(items.stream().map(ItemStack::fromNonEmptyStack).toList());
+		return new BundleContents(items.stream().map(s -> s.isEmpty() ? ItemStack.EMPTY : s.copy()).toList());
 	}
 
 	/** Counts matching items across inventory and crafting grid without removing them. */
