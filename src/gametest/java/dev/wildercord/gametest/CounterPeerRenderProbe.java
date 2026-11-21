@@ -131,7 +131,7 @@ public final class CounterPeerRenderProbe {
         DeltaTracker delta=new DeltaTracker(){public float getGameTimeDeltaTicks(){return .5F;}public float getGameTimeDeltaPartialTick(boolean paused){return .5F;}public float getRealtimeDeltaTicks(){return .5F;}};
         try{
             scope=enter((TestScreenshotCommonOptionsImpl<?>)options,mc);
-            mc.gameRenderer.updateCamera(delta);extractBegin(delta);boolean extracted=false;
+            dev.wildercord.gametest.compat.GametestCompat.updateCamera(mc.gameRenderer, delta);extractBegin(delta);boolean extracted=false;
             try{mc.gameRenderer.render(delta,true);extracted=true;}finally{extractEnd(extracted);}
             renderBegin();boolean rendered=false;try{GametestCompat.renderFrame(mc,delta);rendered=true;}finally{renderEnd(rendered);}
             screenshot(mc.getMainRenderTarget(),image->{try(image){
@@ -509,7 +509,7 @@ public final class CounterPeerRenderProbe {
     public static void fallbackViewItem(FallbackView call,ItemStackRenderState item,Matrix4fc actual){
         var s=rendering();if(s==null||call==null)return;var source=s.sources.get(call.avatar);
         var held=call.hands.mainHandItem();
-        if(source==null||!CounterPeerRenderMath.item(id(s,call.item),id(s,item),call.dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar).is(Items.DIAMOND_SWORD),
+        if(source==null||!CounterPeerRenderMath.item(id(s,call.item),id(s,item),dev.wildercord.client.compat.RenderCompat.mainHandStack(call.avatar).is(Items.DIAMOND_SWORD),
             offhand(call.avatar).isEmpty(),ItemStack.isSameItemSameComponents(source.main(),held))||item.isEmpty())s.token.reject("wrong_native_item");
         if(!call.transform)s.token.reject("skipped_classic_transform");
         pass(s,"native_item",call.avatar,call.hands.rendererObject(),item,CounterPeerRenderMath.compare("actual_native_item_matrix",CounterPeerRenderMath.values(call.expectedItem),CounterPeerRenderMath.values(actual)),false,true);

@@ -96,6 +96,16 @@ public final class GametestCompat {
 		mc.gameRenderer.render(delta, true);
 	}
 
+	/** 1.21.10 has no GameRenderer.updateCamera: tick() refreshes the main camera from the camera entity. */
+	public static void updateCamera(GameRenderer gameRenderer, DeltaTracker delta) {
+		gameRenderer.tick();
+	}
+
+	/** 1.21.10 dropped the client-loaded tracking, so a ticked, live player stands in for the loaded client. */
+	public static boolean clientLoaded(ServerPlayer player) {
+		return player.tickCount > 0 && !player.isRemoved();
+	}
+
 	public static void extractMainCamera(GameRenderer gameRenderer, CameraRenderState camera, DeltaTracker delta) {
 		// 1.21.11 has no MainCamera.extractRenderState: the level render state carries the camera's, filled by the last frame.
 		// 1.21.10 has neither, so copy the live camera's pose into the state.

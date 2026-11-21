@@ -79,7 +79,7 @@ public final class CounterPeerAdmissionProbe {
         Watch w=current;Frame previous=REQUEST.get();Frame frame=live(w)?new Frame(w,actor,payload):null;
         if(frame!=null)w.trace.observe(()->{require(previous==null,"No nested request can borrow the original receipt");
             w.requestTick=actor.level().getGameTime();w.requestMarks=payload.marks().toString();w.trace.entered(payload,fields(payload),actor,actor.level(),actor.connection);
-            require(actor.connection.player==actor&&actor.level().getServer().getPlayerList().getPlayer(actor.getUUID())==actor&&actor.isAlive()&&actor.connection.hasClientLoaded(),"Original connected native server body");
+            require(actor.connection.player==actor&&actor.level().getServer().getPlayerList().getPlayer(actor.getUUID())==actor&&actor.isAlive()&&dev.wildercord.gametest.compat.GametestCompat.clientLoaded(actor),"Original connected native server body");
             w.pendingAtEntry=identity(pending(actor));require(w.requestTick>=w.armedTick&&AuraGuard.caught(actor)==w.caught&&pending(actor)==null&&!MastersArts.committed(actor),"Original caught guard and fresh action at request entry");});
         REQUEST.set(frame);
         try{if(frame==null){original.run();return;}w.trace.invoke(original,thrown->{w.trace.observe(()->{

@@ -394,7 +394,7 @@ public final class CrimsonMoonRenderProbe {
     public static void fallbackViewItem(FallbackView call,ItemStackRenderState item,Matrix4fc actual){
         var s=rendering();if(s==null||call==null)return;var source=s.sources.get(call.avatar);
         var held=call.hands.mainHandItem();
-        if(source==null||!CrimsonMoonRenderMath.item(id(s,call.item),id(s,item),call.dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar).is(Items.DIAMOND_SWORD),
+        if(source==null||!CrimsonMoonRenderMath.item(id(s,call.item),id(s,item),dev.wildercord.client.compat.RenderCompat.mainHandStack(call.avatar).is(Items.DIAMOND_SWORD),
             offhand(call.avatar).isEmpty(),ItemStack.isSameItemSameComponents(source.main(),held))||item.isEmpty())s.token.reject("wrong_native_item");
         if(!call.transform)s.token.reject("skipped_classic_transform");
         pass(s,"native_item",call.avatar,call.hands.rendererObject(),item,CrimsonMoonRenderMath.compare("actual_native_item_matrix",CrimsonMoonRenderMath.values(call.expectedItem),CrimsonMoonRenderMath.values(actual)),false,true);

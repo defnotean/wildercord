@@ -238,7 +238,7 @@ public final class MastersNpcCaptureProbe {
 					mc.level.getLevelData().setGameTime(gameTime);
 				}
 			}
-			mc.gameRenderer.updateCamera(DELTA); mc.gameRenderer.render(DELTA, true); dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA);
+			dev.wildercord.gametest.compat.GametestCompat.updateCamera(mc.gameRenderer, DELTA); mc.gameRenderer.render(DELTA, true); dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA);
 			
 			Vec3 eye = mc.gameRenderer.getMainCamera().position();
 			ProjectedBounds capturedBodyBounds = articulated ? bodyBounds.snapshot() : null;

@@ -150,7 +150,7 @@ public final class MastersCaptureProbe {
 				}
 			}
 			BraceNullCaptureProbe.begin(mc, name);
-			mc.gameRenderer.updateCamera(DELTA);
+			dev.wildercord.gametest.compat.GametestCompat.updateCamera(mc.gameRenderer, DELTA);
 			mc.gameRenderer.render(DELTA, true);
 			BraceNullCaptureProbe.rendering(true);
 			try { dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA); } finally { BraceNullCaptureProbe.rendering(false); }
