@@ -110,8 +110,7 @@ public final class Targets {
 		if (!(caster instanceof Player)) {
 			return playerPet(entity)
 				|| entity instanceof AbstractGolem
-				|| caster instanceof Mob mob && mob.getTarget() == entity
-				
+				|| caster instanceof Mob mob && mob.getTarget() == entity;
 		}
 		// Another player's pet is as safe as they are: only with pvp on.
 		if (playerPet(entity)) {
