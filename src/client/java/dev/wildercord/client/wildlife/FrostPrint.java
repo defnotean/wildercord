@@ -28,7 +28,7 @@ final class FrostPrint extends McQuadParticle {
 	}
 
 	private static TextureAtlasSprite sprite() {
-		return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_PARTICLES).apply(Wildercord.id("frost_print"));
+		return dev.wildercord.client.compat.RenderCompat.atlas(TextureAtlas.LOCATION_PARTICLES).apply(Wildercord.id("frost_print"));
 	}
 
 	@Override

@@ -278,7 +278,7 @@ def write(g):
     g.write_json(g.ASSETS / 'models/item/bank_surveyors_line_held.json', held_spool())
     # Actual26.3 spyglass descriptor verifies these display contexts and separate held model.
     g.write_json(g.ASSETS / 'items/bank_surveyors_line.json', {'model': {'type': 'minecraft:select', 'property': 'minecraft:display_context',
-        'cases': [{'when': ['gui', 'ground', 'fixed', 'on_shelf'], 'model': {'type': 'minecraft:model', 'model': 'wildercord:item/bank_surveyors_line'}}],
+        'cases': [{'when': ['gui', 'ground', 'fixed'], 'model': {'type': 'minecraft:model', 'model': 'wildercord:item/bank_surveyors_line'}}],
         'fallback': {'type': 'minecraft:model', 'model': 'wildercord:item/bank_surveyors_line_held'}}})
     g.write_json(g.DATA / 'tags/item/repairs_reedwater.json', {'replace': False, 'values': ['wildercord:moonreed_floss']})
     g.write_json(g.DATA / 'tags/item/repairs_dewglass.json', {'replace': False, 'values': ['minecraft:glass_pane']})

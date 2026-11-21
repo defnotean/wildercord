@@ -166,13 +166,13 @@ public class SpellCircleParticle extends McQuadParticle implements SigilGroup.Ex
 	}
 
 	static TextureAtlasSprite particleSprite(String path) {
-		return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_PARTICLES).apply(Wildercord.id(path));
+		return dev.wildercord.client.compat.RenderCompat.atlas(TextureAtlas.LOCATION_PARTICLES).apply(Wildercord.id(path));
 	}
 
 	/** A rune's pattern ({@code band}) or emblem ({@code mark}), drawn by tools/circle_art.py; add-ons get their family's. */
 	static TextureAtlasSprite runeSprite(String rune, RuneDef def, String part) {
 		java.util.function.Function<ResourceLocation, TextureAtlasSprite> atlas =
-			Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_PARTICLES);
+			dev.wildercord.client.compat.RenderCompat.atlas(TextureAtlas.LOCATION_PARTICLES);
 		ResourceLocation id = ResourceLocation.tryParse(rune);
 		if (id != null && id.getNamespace().equals(Wildercord.MOD_ID)) {
 			TextureAtlasSprite own = atlas.apply(Wildercord.id("circle/" + id.getPath() + "_" + part));

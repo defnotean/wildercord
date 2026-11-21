@@ -186,6 +186,6 @@ def write(g):
  for kind in ('rib','cloth','splinter'):g.save(sprite(kind),g.ASSETS/f'textures/particle/rainshield_{kind}.png')
  for kind in ('reed','pivot','cloth','feather'):g.save(material(kind),g.ASSETS/f'textures/item/rainshield_{kind}.png')
  g.write_json(g.ASSETS/'models/item/rooks_rainshield_held.json',held())
- g.write_json(g.ASSETS/'items/rooks_rainshield.json',{'model':{'type':'minecraft:select','property':'minecraft:display_context','cases':[{'when':['gui','ground','fixed','on_shelf'],'model':{'type':'minecraft:model','model':'wildercord:item/rooks_rainshield'}}],'fallback':{'type':'minecraft:model','model':'wildercord:item/rooks_rainshield_held'}}})
+ g.write_json(g.ASSETS/'items/rooks_rainshield.json',{'model':{'type':'minecraft:select','property':'minecraft:display_context','cases':[{'when':['gui','ground','fixed'],'model':{'type':'minecraft:model','model':'wildercord:item/rooks_rainshield'}}],'fallback':{'type':'minecraft:model','model':'wildercord:item/rooks_rainshield_held'}}})
  g.write_json(g.DATA/'recipe/rooks_rainshield.json',{'type':'minecraft:crafting_shapeless','category':'equipment','ingredients':['wildercord:windreed_braid','wildercord:moonreed_floss','minecraft:copper_ingot','minecraft:leather'],'result':{'id':'wildercord:rooks_rainshield','count':1}})
  g.unlock_advancement('wildercord:rooks_rainshield','wildercord:moonreed_floss')

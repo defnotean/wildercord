@@ -7,7 +7,6 @@
         "when": [
           "gui",
           "fixed",
-          "on_shelf",
           "none"
         ],
         "model": {

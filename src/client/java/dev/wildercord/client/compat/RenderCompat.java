@@ -308,4 +308,22 @@ public final class RenderCompat {
 	public static McQuadParticle.Layer darkParticleLayer() {
 		return new McQuadParticle.Layer(RenderType.translucentParticle(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES));
 	}
+
+	/**
+	 * Sprite lookup for an atlas. 1.21.8's atlas set only carries the block and entity sheets: the
+	 * particle atlas belongs to the particle engine, which registers it with the texture manager,
+	 * so the vanilla lookup throws before it can answer.
+	 */
+	public static java.util.function.Function<ResourceLocation, TextureAtlasSprite> atlas(ResourceLocation atlas) {
+		Minecraft mc = Minecraft.getInstance();
+		try {
+			net.minecraft.client.renderer.texture.AbstractTexture held = mc.getTextureManager().getTexture(atlas);
+			if (held instanceof net.minecraft.client.renderer.texture.TextureAtlas stitched) {
+				return stitched::getSprite;
+			}
+		} catch (RuntimeException absent) {
+			// not registered with the texture manager; the atlas set may still know it
+		}
+		return mc.getTextureAtlas(atlas);
+	}
 }

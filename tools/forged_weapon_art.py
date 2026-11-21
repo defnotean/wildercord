@@ -474,7 +474,7 @@ def write(g):
         # The drawn sprite in menus, frames and on shelves; the built weapon in a hand or lying on the ground.
         g.write_json(g.ASSETS / f"items/{name}.json", {"model": {
             "type": "minecraft:select", "property": "minecraft:display_context",
-            "cases": [{"when": ["gui", "fixed", "on_shelf"], "model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}}],
+            "cases": [{"when": ["gui", "fixed"], "model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}}],
             "fallback": {"type": "minecraft:model", "model": f"wildercord:item/{name}_in_hand"}},
             **({"swap_animation_scale": 1.95} if angle > 0 else {})})
 
@@ -529,7 +529,7 @@ def write_staffs(g, element_names):
                 "textures": tex, "elements": elements(parts, length, -45), "display": display})
             g.write_json(g.ASSETS / f"items/{name}.json", {"model": {
                 "type": "minecraft:select", "property": "minecraft:display_context",
-                "cases": [{"when": ["gui", "fixed", "on_shelf", "none"], "model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}}],
+                "cases": [{"when": ["gui", "fixed", "none"], "model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}}],
                 "fallback": {"type": "minecraft:model", "model": f"wildercord:item/{name}_in_hand"}}})
 
 

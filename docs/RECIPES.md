@@ -15,7 +15,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Rune | Family | Items |
 |---|---|---|
 | Air Pocket | Effect | Glass Bottle, Kelp |
-| Anchor | Effect | Iron Chain, any cobblestone or deepslate |
+| Anchor | Effect | Chain, any cobblestone or deepslate |
 | Angler's Lure | Effect | String, Cod |
 | Appraise | Effect | Emerald, any glass pane |
 | Bait Blessing | Effect | Rabbit Foot, Salmon |
@@ -366,7 +366,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | School Sight | Effect | Tropical Fish, Glow Ink Sac |
 | Sea Breeze | Effect | Feather, Milk Bucket |
 | Searing Edge | Effect | Iron Sword, Blaze Powder |
-| Shackle | Effect | 2x Iron Chain |
+| Shackle | Effect | 2x Chain |
 | Shellback | Effect | Turtle Scute, Kelp |
 | Shield | Effect | Shield |
 | Shieldwall | Effect | Shield, any cobblestone or deepslate |
@@ -535,7 +535,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Gangue | Effect | Iron Pickaxe, any cobblestone or deepslate, Raw Iron |
 | Glidewind | Effect | Phantom Membrane, Wind Charge |
 | Gravity Well | Effect | Ender Eye, Crying Obsidian |
-| Guardlink | Effect | Iron Chain, Iron Ingot |
+| Guardlink | Effect | Chain, Iron Ingot |
 | Haggle | Effect | 2x Emerald, any banners |
 | Hearthbond | Effect | Golden Apple, String |
 | Hearthcook | Effect | Smoker, Coal, Beef |
@@ -576,7 +576,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | On Low Health | Link | Golden Apple |
 | On Reaction | Link | Brewing Stand |
 | Blood Price | Modifier | Ghast Tear, Redstone |
-| Chain | Modifier | Iron Chain, Redstone |
+| Chain | Modifier | Chain, Redstone |
 | Confluence Circle | Modifier | Amethyst Shard, Prismarine Shard |
 | Eclipse Circle | Modifier | Ender Pearl, Gold Nugget |
 | Headhunting | Modifier | Skeleton Skull, Arrow, Spyglass |
