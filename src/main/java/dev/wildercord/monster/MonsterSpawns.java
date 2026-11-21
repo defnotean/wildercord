@@ -161,7 +161,8 @@ public final class MonsterSpawns {
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.MANA_OOZE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, MonsterRules.Kind.MANA_OOZE)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || deep(level, pos)
+				// 1.21.10 types the check as EntityType<? extends Monster>; the ooze is a cube mob, and the check only reads the entity type.
+				&& Monster.checkMonsterSpawnRules((net.minecraft.world.entity.EntityType<? extends Monster>) (net.minecraft.world.entity.EntityType<?>) type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || deep(level, pos)
 					|| pos.getY() < MonsterRules.LEY_OOZE_Y && !level.canSeeSky(pos) && onLey(level, pos)));
 		SpawnPlacements.register(MonsterContent.STRAWMAN, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, STRAWMAN)
