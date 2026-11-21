@@ -22,6 +22,7 @@ Six magical monsters live beside the zombies and skeletons, and **fallen knights
 | [Oathbound Bastion](#oathbound-bastion) | Deep haunts (strongholds, ancient cities, expeditions) | Hexagonal shield barrier, overhead mace windup | Shatter guard with an axe; bait Shield-Ram into walls; clear shockwave ring | Iron/Stone Manual Pages, 2–3 Aura Shards, Gold, Iron, Diamonds |
 | [Oathbound Blade-Champion](#oathbound-blade-champion) | Deep haunts (strongholds, ancient cities, expeditions) | Two-handed diagonal blade parry, forward pommel lunge, overhead Zweihänder arch | Smash Wrathful Riposte with an axe; dodge the shield-shattering Pommel-Break Lunge; sidestep the Guillotine fissure | Crimson/Ember Manual Pages, 2–4 Aura Shards, Gold, Iron, Diamonds |
 | [Oathbound Halberdier](#oathbound-halberdier) | Deep haunts (strongholds, ancient cities, expeditions) | Sweeping cyan storm coil, blink-thrust crouch, overhead halberd arch | Sidestep the 4-way Thunderbolt cross; interrupt halberd windups with an axe | Thunder/Gale Manual Pages, 2–4 Aura Shards, Iron, Gold, Diamonds |
+| [Oathbound Banner-Marshal](#oathbound-banner-marshal) | Deep haunts (strongholds, ancient cities, expeditions) | Skyward sword & blazing banner ring, chest Sun-Shield lock, overhead command arch | Smash Solar Aegis with an axe; focus down first to stop rally heals; step out of Sovereign Judgment pillars | Dawn/Hourglass Manual Pages, 3–4 Aura Shards, Gold, Emeralds, Diamonds |
 
 Any of the six can also be [Runebound](runebound.md). Their magic counts as spells, so
 armour, Warding and the spellguard all help. Your Grimoire's Bestiary fills in each one's
@@ -166,6 +167,17 @@ A swift polearm sentinel of the Way of the Storm-Glaive who haunts strongholds, 
 - **Hook-and-Reap Pull:** reaches out with the rear fluke of its halberd (`5.4`-block line) to yank prey inward off-balance with Slowness II.
 - **Valkyrie Sky-Vault & Thunderbolt Crash:** hoists its halberd overhead before plunging it into the stone to detonate a `6`-block four-way lightning cross across the floor.
 - **Drops:** `2–3` **Manual Pages** (Thunder and Gale), `2–4` **Aura Shards**, iron ingots, gold ingots, and diamonds.
+
+## Oathbound Banner-Marshal
+
+
+A regal commander of the Way of the Sovereign Banner who leads Oathbound knights in strongholds, ancient cities, and sunken expeditions (`145` health, `17` armour, `8` armour toughness). Clad in ivory-white and burnished gold plate over an emerald surcoat with a golden laurel crown, shoulder angel wings, glowing chest Sun-Core, octagonal Solar Aegis Shield, Sovereign Sunblade, and towering War-Banner, it ignites **Solar Sovereignty** below half health (`+16%` damage, faster commands).
+
+- **Decree of the Standard:** raises its blade toward a golden floor circle, healing itself and all nearby fallen or Oathbound knights within `12` blocks (`+8` health, Strength I, and Resistance I for `8` seconds). Focus the Banner-Marshal early before it bolsters its squad.
+- **Solar Aegis Guard:** locks its sun-shield across its chest; arrows deflect back and frontal strikes trigger a Sunblade Counter-Thrust unless you **smash its guard with an axe** (`+45%` staggered damage taken).
+- **Radiant Sunblade Cleave:** wide diagonal broadsword sweeps cleave close attackers.
+- **Heaven's Lance & Sovereign Judgment:** calls down pillars of solar light inside a `5.5`-block ring — sidestep outside the glowing rune circle before impact.
+- **Drops:** `2–3` **Manual Pages** (Dawn and Hourglass), `3–4` **Aura Shards**, gold ingots, emeralds, and diamonds.
 
 ## Mage-Hunter (0.13)
 
