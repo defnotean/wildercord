@@ -2259,12 +2259,11 @@ public class CordScreen extends Screen {
 
 	// ------------------------------------------------------------------ mouse (all in local coordinates)
 
-	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		updateAuraEntry();
 		double mx = localX(event.x());
 		double my = localY(event.y());
-		if (auraEntry != null && auraEntry.active && auraEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event, doubleClick);
+		if (auraEntry != null && auraEntry.active && auraEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event.x(), event.y(), event.button());
 		setFocused(null);
 		if (tier() == null) {
 			if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && dev.wildercord.player.MasterStudies.hasRelayLesson(minecraft.player)
@@ -2273,7 +2272,7 @@ public class CordScreen extends Screen {
 				minecraft.setScreen(new RelayLessonScreen(this));
 				return true;
 			}
-			return super.mouseClicked(event, doubleClick);
+			return super.mouseClicked(event.x(), event.y(), event.button());
 		}
 		if (pressedRune != null || pressedSocket >= 0) {
 			if (event.button() != pressButton) {
@@ -2515,17 +2514,16 @@ public class CordScreen extends Screen {
 			}
 			return true;
 		}
-		return super.mouseClicked(event, doubleClick);
+		return super.mouseClicked(event.x(), event.y(), event.button());
 	}
 
-	@Override
 	public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
 		double mx = localX(event.x());
 		double my = localY(event.y());
 		if ((pressedRune != null || pressedSocket >= 0) && !dragging && Math.hypot(mx - pressX, my - pressY) > 3) {
 			dragging = true;
 		}
-		return dragging || super.mouseDragged(event, dx, dy);
+		return dragging || super.mouseDragged(event.x(), event.y(), event.button(), dx, dy);
 	}
 
 	@Override

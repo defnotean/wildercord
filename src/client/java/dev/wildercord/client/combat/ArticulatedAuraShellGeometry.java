@@ -86,7 +86,7 @@ public final class ArticulatedAuraShellGeometry extends McModel<ArticulatedArmor
 			for (var polygon : cube.polygons) {
 				List<ArticulatedArmorMesh.SourceVertex> vertices = new ArrayList<>(4);
 				for (var vertex : polygon.vertices()) {
-					Vector3f point = pose.pose().transformPosition(vertex.worldX(), vertex.worldY(), vertex.worldZ(), new Vector3f()).mul(16);
+					Vector3f point = pose.pose().transformPosition(vertex.pos().x(), vertex.pos().y(), vertex.pos().z(), new Vector3f()).mul(16);
 					vertices.add(new ArticulatedArmorMesh.SourceVertex(new Vec3(point.x, point.y, point.z), vertex.u(), vertex.v()));
 				}
 				sources.add(new ArticulatedArmorMesh.SourceFace(region, vertices));

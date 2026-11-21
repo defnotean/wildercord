@@ -170,7 +170,7 @@ public final class CrimsonMoonRenderProbe {
         if(!(actor instanceof net.minecraft.client.player.AbstractClientPlayer connectedActor))throw new AssertionError("Actor is not an actual connected client player");
         s.originalSkin=connectedActor.getSkin();
         s.originalModel=((net.minecraft.client.renderer.entity.player.PlayerRenderer)mc.getEntityRenderDispatcher().getRenderer(actor)).getModel();
-        token.observe("connectedSkinTexture",s.originalSkin.body().texturePath());token.observe("connectedSkinModel",s.originalSkin.model());
+        token.observe("connectedSkinTexture",s.originalSkin.texture());token.observe("connectedSkinModel",s.originalSkin.model());
         if(token.paired!=null){
             var proof=CrimsonMoonMultiplayerProof.readRelease(token.paired.releaseReceipt(),token.paired.releaseIdentity());
             if(proof.accepted()!=e.activation())token.reject("release_action_changed");
@@ -226,9 +226,9 @@ public final class CrimsonMoonRenderProbe {
         ItemStack off=offhand(a);boolean shell=a.getData(AuraShellLayer.SHELL_GLOW)!=null;
         var model=s.originalModel;
         if(!(entity instanceof net.minecraft.client.player.AbstractClientPlayer connected)||!connected.getSkin().equals(s.originalSkin)
-            ||!a.skin.equals(s.originalSkin)||!CrimsonMoonRenderMath.originalSkin(s.originalSkin.body().texturePath().toString(),a.skin.body().texturePath().toString(),
+            ||!a.skin.equals(s.originalSkin)||!CrimsonMoonRenderMath.originalSkin(s.originalSkin.texture().toString(),a.skin.texture().toString(),
                 s.originalSkin.model().getSerializedName(),a.skin.model().getSerializedName(),true))s.token.reject("extracted_skin_is_not_original_connected_skin");
-        var source=new Extracted(SEQ.incrementAndGet(),id(s,a),entity.getUUID().toString(),a.skin.model().toString(),a.skin.body().texturePath().toString(),
+        var source=new Extracted(SEQ.incrementAndGet(),id(s,a),entity.getUUID().toString(),a.skin.model().toString(),a.skin.texture().toString(),
             p,c,r,model,dev.wildercord.client.compat.RenderCompat.mainHandStack(a).copy(),off.copy(),dev.wildercord.client.compat.RenderCompat.mainHandItemState(a),armor(a).stream().map(ItemStack::copy).toList(),shell,expectedBody,expectedView,s.originalSkin);
         s.sources.put(a,source);
         if(!entity.getUUID().toString().equals(e.uuid())||!dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD)||!off.isEmpty())s.token.reject("wrong_owner_weapon_offhand");
@@ -284,8 +284,8 @@ public final class CrimsonMoonRenderProbe {
         var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof PlayerRenderState a)||a.id!=s.token.expected.owner())return;
         var source=s.sources.get(a);
         if(source==null||source.model()!=model||!(model instanceof PlayerModel player)){s.token.reject("world_submit_without_exact_model");return;}
-        var expectedMaterial=player.renderType(source.originalSkin().body().texturePath());
-        if(!CrimsonMoonRenderMath.originalSkin(source.originalSkin().body().texturePath().toString(),a.skin.body().texturePath().toString(),
+        var expectedMaterial=player.renderType(source.originalSkin().texture());
+        if(!CrimsonMoonRenderMath.originalSkin(source.originalSkin().texture().toString(),a.skin.texture().toString(),
             source.originalSkin().model().getSerializedName(),a.skin.model().getSerializedName(),material==expectedMaterial))s.token.reject("wrong_world_skin_material");
         var submittedModelRoot=part(player.root()).matrix();
         var rootProof=CrimsonMoonRenderMath.compare("world_root_identity",CrimsonMoonRenderMath.outerRoot(new Matrix4f(),true),CrimsonMoonRenderMath.outerRoot(submittedModelRoot,player.root().visible));
@@ -344,8 +344,8 @@ public final class CrimsonMoonRenderProbe {
         var expected=source.expectedView();
         if(expected.phase()!=frame.pose().phase()||!hashPose(expected::local,expected.weight()).equals(hashPose(frame.pose()::local,frame.pose().weight())))s.token.reject("wrong_submitted_view_palette");
         var matrix=CrimsonMoonRenderMath.viewRoot(s.view.before(),expected,source.expectedBody().weight(),neutral?0:r.yawDelta(),neutral?0:r.pitchDelta());
-        RenderType expectedMaterial=RenderType.entityTranslucent(source.originalSkin().body().texturePath());
-        if(!CrimsonMoonRenderMath.originalSkin(source.originalSkin().body().texturePath().toString(),a.skin.body().texturePath().toString(),
+        RenderType expectedMaterial=RenderType.entityTranslucent(source.originalSkin().texture());
+        if(!CrimsonMoonRenderMath.originalSkin(source.originalSkin().texture().toString(),a.skin.texture().toString(),
             source.originalSkin().model().getSerializedName(),a.skin.model().getSerializedName(),material==expectedMaterial))s.token.reject("submitted_skin_material_is_not_original");
         s.token.observe("originalSkinMaterialIdentity",id(s,expectedMaterial));s.token.observe("submittedSkinMaterialIdentity",id(s,material));
         s.views.put(frame,new View(a,view,frame,expected,matrix,material));
@@ -405,7 +405,7 @@ public final class CrimsonMoonRenderProbe {
     private static void pass(Scope s,String kind,PlayerRenderState a,Object model,Object item,Comparison proof,boolean segmented,boolean rigid){
         var e=s.sources.get(a);boolean matched=e!=null&&matches(s,e,a);if(proof==null||!proof.matched())s.token.reject("geometry_mismatch:"+kind);
         s.token.pass(new Pass(kind,new Binding(e==null?0:e.source(),id(s,a),id(s,model),id(s,item!=null?item:s.token.expected.view().equals("remote")&&e!=null?e.item():null),skinMaterial(s,a,model),a.id,e==null?"missing":e.uuid(),
-            a.skin.model().toString(),a.skin.body().texturePath().toString(),a.mainArm.name(),e==null?null:e.palette(),matched),proof,segmented,rigid));
+            a.skin.model().toString(),a.skin.texture().toString(),a.mainArm.name(),e==null?null:e.palette(),matched),proof,segmented,rigid));
     }
     private static long skinMaterial(Scope s,PlayerRenderState a,Object model){
         var world=s.worlds.get(a);if(world!=null&&world.model()==model)return id(s,world.material());
@@ -416,7 +416,7 @@ public final class CrimsonMoonRenderProbe {
         if(e.state()!=id(s,a)||e.classic()!=a.getData(MastersArtPose.FRAME)||e.articulated()!=a.getData(ArticulatedCombat.FRAME)
             ||!CrimsonMoonRenderMath.same(e.palette().classic(),key(a.getData(MastersArtPose.FRAME)))
             ||!CrimsonMoonRenderMath.same(e.palette().articulated(),key(a.getData(ArticulatedCombat.FRAME)))
-            ||!e.originalSkin().equals(a.skin)||!e.skin().equals(a.skin.model().toString())||!e.texture().equals(a.skin.body().texturePath().toString())
+            ||!e.originalSkin().equals(a.skin)||!e.skin().equals(a.skin.model().toString())||!e.texture().equals(a.skin.texture().toString())
             ||!a.mainArm.name().equals(s.token.expected.hand())||e.item()!=dev.wildercord.client.compat.RenderCompat.mainHandItemState(a)||!ItemStack.isSameItemSameComponents(e.main(),dev.wildercord.client.compat.RenderCompat.mainHandStack(a))
             ||e.main().getCount()!=dev.wildercord.client.compat.RenderCompat.mainHandStack(a).getCount()||!e.off().isEmpty()||!offhand(a).isEmpty()||!backend(s.token.expected,a))return false;
         var armor=armor(a);for(int i=0;i<4;i++)if(!ItemStack.isSameItemSameComponents(e.armor().get(i),armor.get(i)))return false;
@@ -444,7 +444,7 @@ public final class CrimsonMoonRenderProbe {
     private static boolean commonCompatible(PlayerRenderState a){
         return a.deathTime<=0&&!a.isInvisible&&!a.isBaby&&!a.isUpsideDown&&!a.isAutoSpinAttack&&!a.isFallFlying&&!a.isCrouching&&!a.isPassenger&&!a.isUsingItem
             &&!a.hasPose(Pose.SWIMMING)&&!a.hasPose(Pose.SLEEPING)&&Boolean.TRUE.equals(a.getData(ArticulatedCombat.KNOWN_LAYERS))&&a.walkAnimationSpeed<=.2F&&!a.isSpectator
-            &&a.arrowCount==0&&a.stingerCount==0&&!a.showExtraEars&&a.parrotOnLeftShoulder==null&&a.parrotOnRightShoulder==null&&(!a.showCape||a.skin.cape()==null)&&a.heldOnHead.isEmpty()
+            &&a.arrowCount==0&&a.stingerCount==0&&true&&a.parrotOnLeftShoulder==null&&a.parrotOnRightShoulder==null&&(!a.showCape||a.skin.capeTexture()==null)&&a.heldOnHead.isEmpty()
             &&a.getData(dev.wildercord.client.render.GearLook.PACK)==null&&a.getData(dev.wildercord.client.render.GearLook.PIECES)==null&&a.getData(AuraShellLayer.IMAGES)==null
             &&dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD)&&offhand(a).isEmpty();
     }

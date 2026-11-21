@@ -197,15 +197,15 @@ public final class SerpentRenderer extends CullableEntityRenderer<RootcoilSerpen
 
 	@Override public void render(SerpentRenderState state, PoseStack poseStack, MultiBufferSource buffer, int light) {
 		CameraRenderState camera = RenderCompat.cameraState();
-		super.submit(state,poseStack,buffer,camera);
+		super.render(state,poseStack,buffer,light);
 		if(state.isInvisible || state.joints.length<6)return;
 		int overlay=OverlayTexture.pack(OverlayTexture.u(0),OverlayTexture.v(state.hurt));
 		SerpentHead head=new SerpentHead(state);
-		RenderCompat.submitCustomGeometry(buffer, poseStack,RenderType.entityCutout(SKIN),(pose,buffer)->{
-			body(state,pose,buffer,overlay);
-			head.skin(pose,buffer,overlay,state.lights[0]);
+		RenderCompat.submitCustomGeometry(buffer, poseStack,RenderType.entityCutout(SKIN),(pose,vb)->{
+			body(state,pose,vb,overlay);
+			head.skin(pose,vb,overlay,state.lights[0]);
 		});
-		RenderCompat.submitCustomGeometry(buffer, poseStack,RenderType.eyes(GLOW),(pose,buffer)->head.eyes(pose,buffer,overlay));
+		RenderCompat.submitCustomGeometry(buffer, poseStack,RenderType.eyes(GLOW),(pose,vb)->head.eyes(pose,vb,overlay));
 	}
 
 	/** The tube: a flattened ring round each joint, joined to the next. Columns of the band run round the ring, dorsal at a quarter. */

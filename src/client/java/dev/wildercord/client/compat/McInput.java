@@ -4,6 +4,8 @@ import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
+import net.minecraft.client.gui.screens.Screen;
+
 /**
  * The input events 1.21.9 hands a screen, on 1.21.8, which still passes the raw GLFW numbers. A screen
  * here overrides the plain-number methods and forwards one of these, so the code that reads an input
@@ -30,12 +32,7 @@ public final class McInput {
 			return key == keyCode;
 		}
 
-		/** The same rule {@code Screen} uses for what may be typed into a chat field. */
-	public boolean isAllowedChatCharacter() {
-		return codepoint != 167 && codepoint >= ' ' && codepoint != 127;
-	}
-
-	public boolean isEscape() {
+		public boolean isEscape() {
 			return key == GLFW.GLFW_KEY_ESCAPE;
 		}
 
@@ -56,6 +53,11 @@ public final class McInput {
 
 		public boolean hasControlDown() {
 			return Screen.hasControlDown();
+		}
+
+		/** The same rule {@code Screen} uses for what may be typed into a chat field. */
+		public boolean isAllowedChatCharacter() {
+			return codepoint != 167 && codepoint >= ' ' && codepoint != 127;
 		}
 	}
 }

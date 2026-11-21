@@ -457,7 +457,6 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 		}
 	}
 
-	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mx = event.x() - leftPos;
 		double my = event.y() - topPos;
@@ -485,7 +484,7 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 			}
 			return true;
 		}
-		return super.mouseClicked(event, doubleClick);
+		return super.mouseClicked(event.x(), event.y(), event.button());
 	}
 
 	private void click() {

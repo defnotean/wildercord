@@ -76,7 +76,6 @@ public class SpellWheelScreen extends Screen {
 		return false;
 	}
 
-	@Override
 	public boolean isInGameUi() {
 		return true;
 	}
@@ -122,7 +121,6 @@ public class SpellWheelScreen extends Screen {
 		onClose();
 	}
 
-	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			onClose();

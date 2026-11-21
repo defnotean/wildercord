@@ -514,7 +514,7 @@ public final class ArticulatedSharedRenderProbe {
 	private static Map<String, String> appearance(PlayerRenderState avatar, Model model) {
 		Map<String, String> out = new LinkedHashMap<>();
 		out.put("skinModel", avatar.skin == null ? "unknown" : avatar.skin.model().toString());
-		out.put("skinTexture", avatar.skin == null ? "unknown" : avatar.skin.body().texturePath().toString());
+		out.put("skinTexture", avatar.skin == null ? "unknown" : avatar.skin.texture().toString());
 		out.put("rigWidth", model instanceof ArticulatedViewModel view ? (view.rig().slim() ? "slim" : "wide")
 			: model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned() ? (access.wildercord$rig().slim() ? "slim" : "wide") : "unknown");
 		Scope scope = rendering();

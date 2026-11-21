@@ -124,7 +124,7 @@ public class AuraShellLayer extends RenderLayer<PlayerRenderState, PlayerModel> 
 		}
 		List<Image> images = state.getData(IMAGES);
 		if (images != null && !images.isEmpty() && upright(state)) {
-			RenderType ghost = RenderType.entityTranslucentEmissive(state.skin.body().texturePath());
+			RenderType ghost = RenderType.entityTranslucentEmissive(state.skin.texture());
 			for (Image image : images) {
 				pose.pushPose();
 				// Back out of the body's own turn and the model's flip to the player's feet, level with the world...

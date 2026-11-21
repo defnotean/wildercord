@@ -56,7 +56,7 @@ public final class ArticulatedViewModel extends McModel<ArticulatedViewModel.Fra
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.YP, -yaw);
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.XP, -pitch);
 			stack.scale(-1, -1, 1);
-			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, frame, stack, RenderType.entityTranslucent(avatar.skin.body().texturePath()), light, OverlayTexture.NO_OVERLAY, -1, 0);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, frame, stack, RenderType.entityTranslucent(avatar.skin.texture()), light, OverlayTexture.NO_OVERLAY, -1, 0);
 			// The same immutable palette sets the hand at submission and deferred model rendering.
 			model.setupAnim(frame);
 			if (access.wildercord$armor() != null) access.wildercord$armor().submitView(model.rig, avatar, stack, buffer, light);
@@ -64,7 +64,8 @@ public final class ArticulatedViewModel extends McModel<ArticulatedViewModel.Fra
 			if (shell != null) shell.submitView(model.rig, avatar, stack, buffer);
 			model.rig.socket(avatar.mainArm, stack);
 			ArticulatedCombat.orientItemAtSocket(stack);
-			dev.wildercord.client.compat.RenderCompat.mainHandItemState(avatar).submit(stack, buffer, light, OverlayTexture.NO_OVERLAY, 0);
+			dev.wildercord.client.compat.RenderCompat.submitItemState(
+			dev.wildercord.client.compat.RenderCompat.mainHandItemState(avatar), stack, buffer, light, OverlayTexture.NO_OVERLAY, 0);
 		} finally {
 			stack.popPose();
 		}

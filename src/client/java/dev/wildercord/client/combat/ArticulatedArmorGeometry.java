@@ -139,7 +139,7 @@ public final class ArticulatedArmorGeometry extends McModel<ArticulatedArmorGeom
 			for (ModelPart.Polygon polygon : cube.polygons) {
 				List<ArticulatedArmorMesh.SourceVertex> vertices = new ArrayList<>(4);
 				for (ModelPart.Vertex vertex : polygon.vertices()) {
-					Vector3f root = pose.pose().transformPosition(vertex.worldX(), vertex.worldY(), vertex.worldZ(), new Vector3f()).mul(16);
+					Vector3f root = pose.pose().transformPosition(vertex.pos().x(), vertex.pos().y(), vertex.pos().z(), new Vector3f()).mul(16);
 					vertices.add(new ArticulatedArmorMesh.SourceVertex(new Vec3(root.x, root.y, root.z), vertex.u(), vertex.v()));
 				}
 				if (path.equals("/head/hat")) hatSources.add(source.size());

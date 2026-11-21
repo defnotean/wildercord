@@ -108,8 +108,8 @@ public final class RenderCompat {
 
 	/** Draws something with its own geometry in {@code type}; the body writes to the buffer it is handed. */
 	public static void submitCustomGeometry(MultiBufferSource buffers, PoseStack pose, RenderType type,
-			BiConsumer<PoseStack, VertexConsumer> body) {
-		body.accept(pose, buffers.getBuffer(type));
+			BiConsumer<PoseStack.Pose, VertexConsumer> body) {
+		body.accept(pose.last(), buffers.getBuffer(type));
 	}
 
 	/** Draws a block at the pose stack's position. */
@@ -122,7 +122,7 @@ public final class RenderCompat {
 			float x, float y, boolean shadow, int light, int color, int outline) {
 		Matrix4f position = pose.last().pose();
 		if (outline != 0) {
-			font.drawInBatch8xOutline(text, x, y, color, outline, position, buffers, light, 0);
+			font.drawInBatch8xOutline(text, x, y, color, outline, position, buffers, light);
 			return;
 		}
 		font.drawInBatch(text, x, y, color, shadow, position, buffers, Font.DisplayMode.NORMAL, light, 0);
@@ -207,8 +207,17 @@ public final class RenderCompat {
 		return stacks != null && stacks.length == 3 ? stacks[2] : ItemStack.EMPTY;
 	}
 
+	/** 1.21.8 carries no item render state for the hands: only what the entity wears on its head. */
 	public static net.minecraft.client.renderer.item.ItemStackRenderState mainHandItemState(ArmedEntityRenderState state) {
-		return state.getMainHandItem();
+		return null;
+	}
+
+	/** Draws an item render state, if the platform has one. 1.21.8 draws hands from the stack instead. */
+	public static void submitItemState(net.minecraft.client.renderer.item.ItemStackRenderState item, PoseStack pose,
+			MultiBufferSource buffers, int light, int overlay, int outlineColor) {
+		if (item != null) {
+			item.render(pose, buffers, light, overlay);
+		}
 	}
 
 	/** A baked quad's corner position: 1.21.8 packs the vertices as ints (stride 8, position first). */

@@ -38,8 +38,10 @@ public final class ArticulatedArmorRenderer {
 		this.equipmentRenderer = equipmentRenderer;
 		this.equipmentAssets = java.util.Objects.requireNonNull(equipmentAssets);
 		var layers = slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR;
-		for (EquipmentSlot slot : SLOTS) models.put(slot, new ArticulatedArmorGeometry(modelSet.bakeLayer(layers.get(slot)), slot));
-		viewModel = new ArticulatedArmorGeometry(modelSet.bakeLayer(layers.chest()), EquipmentSlot.CHEST, true);
+	// 1.21.8 bakes the four armour pieces into one model; the slot picks its parts.
+	net.minecraft.client.model.geom.ModelPart armorRoot = modelSet.bakeLayer(layers);
+		for (EquipmentSlot slot : SLOTS) models.put(slot, new ArticulatedArmorGeometry(armorRoot, slot));
+		viewModel = new ArticulatedArmorGeometry(armorRoot, EquipmentSlot.CHEST, true);
 	}
 
 	public static boolean enabled() { return dev.wildercord.client.CombatPresentation.effective().armor(); }
@@ -101,8 +103,9 @@ public final class ArticulatedArmorRenderer {
 		ItemStack snapshot = item.copy();
 		var equippable = snapshot.get(DataComponents.EQUIPPABLE);
 		if (equippable == null || equippable.slot() != slot || equippable.assetId().isEmpty()) throw new IllegalStateException("Armor eligibility changed within submission");
+		model.setupAnim(palette);
 		equipmentRenderer.renderLayers(slot == EquipmentSlot.LEGS ? LayerType.HUMANOID_LEGGINGS : LayerType.HUMANOID,
-			equippable.assetId().orElseThrow(), model, palette, snapshot, stack, buffer, light, outline);
+			equippable.assetId().orElseThrow(), model, snapshot, stack, buffer, light);
 	}
 
 	/** Immutable model-space matrices in pixels; deferred A/B/A passes never read the live skin rig. */

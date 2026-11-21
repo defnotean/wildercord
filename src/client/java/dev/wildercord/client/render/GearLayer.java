@@ -111,7 +111,7 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		ItemStack chest = state.chestEquipment;
 		boolean wings = chest.has(DataComponents.GLIDER);
 		boolean armored = !wings && !chest.isEmpty() && chest.has(DataComponents.EQUIPPABLE);
-		boolean cape = !wings && state.showCape && state.skin != null && state.skin.cape() != null;
+		boolean cape = !wings && state.showCape && state.skin != null && state.skin.capeTexture() != null;
 		float back = wings ? 5.0F : cape ? armored ? 4.2F : 3.2F : armored ? 3.05F : 2.3F;
 		return new Surface(back, armored);
 	}

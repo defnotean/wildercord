@@ -94,7 +94,6 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		return false;
 	}
 
-	@Override
 	public boolean isInGameUi() {
 		return true;
 	}
@@ -327,8 +326,6 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		LivingEntity player = minecraft.player;
 		EntityRenderer<? super LivingEntity, ?> renderer = minecraft.getEntityRenderDispatcher().getRenderer(player);
 		EntityRenderState state = renderer.createRenderState(player, partial);
-		state.shadowPieces.clear();
-		dev.wildercord.client.compat.RenderCompat.outlineOf(state) = 0;
 		float seconds = (net.minecraft.Util.getMillis() - opened) / 1000F;
 		float spin = seconds * 40F;
 		if (state instanceof LivingEntityRenderState living) {
@@ -382,12 +379,11 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 
 	// ------------------------------------------------------------------ clicks
 
-	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mx = localX(event.x());
 		double my = localY(event.y());
 		if (minecraft.player == null) {
-			return super.mouseClicked(event, doubleClick);
+			return super.mouseClicked(event.x(), event.y(), event.button());
 		}
 		CordTier tier = Spellbooks.tier(minecraft.player);
 		Component name = tier == null ? Component.translatable("screen.wildercord.page.cosmetics") : Component.translatable(tier.itemKey());
@@ -408,7 +404,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 			choose(option);
 			return true;
 		}
-		return super.mouseClicked(event, doubleClick);
+		return super.mouseClicked(event.x(), event.y(), event.button());
 	}
 
 	private boolean canAfford(Option option) {

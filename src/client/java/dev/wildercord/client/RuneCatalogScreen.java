@@ -541,9 +541,8 @@ public final class RuneCatalogScreen extends Screen {
 		return null;
 	}
 
-	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		if (super.mouseClicked(event, doubleClick)) {
+		if (super.mouseClicked(event.x(), event.y(), event.button())) {
 			return true;
 		}
 		if (event.button() != InputConstants.MOUSE_BUTTON_LEFT) {
