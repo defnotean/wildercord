@@ -202,14 +202,16 @@ def _valid_mc_jar(path: Path) -> bool:
 
 
 # Loom keeps intermediary-mapped jars beside the Mojang-mapped ones; the verifier
-# reads Mojang names, so a jar must actually carry them to be usable.
-_MOJANG_MARKER = "net/minecraft/world/level/block/Blocks.class"
+# reads Mojang names, so a jar must actually carry them to be usable. The layered
+# split puts common and client classes in separate jars, so either marker counts.
+_MOJANG_MARKERS = ("net/minecraft/world/level/block/Blocks.class", "net/minecraft/client/Minecraft.class")
 
 
 def _mojang_named(path: Path) -> bool:
     try:
         with zipfile.ZipFile(path) as archive:
-            return _MOJANG_MARKER in archive.namelist()
+            names = archive.namelist()
+            return any(marker in names for marker in _MOJANG_MARKERS)
     except (OSError, zipfile.BadZipFile):
         return False
 

@@ -462,7 +462,7 @@ public final class dev.wildercord.cast.Wards {
             sources.write_bytes(b"src")
             # A real zip carrying the Mojang-mapped marker, or find_mc_jars rejects it.
             with zipfile.ZipFile(jar, "w") as archive:
-                archive.writestr(verify_port._MOJANG_MARKER, b"")
+                archive.writestr(verify_port._MOJANG_MARKERS[0], b"")
             prev = os.environ.get("GRADLE_USER_HOME")
             try:
                 os.environ["GRADLE_USER_HOME"] = str(gh)
