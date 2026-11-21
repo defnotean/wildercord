@@ -17,6 +17,6 @@ public abstract class McModel<T> extends Model {
 		super(root, renderType);
 	}
 
-	/** Poses the geometry for a frame's worth of data. */
-	public abstract void setupAnim(T state);
+	/** Poses the geometry for a frame's worth of data. Geometry that poses itself never overrides it. */
+	public void setupAnim(T state) {}
 }

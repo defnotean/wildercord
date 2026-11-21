@@ -13,6 +13,7 @@ import dev.wildercord.client.combat.ArticulatedModelAccess;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.MagicQuality;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;

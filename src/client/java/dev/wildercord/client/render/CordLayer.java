@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.client.CastingPose;
 import dev.wildercord.player.WildercordAttachments;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;

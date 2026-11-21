@@ -68,10 +68,10 @@ public final class WayHud {
 		Component name = Component.translatable(way.nameKey());
 		Component what = Component.translatable(leaning ? "hud.wildercord.crossroads.walk" : "hud.wildercord.crossroads.lean");
 		List<String> nodes = new ArrayList<>();
-		for (AuraApi.WayNode node : way.buffer()) {
-			buffer.add(Component.translatable(node.nameKey()).getString());
+		for (AuraApi.WayNode node : way.nodes()) {
+			nodes.add(Component.translatable(node.nameKey()).getString());
 		}
-		String line = String.join("  ·  ", buffer);
+		String line = String.join("  ·  ", nodes);
 		int wide = Math.max(Math.max(font.width(name), font.width(what)), Math.round(font.width(line) * 0.75F));
 		back(g, cx, y, Math.min(wide, g.guiWidth() - 8), 29);
 		centred(g, font, name, cx, y, 1, color);

@@ -47,8 +47,7 @@ public final class ArticulatedArmorLayer extends RenderLayer<PlayerRenderState, 
 
 	@Override
 	public void render(PoseStack stack, MultiBufferSource buffer, int light, PlayerRenderState state, float yaw, float pitch) {
-		if (!armor.submitWorld(getParentModel(), state, stack, buffer, light)) fallback.render(stack, buffer, light, state, yaw, pitch,
-						dev.wildercord.client.compat.RenderCompat.partialTick());
+		if (!armor.submitWorld(getParentModel(), state, stack, buffer, light)) fallback.render(stack, buffer, light, state, yaw, pitch);
 	}
 
 	public RenderLayer<PlayerRenderState, PlayerModel> fallback() { return fallback; }

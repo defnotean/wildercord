@@ -196,7 +196,7 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		pose.translate(0.4F / 16, -4.5F / 16, z / 16);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.XP, STAFF_LEAN);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, STAFF_TURN);
-		piece.item().submit(pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
+		dev.wildercord.client.compat.RenderCompat.submitItemState(piece.item(), pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		// Two ties round the shaft, reaching in to the back.
 		for (float along : new float[]{-6.6F, -0.6F}) {
 			float y = along * 0.894F;
@@ -220,7 +220,7 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		pose.pushPose();
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, age * 2.6F);
 		pose.scale(0.42F, 0.42F, 0.42F);
-		piece.item().submit(pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
+		dev.wildercord.client.compat.RenderCompat.submitItemState(piece.item(), pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		pose.popPose();
 		// A faint glimmer circling it, neutral in colour like the focus is in element.
 		for (int i = 0; i < 2; i++) {
@@ -251,7 +251,7 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, 180.0F);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, 180.0F);
 		pose.scale(TOME_SIZE, TOME_SIZE, TOME_SIZE);
-		piece.item().submit(pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
+		dev.wildercord.client.compat.RenderCompat.submitItemState(piece.item(), pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		pose.popPose();
 	}
 }

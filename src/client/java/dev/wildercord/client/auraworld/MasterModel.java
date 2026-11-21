@@ -32,9 +32,9 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 		articulated.attach(root);
 	}
 
-	@Override
 	private AuraFighterRenderState posedState;
 
+	@Override
 	public void setupAnim(AuraFighterRenderState state) {
 		posedState = state;
 		// Models are reused between entities and render passes. Reset accessories as well as limbs,

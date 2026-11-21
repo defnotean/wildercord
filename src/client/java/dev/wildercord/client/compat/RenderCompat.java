@@ -106,6 +106,11 @@ public final class RenderCompat {
 		}
 	}
 
+	/** 1.21.8 keeps no packed light in the render state: full brightness. */
+	public static int lightOf(Object state) {
+		return net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
+	}
+
 	/** 1.21.8 render states carry no outline tint: outlines are drawn without one. */
 	public static int outlineOf(Object state) {
 		return 0;

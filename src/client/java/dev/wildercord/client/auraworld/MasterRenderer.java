@@ -94,7 +94,6 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		if (frame == null || rig == null || state.isInvisible) return;
 		float mirror = frame.left() ? 1 : -1;
 		int overlay = LivingEntityRenderer.getOverlayCoords(state, getWhiteOverlayProgress(state));
-		int light = lightOf(state);
 		boolean[] blade = blade(rig);
 
 		poseStack.pushPose();

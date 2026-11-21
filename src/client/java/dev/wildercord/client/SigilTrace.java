@@ -105,8 +105,8 @@ public final class SigilTrace {
 		double s = mc.options.sensitivity().get() * 0.6 + 0.2;
 		// What vanilla would turn the view by for one count, in degrees, held between the slowest and fastest usable.
 		double rate = Mth.clamp(s * s * s * 8.0 * 0.15, MIN_RATE, MAX_RATE);
-		double mx = mc.options.invertMouseX().get() ? -dx : dx;
-		double my = mc.options.invertMouseY().get() ? -dy : dy;
+		double mx = false ? -dx : dx;
+		double my = mc.options.invertYMouse().get() ? -dy : dy;
 		double du = mx * rate / GLYPH_DEGREES;
 		// The window counts downward; the glyph's y is up.
 		double dv = -my * rate / GLYPH_DEGREES;

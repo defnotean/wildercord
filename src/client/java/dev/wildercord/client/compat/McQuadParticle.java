@@ -93,6 +93,12 @@ public abstract class McQuadParticle extends SingleQuadParticle {
 				getQuadSize(partial), getU0(), getU1(), getV0(), getV1(), argb(), getLightColor(partial));
 	}
 
+	/** {@code rgb} with {@code alpha} applied: the helper the newer particle base carries. */
+	protected static int argb(float alpha, int rgb) {
+		int a = (int) (Mth.clamp(alpha, 0F, 1F) * 255F);
+		return a << 24 | (rgb & 0xFFFFFF);
+	}
+
 	/** The particle's colour as ARGB, which 1.21.8 keeps as four floats. */
 	protected int argb() {
 		int a = (int) (Mth.clamp(alpha, 0F, 1F) * 255F);

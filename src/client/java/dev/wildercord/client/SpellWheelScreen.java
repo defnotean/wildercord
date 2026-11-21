@@ -136,7 +136,7 @@ public class SpellWheelScreen extends Screen {
 	}
 
 	public boolean mouseReleased(MouseButtonEvent event) {
-		if (!toggled && key.matchesMouse(event)) {
+		if (!toggled && key.matchesMouse(event.button())) {
 			released();
 			return true;
 		}
