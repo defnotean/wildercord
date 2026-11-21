@@ -87,7 +87,8 @@
         "FxSupportExplosionMixin",
         "SignBlockEntityMixin",
 		"OathholdSnowMixin",
-		"OathholdWeatherSnowMixin"
+		"OathholdWeatherSnowMixin",
+		"RangedAttributeMaxHealthMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

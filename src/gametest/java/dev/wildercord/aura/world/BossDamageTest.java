@@ -318,6 +318,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var wardenType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:cinder_warden"));
 				var serpentType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:rootcoil_serpent"));
 				var archivistType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:archivist"));
+				var maxHealthAttr = (net.minecraft.world.entity.ai.attributes.RangedAttribute) net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH.value();
+				check(maxHealthAttr.getMaxValue() >= dev.wildercord.cast.BossRules.MAX_HEALTH_CAP, "max_health attribute cap raised above vanilla 1024");
 				var warden = (Mob) wardenType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 				var serpent = (Mob) serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 				var archivist = (Mob) archivistType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);

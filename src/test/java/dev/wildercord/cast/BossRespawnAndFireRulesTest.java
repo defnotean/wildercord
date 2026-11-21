@@ -73,5 +73,11 @@ class BossRespawnAndFireRulesTest {
 		assertTrue(GiantRules.TOUGHNESS >= 10.0);
 		assertTrue(ShrineCatRules.Variant.YUKI.trialHealth >= 400.0F);
 		assertTrue(ShrineCatRules.Variant.KURO.trialHealth > ShrineCatRules.Variant.YUKI.trialHealth);
+
+		assertTrue(BossRules.MAX_HEALTH_CAP >= MastersRules.health(4));
+		assertTrue(BossRules.isMaxHealthAttribute("attribute.name.max_health"));
+		assertTrue(BossRules.isMaxHealthAttribute("attribute.name.generic.max_health"));
+		assertFalse(BossRules.isMaxHealthAttribute("attribute.name.armor"));
+		assertFalse(BossRules.isMaxHealthAttribute(null));
 	}
 }

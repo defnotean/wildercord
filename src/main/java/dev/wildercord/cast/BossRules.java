@@ -11,6 +11,14 @@ public final class BossRules {
 
 	/** Ticks after a boss is slain before its arena or lair allows a fresh respawn (10 minutes). */
 	public static final int BOSS_RESPAWN_TICKS = 10 * 60 * 20;
+	/** Upper ceiling for {@code minecraft:max_health} so high-tier and co-op bosses are not truncated at vanilla's 1024 cap. */
+	public static final double MAX_HEALTH_CAP = 100_000.0;
+
+	/** Whether an attribute description key corresponds to max health. */
+	public static boolean isMaxHealthAttribute(String descriptionId) {
+		return "attribute.name.max_health".equals(descriptionId)
+			|| "attribute.name.generic.max_health".equals(descriptionId);
+	}
 
 	/** Whether enough time has passed since {@code slainAt} for a defeated arena boss to respawn. */
 	public static boolean canRespawn(long slainAt, long now) {
