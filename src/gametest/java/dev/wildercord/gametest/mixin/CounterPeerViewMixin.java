@@ -16,6 +16,7 @@ import net.minecraft.world.InteractionHand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 /** The shell has a separate model/submit method; these hooks observe only the skin model and real item. */
@@ -42,7 +43,7 @@ public abstract class CounterPeerViewMixin {
 	// 1.21.8 draws the hand item without an item render state, so there is nothing to observe
 	// inside submit; the view keeps whatever state it began with and the probe skips a null one.
 	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)Z", at = @At("TAIL"))
-	private static void wildercord$counter$item(CallbackInfo ci,
+	private static void wildercord$counter$item(CallbackInfoReturnable<Boolean> ci,
 			@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) FirstPersonHandView hands,
 			@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) PoseStack pose) {
 		var item = hands == null ? null : hands.initialMainHandRenderState();
