@@ -1069,7 +1069,7 @@ HALBERDIER_UV_BOXES = {
     "head": (0, 0, 8, 8, 8),
     "beak_upper": (32, 0, 4, 2, 2),
     "beak_tip": (44, 0, 2, 2, 2),
-    "wing": (52, 0, 1, 5, 6),
+    "wing": (52, 0, 0, 5, 6),
     "body": (0, 18, 9, 12, 5),
     "cowl": (28, 18, 10, 3, 7),
     "scarf_base": (62, 18, 3, 8, 1),
@@ -1086,8 +1086,8 @@ HALBERDIER_UV_BOXES = {
     "halberd_shaft": (0, 66, 2, 32, 2),
     "halberd_butt": (8, 66, 3, 3, 3),
     "halberd_tassel": (20, 66, 1, 7, 2),
-    "halberd_axe": (26, 66, 1, 9, 6),
-    "halberd_hook": (40, 66, 1, 4, 4),
+    "halberd_axe": (26, 66, 0, 9, 6),
+    "halberd_hook": (40, 66, 0, 4, 4),
     "halberd_spear": (50, 66, 2, 8, 2),
     "halberd_star_xy": (60, 66, 12, 12, 0),
     "halberd_star_zy": (84, 66, 0, 12, 12),
@@ -1142,17 +1142,41 @@ def halberdier_skin(glow: bool = False) -> Image.Image:
         _paint_ramp_box(img, HALBERDIER_UV_BOXES, "beak_upper", FEATHER, fluted=False, gold_bottom=False, seed=203)
         _paint_ramp_box(img, HALBERDIER_UV_BOXES, "beak_tip", FEATHER, fluted=False, gold_bottom=False, seed=205)
 
-        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "wing", FEATHER, fluted=False, gold_bottom=False, seed=207)
+        WING_MASK = (
+            "..SSSS",
+            ".SSSSS",
+            "SSSSSS",
+            "SSSS..",
+            "SS....",
+        )
+        AXE_MASK = (
+            "C.....",
+            "SC....",
+            "SSC...",
+            "DSCC..",
+            "DDDCCM",
+            "DSCC..",
+            "SSC...",
+            "SC....",
+            "C.....",
+        )
+        HOOK_MASK = (
+            "SSSS",
+            "DSS.",
+            "D.S.",
+            "....",
+        )
+
         for side in ("left", "right"):
             wx0, wy0, ww, wh = box(*HALBERDIER_UV_BOXES["wing"])[side]
             for ly in range(wh):
+                row = WING_MASK[ly]
                 for lx in range(ww):
-                    if ly == 0 and lx < 2:
+                    ch = row[lx]
+                    if ch == "S":
+                        px[wx0 + lx, wy0 + ly] = _rgba(FEATHER[3 if (lx + ly) % 2 == 0 else 2])
+                    else:
                         px[wx0 + lx, wy0 + ly] = (0, 0, 0, 0)
-                    elif ly == wh - 1 and lx > ww - 3:
-                        px[wx0 + lx, wy0 + ly] = (0, 0, 0, 0)
-                    elif (ly + lx) % 2 == 0:
-                        px[wx0 + lx, wy0 + ly] = _rgba(FEATHER[3])
 
         # 2. Gunmetal-indigo & cobalt plate cuirass, dark navy cowl, flowing fringed scarf
         _paint_ramp_box(img, HALBERDIER_UV_BOXES, "body", COBALT, fluted=True, gold_bottom=False, seed=211)
@@ -1218,19 +1242,36 @@ def halberdier_skin(glow: bool = False) -> Image.Image:
         _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_butt", FEATHER, fluted=False, gold_bottom=False, seed=239)
         _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_tassel", CYAN_GLOW, fluted=False, gold_bottom=False, seed=241)
         _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_spear", FEATHER, fluted=False, gold_bottom=False, seed=243)
-        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_hook", FEATHER, fluted=False, gold_bottom=False, seed=245)
 
-        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_axe", INDIGO, fluted=False, gold_bottom=False, seed=247)
+        for side in ("left", "right"):
+            hx0, hy0, hw, hh = box(*HALBERDIER_UV_BOXES["halberd_hook"])[side]
+            for ly in range(hh):
+                row = HOOK_MASK[ly]
+                for lx in range(hw):
+                    ch = row[lx]
+                    if ch == "S":
+                        px[hx0 + lx, hy0 + ly] = _rgba(FEATHER[2])
+                    elif ch == "D":
+                        px[hx0 + lx, hy0 + ly] = _rgba(INDIGO[1])
+                    else:
+                        px[hx0 + lx, hy0 + ly] = (0, 0, 0, 0)
+
         for side in ("left", "right"):
             ax0, ay0, aw, ah = box(*HALBERDIER_UV_BOXES["halberd_axe"])[side]
             for ly in range(ah):
+                row = AXE_MASK[ly]
                 for lx in range(aw):
-                    if (ly == 0 or ly == ah - 1) and lx in (0, 1):
-                        px[ax0 + lx, ay0 + ly] = (0, 0, 0, 0)
-                    elif lx == 0 or lx == 1:
-                        px[ax0 + lx, ay0 + ly] = _rgba(FEATHER[3])
-                    elif abs(ly - ah // 2) + abs(lx - 3) in (2, 3) and lx >= 2:
+                    ch = row[lx]
+                    if ch == "C":
                         px[ax0 + lx, ay0 + ly] = (*CYAN_GLOW[2], 255)
+                    elif ch == "S":
+                        px[ax0 + lx, ay0 + ly] = _rgba(FEATHER[3])
+                    elif ch == "D":
+                        px[ax0 + lx, ay0 + ly] = _rgba(INDIGO[2])
+                    elif ch == "M":
+                        px[ax0 + lx, ay0 + ly] = _rgba(CHARCOAL[1])
+                    else:
+                        px[ax0 + lx, ay0 + ly] = (0, 0, 0, 0)
 
         star_img = _storm_star_rgba(12)
         for skey in ("halberd_star_xy", "halberd_star_zy"):
@@ -1257,13 +1298,23 @@ def halberdier_skin(glow: bool = False) -> Image.Image:
         for lx in range(tw):
             px[tx0 + lx, ty0 + ly] = (*CYAN_GLOW[1], 190)
 
+    AXE_GLOW_MASK = (
+        "C.....",
+        ".C....",
+        "..C...",
+        "..CC..",
+        "...CC.",
+        "..CC..",
+        "..C...",
+        ".C....",
+        "C.....",
+    )
     for side in ("left", "right"):
         ax0, ay0, aw, ah = box(*HALBERDIER_UV_BOXES["halberd_axe"])[side]
         for ly in range(ah):
+            row = AXE_GLOW_MASK[ly]
             for lx in range(aw):
-                if (ly == 0 or ly == ah - 1) and lx in (0, 1):
-                    continue
-                if lx == 0 or (abs(ly - ah // 2) + abs(lx - 3) in (2, 3) and lx >= 2):
+                if row[lx] == "C":
                     px[ax0 + lx, ay0 + ly] = (*CYAN_GLOW[2], 245)
 
     star_img = _storm_star_rgba(12)

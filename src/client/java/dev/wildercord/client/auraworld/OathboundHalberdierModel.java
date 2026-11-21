@@ -119,10 +119,10 @@ public final class OathboundHalberdierModel extends EntityModel<OathboundHalberd
 			CubeListBuilder.create().texOffs(44, 0).addBox(-1.0F, -3.2F, -6.5F, 2, 2, 2),
 			PartPose.ZERO);
 		head.addOrReplaceChild("wingR",
-			CubeListBuilder.create().texOffs(52, 0).addBox(-0.5F, -4.0F, -1.0F, 1, 5, 6),
+			CubeListBuilder.create().texOffs(52, 0).addBox(0.0F, -4.0F, -1.0F, 0, 5, 6),
 			PartPose.offsetAndRotation(-4.2F, -7.2F, 0.5F, 0.35F, -0.25F, -0.22F));
 		head.addOrReplaceChild("wingL",
-			CubeListBuilder.create().texOffs(52, 0).mirror().addBox(-0.5F, -4.0F, -1.0F, 1, 5, 6),
+			CubeListBuilder.create().texOffs(52, 0).mirror().addBox(0.0F, -4.0F, -1.0F, 0, 5, 6),
 			PartPose.offsetAndRotation(4.2F, -7.2F, 0.5F, 0.35F, 0.25F, 0.22F));
 
 		// Arms, layered pauldrons, rune gauntlets + Storm-Halberd
@@ -147,10 +147,10 @@ public final class OathboundHalberdierModel extends EntityModel<OathboundHalberd
 			CubeListBuilder.create().texOffs(20, 66).addBox(-0.5F, 0.0F, 0.0F, 1, 7, 2),
 			PartPose.offset(0.0F, -15.0F, 1.0F));
 		halberd.addOrReplaceChild("halberdAxe",
-			CubeListBuilder.create().texOffs(26, 66).addBox(-0.5F, -23.0F, -7.0F, 1, 9, 6),
+			CubeListBuilder.create().texOffs(26, 66).addBox(0.0F, -23.0F, -7.0F, 0, 9, 6),
 			PartPose.ZERO);
 		halberd.addOrReplaceChild("halberdHook",
-			CubeListBuilder.create().texOffs(40, 66).addBox(-0.5F, -21.0F, 1.0F, 1, 4, 4),
+			CubeListBuilder.create().texOffs(40, 66).addBox(0.0F, -21.0F, 1.0F, 0, 4, 4),
 			PartPose.ZERO);
 		halberd.addOrReplaceChild("halberdSpear",
 			CubeListBuilder.create().texOffs(50, 66).addBox(-1.0F, -30.0F, -1.0F, 2, 8, 2),
@@ -213,17 +213,7 @@ public final class OathboundHalberdierModel extends EntityModel<OathboundHalberd
 	}
 
 	private void applyStormVisuals(OathboundHalberdierRenderState s) {
-		boolean show = s.deathTime <= 0
-			&& (s.move == OathboundHalberdierRules.TEMPEST_WHIRL
-				|| s.move == OathboundHalberdierRules.SHADOWSTEP_THRUST
-				|| s.move == OathboundHalberdierRules.SKY_VAULT_CRASH);
-		halberdStormArc.visible = show;
-		if (show) {
-			float pulse = 0.90F + 0.16F * Mth.sin(s.ageInTicks * 0.5F);
-			halberdStormArc.xScale = pulse;
-			halberdStormArc.yScale = pulse;
-			halberdStormArc.zScale = pulse;
-		}
+		halberdStormArc.visible = false;
 	}
 
 	private static float ramp(float t, float from, float ticks) {
@@ -361,34 +351,35 @@ public final class OathboundHalberdierModel extends EntityModel<OathboundHalberd
 				halberd.zRot = Mth.lerp(rec, 0.22F, 0.55F);
 			}
 			case OathboundHalberdierRules.SKY_VAULT_CRASH -> {
-				// Panels 5 & 6: VALKYRIE SKY-VAULT WINDUP -> THUNDERBOLT CRASH
+				// Panels 5 & 6: VALKYRIE SKY-VAULT WINDUP (clear wide overhead arch) -> THUNDERBOLT CRASH (spear & axe floor plunge)
 				float wind = ramp(el, 0.0F, tell - 2.0F);
 				float slam = ramp(el, tell - 2.0F, 3.0F);
 				float rec = smooth(el, tell + 8.0F, OathboundHalberdierRules.CRASH_DURATION);
 
-				legL.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.52F * wind, -0.78F), 0.0F);
-				shinL.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.85F * wind, 0.88F), 0.0F);
-				legL.zRot = Mth.lerp(rec, -0.26F, -0.18F);
-				legR.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.35F * wind, 0.72F), 0.0F);
-				shinR.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.25F * wind, 0.15F), 0.0F);
-				legR.zRot = Mth.lerp(rec, 0.26F, 0.18F);
+				legL.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.45F * wind, -0.68F), 0.0F);
+				shinL.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.78F * wind, 0.82F), 0.0F);
+				legL.zRot = Mth.lerp(rec, -0.28F, -0.18F);
+				legR.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.35F * wind, 0.62F), 0.0F);
+				shinR.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.22F * wind, 0.14F), 0.0F);
+				legR.zRot = Mth.lerp(rec, 0.28F, 0.18F);
 
-				body.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.20F * wind, 0.38F), 0.0F);
-				head.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.12F * wind, -0.20F), 0.0F);
+				body.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.18F * wind, 0.26F), 0.0F);
+				head.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.06F * wind, -0.16F), 0.0F);
 
-				right.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.32F, -2.48F), -1.18F), -0.32F);
-				right.yRot = Mth.lerp(rec, Mth.lerp(slam, -0.15F * wind, -0.42F), -0.35F);
-				right.zRot = Mth.lerp(rec, Mth.lerp(slam, 0.28F * wind, -0.06F), 0.12F);
-				foreR.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.78F, -0.38F), -0.22F), -0.78F);
+				// Windup: raise both arms almost straight vertical (-2.95 rad) with wide outward zRot clear of face!
+				right.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.32F, -2.95F), -1.02F), -0.32F);
+				right.yRot = Mth.lerp(rec, Mth.lerp(slam, 0.0F, -0.38F), -0.35F);
+				right.zRot = Mth.lerp(rec, Mth.lerp(slam, -0.14F * wind, -0.05F), 0.12F);
+				foreR.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.78F, -0.18F), -0.22F), -0.78F);
 
-				left.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.82F, -2.42F), -1.18F), -0.82F);
-				left.yRot = Mth.lerp(rec, Mth.lerp(slam, 0.15F * wind, 0.55F), 0.58F);
-				left.zRot = Mth.lerp(rec, Mth.lerp(slam, -0.28F * wind, 0.06F), -0.08F);
-				foreL.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.68F, -0.38F), -0.24F), -0.68F);
+				left.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.82F, -2.85F), -1.04F), -0.82F);
+				left.yRot = Mth.lerp(rec, Mth.lerp(slam, 0.0F, 0.55F), 0.58F);
+				left.zRot = Mth.lerp(rec, Mth.lerp(slam, 0.14F * wind, 0.05F), -0.08F);
+				foreL.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.68F, -0.22F), -0.24F), -0.68F);
 
-				// Panel 5: overhead crossbar behind helm -> Panel 6: vertical ground spear slam
-				halberd.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 1.82F, 1.65F), -2.12F), 1.82F);
-				halberd.zRot = Mth.lerp(rec, Mth.lerp(slam, -1.15F * wind, 0.08F), 0.55F);
+				// Panel 5: overhead crossbar visible right above winged helm -> Panel 6: spear/axe plunging visibly into stone
+				halberd.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 1.82F, 1.55F), -1.96F), 1.82F);
+				halberd.zRot = Mth.lerp(rec, Mth.lerp(slam, -1.42F * wind, 0.16F), 0.55F);
 
 				float flare = (1.0F - rec) * Math.max(wind * 0.4F, slam);
 				scarfBase.xRot = 0.52F + flare * 0.55F;

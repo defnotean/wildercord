@@ -191,6 +191,8 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				server.runOnServer(s -> {
 					OathboundHalberdier h = (OathboundHalberdier) level(s).getEntity(studioId);
 					h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+					h.setYBodyRot(180.0F);
+					h.setYHeadRot(180.0F);
 					h.poseForPreview(sShot.move(), sShot.tell(), sShot.elapsed());
 				});
 				director(context, world, sShot.cam(), sShot.look());
