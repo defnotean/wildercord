@@ -657,9 +657,6 @@ public class ShrineCat extends TamableAnimal {
 			case YUKI -> {
 				owner.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 140, 0, true, false));
 				LivingEntity foe = owner.getLastHurtByMob();
-				System.out.println("WILDERCORD_YUKI_DEBUG foe=" + (foe == null ? "null"
-					: foe.getClass().getSimpleName() + " alive=" + foe.isAlive() + " distSq=" + foe.distanceToSqr(this)
-					+ " canHarm=" + Targets.canHarm(owner, foe)));
 				if (foe != null && foe.isAlive() && foe.distanceToSqr(this) <= 36.0 && Targets.canHarm(owner, foe)) {
 					triggerAction();
 					foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 120, 1, false, true));

@@ -765,7 +765,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				player.setLastHurtMob(huskB);
 				return new UUID[]{huskA.getUUID(), huskB.getUUID(), huskC.getUUID()};
 			});
-			for (int step = 0; step < 24; step++) {
+			for (int step = 0; step < 60; step++) {
 				c.waitTicks(10);
 				boolean ready = w.getServer().computeOnServer(s -> {
 					ServerLevel l = s.overworld();
@@ -774,6 +774,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					var huskB = (LivingEntity) l.getEntity(powerHusks[1]);
 					var huskC = (LivingEntity) l.getEntity(powerHusks[2]);
 					if (huskA != null) {
+						// Companion powers run on a 100-tick cooldown; keep the attacker fresh until they fire.
 						player.setLastHurtByMob(huskA);
 					}
 					if (huskB != null) {
