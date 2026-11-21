@@ -18,7 +18,7 @@ public final class UpgradeEdits extends SavedData {
 		Codec.LONG.listOf().fieldOf("chunks").forGetter(e->e.chunks.stream().sorted().toList()),
 		Codec.BOOL.optionalFieldOf("saturated",false).forGetter(e->e.saturated)
 	).apply(i,UpgradeEdits::new));
-	private static final SavedDataType<UpgradeEdits> TYPE=new SavedDataType<>(Wildercord.id("upgrade_known_edits"),UpgradeEdits::new,CODEC,null);
+	private static final SavedDataType<UpgradeEdits> TYPE=new SavedDataType<>("upgrade_known_edits",UpgradeEdits::new,CODEC,null);
 	public UpgradeEdits() {}
 	private UpgradeEdits(List<Long> chunks,boolean saturated){this.chunks.addAll(chunks.stream().limit(MAX_CHUNKS).toList());this.saturated=saturated || chunks.size()>MAX_CHUNKS;}
 	public static void successfulPlayerEdit(ServerLevel level,BlockPos point) {

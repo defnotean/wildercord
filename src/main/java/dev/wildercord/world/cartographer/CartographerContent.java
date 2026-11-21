@@ -12,6 +12,7 @@ import net.minecraft.core.registries.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.LodestoneTracker;
 import net.minecraft.world.level.block.*;

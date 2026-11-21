@@ -107,7 +107,7 @@ public final class RiftSiege {
 	private ArmorStand anchor;
 	private final Set<String> elements = new LinkedHashSet<>();
 	private final Set<UUID> fighters = new LinkedHashSet<>();
-	private final ServerBossEvent bar = new ServerBossEvent(UUID.randomUUID(), Component.translatable("boss.wildercord.rift", 1, EventRules.WAVES),
+	private final ServerBossEvent bar = new ServerBossEvent(Component.translatable("boss.wildercord.rift", 1, EventRules.WAVES),
 		BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.PROGRESS);
 
 	RiftSiege(ServerLevel level, Vec3 base, Vec3 toward) {
@@ -175,8 +175,8 @@ public final class RiftSiege {
 		Light.groundRing(level, base, TEAR, 0.4, 9.0, 0.25, 16);
 		for (ServerPlayer player : level.players()) {
 			if (player.position().distanceTo(centre) <= 64) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.rift_opens", WorldEvents.direction(player.position(), centre))
-					.withColor(TEAR));
+				player.displayClientMessage(Component.translatable("message.wildercord.rift_opens", WorldEvents.direction(player.position(), centre))
+					.withColor(TEAR), true);
 			}
 		}
 	}
@@ -448,8 +448,8 @@ public final class RiftSiege {
 		Light.ring(level, centre, facing.scale(-1), TEAR, 0.4, 3.0, 0.12, 10);
 		for (ServerPlayer player : level.players()) {
 			if (player.position().distanceTo(centre) <= 64) {
-				player.sendOverlayMessage(Component.translatable(n == EventRules.WAVES ? "message.wildercord.rift_last_wave" : "message.wildercord.rift_wave",
-					n, EventRules.WAVES).withColor(TEAR));
+				player.displayClientMessage(Component.translatable(n == EventRules.WAVES ? "message.wildercord.rift_last_wave" : "message.wildercord.rift_wave",
+					n, EventRules.WAVES).withColor(TEAR), true);
 			}
 		}
 		ServerPlayer target = nearest;
@@ -501,7 +501,7 @@ public final class RiftSiege {
 			Sigils.circle(level, centre, facing, TEAR, RIM, 2.6F, 30);
 			ScreenFx.shake(level, centre, 0.4F, 24);
 			for (ServerPlayer player : bar.getPlayers()) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.riftcaller").withColor(0xFF7CE0));
+				player.displayClientMessage(Component.translatable("message.wildercord.riftcaller").withColor(0xFF7CE0), true);
 			}
 		}
 		Vec3 mid = at.add(0, mob.getBbHeight() * 0.5, 0);
@@ -534,7 +534,7 @@ public final class RiftSiege {
 		}
 		if (wave < EventRules.RIFT_SEAL_FROM_WAVE) {
 			// Too raw yet: it shrugs the spell off.
-			player.sendOverlayMessage(Component.translatable("message.wildercord.rift_raw").withColor(0xB8A8D8));
+			player.displayClientMessage(Component.translatable("message.wildercord.rift_raw").withColor(0xB8A8D8), true);
 			return;
 		}
 		fighters.add(player.getUUID());
@@ -547,8 +547,8 @@ public final class RiftSiege {
 		Sigils.layer(level, centre.add(facing.scale(0.4)), facing, SigilOption.STAR, color, 1.2F + 0.4F * elements.size(), 40, 0.1F);
 		Fx.sound(level, centre, EventSounds.STORM_ARC, 1.0F, 0.7F + 0.15F * elements.size());
 		for (ServerPlayer p : bar.getPlayers()) {
-			p.sendOverlayMessage(Component.translatable("message.wildercord.rift_struck",
-				Component.translatable("element.wildercord." + element), elements.size(), EventRules.RIFT_SEAL_ELEMENTS).withColor(color));
+			p.displayClientMessage(Component.translatable("message.wildercord.rift_struck",
+				Component.translatable("element.wildercord." + element), elements.size(), EventRules.RIFT_SEAL_ELEMENTS).withColor(color), true);
 		}
 		if (elements.size() >= EventRules.RIFT_SEAL_ELEMENTS) {
 			close(true, player);
@@ -590,7 +590,7 @@ public final class RiftSiege {
 		String message = won ? (sealer != null ? "message.wildercord.rift_sealed" : "message.wildercord.rift_won") : "message.wildercord.rift_fades";
 		for (ServerPlayer player : level.players()) {
 			if (player.position().distanceTo(centre) <= 64) {
-				player.sendOverlayMessage(Component.translatable(message).withColor(won ? RIM : 0xB8A8D8));
+				player.displayClientMessage(Component.translatable(message).withColor(won ? RIM : 0xB8A8D8), true);
 			}
 		}
 		if (won) {

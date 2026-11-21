@@ -613,7 +613,7 @@ public final class Techniques {
 		String intent = TechniqueRules.normal(w.intent());
 		Refusal why = refusal(player, w.slot(), stroke, release, intent, w.string());
 		if (why != null) {
-			player.sendOverlayMessage(why.line());
+			player.displayClientMessage(why.line(), true);
 			return false;
 		}
 		String name = TechniqueRules.cleanName(w.name());
@@ -632,8 +632,8 @@ public final class Techniques {
 		set(player, after);
 		boolean fresh = before.empty() || !before.key().equals(next.key());
 		Aura.sound(player, "aura_technique_write", 0.8F, fresh ? 1.0F : 1.15F);
-		player.sendOverlayMessage(Component.translatable(fresh ? "message.wildercord.aura.technique.written" : "message.wildercord.aura.technique.rewritten",
-			Component.literal(name).withColor(0xFF000000 | Aura.color(player)), Component.translatable(slotKey(w.slot()))).withColor(0xE8D8B0));
+		player.displayClientMessage(Component.translatable(fresh ? "message.wildercord.aura.technique.written" : "message.wildercord.aura.technique.rewritten",
+			Component.literal(name).withColor(0xFF000000 | Aura.color(player)), Component.translatable(slotKey(w.slot()))).withColor(0xE8D8B0), true);
 		Grimoire.unlock(player, "aura:technique");
 		for (AuraApi.TechniqueHook hook : AuraApi.techniqueHooks()) {
 			try {
@@ -660,7 +660,7 @@ public final class Techniques {
 		Written gone = book.slot(i);
 		set(player, book.withSlot(i, Written.NONE));
 		Aura.sound(player, "aura_technique_write", 0.5F, 0.7F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.technique.erased", Component.literal(gone.shownName())).withColor(0xC8B89A));
+		player.displayClientMessage(Component.translatable("message.wildercord.aura.technique.erased", Component.literal(gone.shownName())).withColor(0xC8B89A), true);
 		return true;
 	}
 
@@ -678,7 +678,7 @@ public final class Techniques {
 		Honing h = book.honing(w.key());
 		int needs = edge ? TechniqueRules.EDGE_RANK : TechniqueRules.TEMPER_RANK;
 		if (h.rank() < needs) {
-			player.sendOverlayMessage(new Refusal("message.wildercord.aura.technique.choose_rank", Component.translatable(rankKey(needs))).line());
+			player.displayClientMessage(new Refusal("message.wildercord.aura.technique.choose_rank", Component.translatable(rankKey(needs))).line(), true);
 			return false;
 		}
 		String had = edge ? h.edge() : h.temper();
@@ -687,7 +687,7 @@ public final class Techniques {
 		}
 		if (!had.isEmpty() && !player.isCreative()) {
 			if (player.experienceLevel < TechniqueRules.CHANGE_LEVELS) {
-				player.sendOverlayMessage(new Refusal("message.wildercord.aura.technique.choose_levels", TechniqueRules.CHANGE_LEVELS).line());
+				player.displayClientMessage(new Refusal("message.wildercord.aura.technique.choose_levels", TechniqueRules.CHANGE_LEVELS).line(), true);
 				return false;
 			}
 			player.giveExperienceLevels(-TechniqueRules.CHANGE_LEVELS);
@@ -711,19 +711,19 @@ public final class Techniques {
 			return false;
 		}
 		if (book.honing(w.key()).rank() < TechniqueRules.INSCRIBE_RANK) {
-			player.sendOverlayMessage(new Refusal("message.wildercord.aura.technique.inscribe_rank",
-				Component.translatable(rankKey(TechniqueRules.INSCRIBE_RANK))).line());
+			player.displayClientMessage(new Refusal("message.wildercord.aura.technique.inscribe_rank",
+				Component.translatable(rankKey(TechniqueRules.INSCRIBE_RANK))).line(), true);
 			return false;
 		}
 		if (!TechniqueRules.scrollable(p)) {
-			player.sendOverlayMessage(new Refusal("message.wildercord.aura.technique.inscribe_part", Component.translatable(TechniqueRules.nameKey(p))).line());
+			player.displayClientMessage(new Refusal("message.wildercord.aura.technique.inscribe_part", Component.translatable(TechniqueRules.nameKey(p))).line(), true);
 			return false;
 		}
 		if (!player.isCreative()) {
 			int paper = dev.wildercord.player.Inventories.slotOf(player.getInventory(), Items.PAPER);
 			int shard = dev.wildercord.player.Inventories.slotOf(player.getInventory(), dev.wildercord.aura.world.AuraWorld.AURA_SHARD);
 			if (paper < 0 || shard < 0) {
-				player.sendOverlayMessage(new Refusal("message.wildercord.aura.technique.inscribe_needs").line());
+				player.displayClientMessage(new Refusal("message.wildercord.aura.technique.inscribe_needs").line(), true);
 				return false;
 			}
 			player.getInventory().removeItem(paper, 1);

@@ -93,7 +93,7 @@ public final class Tribulation {
 		this.level = player.level();
 		this.circle = circle;
 		this.centre = player.position();
-		this.bar = new ServerBossEvent(UUID.randomUUID(), Component.translatable("boss.wildercord.tribulation", Circles.ordinal(circle), 1,
+		this.bar = new ServerBossEvent(Component.translatable("boss.wildercord.tribulation", Circles.ordinal(circle), 1,
 			TribulationRules.waves(circle)), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.PROGRESS);
 		this.nextWaveAt = level.getGameTime() + 60;
 	}
@@ -143,7 +143,7 @@ public final class Tribulation {
 		long now = player.level().getGameTime();
 		Long until = RESTING.get(player.getUUID());
 		if (until != null && now < until) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.tribulation.rest", (until - now + 19) / 20).withColor(COLOR));
+			player.displayClientMessage(Component.translatable("message.wildercord.tribulation.rest", (until - now + 19) / 20).withColor(COLOR), true);
 			return true;
 		}
 		Tribulation t = new Tribulation(player, n);
@@ -177,7 +177,7 @@ public final class Tribulation {
 	}
 
 	private void overlay(Component message) {
-		for (ServerPlayer p : everyone()) p.sendOverlayMessage(message);
+		for (ServerPlayer p : everyone()) p.displayClientMessage(message, true);
 	}
 
 	/** The nearest fighter for a monster without a target. */
@@ -240,7 +240,7 @@ public final class Tribulation {
 			if (out) {
 				bar.removePlayer(ally);
 				if (!ally.isRemoved()) ally.sendSystemMessage(Component.translatable("message.wildercord.tribulation.ally_out").withColor(0xE07A5F));
-				player.sendOverlayMessage(Component.translatable("message.wildercord.tribulation.ally_lost", ally.getDisplayName()).withColor(0xE07A5F));
+				player.displayClientMessage(Component.translatable("message.wildercord.tribulation.ally_lost", ally.getDisplayName()).withColor(0xE07A5F), true);
 			}
 			return out;
 		});

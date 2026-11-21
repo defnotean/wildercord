@@ -81,7 +81,7 @@ public class TechniqueScrollItem extends Item {
 		if (player instanceof ServerPlayer server) {
 			String why = refusal(server, part);
 			if (why != null) {
-				server.sendOverlayMessage(Component.translatable(why, Component.translatable(TechniqueRules.nameKey(part))).withColor(0xA89CC8));
+				server.displayClientMessage(Component.translatable(why, Component.translatable(TechniqueRules.nameKey(part))).withColor(0xA89CC8), true);
 				return InteractionResult.FAIL;
 			}
 			if (!Techniques.teach(server, part, "scroll")) {

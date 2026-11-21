@@ -68,17 +68,17 @@ public class SpellScrollItem extends Item {
 		}
 		Spellbook book = Spellbooks.get(player);
 		if (spell >= 0 && spell < book.spells().size() && RelayRules.containsIds(book.spells().get(spell))) {
-			player.sendOverlayMessage(dev.wildercord.spell.LessonText.problem(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+			player.displayClientMessage(dev.wildercord.spell.LessonText.problem(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED), true);
 			return;
 		}
 		if (spell >= 0 && spell < book.spells().size() && (ReweaveRules.containsIds(book.spells().get(spell)) || dev.wildercord.spell.ExciseRules.containsIds(book.spells().get(spell)) || dev.wildercord.spell.LessonPackRules.containsIds(book.spells().get(spell)))) {
-			player.sendOverlayMessage(dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.LessonPackRules.containsIds(book.spells().get(spell)) ? dev.wildercord.spell.LessonPackRules.lessonOfIds(book.spells().get(spell)).storageProblem : dev.wildercord.spell.ExciseRules.containsIds(book.spells().get(spell)) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+			player.displayClientMessage(dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.LessonPackRules.containsIds(book.spells().get(spell)) ? dev.wildercord.spell.LessonPackRules.lessonOfIds(book.spells().get(spell)).storageProblem : dev.wildercord.spell.ExciseRules.containsIds(book.spells().get(spell)) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED), true);
 			return;
 		}
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		if (runes.isEmpty() || compiled.isEmpty()) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.spell_empty", spell + 1).withStyle(ChatFormatting.RED));
+			player.displayClientMessage(Component.translatable("message.wildercord.spell_empty", spell + 1).withStyle(ChatFormatting.RED), true);
 			return;
 		}
 		// Twice what casting it would cost this player now, as the Cord screen shows it (the server's cost multiplier,
@@ -87,12 +87,12 @@ public class SpellScrollItem extends Item {
 		boolean creative = player.isCreative();
 		if (!creative) {
 			if (!has(player, Items.PAPER) || !has(player, Items.INK_SAC) && !has(player, Items.GLOW_INK_SAC)) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.scroll_needs").withStyle(ChatFormatting.RED));
+				player.displayClientMessage(Component.translatable("message.wildercord.scroll_needs").withStyle(ChatFormatting.RED), true);
 				return;
 			}
 			float mana = Spellbooks.mana(player);
 			if (mana < cost) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.scroll_mana", (int) mana, cost).withStyle(ChatFormatting.RED));
+				player.displayClientMessage(Component.translatable("message.wildercord.scroll_mana", (int) mana, cost).withStyle(ChatFormatting.RED), true);
 				return;
 			}
 			take(player, Items.PAPER);
@@ -111,8 +111,8 @@ public class SpellScrollItem extends Item {
 		}
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.0F);
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.PLAYERS, 0.8F, 1.2F);
-		player.sendOverlayMessage(Component.translatable(mastered ? "message.wildercord.inscribed_mastery" : "message.wildercord.inscribed",
-			SpellCaster.nameOf(player, book, spell, runes)).withColor(0xE8D8B0));
+		player.displayClientMessage(Component.translatable(mastered ? "message.wildercord.inscribed_mastery" : "message.wildercord.inscribed",
+			SpellCaster.nameOf(player, book, spell, runes)).withColor(0xE8D8B0), true);
 		Grimoire.feat(player, Feats.SCROLL);
 	}
 
@@ -140,18 +140,18 @@ public class SpellScrollItem extends Item {
 			return InteractionResult.PASS;
 		}
 		if (RelayRules.containsIds(scroll.runes())) {
-			if (player instanceof ServerPlayer server) server.sendOverlayMessage(dev.wildercord.spell.LessonText.problem(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+			if (player instanceof ServerPlayer server) server.displayClientMessage(dev.wildercord.spell.LessonText.problem(RelayRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED), true);
 			return InteractionResult.FAIL;
 		}
 		if ((ReweaveRules.containsIds(scroll.runes()) || dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()))) {
-			if (player instanceof ServerPlayer server) server.sendOverlayMessage(dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()) ? dev.wildercord.spell.LessonPackRules.lessonOfIds(scroll.runes()).storageProblem : dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED));
+			if (player instanceof ServerPlayer server) server.displayClientMessage(dev.wildercord.spell.LessonText.problem(dev.wildercord.spell.LessonPackRules.containsIds(scroll.runes()) ? dev.wildercord.spell.LessonPackRules.lessonOfIds(scroll.runes()).storageProblem : dev.wildercord.spell.ExciseRules.containsIds(scroll.runes()) ? dev.wildercord.spell.ExciseRules.STORAGE_PROBLEM : ReweaveRules.STORAGE_PROBLEM).withStyle(ChatFormatting.RED), true);
 			return InteractionResult.FAIL;
 		}
 		if (player instanceof ServerPlayer serverPlayer && player.isShiftKeyDown() && stack.has(Inscription.TYPE)) {
 			// Studied rather than read: an inscribed scroll teaches its spell (see cast.Inscriptions).
 			Component refused = dev.wildercord.cast.Inscriptions.study(serverPlayer, stack);
 			if (refused != null) {
-				serverPlayer.sendOverlayMessage(refused);
+				serverPlayer.displayClientMessage(refused, true);
 				return InteractionResult.FAIL;
 			}
 			return InteractionResult.SUCCESS;

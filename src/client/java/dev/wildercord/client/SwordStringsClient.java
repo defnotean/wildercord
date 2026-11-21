@@ -209,7 +209,7 @@ public final class SwordStringsClient {
 				Component line = SwordStrings.refusal(player, art, why == null ? SwordStrings.Refusal.CLOSED : why);
 				Long told = TOLD.get(art.id());
 				if (line != null && (told == null || now - told >= TELL_AGAIN || now < told)) {
-					player.sendOverlayMessage(line);
+					player.displayClientMessage(line, true);
 					TOLD.put(art.id(), now);
 				}
 				lastRefused = art.id();

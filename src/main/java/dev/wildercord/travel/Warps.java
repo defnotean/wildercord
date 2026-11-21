@@ -26,7 +26,7 @@ public final class Warps extends SavedData {
 	static final Codec<Warps> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.unboundedMap(Codec.STRING, Spot.CODEC).optionalFieldOf("warps", Map.of()).forGetter(warps -> warps.byName)
 	).apply(i, Warps::new));
-	static final SavedDataType<Warps> TYPE = new SavedDataType<>(Wildercord.id("warps"), Warps::new, CODEC, null);
+	static final SavedDataType<Warps> TYPE = new SavedDataType<>("warps", Warps::new, CODEC, null);
 
 	private final Map<String, Spot> byName = new TreeMap<>();
 

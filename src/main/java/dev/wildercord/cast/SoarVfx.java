@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
@@ -125,7 +126,7 @@ public final class SoarVfx {
 				0.3 + 0.15 * r.nextDouble(), 2.0, 0.045, 3, 12);
 		}
 		for (int i = 0; i < 4; i++) {
-			Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, Items.FEATHER), root.add((r.nextDouble() - 0.5) * 1.2, 0, (r.nextDouble() - 0.5) * 0.6),
+			Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.FEATHER)), root.add((r.nextDouble() - 0.5) * 1.2, 0, (r.nextDouble() - 0.5) * 0.6),
 				new Vec3(0, -0.3, 0), 0.04);
 		}
 		Feels.sound(level, root, "wind_soar_fade", 0.6F, 1.0F);
@@ -137,7 +138,7 @@ public final class SoarVfx {
 		ElementFx.ring(level, waist, UP, SKY, 1.3, 0.4, 0.04, 16);
 		for (int i = 0; i < 5; i++) {
 			double a = Math.PI * 2 * i / 5;
-			Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, Items.FEATHER), waist.add(Math.cos(a) * 0.7, 0.6, Math.sin(a) * 0.7),
+			Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.FEATHER)), waist.add(Math.cos(a) * 0.7, 0.6, Math.sin(a) * 0.7),
 				new Vec3(0, -0.2, 0), 0.04);
 		}
 		Feels.sound(level, waist, "wind_feather", 0.6F, 0.9F);
@@ -147,7 +148,7 @@ public final class SoarVfx {
 	static void drifting(ServerLevel level, Entity faller) {
 		RandomSource r = level.getRandom();
 		Vec3 at = faller.position().add((r.nextDouble() - 0.5) * 1.2, faller.getBbHeight() * (0.4 + 0.5 * r.nextDouble()), (r.nextDouble() - 0.5) * 1.2);
-		Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, Items.FEATHER), at, new Vec3(0, -0.2, 0), 0.03);
+		Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.FEATHER)), at, new Vec3(0, -0.2, 0), 0.03);
 	}
 
 	/** Grounded: the wind is torn away: a ring snaps in round the flier, a crescent slams down over it and air bursts out. */

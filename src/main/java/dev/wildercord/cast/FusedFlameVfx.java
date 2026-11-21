@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
@@ -656,7 +657,7 @@ final class FusedFlameVfx {
 			ElementFx.slash(level, c.add(out.scale(0.15)), normal, out, i % 2 == 0 ? EARTH.secondary() : STORM.primary(), r, Math.PI * 1.15, 0.04, 3, 10);
 		}
 		RandomSource rr = level.getRandom();
-		ItemParticleOption iron = new ItemParticleOption(ParticleTypes.ITEM, Items.IRON_NUGGET);
+		ItemParticleOption iron = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.IRON_NUGGET));
 		for (int i = 0; i < 3; i++) {
 			Vec3 from = c.add(ElementFx.randomDir(rr).scale(1.6));
 			Vfx.fling(level, iron, from, c.subtract(from).normalize(), 0.18);

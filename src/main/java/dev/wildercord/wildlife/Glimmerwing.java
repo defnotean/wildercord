@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.content.MoteOption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -198,7 +199,7 @@ public class Glimmerwing extends AmbientCreature {
 		}
 		// Open-sky flowers are column tops: at most 49 resident cells every two seconds.
         flower=null;
-        if(WetlandRules.night(level.getOverworldClockTime())) {
+        if(WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level))) {
             flower=MoonreedBlock.findBud(level,blockPosition());
             if(flower!=null){lure=Vec3.atCenterOf(flower).add(0,.4,0);lureLeft=100;target=null;return;}
         }

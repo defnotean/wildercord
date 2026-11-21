@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.*;
 import net.minecraft.core.particles.ParticleTypes;
@@ -8,6 +9,7 @@ import net.minecraft.tags.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
@@ -60,16 +62,16 @@ public final class MoonreedBlock extends Block {
     }).getBiome(at);
     return available[0]&&biome.value().getPrecipitationAt(at,level.getSeaLevel())==net.minecraft.world.level.biome.Biome.Precipitation.RAIN;
    }
-  },here.getX(),here.getY(),here.getZ(),level.getOverworldClockTime());
+  },here.getX(),here.getY(),here.getZ(),dev.wildercord.compat.McTime.overworldClock(level));
   return found==null?null:new BlockPos(found.x(),found.y(),found.z());
  }
  @Override protected BlockState updateShape(BlockState s,LevelReader l,ScheduledTickAccess t,BlockPos p,Direction d,BlockPos np,BlockState ns,RandomSource r) {return canSurvive(s,l,p)?super.updateShape(s,l,t,p,d,np,ns,r):Blocks.AIR.defaultBlockState();}
  @Override protected boolean isRandomlyTicking(BlockState s) {return s.getValue(AGE)==0;}
- @Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r) {if(s.getValue(AGE)==0 && canBloom(l,p,l.getOverworldClockTime()) && r.nextInt(8)==0)l.setBlock(p,s.setValue(AGE,1),Block.UPDATE_CLIENTS);}
+ @Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r) {if(s.getValue(AGE)==0 && canBloom(l,p,dev.wildercord.compat.McTime.overworldClock(l)) && r.nextInt(8)==0)l.setBlock(p,s.setValue(AGE,1),Block.UPDATE_CLIENTS);}
  public static boolean pollinate(ServerLevel l,BlockPos p,Vec3 moth) {return pollinate(l,p,moth,MoonreedAdmission.WORLD);}
  private static boolean bloomContact(ServerLevel l,BlockPos p,Vec3 moth,BlockState s,int age) {
   return l.hasChunkAt(p) && l.getWorldBorder().isWithinBounds(p) && s.is(WetlandGarden.REED) && s.getValue(AGE)==age
-   && s.canSurvive(l,p) && canBloom(l,p,l.getOverworldClockTime()) && moth.distanceToSqr(Vec3.atCenterOf(p).add(0,.4,0))<=1;
+   && s.canSurvive(l,p) && canBloom(l,p,dev.wildercord.compat.McTime.overworldClock(l)) && moth.distanceToSqr(Vec3.atCenterOf(p).add(0,.4,0))<=1;
  }
  /** Production source is the actual registered moth, observed across the synchronous writer. */
  public static boolean pollinate(ServerLevel l,BlockPos p,Glimmerwing moth){return pollinate(l,p,moth,MoonreedAdmission.WORLD);}

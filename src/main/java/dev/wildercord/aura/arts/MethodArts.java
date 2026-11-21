@@ -93,8 +93,8 @@ public final class MethodArts {
 
 	/** An art with nowhere to go (a rush against a wall, a blink with nobody near): it doesn't go, and says why. */
 	static void blocked(ServerPlayer player, String id) {
-		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.art.blocked", Component.translatable("aura.wildercord.art." + id))
-			.withColor(0xA89CC8));
+		player.displayClientMessage(Component.translatable("message.wildercord.aura.art.blocked", Component.translatable("aura.wildercord.art." + id))
+			.withColor(0xA89CC8), true);
 	}
 
 	/**

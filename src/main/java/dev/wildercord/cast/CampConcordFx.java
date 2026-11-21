@@ -23,15 +23,15 @@ public final class CampConcordFx {
  }
  public static void init(){PayloadTypeRegistry.playS2C().register(Event.TYPE,Event.CODEC);}
  private static void send(ServerPlayer p,Event e){if(!Fx.muted()&&p.isAlive()&&p.level().dimension().identifier().toString().equals(e.world)&&ServerPlayNetworking.canSend(p,Event.TYPE))ServerPlayNetworking.send(p,e);}
- static void watch(ServerPlayer p,int phase,Vec3 at){var e=new Event(p.getUUID(),p.getUUID(),p.level().dimension().identifier().toString(),at,at,phase,0,p.level().getGameTime());send(p,e);if(phase==WARN||phase==OBSCURED)p.sendOverlayMessage(Component.translatable("message.wildercord."+(phase==WARN?"watchweft.warn":"watchweft.obscured")));}
+ static void watch(ServerPlayer p,int phase,Vec3 at){var e=new Event(p.getUUID(),p.getUUID(),p.level().dimension().identifier().toString(),at,at,phase,0,p.level().getGameTime());send(p,e);if(phase==WARN||phase==OBSCURED)p.displayClientMessage(Component.translatable("message.wildercord."+(phase==WARN?"watchweft.warn":"watchweft.obscured")), true);}
  /** The sole warning carries only one half-block cardinal tick, never hostile coordinates/identity. */
  static void warning(ServerPlayer p,Vec3 anchor,Vec3 body){var d=body.subtract(anchor);Vec3 tick=d.horizontalDistanceSqr()<.0001?Vec3.ZERO:Math.abs(d.x)>=Math.abs(d.z)?new Vec3(Math.copySign(.5,d.x),0,0):new Vec3(0,0,Math.copySign(.5,d.z));
-  send(p,new Event(p.getUUID(),p.getUUID(),p.level().dimension().identifier().toString(),anchor,anchor.add(tick),WARN,0,p.level().getGameTime()));p.sendOverlayMessage(Component.translatable("message.wildercord.watchweft.warn"));}
+  send(p,new Event(p.getUUID(),p.getUUID(),p.level().dimension().identifier().toString(),anchor,anchor.add(tick),WARN,0,p.level().getGameTime()));p.displayClientMessage(Component.translatable("message.wildercord.watchweft.warn"), true);}
  static void braid(ServerPlayer p,ServerPlayer t,int phase,int gain){
   // Cancellation may follow a large legitimate departure. Dispose the offer without constructing invalid geometry.
   var from=p.getBoundingBox().getCenter();var to=t.getBoundingBox().getCenter();
   if(p.level()!=t.level()||!Event.valid(from)||!Event.valid(to)||from.distanceToSqr(to)>64)return;
   var e=new Event(p.getUUID(),t.getUUID(),p.level().dimension().identifier().toString(),p.getBoundingBox().getCenter(),t.getBoundingBox().getCenter(),phase,gain,p.level().getGameTime());send(p,e);send(t,e);
-  if(phase==OFFER)t.sendOverlayMessage(Component.translatable("message.wildercord.manabraid.offer"));else if(phase==TRANSFER){p.sendOverlayMessage(Component.translatable("message.wildercord.manabraid.given",gain));t.sendOverlayMessage(Component.translatable("message.wildercord.manabraid.received",gain));}
+  if(phase==OFFER)t.displayClientMessage(Component.translatable("message.wildercord.manabraid.offer"), true);else if(phase==TRANSFER){p.displayClientMessage(Component.translatable("message.wildercord.manabraid.given",gain), true);t.displayClientMessage(Component.translatable("message.wildercord.manabraid.received",gain), true);}
  }
 }

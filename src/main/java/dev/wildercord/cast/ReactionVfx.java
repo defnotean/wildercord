@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -50,7 +51,7 @@ final class ReactionVfx {
 		ElementFx.ring(level, c, ElementFx.tilted(0.9, tilt), ElementFx.FROST.accent(), 0.2, 1.9 + w, 0.05, 9);
 		ElementFx.ring(level, c, ElementFx.tilted(0.9, tilt + Math.PI), ElementFx.FIRE.primary(), 0.2, 1.6 + w, 0.05, 10);
 		ElementFx.flatSigil(level, target.position(), SigilOption.CRACKED, ElementFx.FROST.primary(), 1.2 + w, 24, 0.0);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), c, 18, 0.35);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.BLUE_ICE)), c, 18, 0.35);
 		Motes.clouds(level, c, 4, 0.4, Motes.STEAM, 1.3, 40, new Vec3(0, 0.04, 0), 0.05, 0.45);
 	}
 
@@ -154,7 +155,7 @@ final class ReactionVfx {
 		ElementFx.sigil(level, c, ElementFx.flatDir(a), SigilOption.CRACKED, ElementFx.FROST.secondary(), 0.9 + w, 20, 0.0);
 		ElementFx.shards(level, c, 1.0 + w * 0.5, 10);
 		ElementFx.stoneShards(level, c, ElementFx.groundBlock(level, target.position()), 14, 0.3);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.PACKED_ICE), c, 12, 0.3);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.PACKED_ICE)), c, 12, 0.3);
 		ElementFx.ring(level, c, UP, ElementFx.FROST.accent(), 0.2, 1.8 + w, 0.05, 8);
 		ElementFx.ring(level, c, ElementFx.tilted(0.9, a), ElementFx.EARTH.primary(), 0.2, 1.5 + w, 0.08, 9);
 		ElementFx.crack(level, target.position(), 1.2 + w, 26);

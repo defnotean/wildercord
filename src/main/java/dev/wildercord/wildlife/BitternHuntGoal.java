@@ -1,4 +1,5 @@
 package dev.wildercord.wildlife;
+import dev.wildercord.compat.McTime;
 import net.minecraft.core.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -12,7 +13,7 @@ final class BitternHuntGoal extends Goal {
  BitternHuntGoal(SiltcrestBittern bird){this.bird=bird;setFlags(EnumSet.of(Flag.MOVE,Flag.LOOK));}
  public boolean canUse(){return bird.tickCount>=searchAt&&bird.hungry();}
  public void start(){bird.stalking(true);left=SiltcrestBittern.JOURNEY;cursor=0;bank=null;scanAt=bird.tickCount;anchorAt=bird.tickCount+REANCHOR;retries=0;var pool=bird.preyPool((ServerLevel)bird.level());quarry=pool.size()>=3?pool.getFirst():null;origin=quarry==null?null:quarry.blockPosition();}
- public boolean canContinueToUse(){return left>0&&bird.pose()==SiltcrestBittern.STALKING&&quarry!=null&&SiltcrestBittern.wildFish(quarry,(ServerLevel)bird.level())&&WetlandRules.night(bird.level().getOverworldClockTime())&&!bird.level().isRaining();}
+ public boolean canContinueToUse(){return left>0&&bird.pose()==SiltcrestBittern.STALKING&&quarry!=null&&SiltcrestBittern.wildFish(quarry,(ServerLevel)bird.level())&&WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(bird.level()))&&!bird.level().isRaining();}
  public boolean requiresUpdateEveryTick(){return true;}
  public void tick(){left--;var l=(ServerLevel)bird.level();if(quarry==null)return;if(bird.disturbed(l)){bird.retreat();left=0;return;}bird.getLookControl().setLookAt(quarry,30,30);
   // The fish keeps swimming while the bird walks: follow its current cell at a bounded cadence rather than the stale start cell.

@@ -57,7 +57,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> SIDE=SynchedEntityData.defineId(RootcoilSerpent.class,EntityDataSerializers.INT);
 	/** Coiled round the trunk it spans the coils; on the ground, a reared head over a heap of body. */
 	private static final EntityDimensions COILED=EntityDimensions.scalable(9.6F,8F),REARED=EntityDimensions.scalable(3.4F,4.8F).withEyeHeight(4.3F);
-	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.GREEN,BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.GREEN,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private int left,quiet;
 	private long lastCut;
@@ -798,7 +798,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		// Whatever the player is already holding down does not count: a struggle is a fresh press.
 		var in=p.getLastClientInput();gripping=in.jump() || in.left() || in.right();
 		pose(SerpentRules.SQUEEZE,SerpentRules.SQUEEZE_TICKS);
-		p.sendOverlayMessage(Component.translatable("message.wildercord.rootcoil_serpent.caught").withColor(0xD8C070));
+		p.displayClientMessage(Component.translatable("message.wildercord.rootcoil_serpent.caught").withColor(0xD8C070), true);
 		Feels.sound(level,p.position(),"aura_serpent_constrict",1.4F,.9F);
 	}
 
@@ -813,7 +813,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var in=p.getLastClientInput();boolean pressing=in.jump() || in.left() || in.right();
 		if(pressing && !gripping){
 			struggles++;
-			p.sendOverlayMessage(Component.translatable("message.wildercord.rootcoil_serpent.struggle",struggles,SerpentRules.STRUGGLES).withColor(0xD8C070));
+			p.displayClientMessage(Component.translatable("message.wildercord.rootcoil_serpent.struggle",struggles,SerpentRules.STRUGGLES).withColor(0xD8C070), true);
 			level.sendParticles(ParticleTypes.CRIT,p.getX(),p.getY()+1,p.getZ(),4,.4,.4,.4,.1);
 		}
 		gripping=pressing;
@@ -833,7 +833,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var out=ahead(aim);
 		p.knockback(broke?.5:.9,-out.x,-out.z);p.needsSync=true;
 		if(broke){
-			p.sendOverlayMessage(Component.translatable("message.wildercord.rootcoil_serpent.free").withColor(0xA8E070));
+			p.displayClientMessage(Component.translatable("message.wildercord.rootcoil_serpent.free").withColor(0xA8E070), true);
 			if(level() instanceof ServerLevel server)Feels.sound(server,position().add(0,1.5,0),"aura_serpent_hurt",1.2F,.8F);
 		}
 	}

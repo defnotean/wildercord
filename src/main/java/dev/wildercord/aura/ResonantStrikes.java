@@ -89,7 +89,7 @@ public final class ResonantStrikes {
 			if (counter != null && !counter.afterDamage(target)) return false;
 			ResonantVfx.play(level,striker,target,pair.spell().element(),pair.blade().element(),name);
 			Component message=Component.translatable("reaction.wildercord.resonant",Component.translatable("reaction.wildercord.resonant."+name));
-			striker.sendOverlayMessage(message); if(mage!=striker) mage.sendOverlayMessage(message);
+			striker.displayClientMessage(message, true); if(mage!=striker) mage.displayClientMessage(message, true);
 			Grimoire.unlock(striker,"aura:resonant_strike"); if(mage!=striker) Grimoire.unlock(mage,"aura:resonant_strike");
 			reactions++;
 			return true;

@@ -56,7 +56,7 @@ public final class Arena {
 	/** The casters waiting at the stones when the server last stopped, taken up again when it starts. */
 	public static final class Queue extends SavedData {
 		static final Codec<Queue> CODEC = Queued.CODEC.listOf().optionalFieldOf("waiting", List.of()).xmap(Queue::new, q -> q.waiting).codec();
-		static final SavedDataType<Queue> TYPE = new SavedDataType<>(Wildercord.id("arena_queue"), Queue::new, CODEC, null);
+		static final SavedDataType<Queue> TYPE = new SavedDataType<>("arena_queue", Queue::new, CODEC, null);
 
 		private List<Queued> waiting;
 
@@ -135,8 +135,8 @@ public final class Arena {
 		if (Duels.inDuel(player)) return;
 		DuelRules.Refusal refusal = Duels.readiness(player);
 		if (refusal != DuelRules.Refusal.NONE) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.duel_" + refusal.name().toLowerCase(java.util.Locale.ROOT), player.getDisplayName())
-				.withStyle(ChatFormatting.RED));
+			player.displayClientMessage(Component.translatable("message.wildercord.duel_" + refusal.name().toLowerCase(java.util.Locale.ROOT), player.getDisplayName())
+				.withStyle(ChatFormatting.RED), true);
 			return;
 		}
 		Map<BlockPos, Waiting> here = WAITING.computeIfAbsent(level.dimension(), k -> new HashMap<>());
@@ -148,7 +148,7 @@ public final class Arena {
 			&& now - waiting.since() <= ArenaRules.WAIT_TICKS && other.position().distanceTo(Vec3.atCenterOf(pos)) <= ArenaRules.STEP_UP + 2;
 		if (!stillThere) {
 			here.put(pos.immutable(), new Waiting(player.getUUID(), now));
-			player.sendOverlayMessage(Component.translatable("message.wildercord.arena.waiting").withColor(0xB8A8FF));
+			player.displayClientMessage(Component.translatable("message.wildercord.arena.waiting").withColor(0xB8A8FF), true);
 			level.playSound(null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 0.7F, 1.4F);
 			return;
 		}
@@ -234,14 +234,14 @@ public final class Arena {
 
 		@Override
 		public void counting(int second) {
-			both(p -> p.sendOverlayMessage(Component.literal(String.valueOf(second)).withColor(0xFFE8C46A)));
+			both(p -> p.displayClientMessage(Component.literal(String.valueOf(second)).withColor(0xFFE8C46A), true));
 			level.playSound(null, centre.x, centre.y, centre.z, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.PLAYERS, 1.0F, 0.6F + 0.2F * (3 - second));
 			ring(32);
 		}
 
 		@Override
 		public void began() {
-			both(p -> p.sendOverlayMessage(Component.translatable("message.wildercord.arena.fight").withColor(0xFFFF6A4A)));
+			both(p -> p.displayClientMessage(Component.translatable("message.wildercord.arena.fight").withColor(0xFFFF6A4A), true));
 			level.playSound(null, centre.x, centre.y, centre.z, SoundEvents.RAID_HORN.value(), SoundSource.PLAYERS, 0.6F, 1.4F);
 		}
 

@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -95,7 +96,7 @@ public final class FusionVfx {
 		Vec3 c = centre(t);
 		ElementFx.ray(level, top, c, ElementFx.FROST.secondary(), 0.05, 4);
 		ElementFx.shards(level, c.add(0, t.getBbHeight() * 0.3, 0), 0.6, 4);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), c, 6, 0.15);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ICE)), c, 6, 0.15);
 		if (stone == 0) {
 			Sigils.flash(level, top, ElementFx.STORM.secondary(), 0.8F);
 		}

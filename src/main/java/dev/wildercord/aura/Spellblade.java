@@ -70,7 +70,7 @@ public final class Spellblade {
 		AuraPresence.look(player, AuraPresence.look(player).blade(color, until));
 		Aura.sound(player, "aura_spellblade", 0.9F, 1.0F);
 		AuraVfx.spellDrawn(player, color, Aura.color(player));
-		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.spellblade").withColor(0xFF000000 | color));
+		player.displayClientMessage(Component.translatable("message.wildercord.aura.spellblade").withColor(0xFF000000 | color), true);
 		return true;
 	}
 

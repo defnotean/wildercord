@@ -215,9 +215,9 @@ public final class Town {
 	private static void progress(ServerPlayer player, Standing standing, Active bounty) {
 		Active next = bounty.killed();
 		set(player, standing.with(Optional.of(next)));
-		player.sendOverlayMessage(next.done()
+		player.displayClientMessage(next.done()
 			? Component.translatable("message.wildercord.bounty.complete", targetName(next)).withStyle(ChatFormatting.GOLD)
-			: Component.translatable("message.wildercord.bounty.progress", next.kills(), next.needed(), targetName(next)).withStyle(ChatFormatting.YELLOW));
+			: Component.translatable("message.wildercord.bounty.progress", next.kills(), next.needed(), targetName(next)).withStyle(ChatFormatting.YELLOW), true);
 	}
 
 	/** A creature's or an item's name by its id. */

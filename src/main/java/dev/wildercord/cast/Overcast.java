@@ -48,12 +48,12 @@ public final class Overcast {
 		long now = player.level().getGameTime();
 		int active = Heart.active(player);
 		if (active <= 0) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.no_mana", mana, cost).withStyle(ChatFormatting.RED));
+			player.displayClientMessage(Component.translatable("message.wildercord.no_mana", mana, cost).withStyle(ChatFormatting.RED), true);
 			return false;
 		}
 		// A circle pays for a spell, not for anything: past twice your full mana, it can't.
 		if (cost > MAX_COST_MULTIPLE * dev.wildercord.player.Mana.max(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.overcast_too_costly", cost, MAX_COST_MULTIPLE).withStyle(ChatFormatting.RED));
+			player.displayClientMessage(Component.translatable("message.wildercord.overcast_too_costly", cost, MAX_COST_MULTIPLE).withStyle(ChatFormatting.RED), true);
 			return false;
 		}
 		Prompt prompt = PROMPTS.get(player.getUUID());
@@ -62,8 +62,8 @@ public final class Overcast {
 		if (prompt == null || stale || prompt.spell() != spell || now > prompt.until()) {
 			boolean recent = prompt != null && !stale && now <= prompt.until() && prompt.until() - now > CONFIRM_TICKS - 10;
 			PROMPTS.put(player.getUUID(), new Prompt(spell, now + CONFIRM_TICKS));
-			player.sendOverlayMessage(Component.translatable("message.wildercord.overcast_prompt", mana, cost, Circles.ordinal(active))
-				.withColor(0xFF8A5A));
+			player.displayClientMessage(Component.translatable("message.wildercord.overcast_prompt", mana, cost, Circles.ordinal(active))
+				.withColor(0xFF8A5A), true);
 			// Not again for a prompt made moments ago (switching spells back and forth).
 			if (!recent) {
 				Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.7F, 0.5F);
@@ -111,8 +111,8 @@ public final class Overcast {
 		Vfx.radial(level, ParticleTypes.CRIT, heart, 10, 0.4);
 		Sigils.send(level, SigilOption.flat(SigilOption.CRACKED, 0xFF5A3A, 1.6F, 30, 0.0F), player.position().add(0, 0.07, 0));
 		Fx.sound(level, heart, dev.wildercord.content.WildercordSounds.OVERCAST, 1.0F, 1.0F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.overcast", Circles.ordinal(active), MEND_TICKS / 1200)
-			.withColor(0xFF6A4A));
+		player.displayClientMessage(Component.translatable("message.wildercord.overcast", Circles.ordinal(active), MEND_TICKS / 1200)
+			.withColor(0xFF6A4A), true);
 		Grimoire.feat(player, Feats.OVERCAST);
 	}
 

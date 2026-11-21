@@ -76,7 +76,7 @@ public final class WildSurge {
 	/** Spends a waiting Free Recast. */
 	static void useFreeRecast(ServerPlayer player) {
 		FREE.remove(player.getUUID());
-		player.sendOverlayMessage(Component.translatable("message.wildercord.surge.free_used").withColor(Surge.FREE_RECAST.color));
+		player.displayClientMessage(Component.translatable("message.wildercord.surge.free_used").withColor(Surge.FREE_RECAST.color), true);
 	}
 
 	static void forget(UUID player) {
@@ -400,7 +400,7 @@ public final class WildSurge {
 		Component line = Component.translatable("message.wildercord.wild_surge", Component.translatable(surge.key(), args)).withColor(surge.color);
 		Scheduler.later(18, () -> {
 			if (!player.isRemoved()) {
-				player.sendOverlayMessage(line);
+				player.displayClientMessage(line, true);
 			}
 		});
 	}

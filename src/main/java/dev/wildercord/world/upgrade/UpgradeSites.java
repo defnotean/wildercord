@@ -37,7 +37,7 @@ public final class UpgradeSites extends SavedData {
 		SITE.listOf().fieldOf("sites").forGetter(d->List.copyOf(d.sites.values())),
 		Codec.BOOL.optionalFieldOf("saturated",false).forGetter(d->d.saturated)
 	).apply(i,UpgradeSites::new));
-	private static final SavedDataType<UpgradeSites> TYPE=new SavedDataType<>(Wildercord.id("upgrade_sites"),UpgradeSites::new,CODEC,null);
+	private static final SavedDataType<UpgradeSites> TYPE=new SavedDataType<>("upgrade_sites",UpgradeSites::new,CODEC,null);
 	private final Map<String,Site> sites=new LinkedHashMap<>();
 	private boolean saturated;
 	public UpgradeSites() {}

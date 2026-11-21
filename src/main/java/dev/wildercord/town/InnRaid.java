@@ -89,7 +89,7 @@ public final class InnRaid {
 	/** The raids under way when the server last stopped. */
 	public static final class Ledger extends SavedData {
 		static final Codec<Ledger> CODEC = Saved.CODEC.listOf().optionalFieldOf("raids", List.of()).xmap(Ledger::new, l -> l.raids).codec();
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("inn_raids"), Ledger::new, CODEC, null);
+		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("inn_raids", Ledger::new, CODEC, null);
 
 		private List<Saved> raids;
 
@@ -120,7 +120,7 @@ public final class InnRaid {
 		this.centre = centre;
 		this.tier = tier;
 		this.day = day;
-		this.bar = new ServerBossEvent(UUID.randomUUID(), title(1), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
+		this.bar = new ServerBossEvent(title(1), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS);
 		this.nextWaveAt = level.getGameTime() + 100;
 	}
 
@@ -283,7 +283,7 @@ public final class InnRaid {
 			breathing = true;
 			nextWaveAt = now + InnRaidRules.BREATH_TICKS;
 			for (ServerPlayer player : defenders) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.inn_raid.breath", wave, InnRaidRules.waves(tier)).withColor(COLOR));
+				player.displayClientMessage(Component.translatable("message.wildercord.inn_raid.breath", wave, InnRaidRules.waves(tier)).withColor(COLOR), true);
 			}
 		}
 		if (wave > 0 && !breathing && now > waveDeadline) {
@@ -313,8 +313,8 @@ public final class InnRaid {
 		boolean last = InnRaidRules.lastWave(tier, n);
 		level.playSound(null, BlockPos.containing(centre), SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 3F, 1.1F + 0.05F * n);
 		for (ServerPlayer player : defenders) {
-			player.sendOverlayMessage(Component.translatable(last ? "message.wildercord.inn_raid.last" : "message.wildercord.inn_raid.wave",
-				n, InnRaidRules.waves(tier)).withColor(COLOR));
+			player.displayClientMessage(Component.translatable(last ? "message.wildercord.inn_raid.last" : "message.wildercord.inn_raid.wave",
+				n, InnRaidRules.waves(tier)).withColor(COLOR), true);
 		}
 		// They come together from one side.
 		double side = level.getRandom().nextDouble() * Math.PI * 2;
@@ -360,7 +360,7 @@ public final class InnRaid {
 		mob.setTarget(nearest(defenders(), mob));
 		if (captain) {
 			for (ServerPlayer player : defenders()) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.inn_raid.captain").withColor(COLOR));
+				player.displayClientMessage(Component.translatable("message.wildercord.inn_raid.captain").withColor(COLOR), true);
 			}
 		}
 	}

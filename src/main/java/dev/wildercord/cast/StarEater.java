@@ -313,7 +313,7 @@ public class StarEater extends DungeonBoss {
 			Long last = told.get(player.getUUID());
 			if (last == null || now - last > 200) {
 				told.put(player.getUUID(), now);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.star_eater_reflects", Math.round(STRENGTH[phase])).withColor(ACCENT));
+				player.displayClientMessage(Component.translatable("message.wildercord.star_eater_reflects", Math.round(STRENGTH[phase])).withColor(ACCENT), true);
 			}
 		}
 		Scheduler.later(6, () -> {
@@ -380,7 +380,7 @@ public class StarEater extends DungeonBoss {
 		Fx.sound(level, c, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.4F, 0.7F);
 		for (ServerPlayer player : level.players()) {
 			if (player.distanceTo(this) < 40) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.star_eater_open").withColor(ACCENT));
+				player.displayClientMessage(Component.translatable("message.wildercord.star_eater_open").withColor(ACCENT), true);
 			}
 		}
 	}

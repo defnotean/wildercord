@@ -530,6 +530,6 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 
 	/** A line above a player's hotbar, from it. */
 	protected static void say(ServerPlayer player, Component line) {
-		player.sendOverlayMessage(line);
+		player.displayClientMessage(line, true);
 	}
 }

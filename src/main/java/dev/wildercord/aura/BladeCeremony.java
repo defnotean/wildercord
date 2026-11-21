@@ -97,7 +97,7 @@ public final class BladeCeremony {
 			Long told = TOLD.get(player.getUUID());
 			if (told == null || told != state.settledAt()) {
 				TOLD.put(player.getUUID(), state.settledAt());
-				player.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.already").withColor(0xA89CC8));
+				player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.already").withColor(0xA89CC8), true);
 			}
 			return;
 		}
@@ -140,16 +140,16 @@ public final class BladeCeremony {
 		ServerLevel level = player.level();
 		if (rite.kind() == BondedBlades.Rite.BOND) {
 			BondedBlades.sound(level, hand(player), "aura_bond_kindle", 0.9F, 1.0F);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.kindling").withColor(0xFF000000 | color));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.kindling").withColor(0xFF000000 | color), true);
 		} else {
 			ServerPlayer disciple = disciple(player, rite);
 			if (disciple != null) {
 				disciple.setAttached(BondedBlades.RITE, new BondedBlades.Rite(rite.kind(), now, ticks, color(disciple)));
-				disciple.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.passing_to", Component.literal(player.getGameProfile().name()))
-					.withColor(0xFF000000 | color));
+				disciple.displayClientMessage(Component.translatable("message.wildercord.aura.blade.passing_to", Component.literal(player.getGameProfile().name()))
+					.withColor(0xFF000000 | color), true);
 			}
 			BondedBlades.sound(level, hand(player), "aura_bond_kindle", 0.8F, 1.2F);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.passing").withColor(0xFF000000 | color));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.passing").withColor(0xFF000000 | color), true);
 		}
 	}
 
@@ -166,7 +166,7 @@ public final class BladeCeremony {
 	private static void cancel(ServerPlayer player, Rite rite, String why) {
 		end(player, rite);
 		BondedBlades.sound(player.level(), hand(player), "aura_bond_fail", 0.7F, 1.0F);
-		player.sendOverlayMessage(Component.translatable(why).withColor(0xC8A0A0));
+		player.displayClientMessage(Component.translatable(why).withColor(0xC8A0A0), true);
 		Motes.glows(player.level(), hand(player), 6, 0.2, AuraRules.mix(color(player), 0x6A6478, 0.5), 0.1, 20, new Vec3(0, -0.02, 0), 0.02);
 	}
 
@@ -336,7 +336,7 @@ public final class BladeCeremony {
 		}
 		if (phase == 1 && t == BladeRules.KINDLE_END) {
 			BondedBlades.sound(level, blade, "aura_bond_join", 0.9F, 1.0F);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.joining").withColor(0xFF000000 | color));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.joining").withColor(0xFF000000 | color), true);
 		}
 		// ---- sealing: a ring closing in, the blade blazing.
 		if (phase == 2) {
@@ -346,7 +346,7 @@ public final class BladeCeremony {
 				AuraFx.burst(level, player, blade, Vec3.ZERO, color, 0.5F + 0.004F * (t - BladeRules.JOIN_END), AuraFx.Burst.FLASH);
 			}
 			if (t == BladeRules.JOIN_END) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.sealing").withColor(0xFF000000 | color));
+				player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.sealing").withColor(0xFF000000 | color), true);
 			}
 		}
 	}

@@ -44,11 +44,11 @@ public final class McWorldgen {
 	/** Adds a mob spawn entry via Fabric biome modification API. */
 	public static void addSpawn(BiomeModificationContext context, MobCategory category, EntityType<?> type,
 			int minGroup, int maxGroup, int weight) {
-		addSpawn(context.getMobSpawnSettings(), category, type, minGroup, maxGroup, weight);
+		addSpawn(context.getSpawnSettings(), category, type, minGroup, maxGroup, weight);
 	}
 
-	/** Adds a mob spawn entry directly onto a {@link BiomeModificationContext.MobSpawnSettingsContext}. */
-	public static void addSpawn(BiomeModificationContext.MobSpawnSettingsContext spawns, MobCategory category,
+	/** Adds a mob spawn entry directly onto a {@link BiomeModificationContext.SpawnSettingsContext}. */
+	public static void addSpawn(BiomeModificationContext.SpawnSettingsContext spawns, MobCategory category,
 			EntityType<?> type, int minGroup, int maxGroup, int weight) {
 		spawns.addSpawn(category, new MobSpawnSettings.SpawnerData(type, minGroup, maxGroup), weight);
 	}

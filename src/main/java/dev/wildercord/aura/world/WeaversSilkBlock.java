@@ -45,11 +45,11 @@ public final class WeaversSilkBlock extends Block {
 	private static InteractionResult take(Level level, BlockPos pos, Player who) {
 		if (!(level instanceof ServerLevel server) || !(who instanceof ServerPlayer player)) return InteractionResult.SUCCESS;
 		if (WeaversSilk.bound(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.weavers_silk.bound").withColor(0xC4BEB2));
+			player.displayClientMessage(Component.translatable("message.wildercord.weavers_silk.bound").withColor(0xC4BEB2), true);
 			return InteractionResult.FAIL;
 		}
 		if (guarded(server, pos)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.weavers_silk.guarded").withColor(0xB0473C));
+			player.displayClientMessage(Component.translatable("message.wildercord.weavers_silk.guarded").withColor(0xB0473C), true);
 			return InteractionResult.FAIL;
 		}
 		player.setAttached(WildercordAttachments.WEAVERS_SILK, true);
@@ -58,7 +58,7 @@ public final class WeaversSilkBlock extends Block {
 		dev.wildercord.cast.feel.Feels.sound(server, player.position(), "aura_hollow_matron_climb", .7F, 1.3F);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.ITEM_COBWEB, pos.getX() + 0.5, pos.getY() + 0.4, pos.getZ() + 0.5, 24, 0.4, 0.3, 0.4, 0.05);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.ITEM_COBWEB, player.getX(), player.getY() + 1, player.getZ(), 30, 0.4, 0.7, 0.4, 0.04);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.weavers_silk.take").withColor(0xE2DCCC));
+		player.displayClientMessage(Component.translatable("message.wildercord.weavers_silk.take").withColor(0xE2DCCC), true);
 		return InteractionResult.SUCCESS;
 	}
 

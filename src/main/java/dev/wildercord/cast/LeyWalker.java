@@ -62,7 +62,7 @@ public final class LeyWalker {
 			if (Grimoire.feat(player, Feats.LEY_LINE)) {
 				player.sendSystemMessage(Component.translatable("message.wildercord.ley_first").withColor(0xB8A0FF));
 			}
-			player.sendOverlayMessage(Component.translatable("message.wildercord.ley_on").withColor(0xB8A0FF));
+			player.displayClientMessage(Component.translatable("message.wildercord.ley_on").withColor(0xB8A0FF), true);
 			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 1.4F);
 			Vfx.emit(player.level(), ParticleTypes.END_ROD, player.position().add(0, 0.2, 0), 8, 0.5, 0.02);
 		}
@@ -83,7 +83,7 @@ public final class LeyWalker {
 		if (Grimoire.feat(player, Feats.LEY_CROSSING)) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.ley_crossing_first").withColor(0xD8C8FF));
 		}
-		player.sendOverlayMessage(Component.translatable("message.wildercord.ley_crossing").withColor(0xD8C8FF));
+		player.displayClientMessage(Component.translatable("message.wildercord.ley_crossing").withColor(0xD8C8FF), true);
 		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.7F, 1.0F);
 		Fx.sound(player.level(), player.position(), SoundEvents.BEACON_AMBIENT, 0.35F, 1.5F);
 		Vfx.emit(player.level(), new dev.wildercord.content.MaterialOption(dev.wildercord.content.MaterialOption.ARCANE, 0xD8CCFF, 0.14F, 40),

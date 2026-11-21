@@ -123,7 +123,7 @@ public final class ShrineCatContent {
 				recalled++;
 			}
 			if (recalled > 0) {
-				player.sendOverlayMessage(Component.literal("Rang the Suzu Cat-Bell Charm — called " + recalled + " companion cat(s)."));
+				player.displayClientMessage(Component.literal("Rang the Suzu Cat-Bell Charm — called " + recalled + " companion cat(s)."), true);
 			}
 			return InteractionResult.SUCCESS_SERVER;
 		}

@@ -99,8 +99,8 @@ public final class MasterGauntlet {
 			say(player, "lost", ChatFormatting.RED);
 			return false;
 		}
-		player.sendOverlayMessage(Component.translatable("message.wildercord.gauntlet.next", run.index + 1, run.order.size(),
-			MasterVictories.schoolName(run.order.get(run.index))).withStyle(ChatFormatting.GOLD));
+		player.displayClientMessage(Component.translatable("message.wildercord.gauntlet.next", run.index + 1, run.order.size(),
+			MasterVictories.schoolName(run.order.get(run.index))).withStyle(ChatFormatting.GOLD), true);
 		return true;
 	}
 

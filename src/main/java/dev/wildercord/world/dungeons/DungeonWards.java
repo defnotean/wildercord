@@ -50,7 +50,7 @@ public final class DungeonWards extends SavedData {
 		Codec.LONG.listOf().optionalFieldOf("placed", List.of()).forGetter(w -> new ArrayList<>(w.placed)),
 		BoundingBox.CODEC.listOf().optionalFieldOf("rooms", List.of()).forGetter(w -> w.rooms)
 	).apply(i, DungeonWards::new));
-	private static final SavedDataType<DungeonWards> TYPE = new SavedDataType<>(Wildercord.id("dungeon_wards"), DungeonWards::new, CODEC, null);
+	private static final SavedDataType<DungeonWards> TYPE = new SavedDataType<>("dungeon_wards", DungeonWards::new, CODEC, null);
 
 	/**
 	 * Rooms written down by pieces being built, not yet in their world's record. Pieces are built wherever chunks
@@ -297,8 +297,8 @@ public final class DungeonWards extends SavedData {
 		TOLD.put(player.getUUID(), now);
 		level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 0.8F, 0.6F);
 		if (player instanceof ServerPlayer serverPlayer) {
-			serverPlayer.sendOverlayMessage(Component.translatableWithFallback("message.wildercord.warded",
-				"These walls are warded: the only way in is through the dungeon").withColor(0xB48CFF));
+			serverPlayer.displayClientMessage(Component.translatableWithFallback("message.wildercord.warded",
+				"These walls are warded: the only way in is through the dungeon").withColor(0xB48CFF), true);
 		}
 	}
 }

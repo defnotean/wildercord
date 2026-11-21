@@ -112,7 +112,7 @@ public final class LoreJournal {
 	}
 
 	private static void notifyUpdated(ServerPlayer player) {
-		player.sendOverlayMessage(Component.translatable("journal.wildercord.updated", Component.keybind("key.wildercord.lore_journal")).withColor(TITLE));
+		player.displayClientMessage(Component.translatable("journal.wildercord.updated", Component.keybind("key.wildercord.lore_journal")).withColor(TITLE), true);
 		player.level().playSound(null, player.blockPosition(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.6F, 1.2F);
 	}
 

@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.*;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 
 /** A physical warning-window answer; neither a spell nor a tame, with saved player and crab rests. */
@@ -28,7 +29,7 @@ public final class ReedRattle {
         b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
     private static long clock(ServerPlayer p) { return p.level().getServer().overworld().getGameTime(); }
     private static boolean refuse(ServerPlayer p, String reason, Object... args) {
-        p.sendOverlayMessage(Component.translatable("message.wildercord.reed_rattle." + reason, args));
+        p.displayClientMessage(Component.translatable("message.wildercord.reed_rattle." + reason, args), true);
         return false;
     }
 
@@ -46,7 +47,7 @@ public final class ReedRattle {
         p.getCooldowns().addCooldown(stack, REST_TICKS);
         stack.hurtAndBreak(1, p, hand.asEquipmentSlot());
         Feels.sound(p.level(), crab.position(), "wetland_reed_rattle", .6F, 1);
-        p.sendOverlayMessage(Component.translatable("message.wildercord.reed_rattle.settle"));
+        p.displayClientMessage(Component.translatable("message.wildercord.reed_rattle.settle"), true);
         return true;
     }
 

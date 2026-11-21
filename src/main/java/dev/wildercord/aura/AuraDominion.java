@@ -134,13 +134,13 @@ public final class AuraDominion {
         if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return false;
 		long now = player.level().getGameTime();
 		if (!Aura.holdsWeapon(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8), true);
 			return false;
 		}
 		AuraPresence.Timers timers = AuraPresence.timers(player);
 		if (now < timers.dominionReadyAt()) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.dominion_resting", (timers.dominionReadyAt() - now + 19) / 20)
-				.withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.dominion_resting", (timers.dominionReadyAt() - now + 19) / 20)
+				.withColor(0xA89CC8), true);
 			return false;
 		}
 		WildercordConfig.AuraHeights settings = Config.get().aura().heights();

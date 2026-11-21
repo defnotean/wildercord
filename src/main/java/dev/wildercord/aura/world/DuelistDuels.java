@@ -234,15 +234,15 @@ public final class DuelistDuels {
 			return;
 		}
 		if (duelist.inDuel()) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.duelist.busy", name).withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.duelist.busy", name).withColor(0xA89CC8), true);
 			return;
 		}
 		if (inDuel(player) || Duels.inDuel(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.duel_busy").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.duel_busy").withColor(0xA89CC8), true);
 			return;
 		}
 		if (!Aura.enabled(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.disabled").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.disabled").withColor(0xA89CC8), true);
 			return;
 		}
 		if (now < duelist.restUntil) {

@@ -2884,7 +2884,7 @@ public class CordScreen extends Screen {
 				case 1 -> {
 					String code = dev.wildercord.spell.SpellCodes.encode(spells.get(editing));
 					minecraft.keyboardHandler.setClipboard(code);
-					minecraft.player.sendOverlayMessage(Component.translatable("message.wildercord.code_copied", code).withColor(0x7FE0F0));
+					minecraft.player.displayClientMessage(Component.translatable("message.wildercord.code_copied", code).withColor(0x7FE0F0), true);
 				}
 				case 2 -> paste();
 				case 3 -> ClientPlayNetworking.send(new WildercordNetworking.InscribeScroll(editing));
@@ -2900,7 +2900,7 @@ public class CordScreen extends Screen {
 	private void paste() {
 		String code = dev.wildercord.spell.SpellCodes.find(minecraft.keyboardHandler.getClipboard());
 		if (code == null) {
-			minecraft.player.sendOverlayMessage(Component.translatable("message.wildercord.code_none").withColor(0xE06060));
+			minecraft.player.displayClientMessage(Component.translatable("message.wildercord.code_none").withColor(0xE06060), true);
 			return;
 		}
 		List<String> decoded = dev.wildercord.spell.SpellCodes.decode(code);
@@ -2910,8 +2910,8 @@ public class CordScreen extends Screen {
             if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
                 || !pastedLesson.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
                 || !dev.wildercord.player.MasterStudies.knows(minecraft.player, pastedLesson) || !dev.wildercord.player.MasterStudies.eligible(minecraft.player, pastedLesson)) {
-                minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.cord.lesson_needs", pastedLesson.name, pastedLesson.title, pastedLesson.numeral,
-                    pastedLesson.featName, pastedLesson.shape.name(), pastedLesson.name).withColor(0xE06060));
+                minecraft.player.displayClientMessage(Component.translatable("screen.wildercord.cord.lesson_needs", pastedLesson.name, pastedLesson.title, pastedLesson.numeral,
+                    pastedLesson.featName, pastedLesson.shape.name(), pastedLesson.name).withColor(0xE06060), true);
                 return;
             }
         }
@@ -2920,7 +2920,7 @@ public class CordScreen extends Screen {
             if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
                 || !dev.wildercord.spell.ExciseRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
                 || !dev.wildercord.player.MasterStudies.knowsExcise(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleExcise(minecraft.player)) {
-                minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.cord.excise_needs").withColor(0xE06060));
+                minecraft.player.displayClientMessage(Component.translatable("screen.wildercord.cord.excise_needs").withColor(0xE06060), true);
                 return;
             }
         }
@@ -2929,7 +2929,7 @@ public class CordScreen extends Screen {
             if (passivePage || tier() != CordTier.ECHO || editing >= CordTier.ECHO.spells || raw.size() != decoded.size()
                 || !dev.wildercord.spell.ReweaveRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
                 || !dev.wildercord.player.MasterStudies.knowsReweave(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleReweave(minecraft.player)) {
-                minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.cord.reweave_needs").withColor(0xE06060));
+                minecraft.player.displayClientMessage(Component.translatable("screen.wildercord.cord.reweave_needs").withColor(0xE06060), true);
                 return;
             }
         }
@@ -2938,7 +2938,7 @@ public class CordScreen extends Screen {
 			if (passivePage || tier() != CordTier.ECHO || raw.size() != decoded.size()
 				|| !dev.wildercord.spell.RelayRules.valid(raw) || decoded.stream().anyMatch(id -> !book().knows(id))
 				|| !dev.wildercord.player.MasterStudies.knowsRelay(minecraft.player) || !dev.wildercord.player.MasterStudies.eligibleRelay(minecraft.player)) {
-				minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.cord.relay_needs").withColor(0xE06060));
+				minecraft.player.displayClientMessage(Component.translatable("screen.wildercord.cord.relay_needs").withColor(0xE06060), true);
 				return;
 			}
 		}
@@ -2954,9 +2954,9 @@ public class CordScreen extends Screen {
 		}
 		spells.set(editing, kept);
 		sync(editing);
-		minecraft.player.sendOverlayMessage(missing == 0
+		minecraft.player.displayClientMessage(missing == 0
 			? Component.translatable("message.wildercord.code_loaded").withColor(0x7FE0F0)
-			: Component.translatable("message.wildercord.code_partial", missing).withColor(0xF0C440));
+			: Component.translatable("message.wildercord.code_partial", missing).withColor(0xF0C440), true);
 	}
 
 	/**

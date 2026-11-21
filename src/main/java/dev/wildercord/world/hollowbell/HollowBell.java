@@ -28,7 +28,7 @@ public final class HollowBell extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Float> MARK_Z = SynchedEntityData.defineId(HollowBell.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> ACROSS = SynchedEntityData.defineId(HollowBell.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> SECOND = SynchedEntityData.defineId(HollowBell.class, EntityDataSerializers.BOOLEAN);
-	private final ServerBossEvent bar = new ServerBossEvent(getUUID(), getType().getDescription(), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar = new ServerBossEvent(getType().getDescription(), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.NOTCHED_10);
 	private BlockPos plinth, belfry;
 	private UUID lockedTarget;
 	private final Set<UUID> contributors = new LinkedHashSet<>(), announced = new HashSet<>();

@@ -183,14 +183,14 @@ public final class ManaStorm {
 				still.add(player.getUUID());
 				player.setAttached(STORM_UNTIL, now + 50);
 				if (inside.add(player.getUUID())) {
-					player.sendOverlayMessage(Component.translatable("message.wildercord.storm_start").withColor(VIOLET));
+					player.displayClientMessage(Component.translatable("message.wildercord.storm_start").withColor(VIOLET), true);
 					WorldEvents.soundFor(player, EventSounds.STORM_START, 1.0F, 1.0F);
 				}
 			}
 			for (UUID id : inside) {
 				if (!still.contains(id) && level.getServer().getPlayerList().getPlayer(id) instanceof ServerPlayer gone) {
 					gone.removeAttached(STORM_UNTIL);
-					gone.sendOverlayMessage(Component.translatable("message.wildercord.storm_left").withColor(0xB8A8D8));
+					gone.displayClientMessage(Component.translatable("message.wildercord.storm_left").withColor(0xB8A8D8), true);
 				}
 			}
 			inside.retainAll(still);
@@ -265,7 +265,7 @@ public final class ManaStorm {
 		for (UUID id : inside) {
 			if (level.getServer().getPlayerList().getPlayer(id) instanceof ServerPlayer player) {
 				player.removeAttached(STORM_UNTIL);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.storm_end").withColor(0xB8A8D8));
+				player.displayClientMessage(Component.translatable("message.wildercord.storm_end").withColor(0xB8A8D8), true);
 				WorldEvents.soundFor(player, EventSounds.STORM_END, 0.9F, 1.0F);
 			}
 		}
@@ -308,9 +308,9 @@ public final class ManaStorm {
 		ElementFx.ring(level, at, new Vec3(0, 1, 0), VIOLET, 0.3, 2.2, 0.08, 10);
 		Sigils.flash(level, at.add(player.getLookAngle().scale(1.5)), CORE, 1.6F);
 		switch (surge) {
-			case BIGGER -> player.sendOverlayMessage(Component.translatable("message.wildercord.surge.bigger").withColor(VIOLET));
+			case BIGGER -> player.displayClientMessage(Component.translatable("message.wildercord.surge.bigger").withColor(VIOLET), true);
 			case ECHO -> {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.surge.echo").withColor(VIOLET));
+				player.displayClientMessage(Component.translatable("message.wildercord.surge.echo").withColor(VIOLET), true);
 				Scheduler.later(10, () -> {
 					if (!player.isRemoved() && player.isAlive() && player.level() == level) {
 						ElementFx.ring(level, player.position().add(0, 1, 0), new Vec3(0, 1, 0), CORE, 0.2, 1.6, 0.06, 8);
@@ -368,8 +368,8 @@ public final class ManaStorm {
 		}
 		List<RuneDef> spell = List.of(shape, element);
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(spell);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.surge.element",
-			Component.translatable("element.wildercord." + element.element())).withColor(RuneColors.of(element)));
+		player.displayClientMessage(Component.translatable("message.wildercord.surge.element",
+			Component.translatable("element.wildercord." + element.element())).withColor(RuneColors.of(element)), true);
 		if (compiled.isEmpty()) {
 			return;
 		}
@@ -380,7 +380,7 @@ public final class ManaStorm {
 	/** The storm's mana kicks back: a jolt and a shove, never enough to kill, and a little mana spilled. */
 	private static void backfire(ServerPlayer player) {
 		ServerLevel level = player.level();
-		player.sendOverlayMessage(Component.translatable("message.wildercord.surge.backfire").withColor(0xFF8C8C));
+		player.displayClientMessage(Component.translatable("message.wildercord.surge.backfire").withColor(0xFF8C8C), true);
 		float hurt = Math.min(3.0F, player.getHealth() - 2.0F);
 		if (hurt > 0 && !player.isCreative()) {
 			player.hurtServer(level, level.damageSources().magic(), hurt);

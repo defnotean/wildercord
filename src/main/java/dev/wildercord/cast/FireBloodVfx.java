@@ -3,6 +3,7 @@ package dev.wildercord.cast;
 import dev.wildercord.cast.feel.FeelCtx;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -544,7 +545,7 @@ public final class FireBloodVfx {
 					1.3 + 0.2 * k, 0.05, 1, 44 - 10 * k);
 			});
 		}
-		Vfx.radial(level, new net.minecraft.core.particles.ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.IRON_NUGGET), c, 4, 0.15);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(net.minecraft.world.item.Items.IRON_NUGGET)), c, 4, 0.15);
 		snd(level, c, "blood_rend", 0.9F, 1.0F);
 	}
 

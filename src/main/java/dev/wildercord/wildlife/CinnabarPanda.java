@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -140,7 +141,7 @@ public class CinnabarPanda extends Animal {
 			return;
 		}
 		if (pose != RedPandaRules.IDLE) {
-			if (pose == RedPandaRules.SLEEP && !RedPandaRules.drowsy(level.getOverworldClockTime()) && left > 20) {
+			if (pose == RedPandaRules.SLEEP && !RedPandaRules.drowsy(dev.wildercord.compat.McTime.overworldClock(level)) && left > 20) {
 				entityData.set(LEFT, left = 20);
 			}
 			if (pose == RedPandaRules.EAT && left % 12 == 0) {
@@ -159,7 +160,7 @@ public class CinnabarPanda extends Animal {
 		if (isInWater()) {
 			return;
 		}
-		if (RedPandaRules.drowsy(level.getOverworldClockTime()) && random.nextInt(RedPandaRules.SLEEP_ODDS) == 0 && onGround()) {
+		if (RedPandaRules.drowsy(dev.wildercord.compat.McTime.overworldClock(level)) && random.nextInt(RedPandaRules.SLEEP_ODDS) == 0 && onGround()) {
 			pose(RedPandaRules.SLEEP, RedPandaRules.SLEEP_TICKS + random.nextInt(300));
 		} else if (random.nextInt(RedPandaRules.WASH_ODDS) == 0) {
 			pose(RedPandaRules.WASH, RedPandaRules.WASH_TICKS);
@@ -217,7 +218,7 @@ public class CinnabarPanda extends Animal {
 	/** A mouthful: crumbs of berry and a chew. */
 	private void munch(ServerLevel level) {
 		double yaw = getYRot() * Mth.DEG_TO_RAD;
-		level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Items.SWEET_BERRIES), getX() - Math.sin(yaw) * 0.3, getY() + 0.6,
+		level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.SWEET_BERRIES)), getX() - Math.sin(yaw) * 0.3, getY() + 0.6,
 			getZ() + Math.cos(yaw) * 0.3, 3, 0.08, 0.05, 0.08, 0.02);
 		playSound(SoundEvents.PANDA_EAT, 0.4F, 1.8F);
 	}

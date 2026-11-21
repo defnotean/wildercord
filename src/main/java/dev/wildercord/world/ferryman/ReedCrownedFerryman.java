@@ -12,6 +12,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.LodestoneTracker;
 import net.minecraft.world.level.Level;
@@ -32,7 +33,7 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Float> MARK_X2 = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> MARK_Z2 = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> PAIRED = SynchedEntityData.defineId(ReedCrownedFerryman.class, EntityDataSerializers.BOOLEAN);
-	private final ServerBossEvent bar = new ServerBossEvent(getUUID(), getType().getDescription(), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar = new ServerBossEvent(getType().getDescription(), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.NOTCHED_10);
 	private BlockPos mooring, bell;
 	private UUID lockedTarget;
 	private final Set<UUID> contributors = new LinkedHashSet<>(), announced = new HashSet<>();

@@ -35,16 +35,16 @@ public final class TombReliquaryEntity extends BlockEntity {
 	public BlockPos arena(){return worldPosition.relative(getBlockState().getValue(TombReliquary.FACING).getOpposite(),8);}
 	public void use(ServerPlayer p) {
 		if(!(level instanceof ServerLevel server) || p.isSpectator() || !p.isAlive() || p.distanceToSqr(Vec3.atCenterOf(worldPosition))>25 || !Config.get().auraWorld().swordTombs())return;
-		if(!authentic){p.sendOverlayMessage(Component.translatable("message.wildercord.tomb.empty"));return;}
+		if(!authentic){p.displayClientMessage(Component.translatable("message.wildercord.tomb.empty"), true);return;}
 		if(cleared){claim(p);return;}
-		if(guardian!=null){p.sendOverlayMessage(Component.translatable("message.wildercord.tomb.active"));return;}
+		if(guardian!=null){p.displayClientMessage(Component.translatable("message.wildercord.tomb.active"), true);return;}
 		if(!SwordTombRules.gate(Aura.stage(p),AuraRules.EDGE,Aura.enabled(p),Aura.holdsWeapon(p))){
-			p.sendOverlayMessage(Component.translatable("message.wildercord.tomb.challenge"));return;
+			p.displayClientMessage(Component.translatable("message.wildercord.tomb.challenge"), true);return;
 		}
-		if(server.getDifficulty()==Difficulty.PEACEFUL){p.sendOverlayMessage(Component.translatable("message.wildercord.tomb.peaceful"));return;}
+		if(server.getDifficulty()==Difficulty.PEACEFUL){p.displayClientMessage(Component.translatable("message.wildercord.tomb.peaceful"), true);return;}
 		var home=arena();
 		if(!server.hasChunkAt(home) || !server.getBlockState(home).isAir() || !server.getBlockState(home.above()).isAir() || !server.getBlockState(home.above(2)).isAir()){
-			p.sendOverlayMessage(Component.translatable("message.wildercord.tomb.obstructed"));return;
+			p.displayClientMessage(Component.translatable("message.wildercord.tomb.obstructed"), true);return;
 		}
 		var keeper=SwordTombs.KEEPER.create(server,EntitySpawnReason.TRIGGERED);if(keeper==null)return;
 		keeper.bind(worldPosition,home);keeper.snapTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
@@ -56,7 +56,7 @@ public final class TombReliquaryEntity extends BlockEntity {
 	public void participant(ServerPlayer p){if(participants.size()<64 && p.level()==level && p.isAlive() && !p.isCreative() && !p.isSpectator() && p.distanceToSqr(Vec3.atCenterOf(arena()))<24*24 && participants.add(p.getUUID()))setChanged();}
 	public void defeated(UUID id){if(!authentic || cleared || !Objects.equals(guardian,id))return;cleared=true;guardian=null;state(2);setChanged();}
 	private void claim(ServerPlayer p) {
-		if(!participants.contains(p.getUUID()) || !claimed.add(p.getUUID())){p.sendOverlayMessage(Component.translatable("message.wildercord.tomb.spent"));return;}
+		if(!participants.contains(p.getUUID()) || !claimed.add(p.getUUID())){p.displayClientMessage(Component.translatable("message.wildercord.tomb.spent"), true);return;}
 		setChanged();
 		// Two different scrolls; the favoured tomb source already excludes non-scrollable parts.
 		var random=new Random(worldPosition.asLong()^p.getUUID().getLeastSignificantBits());

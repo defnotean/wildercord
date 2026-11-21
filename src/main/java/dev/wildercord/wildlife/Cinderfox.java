@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.Affinities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -144,7 +145,7 @@ public class Cinderfox extends TamableAnimal {
 				if (brush((ServerLevel) level())) {
 					held.hurtAndBreak(16, player, hand.asEquipmentSlot());
 				} else {
-					player.sendOverlayMessage(Component.translatable("message.wildercord.cinderfox.brushed"));
+					player.displayClientMessage(Component.translatable("message.wildercord.cinderfox.brushed"), true);
 				}
 			}
 			return InteractionResult.SUCCESS;
@@ -162,7 +163,7 @@ public class Cinderfox extends TamableAnimal {
 
 	/** A brushing: today's Ember Tuft, if it hasn't given one today. */
 	public boolean brush(ServerLevel level) {
-		long today = WildlifeRules.day(level.getOverworldClockTime());
+		long today = WildlifeRules.day(dev.wildercord.compat.McTime.overworldClock(level));
 		if (entityData.get(DATA_BRUSHED) == today || isBaby()) {
 			return false;
 		}

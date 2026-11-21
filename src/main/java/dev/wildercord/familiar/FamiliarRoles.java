@@ -37,7 +37,7 @@ public final class FamiliarRoles {
      if(!p.level().hasChunkAt(pos))continue;var state=p.level().getBlockState(pos);
      if(state.getBlock() instanceof CropBlock crop&&crop.isMaxAge(state)) {
       dev.wildercord.cast.Fx.sendParticles(p.level(), ParticleTypes.HAPPY_VILLAGER,pos.getX()+.5,pos.getY()+.8,pos.getZ()+.5,5,.3,.2,.3,0);
-      p.sendOverlayMessage(Component.translatable("message.wildercord.familiar_harvest"));return true;
+      p.displayClientMessage(Component.translatable("message.wildercord.familiar_harvest"), true);return true;
      }
     }
     return false;

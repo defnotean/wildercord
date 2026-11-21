@@ -57,7 +57,7 @@ public final class MossveilCowl{
    ((MossveilEffectNotice)(Object)p).mossveil$updated(old,false,source);
    if(!paidCurrent(p,world,worn,source,sourceBody,body,old,home,facts)||old.getDuration()!=after)return;
    p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,20,0));
-   if(paidCurrent(p,world,worn,source,sourceBody,body,old,home,facts)&&old.getDuration()==after){MossveilFilterCue.send(p,source,trim);p.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.mossveil.trim",trim));dev.wildercord.cast.feel.Feels.sound(world,p.position(),"mossveil_filter",.3F,1);}
+   if(paidCurrent(p,world,worn,source,sourceBody,body,old,home,facts)&&old.getDuration()==after){MossveilFilterCue.send(p,source,trim);p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.mossveil.trim",trim), true);dev.wildercord.cast.feel.Feels.sound(world,p.position(),"mossveil_filter",.3F,1);}
   }finally{a.clear();a.operating=false;}
  }
  private static boolean paidCurrent(ServerPlayer p,ServerLevel world,ItemStack worn,MossveilDormouse source,Vec3 sourceBody,Vec3 body,MobEffectInstance old,MossveilHome.Home home,Facts facts){return actor(p)&&p.level()==world&&p.position().equals(body)&&p.getItemBySlot(EquipmentSlot.HEAD)==worn&&worn.is(ITEM)&&source.live(world)&&source.isOwnedBy(p)&&source.isOrderedToSit()&&source.isInSittingPose()&&source.position().equals(sourceBody)&&p.distanceToSqr(source)<=9&&p.hasLineOfSight(source)&&home.current()&&p.getEffect(MobEffects.POISON)==old&&facts.matches(old);}

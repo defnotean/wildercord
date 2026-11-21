@@ -32,8 +32,8 @@ public final class Rhythm {
 			float pitch = 0.9F + 0.25F * stacks;
 			Fx.sound(player.level(), player.position(), SoundEvents.NOTE_BLOCK_CHIME, 0.8F, pitch);
 			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, pitch);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.rhythm", stacks, Math.round(stacks * POWER_PER_STACK * 100))
-				.withColor(0xF5D56A).withStyle(ChatFormatting.BOLD));
+			player.displayClientMessage(Component.translatable("message.wildercord.rhythm", stacks, Math.round(stacks * POWER_PER_STACK * 100))
+				.withColor(0xF5D56A).withStyle(ChatFormatting.BOLD), true);
 			TechniqueVfx.rhythm(player.level(), player, stacks);
 			if (stacks >= MAX) {
 				Grimoire.feat(player, Feats.RHYTHM);

@@ -167,7 +167,7 @@ public final class Affinities {
 			WEAK_STRIKES.merge(target.getUUID(), 1, Integer::sum);
 			WEAK_AT.put(target.getUUID(), cast.level.getGameTime());
 		}
-		if (source.is(DamageTypeTags.IS_FREEZING) && target.is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
+		if (source.is(DamageTypeTags.IS_FREEZING) && target.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
 			multiplier /= VANILLA_FREEZE;
 		}
 		if (verdict == Affinity.Verdict.RESISTED && wetCounted && !Effects.soulBurning()) {

@@ -145,7 +145,7 @@ public final class RuneReadings {
 		}
 		Component name = RuneItem.runeName(rune).withColor(RuneColors.of(rune));
 		if (stage == RuneReading.Stage.GLIMPSED) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.rune_glimpsed", name).withStyle(ChatFormatting.GRAY));
+			player.displayClientMessage(Component.translatable("message.wildercord.rune_glimpsed", name).withStyle(ChatFormatting.GRAY), true);
 		} else if (stage == RuneReading.Stage.UNDERSTOOD) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.rune_understood", name).withColor(0xC8D8F0));
 			Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.6F, 1.25F);

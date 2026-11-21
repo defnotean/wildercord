@@ -100,7 +100,7 @@ public final class Residues {
 	/** One dimension's residues, saved with it. */
 	static final class Record extends SavedData {
 		static final Codec<Record> CODEC = Row.CODEC.listOf().xmap(Record::new, Record::rows);
-		static final SavedDataType<Record> TYPE = new SavedDataType<>(Wildercord.id("residues"), Record::new, CODEC, null);
+		static final SavedDataType<Record> TYPE = new SavedDataType<>("residues", Record::new, CODEC, null);
 
 		final ResidueLedger<Blocks> ledger = new ResidueLedger<>();
 

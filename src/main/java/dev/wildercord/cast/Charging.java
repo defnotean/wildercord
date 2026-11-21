@@ -163,7 +163,7 @@ public final class Charging {
 					dev.wildercord.cast.feel.Feels.step(performance.stage()));
 			}
 			if (performance.shown()) {
-				player.sendOverlayMessage(describe(performance));
+				player.displayClientMessage(describe(performance), true);
 			}
 		}
 	}
@@ -257,7 +257,7 @@ public final class Charging {
 		}
 		stop(player);
 		FIZZLED.add(player.getUUID());
-		player.sendOverlayMessage(Component.translatable("message.wildercord.charge_interrupted").withStyle(ChatFormatting.GRAY));
+		player.displayClientMessage(Component.translatable("message.wildercord.charge_interrupted").withStyle(ChatFormatting.GRAY), true);
 		Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
 		return true;
 	}
@@ -406,7 +406,7 @@ public final class Charging {
 		Motes.burst(level, at, 8, 0xFFFFFF, 0.1, 12, 0.36);
 		dev.wildercord.cast.feel.Feels.sound(level, at, "overchannel_backfire", 0.9F, 1.0F);
 		Fx.sound(level, at, WildercordSounds.MAGIC_BREAK, 0.6F, 0.8F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.overchannel.backfire").withColor(0xFF6A5A));
+		player.displayClientMessage(Component.translatable("message.wildercord.overchannel.backfire").withColor(0xFF6A5A), true);
 		WildSurge.fizzle(player);
 	}
 
@@ -435,7 +435,7 @@ public final class Charging {
 		if (held > MAX_HOLD || Spellbooks.tier(player) == null || !player.isAlive() || player.isSpectator()) {
 			stop(player);
 			FIZZLED.add(player.getUUID());
-			player.sendOverlayMessage(Component.translatable("message.wildercord.charge_fizzled").withStyle(ChatFormatting.GRAY));
+			player.displayClientMessage(Component.translatable("message.wildercord.charge_fizzled").withStyle(ChatFormatting.GRAY), true);
 			Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
 		}
 	}

@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -148,7 +149,7 @@ final class FusedFrostVfx {
 		Vec3 c = centre(t);
 		ElementFx.ring(level, t.position().add(0, 0.1, 0), UP, GALE, width(t) + 0.5, 0.2, 0.035, 7);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, c, 4, 0.3, 0.02);
-		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.SNOWBALL), c, 3, 0.25, 0.05);
+		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.SNOWBALL)), c, 3, 0.25, 0.05);
 	}
 
 	/** The storm blows itself out: a last ring of wind and the snow thrown clear. */
@@ -412,7 +413,7 @@ final class FusedFrostVfx {
 		Vec3 at = c.add(dir.scale(r));
 		Sigils.flash(level, at, ElementFx.FROST.secondary(), 0.9F);
 		ElementFx.ring(level, at, dir, CLOCK_ICE, 0.1, 0.6, 0.03, 6);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), at, 5, 0.12);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ICE)), at, 5, 0.12);
 		Feels.sound(level, at, "frost_tick", 0.8F, 1.5F);
 	}
 
@@ -455,7 +456,7 @@ final class FusedFrostVfx {
 			ElementFx.slash(level, hinge, side, bulge, ElementFx.FROST.secondary(), 0.52, 2.0, 0.06, 2, 6);
 		}
 		ElementFx.drip(level, c, 0.25, 5);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), c, 6, 0.15);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ICE)), c, 6, 0.15);
 		ElementFx.ring(level, c, UP, ElementFx.BLOOD.secondary(), 0.15, w + 0.7, 0.05, 7);
 		ElementFx.ring(level, c, UP, BLOOD_ICE, 0.05, w + 0.4, 0.035, 11);
 		Sigils.flash(level, c, BLOOD_ICE, 1.2F);
@@ -634,7 +635,7 @@ final class FusedFrostVfx {
 		ElementFx.flatSigil(level, feet, SigilOption.CRACKED, ElementFx.EARTH.secondary(), 0.8 + w * 0.5, 22, 0.0);
 		ElementFx.flatSigil(level, feet.add(0, 0.01, 0), SigilOption.STAR, ElementFx.ARCANE.primary(), 0.5 + w * 0.4, 22, 0.06);
 		Sigils.flash(level, c, AMETHYST_LIGHT, 1.4F);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.AMETHYST_SHARD), c, 10, 0.18);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.AMETHYST_SHARD)), c, 10, 0.18);
 		Fx.sound(level, feet, SoundEvents.AMETHYST_CLUSTER_PLACE, 1.0F, 0.9F);
 		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.2F);
 		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_ping", 0.8F, 1.0F);
@@ -668,7 +669,7 @@ final class FusedFrostVfx {
 			Vec3 at = t.position().add(Math.cos(a) * (w * 0.5 + 0.3), 0.3 + r.nextDouble() * t.getBbHeight() * 0.8, Math.sin(a) * (w * 0.5 + 0.3));
 			ElementFx.ray(level, at, at.add(0, 0.35, 0), i == 0 ? AMETHYST_LIGHT : AMETHYST_PALE, 0.03, 8);
 		}
-		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.AMETHYST_SHARD), c, 1, 0.4, 0.0);
+		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.AMETHYST_SHARD)), c, 1, 0.4, 0.0);
 	}
 
 	/** Something struck the ally: shards of amethyst fly off its armour into the striker and cut it. */
@@ -683,7 +684,7 @@ final class FusedFrostVfx {
 			ElementFx.ray(level, from.add(ElementFx.randomDir(r).scale(0.15)), b.add(ElementFx.randomDir(r).scale(0.25)), i == 1 ? AMETHYST_PALE : AMETHYST,
 				0.035, 6);
 		}
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.AMETHYST_SHARD), b, 8, 0.2);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.AMETHYST_SHARD)), b, 8, 0.2);
 		Vec3 normal = ElementFx.randomDir(r);
 		ElementFx.slash(level, b, normal, ElementFx.inPlane(normal, r.nextDouble() * Math.PI * 2), AMETHYST_LIGHT, 0.45, 2.0, 0.08, 1, 6);
 		dev.wildercord.cast.feel.Feels.sound(level, b, "earth_ping", 0.9F, 1.0F);

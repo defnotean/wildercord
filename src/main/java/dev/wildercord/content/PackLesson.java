@@ -84,8 +84,8 @@ public final class PackLesson {
 	private static void openSaved(ServerPlayer player, Lesson lesson, long request) {
 		if (!connected(player)) return;
 		if (!MasterStudies.hasLesson(player, lesson) || !MasterStudies.knows(player, lesson) && !MasterStudies.mayStudy(player, lesson)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord." + lesson.path + "_lesson."
-				+ (MasterStudies.hasLesson(player, lesson) ? "locked" : "uncopied")));
+			player.displayClientMessage(Component.translatable("message.wildercord." + lesson.path + "_lesson."
+				+ (MasterStudies.hasLesson(player, lesson) ? "locked" : "uncopied")), true);
 			ServerPlayNetworking.send(player, new Show(lesson.ordinal(), 0, -1, false, false, request));
 			return;
 		}
@@ -129,7 +129,7 @@ public final class PackLesson {
 
 	private static void interrupted(ServerPlayer player, Reading reading) {
 		if (player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player) return;
-		player.sendOverlayMessage(Component.translatable("message.wildercord." + reading.lesson().path + "_lesson.interrupted"));
+		player.displayClientMessage(Component.translatable("message.wildercord." + reading.lesson().path + "_lesson.interrupted"), true);
 		ServerPlayNetworking.send(player, new Show(reading.lesson().ordinal(), reading.nonce(), -1, false, false, 0));
 	}
 

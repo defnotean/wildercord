@@ -2,6 +2,7 @@ package dev.wildercord.runesmith;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.WildercordItems;
@@ -184,7 +185,7 @@ public final class Contracts {
 	// ------------------------------------------------------------------ the board
 
 	public static long day(ServerPlayer player) {
-		return player.level().getServer().overworld().getOverworldClockTime() / 24000L;
+		return dev.wildercord.compat.McTime.overworldClock(player.level().getServer().overworld()) / 24000L;
 	}
 
 	private static long seed(ServerPlayer player) {
@@ -215,8 +216,8 @@ public final class Contracts {
 					.withStyle(ChatFormatting.GOLD));
 				player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.6F, 1.4F);
 			} else {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.contract_progress", describe(contract), contract.progress(), contract.target())
-					.withStyle(ChatFormatting.GOLD));
+				player.displayClientMessage(Component.translatable("message.wildercord.contract_progress", describe(contract), contract.progress(), contract.target())
+					.withStyle(ChatFormatting.GOLD), true);
 			}
 		}
 	}
@@ -233,7 +234,7 @@ public final class Contracts {
 			player.level().playSound(null, desk, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0F, 1.2F);
 		}
 		// The board opens on the player's screen: today's three contracts, and what was just handed in.
-		long clock = player.level().getServer().overworld().getOverworldClockTime();
+		long clock = dev.wildercord.compat.McTime.overworldClock(player.level().getServer().overworld());
 		// With time standing still (or the board kept from a later day after time was turned back), there's no countdown to show.
 		boolean turning = player.level().getServer().overworld().getGameRules().get(net.minecraft.world.level.gamerules.GameRules.ADVANCE_TIME)
 			&& claim.board().day() <= day(player);

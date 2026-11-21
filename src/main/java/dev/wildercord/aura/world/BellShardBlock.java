@@ -45,11 +45,11 @@ public final class BellShardBlock extends Block {
 	private static InteractionResult touch(Level level, BlockPos pos, Player who) {
 		if (!(level instanceof ServerLevel server) || !(who instanceof ServerPlayer player)) return InteractionResult.SUCCESS;
 		if (BellShard.bound(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.bell_shard.bound").withColor(0x8FBFB0));
+			player.displayClientMessage(Component.translatable("message.wildercord.bell_shard.bound").withColor(0x8FBFB0), true);
 			return InteractionResult.FAIL;
 		}
 		if (guarded(server, pos)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.bell_shard.guarded").withColor(0xC9A46A));
+			player.displayClientMessage(Component.translatable("message.wildercord.bell_shard.guarded").withColor(0xC9A46A), true);
 			return InteractionResult.FAIL;
 		}
 		player.setAttached(WildercordAttachments.BELL_SHARD, true);
@@ -58,7 +58,7 @@ public final class BellShardBlock extends Block {
 		server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.5F, 1.1F);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.GLOW, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 16, 0.3, 0.3, 0.3, 0.02);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.BUBBLE_POP, player.getX(), player.getY() + 1, player.getZ(), 30, 0.5, 0.6, 0.5, 0.05);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.bell_shard.touch").withColor(0x9FE0CC));
+		player.displayClientMessage(Component.translatable("message.wildercord.bell_shard.touch").withColor(0x9FE0CC), true);
 		return InteractionResult.SUCCESS;
 	}
 

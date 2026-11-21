@@ -41,7 +41,7 @@ public final class TemporaryBlocks extends SavedData {
 	}
 
 	static final Codec<TemporaryBlocks> CODEC = Placed.CODEC.listOf().xmap(TemporaryBlocks::new, TemporaryBlocks::all);
-	static final SavedDataType<TemporaryBlocks> TYPE = new SavedDataType<>(Wildercord.id("temporary_blocks"), TemporaryBlocks::new, CODEC, null);
+	static final SavedDataType<TemporaryBlocks> TYPE = new SavedDataType<>("temporary_blocks", TemporaryBlocks::new, CODEC, null);
 
 	/** How often (in ticks) the written-down blocks are looked over. */
 	private static final int SWEEP = 20;

@@ -1,6 +1,7 @@
 package dev.wildercord.client.wildlife;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.spell.ClimateRules;
 import dev.wildercord.wildlife.Cinderfox;
@@ -42,7 +43,7 @@ public final class WildlifeRenderers {
 		public LanternNewtRenderer(EntityRendererProvider.Context c) {super(c,new LanternNewtModel(c.bakeLayer(LANTERN_NEWT)),.25F,texture("lantern_newt"));var light=texture("lantern_newt_glow");glow(s -> light);}
 		@Override public void extractRenderState(dev.wildercord.wildlife.LanternNewt e,WildlifeRenderState s,float partial) {
 			super.extractRenderState(e, s, partial);s.rest=Mth.lerp(partial,e.restO,e.rest);s.air=e.isInWater()?1:0;s.graze=e.browsing()?1:0;s.bow=e.response()>0?1:0;
-			s.glow=dev.wildercord.wildlife.WetlandRules.glow(dev.wildercord.wildlife.WetlandRules.night(e.level().getOverworldClockTime()),e.isInWaterOrRain(),e.response()>0);
+			s.glow=dev.wildercord.wildlife.WetlandRules.glow(dev.wildercord.wildlife.WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(e.level())),e.isInWaterOrRain(),e.response()>0);
 			if(e.response()>0)s.glow*=.8F+.2F*Mth.sin(s.ageInTicks*.25F);
 		}
 	}
@@ -114,7 +115,7 @@ public final class WildlifeRenderers {
 			state.watch = Mth.lerp(partial, stag.watchO, stag.watch);
 			state.bow = Mth.lerp(partial, stag.bowO, stag.bow);
 			state.shed = stag.shedToday();
-			state.glow = WildlifeRules.antlerGlow(ClimateRules.moonPhase(stag.level().getOverworldClockTime()), night(stag.level()));
+			state.glow = WildlifeRules.antlerGlow(ClimateRules.moonPhase(dev.wildercord.compat.McTime.overworldClock(stag.level())), night(stag.level()));
 		}
 	}
 

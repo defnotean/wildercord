@@ -115,11 +115,11 @@ public final class RelayLesson {
 			|| !player.level().clip(new ClipContext(player.getEyePosition(), Vec3.atCenterOf(pos),
 				ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getBlockPos().equals(pos)) return;
 		if (!(player.level().getBlockEntity(pos) instanceof ArchiveLecternBlockEntity lectern) || !quiet(player.level(), pos, lectern)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.relay_lesson.quiet"));
+			player.displayClientMessage(Component.translatable("message.wildercord.relay_lesson.quiet"), true);
 			return;
 		}
 		if (!MasterStudies.hasRelayLesson(player) && !MasterStudies.eligibleRelay(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.relay_lesson.locked"));
+			player.displayClientMessage(Component.translatable("message.wildercord.relay_lesson.locked"), true);
 			return;
 		}
 		if (!MasterStudies.hasRelayLesson(player) && MasterStudies.remember(player, MasterStudyRules.RELAY_COPIED)) {
@@ -132,8 +132,8 @@ public final class RelayLesson {
 	private static void openSaved(ServerPlayer player, long request) {
 		if (!connected(player)) return;
 		if (!MasterStudies.hasRelayLesson(player) || !MasterStudies.knowsRelay(player) && !MasterStudies.mayStudyRelay(player)) {
-			player.sendOverlayMessage(Component.translatable(MasterStudies.hasRelayLesson(player)
-				? "message.wildercord.relay_lesson.locked" : "message.wildercord.relay_lesson.uncopied"));
+			player.displayClientMessage(Component.translatable(MasterStudies.hasRelayLesson(player)
+				? "message.wildercord.relay_lesson.locked" : "message.wildercord.relay_lesson.uncopied"), true);
 			ServerPlayNetworking.send(player, new Show(0, -1, false, false, request));
 			return;
 		}
@@ -174,7 +174,7 @@ public final class RelayLesson {
 
 	private static void interrupted(ServerPlayer player, Reading reading) {
 		if (player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player) return;
-		player.sendOverlayMessage(Component.translatable("message.wildercord.relay_lesson.interrupted"));
+		player.displayClientMessage(Component.translatable("message.wildercord.relay_lesson.interrupted"), true);
 		ServerPlayNetworking.send(player, new Show(reading.nonce(), -1, false, false));
 	}
 

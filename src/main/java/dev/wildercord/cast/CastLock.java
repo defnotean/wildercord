@@ -38,7 +38,7 @@ public final class CastLock {
 			int duration = Math.clamp(ticks, 1, PLAYER_LOCK_CAP);
 			PLAYER_WINDOWS.put(player, new PlayerWindow(now + duration, now + duration + PLAYER_RECOVERY));
 			interrupt(who, duration);
-			player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.control_lock"));
+			player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.control_lock"), true);
 			return;
 		}
 		long until = who.level().getGameTime() + ticks;

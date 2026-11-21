@@ -184,8 +184,8 @@ public final class FallenStars {
 		for (ServerPlayer player : level.players()) {
 			double d = player.position().distanceTo(ground);
 			if (d <= 220 && d > 12) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.star_falls", WorldEvents.direction(player.position(), ground))
-					.withColor(STAR_LIGHT));
+				player.displayClientMessage(Component.translatable("message.wildercord.star_falls", WorldEvents.direction(player.position(), ground))
+					.withColor(STAR_LIGHT), true);
 			}
 		}
 		for (int t = 0; t < FALL_TICKS; t++) {
@@ -514,7 +514,7 @@ public final class FallenStars {
 			star.owed += count - risen;
 		}
 		Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.EVOKER_PREPARE_SUMMON, 1.2F, 1.2F);
-		near.sendOverlayMessage(Component.translatable("message.wildercord.star_guarded").withColor(STAR_LIGHT));
+		near.displayClientMessage(Component.translatable("message.wildercord.star_guarded").withColor(STAR_LIGHT), true);
 	}
 
 	// ------------------------------------------------------------------ looting
@@ -528,7 +528,7 @@ public final class FallenStars {
 			return;
 		}
 		if (level.getDifficulty() == Difficulty.PEACEFUL) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.star_peaceful").withColor(0xB8A8D8));
+			player.displayClientMessage(Component.translatable("message.wildercord.star_peaceful").withColor(0xB8A8D8), true);
 			Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
 			return;
 		}
@@ -546,7 +546,7 @@ public final class FallenStars {
 		}
 		int standing = star.guards.size() + star.owed;
 		if (standing > 0) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.star_held", standing).withColor(0xFF9C9C));
+			player.displayClientMessage(Component.translatable("message.wildercord.star_held", standing).withColor(0xFF9C9C), true);
 			Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
 			return;
 		}
@@ -557,7 +557,7 @@ public final class FallenStars {
 		ExperienceOrb.award(level, at, EventRules.STAR_XP);
 		Grimoire.feat(player, Feats.STARGAZER);
 		EventAftermath.leave(level,pos,"star");
-		player.sendOverlayMessage(Component.translatable("message.wildercord.star_looted").withColor(STAR_LIGHT));
+		player.displayClientMessage(Component.translatable("message.wildercord.star_looted").withColor(STAR_LIGHT), true);
 		crumble(level, pos, entity, true);
 	}
 

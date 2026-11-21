@@ -150,9 +150,9 @@ public final class MountBonds {
 			ride.airborne = false;
 			ride.fell = 0;
 			int next = MountBondRules.next(bond.level());
-			player.sendOverlayMessage(next < 0
+			player.displayClientMessage(next < 0
 				? Component.translatable("message.wildercord.mount_bond.full", bond.level())
-				: Component.translatable("message.wildercord.mount_bond.level", bond.level(), bond.points(), next));
+				: Component.translatable("message.wildercord.mount_bond.level", bond.level(), bond.points(), next), true);
 		}
 		ride.seen = now;
 

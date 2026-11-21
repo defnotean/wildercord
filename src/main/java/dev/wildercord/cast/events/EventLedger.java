@@ -35,7 +35,7 @@ public final class EventLedger extends SavedData {
 		Codec.unboundedMap(Codec.STRING, Codec.LONG).optionalFieldOf("next", Map.of()).forGetter(ledger -> ledger.next),
 		Star.CODEC.listOf().optionalFieldOf("stars", List.of()).forGetter(ledger -> ledger.stars)
 	).apply(i, EventLedger::new));
-	static final SavedDataType<EventLedger> TYPE = new SavedDataType<>(Wildercord.id("world_events"), EventLedger::new, CODEC, null);
+	static final SavedDataType<EventLedger> TYPE = new SavedDataType<>("world_events", EventLedger::new, CODEC, null);
 
 	/** When each thing may next happen: {@code star:<world>}, {@code rift:<world>}, {@code storm:<region>}. */
 	private final Map<String, Long> next = new HashMap<>();

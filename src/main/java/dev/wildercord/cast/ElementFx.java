@@ -12,6 +12,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SpellParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -300,7 +301,7 @@ public final class ElementFx {
 			ray(level, at.add(dir.scale(0.12)), at.add(dir.scale(length)), i % 2 == 0 ? FROST.primary : 0xCFF4FF, 0.035 + 0.02 * r.nextDouble(),
 				7 + r.nextInt(3));
 		}
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), at, count, 0.14);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.BLUE_ICE)), at, count, 0.14);
 	}
 
 	/** The shatter ring: a hard white ring snapping out, a blue one on a tilt behind it. */
@@ -639,7 +640,7 @@ public final class ElementFx {
 
 	// ------------------------------------------------------------------ blood: cuts, heartbeat rings, drops
 
-	private static final ItemParticleOption DROP = new ItemParticleOption(ParticleTypes.ITEM, Items.REDSTONE);
+	private static final ItemParticleOption DROP = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.REDSTONE));
 
 	/** Crimson drops falling from a patch {@code spread} blocks round {@code at}. */
 	public static void drip(ServerLevel level, Vec3 at, double spread, int count) {

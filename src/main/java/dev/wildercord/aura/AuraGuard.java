@@ -43,7 +43,7 @@ public final class AuraGuard {
 		long now = player.level().getGameTime();
 		AuraAttachments.State state = Aura.state(player);
 		if (!Aura.holdsWeapon(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8), true);
 			return false;
 		}
 		if (state.guarding(now) || now < state.guardUntil() + AuraRules.GUARD_REST) {
@@ -256,7 +256,7 @@ public final class AuraGuard {
 		Aura.sound(player, "aura_perfect_guard", 1.0F, 1.0F);
 		dev.wildercord.cast.Fx.sound(player.level(), player.position(), WildercordSounds.SHIELD_PARRY, 0.8F, 1.2F);
 		ScreenFx.kick(player, 0.35F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.perfect_guard").withColor(PERFECT_COLOR));
+		player.displayClientMessage(Component.translatable("message.wildercord.aura.perfect_guard").withColor(PERFECT_COLOR), true);
 	}
 
 	/**

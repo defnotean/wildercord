@@ -226,9 +226,9 @@ public final class Imbuing {
 		ElementFx.implode(level, at, 0.9, 6);
 		Fx.sound(level, at, WildercordSounds.IMBUE, 0.9F, 1.0F);
 		Imbued.Release release = Imbued.release(target);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.imbued_item", target.getHoverName(),
+		player.displayClientMessage(Component.translatable("message.wildercord.imbued_item", target.getHoverName(),
 			Component.literal(SpellNames.auto(stored)).withColor(color), SpellNumbers.IMBUE_CHARGES,
-			Component.translatable("tooltip.wildercord.imbued." + release.name().toLowerCase(java.util.Locale.ROOT))).withColor(0xE8E0FF));
+			Component.translatable("tooltip.wildercord.imbued." + release.name().toLowerCase(java.util.Locale.ROOT))).withColor(0xE8E0FF), true);
 		Grimoire.feat(player, dev.wildercord.spell.Feats.IMBUE);
 	}
 
@@ -254,7 +254,7 @@ public final class Imbuing {
 			return true;
 		}
 		strip(stack, imbued);
-		holder.sendOverlayMessage(Component.translatable("message.wildercord.imbue_faded", stack.getHoverName()).withStyle(ChatFormatting.GRAY));
+		holder.displayClientMessage(Component.translatable("message.wildercord.imbue_faded", stack.getHoverName()).withStyle(ChatFormatting.GRAY), true);
 		Fx.sound(holder.level(), holder.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
 		return false;
 	}
@@ -276,8 +276,8 @@ public final class Imbuing {
 			return;
 		}
 		write(player, level, pos, face, stored.stream().map(RuneDef::id).toList(), color, charges);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.imbued_block", Component.literal(SpellNames.auto(stored)).withColor(color),
-			charges).withColor(0xE8E0FF));
+		player.displayClientMessage(Component.translatable("message.wildercord.imbued_block", Component.literal(SpellNames.auto(stored)).withColor(color),
+			charges).withColor(0xE8E0FF), true);
 		Grimoire.feat(player, dev.wildercord.spell.Feats.IMBUE);
 	}
 
@@ -320,7 +320,7 @@ public final class Imbuing {
 		}
 		Ledger ledger = Ledger.of(level);
 		if (imbued.counted() && !ledger.has(imbued)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.imbue_faded", level.getBlockState(pos).getBlock().getName()).withStyle(ChatFormatting.GRAY));
+			player.displayClientMessage(Component.translatable("message.wildercord.imbue_faded", level.getBlockState(pos).getBlock().getName()).withStyle(ChatFormatting.GRAY), true);
 			return;
 		}
 		ledger.forget(imbued);
@@ -330,8 +330,8 @@ public final class Imbuing {
 		if (rearm != null && rearm > level.getGameTime()) {
 			Glyphs.of(level).rearm.put(pos.immutable(), rearm);
 		}
-		player.sendOverlayMessage(Component.translatable("message.wildercord.imbued_block",
-			Component.literal(SpellNames.auto(runesOf(imbued.runes()))).withColor(imbued.color()), imbued.charges()).withColor(0xE8E0FF));
+		player.displayClientMessage(Component.translatable("message.wildercord.imbued_block",
+			Component.literal(SpellNames.auto(runesOf(imbued.runes()))).withColor(imbued.color()), imbued.charges()).withColor(0xE8E0FF), true);
 	}
 
 	/** Where a glyph's circle lies: on the block's own shape (a slab's top, a button's face), not its whole cube. */
@@ -372,7 +372,7 @@ public final class Imbuing {
 	}
 
 	private static void fail(ServerPlayer player, String key) {
-		player.sendOverlayMessage(Component.translatable(key).withStyle(ChatFormatting.RED));
+		player.displayClientMessage(Component.translatable(key).withStyle(ChatFormatting.RED), true);
 	}
 
 	/** The stored spell's colour: its first effect's element, or its first rune's. */
@@ -452,7 +452,7 @@ public final class Imbuing {
 			dev.wildercord.runesmith.Contracts.onImbueSpent(player, stack);
 			strip(stack, imbued);
 			Ledger.of(player.level()).forget(imbued);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.imbue_spent", stack.getHoverName()).withStyle(ChatFormatting.GRAY));
+			player.displayClientMessage(Component.translatable("message.wildercord.imbue_spent", stack.getHoverName()).withStyle(ChatFormatting.GRAY), true);
 			Fx.sound(player.level(), player.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
 		} else {
 			stack.set(WildercordComponents.IMBUED, imbued.withCharges(left));
@@ -706,13 +706,13 @@ public final class Imbuing {
 				return InteractionResult.FAIL;
 			}
 			if (!ready(server)) {
-				server.sendOverlayMessage(Component.translatable("message.wildercord.imbue_cooling",
-					String.format(java.util.Locale.ROOT, "%.1f", waiting(server) / 20.0)).withStyle(ChatFormatting.GRAY));
+				server.displayClientMessage(Component.translatable("message.wildercord.imbue_cooling",
+					String.format(java.util.Locale.ROOT, "%.1f", waiting(server) / 20.0)).withStyle(ChatFormatting.GRAY), true);
 				return InteractionResult.FAIL;
 			}
 			Cast.Trigger at = aim(server, imbued.runes());
 			if (at == null) {
-				server.sendOverlayMessage(Component.translatable("message.wildercord.imbue_no_aim").withStyle(ChatFormatting.GRAY));
+				server.displayClientMessage(Component.translatable("message.wildercord.imbue_no_aim").withStyle(ChatFormatting.GRAY), true);
 				return InteractionResult.FAIL;
 			}
 			if (!release(server, stack, imbued, at)) return InteractionResult.FAIL;
@@ -776,7 +776,7 @@ public final class Imbuing {
 		 */
 		static final Codec<Glyphs> CODEC = Glyph.CODEC.xmap(Optional::of, Optional::get).orElse(Optional.empty()).listOf()
 			.xmap(read -> new Glyphs(read.stream().flatMap(Optional::stream).toList()), glyphs -> glyphs.all().stream().map(Optional::of).toList());
-		static final SavedDataType<Glyphs> TYPE = new SavedDataType<>(Wildercord.id("glyphs"), Glyphs::new, CODEC, null);
+		static final SavedDataType<Glyphs> TYPE = new SavedDataType<>("glyphs", Glyphs::new, CODEC, null);
 
 		private final Map<BlockPos, Glyph> byPos = new LinkedHashMap<>();
 		/** Not saved: when each last went off, whether it was powered last time it was looked at, and whom it last went off at. */
@@ -833,7 +833,7 @@ public final class Imbuing {
 			Codec.LONG.optionalFieldOf("next", 0L).forGetter(ledger -> ledger.next),
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.LONG.listOf()).optionalFieldOf("makers", Map.of()).forGetter(ledger -> ledger.byMaker)
 		).apply(i, Ledger::new));
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("imbued_items"), Ledger::new, CODEC, null);
+		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("imbued_items", Ledger::new, CODEC, null);
 
 		private final Map<UUID, List<Long>> byMaker = new HashMap<>();
 		private long next;

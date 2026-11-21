@@ -236,7 +236,7 @@ public final class Spars {
 		}
 		SparRules.Refusal refusal = challengeRefusal(from, to);
 		if (refusal != null) {
-			from.sendOverlayMessage(Component.translatable(refusal.key(), to.getDisplayName()).withColor(0xC8A0A0));
+			from.displayClientMessage(Component.translatable(refusal.key(), to.getDisplayName()).withColor(0xC8A0A0), true);
 			return;
 		}
 		if (!readyOrSay(from, from, to)) {
@@ -287,8 +287,8 @@ public final class Spars {
 			return true;
 		}
 		String who = player == told ? "self" : "other";
-		told.sendOverlayMessage(Component.translatable("message.wildercord.aura.spar.not_ready." + why.name().toLowerCase(java.util.Locale.ROOT) + "." + who,
-			player.getDisplayName()).withColor(0xC8A0A0));
+		told.displayClientMessage(Component.translatable("message.wildercord.aura.spar.not_ready." + why.name().toLowerCase(java.util.Locale.ROOT) + "." + who,
+			player.getDisplayName()).withColor(0xC8A0A0), true);
 		return false;
 	}
 
@@ -297,7 +297,7 @@ public final class Spars {
 		SparRules.Refusal refusal = refusal(challenger, answering);
 		if (refusal != null) {
 			Component line = Component.translatable(refusal.key(), challenger.getDisplayName()).withColor(0xC8A0A0);
-			answering.sendOverlayMessage(line);
+			answering.displayClientMessage(line, true);
 			return;
 		}
 		if (!readyOrSay(answering, answering, challenger) || !readyOrSay(answering, challenger, answering)) {

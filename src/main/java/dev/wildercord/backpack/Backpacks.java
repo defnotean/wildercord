@@ -226,7 +226,7 @@ public final class Backpacks {
 	/** The backpack key: opens the worn backpack, or says there's none. */
 	public static void openWorn(ServerPlayer player) {
 		if (!isBackpack(worn(player))) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.backpack.none").withStyle(ChatFormatting.GRAY));
+			player.displayClientMessage(Component.translatable("message.wildercord.backpack.none").withStyle(ChatFormatting.GRAY), true);
 			return;
 		}
 		open(player, Place.WORN);

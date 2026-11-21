@@ -224,8 +224,8 @@ public final class BountyEscorts {
 		}
 		if (tickCount % 200 == 0) {
 			Direction way = Direction.getApproximateNearest(bounty.destX() - llama.getX(), 0, bounty.destZ() - llama.getZ());
-			player.sendOverlayMessage(Component.translatable("message.wildercord.bounty.escort_road", Town.targetName(bounty), (int) toEnd,
-				Component.translatable("town.wildercord.way." + way.getSerializedName())).withStyle(ChatFormatting.YELLOW));
+			player.displayClientMessage(Component.translatable("message.wildercord.bounty.escort_road", Town.targetName(bounty), (int) toEnd,
+				Component.translatable("town.wildercord.way." + way.getSerializedName())).withStyle(ChatFormatting.YELLOW), true);
 		}
 		double fromBoard = Math.hypot(llama.getX() - bounty.boardX(), llama.getZ() - bounty.boardZ());
 		Road road = ROADS.computeIfAbsent(player.getUUID(), id -> new Road());
@@ -264,7 +264,7 @@ public final class BountyEscorts {
 			}
 		}
 		if (spawned > 0) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.bounty.escort_ambush").withStyle(ChatFormatting.RED));
+			player.displayClientMessage(Component.translatable("message.wildercord.bounty.escort_ambush").withStyle(ChatFormatting.RED), true);
 			level.playSound(null, llama.blockPosition(), SoundEvents.LLAMA_ANGRY, SoundSource.NEUTRAL, 1F, 1F);
 		}
 		return spawned > 0;

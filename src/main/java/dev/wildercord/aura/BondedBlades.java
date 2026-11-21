@@ -444,7 +444,7 @@ public final class BondedBlades {
 		if (worth >= 1.3 || target.hasAttached(dev.wildercord.player.WildercordAttachments.RUNEBOUND)) {
 			count(player, BladeRules.STRONG, 1);
 		}
-		if (target.is(EntityTypeTags.UNDEAD)) {
+		if (target.getType().is(EntityTypeTags.UNDEAD)) {
 			count(player, BladeRules.UNDEAD, 1);
 		}
 		if (player.level().dimension() == Level.OVERWORLD && !player.level().isBrightOutside()) {
@@ -1109,7 +1109,7 @@ public final class BondedBlades {
 	public static boolean rename(ServerPlayer player, String typed) {
 		String why = nameRefusal(player, typed);
 		if (why != null) {
-			player.sendOverlayMessage(Component.translatable(why).withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable(why).withColor(0xA89CC8), true);
 			return false;
 		}
 		flush(player);
@@ -1144,12 +1144,12 @@ public final class BondedBlades {
 		ItemStack blade = carried(player);
 		BladeBond b = bond(blade);
 		if (b == null) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.not_with_you").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.not_with_you").withColor(0xA89CC8), true);
 			return false;
 		}
 		if (BladeRules.effective(b.tier(), Aura.stage(player)) < BladeRules.AWAKENED || !b.growth().offer().contains(trait)
 				|| BladeRules.trait(trait).isEmpty()) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.trait_not_offered").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.trait_not_offered").withColor(0xA89CC8), true);
 			return false;
 		}
 		BladeBond.Growth g = b.growth();
@@ -1159,7 +1159,7 @@ public final class BondedBlades {
 		boolean free = g.trait().isEmpty() || g.rechoose();
 		if (!free && !player.isCreative()) {
 			if (player.experienceLevel < BladeRules.RECHOOSE_LEVELS) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.aura.blade.trait_levels", BladeRules.RECHOOSE_LEVELS).withColor(0xA89CC8));
+				player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.trait_levels", BladeRules.RECHOOSE_LEVELS).withColor(0xA89CC8), true);
 				return false;
 			}
 			player.giveExperienceLevels(-BladeRules.RECHOOSE_LEVELS);
@@ -1241,7 +1241,7 @@ public final class BondedBlades {
 	public static boolean pass(ServerPlayer from, ServerPlayer to, boolean rules) {
 		String why = passRefusal(from, to, rules);
 		if (why != null) {
-			from.sendOverlayMessage(Component.translatable(why).withColor(0xA89CC8));
+			from.displayClientMessage(Component.translatable(why).withColor(0xA89CC8), true);
 			return false;
 		}
 		flush(from);

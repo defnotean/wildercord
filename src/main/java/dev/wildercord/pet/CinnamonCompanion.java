@@ -333,7 +333,7 @@ final class CinnamonCompanion {
 		ticketLevel = null; ticketChunk = null; LEASE.clear();
 	}
 	private static void clear() { release(); LIVE.clear(); BLOCKED.clear(); REQUESTED.clear(); UNCERTAIN_OWNERS.clear(); WARNED_IDENTITY.clear(); uncertainOverflow = false; lastModified = -1; recalling = false; }
-	private static void message(ServerPlayer player, String key) { player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon." + key)); }
+	private static void message(ServerPlayer player, String key) { player.displayClientMessage(Component.translatable("message.wildercord.cinnamon." + key), true); }
 	private static boolean matches(ServerPlayer player) {
 		if (config.owner().isBlank()) return false;
 		if (config.owner().equalsIgnoreCase("@singleplayer")) {

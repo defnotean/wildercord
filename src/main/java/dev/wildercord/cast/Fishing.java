@@ -71,7 +71,7 @@ public final class Fishing {
 		if (!magic) {
 			return;
 		}
-		angler.sendOverlayMessage(Component.translatable("message.wildercord.fishing_magic").withColor(TANGLED));
+		angler.displayClientMessage(Component.translatable("message.wildercord.fishing_magic").withColor(TANGLED), true);
 		Vec3 at = hook.position();
 		Vfx.emit(level, SigilOption.glow(TANGLED, 0.9F), at.add(0, 0.3, 0), 1, 0.0, 0.0);
 		ElementFx.groundRing(level, at.add(0, 0.05, 0), TANGLED, 0.2, 1.8, 0.06, 14);

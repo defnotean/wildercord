@@ -1,6 +1,7 @@
 package dev.wildercord.cast;
 
 import com.mojang.serialization.Codec;
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.player.Mana;
 import dev.wildercord.spell.HearthRules;
@@ -1000,7 +1001,7 @@ public final class HearthEffects {
 			key = "message.wildercord.hearth.weather_clear";
 			ticks = weather.getClearWeatherTime() > 0 ? weather.getClearWeatherTime() : weather.getRainTime();
 		}
-		long time = sky.getOverworldClockTime();
+		long time = dev.wildercord.compat.McTime.overworldClock(sky);
 		caster.sendSystemMessage(Component.translatable(key, HearthRules.minutes(ticks)));
 		caster.sendSystemMessage(Component.translatable("message.wildercord.hearth.time", HearthRules.hour(time), HearthRules.moon(time) + 1));
 		Fx.send(level, ParticleTypes.CLOUD, caster.position().add(0, 2.2, 0), 6, 0.4, 0.01);

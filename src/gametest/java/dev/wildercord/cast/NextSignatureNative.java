@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.arrow.Arrow;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;

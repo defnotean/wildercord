@@ -11,6 +11,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -51,8 +52,8 @@ public final class SporebackSnail extends PathfinderMob {
   if(player.isSpectator() || !player.isAlive() || player.level()!=level() || distanceToSqr(player)>9 || !player.hasLineOfSight(this))return InteractionResult.PASS;
   if(!player.getItemInHand(hand).isEmpty())return super.mobInteract(player,hand);
   if(level() instanceof ServerLevel l) {
-   if(!player.isShiftKeyDown()) {player.sendOverlayMessage(Component.translatable("message.wildercord.sporeback.quiet"));return InteractionResult.SUCCESS;}
-   if(!isAlive() || pose()==2 || l.getGameTime()<hiddenUntil || !dew() || l.getGameTime()<gatherReady) {player.sendOverlayMessage(Component.translatable("message.wildercord.sporeback.wait"));return InteractionResult.SUCCESS;}
+   if(!player.isShiftKeyDown()) {player.displayClientMessage(Component.translatable("message.wildercord.sporeback.quiet"), true);return InteractionResult.SUCCESS;}
+   if(!isAlive() || pose()==2 || l.getGameTime()<hiddenUntil || !dew() || l.getGameTime()<gatherReady) {player.displayClientMessage(Component.translatable("message.wildercord.sporeback.wait"), true);return InteractionResult.SUCCESS;}
    entityData.set(DEW,false);gatherReady=l.getGameTime()+SporebackRules.GATHER_REST;
    spawnAtLocation(l,new ItemStack(SporebackContent.DEW));Feels.sound(l,position(),"sporeback_gather",.5F,1);
    var notes=new java.util.ArrayList<>(dev.wildercord.player.Heart.grimoire(player));

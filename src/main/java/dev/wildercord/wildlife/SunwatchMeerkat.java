@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -156,7 +157,7 @@ public class SunwatchMeerkat extends Animal {
 			}
 		}
 		if (pose != MeerkatRules.IDLE) {
-			if (pose == MeerkatRules.SLEEP && !MeerkatRules.night(level.getOverworldClockTime()) && left > 20) {
+			if (pose == MeerkatRules.SLEEP && !MeerkatRules.night(dev.wildercord.compat.McTime.overworldClock(level)) && left > 20) {
 				entityData.set(LEFT, left = 20);
 			}
 			if (pose == MeerkatRules.DIG && left % 8 == 0) {
@@ -179,7 +180,7 @@ public class SunwatchMeerkat extends Animal {
 		if (isInWater() || !onGround()) {
 			return;
 		}
-		long time = level.getOverworldClockTime();
+		long time = dev.wildercord.compat.McTime.overworldClock(level);
 		if (MeerkatRules.night(time)) {
 			return;
 		}
@@ -248,7 +249,7 @@ public class SunwatchMeerkat extends Animal {
 	/** A mouthful: crumbs and a chew. */
 	private void munch(ServerLevel level) {
 		double yaw = getYRot() * Mth.DEG_TO_RAD;
-		level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Items.SPIDER_EYE), getX() - Math.sin(yaw) * 0.25, getY() + 0.55,
+		level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.SPIDER_EYE)), getX() - Math.sin(yaw) * 0.25, getY() + 0.55,
 			getZ() + Math.cos(yaw) * 0.25, 3, 0.06, 0.05, 0.06, 0.02);
 		playSound(SoundEvents.FOX_EAT, 0.4F, 1.8F);
 	}
@@ -456,7 +457,7 @@ public class SunwatchMeerkat extends Animal {
 		@Override
 		public boolean canUse() {
 			if (pose() != MeerkatRules.IDLE || tickCount % 20 != 0 || !onGround() || isInWater()
-				|| !MeerkatRules.night(level().getOverworldClockTime()) || truster() != null) {
+				|| !MeerkatRules.night(dev.wildercord.compat.McTime.overworldClock(level())) || truster() != null) {
 				return false;
 			}
 			// The nearest of the others, one already asleep if there is one.
@@ -489,7 +490,7 @@ public class SunwatchMeerkat extends Animal {
 
 		@Override
 		public void stop() {
-			if (pose() == MeerkatRules.IDLE && MeerkatRules.night(level().getOverworldClockTime())) {
+			if (pose() == MeerkatRules.IDLE && MeerkatRules.night(dev.wildercord.compat.McTime.overworldClock(level()))) {
 				pose(MeerkatRules.SLEEP, MeerkatRules.SLEEP_TICKS + random.nextInt(300));
 			}
 			near = null;

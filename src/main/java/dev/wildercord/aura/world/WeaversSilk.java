@@ -59,13 +59,13 @@ public final class WeaversSilk {
 	/** Puts the silk away or takes it out again, and says which; a player without it is told so. */
 	public static void toggle(ServerPlayer player) {
 		if (!bound(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.weavers_silk.none").withColor(0xC4BEB2));
+			player.displayClientMessage(Component.translatable("message.wildercord.weavers_silk.none").withColor(0xC4BEB2), true);
 			return;
 		}
 		boolean stow = !stowed(player);
 		player.setAttached(WildercordAttachments.WEAVERS_SILK_STOWED, stow);
-		player.sendOverlayMessage(Component.translatable(stow ? "message.wildercord.weavers_silk.stowed" : "message.wildercord.weavers_silk.unstowed")
-			.withColor(0xE2DCCC));
+		player.displayClientMessage(Component.translatable(stow ? "message.wildercord.weavers_silk.stowed" : "message.wildercord.weavers_silk.unstowed")
+			.withColor(0xE2DCCC), true);
 	}
 
 	/** How long this player has been off the ground, in ticks. */
@@ -109,7 +109,7 @@ public final class WeaversSilk {
 					if (!player.onGround() && player.tickCount % 8 == 0)
 						player.level().sendParticles(ParticleTypes.ITEM_COBWEB, player.getX(), player.getY() + 1, player.getZ(), 2, .3, .4, .3, .01);
 				} else if (offGround(player) == HollowMatronRules.SILK_GRIP && walled(player)) {
-					player.sendOverlayMessage(Component.translatable("message.wildercord.weavers_silk.slip").withColor(0xC4BEB2));
+					player.displayClientMessage(Component.translatable("message.wildercord.weavers_silk.slip").withColor(0xC4BEB2), true);
 				}
 			}
 		});

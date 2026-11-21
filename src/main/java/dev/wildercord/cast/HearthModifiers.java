@@ -150,7 +150,7 @@ public final class HearthModifiers {
 			power *= HearthLinkRules.CULLING_POWER;
 		}
 		if (ctx.has("hallowed")) {
-			ctx.keep(e -> e.is(EntityTypeTags.UNDEAD));
+			ctx.keep(e -> e.getType().is(EntityTypeTags.UNDEAD));
 			power *= HearthLinkRules.HALLOWED_POWER;
 		}
 		if (ctx.has("headhunting")) {

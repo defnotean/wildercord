@@ -52,13 +52,13 @@ public final class AuraMethods {
 	 */
 	public static boolean learn(ServerPlayer player, BreathingMethod method, String source, boolean confirmed) {
 		if (!Aura.enabled(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.disabled").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.disabled").withColor(0xA89CC8), true);
 			return false;
 		}
 		AuraAttachments.Data data = Aura.data(player);
 		Component name = Component.translatable(method.nameKey()).withColor(0xFF000000 | method.color());
 		if (data.learned() && data.method().equals(method.id())) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.already", name).withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.already", name).withColor(0xA89CC8), true);
 			return false;
 		}
 		long now = player.level().getGameTime();

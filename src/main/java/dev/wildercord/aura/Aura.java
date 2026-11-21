@@ -241,7 +241,7 @@ public final class Aura {
 			Vec3 at = player.position().add(0, 1.0, 0);
 			Feels.sound(level, at, "aura_backlash", 0.9F, 1.0F);
 			Motes.clouds(level, at, 5, 0.35, 0x6A6478, 0.5, 26, new Vec3(0, 0.01, 0), 0.02, 0.35);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.backlash").withColor(0xC8A0A0));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.backlash").withColor(0xC8A0A0), true);
 		}
 	}
 
@@ -364,7 +364,7 @@ public final class Aura {
 		Feels.sound(player.level(), player.position(), "aura_breath", 0.7F, Feels.step(2));
 		AuraVfx.beat(player, color(player));
 		if (got > 0) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.beat").withColor(0xFF000000 | color(player)));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.beat").withColor(0xFF000000 | color(player)), true);
 		}
 	}
 
@@ -471,30 +471,30 @@ public final class Aura {
 			return false;
 		}
 		if (!enabled(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.disabled").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.disabled").withColor(0xA89CC8), true);
 			return false;
 		}
 		int stage = stage(player);
 		if (stage <= AuraRules.NONE) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.no_method").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.no_method").withColor(0xA89CC8), true);
 			return false;
 		}
 		// Silenced (a Hollow swordsman's Null Parry): nothing but the guard until it passes.
 		if (trigger != AuraApi.Trigger.SNEAK_TAP && dev.wildercord.aura.arts.ArtWards.silenced(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.silenced").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.silenced").withColor(0xA89CC8), true);
 			return false;
 		}
 		// Opened in a duel (their stance broken): the guard is broken until the opening passes.
 		if (trigger == AuraApi.Trigger.SNEAK_TAP && dev.wildercord.aura.Stance.opened(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.guard_broken").withColor(0xE08A60));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.guard_broken").withColor(0xE08A60), true);
 			return false;
 		}
 		Optional<AuraApi.Technique> technique = AuraApi.techniqueFor(stage, trigger);
 		if (technique.isEmpty()) {
 			// What the key would do, and the stage it opens at.
-			AuraApi.techniques().stream().filter(t -> t.trigger() == trigger).findFirst().ifPresent(t -> player.sendOverlayMessage(
+			AuraApi.techniques().stream().filter(t -> t.trigger() == trigger).findFirst().ifPresent(t -> player.displayClientMessage(
 				Component.translatable("message.wildercord.aura.not_yet", Component.translatable(t.nameKey()),
-					Component.translatable("aura.wildercord.stage." + AuraStages.id(t.stage()))).withColor(0xA89CC8)));
+					Component.translatable("aura.wildercord.stage." + AuraStages.id(t.stage()))).withColor(0xA89CC8), true));
 			return false;
 		}
 		try {

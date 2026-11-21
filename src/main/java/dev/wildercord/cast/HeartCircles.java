@@ -75,7 +75,7 @@ public final class HeartCircles {
 				if (wound != null) manaSkin(player, wound);
 				// Forming a circle takes unbroken concentration.
 				if (FORMING.remove(player.getUUID()) != null) {
-					player.sendOverlayMessage(Component.translatable("message.wildercord.circle_broken").withStyle(ChatFormatting.RED));
+					player.displayClientMessage(Component.translatable("message.wildercord.circle_broken").withStyle(ChatFormatting.RED), true);
 					Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_CLUSTER_BREAK, 0.8F, 0.6F);
 				}
 			}

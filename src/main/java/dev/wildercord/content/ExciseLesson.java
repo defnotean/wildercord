@@ -99,8 +99,8 @@ public final class ExciseLesson {
 	private static void openSaved(ServerPlayer player, long request) {
 		if (!connected(player)) return;
 		if (!MasterStudies.hasExciseLesson(player) || !MasterStudies.knowsExcise(player) && !MasterStudies.mayStudyExcise(player)) {
-			player.sendOverlayMessage(Component.translatable(MasterStudies.hasExciseLesson(player)
-				? "message.wildercord.excise_lesson.locked" : "message.wildercord.excise_lesson.uncopied"));
+			player.displayClientMessage(Component.translatable(MasterStudies.hasExciseLesson(player)
+				? "message.wildercord.excise_lesson.locked" : "message.wildercord.excise_lesson.uncopied"), true);
 			ServerPlayNetworking.send(player, new Show(0, -1, false, false, request));
 			return;
 		}
@@ -144,7 +144,7 @@ public final class ExciseLesson {
 
 	private static void interrupted(ServerPlayer player, Reading reading) {
 		if (player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player) return;
-		player.sendOverlayMessage(Component.translatable("message.wildercord.excise_lesson.interrupted"));
+		player.displayClientMessage(Component.translatable("message.wildercord.excise_lesson.interrupted"), true);
 		ServerPlayNetworking.send(player, new Show(reading.nonce(), -1, false, false));
 	}
 

@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -240,7 +241,7 @@ public final class GlimmerwingLanternProbe {
 			+ " alive=" + moth.isAlive() + " removed=" + moth.isRemoved() + " position=" + moth.position()
 			+ " distance=" + moth.position().distanceTo(Vec3.atCenterOf(session.lamp)) + " velocity=" + moth.getDeltaMovement()
 			+ " onGround=" + moth.onGround() + " horizontalCollision=" + moth.horizontalCollision + " verticalCollision=" + moth.verticalCollision
-			+ " body=" + moth.getBoundingBox() + " clock=" + level.getOverworldClockTime()
+			+ " body=" + moth.getBoundingBox() + " clock=" + dev.wildercord.compat.McTime.overworldClock(level)
 			+ " cell={" + cell(level, moth.blockPosition()) + "}";
 	}
 	private static String flight(ServerLevel level, BlockPos flower, Vec3 target, Vec3 lure, int retarget, int lureLeft) {

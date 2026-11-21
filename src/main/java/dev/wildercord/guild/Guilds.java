@@ -61,7 +61,7 @@ public final class Guilds {
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING).optionalFieldOf("names", Map.of()).forGetter(l -> l.names),
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.unboundedMap(KIND, INVITE)).optionalFieldOf("invites", Map.of()).forGetter(l -> l.invites)
 		).apply(i, Ledger::new));
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("guilds"), Ledger::new, CODEC, null);
+		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("guilds", Ledger::new, CODEC, null);
 
 		final GuildRules.Roster roster;
 		private final Map<UUID, String> names;

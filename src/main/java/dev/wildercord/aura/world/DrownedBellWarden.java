@@ -49,7 +49,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	/** Whether it has torn its bell open, half beaten. */
 	private static final EntityDataAccessor<Boolean> CRACKED=SynchedEntityData.defineId(DrownedBellWarden.class,EntityDataSerializers.BOOLEAN);
 	private static final EntityDimensions KNEELING=EntityDimensions.scalable(2.4F,3.2F).withEyeHeight(2.6F),STANDING=EntityDimensions.scalable(2.4F,4.6F).withEyeHeight(4.0F);
-	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.BLUE,BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.BLUE,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private BlockPos vigil=BlockPos.ZERO,hallMin=BlockPos.ZERO,hallMax=BlockPos.ZERO;
 	private float rest;

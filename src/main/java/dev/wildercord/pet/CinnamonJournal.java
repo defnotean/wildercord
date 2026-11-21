@@ -51,7 +51,7 @@ final class CinnamonJournal extends SavedData {
 	private static final Codec<CinnamonJournal> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Entry.CODEC).optionalFieldOf("companions", Map.of()).forGetter(j -> j.entries)
 	).apply(i, CinnamonJournal::new));
-	private static final SavedDataType<CinnamonJournal> TYPE = new SavedDataType<>(Wildercord.id("cinnamon_companions"), CinnamonJournal::new, CODEC, null);
+	private static final SavedDataType<CinnamonJournal> TYPE = new SavedDataType<>("cinnamon_companions", CinnamonJournal::new, CODEC, null);
 	private final Map<UUID, Entry> entries = new HashMap<>();
 	CinnamonJournal() {}
 	private CinnamonJournal(Map<UUID, Entry> entries) { this.entries.putAll(entries); }

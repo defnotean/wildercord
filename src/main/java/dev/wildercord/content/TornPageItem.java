@@ -38,7 +38,7 @@ public class TornPageItem extends Item {
 				? dev.wildercord.cast.WorldResonances.hint(serverPlayer) : java.util.Optional.empty();
 			Secrets.Secret secret = resonance.isPresent() ? null : Grimoire.hint(serverPlayer);
 			if (secret == null && resonance.isEmpty()) {
-				serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.page_nothing").withStyle(ChatFormatting.GRAY));
+				serverPlayer.displayClientMessage(Component.translatable("message.wildercord.page_nothing").withStyle(ChatFormatting.GRAY), true);
 				return InteractionResult.FAIL;
 			}
 			stack.consume(1, player);

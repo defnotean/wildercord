@@ -283,7 +283,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 		// Only its owner names a familiar: anyone else's name tag is refused (and kept).
 		if (!wild() && !isOwnedBy(player) && stack.is(Items.NAME_TAG)) {
 			if (player instanceof ServerPlayer server) {
-				server.sendOverlayMessage(Component.translatable("message.wildercord.wisp.not_yours").withStyle(net.minecraft.ChatFormatting.GRAY));
+				server.displayClientMessage(Component.translatable("message.wildercord.wisp.not_yours").withStyle(net.minecraft.ChatFormatting.GRAY), true);
 			}
 			return InteractionResult.SUCCESS;
 		}

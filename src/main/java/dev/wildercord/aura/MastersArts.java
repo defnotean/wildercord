@@ -153,7 +153,7 @@ public final class MastersArts {
 			String key = Aura.stage(player) < move.stage() ? "stage" : now < rests.ready(ordinal) ? "rest" : "aura";
 			Object detail = key.equals("stage") ? Component.translatable("aura.wildercord.stage." + AuraStages.id(move.stage()))
 				: key.equals("rest") ? String.format(java.util.Locale.ROOT, "%.1f", (rests.ready(ordinal) - now) / 20.0) : move.cost();
-			player.sendOverlayMessage(Component.translatable("message.wildercord.masters_art." + key, detail));
+			player.displayClientMessage(Component.translatable("message.wildercord.masters_art." + key, detail), true);
 			return false;
 		}
 		// Payment and rest are committed before effects, even if a foe moves or every projectile is friendly.
@@ -384,7 +384,7 @@ public final class MastersArts {
 			}
 		}
 		AuraFx.sound(player, AuraFx.Sound.SWING, 0.8F, ordinal == 1 ? 0.85F : 1.15F);
-		player.sendOverlayMessage(Component.translatable("aura.wildercord.art." + move.id()).withColor(Aura.color(player)));
+		player.displayClientMessage(Component.translatable("aura.wildercord.art." + move.id()).withColor(Aura.color(player)), true);
 		return true;
 	}
 }

@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.player.Heart;
 import dev.wildercord.spell.Attunements;
 import dev.wildercord.spell.RuneColors;
@@ -117,7 +118,7 @@ public final class WorldQuirks {
 		BlockPos pos = BlockPos.containing(at);
 		String biome = level.getBiome(pos).unwrapKey().map(k -> k.identifier().toString()).orElse("");
 		String dimension = level.dimension().identifier().toString();
-		long time = Math.floorMod(level.getOverworldClockTime(), 24000L);
+		long time = Math.floorMod(dev.wildercord.compat.McTime.overworldClock(level), 24000L);
 		int moon = level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, pos).index();
 		Biome.Precipitation falling = level.precipitationAt(pos.above());
 		String precipitation = falling == Biome.Precipitation.RAIN ? "rain" : falling == Biome.Precipitation.SNOW ? "snow" : "none";

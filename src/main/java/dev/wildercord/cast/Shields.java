@@ -383,7 +383,7 @@ public final class Shields {
 			// A beat of weight as the spell is turned: the view kicks and punches.
 			ScreenFx.kick(defender, 0.45F);
 			ScreenFx.punch(defender, 0.5F);
-			defender.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.parried").withColor(PARRY_COLOR));
+			defender.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.parried").withColor(PARRY_COLOR), true);
 			Grimoire.feat(defender, dev.wildercord.spell.Feats.PARRY);
 		}
 		Casters.tell(cast.caster, net.minecraft.network.chat.Component.translatable("message.wildercord.parried_you").withColor(0xFF8A6A));
@@ -556,7 +556,7 @@ public final class Shields {
 		Fx.sound(level, c, SoundEvents.GLASS_BREAK, 0.7F, 1.2F);
 		if (t instanceof ServerPlayer player) {
 			ScreenFx.punch(player, 0.6F);
-			player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.shield_shattered").withColor(0xFF8A6A));
+			player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.shield_shattered").withColor(0xFF8A6A), true);
 		}
 	}
 

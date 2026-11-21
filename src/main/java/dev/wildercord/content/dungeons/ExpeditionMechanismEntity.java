@@ -55,15 +55,15 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 					});
 				}
 				pausedUntil=now+100;warningAt=0;nextAction=now+40;stage(stored>0?1:0);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.clock_paused"));
+				player.displayClientMessage(Component.translatable("message.wildercord.clock_paused"), true);
 			}
 			case GARDEN -> {
 				if(completed)return;
 				if(held.is(Items.SHEARS))finishGarden(server,player,true);
 				else if(held.is(Items.BONE_MEAL)) {if(!player.isCreative())held.shrink(1);grow(server,player);}
-				else player.sendOverlayMessage(Component.translatable("message.wildercord.garden_hint"));
+				else player.displayClientMessage(Component.translatable("message.wildercord.garden_hint"), true);
 			}
-			case SKY -> {boolean moved=shiftPlatforms(server);nextAction=now+40;player.sendOverlayMessage(Component.translatable(moved?"message.wildercord.sky_shift":"message.wildercord.sky_blocked"));}
+			case SKY -> {boolean moved=shiftPlatforms(server);nextAction=now+40;player.displayClientMessage(Component.translatable(moved?"message.wildercord.sky_shift":"message.wildercord.sky_blocked"), true);}
 		}
 		setChanged();
 	}
@@ -73,7 +73,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 		if(kind()==ExpeditionMechanism.Kind.CLOCK && node.effect.kind()==EffectKind.HARMFUL) {
 			stored=Math.min(12,stored+(float)Math.max(1,Math.min(4,node.effect.cost()/4)));pausedUntil=server.getGameTime()+100;warningAt=0;
 			stage(Math.min(4,(int)Math.ceil(stored/3)));setChanged();
-			player.sendOverlayMessage(Component.translatable("message.wildercord.clock_stored",String.format(java.util.Locale.ROOT,"%.1f",stored)));return true;
+			player.displayClientMessage(Component.translatable("message.wildercord.clock_stored",String.format(java.util.Locale.ROOT,"%.1f",stored)), true);return true;
 		}
 		if(kind()==ExpeditionMechanism.Kind.CLOCK && node.effect.element().equals("time")){use(player,ItemStack.EMPTY);}
 		if(kind()==ExpeditionMechanism.Kind.GARDEN && node.effect.element().equals("life"))grow(server,player);
@@ -85,7 +85,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 		growth++;nextAction=server.getGameTime()+20;stage(Math.min(4,growth));setChanged();
 		Vfx.emit(server,ParticleTypes.HAPPY_VILLAGER,Vec3.atCenterOf(worldPosition),16,1,.02);
 		if(growth>=3)finishGarden(server,player,false);
-		else player.sendOverlayMessage(Component.translatable("message.wildercord.garden_growth",growth));
+		else player.displayClientMessage(Component.translatable("message.wildercord.garden_growth",growth), true);
 	}
 	private void finishGarden(ServerLevel server,Player player,boolean harvest) {
 		if(completed)return;completed=true;growth=4;stage(4);
@@ -97,7 +97,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 		give(player,new ItemStack(WildercordItems.TORN_PAGE));
 		if(!harvest)player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION,200,0));
 		if(!harvest && player instanceof ServerPlayer serverPlayer)dev.wildercord.player.RuneResearch.garden(serverPlayer);
-		player.sendOverlayMessage(Component.translatable(harvest?"message.wildercord.garden_harvest":"message.wildercord.garden_cleanse"));setChanged();
+		player.displayClientMessage(Component.translatable(harvest?"message.wildercord.garden_harvest":"message.wildercord.garden_cleanse"), true);setChanged();
 	}
 	private void stage(int value){if(level!=null)level.setBlock(worldPosition,getBlockState().setValue(ExpeditionMechanism.STAGE,value),Block.UPDATE_ALL);}
 	private static void give(Player player,ItemStack stack){player.getInventory().add(stack);if(!stack.isEmpty())dev.wildercord.compat.McEntities.drop(player, stack, false);}

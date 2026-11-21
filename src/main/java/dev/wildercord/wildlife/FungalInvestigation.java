@@ -4,6 +4,7 @@ import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import java.util.*;
 /** Six finite discovery flags and one claimed reward, shared across sites and retained through death. */
@@ -17,14 +18,14 @@ public final class FungalInvestigation {
  private static void give(ServerPlayer p,ItemStack stack) {dev.wildercord.compat.McEntities.placeItemBackInInventory(p, stack);}
  public static void read(ServerPlayer p,BlockPos at) {
   if(!actor(p) || !p.level().hasChunkAt(at) || p.distanceToSqr(at.getX()+.5,at.getY()+.5,at.getZ()+.5)>16 || !p.level().mayInteract(p,at) || !visible(p,at))return;
-  if(!(p.level().getBlockEntity(at) instanceof BreathmarkEntity e) || !e.authentic()) {p.sendOverlayMessage(Component.translatable("message.wildercord.fungal.replica"));return;}
+  if(!(p.level().getBlockEntity(at) instanceof BreathmarkEntity e) || !e.authentic()) {p.displayClientMessage(Component.translatable("message.wildercord.fungal.replica"), true);return;}
   if(!knows(p,FIRST)) {hint(p);return;}
   int kind=p.level().getBlockState(at).getValue(BreathmarkBlock.KIND);String key=kind==0?ROOT:AIR;
   if(remember(p,key)) {give(p,new ItemStack(kind==0?FungalGarden.ROOT_NOTES:FungalGarden.AIR_NOTES));Feels.sound(p.level(),p.position(),"fungal_mark_read",.45F,1);}
   hint(p);
  }
  public static String next(ServerPlayer p) {for(var k:List.of(FIRST,ROOT,AIR,HARVEST,ROOF,CRAFT))if(!knows(p,k))return switch(k) {case FIRST -> "snail";case ROOT -> "root";case AIR -> "air";case HARVEST -> "harvest";case ROOF -> "roof";default -> "breather";};return knows(p,DONE)?"done":"return";}
- public static void hint(ServerPlayer p) {p.sendOverlayMessage(Component.translatable("message.wildercord.fungal.hint_"+next(p)));}
+ public static void hint(ServerPlayer p) {p.displayClientMessage(Component.translatable("message.wildercord.fungal.hint_"+next(p)), true);}
  public static boolean finish(ServerPlayer p,BlockPos at) {
   if(!actor(p) || !(p.getMainHandItem().is(FungalGarden.BREATHER) || p.getOffhandItem().is(FungalGarden.BREATHER)) || !p.level().hasChunkAt(at) || !p.level().getBlockState(at).is(FungalGarden.NURSERY) || p.distanceToSqr(at.getX()+.5,at.getY()+.5,at.getZ()+.5)>16 || !p.level().mayInteract(p,at) || !visible(p,at))return false;
   if(!next(p).equals("return")) {hint(p);return false;}

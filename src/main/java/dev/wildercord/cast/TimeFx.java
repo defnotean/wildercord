@@ -8,6 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
@@ -212,7 +213,7 @@ public final class TimeFx {
 		Vfx.emit(level, SigilOption.glow(0xFFFFFF, 2.2F), c, 1, 0.0, 0.0);
 		ElementFx.ring(level, c, UP, PALE, 0.3, 2.4, 0.06, 7);
 		ElementFx.groundRing(level, t.position(), GOLD, 0.4, 2.0, 0.08, 8);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS), c, (int) Math.min(18, 6 + stored), 0.35);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GLASS)), c, (int) Math.min(18, 6 + stored), 0.35);
 		Vfx.radial(level, ParticleTypes.END_ROD, c, 10, 0.3);
 		Feels.sound(level, c, "time_resume", stored > 0 ? 1.0F : 0.7F, 1.0F);
 	}
@@ -259,7 +260,7 @@ public final class TimeFx {
 	/** A payment on a borrowed moment: one gold coin falls from you and a soft tock. */
 	public static void coin(ServerLevel level, Entity t) {
 		Vec3 at = t.getBoundingBox().getCenter().add(0, 0.2, 0);
-		Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GOLD_NUGGET), at, new Vec3(0, -0.4, 0), 0.05);
+		Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GOLD_NUGGET)), at, new Vec3(0, -0.4, 0), 0.05);
 		Vfx.emit(level, ParticleTypes.WAX_ON, at, 2, 0.2, 0.0);
 		Feels.sound(level, at, "time_tock", 0.7F, 1.0F);
 	}

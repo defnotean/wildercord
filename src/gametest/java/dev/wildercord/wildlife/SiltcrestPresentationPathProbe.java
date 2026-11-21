@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.ArrayDeque;
@@ -64,7 +65,7 @@ final class SiltcrestPresentationPathProbe implements AutoCloseable {
   out.addProperty("ground",bird.onGround());out.addProperty("water",bird.isInWater());out.addProperty("horizontalCollision",bird.horizontalCollision);out.addProperty("verticalCollision",bird.verticalCollision);
   out.addProperty("standingBank",BitternHabitat.standingBank(bird));out.add("currentBankCell",bank(level,bird.blockPosition()));
   out.addProperty("forageReady",bird.forageReady());out.addProperty("hungry",bird.hungry());out.addProperty("huntReady",bird.huntReady());out.addProperty("huntRemaining",bird.huntReady()-now);
-  out.addProperty("frightenedUntil",number(bird,"frightenedUntil"));out.addProperty("night",WetlandRules.night(level.getOverworldClockTime()));out.addProperty("raining",level.isRaining());out.addProperty("disturbed",bird.disturbed(level));
+  out.addProperty("frightenedUntil",number(bird,"frightenedUntil"));out.addProperty("night",WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level)));out.addProperty("raining",level.isRaining());out.addProperty("disturbed",bird.disturbed(level));
   out.addProperty("vanillaTarget",identity(bird.getTarget()));out.addProperty("committedQuarry",identity((Entity)read(bird,"quarry")));out.add("locked",vector((Vec3)read(bird,"committed")));
   out.addProperty("pathSequence",pathSequence);out.add("navigation",navigation(bird));
   var move=bird.getMoveControl();var control=new JsonObject();control.addProperty("hasWanted",move.hasWanted());control.add("wanted",vector(new Vec3(move.getWantedX(),move.getWantedY(),move.getWantedZ())));control.addProperty("speedModifier",move.getSpeedModifier());control.addProperty("entitySpeed",bird.getSpeed());out.add("moveControl",control);

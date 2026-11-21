@@ -212,7 +212,7 @@ public final class CinnamonDog extends TamableAnimal {
 	}
 
 	private void ownerMessage(String key) {
-		if (getOwner() instanceof ServerPlayer owner) owner.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon." + key));
+		if (getOwner() instanceof ServerPlayer owner) owner.displayClientMessage(Component.translatable("message.wildercord.cinnamon." + key), true);
 	}
 
 	/** Preserve other mods' scale modifiers and preview the exact resulting physical size without mutating the entity. */
@@ -291,7 +291,7 @@ public final class CinnamonDog extends TamableAnimal {
 			|| stateRevision != revision || !getBoundingBox().equals(before) || !player.position().equals(ownerPosition)
 			|| getScale() != previousScale || scaleAt(next) != physical
 			|| player.getItemInHand(hand) != held || held.isEmpty() || !held.is(ItemTags.WOLF_FOOD)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.growth_blocked"));
+			player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.growth_blocked"), true);
 			return InteractionResult.SUCCESS;
 		}
 		if (growthUntil == 0) growthUntil = now + GROWTH_TICKS;
@@ -428,7 +428,7 @@ public final class CinnamonDog extends TamableAnimal {
 	@Override
 	public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		if (!isOwnedBy(player) || !level().isClientSide() && !CinnamonCompanion.active(this)) {
-			if (!isTame() && !level().isClientSide()) player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.owner"));
+			if (!isTame() && !level().isClientSide()) player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.owner"), true);
 			return InteractionResult.PASS;
 		}
 		if (!level().isClientSide()) {
@@ -437,20 +437,20 @@ public final class CinnamonDog extends TamableAnimal {
 			if (player.getItemInHand(hand).is(CinnamonContent.TOY)) {
 				playTicks = 50; settled = 0;
 				level().broadcastEntityEvent(this, (byte) 7);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.toy"));
+				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.toy"), true);
 				return InteractionResult.SUCCESS;
 			}
 			if (held.is(CinnamonContent.BOW) && !bow) {
 				wearBow(player, true);
 				held.consume(1, player);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.bow_on"));
+				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.bow_on"), true);
 				return InteractionResult.SUCCESS;
 			}
 			if (held.is(Items.SHEARS) && bow) {
 				wearBow(player, false);
 				ItemStack ribbon = new ItemStack(CinnamonContent.BOW);
 				if (!player.getInventory().add(ribbon)) spawnAtLocation((ServerLevel) level(), ribbon);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.bow_off"));
+				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.bow_off"), true);
 				return InteractionResult.SUCCESS;
 			}
 			if (player.isShiftKeyDown()) {
@@ -458,10 +458,10 @@ public final class CinnamonDog extends TamableAnimal {
 				level().broadcastEntityEvent(this, (byte) 7);
 				if (lickTicks == 0 && !isExhausted()) {
 					startLick();
-					player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.lick"));
+					player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.lick"), true);
 					return InteractionResult.SUCCESS;
 				}
-				player.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.pet"));
+				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.pet"), true);
 				return InteractionResult.SUCCESS;
 			}
 			if (isExhausted()) {
@@ -472,7 +472,7 @@ public final class CinnamonDog extends TamableAnimal {
 			settled = 0;
 			player.setAttached(CinnamonState.SITTING, isOrderedToSit());
 			changed();
-			player.sendOverlayMessage(Component.translatable(isOrderedToSit() ? "message.wildercord.cinnamon.sit" : "message.wildercord.cinnamon.follow"));
+			player.displayClientMessage(Component.translatable(isOrderedToSit() ? "message.wildercord.cinnamon.sit" : "message.wildercord.cinnamon.follow"), true);
 			getNavigation().stop();
 		}
 		return InteractionResult.SUCCESS;

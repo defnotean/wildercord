@@ -2,6 +2,7 @@ package dev.wildercord.runesmith;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.WildercordComponents;
@@ -117,7 +118,7 @@ public final class DuplicateSwap {
 			added++;
 		}
 		Set<String> known = new HashSet<>(Spellbooks.get(player).learned());
-		long day = player.level().getOverworldClockTime() / 24000L;
+		long day = dev.wildercord.compat.McTime.overworldClock(player.level()) / 24000L;
 		for (RuneTrades.Pair pair : RuneTrades.rerolls(held)) {
 			// The same pick all day for this villager, until something new is learned.
 			long seed = player.getUUID().getLeastSignificantBits() * 31 + villager.getUUID().getMostSignificantBits() + day * 1_000_003L

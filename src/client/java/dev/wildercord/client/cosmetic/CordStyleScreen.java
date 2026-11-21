@@ -435,11 +435,11 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 				click();
 			} else {
 				minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BASS, 0.6F));
-				minecraft.player.sendOverlayMessage(unlockLine(option, progress).copy().withStyle(ChatFormatting.RED));
+				minecraft.player.displayClientMessage(unlockLine(option, progress).copy().withStyle(ChatFormatting.RED), true);
 			}
 		} else {
 			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BASS, 0.6F));
-			minecraft.player.sendOverlayMessage(unlockLine(option, progress).copy().withStyle(ChatFormatting.GRAY));
+			minecraft.player.displayClientMessage(unlockLine(option, progress).copy().withStyle(ChatFormatting.GRAY), true);
 		}
 	}
 

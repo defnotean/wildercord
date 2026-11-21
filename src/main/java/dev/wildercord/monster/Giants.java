@@ -174,7 +174,7 @@ public final class Giants {
 				: new BrambleGiantFight(giant, giant.variant() == MonsterVariantRules.Variant.ASH));
 		}
 		GIANTS.computeIfAbsent(mob.getUUID(), id -> new Tracked(mob,
-			new ServerBossEvent(UUID.randomUUID(), mob.getDisplayName(), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10)));
+			new ServerBossEvent(mob.getDisplayName(), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10)));
 	}
 
 	private static void forget(UUID id) {

@@ -75,7 +75,7 @@ public final class Rituals {
 	public static final class Sanctuaries extends net.minecraft.world.level.saveddata.SavedData {
 		static final Codec<Sanctuaries> CODEC = Ward.CODEC.listOf().optionalFieldOf("wards", List.of()).xmap(Sanctuaries::new, s -> s.wards).codec();
 		static final net.minecraft.world.level.saveddata.SavedDataType<Sanctuaries> TYPE =
-			new net.minecraft.world.level.saveddata.SavedDataType<>(Wildercord.id("sanctuaries"), Sanctuaries::new, CODEC, null);
+			new net.minecraft.world.level.saveddata.SavedDataType<>("sanctuaries", Sanctuaries::new, CODEC, null);
 
 		private List<Ward> wards;
 
@@ -218,7 +218,7 @@ public final class Rituals {
 				ServerPlayer caster = circle.get(i);
 				Spellbooks.setMana(caster, Spellbooks.mana(caster) - paid[i]);
 				if (caster != leader) {
-					caster.sendOverlayMessage(Component.translatable("message.wildercord.ritual.shared", (int) paid[i]).withColor(0xB8A8FF));
+					caster.displayClientMessage(Component.translatable("message.wildercord.ritual.shared", (int) paid[i]).withColor(0xB8A8FF), true);
 				}
 			}
 			int slot = Inventories.slotOf(leader.getInventory(), reagent(ritual));

@@ -12,6 +12,7 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.effect.*;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;

@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
@@ -120,7 +121,7 @@ public final class DomainClash {
 	private static void shatter(ServerLevel level, Domain domain) {
 		Vec3 c = domain.center();
 		double r = domain.radius();
-		ItemParticleOption glass = new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE);
+		ItemParticleOption glass = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GLASS_PANE));
 		// The dome falls in on itself in light: its meridians and parallels collapse to the middle.
 		double line = 0.08 + r * 0.006;
 		for (int m = 0; m < 4; m++) {

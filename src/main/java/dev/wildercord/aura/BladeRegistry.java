@@ -46,7 +46,7 @@ public final class BladeRegistry extends SavedData {
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Entry.CODEC).optionalFieldOf("bonds", Map.of()).forGetter(r -> r.bonds),
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, ItemStack.CODEC.listOf()).optionalFieldOf("homeward", Map.of()).forGetter(r -> r.homeward)
 	).apply(i, BladeRegistry::new));
-	static final SavedDataType<BladeRegistry> TYPE = new SavedDataType<>(Wildercord.id("bonded_blades"), BladeRegistry::new, CODEC, null);
+	static final SavedDataType<BladeRegistry> TYPE = new SavedDataType<>("bonded_blades", BladeRegistry::new, CODEC, null);
 
 	private final Map<UUID, Entry> bonds = new HashMap<>();
 	private final Map<UUID, List<ItemStack>> homeward = new HashMap<>();

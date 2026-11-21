@@ -101,7 +101,7 @@ public final class MasteryChoices {
 			}
 			Component answer = request(context.player(), payload.kind(), payload.spell(), payload.slot(), payload.trait());
 			if (answer != null) {
-				context.player().sendOverlayMessage(answer);
+				context.player().displayClientMessage(answer, true);
 			}
 		});
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> THROTTLE.forget(handler.player.getUUID()));

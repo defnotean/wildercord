@@ -32,7 +32,7 @@ public class WispLanternItem extends Item {
 		}
 		Bonds bonds = Familiars.get(server);
 		if (bonds.bonds().isEmpty()) {
-			server.sendOverlayMessage(Component.translatable("message.wildercord.wisp.lantern_empty").withStyle(ChatFormatting.GRAY));
+			server.displayClientMessage(Component.translatable("message.wildercord.wisp.lantern_empty").withStyle(ChatFormatting.GRAY), true);
 			return InteractionResult.FAIL;
 		}
 		if (player.isShiftKeyDown()) {

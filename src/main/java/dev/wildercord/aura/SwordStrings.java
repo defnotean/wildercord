@@ -484,7 +484,7 @@ public final class SwordStrings {
 		}
 		Component line = art == null ? null : refusal(player, art, why);
 		if (line != null) {
-			player.sendOverlayMessage(line);
+			player.displayClientMessage(line, true);
 		}
 	}
 

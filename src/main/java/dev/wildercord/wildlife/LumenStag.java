@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.content.MoteOption;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -120,7 +121,7 @@ public class LumenStag extends Animal {
 
 	/** Whether it has shed today, so one antler is gone until tomorrow. */
 	public boolean shedToday() {
-		return shedDay() == WildlifeRules.day(level().getOverworldClockTime());
+		return shedDay() == WildlifeRules.day(dev.wildercord.compat.McTime.overworldClock(level()));
 	}
 
 	public boolean frightened() {
@@ -149,7 +150,7 @@ public class LumenStag extends Animal {
 		if (level().isClientSide() && random.nextInt(5) == 0) {
 			// Motes of its light rise from the antlers on a moonlit night.
 			float night = WildlifeRules.night(level().getSkyDarken());
-			int moon = dev.wildercord.spell.ClimateRules.moonPhase(level().getOverworldClockTime());
+			int moon = dev.wildercord.spell.ClimateRules.moonPhase(dev.wildercord.compat.McTime.overworldClock(level()));
 			if (night > 0.3F && random.nextFloat() < WildlifeRules.antlerGlow(moon, night)) {
 				Vec3 head = headPosition();
 				level().addParticle(new MoteOption(MoteOption.GLOW, 0xBFEFFF, 0.07F, 40, (random.nextFloat() - 0.5F) * 0.01F, 0.012F,
@@ -182,7 +183,7 @@ public class LumenStag extends Animal {
 	}
 
 	private long today() {
-		return WildlifeRules.day(level().getOverworldClockTime());
+		return WildlifeRules.day(dev.wildercord.compat.McTime.overworldClock(level()));
 	}
 
 	/** Sheds today's antler, toward {@code toward} if someone earned it. Returns the antler, or null if it already shed today. */
@@ -228,7 +229,7 @@ public class LumenStag extends Animal {
 			// Killing one is wrong, and the forest knows it.
 			if (source.getEntity() instanceof ServerPlayer killer) {
 				killer.addEffect(new MobEffectInstance(MobEffects.UNLUCK, WildlifeRules.STAG_CURSE_TICKS, 0));
-				killer.sendOverlayMessage(Component.translatable("message.wildercord.lumen_stag.curse"));
+				killer.displayClientMessage(Component.translatable("message.wildercord.lumen_stag.curse"), true);
 			}
 			for (LumenStag other : level.getEntitiesOfClass(LumenStag.class, getBoundingBox().inflate(48), s -> s != this)) {
 				other.frighten(6000);
@@ -379,7 +380,7 @@ public class LumenStag extends Animal {
 			if (++trust >= WildlifeRules.STAG_TRUST_TICKS && level() instanceof ServerLevel level) {
 				trust = 0;
 				if (shed(level, watched) != null) {
-					watched.sendOverlayMessage(Component.translatable("message.wildercord.lumen_stag.shed"));
+					watched.displayClientMessage(Component.translatable("message.wildercord.lumen_stag.shed"), true);
 				}
 			}
 		}

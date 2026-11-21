@@ -8,6 +8,7 @@ import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import java.util.Set;
@@ -18,13 +19,14 @@ import java.util.Set;
  * glint at the bobber and a line above the hotbar. Does nothing for loot rolled without a bobber.
  */
 public record FishedRuneFunction(boolean magic) implements LootItemFunction {
+	public static final LootItemFunctionType<FishedRuneFunction> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 	public static final MapCodec<FishedRuneFunction> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 		Codec.BOOL.optionalFieldOf("magic", false).forGetter(FishedRuneFunction::magic)
 	).apply(i, FishedRuneFunction::new));
 
 	@Override
-	public MapCodec<FishedRuneFunction> codec() {
-		return MAP_CODEC;
+	public LootItemFunctionType<FishedRuneFunction> getType() {
+		return TYPE;
 	}
 
 	@Override

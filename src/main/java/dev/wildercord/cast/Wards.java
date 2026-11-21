@@ -317,7 +317,7 @@ public final class Wards {
 			pick = history.peekFirst();
 		}
 		if (!pick.dimension().equals(player.level().dimension())) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.rewind_dimension"));
+			player.displayClientMessage(Component.translatable("message.wildercord.rewind_dimension"), true);
 			return;
 		}
 		// Later snapshots are forgotten, so rewinding again goes further back.
@@ -327,7 +327,7 @@ public final class Wards {
 		Vec3 from = player.position();
 		// Never back into lava, a wall or thin air: time will not put you somewhere that would kill you.
 		if (!Effects.safeSpot(player.level(), player, pick.pos())) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.rewind_unsafe"));
+			player.displayClientMessage(Component.translatable("message.wildercord.rewind_unsafe"), true);
 			return;
 		}
 		dev.wildercord.aura.MasterFormMovement.begin(player, 2);
@@ -456,7 +456,7 @@ public final class Wards {
 		entity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 60, 1, false, true));
 		LifeOwnerEvents.transition(level,"reversal",entity,LifeOwnerEvents.Moment.TRIGGER,1,entity.getHealth()-reversalBefore,null);
 		if (entity instanceof ServerPlayer player) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.reversal").withColor(0x6EDC64));
+			player.displayClientMessage(Component.translatable("message.wildercord.reversal").withColor(0x6EDC64), true);
 		}
 		return false;
 	}

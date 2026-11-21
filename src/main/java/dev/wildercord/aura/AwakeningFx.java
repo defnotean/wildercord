@@ -131,13 +131,13 @@ public final class AwakeningFx {
 		Motes.clouds(level, heart, 8, 0.45, 0x6A6478, 0.6, 34, new Vec3(0, 0.015, 0), 0.02, 0.4);
 		Motes.burst(level, heart, 8, color, 0.06, 18, 0.06);
 		ArtLight.world(player).groundRing(player.position(), 0x6A6478, 1.6, 0.4, 0.08, 14);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.spent").withColor(0xC8A0A0));
+		player.displayClientMessage(Component.translatable("message.wildercord.aura.spent").withColor(0xC8A0A0), true);
 	}
 
 	/** Spent no longer: the aura stirring again (only the swordsman hears it). */
 	static void recovered(ServerPlayer player) {
 		Feels.sound(player.level(), player.position().add(0, 1.0, 0), "aura_recovered", 0.6F, 1.0F);
 		Motes.burst(player.level(), player.position().add(0, 0.6, 0), 5, Aura.color(player), 0.06, 14, 0.04);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.recovered").withColor(0xFF000000 | Aura.color(player)));
+		player.displayClientMessage(Component.translatable("message.wildercord.aura.recovered").withColor(0xFF000000 | Aura.color(player)), true);
 	}
 }

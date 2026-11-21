@@ -132,7 +132,7 @@ public final class CordCosmetics {
 	/** Wears a style if every part of it is unlocked; returns whether it was. */
 	public static boolean wear(ServerPlayer player, Style style) {
 		if (!CordStyles.allowed(style, progress(player))) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.cosmetic.locked").withStyle(ChatFormatting.RED));
+			player.displayClientMessage(Component.translatable("message.wildercord.cosmetic.locked").withStyle(ChatFormatting.RED), true);
 			return false;
 		}
 		if (!style.equals(style(player))) {
@@ -153,7 +153,7 @@ public final class CordCosmetics {
 			int need = option.unlock().amount();
 			int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(player.getInventory(), stack -> stack.is(item), player.inventoryMenu.getCraftSlots());
 			if (have < need) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.cosmetic.need", need, item.getName(new net.minecraft.world.item.ItemStack(item))).withStyle(ChatFormatting.RED));
+				player.displayClientMessage(Component.translatable("message.wildercord.cosmetic.need", need, item.getName(new net.minecraft.world.item.ItemStack(item))).withStyle(ChatFormatting.RED), true);
 				return false;
 			}
 			dev.wildercord.compat.McBlocksAndItems.removeMatchingItems(player.getInventory(), stack -> stack.is(item), need, player.inventoryMenu.getCraftSlots());
@@ -163,8 +163,8 @@ public final class CordCosmetics {
 			player.setAttached(BOUGHT, List.copyOf(bought));
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), WildercordSounds.RUNE_THREAD, SoundSource.PLAYERS, 0.8F, 1.2F);
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.8F, 1.3F);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.cosmetic.bought",
-				Component.translatable("cosmetic.wildercord." + option.group() + "." + option.id())).withColor(0xE8C46A));
+			player.displayClientMessage(Component.translatable("message.wildercord.cosmetic.bought",
+				Component.translatable("cosmetic.wildercord." + option.group() + "." + option.id())).withColor(0xE8C46A), true);
 		}
 		return wear(player, style(player).with(option));
 	}

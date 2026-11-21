@@ -124,8 +124,8 @@ public final class AuraBreakthroughs {
 		}
 		int held = STILL.merge(player.getUUID(), 1, Integer::sum);
 		if (held == 1) {
-			player.sendOverlayMessage(Component.translatable(trial.equals(TEMPEST) ? "message.wildercord.aura.tempest_begins"
-				: "message.wildercord.aura.stillness_begins").withColor(0xFF000000 | Aura.color(player)));
+			player.displayClientMessage(Component.translatable(trial.equals(TEMPEST) ? "message.wildercord.aura.tempest_begins"
+				: "message.wildercord.aura.stillness_begins").withColor(0xFF000000 | Aura.color(player)), true);
 		}
 		if (held >= AuraRules.stillnessTicks(Aura.stage(player) + 1)) {
 			STILL.remove(player.getUUID());
@@ -177,13 +177,13 @@ public final class AuraBreakthroughs {
 			}
 			foe = new Foe(now + (trial.equals(GUARDIAN) ? AuraRules.GUARDIAN_WINDOW : AuraRules.TRIAL_WINDOW), false, trial);
 			foes.put(target.getUUID(), foe);
-			player.sendOverlayMessage(Component.translatable(trial.equals(GUARDIAN) ? "message.wildercord.aura.guardian_begins"
-				: "message.wildercord.aura.trial_begins").withColor(0xFF000000 | Aura.color(player)));
+			player.displayClientMessage(Component.translatable(trial.equals(GUARDIAN) ? "message.wildercord.aura.guardian_begins"
+				: "message.wildercord.aura.trial_begins").withColor(0xFF000000 | Aura.color(player)), true);
 		}
 		if (killed) {
 			foes.remove(target.getUUID());
 			if (foe.tainted()) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.aura.trial_tainted").withColor(0xC8A0A0));
+				player.displayClientMessage(Component.translatable("message.wildercord.aura.trial_tainted").withColor(0xC8A0A0), true);
 			} else if (now <= foe.until() && complete(player, foe.trial())) {
 				return;
 			}

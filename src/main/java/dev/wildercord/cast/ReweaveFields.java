@@ -193,7 +193,7 @@ public final class ReweaveFields {
         }
     }
     private static void fail(ServerPlayer p, String text) {
-        p.sendOverlayMessage(dev.wildercord.spell.LessonText.problem(text).withColor(0xE0B8D5));
+        p.displayClientMessage(dev.wildercord.spell.LessonText.problem(text).withColor(0xE0B8D5), true);
     }
     private static void publish(Field f) {
         if (!f.valid()) return;

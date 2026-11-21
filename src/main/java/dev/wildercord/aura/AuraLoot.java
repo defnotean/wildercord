@@ -14,6 +14,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 
 import java.util.Map;
@@ -32,14 +33,15 @@ public final class AuraLoot {
 	 * {@link MethodSources} id), or any built-in method when the source is missing.
 	 */
 	public record RandomMethod(String source) implements LootItemFunction {
-		public static final MapCodec<RandomMethod> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+		public static final LootItemFunctionType<RandomMethod> TYPE = new LootItemFunctionType<>(MAP_CODEC);
+	public static final MapCodec<RandomMethod> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 			Codec.STRING.optionalFieldOf("source", "").forGetter(RandomMethod::source)
 		).apply(i, RandomMethod::new));
 
 		@Override
-		public MapCodec<RandomMethod> codec() {
-			return MAP_CODEC;
-		}
+		public LootItemFunctionType<RandomMethod> getType() {
+		return TYPE;
+	}
 
 		@Override
 		public ItemStack apply(ItemStack stack, LootContext context) {
@@ -52,7 +54,7 @@ public final class AuraLoot {
 	}
 
 	static void init() {
-		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_breathing_method"), RandomMethod.MAP_CODEC);
+		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_breathing_method"), RandomMethod.TYPE);
 		LootTableEvents.MODIFY.register((key, table, source, registries) -> {
 			if (!source.isBuiltin()) {
 				return;

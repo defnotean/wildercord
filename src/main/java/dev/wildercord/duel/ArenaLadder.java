@@ -40,7 +40,7 @@ public final class ArenaLadder extends SavedData {
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Standing.CODEC).optionalFieldOf("standings", Map.of()).forGetter(l -> l.standings)
 	).apply(i, ArenaLadder::new));
 
-	static final SavedDataType<ArenaLadder> TYPE = new SavedDataType<>(Wildercord.id("arena_ladder"), ArenaLadder::new, CODEC, null);
+	static final SavedDataType<ArenaLadder> TYPE = new SavedDataType<>("arena_ladder", ArenaLadder::new, CODEC, null);
 
 	private final Map<UUID, Standing> standings;
 

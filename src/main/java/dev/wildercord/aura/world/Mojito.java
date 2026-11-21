@@ -60,7 +60,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	private static final EntityDimensions CURLED=EntityDimensions.scalable(3.6F,2.6F).withEyeHeight(2.0F),STANDING=EntityDimensions.scalable(3.6F,5.0F).withEyeHeight(4.4F);
 	/** His magic: mint green. */
 	private static final DustParticleOptions MINT=new DustParticleOptions(0x7CFFB2,1.5F),MINT_SMALL=new DustParticleOptions(0x7CFFB2,.8F);
-	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.RED,BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.RED,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private BlockPos bed=BlockPos.ZERO,groveMin=BlockPos.ZERO,groveMax=BlockPos.ZERO;
 	private float rest;
@@ -164,7 +164,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	@Override protected void doPush(Entity entity){}
 	@Override public boolean removeWhenFarAway(double distance){return false;}
 
-	private static WolfSoundVariant.WolfSoundSet voice(){return SoundEvents.WOLF_SOUNDS.get(WolfSoundVariants.SoundSet.BIG).adultSounds();}
+	private static WolfSoundVariant voice(){return SoundEvents.WOLF_SOUNDS.get(WolfSoundVariants.SoundSet.BIG);}
 	private void sound(ServerLevel level,Vec3 at,SoundEvent s,float volume,float pitch){level.playSound(null,at.x,at.y,at.z,s,SoundSource.HOSTILE,volume,pitch);}
 	/** His voice, deep for his size. */
 	private void growl(ServerLevel level,float volume){sound(level,head(),voice().growlSound().value(),volume,.55F+random.nextFloat()*.1F);}

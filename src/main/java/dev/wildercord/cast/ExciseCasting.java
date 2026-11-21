@@ -82,7 +82,7 @@ public final class ExciseCasting {
         if (!entitled(p)) return "Study The Root That Outlived Its Gardener in Grimoire > Master studies with active Circle XVI and Heartwood.";
         return row(p, slot) ? null : "Excise needs your Echo Cord and both learned runes.";
     }
-    private static void fail(ServerPlayer p, String text) { p.sendOverlayMessage(dev.wildercord.spell.LessonText.problem(text).withColor(0xD4CEA2)); }
+    private static void fail(ServerPlayer p, String text) { p.displayClientMessage(dev.wildercord.spell.LessonText.problem(text).withColor(0xD4CEA2), true); }
     public static void input(ServerPlayer p, int action, int requested, long nonce) {
         try (var admission = ActionAdmission.begin(p)) {
             if (admission == null) return;

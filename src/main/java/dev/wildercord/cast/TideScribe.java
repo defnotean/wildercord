@@ -286,7 +286,7 @@ public class TideScribe extends DungeonBoss {
 		Fx.sound(level, c, DungeonSounds.TIDE_RISE, 2.0F, 1.0F);
 		for (ServerPlayer player : level.players()) {
 			if (player.distanceTo(this) < 40) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.tide_rises").withColor(ACCENT));
+				player.displayClientMessage(Component.translatable("message.wildercord.tide_rises").withColor(ACCENT), true);
 			}
 		}
 		updateName(null);
@@ -495,7 +495,7 @@ public class TideScribe extends DungeonBoss {
 			Long last = told.get(player.getUUID());
 			if (last == null || now - last > 200) {
 				told.put(player.getUUID(), now);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.tide_conducts").withColor(0xFFE650));
+				player.displayClientMessage(Component.translatable("message.wildercord.tide_conducts").withColor(0xFFE650), true);
 			}
 		}
 	}

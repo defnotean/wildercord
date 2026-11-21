@@ -40,7 +40,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> TELL=SynchedEntityData.defineId(Gravekeeper.class,EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> BEGAN=SynchedEntityData.defineId(Gravekeeper.class,EntityDataSerializers.LONG);
 	private static final DustParticleOptions BONE=new DustParticleOptions(0xBDA879,1.4F),GRAVE=new DustParticleOptions(0x5E5A52,1.6F),SOUL=new DustParticleOptions(0x7FD8E0,1.2F);
-	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.WHITE,BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.WHITE,BossEvent.BossBarOverlay.NOTCHED_10);
 	private final MoveDeck deck=new MoveDeck(SwordTombRules.MEMORY);
 	private final Map<UUID,Vec3> steps=new HashMap<>();
 	private final Map<UUID,Long> grasped=new HashMap<>();

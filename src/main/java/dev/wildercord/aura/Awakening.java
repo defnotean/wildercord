@@ -202,7 +202,7 @@ public final class Awakening {
 			case MOMENTUM -> Component.translatable(why.key(), (int) Math.round(Config.awakeningMomentum(player)), (int) Math.floor(Momentum.value(player)));
 			default -> Component.translatable(why.key());
 		};
-		player.sendOverlayMessage(line.copy().withColor(0xA89CC8));
+		player.displayClientMessage(line.copy().withColor(0xA89CC8), true);
 	}
 
 	/** Awakens {@code player} (already checked). */

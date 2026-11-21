@@ -60,7 +60,7 @@ public final class Battlefields {
 	public static void begin(ServerPlayer player,BlockPos pos) {
 		if (!Config.get().auraWorld().battlefields() || !player.level().hasChunkAt(pos) || player.isSpectator() || player.distanceToSqr(Vec3.atCenterOf(pos))>BattlefieldRules.REACH*BattlefieldRules.REACH) return;
 		if (!(player.level().getBlockEntity(pos) instanceof BattlefieldMemoryEntity marker) || !marker.oldGround()) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.battlefield.empty")); return;
+			player.displayClientMessage(Component.translatable("message.wildercord.battlefield.empty"), true); return;
 		}
 		int kind=marker.getBlockState().getValue(BattlefieldMemorial.KIND);
 		if (Heart.discovered(player,BattlefieldRules.memory(kind).key())) {
@@ -70,7 +70,7 @@ public final class Battlefields {
 			for (int page=1;page<=3;page++) player.sendSystemMessage(Component.translatable("book.wildercord.battlefield."+BattlefieldRules.memory(kind).id()+"."+page)); return;
 		}
 		if (!holding(player,player.level(),pos)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.battlefield.stance")); return;
+			player.displayClientMessage(Component.translatable("message.wildercord.battlefield.stance"), true); return;
 		}
 		if (RITES.containsKey(player.getUUID())) return;
 		RITES.put(player.getUUID(),new Rite(player.level(),pos.immutable(),kind,0));
@@ -99,13 +99,13 @@ public final class Battlefields {
 				if (p==null || !Config.get().auraWorld().battlefields() || !holding(p,rite.level(),rite.at())
 					|| !(rite.level().getBlockEntity(rite.at()) instanceof BattlefieldMemoryEntity marker) || !marker.oldGround()
 					|| marker.getBlockState().getValue(BattlefieldMemorial.KIND)!=rite.kind()) {
-					if (p!=null) p.sendOverlayMessage(Component.translatable("message.wildercord.battlefield.broken"));
+					if (p!=null) p.displayClientMessage(Component.translatable("message.wildercord.battlefield.broken"), true);
 					it.remove();continue;
 				}
 				int held=rite.held()+5;
 				if (held<BattlefieldRules.REMEMBER_TICKS) {
 					entry.setValue(new Rite(rite.level(),rite.at(),rite.kind(),held));
-					if (held%20==0) p.sendOverlayMessage(Component.translatable("message.wildercord.battlefield.listening",held/20,8));
+					if (held%20==0) p.displayClientMessage(Component.translatable("message.wildercord.battlefield.listening",held/20,8), true);
 					continue;
 				}
 				it.remove();var memory=BattlefieldRules.memory(rite.kind());

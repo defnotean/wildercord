@@ -212,26 +212,26 @@ public class RuneItem extends Item {
 		if (player instanceof ServerPlayer serverPlayer) {
 			RuneDef def = rune.get();
 			if(!dev.wildercord.cast.SoulWeaving.owns(serverPlayer,java.util.List.of(def))){
-				serverPlayer.sendOverlayMessage(Component.literal("This innate magic belongs to a different heart."));return InteractionResult.FAIL;
+				serverPlayer.displayClientMessage(Component.literal("This innate magic belongs to a different heart."), true);return InteractionResult.FAIL;
 			}
 			if (Runes.innate(def) && !serverPlayer.isCreative()) {
-				serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.innate_item").withStyle(ChatFormatting.GRAY));
+				serverPlayer.displayClientMessage(Component.translatable("message.wildercord.innate_item").withStyle(ChatFormatting.GRAY), true);
 				return InteractionResult.FAIL;
 			}
             if (def.is(dev.wildercord.spell.ExciseRules.ID) && !dev.wildercord.player.MasterStudies.knowsExcise(serverPlayer)) {
-                serverPlayer.sendOverlayMessage(Component.literal("Excise is learned by studying Rootbound in your Grimoire."));
+                serverPlayer.displayClientMessage(Component.literal("Excise is learned by studying Rootbound in your Grimoire."), true);
                 return InteractionResult.FAIL;
             }
             var pack = dev.wildercord.spell.LessonPackRules.byRune(def.id());
             if (pack != null && !dev.wildercord.player.MasterStudies.knows(serverPlayer, pack)) {
-                serverPlayer.sendOverlayMessage(Component.literal(pack.name + " is learned by studying " + pack.title + " in your Grimoire."));
+                serverPlayer.displayClientMessage(Component.literal(pack.name + " is learned by studying " + pack.title + " in your Grimoire."), true);
                 return InteractionResult.FAIL;
             }
 			int rank = rankOf(stack);
 			boolean known = Spellbooks.knows(serverPlayer, def.id());
 			if (twistedUse(serverPlayer, stack, def, known)) return InteractionResult.SUCCESS;
 			if (known && rank <= RuneRanks.rank(serverPlayer, def.id())) {
-				serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.already_known", runeName(def)).withStyle(ChatFormatting.GRAY));
+				serverPlayer.displayClientMessage(Component.translatable("message.wildercord.already_known", runeName(def)).withStyle(ChatFormatting.GRAY), true);
 				return InteractionResult.FAIL;
 			}
 			Spellbooks.learn(serverPlayer, def.id());
@@ -246,9 +246,9 @@ public class RuneItem extends Item {
 			stack.consume(1, player);
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0F, rank > 1 ? 1.6F : 1.3F);
 			Component name = runeName(def).withColor(RuneColors.of(def));
-			serverPlayer.sendOverlayMessage(rank > 1
+			serverPlayer.displayClientMessage(rank > 1
 				? Component.translatable(known ? "message.wildercord.ranked_up" : "message.wildercord.learned_ranked", name, roman(rank))
-				: Component.translatable("message.wildercord.learned", name));
+				: Component.translatable("message.wildercord.learned", name), true);
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -265,12 +265,12 @@ public class RuneItem extends Item {
 			dev.wildercord.player.RuneTwists.set(player, def.id(), null);
 			stack.consume(1, player);
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 1.2F);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.twist.cleansed", name));
+			player.displayClientMessage(Component.translatable("message.wildercord.twist.cleansed", name), true);
 			return true;
 		}
 		if (def.family() != dev.wildercord.spell.RuneFamily.EFFECT) return false;
 		if (twist == dev.wildercord.player.RuneTwists.twist(player, def.id())) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.already_known", name).withStyle(ChatFormatting.GRAY));
+			player.displayClientMessage(Component.translatable("message.wildercord.already_known", name).withStyle(ChatFormatting.GRAY), true);
 			return true;
 		}
 		if (!known) {
@@ -282,7 +282,7 @@ public class RuneItem extends Item {
 		stack.consume(1, player);
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), twist.corrupted ? SoundEvents.SCULK_SHRIEKER_SHRIEK : SoundEvents.AMETHYST_BLOCK_CHIME,
 			SoundSource.PLAYERS, twist.corrupted ? 0.4F : 1.0F, twist.corrupted ? 1.6F : 0.8F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.twist.learned." + twist.id(), name));
+		player.displayClientMessage(Component.translatable("message.wildercord.twist.learned." + twist.id(), name), true);
 		return true;
 	}
 

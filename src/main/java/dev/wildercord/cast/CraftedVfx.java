@@ -286,7 +286,7 @@ final class CraftedVfx {
 			ElementFx.ray(level, foot, foot.add(Math.cos(a) * -0.15, (frozen ? 0.9 : 0.5) + 0.25 * (i % 2), Math.sin(a) * -0.15), i % 2 == 0 ? WHITE : FROST, 0.05, 7);
 		}
 		if (frozen) {
-			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), c, 10, 0.2);
+			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ICE)), c, 10, 0.2);
 			Feels.sound(level, c, "frost_splat", 1.0F, 1.0F);
 		}
 	}
@@ -352,8 +352,8 @@ final class CraftedVfx {
 		Vec3 c = t.getBoundingBox().getCenter();
 		ElementFx.swirl(level, t.position(), Math.max(0.7, t.getBbWidth()), t.getBbHeight(), 3);
 		if (!taken.isEmpty()) {
-			Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, taken.getItem()), c, new Vec3(0, 1, 0), 0.3);
-			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, taken.getItem()), c, 6, 0.2);
+			Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(taken.getItem())), c, new Vec3(0, 1, 0), 0.3);
+			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(taken.getItem())), c, 6, 0.2);
 			Feels.sound(level, c, "wind_snatch", 0.9F, 1.0F);
 		}
 	}

@@ -302,7 +302,7 @@ public final class Crossroads {
 			return;
 		}
 		if (!Aura.holdsWeapon(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.way.with_blade").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.way.with_blade").withColor(0xA89CC8), true);
 			return;
 		}
 		long now = player.level().getGameTime();
@@ -328,8 +328,8 @@ public final class Crossroads {
 		ArtLight.world(player).flash(head, AuraVfx.hot(color, 0.4), 0.6F).groundRing(standard.foot(), color, 0.2, 1.4, 0.08, 14)
 			.ray(standard.foot(), head.add(0, 0.6, 0), AuraVfx.hot(color, 0.6), 0.07, 10);
 		Feels.sound(player.level(), head, "aura_way_lean", 1.0F, Feels.step(index));
-		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.way.lean", Component.translatable(way.nameKey())
-			.withColor(0xFF000000 | color)).withColor(0xE8D8B0));
+		player.displayClientMessage(Component.translatable("message.wildercord.aura.way.lean", Component.translatable(way.nameKey())
+			.withColor(0xFF000000 | color)).withColor(0xE8D8B0), true);
 	}
 
 	/** The second strike: the Way is walked, its standard pours into the swordsman, the others shatter. */

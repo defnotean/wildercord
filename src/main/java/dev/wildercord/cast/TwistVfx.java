@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -196,7 +197,7 @@ final class TwistVfx {
 	/** Paper Storm: a whirl of pages and runes round the caster. */
 	static void pages(ServerLevel level, Entity caster, int pulse) {
 		Vec3 centre = caster.position().add(0, 1.0, 0);
-		ItemParticleOption paper = new ItemParticleOption(ParticleTypes.ITEM, Items.PAPER);
+		ItemParticleOption paper = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.PAPER));
 		RandomSource r = level.getRandom();
 		for (int i = 0; i < 18; i++) {
 			double a = Math.PI * 2 * i / 18 + pulse * 0.7;
@@ -218,7 +219,7 @@ final class TwistVfx {
 
 	/** A page catching a foe. */
 	static void pageCut(ServerLevel level, Entity target) {
-		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.PAPER), target.getBoundingBox().getCenter(), 4, 0.3, 0.05);
+		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.PAPER)), target.getBoundingBox().getCenter(), 4, 0.3, 0.05);
 		Sigils.flash(level, target.getBoundingBox().getCenter(), 0xF0E4C8, 0.6F);
 	}
 

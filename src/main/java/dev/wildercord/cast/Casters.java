@@ -24,7 +24,7 @@ public final class Casters {
 	/** A line above the hotbar; monsters don't read. */
 	public static void tell(LivingEntity caster, Component message) {
 		if (caster instanceof ServerPlayer player) {
-			player.sendOverlayMessage(message);
+			player.displayClientMessage(message, true);
 		}
 	}
 

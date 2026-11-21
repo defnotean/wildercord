@@ -37,8 +37,8 @@ public class RitualTabletItem extends Item {
 			if (player instanceof ServerPlayer server) {
 				Ritual next = Rituals.ritual(stack).next();
 				Rituals.setRitual(stack, next);
-				server.sendOverlayMessage(Component.translatable("message.wildercord.ritual.chosen",
-					Component.translatable("ritual.wildercord." + next.id), next.minCircle).withColor(0xB8A8FF));
+				server.displayClientMessage(Component.translatable("message.wildercord.ritual.chosen",
+					Component.translatable("ritual.wildercord." + next.id), next.minCircle).withColor(0xB8A8FF), true);
 				server.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 0.8F, 1.0F);
 			}
 			return InteractionResult.SUCCESS;
@@ -56,7 +56,7 @@ public class RitualTabletItem extends Item {
 
 	private static void refuse(ServerPlayer player, Ritual ritual, Rituals.Result result) {
 		String key = "message.wildercord.ritual." + result.name().toLowerCase(java.util.Locale.ROOT);
-		player.sendOverlayMessage(Component.translatable(key, ritual.minCircle, new ItemStack(Rituals.reagent(ritual)).getHoverName()).withStyle(ChatFormatting.GRAY));
+		player.displayClientMessage(Component.translatable(key, ritual.minCircle, new ItemStack(Rituals.reagent(ritual)).getHoverName()).withStyle(ChatFormatting.GRAY), true);
 	}
 
 	@Override

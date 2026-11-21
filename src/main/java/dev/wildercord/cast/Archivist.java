@@ -98,9 +98,9 @@ public class Archivist extends SpellcasterIllager {
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/** Paper, for the pages torn from its tome. */
-	private static final ItemParticleOption PAGE = new ItemParticleOption(ParticleTypes.ITEM, Items.PAPER);
+	private static final ItemParticleOption PAGE = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.PAPER));
 	/** Books, for its volleys. */
-	private static final ItemParticleOption BOOK = new ItemParticleOption(ParticleTypes.ITEM, Items.BOOK);
+	private static final ItemParticleOption BOOK = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.BOOK));
 	/** Splinters of shelf, where a book lands. */
 	private static final BlockParticleOption SHELF = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BOOKSHELF.defaultBlockState());
 	private static final DustParticleOptions INK_DUST = new DustParticleOptions(INK, 1.3F);
@@ -128,7 +128,7 @@ public class Archivist extends SpellcasterIllager {
 		List.of(Runes.BEAM, Runes.SONIC_BOOM),
 		List.of(Runes.BOLT, Runes.FROST, Runes.FROST, Runes.SHOCK));
 
-	private final ServerBossEvent bossEvent = new ServerBossEvent(getUUID(), Component.translatable("entity.wildercord.archivist"),
+	private final ServerBossEvent bossEvent = new ServerBossEvent(Component.translatable("entity.wildercord.archivist"),
 		BossEvent.BossBarColor.PURPLE, BossEvent.BossBarOverlay.NOTCHED_10);
 	private BlockPos home;
 	private int phase = 1;

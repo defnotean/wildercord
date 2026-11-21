@@ -65,7 +65,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** Whether she has roused, half beaten; for the client, her eyes burn brighter. */
 	private static final EntityDataAccessor<Boolean> ROUSED=SynchedEntityData.defineId(HollowMatron.class,EntityDataSerializers.BOOLEAN);
 	private static final EntityDimensions HANGING=EntityDimensions.scalable(2.2F,3.8F).withEyeHeight(.8F),STANDING=EntityDimensions.scalable(3.6F,2.2F).withEyeHeight(1.4F);
-	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.WHITE,BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.WHITE,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	/** Where her feet are while she hangs, the floor under her, and the hall she keeps. */
 	private BlockPos hang=BlockPos.ZERO,hallMin=BlockPos.ZERO,hallMax=BlockPos.ZERO;
@@ -706,7 +706,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** Her thread has {@code p}: she starts hauling them in. */
 	private void catchOn(ServerLevel level,ServerPlayer p){
 		reeled=p;caughtAt=p.position();snaps=0;struck.clear();pose(HollowMatronRules.HAUL,0);
-		p.sendOverlayMessage(Component.translatable("message.wildercord.hollow_matron.reeled").withColor(0xD8C070));
+		p.displayClientMessage(Component.translatable("message.wildercord.hollow_matron.reeled").withColor(0xD8C070), true);
 		sound(level,p.position(),SoundEvents.FISHING_BOBBER_RETRIEVE,1.4F,.6F);
 		level.sendParticles(ParticleTypes.ITEM_COBWEB,p.getX(),p.getY()+1,p.getZ(),14,.4,.5,.4,.05);
 	}
@@ -741,7 +741,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** Her thread snapped by blows on her: whoever she was hauling goes free, and she is left reeling a while. */
 	private void snap(ServerLevel level){
 		var p=reeled;reeled=null;links=0;
-		if(p!=null && p.isAlive())p.sendOverlayMessage(Component.translatable("message.wildercord.hollow_matron.snapped").withColor(0xA8E070));
+		if(p!=null && p.isAlive())p.displayClientMessage(Component.translatable("message.wildercord.hollow_matron.snapped").withColor(0xA8E070), true);
 		var h=head();
 		sound(level,h,SoundEvents.WOOL_BREAK,1.4F,.8F);Feels.sound(level,h,"aura_hollow_matron_hurt",1.3F,1.1F);
 		level.sendParticles(ParticleTypes.ITEM_COBWEB,h.x,h.y,h.z,16,.6,.4,.6,.08);

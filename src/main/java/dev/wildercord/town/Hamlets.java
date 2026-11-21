@@ -124,8 +124,8 @@ public final class Hamlets {
 		Standing standing = standing(player, player.level(), bell);
 		String key = key(player.level(), bell);
 		if (!key.equals(IN.put(player.getUUID(), key))) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.hamlet.enter", name(bell),
-				BountyBoardBlock.tierName(standing.tier())).withStyle(ChatFormatting.GOLD));
+			player.displayClientMessage(Component.translatable("message.wildercord.hamlet.enter", name(bell),
+				BountyBoardBlock.tierName(standing.tier())).withStyle(ChatFormatting.GOLD), true);
 		}
 		favour(player, standing.tier());
 	}

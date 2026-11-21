@@ -18,6 +18,7 @@ import net.minecraft.world.effect.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -52,7 +53,7 @@ public final class HighlandContent {
 					if(kite) {
 						ItemStack fuel=ItemStack.EMPTY;
 						for(int i=0;i<p.getInventory().getContainerSize();i++) {var slot=p.getInventory().getItem(i);if(slot.is(WINDREED)) {fuel=slot;break;}}
-						if(fuel.isEmpty() && !p.getAbilities().instabuild) {p.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.draft_kite.fuel"));return InteractionResult.FAIL;}
+						if(fuel.isEmpty() && !p.getAbilities().instabuild) {p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.draft_kite.fuel"), true);return InteractionResult.FAIL;}
 						if(!p.getAbilities().instabuild)fuel.shrink(1);
 						p.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,160,0,false,true));p.getCooldowns().addCooldown(stack,400);
 						p.setAttached(ready,now+400);

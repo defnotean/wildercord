@@ -42,6 +42,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.Mannequin;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -205,7 +206,7 @@ public final class Innates {
 				}
 			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A));
+				player.displayClientMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A), true);
 				TimeFx.stasisRelease(player.level(), player, 0);
 			}
 		});
@@ -479,7 +480,7 @@ public final class Innates {
 		// Only what can really be mended is borrowed: health that has already come back is nothing to repay.
 		owed = Math.min(owed, Math.max(0.0F, player.getMaxHealth() - player.getHealth()));
 		if (owed < 0.5F) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.nothing_borrowed"));
+			player.displayClientMessage(Component.translatable("message.wildercord.nothing_borrowed"), true);
 			return;
 		}
 		if (history != null) {
@@ -494,7 +495,7 @@ public final class Innates {
 		ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
 		ElementFx.groundRing(player.level(), player.position(), ElementFx.TIME.primary(), 1.8, 0.4, 0.06, 14);
 		dev.wildercord.cast.feel.Feels.sound(player.level(), player.position(), "time_sand", 0.9F, 1.0F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.borrowed", Math.round(owed)).withColor(0xF2D98A));
+		player.displayClientMessage(Component.translatable("message.wildercord.borrowed", Math.round(owed)).withColor(0xF2D98A), true);
 	}
 
 	/** What a player still owes Borrowed Time (0 for nothing), for the tests. */
@@ -520,12 +521,12 @@ public final class Innates {
 	private static void mirror(Cast cast, ServerPlayer player) {
 		SpellHit hit = LAST_SPELL_ON.remove(player.getUUID());
 		if (hit == null || cast.level.getGameTime() - hit.time() > 600) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.nothing_to_mirror"));
+			player.displayClientMessage(Component.translatable("message.wildercord.nothing_to_mirror"), true);
 			return;
 		}
 		Vec3 hand = player.getEyePosition().add(player.getLookAngle().scale(1.0));
 		Sigils.telegraph(cast.level, hand, player.getLookAngle(), 0x8CDCFF, 0.8F, 16);
-		Vfx.radial(cast.level, new net.minecraft.core.particles.ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.GLASS_PANE), hand, 10, 0.2);
+		Vfx.radial(cast.level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(net.minecraft.world.item.Items.GLASS_PANE)), hand, 10, 0.2);
 		ElementFx.shatterRing(cast.level, hand, 1.4);
 		ElementFx.shards(cast.level, hand, 0.9, 5);
 		Feels.sound(cast.level, hand, "frost_mirror", 1.0F, 1.0F);

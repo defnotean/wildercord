@@ -208,13 +208,13 @@ public final class Teleports {
 
 	/** Shows the seconds left above the hotbar, and renews the circle. */
 	private static void countdown(ServerPlayer player, Pending pending, long seconds) {
-		player.sendOverlayMessage(Travel.text("countdown", pending.where(), seconds).withColor(Travel.ARCANE));
+		player.displayClientMessage(Travel.text("countdown", pending.where(), seconds).withColor(Travel.ARCANE), true);
 		TravelFx.circle(player.level(), pending.start(), seconds);
 	}
 
 	private static void cancel(ServerPlayer player, Pending pending, String why) {
 		if (PENDING.remove(player.getUUID(), pending)) {
-			player.sendOverlayMessage(Travel.text("cancel." + why).withStyle(ChatFormatting.RED));
+			player.displayClientMessage(Travel.text("cancel." + why).withStyle(ChatFormatting.RED), true);
 			Travel.fail(player, "cancel." + why);
 			TravelFx.fizzle(player.level(), pending.start());
 		}
@@ -234,7 +234,7 @@ public final class Teleports {
 		TravelFx.arrive(arrival.level(), arrival.pos());
 		READY_AT.computeIfAbsent(player.getUUID(), id -> new EnumMap<>(Kind.class))
 			.put(kind, arrival.level().getServer().getTickCount() + cooldownTicks(kind));
-		player.sendOverlayMessage(Travel.text("arrived", where).withColor(Travel.ARCANE));
+		player.displayClientMessage(Travel.text("arrived", where).withColor(Travel.ARCANE), true);
 		if (kind == Kind.RTP) {
 			// Used: the next /rtp looks for somewhere new.
 			RTP_SEARCHES.remove(player.getUUID());

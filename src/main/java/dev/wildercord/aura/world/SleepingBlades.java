@@ -24,6 +24,7 @@ import net.minecraft.server.network.Filterable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.WrittenBookContent;
@@ -97,7 +98,7 @@ public final class SleepingBlades {
 			&& level.hasChunkAt(at) && level.clip(new net.minecraft.world.level.ClipContext(p.getEyePosition(), Vec3.atCenterOf(at),
 				net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, p)).getBlockPos().equals(at);
 	}
-	private static void say(ServerPlayer p, String id) { p.sendOverlayMessage(Component.translatable("message.wildercord.sleeping_blade." + id)); }
+	private static void say(ServerPlayer p, String id) { p.displayClientMessage(Component.translatable("message.wildercord.sleeping_blade." + id), true); }
 	private static void tick(net.minecraft.server.MinecraftServer server) {
 		if (server.getTickCount() % 5 != 0 || DRAWS.isEmpty()) return;
 		var it = DRAWS.entrySet().iterator();
@@ -115,7 +116,7 @@ public final class SleepingBlades {
 					Feels.sound(d.level(), Vec3.atCenterOf(d.at()), "aura_blade_stone_strain", .65F, .85F + elapsed / 240F);
 					AuraFx.groundScar(d.level(), Vec3.atBottomCenterOf(d.at()), 1.5 + elapsed / 60F, 35, 2);
 				}
-				if (elapsed % 20 == 0) p.sendOverlayMessage(Component.translatable("message.wildercord.sleeping_blade.progress", elapsed / 20, 6));
+				if (elapsed % 20 == 0) p.displayClientMessage(Component.translatable("message.wildercord.sleeping_blade.progress", elapsed / 20, 6), true);
 				continue;
 			}
 			it.remove(); p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(BLADE));

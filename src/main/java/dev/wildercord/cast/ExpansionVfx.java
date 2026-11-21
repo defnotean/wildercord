@@ -11,6 +11,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -717,7 +718,7 @@ final class ExpansionVfx {
 		ElementFx.ray(level, c.add(0, 3.0, 0), c, WHITE, 0.09, 4);
 		ElementFx.ray(level, c.add(0, 3.0, 0), c, FROST, 0.2, 5);
 		Sigils.flash(level, c, FROST, slowed ? 1.2F : 0.8F);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), c, 6, 0.14);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ICE)), c, 6, 0.14);
 		if (slowed) {
 			Light.ring(level, c, UP, FROST, 0.1, 1.1, 0.04, 7);
 			Light.ring(level, c, new Vec3(0.6, 0.5, 0.6).normalize(), WHITE, 0.1, 1.0, 0.03, 6);
@@ -831,7 +832,7 @@ final class ExpansionVfx {
 		Scheduler.later(4, () -> Light.groundRing(level, ground, WHITE, 0.4, radius * 0.6, 0.04, 8));
 		Sigils.flash(level, ground.add(0, 0.8, 0), FROST, (float) Math.min(3, radius));
 		Vfx.radial(level, ParticleTypes.SNOWFLAKE, ground.add(0, 0.6, 0), 20, 0.25);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), ground.add(0, 0.4, 0), 10, 0.2);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ICE)), ground.add(0, 0.4, 0), 10, 0.2);
 		Feels.sound(level, ground, "frost_crust", 1.0F, 0.8F);
 		Feels.sound(level, ground, "frost_whump", 0.5F, 1.3F);
 	}

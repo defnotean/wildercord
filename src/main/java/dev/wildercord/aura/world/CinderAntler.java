@@ -93,7 +93,7 @@ public final class CinderAntler {
 		Feels.sound(level, mob.position(), "aura_ashen_stag_smoulder", .8F, 1.3F);
 		level.sendParticles(ParticleTypes.FLAME, mob.getX(), mob.getY() + mob.getBbHeight() / 2, mob.getZ(), 16, .3, .4, .3, .06);
 		level.sendParticles(ParticleTypes.LAVA, mob.getX(), mob.getY() + mob.getBbHeight() / 2, mob.getZ(), 4, .2, .2, .2, 0);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.cinder_antler.gore").withColor(0xF08A3C));
+		player.displayClientMessage(Component.translatable("message.wildercord.cinder_antler.gore").withColor(0xF08A3C), true);
 	}
 
 	private static net.minecraft.world.damagesource.DamageSource source(ServerPlayer player) {

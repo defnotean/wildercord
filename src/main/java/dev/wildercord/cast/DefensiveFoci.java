@@ -55,7 +55,7 @@ public final class DefensiveFoci {
      try { SpellDefence.guarded(player, () -> player.hurtServer(player.level(),source(player),due)); }
      finally { dev.wildercord.compat.McEntities.restoreHurtCooldown(player, savedCooldown); }
      owed = Math.max(0,owed-due); delay = owed > 0 ? 10 : 0;
-     player.sendOverlayMessage(Component.translatable("message.wildercord.reprieve.debt", String.format(java.util.Locale.ROOT,"%.1f",owed)));
+     player.displayClientMessage(Component.translatable("message.wildercord.reprieve.debt", String.format(java.util.Locale.ROOT,"%.1f",owed)), true);
     }
     int reprieve = Math.max(0,s.reprieve-1), grounding = Math.max(0,s.grounding-1);
     if(owed<=0)player.removeAttached(ORIGIN);
@@ -71,7 +71,7 @@ public final class DefensiveFoci {
  public static void defer(ServerPlayer player,float amount) {
   State s=player.getAttachedOrElse(STATE,State.EMPTY);
   player.setAttached(STATE,new State(amount,amount/4,20,RECHARGE,s.grounding));
-  player.sendOverlayMessage(Component.translatable("message.wildercord.reprieve.held",String.format(java.util.Locale.ROOT,"%.1f",amount)));
+  player.displayClientMessage(Component.translatable("message.wildercord.reprieve.held",String.format(java.util.Locale.ROOT,"%.1f",amount)), true);
   Light.groundRing(player.level(),player.position(),0xD6BDFF,.2,.8,.025,12);
  }
  public static void defer(ServerPlayer player,float amount,net.minecraft.world.damagesource.DamageSource source){
@@ -86,7 +86,7 @@ public final class DefensiveFoci {
   player.setAttached(STATE,new State(s.owed,s.installment,s.delay,s.reprieve,RECHARGE));
   player.addEffect(new MobEffectInstance(MobEffects.SPEED,40,0));
   Light.groundRing(player.level(),player.position(),0x98D5B7,.2,1.2,.035,10);
-  player.sendOverlayMessage(Component.translatable("message.wildercord.grounding"));
+  player.displayClientMessage(Component.translatable("message.wildercord.grounding"), true);
   return impulse.scale(.30);
  }
 }

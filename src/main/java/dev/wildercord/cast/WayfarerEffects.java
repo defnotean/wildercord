@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.spell.ClimateRules;
 import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
@@ -289,7 +290,7 @@ public final class WayfarerEffects {
 			tell(cast, "moon_reading.none");
 			return;
 		}
-		int phase = ClimateRules.moonPhase(level.getOverworldClockTime());
+		int phase = ClimateRules.moonPhase(dev.wildercord.compat.McTime.overworldClock(level));
 		tell(cast, "moon_reading", Component.translatable("message.wildercord.wayfarer.moon." + phase), WayfarerRules.nightsToFull(phase));
 		Fx.send(level, ParticleTypes.END_ROD, cast.caster.getEyePosition().add(0, 1.5, 0), 6, 0.3, 0.01);
 		chime(level, cast.caster.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8f);
@@ -301,7 +302,7 @@ public final class WayfarerEffects {
 			tell(cast, "sun_reading.none");
 			return;
 		}
-		long clock = level.getOverworldClockTime();
+		long clock = dev.wildercord.compat.McTime.overworldClock(level);
 		tell(cast, WayfarerRules.day(clock) ? "sun_reading.day" : "sun_reading.night", WayfarerRules.hour(clock),
 			WayfarerRules.minutes(WayfarerRules.untilTurn(clock)));
 		mark(level, cast.caster.getEyePosition().add(0, 1.5, 0), TIME, 8);
@@ -536,7 +537,7 @@ public final class WayfarerEffects {
 			tell(cast, villager == null ? "appraise.none" : "appraise.idle");
 			return;
 		}
-		long day = WayfarerRules.dayOf(cast.level.getOverworldClockTime());
+		long day = WayfarerRules.dayOf(dev.wildercord.compat.McTime.overworldClock(cast.level));
 		String tag = WayfarerRules.restockTag(day);
 		if (villager.entityTags().contains(tag)) {
 			tell(cast, "restock.done");

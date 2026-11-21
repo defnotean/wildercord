@@ -1,4 +1,5 @@
 package dev.wildercord.wildlife;
+import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.*;
@@ -33,8 +34,8 @@ public final class SiltcrestBittern extends PathfinderMob {
  static long clock(Level l){return l instanceof ServerLevel s?s.getServer().overworld().getGameTime():l.getGameTime();}
  public int pose(){return entityData.get(POSE);}public int phase(){return entityData.get(PHASE);}public long huntReady(){return huntReady;}public long controlReady(){return controlReady;}public BlockPos shelter(){return shelter;}public long shelterUntil(){return shelterUntil;}
  boolean fixed(){return pose()==COILING||pose()==STRIKING||pose()==PREENING||pose()==SHELTERING;}
- boolean wantsShelter(){return (level().isRaining()||!WetlandRules.night(level().getOverworldClockTime()))&&clock(level())>=shelterReady;}
- boolean forageReady(){return isAlive()&&!isRemoved()&&pose()==IDLE&&clock(level())>=huntReady&&clock(level())>=frightenedUntil&&WetlandRules.night(level().getOverworldClockTime())&&!level().isRaining();}
+ boolean wantsShelter(){return (level().isRaining()||!WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level())))&&clock(level())>=shelterReady;}
+ boolean forageReady(){return isAlive()&&!isRemoved()&&pose()==IDLE&&clock(level())>=huntReady&&clock(level())>=frightenedUntil&&WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level()))&&!level().isRaining();}
  boolean hungry(){return forageReady()&&onGround()&&BitternHabitat.standingBank(this);}
  void stalking(boolean yes){if(yes&&pose()==IDLE)pose(STALKING,0);else if(!yes&&pose()==STALKING)pose(IDLE,0);}
  private void pose(int n,int ticks){entityData.set(POSE,n);entityData.set(PHASE,0);left=ticks;if(fixed())still();}
@@ -68,7 +69,7 @@ public final class SiltcrestBittern extends PathfinderMob {
  @Override public boolean hurtServer(ServerLevel l,DamageSource source,float amount){float before=getHealth();boolean hit=super.hurtServer(l,source,amount);if(hit&&getHealth()<before&&isAlive()&&!isRemoved()&&level()==l)retreat();return hit;}
  @Override public void tick(){super.tick();if(level().isClientSide()){coilO=coil;strikeO=strike;preenO=preen;restO=rest;coil=WildlifeRules.approach(coil,pose()==COILING?1:0,.12F);strike=WildlifeRules.approach(strike,pose()==STRIKING?1:0,.65F);preen=WildlifeRules.approach(preen,pose()==PREENING?1:0,.1F);rest=WildlifeRules.approach(rest,pose()==SHELTERING?1:0,.1F);}}
  @Override protected void customServerAiStep(ServerLevel l){super.customServerAiStep(l);if(knownWorld==null)knownWorld=l.dimension();else if(!knownWorld.equals(l.dimension())){knownWorld=l.dimension();epoch++;quarry=null;committed=null;pendingPreen=false;shelter=null;shelterUntil=0;pose(IDLE,0);}
-  if(pose()==COILING){if(quarry==null||!wildFish(quarry,l)||disturbed(l)||!onGround()||!WetlandRules.night(l.getOverworldClockTime())||l.isRaining()){cancel(200);return;}getLookControl().setLookAt(committed.x,committed.y,committed.z,30,30);if(holdQuarry){quarry.getNavigation().stop();quarry.setDeltaMovement(0,quarry.getDeltaMovement().y,0);}entityData.set(PHASE,COIL-left);if(left==1)holdQuarry=false;if(--left<=0){pose(STRIKING,6);strike(l);}return;}
+  if(pose()==COILING){if(quarry==null||!wildFish(quarry,l)||disturbed(l)||!onGround()||!WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(l))||l.isRaining()){cancel(200);return;}getLookControl().setLookAt(committed.x,committed.y,committed.z,30,30);if(holdQuarry){quarry.getNavigation().stop();quarry.setDeltaMovement(0,quarry.getDeltaMovement().y,0);}entityData.set(PHASE,COIL-left);if(left==1)holdQuarry=false;if(--left<=0){pose(STRIKING,6);strike(l);}return;}
   if(pose()==STRIKING||pose()==PREENING){entityData.set(PHASE,(pose()==PREENING?PREEN:6)-left);if(--left<=0){if(pose()==STRIKING&&pendingPreen){pendingPreen=false;pose(PREENING,PREEN);}else pose(IDLE,0);}return;}
   if(pose()==SHELTERING){if(shelter==null||!BitternHabitat.shelter(l,shelter)||!onGround()||distanceToSqr(shelter.getX()+.5,shelter.getY(),shelter.getZ()+.5)>.64||clock(l)>=shelterUntil){shelter=null;shelterUntil=0;pose(IDLE,0);}return;}
   if(pose()==RETREATING){if(--left<=0)pose(IDLE,0);return;}

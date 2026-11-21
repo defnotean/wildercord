@@ -81,8 +81,8 @@ public final class TrainingGrounds {
 		// earn(practice=true) applies PRACTICE_RATE and the shared PRACTICE_CAP; compensate only that rate.
 		AuraExperience.earn(player, settings.trainingPractice() / AuraRules.PRACTICE_RATE, true);
 		if (player.level().getGameTime() % 200 < TrainingRules.CHECK_TICKS) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.training_" + ground.name().toLowerCase(java.util.Locale.ROOT))
-				.withColor(0xFF000000 | Aura.color(player)));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.training_" + ground.name().toLowerCase(java.util.Locale.ROOT))
+				.withColor(0xFF000000 | Aura.color(player)), true);
 		}
 	}
 }

@@ -276,7 +276,7 @@ public final class MasterForms {
 		return true;
 	}
 	private static boolean hingeRefusal(ServerPlayer player, String reason) {
-		player.sendOverlayMessage(Component.translatable("message.wildercord.stone_hinge." + reason)); return false;
+		player.displayClientMessage(Component.translatable("message.wildercord.stone_hinge." + reason), true); return false;
 	}
 	/** The planted body may shuffle, never walk off, jump, or lose the form's requirements. Losing them forfeits without refund. */
 	private static void tickHinge(ServerPlayer player, Session s) {
@@ -326,7 +326,7 @@ public final class MasterForms {
 		else speed.removeModifier(PLANT);
 	}
 	private static boolean refusal(ServerPlayer player, String reason) {
-		player.sendOverlayMessage(Component.translatable("message.wildercord.wall_turn." + reason)); return false;
+		player.displayClientMessage(Component.translatable("message.wildercord.wall_turn." + reason), true); return false;
 	}
 	private static void emit(ServerPlayer player, Session s, int phase, int ticks, float yaw) {
 		s.phase = phase; s.phaseTicks = ticks; s.yaw = yaw;

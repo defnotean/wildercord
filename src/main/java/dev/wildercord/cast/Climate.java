@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.events.ManaStorm;
 import dev.wildercord.config.Config;
@@ -124,7 +125,7 @@ public final class Climate {
 	static ClimateRules.Surroundings surroundings(ServerLevel level, BlockPos feet, BlockPos head, boolean ley, boolean crossing) {
 		Biome biome = level.getBiome(feet).value();
 		boolean fixedTime = level.dimensionType().hasFixedTime();
-		long clock = level.getOverworldClockTime();
+		long clock = dev.wildercord.compat.McTime.overworldClock(level);
 		long time = Math.floorMod(clock, 24000L);
 		int moon = fixedTime ? -1 : ClimateRules.moonPhase(clock);
 		return new ClimateRules.Surroundings(level.dimension().identifier().toString(), !fixedTime, time, level.canSeeSky(head),

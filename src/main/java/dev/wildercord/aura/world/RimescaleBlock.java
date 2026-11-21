@@ -45,11 +45,11 @@ public final class RimescaleBlock extends Block {
 	private static InteractionResult take(Level level, BlockPos pos, Player who) {
 		if (!(level instanceof ServerLevel server) || !(who instanceof ServerPlayer player)) return InteractionResult.SUCCESS;
 		if (Rimescale.bound(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.rimescale.bound").withColor(0xA8C4D4));
+			player.displayClientMessage(Component.translatable("message.wildercord.rimescale.bound").withColor(0xA8C4D4), true);
 			return InteractionResult.FAIL;
 		}
 		if (guarded(server, pos)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.rimescale.guarded").withColor(0xB0473C));
+			player.displayClientMessage(Component.translatable("message.wildercord.rimescale.guarded").withColor(0xB0473C), true);
 			return InteractionResult.FAIL;
 		}
 		player.setAttached(WildercordAttachments.RIMESCALE, true);
@@ -59,7 +59,7 @@ public final class RimescaleBlock extends Block {
 		dev.wildercord.cast.feel.Feels.sound(server, player.position(), "aura_frost_wyrmling_frost", .7F, 1.3F);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.SNOWFLAKE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 30, 0.35, 0.4, 0.35, 0.05);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.SNOWFLAKE, player.getX(), player.getY() + 1, player.getZ(), 40, 0.4, 0.8, 0.4, 0.03);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.rimescale.take").withColor(0xD6EEF8));
+		player.displayClientMessage(Component.translatable("message.wildercord.rimescale.take").withColor(0xD6EEF8), true);
 		return InteractionResult.SUCCESS;
 	}
 

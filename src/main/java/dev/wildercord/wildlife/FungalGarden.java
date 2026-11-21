@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.*;
@@ -45,7 +46,7 @@ public final class FungalGarden {
   @Override public InteractionResult use(Level l,Player p,InteractionHand hand) {
    if(p.isSpectator() || !p.isAlive() || hand!=InteractionHand.OFF_HAND)return InteractionResult.PASS;
    if(p instanceof ServerPlayer sp) {
-    if(!p.hasEffect(net.minecraft.world.effect.MobEffects.POISON) || clock(sp)<sp.getAttachedOrElse(BREATHER_READY,0L)) {p.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.fungal.filter_rest"));return InteractionResult.SUCCESS;}
+    if(!p.hasEffect(net.minecraft.world.effect.MobEffects.POISON) || clock(sp)<sp.getAttachedOrElse(BREATHER_READY,0L)) {p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.fungal.filter_rest"), true);return InteractionResult.SUCCESS;}
     sp.setAttached(BREATHER_READY,clock(sp)+200);var stack=p.getItemInHand(hand);p.getCooldowns().addCooldown(stack,200);stack.hurtAndBreak(1,sp,hand.asEquipmentSlot());p.removeEffect(net.minecraft.world.effect.MobEffects.POISON);p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS,60,0));Feels.sound(sp.level(),p.position(),"fungal_filter",.5F,1);
    }return InteractionResult.SUCCESS;
   }

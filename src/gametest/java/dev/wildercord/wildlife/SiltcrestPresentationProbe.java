@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
@@ -71,7 +72,7 @@ public final class SiltcrestPresentationProbe {
    out.addProperty("sourceTracked",level.getEntity(bird.getUUID())==bird);out.addProperty("ground",bird.onGround());out.addProperty("water",bird.isInWater());
    out.addProperty("pose",bird.pose());out.addProperty("phase",bird.phase());out.addProperty("epoch",epoch);out.addProperty("left",left);
    out.addProperty("pendingPreen",pendingPreen);out.addProperty("huntReady",bird.huntReady());out.addProperty("controlReady",bird.controlReady());
-   out.addProperty("night",WetlandRules.night(level.getOverworldClockTime()));out.addProperty("raining",level.isRaining());
+   out.addProperty("night",WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level)));out.addProperty("raining",level.isRaining());
    out.addProperty("disturbed",bird.disturbed(level));out.addProperty("pool",bird.preyPool(level).size());
    out.addProperty("quarryUuid",quarry==null?null:quarry.getUUID().toString());out.add("committed",vector(committed));
    out.addProperty("admittedEpoch",s.admittedEpoch);out.addProperty("admittedTick",s.admittedTick);out.add("admittedLocked",vector(s.locked));

@@ -146,7 +146,7 @@ public final class LessonPackCasting {
         if (!entitled(p, lesson)) return "Study " + lesson.title + " in Grimoire > Master studies with active Circle " + lesson.numeral + " and " + lesson.featName + ".";
         return row(p, slot, lesson) ? null : lesson.name + " needs your Echo Cord and both learned runes.";
     }
-    private static void fail(ServerPlayer p, String text) { REFUSED.put(p, text); p.sendOverlayMessage(dev.wildercord.spell.LessonText.problem(text).withColor(0xD4CEA2)); }
+    private static void fail(ServerPlayer p, String text) { REFUSED.put(p, text); p.displayClientMessage(dev.wildercord.spell.LessonText.problem(text).withColor(0xD4CEA2), true); }
     static String lastRefusal(ServerPlayer p) { return REFUSED.get(p); }
     static void forgetRefusal(ServerPlayer p) { REFUSED.remove(p); }
     static boolean sparking(ServerPlayer p) { Rod rod = RODS.get(p); return rod != null && rod.spark >= 0; }

@@ -79,7 +79,7 @@ public final class LineageRegistry extends SavedData {
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Honoured.CODEC.listOf()).optionalFieldOf("honoured", Map.of()).forGetter(r -> r.honoured),
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.DOUBLE).optionalFieldOf("owed_after", Map.of()).forGetter(r -> r.owedAfter)
 	).apply(i, LineageRegistry::new));
-	static final SavedDataType<LineageRegistry> TYPE = new SavedDataType<>(Wildercord.id("lineage"), LineageRegistry::new, CODEC, null);
+	static final SavedDataType<LineageRegistry> TYPE = new SavedDataType<>("lineage", LineageRegistry::new, CODEC, null);
 
 	/** Every standing bond, by disciple. */
 	private final Map<UUID, Bond> bonds = new HashMap<>();

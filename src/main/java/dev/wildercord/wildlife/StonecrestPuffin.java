@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -187,11 +188,11 @@ public class StonecrestPuffin extends Animal {
 			}
 			if (pose == PuffinRules.EAT && left % 10 == 0) {
 				double yaw = getYRot() * Mth.DEG_TO_RAD;
-				level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, Items.COD), getX() - Math.sin(yaw) * 0.3, getY() + 0.5,
+				level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.COD)), getX() - Math.sin(yaw) * 0.3, getY() + 0.5,
 					getZ() + Math.cos(yaw) * 0.3, 3, 0.05, 0.05, 0.05, 0.02);
 				playSound(SoundEvents.PARROT_EAT, 0.5F, 0.8F);
 			}
-			if (pose == PuffinRules.SLEEP && !PuffinRules.night(level.getOverworldClockTime()) && left > 20) {
+			if (pose == PuffinRules.SLEEP && !PuffinRules.night(dev.wildercord.compat.McTime.overworldClock(level)) && left > 20) {
 				entityData.set(LEFT, left = 20);
 			}
 			if (pose == PuffinRules.FLY && left < PuffinRules.FLY_TICKS - 6 && (onGround() || isInWater())) {
@@ -205,7 +206,7 @@ public class StonecrestPuffin extends Animal {
 			}
 			return;
 		}
-		long time = level.getOverworldClockTime();
+		long time = dev.wildercord.compat.McTime.overworldClock(level);
 		boolean night = PuffinRules.night(time);
 		if (isInWater()) {
 			if (night && random.nextInt(PuffinRules.SLEEP_ODDS) == 0) {

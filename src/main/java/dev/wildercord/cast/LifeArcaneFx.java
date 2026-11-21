@@ -2,6 +2,7 @@ package dev.wildercord.cast;
 
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -75,7 +76,7 @@ final class LifeArcaneFx {
 	static void nourish(ServerLevel level, Entity target) {
 		Vec3 mouth = target.getEyePosition().subtract(0, 0.3, 0);
 		ElementFx.ring(level, mouth, UP, AMBER, 0.7, 0.2, 0.04, 10);
-		Vfx.emit(level, new net.minecraft.core.particles.ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.BREAD), mouth, 5, 0.2, 0.05);
+		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(net.minecraft.world.item.Items.BREAD)), mouth, 5, 0.2, 0.05);
 		Feels.sound(level, target.position(), "life_munch", 0.8F, 1.0F);
 	}
 

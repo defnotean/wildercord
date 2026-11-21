@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McTime;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -202,7 +203,7 @@ public final class Cast {
 		if(dev.wildercord.spell.CircleDisciplines.selected(group.shapeMods)==null)return;
 		budget.shared.circleConditions.computeIfAbsent(group,g -> {
 			Vec3 velocity=caster.getDeltaMovement();
-			long day=Math.floorMod(level.getOverworldClockTime(),24000);
+			long day=Math.floorMod(dev.wildercord.compat.McTime.overworldClock(level),24000);
 			boolean night=level.dimensionType().hasSkyLight() && !level.dimensionType().hasFixedTime() && day>=13000 && day<23000;
 			return dev.wildercord.spell.CircleDisciplines.conditional(g,
 				velocity.x*velocity.x+velocity.z*velocity.z>=.0025,caster.isShiftKeyDown(),

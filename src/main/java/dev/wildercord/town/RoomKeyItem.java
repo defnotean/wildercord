@@ -24,7 +24,7 @@ public class RoomKeyItem extends Item {
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (player instanceof ServerPlayer server) {
 			if (!atInn(server)) {
-				server.sendOverlayMessage(Component.translatable("message.wildercord.room.no_inn").withStyle(ChatFormatting.RED));
+				server.displayClientMessage(Component.translatable("message.wildercord.room.no_inn").withStyle(ChatFormatting.RED), true);
 				return InteractionResult.FAIL;
 			}
 			InnRooms.rent(server);

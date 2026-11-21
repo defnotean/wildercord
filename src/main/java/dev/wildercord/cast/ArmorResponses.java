@@ -39,7 +39,7 @@ public final class ArmorResponses {
 			if(edge && (hasRime&&rime==0 || hasMirror&&mirror==0)) {
 				if(hasRime&&rime==0){rime=80;rimeWindow=12;}if(hasMirror&&mirror==0){mirror=100;mirrorWindow=12;}
 				Light.groundRing(p.level(),p.position(),hasMirror?0xEDCAFF:0xA8EAFF,.3,1.1,.025,12);
-				p.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.armor_guard"));
+				p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.armor_guard"), true);
 			}
 			var next=new State(rimeWindow,mirrorWindow,rime,mirror,p.isShiftKeyDown());
 			if(!next.equals(s))p.setAttached(STATE,next);

@@ -167,7 +167,7 @@ public final class BearersLantern {
 			if (!(player instanceof ServerPlayer server)) return InteractionResult.SUCCESS;
 			ItemStack stack = player.getItemInHand(hand);
 			if (player.isPassenger() || player.isSpectator()) {
-				server.sendOverlayMessage(Component.translatable("message.wildercord.bearers_lantern.mounted").withColor(0x8AA8B0));
+				server.displayClientMessage(Component.translatable("message.wildercord.bearers_lantern.mounted").withColor(0x8AA8B0), true);
 				return InteractionResult.FAIL;
 			}
 			if (!steed(server)) return InteractionResult.FAIL;

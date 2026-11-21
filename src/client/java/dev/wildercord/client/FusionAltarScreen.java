@@ -467,7 +467,7 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 		if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && plan.kind() != Fusions.Kind.NONE && inside(mx, my, buttonX(), buttonY(), BUTTON_W, BUTTON_H)) {
 			int chosen = plan.kind() == Fusions.Kind.KNOT ? chosenSpell() : 0;
 			if (plan.kind() == Fusions.Kind.KNOT && chosen < 0) {
-				if (minecraft.player != null) minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.altar.no_spell").withColor(BAD));
+				if (minecraft.player != null) minecraft.player.displayClientMessage(Component.translatable("screen.wildercord.altar.no_spell").withColor(BAD), true);
 			} else {
 				// Let the server decide from its current slots and XP. A stale client view must not silence a valid click.
 				minecraft.gameMode.handleInventoryButtonClick(menu.containerId,

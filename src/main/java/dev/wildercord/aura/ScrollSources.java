@@ -15,6 +15,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 
 import java.util.ArrayList;
@@ -148,14 +149,15 @@ public final class ScrollSources {
 	 * {@link ScrollSources} id), or any part a scroll can carry when the source is missing.
 	 */
 	public record RandomPart(String source) implements LootItemFunction {
-		public static final MapCodec<RandomPart> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+		public static final LootItemFunctionType<RandomPart> TYPE = new LootItemFunctionType<>(MAP_CODEC);
+	public static final MapCodec<RandomPart> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 			Codec.STRING.optionalFieldOf("source", "").forGetter(RandomPart::source)
 		).apply(i, RandomPart::new));
 
 		@Override
-		public MapCodec<RandomPart> codec() {
-			return MAP_CODEC;
-		}
+		public LootItemFunctionType<RandomPart> getType() {
+		return TYPE;
+	}
 
 		@Override
 		public ItemStack apply(ItemStack stack, LootContext context) {
@@ -194,7 +196,7 @@ public final class ScrollSources {
 	}
 
 	static void init() {
-		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_technique_part"), RandomPart.MAP_CODEC);
+		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_technique_part"), RandomPart.TYPE);
 		LootTableEvents.MODIFY.register((key, table, source, registries) -> {
 			if (!source.isBuiltin()) {
 				return;

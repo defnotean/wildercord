@@ -47,11 +47,11 @@ public final class BarrowLanternBlock extends Block {
 	private static InteractionResult take(Level level, BlockPos pos, Player who) {
 		if (!(level instanceof ServerLevel server) || !(who instanceof ServerPlayer player)) return InteractionResult.SUCCESS;
 		if (BearersLantern.carries(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.bearers_lantern.bound").withColor(0x8AA8B0));
+			player.displayClientMessage(Component.translatable("message.wildercord.bearers_lantern.bound").withColor(0x8AA8B0), true);
 			return InteractionResult.FAIL;
 		}
 		if (guarded(server, pos)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.bearers_lantern.guarded").withColor(0xB0473C));
+			player.displayClientMessage(Component.translatable("message.wildercord.bearers_lantern.guarded").withColor(0xB0473C), true);
 			return InteractionResult.FAIL;
 		}
 		BearersLantern.take(player);
@@ -60,7 +60,7 @@ public final class BarrowLanternBlock extends Block {
 		server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, .5F, .9F);
 		server.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, pos.getX() + .5, pos.getY() + .4, pos.getZ() + .5, 24, .25, .3, .25, .03);
 		server.sendParticles(ParticleTypes.SOUL, player.getX(), player.getY() + 1, player.getZ(), 16, .4, .7, .4, .03);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.bearers_lantern.take").withColor(0xA8E4EC));
+		player.displayClientMessage(Component.translatable("message.wildercord.bearers_lantern.take").withColor(0xA8E4EC), true);
 		return InteractionResult.SUCCESS;
 	}
 

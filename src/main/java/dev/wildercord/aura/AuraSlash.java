@@ -26,7 +26,7 @@ public final class AuraSlash {
         if ((dev.wildercord.cast.ExciseCasting.blocking(player) || dev.wildercord.cast.LessonPackCasting.blocking(player))) return false;
 		long now = player.level().getGameTime();
 		if (!Aura.holdsWeapon(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8), true);
 			return false;
 		}
 		AuraAttachments.State state = Aura.state(player);

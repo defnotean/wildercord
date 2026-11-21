@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.*;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.*;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
@@ -36,7 +37,7 @@ public final class TidewardSurvey {
  private static final AttachmentType<State> STATE=AttachmentRegistry.create(Wildercord.id("bank_survey_state"),b -> b.initializer(State::new));
  private static boolean current(ServerPlayer p,State s){return TidewardReadAdmission.actor(p) && s.world==p.level() && s.hand!=null && p.getItemInHand(s.hand)==s.held && s.held.is(ITEM);}
  private static void clear(ServerPlayer p,State s){if(!s.route.isEmpty())TidewardCue.clear(p,s.nonce);s.route=List.of();s.first=null;s.until=0;}
- private static boolean refuse(ServerPlayer p,String reason){p.sendOverlayMessage(Component.translatable("message.wildercord.bank_line."+reason));return false;}
+ private static boolean refuse(ServerPlayer p,String reason){p.displayClientMessage(Component.translatable("message.wildercord.bank_line."+reason), true);return false;}
  public static List<BlockPos> columns(BlockPos a,BlockPos b){
   int dx=b.getX()-a.getX(),dy=b.getY()-a.getY(),dz=b.getZ()-a.getZ();int steps=Math.max(Math.abs(dx),Math.abs(dz));
   if(steps<1 || steps>8 || Math.abs(dy)>1 || (long)dx*dx+(long)dz*dz>64)return List.of();
@@ -84,7 +85,7 @@ public final class TidewardSurvey {
   var floor=c.getClickedPos().immutable();if(!visibleBank(p,floor))return refuse(p,"bank");
   if(!current(p,s) || now>=s.until || s.first==null){
    clear(p,s);s.world=p.level();s.held=held;s.hand=c.getHand();s.first=floor;s.until=now+ANCHOR_LIFE;
-   p.sendOverlayMessage(Component.translatable("message.wildercord.bank_line.first"));return true;
+   p.displayClientMessage(Component.translatable("message.wildercord.bank_line.first"), true);return true;
   }
   var cells=columns(s.first,floor);if(!route(p,cells) || !current(p,s))return refuse(p,"crossing");
   // Payment is committed once; callbacks cannot create an unpaid success or evade its shared rest.

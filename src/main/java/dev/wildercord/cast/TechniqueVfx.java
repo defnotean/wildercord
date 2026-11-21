@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -313,7 +314,7 @@ final class TechniqueVfx {
 	/** Resonance: a nail rings out and threads of cursed light run to every marked enemy. */
 	static void resonance(ServerLevel level, Entity target, List<? extends Entity> linked) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		ItemParticleOption nail = new ItemParticleOption(ParticleTypes.ITEM, Items.IRON_NUGGET);
+		ItemParticleOption nail = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.IRON_NUGGET));
 		Sigils.flash(level, c, CURSE, 1.4F);
 		ElementFx.ring(level, c, UP, ElementFx.ARCANE.primary(), 0.2, 1.1, 0.045, 9);
 		ElementFx.ring(level, c, ElementFx.tilted(1.2, level.getRandom().nextDouble() * Math.PI * 2), CURSE, 0.15, 0.8, 0.035, 11);
@@ -585,7 +586,7 @@ final class TechniqueVfx {
 			ElementFx.ring(level, c, new Vec3(Math.cos(b), 0, Math.sin(b)), i == 1 ? ElementFx.ARCANE.secondary() : ElementFx.ARCANE.accent(), r * 1.3, r, 0.03, 12);
 		}
 		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, 0.7, 14);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE), c, 8, 0.15);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GLASS_PANE)), c, 8, 0.15);
 		dev.wildercord.cast.feel.Feels.sound(level, c, "arcane_mirror", 0.9F, 1.0F);
 	}
 
@@ -601,7 +602,7 @@ final class TechniqueVfx {
 		ElementFx.ray(level, start, b, ElementFx.ARCANE.secondary(), 0.025, 7);
 		dot(level, SigilOption.glow(ElementFx.ARCANE.primary(), 1.4F), b);
 		ElementFx.ring(level, b, d, ElementFx.ARCANE.secondary(), 0.2, 1.0, 0.04, 7);
-		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE), b, 6, 0.3, 0.1);
+		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.GLASS_PANE)), b, 6, 0.3, 0.1);
 		dev.wildercord.cast.feel.Feels.sound(level, b, "arcane_mirror_crack", 0.9F, 1.0F);
 	}
 

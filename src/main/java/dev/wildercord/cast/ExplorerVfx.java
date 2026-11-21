@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -204,7 +205,7 @@ final class ExplorerVfx {
 		Vec3 dir = to.subtract(from).normalize();
 		ElementFx.slash(level, to, dir.cross(UP).lengthSqr() < 1e-4 ? UP : dir.cross(UP), dir, ElementFx.LIFE.primary(), 0.9, 2.2, 0.07, 3, 7);
 		ElementFx.petals(level, to, 0.4, 6);
-		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.VINE), to, 6, 0.3, 0.1);
+		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.VINE)), to, 6, 0.3, 0.1);
 		dev.wildercord.cast.feel.Feels.sound(level, to, "life_whip", 0.9F, 1.0F);
 	}
 

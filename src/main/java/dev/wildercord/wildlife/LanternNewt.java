@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -87,7 +89,7 @@ public final class LanternNewt extends PathfinderMob {
 	}
 	@Override protected void customServerAiStep(ServerLevel l) {
 		super.customServerAiStep(l);
-		if(isInWaterOrRain() && (response()>0 || WetlandRules.night(l.getOverworldClockTime())) && tickCount%20==0)
+		if(isInWaterOrRain() && (response()>0 || WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(l))) && tickCount%20==0)
 			l.sendParticles(net.minecraft.core.particles.ParticleTypes.GLOW,getX(),getY()+.3,getZ(),2,.16,.05,.16,0);
 	}
 	@Override public boolean hurtServer(ServerLevel l,DamageSource source,float amount) {boolean hit=super.hurtServer(l,source,amount);if(hit) {frightenedUntil=l.getGameTime()+200;entityData.set(RESPONSE,0L);entityData.set(RESTING,false);}return hit;}
@@ -95,8 +97,8 @@ public final class LanternNewt extends PathfinderMob {
 		var stack=p.getItemInHand(hand);if(!stack.is(Items.SEAGRASS))return super.mobInteract(p,hand);
 		if(level() instanceof ServerLevel l) {
 			if(!isAlive() || l.getGameTime()<frightenedUntil)return InteractionResult.PASS;
-			if(!isInWaterOrRain()) {p.sendOverlayMessage(Component.translatable("message.wildercord.lantern_newt.water"));return InteractionResult.SUCCESS;}
-			if(!WetlandRules.ready(l.getGameTime(),pearlReady)) {p.sendOverlayMessage(Component.translatable("message.wildercord.lantern_newt.rest"));return InteractionResult.SUCCESS;}
+			if(!isInWaterOrRain()) {p.displayClientMessage(Component.translatable("message.wildercord.lantern_newt.water"), true);return InteractionResult.SUCCESS;}
+			if(!WetlandRules.ready(l.getGameTime(),pearlReady)) {p.displayClientMessage(Component.translatable("message.wildercord.lantern_newt.rest"), true);return InteractionResult.SUCCESS;}
 			if(!p.getAbilities().instabuild)stack.shrink(1);
 			pearlReady=l.getGameTime()+WetlandRules.PEARL_REST;browseReady=l.getGameTime()+WetlandRules.BROWSE_REST;
 			spawnAtLocation(l,new ItemStack(WetlandContent.DUSK_PEARL));entityData.set(RESPONSE,l.getGameTime()+60);Feels.sound(l,position(),"wetland_newt_pearl",.7F,1);
@@ -114,7 +116,7 @@ public final class LanternNewt extends PathfinderMob {
   private HabitatSweep sweep;private BlockPos roof;private net.minecraft.world.level.pathfinder.Path route;
   private int scanAt,travelLeft,settled,retries;private boolean arrived;
   Shelter() {setFlags(EnumSet.of(Flag.MOVE,Flag.LOOK));}
-  private boolean weather() {return isInWaterOrRain() && (!WetlandRules.night(level().getOverworldClockTime()) || level().isRaining()) && !frightened() && response()==0;}
+  private boolean weather() {return isInWaterOrRain() && (!WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level())) || level().isRaining()) && !frightened() && response()==0;}
   private boolean available(BlockPos at) {
    if(!level().hasChunkAt(at))return false;var b=level().getBlockState(at);
    return b.is(WetlandShelters.REFUGE) && b.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED)

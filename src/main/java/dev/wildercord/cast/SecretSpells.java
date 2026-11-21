@@ -23,6 +23,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
@@ -201,7 +202,7 @@ public final class SecretSpells {
 			for (int k = 1; k <= 4; k++) {
 				Vec3 p = from.add(dir.scale(length * k / 5));
 				ElementFx.shatterRing(level, p, 1.2);
-				Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), p, 5, 0.15);
+				Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ICE)), p, 5, 0.15);
 			}
 			Vec3 prev = from;
 			for (LivingEntity t : pierced) {
@@ -662,7 +663,7 @@ public final class SecretSpells {
 		Fx.sound(level, c, SoundEvents.TOTEM_USE, 1.0F, 0.9F);
 		Fx.sound(level, c, SoundEvents.BLAZE_SHOOT, 1.0F, 0.5F);
 		if (entity instanceof ServerPlayer player) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.reborn").withColor(0xFF9050));
+			player.displayClientMessage(Component.translatable("message.wildercord.reborn").withColor(0xFF9050), true);
 		}
 	}
 

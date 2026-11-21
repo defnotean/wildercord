@@ -222,7 +222,7 @@ public final class MonsterSpawns {
 	private static void add(BiomeSelectionContext biome, BiomeModificationContext context) {
 		ResourceKey<Biome> key = biome.getBiomeKey();
 		double rate = Config.get().monsters().spawnRate();
-		BiomeModificationContext.MobSpawnSettingsContext spawns = context.getMobSpawnSettings();
+		BiomeModificationContext.SpawnSettingsContext spawns = context.getSpawnSettings();
 		if (FORESTS.contains(key)) {
 			add(spawns, MonsterRules.Kind.BRAMBLEWALKER, DARK_WOODS.contains(key) ? 1.4 : 1.0, rate);
 		}
@@ -327,7 +327,7 @@ public final class MonsterSpawns {
 		}
 	}
 
-	private static void add(BiomeModificationContext.MobSpawnSettingsContext spawns, MonsterRules.Kind kind, double share, double rate) {
+	private static void add(BiomeModificationContext.SpawnSettingsContext spawns, MonsterRules.Kind kind, double share, double rate) {
 		int weight = MonsterRules.weight((int) Math.round(kind.weight * share), rate);
 		if (weight > 0) {
 			dev.wildercord.compat.McWorldgen.addSpawn(spawns, MobCategory.MONSTER, MonsterContent.type(kind), kind.min, kind.max, weight);

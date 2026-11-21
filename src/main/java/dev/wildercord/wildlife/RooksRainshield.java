@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.entity.projectile.arrow.SpectralArrow;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.GameType;
@@ -59,7 +60,7 @@ public final class RooksRainshield {
    if(!(target instanceof ServerPlayer r)||p==r||!pair(p,r)||!stack.is(ITEM)||p.getItemInHand(h)!=stack||p.getAttached(FAN)!=null||p.getAttached(COVER)!=null||r.getAttached(COVER)!=null)return InteractionResult.FAIL;
    var selection=p.getAttached(SELECT);
    if(selection!=null&&selection.level==p.level()&&selection.recipient.equals(r.getUUID())&&selection.recipientBody==r&&selection.held==stack&&selection.hand==h&&now(p)<=selection.until&&selection.consented&&r.isShiftKeyDown())return use(p.level(),p,h);
-   p.setAttached(SELECT,new Selection(p,r,stack,h));r.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.rainshield.offer",p.getDisplayName()));return InteractionResult.SUCCESS;
+   p.setAttached(SELECT,new Selection(p,r,stack,h));r.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.rainshield.offer",p.getDisplayName()), true);return InteractionResult.SUCCESS;
   }
   @Override public InteractionResult use(Level l,Player user,InteractionHand h){
    if(!(user instanceof ServerPlayer p)){if(user.isAlive()&&!user.isSpectator()){user.startUsingItem(h);return InteractionResult.CONSUME;}return InteractionResult.FAIL;}

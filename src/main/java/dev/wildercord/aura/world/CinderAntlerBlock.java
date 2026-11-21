@@ -45,11 +45,11 @@ public final class CinderAntlerBlock extends Block {
 	private static InteractionResult take(Level level, BlockPos pos, Player who) {
 		if (!(level instanceof ServerLevel server) || !(who instanceof ServerPlayer player)) return InteractionResult.SUCCESS;
 		if (CinderAntler.bound(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.cinder_antler.bound").withColor(0xC08A5C));
+			player.displayClientMessage(Component.translatable("message.wildercord.cinder_antler.bound").withColor(0xC08A5C), true);
 			return InteractionResult.FAIL;
 		}
 		if (guarded(server, pos)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.cinder_antler.guarded").withColor(0xC9A46A));
+			player.displayClientMessage(Component.translatable("message.wildercord.cinder_antler.guarded").withColor(0xC9A46A), true);
 			return InteractionResult.FAIL;
 		}
 		player.setAttached(WildercordAttachments.CINDER_ANTLER, true);
@@ -58,7 +58,7 @@ public final class CinderAntlerBlock extends Block {
 		dev.wildercord.cast.feel.Feels.sound(server, player.position(), "aura_ashen_stag_bellow", .6F, 1.4F);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 0.3, pos.getZ() + 0.5, 20, 0.4, 0.2, 0.4, 0.03);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.WHITE_ASH, player.getX(), player.getY() + 1, player.getZ(), 40, 0.5, 0.6, 0.5, 0.05);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.cinder_antler.take").withColor(0xF08A3C));
+		player.displayClientMessage(Component.translatable("message.wildercord.cinder_antler.take").withColor(0xF08A3C), true);
 		return InteractionResult.SUCCESS;
 	}
 

@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.RitualOption;
 import dev.wildercord.content.WildercordItems;
@@ -79,7 +80,7 @@ public final class Attunement {
 				var message=possible.isPresent()
 					? Component.translatable("message.wildercord.attune_conditions",possible.get().needs())
 					: Component.translatable("message.wildercord.attune_quiet_details",Component.translatableWithFallback("biome."+place.biome().replace(':','.'),place.biome()),place.y());
-				player.sendOverlayMessage(message.withStyle(ChatFormatting.GRAY));
+				player.displayClientMessage(message.withStyle(ChatFormatting.GRAY), true);
 				quiet = now + 600;
 			}
 			STATES.put(player.getUUID(), new State("", 0, quiet));
@@ -91,7 +92,7 @@ public final class Attunement {
 			// This land already gave this player its rune today: say so (at most every half minute), and don't start.
 			long quiet = state == null ? 0 : state.quietUntil();
 			if (now >= quiet) {
-				player.sendOverlayMessage(Component.translatable("message.wildercord.attune_resting", minutes(rest)).withStyle(ChatFormatting.GRAY));
+				player.displayClientMessage(Component.translatable("message.wildercord.attune_resting", minutes(rest)).withStyle(ChatFormatting.GRAY), true);
 				quiet = now + 600;
 			}
 			STATES.put(player.getUUID(), new State("", 0, quiet));
@@ -105,11 +106,11 @@ public final class Attunement {
 		}
 		int perStage = CHECKS / STAGES;
 		if (checks == 1) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.attune_begin").withColor(color));
+			player.displayClientMessage(Component.translatable("message.wildercord.attune_begin").withColor(color), true);
 			Fx.sound(player.level(), player.position(), WildercordSounds.CIRCLE_OPEN, 0.8F, 0.8F);
 		} else if (checks < CHECKS && checks % perStage == 0) {
 			int stage = checks / perStage;
-			player.sendOverlayMessage(Component.translatable("message.wildercord.attune_stage." + stage).withColor(color));
+			player.displayClientMessage(Component.translatable("message.wildercord.attune_stage." + stage).withColor(color), true);
 			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.8F + stage * 0.25F);
 			Sigils.flash(player.level(), hold(player), color, 0.6F + stage * 0.3F);
 			// A pulse runs out from the circle's rim, stronger each stage.
@@ -149,7 +150,7 @@ public final class Attunement {
 		BlockPos head = BlockPos.containing(player.getEyePosition());
 		String biome = level.getBiome(feet).unwrapKey().map(k -> k.identifier().toString()).orElse("");
 		String dimension = level.dimension().identifier().toString();
-		long time = Math.floorMod(level.getOverworldClockTime(), 24000L);
+		long time = Math.floorMod(dev.wildercord.compat.McTime.overworldClock(level), 24000L);
 		int moon = level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, feet).index();
 		Biome.Precipitation falling = level.precipitationAt(head);
 		String precipitation = falling == Biome.Precipitation.RAIN ? "rain" : falling == Biome.Precipitation.SNOW ? "snow" : "none";
@@ -205,7 +206,7 @@ public final class Attunement {
 		Light.groundRing(level, player.position(), 0xFFFFFF, 0.2, 2.2, 0.04, 10);
 		Fx.sound(level, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 1.2F);
 		Fx.sound(level, at, WildercordSounds.DISCOVERY, 1.0F, 1.0F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.attuned", RuneItem.runeName(rule.rune()).withColor(color)));
+		player.displayClientMessage(Component.translatable("message.wildercord.attuned", RuneItem.runeName(rule.rune()).withColor(color)), true);
 		Grimoire.unlock(player, rule.key());
 		// The land rests now: once a day for each player.
 		Map<String, Long> attuned = new HashMap<>(player.getAttachedOrElse(WildercordAttachments.ATTUNED_AT, Map.of()));
@@ -214,7 +215,7 @@ public final class Attunement {
 	}
 
 	private static void broken(ServerPlayer player) {
-		player.sendOverlayMessage(Component.translatable("message.wildercord.attune_broken").withStyle(ChatFormatting.GRAY));
+		player.displayClientMessage(Component.translatable("message.wildercord.attune_broken").withStyle(ChatFormatting.GRAY), true);
 		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.5F);
 	}
 

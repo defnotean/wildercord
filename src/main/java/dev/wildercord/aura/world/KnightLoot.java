@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 /**
@@ -15,11 +16,12 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
  * The fallen knight's loot table uses it, so the table stays data a pack can change.
  */
 public record KnightLoot() implements LootItemFunction {
+	public static final LootItemFunctionType<KnightLoot> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 	public static final MapCodec<KnightLoot> MAP_CODEC = MapCodec.unit(new KnightLoot());
 
 	@Override
-	public MapCodec<KnightLoot> codec() {
-		return MAP_CODEC;
+	public LootItemFunctionType<KnightLoot> getType() {
+		return TYPE;
 	}
 
 	@Override

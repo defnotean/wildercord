@@ -141,7 +141,7 @@ public final class AuraWorld {
 		SwordMaster.init();
 		MastersCommand.init();
 		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Wildercord.id("manual_pages"), ManualPagesRecipe.SERIALIZER);
-		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("knight_method"), KnightLoot.MAP_CODEC);
+		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("knight_method"), KnightLoot.TYPE);
 		// Into the field guide: the duelist among the wanderers, the knight among the monsters.
 		FieldGuide.add(new FieldGuide.Entry("wildercord:duelist", FieldGuide.Group.WANDERER, 0xE8D8B0));
 		FieldGuide.add(new FieldGuide.Entry("wildercord:fallen_knight", FieldGuide.Group.MONSTER, 0x9AA8D0));

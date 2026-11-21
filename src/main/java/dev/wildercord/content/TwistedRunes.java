@@ -19,6 +19,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 import java.util.Optional;
 import java.util.Random;
@@ -35,7 +36,8 @@ public final class TwistedRunes {
 
 	/** {@code wildercord:twisted_rune}: makes a rune item a random effect rune with a random twist. */
 	public record Function() implements LootItemFunction {
-		public static final MapCodec<Function> MAP_CODEC = MapCodec.unit(new Function());
+		public static final LootItemFunctionType<Function> TYPE = new LootItemFunctionType<>(MAP_CODEC);
+	public static final MapCodec<Function> MAP_CODEC = MapCodec.unit(new Function());
 
 		@Override
 		public MapCodec<Function> codec() {
@@ -73,7 +75,7 @@ public final class TwistedRunes {
 	}
 
 	public static void init() {
-		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("twisted_rune"), Function.MAP_CODEC);
+		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("twisted_rune"), Function.TYPE);
 		LootTableEvents.MODIFY.register((key, table, source, registries) -> {
 			if (!source.isBuiltin() || !CHESTS.contains(key)) return;
 			int chance = dev.wildercord.config.WildercordConfig.scaledChance(RuneTwistRules.CHEST_CHANCE, dev.wildercord.config.Config.get().runeLootChance());

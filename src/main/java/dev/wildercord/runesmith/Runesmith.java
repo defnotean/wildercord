@@ -64,7 +64,7 @@ public final class Runesmith {
 			ImmutableSet.of(),
 			SoundEvents.VILLAGER_WORK_LIBRARIAN));
 		VillagerTradeCompat.init();
-		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_rune"), RandomRuneFunction.MAP_CODEC);
+		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_rune"), RandomRuneFunction.TYPE);
 		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(output -> output.addAfter(WildercordItems.TRAINING_DUMMY, SCRIBING_DESK));
 		DuplicateSwap.init();

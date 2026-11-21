@@ -28,7 +28,7 @@ public final class IntentGate extends Block {
 		var level=p.level();var s=level.getBlockState(at);if(!s.is(SwordTombs.GATE))return;
 		int stage=s.getValue(STAGE);
 		if(!SwordTombRules.gate(Aura.stage(p),stage,Aura.enabled(p),Aura.holdsWeapon(p))) {
-			p.sendOverlayMessage(Component.translatable("message.wildercord.tomb.gate",Component.translatable("aura.wildercord.stage."+AuraRules.id(stage))));return;
+			p.displayClientMessage(Component.translatable("message.wildercord.tomb.gate",Component.translatable("aura.wildercord.stage."+AuraRules.id(stage))), true);return;
 		}
 		Direction side=s.getValue(FACING).getClockWise();
 		for(int dx=-2;dx<=2;dx++)for(int dy=-2;dy<=2;dy++) {

@@ -165,7 +165,7 @@ public final class WorldResonances {
 			QUIRK.listOf().optionalFieldOf("quirks", List.of()).forGetter(l -> l.quirks),
 			Codec.unboundedMap(Codec.STRING, Finding.CODEC).optionalFieldOf("found", Map.of()).forGetter(l -> l.found)
 		).apply(i, Ledger::new));
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("resonances"), Ledger::new, CODEC, null);
+		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("resonances", Ledger::new, CODEC, null);
 
 		private boolean drawn;
 		private long seed;

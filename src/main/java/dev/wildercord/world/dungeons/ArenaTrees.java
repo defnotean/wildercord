@@ -115,7 +115,7 @@ public final class ArenaTrees {
 		private static final Codec<Swept> CODEC = RecordCodecBuilder.create(i -> i.group(
 			BoundingBox.CODEC.listOf().optionalFieldOf("swept", List.of()).forGetter(w -> new ArrayList<>(w.boxes))
 		).apply(i, Swept::new));
-		static final SavedDataType<Swept> TYPE = new SavedDataType<>(Wildercord.id("arena_trees"), Swept::new, CODEC, null);
+		static final SavedDataType<Swept> TYPE = new SavedDataType<>("arena_trees", Swept::new, CODEC, null);
 		final Set<BoundingBox> boxes = new HashSet<>();
 
 		Swept() {

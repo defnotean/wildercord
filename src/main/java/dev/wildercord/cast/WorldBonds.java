@@ -130,8 +130,8 @@ public final class WorldBonds {
 		Long last = HINTED.get(caster.getUUID());
 		if (last == null || now - last >= HINT_REST || now < last) {
 			HINTED.put(caster.getUUID(), now);
-			caster.sendOverlayMessage(Component.translatable("message.wildercord.harmony_needs_crossing")
-				.withStyle(ChatFormatting.ITALIC).withColor(resonance.color()));
+			caster.displayClientMessage(Component.translatable("message.wildercord.harmony_needs_crossing")
+				.withStyle(ChatFormatting.ITALIC).withColor(resonance.color()), true);
 		}
 		return false;
 	}

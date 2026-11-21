@@ -22,7 +22,7 @@ public abstract class EliteMonster extends WildMonster {
 
 	protected EliteMonster(EntityType<? extends EliteMonster> type, Level level, BossEvent.BossBarColor color) {
 		super(type, level);
-		this.bar = new ServerBossEvent(getUUID(), getType().getDescription(), color, BossEvent.BossBarOverlay.NOTCHED_10);
+		this.bar = new ServerBossEvent(getType().getDescription(), color, BossEvent.BossBarOverlay.NOTCHED_10);
 	}
 
 	/** Its step among the elites. */

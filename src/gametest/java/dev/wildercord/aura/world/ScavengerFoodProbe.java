@@ -3,6 +3,7 @@ package dev.wildercord.aura.world;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import dev.wildercord.compat.McTime;
 import dev.wildercord.config.Config;
 import dev.wildercord.wildlife.HighlandRules;
 import dev.wildercord.wildlife.HighlandShelterGoal;
@@ -92,12 +93,12 @@ public final class ScavengerFoodProbe {
 
  private static JsonObject snapshot(Session session){
   var actor=(Galeclaw)session.actor;var level=(ServerLevel)session.world;var row=new JsonObject();
-  row.addProperty("serverThread",level.getServer().isSameThread());row.addProperty("gameTime",level.getGameTime());row.addProperty("overworldClockTime",level.getOverworldClockTime());row.addProperty("dimension",level.dimension().identifier().toString());
+  row.addProperty("serverThread",level.getServer().isSameThread());row.addProperty("gameTime",level.getGameTime());row.addProperty("overworldClockTime",dev.wildercord.compat.McTime.overworldClock(level));row.addProperty("dimension",level.dimension().identifier().toString());
   row.addProperty("raining",level.isRaining());row.addProperty("difficulty",level.getDifficulty().toString());row.addProperty("beastsEnabled",Config.get().auraWorld().auraBeasts());
   row.add("actor",entity(session,actor));row.add("fixtureFood",entity(session,(Entity)session.food));row.addProperty("fixtureDistanceSqr",actor.position().distanceToSqr(((Entity)session.food).position()));
   row.addProperty("pose",actor.pose());row.addProperty("left",actor.left);row.addProperty("calm",actor.calm);row.addProperty("aggression",actor.aggression);row.addProperty("fedUntil",actor.fedUntil());row.addProperty("hungry",HighlandRules.hungry(level.getGameTime(),actor.fedUntil()));
   row.addProperty("forageModulo",Math.floorMod(actor.tickCount,40));row.addProperty("home",String.valueOf(actor.home()));row.addProperty("noAi",actor.isNoAi());row.add("target",entity(session,actor.getTarget()));
-  row.addProperty("wantsCover",HighlandRules.wantsCover(true,level.getOverworldClockTime(),level.isRaining()));
+  row.addProperty("wantsCover",HighlandRules.wantsCover(true,dev.wildercord.compat.McTime.overworldClock(level),level.isRaining()));
   row.add("navigation",navigation(actor.getNavigation()));var goals=new JsonArray();int count=0;
   for(var wrapped:dev.wildercord.compat.McEntities.goalSelector(actor).getAvailableGoals()){
    if(count++>=MAX_GOALS)continue;var goal=wrapped.getGoal();var item=new JsonObject();item.addProperty("class",goal.getClass().getName());item.addProperty("priority",wrapped.getPriority());item.addProperty("running",wrapped.isRunning());if(goal instanceof HighlandShelterGoal shelter)item.addProperty("shelterRunning",shelter.running());goals.add(item);

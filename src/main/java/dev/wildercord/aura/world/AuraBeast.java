@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.aura.AuraFx;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.cast.Vfx;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -57,7 +59,7 @@ public abstract class AuraBeast extends PathfinderMob {
 		goalSelector.addGoal(0,new FloatGoal(this));
 		shelter=new dev.wildercord.wildlife.HighlandShelterGoal(this,
 			() -> Config.get().auraWorld().auraBeasts() && level().getDifficulty()!=Difficulty.PEACEFUL && getTarget()==null && left==0 && (pose()==BeastRules.IDLE || pose()==BeastRules.REST),
-			() -> dev.wildercord.wildlife.HighlandRules.wantsCover(gale(),level().getOverworldClockTime(),level().isRaining()),
+			() -> dev.wildercord.wildlife.HighlandRules.wantsCover(gale(),dev.wildercord.compat.McTime.overworldClock(level()),level().isRaining()),
 			settled -> {if(settled && pose()!=BeastRules.REST)pose(BeastRules.REST,0);else if(!settled && pose()==BeastRules.REST)pose(BeastRules.IDLE,0);});
 		goalSelector.addGoal(2,shelter);
 		if(!gale()) {
@@ -116,7 +118,7 @@ public abstract class AuraBeast extends PathfinderMob {
 		if(gale() ? !stack.is(Items.RABBIT) && !stack.is(Items.CHICKEN) : !stack.is(Items.WHEAT)) return super.mobInteract(p,hand);
 		if(!isAlive() || isRemoved() || pose()==BeastRules.WARN || pose()==BeastRules.CHARGE || pose()==BeastRules.LEAP || aggression>0) return InteractionResult.PASS;
 		if(level() instanceof ServerLevel server) {
-			if(server.getGameTime()<nextShed) { p.sendOverlayMessage(Component.translatable("message.wildercord.aura_beast.rest")); return InteractionResult.SUCCESS; }
+			if(server.getGameTime()<nextShed) { p.displayClientMessage(Component.translatable("message.wildercord.aura_beast.rest"), true); return InteractionResult.SUCCESS; }
 			if(!p.getAbilities().instabuild) stack.shrink(1);
 			if(this instanceof Galeclaw runner) runner.ate();
 			nextShed=server.getGameTime()+BeastRules.SHED_INTERVAL; calm=200; setTarget(null); pose(BeastRules.FORAGE,60);

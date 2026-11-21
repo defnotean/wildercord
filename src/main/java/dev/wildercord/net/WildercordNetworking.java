@@ -258,7 +258,7 @@ public final class WildercordNetworking {
 			}
 			net.minecraft.network.chat.Component problem = SpellCaster.editPassive(context.player(), payload.slot(), payload.runes());
 			if (problem != null) {
-				context.player().sendOverlayMessage(problem.copy().withStyle(net.minecraft.ChatFormatting.RED));
+				context.player().displayClientMessage(problem.copy().withStyle(net.minecraft.ChatFormatting.RED), true);
 			}
 		});
 		PayloadTypeRegistry.playC2S().register(CastSpell.TYPE, CastSpell.CODEC);
@@ -308,8 +308,8 @@ public final class WildercordNetworking {
 			}
 			dev.wildercord.loadout.Loadouts.Result result = dev.wildercord.loadout.Loadouts.request(context.player(), payload.kind(), payload.index(), payload.name());
 			if (result != null) {
-				context.player().sendOverlayMessage(result.ok() ? result.message().copy().withColor(0x7FE0F0)
-					: result.message().copy().withStyle(net.minecraft.ChatFormatting.RED));
+				context.player().displayClientMessage(result.ok() ? result.message().copy().withColor(0x7FE0F0)
+					: result.message().copy().withStyle(net.minecraft.ChatFormatting.RED), true);
 			}
 		});
 		PayloadTypeRegistry.playC2S().register(OpenBackpack.TYPE, OpenBackpack.CODEC);
@@ -334,7 +334,7 @@ public final class WildercordNetworking {
 			net.minecraft.network.chat.Component problem = SpellCaster.edit(context.player(), payload.spell(), payload.runes());
 			if (relayEdit) RelayEditorReply.reply(context.player(), payload, problem);
 			if (problem != null) {
-				context.player().sendOverlayMessage(problem.copy().withStyle(net.minecraft.ChatFormatting.RED));
+				context.player().displayClientMessage(problem.copy().withStyle(net.minecraft.ChatFormatting.RED), true);
 			}
 		});
 	}

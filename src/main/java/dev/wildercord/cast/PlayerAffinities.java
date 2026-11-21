@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.config.Config;
 import dev.wildercord.player.Heart;
@@ -477,7 +478,7 @@ public final class PlayerAffinities {
 			NIGHT.merge(id, 1, Integer::sum);
 			return;
 		}
-		long time = Math.floorMod(level.getOverworldClockTime(), 24000L);
+		long time = Math.floorMod(dev.wildercord.compat.McTime.overworldClock(level), 24000L);
 		boolean night = level.dimensionType().hasFixedTime() || time >= 13000 && time < 23000;
 		if (night) {
 			// Indoors, or somewhere without a sky, for a while: that check just doesn't count.

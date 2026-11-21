@@ -84,7 +84,7 @@ public final class RuneEtchings {
 			Effects.apply(cast,group.effects.getFirst(),hit);
 			if (counter != null && !counter.afterDamage(foe)) return false;
 			Grimoire.unlock(p,"aura:rune_etched_blade");
-			p.sendOverlayMessage(Component.translatable("message.wildercord.blade_rune.woke",RuneItem.runeName(rune),price));
+			p.displayClientMessage(Component.translatable("message.wildercord.blade_rune.woke",RuneItem.runeName(rune),price), true);
 			return true;
 		} finally { waking=false; }
 	}

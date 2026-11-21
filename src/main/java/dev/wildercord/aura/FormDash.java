@@ -228,7 +228,7 @@ public final class FormDash {
 		return true;
 	}
 	private static boolean refusal(ServerPlayer player, String reason) {
-		player.sendOverlayMessage(Component.translatable("message.wildercord.field_form." + reason)); return false;
+		player.displayClientMessage(Component.translatable("message.wildercord.field_form." + reason), true); return false;
 	}
 	private static void sound(ServerPlayer player, SoundEvent sound, float volume, float pitch) {
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, volume, pitch);

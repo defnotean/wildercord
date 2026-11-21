@@ -71,7 +71,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	private static final Map<UUID, Introduction> INTRODUCTIONS = new HashMap<>();
 	private final Set<UUID> participants = new LinkedHashSet<>();
 	private final Map<UUID, Long> invitations = new HashMap<>();
-	private final ServerBossEvent bar = new ServerBossEvent(getUUID(), getType().getDescription(),
+	private final ServerBossEvent bar = new ServerBossEvent(getType().getDescription(),
 		BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
 	private BlockPos home;
 	private UUID challenger, waitingFor;

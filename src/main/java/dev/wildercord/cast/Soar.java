@@ -522,6 +522,6 @@ public final class Soar {
 	}
 
 	private static void tell(ServerPlayer player, Component text, int color) {
-		player.sendOverlayMessage(text.copy().withColor(color));
+		player.displayClientMessage(text.copy().withColor(color), true);
 	}
 }

@@ -52,7 +52,7 @@ public final class Mentors {
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT).optionalFieldOf("paid", Map.of()).forGetter(l -> l.tutelage.paidThrough()),
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT).optionalFieldOf("owed", Map.of()).forGetter(l -> l.tutelage.owed())
 		).apply(i, Ledger::new));
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("mentors"), Ledger::new, CODEC, null);
+		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("mentors", Ledger::new, CODEC, null);
 
 		final MentorRules.Book book;
 		private final Map<UUID, String> names;

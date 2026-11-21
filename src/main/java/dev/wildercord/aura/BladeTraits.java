@@ -148,7 +148,7 @@ public final class BladeTraits {
 				return mighty(target) ? BladeRules.scaled(BladeRules.MOUNTAINFELLER_DAMAGE, s) : 1.0;
 			}
 			case BladeRules.GRAVEWARDEN -> {
-				return !(target instanceof Player) && target.is(EntityTypeTags.UNDEAD) ? BladeRules.scaled(BladeRules.GRAVEWARDEN_DAMAGE, s) : 1.0;
+				return !(target instanceof Player) && target.getType().is(EntityTypeTags.UNDEAD) ? BladeRules.scaled(BladeRules.GRAVEWARDEN_DAMAGE, s) : 1.0;
 			}
 			default -> {
 				return 1.0;

@@ -71,10 +71,10 @@ public class CampPotBlock extends Block {
 		if (player.isShiftKeyDown()) {
 			CookingRules.Recipe next = CookingRules.next(have, CHOSEN.get(player.getUUID()));
 			if (next == null) {
-				server.sendOverlayMessage(Component.translatable("message.wildercord.pot.nothing").withStyle(ChatFormatting.GRAY));
+				server.displayClientMessage(Component.translatable("message.wildercord.pot.nothing").withStyle(ChatFormatting.GRAY), true);
 			} else {
 				CHOSEN.put(player.getUUID(), next.id());
-				server.sendOverlayMessage(Component.translatable("message.wildercord.pot.chosen", name(next)).withStyle(ChatFormatting.GOLD));
+				server.displayClientMessage(Component.translatable("message.wildercord.pot.chosen", name(next)).withStyle(ChatFormatting.GOLD), true);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -93,13 +93,13 @@ public class CampPotBlock extends Block {
 		}
 		if (!(player instanceof ServerPlayer server) || !(level instanceof ServerLevel serverLevel)) return InteractionResult.SUCCESS;
 		if (!heated(level, pos)) {
-			server.sendOverlayMessage(Component.translatable("message.wildercord.pot.cold").withStyle(ChatFormatting.RED));
+			server.displayClientMessage(Component.translatable("message.wildercord.pot.cold").withStyle(ChatFormatting.RED), true);
 			return InteractionResult.SUCCESS;
 		}
 		Inventory inventory = server.getInventory();
 		CookingRules.Recipe recipe = CookingRules.pick(pantry(inventory), CHOSEN.get(player.getUUID()));
 		if (recipe == null) {
-			server.sendOverlayMessage(Component.translatable("message.wildercord.pot.nothing").withStyle(ChatFormatting.GRAY));
+			server.displayClientMessage(Component.translatable("message.wildercord.pot.nothing").withStyle(ChatFormatting.GRAY), true);
 			return InteractionResult.SUCCESS;
 		}
 		for (CookingRules.Need need : recipe.needs()) {
@@ -110,7 +110,7 @@ public class CampPotBlock extends Block {
 		level.playSound(null, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 0.8F, 1.1F);
 		serverLevel.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, pos.getX() + 0.5, pos.getY() + 0.8, pos.getZ() + 0.5, 4, 0.15, 0.1, 0.15, 0.01);
 		serverLevel.sendParticles(ParticleTypes.BUBBLE_POP, pos.getX() + 0.5, pos.getY() + 0.7, pos.getZ() + 0.5, 8, 0.25, 0.05, 0.25, 0.02);
-		server.sendOverlayMessage(Component.translatable("message.wildercord.pot.cooked", name(recipe)).withStyle(ChatFormatting.GOLD));
+		server.displayClientMessage(Component.translatable("message.wildercord.pot.cooked", name(recipe)).withStyle(ChatFormatting.GOLD), true);
 		return InteractionResult.SUCCESS;
 	}
 

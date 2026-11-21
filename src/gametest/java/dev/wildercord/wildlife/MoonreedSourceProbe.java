@@ -2,6 +2,7 @@ package dev.wildercord.wildlife;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -81,8 +82,8 @@ public final class MoonreedSourceProbe {
    out.addProperty("rootDistanceSquared",moth.position().distanceToSqr(Vec3.atCenterOf(root).add(0,.4,0)));
    out.addProperty("rootInSearchBox",Math.abs(here.getX()-root.getX())<=3&&Math.abs(here.getY()-root.getY())<=1&&Math.abs(here.getZ()-root.getZ())<=3);
    out.addProperty("rootInAcquisitionBand",Math.abs(here.getX()-root.getX())<=3&&root.getY()>=here.getY()-4&&root.getY()<=here.getY()+1&&Math.abs(here.getZ()-root.getZ())<=3);
-   out.addProperty("searchPhase",Math.floorMod(moth.tickCount+moth.getId(),40));out.addProperty("clock",level.getOverworldClockTime());
-   out.addProperty("night",WetlandRules.night(level.getOverworldClockTime()));out.addProperty("rootChunkLoaded",level.hasChunkAt(root));
+   out.addProperty("searchPhase",Math.floorMod(moth.tickCount+moth.getId(),40));out.addProperty("clock",dev.wildercord.compat.McTime.overworldClock(level));
+   out.addProperty("night",WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level)));out.addProperty("rootChunkLoaded",level.hasChunkAt(root));
    out.addProperty("rootWithinBorder",level.getWorldBorder().isWithinBounds(root));
    if(level.hasChunkAt(root)){
     var state=level.getBlockState(root);out.addProperty("rootState",state.toString());out.addProperty("rootSurvives",state.canSurvive(level,root));

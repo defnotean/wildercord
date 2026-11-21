@@ -104,9 +104,9 @@ public class WayfarerKeeper extends WanderingTrader {
 				? stock.computeIfAbsent(server.getUUID(), id -> offers(role, tier, getUUID().getMostSignificantBits() ^ id.getLeastSignificantBits()))
 				: offers(role, tier, seed);
 			BountyRules.Tier next = tier.next();
-			server.sendOverlayMessage(next == null
+			server.displayClientMessage(next == null
 				? Component.translatable("message.wildercord.keeper.honoured").withStyle(ChatFormatting.AQUA)
-				: Component.translatable("message.wildercord.keeper.more", BountyBoardBlock.tierName(next)).withStyle(ChatFormatting.GRAY));
+				: Component.translatable("message.wildercord.keeper.more", BountyBoardBlock.tierName(next)).withStyle(ChatFormatting.GRAY), true);
 		}
 		return super.mobInteract(player, hand);
 	}

@@ -1,5 +1,6 @@
 package dev.wildercord.cast.events;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.Runebound;
 import dev.wildercord.config.Config;
@@ -154,7 +155,7 @@ public final class WorldEvents {
 		ServerLevel level = server.overworld();
 		RandomSource random = level.getRandom();
 		long now = level.getGameTime();
-		boolean night = EventRules.night(level.getOverworldClockTime());
+		boolean night = EventRules.night(dev.wildercord.compat.McTime.overworldClock(level));
 		boolean hostile = level.getDifficulty() != Difficulty.PEACEFUL;
 		EventLedger ledger = EventLedger.of(server);
 		for (ServerPlayer player : new ArrayList<>(level.players())) {

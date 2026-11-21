@@ -81,7 +81,7 @@ public final class AuraStep {
 		if (MasterForms.committed(player)) return false;
 		long now = player.level().getGameTime();
 		if (!Aura.holdsWeapon(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8), true);
 			return false;
 		}
 		AuraPresence.Timers timers = AuraPresence.timers(player);
@@ -93,7 +93,7 @@ public final class AuraStep {
 		List<Vec3> path = path(player, dir, settings.stepDistance());
 		if (path.size() < 2 || path.getLast().distanceTo(player.position()) < 0.5) {
 			// Up against a wall (or a ward's edge): there's nowhere to step.
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.step_blocked").withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable("message.wildercord.aura.step_blocked").withColor(0xA89CC8), true);
 			AuraVfx.stepBlocked(player, Aura.color(player), dir);
 			return false;
 		}

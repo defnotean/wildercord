@@ -485,7 +485,7 @@ public final class SpellCaster {
 				line.append(RuneItem.runeName(runes.get(i)).withColor(dev.wildercord.spell.RuneColors.of(runes.get(i))));
 			}
 		}
-		player.sendOverlayMessage(line);
+		player.displayClientMessage(line, true);
 	}
 
 	/**
@@ -647,12 +647,12 @@ public final class SpellCaster {
 		Spellbook book = Spellbooks.get(player);
 		boolean on = !book.passiveOn(slot);
 		Spellbooks.set(player, book.withPassiveOn(slot, on));
-		player.sendOverlayMessage(Component.translatable(on ? "message.wildercord.passive_on" : "message.wildercord.passive_off", slot + 1)
-			.withStyle(on ? ChatFormatting.AQUA : ChatFormatting.GRAY));
+		player.displayClientMessage(Component.translatable(on ? "message.wildercord.passive_on" : "message.wildercord.passive_off", slot + 1)
+			.withStyle(on ? ChatFormatting.AQUA : ChatFormatting.GRAY), true);
 	}
 
 	private static void fail(ServerPlayer player, Component message) {
-		player.sendOverlayMessage(message.copy().withStyle(ChatFormatting.RED));
+		player.displayClientMessage(message.copy().withStyle(ChatFormatting.RED), true);
 		// A quiet fizzle, so a cast that didn't go off is heard as well as read.
 		dev.wildercord.cast.feel.Feels.sound(player.level(), player.position(), "fizzle", 0.4F, 1.0F);
 	}

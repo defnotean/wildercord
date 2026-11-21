@@ -45,11 +45,11 @@ public final class CoilrootBlock extends Block {
 	private static InteractionResult eat(Level level, BlockPos pos, Player who) {
 		if (!(level instanceof ServerLevel server) || !(who instanceof ServerPlayer player)) return InteractionResult.SUCCESS;
 		if (Coilroot.eaten(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.coilroot.eaten").withColor(0x9FBF7A));
+			player.displayClientMessage(Component.translatable("message.wildercord.coilroot.eaten").withColor(0x9FBF7A), true);
 			return InteractionResult.FAIL;
 		}
 		if (guarded(server, pos)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.coilroot.guarded").withColor(0xC9A46A));
+			player.displayClientMessage(Component.translatable("message.wildercord.coilroot.guarded").withColor(0xC9A46A), true);
 			return InteractionResult.FAIL;
 		}
 		player.setAttached(WildercordAttachments.COILROOT, true);
@@ -58,7 +58,7 @@ public final class CoilrootBlock extends Block {
 		server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.5F, 1.3F);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.HAPPY_VILLAGER, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 14, 0.3, 0.3, 0.3, 0);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.ENCHANT, player.getX(), player.getY() + 0.2, player.getZ(), 40, 0.6, 0.2, 0.6, 0.6);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.coilroot.eat").withColor(0xB6E08A));
+		player.displayClientMessage(Component.translatable("message.wildercord.coilroot.eat").withColor(0xB6E08A), true);
 		return InteractionResult.SUCCESS;
 	}
 

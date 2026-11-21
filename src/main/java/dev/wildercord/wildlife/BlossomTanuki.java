@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.Fx;
 import dev.wildercord.spell.ClimateRules;
 import net.minecraft.core.BlockPos;
@@ -211,7 +212,7 @@ public class BlossomTanuki extends Animal {
 	private void drum(ServerLevel level, long now) {
 		boolean night = level.isDarkOutside() && !level.dimensionType().hasFixedTime();
 		boolean should = !isBaby() && onGround() && !isInWater() && getNavigation().isDone() && truster() == null
-			&& TanukiRules.drums(night, ClimateRules.moonPhase(level.getOverworldClockTime()), hidden());
+			&& TanukiRules.drums(night, ClimateRules.moonPhase(dev.wildercord.compat.McTime.overworldClock(level)), hidden());
 		if (should != drumming()) {
 			entityData.set(DRUMMING, should);
 		}

@@ -213,8 +213,8 @@ public final class Lineage {
 				begin(master, kneeling, LineageRules.LESSON_TICKS, Rite.LESSON, now);
 			} else if (tellOnce(master, state)) {
 				long left = Math.max(0, last + LineageRules.LESSON_REST - now);
-				master.sendOverlayMessage(Component.translatable("message.wildercord.aura.lineage.lesson_later", kneeling.getDisplayName(),
-					(left + 1199) / 1200).withColor(0xA89CC8));
+				master.displayClientMessage(Component.translatable("message.wildercord.aura.lineage.lesson_later", kneeling.getDisplayName(),
+					(left + 1199) / 1200).withColor(0xA89CC8), true);
 			}
 			return;
 		}
@@ -223,8 +223,8 @@ public final class Lineage {
 			begin(master, kneeling, LineageRules.CEREMONY_TICKS, Rite.TAKE, now);
 		} else if (why != LineageRules.Refusal.OFF && tellOnce(master, state)) {
 			Component line = Component.translatable(why.key(), kneeling.getDisplayName(), master.getDisplayName()).withColor(0xA89CC8);
-			master.sendOverlayMessage(line);
-			kneeling.sendOverlayMessage(line);
+			master.displayClientMessage(line, true);
+			kneeling.displayClientMessage(line, true);
 		}
 	}
 
@@ -266,9 +266,9 @@ public final class Lineage {
 			disciple.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.asks_disciple", master.getDisplayName()).withColor(0xE8D8B0));
 		} else {
 			Feels.sound(level, master.position().add(0, 1, 0), "aura_lineage_lesson", 0.8F, 0.9F);
-			master.sendOverlayMessage(Component.translatable("message.wildercord.aura.lineage.lesson_begins", disciple.getDisplayName()).withColor(0xFF000000 | mc));
-			disciple.sendOverlayMessage(Component.translatable("message.wildercord.aura.lineage.lesson_begins_disciple", master.getDisplayName())
-				.withColor(0xFF000000 | mc));
+			master.displayClientMessage(Component.translatable("message.wildercord.aura.lineage.lesson_begins", disciple.getDisplayName()).withColor(0xFF000000 | mc), true);
+			disciple.displayClientMessage(Component.translatable("message.wildercord.aura.lineage.lesson_begins_disciple", master.getDisplayName())
+				.withColor(0xFF000000 | mc), true);
 		}
 	}
 
@@ -286,9 +286,9 @@ public final class Lineage {
 		end(master, rite);
 		Feels.sound(master.level(), master.position().add(0, 1, 0), "aura_bond_fail", 0.6F, 1.1F);
 		Component line = Component.translatable(rite.kind() == Rite.LESSON ? "message.wildercord.aura.lineage.lesson_broken" : "message.wildercord.aura.lineage.broken").withColor(0xC8A0A0);
-		master.sendOverlayMessage(line);
+		master.displayClientMessage(line, true);
 		if (disciple != null) {
-			disciple.sendOverlayMessage(line);
+			disciple.displayClientMessage(line, true);
 		}
 	}
 

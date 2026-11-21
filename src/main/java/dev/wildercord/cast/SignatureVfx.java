@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -654,7 +655,7 @@ final class SignatureVfx {
 	/** An enemy buried: snow heaped on it, and a crack of ice on a bare head. */
 	static void avalancheBury(ServerLevel level, LivingEntity t, boolean bare) {
 		Vec3 top = t.position().add(0, t.getBbHeight(), 0);
-		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.SNOWBALL), top, 6, width(t) * 0.4, 0.08);
+		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.SNOWBALL)), top, 6, width(t) * 0.4, 0.08);
 		ElementFx.ring(level, t.position().add(0, 0.1, 0), UP, ElementFx.FROST.secondary(), width(t) + 0.5, 0.2, 0.05, 8);
 		if (bare) {
 			ElementFx.shards(level, top, 0.4, 4);

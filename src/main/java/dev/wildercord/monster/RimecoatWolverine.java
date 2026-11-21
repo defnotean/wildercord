@@ -269,7 +269,7 @@ public class RimecoatWolverine extends WildMonster {
 		ItemStack stolen = from.split(WolverineRules.take(from.getCount()));
 		inventory.setChanged();
 		grab(stolen);
-		player.sendOverlayMessage(Component.translatable("monster.wildercord.rimecoat_wolverine.stole", stolen.getHoverName()));
+		player.displayClientMessage(Component.translatable("monster.wildercord.rimecoat_wolverine.stole", stolen.getHoverName()), true);
 	}
 
 	/** Takes food in its jaws (as much of {@code stack} as it can carry, the rest left where it was). */

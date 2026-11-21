@@ -102,11 +102,11 @@ public final class ReweaveLesson {
 			|| !player.level().clip(new ClipContext(player.getEyePosition(), Vec3.atCenterOf(pos),
 				ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getBlockPos().equals(pos)) return;
 		if (!(player.level().getBlockEntity(pos) instanceof DungeonAltarBlockEntity altar) || !quiet(player.level(), pos, altar)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.reweave_lesson.quiet"));
+			player.displayClientMessage(Component.translatable("message.wildercord.reweave_lesson.quiet"), true);
 			return;
 		}
 		if (!MasterStudies.hasReweaveLesson(player)) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.reweave_lesson.locked"));
+			player.displayClientMessage(Component.translatable("message.wildercord.reweave_lesson.locked"), true);
 			return;
 		}
 		if (MasterStudies.remember(player, MasterStudyRules.REWEAVE_COPIED)) {
@@ -119,8 +119,8 @@ public final class ReweaveLesson {
 	private static void openSaved(ServerPlayer player, long request) {
 		if (!connected(player)) return;
 		if (!MasterStudies.hasReweaveLesson(player) || !MasterStudies.knowsReweave(player) && !MasterStudies.mayStudyReweave(player)) {
-			player.sendOverlayMessage(Component.translatable(MasterStudies.hasReweaveLesson(player)
-				? "message.wildercord.reweave_lesson.locked" : "message.wildercord.reweave_lesson.uncopied"));
+			player.displayClientMessage(Component.translatable(MasterStudies.hasReweaveLesson(player)
+				? "message.wildercord.reweave_lesson.locked" : "message.wildercord.reweave_lesson.uncopied"), true);
 			ServerPlayNetworking.send(player, new Show(0, -1, false, false, request));
 			return;
 		}
@@ -163,7 +163,7 @@ public final class ReweaveLesson {
 
 	private static void interrupted(ServerPlayer player, Reading reading) {
 		if (player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player) return;
-		player.sendOverlayMessage(Component.translatable("message.wildercord.reweave_lesson.interrupted"));
+		player.displayClientMessage(Component.translatable("message.wildercord.reweave_lesson.interrupted"), true);
 		ServerPlayNetworking.send(player, new Show(reading.nonce(), -1, false, false));
 	}
 

@@ -20,7 +20,7 @@ public final class EventAftermath extends SavedData {
  }
  private final List<Echo> echoes=new ArrayList<>();
  static final Codec<EventAftermath> CODEC=Echo.CODEC.listOf(0,32).xmap(EventAftermath::new,a->List.copyOf(a.echoes));
- static final SavedDataType<EventAftermath> TYPE=new SavedDataType<>(Wildercord.id("event_aftermath"),EventAftermath::new,CODEC,null);
+ static final SavedDataType<EventAftermath> TYPE=new SavedDataType<>("event_aftermath",EventAftermath::new,CODEC,null);
  public EventAftermath(){}private EventAftermath(List<Echo> list){echoes.addAll(list);}
  public static EventAftermath of(MinecraftServer s){return s.overworld().getDataStorage().computeIfAbsent(TYPE);}
  public List<Echo> echoes(){return List.copyOf(echoes);}

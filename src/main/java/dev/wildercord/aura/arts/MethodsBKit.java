@@ -32,7 +32,7 @@ public final class MethodsBKit {
 
 	/** Whether {@code foe} is undead (Dawn's light burns it hardest; a player never is). */
 	public static boolean undead(LivingEntity foe) {
-		return !(foe instanceof Player) && foe.is(EntityTypeTags.UNDEAD);
+		return !(foe instanceof Player) && foe.getType().is(EntityTypeTags.UNDEAD);
 	}
 
 	/** Echo: {@code foe} reels a while: a player's view swims, a mob stumbles and loses its aim. */

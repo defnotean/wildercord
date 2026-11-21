@@ -54,10 +54,10 @@ public final class Unison {
 		LAST.remove(target.getUUID());
 		burst(cast.level, target, RuneColors.element(last.element()), RuneColors.element(element));
 		Component message = Component.translatable("reaction.wildercord.unison").withColor(0xFFF0C0).withStyle(ChatFormatting.BOLD);
-		caster.sendOverlayMessage(message);
+		caster.displayClientMessage(message, true);
 		Grimoire.feat(caster, Feats.UNISON);
 		if (partner != null) {
-			partner.sendOverlayMessage(message);
+			partner.displayClientMessage(message, true);
 			Grimoire.feat(partner, Feats.UNISON);
 		}
 		return BONUS;

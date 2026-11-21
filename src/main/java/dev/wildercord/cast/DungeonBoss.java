@@ -138,7 +138,7 @@ public abstract class DungeonBoss extends Monster {
 	protected DungeonBoss(EntityType<? extends DungeonBoss> type, Level level, BossEvent.BossBarColor color) {
 		super(type, level);
 		this.xpReward = 0;
-		this.bossEvent = new ServerBossEvent(getUUID(), getType().getDescription(), color, BossEvent.BossBarOverlay.NOTCHED_10);
+		this.bossEvent = new ServerBossEvent(getType().getDescription(), color, BossEvent.BossBarOverlay.NOTCHED_10);
 		this.bossEvent.setDarkenScreen(true);
 		setPersistenceRequired();
 	}

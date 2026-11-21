@@ -667,7 +667,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 		if (tamed()) {
 			if (!isOwnedBy(player)) {
 				// Someone else's: it stays shut on them.
-				player.sendOverlayMessage(Component.translatable("message.wildercord.coffer_mimic.not_yours").withColor(0xC4BEB2));
+				player.displayClientMessage(Component.translatable("message.wildercord.coffer_mimic.not_yours").withColor(0xC4BEB2), true);
 				play(server, SoundEvents.CHEST_LOCKED, 0.6F, 1.2F);
 				return InteractionResult.SUCCESS;
 			}
@@ -678,8 +678,8 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 					staying = !staying;
 					heeling = false;
 					getNavigation().stop();
-					player.sendOverlayMessage(Component.translatable(staying ? "message.wildercord.coffer_mimic.stay" : "message.wildercord.coffer_mimic.follow")
-						.withColor(0xE2DCCC));
+					player.displayClientMessage(Component.translatable(staying ? "message.wildercord.coffer_mimic.stay" : "message.wildercord.coffer_mimic.follow")
+						.withColor(0xE2DCCC), true);
 				}
 				return InteractionResult.SUCCESS;
 			}
@@ -707,7 +707,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 			tame(player);
 			heal(MimicRules.BOOK_HEAL);
 			level.sendParticles(ParticleTypes.HEART, getX(), getY() + 1.0, getZ(), 7, 0.4, 0.3, 0.4, 0);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.coffer_mimic.tamed").withColor(0xE8B820));
+			player.displayClientMessage(Component.translatable("message.wildercord.coffer_mimic.tamed").withColor(0xE8B820), true);
 		} else {
 			level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 1.0, getZ(), 7, 0.4, 0.3, 0.4, 0.02);
 		}
@@ -719,7 +719,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 		level.sendParticles(ParticleTypes.HEART, getX(), getY() + 1.0, getZ(), 3, 0.3, 0.2, 0.3, 0);
 		play(level, SoundEvents.CAT_PURR_BABY.value(), 1.0F, 0.5F);
 		play(level, SoundEvents.CHEST_OPEN, 0.3F, 1.6F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.coffer_mimic.pet").withColor(0xE2DCCC));
+		player.displayClientMessage(Component.translatable("message.wildercord.coffer_mimic.pet").withColor(0xE2DCCC), true);
 	}
 
 	@Override

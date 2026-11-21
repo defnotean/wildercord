@@ -58,7 +58,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Integer> SIDE=SynchedEntityData.defineId(FrostWyrmling.class,EntityDataSerializers.INT);
 	private static final EntityDimensions CURLED=EntityDimensions.scalable(2.8F,1.6F).withEyeHeight(1.2F),STANDING=EntityDimensions.scalable(2.8F,3.0F).withEyeHeight(2.6F);
 	private static final DustParticleOptions FROST=new DustParticleOptions(0x9FDFFF,1.2F),WHITE=new DustParticleOptions(0xFFFFFF,1.5F),PALE=new DustParticleOptions(0xCFEFFF,.9F);
-	private final ServerBossEvent bar=new ServerBossEvent(getUUID(),getType().getDescription(),BossEvent.BossBarColor.BLUE,BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar=new ServerBossEvent(getType().getDescription(),BossEvent.BossBarColor.BLUE,BossEvent.BossBarOverlay.NOTCHED_10);
 	private boolean bound;
 	private BlockPos mound=BlockPos.ZERO,hallMin=BlockPos.ZERO,hallMax=BlockPos.ZERO;
 	private float rest;

@@ -23,6 +23,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
@@ -523,7 +524,7 @@ public final class Vfx {
 		Vec3 base = target.position();
 		for (int i = 0; i < 5; i++) {
 			double a = Math.PI * 2 * i / 5;
-			fling(level, new ItemParticleOption(ParticleTypes.ITEM, Items.FEATHER), base.add(Math.cos(a) * 0.7, target.getBbHeight() + 0.1, Math.sin(a) * 0.7),
+			fling(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.FEATHER)), base.add(Math.cos(a) * 0.7, target.getBbHeight() + 0.1, Math.sin(a) * 0.7),
 				new Vec3(0, -0.2, 0), 0.04);
 		}
 		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 1.3, 0.04, 16);

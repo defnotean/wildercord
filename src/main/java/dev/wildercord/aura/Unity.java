@@ -62,13 +62,13 @@ public final class Unity {
 	public static boolean begin(ServerPlayer p) {
         if ((dev.wildercord.cast.ExciseCasting.blocking(p) || dev.wildercord.cast.LessonPackCasting.blocking(p))) return false;
 		String why=refusal(p);
-		if (why!=null) { p.sendOverlayMessage(Component.translatable("message.wildercord.unity."+why));return false; }
+		if (why!=null) { p.displayClientMessage(Component.translatable("message.wildercord.unity."+why), true);return false; }
 		// Written after both payments: activation cannot refund itself.
 		Spellbooks.setMana(p,Spellbooks.mana(p)-UnityRules.MANA_PRICE);
 		Aura.spend(p,UnityRules.AURA_PRICE,"unity");
 		p.setAttached(STATE,UnityRules.begin(now(p)));
 		Grimoire.unlock(p,"aura:unity"); UnityFx.begin(p);
-		p.sendOverlayMessage(Component.translatable("message.wildercord.unity.begin"));return true;
+		p.displayClientMessage(Component.translatable("message.wildercord.unity.begin"), true);return true;
 	}
 	private static boolean working(ServerPlayer p) {
 		return active(p) && p.isAlive() && !p.isSpectator() && !p.isCreative() && Aura.enabled(p)

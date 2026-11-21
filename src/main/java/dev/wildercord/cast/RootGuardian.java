@@ -317,7 +317,7 @@ public final class RootGuardian extends DungeonBoss {
 
 	@Override public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		if (!player.getItemInHand(hand).is(Items.SHEARS)) return super.mobInteract(player, hand);
-		if (level() instanceof ServerLevel server && prune(server)) player.sendOverlayMessage(Component.translatable("message.wildercord.root_pruned", bindings));
+		if (level() instanceof ServerLevel server && prune(server)) player.displayClientMessage(Component.translatable("message.wildercord.root_pruned", bindings), true);
 		return InteractionResult.SUCCESS;
 	}
 

@@ -101,7 +101,7 @@ public final class MonsterMagic {
 	/** A short line above the hotbar for a player, to explain what just happened (at most once in a while: the caller decides). */
 	public static void tell(LivingEntity who, net.minecraft.network.chat.Component line) {
 		if (who instanceof ServerPlayer player) {
-			player.sendOverlayMessage(line);
+			player.displayClientMessage(line, true);
 		}
 	}
 }

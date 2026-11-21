@@ -81,7 +81,7 @@ public class CrossroadsIncense extends Item {
 		String why = refusal(player);
 		if (why != null) {
 			if (player instanceof ServerPlayer server) {
-				server.sendOverlayMessage(Component.translatable(why).withColor(0xA89CC8));
+				server.displayClientMessage(Component.translatable(why).withColor(0xA89CC8), true);
 			}
 			return InteractionResult.FAIL;
 		}
@@ -109,7 +109,7 @@ public class CrossroadsIncense extends Item {
 		}
 		String why = refusal(player);
 		if (why != null) {
-			player.sendOverlayMessage(Component.translatable(why).withColor(0xA89CC8));
+			player.displayClientMessage(Component.translatable(why).withColor(0xA89CC8), true);
 			return stack;
 		}
 		Optional<AuraApi.Way> left = Ways.unbind(player);

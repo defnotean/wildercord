@@ -301,7 +301,7 @@ public final class Stance {
 		if (!ArtHitScope.releasedAfter(attacker, target)) return;
 		Grimoire.unlock(attacker, "aura:stance_break");
 		if (target instanceof ServerPlayer struck) {
-			struck.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.aura.opened").withColor(0xFFE08A60));
+			struck.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.aura.opened").withColor(0xFFE08A60), true);
 		}
 		for (AuraApi.BreakHook hook : AuraApi.breakHooks()) {
 			try {

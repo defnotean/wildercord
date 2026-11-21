@@ -768,7 +768,7 @@ final class FusedLife {
 		}
 		LifeOwnerEvents.transition(level,"second_wind",e,LifeOwnerEvents.Moment.TRIGGER,1,e.getHealth()-windBefore,null,wind.cast.caster.getUUID());
 		if (e instanceof ServerPlayer player) {
-			player.sendOverlayMessage(Component.translatableWithFallback("message.wildercord.second_wind", "Second Wind!").withColor(0x6EDC64));
+			player.displayClientMessage(Component.translatableWithFallback("message.wildercord.second_wind", "Second Wind!").withColor(0x6EDC64), true);
 		}
 		return true;
 	}

@@ -107,7 +107,7 @@ public final class MountContent {
 			BiomeSelectors.includeByKey(BIOMES.stream().map(id -> ResourceKey.create(Registries.BIOME, net.minecraft.resources.Identifier.parse(id))).toList()),
 			context -> {
 				if (Config.get().wildlife().enabled() && Config.get().wildlife().spawnMultiplier() > 0) {
-					dev.wildercord.compat.McWorldgen.addSpawn(context.getMobSpawnSettings(), MobCategory.CREATURE, RIDGEBACK_STAG, MIN_GROUP, MAX_GROUP, WEIGHT);
+					dev.wildercord.compat.McWorldgen.addSpawn(context.getSpawnSettings(), MobCategory.CREATURE, RIDGEBACK_STAG, MIN_GROUP, MAX_GROUP, WEIGHT);
 				}
 			});
 		FieldGuide.add(new FieldGuide.Entry("wildercord:ridgeback_stag", FieldGuide.Group.WILDLIFE, 0x8A5A34));

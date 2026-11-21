@@ -344,6 +344,6 @@ public final class SpellDefence {
 		Fx.sound(level, at, WildercordSounds.SHIELD_BREAK, 1.0F, 1.15F);
 		Fx.sound(level, at, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.7F);
 		ScreenFx.kick(player, 0.5F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.spellguard", recharge).withColor(GUARD_COLOR));
+		player.displayClientMessage(Component.translatable("message.wildercord.spellguard", recharge).withColor(GUARD_COLOR), true);
 	}
 }

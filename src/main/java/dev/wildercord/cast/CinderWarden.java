@@ -1323,7 +1323,7 @@ public class CinderWarden extends DungeonBoss {
 			Long last = told.get(player.getUUID());
 			if (last == null || now - last > 200) {
 				told.put(player.getUUID(), now);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.cinder_warden_immune").withColor(ACCENT));
+				player.displayClientMessage(Component.translatable("message.wildercord.cinder_warden_immune").withColor(ACCENT), true);
 			}
 		}
 	}

@@ -125,21 +125,21 @@ public final class Familiars {
 		wisp.flare();
 		Fx.sound(level, wisp.position(), FamiliarContent.WISP_CHIME, 0.9F, 0.85F + 0.15F * hits);
 		ElementFx.impact(level, wisp.element(), wisp.position().add(0, 0.2, 0), 0.45);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.drinks", element(wisp.element()), hits, WispRules.TAMING_HITS)
-			.withColor(wisp.color()));
+		player.displayClientMessage(Component.translatable("message.wildercord.wisp.drinks", element(wisp.element()), hits, WispRules.TAMING_HITS)
+			.withColor(wisp.color()), true);
 	}
 
 	static void spooked(Wisp wisp, ServerPlayer player, String offered) {
 		ServerLevel level = (ServerLevel) wisp.level();
 		Fx.sound(level, wisp.position(), SoundEvents.AMETHYST_BLOCK_BREAK, 0.6F, 1.8F);
 		Fx.send(level, ParticleTypes.POOF, wisp.position().add(0, 0.2, 0), 6, 0.15, 0.02);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.spooked", element(offered), element(wisp.element()))
-			.withStyle(ChatFormatting.GRAY));
+		player.displayClientMessage(Component.translatable("message.wildercord.wisp.spooked", element(offered), element(wisp.element()))
+			.withStyle(ChatFormatting.GRAY), true);
 	}
 
 	/** Tells a player they keep all the familiars they can. */
 	static void full(ServerPlayer player) {
-		player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.full", WispRules.MAX_BONDS).withStyle(ChatFormatting.RED));
+		player.displayClientMessage(Component.translatable("message.wildercord.wisp.full", WispRules.MAX_BONDS).withStyle(ChatFormatting.RED), true);
 	}
 
 	/** A wild wisp becomes the player's familiar, and comes out at once (the one out before goes back into the lantern). */
@@ -220,7 +220,7 @@ public final class Familiars {
 		}
 		set(player, bonds.withOut(""));
 		if (!quiet) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.home", displayName(out)).withColor(color(out)));
+			player.displayClientMessage(Component.translatable("message.wildercord.wisp.home", displayName(out)).withColor(color(out)), true);
 		}
 		return true;
 	}
@@ -236,7 +236,7 @@ public final class Familiars {
 		set(player, bonds.withOut(bond.id()));
 		summon(player, bond);
 		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.4F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.out", displayName(bond), bond.level()).withColor(color(bond)));
+		player.displayClientMessage(Component.translatable("message.wildercord.wisp.out", displayName(bond), bond.level()).withColor(color(bond)), true);
 	}
 
 	/** Sneak-use on your own familiar: follow becomes stay (or waiting, near an awake Wellstone), and back. */
@@ -251,15 +251,15 @@ public final class Familiars {
 				if (wellstoneNear((ServerLevel) wisp.level(), wisp.blockPosition())) {
 					wisp.setMode(Wisp.WAITING);
 					set(player, bonds.with(bond.withWaiting(true)).withOut(""));
-					player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.waiting", displayName(bond)).withColor(color(bond)));
+					player.displayClientMessage(Component.translatable("message.wildercord.wisp.waiting", displayName(bond)).withColor(color(bond)), true);
 				} else {
 					wisp.setMode(Wisp.STAY);
-					player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.stay", displayName(bond)).withColor(color(bond)));
+					player.displayClientMessage(Component.translatable("message.wildercord.wisp.stay", displayName(bond)).withColor(color(bond)), true);
 				}
 			}
 			case Wisp.STAY -> {
 				wisp.setMode(Wisp.FOLLOW);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.follow", displayName(bond)).withColor(color(bond)));
+				player.displayClientMessage(Component.translatable("message.wildercord.wisp.follow", displayName(bond)).withColor(color(bond)), true);
 			}
 			case Wisp.WAITING -> {
 				// Collected from its Wellstone: it follows again, and whoever was out goes home.
@@ -271,7 +271,7 @@ public final class Familiars {
 				wisp.setMode(Wisp.FOLLOW);
 				set(player, bonds.with(bond.withWaiting(false)).withOut(bond.id()));
 				LIVE.put(bond.id(), wisp);
-				player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.follow", displayName(bond)).withColor(color(bond)));
+				player.displayClientMessage(Component.translatable("message.wildercord.wisp.follow", displayName(bond)).withColor(color(bond)), true);
 			}
 			default -> { }
 		}

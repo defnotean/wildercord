@@ -154,7 +154,7 @@ public final class Chorus {
 		Component message = Component.translatable("reaction.wildercord.chorus").withColor(0xFFF0C0).withStyle(ChatFormatting.BOLD);
 		for (LivingEntity singer : singers) {
 			if (singer instanceof ServerPlayer player) {
-				player.sendOverlayMessage(message);
+				player.displayClientMessage(message, true);
 				Grimoire.feat(player, Feats.CHORUS);
 			}
 		}

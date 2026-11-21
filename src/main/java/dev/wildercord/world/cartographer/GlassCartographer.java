@@ -28,7 +28,7 @@ public final class GlassCartographer extends PathfinderMob implements Enemy {
 	private static final EntityDataAccessor<Float> MARK_Z = SynchedEntityData.defineId(GlassCartographer.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> ACROSS = SynchedEntityData.defineId(GlassCartographer.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> SECOND = SynchedEntityData.defineId(GlassCartographer.class, EntityDataSerializers.BOOLEAN);
-	private final ServerBossEvent bar = new ServerBossEvent(getUUID(), getType().getDescription(), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
+	private final ServerBossEvent bar = new ServerBossEvent(getType().getDescription(), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
 	private BlockPos pedestal, astrolabe;
 	private UUID lockedTarget;
 	private final Set<UUID> contributors = new LinkedHashSet<>(), announced = new HashSet<>();

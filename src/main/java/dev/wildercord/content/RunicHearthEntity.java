@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.*;
 import net.minecraft.world.effect.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -30,7 +31,7 @@ public final class RunicHearthEntity extends BlockEntity {
   if(!(player instanceof ServerPlayer p)||!(level instanceof ServerLevel s)||p.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(worldPosition))>36)return;
   if(held.is(Items.BOOK)){dev.wildercord.net.NotebookPayload.open(p);return;}
   if(owner.isEmpty()){owner=p.getStringUUID();setChanged();}
-  if(!owner.equals(p.getStringUUID())){p.sendOverlayMessage(Component.translatable("message.wildercord.hearth_owner"));return;}
+  if(!owner.equals(p.getStringUUID())){p.displayClientMessage(Component.translatable("message.wildercord.hearth_owner"), true);return;}
   String next=held.is(Items.AMETHYST_SHARD)?"lantern":held.is(Items.WHEAT)?"garden":held.is(Items.FEATHER)?"chime":held.is(Items.ENDER_PEARL)?"ritual":null;
   if(next!=null&&ritualFinish==0){project=next;charge=0;readyAt=0;ingredients.clear();contributors.clear();setChanged();sync();}
   else if(held.is(WildercordItems.MANA_CRYSTAL)&&project.equals("ritual")&&ritualFinish==0&&s.getGameTime()>=ritualReadyAt) {

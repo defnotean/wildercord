@@ -107,7 +107,7 @@ public final class RelayCircles {
 	public static boolean interrupt(ServerPlayer player) {
 		if (!pending(player)) return false;
 		cancel(player);
-		player.sendOverlayMessage(Component.literal("The Relay margin closes. Its payment and rest remain."));
+		player.displayClientMessage(Component.literal("The Relay margin closes. Its payment and rest remain."), true);
 		return true;
 	}
 	/** Other user-triggered spell routes cancel an uncommitted focus, and cannot overlap warning/recovery. */
@@ -366,7 +366,7 @@ public final class RelayCircles {
 		try { impact.run(); } finally { if (cast.guardedImpact()) cast.incoming(previous); }
 	}
 
-	private static void fail(ServerPlayer player, String message) { player.sendOverlayMessage(Component.literal(message).withStyle(net.minecraft.ChatFormatting.RED)); }
+	private static void fail(ServerPlayer player, String message) { player.displayClientMessage(Component.literal(message).withStyle(net.minecraft.ChatFormatting.RED), true); }
 	public static void init() {
 		dev.wildercord.net.RelayInput.init();
 		dev.wildercord.net.RelayEditorReply.init();

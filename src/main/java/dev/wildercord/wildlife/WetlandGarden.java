@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.WildercordEvents;
 import dev.wildercord.aura.world.AuraWorld;
@@ -18,6 +19,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.*;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
@@ -55,7 +57,7 @@ public final class WetlandGarden {
      if(!l.hasChunkAt(at) || !l.getBlockState(at).is(REED))continue;
      double d=at.distToCenterSqr(p.position());if(d<distance && l.clip(new ClipContext(p.getEyePosition(),Vec3.atCenterOf(at),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,p)).getType()==net.minecraft.world.phys.HitResult.Type.MISS) {distance=d;best=at.immutable();}
     }
-    if(best==null)p.sendOverlayMessage(Component.translatable("message.wildercord.dewglass.none"));
+    if(best==null)p.displayClientMessage(Component.translatable("message.wildercord.dewglass.none"), true);
     else {var a=p.getEyePosition();var b=Vec3.atCenterOf(best).add(0,.5,0);for(int i=1;i<=8;i++) {var v=a.lerp(b,i/8.0);sp.level().sendParticles(ParticleTypes.GLOW,v.x,v.y,v.z,1,0,0,0,0);}inspect(sp,best);}
    }
    return InteractionResult.SUCCESS;
@@ -63,8 +65,8 @@ public final class WetlandGarden {
  });
  private static void inspect(ServerPlayer p,BlockPos at) {
   var s=p.level().getBlockState(at);int age=s.getValue(MoonreedBlock.AGE);
-  String condition=age==2?"ready":!MoonreedBlock.moist(p.level(),at)?"dry":!MoonreedBlock.openSky(p.level(),at)?"covered":!WetlandRules.night(p.level().getOverworldClockTime())?"day":age==0?"growing":age==1?"moth":"ready";
-  p.sendOverlayMessage(Component.translatable("message.wildercord.dewglass."+condition));
+  String condition=age==2?"ready":!MoonreedBlock.moist(p.level(),at)?"dry":!MoonreedBlock.openSky(p.level(),at)?"covered":!WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(p.level()))?"day":age==0?"growing":age==1?"moth":"ready";
+  p.displayClientMessage(Component.translatable("message.wildercord.dewglass."+condition), true);
  }
  public static void init() {
   ServerPlayConnectionEvents.JOIN.register((handler,sender,server) -> {
@@ -78,7 +80,7 @@ public final class WetlandGarden {
    if(!(e instanceof LanternNewt n) || !p.getItemInHand(h).is(LENS) || p.isSpectator())return InteractionResult.PASS;
    if(p instanceof ServerPlayer sp && begin(sp,h)) {
     long left=Math.max(0,n.pearlReady()-l.getGameTime());
-    p.sendOverlayMessage(Component.translatable(n.frightened()?"message.wildercord.dewglass.newt_hurt":!n.isInWaterOrRain()?"message.wildercord.dewglass.newt_dry":left>0?"message.wildercord.dewglass.newt_rest":"message.wildercord.dewglass.newt_ready",(left+19)/20));
+    p.displayClientMessage(Component.translatable(n.frightened()?"message.wildercord.dewglass.newt_hurt":!n.isInWaterOrRain()?"message.wildercord.dewglass.newt_dry":left>0?"message.wildercord.dewglass.newt_rest":"message.wildercord.dewglass.newt_ready",(left+19)/20), true);
    }
    return InteractionResult.SUCCESS;
   });

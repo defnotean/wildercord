@@ -34,7 +34,7 @@ public final class Thaws extends SavedData {
 	}
 
 	static final Codec<Thaws> CODEC = Pending.CODEC.listOf().xmap(Thaws::new, Thaws::all);
-	static final SavedDataType<Thaws> TYPE = new SavedDataType<>(Wildercord.id("frost_thaws"), Thaws::new, CODEC, null);
+	static final SavedDataType<Thaws> TYPE = new SavedDataType<>("frost_thaws", Thaws::new, CODEC, null);
 
 	/** How often (in ticks) the waiting ice is looked over. */
 	private static final int SWEEP = 20;

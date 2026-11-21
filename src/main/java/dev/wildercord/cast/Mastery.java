@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McTime;
 import dev.wildercord.api.SpellMasteryApi;
 import dev.wildercord.config.Config;
 import dev.wildercord.player.MasteryAttachments;
@@ -438,7 +439,7 @@ public final class Mastery {
 			}
 		}
 		if (sky) {
-			long day = Math.floorMod(level.getOverworldClockTime(), 24000);
+			long day = Math.floorMod(dev.wildercord.compat.McTime.overworldClock(level), 24000);
 			boolean night = day >= 13000 && day < 23000;
 			if (night) {
 				out.add("night");
@@ -567,8 +568,8 @@ public final class Mastery {
 			case "" -> true;
 			case "low_target" -> target.getHealth() < target.getMaxHealth() / 3F;
 			case "full_target" -> target.getHealth() >= target.getMaxHealth() - 0.01F;
-			case "undead" -> target.is(EntityTypeTags.UNDEAD);
-			case "arthropod" -> target.is(EntityTypeTags.ARTHROPOD);
+			case "undead" -> target.getType().is(EntityTypeTags.UNDEAD);
+			case "arthropod" -> target.getType().is(EntityTypeTags.ARTHROPOD);
 			case "boss" -> Spirits.isBoss(target);
 			case "nether" -> cast.level.dimension() == Level.NETHER;
 			case "end" -> cast.level.dimension() == Level.END;
@@ -601,10 +602,10 @@ public final class Mastery {
 			double xp = first ? MasteryRules.strike(worth, share, killed) : worth * (MasteryRules.DAMAGE * Math.min(1, share) + (killed ? MasteryRules.KILL : 0));
 			String kind = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString();
 			if (!practice) {
-				if (target.is(EntityTypeTags.UNDEAD)) {
+				if (target.getType().is(EntityTypeTags.UNDEAD)) {
 					circumstance(tally, "undead");
 				}
-				if (target.is(EntityTypeTags.ARTHROPOD)) {
+				if (target.getType().is(EntityTypeTags.ARTHROPOD)) {
 					circumstance(tally, "arthropod");
 				}
 				if (Spirits.isBoss(target)) {
