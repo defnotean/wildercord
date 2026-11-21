@@ -157,7 +157,7 @@ public final class QuarryHallPiece extends MasterSitePiece {
 		fill(level, bb, 26, 12, 8, 26, 12, 18, jib);
 		set(level, bb, stair(alt ? Blocks.DARK_OAK_STAIRS : Blocks.SPRUCE_STAIRS, Direction.SOUTH, true), 26, 11, 16);
 		set(level, bb, cobble, 26, 11, 18);
-		fill(level, bb, 26, 3, 9, 26, 11, 9, s(Blocks.IRON_CHAIN));
+		fill(level, bb, 26, 3, 9, 26, 11, 9, s(Blocks.CHAIN));
 		set(level, bb, cut, 26, 2, 9);
 		hangingLantern(level, bb, 26, 11, 13, 1, false);
 		// A lesser derrick by the gate, lifting from the first bench.
@@ -165,7 +165,7 @@ public final class QuarryHallPiece extends MasterSitePiece {
 		fill(level, bb, 20, 1, 2, 20, 9, 2, mast);
 		fill(level, bb, 20, 9, 0, 20, 9, 7, jib);
 		set(level, bb, stair(alt ? Blocks.DARK_OAK_STAIRS : Blocks.SPRUCE_STAIRS, Direction.NORTH, true), 20, 8, 3);
-		fill(level, bb, 20, 3, 6, 20, 8, 6, s(Blocks.IRON_CHAIN));
+		fill(level, bb, 20, 3, 6, 20, 8, 6, s(Blocks.CHAIN));
 		set(level, bb, raw, 20, 2, 6);
 		// Stacks of dressed blocks waiting to be hauled, a cook fire and lantern posts at the pit's ends.
 		fill(level, bb, 27, 1, 0, 28, 2, 1, cut);

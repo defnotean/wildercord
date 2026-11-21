@@ -168,7 +168,7 @@ public final class BasaltFoundryPiece extends MinePiece {
 		set(level, bb, s(Blocks.ANVIL), 9, 1, 14);
 		for (int x : new int[] {6, 12}) for (int z : new int[] {6, 13}) hangingLantern(level, bb, x, 8, z);
 		// Chains hang from the ceiling over the troughs, where the crucibles were swung.
-		for (int x : new int[] {4, 14}) for (int z : new int[] {6, 12}) fill(level, bb, x, 6, z, x, 8, z, s(Blocks.IRON_CHAIN));
+		for (int x : new int[] {4, 14}) for (int z : new int[] {6, 12}) fill(level, bb, x, 6, z, x, 8, z, s(Blocks.CHAIN));
 		guard(level, bb, EntityType.WITHER_SKELETON, 9, 1, 12, List.of(Runes.BOLT, Runes.EMBER), true);
 		sentry(level, bb, EntityType.BLAZE, 12, 2, 4);
 		sentry(level, bb, EntityType.MAGMA_CUBE, 6, 1, 15);

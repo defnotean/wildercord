@@ -58,7 +58,7 @@ public class EmberSanctumPiece extends DungeonPiece {
 	private static final BlockState MAGMA = Blocks.MAGMA_BLOCK.defaultBlockState();
 	private static final BlockState BASALT = Blocks.POLISHED_BASALT.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
 	private static final BlockState LAVA = Blocks.LAVA.defaultBlockState();
-	private static final BlockState CHAIN = Blocks.IRON_CHAIN.defaultBlockState();
+	private static final BlockState CHAIN = Blocks.CHAIN.defaultBlockState();
 	private static final BlockState LANTERN = Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);
 	private static final BlockState FIRE = Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true);
 

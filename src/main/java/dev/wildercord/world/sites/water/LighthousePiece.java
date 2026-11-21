@@ -274,6 +274,6 @@ public class LighthousePiece extends WaterPiece {
 		set(level, bb, Blocks.GLOWSTONE.defaultBlockState(), CX, GALLERY + 4, CZ);
 		set(level, bb, Blocks.LEVER.defaultBlockState().setValue(LeverBlock.FACE, AttachFace.FLOOR).setValue(LeverBlock.FACING, Direction.SOUTH), CX, GALLERY + 1, 7);
 		set(level, bb, Blocks.CHISELED_STONE_BRICKS.defaultBlockState(), CX, GALLERY + 9, CZ);
-		set(level, bb, Blocks.WAXED_LIGHTNING_ROD.defaultBlockState(), CX, GALLERY + 10, CZ);
+		set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState(), CX, GALLERY + 10, CZ);
 	}
 }

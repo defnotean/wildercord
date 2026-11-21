@@ -116,7 +116,7 @@ public final class BearersLantern {
 		// Saved with an end time, as a summoned wolf is, so a restart can never leave it behind for good (see Spirits).
 		horse.setAttached(WildercordAttachments.SPIRIT_UNTIL, level.getGameTime() + LanternBearerRules.STEED_LINGER);
 		level.addFreshEntity(horse);
-		player.startRiding(horse, true, true);
+		player.startRiding(horse, true);
 		var feet = horse.position();
 		level.sendParticles(ParticleTypes.SOUL, feet.x, feet.y + .3, feet.z, 24, .7, .3, .7, .03);
 		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, feet.x, feet.y + .1, feet.z, 30, .9, .05, .9, .02);

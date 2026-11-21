@@ -369,6 +369,9 @@ public final class ArticulatedSharedRenderProbe {
 		} catch (Throwable failure) { scope.token.session.reject("fallback_observer_failed:" + failure); return null; }
 	}
 	public static void fallbackViewItem(FallbackView call, ItemStackRenderState item) {
+		if (call == null || call.item() == null) {
+			return;
+		}
 		Scope scope = rendering(); if (scope == null || call == null) return;
 		guard(scope.token, () -> {
 			if (item == null || item != call.item() || item.isEmpty()) { scope.token.session.reject("wrong_native_fallback_submission"); return; }

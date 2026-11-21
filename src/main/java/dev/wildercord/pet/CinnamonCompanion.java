@@ -47,7 +47,7 @@ final class CinnamonCompanion {
 	private static boolean uncertainOverflow;
 	private static final CinnamonRecoveryRules LEASE = new CinnamonRecoveryRules();
 	private static final TicketType RECOVERY = Registry.register(BuiltInRegistries.TICKET_TYPE, Wildercord.id("cinnamon_recovery"),
-		new TicketType(CinnamonRecoveryRules.TICKET_TICKS, TicketType.FLAG_LOADING | TicketType.FLAG_SIMULATION));
+		new TicketType(CinnamonRecoveryRules.TICKET_TICKS, true, TicketType.TicketUse.LOADING_AND_SIMULATION));
 	private static ServerLevel ticketLevel;
 	private static ChunkPos ticketChunk;
 	private static CinnamonConfig config = CinnamonConfig.EMPTY;
@@ -195,7 +195,7 @@ final class CinnamonCompanion {
 		if (entry.retired()) return;
 		CinnamonDog dog = LIVE.get(player.getUUID());
 		if (dog == null || dog.isRemoved()) {
-			Entity found = server.overworld().getEntityInAnyDimension(entry.entity());
+			Entity found = dev.wildercord.compat.McEntities.entityAnywhere(server.overworld(), entry.entity());
 			if (found instanceof CinnamonDog known && player.getUUID().equals(ownerId(known))) loaded(known, (ServerLevel) known.level());
 			dog = LIVE.get(player.getUUID());
 		}
@@ -338,7 +338,7 @@ final class CinnamonCompanion {
 		if (config.owner().isBlank()) return false;
 		if (config.owner().equalsIgnoreCase("@singleplayer")) {
 			var profile = player.level().getServer().getSingleplayerProfile();
-			return profile != null && (profile.id().equals(player.getUUID()) || profile.name().equalsIgnoreCase(player.getGameProfile().getName()));
+			return profile != null && (profile.getId().equals(player.getUUID()) || profile.getName().equalsIgnoreCase(player.getGameProfile().getName()));
 		}
 		return config.ownerId() != null ? player.getUUID().equals(config.ownerId()) : player.getGameProfile().getName().equalsIgnoreCase(config.owner());
 	}

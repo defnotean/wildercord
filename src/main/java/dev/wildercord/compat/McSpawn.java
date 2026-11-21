@@ -23,7 +23,7 @@ public final class McSpawn {
 
 	/** The player's bed or respawn anchor, or null when they have none. */
 	public static SpawnPoint ofPlayer(ServerPlayer player) {
-		var home = dev.wildercord.compat.McSpawn.ofPlayer(player);
+		var home = player.getRespawnConfig();
 		return home == null ? null : new SpawnPoint(home.dimension(), home.pos(), home.angle(), home.forced());
 	}
 

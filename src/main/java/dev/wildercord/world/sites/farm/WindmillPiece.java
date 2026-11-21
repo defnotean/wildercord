@@ -112,7 +112,7 @@ public final class WindmillPiece extends FarmPiece {
 		for (int x : new int[]{9, 13}) { set(level, bb, s(Blocks.COBBLESTONE_WALL), x, 1, 9); set(level, bb, s(Blocks.LANTERN), x, 2, 9); }
 		// A hoist beam out over the yard, a bale on its chain.
 		fill(level, bb, 15, 11, 15, 16, 11, 15, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(BlockStateProperties.AXIS, Direction.Axis.X));
-		set(level, bb, s(Blocks.IRON_CHAIN), 16, 10, 15);
+		set(level, bb, s(Blocks.CHAIN), 16, 10, 15);
 		set(level, bb, s(Blocks.HAY_BLOCK), 16, 9, 15);
 		// Lantern posts up the path, a lily on the pond.
 		for (int x : new int[]{9, 13}) for (int z : new int[]{2, 6}) {

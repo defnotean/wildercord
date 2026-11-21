@@ -60,7 +60,7 @@ public final class BarrowFieldPiece extends DungeonPiece {
 	private static final BlockState POST=Blocks.DARK_OAK_LOG.defaultBlockState();
 	private static final BlockState FENCE=Blocks.DARK_OAK_FENCE.defaultBlockState();
 	private static final BlockState STAKE=Blocks.SPRUCE_FENCE.defaultBlockState();
-	private static final BlockState SPEAR=Blocks.WAXED_WEATHERED_LIGHTNING_ROD.defaultBlockState();
+	private static final BlockState SPEAR=Blocks.LIGHTNING_ROD.defaultBlockState();
 	private static final BlockState CANDLE=Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.LIT,false);
 
 	public BarrowFieldPiece(int x,int y,int z,Direction facing){super(DungeonWorldgen.BARROW_FIELD_PIECE,x,y,z,WIDTH,HEIGHT,DEPTH,facing);}
@@ -393,7 +393,7 @@ public final class BarrowFieldPiece extends DungeonPiece {
 		fill(level,bb,CX,ARM_Y,LANTERN_Z,CX,ARM_Y,POST_Z-1,arm);
 		// The brace, from the post up under the arm.
 		set(level,bb,Blocks.DARK_OAK_STAIRS.defaultBlockState().setValue(StairBlock.FACING,Direction.NORTH).setValue(StairBlock.HALF,net.minecraft.world.level.block.state.properties.Half.TOP),CX,ARM_Y-1,POST_Z-1);
-		set(level,bb,Blocks.IRON_CHAIN.defaultBlockState(),LANTERN_X,ARM_Y-1,LANTERN_Z);
+		set(level,bb,Blocks.CHAIN.defaultBlockState(),LANTERN_X,ARM_Y-1,LANTERN_Z);
 		set(level,bb,lantern(),LANTERN_X,LANTERN_Y,LANTERN_Z);
 		set(level,bb,Blocks.COBWEB.defaultBlockState(),CX+1,ARM_Y,POST_Z);
 		// On a footing stone at the post's foot, the lantern it leaves behind: there for the taking once it lies still.

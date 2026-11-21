@@ -257,7 +257,7 @@ public final class BellSanctumPiece extends BelowkeeperPiece {
 
 	/** A lantern hung from the rib above on one link of chain. */
 	private void hang(WorldGenLevel level, BoundingBox clip, int x, int z, boolean soul) {
-		set(level, clip, Blocks.IRON_CHAIN.defaultBlockState(), x, 9, z);
+		set(level, clip, Blocks.CHAIN.defaultBlockState(), x, 9, z);
 		set(level, clip, (soul ? Blocks.SOUL_LANTERN : Blocks.LANTERN).defaultBlockState().setValue(LanternBlock.HANGING, true), x, 8, z);
 	}
 

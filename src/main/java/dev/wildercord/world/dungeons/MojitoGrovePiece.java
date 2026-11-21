@@ -130,7 +130,7 @@ public final class MojitoGrovePiece extends DungeonPiece {
 			fill(level,bb,x,F+1,9,x,F+4,9,Blocks.MOSSY_STONE_BRICKS.defaultBlockState());
 			set(level,bb,Blocks.MOSSY_STONE_BRICK_WALL.defaultBlockState(),x,F+5,9);
 		}
-		for(int x=CX-2;x<=CX+2;x++)set(level,bb,Blocks.IRON_CHAIN.defaultBlockState().setValue(ChainBlock.AXIS,Direction.Axis.X),x,Math.abs(x-CX)<=1?F+3:F+4,9);
+		for(int x=CX-2;x<=CX+2;x++)set(level,bb,Blocks.CHAIN.defaultBlockState().setValue(ChainBlock.AXIS,Direction.Axis.X),x,Math.abs(x-CX)<=1?F+3:F+4,9);
 		set(level,bb,Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING,true),CX,F+2,9);
 		// By the path: a cold fire, the last visitors' chest, and a tipped water bowl.
 		set(level,bb,Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT,false),CX-3,F+1,3);

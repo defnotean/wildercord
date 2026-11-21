@@ -78,7 +78,7 @@ public final class GranaryPiece extends FarmPiece {
 		fill(level, bb, 8, 8, 6, 12, 12, 6, beam);
 		fill(level, bb, 9, 9, 6, 11, 11, 6, s(Blocks.HAY_BLOCK));
 		set(level, bb, topSlab(Blocks.DARK_OAK_SLAB), 10, 13, 5); set(level, bb, topSlab(Blocks.DARK_OAK_SLAB), 10, 13, 4);
-		set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), 10, 12, 4);
+		set(level, bb, Blocks.CHAIN.defaultBlockState(), 10, 12, 4);
 		set(level, bb, s(Blocks.HAY_BLOCK), 10, 11, 4);
 		fill(level, bb, 10, 9, 22, 10, 11, 22, s(Blocks.GLASS));
 		set(level, bb, s(Blocks.GLASS), 9, 10, 22); set(level, bb, s(Blocks.GLASS), 11, 10, 22);
@@ -88,7 +88,7 @@ public final class GranaryPiece extends FarmPiece {
 		set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, true), 10, 17, 13); set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, true), 10, 17, 15);
 		set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.EAST, true), 9, 17, 14); set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.WEST, true), 11, 17, 14);
 		hipRoof(level, bb, 9, 13, 11, 15, 18, Blocks.DARK_OAK_STAIRS, beam, s(Blocks.DARK_OAK_SLAB));
-		set(level, bb, s(Blocks.WAXED_LIGHTNING_ROD), 10, 21, 14);
+		set(level, bb, s(Blocks.LIGHTNING_ROD), 10, 21, 14);
 		hangingLantern(level, bb, 10, 16, 14, 0, false);
 		// Windows with sills and hoods.
 		for (int z : new int[]{10, 18}) {
@@ -218,7 +218,7 @@ public final class GranaryPiece extends FarmPiece {
 			}
 		}
 		set(level, bb, s(Blocks.DARK_OAK_FENCE), cx, 19, cz);
-		set(level, bb, s(Blocks.WAXED_LIGHTNING_ROD), cx, 20, cz);
+		set(level, bb, s(Blocks.LIGHTNING_ROD), cx, 20, cz);
 		// Slit windows round the shaft.
 		for (int y : new int[]{7, 11}) {
 			set(level, bb, s(Blocks.GLASS_PANE), cx, y, cz - 3);

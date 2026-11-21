@@ -185,7 +185,7 @@ public class PierBoathousePiece extends WaterPiece {
 			hangingLantern(level, bb, 2, DECK + 4, z, 0, false);
 			hangingLantern(level, bb, 8, DECK + 4, z, 0, false);
 		}
-		fill(level, bb, 5, DECK + 5, 24, 5, DECK + 9, 24, Blocks.IRON_CHAIN.defaultBlockState());
+		fill(level, bb, 5, DECK + 5, 24, 5, DECK + 9, 24, Blocks.CHAIN.defaultBlockState());
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 5, DECK + 4, 24);
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 1, DECK + 1, 23);
 		set(level, bb, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), 9, DECK + 1, 22);

@@ -353,7 +353,7 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 			set(level, bb, LIGHT, CX, F + 11, z);
 		}
 		for (int z : new int[] {30, 36}) {
-			fill(level, bb, 20, F + 7, z, 20, vaultTop(CX), z, Blocks.IRON_CHAIN.defaultBlockState());
+			fill(level, bb, 20, F + 7, z, 20, vaultTop(CX), z, Blocks.CHAIN.defaultBlockState());
 			set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 20, F + 6, z);
 		}
 		// Outside: stepped buttresses against the long walls, a parapet round the roof and a ridge down its middle.
@@ -481,7 +481,7 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 			set(level, bb, LIGHT, px, F + 4, pz);
 		}
 		// The conduit hangs on a chain from the crown.
-		fill(level, bb, CX, F + 6, ARENA_Z, CX, F + 15, ARENA_Z, Blocks.IRON_CHAIN.defaultBlockState());
+		fill(level, bb, CX, F + 6, ARENA_Z, CX, F + 15, ARENA_Z, Blocks.CHAIN.defaultBlockState());
 		// Steps down from the balcony, and the way in.
 		fill(level, bb, 19, PIT + 1, 51, 21, PIT + 2, 51, BRICKS);
 		fill(level, bb, 19, PIT + 1, 52, 21, PIT + 1, 52, BRICKS);

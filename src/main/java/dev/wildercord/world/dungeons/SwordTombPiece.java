@@ -63,12 +63,12 @@ public final class SwordTombPiece extends DungeonPiece {
 			fill(level,bb,x,1,z,x,7,z,carved);set(level,bb,Blocks.LANTERN.defaultBlockState(),x,8,z);
 		}
 		for(int x:new int[]{14,26})for(int z:new int[]{30,40}){
-			fill(level,bb,x,7,z,x,9,z,Blocks.IRON_CHAIN.defaultBlockState());
+			fill(level,bb,x,7,z,x,9,z,Blocks.CHAIN.defaultBlockState());
 			set(level,bb,Blocks.LANTERN.defaultBlockState().setValue(net.minecraft.world.level.block.LanternBlock.HANGING,true),x,6,z);
 		}
 		// Low pendants light the actual duel and the keeper's mask, rather than only the perimeter.
 		for(int x:new int[]{18,22}){
-			fill(level,bb,x,5,36,x,9,36,Blocks.IRON_CHAIN.defaultBlockState());
+			fill(level,bb,x,5,36,x,9,36,Blocks.CHAIN.defaultBlockState());
 			set(level,bb,Blocks.LANTERN.defaultBlockState().setValue(net.minecraft.world.level.block.LanternBlock.HANGING,true),x,4,36);
 		}
 		// Broken burial terraces provide flanking cover without choking the sweep/thrust lanes.

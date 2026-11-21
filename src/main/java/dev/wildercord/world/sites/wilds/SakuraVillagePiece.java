@@ -248,9 +248,9 @@ public final class SakuraVillagePiece extends WildsPiece {
 		fill(level, bb, 6, 2, 23, 9, 2, 26, s(Blocks.STONE_BRICKS));
 		set(level, bb, s(Blocks.CAMPFIRE).setValue(CampfireBlock.LIT, true), 7, 2, 24);
 		set(level, bb, s(Blocks.CAULDRON), 7, 4, 24);
-		set(level, bb, s(Blocks.IRON_CHAIN), 7, 5, 24);
+		set(level, bb, s(Blocks.CHAIN), 7, 5, 24);
 		fill(level, bb, 6, 2, 28, 6, 2, 33, darkLog);
-		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(ChiseledBookShelfBlock.FACING, Direction.EAST), 6, 2, 27);
+		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(HorizontalDirectionalBlock.FACING, Direction.EAST), 6, 2, 27);
 		set(level, bb, s(Blocks.BARREL), 6, 2, 29);
 		set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), 6, 3, 28);
 		banner(level, bb, Blocks.GREEN_WALL_BANNER, 6, 5, 31, Direction.EAST);
@@ -332,7 +332,7 @@ public final class SakuraVillagePiece extends WildsPiece {
 			set(level, bb, s(Blocks.POTTED_FLOWERING_AZALEA), c[0] - 1, 2, c[1]);
 		}
 		fill(level, bb, 49, 5, 31, 51, 5, 33, cherry);
-		set(level, bb, s(Blocks.IRON_CHAIN), 50, 4, 32);
+		set(level, bb, s(Blocks.CHAIN), 50, 4, 32);
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.FACING, Direction.WEST), 50, 3, 32);
 		for (int[] sl : new int[][]{{45, 24}, {55, 24}, {45, 40}, {55, 40}}) {
 			set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), sl[0], 6, sl[1]);

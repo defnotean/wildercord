@@ -145,7 +145,7 @@ public class RootboundMazePiece extends DungeonPiece {
 
 	/** Lamps hung on chains, roots through the ceilings, columns and a moss dais in the vault. */
 	private void interior(WorldGenLevel level, BoundingBox bb) {
-		BlockState chain = Blocks.IRON_CHAIN.defaultBlockState();
+		BlockState chain = Blocks.CHAIN.defaultBlockState();
 		for (int x : new int[] {9, 21}) {
 			set(level, bb, chain, x, 6, 5);
 			set(level, bb, chain, x, 6, 17);

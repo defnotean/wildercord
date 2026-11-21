@@ -45,7 +45,7 @@ public final class LivingGreenhousePiece extends DungeonPiece {
    set(level,bb,Blocks.SHROOMLIGHT.defaultBlockState(),x,6,z);
   }
   // The lamps hang on chains from the glass vault; lily pads on the pool, moss creeping over the floor.
-  for(int x:new int[]{5,23})for(int z:new int[]{6,12,26,32})fill(level,bb,x,7,z,x,13,z,Blocks.IRON_CHAIN.defaultBlockState());
+  for(int x:new int[]{5,23})for(int z:new int[]{6,12,26,32})fill(level,bb,x,7,z,x,13,z,Blocks.CHAIN.defaultBlockState());
   hangingLantern(level,bb,14,15,7,4,false);hangingLantern(level,bb,14,15,29,4,false);hangingLantern(level,bb,14,15,18,5,false);
   for(int x=10;x<=18;x++)for(int z=14;z<=22;z++)if(x!=14&&noise(x,z)<14)set(level,bb,Blocks.LILY_PAD.defaultBlockState(),x,1,z);
   scatter(level,bb,2,1,2,26,1,34,Blocks.MOSS_CARPET.defaultBlockState(),12);

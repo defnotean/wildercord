@@ -116,7 +116,7 @@ public final class MinersRestPiece extends MinePiece {
 		set(level, bb, stair(Blocks.STONE_BRICK_STAIRS, Direction.EAST, true), 6, 12, 4);
 		fill(level, bb, 4, 13, 3, 6, 13, 5, chiseled);
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.ATTACHMENT, BellAttachType.CEILING), 5, 12, 4);
-		spire(level, bb, 5, 4, 2, 14, Blocks.STONE_BRICK_STAIRS, brick, chiseled, s(Blocks.WAXED_LIGHTNING_ROD));
+		spire(level, bb, 5, 4, 2, 14, Blocks.STONE_BRICK_STAIRS, brick, chiseled, s(Blocks.LIGHTNING_ROD));
 		// Lamps hung at the roof's four corners and banners on the front pillars.
 		for (int x : new int[] {1, 9}) for (int z : new int[] {0, 8}) hangingLantern(level, bb, x, 5, z, 0, false);
 		for (int x : new int[] {2, 8}) banner(level, bb, Blocks.ORANGE_WALL_BANNER, x, 4, 0, Direction.NORTH);
@@ -153,7 +153,7 @@ public final class MinersRestPiece extends MinePiece {
 			fill(level, bb, x, 0, 10, x, 0, 15, s(Blocks.STRIPPED_SPRUCE_LOG).setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z));
 			set(level, bb, stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, true), x, -1, 10);
 		}
-		fill(level, bb, 5, -2, 15, 5, 0, 15, s(Blocks.IRON_CHAIN));
+		fill(level, bb, 5, -2, 15, 5, 0, 15, s(Blocks.CHAIN));
 		hangingLantern(level, bb, 5, -3, 15);
 		set(level, bb, s(Blocks.LANTERN), 3, 3, 15);
 		set(level, bb, s(Blocks.LANTERN), 7, 3, 15);

@@ -507,6 +507,9 @@ public final class CounterPeerRenderProbe {
             CounterPeerRenderMath.values(call.expected()),CounterPeerRenderMath.values(pose.last().pose())),false,true);
     }
     public static void fallbackViewItem(FallbackView call,ItemStackRenderState item,Matrix4fc actual){
+		if (call == null || call.item() == null) {
+			return;
+		}
         var s=rendering();if(s==null||call==null)return;var source=s.sources.get(call.avatar);
         var held=call.hands.mainHandItem();
         if(source==null||!CounterPeerRenderMath.item(id(s,call.item),id(s,item),dev.wildercord.client.compat.RenderCompat.mainHandStack(call.avatar).is(Items.DIAMOND_SWORD),

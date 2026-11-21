@@ -22,11 +22,14 @@ import net.minecraft.world.phys.Vec3;
 public abstract class StoneHingeOwnerServerProbeMixin implements StoneHingeOwnerProbe.ConnectionState {
 	@Shadow private Vec3 awaitingPositionFromClient;
 	@Override public boolean stoneHinge$awaitingTeleport() { return awaitingPositionFromClient != null; }
-    @WrapMethod(method = "tickPlayer()Z", require = 1, expect = 1, allow = 1)
-    private boolean stoneHinge$naturalListener(Operation<Boolean> original) {
-        return StoneHingeNaturalMotion.listener((ServerGamePacketListenerImpl) (Object) this, () -> original.call());
+    @WrapMethod(method = "tick()V", require = 1, expect = 1, allow = 1)
+    private void stoneHinge$naturalListener(Operation<Void> original) {
+        StoneHingeNaturalMotion.listener((ServerGamePacketListenerImpl) (Object) this, () -> {
+            original.call();
+            return true;
+        });
     }
-    @WrapOperation(method = "tickPlayer()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;doTick()V"), require = 1, expect = 1, allow = 1)
+    @WrapOperation(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;doTick()V"), require = 1, expect = 1, allow = 1)
     private void stoneHinge$nativeStepCallsite(ServerPlayer player, Operation<Void> original) {
         StoneHingeNaturalMotion.callSite((ServerGamePacketListenerImpl) (Object) this, player, () -> original.call(player));
     }

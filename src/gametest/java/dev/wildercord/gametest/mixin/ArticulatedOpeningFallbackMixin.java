@@ -15,6 +15,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 /** Passive exact native fallback path. A held sword submits an item, without an arm-model pass. */
@@ -42,13 +44,16 @@ public abstract class ArticulatedOpeningFallbackMixin {
 		}
 	}
 
-	@WrapOperation(method = "renderItem", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"), require = 1, expect = 1, allow = 1)
-	private void wildercord$item(ItemStackRenderState item, PoseStack pose, MultiBufferSource buffer,
-			int light, int overlay, int outline, Operation<Void> original) {
+	// 1.21.8 draws the hand item straight from the ItemStack: there is no item render state
+	// to observe here, so the probe sees the state the view began with (and skips when
+	// the platform has none).
+	@Inject(method = "renderItem", at = @At("TAIL"))
+	private void wildercord$item(CallbackInfo ci) {
 		var call = wildercord$openingFallback.get();
-		if (call != null) call.bindItem(item);
-		original.call(item, pose, buffer, light, overlay, outline);
+		if (call == null) {
+			return;
+		}
+		var item = call.item();
 		ArticulatedSharedRenderProbe.fallbackViewItem(call, item);
 	}
 }

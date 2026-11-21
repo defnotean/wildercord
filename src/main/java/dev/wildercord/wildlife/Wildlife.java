@@ -21,6 +21,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -111,7 +112,7 @@ public final class Wildlife {
 		return Registry.register(BuiltInRegistries.ITEM, key, new WildlifeItem(properties.setId(key)));
 	}
 
-	private static Item egg(String creature, EntityType<?> type) {
+	private static Item egg(String creature, EntityType<? extends Mob> type) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(creature + "_spawn_egg"));
 		return Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(type, new Item.Properties().setId(key)));
 	}

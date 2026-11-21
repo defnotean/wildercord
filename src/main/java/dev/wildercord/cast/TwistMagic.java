@@ -588,7 +588,7 @@ public final class TwistMagic {
 		// Saved with an end time, as a summoned wolf is, so a restart can never leave it behind for good (see Spirits).
 		horse.setAttached(WildercordAttachments.SPIRIT_UNTIL, level.getGameTime() + 600);
 		level.addFreshEntity(horse);
-		player.startRiding(horse, true, true);
+		player.startRiding(horse, true);
 		TwistVfx.steedRises(level, horse);
 		int[] empty = {0};
 		every(null, 5, 120, tick -> {

@@ -230,7 +230,7 @@ public final class LanternBathhousePiece extends DungeonPiece {
 		fill(level, bb, 9, F + 1, 10, 12, F + 1, 10, DARK_OAK);
 		set(level, bb, Blocks.LECTERN.defaultBlockState().setValue(LecternBlock.FACING, Direction.SOUTH), 10, F + 2, 10);
 		set(level, bb, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, Direction.SOUTH), 12, F + 2, 10);
-		fill(level, bb, 26, F + 1, 9, 29, F + 1, 9, Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(ChiseledBookShelfBlock.FACING, Direction.SOUTH));
+		fill(level, bb, 26, F + 1, 9, 29, F + 1, 9, Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH));
 		set(level, bb, Blocks.POTTED_FLOWERING_AZALEA.defaultBlockState(), 25, F + 1, 9);
 		for (int x = 18; x <= 20; x++) {
 			set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), x, F + 1, 10);
@@ -301,7 +301,7 @@ public final class LanternBathhousePiece extends DungeonPiece {
 			}
 			fill(level, bb, 5, F + 7, z, 33, F + 7, z, DARK_OAK);
 			for (int lx : new int[]{11, 17, 21, 27}) {
-				set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), lx, F + 6, z);
+				set(level, bb, Blocks.CHAIN.defaultBlockState(), lx, F + 6, z);
 				set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), lx, F + 5, z);
 			}
 		}

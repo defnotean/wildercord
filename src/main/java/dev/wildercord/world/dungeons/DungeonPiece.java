@@ -398,7 +398,7 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 
 	/** A lantern hanging under (x, y, z) on {@code chain} blocks of chain. */
 	protected void hangingLantern(WorldGenLevel level, BoundingBox bb, int x, int y, int z, int chain, boolean soul) {
-		for (int i = 0; i < chain; i++) set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), x, y - i, z);
+		for (int i = 0; i < chain; i++) set(level, bb, Blocks.CHAIN.defaultBlockState(), x, y - i, z);
 		set(level, bb, (soul ? Blocks.SOUL_LANTERN : Blocks.LANTERN).defaultBlockState()
 			.setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true), x, y - chain, z);
 	}

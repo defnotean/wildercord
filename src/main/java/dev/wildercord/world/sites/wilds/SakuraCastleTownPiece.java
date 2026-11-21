@@ -199,7 +199,7 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 		}
 		fill(level, bb, 29, 7, 29, 35, 7, 35, cherry);
 		set(level, bb, s(Blocks.OCHRE_FROGLIGHT), 32, 3, 32);
-		set(level, bb, s(Blocks.IRON_CHAIN), 32, 6, 32);
+		set(level, bb, s(Blocks.CHAIN), 32, 6, 32);
 		set(level, bb, s(Blocks.BELL).setValue(BellBlock.FACING, Direction.SOUTH), 32, 5, 32);
 		banner(level, bb, Blocks.RED_WALL_BANNER, 28, 6, 27, Direction.SOUTH);
 		banner(level, bb, Blocks.RED_WALL_BANNER, 36, 6, 27, Direction.SOUTH);
@@ -244,7 +244,7 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 			set(level, bb, s(Blocks.SPRUCE_FENCE), 22, 2, rz);
 			set(level, bb, s(Blocks.IRON_BARS), 22, 3, rz);
 		}
-		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(ChiseledBookShelfBlock.FACING, Direction.EAST), 7, 2, 30);
+		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(HorizontalDirectionalBlock.FACING, Direction.EAST), 7, 2, 30);
 		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 14, 6, 30);
 		chest(level, bb, 8, 2, 24, WildsSites.SAKURA_CASTLE_VAULT, Direction.EAST, 71L);
 
@@ -328,7 +328,7 @@ public final class SakuraCastleTownPiece extends WildsPiece {
 		set(level, bb, s(Blocks.COMPOSTER), 26, 1, 58);
 		set(level, bb, s(Blocks.CAULDRON), 28, 1, 58);
 		set(level, bb, s(Blocks.BARREL), 36, 1, 58);
-		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(ChiseledBookShelfBlock.FACING, Direction.NORTH), 34, 1, 58);
+		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH), 34, 1, 58);
 		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 30, 5, 55);
 		gableRoof(level, bb, 20, 48, 40, 62, 6, true, Blocks.DEEPSLATE_TILE_STAIRS, s(Blocks.STRIPPED_CHERRY_LOG), Palette.of(plaster, 1));
 		// Cottage chimney.

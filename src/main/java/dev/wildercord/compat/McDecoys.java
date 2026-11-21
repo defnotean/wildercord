@@ -2,6 +2,7 @@ package dev.wildercord.compat;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 
@@ -14,13 +15,12 @@ public final class McDecoys {
 
 	/** A body to pose as the caster, or null when one cannot be placed. */
 	public static LivingEntity afterimageBody(ServerLevel level, Player caster) {
-		ArmorStand body = new ArmorStand(level);
+		ArmorStand body = new ArmorStand(EntityType.ARMOR_STAND, level);
 		body.snapTo(caster.getX(), caster.getY(), caster.getZ(), caster.getYRot(), caster.getXRot());
 		body.setYHeadRot(caster.getYHeadRot());
 		body.setNoGravity(true);
 		body.setNoBasePlate(true);
 		body.setShowArms(true);
-		body.setPersistenceRequired();
 		body.setInvulnerable(true);
 		return body;
 	}

@@ -299,7 +299,7 @@ public final class Teleports {
 				Travel.fail(traveller, "unsafe", where);
 				return null;
 			}
-			return new Arrival(level, spot, data.yaw(), 0F);
+			return new Arrival(level, spot, data.angle(), 0F);
 		}, operator);
 	}
 

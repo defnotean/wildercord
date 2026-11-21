@@ -307,7 +307,7 @@ public class AstralObservatoryPiece extends DungeonPiece {
 		// Orreries: amethyst worlds hanging on chains from the vault, an end rod shining down from each.
 		for (int z : new int[] {17, 23, 29}) {
 			for (int x : new int[] {17, 23}) {
-				fill(level, bb, x, F + 8, z, x, vaultTop(x), z, Blocks.IRON_CHAIN.defaultBlockState());
+				fill(level, bb, x, F + 8, z, x, vaultTop(x), z, Blocks.CHAIN.defaultBlockState());
 				set(level, bb, Blocks.AMETHYST_BLOCK.defaultBlockState(), x, F + 7, z);
 				set(level, bb, ROD_DOWN, x, F + 6, z);
 			}
@@ -395,7 +395,7 @@ public class AstralObservatoryPiece extends DungeonPiece {
 			set(level, bb, ROD_UP, px, F + 6, pz);
 		}
 		// A star hangs over the altar from the dome's crown, its rays of end rods reaching out.
-		fill(level, bb, CX, F + 13, DOME_Z, CX, F + 16, DOME_Z, Blocks.IRON_CHAIN.defaultBlockState());
+		fill(level, bb, CX, F + 13, DOME_Z, CX, F + 16, DOME_Z, Blocks.CHAIN.defaultBlockState());
 		set(level, bb, STAR, CX, F + 12, DOME_Z);
 		set(level, bb, ROD_DOWN, CX, F + 11, DOME_Z);
 		for (Direction dir : Direction.Plane.HORIZONTAL) {

@@ -333,8 +333,8 @@ public class FoxfireKitsune extends WildMonster {
 	}
 
 	@Override
-	protected boolean shouldDropLoot(ServerLevel level) {
-		return !decoy() && super.shouldDropLoot(level);
+	protected boolean shouldDropLoot() {
+		return !decoy() && super.shouldDropLoot();
 	}
 
 	@Override

@@ -212,7 +212,7 @@ public final class JapaneseArchitecture {
 		int cz = (z0 + z1) / 2;
 		p.set(cx, y, cz, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
 		p.set(cx, y + 2, cz, Blocks.CAULDRON.defaultBlockState());
-		p.set(cx, y + 3, cz, Blocks.IRON_CHAIN.defaultBlockState());
+		p.set(cx, y + 3, cz, Blocks.CHAIN.defaultBlockState());
 		p.set(x0 + 1, y + 3, z0 + 1, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true));
 		p.set(x1 - 1, y + 3, z1 - 1, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true));
 	}

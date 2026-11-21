@@ -180,7 +180,7 @@ public final class SakuraCanalTownPiece extends WildsPiece {
 		fill(level, bb, 7, 4, 24, 9, 4, 26, s(Blocks.STONE_BRICKS));
 		set(level, bb, s(Blocks.CAMPFIRE).setValue(CampfireBlock.LIT, true), 8, 4, 25);
 		set(level, bb, s(Blocks.CAULDRON), 8, 6, 25);
-		set(level, bb, s(Blocks.IRON_CHAIN), 8, 7, 25);
+		set(level, bb, s(Blocks.CHAIN), 8, 7, 25);
 		for (int z = 28; z <= 35; z += 3) {
 			set(level, bb, JapaneseArchitecture.slab(Blocks.DARK_OAK_SLAB, SlabType.BOTTOM), 16, 4, z);
 			set(level, bb, SakuraVillageHelper.dryTeaCups(2), 16, 5, z);

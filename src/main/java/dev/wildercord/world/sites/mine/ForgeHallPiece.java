@@ -160,7 +160,7 @@ public final class ForgeHallPiece extends MinePiece {
 		barrel(level, bb, 20, 1, 17, null, 0);
 		set(level, bb, s(Blocks.CRAFTING_TABLE), 19, 1, 14);
 		for (int x : new int[] {6, 11, 16}) for (int z : new int[] {5, 15}) {
-			fill(level, bb, x, 8, z, x, 10, z, s(Blocks.IRON_CHAIN));
+			fill(level, bb, x, 8, z, x, 10, z, s(Blocks.CHAIN));
 			hangingLantern(level, bb, x, 7, z);
 		}
 		yard(level, bb, brick, plinth, chiseled);
@@ -204,7 +204,7 @@ public final class ForgeHallPiece extends MinePiece {
 		fill(level, bb, 26, 1, 4, 26, 7, 4, s(Blocks.DARK_OAK_LOG));
 		fill(level, bb, 27, 7, 4, 29, 7, 4, s(Blocks.STRIPPED_DARK_OAK_LOG).setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X));
 		set(level, bb, stair(Blocks.DARK_OAK_STAIRS, Direction.WEST, true), 27, 6, 4);
-		fill(level, bb, 29, 5, 4, 29, 6, 4, s(Blocks.IRON_CHAIN));
+		fill(level, bb, 29, 5, 4, 29, 6, 4, s(Blocks.CHAIN));
 		set(level, bb, s(Blocks.LANTERN).setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true), 29, 4, 4);
 		// The quench trough by the door, and the woodpile for the stack.
 		fill(level, bb, 24, 0, 15, 25, 0, 19, brick);

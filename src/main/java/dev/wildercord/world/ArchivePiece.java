@@ -379,9 +379,9 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 				if (pillar) {
 					left = right = POLISHED;
 				} else if (y <= 7) {
-					left = z % 3 == 0 ? Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(net.minecraft.world.level.block.ChiseledBookShelfBlock.FACING, Direction.EAST)
+					left = z % 3 == 0 ? Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.EAST)
 						: Blocks.BOOKSHELF.defaultBlockState();
-					right = z % 3 == 1 ? Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(net.minecraft.world.level.block.ChiseledBookShelfBlock.FACING, Direction.WEST)
+					right = z % 3 == 1 ? Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.WEST)
 						: Blocks.BOOKSHELF.defaultBlockState();
 				} else {
 					left = right = TILES;
@@ -424,8 +424,8 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		}
 		// Chandeliers.
 		for (int[] c : new int[][] {{14, 35}, {26, 35}, {14, 43}, {26, 43}, {20, 39}}) {
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), c[0], 11, c[1]);
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), c[0], 10, c[1]);
+			set(level, bb, Blocks.CHAIN.defaultBlockState(), c[0], 11, c[1]);
+			set(level, bb, Blocks.CHAIN.defaultBlockState(), c[0], 10, c[1]);
 			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), c[0], 9, c[1]);
 		}
 		createChest(level, bb, RandomSource.create(boundingBox.minX() * 31L + boundingBox.minZ()), 29, 3, 46, WildercordWorldgen.LIBRARY_LOOT);
@@ -456,15 +456,15 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		for (int[] p : new int[][] {{14, 50}, {26, 50}, {14, 58}, {26, 58}}) {
 			set(level, bb, Blocks.POLISHED_BLACKSTONE.defaultBlockState(), p[0], 3, p[1]);
 			set(level, bb, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, false), p[0], 4, p[1]);
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), p[0], 10, p[1]);
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), p[0], 9, p[1]);
+			set(level, bb, Blocks.CHAIN.defaultBlockState(), p[0], 10, p[1]);
+			set(level, bb, Blocks.CHAIN.defaultBlockState(), p[0], 9, p[1]);
 		}
 		for (int z = 50; z <= 58; z += 4) {
 			set(level, bb, Blocks.AMETHYST_CLUSTER.defaultBlockState(), 13, 3, z);
 			set(level, bb, Blocks.AMETHYST_CLUSTER.defaultBlockState(), 27, 3, z);
 		}
 		set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 20, 9, 54);
-		set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), 20, 10, 54);
+		set(level, bb, Blocks.CHAIN.defaultBlockState(), 20, 10, 54);
 		// A blackstone skirting and a polished string course along the side walls.
 		for (int z = 49; z <= 59; z++) {
 			for (int x : new int[] {12, 28}) {
@@ -578,7 +578,7 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		int hang = ceiling(Math.sqrt(32));
 		for (int[] c : new int[][] {{16, ARENA_Z - 4}, {24, ARENA_Z - 4}, {16, ARENA_Z + 4}, {24, ARENA_Z + 4}}) {
 			for (int y = hang - 3; y <= hang; y++) {
-				set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), c[0], y, c[1]);
+				set(level, bb, Blocks.CHAIN.defaultBlockState(), c[0], y, c[1]);
 			}
 			set(level, bb, Blocks.SOUL_LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), c[0], hang - 4, c[1]);
 		}

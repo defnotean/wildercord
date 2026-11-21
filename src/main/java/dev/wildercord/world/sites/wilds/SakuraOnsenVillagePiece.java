@@ -366,7 +366,7 @@ public final class SakuraOnsenVillagePiece extends WildsPiece {
 			}
 		}
 		set(level, bb, s(Blocks.LECTERN), 12, 7, 56);
-		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(ChiseledBookShelfBlock.FACING, Direction.SOUTH), 10, 7, 59);
+		set(level, bb, s(Blocks.CHISELED_BOOKSHELF).setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH), 10, 7, 59);
 		set(level, bb, s(Blocks.POTTED_CHERRY_SAPLING), 9, 7, 53);
 		set(level, bb, s(Blocks.LANTERN).setValue(LanternBlock.HANGING, true), 12, 10, 56);
 		chest(level, bb, 15, 7, 59, WildsSites.SAKURA_ONSEN_VAULT, Direction.NORTH, 67L);

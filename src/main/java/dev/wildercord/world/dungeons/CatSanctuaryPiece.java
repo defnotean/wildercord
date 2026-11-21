@@ -202,9 +202,9 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		for (int[] cp : new int[][]{{40, 5}, {44, 5}, {40, 9}, {44, 9}}) {
 			fill(level, bb, cp[0], F1 + 2, cp[1], cp[0], F1 + 4, cp[1], VERMILION);
 		}
-		set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), 42, F1 + 4, 7);
+		set(level, bb, Blocks.CHAIN.defaultBlockState(), 42, F1 + 4, 7);
 		set(level, bb, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, Direction.SOUTH), 42, F1 + 3, 7);
-		set(level, bb, Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(ChiseledBookShelfBlock.FACING, Direction.SOUTH), 42, F1 + 2, 5);
+		set(level, bb, Blocks.CHISELED_BOOKSHELF.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, Direction.SOUTH), 42, F1 + 2, 5);
 		hipRoof(level, bb, 40, 5, 44, 9, F1 + 5, Blocks.DEEPSLATE_TILE_STAIRS, VERMILION, DEEPSLATE_TILES);
 
 		// Four Weeping Sakura Trees & Bamboo Clusters framing the forecourt.
@@ -365,7 +365,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		fill(level, bb, 27, F2 + 1, 41, 29, F2 + 1, 43, Blocks.ORANGE_CARPET.defaultBlockState());
 		set(level, bb, Blocks.GLOWSTONE.defaultBlockState(), 28, F2, 42);
 		set(level, bb, Blocks.CAULDRON.defaultBlockState(), 28, F2 + 6, 42);
-		set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), 28, F2 + 7, 42);
+		set(level, bb, Blocks.CHAIN.defaultBlockState(), 28, F2 + 7, 42);
 		for (int[] post : new int[][]{{24, 38}, {32, 38}, {24, 46}, {32, 46}}) {
 			set(level, bb, DARK_LOG, post[0], F2 + 1, post[1]);
 			set(level, bb, Blocks.LANTERN.defaultBlockState(), post[0], F2 + 2, post[1]);
@@ -401,7 +401,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 				fill(level, bb, c[0], F3 + 1, c[1], c[0], F3 + 4, c[1], CHERRY_LOG);
 			}
 			fill(level, bb, x - 1, F3 + 5, z - 1, x + 1, F3 + 5, z + 1, CHERRY_PLANKS);
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), x, F3 + 4, z);
+			set(level, bb, Blocks.CHAIN.defaultBlockState(), x, F3 + 4, z);
 			set(level, bb, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, x < 28 ? Direction.EAST : Direction.WEST),
 				x, F3 + 3, z);
 			set(level, bb, Blocks.LANTERN.defaultBlockState(), x, F3 + 6, z);

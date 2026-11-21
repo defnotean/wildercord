@@ -47,7 +47,7 @@ public final class PredatorContent {
 		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
 	}
 
-	private static Item egg(String name, EntityType<?> type) {
+	private static Item egg(String name, EntityType<? extends Mob> type) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(name + "_spawn_egg"));
 		return Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(type, new Item.Properties().setId(key)));
 	}

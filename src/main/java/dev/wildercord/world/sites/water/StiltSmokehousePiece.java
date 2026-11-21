@@ -209,7 +209,7 @@ public class StiltSmokehousePiece extends WaterPiece {
 		set(level, bb, Blocks.CAMPFIRE.defaultBlockState(), 5, DECK + 1, 13);
 		set(level, bb, Blocks.CAMPFIRE.defaultBlockState(), 9, DECK + 1, 13);
 		for (int x : new int[] {6, 8}) {
-			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState(), x, DECK + 4, 12);
+			set(level, bb, Blocks.CHAIN.defaultBlockState(), x, DECK + 4, 12);
 			set(level, bb, Blocks.DRIED_KELP_BLOCK.defaultBlockState(), x, DECK + 3, 12);
 		}
 		set(level, bb, Blocks.SMOKER.defaultBlockState().setValue(net.minecraft.world.level.block.AbstractFurnaceBlock.FACING, Direction.SOUTH), 7, DECK + 1, 13);

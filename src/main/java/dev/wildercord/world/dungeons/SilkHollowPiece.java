@@ -262,7 +262,7 @@ public final class SilkHollowPiece extends DungeonPiece {
 		}
 		for(int x=SHAFT_X-4;x<=SHAFT_X+4;x++)if(column(bb,x,SHAFT_Z))set(level,bb,LOG.setValue(RotatedPillarBlock.AXIS,Direction.Axis.X),x,top+4,SHAFT_Z);
 		if(column(bb,SHAFT_X,SHAFT_Z)){
-			set(level,bb,Blocks.IRON_CHAIN.defaultBlockState(),SHAFT_X,top+3,SHAFT_Z);
+			set(level,bb,Blocks.CHAIN.defaultBlockState(),SHAFT_X,top+3,SHAFT_Z);
 			set(level,bb,Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING,true),SHAFT_X,top+2,SHAFT_Z);
 		}
 	}

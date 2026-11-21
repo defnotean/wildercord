@@ -108,7 +108,7 @@ public final class HillsideMinePiece extends MinePiece {
 		set(level, bb, s(Blocks.SPRUCE_TRAPDOOR), 4, head + 2, 4);
 		hipRoof(level, bb, 2, 3, 6, 7, head + 3, Blocks.SPRUCE_STAIRS, plank, s(Blocks.SPRUCE_SLAB));
 		hangingLantern(level, bb, 3, head, 4);
-		fill(level, bb, 4, 2, 5, 4, head, 5, s(Blocks.IRON_CHAIN));
+		fill(level, bb, 4, 2, 5, 4, head, 5, s(Blocks.CHAIN));
 		set(level, bb, s(Blocks.CAULDRON), 4, 1, 5);
 		for (int x : new int[] {3, 5}) set(level, bb, fence, x, YARD + 1, 4);
 		// Ore waiting for the cart: a spill of raw stone and barrels by the pit.

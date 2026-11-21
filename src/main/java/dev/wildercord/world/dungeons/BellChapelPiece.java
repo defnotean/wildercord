@@ -288,7 +288,7 @@ public final class BellChapelPiece extends DungeonPiece {
 
 	/** A lantern hung on a chain from the vault at {@code top} down to {@code low}. */
 	private void hang(WorldGenLevel level,BoundingBox bb,int x,int z,int top,int low){
-		fill(level,bb,x,low+1,z,x,top,z,Blocks.IRON_CHAIN.defaultBlockState());
+		fill(level,bb,x,low+1,z,x,top,z,Blocks.CHAIN.defaultBlockState());
 		set(level,bb,Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING,true),x,low,z);
 	}
 
@@ -386,8 +386,8 @@ public final class BellChapelPiece extends DungeonPiece {
 		for(int x:new int[]{REST_X-4,REST_X+4})fill(level,bb,x,F+1,REST_Z,x,F+9,REST_Z,post);
 		fill(level,bb,REST_X-4,F+10,REST_Z,REST_X+1,F+10,REST_Z,beam);
 		set(level,bb,beam,REST_X+4,F+10,REST_Z);
-		fill(level,bb,REST_X-1,F+7,REST_Z,REST_X-1,F+9,REST_Z,Blocks.IRON_CHAIN.defaultBlockState());
-		set(level,bb,Blocks.IRON_CHAIN.defaultBlockState(),REST_X+1,F+9,REST_Z);
+		fill(level,bb,REST_X-1,F+7,REST_Z,REST_X-1,F+9,REST_Z,Blocks.CHAIN.defaultBlockState());
+		set(level,bb,Blocks.CHAIN.defaultBlockState(),REST_X+1,F+9,REST_Z);
 		// The rest of the beam, where it fell.
 		set(level,bb,Blocks.DARK_OAK_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS,Direction.Axis.Z),REST_X+3,F+1,REST_Z+2);
 		set(level,bb,Blocks.DARK_OAK_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS,Direction.Axis.Z),REST_X+3,F+1,REST_Z+3);

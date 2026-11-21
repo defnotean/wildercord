@@ -247,14 +247,14 @@ public final class OldBattlefieldPiece extends DungeonPiece {
 		for (int x:new int[]{1,7}) fill(level,bb,x,1,3,x,1,4,cross);
 		fill(level,bb,4,7,2,4,7,5,cross);
 		// The counterweight box hangs on chains below the axle; the arm's stub points up and its broken length lies in the grass.
-		fill(level,bb,3,6,3,3,6,4,Blocks.IRON_CHAIN.defaultBlockState());
+		fill(level,bb,3,6,3,3,6,4,Blocks.CHAIN.defaultBlockState());
 		fill(level,bb,2,4,3,3,5,4,Blocks.COBBLESTONE.defaultBlockState());
 		set(level,bb,Blocks.SPRUCE_PLANKS.defaultBlockState(),2,5,3);
 		set(level,bb,Blocks.SPRUCE_PLANKS.defaultBlockState(),3,5,4);
 		fill(level,bb,5,8,3,5,9,3,Blocks.STRIPPED_DARK_OAK_LOG.defaultBlockState());
 		set(level,bb,Blocks.STRIPPED_DARK_OAK_LOG.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.X),6,8,3);
 		fill(level,bb,6,1,3,8,1,3,Blocks.STRIPPED_DARK_OAK_LOG.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.X));
-		set(level,bb,Blocks.IRON_CHAIN.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.X),9,1,3);
+		set(level,bb,Blocks.CHAIN.defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS,Direction.Axis.X),9,1,3);
 		for (int[] r:new int[][]{{1,7,0},{2,7,0},{1,8,0},{2,8,0},{1,7,1},{3,8,0}})
 			set(level,bb,(noise(r[0],r[2],r[1])<50?Blocks.COBBLESTONE:Blocks.ANDESITE).defaultBlockState(),r[0],r[2],r[1]);
 	}

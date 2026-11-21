@@ -64,7 +64,7 @@ public final class WindGatePiece extends MasterSitePiece {
 		fill(level, bb, 0, 15, 6, 14, 15, 8, beam);
 		fill(level, bb, 3, 13, 7, 11, 13, 7, beam);
 		for (int x = 3; x <= 11; x += 2) { set(level, bb, cloth, x, 14, 6); set(level, bb, cloth, x, 14, 8); }
-		var rod = s(Blocks.WAXED_LIGHTNING_ROD);
+		var rod = s(Blocks.LIGHTNING_ROD);
 		set(level, bb, rod, 0, 16, 7); set(level, bb, rod, 14, 16, 7);
 		if (alt) { set(level, bb, rod, 4, 16, 6); set(level, bb, rod, 10, 16, 8); }
 		// A hipped roof raised over the beam on short posts, lanterns hung beneath, rods on its ridge.
