@@ -34,9 +34,10 @@ public final class OathholdTerrain {
 				int wx = c.wx(lx);
 				int wz = c.wz(lz);
 				int natWorldY = c.level().getHeight(Heightmap.Types.OCEAN_FLOOR_WG, wx, wz);
-				int surfWorldY = c.level().getHeight(Heightmap.Types.WORLD_SURFACE_WG, wx, wz);
+				int wgSurfY = c.level().getHeight(Heightmap.Types.WORLD_SURFACE_WG, wx, wz);
+				int liveSurfY = c.level().getHeight(Heightmap.Types.WORLD_SURFACE, wx, wz);
 				int natLocal = natWorldY - c.baseY();
-				int surfLocal = Math.max(natLocal, surfWorldY - c.baseY());
+				int surfLocal = Math.max(natLocal, Math.max(wgSurfY, liveSurfY) - c.baseY());
 
 				int ax = Math.abs(lx);
 				int az = Math.abs(lz);
@@ -104,8 +105,8 @@ public final class OathholdTerrain {
 		int h = OathholdCanvas.hash(lx, bedY, lz);
 		c.set(lx, bedY, lz, h < 45 ? OathholdCanvas.MOSSY_STONE_BRICKS : h < 75 ? GRAVEL : STONE);
 		for (int y = bedY + 1; y <= waterTopY; y++) c.set(lx, y, lz, OathholdCanvas.WATER);
-		int clearTop = Math.min(maxLocalY, Math.max(waterTopY + 18, surfLocal + 14));
-		for (int y = waterTopY + 1; y <= clearTop; y++) c.set(lx, y, lz, OathholdCanvas.AIR);
+		int clearTop = Math.min(maxLocalY, Math.max(waterTopY + 56, surfLocal + 24));
+		c.clearNonAirColumn(lx, waterTopY + 1, clearTop, lz);
 	}
 
 	private static void gradeSlopeColumn(OathholdCanvas c, int lx, int lz, int targetY, int surfLocal,
@@ -119,8 +120,8 @@ public final class OathholdTerrain {
 		} else {
 			c.set(lx, targetY, lz, GRASS);
 		}
-		int clearTop = Math.min(maxLocalY, Math.max(targetY + 14, surfLocal + 12));
-		for (int y = targetY + 1; y <= clearTop; y++) c.set(lx, y, lz, OathholdCanvas.AIR);
+		int clearTop = Math.min(maxLocalY, Math.max(targetY + 56, surfLocal + 24));
+		c.clearNonAirColumn(lx, targetY + 1, clearTop, lz);
 	}
 
 	private static void gradeDeckColumn(OathholdCanvas c, int lx, int lz, int deckY, int natLocal, int surfLocal,
@@ -130,8 +131,8 @@ public final class OathholdTerrain {
 			c.set(lx, y, lz, y >= deckY - 3 ? OathholdCanvas.COBBLESTONE : STONE);
 		}
 		c.set(lx, deckY, lz, cap);
-		int clearTop = Math.min(maxLocalY, Math.max(deckY + 34, surfLocal + 14));
-		for (int y = deckY + 1; y <= clearTop; y++) c.set(lx, y, lz, OathholdCanvas.AIR);
+		int clearTop = Math.min(maxLocalY, Math.max(deckY + 56, surfLocal + 24));
+		c.clearNonAirColumn(lx, deckY + 1, clearTop, lz);
 	}
 
 	private static BlockState acropolisCap(int lx, int lz) {

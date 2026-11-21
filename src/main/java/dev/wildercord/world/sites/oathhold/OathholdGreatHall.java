@@ -22,7 +22,7 @@ public final class OathholdGreatHall {
 	private static final int MIN_Z = -204, MAX_Z = -92;
 
 	public static void build(OathholdCanvas c) {
-		if (!c.intersects(MIN_X - 4, MIN_Z - 4, MAX_X + 4, MAX_Z + 6)) return;
+		if (!c.intersects(MIN_X - 4, MIN_Z - 4, MAX_X + 4, MAX_Z + 14)) return;
 
 		BlockState glassWhite = Blocks.STAINED_GLASS.white().defaultBlockState();
 		BlockState glassGold = Blocks.STAINED_GLASS.yellow().defaultBlockState();
@@ -38,7 +38,8 @@ public final class OathholdGreatHall {
 			for (int z = Math.max(MIN_Z + 1, c.clipMinLz()); z <= Math.min(MAX_Z - 1, c.clipMaxLz()); z++) {
 				int ax = Math.abs(x);
 				if (ax <= 2 && z >= -168) {
-					c.set(x, AY, z, OathholdCanvas.POLISHED_DEEPSLATE);
+					c.set(x, AY, z, (x == 0 && Math.floorMod(z, 4) == 0 && z <= -98)
+						? OathholdCanvas.OCHRE_LIGHT : OathholdCanvas.POLISHED_DEEPSLATE);
 					c.set(x, AY + 1, z, carpetRed);
 				} else if (ax == 3 && z >= -168) {
 					c.set(x, AY, z, OathholdCanvas.STONE_BRICKS);
@@ -53,11 +54,14 @@ public final class OathholdGreatHall {
 			}
 		}
 
-		// 2. Outer nave walls with warm brick arcading & towering clerestory lancets
+		// 2. Outer nave walls (full gable height to ceilingY) with warm brick arcading & towering clerestory lancets
 		c.fillWeatheredStone(-26, AY + 1, MIN_Z, -25, AY + 34, MAX_Z);
 		c.fillWeatheredStone(25, AY + 1, MIN_Z, 26, AY + 34, MAX_Z);
-		c.fillWeatheredStone(-26, AY + 1, MIN_Z, 26, AY + 36, MIN_Z + 1);
-		c.fillWeatheredStone(-26, AY + 1, MAX_Z - 1, 26, AY + 36, MAX_Z);
+		for (int x = -26; x <= 26; x++) {
+			int wallTop = AY + 42 - Math.abs(x) * 14 / 25;
+			c.fillWeatheredStone(x, AY + 1, MIN_Z, x, wallTop, MIN_Z + 1);
+			c.fillWeatheredStone(x, AY + 1, MAX_Z - 1, x, wallTop, MAX_Z);
+		}
 
 		// Brick arcade backing lining inside outer walls (matches concept_city_great_hall_interior brick + stone look)
 		c.fill(-25, AY + 1, MIN_Z + 2, -25, AY + 14, MAX_Z - 2, OathholdCanvas.BRICKS);
@@ -80,6 +84,7 @@ public final class OathholdGreatHall {
 				c.fill(px - 1, AY + 1, bz - 1, px + 1, AY + 2, bz + 1, OathholdCanvas.CHISELED_TUFF_BRICKS);
 				c.fill(px - 1, AY + 14, bz - 1, px + 1, AY + 15, bz + 1, OathholdCanvas.GOLD);
 				c.set(px + (px < 0 ? 1 : -1), AY + 12, bz, OathholdCanvas.HANGING_LANTERN);
+				c.set(px, AY + 17, bz, OathholdCanvas.LANTERN);
 			}
 			// Hanging Emerald-Gold Heraldic Banners on gallery outer pillars
 			c.wallBannerStrip(-24, AY + 12, bz, 6, Direction.EAST);
@@ -103,6 +108,14 @@ public final class OathholdGreatHall {
 			c.gothicArchX(-26, -24, AY + 18, bz, 3, 7, 4, OathholdCanvas.STONE_BRICKS, glassWhite);
 			c.gothicArchX(24, 26, AY + 18, bz, 3, 7, 4, OathholdCanvas.STONE_BRICKS, glassWhite);
 		}
+		for (int bz : new int[]{-122, -146, -170}) {
+			c.gothicArchX(-26, -24, AY + 3, bz, 3, 5, 3, OathholdCanvas.TUFF_BRICKS, glassWhite);
+			c.gothicArchX(24, 26, AY + 3, bz, 3, 5, 3, OathholdCanvas.TUFF_BRICKS, glassWhite);
+		}
+		for (int bz : new int[]{-114, -126, -138, -154, -166, -178}) {
+			c.set(-24, AY + 6, bz, OathholdCanvas.LANTERN);
+			c.set(24, AY + 6, bz, OathholdCanvas.LANTERN);
+		}
 		for (int gx : new int[]{-14, 14}) {
 			int lo = gx < 0 ? -24 : 13, hi = gx < 0 ? -13 : 24;
 			c.fill(lo, AY + 14, MIN_Z + 2, hi, AY + 14, MAX_Z - 2, OathholdCanvas.STONE_BRICKS);
@@ -119,16 +132,43 @@ public final class OathholdGreatHall {
 
 		// 4. Exterior Gilded Central Golden Dome & 4 Corner Golden Turrets (matches concept_city_aerial_overview!)
 		c.ribbedDome(0, AY + 42, -148, 16, 18, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
-		for (int[] tx : new int[][]{{-24, -114}, {24, -114}, {-24, -182}, {24, -182}}) {
-			c.bastionTower(tx[0], AY, tx[1], 5, 28, 0, OathholdCanvas.DEEPSLATE_TILES, false);
-			c.ribbedDome(tx[0], AY + 29, tx[1], 5, 7, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
+		for (int[] tx : new int[][]{{-26, -94}, {26, -94}, {-26, -202}, {26, -202}}) {
+			c.bastionTower(tx[0], AY, tx[1], 5, 34, 0, OathholdCanvas.DEEPSLATE_TILES, false);
+			c.ribbedDome(tx[0], AY + 35, tx[1], 5, 8, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
 		}
 
-		// 5. Giant North Solar Rose Window (19-block diameter) + South Grand Entrance Arch
-		c.roseWindowZ(0, AY + 28, MIN_Z + 1, 9, glassGold, glassOrange, OathholdCanvas.TUFF_BRICKS);
+		// 5. Open-Daylight North Solar Rose Window + South Grand Portico, Gilded Pediment & Windows
+		c.roseWindowZOpen(0, AY + 30, MIN_Z + 1, MIN_Z, 8, glassGold, glassOrange, OathholdCanvas.TUFF_BRICKS);
+		c.roseWindowZOpen(0, AY + 32, MAX_Z, MAX_Z - 1, 5, glassGold, glassOrange, OathholdCanvas.TUFF_BRICKS);
+		c.gothicArchZ(-18, AY + 8, MAX_Z - 1, MAX_Z, 2, 7, 4, OathholdCanvas.TUFF_BRICKS, glassGold);
+		c.gothicArchZ(18, AY + 8, MAX_Z - 1, MAX_Z, 2, 7, 4, OathholdCanvas.TUFF_BRICKS, glassGold);
 		c.gothicArchZ(0, AY + 1, MAX_Z - 4, MAX_Z + 2, 6, 10, 5, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
 		c.wallBannerStrip(-10, AY + 16, MAX_Z + 1, 8, Direction.SOUTH);
 		c.wallBannerStrip(10, AY + 16, MAX_Z + 1, 8, Direction.SOUTH);
+
+		// Monumental South Portico & Gilded Pediment (z = -91..-80)
+		c.fillWeatheredStone(-14, AY, -85, 14, AY, -80);
+		c.fill(-12, AY + 1, -85, 12, AY + 1, -84, OathholdCanvas.POLISHED_ANDESITE);
+		for (int px : new int[]{-12, -6, 6, 12}) {
+			c.fill(px, AY + 1, -87, px, AY + 3, -86, OathholdCanvas.TUFF_BRICKS);
+			c.fill(px, AY + 4, -87, px, AY + 18, -86, OathholdCanvas.CALCITE);
+			c.fill(px, AY + 19, -87, px, AY + 20, -86, OathholdCanvas.GOLD);
+		}
+		c.fill(-14, AY + 21, -91, 14, AY + 21, -89, OathholdCanvas.CALCITE);
+		c.fill(-15, AY + 21, -88, 15, AY + 21, -86, OathholdCanvas.GOLD);
+		for (int dy = 1; dy <= 8; dy++) {
+			int half = 14 - dy * 14 / 8;
+			if (half > 0) {
+				c.fill(-half + 1, AY + 21 + dy, -88, half - 1, AY + 21 + dy, -86, OathholdCanvas.CALCITE);
+			}
+			c.fill(-half, AY + 21 + dy, -88, -half, AY + 21 + dy, -86, OathholdCanvas.GOLD);
+			c.fill(half, AY + 21 + dy, -88, half, AY + 21 + dy, -86, OathholdCanvas.GOLD);
+		}
+		c.set(0, AY + 24, -86, OathholdCanvas.OCHRE_LIGHT);
+		c.set(-1, AY + 24, -86, OathholdCanvas.GOLD);
+		c.set(1, AY + 24, -86, OathholdCanvas.GOLD);
+		c.set(0, AY + 23, -86, OathholdCanvas.GOLD);
+		c.set(0, AY + 25, -86, OathholdCanvas.GOLD);
 
 		// 6. Six Suspended Iron-Chain & Dark-Oak Lantern Chandeliers
 		for (int cz : new int[]{-116, -142, -166}) {
@@ -180,7 +220,7 @@ public final class OathholdGreatHall {
 		c.set(0, daisY + 2, -191, woolRed);
 		c.set(-1, daisY + 2, -191, OathholdCanvas.GOLD);
 		c.set(1, daisY + 2, -191, OathholdCanvas.GOLD);
-		// Blazing Solar Sunburst on apse behind throne
+		// Blazing Solar Sunburst on apse behind throne & carved gilded pointed arch
 		int sunY = daisY + 9;
 		for (int dx = -4; dx <= 4; dx++) {
 			for (int dy = -4; dy <= 4; dy++) {
@@ -190,21 +230,28 @@ public final class OathholdGreatHall {
 				else if (dist <= 4.3 && (dx == 0 || dy == 0 || Math.abs(dx) == Math.abs(dy))) c.set(dx, sunY + dy, -196, OathholdCanvas.GOLD);
 			}
 		}
+		c.gothicArchZ(0, daisY + 1, -195, -195, 5, 8, 6, OathholdCanvas.GOLD, OathholdCanvas.AIR);
+		c.fill(-6, daisY + 1, -195, -6, daisY + 10, -195, OathholdCanvas.CHISELED_TUFF_BRICKS);
+		c.fill(6, daisY + 1, -195, 6, daisY + 10, -195, OathholdCanvas.CHISELED_TUFF_BRICKS);
 
 		c.chest(-8, daisY + 1, -191, Direction.EAST, OathholdSites.LOOT_TREASURY, 111L);
 		c.chest(8, daisY + 1, -191, Direction.WEST, OathholdSites.LOOT_TREASURY, 113L);
 		c.lecternBook(0, AY + 1, -110, Direction.SOUTH,
-			"The Sovereign Charter of Oathhold", "First Banner-Marshal",
+			"Sovereign Charter of Oathhold", "First Banner-Marshal",
 			List.of(
 				"Here stands Oathhold, Bulwark of the Realms, raised across two thousand paces of stone and oath.",
 				"May every traveler pass the South Gate under the Sovereign Sunburst and find honor in the Hall."
 			));
 
 		// 9. Ceremonial Oathbound High Knights lining the Sovereign Great Hall aisle!
-		c.spawnMob(-3, AY + 1, -124, AuraWorld.OATHBOUND_BASTION, -90.0F, true);
-		c.spawnMob(3, AY + 1, -124, AuraWorld.OATHBOUND_HALBERDIER, 90.0F, true);
-		c.spawnMob(-3, AY + 1, -148, AuraWorld.OATHBOUND_BLADE_CHAMPION, -90.0F, true);
-		c.spawnMob(3, AY + 1, -148, AuraWorld.OATHBOUND_BASTION, 90.0F, true);
+		c.spawnMob(-5, AY + 1, -118, AuraWorld.OATHBOUND_BASTION, -90.0F, true);
+		c.spawnMob(5, AY + 1, -118, AuraWorld.OATHBOUND_BASTION, 90.0F, true);
+		c.spawnMob(-5, AY + 1, -132, AuraWorld.OATHBOUND_HALBERDIER, -90.0F, true);
+		c.spawnMob(5, AY + 1, -132, AuraWorld.OATHBOUND_HALBERDIER, 90.0F, true);
+		c.spawnMob(-5, AY + 1, -146, AuraWorld.OATHBOUND_BLADE_CHAMPION, -90.0F, true);
+		c.spawnMob(5, AY + 1, -146, AuraWorld.OATHBOUND_BLADE_CHAMPION, 90.0F, true);
+		c.spawnMob(-5, AY + 1, -160, AuraWorld.OATHBOUND_BASTION, -90.0F, true);
+		c.spawnMob(5, AY + 1, -160, AuraWorld.OATHBOUND_BASTION, 90.0F, true);
 		c.spawnMob(0, daisY + 1, -183, AuraWorld.OATHBOUND_BANNER_MARSHAL, 0.0F, true);
 	}
 }

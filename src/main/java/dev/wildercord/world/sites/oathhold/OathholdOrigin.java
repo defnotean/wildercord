@@ -56,9 +56,8 @@ public final class OathholdOrigin {
 	public static final Set<ResourceKey<Biome>> CENTER_BIOMES = Set.of(
 		Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.MEADOW,
 		Biomes.FOREST, Biomes.FLOWER_FOREST, Biomes.BIRCH_FOREST,
-		Biomes.OLD_GROWTH_BIRCH_FOREST, Biomes.DARK_FOREST, Biomes.TAIGA,
-		Biomes.SAVANNA, Biomes.SAVANNA_PLATEAU, Biomes.CHERRY_GROVE,
-		Biomes.WINDSWEPT_HILLS, Biomes.WINDSWEPT_FOREST
+		Biomes.OLD_GROWTH_BIRCH_FOREST, Biomes.DARK_FOREST,
+		Biomes.SAVANNA, Biomes.SAVANNA_PLATEAU, Biomes.CHERRY_GROVE
 	);
 
 	/** World-space anchor at local {@code (0, 0, 0)}. */
@@ -108,19 +107,22 @@ public final class OathholdOrigin {
 		int sampleY = Math.max(sea, 64);
 
 		Holder<Biome> centerBiome = McWorldgen.getNoiseBiome(ctx, originX, sampleY, originZ);
-		if (centerBiome.unwrapKey().map(CENTER_BIOMES::contains).orElse(false)) {
-			// Preferred center biome matched directly; proceed to dry-land height probe.
-		} else {
-			int validBiomes = 0;
-			for (int[] off : new int[][]{{-128, 0}, {128, 0}, {0, -128}, {0, 128}}) {
-				Holder<Biome> b = McWorldgen.getNoiseBiome(ctx, originX + off[0], sampleY, originZ + off[1]);
-				if (b.unwrapKey().map(CENTER_BIOMES::contains).orElse(false)) {
-					validBiomes++;
-				}
-			}
-			if (validBiomes < 2) {
+		if (centerBiome.value().getBaseTemperature() < 0.35F) {
+			return Optional.empty();
+		}
+		boolean centerValid = centerBiome.unwrapKey().map(CENTER_BIOMES::contains).orElse(false);
+		int validBiomes = 0;
+		for (int[] off : new int[][]{{-192, 0}, {192, 0}, {0, -192}, {0, 192}}) {
+			Holder<Biome> b = McWorldgen.getNoiseBiome(ctx, originX + off[0], sampleY, originZ + off[1]);
+			if (b.value().getBaseTemperature() < 0.35F) {
 				return Optional.empty();
 			}
+			if (b.unwrapKey().map(CENTER_BIOMES::contains).orElse(false)) {
+				validBiomes++;
+			}
+		}
+		if (!centerValid && validBiomes < 2) {
+			return Optional.empty();
 		}
 
 		int[] samples = new int[5];

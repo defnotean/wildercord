@@ -101,7 +101,7 @@ public final class OathholdAcropolisHalls {
 	}
 
 	private static void buildArcanumLibrary(OathholdCanvas c) {
-		if (!c.intersects(40, -180, 120, -56)) return;
+		if (!c.intersects(40, -180, 120, -44)) return;
 
 		int cx = 80, cz = -124;
 		// White Calcite & Stone-Brick Collegiate Hall: lx [52..108], lz [-164..-84]
@@ -142,18 +142,21 @@ public final class OathholdAcropolisHalls {
 		}
 
 		// South Facade Rose/Lancet Multi-Colored Stained Glass & Terraced Cherry Blossom Garden Stairs
-		c.roseWindowZ(cx, AY + 15, -84, 5, Blocks.STAINED_GLASS.cyan().defaultBlockState(), Blocks.STAINED_GLASS.yellow().defaultBlockState(), OathholdCanvas.STONE_BRICKS);
+		c.roseWindowZOpen(cx, AY + 15, -84, -85, 5, Blocks.STAINED_GLASS.cyan().defaultBlockState(), Blocks.STAINED_GLASS.yellow().defaultBlockState(), OathholdCanvas.STONE_BRICKS);
 		c.gothicArchZ(cx, AY + 1, -85, -83, 4, 6, 4, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
-		for (int step = 0; step <= 6; step++) {
-			int sz = -82 + step * 2;
-			int sy = AY + 1 - Math.max(0, step - 4);
-			c.fill(cx - 8, AY, sz, cx + 8, sy, sz + 1, OathholdCanvas.STONE_BRICKS);
+
+		// Cherry Blossom Garden Terrace & Outdoor Bookshelf Terraces (z = -83..-48, x = 56..104)
+		c.fill(74, AY, -83, 86, AY, -52, OathholdCanvas.POLISHED_ANDESITE);
+		c.fill(56, AY, -79, 72, AY, -51, Blocks.GRASS_BLOCK.defaultBlockState());
+		c.fill(88, AY, -79, 104, AY, -51, Blocks.GRASS_BLOCK.defaultBlockState());
+		for (int[] ct : new int[][]{{64, -74}, {96, -74}, {64, -56}, {96, -56}, {56, -65}, {104, -65}}) {
+			c.tree(ct[0], AY, ct[1], true);
 		}
-		// Blossoming Pink Cherry Trees & Outdoor Bookshelf Terraces (concept_city_districts_courtyard right!)
-		c.tree(cx - 14, AY, -76, true);
-		c.tree(cx + 14, AY, -76, true);
-		c.fill(cx - 22, AY + 1, -78, cx - 18, AY + 3, -78, Blocks.BOOKSHELF.defaultBlockState());
-		c.fill(cx + 18, AY + 1, -78, cx + 22, AY + 3, -78, Blocks.BOOKSHELF.defaultBlockState());
+		c.fill(66, AY + 1, -78, 71, AY + 3, -78, Blocks.BOOKSHELF.defaultBlockState());
+		c.fill(89, AY + 1, -78, 94, AY + 3, -78, Blocks.BOOKSHELF.defaultBlockState());
+		for (int[] lamp : new int[][]{{73, -72}, {87, -72}, {73, -54}, {87, -54}}) {
+			c.streetLamp(lamp[0], AY + 1, lamp[1]);
+		}
 	}
 
 	private static void buildCathedralSpire(OathholdCanvas c) {
@@ -174,7 +177,7 @@ public final class OathholdAcropolisHalls {
 		// Steep Gothic Roof + Twin West Facade Spires
 		c.pitchedRoofZ(132, AY + 29, -192, 168, -88, Blocks.STONE_BRICK_STAIRS, Blocks.STONE_BRICK_SLAB, OathholdCanvas.STONE_BRICKS, OathholdCanvas.TUFF_BRICKS);
 		c.gothicArchZ(cx, AY + 1, -90, -87, 5, 9, 5, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
-		c.roseWindowZ(cx, AY + 20, -88, 6, glassGold, glassBlue, OathholdCanvas.TUFF_BRICKS);
+		c.roseWindowZOpen(cx, AY + 20, -88, -89, 6, glassGold, glassBlue, OathholdCanvas.TUFF_BRICKS);
 
 		c.bastionTower(134, AY, -90, 4, 34, 16, OathholdCanvas.STONE_BRICKS, false);
 		c.bastionTower(166, AY, -90, 4, 34, 16, OathholdCanvas.STONE_BRICKS, false);

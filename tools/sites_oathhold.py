@@ -9,12 +9,9 @@ CENTER_BIOMES = [
     "minecraft:birch_forest",
     "minecraft:old_growth_birch_forest",
     "minecraft:dark_forest",
-    "minecraft:taiga",
     "minecraft:savanna",
     "minecraft:savanna_plateau",
     "minecraft:cherry_grove",
-    "minecraft:windswept_hills",
-    "minecraft:windswept_forest",
 ]
 
 LANG = {
@@ -72,7 +69,7 @@ def write(gen):
         "site": "oathhold",
         "biomes": "#wildercord:has_structure/oathhold",
         "spawn_overrides": {},
-        "step": "top_layer_modification",
+        "step": "surface_structures",
         "terrain_adaptation": "none",
     })
     gen.write_json(gen.DATA / "worldgen/structure_set/oathhold.json", {
@@ -95,7 +92,7 @@ def write(gen):
         "site": "oathhold_sector",
         "biomes": "#wildercord:has_structure/oathhold_sector",
         "spawn_overrides": {},
-        "step": "top_layer_modification",
+        "step": "surface_structures",
         "terrain_adaptation": "none",
     })
     gen.write_json(gen.DATA / "worldgen/structure_set/oathhold_sector.json", {

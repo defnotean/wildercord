@@ -325,7 +325,7 @@ public final class OathholdFortifications {
 		c.fillWeatheredStone(minX, 5, wz - 3, maxX, 20, wz + 3);
 		c.fill(minX, 17, wz - 3, maxX, 17, wz + 3, OathholdCanvas.POLISHED_ANDESITE);
 		for (int x = Math.max(minX, c.clipMinLx()); x <= Math.min(maxX, c.clipMaxLx()); x++) {
-			if (Math.abs(x) <= 8) continue;
+			if (Math.abs(x) <= 8 || Math.abs(x - 80) <= 7) continue;
 			// Arched wall ribs every 8 blocks
 			if (Math.floorMod(x, 8) == 0) {
 				c.fill(x, 1, wz + 4, x, 17, wz + 4, OathholdCanvas.TUFF_BRICKS);
@@ -361,6 +361,22 @@ public final class OathholdFortifications {
 			if (step % 4 == 0) {
 				c.set(-8, sy + 1, sz, OathholdCanvas.LANTERN);
 				c.set(8, sy + 1, sz, OathholdCanvas.LANTERN);
+			}
+		}
+
+		// East Arcanum Arch & Grand Staircase connecting Lower City up to Cherry Blossom Terrace
+		c.gothicArchZ(80, 1, wz - 4, wz + 4, 7, 12, 5, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
+		for (int step = 0; step <= 15; step++) {
+			int sz = -37 - step;
+			int sy = step + 1;
+			c.fill(73, 1, sz, 87, sy - 1, sz, OathholdCanvas.STONE_BRICKS);
+			c.fill(74, sy, sz, 86, sy, sz, OathholdCanvas.stair(Blocks.STONE_BRICK_STAIRS, Direction.NORTH, false));
+			c.clear(74, sy + 1, sz, 86, 26, sz);
+			c.set(73, sy, sz, OathholdCanvas.TUFF_BRICKS);
+			c.set(87, sy, sz, OathholdCanvas.TUFF_BRICKS);
+			if (step % 4 == 0) {
+				c.set(73, sy + 1, sz, OathholdCanvas.LANTERN);
+				c.set(87, sy + 1, sz, OathholdCanvas.LANTERN);
 			}
 		}
 		// Side East & West Acropolis retainer walls rising to y=20 around perimeter

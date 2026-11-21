@@ -187,6 +187,29 @@ public final class OathholdCanvas {
 		fill(x0, y0, z0, x1, y1, z1, AIR);
 	}
 
+	/** Clears only non-air blocks in a vertical column inside the clip box using a mutable BlockPos. */
+	public void clearNonAirColumn(int lx, int y0, int y1, int lz) {
+		int wx = originX + lx;
+		int wz = originZ + lz;
+		if (wx < clip.minX() || wx > clip.maxX() || wz < clip.minZ() || wz > clip.maxZ()) {
+			return;
+		}
+		int wy0 = Math.max(clip.minY(), baseY + Math.min(y0, y1));
+		int wy1 = Math.min(clip.maxY(), baseY + Math.max(y0, y1));
+		if (wy0 > wy1) return;
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(wx, wy0, wz);
+		for (int wy = wy0; wy <= wy1; wy++) {
+			pos.setY(wy);
+			BlockState cur = level.getBlockState(pos);
+			if (!cur.isAir()) {
+				if (cur.hasBlockEntity()) {
+					level.getChunk(pos).removeBlockEntity(pos);
+				}
+				level.setBlock(pos, AIR, 2);
+			}
+		}
+	}
+
 	/** Rich weathered castle masonry blending stone bricks, tuff bricks, cracked stone, andesites, and moss. */
 	public void fillWeatheredStone(int x0, int y0, int z0, int x1, int y1, int z1) {
 		int cx0 = Math.max(Math.min(x0, x1), minLx), cx1 = Math.min(Math.max(x0, x1), maxLx);
@@ -291,6 +314,21 @@ public final class OathholdCanvas {
 				}
 			}
 		}
+	}
+
+	/** Circular gothic stained-glass rose window with an open daylight backing plane at {@code clearZ}. */
+	public void roseWindowZOpen(int cx, int cy, int glassZ, int clearZ, int radius,
+			BlockState glassA, BlockState glassB, BlockState frame) {
+		int minZ = Math.min(glassZ, clearZ), maxZ = Math.max(glassZ, clearZ);
+		if (!intersects(cx - radius - 1, minZ, cx + radius + 1, maxZ)) return;
+		for (int dx = -radius; dx <= radius; dx++) {
+			for (int dy = -radius; dy <= radius; dy++) {
+				if (Math.sqrt(dx * dx + dy * dy) < radius - 0.3) {
+					set(cx + dx, cy + dy, clearZ, AIR);
+				}
+			}
+		}
+		roseWindowZ(cx, cy, glassZ, radius, glassA, glassB, frame);
 	}
 
 	/** Steep pitched gable roof whose ridge runs along Z over {@code [x0..x1] x [z0..z1]}. */
@@ -555,7 +593,8 @@ public final class OathholdCanvas {
 	public void tree(int lx, int y, int lz, boolean cherry) {
 		if (!intersects(lx - 3, lz - 3, lx + 3, lz + 3)) return;
 		BlockState log = cherry ? Blocks.CHERRY_LOG.defaultBlockState() : Blocks.OAK_LOG.defaultBlockState();
-		BlockState leaves = cherry ? Blocks.CHERRY_LEAVES.defaultBlockState() : Blocks.OAK_LEAVES.defaultBlockState();
+		BlockState leaves = (cherry ? Blocks.CHERRY_LEAVES : Blocks.OAK_LEAVES)
+			.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true);
 		for (int dy = 1; dy <= 4; dy++) set(lx, y + dy, lz, log);
 		for (int dx = -2; dx <= 2; dx++) {
 			for (int dz = -2; dz <= 2; dz++) {

@@ -3,6 +3,6 @@
   "site": "oathhold_sector",
   "biomes": "#wildercord:has_structure/oathhold_sector",
   "spawn_overrides": {},
-  "step": "top_layer_modification",
+  "step": "surface_structures",
   "terrain_adaptation": "none"
 }
