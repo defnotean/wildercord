@@ -85,5 +85,8 @@ public final class SiteFamilies {
 		// ---- sites-emberwood pack
 		worldgen("wildercord:emberwood_charcoal_yard", "New Emberwood Reach charcoal yard and Kiln Keeper resident; generates only in new chunks.");
 		worldgen("wildercord:emberwood_kiln_court", "Optional Emberwood Kiln Court encounter; generates only in new chunks.");
+		// ---- sites-oathhold megacity pack
+		worldgen("wildercord:oathhold", "2,048x2,048 Sovereign Citadel Megacity anchor; generates only in newly explored chunks.");
+		worldgen("wildercord:oathhold_sector", "128x128 urban sector tile of Oathhold Megacity; generates only in newly explored chunks.");
 	}
 }

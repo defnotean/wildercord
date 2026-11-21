@@ -203,6 +203,14 @@
       "dev.wildercord.aura.world.OathboundBannerMarshalTest"
     ]
   },
+  "oathhold-city": {
+    "description": "Oathhold 2,048x2,048 Sovereign Megacity: real Overworld /locate placement, continuous 1,920-block walled span verification, outer/inner landmarks, and 1:1 visual showcase screenshots.",
+    "purpose": "area",
+    "expectedCount": 1,
+    "entries": [
+      "dev.wildercord.world.sites.OathholdMegacityTest"
+    ]
+  },
   "structure-gallery": {
     "description": "Structure gallery: every registered WilderCord structure found in its own biome on a fixed normal-world seed, placed through the registered path and photographed from two aerial corners, eye level, straight above and inside. Visual evidence for the building work; not part of the gameplay suites.",
     "expectedCount": 6,

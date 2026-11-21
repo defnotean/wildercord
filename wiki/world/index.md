@@ -169,6 +169,7 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 - [Expeditions and Relics]({{ '/world/expeditions/' | relative_url }})
 
 **Sites to explore**
+- [Oathhold, Sovereign Citadel City]({{ '/world/oathhold/' | relative_url }})
 - [Farmstead Sites]({{ '/world/farm-sites/' | relative_url }})
 - [Master halls and shrines]({{ '/world/masters-sites/' | relative_url }})
 - [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }})
