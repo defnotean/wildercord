@@ -2,7 +2,6 @@ package dev.wildercord.world.sites.oathhold;
 
 import dev.wildercord.aura.world.AuraWorld;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -150,7 +149,6 @@ public final class OathholdOuterWards {
 		c.wallBannerStrip(-11, 16, cz - 4, 7, Direction.NORTH);
 		c.wallBannerStrip(11, 16, cz - 4, 7, Direction.NORTH);
 		c.spawnMob(-4, 1, cz, AuraWorld.OATHBOUND_HALBERDIER, cz > 0 ? 0.0F : 180.0F, true);
-		c.spawnMob(8, 2, cz + 5, EntityTypes.VILLAGER, 0.0F, true);
 	}
 
 	private static void buildTriumphalArchX(OathholdCanvas c, int cx) {
@@ -163,7 +161,6 @@ public final class OathholdOuterWards {
 		c.wallBannerStrip(cx - 4, 16, -11, 7, Direction.WEST);
 		c.wallBannerStrip(cx - 4, 16, 11, 7, Direction.WEST);
 		c.spawnMob(cx, 1, 4, AuraWorld.OATHBOUND_BASTION, cx > 0 ? 90.0F : -90.0F, true);
-		c.spawnMob(cx + 5, 2, -8, EntityTypes.VILLAGER, 90.0F, true);
 	}
 
 	private static void buildRingCanalPromenade(OathholdCanvas c) {
@@ -296,7 +293,7 @@ public final class OathholdOuterWards {
 		}
 	}
 
-	private static boolean overlapsMajorFeature(int x0, int z0, int x1, int z1) {
+	public static boolean overlapsMajorFeature(int x0, int z0, int x1, int z1) {
 		int maxC = Math.max(Math.max(Math.abs(x0), Math.abs(x1)), Math.max(Math.abs(z0), Math.abs(z1)));
 		int minXAbs = (x0 <= 0 && x1 >= 0) ? 0 : Math.min(Math.abs(x0), Math.abs(x1));
 		int minZAbs = (z0 <= 0 && z1 >= 0) ? 0 : Math.min(Math.abs(z0), Math.abs(z1));
@@ -410,14 +407,12 @@ public final class OathholdOuterWards {
 				OathholdStreetscape.marketStall(c, x1 - 8, 2, z0 + 8, Blocks.WOOL.blue().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), h + 1);
 				OathholdStreetscape.marketStall(c, x0 + 8, 2, z1 - 8, Blocks.WOOL.orange().defaultBlockState(), Blocks.WOOL.yellow().defaultBlockState(), h + 2);
 				OathholdStreetscape.marketStall(c, x1 - 8, 2, z1 - 8, Blocks.WOOL.lime().defaultBlockState(), Blocks.WOOL.white().defaultBlockState(), h + 3);
-				c.spawnMob(cx, 2, cz + 4, EntityTypes.VILLAGER, 0.0F, true);
 			}
 			case MARITIME_SE -> {
 				c.fill(x0 + 4, 2, z0 + 4, x0 + 9, 3, z0 + 6, OathholdCanvas.SPRUCE_LOG);
 				OathholdStreetscape.cargoCluster(c, x1 - 6, 2, z0 + 6, h);
 				OathholdStreetscape.patioTable(c, cx - 4, 2, cz + 5, Blocks.CARPET.cyan().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
 				OathholdStreetscape.patioTable(c, cx + 4, 2, cz + 5, Blocks.CARPET.green().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
-				c.spawnMob(cx, 2, cz, EntityTypes.VILLAGER, 0.0F, true);
 			}
 			default -> {}
 		}

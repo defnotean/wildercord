@@ -615,10 +615,74 @@ public final class OathholdCanvas {
 		}
 	}
 
-	/** Spawns one structure-resident entity inside the chunk if its block falls in {@code clip}. */
+	/** Places an unbreakable Oathhold Adventurers' Guild Request Board at local {@code (lx, ly, lz)}. */
+	public void guildBoard(int lx, int ly, int lz, Direction facing) {
+		if (!inClip(lx, ly, lz)) return;
+		set(lx, ly, lz, OathholdContent.GUILD_REQUEST_BOARD.defaultBlockState().setValue(GuildRequestBoardBlock.FACING, facing));
+	}
+
+	/**
+	 * Finds a safe, non-fluid 2-block-high air standing spot near {@code (lx, ly, lz)} inside {@code clip}
+	 * so spawned guards and citizens never suffocate inside walls, counters, or canals.
+	 */
+	public BlockPos findSafeStandPos(int lx, int ly, int lz) {
+		if (isSafeStandColumn(lx, ly, lz)) {
+			return new BlockPos(wx(lx), wy(ly), wz(lz));
+		}
+		int[] dyOrder = {0, 1, -1, 2, -2};
+		for (int r = 1; r <= 2; r++) {
+			for (int dy : dyOrder) {
+				for (int dx = -r; dx <= r; dx++) {
+					for (int dz = -r; dz <= r; dz++) {
+						if (Math.max(Math.abs(dx), Math.abs(dz)) != r) continue;
+						int cx = lx + dx, cy = ly + dy, cz = lz + dz;
+						if (isSafeStandColumn(cx, cy, cz)) {
+							return new BlockPos(wx(cx), wy(cy), wz(cz));
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private boolean isSafeStandColumn(int lx, int ly, int lz) {
+		if (!inClip(lx, ly, lz) || !inClip(lx, ly - 1, lz) || !inClip(lx, ly + 1, lz)) return false;
+		BlockPos feet = new BlockPos(wx(lx), wy(ly), wz(lz));
+		BlockPos head = feet.above();
+		BlockPos floor = feet.below();
+		BlockState feetState = level.getBlockState(feet);
+		BlockState headState = level.getBlockState(head);
+		BlockState floorState = level.getBlockState(floor);
+		return (feetState.isAir() || feetState.canBeReplaced())
+			&& (headState.isAir() || headState.canBeReplaced())
+			&& !floorState.isAir()
+			&& level.getFluidState(feet).isEmpty()
+			&& level.getFluidState(floor).isEmpty();
+	}
+
+	/** Spawns one named {@link OathholdCitizen} inside the clip if safe standing clearance exists. */
+	public OathholdCitizen spawnCitizen(int lx, int ly, int lz, OathholdCitizenRules.Archetype archetype,
+			int tetherRadius, float yaw) {
+		if (!inClip(lx, ly, lz)) return null;
+		BlockPos pos = findSafeStandPos(lx, ly, lz);
+		if (pos == null) return null;
+		OathholdCitizen citizen = OathholdContent.CITIZEN.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		if (citizen == null) return null;
+		citizen.configure(archetype, lx, ly, lz, pos, tetherRadius);
+		citizen.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0.0F);
+		citizen.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+		level.addFreshEntityWithPassengers(citizen);
+		return citizen;
+	}
+
+	/** Spawns one structure-resident entity inside the chunk if its block falls in {@code clip} and has clearance. */
 	public <T extends Mob> T spawnMob(int lx, int ly, int lz, EntityType<T> type, float yaw, boolean persistent) {
 		if (!inClip(lx, ly, lz)) return null;
-		BlockPos pos = new BlockPos(wx(lx), wy(ly), wz(lz));
+		BlockPos pos = findSafeStandPos(lx, ly, lz);
+		if (pos == null) {
+			pos = new BlockPos(wx(lx), wy(ly), wz(lz));
+		}
 		T mob = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 		if (mob == null) return null;
 		if (persistent) mob.setPersistenceRequired();

@@ -8,6 +8,7 @@ import dev.wildercord.compat.McEntities;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.monster.MonsterMagic;
+import dev.wildercord.world.sites.oathhold.OathholdLaw;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,8 +40,6 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -140,8 +139,8 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 
 		targetSelector.addGoal(1, new HurtByTargetGoal(this));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		targetSelector.addGoal(2, new OathholdLaw.LawEnforcementTargetGoal(this));
+		targetSelector.addGoal(3, new OathholdLaw.CityMonsterDefenseGoal(this));
 	}
 
 	public int move() {

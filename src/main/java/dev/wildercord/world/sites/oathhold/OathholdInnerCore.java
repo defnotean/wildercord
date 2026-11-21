@@ -5,7 +5,6 @@ import dev.wildercord.town.BountyBoardBlock;
 import dev.wildercord.town.Town;
 import dev.wildercord.town.WayfarerKeeper;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -93,8 +92,6 @@ public final class OathholdInnerCore {
 		OathholdStreetscape.merchantWagon(c, -6, 1, 200, true, 3);
 		OathholdStreetscape.merchantWagon(c, 6, 1, 156, true, 4);
 
-		c.spawnMob(-4, 1, 196, EntityTypes.VILLAGER, 0.0F, true);
-		c.spawnMob(4, 1, 164, EntityTypes.VILLAGER, 180.0F, true);
 		c.spawnMob(-7, 1, 160, AuraWorld.OATHBOUND_HALBERDIER, 45.0F, true);
 		c.spawnMob(7, 1, 194, AuraWorld.OATHBOUND_BLADE_CHAMPION, -135.0F, true);
 	}
@@ -142,8 +139,6 @@ public final class OathholdInnerCore {
 			OathholdStreetscape.parkBench(c, -13, 1, tz - 2, Direction.EAST);
 			OathholdStreetscape.parkBench(c, 13, 1, tz - 2, Direction.WEST);
 		}
-		c.spawnMob(-14, 1, 70, EntityTypes.VILLAGER, 90.0F, true);
-		c.spawnMob(14, 1, 100, EntityTypes.VILLAGER, -90.0F, true);
 	}
 
 	/** Arched stone footbridge over the Central Canal centered at local Z = {@code bz}. */
@@ -242,7 +237,6 @@ public final class OathholdInnerCore {
 			c.set(mx - 1, 1, 69, Blocks.BARREL.defaultBlockState());
 			c.chest(mx + 1, 2, 66, Direction.SOUTH, OathholdSites.LOOT_MARKET, mx * 7L);
 			c.set(mx, 8, 66, OathholdCanvas.HANGING_LANTERN);
-			c.spawnMob(mx, 1, 60, EntityTypes.VILLAGER, 0.0F, true);
 		}
 	}
 
@@ -275,9 +269,6 @@ public final class OathholdInnerCore {
 				c.set(sx + 2, 2, sz - 1, Blocks.BARREL.defaultBlockState());
 				c.set(sx - 1, 2, sz - 1, (idx & 1) == 0 ? Blocks.LOOM.defaultBlockState() : Blocks.CRAFTING_TABLE.defaultBlockState());
 				c.set(sx - 2, 3, sz + 1, OathholdCanvas.HANGING_LANTERN);
-				if ((idx & 1) == 0) {
-					c.spawnMob(sx, 1, sz + 1, EntityTypes.VILLAGER, 180.0F, true);
-				}
 			}
 		}
 		// Bazaar wagons, crate clusters, outdoor cafe tables & perimeter streetlamps
@@ -316,7 +307,6 @@ public final class OathholdInnerCore {
 		c.fill(-167, 1, 79, -161, 1, 81, Blocks.LAVA.defaultBlockState());
 		c.set(-152, 1, 84, Blocks.GRINDSTONE.defaultBlockState());
 		c.chest(-144, 1, 60, Direction.WEST, OathholdSites.LOOT_ARMORY, 311L);
-		c.spawnMob(-160, 1, 72, EntityTypes.VILLAGER, -90.0F, true);
 
 		// Open-Air Blacksmiths' Yard (z = 36..52): quenching basin, anvils, ore piles, wagon & armorer
 		c.fill(-176, 1, 38, -170, 1, 42, OathholdCanvas.TUFF_BRICKS);
@@ -330,7 +320,6 @@ public final class OathholdInnerCore {
 		OathholdStreetscape.merchantWagon(c, -132, 1, 46, true, 31);
 		OathholdStreetscape.ornateStreetLamp(c, -132, 1, 56, false);
 		OathholdStreetscape.ornateStreetLamp(c, -132, 1, 88, false);
-		c.spawnMob(-152, 1, 40, EntityTypes.VILLAGER, 0.0F, true);
 	}
 
 	private static void buildCopperGuildhall(OathholdCanvas c) {
@@ -400,8 +389,6 @@ public final class OathholdInnerCore {
 		c.bastionTower(x1 - 4, 0, z0 + 4, 4, 24, 12, OathholdCanvas.COPPER_WEATHERED, false);
 		c.chest(148, 1, 76, Direction.NORTH, OathholdSites.LOOT_TREASURY, 321L);
 		c.chandelier(136, 17, 4, 63);
-		c.spawnMob(138, 1, 63, EntityTypes.VILLAGER, -90.0F, true);
-		c.spawnMob(130, 11, 49, EntityTypes.VILLAGER, 0.0F, true);
 	}
 
 	private static void buildGrandInn(OathholdCanvas c) {
@@ -441,7 +428,6 @@ public final class OathholdInnerCore {
 		c.set(54, 1, 132, Town.BOUNTY_BOARD.defaultBlockState().setValue(BountyBoardBlock.FACING, Direction.SOUTH));
 		WayfarerKeeper cook = c.spawnMob(50, 1, 118, Town.KEEPER, 0.0F, true);
 		if (cook != null) cook.setRole(WayfarerKeeper.Role.COOK);
-		c.spawnMob(52, 1, 141, EntityTypes.VILLAGER, 0.0F, true);
 	}
 
 	private static void buildLowerCityTownhouses(OathholdCanvas c) {
@@ -479,7 +465,7 @@ public final class OathholdInnerCore {
 		}
 	}
 
-	private static boolean overlapsInnerLandmark(int x0, int z0, int x1, int z1) {
+	public static boolean overlapsInnerLandmark(int x0, int z0, int x1, int z1) {
 		if (x0 <= 26 && x1 >= -26 && z1 >= -44) return true;
 		if (z1 <= -36) return true;
 		if (x1 >= -124 && x0 <= -36 && z1 >= 42 && z0 <= 152) return true;

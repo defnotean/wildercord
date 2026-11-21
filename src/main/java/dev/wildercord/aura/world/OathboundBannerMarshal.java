@@ -37,8 +37,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import dev.wildercord.world.sites.oathhold.OathholdLaw;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -128,8 +127,8 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 		goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 12.0F));
 		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 		targetSelector.addGoal(1, new HurtByTargetGoal(this));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+		targetSelector.addGoal(2, new OathholdLaw.LawEnforcementTargetGoal(this));
+		targetSelector.addGoal(3, new OathholdLaw.CityMonsterDefenseGoal(this));
 	}
 
 	public int move() {

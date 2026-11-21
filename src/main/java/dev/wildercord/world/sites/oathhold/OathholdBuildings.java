@@ -1,7 +1,6 @@
 package dev.wildercord.world.sites.oathhold;
 
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -233,9 +232,7 @@ public final class OathholdBuildings {
 			c.set(x1, roofY + 2, mz, Blocks.GLASS_PANE.defaultBlockState());
 		}
 
-		if (spawnResident) {
-			c.spawnMob(mx + 1, baseY + 1, z1 - 4, EntityTypes.VILLAGER, 0.0F, true);
-		}
+		// Structure residents are placed after terrain & interiors by OathholdPopulation.
 	}
 
 	private static BlockState[] pickAwning(Theme theme, int seed) {

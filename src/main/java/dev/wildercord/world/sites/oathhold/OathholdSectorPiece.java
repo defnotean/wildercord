@@ -48,6 +48,7 @@ public final class OathholdSectorPiece extends StructurePiece {
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos pivot) {
 		OathholdCanvas canvas = new OathholdCanvas(level, bb, originX, baseY, originZ, random);
+		OathholdLaw.rememberCity(level, originX, baseY, originZ);
 		OathholdTerrain.prepareChunk(canvas);
 		OathholdFortifications.build(canvas);
 		OathholdInnerCore.build(canvas);
@@ -55,5 +56,6 @@ public final class OathholdSectorPiece extends StructurePiece {
 		OathholdAcropolisHalls.build(canvas);
 		OathholdOuterLandmarks.build(canvas);
 		OathholdOuterWards.build(canvas);
+		OathholdPopulation.build(canvas);
 	}
 }

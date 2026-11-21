@@ -2,7 +2,6 @@ package dev.wildercord.world.sites.oathhold;
 
 import dev.wildercord.aura.world.AuraWorld;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -208,8 +207,6 @@ public final class OathholdAcropolisHalls {
 				"Look up at dusk to read the Starlit constellations painted across the weathered vault ribs."
 			));
 		c.chandelier(cx, AY + 24, 5, cz);
-		c.spawnMob(cx - 4, AY + 1, cz + 6, EntityTypes.VILLAGER, 0.0F, true);
-		c.spawnMob(cx + 4, AY + 1, cz - 6, EntityTypes.VILLAGER, 180.0F, true);
 
 		c.pitchedRoofZ(52, AY + 23, -164, 108, -84, Blocks.DARK_OAK_STAIRS, Blocks.DARK_OAK_SLAB, OathholdCanvas.CALCITE, OathholdCanvas.TUFF_BRICKS);
 		c.fill(cx - 16, AY + 24, cz - 16, cx + 16, AY + 30, cz + 16, OathholdCanvas.STONE_BRICKS);
@@ -323,7 +320,5 @@ public final class OathholdAcropolisHalls {
 		c.chandelier(cx, AY + 26, 7, -110);
 		c.chandelier(cx, AY + 26, 7, -140);
 		c.chandelier(cx, AY + 26, 7, -170);
-		c.spawnMob(cx - 4, AY + 1, -175, EntityTypes.VILLAGER, 0.0F, true);
-		c.spawnMob(cx + 4, AY + 1, -112, EntityTypes.VILLAGER, 180.0F, true);
 	}
 }

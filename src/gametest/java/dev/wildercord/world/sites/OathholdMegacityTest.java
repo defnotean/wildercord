@@ -2,8 +2,11 @@ package dev.wildercord.world.sites;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.compat.McWorldgen;
+import dev.wildercord.world.sites.oathhold.OathholdCitizen;
+import dev.wildercord.world.sites.oathhold.OathholdContent;
 import dev.wildercord.world.sites.oathhold.OathholdOrigin;
 import dev.wildercord.world.sites.oathhold.OathholdSites;
+import net.minecraft.world.phys.AABB;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -204,6 +207,17 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 						l.getChunk(wx >> 4, wz >> 4);
 					}
 				}
+
+				// Living-City Guild Request Boards & persistent named OathholdCitizens placed by worldgen
+				var guildBoard = blockAt(l, ox + 136, by + 1, oz + 50);
+				check(guildBoard.is(OathholdContent.GUILD_REQUEST_BOARD), "Adventurers' Guild HQ Request Board missing at (ox+136, by+1, oz+50): " + guildBoard);
+				var plazaBoard = blockAt(l, ox - 12, by + 2, oz + 166);
+				check(plazaBoard.is(OathholdContent.GUILD_REQUEST_BOARD), "Fountain Plaza Guild Request Board missing at (ox-12, by+2, oz+166): " + plazaBoard);
+				List<OathholdCitizen> innerCitizens = l.getEntitiesOfClass(
+					OathholdCitizen.class,
+					new AABB(ox - 220, by - 8, oz - 230, ox + 220, by + 64, oz + 280)
+				);
+				check(innerCitizens.size() >= 50, "Expected >= 50 live OathholdCitizens in Inner Citadel worldgen, found " + innerCitizens.size());
 			});
 
 			// 3. Capture 11 showcase screenshots for 1:1 visual inspection against Master Map & Stage 2 concepts

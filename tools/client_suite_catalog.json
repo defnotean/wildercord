@@ -204,11 +204,12 @@
     ]
   },
   "oathhold-city": {
-    "description": "Oathhold 2,048x2,048 Sovereign Megacity: real Overworld /locate placement, continuous 1,920-block walled span verification, outer/inner landmarks, and 1:1 visual showcase screenshots.",
+    "description": "Oathhold 2,048x2,048 Sovereign Megacity: real Overworld /locate placement, continuous 1,920-block walled span verification, outer/inner landmarks, 750+ named citizens, neutral-until-crime Knights, Guild Request Board, and 1:1 visual showcase screenshots.",
     "purpose": "area",
-    "expectedCount": 1,
+    "expectedCount": 2,
     "entries": [
-      "dev.wildercord.world.sites.OathholdMegacityTest"
+      "dev.wildercord.world.sites.OathholdMegacityTest",
+      "dev.wildercord.world.sites.OathholdGuildAndLawTest"
     ]
   },
   "structure-gallery": {

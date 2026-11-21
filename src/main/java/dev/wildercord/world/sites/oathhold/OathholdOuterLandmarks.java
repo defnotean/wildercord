@@ -2,7 +2,6 @@ package dev.wildercord.world.sites.oathhold;
 
 import dev.wildercord.aura.world.AuraWorld;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -101,8 +100,6 @@ public final class OathholdOuterLandmarks {
 			OathholdStreetscape.ornateStreetLamp(c, -552, 1, sz, false);
 			OathholdStreetscape.parkBench(c, -612, 1, sz, sz < 0 ? Direction.SOUTH : Direction.NORTH);
 		}
-		c.spawnMob(-554, 1, 8, EntityTypes.VILLAGER, -90.0F, true);
-		c.spawnMob(-664, 1, -46, EntityTypes.VILLAGER, 45.0F, true);
 	}
 
 	private static BlockState wYellow() {
@@ -143,7 +140,6 @@ public final class OathholdOuterLandmarks {
 		for (int i = 0; i < stallZ.length; i++) {
 			int sz = stallZ[i];
 			OathholdStreetscape.marketStall(c, 542, 2, sz, harborA[i % harborA.length], wWhite, 620 + i);
-			c.spawnMob(545, 2, sz, EntityTypes.VILLAGER, 90.0F, true);
 		}
 		// Dockside timber piles, raw ore stacks & cargo wagons
 		c.fill(546, 2, -48, 551, 3, -45, OathholdCanvas.SPRUCE_LOG);
@@ -176,7 +172,6 @@ public final class OathholdOuterLandmarks {
 		for (int ptz : new int[]{-16, -8, 8, 16}) {
 			OathholdStreetscape.patioTable(c, 538, 2, ptz, Blocks.CARPET.cyan().defaultBlockState(), wWhite);
 		}
-		c.spawnMob(539, 2, 0, EntityTypes.VILLAGER, 90.0F, true);
 		c.spawnMob(551, 2, -12, AuraWorld.OATHBOUND_BASTION, 90.0F, true);
 		c.spawnMob(551, 2, 12, AuraWorld.OATHBOUND_HALBERDIER, 90.0F, true);
 
@@ -299,9 +294,6 @@ public final class OathholdOuterLandmarks {
 		c.chandelier(-24, 12, 4, 562);
 		c.chandelier(0, 12, 4, 562);
 		c.chandelier(24, 12, 4, 562);
-		c.spawnMob(-24, 1, 556, EntityTypes.VILLAGER, 0.0F, true);
-		c.spawnMob(0, 1, 570, EntityTypes.VILLAGER, 180.0F, true);
-		c.spawnMob(24, 1, 556, EntityTypes.VILLAGER, 0.0F, true);
 
 		// King's Plaza Triumphal Obelisk Fountain & Bustling Civic Square (z = 590..668)
 		for (int x = Math.max(-14, c.clipMinLx()); x <= Math.min(14, c.clipMaxLx()); x++) {
@@ -335,8 +327,6 @@ public final class OathholdOuterLandmarks {
 		OathholdStreetscape.parkBench(c, 16, 1, 628, Direction.WEST);
 		OathholdStreetscape.merchantWagon(c, -6, 1, 660, true, 731);
 		OathholdStreetscape.merchantWagon(c, 6, 1, 598, true, 732);
-		c.spawnMob(-12, 1, 612, EntityTypes.VILLAGER, 45.0F, true);
-		c.spawnMob(12, 1, 644, EntityTypes.VILLAGER, -135.0F, true);
 	}
 
 	private static void buildSovereignAbbey(OathholdCanvas c) {
@@ -376,8 +366,6 @@ public final class OathholdOuterLandmarks {
 		c.chandelier(-22, 16, 4, -644);
 		c.chandelier(0, 16, 4, -644);
 		c.chandelier(22, 16, 4, -644);
-		c.spawnMob(-4, 1, -654, EntityTypes.VILLAGER, 0.0F, true);
-		c.spawnMob(6, 1, -634, EntityTypes.VILLAGER, 180.0F, true);
 
 		// Open Arched Cloister Colonnade wrapping Cherry Blossom & Herb Garden Garth (lz -616..-548)
 		c.fillWeatheredStone(-28, 1, -616, 28, 6, -614);
