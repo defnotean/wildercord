@@ -14,8 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(AbstractRecipeBookScreen.class)
 public abstract class AbstractRecipeBookScreenMixin {
+	// 1.21.8's hasClickedOutside still takes the button that triggered it.
 	@Inject(method = "hasClickedOutside", at = @At("HEAD"), cancellable = true)
-	private void wildercord$trayIsInside(double mx, double my, int xo, int yo, CallbackInfoReturnable<Boolean> cir) {
+	private void wildercord$trayIsInside(double mx, double my, int xo, int yo, int button,
+			CallbackInfoReturnable<Boolean> cir) {
 		if ((Object) this instanceof InventoryScreen && GearLayout.onTray(mx - xo, my - yo, GearLayout.traySlots())) {
 			cir.setReturnValue(false);
 		}
