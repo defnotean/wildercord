@@ -6,12 +6,8 @@
     "XD"
   ],
   "key": {
-    "X": {
-      "tag": "minecraft:dyes"
-    },
-    "D": {
-      "item": "wildercord:runewoven_backpack"
-    }
+    "X": "#minecraft:dyes",
+    "D": "wildercord:runewoven_backpack"
   },
   "result": {
     "count": 1,

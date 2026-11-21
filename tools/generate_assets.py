@@ -1256,6 +1256,12 @@ _DYE_COLORS = (
 )
 # Tag name -> (English item-tag name, human prose label, tag values).
 CUSTOM_RECIPE_ITEM_TAGS = {
+    # 1.21.11 has no vanilla concrete_powders item tag; the recipe needs one of its own.
+    "concrete_powders": (
+        "Any Concrete Powder",
+        "any concrete powder",
+        [f"minecraft:{c}_concrete_powder" for c in _DYE_COLORS],
+    ),
     "cobblestone_variants": (
         "Cobblestone, Deepslate, or Stone",
         "any cobblestone or deepslate",
@@ -1386,7 +1392,7 @@ RECIPE_VARIANT_TAGS = {
     "minecraft:white_bed": "#minecraft:beds",
     "minecraft:red_bed": "#minecraft:beds",
     "minecraft:white_banner": "#minecraft:banners",
-    "minecraft:white_concrete_powder": "#minecraft:concrete_powders",
+    "minecraft:white_concrete_powder": "#wildercord:concrete_powders",
     "minecraft:stone_button": "#minecraft:buttons",
     "minecraft:sand": "#minecraft:smelts_to_glass",
     "minecraft:dirt": "#minecraft:dirt",
@@ -4108,7 +4114,7 @@ def write_backpack_content():
         # Dyed like leather armour, keeping what's inside; a cauldron washes the dye out.
         write_json(DATA / f"recipe/{path}_dyed.json", {
             "type": "minecraft:crafting_shaped", "category": "equipment", "group": f"dyed_{path}",
-            "pattern": ["XD"], "key": {"X": {"tag": "minecraft:dyes"}, "D": {"item": f"wildercord:{path}"}},
+            "pattern": ["XD"], "key": {"X": "#minecraft:dyes", "D": f"wildercord:{path}"},
             "result": {"count": 1, "id": f"wildercord:{path}"}})
         unlock_advancement(f"wildercord:{path}_dyed", f"wildercord:{path}")
     write_json(DATA / "recipe/backpack.json", {

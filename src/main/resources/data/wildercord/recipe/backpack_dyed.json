@@ -6,12 +6,8 @@
     "XD"
   ],
   "key": {
-    "X": {
-      "tag": "minecraft:dyes"
-    },
-    "D": {
-      "item": "wildercord:backpack"
-    }
+    "X": "#minecraft:dyes",
+    "D": "wildercord:backpack"
   },
   "result": {
     "count": 1,
