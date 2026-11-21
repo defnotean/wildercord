@@ -21,6 +21,18 @@ LANG = {
     ),
     "subtitles.wildercord.oathbound_bastion.phalanx": "Bastion locks its greatshield",
     "subtitles.wildercord.oathbound_bastion.anvil_slam": "Bastion hammers the floor",
+    "entity.wildercord.oathbound_blade_champion": "Oathbound Blade-Champion",
+    "item.wildercord.oathbound_blade_champion_spawn_egg": "Oathbound Blade-Champion Spawn Egg",
+    "guide.wildercord.oathbound_blade_champion": (
+        "A peerless duel-master of the Way of the Blade armored in fluted silver and gold plate with a trailing "
+        "crimson plume, diagonal sash, and split parchment-crimson banner cape. When it sets its Zweihänder in "
+        "Wrathful Riposte, frontal swings trigger an immediate golden-crimson counter-cleave and arrows bounce straight "
+        "back; smash its stance with an axe, dodge the shield-shattering Pommel-Break Lunge, and clear the crimson "
+        "ground fissure of its Sky-Rending Guillotine."
+    ),
+    "guide.wildercord.oathbound_blade_champion.hint": (
+        "Commands the deepest haunts — strongholds, ancient cities, and sunken expeditions — alongside fallen knights."
+    ),
 }
 
 # Exact UV boxes matching OathboundBastionModel.createLayer() on a 128x128 sheet.
@@ -70,9 +82,10 @@ AMBER = ((196, 86, 10), (246, 152, 26), (255, 214, 78), (255, 248, 192))
 FACE_SHADE = {"top": 1, "bottom": -1, "front": 1, "right": 0, "left": 0, "back": 0}
 
 
-def _assert_no_overlap() -> None:
+def _assert_no_overlap(boxes: dict[str, tuple[int, int, int, int, int]] | None = None) -> None:
     rects = []
-    for name, (u, v, w, h, d) in UV_BOXES.items():
+    target = UV_BOXES if boxes is None else boxes
+    for name, (u, v, w, h, d) in target.items():
         rw, rh = 2 * (d + w), d + h
         assert u >= 0 and v >= 0 and u + rw <= 128 and v + rh <= 128, f"{name} out of 128x128 bounds"
         rect = (u, v, u + rw, v + rh)
@@ -606,6 +619,402 @@ BASTION_LOOT = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Knight #2: Oathbound Blade-Champion (Way of the Blade)
+# ---------------------------------------------------------------------------
+
+BLADE_CHAMPION_UV_BOXES = {
+    "head": (0, 0, 8, 8, 8),
+    "visor_peak": (32, 0, 6, 3, 2),
+    "plume_base": (48, 0, 3, 4, 7),
+    "plume_tip": (68, 0, 3, 4, 7),
+    "body": (0, 18, 9, 12, 5),
+    "chest_crest": (28, 18, 6, 5, 1),
+    "sash_clasp": (28, 24, 3, 3, 1),
+    "gorget": (42, 18, 8, 2, 6),
+    "tabard_front": (36, 26, 5, 8, 1),
+    "tabard_back": (48, 26, 6, 8, 1),
+    "tasset": (62, 26, 2, 6, 5),
+    "cape_yoke": (76, 20, 10, 6, 1),
+    "cape_tail": (76, 28, 5, 13, 1),
+    "cape_tip": (88, 28, 3, 3, 1),
+    "upper_arm": (0, 38, 4, 6, 4),
+    "pauldron": (16, 38, 6, 5, 6),
+    "haute": (40, 38, 2, 3, 5),
+    "fore_arm": (0, 48, 4, 7, 4),
+    "couter": (16, 49, 2, 3, 2),
+    "thigh": (54, 38, 4, 6, 4),
+    "shin": (54, 48, 4, 6, 5),
+    "knee": (72, 48, 4, 3, 2),
+    "sword_grip": (0, 62, 2, 8, 2),
+    "sword_pommel": (8, 62, 3, 3, 3),
+    "sword_guard": (20, 62, 9, 2, 3),
+    "sword_quillon": (44, 62, 2, 2, 2),
+    "sword_ricasso": (52, 62, 3, 5, 2),
+    "sword_blade": (0, 72, 3, 18, 1),
+    "sword_tip": (8, 72, 2, 4, 1),
+    "sword_star_xy": (20, 72, 12, 12, 0),
+    "sword_star_zy": (44, 72, 0, 12, 12),
+}
+
+SILVER = ((72, 78, 92), (110, 118, 134), (154, 164, 182), (196, 206, 222), (228, 236, 248))
+CHARCOAL = ((26, 30, 40), (42, 48, 60), (60, 68, 82))
+CRIMSON = ((96, 14, 20), (148, 22, 30), (196, 36, 44), (232, 68, 72))
+CREAM = ((156, 146, 126), (198, 186, 162), (228, 218, 194), (246, 240, 224))
+CRIMSON_GLOW = ((180, 24, 24), (236, 48, 36), (255, 118, 72), (255, 228, 180))
+
+
+def _paint_ramp_box(
+    img: Image.Image,
+    boxes: dict[str, tuple[int, int, int, int, int]],
+    key: str,
+    ramp: tuple[tuple[int, int, int], ...],
+    fluted: bool = True,
+    gold_bottom: bool = False,
+    seed: int = 31,
+) -> None:
+    px = img.load()
+    for face, area in box(*boxes[key]).items():
+        x0, y0, w, h = area
+        bias = FACE_SHADE.get(face, 0)
+        for ly in range(h):
+            for lx in range(w):
+                if gold_bottom and ly == h - 1 and face in ("front", "back", "left", "right"):
+                    px[x0 + lx, y0 + ly] = _rgba(_tone(GOLD, 3 if lx % 2 == 0 else 2))
+                    continue
+                if lx == 0 or ly == 0 or lx == w - 1 or ly == h - 1:
+                    idx = 3 + bias if (lx == 0 or ly == 0) else 1
+                else:
+                    flute = 1 if (fluted and (lx + ly * 0) % 2 == 0) else 0
+                    jitter = 1 if noise(x0 + lx, y0 + ly, seed) > 0.65 else (-1 if noise(lx, ly, seed + 5) < 0.2 else 0)
+                    idx = 2 + bias + flute + jitter
+                px[x0 + lx, y0 + ly] = _rgba(_tone(ramp, idx))
+
+
+def _riposte_star_rgba(size: int = 12) -> Image.Image:
+    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    px = im.load()
+    c = (size - 1) / 2.0
+    for y in range(size):
+        for x in range(size):
+            dx = abs(x - c)
+            dy = abs(y - c)
+            cross = min(dx, dy)
+            diag = abs(dx - dy)
+            dist = math.hypot(dx, dy)
+            if dist <= 1.25:
+                px[x, y] = (*AMBER[3], 255)
+            elif cross <= 0.75 and dist <= 5.5:
+                fade = max(0.0, 1.0 - dist / 6.0)
+                px[x, y] = (*_tone(GOLD, 4 if dist < 3.0 else 3), int(235 * fade))
+            elif diag <= 0.75 and dist <= 4.3:
+                fade = max(0.0, 1.0 - dist / 4.8)
+                px[x, y] = (*_tone(CRIMSON_GLOW, 2 if dist < 2.6 else 1), int(215 * fade))
+    return im
+
+
+def blade_champion_skin(glow: bool = False) -> Image.Image:
+    _assert_no_overlap(BLADE_CHAMPION_UV_BOXES)
+    img = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    px = img.load()
+
+    if not glow:
+        # 1. Head / Armet Helm, pointed visor prow, flowing 2-segment crimson plume
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "head", SILVER, fluted=True, gold_bottom=True, seed=101)
+        hf_x, hf_y, _, _ = box(*BLADE_CHAMPION_UV_BOXES["head"])["front"]
+        # Gold brow ridge & crimson T-visor recess on helm front
+        for lx in range(8):
+            px[hf_x + lx, hf_y + 1] = _rgba(GOLD[3] if lx % 2 == 0 else GOLD[2])
+        for ex, ey in ((1, 3), (2, 3), (5, 3), (6, 3), (3, 4), (4, 4), (3, 5), (4, 5)):
+            px[hf_x + ex, hf_y + ey] = (*CRIMSON_GLOW[1], 255)
+        for side in ("left", "right"):
+            sx, sy, _, _ = box(*BLADE_CHAMPION_UV_BOXES["head"])[side]
+            for ox, oy in ((3, 3), (4, 3), (3, 4), (4, 4)):
+                px[sx + ox, sy + oy] = _rgba(GOLD[3])
+
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "visor_peak", SILVER, fluted=True, gold_bottom=True, seed=103)
+        vx, vy, _, _ = box(*BLADE_CHAMPION_UV_BOXES["visor_peak"])["front"]
+        for ex in (1, 2, 3, 4):
+            px[vx + ex, vy + 0] = (*CRIMSON_GLOW[2], 255)
+        px[vx + 2, vy + 1] = (*CRIMSON_GLOW[1], 255)
+        px[vx + 3, vy + 1] = (*CRIMSON_GLOW[1], 255)
+
+        for pkey, pseed in (("plume_base", 107), ("plume_tip", 109)):
+            _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, pkey, CRIMSON, fluted=True, gold_bottom=False, seed=pseed)
+        # Gold plume mount collar
+        pbx, pby, pbw, pbh = box(*BLADE_CHAMPION_UV_BOXES["plume_base"])["front"]
+        for ly in range(pbh):
+            for lx in range(pbw):
+                if ly >= pbh - 2:
+                    px[pbx + lx, pby + ly] = _rgba(GOLD[3])
+
+        # 2. Fluted Silver Cuirass + Crimson Diagonal Chest Sash + Studded Belt + Gold Medallion
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "body", SILVER, fluted=True, gold_bottom=False, seed=113)
+        for face in ("front", "back"):
+            bx0, by0, bw, bh = box(*BLADE_CHAMPION_UV_BOXES["body"])[face]
+            for ly in range(bh):
+                for lx in range(bw):
+                    # Gunmetal chainmail lower waist strip before belt
+                    if ly in (8, 9):
+                        px[bx0 + lx, by0 + ly] = _rgba(CHARCOAL[1 if (lx + ly) % 2 == 0 else 0])
+                    # Leather & gold belt
+                    elif ly in (10, 11):
+                        px[bx0 + lx, by0 + ly] = _rgba(GOLD[2] if ly == 10 and lx % 3 == 0 else LEATHER[1])
+                    # Diagonal crimson cloth & gold sash running right-shoulder (lx=0..2,ly=0) -> left-hip (lx=7..8,ly=9)
+                    diag = lx - int(round((ly / 9.0) * (bw - 1)))
+                    if ly <= 9 and abs(diag) <= 1:
+                        px[bx0 + lx, by0 + ly] = _rgba(GOLD[3] if abs(diag) == 1 and ly % 3 == 0 else CRIMSON[2 if diag == 0 else 1])
+
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "chest_crest", SILVER, fluted=True, gold_bottom=True, seed=115)
+        cx0, cy0, _, _ = box(*BLADE_CHAMPION_UV_BOXES["chest_crest"])["front"]
+        for ox, oy in ((2, 1), (3, 1), (2, 2), (3, 2)):
+            px[cx0 + ox, cy0 + oy] = _rgba(GOLD[3])
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "sash_clasp", GOLD, fluted=False, gold_bottom=False, seed=117)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "gorget", SILVER, fluted=True, gold_bottom=True, seed=119)
+
+        # 3. Waist Tabards (crimson w/ gold border) & Fluted Thigh Tassets
+        for tkey, tseed in (("tabard_front", 121), ("tabard_back", 123)):
+            _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, tkey, CRIMSON, fluted=True, gold_bottom=True, seed=tseed)
+            for face in ("front", "back"):
+                tx0, ty0, tw, th = box(*BLADE_CHAMPION_UV_BOXES[tkey])[face]
+                for ly in range(th):
+                    for lx in range(tw):
+                        if lx == 0 or lx == tw - 1 or ly == th - 1:
+                            px[tx0 + lx, ty0 + ly] = _rgba(GOLD[3] if ly % 2 == 0 else GOLD[2])
+                        elif tw >= 5 and lx in (tw // 2 - 1, tw // 2) and 1 <= ly <= 4:
+                            px[tx0 + lx, ty0 + ly] = _rgba(GOLD[2])
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "tasset", SILVER, fluted=True, gold_bottom=True, seed=125)
+
+        # 4. Split Dual-Tail Banner Cape (crimson yoke -> cream parchment tails w/ crimson + gold trim)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "cape_yoke", CRIMSON, fluted=True, gold_bottom=True, seed=127)
+        for ckey, cseed in (("cape_tail", 131), ("cape_tip", 133)):
+            _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, ckey, CREAM, fluted=True, gold_bottom=False, seed=cseed)
+            for face in ("front", "back"):
+                cx0, cy0, cw, ch = box(*BLADE_CHAMPION_UV_BOXES[ckey])[face]
+                for ly in range(ch):
+                    for lx in range(cw):
+                        if face == "front":
+                            # Underside is deep crimson w/ gold edge
+                            px[cx0 + lx, cy0 + ly] = _rgba(GOLD[2] if (lx == 0 or lx == cw - 1) else CRIMSON[1 if ly % 2 == 0 else 0])
+                        elif lx == 0 or lx == cw - 1:
+                            px[cx0 + lx, cy0 + ly] = _rgba(GOLD[3] if ly % 2 == 0 else CRIMSON[2])
+                        elif ch >= 6 and ly == ch - 1:
+                            px[cx0 + lx, cy0 + ly] = _rgba(CRIMSON[2])
+
+        # 5. Arms, Haute-Piece Pauldrons, Elbow Wings, Gauntlets, Greaves & Knees
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "upper_arm", CHARCOAL, fluted=False, gold_bottom=False, seed=137)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "pauldron", SILVER, fluted=True, gold_bottom=True, seed=139)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "haute", SILVER, fluted=False, gold_bottom=False, seed=141)
+        # Gold edge on top of haute piece
+        hx0, hy0, hw, _ = box(*BLADE_CHAMPION_UV_BOXES["haute"])["top"]
+        for lx in range(hw):
+            px[hx0 + lx, hy0] = _rgba(GOLD[3])
+
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "fore_arm", SILVER, fluted=True, gold_bottom=True, seed=143)
+        for face in ("front", "back", "left", "right"):
+            fx0, fy0, fw, fh = box(*BLADE_CHAMPION_UV_BOXES["fore_arm"])[face]
+            for ly in range(max(0, fh - 2), fh):
+                for lx in range(fw):
+                    px[fx0 + lx, fy0 + ly] = _rgba(CRIMSON[1] if ly == fh - 2 else GOLD[2])
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "couter", SILVER, fluted=False, gold_bottom=True, seed=145)
+
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "thigh", CHARCOAL, fluted=False, gold_bottom=False, seed=147)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "shin", SILVER, fluted=True, gold_bottom=True, seed=149)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "knee", GOLD, fluted=False, gold_bottom=False, seed=151)
+
+        # 6. Ornate Zweihänder Greatsword (gold pommel, leather grip, swept silver-gold guard, glowing rune blade)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "sword_grip", LEATHER, fluted=False, gold_bottom=False, seed=153)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "sword_pommel", GOLD, fluted=False, gold_bottom=False, seed=155)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "sword_guard", GOLD, fluted=False, gold_bottom=False, seed=157)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "sword_quillon", GOLD, fluted=False, gold_bottom=False, seed=159)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "sword_ricasso", LEATHER, fluted=False, gold_bottom=True, seed=161)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "sword_blade", SILVER, fluted=False, gold_bottom=False, seed=163)
+        _paint_ramp_box(img, BLADE_CHAMPION_UV_BOXES, "sword_tip", SILVER, fluted=False, gold_bottom=False, seed=165)
+
+        for face in ("front", "back"):
+            bx0, by0, bw, bh = box(*BLADE_CHAMPION_UV_BOXES["sword_blade"])[face]
+            for ly in range(bh):
+                px[bx0 + 0, by0 + ly] = _rgba(SILVER[4])
+                px[bx0 + 2, by0 + ly] = _rgba(SILVER[3])
+                if 2 <= ly <= bh - 3 and ly % 3 != 0:
+                    px[bx0 + 1, by0 + ly] = (*CRIMSON_GLOW[2], 255)
+                else:
+                    px[bx0 + 1, by0 + ly] = _rgba(CHARCOAL[1])
+
+        star_img = _riposte_star_rgba(12)
+        for skey in ("sword_star_xy", "sword_star_zy"):
+            for _, (x0, y0, w, h) in box(*BLADE_CHAMPION_UV_BOXES[skey]).items():
+                if w == 12 and h == 12:
+                    img.paste(star_img, (x0, y0))
+        return img
+
+    # ---- GLOW LAYER (emissive crimson T-visor, Zweihänder Aura runes, Riposte flare) ----
+    hf_x, hf_y, _, _ = box(*BLADE_CHAMPION_UV_BOXES["head"])["front"]
+    for ex, ey in ((1, 3), (2, 3), (5, 3), (6, 3)):
+        px[hf_x + ex, hf_y + ey] = (*CRIMSON_GLOW[3], 255)
+    for ex, ey in ((3, 4), (4, 4), (3, 5), (4, 5)):
+        px[hf_x + ex, hf_y + ey] = (*CRIMSON_GLOW[2], 230)
+
+    vx, vy, _, _ = box(*BLADE_CHAMPION_UV_BOXES["visor_peak"])["front"]
+    for ex in (1, 2, 3, 4):
+        px[vx + ex, vy] = (*CRIMSON_GLOW[3], 255)
+    px[vx + 2, vy + 1] = (*CRIMSON_GLOW[2], 215)
+    px[vx + 3, vy + 1] = (*CRIMSON_GLOW[2], 215)
+
+    for face in ("front", "back"):
+        bx0, by0, _, bh = box(*BLADE_CHAMPION_UV_BOXES["sword_blade"])[face]
+        for ly in range(2, bh - 2):
+            if ly % 3 != 0:
+                px[bx0 + 1, by0 + ly] = (*CRIMSON_GLOW[3], 255)
+
+    star_img = _riposte_star_rgba(12)
+    for skey in ("sword_star_xy", "sword_star_zy"):
+        for _, (x0, y0, w, h) in box(*BLADE_CHAMPION_UV_BOXES[skey]).items():
+            if w == 12 and h == 12:
+                img.paste(star_img, (x0, y0))
+    return img
+
+
+def blade_champion_spawn_egg() -> Image.Image:
+    EGG = """
+        ................
+        ................
+        ......oooo......
+        ....oo1111oo....
+        ...o11111111o...
+        ..o1111111111o..
+        ..o1111111111o..
+        .o111111111111o.
+        .o111111111111o.
+        .o111111111111o.
+        .o111111111111o.
+        ..o1111111111o..
+        ..o1111111111o..
+        ...o11111111o...
+        ....oooooooo....
+        ................
+    """
+    MOTIF = """
+        ................
+        ................
+        ......rrrr......
+        .....rrrrrr.....
+        .....SSSSSS.....
+        .....SvvrvS.....
+        .....SSSSSS.....
+        ....g.rgg.g.....
+        ......rg........
+        .....grS........
+        ......gS........
+        ......gS........
+        .......S........
+        ................
+    """
+    pal = {
+        "g": hexc("#F2C24B"),
+        "S": hexc("#C4CEDE"),
+        "r": hexc("#D62830"),
+        "v": hexc("#FF5038"),
+    }
+    cv = Canvas()
+    dark, mid, light = hexc("#5B6374"), hexc("#8F9AAC"), hexc("#C4CEDE")
+    edge = mix(dark, (0, 0, 0), 0.55)
+    for y, row in enumerate(r.strip() for r in EGG.strip("\n").splitlines()):
+        for x, ch in enumerate(row):
+            if ch == "o":
+                cv.put(x, y, edge)
+            elif ch == "1":
+                t = (x + y) / 26.0
+                cv.put(x, y, light if t < 0.4 else mid if t < 0.72 else dark)
+    for y, row in enumerate(r.strip() for r in MOTIF.strip("\n").splitlines()):
+        for x, ch in enumerate(row):
+            if ch in pal and cv.get(x, y) is not None:
+                cv.put(x, y, pal[ch])
+    return cv.image()
+
+
+BLADE_CHAMPION_LOOT = {
+    "type": "minecraft:entity",
+    "pools": [
+        {
+            "rolls": {"type": "minecraft:uniform", "min": 2, "max": 3},
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:manual_page",
+                    "weight": 3,
+                    "functions": [
+                        {"function": "minecraft:set_components", "components": {"wildercord:breathing_method": "crimson"}},
+                    ],
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:manual_page",
+                    "weight": 2,
+                    "functions": [
+                        {"function": "minecraft:set_components", "components": {"wildercord:breathing_method": "ember"}},
+                    ],
+                },
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:aura_shard",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 4}},
+                        {
+                            "function": "minecraft:enchanted_count_increase",
+                            "enchantment": "minecraft:looting",
+                            "count": {"type": "minecraft:uniform", "min": 0.0, "max": 1.0},
+                        },
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:gold_ingot",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 5}},
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_ingot",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 3, "max": 6}},
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}},
+                    ],
+                }
+            ],
+        },
+    ],
+    "random_sequence": "wildercord:entities/oathbound_blade_champion",
+}
+
+
 def write(g) -> None:
     g.save(bastion_skin(glow=False), g.ASSETS / "textures/entity/oathbound_bastion/skin.png")
     g.save(bastion_skin(glow=True), g.ASSETS / "textures/entity/oathbound_bastion/glow.png")
@@ -617,3 +1026,14 @@ def write(g) -> None:
         {"model": {"type": "minecraft:model", "model": f"wildercord:item/{egg}"}},
     )
     g.write_json(g.DATA / "loot_table/entities/oathbound_bastion.json", BASTION_LOOT)
+
+    g.save(blade_champion_skin(glow=False), g.ASSETS / "textures/entity/oathbound_blade_champion/skin.png")
+    g.save(blade_champion_skin(glow=True), g.ASSETS / "textures/entity/oathbound_blade_champion/glow.png")
+    bc_egg = "oathbound_blade_champion_spawn_egg"
+    g.save(blade_champion_spawn_egg(), g.ASSETS / f"textures/item/{bc_egg}.png")
+    g.item_model(bc_egg, bc_egg)
+    g.write_json(
+        g.ASSETS / f"items/{bc_egg}.json",
+        {"model": {"type": "minecraft:model", "model": f"wildercord:item/{bc_egg}"}},
+    )
+    g.write_json(g.DATA / "loot_table/entities/oathbound_blade_champion.json", BLADE_CHAMPION_LOOT)

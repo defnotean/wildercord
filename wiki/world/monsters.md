@@ -26,6 +26,7 @@ Six magical monsters live beside the zombies and skeletons, and **fallen knights
 | [Paper Lantern Spirit](#paper-lantern-spirit) | Cat Sanctuary, Lantern Bathhouse | It unhinges its ember jaw and charges a flame burst | Shoot before detonation or dodge the flame pulse | Lanterns |
 | [Fallen Knight](#fallen-knight) | Strongholds, ancient cities, expeditions, dungeons | Blade raised, a line of light on the ground | Step off the line; break its guard with an axe | Manual Pages, Aura Shards |
 | [Oathbound Bastion](#oathbound-bastion) | Deep haunts (strongholds, ancient cities, expeditions) | Hexagonal shield barrier, overhead mace windup | Shatter guard with an axe; bait Shield-Ram into walls; clear shockwave ring | Iron/Stone Manual Pages, 2–3 Aura Shards, Gold, Iron, Diamonds |
+| [Oathbound Blade-Champion](#oathbound-blade-champion) | Deep haunts (strongholds, ancient cities, expeditions) | Two-handed diagonal blade parry, forward pommel lunge, overhead Zweihänder arch | Smash Wrathful Riposte with an axe; dodge the shield-shattering Pommel-Break Lunge; sidestep the Guillotine fissure | Crimson/Ember Manual Pages, 2–4 Aura Shards, Gold, Iron, Diamonds |
 
 Any of the six can also be [Runebound]({{ '/world/runebound/' | relative_url }}). Their magic counts as spells, so
 armour, Warding and the spellguard all help. Your Grimoire's Bestiary fills in each one's
@@ -148,6 +149,17 @@ An unbroken champion of the Way of the Bulwark who haunts strongholds, ancient c
 - **Anvil Slam:** it hoists its flaming greatmace overhead above a glowing floor ring before dropping to one knee and driving the mace into the ground, sending out an expanding golden shockwave (`5.8`-block radius). Punish its kneeling recovery window immediately after.
 - **Shield-Bash Sweep & Sun-Mace Cleave:** close-range wide shield sweeps (inflicting Slowness II) and heavy mace strikes keep aggressive melee fighters honest.
 - **Drops:** `2–3` **Manual Pages** (Iron and Stone), `2–3` **Aura Shards**, gold ingots, iron ingots, and diamonds.
+
+## Oathbound Blade-Champion
+{: #oathbound-blade-champion }
+
+An elite duel-master of the Way of the Blade who haunts strongholds, ancient cities, and sunken expeditions alongside Bastions and fallen knights (`135` health, `15` armour, `7` armour toughness). Clad in fluted silver and gold plate with a crimson diagonal sash, glowing red T-visor, flowing crimson plume, and split parchment-crimson banner cape, it enters **Crimson Overdrive** below half health (`+18%` damage, faster windups).
+
+- **Wrathful Riposte:** it locks its rune-etched Zweihänder diagonally across its chest. Frontal swings trigger an immediate golden-crimson counter-cleave and projectiles ricochet back at their shooter; flank it or **smash its parry with an axe** to stagger it (`+45%` damage taken).
+- **Pommel-Break Lunge:** it coils low and rockets forward with the pommel first. **Blocking with a shield shatters your guard**, putting your shield on a `5`-second cooldown and slowing you down.
+- **Crimson Crescent Cleave:** wide `180°` waist-high horizontal sweeps punish anyone circling lazily at medium range.
+- **Sky-Rending Guillotine:** after hoisting its Zweihänder high behind its plumed helm, it plunges the blade straight down into the stone, unleashing a forward crimson fissure (`6.5` blocks long) — sidestep the line and punish its ground-embedded recovery window.
+- **Drops:** `2–3` **Manual Pages** (Crimson and Ember), `2–4` **Aura Shards**, gold ingots, iron ingots, and diamonds.
 
 ## Mage-Hunter (0.13)
 

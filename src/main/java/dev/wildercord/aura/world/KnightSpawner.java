@@ -89,13 +89,16 @@ public final class KnightSpawner {
 		double r = AuraWorldRules.KNIGHT_CROWD;
 		int fallen = level.getEntities(AuraWorld.FALLEN_KNIGHT, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
 		int bastions = level.getEntities(AuraWorld.OATHBOUND_BASTION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
-		return fallen + bastions;
+		int blades = level.getEntities(AuraWorld.OATHBOUND_BLADE_CHAMPION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
+		return fallen + bastions + blades;
 	}
 
 	/** Living Oathbound high knights within {@link OathboundBastionRules#CHAMPION_CROWD_RADIUS} blocks of {@code pos}. */
 	public static int nearbyChampions(ServerLevel level, BlockPos pos) {
 		double r = OathboundBastionRules.CHAMPION_CROWD_RADIUS;
-		return level.getEntities(AuraWorld.OATHBOUND_BASTION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
+		int bastions = level.getEntities(AuraWorld.OATHBOUND_BASTION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
+		int blades = level.getEntities(AuraWorld.OATHBOUND_BLADE_CHAMPION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
+		return bastions + blades;
 	}
 
 	/** The haunted place {@code pos} is in, or null. */
@@ -166,8 +169,8 @@ public final class KnightSpawner {
 		return knight;
 	}
 
-	/** Raises an elite Oathbound Bastion inside a deep haunt when headroom allows. */
-	public static @Nullable OathboundBastion spawnChampionIn(ServerLevel level, BlockPos near, Haunt haunt, RandomSource random) {
+	/** Raises an elite Oathbound high knight inside a deep haunt when headroom allows. */
+	public static @Nullable PathfinderMob spawnChampionIn(ServerLevel level, BlockPos near, Haunt haunt, RandomSource random) {
 		for (int i = 0; i < 16; i++) {
 			double a = random.nextDouble() * Math.PI * 2;
 			double r = 8 + random.nextDouble() * 12;
@@ -181,7 +184,7 @@ public final class KnightSpawner {
 			if (haunt.start() != null ? !level.structureManager().getStructureWithPieceAt(at, HAUNTS).isValid() : !spawnerRoom(level, at)) {
 				continue;
 			}
-			return raiseChampion(level, at, random);
+			return random.nextBoolean() ? raiseChampion(level, at, random) : raiseBladeChampion(level, at, random);
 		}
 		return null;
 	}
@@ -192,6 +195,21 @@ public final class KnightSpawner {
 			return null;
 		}
 		OathboundBastion champion = AuraWorld.OATHBOUND_BASTION.create(level, EntitySpawnReason.NATURAL);
+		if (champion == null) {
+			return null;
+		}
+		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
+		level.addFreshEntityWithPassengers(champion);
+		return champion;
+	}
+
+	/** Places an {@link OathboundBladeChampion} at {@code at} after checking three blocks of vertical clearance. */
+	public static @Nullable OathboundBladeChampion raiseBladeChampion(ServerLevel level, BlockPos at, RandomSource random) {
+		if (!level.getBlockState(at.above(2)).isAir()) {
+			return null;
+		}
+		OathboundBladeChampion champion = AuraWorld.OATHBOUND_BLADE_CHAMPION.create(level, EntitySpawnReason.NATURAL);
 		if (champion == null) {
 			return null;
 		}

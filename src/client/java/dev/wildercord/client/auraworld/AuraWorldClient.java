@@ -43,10 +43,12 @@ public final class AuraWorldClient {
 		ModelLayerRegistry.registerModelLayer(DUELIST, DuelistModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
 		ModelLayerRegistry.registerModelLayer(OathboundBastionRenderer.LAYER, OathboundBastionModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(OathboundBladeChampionRenderer.LAYER, OathboundBladeChampionModel::createLayer);
 		EntityRendererRegistry.register(AuraWorld.DUELIST, AuraWorldClient::duelist);
 		EntityRendererRegistry.register(AuraWorld.SWORD_MASTER, MasterRenderer::new);
 		EntityRendererRegistry.register(AuraWorld.FALLEN_KNIGHT, AuraWorldClient::knight);
 		EntityRendererRegistry.register(AuraWorld.OATHBOUND_BASTION, OathboundBastionRenderer::new);
+		EntityRendererRegistry.register(AuraWorld.OATHBOUND_BLADE_CHAMPION, OathboundBladeChampionRenderer::new);
 		ModelLayerRegistry.registerModelLayer(GravekeeperRenderer.LAYER,GravekeeperModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.SwordTombs.KEEPER,GravekeeperRenderer::new);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.Guardians.SERPENT,SerpentRenderer::new);
