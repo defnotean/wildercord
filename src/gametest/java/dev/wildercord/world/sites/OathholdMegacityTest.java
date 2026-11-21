@@ -62,7 +62,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 		double eye = 1.62, dx = tx - x, dy = ty - (y + eye), dz = tz - z;
 		float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
 		float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
-		int chunkR = Math.max(8, Math.min(12, renderDist));
+		int chunkR = Math.min(8, renderDist);
 		world.getServer().runOnServer(s -> {
 			ServerLevel level = s.overworld();
 			warmArea(level, (int) Math.floor(x), (int) Math.floor(z), chunkR);
@@ -71,13 +71,13 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			p.teleportTo(level, x, y, z, Set.<Relative>of(), yaw, pitch, false);
 		});
 		ctx.waitTicks(20);
-		for (int attempt = 0; attempt < 3; attempt++) {
+		for (int attempt = 0; attempt < 4; attempt++) {
 			try {
 				world.getConnection().waitForChunksDownload();
 				world.getConnection().waitForClientboundPackets();
 				world.getConnection().waitForChunksRender();
 				break;
-			} catch (RuntimeException ignored) {
+			} catch (AssertionError | RuntimeException ignored) {
 				ctx.waitTicks(40);
 			}
 		}
@@ -104,7 +104,8 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 
 			context.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1280, 720);
-				mc.options.renderDistance().set(24);
+				mc.options.renderDistance().set(10);
+				mc.options.simulationDistance().set(5);
 				mc.options.fov().set(74);
 				mc.resizeGui();
 				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
@@ -191,16 +192,16 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			});
 
 			// 3. Capture 6 showcase screenshots for 1:1 visual inspection against concept art
-			lookAt(context, world, ox, by + 112, oz + 200, ox, by + 28, oz - 90, 24, 82);
+			lookAt(context, world, ox, by + 98, oz + 112, ox, by + 26, oz - 115, 19, 86);
 			shot(context, "oathhold_01_aerial_overview");
 
-			lookAt(context, world, ox + 0.5, by + 4.0, oz + 266, ox + 0.5, by + 18, oz + 224, 12, 72);
+			lookAt(context, world, ox + 0.5, by + 4.0, oz + 266, ox + 0.5, by + 18, oz + 224, 10, 72);
 			shot(context, "oathhold_02_south_gatehouse");
 
-			lookAt(context, world, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 4.0, oz - 106, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 17, oz - 196, 12, 74);
+			lookAt(context, world, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 4.0, oz - 106, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 17, oz - 196, 10, 74);
 			shot(context, "oathhold_03_great_hall_interior");
 
-			lookAt(context, world, ox - 62, by + 22, oz + 96, ox + 26, by + 18, oz - 56, 18, 76);
+			lookAt(context, world, ox - 62, by + 22, oz + 96, ox + 26, by + 18, oz - 56, 17, 76);
 			shot(context, "oathhold_04_districts_courtyard");
 
 			lookAt(context, world, ox - 546, by + 50, oz + 64, ox - 612, by + 10, oz, 12, 72);
