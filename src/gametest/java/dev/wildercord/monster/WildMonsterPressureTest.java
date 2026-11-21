@@ -28,7 +28,7 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(30);
 			world.getServer().runCommand("difficulty normal");
-			world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				ServerLevel level = player.level();

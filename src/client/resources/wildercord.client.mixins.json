@@ -16,7 +16,6 @@
 		"ModelPartChildrenAccessor",
 		"ArticulatedPlayerModelMixin",
 		"LivingEntityRendererMixin",
-		"ClientLevelMixin",
 		"AvatarRendererStyleMixin",
 		"AvatarRendererGearMixin",
 		"BossHealthOverlayAccessor",

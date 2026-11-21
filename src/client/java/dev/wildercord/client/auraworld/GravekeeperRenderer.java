@@ -5,7 +5,7 @@ import dev.wildercord.aura.world.Gravekeeper;
 import dev.wildercord.aura.world.SwordTombRules;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.util.Map;
@@ -20,7 +20,7 @@ public final class GravekeeperRenderer extends MobRenderer<Gravekeeper,Gravekeep
 	private final Map<Gravekeeper,Mem> memory=new WeakHashMap<>();
 	public GravekeeperRenderer(EntityRendererProvider.Context c){super(c,new GravekeeperModel(c.bakeLayer(LAYER)),.75F);}
 	@Override public GravekeeperRenderState createRenderState(){return new GravekeeperRenderState();}
-	@Override public Identifier getTextureLocation(GravekeeperRenderState s){return Wildercord.id("textures/entity/gravekeeper.png");}
+	@Override public ResourceLocation getTextureLocation(GravekeeperRenderState s){return Wildercord.id("textures/entity/gravekeeper.png");}
 	@Override public void extractRenderState(Gravekeeper e,GravekeeperRenderState s,float partial){
 		super.extractRenderState(e, s, partial);s.move=e.move();s.tell=e.tell();s.elapsed=e.elapsed(partial);
 		Mem m=memory.computeIfAbsent(e,k->new Mem());

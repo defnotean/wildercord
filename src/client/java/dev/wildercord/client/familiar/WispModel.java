@@ -4,7 +4,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 
 /**
  * A wisp has no body of boxes: it's light, drawn by {@link WispRenderer} as sprites that face the
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
  */
 public class WispModel extends EntityModel<WispRenderState> {
 	public WispModel(ModelPart root) {
-		super(root, RenderTypes::entityTranslucent);
+		super(root, RenderType::entityTranslucent);
 	}
 
 	public static LayerDefinition createLayer() {

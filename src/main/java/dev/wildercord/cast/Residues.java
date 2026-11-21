@@ -37,11 +37,10 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -208,7 +207,7 @@ public final class Residues {
 	}
 
 	/** A player's magic, or a boss's (the Riftcaller, the Archivist, a dungeon's master): nobody else's leaves residues. */
-	private static @Nullable Source sourceOf(LivingEntity caster) {
+	private static  Source sourceOf(LivingEntity caster) {
 		if (caster instanceof ServerPlayer) {
 			return Source.SPELL;
 		}
@@ -233,7 +232,7 @@ public final class Residues {
 	 * {@code spells_edit_blocks} and the mob-griefing rule). Every rule holds: natural ground only, never in a
 	 * ward, the caps. Returns how many blocks it left (0 for none, or with residues switched off).
 	 */
-	public static int leave(ServerLevel level, String element, Vec3 at, double strength, @Nullable LivingEntity by) {
+	public static int leave(ServerLevel level, String element, Vec3 at, double strength,  LivingEntity by) {
 		Optional<Kind> kind = ResidueRules.kindFor(element);
 		if (kind.isEmpty() || strength < 1.0 || !Config.get().residues().enabled()) {
 			return 0;
@@ -243,7 +242,7 @@ public final class Residues {
 			Effects.applyingCast() != null && Effects.applyingCast().caster == by && Effects.applyingCast().level == level ? Effects.applyingCast() : null);
 	}
 
-	private static int leave(ServerLevel level, Kind kind, BlockPos impact, double strength, @Nullable LivingEntity by, Source source, @Nullable Cast cast) {
+	private static int leave(ServerLevel level, Kind kind, BlockPos impact, double strength,  LivingEntity by, Source source,  Cast cast) {
 		dev.wildercord.config.WildercordConfig.ResidueSettings cfg = Config.get().residues();
 		if (!cfg.enabled()) {
 			return 0;
@@ -290,7 +289,7 @@ public final class Residues {
 	 * Where in this column a residue of {@code kind} would go: the first solid thing from a little above down (the
 	 * surface), or the space above it for one that lies on the ground; null if the column has no surface near.
 	 */
-	private static @Nullable BlockPos groundFor(ServerLevel level, Kind kind, BlockPos column) {
+	private static  BlockPos groundFor(ServerLevel level, Kind kind, BlockPos column) {
 		for (int dy = 2; dy >= -4; dy--) {
 			BlockPos p = column.offset(0, dy, 0);
 			if (!level.isLoaded(p)) {
@@ -305,7 +304,7 @@ public final class Residues {
 	}
 
 	/** Why a residue of {@code kind} can't go at {@code pos} for {@code by}, or null if it can (see {@link ResidueRules#judge}). */
-	public static @Nullable Refusal judge(ServerLevel level, Kind kind, BlockPos pos, @Nullable LivingEntity by) {
+	public static  Refusal judge(ServerLevel level, Kind kind, BlockPos pos,  LivingEntity by) {
 		boolean loaded = level.isLoaded(pos) && level.isLoaded(pos.below()) && level.isLoaded(pos.above());
 		if (!loaded) {
 			return Refusal.UNLOADED;
@@ -341,11 +340,11 @@ public final class Residues {
 	}
 
 	/** Whether whoever's magic it is may change this block: a player as any spell of theirs may, the world's own by its rules. */
-	private static boolean permitted(ServerLevel level, BlockPos pos, @Nullable LivingEntity by) {
+	private static boolean permitted(ServerLevel level, BlockPos pos,  LivingEntity by) {
 		if (by instanceof ServerPlayer player) {
 			return Casters.mayEdit(player, level, pos);
 		}
-		return Config.get().spellsEditBlocks() && level.getGameRules().get(GameRules.MOB_GRIEFING);
+		return Config.get().spellsEditBlocks() && level.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get();
 	}
 
 	private static void put(ServerLevel level, Record record, Kind kind, BlockPos pos, long now, long due, int generation, String owner) {
@@ -414,7 +413,7 @@ public final class Residues {
 		return entry == null ? -1 : entry.due();
 	}
 
-	private static ResidueLedger.@Nullable Entry<Blocks> entry(ServerLevel level, BlockPos pos) {
+	private static ResidueLedger. Entry<Blocks> entry(ServerLevel level, BlockPos pos) {
 		Record record = level.getDataStorage().get(Record.TYPE);
 		return record == null ? null : record.ledger.get(pos.asLong());
 	}
@@ -428,7 +427,7 @@ public final class Residues {
 	// ------------------------------------------------------------------ how they go
 
 	/** A residue was harvested (broken by a player, or bottled): its record goes, and the ground it took comes back. */
-	public static void harvested(ServerLevel level, BlockPos pos, BlockState state, @Nullable ServerPlayer by) {
+	public static void harvested(ServerLevel level, BlockPos pos, BlockState state,  ServerPlayer by) {
 		Record record = level.getDataStorage().get(Record.TYPE);
 		ResidueLedger.Entry<Blocks> entry = record == null ? null : record.ledger.remove(pos.asLong());
 		if (entry == null) {

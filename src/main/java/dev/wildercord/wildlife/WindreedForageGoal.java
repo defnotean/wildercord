@@ -5,7 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import java.util.EnumSet;
 import java.util.function.*;
 
@@ -57,7 +57,7 @@ public final class WindreedForageGoal extends Goal {
 			if(mob.getNavigation().isDone() && mob.tickCount>=retryAt && retries<4) {retries++;retryAt=mob.tickCount+20;approach();}
 		}
 		if(near) {mob.getNavigation().stop();if(++chew==40) {
-			if(mob.level() instanceof ServerLevel l && l.getGameRules().get(GameRules.MOB_GRIEFING) && ripe(food))l.setBlock(food,l.getBlockState(food).setValue(WindreedBlock.AGE,1),Block.UPDATE_CLIENTS);
+			if(mob.level() instanceof ServerLevel l && l.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get() && ripe(food))l.setBlock(food,l.getBlockState(food).setValue(WindreedBlock.AGE,1),Block.UPDATE_CLIENTS);
 			searchAt=mob.tickCount+1200;
 		}}
 	}

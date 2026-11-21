@@ -16,7 +16,7 @@ public final class SafeTelegraphsTest implements FabricClientGameTest {
 		boolean old = c.computeOnClient(mc -> MagicQuality.safeTelegraphs);
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(30);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runCommand("time set 6000");
 			c.runOnClient(mc -> {
 				MagicQuality.safeTelegraphs = false;

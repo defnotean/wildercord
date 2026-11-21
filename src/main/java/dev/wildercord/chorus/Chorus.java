@@ -112,7 +112,7 @@ public final class Chorus {
 			target = entity == null ? null : entity.getEntity();
 			aim = entity == null ? end : entity.getLocation();
 		}
-		ChorusRules.Voice voice = new ChorusRules.Voice(caster.getUUID(), shape, now, level.dimension().identifier().toString(),
+		ChorusRules.Voice voice = new ChorusRules.Voice(caster.getUUID(), shape, now, level.dimension().location().toString(),
 			caster.getX(), caster.getY(), caster.getZ(), aim.x, aim.y, aim.z, target == null ? null : target.getUUID(), kind(first));
 		List<ChorusRules.Voice> choir = CHOIR.offer(voice, (a, b) -> allied(level, a, b));
 		if (choir.size() < 2) {

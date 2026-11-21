@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -52,8 +52,8 @@ import java.util.UUID;
 public final class Tribulation {
 	private static final int COLOR = 0xE8D8B0;
 	private static final int STORM = 0x8C7CFF;
-	private static final Identifier HEALTH = Wildercord.id("tribulation_health");
-	private static final Identifier DAMAGE = Wildercord.id("tribulation_damage");
+	private static final ResourceLocation HEALTH = Wildercord.id("tribulation_health");
+	private static final ResourceLocation DAMAGE = Wildercord.id("tribulation_damage");
 	/** On the last wave's Herald. */
 	public static final String HERALD_TAG = "wildercord.tribulation_herald";
 	/** On a rival tribulation's Shadow (it carries the Herald's tag too). */

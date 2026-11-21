@@ -8,7 +8,7 @@ import dev.wildercord.aura.ArticulatedCombatPose.Vec3;
 import dev.wildercord.client.render.AuraShellLayer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -37,7 +37,7 @@ public final class ArticulatedAuraShellGeometry extends Model<ArticulatedArmorGe
 		this(bake(source, slim, armsOnly));
 	}
 	private ArticulatedAuraShellGeometry(Baked baked) {
-		super(baked.root(), RenderTypes::eyes);
+		super(baked.root(), RenderType::eyes);
 		mesh = baked.mesh(); faces = baked.faces();
 		setupAnim(ArticulatedArmorGeometry.Palette.from(joint -> new Matrix4f().set(ArticulatedCombatPose.NONE.world(joint).values())));
 	}

@@ -29,7 +29,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A rimehare: a quick white hare of the snowy lands, long-eared and long-legged, frost glinting on its coat. It goes in
@@ -202,24 +201,24 @@ public class Rimehare extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return Wildlife.RIMEHARE.create(level, EntitySpawnReason.BREEDING);
 	}
 
 	// ------------------------------------------------------------------ sound
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return Wildlife.sound("rimehare_squeak");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return Wildlife.sound("rimehare_hurt");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return Wildlife.sound("rimehare_hurt");
 	}
 

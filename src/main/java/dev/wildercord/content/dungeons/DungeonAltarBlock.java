@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
 
@@ -95,13 +94,13 @@ public class DungeonAltarBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+	public  BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new DungeonAltarBlockEntity(pos, state);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+	public <T extends BlockEntity>  BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return level.isClientSide() || type != DungeonBlocks.ALTAR_ENTITY ? null
 			: (BlockEntityTicker<T>) (BlockEntityTicker<DungeonAltarBlockEntity>) DungeonAltarBlockEntity::serverTick;
 	}

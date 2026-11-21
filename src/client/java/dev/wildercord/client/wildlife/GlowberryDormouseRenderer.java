@@ -7,13 +7,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /** The glowberry dormouse, its cheeks glowing with the berries stuffed in them. */
 public final class GlowberryDormouseRenderer extends WildlifeRenderer<GlowberryDormouse, GlowberryDormouseModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("glowberry_dormouse"), "main");
-	private static final Identifier GLOW = WildlifeRenderers.texture("glowberry_dormouse_glow");
+	private static final ResourceLocation GLOW = WildlifeRenderers.texture("glowberry_dormouse_glow");
 
 	public GlowberryDormouseRenderer(EntityRendererProvider.Context context) {
 		super(context, new GlowberryDormouseModel(context.bakeLayer(LAYER)), 0.2F, WildlifeRenderers.texture("glowberry_dormouse"));

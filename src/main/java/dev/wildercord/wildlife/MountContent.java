@@ -104,7 +104,7 @@ public final class MountContent {
 		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(SKYRAY_BRIDLE));
 		SpawnPlacements.register(RIDGEBACK_STAG, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
 		BiomeModifications.create(Wildercord.id("wildlife/ridgeback_stag")).add(ModificationPhase.ADDITIONS,
-			BiomeSelectors.includeByKey(BIOMES.stream().map(id -> ResourceKey.create(Registries.BIOME, net.minecraft.resources.Identifier.parse(id))).toList()),
+			BiomeSelectors.includeByKey(BIOMES.stream().map(id -> ResourceKey.create(Registries.BIOME, net.minecraft.resources.ResourceLocation.parse(id))).toList()),
 			context -> {
 				if (Config.get().wildlife().enabled() && Config.get().wildlife().spawnMultiplier() > 0) {
 					dev.wildercord.compat.McWorldgen.addSpawn(context.getSpawnSettings(), MobCategory.CREATURE, RIDGEBACK_STAG, MIN_GROUP, MAX_GROUP, WEIGHT);

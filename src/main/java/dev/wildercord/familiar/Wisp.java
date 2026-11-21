@@ -40,7 +40,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Optional;
@@ -189,15 +188,15 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	@Override
-	public @Nullable EntityReference<LivingEntity> getOwnerReference() {
+	public  EntityReference<LivingEntity> getOwnerReference() {
 		return entityData.get(DATA_OWNER).orElse(null);
 	}
 
-	void setOwner(@Nullable UUID owner) {
+	void setOwner( UUID owner) {
 		entityData.set(DATA_OWNER, Optional.ofNullable(owner).map(EntityReference::<LivingEntity>of));
 	}
 
-	public @Nullable UUID ownerId() {
+	public  UUID ownerId() {
 		EntityReference<LivingEntity> ref = getOwnerReference();
 		return ref == null ? null : ref.getUUID();
 	}
@@ -207,7 +206,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	/** The owner if they're online (in any dimension), on the server. */
-	public @Nullable ServerPlayer ownerPlayer() {
+	public  ServerPlayer ownerPlayer() {
 		UUID id = ownerId();
 		return id == null || !(level() instanceof ServerLevel level) ? null : level.getServer().getPlayerList().getPlayer(id);
 	}
@@ -228,7 +227,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	@Override
-	public void setCustomName(@Nullable Component name) {
+	public void setCustomName( Component name) {
 		// A name tag on a familiar renames it (the name is kept on its bond, the plate shows the owner too).
 		if (!naming && name != null && !wild() && level() instanceof ServerLevel) {
 			Familiars.rename(this, name.getString());
@@ -243,7 +242,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	 * A player offers the wisp magic (or food) of {@code offered}; {@code cast} is the spell's
 	 * identity (so its several effects count once), or null for food. Returns what happened.
 	 */
-	public WispRules.Outcome offer(ServerPlayer player, String offered, @Nullable Object cast) {
+	public WispRules.Outcome offer(ServerPlayer player, String offered,  Object cast) {
 		if (!wild() || !isAlive()) {
 			return WispRules.Outcome.IGNORED;
 		}
@@ -627,7 +626,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return FamiliarContent.WISP_AMBIENT;
 	}
 
@@ -642,12 +641,12 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return null;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return null;
 	}
 

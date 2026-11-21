@@ -40,7 +40,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 
@@ -212,7 +211,7 @@ public class MirebathCapybara extends Animal {
 	}
 
 	@Override
-	public @Nullable LivingEntity getControllingPassenger() {
+	public  LivingEntity getControllingPassenger() {
 		return null;
 	}
 
@@ -250,22 +249,22 @@ public class MirebathCapybara extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof MirebathCapybara young ? young : null;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return SoundEvents.ARMADILLO_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.ARMADILLO_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.ARMADILLO_DEATH;
 	}
 
@@ -336,7 +335,7 @@ public class MirebathCapybara extends Animal {
 			}
 		}
 
-		private @Nullable BlockPos findWater() {
+		private  BlockPos findWater() {
 			BlockPos home = blockPosition();
 			int r = CapybaraRules.WATER_SEARCH;
 			for (int i = 0; i < 24; i++) {

@@ -27,7 +27,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -169,7 +168,7 @@ public class GulperPitcher extends WildMonster {
 	}
 
 	/** The vine lashed out: whoever is still in reach and in the open is struck and hauled in. */
-	private void lash(ServerLevel level, @Nullable LivingEntity target, long now) {
+	private void lash(ServerLevel level,  LivingEntity target, long now) {
 		lashAt = -1;
 		lashUntil = now + GulperPitcherRules.LASH_TICKS;
 		setState(WINDUP, false);
@@ -218,7 +217,7 @@ public class GulperPitcher extends WildMonster {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return open() ? SoundEvents.SLIME_SQUISH_SMALL : SoundEvents.AZALEA_LEAVES_STEP;
 	}
 

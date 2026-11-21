@@ -13,7 +13,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -107,7 +107,7 @@ public final class AuraWorld {
 		}
 		Item base = switch (forged) {
 			case LUMENEDGE -> netherite ? Items.NETHERITE_SWORD : Items.DIAMOND_SWORD;
-			case SKYREND_GLAIVE -> netherite ? Items.NETHERITE_SPEAR : Items.DIAMOND_SPEAR;
+			case SKYREND_GLAIVE -> dev.wildercord.compat.McBlocksAndItems.spearItem(netherite);
 			case BULWARK_MAUL -> netherite ? Items.NETHERITE_AXE : Items.DIAMOND_AXE;
 			case FETCHBLADE -> Items.NETHERITE_SWORD;
 		};
@@ -177,7 +177,7 @@ public final class AuraWorld {
 	}
 
 	/** The id of a world-of-aura texture or model. */
-	public static Identifier id(String path) {
+	public static ResourceLocation id(String path) {
 		return Wildercord.id(path);
 	}
 }

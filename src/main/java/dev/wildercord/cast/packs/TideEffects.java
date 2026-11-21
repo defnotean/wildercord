@@ -18,7 +18,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -35,15 +35,15 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.AgeableWaterCreature;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
-import net.minecraft.world.entity.animal.dolphin.Dolphin;
-import net.minecraft.world.entity.animal.fish.AbstractFish;
-import net.minecraft.world.entity.animal.fish.WaterAnimal;
-import net.minecraft.world.entity.animal.turtle.Turtle;
+import net.minecraft.world.entity.animal.Dolphin;
+import net.minecraft.world.entity.animal.AbstractFish;
+import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
-import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
+import net.minecraft.world.entity.vehicle.AbstractBoat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -92,7 +92,7 @@ import java.util.function.BooleanSupplier;
 public final class TideEffects {
 	private TideEffects() {}
 
-	private static final Identifier DIVERS_HANDS = Wildercord.id("divers_hands");
+	private static final ResourceLocation DIVERS_HANDS = Wildercord.id("divers_hands");
 	/** Bobbers Angler's Lure already hurried (once each). */
 	private static final Set<FishingHook> LURED = Collections.newSetFromMap(new WeakHashMap<>());
 	/** Each caster's one Tide Marker. */
@@ -418,7 +418,7 @@ public final class TideEffects {
 	}
 
 	private static boolean evaporates(ServerLevel level, Vec3 at) {
-		return level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.WATER_EVAPORATES, at);
+		return dev.wildercord.compat.EnvCompat.waterEvaporates(level, at);
 	}
 
 	private static void reedCut(Cast cast, Vec3 at) {
@@ -614,7 +614,7 @@ public final class TideEffects {
 			BlockState into = null;
 			String concrete = TideRules.concreteFor(BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath());
 			if (concrete != null) {
-				Block b = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(concrete));
+				Block b = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(concrete));
 				if (b != Blocks.AIR) into = b.defaultBlockState();
 			} else if (s.is(Blocks.DIRT)) {
 				into = Blocks.MUD.defaultBlockState();
@@ -705,7 +705,7 @@ public final class TideEffects {
 			BlockState s = level.getBlockState(p);
 			String living = TideRules.livingCoral(BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath());
 			if (living == null || !touchesWater(level, p, s)) continue;
-			Block b = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(living));
+			Block b = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(living));
 			if (b == Blocks.AIR || !take(cast, p)) continue;
 			level.setBlockAndUpdate(p, b.withPropertiesOf(s));
 			emit(level, ParticleTypes.BUBBLE, Vec3.atCenterOf(p), 6, 0.3);

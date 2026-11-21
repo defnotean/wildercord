@@ -17,7 +17,7 @@ public final class LearnAllFusionTest implements FabricClientGameTest {
   TestWorldSave save;
   var spell=List.of(Runes.BOLT.id(),Runes.FIRESTORM.id());
   try(var w=c.worldBuilder().create()) {
-   c.waitTicks(35);w.getServer().runCommand("gamerule spawn_mobs false");
+   c.waitTicks(35);w.getServer().runCommand("gamerule doMobSpawning false");
    w.getServer().runOnServer(s -> {var p=s.getPlayerList().getPlayers().getFirst();
     Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));
     Spellbooks.set(p,Spellbook.EMPTY.learn("unloaded:old_rune").withSpell(0,spell).withName(0,"Old Flame"));

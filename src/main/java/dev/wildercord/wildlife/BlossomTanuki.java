@@ -40,7 +40,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -64,7 +63,7 @@ public class BlossomTanuki extends Animal {
 	/** When its form last changed and when it last turned back, who fed it and when, how long they've crouched by it, and its last trick and beat. */
 	private long formAt = -1;
 	private long turnedBackAt = -1;
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1;
 	private int crouched;
 	private long trickAt = -1;
@@ -175,14 +174,14 @@ public class BlossomTanuki extends Animal {
 	}
 
 	/** The nearest thing near enough that frightens it: someone running (not its friend), a wolf, a fox, or a monster. */
-	private @Nullable Entity threat(ServerLevel level, double range) {
+	private  Entity threat(ServerLevel level, double range) {
 		Player friend = truster();
 		Entity best = null;
 		double bestDistance = Double.MAX_VALUE;
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(range), e -> e != this && e.isAlive())) {
 			boolean frightening = e instanceof Player player
 				? player != friend && player.isSprinting() && !player.isSpectator()
-				: e instanceof Enemy || e instanceof net.minecraft.world.entity.animal.wolf.Wolf || e instanceof net.minecraft.world.entity.animal.fox.Fox;
+				: e instanceof Enemy || e instanceof net.minecraft.world.entity.animal.wolf.Wolf || e instanceof net.minecraft.world.entity.animal.Fox;
 			double d = distanceTo(e);
 			if (frightening && d <= range && d < bestDistance) {
 				best = e;
@@ -233,7 +232,7 @@ public class BlossomTanuki extends Animal {
 		setDeltaMovement(getDeltaMovement().add(0, 0.35, 0));
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !TanukiRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -275,7 +274,7 @@ public class BlossomTanuki extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof BlossomTanuki young ? young : null;
 	}
 
@@ -285,17 +284,17 @@ public class BlossomTanuki extends Animal {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return hidden() || drumming() ? null : SoundEvents.FOX_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.FOX_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.FOX_DEATH;
 	}
 
@@ -338,7 +337,7 @@ public class BlossomTanuki extends Animal {
 
 	/** Trusting someone, it trots along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

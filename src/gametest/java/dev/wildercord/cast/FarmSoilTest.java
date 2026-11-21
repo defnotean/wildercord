@@ -26,7 +26,7 @@ public final class FarmSoilTest implements FabricClientGameTest {
     public void runTest(ClientGameTestContext c) {
         try (var w = c.worldBuilder().create()) {
             c.waitTicks(30);
-            w.getServer().runCommand("gamerule spawn_mobs false");
+            w.getServer().runCommand("gamerule doMobSpawning false");
             w.getServer().runCommand("time set 6000");
             w.getServer().runOnServer(s -> {
                 var p = p(s);

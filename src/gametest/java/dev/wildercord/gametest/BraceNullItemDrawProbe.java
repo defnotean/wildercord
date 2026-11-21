@@ -2,7 +2,7 @@ package dev.wildercord.gametest;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.client.MastersArtPose;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -40,8 +40,8 @@ public final class BraceNullItemDrawProbe {
 		var id = BraceNullCaptureProbe.identity();
 		if (id == null || id.firstPerson() || state.id != id.owner() || arm != state.mainArm) return null;
 		check(model instanceof PlayerModel && model instanceof BraceNullPlayerWidth, "Unknown world sword model/width");
-		check(arm == (id.left() ? HumanoidArm.LEFT : HumanoidArm.RIGHT) && item == state.getMainHandItemState() && !item.isEmpty()
-			&& sword.is(Items.DIAMOND_SWORD) && ItemStack.isSameItemSameComponents(sword, state.getMainHandItemStack())
+		check(arm == (id.left() ? HumanoidArm.LEFT : HumanoidArm.RIGHT) && item == dev.wildercord.client.compat.RenderCompat.mainHandItemState(state) && !item.isEmpty()
+			&& sword.is(Items.DIAMOND_SWORD) && ItemStack.isSameItemSameComponents(sword, dev.wildercord.client.compat.RenderCompat.mainHandStack(state))
 			&& !state.isUsingItem && !state.isBaby && state.ticksUsingItem(arm) == 0,
 			"Wrong world item/hand or unsupported use state");
 		check(!dev.wildercord.client.compat.RenderCompat.isStabSwingType(state), "Unsupported native stabbing item motion");

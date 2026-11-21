@@ -11,7 +11,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.animal.fish.*;
+import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -78,6 +78,6 @@ public final class SiltcrestBittern extends PathfinderMob {
  @Override protected SoundEvent getHurtSound(DamageSource s){return dev.wildercord.content.WildercordSounds.kit("bittern_rustle");}
  @Override public int getAmbientSoundInterval(){return 480;}
  @Override protected float getSoundVolume(){return .4F;}
- @Override protected void addAdditionalSaveData(ValueOutput o){super.addAdditionalSaveData(o);o.putLong("bittern_hunt_ready",huntReady);o.putLong("bittern_control_ready",controlReady);o.putLong("bittern_frightened_until",frightenedUntil);o.putLong("bittern_shelter_ready",shelterReady);o.putLong("bittern_shelter_until",shelterUntil);o.putString("bittern_shelter_world",level().dimension().identifier().toString());if(shelter!=null)o.store("bittern_shelter",BlockPos.CODEC,shelter);}
- @Override protected void readAdditionalSaveData(ValueInput i){super.readAdditionalSaveData(i);huntReady=i.getLongOr("bittern_hunt_ready",0);controlReady=i.getLongOr("bittern_control_ready",0);frightenedUntil=i.getLongOr("bittern_frightened_until",0);shelterReady=i.getLongOr("bittern_shelter_ready",0);shelterUntil=i.getLongOr("bittern_shelter_until",0);shelter=i.read("bittern_shelter",BlockPos.CODEC).orElse(null);if(!i.getStringOr("bittern_shelter_world",level().dimension().identifier().toString()).equals(level().dimension().identifier().toString())){shelter=null;shelterUntil=0;}knownWorld=level().dimension();quarry=null;committed=null;pendingPreen=false;epoch++;pose(shelter!=null&&clock(level())<shelterUntil?SHELTERING:IDLE,0);}
+ @Override protected void addAdditionalSaveData(ValueOutput o){super.addAdditionalSaveData(o);o.putLong("bittern_hunt_ready",huntReady);o.putLong("bittern_control_ready",controlReady);o.putLong("bittern_frightened_until",frightenedUntil);o.putLong("bittern_shelter_ready",shelterReady);o.putLong("bittern_shelter_until",shelterUntil);o.putString("bittern_shelter_world",level().dimension().location().toString());if(shelter!=null)o.store("bittern_shelter",BlockPos.CODEC,shelter);}
+ @Override protected void readAdditionalSaveData(ValueInput i){super.readAdditionalSaveData(i);huntReady=i.getLongOr("bittern_hunt_ready",0);controlReady=i.getLongOr("bittern_control_ready",0);frightenedUntil=i.getLongOr("bittern_frightened_until",0);shelterReady=i.getLongOr("bittern_shelter_ready",0);shelterUntil=i.getLongOr("bittern_shelter_until",0);shelter=i.read("bittern_shelter",BlockPos.CODEC).orElse(null);if(!i.getStringOr("bittern_shelter_world",level().dimension().location().toString()).equals(level().dimension().location().toString())){shelter=null;shelterUntil=0;}knownWorld=level().dimension();quarry=null;committed=null;pendingPreen=false;epoch++;pose(shelter!=null&&clock(level())<shelterUntil?SHELTERING:IDLE,0);}
 }

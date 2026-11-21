@@ -223,13 +223,13 @@ public final class StoneHingeImpulseProbe {
 	public static String entityIdentity(Entity entity) {
 		if (entity == null) return "null";
 		return "{type=" + BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()) + ", id=" + entity.getId() + ", uuid=" + entity.getUUID()
-			+ ", dimension=" + entity.level().dimension().identifier() + ", fireTicks=" + entity.getRemainingFireTicks() + ", removed=" + entity.isRemoved()
+			+ ", dimension=" + entity.level().dimension().location() + ", fireTicks=" + entity.getRemainingFireTicks() + ", removed=" + entity.isRemoved()
 			+ (entity instanceof SwordMaster master ? ", started=" + master.started() + ", windup=" + master.state(AuraFighter.WINDUP)
 				+ ", attack=" + master.attackAnimation() + ", elapsed=" + master.attackElapsed(0) + ", tell=" + master.attackTellTicks() : "") + "}";
 	}
 	public static String sourceIdentity(DamageSource source) {
 		if (source == null) return "null";
-		return "{type=" + source.typeHolder().unwrapKey().map(key -> key.identifier().toString()).orElse(source.getMsgId())
+		return "{type=" + source.typeHolder().unwrapKey().map(key -> key.location().toString()).orElse(source.getMsgId())
 			+ ", owner=" + entityIdentity(source.getEntity()) + ", direct=" + entityIdentity(source.getDirectEntity()) + "}";
 	}
 

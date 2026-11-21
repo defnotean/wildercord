@@ -32,7 +32,7 @@ public final class LoadoutsTest implements FabricClientGameTest {
 		TestWorldSave save;
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(35);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runOnServer(s -> {
 				ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
 				Spellbooks.setCord(p, new ItemStack(WildercordItems.ECHO_CORD));

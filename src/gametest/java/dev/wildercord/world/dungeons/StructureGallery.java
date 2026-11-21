@@ -44,7 +44,7 @@ final class StructureGallery {
 				p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 1_000_000, 0, false, false));
 			});
 			List<String> ids = world.getServer().computeOnServer(s -> s.overworld().registryAccess().lookupOrThrow(Registries.STRUCTURE).listElementIds()
-				.map(k -> k.identifier()).filter(id -> id.getNamespace().equals("wildercord")).map(id -> id.getPath()).sorted().toList());
+				.map(k -> k.location()).filter(id -> id.getNamespace().equals("wildercord")).map(id -> id.getPath()).sorted().toList());
 			for (int i = 0; i < ids.size(); i++) {
 				if (i % shards != shard) continue;
 				String id = ids.get(i);
@@ -57,7 +57,7 @@ final class StructureGallery {
 					for (int cx = (b.minX() >> 4) - 2; cx <= (b.maxX() >> 4) + 2; cx++) for (int cz = (b.minZ() >> 4) - 2; cz <= (b.maxZ() >> 4) + 2; cz++) level.getChunk(cx, cz);
 					boolean[] ok = {false};
 					s.getCommands().performPrefixedCommand(s.createCommandSourceStack().withSuppressedOutput().withCallback((success, value) -> ok[0] = success && value == 1),
-						"execute in " + site.dimension().identifier() + " run place structure wildercord:" + id + " " + site.command().getX() + " " + site.command().getY() + " " + site.command().getZ());
+						"execute in " + site.dimension().location() + " run place structure wildercord:" + id + " " + site.command().getX() + " " + site.command().getY() + " " + site.command().getZ());
 					return ok[0];
 				});
 				if (!placed) { missing.add(id); log(id, "place structure refused at " + site.command()); continue; }
@@ -100,7 +100,7 @@ final class StructureGallery {
 	/** The dimension whose biomes can host {@code id}: the overworld unless only the Nether's or the End's biomes are in its tag. */
 	private static ServerLevel home(net.minecraft.server.MinecraftServer server, String id) {
 		var biomes = server.overworld().registryAccess().lookupOrThrow(Registries.STRUCTURE).getValueOrThrow(ResourceKey.create(Registries.STRUCTURE,
-			net.minecraft.resources.Identifier.fromNamespaceAndPath("wildercord", id))).biomes();
+			net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("wildercord", id))).biomes();
 		for (ServerLevel level : server.getAllLevels())
 			if (level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes().stream().anyMatch(biomes::contains)) return level;
 		return server.overworld();
@@ -109,7 +109,7 @@ final class StructureGallery {
 	/** The nearest valid registered start of {@code id}, searched outward from its biome closest to {@code origin}. */
 	private static Site find(ServerLevel level, String id, BlockPos origin) {
 		var holder = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,
-			net.minecraft.resources.Identifier.fromNamespaceAndPath("wildercord", id)));
+			net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("wildercord", id)));
 		var structure = holder.value();
 		var source = level.getChunkSource();
 		var generator = source.getGenerator();

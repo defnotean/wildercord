@@ -3,7 +3,7 @@ import dev.wildercord.compat.McTime;
 import net.minecraft.core.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.animal.fish.AbstractFish;
+import net.minecraft.world.entity.animal.AbstractFish;
 import java.util.*;
 /** Complete prey pool; dry footing avoids a swimming target that cannot ground a strike; retained bank cursor, at most two native path requests per search pulse. */
 final class BitternHuntGoal extends Goal {

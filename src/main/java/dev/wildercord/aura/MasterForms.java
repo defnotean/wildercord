@@ -316,7 +316,7 @@ public final class MasterForms {
 			Math.max(p.recoveryUntil(), now(player) + StoneHingeRules.RECOVERY_TICKS), p.landingUntil(), p.hingeLearned()));
 		emit(player, s, phase, StoneHingeRules.RECOVERY_TICKS, s.hingeYaw);
 	}
-	private static final net.minecraft.resources.Identifier PLANT = Wildercord.id("stone_hinge_plant");
+	private static final net.minecraft.resources.ResourceLocation PLANT = Wildercord.id("stone_hinge_plant");
 	/** The plant: a heavy, transient slow while braced and catching. Never saved, always removed on any exit. */
 	private static void plant(ServerPlayer player, boolean on) {
 		var speed = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);

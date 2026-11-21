@@ -17,7 +17,7 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -48,11 +48,11 @@ public class ContractBoardScreen extends Screen {
 	private static final int FAINT = 0xFF5A5470;
 	private static final int DONE = 0xFF7BD88F;
 
-	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
-	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
-	private static final Identifier SPR_ROW = Wildercord.id("cord/row");
-	private static final Identifier SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
-	private static final Identifier SPR_SOCKET = Wildercord.id("cord/socket");
+	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
+	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
+	private static final ResourceLocation SPR_ROW = Wildercord.id("cord/row");
+	private static final ResourceLocation SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
+	private static final ResourceLocation SPR_SOCKET = Wildercord.id("cord/socket");
 
 	private final List<ContractRules.Contract> contracts;
 	private final int ticksToDawn;
@@ -84,7 +84,7 @@ public class ContractBoardScreen extends Screen {
 		return (height - H) / 2;
 	}
 
-	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 

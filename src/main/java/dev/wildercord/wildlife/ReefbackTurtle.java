@@ -15,13 +15,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 /**
  * The Reefback Turtle (0.13), the water mount: a great sea turtle with a coral-crusted shell that comes ashore on warm
@@ -150,7 +149,7 @@ public class ReefbackTurtle extends AbstractHorse {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		ReefbackTurtle hatchling = MountContent.REEFBACK_TURTLE.create(level, EntitySpawnReason.BREEDING);
 		if (hatchling != null) {
 			setOffspringAttributes(partner, hatchling);

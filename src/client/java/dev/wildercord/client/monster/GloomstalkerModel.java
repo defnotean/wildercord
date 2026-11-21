@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 
 /**
@@ -48,7 +48,7 @@ public class GloomstalkerModel extends EntityModel<MonsterRenderState> {
 	private final Giant giant = new Giant();
 
 	public GloomstalkerModel(ModelPart root) {
-		super(root, RenderTypes::entityTranslucent);
+		super(root, RenderType::entityTranslucent);
 		this.body = root.getChild("body");
 		this.head = body.getChild("head");
 		this.jaw = head.getChild("jaw");

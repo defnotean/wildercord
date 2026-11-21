@@ -76,8 +76,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			});
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");
-			world.getServer().runCommand("gamerule advance_time false");
-			world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runCommand("gamerule doDaylightCycle false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
 			setup(world);
 			context.waitTicks(20);
 			String section = System.getenv("WILDERCORD_TOUR_SECTION");

@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
@@ -116,10 +115,10 @@ public final class WorldQuirks {
 	/** Everything a quirk can ask about where an effect lands (as {@link Attunement#placeOf} does for a player). */
 	static Attunements.Place placeAt(ServerLevel level, Vec3 at) {
 		BlockPos pos = BlockPos.containing(at);
-		String biome = level.getBiome(pos).unwrapKey().map(k -> k.identifier().toString()).orElse("");
-		String dimension = level.dimension().identifier().toString();
+		String biome = level.getBiome(pos).unwrapKey().map(k -> k.location().toString()).orElse("");
+		String dimension = level.dimension().location().toString();
 		long time = Math.floorMod(dev.wildercord.compat.McTime.overworldClock(level), 24000L);
-		int moon = level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, pos).index();
+		int moon = dev.wildercord.compat.EnvCompat.moonPhase(level, pos);
 		Biome.Precipitation falling = level.precipitationAt(pos.above());
 		String precipitation = falling == Biome.Precipitation.RAIN ? "rain" : falling == Biome.Precipitation.SNOW ? "snow" : "none";
 		return new Attunements.Place(biome, dimension, pos.getY(), time, moon, precipitation, level.canSeeSky(pos.above()), false);

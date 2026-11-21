@@ -17,7 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,7 +27,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.StructureTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -36,12 +36,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.monster.piglin.Piglin;
-import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -165,7 +165,7 @@ public final class WayfarerEffects {
 		ServerLevel level = cast.level;
 		BlockPos pos = ground(hit);
 		Holder<Biome> biome = level.getBiome(pos);
-		Component name = biome.unwrapKey().map(k -> (Component) Component.translatable(Util.makeDescriptionId("biome", k.identifier())))
+		Component name = biome.unwrapKey().map(k -> (Component) Component.translatable(Util.makeDescriptionId("biome", k.location())))
 			.orElse(Component.literal("?"));
 		float warmth = biome.value().getBaseTemperature();
 		String feel = warmth < 0.15f ? "frozen" : warmth < 0.5f ? "cool" : warmth < 1.0f ? "mild" : "hot";
@@ -769,7 +769,7 @@ public final class WayfarerEffects {
 	}
 
 	private static Optional<Holder.Reference<MobEffect>> effect(String id) {
-		Identifier parsed = Identifier.tryParse(id);
+		ResourceLocation parsed = ResourceLocation.tryParse(id);
 		return parsed == null ? Optional.empty() : BuiltInRegistries.MOB_EFFECT.get(parsed);
 	}
 

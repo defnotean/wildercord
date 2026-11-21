@@ -55,8 +55,8 @@ public final class MasterSchoolMotionChecks {
 		var saved = context.computeOnClient(MastersNpcCaptureProbe.Options::save);
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(30);
-			for (String command : List.of("difficulty normal", "gamerule spawn_mobs false", "gamerule natural_health_regeneration false",
-				"gamerule advance_time false", "time set 3000", "weather clear")) world.getServer().runCommand(command);
+			for (String command : List.of("difficulty normal", "gamerule doMobSpawning false", "gamerule natural_regeneration false",
+				"gamerule doDaylightCycle false", "time set 3000", "weather clear")) world.getServer().runCommand(command);
 			world.getServer().runOnServer(server -> {
 				ServerPlayer observer = server.getPlayerList().getPlayers().getFirst();
 				level = observer.level();

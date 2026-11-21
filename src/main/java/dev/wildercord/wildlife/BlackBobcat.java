@@ -29,13 +29,12 @@ import net.minecraft.world.entity.ai.goal.target.NonTameRandomTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.chicken.Chicken;
-import net.minecraft.world.entity.animal.rabbit.Rabbit;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A black bobcat: a melanistic wildcat of the dark forests and old taigas, as big as a polar bear, with tufted ears, a bobbed
@@ -149,7 +148,7 @@ public class BlackBobcat extends TamableAnimal {
 	// ------------------------------------------------------------------ breeding
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		// A kitten of its own kind: a lynx raises a lynx, a cougar a cougar.
 		if (!(getType().create(level, EntitySpawnReason.BREEDING) instanceof BlackBobcat kitten)) {
 			return null;
@@ -170,17 +169,17 @@ public class BlackBobcat extends TamableAnimal {
 	// ------------------------------------------------------------------ sound: an ocelot's voice, a big cat's chest
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return SoundEvents.OCELOT_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.OCELOT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.OCELOT_DEATH;
 	}
 

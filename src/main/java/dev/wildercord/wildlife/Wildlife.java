@@ -29,7 +29,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.enchantment.Repairable;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,7 +120,7 @@ public final class Wildlife {
 	 * A wildlife sound from the feel kit ({@code tools/feel/wildlife.py}), by the name after {@code wildlife_}; null when
 	 * the kit has none, which plays nothing.
 	 */
-	public static @Nullable SoundEvent sound(String name) {
+	public static  SoundEvent sound(String name) {
 		return WildercordSounds.kit("wildlife_" + name);
 	}
 

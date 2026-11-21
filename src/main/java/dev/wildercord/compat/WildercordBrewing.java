@@ -3,7 +3,7 @@ package dev.wildercord.compat;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
@@ -48,7 +48,7 @@ public final class WildercordBrewing {
 
 	private static void mix(PotionBrewing.Builder builder, String inId, String reagentId, String outId) {
 		var inPotion = potion(inId);
-		var reagent = BuiltInRegistries.ITEM.getOptional(Identifier.parse(reagentId)).orElse(null);
+		var reagent = BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(reagentId)).orElse(null);
 		var outPotion = potion(outId);
 		if (inPotion != null && reagent != null && outPotion != null) {
 			builder.addMix(inPotion, reagent, outPotion);
@@ -56,6 +56,6 @@ public final class WildercordBrewing {
 	}
 
 	private static Holder<Potion> potion(String id) {
-		return BuiltInRegistries.POTION.get(ResourceKey.create(Registries.POTION, Identifier.parse(id))).orElse(null);
+		return BuiltInRegistries.POTION.get(ResourceKey.create(Registries.POTION, ResourceLocation.parse(id))).orElse(null);
 	}
 }

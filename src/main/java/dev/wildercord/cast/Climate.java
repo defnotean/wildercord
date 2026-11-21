@@ -128,7 +128,7 @@ public final class Climate {
 		long clock = dev.wildercord.compat.McTime.overworldClock(level);
 		long time = Math.floorMod(clock, 24000L);
 		int moon = fixedTime ? -1 : ClimateRules.moonPhase(clock);
-		return new ClimateRules.Surroundings(level.dimension().identifier().toString(), !fixedTime, time, level.canSeeSky(head),
+		return new ClimateRules.Surroundings(level.dimension().location().toString(), !fixedTime, time, level.canSeeSky(head),
 			level.isRaining(), level.isThundering(), level.isRainingAt(head), biome.coldEnoughToSnow(feet, level.getSeaLevel()),
 			biome.getBaseTemperature(), !biome.hasPrecipitation(), feet.getY(), ley, crossing, moon, Config.get().power().celestial());
 	}

@@ -18,9 +18,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.*;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.renderer.entity.state.*;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -230,9 +230,9 @@ public final class CrimsonMoonRenderProbe {
             ||!a.skin.equals(s.originalSkin)||!CrimsonMoonRenderMath.originalSkin(s.originalSkin.body().texturePath().toString(),a.skin.body().texturePath().toString(),
                 s.originalSkin.model().getSerializedName(),a.skin.model().getSerializedName(),true))s.token.reject("extracted_skin_is_not_original_connected_skin");
         var source=new Extracted(SEQ.incrementAndGet(),id(s,a),entity.getUUID().toString(),a.skin.model().toString(),a.skin.body().texturePath().toString(),
-            p,c,r,model,a.getMainHandItemStack().copy(),off.copy(),a.getMainHandItemState(),armor(a).stream().map(ItemStack::copy).toList(),shell,expectedBody,expectedView,s.originalSkin);
+            p,c,r,model,dev.wildercord.client.compat.RenderCompat.mainHandStack(a).copy(),off.copy(),dev.wildercord.client.compat.RenderCompat.mainHandItemState(a),armor(a).stream().map(ItemStack::copy).toList(),shell,expectedBody,expectedView,s.originalSkin);
         s.sources.put(a,source);
-        if(!entity.getUUID().toString().equals(e.uuid())||!a.getMainHandItemStack().is(Items.DIAMOND_SWORD)||!off.isEmpty())s.token.reject("wrong_owner_weapon_offhand");
+        if(!entity.getUUID().toString().equals(e.uuid())||!dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD)||!off.isEmpty())s.token.reject("wrong_owner_weapon_offhand");
         if(!a.mainArm.name().equals(e.hand())||!a.skin.model().toString().equalsIgnoreCase(e.skin())||shell!=e.shell())s.token.reject("wrong_original_appearance");
         boolean armor=e.armor()?a.headEquipment.is(Items.NETHERITE_HELMET)&&a.chestEquipment.is(Items.NETHERITE_CHESTPLATE)
             &&a.legsEquipment.is(Items.NETHERITE_LEGGINGS)&&a.feetEquipment.is(Items.NETHERITE_BOOTS)&&armor(a).stream().allMatch(ItemStack::hasFoil):armor(a).stream().allMatch(ItemStack::isEmpty);
@@ -345,7 +345,7 @@ public final class CrimsonMoonRenderProbe {
         var expected=source.expectedView();
         if(expected.phase()!=frame.pose().phase()||!hashPose(expected::local,expected.weight()).equals(hashPose(frame.pose()::local,frame.pose().weight())))s.token.reject("wrong_submitted_view_palette");
         var matrix=CrimsonMoonRenderMath.viewRoot(s.view.before(),expected,source.expectedBody().weight(),neutral?0:r.yawDelta(),neutral?0:r.pitchDelta());
-        RenderType expectedMaterial=RenderTypes.entityTranslucent(source.originalSkin().body().texturePath());
+        RenderType expectedMaterial=RenderType.entityTranslucent(source.originalSkin().body().texturePath());
         if(!CrimsonMoonRenderMath.originalSkin(source.originalSkin().body().texturePath().toString(),a.skin.body().texturePath().toString(),
             source.originalSkin().model().getSerializedName(),a.skin.model().getSerializedName(),material==expectedMaterial))s.token.reject("submitted_skin_material_is_not_original");
         s.token.observe("originalSkinMaterialIdentity",id(s,expectedMaterial));s.token.observe("submittedSkinMaterialIdentity",id(s,material));
@@ -363,8 +363,8 @@ public final class CrimsonMoonRenderProbe {
         var s=rendering();if(s==null||s.view==null||s.view.hand()!=InteractionHand.MAIN_HAND)return;
         var a=s.view.avatar();var source=s.sources.get(a);var candidates=s.views.values().stream().filter(v->v.avatar()==a).toList();
         if(source==null||candidates.size()!=1){s.token.reject("item_without_unique_view");return;}var view=candidates.getFirst();
-        if(!CrimsonMoonRenderMath.item(id(s,source.item()),id(s,item),a.getMainHandItemStack().is(Items.DIAMOND_SWORD),offhand(a).isEmpty(),
-            ItemStack.isSameItemSameComponents(source.main(),a.getMainHandItemStack()))||item.isEmpty())s.token.reject("wrong_articulated_item");
+        if(!CrimsonMoonRenderMath.item(id(s,source.item()),id(s,item),dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD),offhand(a).isEmpty(),
+            ItemStack.isSameItemSameComponents(source.main(),dev.wildercord.client.compat.RenderCompat.mainHandStack(a)))||item.isEmpty())s.token.reject("wrong_articulated_item");
         var expected=CrimsonMoonRenderMath.sword(view.root(),CrimsonMoonRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
         pass(s,"view_item",a,view.model(),item,CrimsonMoonRenderMath.compare("actual_socket_item_matrix",CrimsonMoonRenderMath.values(expected),CrimsonMoonRenderMath.values(actual)),true,false);
     }
@@ -375,7 +375,7 @@ public final class CrimsonMoonRenderProbe {
         if(!stack.is(Items.DIAMOND_SWORD)||!hands.equipKnown()||!ItemStack.isSameItemSameComponents(stack,hands.mainHandItem())||!ItemStack.isSameItemSameComponents(stack,source.main()))s.token.reject("wrong_native_stack");
         var c=source.classic();boolean equipping=hands.mainHandEquipping();
         float ownership=c==null||equipping?0:MastersViewMotion.ownership(c.pose().weight(),true);
-        boolean whack=RenderCompat.activeMainHandSwingType(a)==SwingAnimationType.WHACK;
+        boolean whack=RenderCompat.activeMainHandSwingType(a)==RenderCompat.SwingAnim.WHACK;
         if(a.isUsingItem||a.isAutoSpinAttack||hands.isScoping()||RenderCompat.hasActiveStabSwing(a))s.token.reject("unsupported_native_item_motion");
         var before=new Matrix4f(pose.last().pose());var expected=CrimsonMoonRenderMath.nativeSword(before,c==null?null:c.pose(),a.mainArm==HumanoidArm.LEFT,inverse,c==null?0:c.yawDelta(),c==null?0:c.pitchDelta(),ownership,attack,whack);
         var call=new FallbackView(a,hands,before,expected,inverse,ownership,s.fallback);s.fallback=call;return call;
@@ -394,7 +394,7 @@ public final class CrimsonMoonRenderProbe {
     public static void fallbackViewItem(FallbackView call,ItemStackRenderState item,Matrix4fc actual){
         var s=rendering();if(s==null||call==null)return;var source=s.sources.get(call.avatar);
         var held=call.hands.mainHandItem();
-        if(source==null||!CrimsonMoonRenderMath.item(id(s,call.item),id(s,item),call.avatar.getMainHandItemStack().is(Items.DIAMOND_SWORD),
+        if(source==null||!CrimsonMoonRenderMath.item(id(s,call.item),id(s,item),call.dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar).is(Items.DIAMOND_SWORD),
             offhand(call.avatar).isEmpty(),ItemStack.isSameItemSameComponents(source.main(),held))||item.isEmpty())s.token.reject("wrong_native_item");
         if(!call.transform)s.token.reject("skipped_classic_transform");
         pass(s,"native_item",call.avatar,call.hands.rendererObject(),item,CrimsonMoonRenderMath.compare("actual_native_item_matrix",CrimsonMoonRenderMath.values(call.expectedItem),CrimsonMoonRenderMath.values(actual)),false,true);
@@ -415,8 +415,8 @@ public final class CrimsonMoonRenderProbe {
             ||!CrimsonMoonRenderMath.same(e.palette().classic(),key(a.getData(MastersArtPose.FRAME)))
             ||!CrimsonMoonRenderMath.same(e.palette().articulated(),key(a.getData(ArticulatedCombat.FRAME)))
             ||!e.originalSkin().equals(a.skin)||!e.skin().equals(a.skin.model().toString())||!e.texture().equals(a.skin.body().texturePath().toString())
-            ||!a.mainArm.name().equals(s.token.expected.hand())||e.item()!=a.getMainHandItemState()||!ItemStack.isSameItemSameComponents(e.main(),a.getMainHandItemStack())
-            ||e.main().getCount()!=a.getMainHandItemStack().getCount()||!e.off().isEmpty()||!offhand(a).isEmpty()||!backend(s.token.expected,a))return false;
+            ||!a.mainArm.name().equals(s.token.expected.hand())||e.item()!=dev.wildercord.client.compat.RenderCompat.mainHandItemState(a)||!ItemStack.isSameItemSameComponents(e.main(),dev.wildercord.client.compat.RenderCompat.mainHandStack(a))
+            ||e.main().getCount()!=dev.wildercord.client.compat.RenderCompat.mainHandStack(a).getCount()||!e.off().isEmpty()||!offhand(a).isEmpty()||!backend(s.token.expected,a))return false;
         var armor=armor(a);for(int i=0;i<4;i++)if(!ItemStack.isSameItemSameComponents(e.armor().get(i),armor.get(i)))return false;
         return e.shell()==(a.getData(AuraShellLayer.SHELL_GLOW)!=null);
     }
@@ -444,9 +444,9 @@ public final class CrimsonMoonRenderProbe {
             &&!a.hasPose(Pose.SWIMMING)&&!a.hasPose(Pose.SLEEPING)&&Boolean.TRUE.equals(a.getData(ArticulatedCombat.KNOWN_LAYERS))&&a.walkAnimationSpeed<=.2F&&!a.isSpectator
             &&a.arrowCount==0&&a.stingerCount==0&&!a.showExtraEars&&a.parrotOnLeftShoulder==null&&a.parrotOnRightShoulder==null&&(!a.showCape||a.skin.cape()==null)&&a.heldOnHead.isEmpty()
             &&a.getData(dev.wildercord.client.render.GearLook.PACK)==null&&a.getData(dev.wildercord.client.render.GearLook.PIECES)==null&&a.getData(AuraShellLayer.IMAGES)==null
-            &&a.getMainHandItemStack().is(Items.DIAMOND_SWORD)&&offhand(a).isEmpty();
+            &&dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD)&&offhand(a).isEmpty();
     }
-    private static ItemStack offhand(AvatarRenderState a){return a.mainArm==HumanoidArm.RIGHT?a.leftHandItemStack:a.rightHandItemStack;}
+    private static ItemStack offhand(AvatarRenderState a){return a.mainArm==HumanoidArm.RIGHT?dev.wildercord.client.compat.RenderCompat.leftHandStack(a):dev.wildercord.client.compat.RenderCompat.rightHandStack(a);}
     private static List<ItemStack> armor(AvatarRenderState a){return List.of(a.headEquipment,a.chestEquipment,a.legsEquipment,a.feetEquipment);}
     private static long id(Scope s,Object object){return object==null?0:s.ids.computeIfAbsent(object,key->SEQ.incrementAndGet());}
     private static Part part(ModelPart p){var initial=p.getInitialPose();return new Part(p.x,p.y,p.z,p.xRot,p.yRot,p.zRot,p.xScale,p.yScale,p.zScale,initial.x(),initial.y(),initial.z());}

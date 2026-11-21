@@ -5,8 +5,8 @@ import dev.wildercord.monster.Gloomstalker;
 import dev.wildercord.monster.MonsterRules;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 
 /**
@@ -17,7 +17,7 @@ import net.minecraft.util.ARGB;
  */
 public class GloomstalkerRenderer extends WildMonsterRenderer<Gloomstalker, GloomstalkerModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("gloomstalker"), "main");
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/gloomstalker.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/gloomstalker.png");
 
 	public GloomstalkerRenderer(EntityRendererProvider.Context context) {
 		super(context, new GloomstalkerModel(context.bakeLayer(LAYER)), 0.5F, TEXTURE);

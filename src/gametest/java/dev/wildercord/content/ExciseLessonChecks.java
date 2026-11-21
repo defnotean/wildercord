@@ -63,9 +63,9 @@ public final class ExciseLessonChecks {
 			TestServerConnection connection = server.connect();
 			try {
 				connection.getClientWorld().waitForChunksDownload();
-				server.runCommand("gamerule spawn_mobs false");
-				server.runCommand("gamerule fall_damage false");
-            server.runCommand("gamerule keep_inventory true");
+				server.runCommand("gamerule doMobSpawning false");
+				server.runCommand("gamerule fallDamage false");
+            server.runCommand("gamerule keepInventory true");
 				server.runOnServer(s -> {
 					for (var level : List.of(s.overworld(), s.getLevel(Level.NETHER))) {
 						for (int x = -4; x <= 4; x++) for (int z = -4; z <= 4; z++) {

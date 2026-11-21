@@ -8,7 +8,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +25,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwingAnimationType;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.SwingAnimation;
@@ -42,9 +41,8 @@ import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.material.PushReaction;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -53,7 +51,7 @@ import java.util.function.Predicate;
  * Version seam for blocks, items, tags, sounds, signs, containers, compostables and fuels.
  */
 public final class McBlocksAndItems {
-	private static final TagKey<Block> SAPLINGS = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("saplings"));
+	private static final TagKey<Block> SAPLINGS = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("saplings"));
 	// 26.1.2 has no vanilla colour-collection holders; dyed families are resolved by registry name.
 	private static final List<String> DYED_SUFFIXES = List.of(
 		"stained_glass_pane", "stained_glass", "glazed_terracotta", "concrete_powder",
@@ -92,13 +90,13 @@ public final class McBlocksAndItems {
 	}
 
 	/** Extinguishes a lit campfire block cleanly across MC douse/dowse renames. */
-	public static void douseCampfire(@Nullable Entity actor, LevelAccessor level, BlockPos pos, BlockState state) {
+	public static void douseCampfire( Entity actor, LevelAccessor level, BlockPos pos, BlockState state) {
 		CampfireBlock.dowse(actor, level, pos, state);
 	}
 
 	/** Primes a TNT block at {@code pos} respecting {@code TNT_EXPLODES}, returning true if primed. */
-	public static boolean primeTnt(ServerLevel level, BlockPos pos, @Nullable LivingEntity igniter) {
-		if (!level.getGameRules().get(GameRules.TNT_EXPLODES)) {
+	public static boolean primeTnt(ServerLevel level, BlockPos pos,  LivingEntity igniter) {
+		if (!level.getGameRules().getRule(GameRules.RULE_TNT_EXPLODES).get()) {
 			return false;
 		}
 		PrimedTnt tnt = new PrimedTnt(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, igniter);
@@ -144,17 +142,17 @@ public final class McBlocksAndItems {
 	}
 
 	/** Copies all slots held inside an {@link ItemContainerContents} component. */
-	public static List<ItemStack> containerItems(@Nullable ItemContainerContents contents) {
+	public static List<ItemStack> containerItems( ItemContainerContents contents) {
 		return contents == null ? List.of() : contents.stream().map(ItemStack::copy).toList();
 	}
 
 	/** Number of slot entries inside an {@link ItemContainerContents} component. */
-	public static int containerCount(@Nullable ItemContainerContents contents) {
+	public static int containerCount( ItemContainerContents contents) {
 		return contents == null ? 0 : contents.stream().map(ItemStack::copy).toList().size();
 	}
 
 	/** Copies all stacks held inside a {@link BundleContents} component. */
-	public static List<ItemStack> bundleItems(@Nullable BundleContents bundle) {
+	public static List<ItemStack> bundleItems( BundleContents bundle) {
 		return bundle == null ? List.of() : bundle.itemCopyStream().toList();
 	}
 
@@ -216,8 +214,8 @@ public final class McBlocksAndItems {
 	}
 
 	/** Block of the dyed family {@code suffix} (e.g. {@code "wall_banner"}) in {@code color}, or null when absent. */
-	public static @Nullable Block dyedBlock(String suffix, DyeColor color) {
-		Block block = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(color.getName() + "_" + suffix));
+	public static  Block dyedBlock(String suffix, DyeColor color) {
+		Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(color.getName() + "_" + suffix));
 		return block == Blocks.AIR ? null : block;
 	}
 
@@ -234,7 +232,7 @@ public final class McBlocksAndItems {
 	}
 
 	/** {@code block} recoloured to {@code color} within its dyed family, or null when it isn't dyeable or already is that colour. */
-	public static @Nullable Block recoloured(Block block, DyeColor color) {
+	public static  Block recoloured(Block block, DyeColor color) {
 		String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
 		if (block == Blocks.GLASS) {
 			name = "stained_glass";
@@ -270,8 +268,14 @@ public final class McBlocksAndItems {
 		return Blocks.SPRUCE_STAIRS;
 	}
 
+	/** The base weapon a skyrend glaive is forged onto in the active MC version. */
+	public static Item spearItem(boolean netherite) {
+		// 1.21.10 has no spear items: the glaive is forged onto a sword.
+		return netherite ? Items.NETHERITE_SWORD : Items.DIAMOND_SWORD;
+	}
+
 	/** Applies skyrend glaive's heavy swing component in the active MC version. */
 	public static void setGlaiveSwingAnimation(ItemStack stack, int duration) {
-		stack.set(DataComponents.SWING_ANIMATION, new SwingAnimation(SwingAnimationType.WHACK, duration));
+		// 1.21.10 has no minecraft:swing_animation component; the glaive swings like any other blade.
 	}
 }

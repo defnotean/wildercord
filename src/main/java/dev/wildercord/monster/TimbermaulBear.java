@@ -47,7 +47,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -106,8 +105,8 @@ public class TimbermaulBear extends EliteMonster {
 	private double broke;
 	private boolean roused, again;
 	private Vec3 dir = new Vec3(0, 0, 1), spot = Vec3.ZERO, from = Vec3.ZERO;
-	private @Nullable LivingEntity wary;
-	private @Nullable UUID pinned;
+	private  LivingEntity wary;
+	private  UUID pinned;
 
 	public TimbermaulBear(EntityType<? extends TimbermaulBear> type, Level level) {
 		super(type, level, BossEvent.BossBarColor.RED);
@@ -369,7 +368,7 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** Standing up tall, huffing at whoever came near: they back off and are let be, or it charges. */
-	private void bluff(ServerLevel level, @Nullable LivingEntity target) {
+	private void bluff(ServerLevel level,  LivingEntity target) {
 		hold();
 		if (target != null) {
 			wary = null;
@@ -406,7 +405,7 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** Between moves: closing in, standing planted a moment, then the next move off the deck. */
-	private void idle(ServerLevel level, @Nullable LivingEntity target) {
+	private void idle(ServerLevel level,  LivingEntity target) {
 		if (target == null) {
 			roam(level);
 			return;
@@ -502,7 +501,7 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** The rake: a paw drawn back on one side and swept across its front; roused, the other paw backhands after. */
-	private void rake(ServerLevel level, @Nullable LivingEntity target) {
+	private void rake(ServerLevel level,  LivingEntity target) {
 		hold();
 		long s = since();
 		int tell = tell(), side = side();
@@ -557,7 +556,7 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** The snap: head low and jaws open, a lunge down a short lane; roused, a second snap after. */
-	private void snap(ServerLevel level, @Nullable LivingEntity target) {
+	private void snap(ServerLevel level,  LivingEntity target) {
 		long s = since();
 		int tell = tell();
 		if (s < tell) {
@@ -608,7 +607,7 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** The crush: reared up tall, then both forepaws brought down on a fan of ground before it; roused, it rears again. */
-	private void crush(ServerLevel level, @Nullable LivingEntity target) {
+	private void crush(ServerLevel level,  LivingEntity target) {
 		hold();
 		long s = since();
 		int tell = tell();
@@ -661,14 +660,14 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** Where a pounce at its prey would come down, if it can get there: else null. */
-	private @Nullable Vec3 leap(ServerLevel level, LivingEntity target) {
+	private  Vec3 leap(ServerLevel level, LivingEntity target) {
 		Vec3 at = within(target.position(), TimbermaulRules.pounceLength(distanceTo(target)));
 		boolean clear = Math.abs(at.y - getY()) <= 3 && level.noCollision(this, getBoundingBox().move(at.subtract(position())));
 		return clear ? at : null;
 	}
 
 	/** The pounce: haunches down, then a leap on a ring where its prey stood; a miss leaves it sprawled. Roused, it leaps twice. */
-	private void pounce(ServerLevel level, @Nullable LivingEntity target) {
+	private void pounce(ServerLevel level,  LivingEntity target) {
 		long s = since();
 		int tell = tell();
 		if (s < tell) {
@@ -713,7 +712,7 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** Coming down from a pounce: whoever is under it struck, then a second leap (roused), a sprawl (missed) or a breath. */
-	private void land(ServerLevel level, @Nullable LivingEntity target) {
+	private void land(ServerLevel level,  LivingEntity target) {
 		noPhysics = false;
 		setPos(spot);
 		sound(level, spot, SoundEvents.MACE_SMASH_GROUND_HEAVY, 1.3F, 0.85F);
@@ -843,7 +842,7 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** The log: claws dug in under a fallen trunk, heaved up and sent rolling down a lane (jump it). Roused, a second one after. */
-	private void log(ServerLevel level, @Nullable LivingEntity target) {
+	private void log(ServerLevel level,  LivingEntity target) {
 		hold();
 		long s = since();
 		int tell = tell();
@@ -1026,7 +1025,7 @@ public class TimbermaulBear extends EliteMonster {
 	}
 
 	/** The hug, roused: reared up wide, then falling forward on whoever stands before it and pinning them. */
-	private void hug(ServerLevel level, @Nullable LivingEntity target) {
+	private void hug(ServerLevel level,  LivingEntity target) {
 		hold();
 		long s = since();
 		int tell = tell();
@@ -1071,7 +1070,7 @@ public class TimbermaulBear extends EliteMonster {
 		}
 	}
 
-	private @Nullable LivingEntity held(ServerLevel level) {
+	private  LivingEntity held(ServerLevel level) {
 		return pinned != null && level.getEntity(pinned) instanceof LivingEntity victim && victim.isAlive() && victim.distanceTo(this) <= 6
 			? victim : null;
 	}
@@ -1282,7 +1281,7 @@ public class TimbermaulBear extends EliteMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return SoundEvents.POLAR_BEAR_AMBIENT;
 	}
 

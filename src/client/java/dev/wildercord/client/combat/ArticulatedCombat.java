@@ -10,7 +10,7 @@ import dev.wildercord.client.render.AuraShellLayer;
 import dev.wildercord.client.render.GearLook;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
@@ -139,7 +139,7 @@ public final class ArticulatedCombat {
 	public static Frame viewFrame(AvatarRenderState state) { return compatible(state, true); }
 
 	private static Frame compatible(ArmedEntityRenderState state, boolean view) {
-		if (!enabled() || !(state instanceof HumanoidRenderState humanoid) || !upright(humanoid) || !plainSword(state.getMainHandItemStack())
+		if (!enabled() || !(state instanceof HumanoidRenderState humanoid) || !upright(humanoid) || !plainSword(dev.wildercord.client.compat.RenderCompat.mainHandStack(state))
 			|| !Boolean.TRUE.equals(state.getData(KNOWN_LAYERS))) return null;
 		Frame frame = state.getData(FRAME);
 		if (frame == null || !view && state.walkAnimationSpeed > .2F
@@ -147,7 +147,7 @@ public final class ArticulatedCombat {
 			|| !ArticulatedArmorRenderer.compatible(humanoid) || !view && frame.pose().weight() <= 0
 			|| view && frame.move() != -1 && !ArticulatedCombatPose.supportsPlayer(frame.move()) && !wallTurn(frame)
 			|| view && frame.move() == -1 && dev.wildercord.client.compat.RenderCompat.swingProgress(state) > 0) return null;
-		ItemStack off = state.mainArm == HumanoidArm.RIGHT ? state.leftHandItemStack : state.rightHandItemStack;
+		ItemStack off = state.mainArm == HumanoidArm.RIGHT ? dev.wildercord.client.compat.RenderCompat.leftHandStack(state) : dev.wildercord.client.compat.RenderCompat.rightHandStack(state);
 		if (off != null && !off.isEmpty()) return null;
 		if (state instanceof AvatarRenderState avatar) {
 			if (frame.master() || avatar.isSpectator || avatar.skin == null

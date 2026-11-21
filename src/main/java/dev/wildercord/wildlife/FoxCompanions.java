@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.animal.fox.Fox;
+import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import java.util.*;

@@ -10,9 +10,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.util.function.Function;
@@ -22,15 +22,15 @@ import java.util.function.ToIntFunction;
  * Draws a duelist or a fallen knight: its model on its skin, a glow layer of only what glows (a duelist's sash emblem, a
  * knight's visor and the cracks in its plate) in its aura's colour through vanilla's glowing-eyes pass, and the aura along its
  * drawn blade, the same {@link AuraBlade} a player's carries (its colour, stage and guard ride into the render state, and the
- * item layer draws round the weapon). Everything glowing is {@code RenderTypes.eyes}, so shader packs take it as they take
+ * item layer draws round the weapon). Everything glowing is {@code RenderType.eyes}, so shader packs take it as they take
  * glowing eyes.
  */
 public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<AuraFighterRenderState>> extends HumanoidMobRenderer<T, AuraFighterRenderState, M> {
-	private final Function<AuraFighterRenderState, Identifier> texture;
+	private final Function<AuraFighterRenderState, ResourceLocation> texture;
 	/** How strongly its blade's aura shows (a fallen knight's is dim and smoky). */
 	private final float bladeStrength;
 
-	public AuraFighterRenderer(EntityRendererProvider.Context context, M model, Function<AuraFighterRenderState, Identifier> texture, Identifier glow,
+	public AuraFighterRenderer(EntityRendererProvider.Context context, M model, Function<AuraFighterRenderState, ResourceLocation> texture, ResourceLocation glow,
 			ToIntFunction<AuraFighterRenderState> glowAlpha, float bladeStrength) {
 		super(context, model, 0.5F);
 		this.texture = texture;
@@ -39,7 +39,7 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 	}
 
 	@Override
-	public Identifier getTextureLocation(AuraFighterRenderState state) {
+	public ResourceLocation getTextureLocation(AuraFighterRenderState state) {
 		return texture.apply(state);
 	}
 
@@ -98,12 +98,12 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 
 	/** An emissive copy of the model with a texture of only what glows, its strength and colour per frame. */
 	private static final class Glow<M extends HumanoidModel<AuraFighterRenderState>> extends RenderLayer<AuraFighterRenderState, M> {
-		private final net.minecraft.client.renderer.rendertype.RenderType renderType;
+		private final net.minecraft.client.renderer.RenderType renderType;
 		private final ToIntFunction<AuraFighterRenderState> color;
 
-		Glow(RenderLayerParent<AuraFighterRenderState, M> parent, Identifier texture, ToIntFunction<AuraFighterRenderState> color) {
+		Glow(RenderLayerParent<AuraFighterRenderState, M> parent, ResourceLocation texture, ToIntFunction<AuraFighterRenderState> color) {
 			super(parent);
-			this.renderType = RenderTypes.eyes(texture);
+			this.renderType = RenderType.eyes(texture);
 			this.color = color;
 		}
 

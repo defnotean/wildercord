@@ -18,7 +18,7 @@ import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 
 import java.util.HashMap;
@@ -43,11 +43,11 @@ import java.util.Map;
 public final class SpellHud {
 	private SpellHud() {}
 
-	private static final Identifier FRAME = Wildercord.id("hud/frame");
-	private static final Identifier BADGE = Wildercord.id("hud/badge");
-	private static final Identifier BAR = Wildercord.id("hud/bar_frame");
-	private static final Identifier FILL = Wildercord.id("hud/mana_fill");
-	private static final Identifier BEAT = Wildercord.id("hud/beat_ring");
+	private static final ResourceLocation FRAME = Wildercord.id("hud/frame");
+	private static final ResourceLocation BADGE = Wildercord.id("hud/badge");
+	private static final ResourceLocation BAR = Wildercord.id("hud/bar_frame");
+	private static final ResourceLocation FILL = Wildercord.id("hud/mana_fill");
+	private static final ResourceLocation BEAT = Wildercord.id("hud/beat_ring");
 
 	private static final int HEIGHT = 32;
 	private static final int BODY_X = 28;
@@ -175,7 +175,7 @@ public final class SpellHud {
 		return compiled;
 	}
 
-	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 

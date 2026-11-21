@@ -14,7 +14,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;

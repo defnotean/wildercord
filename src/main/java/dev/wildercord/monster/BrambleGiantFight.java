@@ -17,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -51,14 +50,14 @@ final class BrambleGiantFight extends GiantFight {
 	/** Each burrowing root's head: where it is and the way it's going. */
 	private final List<Vec3[]> roots = new ArrayList<>();
 	/** Whoever it holds, and how much it has been hurt since it caught them. */
-	private @Nullable UUID held;
+	private  UUID held;
 	private float heldTaken;
 	/** What it has left on the ground. */
 	private final List<Patch> patches = new ArrayList<>();
 	/** How long its fists are stuck this time. */
 	private int stuckFor;
 	/** Where its prey was last tick and how it has been moving (to lead a throw), and its last burning footprint. */
-	private @Nullable Vec3 seen;
+	private  Vec3 seen;
 	private Vec3 drift = Vec3.ZERO, lastPrint = Vec3.ZERO;
 
 	/** Something left on the ground: burning, or brambles waiting {@code fuse} ticks to burst up and then lingering. */
@@ -118,7 +117,7 @@ final class BrambleGiantFight extends GiantFight {
 	}
 
 	@Override
-	protected void act(ServerLevel level, int move, int t, @Nullable LivingEntity target) {
+	protected void act(ServerLevel level, int move, int t,  LivingEntity target) {
 		switch (move) {
 			case STOMP -> stomping(level, t);
 			case SWEEP -> sweeping(level, t, target);
@@ -137,7 +136,7 @@ final class BrambleGiantFight extends GiantFight {
 	}
 
 	@Override
-	protected void after(ServerLevel level, int move, @Nullable LivingEntity target) {
+	protected void after(ServerLevel level, int move,  LivingEntity target) {
 		boolean again = roused && !twice && target != null;
 		switch (move) {
 			case STOMP -> {
@@ -295,7 +294,7 @@ final class BrambleGiantFight extends GiantFight {
 	}
 
 	/** An arm drawn back to one side while the arc it will cover is marked; swung across its front, flinging aside whoever it meets. */
-	private void sweeping(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void sweeping(ServerLevel level, int t,  LivingEntity target) {
 		hold();
 		Vec3 feet = feet();
 		if (target != null && t < tell - 6) {
@@ -346,7 +345,7 @@ final class BrambleGiantFight extends GiantFight {
 	}
 
 	/** A clod torn up and heaved overhead while a ring closes on where it will land; thrown, it bursts there. */
-	private void hurling(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void hurling(ServerLevel level, int t,  LivingEntity target) {
 		hold();
 		Vec3 feet = feet();
 		if (target != null && t < tell - HURL_LOCK) {
@@ -408,7 +407,7 @@ final class BrambleGiantFight extends GiantFight {
 	// ------------------------------------------------------------------ the root
 
 	/** Its fists sunk in the earth while it stares you down; a root bursts away under the ground after you, turning as you run. */
-	private void rooting(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void rooting(ServerLevel level, int t,  LivingEntity target) {
 		hold();
 		Vec3 feet = feet();
 		if (t < tell) {
@@ -497,7 +496,7 @@ final class BrambleGiantFight extends GiantFight {
 	// ------------------------------------------------------------------ the grab
 
 	/** An arm drawn back with the hand open while its reach is marked; it lunges and closes on whoever is in it. */
-	private void grabbing(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void grabbing(ServerLevel level, int t,  LivingEntity target) {
 		Vec3 feet = feet();
 		if (t < tell) {
 			hold();
@@ -605,7 +604,7 @@ final class BrambleGiantFight extends GiantFight {
 	// ------------------------------------------------------------------ the hammer
 
 	/** Both fists raised high over its head while the lane ahead is marked out; slammed down along the length of it. */
-	private void hammering(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void hammering(ServerLevel level, int t,  LivingEntity target) {
 		hold();
 		Vec3 feet = feet();
 		if (t < tell) {
@@ -888,7 +887,7 @@ final class BrambleGiantFight extends GiantFight {
 	}
 
 	/** Whoever it holds, if they're still there. */
-	private @Nullable LivingEntity holding(ServerLevel level) {
+	private  LivingEntity holding(ServerLevel level) {
 		return held != null && level.getEntity(held) instanceof LivingEntity v && v.isAlive() && v.distanceTo(mob) <= 12 ? v : null;
 	}
 

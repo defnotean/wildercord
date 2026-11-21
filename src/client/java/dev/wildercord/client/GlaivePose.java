@@ -6,7 +6,7 @@ import dev.wildercord.aura.world.AuraWorldRules;
 import dev.wildercord.aura.world.ForgedGear;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.util.Mth;
@@ -15,14 +15,13 @@ import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwingAnimationType;
 
 /**
  * Polearm stance and sweeping cleave animation for the Skyrend Glaive.
  *
  * <p>Because Skyrend Glaive is forged onto a spear base item, vanilla would otherwise hold it
  * one-handed vertically beside the ear ({@link HumanoidModel.ArmPose#SPEAR}) and poke straight
- * ahead ({@link SwingAnimationType#STAB}). A glaive is a long-shafted two-handed polearm: at
+ * ahead a stab. A glaive is a long-shafted two-handed polearm: at
  * rest both hands grip the shaft diagonally across the body with the curved blade poised forward
  * and clear of the head, and attacks uncoil the torso in a wide horizontal-diagonal sweep.</p>
  */
@@ -34,7 +33,7 @@ public final class GlaivePose {
 	}
 
 	private static boolean holdsGlaive(ArmedEntityRenderState state) {
-		return state != null && isGlaive(state.getMainHandItemStack());
+		return state != null && isGlaive(dev.wildercord.client.compat.RenderCompat.mainHandStack(state));
 	}
 
 	private static boolean eligible(AvatarRenderState state) {
@@ -52,9 +51,9 @@ public final class GlaivePose {
 			return;
 		}
 		if (!state.isUsingItem) {
-			if (state.mainArm == HumanoidArm.RIGHT && state.rightArmPose == HumanoidModel.ArmPose.SPEAR) {
+			if (state.mainArm == HumanoidArm.RIGHT && state.rightArmPose == HumanoidModel.ArmPose.ITEM) {
 				state.rightArmPose = HumanoidModel.ArmPose.ITEM;
-			} else if (state.mainArm == HumanoidArm.LEFT && state.leftArmPose == HumanoidModel.ArmPose.SPEAR) {
+			} else if (state.mainArm == HumanoidArm.LEFT && state.leftArmPose == HumanoidModel.ArmPose.ITEM) {
 				state.leftArmPose = HumanoidModel.ArmPose.ITEM;
 			}
 		}
@@ -73,7 +72,7 @@ public final class GlaivePose {
 		float side = leftHanded ? -1.0F : 1.0F;
 		ModelPart main = leftHanded ? model.leftArm : model.rightArm;
 		ModelPart off = leftHanded ? model.rightArm : model.leftArm;
-		ItemStack offStack = leftHanded ? state.rightHandItemStack : state.leftHandItemStack;
+		ItemStack offStack = leftHanded ? dev.wildercord.client.compat.RenderCompat.rightHandStack(state) : dev.wildercord.client.compat.RenderCompat.leftHandStack(state);
 		boolean twoHanded = offStack == null || offStack.isEmpty();
 
 		float pitch = Mth.clamp(model.head.xRot, -0.55F, 0.55F);

@@ -40,7 +40,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -66,7 +65,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 
 	/** When a shorn cap grows back (-1 for not shorn), and who fed it last and when. */
 	private long regrowAt = -1;
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1;
 
 	/** Client: how far it is drawn in (1 all the way, less while peeking), eased, this tick's and last. */
@@ -184,7 +183,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 		return player.getUUID().equals(truster) && SnailRules.trusts(level().getGameTime() - fedAt);
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !SnailRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -261,14 +260,14 @@ public class CapcrownSnail extends Animal implements Shearable {
 	// ------------------------------------------------------------------ colour, breeding and saving
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData group) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData group) {
 		entityData.set(COLOUR, random.nextInt(3) == 0 ? BROWN : RED);
 		return super.finalizeSpawn(level, difficulty, reason, group);
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		if (getType().create(level, EntitySpawnReason.BREEDING) instanceof CapcrownSnail young) {
 			int colour = partner instanceof CapcrownSnail other && random.nextBoolean() ? other.colour() : colour();
 			young.entityData.set(COLOUR, colour);
@@ -296,17 +295,17 @@ public class CapcrownSnail extends Animal implements Shearable {
 	// ------------------------------------------------------------------ sound: soft squelches
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return null;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.SLIME_HURT_SMALL;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.SLIME_DEATH_SMALL;
 	}
 
@@ -351,7 +350,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 
 	/** Trusting someone, it glides along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

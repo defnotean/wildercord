@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.ai.village.poi.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.AABB;
 import java.util.*;
 
@@ -38,7 +38,7 @@ public final class VillageTournaments {
 	static void loaded(TournamentBoardEntity b){if(b.getLevel() instanceof ServerLevel s){var sites=LOADED.computeIfAbsent(s,k->new HashMap<>());sites.values().removeIf(BlockEntity::isRemoved);if(sites.size()<128 || sites.containsKey(b.getBlockPos()))sites.put(b.getBlockPos(),b);}}
 	public static boolean inhabited(ServerLevel s,BlockPos bell){return bell!=null && s.hasChunkAt(bell) && s.getBlockState(bell).is(Blocks.BELL) && s.getEntitiesOfClass(Villager.class,new AABB(bell).inflate(32),v->v.isAlive()).size()>=3;}
 	public static TournamentBoardEntity install(ServerLevel s,BlockPos center,BlockPos bell){
-		if(!Config.get().auraWorld().tournaments() || !s.getGameRules().get(GameRules.MOB_GRIEFING) || !inhabited(s,bell) || center.distSqr(bell)>64*64)return null;
+		if(!Config.get().auraWorld().tournaments() || !s.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get() || !inhabited(s,bell) || center.distSqr(bell)>64*64)return null;
 		var sites=LOADED.computeIfAbsent(s,k->new HashMap<>());sites.values().removeIf(BlockEntity::isRemoved);
 		if(sites.size()>=128 || sites.values().stream().anyMatch(b->b.getBlockPos().distSqr(bell)<96*96))return null;
 		for(int x=-8;x<=8;x++)for(int z=-8;z<=8;z++){
@@ -58,7 +58,7 @@ public final class VillageTournaments {
 		ServerLifecycleEvents.SERVER_STOPPED.register(s->LOADED.clear());
 		ServerTickEvents.END_SERVER_TICK.register(server->{
 			if(server.getTickCount()%1200!=0 || !Config.get().auraWorld().tournaments())return;
-			ServerLevel s=server.overworld();if(!s.isBrightOutside() || !s.getGameRules().get(GameRules.SPAWN_MOBS) || !s.getGameRules().get(GameRules.MOB_GRIEFING))return;
+			ServerLevel s=server.overworld();if(!s.isBrightOutside() || !s.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get() || !s.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get())return;
 			var players=s.players().stream().filter(p->!p.isSpectator()).toList();if(players.isEmpty())return;
 			var random=s.getRandom();var p=players.get(random.nextInt(players.size()));
 			var bell=s.getPoiManager().findClosest(t->t.is(PoiTypes.MEETING),p.blockPosition(),96,PoiManager.Occupancy.ANY).orElse(null);if(!inhabited(s,bell))return;

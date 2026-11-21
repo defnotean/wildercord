@@ -75,8 +75,8 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
             var connection = server.connect();
             try {
                 connection.getClientWorld().waitForChunksDownload();
-                server.runCommand("gamerule spawn_mobs false"); server.runCommand("gamerule fall_damage false");
-                server.runCommand("gamerule natural_health_regeneration false"); server.runCommand("gamerule keep_inventory true");
+                server.runCommand("gamerule doMobSpawning false"); server.runCommand("gamerule fallDamage false");
+                server.runCommand("gamerule natural_regeneration false"); server.runCommand("gamerule keepInventory true");
                 server.runOnServer(s -> {
                     probe = new Probe(); probe.player = player(s);
                     RelayCircleTest.prepare(probe.player, Runes.HARM);
@@ -470,7 +470,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
             assertNotLoaded();
             var structure = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
                 .getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,
-                    net.minecraft.resources.Identifier.parse("wildercord:sword_tomb"))).value();
+                    net.minecraft.resources.ResourceLocation.parse("wildercord:sword_tomb"))).value();
             try {
                 chunk.addReferenceForStructure(structure, net.minecraft.world.level.ChunkPos.asLong(FAR, FAR));
                 if (failAfterInsert != null) throw failAfterInsert;

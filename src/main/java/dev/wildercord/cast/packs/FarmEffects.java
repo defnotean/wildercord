@@ -17,7 +17,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -30,13 +30,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.bee.Bee;
-import net.minecraft.world.entity.animal.chicken.Chicken;
-import net.minecraft.world.entity.animal.cow.AbstractCow;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
-import net.minecraft.world.entity.animal.fox.Fox;
+import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.AbstractCow;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.goat.Goat;
-import net.minecraft.world.entity.animal.rabbit.Rabbit;
+import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
@@ -499,7 +499,7 @@ public final class FarmEffects {
 	private static void ditchwater(Cast cast, Cast.Hit hit) {
 		BlockPos pos = hit.block() != null && hit.face() != null ? hit.block().relative(hit.face()) : target(hit).above();
 		ServerLevel level = cast.level;
-		boolean hot = level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.WATER_EVAPORATES, Vec3.atCenterOf(pos));
+		boolean hot = dev.wildercord.compat.EnvCompat.waterEvaporates(level, Vec3.atCenterOf(pos);
 		if (hot || !level.getBlockState(pos).isAir() || !level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)
 			|| !nearFarmland(level, pos)) {
 			return;
@@ -1099,12 +1099,12 @@ public final class FarmEffects {
 		if (!state.is(BlockTags.LOGS)) {
 			return null;
 		}
-		Identifier id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+		ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
 		String path = FarmRules.strippedPath(id.getPath());
 		if (path == null) {
 			return null;
 		}
-		Block bare = BuiltInRegistries.BLOCK.getOptional(Identifier.fromNamespaceAndPath(id.getNamespace(), path)).orElse(null);
+		Block bare = BuiltInRegistries.BLOCK.getOptional(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), path)).orElse(null);
 		if (bare == null || bare == Blocks.AIR || bare == state.getBlock()) {
 			return null;
 		}

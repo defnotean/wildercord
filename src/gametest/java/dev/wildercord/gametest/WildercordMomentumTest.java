@@ -109,8 +109,8 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		});
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
 			context.waitTicks(40);
-			world.getServer().runCommand("gamerule spawn_mobs false");
-			world.getServer().runCommand("gamerule advance_time false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
+			world.getServer().runCommand("gamerule doDaylightCycle false");
 			world.getServer().runCommand("gamerule natural_regeneration false");
 			world.getServer().runCommand("difficulty normal");
 			world.getServer().runCommand("time set 3000");

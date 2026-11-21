@@ -37,15 +37,14 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NonTameRandomTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
-import net.minecraft.world.entity.animal.chicken.Chicken;
-import net.minecraft.world.entity.animal.rabbit.Rabbit;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A cinderfox: a slight, big-eared fox of deserts and badlands whose tail ends in a living ember, glowing and shedding
@@ -216,7 +215,7 @@ public class Cinderfox extends TamableAnimal {
 	// ------------------------------------------------------------------ breeding
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		Cinderfox kit = Wildlife.CINDERFOX.create(level, EntitySpawnReason.BREEDING);
 		if (kit != null && isTame()) {
 			kit.setOwnerReference(getOwnerReference());
@@ -234,17 +233,17 @@ public class Cinderfox extends TamableAnimal {
 	// ------------------------------------------------------------------ sound
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return Wildlife.sound("cinderfox_yip");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return Wildlife.sound("cinderfox_hurt");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return Wildlife.sound("cinderfox_death");
 	}
 

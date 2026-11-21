@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.AABB;
 
 /** Observation of the original first harvest and stationary pickup. Never supplies items or movement. */
@@ -127,7 +127,7 @@ public final class FungalGillProbe {
    }));
   }
   String row="event="+event+" now="+level.getGameTime()+" elapsed="+(level.getGameTime()-started)+" collectorElapsed="+(collectorStarted<0?"not-started":level.getGameTime()-collectorStarted)
-   +" before="+before+" actualCount="+player.getInventory().countItem(FungalGarden.GILLS)+" baselineResident="+baselineResident+" blockDrops="+level.getGameRules().get(GameRules.BLOCK_DROPS)
+   +" before="+before+" actualCount="+player.getInventory().countItem(FungalGarden.GILLS)+" baselineResident="+baselineResident+" blockDrops="+level.getGameRules().getRule(GameRules.RULE_DOBLOCKDROPS).get()
    +" player="+player.getUUID()+" position="+player.position()+" velocity="+player.getDeltaMovement()+" body="+player.getBoundingBox()+" pickupBox="+pickup+" ground="+player.onGround()+" water="+player.isInWater()
    +" horizontalCollision="+player.horizontalCollision+" verticalCollision="+player.verticalCollision+" mode="+player.gameMode.getGameModeForPlayer()+" alive="+player.isAlive()+" spectator="+player.isSpectator()+" sameLevel="+(player.level()==level)
    +" selected="+player.getInventory().getSelectedSlot()+" freeSlot="+player.getInventory().getFreeSlot()+" inventory="+stacks+" drops="+items+" touchEntries="+touchEntries+" touchReturns="+touchReturns

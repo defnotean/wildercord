@@ -27,14 +27,13 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.rabbit.Rabbit;
+import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -54,7 +53,7 @@ public class SnowcapStoat extends Animal {
 	private static final EntityDataAccessor<Integer> LEFT = SynchedEntityData.defineId(SnowcapStoat.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> WINTER = SynchedEntityData.defineId(SnowcapStoat.class, EntityDataSerializers.BOOLEAN);
 
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1, huntedAt = -StoatRules.HUNT_REST, standAgain;
 	private boolean hunting;
 
@@ -170,7 +169,7 @@ public class SnowcapStoat extends Animal {
 	}
 
 	/** Someone it doesn't trust near enough to stand up and look at. */
-	private @Nullable Player looker(ServerLevel level) {
+	private  Player looker(ServerLevel level) {
 		for (Player player : level.players()) {
 			if (!player.isSpectator() && StoatRules.perks(distanceTo(player), trusts(player))) {
 				return player;
@@ -226,7 +225,7 @@ public class SnowcapStoat extends Animal {
 		return player.getUUID().equals(truster) && StoatRules.trusts(level().getGameTime() - fedAt);
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !StoatRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -282,24 +281,24 @@ public class SnowcapStoat extends Animal {
 	// ------------------------------------------------------------------ breeding: a kit
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof SnowcapStoat kit ? kit : null;
 	}
 
 	// ------------------------------------------------------------------ sound: chitters and squeaks
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return buried() ? null : SoundEvents.FOX_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.FOX_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.FOX_DEATH;
 	}
 
@@ -345,7 +344,7 @@ public class SnowcapStoat extends Animal {
 	 * darts in and bites. Gives up if the rabbit gets too far away or it takes too long.
 	 */
 	private final class Hunt extends Goal {
-		private @Nullable Rabbit rabbit;
+		private  Rabbit rabbit;
 		private int ticks, danceEnd;
 		private boolean danced;
 
@@ -431,7 +430,7 @@ public class SnowcapStoat extends Animal {
 
 	/** Trusting someone, it bounds along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

@@ -7,19 +7,18 @@ import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 /** First-person hand state and renderer view across ItemInHandRenderer (26.2) and FirstPersonHandsAndItemsRenderState (26.3). */
 public final class FirstPersonHandView {
 	private final ItemInHandRenderer renderer;
-	private final @Nullable AbstractClientPlayer player;
+	private final  AbstractClientPlayer player;
 
-	private FirstPersonHandView(ItemInHandRenderer renderer, @Nullable AbstractClientPlayer player) {
+	private FirstPersonHandView(ItemInHandRenderer renderer,  AbstractClientPlayer player) {
 		this.renderer = renderer;
 		this.player = player;
 	}
 
-	public static FirstPersonHandView of(ItemInHandRenderer renderer, @Nullable AbstractClientPlayer player) {
+	public static FirstPersonHandView of(ItemInHandRenderer renderer,  AbstractClientPlayer player) {
 		return new FirstPersonHandView(renderer, player);
 	}
 
@@ -65,7 +64,7 @@ public final class FirstPersonHandView {
 			|| isScoping();
 	}
 
-	public @Nullable ItemStackRenderState initialMainHandRenderState() {
+	public  ItemStackRenderState initialMainHandRenderState() {
 		return null;
 	}
 

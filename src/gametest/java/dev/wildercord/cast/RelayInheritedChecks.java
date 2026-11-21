@@ -51,7 +51,7 @@ public final class RelayInheritedChecks {
 			return true;
 		});}
 		try(var world=c.worldBuilder().create()){
-			c.waitTicks(40);world.getServer().runCommand("gamerule spawn_mobs false");
+			c.waitTicks(40);world.getServer().runCommand("gamerule doMobSpawning false");
 			var original=world.getServer().computeOnServer(s->Config.get());
 			try {
 				TrainingDummy[] wet=new TrainingDummy[2];

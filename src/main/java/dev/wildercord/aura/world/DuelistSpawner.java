@@ -16,9 +16,8 @@ import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +53,7 @@ public final class DuelistSpawner {
 		}
 		WildercordConfig.AuraWorldSettings settings = Config.get().auraWorld();
 		ServerLevel level = server.overworld();
-		if (!settings.duelistsSpawn() || !level.isBrightOutside() || !level.getGameRules().get(GameRules.SPAWN_MOBS)) {
+		if (!settings.duelistsSpawn() || !level.isBrightOutside() || !level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get()) {
 			return;
 		}
 		List<ServerPlayer> players = level.players().stream().filter(p -> !p.isSpectator()).toList();
@@ -81,7 +80,7 @@ public final class DuelistSpawner {
 	 * Brings a duelist in near {@code player}, at a village, a road or a camp, if there's room for one (none within
 	 * {@link AuraWorldRules#DUELIST_APART} blocks) and a place to stand. Returns it, or null.
 	 */
-	public static @Nullable Duelist spawnNear(ServerLevel level, ServerPlayer player, boolean camps, RandomSource random) {
+	public static  Duelist spawnNear(ServerLevel level, ServerPlayer player, boolean camps, RandomSource random) {
 		if (!level.getEntities(AuraWorld.DUELIST, d -> d.isAlive() && d.distanceTo(player) < AuraWorldRules.DUELIST_APART).isEmpty()) {
 			return null;
 		}
@@ -96,7 +95,7 @@ public final class DuelistSpawner {
 	}
 
 	/** Brings a duelist to a spot found for it (and, at a camp, lights its fire). */
-	public static @Nullable Duelist spawnAt(ServerLevel level, Spot spot, boolean camps, RandomSource random) {
+	public static  Duelist spawnAt(ServerLevel level, Spot spot, boolean camps, RandomSource random) {
 		Duelist duelist = AuraWorld.DUELIST.create(level, EntitySpawnReason.EVENT);
 		if (duelist == null) {
 			return null;
@@ -104,7 +103,7 @@ public final class DuelistSpawner {
 		BlockPos at = spot.pos();
 		duelist.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360, 0);
 		duelist.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.EVENT, null);
-		if (spot.place() == Place.CAMP && camps && level.getGameRules().get(GameRules.MOB_GRIEFING)) {
+		if (spot.place() == Place.CAMP && camps && level.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get()) {
 			duelist.camp = lightFire(level, at, duelist.stayUntil + 200);
 		}
 		level.addFreshEntity(duelist);
@@ -114,7 +113,7 @@ public final class DuelistSpawner {
 	// ------------------------------------------------------------------ places
 
 	/** A few blocks from the nearest village bell within 96 blocks, if there is one. */
-	public static @Nullable Spot village(ServerLevel level, BlockPos near, RandomSource random) {
+	public static  Spot village(ServerLevel level, BlockPos near, RandomSource random) {
 		Optional<BlockPos> bell = level.getPoiManager().findClosest(p -> p.is(PoiTypes.MEETING), near, 96, PoiManager.Occupancy.ANY);
 		if (bell.isEmpty()) {
 			return null;
@@ -132,7 +131,7 @@ public final class DuelistSpawner {
 	}
 
 	/** A dirt path 16 to 48 blocks from the player. */
-	public static @Nullable Spot road(ServerLevel level, BlockPos near, RandomSource random) {
+	public static  Spot road(ServerLevel level, BlockPos near, RandomSource random) {
 		for (int i = 0; i < 40; i++) {
 			BlockPos column = ring(near, 16, 48, random);
 			if (!level.hasChunkAt(column)) {
@@ -148,7 +147,7 @@ public final class DuelistSpawner {
 	}
 
 	/** Open ground under the sky 20 to 40 blocks from the player, room beside it for a fire. */
-	public static @Nullable Spot camp(ServerLevel level, BlockPos near, RandomSource random) {
+	public static  Spot camp(ServerLevel level, BlockPos near, RandomSource random) {
 		for (int i = 0; i < 24; i++) {
 			BlockPos column = ring(near, 20, 40, random);
 			BlockPos stand = surface(level, column);
@@ -174,7 +173,7 @@ public final class DuelistSpawner {
 	}
 
 	/** The spot on top of the ground in a column, if one can stand there: solid below, two blocks of air, no water. */
-	static @Nullable BlockPos surface(ServerLevel level, BlockPos column) {
+	static  BlockPos surface(ServerLevel level, BlockPos column) {
 		if (!level.hasChunkAt(column)) {
 			return null;
 		}
@@ -189,7 +188,7 @@ public final class DuelistSpawner {
 	}
 
 	/** A campfire two blocks from the duelist, borrowed until it goes (and a little after). Returns where, or null. */
-	static @Nullable BlockPos lightFire(ServerLevel level, BlockPos stand, long until) {
+	static  BlockPos lightFire(ServerLevel level, BlockPos stand, long until) {
 		BlockPos fire = stand.offset(2, 0, 0);
 		BlockState was = level.getBlockState(fire);
 		if (!was.isAir()) {

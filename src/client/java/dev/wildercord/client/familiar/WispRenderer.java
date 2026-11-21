@@ -14,19 +14,18 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -50,14 +49,14 @@ import java.util.WeakHashMap;
  */
 public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("wisp"), "main");
-	private static final Identifier BODY = Wildercord.id("textures/entity/wisp.png");
-	private static final Identifier GLOW = Wildercord.id("textures/entity/wisp_glow.png");
+	private static final ResourceLocation BODY = Wildercord.id("textures/entity/wisp.png");
+	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/wisp_glow.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spell glows. */
 	private static final RenderType GLOW_TYPE = RenderCompat.wispGlowRenderType(GLOW);
-	private static final RenderType BODY_TYPE = RenderTypes.entityTranslucentEmissive(BODY);
+	private static final RenderType BODY_TYPE = RenderType.entityTranslucentEmissive(BODY);
 	/** The glow under a shader pack, which can't add light (see ShaderCompat): vanilla's glowing eyes, laid over what's behind. */
-	private static final RenderType PLAIN_GLOW_TYPE = RenderTypes.eyes(GLOW);
+	private static final RenderType PLAIN_GLOW_TYPE = RenderType.eyes(GLOW);
 
 	/** The middle of the orb above the entity's feet (its box is 0.45 tall). */
 	private static final float MIDDLE = 0.24F;
@@ -74,7 +73,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	}
 
 	@Override
-	public Identifier getTextureLocation(WispRenderState state) {
+	public ResourceLocation getTextureLocation(WispRenderState state) {
 		return BODY;
 	}
 
@@ -107,7 +106,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 
 	/** No model of boxes: {@link #submit} draws the wisp itself. */
 	@Override
-	protected @Nullable RenderType getRenderType(WispRenderState state, boolean isBodyVisible, boolean forceTransparent, boolean appearGlowing) {
+	protected  RenderType getRenderType(WispRenderState state, boolean isBodyVisible, boolean forceTransparent, boolean appearGlowing) {
 		return null;
 	}
 

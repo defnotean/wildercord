@@ -41,7 +41,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -59,13 +58,13 @@ import java.util.function.Predicate;
  */
 public class Duelist extends AuraFighter {
 	/** Its challenger, while a duel is on (server only). */
-	@Nullable UUID opponent;
+	 UUID opponent;
 	/** When it moves on, when it can take another challenge, and (once beaten) when it goes. */
 	long stayUntil;
 	long restUntil;
 	long leaveAt = -1;
 	/** Its campfire, if it made one. */
-	@Nullable BlockPos camp;
+	 BlockPos camp;
 	/** Whether to raise its guard next tick (it learned the rhythm of the last blow). */
 	private boolean guardNext;
 	/** The last crescent of its challenger's it decided whether to answer (once a crescent). */
@@ -129,7 +128,7 @@ public class Duelist extends AuraFighter {
 	}
 
 	/** Its campfire, if it made one. */
-	public @Nullable BlockPos camp() {
+	public  BlockPos camp() {
 		return camp;
 	}
 
@@ -152,8 +151,8 @@ public class Duelist extends AuraFighter {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData group) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData group) {
 		setMethod(BreathingMethods.BUILT_IN.get(getRandom().nextInt(BreathingMethods.BUILT_IN.size())));
 		setStage(AuraRules.GLOW);
 		stayUntil = level.getLevel().getGameTime() + AuraWorldRules.DUELIST_STAY;
@@ -563,7 +562,7 @@ public class Duelist extends AuraFighter {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return null;
 	}
 

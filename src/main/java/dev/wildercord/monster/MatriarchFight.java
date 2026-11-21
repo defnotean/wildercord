@@ -19,7 +19,6 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,7 +63,7 @@ final class MatriarchFight extends GiantFight {
 	/** Icicles hung over the ground, each falling at a tick. */
 	private final List<Icicle> icicles = new ArrayList<>();
 	/** Where her prey was last tick and how it has been moving (to lead a pounce or an icicle). */
-	private @Nullable Vec3 seen;
+	private  Vec3 seen;
 	private Vec3 drift = Vec3.ZERO;
 
 	private record Icicle(Vec3 at, int falls) {}
@@ -125,7 +124,7 @@ final class MatriarchFight extends GiantFight {
 	}
 
 	@Override
-	protected void act(ServerLevel level, int move, int t, @Nullable LivingEntity target) {
+	protected void act(ServerLevel level, int move, int t,  LivingEntity target) {
 		switch (move) {
 			case POUNCE -> pouncing(level, t, target);
 			case SPRAWL -> sprawled(level, t);
@@ -142,7 +141,7 @@ final class MatriarchFight extends GiantFight {
 	}
 
 	@Override
-	protected void after(ServerLevel level, int move, @Nullable LivingEntity target) {
+	protected void after(ServerLevel level, int move,  LivingEntity target) {
 		boolean again = roused && !twice && target != null;
 		switch (move) {
 			case POUNCE -> {
@@ -252,7 +251,7 @@ final class MatriarchFight extends GiantFight {
 	}
 
 	/** Crouched with her haunches up, a ring on the snow follows her prey until it settles; then she leaps onto it. */
-	private void pouncing(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void pouncing(ServerLevel level, int t,  LivingEntity target) {
 		double r = POUNCE_RADIUS + hw() * 0.5;
 		if (t < tell) {
 			hold();
@@ -350,7 +349,7 @@ final class MatriarchFight extends GiantFight {
 	}
 
 	/** A paw raised to one side and the arc it will rake marked; she steps in as it comes across. */
-	private void swiping(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void swiping(ServerLevel level, int t,  LivingEntity target) {
 		if (t < tell) {
 			hold();
 			if (target != null && t < tell - 3) {
@@ -439,7 +438,7 @@ final class MatriarchFight extends GiantFight {
 	// ------------------------------------------------------------------ the howl
 
 	/** Head thrown back and the ground about her marked as it chills; then the howl, and her pups come out of the snow. */
-	private void howling(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void howling(ServerLevel level, int t,  LivingEntity target) {
 		hold();
 		Vec3 feet = feet();
 		double r = HOWL_RADIUS + hw();
@@ -550,7 +549,7 @@ final class MatriarchFight extends GiantFight {
 	// ------------------------------------------------------------------ vanishing and the lunge
 
 	/** She burrows into the snow in a cloud and circles her prey unseen, only her prints and the crunch of them giving her away. */
-	private void vanishing(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void vanishing(ServerLevel level, int t,  LivingEntity target) {
 		Vec3 feet = feet();
 		if (t < tell) {
 			hold();
@@ -581,7 +580,7 @@ final class MatriarchFight extends GiantFight {
 		}
 	}
 
-	private void lunge(ServerLevel level, @Nullable LivingEntity target, int tell) {
+	private void lunge(ServerLevel level,  LivingEntity target, int tell) {
 		mob.giantState(WildMonster.VEILED, false);
 		if (target != null) {
 			lungeWay = flat(target.position().subtract(feet()), dir);
@@ -596,7 +595,7 @@ final class MatriarchFight extends GiantFight {
 	}
 
 	/** Risen out of the snow low and coiled, the line she'll run marked; then she runs it, and a wall in the way stops her hard. */
-	private void lunging(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void lunging(ServerLevel level, int t,  LivingEntity target) {
 		Vec3 feet = feet();
 		double length = LUNGE_SPEED * LUNGE_TICKS + hw();
 		if (t < tell) {
@@ -653,7 +652,7 @@ final class MatriarchFight extends GiantFight {
 	// ------------------------------------------------------------------ the icicles
 
 	/** Head raised and the cold rising off her, she hangs icicles over everyone near, wave after wave. */
-	private void calling(ServerLevel level, int t, @Nullable LivingEntity target) {
+	private void calling(ServerLevel level, int t,  LivingEntity target) {
 		hold();
 		Motes.glows(level, head().add(0, 0.6, 0), 2, 0.4, TINT.primary(), 0.3, 18, new Vec3(0, 0.1, 0), 0.03);
 		if (t < tell || (t - tell) % ICICLE_EVERY != 0) {

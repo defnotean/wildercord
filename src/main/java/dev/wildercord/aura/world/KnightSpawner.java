@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,10 +24,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Random;
 
@@ -47,7 +46,7 @@ public final class KnightSpawner {
 	public static final TagKey<Structure> HAUNTS = TagKey.create(Registries.STRUCTURE, Wildercord.id("knight_haunts"));
 
 	/** A haunted place: the rank of what rises there, the source whose weights pick its method, and its bounds. */
-	public record Haunt(int rank, String source, @Nullable StructureStart start) {}
+	public record Haunt(int rank, String source,  StructureStart start) {}
 
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(KnightSpawner::tick);
@@ -62,7 +61,7 @@ public final class KnightSpawner {
 			return;
 		}
 		for (ServerLevel level : server.getAllLevels()) {
-			if (level.getDifficulty() == Difficulty.PEACEFUL || !level.getGameRules().get(GameRules.SPAWN_MONSTERS)) {
+			if (level.getDifficulty() == Difficulty.PEACEFUL || !level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get()) {
 				continue;
 			}
 			RandomSource random = level.getRandom();
@@ -86,10 +85,10 @@ public final class KnightSpawner {
 	}
 
 	/** The haunted place {@code pos} is in, or null. */
-	public static @Nullable Haunt haunt(ServerLevel level, BlockPos pos) {
+	public static  Haunt haunt(ServerLevel level, BlockPos pos) {
 		StructureStart start = level.structureManager().getStructureWithPieceAt(pos, HAUNTS);
 		if (start.isValid()) {
-			Identifier id = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(start.getStructure());
+			ResourceLocation id = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(start.getStructure());
 			String path = id == null ? "" : id.getPath();
 			boolean stronghold = path.equals("stronghold");
 			// A structure's own chests' source when it has one (the ancient city's, each expedition's), else any method.
@@ -122,7 +121,7 @@ public final class KnightSpawner {
 	}
 
 	/** Raises a knight 8 to 20 blocks from {@code near}, somewhere dark inside the same place. Returns it, or null. */
-	public static @Nullable FallenKnight spawnIn(ServerLevel level, BlockPos near, Haunt haunt, RandomSource random) {
+	public static  FallenKnight spawnIn(ServerLevel level, BlockPos near, Haunt haunt, RandomSource random) {
 		for (int i = 0; i < 16; i++) {
 			double a = random.nextDouble() * Math.PI * 2;
 			double r = 8 + random.nextDouble() * 12;
@@ -140,7 +139,7 @@ public final class KnightSpawner {
 	}
 
 	/** A knight of {@code haunt}'s rank and one of its methods, standing at {@code at}. */
-	public static @Nullable FallenKnight raise(ServerLevel level, BlockPos at, Haunt haunt, RandomSource random) {
+	public static  FallenKnight raise(ServerLevel level, BlockPos at, Haunt haunt, RandomSource random) {
 		FallenKnight knight = AuraWorld.FALLEN_KNIGHT.create(level, EntitySpawnReason.NATURAL);
 		if (knight == null) {
 			return null;
@@ -161,7 +160,7 @@ public final class KnightSpawner {
 	}
 
 	/** A floor to stand on in a column, within four blocks above or below {@code column}'s height. */
-	static @Nullable BlockPos floor(ServerLevel level, BlockPos column) {
+	static  BlockPos floor(ServerLevel level, BlockPos column) {
 		if (!level.hasChunkAt(column)) {
 			return null;
 		}

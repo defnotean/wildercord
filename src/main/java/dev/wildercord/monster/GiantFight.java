@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -66,10 +65,10 @@ public abstract class GiantFight extends Goal {
 	protected abstract void begin(ServerLevel level, int move, LivingEntity target);
 
 	/** One tick of the move under way, {@code t} ticks into it. Its prey may be gone. */
-	protected abstract void act(ServerLevel level, int move, int t, @Nullable LivingEntity target);
+	protected abstract void act(ServerLevel level, int move, int t,  LivingEntity target);
 
 	/** The move under way has run out: chain into another with {@link #pose}, or {@link #settle}. */
-	protected abstract void after(ServerLevel level, int move, @Nullable LivingEntity target);
+	protected abstract void after(ServerLevel level, int move,  LivingEntity target);
 
 	/** What a blow deals it in the middle of a move. */
 	protected abstract float hurt(float damage, int move);
@@ -183,7 +182,7 @@ public abstract class GiantFight extends Goal {
 	}
 
 	/** Someone near enough and in sight to fight, nearest first. */
-	private @Nullable Player spot(ServerLevel level) {
+	private  Player spot(ServerLevel level) {
 		return level.getEntitiesOfClass(Player.class, mob.getBoundingBox().inflate(SPOT, 8, SPOT),
 				p -> p.isAlive() && Targets.canHarm(mob, p) && mob.hasLineOfSight(p))
 			.stream().min(Comparator.comparingDouble(mob::distanceToSqr)).orElse(null);

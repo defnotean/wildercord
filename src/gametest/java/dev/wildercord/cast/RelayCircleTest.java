@@ -57,9 +57,9 @@ public final class RelayCircleTest implements FabricClientGameTest {
 		listen();
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(40);
-			world.getServer().runCommand("gamerule spawn_mobs false");
-			world.getServer().runCommand("gamerule fall_damage false");
-			world.getServer().runCommand("gamerule natural_health_regeneration false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
+			world.getServer().runCommand("gamerule fallDamage false");
+			world.getServer().runCommand("gamerule natural_regeneration false");
 			world.getServer().runOnServer(server -> {
 				probe = new Probe(); probe.owner = player(server);
 				prepare(probe.owner, Runes.HARM);

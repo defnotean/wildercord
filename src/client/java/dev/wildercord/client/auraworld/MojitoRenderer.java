@@ -10,24 +10,24 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 
 /** Mojito (see {@link MojitoModel}), his head nearly three times a player's height, with his eyes, the runes down his blade and the magic at his sides lit whatever the light. */
 public final class MojitoRenderer extends CullableMobRenderer<Mojito,MojitoRenderState,MojitoModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("mojito"),"main");
-	private static final Identifier SKIN=Wildercord.id("textures/entity/mojito/skin.png");
-	private static final Identifier GLOW=Wildercord.id("textures/entity/mojito/glow.png");
+	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/mojito/skin.png");
+	private static final ResourceLocation GLOW=Wildercord.id("textures/entity/mojito/glow.png");
 	static final float SCALE=2.2F;
 	/** How long one move takes to blend into the next, in ticks. */
 	private static final float BLEND_TICKS=4;
 	public MojitoRenderer(EntityRendererProvider.Context c){super(c,new MojitoModel(c.bakeLayer(LAYER)),2.0F);addLayer(new Eyes(this));}
 	@Override public MojitoRenderState createRenderState(){return new MojitoRenderState();}
-	@Override public Identifier getTextureLocation(MojitoRenderState s){return SKIN;}
+	@Override public ResourceLocation getTextureLocation(MojitoRenderState s){return SKIN;}
 	/** Thrown, his sword can be well off from him, and he should not vanish from view when it is in sight and he isn't, nor it. */
 	@Override protected AABB cullingBounds(Mojito e,float partial){
 		var box=superCullingBounds(e,partial);
@@ -61,7 +61,7 @@ public final class MojitoRenderer extends CullableMobRenderer<Mojito,MojitoRende
 
 	/** His mint light: a faint glimmer on the blade while he sleeps, bright once he is up, fading out as he dies. */
 	private static final class Eyes extends RenderLayer<MojitoRenderState,MojitoModel> {
-		private final RenderType type=RenderTypes.eyes(GLOW);
+		private final RenderType type=RenderType.eyes(GLOW);
 		Eyes(RenderLayerParent<MojitoRenderState,MojitoModel> parent){super(parent);}
 		@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,MojitoRenderState s,float yRot,float xRot){
 			if(s.isInvisible)return;

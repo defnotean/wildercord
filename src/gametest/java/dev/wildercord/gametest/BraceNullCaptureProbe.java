@@ -4,7 +4,7 @@ import dev.wildercord.client.MastersArtPose;
 import dev.wildercord.client.MastersArtsClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.HumanoidArm;
 
@@ -143,14 +143,14 @@ public final class BraceNullCaptureProbe {
 		check(!state.isUsingItem && !state.isAutoSpinAttack && !hands.isScoping()
 			&& !hands.hasMainHandMapData(item)
 			&& item.is(net.minecraft.world.item.Items.DIAMOND_SWORD)
-			&& net.minecraft.world.item.ItemStack.isSameItemSameComponents(item, state.getMainHandItemStack())
+			&& net.minecraft.world.item.ItemStack.isSameItemSameComponents(item, dev.wildercord.client.compat.RenderCompat.mainHandStack(state))
 			&& hands.equipKnown() && !hands.mainHandEquipping(),
 			"Pair hand oracle requires the genuine same-item Classic sword path, without equip/use overrides");
 		var swingType = dev.wildercord.client.compat.RenderCompat.activeMainHandSwingType(state);
 		boolean swing = swingType != null;
 		if (swing) {
-			check(swingType == net.minecraft.world.item.SwingAnimationType.NONE || swingType == net.minecraft.world.item.SwingAnimationType.WHACK, "Unsupported native swing path");
-			swing = swingType == net.minecraft.world.item.SwingAnimationType.WHACK;
+			check(swingType == dev.wildercord.client.compat.RenderCompat.SwingAnim.NONE || swingType == dev.wildercord.client.compat.RenderCompat.SwingAnim.WHACK, "Unsupported native swing path");
+			swing = swingType == dev.wildercord.client.compat.RenderCompat.SwingAnim.WHACK;
 		}
 		check(!HAND_BASES.containsKey(state), "Duplicate native main-hand entry");
 		HAND_BASES.put(state, new HandBasis(state.getData(MastersArtPose.FRAME), hands.stateObject(), stack, attack, inverseHeight, swing, stack.last().pose().get(new float[16])));

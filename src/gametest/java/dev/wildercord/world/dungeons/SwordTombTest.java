@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -27,7 +27,7 @@ import java.util.*;
 public final class SwordTombTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext c){
 		try(var world=c.worldBuilder().create()){
-			c.waitTicks(40);world.getServer().runCommand("gamerule spawn_mobs false");world.getServer().runCommand("difficulty normal");world.getServer().runCommand("time set 6000");
+			c.waitTicks(40);world.getServer().runCommand("gamerule doMobSpawning false");world.getServer().runCommand("difficulty normal");world.getServer().runCommand("time set 6000");
 			BlockPos altar=world.getServer().computeOnServer(server->{
 				var l=server.overworld();var p=server.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);
 				BlockPos chosen=null;
@@ -80,7 +80,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();for(int i=0;i<p.getInventory().getContainerSize();i++){var item=p.getInventory().getItem(i);if(item.has(DataComponents.WRITTEN_BOOK_CONTENT)){p.setItemInHand(InteractionHand.MAIN_HAND,item.copy());break;}}});c.waitTicks(10);c.runOnClient(mc->mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND));c.waitTicks(10);c.runOnClient(mc->check(mc.screen instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen,"The actual awarded testament opens for reading"));shot(c,"sword_tomb_testament");
 		}
 		try(var natural=c.worldBuilder().setUseConsistentSettings(false).adjustSettings(settings->settings.setSeed("811")).create()){
-			c.waitTicks(40);natural.getServer().runCommand("gamerule spawn_mobs false");natural.getServer().runCommand("time set 6000");
+			c.waitTicks(40);natural.getServer().runCommand("gamerule doMobSpawning false");natural.getServer().runCommand("time set 6000");
 			var site=natural.getServer().computeOnServer(s->findNaturalTombSite(s.overworld()));
 			natural.getServer().runOnServer(s->{
 				var b=site.bounds();
@@ -104,7 +104,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 		var habitat=dev.wildercord.gametest.compat.GametestCompat.findBiomeHorizontal(generator.getBiomeSource(),1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(811),true,randomState);
 		check(habitat!=null,"Normal world has a surface tomb habitat");
 		var origin=new ChunkPos(habitat.getFirst());
-		var tomb=level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,Identifier.parse("wildercord:sword_tomb")));
+		var tomb=level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,ResourceLocation.parse("wildercord:sword_tomb")));
 		// A plains biome sample need not put the rotated entrance on dry ground. Probe the
 		// registered generation path first; load only the successful start's actual footprint.
 		for(int radius=0;radius<=32;radius++)for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++){

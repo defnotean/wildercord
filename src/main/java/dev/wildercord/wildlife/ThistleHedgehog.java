@@ -33,7 +33,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -55,7 +54,7 @@ public class ThistleHedgehog extends TamableAnimal {
 	private static final Item[] GIFTS = {Items.SWEET_BERRIES, Items.BROWN_MUSHROOM, Items.RED_MUSHROOM, Items.DANDELION, Items.APPLE, Items.BEETROOT_SEEDS};
 
 	/** Who fed it last, when, and when its gift comes (-1 for none). */
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1, giftAt = -1;
 
 	/** Client: how far it is curled (1 tight, less while peeking out) and how far into a sneeze, eased, this tick's and last. */
@@ -159,7 +158,7 @@ public class ThistleHedgehog extends TamableAnimal {
 		return isOwnedBy(player) || player.getUUID().equals(truster) && HedgehogRules.trusts(level().getGameTime() - fedAt);
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (isTame()) {
 			return getOwner() instanceof Player owner && owner.isAlive() && !owner.isSpectator() ? owner : null;
 		}
@@ -278,7 +277,7 @@ public class ThistleHedgehog extends TamableAnimal {
 	// ------------------------------------------------------------------ breeding: a hoglet
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		if (!(getType().create(level, EntitySpawnReason.BREEDING) instanceof ThistleHedgehog hoglet)) {
 			return null;
 		}
@@ -293,17 +292,17 @@ public class ThistleHedgehog extends TamableAnimal {
 	// ------------------------------------------------------------------ sound: snuffles, squeaks
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return curled() ? null : SoundEvents.FOX_SNIFF;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.RABBIT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.RABBIT_DEATH;
 	}
 
@@ -346,7 +345,7 @@ public class ThistleHedgehog extends TamableAnimal {
 
 	/** Trusting someone, it potters along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

@@ -8,10 +8,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.ToIntFunction;
 
@@ -22,20 +22,20 @@ import java.util.function.ToIntFunction;
  */
 public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends EntityModel<DungeonBossRenderState>>
 		extends MobRenderer<T, DungeonBossRenderState, M> {
-	private final Identifier texture;
+	private final ResourceLocation texture;
 
-	protected DungeonBossRenderer(EntityRendererProvider.Context context, M model, float shadow, Identifier texture) {
+	protected DungeonBossRenderer(EntityRendererProvider.Context context, M model, float shadow, ResourceLocation texture) {
 		super(context, model, shadow);
 		this.texture = texture;
 	}
 
 	/** Adds a layer holding only what glows, drawn at full brightness with the ARGB {@code color} gives each frame. */
-	protected void glow(Identifier texture, ToIntFunction<DungeonBossRenderState> color) {
+	protected void glow(ResourceLocation texture, ToIntFunction<DungeonBossRenderState> color) {
 		addLayer(new Glow<>(this, texture, color));
 	}
 
 	@Override
-	public Identifier getTextureLocation(DungeonBossRenderState state) {
+	public ResourceLocation getTextureLocation(DungeonBossRenderState state) {
 		return texture;
 	}
 
@@ -85,9 +85,9 @@ public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends Entit
 		private final RenderType renderType;
 		private final ToIntFunction<DungeonBossRenderState> color;
 
-		Glow(RenderLayerParent<DungeonBossRenderState, M> parent, Identifier texture, ToIntFunction<DungeonBossRenderState> color) {
+		Glow(RenderLayerParent<DungeonBossRenderState, M> parent, ResourceLocation texture, ToIntFunction<DungeonBossRenderState> color) {
 			super(parent);
-			this.renderType = RenderTypes.eyes(texture);
+			this.renderType = RenderType.eyes(texture);
 			this.color = color;
 		}
 

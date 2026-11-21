@@ -13,7 +13,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Small lights made on the client for places and creatures, never sent by the server:
@@ -45,7 +44,7 @@ public class Glimmer extends SingleQuadParticle implements SigilGroup.Extent {
 	private double driftY;
 	private double driftZ;
 	private float twinkle = 0.3F;
-	private @Nullable Entity anchor;
+	private  Entity anchor;
 	private double anchorY;
 
 	private Glimmer(ClientLevel level, double x, double y, double z, int kind, int color, float size, float peak, int lifetime, float extra) {

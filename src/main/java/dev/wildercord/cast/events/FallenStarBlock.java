@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A Fallen Star: a lump of glowing starstone left in the crater where a star came down. It can't
@@ -46,13 +45,13 @@ public class FallenStarBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+	public  BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new FallenStarBlockEntity(pos, state);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+	public <T extends BlockEntity>  BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return level.isClientSide() || type != EventContent.FALLEN_STAR_ENTITY ? null
 			: (BlockEntityTicker<T>) (BlockEntityTicker<FallenStarBlockEntity>) FallenStarBlockEntity::serverTick;
 	}

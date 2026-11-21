@@ -12,4 +12,9 @@ public interface RenderPipelinesAccessor {
 	static RenderPipeline.Snippet wildercord$particleSnippet() {
 		throw new AssertionError();
 	}
+
+	@Accessor("ENTITY_EMISSIVE_SNIPPET")
+	static RenderPipeline.Snippet wildercord$entityEmissiveSnippet() {
+		throw new AssertionError();
+	}
 }

@@ -13,7 +13,7 @@ public final class RootCarryClient {
  private static long playbackTick;
  private RootCarryClient(){}
  public static void init(){ClientPlayNetworking.registerGlobalReceiver(RootCarryFx.Event.TYPE,(e,context)->{
-  var mc=context.client();if(mc.level==null||mc.player==null||ACTIVE.size()>=32||!mc.level.dimension().identifier().toString().equals(e.dimension())||!mc.level.hasChunkAt(e.from())||!mc.level.hasChunkAt(e.to())||Math.abs(mc.level.getGameTime()-e.tick())>40)return;ACTIVE.add(new Pending(e,mc.level,playbackTick));
+  var mc=context.client();if(mc.level==null||mc.player==null||ACTIVE.size()>=32||!mc.level.dimension().location().toString().equals(e.dimension())||!mc.level.hasChunkAt(e.from())||!mc.level.hasChunkAt(e.to())||Math.abs(mc.level.getGameTime()-e.tick())>40)return;ACTIVE.add(new Pending(e,mc.level,playbackTick));
  });ClientTickEvents.END_CLIENT_TICK.register(RootCarryClient::tick);}
  private static void tick(Minecraft mc){
   if(mc.level==null||mc.player==null){ACTIVE.clear();return;}if(mc.isPaused())return;int[] spent={0};

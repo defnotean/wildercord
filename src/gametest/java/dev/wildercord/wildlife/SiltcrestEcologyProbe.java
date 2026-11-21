@@ -12,7 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.animal.fish.AbstractFish;
+import net.minecraft.world.entity.animal.AbstractFish;
 
 /** Passive full-cohort audit. Failures are latched for the harness, never thrown through native AI. */
 final class SiltcrestEcologyProbe implements AutoCloseable {

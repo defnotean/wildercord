@@ -12,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,7 +211,7 @@ public final class LeyMotes {
 	 * above the ground, or null where the line is too faint, the ground too far from {@code nearY},
 	 * or the land too broken to lay a ribbon on.
 	 */
-	private static @Nullable List<Vec3> trace(ClientLevel level, double x, double z, double nearY) {
+	private static  List<Vec3> trace(ClientLevel level, double x, double z, double nearY) {
 		// The line's direction: the way along which it stays strongest, both ahead and behind.
 		double best = -1;
 		double angle = 0;
@@ -269,7 +268,7 @@ public final class LeyMotes {
 	}
 
 	/** Just above the ground (through leaves, onto water) at a spot, or null where it isn't loaded. */
-	private static @Nullable Double ground(ClientLevel level, double x, double z) {
+	private static  Double ground(ClientLevel level, double x, double z) {
 		int bx = (int) Math.floor(x);
 		int bz = (int) Math.floor(z);
 		if (!level.hasChunk(bx >> 4, bz >> 4)) {

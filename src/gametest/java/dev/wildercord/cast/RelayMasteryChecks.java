@@ -45,7 +45,7 @@ public final class RelayMasteryChecks {
             });
         }
         try (var world = c.worldBuilder().create()) {
-            c.waitTicks(40); world.getServer().runCommand("gamerule spawn_mobs false");
+            c.waitTicks(40); world.getServer().runCommand("gamerule doMobSpawning false");
             var original = world.getServer().computeOnServer(s -> Config.get());
             List<TrainingDummy> bodies = new ArrayList<>();
             try {

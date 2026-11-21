@@ -42,7 +42,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -63,7 +62,7 @@ public class GlowberryDormouse extends Animal {
 
 	/** When something last woke it, who fed it last and when, when it last gave a berry, and when it next eats one of its own. */
 	private long wokenAt = -1;
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1;
 	private long gaveAt = -1;
 	private long eatAt;
@@ -190,7 +189,7 @@ public class GlowberryDormouse extends Animal {
 		return player.getUUID().equals(truster) && DormouseRules.trusts(level().getGameTime() - fedAt);
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !DormouseRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -238,7 +237,7 @@ public class GlowberryDormouse extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof GlowberryDormouse young ? young : null;
 	}
 
@@ -257,7 +256,7 @@ public class GlowberryDormouse extends Animal {
 	// ------------------------------------------------------------------ sound: little squeaks and sniffs
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return asleep() ? null : SoundEvents.RABBIT_AMBIENT;
 	}
 
@@ -267,12 +266,12 @@ public class GlowberryDormouse extends Animal {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.RABBIT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.RABBIT_DEATH;
 	}
 
@@ -314,8 +313,8 @@ public class GlowberryDormouse extends Animal {
 
 	/** To the foot of a cave vine with a berry hanging low enough, up on its hind legs, and the berry into its cheeks. */
 	private final class Forage extends Goal {
-		private @Nullable BlockPos vine;
-		private @Nullable BlockPos stand;
+		private  BlockPos vine;
+		private  BlockPos stand;
 		private int plucking;
 		private int time;
 		private long nextLook;
@@ -419,7 +418,7 @@ public class GlowberryDormouse extends Animal {
 
 	/** Trusting someone, it scurries along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

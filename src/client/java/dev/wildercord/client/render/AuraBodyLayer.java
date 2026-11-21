@@ -17,15 +17,15 @@ import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.MagicQuality;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Avatar;
@@ -60,12 +60,12 @@ import org.joml.Vector3f;
  * (see {@link ShaderCompat}). The player's "Body aura" setting calms it or switches it off.</p>
  */
 public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/aura/body.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/aura/body.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spells' and the wisps' glows. */
 	private static final RenderType GLOW_TYPE = RenderCompat.auraBodyGlowRenderType(TEXTURE);
 	/** Under a shader pack, which can't add light: vanilla's glowing eyes, laid over what's behind. */
-	private static final RenderType PLAIN_TYPE = RenderTypes.eyes(TEXTURE);
+	private static final RenderType PLAIN_TYPE = RenderType.eyes(TEXTURE);
 	private static final int FULL = LightTexture.FULL_BRIGHT;
 
 	// Where each shape lies in body.png (u0, v0, u1, v1): see tools/aura_art.py body().

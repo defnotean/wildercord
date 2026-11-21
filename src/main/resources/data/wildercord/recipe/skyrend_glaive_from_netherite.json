@@ -1,21 +1,17 @@
 {
   "type": "minecraft:smithing_transform",
   "template": "wildercord:aura_shard",
-  "base": "minecraft:netherite_spear",
+  "base": "minecraft:netherite_sword",
   "addition": "wildercord:fulgurite_shard",
   "result": {
-    "id": "minecraft:netherite_spear",
+    "id": "minecraft:netherite_sword",
     "components": {
       "wildercord:aura_forged": "skyrend_glaive",
       "minecraft:item_model": "wildercord:skyrend_glaive",
       "minecraft:item_name": {
         "translate": "item.wildercord.skyrend_glaive"
       },
-      "minecraft:rarity": "rare",
-      "minecraft:swing_animation": {
-        "type": "whack",
-        "duration": 10
-      }
+      "minecraft:rarity": "rare"
     }
   }
 }

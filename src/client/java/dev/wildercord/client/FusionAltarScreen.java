@@ -20,7 +20,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -49,14 +49,14 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 	private static final int BAD = 0xFFE05050;
 	private static final int XP = 0xFF80FF20;
 
-	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
-	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
-	private static final Identifier SPR_SOCKET = Wildercord.id("cord/socket");
-	private static final Identifier SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
-	private static final Identifier SPR_TAB = Wildercord.id("cord/tab");
-	private static final Identifier SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
-	private static final Identifier SPR_ROW = Wildercord.id("cord/row");
-	private static final Identifier SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
+	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
+	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
+	private static final ResourceLocation SPR_SOCKET = Wildercord.id("cord/socket");
+	private static final ResourceLocation SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
+	private static final ResourceLocation SPR_TAB = Wildercord.id("cord/tab");
+	private static final ResourceLocation SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
+	private static final ResourceLocation SPR_ROW = Wildercord.id("cord/row");
+	private static final ResourceLocation SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
 
 	// The altar on the left, the result and the panel on the right (local coordinates).
 	private static final int ALTAR_X = 8;
@@ -175,7 +175,7 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 		return PANEL_Y + 15 + s * ROW_H;
 	}
 
-	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 

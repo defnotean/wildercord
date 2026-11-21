@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -71,7 +70,7 @@ public class RuneItem extends Item {
 	 * wakes as a random rune of Tier I to IV, as a Runesmith would pick one. A whole stack becomes the same rune.
 	 */
 	@Override
-	public void inventoryTick(ItemStack stack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity owner,  EquipmentSlot slot) {
 		if (stack.get(WildercordComponents.RUNE) == null && owner instanceof Player) {
 			dev.wildercord.runesmith.RuneTrades.random(1, 4, new java.util.Random(level.getRandom().nextLong()))
 				.ifPresent(rune -> stack.set(WildercordComponents.RUNE, rune.id()));

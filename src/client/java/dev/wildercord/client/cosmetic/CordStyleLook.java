@@ -5,7 +5,7 @@ import dev.wildercord.cosmetic.CordCosmetics;
 import dev.wildercord.cosmetic.CordStyles;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Avatar;
 
 /**
@@ -19,8 +19,8 @@ public final class CordStyleLook {
 	/** The style to draw this frame; absent means the default glass beads that follow the spell. */
 	public static final RenderStateDataKey<CordStyles.Style> STYLE = RenderStateDataKey.create(() -> "wildercord:cord_style");
 
-	private static final java.util.Map<String, Identifier> BEADS = new java.util.concurrent.ConcurrentHashMap<>();
-	private static final Identifier CORE = Wildercord.id("textures/entity/cord/bead_core.png");
+	private static final java.util.Map<String, ResourceLocation> BEADS = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final ResourceLocation CORE = Wildercord.id("textures/entity/cord/bead_core.png");
 
 	public static void extract(Avatar avatar, AvatarRenderState state) {
 		CordStyles.Style style = avatar.getAttached(CordCosmetics.STYLE);
@@ -38,12 +38,12 @@ public final class CordStyleLook {
 	}
 
 	/** The bead's own texture: glass is the plain white bead the rune's colour tints. */
-	public static Identifier beadTexture(CordStyles.Style style, Identifier glass) {
+	public static ResourceLocation beadTexture(CordStyles.Style style, ResourceLocation glass) {
 		return tinted(style) ? glass : BEADS.computeIfAbsent(style.material(), material -> Wildercord.id("textures/entity/cord/bead_" + material + ".png"));
 	}
 
 	/** What glows: the whole glass bead, or just the core showing through the other materials. */
-	public static Identifier glowTexture(CordStyles.Style style, Identifier glass) {
+	public static ResourceLocation glowTexture(CordStyles.Style style, ResourceLocation glass) {
 		return tinted(style) ? glass : CORE;
 	}
 

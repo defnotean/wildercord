@@ -21,7 +21,6 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -125,7 +124,7 @@ public final class McWorldgen {
 
 	/** Finds the nearest structure matching a {@link TagKey} or {@link HolderSet}. */
 	@SuppressWarnings("unchecked")
-	public static @Nullable BlockPos findNearestStructure(ServerLevel level, Object target, BlockPos origin,
+	public static  BlockPos findNearestStructure(ServerLevel level, Object target, BlockPos origin,
 			int radiusCells, boolean skipKnown) {
 		if (target instanceof TagKey<?> tag) {
 			return level.findNearestMapStructure((TagKey<Structure>) tag, origin, radiusCells, skipKnown);

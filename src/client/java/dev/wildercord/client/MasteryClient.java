@@ -20,7 +20,7 @@ import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -69,7 +69,7 @@ public final class MasteryClient {
 
 	/** "Your spell grows: Adept", with the spell's name in its colour and its sigil where an item would sit. */
 	public static final class RankToast implements Toast {
-		private static final Identifier BACKGROUND = Wildercord.id("toast/grimoire");
+		private static final ResourceLocation BACKGROUND = Wildercord.id("toast/grimoire");
 		private static final long SHOW_MS = 6000;
 		private final MasteryChoices.Rise rise;
 		private Visibility visibility = Visibility.SHOW;

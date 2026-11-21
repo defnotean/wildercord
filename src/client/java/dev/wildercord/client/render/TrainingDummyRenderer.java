@@ -5,18 +5,18 @@ import dev.wildercord.cast.TrainingDummy;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class TrainingDummyRenderer extends LivingEntityRenderer<TrainingDummy, DummyRenderState, DummyModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("training_dummy"), "main");
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/training_dummy.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/training_dummy.png");
 
 	public TrainingDummyRenderer(EntityRendererProvider.Context context) {
 		super(context, new DummyModel(context.bakeLayer(LAYER)), 0.45F);
 	}
 
 	@Override
-	public Identifier getTextureLocation(DummyRenderState state) {
+	public ResourceLocation getTextureLocation(DummyRenderState state) {
 		return TEXTURE;
 	}
 

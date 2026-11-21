@@ -10,23 +10,23 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /** The Frost Wyrmling (see {@link FrostWyrmlingModel}), its head held well above a player's, with its eyes and the frost in its horns lit whatever the light. */
 public final class FrostWyrmlingRenderer extends MobRenderer<FrostWyrmling,FrostWyrmlingRenderState,FrostWyrmlingModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("frost_wyrmling"),"main");
-	private static final Identifier SKIN=Wildercord.id("textures/entity/frost_wyrmling/skin.png");
-	private static final Identifier GLOW=Wildercord.id("textures/entity/frost_wyrmling/glow.png");
+	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/frost_wyrmling/skin.png");
+	private static final ResourceLocation GLOW=Wildercord.id("textures/entity/frost_wyrmling/glow.png");
 	static final float SCALE=1.5F;
 	/** How long one move takes to blend into the next, in ticks. */
 	private static final float BLEND_TICKS=4;
 	public FrostWyrmlingRenderer(EntityRendererProvider.Context c){super(c,new FrostWyrmlingModel(c.bakeLayer(LAYER)),1.6F);addLayer(new Eyes(this));}
 	@Override public FrostWyrmlingRenderState createRenderState(){return new FrostWyrmlingRenderState();}
-	@Override public Identifier getTextureLocation(FrostWyrmlingRenderState s){return SKIN;}
+	@Override public ResourceLocation getTextureLocation(FrostWyrmlingRenderState s){return SKIN;}
 	@Override public void extractRenderState(FrostWyrmling e,FrostWyrmlingRenderState s,float partial){
 		super.extractRenderState(e, s, partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.rise=FrostWyrmlingRules.rise(s.move,s.elapsed);
 		// Blending out of the move before over a few ticks; out of its curl or into it the rise does that itself.
@@ -46,7 +46,7 @@ public final class FrostWyrmlingRenderer extends MobRenderer<FrostWyrmling,Frost
 
 	/** Its eyes and the frost in its horns: dim and slow while it sleeps, bright once it is up; going out as it dies. */
 	private static final class Eyes extends RenderLayer<FrostWyrmlingRenderState,FrostWyrmlingModel> {
-		private final RenderType type=RenderTypes.eyes(GLOW);
+		private final RenderType type=RenderType.eyes(GLOW);
 		Eyes(RenderLayerParent<FrostWyrmlingRenderState,FrostWyrmlingModel> parent){super(parent);}
 		@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,FrostWyrmlingRenderState s,float yRot,float xRot){
 			if(s.isInvisible)return;

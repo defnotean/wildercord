@@ -11,11 +11,11 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -24,14 +24,14 @@ import net.minecraft.util.Mth;
  */
 public final class LanternBearerRenderer extends CullableMobRenderer<LanternBearer,LanternBearerRenderState,LanternBearerModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("lantern_bearer"),"main");
-	private static final Identifier SKIN=Wildercord.id("textures/entity/lantern_bearer/skin.png");
-	private static final Identifier GLOW=Wildercord.id("textures/entity/lantern_bearer/glow.png");
+	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/lantern_bearer/skin.png");
+	private static final ResourceLocation GLOW=Wildercord.id("textures/entity/lantern_bearer/glow.png");
 	static final float SCALE=1.6F;
 	/** How long one move takes to blend into the next, in ticks. */
 	private static final float BLEND_TICKS=4;
 	public LanternBearerRenderer(EntityRendererProvider.Context c){super(c,new LanternBearerModel(c.bakeLayer(LAYER)),1.2F);addLayer(new Glow(this));}
 	@Override public LanternBearerRenderState createRenderState(){return new LanternBearerRenderState();}
-	@Override public Identifier getTextureLocation(LanternBearerRenderState s){return SKIN;}
+	@Override public ResourceLocation getTextureLocation(LanternBearerRenderState s){return SKIN;}
 	/** Down in its grave, or out in the dark with its lantern out, it is not there to see. */
 	@Override protected boolean shouldRenderEntity(LanternBearer e,Frustum frustum,double x,double y,double z,float partial){
 		return e.move()!=LanternBearerRules.DORMANT&&!e.unseen()&&superShouldRenderEntity(e,frustum,x,y,z,partial);
@@ -72,7 +72,7 @@ public final class LanternBearerRenderer extends CullableMobRenderer<LanternBear
 	 * dark, but for a low glimmer as it stands up behind someone.
 	 */
 	private static final class Glow extends RenderLayer<LanternBearerRenderState,LanternBearerModel> {
-		private final RenderType type=RenderTypes.eyes(GLOW);
+		private final RenderType type=RenderType.eyes(GLOW);
 		Glow(RenderLayerParent<LanternBearerRenderState,LanternBearerModel> parent){super(parent);}
 		@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,LanternBearerRenderState s,float yRot,float xRot){
 			if(s.isInvisible)return;

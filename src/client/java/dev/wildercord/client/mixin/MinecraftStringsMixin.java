@@ -30,17 +30,9 @@ public abstract class MinecraftStringsMixin {
 
 	@Inject(method = "startAttack", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;)V",
-		ordinal = 1, shift = At.Shift.AFTER))
+		ordinal = 0, shift = At.Shift.AFTER))
 	private void wildercord$stroke(CallbackInfoReturnable<Boolean> cir) {
 		SwordStringsClient.swung((Minecraft) (Object) this, false);
 		AuraFxClient.swung((Minecraft) (Object) this, false);
-	}
-
-	@Inject(method = "startAttack", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;piercingAttack(Lnet/minecraft/world/item/component/PiercingWeapon;)V",
-		shift = At.Shift.AFTER))
-	private void wildercord$thrust(CallbackInfoReturnable<Boolean> cir) {
-		SwordStringsClient.swung((Minecraft) (Object) this, true);
-		AuraFxClient.swung((Minecraft) (Object) this, true);
 	}
 }

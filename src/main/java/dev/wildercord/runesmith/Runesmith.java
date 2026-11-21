@@ -13,8 +13,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
-import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -55,7 +55,7 @@ public final class Runesmith {
 	}
 
 	public static void init() {
-		PointOfInterestHelper.register(POI.identifier(), 1, 1, SCRIBING_DESK);
+		PointOfInterestHelper.register(POI.location(), 1, 1, SCRIBING_DESK);
 		Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, PROFESSION, new VillagerProfession(
 			Component.translatable("entity.wildercord.villager.runesmith"),
 			poi -> poi.is(POI),

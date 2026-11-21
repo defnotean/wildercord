@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public final class AuraWorldClient {
 	public static final ModelLayerLocation FALLEN_KNIGHT = new ModelLayerLocation(Wildercord.id("fallen_knight"), "main");
 
 	/** Each duelist's skin, by its method: its cloak's trim, its sash and its scabbard's tassel in its element's colours. */
-	private static final Map<String, Identifier> DUELIST_SKINS = new HashMap<>();
+	private static final Map<String, ResourceLocation> DUELIST_SKINS = new HashMap<>();
 
 	public static void init() {
 		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.ferryman.FerrymanRenderer.LAYER, dev.wildercord.client.ferryman.FerrymanModel::createLayer);
@@ -75,7 +75,7 @@ public final class AuraWorldClient {
 		});
 	}
 
-	private static Identifier duelistSkin(String method) {
+	private static ResourceLocation duelistSkin(String method) {
 		return DUELIST_SKINS.computeIfAbsent(method, m -> Wildercord.id("textures/entity/duelist/" + m + ".png"));
 	}
 

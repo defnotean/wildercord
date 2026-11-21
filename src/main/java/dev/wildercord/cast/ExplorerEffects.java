@@ -11,7 +11,7 @@ import dev.wildercord.spell.SpellPlan;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -28,7 +28,7 @@ import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.zombie.ZombieVillager;
+import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.level.ClipContext;
@@ -767,7 +767,7 @@ public final class ExplorerEffects {
 		}
 	}
 
-	private static final Identifier SHELL_ID = Wildercord.id("shulkershell");
+	private static final ResourceLocation SHELL_ID = Wildercord.id("shulkershell");
 
 	/** What each shell has turned aside so far, by wearer (loosed as bullets when it opens). */
 	private static final Map<UUID, double[]> SHELLS = new HashMap<>();
@@ -949,7 +949,7 @@ public final class ExplorerEffects {
 
 	/** Moonpetal: moonlit petals cut enemies and mend allies alike. */
 	private static void moonpetal(Cast cast, Vec3 point, double radius, double power) {
-		power *= ExplorerNumbers.moonFactor(cast.level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.MOON_PHASE, BlockPos.containing(point)).index(), !cast.level.isBrightOutside() && cast.level.canSeeSky(BlockPos.containing(point)));
+		power *= ExplorerNumbers.moonFactor(dev.wildercord.compat.EnvCompat.moonPhase(cast.level, BlockPos.containing(point)), !cast.level.isBrightOutside() && cast.level.canSeeSky(BlockPos.containing(point)));
 		for (LivingEntity t : enemiesAround(cast, point, radius)) {
 			final double observedPower=power;
 			LifeOwnerEvents.mutation(cast,"moonpetal",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast,t,magic(cast),5*observedPower));
@@ -1091,7 +1091,7 @@ public final class ExplorerEffects {
 		}
 	}
 
-	private static final Identifier MIRE_ID = Wildercord.id("mire");
+	private static final ResourceLocation MIRE_ID = Wildercord.id("mire");
 
 	/** Mire: the ground turns to mud under the target. */
 	private static void mire(Cast cast, LivingEntity t, int ticks) {
@@ -1851,7 +1851,7 @@ public final class ExplorerEffects {
 		return t.isNoGravity() || t instanceof Mob mob && mob.getNavigation() instanceof net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 	}
 
-	private static final Identifier CURRENT_ID = Wildercord.id("current");
+	private static final ResourceLocation CURRENT_ID = Wildercord.id("current");
 
 	/**
 	 * Current: a current sweeps the caster the way they look, held at speed for a moment and then carried on by the

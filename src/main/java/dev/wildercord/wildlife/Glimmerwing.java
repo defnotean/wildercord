@@ -29,7 +29,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A glimmerwing: a soft-glowing moth the size of a hand, out at night in forests and flower fields in little swarms
@@ -50,13 +49,13 @@ public class Glimmerwing extends AmbientCreature {
 	private static final EntityDataAccessor<Byte> DATA_VARIANT = SynchedEntityData.defineId(Glimmerwing.class, EntityDataSerializers.BYTE);
 
 	/** The spot its swarm keeps near, unless something draws it off. */
-	private @Nullable Vec3 home;
+	private  Vec3 home;
 	/** What it's flying to now. */
-	private @Nullable Vec3 target;
+	private  Vec3 target;
 	/** A light or a caster it's circling, until it loses interest. */
-	private @Nullable Vec3 lure;
+	private  Vec3 lure;
 	private int lureLeft;
-	private @Nullable BlockPos flower;
+	private  BlockPos flower;
 	private int retarget;
 	/** Client: the wings' phase and how hard they beat (this tick's and last tick's phase), and a glide's ticks left. */
 	public float flapPhase, flapPhaseO, flapStrength = 1;
@@ -93,13 +92,13 @@ public class Glimmerwing extends AmbientCreature {
 	private record Swarm(int variant) implements SpawnGroupData {}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData group) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData group) {
 		if (group instanceof Swarm swarm) {
 			setVariant(swarm.variant());
 		} else {
 			var biome = level.getBiome(blockPosition());
-			String id = biome.unwrapKey().map(k -> k.identifier().toString()).orElse("");
+			String id = biome.unwrapKey().map(k -> k.location().toString()).orElse("");
 			int variant = switch (id) {
 				case "minecraft:flower_forest", "minecraft:cherry_grove" -> ROSE;
 				case "minecraft:meadow", "minecraft:sunflower_plains" -> AMBER;
@@ -282,17 +281,17 @@ public class Glimmerwing extends AmbientCreature {
 	// ------------------------------------------------------------------ sound
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return Wildlife.sound("glimmerwing_flutter");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return Wildlife.sound("glimmerwing_hurt");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return Wildlife.sound("glimmerwing_hurt");
 	}
 

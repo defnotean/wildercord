@@ -21,7 +21,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 
@@ -77,7 +77,7 @@ public final class Hamlets {
 	}
 
 	static String key(ServerLevel level, BlockPos bell) {
-		return level.dimension().identifier() + "|" + bell.asLong();
+		return level.dimension().location() + "|" + bell.asLong();
 	}
 
 	public static String name(BlockPos bell) {

@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import org.jspecify.annotations.Nullable;
 
 /**
  * The Wellstone: set it on a ley line and it wakes, drawing the line's mana up into a slowly
@@ -27,13 +26,13 @@ public class WellstoneBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+	public  BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new WellstoneBlockEntity(pos, state);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+	public <T extends BlockEntity>  BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return level.isClientSide() || type != WildercordBlocks.WELLSTONE_ENTITY ? null
 			: (BlockEntityTicker<T>) (BlockEntityTicker<WellstoneBlockEntity>) WellstoneBlockEntity::serverTick;
 	}

@@ -322,6 +322,10 @@ class DataPackProfile:
         key = "minecraft:swing_animation" if self.is_26_2 else "minecraft:attack_animation"
         return key, {"type": "whack", "duration": 10}
 
+    def has_spear_base(self):
+        """Spear base items and the swing/attack animation component only exist from 1.21.11 on."""
+        return self.version_tuple >= (1, 21, 11)
+
     @property
     def brewing_subdir(self):
         return "brewing" if self.is_26_2 else "recipe/brewing"

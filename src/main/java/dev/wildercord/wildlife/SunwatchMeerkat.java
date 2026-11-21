@@ -39,7 +39,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -59,7 +58,7 @@ public class SunwatchMeerkat extends Animal {
 	private static final EntityDataAccessor<Integer> POSE = SynchedEntityData.defineId(SunwatchMeerkat.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> LEFT = SynchedEntityData.defineId(SunwatchMeerkat.class, EntityDataSerializers.INT);
 
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1;
 	private boolean wantsWatch;
 
@@ -194,7 +193,7 @@ public class SunwatchMeerkat extends Animal {
 	}
 
 	/** A stranger it doesn't trust, or a monster, near enough to see; or nobody. */
-	private @Nullable Entity threat(ServerLevel level, boolean watching) {
+	private  Entity threat(ServerLevel level, boolean watching) {
 		for (Player player : level.players()) {
 			if (!player.isSpectator() && player.isAlive()
 				&& MeerkatRules.threatens(distanceTo(player), watching, player.isCrouching(), trusts(player))) {
@@ -267,7 +266,7 @@ public class SunwatchMeerkat extends Animal {
 		return player.getUUID().equals(truster) && MeerkatRules.trusts(level().getGameTime() - fedAt);
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !MeerkatRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -324,25 +323,25 @@ public class SunwatchMeerkat extends Animal {
 	// ------------------------------------------------------------------ breeding: a pup
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof SunwatchMeerkat pup ? pup : null;
 	}
 
 	// ------------------------------------------------------------------ sound: chirps and peeps
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		int pose = pose();
 		return pose == MeerkatRules.SLEEP || pose == MeerkatRules.HIDE ? null : SoundEvents.FOX_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.FOX_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.FOX_DEATH;
 	}
 
@@ -385,7 +384,7 @@ public class SunwatchMeerkat extends Animal {
 
 	/** Its turn on watch: up to the highest spot near, and it stands sentry there. */
 	private final class Lookout extends Goal {
-		private @Nullable BlockPos spot;
+		private  BlockPos spot;
 		private int ticks;
 
 		Lookout() {
@@ -447,7 +446,7 @@ public class SunwatchMeerkat extends Animal {
 
 	/** At night it trots over to the others and they all go to sleep in a heap. */
 	private final class Huddle extends Goal {
-		private @Nullable SunwatchMeerkat near;
+		private  SunwatchMeerkat near;
 		private int ticks;
 
 		Huddle() {
@@ -514,7 +513,7 @@ public class SunwatchMeerkat extends Animal {
 
 	/** Trusting someone, it trots along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class SnapjawTurtle extends WildMonster {
 	private long roused;
 	private int dry;
 	private int repath;
-	private @Nullable LivingEntity held;
+	private  LivingEntity held;
 	private int heldTicks;
 	private float harm;
 
@@ -233,7 +232,7 @@ public class SnapjawTurtle extends WildMonster {
 		}
 	}
 
-	private @Nullable BlockPos nearWater(ServerLevel level) {
+	private  BlockPos nearWater(ServerLevel level) {
 		BlockPos at = blockPosition();
 		BlockPos best = null;
 		double bestDistance = Double.MAX_VALUE;
@@ -355,7 +354,7 @@ public class SnapjawTurtle extends WildMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return isInWater() ? null : SoundEvents.TURTLE_AMBIENT_LAND;
 	}
 

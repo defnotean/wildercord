@@ -45,7 +45,7 @@ final class ScoutLegendChecks {
 	}
 
 	static void run(ClientGameTestContext c, TestSingleplayerContext world) {
-		world.getServer().runCommand("gamerule spawn_mobs false");
+		world.getServer().runCommand("gamerule doMobSpawning false");
 		world.getServer().runOnServer(s -> {
 			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
 			Grimoire.unlock(player, "aura:battlefield_returned_step");

@@ -20,8 +20,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
-import net.minecraft.world.entity.animal.equine.Llama;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.Heightmap;
 
@@ -213,7 +213,7 @@ public final class BountyEscorts {
 		Town.Standing standing = Town.standing(player);
 		if (standing.bounty().isEmpty()) return;
 		Town.Active bounty = standing.bounty().get();
-		if (bounty.type() != BountyRules.Kind.ESCORT || !bounty.dimension().equals(player.level().dimension().identifier().toString())) return;
+		if (bounty.type() != BountyRules.Kind.ESCORT || !bounty.dimension().equals(player.level().dimension().location().toString())) return;
 		ServerLevel level = player.level();
 		Llama llama = llama(player);
 		if (llama == null) return;

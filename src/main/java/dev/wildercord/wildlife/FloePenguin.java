@@ -43,7 +43,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -65,7 +64,7 @@ public class FloePenguin extends Animal {
 	private static final EntityDataAccessor<Boolean> HUDDLING = SynchedEntityData.defineId(FloePenguin.class, EntityDataSerializers.BOOLEAN);
 
 	/** Who fed it and when, and its last fishing trip. */
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1;
 	private long fishedAt = -1;
 
@@ -203,7 +202,7 @@ public class FloePenguin extends Animal {
 		return state.is(BlockTags.ICE) || state.is(Blocks.SNOW) || state.is(Blocks.SNOW_BLOCK) || state.is(Blocks.POWDER_SNOW);
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || level().getGameTime() - fedAt > PenguinRules.TRUST_TICKS) {
 			return null;
 		}
@@ -212,7 +211,7 @@ public class FloePenguin extends Animal {
 	}
 
 	/** A chick of its colony nearby that could do with a fish. */
-	private @Nullable FloePenguin chick() {
+	private  FloePenguin chick() {
 		List<FloePenguin> chicks = level().getEntitiesOfClass(FloePenguin.class, getBoundingBox().inflate(PenguinRules.CHICK_RANGE),
 			p -> p != this && p.isBaby() && p.isAlive());
 		FloePenguin best = null;
@@ -262,22 +261,22 @@ public class FloePenguin extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof FloePenguin young ? young : null;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return huddling() ? null : SoundEvents.PARROT_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.PARROT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.PARROT_DEATH;
 	}
 
@@ -303,7 +302,7 @@ public class FloePenguin extends Animal {
 	 * hungry chick, or itself.
 	 */
 	private final class Fish extends Goal {
-		private @Nullable BlockPos water;
+		private  BlockPos water;
 		private int swum;
 		private int length;
 		private int trip;
@@ -455,7 +454,7 @@ public class FloePenguin extends Animal {
 		}
 
 		/** Open water near it, with air over it to dive in from. */
-		private @Nullable BlockPos find() {
+		private  BlockPos find() {
 			BlockPos here = blockPosition();
 			int r = PenguinRules.FISH_RANGE;
 			for (int i = 0; i < 24; i++) {
@@ -469,7 +468,7 @@ public class FloePenguin extends Animal {
 		}
 
 		/** Dry ground near it, to climb out onto. */
-		private @Nullable BlockPos shore() {
+		private  BlockPos shore() {
 			BlockPos here = blockPosition();
 			for (int i = 0; i < 20; i++) {
 				BlockPos at = here.offset(getRandom().nextInt(13) - 6, getRandom().nextInt(5) - 1, getRandom().nextInt(13) - 6);
@@ -484,7 +483,7 @@ public class FloePenguin extends Animal {
 
 	/** At night it shuffles in among the rest of its colony and dozes there, head tucked in, until morning. */
 	private final class Huddle extends Goal {
-		private @Nullable Vec3 heart;
+		private  Vec3 heart;
 
 		Huddle() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
@@ -561,7 +560,7 @@ public class FloePenguin extends Animal {
 
 	/** Trusting someone, it waddles (or on the ice, slides) along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

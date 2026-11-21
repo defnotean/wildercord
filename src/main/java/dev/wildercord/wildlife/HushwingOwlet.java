@@ -37,7 +37,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -57,9 +56,9 @@ public class HushwingOwlet extends Animal {
 	private static final EntityDataAccessor<Boolean> STARING = SynchedEntityData.defineId(HushwingOwlet.class, EntityDataSerializers.BOOLEAN);
 
 	/** What it stares down (server only); when something last woke it, who fed it last and when, when it last warned them, and its second hoot. */
-	private @Nullable Creaking stare;
+	private  Creaking stare;
 	private long wokenAt = -1;
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1;
 	private long warnedAt = -1;
 	private long hootAgain = -1;
@@ -191,7 +190,7 @@ public class HushwingOwlet extends Animal {
 	}
 
 	/** The nearest creaking it can see to stare down, if any. */
-	private @Nullable Creaking watch(ServerLevel level) {
+	private  Creaking watch(ServerLevel level) {
 		if (asleep() || isBaby()) {
 			return null;
 		}
@@ -231,7 +230,7 @@ public class HushwingOwlet extends Animal {
 		hootAgain = now + 7;
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !OwletRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -279,14 +278,14 @@ public class HushwingOwlet extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof HushwingOwlet young ? young : null;
 	}
 
 	// ------------------------------------------------------------------ sound: soft chirrs and, now and then, a hoot
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return asleep() ? null : SoundEvents.PARROT_FLY;
 	}
 
@@ -305,12 +304,12 @@ public class HushwingOwlet extends Animal {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.PARROT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.PARROT_DEATH;
 	}
 
@@ -378,7 +377,7 @@ public class HushwingOwlet extends Animal {
 
 	/** Trusting someone, it hops along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

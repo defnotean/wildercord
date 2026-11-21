@@ -11,12 +11,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
@@ -42,20 +42,20 @@ import java.util.function.Supplier;
  * their spread gives the line of the blade (its point is the end toward the top of the sprite, where every handheld weapon's
  * is). A weapon drawn by a model of its own (the trident in hand) gets the glow along its length instead.
  *
- * <p>Everything is vanilla's glowing-eyes type ({@code RenderTypes.eyes}), so it draws under shader packs as it does without, and is left
+ * <p>Everything is vanilla's glowing-eyes type ({@code RenderType.eyes}), so it draws under shader packs as it does without, and is left
  * out of a pack's shadows: it's light, not a thing (see {@link ShaderCompat}). Drawn from the synced aura look: everyone sees
  * everyone's blade.</p>
  */
 public final class AuraBlade {
 	private AuraBlade() {}
 
-	private static final Identifier HAZE = Wildercord.id("textures/entity/aura/haze.png");
-	private static final Identifier CRYSTAL = Wildercord.id("textures/entity/aura/crystal.png");
-	private static final Identifier SOFT = Wildercord.id("textures/entity/aura/soft.png");
+	private static final ResourceLocation HAZE = Wildercord.id("textures/entity/aura/haze.png");
+	private static final ResourceLocation CRYSTAL = Wildercord.id("textures/entity/aura/crystal.png");
+	private static final ResourceLocation SOFT = Wildercord.id("textures/entity/aura/soft.png");
 	/** Vanilla's glowing eyes: full bright, no shading by the light's direction, laid over what's behind. */
-	private static final RenderType HAZE_TYPE = RenderTypes.eyes(HAZE);
-	private static final RenderType CRYSTAL_TYPE = RenderTypes.eyes(CRYSTAL);
-	private static final RenderType SOFT_TYPE = RenderTypes.eyes(SOFT);
+	private static final RenderType HAZE_TYPE = RenderType.eyes(HAZE);
+	private static final RenderType CRYSTAL_TYPE = RenderType.eyes(CRYSTAL);
+	private static final RenderType SOFT_TYPE = RenderType.eyes(SOFT);
 	private static final int FULL = LightTexture.FULL_BRIGHT;
 
 	/**

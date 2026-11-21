@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -83,7 +83,7 @@ public final class WildlifeSpawns {
 
 	/** The biome keys a kind lives in. */
 	public static Set<ResourceKey<Biome>> biomes(Kind kind) {
-		return kind.biomes().stream().map(id -> ResourceKey.create(Registries.BIOME, Identifier.parse(id))).collect(Collectors.toUnmodifiableSet());
+		return kind.biomes().stream().map(id -> ResourceKey.create(Registries.BIOME, ResourceLocation.parse(id))).collect(Collectors.toUnmodifiableSet());
 	}
 
 	public static MobCategory category(Kind kind) {

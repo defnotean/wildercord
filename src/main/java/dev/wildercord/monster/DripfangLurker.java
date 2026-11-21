@@ -28,7 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -230,7 +229,7 @@ public class DripfangLurker extends WildMonster {
 	}
 
 	/** On the ground: after its prey, biting, or idling till it climbs back up. */
-	private void roam(ServerLevel level, @Nullable LivingEntity target, boolean hunting, long now) {
+	private void roam(ServerLevel level,  LivingEntity target, boolean hunting, long now) {
 		if (!hunting) {
 			idle++;
 			if (idle % 20 == 0 && DripfangRules.reclimbs(idle, false, true)) {
@@ -285,7 +284,7 @@ public class DripfangLurker extends WildMonster {
 	}
 
 	/** A roof above it high enough over the floor to hang from, or nothing. */
-	private @Nullable BlockPos roof(ServerLevel level) {
+	private  BlockPos roof(ServerLevel level) {
 		BlockPos at = blockPosition();
 		BlockPos roof = null;
 		for (int i = 1; i <= DripfangRules.CEILING_REACH + 2; i++) {
@@ -335,7 +334,7 @@ public class DripfangLurker extends WildMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return phase == Phase.ROAM ? SoundEvents.SILVERFISH_AMBIENT : null;
 	}
 

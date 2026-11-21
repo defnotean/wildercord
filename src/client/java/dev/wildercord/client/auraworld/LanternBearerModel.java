@@ -4,7 +4,7 @@ import dev.wildercord.aura.world.LanternBearerRules;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.*;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 
 /**
@@ -27,7 +27,7 @@ public final class LanternBearerModel extends EntityModel<LanternBearerRenderSta
 	/** How far the cape's lower piece swings past the upper (each move sets it a beat after the cape itself moves), and the same for the hem's tatters. */
 	private float capeT,hemKick,clock;
 	public LanternBearerModel(ModelPart root){
-		super(root,RenderTypes::entityTranslucent);
+		super(root,RenderType::entityTranslucent);
 		body=root.getChild("body");head=body.getChild("head");skirt=body.getChild("skirt");cape=body.getChild("cape");
 		armR=body.getChild("armR");foreR=armR.getChild("fore");spade=foreR.getChild("spade");
 		armL=body.getChild("armL");foreL=armL.getChild("fore");crook=foreL.getChild("crook");lantern=crook.getChild("tip").getChild("lantern");

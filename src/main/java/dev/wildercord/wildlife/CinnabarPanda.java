@@ -36,7 +36,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -55,7 +54,7 @@ public class CinnabarPanda extends Animal {
 	private static final EntityDataAccessor<Integer> POSE = SynchedEntityData.defineId(CinnabarPanda.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> LEFT = SynchedEntityData.defineId(CinnabarPanda.class, EntityDataSerializers.INT);
 
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1, ateAt = -RedPandaRules.FORAGE_REST, rearAgain;
 
 	/** Client: how far it is reared up, washing, curled asleep, sat up eating, tumbling, eased, this tick's and last. */
@@ -227,7 +226,7 @@ public class CinnabarPanda extends Animal {
 		return player.getUUID().equals(truster) && RedPandaRules.trusts(level().getGameTime() - fedAt);
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !RedPandaRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -268,24 +267,24 @@ public class CinnabarPanda extends Animal {
 	// ------------------------------------------------------------------ breeding: a cub
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof CinnabarPanda cub ? cub : null;
 	}
 
 	// ------------------------------------------------------------------ sound: twitters and huffs
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return pose() == RedPandaRules.SLEEP ? null : SoundEvents.PANDA_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.PANDA_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.PANDA_DEATH;
 	}
 
@@ -328,7 +327,7 @@ public class CinnabarPanda extends Animal {
 
 	/** It sniffs out a ripe sweet berry bush, trots over, strips it and sits up to eat. */
 	private final class Forage extends Goal {
-		private @Nullable BlockPos bush;
+		private  BlockPos bush;
 		private int ticks;
 
 		Forage() {
@@ -401,7 +400,7 @@ public class CinnabarPanda extends Animal {
 
 	/** Trusting someone, it trots along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

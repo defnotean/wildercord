@@ -24,7 +24,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A skyray: a great manta of the open sky, three blocks from wingtip to wingtip, gliding in slow loops high over
@@ -37,7 +36,7 @@ import org.jspecify.annotations.Nullable;
  */
 public class Skyray extends AmbientCreature {
 	/** The point it circles, which wanders. */
-	private @Nullable Vec3 anchor;
+	private  Vec3 anchor;
 	private double angle;
 	/** +1 or -1: which way round it goes. */
 	private int way = 1;
@@ -85,8 +84,8 @@ public class Skyray extends AmbientCreature {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData group) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData group) {
 		anchor = position();
 		angle = random.nextDouble() * Mth.TWO_PI;
 		way = random.nextBoolean() ? 1 : -1;
@@ -221,17 +220,17 @@ public class Skyray extends AmbientCreature {
 	// ------------------------------------------------------------------ sound
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return Wildlife.sound("skyray_call");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return Wildlife.sound("skyray_hurt");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return Wildlife.sound("skyray_death");
 	}
 

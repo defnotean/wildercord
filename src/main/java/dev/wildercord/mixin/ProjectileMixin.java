@@ -16,7 +16,7 @@ public abstract class ProjectileMixin {
 	private void wildercord$releaseImbued(HitResult result, CallbackInfo ci) {
 		Projectile self = (Projectile) (Object) this;
 		// One physical vanilla arrow catch precedes imbued release; magic shots refuse the relic.
-		if (self instanceof net.minecraft.world.entity.projectile.arrow.AbstractArrow arrow
+		if (self instanceof net.minecraft.world.entity.projectile.AbstractArrow arrow
 				&& result instanceof net.minecraft.world.phys.EntityHitResult hit
 				&& dev.wildercord.wildlife.RooksRainshield.intercept(arrow, hit)) { ci.cancel(); return; }
 		if (!self.level().isClientSide() && self.hasAttached(WildercordAttachments.IMBUED_SHOT)) {

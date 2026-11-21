@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -64,7 +63,7 @@ public class FoxfireKitsune extends WildMonster {
 	/** A copy's maker, by its entity id (copies aren't saved, so this needn't outlive the world). */
 	private int makerId = -1;
 	/** Its foxfire in flight, if any. */
-	private @Nullable Vec3 firePos;
+	private  Vec3 firePos;
 	private Vec3 fireVel = Vec3.ZERO;
 	private int fireLife;
 
@@ -351,7 +350,7 @@ public class FoxfireKitsune extends WildMonster {
 	// ------------------------------------------------------------------ voice
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return SoundEvents.FOX_AMBIENT;
 	}
 

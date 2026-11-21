@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import dev.wildercord.aura.MastersArtAnimation;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -110,7 +110,7 @@ public final class MastersArtPose {
 		boolean owns = hand == InteractionHand.MAIN_HAND && frame != null
 			&& hands.equipKnown() && !hands.mainHandEquipping()
 			&& !hands.mainHandItem().isEmpty()
-			&& net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem(), state.getMainHandItemStack());
+			&& net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem(), dev.wildercord.client.compat.RenderCompat.mainHandStack(state));
 		return dev.wildercord.aura.MastersViewMotion.ownership(frame == null ? 0 : frame.pose().weight(), owns);
 	}
 

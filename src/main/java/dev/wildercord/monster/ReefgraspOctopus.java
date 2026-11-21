@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class ReefgraspOctopus extends WildMonster {
 	private long jetUntil = -1;
 	private long roused;
 	private int repath;
-	private @Nullable LivingEntity held;
+	private  LivingEntity held;
 	private int heldTicks;
 	private float harm;
 	private Vec3 jet = Vec3.ZERO;
@@ -267,7 +266,7 @@ public class ReefgraspOctopus extends WildMonster {
 	}
 
 	/** A cloud of ink that blinds all near, its grip let go, and off it jets, away from whoever struck it. */
-	private void ink(ServerLevel level, long now, @Nullable Entity from) {
+	private void ink(ServerLevel level, long now,  Entity from) {
 		nextInk = now + OctopusRules.INK_COOLDOWN;
 		let(now);
 		grabAt = -1;
@@ -325,7 +324,7 @@ public class ReefgraspOctopus extends WildMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return SoundEvents.SQUID_AMBIENT;
 	}
 

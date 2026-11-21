@@ -6,7 +6,7 @@ import dev.wildercord.monster.CofferMimic;
 import dev.wildercord.monster.MimicRules;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import org.spongepowered.asm.mixin.Mixin;
 
 /** Iron golems pass a tamed coffer by: golems take up with anything that is an Enemy, and a mimic stays a monster even after it is tame. */

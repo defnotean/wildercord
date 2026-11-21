@@ -16,7 +16,7 @@ public final class CampConcordClient {
  private static final long[] accepted=new long[8];
  public static long accepted(int phase){return phase>=0&&phase<8?accepted[phase]:0;}
  public static void init(){ClientPlayNetworking.registerGlobalReceiver(CampConcordFx.Event.TYPE,(e,ctx)->{
-  var mc=ctx.client();if(mc.player==null||mc.level==null||ACTIVE.size()>=32||!mc.level.dimension().identifier().toString().equals(e.world())||!e.source().equals(mc.player.getUUID())&&!e.target().equals(mc.player.getUUID())
+  var mc=ctx.client();if(mc.player==null||mc.level==null||ACTIVE.size()>=32||!mc.level.dimension().location().toString().equals(e.world())||!e.source().equals(mc.player.getUUID())&&!e.target().equals(mc.player.getUUID())
    ||Math.abs(mc.level.getGameTime()-e.tick())>40||!mc.level.hasChunkAt(BlockPos.containing(e.from()))||!mc.level.hasChunkAt(BlockPos.containing(e.to())))return;
   ACTIVE.add(new Pending(e,mc.level,clock));accepted[e.phase()]++;
   String sound=switch(e.phase()){case CampConcordFx.ARM->"camp_watch_arm";case CampConcordFx.WARN->"camp_watch_warn";case CampConcordFx.OFFER->"camp_braid_offer";case CampConcordFx.TRANSFER->"camp_braid_transfer";case CampConcordFx.DECLINE->"camp_braid_decline";default->null;};

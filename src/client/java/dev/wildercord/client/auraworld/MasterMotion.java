@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
-import org.jspecify.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import java.util.Map;
@@ -24,7 +23,7 @@ public final class MasterMotion {
 	public static final RenderStateDataKey<Frame> RIG = RenderStateDataKey.create(() -> "wildercord:master_rig");
 
 	/** The pose to draw, its sword hand, how much of it is there (0 mid-vanish), and the afterimage it left, if any. */
-	public record Frame(MasterRig.Pose pose, boolean left, float alpha, @Nullable Ghost ghost) {}
+	public record Frame(MasterRig.Pose pose, boolean left, float alpha,  Ghost ghost) {}
 
 	/** An afterimage: the pose it vanished from, where in the world, facing which way, and how much of it is left. */
 	public record Ghost(MasterRig.Pose pose, double x, double y, double z, float bodyRot, float alpha) {}
@@ -124,22 +123,22 @@ public final class MasterMotion {
 	private static final class Track {
 		boolean dashing;
 		long dashStart = Long.MIN_VALUE / 2, dashEnd = Long.MIN_VALUE / 2;
-		MasterRig.@Nullable Pose last, fadeFrom, ghost;
+		MasterRig. Pose last, fadeFrom, ghost;
 		double gx, gy, gz;
 		float gyaw;
 		double fadeStart;
 		float fadeLen;
 		String key = "";
-		MasterRig.@Nullable Clip tail;
+		MasterRig. Clip tail;
 		float tailFrom;
 		double tailStart;
-		MasterRig.@Nullable Clip clip;
+		MasterRig. Clip clip;
 		float clipTime;
 		/** The clip whose blow landed and the tick it did: the follow-through's overshoot runs from there. */
-		MasterRig.@Nullable Clip overClip;
+		MasterRig. Clip overClip;
 		double overStart;
 		/** Per overshoot bone: the angle the clip turns it by near the blow, then the axis (4 floats each). */
-		MasterRig.@Nullable Clip velClip;
+		MasterRig. Clip velClip;
 		float[] velocity = new float[OVER_BONES * 4];
 		/** Hurt flinch: whether the vanilla red flash was up last frame, and when it last came on. */
 		boolean red;

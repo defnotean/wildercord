@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,7 +20,7 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -54,8 +54,8 @@ public final class MountBonds {
 	public static final AttachmentType<Bond> BOND = AttachmentRegistry.create(Wildercord.id("mount_bond"),
 		builder -> builder.initializer(() -> Bond.NONE).persistent(Bond.CODEC));
 
-	private static final Identifier SPEED = Wildercord.id("mount_bond_speed");
-	private static final Identifier HEALTH = Wildercord.id("mount_bond_health");
+	private static final ResourceLocation SPEED = Wildercord.id("mount_bond_speed");
+	private static final ResourceLocation HEALTH = Wildercord.id("mount_bond_health");
 
 	/** What riding is doing now, not saved: where it was a second ago, its last dash, the sprint key, how far it has fallen. */
 	private static final class Ride {

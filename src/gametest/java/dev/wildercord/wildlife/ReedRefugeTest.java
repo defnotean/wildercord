@@ -29,7 +29,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   NewtBlockedTimeoutProbeChecks.verify();
   TestWorldSave save;
   try(var w=c.worldBuilder().create()) {
-   c.waitTicks(30);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 6000");w.getServer().runCommand("weather clear");
+   c.waitTicks(30);w.getServer().runCommand("gamerule doMobSpawning false");w.getServer().runCommand("time set 6000");w.getServer().runCommand("weather clear");
    w.getServer().runOnServer(s -> {
     var l=s.overworld();dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.ReedRefugeTest\",\"seed\":\"{}\"}",l.getSeed());for(int x=-12;x<=12;x++)for(int z=-8;z<=12;z++) {l.setBlock(new BlockPos(x,100,z),Blocks.DIRT.defaultBlockState(),2);l.setBlock(new BlockPos(x,101,z),x>=-5 && x<=7 && z>=0 && z<=8?Blocks.WATER.defaultBlockState():Blocks.GRASS_BLOCK.defaultBlockState(),2);l.setBlock(new BlockPos(x,102,z),Blocks.AIR.defaultBlockState(),2);}
     for(var row:List.of(List.of(Items.BAMBOO,Items.BAMBOO,Items.BAMBOO,WetlandGarden.FLOSS,Items.STRING,Items.SEAGRASS,WetlandShelters.REFUGE_ITEM),List.of(Items.BOOK,WetlandGarden.FLOSS,Items.SEAGRASS,WetlandShelters.NOTES))) {

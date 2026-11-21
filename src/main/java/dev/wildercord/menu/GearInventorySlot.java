@@ -4,7 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.gear.GearLayout;
 import dev.wildercord.gear.GearSlot;
 import dev.wildercord.gear.GearSlots;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -38,7 +38,7 @@ public class GearInventorySlot extends Slot implements PlacedSlot {
 	}
 
 	@Override
-	public Identifier getNoItemIcon() {
+	public ResourceLocation getNoItemIcon() {
 		return Wildercord.id(kind.iconPath());
 	}
 

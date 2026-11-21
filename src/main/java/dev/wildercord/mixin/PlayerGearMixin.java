@@ -4,7 +4,7 @@ import dev.wildercord.backpack.Backpacks;
 import dev.wildercord.gear.GearSlots;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerGearMixin {
 	@Inject(method = "dropEquipment", at = @At("TAIL"))
 	private void wildercord$dropGear(ServerLevel level, CallbackInfo ci) {
-		if (!level.getGameRules().get(GameRules.KEEP_INVENTORY)) {
+		if (!level.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).get()) {
 			GearSlots.dropAll((Player) (Object) this);
 			Backpacks.dropWorn((Player) (Object) this);
 		}

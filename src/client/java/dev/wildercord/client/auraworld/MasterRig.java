@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.wildercord.Wildercord;
-import org.jspecify.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -40,13 +39,13 @@ public final class MasterRig {
 	public record Bone(String name, int parent, float[] pos, float[] rot, float[] quads) {}
 
 	/** Per bone (null where the clip leaves it at rest) a flat run of frames of each channel it moves. */
-	public record Track(float @Nullable [] p, float @Nullable [] q, float @Nullable [] s) {}
+	public record Track(float  [] p, float  [] q, float  [] s) {}
 
 	/**
 	 * A clip; {@code markers} (attacks only) are where its strike starts, where it lands, where the follow-through's hold ends,
 	 * and its end, in seconds, so a server's tell, hit and recovery can be stretched onto them.
 	 */
-	public record Clip(String name, float length, boolean loop, int frames, float @Nullable [] markers, Track[] tracks) {
+	public record Clip(String name, float length, boolean loop, int frames, float  [] markers, Track[] tracks) {
 		public float strike() { return markers == null ? 0 : markers[0]; }
 		public float impact() { return markers == null ? 0 : markers[1]; }
 		public float hold() { return markers == null ? length : markers[2]; }
@@ -96,7 +95,7 @@ public final class MasterRig {
 	}
 
 	/** The rig, loaded once; null (and the old model kept) if it's missing or broken. */
-	public static @Nullable MasterRig get() {
+	public static  MasterRig get() {
 		if (!tried) {
 			tried = true;
 			try (InputStream in = MasterRig.class.getResourceAsStream(PATH)) {
@@ -145,7 +144,7 @@ public final class MasterRig {
 		return new MasterRig(bones, clips, doc.get("fps").getAsFloat());
 	}
 
-	private static float @Nullable [] channel(JsonObject track, String key, int size) {
+	private static float  [] channel(JsonObject track, String key, int size) {
 		if (!track.has(key)) return null;
 		float[] values = floats(track.getAsJsonArray(key));
 		if (values.length != size) throw new IllegalStateException("channel " + key + " has " + values.length + " of " + size);
@@ -192,7 +191,7 @@ public final class MasterRig {
 		return out;
 	}
 
-	private static void lerp(float @Nullable [] values, float[] rest, int n, int a, int b, float w, float[] out, int bone) {
+	private static void lerp(float  [] values, float[] rest, int n, int a, int b, float w, float[] out, int bone) {
 		for (int j = 0; j < n; j++) {
 			out[bone * n + j] = values == null ? rest[j] : values[a * n + j] + (values[b * n + j] - values[a * n + j]) * w;
 		}

@@ -22,7 +22,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -35,7 +34,7 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.zombie.ZombieVillager;
+import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BoneMealItem;
@@ -296,7 +295,7 @@ public final class WorldMagic {
 			}
 			BlockState state = level.getBlockState(pos);
 			boolean ice = state.is(Blocks.ICE) || state.is(Blocks.FROSTED_ICE);
-			if (ice && !level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos)) {
+			if (ice && !dev.wildercord.compat.EnvCompat.waterEvaporates(level, pos) {
 				level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
 			} else {
 				level.removeBlock(pos, false);

@@ -13,7 +13,7 @@ public final class ScreenEffectSettingTest implements FabricClientGameTest {
 		double oldScale = c.computeOnClient(mc -> mc.options.screenEffectScale().get());
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(30);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runCommand("time set 6000");
 			c.runOnClient(mc -> {
 				MagicQuality.reducedFlash = true;

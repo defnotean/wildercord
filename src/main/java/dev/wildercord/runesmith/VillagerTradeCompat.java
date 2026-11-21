@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.npc.villager.VillagerProfession;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
-import net.minecraft.world.entity.npc.villager.VillagerTrades.ItemListing;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -61,14 +61,14 @@ public final class VillagerTradeCompat {
 	private static ItemListing[] wanderingUncommon = new ItemListing[0];
 
 	/** The wandering trader's uncommon slot, appended when it builds its offers. */
-	public static void appendWanderingTrades(net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader trader,
+	public static void appendWanderingTrades(net.minecraft.world.entity.npc.WanderingTrader trader,
 			net.minecraft.server.level.ServerLevel level) {
 		if (wanderingUncommon.length == 0) {
 			return;
 		}
 		net.minecraft.world.item.trading.MerchantOffers offers = trader.getOffers();
 		for (ItemListing listing : wanderingUncommon) {
-			MerchantOffer offer = listing.getOffer(level, trader, RandomSource.create());
+			MerchantOffer offer = listing.getOffer(trader, RandomSource.create());
 			if (offer != null) {
 				offers.add(offer);
 			}
@@ -90,7 +90,7 @@ public final class VillagerTradeCompat {
 	private static ItemListing[] loadTag(String namespace, String profession, String level) {
 		List<ItemListing> listings = new ArrayList<>();
 		for (String id : readTagValues(namespace, profession, level)) {
-			Identifier tradeId = Identifier.parse(id);
+			ResourceLocation tradeId = ResourceLocation.parse(id);
 			JsonObject json = readJson("data/" + tradeId.getNamespace() + "/villager_trade/" + tradeId.getPath() + ".json");
 			if (json != null) {
 				listings.add(listing(tradeId, json));
@@ -121,7 +121,7 @@ public final class VillagerTradeCompat {
 		}
 	}
 
-	private static ItemListing listing(Identifier id, JsonObject json) {
+	private static ItemListing listing(ResourceLocation id, JsonObject json) {
 		ItemCost costA = cost(json.getAsJsonObject("wants"));
 		ItemCost costB = json.has("additional_wants") ? cost(json.getAsJsonObject("additional_wants")) : null;
 		ItemStack gives = stack(json.getAsJsonObject("gives"));
@@ -139,7 +139,7 @@ public final class VillagerTradeCompat {
 			}
 		}
 		final String source = breathingSource;
-		return (serverLevel, trader, random) -> {
+		return (trader, random) -> {
 			ItemStack result = gives.copy();
 			if (source != null) {
 				// The same draw wildercord:random_breathing_method does on a loot table.
@@ -162,7 +162,7 @@ public final class VillagerTradeCompat {
 	}
 
 	private static ItemStack stack(JsonObject json) {
-		Identifier itemId = Identifier.parse(json.get("id").getAsString());
+		ResourceLocation itemId = ResourceLocation.parse(json.get("id").getAsString());
 		ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId).orElseThrow());
 		if (json.has("count")) {
 			stack.setCount(json.get("count").getAsInt());

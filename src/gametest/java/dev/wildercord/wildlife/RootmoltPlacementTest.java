@@ -13,7 +13,7 @@ import java.util.*;
 public final class RootmoltPlacementTest implements FabricClientGameTest {
  private static final BlockPos SITE=new BlockPos(0,30,0),CAP=SITE.east(2);
  @Override public void runTest(ClientGameTestContext c){try(var w=c.worldBuilder().create()){
-  c.waitTicks(25);w.getServer().runCommand("difficulty normal");w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("gamerule random_tick_speed 0");
+  c.waitTicks(25);w.getServer().runCommand("difficulty normal");w.getServer().runCommand("gamerule doMobSpawning false");w.getServer().runCommand("gamerule random_tick_speed 0");
   WildercordConfig original=w.getServer().computeOnServer(s->Config.get());
   try{
    w.getServer().runOnServer(s->{var l=s.overworld();habitat(l,SITE);set(original,Map.of("enabled",true,"rootmoltStrider",true,"spawnMultiplier",1.0));});

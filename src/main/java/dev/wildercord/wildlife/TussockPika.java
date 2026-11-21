@@ -39,9 +39,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -59,9 +58,9 @@ public class TussockPika extends Animal {
 	private static final EntityDataAccessor<Boolean> BASKING = SynchedEntityData.defineId(TussockPika.class, EntityDataSerializers.BOOLEAN);
 
 	/** Where its haypile is, the flower it carries for its friend, who fed it and when, and its last trip and bask. */
-	private @Nullable BlockPos home;
+	private  BlockPos home;
 	private Item flower = Items.AIR;
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1;
 	private long hayedAt = -1;
 	private long baskedAt = -1;
@@ -155,7 +154,7 @@ public class TussockPika extends Animal {
 		return false;
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !PikaRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -198,22 +197,22 @@ public class TussockPika extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof TussockPika young ? young : null;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return basking() ? null : SoundEvents.RABBIT_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.RABBIT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.RABBIT_DEATH;
 	}
 
@@ -283,7 +282,7 @@ public class TussockPika extends Animal {
 	 * to its friend's feet.
 	 */
 	private final class Hay extends Goal {
-		private @Nullable BlockPos plant;
+		private  BlockPos plant;
 		private int nibbled;
 		private int trip;
 
@@ -293,7 +292,7 @@ public class TussockPika extends Animal {
 
 		@Override
 		public boolean canUse() {
-			if ((tickCount + getId()) % 20 != 0 || !(level() instanceof ServerLevel level) || !level.getGameRules().get(GameRules.MOB_GRIEFING)) {
+			if ((tickCount + getId()) % 20 != 0 || !(level() instanceof ServerLevel level) || !level.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get()) {
 				return false;
 			}
 			boolean friend = truster() != null;
@@ -412,7 +411,7 @@ public class TussockPika extends Animal {
 		}
 
 		/** Somewhere near, a plant it may cut and can reach. */
-		private @Nullable BlockPos find(boolean friend) {
+		private  BlockPos find(boolean friend) {
 			BlockPos here = blockPosition();
 			int r = PikaRules.HAY_RANGE;
 			BlockPos grassAt = null;
@@ -441,7 +440,7 @@ public class TussockPika extends Animal {
 
 	/** Trusting someone, it scampers along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

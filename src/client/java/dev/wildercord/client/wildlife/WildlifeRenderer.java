@@ -7,9 +7,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
 
 import java.util.function.Function;
@@ -17,23 +17,23 @@ import java.util.function.Function;
 /**
  * What the wildlife renderers share: one render state for all six, babies drawn small (their models give them bigger
  * heads), and a glow layer: the model again with a texture holding only what glows, drawn like vanilla's glowing eyes
- * ({@code RenderTypes.eyes}, which every shader pack handles) at the strength {@link WildlifeRenderState#glow} gives.
+ * ({@code RenderType.eyes}, which every shader pack handles) at the strength {@link WildlifeRenderState#glow} gives.
  */
 public abstract class WildlifeRenderer<T extends Mob, M extends EntityModel<WildlifeRenderState>> extends MobRenderer<T, WildlifeRenderState, M> {
-	private final Identifier texture;
+	private final ResourceLocation texture;
 
-	protected WildlifeRenderer(EntityRendererProvider.Context context, M model, float shadow, Identifier texture) {
+	protected WildlifeRenderer(EntityRendererProvider.Context context, M model, float shadow, ResourceLocation texture) {
 		super(context, model, shadow);
 		this.texture = texture;
 	}
 
 	/** Adds the glow layer: a texture holding only what glows, which may depend on the creature (a glimmerwing's colouring). */
-	protected void glow(Function<WildlifeRenderState, Identifier> texture) {
+	protected void glow(Function<WildlifeRenderState, ResourceLocation> texture) {
 		addLayer(new Glow<>(this, texture));
 	}
 
 	@Override
-	public Identifier getTextureLocation(WildlifeRenderState state) {
+	public ResourceLocation getTextureLocation(WildlifeRenderState state) {
 		return texture;
 	}
 
@@ -57,9 +57,9 @@ public abstract class WildlifeRenderer<T extends Mob, M extends EntityModel<Wild
 
 	/** The model again, emissive, with only what glows. */
 	private static final class Glow<M extends EntityModel<WildlifeRenderState>> extends RenderLayer<WildlifeRenderState, M> {
-		private final Function<WildlifeRenderState, Identifier> texture;
+		private final Function<WildlifeRenderState, ResourceLocation> texture;
 
-		Glow(RenderLayerParent<WildlifeRenderState, M> parent, Function<WildlifeRenderState, Identifier> texture) {
+		Glow(RenderLayerParent<WildlifeRenderState, M> parent, Function<WildlifeRenderState, ResourceLocation> texture) {
 			super(parent);
 			this.texture = texture;
 		}
@@ -70,7 +70,7 @@ public abstract class WildlifeRenderer<T extends Mob, M extends EntityModel<Wild
 			if (state.isInvisible || alpha < 4) {
 				return;
 			}
-			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderTypes.eyes(texture.apply(state)), light, OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderType.eyes(texture.apply(state)), light, OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, state.outlineColor);
 		}
 	}
 }

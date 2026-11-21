@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.ArrayList;
@@ -65,12 +65,12 @@ final class LoadoutPanel {
 	private static final int WARN = 0xFFF0C440;
 	private static final int CYAN = 0xFF7FE0F0;
 
-	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
-	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
-	private static final Identifier SPR_ROW = Wildercord.id("cord/row");
-	private static final Identifier SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
-	private static final Identifier SPR_TAB = Wildercord.id("cord/tab");
-	private static final Identifier SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
+	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
+	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
+	private static final ResourceLocation SPR_ROW = Wildercord.id("cord/row");
+	private static final ResourceLocation SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
+	private static final ResourceLocation SPR_TAB = Wildercord.id("cord/tab");
+	private static final ResourceLocation SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
 
 	private boolean open;
 	/** The row the keyboard is on. */
@@ -195,7 +195,7 @@ final class LoadoutPanel {
 			pendingFrom = null;
 			return true;
 		}
-		if (net.minecraft.util.Util.getMillis() > pendingUntil) {
+		if (net.minecraft.Util.getMillis() > pendingUntil) {
 			// Nothing changed: refused, or it held the same runes. Nothing to read again.
 			pendingFrom = null;
 		}
@@ -204,7 +204,7 @@ final class LoadoutPanel {
 
 	// ------------------------------------------------------------------ drawing
 
-	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 
@@ -228,7 +228,7 @@ final class LoadoutPanel {
 	List<Component> draw(GuiGraphicsExtractor g, int mx, int my, int windowW, int windowH) {
 		Font font = mc().font;
 		LoadoutData data = data();
-		long now = net.minecraft.util.Util.getMillis();
+		long now = net.minecraft.Util.getMillis();
 		if (confirmRow >= 0 && now > confirmUntil) {
 			confirmRow = -1;
 		}
@@ -482,19 +482,19 @@ final class LoadoutPanel {
 			case 0 -> {
 				naming = -2;
 				pendingFrom = Spellbooks.get(mc().player);
-				pendingUntil = net.minecraft.util.Util.getMillis() + 3000;
+				pendingUntil = net.minecraft.Util.getMillis() + 3000;
 				send(Loadouts.LOAD, row, "");
 				close();
 			}
 			case 1, 3 -> {
 				naming = -2;
-				if (confirmRow == row && confirmButton == button && net.minecraft.util.Util.getMillis() <= confirmUntil) {
+				if (confirmRow == row && confirmButton == button && net.minecraft.Util.getMillis() <= confirmUntil) {
 					confirmRow = -1;
 					send(button == 1 ? Loadouts.SAVE_OVER : Loadouts.DELETE, row, "");
 				} else {
 					confirmRow = row;
 					confirmButton = button;
-					confirmUntil = net.minecraft.util.Util.getMillis() + CONFIRM_MS;
+					confirmUntil = net.minecraft.Util.getMillis() + CONFIRM_MS;
 				}
 			}
 			case 2 -> {
@@ -550,7 +550,7 @@ final class LoadoutPanel {
 
 	private void refuse(Component why) {
 		status = why;
-		statusUntil = net.minecraft.util.Util.getMillis() + 4000;
+		statusUntil = net.minecraft.Util.getMillis() + 4000;
 		mc().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BASS, 0.6F));
 	}
 

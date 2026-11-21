@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 public final class SiltcrestBankReturnTest implements FabricClientGameTest {
  private SiltcrestBittern witness;
  public void runTest(ClientGameTestContext c){EcologyReturnProbeChecks.verify();try(var w=c.worldBuilder().create()){
-  c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
+  c.waitTicks(25);w.getServer().runCommand("gamerule doMobSpawning false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
   w.getServer().runOnServer(s->{dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.SiltcrestBankReturnTest\",\"seed\":\"{}\"}",s.overworld().getSeed());floor(s.overworld());observer(s.getPlayerList().getPlayers().getFirst(),new Vec3(.5,101.7,.5));witness=bird(s.overworld(),.5,.5);});
   var probe=w.getServer().computeOnServer(s->EcologyReturnProbe.begin(EcologyReturnProbe.BANK,s.overworld(),witness));
   try{

@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Custom Japanese Sakura Village residents across six professions ({@code Tea Master},
@@ -130,8 +129,8 @@ public class SakuraVillager extends PathfinderMob {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData data) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData data) {
 		SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
 		if ((reason == EntitySpawnReason.SPAWN_ITEM_USE || reason == EntitySpawnReason.COMMAND) && !hasCustomName()) {
 			configure(random.nextInt(ROLE_COUNT));

@@ -21,7 +21,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -157,7 +157,7 @@ public final class ArticulatedSharedRenderProbe {
 			s.observe("nativeLaunchNonce", launchNonce == null ? "unbound" : launchNonce);
 			scope.owner = mc.player.getId();
 			var timeline = MastersArtsClient.timeline(mc.player);
-			s.observe("worldSession", identity(mc.level)); s.observe("dimension", mc.level.dimension().identifier());
+			s.observe("worldSession", identity(mc.level)); s.observe("dimension", mc.level.dimension().location());
 			s.observe("ownerUuid", mc.player.getUUID()); s.observe("ownerId", scope.owner);
 			s.observe("clientGameTick", mc.level.getGameTime()); s.observe("ownerTickCount", mc.player.tickCount);
 			s.observe("acceptedMove", timeline == null ? -1 : timeline.move());
@@ -294,7 +294,7 @@ public final class ArticulatedSharedRenderProbe {
 			s.observe("viewInterpolatedHeight", net.minecraft.util.Mth.lerp(partial, oldHeight, mainHeight));
 			s.observe("viewEquipKnown", hands.equipKnown());
 			s.observe("viewEquipping", hands.equipKnown() ? String.valueOf(hands.mainHandEquipping()) : "unknown");
-			s.observe("viewSameItem", ItemStack.isSameItemSameComponents(mainItem, avatar.getMainHandItemStack()));
+			s.observe("viewSameItem", ItemStack.isSameItemSameComponents(mainItem, dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar)));
 			s.observe("viewSwing", RenderCompat.swingObservation(avatar)); s.observe("viewCrouching", avatar.isCrouching); s.observe("viewUsingItem", avatar.isUsingItem);
 			var model = RenderCompat.livingModel(avatar);
 			s.observe("viewModelSupported", model != null && model.getClass() == PlayerModel.class && model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned());
@@ -342,7 +342,7 @@ public final class ArticulatedSharedRenderProbe {
 		guard(scope.token, () -> {
 			AvatarRenderState avatar = scope.viewCall.avatar();
 			List<View> views = scope.views.values().stream().filter(v -> v.avatar() == avatar).toList();
-			if (views.size() != 1 || item != avatar.getMainHandItemState() || item.isEmpty()) { scope.token.session.reject("wrong_view_item_submission"); return; }
+			if (views.size() != 1 || item != dev.wildercord.client.compat.RenderCompat.mainHandItemState(avatar) || item.isEmpty()) { scope.token.session.reject("wrong_view_item_submission"); return; }
 			View view = views.getFirst();
 			Map<String, String> attributes = new LinkedHashMap<>(view.appearance()); attributes.put("itemStateIdentity", String.valueOf(identity(item)));
 			scope.token.session.pass(new ArticulatedRenderReceipt.Pass("view_item", view.stateId(), identity(view.model()), avatar.id, view.palette(), attributes));
@@ -356,7 +356,7 @@ public final class ArticulatedSharedRenderProbe {
 		if (scope == null || !opening(scope) || !ArticulatedRenderReceipt.fallback(scope.token.session.identity().trial())
 			|| avatar == null || avatar.id != scope.owner || hand != InteractionHand.MAIN_HAND) return null;
 		try {
-			if (!ItemStack.isSameItemSameComponents(stack, avatar.getMainHandItemStack())
+			if (!ItemStack.isSameItemSameComponents(stack, dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar))
 				|| hands.isFallbackItemInvalid(stack)) {
 				scope.token.session.reject("wrong_native_fallback_item"); return null;
 			}
@@ -531,7 +531,7 @@ public final class ArticulatedSharedRenderProbe {
 			out.put("shellAdapterEnabled", String.valueOf(ArticulatedAuraShellRenderer.enabled()));
 		}
 		out.put("mainArm", avatar.mainArm.name());
-		out.put("mainHand", item(avatar.getMainHandItemStack())); out.put("head", item(avatar.headEquipment));
+		out.put("mainHand", item(dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar))); out.put("head", item(avatar.headEquipment));
 		out.put("chest", item(avatar.chestEquipment)); out.put("legs", item(avatar.legsEquipment)); out.put("feet", item(avatar.feetEquipment));
 		return out;
 	}

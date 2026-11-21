@@ -37,8 +37,8 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext context) {
 		BattlefieldsGenerationProbeChecks.verify();
 		try (var world=context.worldBuilder().create()) {
-			context.waitTicks(40);world.getServer().runCommand("gamerule spawn_mobs false");
-			world.getServer().runCommand("gamerule fall_damage false");
+			context.waitTicks(40);world.getServer().runCommand("gamerule doMobSpawning false");
+			world.getServer().runCommand("gamerule fallDamage false");
 			world.getServer().runCommand("time set 6000");world.getServer().runCommand("weather clear");
 			List<BlockPos> markers=world.getServer().computeOnServer(server -> {
 				server.getPlayerList().getPlayers().getFirst().setGameMode(GameType.CREATIVE);
@@ -117,15 +117,15 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 				.adjustSettings(settings -> settings.setSeed(REPRESENTATIVE_SEED)).create();
 			 var probe=natural.getServer().computeOnServer(server -> BattlefieldsGenerationProbe.begin(server.overworld().getSeed()))) {
 			check(probe.seed==Long.parseLong(REPRESENTATIVE_SEED),"Representative normal-world seed is applied exactly");
-			context.waitTicks(50);natural.getServer().runCommand("gamerule spawn_mobs false");natural.getServer().runCommand("time set 6000");
+			context.waitTicks(50);natural.getServer().runCommand("gamerule doMobSpawning false");natural.getServer().runCommand("time set 6000");
 			natural.getServer().runOnServer(server -> server.getPlayerList().getPlayers().getFirst().setGameMode(GameType.CREATIVE));
 			BlockPos found=null;
 			BlockPos habitat=natural.getServer().computeOnServer(server -> {
 				var nearest=server.overworld().findClosestBiome3d(b -> b.is(net.minecraft.world.level.biome.Biomes.PLAINS),new BlockPos(1024,70,1024),6400,32,64);
 				check(nearest!=null,"Normal world contains the battlefield's plains habitat");
 				var registered=server.overworld().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
-					.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.Identifier.parse("wildercord:old_battlefield")));
-				probe.habitat(nearest.getFirst(),nearest.getSecond().unwrapKey().map(key -> key.identifier().toString()).orElse("unregistered"),
+					.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.ResourceLocation.parse("wildercord:old_battlefield")));
+				probe.habitat(nearest.getFirst(),nearest.getSecond().unwrapKey().map(key -> key.location().toString()).orElse("unregistered"),
 					registered.value().getClass().getName(),registered.value().biomes().contains(nearest.getSecond()));
 				return nearest.getFirst();
 			});

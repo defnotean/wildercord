@@ -16,7 +16,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerBossEvent;
@@ -42,7 +42,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,8 +58,8 @@ public final class Giants {
 
 	/** Every giant carries this tag. */
 	public static final String TAG = "wildercord_giant";
-	private static final Identifier SCALE = Wildercord.id("giant_scale");
-	private static final Identifier STURDY = Wildercord.id("giant_sturdy");
+	private static final ResourceLocation SCALE = Wildercord.id("giant_scale");
+	private static final ResourceLocation STURDY = Wildercord.id("giant_sturdy");
 
 	/** What a giant drops: a heart as big as a fist, still warm. */
 	public static final Item GIANT_HEART = heart();
@@ -108,7 +107,7 @@ public final class Giants {
 	}
 
 	/** Wakes a giant somewhere near {@code player}; returns it, or null with nowhere to stand or another giant close by. */
-	public static @Nullable Mob wake(ServerLevel level, ServerPlayer player) {
+	public static  Mob wake(ServerLevel level, ServerPlayer player) {
 		double apart = GiantRules.APART * GiantRules.APART;
 		for (Tracked giant : GIANTS.values()) {
 			if (giant.mob().level() == level && giant.mob().distanceToSqr(player) < apart) return null;
@@ -138,7 +137,7 @@ public final class Giants {
 	}
 
 	/** Makes a giant of {@code kind} at {@code at}, tempered to {@code threat}; adds it to the world only if {@code add}. */
-	public static @Nullable Mob make(ServerLevel level, GiantRules.Kind kind, Vec3 at, int threat, boolean add) {
+	public static  Mob make(ServerLevel level, GiantRules.Kind kind, Vec3 at, int threat, boolean add) {
 		WildMonster mob = (kind == GiantRules.Kind.MATRIARCH ? MonsterContent.GLOOMSTALKER : MonsterContent.BRAMBLEWALKER)
 			.create(level, EntitySpawnReason.EVENT);
 		if (mob == null) return null;
@@ -158,7 +157,7 @@ public final class Giants {
 		return mob;
 	}
 
-	private static void modifier(Mob mob, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation operation) {
+	private static void modifier(Mob mob, Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
 		AttributeInstance instance = mob.getAttribute(attribute);
 		if (instance == null) return;
 		instance.removeModifier(id);
@@ -198,7 +197,7 @@ public final class Giants {
 	}
 
 	/** Its bar, or null if it isn't a loaded giant. */
-	public static @Nullable ServerBossEvent bar(Mob mob) {
+	public static  ServerBossEvent bar(Mob mob) {
 		Tracked giant = GIANTS.get(mob.getUUID());
 		return giant == null ? null : giant.bar();
 	}

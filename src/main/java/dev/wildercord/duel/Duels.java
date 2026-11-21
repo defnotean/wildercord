@@ -16,7 +16,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -43,8 +42,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.gamerules.GameRule;
-import net.minecraft.world.level.gamerules.GameRuleCategory;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -111,9 +108,11 @@ public final class Duels {
 		return dev.wildercord.config.Config.get().duels();
 	}
 
-	public static final GameRule<Boolean> ALLOW_DUELS = GameRuleBuilder.forBoolean(true)
-		.category(GameRuleCategory.PLAYER)
-		.buildAndRegister(Wildercord.id("allow_duels"));
+	public static final net.minecraft.world.level.GameRules.Key<net.minecraft.world.level.GameRules.BooleanValue> ALLOW_DUELS =
+		net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry.register("wildercord:allow_duels",
+			new net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory(Wildercord.id("duels"),
+				net.minecraft.network.chat.Component.literal("Duels")),
+			net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory.createBooleanRule(true));
 
 	/** A player's duelling record. */
 	public record Record(int wins, int losses) {
@@ -455,7 +454,7 @@ public final class Duels {
 	// ------------------------------------------------------------------ challenges
 
 	private static boolean allowed(ServerLevel level) {
-		return enabled() && level.getGameRules().get(ALLOW_DUELS);
+		return enabled() && level.getGameRules().getRule(ALLOW_DUELS).get();
 	}
 
 	private static int challenge(ServerPlayer from, ServerPlayer to) {

@@ -50,11 +50,11 @@ import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.projectile.arrow.Arrow;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
@@ -131,11 +131,11 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		});
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
 			context.waitTicks(40);
-			world.getServer().runCommand("gamerule spawn_mobs false");
-			world.getServer().runCommand("gamerule advance_time false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
+			world.getServer().runCommand("gamerule doDaylightCycle false");
 			world.getServer().runOnServer(server -> {
-				server.overworld().getGameRules().set(GameRules.NATURAL_HEALTH_REGENERATION, false, server);
-				check(!server.overworld().getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION),
+				server.overworld().getGameRules().getRule(GameRules.RULE_NATURAL_REGENERATION).set(false, server);
+				check(!server.overworld().getGameRules().getRule(GameRules.RULE_NATURAL_REGENERATION).get(),
 					"Natural health regeneration is disabled for explicit art-healing checks");
 			});
 			world.getServer().runCommand("difficulty normal");
@@ -1236,7 +1236,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		check(timing != null, "Moon's toll checks require its real fixed-release profile");
 		context.waitTicks(timing.recovery() + 1);
 		on(world, player -> {
-			check(!player.level().getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION),
+			check(!player.level().getGameRules().getRule(GameRules.RULE_NATURAL_REGENERATION).get(),
 				"Natural healing remains disabled before asynchronous toll probes");
 			kill(player); return null;
 		});
@@ -1709,7 +1709,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	/** The scene's husks, in the order they were spawned. */
 	private static List<Mob> foes(ServerPlayer player) {
 		List<Mob> found = new ArrayList<>(player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(48),
-			m -> m.getTags().contains(TAG) && m instanceof net.minecraft.world.entity.monster.zombie.Husk));
+			m -> m.getTags().contains(TAG) && m instanceof net.minecraft.world.entity.monster.Husk));
 		found.sort(java.util.Comparator.comparingInt(Mob::getId));
 		if (found.isEmpty()) {
 			throw new AssertionError("the husks are gone");

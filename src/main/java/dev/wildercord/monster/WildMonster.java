@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -26,7 +26,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
 
 /**
  * What the magical monsters of the wilds share: a few bits of what they're doing, synced in one byte and eased on the client
@@ -58,11 +57,11 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	/** Its biome variant ({@link MonsterVariantRules.Variant}'s ordinal) and whether it leads a pack. */
 	private static final EntityDataAccessor<Byte> DATA_VARIANT = SynchedEntityData.defineId(WildMonster.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Boolean> DATA_ALPHA = SynchedEntityData.defineId(WildMonster.class, EntityDataSerializers.BOOLEAN);
-	private static final Identifier VARIANT_HEALTH = dev.wildercord.Wildercord.id("variant_health");
-	private static final Identifier VARIANT_DAMAGE = dev.wildercord.Wildercord.id("variant_damage");
-	private static final Identifier ALPHA_HEALTH = dev.wildercord.Wildercord.id("alpha_health");
-	private static final Identifier ALPHA_DAMAGE = dev.wildercord.Wildercord.id("alpha_damage");
-	private static final Identifier ALPHA_SCALE = dev.wildercord.Wildercord.id("alpha_scale");
+	private static final ResourceLocation VARIANT_HEALTH = dev.wildercord.Wildercord.id("variant_health");
+	private static final ResourceLocation VARIANT_DAMAGE = dev.wildercord.Wildercord.id("variant_damage");
+	private static final ResourceLocation ALPHA_HEALTH = dev.wildercord.Wildercord.id("alpha_health");
+	private static final ResourceLocation ALPHA_DAMAGE = dev.wildercord.Wildercord.id("alpha_damage");
+	private static final ResourceLocation ALPHA_SCALE = dev.wildercord.Wildercord.id("alpha_scale");
 
 	/** A giant's move under way (-1 for anything that isn't a giant), its tell, when it began, and whether it's roused. */
 	private static final EntityDataAccessor<Integer> GIANT_MOVE = SynchedEntityData.defineId(WildMonster.class, EntityDataSerializers.INT);
@@ -74,7 +73,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	private final float[] pose = new float[FLAGS];
 	private final float[] poseO = new float[FLAGS];
 	private final float[] giantBlend = new float[GIANT_MOVES], giantBlendO = new float[GIANT_MOVES];
-	private @Nullable GiantFight fight;
+	private  GiantFight fight;
 
 	protected WildMonster(EntityType<? extends WildMonster> type, Level level) {
 		super(type, level);
@@ -265,7 +264,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 		modifier(Attributes.SCALE, ALPHA_SCALE, alpha ? MonsterVariantRules.ALPHA_SCALE : 0);
 	}
 
-	private void modifier(Holder<Attribute> attribute, Identifier id, double amount) {
+	private void modifier(Holder<Attribute> attribute, ResourceLocation id, double amount) {
 		AttributeInstance instance = getAttribute(attribute);
 		if (instance == null) {
 			return;
@@ -277,8 +276,8 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData groupData) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData groupData) {
 		SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, groupData);
 		if (hasVariants() || packHunter()) {
 			var biome = level.getBiome(blockPosition()).value();
@@ -301,7 +300,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	private static final class PackData implements SpawnGroupData {}
 
 	@Override
-	public void setTarget(@Nullable LivingEntity target) {
+	public void setTarget( LivingEntity target) {
 		LivingEntity before = getTarget();
 		super.setTarget(target);
 		if (packHunter() && target != null && target != before && level() instanceof ServerLevel server) {

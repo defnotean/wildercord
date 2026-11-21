@@ -98,13 +98,13 @@ public final class GametestCompat {
 
 	public static void extractMainCamera(GameRenderer gameRenderer, CameraRenderState camera, DeltaTracker delta) {
 		// 1.21.11 has no MainCamera.extractRenderState: the level render state carries the camera's, filled by the last frame.
-		gameRenderer.updateCamera(delta);
-		CameraRenderState source = gameRenderer.getLevelRenderState().cameraRenderState;
-		camera.blockPos = source.blockPos;
-		camera.pos = source.pos;
-		camera.initialized = source.initialized;
-		camera.entityPos = source.entityPos;
-		camera.orientation = source.orientation;
+		// 1.21.10 has neither, so copy the live camera's pose into the state.
+		Camera source = gameRenderer.getMainCamera();
+		camera.blockPos = source.getBlockPosition();
+		camera.pos = source.getPosition();
+		camera.initialized = true;
+		camera.entityPos = source.getPosition();
+		camera.orientation = source.rotation();
 	}
 
 	public static BlockPos findNearestStructure(ServerLevel level, Holder<Structure> structure, BlockPos origin,

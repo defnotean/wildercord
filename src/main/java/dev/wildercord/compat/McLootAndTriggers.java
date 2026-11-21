@@ -3,13 +3,12 @@ package dev.wildercord.compat;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -25,7 +24,7 @@ public final class McLootAndTriggers {
 	}
 
 	/** Reads an optional parameter from {@link LootContext}. */
-	public static <T> @Nullable T getOptionalParam(LootContext context, ContextKey<T> param) {
+	public static <T>  T getOptionalParam(LootContext context, ContextKey<T> param) {
 		return context.getOptionalParameter(param);
 	}
 

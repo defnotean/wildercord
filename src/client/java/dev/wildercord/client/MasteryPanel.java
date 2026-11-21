@@ -18,7 +18,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -57,12 +57,12 @@ final class MasteryPanel {
 	private static final int LAVENDER = 0xFFB8A8FF;
 	private static final int CYAN = 0xFF7FE0F0;
 
-	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
-	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
-	private static final Identifier SPR_ROW = Wildercord.id("cord/row");
-	private static final Identifier SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
-	private static final Identifier SPR_TAB = Wildercord.id("cord/tab");
-	private static final Identifier SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
+	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
+	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
+	private static final ResourceLocation SPR_ROW = Wildercord.id("cord/row");
+	private static final ResourceLocation SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
+	private static final ResourceLocation SPR_TAB = Wildercord.id("cord/tab");
+	private static final ResourceLocation SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
 
 	/** The colour of each rank, from Kindled to Mythic. */
 	static final int[] RANK_COLORS = {0xFFB8A890, 0xFF9FD8C0, 0xFF8FB8FF, 0xFFE8C46A, 0xFFF0A8FF};
@@ -86,7 +86,7 @@ final class MasteryPanel {
 	void open(int spell) {
 		this.open = true;
 		this.spell = spell;
-		this.openedAt = net.minecraft.util.Util.getMillis();
+		this.openedAt = net.minecraft.Util.getMillis();
 	}
 
 	void close() {
@@ -175,7 +175,7 @@ final class MasteryPanel {
 
 	// ------------------------------------------------------------------ drawing
 
-	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 
@@ -241,7 +241,7 @@ final class MasteryPanel {
 		float circleX = left + LEFT_W / 2F;
 		float circleY = TOP + 24 + 50;
 		float time = (mc().level == null ? 0 : mc().level.getGameTime()) / 20F;
-		float opening = Math.min(1, (net.minecraft.util.Util.getMillis() - openedAt) / 700F);
+		float opening = Math.min(1, (net.minecraft.Util.getMillis() - openedAt) / 700F);
 		MasteryAttachments.Look look = new MasteryAttachments.Look(0, rank, shown.seed(),
 			entry != null && entry.active().contains(MasteryTraits.DEEP_HUE.id()) ? MasteryAttachments.Look.HUE : 0);
 		GuiSpellCircle.draw(g, circleX, circleY, 34, shown.runes(), time, opening, look);
@@ -359,7 +359,7 @@ final class MasteryPanel {
 	private List<Component> drawChoice(GuiGraphicsExtractor g, Font font, MasteryBook.Entry entry, int slot, int mx, int my, int windowW) {
 		List<Component> tip = null;
 		int x = columnX();
-		int pulse = (net.minecraft.util.Util.getMillis() / 500) % 2 == 0 ? WARN : GOLD;
+		int pulse = (net.minecraft.Util.getMillis() / 500) % 2 == 0 ? WARN : GOLD;
 		fitText(g, font, Component.translatable("screen.wildercord.mastery.choose", rankName(MasteryRules.rankOf(slot))), x, choiceTop(),
 			columnW(windowW), pulse, false);
 		List<String> offer = entry.offer();

@@ -21,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -31,7 +30,7 @@ import java.util.UUID;
  * and its rider can't strike it. Brought down, its bridle rests for five minutes.
  */
 public class BondedSkyray extends Skyray {
-	private @Nullable UUID owner;
+	private  UUID owner;
 	/** Ticks since anyone rode it. */
 	private int unridden;
 
@@ -43,11 +42,11 @@ public class BondedSkyray extends Skyray {
 		return Skyray.createAttributes().add(Attributes.MAX_HEALTH, 40.0);
 	}
 
-	public @Nullable UUID owner() {
+	public  UUID owner() {
 		return owner;
 	}
 
-	public void setOwner(@Nullable UUID owner) {
+	public void setOwner( UUID owner) {
 		this.owner = owner;
 	}
 
@@ -55,7 +54,7 @@ public class BondedSkyray extends Skyray {
 	 * Calls {@code player}'s skyray down and puts them on it, sending off any other of theirs nearby. Returns null when they
 	 * can't be carried now (already riding something).
 	 */
-	public static @Nullable BondedSkyray call(ServerLevel level, ServerPlayer player) {
+	public static  BondedSkyray call(ServerLevel level, ServerPlayer player) {
 		if (player.isPassenger()) {
 			return null;
 		}
@@ -103,7 +102,7 @@ public class BondedSkyray extends Skyray {
 	}
 
 	@Override
-	public @Nullable LivingEntity getControllingPassenger() {
+	public  LivingEntity getControllingPassenger() {
 		return getFirstPassenger() instanceof Player player ? player : super.getControllingPassenger();
 	}
 

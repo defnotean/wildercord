@@ -2,7 +2,6 @@ package dev.wildercord.wildlife;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.pathfinder.Path;
-import org.jspecify.annotations.Nullable;
 
 /** Recognizes a final native waypoint reached after travel, before navigation's next tick. */
 final class RimehareBoundArrival {
@@ -12,7 +11,7 @@ final class RimehareBoundArrival {
 	private RimehareBoundArrival() {}
 
 	/** Read-only prediction: ordinary navigation resumes if native coasting cannot settle promptly. */
-	static boolean canCoastToFinalWaypoint(@Nullable Path path, double x, double y, double z,
+	static boolean canCoastToFinalWaypoint( Path path, double x, double y, double z,
 		double velocityX, double velocityZ, float horizontalTolerance, float verticalTolerance, float drag) {
 		if (path == null || path.isDone() || path.getNextNodeIndex() != path.getNodeCount() - 1
 			|| !Float.isFinite(horizontalTolerance) || horizontalTolerance <= 0
@@ -45,7 +44,7 @@ final class RimehareBoundArrival {
 			* Mth.clamp(1F - (1F - .91F) * airModifier, 0F, 1F);
 	}
 
-	static boolean isAtFinalWaypoint(@Nullable Path path, double x, double y, double z,
+	static boolean isAtFinalWaypoint( Path path, double x, double y, double z,
 		float horizontalTolerance, float verticalTolerance) {
 		if (path == null || path.isDone() || path.getNextNodeIndex() != path.getNodeCount() - 1) return false;
 		var node = path.getNextNodePos();

@@ -35,16 +35,15 @@ import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.fish.AbstractFish;
-import net.minecraft.world.entity.animal.fish.Cod;
-import net.minecraft.world.entity.animal.fish.Salmon;
+import net.minecraft.world.entity.animal.AbstractFish;
+import net.minecraft.world.entity.animal.Cod;
+import net.minecraft.world.entity.animal.Salmon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.EnumSet;
@@ -66,10 +65,10 @@ public class BrookOtter extends Animal {
 	private static final EntityDataAccessor<Integer> HELD = SynchedEntityData.defineId(BrookOtter.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> RIGHT = SynchedEntityData.defineId(BrookOtter.class, EntityDataSerializers.BOOLEAN);
 
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1, huntedAt = -OtterRules.HUNT_REST, giftedAt;
 	/** Holding paws: the other otter, and whether this one leads (the other drifts at its side). */
-	private @Nullable BrookOtter partner;
+	private  BrookOtter partner;
 	private boolean leads;
 
 	/** Client: how far it lies on its back, sits up, swims, knocks or eats, and holds out a paw, eased, this tick's and last. */
@@ -334,7 +333,7 @@ public class BrookOtter extends Animal {
 
 	/** The pup rides; it doesn't steer. */
 	@Override
-	public @Nullable LivingEntity getControllingPassenger() {
+	public  LivingEntity getControllingPassenger() {
 		return null;
 	}
 
@@ -355,7 +354,7 @@ public class BrookOtter extends Animal {
 
 	// ------------------------------------------------------------------ trust and gifts
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !OtterRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -422,24 +421,24 @@ public class BrookOtter extends Animal {
 	// ------------------------------------------------------------------ breeding: a pup
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof BrookOtter pup ? pup : null;
 	}
 
 	// ------------------------------------------------------------------ sound: chirps and squeaks
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return SoundEvents.FOX_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.FOX_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.FOX_DEATH;
 	}
 
@@ -510,7 +509,7 @@ public class BrookOtter extends Animal {
 
 	/** A hunt: it darts after a cod or a salmon, catches it, then floats on its back to eat it. */
 	private final class Hunt extends Goal {
-		private @Nullable AbstractFish fish;
+		private  AbstractFish fish;
 		private int ticks;
 
 		Hunt() {
@@ -587,7 +586,7 @@ public class BrookOtter extends Animal {
 
 	/** Ashore a while, it makes for the water. */
 	private final class ToWater extends Goal {
-		private @Nullable BlockPos water;
+		private  BlockPos water;
 
 		ToWater() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE));
@@ -629,7 +628,7 @@ public class BrookOtter extends Animal {
 
 	/** Trusting someone, it follows them about. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

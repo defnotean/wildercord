@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.InteractionHand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,7 +30,7 @@ public abstract class CrimsonMoonViewMixin {
 	}
 
 	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)Z",
-		at = @At(value = "INVOKE", target = "Ldev/wildercord/client/compat/RenderCompat;submitModel(Lnet/minecraft/client/renderer/OrderedSubmitNodeCollector;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIII)V"), require = 1, expect = 1, allow = 1)
+		at = @At(value = "INVOKE", target = "Ldev/wildercord/client/compat/RenderCompat;submitModel(Lnet/minecraft/client/renderer/OrderedSubmitNodeCollector;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/RenderType;IIII)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$moon$model(OrderedSubmitNodeCollector collector, Model<?> model, Object state, PoseStack pose,
 			RenderType type, int light, int overlay, int color, int outline, Operation<Void> original) {
 		var submitted = new org.joml.Matrix4f(pose.last().pose());

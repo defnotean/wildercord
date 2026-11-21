@@ -37,7 +37,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -59,11 +58,11 @@ public class StonecrestPuffin extends Animal {
 	private static final EntityDataAccessor<Integer> LEFT = SynchedEntityData.defineId(StonecrestPuffin.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> FISH = SynchedEntityData.defineId(StonecrestPuffin.class, EntityDataSerializers.BOOLEAN);
 
-	private @Nullable UUID truster;
+	private  UUID truster;
 	private long fedAt = -1;
 	private boolean gifted;
 	private int carryLeft;
-	private @Nullable StonecrestPuffin mate;
+	private  StonecrestPuffin mate;
 
 	/**
 	 * Client: afloat, diving, sleeping, preening, bill-tapping and eating, eased, this tick's and last; how hard its wings beat and
@@ -324,7 +323,7 @@ public class StonecrestPuffin extends Animal {
 	}
 
 	/** Another grown puffin close by, ashore and with nothing else to do, to bill-tap with. */
-	private @Nullable StonecrestPuffin mateNear(ServerLevel level) {
+	private  StonecrestPuffin mateNear(ServerLevel level) {
 		StonecrestPuffin best = null;
 		double near = PuffinRules.MATE_NEAR;
 		for (StonecrestPuffin other : level.getEntitiesOfClass(StonecrestPuffin.class, getBoundingBox().inflate(PuffinRules.MATE_NEAR),
@@ -338,7 +337,7 @@ public class StonecrestPuffin extends Animal {
 		return best;
 	}
 
-	private @Nullable StonecrestPuffin puffling() {
+	private  StonecrestPuffin puffling() {
 		StonecrestPuffin best = null;
 		double near = PuffinRules.BRING_FAR;
 		for (StonecrestPuffin other : level().getEntitiesOfClass(StonecrestPuffin.class, getBoundingBox().inflate(PuffinRules.BRING_FAR),
@@ -352,7 +351,7 @@ public class StonecrestPuffin extends Animal {
 		return best;
 	}
 
-	private @Nullable Player truster() {
+	private  Player truster() {
 		if (truster == null || !PuffinRules.trusts(level().getGameTime() - fedAt)) {
 			return null;
 		}
@@ -396,25 +395,25 @@ public class StonecrestPuffin extends Animal {
 	// ------------------------------------------------------------------ breeding: a puffling
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return getType().create(level, EntitySpawnReason.BREEDING) instanceof StonecrestPuffin puffling ? puffling : null;
 	}
 
 	// ------------------------------------------------------------------ sound: a low purring growl
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		int pose = pose();
 		return pose == PuffinRules.SLEEP || pose == PuffinRules.DIVE || carrying() ? null : SoundEvents.PARROT_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.PARROT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.PARROT_DEATH;
 	}
 
@@ -487,8 +486,8 @@ public class StonecrestPuffin extends Animal {
 
 	/** With fish in its bill: to a puffling if there's one about, else to someone it trusts. */
 	private final class BringCatch extends Goal {
-		private @Nullable StonecrestPuffin chick;
-		private @Nullable Player friend;
+		private  StonecrestPuffin chick;
+		private  Player friend;
 		private int ticks;
 
 		BringCatch() {
@@ -569,7 +568,7 @@ public class StonecrestPuffin extends Animal {
 
 	/** Trusting someone, it waddles along after them. */
 	private final class FollowTruster extends Goal {
-		private @Nullable Player player;
+		private  Player player;
 
 		FollowTruster() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));

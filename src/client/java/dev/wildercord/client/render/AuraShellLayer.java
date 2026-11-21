@@ -16,16 +16,16 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Avatar;
@@ -50,8 +50,8 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 	public static final ModelLayerLocation SHELL = new ModelLayerLocation(Wildercord.id("aura_shell"), "main");
 	public static final ModelLayerLocation SLIM_SHELL = new ModelLayerLocation(Wildercord.id("aura_shell"), "slim");
 	/** The shell's light, laid out on the skin of each model (the slim one's arms are a pixel narrower). */
-	private static final RenderType SHELL_TYPE = RenderTypes.eyes(Wildercord.id("textures/entity/aura/shell.png"));
-	private static final RenderType SLIM_SHELL_TYPE = RenderTypes.eyes(Wildercord.id("textures/entity/aura/shell_slim.png"));
+	private static final RenderType SHELL_TYPE = RenderType.eyes(Wildercord.id("textures/entity/aura/shell.png"));
+	private static final RenderType SLIM_SHELL_TYPE = RenderType.eyes(Wildercord.id("textures/entity/aura/shell_slim.png"));
 	/** How far the shell stands off the body, in pixels. */
 	private static final float STAND_OFF = 0.55F;
 
@@ -125,7 +125,7 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		}
 		List<Image> images = state.getData(IMAGES);
 		if (images != null && !images.isEmpty() && upright(state)) {
-			RenderType ghost = RenderTypes.entityTranslucentEmissive(state.skin.body().texturePath());
+			RenderType ghost = RenderType.entityTranslucentEmissive(state.skin.body().texturePath());
 			for (Image image : images) {
 				pose.pushPose();
 				// Back out of the body's own turn and the model's flip to the player's feet, level with the world...

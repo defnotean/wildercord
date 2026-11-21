@@ -31,7 +31,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BarrelBlockEntity;
@@ -86,7 +86,7 @@ public final class WorldEvents {
 		EventContent.init();
 		EventCommand.init();
 		// Loading the class registers the storm attachment (synced, so both sides need it).
-		ManaStorm.STORM_UNTIL.identifier();
+		ManaStorm.STORM_UNTIL.location();
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			if (entity.getTags().contains(TAG) && !LIVE.contains(entity.getUUID())) {
 				entity.discard();

@@ -25,7 +25,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.List;
@@ -43,9 +43,9 @@ import java.util.Locale;
  * key is down: it waits for the key's own release event instead.
  */
 public class SpellWheelScreen extends Screen {
-	private static final Identifier RING = Wildercord.id("wheel/ring");
-	private static final Identifier NODE = Wildercord.id("wheel/node");
-	private static final Identifier NODE_HOVER = Wildercord.id("wheel/node_hover");
+	private static final ResourceLocation RING = Wildercord.id("wheel/ring");
+	private static final ResourceLocation NODE = Wildercord.id("wheel/node");
+	private static final ResourceLocation NODE_HOVER = Wildercord.id("wheel/node_hover");
 	private static final int RADIUS = 60;
 	/** Labels sit just outside the 180-wide disc. */
 	private static final int LABEL_RADIUS = 97;

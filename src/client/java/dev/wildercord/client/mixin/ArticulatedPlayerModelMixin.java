@@ -6,7 +6,7 @@ import dev.wildercord.client.combat.ArticulatedArmorRenderer;
 import dev.wildercord.client.combat.ArticulatedModelAccess;
 import dev.wildercord.client.combat.ArticulatedRig;
 import dev.wildercord.client.combat.ArticulatedViewModel;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.world.entity.HumanoidArm;
 import org.spongepowered.asm.mixin.Mixin;

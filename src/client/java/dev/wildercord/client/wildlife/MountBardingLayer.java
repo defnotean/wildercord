@@ -6,10 +6,10 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 
@@ -21,7 +21,7 @@ public final class MountBardingLayer<M extends EntityModel<WildlifeRenderState>>
 	/** How much larger the barding is drawn than the body, so its plates sit over the coat. */
 	private static final float GROW = 1.04F;
 
-	private final Identifier texture;
+	private final ResourceLocation texture;
 	/** Where the body's middle is, in blocks down from the model's origin, so it grows about there. */
 	private final float middle;
 
@@ -59,7 +59,7 @@ public final class MountBardingLayer<M extends EntityModel<WildlifeRenderState>>
 		poseStack.translate(0, middle, 0);
 		poseStack.scale(GROW, GROW, GROW);
 		poseStack.translate(0, -middle, 0);
-		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderTypes.entityCutout(texture), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), 0xFF000000 | state.barding, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderType.entityCutout(texture), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), 0xFF000000 | state.barding, state.outlineColor);
 		poseStack.popPose();
 	}
 }

@@ -27,7 +27,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -134,8 +133,8 @@ public class FallenKnight extends AuraFighter implements Enemy {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData group) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData group) {
 		SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, group);
 		setMethod(BreathingMethods.BUILT_IN.get(getRandom().nextInt(BreathingMethods.BUILT_IN.size())));
 		setStage(AuraRules.EDGE);
@@ -266,17 +265,17 @@ public class FallenKnight extends AuraFighter implements Enemy {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return MonsterMagic.kit("duelist_knight_ambient");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return MonsterMagic.kit("duelist_knight_hurt");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return MonsterMagic.kit("duelist_knight_death");
 	}
 

@@ -72,7 +72,7 @@ public final class AuraBeasts {
 	}
 	private static <T extends AuraBeast> void spawn(EntityType<T> type,String id,int weight,String... ids) {
 		SpawnPlacements.register(type,SpawnPlacementTypes.ON_GROUND,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(t,l,r,p,random)->maySpawn(t,l,r,p));
-		var biomes=Arrays.stream(ids).map(s->ResourceKey.create(Registries.BIOME,Identifier.parse(s))).collect(java.util.stream.Collectors.toSet());
+		var biomes=Arrays.stream(ids).map(s->ResourceKey.create(Registries.BIOME,ResourceLocation.parse(s))).collect(java.util.stream.Collectors.toSet());
 		BiomeModifications.create(Wildercord.id("aura_beasts/"+id)).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(biomes),c->{
 			if(Config.get().auraWorld().auraBeasts()) dev.wildercord.compat.McWorldgen.addSpawn(c.getSpawnSettings(), MobCategory.CREATURE, type, 1, 1, weight);
 		});

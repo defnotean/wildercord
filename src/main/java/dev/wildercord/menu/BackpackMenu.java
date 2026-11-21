@@ -14,7 +14,6 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-import org.jspecify.annotations.Nullable;
 
 /**
  * An open backpack: its rows above the player's inventory, laid out like a chest's. Only a backpack in its
@@ -49,9 +48,9 @@ public class BackpackMenu extends AbstractContainerMenu {
 	private final int locked;
 	private final Contents contents;
 	/** Server only: whose backpack, where it is and the stack itself. Null on the client. */
-	private final @Nullable Player owner;
-	private final Backpacks.@Nullable Place place;
-	private final @Nullable ItemStack stack;
+	private final  Player owner;
+	private final Backpacks. Place place;
+	private final  ItemStack stack;
 
 	/** The client's side. */
 	public BackpackMenu(int containerId, Inventory inventory, Opening opening) {
@@ -63,8 +62,8 @@ public class BackpackMenu extends AbstractContainerMenu {
 		this(containerId, inventory, tier.rows, place.slot(), owner, place, stack);
 	}
 
-	private BackpackMenu(int containerId, Inventory inventory, int rows, int locked, @Nullable Player owner, Backpacks.@Nullable Place place,
-			@Nullable ItemStack stack) {
+	private BackpackMenu(int containerId, Inventory inventory, int rows, int locked,  Player owner, Backpacks. Place place,
+			 ItemStack stack) {
 		super(WildercordMenus.BACKPACK, containerId);
 		this.rows = rows;
 		this.locked = locked;

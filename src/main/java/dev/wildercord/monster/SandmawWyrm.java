@@ -38,7 +38,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -81,7 +80,7 @@ public class SandmawWyrm extends EliteMonster {
 	private double hurtSinceRise, broke, quillStart;
 	private boolean lastBreach, again, roused;
 	private Vec3 dir = new Vec3(0, 0, 1), aim = new Vec3(0, 0, 1), spot = Vec3.ZERO, from = Vec3.ZERO, to = Vec3.ZERO;
-	private @Nullable UUID swallowed;
+	private  UUID swallowed;
 
 	public SandmawWyrm(EntityType<? extends SandmawWyrm> type, Level level) {
 		super(type, level, BossEvent.BossBarColor.YELLOW);
@@ -283,7 +282,7 @@ public class SandmawWyrm extends EliteMonster {
 	 * Under the sand: feeling for footsteps, then swimming after them, a furrow of sand in its wake, to rise beneath; or, now and
 	 * then, with its prey a way off, breaching out at them along a furrow instead.
 	 */
-	private void burrow(ServerLevel level, @Nullable LivingEntity target) {
+	private void burrow(ServerLevel level,  LivingEntity target) {
 		down++;
 		if (target == null) {
 			hold();
@@ -385,7 +384,7 @@ public class SandmawWyrm extends EliteMonster {
 	}
 
 	/** Up, between moves: a pause, then the next move, chosen; or back under. Half beaten, the thrash, once. */
-	private void idle(ServerLevel level, @Nullable LivingEntity target) {
+	private void idle(ServerLevel level,  LivingEntity target) {
 		hold();
 		if (target == null) {
 			if (up > 60) {
@@ -480,7 +479,7 @@ public class SandmawWyrm extends EliteMonster {
 	 * Reared up with its head swung round to follow its prey, the line before it scored in the sand, then slammed down along it
 	 * to stick fast. Roused, it wrenches free and slams again at once if they are still near.
 	 */
-	private void slam(ServerLevel level, @Nullable LivingEntity target) {
+	private void slam(ServerLevel level,  LivingEntity target) {
 		hold();
 		long s = since();
 		int tell = tell();
@@ -549,7 +548,7 @@ public class SandmawWyrm extends EliteMonster {
 	 * down it: stinging, blinding and slowing. Roused, three gouts fanned one after another, each one's line marked during the
 	 * one before.
 	 */
-	private void spit(ServerLevel level, @Nullable LivingEntity target) {
+	private void spit(ServerLevel level,  LivingEntity target) {
 		hold();
 		long s = since();
 		int tell = tell();
@@ -626,7 +625,7 @@ public class SandmawWyrm extends EliteMonster {
 	 * Rearing back over a spot marked on the ground before it, jaws gnashing, then plunging down on it maw first: whoever
 	 * stands there is swallowed, and those about it knocked flying; nobody there and it chokes on a mouthful of sand.
 	 */
-	private void gulp(ServerLevel level, @Nullable LivingEntity target) {
+	private void gulp(ServerLevel level,  LivingEntity target) {
 		long s = since();
 		int tell = tell();
 		boolean locked = s >= tell - SandmawRules.GULP_LOCK;
@@ -702,7 +701,7 @@ public class SandmawWyrm extends EliteMonster {
 	}
 
 	/** Whoever it has swallowed, if they are still there to hold. */
-	private @Nullable LivingEntity swallowed(ServerLevel level) {
+	private  LivingEntity swallowed(ServerLevel level) {
 		return swallowed != null && level.getEntity(swallowed) instanceof LivingEntity victim && victim.isAlive()
 			&& victim.distanceTo(this) <= 6 ? victim : null;
 	}
@@ -858,7 +857,7 @@ public class SandmawWyrm extends EliteMonster {
 	 * Its head driven into the sand, drumming, then geysers sent up one after another beneath its prey, each spot marked and
 	 * bubbling a moment before it goes up: keep moving.
 	 */
-	private void geyser(ServerLevel level, @Nullable LivingEntity target) {
+	private void geyser(ServerLevel level,  LivingEntity target) {
 		hold();
 		long s = since();
 		int tell = tell();
@@ -1024,7 +1023,7 @@ public class SandmawWyrm extends EliteMonster {
 	 * then a burst of sand where it lies, and it breaches out along the furrow in a great arc, striking all along it, and
 	 * crashes down at the far end. Roused, it dives straight back in and breaches back at them once more.
 	 */
-	private void breach(ServerLevel level, @Nullable LivingEntity target) {
+	private void breach(ServerLevel level,  LivingEntity target) {
 		long s = since();
 		int tell = tell();
 		if (s < tell) {
@@ -1306,7 +1305,7 @@ public class SandmawWyrm extends EliteMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return burrowed() ? null : SoundEvents.RAVAGER_AMBIENT;
 	}
 

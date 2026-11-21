@@ -43,7 +43,7 @@ public final class ArenaTreeClearingTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runCommand("time set day");
 			BoundingBox box = w.getServer().computeOnServer(s -> {
 				var l = s.overworld();

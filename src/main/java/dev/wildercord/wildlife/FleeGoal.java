@@ -6,7 +6,6 @@ import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.function.Predicate;
@@ -22,8 +21,8 @@ final class FleeGoal extends Goal {
 	private final double range;
 	private final double walk;
 	private final double sprint;
-	private @Nullable Player threat;
-	private @Nullable Path path;
+	private  Player threat;
+	private  Path path;
 
 	FleeGoal(PathfinderMob mob, Predicate<Player> fears, double range, double walk, double sprint) {
 		this.mob = mob;

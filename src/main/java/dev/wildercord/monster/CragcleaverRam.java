@@ -24,7 +24,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -120,7 +119,7 @@ public class CragcleaverRam extends WildMonster {
 		setState(STUNNED, phase == Phase.DAZED);
 	}
 
-	private void roam(ServerLevel level, @Nullable LivingEntity target, boolean hunting, long now) {
+	private void roam(ServerLevel level,  LivingEntity target, boolean hunting, long now) {
 		if (!hunting) {
 			return;
 		}
@@ -149,7 +148,7 @@ public class CragcleaverRam extends WildMonster {
 	}
 
 	/** Head low, a hoof scraping the ground; its aim follows its prey, then sets just before it goes. */
-	private void paw(ServerLevel level, @Nullable LivingEntity target, boolean hunting, long now) {
+	private void paw(ServerLevel level,  LivingEntity target, boolean hunting, long now) {
 		getNavigation().stop();
 		if (!hunting) {
 			phase = Phase.ROAM;
@@ -243,7 +242,7 @@ public class CragcleaverRam extends WildMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return phase == Phase.ROAM ? SoundEvents.GOAT_AMBIENT : null;
 	}
 

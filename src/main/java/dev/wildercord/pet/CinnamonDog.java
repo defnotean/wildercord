@@ -6,7 +6,7 @@ import dev.wildercord.cast.Targets;
 import dev.wildercord.duel.Duels;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
@@ -43,7 +43,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import org.jspecify.annotations.Nullable;
 
 /**
  * An immortal little dog bound to the configured owner from the moment she appears. She goes after anyone who hurts her
@@ -73,16 +72,16 @@ public final class CinnamonDog extends TamableAnimal {
 		java.util.List.of(dev.wildercord.spell.Runes.BOLT, dev.wildercord.spell.Runes.SHOCK),
 		java.util.List.of(dev.wildercord.spell.Runes.BOLT, dev.wildercord.spell.Runes.HARM));
 	private static final java.util.List<dev.wildercord.spell.RuneDef> MENDING = java.util.List.of(dev.wildercord.spell.Runes.BEAM, dev.wildercord.spell.Runes.HEAL);
-	private static final Identifier GROWTH_MODIFIER = Wildercord.id("cinnamon_growth");
-	private static final Identifier STRENGTH_MODIFIER = Wildercord.id("cinnamon_strength");
+	private static final ResourceLocation GROWTH_MODIFIER = Wildercord.id("cinnamon_growth");
+	private static final ResourceLocation STRENGTH_MODIFIER = Wildercord.id("cinnamon_strength");
 	/** How long a jingle lasts, and when in it each of its three little dings sounds. */
 	private static final int RING_TICKS = 12;
 	private int settled, playTicks, greeting, ringTicks, tongueTicks, lickTicks;
 	/** Client side: how far into the lick she is, counted from when it showed up. */
 	public int lickAge;
 	private int castCooldown = 40, healCooldown, castWindup, spellIndex;
-	private java.util.@Nullable List<dev.wildercord.spell.RuneDef> casting;
-	private @Nullable LivingEntity castTarget;
+	private java.util. List<dev.wildercord.spell.RuneDef> casting;
+	private  LivingEntity castTarget;
 	private int nextRing = 100 + getRandom().nextInt(300);
 	private boolean bow;
 	private boolean savedSitting, resizing, feeding, countingDamage;
@@ -352,7 +351,7 @@ public final class CinnamonDog extends TamableAnimal {
 	}
 
 	/** The target, her owner and her own state are checked again: anything may have changed during the windup. */
-	private void release(ServerLevel level, @Nullable LivingEntity owner) {
+	private void release(ServerLevel level,  LivingEntity owner) {
 		java.util.List<dev.wildercord.spell.RuneDef> spell = casting;
 		LivingEntity target = castTarget;
 		casting = null;
@@ -415,7 +414,7 @@ public final class CinnamonDog extends TamableAnimal {
 		return owner != null && wantsToAttack(target, owner) && super.canAttack(target);
 	}
 
-	@Override public void setTarget(@Nullable LivingEntity target) {
+	@Override public void setTarget( LivingEntity target) {
 		super.setTarget(target == null || canAttack(target) ? target : null);
 	}
 
@@ -563,7 +562,7 @@ public final class CinnamonDog extends TamableAnimal {
 	public boolean canMate(net.minecraft.world.entity.animal.Animal partner) { return false; }
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) { return null; }
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) { return null; }
 
 	@Override
 	public boolean canBeLeashed() { return false; }

@@ -1,6 +1,5 @@
 package dev.wildercord.wildlife;
 
-import org.jspecify.annotations.Nullable;
 
 /** A bounded search of exposed column tops. No randomness, movement, or chunk requests. */
 final class MoonreedSearch {
@@ -18,7 +17,7 @@ final class MoonreedSearch {
 		boolean raining(int x, int y, int z);
 	}
 
-	static @Nullable Cell find(View world, int x, int y, int z, long time) {
+	static  Cell find(View world, int x, int y, int z, long time) {
 		if (!WetlandRules.night(time)) return null;
 		Cell oldBand = null, lowerBand = null;
 		for (int dz = -RADIUS; dz <= RADIUS; dz++) {
@@ -39,7 +38,7 @@ final class MoonreedSearch {
 	}
 
 	/** betweenClosed visits X fastest, then Y, then Z; preserve its first old-band match. */
-	private static boolean before(Cell at, @Nullable Cell previous) {
+	private static boolean before(Cell at,  Cell previous) {
 		return previous == null || at.z < previous.z || at.z == previous.z
 			&& (at.y < previous.y || at.y == previous.y && at.x < previous.x);
 	}

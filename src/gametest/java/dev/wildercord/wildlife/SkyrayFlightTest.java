@@ -56,7 +56,7 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
 			TestServerContext server = w.getServer();
-			server.runCommand("gamerule spawn_mobs false");
+			server.runCommand("gamerule doMobSpawning false");
 			server.runCommand("time set day");
 			server.runOnServer(s -> {
 				var l = s.overworld();

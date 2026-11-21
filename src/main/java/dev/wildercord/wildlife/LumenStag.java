@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -61,7 +60,7 @@ public class LumenStag extends Animal {
 	private int fright;
 	private int poseTicks;
 	/** Whose trust is building, and for how long. */
-	private @Nullable UUID trusting;
+	private  UUID trusting;
 	private int trust;
 	/** Client: its poses eased in and out for the model (this tick's and last tick's, to blend between). */
 	public float graze, grazeO, watch, watchO, bow, bowO;
@@ -187,7 +186,7 @@ public class LumenStag extends Animal {
 	}
 
 	/** Sheds today's antler, toward {@code toward} if someone earned it. Returns the antler, or null if it already shed today. */
-	public @Nullable ItemEntity shed(ServerLevel level, @Nullable Player toward) {
+	public  ItemEntity shed(ServerLevel level,  Player toward) {
 		if (!WildlifeRules.mayShed(shedDay(), today())) {
 			return null;
 		}
@@ -256,24 +255,24 @@ public class LumenStag extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return null;
 	}
 
 	// ------------------------------------------------------------------ sound
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return Wildlife.sound("stag_call");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return Wildlife.sound("stag_hurt");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return Wildlife.sound("stag_death");
 	}
 
@@ -302,13 +301,13 @@ public class LumenStag extends Animal {
 
 	/** Stands still for a calm player and watches them; one who stays close and still long enough is trusted with an antler. */
 	private final class WatchGoal extends Goal {
-		private @Nullable Player watched;
+		private  Player watched;
 
 		WatchGoal() {
 			setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
 		}
 
-		private @Nullable Player find() {
+		private  Player find() {
 			Player best = null;
 			double nearest = Double.MAX_VALUE;
 			for (Player player : level().players()) {

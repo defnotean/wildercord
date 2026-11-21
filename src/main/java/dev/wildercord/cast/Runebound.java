@@ -20,11 +20,10 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.objects.AtlasSprite;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -37,13 +36,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Witch;
-import net.minecraft.world.entity.monster.zombie.Drowned;
-import net.minecraft.world.entity.monster.zombie.Husk;
-import net.minecraft.world.entity.monster.zombie.Zombie;
-import net.minecraft.world.entity.monster.zombie.ZombieVillager;
-import net.minecraft.world.entity.monster.illager.Pillager;
-import net.minecraft.world.entity.monster.illager.Vindicator;
-import net.minecraft.world.entity.monster.skeleton.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.monster.Husk;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.ZombieVillager;
+import net.minecraft.world.entity.monster.Pillager;
+import net.minecraft.world.entity.monster.Vindicator;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
@@ -67,7 +66,7 @@ import java.util.UUID;
 public final class Runebound {
 	private Runebound() {}
 
-	private static final Identifier HEALTH = Wildercord.id("runebound_health");
+	private static final ResourceLocation HEALTH = Wildercord.id("runebound_health");
 	private static final int TELEGRAPH = 22;
 
 	/** A Runebound's state between ticks: when it may cast again, and the cast it's preparing. */
@@ -274,7 +273,7 @@ public final class Runebound {
 			name.append(Component.literal("» ").withColor(0xFFFFFF));
 		}
 		for (RuneDef rune : spell) {
-			name.append(Component.object(new AtlasSprite(AtlasIds.ITEMS, Wildercord.id("item/rune/" + rune.path()))));
+			name.append(Component.object(new AtlasSprite(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_ITEMS, Wildercord.id("item/rune/" + rune.path()))));
 			name.append(Component.literal("◆").withColor(RuneColors.of(rune)));
 		}
 		int color = elementColor(spell);

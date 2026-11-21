@@ -8,7 +8,7 @@ import dev.wildercord.aura.ArticulatedCombatPose.Joint;
 import dev.wildercord.aura.ArticulatedCombatPose.Vec3;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EquipmentSlot;
 import org.joml.Matrix4f;
@@ -89,7 +89,7 @@ public final class ArticulatedArmorGeometry extends Model<ArticulatedArmorGeomet
 	public ArticulatedArmorGeometry(ModelPart bakedVanillaSlotRoot, EquipmentSlot slot) { this(bakedVanillaSlotRoot, slot, false); }
 	public ArticulatedArmorGeometry(ModelPart bakedVanillaSlotRoot, EquipmentSlot slot, boolean armsOnly) { this(bake(bakedVanillaSlotRoot, slot, armsOnly)); }
 	private ArticulatedArmorGeometry(Baked baked) {
-		super(baked.root(), RenderTypes::armorCutoutNoCull);
+		super(baked.root(), RenderType::armorCutoutNoCull);
 		mesh = baked.mesh(); faces = baked.faces(); armsOnly = baked.armsOnly(); hat = baked.hat();
 		setupAnim(Palette.from(joint -> new Matrix4f().set(ArticulatedCombatPose.NONE.world(joint).values())));
 	}

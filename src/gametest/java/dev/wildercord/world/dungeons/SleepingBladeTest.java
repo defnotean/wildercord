@@ -32,8 +32,8 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext c) {
 		SleepingBladeGenerationProbeChecks.verify();
 		try (var world=c.worldBuilder().create()) {
-			c.waitTicks(40); world.getServer().runCommand("gamerule spawn_mobs false");
-			world.getServer().runCommand("gamerule fall_damage false"); world.getServer().runCommand("time set 6000");
+			c.waitTicks(40); world.getServer().runCommand("gamerule doMobSpawning false");
+			world.getServer().runCommand("gamerule fallDamage false"); world.getServer().runCommand("time set 6000");
 			BlockPos at=world.getServer().computeOnServer(s -> {
 				var level=s.overworld(); int index=0; BlockPos first=null;
 				for (var facing:Direction.Plane.HORIZONTAL) for (int variant=0;variant<3;variant++) {
@@ -118,7 +118,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 		dev.wildercord.Wildercord.LOGGER.info("SLEEPING_BLADE_GENERATION PRIOR_CHECKS completed=12_rotated_variants,persisted_provenance,draw_interruptions,unique_claim,bond_ownership,guard_tradeoff,unprovenanced_socket_false,book_screen");
 		try(var natural=c.worldBuilder().setUseConsistentSettings(false).create();
 			var probe=natural.getServer().computeOnServer(s->SleepingBladeGenerationProbe.begin(s.overworld().getSeed()))) {
-			c.waitTicks(40);natural.getServer().runCommand("gamerule spawn_mobs false");natural.getServer().runCommand("time set 6000");
+			c.waitTicks(40);natural.getServer().runCommand("gamerule doMobSpawning false");natural.getServer().runCommand("time set 6000");
 			BlockPos habitat=natural.getServer().computeOnServer(s->{
 				// The biome is sampled above the ground, so a plains hit can lie over a lake or the sea: take the first whose
 				// candidate grid is at least half dry land, as the structure's own footing rule sees it.
@@ -139,8 +139,8 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				check(b!=null,"Normal world contains a dry landmark habitat");
 				var dryHit=b;
 				var registered=s.overworld().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
-					.get(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.Identifier.parse("wildercord:sleeping_blade")));
-				probe.habitat(b.getFirst(),b.getSecond().unwrapKey().map(key->key.identifier().toString()).orElse("unregistered"),
+					.get(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.ResourceLocation.parse("wildercord:sleeping_blade")));
+				probe.habitat(b.getFirst(),b.getSecond().unwrapKey().map(key->key.location().toString()).orElse("unregistered"),
 					registered.map(value->value.value().getClass().getName()).orElse("unregistered"),registered.map(value->value.value().biomes().contains(dryHit.getSecond())).orElse(false));
 				return b.getFirst();
 			});

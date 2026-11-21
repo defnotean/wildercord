@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -43,7 +43,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runCommand("difficulty normal");
 			w.getServer().runCommand("time set day");
 			w.getServer().runCommand("forceload add -" + SPAN + " -" + SPAN + " " + SPAN + " " + SPAN);
@@ -97,7 +97,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 			// A plain creature of the same kind doesn't count; the hunter's kill of the marked elite does.
 			w.getServer().runOnServer(s -> {
 				var l = s.overworld();
-				var type = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse(TARGET));
+				var type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse(TARGET));
 				Mob plain = (Mob) type.create(l, EntitySpawnReason.COMMAND);
 				plain.snapTo(p(s).getX() + 2, Y + 1, p(s).getZ(), 0, 0);
 				l.addFreshEntity(plain);

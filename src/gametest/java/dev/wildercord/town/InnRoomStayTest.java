@@ -51,8 +51,8 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
-			w.getServer().runCommand("gamerule spawn_mobs false");
-			w.getServer().runCommand("gamerule keep_inventory false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
+			w.getServer().runCommand("gamerule keepInventory false");
 			w.getServer().runCommand("time set day");
 			w.getServer().runOnServer(s -> {
 				var l = s.overworld();

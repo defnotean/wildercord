@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 import net.minecraft.core.BlockPos;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.entity.animal.fish.AbstractFish;
+import net.minecraft.world.entity.animal.AbstractFish;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.phys.Vec3;
@@ -32,7 +32,7 @@ public final class SiltcrestEcologyTest implements FabricClientGameTest {
   try {
    c.runOnClient(mc->{mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);if(!mc.options.hideGui)mc.options.hideGui = !mc.options.hideGui;});
    try(var w=c.worldBuilder().create()) {
-    c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
+    c.waitTicks(25);w.getServer().runCommand("gamerule doMobSpawning false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
     long started=w.getServer().computeOnServer(s->{
      var l=s.overworld();var cohorts=new ArrayList<SiltcrestEcologyProbe.Cohort>();
      // Exactly three original habitats, twenty blocks apart. No retries, reseeding, or later actor placement.

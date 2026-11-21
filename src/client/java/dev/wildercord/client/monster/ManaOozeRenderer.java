@@ -9,9 +9,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -22,8 +22,8 @@ import net.minecraft.util.Mth;
 public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State, ManaOozeModel> {
 	public static final ModelLayerLocation INNER = new ModelLayerLocation(Wildercord.id("mana_ooze"), "main");
 	public static final ModelLayerLocation OUTER = new ModelLayerLocation(Wildercord.id("mana_ooze"), "outer");
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/mana_ooze.png");
-	private static final Identifier GLOW = Wildercord.id("textures/entity/mana_ooze_glow.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/mana_ooze.png");
+	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/mana_ooze_glow.png");
 
 	public ManaOozeRenderer(EntityRendererProvider.Context context) {
 		// 26.1.2 has no AbstractCubeMobRenderer: a plain MobRenderer with the slime shadow radius.
@@ -38,7 +38,7 @@ public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State,
 				}
 				float strength = Mth.clamp(0.7F + 0.3F * state.fill + 0.5F * state.flash, 0, 1) * (state.deathTime > 0 ? 0.4F : 1);
 				int argb = ((int) (strength * 255) << 24) | 0xFFFFFF;
-				dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
+				dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
 			}
 		});
 		// The clear outer jelly, last, over everything inside it.
@@ -49,13 +49,13 @@ public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State,
 					return;
 				}
 				outer.setupAnim(state);
-				dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(2), outer, state, poseStack, RenderTypes.entityTranslucent(TEXTURE), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), state.outlineColor);
+				dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(2), outer, state, poseStack, RenderType.entityTranslucent(TEXTURE), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), state.outlineColor);
 			}
 		});
 	}
 
 	@Override
-	public Identifier getTextureLocation(ManaOozeModel.State state) {
+	public ResourceLocation getTextureLocation(ManaOozeModel.State state) {
 		return TEXTURE;
 	}
 

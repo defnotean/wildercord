@@ -11,7 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 /**
@@ -35,7 +35,7 @@ public final class WispSpawner {
 		}
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			ServerLevel level = player.level();
-			if (player.isSpectator() || level.dimension() != Level.OVERWORLD || !level.getGameRules().get(GameRules.SPAWN_MOBS)) {
+			if (player.isSpectator() || level.dimension() != Level.OVERWORLD || !level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get()) {
 				continue;
 			}
 			trySpawn(level, player);

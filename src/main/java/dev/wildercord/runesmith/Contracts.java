@@ -236,7 +236,7 @@ public final class Contracts {
 		// The board opens on the player's screen: today's three contracts, and what was just handed in.
 		long clock = dev.wildercord.compat.McTime.overworldClock(player.level().getServer().overworld());
 		// With time standing still (or the board kept from a later day after time was turned back), there's no countdown to show.
-		boolean turning = player.level().getServer().overworld().getGameRules().get(net.minecraft.world.level.gamerules.GameRules.ADVANCE_TIME)
+		boolean turning = player.level().getServer().overworld().getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_DAYLIGHT).get()
 			&& claim.board().day() <= day(player);
 		int dawn = turning ? (int) (24000L - Math.floorMod(clock, 24000L)) : -1;
 		List<String> handedIn = claim.rewards().stream().map(r -> r.type() + ":" + r.amount()).toList();

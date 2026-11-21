@@ -30,7 +30,7 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +40,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -138,8 +137,8 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData groupData) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData groupData) {
 		// 26.1.2 has no setSpawnSize hook: roll the size here, before the vanilla finalise pass.
 		// Mostly small, sometimes middling, now and then big.
 		float roll = level.getRandom().nextFloat();
@@ -169,7 +168,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	}
 
 	/** A spell's harm sinks into it: it fills, and grows or bursts when full. */
-	public void drink(ServerLevel level, float amount, @Nullable Entity caster) {
+	public void drink(ServerLevel level, float amount,  Entity caster) {
 		if (amount <= 0 || !isAlive()) {
 			return;
 		}
@@ -254,7 +253,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	}
 
 	@Override
-	protected @Nullable ParticleOptions getParticleType() {
+	protected  ParticleOptions getParticleType() {
 		return ParticleTypes.PORTAL;
 	}
 
@@ -281,7 +280,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return MonsterMagic.kit("monster_ooze_ambient");
 	}
 
@@ -303,7 +302,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	}
 
 	/** Unused by the game: a Mana Ooze never breeds. */
-	public @Nullable CompatCubeMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  CompatCubeMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return null;
 	}
 }

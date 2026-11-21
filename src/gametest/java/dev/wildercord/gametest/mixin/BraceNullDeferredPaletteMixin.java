@@ -12,14 +12,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 /** Keeps primary and auxiliary native preparations distinct through their actual draw. */
 @Mixin(ModelFeatureRenderer.class)
 public abstract class BraceNullDeferredPaletteMixin {
-	@WrapMethod(method = "renderModel(Lnet/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit;Lnet/minecraft/client/renderer/rendertype/RenderType;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/renderer/OutlineBufferSource;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;)V", require = 1, expect = 1, allow = 1)
+	@WrapMethod(method = "renderModel(Lnet/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit;Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/renderer/OutlineBufferSource;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;)V", require = 1, expect = 1, allow = 1)
 	private void prepareNativeBody(SubmitNodeStorage.ModelSubmit<?> node, RenderType renderType, VertexConsumer vertices,
 			OutlineBufferSource outline, MultiBufferSource.BufferSource buffer, Operation<Void> original) {
 		var call = BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.deferredEnter(node, node.model(), node.state(), renderType, node.pose().pose().get(new float[16])), null);
@@ -27,7 +27,7 @@ public abstract class BraceNullDeferredPaletteMixin {
 		try { original.call(node, renderType, vertices, outline, buffer); completed = true; }
 		finally { boolean done = completed; BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.deferredLeave(call, done)); }
 	}
-	@WrapOperation(method = "renderModel(Lnet/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit;Lnet/minecraft/client/renderer/rendertype/RenderType;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/renderer/OutlineBufferSource;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;)V",
+	@WrapOperation(method = "renderModel(Lnet/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit;Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/renderer/OutlineBufferSource;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/Model;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), require = 1, expect = 3, allow = 3)
 	private void drawnNativeBody(Model<?> model, PoseStack pose, VertexConsumer vertices, int light, int overlay, int tint,
 		Operation<Void> original, @Local(argsOnly = true) SubmitNodeStorage.ModelSubmit<?> node) {

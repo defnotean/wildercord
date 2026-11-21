@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.state.SlimeRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 
 /**
@@ -36,7 +36,7 @@ public class ManaOozeModel extends EntityModel<ManaOozeModel.State> {
 	private final ModelPart outer;
 
 	public ManaOozeModel(ModelPart root) {
-		super(root, RenderTypes::entityTranslucent);
+		super(root, RenderType::entityTranslucent);
 		this.inner = root.hasChild("inner") ? root.getChild("inner") : null;
 		this.core = root.hasChild("core") ? root.getChild("core") : null;
 		this.mote = core != null ? core.getChild("mote") : null;

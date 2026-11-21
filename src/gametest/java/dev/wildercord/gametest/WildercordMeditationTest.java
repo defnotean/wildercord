@@ -23,8 +23,8 @@ public final class WildercordMeditationTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext context) {
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(40);
-			world.getServer().runCommand("gamerule spawn_mobs false");
-			world.getServer().runCommand("gamerule fall_damage false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
+			world.getServer().runCommand("gamerule fallDamage false");
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runOnServer(server -> {
 				var player = server.getPlayerList().getPlayers().getFirst();

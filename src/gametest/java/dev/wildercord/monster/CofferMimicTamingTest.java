@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +48,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runCommand("time set day");
 			w.getServer().runOnServer(s -> {
 				var l = s.overworld();

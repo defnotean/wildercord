@@ -47,8 +47,8 @@ public final class RelayLessonChecks {
 	public static void run(ClientGameTestContext context) {
 		try (var world = context.worldBuilder().create()) {
 			context.waitTicks(40);
-			world.getServer().runCommand("gamerule spawn_mobs false");
-			world.getServer().runCommand("gamerule fall_damage false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
+			world.getServer().runCommand("gamerule fallDamage false");
 			world.getServer().runOnServer(server -> {
 				var level = server.overworld();
 				for (int x = -5; x <= 30; x++) for (int z = -5; z <= 5; z++) {
@@ -289,7 +289,7 @@ public final class RelayLessonChecks {
 			TestServerConnection connection = server.connect();
 			try {
 				connection.getClientWorld().waitForChunksDownload();
-				server.runCommand("gamerule spawn_mobs false"); server.runCommand("gamerule fall_damage false");
+				server.runCommand("gamerule doMobSpawning false"); server.runCommand("gamerule fallDamage false");
 				ServerPlayer original = server.computeOnServer(s -> {
 					var level = s.overworld();
 					for (int x = -3; x <= 3; x++) for (int z = -4; z <= 3; z++) {

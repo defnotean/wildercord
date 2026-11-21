@@ -7,21 +7,21 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /** The brookbill duck (see {@link BrookbillDuckModel}): floating, up-ending to dabble, flapping, and its yellow ducklings. */
 public final class BrookbillDuckRenderer extends WildlifeRenderer<BrookbillDuck, BrookbillDuckModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("brookbill_duck"), "main");
-	private static final Identifier ADULT = WildlifeRenderers.texture("brookbill_duck");
-	private static final Identifier DUCKLING = WildlifeRenderers.texture("brookbill_duckling");
+	private static final ResourceLocation ADULT = WildlifeRenderers.texture("brookbill_duck");
+	private static final ResourceLocation DUCKLING = WildlifeRenderers.texture("brookbill_duckling");
 
 	public BrookbillDuckRenderer(EntityRendererProvider.Context context) {
 		super(context, new BrookbillDuckModel(context.bakeLayer(LAYER)), 0.3F, ADULT);
 	}
 
 	@Override
-	public Identifier getTextureLocation(WildlifeRenderState state) {
+	public ResourceLocation getTextureLocation(WildlifeRenderState state) {
 		return state.isBaby ? DUCKLING : ADULT;
 	}
 

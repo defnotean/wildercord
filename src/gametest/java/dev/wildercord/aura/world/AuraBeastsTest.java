@@ -27,13 +27,13 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext c) {
 		ScavengerFoodProbeChecks.verify();
 		try(var w=c.worldBuilder().create()) {
-			c.waitTicks(40);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("gamerule fall_damage false");w.getServer().runCommand("time set 6000");
+			c.waitTicks(40);w.getServer().runCommand("gamerule doMobSpawning false");w.getServer().runCommand("gamerule fallDamage false");w.getServer().runCommand("time set 6000");
 			var ids=w.getServer().computeOnServer(s->{
 				var l=s.overworld();for(int x=-24;x<=24;x++)for(int z=-24;z<=24;z++)l.setBlock(new BlockPos(x,100,z),Blocks.GRASS_BLOCK.defaultBlockState(),2);
 				var biomeRegistry=s.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.BIOME);
 				for(var habitat:Map.of(AuraBeasts.STONEHORN,List.of("meadow","windswept_hills","windswept_gravelly_hills","stony_peaks"),AuraBeasts.GALECLAW,List.of("windswept_hills","windswept_forest","jagged_peaks","frozen_peaks","snowy_slopes","grove")).entrySet()) {
 					for(var name:habitat.getValue()) {
-						var biome=biomeRegistry.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.BIOME,net.minecraft.resources.Identifier.withDefaultNamespace(name))).value();
+						var biome=biomeRegistry.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.BIOME,net.minecraft.resources.ResourceLocation.withDefaultNamespace(name))).value();
 						check(dev.wildercord.gametest.compat.GametestCompat.biomeHasMob(biome,MobCategory.CREATURE,habitat.getKey()),"Natural spawn entry exists in "+name);
 					}
 				}

@@ -58,7 +58,7 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
 			TestServerContext server = w.getServer();
-			server.runCommand("gamerule spawn_mobs false");
+			server.runCommand("gamerule doMobSpawning false");
 			server.runOnServer(s -> {
 				p(s).setGameMode(GameType.SURVIVAL);
 				var inv = p(s).getInventory();

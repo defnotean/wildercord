@@ -18,7 +18,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -36,9 +36,9 @@ import java.util.Locale;
 public class AuraScreen extends Screen implements CordEditorParent {
 	private static final int W = 320;
 	private static final int H = 340;
-	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
-	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
-	private static final Identifier SPR_BAR = Wildercord.id("hud/bar_frame");
+	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
+	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
+	private static final ResourceLocation SPR_BAR = Wildercord.id("hud/bar_frame");
 	private static final int GOLD = 0xFFE8C46A;
 	private static final int TEXT = 0xFFE8E0F0;
 	private static final int DIM = 0xFF8A84A0;
@@ -830,7 +830,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 	private static final int ROW = 22;
 
 	/** A Way's emblem sprite (an add-on's Way, without one of its own, gets the plain one). */
-	private static Identifier emblem(String wayId) {
+	private static ResourceLocation emblem(String wayId) {
 		return dev.wildercord.aura.WayRules.BUILT_IN.contains(wayId) ? Wildercord.id("aura/way_" + wayId) : Wildercord.id("aura/way_unknown");
 	}
 

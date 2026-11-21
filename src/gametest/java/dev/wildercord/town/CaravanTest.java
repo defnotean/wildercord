@@ -10,7 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Relative;
-import net.minecraft.world.entity.animal.equine.TraderLlama;
+import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -39,7 +39,7 @@ public final class CaravanTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runCommand("time set day");
 			w.getServer().runCommand("forceload add -" + SPAN + " -" + SPAN + " " + SPAN + " " + SPAN);
 			w.getServer().runOnServer(s -> {

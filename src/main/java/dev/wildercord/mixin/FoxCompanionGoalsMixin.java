@@ -1,6 +1,6 @@
 package dev.wildercord.mixin;
 import dev.wildercord.wildlife.FoxCompanions;
-import net.minecraft.world.entity.animal.fox.Fox;
+import net.minecraft.world.entity.animal.Fox;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;

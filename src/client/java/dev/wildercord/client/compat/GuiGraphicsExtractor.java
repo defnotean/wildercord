@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -147,44 +147,44 @@ public final class GuiGraphicsExtractor {
 		g.drawStringWithBackdrop(font, text, x, y, width, color);
 	}
 
-	public void blit(RenderPipeline pipeline, Identifier atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height) {
+	public void blit(RenderPipeline pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height) {
 		g.blit(pipeline, atlas, x, y, u, v, regionWidth, regionHeight, width, height);
 	}
 
-	public void blit(RenderPipeline pipeline, Identifier atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int blitOffset) {
+	public void blit(RenderPipeline pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int blitOffset) {
 		g.blit(pipeline, atlas, x, y, u, v, regionWidth, regionHeight, width, height, blitOffset);
 	}
 
-	public void blit(RenderPipeline pipeline, Identifier atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int blitOffset) {
+	public void blit(RenderPipeline pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int blitOffset) {
 		// 1.21.11 has no colour on a raw blit; the circle textures read fine untinted.
 		g.blit(pipeline, atlas, x, y, (float) (u + textureU), (float) (v + textureV), regionWidth, regionHeight, width, height, 256, 256);
 	}
 
-	public void blit(RenderPipeline pipeline, Identifier atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int textureWidth, int textureHeight) {
+	public void blit(RenderPipeline pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int textureWidth, int textureHeight) {
 		g.blit(pipeline, atlas, x, y, (float) (u + textureU), (float) (v + textureV), regionWidth, regionHeight, width, height, textureWidth, textureHeight);
 	}
 
-	public void blit(Identifier atlas, int x, int y, int width, int height, float u, float v, float regionWidth, float regionHeight) {
+	public void blit(ResourceLocation atlas, int x, int y, int width, int height, float u, float v, float regionWidth, float regionHeight) {
 		g.blit(atlas, x, y, width, height, u, v, regionWidth, regionHeight);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height) {
+	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height) {
 		g.blitSprite(pipeline, sprite, x, y, width, height);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height, float blitOffset) {
+	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height, float blitOffset) {
 		g.blitSprite(pipeline, sprite, x, y, width, height, blitOffset);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height, int color) {
+	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height, int color) {
 		g.blitSprite(pipeline, sprite, x, y, width, height, color);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight) {
+	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight) {
 		g.blitSprite(pipeline, sprite, x, y, width, height, u, v, regionWidth, regionHeight);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, Identifier sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight, int blitOffset) {
+	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight, int blitOffset) {
 		g.blitSprite(pipeline, sprite, x, y, width, height, u, v, regionWidth, regionHeight, blitOffset);
 	}
 

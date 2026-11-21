@@ -6,32 +6,32 @@ import dev.wildercord.world.kilnwidow.*;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.*;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import static dev.wildercord.world.kilnwidow.KilnWidowRules.*;
 
 public final class KilnWidowRenderer extends dev.wildercord.client.compat.CullableMobRenderer<KilnWidow, KilnWidowRenderState, KilnWidowModel> {
-	private static final Identifier TEXTURE = Wildercord.id("textures/entity/kiln_widow.png");
-	private static final Identifier GLOW = Wildercord.id("textures/entity/kiln_widow_glow.png");
-	private static final Identifier MARK = Wildercord.id("textures/entity/kiln_widow_mark.png");
+	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/kiln_widow.png");
+	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/kiln_widow_glow.png");
+	private static final ResourceLocation MARK = Wildercord.id("textures/entity/kiln_widow_mark.png");
 
 	public KilnWidowRenderer(EntityRendererProvider.Context context) {
 		super(context, new KilnWidowModel(context.bakeLayer(KilnWidowModel.LAYER)), 1.3F);
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<KilnWidowRenderState, KilnWidowModel>(this) {
 			@Override public void submit(PoseStack pose, SubmitNodeCollector collector, int light, KilnWidowRenderState state, float yRot, float xRot) {
 				if (!state.isInvisible && state.deathTime <= 0) {
-					dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+					dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 				}
 			}
 		});
 	}
 
 	@Override public KilnWidowRenderState createRenderState() { return new KilnWidowRenderState(); }
-	@Override public Identifier getTextureLocation(KilnWidowRenderState state) { return TEXTURE; }
+	@Override public ResourceLocation getTextureLocation(KilnWidowRenderState state) { return TEXTURE; }
 	@Override protected float getFlipDegrees() { return 0; }
 	@Override protected boolean shouldRenderEntity(KilnWidow e, Frustum frustum, double x, double y, double z, float partial) {
 		return superShouldRenderEntity(e, frustum, x, y, z, partial) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));
@@ -58,7 +58,7 @@ public final class KilnWidowRenderer extends dev.wildercord.client.compat.Cullab
 		float pulse = .55F + .35F * Mth.sin(s.ageInTicks * .35F);
 		int ember = color(0.96F, s.second ? 0.68F : 0.45F, 0.22F, .80F * pulse);
 		int cooled = color(0.58F, 0.86F, 0.78F, .85F);
-		collector.order(1).submitCustomGeometry(matrices, RenderTypes.entityTranslucentEmissive(MARK), (p, consumer) -> {
+		collector.order(1).submitCustomGeometry(matrices, RenderType.entityTranslucentEmissive(MARK), (p, consumer) -> {
 			if (s.move == DRAFT) drawDraft(consumer, p, s.tellProgress, ember, cooled);
 			else if (s.move == SLAG) drawSlag(consumer, p, s.markX, s.markZ, s.tellProgress, ember);
 			else if (s.move == SWEEP) drawSweep(consumer, p, s.acrossX, ember, cooled);

@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.monster.illager.Pillager;
+import net.minecraft.world.entity.monster.Pillager;
 import java.util.*;
 
 /** Negative cases exercise the final damage gate directly, not public spell delivery.
@@ -19,8 +19,8 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
  @Override public void runTest(ClientGameTestContext c){
   try(var world=c.worldBuilder().create()){
    c.waitTicks(30);var server=world.getServer();
-   server.runCommand("gamerule spawn_mobs false");
-   server.runCommand("gamerule natural_health_regeneration false");
+   server.runCommand("gamerule doMobSpawning false");
+   server.runCommand("gamerule natural_regeneration false");
    server.runCommand("fill -12 100 -12 12 100 20 polished_deepslate");
    server.runOnServer(s->{
     // Paid admission owns the connected body; pose also synchronizes its client.

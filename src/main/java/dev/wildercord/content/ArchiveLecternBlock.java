@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jspecify.annotations.Nullable;
 
 /**
  * The Archive Lectern, at the heart of the Archive: the Archivist rises from it the first time a
@@ -53,13 +52,13 @@ public class ArchiveLecternBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+	public  BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new ArchiveLecternBlockEntity(pos, state);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+	public <T extends BlockEntity>  BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return level.isClientSide() || type != WildercordBlocks.ARCHIVE_LECTERN_ENTITY ? null
 			: (BlockEntityTicker<T>) (BlockEntityTicker<ArchiveLecternBlockEntity>) ArchiveLecternBlockEntity::serverTick;
 	}

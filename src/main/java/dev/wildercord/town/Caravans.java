@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.equine.TraderLlama;
+import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public final class Caravans {
 
 	private static void check(MinecraftServer server) {
 		ServerLevel level = server.overworld();
-		if (!level.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.SPAWN_WANDERING_TRADERS)) return;
+		if (!level.getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_DO_TRADER_SPAWNING).get()) return;
 		RandomSource random = level.getRandom();
 		if (random.nextDouble() >= CaravanRules.CHANCE) return;
 		List<ServerPlayer> players = level.players().stream().filter(p -> p.isAlive() && !p.isSpectator()).toList();

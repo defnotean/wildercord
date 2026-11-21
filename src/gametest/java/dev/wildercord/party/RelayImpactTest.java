@@ -22,7 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -51,10 +51,10 @@ public final class RelayImpactTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext context) {
 		register();
 		try (var world = context.worldBuilder().create()) {
-			context.waitTicks(40); world.getServer().runCommand("gamerule spawn_mobs false");
+			context.waitTicks(40); world.getServer().runCommand("gamerule doMobSpawning false");
 			world.getServer().runOnServer(server -> {
 				owner = RelayCircleTest.player(server); RelayCircleTest.prepare(owner, Runes.FROST);
-				owner.level().getGameRules().set(GameRules.PVP, true, server);
+				owner.level().getGameRules().getRule(GameRules.RULE_PVP).set(true, server);
 				guest = new Guest(owner.level()); guest.setGameMode(GameType.SURVIVAL);
 				guest.snapTo(.5,150,6.5,180,0); guest.setNoGravity(true); owner.level().addNewPlayer(guest);
 				incoming=0;

@@ -10,7 +10,7 @@ import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -76,9 +76,9 @@ public final class InnRaid {
 	private long graceUntil;
 
 	/** One raid as saved over a restart. */
-	public record Saved(Identifier dimension, long centre, int tier, long day, int wave) {
+	public record Saved(ResourceLocation dimension, long centre, int tier, long day, int wave) {
 		static final Codec<Saved> CODEC = RecordCodecBuilder.create(i -> i.group(
-			Identifier.CODEC.fieldOf("dimension").forGetter(Saved::dimension),
+			ResourceLocation.CODEC.fieldOf("dimension").forGetter(Saved::dimension),
 			Codec.LONG.fieldOf("centre").forGetter(Saved::centre),
 			Codec.INT.fieldOf("tier").forGetter(Saved::tier),
 			Codec.LONG.fieldOf("day").forGetter(Saved::day),
@@ -153,7 +153,7 @@ public final class InnRaid {
 		List<Saved> saved = new ArrayList<>();
 		for (Map.Entry<Key, InnRaid> e : ACTIVE.entrySet()) {
 			InnRaid r = e.getValue();
-			saved.add(new Saved(r.level.dimension().identifier(), e.getKey().centre(), r.tier.ordinal(), r.day, r.wave));
+			saved.add(new Saved(r.level.dimension().location(), e.getKey().centre(), r.tier.ordinal(), r.day, r.wave));
 			r.clear();
 		}
 		ACTIVE.clear();

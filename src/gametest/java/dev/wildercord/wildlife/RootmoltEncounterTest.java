@@ -71,7 +71,7 @@ public final class RootmoltEncounterTest implements FabricClientGameTest {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
 			TestServerContext server = w.getServer();
-			server.runCommand("gamerule spawn_mobs false");
+			server.runCommand("gamerule doMobSpawning false");
 			server.runCommand("difficulty normal");
 			server.runCommand("time set 18000");
 			server.runOnServer(s -> {

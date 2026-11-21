@@ -19,7 +19,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,13 +64,13 @@ public final class ArchiveAmbience {
 
 	private record Shaft(Vec3 top, float length, float width, int color, int until) {}
 
-	private static @Nullable ClientLevel seen;
+	private static  ClientLevel seen;
 	/** The Archive Lectern at the heart of the Archive the player is in or near. */
-	private static @Nullable BlockPos heart;
+	private static  BlockPos heart;
 	/** Which way the arena's hexagram points: 0 not known yet, 1 along z, 2 along x, 3 not found. */
 	private static int hexagram;
 	private static int floorEnds;
-	private static @Nullable RingGlow floorGlow;
+	private static  RingGlow floorGlow;
 	private static boolean fight;
 	private static int clock;
 	private static int slice;
@@ -129,7 +128,7 @@ public final class ArchiveAmbience {
 	// ------------------------------------------------------------------ finding the Archive
 
 	/** The nearest Archive Lectern in the loaded chunks around the player, or null. */
-	private static @Nullable BlockPos findHeart(ClientLevel level, LocalPlayer player) {
+	private static  BlockPos findHeart(ClientLevel level, LocalPlayer player) {
 		int pcx = player.blockPosition().getX() >> 4;
 		int pcz = player.blockPosition().getZ() >> 4;
 		BlockPos best = null;

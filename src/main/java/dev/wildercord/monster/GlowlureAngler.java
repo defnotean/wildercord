@@ -25,7 +25,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -126,7 +125,7 @@ public class GlowlureAngler extends WildMonster {
 	}
 
 	/** Lying flat and still, the lure swaying; drawing in whoever stares at it, snapping at whoever comes close. */
-	private void lurk(ServerLevel level, @Nullable LivingEntity target, boolean hunting, long now) {
+	private void lurk(ServerLevel level,  LivingEntity target, boolean hunting, long now) {
 		getNavigation().stop();
 		setDeltaMovement(getDeltaMovement().multiply(0, 1, 0));
 		Vec3 lure = lure();
@@ -170,7 +169,7 @@ public class GlowlureAngler extends WildMonster {
 		playSound(SoundEvents.FROG_AMBIENT, 1.0F, 0.5F);
 	}
 
-	private void lunge(ServerLevel level, @Nullable LivingEntity target) {
+	private void lunge(ServerLevel level,  LivingEntity target) {
 		phase = Phase.LUNGE;
 		landed = false;
 		Vec3 to = target != null ? target.position().subtract(position()) : getLookAngle();
@@ -214,7 +213,7 @@ public class GlowlureAngler extends WildMonster {
 	}
 
 	/** Slow on land, it goes after its prey a while, biting, snapping again when it can, then settles. */
-	private void chase(ServerLevel level, @Nullable LivingEntity target, boolean hunting, long now) {
+	private void chase(ServerLevel level,  LivingEntity target, boolean hunting, long now) {
 		chased++;
 		if (target == null || AnglerRules.settles(chased, hunting)) {
 			phase = Phase.LURK;
@@ -263,7 +262,7 @@ public class GlowlureAngler extends WildMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return phase == Phase.CHASE ? SoundEvents.FROG_AMBIENT : null;
 	}
 

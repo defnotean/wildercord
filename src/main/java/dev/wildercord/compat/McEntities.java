@@ -13,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Version seam for Minecraft entity, player, hand-swing, hurt-cooldown and Enderman APIs.
@@ -29,11 +28,11 @@ public final class McEntities {
 	/** Version-independent callback for custom projectile deflection. */
 	@FunctionalInterface
 	public interface ProjectileRedirect {
-		void deflect(Projectile turned, @Nullable Entity by, RandomSource random);
+		void deflect(Projectile turned,  Entity by, RandomSource random);
 	}
 
 	/** Drops {@code stack} from {@code player} under server authority. */
-	public static @Nullable ItemEntity drop(Player player, ItemStack stack, boolean dropAround) {
+	public static  ItemEntity drop(Player player, ItemStack stack, boolean dropAround) {
 		return player.drop(stack, dropAround);
 	}
 
@@ -105,7 +104,7 @@ public final class McEntities {
 	}
 
 	/** Whether {@code entity} is an Enderman (handles {@code EnderMan} vs {@code Enderman}). */
-	public static boolean isEnderman(@Nullable Entity entity) {
+	public static boolean isEnderman( Entity entity) {
 		return entity instanceof EnderMan;
 	}
 

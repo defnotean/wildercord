@@ -1,7 +1,6 @@
 package dev.wildercord.mixin;
 
-import net.minecraft.world.entity.monster.zombie.ZombieVillager;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.world.entity.monster.ZombieVillager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -11,5 +10,5 @@ import java.util.UUID;
 @Mixin(ZombieVillager.class)
 public interface ZombieVillagerAccessor {
 	@Invoker("startConverting")
-	void wildercord$startConverting(@Nullable UUID player, int time);
+	void wildercord$startConverting( UUID player, int time);
 }

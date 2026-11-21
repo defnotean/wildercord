@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -247,7 +246,7 @@ public class Strawman extends WildMonster {
 
 	// It makes no sound of its own: only the rustle as it comes, and the straw when it's struck.
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return null;
 	}
 

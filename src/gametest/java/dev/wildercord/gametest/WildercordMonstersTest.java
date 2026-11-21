@@ -46,7 +46,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -97,9 +97,9 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");
 			world.getServer().runCommand("difficulty normal");
-			world.getServer().runCommand("gamerule advance_time false");
-			world.getServer().runCommand("gamerule advance_weather false");
-			world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runCommand("gamerule doDaylightCycle false");
+			world.getServer().runCommand("gamerule doWeatherCycle false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
 			world.getServer().runCommand("gamerule natural_regeneration false");
 			setup(world);
 			context.waitTicks(10);
@@ -347,7 +347,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 				EntityType<? extends Mob> type = (EntityType<? extends Mob>) row[1];
 				boolean in = MonsterSpawns.spawnsIn(biome.apply(key), type);
 				if (in != (Boolean) row[2]) {
-					return EntityType.getKey(type) + (in ? " shouldn't" : " should") + " be among " + key.identifier() + "'s monsters (it has "
+					return EntityType.getKey(type) + (in ? " shouldn't" : " should") + " be among " + key.location() + "'s monsters (it has "
 						+ MonsterSpawns.monstersIn(biome.apply(key)) + ")";
 				}
 			}

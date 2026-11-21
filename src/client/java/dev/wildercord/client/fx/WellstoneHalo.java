@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ public final class WellstoneHalo {
 	/** Awake Wellstones in view, and the tick each one's halo ends. */
 	private static final Map<BlockPos, Integer> HALOS = new HashMap<>();
 	private static List<BlockPos> awake = List.of();
-	private static @Nullable ClientLevel seen;
+	private static  ClientLevel seen;
 	private static int clock;
 
 	public static void tick(Minecraft mc) {

@@ -2,7 +2,6 @@ package dev.wildercord.content;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.world.ResidueRules.Kind;
-import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -72,7 +71,8 @@ public final class ResidueBlocks {
 
 	public static void init() {
 		// Animals (any mob that paths) keep off a void scar and step round it, and round a patch of bloodmoss.
-		LandPathNodeTypesRegistry.register(VOID_SCAR, PathType.DANGER_FIRE, PathType.DANGER_OTHER);
-		LandPathNodeTypesRegistry.register(BLOODMOSS, PathType.DANGER_OTHER, PathType.DANGER_OTHER);
+		// 1.21.10 has no fabric land-path registry; PathTypeCompat + WalkNodeEvaluator mixin cover it.
+		dev.wildercord.compat.PathTypeCompat.register(VOID_SCAR, PathType.DANGER_FIRE, PathType.DANGER_OTHER);
+		dev.wildercord.compat.PathTypeCompat.register(BLOODMOSS, PathType.DANGER_OTHER, PathType.DANGER_OTHER);
 	}
 }

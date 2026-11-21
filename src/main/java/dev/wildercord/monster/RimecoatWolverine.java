@@ -32,7 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +59,7 @@ public class RimecoatWolverine extends WildMonster {
 	private long eatingUntil = -1;
 	private int carried;
 	private int repath;
-	private @Nullable ItemEntity scent;
+	private  ItemEntity scent;
 
 	public RimecoatWolverine(EntityType<? extends RimecoatWolverine> type, Level level) {
 		super(type, level);
@@ -319,7 +318,7 @@ public class RimecoatWolverine extends WildMonster {
 	}
 
 	/** The nearest food lying on the ground within its nose's reach. */
-	private @Nullable ItemEntity sniff(ServerLevel level) {
+	private  ItemEntity sniff(ServerLevel level) {
 		ItemEntity best = null;
 		double bestDistance = Double.MAX_VALUE;
 		for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(WolverineRules.SCENT_RANGE),
@@ -346,7 +345,7 @@ public class RimecoatWolverine extends WildMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return carrying() ? null : SoundEvents.POLAR_BEAR_AMBIENT;
 	}
 

@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 
 /**
@@ -24,7 +24,7 @@ public final class GlimmerwingModel extends EntityModel<WildlifeRenderState> {
 	private final ModelPart body, abdomen, head, leftFore, rightFore, leftHind, rightHind, leftAntenna, rightAntenna;
 
 	public GlimmerwingModel(ModelPart root) {
-		super(root, RenderTypes::entityTranslucent);
+		super(root, RenderType::entityTranslucent);
 		body = root.getChild("body");
 		abdomen = body.getChild("abdomen");
 		head = body.getChild("head");

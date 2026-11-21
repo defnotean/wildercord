@@ -37,7 +37,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -193,7 +192,7 @@ public class Dunestinger extends WildMonster {
 	}
 
 	/** Whoever is near enough, by how they're moving, to be felt through the sand. */
-	private @Nullable Player feel(ServerLevel level) {
+	private  Player feel(ServerLevel level) {
 		Player nearest = null;
 		double best = Double.MAX_VALUE;
 		for (Player player : level.getEntitiesOfClass(Player.class, getBoundingBox().inflate(DunestingerRules.SPRINT_WAKE_RANGE))) {
@@ -263,7 +262,7 @@ public class Dunestinger extends WildMonster {
 	}
 
 	/** The sting driven down: it poisons whatever is still within reach. */
-	private void sting(ServerLevel level, @Nullable LivingEntity target, long now) {
+	private void sting(ServerLevel level,  LivingEntity target, long now) {
 		stingAt = -1;
 		stingUntil = now + DunestingerRules.STING_TICKS;
 		setState(WINDUP, false);
@@ -288,7 +287,7 @@ public class Dunestinger extends WildMonster {
 	}
 
 	/** Up again, right beside whoever it was fighting if it can find room there. */
-	private void resurface(ServerLevel level, @Nullable LivingEntity target, long now) {
+	private void resurface(ServerLevel level,  LivingEntity target, long now) {
 		burrowUntil = -1;
 		if (target != null) {
 			Vec3 spot = beside(level, target);
@@ -305,7 +304,7 @@ public class Dunestinger extends WildMonster {
 	}
 
 	/** A place to come up beside someone: open, on firm ground, a block or two away. */
-	private @Nullable Vec3 beside(ServerLevel level, LivingEntity target) {
+	private  Vec3 beside(ServerLevel level, LivingEntity target) {
 		for (int i = 0; i < 12; i++) {
 			double angle = random.nextDouble() * Math.PI * 2;
 			double r = 1.5 + random.nextDouble();
@@ -351,8 +350,8 @@ public class Dunestinger extends WildMonster {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData groupData) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData groupData) {
 		SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, groupData);
 		// Born on sand, it's already lying in wait.
 		if (level.getBlockState(blockPosition().below()).is(BlockTags.SAND)) {
@@ -374,7 +373,7 @@ public class Dunestinger extends WildMonster {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return buried() ? null : SoundEvents.SILVERFISH_AMBIENT;
 	}
 

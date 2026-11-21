@@ -108,7 +108,7 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
 			TestServerContext server = w.getServer();
-			server.runCommand("gamerule spawn_mobs false");
+			server.runCommand("gamerule doMobSpawning false");
 			// The first rank-up and fusion reward XP; earn them first so the levels below count only what the altar takes.
 			server.runCommand("advancement grant @a only wildercord:altar/upgrade");
 			server.runCommand("advancement grant @a only wildercord:altar/combine");

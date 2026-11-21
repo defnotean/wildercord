@@ -7,10 +7,10 @@ import dev.wildercord.aura.MastersViewMotion;
 import dev.wildercord.client.compat.FirstPersonHandView;
 import dev.wildercord.client.compat.RenderCompat;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.InteractionHand;
 
@@ -21,7 +21,7 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 
 	public ArticulatedViewModel(boolean slim) { this(new ArticulatedRig(slim, false)); }
 	private ArticulatedViewModel(ArticulatedRig rig) {
-		super(rig.root, RenderTypes::entityTranslucent);
+		super(rig.root, RenderType::entityTranslucent);
 		this.rig = rig;
 	}
 
@@ -55,7 +55,7 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.YP, -yaw);
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(stack, Axis.XP, -pitch);
 			stack.scale(-1, -1, 1);
-			dev.wildercord.client.compat.RenderCompat.submitModel(collector, model, frame, stack, RenderTypes.entityTranslucent(avatar.skin.body().texturePath()), light, OverlayTexture.NO_OVERLAY, -1, 0);
+			dev.wildercord.client.compat.RenderCompat.submitModel(collector, model, frame, stack, RenderType.entityTranslucent(avatar.skin.body().texturePath()), light, OverlayTexture.NO_OVERLAY, -1, 0);
 			// The same immutable palette sets the hand at submission and deferred model rendering.
 			model.setupAnim(frame);
 			if (access.wildercord$armor() != null) access.wildercord$armor().submitView(model.rig, avatar, stack, collector, light);
@@ -63,7 +63,7 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 			if (shell != null) shell.submitView(model.rig, avatar, stack, collector);
 			model.rig.socket(avatar.mainArm, stack);
 			ArticulatedCombat.orientItemAtSocket(stack);
-			avatar.getMainHandItemState().submit(stack, collector, light, OverlayTexture.NO_OVERLAY, 0);
+			dev.wildercord.client.compat.RenderCompat.mainHandItemState(avatar).submit(stack, collector, light, OverlayTexture.NO_OVERLAY, 0);
 		} finally {
 			stack.popPose();
 		}
@@ -78,7 +78,7 @@ public final class ArticulatedViewModel extends Model<ArticulatedViewModel.Frame
 		if (!known) return MastersViewMotion.articulatedHandAdmission(acceptedArt, 0.0F, false, false, false);
 		return MastersViewMotion.articulatedHandAdmission(acceptedArt,
 			net.minecraft.util.Mth.lerp(partial, hands.oldMainHandHeight(), hands.mainHandHeight()),
-			net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem(), avatar.getMainHandItemStack()),
+			net.minecraft.world.item.ItemStack.isSameItemSameComponents(hands.mainHandItem(), dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar)),
 			true, hands.mainHandEquipping());
 	}
 

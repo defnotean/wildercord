@@ -91,7 +91,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 	@Override public void runTest(ClientGameTestContext c) {
 		try (var world = c.worldBuilder().create()) {
 			c.waitTicks(40);
-			world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
 			world.getServer().runCommand("difficulty peaceful");
 			world.getServer().runCommand("time set 6000");
 			List<Room> rooms = world.getServer().computeOnServer(s -> {

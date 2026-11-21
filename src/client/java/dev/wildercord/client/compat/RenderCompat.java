@@ -11,22 +11,20 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.SwingAnimationType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionfc;
-import org.jspecify.annotations.Nullable;
 
 /** Version-specific rendering, pose, pipeline, and input seams for Minecraft 26.2. */
 public final class RenderCompat {
-	private static final RenderPipeline WISP_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENTITY_EMISSIVE_SNIPPET)
+	private static final RenderPipeline WISP_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$entityEmissiveSnippet())
 		.withLocation(Wildercord.id("pipeline/wisp_glow"))
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withShaderDefine("NO_OVERLAY")
@@ -36,7 +34,7 @@ public final class RenderCompat {
 		.withDepthWrite(false)
 		.build();
 
-	private static final RenderPipeline AURA_BODY_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENTITY_EMISSIVE_SNIPPET)
+	private static final RenderPipeline AURA_BODY_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$entityEmissiveSnippet())
 		.withLocation(Wildercord.id("pipeline/aura_body_glow"))
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withShaderDefine("NO_OVERLAY")
@@ -92,42 +90,78 @@ public final class RenderCompat {
 		// 1.21.11 clears the IME area with the widget focus.
 	}
 
+	/** 1.21.10 has no swing animation component: every native swing is a plain whack. */
+	public enum SwingAnim { NONE, WHACK, STAB }
+
 	public static float swingProgress(ArmedEntityRenderState state) {
-		return state.attackTime;
+		return state instanceof HumanoidRenderState humanoid ? humanoid.attackTime : 0F;
 	}
 
 	public static void setSwingProgress(ArmedEntityRenderState state, float progress) {
-		state.attackTime = progress;
-	}
-
-	public static void overrideStabWithWhackGlaive(AvatarRenderState state) {
-		if (state.swingAnimationType == SwingAnimationType.STAB) {
-			state.swingAnimationType = SwingAnimationType.WHACK;
+		if (state instanceof HumanoidRenderState humanoid) {
+			humanoid.attackTime = progress;
 		}
 	}
 
+	/** 1.21.10 render states carry no ItemStacks: the renderer mixin notes the entity's real stacks as each state is extracted. */
+	private static final java.util.WeakHashMap<ArmedEntityRenderState, ItemStack[]> HAND_STACKS = new java.util.WeakHashMap<>();
+
+	public static void captureHandStacks(net.minecraft.world.entity.LivingEntity entity, Object state) {
+		if (!(state instanceof ArmedEntityRenderState armed)) {
+			return;
+		}
+		ItemStack main = entity.getMainHandItem();
+		ItemStack off = entity.getOffhandItem();
+		ItemStack left = entity.getMainArm() == net.minecraft.world.entity.HumanoidArm.LEFT ? main : off;
+		ItemStack right = entity.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT ? main : off;
+		HAND_STACKS.put(armed, new ItemStack[]{main.copy(), left.copy(), right.copy()});
+	}
+
+	public static ItemStack mainHandStack(ArmedEntityRenderState state) {
+		ItemStack[] stacks = HAND_STACKS.get(state);
+		return stacks != null ? stacks[0] : ItemStack.EMPTY;
+	}
+
+	public static ItemStack leftHandStack(ArmedEntityRenderState state) {
+		ItemStack[] stacks = HAND_STACKS.get(state);
+		return stacks != null ? stacks[1] : ItemStack.EMPTY;
+	}
+
+	public static ItemStack rightHandStack(ArmedEntityRenderState state) {
+		ItemStack[] stacks = HAND_STACKS.get(state);
+		return stacks != null ? stacks[2] : ItemStack.EMPTY;
+	}
+
+	public static Object mainHandItemState(ArmedEntityRenderState state) {
+		return state.getMainHandItem();
+	}
+
+	public static void overrideStabWithWhackGlaive(AvatarRenderState state) {
+		// 1.21.10 has no stab/whack distinction; nothing to override.
+	}
+
 	public static void clearSwingForCustomRig(ArmedEntityRenderState state) {
-		state.attackTime = 0;
-		state.swingAnimationType = SwingAnimationType.WHACK;
+		setSwingProgress(state, 0F);
 	}
 
 	public static Object swingObservation(AvatarRenderState state) {
-		return state.swingAnimationType;
+		return activeMainHandSwingType(state);
 	}
 
 	public static boolean isStabSwingType(AvatarRenderState state) {
-		return state.swingAnimationType == SwingAnimationType.STAB;
+		// 1.21.10 has no piercing weapons: nothing stabs.
+		return false;
 	}
 
 	public static boolean hasActiveStabSwing(AvatarRenderState state) {
-		return state.attackTime > 0 && state.swingAnimationType == SwingAnimationType.STAB;
+		return false;
 	}
 
-	public static @Nullable SwingAnimationType activeMainHandSwingType(AvatarRenderState state) {
-		return state.attackTime > 0 && state.attackArm == state.mainArm ? state.swingAnimationType : null;
+	public static SwingAnim activeMainHandSwingType(AvatarRenderState state) {
+		return state.attackTime > 0 && state.attackArm == state.mainArm ? SwingAnim.WHACK : null;
 	}
 
-	public static @Nullable Model<?> livingModel(EntityRenderState state) {
+	public static  Model<?> livingModel(EntityRenderState state) {
 		return Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(state) instanceof LivingEntityRenderer<?, ?, ?> living
 			? living.getModel()
 			: null;
@@ -149,14 +183,13 @@ public final class RenderCompat {
 		return DARK_PARTICLE_PIPELINE;
 	}
 
-	public static RenderType wispGlowRenderType(Identifier texture) {
-		return RenderType.create("wildercord_wisp_glow",
-			RenderSetup.builder(WISP_GLOW_PIPELINE).withTexture("Sampler0", texture).sortOnUpload().createRenderSetup());
+	public static RenderType wispGlowRenderType(ResourceLocation texture) {
+		// 1.21.10 has no RenderSetup: vanilla's emissive eyes layer is the same additive, depthless glow.
+		return RenderType.eyes(texture);
 	}
 
-	public static RenderType auraBodyGlowRenderType(Identifier texture) {
-		return RenderType.create("wildercord_aura_body_glow",
-			RenderSetup.builder(AURA_BODY_GLOW_PIPELINE).withTexture("Sampler0", texture).sortOnUpload().createRenderSetup());
+	public static RenderType auraBodyGlowRenderType(ResourceLocation texture) {
+		return RenderType.eyes(texture);
 	}
 
 	public static SingleQuadParticle.Layer glowParticleLayer() {

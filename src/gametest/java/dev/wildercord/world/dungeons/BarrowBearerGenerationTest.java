@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.level.GameType;
@@ -26,11 +26,11 @@ public final class BarrowBearerGenerationTest implements FabricClientGameTest {
 		try (var world = c.worldBuilder().setUseConsistentSettings(false)
 				.adjustSettings(settings -> settings.setSeed(BattlefieldsTest.REPRESENTATIVE_SEED)).create()) {
 			c.waitTicks(40);
-			world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runCommand("gamerule doMobSpawning false");
 			BlockPos found = world.getServer().computeOnServer(s -> {
 				var level = s.overworld();
 				var holder = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,
-					Identifier.fromNamespaceAndPath("wildercord", "barrow_field")));
+					ResourceLocation.fromNamespaceAndPath("wildercord", "barrow_field")));
 				return dev.wildercord.gametest.compat.GametestCompat.findNearestStructure(level, holder, BlockPos.ZERO, 100, false);
 			});
 			check(found != null, "A barrow field generates somewhere near spawn on the representative seed");

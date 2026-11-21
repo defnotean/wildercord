@@ -39,7 +39,7 @@ public final class UpgradeTemplates {
 			cells.add(new UpgradePlan.Cell(new UpgradePlan.Point(pos.getX(),pos.getY(),pos.getZ()),
 				BlockStateParser.serialize(old),BlockStateParser.serialize(after==null?old:after)));
 		}
-		var plan=new UpgradePlan(level.getSeed(),level.dimension().identifier().toString(),family,blueprint.version(),chunkX,chunkZ,cells);
+		var plan=new UpgradePlan(level.getSeed(),level.dimension().location().toString(),family,blueprint.version(),chunkX,chunkZ,cells);
 		if(plan.writes().size()!=blueprint.writes() || plan.cells().size()!=blueprint.cells())throw new IllegalStateException("Unexpected template budget");
 		return plan;
 	}

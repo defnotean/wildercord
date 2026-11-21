@@ -18,7 +18,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jspecify.annotations.Nullable;
 
 /**
  * The Fusion Altar: an amethyst table on a deepslate plinth. Right-click to open it, put runes in,
@@ -53,7 +52,7 @@ public class FusionAltarBlock extends Block {
 	}
 
 	@Override
-	protected @Nullable MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+	protected  MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
 		return new SimpleMenuProvider((containerId, inventory, player) -> new FusionAltarMenu(containerId, inventory, ContainerLevelAccess.create(level, pos)), TITLE);
 	}
 }

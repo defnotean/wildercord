@@ -4,7 +4,7 @@ import net.minecraft.core.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.*;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.animal.fish.*;
+import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;

@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,7 +47,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -64,7 +64,6 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -169,13 +168,13 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 	}
 
 	private static Item item(String id) {
-		Item resolved = BuiltInRegistries.ITEM.getValue(Identifier.parse(id));
+		Item resolved = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(id));
 		check(resolved != Items.AIR, "Registered item exists: " + id);
 		return resolved;
 	}
 
 	private static void craftCheck(ServerLevel l, MinecraftServer s, int w, int h, List<ItemStack> inputs,
-			Item expectedItem, int expectedCount, @Nullable String expectedRuneId, String msg) {
+			Item expectedItem, int expectedCount,  String expectedRuneId, String msg) {
 		var in = CraftingInput.of(w, h, inputs);
 		var matched = s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, in, l);
 		check(matched.isPresent(), msg + " (recipe missing)");
@@ -212,7 +211,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext c) {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(30);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runCommand("difficulty normal");
 			w.getServer().runCommand("time set 6000");
 			w.getServer().runCommand("weather clear");

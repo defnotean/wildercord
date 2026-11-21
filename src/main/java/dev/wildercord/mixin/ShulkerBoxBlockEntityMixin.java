@@ -3,7 +3,6 @@ package dev.wildercord.mixin;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ShulkerBoxBlockEntity.class)
 public abstract class ShulkerBoxBlockEntityMixin {
 	@Inject(method = "canPlaceItemThroughFace", at = @At("HEAD"), cancellable = true)
-	private void wildercord$onlyWhatFits(int slot, ItemStack stack, @Nullable Direction direction, CallbackInfoReturnable<Boolean> cir) {
+	private void wildercord$onlyWhatFits(int slot, ItemStack stack,  Direction direction, CallbackInfoReturnable<Boolean> cir) {
 		if (!stack.getItem().canFitInsideContainerItems()) {
 			cir.setReturnValue(false);
 		}

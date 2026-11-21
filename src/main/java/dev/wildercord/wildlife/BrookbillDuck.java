@@ -36,7 +36,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -56,9 +55,9 @@ public class BrookbillDuck extends Animal {
 	private static final EntityDataAccessor<Boolean> FLAPPING = SynchedEntityData.defineId(BrookbillDuck.class, EntityDataSerializers.BOOLEAN);
 
 	/** The player a duckling imprinted on, if any. */
-	private @Nullable UUID imprint;
+	private  UUID imprint;
 	/** Server: whoever it is following at the head of its line, refreshed now and then; whether it was afloat last tick. */
-	private @Nullable Entity lead;
+	private  Entity lead;
 	private boolean wasAfloat;
 	private int flapLeft;
 	private long dabbledAt = -1;
@@ -145,7 +144,7 @@ public class BrookbillDuck extends Animal {
 	}
 
 	/** The player it imprinted on, if they are about. */
-	private @Nullable Player imprinted() {
+	private  Player imprinted() {
 		if (imprint == null || !isBaby()) {
 			return null;
 		}
@@ -154,7 +153,7 @@ public class BrookbillDuck extends Animal {
 	}
 
 	/** Whoever heads its line: the player it imprinted on, else the nearest grown duck. */
-	private @Nullable Entity findLead() {
+	private  Entity findLead() {
 		Player player = imprinted();
 		if (player != null) {
 			return player;
@@ -186,7 +185,7 @@ public class BrookbillDuck extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		if (!(getType().create(level, EntitySpawnReason.BREEDING) instanceof BrookbillDuck young)) {
 			return null;
 		}
@@ -242,12 +241,12 @@ public class BrookbillDuck extends Animal {
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.PARROT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return SoundEvents.PARROT_DEATH;
 	}
 
@@ -269,7 +268,7 @@ public class BrookbillDuck extends Animal {
 
 	/** A duckling paddles single file behind the one ahead of it in its brood, the first of them behind its mother. */
 	private final class FollowLine extends Goal {
-		private @Nullable Entity ahead;
+		private  Entity ahead;
 
 		FollowLine() {
 			setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
@@ -315,7 +314,7 @@ public class BrookbillDuck extends Animal {
 		}
 
 		/** Whoever is just ahead of it in the line. */
-		private @Nullable Entity ahead() {
+		private  Entity ahead() {
 			if (lead == null) {
 				return null;
 			}

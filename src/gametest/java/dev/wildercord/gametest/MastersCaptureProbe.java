@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /** Test-only observations of the screenshot's native submit paths and unmodified framebuffer. */
 public final class MastersCaptureProbe {
@@ -58,7 +58,7 @@ public final class MastersCaptureProbe {
 	}
 
 	/** Observe the native player-HUD sprites, including the actual heart/armor rows and hotbar. */
-	public static void hudSprite(Identifier sprite, int x, int y, int width, int height, int guiWidth, int guiHeight) {
+	public static void hudSprite(ResourceLocation sprite, int x, int y, int width, int height, int guiWidth, int guiHeight) {
 		if (!armed || !sprite.getNamespace().equals("minecraft")) return;
 		String path = sprite.getPath();
 		if (!(path.startsWith("hud/hotbar") || path.startsWith("hud/heart/") || path.startsWith("hud/armor_")

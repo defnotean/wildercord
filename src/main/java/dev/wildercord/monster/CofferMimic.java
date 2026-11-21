@@ -38,7 +38,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
@@ -52,7 +52,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -82,7 +81,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 
 	private Phase phase = Phase.DISGUISED;
 	private int phaseTicks;
-	private @Nullable BlockPos home;
+	private  BlockPos home;
 	private float homeYaw;
 	private int lingered;
 	private long nextTwitch;
@@ -158,7 +157,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	// ------------------------------------------------------------------ owner
 
 	@Override
-	public @Nullable EntityReference<LivingEntity> getOwnerReference() {
+	public  EntityReference<LivingEntity> getOwnerReference() {
 		return entityData.get(DATA_OWNER).orElse(null);
 	}
 
@@ -192,7 +191,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	/** Its owner, if they're in this world with it. */
-	private @Nullable Player ownerHere(ServerLevel level) {
+	private  Player ownerHere(ServerLevel level) {
 		EntityReference<LivingEntity> owner = getOwnerReference();
 		return owner == null ? null : level.getPlayerByUUID(owner.getUUID());
 	}
@@ -205,7 +204,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	@Override
-	public void setTarget(@Nullable LivingEntity target) {
+	public void setTarget( LivingEntity target) {
 		// Nor does it take one up in retaliation: a golem it has never crossed has no reason to come at it.
 		super.setTarget(MimicRules.sparesGolems(tamed()) && target instanceof IronGolem ? null : target);
 	}
@@ -251,8 +250,8 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData groupData) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData groupData) {
 		SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, groupData);
 		settleHere(getYRot());
 		return data;
@@ -441,7 +440,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	/** The lid flies open: it's no coffer. */
-	private void wake(ServerLevel level, @Nullable LivingEntity by) {
+	private void wake(ServerLevel level,  LivingEntity by) {
 		setState(VEILED, false);
 		enter(Phase.WAKE);
 		lingered = 0;
@@ -525,7 +524,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 
 	// ------------------------------------------------------------------ awake
 
-	private void hunt(ServerLevel level, @Nullable LivingEntity target, boolean live, long now) {
+	private void hunt(ServerLevel level,  LivingEntity target, boolean live, long now) {
 		if (!live) {
 			if (tamed()) {
 				heel(level);
@@ -783,7 +782,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return disguised() ? null : SoundEvents.RAVAGER_AMBIENT;
 	}
 

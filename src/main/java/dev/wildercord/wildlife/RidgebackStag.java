@@ -13,11 +13,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 
 /**
  * The Ridgeback Stag (0.12 "Tempering"): the mod's first mount. A broad chestnut stag of the plains, meadows and savannas,
@@ -66,7 +65,7 @@ public class RidgebackStag extends AbstractHorse {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		RidgebackStag calf = MountContent.RIDGEBACK_STAG.create(level, EntitySpawnReason.BREEDING);
 		if (calf != null) {
 			setOffspringAttributes(partner, calf);

@@ -40,7 +40,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -287,7 +287,7 @@ public final class FallenStars {
 		Fx.send(level, ParticleTypes.EXPLOSION_EMITTER, ground.x, ground.y + 0.5, ground.z, 1, 0, 0, 0, 0);
 		Fx.send(level, ParticleTypes.END_ROD, ground.x, ground.y + 1, ground.z, 30, 1.2, 1.0, 1.2, 0.25);
 		Motes.clouds(level, ground.add(0, 0.6, 0), 12, 1.4, 0x9A948C, 2.4, 60, new Vec3(0, 0.03, 0), 0.05, 0.4);
-		boolean dig = by != null && !by.isRemoved() && level.getGameRules().get(GameRules.MOB_GRIEFING);
+		boolean dig = by != null && !by.isRemoved() && level.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get();
 		List<FallenStarBlockEntity.Changed> changed = dig ? carve(level, cell, by) : List.of();
 		BlockPos at = cell;
 		if (!changed.isEmpty()) {

@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,7 +47,7 @@ import java.util.UUID;
 final class Techniques {
 	private Techniques() {}
 
-	private static final Identifier WEIGH_ID = Identifier.fromNamespaceAndPath("wildercord", "weigh");
+	private static final ResourceLocation WEIGH_ID = ResourceLocation.fromNamespaceAndPath("wildercord", "weigh");
 	private static final Map<UUID, Long> WEIGHED = new HashMap<>();
 	private static final Map<UUID, Long> BLACKFLAME = new HashMap<>();
 	private static final Map<UUID, Integer> BIRDS = new HashMap<>();

@@ -46,7 +46,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.zombie.Husk;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -56,7 +56,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -85,8 +84,8 @@ public class ShrineCat extends TamableAnimal {
 		BossEvent.BossBarOverlay.NOTCHED_10
 	);
 
-	private @Nullable BlockPos homePos;
-	private @Nullable BlockPos sanctuaryHeart;
+	private  BlockPos homePos;
+	private  BlockPos sanctuaryHeart;
 	private boolean sanctuaryFinished;
 	private boolean wave1Summoned;
 	private boolean wave2Summoned;
@@ -270,7 +269,7 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason, @Nullable SpawnGroupData data) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,  SpawnGroupData data) {
 		SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
 		if (reason == EntitySpawnReason.SPAWN_ITEM_USE || reason == EntitySpawnReason.COMMAND) {
 			if (entityData.get(DATA_VARIANT) == 0 && !hasCustomName()) {
@@ -809,7 +808,7 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		return null;
 	}
 

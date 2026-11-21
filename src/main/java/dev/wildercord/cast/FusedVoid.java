@@ -187,7 +187,7 @@ final class FusedVoid {
 		Scheduler.later(20, () -> unravel(t, unravel));
 	}
 
-	private static final net.minecraft.resources.Identifier ENTROPY_ID = dev.wildercord.Wildercord.id("entropy");
+	private static final net.minecraft.resources.ResourceLocation ENTROPY_ID = dev.wildercord.Wildercord.id("entropy");
 
 	/** Each wound also strips a point of armour (up to 5) until the unravelling ends: what the team hits it with goes further. */
 	private static void strip(LivingEntity t, int step) {

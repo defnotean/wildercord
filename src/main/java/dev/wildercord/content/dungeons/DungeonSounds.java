@@ -3,7 +3,7 @@ package dev.wildercord.content.dungeons;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
 /**
@@ -52,7 +52,7 @@ public final class DungeonSounds {
 	public static final SoundEvent TIDE_EBB = register("tide_ebb");
 
 	private static SoundEvent register(String path) {
-		Identifier id = Wildercord.id(path);
+		ResourceLocation id = Wildercord.id(path);
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
 	}
 

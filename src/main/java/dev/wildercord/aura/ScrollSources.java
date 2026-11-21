@@ -202,7 +202,7 @@ public final class ScrollSources {
 				return;
 			}
 			WildercordConfig config = dev.wildercord.config.Config.get();
-			for (Source found : forLootTable(key.identifier().toString())) {
+			for (Source found : forLootTable(key.location().toString())) {
 				int chance = chance(found, config);
 				if (chance > 0) {
 					table.withPool(pool(found, chance));

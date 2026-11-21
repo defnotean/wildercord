@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public final class Tooltips {
 	/** The widest a tooltip grows, in GUI pixels: a comfortable line for reading. */
 	private static final int MAX_WIDTH = 280;
 	/** After everything else (this mod's and others') has added its lines to an item's tooltip. */
-	private static final Identifier WRAP_PHASE = Wildercord.id("wrap_tooltips");
+	private static final ResourceLocation WRAP_PHASE = Wildercord.id("wrap_tooltips");
 
 	/** How wide a tooltip may be on a screen {@code screenWidth} wide: never wider than fits on it. */
 	public static int maxWidth(int screenWidth) {

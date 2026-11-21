@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
 
 /**
  * A mossback tortoise: huge, slow and patient, with a little garden growing on its shell. What grows there comes from
@@ -52,7 +51,7 @@ public class MossbackTortoise extends Animal {
 
 	private int scuteTime;
 	/** A garden it's been living among, and for how many checks in a row. */
-	private @Nullable Garden newGarden;
+	private  Garden newGarden;
 	private int newGardenChecks;
 	/** Client: how far into its shell, eased (this tick's and last tick's). */
 	public float hide, hideO;
@@ -102,15 +101,15 @@ public class MossbackTortoise extends Animal {
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
-			@Nullable SpawnGroupData group) {
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+			 SpawnGroupData group) {
 		Garden here = gardenAt(level, blockPosition());
 		setGarden(here != null ? here : Garden.byId(random.nextInt(Garden.values().length)));
 		return super.finalizeSpawn(level, difficulty, reason, group);
 	}
 
-	private static @Nullable Garden gardenAt(ServerLevelAccessor level, BlockPos pos) {
-		return level.getBiome(pos).unwrapKey().map(k -> WildlifeRules.garden(k.identifier().toString())).orElse(null);
+	private static  Garden gardenAt(ServerLevelAccessor level, BlockPos pos) {
+		return level.getBiome(pos).unwrapKey().map(k -> WildlifeRules.garden(k.location().toString())).orElse(null);
 	}
 
 	// ------------------------------------------------------------------ its shell
@@ -213,7 +212,7 @@ public class MossbackTortoise extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		MossbackTortoise baby = Wildlife.MOSSBACK_TORTOISE.create(level, EntitySpawnReason.BREEDING);
 		if (baby != null) {
 			Garden here = gardenAt(level, blockPosition());
@@ -225,17 +224,17 @@ public class MossbackTortoise extends Animal {
 	// ------------------------------------------------------------------ sound
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return hidden() ? null : Wildlife.sound("tortoise_grumble");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected  SoundEvent getHurtSound(DamageSource source) {
 		return Wildlife.sound("tortoise_hurt");
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected  SoundEvent getDeathSound() {
 		return Wildlife.sound("tortoise_death");
 	}
 

@@ -3,7 +3,7 @@ package dev.wildercord.mixin;
 import dev.wildercord.aura.BondedBlades;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class BondedBladeDeathMixin {
 	@Inject(method = "dropEquipment", at = @At("HEAD"))
 	private void wildercord$keepBlade(ServerLevel level, CallbackInfo ci) {
-		if (!level.getGameRules().get(GameRules.KEEP_INVENTORY)) {
+		if (!level.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).get()) {
 			BondedBlades.dying((Player) (Object) this);
 		}
 	}

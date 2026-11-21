@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class BloomclawMantis extends WildMonster {
 	private long nextStrike;
 	private int heldTicks;
 	private int stalked;
-	private @Nullable LivingEntity held;
+	private  LivingEntity held;
 
 	public BloomclawMantis(EntityType<? extends BloomclawMantis> type, Level level) {
 		super(type, level);
@@ -151,7 +150,7 @@ public class BloomclawMantis extends WildMonster {
 	}
 
 	/** Creeping after its prey, slow and swaying, rearing to strike once it is near enough. */
-	private void stalk(ServerLevel level, @Nullable LivingEntity target, boolean hunting, long now) {
+	private void stalk(ServerLevel level,  LivingEntity target, boolean hunting, long now) {
 		stalked++;
 		if (!hunting || stalked > 400 || distanceTo(target) > MantisRules.NOTICE_RANGE + 4) {
 			// Lost, or gone too far: it settles back among the flowers.
@@ -176,7 +175,7 @@ public class BloomclawMantis extends WildMonster {
 	}
 
 	/** The forelegs snap out: whoever stands squarely before it, near enough, is caught. */
-	private void strike(ServerLevel level, @Nullable LivingEntity target, long now) {
+	private void strike(ServerLevel level,  LivingEntity target, long now) {
 		nextStrike = now + MantisRules.STRIKE_COOLDOWN;
 		if (target != null && target.isAlive() && Targets.canHarm(this, target)) {
 			Vec3 to = target.position().subtract(position());
@@ -261,7 +260,7 @@ public class BloomclawMantis extends WildMonster {
 	// ------------------------------------------------------------------ sounds
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected  SoundEvent getAmbientSound() {
 		return null;
 	}
 

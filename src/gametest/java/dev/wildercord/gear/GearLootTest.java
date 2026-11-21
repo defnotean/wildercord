@@ -25,7 +25,7 @@ public final class GearLootTest implements FabricClientGameTest {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(35);
 			TestServerContext server = w.getServer();
-			server.runCommand("gamerule spawn_mobs false");
+			server.runCommand("gamerule doMobSpawning false");
 			server.runCommand("fill " + (X - 4) + " " + (Y - 1) + " " + (Z - 4) + " " + (X + 4) + " " + (Y - 1) + " " + (Z + 4) + " stone");
 			server.runCommand("tp @p " + X + " " + Y + " " + (Z - 5) + " 0 20");
 

@@ -17,7 +17,7 @@ public final class GauntletRestartTest implements FabricClientGameTest {
 		TestWorldSave save;
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(30);
-			w.getServer().runCommand("gamerule spawn_mobs false");
+			w.getServer().runCommand("gamerule doMobSpawning false");
 			w.getServer().runOnServer(s -> {
 				s.setDifficulty(Difficulty.NORMAL, true);
 				var p = p(s);

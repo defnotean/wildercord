@@ -13,7 +13,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Relative;
-import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.ItemCost;
@@ -77,7 +77,7 @@ public final class HamletStandingTest implements FabricClientGameTest {
 		try (var w = c.worldBuilder().create()) {
 			c.waitTicks(25);
 			TestServerContext server = w.getServer();
-			server.runCommand("gamerule spawn_mobs false");
+			server.runCommand("gamerule doMobSpawning false");
 			server.runCommand("time set day");
 			server.runOnServer(s -> {
 				var l = s.overworld();

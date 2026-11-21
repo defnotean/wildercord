@@ -87,22 +87,22 @@ public abstract class FirstPersonAuraMixin implements dev.wildercord.client.Firs
 	}
 
 	@WrapOperation(method = "renderArmWithItem", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;swingArm(FLcom/mojang/blaze3d/vertex/PoseStack;ILnet/minecraft/world/entity/HumanoidArm;)V"))
-	private void wildercord$blendAttack(ItemInHandRenderer renderer, float attack, PoseStack pose, int side, HumanoidArm arm,
+		target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;swingArm(FFLcom/mojang/blaze3d/vertex/PoseStack;ILnet/minecraft/world/entity/HumanoidArm;)V"))
+	private void wildercord$blendAttack(ItemInHandRenderer renderer, float swing, float partialTick, PoseStack pose, int side, HumanoidArm arm,
 			Operation<Void> original, @Local(argsOnly = true) AbstractClientPlayer player,
 			@Local(argsOnly = true, ordinal = 0) float partial, @Local(argsOnly = true) InteractionHand hand) {
 		AvatarRenderState avatar = wildercord$state(player, partial);
 		float ownership = MastersArtPose.firstPersonOwnership(hand, avatar, dev.wildercord.client.compat.FirstPersonHandView.of(renderer, player));
 		if (ownership <= 0) {
-			if (avatar != null && dev.wildercord.client.GlaivePose.firstPersonSwing(attack, pose, side, arm, avatar, hand)) return;
-			original.call(renderer, attack, pose, side, arm);
+			if (avatar != null && dev.wildercord.client.GlaivePose.firstPersonSwing(swing, pose, side, arm, avatar, hand)) return;
+			original.call(renderer, swing, partialTick, pose, side, arm);
 			return;
 		}
 		if (ownership >= 1) return;
 		// Capture the native delta at its real phase, then fade its amplitude. Scaling the phase
 		// would turn a nearly finished neutral swing into a large mid-swing during recovery.
 		PoseStack delta = new PoseStack();
-		original.call(renderer, attack, delta, side, arm);
+		original.call(renderer, swing, partialTick, delta, side, arm);
 		pose.mulPose(MastersViewMotion.fadeSwing(delta.last().pose(), ownership));
 	}
 
