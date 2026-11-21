@@ -273,7 +273,7 @@ public final class Runebound {
 			name.append(Component.literal("» ").withColor(0xFFFFFF));
 		}
 		for (RuneDef rune : spell) {
-			name.append(Component.object(new AtlasSprite(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_ITEMS, Wildercord.id("item/rune/" + rune.path()))));
+			name.append(Component.object(new AtlasSprite(net.minecraft.resources.ResourceLocation.parse("textures/atlas/items.png"), Wildercord.id("item/rune/" + rune.path()))));
 			name.append(Component.literal("◆").withColor(RuneColors.of(rune)));
 		}
 		int color = elementColor(spell);

@@ -201,7 +201,7 @@ public class WayfarerKeeper extends WanderingTrader {
 	}
 
 	@Override
-	protected void updateTrades(ServerLevel level) {
+	protected void updateTrades() {
 		// Rebuilt for each traveller as they open the trade, from their standing.
 	}
 

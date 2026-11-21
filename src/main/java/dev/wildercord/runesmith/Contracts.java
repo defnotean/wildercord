@@ -177,7 +177,7 @@ public final class Contracts {
 	/** The last charge of an imbued item was used: a weapon's counts. */
 	public static void onImbueSpent(ServerPlayer player, ItemStack stack) {
 		if (stack.is(ItemTags.WEAPON_ENCHANTABLE) || stack.is(ItemTags.BOW_ENCHANTABLE) || stack.is(ItemTags.CROSSBOW_ENCHANTABLE)
-				|| stack.is(ItemTags.TRIDENT_ENCHANTABLE) || stack.is(ItemTags.MACE_ENCHANTABLE) || stack.is(ItemTags.SPEARS)) {
+				|| stack.is(ItemTags.TRIDENT_ENCHANTABLE) || stack.is(ItemTags.MACE_ENCHANTABLE)) {
 			progress(player, ContractRules.IMBUE, "", 1);
 		}
 	}

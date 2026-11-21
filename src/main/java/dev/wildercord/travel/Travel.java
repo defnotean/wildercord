@@ -89,7 +89,7 @@ public final class Travel {
 
 	/** Whether {@code player} is an operator (permission level 2, as for {@code /wildercord}): they skip warmups and cooldowns. */
 	public static boolean operator(ServerPlayer player) {
-		return Commands.LEVEL_GAMEMASTERS.check(player.permissions());
+		return player.getPermissionLevel() >= Commands.LEVEL_GAMEMASTERS;
 	}
 
 	// ------------------------------------------------------------------ messages
