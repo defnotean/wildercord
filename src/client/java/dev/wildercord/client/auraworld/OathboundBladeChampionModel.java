@@ -302,12 +302,12 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 		capeTailL.zRot = -0.12F;
 
 		// Panel 1: Greatsword rested cleanly over right shoulder, left hand poised at hip
-		right.xRot = -0.78F - Mth.cos(step) * walk * 0.14F;
-		right.yRot = -0.18F;
-		right.zRot = 0.22F;
-		foreR.xRot = -1.65F;
-		greatsword.xRot = 1.25F;
-		greatsword.zRot = 0.28F;
+		right.xRot = -0.82F - Mth.cos(step) * walk * 0.14F;
+		right.yRot = -0.28F;
+		right.zRot = 0.28F;
+		foreR.xRot = -1.55F;
+		greatsword.xRot = 1.15F;
+		greatsword.zRot = 0.14F;
 
 		left.xRot = 0.18F + Mth.cos(step) * walk * 0.24F;
 		left.zRot = -0.22F;
@@ -322,22 +322,22 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 					bend(0.30F * in);
 					legL.zRot = -0.20F * in;
 					legR.zRot = 0.20F * in;
-					body.yRot = Mth.lerp(in, body.yRot, -0.18F);
-					body.xRot = Mth.lerp(in, body.xRot, 0.12F);
-					head.yRot = Mth.lerp(in, head.yRot, 0.15F);
+					body.yRot = Mth.lerp(in, body.yRot, -0.15F);
+					body.xRot = Mth.lerp(in, body.xRot, 0.10F);
+					head.yRot = Mth.lerp(in, head.yRot, 0.12F);
 
-					// Both hands clasp hilt on lower-right chest, blade angled diagonally up-left (+X, -Y)
-					right.xRot = Mth.lerp(in, right.xRot, -0.58F);
-					right.yRot = Mth.lerp(in, right.yRot, 0.52F);
-					right.zRot = Mth.lerp(in, right.zRot, -0.12F);
-					foreR.xRot = Mth.lerp(in, foreR.xRot, -0.78F);
+					// Right yRot < 0 swings -Z inward (+X); Left yRot > 0 swings -Z inward (-X) so BOTH hands clasp hilt!
+					right.xRot = Mth.lerp(in, right.xRot, -0.68F);
+					right.yRot = Mth.lerp(in, right.yRot, -0.42F);
+					right.zRot = Mth.lerp(in, right.zRot, 0.06F);
+					foreR.xRot = Mth.lerp(in, foreR.xRot, -0.85F);
 
 					left.xRot = Mth.lerp(in, left.xRot, -0.78F);
-					left.yRot = Mth.lerp(in, left.yRot, -0.75F);
-					left.zRot = Mth.lerp(in, left.zRot, 0.24F);
+					left.yRot = Mth.lerp(in, left.yRot, 0.72F);
+					left.zRot = Mth.lerp(in, left.zRot, -0.06F);
 					foreL.xRot = Mth.lerp(in, foreL.xRot, -0.82F);
 
-					greatsword.xRot = Mth.lerp(in, greatsword.xRot, 0.72F);
+					greatsword.xRot = Mth.lerp(in, greatsword.xRot, 0.65F);
 					greatsword.zRot = Mth.lerp(in, greatsword.zRot, 0.85F);
 					capeYoke.xRot = 0.24F * in + 0.12F;
 				} else {
@@ -348,21 +348,21 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 					body.xRot = Mth.lerp(rec, 0.24F, 0.0F);
 					bend(0.35F * (1.0F - rec));
 
-					right.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.75F, -0.85F), -0.78F);
-					right.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.75F, -0.55F), -0.18F);
-					foreR.xRot = Mth.lerp(rec, -0.55F, -1.65F);
+					right.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.88F, -0.95F), -0.82F);
+					right.yRot = Mth.lerp(rec, Mth.lerp(swing, -0.72F, 0.45F), -0.28F);
+					foreR.xRot = Mth.lerp(rec, -0.45F, -1.55F);
 
-					left.xRot = Mth.lerp(rec, -0.85F, 0.18F);
-					left.yRot = Mth.lerp(rec, Mth.lerp(swing, -0.35F, -0.95F), 0.0F);
-					foreL.xRot = Mth.lerp(rec, -0.65F, -0.45F);
+					left.xRot = Mth.lerp(rec, -0.92F, 0.18F);
+					left.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.28F, 0.85F), 0.0F);
+					foreL.xRot = Mth.lerp(rec, -0.58F, -0.45F);
 
-					greatsword.xRot = Mth.lerp(rec, 1.48F, 1.25F);
-					greatsword.zRot = Mth.lerp(rec, Mth.lerp(swing, 0.95F, -1.15F), 0.28F);
+					greatsword.xRot = Mth.lerp(rec, 2.88F, 1.15F);
+					greatsword.zRot = Mth.lerp(rec, Mth.lerp(swing, 0.95F, -1.15F), 0.14F);
 					capeYoke.xRot = 0.48F * (1.0F - rec) + 0.12F;
 				}
 			}
 			case OathboundBladeChampionRules.CRESCENT_CLEAVE -> {
-				// Panel 3: CRIMSON CRESCENT CLEAVE — coiled right windup -> low horizontal 180-deg follow-through
+				// Panel 3: CRIMSON CRESCENT CLEAVE — coiled right windup -> waist-high horizontal 180-deg sweep
 				float wind = ramp(el, 0.0F, tell);
 				float swing = ramp(el, tell, 5.0F);
 				float rec = smooth(el, tell + 7.0F, OathboundBladeChampionRules.CRESCENT_DURATION);
@@ -375,18 +375,19 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 				legL.zRot = -0.22F * (1.0F - rec);
 				legR.zRot = 0.22F * (1.0F - rec);
 
-				right.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.68F, -0.88F), -0.78F);
-				right.yRot = Mth.lerp(rec, Mth.lerp(swing, -0.62F * wind, 0.58F), -0.18F);
-				right.zRot = Mth.lerp(rec, 0.28F, 0.22F);
-				foreR.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.45F, -0.35F), -1.65F);
+				right.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.82F, -0.95F), -0.82F);
+				right.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.42F * wind, -0.68F), -0.28F);
+				right.zRot = Mth.lerp(rec, 0.18F, 0.28F);
+				foreR.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.55F, -0.45F), -1.55F);
 
-				left.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.88F, -0.72F), 0.18F);
-				left.yRot = Mth.lerp(rec, Mth.lerp(swing, -1.02F * wind, -0.25F), 0.0F);
-				left.zRot = Mth.lerp(rec, -0.12F, -0.22F);
-				foreL.xRot = Mth.lerp(rec, -0.58F, -0.45F);
+				left.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.88F, -0.92F), 0.18F);
+				left.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.92F * wind, 0.35F), 0.0F);
+				left.zRot = Mth.lerp(rec, -0.08F, -0.22F);
+				foreL.xRot = Mth.lerp(rec, -0.52F, -0.45F);
 
-				greatsword.xRot = Mth.lerp(rec, 1.52F, 1.25F);
-				greatsword.zRot = Mth.lerp(rec, Mth.lerp(swing, -1.05F, 1.15F), 0.28F);
+				// Net xRot = -0.95 - 0.45 + 2.95 = +1.55 rad (horizontal waist-high blade sweeping -Z..+X!)
+				greatsword.xRot = Mth.lerp(rec, 2.95F, 1.15F);
+				greatsword.zRot = Mth.lerp(rec, Mth.lerp(swing, -0.75F, 0.55F), 0.14F);
 
 				float fan = (1.0F - rec) * swing;
 				capeYoke.xRot = 0.12F + fan * 0.45F;
@@ -395,16 +396,16 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 				plumeTip.xRot = -0.12F - swing * 0.22F;
 			}
 			case OathboundBladeChampionRules.POMMEL_BREAK -> {
-				// Panel 4: POMMEL-BREAK LUNGE — coiled crouch -> explosive forward lunge with pommel jabbed ahead
+				// Panel 4: POMMEL-BREAK LUNGE — coiled crouch -> explosive forward lunge with two-handed pommel punch
 				float wind = ramp(el, 0.0F, tell);
 				float lunge = ramp(el, tell, 4.0F);
 				float rec = smooth(el, tell + OathboundBladeChampionRules.POMMEL_LUNGE_TICKS,
 					OathboundBladeChampionRules.POMMEL_DURATION);
 				float active = (1.0F - rec) * Math.max(wind * 0.6F, lunge);
 
-				body.xRot = Mth.lerp(rec, Mth.lerp(lunge, 0.12F * wind, 0.36F), 0.0F);
-				body.yRot = Mth.lerp(rec, Mth.lerp(lunge, 0.32F * wind, -0.22F), 0.0F);
-				head.xRot = Mth.lerp(active, head.xRot, -0.22F);
+				body.xRot = Mth.lerp(rec, Mth.lerp(lunge, 0.12F * wind, 0.34F), 0.0F);
+				body.yRot = Mth.lerp(rec, Mth.lerp(lunge, 0.32F * wind, -0.20F), 0.0F);
+				head.xRot = Mth.lerp(active, head.xRot, -0.20F);
 
 				// Deep asymmetric sprinter/martial lunge
 				legL.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.30F, -0.62F), 0.0F);
@@ -412,27 +413,27 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 				legR.xRot = Mth.lerp(rec, Mth.lerp(lunge, 0.30F, 0.68F), 0.0F);
 				shinR.xRot = Mth.lerp(rec, 0.15F, 0.0F);
 
-				// Both arms push pommel straight forward (-Z), blade trailing horizontally back-left
-				right.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.45F, -0.95F), -0.78F);
-				right.yRot = Mth.lerp(rec, Mth.lerp(lunge, -0.15F, 0.35F), -0.18F);
-				right.zRot = Mth.lerp(rec, 0.18F, 0.22F);
-				foreR.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.95F, -0.55F), -1.65F);
+				// Both arms drive forward-across chest so left gauntlet clasps grip/ricasso behind pommel
+				right.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.55F, -1.15F), -0.82F);
+				right.yRot = Mth.lerp(rec, Mth.lerp(lunge, -0.20F, -0.45F), -0.28F);
+				right.zRot = Mth.lerp(rec, 0.15F, 0.28F);
+				foreR.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.85F, -0.45F), -1.55F);
 
-				left.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.52F, -1.02F), 0.18F);
-				left.yRot = Mth.lerp(rec, Mth.lerp(lunge, -0.55F, -0.42F), 0.0F);
-				left.zRot = Mth.lerp(rec, 0.10F, -0.22F);
-				foreL.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.95F, -0.58F), -0.45F);
+				left.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.58F, -1.18F), 0.18F);
+				left.yRot = Mth.lerp(rec, Mth.lerp(lunge, 0.45F, 0.62F), 0.0F);
+				left.zRot = Mth.lerp(rec, 0.05F, -0.22F);
+				foreL.xRot = Mth.lerp(rec, Mth.lerp(lunge, -0.88F, -0.48F), -0.45F);
 
-				// Net xRot ~ -1.25 rad: pommel (+Y) aims forward (-Z), blade (-Y) trails back (+Z)
-				greatsword.xRot = Mth.lerp(rec, Mth.lerp(lunge, 0.85F, 0.25F), 1.25F);
-				greatsword.zRot = Mth.lerp(rec, Mth.lerp(lunge, 0.22F, -0.32F), 0.28F);
+				// Pommel thrust forward (-Z), blade trailing upward-back behind left shoulder
+				greatsword.xRot = Mth.lerp(rec, Mth.lerp(lunge, 0.85F, 0.48F), 1.15F);
+				greatsword.zRot = Mth.lerp(rec, Mth.lerp(lunge, 0.22F, -0.36F), 0.14F);
 
 				capeYoke.xRot = 0.12F + lunge * 0.58F * (1.0F - rec);
 				capeTailR.zRot = 0.12F + lunge * 0.22F * (1.0F - rec);
 				capeTailL.zRot = -0.12F - lunge * 0.22F * (1.0F - rec);
 			}
 			case OathboundBladeChampionRules.GUILLOTINE_SLAM -> {
-				// Panels 5 & 6: SKY-RENDING GUILLOTINE — towering overhead arch -> vertical ground-buried slam
+				// Panels 5 & 6: SKY-RENDING GUILLOTINE — symmetrical overhead arch -> vertical ground-buried split lunge
 				float wind = ramp(el, 0.0F, tell - 2.0F);
 				float slam = ramp(el, tell - 2.0F, 3.0F);
 				float rec = smooth(el, tell + 10.0F, OathboundBladeChampionRules.GUILLOTINE_DURATION);
@@ -443,24 +444,24 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 				legR.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.15F * wind, 0.72F), 0.0F);
 				shinR.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.12F * wind, 0.12F), 0.0F);
 
-				body.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.18F * wind, 0.44F), 0.0F);
-				head.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.12F * wind, -0.28F), 0.0F);
+				body.xRot = Mth.lerp(rec, Mth.lerp(slam, -0.18F * wind, 0.34F), 0.0F);
+				head.xRot = Mth.lerp(rec, Mth.lerp(slam, 0.12F * wind, -0.22F), 0.0F);
 
-				// Symmetrical high-overhead arch (Panel 5) -> straight forward-down slam (Panel 6)
-				// Remember -zRot on overhead (-Y) arm tilts outward (-X) clear of helm
-				right.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.78F, -2.55F), -0.92F), -0.78F);
-				right.yRot = Mth.lerp(rec, Mth.lerp(slam, 0.25F * wind, 0.42F), -0.18F);
-				right.zRot = Mth.lerp(rec, Mth.lerp(slam, -0.22F * wind, 0.18F), 0.22F);
-				foreR.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -1.65F, -0.38F), -0.18F), -1.65F);
+				// Overhead (-Y) arm: +zRot tilts right INWARD toward center; -zRot tilts left INWARD toward center!
+				// On slam: right.yRot < 0 & left.yRot > 0 bring both hands together onto vertical sword hilt!
+				right.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.82F, -2.55F), -1.18F), -0.82F);
+				right.yRot = Mth.lerp(rec, Mth.lerp(slam, -0.18F * wind, -0.45F), -0.28F);
+				right.zRot = Mth.lerp(rec, Mth.lerp(slam, 0.32F * wind, -0.06F), 0.28F);
+				foreR.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -1.55F, -0.35F), -0.18F), -1.55F);
 
-				left.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 0.18F, -2.55F), -0.92F), 0.18F);
-				left.yRot = Mth.lerp(rec, Mth.lerp(slam, -0.25F * wind, -0.44F), 0.0F);
-				left.zRot = Mth.lerp(rec, Mth.lerp(slam, 0.22F * wind, -0.18F), -0.22F);
-				foreL.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.45F, -0.38F), -0.18F), -0.45F);
+				left.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 0.18F, -2.55F), -1.18F), 0.18F);
+				left.yRot = Mth.lerp(rec, Mth.lerp(slam, 0.18F * wind, 0.58F), 0.0F);
+				left.zRot = Mth.lerp(rec, Mth.lerp(slam, -0.32F * wind, 0.06F), -0.22F);
+				foreL.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.45F, -0.35F), -0.20F), -0.45F);
 
-				// Windup net xRot ~ -0.55 (blade up-back behind plume); Impact net xRot ~ -3.14 (blade buried straight down!)
-				greatsword.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 1.25F, 2.38F), -2.48F), 1.25F);
-				greatsword.zRot = Mth.lerp(rec, Mth.lerp(slam, 0.0F, 0.0F), 0.28F);
+				// Windup net xRot ~ -0.55 (blade up-back centered behind plume); Impact net xRot ~ -3.14 (vertical ground plunge!)
+				greatsword.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 1.15F, 2.34F), -2.12F), 1.15F);
+				greatsword.zRot = Mth.lerp(rec, Mth.lerp(slam, -0.18F * wind, 0.08F), 0.14F);
 
 				float flare = (1.0F - rec) * Math.max(wind * 0.25F, slam);
 				capeYoke.xRot = 0.12F + flare * 0.68F;

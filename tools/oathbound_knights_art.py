@@ -661,7 +661,7 @@ SILVER = ((72, 78, 92), (110, 118, 134), (154, 164, 182), (196, 206, 222), (228,
 CHARCOAL = ((26, 30, 40), (42, 48, 60), (60, 68, 82))
 CRIMSON = ((96, 14, 20), (148, 22, 30), (196, 36, 44), (232, 68, 72))
 CREAM = ((156, 146, 126), (198, 186, 162), (228, 218, 194), (246, 240, 224))
-CRIMSON_GLOW = ((180, 24, 24), (236, 48, 36), (255, 118, 72), (255, 228, 180))
+CRIMSON_GLOW = ((150, 14, 18), (218, 24, 28), (255, 42, 34), (255, 86, 58))
 
 
 def _paint_ramp_box(
@@ -725,7 +725,7 @@ def blade_champion_skin(glow: bool = False) -> Image.Image:
         # Gold brow ridge & crimson T-visor recess on helm front
         for lx in range(8):
             px[hf_x + lx, hf_y + 1] = _rgba(GOLD[3] if lx % 2 == 0 else GOLD[2])
-        for ex, ey in ((1, 3), (2, 3), (5, 3), (6, 3), (3, 4), (4, 4), (3, 5), (4, 5)):
+        for ex, ey in ((1, 3), (2, 3), (5, 3), (6, 3), (3, 4), (4, 4)):
             px[hf_x + ex, hf_y + ey] = (*CRIMSON_GLOW[1], 255)
         for side in ("left", "right"):
             sx, sy, _, _ = box(*BLADE_CHAMPION_UV_BOXES["head"])[side]
