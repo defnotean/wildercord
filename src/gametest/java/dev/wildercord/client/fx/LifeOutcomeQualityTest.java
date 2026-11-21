@@ -70,7 +70,7 @@ private static final class CountingState extends QuadParticleRenderState {
 	int quads;
 	@Override public void add(net.minecraft.client.particle.SingleQuadParticle.Layer layer,
 			float x, float y, float z, float width, float height, float u0, float v0, float u1, float v1,
-			float r, float g, float b, float a, int light, int overlay) {
+			float r, float g, float b, int light, int overlay) {
 		quads++;
 		super.add(layer, x, y, z, width, height, u0, v0, u1, v1, r, g, b, a, light, overlay);
 	}

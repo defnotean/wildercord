@@ -13,15 +13,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** Hands each extracted GUI rectangle to {@link HudCapture} (only while a layout check is listening). */
 @Mixin(GuiRenderState.class)
 public abstract class PerfGuiCaptureMixin {
-	@Inject(method = "addGuiElement", at = @At("HEAD"))
+	@Inject(method = "submitGuiElement", at = @At("HEAD"))
 	private void perf$element(GuiElementRenderState state, CallbackInfo ci) { if (HudCapture.on) HudCapture.add(state.bounds()); }
 
-	@Inject(method = "addBlitToCurrentLayer", at = @At("HEAD"))
+	@Inject(method = "submitBlitToCurrentLayer", at = @At("HEAD"))
 	private void perf$blit(net.minecraft.client.gui.render.state.BlitRenderState state, CallbackInfo ci) { if (HudCapture.on) HudCapture.add(state.bounds()); }
 
-	@Inject(method = "addText", at = @At("HEAD"))
+	@Inject(method = "submitText", at = @At("HEAD"))
 	private void perf$text(GuiTextRenderState state, CallbackInfo ci) { if (HudCapture.on) HudCapture.add(state.bounds()); }
 
-	@Inject(method = "addItem", at = @At("HEAD"))
+	@Inject(method = "submitItem", at = @At("HEAD"))
 	private void perf$item(GuiItemRenderState state, CallbackInfo ci) { if (HudCapture.on) HudCapture.add(state.bounds()); }
 }
