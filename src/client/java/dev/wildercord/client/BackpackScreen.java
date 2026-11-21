@@ -37,6 +37,10 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 	}
 
 	@Override
+	@Override protected void renderBg(GuiGraphics wcGui, float partialTick, int mouseX, int mouseY) {
+	}
+
+	@Override
 	public void renderBackground(GuiGraphics wcGui, int mouseX, int mouseY, float a) {
 		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		super.renderBackground(wcGui, mouseX, mouseY, a);

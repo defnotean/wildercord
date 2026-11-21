@@ -180,6 +180,10 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 	}
 
 	@Override
+	@Override protected void renderBg(GuiGraphics wcGui, float partialTick, int mouseX, int mouseY) {
+	}
+
+	@Override
 	public void renderBackground(GuiGraphics wcGui, int mouseX, int mouseY, float a) {
 		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 		super.renderBackground(wcGui, mouseX, mouseY, a);

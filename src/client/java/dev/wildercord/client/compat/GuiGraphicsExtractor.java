@@ -252,10 +252,6 @@ public final class GuiGraphicsExtractor {
 		g.setTooltipForNextFrame(font, lines, custom, x, y);
 	}
 
-	public void setTooltipForNextFrame(Font font, List<Component> lines, int x, int y) {
-		g.setTooltipForNextFrame(font, lines, Optional.empty(), x, y);
-	}
-
 	public void setTooltipForNextFrame(Font font, Component tooltip, int x, int y) {
 		g.setTooltipForNextFrame(font, tooltip, x, y);
 	}
