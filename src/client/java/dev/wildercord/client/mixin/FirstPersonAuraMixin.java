@@ -52,12 +52,14 @@ public abstract class FirstPersonAuraMixin implements dev.wildercord.client.Firs
 	}
 
 	@Inject(method = "renderHandsWithItems", at = @At("HEAD"))
-	private void wildercord$extractHandsAvatar(float partial, PoseStack pose, MultiBufferSource buffer, LocalPlayer player, int light, CallbackInfo ci) {
+	private void wildercord$extractHandsAvatar(float partial, PoseStack pose, MultiBufferSource.BufferSource buffer,
+			LocalPlayer player, int light, CallbackInfo ci) {
 		if (wildercord$avatar == null) wildercord$prepareHandsAvatar(player, partial);
 	}
 
 	@Inject(method = "renderHandsWithItems", at = @At("RETURN"))
-	private void wildercord$clearHandsAvatar(float partial, PoseStack pose, MultiBufferSource buffer, LocalPlayer player, int light, CallbackInfo ci) {
+	private void wildercord$clearHandsAvatar(float partial, PoseStack pose, MultiBufferSource.BufferSource buffer,
+			LocalPlayer player, int light, CallbackInfo ci) {
 		wildercord$avatar = null;
 	}
 
