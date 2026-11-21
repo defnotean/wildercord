@@ -90,17 +90,11 @@ public abstract class McQuadParticle extends SingleQuadParticle {
 		float py = (float) (Mth.lerp(partial, yo, y) - eye.y);
 		float pz = (float) (Mth.lerp(partial, zo, z) - eye.z);
 		state.add(getLayer(), px, py, pz, rotation.x(), rotation.y(), rotation.z(), rotation.w(),
-				getQuadSize(partial), getU0(), getU1(), getV0(), getV1(), argb(), getLightColor(partial));
+				getQuadSize(partial), getU0(), getU1(), getV0(), getV1(), particleArgb(), getLightColor(partial));
 	}
 
-	/** {@code rgb} with {@code alpha} applied: the helper the newer particle base carries. */
-	protected static int argb(float alpha, int rgb) {
-		int a = (int) (Mth.clamp(alpha, 0F, 1F) * 255F);
-		return a << 24 | (rgb & 0xFFFFFF);
-	}
-
-	/** The particle's colour as ARGB, which 1.21.8 keeps as four floats. */
-	protected int argb() {
+	/** The particle's own colour as ARGB, which 1.21.8 keeps as four floats. */
+	protected int particleArgb() {
 		int a = (int) (Mth.clamp(alpha, 0F, 1F) * 255F);
 		int r = (int) (Mth.clamp(rCol, 0F, 1F) * 255F);
 		int g = (int) (Mth.clamp(gCol, 0F, 1F) * 255F);

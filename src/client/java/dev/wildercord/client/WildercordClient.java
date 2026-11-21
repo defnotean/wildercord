@@ -145,13 +145,12 @@ public final class WildercordClient implements ClientModInitializer {
 		});
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
-			if (client.packetProcessor() != null) {
-				inStartClientTick = true;
-				try {
-					client.packetProcessor().processQueuedPackets();
-				} finally {
-					inStartClientTick = false;
-				}
+			// 1.21.8 has no packet processor to drain: payloads already arrive on the client thread,
+			// so the flag only has to cover the tick itself.
+			inStartClientTick = true;
+			try {
+			} finally {
+				inStartClientTick = false;
 			}
 		});
 
