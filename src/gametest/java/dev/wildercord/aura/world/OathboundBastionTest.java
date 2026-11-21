@@ -149,10 +149,9 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 			server.runCommand("fill -10 121 -10 10 132 10 air");
 			server.runCommand("fill -9 121 7 9 128 7 polished_deepslate");
 			server.runCommand("fill -9 121 8 9 128 8 deepslate_bricks");
-			server.runCommand("setblock -6 121 -7 sea_lantern");
-			server.runCommand("setblock 6 121 -7 sea_lantern");
-			server.runCommand("setblock -7 121 4 sea_lantern");
-			server.runCommand("setblock 7 121 4 sea_lantern");
+			server.runCommand("setblock -6 121 -8 sea_lantern");
+			server.runCommand("setblock 6 121 -8 sea_lantern");
+			server.runCommand("setblock 0 121 -9 sea_lantern");
 
 			// ------------------------------------------------------------------
 			// 1. Visual Studio 7-Panel Verification (1:1 against Concept & Anim Sheet)

@@ -364,15 +364,15 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 				body.yRot = Mth.lerp(go, -0.18F * wind, 0.0F);
 				head.xRot = Mth.lerp(go, -0.22F * wind, 0.18F * imp);
 
-				// Right arm: hoisted high up & out beside crown -> swept down-center holding vertical mace shaft
-				float wRightX = Mth.lerp(wind, 0.25F, -2.55F);
-				float wRightZ = Mth.lerp(wind, 0.16F, 0.58F);
-				float wForeRX = Mth.lerp(wind, -0.35F, -0.42F);
-				float wMaceX = Mth.lerp(wind, 0.55F, -0.58F);
+				// Right arm: hoisted high up & OUTSIDE crown (-zRot lifts overhead outward to -X) -> swept down-center holding vertical mace shaft
+				float wRightX = Mth.lerp(wind, 0.25F, -2.90F);
+				float wRightZ = Mth.lerp(wind, 0.16F, -0.38F);
+				float wForeRX = Mth.lerp(wind, -0.35F, -0.22F);
+				float wMaceX = Mth.lerp(wind, 0.55F, 0.95F);
 
 				right.xRot = Mth.lerp(imp, wRightX, -1.25F);
 				right.zRot = Mth.lerp(imp, wRightZ, -0.38F);
-				right.yRot = Mth.lerp(imp, -0.22F * wind, -0.38F);
+				right.yRot = Mth.lerp(imp, 0.0F, -0.38F);
 				foreR.xRot = Mth.lerp(imp, wForeRX, -0.95F);
 				mace.xRot = Mth.lerp(imp, wMaceX, 3.05F);
 				mace.yRot = Mth.lerp(imp, -0.15F, 0.0F);
@@ -404,24 +404,24 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 				cape.xRot = Mth.lerp(imp, 0.15F, 0.35F) + whip * 1.65F;
 			}
 			case OathboundBastionRules.SHIELD_BASH -> {
-				// Panel 6: SHIELD-BASH SWEEP — chest & visor open forward as giant shield sweeps aggressively across front-left
+				// Panel 6: SHIELD-BASH SWEEP — torso turned cleanly forward as giant shield sweeps across front
 				float wind = ramp(el, 0.0F, tell);
 				float swing = ramp(el, tell, 4.0F);
 				float rec = smooth(el, tell + 6.0F, OathboundBastionRules.BASH_DURATION);
 
-				float yawWind = 0.65F * wind;
-				float yawEnd = -0.32F;
+				float yawWind = -0.55F * wind;
+				float yawEnd = 0.28F;
 				body.yRot = Mth.lerp(rec, Mth.lerp(swing, yawWind, yawEnd), 0.0F);
-				body.xRot = 0.18F * (1.0F - rec);
+				body.xRot = 0.16F * (1.0F - rec);
 
-				left.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.75F, -1.08F), -0.48F);
-				left.yRot = Mth.lerp(rec, Mth.lerp(swing, 1.55F, 0.85F), 1.05F);
-				left.zRot = Mth.lerp(rec, Mth.lerp(swing, -0.05F, -0.48F), -0.14F);
+				left.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.75F, -1.25F), -0.48F);
+				left.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.45F, 1.35F), 1.05F);
+				left.zRot = Mth.lerp(rec, Mth.lerp(swing, -0.45F, -0.42F), -0.14F);
 				foreL.xRot = Mth.lerp(rec, -0.38F, -0.48F);
-				shield.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.25F, 0.42F), 0.38F);
+				shield.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.10F, 0.35F), 0.38F);
 
-				right.xRot = Mth.lerp(rec, Mth.lerp(swing, 0.35F, 0.52F), 0.25F);
-				right.zRot = Mth.lerp(rec, 0.42F, 0.16F);
+				right.xRot = Mth.lerp(rec, Mth.lerp(swing, 0.25F, 0.48F), 0.25F);
+				right.zRot = Mth.lerp(rec, 0.32F, 0.16F);
 				bend(0.32F * (1.0F - rec));
 				legL.zRot = -0.18F * (1.0F - rec);
 				legR.zRot = 0.18F * (1.0F - rec);
