@@ -415,7 +415,7 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 			}
 		}
 		sound(level, position(), SoundEvents.MACE_SMASH_GROUND, 1.35F, 1.05F);
-		sound(level, position(), SoundEvents.TRIDENT_THUNDER, 1.25F, 1.10F);
+		sound(level, position(), SoundEvents.TRIDENT_THUNDER.value(), 1.25F, 1.10F);
 
 		boolean emp = empowered();
 		for (LivingEntity foe : targetsIn(level, position(), len + 1.5)) {
