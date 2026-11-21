@@ -53,11 +53,25 @@ public final class VillagerTradeCompat {
 		addVanilla(VillagerProfession.CLERIC, 5, loadTag("minecraft", "cleric", "level_5"));
 		addVanilla(VillagerProfession.WEAPONSMITH, 5, loadTag("minecraft", "weaponsmith", "level_5"));
 		ItemListing[] uncommon = loadTag("minecraft", "wandering_trader", "uncommon");
-		if (uncommon.length > 0 && VillagerTrades.WANDERING_TRADER_TRADES.size() > 1) {
-			Pair<ItemListing[], Integer> pair = VillagerTrades.WANDERING_TRADER_TRADES.get(1);
-			List<ItemListing> merged = new ArrayList<>(List.of(pair.getLeft()));
-			merged.addAll(List.of(uncommon));
-			VillagerTrades.WANDERING_TRADER_TRADES.set(1, Pair.of(merged.toArray(new ItemListing[0]), pair.getRight()));
+		// 1.21.11's WANDERING_TRADER_TRADES is an immutable list; the offers go in at restock
+		// through WanderingTraderTradesMixin instead.
+		wanderingUncommon = uncommon;
+	}
+
+	private static ItemListing[] wanderingUncommon = new ItemListing[0];
+
+	/** The wandering trader's uncommon slot, appended when it builds its offers. */
+	public static void appendWanderingTrades(net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader trader,
+			net.minecraft.server.level.ServerLevel level) {
+		if (wanderingUncommon.length == 0) {
+			return;
+		}
+		net.minecraft.world.item.trading.MerchantOffers offers = trader.getOffers();
+		for (ItemListing listing : wanderingUncommon) {
+			MerchantOffer offer = listing.accept(level, trader, RandomSource.create());
+			if (offer != null) {
+				offers.add(offer);
+			}
 		}
 	}
 

@@ -37,6 +37,7 @@
 		"ProjectileOwnerAccessor",
 		"RunesmithTradeMixin",
 		"HamletTradeMixin",
+		"WanderingTraderTradesMixin",
 		"SwapOfferMixin",
 		"MobConversionMixin",
 		"MobGoalSelectorMixin",
