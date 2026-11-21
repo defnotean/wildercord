@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
  */
 @Mixin(SubtitleOverlay.class)
 public abstract class SubtitleOverlayMixin {
-	@ModifyArgs(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix3x2fStack;translate(FF)Lorg/joml/Matrix3x2f;"))
+	@ModifyArgs(method = "render", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix3x2fStack;translate(FF)Lorg/joml/Matrix3x2f;"))
 	private void wildercord$clearSpellHud(Args args) {
 		var window = Minecraft.getInstance().getWindow();
 		float x = args.get(0);
