@@ -164,6 +164,7 @@
   * [Roadside Sites](world/travel-sites.md)
   * [Water Sites](world/water-sites.md)
   * [Wild Places](world/wilds-sites.md)
+  * [Oathhold, Sovereign Citadel City](world/oathhold.md)
   * [Luminous Reedlands](world/luminous-reedlands.md)
   * [Pavilion Upgrade for Old Worlds](world/pavilion-upgrade.md)
   * [Reed-Crowned Ferryman](world/reed-crowned-ferryman.md)

@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "site": "oathhold_sector",
+  "biomes": "#wildercord:has_structure/oathhold_sector",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}
