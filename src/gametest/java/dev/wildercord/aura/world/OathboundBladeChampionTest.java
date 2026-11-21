@@ -305,21 +305,31 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				p.setInvulnerableTime(0);
 				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SHIELD));
-				p.startUsingItem(InteractionHand.MAIN_HAND);
 			});
-			context.waitTicks(6);
-			server.runOnServer(s -> {
-				ServerPlayer p = player(s);
-				check(p.isBlocking(), "Player shield must be active before Pommel-Break test");
-				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
-				c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
-				c.startMove(level(s), OathboundBladeChampionRules.POMMEL_BREAK, p);
+			context.runOnClient(mc -> {
+				mc.gui.setScreen(null);
+				mc.options.keyUse.setDown(true);
+				if (mc.player != null) {
+					mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
+				}
 			});
-			boolean shieldShattered = await(context, world, 30, s -> {
-				ServerPlayer p = player(s);
-				return p.getCooldowns().isOnCooldown(new ItemStack(Items.SHIELD)) && p.getHealth() < 20.0F;
-			});
-			check(shieldShattered, "Pommel-Break Lunge did not shatter player shield and deal impact damage");
+			context.waitTicks(7);
+			try {
+				server.runOnServer(s -> {
+					ServerPlayer p = player(s);
+					check(p.isBlocking(), "Player shield must be active before Pommel-Break test");
+					OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
+					c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+					c.startMove(level(s), OathboundBladeChampionRules.POMMEL_BREAK, p);
+				});
+				boolean shieldShattered = await(context, world, 30, s -> {
+					ServerPlayer p = player(s);
+					return p.getCooldowns().isOnCooldown(new ItemStack(Items.SHIELD)) && p.getHealth() < 20.0F;
+				});
+				check(shieldShattered, "Pommel-Break Lunge did not shatter player shield and deal impact damage");
+			} finally {
+				context.runOnClient(mc -> mc.options.keyUse.setDown(false));
+			}
 
 			// 2e. Sky-Rending Guillotine forward line fissure damage
 			server.runOnServer(s -> {

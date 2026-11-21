@@ -852,7 +852,7 @@ def blade_champion_skin(glow: bool = False) -> Image.Image:
     hf_x, hf_y, _, _ = box(*BLADE_CHAMPION_UV_BOXES["head"])["front"]
     for ex, ey in ((1, 3), (2, 3), (5, 3), (6, 3)):
         px[hf_x + ex, hf_y + ey] = (*CRIMSON_GLOW[3], 255)
-    for ex, ey in ((3, 4), (4, 4), (3, 5), (4, 5)):
+    for ex, ey in ((3, 4), (4, 4)):
         px[hf_x + ex, hf_y + ey] = (*CRIMSON_GLOW[2], 230)
 
     vx, vy, _, _ = box(*BLADE_CHAMPION_UV_BOXES["visor_peak"])["front"]

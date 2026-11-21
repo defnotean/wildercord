@@ -337,8 +337,8 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 					left.zRot = Mth.lerp(in, left.zRot, -0.06F);
 					foreL.xRot = Mth.lerp(in, foreL.xRot, -0.82F);
 
-					greatsword.xRot = Mth.lerp(in, greatsword.xRot, 0.65F);
-					greatsword.zRot = Mth.lerp(in, greatsword.zRot, 0.85F);
+					greatsword.xRot = Mth.lerp(in, greatsword.xRot, 2.15F);
+					greatsword.zRot = Mth.lerp(in, greatsword.zRot, 0.72F);
 					capeYoke.xRot = 0.24F * in + 0.12F;
 				} else {
 					// Explosive golden-crimson riposte counter cleave!
