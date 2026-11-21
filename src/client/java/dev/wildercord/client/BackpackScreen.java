@@ -75,7 +75,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 		if (super.keyPressed(event.key(), event.scancode(), event.modifiers())) {
 			return true;
 		}
-		if (WildercordKeys.backpackMapping().matches(event)) {
+		if (WildercordKeys.backpackMapping().matches(event.key(), event.scancode())) {
 			this.onClose();
 			return true;
 		}

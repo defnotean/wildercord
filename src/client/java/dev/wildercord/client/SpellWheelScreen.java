@@ -151,7 +151,7 @@ public class SpellWheelScreen extends Screen {
 	}
 
 	public boolean keyReleased(KeyEvent event) {
-		if (!toggled && key.matches(event)) {
+		if (!toggled && key.matches(event.key(), event.scancode())) {
 			released();
 			return true;
 		}
@@ -172,7 +172,7 @@ public class SpellWheelScreen extends Screen {
 			choose();
 			return true;
 		}
-		if (toggled && (key.matches(event) || event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER)) {
+		if (toggled && (key.matches(event.key(), event.scancode()) || event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER)) {
 			choose();
 			return true;
 		}

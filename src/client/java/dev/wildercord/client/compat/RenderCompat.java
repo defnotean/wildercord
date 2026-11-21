@@ -101,6 +101,11 @@ public final class RenderCompat {
 		}
 	}
 
+	/** 1.21.8 render states carry no outline tint: outlines are drawn without one. */
+	public static int outlineOf(Object state) {
+		return 0;
+	}
+
 	/** Draws something with its own geometry in {@code type}; the body writes to the buffer it is handed. */
 	public static void submitCustomGeometry(MultiBufferSource buffers, PoseStack pose, RenderType type,
 			BiConsumer<PoseStack, VertexConsumer> body) {

@@ -164,7 +164,7 @@ public final class LoreJournalScreen extends Screen {
 	}
 
 	public boolean keyPressed(KeyEvent event) {
-		if (LoreJournalClient.mapping() != null && LoreJournalClient.mapping().matches(event)) {
+		if (LoreJournalClient.mapping() != null && LoreJournalClient.mapping().matches(event.key(), event.scancode())) {
 			onClose();
 			return true;
 		}

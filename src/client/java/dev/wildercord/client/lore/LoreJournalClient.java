@@ -15,7 +15,7 @@ public final class LoreJournalClient {
 
 	public static void init() {
 		key = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.wildercord.lore_journal", InputConstants.KEY_H,
-			KeyMapping.Category.register(Wildercord.id("lore"))));
+			"key.categories.lore_journal"));
 		ClientTickEvents.END_CLIENT_TICK.register(LoreJournalClient::tick);
 	}
 
