@@ -337,8 +337,8 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 						double mult = emp ? OathboundBladeChampionRules.EMPOWERED_DAMAGE_MULT : 1.0;
 						Vec3 center = chestPos();
 						Vec3 forward = ahead(aim);
-						Light.slash(level, center, UP, forward, HEX_GOLD, 3.6, 2.4, 0.22, 1.0, 12);
-						Light.slash(level, center.add(0, 0.12, 0), UP, forward, HEX_CRIMSON, 3.3, 2.2, 0.18, 1.0, 10);
+						Light.slash(level, center, UP, forward, HEX_GOLD, 3.6, 2.4, 0.22, 1, 12);
+						Light.slash(level, center.add(0, 0.12, 0), UP, forward, HEX_CRIMSON, 3.3, 2.2, 0.18, 1, 10);
 						Feels.sound(level, center, "duelist_clash", 1.3F, 1.05F);
 						for (LivingEntity foe : targetsIn(level, position(), OathboundBladeChampionRules.RIPOSTE_COUNTER_REACH + 1.0)) {
 							if (OathboundBladeChampionRules.inCleaveArc(aim, foe.getX() - getX(), foe.getZ() - getZ(),
@@ -360,8 +360,8 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 					crescentHitFired = true;
 					double mult = emp ? OathboundBladeChampionRules.EMPOWERED_DAMAGE_MULT : 1.0;
 					Vec3 center = chestPos().add(ahead(aim).scale(0.6));
-					Light.slash(level, center, UP, ahead(aim), HEX_CRIMSON, 3.8, 2.6, 0.24, 1.0, 11);
-					Light.slash(level, center.add(0, 0.08, 0), UP, ahead(aim), 0xFFFFFF, 3.4, 2.2, 0.10, 1.0, 8);
+					Light.slash(level, center, UP, ahead(aim), HEX_CRIMSON, 3.8, 2.6, 0.24, 1, 11);
+					Light.slash(level, center.add(0, 0.08, 0), UP, ahead(aim), 0xFFFFFF, 3.4, 2.2, 0.10, 1, 8);
 					Feels.sound(level, center, "duelist_clash", 1.15F, 0.95F);
 					for (LivingEntity foe : targetsIn(level, position(), OathboundBladeChampionRules.CRESCENT_REACH + 1.0)) {
 						if (OathboundBladeChampionRules.inCleaveArc(aim, foe.getX() - getX(), foe.getZ() - getZ(),
@@ -446,13 +446,13 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		boolean emp = empowered();
 
 		Light.groundRing(level, impact, HEX_CRIMSON, 0.4, 3.8, 0.20, 16);
-		Light.slash(level, position().add(0, 1.1, 0), new Vec3(-forward.z, 0, forward.x), forward, HEX_CRIMSON, 3.8, 2.2, 0.26, 1.0, 12);
+		Light.slash(level, position().add(0, 1.1, 0), new Vec3(-forward.z, 0, forward.x), forward, HEX_CRIMSON, 3.8, 2.2, 0.26, 1, 12);
 		for (int step = 1; step <= 6; step++) {
 			Vec3 pt = position().add(forward.scale(step * 1.05));
 			dust(level, pt, 8, 0.45);
 			level.sendParticles(ParticleTypes.FLAME, pt.x, pt.y + 0.18, pt.z, 4, 0.2, 0.08, 0.2, 0.02);
 		}
-		sound(level, impact, SoundEvents.MACE_SMASH_GROUND.value(), 1.4F, 0.85F);
+		sound(level, impact, SoundEvents.MACE_SMASH_GROUND, 1.4F, 0.85F);
 		Feels.sound(level, impact, "duelist_clash", 1.35F, 0.78F);
 
 		for (LivingEntity foe : targetsIn(level, position(), OathboundBladeChampionRules.GUILLOTINE_LINE_LENGTH + 1.5)) {
@@ -478,7 +478,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		player.getCooldowns().addCooldown(new ItemStack(Items.SHIELD), OathboundBladeChampionRules.POMMEL_SHIELD_DISABLE_TICKS);
 		if (blocking) {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(),
-				SoundEvents.SHIELD_BREAK, SoundSource.PLAYERS, 1.2F, 0.9F);
+				SoundEvents.SHIELD_BREAK.value(), SoundSource.PLAYERS, 1.2F, 0.9F);
 			return true;
 		}
 		return false;
