@@ -20,11 +20,12 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class CrimsonMoonWorldItemMixin {
     @Unique private static final ThreadLocal<CrimsonMoonRenderProbe.WorldItem> moon$current=new ThreadLocal<>();
     @WrapMethod(method="submitArmWithItem",require=1,expect=1,allow=1)
-    private void moon$scope(ArmedEntityRenderState state,ItemStackRenderState item,ItemStack stack,HumanoidArm arm,PoseStack pose,SubmitNodeCollector collector,int light,Operation<Void> original){
+    private void moon$scope(ArmedEntityRenderState state,ItemStackRenderState item,HumanoidArm arm,PoseStack pose,SubmitNodeCollector collector,int light,Operation<Void> original){
         var previous=moon$current.get();
+        ItemStack stack=arm==HumanoidArm.LEFT?dev.wildercord.client.compat.RenderCompat.leftHandStack(state):dev.wildercord.client.compat.RenderCompat.rightHandStack(state);
         var call=CrimsonMoonRenderProbe.worldItemBegin(((ItemInHandLayer<?,?>)(Object)this).getParentModel(),state,item,stack,arm,pose);
         moon$current.set(call);boolean completed=false;
-        try{original.call(state,item,stack,arm,pose,collector,light);completed=true;}
+        try{original.call(state,item,arm,pose,collector,light);completed=true;}
         finally{try{CrimsonMoonRenderProbe.worldItemEnd(call,completed);}finally{if(previous==null)moon$current.remove();else moon$current.set(previous);}}
     }
     @WrapOperation(method="submitArmWithItem",at=@At(value="INVOKE",target="Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"),require=1,expect=1,allow=1)
