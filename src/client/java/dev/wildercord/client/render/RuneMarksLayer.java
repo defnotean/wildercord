@@ -59,7 +59,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 		if (marks == null || state.isInvisible || state.isBaby) {
 			return;
 		}
-		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, marks, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, marks, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 	}
 
 	/** Reads the synced marks into the render state (called as every living entity's state is extracted). */

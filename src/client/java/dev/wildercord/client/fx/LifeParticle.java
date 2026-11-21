@@ -1,6 +1,7 @@
 package dev.wildercord.client.fx;
 
 import dev.wildercord.content.LifeOption;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.Camera;

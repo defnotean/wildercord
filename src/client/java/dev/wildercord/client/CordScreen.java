@@ -358,7 +358,6 @@ public class CordScreen extends Screen {
 	}
 
 	/** Dims the world like the inventory does, instead of blurring it like a menu. */
-	@Override
 	public boolean isInGameUi() {
 		return true;
 	}
@@ -2148,7 +2147,7 @@ public class CordScreen extends Screen {
 	// ------------------------------------------------------------------ keyboard: the search box
 
 	@Override
-	public boolean charTyped(int codePoint, int modifiers) {
+	public boolean charTyped(char codePoint, int modifiers) {
 		return charTyped(new CharacterEvent((char) codePoint, modifiers));
 	}
 

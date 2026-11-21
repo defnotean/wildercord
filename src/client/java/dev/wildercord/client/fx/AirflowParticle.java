@@ -1,6 +1,7 @@
 package dev.wildercord.client.fx;
 
 import dev.wildercord.content.AirflowOption;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;

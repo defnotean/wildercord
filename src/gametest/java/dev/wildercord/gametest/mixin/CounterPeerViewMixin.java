@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.InteractionHand;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 /** The shell has a separate model/submit method; these hooks observe only the skin model and real item. */
@@ -37,13 +39,17 @@ public abstract class CounterPeerViewMixin {
 		CounterPeerRenderProbe.viewSubmitted(model, state, submitted, type);
 	}
 
-	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)Z",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"), require = 1, expect = 1, allow = 1)
-	private static void wildercord$counter$item(ItemStackRenderState item, PoseStack pose, MultiBufferSource buffer,
-			int light, int overlay, int outline, Operation<Void> original) {
-		var submitted = new org.joml.Matrix4f(pose.last().pose());
-		original.call(item, pose, buffer, light, overlay, outline);
-		CounterPeerRenderProbe.viewItem(item, submitted);
+	// 1.21.8 draws the hand item without an item render state, so there is nothing to observe
+	// inside submit; the view keeps whatever state it began with and the probe skips a null one.
+	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)Z", at = @At("TAIL"))
+	private static void wildercord$counter$item(CallbackInfo ci,
+			@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) FirstPersonHandView hands,
+			@com.llamalad7.mixinextras.sugar.Local(argsOnly = true) PoseStack pose) {
+		var item = hands == null ? null : hands.initialMainHandRenderState();
+		if (item == null) {
+			return;
+		}
+		CounterPeerRenderProbe.viewItem(item, new org.joml.Matrix4f(pose.last().pose()));
 	}
 
 	@WrapMethod(method = "setupAnim(Ldev/wildercord/client/combat/ArticulatedViewModel$Frame;)V", require = 1, expect = 1, allow = 1)

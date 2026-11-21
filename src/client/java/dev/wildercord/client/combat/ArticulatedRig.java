@@ -223,19 +223,19 @@ public final class ArticulatedRig {
 			var vertices = new ModelPart.Vertex[old.length];
 			for (int i = 0; i < old.length; i++) {
 				var vertex = old[i];
-				boolean top = vertex.y() < y + h / 2;
+				boolean top = vertex.pos().y() < y + h / 2;
 				float fullY = y + (top ? start - grow : end + grow);
 				float vv = vertex.v();
 				if (Math.abs(polygon.normal().y()) < .5F) {
 					for (var opposite : old) {
-						if (opposite.x() == vertex.x() && opposite.z() == vertex.z() && opposite.y() != vertex.y()) {
-							float t = (fullY - vertex.y()) / (opposite.y() - vertex.y());
+						if (opposite.pos().x() == vertex.pos().x() && opposite.pos().z() == vertex.pos().z() && opposite.pos().y() != vertex.pos().y()) {
+							float t = (fullY - vertex.pos().y()) / (opposite.pos().y() - vertex.pos().y());
 							vv += (opposite.v() - vertex.v()) * t;
 							break;
 						}
 					}
 				}
-				vertices[i] = new ModelPart.Vertex(vertex.x(), fullY - origin, vertex.z(), vertex.u(), vv);
+				vertices[i] = new ModelPart.Vertex(vertex.pos().x(), fullY - origin, vertex.pos().z(), vertex.u(), vv);
 			}
 			result.polygons[face] = new ModelPart.Polygon(vertices, polygon.normal());
 		}

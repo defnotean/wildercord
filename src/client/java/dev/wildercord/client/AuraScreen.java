@@ -125,7 +125,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		return keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
+		return keyPressed(new dev.wildercord.client.compat.McInput.KeyEvent(keyCode, scanCode, modifiers));
 	}
 
 	public boolean keyPressed(dev.wildercord.client.compat.McInput.KeyEvent event) {
@@ -142,8 +142,8 @@ public class AuraScreen extends Screen implements CordEditorParent {
 	}
 
 	@Override
-	public boolean charTyped(int codePoint, int modifiers) {
-		return charTyped(new CharacterEvent((char) codePoint, modifiers));
+	public boolean charTyped(char codePoint, int modifiers) {
+		return charTyped(new dev.wildercord.client.compat.McInput.CharacterEvent((char) codePoint, modifiers));
 	}
 
 	public boolean charTyped(dev.wildercord.client.compat.McInput.CharacterEvent event) {
@@ -174,7 +174,6 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		return false;
 	}
 
-	@Override
 	public boolean isInGameUi() {
 		return true;
 	}
@@ -235,9 +234,8 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		return mx >= x && mx < x + w && my >= y && my < y + h;
 	}
 
-	@Override
 	public boolean mouseClicked(dev.wildercord.client.compat.McInput.MouseButtonEvent event, boolean doubleClick) {
-		if (masterFormsEntry != null && masterFormsEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event, doubleClick);
+		if (masterFormsEntry != null && masterFormsEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event.x(), event.y(), event.button());
 		setFocused(null);
 		if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && tabsY >= 0) {
 			float s = scale();
@@ -320,7 +318,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 				return true;
 			}
 		}
-		return super.mouseClicked(event, doubleClick);
+		return super.mouseClicked(event.x(), event.y(), event.button());
 	}
 
 	/** Opens the page on its Sword strings tab ({@code true}) or its techniques (the game tests put it back as they found it). */
@@ -943,11 +941,11 @@ public class AuraScreen extends Screen implements CordEditorParent {
 			}
 		}
 		// ---- the picked node, in full.
-		String shown = picked != null && cells.containsKey(picked) ? picked : auto != null ? auto : walking != null ? walking.buffer().getFirst().id()
-			: ways.getFirst().buffer().getFirst().id();
+		String shown = picked != null && cells.containsKey(picked) ? picked : auto != null ? auto : walking != null ? walking.nodes().getFirst().id()
+			: ways.getFirst().nodes().getFirst().id();
 		int dy = rowsY + stages.length * ROW + 1;
 		for (AuraApi.Way w : ways) {
-			for (AuraApi.WayNode node : w.buffer()) {
+			for (AuraApi.WayNode node : w.nodes()) {
 				if (!node.id().equals(shown)) {
 					continue;
 				}

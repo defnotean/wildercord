@@ -24,6 +24,12 @@ import org.joml.Matrix4f;
  * and bowing have no rig clips and keep the native model.
  */
 public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, MasterModel> {
+
+	/** 1.21.8 keeps no light in the render state: full brightness, the way the layer draws it anyway. */
+	private static int lightOf(Object state) {
+		return net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
+	}
+
 	/** The schools with their own master dress; anything else keeps the duelist's skin. */
 	private static final java.util.Set<String> MASTER_SKINS = java.util.Set.of("ember", "gale", "stone",
 		"rime", "thunder", "verdant", "hollow", // ---- masters-a pack
@@ -88,7 +94,7 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		if (frame == null || rig == null || state.isInvisible) return;
 		float mirror = frame.left() ? 1 : -1;
 		int overlay = LivingEntityRenderer.getOverlayCoords(state, getWhiteOverlayProgress(state));
-		int light = state.lightCoords;
+		int light = lightOf(state);
 		boolean[] blade = blade(rig);
 
 		poseStack.pushPose();

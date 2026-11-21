@@ -57,8 +57,8 @@ public class BogBubbleRenderer extends EntityRenderer<BogBubble, BogBubbleRender
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.YP, t * 9.0F);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.XP, t * 5.0F);
 		poseStack.translate(0.0F, -1.5F, 0.0F);
-		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, state, poseStack, RenderType.entityTranslucent(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
-		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, state, poseStack, RenderType.eyes(GLOW), state.lightCoords, OverlayTexture.NO_OVERLAY, 0xE0FFFFFF, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, state, poseStack, RenderType.entityTranslucent(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, state, poseStack, RenderType.eyes(GLOW), state.lightCoords, OverlayTexture.NO_OVERLAY, 0xE0FFFFFF, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		poseStack.popPose();
 		super.render(state, poseStack, buffer, light);
 	}

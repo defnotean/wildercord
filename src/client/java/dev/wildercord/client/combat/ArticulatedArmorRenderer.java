@@ -37,7 +37,7 @@ public final class ArticulatedArmorRenderer {
 	public ArticulatedArmorRenderer(EntityModelSet modelSet, boolean slim, EquipmentLayerRenderer equipmentRenderer, EquipmentAssetManager equipmentAssets) {
 		this.equipmentRenderer = equipmentRenderer;
 		this.equipmentAssets = java.util.Objects.requireNonNull(equipmentAssets);
-		var layers = slim ? ModelLayers.PLAYER_SLIM_ARMOR : ModelLayers.PLAYER_ARMOR;
+		var layers = slim ? ModelLayers.PLAYER_SLIM_OUTER_ARMOR : ModelLayers.PLAYER_OUTER_ARMOR;
 		for (EquipmentSlot slot : SLOTS) models.put(slot, new ArticulatedArmorGeometry(modelSet.bakeLayer(layers.get(slot)), slot));
 		viewModel = new ArticulatedArmorGeometry(modelSet.bakeLayer(layers.chest()), EquipmentSlot.CHEST, true);
 	}
@@ -81,7 +81,7 @@ public final class ArticulatedArmorRenderer {
 		stack.pushPose();
 		try {
 			body.root().translateAndRotate(stack);
-			for (EquipmentSlot slot : SLOTS) submit(slot, stack(state, slot), models.get(slot), palette, stack, buffer, light, state.outlineColor);
+			for (EquipmentSlot slot : SLOTS) submit(slot, stack(state, slot), models.get(slot), palette, stack, buffer, light, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		} finally {
 			stack.popPose();
 		}

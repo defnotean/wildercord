@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 public final class WildercordKeys {
 	private WildercordKeys() {}
 
-	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Wildercord.id("wildercord"));
+	private static final String CATEGORY = "key.categories.wildercord";
 	/** Held this many ticks, a key press becomes a hold (a charge, or the wheel). */
 	private static final int HOLD = 5;
 

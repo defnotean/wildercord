@@ -25,7 +25,7 @@ public final class GlassCartographerRenderer extends dev.wildercord.client.compa
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<GlassCartographerRenderState, GlassCartographerModel>(this) {
 			@Override public void render(PoseStack pose, MultiBufferSource buffer, int light, GlassCartographerRenderState state, float yRot, float xRot) {
 				if (!state.isInvisible && state.deathTime <= 0) {
-					dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+					dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 				}
 			}
 		});

@@ -328,7 +328,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		EntityRenderer<? super LivingEntity, ?> renderer = minecraft.getEntityRenderDispatcher().getRenderer(player);
 		EntityRenderState state = renderer.createRenderState(player, partial);
 		state.shadowPieces.clear();
-		state.outlineColor = 0;
+		dev.wildercord.client.compat.RenderCompat.outlineOf(state) = 0;
 		float seconds = (net.minecraft.Util.getMillis() - opened) / 1000F;
 		float spin = seconds * 40F;
 		if (state instanceof LivingEntityRenderState living) {

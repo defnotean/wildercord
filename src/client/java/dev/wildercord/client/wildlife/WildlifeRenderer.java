@@ -70,7 +70,7 @@ public abstract class WildlifeRenderer<T extends Mob, M extends EntityModel<Wild
 			if (state.isInvisible || alpha < 4) {
 				return;
 			}
-			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, RenderType.eyes(texture.apply(state)), light, OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, RenderType.eyes(texture.apply(state)), light, OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		}
 	}
 }

@@ -62,7 +62,7 @@ public class RimecoatWolverineRenderer extends WildMonsterRenderer<RimecoatWolve
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.XP, 90);
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.ZP, 90);
 			poseStack.scale(0.8F, 0.8F, 0.8F);
-			mouth.submit(poseStack, buffer, light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
+			mouth.submit(poseStack, buffer, light, LivingEntityRenderer.getOverlayCoords(state, 0), dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 			poseStack.popPose();
 		}
 	}

@@ -18,14 +18,14 @@ import org.joml.Vector3f;
  */
 final class LightStrokes {
 	private final QuadParticleRenderState state;
-	private final SingleQuadParticle.Layer layer;
+	private final McQuadParticle.Layer layer;
 	private final Quaternionf turn = new Quaternionf();
 	private final Vector3f dir = new Vector3f();
 	final TextureAtlasSprite soft;
 	final TextureAtlasSprite line;
 	final TextureAtlasSprite glow;
 
-	LightStrokes(QuadParticleRenderState state, SingleQuadParticle.Layer layer) {
+	LightStrokes(QuadParticleRenderState state, McQuadParticle.Layer layer) {
 		this.state = state;
 		this.layer = layer;
 		this.soft = SpellCircleParticle.particleSprite("sigil_beam");

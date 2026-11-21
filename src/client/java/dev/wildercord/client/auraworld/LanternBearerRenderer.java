@@ -78,7 +78,7 @@ public final class LanternBearerRenderer extends CullableMobRenderer<LanternBear
 			float lit=LanternBearerRules.holdsLantern(s.rise)?Mth.clamp((s.rise-(float)LanternBearerRules.HOOK_AT/LanternBearerRules.RISE_TICKS)*8,0,1):0;
 			float alpha=(.75F+.25F*Mth.sin(s.ageInTicks*.31F)*Mth.sin(s.ageInTicks*.17F))*lit*Math.min(1,s.solid*1.2F)*lights(s);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
-			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, s.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, dev.wildercord.client.compat.RenderCompat.outlineOf(s));
 		}
 		private static float lights(LanternBearerRenderState s){
 			// Burning hot and steady as it gathers the souls for a flare, breathes, or holds its rite.

@@ -1,5 +1,6 @@
 package dev.wildercord.client.fx;
 import dev.wildercord.content.CampOption;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.RandomSource;

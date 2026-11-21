@@ -182,8 +182,8 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
 	/** A backpack part: its leather (or cloth) in the backpack's colour, then what isn't dyed over it. */
 	private static void leather(BackpackModel model, ResourceLocation[] textures, int color, PoseStack pose, MultiBufferSource buffer, int light, int overlay, PlayerRenderState state) {
-		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, Unit.INSTANCE, pose, RenderType.entityCutout(textures[0]), light, overlay, color, state.outlineColor);
-		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, Unit.INSTANCE, pose, RenderType.entityCutout(textures[1]), light, overlay, -1, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, Unit.INSTANCE, pose, RenderType.entityCutout(textures[0]), light, overlay, color, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, Unit.INSTANCE, pose, RenderType.entityCutout(textures[1]), light, overlay, -1, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 	}
 
 	/** The staff, strapped across the back. In item space: +x to the wearer's right, +y up, +z out of the back, in pixels of 1/16. */
@@ -196,7 +196,7 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		pose.translate(0.4F / 16, -4.5F / 16, z / 16);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.XP, STAFF_LEAN);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, STAFF_TURN);
-		piece.item().submit(pose, buffer, light, overlay, state.outlineColor);
+		piece.item().submit(pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		// Two ties round the shaft, reaching in to the back.
 		for (float along : new float[]{-6.6F, -0.6F}) {
 			float y = along * 0.894F;
@@ -206,7 +206,7 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 			pose.translate(along * SIN45 / 16, along * SIN45 / 16, (0.75F - depth / 2) / 16);
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, -45.0F);
 			pose.scale(1.0F, 1.0F, depth);
-			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, tie, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, tie, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 			pose.popPose();
 		}
 	}
@@ -220,7 +220,7 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		pose.pushPose();
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, age * 2.6F);
 		pose.scale(0.42F, 0.42F, 0.42F);
-		piece.item().submit(pose, buffer, light, overlay, state.outlineColor);
+		piece.item().submit(pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		pose.popPose();
 		// A faint glimmer circling it, neutral in colour like the focus is in element.
 		for (int i = 0; i < 2; i++) {
@@ -230,14 +230,14 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 			pose.scale(0.7F, 0.7F, 0.7F);
 			float fade = 0.35F + 0.25F * Mth.sin(age * 0.2F + i * 2.0F);
 			int alpha = Mth.clamp(Math.round(255 * fade), 0, 255);
-			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, mote, Unit.INSTANCE, pose, RenderType.eyes(MOTE_TEXTURE), LightTexture.FULL_BRIGHT, overlay, (alpha << 24) | 0xE4DCFF, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, mote, Unit.INSTANCE, pose, RenderType.eyes(MOTE_TEXTURE), LightTexture.FULL_BRIGHT, overlay, (alpha << 24) | 0xE4DCFF, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 			pose.popPose();
 		}
 	}
 
 	/** The tome, hung from a strap on a belt at the left hip. In body space: y down, the front at -z, the wearer's left at +x. */
 	private void hip(GearLook.Piece piece, PoseStack pose, MultiBufferSource buffer, int light, int overlay, PlayerRenderState state, Surface surface) {
-		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, surface.armored() ? armoredBelt : belt, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, surface.armored() ? armoredBelt : belt, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		float outer = surface.armored() ? BELT_ARMORED_OUTER : BELT_OUTER;
 		float top = GearModel.BELT_TOP + GearModel.BELT_HEIGHT;
 		// Swings a little with the wearer's stride, from where the strap meets the belt.
@@ -245,13 +245,13 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		pose.pushPose();
 		pose.translate(TOME_X / 16, top / 16, -(outer + 0.5F) / 16);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.XP, swing);
-		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, loop, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, loop, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		// Below the strap, the book hangs with its cover out (item space, turned to face the front).
 		pose.translate(0, (LOOP_LENGTH + 0.2F + TOME_SIZE * 8) / 16, -0.75F / 16);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, 180.0F);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, 180.0F);
 		pose.scale(TOME_SIZE, TOME_SIZE, TOME_SIZE);
-		piece.item().submit(pose, buffer, light, overlay, state.outlineColor);
+		piece.item().submit(pose, buffer, light, overlay, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		pose.popPose();
 	}
 }

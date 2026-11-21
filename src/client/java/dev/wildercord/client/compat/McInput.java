@@ -15,22 +15,27 @@ public final class McInput {
 	/** A key press or release. */
 	public record KeyEvent(int key, int scancode, int modifiers) {
 		public boolean hasControlDown() {
-			return InputConstants.isModifierKeyDown(modifiers, InputConstants.MOD_CONTROL);
+			return Screen.hasControlDown();
 		}
 
 		public boolean hasShiftDown() {
-			return InputConstants.isModifierKeyDown(modifiers, InputConstants.MOD_SHIFT);
+			return Screen.hasShiftDown();
 		}
 
 		public boolean hasAltDown() {
-			return InputConstants.isModifierKeyDown(modifiers, InputConstants.MOD_ALT);
+			return Screen.hasAltDown();
 		}
 
 		public boolean isKeyDown(int keyCode) {
 			return key == keyCode;
 		}
 
-		public boolean isEscape() {
+		/** The same rule {@code Screen} uses for what may be typed into a chat field. */
+	public boolean isAllowedChatCharacter() {
+		return codepoint != 167 && codepoint >= ' ' && codepoint != 127;
+	}
+
+	public boolean isEscape() {
 			return key == GLFW.GLFW_KEY_ESCAPE;
 		}
 
@@ -50,7 +55,7 @@ public final class McInput {
 		}
 
 		public boolean hasControlDown() {
-			return InputConstants.isModifierKeyDown(modifiers, InputConstants.MOD_CONTROL);
+			return Screen.hasControlDown();
 		}
 	}
 }

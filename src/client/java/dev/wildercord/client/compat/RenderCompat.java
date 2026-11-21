@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.wildercord.Wildercord;
 import dev.wildercord.client.mixin.RenderPipelinesAccessor;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
@@ -91,7 +92,6 @@ public final class RenderCompat {
 	}
 
 	/** Poses a model for its state, which 1.21.8's {@code renderToBuffer} does not do for you. */
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private static <S> void poseFor(Model model, S state) {
 		if (model instanceof McModel posed) {

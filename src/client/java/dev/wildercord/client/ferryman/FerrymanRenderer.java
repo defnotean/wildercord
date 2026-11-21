@@ -22,7 +22,7 @@ public final class FerrymanRenderer extends dev.wildercord.client.compat.Cullabl
 		super(c,new FerrymanModel(c.bakeLayer(LAYER)),1.7F);
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<FerrymanRenderState,FerrymanModel>(this) {
 			@Override public void render(PoseStack pose, MultiBufferSource buffer, int light,FerrymanRenderState state,float yRot,float xRot) {
-				if(!state.isInvisible && state.deathTime<=0) dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+				if(!state.isInvisible && state.deathTime<=0) dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 			}
 		});
 	}

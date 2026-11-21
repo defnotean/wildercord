@@ -67,7 +67,7 @@ public class CordLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		float[][] spots = slim ? SLIM_SPOTS : SPOTS;
 		// The colour goes in as the tint; the outline is the player's own (none unless they're Glowing), so the Cord
 		// never carries a glowing outline of its own.
-		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, slim ? slimBand : band, Unit.INSTANCE, pose, RenderType.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, slim ? slimBand : band, Unit.INSTANCE, pose, RenderType.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, -1, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		float glow = ((CastingPose) state).wildercord$glow();
 		// The player's chosen style (see CordStyleLook): the beads' material, and a fixed glow colour or the runes' own.
 		dev.wildercord.cosmetic.CordStyles.Style style = dev.wildercord.client.cosmetic.CordStyleLook.of(state);
@@ -84,7 +84,7 @@ public class CordLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 			pose.translate(spot[0] / 16F, spot[1] / 16F, spot[2] / 16F);
 			int rgb = dev.wildercord.client.cosmetic.CordStyleLook.glowColor(style, cord.beads().get(i)) & 0xFFFFFF;
 			int color = (alpha << 24) | rgb;
-			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, bead, Unit.INSTANCE, pose, RenderType.entityCutout(beadTexture), light, OverlayTexture.NO_OVERLAY, tinted ? 0xFF000000 | rgb : -1, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, bead, Unit.INSTANCE, pose, RenderType.entityCutout(beadTexture), light, OverlayTexture.NO_OVERLAY, tinted ? 0xFF000000 | rgb : -1, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 			// The glow is light, not a thing: a shader pack's shadows leave it out.
 			if (alpha > 0 && !dev.wildercord.client.compat.ShaderCompat.shadowPass()) {
 				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, bead, Unit.INSTANCE, pose, RenderType.eyes(glowTexture), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color, 0);

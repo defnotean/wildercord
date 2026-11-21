@@ -151,9 +151,9 @@ public final class ArticulatedCombat {
 		if (off != null && !off.isEmpty()) return null;
 		if (state instanceof PlayerRenderState avatar) {
 			if (frame.master() || avatar.isSpectator || avatar.skin == null
-				|| avatar.arrowCount > 0 || avatar.stingerCount > 0 || avatar.showExtraEars
+				|| avatar.arrowCount > 0 || avatar.stingerCount > 0 || false
 				|| avatar.parrotOnLeftShoulder != null || avatar.parrotOnRightShoulder != null
-				|| avatar.showCape && avatar.skin.cape() != null || !avatar.heldOnHead.isEmpty()
+				|| avatar.showCape && avatar.skin.cape() != null || false
 				|| state.getData(GearLook.PACK) != null || state.getData(GearLook.PIECES) != null
 				|| !ArticulatedAuraShellRenderer.compatible(avatar) || state.getData(AuraShellLayer.IMAGES) != null) return null;
 		} else if (!(state instanceof AuraFighterRenderState fighter) || !frame.master() || fighter.sit > 0 || fighter.yield > 0 || fighter.stagger > 0) return null;

@@ -55,7 +55,7 @@ public final class HollowMatronRenderer extends MobRenderer<HollowMatron,HollowM
 			if(s.roused)alpha+=.25F+.15F*Mth.sin(s.ageInTicks*.3F);
 			if(s.deathTime>0)alpha*=Math.max(0,1-s.deathTime/20F);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
-			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, s.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, dev.wildercord.client.compat.RenderCompat.outlineOf(s));
 		}
 	}
 }

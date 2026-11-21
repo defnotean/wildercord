@@ -38,7 +38,7 @@ public final class BladeTooltip {
 			if (!client.isSameThread()) {
 				return;
 			}
-			List<Component> extra = lines(stack, client.player, client.hasShiftDown());
+			List<Component> extra = lines(stack, client.player, net.minecraft.client.gui.screens.Screen.hasShiftDown());
 			if (!extra.isEmpty()) {
 				lines.addAll(Math.min(1, lines.size()), extra);
 			}

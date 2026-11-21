@@ -2,6 +2,7 @@ package dev.wildercord.client.compat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -20,7 +21,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
  * Particles report {@code CUSTOM} so the engine hands over the whole buffer source.
  */
 public abstract class McQuadParticle extends SingleQuadParticle {
-	/** How a quad is blended: 1.21.9's {@code SingleQuadParticle.Layer}, which 1.21.8 has no equivalent of. */
+	/** How a quad is blended: 1.21.9's {@code McQuadParticle.Layer}, which 1.21.8 has no equivalent of. */
 	public static final class Layer {
 		/** Vanilla's translucent particles: light that hides a little of what's behind it. */
 		public static final Layer TRANSLUCENT = new Layer(RenderType.translucentParticle(TextureAtlas.LOCATION_PARTICLES));

@@ -1,6 +1,7 @@
 package dev.wildercord.client.fx;
 import dev.wildercord.wildlife.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;

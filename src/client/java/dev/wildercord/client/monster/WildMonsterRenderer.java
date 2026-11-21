@@ -108,7 +108,7 @@ public class WildMonsterRenderer<T extends WildMonster, M extends EntityModel<Mo
 			if ((argb >>> 24) < 4) {
 				return;
 			}
-			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 		}
 	}
 }

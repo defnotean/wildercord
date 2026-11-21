@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.wildercord.client.fx.GlowLayers;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 /**

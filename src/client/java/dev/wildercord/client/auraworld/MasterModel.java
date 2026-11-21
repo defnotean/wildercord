@@ -122,9 +122,9 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 	}
 
 	@Override
-	public void translateToHand(AuraFighterRenderState state, HumanoidArm arm, PoseStack stack) {
+	public void translateToHand(HumanoidArm arm, PoseStack stack) {
 		var frame = dev.wildercord.client.combat.ArticulatedCombat.frame(state);
-		if (frame == null) { super.translateToHand(state, arm, stack); return; }
+		if (frame == null) { super.translateToHand(arm, stack); return; }
 		dev.wildercord.client.combat.ArticulatedCombat.translateHeld(articulated, this, state, arm, stack);
 	}
 

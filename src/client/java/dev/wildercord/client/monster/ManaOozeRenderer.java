@@ -38,7 +38,7 @@ public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State,
 				}
 				float strength = Mth.clamp(0.7F + 0.3F * state.fill + 0.5F * state.flash, 0, 1) * (state.deathTime > 0 ? 0.4F : 1);
 				int argb = ((int) (strength * 255) << 24) | 0xFFFFFF;
-				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
+				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, argb, dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 			}
 		});
 		// The clear outer jelly, last, over everything inside it.
@@ -49,7 +49,7 @@ public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State,
 					return;
 				}
 				outer.setupAnim(state);
-				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, outer, state, poseStack, RenderType.entityTranslucent(TEXTURE), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), state.outlineColor);
+				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, outer, state, poseStack, RenderType.entityTranslucent(TEXTURE), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), dev.wildercord.client.compat.RenderCompat.outlineOf(state));
 			}
 		});
 	}
