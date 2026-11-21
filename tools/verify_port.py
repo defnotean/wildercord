@@ -201,6 +201,19 @@ def _valid_mc_jar(path: Path) -> bool:
     )
 
 
+# Loom keeps intermediary-mapped jars beside the Mojang-mapped ones; the verifier
+# reads Mojang names, so a jar must actually carry them to be usable.
+_MOJANG_MARKER = "net/minecraft/world/level/block/Blocks.class"
+
+
+def _mojang_named(path: Path) -> bool:
+    try:
+        with zipfile.ZipFile(path) as archive:
+            return _MOJANG_MARKER in archive.namelist()
+    except (OSError, zipfile.BadZipFile):
+        return False
+
+
 def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
     if explicit_jars:
         return [Path(j) for j in explicit_jars if Path(j).exists()]
@@ -208,7 +221,7 @@ def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
     bases = _gradle_bases()
     for base in bases:
         merged = base / "caches" / "fabric-loom" / mc_version / "minecraft-client.jar"
-        if merged.is_file():
+        if merged.is_file() and _mojang_named(merged):
             return [merged]
 
     for base in bases:
@@ -222,7 +235,7 @@ def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
                 if not ver_dir.is_dir():
                     continue
                 for jar in sorted(ver_dir.glob("*.jar")):
-                    if _valid_mc_jar(jar):
+                    if _valid_mc_jar(jar) and _mojang_named(jar):
                         merged_jars.append(jar)
         if merged_jars:
             named = [j for j in merged_jars if "named" in str(j) or "loom.mappings" in str(j)]
@@ -232,7 +245,7 @@ def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
     if loom_maven.is_dir():
         project_jars = []
         for jar in sorted(loom_maven.rglob("*.jar")):
-            if not _valid_mc_jar(jar):
+            if not _valid_mc_jar(jar) or not _mojang_named(jar):
                 continue
             if jar.name.startswith("minecraft-") and (
                 f"-{mc_version}" in jar.name or jar.parent.name.startswith(mc_version)
@@ -256,7 +269,7 @@ def find_mc_jars(root: Path, mc_version: str, explicit_jars=None):
                     if not ver_dir.is_dir():
                         continue
                     for jar in sorted(ver_dir.glob("*.jar")):
-                        if _valid_mc_jar(jar) and jar not in candidates:
+                        if _valid_mc_jar(jar) and _mojang_named(jar) and jar not in candidates:
                             candidates.append(jar)
     return candidates
 
