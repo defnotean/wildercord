@@ -65,7 +65,19 @@ public final class LifeOutcomeQualityTest implements FabricClientGameTest {
   }finally{c.runOnClient(mc->{MagicQuality.own=oldOwn;MagicQuality.others=oldOthers;mc.options.setCameraType(oldCamera);});}
  }
  private static List<Particle> particles(ParticleEngine e){var out=new ArrayList<Particle>();for(var group:((Map<?,?>)field(e,ParticleEngine.class,"particles")).values())for(var p:(Queue<?>)field(group,ParticleGroup.class,"particles"))out.add((Particle)p);for(var p:(Queue<?>)field(e,ParticleEngine.class,"particlesToAdd"))out.add((Particle)p);return out;}
- private static Object field(Object o,Class<?> type,String name){try{var f=type.getDeclaredField(name);f.setAccessible(true);return f.get(o);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}
+ /** 1.21.11 keeps the quad list private; count the submissions instead. */
+private static final class CountingState extends QuadParticleRenderState {
+	int quads;
+	@Override public void add(net.minecraft.client.particle.SingleQuadParticle.Layer layer,
+			float x, float y, float z, float width, float height, float u0, float v0, float u1, float v1,
+			float r, float g, float b, float a, int light, int overlay) {
+		quads++;
+		super.add(layer, x, y, z, width, height, u0, v0, u1, v1, r, g, b, a, light, overlay);
+	}
+	boolean isEmpty() { return quads == 0; }
+}
+
+private static Object field(Object o,Class<?> type,String name){try{var f=type.getDeclaredField(name);f.setAccessible(true);return f.get(o);}catch(ReflectiveOperationException e){throw new AssertionError(e);}}
  private static void reject(Runnable r){boolean refused=false;try{r.run();}catch(IllegalArgumentException expected){refused=true;}check(refused,"Malformed cosmetic payload rejected");}
  private static void check(boolean ok,String why){if(!ok)throw new AssertionError(why);}
 }
