@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.wildercord.client.fx.GlowLayers;
 import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OverlayTexture;
 
 /**
  * Stands in for 1.21.9's {@code QuadParticleRenderState}, which 1.21.8 doesn't have: it collects the
@@ -79,6 +80,7 @@ public class QuadParticleRenderState {
 				z + right.z * along + up.z * across)
 			.setUv(u, v)
 			.setColor(red, green, blue, alpha)
+			.setOverlay(OverlayTexture.NO_OVERLAY)
 			.setLight(lightCoords)
 			.setNormal(-back.x, -back.y, -back.z);
 	}
