@@ -371,10 +371,11 @@ public final class BossDamageTest implements FabricClientGameTest {
 
 			// Test custom mob fire rendering: burning custom mob suppresses vanilla flame billboard while burning vanilla mob keeps it.
 			int[] fireIds = new int[2];
+			server.runCommand("weather clear");
+			server.runCommand("time set 6000");
 			server.runOnServer(s -> {
 				var player = p(s);
 				var level = s.overworld();
-				level.setWeatherParameters(12000, 0, false, false);
 				player.setGameMode(GameType.CREATIVE);
 				player.teleportTo(0.5, 101, 5.5);
 				player.setYRot(180.0F);
