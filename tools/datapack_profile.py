@@ -356,8 +356,10 @@ class DataPackProfile:
         effects.setdefault("fog_color", effects.get("water_fog_color", 12638463))
         music = attrs.get("minecraft:audio/background_music")
         if isinstance(music, dict) and isinstance(music.get("default"), dict):
-            # 1.21.10 stores background music as a WeightedList: an array of {data, weight} entries.
-            effects["music"] = [{"data": music["default"], "weight": 1}]
+            # 1.21.10 stores background music as a WeightedList of Music codecs, which also want replace_current_music.
+            entry = dict(music["default"])
+            entry.setdefault("replace_current_music", False)
+            effects["music"] = [{"data": entry, "weight": 1}]
         return effects
 
     @property

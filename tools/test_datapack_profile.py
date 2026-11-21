@@ -189,7 +189,8 @@ class DataPackProfileTests(unittest.TestCase):
         self.assertEqual(b12110["effects"]["water_fog_color"], 0x245257)
         self.assertEqual(b12110["effects"]["grass_color"], 0x78A994)
         self.assertEqual(b12110["effects"]["fog_color"], 0x245257)
-        self.assertEqual(b12110["effects"]["music"], [{"data": {"sound": "minecraft:music.overworld.swamp"}, "weight": 1}])
+        self.assertEqual(b12110["effects"]["music"],
+                         [{"data": {"sound": "minecraft:music.overworld.swamp", "replace_current_music": False}, "weight": 1}])
 
         mod = {"type": "wildercord:random_rune", "min_tier": 1, "max_tier": 2}
         self.assertEqual(p262.villager_item_modifier_field(mod), {"given_item_modifiers": [{"function": "wildercord:random_rune", "min_tier": 1, "max_tier": 2}]})

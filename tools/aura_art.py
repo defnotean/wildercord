@@ -414,8 +414,10 @@ def write(g):
     aura_standard_art.write(g)
 
     # What carries aura: servers and add-ons extend it.
-    g.write_json(g.DATA / "tags/item/aura_weapons.json", {"replace": False, "values": [
-        "#minecraft:swords", "#minecraft:axes", "#minecraft:spears", "minecraft:trident", "minecraft:mace"]})
+    aura_weapon_values = ["#minecraft:swords", "#minecraft:axes", "#minecraft:spears", "minecraft:trident", "minecraft:mace"]
+    if not g.profile.has_spear_base():
+        aura_weapon_values.remove("#minecraft:spears")  # no spear tag before 1.21.11
+    g.write_json(g.DATA / "tags/item/aura_weapons.json", {"replace": False, "values": aura_weapon_values})
     # Aura off the blade (the slash, a spark): armour applies; against players it goes through the spell defences in code.
     g.write_json(g.DATA / "damage_type/aura.json", {"exhaustion": 0.1, "message_id": "wildercord.aura", "scaling": "when_caused_by_living_non_player"})
     # Masters hand their methods down: a manual at the weaponsmith's and the cleric's last level.
