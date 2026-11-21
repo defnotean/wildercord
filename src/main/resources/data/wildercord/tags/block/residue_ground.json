@@ -1,6 +1,8 @@
 {
   "values": [
-    "#minecraft:substrate_overworld",
+    "#minecraft:animals_spawnable_on",
+    "minecraft:mud",
+    "minecraft:moss_block",
     "#minecraft:sand",
     "minecraft:gravel",
     "minecraft:clay",

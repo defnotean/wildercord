@@ -574,10 +574,16 @@ class DataFormatTest {
 		required(stack, where, "id");
 	}
 
-	/** An ingredient: an item id, a {@code #tag} or a list of them; the older {@code {"item": ...}} objects fail. */
+	/** An ingredient: an item id, a {@code #tag} or a list of them; 1.21.x also allows the {@code {"item"|"tag": ...}} objects. */
 	private static void ingredient(JsonElement ingredient, String where) {
 		if (ingredient.isJsonArray()) {
 			ingredient.getAsJsonArray().forEach(e -> ingredient(e, where));
+			return;
+		}
+		if (TestDataProfile.isBefore26_3() && ingredient.isJsonObject()) {
+			JsonObject object = ingredient.getAsJsonObject();
+			allowed(object, where, "item", "tag");
+			assertTrue(object.has("item") ^ object.has("tag"), where + ": an ingredient object carries exactly one of item/tag: " + object);
 			return;
 		}
 		assertTrue(ingredient.isJsonPrimitive(), where + ": an ingredient is an item id or #tag in " + TestDataProfile.MC_VERSION + ", not " + ingredient);
