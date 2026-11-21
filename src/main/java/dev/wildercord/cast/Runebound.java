@@ -22,7 +22,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.objects.AtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -273,7 +272,7 @@ public final class Runebound {
 			name.append(Component.literal("» ").withColor(0xFFFFFF));
 		}
 		for (RuneDef rune : spell) {
-			name.append(Component.object(new AtlasSprite(net.minecraft.resources.ResourceLocation.parse("textures/atlas/items.png"), Wildercord.id("item/rune/" + rune.path()))));
+			// 1.21.8 components carry no inline sprite objects: the coloured rune glyph alone.
 			name.append(Component.literal("◆").withColor(RuneColors.of(rune)));
 		}
 		int color = elementColor(spell);

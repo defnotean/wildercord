@@ -160,7 +160,7 @@ public final class Familiars {
 		wisp.setMode(Wisp.FOLLOW);
 		wisp.setFamiliarLevel(1);
 		wisp.setPersistenceRequired();
-		wisp.updateName(player.getGameProfile().name(), "");
+		wisp.updateName(player.getGameProfile().getName(), "");
 		LIVE.put(id, wisp);
 
 		ServerLevel level = (ServerLevel) wisp.level();
@@ -195,7 +195,7 @@ public final class Familiars {
 		wisp.setMode(Wisp.FOLLOW);
 		wisp.setFamiliarLevel(bond.level());
 		wisp.setPersistenceRequired();
-		wisp.updateName(player.getGameProfile().name(), bond.name());
+		wisp.updateName(player.getGameProfile().getName(), bond.name());
 		level.addFreshEntity(wisp);
 		LIVE.put(bond.id(), wisp);
 		wisp.flare();
@@ -303,7 +303,7 @@ public final class Familiars {
 		String clean = name.strip();
 		clean = clean.length() > 32 ? clean.substring(0, 32) : clean;
 		set(owner, bonds.with(bond.withName(clean)));
-		wisp.updateName(owner.getGameProfile().name(), clean);
+		wisp.updateName(owner.getGameProfile().getName(), clean);
 	}
 
 	/** A wild wisp fading away (day came, or it has drifted long enough). */

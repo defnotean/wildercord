@@ -25,7 +25,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -110,14 +109,14 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 		}
 
 		@Override
-		public void startOpen(ContainerUser user) {
+		public void startOpen(Player user) {
 			if (opened++ == 0 && level() instanceof ServerLevel server) {
 				play(server, SoundEvents.CHEST_OPEN, 0.6F, 1.0F);
 			}
 		}
 
 		@Override
-		public void stopOpen(ContainerUser user) {
+		public void stopOpen(Player user) {
 			if (opened > 0 && --opened == 0 && level() instanceof ServerLevel server) {
 				play(server, SoundEvents.CHEST_CLOSE, 0.6F, 1.0F);
 			}
@@ -183,7 +182,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 
 	/** Takes to this player: it drops whatever it was after, and won't wander off or despawn. */
 	public void tame(Player player) {
-		entityData.set(DATA_OWNER, Optional.of(EntityReference.<LivingEntity>of(player.getUUID())));
+		entityData.set(DATA_OWNER, Optional.of(new EntityReference<>(player.getUUID())));
 		setTarget(null);
 		setLastHurtByMob(null);
 		setPersistenceRequired();

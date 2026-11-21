@@ -4,7 +4,6 @@ import net.minecraft.core.particles.ItemParticleOption;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.Wildercord;
-import dev.wildercord.mixin.MannequinAccessor;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
@@ -41,7 +40,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.decoration.Mannequin;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -141,7 +140,7 @@ public final class Innates {
 
 	private record SpellHit(SpellPlan.Segment root, long time) {}
 
-	private record Afterimage(Mannequin body, LivingEntity caster, long until, double power) {}
+	private record Afterimage(LivingEntity body, LivingEntity caster, long until, double power) {}
 
 	private static final Map<UUID, Thread> THREADS = new HashMap<>();
 	private static final Map<UUID, Set<LivingEntity>> THREAD_MEMBERS = new HashMap<>();
@@ -171,7 +170,7 @@ public final class Innates {
 			if (damage <= 0 || !(entity.level() instanceof ServerLevel level)) {
 				return;
 			}
-			if (entity instanceof Mannequin && entity.getTags().contains(AFTERIMAGE_TAG)) {
+			if (entity instanceof ArmorStand && entity.getTags().contains(AFTERIMAGE_TAG)) {
 				SOAKED.merge(entity.getUUID(), damage, Float::sum);
 			}
 			long now = level.getGameTime();
@@ -218,7 +217,7 @@ public final class Innates {
 			AFTERIMAGES.clear();
 		});
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity instanceof Mannequin && entity.getTags().contains(AFTERIMAGE_TAG)
+			if (entity instanceof ArmorStand && entity.getTags().contains(AFTERIMAGE_TAG)
 					&& AFTERIMAGES.stream().noneMatch(a -> a.body() == entity)) {
 				entity.discard();
 			}
@@ -578,15 +577,12 @@ public final class Innates {
 
 	private static void afterimage(Cast cast, ServerPlayer player, int ticks, double power) {
 		ServerLevel level = cast.level;
-		Mannequin body = Mannequin.create(EntityType.MANNEQUIN, level);
+		LivingEntity body = dev.wildercord.compat.McDecoys.afterimageBody(level, player);
 		if (body == null) {
 			return;
 		}
 		body.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
 		body.setYHeadRot(player.getYHeadRot());
-		body.setComponent(DataComponents.PROFILE, ResolvableProfile.createResolved(player.getGameProfile()));
-		((MannequinAccessor) body).wildercord$setHideDescription(true);
-		((MannequinAccessor) body).wildercord$setImmovable(true);
 		body.setCustomName(Component.translatable("entity.wildercord.afterimage", player.getName()).withColor(0xB45AF0));
 		body.addEffect(new MobEffectInstance(MobEffects.GLOWING, ticks, 0, false, false));
 		body.getAttribute(Attributes.MAX_HEALTH).setBaseValue(60);
@@ -603,7 +599,7 @@ public final class Innates {
 		taunt(level, body);
 	}
 
-	private static void taunt(ServerLevel level, Mannequin body) {
+	private static void taunt(ServerLevel level, LivingEntity body) {
 		for (Entity e : level.getEntities(body, body.getBoundingBox().inflate(16), e -> e instanceof Mob && e instanceof Enemy && e.isAlive())) {
 			((Mob) e).setTarget(body);
 		}
@@ -709,7 +705,7 @@ public final class Innates {
 		if (!AFTERIMAGES.isEmpty()) {
 			for (Iterator<Afterimage> it = AFTERIMAGES.iterator(); it.hasNext(); ) {
 				Afterimage image = it.next();
-				Mannequin body = image.body();
+				LivingEntity body = image.body();
 				if (!(body.level() instanceof ServerLevel level)) {
 					it.remove();
 					continue;

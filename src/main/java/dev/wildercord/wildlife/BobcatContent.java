@@ -33,7 +33,7 @@ public final class BobcatContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("black_bobcat_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(BLACK_BOBCAT).setId(EGG_KEY)));
+		new SpawnEggItem(BLACK_BOBCAT, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a bobcat may stand on to spawn (written by tools/bobcat_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/black_bobcat"));

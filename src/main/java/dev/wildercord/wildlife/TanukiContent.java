@@ -33,7 +33,7 @@ public final class TanukiContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("blossom_tanuki_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(BLOSSOM_TANUKI).setId(EGG_KEY)));
+		new SpawnEggItem(BLOSSOM_TANUKI, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a blossom tanuki may stand on to spawn (written by tools/tanuki_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/blossom_tanuki"));

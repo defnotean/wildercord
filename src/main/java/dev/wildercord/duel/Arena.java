@@ -123,7 +123,7 @@ public final class Arena {
 	/** A caster's standing this season. */
 	public static ArenaLadder.Standing standing(ServerPlayer player) {
 		ServerLevel level = player.level();
-		return ArenaLadder.of(level.getServer()).standing(player.getUUID(), player.getGameProfile().name(), season(level));
+		return ArenaLadder.of(level.getServer()).standing(player.getUUID(), player.getGameProfile().getName(), season(level));
 	}
 
 	/** {@code player} used the stone at {@code pos}: step up, or (sneaking) read the ladder. */
@@ -222,8 +222,8 @@ public final class Arena {
 			this.centre = centre;
 			this.a = a.getUUID();
 			this.b = b.getUUID();
-			this.nameA = a.getGameProfile().name();
-			this.nameB = b.getGameProfile().name();
+			this.nameA = a.getGameProfile().getName();
+			this.nameB = b.getGameProfile().getName();
 		}
 
 		private void both(java.util.function.Consumer<ServerPlayer> each) {

@@ -357,7 +357,7 @@ public final class HearthEffects {
 			case "skyread" -> skyread(caster, level);
 			case "landread" -> landread(caster, level, BlockPos.containing(ground(level, hit, caster)));
 			case "starchart" -> {
-				BlockPos spawn = level.getRespawnData().pos();
+				BlockPos spawn = dev.wildercord.compat.McSpawn.ofLevel(level).pos();
 				int far = (int) Math.sqrt(caster.blockPosition().distSqr(spawn));
 				BlockPos me = caster.blockPosition();
 				Casters.tell(caster, Component.translatable("message.wildercord.hearth.star", me.getX(), me.getY(), me.getZ(),
@@ -374,9 +374,9 @@ public final class HearthEffects {
 				}
 			}
 			case "hearthpath" -> {
-				ServerPlayer.RespawnConfig respawn = caster.getRespawnConfig();
-				ResourceKey<Level> dim = respawn != null ? respawn.respawnData().dimension() : Level.OVERWORLD;
-				BlockPos pos = respawn != null ? respawn.respawnData().pos() : level.getServer().overworld().getRespawnData().pos();
+				var respawn = dev.wildercord.compat.McSpawn.ofPlayer(caster);
+				ResourceKey<Level> dim = respawn != null ? respawn.dimension() : Level.OVERWORLD;
+				BlockPos pos = respawn != null ? respawn.pos() : dev.wildercord.compat.McSpawn.ofServer(level.getServer()).pos();
 				point(caster, dim, List.of(Vec3.atCenterOf(pos)), Effects.ticks(HearthRules.BRIEF, duration), 0xFFB060,
 					"message.wildercord.hearth.home_far");
 			}

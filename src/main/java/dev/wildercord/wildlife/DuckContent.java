@@ -33,7 +33,7 @@ public final class DuckContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("brookbill_duck_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(BROOKBILL_DUCK).setId(EGG_KEY)));
+		new SpawnEggItem(BROOKBILL_DUCK, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a brookbill duck may stand on to spawn (written by tools/duck_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/brookbill_duck"));

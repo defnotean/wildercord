@@ -673,7 +673,7 @@ public final class BondedBlades {
 		if (color != 0 && color != b.color()) {
 			next = next.withGrowth(next.growth().withColor(color));
 		}
-		String name = player.getGameProfile().name();
+		String name = player.getGameProfile().getName();
 		if (!name.equals(b.who().ownerName())) {
 			next = next.withWho(new BladeBond.Who(b.id(), b.owner(), name, b.who().lineage()));
 		}
@@ -842,7 +842,7 @@ public final class BondedBlades {
 			Component.literal(b.who().ownerName())).withColor(0xC8B8A0));
 		if (owner != null && owner != holder) {
 			owner.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.came_home", name.copy().withColor(color),
-				Component.literal(holder.getGameProfile().name())).withColor(0xE8D8B0));
+				Component.literal(holder.getGameProfile().getName())).withColor(0xE8D8B0));
 			BladeCeremony.homeFx(holder.level(), from, owner, b.color());
 		} else {
 			BladeCeremony.homeFx(holder.level(), from, null, b.color());
@@ -1068,10 +1068,10 @@ public final class BondedBlades {
 		BladeBond.Origin origin = new BladeBond.Origin(day(level), biome, level.dimension().location().toString(), at.getX(), at.getY(), at.getZ(),
 			Aura.data(player).method(), how);
 		UUID id = UUID.randomUUID();
-		BladeBond b = BladeBond.fresh(id, player.getUUID(), player.getGameProfile().name(), Aura.color(player), origin);
+		BladeBond b = BladeBond.fresh(id, player.getUUID(), player.getGameProfile().getName(), Aura.color(player), origin);
 		stack.remove(FORMER);
 		stack.set(BOND, b);
-		BladeRegistry.of(level.getServer()).register(id, player.getUUID(), player.getGameProfile().name(), level.getGameTime());
+		BladeRegistry.of(level.getServer()).register(id, player.getUUID(), player.getGameProfile().getName(), level.getGameTime());
 		player.setAttached(STATE, new State(id.toString(), Shown.NONE, level.dimension().location().toString(), at.getX(), at.getY(), at.getZ(), false));
 		PENDING.remove(player.getUUID());
 		FOES.remove(player.getUUID());
@@ -1254,14 +1254,14 @@ public final class BondedBlades {
 		from.getInventory().setItem(slot, ItemStack.EMPTY);
 		long day = day(from.level());
 		List<String> lineage = new ArrayList<>(b.who().lineage());
-		lineage.add(from.getGameProfile().name());
+		lineage.add(from.getGameProfile().getName());
 		int color = Aura.color(to) == 0 ? b.color() : Aura.color(to);
-		BladeBond next = b.withWho(new BladeBond.Who(b.id(), to.getUUID(), to.getGameProfile().name(), lineage))
+		BladeBond next = b.withWho(new BladeBond.Who(b.id(), to.getUUID(), to.getGameProfile().getName(), lineage))
 			.withGrowth(b.growth().withColor(color))
 			.withHistory(b.history().plus(Map.of(), List.of(), List.of(new BladeBond.Deed(BladeRules.DEED_PASSED,
-				from.getGameProfile().name() + ">" + to.getGameProfile().name(), day))));
+				from.getGameProfile().getName() + ">" + to.getGameProfile().getName(), day))));
 		blade.set(BOND, next);
-		BladeRegistry.of(from.level().getServer()).moveTo(b.id(), to.getUUID(), to.getGameProfile().name());
+		BladeRegistry.of(from.level().getServer()).moveTo(b.id(), to.getUUID(), to.getGameProfile().getName());
 		from.setAttached(STATE, State.NONE);
 		to.setAttached(STATE, new State(b.id().toString(), Shown.NONE, "", 0, 0, 0, false));
 		PENDING.remove(from.getUUID());

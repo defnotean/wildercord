@@ -31,7 +31,7 @@ import java.util.*;
 public final class HighlandContent {
 	private HighlandContent() {}
 	private static final ResourceKey<Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("windreed"));
-	public static final WindreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new WindreedBlock(BlockBehaviour.Properties.of().setId(KEY).noCollision().noOcclusion().instabreak().randomTicks().sound(SoundType.GRASS)));
+	public static final WindreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new WindreedBlock(BlockBehaviour.Properties.of().setId(KEY).noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.GRASS)));
 	public static final Item WINDREED=Registry.register(BuiltInRegistries.ITEM,ResourceKey.create(Registries.ITEM,Wildercord.id("windreed")),
 		new BlockItem(REED,new Item.Properties().setId(ResourceKey.create(Registries.ITEM,Wildercord.id("windreed"))).useBlockDescriptionPrefix()));
 	public static final Holder<MobEffect> DOWNWIND=Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,Wildercord.id("downwind"),

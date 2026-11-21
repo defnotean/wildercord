@@ -33,7 +33,7 @@ public final class MeerkatContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("sunwatch_meerkat_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(SUNWATCH_MEERKAT).setId(EGG_KEY)));
+		new SpawnEggItem(SUNWATCH_MEERKAT, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a sunwatch meerkat may stand on to spawn (written by tools/meerkat_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/sunwatch_meerkat"));

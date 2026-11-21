@@ -33,7 +33,7 @@ public final class RedPandaContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinnabar_panda_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(CINNABAR_PANDA).setId(EGG_KEY)));
+		new SpawnEggItem(CINNABAR_PANDA, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a cinnabar panda may stand on to spawn (written by tools/red_panda_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/cinnabar_panda"));

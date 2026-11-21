@@ -80,7 +80,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 				check(room.isPresent() && room.get().bed().pos().equals(ROOM), "A room is let where the key was used");
 				check(InnRoomRules.daysLeft(room.get().until(), now) == InnRoomRules.RENT_DAYS, "for a key's days");
 				var respawn = p(s).getRespawnConfig();
-				check(respawn != null && respawn.forced() && respawn.respawnData().pos().equals(ROOM), "The traveller now wakes at the inn");
+				check(respawn != null && respawn.forced() && respawn.pos().equals(ROOM), "The traveller now wakes at the inn");
 
 				// A second key adds to the stay rather than starting it over.
 				check(useKey(s), "A second key is spent");

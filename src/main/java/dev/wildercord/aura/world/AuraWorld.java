@@ -46,7 +46,7 @@ public final class AuraWorld {
 		EntityType.Builder.of(Duelist::new, MobCategory.CREATURE).sized(0.6F, 1.95F).eyeHeight(1.62F).clientTrackingRange(10));
 	/** An old suit of armour that aura still walks in. */
 	public static final EntityType<FallenKnight> FALLEN_KNIGHT = register("fallen_knight",
-		EntityType.Builder.of(FallenKnight::new, MobCategory.MONSTER).sized(0.7F, 2.05F).eyeHeight(1.72F).clientTrackingRange(8).notInPeaceful());
+		EntityType.Builder.of(FallenKnight::new, MobCategory.MONSTER).sized(0.7F, 2.05F).eyeHeight(1.72F).clientTrackingRange(8));
 
 	/** An opt-in endgame encounter; never part of natural spawning. */
 	public static final EntityType<SwordMaster> SWORD_MASTER = register("sword_master",
@@ -74,7 +74,7 @@ public final class AuraWorld {
 
 	private static Item egg(String id, EntityType<? extends Mob> type) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(id + "_spawn_egg"));
-		Item egg = Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(new Item.Properties().spawnEgg(type).setId(key)));
+		Item egg = Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(type, new Item.Properties().setId(key)));
 		SPAWN_EGGS.add(egg);
 		return egg;
 	}

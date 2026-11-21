@@ -63,7 +63,7 @@ public final class Inscriptions {
 		if (entry == null || entry.rank() < MasteryRules.ADEPT) {
 			return false;
 		}
-		scroll.set(Inscription.TYPE, new Inscription(entry.key(), entry.own(), entry.seed(), entry.rank(), player.getGameProfile().name()));
+		scroll.set(Inscription.TYPE, new Inscription(entry.key(), entry.own(), entry.seed(), entry.rank(), player.getGameProfile().getName()));
 		return true;
 	}
 

@@ -54,7 +54,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 			context.waitTicks(40); world.getServer().runCommand("gamerule doMobSpawning false");
 			world.getServer().runOnServer(server -> {
 				owner = RelayCircleTest.player(server); RelayCircleTest.prepare(owner, Runes.FROST);
-				owner.level().getGameRules().getRule(GameRules.RULE_PVP).set(true, server);
+				server.setPvpAllowed(true);
 				guest = new Guest(owner.level()); guest.setGameMode(GameType.SURVIVAL);
 				guest.snapTo(.5,150,6.5,180,0); guest.setNoGravity(true); owner.level().addNewPlayer(guest);
 				incoming=0;

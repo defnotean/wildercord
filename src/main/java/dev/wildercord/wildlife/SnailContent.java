@@ -33,7 +33,7 @@ public final class SnailContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("capcrown_snail_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(CAPCROWN_SNAIL).setId(EGG_KEY)));
+		new SpawnEggItem(CAPCROWN_SNAIL, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a capcrown snail may stand on to spawn (written by tools/snail_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/capcrown_snail"));

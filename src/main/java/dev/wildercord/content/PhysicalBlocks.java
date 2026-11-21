@@ -29,7 +29,7 @@ public final class PhysicalBlocks {
 		var key=ResourceKey.create(Registries.BLOCK,Wildercord.id(name));
 		var p=BlockBehaviour.Properties.of().setId(key).strength(.6F,2).noLootTable().noOcclusion().lightLevel(s->light)
 			.sound(step?SoundType.WOOL:SoundType.STONE);
-		if(ghost)p.noCollision().strength(-1,3600000);
+		if(ghost)p.noCollission().strength(-1,3600000);
 		return Registry.register(BuiltInRegistries.BLOCK,key,step?new Step(p):new Block(p));
 	}
 	private static final class Step extends Block {

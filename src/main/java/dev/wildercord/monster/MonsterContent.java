@@ -156,7 +156,7 @@ public final class MonsterContent {
 	}
 
 	private static <T extends net.minecraft.world.entity.Entity> EntityType<T> monster(String id, EntityType.Builder<T> builder) {
-		return register(id, builder.clientTrackingRange(8).notInPeaceful());
+		return register(id, builder.clientTrackingRange(8));
 	}
 
 	private static <T extends net.minecraft.world.entity.Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
@@ -171,7 +171,7 @@ public final class MonsterContent {
 
 	private static Item egg(String id, EntityType<? extends Mob> type) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(id + "_spawn_egg"));
-		Item egg = Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(new Item.Properties().spawnEgg(type).setId(key)));
+		Item egg = Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(type, new Item.Properties().setId(key)));
 		SPAWN_EGGS.add(egg);
 		return egg;
 	}

@@ -43,7 +43,7 @@ public final class Parties {
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> PartyCommands.register(dispatcher));
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((target, source, amount) -> !blocksDamage(target, source));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
-			session(server).remember(handler.player.getUUID(), handler.player.getGameProfile().name()));
+			session(server).remember(handler.player.getUUID(), handler.player.getGameProfile().getName()));
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> {
 			PartySession state = SESSIONS.get(server);
 			if (state != null) state.disconnect(handler.player.getUUID(), now(server));

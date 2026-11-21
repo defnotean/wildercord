@@ -27,7 +27,7 @@ public final class Coilroot {
 
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("coilroot"));
 	public static final CoilrootBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new CoilrootBlock(BlockBehaviour.Properties.of()
-		.setId(KEY).noCollision().noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.AZALEA).lightLevel(state -> 6)
+		.setId(KEY).noCollission().noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.AZALEA).lightLevel(state -> 6)
 		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("coilroot"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,

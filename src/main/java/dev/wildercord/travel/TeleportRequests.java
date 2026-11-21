@@ -92,7 +92,7 @@ public final class TeleportRequests {
 		}
 		long now = from.level().getServer().getTickCount();
 		TravelRules.Request replaced = BOOK.add(new TravelRules.Request(from.getUUID(), to.getUUID(), here, now));
-		String name = from.getGameProfile().name();
+		String name = from.getGameProfile().getName();
 		MutableComponent accept = Travel.button(Travel.text("tpa_accept").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), "/tpaccept " + name,
 			Travel.text("tpa_accept_hover", from.getDisplayName()));
 		MutableComponent deny = Travel.button(Travel.text("tpa_deny").withStyle(ChatFormatting.RED, ChatFormatting.BOLD), "/tpdeny " + name,

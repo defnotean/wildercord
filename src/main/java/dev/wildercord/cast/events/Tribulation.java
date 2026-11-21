@@ -352,7 +352,7 @@ public final class Tribulation {
 		mob.addTag(SHADOW_TAG);
 		mob.addTag(HERALD_TAG);
 		net.minecraft.world.item.ItemStack head = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.PLAYER_HEAD);
-		head.set(net.minecraft.core.component.DataComponents.PROFILE, net.minecraft.world.item.component.ResolvableProfile.createResolved(player.getGameProfile()));
+		head.set(net.minecraft.core.component.DataComponents.PROFILE, new net.minecraft.world.item.component.ResolvableProfile(player.getGameProfile()));
 		mob.setItemSlot(EquipmentSlot.HEAD, head);
 		for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
 			mob.setItemSlot(slot, player.getItemBySlot(slot).copy());

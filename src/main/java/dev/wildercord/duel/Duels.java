@@ -486,7 +486,7 @@ public final class Duels {
 		long now = from.level().getGameTime();
 		boolean renewed = CHALLENGES.removeIf(c -> c.from().equals(from.getUUID()) && c.to().equals(to.getUUID()));
 		CHALLENGES.add(new DuelRules.Challenge(from.getUUID(), to.getUUID(), now));
-		String name = from.getGameProfile().name();
+		String name = from.getGameProfile().getName();
 		MutableComponent accept = Component.translatable("message.wildercord.duel_accept").withStyle(style -> style.withColor(ChatFormatting.GREEN).withBold(true)
 			.withClickEvent(new ClickEvent.RunCommand("/duel accept " + name))
 			.withHoverEvent(new HoverEvent.ShowText(Component.translatable("message.wildercord.duel_accept_hover", from.getDisplayName()))));

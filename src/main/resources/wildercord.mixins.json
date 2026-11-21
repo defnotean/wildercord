@@ -29,7 +29,6 @@
 		"LivingEntityHealMixin",
 		"ProjectileMixin",
 		"BlockItemMixin",
-		"MannequinAccessor",
 		"DuelHarmMixin",
 		"PartyEffectMixin",
 		"PartyFireMixin",

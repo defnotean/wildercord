@@ -59,8 +59,8 @@ public final class InnRooms {
 		Room old = player.getAttached(ROOM);
 		Room room = new Room(InnRoomRules.extend(old == null ? 0 : old.until(), now), GlobalPos.of(player.level().dimension(), player.blockPosition()));
 		player.setAttached(ROOM, room);
-		player.setRespawnPosition(new ServerPlayer.RespawnConfig(LevelData.RespawnData.of(room.bed().dimension(), room.bed().pos(),
-			player.getYRot(), 0), true), false);
+		player.setRespawnPosition(new ServerPlayer.RespawnConfig(room.bed().dimension(), room.bed().pos(),
+			player.getYRot(), true), false);
 		player.level().playSound(null, player.blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 0.8F, 1.4F);
 		boolean extended = old != null && InnRoomRules.rented(old.until(), now);
 		player.sendSystemMessage(Component.translatable(extended ? "message.wildercord.room.extended" : "message.wildercord.room.rented",
@@ -103,9 +103,9 @@ public final class InnRooms {
 		Room room = player.getAttached(ROOM);
 		if (room == null || InnRoomRules.rented(room.until(), player.level().getGameTime())) return;
 		player.removeAttached(ROOM);
-		ServerPlayer.RespawnConfig respawn = player.getRespawnConfig();
-		if (respawn != null && respawn.forced() && respawn.respawnData().dimension() == room.bed().dimension()
-			&& respawn.respawnData().pos().equals(room.bed().pos())) {
+		var respawn = dev.wildercord.compat.McSpawn.ofPlayer(player);
+		if (respawn != null && respawn.forced() && respawn.dimension() == room.bed().dimension()
+			&& respawn.pos().equals(room.bed().pos())) {
 			player.setRespawnPosition(null, false);
 		}
 		player.sendSystemMessage(Component.translatable("message.wildercord.room.ended").withStyle(ChatFormatting.GRAY));

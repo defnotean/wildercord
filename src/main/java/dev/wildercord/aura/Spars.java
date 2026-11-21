@@ -245,7 +245,7 @@ public final class Spars {
 		Salute mine = SALUTES.get(from.getUUID());
 		boolean renewed = mine != null && mine.to().equals(to.getUUID()) && now - mine.at() <= SparRules.RESALUTE;
 		SALUTES.put(from.getUUID(), new Salute(to.getUUID(), now));
-		to.setAttached(OFFER, new Offer(from.getUUID(), from.getGameProfile().name(), colour(from), now + SparRules.OFFER_TICKS));
+		to.setAttached(OFFER, new Offer(from.getUUID(), from.getGameProfile().getName(), colour(from), now + SparRules.OFFER_TICKS));
 		saluteLook(from, to);
 		if (renewed) {
 			return;
@@ -355,7 +355,7 @@ public final class Spars {
 			p.removeAttached(OFFER);
 			// A spar starts at nothing: momentum built before it doesn't come in, and what's built in it doesn't go out.
 			Momentum.reset(p);
-			p.setAttached(SPAR, new Bout(other.getUUID(), other.getGameProfile().name(), centre.x, centre.y, centre.z, radius, now, SparRules.COUNT_TICKS,
+			p.setAttached(SPAR, new Bout(other.getUUID(), other.getGameProfile().getName(), centre.x, centre.y, centre.z, radius, now, SparRules.COUNT_TICKS,
 				colour(p), colour(other), p == a ? ring.countsA : ring.countsB, 0, 0));
 			p.sendSystemMessage(Component.translatable("message.wildercord.aura.spar.begins", other.getDisplayName()).withColor(0xFFE8C46A));
 			p.sendSystemMessage(Component.translatable(p == a && ring.countsA || p == b && ring.countsB ? "message.wildercord.aura.spar.counts"
@@ -613,10 +613,10 @@ public final class Spars {
 			// The ring falls in on the winner.
 			ArtLight.world(winner).groundRing(ring.centre, color, ring.radius, 0.6, 0.18, 14).groundRing(feet, AuraVfx.hot(color, 0.4), 0.3, 3.0, 0.1, 12);
 			Motes.burst(level, feet.add(0, 1.0, 0), 16, color, 0.12, 28, 0.1);
-			Component kicker = Component.translatable("aura.wildercord.spar.kicker", loser.getGameProfile().name());
+			Component kicker = Component.translatable("aura.wildercord.spar.kicker", loser.getGameProfile().getName());
 			AuraFx.banner(winner, Component.translatable("aura.wildercord.spar.victory"), kicker, color, AuraFxRules.BannerKind.GRAND);
 			AuraFx.banner(loser, Component.translatable("aura.wildercord.spar.bested"),
-				Component.translatable("aura.wildercord.spar.kicker", winner.getGameProfile().name()), colour(loser), AuraFxRules.BannerKind.ART);
+				Component.translatable("aura.wildercord.spar.kicker", winner.getGameProfile().getName()), colour(loser), AuraFxRules.BannerKind.ART);
 			Component how = Component.translatable(ending == DuelRules.Ending.LEFT_AREA ? "message.wildercord.aura.spar.won_out" : "message.wildercord.aura.spar.won",
 				winner.getDisplayName(), loser.getDisplayName()).withColor(0xFFE8C46A);
 			tell(ring, how);

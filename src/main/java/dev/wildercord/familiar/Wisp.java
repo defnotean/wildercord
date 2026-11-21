@@ -193,7 +193,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	void setOwner( UUID owner) {
-		entityData.set(DATA_OWNER, Optional.ofNullable(owner).map(EntityReference::<LivingEntity>of));
+		entityData.set(DATA_OWNER, Optional.ofNullable(owner).map(id -> new EntityReference<LivingEntity>(id)));
 	}
 
 	public  UUID ownerId() {
@@ -298,7 +298,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 				if (player instanceof ServerPlayer server) {
 					WispRules.Outcome outcome = offer(server, food, null);
 					if (outcome == WispRules.Outcome.PROGRESS || outcome == WispRules.Outcome.BONDED) {
-						usePlayerItem(player, hand, stack);
+						stack.consume(1, player);
 					}
 				}
 				return InteractionResult.SUCCESS;

@@ -33,7 +33,7 @@ public final class OwletContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("hushwing_owlet_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(HUSHWING_OWLET).setId(EGG_KEY)));
+		new SpawnEggItem(HUSHWING_OWLET, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a hushwing owlet may stand on to spawn (written by tools/owlet_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/hushwing_owlet"));

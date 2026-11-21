@@ -338,9 +338,9 @@ final class CinnamonCompanion {
 		if (config.owner().isBlank()) return false;
 		if (config.owner().equalsIgnoreCase("@singleplayer")) {
 			var profile = player.level().getServer().getSingleplayerProfile();
-			return profile != null && (profile.id().equals(player.getUUID()) || profile.name().equalsIgnoreCase(player.getGameProfile().name()));
+			return profile != null && (profile.id().equals(player.getUUID()) || profile.name().equalsIgnoreCase(player.getGameProfile().getName()));
 		}
-		return config.ownerId() != null ? player.getUUID().equals(config.ownerId()) : player.getGameProfile().name().equalsIgnoreCase(config.owner());
+		return config.ownerId() != null ? player.getUUID().equals(config.ownerId()) : player.getGameProfile().getName().equalsIgnoreCase(config.owner());
 	}
 	static ServerPlayer configuredOwner(MinecraftServer server) {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) if (matches(player)) return player;

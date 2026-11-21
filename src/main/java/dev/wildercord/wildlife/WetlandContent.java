@@ -31,7 +31,7 @@ public final class WetlandContent {
 	private static ResourceKey<Item> itemKey(String name) {return ResourceKey.create(Registries.ITEM,Wildercord.id(name));}
 	public static final Item DUSK_PEARL=Registry.register(BuiltInRegistries.ITEM,itemKey("dusk_pearl"),new AuraWorld.Lore("dusk_pearl",new Item.Properties().setId(itemKey("dusk_pearl")).rarity(Rarity.UNCOMMON)));
 	public static final Item MARSHLIGHT_ITEM=Registry.register(BuiltInRegistries.ITEM,itemKey("marshlight"),new BlockItem(MARSHLIGHT,new Item.Properties().setId(itemKey("marshlight")).useBlockDescriptionPrefix()));
-	public static final Item NEWT_EGG=Registry.register(BuiltInRegistries.ITEM,itemKey("lantern_newt_spawn_egg"),new SpawnEggItem(new Item.Properties().setId(itemKey("lantern_newt_spawn_egg")).spawnEgg(NEWT)));
+	public static final Item NEWT_EGG=Registry.register(BuiltInRegistries.ITEM,itemKey("lantern_newt_spawn_egg"),new SpawnEggItem(NEWT, new Item.Properties().setId(itemKey("lantern_newt_spawn_egg"))));
 	public static final Item FIELD_NOTES=Registry.register(BuiltInRegistries.ITEM,itemKey("tideward_notes"),new WrittenBookItem(new Item.Properties().setId(itemKey("tideward_notes")).stacksTo(1).component(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT,
 		new net.minecraft.world.item.component.WrittenBookContent(net.minecraft.server.network.Filterable.passThrough("Lights Along the Bank"),"Iona of the Tideward",0,
 			java.util.stream.IntStream.rangeClosed(1,3).mapToObj(i -> net.minecraft.server.network.Filterable.<net.minecraft.network.chat.Component>passThrough(net.minecraft.network.chat.Component.translatable("book.wildercord.tideward."+i))).toList(),true))));

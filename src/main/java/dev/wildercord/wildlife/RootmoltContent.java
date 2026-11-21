@@ -30,7 +30,7 @@ public final class RootmoltContent {
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("rootmolt_strider"));
  public static final EntityType<RootmoltStrider> STRIDER=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(RootmoltStrider::new,MobCategory.MONSTER).sized(1.05F,.8F).eyeHeight(.48F).clientTrackingRange(8).build(KEY));
  private static final ResourceKey<Item> EGG_KEY=ResourceKey.create(Registries.ITEM,Wildercord.id("rootmolt_strider_spawn_egg"));
- public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,new SpawnEggItem(new Item.Properties().setId(EGG_KEY).spawnEgg(STRIDER)));
+ public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,new SpawnEggItem(STRIDER, new Item.Properties().setId(EGG_KEY)));
  @FunctionalInterface public interface RootResistance {boolean resist(LivingEntity victim,RootmoltStrider source);}
  /** Providers must admit and spend their finite equipment preparation atomically, after actual contact. */
  public static final Event<RootResistance> ROOT_RESISTANCE=EventFactory.createArrayBacked(RootResistance.class,callbacks -> (victim,source) -> {for(var callback:callbacks){if(!contact(victim,source))return false;if(callback.resist(victim,source))return true;}return false;});

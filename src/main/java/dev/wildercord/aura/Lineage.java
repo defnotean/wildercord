@@ -257,8 +257,8 @@ public final class Lineage {
 	private static void begin(ServerPlayer master, ServerPlayer disciple, int ticks, int kind, long now) {
 		RITES.put(master.getUUID(), new Under(kind, now, disciple.getUUID()));
 		int mc = Spars.colour(master);
-		master.setAttached(RITE, new Rite(kind, now, ticks, mc, disciple.getGameProfile().name(), true));
-		disciple.setAttached(RITE, new Rite(kind, now, ticks, mc, master.getGameProfile().name(), false));
+		master.setAttached(RITE, new Rite(kind, now, ticks, mc, disciple.getGameProfile().getName(), true));
+		disciple.setAttached(RITE, new Rite(kind, now, ticks, mc, master.getGameProfile().getName(), false));
 		ServerLevel level = master.level();
 		if (kind == Rite.TAKE) {
 			Feels.sound(level, master.position().add(0, 1, 0), "aura_lineage_ask", 0.9F, 1.0F);
@@ -353,7 +353,7 @@ public final class Lineage {
 		}
 		LineageRegistry r = LineageRegistry.of(master.level().getServer());
 		long now = master.level().getGameTime();
-		r.add(new LineageRegistry.Bond(master.getUUID(), master.getGameProfile().name(), disciple.getUUID(), disciple.getGameProfile().name(), now,
+		r.add(new LineageRegistry.Bond(master.getUUID(), master.getGameProfile().getName(), disciple.getUUID(), disciple.getGameProfile().getName(), now,
 			Long.MIN_VALUE, 0, Aura.stage(master), Aura.stage(disciple), Spars.colour(master), Spars.colour(disciple)));
 		Grimoire.unlock(master, "aura:lineage");
 		Grimoire.unlock(disciple, "aura:lineage");
@@ -446,9 +446,9 @@ public final class Lineage {
 			AuraFx.bodyAuraFlare(master, 40, 0.8F);
 			AuraFx.bodyAuraFlare(disciple, 50, 1.0F);
 		}
-		AuraFx.banner(disciple, Component.translatable("aura.wildercord.lineage.disciple_of"), Component.literal(master.getGameProfile().name()), mc,
+		AuraFx.banner(disciple, Component.translatable("aura.wildercord.lineage.disciple_of"), Component.literal(master.getGameProfile().getName()), mc,
 			AuraFxRules.BannerKind.GRAND);
-		AuraFx.banner(master, Component.translatable("aura.wildercord.lineage.a_disciple"), Component.literal(disciple.getGameProfile().name()),
+		AuraFx.banner(master, Component.translatable("aura.wildercord.lineage.a_disciple"), Component.literal(disciple.getGameProfile().getName()),
 			mc, AuraFxRules.BannerKind.ART);
 		master.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.taken_master", disciple.getDisplayName()).withColor(0xE8D8B0));
 		master.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.taken_master_how").withColor(0xB8A8D8));
@@ -541,7 +541,7 @@ public final class Lineage {
 		double share = on(player) ? LineageRules.share(stage, Config.get().aura().sparring().masterShare()) : 0;
 		if (share > 0) {
 			if (master != null && master.connection != null && master.level().getServer().getPlayerList().getPlayer(master.getUUID()) != null) {
-				paid(master, share, player.getGameProfile().name(), stage);
+				paid(master, share, player.getGameProfile().getName(), stage);
 			} else {
 				r.put(bond.owing(share));
 			}
@@ -578,7 +578,7 @@ public final class Lineage {
 	private static void graduate(ServerPlayer disciple, ServerPlayer master, LineageRegistry.Bond bond) {
 		LineageRegistry r = LineageRegistry.of(disciple.level().getServer());
 		r.end(disciple.getUUID());
-		r.honour(bond.master(), new LineageRegistry.Honoured(disciple.getUUID(), disciple.getGameProfile().name(), bond.since(),
+		r.honour(bond.master(), new LineageRegistry.Honoured(disciple.getUUID(), disciple.getGameProfile().getName(), bond.since(),
 			disciple.level().getGameTime(), Spars.colour(disciple)));
 		int dc = Spars.colour(disciple);
 		Feels.sound(disciple.level(), disciple.position().add(0, 1, 0), "aura_lineage_graduate", 1.0F, 1.0F);
@@ -588,7 +588,7 @@ public final class Lineage {
 			.withColor(0xFFE8C46A));
 		if (master != null) {
 			Feels.sound(master.level(), master.position().add(0, 1, 0), "aura_lineage_graduate", 0.8F, 1.1F);
-			AuraFx.banner(master, Component.translatable("aura.wildercord.lineage.graduated_master"), Component.literal(disciple.getGameProfile().name()),
+			AuraFx.banner(master, Component.translatable("aura.wildercord.lineage.graduated_master"), Component.literal(disciple.getGameProfile().getName()),
 				Spars.colour(master), AuraFxRules.BannerKind.ART);
 			master.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.graduated_master_line", disciple.getDisplayName())
 				.withColor(0xFFE8C46A));
@@ -679,7 +679,7 @@ public final class Lineage {
 		}
 		LineageRegistry r = LineageRegistry.of(player.level().getServer());
 		long now = player.level().getGameTime();
-		String name = player.getGameProfile().name();
+		String name = player.getGameProfile().getName();
 		int stage = Aura.stage(player);
 		int color = Spars.colour(player);
 		Optional<LineageRegistry.Bond> mine = r.masterOf(player.getUUID());
@@ -696,14 +696,14 @@ public final class Lineage {
 		Optional<Entry> master = r.masterOf(player.getUUID()).map(b -> {
 			ServerPlayer m = find(player, b.master());
 			boolean near = m != null && m.level() == player.level() && m.distanceToSqr(player) <= LineageRules.NEAR * LineageRules.NEAR;
-			return new Entry(b.master(), m != null ? m.getGameProfile().name() : b.masterName(), m != null ? Aura.stage(m) : b.masterStage(),
+			return new Entry(b.master(), m != null ? m.getGameProfile().getName() : b.masterName(), m != null ? Aura.stage(m) : b.masterStage(),
 				m != null ? Spars.colour(m) : b.masterColor(), b.since(), m != null, near);
 		});
 		List<Entry> disciples = new ArrayList<>();
 		for (LineageRegistry.Bond b : r.disciplesOf(player.getUUID())) {
 			ServerPlayer d = find(player, b.disciple());
 			boolean near = d != null && d.level() == player.level() && d.distanceToSqr(player) <= LineageRules.NEAR * LineageRules.NEAR;
-			disciples.add(new Entry(b.disciple(), d != null ? d.getGameProfile().name() : b.discipleName(), d != null ? Aura.stage(d) : b.discipleStage(),
+			disciples.add(new Entry(b.disciple(), d != null ? d.getGameProfile().getName() : b.discipleName(), d != null ? Aura.stage(d) : b.discipleStage(),
 				d != null ? Spars.colour(d) : b.discipleColor(), b.since(), d != null, near));
 		}
 		List<Entry> honoured = new ArrayList<>();

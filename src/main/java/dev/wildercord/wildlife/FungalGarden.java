@@ -30,7 +30,7 @@ public final class FungalGarden {
  private FungalGarden() {}
  private static ResourceKey<Block> blockKey(String n) {return ResourceKey.create(Registries.BLOCK,Wildercord.id(n));}
  private static ResourceKey<Item> itemKey(String n) {return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}
- public static final GlowcapBlock GLOWCAP=Registry.register(BuiltInRegistries.BLOCK,blockKey("glowcap"),new GlowcapBlock(BlockBehaviour.Properties.of().setId(blockKey("glowcap")).noCollision().noOcclusion().instabreak().randomTicks().sound(SoundType.FUNGUS).lightLevel(s -> s.getValue(GlowcapBlock.AGE)==2?4:0)));
+ public static final GlowcapBlock GLOWCAP=Registry.register(BuiltInRegistries.BLOCK,blockKey("glowcap"),new GlowcapBlock(BlockBehaviour.Properties.of().setId(blockKey("glowcap")).noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.FUNGUS).lightLevel(s -> s.getValue(GlowcapBlock.AGE)==2?4:0)));
  public static final FungalNurseryBlock NURSERY=Registry.register(BuiltInRegistries.BLOCK,blockKey("fungal_nursery"),new FungalNurseryBlock(BlockBehaviour.Properties.of().setId(blockKey("fungal_nursery")).strength(.8F).noOcclusion().sound(SoundType.WOOD)));
  public static final BreathmarkBlock BREATHMARK=Registry.register(BuiltInRegistries.BLOCK,blockKey("breathmark"),new BreathmarkBlock(BlockBehaviour.Properties.of().setId(blockKey("breathmark")).strength(-1,3600000).noLootTable().noOcclusion().sound(SoundType.DEEPSLATE)));
  public static final BlockEntityType<BreathmarkEntity> BREATHMARK_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("breathmark"),FabricBlockEntityTypeBuilder.create(BreathmarkEntity::new,BREATHMARK).build());

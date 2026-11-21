@@ -28,18 +28,18 @@ public final class ResidueBlocks {
 
 	private static final Map<Kind, ResidueBlock> BY_KIND = new EnumMap<>(Kind.class);
 
-	public static final ResidueBlock SMOULDERING_ASH = register(Kind.SMOULDERING_ASH, props(MapColor.COLOR_GRAY, SoundType.SAND, 0.2F, 6).noCollision());
+	public static final ResidueBlock SMOULDERING_ASH = register(Kind.SMOULDERING_ASH, props(MapColor.COLOR_GRAY, SoundType.SAND, 0.2F, 6).noCollission());
 	public static final ResidueBlock EVERFROST = register(Kind.EVERFROST, props(MapColor.ICE, SoundType.GLASS, 0.9F, 2).friction(0.98F));
-	public static final ResidueBlock FULGURITE = register(Kind.FULGURITE, props(MapColor.COLOR_YELLOW, SoundType.GLASS, 0.4F, 5).noCollision().noOcclusion());
-	public static final ResidueBlock LINGERING_EDDY = register(Kind.LINGERING_EDDY, props(MapColor.NONE, SoundType.WOOL, 0.0F, 0).noCollision().noOcclusion()
+	public static final ResidueBlock FULGURITE = register(Kind.FULGURITE, props(MapColor.COLOR_YELLOW, SoundType.GLASS, 0.4F, 5).noCollission().noOcclusion());
+	public static final ResidueBlock LINGERING_EDDY = register(Kind.LINGERING_EDDY, props(MapColor.NONE, SoundType.WOOL, 0.0F, 0).noCollission().noOcclusion()
 		.replaceable());
 	public static final ResidueBlock RIVEN_STONE = register(Kind.RIVEN_STONE, props(MapColor.DIRT, SoundType.TUFF, 0.6F, 3));
-	public static final ResidueBlock WILDBLOOM = register(Kind.WILDBLOOM, props(MapColor.COLOR_PINK, SoundType.GRASS, 0.0F, 6).noCollision()
+	public static final ResidueBlock WILDBLOOM = register(Kind.WILDBLOOM, props(MapColor.COLOR_PINK, SoundType.GRASS, 0.0F, 6).noCollission()
 		.offsetType(BlockBehaviour.OffsetType.XZ));
 	public static final ResidueBlock VOID_SCAR = register(Kind.VOID_SCAR, props(MapColor.COLOR_BLACK, SoundType.SCULK, 0.8F, 1));
-	public static final ResidueBlock STAR_GLYPH = register(Kind.STAR_GLYPH, props(MapColor.COLOR_MAGENTA, SoundType.AMETHYST, 0.1F, 7).noCollision());
-	public static final ResidueBlock STILLED_SAND = register(Kind.STILLED_SAND, props(MapColor.SAND, SoundType.SAND, 0.2F, 4).noCollision());
-	public static final ResidueBlock BLOODMOSS = register(Kind.BLOODMOSS, props(MapColor.CRIMSON_NYLIUM, SoundType.MOSS_CARPET, 0.1F, 2).noCollision());
+	public static final ResidueBlock STAR_GLYPH = register(Kind.STAR_GLYPH, props(MapColor.COLOR_MAGENTA, SoundType.AMETHYST, 0.1F, 7).noCollission());
+	public static final ResidueBlock STILLED_SAND = register(Kind.STILLED_SAND, props(MapColor.SAND, SoundType.SAND, 0.2F, 4).noCollission());
+	public static final ResidueBlock BLOODMOSS = register(Kind.BLOODMOSS, props(MapColor.CRIMSON_NYLIUM, SoundType.MOSS_CARPET, 0.1F, 2).noCollission());
 
 	private static BlockBehaviour.Properties props(MapColor color, SoundType sound, float strength, int light) {
 		return BlockBehaviour.Properties.of().mapColor(color).sound(sound).strength(strength, strength * 2).lightLevel(s -> light);

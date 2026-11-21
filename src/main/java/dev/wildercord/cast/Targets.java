@@ -104,18 +104,18 @@ public final class Targets {
 			return false;
 		}
 		if (entity instanceof Player player) {
-			boolean pvp = !(caster instanceof Player) || ((ServerLevel) caster.level()).getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_PVP).get();
+			boolean pvp = !(caster instanceof Player) || ((ServerLevel) caster.level()).getServer().isPvpAllowed();
 			return pvp && !player.isCreative() && !player.isSpectator();
 		}
 		if (!(caster instanceof Player)) {
 			return playerPet(entity)
 				|| entity instanceof AbstractGolem
 				|| caster instanceof Mob mob && mob.getTarget() == entity
-				|| entity instanceof net.minecraft.world.entity.decoration.Mannequin;
+				
 		}
 		// Another player's pet is as safe as they are: only with pvp on.
 		if (playerPet(entity)) {
-			return ((ServerLevel) caster.level()).getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_PVP).get();
+			return ((ServerLevel) caster.level()).getServer().isPvpAllowed();
 		}
 		return true;
 	}

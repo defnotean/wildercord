@@ -201,7 +201,7 @@ public final class WayfarerEffects {
 	}
 
 	private static void spawnBearing(Cast cast) {
-		LevelData.RespawnData spawn = cast.level.getRespawnData();
+		var spawn = dev.wildercord.compat.McSpawn.ofLevel(cast.level);
 		if (spawn == null || spawn.dimension() != cast.level.dimension()) {
 			tell(cast, "spawn_bearing.elsewhere");
 			return;
@@ -213,13 +213,13 @@ public final class WayfarerEffects {
 		if (!(cast.caster instanceof ServerPlayer player)) {
 			return;
 		}
-		ServerPlayer.RespawnConfig home = player.getRespawnConfig();
+		var home = dev.wildercord.compat.McSpawn.ofPlayer(player);
 		if (home == null) {
 			tell(cast, "home_bearing.none");
-		} else if (home.respawnData().dimension() != cast.level.dimension()) {
+		} else if (home.dimension() != cast.level.dimension()) {
 			tell(cast, "home_bearing.elsewhere");
 		} else {
-			bearing(cast, "home_bearing", Vec3.atCenterOf(home.respawnData().pos()), true, WIND);
+			bearing(cast, "home_bearing", Vec3.atCenterOf(home.pos()), true, WIND);
 		}
 	}
 

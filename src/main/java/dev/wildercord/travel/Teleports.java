@@ -287,8 +287,8 @@ public final class Teleports {
 		Component where = Travel.text("where.spawn");
 		return begin(player, Kind.SPAWN, where, traveller -> {
 			MinecraftServer server = traveller.level().getServer();
-			ServerLevel level = server.findRespawnDimension();
-			LevelData.RespawnData data = server.getRespawnData();
+			ServerLevel level = dev.wildercord.compat.McSpawn.spawnLevel(server);
+			var data = dev.wildercord.compat.McSpawn.ofServer(server);
 			BlockPos pos = data.pos();
 			Vec3 spot = Landing.near(level, Vec3.atBottomCenterOf(pos), traveller, false);
 			if (spot == null) {
@@ -353,7 +353,7 @@ public final class Teleports {
 			}
 			return again;
 		}
-		LevelData.RespawnData data = server.getRespawnData();
+		var data = dev.wildercord.compat.McSpawn.ofServer(server);
 		BlockPos centre = Level.OVERWORLD.equals(data.dimension()) ? data.pos() : BlockPos.ZERO;
 		Vec3 found = Landing.random(overworld, centre, Travel.config().rtpRadius(), player.getRandom(), player);
 		if (!operator) {

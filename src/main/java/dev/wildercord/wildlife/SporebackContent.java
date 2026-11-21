@@ -31,7 +31,7 @@ public final class SporebackContent {
    if(!l.isClientSide()) {p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION,600,0));p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS,120,0));if(!p.getAbilities().instabuild)p.getItemInHand(h).shrink(1);dev.wildercord.cast.feel.Feels.sound((net.minecraft.server.level.ServerLevel)l,p.position(),"sporeback_gather",.35F,.8F);}return net.minecraft.world.InteractionResult.SUCCESS;
   }
  });
- public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,key("sporeback_snail_spawn_egg"),new SpawnEggItem(new Item.Properties().setId(key("sporeback_snail_spawn_egg")).spawnEgg(SNAIL)));
+ public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,key("sporeback_snail_spawn_egg"),new SpawnEggItem(SNAIL, new Item.Properties().setId(key("sporeback_snail_spawn_egg"))));
  public static final Item JOURNAL=Registry.register(BuiltInRegistries.ITEM,key("sporeback_journal"),new WrittenBookItem(new Item.Properties().setId(key("sporeback_journal")).stacksTo(1).component(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT,new net.minecraft.world.item.component.WrittenBookContent(net.minecraft.server.network.Filterable.passThrough("The Patient Spiral"),"Mara, Belowkeeper",0,java.util.stream.IntStream.rangeClosed(1,3).mapToObj(i -> net.minecraft.server.network.Filterable.<net.minecraft.network.chat.Component>passThrough(net.minecraft.network.chat.Component.translatable("book.wildercord.sporeback."+i))).toList(),true))));
  public static void init() {
   FabricDefaultAttributeRegistry.register(SNAIL,SporebackSnail.attributes());

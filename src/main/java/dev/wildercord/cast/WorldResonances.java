@@ -249,7 +249,7 @@ public final class WorldResonances {
 			if (found.containsKey(id)) {
 				return false;
 			}
-			found.put(id, new Finding(player.getGameProfile().name(), player.getUUID().toString(), player.level().getGameTime()));
+			found.put(id, new Finding(player.getGameProfile().getName(), player.getUUID().toString(), player.level().getGameTime()));
 			setDirty();
 			return true;
 		}

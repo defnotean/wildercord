@@ -187,7 +187,7 @@ public final class TravelCommands {
 	private static final SuggestionProvider<CommandSourceStack> ASKERS = fromPlayer(p -> TeleportRequests.waitingFor(p).stream()
 		.map(r -> p.level().getServer().getPlayerList().getPlayer(r.from()))
 		.filter(Objects::nonNull)
-		.map(asker -> asker.getGameProfile().name()));
+		.map(asker -> asker.getGameProfile().getName()));
 	private static final SuggestionProvider<CommandSourceStack> WARPS = (ctx, builder) ->
 		SharedSuggestionProvider.suggest(Warps.of(ctx.getSource().getServer()).names(), builder);
 }

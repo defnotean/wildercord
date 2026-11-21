@@ -128,7 +128,7 @@ public final class Guilds {
 	public static void init() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> register(dispatcher));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
-			ledger(server).remember(handler.player.getUUID(), handler.player.getGameProfile().name()));
+			ledger(server).remember(handler.player.getUUID(), handler.player.getGameProfile().getName()));
 	}
 
 	public static Ledger ledger(MinecraftServer server) {
@@ -215,7 +215,7 @@ public final class Guilds {
 
 	private static int found(ServerPlayer player, Kind kind, String name) {
 		Ledger ledger = ledger(player.level().getServer());
-		ledger.remember(player.getUUID(), player.getGameProfile().name());
+		ledger.remember(player.getUUID(), player.getGameProfile().getName());
 		if (!eligible(player, kind)) return refuse(player, kind, "eligible");
 		Result check = !GuildRules.validName(name) ? Result.BAD_NAME : ledger.roster.named(name) != null ? Result.NAME_TAKEN
 			: ledger.roster.of(player.getUUID(), kind) != null ? Result.ALREADY_IN : Result.OK;
@@ -241,7 +241,7 @@ public final class Guilds {
 
 	private static int invite(ServerPlayer from, ServerPlayer to, Kind kind) {
 		Ledger ledger = ledger(from.level().getServer());
-		ledger.remember(to.getUUID(), to.getGameProfile().name());
+		ledger.remember(to.getUUID(), to.getGameProfile().getName());
 		Result check = ledger.roster.canInvite(from.getUUID(), to.getUUID(), kind);
 		if (check != Result.OK) return refuse(from, kind, check);
 		if (!eligible(to, kind)) return refuse(from, kind, "their_eligible");
@@ -260,7 +260,7 @@ public final class Guilds {
 		if (invite == null || invite.until() < player.level().getServer().overworld().getGameTime()) return refuse(player, kind, "no_invite");
 		if (!eligible(player, kind)) return refuse(player, kind, "eligible");
 		Ledger ledger = ledger(player.level().getServer());
-		ledger.remember(player.getUUID(), player.getGameProfile().name());
+		ledger.remember(player.getUUID(), player.getGameProfile().getName());
 		Result result = ledger.change(r -> r.join(player.getUUID(), invite.guild(), kind));
 		if (result != Result.OK) return refuse(player, kind, result);
 		announce(player, ledger.roster.named(invite.guild()), text(kind, "joined", player.getDisplayName(), invite.guild()));

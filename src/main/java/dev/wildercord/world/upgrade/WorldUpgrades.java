@@ -178,7 +178,7 @@ public final class WorldUpgrades {
 			var anchor=UpgradeTemplates.anchor(plan);
 			if(chunk.getBlockEntities().keySet().stream().anyMatch(p->!p.equals(anchor)) || chunk.getBlockEntitiesPos().stream().anyMatch(p->!p.equals(anchor)))return "Container/block entity in chunk excluded";
 			if(chunk.getAllStarts().values().stream().anyMatch(start->start.isValid()) || chunk.getAllReferences().values().stream().anyMatch(refs->!refs.isEmpty()))return "Existing structure start/reference excluded";
-			var spawn=level.getRespawnData();
+			var spawn=dev.wildercord.compat.McSpawn.ofLevel(level);
 			if(spawn.dimension().equals(level.dimension()) && Math.abs(spawn.pos().getX()-x)<=SPAWN_DISTANCE && Math.abs(spawn.pos().getZ()-z)<=SPAWN_DISTANCE)return "Spawn buffer excluded";
 		}
 		int minX=Integer.MAX_VALUE,minY=Integer.MAX_VALUE,minZ=Integer.MAX_VALUE,maxX=Integer.MIN_VALUE,maxY=Integer.MIN_VALUE,maxZ=Integer.MIN_VALUE;

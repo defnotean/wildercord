@@ -45,10 +45,10 @@ final class PartyCommands {
 
 	private static int invite(ServerPlayer from, ServerPlayer to) {
 		PartySession state = state(from);
-		state.remember(to.getUUID(), to.getGameProfile().name());
+		state.remember(to.getUUID(), to.getGameProfile().getName());
 		PartyRules.Result result = state.rules.invite(from.getUUID(), to.getUUID(), Parties.now(from.level().getServer()));
 		if (!check(from, result)) return 0;
-		String sender = from.getGameProfile().name();
+		String sender = from.getGameProfile().getName();
 		MutableComponent accept = text("accept", "[Accept]").withStyle(style -> style.withColor(ChatFormatting.GREEN)
 			.withClickEvent(new ClickEvent.RunCommand("/party accept " + sender)));
 		MutableComponent decline = text("decline", "[Decline]").withStyle(style -> style.withColor(ChatFormatting.RED)
@@ -149,7 +149,7 @@ final class PartyCommands {
 
 	private static PartySession state(ServerPlayer player) {
 		PartySession state = Parties.session(player.level().getServer());
-		state.remember(player.getUUID(), player.getGameProfile().name());
+		state.remember(player.getUUID(), player.getGameProfile().getName());
 		return state;
 	}
 

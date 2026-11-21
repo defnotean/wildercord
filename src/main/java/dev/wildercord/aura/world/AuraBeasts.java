@@ -38,7 +38,7 @@ public final class AuraBeasts {
 		var key=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id(id)); return Registry.register(BuiltInRegistries.ENTITY_TYPE,key,builder.build(key));
 	}
 	private static Item egg(String id,EntityType<?> type) {
-		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id+"_spawn_egg")); return Registry.register(BuiltInRegistries.ITEM,key,new SpawnEggItem(new Item.Properties().setId(key).spawnEgg(type)));
+		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id+"_spawn_egg")); return Registry.register(BuiltInRegistries.ITEM,key,new SpawnEggItem(type, new Item.Properties().setId(key)));
 	}
 	private static Item item(String id,boolean usable) {
 		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id));

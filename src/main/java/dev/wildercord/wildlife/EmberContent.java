@@ -24,10 +24,10 @@ public final class EmberContent {
  private static final ResourceKey<EntityType<?>> ENTITY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("cinder_bailiff"));
  public static final EntityType<CinderBailiff> BAILIFF=Registry.register(BuiltInRegistries.ENTITY_TYPE,ENTITY,EntityType.Builder.of(CinderBailiff::new,MobCategory.MONSTER).sized(1.15F,1.0F).eyeHeight(.75F).clientTrackingRange(8).build(ENTITY));
  private static final ResourceKey<Block> BLOCK=ResourceKey.create(Registries.BLOCK,Wildercord.id("cinder_fern"));
- public static final CinderFernBlock FERN=Registry.register(BuiltInRegistries.BLOCK,BLOCK,new CinderFernBlock(BlockBehaviour.Properties.of().setId(BLOCK).noCollision().noOcclusion().instabreak().randomTicks().sound(SoundType.AZALEA)));
+ public static final CinderFernBlock FERN=Registry.register(BuiltInRegistries.BLOCK,BLOCK,new CinderFernBlock(BlockBehaviour.Properties.of().setId(BLOCK).noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.AZALEA)));
  private static ResourceKey<Item> item(String n){return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}
  public static final Item FERN_ITEM=Registry.register(BuiltInRegistries.ITEM,item("cinder_fern"),new BlockItem(FERN,new Item.Properties().setId(item("cinder_fern")).useBlockDescriptionPrefix()));
- public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,item("cinder_bailiff_spawn_egg"),new SpawnEggItem(new Item.Properties().setId(item("cinder_bailiff_spawn_egg")).spawnEgg(BAILIFF)));
+ public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,item("cinder_bailiff_spawn_egg"),new SpawnEggItem(BAILIFF, new Item.Properties().setId(item("cinder_bailiff_spawn_egg"))));
  static boolean room(net.minecraft.server.level.ServerLevel l,BlockPos p){var peers=new ArrayList<CinderBailiff>(EmberRules.LOCAL_CAP);l.getEntities(BAILIFF,new AABB(p).inflate(32),Entity::isAlive,peers,EmberRules.LOCAL_CAP);return peers.size()<EmberRules.LOCAL_CAP;}
  public static void init(){dev.wildercord.compat.McWorldgen.registerFeature("cinder_fern_patch", new CinderFernFeature());FabricDefaultAttributeRegistry.register(BAILIFF,CinderBailiff.attributes());
   SpawnPlacements.register(BAILIFF,SpawnPlacementTypes.ON_GROUND,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(type,l,reason,p,r)->{if(reason==EntitySpawnReason.CHUNK_GENERATION)return false;if(reason!=EntitySpawnReason.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;

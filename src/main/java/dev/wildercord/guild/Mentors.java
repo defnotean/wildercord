@@ -149,7 +149,7 @@ public final class Mentors {
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> register(dispatcher));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			Ledger ledger = ledger(server);
-			ledger.remember(handler.player.getUUID(), handler.player.getGameProfile().name());
+			ledger.remember(handler.player.getUUID(), handler.player.getGameProfile().getName());
 			int owed = ledger.collect(handler.player.getUUID());
 			if (owed > 0) {
 				give(handler.player, owed);
@@ -247,7 +247,7 @@ public final class Mentors {
 
 	private static int take(ServerPlayer mentor, ServerPlayer apprentice) {
 		Ledger ledger = ledger(mentor.level().getServer());
-		ledger.remember(apprentice.getUUID(), apprentice.getGameProfile().name());
+		ledger.remember(apprentice.getUUID(), apprentice.getGameProfile().getName());
 		MentorRules.Refusal refusal = refusal(ledger, mentor, apprentice);
 		if (refusal != MentorRules.Refusal.NONE) return refuse(mentor, refusal);
 		long now = mentor.level().getServer().overworld().getGameTime();
@@ -272,8 +272,8 @@ public final class Mentors {
 		ServerPlayer mentor = server.getPlayerList().getPlayer(offer.mentor());
 		if (mentor == null) return refuse(apprentice, "mentor_gone");
 		Ledger ledger = ledger(server);
-		ledger.remember(apprentice.getUUID(), apprentice.getGameProfile().name());
-		ledger.remember(mentor.getUUID(), mentor.getGameProfile().name());
+		ledger.remember(apprentice.getUUID(), apprentice.getGameProfile().getName());
+		ledger.remember(mentor.getUUID(), mentor.getGameProfile().getName());
 		MentorRules.Refusal refusal = refusal(ledger, mentor, apprentice);
 		if (refusal != MentorRules.Refusal.NONE) return refuse(apprentice, refusal);
 		ledger.take(mentor.getUUID(), apprentice.getUUID());

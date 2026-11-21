@@ -145,7 +145,7 @@ public final class BladeCeremony {
 			ServerPlayer disciple = disciple(player, rite);
 			if (disciple != null) {
 				disciple.setAttached(BondedBlades.RITE, new BondedBlades.Rite(rite.kind(), now, ticks, color(disciple)));
-				disciple.displayClientMessage(Component.translatable("message.wildercord.aura.blade.passing_to", Component.literal(player.getGameProfile().name()))
+				disciple.displayClientMessage(Component.translatable("message.wildercord.aura.blade.passing_to", Component.literal(player.getGameProfile().getName()))
 					.withColor(0xFF000000 | color), true);
 			}
 			BondedBlades.sound(level, hand(player), "aura_bond_kindle", 0.8F, 1.2F);
@@ -490,9 +490,9 @@ public final class BladeCeremony {
 		Component name = BondedBlades.name(BondedBlades.bonded(stack) ? stack : BondedBlades.carried(to), b).copy().withColor(0xFF000000 | color);
 		AuraFx.banner(to, Component.translatable("aura.wildercord.blade.passed_to_you"), name, color, AuraFxRules.BannerKind.GRAND);
 		AuraFx.banner(from, Component.translatable("aura.wildercord.blade.passed_on"), name, color(from), AuraFxRules.BannerKind.ART);
-		to.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.passed_to_you", name, Component.literal(from.getGameProfile().name()))
+		to.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.passed_to_you", name, Component.literal(from.getGameProfile().getName()))
 			.withColor(0xE8D8B0));
-		from.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.passed_on", name, Component.literal(to.getGameProfile().name()))
+		from.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.passed_on", name, Component.literal(to.getGameProfile().getName()))
 			.withColor(0xE8D8B0));
 		if (BladeRules.effective(b.tier(), Aura.stage(to)) < b.tier()) {
 			to.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.passed_sleeps").withColor(0xB8A8D8));

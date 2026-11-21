@@ -9,7 +9,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.SpellParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -583,7 +582,7 @@ public final class ElementFx {
 	public static void shimmer(ServerLevel level, Vec3 at, double spread, int count) {
 		// Enchanting glyphs fly in to where they're spawned.
 		Vfx.emit(level, ParticleTypes.ENCHANT, at, count, 0.05, spread * 1.5);
-		Vfx.emit(level, SpellParticleOption.create(ParticleTypes.INSTANT_EFFECT, 0xFF000000 | ARCANE.primary, 1.0F), at, (count + 1) / 2, spread, 0.0);
+		Vfx.emit(level, dev.wildercord.compat.McParticles.spell(ParticleTypes.INSTANT_EFFECT, 0xFF000000 | ARCANE.primary, 1.0F), at, (count + 1) / 2, spread, 0.0);
 	}
 
 	public static void arcaneImpact(ServerLevel level, Vec3 at, double size) {

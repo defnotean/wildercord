@@ -103,7 +103,7 @@ public class SpellScrollItem extends Item {
 		}
 		ItemStack scroll = new ItemStack(WildercordItems.SPELL_SCROLL);
 		scroll.set(WildercordComponents.SCROLL, new ScrollSpell(runes.stream().map(RuneDef::id).toList(), SpellCaster.nameOf(player, book, spell, runes),
-			player.getGameProfile().name()));
+			player.getGameProfile().getName()));
 		// An Adept spell carries its traits and sigil with it (see cast.Inscriptions).
 		boolean mastered = dev.wildercord.cast.Inscriptions.inscribe(player, runes, scroll);
 		if (!player.getInventory().add(scroll)) {

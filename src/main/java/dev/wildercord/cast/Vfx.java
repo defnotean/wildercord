@@ -11,8 +11,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.PowerParticleOption;
-import net.minecraft.core.particles.SpellParticleOption;
 import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -624,7 +622,7 @@ public final class Vfx {
 
 	/** One pulse of Dragon Breath: violet breath over the ground, a rim of light round it and darkness drawing in. */
 	public static void dragonBreath(ServerLevel level, Vec3 center, double radius) {
-		emit(level, PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F), center.add(0, 0.4, 0), 22, radius / 2, 0.02);
+		emit(level, dev.wildercord.compat.McParticles.power(ParticleTypes.DRAGON_BREATH, 1.0F), center.add(0, 0.4, 0), 22, radius / 2, 0.02);
 		ElementFx.groundRing(level, center, ElementFx.VOID.primary(), radius * 0.85, radius, 0.06, 20);
 		ElementFx.groundRing(level, center, ElementFx.dark(ElementFx.VOID.accent()), radius, radius * 0.25, 0.12, 18);
 	}

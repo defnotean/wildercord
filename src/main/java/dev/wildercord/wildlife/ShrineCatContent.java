@@ -67,14 +67,14 @@ public final class ShrineCatContent {
 	public static final Item SHRINE_CAT_EGG = Registry.register(
 		BuiltInRegistries.ITEM,
 		SHRINE_CAT_EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(SHRINE_CAT).setId(SHRINE_CAT_EGG_KEY))
+		new SpawnEggItem(SHRINE_CAT, new Item.Properties().setId(SHRINE_CAT_EGG_KEY))
 	);
 
 	private static final ResourceKey<Item> SAKURA_VILLAGER_EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("sakura_villager_spawn_egg"));
 	public static final Item SAKURA_VILLAGER_EGG = Registry.register(
 		BuiltInRegistries.ITEM,
 		SAKURA_VILLAGER_EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(SAKURA_VILLAGER).setId(SAKURA_VILLAGER_EGG_KEY))
+		new SpawnEggItem(SAKURA_VILLAGER, new Item.Properties().setId(SAKURA_VILLAGER_EGG_KEY))
 	);
 
 	public static void init() {

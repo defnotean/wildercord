@@ -33,7 +33,7 @@ import java.util.*;
 /** Plants, pollinators and a field instrument. No ticking blocks, resource cache or forced chunk loads. */
 public final class WetlandGarden {
  private static final ResourceKey<Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("moonreed"));
- public static final MoonreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new MoonreedBlock(BlockBehaviour.Properties.of().setId(KEY).noCollision().noOcclusion().instabreak().randomTicks().sound(SoundType.GRASS).lightLevel(s -> s.getValue(MoonreedBlock.AGE)==2?6:0)));
+ public static final MoonreedBlock REED=Registry.register(BuiltInRegistries.BLOCK,KEY,new MoonreedBlock(BlockBehaviour.Properties.of().setId(KEY).noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.GRASS).lightLevel(s -> s.getValue(MoonreedBlock.AGE)==2?6:0)));
  private static ResourceKey<Item> key(String id) {return ResourceKey.create(Registries.ITEM,Wildercord.id(id));}
  public static final Item CUTTING=Registry.register(BuiltInRegistries.ITEM,key("moonreed"),new BlockItem(REED,new Item.Properties().setId(key("moonreed")).useBlockDescriptionPrefix()));
  public static final Item FLOSS=Registry.register(BuiltInRegistries.ITEM,key("moonreed_floss"),new AuraWorld.Lore("moonreed_floss",new Item.Properties().setId(key("moonreed_floss"))));

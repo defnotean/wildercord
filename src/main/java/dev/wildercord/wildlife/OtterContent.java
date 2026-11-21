@@ -33,7 +33,7 @@ public final class OtterContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("brook_otter_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(BROOK_OTTER).setId(EGG_KEY)));
+		new SpawnEggItem(BROOK_OTTER, new Item.Properties().setId(EGG_KEY)));
 
 	/** What an otter may stand on to spawn (written by tools/otter_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/brook_otter"));

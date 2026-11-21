@@ -36,7 +36,7 @@ public final class SpellMaterials {
 			default->"arcane";
 		};
 		int color=element.equals("water")?0x57CFF0:element.equals("vapour")?0xE2E9EF:Vfx.theme(element).primary();
-		if(p instanceof SpellParticleOption spell)color=((int)(spell.getRed()*255)&255)<<16|((int)(spell.getGreen()*255)&255)<<8|((int)(spell.getBlue()*255)&255);
+		int tinted=dev.wildercord.compat.McParticles.colorOf(p);if(tinted>=0)color=tinted;
 		return of(element,color,element.equals("vapour")?.32F:.12F);
 	}
 }

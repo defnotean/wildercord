@@ -33,7 +33,7 @@ public final class StoatContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("snowcap_stoat_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(SNOWCAP_STOAT).setId(EGG_KEY)));
+		new SpawnEggItem(SNOWCAP_STOAT, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a stoat may stand on to spawn (written by tools/stoat_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/snowcap_stoat"));
