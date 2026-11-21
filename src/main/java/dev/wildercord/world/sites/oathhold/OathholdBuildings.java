@@ -56,17 +56,28 @@ public final class OathholdBuildings {
 		int mx = (x0 + x1) / 2;
 		int mz = (z0 + z1) / 2;
 		int hx = Math.min(x1 - 4, x0 + 4);
+		boolean cozyLoft = stories >= 2 && (x1 - x0) >= 14 && (x1 - x0) < 30 && (z1 - z0) >= 14;
 		c.clear(x0 + 1, baseY + 1, z0 + 1, x1 - 1, roofY + 2, z1 - 1);
 
-		// Ground plank floor with dark-oak border & woven center rug
+		// Ground plank floor with dark-oak border & colorful patchwork rug
 		c.fill(x0 + 1, baseY, z0 + 1, x1 - 1, baseY, z1 - 1, OathholdCanvas.DARK_OAK);
 		c.fill(x0 + 2, baseY, z0 + 2, x1 - 2, baseY, z1 - 2, OathholdCanvas.SPRUCE);
 		BlockState rugA = RUG_COLORS[Math.floorMod(seed, RUG_COLORS.length)];
 		BlockState rugB = RUG_COLORS[Math.floorMod(seed + 1, RUG_COLORS.length)];
-		for (int rx = mx - 1; rx <= mx + 1; rx++) {
-			for (int rz = mz - 1; rz <= mz + 1; rz++) {
+		BlockState rugC = RUG_COLORS[Math.floorMod(seed + 2, RUG_COLORS.length)];
+		BlockState rugD = RUG_COLORS[Math.floorMod(seed + 3, RUG_COLORS.length)];
+		int rugCz = cozyLoft ? Math.min(z1 - 4, mz + 3) : mz;
+		int rugSpan = cozyLoft ? 2 : 1;
+		for (int rx = mx - rugSpan; rx <= mx + rugSpan; rx++) {
+			for (int rz = rugCz - rugSpan; rz <= rugCz + rugSpan; rz++) {
 				if (rx > x0 + 1 && rx < x1 - 1 && rz > z0 + 1 && rz < z1 - 1) {
-					c.set(rx, baseY + 1, rz, ((rx + rz) & 1) == 0 ? rugA : rugB);
+					BlockState tile = switch (Math.floorMod(rx * 3 + rz * 5, 4)) {
+						case 0 -> rugA;
+						case 1 -> rugB;
+						case 2 -> rugC;
+						default -> rugD;
+					};
+					c.set(rx, baseY + 1, rz, tile);
 				}
 			}
 		}
@@ -91,8 +102,12 @@ public final class OathholdBuildings {
 			c.fill(x1, fy, z0, x1, fy + 4, z1, wall);
 
 			if (!ground) {
-				// Timber horizontal sill beams + upper floor planks
-				c.fill(x0 + 1, fy - 1, z0 + 1, x1 - 1, fy - 1, z1 - 1, OathholdCanvas.SPRUCE);
+				// Exposed timber crossbeams + full upper floor OR 3/4 mezzanine loft overlooking ground shop
+				int deckMaxZ = (cozyLoft && s == 1) ? mz : z1 - 1;
+				c.fill(x0 + 1, fy - 1, z0 + 1, x1 - 1, fy - 1, deckMaxZ, OathholdCanvas.SPRUCE);
+				if (cozyLoft && s == 1 && mz + 4 < z1) {
+					c.fill(x0 + 1, fy - 1, mz + 4, x1 - 1, fy - 1, mz + 4, OathholdCanvas.DARK_OAK_LOG);
+				}
 				c.fill(x0, fy, z0, x1, fy, z0, OathholdCanvas.DARK_OAK_LOG);
 				c.fill(x0, fy, z1, x1, fy, z1, OathholdCanvas.DARK_OAK_LOG);
 				c.fill(x0, fy, z0, x0, fy, z1, OathholdCanvas.DARK_OAK_LOG);
@@ -115,7 +130,11 @@ public final class OathholdBuildings {
 			if (ground) {
 				c.fill(mx - 2, baseY + 2, z1, mx - 2, baseY + 3, z1, Blocks.GLASS_PANE.defaultBlockState());
 				c.fill(mx + 2, baseY + 2, z1, mx + 2, baseY + 3, z1, Blocks.GLASS_PANE.defaultBlockState());
-				c.set(mx, baseY + 2, z0, Blocks.GLASS_PANE.defaultBlockState());
+				c.fill(mx, baseY + 2, z0, mx, baseY + 3, z0, Blocks.GLASS_PANE.defaultBlockState());
+				if (cozyLoft && x1 - 4 > mx + 1) {
+					c.fill(x1 - 4, baseY + 2, z0, x1 - 4, baseY + 3, z0, Blocks.GLASS_PANE.defaultBlockState());
+					c.fill(x1 - 2, baseY + 2, z0, x1 - 2, baseY + 3, z0, Blocks.GLASS_PANE.defaultBlockState());
+				}
 				c.set(x0, baseY + 2, mz, Blocks.GLASS_PANE.defaultBlockState());
 				c.set(x1, baseY + 2, mz, Blocks.GLASS_PANE.defaultBlockState());
 				OathholdStreetscape.flowerBox(c, x0 - 1, baseY + 1, mz + 2, Direction.WEST);
@@ -140,8 +159,9 @@ public final class OathholdBuildings {
 			c.set(mx + 3, baseY + 1, z1 + 1, Blocks.BARREL.defaultBlockState());
 		}
 
-		// Zero-tick red-brick fireplace hearth & chimney (Ochre Froglight flame)
-		c.fill(hx - 1, baseY + 1, z0 + 1, hx + 1, baseY + 4, z0 + 1, OathholdCanvas.BRICKS);
+		// Tapered red-brick fireplace hearth & chimney (Ochre Froglight warm glow + iron grate)
+		c.fill(hx - 1, baseY + 1, z0 + 1, hx + 1, baseY + 3, z0 + 1, OathholdCanvas.BRICKS);
+		c.fill(hx - 1, baseY + 4, z0 + 1, hx + 1, baseY + 4, z0 + 1, OathholdCanvas.BRICKS);
 		c.fill(hx, baseY + 1, z0 + 1, hx, roofY + 3, z0 + 1, OathholdCanvas.BRICKS);
 		c.set(hx, roofY + 4, z0 + 1, Blocks.COBBLESTONE_WALL.defaultBlockState());
 		c.set(hx, roofY + 5, z0 + 1, Blocks.FLOWER_POT.defaultBlockState());
@@ -151,70 +171,118 @@ public final class OathholdBuildings {
 		c.set(hx, baseY + 3, z0 + 2, OathholdCanvas.slab(Blocks.BRICK_SLAB, true));
 		c.set(hx, baseY + 4, z0 + 2, OathholdCanvas.LANTERN);
 
-		// Furnish Ground Floor: dining table by hearth, shop counter, bookshelves & workstation
-		int tableX = Math.min(x1 - 4, hx + 2);
-		int tableZ = Math.min(z1 - 4, z0 + 4);
-		if (tableX > x0 + 2 && tableZ > z0 + 2) {
-			c.set(tableX, baseY + 1, tableZ, Blocks.OAK_FENCE.defaultBlockState());
-			c.set(tableX, baseY + 2, tableZ, Blocks.SPRUCE_PRESSURE_PLATE.defaultBlockState());
-			c.set(tableX, baseY + 3, tableZ, OathholdStreetscape.pottedPlant(seed));
-			c.set(tableX - 1, baseY + 1, tableZ, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.EAST, false));
-			c.set(tableX + 1, baseY + 1, tableZ, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.WEST, false));
+		// Bookshelves & barrels flanking hearth + left foreground bookshelf
+		if (hx - 2 >= x0 + 1) {
+			c.fill(x0 + 1, baseY + 1, z0 + 1, hx - 2, baseY + 4, z0 + 1, Blocks.BOOKSHELF.defaultBlockState());
 		}
-
-		int cx0 = Math.max(mx + 1, x1 - 4);
-		int czShop = z1 - 3;
-		if (cx0 <= x1 - 2 && czShop > z0 + 2) {
-			c.fill(cx0, baseY + 1, czShop, x1 - 2, baseY + 1, czShop, OathholdCanvas.SPRUCE);
-			c.set(cx0, baseY + 2, czShop, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true));
-			c.set(x1 - 2, baseY + 2, czShop, OathholdStreetscape.pottedPlant(seed + 4));
-			c.set(x1 - 2, baseY + 1, czShop + 1, districtWorkstation(theme));
+		if (cozyLoft) {
+			c.fill(x0 + 1, baseY + 1, mz - 2, x0 + 1, baseY + 4, mz + 1, Blocks.BOOKSHELF.defaultBlockState());
+			c.set(x0 + 2, baseY + 4, mz, OathholdCanvas.LANTERN);
 		}
-
-		// Bookshelf & storage wall on NE inside corner
-		if (x1 - 4 > hx + 1 && z0 + 1 < z1 - 4) {
-			c.fill(x1 - 3, baseY + 1, z0 + 1, x1 - 2, baseY + 3, z0 + 1, Blocks.BOOKSHELF.defaultBlockState());
-			c.set(x1 - 4, baseY + 1, z0 + 1, Blocks.BARREL.defaultBlockState());
-			if ((seed & 3) == 0) {
-				c.chest(x1 - 4, baseY + 2, z0 + 1, Direction.SOUTH,
+		if (hx + 2 <= mx - 2) {
+			c.fill(hx + 2, baseY + 1, z0 + 1, hx + 3, baseY + 3, z0 + 1, Blocks.BOOKSHELF.defaultBlockState());
+			c.set(hx + 4, baseY + 1, z0 + 1, Blocks.BARREL.defaultBlockState());
+			c.set(hx + 4, baseY + 2, z0 + 1, Blocks.BARREL.defaultBlockState());
+			if ((seed & 3) == 0 || cozyLoft) {
+				c.chest(hx + 3, baseY + 4, z0 + 1, Direction.SOUTH,
 					theme == Theme.SCHOLARS_NE ? OathholdSites.LOOT_ARCANUM : OathholdSites.LOOT_MARKET, seed * 17L);
 			}
 		}
-		c.set(mx, baseY + 4, mz, OathholdCanvas.HANGING_LANTERN);
 
-		// Walkable Internal Spruce Staircase & Open Stairwell to every upper floor
-		for (int s = 0; s < stories - 1; s++) {
-			int fy = baseY + s * 5 + 1;
+		// Furnish Ground Floor: dining table by hearth, L-shaped merchant shop counter & warm overhead lanterns
+		int tableX = Math.min(x1 - 4, hx + 1);
+		int tableZ = Math.min(z1 - 4, z0 + 5);
+		if (tableX > x0 + 2 && tableZ > z0 + 2) {
+			c.set(tableX, baseY + 1, tableZ, Blocks.OAK_FENCE.defaultBlockState());
+			c.set(tableX, baseY + 2, tableZ, Blocks.SPRUCE_PRESSURE_PLATE.defaultBlockState());
+			c.set(tableX, baseY + 3, tableZ, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true));
+			c.set(tableX - 1, baseY + 1, tableZ, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.EAST, false));
+			c.set(tableX + 1, baseY + 1, tableZ, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.WEST, false));
+			c.set(tableX + 1, baseY + 2, tableZ - 1, OathholdStreetscape.pottedPlant(seed));
+		}
+
+		int cx0 = Math.max(mx + 2, x1 - 5);
+		int czShop = Math.max(z0 + 4, mz + 1);
+		int czFront = z1 - 3;
+		if (cx0 <= x1 - 2 && czShop <= czFront) {
+			c.fill(cx0, baseY + 1, czShop, x1 - 2, baseY + 1, czShop, OathholdCanvas.SPRUCE);
+			c.fill(cx0, baseY + 1, czShop, cx0, baseY + 1, czFront, OathholdCanvas.SPRUCE);
+			c.set(cx0, baseY + 2, czFront - 1, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true));
+			c.set(cx0 + 1, baseY + 2, czShop, Blocks.LOOM.defaultBlockState());
+			c.set(x1 - 2, baseY + 2, czShop, OathholdStreetscape.pottedPlant(seed + 4));
+			c.set(x1 - 3, baseY + 2, czFront, OathholdStreetscape.pottedPlant(seed + 2));
+			c.set(x1 - 2, baseY + 1, czFront + 1, districtWorkstation(theme));
+			c.set(x1 - 3, baseY + 4, czFront, OathholdCanvas.HANGING_LANTERN);
+		} else {
+			int sx = Math.max(mx + 1, x1 - 4);
+			if (sx <= x1 - 2 && czFront > z0 + 2) {
+				c.fill(sx, baseY + 1, czFront, x1 - 2, baseY + 1, czFront, OathholdCanvas.SPRUCE);
+				c.set(sx, baseY + 2, czFront, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true));
+				c.set(x1 - 2, baseY + 2, czFront, OathholdStreetscape.pottedPlant(seed + 4));
+				c.set(x1 - 2, baseY + 1, czFront + 1, districtWorkstation(theme));
+			}
+		}
+
+		c.set(mx, baseY + 4, mz + 3, OathholdCanvas.HANGING_LANTERN);
+		c.set(x0 + 2, baseY + 4, z0 + 3, OathholdCanvas.HANGING_LANTERN);
+
+		// Walkable Internal Spruce Staircase & Open Mezzanine Balcony
+		if (cozyLoft) {
+			// Central-left staircase climbing up toward mezzanine bedroom loft at z = mz
 			for (int step = 0; step <= 4; step++) {
-				int sz = z0 + 2 + step;
-				int sy = fy + step;
-				if (sz >= z1 - 1) break;
-				c.set(x0 + 1, sy, sz, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, false));
-				c.clear(x0 + 1, sy + 1, sz, x0 + 1, fy + 8, sz);
-				if (step > 0 && step < 4) {
-					c.set(x0 + 2, fy + 5, sz, Blocks.OAK_FENCE.defaultBlockState());
+				int sz = mz + 4 - step;
+				int sy = baseY + 1 + step;
+				c.fill(mx - 1, baseY + 1, sz, mx - 1, Math.max(baseY + 1, sy - 1), sz, OathholdCanvas.SPRUCE);
+				c.set(mx - 1, sy, sz, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.NORTH, false));
+				c.clear(mx - 1, sy + 1, sz, mx - 1, baseY + 9, sz);
+			}
+			c.fill(x0 + 1, baseY + 6, mz, x1 - 2, baseY + 6, mz, Blocks.OAK_FENCE.defaultBlockState());
+			c.clear(mx - 2, baseY + 6, mz, mx, baseY + 8, mz);
+			c.clear(mx - 2, baseY + 5, mz + 1, mx, baseY + 9, z1 - 2);
+		} else {
+			for (int s = 0; s < stories - 1; s++) {
+				int fy = baseY + s * 5 + 1;
+				for (int step = 0; step <= 4; step++) {
+					int sz = z0 + 2 + step;
+					int sy = fy + step;
+					if (sz >= z1 - 1) break;
+					c.set(x0 + 1, sy, sz, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.SOUTH, false));
+					c.clear(x0 + 1, sy + 1, sz, x0 + 1, fy + 8, sz);
+					if (step > 0 && step < 4) {
+						c.set(x0 + 2, fy + 5, sz, Blocks.OAK_FENCE.defaultBlockState());
+					}
 				}
 			}
 		}
 
-		// Upper-story furnished bedrooms & studies
+		// Upper-story furnished bedrooms & studies (clearly visible from ground shop in cozyLoft buildings!)
 		for (int s = 1; s < stories; s++) {
 			int fy = baseY + s * 5 + 1;
 			DyeColor bedCol = BED_COLORS[Math.floorMod(seed + s, BED_COLORS.length)];
-			if (x1 - 3 > x0 + 2 && z0 + 2 < z1 - 2) {
-				c.bed(x1 - 3, fy, z0 + 2, bedCol, Direction.EAST);
-				c.set(x1 - 4, fy, z0 + 2, Blocks.CRAFTING_TABLE.defaultBlockState());
-				c.set(x1 - 4, fy + 1, z0 + 2, OathholdCanvas.LANTERN);
+			if (cozyLoft && s == 1) {
+				int bedX = Math.max(mx + 1, x1 - 6);
+				int bedZ = Math.max(z0 + 2, mz - 3);
+				c.bed(bedX, fy, bedZ, bedCol, Direction.EAST);
+				c.set(bedX + 2, fy, bedZ, Blocks.CRAFTING_TABLE.defaultBlockState());
+				c.set(bedX + 1, fy + 3, bedZ, OathholdCanvas.HANGING_LANTERN);
+				c.fill(x0 + 2, fy, z0 + 1, x0 + 3, fy + 2, z0 + 1, Blocks.BOOKSHELF.defaultBlockState());
+				c.set(mx, fy + 3, z0 + 3, OathholdCanvas.HANGING_LANTERN);
+			} else {
+				if (x1 - 3 > x0 + 2 && z0 + 2 < z1 - 2) {
+					c.bed(x1 - 3, fy, z0 + 2, bedCol, Direction.EAST);
+					c.set(x1 - 4, fy, z0 + 2, Blocks.CRAFTING_TABLE.defaultBlockState());
+					c.set(x1 - 4, fy + 1, z0 + 2, OathholdCanvas.LANTERN);
+				}
+				c.fill(x1 - 2, fy, z1 - 1, x1 - 1, fy + 2, z1 - 1, Blocks.BOOKSHELF.defaultBlockState());
+				if (x1 - 4 > x0 + 2 && z1 - 2 > z0 + 3) {
+					c.set(x1 - 3, fy, z1 - 2, Blocks.OAK_FENCE.defaultBlockState());
+					c.set(x1 - 3, fy + 1, z1 - 2, Blocks.SPRUCE_PRESSURE_PLATE.defaultBlockState());
+					c.set(x1 - 3, fy + 2, z1 - 2, OathholdStreetscape.pottedPlant(seed + s + 1));
+					c.set(x1 - 4, fy, z1 - 2, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.EAST, false));
+				}
+				c.set(mx, fy, mz, rugA);
+				c.set(mx, fy + 3, mz, OathholdCanvas.HANGING_LANTERN);
 			}
-			c.fill(x1 - 2, fy, z1 - 1, x1 - 1, fy + 2, z1 - 1, Blocks.BOOKSHELF.defaultBlockState());
-			if (x1 - 4 > x0 + 2 && z1 - 2 > z0 + 3) {
-				c.set(x1 - 3, fy, z1 - 2, Blocks.OAK_FENCE.defaultBlockState());
-				c.set(x1 - 3, fy + 1, z1 - 2, Blocks.SPRUCE_PRESSURE_PLATE.defaultBlockState());
-				c.set(x1 - 3, fy + 2, z1 - 2, OathholdStreetscape.pottedPlant(seed + s + 1));
-				c.set(x1 - 4, fy, z1 - 2, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.EAST, false));
-			}
-			c.set(mx, fy, mz, rugA);
-			c.set(mx, fy + 3, mz, OathholdCanvas.HANGING_LANTERN);
 		}
 
 		// Roof matching quadrant palette + gable window accent

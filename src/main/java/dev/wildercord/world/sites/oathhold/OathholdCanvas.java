@@ -335,6 +335,8 @@ public final class OathholdCanvas {
 	public void pitchedRoofZ(int x0, int y0, int z0, int x1, int z1, Block stairBlock, Block slabBlock, BlockState gableWall, BlockState trim) {
 		if (!intersects(x0 - 1, z0 - 1, x1 + 1, z1 + 1)) return;
 		int half = (x1 - x0) / 2;
+		int midX = (x0 + x1) / 2;
+		boolean timberedGable = gableWall.equals(CALCITE) || gableWall.is(Blocks.SMOOTH_SANDSTONE);
 		for (int k = 0; k <= half + 1; k++) {
 			int lx = x0 + k - 1;
 			int rx = x1 - k + 1;
@@ -347,8 +349,19 @@ public final class OathholdCanvas {
 			fill(lx, yy, z0 - 1, lx, yy, z1 + 1, stair(stairBlock, Direction.EAST, false));
 			fill(rx, yy, z0 - 1, rx, yy, z1 + 1, stair(stairBlock, Direction.WEST, false));
 			if (lx + 1 <= rx - 1 && k > 0) {
-				fill(lx + 1, yy, z0, rx - 1, yy, z0, gableWall);
-				fill(lx + 1, yy, z1, rx - 1, yy, z1, gableWall);
+				if (timberedGable) {
+					boolean collar = (k % 3) == 0;
+					for (int x = Math.max(lx + 1, minLx); x <= Math.min(rx - 1, maxLx); x++) {
+						boolean stud = collar || x == midX || Math.floorMod(Math.abs(x - midX), 4) == 0;
+						boolean atticWin = half >= 4 && x == midX && (k == 2 || k == 3);
+						BlockState fillBlock = atticWin ? Blocks.GLASS_PANE.defaultBlockState() : (stud ? DARK_OAK_LOG : gableWall);
+						set(x, yy, z0, fillBlock);
+						set(x, yy, z1, fillBlock);
+					}
+				} else {
+					fill(lx + 1, yy, z0, rx - 1, yy, z0, gableWall);
+					fill(lx + 1, yy, z1, rx - 1, yy, z1, gableWall);
+				}
 			}
 			if (k > 0) {
 				set(lx, yy, z0 - 1, trim);
@@ -363,6 +376,8 @@ public final class OathholdCanvas {
 	public void pitchedRoofX(int x0, int y0, int z0, int x1, int z1, Block stairBlock, Block slabBlock, BlockState gableWall, BlockState trim) {
 		if (!intersects(x0 - 1, z0 - 1, x1 + 1, z1 + 1)) return;
 		int half = (z1 - z0) / 2;
+		int midZ = (z0 + z1) / 2;
+		boolean timberedGable = gableWall.equals(CALCITE) || gableWall.is(Blocks.SMOOTH_SANDSTONE);
 		for (int k = 0; k <= half + 1; k++) {
 			int lz = z0 + k - 1;
 			int rz = z1 - k + 1;
@@ -375,8 +390,19 @@ public final class OathholdCanvas {
 			fill(x0 - 1, yy, lz, x1 + 1, yy, lz, stair(stairBlock, Direction.SOUTH, false));
 			fill(x0 - 1, yy, rz, x1 + 1, yy, rz, stair(stairBlock, Direction.NORTH, false));
 			if (lz + 1 <= rz - 1 && k > 0) {
-				fill(x0, yy, lz + 1, x0, yy, rz - 1, gableWall);
-				fill(x1, yy, lz + 1, x1, yy, rz - 1, gableWall);
+				if (timberedGable) {
+					boolean collar = (k % 3) == 0;
+					for (int z = Math.max(lz + 1, minLz); z <= Math.min(rz - 1, maxLz); z++) {
+						boolean stud = collar || z == midZ || Math.floorMod(Math.abs(z - midZ), 4) == 0;
+						boolean atticWin = half >= 4 && z == midZ && (k == 2 || k == 3);
+						BlockState fillBlock = atticWin ? Blocks.GLASS_PANE.defaultBlockState() : (stud ? DARK_OAK_LOG : gableWall);
+						set(x0, yy, z, fillBlock);
+						set(x1, yy, z, fillBlock);
+					}
+				} else {
+					fill(x0, yy, lz + 1, x0, yy, rz - 1, gableWall);
+					fill(x1, yy, lz + 1, x1, yy, rz - 1, gableWall);
+				}
 			}
 			if (k > 0) {
 				set(x0 - 1, yy, lz, trim);

@@ -104,7 +104,10 @@ public final class OathholdTerrain {
 		for (int y = startY; y < bedY; y++) c.set(lx, y, lz, STONE);
 		int h = OathholdCanvas.hash(lx, bedY, lz);
 		c.set(lx, bedY, lz, h < 45 ? OathholdCanvas.MOSSY_STONE_BRICKS : h < 75 ? GRAVEL : STONE);
-		for (int y = bedY + 1; y <= waterTopY; y++) c.set(lx, y, lz, OathholdCanvas.WATER);
+		boolean thermal = bedY < -3 && Math.floorMod(lx, 3) == 1 && Math.floorMod(lz, 3) == 1;
+		for (int y = bedY + 1; y <= waterTopY; y++) {
+			c.set(lx, y, lz, (thermal && y == -3) ? OathholdCanvas.SEA_LANTERN : OathholdCanvas.WATER);
+		}
 		int clearTop = Math.min(maxLocalY, Math.max(waterTopY + 56, surfLocal + 24));
 		c.clearNonAirColumn(lx, waterTopY + 1, clearTop, lz);
 	}

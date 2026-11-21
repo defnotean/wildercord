@@ -241,55 +241,98 @@ public final class OathholdStreetscape {
 		c.set(x, y + 2, z, OathholdCanvas.LANTERN);
 	}
 
-	/** Outdoor waterside/patio umbrella table with two spruce-stair chairs. */
+	/** Outdoor waterside/patio umbrella table with sleek carpet canopy & two spruce-stair chairs. */
 	public static void patioTable(OathholdCanvas c, int x, int y, int z, BlockState umbrellaCarpet, BlockState accentWool) {
 		if (!c.intersects(x - 2, z - 2, x + 2, z + 2)) return;
+		BlockState carpetWhite = Blocks.CARPET.white().defaultBlockState();
+		BlockState trapTop = trapdoorShelf(Blocks.SPRUCE_TRAPDOOR, Direction.NORTH);
 		c.set(x, y, z, OAK_FENCE);
 		c.set(x, y + 1, z, OAK_FENCE);
 		c.set(x, y + 2, z, OAK_FENCE);
 		for (int dx = -1; dx <= 1; dx++) {
 			for (int dz = -1; dz <= 1; dz++) {
-				c.set(x + dx, y + 3, z + dz, ((dx + dz) & 1) == 0 ? umbrellaCarpet : accentWool);
+				if (dx != 0 || dz != 0) {
+					c.set(x + dx, y + 2, z + dz, trapTop);
+				}
+				c.set(x + dx, y + 3, z + dz, ((dx + dz) & 1) == 0 ? umbrellaCarpet : carpetWhite);
 			}
 		}
 		c.set(x - 1, y, z, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.EAST, false));
 		c.set(x + 1, y, z, OathholdCanvas.stair(Blocks.SPRUCE_STAIRS, Direction.WEST, false));
 	}
 
-	/** Moored wooden canal cargo barge sitting in canal water. */
+	/** Moored 13-block masted wooden canal cargo barge sitting proudly in canal water. */
 	public static void canalBarge(OathholdCanvas c, int cx, int waterTopY, int cz, boolean alongZ) {
-		if (!c.intersects(cx - 5, cz - 5, cx + 5, cz + 5)) return;
+		if (!c.intersects(cx - 7, cz - 7, cx + 7, cz + 7)) return;
 		if (alongZ) {
-			c.fill(cx - 1, waterTopY, cz - 4, cx + 1, waterTopY, cz + 4, OathholdCanvas.SPRUCE);
-			c.fill(cx - 1, waterTopY + 1, cz - 3, cx - 1, waterTopY + 1, cz + 3, OathholdCanvas.DARK_OAK);
-			c.fill(cx + 1, waterTopY + 1, cz - 3, cx + 1, waterTopY + 1, cz + 3, OathholdCanvas.DARK_OAK);
-			c.set(cx, waterTopY + 1, cz - 1, CRAFTING);
-			c.set(cx, waterTopY + 1, cz + 1, HAY);
+			c.fill(cx - 2, waterTopY, cz - 5, cx + 2, waterTopY, cz + 5, OathholdCanvas.SPRUCE);
+			c.fill(cx - 1, waterTopY, cz - 6, cx + 1, waterTopY, cz - 6, OathholdCanvas.DARK_OAK);
+			c.fill(cx - 1, waterTopY, cz + 6, cx + 1, waterTopY, cz + 6, OathholdCanvas.DARK_OAK);
+			c.fill(cx - 2, waterTopY + 1, cz - 4, cx - 2, waterTopY + 1, cz + 4, OathholdCanvas.DARK_OAK);
+			c.fill(cx + 2, waterTopY + 1, cz - 4, cx + 2, waterTopY + 1, cz + 4, OathholdCanvas.DARK_OAK);
+			c.fill(cx - 1, waterTopY + 1, cz - 5, cx + 1, waterTopY + 1, cz - 5, OathholdCanvas.DARK_OAK);
+			c.fill(cx - 1, waterTopY + 1, cz + 5, cx + 1, waterTopY + 1, cz + 5, OathholdCanvas.DARK_OAK);
+			// Tall central cargo mast, yardarm sail bar & pennant
+			c.fill(cx, waterTopY + 1, cz, cx, waterTopY + 7, cz, OathholdCanvas.DARK_OAK_LOG);
+			c.fill(cx - 2, waterTopY + 5, cz, cx + 2, waterTopY + 5, cz, Blocks.WOOL.white().defaultBlockState());
+			c.fill(cx - 1, waterTopY + 6, cz, cx + 1, waterTopY + 6, cz, OathholdCanvas.DARK_OAK);
+			c.flagPennant(cx, waterTopY + 7, cz);
+			// Cargo crates, hay bales, barrels & bow/stern lanterns
+			c.set(cx - 1, waterTopY + 1, cz - 2, CRAFTING);
+			c.set(cx + 1, waterTopY + 1, cz - 2, HAY);
 			c.set(cx, waterTopY + 1, cz + 2, BARREL);
-			c.set(cx, waterTopY + 2, cz - 3, OathholdCanvas.LANTERN);
+			c.set(cx + 1, waterTopY + 1, cz + 3, HAY);
+			c.set(cx - 1, waterTopY + 1, cz + 3, LOOM);
+			c.set(cx, waterTopY + 2, cz - 2, NOTE);
+			c.set(cx - 2, waterTopY + 2, cz - 4, OathholdCanvas.LANTERN);
+			c.set(cx + 2, waterTopY + 2, cz + 4, OathholdCanvas.LANTERN);
 		} else {
-			c.fill(cx - 4, waterTopY, cz - 1, cx + 4, waterTopY, cz + 1, OathholdCanvas.SPRUCE);
-			c.fill(cx - 3, waterTopY + 1, cz - 1, cx + 3, waterTopY + 1, cz - 1, OathholdCanvas.DARK_OAK);
-			c.fill(cx - 3, waterTopY + 1, cz + 1, cx + 3, waterTopY + 1, cz + 1, OathholdCanvas.DARK_OAK);
-			c.set(cx - 1, waterTopY + 1, cz, CRAFTING);
-			c.set(cx + 1, waterTopY + 1, cz, HAY);
+			c.fill(cx - 5, waterTopY, cz - 2, cx + 5, waterTopY, cz + 2, OathholdCanvas.SPRUCE);
+			c.fill(cx - 6, waterTopY, cz - 1, cx - 6, waterTopY, cz + 1, OathholdCanvas.DARK_OAK);
+			c.fill(cx + 6, waterTopY, cz - 1, cx + 6, waterTopY, cz + 1, OathholdCanvas.DARK_OAK);
+			c.fill(cx - 4, waterTopY + 1, cz - 2, cx + 4, waterTopY + 1, cz - 2, OathholdCanvas.DARK_OAK);
+			c.fill(cx - 4, waterTopY + 1, cz + 2, cx + 4, waterTopY + 1, cz + 2, OathholdCanvas.DARK_OAK);
+			c.fill(cx - 5, waterTopY + 1, cz - 1, cx - 5, waterTopY + 1, cz + 1, OathholdCanvas.DARK_OAK);
+			c.fill(cx + 5, waterTopY + 1, cz - 1, cx + 5, waterTopY + 1, cz + 1, OathholdCanvas.DARK_OAK);
+			c.fill(cx, waterTopY + 1, cz, cx, waterTopY + 7, cz, OathholdCanvas.DARK_OAK_LOG);
+			c.fill(cx, waterTopY + 5, cz - 2, cx, waterTopY + 5, cz + 2, Blocks.WOOL.white().defaultBlockState());
+			c.fill(cx, waterTopY + 6, cz - 1, cx, waterTopY + 6, cz + 1, OathholdCanvas.DARK_OAK);
+			c.flagPennant(cx, waterTopY + 7, cz);
+			c.set(cx - 2, waterTopY + 1, cz - 1, CRAFTING);
+			c.set(cx - 2, waterTopY + 1, cz + 1, HAY);
 			c.set(cx + 2, waterTopY + 1, cz, BARREL);
-			c.set(cx - 3, waterTopY + 2, cz, OathholdCanvas.LANTERN);
+			c.set(cx + 3, waterTopY + 1, cz + 1, HAY);
+			c.set(cx - 4, waterTopY + 2, cz - 2, OathholdCanvas.LANTERN);
+			c.set(cx + 4, waterTopY + 2, cz + 2, OathholdCanvas.LANTERN);
 		}
 	}
 
-	/** Carved tuff, stone & gold Oathbound Knight Hero Statue with halberd. */
+	/** Sculpted multi-block Oathbound Hero Knight Statue with stone armor, shield, gold crest & halberd. */
 	public static void knightMonument(OathholdCanvas c, int x, int y, int z) {
 		if (!c.intersects(x - 2, z - 2, x + 2, z + 2)) return;
 		c.fill(x - 1, y, z - 1, x + 1, y, z + 1, OathholdCanvas.TUFF_BRICKS);
-		c.set(x, y + 1, z, OathholdCanvas.CHISELED_STONE_BRICKS);
+		c.fill(x - 1, y + 1, z - 1, x + 1, y + 1, z + 1, OathholdCanvas.STONE_BRICKS);
+		c.set(x, y + 1, z + 1, OathholdCanvas.GOLD);
+		c.set(x, y + 1, z - 1, OathholdCanvas.GOLD);
+		c.set(x - 1, y + 1, z, OathholdCanvas.GOLD);
+		c.set(x + 1, y + 1, z, OathholdCanvas.GOLD);
+		// Knight greaves, waist belt, armored cuirass with pauldrons & shield, visored helm & emerald plume
 		c.set(x, y + 2, z, OathholdCanvas.POLISHED_DEEPSLATE);
-		c.set(x, y + 3, z, OathholdCanvas.GOLD);
-		c.set(x, y + 4, z, OathholdCanvas.EMERALD_GREEN);
-		c.set(x, y + 5, z, OathholdCanvas.GOLD);
-		c.fill(x + 1, y + 2, z, x + 1, y + 6, z, OathholdCanvas.IRON_BARS);
-		c.set(x - 1, y + 1, z - 1, OathholdCanvas.LANTERN);
-		c.set(x + 1, y + 1, z + 1, OathholdCanvas.LANTERN);
+		c.set(x, y + 3, z, OathholdCanvas.EMERALD_GREEN);
+		c.set(x - 1, y + 3, z, OathholdCanvas.IRON_BARS);
+		c.set(x, y + 4, z, OathholdCanvas.CHISELED_STONE_BRICKS);
+		c.set(x - 1, y + 4, z, Blocks.STONE_BRICK_WALL.defaultBlockState());
+		c.set(x + 1, y + 4, z, Blocks.STONE_BRICK_WALL.defaultBlockState());
+		c.set(x, y + 5, z, OathholdCanvas.STONE_BRICKS);
+		c.set(x, y + 6, z, OathholdCanvas.GOLD);
+		c.set(x, y + 7, z, OathholdCanvas.EMERALD_GREEN);
+		// Upright Halberd shaft + axe head
+		c.fill(x + 1, y + 2, z, x + 1, y + 7, z, OathholdCanvas.IRON_BARS);
+		c.set(x + 1, y + 6, z, OathholdCanvas.POLISHED_ANDESITE);
+		c.set(x + 1, y + 7, z, OathholdCanvas.GOLD);
+		// Corner lanterns on pedestal
+		c.set(x - 1, y + 2, z - 1, OathholdCanvas.LANTERN);
+		c.set(x + 1, y + 2, z + 1, OathholdCanvas.LANTERN);
 	}
 
 	/** Trimmed stone-bordered green boxwood hedge parterre planter. */

@@ -109,8 +109,16 @@ public final class OathholdOuterLandmarks {
 	private static void buildImperialHarbor(OathholdCanvas c) {
 		if (!c.intersects(498, -262, 954, 262)) return;
 
-		// Stone Harbor Promenade Quay (x 536..555, top surface y = 1) & Finger Cargo Piers
+		// Stone Harbor Promenade Quay (x 536..555, top surface y = 1) with flush warm dock lights keeping snow away
 		c.fillWeatheredStone(536, -1, -220, 555, 1, 220);
+		for (int x = Math.max(500, c.clipMinLx()); x <= Math.min(555, c.clipMaxLx()); x++) {
+			for (int z = Math.max(-220, c.clipMinLz()); z <= Math.min(220, c.clipMaxLz()); z++) {
+				if (Math.floorMod(x, 3) == 0 && Math.floorMod(z, 3) == 0) {
+					int ly = x >= 536 ? 1 : 0;
+					c.set(x, ly, z, OathholdCanvas.OCHRE_LIGHT);
+				}
+			}
+		}
 		for (int z = Math.max(-216, c.clipMinLz()); z <= Math.min(216, c.clipMaxLz()); z++) {
 			boolean onPier = Math.abs(z) <= 6 || Math.abs(z - 120) <= 6 || Math.abs(z + 120) <= 6;
 			if (!onPier) {
@@ -151,6 +159,11 @@ public final class OathholdOuterLandmarks {
 		for (int pz : new int[]{-120, 0, 120}) {
 			c.fillWeatheredStone(555, -2, pz - 6, 710, 1, pz + 6);
 			c.fill(556, 1, pz - 4, 708, 1, pz + 4, OathholdCanvas.SPRUCE);
+			for (int x = 558; x <= 708; x += 3) {
+				c.set(x, 1, pz - 5, OathholdCanvas.OCHRE_LIGHT);
+				c.set(x, 1, pz + 5, OathholdCanvas.OCHRE_LIGHT);
+				c.set(x, 1, pz, OathholdCanvas.OCHRE_LIGHT);
+			}
 			for (int x = 570; x <= 685; x += 24) {
 				OathholdStreetscape.ornateStreetLamp(c, x, 2, pz - 5, false);
 				OathholdStreetscape.ornateStreetLamp(c, x, 2, pz + 5, false);
@@ -164,61 +177,74 @@ public final class OathholdOuterLandmarks {
 			c.fill(702, 7, pz - 2, 704, 8, pz, OathholdCanvas.SPRUCE);
 		}
 
-		// Admiralty Harbor Guildhall with furnished interiors & dockside tavern patio
+		// Admiralty Harbor Guildhall + Dockside Harbor Tavern & patio tables
 		OathholdBuildings.build(c, 0, 504, -24, 534, 24, 3,
 			Blocks.CUT_COPPER_STAIRS.waxed().weathered(), Blocks.CUT_COPPER_SLAB.waxed().weathered(),
 			true, OathholdBuildings.Theme.MARITIME_SE, true, 601);
+		OathholdBuildings.build(c, 0, 506, 30, 532, 54, 2,
+			Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB,
+			false, OathholdBuildings.Theme.MARITIME_SE, false, 603);
 		c.chest(518, 2, 0, Direction.EAST, OathholdSites.LOOT_MARKET, 602L);
-		for (int ptz : new int[]{-16, -8, 8, 16}) {
+		for (int ptz : new int[]{-16, -8, 8, 16, 36, 46}) {
 			OathholdStreetscape.patioTable(c, 538, 2, ptz, Blocks.CARPET.cyan().defaultBlockState(), wWhite);
 		}
 		c.spawnMob(551, 2, -12, AuraWorld.OATHBOUND_BASTION, 90.0F, true);
 		c.spawnMob(551, 2, 12, AuraWorld.OATHBOUND_HALBERDIER, 90.0F, true);
 
-		// Harbor Lighthouse Beacon at NE Quay (cx = 928, cz = -158, height = 56)
-		int lhx = 928, lhz = -158;
-		if (c.intersects(lhx - 14, lhz - 14, lhx + 14, lhz + 14)) {
-			c.fillWeatheredStone(lhx - 10, -4, lhz - 10, lhx + 10, 2, lhz + 10);
-			for (int dy = 3; dy <= 44; dy++) {
-				int r = Math.max(4, 9 - dy / 10);
-				BlockState band = (dy / 5) % 2 == 0 ? OathholdCanvas.CALCITE : OathholdCanvas.STONE_BRICKS;
-				for (int dx = -r; dx <= r; dx++) {
-					for (int dz = -r; dz <= r; dz++) {
-						double d = Math.sqrt(dx * dx + dz * dz);
-						if (d <= r + 0.3 && d >= r - 1.5) {
-							c.set(lhx + dx, dy, lhz + dz, band);
-						}
-					}
-				}
-			}
-			c.fill(lhx - 3, 45, lhz - 3, lhx + 3, 50, lhz + 3, Blocks.STAINED_GLASS.yellow().defaultBlockState());
-			c.fill(lhx - 2, 45, lhz - 2, lhx + 2, 50, lhz + 2, OathholdCanvas.SEA_LANTERN);
-			c.fill(lhx - 1, 46, lhz - 1, lhx + 1, 49, lhz + 1, OathholdCanvas.OCHRE_LIGHT);
-			c.ribbedDome(lhx, 51, lhz, 5, 5, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
-		}
+		// Central Breakwater Imperial Lighthouse between the galleons & NE Headland Beacon
+		buildHarborLighthouse(c, 840, -16);
+		buildHarborLighthouse(c, 928, -158);
 
-		// Six Full-Scale Sailing Galleons moored across Harbor Basin!
+		// Six 3-Mast Sailing Galleons with Emerald-Cross white sails moored across Harbor Basin!
 		int[][] galleons = {{626, -58}, {626, 58}, {760, -58}, {760, 58}, {844, -150}, {844, 150}};
 		for (int[] g : galleons) {
 			buildGalleon(c, g[0], g[1]);
 		}
 	}
 
+	private static void buildHarborLighthouse(OathholdCanvas c, int lhx, int lhz) {
+		if (!c.intersects(lhx - 14, lhz - 14, lhx + 14, lhz + 14)) return;
+		c.fillWeatheredStone(lhx - 10, -4, lhz - 10, lhx + 10, 2, lhz + 10);
+		for (int x = lhx - 9; x <= lhx + 9; x += 3) {
+			for (int z = lhz - 9; z <= lhz + 9; z += 3) {
+				c.set(x, 2, z, OathholdCanvas.OCHRE_LIGHT);
+			}
+		}
+		for (int dy = 3; dy <= 44; dy++) {
+			int r = Math.max(4, 9 - dy / 10);
+			BlockState band = (dy / 5) % 2 == 0 ? OathholdCanvas.CALCITE : OathholdCanvas.STONE_BRICKS;
+			for (int dx = -r; dx <= r; dx++) {
+				for (int dz = -r; dz <= r; dz++) {
+					double d = Math.sqrt(dx * dx + dz * dz);
+					if (d <= r + 0.3 && d >= r - 1.5) {
+						c.set(lhx + dx, dy, lhz + dz, band);
+					}
+				}
+			}
+		}
+		c.fill(lhx - 3, 45, lhz - 3, lhx + 3, 50, lhz + 3, Blocks.STAINED_GLASS.yellow().defaultBlockState());
+		c.fill(lhx - 2, 45, lhz - 2, lhx + 2, 50, lhz + 2, OathholdCanvas.SEA_LANTERN);
+		c.fill(lhx - 1, 46, lhz - 1, lhx + 1, 49, lhz + 1, OathholdCanvas.OCHRE_LIGHT);
+		c.ribbedDome(lhx, 51, lhz, 5, 5, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
+		c.flagPennant(lhx, 57, lhz);
+	}
+
 	private static void buildGalleon(OathholdCanvas c, int cx, int cz) {
-		if (!c.intersects(cx - 26, cz - 12, cx + 26, cz + 12)) return;
+		if (!c.intersects(cx - 28, cz - 14, cx + 30, cz + 14)) return;
 		BlockState hull = OathholdCanvas.DARK_OAK;
+		BlockState trim = OathholdCanvas.SPRUCE_LOG;
 		BlockState deck = OathholdCanvas.SPRUCE;
 		BlockState mast = OathholdCanvas.DARK_OAK_LOG;
 		BlockState sailWhite = Blocks.WOOL.white().defaultBlockState();
 		BlockState sailGreen = Blocks.WOOL.green().defaultBlockState();
 
 		for (int dx = -22; dx <= 22; dx++) {
-			int halfBeam = Math.max(1, (int) Math.round(7.0 * Math.sqrt(Math.max(0.0, 1.0 - (dx * dx) / 500.0))));
+			int halfBeam = Math.max(1, (int) Math.round(7.5 * Math.sqrt(Math.max(0.0, 1.0 - (dx * dx) / 505.0))));
 			for (int dz = -halfBeam; dz <= halfBeam; dz++) {
 				for (int dy = -3; dy <= 3; dy++) {
 					boolean edge = Math.abs(dz) >= halfBeam - 1 || dy <= -2 || Math.abs(dx) >= 20;
 					if (edge) {
-						c.set(cx + dx, dy, cz + dz, hull);
+						c.set(cx + dx, dy, cz + dz, dy == 3 ? trim : hull);
 					} else if (dy == 1) {
 						c.set(cx + dx, dy, cz + dz, deck);
 					} else if (dy > 1) {
@@ -227,27 +253,42 @@ public final class OathholdOuterLandmarks {
 				}
 			}
 		}
-		c.fill(cx - 20, 4, cz - 4, cx - 10, 6, cz + 4, hull);
-		c.fill(cx - 19, 7, cz - 3, cx - 11, 7, cz + 3, deck);
-		c.fill(cx + 22, 4, cz, cx + 29, 4, cz, mast);
+		// Tiered sterncastle with cabin windows + forecastle + bowsprit
+		c.fill(cx - 21, 4, cz - 5, cx - 10, 7, cz + 5, hull);
+		c.fill(cx - 20, 8, cz - 4, cx - 11, 8, cz + 4, deck);
+		c.set(cx - 21, 6, cz - 2, OathholdCanvas.OCHRE_LIGHT);
+		c.set(cx - 21, 6, cz + 2, OathholdCanvas.OCHRE_LIGHT);
+		c.fill(cx + 12, 4, cz - 4, cx + 19, 5, cz + 4, hull);
+		c.fill(cx + 13, 6, cz - 3, cx + 18, 6, cz + 3, deck);
+		c.fill(cx + 21, 5, cz, cx + 29, 5, cz, mast);
 		c.chest(cx - 14, 2, cz, Direction.EAST, OathholdSites.LOOT_MARKET, cx * 5L + cz);
 
-		for (int mx : new int[]{cx - 2, cx + 10}) {
-			int topH = mx < cx ? 27 : 22;
+		// 3 Masts (Mizzen, Main at cx-2 preserving DARK_OAK_LOG probe at (758, by+18, -58), Foremast) with Emerald Cross Sails
+		int[][] masts = {{cx - 14, 22, 4}, {cx - 2, 30, 7}, {cx + 10, 25, 6}};
+		for (int[] m : masts) {
+			int mx = m[0], topH = m[1], halfW = m[2];
 			c.fill(mx, 2, cz, mx, topH, cz, mast);
-			int yardBase = topH - 12;
-			for (int sy = yardBase; sy <= topH - 3; sy++) {
-				int halfW = 6;
-				int curveX = (sy > yardBase + 2 && sy < topH - 5) ? 2 : 1;
-				for (int sz = cz - halfW; sz <= cz + halfW; sz++) {
-					boolean stripe = Math.abs(sz - cz) <= 1 || sy == yardBase + 4;
-					c.set(mx + curveX, sy, sz, stripe ? sailGreen : sailWhite);
+			// Lower course sail + Upper topsail emblazoned with Emerald Cross
+			int[][] tiers = (mx == cx - 14)
+				? new int[][]{{11, 19, 4}}
+				: new int[][]{{8, 16, halfW}, {18, topH - 3, Math.max(4, halfW - 1)}};
+			for (int[] t : tiers) {
+				int sy0 = t[0], sy1 = t[1], hw = t[2];
+				int midY = (sy0 + sy1) / 2;
+				for (int sy = sy0; sy <= sy1; sy++) {
+					int bulge = (sy > sy0 + 1 && sy < sy1 - 1) ? 2 : 1;
+					for (int sz = cz - hw; sz <= cz + hw; sz++) {
+						boolean inCross = (Math.abs(sz - cz) <= 1 && Math.abs(sy - midY) <= 3)
+							|| (sy == midY && Math.abs(sz - cz) <= Math.max(2, hw - 2));
+						c.set(mx + bulge, sy, sz, inCross ? sailGreen : sailWhite);
+					}
 				}
 			}
 			c.flagPennant(mx, topH, cz);
 		}
-		c.set(cx - 18, 8, cz, OathholdCanvas.LANTERN);
-		c.set(cx + 16, 4, cz, OathholdCanvas.LANTERN);
+		c.set(cx - 19, 9, cz - 3, OathholdCanvas.LANTERN);
+		c.set(cx - 19, 9, cz + 3, OathholdCanvas.LANTERN);
+		c.set(cx + 16, 7, cz, OathholdCanvas.LANTERN);
 	}
 
 	private static void buildKingsExchangeSquare(OathholdCanvas c) {

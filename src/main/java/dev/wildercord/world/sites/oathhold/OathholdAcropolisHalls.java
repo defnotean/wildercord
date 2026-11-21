@@ -180,12 +180,47 @@ public final class OathholdAcropolisHalls {
 		if (!c.intersects(40, -180, 120, -44)) return;
 
 		int cx = 80, cz = -124;
-		c.clear(53, AY + 1, -163, 107, AY + 28, -85);
-		c.fill(52, AY + 1, -164, 53, AY + 22, -84, OathholdCanvas.CALCITE);
-		c.fill(107, AY + 1, -164, 108, AY + 22, -84, OathholdCanvas.CALCITE);
-		c.fill(52, AY + 1, -164, 108, AY + 22, -163, OathholdCanvas.CALCITE);
-		c.fill(52, AY + 1, -85, 108, AY + 22, -84, OathholdCanvas.CALCITE);
+		BlockState glassCyan = Blocks.STAINED_GLASS.cyan().defaultBlockState();
+		BlockState glassGold = Blocks.STAINED_GLASS.yellow().defaultBlockState();
+		c.clear(53, AY + 1, -163, 107, AY + 45, -85);
 
+		// Classical Palladian stone-and-calcite colonnade walls (flat balustraded roof at AY + 18)
+		for (int y = AY + 1; y <= AY + 18; y++) {
+			for (int x = 52; x <= 108; x++) {
+				boolean cornerCol = x <= 55 || x >= 105;
+				boolean col = (x % 4) == 0;
+				boolean win = !cornerCol && !col && y >= AY + 4 && y <= AY + 14;
+				BlockState blk = y <= AY + 2 || y >= AY + 17 ? OathholdCanvas.STONE_BRICKS
+					: (win ? glassCyan : (col ? OathholdCanvas.STONE_BRICKS : OathholdCanvas.CALCITE));
+				c.set(x, y, -164, blk);
+				c.set(x, y, -84, blk);
+			}
+			for (int z = -163; z <= -85; z++) {
+				boolean col = (z % 4) == 0;
+				boolean win = !col && y >= AY + 4 && y <= AY + 14;
+				BlockState blk = y <= AY + 2 || y >= AY + 17 ? OathholdCanvas.STONE_BRICKS
+					: (win ? glassCyan : (col ? OathholdCanvas.STONE_BRICKS : OathholdCanvas.CALCITE));
+				c.set(52, y, z, blk);
+				c.set(108, y, z, blk);
+			}
+		}
+		// Flat classical roof slab & stone balustrade (AY + 18..19) so the Teal Copper Dome stands fully exposed!
+		c.fill(53, AY + 18, -163, 107, AY + 18, -85, OathholdCanvas.STONE_BRICKS);
+		c.clear(cx - 14, AY + 18, cz - 14, cx + 14, AY + 18, cz + 14);
+		for (int x = 53; x <= 107; x++) {
+			if ((x & 1) == 0) {
+				c.set(x, AY + 19, -164, OathholdCanvas.TUFF_BRICKS);
+				c.set(x, AY + 19, -84, OathholdCanvas.TUFF_BRICKS);
+			}
+		}
+		for (int z = -163; z <= -85; z++) {
+			if ((z & 1) == 0) {
+				c.set(52, AY + 19, z, OathholdCanvas.TUFF_BRICKS);
+				c.set(108, AY + 19, z, OathholdCanvas.TUFF_BRICKS);
+			}
+		}
+
+		// Library interior floor, towering bookshelves & astral lectern
 		c.fill(54, AY, -162, 106, AY, -86, OathholdCanvas.POLISHED_ANDESITE);
 		for (int x = 55; x <= 105; x += 6) {
 			if (Math.abs(x - cx) < 6) continue;
@@ -206,19 +241,31 @@ public final class OathholdAcropolisHalls {
 				"Beneath the copper dome, runic scholars trace leylines across the Overworld while Knights guard the roads below.",
 				"Look up at dusk to read the Starlit constellations painted across the weathered vault ribs."
 			));
-		c.chandelier(cx, AY + 24, 5, cz);
+		c.chandelier(cx, AY + 34, 8, cz);
 
-		c.pitchedRoofZ(52, AY + 23, -164, 108, -84, Blocks.DARK_OAK_STAIRS, Blocks.DARK_OAK_SLAB, OathholdCanvas.CALCITE, OathholdCanvas.TUFF_BRICKS);
-		c.fill(cx - 16, AY + 24, cz - 16, cx + 16, AY + 30, cz + 16, OathholdCanvas.STONE_BRICKS);
-		c.clear(cx - 14, AY + 25, cz - 14, cx + 14, AY + 29, cz + 14);
-		c.ribbedDome(cx, AY + 31, cz, 16, 15, OathholdCanvas.COPPER_WEATHERED, OathholdCanvas.COPPER_OXIDIZED, OathholdCanvas.GOLD);
+		// Windowed Octagonal Clerestory Drum (AY+19..26) & Towering Teal/Oxidized Copper Ribbed Dome (AY+27..45)
+		for (int dy = 19; dy <= 26; dy++) {
+			for (int dx = -17; dx <= 17; dx++) {
+				for (int dz = -17; dz <= 17; dz++) {
+					double d = Math.sqrt(dx * dx + dz * dz);
+					if (d <= 17.4 && d >= 15.6) {
+						boolean cornice = dy == 19 || dy == 26;
+						boolean drumWin = !cornice && (Math.abs(dx) <= 1 || Math.abs(dz) <= 1 || Math.abs(Math.abs(dx) - Math.abs(dz)) <= 1);
+						c.set(cx + dx, AY + dy, cz + dz,
+							cornice ? OathholdCanvas.TUFF_BRICKS : (drumWin ? glassGold : OathholdCanvas.CALCITE));
+					}
+				}
+			}
+		}
+		c.ribbedDome(cx, AY + 27, cz, 17, 17, OathholdCanvas.COPPER_OXIDIZED, OathholdCanvas.COPPER_WEATHERED, OathholdCanvas.GOLD);
+		c.flagPennant(cx, AY + 51, cz);
 
 		for (int[] t : new int[][]{{52, -84}, {108, -84}, {52, -164}, {108, -164}}) {
-			c.bastionTower(t[0], AY, t[1], 5, 25, 11, OathholdCanvas.DARK_OAK, false);
+			c.bastionTower(t[0], AY, t[1], 4, 21, 9, OathholdCanvas.COPPER_WEATHERED, false);
 		}
 
-		c.roseWindowZOpen(cx, AY + 15, -84, -85, 5, Blocks.STAINED_GLASS.cyan().defaultBlockState(), Blocks.STAINED_GLASS.yellow().defaultBlockState(), OathholdCanvas.STONE_BRICKS);
-		c.gothicArchZ(cx, AY + 1, -85, -83, 4, 6, 4, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
+		c.roseWindowZOpen(cx, AY + 13, -84, -85, 4, glassCyan, glassGold, OathholdCanvas.STONE_BRICKS);
+		c.gothicArchZ(cx, AY + 1, -85, -83, 4, 6, 3, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
 
 		// Cherry Blossom Garden Terrace & Outdoor Bookshelf Terraces (z = -83..-48, x = 56..104)
 		c.fill(74, AY, -83, 86, AY, -52, OathholdCanvas.POLISHED_ANDESITE);
@@ -241,23 +288,31 @@ public final class OathholdAcropolisHalls {
 
 		int cx = 150, cz = -140;
 		BlockState glassBlue = Blocks.STAINED_GLASS.blue().defaultBlockState();
+		BlockState glassLightBlue = Blocks.STAINED_GLASS.lightBlue().defaultBlockState();
+		BlockState glassPurple = Blocks.STAINED_GLASS.purple().defaultBlockState();
 		BlockState glassGold = Blocks.STAINED_GLASS.yellow().defaultBlockState();
+		BlockState glassOrange = Blocks.STAINED_GLASS.orange().defaultBlockState();
+		BlockState glassRed = Blocks.STAINED_GLASS.red().defaultBlockState();
 
-		c.clear(133, AY + 1, -191, 167, AY + 30, -89);
-		c.fillWeatheredStone(132, AY + 1, -192, 133, AY + 28, -88);
-		c.fillWeatheredStone(167, AY + 1, -192, 168, AY + 28, -88);
-		c.fillWeatheredStone(132, AY + 1, -192, 168, AY + 30, -191);
-		c.fillWeatheredStone(132, AY + 1, -89, 168, AY + 30, -88);
+		c.clear(131, AY + 1, -191, 169, AY + 38, -89);
+		c.fillWeatheredStone(130, AY + 1, -192, 131, AY + 30, -88);
+		c.fillWeatheredStone(169, AY + 1, -192, 170, AY + 30, -88);
+		c.fillWeatheredStone(130, AY + 1, -192, 170, AY + 30, -191);
+		c.fillWeatheredStone(130, AY + 1, -89, 170, AY + 30, -88);
+		// Keep exterior stained-glass perimeter open to natural sky daylight
+		c.clear(128, AY + 3, -190, 129, AY + 28, -90);
+		c.clear(171, AY + 3, -190, 172, AY + 28, -90);
 
-		// Checkered sanctuary floor with crimson-and-gold central aisle runner
-		for (int x = Math.max(133, c.clipMinLx()); x <= Math.min(167, c.clipMaxLx()); x++) {
+		// Checkered sanctuary floor with gold-bordered crimson central aisle runner
+		for (int x = Math.max(132, c.clipMinLx()); x <= Math.min(168, c.clipMaxLx()); x++) {
 			for (int z = Math.max(-191, c.clipMinLz()); z <= Math.min(-89, c.clipMaxLz()); z++) {
 				int dx = Math.abs(x - cx);
-				if (dx <= 1 && z >= -175 && z <= -91) {
+				if (dx <= 1 && z >= -176 && z <= -90) {
 					c.set(x, AY, z, (x == cx && Math.floorMod(z, 4) == 0) ? OathholdCanvas.OCHRE_LIGHT : OathholdCanvas.POLISHED_DEEPSLATE);
 					c.set(x, AY + 1, z, Blocks.CARPET.red().defaultBlockState());
-				} else if (dx == 2 && z >= -175 && z <= -91) {
+				} else if (dx == 2 && z >= -176 && z <= -90) {
 					c.set(x, AY, z, OathholdCanvas.GOLD);
+					c.set(x, AY + 1, z, Blocks.CARPET.yellow().defaultBlockState());
 				} else {
 					boolean even = (Math.floorDiv(x, 2) + Math.floorDiv(z, 2)) % 2 == 0;
 					c.set(x, AY, z, even ? OathholdCanvas.CALCITE : OathholdCanvas.POLISHED_DEEPSLATE);
@@ -265,13 +320,55 @@ public final class OathholdAcropolisHalls {
 			}
 		}
 
-		// Tall Cobalt-Blue & Golden-Amber Gothic Stained-Glass Windows along both side walls
-		for (int wz = -180; wz <= -100; wz += 12) {
-			BlockState winGlass = Math.floorMod(wz, 24) == 0 ? glassBlue : glassGold;
-			c.gothicArchX(132, 133, AY + 4, wz, 2, 10, 4, OathholdCanvas.TUFF_BRICKS, winGlass);
-			c.gothicArchX(167, 168, AY + 4, wz, 2, 10, 4, OathholdCanvas.TUFF_BRICKS, winGlass);
-			c.wallBannerStrip(134, AY + 14, wz - 6, 7, Direction.EAST);
-			c.wallBannerStrip(166, AY + 14, wz - 6, 7, Direction.WEST);
+		// Twin 3-Aisle Clustered Gothic Arcade Piers, Pointed Side Arches, Emerald-Gold Banners & Vaulted Ceiling Ribs
+		int[] pierZs = {-180, -168, -156, -144, -132, -120, -108, -96};
+		for (int i = 0; i < pierZs.length; i++) {
+			int bz = pierZs[i];
+			for (int px : new int[]{135, 165}) {
+				int x0 = px == 135 ? 135 : 164;
+				int x1 = px == 135 ? 136 : 165;
+				c.fillWeatheredStone(x0, AY + 1, bz - 1, x1, AY + 22, bz + 1);
+				c.fill(x0, AY + 1, bz - 1, x1, AY + 2, bz + 1, OathholdCanvas.CHISELED_TUFF_BRICKS);
+				c.set(px == 135 ? 137 : 163, AY + 4, bz, OathholdCanvas.LANTERN);
+				c.set(px, AY + 23, bz, OathholdCanvas.OCHRE_LIGHT);
+				c.wallBannerStrip(px == 135 ? 137 : 163, AY + 12, bz, 6, px == 135 ? Direction.EAST : Direction.WEST);
+			}
+			// Transverse Gothic Stone Vault Ribs curving from arcade piers to central nave apex
+			for (int dx = 0; dx <= 15; dx++) {
+				int ry = AY + 35 - (int) Math.round(13.0 * Math.pow(dx / 15.0, 1.55));
+				c.set(cx - dx, ry, bz, dx == 0 ? OathholdCanvas.GOLD : OathholdCanvas.TUFF_BRICKS);
+				c.set(cx + dx, ry, bz, dx == 0 ? OathholdCanvas.GOLD : OathholdCanvas.TUFF_BRICKS);
+				c.set(cx - dx, ry - 1, bz, OathholdCanvas.STONE_BRICKS);
+				c.set(cx + dx, ry - 1, bz, OathholdCanvas.STONE_BRICKS);
+			}
+			if (i < pierZs.length - 1) {
+				int midZ = (bz + pierZs[i + 1]) / 2;
+				c.gothicArchX(135, 136, AY + 12, midZ, 3, 2, 4, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
+				c.gothicArchX(164, 165, AY + 12, midZ, 3, 2, 4, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
+			}
+		}
+
+		// Jewel-Toned Side-Aisle Stained Glass (Cobalt Left / Sunset Gold-Crimson Right) + Clerestory Lancets
+		for (int wz = -182; wz <= -98; wz += 12) {
+			BlockState westGlass = Math.floorMod(wz, 24) == 0 ? glassBlue : (Math.floorMod(wz, 36) == 0 ? glassPurple : glassLightBlue);
+			BlockState eastGlass = Math.floorMod(wz, 24) == 0 ? glassGold : (Math.floorMod(wz, 36) == 0 ? glassRed : glassOrange);
+			c.gothicArchX(130, 131, AY + 4, wz, 2, 8, 4, OathholdCanvas.TUFF_BRICKS, westGlass);
+			c.gothicArchX(169, 170, AY + 4, wz, 2, 8, 4, OathholdCanvas.TUFF_BRICKS, eastGlass);
+			c.gothicArchX(130, 131, AY + 20, wz, 2, 5, 3, OathholdCanvas.STONE_BRICKS, westGlass);
+			c.gothicArchX(169, 170, AY + 20, wz, 2, 5, 3, OathholdCanvas.STONE_BRICKS, eastGlass);
+			c.set(132, AY + 3, wz - 6, OathholdCanvas.LANTERN);
+			c.set(168, AY + 3, wz - 6, OathholdCanvas.LANTERN);
+			c.wallBannerStrip(132, AY + 12, wz - 6, 7, Direction.EAST);
+			c.wallBannerStrip(168, AY + 12, wz - 6, 7, Direction.WEST);
+		}
+		// Side-aisle dark-oak confessionals/shrines
+		for (int sz : new int[]{-174, -150, -126, -102}) {
+			for (int sx : new int[]{132, 167}) {
+				c.fill(sx, AY + 1, sz - 1, sx + 1, AY + 3, sz + 1, OathholdCanvas.DARK_OAK);
+				c.set(sx == 132 ? 133 : 167, AY + 1, sz, OathholdCanvas.AIR);
+				c.set(sx == 132 ? 133 : 167, AY + 2, sz, OathholdCanvas.AIR);
+				c.set(sx == 132 ? 133 : 167, AY + 4, sz, OathholdCanvas.LANTERN);
+			}
 		}
 
 		// 16 Rows of Dark-Oak Cathedral Pews with trapdoor ends flanking both sides (includes x=141, z=-142!)
@@ -287,19 +384,54 @@ public final class OathholdAcropolisHalls {
 			c.set(163, AY + 1, pz, pewEndE);
 		}
 
-		c.pitchedRoofZ(132, AY + 29, -192, 168, -88, Blocks.STONE_BRICK_STAIRS, Blocks.STONE_BRICK_SLAB, OathholdCanvas.STONE_BRICKS, OathholdCanvas.TUFF_BRICKS);
+		// Stone nave vault ceiling & exterior pitched slate roof (cleanly ABOVE AY + 36!)
+		for (int x = 132; x <= 168; x++) {
+			int dx = Math.abs(x - cx);
+			int vaultY = AY + 36 - Math.min(12, dx * 12 / 18);
+			c.fill(x, vaultY, -191, x, vaultY, -89, OathholdCanvas.STONE_BRICKS);
+			c.fill(x, vaultY + 1, -191, x, AY + 38, -89, OathholdCanvas.TUFF_BRICKS);
+		}
+		c.pitchedRoofZ(130, AY + 31, -192, 170, -88, Blocks.STONE_BRICK_STAIRS, Blocks.STONE_BRICK_SLAB, OathholdCanvas.STONE_BRICKS, OathholdCanvas.TUFF_BRICKS);
 		c.gothicArchZ(cx, AY + 1, -90, -87, 5, 9, 5, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
-		c.roseWindowZOpen(cx, AY + 20, -88, -89, 6, glassGold, glassBlue, OathholdCanvas.TUFF_BRICKS);
+		c.roseWindowZOpen(cx, AY + 22, -88, -89, 6, glassGold, glassBlue, OathholdCanvas.TUFF_BRICKS);
 
-		c.bastionTower(134, AY, -90, 4, 34, 16, OathholdCanvas.STONE_BRICKS, false);
-		c.bastionTower(166, AY, -90, 4, 34, 16, OathholdCanvas.STONE_BRICKS, false);
+		c.bastionTower(132, AY, -90, 4, 34, 16, OathholdCanvas.STONE_BRICKS, false);
+		c.bastionTower(168, AY, -90, 4, 34, 16, OathholdCanvas.STONE_BRICKS, false);
 
-		// Soaring Central Openwork Gothic Bell-Spire rising 98 blocks above Acropolis (ly = AY..114+)
-		c.bastionTower(cx, AY + 28, cz, 7, 36, 34, OathholdCanvas.STONE_BRICKS, true);
-		c.set(cx, AY + 48, cz, OathholdCanvas.CHAIN);
-		c.set(cx, AY + 47, cz, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, Direction.SOUTH));
+		// Roof-Mounted Central Openwork Gothic Bell-Spire rising strictly above the AY+36 vault (y = AY+45..104; ly = 61..120)
+		int spireBase = AY + 45;
+		for (int dx = -6; dx <= 6; dx++) {
+			for (int dz = -6; dz <= 6; dz++) {
+				int manhattan = Math.abs(dx) + Math.abs(dz);
+				int cheb = Math.max(Math.abs(dx), Math.abs(dz));
+				if (cheb > 6 || manhattan > 9) continue;
+				boolean isWall = cheb == 6 || manhattan == 9;
+				for (int y = spireBase; y <= AY + 78; y++) {
+					if (isWall) {
+						boolean louvre = (y >= spireBase + 6 && y <= AY + 74 && (y % 7 < 3) && (dx == 0 || dz == 0));
+						c.set(cx + dx, y, cz + dz, louvre ? OathholdCanvas.IRON_BARS : OathholdCanvas.STONE_BRICKS);
+					}
+				}
+			}
+		}
+		for (int dy = 1; dy <= 28; dy++) {
+			int sr = Math.max(0, 6 - dy * 6 / 28);
+			for (int dx = -sr; dx <= sr; dx++) {
+				for (int dz = -sr; dz <= sr; dz++) {
+					if (Math.abs(dx) + Math.abs(dz) <= sr + 1) {
+						if (dx == 0 && dz == 0 || Math.max(Math.abs(dx), Math.abs(dz)) == sr) {
+							c.set(cx + dx, AY + 78 + dy, cz + dz, OathholdCanvas.STONE_BRICKS);
+						}
+					}
+				}
+			}
+		}
+		c.set(cx, AY + 107, cz, OathholdCanvas.GOLD);
+		c.flagPennant(cx, AY + 107, cz);
 		c.set(cx, AY + 56, cz, OathholdCanvas.CHAIN);
-		c.set(cx, AY + 55, cz, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, Direction.EAST));
+		c.set(cx, AY + 55, cz, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, Direction.SOUTH));
+		c.set(cx, AY + 68, cz, OathholdCanvas.CHAIN);
+		c.set(cx, AY + 67, cz, Blocks.BELL.defaultBlockState().setValue(BellBlock.FACING, Direction.EAST));
 
 		// Pipe Organ Loft over South entrance
 		c.fill(142, AY + 14, -91, 158, AY + 16, -90, OathholdCanvas.DARK_OAK);
@@ -308,17 +440,25 @@ public final class OathholdAcropolisHalls {
 			c.fill(ox, AY + 17, -91, ox, AY + ph, -91, Math.abs(ox - cx) <= 2 ? OathholdCanvas.GOLD : OathholdCanvas.COPPER_WEATHERED);
 		}
 
-		// Candlelit gilded sanctuary altar, lectern pulpit, treasury chest & Cleric Villagers
-		c.fill(cx - 5, AY + 1, -186, cx + 5, AY + 1, -176, OathholdCanvas.TUFF_BRICKS);
-		c.fill(cx - 2, AY + 2, -183, cx + 2, AY + 2, -180, OathholdCanvas.GOLD);
-		c.set(cx - 2, AY + 3, -181, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4).setValue(CandleBlock.LIT, true));
-		c.set(cx + 2, AY + 3, -181, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4).setValue(CandleBlock.LIT, true));
+		// Stepped Golden High Altar Sanctuary, Reredos Spire, Apse Stained Glass & Four Chandeliers
+		c.fill(cx - 5, AY + 1, -187, cx + 5, AY + 1, -177, OathholdCanvas.TUFF_BRICKS);
+		c.fill(cx - 4, AY + 2, -186, cx + 4, AY + 2, -179, OathholdCanvas.STONE_BRICKS);
+		c.fill(cx - 2, AY + 3, -184, cx + 2, AY + 3, -181, OathholdCanvas.GOLD);
+		c.fill(cx - 1, AY + 4, -186, cx + 1, AY + 10, -186, OathholdCanvas.GOLD);
+		c.set(cx, AY + 5, -185, OathholdCanvas.OCHRE_LIGHT);
+		c.set(cx - 2, AY + 4, -182, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4).setValue(CandleBlock.LIT, true));
+		c.set(cx + 2, AY + 4, -182, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4).setValue(CandleBlock.LIT, true));
+		c.set(cx - 3, AY + 3, -182, OathholdCanvas.GOLD);
+		c.set(cx - 3, AY + 4, -182, OathholdCanvas.LANTERN);
+		c.set(cx + 3, AY + 3, -182, OathholdCanvas.GOLD);
+		c.set(cx + 3, AY + 4, -182, OathholdCanvas.LANTERN);
+		c.roseWindowZOpen(cx, AY + 20, -191, -192, 5, glassGold, glassBlue, OathholdCanvas.TUFF_BRICKS);
 		c.lecternBook(cx - 5, AY + 2, -178, Direction.SOUTH,
 			"Liturgy of the High Covenant", "Arch-Prelate",
 			List.of("Beneath vaulted stone and sapphire glass, Oathhold keeps the ancient vows unbroken."));
-		c.chest(cx + 4, AY + 2, -181, Direction.WEST, OathholdSites.LOOT_TREASURY, 221L);
-		c.chandelier(cx, AY + 26, 7, -110);
-		c.chandelier(cx, AY + 26, 7, -140);
-		c.chandelier(cx, AY + 26, 7, -170);
+		c.chest(cx + 4, AY + 3, -181, Direction.WEST, OathholdSites.LOOT_TREASURY, 221L);
+		for (int chZ : new int[]{-114, -134, -154, -172}) {
+			c.chandelier(cx, AY + 34, 11, chZ);
+		}
 	}
 }

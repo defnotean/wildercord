@@ -142,24 +142,74 @@ public final class OathholdOuterWards {
 	private static void buildTriumphalArchZ(OathholdCanvas c, int cz) {
 		if (!c.intersects(-15, cz - 5, 15, cz + 5)) return;
 		c.fillWeatheredStone(-13, 1, cz - 3, 13, 18, cz + 3);
-		c.gothicArchZ(0, 1, cz - 3, cz + 3, 8, 9, 5, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
-		c.fill(-13, 19, cz - 3, 13, 19, cz + 3, OathholdCanvas.GOLD);
-		c.wallBannerStrip(-11, 16, cz + 4, 7, Direction.SOUTH);
-		c.wallBannerStrip(11, 16, cz + 4, 7, Direction.SOUTH);
-		c.wallBannerStrip(-11, 16, cz - 4, 7, Direction.NORTH);
-		c.wallBannerStrip(11, 16, cz - 4, 7, Direction.NORTH);
+		c.gothicArchZ(0, 1, cz - 3, cz + 3, 5, 10, 4, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
+		c.gothicArchZ(-9, 2, cz - 3, cz + 3, 1, 5, 2, OathholdCanvas.GOLD, OathholdCanvas.AIR);
+		c.gothicArchZ(9, 2, cz - 3, cz + 3, 1, 5, 2, OathholdCanvas.GOLD, OathholdCanvas.AIR);
+		// Gold-and-deepslate frieze band & crenellated parapet
+		c.fill(-14, 17, cz - 4, 14, 17, cz + 4, OathholdCanvas.DEEPSLATE_BRICKS);
+		c.fill(-14, 18, cz - 4, 14, 18, cz + 4, OathholdCanvas.TUFF_BRICKS);
+		for (int x = -12; x <= 12; x += 2) {
+			c.set(x, 18, cz - 4, OathholdCanvas.GOLD);
+			c.set(x, 18, cz + 4, OathholdCanvas.GOLD);
+		}
+		c.fill(-13, 19, cz - 3, 13, 19, cz + 3, OathholdCanvas.POLISHED_ANDESITE);
+		for (int x = -6; x <= 6; x += 2) {
+			c.set(x, 20, cz - 3, OathholdCanvas.STONE_BRICKS);
+			c.set(x, 20, cz + 3, OathholdCanvas.STONE_BRICKS);
+		}
+		// Twin Crenellated Upper Watch-Turrets matching boulevard concept art
+		for (int tx : new int[]{-10, 10}) {
+			c.fillWeatheredStone(tx - 2, 20, cz - 3, tx + 2, 25, cz + 3);
+			c.clear(tx - 1, 21, cz - 2, tx + 1, 24, cz + 2);
+			c.set(tx, 22, cz - 3, OathholdCanvas.IRON_BARS);
+			c.set(tx, 22, cz + 3, OathholdCanvas.IRON_BARS);
+			for (int dx = -2; dx <= 2; dx += 2) {
+				c.set(tx + dx, 26, cz - 3, OathholdCanvas.STONE_BRICKS);
+				c.set(tx + dx, 26, cz + 3, OathholdCanvas.STONE_BRICKS);
+			}
+			c.set(tx, 22, cz + 4, OathholdCanvas.HANGING_LANTERN);
+			c.set(tx, 22, cz - 4, OathholdCanvas.HANGING_LANTERN);
+		}
+		c.wallBannerStrip(-4, 18, cz + 4, 3, Direction.SOUTH);
+		c.wallBannerStrip(4, 18, cz + 4, 3, Direction.SOUTH);
+		c.wallBannerStrip(-4, 18, cz - 4, 3, Direction.NORTH);
+		c.wallBannerStrip(4, 18, cz - 4, 3, Direction.NORTH);
 		c.spawnMob(-4, 1, cz, AuraWorld.OATHBOUND_HALBERDIER, cz > 0 ? 0.0F : 180.0F, true);
 	}
 
 	private static void buildTriumphalArchX(OathholdCanvas c, int cx) {
 		if (!c.intersects(cx - 5, -15, cx + 5, 15)) return;
 		c.fillWeatheredStone(cx - 3, 1, -13, cx + 3, 18, 13);
-		c.gothicArchX(cx - 3, cx + 3, 1, 0, 8, 9, 5, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
-		c.fill(cx - 3, 19, -13, cx + 3, 19, 13, OathholdCanvas.GOLD);
-		c.wallBannerStrip(cx + 4, 16, -11, 7, Direction.EAST);
-		c.wallBannerStrip(cx + 4, 16, 11, 7, Direction.EAST);
-		c.wallBannerStrip(cx - 4, 16, -11, 7, Direction.WEST);
-		c.wallBannerStrip(cx - 4, 16, 11, 7, Direction.WEST);
+		c.gothicArchX(cx - 3, cx + 3, 1, 0, 5, 10, 4, OathholdCanvas.TUFF_BRICKS, OathholdCanvas.AIR);
+		c.gothicArchX(cx - 3, cx + 3, 2, -9, 1, 5, 2, OathholdCanvas.GOLD, OathholdCanvas.AIR);
+		c.gothicArchX(cx - 3, cx + 3, 2, 9, 1, 5, 2, OathholdCanvas.GOLD, OathholdCanvas.AIR);
+		c.fill(cx - 4, 17, -14, cx + 4, 17, 14, OathholdCanvas.DEEPSLATE_BRICKS);
+		c.fill(cx - 4, 18, -14, cx + 4, 18, 14, OathholdCanvas.TUFF_BRICKS);
+		for (int z = -12; z <= 12; z += 2) {
+			c.set(cx - 4, 18, z, OathholdCanvas.GOLD);
+			c.set(cx + 4, 18, z, OathholdCanvas.GOLD);
+		}
+		c.fill(cx - 3, 19, -13, cx + 3, 19, 13, OathholdCanvas.POLISHED_ANDESITE);
+		for (int z = -6; z <= 6; z += 2) {
+			c.set(cx - 3, 20, z, OathholdCanvas.STONE_BRICKS);
+			c.set(cx + 3, 20, z, OathholdCanvas.STONE_BRICKS);
+		}
+		for (int tz : new int[]{-10, 10}) {
+			c.fillWeatheredStone(cx - 3, 20, tz - 2, cx + 3, 25, tz + 2);
+			c.clear(cx - 2, 21, tz - 1, cx + 2, 24, tz + 1);
+			c.set(cx - 3, 22, tz, OathholdCanvas.IRON_BARS);
+			c.set(cx + 3, 22, tz, OathholdCanvas.IRON_BARS);
+			for (int dz = -2; dz <= 2; dz += 2) {
+				c.set(cx - 3, 26, tz + dz, OathholdCanvas.STONE_BRICKS);
+				c.set(cx + 3, 26, tz + dz, OathholdCanvas.STONE_BRICKS);
+			}
+			c.set(cx + 4, 22, tz, OathholdCanvas.HANGING_LANTERN);
+			c.set(cx - 4, 22, tz, OathholdCanvas.HANGING_LANTERN);
+		}
+		c.wallBannerStrip(cx + 4, 18, -4, 3, Direction.EAST);
+		c.wallBannerStrip(cx + 4, 18, 4, 3, Direction.EAST);
+		c.wallBannerStrip(cx - 4, 18, -4, 3, Direction.WEST);
+		c.wallBannerStrip(cx - 4, 18, 4, 3, Direction.WEST);
 		c.spawnMob(cx, 1, 4, AuraWorld.OATHBOUND_BASTION, cx > 0 ? 90.0F : -90.0F, true);
 	}
 

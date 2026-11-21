@@ -86,9 +86,9 @@ public final class OathholdGreatHall {
 				c.set(px + (px < 0 ? 1 : -1), AY + 12, bz, OathholdCanvas.HANGING_LANTERN);
 				c.set(px, AY + 17, bz, OathholdCanvas.LANTERN);
 			}
-			// Hanging Emerald-Gold Heraldic Banners on gallery outer pillars
-			c.wallBannerStrip(-24, AY + 12, bz, 6, Direction.EAST);
-			c.wallBannerStrip(24, AY + 12, bz, 6, Direction.WEST);
+			// Hanging Emerald-Gold Heraldic Banners on both nave columns & gallery outer walls
+			c.wallBannerStrip(px < 0 ? -11 : 11, AY + 10, bz, 6, px < 0 ? Direction.EAST : Direction.WEST);
+			c.wallBannerStrip(px < 0 ? -24 : 24, AY + 12, bz, 6, px < 0 ? Direction.EAST : Direction.WEST);
 
 			// Transverse gothic vault arch curving overhead from lx = +-13 (y=AY+24) up to lx = 0 (y=AY+38)
 			for (int dx = 0; dx <= 13; dx++) {
@@ -113,8 +113,10 @@ public final class OathholdGreatHall {
 			c.gothicArchX(24, 26, AY + 3, bz, 3, 5, 3, OathholdCanvas.TUFF_BRICKS, glassWhite);
 		}
 		for (int bz : new int[]{-114, -126, -138, -154, -166, -178}) {
-			c.set(-24, AY + 6, bz, OathholdCanvas.LANTERN);
-			c.set(24, AY + 6, bz, OathholdCanvas.LANTERN);
+			c.set(-24, AY + 6, bz, OathholdCanvas.OCHRE_LIGHT);
+			c.set(24, AY + 6, bz, OathholdCanvas.OCHRE_LIGHT);
+			c.set(-14, AY + 15, bz, OathholdCanvas.OCHRE_LIGHT);
+			c.set(14, AY + 15, bz, OathholdCanvas.OCHRE_LIGHT);
 		}
 		for (int gx : new int[]{-14, 14}) {
 			int lo = gx < 0 ? -24 : 13, hi = gx < 0 ? -13 : 24;
@@ -130,8 +132,21 @@ public final class OathholdGreatHall {
 			c.fill(x, ceilingY + 1, MIN_Z, x, ceilingY + 2, MAX_Z, Math.abs(x) <= 2 ? OathholdCanvas.GOLD : OathholdCanvas.DEEPSLATE_TILES);
 		}
 
-		// 4. Exterior Gilded Central Golden Dome & 4 Corner Golden Turrets (matches concept_city_aerial_overview!)
-		c.ribbedDome(0, AY + 42, -148, 16, 18, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
+		// 4. Exterior Tall Octagonal Drum + Gilded Central Golden Dome & 4 Corner Golden Turrets
+		for (int dy = 40; dy <= 47; dy++) {
+			for (int dx = -15; dx <= 15; dx++) {
+				for (int dz = -15; dz <= 15; dz++) {
+					double d = Math.sqrt(dx * dx + dz * dz);
+					if (d <= 15.4 && d >= 13.6) {
+						boolean ring = dy == 40 || dy == 47;
+						boolean win = !ring && (Math.abs(dx) <= 1 || Math.abs(dz) <= 1);
+						c.set(dx, AY + dy, -132 + dz, ring ? OathholdCanvas.GOLD : (win ? glassGold : OathholdCanvas.CALCITE));
+					}
+				}
+			}
+		}
+		c.ribbedDome(0, AY + 48, -132, 16, 18, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
+		c.flagPennant(0, AY + 72, -132);
 		for (int[] tx : new int[][]{{-26, -94}, {26, -94}, {-26, -202}, {26, -202}}) {
 			c.bastionTower(tx[0], AY, tx[1], 5, 34, 0, OathholdCanvas.DEEPSLATE_TILES, false);
 			c.ribbedDome(tx[0], AY + 35, tx[1], 5, 8, OathholdCanvas.GOLD, OathholdCanvas.RAW_GOLD, OathholdCanvas.GOLD);
@@ -172,8 +187,9 @@ public final class OathholdGreatHall {
 
 		// 6. Six Suspended Iron-Chain & Dark-Oak Lantern Chandeliers
 		for (int cz : new int[]{-116, -142, -166}) {
-			c.chandelier(-7, AY + 37, 8, cz);
-			c.chandelier(7, AY + 37, 8, cz);
+			c.chandelier(-7, AY + 36, 7, cz);
+			c.chandelier(7, AY + 36, 7, cz);
+			c.set(0, AY + 38, cz, OathholdCanvas.OCHRE_LIGHT);
 		}
 
 		// 7. Four Roaring Stone Hearth Fireplaces & Four Long Dark-Oak War-Council Tables
@@ -183,6 +199,7 @@ public final class OathholdGreatHall {
 				c.fill(fx - side, AY + 1, fz - 2, fx, AY + 12, fz + 2, OathholdCanvas.TUFF_BRICKS);
 				c.clear(fx - side, AY + 1, fz - 1, fx - side, AY + 3, fz + 1);
 				c.set(fx - side, AY + 1, fz, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+				c.set(fx - side * 2, AY + 2, fz, OathholdCanvas.OCHRE_LIGHT);
 				c.set(fx - side * 2, AY + 4, fz, OathholdCanvas.LANTERN);
 			}
 		}

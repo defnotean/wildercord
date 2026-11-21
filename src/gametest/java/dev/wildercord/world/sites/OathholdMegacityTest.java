@@ -165,8 +165,12 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				// Inner Citadel: South Gatehouse, Fountain Plaza, Canal, Sovereign Great Hall, Cathedral Spire & Hygiene Checks
 				var southInnerTower = blockAt(l, ox + 23, by + 20, oz + 224);
 				check(!southInnerTower.isAir(), "South Inner Gatehouse Tower missing at z=+224: " + southInnerTower);
+				var harborQuayTop = blockAt(l, ox + 544, by + 2, oz - 20);
+				check(!harborQuayTop.is(Blocks.SNOW), "Unexpected snow on East Harbor Quay: " + harborQuayTop);
+				var harborSurface = blockAt(l, ox + 760, by - 1, oz);
+				check(harborSurface.getFluidState().is(Fluids.WATER), "East Imperial Harbor basin water froze at x=+760 (by-1): " + harborSurface);
 				var fountainWater = blockAt(l, ox, by + 1, oz + 182);
-				check(fountainWater.getFluidState().is(Fluids.WATER) || fountainWater.is(Blocks.ICE), "Fountain Plaza water missing at z=+182: " + fountainWater);
+				check(fountainWater.getFluidState().is(Fluids.WATER), "Fountain Plaza water missing/frozen at z=+182: " + fountainWater);
 				var canalWater = blockAt(l, ox, by - 2, oz + 80);
 				check(canalWater.getFluidState().is(Fluids.WATER), "Central Canal water missing at z=+80 (by-2): " + canalWater);
 				var throneCushion = blockAt(l, ox, by + OathholdOrigin.ACROPOLIS_Y + 10, oz - 191);
@@ -200,6 +204,8 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				check(!acropolisHedge.isAir(), "Acropolis Esplanade boxwood hedge missing at (ox-32, AY+1, oz-68): " + acropolisHedge);
 				var harborStall = blockAt(l, ox + 542, by + 4, oz - 32);
 				check(!harborStall.isAir(), "Harbor Quay market stall furnishing missing at (ox+542, by+4, oz-32): " + harborStall);
+				var loftBed = blockAt(l, ox + 49, by + 6, oz + 75);
+				check(!loftBed.isAir(), "Canal Shop-House mezzanine loft bed missing at (ox+49, by+6, oz+75): " + loftBed);
 
 				// Pre-warm full Inner Citadel + Acropolis grid so shot 01 renders the whole skyline
 				for (int wx = ox - 208; wx <= ox + 208; wx += 16) {
@@ -236,7 +242,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			lookAt(context, world, ox - 546, by + 50, oz + 64, ox - 612, by + 10, oz, 10, 72);
 			shot(context, "oathhold_05_outer_metropolis_colosseum");
 
-			lookAt(context, world, ox + 528, by + 22, oz + 88, ox + 760, by + 10, oz - 58, 18, 74);
+			lookAt(context, world, ox + 520.0, by + 12.0, oz + 82.0, ox + 760.0, by + 13.0, oz - 26.0, 18, 76);
 			shot(context, "oathhold_06_harbor_and_outer_gate");
 
 			lookAt(context, world, ox + 3.5, by + 2.5, oz + 446, ox, by + 9.0, oz + 360, 16, 76);
@@ -245,13 +251,13 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			lookAt(context, world, ox + 13.5, by + 2.5, oz + 110, ox + 1.0, by + 4.0, oz + 56, 14, 76);
 			shot(context, "oathhold_08_canal_promenade_alley");
 
-			lookAt(context, world, ox - 5.5, by + OathholdOrigin.ACROPOLIS_Y + 4.5, oz - 48, ox + 4, by + OathholdOrigin.ACROPOLIS_Y + 16, oz - 112, 14, 80);
+			lookAt(context, world, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 4.5, oz - 45.0, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 19.0, oz - 118.0, 14, 80);
 			shot(context, "oathhold_09_acropolis_esplanade");
 
-			lookAt(context, world, ox + 64.5, by + 1.0, oz + 124.5, ox + 45, by + 2.3, oz + 103, 8, 78);
+			lookAt(context, world, ox + 45.5, by + 1.5, oz + 86.2, ox + 44.0, by + 4.2, oz + 69.0, 8, 82);
 			shot(context, "oathhold_10_townhouse_shop_interior");
 
-			lookAt(context, world, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 2.5, oz - 95, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 9.0, oz - 180, 8, 78);
+			lookAt(context, world, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 3.0, oz - 94.0, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 12.0, oz - 180.0, 10, 78);
 			shot(context, "oathhold_11_cathedral_nave_interior");
 		}
 	}

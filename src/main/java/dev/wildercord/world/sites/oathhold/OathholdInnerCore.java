@@ -5,7 +5,13 @@ import dev.wildercord.town.BountyBoardBlock;
 import dev.wildercord.town.Town;
 import dev.wildercord.town.WayfarerKeeper;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -54,7 +60,8 @@ public final class OathholdInnerCore {
 						c.set(x, 1, z, OathholdCanvas.STONE_BRICKS);
 						c.set(x, 2, z, OathholdCanvas.TUFF_BRICKS);
 					} else {
-						c.set(x, 0, z, OathholdCanvas.STONE_BRICKS);
+						boolean glow = Math.floorMod(x, 3) == 0 && Math.floorMod(z, 3) == 0;
+						c.set(x, 0, z, glow ? OathholdCanvas.SEA_LANTERN : OathholdCanvas.STONE_BRICKS);
 						c.set(x, 1, z, OathholdCanvas.WATER);
 					}
 				} else if (Math.abs(x) >= 12 && z <= 208) {
@@ -67,12 +74,9 @@ public final class OathholdInnerCore {
 			}
 		}
 
-		// Central Gilded Knight Statue Pedestal
-		c.fill(cx - 1, 1, cz - 1, cx + 1, 5, cz + 1, OathholdCanvas.STONE_BRICKS);
-		c.fill(cx - 1, 6, cz - 1, cx + 1, 9, cz + 1, OathholdCanvas.TUFF_BRICKS);
-		c.set(cx, 10, cz, OathholdCanvas.CHISELED_STONE_BRICKS);
-		c.set(cx, 11, cz, OathholdCanvas.GOLD);
-		c.set(cx, 12, cz, OathholdCanvas.LANTERN);
+		// Central Sculpted Hero Knight Fountain Monument
+		c.fill(cx - 1, 1, cz - 1, cx + 1, 4, cz + 1, OathholdCanvas.STONE_BRICKS);
+		OathholdStreetscape.knightMonument(c, cx, 5, cz);
 
 		// Corner boxwood hedges, ornate lamps, benches, stalls & supply wagons
 		OathholdStreetscape.hedgePlanter(c, -23, 2, 152, -17, 158);
@@ -119,8 +123,8 @@ public final class OathholdInnerCore {
 			buildCanalBridge(c, bz);
 		}
 
-		// Four Wooden Canal Cargo Barges moored in water (leaving z = 80 clear open water)
-		for (int[] boat : new int[][]{{0, 132}, {0, 86}, {0, 26}, {0, -22}}) {
+		// Five Masted Wooden Canal Cargo Barges moored in water (leaving z = 80 clear open water)
+		for (int[] boat : new int[][]{{0, 134}, {-3, 98}, {3, 72}, {0, 34}, {0, -22}}) {
 			OathholdStreetscape.canalBarge(c, boat[0], -1, boat[1], true);
 		}
 
@@ -398,12 +402,24 @@ public final class OathholdInnerCore {
 		OathholdBuildings.build(c, 0, x0, z0, x1, z1, 3, Blocks.SPRUCE_STAIRS, Blocks.SPRUCE_SLAB,
 			false, OathholdBuildings.Theme.CITADEL, true, 401);
 
-		// Ground Tavern hearth, common tables, Bounty Board & Wayfarer Keeper
+		// Ground Tavern hearth, bar counter, timber pillars, chandeliers, common tables, Bounty Board & Wayfarer Keeper
 		c.fill(44, 1, 104, 48, 3, 104, OathholdCanvas.BRICKS);
 		c.set(46, 1, 104, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
+		c.fill(40, 1, 121, 48, 1, 121, OathholdCanvas.DARK_OAK);
+		c.set(41, 2, 121, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3).setValue(CandleBlock.LIT, true));
+		c.set(46, 2, 121, OathholdCanvas.LANTERN);
+		for (int px : new int[]{48, 62}) {
+			c.fill(px, 1, 108, px, 4, 108, OathholdCanvas.DARK_OAK_LOG);
+			c.fill(px, 1, 118, px, 4, 118, OathholdCanvas.DARK_OAK_LOG);
+		}
+		c.chandelier(55, 5, 1, 114);
+		c.chandelier(64, 5, 1, 114);
 		c.fill(52, 1, 108, 60, 1, 112, OathholdCanvas.DARK_OAK);
 		c.set(54, 2, 110, OathholdCanvas.LANTERN);
 		c.set(58, 2, 110, OathholdCanvas.LANTERN);
+		c.fill(52, 1, 118, 62, 1, 121, OathholdCanvas.SPRUCE);
+		c.set(54, 2, 119, OathholdCanvas.LANTERN);
+		c.set(60, 2, 120, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true));
 
 		// Furnished 2nd-Story Inn Lounge & Guest Suites (Floor deck at y = 5, furnishings at y = 6)
 		for (int gx = 42; gx <= 66; gx += 12) {
@@ -436,6 +452,27 @@ public final class OathholdInnerCore {
 				int x0 = gx + 3, x1 = gx + 29, z0 = gz + 3, z1 = gz + 29;
 				if (!c.intersects(x0 - 3, z0 - 3, x1 + 3, z1 + 3)) continue;
 				if (overlapsInnerLandmark(x0, z0, x1, z1)) continue;
+
+				if (gx == 32 && gz == 64) {
+					// Showcase Canal-Side Curio & Armor Shop-House with double-height mezzanine loft
+					OathholdBuildings.build(c, 0, 35, 67, 55, 89, 2, Blocks.SPRUCE_STAIRS, Blocks.SPRUCE_SLAB,
+						false, OathholdBuildings.Theme.CITADEL, false, 777);
+					OathholdStreetscape.hedgePlanter(c, 57, 0, 68, 61, 88);
+					OathholdStreetscape.patioTable(c, 58, 1, 78, Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
+					if (c.inClip(50, 1, 69)) {
+						ArmorStand stand = EntityType.ARMOR_STAND.create(c.level().getLevel(), EntitySpawnReason.STRUCTURE);
+						if (stand != null) {
+							stand.snapTo(c.wx(50) + 0.5, c.wy(1), c.wz(69) + 0.5, 160.0F, 0.0F);
+							stand.setPersistenceRequired();
+							stand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+							stand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
+							stand.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS));
+							stand.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.IRON_BOOTS));
+							c.level().addFreshEntityWithPassengers(stand);
+						}
+					}
+					continue;
+				}
 
 				int h = OathholdCanvas.hash(gx, 11, gz);
 				OathholdStreetscape.ornateStreetLamp(c, gx + 16, 1, gz + 1, false);

@@ -187,7 +187,7 @@ Four custom-modeled guardian cats preside over the **Cat Sanctuary** pagoda and 
 - **Freya** (Floor 3, plush grey shorthair with rose-pink collar and swinging silver Suzu bell): grants **Silver-Bell Chime** (`Absorption I + Haste I`), and when tamed boosts attack/casting tempo and chimes near allies.
 - **Kuro** (Floor 4 roof master, notched left ear & golden eyes): grants **Night-Stalker Grace** (`Speed II, Strength I, Night Vision`) and unlocks taming for all four cats!
 
-Tame any cleared quartet cat with cooked salmon/cod or a **Suzu Cat-Bell Charm** (which also rings to call tamed cats back and reunites lost quartet companions). Sneak-click a tamed cat to toggle between loafing/sitting and following; tamed quartet cats never permanently die to owner hits, thorns, or dungeon hazards.
+Tame any cleared quartet cat with cooked salmon/cod or a **Suzu Cat-Bell Charm** (which also rings to call following cats back, unseat resting cats when sneaking, and summon back a fallen companion without ever duplicating sitting or distant cats). Sneak-click a tamed cat to toggle between loafing/sitting and following; tamed quartet cats never permanently die to owner hits, thorns, or dungeon hazards.
 
 ## Sakura Villagers
 {: #sakura-villagers }
