@@ -131,7 +131,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 			c.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1280, 720);
 				mc.options.guiScale().set(2);
-				mc.resizeGui();
+				mc.resizeDisplay();
 			});
 			java.util.List<java.util.Map.Entry<String, net.minecraft.world.item.ItemStack>> showcase = java.util.List.of(
 				java.util.Map.entry("oathkeeper", new net.minecraft.world.item.ItemStack(SleepingBlades.BLADE)),

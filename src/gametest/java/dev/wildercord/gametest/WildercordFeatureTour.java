@@ -72,7 +72,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1920, 1080);
 				mc.options.guiScale().set(2);
-				mc.resizeGui();
+				mc.resizeDisplay();
 			});
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");

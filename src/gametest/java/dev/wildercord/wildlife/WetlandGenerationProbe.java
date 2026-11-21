@@ -50,7 +50,7 @@ public final class WetlandGenerationProbe {
  private static boolean inScope(Session session,WorldGenLevel level) {
   if(session==null || session.closed || active!=session || !(level instanceof WorldGenRegion region))return false;
   var source=region.getCenter();
-  return inScope(session,true,region.getLevel().dimension()==Level.OVERWORLD,region.getSeed(),source.x(),source.z());
+  return inScope(session,true,region.getLevel().dimension()==Level.OVERWORLD,region.getSeed(),source.x,source.z);
  }
  record Scope(String name,long seed,int minX,int maxX,int minZ,int maxZ) {
   Scope {if(minX>maxX || minZ>maxZ || maxX-minX>8 || maxZ-minZ>8)throw new IllegalArgumentException("At most a 9 by 9 chunk fixture");}
@@ -70,7 +70,7 @@ public final class WetlandGenerationProbe {
   int stage=GenerationStep.Decoration.VEGETAL_DECORATION.ordinal();
   var data=steps.get(stage);int index=data.indexMapping().applyAsInt(feature);
   session.featureGraph(data.features().stream().map(entry -> String.valueOf(level.registryAccess().lookupOrThrow(Registries.PLACED_FEATURE).getKey(entry))).toList());
-  var source=session.claim(center.x(),center.z());
+  var source=session.claim(center.x,center.z);
   if(source==null)return null;
   session.index(index,data.features().size());
   PLACEMENT.set(source);
@@ -117,7 +117,7 @@ public final class WetlandGenerationProbe {
   var source=PLACEMENT.get();
   if(!live(source) || !inScope(source.session,level))return null;
   var center=((WorldGenRegion)level).getCenter();
-  if(center.x()!=source.x || center.z()!=source.z)return null;
+  if(center.x!=source.x || center.z!=source.z)return null;
   return beginFeature(source,origin);
  }
  static Invocation beginFeature(Source source,BlockPos origin) {

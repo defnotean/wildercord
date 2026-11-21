@@ -57,7 +57,7 @@ public final class ArenaTreeClearingTest implements FabricClientGameTest {
 				// Registered the way world generation registers it: the start in its chunk, a reference in every chunk it covers.
 				var glade = l.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE, Wildercord.id("ashen_glade"))).value();
 				var home = new ChunkPos(b.minX() >> 4, b.minZ() >> 4);
-				l.getChunk(home.x(), home.z()).setStartForStructure(glade, new StructureStart(glade, home, 0, new PiecesContainer(List.of(piece))));
+				l.getChunk(home.x, home.z).setStartForStructure(glade, new StructureStart(glade, home, 0, new PiecesContainer(List.of(piece))));
 				for (int cx = b.minX() >> 4; cx <= b.maxX() >> 4; cx++) for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) l.getChunk(cx, cz).addReferenceForStructure(glade, home.pack());
 				piece.postProcess(l, l.structureManager(), l.getChunkSource().getGenerator(), RandomSource.create(56), b, home, BlockPos.ZERO);
 				check(ArenaTrees.blocksTree(l, BlockPos.containing(b.getCenter().getX(), 101, b.getCenter().getZ())), "The registered arena is found from its middle");
@@ -100,7 +100,7 @@ public final class ArenaTreeClearingTest implements FabricClientGameTest {
 				p.onUpdateAbilities();
 			});
 			c.waitTicks(40);
-			w.getClientLevel().waitForChunksRender();
+			w.getClientWorld().waitForChunksRender();
 			c.runOnClient(mc -> mc.gui.getChat().clearMessages(false));
 			c.takeScreenshot(TestScreenshotOptions.of("arena_trees_kept_out").disableCounterPrefix());
 		}

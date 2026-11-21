@@ -48,7 +48,7 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 	}
 
 	private static void click(ClientGameTestContext c, int slot, int button, ClickType input) {
-		c.runOnClient(mc -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, slot, button, input, mc.player));
+		c.runOnClient(mc -> mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, button, input, mc.player));
 		c.waitTicks(3);
 	}
 

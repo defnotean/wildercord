@@ -105,7 +105,7 @@ public final class LoadoutsTest implements FabricClientGameTest {
 				LoadoutData data = Loadouts.data(mc.player);
 				check(data.size() == LoadoutRules.MAX - 1 && data.names().contains("Mining") && data.names().contains("Flame"), "The loadouts reach the player's client: " + data.names());
 				mc.getWindow().setWindowed(1280, 720);
-				mc.resizeGui();
+				mc.resizeDisplay();
 				mc.getToastManager().clear();
 			});
 

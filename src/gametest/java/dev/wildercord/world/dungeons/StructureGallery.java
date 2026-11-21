@@ -36,7 +36,7 @@ final class StructureGallery {
 			for (String rule : List.of("spawn_mobs false", "advance_time false", "advance_weather false")) world.getServer().runCommand("gamerule " + rule);
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");
-			c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.options.renderDistance().set(8); mc.options.fov().set(70); mc.resizeGui();
+			c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.options.renderDistance().set(8); mc.options.fov().set(70); mc.resizeDisplay();
 				if (!mc.options.hideGui) mc.options.hideGui = !mc.options.hideGui; });
 			world.getServer().runOnServer(s -> {
 				var p = s.getPlayerList().getPlayers().getFirst();
@@ -123,7 +123,7 @@ final class StructureGallery {
 			var centre = new ChunkPos(biome.getFirst());
 			for (int r = 0; r <= 24; r++) for (int dx = -r; dx <= r; dx++) for (int dz = -r; dz <= r; dz++) {
 				if (Math.max(Math.abs(dx), Math.abs(dz)) != r) continue;
-				Site site = at.apply(new ChunkPos(centre.x() + dx, centre.z() + dz));
+				Site site = at.apply(new ChunkPos(centre.x + dx, centre.z + dz));
 				if (site != null) return site;
 			}
 		}

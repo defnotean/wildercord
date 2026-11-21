@@ -20,7 +20,7 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
   try{
    SiltcrestPresentationProbeChecks.verify();
    SiltcrestPresentationWitnessChecks.verify();
-   c.runOnClient(mc->{mc.getWindow().setWindowed(1920,1080);mc.resizeGui();mc.options.setCameraType(CameraType.FIRST_PERSON);clean(mc);});
+   c.runOnClient(mc->{mc.getWindow().setWindowed(1920,1080);mc.resizeDisplay();mc.options.setCameraType(CameraType.FIRST_PERSON);clean(mc);});
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))try(var w=c.worldBuilder().create()){
     try{
     String prefix="siltcrest_"+quality.name().toLowerCase(Locale.ROOT);c.waitTicks(25);w.getServer().runCommand("gamerule spawn_mobs false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
@@ -35,7 +35,7 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
     w.getServer().runOnServer(s->check(source.onGround()&&source.shelter()!=null&&BitternHabitat.shelter(s.overworld(),source.shelter())&&source.distanceToSqr(source.shelter().getX()+.5,source.shelter().getY(),source.shelter().getZ()+.5)<=.36&&source.huntReady()==meal,"Actual grounded canopy rest retains earned appetite"));finish(c,capture(c,prefix+"_actual_shelter",SiltcrestBittern.SHELTERING));
     }finally{if(observation!=null){try{observation.close();}finally{observation=null;}}}
    }
-  }finally{source=null;c.runOnClient(mc->{MagicQuality.own=own;MagicQuality.others=others;MagicQuality.reducedFlash=flash;mc.options.setCameraType(camera);if(mc.options.hideGui!=hud)mc.options.hideGui = !mc.options.hideGui;mc.getWindow().setWindowed(size[0],size[1]);mc.resizeGui();});}
+  }finally{source=null;c.runOnClient(mc->{MagicQuality.own=own;MagicQuality.others=others;MagicQuality.reducedFlash=flash;mc.options.setCameraType(camera);if(mc.options.hideGui!=hud)mc.options.hideGui = !mc.options.hideGui;mc.getWindow().setWindowed(size[0],size[1]);mc.resizeDisplay();});}
  }
  private record HuntState(long clock,int pose,long huntReady,SiltcrestPresentationWitness.Candidate candidate) {}
  private record HuntFrames(List<CompletableFuture<Void>> frames,String coil) {}
@@ -118,5 +118,5 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
   });return done;}
  private static void finish(ClientGameTestContext c,CompletableFuture<Void> done){c.waitFor(mc->done.isDone());done.join();}
  private static void clean(Minecraft mc){mc.setScreen(null);mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);if(!mc.options.hideGui)mc.options.hideGui = !mc.options.hideGui;}
- private static CompletableFuture<int[]> pixels(Minecraft mc,String name){var result=new CompletableFuture<int[]>();mc.gameRenderer.update(DeltaTracker.ONE, true);mc.gameRenderer.extract(DeltaTracker.ONE,true);dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc,DeltaTracker.ONE);net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget(),image->{try(image){var p=java.nio.file.Path.of("screenshots",name+".png");java.nio.file.Files.createDirectories(p.getParent());image.writeToFile(p);result.complete(image.getPixels());}catch(Throwable error){result.completeExceptionally(error);}});return result;}
+ private static CompletableFuture<int[]> pixels(Minecraft mc,String name){var result=new CompletableFuture<int[]>();mc.gameRenderer.updateCamera(DeltaTracker.ONE);mc.gameRenderer.render(DeltaTracker.ONE,true);dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc,DeltaTracker.ONE);net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget(),image->{try(image){var p=java.nio.file.Path.of("screenshots",name+".png");java.nio.file.Files.createDirectories(p.getParent());image.writeToFile(p);result.complete(image.getPixels());}catch(Throwable error){result.completeExceptionally(error);}});return result;}
 }

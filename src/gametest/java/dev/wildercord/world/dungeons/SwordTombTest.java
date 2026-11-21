@@ -47,7 +47,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 				}
 				return chosen;
 			});
-			c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(2);mc.resizeGui();});
+			c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(2);mc.resizeDisplay();});
 			var facing=world.getServer().computeOnServer(s->s.overworld().getBlockState(altar).getValue(TombReliquary.FACING));
 			BlockPos inner=altar.relative(facing.getOpposite(),20),outer=altar.relative(facing.getOpposite(),29);
 			placePlayer(world,outer.relative(facing.getOpposite(),2),1);c.waitTicks(15);use(c,outer);c.waitTicks(10);
@@ -94,7 +94,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 			BlockPos at=site.altar();
 			BlockPos entrance=natural.getServer().computeOnServer(s->at.relative(s.overworld().getBlockState(at).getValue(TombReliquary.FACING).getOpposite(),42).above(12));
 			natural.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),entrance.getX()+7.5,entrance.getY()+5,entrance.getZ()+7.5,Set.<Relative>of(),0,25,false);p.getAbilities().flying=true;p.onUpdateAbilities();});
-			c.waitTicks(30);aim(c,entrance,0);c.waitTicks(30);natural.getClientLevel().waitForChunksRender();shot(c,"sword_tomb_natural_entrance");
+			c.waitTicks(30);aim(c,entrance,0);c.waitTicks(30);natural.getClientWorld().waitForChunksRender();shot(c,"sword_tomb_natural_entrance");
 		}
 	}
 	private record NaturalTombSite(BlockPos command,BoundingBox bounds,BlockPos altar){}
@@ -109,7 +109,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 		// registered generation path first; load only the successful start's actual footprint.
 		for(int radius=0;radius<=32;radius++)for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++){
 			if(Math.max(Math.abs(dx),Math.abs(dz))!=radius)continue;
-			var chunk=new ChunkPos(origin.x()+dx,origin.z()+dz);
+			var chunk=new ChunkPos(origin.x+dx,origin.z+dz);
 			var start=dev.wildercord.gametest.compat.GametestCompat.generateStructureStart(level,tomb,chunk);
 			if(!start.isValid())continue;
 			check(start.getPieces().size()==1 && start.getPieces().getFirst() instanceof SwordTombPiece,"Registered tomb start contains its authored piece");

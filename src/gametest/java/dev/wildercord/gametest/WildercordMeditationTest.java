@@ -46,7 +46,7 @@ public final class WildercordMeditationTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1280, 720);
 				mc.options.guiScale().set(2);
-				mc.resizeGui();
+				mc.resizeDisplay();
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.options.toggleCrouch().set(false);
 				mc.getToastManager().clear();

@@ -139,7 +139,7 @@ final class ScoutLegendChecks {
 		ChunkPos origin = new ChunkPos(box.minX() >> 4, box.minZ() >> 4);
 		level.getChunk(box.minX() >> 4, box.minZ() >> 4).setStartForStructure(structure, new StructureStart(structure, origin, 0, new PiecesContainer(List.of(piece))));
 		for (int x = box.minX() >> 4; x <= box.maxX() >> 4; x++) for (int z = box.minZ() >> 4; z <= box.maxZ() >> 4; z++)
-			level.getChunk(x, z).addReferenceForStructure(structure, origin.pack());
+			level.getChunk(x, z).addReferenceForStructure(structure, origin.toLong());
 		BlockPos at = piece.localPosition(localX, 1, localZ);
 		player.teleportTo(level, at.getX() + .5, at.getY(), at.getZ() + .5, Set.<Relative>of(), 0, 0, false);
 	}

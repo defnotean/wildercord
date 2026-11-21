@@ -179,7 +179,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 		var in = CraftingInput.of(w, h, inputs);
 		var matched = s.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, in, l);
 		check(matched.isPresent(), msg + " (recipe missing)");
-		ItemStack out = matched.get().value().assemble(in);
+		ItemStack out = matched.get().value().assemble(in, s.registryAccess());
 		check(out.is(expectedItem) && out.getCount() == expectedCount,
 			msg + " (unexpected output: " + out.getItem() + " x" + out.getCount() + ")");
 		if (expectedRuneId != null) {

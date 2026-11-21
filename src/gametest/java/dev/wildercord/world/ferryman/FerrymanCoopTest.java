@@ -64,7 +64,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				for (int cx = b.minX() >> 4; cx <= b.maxX() >> 4; cx++)
 					for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) {
 						var chunk = l.getChunk(cx, cz);
-						chunk.addReferenceForStructure(structure, startChunk.pack());
+						chunk.addReferenceForStructure(structure, startChunk.toLong());
 						chunk.setStartForStructure(structure, start);
 					}
 				var at = piece.bellPosition();

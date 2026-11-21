@@ -26,7 +26,7 @@ public final class LearnAllFusionTest implements FabricClientGameTest {
    });
    w.getServer().runCommand("execute as @p run wildercord learnall");c.waitTicks(8);
    w.getServer().runOnServer(s -> verify(s.getPlayerList().getPlayers().getFirst(),spell));
-   c.runOnClient(mc -> {verify(mc.player,spell);mc.getWindow().setWindowed(1280,720);mc.resizeGui();mc.getToastManager().clear();});
+   c.runOnClient(mc -> {verify(mc.player,spell);mc.getWindow().setWindowed(1280,720);mc.resizeDisplay();mc.getToastManager().clear();});
    c.takeScreenshot(TestScreenshotOptions.of("learnall_fusion_command").disableCounterPrefix());
    w.getServer().runCommand("execute as @p run wildercord learnall");c.waitTicks(4);
    w.getServer().runOnServer(s -> verify(s.getPlayerList().getPlayers().getFirst(),spell));

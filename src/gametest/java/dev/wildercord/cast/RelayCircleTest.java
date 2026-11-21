@@ -271,7 +271,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 			final int gui = scale;
 			onServer.accept(server -> { reset(probe.owner, Runes.HARM); directDown(probe.owner); });
 			c.waitTicks(2);
-			c.runOnClient(mc -> { mc.getWindow().setWindowed(size[0], size[1]); mc.options.guiScale().set(gui); mc.resizeGui(); });
+			c.runOnClient(mc -> { mc.getWindow().setWindowed(size[0], size[1]); mc.options.guiScale().set(gui); mc.resizeDisplay(); });
 			c.takeScreenshot(TestScreenshotOptions.of("relay_focus_" + size[0] + "x" + size[1] + "_gui_" + scale).disableCounterPrefix());
 			onServer.accept(server -> RelayCircles.cancel(probe.owner));
 			c.waitTicks(2);

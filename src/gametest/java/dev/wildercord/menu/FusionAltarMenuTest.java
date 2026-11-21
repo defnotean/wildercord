@@ -72,7 +72,7 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 	}
 
 	private static void click(ClientGameTestContext c, int slot, ClickType input) {
-		c.runOnClient(mc -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, slot, 0, input, mc.player));
+		c.runOnClient(mc -> mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 0, input, mc.player));
 		c.waitTicks(3);
 	}
 

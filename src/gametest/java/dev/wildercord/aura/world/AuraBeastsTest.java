@@ -40,7 +40,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 				for(var parts:List.of(List.of(AuraBeasts.STONEHORN_PLATE,Items.CLAY_BALL,Items.WHEAT,AuraBeasts.BASTION_POULTICE),List.of(AuraBeasts.GALECLAW_PLUME,Items.COPPER_INGOT,Items.STRING,AuraBeasts.RIDGE_WHISTLE))) {
 					var input=net.minecraft.world.item.crafting.CraftingInput.of(3,1,List.of(new ItemStack(parts.get(0)),new ItemStack(parts.get(1)),new ItemStack(parts.get(2))));
 					var recipe=s.getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING,input,l);
-					check(recipe.isPresent() && recipe.get().value().assemble(input, level.registryAccess()).is(parts.get(3)),"Actual loaded recipe crafts the intended field tool");
+					check(recipe.isPresent() && recipe.get().value().assemble(input, l.registryAccess()).is(parts.get(3)),"Actual loaded recipe crafts the intended field tool");
 				}
 				check(AuraBeasts.maySpawn(AuraBeasts.STONEHORN,l,EntitySpawnReason.NATURAL,new BlockPos(0,101,0)),"Dry open highland ground permits a natural spawn");
 				l.setBlock(new BlockPos(20,101,20),Blocks.STONE.defaultBlockState(),2);check(!AuraBeasts.maySpawn(AuraBeasts.STONEHORN,l,EntitySpawnReason.NATURAL,new BlockPos(20,101,20)),"Occupied habitat is rejected");
@@ -61,7 +61,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 				}
 				return new int[]{stone.getId(),gale.getId()};
 			});
-			c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(2);mc.resizeGui();});c.waitTicks(25);
+			c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(2);mc.resizeDisplay();});c.waitTicks(25);
 			// Actual client feeding packets; the one-per-interval reward survives entity serialization.
 			for(int index=0;index<2;index++) {
 				int which=index,id=ids[index];w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var beast=(AuraBeast)s.overworld().getEntity(id);p.teleportTo(s.overworld(),beast.getX(),101,beast.getZ()-2.5,Set.<Relative>of(),0,0,false);p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(which==0?Items.WHEAT:Items.RABBIT,2));});c.waitTicks(10);
@@ -106,7 +106,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 		}
 	}
 	private static void freshHunter(MinecraftServer s,int[] ids) {var old=(Galeclaw)s.overworld().getEntity(ids[1]);var fresh=AuraBeasts.GALECLAW.create(s.overworld(),EntitySpawnReason.COMMAND);fresh.snapTo(old.getX(),old.getY(),old.getZ(),old.getYRot(),0);fresh.tickCount=99;old.discard();s.overworld().addFreshEntity(fresh);ids[1]=fresh.getId();}
-	private static void feed(ClientGameTestContext c,int id) { c.runOnClient(mc->{var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);}); }
+	private static void feed(ClientGameTestContext c,int id) { c.runOnClient(mc->{var e=mc.level.getEntity(id);mc.gameMode.interactAt(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);}); }
 	private static int drops(ServerLevel l,Item item) { int n=l.getEntitiesOfClass(ItemEntity.class,new AABB(-30,99,-30,30,110,30),e->e.getItem().is(item)).stream().mapToInt(e->e.getItem().getCount()).sum();for(var p:l.players())for(int i=0;i<p.getInventory().getContainerSize();i++)if(p.getInventory().getItem(i).is(item))n+=p.getInventory().getItem(i).getCount();return n; }
 	private static void aim(ClientGameTestContext c,int id) { c.runOnClient(mc->{var e=mc.level.getEntity(id);var d=e.getBoundingBox().getCenter().subtract(mc.player.getEyePosition());mc.player.setYRot((float)Math.toDegrees(Math.atan2(-d.x,d.z)));mc.player.setXRot((float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())));}); }
 	private static void view(TestSingleplayerContext w,ClientGameTestContext c,int id,String name) { w.getServer().runOnServer(s->{var e=(AuraBeast)s.overworld().getEntity(id);var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);p.teleportTo(s.overworld(),e.getX()+2.5,101,e.getZ()-3,Set.<Relative>of(),0,0,false);e.setYRot((float)Math.toDegrees(Math.atan2(-2.5,-3)));e.yBodyRot=e.yHeadRot=e.getYRot();});c.waitTicks(65);aim(c,id);c.waitTicks(5);shot(c,name);w.getServer().runOnServer(s->s.getPlayerList().getPlayers().getFirst().setGameMode(GameType.SURVIVAL)); }

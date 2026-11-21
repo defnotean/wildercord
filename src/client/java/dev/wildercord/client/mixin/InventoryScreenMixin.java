@@ -4,6 +4,7 @@ import dev.wildercord.client.GearTray;
 import dev.wildercord.client.SlotWell;
 import dev.wildercord.menu.CordSlot;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -19,8 +20,9 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 		super(null, null, null);
 	}
 
-	@Inject(method = "extractBackground", at = @At("TAIL"))
-	private void wildercord$drawCordWell(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+	@Inject(method = "renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", at = @At("TAIL"))
+	private void wildercord$drawCordWell(GuiGraphics wcGui, float partialTick, int mouseX, int mouseY, CallbackInfo ci) {
+		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		SlotWell.draw(graphics, this.leftPos + CordSlot.INVENTORY_X - 1, this.topPos + CordSlot.INVENTORY_Y - 1);
 		GearTray.drawSurvival(graphics, this.leftPos, this.topPos);
 	}

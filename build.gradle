@@ -202,6 +202,14 @@ tasks.withType(JavaCompile).configureEach {
 
 test {
 	useJUnitPlatform()
+	// The bytecode contract tests read class files through java.lang.classfile (Java 22+), and unit
+	// tests run on the build JDK, so only the test set leaves Java 21; the game and gametest sets stay 21.
+	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.named('compileTestJava') {
+	javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+	options.release = 25
 }
 
 java {

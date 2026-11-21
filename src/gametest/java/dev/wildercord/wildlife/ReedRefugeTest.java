@@ -328,7 +328,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   }
  }
 
- private static void feed(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> n) {int id=w.getServer().computeOnServer(s -> n.get().getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);mc.gameMode.interact(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);});}
+ private static void feed(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> n) {int id=w.getServer().computeOnServer(s -> n.get().getId());c.runOnClient(mc -> {var e=mc.level.getEntity(id);mc.gameMode.interactAt(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);});}
  private static void place(ClientGameTestContext c,BlockPos ground) {c.runOnClient(mc -> mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(Vec3.atCenterOf(ground),Direction.UP,ground,false)));}
  private static int pearls(MinecraftServer s) {return s.overworld().getEntitiesOfClass(ItemEntity.class,new AABB(-12,100,-8,12,106,12),e -> e.getItem().is(WetlandContent.DUSK_PEARL)).stream().mapToInt(e -> e.getItem().getCount()).sum()+java.util.stream.IntStream.range(0,p(s).getInventory().getContainerSize()).map(i -> p(s).getInventory().getItem(i).is(WetlandContent.DUSK_PEARL)?p(s).getInventory().getItem(i).getCount():0).sum();}
  private static ServerPlayer p(MinecraftServer s) {return s.getPlayerList().getPlayers().getFirst();}

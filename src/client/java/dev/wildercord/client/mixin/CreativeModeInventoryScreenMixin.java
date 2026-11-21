@@ -5,6 +5,7 @@ import dev.wildercord.client.SlotWell;
 import dev.wildercord.menu.CordSlot;
 import dev.wildercord.menu.PlacedSlot;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,8 +45,9 @@ public abstract class CreativeModeInventoryScreenMixin extends AbstractContainer
 		}
 	}
 
-	@Inject(method = "extractBackground", at = @At("TAIL"))
-	private void wildercord$drawCordWell(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+	@Inject(method = "renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", at = @At("TAIL"))
+	private void wildercord$drawCordWell(GuiGraphics wcGui, float partialTick, int mouseX, int mouseY, CallbackInfo ci) {
+		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		if (this.isInventoryOpen()) {
 			SlotWell.draw(graphics, this.leftPos + CordSlot.CREATIVE_X - 1, this.topPos + CordSlot.CREATIVE_Y - 1);
 			GearTray.drawCreative(graphics, this.leftPos, this.topPos);

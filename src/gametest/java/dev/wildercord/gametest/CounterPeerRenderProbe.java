@@ -124,15 +124,15 @@ public final class CounterPeerRenderProbe {
     }
     /** One unchanged native update/extract/render/copy. File completion never inserts a game tick between phase renders. */
     public static java.util.concurrent.CompletableFuture<Artifact> capture(Minecraft mc,String name){
-        var options=TestScreenshotOptions.of(name).disableCounterPrefix().withDeltaTicks(.5F);
+        var options=TestScreenshotOptions.of(name).disableCounterPrefix().withTickDelta(.5F);
         var token=begin(options);if(token==null)throw new AssertionError("Unarmed counter native capture");
         var output=new java.util.concurrent.CompletableFuture<Path>();
         Scope scope=null;
         DeltaTracker delta=new DeltaTracker(){public float getGameTimeDeltaTicks(){return .5F;}public float getGameTimeDeltaPartialTick(boolean paused){return .5F;}public float getRealtimeDeltaTicks(){return .5F;}};
         try{
             scope=enter((TestScreenshotCommonOptionsImpl<?>)options,mc);
-            mc.gameRenderer.update(delta, true);extractBegin(delta);boolean extracted=false;
-            try{mc.gameRenderer.extract(delta,true);extracted=true;}finally{extractEnd(extracted);}
+            mc.gameRenderer.updateCamera(delta);extractBegin(delta);boolean extracted=false;
+            try{mc.gameRenderer.render(delta,true);extracted=true;}finally{extractEnd(extracted);}
             renderBegin();boolean rendered=false;try{GametestCompat.renderFrame(mc,delta);rendered=true;}finally{renderEnd(rendered);}
             screenshot(mc.getMainRenderTarget(),image->{try(image){
                 var path=FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name+".png");

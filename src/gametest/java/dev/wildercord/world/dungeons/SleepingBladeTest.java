@@ -51,7 +51,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				}
 				return first;
 			});
-			c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(2);mc.resizeGui();mc.options.toggleCrouch().set(false);mc.options.setCameraType(CameraType.FIRST_PERSON);});
+			c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.options.guiScale().set(2);mc.resizeDisplay();mc.options.toggleCrouch().set(false);mc.options.setCameraType(CameraType.FIRST_PERSON);});
 			stand(world,at,AuraRules.EDGE);c.waitTicks(25);aim(c,at);c.runOnClient(mc->mc.options.keyShift.setDown(true));c.waitTicks(10);
 			use(c,at);c.waitTicks(130);unclaimed(world,at,"Edge cannot draw a Form blade");
 			// Visiting now gives the history before Form. Keep it when the fixture equips its next test weapon.
@@ -167,7 +167,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			}
 			check(found!=null,"Registered normal-terrain structure placement creates the authentic blade; "+probe.summary());BlockPos landmark=found;
 			natural.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),landmark.getX()+4,landmark.getY()+3,landmark.getZ()+5,Set.<Relative>of(),0,0,false);p.getAbilities().flying=true;p.onUpdateAbilities();});
-			c.waitTicks(30);aim(c,landmark);c.waitTicks(30);natural.getClientLevel().waitForChunksRender();shot(c,"sleeping_blade_natural_landmark");
+			c.waitTicks(30);aim(c,landmark);c.waitTicks(30);natural.getClientWorld().waitForChunksRender();shot(c,"sleeping_blade_natural_landmark");
 		}
 	}
 	private static void stand(TestSingleplayerContext w,BlockPos at,int stage) {

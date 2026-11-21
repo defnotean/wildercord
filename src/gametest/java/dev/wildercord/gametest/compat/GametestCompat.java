@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
+import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 
 import java.util.function.Predicate;
 
@@ -76,6 +78,18 @@ public final class GametestCompat {
 		if (window.isFullscreen() != fullscreen) {
 			window.toggleFullScreen();
 		}
+	}
+
+	/** 1.21.11 dropped Camera#getViewRotationProjectionMatrix: rebuild it from the camera pose and the perspective. */
+	public static Matrix4f viewProjection(Camera camera, Matrix4f out) {
+		Vec3 pos = camera.position();
+		out.rotation(camera.rotation()).translate((float) -pos.x, (float) -pos.y, (float) -pos.z);
+		return Minecraft.getInstance().gameRenderer.getProjectionMatrix(reportedFov(camera)).mul(out, out);
+	}
+
+	/** 1.21.11 no longer reports a fov on Camera; the slider is what GameRenderer feeds the projection. */
+	public static float reportedFov(Camera camera) {
+		return Minecraft.getInstance().options.fov().get();
 	}
 
 	public static void renderFrame(Minecraft mc, DeltaTracker delta) {

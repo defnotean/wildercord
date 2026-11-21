@@ -33,7 +33,7 @@ public final class LifeJournalTest implements FabricClientGameTest {
   c.waitTicks(2);
  }
  private static void shot(ClientGameTestContext c,String name){c.runOnClient(mc -> {mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);});c.waitTicks(3);c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
- private static void size(ClientGameTestContext c,int w,int h){c.runOnClient(mc -> {mc.getWindow().setWindowed(w,h);mc.options.guiScale().set(2);mc.resizeGui();});c.waitTicks(5);}
+ private static void size(ClientGameTestContext c,int w,int h){c.runOnClient(mc -> {mc.getWindow().setWindowed(w,h);mc.options.guiScale().set(2);mc.resizeDisplay();});c.waitTicks(5);}
  private static void settingsLayout(ClientGameTestContext c){
   check(c.computeOnClient(mc -> {
    if(!(mc.screen instanceof MagicSettingsScreen s))return false;
@@ -111,7 +111,7 @@ public final class LifeJournalTest implements FabricClientGameTest {
    check(saved.equals(world.getServer().computeOnServer(s -> Spellbooks.get(player(s)).spells().stream().map(List::copyOf).toList())),"Settings and learning do not mutate the saved spell rows");
   }finally{
    c.getInput().releaseMouse(LEFT);c.getInput().releaseKey(InputConstants.KEY_ESCAPE);
-   c.runOnClient(mc -> {mc.setScreen(null);mc.getWindow().setWindowed(original[0],original[1]);mc.options.guiScale().set(original[2]);mc.resizeGui();});
+   c.runOnClient(mc -> {mc.setScreen(null);mc.getWindow().setWindowed(original[0],original[1]);mc.options.guiScale().set(original[2]);mc.resizeDisplay();});
   }
  }
 }

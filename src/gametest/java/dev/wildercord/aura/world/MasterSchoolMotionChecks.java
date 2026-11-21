@@ -72,7 +72,7 @@ public final class MasterSchoolMotionChecks {
 			});
 			context.runOnClient(MastersNpcCaptureProbe::configure);
 			context.waitTicks(10);
-			world.getClientLevel().waitForChunksRender();
+			world.getClientWorld().waitForChunksRender();
 			for (int school : new int[] {MastersRules.GALE, MastersRules.STONE}) {
 				boolean gale = school == MastersRules.GALE;
 				List<Beat> beats = gale

@@ -18,9 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class GameRendererMixin {
 	@Shadow @Final public net.minecraft.client.renderer.ItemInHandRenderer itemInHandRenderer;
 
-	@Inject(method = "extract", at = @At("HEAD"))
+	@Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V", at = @At("HEAD"))
 	private void wildercord$presentationFrame(CallbackInfo ci) { dev.wildercord.client.CombatPresentation.beginFrame(); }
-	@Inject(method = "extract", at = @At("TAIL"))
+	@Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V", at = @At("TAIL"))
 	private void wildercord$extractHandsAvatar(net.minecraft.client.DeltaTracker delta, boolean renderLevel, CallbackInfo ci) {
 		Minecraft mc = Minecraft.getInstance();
 		if (renderLevel && mc.isGameLoadFinished() && mc.level != null && mc.player != null
@@ -39,14 +39,14 @@ public abstract class GameRendererMixin {
 	}
 
 	@Inject(method = "bobHurt", at = @At("HEAD"), cancellable = true)
-	private void wildercord$shake(CameraRenderState camera, PoseStack pose, CallbackInfo ci) {
+	private void wildercord$shake(PoseStack pose, float partialTick, CallbackInfo ci) {
 		if (dev.wildercord.client.combat.ArticulatedCombat.stableCamera()) { ci.cancel(); return; }
 		Matrix4f shake = new Matrix4f();
 		ScreenEffects.applyShake(shake, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
 		pose.mulPose(shake);
 	}
 	@Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
-	private void wildercord$stableView(CameraRenderState camera, PoseStack pose, CallbackInfo ci) {
+	private void wildercord$stableView(PoseStack pose, float partialTick, CallbackInfo ci) {
 		if (dev.wildercord.client.combat.ArticulatedCombat.stableCamera()) ci.cancel();
 	}
 }

@@ -92,7 +92,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1600, 900);
 				mc.options.guiScale().set(2);
-				mc.resizeGui();
+				mc.resizeDisplay();
 			});
 			world.getServer().runCommand("time set 6000");
 			world.getServer().runCommand("weather clear");

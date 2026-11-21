@@ -288,7 +288,7 @@ public final class RelayLessonChecks {
 		try (var server = context.worldBuilder().createServer(properties)) {
 			TestServerConnection connection = server.connect();
 			try {
-				connection.getClientLevel().waitForChunksDownload();
+				connection.getClientWorld().waitForChunksDownload();
 				server.runCommand("gamerule spawn_mobs false"); server.runCommand("gamerule fall_damage false");
 				ServerPlayer original = server.computeOnServer(s -> {
 					var level = s.overworld();
@@ -309,7 +309,7 @@ public final class RelayLessonChecks {
 				advance(context); assertPage(context, 1, true);
 				connection.close(); context.waitFor(mc -> mc.level == null, 200); context.setScreen(TitleScreen::new);
 				server.runOnServer(s -> s.overworld().setBlock(LECTERN, Blocks.STONE.defaultBlockState(), 3));
-				connection = server.connect(); connection.getClientLevel().waitForChunksDownload();
+				connection = server.connect(); connection.getClientWorld().waitForChunksDownload();
 				server.runOnServer(s -> {
 					var joined = player(s);
 					check(joined != original && joined.getUUID().equals(original.getUUID()), "Reconnect creates a distinct connected body");

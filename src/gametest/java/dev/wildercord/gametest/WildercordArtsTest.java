@@ -124,7 +124,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		context.runOnClient(mc -> {
 			mc.getWindow().setWindowed(1920, 1080);
 			mc.options.guiScale().set(2);
-			mc.resizeGui();
+			mc.resizeDisplay();
 			mc.options.toggleCrouch().set(false);
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
 			MagicQuality.stringIndicator = MagicQuality.StringIndicator.CROSSHAIR;

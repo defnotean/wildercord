@@ -92,7 +92,7 @@ public final class StoneHingeNaturalMotion {
         if (!value.proof.pending()) return false;
         boolean[] expected = {false};
         value.proof.observe(() -> expected[0] = value.proof.sendEnter(value.frame("natural-motion-start"), tracker, packet,
-            packet.id(), ordinal, vector(packet.movement()), manual));
+            packet.getId(), ordinal, vector(packet.getMovement()), manual));
         return expected[0];
     }
     public static void sent(ServerPlayer player, ClientboundSetEntityMotionPacket packet) {
@@ -110,7 +110,7 @@ public final class StoneHingeNaturalMotion {
     }
     public static void otherMotion(ServerPlayer player, ClientboundSetEntityMotionPacket packet) {
         Observation value = pending(player);
-        if (value != null && packet.id() != player.getId() && StoneHingePeerProbe.currentTracker(player) != null)
+        if (value != null && packet.getId() != player.getId() && StoneHingePeerProbe.currentTracker(player) != null)
             value.proof.invalidate("Wrong entity motion inside the original owner tracker");
     }
     public static void connection(ServerGamePacketListenerImpl connection) {

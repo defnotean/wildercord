@@ -35,7 +35,7 @@ public final class SleepingBladeGenerationProbe {
  }
 
  public static LocateScope locate(Structure.GenerationContext context) {
-  return locate(currentSuite(),context.heightAccessor(),context.seed(),context.chunkPos().x(),context.chunkPos().z());
+  return locate(currentSuite(),context.heightAccessor(),context.seed(),context.chunkPos().x,context.chunkPos().z);
  }
  static LocateScope locate(String suite,Object world,long seed,int x,int z) {
   Candidate previous=LOCATE.get(),candidate=COMMAND.get();
