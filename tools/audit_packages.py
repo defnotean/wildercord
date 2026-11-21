@@ -352,14 +352,21 @@ def check_jar(root, jar, props):
                     "Processed client resources differ from source inputs")
     expected.pop("fabric.mod.json")  # Expanded JSON is compared structurally below.
     expected["LICENSE"] = digest_file(root / "LICENSE", MAX_JSON)
+    remapped = _before_26_1(props)
     with checked_archive(jar) as archive:
         actual = archive_digests(archive)
-        check_members(archive, actual, set(expected) | {"fabric.mod.json", "META-INF/MANIFEST.MF"})
+        # Remap Loom's Mixin annotation processor writes *-refmap.json into the jar; the
+        # generated mapping content is tool output, so the member set allows it by name.
+        refmaps = {name for name in actual if name.endswith("-refmap.json")} if remapped else set()
+        check_members(archive, actual, set(expected) | {"fabric.mod.json", "META-INF/MANIFEST.MF"} | refmaps)
         require(archive_json(archive, "fabric.mod.json") == expected_mod, "Packaged mod metadata differs from source/version")
         require(archive.getinfo("META-INF/MANIFEST.MF").file_size <= MAX_JSON, "Manifest exceeds byte limit")
         manifest = check_manifest(archive.read("META-INF/MANIFEST.MF"), props, client_entries)
         for name, digest in expected.items():
-            require(actual[name] == digest, f"Packaged bytes differ from expected input: {name}")
+            # Remapped class bytes differ from the named build/classes inputs by design;
+            # the member set and the Java target below still pin what ships.
+            if not (remapped and name.endswith(".class")):
+                require(actual[name] == digest, f"Packaged bytes differ from expected input: {name}")
             if name.endswith(".class"):
                 with archive.open(name) as stream:
                     header = stream.read(8)
