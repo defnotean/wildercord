@@ -48,8 +48,10 @@ public final class OathholdOrigin {
 	public static final int SECTOR_SEPARATION = 7;
 	public static final int SECTOR_SALT = 20261131;
 
-	public static final RandomSpreadStructurePlacement CENTER_PLACEMENT =
-		new RandomSpreadStructurePlacement(MACRO_SPACING, MACRO_SEPARATION, RandomSpreadType.LINEAR, CENTER_SALT);
+	private static final class PlacementHolder {
+		static final RandomSpreadStructurePlacement CENTER =
+			new RandomSpreadStructurePlacement(MACRO_SPACING, MACRO_SEPARATION, RandomSpreadType.LINEAR, CENTER_SALT);
+	}
 
 	public static final Set<ResourceKey<Biome>> CENTER_BIOMES = Set.of(
 		Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.MEADOW,
@@ -95,7 +97,7 @@ public final class OathholdOrigin {
 
 	/** Returns the deterministic macro city-center chunk inside the region containing {@code (sampleChunkX, sampleChunkZ)}. */
 	public static ChunkPos macroCenterChunk(long seed, int sampleChunkX, int sampleChunkZ) {
-		return CENTER_PLACEMENT.getPotentialStructureChunk(seed, sampleChunkX, sampleChunkZ);
+		return PlacementHolder.CENTER.getPotentialStructureChunk(seed, sampleChunkX, sampleChunkZ);
 	}
 
 	/** Resolves whether a candidate macro center chunk hosts Oathhold and computes its locked ground deck Y. */
