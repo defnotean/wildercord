@@ -245,12 +245,19 @@ class DataPackProfile:
             to_place["properties"] = dict(properties)
         return {"type": "minecraft:simple_block", "to_place": to_place}
 
+    def _spread_provider(self, provider):
+        """1.21.x has no trapezoid int provider; a uniform over the same range is the closest shape."""
+        if self.is_obfuscated and isinstance(provider, dict) and provider.get("type") == "minecraft:trapezoid":
+            return {"type": "minecraft:uniform", "min_inclusive": provider["min"], "max_inclusive": provider["max"]}
+        return provider
+
     def placed_offset_modifier(self, x_provider, y_provider, z_provider=None):
         """PlacedFeature offset modifier (random_offset in 26.2 vs offset in 26.3)."""
+        x, y = self._spread_provider(x_provider), self._spread_provider(y_provider)
         if self.is_26_2:
-            return {"type": "minecraft:random_offset", "xz_spread": x_provider, "y_spread": y_provider}
-        z = x_provider if z_provider is None else z_provider
-        return {"type": "minecraft:offset", "x": x_provider, "y": y_provider, "z": z}
+            return {"type": "minecraft:random_offset", "xz_spread": x, "y_spread": y}
+        z = x if z_provider is None else self._spread_provider(z_provider)
+        return {"type": "minecraft:offset", "x": x, "y": y, "z": z}
 
     # ---------------------------------------------------------------- spawns & biomes
 
