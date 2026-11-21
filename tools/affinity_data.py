@@ -14,7 +14,7 @@ NETHER = ["minecraft:blaze", "minecraft:magma_cube", "minecraft:ghast", "minecra
 # Creatures of the End slip through space: void can't hold them, time can.
 END = ["minecraft:enderman", "minecraft:endermite", "minecraft:shulker"]
 # Built things with no blood in them: golems of iron and copper.
-METAL = ["minecraft:iron_golem", "minecraft:copper_golem"]
+METAL = ["minecraft:iron_golem"]  # 1.21.8 has no copper golem
 
 AFFINITIES = {
     # The cold's own creatures thaw and melt; the Creaking is dry wood.

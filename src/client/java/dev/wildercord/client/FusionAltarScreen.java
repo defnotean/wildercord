@@ -457,6 +457,11 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 		}
 	}
 
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		// 1.21.8 hands a screen only the raw click; the event record is ours.
+		return mouseClicked(new MouseButtonEvent(mouseX, mouseY, button), false);
+	}
+
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mx = event.x() - leftPos;
 		double my = event.y() - topPos;

@@ -379,6 +379,11 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 
 	// ------------------------------------------------------------------ clicks
 
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		// 1.21.8 hands a screen only the raw click; the event record is ours.
+		return mouseClicked(new MouseButtonEvent(mouseX, mouseY, button), false);
+	}
+
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mx = localX(event.x());
 		double my = localY(event.y());

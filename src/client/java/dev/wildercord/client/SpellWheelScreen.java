@@ -121,6 +121,11 @@ public class SpellWheelScreen extends Screen {
 		onClose();
 	}
 
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		// 1.21.8 hands a screen only the raw click; the event record is ours.
+		return mouseClicked(new MouseButtonEvent(mouseX, mouseY, button), false);
+	}
+
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 			onClose();

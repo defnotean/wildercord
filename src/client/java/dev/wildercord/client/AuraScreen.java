@@ -234,6 +234,11 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		return mx >= x && mx < x + w && my >= y && my < y + h;
 	}
 
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		// 1.21.8 hands a screen only the raw click; the event record is ours.
+		return mouseClicked(new dev.wildercord.client.compat.McInput.MouseButtonEvent(mouseX, mouseY, button), false);
+	}
+
 	public boolean mouseClicked(dev.wildercord.client.compat.McInput.MouseButtonEvent event, boolean doubleClick) {
 		if (masterFormsEntry != null && masterFormsEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event.x(), event.y(), event.button());
 		setFocused(null);

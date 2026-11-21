@@ -64,7 +64,8 @@ public final class LifeJournalTest implements FabricClientGameTest {
    List<List<String>> saved=world.getServer().computeOnServer(s -> Spellbooks.get(player(s)).spells().stream().map(List::copyOf).toList());
    size(c,1920,1080);c.setScreen(CordScreen::new);c.waitTicks(3);
    click(c,c.computeOnClient(mc -> ((CordScreen)mc.screen).pagePoint(2)));
-   check(c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalKnown().equals(List.of(Runes.HEAL.id(),Runes.RESTORE.id()))),"Only the two actually synced known Life runes render named notes");
+   List<String> journal=c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalKnown());
+   check(journal.equals(List.of(Runes.HEAL.id(),Runes.RESTORE.id())),"Only the two actually synced known Life runes render named notes, got "+journal);
    check(c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalPoint(Runes.REMEDY.id())==null),"An unknown rune has no visible link");
    check(c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalPoint("wildercord:ashen_mercy")==null&&!Spellbooks.get(mc.player).knows("wildercord:ashen_mercy")),"An undiscovered secret fusion does not leak a named note or clickable link");
    double[] heal=c.computeOnClient(mc -> ((CordScreen)mc.screen).lifeJournalPoint(Runes.HEAL.id()));

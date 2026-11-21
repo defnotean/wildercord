@@ -2259,6 +2259,11 @@ public class CordScreen extends Screen {
 
 	// ------------------------------------------------------------------ mouse (all in local coordinates)
 
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		// 1.21.8 hands a screen only the raw click; the event record is ours.
+		return mouseClicked(new MouseButtonEvent(mouseX, mouseY, button), false);
+	}
+
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		updateAuraEntry();
 		double mx = localX(event.x());
@@ -2515,6 +2520,10 @@ public class CordScreen extends Screen {
 			return true;
 		}
 		return super.mouseClicked(event.x(), event.y(), event.button());
+	}
+
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+		return mouseDragged(new MouseButtonEvent(mouseX, mouseY, button), dragX, dragY);
 	}
 
 	public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
