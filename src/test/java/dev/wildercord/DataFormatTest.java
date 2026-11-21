@@ -416,29 +416,56 @@ class DataFormatTest {
 	@Test
 	void regionalBiomesUseTheAttributeBasedFormat() throws IOException {
 		boolean is262 = TestDataProfile.is26_2();
+		boolean biomeAttributes = TestDataProfile.hasBiomeAttributes();
 		for (Path file : files("wildercord/worldgen/biome")) {
 			var biome = read(file);
-			if (is262) {
+			if (biomeAttributes) {
 				allowed(biome, file, "attributes", "carvers", "downfall", "effects", "features", "has_precipitation",
 					"spawn_costs", "spawners", "temperature", "temperature_modifier");
-				required(biome, file, "effects", "features", "carvers", "has_precipitation", "spawn_costs", "spawners", "temperature", "downfall");
-			} else {
-				allowed(biome, file, "attributes", "carvers", "downfall", "effects", "features", "has_precipitation", "temperature", "temperature_modifier");
 				required(biome, file, "effects", "features", "carvers", "has_precipitation", "temperature", "downfall");
+				if (is262) required(biome, file, "spawn_costs", "spawners");
+			} else {
+				allowed(biome, file, "carvers", "downfall", "effects", "features", "has_precipitation", "spawn_costs", "spawners", "temperature", "temperature_modifier");
+				required(biome, file, "effects", "features", "carvers", "has_precipitation", "spawn_costs", "spawners", "temperature", "downfall");
 			}
 			assertTrue(biome.get("has_precipitation").getAsJsonPrimitive().isBoolean());
 			assertTrue(Double.isFinite(biome.get("temperature").getAsDouble()));
 			assertTrue(biome.get("downfall").getAsDouble() >= 0 && biome.get("downfall").getAsDouble() <= 1);
 			var effects = biome.getAsJsonObject("effects");
-			allowed(effects, file, "water_color", "foliage_color", "dry_foliage_color", "grass_color", "grass_color_modifier");
-			required(effects, file, "water_color");
-			for (var effect : effects.entrySet()) {
-				if (effect.getKey().endsWith("_color")) assertTrue(effect.getValue().getAsString().matches("#[0-9a-fA-F]{6}"), file + " color " + effect.getKey());
+			if (biomeAttributes) {
+				allowed(effects, file, "water_color", "foliage_color", "dry_foliage_color", "grass_color", "grass_color_modifier");
+				required(effects, file, "water_color");
+				for (var effect : effects.entrySet()) {
+					if (effect.getKey().endsWith("_color")) assertTrue(effect.getValue().getAsString().matches("#[0-9a-fA-F]{6}"), file + " color " + effect.getKey());
+				}
+			} else {
+				// Before 1.21.11 the colors live in effects as ints, and sky/fog/water colors are required.
+				allowed(effects, file, "water_color", "water_fog_color", "sky_color", "fog_color",
+					"foliage_color", "dry_foliage_color", "grass_color", "grass_color_modifier", "music");
+				required(effects, file, "water_color", "water_fog_color", "sky_color", "fog_color");
+				for (var effect : effects.entrySet()) {
+					if (effect.getKey().endsWith("_color")) assertTrue(effect.getValue().getAsJsonPrimitive().isNumber(), file + " color " + effect.getKey());
+				}
 			}
 			for (var carver : biome.getAsJsonArray("carvers")) assertTrue(carver.getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
 			for (var stage : biome.getAsJsonArray("features")) {
 				assertTrue(stage.isJsonArray(), file + " decoration stage");
 				for (var feature : stage.getAsJsonArray()) assertTrue(feature.getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
+			}
+			if (!biomeAttributes) {
+				assertTrue(!biome.has("attributes"), file + " predates the attributes biome format");
+				var legacySpawners = biome.getAsJsonObject("spawners");
+				allowed(legacySpawners, file, "ambient", "axolotls", "creature", "misc", "monster", "underground_water_creature", "water_ambient", "water_creature");
+				for (var pool : legacySpawners.entrySet()) for (var value : pool.getValue().getAsJsonArray()) {
+					var spawn = value.getAsJsonObject();
+					allowed(spawn, file, "type", "weight", "minCount", "maxCount"); required(spawn, file, "type", "weight", "minCount", "maxCount");
+					assertTrue(spawn.get("type").getAsString().matches("[a-z0-9_.-]+:[a-z0-9_/.-]+"));
+					assertTrue(spawn.get("weight").getAsInt() > 0);
+					int minCount = spawn.get("minCount").getAsInt();
+					int maxCount = spawn.get("maxCount").getAsInt();
+					assertTrue(minCount > 0 && maxCount >= minCount, file + " spawn count range");
+				}
+				continue;
 			}
 			var attributes = biome.getAsJsonObject("attributes");
 			if (is262) {

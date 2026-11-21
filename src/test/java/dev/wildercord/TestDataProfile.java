@@ -25,6 +25,17 @@ public final class TestDataProfile {
 		return Integer.parseInt(MC_VERSION.trim().split("\\.")[0]) < 26;
 	}
 
+	/** The namespaced attributes biome format arrived with 1.21.11; older 1.21 biomes use the effects codec. */
+	public static boolean hasBiomeAttributes() {
+		if (!is121Line()) {
+			return true;
+		}
+		String[] parts = MC_VERSION.trim().split("\\.");
+		int minor = Integer.parseInt(parts[1]);
+		int patch = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
+		return minor > 21 || (minor == 21 && patch >= 11);
+	}
+
 	public static String featureDirName() {
 		return BEFORE_26_3 ? "configured_feature" : "feature";
 	}
