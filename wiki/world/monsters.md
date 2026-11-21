@@ -144,7 +144,7 @@ Empty armour still moved by a swordsman's aura, glowing in the colours of its ol
 ## Oathbound Bastion
 {: #oathbound-bastion }
 
-An unbroken champion of the Way of the Bulwark who haunts strongholds, ancient cities, and expeditions alongside fallen knights (`150` health, `18` armour, `8` armour toughness). Crowned in antique gold over obsidian plate and draped in a royal navy quilted tabard and cape, it fights behind a towering Sun-Anvil Greatshield and a glowing Flanged Greatmace, accelerating and hitting harder below half health.
+An unbroken champion of the Way of the Bulwark who haunts strongholds, ancient cities, and expeditions alongside fallen knights (`650` health, `18` armour, `8` armour toughness). Crowned in antique gold over obsidian plate and draped in a royal navy quilted tabard and cape, it fights behind a towering Sun-Anvil Greatshield and a glowing Flanged Greatmace, accelerating and hitting harder below half health.
 
 - **Aegis Phalanx Brace:** it crouches behind its grounded greatshield inside a hexagonal Aura barrier. Frontal blows deal barely a scratch and arrows fly straight back at whoever fired them; flank it or **smash its guard with an axe** to leave it staggered (`+45%` damage taken).
 - **Shield-Ram Stampede:** it pitches forward and charges with its shield locked ahead like a battering ram. Step aside and **lead it into a stone wall** to stun it cleanly.
@@ -155,7 +155,7 @@ An unbroken champion of the Way of the Bulwark who haunts strongholds, ancient c
 ## Oathbound Blade-Champion
 {: #oathbound-blade-champion }
 
-An elite duel-master of the Way of the Blade who haunts strongholds, ancient cities, and sunken expeditions alongside Bastions and fallen knights (`135` health, `15` armour, `7` armour toughness). Clad in fluted silver and gold plate with a crimson diagonal sash, glowing red T-visor, flowing crimson plume, and split parchment-crimson banner cape, it enters **Crimson Overdrive** below half health (`+18%` damage, faster windups).
+An elite duel-master of the Way of the Blade who haunts strongholds, ancient cities, and sunken expeditions alongside Bastions and fallen knights (`560` health, `15` armour, `7` armour toughness). Clad in fluted silver and gold plate with a crimson diagonal sash, glowing red T-visor, flowing crimson plume, and split parchment-crimson banner cape, it enters **Crimson Overdrive** below half health (`+18%` damage, faster windups).
 
 - **Wrathful Riposte:** it locks its rune-etched Zweihänder diagonally across its chest. Frontal swings trigger an immediate golden-crimson counter-cleave and projectiles ricochet back at their shooter; flank it or **smash its parry with an axe** to stagger it (`+45%` damage taken).
 - **Pommel-Break Lunge:** it coils low and rockets forward with the pommel first. **Blocking with a shield shatters your guard**, putting your shield on a `5`-second cooldown and slowing you down.
@@ -166,7 +166,7 @@ An elite duel-master of the Way of the Blade who haunts strongholds, ancient cit
 ## Oathbound Halberdier
 {: #oathbound-halberdier }
 
-A swift polearm sentinel of the Way of the Storm-Glaive who haunts strongholds, ancient cities, and sunken expeditions alongside Bastions, Blade-Champions, and fallen knights (`125` health, `13` armour, `6` armour toughness). Clad in gunmetal-indigo and cobalt plate with swept silver helm wings, a glowing cyan falcon-beak visor, flowing dark navy scarf, and violet-cyan rune circuits, it enters **Storm-Glaive Overdrive** below half health (`+18%` damage, faster tells).
+A swift polearm sentinel of the Way of the Storm-Glaive who haunts strongholds, ancient cities, and sunken expeditions alongside Bastions, Blade-Champions, and fallen knights (`520` health, `13` armour, `6` armour toughness). Clad in gunmetal-indigo and cobalt plate with swept silver helm wings, a glowing cyan falcon-beak visor, flowing dark navy scarf, and violet-cyan rune circuits, it enters **Storm-Glaive Overdrive** below half health (`+18%` damage, faster tells).
 
 - **Tempest Whirl Cleave:** spins its Storm-Halberd through a wide `360°` cyan-and-violet lightning arc (`4.6`-block radius). **Smash its telegraphed windups with an axe** to stagger it (`+45%` damage taken).
 - **Shadowstep Blink-Thrust:** rockets straight ahead in a burst of electric sparks to skewer targets at long reach (`4.2` blocks).
@@ -177,7 +177,7 @@ A swift polearm sentinel of the Way of the Storm-Glaive who haunts strongholds, 
 ## Oathbound Banner-Marshal
 {: #oathbound-banner-marshal }
 
-A regal commander of the Way of the Sovereign Banner who leads Oathbound knights in strongholds, ancient cities, and sunken expeditions (`145` health, `17` armour, `8` armour toughness). Clad in ivory-white and burnished gold plate over an emerald surcoat with a golden laurel crown, shoulder angel wings, glowing chest Sun-Core, octagonal Solar Aegis Shield, Sovereign Sunblade, and towering War-Banner, it ignites **Solar Sovereignty** below half health (`+16%` damage, faster commands).
+A regal commander of the Way of the Sovereign Banner who leads Oathbound knights in strongholds, ancient cities, and sunken expeditions (`600` health, `17` armour, `8` armour toughness). Clad in ivory-white and burnished gold plate over an emerald surcoat with a golden laurel crown, shoulder angel wings, glowing chest Sun-Core, octagonal Solar Aegis Shield, Sovereign Sunblade, and towering War-Banner, it ignites **Solar Sovereignty** below half health (`+16%` damage, faster commands).
 
 - **Decree of the Standard:** raises its blade toward a golden floor circle, healing itself and all nearby fallen or Oathbound knights within `12` blocks (`+8` health, Strength I, and Resistance I for `8` seconds). Focus the Banner-Marshal early before it bolsters its squad.
 - **Solar Aegis Guard:** locks its sun-shield across its chest; arrows deflect back and frontal strikes trigger a Sunblade Counter-Thrust unless you **smash its guard with an axe** (`+45%` staggered damage taken).

@@ -20,13 +20,13 @@ Roughly from easiest to hardest:
 
 | | Boss | Lair | Where | Health | What it gives |
 |---|---|---|---|---|---|
-| 1 | [Rootcoil Serpent](#rootcoil-serpent) | A sinkhole down to a flooded cavern | Jungles | 200 | **Coilroot**: aura comes more easily |
-| 2 | [Lantern-Bearer](#lantern-bearer) | The Barrow Field, after dark | Plains, meadows, savannas | 250 | **Bearer's Lantern**: calls the Barrow Steed |
-| 3 | [Hollow Matron](#hollow-matron) | An abandoned mine | Forests, taigas, windswept hills, plains | 300 | **Weaver's Silk**: climb walls |
-| 4 | [Ashen Stag](#ashen-stag) | A burnt clearing | Forests and taigas | 350 | **Cinder Antler**: gore after a sprint |
-| 5 | [Frost Wyrmling](#frost-wyrmling) | The Glacier Den | Snowy mountains, groves, snowy plains and taigas | 410 | **Rimescale**: frost can't hurt you |
-| 6 | [Mojito](#mojito) | A misty grove | Forests, meadows, plains | 440 | **Mojito's Fetchblade**, bones, emeralds and diamonds |
-| 7 | [Drowned Bell-Warden](#drowned-bell-warden) | A chapel sunk to the sea floor | Deep oceans | 470 | **Bell Shard**: tolls when you're nearly down |
+| 1 | [Rootcoil Serpent](#rootcoil-serpent) | A sinkhole down to a flooded cavern | Jungles | 750 | **Coilroot**: aura comes more easily |
+| 2 | [Lantern-Bearer](#lantern-bearer) | The Barrow Field, after dark | Plains, meadows, savannas | 950 | **Bearer's Lantern**: calls the Barrow Steed |
+| 3 | [Hollow Matron](#hollow-matron) | An abandoned mine | Forests, taigas, windswept hills, plains | 1,150 | **Weaver's Silk**: climb walls |
+| 4 | [Ashen Stag](#ashen-stag) | A burnt clearing | Forests and taigas | 1,350 | **Cinder Antler**: gore after a sprint |
+| 5 | [Frost Wyrmling](#frost-wyrmling) | The Glacier Den | Snowy mountains, groves, snowy plains and taigas | 1,600 | **Rimescale**: frost can't hurt you |
+| 6 | [Mojito](#mojito) | A misty grove | Forests, meadows, plains | 1,750 | **Mojito's Fetchblade**, bones, emeralds and diamonds |
+| 7 | [Drowned Bell-Warden](#drowned-bell-warden) | A chapel sunk to the sea floor | Deep oceans | 1,950 | **Bell Shard**: tolls when you're nearly down |
 
 ## How every lair boss works
 
@@ -45,6 +45,8 @@ Roughly from easiest to hardest:
 - **A chest and a boon.** Each lair has a chest. Six of the seven also guard a **boon**: a block in the lair you use to
   take its gift for good. You can't take it while its boss is alive nearby. Each player can take it once, and it stays
   for whoever comes after.
+- **Bosses respawn in their arenas.** Once defeated, lair guardians, dungeon altars, lecterns, regional shrines, and
+  Sword Tombs rest for 10 minutes before waking or allowing a fresh challenge again.
 
 Server owners can turn new lairs off with `aura_world.guardians`. Boons already taken are kept.
 
@@ -355,7 +357,7 @@ have no lair and guard no boon. So far there are two.
 
 ### Sandmaw Wyrm
 
-A great ringed worm, sand-hided, with a ridge of spines down its back and four jaw-plates round its mouth. 90 health.
+A great ringed worm, sand-hided, with a ridge of spines down its back and four jaw-plates round its mouth. 360 health.
 
 **Where:** alone and rarely in deserts, badlands, eroded badlands and wooded badlands. It follows the server's
 [monster](monsters.md) settings, `monsters.enabled` and `monsters.spawn_rate`, and has no
@@ -392,7 +394,7 @@ for longer, and breaches again straight back at you.
 ### Timbermaul Bear
 
 A great brown bear half again a bear's size, moss grown thick on its back, a ridge of dark hackles down its spine and old
-claw scars down its flanks. A champion, a step above the other elites: 120 health, 6 armour, and a red boss bar.
+claw scars down its flanks. A champion, a step above the other elites: 480 health, 10 armour, and a red boss bar.
 
 **Where:** alone and rarely in the taigas. It follows the server's [monster](monsters.md)
 settings and has no switch of its own.

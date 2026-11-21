@@ -819,7 +819,10 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		if(source.getEntity() instanceof LivingEntity e && source.getDirectEntity()==e && e.distanceToSqr(this)<5*5){e.knockback(.8,getX()-e.getX(),getZ()-e.getZ(),level.damageSources().mobAttack(this),0);e.needsSync=true;}
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);Guardians.reward(server,this,BellWardenRules.TIER,bar,source);bar.removeAllPlayers();}
+		if(level() instanceof ServerLevel server){
+			Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);Guardians.reward(server,this,BellWardenRules.TIER,bar,source);bar.removeAllPlayers();
+			if(bound){LairRespawns.schedule(server,LairRespawns.Entry.simple("drowned_bell_warden",vigil,rest,hallMin,hallMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+		}
 		super.die(source);
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}

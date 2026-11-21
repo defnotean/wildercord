@@ -1028,6 +1028,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 		if(level() instanceof ServerLevel server){
 			Feels.sound(server,head(),"aura_frost_wyrmling_death",1.8F,1);Guardians.reward(server,this,FrostWyrmlingRules.TIER,bar,source);bar.removeAllPlayers();
 			server.sendParticles(ParticleTypes.SNOWFLAKE,getX(),getY()+1.2,getZ(),60,1.6,.8,1.6,.04);
+			if(bound){LairRespawns.schedule(server,LairRespawns.Entry.simple("frost_wyrmling",mound,rest,hallMin,hallMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		super.die(source);
 	}

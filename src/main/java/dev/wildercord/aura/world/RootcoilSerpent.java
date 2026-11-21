@@ -1032,7 +1032,10 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	}
 	@Override public void die(DamageSource source){
 		letGo(false);dropClods();dropSpikes();roots.clear();rippleAge=-1;
-		if(level() instanceof ServerLevel server){Feels.sound(server,position().add(0,2,0),"aura_serpent_death",1.6F,1);Guardians.reward(server,this,SerpentRules.TIER,bar,source);bar.removeAllPlayers();}
+		if(level() instanceof ServerLevel server){
+			Feels.sound(server,position().add(0,2,0),"aura_serpent_death",1.6F,1);Guardians.reward(server,this,SerpentRules.TIER,bar,source);bar.removeAllPlayers();
+			if(bound){LairRespawns.schedule(server,LairRespawns.Entry.simple("rootcoil_serpent",tree(),rest(),tree(),tree(),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+		}
 		super.die(source);
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}

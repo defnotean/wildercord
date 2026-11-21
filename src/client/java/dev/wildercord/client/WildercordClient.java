@@ -85,6 +85,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.oathhold.OathholdCitizenRenderer.LAYER, dev.wildercord.client.oathhold.OathholdCitizenModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.sites.oathhold.OathholdContent.CITIZEN, dev.wildercord.client.oathhold.OathholdCitizenRenderer::new);
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.cosmetic.CordTrails::tick);
+		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.CustomMobFireFx::tick);
 		// Magic drawn the plain way under a shader pack (Iris), so the pack's lighting doesn't break on it.
 		dev.wildercord.client.compat.ShaderCompat.init();
 

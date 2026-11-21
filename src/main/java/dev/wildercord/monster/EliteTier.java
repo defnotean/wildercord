@@ -12,9 +12,9 @@ package dev.wildercord.monster;
  * </ol>
  */
 public enum EliteTier {
-	BRUTE(90, 4, 1, 1.0),
-	CHAMPION(120, 6, 2, 1.15),
-	WARLORD(150, 8, 3, 1.3);
+	BRUTE(360, 8, 3, 1.0),
+	CHAMPION(480, 10, 4, 1.15),
+	WARLORD(600, 12, 5, 1.3);
 
 	/** Its health, armour and armour toughness. */
 	public final double health, armour, toughness;

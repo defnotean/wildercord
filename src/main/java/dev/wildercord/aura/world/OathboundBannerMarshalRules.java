@@ -29,7 +29,7 @@ public final class OathboundBannerMarshalRules {
 
 	// ------------------------------------------------------------------ core attributes & thresholds
 
-	public static final double MAX_HEALTH = 145.0;
+	public static final double MAX_HEALTH = 600.0;
 	public static final double ARMOR = 17.0;
 	public static final double ARMOR_TOUGHNESS = 8.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.80;

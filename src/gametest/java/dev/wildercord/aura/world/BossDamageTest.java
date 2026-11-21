@@ -305,6 +305,120 @@ public final class BossDamageTest implements FabricClientGameTest {
 				player.removeAllEffects();
 				player.setGameMode(GameType.CREATIVE);
 			});
+
+			// Verify raised boss health pools, dungeon altar respawn, lair guardian respawn, and clean custom-mob fire rendering.
+			net.minecraft.core.BlockPos altarPos = new net.minecraft.core.BlockPos(0, 101, 0);
+			long[] savedTime = new long[1];
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				savedTime[0] = level.getGameTime();
+				for (var e : level.getEntities(player, player.getBoundingBox().inflate(48))) e.discard();
+
+				var wardenType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:cinder_warden"));
+				var serpentType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:rootcoil_serpent"));
+				var archivistType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:archivist"));
+				var warden = (Mob) wardenType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var serpent = (Mob) serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var archivist = (Mob) archivistType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var keeper = dev.wildercord.aura.world.SwordTombs.KEEPER.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var ferryman = dev.wildercord.world.ferryman.FerrymanContent.FERRYMAN.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				check(warden != null && warden.getMaxHealth() == 1200.0F, "cinder_warden max health raised to 1200");
+				check(serpent != null && serpent.getMaxHealth() == 750.0F, "rootcoil_serpent max health raised to 750");
+				check(archivist != null && archivist.getMaxHealth() == 1650.0F, "archivist max health raised to 1650");
+				check(bastion != null && bastion.getMaxHealth() == 650.0F, "oathbound_bastion max health raised to 650");
+				check(keeper != null && keeper.getMaxHealth() == 700.0F, "gravekeeper max health raised to 700");
+				check(ferryman != null && ferryman.getMaxHealth() == 720.0F, "reed_crowned_ferryman max health raised to 720");
+
+				// Test DungeonAltarBlockEntity respawn after BossRules.BOSS_RESPAWN_TICKS.
+				player.teleportTo(0.5, 101, 4.5);
+				level.setBlockAndUpdate(altarPos, dev.wildercord.content.dungeons.DungeonBlocks.ALTAR.defaultBlockState()
+					.setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.KIND, dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.CINDER)
+					.setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.AWAKE, true));
+				var altarBe = (dev.wildercord.content.dungeons.DungeonAltarBlockEntity) level.getBlockEntity(altarPos);
+				altarBe.slain();
+				check(altarBe.isSlain(), "dungeon altar marks slain after defeat");
+
+				long dueTime = level.getGameTime() + dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS;
+				long aligned = dueTime + Math.floorMod(-(dueTime + altarPos.asLong()), 100L);
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(aligned);
+				dev.wildercord.content.dungeons.DungeonAltarBlockEntity.serverTick(level, altarPos, level.getBlockState(altarPos), altarBe);
+				check(!altarBe.isSlain() && !level.getBlockState(altarPos).getValue(dev.wildercord.content.dungeons.DungeonAltarBlock.AWAKE),
+					"dungeon altar re-arms after respawn delay");
+				level.setBlockAndUpdate(altarPos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(savedTime[0]);
+
+				// Test LairRespawns scheduling on bound guardian death and respawn at home.
+				var boundSerpent = (dev.wildercord.aura.world.RootcoilSerpent) serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);
+				boundSerpent.snapTo(0.5, 101, 0.5, 0.0F, 0.0F);
+				boundSerpent.bind(altarPos, 0.0F);
+				level.addFreshEntity(boundSerpent);
+				boundSerpent.setHealth(1.0F);
+				boundSerpent.hurtServer(level, level.damageSources().genericKill(), 50.0F);
+				check(dev.wildercord.aura.world.LairRespawns.pendingCount(level) >= 1, "bound lair guardian schedules respawn on death");
+				long afterLairRespawn = level.getGameTime() + dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS + 1L;
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(afterLairRespawn);
+				dev.wildercord.aura.world.LairRespawns.tickLevel(level);
+				var respawned = level.getEntitiesOfClass(dev.wildercord.aura.world.RootcoilSerpent.class,
+					new net.minecraft.world.phys.AABB(altarPos).inflate(16.0), dev.wildercord.aura.world.RootcoilSerpent::isAlive);
+				check(respawned.size() == 1 && respawned.getFirst().getMaxHealth() == 750.0F,
+					"lair guardian respawns in its arena with boosted max health");
+				check(dev.wildercord.aura.world.LairRespawns.pendingCount(level) == 0, "lair respawn entry clears once spawned");
+				for (var r : respawned) r.discard();
+				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(savedTime[0]);
+			});
+
+			// Test custom mob fire rendering: burning custom mob suppresses vanilla flame billboard while burning vanilla mob keeps it.
+			int[] fireIds = new int[2];
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				level.setWeatherParameters(12000, 0, false, false);
+				player.setGameMode(GameType.CREATIVE);
+				player.teleportTo(0.5, 101, 5.5);
+				player.setYRot(180.0F);
+				player.setXRot(8.0F);
+
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				bastion.setNoAi(true);
+				bastion.setPos(0.5, 101, 0.5);
+				bastion.setYRot(0.0F);
+				bastion.setYHeadRot(0.0F);
+				bastion.setYBodyRot(0.0F);
+				bastion.setRemainingFireTicks(200);
+				level.addFreshEntity(bastion);
+				fireIds[0] = bastion.getId();
+
+				var zombie = net.minecraft.world.entity.EntityTypes.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				zombie.setNoAi(true);
+				zombie.setPos(3.5, 101, 0.5);
+				zombie.setRemainingFireTicks(200);
+				level.addFreshEntity(zombie);
+				fireIds[1] = zombie.getId();
+			});
+			c.waitTicks(6);
+			c.runOnClient(mc -> {
+				var custom = mc.level.getEntity(fireIds[0]);
+				var vanilla = mc.level.getEntity(fireIds[1]);
+				check(custom != null && custom.displayFireAnimation(), "burning custom mob logically displays fire");
+				check(vanilla != null && vanilla.displayFireAnimation(), "burning vanilla mob logically displays fire");
+				var customState = mc.getEntityRenderDispatcher().extractEntity(custom, 0.0F);
+				var vanillaState = mc.getEntityRenderDispatcher().extractEntity(vanilla, 0.0F);
+				check(!customState.displayFireAnimation, "custom mob suppresses obscuring vanilla fire billboard");
+				check(vanillaState.displayFireAnimation, "vanilla mob preserves vanilla fire billboard");
+				mc.gui.toastManager().clear();
+				mc.gui.hud.getChat().clearMessages(false);
+			});
+			c.waitTicks(4);
+			c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("custom_mob_fire_clean").disableCounterPrefix());
+			server.runOnServer(s -> {
+				var level = s.overworld();
+				for (int id : fireIds) {
+					var e = level.getEntity(id);
+					if (e != null) e.discard();
+				}
+			});
 		}
 	}
 }

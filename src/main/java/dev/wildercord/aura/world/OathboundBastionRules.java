@@ -29,7 +29,7 @@ public final class OathboundBastionRules {
 
 	// ------------------------------------------------------------------ core attributes & thresholds
 
-	public static final double MAX_HEALTH = 150.0;
+	public static final double MAX_HEALTH = 650.0;
 	public static final double ARMOR = 18.0;
 	public static final double ARMOR_TOUGHNESS = 8.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.85;

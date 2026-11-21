@@ -27,7 +27,7 @@ public final class OathboundHalberdierRules {
 
 	// ------------------------------------------------------------------ core attributes & thresholds
 
-	public static final double MAX_HEALTH = 125.0;
+	public static final double MAX_HEALTH = 520.0;
 	public static final double ARMOR = 13.0;
 	public static final double ARMOR_TOUGHNESS = 6.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.60;

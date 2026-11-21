@@ -9,6 +9,30 @@ package dev.wildercord.cast;
 public final class BossRules {
 	private BossRules() {}
 
+	/** Ticks after a boss is slain before its arena or lair allows a fresh respawn (10 minutes). */
+	public static final int BOSS_RESPAWN_TICKS = 10 * 60 * 20;
+
+	/** Whether enough time has passed since {@code slainAt} for a defeated arena boss to respawn. */
+	public static boolean canRespawn(long slainAt, long now) {
+		return slainAt <= 0L || now - slainAt >= BOSS_RESPAWN_TICKS;
+	}
+
+	/** Ticks remaining before an arena boss can respawn, or 0 if ready now. */
+	public static long respawnTicksRemaining(long slainAt, long now) {
+		if (canRespawn(slainAt, now)) {
+			return 0L;
+		}
+		return Math.max(0L, (slainAt + BOSS_RESPAWN_TICKS) - now);
+	}
+
+	/** Human-readable countdown for a resting boss arena (e.g. {@code 4m 15s} or {@code 30s}). */
+	public static String formatRespawnRemaining(long ticks) {
+		long totalSeconds = Math.max(1L, (ticks + 19L) / 20L);
+		long minutes = totalSeconds / 60L;
+		long seconds = totalSeconds % 60L;
+		return minutes > 0 ? minutes + "m " + seconds + "s" : seconds + "s";
+	}
+
 	/** Ticks a stranded Tide Scribe can't be stranded again after it breaks free. */
 	public static final int STRAND_IMMUNE_TICKS = 100;
 	/** Minimum duration (1.0s) for a temporary hold/immobilization on a boss. */

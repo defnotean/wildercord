@@ -27,7 +27,7 @@ public final class OathboundBladeChampionRules {
 
 	// ------------------------------------------------------------------ core attributes & thresholds
 
-	public static final double MAX_HEALTH = 135.0;
+	public static final double MAX_HEALTH = 560.0;
 	public static final double ARMOR = 15.0;
 	public static final double ARMOR_TOUGHNESS = 7.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.72;

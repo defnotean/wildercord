@@ -199,7 +199,8 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				ServerLevel l = level(s);
 				OathboundBastion b = (OathboundBastion) l.getEntity(studioId);
-				check(b.getAttributeValue(Attributes.MAX_HEALTH) == OathboundBastionRules.MAX_HEALTH, "Bastion max health must be 150");
+				check(b.getAttributeValue(Attributes.MAX_HEALTH) == OathboundBastionRules.MAX_HEALTH,
+					"Bastion max health must be " + OathboundBastionRules.MAX_HEALTH);
 				check(b.getAttributeValue(Attributes.ARMOR) == OathboundBastionRules.ARMOR, "Bastion armor must be 18");
 				check(b.getAttributeValue(Attributes.ARMOR_TOUGHNESS) == OathboundBastionRules.ARMOR_TOUGHNESS, "Bastion toughness must be 8");
 				check(b.getBbHeight() >= 2.4F, "Bastion hitbox height must match 1.25x scale");
