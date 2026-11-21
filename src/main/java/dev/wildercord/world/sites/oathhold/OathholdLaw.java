@@ -137,6 +137,16 @@ public final class OathholdLaw {
 			}
 			return Optional.empty();
 		}
+
+		public boolean isInsideFootprint(int wx, int wz) {
+			for (OathholdOrigin.Origin o : cities) {
+				if (Math.abs(wx - o.originX()) <= OathholdOrigin.HALF_SIZE
+						&& Math.abs(wz - o.originZ()) <= OathholdOrigin.HALF_SIZE) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 
 	private static final Queue<OathholdOrigin.Origin> PENDING_CITIES = new ConcurrentLinkedQueue<>();
@@ -244,6 +254,11 @@ public final class OathholdLaw {
 			return Optional.empty();
 		}
 		return ledger(level.getServer()).find(pos.getX(), pos.getZ());
+	}
+
+	public static boolean isInsideCityFootprint(ServerLevel level, BlockPos pos) {
+		return level.dimension().equals(net.minecraft.world.level.Level.OVERWORLD)
+			&& ledger(level.getServer()).isInsideFootprint(pos.getX(), pos.getZ());
 	}
 
 	public static void onEntityAttacked(ServerLevel level, LivingEntity victim, DamageSource source) {

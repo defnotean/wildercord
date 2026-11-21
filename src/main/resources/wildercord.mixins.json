@@ -85,7 +85,9 @@
         "TemperedBlowMixin",
         "FxSupportMobMixin",
         "FxSupportExplosionMixin",
-        "SignBlockEntityMixin"
+        "SignBlockEntityMixin",
+		"OathholdSnowMixin",
+		"OathholdWeatherSnowMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

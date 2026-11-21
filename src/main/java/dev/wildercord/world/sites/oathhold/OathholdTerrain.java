@@ -1,8 +1,18 @@
 package dev.wildercord.world.sites.oathhold;
 
+import dev.wildercord.compat.McWorldgen;
+import dev.wildercord.world.sites.Sites;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 
 /**
  * Column-wise terrain grading, foundation pouring, canal/moat/harbor excavation, and Acropolis terracing.
@@ -104,7 +114,7 @@ public final class OathholdTerrain {
 		for (int y = startY; y < bedY; y++) c.set(lx, y, lz, STONE);
 		int h = OathholdCanvas.hash(lx, bedY, lz);
 		c.set(lx, bedY, lz, h < 45 ? OathholdCanvas.MOSSY_STONE_BRICKS : h < 75 ? GRAVEL : STONE);
-		boolean thermal = bedY < -3 && Math.floorMod(lx, 3) == 1 && Math.floorMod(lz, 3) == 1;
+		boolean thermal = bedY < -3 && Math.floorMod(lx, 16) == 8 && Math.floorMod(lz, 16) == 8;
 		for (int y = bedY + 1; y <= waterTopY; y++) {
 			c.set(lx, y, lz, (thermal && y == -3) ? OathholdCanvas.SEA_LANTERN : OathholdCanvas.WATER);
 		}
@@ -151,5 +161,48 @@ public final class OathholdTerrain {
 		}
 		if (Math.floorMod(lx, 6) == 0 || Math.floorMod(lz, 6) == 0) return OathholdCanvas.POLISHED_ANDESITE;
 		return h < 45 ? OathholdCanvas.STONE_BRICKS : h < 72 ? OathholdCanvas.COBBLESTONE : h < 90 ? OathholdCanvas.TUFF_BRICKS : OathholdCanvas.ANDESITE;
+	}
+
+	/** Whether worldgen snow/ice placement for the chunk at {@code origin} falls inside Oathhold's 2,048x2,048 footprint. */
+	public static boolean blocksSnowAndFreeze(WorldGenLevel level, BlockPos origin) {
+		StructureManager structures;
+		if (level instanceof WorldGenRegion region) {
+			structures = region.getLevel().structureManager().forWorldGenRegion(region);
+		} else if (level instanceof ServerLevel server) {
+			structures = server.structureManager();
+		} else {
+			return false;
+		}
+		int cx = origin.getX() >> 4;
+		int cz = origin.getZ() >> 4;
+		int chunkMinX = cx << 4;
+		int chunkMaxX = chunkMinX + 15;
+		int chunkMinZ = cz << 4;
+		int chunkMaxZ = chunkMinZ + 15;
+		for (StructureStart start : McWorldgen.startsForStructure(structures, cx, cz, s -> s.type() == Sites.SITE)) {
+			for (StructurePiece piece : start.getPieces()) {
+				int ox;
+				int oz;
+				if (piece instanceof OathholdSectorPiece sp) {
+					ox = sp.originX();
+					oz = sp.originZ();
+				} else if (piece instanceof OathholdAnchorPiece ap) {
+					ox = ap.originX();
+					oz = ap.originZ();
+				} else {
+					continue;
+				}
+				if (chunkMaxX >= ox - OathholdOrigin.HALF_SIZE && chunkMinX <= ox + OathholdOrigin.HALF_SIZE
+						&& chunkMaxZ >= oz - OathholdOrigin.HALF_SIZE && chunkMinZ <= oz + OathholdOrigin.HALF_SIZE) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/** Whether live precipitation ticks on a loaded server level should skip snow/ice inside a registered Oathhold city. */
+	public static boolean blocksLiveWeatherSnow(LevelReader level, BlockPos pos) {
+		return level instanceof ServerLevel server && OathholdLaw.isInsideCityFootprint(server, pos);
 	}
 }

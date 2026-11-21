@@ -109,13 +109,12 @@ public final class OathholdOuterLandmarks {
 	private static void buildImperialHarbor(OathholdCanvas c) {
 		if (!c.intersects(498, -262, 954, 262)) return;
 
-		// Stone Harbor Promenade Quay (x 536..555, top surface y = 1) with flush warm dock lights keeping snow away
+		// Stone Harbor Promenade Quay (x 536..555, top surface y = 1) with sparse flush dock lamps
 		c.fillWeatheredStone(536, -1, -220, 555, 1, 220);
-		for (int x = Math.max(500, c.clipMinLx()); x <= Math.min(555, c.clipMaxLx()); x++) {
+		for (int x : new int[]{540, 552}) {
 			for (int z = Math.max(-220, c.clipMinLz()); z <= Math.min(220, c.clipMaxLz()); z++) {
-				if (Math.floorMod(x, 3) == 0 && Math.floorMod(z, 3) == 0) {
-					int ly = x >= 536 ? 1 : 0;
-					c.set(x, ly, z, OathholdCanvas.OCHRE_LIGHT);
+				if (Math.floorMod(z, 16) == 8) {
+					c.set(x, 1, z, OathholdCanvas.OCHRE_LIGHT);
 				}
 			}
 		}
@@ -159,11 +158,6 @@ public final class OathholdOuterLandmarks {
 		for (int pz : new int[]{-120, 0, 120}) {
 			c.fillWeatheredStone(555, -2, pz - 6, 710, 1, pz + 6);
 			c.fill(556, 1, pz - 4, 708, 1, pz + 4, OathholdCanvas.SPRUCE);
-			for (int x = 558; x <= 708; x += 3) {
-				c.set(x, 1, pz - 5, OathholdCanvas.OCHRE_LIGHT);
-				c.set(x, 1, pz + 5, OathholdCanvas.OCHRE_LIGHT);
-				c.set(x, 1, pz, OathholdCanvas.OCHRE_LIGHT);
-			}
 			for (int x = 570; x <= 685; x += 24) {
 				OathholdStreetscape.ornateStreetLamp(c, x, 2, pz - 5, false);
 				OathholdStreetscape.ornateStreetLamp(c, x, 2, pz + 5, false);

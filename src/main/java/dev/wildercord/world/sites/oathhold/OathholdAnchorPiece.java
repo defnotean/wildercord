@@ -42,6 +42,14 @@ public final class OathholdAnchorPiece extends StructurePiece {
 		tag.putInt("OZ", originZ);
 	}
 
+	public int originX() {
+		return originX;
+	}
+
+	public int originZ() {
+		return originZ;
+	}
+
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random,
 			BoundingBox bb, ChunkPos chunk, BlockPos pivot) {
