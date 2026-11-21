@@ -179,7 +179,6 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 
-	@Override
 	@Override protected void renderBg(GuiGraphics wcGui, float partialTick, int mouseX, int mouseY) {
 	}
 

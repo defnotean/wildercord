@@ -36,7 +36,6 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 		this.inventoryLabelY = this.imageHeight - 94;
 	}
 
-	@Override
 	@Override protected void renderBg(GuiGraphics wcGui, float partialTick, int mouseX, int mouseY) {
 	}
 
