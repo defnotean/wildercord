@@ -451,7 +451,6 @@ public final class OathholdInnerCore {
 			for (int gz = -32; gz <= 160; gz += 32) {
 				int x0 = gx + 3, x1 = gx + 29, z0 = gz + 3, z1 = gz + 29;
 				if (!c.intersects(x0 - 3, z0 - 3, x1 + 3, z1 + 3)) continue;
-				if (overlapsInnerLandmark(x0, z0, x1, z1)) continue;
 
 				if (gx == 32 && gz == 64) {
 					// Showcase Canal-Side Curio & Armor Shop-House with double-height mezzanine loft
@@ -459,10 +458,10 @@ public final class OathholdInnerCore {
 						false, OathholdBuildings.Theme.CITADEL, false, 777);
 					OathholdStreetscape.hedgePlanter(c, 57, 0, 68, 61, 88);
 					OathholdStreetscape.patioTable(c, 58, 1, 78, Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
-					if (c.inClip(50, 1, 69)) {
+					if (c.inClip(52, 1, 82)) {
 						ArmorStand stand = EntityTypes.ARMOR_STAND.create(c.level().getLevel(), EntitySpawnReason.STRUCTURE);
 						if (stand != null) {
-							stand.snapTo(c.wx(50) + 0.5, c.wy(1), c.wz(69) + 0.5, 160.0F, 0.0F);
+							stand.snapTo(c.wx(52) + 0.5, c.wy(1), c.wz(82) + 0.5, 125.0F, 0.0F);
 							stand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
 							stand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
 							stand.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS));
@@ -472,6 +471,7 @@ public final class OathholdInnerCore {
 					}
 					continue;
 				}
+				if (overlapsInnerLandmark(x0, z0, x1, z1)) continue;
 
 				int h = OathholdCanvas.hash(gx, 11, gz);
 				OathholdStreetscape.ornateStreetLamp(c, gx + 16, 1, gz + 1, false);

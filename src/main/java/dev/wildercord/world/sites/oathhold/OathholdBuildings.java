@@ -210,7 +210,9 @@ public final class OathholdBuildings {
 			c.set(cx0, baseY + 2, czFront - 1, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true));
 			c.set(cx0 + 1, baseY + 2, czShop, Blocks.LOOM.defaultBlockState());
 			c.set(x1 - 2, baseY + 2, czShop, OathholdStreetscape.pottedPlant(seed + 4));
-			c.set(x1 - 3, baseY + 2, czFront, OathholdStreetscape.pottedPlant(seed + 2));
+			if (czShop + 2 <= czFront) {
+				c.set(cx0, baseY + 2, czShop + 2, OathholdStreetscape.pottedPlant(seed + 2));
+			}
 			c.set(x1 - 2, baseY + 1, czFront + 1, districtWorkstation(theme));
 			c.set(x1 - 3, baseY + 4, czFront, OathholdCanvas.HANGING_LANTERN);
 		} else {
