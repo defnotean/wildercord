@@ -29,8 +29,8 @@ public abstract class CounterPeerWorldItemMixin {
         finally{try{CounterPeerRenderProbe.worldItemEnd(call,completed);}finally{if(previous==null)counter$current.remove();else counter$current.set(previous);}}
     }
     @WrapOperation(method="renderArmWithItem",at=@At(value="INVOKE",target="Lnet/minecraft/client/renderer/item/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"),require=1,expect=1,allow=1)
-    private void counter$item(ItemStackRenderState item,PoseStack pose,MultiBufferSource buffer,int light,int overlay,int outline,Operation<Void> original){
-        var actual=new org.joml.Matrix4f(pose.last().pose());original.call(item,pose,buffer,light,overlay,outline);
+    private void counter$item(ItemStackRenderState item,PoseStack pose,MultiBufferSource buffer,int light,int overlay,Operation<Void> original){
+        var actual=new org.joml.Matrix4f(pose.last().pose());original.call(item,pose,buffer,light,overlay);
         CounterPeerRenderProbe.worldItemSubmitted(counter$current.get(),item,actual);
     }
 }

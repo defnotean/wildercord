@@ -29,8 +29,8 @@ public abstract class BraceNullWorldItemMixin {
 		finally { try { BraceNullItemDrawProbe.end(call, complete); } finally { if (prior == null) wildercord$braceNullItem.remove(); else wildercord$braceNullItem.set(prior); } }
 	}
 	@WrapOperation(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"), require = 1, expect = 1, allow = 1)
-	private void wildercord$braceNullWorldItem(ItemStackRenderState item, PoseStack pose, MultiBufferSource buffer, int light, int overlay, int outline, Operation<Void> original) {
+	private void wildercord$braceNullWorldItem(ItemStackRenderState item, PoseStack pose, MultiBufferSource buffer, int light, int overlay, Operation<Void> original) {
 		BraceNullItemDrawProbe.worldPre(wildercord$braceNullItem.get(), ((ItemInHandLayer<?, ?>) (Object) this).getParentModel(), item, pose, buffer);
-		original.call(item, pose, buffer, light, overlay, outline);
+		original.call(item, pose, buffer, light, overlay);
 	}
 }
