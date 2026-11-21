@@ -25,6 +25,7 @@ Six magical monsters live beside the zombies and skeletons, and **fallen knights
 | [Karakuri Sentinel](#karakuri-sentinel) | Cat Sanctuary, Lantern Bathhouse | Brass chest gears spin & it winds back a naginata lunge | Heavy strikes, lightning or fire; stagger between swings | Gold Nuggets |
 | [Paper Lantern Spirit](#paper-lantern-spirit) | Cat Sanctuary, Lantern Bathhouse | It unhinges its ember jaw and charges a flame burst | Shoot before detonation or dodge the flame pulse | Lanterns |
 | [Fallen Knight](#fallen-knight) | Strongholds, ancient cities, expeditions, dungeons | Blade raised, a line of light on the ground | Step off the line; break its guard with an axe | Manual Pages, Aura Shards |
+| [Oathbound Bastion](#oathbound-bastion) | Deep haunts (strongholds, ancient cities, expeditions) | Hexagonal shield barrier, overhead mace windup | Shatter guard with an axe; bait Shield-Ram into walls; clear shockwave ring | Iron/Stone Manual Pages, 2–3 Aura Shards, Gold, Iron, Diamonds |
 
 Any of the six can also be [Runebound]({{ '/world/runebound/' | relative_url }}). Their magic counts as spells, so
 armour, Warding and the spellguard all help. Your Grimoire's Bestiary fills in each one's
@@ -136,6 +137,17 @@ Empty armour still moved by a swordsman's aura, glowing in the colours of its ol
   behind, or **break it with an axe**.
 - **Drops:** always a **Manual Page** for its method (four pages and a book bind into its Breathing Manual), and about
   one time in four an **Aura Shard** for [aura-forged gear]({{ '/progression/aura/' | relative_url }}#aura-forged-gear).
+
+## Oathbound Bastion
+{: #oathbound-bastion }
+
+An unbroken champion of the Way of the Bulwark who haunts strongholds, ancient cities, and expeditions alongside fallen knights (`150` health, `18` armour, `8` armour toughness). Crowned in antique gold over obsidian plate and draped in a royal navy quilted tabard and cape, it fights behind a towering Sun-Anvil Greatshield and a glowing Flanged Greatmace, accelerating and hitting harder below half health.
+
+- **Aegis Phalanx Brace:** it crouches behind its grounded greatshield inside a hexagonal Aura barrier. Frontal blows deal barely a scratch and arrows fly straight back at whoever fired them; flank it or **smash its guard with an axe** to leave it staggered (`+45%` damage taken).
+- **Shield-Ram Stampede:** it pitches forward and charges with its shield locked ahead like a battering ram. Step aside and **lead it into a stone wall** to stun it cleanly.
+- **Anvil Slam:** it hoists its flaming greatmace overhead above a glowing floor ring before dropping to one knee and driving the mace into the ground, sending out an expanding golden shockwave (`5.8`-block radius). Punish its kneeling recovery window immediately after.
+- **Shield-Bash Sweep & Sun-Mace Cleave:** close-range wide shield sweeps (inflicting Slowness II) and heavy mace strikes keep aggressive melee fighters honest.
+- **Drops:** `2–3` **Manual Pages** (Iron and Stone), `2–3` **Aura Shards**, gold ingots, iron ingots, and diamonds.
 
 ## Mage-Hunter (0.13)
 

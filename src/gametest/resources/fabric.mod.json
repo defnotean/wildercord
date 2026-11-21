@@ -55,6 +55,7 @@
       "dev.wildercord.town.BountyEscortTest",
       "dev.wildercord.town.CaravanTest",
       "dev.wildercord.aura.world.CooldownRestartTest",
+      "dev.wildercord.aura.world.OathboundBastionTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
       "dev.wildercord.world.ferryman.FerrymanCoopTest",

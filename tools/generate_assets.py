@@ -402,6 +402,8 @@ def main():
     soar_art.write(sys.modules[__name__])
     import aura_world_art  # The world of aura: duelists, fallen knights, pages, forged gear, the sash, their recipes and loot.
     aura_world_art.write(sys.modules[__name__])
+    import oathbound_knights_art
+    oathbound_knights_art.write(sys.modules[__name__])
     import way_art  # Ways: the four Ways' emblems, the Crossroads Incense and its recipe.
     way_art.write(sys.modules[__name__])
     import technique_art  # Techniques of one's own: each part's glyph, the writing page's seals, the technique scroll.
@@ -1076,6 +1078,8 @@ def write_lang(runes):
     refuge_art.write(sys.modules[__name__])
     import aura_world_art
     lang.update(aura_world_art.LANG)
+    import oathbound_knights_art
+    lang.update(oathbound_knights_art.LANG)
     import masters_art
     lang.update(masters_art.LANG)
     masters_art.write(sys.modules[__name__])
