@@ -92,7 +92,7 @@ public final class Giants {
 	}
 
 	public static boolean is(Mob mob) {
-		return mob.entityTags().contains(TAG);
+		return mob.getTags().contains(TAG);
 	}
 
 	// ------------------------------------------------------------------ waking

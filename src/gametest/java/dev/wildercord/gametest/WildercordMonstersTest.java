@@ -264,7 +264,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		int id = world.getServer().computeOnServer(server -> {
 			ServerLevel level = player(server).level();
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, new AABB(base, base).inflate(400),
-				e -> e.entityTags().contains("wildercord.camera")).forEach(Entity::discard);
+				e -> e.getTags().contains("wildercord.camera")).forEach(Entity::discard);
 			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
 			camera.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			camera.addTag("wildercord.camera");

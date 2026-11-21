@@ -28,7 +28,7 @@ public final class BlockFx {
 
 	public static void init() {
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity instanceof Display && entity.entityTags().contains(TAG) && entity.tickCount == 0 && !FRESH.remove(entity)) {
+			if (entity instanceof Display && entity.getTags().contains(TAG) && entity.tickCount == 0 && !FRESH.remove(entity)) {
 				entity.discard();
 			}
 		});

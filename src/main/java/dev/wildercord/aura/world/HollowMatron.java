@@ -231,7 +231,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		// Her brood she spares while she fights; once she is back on her thread, they go too.
 		boolean fighting=move()!=HollowMatronRules.DORMANT;
 		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof HollowMatron) && inHall(e.position(),0)
-				&& !(fighting && e.entityTags().contains(BROOD)))
+				&& !(fighting && e.getTags().contains(BROOD)))
 			.stream().min(Comparator.comparingDouble(e->e.distanceToSqr(h))).orElse(null);
 		if(m==null)return;
 		var to=m.position().add(0,m.getBbHeight()/2,0);
@@ -977,7 +977,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	private void hatch(ServerLevel level,LivingEntity target){
 		if(sacs.isEmpty())return;
 		var box=new AABB(Vec3.atLowerCornerOf(hallMin),Vec3.atLowerCornerOf(hallMax).add(1,1,1));
-		int alive=level.getEntitiesOfClass(Mob.class,box,e->e.isAlive() && e.entityTags().contains(BROOD)).size();
+		int alive=level.getEntitiesOfClass(Mob.class,box,e->e.isAlive() && e.getTags().contains(BROOD)).size();
 		int n=HollowMatronRules.brood(prey(level).size())-alive;
 		var order=new ArrayList<>(sacs);Collections.shuffle(order,new Random(random.nextLong()));
 		for(int i=0;i<n;i++){

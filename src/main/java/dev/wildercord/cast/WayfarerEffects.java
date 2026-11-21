@@ -539,11 +539,11 @@ public final class WayfarerEffects {
 		}
 		long day = WayfarerRules.dayOf(dev.wildercord.compat.McTime.overworldClock(cast.level));
 		String tag = WayfarerRules.restockTag(day);
-		if (villager.entityTags().contains(tag)) {
+		if (villager.getTags().contains(tag)) {
 			tell(cast, "restock.done");
 			return;
 		}
-		villager.entityTags().stream().filter(t -> t.startsWith("wildercord.restocked.")).toList().forEach(villager::removeTag);
+		villager.getTags().stream().filter(t -> t.startsWith("wildercord.restocked.")).toList().forEach(villager::removeTag);
 		villager.addTag(tag);
 		villager.restock();
 		tell(cast, "restock");

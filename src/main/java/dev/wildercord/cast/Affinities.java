@@ -154,9 +154,9 @@ public final class Affinities {
 		}
 		// Burning spells on something fire can't hurt (a blaze, a strider) do nothing already: say so.
 		boolean burnproof = element.equals("fire") && source.is(DamageTypeTags.IS_FIRE) && target.fireImmune();
-		boolean weak = target.is(WEAK.get(element));
-		boolean resists = target.is(RESISTS.get(element)) || runeboundElement(target).equals(element);
-		boolean immune = burnproof || target.is(IMMUNE.get(element));
+		boolean weak = target.getType().is(WEAK.get(element));
+		boolean resists = target.getType().is(RESISTS.get(element)) || runeboundElement(target).equals(element);
+		boolean immune = burnproof || target.getType().is(IMMUNE.get(element));
 		Affinity.Verdict verdict = Affinity.judge(weak, resists, immune, Reactions.reactedWithin(target, 0));
 		if (verdict == Affinity.Verdict.RESISTED && Effects.isRent(target)) {
 			// A Rend has torn its natural resistances: it takes the element at full strength (immunity still holds).
@@ -181,7 +181,7 @@ public final class Affinities {
 			meet(player, target.getType());
 			if (verdict != Affinity.Verdict.NONE) {
 				// A Runebound's resistance comes from its Cord, not its kind: that isn't written down.
-				notice(cast, player, target, element, verdict, verdict != Affinity.Verdict.RESISTED || target.is(RESISTS.get(element)));
+				notice(cast, player, target, element, verdict, verdict != Affinity.Verdict.RESISTED || target.getType().is(RESISTS.get(element)));
 			}
 		}
 		return multiplier;

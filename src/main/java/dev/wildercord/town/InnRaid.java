@@ -131,7 +131,7 @@ public final class InnRaid {
 		ServerLifecycleEvents.SERVER_STOPPING.register(InnRaid::suspend);
 		ServerLifecycleEvents.SERVER_STARTED.register(InnRaid::resume);
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity instanceof Mob mob && mob.entityTags().contains(TAG) && !owned(mob)) mob.discard();
+			if (entity instanceof Mob mob && mob.getTags().contains(TAG) && !owned(mob)) mob.discard();
 		});
 	}
 

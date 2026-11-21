@@ -50,7 +50,7 @@ public class BackpackItem extends Item {
 	public void onDestroyed(ItemEntity entity) {
 		ItemContainerContents contents = entity.getItem().set(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
 		if (contents != null) {
-			ItemUtils.onContainerDestroyed(entity, contents.nonEmptyItemCopyStream());
+			ItemUtils.onContainerDestroyed(entity, contents.nonEmptyItemsCopy());
 		}
 	}
 

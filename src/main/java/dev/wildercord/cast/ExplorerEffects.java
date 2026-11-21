@@ -228,7 +228,7 @@ public final class ExplorerEffects {
 	 * only what the caster may harm (not the target, whose own bite is coming, and nobody once the spell has ended).
 	 */
 	public static boolean bite(EvokerFangs fangs, LivingEntity target) {
-		if (!fangs.entityTags().contains(FANGS_TAG)) {
+		if (!fangs.getTags().contains(FANGS_TAG)) {
 			return true;
 		}
 		Bite bite = BITES.get(fangs);

@@ -74,7 +74,7 @@ public final class ArenaTrees {
 			for (var it = WAITING.iterator(); it.hasNext() && swept < SWEEPS_PER_TICK; ) {
 				var waiting = it.next();
 				ServerLevel level = server.getLevel(waiting.getKey());
-				ChunkPos at = ChunkPos.unpack(waiting.getValue());
+				ChunkPos at = new ChunkPos(waiting.getValue());
 				var chunk = level == null ? null : level.getChunkSource().getChunkNow(at.x(), at.z());
 				if (chunk == null) {
 					it.remove();
@@ -175,7 +175,7 @@ public final class ArenaTrees {
 				continue;
 			}
 			for (long packed : entry.getValue()) {
-				ChunkPos at = ChunkPos.unpack(packed);
+				ChunkPos at = new ChunkPos(packed);
 				var startChunk = level.getChunkSource().getChunkNow(at.x(), at.z());
 				StructureStart start = startChunk == null ? null : startChunk.getStartForStructure(entry.getKey());
 				if (start == null || !start.isValid()) {
@@ -250,7 +250,7 @@ public final class ArenaTrees {
 		while (!open.isEmpty()) {
 			BlockPos log = open.poll();
 			logs.add(log);
-			rooted |= level.getBlockState(log.below()).is(BlockTags.SUBSTRATE_OVERWORLD);
+			rooted |= level.getBlockState(log.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON);
 			for (BlockPos near : BlockPos.betweenClosed(log.offset(-1, -1, -1), log.offset(1, 1, 1))) {
 				BlockState state = level.getBlockState(near);
 				if (state.getBlock() instanceof LeavesBlock && !wildLeaf(state)) {

@@ -466,7 +466,7 @@ final class MatriarchFight extends GiantFight {
 		ElementFx.groundRing(level, feet, TINT.primary(), 1, r, 0.8, 16);
 		ElementFx.frostCreep(level, feet, r, 60);
 		for (LivingEntity e : prey(level, HOWL_RADIUS)) {
-			if (!e.entityTags().contains(PUP) && across(e) <= HOWL_RADIUS) {
+			if (!e.getTags().contains(PUP) && across(e) <= HOWL_RADIUS) {
 				chill(e, 70);
 			}
 		}
@@ -761,7 +761,7 @@ final class MatriarchFight extends GiantFight {
 	/** Her pups still about. */
 	private int pups(ServerLevel level) {
 		return level.getEntitiesOfClass(Gloomstalker.class, mob.getBoundingBox().inflate(PUP_RANGE),
-			g -> g.isAlive() && g.entityTags().contains(PUP)).size();
+			g -> g.isAlive() && g.getTags().contains(PUP)).size();
 	}
 
 	/** Cold that frosts someone over and slows them. */

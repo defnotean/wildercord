@@ -310,7 +310,7 @@ public final class Rituals {
 
 	/** A Sanctuary turns aside the common monsters: no boss, and no Riftcaller, is pushed out of its own fight. */
 	private static boolean held(Mob mob) {
-		return dev.wildercord.cast.Spirits.isBoss(mob) || mob.entityTags().contains(dev.wildercord.cast.events.RiftSiege.RIFTCALLER_TAG);
+		return dev.wildercord.cast.Spirits.isBoss(mob) || mob.getTags().contains(dev.wildercord.cast.events.RiftSiege.RIFTCALLER_TAG);
 	}
 
 	/** Monsters inside the ward forget who they were after and are pushed back towards its edge. */

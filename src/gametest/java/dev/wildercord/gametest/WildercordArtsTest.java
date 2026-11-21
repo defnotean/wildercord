@@ -110,12 +110,12 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			hooked = true;
 			AuraApi.onString((player, art, ctx) -> PERFORMED.add(art.id()));
 			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
-				if (source.is(Aura.DAMAGE) && taken > 0 && entity.entityTags().contains(TAG)) {
+				if (source.is(Aura.DAMAGE) && taken > 0 && entity.getTags().contains(TAG)) {
 					ART_HITS.merge(entity.getUUID(), 1, Integer::sum);
 				}
 				if (traceBoltStep && taken > 0 && source.getEntity() instanceof LivingEntity attacker
-					&& (source.is(Aura.DAMAGE) && entity.entityTags().contains(TAG) && attacker instanceof ServerPlayer
-						|| entity instanceof ServerPlayer && attacker.entityTags().contains(TAG))) {
+					&& (source.is(Aura.DAMAGE) && entity.getTags().contains(TAG) && attacker instanceof ServerPlayer
+						|| entity instanceof ServerPlayer && attacker.getTags().contains(TAG))) {
 					dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_BOLT_STEP_DAMAGE tick={} aura={} damage={} source={} victim={}",
 						entity.level().getGameTime(), source.is(Aura.DAMAGE), taken, boltState(attacker), boltState(entity));
 				}
@@ -476,7 +476,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (!p.hasEffect(MobEffects.SPEED)) {
 				return "the wind at the swordsman's back should speed them";
 			}
-			List<Wolf> wolves = p.level().getEntitiesOfClass(Wolf.class, p.getBoundingBox().inflate(32), w -> w.entityTags().contains(TAG));
+			List<Wolf> wolves = p.level().getEntitiesOfClass(Wolf.class, p.getBoundingBox().inflate(32), w -> w.getTags().contains(TAG));
 			MobEffectInstance swift = wolves.isEmpty() ? null : wolves.getFirst().getEffect(MobEffects.SPEED);
 			return swift != null && swift.getAmplifier() >= 1 ? null : "the ally near the way should be swept along faster (" + swift + ")";
 		}));
@@ -873,7 +873,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 
 	/** The scene's ally (a tamed wolf, sitting where the scene put it), or null. */
 	private static Wolf wolf(ServerPlayer player) {
-		List<Wolf> wolves = player.level().getEntitiesOfClass(Wolf.class, player.getBoundingBox().inflate(32), w -> w.entityTags().contains(TAG));
+		List<Wolf> wolves = player.level().getEntitiesOfClass(Wolf.class, player.getBoundingBox().inflate(32), w -> w.getTags().contains(TAG));
 		return wolves.isEmpty() ? null : wolves.getFirst();
 	}
 
@@ -1709,7 +1709,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	/** The scene's husks, in the order they were spawned. */
 	private static List<Mob> foes(ServerPlayer player) {
 		List<Mob> found = new ArrayList<>(player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(48),
-			m -> m.entityTags().contains(TAG) && m instanceof net.minecraft.world.entity.monster.zombie.Husk));
+			m -> m.getTags().contains(TAG) && m instanceof net.minecraft.world.entity.monster.zombie.Husk));
 		found.sort(java.util.Comparator.comparingInt(Mob::getId));
 		if (found.isEmpty()) {
 			throw new AssertionError("the husks are gone");
@@ -1718,7 +1718,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	}
 
 	private static void kill(ServerPlayer player) {
-		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(64), e -> e.entityTags().contains(TAG))) {
+		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(64), e -> e.getTags().contains(TAG))) {
 			e.discard();
 		}
 	}

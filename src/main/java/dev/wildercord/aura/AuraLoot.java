@@ -33,10 +33,10 @@ public final class AuraLoot {
 	 * {@link MethodSources} id), or any built-in method when the source is missing.
 	 */
 	public record RandomMethod(String source) implements LootItemFunction {
-		public static final LootItemFunctionType<RandomMethod> TYPE = new LootItemFunctionType<>(MAP_CODEC);
-	public static final MapCodec<RandomMethod> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+		public static final MapCodec<RandomMethod> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 			Codec.STRING.optionalFieldOf("source", "").forGetter(RandomMethod::source)
 		).apply(i, RandomMethod::new));
+	public static final LootItemFunctionType<RandomMethod> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 
 		@Override
 		public LootItemFunctionType<RandomMethod> getType() {

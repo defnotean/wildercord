@@ -216,7 +216,7 @@ public final class Residues {
 		if (caster instanceof ServerPlayer) {
 			return Source.SPELL;
 		}
-		if (caster instanceof DungeonBoss || caster instanceof Archivist || caster.entityTags().contains(dev.wildercord.cast.events.RiftSiege.RIFTCALLER_TAG)) {
+		if (caster instanceof DungeonBoss || caster instanceof Archivist || caster.getTags().contains(dev.wildercord.cast.events.RiftSiege.RIFTCALLER_TAG)) {
 			return Source.BOSS;
 		}
 		return null;
@@ -472,7 +472,7 @@ public final class Residues {
 		}
 		int reach = ResidueRules.BLOOM_REACH;
 		BlockPos spot = groundFor(level, Kind.WILDBLOOM, pos.offset(random.nextInt(reach * 2 + 1) - reach, 0, random.nextInt(reach * 2 + 1) - reach));
-		if (spot == null || !level.getBlockState(spot.below()).is(BlockTags.SUBSTRATE_OVERWORLD) || judge(level, Kind.WILDBLOOM, spot, owner) != null) {
+		if (spot == null || !level.getBlockState(spot.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON) || judge(level, Kind.WILDBLOOM, spot, owner) != null) {
 			return;
 		}
 		dev.wildercord.config.WildercordConfig.ResidueSettings cfg = Config.get().residues();

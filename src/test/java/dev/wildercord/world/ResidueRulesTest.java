@@ -135,8 +135,8 @@ class ResidueRulesTest {
 		JsonArray values = JsonParser.parseString(Files.readString(tag)).getAsJsonObject().getAsJsonArray("values");
 		Set<String> entries = new HashSet<>();
 		values.forEach(v -> entries.add(v.isJsonObject() ? v.getAsJsonObject().get("id").getAsString() : v.getAsString()));
-		// Grass, dirt, moss and mud come in through vanilla's own substrate tag.
-		assertTrue(entries.contains("minecraft:grass_block") || entries.contains("#minecraft:substrate_overworld"), "grass is natural ground");
+		// Grass, dirt, moss and mud come in through vanilla's own spawn-substrate tag.
+		assertTrue(entries.contains("minecraft:grass_block") || entries.contains("#minecraft:animals_spawnable_on"), "grass is natural ground");
 		assertTrue(entries.contains("minecraft:sand") || entries.contains("#minecraft:sand"));
 		for (String built : List.of("minecraft:oak_planks", "minecraft:cobblestone", "minecraft:stone_bricks", "minecraft:glass", "minecraft:bricks",
 				"minecraft:smooth_stone", "#minecraft:planks", "#minecraft:logs", "minecraft:white_wool", "minecraft:polished_andesite", "minecraft:farmland",

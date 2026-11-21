@@ -120,7 +120,7 @@ final class StructureGallery {
 		};
 		var biome = level.findClosestBiome3d(structure.biomes()::contains, origin, 6400, 32, 64);
 		if (biome != null) {
-			var centre = ChunkPos.containing(biome.getFirst());
+			var centre = new ChunkPos(biome.getFirst());
 			for (int r = 0; r <= 24; r++) for (int dx = -r; dx <= r; dx++) for (int dz = -r; dz <= r; dz++) {
 				if (Math.max(Math.abs(dx), Math.abs(dz)) != r) continue;
 				Site site = at.apply(new ChunkPos(centre.x() + dx, centre.z() + dz));
@@ -132,7 +132,7 @@ final class StructureGallery {
 		BlockPos found = dev.wildercord.gametest.compat.GametestCompat.findNearestStructure(level, holder, origin, 100, false);
 		if (found == null) return null;
 		log(id, "found by locate at " + found);
-		return at.apply(ChunkPos.containing(found));
+		return at.apply(new ChunkPos(found));
 	}
 
 	/**

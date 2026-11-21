@@ -1030,7 +1030,7 @@ public final class FarmEffects {
 				break;
 			}
 			BlockPos spot = p.above();
-			if (!cast.level.getBlockState(p).is(BlockTags.SUBSTRATE_OVERWORLD) || !cast.level.getBlockState(spot).isAir()
+			if (!cast.level.getBlockState(p).is(BlockTags.ANIMALS_SPAWNABLE_ON) || !cast.level.getBlockState(spot).isAir()
 				|| planted.stream().anyMatch(o -> !FarmRules.spaced(o.getX() - spot.getX(), o.getZ() - spot.getZ()))) {
 				continue;
 			}
@@ -1166,7 +1166,7 @@ public final class FarmEffects {
 		Vfx.emit(level, ParticleTypes.COMPOSTER, Vec3.atCenterOf(start), 10, 0.8, 0.03);
 		Fx.sound(level, Vec3.atCenterOf(start), SoundEvents.WOOD_BREAK, 1.0F, 0.8F);
 		// The stump is replanted from the caster's own saplings.
-		BlockPos stump = level.getBlockState(start).isAir() && level.getBlockState(start.below()).is(BlockTags.SUBSTRATE_OVERWORLD) ? start : null;
+		BlockPos stump = level.getBlockState(start).isAir() && level.getBlockState(start.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON) ? start : null;
 		if (stump != null && cast.caster instanceof ServerPlayer player) {
 			BlockPos at = stump;
 			ItemStack sapling = find(player, s -> s.getItem() instanceof BlockItem bi && dev.wildercord.compat.McBlocksAndItems.isSapling(bi.getBlock().defaultBlockState())

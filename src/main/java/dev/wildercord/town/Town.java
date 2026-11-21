@@ -188,7 +188,7 @@ public final class Town {
 		Active bounty = standing.bounty().get();
 		switch (bounty.type()) {
 			case ELITE -> {
-				if (!bounty.done() && victim.entityTags().contains(markTag(player.getUUID()))) progress(player, standing, bounty);
+				if (!bounty.done() && victim.getTags().contains(markTag(player.getUUID()))) progress(player, standing, bounty);
 			}
 			case DUNGEON -> {
 				if (!bounty.done() && victim instanceof DungeonBoss) progress(player, standing, bounty);

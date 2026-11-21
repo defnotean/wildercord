@@ -326,7 +326,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	/** On his feet and tracking: closing on his prey, and turning only so fast, so his back can be got at. */
 	private void watch(ServerLevel level,LivingEntity target){
 		if(getDeltaMovement().horizontalDistanceSqr()>.0004 && tickCount%8==0){
-			sound(level,position(),SoundEvents.WOLF_STEP.value(),1.4F,.5F+random.nextFloat()*.1F);
+			sound(level,position(),SoundEvents.WOLF_STEP,1.4F,.5F+random.nextFloat()*.1F);
 			// The gold chain at his throat, jingling.
 			if(random.nextInt(3)==0)sound(level,head().add(0,-1,0),SoundEvents.CHAIN_PLACE,.6F,1.4F+random.nextFloat()*.3F);
 		}
@@ -505,7 +505,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		// Round often enough to come by everyone again.
 		if(k%10==1)struck.clear();
 		if(k%5==1)sound(level,position(),SoundEvents.PLAYER_ATTACK_SWEEP,1.6F,.7F+random.nextFloat()*.2F);
-		if(k%4==0)sound(level,position(),SoundEvents.WOLF_STEP.value(),1.4F,.7F);
+		if(k%4==0)sound(level,position(),SoundEvents.WOLF_STEP,1.4F,.7F);
 		var f=ahead(yaw);
 		for(int side=-1;side<=1;side+=2){
 			double x=getX()-f.z*side*5,z=getZ()+f.x*side*5;
@@ -522,7 +522,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		var h=head();
 		for(int i=0;i<3;i++){double a=el*.3+i*Math.PI*2/3;level.sendParticles(STAR,h.x+Math.cos(a)*1.1,h.y+.9,h.z+Math.sin(a)*1.1,1,0,0,0,0);}
 		if(el%14==0)sound(level,h,voice().whineSound().value(),1F,.6F+random.nextFloat()*.1F);
-		if(el%10==5)sound(level,position(),SoundEvents.WOLF_STEP.value(),1F,.5F);
+		if(el%10==5)sound(level,position(),SoundEvents.WOLF_STEP,1F,.5F);
 		if(--left<=0){pose(MojitoRules.WATCH,gap());growl(level,1.2F);}
 	}
 
@@ -655,7 +655,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 				var step=way.scale(Math.min(MojitoRules.FETCH_RUN,far)/far);
 				aim=(float)Math.toDegrees(Math.atan2(-step.x,step.z));face(aim);
 				move(MoverType.SELF,new Vec3(step.x,-.3,step.z));setDeltaMovement(Vec3.ZERO);
-				if(k%3==0)sound(level,position(),SoundEvents.WOLF_STEP.value(),1.6F,.65F+random.nextFloat()*.1F);
+				if(k%3==0)sound(level,position(),SoundEvents.WOLF_STEP,1.6F,.65F+random.nextFloat()*.1F);
 				if(k%2==0)level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),getX(),getY()+.2,getZ(),4,1,.1,1,.1);
 				for(var p:prey)if(!trampled.contains(p.getUUID()) && reaches(MojitoRules.FETCH,p)){trampled.add(p.getUUID());hit(level,p,MojitoRules.BODY_DAMAGE,1.6,position().subtract(ahead(aim)),.35);}
 			}
@@ -693,7 +693,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		var h=head();
 		if(el%5==0)level.sendParticles(ParticleTypes.NOTE,h.x,h.y+1,h.z,1,.6,.3,.6,1);
 		if(el%7==0)level.sendParticles(ParticleTypes.HAPPY_VILLAGER,h.x,h.y,h.z,3,.8,.4,.8,0);
-		if(el%4==0)sound(level,position(),SoundEvents.WOLF_STEP.value(),1F,1.1F);
+		if(el%4==0)sound(level,position(),SoundEvents.WOLF_STEP,1F,1.1F);
 		if(el%12==6)bark(level,1.2F,1.15F+random.nextFloat()*.1F);
 		if(--left<=0)pose(MojitoRules.WATCH,gap());
 	}
@@ -819,7 +819,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			face(getYRot()+(el%2==0?3:-3));
 			if(el%2==0)level.sendParticles(ParticleTypes.SPLASH,getX(),getY()+3,getZ(),8,1.4,1,1.4,0);
 			if(el%3==0)level.sendParticles(MINT_SMALL,getX(),getY()+2.5,getZ(),6,1.6,1.2,1.6,0);
-			if(el%4==0)sound(level,position(),SoundEvents.WOLF_STEP.value(),1F,.5F);
+			if(el%4==0)sound(level,position(),SoundEvents.WOLF_STEP,1F,.5F);
 			return;
 		}
 		if(el==tell){
@@ -915,7 +915,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 				face(aim);
 				move(MoverType.SELF,new Vec3(dashStep.x,-.3,dashStep.z));setDeltaMovement(Vec3.ZERO);
 				if(d==skid)sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.6F,.8F);
-				if(d%2==0){sound(level,position(),SoundEvents.WOLF_STEP.value(),1.8F,.7F);trail.add(new Spot(getX(),getY(),getZ(),now+MojitoRules.TRAIL_TICKS));}
+				if(d%2==0){sound(level,position(),SoundEvents.WOLF_STEP,1.8F,.7F);trail.add(new Spot(getX(),getY(),getZ(),now+MojitoRules.TRAIL_TICKS));}
 				level.sendParticles(ParticleTypes.CLOUD,getX(),getY()+.5,getZ(),3,.8,.2,.8,.02);
 			}else{
 				// Back round onto a circle from wherever the dash left him.
@@ -934,7 +934,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			if(step.lengthSqr()>1e-4){aim=(float)Math.toDegrees(Math.atan2(-step.x,step.z));face(aim);}
 			move(MoverType.SELF,new Vec3(step.x,-.3,step.z));setDeltaMovement(Vec3.ZERO);
 			if(el%3==0){
-				sound(level,position(),SoundEvents.WOLF_STEP.value(),1.6F,.6F+random.nextFloat()*.1F);
+				sound(level,position(),SoundEvents.WOLF_STEP,1.6F,.6F+random.nextFloat()*.1F);
 				trail.add(new Spot(getX(),getY(),getZ(),now+MojitoRules.TRAIL_TICKS));
 			}
 			if(random.nextInt(25)==0)bark(level,1.6F,.8F+random.nextFloat()*.1F);
@@ -984,7 +984,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		slide=away.normalize().scale(MojitoRules.HOP_SPEED);
 		var f=ahead(aim);double side=slide.x*-f.z+slide.z*f.x;
 		entityData.set(SIDE,Math.abs(side)<.3?0:side>0?1:-1);pose(MojitoRules.HOP,MojitoRules.HOP_TICKS,MojitoRules.HOP_TICKS);
-		sound(level,position(),SoundEvents.WOLF_STEP.value(),1.6F,.6F);
+		sound(level,position(),SoundEvents.WOLF_STEP,1.6F,.6F);
 		level.sendParticles(ParticleTypes.POOF,getX(),getY()+.1,getZ(),10,1,.1,1,.04);
 	}
 	/** Standing his ground: no sliding about, though he still falls. */

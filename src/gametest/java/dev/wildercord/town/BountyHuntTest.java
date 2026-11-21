@@ -33,7 +33,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 
 	private static List<Mob> elites(MinecraftServer s) {
 		return s.overworld().getEntitiesOfClass(Mob.class, new AABB(-SPAN, Y - 8, -SPAN, SPAN, Y + 8, SPAN),
-			m -> m.entityTags().contains(Town.markTag(p(s).getUUID())));
+			m -> m.getTags().contains(Town.markTag(p(s).getUUID())));
 	}
 
 	private static Town.Active bounty(MinecraftServer s) {

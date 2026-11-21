@@ -48,16 +48,16 @@ public final class Tempering {
 
 	public static void init() {
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity instanceof Mob mob && !entity.entityTags().contains(TAG)) {
+			if (entity instanceof Mob mob && !entity.getTags().contains(TAG)) {
 				temper(mob, level);
 			}
 		});
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (damage > 0 && source.getEntity() instanceof Mob attacker && attacker.isAlive()
-					&& attacker.entityTags().contains(TemperingRules.Elite.VAMPIRIC.tag())) {
+					&& attacker.getTags().contains(TemperingRules.Elite.VAMPIRIC.tag())) {
 				attacker.heal(damage * (float) TemperingRules.VAMPIRIC_DRAIN);
 			}
-			if (entity instanceof Mob boss && entity.isAlive() && phaseless(boss) && !boss.entityTags().contains(ENRAGED_TAG)
+			if (entity instanceof Mob boss && entity.isAlive() && phaseless(boss) && !boss.getTags().contains(ENRAGED_TAG)
 					&& TemperingRules.enrages(boss.getHealth(), boss.getMaxHealth())) {
 				enrage(boss);
 			}
@@ -189,7 +189,7 @@ public final class Tempering {
 
 	/** The threat {@code entity} was tempered to (0 if none). */
 	public static int threat(Entity entity) {
-		for (String tag : entity.entityTags()) {
+		for (String tag : entity.getTags()) {
 			if (tag.startsWith(THREAT_TAG)) {
 				try {
 					return Integer.parseInt(tag.substring(THREAT_TAG.length()));
@@ -204,14 +204,14 @@ public final class Tempering {
 	/** {@code entity}'s elite kind, or null. */
 	public static TemperingRules.Elite elite(Entity entity) {
 		for (TemperingRules.Elite elite : TemperingRules.Elite.values()) {
-			if (entity.entityTags().contains(elite.tag())) return elite;
+			if (entity.getTags().contains(elite.tag())) return elite;
 		}
 		return null;
 	}
 
 	/** What a blow from {@code source} on a player becomes: a tempered creature's harder blow. */
 	public static float onPlayer(DamageSource source, float amount) {
-		if (!(source.getEntity() instanceof LivingEntity attacker) || attacker instanceof Player || !attacker.entityTags().contains(TAG)) {
+		if (!(source.getEntity() instanceof LivingEntity attacker) || attacker instanceof Player || !attacker.getTags().contains(TAG)) {
 			return amount;
 		}
 		double k = TemperingRules.damage(threat(attacker));

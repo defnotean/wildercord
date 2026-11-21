@@ -38,7 +38,7 @@ public final class CairnKeeperResident {
 	public static void init() {
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
 			if (hand != InteractionHand.MAIN_HAND || player.isSpectator() || !(entity instanceof Villager)
-				|| !entity.entityTags().contains(TAG)) return InteractionResult.PASS;
+				|| !entity.getTags().contains(TAG)) return InteractionResult.PASS;
 			if (player instanceof ServerPlayer server) {
 				if (player.isSecondaryUseActive() || !LoreJournal.data(server).has(ENTRY)) talk(server);
 			}

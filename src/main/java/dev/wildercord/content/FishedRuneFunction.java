@@ -19,10 +19,10 @@ import java.util.Set;
  * glint at the bobber and a line above the hotbar. Does nothing for loot rolled without a bobber.
  */
 public record FishedRuneFunction(boolean magic) implements LootItemFunction {
-	public static final LootItemFunctionType<FishedRuneFunction> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 	public static final MapCodec<FishedRuneFunction> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 		Codec.BOOL.optionalFieldOf("magic", false).forGetter(FishedRuneFunction::magic)
 	).apply(i, FishedRuneFunction::new));
+	public static final LootItemFunctionType<FishedRuneFunction> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 
 	@Override
 	public LootItemFunctionType<FishedRuneFunction> getType() {

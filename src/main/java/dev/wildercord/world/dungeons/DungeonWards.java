@@ -176,7 +176,7 @@ public final class DungeonWards extends SavedData {
 		for (var entry : chunk.getAllReferences().entrySet()) {
 			for (long packed : entry.getValue()) {
 				if (++references > 64) return MovementWard.UNKNOWN;
-				ChunkPos reference = ChunkPos.unpack(packed);
+				ChunkPos reference = new ChunkPos(packed);
 				var startChunk = level.getChunkSource().getChunkNow(reference.x(), reference.z());
 				if (startChunk == null) return MovementWard.UNKNOWN;
 				StructureStart start = startChunk.getStartForStructure(entry.getKey());
@@ -208,7 +208,7 @@ public final class DungeonWards extends SavedData {
 				}
 			}
 		}
-		ChunkPos centre = ChunkPos.containing(pos);
+		ChunkPos centre = new ChunkPos(pos);
 		for (int dx = -chunkRadius; dx <= chunkRadius; dx++) {
 			for (int dz = -chunkRadius; dz <= chunkRadius; dz++) {
 				BlockPos at = new BlockPos(((centre.x() + dx) << 4) + 8, pos.getY(), ((centre.z() + dz) << 4) + 8);
@@ -247,7 +247,7 @@ public final class DungeonWards extends SavedData {
 
 	/** The start of {@code structure} whose bounds reach {@code pos}'s column, even if {@code pos} is above or below it. */
 	private static StructureStart findStart(ServerLevel level, BlockPos pos, Structure structure) {
-		ChunkPos chunk = ChunkPos.containing(pos);
+		ChunkPos chunk = new ChunkPos(pos);
 		for (StructureStart start : dev.wildercord.compat.McWorldgen.startsForStructure(level.structureManager(), chunk, structure)) {
 			BoundingBox bb = start.getBoundingBox();
 			if (start.isValid() && pos.getX() >= bb.minX() && pos.getX() <= bb.maxX() && pos.getZ() >= bb.minZ() && pos.getZ() <= bb.maxZ()) {

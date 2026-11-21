@@ -367,6 +367,6 @@ public class RimecoatWolverine extends WildMonster {
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState block) {
-		playSound(SoundEvents.WOLF_STEP.value(), 0.3F, 0.8F);
+		playSound(SoundEvents.WOLF_STEP, 0.3F, 0.8F);
 	}
 }

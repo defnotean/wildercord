@@ -149,10 +149,10 @@ public final class ScrollSources {
 	 * {@link ScrollSources} id), or any part a scroll can carry when the source is missing.
 	 */
 	public record RandomPart(String source) implements LootItemFunction {
-		public static final LootItemFunctionType<RandomPart> TYPE = new LootItemFunctionType<>(MAP_CODEC);
-	public static final MapCodec<RandomPart> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+		public static final MapCodec<RandomPart> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 			Codec.STRING.optionalFieldOf("source", "").forGetter(RandomPart::source)
 		).apply(i, RandomPart::new));
+	public static final LootItemFunctionType<RandomPart> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 
 		@Override
 		public LootItemFunctionType<RandomPart> getType() {

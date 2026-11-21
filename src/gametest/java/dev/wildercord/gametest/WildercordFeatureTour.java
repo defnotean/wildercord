@@ -157,7 +157,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		int id = world.getServer().computeOnServer(server -> {
 			ServerLevel level = player(server).level();
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, player(server).getBoundingBox().inflate(128),
-				e -> e.entityTags().contains("wildercord.camera")).forEach(net.minecraft.world.entity.Entity::discard);
+				e -> e.getTags().contains("wildercord.camera")).forEach(net.minecraft.world.entity.Entity::discard);
 			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
 			Vec3 d = target.subtract(eye);
 			float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
@@ -638,7 +638,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		});
 		// Wait for it to start a telegraph, then catch the circle and the lit nameplate.
 		int waited = dev.wildercord.gametest.compat.GametestCompat.waitFor(context, world.getServer(), server -> {
-			List<Mob> mobs = player(server).level().getEntitiesOfClass(Mob.class, player(server).getBoundingBox().inflate(20), m -> m.entityTags().contains("wildercord.tour"));
+			List<Mob> mobs = player(server).level().getEntitiesOfClass(Mob.class, player(server).getBoundingBox().inflate(20), m -> m.getTags().contains("wildercord.tour"));
 			return !mobs.isEmpty() && mobs.getFirst().getCustomName() != null && mobs.getFirst().getCustomName().getString().startsWith("»");
 		}, 400);
 		context.waitTicks(8);
@@ -716,7 +716,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerLevel level = player.level();
 			Vec3 at = stage.add(SHIELD_SPOT);
 			place(player, at, 0, 0);
-			level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(30), m -> m.entityTags().contains("wildercord.tour")).forEach(Mob::discard);
+			level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(30), m -> m.getTags().contains("wildercord.tour")).forEach(Mob::discard);
 			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, SHIELD_RANGE);
 			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
@@ -747,7 +747,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 	}
 
 	private static Mob tourHusk(MinecraftServer server) {
-		List<Mob> mobs = player(server).level().getEntitiesOfClass(Mob.class, player(server).getBoundingBox().inflate(30), m -> m.entityTags().contains("wildercord.tour"));
+		List<Mob> mobs = player(server).level().getEntitiesOfClass(Mob.class, player(server).getBoundingBox().inflate(30), m -> m.getTags().contains("wildercord.tour"));
 		return mobs.isEmpty() ? null : mobs.getFirst();
 	}
 

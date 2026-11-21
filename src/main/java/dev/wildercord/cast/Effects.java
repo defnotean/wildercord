@@ -2499,7 +2499,7 @@ public final class Effects {
 					continue;
 				}
 				Vec3 away = horizontal(p.position().subtract(centre), v.scale(-1));
-				if (owner instanceof LivingEntity shooter && shooter.isAlive() && !p.entityTags().contains(DEFLECTED_TAG)) {
+				if (owner instanceof LivingEntity shooter && shooter.isAlive() && !p.getTags().contains(DEFLECTED_TAG)) {
 					// Returned to sender, once: it flies back at its shooter, now the warded creature's.
 					p.addTag(DEFLECTED_TAG);
 					Vec3 back = shooter.getBoundingBox().getCenter().subtract(p.position());

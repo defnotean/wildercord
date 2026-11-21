@@ -88,7 +88,7 @@ public final class WorldEvents {
 		// Loading the class registers the storm attachment (synced, so both sides need it).
 		ManaStorm.STORM_UNTIL.identifier();
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity.entityTags().contains(TAG) && !LIVE.contains(entity.getUUID())) {
+			if (entity.getTags().contains(TAG) && !LIVE.contains(entity.getUUID())) {
 				entity.discard();
 			}
 		});
@@ -104,7 +104,7 @@ public final class WorldEvents {
 		// An event's monster that turns into another (a zombie drowning, a husk soaking, a skeleton freezing) is still
 		// the event's: the new one carries its tag, so it's taken in its place (before it's added, or it would be removed).
 		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, params) -> {
-			if (previous.entityTags().contains(TAG) && LIVE.remove(previous.getUUID())) {
+			if (previous.getTags().contains(TAG) && LIVE.remove(previous.getUUID())) {
 				LIVE.add(converted.getUUID());
 				for (RiftSiege rift : RIFTS) {
 					rift.converted(previous.getUUID(), converted.getUUID());
@@ -114,7 +114,7 @@ public final class WorldEvents {
 		});
 		// Nothing may be hung on (or taken from) a rift's invisible stand.
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) ->
-			entity.entityTags().contains(RiftSiege.ANCHOR_TAG) ? InteractionResult.FAIL : InteractionResult.PASS);
+			entity.getTags().contains(RiftSiege.ANCHOR_TAG) ? InteractionResult.FAIL : InteractionResult.PASS);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			for (RiftSiege rift : RIFTS) {
 				rift.forget();
@@ -293,12 +293,12 @@ public final class WorldEvents {
 	private static void fought(LivingEntity victim, DamageSource source) {
 		Entity attacker = source.getEntity();
 		if (victim instanceof ServerPlayer player) {
-			if (attacker != null && attacker.entityTags().contains(TAG)) {
+			if (attacker != null && attacker.getTags().contains(TAG)) {
 				for (RiftSiege rift : RIFTS) {
 					rift.fought(player, attacker.getUUID());
 				}
 			}
-		} else if (attacker instanceof ServerPlayer player && victim.entityTags().contains(TAG)) {
+		} else if (attacker instanceof ServerPlayer player && victim.getTags().contains(TAG)) {
 			for (RiftSiege rift : RIFTS) {
 				rift.fought(player, victim.getUUID());
 			}
@@ -307,14 +307,14 @@ public final class WorldEvents {
 
 	/** Something died: an event's monster was killed (not sent away, not lost), and a Riftcaller leaves its spoils. */
 	private static void died(LivingEntity entity, DamageSource source) {
-		if (!entity.entityTags().contains(TAG) || !(entity.level() instanceof ServerLevel level)) {
+		if (!entity.getTags().contains(TAG) || !(entity.level() instanceof ServerLevel level)) {
 			return;
 		}
 		for (RiftSiege rift : RIFTS) {
 			rift.killed(entity.getUUID());
 		}
 		FallenStars.guardKilled(entity.getUUID());
-		if (entity.entityTags().contains(RiftSiege.RIFTCALLER_TAG)) {
+		if (entity.getTags().contains(RiftSiege.RIFTCALLER_TAG)) {
 			RiftSiege.riftcallerLoot(level, entity, source);
 		}
 		// Dead, it will never load again: nothing need remember it.

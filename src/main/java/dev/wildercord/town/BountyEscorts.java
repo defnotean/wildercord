@@ -74,7 +74,7 @@ public final class BountyEscorts {
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (!(entity.level() instanceof ServerLevel level)) return;
-			for (String tag : entity.entityTags()) {
+			for (String tag : entity.getTags()) {
 				if (!tag.startsWith(Town.ESCORT_TAG)) continue;
 				UUID owner;
 				try {
@@ -97,7 +97,7 @@ public final class BountyEscorts {
 		});
 		// A llama whose escort was abandoned or lost while it was out of reach goes back to its traveller when it next loads.
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity instanceof Llama llama && llama.entityTags().stream().anyMatch(tag -> tag.startsWith(Town.ESCORT_TAG))) LOADED.add(llama);
+			if (entity instanceof Llama llama && llama.getTags().stream().anyMatch(tag -> tag.startsWith(Town.ESCORT_TAG))) LOADED.add(llama);
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			ROADS.clear();
@@ -107,7 +107,7 @@ public final class BountyEscorts {
 
 	private static void reclaim(Llama llama) {
 		if (!llama.isAlive() || !(llama.level() instanceof ServerLevel level)) return;
-		for (String tag : llama.entityTags()) {
+		for (String tag : llama.getTags()) {
 			if (!tag.startsWith(Town.ESCORT_TAG)) continue;
 			UUID owner;
 			try {
@@ -125,7 +125,7 @@ public final class BountyEscorts {
 	private static boolean current(ServerPlayer player, Llama llama) {
 		Optional<Town.Active> bounty = Town.standing(player).bounty();
 		String road = bounty.isPresent() && bounty.get().type() == BountyRules.Kind.ESCORT ? road(bounty.get()) : null;
-		String llamaRoad = llama.entityTags().stream().filter(tag -> tag.startsWith(ROAD_TAG)).findFirst()
+		String llamaRoad = llama.getTags().stream().filter(tag -> tag.startsWith(ROAD_TAG)).findFirst()
 			.map(tag -> tag.substring(ROAD_TAG.length())).orElse(null);
 		return BountyRules.sameEscort(llamaRoad, road);
 	}
@@ -195,7 +195,7 @@ public final class BountyEscorts {
 	public static Llama llama(ServerPlayer player) {
 		String tag = Town.ESCORT_TAG + player.getUUID();
 		List<Llama> found = player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64),
-			l -> l.isAlive() && l.entityTags().contains(tag) && current(player, l));
+			l -> l.isAlive() && l.getTags().contains(tag) && current(player, l));
 		return found.isEmpty() ? null : found.getFirst();
 	}
 
@@ -203,7 +203,7 @@ public final class BountyEscorts {
 	private static void sweep(ServerPlayer player) {
 		String tag = Town.ESCORT_TAG + player.getUUID();
 		for (Llama stale : player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64),
-				l -> l.isAlive() && l.entityTags().contains(tag) && !current(player, l))) {
+				l -> l.isAlive() && l.getTags().contains(tag) && !current(player, l))) {
 			release(player.level(), stale);
 		}
 	}

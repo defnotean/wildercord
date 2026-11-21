@@ -101,7 +101,7 @@ public final class KnightSpawner {
 
 	/** Whether a dungeon's spawner (on cobblestone or mossy cobblestone) is within ten blocks. */
 	static boolean spawnerRoom(ServerLevel level, BlockPos pos) {
-		ChunkPos centre = ChunkPos.containing(pos);
+		ChunkPos centre = new ChunkPos(pos);
 		for (int dx = -1; dx <= 1; dx++) {
 			for (int dz = -1; dz <= 1; dz++) {
 				if (!level.hasChunk(centre.x() + dx, centre.z() + dz)) {

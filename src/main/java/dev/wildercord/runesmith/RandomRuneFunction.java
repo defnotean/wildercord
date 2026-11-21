@@ -17,11 +17,11 @@ import java.util.Random;
  * so every trader stocks a different selection.
  */
 public record RandomRuneFunction(int minTier, int maxTier) implements LootItemFunction {
-	public static final LootItemFunctionType<RandomRuneFunction> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 	public static final MapCodec<RandomRuneFunction> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 		Codec.intRange(1, 4).optionalFieldOf("min_tier", 1).forGetter(RandomRuneFunction::minTier),
 		Codec.intRange(1, 4).optionalFieldOf("max_tier", 1).forGetter(RandomRuneFunction::maxTier)
 	).apply(i, RandomRuneFunction::new));
+	public static final LootItemFunctionType<RandomRuneFunction> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 
 	@Override
 	public LootItemFunctionType<RandomRuneFunction> getType() {

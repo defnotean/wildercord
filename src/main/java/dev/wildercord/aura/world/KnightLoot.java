@@ -16,8 +16,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
  * The fallen knight's loot table uses it, so the table stays data a pack can change.
  */
 public record KnightLoot() implements LootItemFunction {
-	public static final LootItemFunctionType<KnightLoot> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 	public static final MapCodec<KnightLoot> MAP_CODEC = MapCodec.unit(new KnightLoot());
+	public static final LootItemFunctionType<KnightLoot> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 
 	@Override
 	public LootItemFunctionType<KnightLoot> getType() {

@@ -170,7 +170,7 @@ public final class Innates {
 			if (damage <= 0 || !(entity.level() instanceof ServerLevel level)) {
 				return;
 			}
-			if (entity instanceof Mannequin && entity.entityTags().contains(AFTERIMAGE_TAG)) {
+			if (entity instanceof Mannequin && entity.getTags().contains(AFTERIMAGE_TAG)) {
 				SOAKED.merge(entity.getUUID(), damage, Float::sum);
 			}
 			long now = level.getGameTime();
@@ -217,7 +217,7 @@ public final class Innates {
 			AFTERIMAGES.clear();
 		});
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity instanceof Mannequin && entity.entityTags().contains(AFTERIMAGE_TAG)
+			if (entity instanceof Mannequin && entity.getTags().contains(AFTERIMAGE_TAG)
 					&& AFTERIMAGES.stream().noneMatch(a -> a.body() == entity)) {
 				entity.discard();
 			}

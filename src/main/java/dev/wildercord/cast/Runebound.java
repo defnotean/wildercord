@@ -92,13 +92,13 @@ public final class Runebound {
 				// Its extra health, for a Runebound saved before that was kept.
 				AttributeInstance health = mob.getAttribute(Attributes.MAX_HEALTH);
 				if (health != null && !health.hasModifier(HEALTH)) {
-					health.addPermanentModifier(healthBonus(mob.entityTags().contains(ADEPT_TAG)));
+					health.addPermanentModifier(healthBonus(mob.getTags().contains(ADEPT_TAG)));
 				}
 				LOADED.put(mob.getUUID(), mob);
 				showMarks(mob);
 				return;
 			}
-			if (mob.entityTags().contains(ROLLED_TAG) || pool(mob).isEmpty()) {
+			if (mob.getTags().contains(ROLLED_TAG) || pool(mob).isEmpty()) {
 				return;
 			}
 			mob.addTag(ROLLED_TAG);
@@ -130,7 +130,7 @@ public final class Runebound {
 				return;
 			}
 			if (!pool(converted).isEmpty()) {
-				bind(converted, spell, previous.entityTags().contains(ADEPT_TAG));
+				bind(converted, spell, previous.getTags().contains(ADEPT_TAG));
 			} else {
 				converted.removeAttached(WildercordAttachments.RUNEBOUND);
 				converted.removeAttached(WildercordAttachments.RUNE_MARKS);
@@ -236,7 +236,7 @@ public final class Runebound {
 		List<RuneDef> spell = spellOf(mob);
 		if (!spell.isEmpty()) {
 			mob.setAttached(WildercordAttachments.RUNE_MARKS,
-				new WildercordAttachments.RuneMarks(elementColor(spell), mob.entityTags().contains(ADEPT_TAG), 0));
+				new WildercordAttachments.RuneMarks(elementColor(spell), mob.getTags().contains(ADEPT_TAG), 0));
 		}
 	}
 
@@ -335,7 +335,7 @@ public final class Runebound {
 		}
 		state.castAt = 0;
 		state.readyAt = Math.max(state.readyAt, mob.level().getGameTime() + delay);
-		mob.setCustomName(nameplate(spell, mob.entityTags().contains("wildercord.adept"), false));
+		mob.setCustomName(nameplate(spell, mob.getTags().contains("wildercord.adept"), false));
 	}
 
 	private static void tick(ServerLevel level, Mob mob) {
@@ -349,7 +349,7 @@ public final class Runebound {
 		if (spell.isEmpty()) {
 			return;
 		}
-		boolean adept = mob.entityTags().contains("wildercord.adept");
+		boolean adept = mob.getTags().contains("wildercord.adept");
 		int color = elementColor(spell);
 		if (now % 20 == mob.getId() % 20) {
 			// A faint rune circle turns at its feet.
@@ -413,7 +413,7 @@ public final class Runebound {
 		state.readyAt = mob.level().getGameTime() + 40;
 		List<RuneDef> spell = spellOf(mob);
 		if (!spell.isEmpty()) {
-			mob.setCustomName(nameplate(spell, mob.entityTags().contains("wildercord.adept"), false));
+			mob.setCustomName(nameplate(spell, mob.getTags().contains("wildercord.adept"), false));
 		}
 		WildercordAttachments.RuneMarks marks = mob.getAttached(WildercordAttachments.RUNE_MARKS);
 		if (marks != null) {
@@ -486,7 +486,7 @@ public final class Runebound {
 		killer.setAttached(WildercordAttachments.RUNEBOUND_SLAIN, Heart.runeboundSlain(killer) + 1);
 		Grimoire.feat(killer, Feats.RUNEBOUND);
 		List<RuneDef> spell = spellOf(mob);
-		boolean adept = mob.entityTags().contains("wildercord.adept");
+		boolean adept = mob.getTags().contains("wildercord.adept");
 		if (adept) {
 			dev.wildercord.advancement.Advancements.moment(killer, dev.wildercord.advancement.Advancements.RUNEBOUND_ADEPT);
 		}

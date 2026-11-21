@@ -290,6 +290,6 @@ public class CacklingHyena extends WildMonster {
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState block) {
-		playSound(SoundEvents.WOLF_STEP.value(), 0.15F, 1.0F);
+		playSound(SoundEvents.WOLF_STEP, 0.15F, 1.0F);
 	}
 }

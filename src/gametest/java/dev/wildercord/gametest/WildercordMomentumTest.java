@@ -956,7 +956,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	private static void kill(TestSingleplayerContext world) {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			for (Entity e : player.level().getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(64), e -> e.entityTags().contains(TAG))) {
+			for (Entity e : player.level().getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(64), e -> e.getTags().contains(TAG))) {
 				e.discard();
 			}
 		});
@@ -1025,7 +1025,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 
 	private static List<Mob> foes(ServerPlayer player, EntityType<?> type) {
 		List<Mob> found = new ArrayList<>(player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(48),
-			m -> m.entityTags().contains(TAG) && m.getType() == type));
+			m -> m.getTags().contains(TAG) && m.getType() == type));
 		found.sort(java.util.Comparator.comparingInt(Mob::getId));
 		if (found.isEmpty()) {
 			throw new AssertionError("the foes are gone");
@@ -1040,7 +1040,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	private static void regroup(ClientGameTestContext context, TestSingleplayerContext world) {
 		context.waitTicks(2);
 		on(world, player -> {
-			for (Mob m : player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(32), m -> m.entityTags().contains(TAG) && !m.isPassenger())) {
+			for (Mob m : player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(32), m -> m.getTags().contains(TAG) && !m.isPassenger())) {
 				Vec3 p = SPOTS.get(m.getUUID());
 				if (p != null) {
 					m.teleportTo(p.x, p.y, p.z);

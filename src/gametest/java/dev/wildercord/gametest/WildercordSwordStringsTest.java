@@ -97,7 +97,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			hooked = true;
 			AuraApi.onString((player, art, ctx) -> PERFORMED.add(art.id()));
 			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
-				if (source.is(Aura.DAMAGE) && taken > 0 && entity.entityTags().contains(TAG)) {
+				if (source.is(Aura.DAMAGE) && taken > 0 && entity.getTags().contains(TAG)) {
 					ART_HITS.add(entity.getUUID());
 				}
 			});
@@ -527,7 +527,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		check(PERFORMED.equals(List.of(PlaceholderArts.FOURTH)), "a swing straight after an Aura Step should play the Fourth Art (" + PERFORMED + ")");
 		String cut = on(world, player -> {
 			int hurt = 0;
-			for (Mob husk : player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(16), m -> m.entityTags().contains("wildercord.string_line"))) {
+			for (Mob husk : player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(16), m -> m.getTags().contains("wildercord.string_line"))) {
 				if (husk.getHealth() < husk.getMaxHealth()) {
 					hurt++;
 				}
@@ -580,7 +580,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 				return "the Final Art should cost " + price + " at the peak (spent " + spent + ")";
 			}
 			int hurt = 0;
-			for (Mob husk : player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(8), m -> m.entityTags().contains("wildercord.string_ring"))) {
+			for (Mob husk : player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(8), m -> m.getTags().contains("wildercord.string_ring"))) {
 				if (husk.getHealth() < husk.getMaxHealth()) {
 					hurt++;
 				}
@@ -901,7 +901,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 	}
 
 	private static Mob tagged(ServerPlayer player, String tag) {
-		List<Mob> found = player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(48), m -> m.entityTags().contains(tag) && m.isAlive());
+		List<Mob> found = player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(48), m -> m.getTags().contains(tag) && m.isAlive());
 		if (found.isEmpty()) {
 			throw new AssertionError("the mob tagged " + tag + " is gone");
 		}
@@ -909,7 +909,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 	}
 
 	private static void kill(ServerPlayer player, String tag) {
-		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(64), e -> e.entityTags().contains(tag))) {
+		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(64), e -> e.getTags().contains(tag))) {
 			e.discard();
 		}
 	}

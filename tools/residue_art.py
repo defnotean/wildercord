@@ -43,7 +43,9 @@ RESIDUES = [
 # Natural ground a residue may take or lie on. Only what the world makes; never anything players build with
 # (planks, cobblestone, bricks, smooth stone, glass, terracotta, farmland, paths...).
 RESIDUE_GROUND = [
-    "#minecraft:substrate_overworld",  # dirt, coarse and rooted dirt, grass, podzol, mycelium, moss, mud
+    "#minecraft:animals_spawnable_on",  # dirt, coarse dirt, grass, podzol, mycelium, moss
+    "minecraft:mud",
+    "minecraft:moss_block",
     "#minecraft:sand",
     "minecraft:gravel",
     "minecraft:clay",

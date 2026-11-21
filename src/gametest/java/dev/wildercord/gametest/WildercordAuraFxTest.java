@@ -864,7 +864,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 	}
 
 	private static Mob tagged(ServerPlayer player, String tag) {
-		List<Mob> found = player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(48), m -> m.entityTags().contains(tag) && m.isAlive());
+		List<Mob> found = player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(48), m -> m.getTags().contains(tag) && m.isAlive());
 		if (found.isEmpty()) {
 			throw new AssertionError("the mob tagged " + tag + " is gone");
 		}
@@ -872,7 +872,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 	}
 
 	private static void kill(ServerPlayer player, String tag) {
-		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(64), e -> e.entityTags().contains(tag))) {
+		for (LivingEntity e : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(64), e -> e.getTags().contains(tag))) {
 			e.discard();
 		}
 	}

@@ -36,8 +36,8 @@ public final class TwistedRunes {
 
 	/** {@code wildercord:twisted_rune}: makes a rune item a random effect rune with a random twist. */
 	public record Function() implements LootItemFunction {
-		public static final LootItemFunctionType<Function> TYPE = new LootItemFunctionType<>(MAP_CODEC);
-	public static final MapCodec<Function> MAP_CODEC = MapCodec.unit(new Function());
+		public static final MapCodec<Function> MAP_CODEC = MapCodec.unit(new Function());
+	public static final LootItemFunctionType<Function> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 
 		@Override
 		public MapCodec<Function> codec() {
