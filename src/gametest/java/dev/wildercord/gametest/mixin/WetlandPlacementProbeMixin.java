@@ -23,7 +23,7 @@ public abstract class WetlandPlacementProbeMixin {
   try {result=original.call(level,generator,random,origin);return result;}
   finally {WetlandGenerationProbe.endPlacement(source,result);}
  }
- @WrapOperation(method="lambda$placeWithContext$0(Lnet/minecraft/world/level/levelgen/placement/PlacementModifier;Lnet/minecraft/world/level/levelgen/placement/PlacementContext;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Ljava/util/stream/Stream;",
+ @WrapOperation(method="method_39649(Lnet/minecraft/world/level/levelgen/placement/PlacementModifier;Lnet/minecraft/world/level/levelgen/placement/PlacementContext;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Ljava/util/stream/Stream;",
    at=@At(value="INVOKE",target="Lnet/minecraft/world/level/levelgen/placement/PlacementModifier;getPositions(Lnet/minecraft/world/level/levelgen/placement/PlacementContext;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Ljava/util/stream/Stream;"),require=1,expect=1,allow=1)
  private static Stream<BlockPos> wildercord$modifier(PlacementModifier modifier,PlacementContext context,RandomSource random,BlockPos origin,Operation<Stream<BlockPos>> original) {
   var source=WetlandGenerationProbe.modifierSource();
