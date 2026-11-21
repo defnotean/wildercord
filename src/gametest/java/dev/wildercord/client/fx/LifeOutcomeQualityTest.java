@@ -72,7 +72,7 @@ private static final class CountingState extends QuadParticleRenderState {
 			float x, float y, float z, float width, float height, float u0, float v0, float u1, float v1,
 			float r, float g, float b, int light, int overlay) {
 		quads++;
-		super.add(layer, x, y, z, width, height, u0, v0, u1, v1, r, g, b, a, light, overlay);
+		super.add(layer, x, y, z, width, height, u0, v0, u1, v1, r, g, b, light, overlay);
 	}
 	boolean isEmpty() { return quads == 0; }
 }
