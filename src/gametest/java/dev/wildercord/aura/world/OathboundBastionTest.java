@@ -136,22 +136,23 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 			});
 
 			var server = world.getServer();
-			server.runCommand("time set 12800");
+			server.runCommand("time set 15000");
 			server.runCommand("weather clear");
 			server.runCommand("difficulty normal");
 			server.runCommand("gamerule advance_time false");
 			server.runCommand("gamerule advance_weather false");
 			server.runCommand("gamerule spawn_mobs false");
-			server.runCommand("gamerule natural_regeneration false");
+			server.runCommand("gamerule natural_health_regeneration false");
 
-			// Build museum showcase floor & dark deepslate backdrop behind +Z
+			// Build museum showcase floor & dark deepslate backdrop behind +Z (lights hidden behind cameras)
 			server.runCommand("fill -10 120 -10 10 120 10 stone_bricks");
 			server.runCommand("fill -10 121 -10 10 132 10 air");
 			server.runCommand("fill -9 121 7 9 128 7 polished_deepslate");
 			server.runCommand("fill -9 121 8 9 128 8 deepslate_bricks");
-			server.runCommand("setblock -5 123 -3 sea_lantern");
-			server.runCommand("setblock 5 123 -3 sea_lantern");
-			server.runCommand("setblock 0 126 -3 sea_lantern");
+			server.runCommand("setblock -6 121 -7 sea_lantern");
+			server.runCommand("setblock 6 121 -7 sea_lantern");
+			server.runCommand("setblock -7 121 4 sea_lantern");
+			server.runCommand("setblock 7 121 4 sea_lantern");
 
 			// ------------------------------------------------------------------
 			// 1. Visual Studio 7-Panel Verification (1:1 against Concept & Anim Sheet)
@@ -166,19 +167,19 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 			record StudioShot(String name, int move, int tell, float elapsed, float barrier, Vec3 cam, Vec3 look) {}
 			List<StudioShot> shots = List.of(
 				new StudioShot("bastion_01_front_34", OathboundBastionRules.IDLE_MARCH, 0, 0.0F, 0.25F,
-					new Vec3(3.1, 122.9, -3.8), STAGE.add(0.0, 1.35, 0.0)),
+					new Vec3(2.4, 122.7, -3.1), STAGE.add(0.0, 1.35, 0.0)),
 				new StudioShot("bastion_02_back_34", OathboundBastionRules.IDLE_MARCH, 0, 0.0F, 0.25F,
-					new Vec3(-3.0, 123.0, 4.1), STAGE.add(0.0, 1.35, 0.0)),
+					new Vec3(-2.6, 122.9, 3.4), STAGE.add(0.0, 1.35, 0.0)),
 				new StudioShot("bastion_03_phalanx_brace", OathboundBastionRules.PHALANX_BRACE, OathboundBastionRules.PHALANX_TELL, 14.0F, 1.0F,
-					new Vec3(2.8, 122.5, -4.1), STAGE.add(0.0, 1.15, 0.0)),
+					new Vec3(2.3, 122.4, -3.2), STAGE.add(0.0, 1.15, 0.0)),
 				new StudioShot("bastion_04_shield_ram", OathboundBastionRules.SHIELD_RAM, OathboundBastionRules.RAM_TELL, 20.0F, 0.85F,
-					new Vec3(4.2, 122.6, -1.9), STAGE.add(0.0, 1.2, 0.0)),
+					new Vec3(3.3, 122.5, -2.5), STAGE.add(0.0, 1.2, 0.0)),
 				new StudioShot("bastion_05_anvil_windup", OathboundBastionRules.ANVIL_SLAM, OathboundBastionRules.ANVIL_TELL, 18.0F, 0.35F,
-					new Vec3(2.9, 123.0, -4.2), STAGE.add(0.0, 1.55, 0.0)),
+					new Vec3(2.4, 122.8, -3.4), STAGE.add(0.0, 1.55, 0.0)),
 				new StudioShot("bastion_06_anvil_impact", OathboundBastionRules.ANVIL_SLAM, OathboundBastionRules.ANVIL_TELL, 24.0F, 0.35F,
-					new Vec3(3.2, 122.4, -3.9), STAGE.add(0.0, 1.05, 0.0)),
+					new Vec3(2.6, 122.3, -3.1), STAGE.add(0.0, 1.05, 0.0)),
 				new StudioShot("bastion_07_shield_bash", OathboundBastionRules.SHIELD_BASH, OathboundBastionRules.BASH_TELL, 15.0F, 0.75F,
-					new Vec3(2.8, 122.7, -4.1), STAGE.add(0.0, 1.25, 0.0))
+					new Vec3(2.3, 122.6, -3.3), STAGE.add(0.0, 1.25, 0.0))
 			);
 
 			for (StudioShot sShot : shots) {
@@ -261,10 +262,12 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				check(b.move() == OathboundBastionRules.STAGGERED, "Frontal axe blow must shatter Phalanx Brace into STAGGERED");
 			});
 
-			// B) Shield-Ram into stone wall -> STAGGERED
+			// B) Shield-Ram into stone wall -> STAGGERED (place player in Creative so AI doesn't turn back during tell)
 			server.runCommand("fill -2 121 4 2 124 4 stone");
 			server.runOnServer(s -> {
 				ServerLevel l = level(s);
+				ServerPlayer p = player(s);
+				p.setGameMode(GameType.CREATIVE);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 				b.setNoAi(false);
 				b.snapTo(0.5, 121.0, 1.5, 0.0F, 0.0F);

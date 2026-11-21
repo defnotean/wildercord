@@ -227,7 +227,8 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 	}
 
 	private void applyBarrierVisuals(OathboundBastionRenderState s) {
-		boolean show = s.deathTime <= 0 && (s.barrier > 0.06F || s.move == OathboundBastionRules.PHALANX_BRACE || s.move == OathboundBastionRules.SHIELD_RAM);
+		boolean show = s.deathTime <= 0
+			&& (s.barrier >= 0.5F || s.move == OathboundBastionRules.PHALANX_BRACE || s.move == OathboundBastionRules.SHIELD_RAM);
 		shieldAuraInner.visible = show;
 		shieldAuraOuter.visible = show;
 		if (!show) {
@@ -283,12 +284,12 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 		mace.xRot = 0.55F;
 		mace.yRot = -0.15F;
 
-		left.xRot = -0.45F + Mth.cos(step) * walk * 0.22F;
-		left.yRot = 0.55F;
-		left.zRot = -0.12F;
-		foreL.xRot = -0.50F;
+		left.xRot = -0.48F + Mth.cos(step) * walk * 0.22F;
+		left.yRot = 1.05F;
+		left.zRot = -0.14F;
+		foreL.xRot = -0.48F;
 		shield.xRot = 0.0F;
-		shield.yRot = 0.0F;
+		shield.yRot = 0.38F;
 		shield.zRot = 0.0F;
 
 		float tell = Math.max(1.0F, tellTicks);
@@ -305,12 +306,12 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 				head.xRot = Mth.lerp(k, head.xRot, -0.08F);
 
 				// Giant shield planted straight vertically across front center
-				left.xRot = Mth.lerp(k, left.xRot, -0.78F);
-				left.yRot = Mth.lerp(k, left.yRot, 1.42F);
-				left.zRot = Mth.lerp(k, left.zRot, -0.05F);
-				foreL.xRot = Mth.lerp(k, foreL.xRot, -0.48F);
-				shield.xRot = Mth.lerp(k, shield.xRot, -0.12F);
-				shield.yRot = Mth.lerp(k, shield.yRot, 0.12F);
+				left.xRot = Mth.lerp(k, left.xRot, -0.82F);
+				left.yRot = Mth.lerp(k, left.yRot, 1.52F);
+				left.zRot = Mth.lerp(k, left.zRot, -0.04F);
+				foreL.xRot = Mth.lerp(k, foreL.xRot, -0.45F);
+				shield.xRot = Mth.lerp(k, shield.xRot, -0.10F);
+				shield.yRot = Mth.lerp(k, shield.yRot, 0.22F);
 
 				// Greatmace cocked back behind right hip ready to riposte
 				right.xRot = Mth.lerp(k, right.xRot, 0.55F);
@@ -344,12 +345,12 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 				legR.xRot = Mth.lerp(dash, 0.45F, -Mth.cos(sprint) * 0.75F);
 				shinL.xRot = Mth.lerp(dash, 0.45F, Math.max(0.0F, -Mth.sin(sprint)) * 1.15F);
 				shinR.xRot = Mth.lerp(dash, 0.20F, Math.max(0.0F, Mth.sin(sprint)) * 1.15F);
-				cape.xRot = Mth.lerp(dash, 0.25F, 1.12F + Mth.sin(t * 0.7F) * 0.08F);
+				cape.xRot = Mth.lerp(dash, 0.25F, 0.94F + Mth.sin(t * 0.7F) * 0.08F);
 				tabardFront.xRot = -0.35F * dash;
 				tabardBack.xRot = 0.55F * dash;
 			}
 			case OathboundBastionRules.ANVIL_SLAM -> {
-				// Panel 4 (Windup): overhead mace behind crown + shield counter-balanced low left
+				// Panel 4 (Windup): overhead mace clear of crown + shield counter-balanced low left
 				// Panel 5 (Impact): deep one-knee drop, BOTH arms center-front holding vertical mace slammed into ground, cape whipped up
 				float wind = ramp(el, 0.0F, Math.max(2.0F, tell - 3.0F));
 				float slamEl = stop(el, tell + 2.0F);
@@ -360,31 +361,31 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 				float windBodyX = -0.18F * wind;
 				float impBodyX = 0.42F;
 				body.xRot = Mth.lerp(go, windBodyX, Mth.lerp(rec, impBodyX, 0.18F));
-				body.yRot = Mth.lerp(go, -0.22F * wind, 0.0F);
-				head.xRot = Mth.lerp(go, -0.25F * wind, 0.18F * imp);
+				body.yRot = Mth.lerp(go, -0.18F * wind, 0.0F);
+				head.xRot = Mth.lerp(go, -0.22F * wind, 0.18F * imp);
 
-				// Right arm: hoisted high overhead behind crown -> swept down-center holding vertical mace shaft
-				float wRightX = Mth.lerp(wind, 0.25F, -2.75F);
-				float wRightZ = Mth.lerp(wind, 0.16F, 0.35F);
-				float wForeRX = Mth.lerp(wind, -0.35F, -0.35F);
-				float wMaceX = Mth.lerp(wind, 0.55F, -0.35F);
+				// Right arm: hoisted high up & out beside crown -> swept down-center holding vertical mace shaft
+				float wRightX = Mth.lerp(wind, 0.25F, -2.55F);
+				float wRightZ = Mth.lerp(wind, 0.16F, 0.58F);
+				float wForeRX = Mth.lerp(wind, -0.35F, -0.42F);
+				float wMaceX = Mth.lerp(wind, 0.55F, -0.58F);
 
 				right.xRot = Mth.lerp(imp, wRightX, -1.25F);
 				right.zRot = Mth.lerp(imp, wRightZ, -0.38F);
-				right.yRot = Mth.lerp(imp, -0.15F * wind, -0.38F);
+				right.yRot = Mth.lerp(imp, -0.22F * wind, -0.38F);
 				foreR.xRot = Mth.lerp(imp, wForeRX, -0.95F);
 				mace.xRot = Mth.lerp(imp, wMaceX, 3.05F);
 				mace.yRot = Mth.lerp(imp, -0.15F, 0.0F);
 
-				// Left arm: counter-balanced low back-left on windup -> pulled inward to grip shaft at impact while shield stays clear
-				float wLeftX = Mth.lerp(wind, -0.45F, 0.35F);
-				float wLeftY = Mth.lerp(wind, 0.55F, 0.20F);
-				float wLeftZ = Mth.lerp(wind, -0.12F, -0.52F);
+				// Left arm: counter-balanced open left on windup -> pulled inward to grip shaft at impact while shield stays clear
+				float wLeftX = Mth.lerp(wind, -0.48F, 0.25F);
+				float wLeftY = Mth.lerp(wind, 1.05F, 0.45F);
+				float wLeftZ = Mth.lerp(wind, -0.14F, -0.48F);
 				left.xRot = Mth.lerp(imp, wLeftX, -1.22F);
 				left.yRot = Mth.lerp(imp, wLeftY, 0.38F);
 				left.zRot = Mth.lerp(imp, wLeftZ, 0.35F);
-				foreL.xRot = Mth.lerp(imp, -0.50F, -0.92F);
-				shield.yRot = Mth.lerp(imp, 0.0F, 0.35F);
+				foreL.xRot = Mth.lerp(imp, -0.48F, -0.92F);
+				shield.yRot = Mth.lerp(imp, 0.38F, 0.35F);
 
 				// Legs: windup brace -> true one-knee drop (left foot planted forward, right knee grounded behind)
 				float braceK = 0.20F * wind;
@@ -399,27 +400,28 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 				tassetL.xRot = Mth.lerp(imp, 0.0F, -0.75F);
 				tassetR.xRot = Mth.lerp(imp, 0.0F, 0.15F);
 				// Cape whips sharply upward right on ground impact (Panel 5 signature!)
-				float whip = smooth(el, tell - 1.0F, tell + 2.0F) * (1.0F - smooth(el, tell + 4.0F, tell + OathboundBastionRules.ANVIL_RECOVERY));
-				cape.xRot = Mth.lerp(imp, 0.15F, 0.35F) + whip * 1.45F;
+				float whip = smooth(el, tell - 1.0F, tell + 2.0F) * (1.0F - smooth(el, tell + 5.0F, tell + OathboundBastionRules.ANVIL_RECOVERY));
+				cape.xRot = Mth.lerp(imp, 0.15F, 0.35F) + whip * 1.65F;
 			}
 			case OathboundBastionRules.SHIELD_BASH -> {
-				// Panel 6: SHIELD-BASH SWEEP — sharp torso windup twisting left-back, snapping across right to left
+				// Panel 6: SHIELD-BASH SWEEP — chest & visor open forward as giant shield sweeps aggressively across front-left
 				float wind = ramp(el, 0.0F, tell);
 				float swing = ramp(el, tell, 4.0F);
 				float rec = smooth(el, tell + 6.0F, OathboundBastionRules.BASH_DURATION);
 
-				float yawWind = 0.72F * wind;
-				float yawEnd = -0.82F;
+				float yawWind = 0.65F * wind;
+				float yawEnd = -0.32F;
 				body.yRot = Mth.lerp(rec, Mth.lerp(swing, yawWind, yawEnd), 0.0F);
-				body.xRot = 0.20F * (1.0F - rec);
+				body.xRot = 0.18F * (1.0F - rec);
 
-				left.xRot = Mth.lerp(rec, -0.95F, -0.45F);
-				left.yRot = Mth.lerp(rec, Mth.lerp(swing, 1.55F, 0.45F), 0.55F);
-				left.zRot = Mth.lerp(rec, Mth.lerp(swing, -0.15F, -0.65F), -0.12F);
-				foreL.xRot = Mth.lerp(rec, -0.35F, -0.50F);
+				left.xRot = Mth.lerp(rec, Mth.lerp(swing, -0.75F, -1.08F), -0.48F);
+				left.yRot = Mth.lerp(rec, Mth.lerp(swing, 1.55F, 0.85F), 1.05F);
+				left.zRot = Mth.lerp(rec, Mth.lerp(swing, -0.05F, -0.48F), -0.14F);
+				foreL.xRot = Mth.lerp(rec, -0.38F, -0.48F);
+				shield.yRot = Mth.lerp(rec, Mth.lerp(swing, 0.25F, 0.42F), 0.38F);
 
-				right.xRot = Mth.lerp(rec, Mth.lerp(swing, 0.25F, 0.65F), 0.25F);
-				right.zRot = Mth.lerp(rec, 0.45F, 0.16F);
+				right.xRot = Mth.lerp(rec, Mth.lerp(swing, 0.35F, 0.52F), 0.25F);
+				right.zRot = Mth.lerp(rec, 0.42F, 0.16F);
 				bend(0.32F * (1.0F - rec));
 				legL.zRot = -0.18F * (1.0F - rec);
 				legR.zRot = 0.18F * (1.0F - rec);

@@ -183,7 +183,7 @@ def _shield_emblem_pattern() -> list[str]:
 
 
 def _hex_barrier_rgba(glow: bool) -> Image.Image:
-    # 16x16 concentric hexagonal Aura rings matching Panel 2 & front concept
+    # 16x16 hollow concentric hexagonal Aura rings (clean interior so Sun-Anvil crest shines through)
     tile = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     if not glow:
         return tile
@@ -195,18 +195,32 @@ def _hex_barrier_rgba(glow: bool) -> Image.Image:
             dy = abs(y - cy)
             # Point-topped hexagon distance metric: max(|x|, 0.5*|x| + 0.866*|y|)
             r = max(dx, 0.5 * dx + 0.866025 * dy)
-            d_outer = abs(r - 6.6)
-            d_inner = abs(r - 4.0)
-            d_core = abs(r - 1.4)
+            d_outer = abs(r - 6.7)
+            d_inner = abs(r - 4.3)
             if d_outer < 0.65:
-                a = int(255 * (1.0 - d_outer / 0.75))
-                px[x, y] = (*AMBER[2], max(90, a))
-            elif d_inner < 0.65:
-                a = int(255 * (1.0 - d_inner / 0.7))
-                px[x, y] = (*AMBER[3], max(130, a))
-            elif d_core < 0.75:
-                px[x, y] = (*AMBER[3], 220)
+                a = int(255 * (1.0 - d_outer / 0.7))
+                px[x, y] = (*AMBER[2], max(110, a))
+            elif d_inner < 0.55:
+                a = int(230 * (1.0 - d_inner / 0.65))
+                px[x, y] = (*AMBER[3], max(110, a))
     return tile
+
+
+def _notch_flanges(img: Image.Image) -> None:
+    """Carves serrated sunburst notches on the outer flange tips of the Greatmace on both skin and glow."""
+    px = img.load()
+    fx = box(*UV_BOXES["mace_flange_x"])
+    for side in ("top", "bottom"):
+        x0, y0, w, h = fx[side]
+        for lx in (0, w - 1):
+            for ly in (0, 2, h - 1):
+                px[x0 + lx, y0 + ly] = (0, 0, 0, 0)
+    fy = box(*UV_BOXES["mace_flange_y"])
+    for side in ("right", "left"):
+        x0, y0, w, h = fy[side]
+        for ly in (0, h - 1):
+            for lx in (0, 2, w - 1):
+                px[x0 + lx, y0 + ly] = (0, 0, 0, 0)
 
 
 def bastion_skin(glow: bool = False) -> Image.Image:
@@ -301,19 +315,11 @@ def bastion_skin(glow: bool = False) -> Image.Image:
                 px[sx, sy + ly] = _rgba(GOLD[2])
                 px[sx + sw - 1, sy + ly] = _rgba(GOLD[1])
 
-        # Armored Cape (obsidian-navy outer + vibrant royal navy checkered inner with gold trim)
+        # Armored Cape (rich royal-navy checkered & gold-trimmed on BOTH faces so Shield-Ram / Impact pop clearly)
         _paint_steel_box(img, "cape", fluted=False, seed=212)
         cp = box(*UV_BOXES["cape"])
         _paint_quilted_navy(img, cp["front"], gold_border=True)
-        ox, oy, ow, oh = cp["back"]
-        for ly in range(oh):
-            for lx in range(ow):
-                if lx == 0 or lx == ow - 1 or ly == oh - 1:
-                    px[ox + lx, oy + ly] = _rgba(GOLD[2] if ly % 2 == 0 else GOLD[1])
-                elif ly < 4:
-                    px[ox + lx, oy + ly] = _rgba(STEEL[1])
-                else:
-                    px[ox + lx, oy + ly] = _rgba(NAVY[0] if (lx + ly) % 2 == 0 else STEEL[0])
+        _paint_quilted_navy(img, cp["back"], gold_border=True)
 
         # 3. Cathedral Pauldrons & Articulated Limbs
         for pkey, bband in (("pauldron_outer", 3), ("pauldron_ridge", 0)):
@@ -419,6 +425,7 @@ def bastion_skin(glow: bool = False) -> Image.Image:
                 if ch in pal:
                     px[em[0] + lx, em[1] + ly] = _rgba(pal[ch])
 
+        _notch_flanges(img)
         return img
 
     # ---- GLOW LAYER (emissive white/amber pixels rendered via RenderTypes.eyes) ----
@@ -437,6 +444,9 @@ def bastion_skin(glow: bool = False) -> Image.Image:
                 for lx in range(w):
                     bright = AMBER[3] if mkey == "mace_core" else AMBER[2]
                     px[x0 + lx, y0 + ly] = (*bright, alpha)
+
+    # Cutout serrated sunburst corners on flange ends (matching concept mace silhouette)
+    _notch_flanges(img)
 
     # 3. Glowing Shield Runes & Sun-Anvil crest highlight
     sox, soy, _, _ = box(*UV_BOXES["shield_upper"])["left"]
