@@ -87,6 +87,7 @@
       "dev.wildercord.wildlife.RainshieldFaultTest",
       "dev.wildercord.wildlife.SiltcrestPresentationTest",
       "dev.wildercord.world.sites.OathholdMegacityTest",
+      "dev.wildercord.world.sites.OathholdGuildAndLawTest",
       "dev.wildercord.gametest.WildercordFeatureTour"
     ]
   },
