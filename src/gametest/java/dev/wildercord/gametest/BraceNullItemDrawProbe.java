@@ -42,7 +42,7 @@ public final class BraceNullItemDrawProbe {
 		check(model instanceof PlayerModel && model instanceof BraceNullPlayerWidth, "Unknown world sword model/width");
 		check(arm == (id.left() ? HumanoidArm.LEFT : HumanoidArm.RIGHT) && item == dev.wildercord.client.compat.RenderCompat.mainHandItemState(state) && !item.isEmpty()
 			&& sword.is(Items.DIAMOND_SWORD) && ItemStack.isSameItemSameComponents(sword, dev.wildercord.client.compat.RenderCompat.mainHandStack(state))
-			&& !state.isUsingItem && !state.isBaby && state.ticksUsingItem(arm) == 0,
+			&& !state.isUsingItem && !state.isBaby && state.ticksUsingItem == 0,
 			"Wrong world item/hand or unsupported use state");
 		check(!dev.wildercord.client.compat.RenderCompat.isStabSwingType(state), "Unsupported native stabbing item motion");
 		float[] body = BraceNullCaptureProbe.worldBody((PlayerModel) model, state, stack);

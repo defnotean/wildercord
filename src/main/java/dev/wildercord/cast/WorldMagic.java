@@ -295,7 +295,7 @@ public final class WorldMagic {
 			}
 			BlockState state = level.getBlockState(pos);
 			boolean ice = state.is(Blocks.ICE) || state.is(Blocks.FROSTED_ICE);
-			if (ice && !dev.wildercord.compat.EnvCompat.waterEvaporates(level, pos) {
+			if (ice && !dev.wildercord.compat.EnvCompat.waterEvaporates(level, pos)) {
 				level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
 			} else {
 				level.removeBlock(pos, false);

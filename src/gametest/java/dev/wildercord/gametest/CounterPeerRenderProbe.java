@@ -413,7 +413,7 @@ public final class CounterPeerRenderProbe {
         if(source==null||world==null||parent!=source.model()||world.model()!=parent||baseline==null){s.token.reject("world_item_without_exact_vanilla_baseline");return null;}
         var model=source.model();boolean same=ItemStack.isSameItemSameComponents(stack,source.main())&&stack.getCount()==source.main().getCount();
         boolean eligible=CounterPeerRenderMath.item(id(s,source.item()),id(s,item),stack.is(Items.DIAMOND_SWORD),offhand(a).isEmpty(),same)
-            &&!item.isEmpty()&&!a.isUsingItem&&!a.isBaby&&a.ticksUsingItem(arm)==0
+            &&!item.isEmpty()&&!a.isUsingItem&&!a.isBaby&&a.ticksUsingItem==0
             &&!RenderCompat.hasActiveStabSwing(a)&&ArticulatedCombat.frame(a)==source.articulated();
         s.token.observe("worldHandEligible",eligible);if(!eligible)s.token.reject("ineligible_ordinary_world_hand");
         if(!CounterPeerRenderMath.compare("world_item_root",CounterPeerRenderMath.values(world.root()),CounterPeerRenderMath.values(pose.last().pose())).matched())s.token.reject("changed_world_item_root");

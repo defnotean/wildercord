@@ -499,7 +499,7 @@ public final class FarmEffects {
 	private static void ditchwater(Cast cast, Cast.Hit hit) {
 		BlockPos pos = hit.block() != null && hit.face() != null ? hit.block().relative(hit.face()) : target(hit).above();
 		ServerLevel level = cast.level;
-		boolean hot = dev.wildercord.compat.EnvCompat.waterEvaporates(level, Vec3.atCenterOf(pos);
+		boolean hot = dev.wildercord.compat.EnvCompat.waterEvaporates(level, Vec3.atCenterOf(pos));
 		if (hot || !level.getBlockState(pos).isAir() || !level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)
 			|| !nearFarmland(level, pos)) {
 			return;

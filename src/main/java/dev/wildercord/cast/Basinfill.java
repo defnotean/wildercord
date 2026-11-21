@@ -18,7 +18,7 @@ public final class Basinfill {
     public static boolean fill(Cast cast, Cast.Hit hit) {
         var level = cast.level;
         if (hit.block() == null || hit.face() == null || hit.self()) return refuse(cast);
-        if (dev.wildercord.compat.EnvCompat.waterEvaporates(level, hit.point() || !Casters.mayBuild(cast.caster)) return refuse(cast);
+        if (dev.wildercord.compat.EnvCompat.waterEvaporates(level, hit.point()) || !Casters.mayBuild(cast.caster)) return refuse(cast);
         BlockPos seed = hit.block().relative(hit.face());
         var cells = new LinkedHashSet<BlockPos>();
         var queue = new ArrayDeque<BlockPos>();
