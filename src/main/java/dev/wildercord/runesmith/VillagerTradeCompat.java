@@ -68,7 +68,7 @@ public final class VillagerTradeCompat {
 		}
 		net.minecraft.world.item.trading.MerchantOffers offers = trader.getOffers();
 		for (ItemListing listing : wanderingUncommon) {
-			MerchantOffer offer = listing.accept(level, trader, RandomSource.create());
+			MerchantOffer offer = listing.getOffer(level, trader, RandomSource.create());
 			if (offer != null) {
 				offers.add(offer);
 			}
