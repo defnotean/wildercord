@@ -36,7 +36,7 @@ public abstract class CounterPeerScreenshotMixin {
 		} finally { CounterPeerRenderProbe.unregister(options, token); }
 	}
 
-	@WrapMethod(method = "lambda$doTakeScreenshot$1(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;", require = 1, expect = 1, allow = 1)
+	@WrapMethod(method = "lambda$doTakeScreenshot$14(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;", require = 1, expect = 1, allow = 1)
 	private static CompletableFuture<?> wildercord$counter$scope(TestScreenshotCommonOptionsImpl<?> options,
 			Function<NativeImage, ?> save, Minecraft mc, Operation<CompletableFuture<?>> original) {
 		var scope = CounterPeerRenderProbe.enter(options, mc);
@@ -44,8 +44,8 @@ public abstract class CounterPeerScreenshotMixin {
 		finally { CounterPeerRenderProbe.leave(scope); }
 	}
 
-	@WrapOperation(method = "lambda$doTakeScreenshot$1(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;extract(Lnet/minecraft/client/DeltaTracker;Z)V"), require = 1, expect = 1, allow = 1)
+	@WrapOperation(method = "lambda$doTakeScreenshot$14(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;render(Lnet/minecraft/client/DeltaTracker;Z)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$counter$extract(GameRenderer renderer, DeltaTracker delta, boolean renderLevel, Operation<Void> original) {
 		CounterPeerRenderProbe.extractBegin(delta);
 		boolean completed = false;
@@ -53,7 +53,7 @@ public abstract class CounterPeerScreenshotMixin {
 		finally { CounterPeerRenderProbe.extractEnd(completed); }
 	}
 
-	@WrapOperation(method = "lambda$doTakeScreenshot$1(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
+	@WrapOperation(method = "lambda$doTakeScreenshot$14(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;render(Lnet/minecraft/client/DeltaTracker;Z)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$counter$render(GameRenderer renderer, DeltaTracker delta, boolean renderLevel, Operation<Void> original) {
 		CounterPeerRenderProbe.renderBegin();
@@ -62,7 +62,7 @@ public abstract class CounterPeerScreenshotMixin {
 		finally { CounterPeerRenderProbe.renderEnd(completed); }
 	}
 
-	@WrapOperation(method = "lambda$doTakeScreenshot$1(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
+	@WrapOperation(method = "lambda$doTakeScreenshot$14(Lnet/fabricmc/fabric/impl/client/gametest/screenshot/TestScreenshotCommonOptionsImpl;Ljava/util/function/Function;Lnet/minecraft/client/Minecraft;)Ljava/util/concurrent/CompletableFuture;",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Screenshot;takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;Ljava/util/function/Consumer;)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$counter$readback(RenderTarget target, Consumer<NativeImage> consumer, Operation<Void> original) {
 		CounterPeerRenderProbe.screenshot(target, consumer, (unchangedTarget, wrappedConsumer) -> original.call(unchangedTarget, wrappedConsumer));
