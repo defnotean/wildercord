@@ -75,7 +75,7 @@ public final class ArenaTrees {
 				var waiting = it.next();
 				ServerLevel level = server.getLevel(waiting.getKey());
 				ChunkPos at = new ChunkPos(waiting.getValue());
-				var chunk = level == null ? null : level.getChunkSource().getChunkNow(at.x(), at.z());
+				var chunk = level == null ? null : level.getChunkSource().getChunkNow(at.x, at.z);
 				if (chunk == null) {
 					it.remove();
 					continue;
@@ -176,7 +176,7 @@ public final class ArenaTrees {
 			}
 			for (long packed : entry.getValue()) {
 				ChunkPos at = new ChunkPos(packed);
-				var startChunk = level.getChunkSource().getChunkNow(at.x(), at.z());
+				var startChunk = level.getChunkSource().getChunkNow(at.x, at.z);
 				StructureStart start = startChunk == null ? null : startChunk.getStartForStructure(entry.getKey());
 				if (start == null || !start.isValid()) {
 					continue;

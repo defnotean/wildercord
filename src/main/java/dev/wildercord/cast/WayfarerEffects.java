@@ -271,7 +271,7 @@ public final class WayfarerEffects {
 			tell(cast, "sky_reading.none");
 			return;
 		}
-		ServerLevelData weather = level.getLevelData();
+		ServerLevelData weather = (ServerLevelData) level.getLevelData();
 		if (weather.getClearWeatherTime() > 0) {
 			tell(cast, "sky_reading.held", WayfarerRules.minutes(weather.getClearWeatherTime()));
 		} else if (weather.isRaining()) {
@@ -784,7 +784,7 @@ public final class WayfarerEffects {
 	private static void dye(Cast cast, Cast.Hit hit, double radius, boolean checker) {
 		ServerLevel level = cast.level;
 		ItemStack held = cast.caster.getOffhandItem();
-		DyeColor color = held.get(DataComponents.DYE);
+		DyeColor color = (held.getItem() instanceof net.minecraft.world.item.DyeItem dyeItem ? dyeItem.getDyeColor() : null);
 		if (color == null) {
 			tell(cast, "dye_wash.no_dye");
 			return;

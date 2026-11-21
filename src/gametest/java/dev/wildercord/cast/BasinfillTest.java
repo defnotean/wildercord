@@ -65,7 +65,7 @@ public final class BasinfillTest implements FabricClientGameTest {
                 check(recipe.isPresent(),"Generated acquisition recipe loaded");
                 var input=net.minecraft.world.item.crafting.CraftingInput.of(3,1,List.of(new ItemStack(WildercordItems.BLANK_RUNE),new ItemStack(net.minecraft.world.item.Items.CLAY_BALL),new ItemStack(net.minecraft.world.item.Items.WATER_BUCKET)));
                 var crafted=s.getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING,input,s.overworld());
-                check(crafted.isPresent() && Runes.BASINFILL.id().equals(crafted.get().value().assemble(input).get(dev.wildercord.content.WildercordComponents.RUNE)),"Actual recipe crafts Basinfill");
+                check(crafted.isPresent() && Runes.BASINFILL.id().equals(crafted.get().value().assemble(input, level.registryAccess()).get(dev.wildercord.content.WildercordComponents.RUNE)),"Actual recipe crafts Basinfill");
                 check(crafted.get().value().getRemainingItems(input).stream().anyMatch(stack -> stack.is(net.minecraft.world.item.Items.BUCKET)),"Craft returns empty bucket");
                 basin(p,100,2,2);
                 var veto=new java.util.concurrent.atomic.AtomicBoolean(true);

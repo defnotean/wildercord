@@ -597,7 +597,7 @@ public final class FarmEffects {
 			for (Direction side : Direction.Plane.HORIZONTAL.shuffledCopy(cast.level.getRandom())) {
 				BlockPos spot = p.relative(side);
 				BlockState ground = cast.level.getBlockState(spot.below());
-				if (!cast.level.getBlockState(spot).isAir() || !ground.is(BlockTags.SUPPORTS_STEM_FRUIT)) {
+				if (!cast.level.getBlockState(spot).isAir() || !ground.is(BlockTags.DIRT)) {
 					continue;
 				}
 				if (!Casters.mayEdit(cast.caster, cast.level, spot) || !cast.takeBlock()) {
@@ -844,7 +844,7 @@ public final class FarmEffects {
 				if (recipe.isEmpty()) {
 					break;
 				}
-				ItemStack out = recipe.get().value().assemble(input);
+				ItemStack out = recipe.get().value().assemble(input, level.registryAccess());
 				if (out.isEmpty()) {
 					break;
 				}

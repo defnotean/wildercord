@@ -40,7 +40,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 				for(var parts:List.of(List.of(AuraBeasts.STONEHORN_PLATE,Items.CLAY_BALL,Items.WHEAT,AuraBeasts.BASTION_POULTICE),List.of(AuraBeasts.GALECLAW_PLUME,Items.COPPER_INGOT,Items.STRING,AuraBeasts.RIDGE_WHISTLE))) {
 					var input=net.minecraft.world.item.crafting.CraftingInput.of(3,1,List.of(new ItemStack(parts.get(0)),new ItemStack(parts.get(1)),new ItemStack(parts.get(2))));
 					var recipe=s.getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING,input,l);
-					check(recipe.isPresent() && recipe.get().value().assemble(input).is(parts.get(3)),"Actual loaded recipe crafts the intended field tool");
+					check(recipe.isPresent() && recipe.get().value().assemble(input, level.registryAccess()).is(parts.get(3)),"Actual loaded recipe crafts the intended field tool");
 				}
 				check(AuraBeasts.maySpawn(AuraBeasts.STONEHORN,l,EntitySpawnReason.NATURAL,new BlockPos(0,101,0)),"Dry open highland ground permits a natural spawn");
 				l.setBlock(new BlockPos(20,101,20),Blocks.STONE.defaultBlockState(),2);check(!AuraBeasts.maySpawn(AuraBeasts.STONEHORN,l,EntitySpawnReason.NATURAL,new BlockPos(20,101,20)),"Occupied habitat is rejected");

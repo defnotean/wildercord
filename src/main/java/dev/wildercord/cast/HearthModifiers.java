@@ -603,7 +603,7 @@ public final class HearthModifiers {
 		if (recipe.isEmpty()) {
 			return stack;
 		}
-		ItemStack out = recipe.get().value().assemble(input);
+		ItemStack out = recipe.get().value().assemble(input, level.registryAccess());
 		if (out.isEmpty()) {
 			return stack;
 		}

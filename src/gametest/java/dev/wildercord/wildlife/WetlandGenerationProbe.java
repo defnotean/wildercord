@@ -168,7 +168,7 @@ public final class WetlandGenerationProbe {
   } finally {INVOCATION.remove();}
  }
  public static void afterRequestedChunk(ChunkPos chunk) {
-  var session=active;if(session!=null && session.scope.inside(chunk.x(),chunk.z()))session.checkpoint(chunk);
+  var session=active;if(session!=null && session.scope.inside(chunk.x,chunk.z))session.checkpoint(chunk);
  }
  private static String position(BlockPos pos) {return pos.getX()+"/"+pos.getY()+"/"+pos.getZ();}
 

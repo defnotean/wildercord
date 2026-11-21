@@ -177,7 +177,7 @@ public final class DungeonWards extends SavedData {
 			for (long packed : entry.getValue()) {
 				if (++references > 64) return MovementWard.UNKNOWN;
 				ChunkPos reference = new ChunkPos(packed);
-				var startChunk = level.getChunkSource().getChunkNow(reference.x(), reference.z());
+				var startChunk = level.getChunkSource().getChunkNow(reference.x, reference.z);
 				if (startChunk == null) return MovementWard.UNKNOWN;
 				StructureStart start = startChunk.getStartForStructure(entry.getKey());
 				if (start == null || !start.isValid()) return MovementWard.UNKNOWN;
@@ -211,7 +211,7 @@ public final class DungeonWards extends SavedData {
 		ChunkPos centre = new ChunkPos(pos);
 		for (int dx = -chunkRadius; dx <= chunkRadius; dx++) {
 			for (int dz = -chunkRadius; dz <= chunkRadius; dz++) {
-				BlockPos at = new BlockPos(((centre.x() + dx) << 4) + 8, pos.getY(), ((centre.z() + dz) << 4) + 8);
+				BlockPos at = new BlockPos(((centre.x + dx) << 4) + 8, pos.getY(), ((centre.z + dz) << 4) + 8);
 				if (!level.hasChunkAt(at)) {
 					continue;
 				}

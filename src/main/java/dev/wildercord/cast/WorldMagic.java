@@ -1239,7 +1239,7 @@ public final class WorldMagic {
 					BlockPos pos = centre.offset(dx, dy, dz);
 					// Grass left the dirt tag in 26.3: both are ground a bloom can take.
 					net.minecraft.world.level.block.state.BlockState ground = level.getBlockState(pos.below());
-					if (level.getBlockState(pos).isAir() && (ground.is(BlockTags.DIRT) || ground.is(BlockTags.GRASS_BLOCKS))) {
+					if (level.getBlockState(pos).isAir() && (ground.is(BlockTags.DIRT) || ground.is(Blocks.GRASS_BLOCK))) {
 						spots.add(pos);
 						break;
 					}
@@ -1367,7 +1367,7 @@ public final class WorldMagic {
 		int grownUp = 0;
 		if (lasting && !cast.passive) {
 			AABB box = new AABB(at, at).inflate(WorldRules.AGE_BABY_RADIUS);
-			for (AgeableMob baby : level.getEntitiesOfClass(AgeableMob.class, box, m -> m.isAlive() && m.canAgeUp())) {
+			for (AgeableMob baby : level.getEntitiesOfClass(AgeableMob.class, box, m -> m.isAlive() && m.canBreed())) {
 				if (grownUp >= WorldRules.AGE_BABIES || left(cast, EDITS) <= 0) {
 					break;
 				}

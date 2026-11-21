@@ -661,7 +661,7 @@ public final class TideEffects {
 	}
 
 	private static void stormGlass(Cast cast) {
-		var weather = cast.level.getLevelData();
+		net.minecraft.world.level.storage.ServerLevelData weather = (net.minecraft.world.level.storage.ServerLevelData) cast.level.getLevelData();
 		int turn = TideRules.weatherTurn(weather.isRaining(), weather.getRainTime(), weather.getClearWeatherTime());
 		Component said = turn > 0 ? Component.translatable("message.wildercord.tide.rain_ends", turn)
 			: turn < 0 ? Component.translatable("message.wildercord.tide.rain_starts", -turn)

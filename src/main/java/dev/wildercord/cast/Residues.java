@@ -26,7 +26,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -136,12 +135,8 @@ public final class Residues {
 
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(Residues::tick);
-		ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.register((level, chunk, oldStatus, newStatus) -> {
-			// A resident chunk can become accessible again without another CHUNK_LOAD event.
-			// Its full-chunk future may still be incomplete here: only queue, never read blocks.
-			if (oldStatus != FullChunkStatus.INACCESSIBLE || !newStatus.isOrAfter(FullChunkStatus.FULL)) {
-				return;
-			}
+		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+		// 1.21.11 has no full-chunk-status hook: chunk load is when a resident chunk is accessible again.
 			Record record = level.getDataStorage().get(Record.TYPE);
 			long key = chunk.getPos().pack();
 			if (record != null && record.ledger.inChunk(key) > 0) {

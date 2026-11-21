@@ -988,7 +988,7 @@ public final class HearthEffects {
 
 	private static void skyread(ServerPlayer caster, ServerLevel level) {
 		ServerLevel sky = level.getServer().overworld();
-		var weather = sky.getLevelData();
+		net.minecraft.world.level.storage.ServerLevelData weather = (net.minecraft.world.level.storage.ServerLevelData) sky.getLevelData();
 		String key;
 		int ticks;
 		if (weather.isThundering()) {

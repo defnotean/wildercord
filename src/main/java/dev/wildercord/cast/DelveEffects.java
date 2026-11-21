@@ -634,7 +634,7 @@ final class DelveEffects {
 			if (recipe.isEmpty()) {
 				continue;
 			}
-			ItemStack out = recipe.get().value().assemble(input);
+			ItemStack out = recipe.get().value().assemble(input, level.registryAccess());
 			if (out.getCount() != 1 || !(out.getItem() instanceof BlockItem block) || block.getBlock().defaultBlockState().hasBlockEntity()) {
 				continue;
 			}
@@ -721,7 +721,7 @@ final class DelveEffects {
 			if (recipe.isEmpty()) {
 				continue;
 			}
-			ItemStack out = recipe.get().value().assemble(input);
+			ItemStack out = recipe.get().value().assemble(input, level.registryAccess());
 			if (out.getCount() != 1 || !(out.getItem() instanceof BlockItem) || out.is(item)
 				|| recipe.get().value().getRemainingItems(input).stream().anyMatch(s -> !s.isEmpty())) {
 				continue;
@@ -754,7 +754,7 @@ final class DelveEffects {
 			if (recipe.isEmpty()) {
 				continue;
 			}
-			ItemStack out = recipe.get().value().assemble(input);
+			ItemStack out = recipe.get().value().assemble(input, level.registryAccess());
 			if (out.getCount() != 9 || out.is(item) || recipe.get().value().getRemainingItems(input).stream().anyMatch(s -> !s.isEmpty())) {
 				continue;
 			}

@@ -104,10 +104,10 @@ public final class KnightSpawner {
 		ChunkPos centre = new ChunkPos(pos);
 		for (int dx = -1; dx <= 1; dx++) {
 			for (int dz = -1; dz <= 1; dz++) {
-				if (!level.hasChunk(centre.x() + dx, centre.z() + dz)) {
+				if (!level.hasChunk(centre.x + dx, centre.z + dz)) {
 					continue;
 				}
-				LevelChunk chunk = level.getChunk(centre.x() + dx, centre.z() + dz);
+				LevelChunk chunk = level.getChunk(centre.x + dx, centre.z + dz);
 				for (BlockEntity entity : chunk.getBlockEntities().values()) {
 					if (entity instanceof SpawnerBlockEntity && entity.getBlockPos().distSqr(pos) < 100) {
 						BlockState floor = level.getBlockState(entity.getBlockPos().below());

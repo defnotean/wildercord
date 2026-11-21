@@ -253,7 +253,7 @@ public final class Rituals {
 
 	/** Clear Skies and Call Storm. */
 	public static boolean weather(ServerLevel level, boolean storm) {
-		ServerLevelData weather = level.getLevelData();
+		ServerLevelData weather = (ServerLevelData) level.getLevelData();
 		if (storm) {
 			weather.setClearWeatherTime(0);
 			weather.setRaining(true);

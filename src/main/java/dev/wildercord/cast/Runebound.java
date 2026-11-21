@@ -274,8 +274,8 @@ public final class Runebound {
 			name.append(Component.literal("» ").withColor(0xFFFFFF));
 		}
 		for (RuneDef rune : spell) {
-			name.append(Component.object(new AtlasSprite(AtlasIds.ITEMS, Wildercord.id("item/rune/" + rune.path())),
-				Component.literal("◆").withColor(RuneColors.of(rune))));
+			name.append(Component.object(new AtlasSprite(AtlasIds.ITEMS, Wildercord.id("item/rune/" + rune.path()))));
+			name.append(Component.literal("◆").withColor(RuneColors.of(rune)));
 		}
 		int color = elementColor(spell);
 		MutableComponent title = Component.literal(" " + (adept ? "Adept · " : "") + SpellNames.auto(spell)).withColor(casting ? 0xFFFFFF : color);

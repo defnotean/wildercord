@@ -75,7 +75,7 @@ public abstract class MasterSitePiece extends DungeonPiece {
 
 	/** Which school a chunk's hall keeps: stable, and both appear across a world. */
 	static boolean altFor(ChunkPos chunk) {
-		return Math.floorMod(chunk.x() * 7 + chunk.z() * 13 + (chunk.x() >> 2), 2) == 1;
+		return Math.floorMod(chunk.x * 7 + chunk.z * 13 + (chunk.x >> 2), 2) == 1;
 	}
 
 	// ------------------------------------------------------------------ locating
