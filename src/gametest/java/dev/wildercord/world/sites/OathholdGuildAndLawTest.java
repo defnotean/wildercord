@@ -210,12 +210,13 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				l.setBlock(new BlockPos(8, 120, -5), Blocks.BLAST_FURNACE.defaultBlockState(), 3);
 				l.setBlock(new BlockPos(6, 120, -5), Blocks.SMITHING_TABLE.defaultBlockState(), 3);
 
-				// Sand Colosseum Ring centered at (-18, 120, 14)
+				// Sand Colosseum Ring centered at (-18, 120, 14) with sandstone base at y = 118 so sand never falls
 				for (int dx = -8; dx <= 8; dx++) {
 					for (int dz = -8; dz <= 8; dz++) {
 						double d = Math.hypot(dx, dz);
 						int wx = ARENA_CENTER.getX() + dx;
 						int wz = ARENA_CENTER.getZ() + dz;
+						l.setBlock(new BlockPos(wx, 118, wz), Blocks.SANDSTONE.defaultBlockState(), 3);
 						if (d <= 6.4) {
 							l.setBlock(new BlockPos(wx, 119, wz), Blocks.SAND.defaultBlockState(), 3);
 						} else if (d <= 7.8 && !(Math.abs(dz) <= 1 && dx > 0)) {
@@ -223,7 +224,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 						}
 					}
 				}
-				for (int[] col : new int[][]{{-24, 8}, {-24, 20}, {-12, 8}, {-12, 20}}) {
+				for (int[] col : new int[][]{{-25, 7}, {-25, 21}, {-11, 7}, {-11, 21}}) {
 					l.setBlock(new BlockPos(col[0], 120, col[1]), Blocks.CHISELED_STONE_BRICKS.defaultBlockState(), 3);
 					l.setBlock(new BlockPos(col[0], 121, col[1]), Blocks.CHISELED_STONE_BRICKS.defaultBlockState(), 3);
 					l.setBlock(new BlockPos(col[0], 122, col[1]), Blocks.GOLD_BLOCK.defaultBlockState(), 3);
@@ -240,7 +241,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				spawnCitizen(l, OathholdCitizenRules.Archetype.BAKER_COOK, -4, 120, -1, 15.0F);
 				spawnCitizen(l, OathholdCitizenRules.Archetype.SCHOLAR_SCRIBE, 4, 120, -1, -20.0F);
 				spawnCitizen(l, OathholdCitizenRules.Archetype.STREET_SWEEPER, -3, 120, 2, 180.0F);
-				spawnCitizen(l, OathholdCitizenRules.Archetype.CITY_WATCHMAN, 5, 120, 2, 180.0F);
+				spawnCitizen(l, OathholdCitizenRules.Archetype.CITY_WATCHMAN, 7, 120, 0, -90.0F);
 				spawnCitizen(l, OathholdCitizenRules.Archetype.ARENA_PROMOTER, -10, 120, 14, -90.0F);
 				UUID clericId = spawnCitizen(l, OathholdCitizenRules.Archetype.PRIEST_CLERIC, 9, 120, 3, -90.0F);
 				UUID targetCitizenId = spawnCitizen(l, OathholdCitizenRules.Archetype.TOWNSFOLK, -6, 120, 2, 0.0F);
@@ -431,7 +432,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 
 				OathboundHalberdier watcher = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
 				check(watcher != null, "Failed to spawn arena watcher knight");
-				watcher.snapTo(ARENA_CENTER.getX() + 7.5, 120.0, ARENA_CENTER.getZ() + 3.5, 115.0F, 0.0F);
+				watcher.snapTo(ARENA_CENTER.getX() + 3.5, 120.0, ARENA_CENTER.getZ() - 5.5, 25.0F, 0.0F);
 				watcher.finalizeSpawn(l, l.getCurrentDifficultyAt(watcher.blockPosition()), EntitySpawnReason.COMMAND, null);
 				l.addFreshEntity(watcher);
 
@@ -443,7 +444,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 			});
 
 			context.waitTicks(8);
-			director(context, world, new Vec3(-10.5, 123.6, 22.0), new Vec3(-17.5, 121.1, 14.0));
+			director(context, world, new Vec3(-12.2, 123.6, 19.8), new Vec3(-18.2, 121.0, 14.0));
 			shot(context, "oathhold_guild_04_arena_bout_duel");
 			cut(context, world);
 
