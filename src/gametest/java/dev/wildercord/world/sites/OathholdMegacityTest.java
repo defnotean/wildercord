@@ -58,30 +58,29 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 		ctx.runOnClient(mc -> {
 			mc.options.renderDistance().set(renderDist);
 			mc.options.fov().set(fov);
+			mc.options.broadcastOptions();
+			mc.levelRenderer.allChanged();
 		});
 		double eye = 1.62, dx = tx - x, dy = ty - (y + eye), dz = tz - z;
 		float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
 		float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
 		int chunkR = Math.min(8, renderDist);
 		world.getServer().runOnServer(s -> {
+			s.getPlayerList().setViewDistance(renderDist);
 			ServerLevel level = s.overworld();
 			warmArea(level, (int) Math.floor(x), (int) Math.floor(z), chunkR);
 			warmArea(level, (int) Math.floor(tx), (int) Math.floor(tz), chunkR);
 			ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
 			p.teleportTo(level, x, y, z, Set.<Relative>of(), yaw, pitch, false);
 		});
-		ctx.waitTicks(20);
-		for (int attempt = 0; attempt < 4; attempt++) {
-			try {
-				world.getConnection().waitForChunksDownload();
-				world.getConnection().waitForClientboundPackets();
-				world.getConnection().waitForChunksRender();
-				break;
-			} catch (AssertionError | RuntimeException ignored) {
-				ctx.waitTicks(40);
-			}
+		ctx.waitTicks(40);
+		try {
+			world.getConnection().waitForChunksDownload();
+			world.getConnection().waitForClientboundPackets();
+			world.getConnection().waitForChunksRender();
+		} catch (AssertionError | RuntimeException ignored) {
 		}
-		ctx.waitTicks(10);
+		ctx.waitTicks(40);
 	}
 
 	private static void shot(ClientGameTestContext ctx, String name) {
@@ -104,9 +103,10 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 
 			context.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1280, 720);
-				mc.options.renderDistance().set(10);
+				mc.options.renderDistance().set(12);
 				mc.options.simulationDistance().set(5);
 				mc.options.fov().set(74);
+				mc.options.broadcastOptions();
 				mc.resizeGui();
 				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
 			});
@@ -192,7 +192,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			});
 
 			// 3. Capture 6 showcase screenshots for 1:1 visual inspection against concept art
-			lookAt(context, world, ox, by + 98, oz + 112, ox, by + 26, oz - 115, 19, 86);
+			lookAt(context, world, ox, by + 92, oz + 96, ox, by + 26, oz - 115, 18, 86);
 			shot(context, "oathhold_01_aerial_overview");
 
 			lookAt(context, world, ox + 0.5, by + 4.0, oz + 266, ox + 0.5, by + 18, oz + 224, 10, 72);
@@ -201,10 +201,10 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			lookAt(context, world, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 4.0, oz - 106, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 17, oz - 196, 10, 74);
 			shot(context, "oathhold_03_great_hall_interior");
 
-			lookAt(context, world, ox - 62, by + 22, oz + 96, ox + 26, by + 18, oz - 56, 17, 76);
+			lookAt(context, world, ox - 58, by + 22, oz + 86, ox + 26, by + 18, oz - 56, 16, 76);
 			shot(context, "oathhold_04_districts_courtyard");
 
-			lookAt(context, world, ox - 546, by + 50, oz + 64, ox - 612, by + 10, oz, 12, 72);
+			lookAt(context, world, ox - 546, by + 50, oz + 64, ox - 612, by + 10, oz, 10, 72);
 			shot(context, "oathhold_05_outer_metropolis_colosseum");
 
 			lookAt(context, world, ox + 740, by + 46, oz + 12, ox + 885, by + 18, oz - 92, 16, 74);
