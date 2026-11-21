@@ -87,8 +87,10 @@ public final class OathholdGreatHall {
 				c.set(px, AY + 17, bz, OathholdCanvas.LANTERN);
 			}
 			// Hanging Emerald-Gold Heraldic Banners on both nave columns & gallery outer walls
-			c.wallBannerStrip(px < 0 ? -11 : 11, AY + 10, bz, 6, px < 0 ? Direction.EAST : Direction.WEST);
-			c.wallBannerStrip(px < 0 ? -24 : 24, AY + 12, bz, 6, px < 0 ? Direction.EAST : Direction.WEST);
+			c.wallBannerStrip(-11, AY + 10, bz, 6, Direction.EAST);
+			c.wallBannerStrip(11, AY + 10, bz, 6, Direction.WEST);
+			c.wallBannerStrip(-24, AY + 12, bz, 6, Direction.EAST);
+			c.wallBannerStrip(24, AY + 12, bz, 6, Direction.WEST);
 
 			// Transverse gothic vault arch curving overhead from lx = +-13 (y=AY+24) up to lx = 0 (y=AY+38)
 			for (int dx = 0; dx <= 13; dx++) {

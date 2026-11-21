@@ -6,7 +6,7 @@ import dev.wildercord.town.Town;
 import dev.wildercord.town.WayfarerKeeper;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.DyeColor;
@@ -460,10 +460,9 @@ public final class OathholdInnerCore {
 					OathholdStreetscape.hedgePlanter(c, 57, 0, 68, 61, 88);
 					OathholdStreetscape.patioTable(c, 58, 1, 78, Blocks.CARPET.red().defaultBlockState(), Blocks.WOOL.white().defaultBlockState());
 					if (c.inClip(50, 1, 69)) {
-						ArmorStand stand = EntityType.ARMOR_STAND.create(c.level().getLevel(), EntitySpawnReason.STRUCTURE);
+						ArmorStand stand = EntityTypes.ARMOR_STAND.create(c.level().getLevel(), EntitySpawnReason.STRUCTURE);
 						if (stand != null) {
 							stand.snapTo(c.wx(50) + 0.5, c.wy(1), c.wz(69) + 0.5, 160.0F, 0.0F);
-							stand.setPersistenceRequired();
 							stand.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
 							stand.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.IRON_CHESTPLATE));
 							stand.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.IRON_LEGGINGS));
