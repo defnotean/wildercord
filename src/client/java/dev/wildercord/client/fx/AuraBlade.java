@@ -163,14 +163,14 @@ public final class AuraBlade {
 		if (glow == null) {
 			return;
 		}
-		RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, buffer) -> soft(p, buffer, s, glow, time, fp));
-		RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> haze(p, buffer, s, glow, time, fp));
+		RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, vb) -> soft(p, vb, s, glow, time, fp));
+		RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, vb) -> haze(p, vb, s, glow, time, fp));
 		if (glow.stage() >= AuraRules.EDGE) {
-			RenderCompat.submitCustomGeometry(buffer, pose, CRYSTAL_TYPE, (p, buffer) -> crystal(p, buffer, s, glow, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, CRYSTAL_TYPE, (p, vb) -> crystal(p, vb, s, glow, time, fp));
 		}
 		if (glow.spell() != 0) {
-			RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, buffer) -> spellGlow(p, buffer, s, glow, time, fp));
-			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> spellBands(p, buffer, s, glow, time));
+			RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, vb) -> spellGlow(p, vb, s, glow, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, vb) -> spellBands(p, vb, s, glow, time));
 		}
 	}
 

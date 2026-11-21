@@ -75,7 +75,7 @@ public final class ShieldCircles {
 				}
 				return null;
 			}
-			Stack stack = new Stack(level, entity, new Vec3(x, y, z), dir, option, random);
+			Stack stack = new Stack(level, entity, new Vec3(x, y, z), dir, option, level.getRandom());
 			if (entity != null) {
 				SHOWING.put(entity.getId(), stack);
 			}

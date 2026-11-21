@@ -142,7 +142,7 @@ public class AuraBodyLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 			pose.pushPose();
 			if (!dev.wildercord.client.combat.ArticulatedCombat.head(getParentModel(), state, pose)) getParentModel().head.translateAndRotate(pose);
 			for (Ink ink : inks) {
-				RenderCompat.submitCustomGeometry(buffer, pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, buffer) -> eyes(p, buffer, body, ink));
+				RenderCompat.submitCustomGeometry(buffer, pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, vb) -> eyes(p, vb, body, ink));
 			}
 			pose.popPose();
 		}
@@ -165,7 +165,7 @@ public class AuraBodyLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		float yaw = state.bodyRot * Mth.DEG_TO_RAD;
 		Frame frame = new Frame(-Mth.sin(yaw), Mth.cos(yaw), camRight, camUp, toCamera);
 		for (Ink ink : inks) {
-			RenderCompat.submitCustomGeometry(buffer, pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, buffer) -> body(p, buffer, body, frame, ink));
+			RenderCompat.submitCustomGeometry(buffer, pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, vb) -> body(p, vb, body, frame, ink));
 		}
 		pose.popPose();
 	}

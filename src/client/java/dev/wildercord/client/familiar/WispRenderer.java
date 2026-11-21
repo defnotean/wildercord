@@ -144,7 +144,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 		// Under a shader pack the glow is drawn the plain way, and is left out of its shadows: it's light, not a thing.
 		boolean plain = ShaderCompat.active();
 		if (!ShaderCompat.shadowPass()) {
-			RenderCompat.submitCustomGeometry(buffer, poseStack, plain ? PLAIN_GLOW_TYPE : GLOW_TYPE, (pose, buffer) -> {
+			RenderCompat.submitCustomGeometry(buffer, poseStack, plain ? PLAIN_GLOW_TYPE : GLOW_TYPE, (pose, vb) -> {
 				// The tail, farthest first: beads of light shrinking and flickering along the way it came.
 				for (int i = tail.length / 3 - 1; i >= 0; i--) {
 					float along = (i + 1F) / (TAIL + 1F);
@@ -153,8 +153,8 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 					float x = tail[i * 3];
 					float y = tail[i * 3 + 1];
 					float z = tail[i * 3 + 2];
-					quad(buffer, pose, right, up, x, y, z, r * 2.3F, 0, PUFF, glow(plain, scale(color, 0.7F * fade * bright)));
-					quad(buffer, pose, right, up, x, y, z, r * 0.9F, 0, PUFF, glow(plain, scale(hot, 0.55F * fade * bright)));
+					quad(vb, pose, right, up, x, y, z, r * 2.3F, 0, PUFF, glow(plain, scale(color, 0.7F * fade * bright)));
+					quad(vb, pose, right, up, x, y, z, r * 0.9F, 0, PUFF, glow(plain, scale(hot, 0.55F * fade * bright)));
 				}
 				// Sparks twinkling along it, each a few ticks, somewhere new each time.
 				int beads = tail.length / 3;
@@ -166,19 +166,19 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 					float jy = (hashF(slot * 3 + 2) - 0.5F) * size * 1.2F;
 					float jz = (hashF(slot * 3 + 3) - 0.5F) * size * 1.2F;
 					float glint = Mth.sin(life * Mth.PI) * (1 - (i + 1F) / (beads + 1F));
-					quad(buffer, pose, right, up, tail[i * 3] + jx, tail[i * 3 + 1] + jy, tail[i * 3 + 2] + jz, size * 0.75F, t * 0.1F, SPARK,
+					quad(vb, pose, right, up, tail[i * 3] + jx, tail[i * 3 + 1] + jy, tail[i * 3 + 2] + jz, size * 0.75F, t * 0.1F, SPARK,
 						glow(plain, scale(hot, 0.9F * glint * bright)));
 				}
 				// The halo, a brighter heart, and a slow shimmer turning behind it.
 				float halo = size * (3.6F + 0.25F * breath + 1.3F * flare);
-				quad(buffer, pose, right, up, 0, 0, 0, halo, 0, HALO, glow(plain, scale(color, 0.62F * bright)));
-				quad(buffer, pose, right, up, 0, 0, 0, size * 1.9F, 0, HALO, glow(plain, scale(pale, 0.75F * bright)));
-				quad(buffer, pose, right, up, 0, 0, 0, size * (2.6F + 1.5F * flare), t * 0.03F, SPARK, glow(plain, scale(hot, (0.35F + 0.6F * flare) * bright)));
+				quad(vb, pose, right, up, 0, 0, 0, halo, 0, HALO, glow(plain, scale(color, 0.62F * bright)));
+				quad(vb, pose, right, up, 0, 0, 0, size * 1.9F, 0, HALO, glow(plain, scale(pale, 0.75F * bright)));
+				quad(vb, pose, right, up, 0, 0, 0, size * (2.6F + 1.5F * flare), t * 0.03F, SPARK, glow(plain, scale(hot, (0.35F + 0.6F * flare) * bright)));
 			});
 		}
-		RenderCompat.submitCustomGeometry(buffer, poseStack, BODY_TYPE, (pose, buffer) -> {
+		RenderCompat.submitCustomGeometry(buffer, poseStack, BODY_TYPE, (pose, vb) -> {
 			float half = size * (1.0F + 0.04F * breath + 0.12F * flare);
-			quad(buffer, pose, right, up, 0, 0, 0, half, 0, bodyFrame(frame), 0xFF000000 | mix(pale, 0xFFFFFF, 0.25F * flare));
+			quad(vb, pose, right, up, 0, 0, 0, half, 0, bodyFrame(frame), 0xFF000000 | mix(pale, 0xFFFFFF, 0.25F * flare));
 		});
 		poseStack.popPose();
 	}

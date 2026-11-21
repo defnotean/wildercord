@@ -39,7 +39,7 @@ public final class FerrymanRenderer extends dev.wildercord.client.compat.Cullabl
 	}
 	@Override public void render(FerrymanRenderState s, PoseStack pose, MultiBufferSource buffer, int light) {
 		CameraRenderState camera = RenderCompat.cameraState();
-		super.submit(s,pose,buffer,camera);
+		super.render(s,pose,buffer,light);
 		if(s.isInvisible || s.deathTime>0 || s.move==IDLE || s.elapsed>tell(s.move)+5) return;
 		RenderCompat.submitCustomGeometry(buffer, pose,RenderType.entityTranslucentEmissive(MARK),(p,b)->marks(s,p,b));
 	}

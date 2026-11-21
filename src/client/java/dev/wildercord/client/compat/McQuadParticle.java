@@ -12,6 +12,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 
 /**
  * The shape 1.21.9's {@code SingleQuadParticle} gives spell effects, on 1.21.8. There the particle fills
@@ -74,8 +77,30 @@ public abstract class McQuadParticle extends SingleQuadParticle {
 		return ParticleRenderType.CUSTOM;
 	}
 
-	/** Fills {@code state} with this particle's quads, in camera-relative space. */
-	public abstract void extract(QuadParticleRenderState state, Camera camera, float partial);
+	/** Fills {@code state} with this particle's quads, in camera-relative space. A particle that only
+	 * draws its own sprite gets vanilla's billboard for free. */
+	public void extract(QuadParticleRenderState state, Camera camera, float partial) {
+		extractDefault(state, camera, partial);
+	}
+
+	/** One billboard quad, turned by {@code rotation}: 1.21.9's {@code extractRotatedQuad}. */
+	protected void extractRotatedQuad(QuadParticleRenderState state, Camera camera, Quaternionf rotation, float partial) {
+		Vec3 eye = camera.getPosition();
+		float px = (float) (Mth.lerp(partial, xo, x) - eye.x);
+		float py = (float) (Mth.lerp(partial, yo, y) - eye.y);
+		float pz = (float) (Mth.lerp(partial, zo, z) - eye.z);
+		state.add(getLayer(), px, py, pz, rotation.x(), rotation.y(), rotation.z(), rotation.w(),
+				getQuadSize(partial), getU0(), getU1(), getV0(), getV1(), argb(), getLightColor(partial));
+	}
+
+	/** The particle's colour as ARGB, which 1.21.8 keeps as four floats. */
+	protected int argb() {
+		int a = (int) (Mth.clamp(alpha, 0F, 1F) * 255F);
+		int r = (int) (Mth.clamp(rCol, 0F, 1F) * 255F);
+		int g = (int) (Mth.clamp(gCol, 0F, 1F) * 255F);
+		int b = (int) (Mth.clamp(bCol, 0F, 1F) * 255F);
+		return a << 24 | r << 16 | g << 8 | b;
+	}
 
 	@Override
 	public ParticleRenderType getRenderType() {

@@ -183,20 +183,20 @@ public final class BondGlow {
 			return;
 		}
 		Look l = look;
-		RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, buffer) -> veinGlow(p, buffer, s, l, time, fp));
-		RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> vein(p, buffer, s, l, time, fp));
+		RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, vb) -> veinGlow(p, vb, s, l, time, fp));
+		RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, vb) -> vein(p, vb, s, l, time, fp));
 		if (l.tier() >= BladeRules.NAMED && !l.cold()) {
-			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> marks(p, buffer, s, l, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, vb) -> marks(p, vb, s, l, time, fp));
 		}
 		if (l.tier() >= BladeRules.AWAKENED && !l.cold() && s.flat()) {
-			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> tongues(p, buffer, s, l, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, vb) -> tongues(p, vb, s, l, time, fp));
 		}
 		if (l.tier() >= BladeRules.SOULFORGED && !l.cold()) {
-			RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, buffer) -> corona(p, buffer, s, l, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, vb) -> corona(p, vb, s, l, time, fp));
 			if (s.flat()) {
-				RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> rim(p, buffer, s, l, time, fp));
+				RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, vb) -> rim(p, vb, s, l, time, fp));
 			}
-			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> halo(p, buffer, s, l, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, vb) -> halo(p, vb, s, l, time, fp));
 		}
 	}
 
@@ -436,21 +436,21 @@ public final class BondGlow {
 		}
 		if (day) {
 			// By day added light alone washes out on bright ground: a soft shade of its colour lies under the pool, so the light reads.
-			RenderCompat.submitCustomGeometry(buffer, pose, SHADE_TYPE, (p, buffer) -> shade(p, buffer, look));
+			RenderCompat.submitCustomGeometry(buffer, pose, SHADE_TYPE, (p, vb) -> shade(p, vb, look));
 		}
 		// Under a shader pack the ground's lights are drawn as emissive translucency (a pack lights glowing eyes as it pleases, and a
 		// tall column drawn that way came out dark at night).
 		boolean pack = ShaderCompat.active();
 		RenderType soft = pack ? SOFT_PACK_TYPE : SOFT_TYPE;
-		RenderCompat.submitCustomGeometry(buffer, pose, soft, (p, buffer) -> pool(p, buffer, look, time));
+		RenderCompat.submitCustomGeometry(buffer, pose, soft, (p, vb) -> pool(p, vb, look, time));
 		// A soft glow round it, turned to whoever looks, so a blade lying in the grass is seen from a way off.
 		pose.pushPose();
 		pose.translate(0, 0.3F, 0);
 		dev.wildercord.client.compat.RenderCompat.rotate(pose, facing);
-		RenderCompat.submitCustomGeometry(buffer, pose, soft, (p, buffer) -> aura(p, buffer, look, time));
+		RenderCompat.submitCustomGeometry(buffer, pose, soft, (p, vb) -> aura(p, vb, look, time));
 		pose.popPose();
 		if (look.tier() >= BladeRules.SOULFORGED) {
-			RenderCompat.submitCustomGeometry(buffer, pose, pack ? HAZE_PACK_TYPE : HAZE_TYPE, (p, buffer) -> column(p, buffer, look, time));
+			RenderCompat.submitCustomGeometry(buffer, pose, pack ? HAZE_PACK_TYPE : HAZE_TYPE, (p, vb) -> column(p, vb, look, time));
 		}
 	}
 

@@ -91,6 +91,11 @@ public final class RenderCompat {
 		model.renderToBuffer(pose, buffers.getBuffer(type), light, overlay, color);
 	}
 
+	/** The frame's partial tick, for the few 1.21.8 APIs that still ask for one. */
+	public static float partialTick() {
+		return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+	}
+
 	/** Poses a model for its state, which 1.21.8's {@code renderToBuffer} does not do for you. */
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private static <S> void poseFor(Model model, S state) {

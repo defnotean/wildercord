@@ -33,7 +33,10 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 	}
 
 	@Override
+	private AuraFighterRenderState posedState;
+
 	public void setupAnim(AuraFighterRenderState state) {
+		posedState = state;
 		// Models are reused between entities and render passes. Reset accessories as well as limbs,
 		// and explicitly restore hilt visibility, so cancellation/reuse cannot retain a combat pose.
 		articulated.restoreRigid(this);
@@ -123,6 +126,8 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 
 	@Override
 	public void translateToHand(HumanoidArm arm, PoseStack stack) {
+		AuraFighterRenderState state = posedState;
+		if (state == null) { super.translateToHand(arm, stack); return; }
 		var frame = dev.wildercord.client.combat.ArticulatedCombat.frame(state);
 		if (frame == null) { super.translateToHand(arm, stack); return; }
 		dev.wildercord.client.combat.ArticulatedCombat.translateHeld(articulated, this, state, arm, stack);

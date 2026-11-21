@@ -19,6 +19,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import dev.wildercord.client.compat.McQuadParticle;
 import dev.wildercord.client.compat.QuadParticleRenderState;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -170,17 +171,18 @@ public class SpellCircleParticle extends McQuadParticle implements SigilGroup.Ex
 
 	/** A rune's pattern ({@code band}) or emblem ({@code mark}), drawn by tools/circle_art.py; add-ons get their family's. */
 	static TextureAtlasSprite runeSprite(String rune, RuneDef def, String part) {
-		TextureAtlas atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_PARTICLES);
+		java.util.function.Function<ResourceLocation, TextureAtlasSprite> atlas =
+			Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_PARTICLES);
 		ResourceLocation id = ResourceLocation.tryParse(rune);
 		if (id != null && id.getNamespace().equals(Wildercord.MOD_ID)) {
-			TextureAtlasSprite own = atlas.getSprite(Wildercord.id("circle/" + id.getPath() + "_" + part));
-			if (own != atlas.missingSprite()) {
+			TextureAtlasSprite own = atlas.apply(Wildercord.id("circle/" + id.getPath() + "_" + part));
+			if (own != atlas.apply(MissingTextureAtlasSprite.getLocation())) {
 				return own;
 			}
 		}
 		// A Knot is a spell tied up: it wears the links' ring and emblem.
 		String family = def == null ? "effect" : def.family() == RuneFamily.KNOT ? "link" : def.family().name().toLowerCase(Locale.ROOT);
-		return atlas.getSprite(Wildercord.id("circle/_" + family + "_" + part));
+		return atlas.apply(Wildercord.id("circle/_" + family + "_" + part));
 	}
 
 	/**

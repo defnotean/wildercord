@@ -106,16 +106,16 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		boolean whole = frame.alpha() >= 0.999F;
 		int body = (Math.round(frame.alpha() * 255) << 24) | 0xFFFFFF;
 		RenderCompat.submitCustomGeometry(buffer, poseStack, whole ? RenderType.entityCutout(skin) : RenderType.entityTranslucent(skin),
-			(pose, buffer) -> rig.emit(placed, bone -> true, mirror < 0, pose, buffer, body, overlay, light));
+			(pose, vb) -> rig.emit(placed, bone -> true, mirror < 0, pose, vb, body, overlay, light));
 		float glow = (.7F + .3F * state.windup) * AuraFighterRenderer.alive(state) * frame.alpha();
 		int eyes = AuraFighterRenderer.tint(glow, state.color);
 		if ((eyes >>> 24) >= 4) RenderCompat.submitCustomGeometry(buffer, poseStack, RenderType.eyes(RIG_GLOW),
-			(pose, buffer) -> rig.emit(placed, bone -> !blade[bone], mirror < 0, pose, buffer, eyes, overlay, light));
+			(pose, vb) -> rig.emit(placed, bone -> !blade[bone], mirror < 0, pose, vb, eyes, overlay, light));
 		AuraBlade.Glow aura = state.getData(AuraBlade.GLOW);
 		if (aura != null && state.drawn > 0.5F) {
 			int edge = AuraFighterRenderer.tint(Math.min(1, aura.strength()) * frame.alpha(), aura.color());
 			if ((edge >>> 24) >= 4) RenderCompat.submitCustomGeometry(buffer, poseStack, RenderType.eyes(RIG_BLADE),
-				(pose, buffer) -> rig.emit(placed, bone -> blade[bone], mirror < 0, pose, buffer, edge, overlay, light));
+				(pose, vb) -> rig.emit(placed, bone -> blade[bone], mirror < 0, pose, vb, edge, overlay, light));
 		}
 		poseStack.popPose();
 
@@ -130,7 +130,7 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 			Matrix4f[] image = rig.matrices(ghost.pose());
 			int tint = AuraFighterRenderer.tint(ghost.alpha(), state.color);
 			RenderCompat.submitCustomGeometry(buffer, poseStack, RenderType.entityTranslucent(skin),
-				(pose, buffer) -> rig.emit(image, bone -> true, mirror < 0, pose, buffer, tint, overlay, light));
+				(pose, vb) -> rig.emit(image, bone -> true, mirror < 0, pose, vb, tint, overlay, light));
 			poseStack.popPose();
 		}
 	}
