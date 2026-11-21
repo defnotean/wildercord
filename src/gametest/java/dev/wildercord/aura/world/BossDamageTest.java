@@ -198,8 +198,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var player = p(s);
 				var level = s.overworld();
 				for (var e : level.getEntities(player, player.getBoundingBox().inflate(48))) e.discard();
-				for (int dx = -8; dx <= 8; dx++) {
-					for (int dz = -8; dz <= 8; dz++) {
+				for (int dx = -12; dx <= 12; dx++) {
+					for (int dz = -12; dz <= 12; dz++) {
 						level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, 100, dz), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
 						for (int dy = 101; dy <= 104; dy++) {
 							level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, dy, dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
@@ -239,7 +239,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 
 				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
 				check(bastion != null && dev.wildercord.cast.Spirits.isBoss(bastion), "oathbound_bastion recognized as boss");
-				bastion.setPos(0.5, 101, -4.5);
+				bastion.setPos(0.5, 101, -9.5);
 				bastion.setPersistenceRequired();
 				level.addFreshEntity(bastion);
 				liveBossId[0] = bastion.getUUID();

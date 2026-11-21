@@ -1417,7 +1417,7 @@ public final class Effects {
 				hurt(cast, t, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 5 * power * Reactions.storm(cast, t));
 				Vec3 away = horizontal(t.position().subtract(point), cast.caster.getLookAngle());
 				push(t, away.scale(0.8 * Math.sqrt(power)).add(0, 0.3, 0));
-				Spirits.hold(t, 10, caster);
+				Spirits.hold(t, 10, cast.caster);
 				if (t instanceof Mob mob && !Spirits.isBoss(mob)) {
 					mob.setTarget(null);
 				}
