@@ -21,6 +21,7 @@ Six magical monsters live beside the zombies and skeletons, and **fallen knights
 | [Fallen Knight](#fallen-knight) | Strongholds, ancient cities, expeditions, dungeons | Blade raised, a line of light on the ground | Step off the line; break its guard with an axe | Manual Pages, Aura Shards |
 | [Oathbound Bastion](#oathbound-bastion) | Deep haunts (strongholds, ancient cities, expeditions) | Hexagonal shield barrier, overhead mace windup | Shatter guard with an axe; bait Shield-Ram into walls; clear shockwave ring | Iron/Stone Manual Pages, 2–3 Aura Shards, Gold, Iron, Diamonds |
 | [Oathbound Blade-Champion](#oathbound-blade-champion) | Deep haunts (strongholds, ancient cities, expeditions) | Two-handed diagonal blade parry, forward pommel lunge, overhead Zweihänder arch | Smash Wrathful Riposte with an axe; dodge the shield-shattering Pommel-Break Lunge; sidestep the Guillotine fissure | Crimson/Ember Manual Pages, 2–4 Aura Shards, Gold, Iron, Diamonds |
+| [Oathbound Halberdier](#oathbound-halberdier) | Deep haunts (strongholds, ancient cities, expeditions) | Sweeping cyan storm coil, blink-thrust crouch, overhead halberd arch | Sidestep the 4-way Thunderbolt cross; interrupt halberd windups with an axe | Thunder/Gale Manual Pages, 2–4 Aura Shards, Iron, Gold, Diamonds |
 
 Any of the six can also be [Runebound](runebound.md). Their magic counts as spells, so
 armour, Warding and the spellguard all help. Your Grimoire's Bestiary fills in each one's
@@ -154,6 +155,17 @@ An elite duel-master of the Way of the Blade who haunts strongholds, ancient cit
 - **Crimson Crescent Cleave:** wide `180°` waist-high horizontal sweeps punish anyone circling lazily at medium range.
 - **Sky-Rending Guillotine:** after hoisting its Zweihänder high behind its plumed helm, it plunges the blade straight down into the stone, unleashing a forward crimson fissure (`6.5` blocks long) — sidestep the line and punish its ground-embedded recovery window.
 - **Drops:** `2–3` **Manual Pages** (Crimson and Ember), `2–4` **Aura Shards**, gold ingots, iron ingots, and diamonds.
+
+## Oathbound Halberdier
+
+
+A swift polearm sentinel of the Way of the Storm-Glaive who haunts strongholds, ancient cities, and sunken expeditions alongside Bastions, Blade-Champions, and fallen knights (`125` health, `13` armour, `6` armour toughness). Clad in gunmetal-indigo and cobalt plate with swept silver helm wings, a glowing cyan falcon-beak visor, flowing dark navy scarf, and violet-cyan rune circuits, it enters **Storm-Glaive Overdrive** below half health (`+18%` damage, faster tells).
+
+- **Tempest Whirl Cleave:** spins its Storm-Halberd through a wide `360°` cyan-and-violet lightning arc (`4.6`-block radius). **Smash its telegraphed windups with an axe** to stagger it (`+45%` damage taken).
+- **Shadowstep Blink-Thrust:** rockets straight ahead in a burst of electric sparks to skewer targets at long reach (`4.2` blocks).
+- **Hook-and-Reap Pull:** reaches out with the rear fluke of its halberd (`5.4`-block line) to yank prey inward off-balance with Slowness II.
+- **Valkyrie Sky-Vault & Thunderbolt Crash:** hoists its halberd overhead before plunging it into the stone to detonate a `6`-block four-way lightning cross across the floor.
+- **Drops:** `2–3` **Manual Pages** (Thunder and Gale), `2–4` **Aura Shards**, iron ingots, gold ingots, and diamonds.
 
 ## Mage-Hunter (0.13)
 
