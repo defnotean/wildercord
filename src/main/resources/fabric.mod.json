@@ -25,9 +25,9 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.20.1",
-		"minecraft": "~1.21.7",
+		"minecraft": "~1.21.6",
 		"java": ">=21",
-		"fabric-api": ">=0.129.0+1.21.7"
+		"fabric-api": ">=0.128.2+1.21.6"
 	},
 	"mixins": [
 		"wildercord.mixins.json",

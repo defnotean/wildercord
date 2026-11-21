@@ -1,20 +1,20 @@
 {
-  "minecraft": "1.21.7",
+  "minecraft": "1.21.6",
   "fabric_loader": "0.20.1",
   "dependencies": [
     {
       "project": "fabric-api",
-      "version": "0.129.0+1.21.7",
-      "version_id": "JntuF9Ul",
-      "filename": "fabric-api-0.129.0+1.21.7.jar",
-      "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/JntuF9Ul/fabric-api-0.129.0%2B1.21.7.jar",
-      "size": 2212353,
+      "version": "0.128.2+1.21.6",
+      "version_id": "F5TVHWcE",
+      "filename": "fabric-api-0.128.2+1.21.6.jar",
+      "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/F5TVHWcE/fabric-api-0.128.2%2B1.21.6.jar",
+      "size": 2209737,
       "hashes": {
-        "sha512": "43bf6af145a6b450503a6d7e7ec9a34912bd1494969b5d8861067f0f846cf710805415fb0fbc93c9ae9f5164d45c7649342f84b4f34552b2abdd892fd3b9838e",
-        "sha1": "60bb50ad1f7d316be9ba662e84089e1affdd44e6"
+        "sha512": "b6d0ec0aec40069cb1fa2159c126d027d7f95e3f6260a3e88ebe9c47f3cb716d1170af8e2e4ff3d4108ce5eeaea70002a889547578374d4d6dfa45755e99431e",
+        "sha1": "b273a883a3864108453a5d5f0b9e4f0a870c9579"
       },
       "game_versions": [
-        "1.21.7"
+        "1.21.6"
       ],
       "loaders": [
         "fabric"
