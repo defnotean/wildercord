@@ -1,5 +1,6 @@
 package dev.wildercord.client.render;
 
+import dev.wildercord.client.compat.RenderStateDataKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
