@@ -3,10 +3,11 @@ package dev.wildercord.client.cosmetic;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cosmetic.CordCosmetics;
 import dev.wildercord.cosmetic.CordStyles;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * How a player's Cord style reaches the Cord layer: read from the synced attachment into the
@@ -24,11 +25,11 @@ public final class CordStyleLook {
 
 	public static void extract(LivingEntity avatar, PlayerRenderState state) {
 		CordStyles.Style style = avatar.getAttached(CordCosmetics.STYLE);
-		state.setData(STYLE, style);
+		RenderStateData.set(state, STYLE, style);
 	}
 
 	public static CordStyles.Style of(PlayerRenderState state) {
-		CordStyles.Style style = state.getData(STYLE);
+		CordStyles.Style style = RenderStateData.get(state, STYLE);
 		return style == null ? CordStyles.Style.DEFAULT : style;
 	}
 

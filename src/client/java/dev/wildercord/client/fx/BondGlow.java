@@ -9,7 +9,7 @@ import dev.wildercord.aura.BladeBond;
 import dev.wildercord.aura.BladeRules;
 import dev.wildercord.aura.BondedBlades;
 import dev.wildercord.client.compat.ShaderCompat;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -28,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import java.util.UUID;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * A bonded blade's own glow, in the colour of its swordsman's aura, growing by its tier: drawn on the blade itself wherever it's drawn
@@ -97,11 +98,11 @@ public final class BondGlow {
 	/** Carries {@code avatar}'s part in its blade's glow into its render state. */
 	public static void extract(LivingEntity avatar, EntityRenderState state) {
 		if (!(avatar instanceof Player player)) {
-			state.setData(HOLDER, null);
+			RenderStateData.set(state, HOLDER, null);
 			return;
 		}
 		BondedBlades.Rite rite = player.getAttached(BondedBlades.RITE);
-		state.setData(HOLDER, new Holder(player.getUUID(), Aura.look(player).stage(), Awakening.awakened(player), rite == null ? 0 : rite.kind(),
+		RenderStateData.set(state, HOLDER, new Holder(player.getUUID(), Aura.look(player).stage(), Awakening.awakened(player), rite == null ? 0 : rite.kind(),
 			rite == null ? 0 : rite.start(), rite == null ? 0 : rite.ticks(), rite == null ? 0 : rite.color()));
 	}
 
@@ -140,7 +141,7 @@ public final class BondGlow {
 	static void beginThirdPerson(EntityRenderState state, boolean mainHand, ItemStack stack) {
 		Minecraft mc = Minecraft.getInstance();
 		long now = mc.level == null ? 0 : mc.level.getGameTime();
-		current = of(state.getData(HOLDER), stack, now, mainHand);
+		current = of(RenderStateData.get(state, HOLDER), stack, now, mainHand);
 		onGround = false;
 	}
 

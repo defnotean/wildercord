@@ -4,7 +4,7 @@ import dev.wildercord.backpack.BackpackTier;
 import dev.wildercord.backpack.Backpacks;
 import dev.wildercord.gear.GearSlot;
 import dev.wildercord.gear.GearSlots;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -16,6 +16,7 @@ import net.minecraft.world.item.component.DyedItemColor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * The casting gear a player wears in its slots, and their worn backpack, carried from the entity into the
@@ -39,10 +40,10 @@ public final class GearLook {
 	public static void extract(LivingEntity avatar, PlayerRenderState state) {
 		ItemStack backpack = Backpacks.look(avatar);
 		BackpackTier tier = Backpacks.tierOf(backpack);
-		state.setData(PACK, tier == null ? null : new Pack(tier, DyedItemColor.getOrDefault(backpack, 0xFF000000 | tier.color)));
+		RenderStateData.set(state, PACK, tier == null ? null : new Pack(tier, DyedItemColor.getOrDefault(backpack, 0xFF000000 | tier.color)));
 		Map<GearSlot, ItemStack> worn = GearSlots.equipped(avatar);
 		if (worn.isEmpty()) {
-			state.setData(PIECES, null);
+			RenderStateData.set(state, PIECES, null);
 			return;
 		}
 		List<Piece> pieces = new ArrayList<>(worn.size());
@@ -58,6 +59,6 @@ public final class GearLook {
 				pieces.add(new Piece(entry.getKey(), item));
 			}
 		}
-		state.setData(PIECES, pieces.isEmpty() ? null : List.copyOf(pieces));
+		RenderStateData.set(state, PIECES, pieces.isEmpty() ? null : List.copyOf(pieces));
 	}
 }

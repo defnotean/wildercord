@@ -16,6 +16,7 @@ import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.joml.Matrix4f;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Captures a complete immutable master frame from the synced server clock, including recovery. Where the Sword Master rig
@@ -52,13 +53,13 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 	@Override
 	public void extractRenderState(SwordMaster master, AuraFighterRenderState state, float partial) {
 		super.extractRenderState(master, state, partial);
-		state.setData(MasterModel.FRAME, null);
+		RenderStateData.set(state, MasterModel.FRAME, null);
 		dev.wildercord.client.combat.ArticulatedCombat.extractMaster(master, state, partial);
 		// This rig owns the entire swipe, including cancellation. A vanilla swing may not survive
 		// the server clearing an attack during its active tick.
 		dev.wildercord.client.compat.RenderCompat.clearSwingForCustomRig(state);
 		if (!state.isUpsideDown) MasterMotion.extract(master, state, partial);
-		else state.setData(MasterMotion.RIG, null);
+		else RenderStateData.set(state, MasterMotion.RIG, null);
 		if (!master.isAlive() || master.isRemoved() || state.deathTime > 0 || state.isUpsideDown) return;
 		var pose = master.state(AuraFighter.STAGGER) ? MasterAnimationRules.NONE
 			: master.attackAnimation() == MasterAnimationRules.TECHNIQUE ? MasterTechniques.sample(master.technique(), master.attackElapsed(partial))
@@ -70,26 +71,26 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		}
 		if (pose.weight() <= 0) pose = MasterAnimationRules.defence(state.guard, state.dash, state.stagger);
 		if (pose.weight() > 0) {
-			state.setData(MasterModel.FRAME, new MasterModel.Frame(pose, master.getMainArm() == HumanoidArm.LEFT,
+			RenderStateData.set(state, MasterModel.FRAME, new MasterModel.Frame(pose, master.getMainArm() == HumanoidArm.LEFT,
 				master.level().getGameTime() - (long) Math.floor(master.attackElapsed(partial)), master.attackAnimation()));
 		}
 	}
 
 	@Override
 	protected  RenderType getRenderType(AuraFighterRenderState state, boolean visible, boolean translucent, boolean glowing) {
-		return state.getData(MasterMotion.RIG) != null ? null : super.getRenderType(state, visible, translucent, glowing);
+		return RenderStateData.get(state, MasterMotion.RIG) != null ? null : super.getRenderType(state, visible, translucent, glowing);
 	}
 
 	@Override
 	protected boolean shouldRenderLayers(AuraFighterRenderState state) {
-		return state.getData(MasterMotion.RIG) == null && super.shouldRenderLayers(state);
+		return RenderStateData.get(state, MasterMotion.RIG) == null && super.shouldRenderLayers(state);
 	}
 
 	@Override
 	public void render(AuraFighterRenderState state, PoseStack poseStack, MultiBufferSource buffer, int light) {
 		CameraRenderState camera = RenderCompat.cameraState();
 		super.render(state, poseStack, buffer, light);
-		MasterMotion.Frame frame = state.getData(MasterMotion.RIG);
+		MasterMotion.Frame frame = RenderStateData.get(state, MasterMotion.RIG);
 		MasterRig rig = MasterRig.get();
 		if (frame == null || rig == null || state.isInvisible) return;
 		float mirror = frame.left() ? 1 : -1;
@@ -110,7 +111,7 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		int eyes = AuraFighterRenderer.tint(glow, state.color);
 		if ((eyes >>> 24) >= 4) RenderCompat.submitCustomGeometry(buffer, poseStack, RenderType.eyes(RIG_GLOW),
 			(pose, vb) -> rig.emit(placed, bone -> !blade[bone], mirror < 0, pose, vb, eyes, overlay, light));
-		AuraBlade.Glow aura = state.getData(AuraBlade.GLOW);
+		AuraBlade.Glow aura = RenderStateData.get(state, AuraBlade.GLOW);
 		if (aura != null && state.drawn > 0.5F) {
 			int edge = AuraFighterRenderer.tint(Math.min(1, aura.strength()) * frame.alpha(), aura.color());
 			if ((edge >>> 24) >= 4) RenderCompat.submitCustomGeometry(buffer, poseStack, RenderType.eyes(RIG_BLADE),

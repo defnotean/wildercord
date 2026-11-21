@@ -17,6 +17,7 @@ import net.minecraft.util.Mth;
 
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Draws a duelist or a fallen knight: its model on its skin, a glow layer of only what glows (a duelist's sash emblem, a
@@ -66,7 +67,7 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 		// Its drawn blade carries its aura as a player's does; brighter in its tell, braced in guard.
 		boolean blade = !fighter.isInvisible() && fighter.getMainHandItem().is(Aura.WEAPONS);
 		float strength = bladeStrength * (0.8F + 0.45F * state.windup);
-		state.setData(AuraBlade.GLOW, blade ? new AuraBlade.Glow(state.color, state.stage, Math.min(1.2F, strength), state.guard > 0.5F,
+		RenderStateData.set(state, AuraBlade.GLOW, blade ? new AuraBlade.Glow(state.color, state.stage, Math.min(1.2F, strength), state.guard > 0.5F,
 			fighter.getMainArm()) : null);
 	}
 

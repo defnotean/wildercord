@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Carries a Runebound's rune marks into its render state, where {@link RuneMarksLayer} draws them.
@@ -28,13 +29,13 @@ public abstract class LivingEntityRendererMixin implements dev.wildercord.client
 		boolean known = (!(state instanceof net.minecraft.client.renderer.entity.state.PlayerRenderState)
 			|| model.getClass() == net.minecraft.client.model.PlayerModel.class
 				&& model instanceof dev.wildercord.client.combat.ArticulatedModelAccess owner && owner.wildercord$bodyOwned()) && layers.stream().allMatch(dev.wildercord.client.combat.ArticulatedCombat::knownLayer);
-		state.setData(dev.wildercord.client.combat.ArticulatedCombat.KNOWN_LAYERS, known);
-		state.setData(dev.wildercord.client.combat.ArticulatedArmorRenderer.READY,
+		RenderStateData.set(state, dev.wildercord.client.combat.ArticulatedCombat.KNOWN_LAYERS, known);
+		RenderStateData.set(state, dev.wildercord.client.combat.ArticulatedArmorRenderer.READY,
 			model instanceof dev.wildercord.client.combat.ArticulatedModelAccess access && access.wildercord$bodyOwned() && access.wildercord$armor() != null && access.wildercord$armor().supportsAssets()
 				&& layers.stream().filter(layer -> layer.getClass() == dev.wildercord.client.combat.ArticulatedArmorLayer.class).count() == 1
 				&& layers.stream().noneMatch(layer -> layer instanceof net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer<?, ?, ?>));
 		var shellLayers = layers.stream().filter(layer -> layer.getClass() == dev.wildercord.client.render.AuraShellLayer.class).toList();
 		var shell = shellLayers.size() == 1 ? ((dev.wildercord.client.render.AuraShellLayer) shellLayers.getFirst()).articulated() : null;
-		state.setData(dev.wildercord.client.combat.ArticulatedAuraShellRenderer.READY, shell != null && shell.owner() == model ? shell : null);
+		RenderStateData.set(state, dev.wildercord.client.combat.ArticulatedAuraShellRenderer.READY, shell != null && shell.owner() == model ? shell : null);
 	}
 }

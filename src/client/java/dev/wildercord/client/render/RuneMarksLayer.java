@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.IllagerModel;
@@ -23,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Rune marks: a Runebound's Cord written on its body in glyphs of light, in its spell's colour.
@@ -55,7 +56,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 
 	@Override
 	public void render(PoseStack poseStack, MultiBufferSource buffer, int light, S state, float yRot, float xRot) {
-		Integer marks = state.getData(MARKS);
+		Integer marks = RenderStateData.get(state, MARKS);
 		if (marks == null || state.isInvisible || state.isBaby) {
 			return;
 		}
@@ -86,7 +87,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 		}
 		// Flaring, the colour runs hot toward white.
 		int rgb = hot(marks.color(), 0.04F + flare * 0.5F);
-		state.setData(MARKS, (Mth.clamp((int) (glow * 255), 0, 255) << 24) | rgb);
+		RenderStateData.set(state, MARKS, (Mth.clamp((int) (glow * 255), 0, 255) << 24) | rgb);
 	}
 
 	private static int hot(int rgb, float t) {

@@ -18,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** Test-only observations of the screenshot's native submit paths and unmodified framebuffer. */
 public final class MastersCaptureProbe {
@@ -79,7 +80,7 @@ public final class MastersCaptureProbe {
 			hands.mainHandSwapScale(),
 			hands.mainHandEquipping(),
 			dev.wildercord.client.MastersArtPose.firstPersonOwnership(net.minecraft.world.InteractionHand.MAIN_HAND, avatar, hands),
-			avatar.getData(dev.wildercord.client.MastersArtPose.FRAME));
+			RenderStateData.get(avatar, dev.wildercord.client.MastersArtPose.FRAME));
 		Minecraft mc = Minecraft.getInstance();
 		var camera = new CameraRenderState();
 		dev.wildercord.gametest.compat.GametestCompat.extractMainCamera(mc.gameRenderer, camera, DELTA);

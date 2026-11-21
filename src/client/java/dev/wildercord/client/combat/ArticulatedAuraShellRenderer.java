@@ -3,7 +3,7 @@ package dev.wildercord.client.combat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.render.AuraShellLayer;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.PlayerModel;
@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.resources.PlayerSkin.Model;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** One reload-owned shell adapter belonging to exactly one primary player body. */
 public final class ArticulatedAuraShellRenderer {
@@ -37,14 +38,14 @@ public final class ArticulatedAuraShellRenderer {
 			&& access.wildercord$rig().slim() == slim && state.skin != null && (state.skin.model() == PlayerSkin.Model.SLIM) == slim;
 	}
 	public static boolean compatible(PlayerRenderState state) {
-		if (state.getData(AuraShellLayer.SHELL_GLOW) == null) return true;
-		var adapter = state.getData(READY);
+		if (RenderStateData.get(state, AuraShellLayer.SHELL_GLOW) == null) return true;
+		var adapter = RenderStateData.get(state, READY);
 		return adapter != null && adapter.supports(state);
 	}
 
 	public boolean submitWorld(PlayerRenderState state, PoseStack stack, MultiBufferSource buffer) {
-		if (state.getData(READY) != this || !supports(state) || !ArticulatedCombat.applyPlayer(owner, state)) return false;
-		Integer glow = state.getData(AuraShellLayer.SHELL_GLOW);
+		if (RenderStateData.get(state, READY) != this || !supports(state) || !ArticulatedCombat.applyPlayer(owner, state)) return false;
+		Integer glow = RenderStateData.get(state, AuraShellLayer.SHELL_GLOW);
 		if (glow == null || state.isInvisible || ShaderCompat.shadowPass()) return true;
 		ArticulatedRig rig = ((ArticulatedModelAccess) owner).wildercord$rig();
 		var palette = ArticulatedArmorGeometry.Palette.capture(rig);
@@ -58,8 +59,8 @@ public final class ArticulatedAuraShellRenderer {
 
 	/** Both camera-space arms share the exact final view pose used by the skin, armor and hilt. */
 	public boolean submitView(ArticulatedRig rig, PlayerRenderState state, PoseStack stack, MultiBufferSource buffer) {
-		if (state.getData(READY) != this || !supports(state) || ArticulatedCombat.viewFrame(state) == null) return false;
-		Integer glow = state.getData(AuraShellLayer.SHELL_GLOW);
+		if (RenderStateData.get(state, READY) != this || !supports(state) || ArticulatedCombat.viewFrame(state) == null) return false;
+		Integer glow = RenderStateData.get(state, AuraShellLayer.SHELL_GLOW);
 		if (glow == null || state.isInvisible || ShaderCompat.shadowPass()) return true;
 		submit(view, ArticulatedArmorGeometry.Palette.capture(rig), glow, stack, buffer);
 		return true;

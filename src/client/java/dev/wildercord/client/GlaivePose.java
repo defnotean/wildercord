@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Polearm stance and sweeping cleave animation for the Skyrend Glaive.
@@ -189,7 +190,7 @@ public final class GlaivePose {
 			return;
 		}
 		if (dev.wildercord.client.combat.ArticulatedCombat.frame(avatar) != null
-			|| avatar.getData(MastersArtPose.FRAME) != null) {
+			|| RenderStateData.get(avatar, MastersArtPose.FRAME) != null) {
 			return;
 		}
 		float side = state.mainArm == HumanoidArm.LEFT ? -1.0F : 1.0F;

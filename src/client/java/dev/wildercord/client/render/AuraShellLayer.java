@@ -12,7 +12,7 @@ import dev.wildercord.client.combat.ArticulatedAuraShellRenderer;
 import dev.wildercord.client.combat.ArticulatedModelAccess;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.MagicQuality;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -35,6 +35,7 @@ import net.minecraft.client.resources.PlayerSkin.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * What the top stages of aura look like on a player, for everyone:
@@ -118,12 +119,12 @@ public class AuraShellLayer extends RenderLayer<PlayerRenderState, PlayerModel> 
 		if (state.isInvisible || ShaderCompat.shadowPass()) {
 			return;
 		}
-		Integer glow = state.getData(SHELL_GLOW);
+		Integer glow = RenderStateData.get(state, SHELL_GLOW);
 		if (glow != null && (articulated == null || !articulated.submitWorld(state, pose, buffer))) {
 			boolean slim = state.skin != null && state.skin.model() == PlayerSkin.Model.SLIM;
 			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, slim ? slimShell : shell, state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
 		}
-		List<Image> images = state.getData(IMAGES);
+		List<Image> images = RenderStateData.get(state, IMAGES);
 		if (images != null && !images.isEmpty() && upright(state)) {
 			RenderType ghost = RenderType.entityTranslucentEmissive(state.skin.texture());
 			for (Image image : images) {
@@ -160,8 +161,8 @@ public class AuraShellLayer extends RenderLayer<PlayerRenderState, PlayerModel> 
 
 	/** Carries a player's shell and afterimages into their render state as it's extracted. */
 	public static void extract(LivingEntity avatar, PlayerRenderState state, float partial) {
-		state.setData(SHELL_GLOW, null);
-		state.setData(IMAGES, null);
+		RenderStateData.set(state, SHELL_GLOW, null);
+		RenderStateData.set(state, IMAGES, null);
 		if (!(avatar instanceof Player player) || player.isInvisible() || player.isSpectator()) {
 			return;
 		}
@@ -171,7 +172,7 @@ public class AuraShellLayer extends RenderLayer<PlayerRenderState, PlayerModel> 
 		if (presence.shell() && look.stage() > 0 && dev.wildercord.client.AuraFxClient.inUse(player, time)) {
 			// Both shell backends receive the same material, including the viewer's Reduced flash choice.
 			float since = presence.shellStruckAt() < 0 ? 99 : time - presence.shellStruckAt();
-			state.setData(SHELL_GLOW, AuraShellMaterial.argb(look.color(), Mth.sin(time * 0.09F + player.getId()), since,
+			RenderStateData.set(state, SHELL_GLOW, AuraShellMaterial.argb(look.color(), Mth.sin(time * 0.09F + player.getId()), since,
 				MagicQuality.reducedFlash));
 		}
 		List<AuraClient.Afterimage> images = AuraClient.afterimages(player.getId(), time);
@@ -191,7 +192,7 @@ public class AuraShellLayer extends RenderLayer<PlayerRenderState, PlayerModel> 
 					(Mth.clamp(Math.round(alpha * 255), 0, 255) << 24) | rgb));
 			}
 			if (!out.isEmpty()) {
-				state.setData(IMAGES, out);
+				RenderStateData.set(state, IMAGES, out);
 			}
 		}
 	}

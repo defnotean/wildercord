@@ -4,7 +4,7 @@ import dev.wildercord.aura.world.AuraFighter;
 import dev.wildercord.aura.world.MasterAnimationRules;
 import dev.wildercord.aura.world.MasterTechniques;
 import dev.wildercord.aura.world.SwordMaster;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
@@ -12,6 +12,7 @@ import org.joml.Quaternionf;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Picks the Sword Master's rig pose each frame from what the server syncs: its idle breathing and its walk (matched to the
@@ -157,7 +158,7 @@ public final class MasterMotion {
 	private static final float[] OVER_CAP = {.6F, .6F, .3F, .3F, .2F};
 
 	public static void extract(SwordMaster master, AuraFighterRenderState state, float partial) {
-		state.setData(RIG, null);
+		RenderStateData.set(state, RIG, null);
 		MasterRig rig = MasterRig.get();
 		if (rig == null || !enabled() || state.sit + state.yield + state.bow > 0.01F) return;
 		Track track = TRACKS.computeIfAbsent(master, m -> new Track());
@@ -310,7 +311,7 @@ public final class MasterMotion {
 		} else {
 			track.ghost = null;
 		}
-		state.setData(RIG, new Frame(drawn, left, alpha, ghost));
+		RenderStateData.set(state, RIG, new Frame(drawn, left, alpha, ghost));
 	}
 
 	private static final float TAU = (float) (Math.PI * 2);

@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Casting gear in its slots, seen on the wearer by everyone (and in the inventory's paper doll). Each
@@ -118,8 +119,8 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
 	@Override
 	public void render(PoseStack pose, MultiBufferSource buffer, int light, PlayerRenderState state, float yRot, float xRot) {
-		List<GearLook.Piece> pieces = state.getData(GearLook.PIECES);
-		GearLook.Pack pack = state.getData(GearLook.PACK);
+		List<GearLook.Piece> pieces = RenderStateData.get(state, GearLook.PIECES);
+		GearLook.Pack pack = RenderStateData.get(state, GearLook.PACK);
 		if ((pieces == null && pack == null) || state.isInvisible || state.isSpectator) {
 			return;
 		}

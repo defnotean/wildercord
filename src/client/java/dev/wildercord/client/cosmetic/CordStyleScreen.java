@@ -38,6 +38,7 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * The Cord screen's Cosmetics page: how your Cord looks to everyone. Pick the beads' material, their
@@ -341,7 +342,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 			style = style.with(hovered);
 		}
 		if (state instanceof PlayerRenderState avatar) {
-			avatar.setData(CordStyleLook.STYLE, style);
+			RenderStateData.set(avatar, CordStyleLook.STYLE, style);
 			CastingPose pose = (CastingPose) avatar;
 			WildercordAttachments.CordLook cord = pose.wildercord$cord();
 			if (cord.beads().isEmpty() && !cord.tier().isEmpty()) {

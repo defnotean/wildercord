@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.InteractionHand;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** Actual skin-textured upper arms, forearms and hands, authored independently of the world camera. */
 public final class ArticulatedViewModel extends McModel<ArticulatedViewModel.Frame> {
@@ -60,7 +61,7 @@ public final class ArticulatedViewModel extends McModel<ArticulatedViewModel.Fra
 			// The same immutable palette sets the hand at submission and deferred model rendering.
 			model.setupAnim(frame);
 			if (access.wildercord$armor() != null) access.wildercord$armor().submitView(model.rig, avatar, stack, buffer, light);
-			var shell = avatar.getData(ArticulatedAuraShellRenderer.READY);
+			var shell = RenderStateData.get(avatar, ArticulatedAuraShellRenderer.READY);
 			if (shell != null) shell.submitView(model.rig, avatar, stack, buffer);
 			model.rig.socket(avatar.mainArm, stack);
 			ArticulatedCombat.orientItemAtSocket(stack);

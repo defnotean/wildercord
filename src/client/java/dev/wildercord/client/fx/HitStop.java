@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
 import java.util.Map;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Aura's hit-stop, on the client only: as a heavy blow lands, the striker and the one struck hold still on this screen for a few
@@ -46,14 +47,14 @@ public final class HitStop {
 				swing = dev.wildercord.client.compat.RenderCompat.swingProgress(armed);
 			}
 			return new Pose(state.x, state.y, state.z, state.ageInTicks, bodyRot, yRot, xRot, walk, walkSpeed, swing,
-				state.getData(dev.wildercord.client.MastersArtPose.FRAME), state.getData(dev.wildercord.client.auraworld.MasterModel.FRAME),
-				state.getData(dev.wildercord.client.combat.ArticulatedCombat.FRAME));
+				RenderStateData.get(state, dev.wildercord.client.MastersArtPose.FRAME), RenderStateData.get(state, dev.wildercord.client.auraworld.MasterModel.FRAME),
+				RenderStateData.get(state, dev.wildercord.client.combat.ArticulatedCombat.FRAME));
 		}
 
 		boolean sameActivation(EntityRenderState state) {
-			var liveArt = state.getData(dev.wildercord.client.MastersArtPose.FRAME);
-			var liveMaster = state.getData(dev.wildercord.client.auraworld.MasterModel.FRAME);
-			var liveRig = state.getData(dev.wildercord.client.combat.ArticulatedCombat.FRAME);
+			var liveArt = RenderStateData.get(state, dev.wildercord.client.MastersArtPose.FRAME);
+			var liveMaster = RenderStateData.get(state, dev.wildercord.client.auraworld.MasterModel.FRAME);
+			var liveRig = RenderStateData.get(state, dev.wildercord.client.combat.ArticulatedCombat.FRAME);
 			return (art == null ? liveArt == null : art.sameActivation(liveArt))
 				&& (master == null ? liveMaster == null : master.sameActivation(liveMaster))
 				&& (articulated == null ? liveRig == null : articulated.sameActivation(liveRig));
@@ -61,12 +62,12 @@ public final class HitStop {
 
 		void onto(EntityRenderState state) {
 			// Cosmetic palettes freeze with the base pose, but cancellation/new activation wins.
-			if (art != null && art.sameActivation(state.getData(dev.wildercord.client.MastersArtPose.FRAME)))
-				state.setData(dev.wildercord.client.MastersArtPose.FRAME, art);
-			if (master != null && master.sameActivation(state.getData(dev.wildercord.client.auraworld.MasterModel.FRAME)))
-				state.setData(dev.wildercord.client.auraworld.MasterModel.FRAME, master);
-			if (articulated != null && articulated.sameActivation(state.getData(dev.wildercord.client.combat.ArticulatedCombat.FRAME)))
-				state.setData(dev.wildercord.client.combat.ArticulatedCombat.FRAME, articulated);
+			if (art != null && art.sameActivation(RenderStateData.get(state, dev.wildercord.client.MastersArtPose.FRAME)))
+				RenderStateData.set(state, dev.wildercord.client.MastersArtPose.FRAME, art);
+			if (master != null && master.sameActivation(RenderStateData.get(state, dev.wildercord.client.auraworld.MasterModel.FRAME)))
+				RenderStateData.set(state, dev.wildercord.client.auraworld.MasterModel.FRAME, master);
+			if (articulated != null && articulated.sameActivation(RenderStateData.get(state, dev.wildercord.client.combat.ArticulatedCombat.FRAME)))
+				RenderStateData.set(state, dev.wildercord.client.combat.ArticulatedCombat.FRAME, articulated);
 			state.x = x;
 			state.y = y;
 			state.z = z;

@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** Read-only native NPC submit/model/particle and unmodified framebuffer evidence. No pose injection. */
 public final class MastersNpcCaptureProbe {
@@ -119,10 +120,10 @@ public final class MastersNpcCaptureProbe {
 		float age = master.attackElapsed(partial);
 		timeline = new Timeline(master.level().getGameTime(), master.level().getGameTime() - (long) master.attackElapsed(0),
 			master.attackAnimation(), partial, age, master.attackTellTicks(), master.attackActiveTicks(), master.attackRecoveryTicks(),
-			ArticulatedCombat.frame(state) == null, state.getData(MasterModel.FRAME));
+			ArticulatedCombat.frame(state) == null, RenderStateData.get(state, MasterModel.FRAME));
 		// Preserve the extracted candidate even when eligibility rejects it; failed captures then
 		// retain the synced velocity/interpolated travel needed to diagnose an ownership gap.
-		var frame = state.getData(ArticulatedCombat.FRAME);
+		var frame = RenderStateData.get(state, ArticulatedCombat.FRAME);
 		double dx = master.getX() - master.xo, dz = master.getZ() - master.zo;
 		articulatedFrame = frame == null ? null : new ArticulatedFrame(frame.activation(), frame.move(), frame.pose().phase().name(),
 			frame.pose().weight(), frame.leftHanded(), frame.scriptedFootwork(), frame.horizontalVelocitySquared(), dx * dx + dz * dz, state.walkAnimationSpeed);

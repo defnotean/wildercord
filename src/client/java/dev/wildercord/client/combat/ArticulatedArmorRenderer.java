@@ -1,7 +1,7 @@
 package dev.wildercord.client.combat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.PlayerModel;
@@ -18,6 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import java.util.EnumMap;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Renderer-owned armor geometry with vanilla's complete material submission path. The independent
@@ -50,7 +51,7 @@ public final class ArticulatedArmorRenderer {
 	/** Unknown items/components always retain the entire previous renderer, including their layers. */
 	public static boolean compatible(HumanoidRenderState state) {
 		if (empty(state.headEquipment) && empty(state.chestEquipment) && empty(state.legsEquipment) && empty(state.feetEquipment)) return true;
-		return state instanceof PlayerRenderState && enabled() && Boolean.TRUE.equals(state.getData(READY)) && supports(state);
+		return state instanceof PlayerRenderState && enabled() && Boolean.TRUE.equals(RenderStateData.get(state, READY)) && supports(state);
 	}
 
 	public static boolean supports(HumanoidRenderState state) {
@@ -74,7 +75,7 @@ public final class ArticulatedArmorRenderer {
 	}
 
 	public boolean submitWorld(PlayerModel body, PlayerRenderState state, PoseStack stack, MultiBufferSource buffer, int light) {
-		if (!enabled() || !supportsAssets() || !supports(state) || !Boolean.TRUE.equals(state.getData(READY))
+		if (!enabled() || !supportsAssets() || !supports(state) || !Boolean.TRUE.equals(RenderStateData.get(state, READY))
 			|| !(body instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned() || access.wildercord$armor() != this
 			|| !ArticulatedCombat.applyPlayer(body, state)) return false;
 		if (empty(state.headEquipment) && empty(state.chestEquipment) && empty(state.legsEquipment) && empty(state.feetEquipment)) return true;

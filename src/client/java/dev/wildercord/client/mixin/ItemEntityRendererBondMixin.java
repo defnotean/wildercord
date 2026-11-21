@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * A bonded blade lying on the ground keeps its glow ({@link BondGlow}): its look is carried into the item's render state, the glow goes on
@@ -23,16 +24,16 @@ public abstract class ItemEntityRendererBondMixin {
 		at = @At("TAIL"))
 	private void wildercord$bondLook(ItemEntity entity, ItemEntityRenderState state, float partial, CallbackInfo ci) {
 		BondGlow.Look look = BondGlow.ground(entity);
-		state.setData(BondGlow.GROUND, look);
-		state.setData(BondGlow.GROUND_DAY, look != null && BondGlow.day(entity));
+		RenderStateData.set(state, BondGlow.GROUND, look);
+		RenderStateData.set(state, BondGlow.GROUND_DAY, look != null && BondGlow.day(entity));
 	}
 
 	@Inject(method = "render(Lnet/minecraft/client/renderer/entity/state/ItemEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
 		at = @At("HEAD"))
 	private void wildercord$bondBegin(ItemEntityRenderState state, PoseStack pose, MultiBufferSource buffer, int light, CallbackInfo ci) {
-		BondGlow.Look look = state.getData(BondGlow.GROUND);
+		BondGlow.Look look = RenderStateData.get(state, BondGlow.GROUND);
 		if (look != null) {
-			BondGlow.groundExtras(pose, buffer, look, state.ageInTicks, dev.wildercord.client.compat.RenderCompat.cameraState().orientation, Boolean.TRUE.equals(state.getData(BondGlow.GROUND_DAY)));
+			BondGlow.groundExtras(pose, buffer, look, state.ageInTicks, dev.wildercord.client.compat.RenderCompat.cameraState().orientation, Boolean.TRUE.equals(RenderStateData.get(state, BondGlow.GROUND_DAY)));
 		}
 		AuraBlade.beginGround(look);
 	}

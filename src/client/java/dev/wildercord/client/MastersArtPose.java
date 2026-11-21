@@ -3,7 +3,7 @@ package dev.wildercord.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.wildercord.aura.MastersArtAnimation;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
@@ -12,6 +12,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** The accepted art's full-body and first-person animation, layered on the existing player rig. */
 public final class MastersArtPose {
@@ -26,7 +27,7 @@ public final class MastersArtPose {
 	public static void extract(LivingEntity avatar, PlayerRenderState state, float partial) {
 		MastersArtAnimation.Pose pose = MastersArtsClient.pose(avatar, partial);
 		var timeline = MastersArtsClient.timeline(avatar);
-		state.setData(FRAME, null);
+		RenderStateData.set(state, FRAME, null);
 		if (!eligible(state)) return;
 		var form = MasterFormsClient.timeline(avatar);
 		if (form != null && timeline == null) {
@@ -35,7 +36,7 @@ public final class MastersArtPose {
 			if (movement.weight() > 0) {
 				var facing = MastersArtAnimation.facing(state.bodyRot, state.yRot, state.xRot, event.yaw(), 0, movement.weight());
 				state.bodyRot = facing.bodyYaw(); state.yRot = facing.headYaw();
-				state.setData(FRAME, new Frame(movement, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), 0, 0, event.serial(), -2 - event.phase()));
+				RenderStateData.set(state, FRAME, new Frame(movement, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), 0, 0, event.serial(), -2 - event.phase()));
 				return;
 			}
 		}
@@ -47,7 +48,7 @@ public final class MastersArtPose {
 				var facing = MastersArtAnimation.facing(state.bodyRot, state.yRot, state.xRot, event.yaw(), 0, movement.weight());
 				state.bodyRot = facing.bodyYaw(); state.yRot = facing.headYaw();
 				// Below every Wall Turn move id, so the articulated rig keeps its whole Classic fallback here too.
-				state.setData(FRAME, new Frame(movement, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), 0, 0, event.serial(), -20 - event.phase()));
+				RenderStateData.set(state, FRAME, new Frame(movement, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), 0, 0, event.serial(), -20 - event.phase()));
 				return;
 			}
 		}
@@ -56,7 +57,7 @@ public final class MastersArtPose {
 		state.bodyRot = facing.bodyYaw();
 		state.yRot = facing.headYaw();
 		float age = avatar.level().getGameTime() - timeline.startTick() + partial;
-		state.setData(FRAME, new Frame(pose, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), facing.pitchDelta(),
+		RenderStateData.set(state, FRAME, new Frame(pose, avatar.getMainArm() == HumanoidArm.LEFT, facing.yawDelta(), facing.pitchDelta(),
 			MastersArtAnimation.bladeTilt(timeline.move(), age, timeline.windup(), pose.weight()), timeline.startTick(), timeline.move()));
 	}
 
@@ -146,7 +147,7 @@ public final class MastersArtPose {
 	}
 
 	private static Frame frame(PlayerRenderState state) {
-		return eligible(state) ? state.getData(FRAME) : null;
+		return eligible(state) ? RenderStateData.get(state, FRAME) : null;
 	}
 
 	private static boolean eligible(PlayerRenderState state) {

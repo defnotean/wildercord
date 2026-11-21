@@ -7,7 +7,7 @@ import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.client.compat.ShaderCompat;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import dev.wildercord.client.compat.RenderCompat;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * The blade's aura, drawn on the weapon itself in first and third person, growing with the stage:
@@ -96,13 +97,13 @@ public final class AuraBlade {
 
 	/** Carries a player's blade glow into their render state as it's extracted (and their part in a bonded blade's, {@link BondGlow}). */
 	public static void extract(net.minecraft.world.entity.LivingEntity avatar, EntityRenderState state) {
-		state.setData(GLOW, avatar instanceof Player player ? of(player) : null);
+		RenderStateData.set(state, GLOW, avatar instanceof Player player ? of(player) : null);
 		BondGlow.extract(avatar, state);
 	}
 
 	/** A hand's item is about to be drawn in third person: its aura goes with it if it's the main hand's (a bonded blade's own glow either way). */
 	public static void beginThirdPerson(EntityRenderState state, HumanoidArm arm, ItemStack stack) {
-		Glow glow = state.getData(GLOW);
+		Glow glow = RenderStateData.get(state, GLOW);
 		current = glow != null && glow.arm() == arm && stack.is(Aura.WEAPONS) ? glow : null;
 		BondGlow.beginThirdPerson(state, state instanceof net.minecraft.client.renderer.entity.state.ArmedEntityRenderState armed && armed.mainArm == arm, stack);
 		drawn = false;

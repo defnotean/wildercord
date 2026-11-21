@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix4fc;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** Binds the real item-entry and displayed-quad submission to one owner/frame/stack/model scope. */
 public final class BraceNullItemDrawProbe {
@@ -28,7 +29,7 @@ public final class BraceNullItemDrawProbe {
 		boolean pre, drawing, drawn, closed;
 		Call(PlayerRenderState state, Object model, ItemStackRenderState item, PoseStack stack, MultiBufferSource buffer, boolean first, float[] expectedPre) {
 			this.state = state; this.model = model; this.item = item; this.stack = stack; this.collector = buffer;
-			this.frame = state.getData(MastersArtPose.FRAME); this.first = first; this.expectedPre = expectedPre == null ? null : expectedPre.clone();
+			this.frame = RenderStateData.get(state, MastersArtPose.FRAME); this.first = first; this.expectedPre = expectedPre == null ? null : expectedPre.clone();
 		}
 	}
 	public record Report(boolean firstPerson, long stateIdentity, int itemIdentity, int modelIdentity, int stackIdentity,
@@ -45,7 +46,7 @@ public final class BraceNullItemDrawProbe {
 			"Wrong world item/hand or unsupported use state");
 		check(!dev.wildercord.client.compat.RenderCompat.isStabSwingType(state), "Unsupported native stabbing item motion");
 		float[] body = BraceNullCaptureProbe.worldBody((PlayerModel) model, state, stack);
-		float[] expected = BraceNullTransformOracle.worldItem(stack.last().pose().get(new float[16]), body, id.left(), ((BraceNullPlayerWidth) model).wildercord$braceNullSlim(), state.getData(MastersArtPose.FRAME).bladeTilt());
+		float[] expected = BraceNullTransformOracle.worldItem(stack.last().pose().get(new float[16]), body, id.left(), ((BraceNullPlayerWidth) model).wildercord$braceNullSlim(), RenderStateData.get(state, MastersArtPose.FRAME).bladeTilt());
 		return begin(new Call(state, model, item, stack, buffer, false, expected));
 	}
 	public static Call firstBegin(PlayerRenderState state, PoseStack stack, MultiBufferSource buffer) {
@@ -67,7 +68,7 @@ public final class BraceNullItemDrawProbe {
 		pre(call, call.expectedPre, stack.last().pose().get(new float[16]));
 	}
 	private static void pre(Call call, float[] wanted, float[] actual) {
-		check(!call.closed && !call.pre && call.frame.equals(call.state.getData(MastersArtPose.FRAME)), "Duplicate/changed item frame");
+		check(!call.closed && !call.pre && call.frame.equals(RenderStateData.get(call.state, MastersArtPose.FRAME)), "Duplicate/changed item frame");
 		BraceNullCaptureProbe.observeFrame(call.state);
 		try { BraceNullTransformOracle.requireHand(wanted, actual); } catch (AssertionError mismatch) { failure = mismatch.getMessage(); throw mismatch; }
 		preExpected = list(wanted); preActual = list(actual); call.pre = true;
@@ -91,7 +92,7 @@ public final class BraceNullItemDrawProbe {
 		var call = active; var id = BraceNullCaptureProbe.identity();
 		check(id != null && call.pre && call.drawing && !call.drawn && !call.closed && call.item == owner && call.stack == stack && call.collector == buffer,
 			"Detached, substituted or duplicate displayed item callback");
-		check(call.frame.equals(call.state.getData(MastersArtPose.FRAME)), "Displayed item frame changed"); BraceNullCaptureProbe.observeFrame(call.state);
+		check(call.frame.equals(RenderStateData.get(call.state, MastersArtPose.FRAME)), "Displayed item frame changed"); BraceNullCaptureProbe.observeFrame(call.state);
 		ItemDisplayContext expectedContext = call.first ? (id.left() ? ItemDisplayContext.FIRST_PERSON_LEFT_HAND : ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
 			: (id.left() ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
 		check(context == expectedContext && quads != null && !quads.isEmpty(), "Wrong display context or missing actual quads");

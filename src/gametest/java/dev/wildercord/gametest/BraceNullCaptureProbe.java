@@ -11,6 +11,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** Pair-only passive receipt inside MastersCaptureProbe's one native extract/render/readback. */
 public final class BraceNullCaptureProbe {
@@ -60,7 +61,7 @@ public final class BraceNullCaptureProbe {
 		check(!SUBMITTED.containsKey(avatar), "Duplicate body submission");
 		requireRoot((PlayerModel) model); SUBMITTED.put(avatar, model); ROOTS.put(avatar, stack.last().pose().get(new float[16]));
 	}
-	private static NativeBodySubmission.Frames frames(PlayerRenderState state) { return new NativeBodySubmission.Frames(state.getData(MastersArtPose.FRAME), null); }
+	private static NativeBodySubmission.Frames frames(PlayerRenderState state) { return new NativeBodySubmission.Frames(RenderStateData.get(state, MastersArtPose.FRAME), null); }
 	public static NativeBodySubmission.Origin submissionBegin(Model model, Object state, com.mojang.blaze3d.vertex.PoseStack stack, Object material) {
 		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof PlayerRenderState avatar) || avatar.id != expected.owner()) return null;
 		return NATIVE_BODY.begin(model, state, frames(avatar), material, stack.last().pose().get(new float[16]));
@@ -96,13 +97,13 @@ public final class BraceNullCaptureProbe {
 		var deferred = DEFERRED.get();
 		if (deferred == null) {
 			check(SUBMITTED.get(state) == model, "Layer baseline is not from the submitted model/state");
-			observe(state); LAYER_BASES.put(state, new BodyBasis(model, state.getData(MastersArtPose.FRAME), palette(model, false), palette(model, true))); return;
+			observe(state); LAYER_BASES.put(state, new BodyBasis(model, RenderStateData.get(state, MastersArtPose.FRAME), palette(model, false), palette(model, true))); return;
 		}
 		if (!deferred.visit().primary()) return;
 		NATIVE_BODY.baseline(deferred.visit(), model, state, frames(state));
 		check(SUBMITTED.get(state) == model, "Body baseline is not from the submitted deferred model/state");
 		observe(state);
-		BODY_BASES.put(state, new BodyBasis(model, state.getData(MastersArtPose.FRAME), palette(model, false), palette(model, true)));
+		BODY_BASES.put(state, new BodyBasis(model, RenderStateData.get(state, MastersArtPose.FRAME), palette(model, false), palette(model, true)));
 	}
 	/** Called after the complete native PlayerModel.setupAnim, including production tail hooks. */
 	public static void bodyConsumed(PlayerModel model, PlayerRenderState state) {
@@ -114,7 +115,7 @@ public final class BraceNullCaptureProbe {
 			"Classic receipt requires the complete rigid backend");
 		observe(state); requireRoot(model);
 		var basis = BODY_BASES.remove(state);
-		check(basis != null && basis.model() == model && basis.frame().equals(state.getData(MastersArtPose.FRAME)), "Missing or borrowed pre-art native body baseline");
+		check(basis != null && basis.model() == model && basis.frame().equals(RenderStateData.get(state, MastersArtPose.FRAME)), "Missing or borrowed pre-art native body baseline");
 		float[] actual = palette(model, false);
 		float[] wanted = BraceNullTransformOracle.body(consumed.pose(), expected.left(), basis.baseline(), basis.bind());
 		validate(() -> BraceNullTransformOracle.requireBody(wanted, actual));
@@ -153,7 +154,7 @@ public final class BraceNullCaptureProbe {
 			swing = swingType == dev.wildercord.client.compat.RenderCompat.SwingAnim.WHACK;
 		}
 		check(!HAND_BASES.containsKey(state), "Duplicate native main-hand entry");
-		HAND_BASES.put(state, new HandBasis(state.getData(MastersArtPose.FRAME), hands.stateObject(), stack, attack, inverseHeight, swing, stack.last().pose().get(new float[16])));
+		HAND_BASES.put(state, new HandBasis(RenderStateData.get(state, MastersArtPose.FRAME), hands.stateObject(), stack, attack, inverseHeight, swing, stack.last().pose().get(new float[16])));
 		return BraceNullItemDrawProbe.firstBegin(state, stack, buffer);
 	}
 	public static void handConsumed(PlayerRenderState state, dev.wildercord.client.compat.FirstPersonHandView hands,
@@ -161,7 +162,7 @@ public final class BraceNullCaptureProbe {
 		if (expected == null || !rendering || !expected.firstPerson() || state.id != expected.owner()) return;
 		observe(state);
 		var basis = HAND_BASES.remove(state);
-		check(basis != null && basis.hands() == hands.stateObject() && basis.stack() == stack && basis.frame().equals(state.getData(MastersArtPose.FRAME))
+		check(basis != null && basis.hands() == hands.stateObject() && basis.stack() == stack && basis.frame().equals(RenderStateData.get(state, MastersArtPose.FRAME))
 			&& Float.floatToIntBits(basis.attack()) == Float.floatToIntBits(attack)
 			&& Float.floatToIntBits(basis.inverseHeight()) == Float.floatToIntBits(inverseHeight), "Missing or borrowed native hand entry/matrix context");
 		var raw = basis.frame();
@@ -178,7 +179,7 @@ public final class BraceNullCaptureProbe {
 	static float[] worldBody(PlayerModel model, PlayerRenderState state, com.mojang.blaze3d.vertex.PoseStack stack) {
 		observeFrame(state); requireRoot(model);
 		var basis = LAYER_BASES.remove(state);
-		check(SUBMITTED.get(state) == model && basis != null && basis.model() == model && basis.frame().equals(state.getData(MastersArtPose.FRAME)), "Missing or borrowed attachment body baseline");
+		check(SUBMITTED.get(state) == model && basis != null && basis.model() == model && basis.frame().equals(RenderStateData.get(state, MastersArtPose.FRAME)), "Missing or borrowed attachment body baseline");
 		validate(() -> BraceNullTransformOracle.requireHand(ROOTS.get(state), stack.last().pose().get(new float[16])));
 		float[] body = BraceNullTransformOracle.body(consumed.pose(), expected.left(), basis.baseline(), basis.bind());
 		validate(() -> BraceNullTransformOracle.requireBody(body, palette(model, false))); return body;
@@ -207,7 +208,7 @@ public final class BraceNullCaptureProbe {
 		check(mc.player.getId() == expected.owner() && mc.player.getUUID().toString().equals(expected.ownerUuid())
 			&& mc.level.getGameTime() == gameTick && mc.player.tickCount == entityTick
 			&& mc.options.getCameraType().isFirstPerson() == expected.firstPerson(), "Owner, camera or clock changed within one native capture");
-		var raw = state.getData(MastersArtPose.FRAME);
+		var raw = RenderStateData.get(state, MastersArtPose.FRAME);
 		check(raw != null && state.mainArm == (expected.left() ? HumanoidArm.LEFT : HumanoidArm.RIGHT), "Missing rendered art or changed hand");
 		// HitStop restores ageInTicks together with the immutable art. This derives the actual
 		// consumed animation age from that restored clock, not the requested screenshot tick.

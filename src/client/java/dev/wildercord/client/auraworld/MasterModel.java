@@ -3,7 +3,7 @@ package dev.wildercord.client.auraworld;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.wildercord.aura.world.MasterAnimationRules;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
@@ -11,6 +11,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** The authored travelling rig, with original, server-timed master combat rather than a held windup. */
 public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
@@ -69,7 +70,7 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 			return;
 		}
 		if (state.isUpsideDown) return;
-		Frame frame = state.getData(FRAME);
+		Frame frame = RenderStateData.get(state, FRAME);
 		boolean left = frame != null ? frame.leftHanded() : state.mainArm == HumanoidArm.LEFT;
 		ModelPart sword = left ? leftArm : rightArm;
 		ModelPart offhand = left ? rightArm : leftArm;
@@ -118,7 +119,7 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 		if (dev.wildercord.client.combat.ArticulatedCombat.frame(state) != null) return;
 		if (!(state instanceof AuraFighterRenderState fighter) || fighter.deathTime > 0 || fighter.isUpsideDown
 			|| arm != state.mainArm || !item.is(ItemTags.SWORDS)) return;
-		Frame frame = state.getData(FRAME);
+		Frame frame = RenderStateData.get(state, FRAME);
 		if (frame == null) return;
 		float tilt = frame.pose().bladeTilt() * frame.pose().weight();
 		if (tilt == 0) return;

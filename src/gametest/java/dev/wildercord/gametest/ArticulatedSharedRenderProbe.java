@@ -44,6 +44,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** Passive GameTest-only observer. It never updates, extracts, renders, samples or changes game state. */
 public final class ArticulatedSharedRenderProbe {
@@ -219,7 +220,7 @@ public final class ArticulatedSharedRenderProbe {
 		Scope scope = CURRENT.get();
 		if (scope == null || !scope.extracting || entity.getId() != scope.owner || !(state instanceof PlayerRenderState avatar)) return;
 		guard(scope.token, () -> {
-			var raw = palette(avatar.getData(ArticulatedCombat.FRAME));
+			var raw = palette(RenderStateData.get(avatar, ArticulatedCombat.FRAME));
 			scope.extractions.add("state=" + identity(avatar) + ",entityPartial=" + partial + ",postHitStop=" + raw);
 			if (opening(scope)) scope.openingExtractions.put(avatar, new Extracted(entity.getId(), entity.getUUID().toString(), identity(avatar), raw));
 		});
@@ -246,7 +247,7 @@ public final class ArticulatedSharedRenderProbe {
 		if (scope == null || !(renderState instanceof PlayerRenderState avatar) || avatar.id != scope.owner) return;
 		guard(scope.token, () -> {
 			scope.bodies.put(avatar, new Body(model, identity(avatar)));
-			scope.token.session.pass(pass("body_submit", avatar, model, palette(avatar.getData(ArticulatedCombat.FRAME)), appearance(avatar, model)));
+			scope.token.session.pass(pass("body_submit", avatar, model, palette(RenderStateData.get(avatar, ArticulatedCombat.FRAME)), appearance(avatar, model)));
 		});
 	}
 	public static void bodyPalette(PlayerModel model, PlayerRenderState avatar) {
@@ -266,7 +267,7 @@ public final class ArticulatedSharedRenderProbe {
 			}
 			if (model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned()) appearance.put("rigPaletteSha256", rigHash(access.wildercord$rig()));
 			String kind = deferred(scope, model, avatar) ? "body_deferred" : "body_attachment";
-			scope.token.session.pass(pass(kind, avatar, model, palette(avatar.getData(ArticulatedCombat.FRAME)), appearance));
+			scope.token.session.pass(pass(kind, avatar, model, palette(RenderStateData.get(avatar, ArticulatedCombat.FRAME)), appearance));
 		});
 	}
 	public static ViewCall viewEnter(PlayerRenderState avatar, float partial, InteractionHand hand) {
@@ -306,7 +307,7 @@ public final class ArticulatedSharedRenderProbe {
 			|| !(model instanceof ArticulatedViewModel view) || !(renderState instanceof ArticulatedViewModel.Frame frame)) return;
 		guard(scope.token, () -> {
 			PlayerRenderState avatar = scope.viewCall.avatar();
-			var combat = avatar.getData(ArticulatedCombat.FRAME);
+			var combat = RenderStateData.get(avatar, ArticulatedCombat.FRAME);
 			var observed = combat == null ? null : new ArticulatedRenderReceipt.Palette(combat.activation(), combat.move(),
 				frame.pose().phase().name(), frame.pose().weight(), combat.leftHanded(), combat.master(), localsHash(frame.pose()::local));
 			Map<String, String> appearance = appearance(avatar, model);
@@ -365,7 +366,7 @@ public final class ArticulatedSharedRenderProbe {
 			attributes.put("fallbackFrameCompatible", String.valueOf(ArticulatedCombat.viewFrame(avatar) != null));
 			attributes.put("segmentedVisible", "false");
 			attributes.put("nativeRenderer", hands.rendererClassName());
-			return new FallbackView(hands, avatar, palette(avatar.getData(ArticulatedCombat.FRAME)), new LinkedHashMap<>(attributes));
+			return new FallbackView(hands, avatar, palette(RenderStateData.get(avatar, ArticulatedCombat.FRAME)), new LinkedHashMap<>(attributes));
 		} catch (Throwable failure) { scope.token.session.reject("fallback_observer_failed:" + failure); return null; }
 	}
 	public static void fallbackViewItem(FallbackView call, ItemStackRenderState item) {
@@ -524,13 +525,13 @@ public final class ArticulatedSharedRenderProbe {
 			out.put("extractedStateIdentity", extracted == null ? "0" : String.valueOf(extracted.stateId()));
 			out.put("ownerUuid", extracted == null ? "unknown" : extracted.ownerUuid());
 			out.put("postHitStopExtractionMatched", String.valueOf(extracted != null && extracted.owner() == avatar.id
-				&& java.util.Objects.equals(extracted.palette(), palette(avatar.getData(ArticulatedCombat.FRAME)))));
+				&& java.util.Objects.equals(extracted.palette(), palette(RenderStateData.get(avatar, ArticulatedCombat.FRAME)))));
 			if (extracted != null && extracted.palette() != null) {
 				out.put("rawAcceptedPhase", extracted.palette().phase()); out.put("rawActivation", String.valueOf(extracted.palette().activation()));
 				out.put("rawMove", String.valueOf(extracted.palette().move())); out.put("rawLeftHanded", String.valueOf(extracted.palette().leftHanded()));
 				out.put("rawPaletteSha256", extracted.palette().localsSha256());
 			}
-			out.put("shellGlowPresent", String.valueOf(avatar.getData(AuraShellLayer.SHELL_GLOW) != null));
+			out.put("shellGlowPresent", String.valueOf(RenderStateData.get(avatar, AuraShellLayer.SHELL_GLOW) != null));
 			out.put("shellAdapterEnabled", String.valueOf(ArticulatedAuraShellRenderer.enabled()));
 		}
 		out.put("mainArm", avatar.mainArm.name());

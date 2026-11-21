@@ -33,6 +33,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import dev.wildercord.client.compat.RenderStateData;
 
 /** Moon-only passive renderer proof. Shared/opening receipt scopes and their acceptance gates are untouched. */
 public final class CrimsonMoonRenderProbe {
@@ -113,7 +114,7 @@ public final class CrimsonMoonRenderProbe {
     public static void watch(UUID owner){watched=owner;synchronized(ORIGINS){ORIGINS.clear();HISTORY.clear();}}
     public static void unwatch(){watch(null);}
     public static void classicExtracted(LivingEntity owner,PlayerRenderState state,float partial){
-        if(!owner.getUUID().equals(watched))return;var frame=state.getData(MastersArtPose.FRAME);if(frame==null||frame.move()!=19)return;
+        if(!owner.getUUID().equals(watched))return;var frame=RenderStateData.get(state, MastersArtPose.FRAME);if(frame==null||frame.move()!=19)return;
         synchronized(ORIGINS){ORIGINS.put(frame,new Origin(owner.getUUID(),owner.getId(),frame.activation(),owner.level().getGameTime()-frame.activation()+partial,SEQ.incrementAndGet()));
             HISTORY.add(frame);while(HISTORY.size()>512)ORIGINS.remove(HISTORY.removeFirst());}
     }
@@ -194,7 +195,7 @@ public final class CrimsonMoonRenderProbe {
     public static void extractEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.extracting=false;if(completed)s.token.extracted=SEQ.incrementAndGet();}}
     public static void extracted(Entity entity,float partial,EntityRenderState state){
         var s=CURRENT.get();if(s==null||!s.extracting||entity.getId()!=s.token.expected.owner()||!(state instanceof PlayerRenderState a))return;
-        var e=s.token.expected;var c=a.getData(MastersArtPose.FRAME);var r=a.getData(ArticulatedCombat.FRAME);
+        var e=s.token.expected;var c=RenderStateData.get(a, MastersArtPose.FRAME);var r=RenderStateData.get(a, ArticulatedCombat.FRAME);
         float age=entity.level().getGameTime()-e.activation()+partial;
         if(c!=null){
             Origin origin;synchronized(ORIGINS){origin=ORIGINS.get(c);}
@@ -224,7 +225,7 @@ public final class CrimsonMoonRenderProbe {
         if(r!=null&&!CrimsonMoonRenderMath.viewSource(expectedBody,r.pose(),e.hand().equals("LEFT")).matched())
             s.token.reject("wrong_authoritative_source_view");
         var p=new Palette(c==null?Long.MIN_VALUE:c.activation(),c==null?-1:c.move(),phase,age,key(c),key(r));
-        ItemStack off=offhand(a);boolean shell=a.getData(AuraShellLayer.SHELL_GLOW)!=null;
+        ItemStack off=offhand(a);boolean shell=RenderStateData.get(a, AuraShellLayer.SHELL_GLOW)!=null;
         var model=s.originalModel;
         if(!(entity instanceof net.minecraft.client.player.AbstractClientPlayer connected)||!connected.getSkin().equals(s.originalSkin)
             ||!a.skin.equals(s.originalSkin)||!CrimsonMoonRenderMath.originalSkin(s.originalSkin.texture().toString(),a.skin.texture().toString(),
@@ -414,23 +415,23 @@ public final class CrimsonMoonRenderProbe {
         return views.size()==1?id(s,views.getFirst().material()):0;
     }
     private static boolean matches(Scope s,Extracted e,PlayerRenderState a){
-        if(e.state()!=id(s,a)||e.classic()!=a.getData(MastersArtPose.FRAME)||e.articulated()!=a.getData(ArticulatedCombat.FRAME)
-            ||!CrimsonMoonRenderMath.same(e.palette().classic(),key(a.getData(MastersArtPose.FRAME)))
-            ||!CrimsonMoonRenderMath.same(e.palette().articulated(),key(a.getData(ArticulatedCombat.FRAME)))
+        if(e.state()!=id(s,a)||e.classic()!=RenderStateData.get(a, MastersArtPose.FRAME)||e.articulated()!=RenderStateData.get(a, ArticulatedCombat.FRAME)
+            ||!CrimsonMoonRenderMath.same(e.palette().classic(),key(RenderStateData.get(a, MastersArtPose.FRAME)))
+            ||!CrimsonMoonRenderMath.same(e.palette().articulated(),key(RenderStateData.get(a, ArticulatedCombat.FRAME)))
             ||!e.originalSkin().equals(a.skin)||!e.skin().equals(a.skin.model().toString())||!e.texture().equals(a.skin.texture().toString())
             ||!a.mainArm.name().equals(s.token.expected.hand())||e.item()!=dev.wildercord.client.compat.RenderCompat.mainHandItemState(a)||!ItemStack.isSameItemSameComponents(e.main(),dev.wildercord.client.compat.RenderCompat.mainHandStack(a))
             ||e.main().getCount()!=dev.wildercord.client.compat.RenderCompat.mainHandStack(a).getCount()||!e.off().isEmpty()||!offhand(a).isEmpty()||!backend(s.token.expected,a))return false;
         var armor=armor(a);for(int i=0;i<4;i++)if(!ItemStack.isSameItemSameComponents(e.armor().get(i),armor.get(i)))return false;
-        return e.shell()==(a.getData(AuraShellLayer.SHELL_GLOW)!=null);
+        return e.shell()==(RenderStateData.get(a, AuraShellLayer.SHELL_GLOW)!=null);
     }
     private static Identity key(MastersArtPose.Frame f){return f==null?null:new Identity(f.activation(),f.move(),f.leftHanded(),false,f.yawDelta(),f.pitchDelta(),f.bladeTilt(),false,"n/a",hash(f.pose().toString()));}
     private static Identity key(ArticulatedCombat.Frame f){return f==null?null:new Identity(f.activation(),f.move(),f.leftHanded(),f.master(),f.yawDelta(),f.pitchDelta(),0,f.scriptedFootwork(),Double.toHexString(f.horizontalVelocitySquared()),f.pose().phase().name()+":"+hashPose(f.pose()::local,f.pose().weight())+":"+hashPose(ArticulatedCombatPose.view(f.pose(),f.leftHanded())::local,f.pose().weight()));}
     private static boolean backend(Expected e,PlayerRenderState a){
-        boolean enabled=ArticulatedCombat.enabled(),shell=ArticulatedAuraShellRenderer.enabled(),funded=a.getData(AuraShellLayer.SHELL_GLOW)!=null;
+        boolean enabled=ArticulatedCombat.enabled(),shell=ArticulatedAuraShellRenderer.enabled(),funded=RenderStateData.get(a, AuraShellLayer.SHELL_GLOW)!=null;
         var s=CURRENT.get();var source=s==null?null:s.sources.get(a);PlayerModel model=source==null?null:source.model();
         boolean owned=model instanceof ArticulatedModelAccess access&&access.wildercord$bodyOwned();
         var access=owned?(ArticulatedModelAccess)model:null;
-        var shellAdapter=a.getData(ArticulatedAuraShellRenderer.READY);
+        var shellAdapter=RenderStateData.get(a, ArticulatedAuraShellRenderer.READY);
         boolean shellOwned=!funded||e.mode().equals("classic")||shellAdapter!=null&&shellAdapter.owner()==model
             &&(Object)shellAdapter instanceof dev.wildercord.gametest.mixin.CrimsonMoonShellAccess shellAccess
             &&shellAccess.moon$slim()==source.originalSkin().model().id().equals("slim");
@@ -444,9 +445,9 @@ public final class CrimsonMoonRenderProbe {
     }
     private static boolean commonCompatible(PlayerRenderState a){
         return a.deathTime<=0&&!a.isInvisible&&!a.isBaby&&!a.isUpsideDown&&!a.isAutoSpinAttack&&!a.isFallFlying&&!a.isCrouching&&!a.isPassenger&&!a.isUsingItem
-            &&!a.hasPose(Pose.SWIMMING)&&!a.hasPose(Pose.SLEEPING)&&Boolean.TRUE.equals(a.getData(ArticulatedCombat.KNOWN_LAYERS))&&a.walkAnimationSpeed<=.2F&&!a.isSpectator
+            &&!a.hasPose(Pose.SWIMMING)&&!a.hasPose(Pose.SLEEPING)&&Boolean.TRUE.equals(RenderStateData.get(a, ArticulatedCombat.KNOWN_LAYERS))&&a.walkAnimationSpeed<=.2F&&!a.isSpectator
             &&a.arrowCount==0&&a.stingerCount==0&&true&&a.parrotOnLeftShoulder==null&&a.parrotOnRightShoulder==null&&(!a.showCape||a.skin.capeTexture()==null)&&a.heldOnHead.isEmpty()
-            &&a.getData(dev.wildercord.client.render.GearLook.PACK)==null&&a.getData(dev.wildercord.client.render.GearLook.PIECES)==null&&a.getData(AuraShellLayer.IMAGES)==null
+            &&RenderStateData.get(a, dev.wildercord.client.render.GearLook.PACK)==null&&RenderStateData.get(a, dev.wildercord.client.render.GearLook.PIECES)==null&&RenderStateData.get(a, AuraShellLayer.IMAGES)==null
             &&dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD)&&offhand(a).isEmpty();
     }
     private static ItemStack offhand(PlayerRenderState a){return a.mainArm==HumanoidArm.RIGHT?dev.wildercord.client.compat.RenderCompat.leftHandStack(a):dev.wildercord.client.compat.RenderCompat.rightHandStack(a);}

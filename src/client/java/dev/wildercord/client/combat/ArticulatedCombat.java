@@ -8,7 +8,7 @@ import dev.wildercord.client.MastersArtsClient;
 import dev.wildercord.client.auraworld.AuraFighterRenderState;
 import dev.wildercord.client.render.AuraShellLayer;
 import dev.wildercord.client.render.GearLook;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
@@ -19,6 +19,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * Opt-in vertical slice. Owns a complete body/hands/item presentation only when every supported
@@ -76,9 +77,9 @@ public final class ArticulatedCombat {
 	}
 
 	public static void extract(LivingEntity avatar, PlayerRenderState state, float partial) {
-		state.setData(FRAME, null);
+		RenderStateData.set(state, FRAME, null);
 		if (!enabled()) return;
-		var movement = state.getData(dev.wildercord.client.MastersArtPose.FRAME);
+		var movement = RenderStateData.get(state, dev.wildercord.client.MastersArtPose.FRAME);
 		var timeline = MastersArtsClient.timeline(avatar);
 		boolean left = avatar.getMainArm() == HumanoidArm.LEFT;
 		// Wall Turn owns its segmented palette, including the airborne carry after the Classic tail has faded.
@@ -89,7 +90,7 @@ public final class ArticulatedCombat {
 			var event = form.event();
 			var pose = ArticulatedCombatPose.sampleWallTurn(event.phase(), event.ticks(), avatar.level().getGameTime() - form.received() + partial, left);
 			if (pose.weight() > 0) {
-				state.setData(FRAME, new Frame(pose, event.serial(), -2 - event.phase(), false, left,
+				RenderStateData.set(state, FRAME, new Frame(pose, event.serial(), -2 - event.phase(), false, left,
 					movement == null ? 0 : movement.yawDelta(), 0, true));
 				return;
 			}
@@ -97,7 +98,7 @@ public final class ArticulatedCombat {
 		if (movement != null && movement.move() <= -2) return;
 		if (timeline == null) {
 			// Stable first-person ownership avoids adding/removing two arms at every clip edge.
-			state.setData(FRAME, new Frame(ArticulatedCombatPose.NONE, Long.MIN_VALUE, -1, false, left, 0, 0));
+			RenderStateData.set(state, FRAME, new Frame(ArticulatedCombatPose.NONE, Long.MIN_VALUE, -1, false, left, 0, 0));
 			return;
 		}
 		if (!ArticulatedCombatPose.supportsPlayer(timeline.move())) return;
@@ -105,18 +106,18 @@ public final class ArticulatedCombat {
 		var pose = ArticulatedCombatPose.samplePlayer(timeline.move(), age, timeline.windup(), timeline.recovery(), left);
 		float viewYaw = avatar.getViewYRot(partial), viewPitch = avatar.getViewXRot(partial);
 		float yawDelta = net.minecraft.util.Mth.wrapDegrees(timeline.yaw() - viewYaw);
-		state.setData(FRAME, new Frame(pose, timeline.startTick(), timeline.move(), false, left, yawDelta, timeline.pitch() - viewPitch));
+		RenderStateData.set(state, FRAME, new Frame(pose, timeline.startTick(), timeline.move(), false, left, yawDelta, timeline.pitch() - viewPitch));
 	}
 
 	public static void extractMaster(SwordMaster master, AuraFighterRenderState state, float partial) {
-		state.setData(FRAME, null);
+		RenderStateData.set(state, FRAME, null);
 		// ---- masters-a pack: elemental signatures own a separate articulated clip on the executor clock.
 		if (enabled() && ArticulatedCombatPose.supportsMasterSignature(master.attackAnimation())
 			&& !master.state(dev.wildercord.aura.world.AuraFighter.STAGGER)) {
 			float elapsed = master.attackElapsed(partial);
 			boolean left = master.getMainArm() == HumanoidArm.LEFT;
 			var pose = ArticulatedCombatPose.sampleMasterSignature(master.attackAnimation(), elapsed, left);
-			if (pose.weight() > 0) state.setData(FRAME, new Frame(pose, master.level().getGameTime() - (long) Math.floor(elapsed),
+			if (pose.weight() > 0) RenderStateData.set(state, FRAME, new Frame(pose, master.level().getGameTime() - (long) Math.floor(elapsed),
 				master.attackAnimation(), true, left, 0, 0, false, master.getDeltaMovement().horizontalDistanceSqr()));
 			return;
 		}
@@ -129,7 +130,7 @@ public final class ArticulatedCombat {
 			master.attackActiveTicks(), master.attackRecoveryTicks(), left);
 		if (pose.weight() <= 0) return;
 		long activation = master.level().getGameTime() - (long) Math.floor(elapsed);
-		state.setData(FRAME, new Frame(pose, activation, master.attackAnimation(), true, left, 0, 0,
+		RenderStateData.set(state, FRAME, new Frame(pose, activation, master.attackAnimation(), true, left, 0, 0,
 			ArticulatedCombatPose.masterFootwork(master.attackAnimation(), elapsed, master.attackTellTicks()), master.getDeltaMovement().horizontalDistanceSqr()));
 	}
 
@@ -140,8 +141,8 @@ public final class ArticulatedCombat {
 
 	private static Frame compatible(ArmedEntityRenderState state, boolean view) {
 		if (!enabled() || !(state instanceof HumanoidRenderState humanoid) || !upright(humanoid) || !plainSword(dev.wildercord.client.compat.RenderCompat.mainHandStack(state))
-			|| !Boolean.TRUE.equals(state.getData(KNOWN_LAYERS))) return null;
-		Frame frame = state.getData(FRAME);
+			|| !Boolean.TRUE.equals(RenderStateData.get(state, KNOWN_LAYERS))) return null;
+		Frame frame = RenderStateData.get(state, FRAME);
 		if (frame == null || !view && state.walkAnimationSpeed > .2F
 				&& !schoolFootworkCompatible(frame)
 			|| !ArticulatedArmorRenderer.compatible(humanoid) || !view && frame.pose().weight() <= 0
@@ -154,8 +155,8 @@ public final class ArticulatedCombat {
 				|| avatar.arrowCount > 0 || avatar.stingerCount > 0 || false
 				|| avatar.parrotOnLeftShoulder != null || avatar.parrotOnRightShoulder != null
 				|| avatar.showCape && avatar.skin.capeTexture() != null || !avatar.heldOnHead.isEmpty()
-				|| state.getData(GearLook.PACK) != null || state.getData(GearLook.PIECES) != null
-				|| !ArticulatedAuraShellRenderer.compatible(avatar) || state.getData(AuraShellLayer.IMAGES) != null) return null;
+				|| RenderStateData.get(state, GearLook.PACK) != null || RenderStateData.get(state, GearLook.PIECES) != null
+				|| !ArticulatedAuraShellRenderer.compatible(avatar) || RenderStateData.get(state, AuraShellLayer.IMAGES) != null) return null;
 		} else if (!(state instanceof AuraFighterRenderState fighter) || !frame.master() || fighter.sit > 0 || fighter.yield > 0 || fighter.stagger > 0) return null;
 		return frame;
 	}

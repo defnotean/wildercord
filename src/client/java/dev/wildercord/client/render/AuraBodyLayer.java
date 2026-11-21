@@ -15,7 +15,7 @@ import dev.wildercord.client.AuraFxClient;
 import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.MagicQuality;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -32,6 +32,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
+import dev.wildercord.client.compat.RenderStateData;
 
 /**
  * The body's aura, by stage, for everyone to see (see {@code tools/aura_art.py}, {@code body.png}, for its shapes):
@@ -103,7 +104,7 @@ public class AuraBodyLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
 	/** Carries a player's body aura into their render state as it's extracted. */
 	public static void extract(LivingEntity avatar, PlayerRenderState state, float partial) {
-		state.setData(BODY, null);
+		RenderStateData.set(state, BODY, null);
 		if (!(avatar instanceof Player player) || player.isInvisible() || player.isSpectator() || MagicQuality.bodyAura == MagicQuality.BodyAura.OFF) {
 			return;
 		}
@@ -121,7 +122,7 @@ public class AuraBodyLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 		float awaken = AuraFxClient.awakenedForm(player, time);
 		boolean spent = Awakening.spent(player);
 		int color = spent ? mix(look.color(), 0x7A7080, 0.6F) : look.color();
-		state.setData(BODY, new Body(color, look.stage(), intensity, time + player.getId() * 7.3F, (float) Math.sqrt(dx * dx + dz * dz),
+		RenderStateData.set(state, BODY, new Body(color, look.stage(), intensity, time + player.getId() * 7.3F, (float) Math.sqrt(dx * dx + dz * dz),
 			player.onGround(), awaken, spent));
 	}
 
@@ -129,7 +130,7 @@ public class AuraBodyLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
 	@Override
 	public void render(PoseStack pose, MultiBufferSource buffer, int light, PlayerRenderState state, float yRot, float xRot) {
-		Body body = state.getData(BODY);
+		Body body = RenderStateData.get(state, BODY);
 		if (body == null || state.isInvisible || ShaderCompat.shadowPass()) {
 			return;
 		}
