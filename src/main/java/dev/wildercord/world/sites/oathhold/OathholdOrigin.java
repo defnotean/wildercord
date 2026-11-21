@@ -226,11 +226,11 @@ public final class OathholdOrigin {
 		}
 
 		// Outer Metropolitan Wards (248 < cheb < 952)
-		if (ax <= 11 || az <= 11) return Zone.OUTER_CAUSEWAY;
 		if (lx >= 500 && lx <= 951 && lz >= -260 && lz <= 260) return Zone.OUTER_HARBOR;
 		if (lx >= -680 && lx <= -544 && az <= 68) return Zone.OUTER_COLOSSEUM;
 		if (ax <= 68 && lz >= 536 && lz <= 672) return Zone.OUTER_EXCHANGE;
 		if (ax <= 68 && lz >= -672 && lz <= -536) return Zone.OUTER_ABBEY;
+		if (ax <= 11 || az <= 11) return Zone.OUTER_CAUSEWAY;
 		if (cheb >= 622 && cheb <= 638) return Zone.OUTER_CANAL;
 		if ((cheb >= 570 && cheb <= 588) || (cheb >= 924 && cheb <= 944)) return Zone.OUTER_RING_ROAD;
 		return Zone.OUTER_URBAN;
