@@ -56,6 +56,9 @@ public final class AuraWorld {
 	/** Knight #3 (Way of the Storm-Glaive): a winged houndskull sentinel wielding a lightning Storm-Halberd. */
 	public static final EntityType<OathboundHalberdier> OATHBOUND_HALBERDIER = register("oathbound_halberdier",
 		EntityType.Builder.of(OathboundHalberdier::new, MobCategory.MONSTER).sized(0.82F, 2.25F).eyeHeight(1.95F).clientTrackingRange(10).notInPeaceful());
+	/** Knight #4 (Way of the Sovereign Banner): a laurel-crowned commander rallying knights beneath a Sovereign War-Banner. */
+	public static final EntityType<OathboundBannerMarshal> OATHBOUND_BANNER_MARSHAL = register("oathbound_banner_marshal",
+		EntityType.Builder.of(OathboundBannerMarshal::new, MobCategory.MONSTER).sized(0.92F, 2.48F).eyeHeight(2.12F).clientTrackingRange(10).notInPeaceful());
 
 	/** An opt-in endgame encounter; never part of natural spawning. */
 	public static final EntityType<SwordMaster> SWORD_MASTER = register("sword_master",
@@ -72,6 +75,7 @@ public final class AuraWorld {
 	public static final Item OATHBOUND_BASTION_SPAWN_EGG = egg("oathbound_bastion", OATHBOUND_BASTION);
 	public static final Item OATHBOUND_BLADE_CHAMPION_SPAWN_EGG = egg("oathbound_blade_champion", OATHBOUND_BLADE_CHAMPION);
 	public static final Item OATHBOUND_HALBERDIER_SPAWN_EGG = egg("oathbound_halberdier", OATHBOUND_HALBERDIER);
+	public static final Item OATHBOUND_BANNER_MARSHAL_SPAWN_EGG = egg("oathbound_banner_marshal", OATHBOUND_BANNER_MARSHAL);
 	public static final Item SWORD_MASTER_SPAWN_EGG = egg("sword_master", SWORD_MASTER);
 
 	private static <T extends net.minecraft.world.entity.Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
@@ -152,6 +156,7 @@ public final class AuraWorld {
 		FabricDefaultAttributeRegistry.register(OATHBOUND_BASTION, OathboundBastion.createAttributes());
 		FabricDefaultAttributeRegistry.register(OATHBOUND_BLADE_CHAMPION, OathboundBladeChampion.createAttributes());
 		FabricDefaultAttributeRegistry.register(OATHBOUND_HALBERDIER, OathboundHalberdier.createAttributes());
+		FabricDefaultAttributeRegistry.register(OATHBOUND_BANNER_MARSHAL, OathboundBannerMarshal.createAttributes());
 		FabricDefaultAttributeRegistry.register(SWORD_MASTER, SwordMaster.createAttributes());
 		SwordMaster.init();
 		MastersCommand.init();
@@ -163,6 +168,7 @@ public final class AuraWorld {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:oathbound_bastion", FieldGuide.Group.MONSTER, 0xE8B848));
 		FieldGuide.add(new FieldGuide.Entry("wildercord:oathbound_blade_champion", FieldGuide.Group.MONSTER, 0xD83830));
 		FieldGuide.add(new FieldGuide.Entry("wildercord:oathbound_halberdier", FieldGuide.Group.MONSTER, 0x48F0FF));
+		FieldGuide.add(new FieldGuide.Entry("wildercord:oathbound_banner_marshal", FieldGuide.Group.MONSTER, 0xFFE066));
 		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		CreativeModeTabEvents.modifyOutputEvent(tab).register(output -> {
 			for (BreathingMethod method : BreathingMethods.BUILT_IN) {

@@ -44,6 +44,17 @@ LANG = {
     "guide.wildercord.oathbound_halberdier.hint": (
         "Commands the deepest haunts — strongholds, ancient cities, and sunken expeditions — alongside fallen knights."
     ),
+    "entity.wildercord.oathbound_banner_marshal": "Oathbound Banner-Marshal",
+    "item.wildercord.oathbound_banner_marshal_spawn_egg": "Oathbound Banner-Marshal Spawn Egg",
+    "guide.wildercord.oathbound_banner_marshal": (
+        "A regal Oathbound commander of the Way of the Sovereign Banner armored in ivory-white and gold plate over an "
+        "emerald surcoat, crowned with a golden laurel wreath and bearing a tall Sovereign War-Banner. It rallies nearby "
+        "knights with Strength, Resistance, and healing beneath its golden Decree, reflects arrows behind its Solar Aegis "
+        "shield, and calls down vertical pillars of judgment; break its guard with an axe."
+    ),
+    "guide.wildercord.oathbound_banner_marshal.hint": (
+        "Commands the deepest haunts — strongholds, ancient cities, and sunken expeditions — alongside fallen knights."
+    ),
 }
 
 # Exact UV boxes matching OathboundBastionModel.createLayer() on a 128x128 sheet.
@@ -1059,6 +1070,403 @@ def write(g) -> None:
         {"model": {"type": "minecraft:model", "model": f"wildercord:item/{hb_egg}"}},
     )
     g.write_json(g.DATA / "loot_table/entities/oathbound_halberdier.json", HALBERDIER_LOOT)
+
+    g.save(banner_marshal_skin(glow=False), g.ASSETS / "textures/entity/oathbound_banner_marshal/skin.png")
+    g.save(banner_marshal_skin(glow=True), g.ASSETS / "textures/entity/oathbound_banner_marshal/glow.png")
+    bm_egg = "oathbound_banner_marshal_spawn_egg"
+    g.save(banner_marshal_spawn_egg(), g.ASSETS / f"textures/item/{bm_egg}.png")
+    g.item_model(bm_egg, bm_egg)
+    g.write_json(
+        g.ASSETS / f"items/{bm_egg}.json",
+        {"model": {"type": "minecraft:model", "model": f"wildercord:item/{bm_egg}"}},
+    )
+    g.write_json(g.DATA / "loot_table/entities/oathbound_banner_marshal.json", BANNER_MARSHAL_LOOT)
+
+
+# ---------------------------------------------------------------------------
+# Knight #4: Oathbound Banner-Marshal (Way of the Sovereign Banner)
+# ---------------------------------------------------------------------------
+
+BANNER_MARSHAL_UV_BOXES = {
+    "head": (0, 0, 8, 8, 8),
+    "laurel_band": (32, 0, 9, 2, 9),
+    "laurel_crest": (68, 0, 3, 3, 2),
+    "body": (0, 18, 10, 12, 6),
+    "chest_core": (32, 18, 4, 4, 1),
+    "tabard_front": (42, 18, 6, 9, 1),
+    "tabard_back": (56, 18, 6, 9, 1),
+    "tasset": (70, 18, 2, 7, 5),
+    "upper_arm": (0, 38, 4, 6, 4),
+    "pauldron": (16, 38, 6, 5, 6),
+    "rondel": (40, 38, 3, 3, 1),
+    "wing": (48, 38, 0, 7, 6),
+    "fore_arm": (0, 52, 4, 7, 4),
+    "thigh": (16, 52, 4, 6, 4),
+    "shin": (32, 52, 4, 6, 5),
+    "knee": (50, 52, 4, 3, 2),
+    "backpack": (64, 38, 6, 7, 2),
+    "banner_pole": (0, 66, 2, 28, 2),
+    "banner_crossbar": (8, 66, 12, 2, 2),
+    "banner_cloth": (8, 72, 10, 12, 1),
+    "banner_tip": (30, 72, 4, 3, 1),
+    "banner_halo": (40, 66, 12, 14, 0),
+    "sword_grip": (0, 98, 2, 6, 2),
+    "sword_guard": (8, 98, 7, 2, 2),
+    "sword_blade": (26, 98, 3, 16, 1),
+    "sword_tip": (34, 98, 2, 3, 1),
+    "shield_body": (64, 66, 0, 13, 11),
+    "shield_boss": (90, 66, 1, 9, 9),
+    "shield_flare": (90, 86, 0, 14, 14),
+}
+
+IVORY = ((156, 150, 140), (196, 190, 178), (226, 220, 208), (246, 242, 232), (255, 252, 246))
+EMERALD = ((12, 62, 48), (18, 96, 74), (28, 132, 98), (48, 166, 124))
+SOLAR_GLOW = ((218, 152, 24), (255, 210, 74), (255, 240, 152), (255, 252, 224))
+
+
+def _solar_star_rgba(w: int, h: int) -> Image.Image:
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    px = im.load()
+    cx = (w - 1) / 2.0
+    cy = (h - 1) / 2.0
+    for y in range(h):
+        for x in range(w):
+            dx = abs(x - cx)
+            dy = abs(y - cy)
+            dist = math.hypot(dx / max(1.0, cx), dy / max(1.0, cy))
+            cross = min(dx, dy)
+            if dist <= 0.28:
+                px[x, y] = (*SOLAR_GLOW[3], 255)
+            elif cross <= 0.85 and dist <= 0.92:
+                px[x, y] = (*SOLAR_GLOW[2], int(230 * max(0.0, 1.0 - dist)))
+            elif abs(dist - 0.55) <= 0.14:
+                px[x, y] = (*SOLAR_GLOW[1], 190)
+    return im
+
+
+def banner_marshal_skin(glow: bool = False) -> Image.Image:
+    _assert_no_overlap(BANNER_MARSHAL_UV_BOXES)
+    img = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    px = img.load()
+
+    WING_MASK = (
+        "...GGG",
+        "..GGGG",
+        ".GGGG.",
+        "GGGG..",
+        "GGG...",
+        "GG....",
+        "G.....",
+    )
+    SHIELD_MASK = (
+        "..GGGGGGG..",
+        ".GDDDDDDDG.",
+        "GDDGGGGDDDG",
+        "GDGGSSGGDDG",
+        "GDGSSSSGDDG",
+        "GDGSSSSGDDG",
+        "GDGSSSSGDDG",
+        "GDGSSSSGDDG",
+        "GDGSSSSGDDG",
+        "GDGGSSGGDDG",
+        "GDDGGGGDDDG",
+        ".GDDDDDDDG.",
+        "..GGGGGGG..",
+    )
+
+    if not glow:
+        # 1. Ivory-white & gold greathelm, golden laurel wreath, solar T-visor
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "head", IVORY, fluted=True, gold_bottom=True, seed=301)
+        hf_x, hf_y, _, _ = box(*BANNER_MARSHAL_UV_BOXES["head"])["front"]
+        for ex, ey in ((1, 3), (2, 3), (3, 3), (4, 3), (5, 3), (6, 3), (3, 4), (4, 4), (3, 5), (4, 5)):
+            px[hf_x + ex, hf_y + ey] = (*SOLAR_GLOW[2], 255)
+        for lx in range(8):
+            px[hf_x + lx, hf_y + 2] = _rgba(GOLD[3])
+
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "laurel_band", GOLD, fluted=False, gold_bottom=False, seed=303)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "laurel_crest", GOLD, fluted=False, gold_bottom=False, seed=305)
+
+        # 2. Ivory cuirass over emerald waist, glowing Sun-Core, tabards, tassets
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "body", IVORY, fluted=True, gold_bottom=False, seed=311)
+        for face in ("front", "back"):
+            bx0, by0, bw, bh = box(*BANNER_MARSHAL_UV_BOXES["body"])[face]
+            for ly in range(bh):
+                for lx in range(bw):
+                    if ly in (0, 1) and lx in (0, 1, bw - 2, bw - 1):
+                        px[bx0 + lx, by0 + ly] = _rgba(EMERALD[2])
+                    elif ly in (7, 8, 9):
+                        px[bx0 + lx, by0 + ly] = _rgba(EMERALD[2 if (lx + ly) % 2 == 0 else 1])
+                    elif ly in (10, 11):
+                        px[bx0 + lx, by0 + ly] = _rgba(GOLD[3] if ly == 10 and lx % 2 == 0 else LEATHER[1])
+                    elif lx in (bw // 2 - 1, bw // 2) and ly < 7:
+                        px[bx0 + lx, by0 + ly] = _rgba(GOLD[3])
+
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "chest_core", GOLD, fluted=False, gold_bottom=False, seed=313)
+        ccx, ccy, _, _ = box(*BANNER_MARSHAL_UV_BOXES["chest_core"])["front"]
+        for ox, oy in ((1, 1), (2, 1), (1, 2), (2, 2)):
+            px[ccx + ox, ccy + oy] = (*SOLAR_GLOW[3], 255)
+
+        for tkey, tseed in (("tabard_front", 315), ("tabard_back", 317)):
+            _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, tkey, EMERALD, fluted=True, gold_bottom=True, seed=tseed)
+            for face in ("front", "back"):
+                tx0, ty0, tw, th = box(*BANNER_MARSHAL_UV_BOXES[tkey])[face]
+                for ly in range(th):
+                    for lx in range(tw):
+                        if lx == 0 or lx == tw - 1 or ly == th - 1:
+                            px[tx0 + lx, ty0 + ly] = _rgba(GOLD[3])
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "tasset", IVORY, fluted=True, gold_bottom=True, seed=319)
+
+        # 3. Shoulder pauldrons, golden sun rondels, angel wing cutouts, arms, greaves
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "upper_arm", EMERALD, fluted=False, gold_bottom=False, seed=321)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "pauldron", IVORY, fluted=True, gold_bottom=True, seed=323)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "rondel", GOLD, fluted=False, gold_bottom=False, seed=325)
+        for side in ("left", "right"):
+            wx0, wy0, ww, wh = box(*BANNER_MARSHAL_UV_BOXES["wing"])[side]
+            for ly in range(wh):
+                row = WING_MASK[ly]
+                for lx in range(ww):
+                    px[wx0 + lx, wy0 + ly] = _rgba(GOLD[3 if (lx + ly) % 2 == 0 else 2]) if row[lx] == "G" else (0, 0, 0, 0)
+
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "fore_arm", IVORY, fluted=True, gold_bottom=True, seed=327)
+        for face in ("front", "back", "left", "right"):
+            fx0, fy0, fw, fh = box(*BANNER_MARSHAL_UV_BOXES["fore_arm"])[face]
+            for lx in range(fw):
+                px[fx0 + lx, fy0 + fh - 1] = _rgba(GOLD[3])
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "thigh", EMERALD, fluted=False, gold_bottom=False, seed=329)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "shin", IVORY, fluted=True, gold_bottom=True, seed=331)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "knee", GOLD, fluted=False, gold_bottom=False, seed=333)
+
+        # 4. Back Sovereign War-Banner (leather mount, gold crossbar standard, emerald cloth w/ golden Sun-Sword emblem)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "backpack", LEATHER, fluted=False, gold_bottom=True, seed=335)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "banner_pole", GOLD, fluted=False, gold_bottom=False, seed=337)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "banner_crossbar", GOLD, fluted=False, gold_bottom=False, seed=339)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "banner_cloth", EMERALD, fluted=True, gold_bottom=False, seed=341)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "banner_tip", EMERALD, fluted=False, gold_bottom=True, seed=343)
+        for face in ("front", "back"):
+            bx0, by0, bw, bh = box(*BANNER_MARSHAL_UV_BOXES["banner_cloth"])[face]
+            for ly in range(bh):
+                for lx in range(bw):
+                    if lx == 0 or lx == bw - 1 or ly == 0:
+                        px[bx0 + lx, by0 + ly] = _rgba(GOLD[3])
+                    elif lx in (4, 5) and 2 <= ly <= 9:
+                        px[bx0 + lx, by0 + ly] = (*SOLAR_GLOW[2], 255)
+                    elif 3 <= lx <= 6 and ly in (4, 7) or (lx in (2, 7) and 5 <= ly <= 6):
+                        px[bx0 + lx, by0 + ly] = (*SOLAR_GLOW[1], 255)
+
+        bhalo = _solar_star_rgba(12, 14)
+        for _, (x0, y0, w, h) in box(*BANNER_MARSHAL_UV_BOXES["banner_halo"]).items():
+            if w == 12 and h == 14:
+                img.paste(bhalo, (x0, y0))
+
+        # 5. Sovereign Sunblade & Octagonal Solar Aegis Shield
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "sword_grip", LEATHER, fluted=False, gold_bottom=False, seed=345)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "sword_guard", GOLD, fluted=False, gold_bottom=False, seed=347)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "sword_blade", SOLAR_GLOW, fluted=False, gold_bottom=False, seed=349)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "sword_tip", SOLAR_GLOW, fluted=False, gold_bottom=False, seed=351)
+
+        for side in ("left", "right"):
+            sx0, sy0, sw, sh = box(*BANNER_MARSHAL_UV_BOXES["shield_body"])[side]
+            for ly in range(sh):
+                row = SHIELD_MASK[ly]
+                for lx in range(sw):
+                    ch = row[lx]
+                    if ch == "G":
+                        px[sx0 + lx, sy0 + ly] = _rgba(GOLD[3])
+                    elif ch == "D":
+                        px[sx0 + lx, sy0 + ly] = _rgba(GOLD[1])
+                    elif ch == "S":
+                        px[sx0 + lx, sy0 + ly] = (*SOLAR_GLOW[2], 255)
+                    else:
+                        px[sx0 + lx, sy0 + ly] = (0, 0, 0, 0)
+        _paint_ramp_box(img, BANNER_MARSHAL_UV_BOXES, "shield_boss", GOLD, fluted=False, gold_bottom=False, seed=353)
+        sbx, sby, _, _ = box(*BANNER_MARSHAL_UV_BOXES["shield_boss"])["left"]
+        for oy in range(3, 6):
+            for ox in range(3, 6):
+                px[sbx + ox, sby + oy] = (*SOLAR_GLOW[2], 255)
+
+        sflare = _solar_star_rgba(14, 14)
+        for _, (x0, y0, w, h) in box(*BANNER_MARSHAL_UV_BOXES["shield_flare"]).items():
+            if w == 14 and h == 14:
+                img.paste(sflare, (x0, y0))
+        return img
+
+    # ---- GLOW LAYER (golden T-visor, chest sun-core, banner emblem, Sunblade, shield sun boss & halos) ----
+    hf_x, hf_y, _, _ = box(*BANNER_MARSHAL_UV_BOXES["head"])["front"]
+    for ex, ey in ((1, 3), (2, 3), (3, 3), (4, 3), (5, 3), (6, 3), (3, 4), (4, 4), (3, 5), (4, 5)):
+        px[hf_x + ex, hf_y + ey] = (*SOLAR_GLOW[3], 255)
+
+    ccx, ccy, _, _ = box(*BANNER_MARSHAL_UV_BOXES["chest_core"])["front"]
+    for ox, oy in ((1, 1), (2, 1), (1, 2), (2, 2)):
+        px[ccx + ox, ccy + oy] = (*SOLAR_GLOW[3], 255)
+
+    for face in ("front", "back"):
+        bx0, by0, bw, bh = box(*BANNER_MARSHAL_UV_BOXES["banner_cloth"])[face]
+        for ly in range(bh):
+            for lx in range(bw):
+                if (lx in (4, 5) and 2 <= ly <= 9) or (3 <= lx <= 6 and ly in (4, 7)) or (lx in (2, 7) and 5 <= ly <= 6):
+                    px[bx0 + lx, by0 + ly] = (*SOLAR_GLOW[2], 225)
+
+    for skey in ("sword_blade", "sword_tip"):
+        for _, (x0, y0, w, h) in box(*BANNER_MARSHAL_UV_BOXES[skey]).items():
+            for ly in range(h):
+                for lx in range(w):
+                    px[x0 + lx, y0 + ly] = (*SOLAR_GLOW[3 if lx == 1 else 1], 240)
+
+    for side in ("left", "right"):
+        sbx, sby, _, _ = box(*BANNER_MARSHAL_UV_BOXES["shield_boss"])[side]
+        for oy in range(3, 6):
+            for ox in range(3, 6):
+                px[sbx + ox, sby + oy] = (*SOLAR_GLOW[3], 245)
+
+    bhalo = _solar_star_rgba(12, 14)
+    for _, (x0, y0, w, h) in box(*BANNER_MARSHAL_UV_BOXES["banner_halo"]).items():
+        if w == 12 and h == 14:
+            img.paste(bhalo, (x0, y0))
+
+    sflare = _solar_star_rgba(14, 14)
+    for _, (x0, y0, w, h) in box(*BANNER_MARSHAL_UV_BOXES["shield_flare"]).items():
+        if w == 14 and h == 14:
+            img.paste(sflare, (x0, y0))
+    return img
+
+
+def banner_marshal_spawn_egg() -> Image.Image:
+    EGG = """
+        ................
+        ................
+        ......oooo......
+        ....oo1111oo....
+        ...o11111111o...
+        ..o1111111111o..
+        ..o1111111111o..
+        .o111111111111o.
+        .o111111111111o.
+        .o111111111111o.
+        .o111111111111o.
+        ..o1111111111o..
+        ..o1111111111o..
+        ...o11111111o...
+        ....oooooooo....
+        ................
+    """
+    MOTIF = """
+        ................
+        .......ee.......
+        ......eGGe......
+        .....GGGGGG.....
+        .....IvvvvI.....
+        ......IIII......
+        .....gIvvIg.....
+        ......gIIg......
+        ......eGGe......
+        ......eeee......
+        .......ee.......
+        ................
+    """
+    pal = {
+        "g": hexc("#E8B83C"),
+        "G": hexc("#FFE47A"),
+        "I": hexc("#EDE8DC"),
+        "e": hexc("#1E8458"),
+        "v": hexc("#FFF6C8"),
+    }
+    cv = Canvas()
+    dark, mid, light = hexc("#8F887A"), hexc("#CEC6B6"), hexc("#EFEAE0")
+    edge = mix(dark, (0, 0, 0), 0.55)
+    for y, row in enumerate(r.strip() for r in EGG.strip("\n").splitlines()):
+        for x, ch in enumerate(row):
+            if ch == "o":
+                cv.put(x, y, edge)
+            elif ch == "1":
+                t = (x + y) / 26.0
+                cv.put(x, y, light if t < 0.4 else mid if t < 0.72 else dark)
+    for y, row in enumerate(r.strip() for r in MOTIF.strip("\n").splitlines()):
+        for x, ch in enumerate(row):
+            if ch in pal and cv.get(x, y) is not None:
+                cv.put(x, y, pal[ch])
+    return cv.image()
+
+
+BANNER_MARSHAL_LOOT = {
+    "type": "minecraft:entity",
+    "pools": [
+        {
+            "rolls": {"type": "minecraft:uniform", "min": 2, "max": 3},
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:manual_page",
+                    "weight": 3,
+                    "functions": [
+                        {"function": "minecraft:set_components", "components": {"wildercord:breathing_method": "dawn"}},
+                    ],
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:manual_page",
+                    "weight": 2,
+                    "functions": [
+                        {"function": "minecraft:set_components", "components": {"wildercord:breathing_method": "hourglass"}},
+                    ],
+                },
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:aura_shard",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 3, "max": 4}},
+                        {
+                            "function": "minecraft:enchanted_count_increase",
+                            "enchantment": "minecraft:looting",
+                            "count": {"type": "minecraft:uniform", "min": 0.0, "max": 1.0},
+                        },
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:gold_ingot",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 3, "max": 6}},
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:emerald",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 4}},
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}},
+                    ],
+                }
+            ],
+        },
+    ],
+    "random_sequence": "wildercord:entities/oathbound_banner_marshal",
+}
 
 
 # ---------------------------------------------------------------------------

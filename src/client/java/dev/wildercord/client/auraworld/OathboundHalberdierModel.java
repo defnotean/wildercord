@@ -377,9 +377,10 @@ public final class OathboundHalberdierModel extends EntityModel<OathboundHalberd
 				left.zRot = Mth.lerp(rec, Mth.lerp(slam, 0.14F * wind, 0.05F), -0.08F);
 				foreL.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, -0.68F, -0.22F), -0.24F), -0.68F);
 
-				// Panel 5: overhead crossbar visible right above winged helm -> Panel 6: spear/axe plunging visibly into stone
-				halberd.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 1.82F, 1.55F), -1.96F), 1.82F);
-				halberd.zRot = Mth.lerp(rec, Mth.lerp(slam, -1.42F * wind, 0.16F), 0.55F);
+				// Panel 5: overhead crossbar out high-left above winged helm -> Panel 6: spear/axe plunging visibly into stone
+				halberd.xRot = Mth.lerp(rec, Mth.lerp(slam, Mth.lerp(wind, 1.82F, 0.0F), -1.96F), 1.82F);
+				halberd.yRot = Mth.lerp(rec, Mth.lerp(slam, 0.0F, 0.95F), 0.0F);
+				halberd.zRot = Mth.lerp(rec, Mth.lerp(slam, -1.85F * wind, 0.16F), 0.55F);
 
 				float flare = (1.0F - rec) * Math.max(wind * 0.4F, slam);
 				scarfBase.xRot = 0.52F + flare * 0.55F;

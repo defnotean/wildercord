@@ -92,7 +92,8 @@ public final class KnightSpawner {
 		int bastions = level.getEntities(AuraWorld.OATHBOUND_BASTION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
 		int blades = level.getEntities(AuraWorld.OATHBOUND_BLADE_CHAMPION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
 		int halberdiers = level.getEntities(AuraWorld.OATHBOUND_HALBERDIER, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
-		return fallen + bastions + blades + halberdiers;
+		int marshals = level.getEntities(AuraWorld.OATHBOUND_BANNER_MARSHAL, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
+		return fallen + bastions + blades + halberdiers + marshals;
 	}
 
 	/** Living Oathbound high knights within {@link OathboundBastionRules#CHAMPION_CROWD_RADIUS} blocks of {@code pos}. */
@@ -101,7 +102,8 @@ public final class KnightSpawner {
 		int bastions = level.getEntities(AuraWorld.OATHBOUND_BASTION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
 		int blades = level.getEntities(AuraWorld.OATHBOUND_BLADE_CHAMPION, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
 		int halberdiers = level.getEntities(AuraWorld.OATHBOUND_HALBERDIER, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
-		return bastions + blades + halberdiers;
+		int marshals = level.getEntities(AuraWorld.OATHBOUND_BANNER_MARSHAL, k -> k.isAlive() && k.blockPosition().distSqr(pos) < r * r).size();
+		return bastions + blades + halberdiers + marshals;
 	}
 
 	/** The haunted place {@code pos} is in, or null. */
@@ -187,10 +189,11 @@ public final class KnightSpawner {
 			if (haunt.start() != null ? !level.structureManager().getStructureWithPieceAt(at, HAUNTS).isValid() : !spawnerRoom(level, at)) {
 				continue;
 			}
-			return switch (random.nextInt(3)) {
+			return switch (random.nextInt(4)) {
 				case 0 -> raiseChampion(level, at, random);
 				case 1 -> raiseBladeChampion(level, at, random);
-				default -> raiseHalberdier(level, at, random);
+				case 2 -> raiseHalberdier(level, at, random);
+				default -> raiseBannerMarshal(level, at, random);
 			};
 		}
 		return null;
@@ -232,6 +235,21 @@ public final class KnightSpawner {
 			return null;
 		}
 		OathboundHalberdier champion = AuraWorld.OATHBOUND_HALBERDIER.create(level, EntitySpawnReason.NATURAL);
+		if (champion == null) {
+			return null;
+		}
+		champion.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360.0F, 0.0F);
+		champion.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
+		level.addFreshEntityWithPassengers(champion);
+		return champion;
+	}
+
+	/** Places an {@link OathboundBannerMarshal} at {@code at} after checking three blocks of vertical clearance. */
+	public static @Nullable OathboundBannerMarshal raiseBannerMarshal(ServerLevel level, BlockPos at, RandomSource random) {
+		if (!level.getBlockState(at.above(2)).isAir()) {
+			return null;
+		}
+		OathboundBannerMarshal champion = AuraWorld.OATHBOUND_BANNER_MARSHAL.create(level, EntitySpawnReason.NATURAL);
 		if (champion == null) {
 			return null;
 		}
