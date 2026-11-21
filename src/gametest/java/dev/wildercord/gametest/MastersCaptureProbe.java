@@ -142,9 +142,8 @@ public final class MastersCaptureProbe {
 		var result = new CompletableFuture<Void>();
 		begin(mc);
 		try {
-			if (mc.packetProcessor() != null && mc.level != null) {
+			if (mc.level != null) {
 				long gameTime = mc.level.getGameTime();
-				mc.packetProcessor().processQueuedPackets();
 				if (mc.level != null && mc.level.getGameTime() != gameTime) {
 					mc.level.getLevelData().setGameTime(gameTime);
 				}

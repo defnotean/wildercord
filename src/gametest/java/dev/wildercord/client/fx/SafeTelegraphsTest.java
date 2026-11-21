@@ -35,7 +35,7 @@ public final class SafeTelegraphsTest implements FabricClientGameTest {
 			shot(c, "safe_telegraphs_off");
 			c.runOnClient(mc -> {
 				MagicQuality.safeTelegraphs = true;
-				mc.particleEngine.clearParticles();
+				dev.wildercord.gametest.compat.GametestCompat.clearParticles(mc.particleEngine);
 				mc.particleEngine.add(circle(mc, RED, -2));
 				mc.particleEngine.add(circle(mc, GREEN, 2));
 			});

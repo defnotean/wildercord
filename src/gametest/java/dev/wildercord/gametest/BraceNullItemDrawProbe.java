@@ -23,7 +23,7 @@ public final class BraceNullItemDrawProbe {
 	private static ItemStackRenderState boundItem;
 	private BraceNullItemDrawProbe() {}
 	public static final class Call {
-		final PlayerRenderState state; final Object model; ItemStackRenderState item; final PoseStack stack; final MultiBufferSource buffer;
+		final PlayerRenderState state; final Object model; ItemStackRenderState item; final PoseStack stack; final MultiBufferSource collector;
 		final MastersArtPose.Frame frame; final boolean first; final float[] expectedPre;
 		boolean pre, drawing, drawn, closed;
 		Call(PlayerRenderState state, Object model, ItemStackRenderState item, PoseStack stack, MultiBufferSource buffer, boolean first, float[] expectedPre) {

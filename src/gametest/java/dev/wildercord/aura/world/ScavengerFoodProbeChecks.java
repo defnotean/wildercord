@@ -91,7 +91,7 @@ public final class ScavengerFoodProbeChecks {
   check(ScavengerFoodProbe.scopesClear(),"no state survives final close");
  }
  private static void path(){
-  var nodes=new ArrayList<>(List.of(new Node(1,101,3),new Node(2,102,3),new Node(3,101,3)));var target=new BlockPos(3,101,3);var path=new Path(buffer,target,true);path.setNextNodeIndex(1);var before=new ArrayList<>(buffer);var row=ScavengerFoodProbe.path(path);
+  var nodes=new ArrayList<>(List.of(new Node(1,101,3),new Node(2,102,3),new Node(3,101,3)));var target=new BlockPos(3,101,3);var path=new Path(nodes,target,true);path.setNextNodeIndex(1);var before=new ArrayList<>(nodes);var row=ScavengerFoodProbe.path(path);
   check(path.getNextNodeIndex()==1&&path.getNodeCount()==3&&path.getTarget()==target&&path.canReach(),"existing native path remains unchanged");for(int i=0;i<3;i++)check(path.getNode(i)==before.get(i),"node identity unchanged");check(row.getAsJsonArray("remainingNodes").size()==2&&row.get("next").getAsInt()==1,"existing path and height recorded");
  }
  private static void throwsSame(RuntimeException marker,Runnable call){try{call.run();throw new AssertionError("native exception swallowed");}catch(RuntimeException caught){check(caught==marker,"native exception identity retained");}}

@@ -36,43 +36,42 @@ public final class LifeOutcomeQualityTest implements FabricClientGameTest {
    });c.waitTicks(8);
    // Opposing own/others settings make a recipient-as-source mistake observable.
    for(boolean own:new boolean[]{true,false}){
-    c.runOnClient(mc->{MagicQuality.own=MagicQuality.Level.MINIMAL;MagicQuality.others=MagicQuality.Level.FULL;mc.particleEngine.clearParticles();});
+    c.runOnClient(mc->{MagicQuality.own=MagicQuality.Level.MINIMAL;MagicQuality.others=MagicQuality.Level.FULL;dev.wildercord.gametest.compat.GametestCompat.clearParticles(mc.particleEngine);});
     w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(own?p.getUUID():new UUID(4,2),s.overworld().dimension().location().toString(),"heal",LifeOutcomes.Moment.APPLY,p.position().add(0,1,4),null,1,2,s.overworld().getGameTime(),new Vec3(0,0,-1),.38));});
     c.waitTicks(2);int actual=c.computeOnClient(mc->(int)particles(mc.particleEngine).stream().filter(p->p.isAlive()&&p instanceof LifeParticle).count());
     int[] expected={0};LifeOutcomes.draw(new LifeOutcomes.Observation("heal",LifeOutcomes.Moment.APPLY,Vec3.ZERO,null,1,2,0),own,(option,at)->expected[0]++);
     check(actual==expected[0],"Actual registered receiver selects "+(own?"own Minimal":"others Full")+" material count: "+actual+"/"+expected[0]);
     c.runOnClient(mc->{Vec3 anchor=mc.player.position().add(0,1,4),normal=new Vec3(0,0,-1);for(var p:particles(mc.particleEngine))if(p.isAlive()&&p instanceof LifeParticle){var at=new Vec3((double)field(p,Particle.class,"x"),(double)field(p,Particle.class,"y"),(double)field(p,Particle.class,"z"));check(at.subtract(anchor).dot(normal)>.34,"Actual packet renderer preserves rotated outward surface instead of legacy center");}});
    }
-   c.runOnClient(mc->{MagicQuality.others=MagicQuality.Level.MINIMAL;mc.particleEngine.clearParticles();});
+   c.runOnClient(mc->{MagicQuality.others=MagicQuality.Level.MINIMAL;dev.wildercord.gametest.compat.GametestCompat.clearParticles(mc.particleEngine);});
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(null,s.overworld().dimension().location().toString(),"pulse_ferry",LifeOutcomes.Moment.PULSE,p.position().add(0,1,4),null,2,2,s.overworld().getGameTime()));});
    c.waitTicks(2);c.runOnClient(mc->{var live=particles(mc.particleEngine).stream().filter(Particle::isAlive).toList();check(live.stream().anyMatch(p->p instanceof LifeParticle),"Actual Minimal packet retains Life body");check(live.stream().anyMatch(p->p instanceof MaterialParticle&&((Integer)field(p,MaterialParticle.class,"style"))==MaterialOption.TIME),"Actual Minimal packet retains Time support");});
-   c.runOnClient(mc->mc.particleEngine.clearParticles());
+   c.runOnClient(mc->dev.wildercord.gametest.compat.GametestCompat.clearParticles(mc.particleEngine));
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(p.getUUID(),"minecraft:the_nether","heal",LifeOutcomes.Moment.APPLY,p.position().add(0,1,4),null,1,2,s.overworld().getGameTime(),new Vec3(0,0,-1),.38));});
    c.waitTicks(2);c.runOnClient(mc->check(particles(mc.particleEngine).stream().noneMatch(p->p.isAlive()&&p instanceof LifeParticle),"Wrong-dimension packet produces no outcome"));
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(p.getUUID(),s.overworld().dimension().location().toString(),"heal",LifeOutcomes.Moment.APPLY,p.getEyePosition(),null,1,2,s.overworld().getGameTime()));});
    c.waitTicks(2);c.runOnClient(mc->check(particles(mc.particleEngine).stream().noneMatch(p->p.isAlive()&&p instanceof LifeParticle),"First-person eye clearance remains enforced for every recipe point"));
-   c.runOnClient(mc->{mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);mc.particleEngine.clearParticles();});c.waitTicks(2);
+   c.runOnClient(mc->{mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);dev.wildercord.gametest.compat.GametestCompat.clearParticles(mc.particleEngine);});c.waitTicks(2);
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(new UUID(4,2),s.overworld().dimension().location().toString(),"heal",LifeOutcomes.Moment.APPLY,p.getEyePosition(),null,1,2,s.overworld().getGameTime()));});
    c.waitTicks(2);c.runOnClient(mc->check(particles(mc.particleEngine).stream().noneMatch(p->p.isAlive()&&p instanceof LifeParticle),"Foreign source retains eye clearance even in local third person"));
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();ServerPlayNetworking.send(p,new LifeOutcomePayload(p.getUUID(),s.overworld().dimension().location().toString(),"second_wind",LifeOutcomes.Moment.APPLY,p.getBoundingBox().getCenter(),null,1,0,s.overworld().getGameTime(),new Vec3(0,0,1),.38));});
    c.waitTicks(2);c.runOnClient(mc->{
     var live=particles(mc.particleEngine).stream().filter(p->p.isAlive()&&(p instanceof LifeParticle||p instanceof MaterialParticle)).toList();
     check(live.size()==3&&live.stream().anyMatch(p->p instanceof MaterialParticle),"Diagnostic owner packet keeps both Life and Time recipe ingredients in native third person");
-    for(var p:live){var state=new CountingState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.getMainCamera(),1);check(!state.isEmpty(),"Actual native third-person extracts original recipe ingredient");}
+    for(var p:live){var state=new CountingState();((dev.wildercord.client.compat.McQuadParticle)p).extract(state,mc.gameRenderer.getMainCamera(),1);check(!state.isEmpty(),"Actual native third-person extracts original recipe ingredient");}
     mc.options.setCameraType(CameraType.FIRST_PERSON);
-    for(var p:live){var state=new CountingState();((SingleQuadParticle)p).extract(state,mc.gameRenderer.getMainCamera(),1);check(state.isEmpty(),"Immediate first-person switch suppresses surviving Life and Time support alike");check(p.getLifetime()==(p instanceof LifeParticle?10:8),"Mode switches retain original recipe lifetimes");}
+    for(var p:live){var state=new CountingState();((dev.wildercord.client.compat.McQuadParticle)p).extract(state,mc.gameRenderer.getMainCamera(),1);check(state.isEmpty(),"Immediate first-person switch suppresses surviving Life and Time support alike");check(p.getLifetime()==(p instanceof LifeParticle?10:8),"Mode switches retain original recipe lifetimes");}
    });
   }finally{c.runOnClient(mc->{MagicQuality.own=oldOwn;MagicQuality.others=oldOthers;mc.options.setCameraType(oldCamera);});}
  }
- private static List<Particle> particles(ParticleEngine e){var out=new ArrayList<Particle>();for(var group:((Map<?,?>)field(e,ParticleEngine.class,"particles")).values())for(var p:(Queue<?>)field(group,ParticleGroup.class,"particles"))out.add((Particle)p);for(var p:(Queue<?>)field(e,ParticleEngine.class,"particlesToAdd"))out.add((Particle)p);return out;}
+ private static List<Particle> particles(ParticleEngine e){var out=new ArrayList<Particle>();for(var q:((Map<?,?>)field(e,ParticleEngine.class,"particles")).values())for(var p:(Queue<?>)q)out.add((Particle)p);for(var p:(Queue<?>)field(e,ParticleEngine.class,"particlesToAdd"))out.add((Particle)p);return out;}
  /** 1.21.11 keeps the quad list private; count the submissions instead. */
 private static final class CountingState extends QuadParticleRenderState {
 	int quads;
-	@Override public void add(net.minecraft.client.particle.SingleQuadParticle.Layer layer,
-			float x, float y, float z, float width, float height, float u0, float v0, float u1, float v1,
-			float r, float g, float b, int light, int overlay) {
-		quads++;
-		super.add(layer, x, y, z, width, height, u0, v0, u1, v1, r, g, b, light, overlay);
+	@Override public void add(dev.wildercord.client.compat.McQuadParticle.Layer layer,
+			float x, float y, float z, float xRot, float yRot, float zRot, float wRot,
+			float scale, float u0, float u1, float v0, float v1, int color, int lightCoords) {
+		if ((color >>> 24) != 0 && scale > 0F) quads++;
 	}
 	boolean isEmpty() { return quads == 0; }
 }

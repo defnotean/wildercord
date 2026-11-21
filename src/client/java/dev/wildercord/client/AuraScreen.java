@@ -680,7 +680,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 				break;
 			}
 		}
-		// ---- the passive, at the foot (the Way tab uses the room for its buffer in full).
+		// ---- the passive, at the foot (the Way tab uses the room for its nodes in full).
 		if (way && wayRight > wayLeft) {
 			return tooltip;
 		}
@@ -842,7 +842,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 
 	/**
 	 * The Way tree: what the swordsman walks (or how to choose one), then a column for each Way (its emblem and name) with its three
-	 * buffer under it, one row a stage (Edge, Form, Sovereign), each node drawn as it stands: in force (lit, framed in gold), waking after
+	 * nodes under it, one row a stage (Edge, Form, Sovereign), each node drawn as it stands: in force (lit, framed in gold), waking after
 	 * a change (half lit, filling), still to come (outlined in its Way's colour), another Way's (dark), or open to choose. Under the tree,
 	 * the picked node in full: its name, its stage, where it stands, its passive and what it changes. At the foot, how to change Way.
 	 */

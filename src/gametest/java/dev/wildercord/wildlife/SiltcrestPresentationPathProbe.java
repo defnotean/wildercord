@@ -106,7 +106,7 @@ final class SiltcrestPresentationPathProbe implements AutoCloseable {
  private static JsonObject navigation(Mob mob) {
   var out=new JsonObject();var navigation=mob.getNavigation();var path=navigation.getPath();out.addProperty("done",navigation.isDone());out.addProperty("stuck",navigation.isStuck());out.addProperty("requestedTarget",String.valueOf(navigation.getTargetPos()));out.addProperty("pathPresent",path!=null);if(path==null)return out;
   out.addProperty("pathDone",path.isDone());out.addProperty("canReach",path.canReach());out.addProperty("target",path.getTarget().toString());out.addProperty("next",path.getNextNodeIndex());out.addProperty("nodeCount",path.getNodeCount());
-  var nodes=new JsonArray();int first=Math.max(0,path.getNextNodeIndex());for(int i=first;i<Math.min(path.getNodeCount(),first+MAX_PATH_NODES);i++)buffer.add(path.getNodePos(i).toString());out.add("remainingNodes",buffer);out.addProperty("remainingNodesOmitted",Math.max(0,path.getNodeCount()-first-MAX_PATH_NODES));
+  var nodes=new JsonArray();int first=Math.max(0,path.getNextNodeIndex());for(int i=first;i<Math.min(path.getNodeCount(),first+MAX_PATH_NODES);i++)nodes.add(path.getNodePos(i).toString());out.add("remainingNodes",nodes);out.addProperty("remainingNodesOmitted",Math.max(0,path.getNodeCount()-first-MAX_PATH_NODES));
   if(first<path.getNodeCount())out.add("nextWaypoint",vector(path.getNextEntityPos(mob)));return out;
  }
  private static Object read(Object source,String name){try{var field=source.getClass().getDeclaredField(name);field.setAccessible(true);return field.get(source);}catch(ReflectiveOperationException error){throw new IllegalStateException(name,error);}}

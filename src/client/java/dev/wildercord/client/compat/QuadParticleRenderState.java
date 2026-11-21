@@ -13,16 +13,21 @@ import net.minecraft.client.renderer.MultiBufferSource;
  * quads a particle wants drawn and writes each one straight to the buffer its layer asks for. Positions
  * are camera-relative, the way every caller here already passes them.
  */
-public final class QuadParticleRenderState {
+public class QuadParticleRenderState {
 	private final MultiBufferSource buffers;
 
 	public QuadParticleRenderState(MultiBufferSource buffers) {
 		this.buffers = buffers;
 	}
 
+	/** For a test that only counts what a particle hands over: there is nothing to draw to. */
+	protected QuadParticleRenderState() {
+		this.buffers = null;
+	}
+
 	/** The buffer a layer's quads go on. */
 	public VertexConsumer bufferFor(McQuadParticle.Layer layer) {
-		return buffers.getBuffer(layer.renderType());
+		return buffers == null ? null : buffers.getBuffer(layer.renderType());
 	}
 
 	/**
@@ -46,6 +51,9 @@ public final class QuadParticleRenderState {
 			}
 		}
 		VertexConsumer buffer = bufferFor(drawn);
+		if (buffer == null) {
+			return;
+		}
 		Quaternionf turn = new Quaternionf(xRot, yRot, zRot, wRot);
 		Vector3f right = new Vector3f(1F, 0F, 0F);
 		Vector3f up = new Vector3f(0F, 1F, 0F);

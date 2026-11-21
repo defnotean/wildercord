@@ -92,7 +92,7 @@ public final class StoneHingeNaturalMotion {
         if (!value.proof.pending()) return false;
         boolean[] expected = {false};
         value.proof.observe(() -> expected[0] = value.proof.sendEnter(value.frame("natural-motion-start"), tracker, packet,
-            packet.getId(), ordinal, vector(packet.getMovement()), manual));
+            packet.getId(), ordinal, vector(dev.wildercord.gametest.compat.GametestCompat.motionOf(packet)), manual));
         return expected[0];
     }
     public static void sent(ServerPlayer player, ClientboundSetEntityMotionPacket packet) {

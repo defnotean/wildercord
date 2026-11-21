@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class CrimsonMoonDeferredMixin {
 	@WrapOperation(method = "render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), require = 1, expect = 1, allow = 1)
-	private void wildercord$moon$deferred(EntityModel<?, ?> model, PoseStack pose, VertexConsumer vertices,
+	private void wildercord$moon$deferred(EntityModel<?> model, PoseStack pose, VertexConsumer vertices,
 			int light, int overlay, int tint, Operation<Void> original,
 			@Local(argsOnly = true) LivingEntityRenderState state) {
 		var call = CrimsonMoonRenderProbe.deferredEnter(model, state);

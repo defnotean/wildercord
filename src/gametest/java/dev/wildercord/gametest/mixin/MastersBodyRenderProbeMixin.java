@@ -23,10 +23,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MastersBodyRenderProbeMixin {
 	@WrapOperation(method = "render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), require = 1, expect = 1, allow = 1)
-	private void wildercord$sharedBody(EntityModel<?, ?> model, PoseStack pose, VertexConsumer vertices,
+	private void wildercord$sharedBody(EntityModel<?> model, PoseStack pose, VertexConsumer vertices,
 			int light, int overlay, int color, Operation<Void> original,
 			@Local(argsOnly = true) LivingEntityRenderState state) {
-		var call = BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.submissionBegin(model, state, pose, null), null);
+		dev.wildercord.gametest.NativeBodySubmission.Origin call = BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.submissionBegin(model, state, pose, null), null);
 		boolean completed = false;
 		try {
 			original.call(model, pose, vertices, light, overlay, color);

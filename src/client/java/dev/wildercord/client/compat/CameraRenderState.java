@@ -2,6 +2,7 @@ package dev.wildercord.client.compat;
 
 import org.joml.Quaternionf;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -10,5 +11,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public final class CameraRenderState {
 	public Vec3 pos = Vec3.ZERO;
+	public Vec3 entityPos = Vec3.ZERO;
+	public BlockPos blockPos = BlockPos.ZERO;
+	public boolean initialized;
 	public Quaternionf orientation = new Quaternionf();
 }

@@ -117,6 +117,27 @@ public final class GametestCompat {
 		camera.orientation = source.rotation();
 	}
 
+	/** 1.21.8 keeps the particle queues private and has no public clear: empty them by hand. */
+	public static void clearParticles(net.minecraft.client.particle.ParticleEngine engine) {
+		try {
+			java.lang.reflect.Field queues = net.minecraft.client.particle.ParticleEngine.class.getDeclaredField("particles");
+			queues.setAccessible(true);
+			for (Object queue : ((java.util.Map<?, ?>) queues.get(engine)).values()) {
+				((java.util.Collection<?>) queue).clear();
+			}
+			java.lang.reflect.Field adding = net.minecraft.client.particle.ParticleEngine.class.getDeclaredField("particlesToAdd");
+			adding.setAccessible(true);
+			((java.util.Collection<?>) adding.get(engine)).clear();
+		} catch (ReflectiveOperationException failure) {
+			throw new IllegalStateException(failure);
+		}
+	}
+
+	/** 1.21.8 carries a knock-back packet as three raw axis values, not a movement vector. */
+	public static net.minecraft.world.phys.Vec3 motionOf(net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket packet) {
+		return new net.minecraft.world.phys.Vec3(packet.getXa(), packet.getYa(), packet.getZa());
+	}
+
 	public static BlockPos findNearestStructure(ServerLevel level, Holder<Structure> structure, BlockPos origin,
 			int radiusChunks, boolean skipKnownStructures) {
 		var hit = level.getChunkSource().getGenerator().findNearestMapStructure(

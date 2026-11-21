@@ -64,7 +64,7 @@ public final class StoneHingeOwnerProbe {
 		final boolean expected, manual, originalTracker;
 		volatile boolean completed;
 		MotionSend(int ordinal, ClientboundSetEntityMotionPacket packet, boolean expected, boolean manual, boolean originalTracker) {
-			this.ordinal = ordinal; this.raw = packet.getMovement(); this.expected = expected; this.manual = manual; this.originalTracker = originalTracker;
+			this.ordinal = ordinal; this.raw = dev.wildercord.gametest.compat.GametestCompat.motionOf(packet); this.expected = expected; this.manual = manual; this.originalTracker = originalTracker;
 			var buffer = new FriendlyByteBuf(Unpooled.buffer());
 			try { ClientboundSetEntityMotionPacket.STREAM_CODEC.encode(buffer, packet); wire = ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(buffer).getMovement(); }
 			finally { buffer.release(); }
@@ -144,12 +144,12 @@ public final class StoneHingeOwnerProbe {
 			} catch (Throwable failure) { failed(failure); return null; }
 		}
 		public void expectMotion(Vec3 vector) { expectedMotion = vector; }
-		public void manual(ClientboundSetEntityMotionPacket packet) { manual = packet; expectedMotion = packet.getMovement(); }
+		public void manual(ClientboundSetEntityMotionPacket packet) { manual = packet; expectedMotion = dev.wildercord.gametest.compat.GametestCompat.motionOf(packet); }
 		private synchronized MotionSend sendingMotion(ClientboundSetEntityMotionPacket packet) {
             int ordinal = ++motionSerial;
             Boolean natural = dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.expected(this,
                 dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.currentTracker(server), packet, ordinal, manual == packet);
-			MotionSend sent = new MotionSend(ordinal, packet, natural != null ? natural : expectedMotion != null && expectedMotion.equals(packet.getMovement())
+			MotionSend sent = new MotionSend(ordinal, packet, natural != null ? natural : expectedMotion != null && expectedMotion.equals(dev.wildercord.gametest.compat.GametestCompat.motionOf(packet))
 				&& (manual == null || manual == packet), manual == packet, dev.wildercord.gametest.stonehinge.peer.StoneHingePeerProbe.originalTracker(server));
 			motionQueue.add(sent);
             if (sent.originalTracker && firstOriginalMotion == null) firstOriginalMotion = sent;
@@ -264,11 +264,11 @@ public final class StoneHingeOwnerProbe {
 	public static void clientMotion(ClientboundSetEntityMotionPacket packet, Runnable original) {
 		Minecraft client = Minecraft.getInstance(); Trace trace = clientTrace(client);
 		if (trace == null || packet.getId() != trace.owner.getId()) { original.run(); return; }
-		Body before = trace.snapshot(client.player); MotionSend sent = trace.observe(() -> trace.matchingMotion(packet.getMovement()));
+		Body before = trace.snapshot(client.player); MotionSend sent = trace.observe(() -> trace.matchingMotion(dev.wildercord.gametest.compat.GametestCompat.motionOf(packet)));
 		original.run(); Body after = trace.snapshot(client.player);
-		Event event = trace.record("client-motion-processed", "sendOrdinal=" + (sent == null ? 0 : sent.ordinal) + " payload=" + packet.getMovement(), before, after);
-		if (sent != null && sent.expected && after != null && event != null && after.motion.equals(packet.getMovement()) && trace.provenMotion == null)
-			trace.provenMotion = new MotionReceipt(sent, event, packet.getMovement());
+		Event event = trace.record("client-motion-processed", "sendOrdinal=" + (sent == null ? 0 : sent.ordinal) + " payload=" + dev.wildercord.gametest.compat.GametestCompat.motionOf(packet), before, after);
+		if (sent != null && sent.expected && after != null && event != null && after.motion.equals(dev.wildercord.gametest.compat.GametestCompat.motionOf(packet)) && trace.provenMotion == null)
+			trace.provenMotion = new MotionReceipt(sent, event, dev.wildercord.gametest.compat.GametestCompat.motionOf(packet));
 	}
 	public static void clientCorrection(Packet<?> packet, Runnable original) {
 		Minecraft client = Minecraft.getInstance(); Trace trace = clientTrace(client);

@@ -20,11 +20,11 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class BraceNullDeferredPaletteMixin {
 	@WrapOperation(method = "render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), require = 1, expect = 1, allow = 1)
-	private void prepareNativeBody(EntityModel<?, ?> model, PoseStack pose, VertexConsumer vertices,
+	private void prepareNativeBody(EntityModel<?> model, PoseStack pose, VertexConsumer vertices,
 			int light, int overlay, int tint, Operation<Void> original,
 			@Local(argsOnly = true) LivingEntityRenderState state) {
 		float[] root = BraceNullCaptureProbe.passive(() -> pose.last().pose().get(new float[16]), null);
-		var call = BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.deferredEnter(model, model, state, null, root), null);
+		BraceNullCaptureProbe.Deferred call = BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.deferredEnter(model, model, state, null, root), null);
 		boolean completed = false;
 		try {
 			original.call(model, pose, vertices, light, overlay, tint);

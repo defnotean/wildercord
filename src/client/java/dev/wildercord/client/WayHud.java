@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * The crossroads on the swordsman's own screen: only words, small and low, never over the middle of the view. Looking at a standard,
- * its Way's name in its colour, what a strike does now (lean toward it, or walk it), and its three buffer by name; looking at none, a
+ * its Way's name in its colour, what a strike does now (lean toward it, or walk it), and its three nodes by name; looking at none, a
  * faint line saying the crossroads stands and how long it waits. The standards themselves are light in the world (see
  * {@code aura.Crossroads}), seen by everyone near.
  */

@@ -47,7 +47,7 @@ public final class NativeBodySubmission {
 		check(model != null && state != null && frames != null && root != null, "missing primary identity");
 		return origin = new Origin(model, state, frames, material, root);
 	}
-	/** The constructor observer returns the original Submit unchanged. Outline buffer are auxiliary. */
+	/** The constructor observer returns the original Submit unchanged. Outline nodes are auxiliary. */
 	public void submitted(Object node, Object model, Object state, Frames frames, Object material, float[] root, boolean outline) {
 		lastEvent = describe("submit", node, model, state, frames, material, root);
 		check(node != null && !entries.containsKey(node), "duplicate native Submit identity");

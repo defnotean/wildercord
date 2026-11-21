@@ -89,7 +89,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    if(path!=null && path.getTarget().equals(ROOF)) {
     boolean around=false;
     for(int i=0;i<path.getNodeCount();i++) {var node=path.getNode(i);var at=new BlockPos(node.x,node.y,node.z);
-     check(n.level().getFluidState(at).is(net.minecraft.tags.FluidTags.WATER),"Refuge's native path contains only aquatic buffer: "+EcologyReturnProbe.path(path));
+     check(n.level().getFluidState(at).is(net.minecraft.tags.FluidTags.WATER),"Refuge's native path contains only aquatic nodes: "+EcologyReturnProbe.path(path));
      around|=node.z!=ROOF.getZ();
     }
     aquaticDetour|=around;
@@ -160,7 +160,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    check(configuration.equals(queryConfiguration(reference)) && configuration.equals(queryConfiguration(routeVisitor.getNavigation())) && maluses.equals(queryMaluses(routeVisitor)),"Actual dry query preserves the same search configuration and actor maluses");
    // The bounded vanilla search also returns a partial route here. Compare its
    // complete result, then prove actual dry walking separately with TemptGoal.
-   check(sameNativeRoute(expected,actual,dry),"After a refuge query, native and custom dry searches return identical target, buffer, costs, cursor and reachability, including partial paths");
+   check(sameNativeRoute(expected,actual,dry),"After a refuge query, native and custom dry searches return identical target, nodes, costs, cursor and reachability, including partial paths");
    routeVisitor.setNoAi(true);checkOrdinaryLook(routeVisitor,"removed refuge");checkNativeSwimControl(routeVisitor,true,"removed refuge");
    walker=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);walker.snapTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
    p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<Relative>of(),180,0,false);

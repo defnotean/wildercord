@@ -105,12 +105,12 @@ public final class BrambleFireProbeChecks {
 	private static void paths() {
 		List<Node> nodes = new ArrayList<>(List.of(new Node(1, 101, 3), new Node(2, 102, 3), new Node(3, 101, 3)));
 		BlockPos target = new BlockPos(9, 101, 3);
-		Path path = new Path(buffer, target, false);
+		Path path = new Path(nodes, target, false);
 		path.setNextNodeIndex(1);
 		String row = BrambleFireProbe.path(path);
 		check(path.getNextNodeIndex() == 1 && path.getNodeCount() == 3 && path.getTarget() == target && !path.canReach(),
 			"partial path and native cursor preserved");
-		for (int i = 0; i < buffer.size(); i++) check(path.getNode(i) == buffer.get(i), "node identity preserved");
+		for (int i = 0; i < nodes.size(); i++) check(path.getNode(i) == nodes.get(i), "node identity preserved");
 		check(row.contains("canReach=false") && row.contains("index=1") && row.contains("2,102,3"), "actual path progression retained");
 		path.setNextNodeIndex(3);
 		check(BrambleFireProbe.path(path).contains("next=none"), "completed path has no invalid next-node read");

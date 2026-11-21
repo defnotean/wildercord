@@ -165,7 +165,7 @@ public final class MastersNpcCaptureProbe {
 				if (!drawsCube(model.root(), path)) return;
 				Matrix4f projected = new Matrix4f(viewProjection).mul(pose.pose());
 				for (var polygon : cube.polygons) for (var vertex : polygon.vertices())
-					bodyBounds.add(projected, vertex.x() / 16F, vertex.y() / 16F, vertex.z() / 16F);
+					bodyBounds.add(projected, vertex.pos().x() / 16F, vertex.pos().y() / 16F, vertex.pos().z() / 16F);
 			});
 		}
 	}
@@ -231,9 +231,8 @@ public final class MastersNpcCaptureProbe {
 		boolean fullWarningCoverage = !closeBody;
 		var result = new CompletableFuture<Evidence>();
 		try {
-			if (mc.packetProcessor() != null && mc.level != null) {
+			if (mc.level != null) {
 				long gameTime = mc.level.getGameTime();
-				mc.packetProcessor().processQueuedPackets();
 				if (mc.level != null && mc.level.getGameTime() != gameTime) {
 					mc.level.getLevelData().setGameTime(gameTime);
 				}

@@ -355,7 +355,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 				if (SpawnPlacements.getPlacementType(type) != SpawnPlacementTypes.ON_GROUND) {
 					return EntityType.getKey(type) + " should have its spawn rule registered";
 				}
-				if (type.isAllowedInPeaceful()) {
+				if (type.getCategory().isFriendly()) {
 					return EntityType.getKey(type) + " shouldn't be allowed on Peaceful";
 				}
 			}
