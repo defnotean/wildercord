@@ -170,7 +170,7 @@ public final class CrimsonMoonRenderProbe {
         token.observe("observerUuid",mc.player.getUUID());token.observe("observerEntity",mc.player.getId());
         if(!(actor instanceof net.minecraft.client.player.AbstractClientPlayer connectedActor))throw new AssertionError("Actor is not an actual connected client player");
         s.originalSkin=connectedActor.getSkin();
-        s.originalModel=((net.minecraft.client.renderer.entity.player.PlayerRenderer)mc.getEntityRenderDispatcher().getRenderer(actor)).getModel();
+        s.originalModel=((net.minecraft.client.renderer.entity.player.PlayerRenderer) (Object) mc.getEntityRenderDispatcher().getRenderer(actor)).getModel();
         token.observe("connectedSkinTexture",s.originalSkin.texture());token.observe("connectedSkinModel",s.originalSkin.model());
         if(token.paired!=null){
             var proof=CrimsonMoonMultiplayerProof.readRelease(token.paired.releaseReceipt(),token.paired.releaseIdentity());

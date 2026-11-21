@@ -66,7 +66,7 @@ public final class StoneHingeOwnerProbe {
 		MotionSend(int ordinal, ClientboundSetEntityMotionPacket packet, boolean expected, boolean manual, boolean originalTracker) {
 			this.ordinal = ordinal; this.raw = dev.wildercord.gametest.compat.GametestCompat.motionOf(packet); this.expected = expected; this.manual = manual; this.originalTracker = originalTracker;
 			var buffer = new FriendlyByteBuf(Unpooled.buffer());
-			try { ClientboundSetEntityMotionPacket.STREAM_CODEC.encode(buffer, packet); wire = ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(buffer).getMovement(); }
+			try { ClientboundSetEntityMotionPacket.STREAM_CODEC.encode(buffer, packet); wire = dev.wildercord.gametest.compat.GametestCompat.motionOf(ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(buffer)); }
 			finally { buffer.release(); }
 		}
 		boolean matches(Vec3 vector) { return raw.equals(vector) || wire.equals(vector); }
