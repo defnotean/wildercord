@@ -59,7 +59,6 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			mc.options.renderDistance().set(renderDist);
 			mc.options.fov().set(fov);
 			mc.options.broadcastOptions();
-			mc.levelRenderer.allChanged();
 		});
 		double eye = 1.62, dx = tx - x, dy = ty - (y + eye), dz = tz - z;
 		float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
