@@ -1,29 +1,29 @@
 package dev.wildercord.gametest.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.gametest.BraceNullCaptureProbe;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.SubmitNodeCollection;
-import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Retains the original native submit node identity; the 26.1.2 record carries no render type, so the buffer's own is used. */
-@Mixin(SubmitNodeCollection.class)
+/**
+ * Retains the original native submit node identity. 1.21.8 builds no node: the model drawing itself
+ * is the submission, so the model stands in for the node and the buffer's render type is unknown here.
+ */
+@Mixin(LivingEntityRenderer.class)
 public abstract class BraceNullNativeSubmitMixin {
-	@WrapOperation(method = "submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V",
-		at = @At(value = "NEW", target = "(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/model/Model;Ljava/lang/Object;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)Lnet/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit;"), require = 1, expect = 1, allow = 1)
-	private SubmitNodeStorage.ModelSubmit<?> captureNativeSubmit(PoseStack.Pose pose, Model model, Object state,
-		int light, int overlay, int tint, TextureAtlasSprite uv, int outlineColor, ModelFeatureRenderer.CrumblingOverlay crumbling,
-		Operation<SubmitNodeStorage.ModelSubmit<?>> original, @Local(argsOnly = true) RenderType material) {
-		var node = original.call(pose, model, state, light, overlay, tint, uv, outlineColor, crumbling);
-		BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.nativeSubmitted(node, node.model(), node.state(), material, node.pose().pose().get(new float[16]), material.isOutline()));
-		return node;
+	@Shadow @org.spongepowered.asm.mixin.Final protected EntityModel<?> model;
+
+	@Inject(method = "render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"))
+	private void captureNativeSubmit(LivingEntityRenderState state, PoseStack pose,
+			net.minecraft.client.renderer.MultiBufferSource buffer, int light, CallbackInfo ci) {
+		EntityModel<?> drawn = model;
+		float[] root = BraceNullCaptureProbe.passive(() -> pose.last().pose().get(new float[16]), null);
+		BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.nativeSubmitted(drawn, drawn, state, null, root, false));
 	}
 }

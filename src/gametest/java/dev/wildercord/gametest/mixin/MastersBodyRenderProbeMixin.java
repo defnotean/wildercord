@@ -1,43 +1,48 @@
 package dev.wildercord.gametest.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.wildercord.gametest.ArticulatedSharedRenderProbe;
+import dev.wildercord.gametest.BraceNullCaptureProbe;
 import dev.wildercord.gametest.MastersCaptureProbe;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.MultiBufferSource;
+import dev.wildercord.gametest.MastersNpcCaptureProbe;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import dev.wildercord.client.compat.CameraRenderState;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/** 1.21.8 has no submit queue: the body draw is the model's own renderToBuffer call. */
 @Mixin(LivingEntityRenderer.class)
 public abstract class MastersBodyRenderProbeMixin {
-	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"), require = 1, expect = 1, allow = 1)
-	private void wildercord$sharedBody(MultiBufferSource buffer, Model model, Object state, PoseStack pose,
-			RenderType type, int light, int overlay, int color, TextureAtlasSprite uv, int outline, ModelFeatureRenderer.CrumblingOverlay crumbling, Operation<Void> original) {
-		var call = dev.wildercord.gametest.BraceNullCaptureProbe.passive(() -> dev.wildercord.gametest.BraceNullCaptureProbe.submissionBegin(model, state, pose, type), null);
+	@WrapOperation(method = "render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), require = 1, expect = 1, allow = 1)
+	private void wildercord$sharedBody(EntityModel<?, ?> model, PoseStack pose, VertexConsumer vertices,
+			int light, int overlay, int color, Operation<Void> original,
+			@Local(argsOnly = true) LivingEntityRenderState state) {
+		var call = BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.submissionBegin(model, state, pose, null), null);
 		boolean completed = false;
 		try {
-			original.call(buffer, model, state, pose, type, light, overlay, color, uv, outline, crumbling);
+			original.call(model, pose, vertices, light, overlay, color);
 			ArticulatedSharedRenderProbe.bodySubmitted(model, state);
-			dev.wildercord.gametest.BraceNullCaptureProbe.passive(() -> dev.wildercord.gametest.BraceNullCaptureProbe.submitted(model, state, pose));
+			BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.submitted(model, state, pose));
 			completed = true;
-		} finally { boolean done = completed; dev.wildercord.gametest.BraceNullCaptureProbe.passive(() -> dev.wildercord.gametest.BraceNullCaptureProbe.submissionEnd(call, done)); }
+		} finally {
+			boolean done = completed;
+			BraceNullCaptureProbe.passive(() -> BraceNullCaptureProbe.submissionEnd(call, done));
+		}
 	}
 
-	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"))
-	private void wildercord$submittedBody(LivingEntityRenderState state, PoseStack pose, MultiBufferSource buffer, CameraRenderState camera, CallbackInfo ci) {
-		dev.wildercord.gametest.MastersNpcCaptureProbe.body(state, pose);
+	@Inject(method = "render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/EntityModel;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"))
+	private void wildercord$submittedBody(LivingEntityRenderState state, PoseStack pose,
+			net.minecraft.client.renderer.MultiBufferSource buffer, int light, CallbackInfo ci) {
+		MastersNpcCaptureProbe.body(state, pose);
 		if (state instanceof PlayerRenderState avatar && !avatar.isInvisible && !avatar.isInvisibleToPlayer && !avatar.isSpectator)
 			MastersCaptureProbe.body(avatar.id);
 	}

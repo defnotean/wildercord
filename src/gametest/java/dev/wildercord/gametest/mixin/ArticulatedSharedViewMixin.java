@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 /** The shell has a separate model/submit method; these hooks observe only the skin model and real item. */
 @Mixin(value = ArticulatedViewModel.class, remap = false)
 public abstract class ArticulatedSharedViewMixin {
-	@WrapMethod(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)Z", require = 1, expect = 1, allow = 1)
+	@WrapMethod(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)Z", require = 1, expect = 1, allow = 1)
 	private static boolean wildercord$view(PlayerRenderState avatar, FirstPersonHandView hands, float partial,
 			InteractionHand hand, PoseStack pose, MultiBufferSource buffer, int light, Operation<Boolean> original) {
 		var call = ArticulatedSharedRenderProbe.viewEnter(avatar, partial, hand);
@@ -28,15 +28,15 @@ public abstract class ArticulatedSharedViewMixin {
 		finally { ArticulatedSharedRenderProbe.viewLeave(call, submitted); }
 	}
 
-	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)Z",
-		at = @At(value = "INVOKE", target = "Ldev/wildercord/client/compat/RenderCompat;submitModel(Lnet/minecraft/client/renderer/OrderedSubmitNodeCollector;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/RenderType;IIII)V"), require = 1, expect = 1, allow = 1)
+	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)Z",
+		at = @At(value = "INVOKE", target = "Ldev/wildercord/client/compat/RenderCompat;submitModel(Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/RenderType;IIII)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$model(MultiBufferSource buffer, Model model, Object state, PoseStack pose,
 			RenderType type, int light, int overlay, int color, int outline, Operation<Void> original) {
 		original.call(buffer, model, state, pose, type, light, overlay, color, outline);
 		ArticulatedSharedRenderProbe.viewSubmitted(model, state);
 	}
 
-	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)Z",
+	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)Z",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$item(ItemStackRenderState item, PoseStack pose, MultiBufferSource buffer,
 			int light, int overlay, int outline, Operation<Void> original) {

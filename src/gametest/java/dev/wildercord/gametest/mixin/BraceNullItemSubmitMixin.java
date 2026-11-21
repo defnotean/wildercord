@@ -8,14 +8,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 
-/** A displayed callback counts only while the original bound ItemStackRenderState.submit executes. */
+/** A displayed callback counts only while the original bound ItemStackRenderState.render executes. */
 @Mixin(ItemStackRenderState.class)
 public abstract class BraceNullItemSubmitMixin {
-	@WrapMethod(method = "submit", require = 1, expect = 1, allow = 1)
-	private void wildercord$braceNullSubmitting(PoseStack pose, MultiBufferSource buffer, int light, int overlay, int outline, Operation<Void> original) {
+	@WrapMethod(method = "render", require = 1, expect = 1, allow = 1)
+	private void wildercord$braceNullSubmitting(PoseStack pose, MultiBufferSource buffer, int light, int overlay, Operation<Void> original) {
 		var item = (ItemStackRenderState) (Object) this;
 		BraceNullItemDrawProbe.itemEnter(item, pose, buffer); boolean complete = false;
-		try { original.call(pose, buffer, light, overlay, outline); complete = true; }
+		try { original.call(pose, buffer, light, overlay); complete = true; }
 		finally { BraceNullItemDrawProbe.itemLeave(item, complete); }
 	}
 }
