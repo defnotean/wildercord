@@ -265,7 +265,7 @@ final class FusedLife {
 	private static void veil(LivingEntity ally, Mist mist) {
 		for (net.minecraft.world.entity.Mob mob : mist.cast.level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class,
 				ally.getBoundingBox().inflate(24.0), m -> m.getTarget() == ally)) {
-			if (mob.distanceTo(ally) > MIST_VEIL) {
+			if (mob.distanceTo(ally) > MIST_VEIL && !Spirits.isBoss(mob)) {
 				mob.setTarget(null);
 			}
 		}

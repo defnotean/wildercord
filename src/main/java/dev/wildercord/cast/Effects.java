@@ -577,18 +577,27 @@ public final class Effects {
 				}
 			});
 			case "root" -> harmed.forEach(t -> {
-				boolean rooted = t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(3, duration), 6, false, false));
+				int rootTicks = ticks(3, duration);
+				if (Spirits.isBoss(t)) {
+					if (!Spirits.tryClaimBossHold(t, rootTicks, caster)) {
+						return;
+					}
+					rootTicks = BossRules.bossHoldTicks(rootTicks);
+				}
+				boolean rooted = t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, rootTicks, 6, false, false));
 				if (rooted && t instanceof ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
-				t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-				Vfx.root(level, t, ticks(3, duration));
-				StormEarthFx.rootHold(level, t, ticks(3, duration));
+				if (!Spirits.isBoss(t)) {
+					t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
+				}
+				Vfx.root(level, t, rootTicks);
+				StormEarthFx.rootHold(level, t, rootTicks);
 			});
 			case "veil" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, ticks(12, duration), 0, false, true));
 				VoidTime.veiled(t, ticks(12, duration));
 				for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(16.0), e -> e instanceof net.minecraft.world.entity.Mob)) {
 					net.minecraft.world.entity.Mob mob = (net.minecraft.world.entity.Mob) e;
-					if (mob.getTarget() == t) {
+					if (mob.getTarget() == t && !Spirits.isBoss(mob)) {
 						mob.setTarget(null);
 					}
 				}
@@ -697,7 +706,7 @@ public final class Effects {
 				Vfx.chill(level, t);
 			});
 			case "silence" -> harmed.forEach(t -> {
-				if (t instanceof net.minecraft.world.entity.Mob mob) {
+				if (t instanceof net.minecraft.world.entity.Mob mob && !Spirits.isBoss(mob)) {
 					mob.setTarget(null);
 				}
 				t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks(6, duration), 0, false, true));
@@ -886,7 +895,7 @@ public final class Effects {
 				ExpansionVfx.jolt(level, t);
 				StormEarthFx.stunRing(level, t, ticks(1, duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 4 * power * Reactions.storm(cast, t));
-				Spirits.hold(t, ticks(1, duration));
+				Spirits.hold(t, ticks(1, duration), caster);
 				// The counter-spell: a caster caught mid-charge loses the spell.
 				if (t instanceof ServerPlayer charging && charging.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE)) {
 					Charging.forget(charging);
@@ -1408,8 +1417,8 @@ public final class Effects {
 				hurt(cast, t, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 5 * power * Reactions.storm(cast, t));
 				Vec3 away = horizontal(t.position().subtract(point), cast.caster.getLookAngle());
 				push(t, away.scale(0.8 * Math.sqrt(power)).add(0, 0.3, 0));
-				Spirits.hold(t, 10);
-				if (t instanceof Mob mob) {
+				Spirits.hold(t, 10, caster);
+				if (t instanceof Mob mob && !Spirits.isBoss(mob)) {
 					mob.setTarget(null);
 				}
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);

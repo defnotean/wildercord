@@ -299,7 +299,7 @@ public final class WardEffects {
 				WardVfx.calm(level, t, 0x5A4A7A);
 			});
 			case "soothe" -> harmed.forEach(t -> {
-				if (t instanceof Mob mob && mob instanceof NeutralMob) {
+				if (t instanceof Mob mob && mob instanceof NeutralMob && !Spirits.isBoss(mob)) {
 					WardState.forget(mob);
 					WardVfx.calm(level, mob, 0xE8C6FF);
 				} else {
@@ -377,7 +377,7 @@ public final class WardEffects {
 				WardState.mark(WardState.WITHDRAWN, t, ticks);
 				for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(32.0), x -> x instanceof Mob)) {
 					Mob mob = (Mob) e;
-					if (mob.getTarget() == t) {
+					if (mob.getTarget() == t && !Spirits.isBoss(mob)) {
 						WardState.forget(mob);
 					}
 				}

@@ -7,9 +7,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -182,6 +185,47 @@ public final class TemporaryBlocks extends SavedData {
 		}
 		if (changed) {
 			setDirty();
+		}
+	}
+
+	/** Shatters temporary spell blocks intersecting {@code area} (leaving Light blocks intact). */
+	static void shatterAround(ServerLevel level, AABB area) {
+		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+		if (blocks == null || blocks.byChunk.isEmpty()) {
+			return;
+		}
+		BlockPos min = BlockPos.containing(area.minX, area.minY, area.minZ);
+		BlockPos max = BlockPos.containing(area.maxX, area.maxY, area.maxZ);
+		List<Placed> hit = new ArrayList<>();
+		for (int cx = min.getX() >> 4; cx <= (max.getX() >> 4); cx++) {
+			for (int cz = min.getZ() >> 4; cz <= (max.getZ() >> 4); cz++) {
+				List<Placed> inChunk = blocks.byChunk.get(Thaws.chunk(new BlockPos(cx << 4, 0, cz << 4)));
+				if (inChunk == null) {
+					continue;
+				}
+				for (Placed p : inChunk) {
+					if (!p.placed().is(Blocks.LIGHT)
+							&& p.pos().getX() >= min.getX() && p.pos().getX() <= max.getX()
+							&& p.pos().getY() >= min.getY() && p.pos().getY() <= max.getY()
+							&& p.pos().getZ() >= min.getZ() && p.pos().getZ() <= max.getZ()) {
+						hit.add(p);
+					}
+				}
+			}
+		}
+		for (Placed p : hit) {
+			PhysicalMagic.evict(level, p.pos());
+			Techniques.evictRampart(level, p.pos());
+			BlockState standing = level.getBlockState(p.pos());
+			if (standing.equals(p.placed())) {
+				level.setBlockAndUpdate(p.pos(), p.replaced());
+				Vfx.emit(level, new net.minecraft.core.particles.BlockParticleOption(
+					net.minecraft.core.particles.ParticleTypes.BLOCK, p.placed()), Vec3.atCenterOf(p.pos()), 6, 0.3, 0.05);
+			}
+			blocks.drop(p.pos());
+		}
+		if (!hit.isEmpty()) {
+			blocks.setDirty();
 		}
 	}
 }

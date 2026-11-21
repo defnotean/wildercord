@@ -11,6 +11,7 @@ Seven bosses sleep in lairs of their own, each in its own kind of land. Wake one
   at least 40% of what armour, Protection and Resistance would stop gets through. Full diamond with Protection IV
   still helps a lot, but it won't make you safe.
 - **Half beaten, it turns fiercer.** It stops for one big move, then fights on quicker, often with its moves in pairs.
+- **Holds only last a moment.** Binding, freezing, slowing or trapping effects hold a boss for only 1 to 2 seconds before it shatters free, shakes off debuffs, and gains 5 seconds of unstoppable resistance while continuing to fight.
 
 
 ## At a glance

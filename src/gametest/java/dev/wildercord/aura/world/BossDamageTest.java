@@ -189,6 +189,122 @@ public final class BossDamageTest implements FabricClientGameTest {
 				c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("weapon_" + name + "_third_person_back").disableCounterPrefix());
 			}
 			c.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
+
+			// Verify Spirits.isBoss classification, 1-2s capped holds, breakout + block shatter, 5s immunity, and pursuit resumption.
+			net.minecraft.core.BlockPos[] holdBlockPos = new net.minecraft.core.BlockPos[1];
+			java.util.UUID[] liveBossId = new java.util.UUID[1];
+			double[] distAtBreakout = new double[1];
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				for (var e : level.getEntities(player, player.getBoundingBox().inflate(48))) e.discard();
+				for (int dx = -8; dx <= 8; dx++) {
+					for (int dz = -8; dz <= 8; dz++) {
+						level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, 100, dz), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+						for (int dy = 101; dy <= 104; dy++) {
+							level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, dy, dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+						}
+					}
+				}
+				player.setGameMode(GameType.SURVIVAL);
+				player.teleportTo(0.5, 101, 7.5);
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.RESISTANCE, 600, 3, false, false));
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 600, 3, false, false));
+
+				var wardenType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:cinder_warden"));
+				var serpentType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:rootcoil_serpent"));
+				var warden = wardenType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var serpent = serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var guardianCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var villageCat = dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				var zombie = net.minecraft.world.entity.EntityTypes.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				check(warden != null && dev.wildercord.cast.Spirits.isBoss(warden), "cinder_warden recognized as boss");
+				check(serpent != null && dev.wildercord.cast.Spirits.isBoss(serpent), "rootcoil_serpent guardian recognized as boss");
+				if (guardianCat != null) {
+					guardianCat.setRole(dev.wildercord.wildlife.ShrineCatRules.ROLE_GUARDIAN);
+					check(dev.wildercord.cast.Spirits.isBoss(guardianCat), "untamed sanctuary guardian ShrineCat recognized as boss");
+				}
+				if (villageCat != null) {
+					villageCat.setRole(dev.wildercord.wildlife.ShrineCatRules.ROLE_VILLAGE);
+					check(!dev.wildercord.cast.Spirits.isBoss(villageCat), "peaceful village ShrineCat not treated as boss");
+				}
+				check(zombie != null && !dev.wildercord.cast.Spirits.isBoss(zombie), "ordinary zombie not treated as boss");
+				if (zombie != null) {
+					zombie.setPos(0.5, 101, -6.5);
+					level.addFreshEntity(zombie);
+					dev.wildercord.cast.Spirits.hold(zombie, 40, player);
+					check(zombie.isNoAi(), "non-boss mob still gets full NoAi hold");
+					zombie.discard();
+				}
+
+				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
+				check(bastion != null && dev.wildercord.cast.Spirits.isBoss(bastion), "oathbound_bastion recognized as boss");
+				bastion.setPos(0.5, 101, -4.5);
+				bastion.setPersistenceRequired();
+				level.addFreshEntity(bastion);
+				liveBossId[0] = bastion.getUUID();
+				bastion.hurtServer(level, level.damageSources().playerAttack(player), 1.0F);
+				bastion.setTarget(player);
+
+				holdBlockPos[0] = bastion.blockPosition().south();
+				dev.wildercord.cast.TemporaryBlocks.put(level, holdBlockPos[0],
+					net.minecraft.world.level.block.Blocks.PACKED_MUD.defaultBlockState(),
+					net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(),
+					level.getGameTime() + 200);
+				level.setBlockAndUpdate(holdBlockPos[0], net.minecraft.world.level.block.Blocks.PACKED_MUD.defaultBlockState());
+
+				dev.wildercord.cast.Spirits.freeze(bastion, 200);
+				boolean stacked = dev.wildercord.cast.Spirits.tryClaimBossHold(bastion, 200, player);
+				check(!stacked, "cannot extend or stack an already active boss hold");
+				check(dev.wildercord.cast.Spirits.bossHeld(bastion), "boss enters brief temporary hold");
+				check(!bastion.isNoAi(), "boss AI is never set to NoAI");
+				check(bastion.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "boss receives temporary slowness while held");
+			});
+			c.waitTicks(38);
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				var boss = (Mob) level.getEntity(liveBossId[0]);
+				check(boss != null && boss.isAlive(), "live boss remains alive after breakout");
+				check(!dev.wildercord.cast.Spirits.bossHeld(boss), "boss breaks out of 200-tick hold within 38 ticks");
+				check(dev.wildercord.cast.Spirits.bossHoldImmune(boss), "boss gains 5s unstoppable immunity after breakout");
+				check(!boss.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS), "breakout clears slowness");
+				check(level.getBlockState(holdBlockPos[0]).isAir() && !dev.wildercord.cast.TemporaryBlocks.recorded(level, holdBlockPos[0]),
+					"breakout shatters surrounding temporary hold blocks");
+				check(!dev.wildercord.cast.Spirits.tryClaimBossHold(boss, 100, player), "follow-up hold claim rejected during 5s immunity");
+				dev.wildercord.cast.Spirits.freeze(boss, 100);
+				check(!dev.wildercord.cast.Spirits.bossHeld(boss) && !boss.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS),
+					"follow-up freeze cannot re-hold boss during 5s immunity");
+				check(boss.getTarget() == player, "boss retains target on breakout");
+				distAtBreakout[0] = boss.distanceTo(player);
+			});
+			c.waitTicks(20);
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				var boss = (Mob) level.getEntity(liveBossId[0]);
+				check(boss != null && boss.isAlive(), "boss alive during counterattack pursuit");
+				check(boss.getTarget() == player, "boss continues targeting player after breakout");
+				check(boss.distanceTo(player) < distAtBreakout[0] - 0.5, "boss closes distance to resume attacking after breakout");
+			});
+			c.waitTicks(90);
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				var boss = (Mob) level.getEntity(liveBossId[0]);
+				check(boss != null && !dev.wildercord.cast.Spirits.bossHoldImmune(boss), "5s hold immunity expires cleanly");
+				check(dev.wildercord.cast.Spirits.tryClaimBossHold(boss, 40, player), "boss can be briefly held again after 5s immunity expires");
+			});
+			c.waitTicks(38);
+			server.runOnServer(s -> {
+				var player = p(s);
+				var level = s.overworld();
+				var boss = (Mob) level.getEntity(liveBossId[0]);
+				check(boss != null && !dev.wildercord.cast.Spirits.bossHeld(boss), "second temporary hold also breaks out within 38 ticks");
+				if (boss != null) boss.discard();
+				player.removeAllEffects();
+				player.setGameMode(GameType.CREATIVE);
+			});
 		}
 	}
 }
