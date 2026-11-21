@@ -295,11 +295,20 @@ def manifest_attributes(data):
     return sections[0]
 
 
+def _before_26_1(props):
+    # < 26.1 builds run on remap Loom: intermediary namespace, generated refmaps, remapped class bytes.
+    parts = props["minecraft_version"].split(".")
+    major = int(parts[0])
+    minor = int(parts[1]) if len(parts) > 1 else 0
+    return (major, minor) < (26, 1)
+
+
 def check_manifest(data, props, client_entries):
     # Loom v1.18.2 ManifestModificationAction/ClientEntriesService define these
     # for this non-remapped, split-source build. Other tool-version fields vary.
     attributes = manifest_attributes(data)
-    pinned = {"manifest-version": "1.0", "fabric-mapping-namespace": "official",
+    mapping_namespace = "intermediary" if _before_26_1(props) else "official"
+    pinned = {"manifest-version": "1.0", "fabric-mapping-namespace": mapping_namespace,
               "fabric-loom-split-environment": "true", "fabric-minecraft-version": props["minecraft_version"],
               "fabric-loader-version": props["loader_version"], "fabric-loom-version": props["loom_version"]}
     for key, value in pinned.items():
