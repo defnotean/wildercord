@@ -87,7 +87,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 
 			context.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1280, 720);
-				mc.options.renderDistance().set(12);
+				mc.options.renderDistance().set(24);
 				mc.options.fov().set(74);
 				mc.resizeGui();
 				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
@@ -121,37 +121,46 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			world.getServer().runOnServer(s -> {
 				ServerLevel l = s.overworld();
 				// South & North Outer Barbicans (distance = 1,920 blocks) + Outer Moat Water
-				check(!blockAt(l, ox + 16, by + 18, oz + 960).isAir(), "South Outer Gatehouse Tower missing at +960");
+				check(!blockAt(l, ox + 23, by + 18, oz + 960).isAir(), "South Outer Gatehouse Tower missing at +960");
 				check(blockAt(l, ox + 24, by - 1, oz + 974).is(Blocks.WATER), "South Outer Moat Water missing at +974");
-				check(!blockAt(l, ox + 16, by + 18, oz - 960).isAir(), "North Outer Gatehouse Tower missing at -960");
+				check(!blockAt(l, ox + 23, by + 18, oz - 960).isAir(), "North Outer Gatehouse Tower missing at -960");
 				check(blockAt(l, ox + 24, by - 1, oz - 974).is(Blocks.WATER), "North Outer Moat Water missing at -974");
 
 				// West & East Outer Walls (distance = 1,920 blocks), Colosseum (-612) & Harbor Galleons (+760)
-				check(!blockAt(l, ox - 960, by + 18, oz + 16).isAir(), "West Outer Gatehouse Tower missing at -960");
+				check(!blockAt(l, ox - 960, by + 18, oz + 23).isAir(), "West Outer Gatehouse Tower missing at -960");
 				check(blockAt(l, ox - 612, by, oz - 14).is(Blocks.SAND), "Tournament Colosseum arena sand missing at x=-612");
 				check(blockAt(l, ox + 760, by - 1, oz).is(Blocks.WATER), "East Imperial Harbor basin water missing at x=+760");
 				check(blockAt(l, ox + 758, by + 18, oz - 58).is(Blocks.DARK_OAK_LOG), "Harbor Galleon mainmast missing at (758, -58)");
-				check(!blockAt(l, ox + 960, by + 18, oz + 100).isAir(), "East Harbor Sea-Gate Bastion missing at x=+960");
+				check(!blockAt(l, ox + 960, by + 18, oz + 108).isAir(), "East Harbor Sea-Gate Bastion missing at x=+960");
 
 				// Inner Citadel: South Gatehouse, Fountain Plaza, Canal, Forge, Sovereign Great Hall, Cathedral Spire
-				check(!blockAt(l, ox + 16, by + 24, oz + 224).isAir(), "South Inner Gatehouse Tower missing at z=+224");
+				check(!blockAt(l, ox + 22, by + 20, oz + 224).isAir(), "South Inner Gatehouse Tower missing at z=+224");
 				check(blockAt(l, ox, by + 1, oz + 182).is(Blocks.WATER), "Fountain Plaza water missing at z=+182");
 				check(blockAt(l, ox, by - 1, oz + 80).is(Blocks.WATER), "Central Canal water missing at z=+80");
-				check(blockAt(l, ox, by + OathholdOrigin.ACROPOLIS_Y + 9, oz - 191).is(Blocks.WOOL.red()), "Sovereign Throne cushion missing inside Great Hall");
-				check(!blockAt(l, ox + 150, by + 104, oz - 140).isAir(), "Sovereign Cathedral Bell-Spire missing above y=+104");
+				check(blockAt(l, ox, by + OathholdOrigin.ACROPOLIS_Y + 10, oz - 191).is(Blocks.WOOL.red()), "Sovereign Throne cushion missing inside Great Hall");
+				check(!blockAt(l, ox + 150, by + 115, oz - 140).isAir(), "Sovereign Cathedral Bell-Spire missing above y=+115");
+
+				// Pre-warm full Inner Citadel + Acropolis grid so shot 01 renders the whole skyline
+				for (int wx = ox - 208; wx <= ox + 208; wx += 16) {
+					for (int wz = oz - 224; wz <= oz + 272; wz += 16) {
+						l.getChunk(wx >> 4, wz >> 4);
+					}
+				}
 			});
 
 			// 3. Capture 6 showcase screenshots for 1:1 visual inspection against concept art
-			lookAt(context, world, ox + 46, by + 96, oz + 340, ox + 4, by + 28, oz - 70, 120);
+			lookAt(context, world, ox + 28, by + 108, oz + 278, ox + 2, by + 28, oz - 48, 160);
 			shot(context, "oathhold_01_aerial_overview");
 
-			lookAt(context, world, ox + 3, by + 4, oz + 278, ox, by + 16, oz + 222, 100);
+			context.runOnClient(mc -> mc.options.renderDistance().set(14));
+
+			lookAt(context, world, ox + 1.5, by + 3.5, oz + 268, ox, by + 18, oz + 224, 100);
 			shot(context, "oathhold_02_south_gatehouse");
 
-			lookAt(context, world, ox, by + OathholdOrigin.ACROPOLIS_Y + 4, oz - 102, ox, by + OathholdOrigin.ACROPOLIS_Y + 14, oz - 196, 100);
+			lookAt(context, world, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 3, oz - 103, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 16, oz - 196, 100);
 			shot(context, "oathhold_03_great_hall_interior");
 
-			lookAt(context, world, ox + 16, by + 28, oz - 54, ox + 78, by + 28, oz - 122, 100);
+			lookAt(context, world, ox - 46, by + 34, oz - 28, ox + 48, by + 26, oz - 118, 100);
 			shot(context, "oathhold_04_districts_courtyard");
 
 			lookAt(context, world, ox - 548, by + 48, oz + 58, ox - 612, by + 10, oz, 100);
