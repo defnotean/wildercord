@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MinecraftSpellCutMixin {
 	@Inject(method = "startAttack", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;)V",
-		ordinal = 1, shift = At.Shift.AFTER))
+		ordinal = 0, shift = At.Shift.AFTER))
 	private void wildercord$spellCut(CallbackInfoReturnable<Boolean> cir) {
 		FormDashClient.swing();
 	}

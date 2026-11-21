@@ -12,6 +12,7 @@
 		"GameRendererMixin",
 		"CameraMixin",
 		"AvatarRenderStateMixin",
+		"ArmedEntityRenderStateMixin",
 		"PlayerModelMixin",
 		"ModelPartChildrenAccessor",
 		"ArticulatedPlayerModelMixin",

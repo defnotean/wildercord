@@ -104,32 +104,34 @@ public final class RenderCompat {
 	}
 
 	/** 1.21.10 render states carry no ItemStacks: the renderer mixin notes the entity's real stacks as each state is extracted. */
-	private static final java.util.WeakHashMap<ArmedEntityRenderState, ItemStack[]> HAND_STACKS = new java.util.WeakHashMap<>();
-
 	public static void captureHandStacks(net.minecraft.world.entity.LivingEntity entity, Object state) {
-		if (!(state instanceof ArmedEntityRenderState armed)) {
+		if (!(state instanceof ArmedEntityRenderState armed) || !(armed instanceof dev.wildercord.client.HandStacks carried)) {
 			return;
 		}
 		ItemStack main = entity.getMainHandItem();
 		ItemStack off = entity.getOffhandItem();
 		ItemStack left = entity.getMainArm() == net.minecraft.world.entity.HumanoidArm.LEFT ? main : off;
 		ItemStack right = entity.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT ? main : off;
-		HAND_STACKS.put(armed, new ItemStack[]{main.copy(), left.copy(), right.copy()});
+		carried.wildercord$setHandStacks(new ItemStack[]{main.copy(), left.copy(), right.copy()});
+	}
+
+	private static ItemStack[] carriedStacks(ArmedEntityRenderState state) {
+		return state instanceof dev.wildercord.client.HandStacks carried ? carried.wildercord$handStacks() : null;
 	}
 
 	public static ItemStack mainHandStack(ArmedEntityRenderState state) {
-		ItemStack[] stacks = HAND_STACKS.get(state);
-		return stacks != null ? stacks[0] : ItemStack.EMPTY;
+		ItemStack[] stacks = carriedStacks(state);
+		return stacks != null && stacks.length == 3 ? stacks[0] : ItemStack.EMPTY;
 	}
 
 	public static ItemStack leftHandStack(ArmedEntityRenderState state) {
-		ItemStack[] stacks = HAND_STACKS.get(state);
-		return stacks != null ? stacks[1] : ItemStack.EMPTY;
+		ItemStack[] stacks = carriedStacks(state);
+		return stacks != null && stacks.length == 3 ? stacks[1] : ItemStack.EMPTY;
 	}
 
 	public static ItemStack rightHandStack(ArmedEntityRenderState state) {
-		ItemStack[] stacks = HAND_STACKS.get(state);
-		return stacks != null ? stacks[2] : ItemStack.EMPTY;
+		ItemStack[] stacks = carriedStacks(state);
+		return stacks != null && stacks.length == 3 ? stacks[2] : ItemStack.EMPTY;
 	}
 
 	public static Object mainHandItemState(ArmedEntityRenderState state) {
