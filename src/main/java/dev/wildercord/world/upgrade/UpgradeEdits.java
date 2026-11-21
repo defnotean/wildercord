@@ -23,13 +23,13 @@ public final class UpgradeEdits extends SavedData {
 	private UpgradeEdits(List<Long> chunks,boolean saturated){this.chunks.addAll(chunks.stream().limit(MAX_CHUNKS).toList());this.saturated=saturated || chunks.size()>MAX_CHUNKS;}
 	public static void successfulPlayerEdit(ServerLevel level,BlockPos point) {
 		var data=level.getDataStorage().computeIfAbsent(TYPE);
-		long key=net.minecraft.world.level.ChunkPos.pack(point);
+		long key=net.minecraft.world.level.ChunkPos.asLong(point);
 		if(data.saturated || data.chunks.contains(key))return;
 		if(data.chunks.size()>=MAX_CHUNKS)data.saturated=true;else data.chunks.add(key);
 		data.setDirty();
 	}
 	static boolean edited(ServerLevel level,int x,int z) {
 		var data=level.getDataStorage().get(TYPE);
-		return data!=null && (data.saturated || data.chunks.contains(net.minecraft.world.level.ChunkPos.pack(x,z)));
+		return data!=null && (data.saturated || data.chunks.contains(net.minecraft.world.level.ChunkPos.asLong(x,z)));
 	}
 }

@@ -39,9 +39,13 @@ public final class TwistedRunes {
 		public static final MapCodec<Function> MAP_CODEC = MapCodec.unit(new Function());
 	public static final LootItemFunctionType<Function> TYPE = new LootItemFunctionType<>(MAP_CODEC);
 
-		@Override
 		public MapCodec<Function> codec() {
 			return MAP_CODEC;
+		}
+
+		@Override
+		public LootItemFunctionType<Function> getType() {
+			return TYPE;
 		}
 
 		@Override

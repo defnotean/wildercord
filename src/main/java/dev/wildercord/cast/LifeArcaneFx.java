@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import net.minecraft.core.particles.ItemParticleOption;
 import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.world.item.ItemStack;

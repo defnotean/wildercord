@@ -284,7 +284,7 @@ public class FloePenguin extends Animal {
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
 		if (!sliding()) {
-			playSound(SoundEvents.CHICKEN_STEP.value(), 0.12F, 1.3F);
+			playSound(SoundEvents.CHICKEN_STEP, 0.12F, 1.3F);
 		}
 	}
 
@@ -439,7 +439,7 @@ public class FloePenguin extends Animal {
 				// Beak to beak, it feeds the chick, which grows a good deal on it.
 				getLookControl().setLookAt(chick, 30, 30);
 				chick.ageUp(AgeableMob.getSpeedUpSecondsWhenFeeding(-chick.getAge()), true);
-				Fx.send(level, new ItemParticleOption(ParticleTypes.ITEM, fish), chick.getX(), chick.getY() + 0.5, chick.getZ(), 6, 0.1, 0.1, 0.1, 0.05);
+				Fx.send(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(fish)), chick.getX(), chick.getY() + 0.5, chick.getZ(), 6, 0.1, 0.1, 0.1, 0.05);
 				Fx.send(level, ParticleTypes.HEART, chick.getX(), chick.getY() + 0.6, chick.getZ(), 1, 0.1, 0.1, 0.1, 0);
 				chick.playSound(SoundEvents.PARROT_EAT, 0.8F, 1.6F);
 			}
@@ -448,7 +448,7 @@ public class FloePenguin extends Animal {
 
 		/** Gulps the fish down whole. */
 		private void eat(ServerLevel level) {
-			Fx.send(level, new ItemParticleOption(ParticleTypes.ITEM, fish(carrying())), getX(), getY() + 0.7, getZ(), 6, 0.1, 0.1, 0.1, 0.05);
+			Fx.send(level, new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(fish(carrying()))), getX(), getY() + 0.7, getZ(), 6, 0.1, 0.1, 0.1, 0.05);
 			playSound(SoundEvents.PARROT_EAT, 0.8F, 0.9F);
 			heal(2);
 			carry(PenguinRules.NOTHING);

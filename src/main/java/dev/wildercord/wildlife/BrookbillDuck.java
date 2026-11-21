@@ -253,7 +253,7 @@ public class BrookbillDuck extends Animal {
 
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
-		playSound(SoundEvents.CHICKEN_STEP.value(), 0.12F, 1.2F);
+		playSound(SoundEvents.CHICKEN_STEP, 0.12F, 1.2F);
 	}
 
 	/** A deep quack from the grown ducks, a thin peep from the ducklings. */

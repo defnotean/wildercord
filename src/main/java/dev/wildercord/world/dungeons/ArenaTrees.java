@@ -66,7 +66,7 @@ public final class ArenaTrees {
 	public static void init() {
 		ServerChunkEvents.CHUNK_LOAD.register((level, chunk, fresh) -> {
 			if (chunk.getAllReferences().keySet().stream().anyMatch(ArenaTrees::dungeon)) {
-				WAITING.add(Map.entry(level.dimension(), chunk.getPos().pack()));
+				WAITING.add(Map.entry(level.dimension(), chunk.getPos().asLong()));
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> {

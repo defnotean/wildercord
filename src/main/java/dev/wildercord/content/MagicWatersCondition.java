@@ -8,6 +8,7 @@ import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
@@ -23,9 +24,15 @@ public record MagicWatersCondition(double multiplier) implements LootItemConditi
 		Codec.doubleRange(0, 100).optionalFieldOf("multiplier", 1.0).forGetter(MagicWatersCondition::multiplier)
 	).apply(i, MagicWatersCondition::new));
 
-	@Override
+	public static final LootItemConditionType<MagicWatersCondition> TYPE = new LootItemConditionType<>(MAP_CODEC);
+
 	public MapCodec<MagicWatersCondition> codec() {
 		return MAP_CODEC;
+	}
+
+	@Override
+	public LootItemConditionType<MagicWatersCondition> getType() {
+		return TYPE;
 	}
 
 	@Override

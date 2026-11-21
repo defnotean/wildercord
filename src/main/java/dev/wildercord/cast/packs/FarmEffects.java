@@ -844,7 +844,7 @@ public final class FarmEffects {
 				if (recipe.isEmpty()) {
 					break;
 				}
-				ItemStack out = recipe.get().value().assemble(input, level.registryAccess());
+				ItemStack out = recipe.get().value().assemble(input, cast.level.registryAccess());
 				if (out.isEmpty()) {
 					break;
 				}

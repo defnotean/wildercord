@@ -65,12 +65,12 @@ public final class UpgradeSites extends SavedData {
 		var structures=level.registryAccess().lookupOrThrow(Registries.STRUCTURE);var pos=chunk.getPos();
 		for(var start:chunk.getAllStarts().entrySet()) {
 			if(!start.getValue().isValid())continue;var id=structures.getKey(start.getKey());if(id==null)continue;
-			UpgradeCatalog.byStructure(id.toString()).ifPresent(f->of(level).record(new Site(f.id(),pos.x(),pos.z(),Site.NATURAL,0,"PRESENT")));
+			UpgradeCatalog.byStructure(id.toString()).ifPresent(f->of(level).record(new Site(f.id(),pos.x,pos.z,Site.NATURAL,0,"PRESENT")));
 		}
 		for(var be:chunk.getBlockEntities().values()) {
 			String family=authenticFamily(be);
 			if(family!=null && journal.stream().noneMatch(e->be.getBlockPos().equals(UpgradeTemplates.anchor(e.plan()))))
-				of(level).record(new Site(family,pos.x(),pos.z(),Site.NATURAL,0,"PRESENT"));
+				of(level).record(new Site(family,pos.x,pos.z,Site.NATURAL,0,"PRESENT"));
 		}
 	}
 	static String authenticFamily(BlockEntity be) {

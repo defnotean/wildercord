@@ -420,7 +420,7 @@ public class StonecrestPuffin extends Animal {
 
 	@Override
 	protected void playStepSound(BlockPos pos, net.minecraft.world.level.block.state.BlockState block) {
-		playSound(SoundEvents.CHICKEN_STEP.value(), 0.12F, 1.3F);
+		playSound(SoundEvents.CHICKEN_STEP, 0.12F, 1.3F);
 	}
 
 	@Override

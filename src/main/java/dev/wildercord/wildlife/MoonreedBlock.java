@@ -41,7 +41,7 @@ public final class MoonreedBlock extends Block {
    // Ticket eligibility is not FULL completion. Snapshot only immediately available chunks for this search.
    private final java.util.Map<Long,net.minecraft.world.level.chunk.LevelChunk> resident=new java.util.HashMap<>();
    private net.minecraft.world.level.chunk.LevelChunk chunk(int x,int z){
-    long key=ChunkPos.pack(x>>4,z>>4);
+    long key=ChunkPos.asLong(x>>4,z>>4);
     if(!resident.containsKey(key))resident.put(key,level.getChunkSource().getChunkNow(x>>4,z>>4));
     return resident.get(key);
    }

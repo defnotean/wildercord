@@ -80,7 +80,6 @@ public class ShrineCat extends TamableAnimal {
 	private static final EntityDataAccessor<Integer> DATA_ACTION_TICK = SynchedEntityData.defineId(ShrineCat.class, EntityDataSerializers.INT);
 
 	private final ServerBossEvent bossBar = new ServerBossEvent(
-		getUUID(),
 		Component.literal("Shrine Guardian"),
 		BossEvent.BossBarColor.PINK,
 		BossEvent.BossBarOverlay.NOTCHED_10
@@ -405,7 +404,7 @@ public class ShrineCat extends TamableAnimal {
 				}
 			}
 			case ODIE -> {
-				level.playSound(null, blockPosition(), SoundEvents.CAT_PURR_BABY.value(), SoundSource.HOSTILE, 1.0F, 0.85F);
+				level.playSound(null, blockPosition(), SoundEvents.CAT_PURR, SoundSource.HOSTILE, 1.0F, 0.85F);
 				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.4, getZ(), 20, 1.8, 0.3, 1.8, 0.04);
 				level.sendParticles(ParticleTypes.LAVA, getX(), getY() + 0.5, getZ(), 8, 1.2, 0.2, 1.2, 0.02);
 				if (distanceToSqr(challenger) <= 25.0) {
@@ -485,7 +484,7 @@ public class ShrineCat extends TamableAnimal {
 		}
 		for (ServerPlayer player : level.players()) {
 			if (player.distanceToSqr(this) <= 32.0 * 32.0) {
-				player.sendSystemMessage(Component.literal("[" + variant().displayName + "] Summons Shrine Reinforcements!"));
+				player.displayClientMessage(Component.literal("[" + variant().displayName + "] Summons Shrine Reinforcements!"), false);
 			}
 		}
 	}
@@ -577,12 +576,12 @@ public class ShrineCat extends TamableAnimal {
 		setLoafing(variant() == ShrineCatRules.Variant.ODIE);
 		setOrderedToSit(variant() != ShrineCatRules.Variant.ODIE);
 		triggerAction();
-		level.playSound(null, blockPosition(), SoundEvents.CAT_PURR_BABY.value(), SoundSource.NEUTRAL, 1.1F, 1.1F);
+		level.playSound(null, blockPosition(), SoundEvents.CAT_PURR, SoundSource.NEUTRAL, 1.1F, 1.1F);
 		level.sendParticles(ParticleTypes.HEART, getX(), getY() + 0.7, getZ(), 16, 0.6, 0.4, 0.6, 0.05);
 		ShrineCatRules.Variant v = variant();
 		for (ServerPlayer player : level.players()) {
 			if (player.distanceToSqr(this) <= 48.0 * 48.0) {
-				player.sendSystemMessage(Component.literal("[" + v.displayName + "] Purrs contentedly — Sanctuary Perk unlocked: " + v.dungeonPerk + "!"));
+				player.displayClientMessage(Component.literal("[" + v.displayName + "] Purrs contentedly — Sanctuary Perk unlocked: " + v.dungeonPerk + "!"), false);
 			}
 		}
 		grantSanctuaryPerks(level);
@@ -602,7 +601,7 @@ public class ShrineCat extends TamableAnimal {
 		level.playSound(null, blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 0.85F, 1.25F);
 		for (ServerPlayer player : level.players()) {
 			if (player.distanceToSqr(this) <= 72.0 * 72.0) {
-				player.sendSystemMessage(Component.literal("The Cat Sanctuary is cleared! Feed Yuki, Odie, Freya, or Kuro fish or use a Suzu Cat-Bell Charm to tame them!"));
+				player.displayClientMessage(Component.literal("The Cat Sanctuary is cleared! Feed Yuki, Odie, Freya, or Kuro fish or use a Suzu Cat-Bell Charm to tame them!"), false);
 			}
 		}
 	}
@@ -765,8 +764,8 @@ public class ShrineCat extends TamableAnimal {
 					setHealth(getMaxHealth());
 					triggerAction();
 					server.broadcastEntityEvent(this, (byte) 7);
-					server.playSound(null, blockPosition(), SoundEvents.CAT_PURR_BABY.value(), SoundSource.NEUTRAL, 1.0F, 1.2F);
-					player.sendSystemMessage(Component.literal("You tamed " + variant().displayName + "! Unique Power: " + variant().tamedPower));
+					server.playSound(null, blockPosition(), SoundEvents.CAT_PURR, SoundSource.NEUTRAL, 1.0F, 1.2F);
+					player.displayClientMessage(Component.literal("You tamed " + variant().displayName + "! Unique Power: " + variant().tamedPower), false);
 				}
 				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 			}
@@ -917,7 +916,7 @@ public class ShrineCat extends TamableAnimal {
 			cat.triggerAction();
 			level.addFreshEntity(cat);
 			level.playSound(null, cat.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.NEUTRAL, 0.85F, 1.35F);
-			owner.sendSystemMessage(Component.literal("[" + v.displayName + "] Rings her Suzu bell and rejoins your side!"));
+			owner.displayClientMessage(Component.literal("[" + v.displayName + "] Rings her Suzu bell and rejoins your side!"), false);
 			restored++;
 		}
 		return restored;

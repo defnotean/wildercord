@@ -72,7 +72,7 @@ public final class ResidueBlocks {
 
 	public static void init() {
 		// Animals (any mob that paths) keep off a void scar and step round it, and round a patch of bloodmoss.
-		LandPathNodeTypesRegistry.register(VOID_SCAR, PathType.DAMAGING, PathType.DAMAGING_IN_NEIGHBOR);
-		LandPathNodeTypesRegistry.register(BLOODMOSS, PathType.DAMAGING_IN_NEIGHBOR, PathType.DAMAGING_IN_NEIGHBOR);
+		LandPathNodeTypesRegistry.register(VOID_SCAR, PathType.DANGER_FIRE, PathType.DANGER_OTHER);
+		LandPathNodeTypesRegistry.register(BLOODMOSS, PathType.DANGER_OTHER, PathType.DANGER_OTHER);
 	}
 }

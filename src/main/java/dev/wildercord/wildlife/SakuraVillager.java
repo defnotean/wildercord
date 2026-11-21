@@ -194,12 +194,12 @@ public class SakuraVillager extends PathfinderMob {
 					spawnAtLocation((ServerLevel) level(), reward);
 				}
 				level().playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL, 0.9F, 1.35F);
-				player.sendSystemMessage(Component.literal("[" + SHORT_NAMES[r] + "] Please take this gift with our blessings."));
+				player.displayClientMessage(Component.literal("[" + SHORT_NAMES[r] + "] Please take this gift with our blessings."), false);
 			} else {
 				String[] lines = ROLE_LINES[r];
 				String line = lines[greetingLine++ % lines.length];
 				level().playSound(null, blockPosition(), SoundEvents.VILLAGER_AMBIENT, SoundSource.NEUTRAL, 0.7F, 1.15F);
-				player.sendSystemMessage(Component.literal("[" + SHORT_NAMES[r] + "] " + line));
+				player.displayClientMessage(Component.literal("[" + SHORT_NAMES[r] + "] " + line), false);
 			}
 		}
 		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;

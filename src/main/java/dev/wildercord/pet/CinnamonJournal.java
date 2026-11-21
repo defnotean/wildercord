@@ -42,8 +42,8 @@ final class CinnamonJournal extends SavedData {
 			Codec.BOOL.optionalFieldOf("retired", false).forGetter(Entry::retired)
 		).apply(i, Entry::new));
 		Entry snapshot(CinnamonDog dog) {
-			return new Entry(entity, dog.level().dimension().identifier().toString(), dog.chunkPosition().x(),
-				dog.chunkPosition().z(), Care.of(dog), whistleUntil, retired);
+			return new Entry(entity, dog.level().dimension().identifier().toString(), dog.chunkPosition().x,
+				dog.chunkPosition().z, Care.of(dog), whistleUntil, retired);
 		}
 		Entry cooldown(long until) { return new Entry(entity, dimension, chunkX, chunkZ, care, until, retired); }
 		Entry retire() { return new Entry(entity, dimension, chunkX, chunkZ, care, whistleUntil, true); }

@@ -380,4 +380,17 @@ public class ThistleHedgehog extends TamableAnimal {
 			}
 		}
 	}
+
+	/** 1.21.11 dropped Animal#feed(Player, InteractionHand, ItemStack, float, float); this keeps its shape. */
+	private void feed(Player player, InteractionHand hand, ItemStack held, float healAmount, float growth) {
+		if (player == null || !player.getAbilities().instabuild) {
+			held.shrink(1);
+		}
+		heal(healAmount);
+		if (isBaby()) {
+			setAge(getAge() + (int) (24000.0F * growth));
+		} else if (player != null) {
+			setInLove(player);
+		}
+	}
 }

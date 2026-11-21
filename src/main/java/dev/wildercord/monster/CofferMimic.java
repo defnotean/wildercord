@@ -717,7 +717,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	private void pet(ServerLevel level, Player player) {
 		twitchUntil = level.getGameTime() + MimicRules.TWITCH_TICKS * 2;
 		level.sendParticles(ParticleTypes.HEART, getX(), getY() + 1.0, getZ(), 3, 0.3, 0.2, 0.3, 0);
-		play(level, SoundEvents.CAT_PURR_BABY.value(), 1.0F, 0.5F);
+		play(level, SoundEvents.CAT_PURR, 1.0F, 0.5F);
 		play(level, SoundEvents.CHEST_OPEN, 0.3F, 1.6F);
 		player.displayClientMessage(Component.translatable("message.wildercord.coffer_mimic.pet").withColor(0xE2DCCC), true);
 	}

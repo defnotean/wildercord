@@ -229,7 +229,7 @@ final class CinnamonCompanion {
 			|| identity(player, journal.get(player.getUUID())) != CinnamonIdentityRules.Status.NEW) return;
 		dog.snapTo(at.x, at.y, at.z, player.getYRot(), 0);
 		var entry = new CinnamonJournal.Entry(dog.getUUID(), player.level().dimension().identifier().toString(),
-			dog.chunkPosition().x(), dog.chunkPosition().z(), CinnamonJournal.Care.of(dog), 0, false);
+			dog.chunkPosition().x, dog.chunkPosition().z, CinnamonJournal.Care.of(dog), 0, false);
 		journal.put(player.getUUID(), entry);
 		if (!player.level().addFreshEntity(dog)) journal.cancelInitial(player.getUUID(), dog.getUUID());
 		else if (!dog.isRemoved() && LIVE.get(player.getUUID()) == dog) player.setAttached(CinnamonState.IDENTITY, dog.getUUID());

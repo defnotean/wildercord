@@ -107,7 +107,7 @@ public final class FieldFusions {
             if(item.distanceToSqr(point)>FieldFusionRules.SIEVE_REACH*FieldFusionRules.SIEVE_REACH
                 || !editable(c,item.blockPosition().below()) || !open(c,p.getEyePosition(),item.position().add(0,.1,0)))continue;
             var input=new SingleRecipeInput(item.getItem());var recipe=c.level.recipeAccess().getRecipeFor(RecipeType.SMELTING,input,c.level);
-            if(recipe.isEmpty())continue;var result=recipe.get().value().assemble(input, level.registryAccess());
+            if(recipe.isEmpty())continue;var result=recipe.get().value().assemble(input, c.level.registryAccess());
             if(result.isEmpty())continue;
             int n=FieldFusionRules.sieveUnits(item.getItem().getCount(),result.getCount(),capacity(simulated,result),FieldFusionRules.SIEVE_ITEMS-used);
             if(n==0)continue;result.setCount(result.getCount()*n);insert(simulated,result.copy());jobs.add(new Cook(item,n,result));used+=n;
