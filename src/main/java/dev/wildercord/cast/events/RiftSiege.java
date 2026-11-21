@@ -629,7 +629,7 @@ public final class RiftSiege {
 		if (riftcaller.getLastHurtByPlayer() == null || riftcaller.getLastHurtByPlayerMemoryTime() <= 0 || !level.getGameRules().getRule(GameRules.RULE_DOMOBLOOT).get()) {
 			return;
 		}
-		riftcaller.dropFromLootTable(level, source, true, RIFTCALLER_LOOT);
+		dev.wildercord.compat.McLoot.dropFromLootTable(riftcaller, level, source, true, RIFTCALLER_LOOT);
 	}
 
 	private void drop(Vec3 at, ItemStack stack) {

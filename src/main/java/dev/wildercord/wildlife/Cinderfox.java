@@ -142,7 +142,7 @@ public class Cinderfox extends TamableAnimal {
 		if (held.is(Items.BRUSH) && isOwnedBy(player)) {
 			if (!level().isClientSide()) {
 				if (brush((ServerLevel) level())) {
-					held.hurtAndBreak(16, player, hand.asEquipmentSlot());
+					held.hurtAndBreak(16, player, dev.wildercord.compat.McHands.slot(hand));
 				} else {
 					player.displayClientMessage(Component.translatable("message.wildercord.cinderfox.brushed"), true);
 				}

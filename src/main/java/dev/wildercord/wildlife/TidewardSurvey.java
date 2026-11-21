@@ -89,7 +89,7 @@ public final class TidewardSurvey {
   }
   var cells=columns(s.first,floor);if(!route(p,cells) || !current(p,s))return refuse(p,"crossing");
   // Payment is committed once; callbacks cannot create an unpaid success or evade its shared rest.
-  p.setAttached(READY,now+REST);p.getCooldowns().addCooldown(held,REST);held.hurtAndBreak(2,p,c.getHand().asEquipmentSlot());
+  p.setAttached(READY,now+REST);p.getCooldowns().addCooldown(held,REST);held.hurtAndBreak(2,p,dev.wildercord.compat.McHands.slot(c.getHand()));
   if(!current(p,s) || !route(p,cells)){clear(p,s);return false;}
   s.first=null;s.route=cells;s.until=now+ROUTE_LIFE;s.nonce=p.level().getGameTime();
   TidewardCue.route(p,s.nonce,cells);Feels.sound(p.level(),p.position(),"tideward_spool_commit",.35F,1);return true;

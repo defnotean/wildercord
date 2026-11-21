@@ -88,9 +88,7 @@
 		"FxSupportMobMixin",
 		"FxSupportExplosionMixin",
 		"SignBlockEntityMixin",
-		"PotionBrewingMixin",
-		"LivingEntityCompatMixin",
-		"InteractionHandCompatMixin"
+		"PotionBrewingMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

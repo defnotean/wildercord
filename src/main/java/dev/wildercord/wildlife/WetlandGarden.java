@@ -42,7 +42,7 @@ public final class WetlandGarden {
  private static boolean begin(ServerPlayer p,InteractionHand hand) {
   if(p.isSpectator())return false;
   var stack=p.getItemInHand(hand);long now=clock(p);if(now<p.getAttachedOrElse(LENS_READY,0L))return false;
-  p.setAttached(LENS_READY,now+100);p.getCooldowns().addCooldown(stack,100);stack.hurtAndBreak(1,p,hand.asEquipmentSlot());Feels.sound(p.level(),p.position(),"wetland_lens_focus",.4F,1);return true;
+  p.setAttached(LENS_READY,now+100);p.getCooldowns().addCooldown(stack,100);stack.hurtAndBreak(1,p,dev.wildercord.compat.McHands.slot(hand));Feels.sound(p.level(),p.position(),"wetland_lens_focus",.4F,1);return true;
  }
  public static final Item LENS=Registry.register(BuiltInRegistries.ITEM,key("dewglass_lens"),new AuraWorld.Lore("dewglass_lens",new Item.Properties().setId(key("dewglass_lens")).durability(96)) {
   @Override public InteractionResult useOn(UseOnContext c) {

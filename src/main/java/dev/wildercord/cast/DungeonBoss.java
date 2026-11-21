@@ -729,7 +729,8 @@ public abstract class DungeonBoss extends Monster {
 			return;
 		}
 		ServerPlayer killer = killer(level, source);
-		dropFromLootTable(level, source, playerKilled, table.get(), stack -> give(level, killer, stack));
+		dev.wildercord.compat.McLoot.dropFromLootTable(this, level, source, playerKilled, table.get(),
+			stack -> give(level, killer, stack));
 	}
 
 	@Override
