@@ -20,6 +20,11 @@ public final class TestDataProfile {
 		return BEFORE_26_3;
 	}
 
+	/** The 1.21.x line, below the 26.1 obfuscation boundary. */
+	public static boolean is121Line() {
+		return Integer.parseInt(MC_VERSION.trim().split("\\.")[0]) < 26;
+	}
+
 	public static String featureDirName() {
 		return BEFORE_26_3 ? "configured_feature" : "feature";
 	}

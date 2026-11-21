@@ -380,7 +380,16 @@ class DataFormatTest {
 					case "minecraft:random_offset" -> {
 						assertTrue(is262, file + ": minecraft:random_offset belongs to 26.2");
 						allowed(modifier,file,"type","xz_spread","y_spread");required(modifier,file,"xz_spread","y_spread");
-						for(String axis:List.of("xz_spread","y_spread")) {var provider=modifier.getAsJsonObject(axis);allowed(provider,file,"type","min","max","plateau");required(provider,file,"type","min","max","plateau");assertEquals("minecraft:trapezoid",provider.get("type").getAsString());assertTrue(provider.get("min").getAsInt()<=provider.get("max").getAsInt());}
+						for(String axis:List.of("xz_spread","y_spread")) {var provider=modifier.getAsJsonObject(axis);
+							if (TestDataProfile.is121Line()) {
+								// 1.21.11 has no trapezoid int provider; the port uses uniform over the same range.
+								allowed(provider,file,"type","min","max");required(provider,file,"type","min","max");
+								assertEquals("minecraft:uniform",provider.get("type").getAsString(),file+" offset provider");
+							} else {
+								allowed(provider,file,"type","min","max","plateau");required(provider,file,"type","min","max","plateau");
+								assertEquals("minecraft:trapezoid",provider.get("type").getAsString());
+							}
+							assertTrue(provider.get("min").getAsInt()<=provider.get("max").getAsInt());}
 					}
 					case "minecraft:offset" -> {
 						assertFalse(is262, file + ": minecraft:offset belongs to 26.3");
