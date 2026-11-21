@@ -18,13 +18,15 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * A Bog Witch-Frog's bubble of bog poison: a wobbling, glowing green bubble lobbed in a high, slow arc. It bursts where it
@@ -180,15 +182,15 @@ public class BogBubble extends Projectile {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putBoolean("engorged", engorged());
 		output.putInt("life", life);
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		setEngorged(input.getBooleanOr("engorged", false));
 		life = input.getIntOr("life", 0);
 	}

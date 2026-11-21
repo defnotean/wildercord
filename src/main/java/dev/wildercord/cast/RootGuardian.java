@@ -34,8 +34,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -44,6 +42,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * The Root Guardian: a walking knot of trunk and root with a heart of amber under three root bindings. Its bindings turn most of
@@ -1263,6 +1265,6 @@ public final class RootGuardian extends DungeonBoss {
 	@Override protected SoundEvent getHurtSound(DamageSource source) { return SoundEvents.WOOD_HIT; }
 	@Override protected SoundEvent getDeathSound() { return null; }
 
-	@Override protected void addAdditionalSaveData(ValueOutput out) { super.addAdditionalSaveData(out); out.putInt("bindings", bindings); out.putLong("exposed_until", exposedUntil); }
-	@Override protected void readAdditionalSaveData(ValueInput in) { super.readAdditionalSaveData(in); bindings = Math.clamp(in.getIntOr("bindings", 3), 0, 3); exposedUntil = in.getLongOr("exposed_until", 0); }
+	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.addAdditionalSaveData(outTag); out.putInt("bindings", bindings); out.putLong("exposed_until", exposedUntil); }
+	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.readAdditionalSaveData(inTag); bindings = Math.clamp(in.getIntOr("bindings", 3), 0, 3); exposedUntil = in.getLongOr("exposed_until", 0); }
 }

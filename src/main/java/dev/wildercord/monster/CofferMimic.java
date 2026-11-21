@@ -48,12 +48,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * The Coffer Mimic: an iron-bound oak coffer that is nothing of the kind. Shut, it sits square to the world on its spot
@@ -737,11 +739,11 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		EntityReference.store(getOwnerReference(), output, "Owner");
 		output.putBoolean("Staying", staying);
-		ValueOutput.TypedOutputList<ItemStackWithSlot> items = output.list("Belly", ItemStackWithSlot.CODEC);
+		McValueOutput.TypedOutputList<ItemStackWithSlot> items = output.list("Belly", ItemStackWithSlot.CODEC);
 		for (int i = 0; i < belly.getContainerSize(); i++) {
 			ItemStack stack = belly.getItem(i);
 			if (!stack.isEmpty()) {
@@ -759,8 +761,8 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		entityData.set(DATA_OWNER, Optional.ofNullable(EntityReference.read(input, "Owner")));
 		staying = input.getBooleanOr("Staying", false);
 		belly.clearContent();

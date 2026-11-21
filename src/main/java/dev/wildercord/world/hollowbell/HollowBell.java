@@ -18,6 +18,10 @@ import net.minecraft.world.phys.Vec3;
 import java.util.*;
 
 import static dev.wildercord.world.hollowbell.HollowBellRules.*;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /** An opt-in, plinth-anchored Belowkeeper resonance guardian. Every impact is one server event following a fixed tell. */
 public final class HollowBell extends PathfinderMob implements Enemy {
@@ -242,14 +246,14 @@ public final class HollowBell extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }
 	@Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player); bar.removePlayer(player); }
 
-	@Override protected void addAdditionalSaveData(ValueOutput out) {
-		super.addAdditionalSaveData(out);
+	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outTag);
 		if (plinth != null) out.store("plinth", BlockPos.CODEC, plinth);
 		if (belfry != null) out.store("listening_belfry", BlockPos.CODEC, belfry);
 	}
 
-	@Override protected void readAdditionalSaveData(ValueInput in) {
-		super.readAdditionalSaveData(in);
+	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inTag);
 		plinth = in.read("plinth", BlockPos.CODEC).orElse(null);
 		belfry = in.read("listening_belfry", BlockPos.CODEC).orElse(null);
 		if (getHealth() > 0) rest(); else { retire(); active = false; }

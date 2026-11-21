@@ -30,11 +30,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * The Strawman: a scarecrow of the plains and meadows, a stuffed sack for a head under a tattered hat, a patched coat,
@@ -233,14 +235,14 @@ public class Strawman extends WildMonster {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putByte("Stance", entityData.get(DATA_STANCE));
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		holdStance(input.getByteOr("Stance", (byte) 0));
 	}
 

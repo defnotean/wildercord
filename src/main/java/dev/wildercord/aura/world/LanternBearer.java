@@ -28,6 +28,10 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
 import java.util.*;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * The Lantern-Bearer ({@link LanternBearerRules}). Generation binds it to the open grave under the Barrow Field's gibbet, to the field
@@ -1124,16 +1128,16 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 
-	@Override protected void addAdditionalSaveData(ValueOutput out){
-		super.addAdditionalSaveData(out);
+	@Override protected void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outTag);
 		out.putBoolean("bearer_bound",bound);out.store("bearer_grave",BlockPos.CODEC,grave);out.putFloat("bearer_rest",rest);
 		out.store("bearer_hall_min",BlockPos.CODEC,hallMin);out.store("bearer_hall_max",BlockPos.CODEC,hallMax);
 		out.store("bearer_hook",BlockPos.CODEC,hook);out.store("bearer_candles",BlockPos.CODEC.listOf(),candles);
 		out.putBoolean("bearer_awake",!LanternBearerRules.scripted(move()));out.putLong("bearer_ticked",lastTick);
 		out.putBoolean("bearer_roused",roused());
 	}
-	@Override protected void readAdditionalSaveData(ValueInput in){
-		super.readAdditionalSaveData(in);
+	@Override protected void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inTag);
 		bound=in.getBooleanOr("bearer_bound",false);
 		grave=in.read("bearer_grave",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("bearer_rest",getYRot());
 		hallMin=in.read("bearer_hall_min",BlockPos.CODEC).orElse(grave);hallMax=in.read("bearer_hall_max",BlockPos.CODEC).orElse(grave);

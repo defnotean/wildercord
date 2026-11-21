@@ -14,6 +14,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.*;
 import java.util.UUID;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /** Saves the guardian's identity and completion state, never duplicating The Kiln Widow on replay or reload. */
 public final class KilnHeartstoneEntity extends BlockEntity {
@@ -66,13 +70,13 @@ public final class KilnHeartstoneEntity extends BlockEntity {
 		return true;
 	}
 
-	@Override protected void loadAdditional(ValueInput input) {
-		super.loadAdditional(input);
+	@Override protected void loadAdditional(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inputTag);
 		guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null);
 		slain = input.getBooleanOr("slain", false);
 	}
-	@Override protected void saveAdditional(ValueOutput output) {
-		super.saveAdditional(output);
+	@Override protected void saveAdditional(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outputTag);
 		if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian);
 		output.putBoolean("slain", slain);
 	}

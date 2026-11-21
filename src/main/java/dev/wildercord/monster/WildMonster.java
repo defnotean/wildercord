@@ -24,8 +24,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * What the magical monsters of the wilds share: a few bits of what they're doing, synced in one byte and eased on the client
@@ -354,16 +356,16 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putByte("Variant", entityData.get(DATA_VARIANT));
 		output.putBoolean("Alpha", alpha());
 		output.putBoolean("GiantRoused", giantRoused());
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		entityData.set(DATA_VARIANT, input.getByteOr("Variant", (byte) 0));
 		entityData.set(DATA_ALPHA, input.getBooleanOr("Alpha", false));
 		entityData.set(GIANT_ROUSED, input.getBooleanOr("GiantRoused", false));

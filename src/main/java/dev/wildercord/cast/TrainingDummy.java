@@ -20,8 +20,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -29,6 +27,10 @@ import org.joml.Vector3f;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Locale;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * A straw practice dummy for trying spells out. It never dies: every hit floats up as a number
@@ -204,8 +206,8 @@ public class TrainingDummy extends LivingEntity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		// So a DPS nameplate saved mid-fight still clears once the dummy loads again.
 		output.putLong("last_hit", lastHit);
 		output.putBoolean("practice_moving", practiceMoving);
@@ -213,8 +215,8 @@ public class TrainingDummy extends LivingEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		lastHit = input.getLongOr("last_hit", 0L);
 		practiceMoving=input.getBooleanOr("practice_moving",false);
 		practiceX=input.getDoubleOr("practice_x",getX()); practiceZ=input.getDoubleOr("practice_z",getZ());

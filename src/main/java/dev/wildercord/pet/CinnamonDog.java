@@ -40,9 +40,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * An immortal little dog bound to the configured owner from the moment she appears. She goes after anyone who hurts her
@@ -592,8 +594,8 @@ public final class CinnamonDog extends TamableAnimal {
 		return deadline <= now ? 0 : Math.min(deadline, now + maximum);
 	}
 
-	@Override protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	@Override protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putBoolean("CinnamonSitting", savedSitting);
 		output.putBoolean("CinnamonBow", bow);
 		output.putDouble("CinnamonScale", growthScale);
@@ -603,8 +605,8 @@ public final class CinnamonDog extends TamableAnimal {
 		output.putLong("CinnamonDamageImmuneUntil", damageImmuneUntil);
 	}
 
-	@Override protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	@Override protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		restoreState(input.getBooleanOr("CinnamonSitting", isOrderedToSit()), input.getBooleanOr("CinnamonBow", false),
 			input.getDoubleOr("CinnamonScale", 1), input.getLongOr("CinnamonGrowthUntil", 0), input.getFloatOr("CinnamonDamage", 0),
 			input.getLongOr("CinnamonRecoveryUntil", 0), input.getLongOr("CinnamonDamageImmuneUntil", 0));

@@ -26,6 +26,10 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
 import java.util.*;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * The Drowned Bell-Warden ({@link BellWardenRules}). Generation leaves it kneeling before the sunken chapel's fallen bell-frame,
@@ -830,15 +834,15 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 
-	@Override protected void addAdditionalSaveData(ValueOutput out){
-		super.addAdditionalSaveData(out);
+	@Override protected void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outTag);
 		out.putBoolean("warden_bound",bound);out.store("warden_vigil",BlockPos.CODEC,vigil);out.putFloat("warden_rest",rest);
 		out.store("warden_hall_min",BlockPos.CODEC,hallMin);out.store("warden_hall_max",BlockPos.CODEC,hallMax);
 		out.putBoolean("warden_awake",!BellWardenRules.scripted(move()));out.putLong("warden_ticked",lastTick);
 		out.putBoolean("warden_cracked",cracked());
 	}
-	@Override protected void readAdditionalSaveData(ValueInput in){
-		super.readAdditionalSaveData(in);
+	@Override protected void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inTag);
 		bound=in.getBooleanOr("warden_bound",false);
 		vigil=in.read("warden_vigil",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("warden_rest",getYRot());
 		hallMin=in.read("warden_hall_min",BlockPos.CODEC).orElse(vigil);hallMax=in.read("warden_hall_max",BlockPos.CODEC).orElse(vigil);

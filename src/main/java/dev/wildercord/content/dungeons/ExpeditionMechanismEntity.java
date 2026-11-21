@@ -20,10 +20,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.*;
 import java.util.Set;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /** Bounded, chunk-local expedition puzzles: stored time, a cleanse/harvest choice, moving stepping stones. */
 public final class ExpeditionMechanismEntity extends BlockEntity {
@@ -149,6 +151,6 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 			}
 		}
 	}
-	@Override protected void saveAdditional(ValueOutput out){super.saveAdditional(out);out.putFloat("stored",stored);out.putInt("growth",growth);out.putInt("sky_step",skyStep);out.putBoolean("completed",completed);out.putLong("paused_until",pausedUntil);out.putLong("next_action",nextAction);}
-	@Override protected void loadAdditional(ValueInput in){super.loadAdditional(in);stored=Math.clamp(in.getFloatOr("stored",0),0,12);growth=Math.clamp(in.getIntOr("growth",0),0,4);skyStep=Math.floorMod(in.getIntOr("sky_step",0),3);completed=in.getBooleanOr("completed",false);pausedUntil=in.getLongOr("paused_until",0);nextAction=in.getLongOr("next_action",0);}
+	@Override protected void saveAdditional(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag);out.putFloat("stored",stored);out.putInt("growth",growth);out.putInt("sky_step",skyStep);out.putBoolean("completed",completed);out.putLong("paused_until",pausedUntil);out.putLong("next_action",nextAction);}
+	@Override protected void loadAdditional(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag);stored=Math.clamp(in.getFloatOr("stored",0),0,12);growth=Math.clamp(in.getIntOr("growth",0),0,4);skyStep=Math.floorMod(in.getIntOr("sky_step",0),3);completed=in.getBooleanOr("completed",false);pausedUntil=in.getLongOr("paused_until",0);nextAction=in.getLongOr("next_action",0);}
 }

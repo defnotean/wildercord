@@ -18,6 +18,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
 import java.util.*;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 /** Territorial cap consumer with a committed physical root rake and a short releasable hold. */
 public final class RootmoltStrider extends Monster {
  public static final int IDLE=0,WARNING=1,RAKING=2,HOLDING=3,RECOVERING=4,BROWSING=5;
@@ -87,6 +91,6 @@ public final class RootmoltStrider extends Monster {
  @Override protected SoundEvent getAmbientSound() {return dev.wildercord.content.WildercordSounds.kit("rootmolt_call");}
  @Override protected SoundEvent getHurtSound(DamageSource d) {return dev.wildercord.content.WildercordSounds.kit("rootmolt_release");}
  @Override public int getAmbientSoundInterval() {return 360;}
- @Override protected void addAdditionalSaveData(ValueOutput o) {super.addAdditionalSaveData(o);o.putLong("meal_ready",mealReady);o.putLong("attack_ready",attackReady);if(guardedCap!=null)o.store("guarded_cap",BlockPos.CODEC,guardedCap);}
- @Override protected void readAdditionalSaveData(ValueInput i) {super.readAdditionalSaveData(i);mealReady=i.getLongOr("meal_ready",0);attackReady=i.getLongOr("attack_ready",0);held=null;guardedCap=i.read("guarded_cap",BlockPos.CODEC).orElse(null);pose(IDLE,0);setTarget(null);}
+ @Override protected void addAdditionalSaveData(CompoundTag oTag) { McValueOutput o = new McValueOutput(oTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(oTag);o.putLong("meal_ready",mealReady);o.putLong("attack_ready",attackReady);if(guardedCap!=null)o.store("guarded_cap",BlockPos.CODEC,guardedCap);}
+ @Override protected void readAdditionalSaveData(CompoundTag iTag) { McValueInput i = new McValueInput(iTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.readAdditionalSaveData(iTag);mealReady=i.getLongOr("meal_ready",0);attackReady=i.getLongOr("attack_ready",0);held=null;guardedCap=i.read("guarded_cap",BlockPos.CODEC).orElse(null);pose(IDLE,0);setTarget(null);}
 }

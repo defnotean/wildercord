@@ -6,6 +6,10 @@ import net.minecraft.server.level.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /** A feathered ridge scavenger: seeks fresh casting, crouches over a fixed landing, then springs. */
 public final class Galeclaw extends AuraBeast {
@@ -19,8 +23,8 @@ public final class Galeclaw extends AuraBeast {
 		boolean livingBefore=target.isAlive();int epoch=attackEpoch(),phase=pose();var owned=hitOwned(level,target,damage,knock);
 		if(owned!=null && target.getLastDamageSource()==owned && livingBefore && attackActive(level,epoch,phase) && target.level()==level && target instanceof Rimehare && !target.isAlive() && target.getHealth()<=0) {ate();setTarget(null);}
 	}
-	@Override protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput out) {super.addAdditionalSaveData(out);out.putLong("fed_until",fedUntil);}
-	@Override protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput in) {super.readAdditionalSaveData(in);fedUntil=in.getLongOr("fed_until",0);}
+	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(outTag);out.putLong("fed_until",fedUntil);}
+	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.readAdditionalSaveData(inTag);fedUntil=in.getLongOr("fed_until",0);}
 	@Override protected void act(ServerLevel level) {
 		if(left>0) {
 			getNavigation().stop(); if(pose()==BeastRules.WARN || pose()==BeastRules.LEAP) lockFacing();

@@ -17,6 +17,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.*;
 import java.util.*;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 /** A quiet fungal browser: the living mushroom remains, and one saved dew reserve needs a real visit. */
 public final class SporebackSnail extends PathfinderMob {
  private static final EntityDataAccessor<Integer> POSE=SynchedEntityData.defineId(SporebackSnail.class,EntityDataSerializers.INT);
@@ -63,8 +67,8 @@ public final class SporebackSnail extends PathfinderMob {
  @Override protected SoundEvent getAmbientSound() {return dev.wildercord.content.WildercordSounds.kit("sporeback_call");}
  @Override protected SoundEvent getHurtSound(DamageSource s) {return dev.wildercord.content.WildercordSounds.kit("sporeback_hide");}
  @Override public int getAmbientSoundInterval() {return 320;}
- @Override protected void addAdditionalSaveData(ValueOutput o) {super.addAdditionalSaveData(o);o.putLong("gather_ready",gatherReady);o.putLong("forage_ready",forageReady);o.putLong("response_ready",responseReady);o.putLong("threat_ready",threatReady);o.putLong("hidden_until",hiddenUntil);o.putBoolean("dew",dew());o.putLong("nursery_ready",nurseryReady);}
- @Override protected void readAdditionalSaveData(ValueInput i) {super.readAdditionalSaveData(i);nurseryReady=i.getLongOr("nursery_ready",0);gatherReady=i.getLongOr("gather_ready",0);forageReady=i.getLongOr("forage_ready",0);responseReady=i.getLongOr("response_ready",0);threatReady=i.getLongOr("threat_ready",0);hiddenUntil=i.getLongOr("hidden_until",0);entityData.set(DEW,i.getBooleanOr("dew",false));entityData.set(POSE,0);answerUntil=0;}
+ @Override protected void addAdditionalSaveData(CompoundTag oTag) { McValueOutput o = new McValueOutput(oTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(oTag);o.putLong("gather_ready",gatherReady);o.putLong("forage_ready",forageReady);o.putLong("response_ready",responseReady);o.putLong("threat_ready",threatReady);o.putLong("hidden_until",hiddenUntil);o.putBoolean("dew",dew());o.putLong("nursery_ready",nurseryReady);}
+ @Override protected void readAdditionalSaveData(CompoundTag iTag) { McValueInput i = new McValueInput(iTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.readAdditionalSaveData(iTag);nurseryReady=i.getLongOr("nursery_ready",0);gatherReady=i.getLongOr("gather_ready",0);forageReady=i.getLongOr("forage_ready",0);responseReady=i.getLongOr("response_ready",0);threatReady=i.getLongOr("threat_ready",0);hiddenUntil=i.getLongOr("hidden_until",0);entityData.set(DEW,i.getBooleanOr("dew",false));entityData.set(POSE,0);answerUntil=0;}
  private final class Visit extends Goal {
   private HabitatSweep sweep;private BlockPos destination;private int scanAt,left,chew,searchAt,retries;private boolean shelter,nursery;
   Visit() {setFlags(EnumSet.of(Flag.MOVE,Flag.LOOK));}

@@ -38,12 +38,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 import java.util.function.Predicate;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * A wandering duelist: a sword master in a travelling cloak with a sheathed blade, who breathes one way (its colour and
@@ -534,8 +536,8 @@ public class Duelist extends AuraFighter {
 	// ------------------------------------------------------------------ saved
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putLong("stay_until", stayUntil);
 		output.putLong("rest_until", restUntil);
 		if(tournament!=null){output.putLong("tournament",tournament.asLong());output.putInt("tournament_slot",tournamentSlot);}
@@ -545,8 +547,8 @@ public class Duelist extends AuraFighter {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		stayUntil = input.getLongOr("stay_until", 0L);
 		restUntil = input.getLongOr("rest_until", 0L);
 		long hosted=input.getLongOr("tournament",Long.MIN_VALUE);tournament=hosted==Long.MIN_VALUE?null:BlockPos.of(hosted);tournamentSlot=Math.clamp(input.getIntOr("tournament_slot",0),0,2);

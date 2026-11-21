@@ -32,8 +32,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * A mossback tortoise: huge, slow and patient, with a little garden growing on its shell. What grows there comes from
@@ -256,16 +258,16 @@ public class MossbackTortoise extends Animal {
 	// ------------------------------------------------------------------ saving
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putByte("garden", (byte) garden().ordinal());
 		output.putInt("scute_time", scuteTime);
 		output.putInt("hiding", hiding());
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		setGarden(Garden.byId(input.getByteOr("garden", (byte) 0)));
 		scuteTime = input.getIntOr("scute_time", WildlifeRules.scuteInterval(random.nextDouble()));
 		entityData.set(DATA_HIDING, input.getIntOr("hiding", 0));

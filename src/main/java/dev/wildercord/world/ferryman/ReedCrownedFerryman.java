@@ -20,6 +20,10 @@ import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 import static dev.wildercord.world.ferryman.FerrymanRules.*;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /** A deliberately challenged, moored guardian. Every impact is one server event following a fixed tell. */
 public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
@@ -205,13 +209,13 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 	}
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }
 	@Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player); bar.removePlayer(player); }
-	@Override protected void addAdditionalSaveData(ValueOutput out) {
-		super.addAdditionalSaveData(out);
+	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outTag);
 		if (mooring != null) out.store("mooring", BlockPos.CODEC, mooring);
 		if (bell != null) out.store("crossing_bell", BlockPos.CODEC, bell);
 	}
-	@Override protected void readAdditionalSaveData(ValueInput in) {
-		super.readAdditionalSaveData(in); mooring = in.read("mooring", BlockPos.CODEC).orElse(null); bell = in.read("crossing_bell", BlockPos.CODEC).orElse(null);
+	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inTag); mooring = in.read("mooring", BlockPos.CODEC).orElse(null); bell = in.read("crossing_bell", BlockPos.CODEC).orElse(null);
 		// A reload requires another deliberate ring. A saved mid-tell attack cannot become an invisible impact.
 		if (getHealth()>0) rest(); else { retire(); active=false; }
 		hold();

@@ -16,6 +16,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
 import java.util.*;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /** A three-bout circuit, one challenger at a time. Only complete, clean knockout runs earn a saved choice of prize. */
 public final class TournamentBoardEntity extends BlockEntity {
@@ -128,6 +132,6 @@ public final class TournamentBoardEntity extends BlockEntity {
 		if(self.roster[0]!=null)self.close(s);
 		if(now>=self.next && s.isBrightOutside() && s.players().stream().anyMatch(p->!p.isSpectator() && p.distanceToSqr(Vec3.atCenterOf(pos))<48*48))self.openEvent(s);
 	}
-	@Override protected void saveAdditional(ValueOutput out){super.saveAdditional(out);if(bell!=null)out.putLong("village_bell",bell.asLong());out.putLong("begins",begins);out.putLong("ends",ends);out.putLong("next",next);for(int i=0;i<3;i++)if(roster[i]!=null)out.store("duelist_"+i,UUIDUtil.CODEC,roster[i]);out.store("winners",UUIDUtil.CODEC.listOf(),List.copyOf(winners));out.store("pending",UUIDUtil.CODEC.listOf(),List.copyOf(pending));for(var id:pending)out.putString("choice_"+id,choices.getOrDefault(id,"echo"));}
-	@Override protected void loadAdditional(ValueInput in){super.loadAdditional(in);long b=in.getLongOr("village_bell",Long.MIN_VALUE);bell=b==Long.MIN_VALUE?null:BlockPos.of(b);begins=in.getLongOr("begins",-1);ends=in.getLongOr("ends",-1);next=in.getLongOr("next",-1);for(int i=0;i<3;i++)roster[i]=in.read("duelist_"+i,UUIDUtil.CODEC).orElse(null);winners.clear();pending.clear();choices.clear();in.read("winners",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(TournamentRules.LEDGER).forEach(winners::add);in.read("pending",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(TournamentRules.LEDGER).forEach(id->{pending.add(id);choices.put(id,in.getStringOr("choice_"+id,"echo"));});reset();}
+	@Override protected void saveAdditional(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag);if(bell!=null)out.putLong("village_bell",bell.asLong());out.putLong("begins",begins);out.putLong("ends",ends);out.putLong("next",next);for(int i=0;i<3;i++)if(roster[i]!=null)out.store("duelist_"+i,UUIDUtil.CODEC,roster[i]);out.store("winners",UUIDUtil.CODEC.listOf(),List.copyOf(winners));out.store("pending",UUIDUtil.CODEC.listOf(),List.copyOf(pending));for(var id:pending)out.putString("choice_"+id,choices.getOrDefault(id,"echo"));}
+	@Override protected void loadAdditional(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag);long b=in.getLongOr("village_bell",Long.MIN_VALUE);bell=b==Long.MIN_VALUE?null:BlockPos.of(b);begins=in.getLongOr("begins",-1);ends=in.getLongOr("ends",-1);next=in.getLongOr("next",-1);for(int i=0;i<3;i++)roster[i]=in.read("duelist_"+i,UUIDUtil.CODEC).orElse(null);winners.clear();pending.clear();choices.clear();in.read("winners",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(TournamentRules.LEDGER).forEach(winners::add);in.read("pending",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(TournamentRules.LEDGER).forEach(id->{pending.add(id);choices.put(id,in.getStringOr("choice_"+id,"echo"));});reset();}
 }

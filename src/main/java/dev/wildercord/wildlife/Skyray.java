@@ -21,9 +21,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * A skyray: a great manta of the open sky, three blocks from wingtip to wingtip, gliding in slow loops high over
@@ -248,8 +250,8 @@ public class Skyray extends AmbientCreature {
 	// ------------------------------------------------------------------ saving
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		if (anchor != null) {
 			output.putDouble("anchor_x", anchor.x);
 			output.putDouble("anchor_y", anchor.y);
@@ -262,8 +264,8 @@ public class Skyray extends AmbientCreature {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		double y = input.getDoubleOr("anchor_y", Double.NaN);
 		if (!Double.isNaN(y)) {
 			anchor = new Vec3(input.getDoubleOr("anchor_x", getX()), y, input.getDoubleOr("anchor_z", getZ()));

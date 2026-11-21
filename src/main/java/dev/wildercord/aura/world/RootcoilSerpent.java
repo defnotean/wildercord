@@ -28,6 +28,10 @@ import net.minecraft.world.phys.*;
 import java.util.*;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * The Rootcoil Serpent ({@link SerpentRules}). Generation leaves it coiled round the grove's tree, bound to the trunk and facing
@@ -1044,13 +1048,13 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	@Override public void startSeenByPlayer(ServerPlayer player){super.startSeenByPlayer(player);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 
-	@Override protected void addAdditionalSaveData(ValueOutput out){
-		super.addAdditionalSaveData(out);
+	@Override protected void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outTag);
 		out.putBoolean("serpent_bound",bound);out.store("serpent_tree",BlockPos.CODEC,tree());out.store("serpent_landing",BlockPos.CODEC,landing());
 		out.putFloat("serpent_rest",rest());out.putBoolean("serpent_awake",!SerpentRules.scripted(move()));out.putBoolean("serpent_dived",dived);out.putLong("serpent_ticked",lastTick);
 	}
-	@Override protected void readAdditionalSaveData(ValueInput in){
-		super.readAdditionalSaveData(in);
+	@Override protected void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inTag);
 		bound=in.getBooleanOr("serpent_bound",false);
 		entityData.set(TREE,in.read("serpent_tree",BlockPos.CODEC).orElse(blockPosition()));entityData.set(LANDING,in.read("serpent_landing",BlockPos.CODEC).orElse(tree()));
 		entityData.set(REST,in.getFloatOr("serpent_rest",getYRot()));

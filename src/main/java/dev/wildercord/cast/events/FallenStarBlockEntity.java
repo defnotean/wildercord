@@ -8,12 +8,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * What a Fallen Star holds and remembers, saved with it: the rune inside, when its beacon goes out
@@ -51,8 +53,8 @@ public class FallenStarBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(ValueInput input) {
-		super.loadAdditional(input);
+	protected void loadAdditional(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inputTag);
 		rune = input.getStringOr("rune", "");
 		beaconUntil = input.getLongOr("beacon_until", 0L);
 		fadeAt = input.getLongOr("fade_at", 0L);
@@ -62,13 +64,13 @@ public class FallenStarBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(ValueOutput output) {
-		super.saveAdditional(output);
+	protected void saveAdditional(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outputTag);
 		output.putString("rune", rune);
 		output.putLong("beacon_until", beaconUntil);
 		output.putLong("fade_at", fadeAt);
 		output.putBoolean("guarded", guarded);
-		ValueOutput.TypedOutputList<Changed> list = output.list("crater", Changed.CODEC);
+		McValueOutput.TypedOutputList<Changed> list = output.list("crater", Changed.CODEC);
 		crater.forEach(list::add);
 	}
 

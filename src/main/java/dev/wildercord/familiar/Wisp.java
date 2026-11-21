@@ -37,13 +37,15 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * A wisp: a small creature of light, an orb with a soft trailing tail and two tiny eyes, tinted by
@@ -653,8 +655,8 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	// ------------------------------------------------------------------ saving (only ever a waiting familiar)
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putString("element", element());
 		output.putByte("mode", mode());
 		output.putString("bond", bondId);
@@ -668,8 +670,8 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		setElement(input.getStringOr("element", "arcane"));
 		entityData.set(DATA_MODE, input.getByteOr("mode", WILD));
 		bondId = input.getStringOr("bond", "");

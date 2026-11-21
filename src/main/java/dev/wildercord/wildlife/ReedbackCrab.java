@@ -16,6 +16,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.Vec3;
 import java.util.Comparator;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 
 /** A wet-bank territorial crab: raised claws warn, a fixed sweep commits, then the shell settles. */
 public final class ReedbackCrab extends PathfinderMob {
@@ -99,6 +103,6 @@ public final class ReedbackCrab extends PathfinderMob {
  @Override protected SoundEvent getAmbientSound() {return dev.wildercord.content.WildercordSounds.kit("wetland_crab_call");}
  @Override protected SoundEvent getHurtSound(DamageSource s) {return dev.wildercord.content.WildercordSounds.kit("wetland_crab_hurt");}
  @Override protected SoundEvent getDeathSound() {return dev.wildercord.content.WildercordSounds.kit("wetland_crab_death");}
- @Override protected void addAdditionalSaveData(ValueOutput o) {super.addAdditionalSaveData(o);if(home!=null) {o.putInt("bank_x",home.getX());o.putInt("bank_y",home.getY());o.putInt("bank_z",home.getZ());}o.putLong("calm_until",calmUntil);o.putLong("response_ready",responseReady);}
- @Override protected void readAdditionalSaveData(ValueInput i) {super.readAdditionalSaveData(i);home=new BlockPos(i.getIntOr("bank_x",blockPosition().getX()),i.getIntOr("bank_y",blockPosition().getY()),i.getIntOr("bank_z",blockPosition().getZ()));calmUntil=i.getLongOr("calm_until",0);responseReady=i.getLongOr("response_ready",0);pose(RECOVERY,60);}
+ @Override protected void addAdditionalSaveData(CompoundTag oTag) { McValueOutput o = new McValueOutput(oTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(oTag);if(home!=null) {o.putInt("bank_x",home.getX());o.putInt("bank_y",home.getY());o.putInt("bank_z",home.getZ());}o.putLong("calm_until",calmUntil);o.putLong("response_ready",responseReady);}
+ @Override protected void readAdditionalSaveData(CompoundTag iTag) { McValueInput i = new McValueInput(iTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.readAdditionalSaveData(iTag);home=new BlockPos(i.getIntOr("bank_x",blockPosition().getX()),i.getIntOr("bank_y",blockPosition().getY()),i.getIntOr("bank_z",blockPosition().getZ()));calmUntil=i.getLongOr("calm_until",0);responseReady=i.getLongOr("response_ready",0);pose(RECOVERY,60);}
 }

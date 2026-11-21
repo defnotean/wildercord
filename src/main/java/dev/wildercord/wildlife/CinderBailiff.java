@@ -17,6 +17,10 @@ import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import java.util.*;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.RegistryAccess;
 /** Territorial woodland ceramic breather: fixed three-lane physical fan, no terrain fire. */
 public final class CinderBailiff extends PathfinderMob {
  public static final int IDLE=0,WARNING=1,FANNING=2,RECOVERING=3,BROWSING=4,RESTING=5;
@@ -69,6 +73,6 @@ public final class CinderBailiff extends PathfinderMob {
  @Override protected SoundEvent getAmbientSound(){return dev.wildercord.content.WildercordSounds.kit("ember_bailiff_browse");}
  @Override protected SoundEvent getHurtSound(DamageSource d){return dev.wildercord.content.WildercordSounds.kit("ember_bailiff_recover");}
  @Override public int getAmbientSoundInterval(){return 400;}
- @Override protected void addAdditionalSaveData(ValueOutput o){super.addAdditionalSaveData(o);o.putLong("ember_meal_ready",mealReady);o.putLong("ember_attack_ready",attackReady);o.putLong("ember_rest_until",restUntil);o.putString("ember_home_dimension",level().dimension().location().toString());if(home!=null)o.store("ember_home",BlockPos.CODEC,home);}
- @Override protected void readAdditionalSaveData(ValueInput i){super.readAdditionalSaveData(i);mealReady=i.getLongOr("ember_meal_ready",0);attackReady=i.getLongOr("ember_attack_ready",0);restUntil=i.getLongOr("ember_rest_until",0);home=i.read("ember_home",BlockPos.CODEC).orElse(null);if(!i.getStringOr("ember_home_dimension",level().dimension().location().toString()).equals(level().dimension().location().toString())){home=null;restUntil=0;}knownDimension=level().dimension();spent.clear();epoch++;setTarget(null);entityData.set(VENT,-1);pose(home!=null&&clock(level())<restUntil?RESTING:IDLE,0);}
+ @Override protected void addAdditionalSaveData(CompoundTag oTag){ McValueOutput o = new McValueOutput(oTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(oTag);o.putLong("ember_meal_ready",mealReady);o.putLong("ember_attack_ready",attackReady);o.putLong("ember_rest_until",restUntil);o.putString("ember_home_dimension",level().dimension().location().toString());if(home!=null)o.store("ember_home",BlockPos.CODEC,home);}
+ @Override protected void readAdditionalSaveData(CompoundTag iTag){ McValueInput i = new McValueInput(iTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.readAdditionalSaveData(iTag);mealReady=i.getLongOr("ember_meal_ready",0);attackReady=i.getLongOr("ember_attack_ready",0);restUntil=i.getLongOr("ember_rest_until",0);home=i.read("ember_home",BlockPos.CODEC).orElse(null);if(!i.getStringOr("ember_home_dimension",level().dimension().location().toString()).equals(level().dimension().location().toString())){home=null;restUntil=0;}knownDimension=level().dimension();spent.clear();epoch++;setTarget(null);entityData.set(VENT,-1);pose(home!=null&&clock(level())<restUntil?RESTING:IDLE,0);}
 }
