@@ -25,8 +25,8 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.Pose;
@@ -121,7 +121,7 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		Integer glow = state.getData(SHELL_GLOW);
 		if (glow != null && (articulated == null || !articulated.submitWorld(state, pose, nodes))) {
 			boolean slim = state.skin != null && state.skin.model() == PlayerModelType.SLIM;
-			dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(1), slim ? slimShell : shell, state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
+			dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(1), slim ? slimShell : shell, state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
 		}
 		List<Image> images = state.getData(IMAGES);
 		if (images != null && !images.isEmpty() && upright(state)) {
@@ -142,9 +142,9 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 				// The body as it was, ghostly in the aura's colour, and its outline lit as the shell's is.
 				int alpha = image.color() >>> 24;
 				int ghostColor = (Math.round(alpha * 0.55F) << 24) | (image.color() & 0xFFFFFF);
-				dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(2), getParentModel(), state, pose, ghost, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ghostColor, 0);
+				dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(2), getParentModel(), state, pose, ghost, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ghostColor, 0);
 				boolean slim = state.skin != null && state.skin.model() == PlayerModelType.SLIM;
-				dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(3), getParentModel(), state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, image.color(), 0);
+				dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(3), getParentModel(), state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, image.color(), 0);
 				pose.popPose();
 			}
 		}

@@ -18,7 +18,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Relative;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -71,7 +71,7 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 		return n;
 	}
 
-	private static void click(ClientGameTestContext c, int slot, ContainerInput input) {
+	private static void click(ClientGameTestContext c, int slot, ClickType input) {
 		c.runOnClient(mc -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, slot, 0, input, mc.player));
 		c.waitTicks(3);
 	}
@@ -141,7 +141,7 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 			check(c.computeOnClient(mc -> mc.player.containerMenu instanceof FusionAltarMenu), "The client shows the altar");
 
 			// Three matching runes spread over the sockets and plan a rank-up.
-			click(c, hotbar(0), ContainerInput.QUICK_MOVE);
+			click(c, hotbar(0), ClickType.QUICK_MOVE);
 			server.runOnServer(s -> {
 				check(onAltar(s, 0) && onAltar(s, 1) && onAltar(s, 2), "A shift-click spreads three runes over the three sockets");
 				var plan = menu(s).plan();
@@ -167,9 +167,9 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 			});
 
 			// Two effects and a shard plan their elements' fusion; it waits until the last result is taken.
-			click(c, hotbar(1), ContainerInput.QUICK_MOVE);
-			click(c, hotbar(2), ContainerInput.QUICK_MOVE);
-			click(c, hotbar(3), ContainerInput.QUICK_MOVE);
+			click(c, hotbar(1), ClickType.QUICK_MOVE);
+			click(c, hotbar(2), ClickType.QUICK_MOVE);
+			click(c, hotbar(3), ClickType.QUICK_MOVE);
 			server.runOnServer(s -> {
 				var plan = menu(s).plan();
 				check(plan.ready() && plan.kind() == Fusions.Kind.COMBINE && plan.recipe() != null, "Two effects and a shard plan a fusion, " + plan);
@@ -182,7 +182,7 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 					"Nothing is used while the last result still waits");
 				check(p(s).experienceLevel == 10 - Ranks.xpCost(2), "and no XP is taken");
 			});
-			click(c, FusionAltarMenu.RESULT, ContainerInput.QUICK_MOVE);
+			click(c, FusionAltarMenu.RESULT, ClickType.QUICK_MOVE);
 			server.runOnServer(s -> check(menu(s).resultFree() && carried(p(s), ranked, 2) == 1, "The rank II rune is taken into the inventory"));
 			c.takeScreenshot(TestScreenshotOptions.of("fusion_altar_combine").disableCounterPrefix());
 			press(c);
@@ -196,11 +196,11 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 			});
 
 			// What can't go on the altar stays in the inventory.
-			click(c, hotbar(4), ContainerInput.QUICK_MOVE);
+			click(c, hotbar(4), ClickType.QUICK_MOVE);
 			server.runOnServer(s -> check(p(s).getInventory().getItem(4).getCount() == 4, "Cobblestone can't go on the altar"));
 
 			// Closing it hands back what was left on it.
-			click(c, FusionAltarMenu.RESULT, ContainerInput.QUICK_MOVE);
+			click(c, FusionAltarMenu.RESULT, ClickType.QUICK_MOVE);
 			int rankedSlot = server.computeOnServer(s -> {
 				var inv = p(s).getInventory();
 				for (int i = 0; i < 36; i++) {
@@ -209,7 +209,7 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 				return -1;
 			});
 			check(rankedSlot >= 0, "The rank II rune is in the inventory");
-			click(c, rankedSlot < 9 ? hotbar(rankedSlot) : FusionAltarMenu.RESULT + 1 + rankedSlot - 9, ContainerInput.QUICK_MOVE);
+			click(c, rankedSlot < 9 ? hotbar(rankedSlot) : FusionAltarMenu.RESULT + 1 + rankedSlot - 9, ClickType.QUICK_MOVE);
 			server.runOnServer(s -> check(onAltar(s, 0) && carried(p(s), ranked, 2) == 0, "The rank II rune goes back on the altar"));
 			c.runOnClient(mc -> mc.player.closeContainer());
 			c.waitTicks(5);

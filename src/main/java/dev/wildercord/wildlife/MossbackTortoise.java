@@ -110,7 +110,7 @@ public class MossbackTortoise extends Animal {
 	}
 
 	private static @Nullable Garden gardenAt(ServerLevelAccessor level, BlockPos pos) {
-		return level.getBiome(pos).unwrapKey().map(k -> WildlifeRules.garden(k.location().toString())).orElse(null);
+		return level.getBiome(pos).unwrapKey().map(k -> WildlifeRules.garden(k.identifier().toString())).orElse(null);
 	}
 
 	// ------------------------------------------------------------------ its shell

@@ -29,8 +29,8 @@ public record TidewardCue(String world,int kind,long nonce,int entity,UUID ident
   if(count<0 || count>9)throw new IllegalArgumentException("Too many route cells");var points=new ArrayList<BlockPos>(count);for(int i=0;i<count;i++)points.add(b.readBlockPos());
   return new TidewardCue(world,kind,nonce,entity,id,points);
  });
- public static void warning(ServerPlayer p,ReedbackCrab crab){ServerPlayNetworking.send(p,new TidewardCue(p.level().dimension().location().toString(),WARNING,p.level().getGameTime(),crab.getId(),crab.getUUID(),List.of()));}
- public static void route(ServerPlayer p,long nonce,List<BlockPos> feet){ServerPlayNetworking.send(p,new TidewardCue(p.level().dimension().location().toString(),ROUTE,nonce,0,null,feet));}
- public static void clear(ServerPlayer p,long nonce){ServerPlayNetworking.send(p,new TidewardCue(p.level().dimension().location().toString(),CLEAR,nonce,0,null,List.of()));}
+ public static void warning(ServerPlayer p,ReedbackCrab crab){ServerPlayNetworking.send(p,new TidewardCue(p.level().dimension().identifier().toString(),WARNING,p.level().getGameTime(),crab.getId(),crab.getUUID(),List.of()));}
+ public static void route(ServerPlayer p,long nonce,List<BlockPos> feet){ServerPlayNetworking.send(p,new TidewardCue(p.level().dimension().identifier().toString(),ROUTE,nonce,0,null,feet));}
+ public static void clear(ServerPlayer p,long nonce){ServerPlayNetworking.send(p,new TidewardCue(p.level().dimension().identifier().toString(),CLEAR,nonce,0,null,List.of()));}
  @Override public Type<TidewardCue> type(){return TYPE;}
 }

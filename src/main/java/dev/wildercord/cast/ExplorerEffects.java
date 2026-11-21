@@ -11,7 +11,7 @@ import dev.wildercord.spell.SpellPlan;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -767,7 +767,7 @@ public final class ExplorerEffects {
 		}
 	}
 
-	private static final ResourceLocation SHELL_ID = Wildercord.id("shulkershell");
+	private static final Identifier SHELL_ID = Wildercord.id("shulkershell");
 
 	/** What each shell has turned aside so far, by wearer (loosed as bullets when it opens). */
 	private static final Map<UUID, double[]> SHELLS = new HashMap<>();
@@ -1091,7 +1091,7 @@ public final class ExplorerEffects {
 		}
 	}
 
-	private static final ResourceLocation MIRE_ID = Wildercord.id("mire");
+	private static final Identifier MIRE_ID = Wildercord.id("mire");
 
 	/** Mire: the ground turns to mud under the target. */
 	private static void mire(Cast cast, LivingEntity t, int ticks) {
@@ -1851,7 +1851,7 @@ public final class ExplorerEffects {
 		return t.isNoGravity() || t instanceof Mob mob && mob.getNavigation() instanceof net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 	}
 
-	private static final ResourceLocation CURRENT_ID = Wildercord.id("current");
+	private static final Identifier CURRENT_ID = Wildercord.id("current");
 
 	/**
 	 * Current: a current sweeps the caster the way they look, held at speed for a moment and then carried on by the

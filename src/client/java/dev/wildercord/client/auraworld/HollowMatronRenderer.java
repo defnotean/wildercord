@@ -13,22 +13,22 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /** The Hollow Matron (see {@link HollowMatronModel}), her legs spanning near six blocks, with her eight eyes lit red whatever the light. */
 public final class HollowMatronRenderer extends MobRenderer<HollowMatron,HollowMatronRenderState,HollowMatronModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("hollow_matron"),"main");
-	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/hollow_matron/skin.png");
-	private static final ResourceLocation GLOW=Wildercord.id("textures/entity/hollow_matron/glow.png");
+	private static final Identifier SKIN=Wildercord.id("textures/entity/hollow_matron/skin.png");
+	private static final Identifier GLOW=Wildercord.id("textures/entity/hollow_matron/glow.png");
 	static final float SCALE=2.4F;
 	/** How long one move takes to blend into the next, in ticks. */
 	private static final float BLEND_TICKS=4;
 	public HollowMatronRenderer(EntityRendererProvider.Context c){super(c,new HollowMatronModel(c.bakeLayer(LAYER)),2.0F);addLayer(new Eyes(this));}
 	@Override public HollowMatronRenderState createRenderState(){return new HollowMatronRenderState();}
-	@Override public ResourceLocation getTextureLocation(HollowMatronRenderState s){return SKIN;}
+	@Override public Identifier getTextureLocation(HollowMatronRenderState s){return SKIN;}
 	@Override public void extractRenderState(HollowMatron e,HollowMatronRenderState s,float partial){
-		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.roused=e.roused();
+		super.extractRenderState(e, s, partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.roused=e.roused();
 		s.drop=HollowMatronRules.drop(s.move,s.elapsed);
 		s.threadUp=e.anchor()-(float)Mth.lerp(partial,e.yo,e.getY());
 		float now=e.tickCount+partial;

@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -47,7 +47,7 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 		return n;
 	}
 
-	private static void click(ClientGameTestContext c, int slot, int button, ContainerInput input) {
+	private static void click(ClientGameTestContext c, int slot, int button, ClickType input) {
 		c.runOnClient(mc -> mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, slot, button, input, mc.player));
 		c.waitTicks(3);
 	}
@@ -82,7 +82,7 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 			check(c.computeOnClient(mc -> mc.player.containerMenu instanceof BackpackMenu), "The client shows the backpack");
 
 			// A shift-click puts the stack in, and the backpack in hand holds it at once.
-			click(c, hotbar(1), 0, ContainerInput.QUICK_MOVE);
+			click(c, hotbar(1), 0, ClickType.QUICK_MOVE);
 			server.runOnServer(s -> {
 				check(p(s).getInventory().getItem(1).isEmpty(), "The cobblestone leaves the inventory");
 				check(inside(p(s).getInventory().getItem(0), Items.COBBLESTONE) == 16, "The backpack holds it at once, had "
@@ -90,15 +90,15 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 			});
 
 			// Another backpack and a bundle are kept out, by shift-click and by hand.
-			click(c, hotbar(2), 0, ContainerInput.QUICK_MOVE);
-			click(c, hotbar(3), 0, ContainerInput.QUICK_MOVE);
+			click(c, hotbar(2), 0, ClickType.QUICK_MOVE);
+			click(c, hotbar(3), 0, ClickType.QUICK_MOVE);
 			server.runOnServer(s -> {
 				check(p(s).getInventory().getItem(2).is(WildercordItems.REINFORCED_BACKPACK), "No backpack goes in a backpack");
 				check(p(s).getInventory().getItem(3).is(Items.BUNDLE), "No bundle goes in a backpack");
 			});
-			click(c, hotbar(2), 0, ContainerInput.PICKUP);
-			click(c, 5, 0, ContainerInput.PICKUP);
-			click(c, hotbar(2), 0, ContainerInput.PICKUP);
+			click(c, hotbar(2), 0, ClickType.PICKUP);
+			click(c, 5, 0, ClickType.PICKUP);
+			click(c, hotbar(2), 0, ClickType.PICKUP);
 			server.runOnServer(s -> {
 				check(p(s).getInventory().getItem(2).is(WildercordItems.REINFORCED_BACKPACK) && menu(s).getCarried().isEmpty(),
 					"A backpack put down on its slots goes back where it was");
@@ -106,8 +106,8 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 			});
 
 			// The open backpack stays put: it can't be picked up, or swapped away with its number key.
-			click(c, hotbar(0), 0, ContainerInput.PICKUP);
-			click(c, 3, 0, ContainerInput.SWAP);
+			click(c, hotbar(0), 0, ClickType.PICKUP);
+			click(c, 3, 0, ClickType.SWAP);
 			server.runOnServer(s -> {
 				check(menu(s).getCarried().isEmpty(), "The open backpack can't be picked up");
 				check(p(s).getInventory().getItem(0).is(WildercordItems.BACKPACK), "Nor swapped out by its number key");
@@ -139,7 +139,7 @@ public final class BackpackMenuTest implements FabricClientGameTest {
 			c.runOnClient(mc -> WildercordKeys.openBackpack());
 			c.waitTicks(5);
 			server.runOnServer(s -> check(menu(s) != null && menu(s).locked() == -1, "The backpack key opens the worn backpack"));
-			click(c, hotbar(4), 0, ContainerInput.QUICK_MOVE);
+			click(c, hotbar(4), 0, ClickType.QUICK_MOVE);
 			c.runOnClient(mc -> mc.player.closeContainer());
 			c.waitTicks(5);
 			server.runOnServer(s -> {

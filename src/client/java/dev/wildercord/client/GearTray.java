@@ -1,7 +1,7 @@
 package dev.wildercord.client;
 
 import dev.wildercord.gear.GearLayout;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 
 /**
  * The gear slots and the Backpack slot on the inventory screens. In the survival inventory they sit in a tray

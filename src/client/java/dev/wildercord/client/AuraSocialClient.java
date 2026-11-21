@@ -13,7 +13,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -106,7 +107,8 @@ public final class AuraSocialClient {
             mc.level.playLocalSound(mc.player.getX(), mc.player.getEyeY(), mc.player.getZ(), sound, SoundSource.PLAYERS, volume, pitch, false);
     }
 
-    private static void draw(GuiGraphicsExtractor g, DeltaTracker delta) {
+    private static void draw(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null || mc.screen != null || mc.player.isSpectator()) return;
         Lock lock = own();

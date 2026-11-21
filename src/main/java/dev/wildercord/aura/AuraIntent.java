@@ -6,7 +6,7 @@ import dev.wildercord.cast.Spirits;
 import dev.wildercord.cast.Targets;
 import dev.wildercord.config.Config;
 import dev.wildercord.config.WildercordConfig;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,7 +37,7 @@ import java.util.UUID;
 public final class AuraIntent {
 	private AuraIntent() {}
 
-	private static final ResourceLocation SLOW = Wildercord.id("aura_intent");
+	private static final Identifier SLOW = Wildercord.id("aura_intent");
 	/** When each player Intent slowed lets go, by player. */
 	private static final Map<UUID, Long> PRESSED = new HashMap<>();
 	/** When each player last heard their Intent take hold (a low thrum, at most every few seconds). */

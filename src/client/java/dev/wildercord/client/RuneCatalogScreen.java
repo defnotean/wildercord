@@ -16,7 +16,8 @@ import dev.wildercord.spell.RuneReading;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.WovenRunes;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.EditBox;
@@ -333,8 +334,9 @@ public final class RuneCatalogScreen extends Screen {
 	// ------------------------------------------------------------------ drawing
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
-		super.extractRenderState(g, mouseX, mouseY, partial);
+	public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+		super.render(wcGui, mouseX, mouseY, partial);
 		List<RuneDef> all = shown();
 		List<RuneDef> runes = RuneCatalog.page(all, page, pageSize());
 		Component tip = null;

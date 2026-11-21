@@ -8,15 +8,15 @@ import dev.wildercord.spell.Incantation;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -152,18 +152,18 @@ public final class Incantations {
 	// ------------------------------------------------------------------ drawing
 
 	/** Draws every incantation in the world, facing the camera, among the frame's other translucent things. */
-	public static void submit(LevelRenderContext context) {
+	public static void submit(WorldRenderContext context) {
 		Minecraft mc = Minecraft.getInstance();
 		ClientLevel level = mc.level;
 		if (level == null || SPOKEN.isEmpty()) {
 			return;
 		}
-		CameraRenderState camera = context.levelState().cameraRenderState;
+		CameraRenderState camera = context.worldState().cameraRenderState;
 		Vec3 cam = camera.pos;
 		float partial = mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		double now = level.getGameTime() + partial;
 		Font font = mc.font;
-		PoseStack pose = context.poseStack();
+		PoseStack pose = context.matrices();
 		for (Map.Entry<Integer, Utterance> e : SPOKEN.entrySet()) {
 			Entity entity = level.getEntity(e.getKey());
 			Utterance u = e.getValue();
@@ -226,7 +226,7 @@ public final class Incantations {
 	 * One syllable, facing the camera, {@code x} and {@code y} font pixels from the anchor (y up): its
 	 * rune's colour lightened, with a darker outline, at full brightness, like glowing sign text.
 	 */
-	private static void drawWord(LevelRenderContext context, PoseStack pose, CameraRenderState camera, Vec3 at, FormattedCharSequence text, float x,
+	private static void drawWord(WorldRenderContext context, PoseStack pose, CameraRenderState camera, Vec3 at, FormattedCharSequence text, float x,
 			float y, int color, float alpha) {
 		pose.pushPose();
 		pose.translate(at.x - camera.pos.x, at.y - camera.pos.y, at.z - camera.pos.z);
@@ -235,7 +235,7 @@ public final class Incantations {
 		int a = Mth.clamp((int) (alpha * 255), 4, 255);
 		int fill = (a << 24) | lighter(color, 0.55F);
 		int outline = (Mth.clamp((int) (alpha * 200), 4, 255) << 24) | darker(color, 0.35F);
-		context.submitNodeCollector().submitText(pose, x, -y - 9, text, false, Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT, fill, 0, outline);
+		context.commandQueue().submitText(pose, x, -y - 9, text, false, Font.DisplayMode.NORMAL, LightTexture.FULL_BRIGHT, fill, 0, outline);
 		pose.popPose();
 	}
 

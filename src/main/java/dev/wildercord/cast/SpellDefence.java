@@ -16,7 +16,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -71,7 +71,7 @@ public final class SpellDefence {
 	 */
 	static final int GUARD_GRACE = 10;
 	/** The phase the spellguard answers a death in: before anything else might (Reversal, Rebirth, a duel's knockout, a totem). */
-	private static final ResourceLocation GUARD_PHASE = Wildercord.id("spellguard");
+	private static final Identifier GUARD_PHASE = Wildercord.id("spellguard");
 
 	/** A spell hit landing on a player right now: who, and their health as it arrived. Null outside one. */
 	private record Landing(LivingEntity target, float healthBefore, Object castIdentity) {}

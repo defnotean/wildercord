@@ -11,7 +11,7 @@ import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.Vfx;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -69,7 +69,7 @@ public final class MethodsAFlavours {
 
 	// ------------------------------------------------------------------ Iron
 
-	private static final ResourceLocation SUNDERED = Wildercord.id("iron_sunder");
+	private static final Identifier SUNDERED = Wildercord.id("iron_sunder");
 	/** When each foe's sunder ends (game time), so a later, longer one isn't cut short by an earlier one's end. */
 	private static final Map<UUID, Long> SUNDER_ENDS = new ConcurrentHashMap<>();
 

@@ -2,7 +2,7 @@ package dev.wildercord.content;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.world.ResidueRules.Kind;
-import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
+import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -72,7 +72,7 @@ public final class ResidueBlocks {
 
 	public static void init() {
 		// Animals (any mob that paths) keep off a void scar and step round it, and round a patch of bloodmoss.
-		LandPathTypeRegistry.register(VOID_SCAR, PathType.DAMAGING, PathType.DAMAGING_IN_NEIGHBOR);
-		LandPathTypeRegistry.register(BLOODMOSS, PathType.DAMAGING_IN_NEIGHBOR, PathType.DAMAGING_IN_NEIGHBOR);
+		LandPathNodeTypesRegistry.register(VOID_SCAR, PathType.DAMAGING, PathType.DAMAGING_IN_NEIGHBOR);
+		LandPathNodeTypesRegistry.register(BLOODMOSS, PathType.DAMAGING_IN_NEIGHBOR, PathType.DAMAGING_IN_NEIGHBOR);
 	}
 }

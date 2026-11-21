@@ -36,7 +36,7 @@ public final class TidewardEquipment {
  private static AttachmentType<Long> rest(String name){return AttachmentRegistry.create(Wildercord.id(name),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());}
  public static final AttachmentType<Long> WALK_READY=rest("tideward_walk_ready"),SIGHT_READY=rest("tideward_sight_ready");
  public static final AttachmentType<Integer> WALK_PROGRESS=AttachmentRegistry.create(Wildercord.id("tideward_walk_progress"),b -> b.initializer(() -> 0).persistent(Codec.intRange(0,WALK_WINDOW-1)).copyOnDeath());
- private static final ResourceLocation WALK_ID=Wildercord.id("reedwater_walk");
+ private static final Identifier WALK_ID=Wildercord.id("reedwater_walk");
  private static final AttributeModifier WALK_MODIFIER=new AttributeModifier(WALK_ID,.25,AttributeModifier.Operation.ADD_VALUE);
  private static final class Walk {ItemStack worn=ItemStack.EMPTY;ServerLevel world;Vec3 at=Vec3.ZERO;}
  private static final class Sight {ItemStack worn=ItemStack.EMPTY;ServerLevel world;UUID target;int ticks;}

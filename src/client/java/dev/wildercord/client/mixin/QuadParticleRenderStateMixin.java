@@ -3,7 +3,7 @@ package dev.wildercord.client.mixin;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.GlowLayers;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

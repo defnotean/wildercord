@@ -11,7 +11,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 
 import java.util.ArrayList;
@@ -183,7 +184,8 @@ public final class StringHud {
 	// ------------------------------------------------------------------ drawing
 
 	/** By the crosshair (the HUD element after vanilla's crosshair). */
-	private static void extract(GuiGraphicsExtractor g, DeltaTracker delta) {
+	private static void extract(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		if (MagicQuality.stringIndicator != MagicQuality.StringIndicator.CROSSHAIR) {
 			return;
 		}

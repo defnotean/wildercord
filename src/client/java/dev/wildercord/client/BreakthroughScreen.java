@@ -13,7 +13,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -155,7 +156,8 @@ public final class BreakthroughScreen extends Screen {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
+	public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		graphics.fill(left, top, left + panelWidth, top + panelHeight, 0xF2141022);
 		graphics.fill(left + 1, top + 1, left + panelWidth - 1, top + 2, color);
 		graphics.fill(left + 1, top + panelHeight - 2, left + panelWidth - 1, top + panelHeight - 1, color);
@@ -174,7 +176,7 @@ public final class BreakthroughScreen extends Screen {
 			graphics.text(font, lines.get(index), left + 16, bodyTop + (index - scroll) * 11, 0xFFE8E5D9, false);
 		}
 		graphics.disableScissor();
-		super.extractRenderState(graphics, mouseX, mouseY, partial);
+		super.render(wcGui, mouseX, mouseY, partial);
 	}
 
 	@Override

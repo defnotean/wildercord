@@ -10,7 +10,7 @@ import dev.wildercord.aura.world.TombReliquaryEntity;
 import dev.wildercord.world.upgrade.UpgradeCatalog.Site;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -109,7 +109,7 @@ public final class UpgradeSites extends SavedData {
 	/** START_PRESENT or CHUNK_LOAD_NEEDED both refuse: an unverifiable natural site counts as present. */
 	private static String natural(ServerLevel level,UpgradeCatalog.Family family,int chunkX,int chunkZ,List<UpgradeCatalog.Region> regions) {
 		var state=level.getChunkSource().getGeneratorState();
-		var key=ResourceKey.create(Registries.STRUCTURE_SET,ResourceLocation.parse(family.structureSet()));
+		var key=ResourceKey.create(Registries.STRUCTURE_SET,Identifier.parse(family.structureSet()));
 		var set=state.possibleStructureSets().stream().filter(h->h.is(key)).findFirst().orElse(null);
 		if(set==null)return "";// This generator never places the family (for example a flat or modded preset).
 		if(!(set.value().placement() instanceof RandomSpreadStructurePlacement spread) || spread.spacing()!=family.spacing() || spread.separation()!=family.separation())

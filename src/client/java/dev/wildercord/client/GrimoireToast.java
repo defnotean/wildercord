@@ -8,13 +8,14 @@ import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.Secrets;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -30,7 +31,7 @@ import java.util.Optional;
  * An affinity reaching a new level has one too ({@link #affinity}), with the element's mark for its icon.
  */
 public class GrimoireToast implements Toast {
-	private static final ResourceLocation BACKGROUND = Wildercord.id("toast/grimoire");
+	private static final Identifier BACKGROUND = Wildercord.id("toast/grimoire");
 	private static final long SHOW_MS = 5000;
 
 	private final Component title;
@@ -132,7 +133,7 @@ public class GrimoireToast implements Toast {
 		} else if (key.startsWith(Bestiary.PREFIX)) {
 			// A weakness found (the Bestiary's only announced entries): the creature, its spawn egg, the element's colour.
 			Bestiary.Entry entry = Bestiary.parse(key).orElse(new Bestiary.Entry(id, Bestiary.Kind.MET, ""));
-			EntityType<?> type = Optional.ofNullable(ResourceLocation.tryParse(entry.type())).flatMap(BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
+			EntityType<?> type = Optional.ofNullable(Identifier.tryParse(entry.type())).flatMap(BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
 			Component creature = type == null ? Component.literal(entry.type()) : type.getDescription();
 			this.name = Component.translatable("toast.wildercord.bestiary", creature, Component.translatable("element.wildercord." + entry.element()));
 			this.icon = type == null ? new ItemStack(Items.BOOK) : SpawnEggItem.byId(type).map(ItemStack::new).orElseGet(() -> new ItemStack(Items.BOOK));
@@ -140,7 +141,7 @@ public class GrimoireToast implements Toast {
 		} else if (dev.wildercord.spell.FieldGuide.isKey(key)) {
 			// A creature met for the first time: its name, its spawn egg, its colour in the field guide.
 			String typeId = key.substring(dev.wildercord.spell.FieldGuide.PREFIX.length());
-			EntityType<?> type = Optional.ofNullable(ResourceLocation.tryParse(typeId)).flatMap(BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
+			EntityType<?> type = Optional.ofNullable(Identifier.tryParse(typeId)).flatMap(BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
 			Component creature = type == null ? Component.literal(typeId) : type.getDescription();
 			this.name = Component.translatable("toast.wildercord.creature", creature);
 			this.icon = type == null ? new ItemStack(Items.BOOK) : SpawnEggItem.byId(type).map(ItemStack::new).orElseGet(() -> new ItemStack(Items.BOOK));
@@ -222,7 +223,8 @@ public class GrimoireToast implements Toast {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor g, Font font, long fullyVisibleForMs) {
+	public void render(GuiGraphics wcGui, Font font, long fullyVisibleForMs) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 0, 0, width(), height());
 		if (glyph != null) {
 			// The element's mark at twice its size, where an item would sit.

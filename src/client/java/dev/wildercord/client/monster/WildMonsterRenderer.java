@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.ToIntFunction;
 
@@ -23,20 +23,20 @@ import java.util.function.ToIntFunction;
  * which every shader pack is written for.
  */
 public class WildMonsterRenderer<T extends WildMonster, M extends EntityModel<MonsterRenderState>> extends MobRenderer<T, MonsterRenderState, M> {
-	private final ResourceLocation texture;
+	private final Identifier texture;
 
-	public WildMonsterRenderer(EntityRendererProvider.Context context, M model, float shadow, ResourceLocation texture) {
+	public WildMonsterRenderer(EntityRendererProvider.Context context, M model, float shadow, Identifier texture) {
 		super(context, model, shadow);
 		this.texture = texture;
 	}
 
 	/** Adds a layer holding only what glows, drawn at full brightness with the ARGB {@code color} gives each frame. */
-	protected void glow(ResourceLocation texture, ToIntFunction<MonsterRenderState> color) {
+	protected void glow(Identifier texture, ToIntFunction<MonsterRenderState> color) {
 		addLayer(new Glow<>(this, texture, color));
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(MonsterRenderState state) {
+	public Identifier getTextureLocation(MonsterRenderState state) {
 		return texture;
 	}
 
@@ -94,7 +94,7 @@ public class WildMonsterRenderer<T extends WildMonster, M extends EntityModel<Mo
 		private final RenderType renderType;
 		private final ToIntFunction<MonsterRenderState> color;
 
-		Glow(RenderLayerParent<MonsterRenderState, M> parent, ResourceLocation texture, ToIntFunction<MonsterRenderState> color) {
+		Glow(RenderLayerParent<MonsterRenderState, M> parent, Identifier texture, ToIntFunction<MonsterRenderState> color) {
 			super(parent);
 			this.renderType = RenderTypes.eyes(texture);
 			this.color = color;

@@ -14,7 +14,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
@@ -35,13 +35,13 @@ public final class WildlifeRenderers {
 	public static final ModelLayerLocation REEDBACK_CRAB=layer("reedback_crab");
  public static final class ReedbackCrabRenderer extends WildlifeRenderer<dev.wildercord.wildlife.ReedbackCrab,ReedbackCrabModel> {
   public ReedbackCrabRenderer(EntityRendererProvider.Context c) {super(c,new ReedbackCrabModel(c.bakeLayer(REEDBACK_CRAB)),.55F,texture("reedback_crab"));}
-  @Override public void extractRenderState(dev.wildercord.wildlife.ReedbackCrab e,WildlifeRenderState s,float partial) {super.extractRenderState(e,s,partial);s.claws=Mth.lerp(partial,e.clawsO,e.claws);s.strike=Mth.lerp(partial,e.strikeO,e.strike);s.settle=Mth.lerp(partial,e.settleO,e.settle);}
+  @Override public void extractRenderState(dev.wildercord.wildlife.ReedbackCrab e,WildlifeRenderState s,float partial) {super.extractRenderState(e, s, partial);s.claws=Mth.lerp(partial,e.clawsO,e.claws);s.strike=Mth.lerp(partial,e.strikeO,e.strike);s.settle=Mth.lerp(partial,e.settleO,e.settle);}
  }
  public static final ModelLayerLocation LANTERN_NEWT = layer("lantern_newt");
 	public static final class LanternNewtRenderer extends WildlifeRenderer<dev.wildercord.wildlife.LanternNewt,LanternNewtModel> {
 		public LanternNewtRenderer(EntityRendererProvider.Context c) {super(c,new LanternNewtModel(c.bakeLayer(LANTERN_NEWT)),.25F,texture("lantern_newt"));var light=texture("lantern_newt_glow");glow(s -> light);}
 		@Override public void extractRenderState(dev.wildercord.wildlife.LanternNewt e,WildlifeRenderState s,float partial) {
-			super.extractRenderState(e,s,partial);s.rest=Mth.lerp(partial,e.restO,e.rest);s.air=e.isInWater()?1:0;s.graze=e.browsing()?1:0;s.bow=e.response()>0?1:0;
+			super.extractRenderState(e, s, partial);s.rest=Mth.lerp(partial,e.restO,e.rest);s.air=e.isInWater()?1:0;s.graze=e.browsing()?1:0;s.bow=e.response()>0?1:0;
 			s.glow=dev.wildercord.wildlife.WetlandRules.glow(dev.wildercord.wildlife.WetlandRules.night(e.level().getOverworldClockTime()),e.isInWaterOrRain(),e.response()>0);
 			if(e.response()>0)s.glow*=.8F+.2F*Mth.sin(s.ageInTicks*.25F);
 		}
@@ -51,7 +51,7 @@ public final class WildlifeRenderers {
 		return new ModelLayerLocation(Wildercord.id(name), "main");
 	}
 
-	static ResourceLocation texture(String name) {
+	static Identifier texture(String name) {
 		return Wildercord.id("textures/entity/wildlife/" + name + ".png");
 	}
 
@@ -63,8 +63,8 @@ public final class WildlifeRenderers {
 	// ------------------------------------------------------------------ the glimmerwing
 
 	public static final class GlimmerwingRenderer extends WildlifeRenderer<Glimmerwing, GlimmerwingModel> {
-		private static final ResourceLocation[] SKINS = {texture("glimmerwing_moonlit"), texture("glimmerwing_rose"), texture("glimmerwing_amber")};
-		private static final ResourceLocation[] GLOWS = {texture("glimmerwing_moonlit_glow"), texture("glimmerwing_rose_glow"), texture("glimmerwing_amber_glow")};
+		private static final Identifier[] SKINS = {texture("glimmerwing_moonlit"), texture("glimmerwing_rose"), texture("glimmerwing_amber")};
+		private static final Identifier[] GLOWS = {texture("glimmerwing_moonlit_glow"), texture("glimmerwing_rose_glow"), texture("glimmerwing_amber_glow")};
 
 		public GlimmerwingRenderer(EntityRendererProvider.Context context) {
 			super(context, new GlimmerwingModel(context.bakeLayer(GLIMMERWING)), 0.12F, SKINS[0]);
@@ -72,7 +72,7 @@ public final class WildlifeRenderers {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(WildlifeRenderState state) {
+		public Identifier getTextureLocation(WildlifeRenderState state) {
 			return SKINS[state.variant];
 		}
 
@@ -103,7 +103,7 @@ public final class WildlifeRenderers {
 	public static final class LumenStagRenderer extends WildlifeRenderer<LumenStag, LumenStagModel> {
 		public LumenStagRenderer(EntityRendererProvider.Context context) {
 			super(context, new LumenStagModel(context.bakeLayer(LUMEN_STAG)), 0.6F, texture("lumen_stag"));
-			ResourceLocation glow = texture("lumen_stag_glow");
+			Identifier glow = texture("lumen_stag_glow");
 			glow(state -> glow);
 		}
 
@@ -123,7 +123,7 @@ public final class WildlifeRenderers {
 	public static final class CinderfoxRenderer extends WildlifeRenderer<Cinderfox, CinderfoxModel> {
 		public CinderfoxRenderer(EntityRendererProvider.Context context) {
 			super(context, new CinderfoxModel(context.bakeLayer(CINDERFOX)), 0.32F, texture("cinderfox"));
-			ResourceLocation glow = texture("cinderfox_glow");
+			Identifier glow = texture("cinderfox_glow");
 			glow(state -> glow);
 		}
 
@@ -141,7 +141,7 @@ public final class WildlifeRenderers {
 	public static final class SkyrayRenderer extends WildlifeRenderer<Skyray, SkyrayModel> {
 		public SkyrayRenderer(EntityRendererProvider.Context context) {
 			super(context, new SkyrayModel(context.bakeLayer(SKYRAY)), 0.0F, texture("skyray"));
-			ResourceLocation glow = texture("skyray_glow");
+			Identifier glow = texture("skyray_glow");
 			glow(state -> glow);
 		}
 
@@ -162,7 +162,7 @@ public final class WildlifeRenderers {
 	public static final class RimehareRenderer extends WildlifeRenderer<Rimehare, RimehareModel> {
 		public RimehareRenderer(EntityRendererProvider.Context context) {
 			super(context, new RimehareModel(context.bakeLayer(RIMEHARE)), 0.22F, texture("rimehare"));
-			ResourceLocation glow = texture("rimehare_glow");
+			Identifier glow = texture("rimehare_glow");
 			glow(state -> glow);
 		}
 

@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
@@ -22,8 +22,8 @@ import net.minecraft.util.Mth;
 public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State, ManaOozeModel> {
 	public static final ModelLayerLocation INNER = new ModelLayerLocation(Wildercord.id("mana_ooze"), "main");
 	public static final ModelLayerLocation OUTER = new ModelLayerLocation(Wildercord.id("mana_ooze"), "outer");
-	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/mana_ooze.png");
-	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/mana_ooze_glow.png");
+	private static final Identifier TEXTURE = Wildercord.id("textures/entity/mana_ooze.png");
+	private static final Identifier GLOW = Wildercord.id("textures/entity/mana_ooze_glow.png");
 
 	public ManaOozeRenderer(EntityRendererProvider.Context context) {
 		// 26.1.2 has no AbstractCubeMobRenderer: a plain MobRenderer with the slime shadow radius.
@@ -55,7 +55,7 @@ public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State,
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ManaOozeModel.State state) {
+	public Identifier getTextureLocation(ManaOozeModel.State state) {
 		return TEXTURE;
 	}
 

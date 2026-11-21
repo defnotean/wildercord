@@ -1,5 +1,7 @@
 package dev.wildercord.client;
 
+import net.minecraft.client.gui.GuiGraphics;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.FormDash;
 import dev.wildercord.aura.FormDashLessons;
@@ -37,7 +39,8 @@ public final class FormDashClient {
 			if (client.level != level) { clear(); level = client.level; }
 			if (client.level != null) EVENTS.values().removeIf(play -> client.level.getGameTime() - play.received() > FormDashRules.MAX_TICKS + 10);
 		});
-		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("field_form_state"), (graphics, delta) -> {
+		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("field_form_state"), (wcG, delta) -> {
+					GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcG);
 			Minecraft client = Minecraft.getInstance();
 			if (client.player == null || client.screen != null || client.options.hideGui || !shown(client)) return;
 			int x = graphics.guiWidth() / 2, y = graphics.guiHeight() - 66;

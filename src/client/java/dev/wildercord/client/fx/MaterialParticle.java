@@ -7,8 +7,8 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.RandomSource;
 
 /** Twelve authored materials: flame curls, angular ice, forked sparks, wind ribbons, tumbling
@@ -56,7 +56,7 @@ public final class MaterialParticle extends SingleQuadParticle implements SigilG
 		if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))super.extract(state,camera,partial);
 	}
 	@Override protected Layer getLayer() { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? Layer.TRANSLUCENT : GlowLayers.GLOW; }
-	@Override public int getLightCoords(float partial) { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? super.getLightCoords(partial) : LightCoordsUtil.FULL_BRIGHT; }
+	@Override public int getLightCoords(float partial) { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? super.getLightCoords(partial) : LightTexture.FULL_BRIGHT; }
 	@Override public ParticleRenderType getGroup(){return SigilGroup.TYPE;}
 	@Override public double centreX(){return x;}
 	@Override public double centreY(){return y;}

@@ -9,8 +9,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelResolver;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -24,15 +22,11 @@ import net.minecraft.world.level.block.Blocks;
  */
 public final class BlossomTanukiRenderer extends WildlifeRenderer<BlossomTanuki, BlossomTanukiModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("blossom_tanuki"), "main");
-	private static final BlockDisplayContext DISPLAY = BlockDisplayContext.create();
 	/** The bush, full grown, in blocks across. */
 	private static final float BUSH_SIZE = 0.7F;
 
-	private final BlockModelResolver blocks;
-
 	public BlossomTanukiRenderer(EntityRendererProvider.Context context) {
 		super(context, new BlossomTanukiModel(context.bakeLayer(LAYER)), 0.35F, WildlifeRenderers.texture("blossom_tanuki"));
-		this.blocks = context.getBlockModelResolver();
 		addLayer(new BushLayer(this));
 	}
 
@@ -42,7 +36,7 @@ public final class BlossomTanukiRenderer extends WildlifeRenderer<BlossomTanuki,
 		state.hide = Mth.lerp(partial, tanuki.bushO, tanuki.bush);
 		state.dance = Mth.lerp(partial, tanuki.drumO, tanuki.drum);
 		state.hold = Mth.lerp(partial, tanuki.leafO, tanuki.leaf);
-		blocks.update(state.garden[0], Blocks.CHERRY_LEAVES.defaultBlockState(), DISPLAY);
+		state.garden[0] = Blocks.CHERRY_LEAVES.defaultBlockState();
 	}
 
 	/** The bush: cherry leaves set on the ground where it stood, swelling as it turns, with a little shiver now and then. */
@@ -70,7 +64,7 @@ public final class BlossomTanukiRenderer extends WildlifeRenderer<BlossomTanuki,
 			poseStack.scale(-size, -size, size);
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.ZP, shiver);
 			poseStack.translate(-0.5F, 0, -0.5F);
-			state.garden[0].submit(poseStack, collector, light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
+			collector.submitBlock(poseStack, state.garden[0], light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
 			poseStack.popPose();
 		}
 	}

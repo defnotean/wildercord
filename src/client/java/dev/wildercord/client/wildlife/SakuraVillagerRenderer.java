@@ -5,13 +5,13 @@ import dev.wildercord.wildlife.SakuraVillager;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /** Renders {@link SakuraVillager} across all six custom Sakura Village NPC professions. */
 public class SakuraVillagerRenderer extends MobRenderer<SakuraVillager, SakuraVillagerRenderState, SakuraVillagerModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("sakura_villager"), "main");
 
-	private static final ResourceLocation[] TEXTURES = {
+	private static final Identifier[] TEXTURES = {
 		Wildercord.id("textures/entity/sakura_villager_tea.png"),
 		Wildercord.id("textures/entity/sakura_villager_shrine.png"),
 		Wildercord.id("textures/entity/sakura_villager_smith.png"),
@@ -25,7 +25,7 @@ public class SakuraVillagerRenderer extends MobRenderer<SakuraVillager, SakuraVi
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(SakuraVillagerRenderState state) {
+	public Identifier getTextureLocation(SakuraVillagerRenderState state) {
 		return TEXTURES[Math.floorMod(state.role, TEXTURES.length)];
 	}
 

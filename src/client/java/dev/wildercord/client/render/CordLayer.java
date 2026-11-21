@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 
@@ -28,8 +28,8 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	public static final ModelLayerLocation BAND = new ModelLayerLocation(Wildercord.id("cord"), "band");
 	public static final ModelLayerLocation SLIM_BAND = new ModelLayerLocation(Wildercord.id("cord"), "slim_band");
 	public static final ModelLayerLocation BEAD = new ModelLayerLocation(Wildercord.id("cord"), "bead");
-	private static final java.util.Map<String, ResourceLocation> TIER_TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
-	private static final ResourceLocation BEAD_TEXTURE = Wildercord.id("textures/entity/cord/bead.png");
+	private static final java.util.Map<String, Identifier> TIER_TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final Identifier BEAD_TEXTURE = Wildercord.id("textures/entity/cord/bead.png");
 
 	/** Where the beads sit on the band, in the right arm's space (x, y, z in pixels). */
 	private static final float[][] SPOTS = {
@@ -62,7 +62,7 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.pushPose();
 		if (!dev.wildercord.client.combat.ArticulatedCombat.legacyArm(getParentModel(), state, net.minecraft.world.entity.HumanoidArm.RIGHT, pose))
 			getParentModel().rightArm.translateAndRotate(pose);
-		ResourceLocation texture = TIER_TEXTURES.computeIfAbsent(cord.tier(), tier -> Wildercord.id("textures/entity/cord/" + tier + ".png"));
+		Identifier texture = TIER_TEXTURES.computeIfAbsent(cord.tier(), tier -> Wildercord.id("textures/entity/cord/" + tier + ".png"));
 		boolean slim = state.skin != null && state.skin.model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
 		float[][] spots = slim ? SLIM_SPOTS : SPOTS;
 		// The colour goes in as the tint; the outline is the player's own (none unless they're Glowing), so the Cord
@@ -72,8 +72,8 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		// The player's chosen style (see CordStyleLook): the beads' material, and a fixed glow colour or the runes' own.
 		dev.wildercord.cosmetic.CordStyles.Style style = dev.wildercord.client.cosmetic.CordStyleLook.of(state);
 		boolean tinted = dev.wildercord.client.cosmetic.CordStyleLook.tinted(style);
-		ResourceLocation beadTexture = dev.wildercord.client.cosmetic.CordStyleLook.beadTexture(style, BEAD_TEXTURE);
-		ResourceLocation glowTexture = dev.wildercord.client.cosmetic.CordStyleLook.glowTexture(style, BEAD_TEXTURE);
+		Identifier beadTexture = dev.wildercord.client.cosmetic.CordStyleLook.beadTexture(style, BEAD_TEXTURE);
+		Identifier glowTexture = dev.wildercord.client.cosmetic.CordStyleLook.glowTexture(style, BEAD_TEXTURE);
 		// A slow pulse, so the beads look alive.
 		float pulse = 0.85F + 0.15F * Mth.sin(state.ageInTicks * 0.12F);
 		float strength = dev.wildercord.client.cosmetic.CordStyleLook.glowStrength(style) * (tinted ? 0.55F : 0.8F);
@@ -87,7 +87,7 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			dev.wildercord.client.compat.RenderCompat.submitModel(nodes, bead, Unit.INSTANCE, pose, RenderTypes.entityCutout(beadTexture), light, OverlayTexture.NO_OVERLAY, tinted ? 0xFF000000 | rgb : -1, state.outlineColor);
 			// The glow is light, not a thing: a shader pack's shadows leave it out.
 			if (alpha > 0 && !dev.wildercord.client.compat.ShaderCompat.shadowPass()) {
-				dev.wildercord.client.compat.RenderCompat.submitModel(nodes, bead, Unit.INSTANCE, pose, RenderTypes.eyes(glowTexture), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color, 0);
+				dev.wildercord.client.compat.RenderCompat.submitModel(nodes, bead, Unit.INSTANCE, pose, RenderTypes.eyes(glowTexture), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color, 0);
 			}
 			pose.popPose();
 		}

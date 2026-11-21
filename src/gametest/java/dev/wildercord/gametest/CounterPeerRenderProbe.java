@@ -22,7 +22,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.client.renderer.entity.state.*;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -241,7 +241,7 @@ public final class CounterPeerRenderProbe {
         else if(timeline==null||timeline.entity()!=e.owner()||timeline.move()!=e.move()||timeline.startTick()!=e.activation()||timeline.windup()!=e.windup()||timeline.recovery()!=e.recovery())token.reject("wrong_accepted_timeline");
         token.observe("acceptedSourceIdentity",requireSource(timeline,e.activation()));
         CounterPeerAdmissionProbe.sourceFields(timeline,"receivedSource").forEach(token::observe);
-        token.observe("receivedOwnerUuid",actor.getUUID());token.observe("receivedOwnerEntity",actor.getId());token.observe("receivedLevel",mc.level.dimension().location());
+        token.observe("receivedOwnerUuid",actor.getUUID());token.observe("receivedOwnerEntity",actor.getId());token.observe("receivedLevel",mc.level.dimension().identifier());
         token.observe("receivedConnectionIdentity",Integer.toUnsignedString(System.identityHashCode(mc.getConnection())));
         token.observe("timeline",timeline);token.observe("camera",mc.options.getCameraType());token.observe("observerCoverage",remote);
         token.observe("tick",mc.level.getGameTime());token.observe("partial",options.deltaTicks);token.observe("owner",actor.getUUID());
@@ -525,7 +525,7 @@ public final class CounterPeerRenderProbe {
             a.skin.model().toString(),a.skin.body().texturePath().toString(),a.mainArm.name(),e==null?null:e.palette(),matched);
     }
     /** Deep native draw after baked ItemTransform and localTransform. Missing/foreign nodes cannot satisfy entry receipts. */
-    public static void itemDraw(ItemStackRenderState item,net.minecraft.client.resources.model.cuboid.ItemTransform transform,Matrix4fc local,
+    public static void itemDraw(ItemStackRenderState item,net.minecraft.client.renderer.block.model.ItemTransform transform,Matrix4fc local,
         ItemDisplayContext context,List<BakedQuad> quads,Matrix4fc actual,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector){
         var s=rendering();if(s==null)return;AvatarRenderState a;Object model;Matrix4f entry;PoseStack entryStack;net.minecraft.client.renderer.SubmitNodeCollector entryCollector;
         boolean remote=s.token.expected.view().equals("remote"),articulated=false;
@@ -552,7 +552,7 @@ public final class CounterPeerRenderProbe {
             ||!CounterPeerRenderMath.compare("stock_display_scale",List.of(size,size,size),scale).matched()
             ||!CounterPeerRenderMath.compare("stock_display_local",CounterPeerRenderMath.values(new Matrix4f()),CounterPeerRenderMath.values(local)).matched())s.token.reject("changed_original_diamond_display");
         var display=CounterPeerRenderMath.display(new Matrix4f(),context.leftHand(),transform.rotation(),transform.translation(),transform.scale(),
-            transform==net.minecraft.client.resources.model.cuboid.ItemTransform.NO_TRANSFORM,local);
+            transform==net.minecraft.client.renderer.block.model.ItemTransform.NO_TRANSFORM,local);
         var expected=new Matrix4f(entry).mul(display);
         var modelPoint=new org.joml.Vector3f(3.5F/16,3.5F/16,8F/16);
         var wanted=CounterPeerRenderMath.point(expected,modelPoint);var consumed=CounterPeerRenderMath.point(actual,modelPoint);

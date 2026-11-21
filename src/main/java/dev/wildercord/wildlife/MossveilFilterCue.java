@@ -13,5 +13,5 @@ public record MossveilFilterCue(String world,long tick,UUID wearer,int pet,UUID 
  public static final StreamCodec<RegistryFriendlyByteBuf,MossveilFilterCue> CODEC=StreamCodec.of((b,e)->{b.writeUtf(e.world,128);b.writeLong(e.tick);b.writeUUID(e.wearer);b.writeVarInt(e.pet);b.writeUUID(e.source);b.writeVarInt(e.trimmed);},b->new MossveilFilterCue(b.readUtf(128),b.readLong(),b.readUUID(),b.readVarInt(),b.readUUID(),b.readVarInt()));
  public Type<MossveilFilterCue> type(){return TYPE;}
  public static void init(){PayloadTypeRegistry.playS2C().register(TYPE,CODEC);}
- static void send(ServerPlayer p,MossveilDormouse pet,int trimmed){ServerPlayNetworking.send(p,new MossveilFilterCue(p.level().dimension().location().toString(),p.level().getGameTime(),p.getUUID(),pet.getId(),pet.getUUID(),trimmed));}
+ static void send(ServerPlayer p,MossveilDormouse pet,int trimmed){ServerPlayNetworking.send(p,new MossveilFilterCue(p.level().dimension().identifier().toString(),p.level().getGameTime(),p.getUUID(),pet.getId(),pet.getUUID(),trimmed));}
 }

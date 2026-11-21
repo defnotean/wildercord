@@ -74,7 +74,7 @@ public final class WetlandGenerationProbe {
   if(source==null)return null;
   session.index(index,data.features().size());
   PLACEMENT.set(source);
-  String featureKey=feature.feature().unwrapKey().map(key -> key.location().toString()).orElse("unregistered");
+  String featureKey=feature.feature().unwrapKey().map(key -> key.identifier().toString()).orElse("unregistered");
   session.emit("SCHEDULE "+source.label()+", seed="+session.scope.seed+", stage="+stage+", index="+index
     +", stepFeatures="+data.features().size()+", placedKey="+placedKey+", featureKey="+featureKey);
   return source;
@@ -143,7 +143,7 @@ public final class WetlandGenerationProbe {
  }
  public static void occupied(WorldGenLevel level,BlockPos at) {
   var invocation=INVOCATION.get();if(invocation==null || !live(invocation.source))return;
-  invocation.source.session.emit("OCCUPIED at="+position(at)+", block="+level.getBlockState(at)+", biome="+level.getBiome(at).unwrapKey().orElseThrow().location());
+  invocation.source.session.emit("OCCUPIED at="+position(at)+", block="+level.getBlockState(at)+", biome="+level.getBiome(at).unwrapKey().orElseThrow().identifier());
  }
  public static void write(boolean result) {
   var invocation=INVOCATION.get();if(invocation==null || !live(invocation.source) || invocation.ordinal>24)return;

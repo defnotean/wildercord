@@ -7,17 +7,17 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import static dev.wildercord.world.cartographer.CartographerRules.*;
 
 public final class GlassCartographerRenderer extends dev.wildercord.client.compat.CullableMobRenderer<GlassCartographer, GlassCartographerRenderState, GlassCartographerModel> {
-	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/glass_cartographer.png");
-	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/glass_cartographer_glow.png");
-	private static final ResourceLocation MARK = Wildercord.id("textures/entity/glass_cartographer_mark.png");
+	private static final Identifier TEXTURE = Wildercord.id("textures/entity/glass_cartographer.png");
+	private static final Identifier GLOW = Wildercord.id("textures/entity/glass_cartographer_glow.png");
+	private static final Identifier MARK = Wildercord.id("textures/entity/glass_cartographer_mark.png");
 
 	public GlassCartographerRenderer(EntityRendererProvider.Context context) {
 		super(context, new GlassCartographerModel(context.bakeLayer(GlassCartographerModel.LAYER)), 1.3F);
@@ -31,7 +31,7 @@ public final class GlassCartographerRenderer extends dev.wildercord.client.compa
 	}
 
 	@Override public GlassCartographerRenderState createRenderState() { return new GlassCartographerRenderState(); }
-	@Override public ResourceLocation getTextureLocation(GlassCartographerRenderState state) { return TEXTURE; }
+	@Override public Identifier getTextureLocation(GlassCartographerRenderState state) { return TEXTURE; }
 	@Override protected float getFlipDegrees() { return 0; }
 	@Override protected boolean shouldRenderEntity(GlassCartographer e, Frustum frustum, double x, double y, double z, float partial) {
 		return superShouldRenderEntity(e, frustum, x, y, z, partial) || frustum.isVisible(e.getBoundingBox().inflate(16, 2, 16));

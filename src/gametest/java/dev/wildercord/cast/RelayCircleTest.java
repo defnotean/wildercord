@@ -20,7 +20,7 @@ import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
-import net.minecraft.client.KeyBinding;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -72,7 +72,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 			InputConstants.Key[] original = new InputConstants.Key[1];
 			context.runOnClient(mc -> {
 				var key = WildercordKeys.castMapping(); original[0] = net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper.getBoundKeyOf(key);
-				key.setKey(dev.wildercord.gametest.compat.GametestCompat.keyboardKey(InputConstants.KEY_F8)); KeyBinding.resetMapping();
+				key.setKey(dev.wildercord.gametest.compat.GametestCompat.keyboardKey(InputConstants.KEY_F8)); KeyMapping.resetMapping();
 				check(WildercordKeys.castKey().getString().contains("F8"), "Lesson and focus help name the rebound cast key");
 			});
 			try {
@@ -109,7 +109,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 				context.getInput().releaseKey(WildercordKeys.castMapping()); context.waitTicks(12);
 			} finally {
 				context.getInput().releaseKey(WildercordKeys.castMapping());
-				context.runOnClient(mc -> { WildercordKeys.castMapping().setKey(original[0]); KeyBinding.resetMapping(); });
+				context.runOnClient(mc -> { WildercordKeys.castMapping().setKey(original[0]); KeyMapping.resetMapping(); });
 			}
 
 			world.getServer().runOnServer(server -> reset(probe.owner, Runes.HARM));

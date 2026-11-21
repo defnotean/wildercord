@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 
@@ -21,8 +21,8 @@ public final class BurrowAndReefRenderers {
 	public static final ModelLayerLocation DELVER_MOLE = new ModelLayerLocation(Wildercord.id("delver_mole"), "main");
 
 	public static final class ReefbackTurtleRenderer extends WildlifeRenderer<ReefbackTurtle, ReefbackTurtleModel> {
-		private static final ResourceLocation BARE = WildlifeRenderers.texture("reefback_turtle");
-		private static final ResourceLocation SADDLED = WildlifeRenderers.texture("reefback_turtle_saddled");
+		private static final Identifier BARE = WildlifeRenderers.texture("reefback_turtle");
+		private static final Identifier SADDLED = WildlifeRenderers.texture("reefback_turtle_saddled");
 
 		public ReefbackTurtleRenderer(EntityRendererProvider.Context context) {
 			super(context, new ReefbackTurtleModel(context.bakeLayer(REEFBACK_TURTLE)), 1.0F, BARE);
@@ -30,7 +30,7 @@ public final class BurrowAndReefRenderers {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(WildlifeRenderState state) {
+		public Identifier getTextureLocation(WildlifeRenderState state) {
 			return state.variant == 1 ? SADDLED : BARE;
 		}
 
@@ -50,8 +50,8 @@ public final class BurrowAndReefRenderers {
 	}
 
 	public static final class DelverMoleRenderer extends WildlifeRenderer<DelverMole, DelverMoleModel> {
-		private static final ResourceLocation BARE = WildlifeRenderers.texture("delver_mole");
-		private static final ResourceLocation SADDLED = WildlifeRenderers.texture("delver_mole_saddled");
+		private static final Identifier BARE = WildlifeRenderers.texture("delver_mole");
+		private static final Identifier SADDLED = WildlifeRenderers.texture("delver_mole_saddled");
 
 		public DelverMoleRenderer(EntityRendererProvider.Context context) {
 			super(context, new DelverMoleModel(context.bakeLayer(DELVER_MOLE)), 0.9F, BARE);
@@ -59,7 +59,7 @@ public final class BurrowAndReefRenderers {
 		}
 
 		@Override
-		public ResourceLocation getTextureLocation(WildlifeRenderState state) {
+		public Identifier getTextureLocation(WildlifeRenderState state) {
 			return state.variant == 1 ? SADDLED : BARE;
 		}
 

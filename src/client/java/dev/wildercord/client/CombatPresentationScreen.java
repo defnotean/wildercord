@@ -3,7 +3,8 @@ package dev.wildercord.client;
 import dev.wildercord.client.fx.MagicQuality;
 import dev.wildercord.presentation.CombatPresentationOptions;
 import dev.wildercord.presentation.CombatPresentationOptions.*;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -49,8 +50,9 @@ public final class CombatPresentationScreen extends Screen implements CordEditor
   return text(CombatPresentation.effective().articulated()?"limited":"classic_status");
  }
  @Override public Component getNarrationMessage(){return title.copy().append(". ").append(current()).append(". ").append(status()).append(". ").append(text("draft",value(draft.animation()),value(draft.camera())));}
- @Override public void extractRenderState(GuiGraphicsExtractor g,int mouseX,int mouseY,float partial){
-  super.extractRenderState(g,mouseX,mouseY,partial);
+ @Override public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial){
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+  super.render(wcGui, mouseX,mouseY,partial);
   g.centeredText(font,title,width/2,10,0xFFE8C46A);
   int x=(width-Math.min(360,width-24))/2,w=Math.min(360,width-24),y=77;
   for(var line:font.split(current(),w)){g.text(font,line,x,y,0xFFFFFFFF,false);y+=10;}
@@ -81,8 +83,9 @@ public final class CombatPresentationScreen extends Screen implements CordEditor
   }
   @Override public void onClose(){minecraft.setScreen(parent);}
   @Override public Component getNarrationMessage(){return title.copy().append(". ").append(body());}
-  @Override public void extractRenderState(GuiGraphicsExtractor g,int mouseX,int mouseY,float partial){
-   super.extractRenderState(g,mouseX,mouseY,partial);g.centeredText(font,text("page",page+1,PAGES),width/2,12,0xFFE8C46A);
+  @Override public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial){
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+   super.render(wcGui, mouseX,mouseY,partial);g.centeredText(font,text("page",page+1,PAGES),width/2,12,0xFFE8C46A);
    int w=Math.min(360,width-24),x=(width-w)/2,y=34;
    for(var line:font.split(body(),w)){g.text(font,line,x,y,0xFFDDDDDD,false);y+=11;}
   }

@@ -11,7 +11,7 @@ import net.minecraft.server.level.*;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.effect.*;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
@@ -151,7 +151,7 @@ public final class FungalNurseryTest implements FabricClientGameTest {
   }
  }
  private static void craft(ClientGameTestContext c,TestSingleplayerContext w,List<ItemStack> ingredients,Item expected) {
-  w.getServer().runOnServer(s -> {for(int i=0;i<4;i++)p(s).inventoryMenu.getSlot(i+1).set(ingredients.get(i));p(s).inventoryMenu.broadcastChanges();});c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).inventoryMenu.getSlot(0).getItem().is(expected)),"Native crafting result is "+expected);c.runOnClient(mc -> mc.gameMode.handleContainerInput(mc.player.inventoryMenu.containerId,0,0,ContainerInput.QUICK_MOVE,mc.player));c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(expected)>0 && p(s).inventoryMenu.getSlot(1).getItem().isEmpty()),"Actual result pickup consumes inputs");
+  w.getServer().runOnServer(s -> {for(int i=0;i<4;i++)p(s).inventoryMenu.getSlot(i+1).set(ingredients.get(i));p(s).inventoryMenu.broadcastChanges();});c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).inventoryMenu.getSlot(0).getItem().is(expected)),"Native crafting result is "+expected);c.runOnClient(mc -> mc.gameMode.handleContainerInput(mc.player.inventoryMenu.containerId,0,0,ClickType.QUICK_MOVE,mc.player));c.waitTicks(5);check(w.getServer().computeOnServer(s -> p(s).getInventory().countItem(expected)>0 && p(s).inventoryMenu.getSlot(1).getItem().isEmpty()),"Actual result pickup consumes inputs");
  }
  private static void readBook(ClientGameTestContext c,TestSingleplayerContext w,Item book,String shot) {w.getServer().runOnServer(s -> {int index=-1;for(int i=0;i<36;i++)if(p(s).getInventory().getItem(i).is(book)){index=i;break;}check(index>=0,"Earned book exists");var stack=p(s).getInventory().getItem(index).copy();p(s).getInventory().setItem(index,ItemStack.EMPTY);hand(p(s),stack);});c.waitTicks(5);c.runOnClient(mc -> mc.gameMode.useItem(mc.player,InteractionHand.MAIN_HAND));c.waitTicks(5);check(c.computeOnClient(mc -> mc.screen instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen),"Native earned book opens");shot(c,shot);c.runOnClient(mc -> mc.setScreen(null));}
  private static ItemStack ingredient(ServerPlayer p,Item item) {for(int i=0;i<36;i++)if(p.getInventory().getItem(i).is(item)){var stack=p.getInventory().getItem(i);var one=stack.split(1);if(stack.isEmpty())p.getInventory().setItem(i,ItemStack.EMPTY);return one;}throw new AssertionError("Earned ingredient missing: "+item);}

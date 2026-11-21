@@ -9,7 +9,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
@@ -66,7 +67,8 @@ public final class StanceHud {
 	/** One foe to draw: it, its stance and how far it is. */
 	private record Foe(LivingEntity entity, Stance.State state, double distance) {}
 
-	static void extract(GuiGraphicsExtractor g, DeltaTracker delta) {
+	static void extract(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Minecraft mc = Minecraft.getInstance();
 		ClientLevel level = mc.level;
 		LocalPlayer player = mc.player;

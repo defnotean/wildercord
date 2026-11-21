@@ -1,5 +1,7 @@
 package dev.wildercord.client;
 
+import net.minecraft.client.gui.GuiGraphics;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.MasterForms;
@@ -12,7 +14,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.KeyBinding;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
@@ -24,14 +26,14 @@ import java.util.Map;
 /** Fresh key edges and bounded playback from actual movement events; menus never queue a future activation. */
 public final class MasterFormsClient {
 	private MasterFormsClient() {}
-	private static KeyBinding key;
+	private static KeyMapping key;
 	private static boolean held, suppressed, playingBefore;
 	private static long epoch, sequence;
 	private static ClientLevel level;
 	public record Playback(MasterForms.Event event, long received) {}
 	private static final Map<Integer, Playback> EVENTS = new HashMap<>();
 	public static void init() {
-		key = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wildercord.master_form", InputConstants.KEY_X,
+		key = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.wildercord.master_form", InputConstants.KEY_X,
 			MastersArtsClient.CATEGORY));
 		ClientPlayNetworking.registerGlobalReceiver(MasterForms.Event.TYPE, (event, context) -> receive(context.client(), event));
 		ClientPlayNetworking.registerGlobalReceiver(MasterFormLessons.Open.TYPE, (event, context) -> {
@@ -43,7 +45,8 @@ public final class MasterFormsClient {
 		});
 		ClientTickEvents.END_CLIENT_TICK.register(MasterFormsClient::tick);
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> clear());
-		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("master_form_state"), (graphics, delta) -> {
+		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("master_form_state"), (wcG, delta) -> {
+					GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcG);
 			Minecraft client = Minecraft.getInstance();
 			if (client.player == null || client.screen != null || client.options.hideGui || MasterForms.data(client.player).equipped() == 0) return;
 			Component line = state();
@@ -61,7 +64,7 @@ public final class MasterFormsClient {
 			}
 		});
 	}
-	public static KeyBinding mapping() { return key; }
+	public static KeyMapping mapping() { return key; }
 	public static Component binding() { return key == null ? Component.literal("X") : key.getTranslatedKeyMessage(); }
 	public static void send(int action) {
 		if (FormDashClient.route(action)) return;

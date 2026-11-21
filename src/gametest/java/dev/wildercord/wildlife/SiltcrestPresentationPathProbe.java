@@ -57,7 +57,7 @@ final class SiltcrestPresentationPathProbe implements AutoCloseable {
  private JsonObject snapshot(ServerLevel level,SiltcrestBittern bird,SiltcrestPresentationWitness.Candidate candidate,long now,JsonArray transitionGoals) {
   var out=new JsonObject();out.addProperty("event","post_refusal_path");out.addProperty("suite",session.suite);out.addProperty("trial",session.trial);
   out.addProperty("clock",now);out.addProperty("entityTick",bird.tickCount);out.addProperty("sourceUuid",bird.getUUID().toString());out.addProperty("sourceId",bird.getId());
-  out.addProperty("world",level.dimension().location().toString());out.addProperty("sameWorld",bird.level()==level);out.addProperty("tracked",level.getEntity(bird.getUUID())==bird);
+  out.addProperty("world",level.dimension().identifier().toString());out.addProperty("sameWorld",bird.level()==level);out.addProperty("tracked",level.getEntity(bird.getUUID())==bird);
   out.addProperty("firstRefusalTick",refusalTick);out.addProperty("firstRefusalEpoch",refusalEpoch);out.addProperty("latestOutcome",candidate==null?null:candidate.outcome().name());
   out.add("position",vector(bird.position()));out.add("velocity",vector(bird.getDeltaMovement()));out.addProperty("pose",bird.pose());out.addProperty("phase",bird.phase());
   out.addProperty("epoch",integer(bird,"epoch"));out.addProperty("left",integer(bird,"left"));out.addProperty("alive",bird.isAlive());out.addProperty("removed",bird.isRemoved());out.addProperty("health",bird.getHealth());out.addProperty("noAi",bird.isNoAi());

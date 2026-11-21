@@ -2,12 +2,12 @@ package dev.wildercord.client;
 
 import dev.wildercord.menu.BackpackMenu;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +21,7 @@ import java.util.List;
  * as the inventory key does.
  */
 public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
-	private static final ResourceLocation CONTAINER_BACKGROUND = ResourceLocation.withDefaultNamespace("textures/gui/container/generic_54.png");
+	private static final Identifier CONTAINER_BACKGROUND = Identifier.withDefaultNamespace("textures/gui/container/generic_54.png");
 	/** The locked slot's shade: the slot well darkened, so the backpack in it reads as held in place. */
 	private static final int LOCKED_SHADE = 0x90201A14;
 

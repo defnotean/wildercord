@@ -14,10 +14,10 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
@@ -49,14 +49,14 @@ import java.util.function.Supplier;
 public final class AuraBlade {
 	private AuraBlade() {}
 
-	private static final ResourceLocation HAZE = Wildercord.id("textures/entity/aura/haze.png");
-	private static final ResourceLocation CRYSTAL = Wildercord.id("textures/entity/aura/crystal.png");
-	private static final ResourceLocation SOFT = Wildercord.id("textures/entity/aura/soft.png");
+	private static final Identifier HAZE = Wildercord.id("textures/entity/aura/haze.png");
+	private static final Identifier CRYSTAL = Wildercord.id("textures/entity/aura/crystal.png");
+	private static final Identifier SOFT = Wildercord.id("textures/entity/aura/soft.png");
 	/** Vanilla's glowing eyes: full bright, no shading by the light's direction, laid over what's behind. */
 	private static final RenderType HAZE_TYPE = RenderTypes.eyes(HAZE);
 	private static final RenderType CRYSTAL_TYPE = RenderTypes.eyes(CRYSTAL);
 	private static final RenderType SOFT_TYPE = RenderTypes.eyes(SOFT);
-	private static final int FULL = LightCoordsUtil.FULL_BRIGHT;
+	private static final int FULL = LightTexture.FULL_BRIGHT;
 
 	/**
 	 * How a blade's aura looks this frame.

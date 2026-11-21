@@ -14,7 +14,7 @@ public abstract class PlayerAttachmentThreadDiagnosticsMixin {
 	@Inject(method = "setAttached", at = @At("HEAD"), remap = false, require = 1, allow = 1)
 	private void wildercord$attachmentThread(AttachmentType<?> type, Object value, CallbackInfoReturnable<Object> cir) {
 		if ((Object) this instanceof ServerPlayer player && !player.level().getServer().isSameThread()) {
-			throw new AssertionError("Off-thread server-player attachment write: " + type.location() + " on " + Thread.currentThread().getName());
+			throw new AssertionError("Off-thread server-player attachment write: " + type.identifier() + " on " + Thread.currentThread().getName());
 		}
 	}
 }

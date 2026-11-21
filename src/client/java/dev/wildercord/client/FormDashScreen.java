@@ -5,7 +5,8 @@ import dev.wildercord.aura.FormDashLessons;
 import dev.wildercord.aura.FormDashRules;
 import dev.wildercord.aura.WallTurnRules;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -106,7 +107,8 @@ public final class FormDashScreen extends Screen implements CordEditorParent {
 	@Override public boolean isInGameUi() { return true; }
 	@Override public Screen cordEditorParent() { return parent; }
 	@Override public void onClose() { minecraft.setScreen(parent); }
-	@Override public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
+	@Override public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 		g.pose().pushMatrix(); g.pose().translate(left(), top()); g.pose().scale(scale(), scale());
 		g.fill(0, 0, W, H, 0xF0241A16); g.fill(1, 1, W - 1, 3, GOLD);
 		g.centeredText(font, title, W / 2, 12, GOLD);
@@ -136,7 +138,7 @@ public final class FormDashScreen extends Screen implements CordEditorParent {
 		}
 		g.centeredText(font, page == 4 ? text("source") : text("page", page + 1, 4), W / 2, H - 16, 0xFFB4A49C);
 		g.pose().popMatrix();
-		super.extractRenderState(g, mouseX, mouseY, partial);
+		super.render(wcGui, mouseX, mouseY, partial);
 	}
 	private int paragraph(GuiGraphicsExtractor g, Component body, int y, int color) {
 		for (var line : font.split(body, W - 36)) { g.text(font, line, 18, y, color, false); y += 10; }

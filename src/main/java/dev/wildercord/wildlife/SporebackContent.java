@@ -42,7 +42,7 @@ public final class SporebackContent {
   });
   BiomeModifications.create(Wildercord.id("sporeback_caves")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)),c -> {var s=Config.get().wildlife();if(s.spawns("sporeback_snail"))dev.wildercord.compat.McWorldgen.addSpawn(c.getMobSpawnSettings(), MobCategory.CREATURE, SNAIL, 1, 1, Math.max(1,(int)(4*Math.max(1,s.spawnMultiplier()))));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:sporeback_snail",FieldGuide.Group.WILDLIFE,0xAB96C5));
-  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(DEW,POULTICE,EGG,JOURNAL).forEach(o::accept));ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o -> o.accept(EGG));
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(DEW,POULTICE,EGG,JOURNAL).forEach(o::accept));ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(o -> o.accept(EGG));
   WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {boolean fire=effects.stream().anyMatch(e -> e.element().equals("fire"));if(!fire && effects.stream().noneMatch(e -> e.element().equals("life")))return;for(var e:targets)if(e instanceof SporebackSnail snail)snail.answerMagic(fire);});
  }
 }

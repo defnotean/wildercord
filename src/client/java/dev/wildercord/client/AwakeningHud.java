@@ -9,7 +9,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
 
@@ -39,7 +40,8 @@ public final class AwakeningHud {
 	// ------------------------------------------------------------------ the charge by the crosshair
 
 	/** The tap-and-hold's charge: segments of a ring round the crosshair lighting one by one, a ring snapping out as it completes. */
-	static void charge(GuiGraphicsExtractor g, DeltaTracker delta) {
+	static void charge(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
 		if (player == null || mc.level == null || mc.screen != null) {
@@ -89,7 +91,8 @@ public final class AwakeningHud {
 	 * Your own awakening in first person: the edges of the view glow once in the aura's colour as it bursts (a band down each side and
 	 * along the top and bottom, at most a sixth opaque at the edge and fading to nothing inward), gone in under two seconds.
 	 */
-	static void glow(GuiGraphicsExtractor g, DeltaTracker delta) {
+	static void glow(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
 		if (player == null || mc.level == null || mc.getCameraEntity() != player || !mc.options.getCameraType().isFirstPerson()

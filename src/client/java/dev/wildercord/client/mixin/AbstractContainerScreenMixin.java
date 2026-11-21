@@ -5,7 +5,7 @@ import dev.wildercord.menu.BackpackSlot;
 import dev.wildercord.menu.GearInventorySlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -38,8 +38,8 @@ public abstract class AbstractContainerScreenMixin {
 	protected AbstractContainerMenu menu;
 
 	/** At every return, not just the last: the game's method returns early when the slot is empty, just the case this is for. */
-	@Inject(method = "extractTooltip", at = @At("RETURN"))
-	private void wildercord$emptyGearSlot(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci) {
+	@Inject(method = "renderTooltip", at = @At("RETURN"))
+	private void wildercord$emptyGearSlot(GuiGraphics graphics, int mouseX, int mouseY, CallbackInfo ci) {
 		Slot slot = this.hoveredSlot;
 		if (slot == null || slot.hasItem() || !this.menu.getCarried().isEmpty()) {
 			return;

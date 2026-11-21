@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
@@ -24,7 +24,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +52,7 @@ final class BladePage {
 	private static final int FAINT = 0xFF5A5470;
 	private static final int RED = 0xFFE08070;
 	private static final int AMBER = 0xFFF0C060;
-	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
+	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
 
 	/** The name being written, whether it's being typed, how many suggestions have been asked for, and two armed clicks. */
 	private static String draft;
@@ -88,11 +88,11 @@ final class BladePage {
 		draftFor = "";
 	}
 
-	static ResourceLocation tierSprite(int tier) {
+	static Identifier tierSprite(int tier) {
 		return Wildercord.id("aura/blade/tier_" + BladeRules.tierId(Math.max(BladeRules.BONDED, tier)));
 	}
 
-	static ResourceLocation traitSprite(String trait) {
+	static Identifier traitSprite(String trait) {
 		return BladeRules.BUILT_IN_TRAITS.contains(trait) ? Wildercord.id("aura/blade/trait_" + trait) : Wildercord.id("aura/blade/trait_unknown");
 	}
 
@@ -284,9 +284,9 @@ final class BladePage {
 	private static ItemStack icon(BondedBlades.Shown shown) {
 		ItemStack icon;
 		try {
-			icon = new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(shown.item().isEmpty() ? "minecraft:iron_sword" : shown.item())));
+			icon = new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(shown.item().isEmpty() ? "minecraft:iron_sword" : shown.item())));
 			if (!shown.model().isEmpty()) {
-				icon.set(DataComponents.ITEM_MODEL, ResourceLocation.parse(shown.model()));
+				icon.set(DataComponents.ITEM_MODEL, Identifier.parse(shown.model()));
 			}
 		} catch (RuntimeException e) {
 			icon = new ItemStack(Items.IRON_SWORD);

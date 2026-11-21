@@ -435,7 +435,7 @@ public final class LessonPackCasting {
             if (dev.wildercord.aura.MastersArtRules.interrupts(base, taken, blocked) && entity instanceof ServerPlayer p) cancelSpark(p);
         });
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer p) retire(p); releaseAlly(entity); });
-        net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((p, from, to) -> { retire(p); releaseAlly(p); });
+        net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((p, from, to) -> { retire(p); releaseAlly(p); });
         net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AFTER_RESPAWN.register(dev.wildercord.aura.Aura.AFTER_COPY, (old, fresh, alive) -> {
             retire(old); releaseAlly(old); fresh.removeAttached(LessonPackState.VIEW); INPUT.remove(fresh);
         });

@@ -3,7 +3,7 @@ package dev.wildercord.menu;
 import dev.wildercord.Wildercord;
 import dev.wildercord.backpack.Backpacks;
 import dev.wildercord.gear.GearLayout;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
  * it, and sits on the gear tray after the gear slots (see {@link GearLayout#backpackIndex()}).
  */
 public class BackpackSlot extends Slot implements PlacedSlot {
-	private static final ResourceLocation EMPTY_ICON = Wildercord.id("container/slot/backpack");
+	private static final Identifier EMPTY_ICON = Wildercord.id("container/slot/backpack");
 
 	public BackpackSlot(Player player) {
 		super(new WornContainer(player), 0, GearLayout.inventoryX(GearLayout.backpackIndex()), GearLayout.INVENTORY_Y);
@@ -32,7 +32,7 @@ public class BackpackSlot extends Slot implements PlacedSlot {
 	}
 
 	@Override
-	public ResourceLocation getNoItemIcon() {
+	public Identifier getNoItemIcon() {
 		return EMPTY_ICON;
 	}
 

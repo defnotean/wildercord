@@ -9,9 +9,9 @@ import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneFamily;
 import dev.wildercord.spell.SpellSigil;
 import dev.wildercord.spell.WovenRunes;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import java.util.List;
@@ -25,26 +25,26 @@ import java.util.List;
 public final class GuiSpellCircle {
 	private GuiSpellCircle() {}
 
-	private static final ResourceLocation LINE = Wildercord.id("textures/particle/sigil_band.png");
-	private static final ResourceLocation GLOW = Wildercord.id("textures/particle/sigil_glow.png");
+	private static final Identifier LINE = Wildercord.id("textures/particle/sigil_band.png");
+	private static final Identifier GLOW = Wildercord.id("textures/particle/sigil_glow.png");
 
 	/** Built once per rune and part rather than every frame the circle is drawn. */
-	private static final java.util.Map<String, ResourceLocation> TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final java.util.Map<String, Identifier> TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
 
-	private static ResourceLocation texture(String name) {
+	private static Identifier texture(String name) {
 		return TEXTURES.computeIfAbsent(name, n -> Wildercord.id("textures/particle/circle/" + n + ".png"));
 	}
 
-	private static ResourceLocation mark(RuneDef rune) {
+	private static Identifier mark(RuneDef rune) {
 		return texture(art(rune) + "_mark");
 	}
 
-	private static ResourceLocation band(RuneDef rune) {
+	private static Identifier band(RuneDef rune) {
 		return texture(art(rune) + "_band");
 	}
 
 	/** A fused rune's second half ({@code band2} or {@code mark2}), shown in {@link RuneColors#second}. */
-	private static ResourceLocation second(RuneDef rune, String part) {
+	private static Identifier second(RuneDef rune, String part) {
 		return texture(rune.path() + "_" + part);
 	}
 
@@ -294,7 +294,7 @@ public final class GuiSpellCircle {
 	}
 
 	/** A whole 16×16 (or any square) texture stretched to w×h, centred on (x, y), turned {@code rot}. */
-	private static void quad(GuiGraphicsExtractor g, ResourceLocation texture, float x, float y, float rot, float w, float h, int argb) {
+	private static void quad(GuiGraphicsExtractor g, Identifier texture, float x, float y, float rot, float w, float h, int argb) {
 		if ((argb >>> 24) < 3 || w <= 0 || h <= 0) {
 			return;
 		}

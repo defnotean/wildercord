@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
@@ -24,21 +24,21 @@ import net.minecraft.util.Mth;
  */
 public final class LanternBearerRenderer extends CullableMobRenderer<LanternBearer,LanternBearerRenderState,LanternBearerModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("lantern_bearer"),"main");
-	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/lantern_bearer/skin.png");
-	private static final ResourceLocation GLOW=Wildercord.id("textures/entity/lantern_bearer/glow.png");
+	private static final Identifier SKIN=Wildercord.id("textures/entity/lantern_bearer/skin.png");
+	private static final Identifier GLOW=Wildercord.id("textures/entity/lantern_bearer/glow.png");
 	static final float SCALE=1.6F;
 	/** How long one move takes to blend into the next, in ticks. */
 	private static final float BLEND_TICKS=4;
 	public LanternBearerRenderer(EntityRendererProvider.Context c){super(c,new LanternBearerModel(c.bakeLayer(LAYER)),1.2F);addLayer(new Glow(this));}
 	@Override public LanternBearerRenderState createRenderState(){return new LanternBearerRenderState();}
-	@Override public ResourceLocation getTextureLocation(LanternBearerRenderState s){return SKIN;}
+	@Override public Identifier getTextureLocation(LanternBearerRenderState s){return SKIN;}
 	/** Down in its grave, or out in the dark with its lantern out, it is not there to see. */
 	@Override protected boolean shouldRenderEntity(LanternBearer e,Frustum frustum,double x,double y,double z,float partial){
 		return e.move()!=LanternBearerRules.DORMANT&&!e.unseen()&&superShouldRenderEntity(e,frustum,x,y,z,partial);
 	}
 	@Override protected int getBlockLightLevel(LanternBearer e,BlockPos pos){return 15;}
 	@Override public void extractRenderState(LanternBearer e,LanternBearerRenderState s,float partial){
-		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.roused=e.roused();s.elapsed=e.elapsed(partial);s.rise=LanternBearerRules.rise(s.move,s.elapsed);
+		super.extractRenderState(e, s, partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.roused=e.roused();s.elapsed=e.elapsed(partial);s.rise=LanternBearerRules.rise(s.move,s.elapsed);
 		float now=e.tickCount+partial;
 		if(e.shownMove!=s.move || s.elapsed<e.shownElapsed-1){
 			if(e.shownMove>=0){e.prevMove=e.shownMove;e.prevTell=e.shownTell;e.prevElapsed=e.shownElapsed;e.switchedAt=now;}

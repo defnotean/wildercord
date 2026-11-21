@@ -1,5 +1,7 @@
 package dev.wildercord.client;
 
+import net.minecraft.client.gui.GuiGraphics;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.ExciseState;
 import dev.wildercord.net.ExciseCores;
@@ -12,7 +14,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.minecraft.client.KeyBinding;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
@@ -26,7 +28,7 @@ public final class ExciseClient {
     private static net.minecraft.client.multiplayer.ClientLevel world;
     private static boolean playing;
     private static long nonce;
-    private static KeyBinding lastBinding;
+    private static KeyMapping lastBinding;
     private static final int INK = 0xB7D58B, WARNING = 0xD9B473;
     private static java.util.List<ExciseCores.Core> cores = java.util.List.of();
     private static net.minecraft.client.multiplayer.ClientLevel coreWorld;
@@ -47,7 +49,7 @@ public final class ExciseClient {
         }
         playing = active;
     }
-    public static boolean key(Minecraft client, KeyBinding binding, int requested) {
+    public static boolean key(Minecraft client, KeyMapping binding, int requested) {
         int index = requested + 1;
         boolean down = binding.isDown(), previous = DOWN[index];
         DOWN[index] = down;
@@ -86,7 +88,8 @@ public final class ExciseClient {
             coresAt = coreWorld == null ? 0 : coreWorld.getGameTime();
         });
         ClientTickEvents.END_CLIENT_TICK.register(ExciseClient::draw);
-        HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("excise_hud"), (g, delta) -> {
+        HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("excise_hud"), (wcG, delta) -> {
+					GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
             Minecraft client = Minecraft.getInstance();
             if (client.player == null || client.level == null) return;
             ExciseState s = client.player.getAttached(ExciseState.VIEW);

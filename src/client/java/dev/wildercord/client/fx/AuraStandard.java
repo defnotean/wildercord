@@ -7,9 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
@@ -143,7 +143,7 @@ public final class AuraStandard extends SingleQuadParticle implements SigilGroup
 		float u0, float v0, float u1, float v1, int color) {
 		state.add(Layer.TRANSLUCENT, (float)at.x, (float)at.y, (float)at.z, q.x, q.y, q.z, q.w, half,
 			Mth.lerp(u0, sprite.getU0(), sprite.getU1()), Mth.lerp(u1, sprite.getU0(), sprite.getU1()),
-			Mth.lerp(v0, sprite.getV0(), sprite.getV1()), Mth.lerp(v1, sprite.getV0(), sprite.getV1()), color, LightCoordsUtil.FULL_BRIGHT);
+			Mth.lerp(v0, sprite.getV0(), sprite.getV1()), Mth.lerp(v1, sprite.getV0(), sprite.getV1()), color, LightTexture.FULL_BRIGHT);
 	}
 	@Override protected Layer getLayer() { return Layer.TRANSLUCENT; }
 	@Override public ParticleRenderType getGroup() { return SigilGroup.TYPE; }

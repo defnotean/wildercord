@@ -1,10 +1,10 @@
 package dev.wildercord.gametest.perf.mixin;
 
 import dev.wildercord.gametest.perf.HudCapture;
-import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
-import net.minecraft.client.renderer.state.gui.GuiItemRenderState;
-import net.minecraft.client.renderer.state.gui.GuiRenderState;
-import net.minecraft.client.renderer.state.gui.GuiTextRenderState;
+import net.minecraft.client.gui.render.state.GuiElementRenderState;
+import net.minecraft.client.gui.render.state.GuiItemRenderState;
+import net.minecraft.client.gui.render.state.GuiRenderState;
+import net.minecraft.client.gui.render.state.GuiTextRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +17,7 @@ public abstract class PerfGuiCaptureMixin {
 	private void perf$element(GuiElementRenderState state, CallbackInfo ci) { if (HudCapture.on) HudCapture.add(state.bounds()); }
 
 	@Inject(method = "addBlitToCurrentLayer", at = @At("HEAD"))
-	private void perf$blit(net.minecraft.client.renderer.state.gui.BlitRenderState state, CallbackInfo ci) { if (HudCapture.on) HudCapture.add(state.bounds()); }
+	private void perf$blit(net.minecraft.client.gui.render.state.BlitRenderState state, CallbackInfo ci) { if (HudCapture.on) HudCapture.add(state.bounds()); }
 
 	@Inject(method = "addText", at = @At("HEAD"))
 	private void perf$text(GuiTextRenderState state, CallbackInfo ci) { if (HudCapture.on) HudCapture.add(state.bounds()); }

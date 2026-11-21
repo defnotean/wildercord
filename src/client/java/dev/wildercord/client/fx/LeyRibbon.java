@@ -4,9 +4,9 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
@@ -167,13 +167,13 @@ public class LeyRibbon extends SingleQuadParticle implements SigilGroup.Extent {
 			}
 			Facing.along(d, mid.x, mid.y, mid.z, q);
 			state.add(getLayer(), mid.x, mid.y, mid.z, q.x, q.y, q.z, q.w, len / 2 * 1.04F, soft.getU0(), soft.getU1(), soft.getV0(), soft.getV1(),
-				argb(pieceAlpha, rgb), LightCoordsUtil.FULL_BRIGHT);
+				argb(pieceAlpha, rgb), LightTexture.FULL_BRIGHT);
 		}
 	}
 
 	@Override
 	public int getLightCoords(float partial) {
-		return LightCoordsUtil.FULL_BRIGHT;
+		return LightTexture.FULL_BRIGHT;
 	}
 
 	@Override

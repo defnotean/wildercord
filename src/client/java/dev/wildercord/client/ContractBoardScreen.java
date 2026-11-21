@@ -8,7 +8,8 @@ import dev.wildercord.runesmith.Contracts;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
@@ -16,7 +17,7 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -47,11 +48,11 @@ public class ContractBoardScreen extends Screen {
 	private static final int FAINT = 0xFF5A5470;
 	private static final int DONE = 0xFF7BD88F;
 
-	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
-	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
-	private static final ResourceLocation SPR_ROW = Wildercord.id("cord/row");
-	private static final ResourceLocation SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
-	private static final ResourceLocation SPR_SOCKET = Wildercord.id("cord/socket");
+	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
+	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
+	private static final Identifier SPR_ROW = Wildercord.id("cord/row");
+	private static final Identifier SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
+	private static final Identifier SPR_SOCKET = Wildercord.id("cord/socket");
 
 	private final List<ContractRules.Contract> contracts;
 	private final int ticksToDawn;
@@ -83,13 +84,14 @@ public class ContractBoardScreen extends Screen {
 		return (height - H) / 2;
 	}
 
-	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
-		super.extractRenderState(g, mouseX, mouseY, partial);
+	public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+		super.render(wcGui, mouseX, mouseY, partial);
 		int x0 = left();
 		int y0 = top();
 		g.pose().pushMatrix();

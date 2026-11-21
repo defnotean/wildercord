@@ -4,7 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.wildercord.content.RelayLesson;
 import dev.wildercord.player.MasterStudies;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -151,7 +152,8 @@ public final class RelayLessonScreen extends Screen implements CordEditorParent 
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
+	public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		graphics.fill(left, top, left + panelWidth, top + panelHeight, 0xF21B2030);
 		graphics.fill(left + 1, top + 1, left + panelWidth - 1, top + 2, 0xFFD4B76D);
 		graphics.centeredText(font, title, width / 2, top + 10, 0xFFE8C46A);
@@ -176,7 +178,7 @@ public final class RelayLessonScreen extends Screen implements CordEditorParent 
 		} else {
 			next.setTooltip(null);
 		}
-		super.extractRenderState(graphics, mouseX, mouseY, partial);
+		super.render(wcGui, mouseX, mouseY, partial);
 	}
 
 	@Override

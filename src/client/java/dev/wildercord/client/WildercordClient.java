@@ -20,8 +20,8 @@ import dev.wildercord.net.WildercordNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleGroupRegistry;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.renderer.entity.NoopRenderer;
@@ -59,7 +59,7 @@ public final class WildercordClient implements ClientModInitializer {
 		// Aura armour's shell, the body drawn again a little larger.
 		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SHELL, dev.wildercord.client.render.AuraShellLayer::createShell);
 		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SLIM_SHELL, dev.wildercord.client.render.AuraShellLayer::createSlimShell);
-		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
+		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
 			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
 				helper.register(new dev.wildercord.client.render.CordLayer(avatar, context));
 				helper.register(new dev.wildercord.client.render.GearLayer(avatar, context));
@@ -86,19 +86,19 @@ public final class WildercordClient implements ClientModInitializer {
 		// Magic drawn the plain way under a shader pack (Iris), so the pack's lighting doesn't break on it.
 		dev.wildercord.client.compat.ShaderCompat.init();
 
-		ParticleGroupRegistry.register(SigilGroup.TYPE, SigilGroup::new);
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.SIGIL, SigilParticle.Provider::new);
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.SPELL_CIRCLE, new dev.wildercord.client.fx.SpellCircleParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.LIGHT, new dev.wildercord.client.fx.LightParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.SHIELD, new dev.wildercord.client.fx.ShieldCircles.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.MOTE, new dev.wildercord.client.fx.MoteParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.EARTH, new dev.wildercord.client.fx.EarthParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.CAMP, new dev.wildercord.client.fx.CampParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.LIFE, new dev.wildercord.client.fx.LifeParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.VOID_MATERIAL, new dev.wildercord.client.fx.VoidParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.AIRFLOW, new dev.wildercord.client.fx.AirflowParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.MATERIAL, new dev.wildercord.client.fx.MaterialParticle.Provider());
-		ParticleProviderRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());
+		ParticleRendererRegistry.register(SigilGroup.TYPE, SigilGroup::new);
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.SIGIL, SigilParticle.Provider::new);
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.SPELL_CIRCLE, new dev.wildercord.client.fx.SpellCircleParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.LIGHT, new dev.wildercord.client.fx.LightParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.SHIELD, new dev.wildercord.client.fx.ShieldCircles.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.MOTE, new dev.wildercord.client.fx.MoteParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.EARTH, new dev.wildercord.client.fx.EarthParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.CAMP, new dev.wildercord.client.fx.CampParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.LIFE, new dev.wildercord.client.fx.LifeParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.VOID_MATERIAL, new dev.wildercord.client.fx.VoidParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.AIRFLOW, new dev.wildercord.client.fx.AirflowParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.MATERIAL, new dev.wildercord.client.fx.MaterialParticle.Provider());
+		ParticleFactoryRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());
 		ImbuedTooltip.init();
 		MasteryClient.init();
 		RelayClient.init();
@@ -193,7 +193,7 @@ public final class WildercordClient implements ClientModInitializer {
 		});
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.ChargeHum::tick);
 		// Charging casters' incantations, drawn among the frame's other things as vanilla text.
-		net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents.COLLECT_SUBMITS.register(dev.wildercord.client.fx.Incantations::submit);
+		net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents.END_EXTRACTION.register(dev.wildercord.client.fx.Incantations::submit);
 		CastingOptions.load();
 		WildercordKeys.init();
 		MastersArtsClient.init();

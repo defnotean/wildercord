@@ -23,7 +23,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.ItemGroups;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
@@ -139,7 +139,7 @@ public final class Wildlife {
 			DROPS.forEach(output::accept);
 			EGGS.forEach(output::accept);
 		});
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(output -> EGGS.forEach(output::accept));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> EGGS.forEach(output::accept));
 
 		// A skyray's membrane mends an elytra as well as a phantom's does.
 		DefaultItemComponentEvents.MODIFY.register(context -> context.modify(Items.ELYTRA, builder ->

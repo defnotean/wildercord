@@ -27,7 +27,7 @@ public final class TidewardClient {
  public static long routeBursts(){return routeBursts;}public static long routePieces(){return routePieces;}public static long routeTerrainReads(){return routeTerrainReads;}
  public static void init(){
   ClientPlayNetworking.registerGlobalReceiver(TidewardCue.TYPE,(cue,context)->{
-   var mc=context.client();if(mc.level==null || mc.player==null || !mc.level.dimension().location().toString().equals(cue.world()))return;
+   var mc=context.client();if(mc.level==null || mc.player==null || !mc.level.dimension().identifier().toString().equals(cue.world()))return;
    if(cue.kind()==TidewardCue.CLEAR){if(pendingRoute!=null&&pendingRoute.cue().nonce()==cue.nonce())pendingRoute=null;if(route!=null && route.cue().nonce()==cue.nonce()){route=null;routeCancelled++;}return;}
    if(Math.abs(mc.level.getGameTime()-cue.nonce())>40)return;
    var view=new View(cue,mc.level,playbackTick);

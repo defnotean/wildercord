@@ -1,7 +1,8 @@
 package dev.wildercord.client;
 
 import dev.wildercord.client.fx.MagicQuality;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -124,8 +125,9 @@ public final class MagicSettingsScreen extends Screen implements CordEditorParen
  private static Component titles() {
   return Component.translatable(MagicQuality.spellTitles ? "screen.wildercord.spell_titles.on" : "screen.wildercord.spell_titles.off");
  }
- @Override public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
-  super.extractRenderState(g, mouseX, mouseY, partial);
+ @Override public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+  super.render(wcGui, mouseX, mouseY, partial);
   g.centeredText(font, title, width / 2, top - 14, 0xFFE8C46A);
  }
 }

@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -149,7 +149,7 @@ public final class CordCosmetics {
 		}
 		CordStyles.Progress progress = progress(player);
 		if (!CordStyles.unlocked(option, progress)) {
-			Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(option.unlock().what()));
+			Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(option.unlock().what()));
 			int need = option.unlock().amount();
 			int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(player.getInventory(), stack -> stack.is(item), player.inventoryMenu.getCraftSlots());
 			if (have < need) {

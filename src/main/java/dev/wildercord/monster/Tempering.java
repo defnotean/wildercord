@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -36,14 +36,14 @@ public final class Tempering {
 	public static final String TAG = "wildercord.tempered";
 	public static final String THREAT_TAG = "wildercord.threat.";
 	public static final String ELITE_TAG = "wildercord.elite.";
-	private static final ResourceLocation HEALTH = Wildercord.id("tempered_health");
-	private static final ResourceLocation ELITE_SPEED = Wildercord.id("elite_speed");
-	private static final ResourceLocation ELITE_ARMOUR = Wildercord.id("elite_armour");
-	private static final ResourceLocation ELITE_TOUGHNESS = Wildercord.id("elite_toughness");
-	private static final ResourceLocation ELITE_KNOCKBACK = Wildercord.id("elite_knockback");
-	private static final ResourceLocation SPLIT_HEALTH = Wildercord.id("split_health");
-	private static final ResourceLocation ENRAGE_SPEED = Wildercord.id("enrage_speed");
-	private static final ResourceLocation ENRAGE_DAMAGE = Wildercord.id("enrage_damage");
+	private static final Identifier HEALTH = Wildercord.id("tempered_health");
+	private static final Identifier ELITE_SPEED = Wildercord.id("elite_speed");
+	private static final Identifier ELITE_ARMOUR = Wildercord.id("elite_armour");
+	private static final Identifier ELITE_TOUGHNESS = Wildercord.id("elite_toughness");
+	private static final Identifier ELITE_KNOCKBACK = Wildercord.id("elite_knockback");
+	private static final Identifier SPLIT_HEALTH = Wildercord.id("split_health");
+	private static final Identifier ENRAGE_SPEED = Wildercord.id("enrage_speed");
+	private static final Identifier ENRAGE_DAMAGE = Wildercord.id("enrage_damage");
 	public static final String ENRAGED_TAG = "wildercord.enraged";
 
 	public static void init() {
@@ -180,7 +180,7 @@ public final class Tempering {
 		}
 	}
 
-	private static boolean modify(Mob mob, Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
+	private static boolean modify(Mob mob, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation operation) {
 		AttributeInstance instance = mob.getAttribute(attribute);
 		if (instance == null) return false;
 		instance.addOrReplacePermanentModifier(new AttributeModifier(id, amount, operation));

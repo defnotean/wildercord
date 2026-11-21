@@ -10,10 +10,10 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.server.level.ParticleStatus;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -401,7 +401,7 @@ public final class RitualCircles {
 		Vector3f yAxis = new Vector3f(z).cross(xAxis).normalize();
 		Quaternionf q = new Quaternionf().setFromNormalized(new Matrix3f(xAxis, yAxis, z));
 		state.add(GlowLayers.GLOW, px, py, pz, q.x, q.y, q.z, q.w, half, sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb,
-			LightCoordsUtil.FULL_BRIGHT);
+			LightTexture.FULL_BRIGHT);
 	}
 
 	/** The rune's emblem shining over the hand at the finish, then drifting up and fading. */
@@ -477,7 +477,7 @@ public final class RitualCircles {
 
 		@Override
 		public int getLightCoords(float partial) {
-			return LightCoordsUtil.FULL_BRIGHT;
+			return LightTexture.FULL_BRIGHT;
 		}
 
 		@Override

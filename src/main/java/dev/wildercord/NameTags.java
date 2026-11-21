@@ -45,7 +45,7 @@ public final class NameTags {
 		if (entity instanceof Player || entity instanceof Wisp || entity instanceof TrainingDummy) {
 			return false;
 		}
-		return entity.getType().builtInRegistryHolder().key().location().getNamespace().equals(Wildercord.MOD_ID)
+		return entity.getType().builtInRegistryHolder().key().identifier().getNamespace().equals(Wildercord.MOD_ID)
 			&& entity.getType().canSerialize();
 	}
 

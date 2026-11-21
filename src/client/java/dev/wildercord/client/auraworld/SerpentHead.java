@@ -2,7 +2,7 @@ package dev.wildercord.client.auraworld;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 
 /**
@@ -41,7 +41,7 @@ final class SerpentHead {
 	}
 
 	void eyes(PoseStack.Pose pose,VertexConsumer buffer,int overlay){
-		for(int side=-1;side<=1;side+=2)box(pose,buffer,overlay,LightCoordsUtil.FULL_BRIGHT,side*6.05F,3,13,1,2,3,120,8,0);
+		for(int side=-1;side<=1;side+=2)box(pose,buffer,overlay,LightTexture.FULL_BRIGHT,side*6.05F,3,13,1,2,3,120,8,0);
 	}
 
 	private void box(PoseStack.Pose pose,VertexConsumer buffer,int overlay,int light,float x,float y,float z,float w,float h,float d,int tu,int tv,float tilt){

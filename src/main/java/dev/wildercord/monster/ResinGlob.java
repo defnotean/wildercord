@@ -13,7 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -40,7 +40,7 @@ public class ResinGlob extends ThrowableItemProjectile {
 	@Override
 	public void handleEntityEvent(byte id) {
 		if (id == 3) {
-			ItemParticleOption resin = new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(new ItemStack(getDefaultItem())));
+			ItemParticleOption resin = new ItemParticleOption(ParticleTypes.ITEM, ItemStack.fromNonEmptyStack(new ItemStack(getDefaultItem())));
 			for (int i = 0; i < 12; i++) {
 				level().addParticle(resin, getX(), getY(), getZ(), (random.nextDouble() - 0.5) * 0.2, random.nextDouble() * 0.12,
 					(random.nextDouble() - 0.5) * 0.2);

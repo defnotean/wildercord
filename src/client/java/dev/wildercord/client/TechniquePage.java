@@ -14,14 +14,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -64,16 +64,16 @@ public final class TechniquePage {
 	private static final int AMBER = 0xFFF0C060;
 	private static final int GREEN = 0xFF9FE08A;
 	private static final int INK = 0xFF120E1A;
-	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
-	private static final ResourceLocation SPR_ROW = Wildercord.id("cord/row");
-	private static final ResourceLocation SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
-	private static final ResourceLocation SPR_ROW_LOCKED = Wildercord.id("cord/row_locked");
-	private static final ResourceLocation SPR_SOCKET = Wildercord.id("cord/socket");
-	private static final ResourceLocation SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
-	private static final ResourceLocation SPR_THREAD = Wildercord.id("cord/thread");
-	private static final ResourceLocation SPR_LOCK = Wildercord.id("cord/lock");
-	private static final ResourceLocation SPR_SEAL = Wildercord.id("technique/seal");
-	private static final ResourceLocation SPR_SEAL_OPEN = Wildercord.id("technique/seal_open");
+	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
+	private static final Identifier SPR_ROW = Wildercord.id("cord/row");
+	private static final Identifier SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
+	private static final Identifier SPR_ROW_LOCKED = Wildercord.id("cord/row_locked");
+	private static final Identifier SPR_SOCKET = Wildercord.id("cord/socket");
+	private static final Identifier SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
+	private static final Identifier SPR_THREAD = Wildercord.id("cord/thread");
+	private static final Identifier SPR_LOCK = Wildercord.id("cord/lock");
+	private static final Identifier SPR_SEAL = Wildercord.id("technique/seal");
+	private static final Identifier SPR_SEAL_OPEN = Wildercord.id("technique/seal_open");
 
 	/** Where the slots, the scroll and the strip at the foot sit (the page's own coordinates). */
 	static final int SLOTS_Y = 38;
@@ -299,7 +299,7 @@ public final class TechniquePage {
 	}
 
 	/** A part's glyph sprite (an add-on's intent without one of its own gets the plain one). */
-	static ResourceLocation glyph(String partId) {
+	static Identifier glyph(String partId) {
 		return TechniqueRules.allParts().contains(partId) && !partId.contains(":") ? Wildercord.id("technique/" + partId) : Wildercord.id("technique/unknown");
 	}
 

@@ -11,7 +11,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
@@ -48,7 +49,8 @@ public final class WaypointHud {
 		return tracked;
 	}
 
-	private static void extract(GuiGraphicsExtractor g, DeltaTracker delta) {
+	private static void extract(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Waypoints.Track track = tracked;
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
@@ -57,7 +59,7 @@ public final class WaypointHud {
 		}
 		Font font = mc.font;
 		float partial = delta.getGameTimeDeltaPartialTick(true);
-		boolean here = track.dimension().equals(player.level().dimension().location().toString());
+		boolean here = track.dimension().equals(player.level().dimension().identifier().toString());
 		Component info;
 		double turn = 0;
 		boolean arrived = false;

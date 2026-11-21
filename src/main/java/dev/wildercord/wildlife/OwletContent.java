@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.item.ItemGroups;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +44,7 @@ public final class OwletContent {
 			(type, level, reason, pos, random) -> WildlifeSpawns.shaded(WildlifeRules.HUSHWING_OWLET, type, GROUND, level, reason, pos, random));
 		WildlifeSpawns.join(WildlifeRules.HUSHWING_OWLET, HUSHWING_OWLET);
 		FieldGuide.add(new FieldGuide.Entry("wildercord:hushwing_owlet", FieldGuide.Group.WILDLIFE, 0xC8C2B4));
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
 		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
 	}
 }

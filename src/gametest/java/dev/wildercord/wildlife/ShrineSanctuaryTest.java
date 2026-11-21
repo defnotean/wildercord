@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -169,7 +169,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 	}
 
 	private static Item item(String id) {
-		Item resolved = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(id));
+		Item resolved = BuiltInRegistries.ITEM.getValue(Identifier.parse(id));
 		check(resolved != Items.AIR, "Registered item exists: " + id);
 		return resolved;
 	}

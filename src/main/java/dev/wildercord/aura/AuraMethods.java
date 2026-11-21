@@ -10,7 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ public final class AuraMethods {
 				for (BreathingMethod method : BreathingMethods.all()) {
 					manuals.add(BreathingManualItem.of(method.id()));
 				}
-				output.insertAfter(dev.wildercord.content.WildercordItems.TORN_PAGE, manuals, ItemGroup.TabVisibility.PARENT_AND_SEARCH_TABS);
+				output.addAfter(dev.wildercord.content.WildercordItems.TORN_PAGE, manuals, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			});
 	}
 

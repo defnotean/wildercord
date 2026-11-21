@@ -2,7 +2,8 @@ package dev.wildercord.client;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import dev.wildercord.net.NotebookPayload;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -28,7 +29,8 @@ public final class RuneNotebookScreen extends Screen {
  }
  private void act(String action){if(name.getValue().isBlank())return;String value=StringArgumentType.escapeIfRequired(name.getValue());command("runelab builds "+action+" "+value+(action.equals("delete")?"":" "+slot));command("runelab notebook");}
  private void command(String command){if(minecraft.player!=null)minecraft.player.connection.sendCommand(command);}
- @Override public void extractRenderState(GuiGraphicsExtractor g,int mx,int my,float partial){super.extractRenderState(g,mx,my,partial);int x=width/2-145,y=Math.max(20,height/2-111);
+ @Override public void render(GuiGraphics wcGui, int mx, int my, float partial){
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);super.render(wcGui, mx,my,partial);int x=width/2-145,y=Math.max(20,height/2-111);
   g.centeredText(font,title,width/2,y-14,0xFFE8C46A);
   g.text(font,Component.translatable("screen.wildercord.notebook.shapes",Math.min(5,snapshot.shapes())),x,y,0xFFB0DCDD,false);
   g.text(font,Component.translatable("screen.wildercord.notebook.fusions",Math.min(3,snapshot.fusions())),x,y+15,0xFFB0DCDD,false);

@@ -5,13 +5,13 @@ import dev.wildercord.wildlife.MountContent;
 import dev.wildercord.wildlife.RidgebackStag;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 
 /** The Ridgeback Stag: the Lumen Stag's frame in its own chestnut coat, with a saddle painted on once it wears one and barding over it. */
 public final class RidgebackStagRenderer extends WildlifeRenderer<RidgebackStag, LumenStagModel> {
-	private static final ResourceLocation BARE = WildlifeRenderers.texture("ridgeback_stag");
-	private static final ResourceLocation SADDLED = WildlifeRenderers.texture("ridgeback_stag_saddled");
+	private static final Identifier BARE = WildlifeRenderers.texture("ridgeback_stag");
+	private static final Identifier SADDLED = WildlifeRenderers.texture("ridgeback_stag_saddled");
 
 	public RidgebackStagRenderer(EntityRendererProvider.Context context) {
 		super(context, new LumenStagModel(context.bakeLayer(WildlifeRenderers.LUMEN_STAG)), 0.75F, BARE);
@@ -19,7 +19,7 @@ public final class RidgebackStagRenderer extends WildlifeRenderer<RidgebackStag,
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(WildlifeRenderState state) {
+	public Identifier getTextureLocation(WildlifeRenderState state) {
 		return state.variant == 1 ? SADDLED : BARE;
 	}
 

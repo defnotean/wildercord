@@ -6,7 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -138,7 +138,7 @@ public class CampPotBlock extends Block {
 	}
 
 	private static Item item(String id) {
-		return BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(id));
+		return BuiltInRegistries.ITEM.getValue(Identifier.parse(id));
 	}
 
 	static Map<String, Integer> pantry(Inventory inventory) {

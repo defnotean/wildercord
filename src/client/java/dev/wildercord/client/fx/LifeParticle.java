@@ -4,7 +4,7 @@ import dev.wildercord.content.LifeOption;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.util.RandomSource;
 
 /** Living matter has material-specific movement; all silhouettes use the sampled world light. */

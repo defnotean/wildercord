@@ -10,10 +10,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -37,7 +38,7 @@ import java.util.Locale;
 public final class AuraBanners {
 	private AuraBanners() {}
 
-	private static final ResourceLocation BAND = Wildercord.id("hud/aura_banner");
+	private static final Identifier BAND = Wildercord.id("hud/aura_banner");
 
 	/** A banner showing: whose, what it says, its colour and kind, and when it began (game time). */
 	record Shown(int entity, Component name, Component kicker, int color, AuraFxRules.BannerKind kind, long start) {}
@@ -90,7 +91,8 @@ public final class AuraBanners {
 
 	// ------------------------------------------------------------------ drawing
 
-	static void extract(GuiGraphicsExtractor g, DeltaTracker delta) {
+	static void extract(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null || mc.player == null || MagicQuality.banners == MagicQuality.Banners.OFF) {
 			return;

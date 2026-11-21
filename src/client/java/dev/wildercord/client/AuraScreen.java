@@ -12,12 +12,13 @@ import dev.wildercord.aura.BreathingManualItem;
 import dev.wildercord.aura.BreathingMethod;
 import dev.wildercord.aura.Techniques;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -35,9 +36,9 @@ import java.util.Locale;
 public class AuraScreen extends Screen implements CordEditorParent {
 	private static final int W = 320;
 	private static final int H = 340;
-	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
-	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
-	private static final ResourceLocation SPR_BAR = Wildercord.id("hud/bar_frame");
+	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
+	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
+	private static final Identifier SPR_BAR = Wildercord.id("hud/bar_frame");
 	private static final int GOLD = 0xFFE8C46A;
 	private static final int TEXT = 0xFFE8E0F0;
 	private static final int DIM = 0xFF8A84A0;
@@ -189,8 +190,9 @@ public class AuraScreen extends Screen implements CordEditorParent {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
-		super.extractRenderState(g, mouseX, mouseY, partial);
+	public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+		super.render(wcGui, mouseX, mouseY, partial);
 		float s = scale();
 		int mx = (int) Math.floor((mouseX - left()) / s);
 		int my = (int) Math.floor((mouseY - top()) / s);
@@ -828,7 +830,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 	private static final int ROW = 22;
 
 	/** A Way's emblem sprite (an add-on's Way, without one of its own, gets the plain one). */
-	private static ResourceLocation emblem(String wayId) {
+	private static Identifier emblem(String wayId) {
 		return dev.wildercord.aura.WayRules.BUILT_IN.contains(wayId) ? Wildercord.id("aura/way_" + wayId) : Wildercord.id("aura/way_unknown");
 	}
 

@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import dev.wildercord.content.WildercordItems;
 import net.minecraft.network.chat.Component;
@@ -155,7 +155,7 @@ public class BountyBoardBlock extends Block {
 		}
 		SHOWN.remove(player.getUUID());
 		Town.Active taken = new Town.Active(offer.kind().id, offer.target(), offer.needed(), 0, offer.emeralds(), offer.reputation(),
-			pos.getX(), pos.getZ(), level.dimension().location().toString(), offer.name());
+			pos.getX(), pos.getZ(), level.dimension().identifier().toString(), offer.name());
 		if (offer.kind() == BountyRules.Kind.ELITE) {
 			Direction way = BountyHunts.loose(player, level, pos, taken);
 			if (way == null) {
@@ -198,7 +198,7 @@ public class BountyBoardBlock extends Block {
 	}
 
 	private static Item goods(Town.Active bounty) {
-		ResourceLocation id = ResourceLocation.tryParse(bounty.target());
+		Identifier id = Identifier.tryParse(bounty.target());
 		return id == null ? Items.AIR : BuiltInRegistries.ITEM.getValue(id);
 	}
 

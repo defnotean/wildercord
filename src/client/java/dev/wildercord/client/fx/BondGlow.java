@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Avatar;
@@ -46,8 +46,8 @@ import java.util.UUID;
 public final class BondGlow {
 	private BondGlow() {}
 
-	private static final ResourceLocation SOFT = Wildercord.id("textures/entity/aura/soft.png");
-	private static final ResourceLocation HAZE = Wildercord.id("textures/entity/aura/haze.png");
+	private static final Identifier SOFT = Wildercord.id("textures/entity/aura/soft.png");
+	private static final Identifier HAZE = Wildercord.id("textures/entity/aura/haze.png");
 	private static final RenderType SOFT_TYPE = RenderTypes.eyes(SOFT);
 	private static final RenderType HAZE_TYPE = RenderTypes.eyes(HAZE);
 	private static final RenderType SHADE_TYPE = RenderTypes.entityTranslucent(SOFT);

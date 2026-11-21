@@ -4,7 +4,7 @@ import dev.wildercord.client.GearTray;
 import dev.wildercord.client.SlotWell;
 import dev.wildercord.menu.CordSlot;
 import dev.wildercord.menu.PlacedSlot;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import org.spongepowered.asm.mixin.Mixin;

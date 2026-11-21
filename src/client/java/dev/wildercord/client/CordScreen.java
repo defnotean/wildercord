@@ -29,7 +29,8 @@ import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -38,7 +39,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -106,24 +107,24 @@ public class CordScreen extends Screen {
 	private static final int WARN = 0xFFF0C440;
 	private static final int CYAN = 0xFF7FE0F0;
 
-	private static final ResourceLocation SPR_PANEL = Wildercord.id("cord/panel");
-	private static final ResourceLocation SPR_INSET = Wildercord.id("cord/inset");
-	private static final ResourceLocation SPR_ROW = Wildercord.id("cord/row");
-	private static final ResourceLocation SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
-	private static final ResourceLocation SPR_ROW_LOCKED = Wildercord.id("cord/row_locked");
-	private static final ResourceLocation SPR_SOCKET = Wildercord.id("cord/socket");
-	private static final ResourceLocation SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
-	private static final ResourceLocation SPR_SOCKET_QUIET = Wildercord.id("cord/socket_quiet");
-	private static final ResourceLocation SPR_THREAD = Wildercord.id("cord/thread");
-	private static final ResourceLocation SPR_TAB = Wildercord.id("cord/tab");
-	private static final ResourceLocation SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
-	private static final ResourceLocation SPR_LOCK = Wildercord.id("cord/lock");
-	private static final ResourceLocation SPR_SCROLLER = Wildercord.id("cord/scroller");
-	private static final ResourceLocation SPR_ATTACH = Wildercord.id("cord/attach");
-	private static final ResourceLocation SPR_BADGE = Wildercord.id("hud/badge");
-	private static final ResourceLocation SPR_MANA = Wildercord.id("cord/mana_badge");
-	private static final ResourceLocation SPR_HEART = Wildercord.id("cord/heart_badge");
-	private static final ResourceLocation SPR_WARD = Wildercord.id("cord/ward_badge");
+	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
+	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
+	private static final Identifier SPR_ROW = Wildercord.id("cord/row");
+	private static final Identifier SPR_ROW_SELECTED = Wildercord.id("cord/row_selected");
+	private static final Identifier SPR_ROW_LOCKED = Wildercord.id("cord/row_locked");
+	private static final Identifier SPR_SOCKET = Wildercord.id("cord/socket");
+	private static final Identifier SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
+	private static final Identifier SPR_SOCKET_QUIET = Wildercord.id("cord/socket_quiet");
+	private static final Identifier SPR_THREAD = Wildercord.id("cord/thread");
+	private static final Identifier SPR_TAB = Wildercord.id("cord/tab");
+	private static final Identifier SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
+	private static final Identifier SPR_LOCK = Wildercord.id("cord/lock");
+	private static final Identifier SPR_SCROLLER = Wildercord.id("cord/scroller");
+	private static final Identifier SPR_ATTACH = Wildercord.id("cord/attach");
+	private static final Identifier SPR_BADGE = Wildercord.id("hud/badge");
+	private static final Identifier SPR_MANA = Wildercord.id("cord/mana_badge");
+	private static final Identifier SPR_HEART = Wildercord.id("cord/heart_badge");
+	private static final Identifier SPR_WARD = Wildercord.id("cord/ward_badge");
 	private static final int LAVENDER = 0xFFB8A8FF;
 
 	private static final String[] TAB_KEYS = {"all", "shape", "effect", "modifier", "link"};
@@ -843,7 +844,7 @@ public class CordScreen extends Screen {
 
 	// ------------------------------------------------------------------ drawing
 
-	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 
@@ -861,10 +862,11 @@ public class CordScreen extends Screen {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
+	public void render(GuiGraphics wcGui, int mouseX, int mouseY, float a) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 		layout();
 		updateAuraEntry();
-		super.extractRenderState(g, mouseX, mouseY, a);
+		super.render(wcGui, mouseX, mouseY, a);
 		drawSideCircle(g, a);
 		float s = scale();
 		int mx = (int) Math.floor(localX(mouseX));
@@ -3539,7 +3541,7 @@ public class CordScreen extends Screen {
 			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.bestiary_none"), 8, DIM, null));
 		}
 		for (String id : met) {
-			net.minecraft.world.entity.EntityType<?> type = Optional.ofNullable(ResourceLocation.tryParse(id))
+			net.minecraft.world.entity.EntityType<?> type = Optional.ofNullable(Identifier.tryParse(id))
 				.flatMap(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
 			Component name = type == null ? Component.literal(id) : type.getDescription();
 			List<Component> tip = new ArrayList<>();
@@ -3610,7 +3612,7 @@ public class CordScreen extends Screen {
 			}
 			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.field_guide_" + group.key), 4, DIM, about));
 			for (dev.wildercord.spell.FieldGuide.Entry entry : entries) {
-				net.minecraft.world.entity.EntityType<?> type = Optional.ofNullable(ResourceLocation.tryParse(entry.type()))
+				net.minecraft.world.entity.EntityType<?> type = Optional.ofNullable(Identifier.tryParse(entry.type()))
 					.flatMap(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
 				Component name = type == null ? Component.literal(entry.type()) : type.getDescription();
 				int kills = minecraft.player == null ? 0 : dev.wildercord.player.Codex.kills(minecraft.player, entry.type());

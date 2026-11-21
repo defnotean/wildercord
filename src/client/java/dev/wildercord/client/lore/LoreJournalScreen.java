@@ -5,7 +5,8 @@ import dev.wildercord.lore.LoreEntries;
 import dev.wildercord.lore.LoreJournal;
 import dev.wildercord.lore.LoreJournalData;
 import dev.wildercord.lore.LoreQuestRules;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -127,7 +128,8 @@ public final class LoreJournalScreen extends Screen {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partial) {
+	public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		graphics.fill(left, top, left + panelWidth, top + panelHeight, 0xF211242C);
 		graphics.fill(left + 1, top + 1, left + panelWidth - 1, top + 2, 0xFF62C8C0);
 		graphics.centeredText(font, title, width / 2, top + 10, 0xFF9FE1D5);
@@ -147,7 +149,7 @@ public final class LoreJournalScreen extends Screen {
 		graphics.disableScissor();
 		if (maximum > 0) graphics.text(font, Component.translatable("screen.wildercord.lore_journal.scroll", scroll + 1, maximum + 1),
 			left + panelWidth - 70, top + panelHeight - 20, MUTED, false);
-		super.extractRenderState(graphics, mouseX, mouseY, partial);
+		super.render(wcGui, mouseX, mouseY, partial);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package dev.wildercord.compat;
 
-import net.fabricmc.fabric.api.registry.FuelValueEvents;
+import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -8,7 +8,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwingAnimationType;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -53,7 +53,7 @@ import java.util.function.Predicate;
  * Version seam for blocks, items, tags, sounds, signs, containers, compostables and fuels.
  */
 public final class McBlocksAndItems {
-	private static final TagKey<Block> SAPLINGS = TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("saplings"));
+	private static final TagKey<Block> SAPLINGS = TagKey.create(Registries.BLOCK, Identifier.withDefaultNamespace("saplings"));
 	// 26.1.2 has no vanilla colour-collection holders; dyed families are resolved by registry name.
 	private static final List<String> DYED_SUFFIXES = List.of(
 		"stained_glass_pane", "stained_glass", "glazed_terracotta", "concrete_powder",
@@ -130,7 +130,7 @@ public final class McBlocksAndItems {
 
 	/** Registers furnace burn duration onto Fabric's registry event in 26.2 (no-op in 26.3). */
 	public static void registerFuel(ItemLike item, int burnTicks) {
-		FuelValueEvents.BUILD.register((builder, context) -> builder.add(item, burnTicks));
+		FuelRegistryEvents.BUILD.register((builder, context) -> builder.add(item, burnTicks));
 	}
 
 	/** Configures medium compostability when encoded on item properties (no-op in 26.2). */
@@ -160,7 +160,7 @@ public final class McBlocksAndItems {
 
 	/** Replaces the items inside a {@link BundleContents} with {@code items}. */
 	public static BundleContents bundleWith(BundleContents previous, List<ItemStack> items) {
-		return new BundleContents(items.stream().map(ItemStackTemplate::fromNonEmptyStack).toList());
+		return new BundleContents(items.stream().map(ItemStack::fromNonEmptyStack).toList());
 	}
 
 	/** Counts matching items across inventory and crafting grid without removing them. */
@@ -217,7 +217,7 @@ public final class McBlocksAndItems {
 
 	/** Block of the dyed family {@code suffix} (e.g. {@code "wall_banner"}) in {@code color}, or null when absent. */
 	public static @Nullable Block dyedBlock(String suffix, DyeColor color) {
-		Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(color.getName() + "_" + suffix));
+		Block block = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(color.getName() + "_" + suffix));
 		return block == Blocks.AIR ? null : block;
 	}
 

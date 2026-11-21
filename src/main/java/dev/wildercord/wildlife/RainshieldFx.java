@@ -24,5 +24,5 @@ public final class RainshieldFx {
   @Override public Type<Release> type(){return TYPE;}
  }
  public static void init(){PayloadTypeRegistry.playS2C().register(Event.TYPE,Event.CODEC);PayloadTypeRegistry.playC2S().register(Release.TYPE,Release.CODEC);ServerPlayNetworking.registerGlobalReceiver(Release.TYPE,(e,context)->RooksRainshield.releaseInput(context.player(),e.draw()));}
- static void send(ServerPlayer p,ServerPlayer r,Vec3 normal,int beat,UUID draw,long generation){if(p.level()!=r.level())return;var e=new Event(p.level().dimension().location().toString(),p.getUUID(),r.getUUID(),p.getId(),r.getId(),normal,beat,p.level().getGameTime(),draw,generation);if(ServerPlayNetworking.canSend(p,Event.TYPE))ServerPlayNetworking.send(p,e);if(r!=p&&ServerPlayNetworking.canSend(r,Event.TYPE))ServerPlayNetworking.send(r,e);}
+ static void send(ServerPlayer p,ServerPlayer r,Vec3 normal,int beat,UUID draw,long generation){if(p.level()!=r.level())return;var e=new Event(p.level().dimension().identifier().toString(),p.getUUID(),r.getUUID(),p.getId(),r.getId(),normal,beat,p.level().getGameTime(),draw,generation);if(ServerPlayNetworking.canSend(p,Event.TYPE))ServerPlayNetworking.send(p,e);if(r!=p&&ServerPlayNetworking.canSend(r,Event.TYPE))ServerPlayNetworking.send(r,e);}
 }

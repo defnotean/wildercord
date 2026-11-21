@@ -18,5 +18,5 @@ public final class RootCarryFx {
   @Override public Type<Event> type(){return TYPE;}
  }
  public static void init(){PayloadTypeRegistry.playS2C().register(Event.TYPE,Event.CODEC);}
- static void send(ServerPlayer p,BlockPos from,BlockPos to,boolean moved){if(dev.wildercord.cast.Fx.muted())return;var l=p.level();var event=new Event(p.getUUID(),l.dimension().location().toString(),from,to,moved,l.getGameTime());for(var viewer:l.players())if(viewer.position().distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(from))<=48*48&&ServerPlayNetworking.canSend(viewer,Event.TYPE))ServerPlayNetworking.send(viewer,event);Feels.sound(l,net.minecraft.world.phys.Vec3.atCenterOf(moved?to:from),moved?"root_carry_settle":"root_carry_select",.35F,1);}
+ static void send(ServerPlayer p,BlockPos from,BlockPos to,boolean moved){if(dev.wildercord.cast.Fx.muted())return;var l=p.level();var event=new Event(p.getUUID(),l.dimension().identifier().toString(),from,to,moved,l.getGameTime());for(var viewer:l.players())if(viewer.position().distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(from))<=48*48&&ServerPlayNetworking.canSend(viewer,Event.TYPE))ServerPlayNetworking.send(viewer,event);Feels.sound(l,net.minecraft.world.phys.Vec3.atCenterOf(moved?to:from),moved?"root_carry_settle":"root_carry_select",.35F,1);}
 }

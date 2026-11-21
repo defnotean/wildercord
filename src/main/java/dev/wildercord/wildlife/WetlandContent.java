@@ -49,7 +49,7 @@ public final class WetlandContent {
 		});
 		FieldGuide.add(new FieldGuide.Entry("wildercord:lantern_newt",FieldGuide.Group.WILDLIFE,0xAAD5AE));
 		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(DUSK_PEARL,MARSHLIGHT_ITEM,NEWT_EGG,FIELD_NOTES).forEach(o::accept));
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o -> o.accept(NEWT_EGG));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(o -> o.accept(NEWT_EGG));
 		WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {
 			if(effects.stream().noneMatch(e -> e.id().equals(dev.wildercord.spell.Runes.TIDEBREATH.id()) || e.element().equals("life")))return;
 			for(var target:targets)if(target instanceof LanternNewt newt)newt.answerMagic();

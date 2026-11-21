@@ -342,7 +342,7 @@ public final class ReweaveFields {
         initialized = true;
         dev.wildercord.net.ReweaveInput.init();
         net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer p) retire(p); });
-        net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((p, from, to) -> retire(p));
+        net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((p, from, to) -> retire(p));
         net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AFTER_RESPAWN.register((old, fresh, alive) -> retire(old));
         dev.wildercord.net.ServerDisconnects.register((handler, server) -> retire(handler.player));
         ServerTickEvents.START_SERVER_TICK.register(server -> {

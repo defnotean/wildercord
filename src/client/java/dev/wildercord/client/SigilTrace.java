@@ -6,7 +6,8 @@ import dev.wildercord.spell.TraceGlyph;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -160,7 +161,8 @@ public final class SigilTrace {
 	// ------------------------------------------------------------------ drawing
 
 	/** The glyph round the crosshair while charging: faint until the hands are steadied, then bright, with the path traced so far. */
-	public static void draw(GuiGraphicsExtractor g, DeltaTracker delta) {
+	public static void draw(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Minecraft mc = Minecraft.getInstance();
 		if (chargeStart == Long.MIN_VALUE || glyph.isEmpty() || mc.player == null) {
 			return;

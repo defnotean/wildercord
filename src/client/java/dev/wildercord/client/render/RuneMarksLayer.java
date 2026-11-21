@@ -3,7 +3,7 @@ package dev.wildercord.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.player.WildercordAttachments;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +40,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 	/** The marks' colour this frame, as ARGB with the alpha as brightness; absent on anything that isn't Runebound. */
 	public static final RenderStateDataKey<Integer> MARKS = RenderStateDataKey.create(() -> "wildercord:rune_marks");
 
-	private static final java.util.Map<String, ResourceLocation> LAYOUT_TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
+	private static final java.util.Map<String, Identifier> LAYOUT_TEXTURES = new java.util.concurrent.ConcurrentHashMap<>();
 	/** How long a Runebound telegraphs, in ticks (as {@code Runebound.TELEGRAPH}). */
 	private static final float TELEGRAPH = 22;
 	/** Ticks the flare takes to reach full strength once the telegraph begins. */
@@ -50,7 +50,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 
 	private final RenderType renderType;
 
-	public RuneMarksLayer(RenderLayerParent<S, M> parent, ResourceLocation texture) {
+	public RuneMarksLayer(RenderLayerParent<S, M> parent, Identifier texture) {
 		super(parent);
 		this.renderType = RenderTypes.eyes(texture);
 	}
@@ -101,11 +101,11 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 	// ------------------------------------------------------------------ registration
 
 	public static void register() {
-		LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
+		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
 			if (type.getCategory() != MobCategory.MONSTER) {
 				return;
 			}
-			ResourceLocation texture = textureFor(type, renderer);
+			Identifier texture = textureFor(type, renderer);
 			if (texture != null) {
 				add(renderer, helper, texture);
 			}
@@ -113,7 +113,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 	}
 
 	/** The marks drawn for a model's skin layout, or null for a model that has none. */
-	private static @Nullable ResourceLocation textureFor(EntityType<?> type, LivingEntityRenderer<?, ?, ?> renderer) {
+	private static @Nullable Identifier textureFor(EntityType<?> type, LivingEntityRenderer<?, ?, ?> renderer) {
 		EntityModel<?> model = renderer.getModel();
 		String layout;
 		if (model instanceof IllagerModel<?>) {
@@ -134,8 +134,8 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static void add(LivingEntityRenderer<?, ?, ?> renderer, LivingEntityRenderLayerRegistrationCallback.RegistrationHelper helper,
-			ResourceLocation texture) {
+	private static void add(LivingEntityRenderer<?, ?, ?> renderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper helper,
+			Identifier texture) {
 		helper.register(new RuneMarksLayer((RenderLayerParent) renderer, texture));
 	}
 }

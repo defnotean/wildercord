@@ -10,7 +10,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -126,9 +126,9 @@ public class BackpackMenu extends AbstractContainerMenu {
 	}
 
 	@Override
-	public void clicked(int slotIndex, int buttonNum, ContainerInput input, Player player) {
+	public void clicked(int slotIndex, int buttonNum, ClickType input, Player player) {
 		// The open backpack stays put: a number key (or F, for the off-hand) can't swap it out from any slot.
-		if (input == ContainerInput.SWAP && locked >= 0 && buttonNum == locked) {
+		if (input == ClickType.SWAP && locked >= 0 && buttonNum == locked) {
 			return;
 		}
 		// Moved some other way since it opened: nothing more happens here, and the menu closes this tick.

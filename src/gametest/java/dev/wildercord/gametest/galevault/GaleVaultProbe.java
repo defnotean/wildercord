@@ -53,7 +53,7 @@ public final class GaleVaultProbe {
             return "event=" + event + " invocation=" + invocation + " tick=" + tick + " movement=" + movement
                 + " source=Entity.checkFallDamage->Block.fallOn ownerUuid=" + owner.getUUID()
                 + " ownerId=" + owner.getId() + " ownerIdentity=" + System.identityHashCode(owner)
-                + " level=" + sourceLevel.dimension().location() + " block=" + block + " state=" + state + " pos=" + pos
+                + " level=" + sourceLevel.dimension().identifier() + " block=" + block + " state=" + state + " pos=" + pos
                 + " argument=" + argument + " beforeCallback=" + beforeCallback + " afterCallback=" + afterCallback
                 + " afterCheck=" + afterCheck + " checkMovementY=" + checkMovementY + " returned=" + returned + " checked=" + checked;
         }

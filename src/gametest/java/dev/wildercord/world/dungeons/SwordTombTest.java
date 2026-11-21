@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -103,7 +103,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 		var habitat=dev.wildercord.gametest.compat.GametestCompat.findBiomeHorizontal(generator.getBiomeSource(),1024,128,1024,6400,32,v->v.is(net.minecraft.world.level.biome.Biomes.PLAINS),RandomSource.create(811),true,randomState);
 		check(habitat!=null,"Normal world has a surface tomb habitat");
 		var origin=ChunkPos.containing(habitat.getFirst());
-		var tomb=level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,ResourceLocation.parse("wildercord:sword_tomb")));
+		var tomb=level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,Identifier.parse("wildercord:sword_tomb")));
 		// A plains biome sample need not put the rotated entrance on dry ground. Probe the
 		// registered generation path first; load only the successful start's actual footprint.
 		for(int radius=0;radius<=32;radius++)for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++){

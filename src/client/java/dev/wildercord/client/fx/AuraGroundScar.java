@@ -6,12 +6,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,7 +42,7 @@ public final class AuraGroundScar extends SingleQuadParticle implements SigilGro
 		void refresh(ClientLevel level) {
 			visible = level.getBlockState(floor).equals(block);
 			BlockPos above = floor.above();
-			lighting = LightCoordsUtil.pack(level.getBrightness(LightLayer.BLOCK, above), level.getBrightness(LightLayer.SKY, above));
+			lighting = LightTexture.pack(level.getBrightness(LightLayer.BLOCK, above), level.getBrightness(LightLayer.SKY, above));
 		}
 	}
 	private static final Map<Key, AuraGroundScar> LIVE = new HashMap<>();

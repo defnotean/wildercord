@@ -7,13 +7,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /** The stonecrest puffin, black above and white below, its great bill banded to an orange-red tip. */
 public final class StonecrestPuffinRenderer extends WildlifeRenderer<StonecrestPuffin, StonecrestPuffinModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("stonecrest_puffin"), "main");
-	private static final ResourceLocation TEXTURE = WildlifeRenderers.texture("stonecrest_puffin");
+	private static final Identifier TEXTURE = WildlifeRenderers.texture("stonecrest_puffin");
 
 	public StonecrestPuffinRenderer(EntityRendererProvider.Context context) {
 		super(context, new StonecrestPuffinModel(context.bakeLayer(LAYER)), 0.25F, TEXTURE);

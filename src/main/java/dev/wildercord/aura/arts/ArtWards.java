@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.server.MinecraftServer;
@@ -117,8 +117,8 @@ public final class ArtWards {
 
 	private static final Map<UUID, Leap> LEFT = new HashMap<>();
 
-	private static final ResourceLocation UNMOVED = Wildercord.id("art_unmoved");
-	private static final ResourceLocation FRENZY_SPEED = Wildercord.id("art_frenzy");
+	private static final Identifier UNMOVED = Wildercord.id("art_unmoved");
+	private static final Identifier FRENZY_SPEED = Wildercord.id("art_frenzy");
 
 	static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(ArtWards::tick);

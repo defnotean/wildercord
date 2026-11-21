@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +22,7 @@ abstract class ReedlandSurfaceComputeMixin {
 	// 26.1.2 has no BuiltInRegistries.BIOME field; the biome registry is only reachable via REGISTRY.
 	@SuppressWarnings("unchecked")
 	private static Registry<Biome> wildercord$biomes() {
-		return (Registry<Biome>) BuiltInRegistries.REGISTRY.getValue(ResourceLocation.withDefaultNamespace("biome"));
+		return (Registry<Biome>) BuiltInRegistries.REGISTRY.getValue(Identifier.withDefaultNamespace("biome"));
 	}
 
 	@WrapOperation(method = "compute()Z", at = @At(value = "INVOKE",

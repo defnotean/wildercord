@@ -147,8 +147,8 @@ public final class Attunement {
 		ServerLevel level = player.level();
 		BlockPos feet = player.blockPosition();
 		BlockPos head = BlockPos.containing(player.getEyePosition());
-		String biome = level.getBiome(feet).unwrapKey().map(k -> k.location().toString()).orElse("");
-		String dimension = level.dimension().location().toString();
+		String biome = level.getBiome(feet).unwrapKey().map(k -> k.identifier().toString()).orElse("");
+		String dimension = level.dimension().identifier().toString();
 		long time = Math.floorMod(level.getOverworldClockTime(), 24000L);
 		int moon = level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, feet).index();
 		Biome.Precipitation falling = level.precipitationAt(head);

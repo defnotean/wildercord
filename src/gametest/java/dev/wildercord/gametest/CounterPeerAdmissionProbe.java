@@ -39,14 +39,14 @@ public final class CounterPeerAdmissionProbe {
         public void bindClient(Minecraft mc){
             require(current==this&&!closed&&clientBody==null&&mc.player!=null&&mc.player.getUUID().equals(actor.getUUID()),"Original local owner before the single input");
             clientBody=mc.player;clientLevel=mc.level;clientConnection=mc.getConnection();require(clientConnection!=null,"Live original client connection");
-            clientUuid=mc.player.getUUID().toString();clientEntity=Integer.toString(mc.player.getId());clientDimension=mc.level.dimension().location().toString();
+            clientUuid=mc.player.getUUID().toString();clientEntity=Integer.toString(mc.player.getId());clientDimension=mc.level.dimension().identifier().toString();
         }
         public boolean ready(){return trace.ready();}
         public void requireAccepted(){trace.requireAccepted();require(performed.equals("true")&&busy.equals("false")&&excise.equals("false"),"Actual native gates and performer accepted");require(current==this&&!closed,"Current original admission generation");}
         public Map<String,String> fields(){
             var out=new HashMap<String,String>();out.put("admissionSchemaVersion","1");out.put("admissionGeneration",generation);out.put("admissionPeerArmedSha256",armedSha);
             out.put("admissionArt",art);out.put("admissionSentMarks",sentMarks);out.put("admissionRequestMarks",requestMarks);
-            out.put("admissionServerBodyUuid",actor.getUUID().toString());out.put("admissionServerBodyEntity",Integer.toString(actor.getId()));out.put("admissionServerLevel",level.dimension().location().toString());
+            out.put("admissionServerBodyUuid",actor.getUUID().toString());out.put("admissionServerBodyEntity",Integer.toString(actor.getId()));out.put("admissionServerLevel",level.dimension().identifier().toString());
             out.put("admissionServerConnectionIdentity",Integer.toUnsignedString(System.identityHashCode(connection)));out.put("admissionClientConnectionIdentity",Integer.toUnsignedString(System.identityHashCode(clientConnection)));
             out.put("admissionClientBodyUuid",clientUuid);out.put("admissionClientBodyEntity",clientEntity);out.put("admissionClientLevel",clientDimension);
             out.put("admissionBusy",busy);out.put("admissionExciseBlocking",excise);out.put("admissionPerformed",performed);out.put("admissionPerformMarks",performMarks);

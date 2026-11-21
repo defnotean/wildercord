@@ -1,9 +1,9 @@
 package dev.wildercord.client.fx;
 
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -94,7 +94,7 @@ final class LightStrokes {
 	/** A square of {@code sprite} {@code half} wide each way, turned by {@code q}. */
 	void quad(TextureAtlasSprite sprite, float x, float y, float z, Quaternionf q, float half, int argb) {
 		state.add(layer, x, y, z, q.x, q.y, q.z, q.w, half, sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb,
-			LightCoordsUtil.FULL_BRIGHT);
+			LightTexture.FULL_BRIGHT);
 	}
 
 	/** {@code rgb} at {@code alpha} (0 to 1). */

@@ -3,7 +3,7 @@ package dev.wildercord.cast.events;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 /**
@@ -33,7 +33,7 @@ public final class EventSounds {
 	public static final SoundEvent RIFT_WAVE = register("rift_wave");
 
 	private static SoundEvent register(String path) {
-		ResourceLocation id = Wildercord.id(path);
+		Identifier id = Wildercord.id(path);
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
 	}
 

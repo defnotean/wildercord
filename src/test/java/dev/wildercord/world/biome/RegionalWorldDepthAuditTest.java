@@ -67,9 +67,9 @@ class RegionalWorldDepthAuditTest {
 			List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> reference = applyOrder(input, perms.getFirst());
 			for (var perm : perms) {
 				var actual = applyOrder(input, perm);
-				assertEquals(reference, actual, "Permutation " + perm + " differed for " + biome.location());
+				assertEquals(reference, actual, "Permutation " + perm + " differed for " + biome.identifier());
 				var idempotent = applyOrder(actual, perm);
-				assertEquals(reference, idempotent, "Idempotence failed for " + biome.location());
+				assertEquals(reference, idempotent, "Idempotence failed for " + biome.identifier());
 			}
 		}
 	}

@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,7 +30,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -43,10 +42,8 @@ import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.StemBlock;
 import net.minecraft.world.level.block.SweetBerryBushBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.saveddata.WeatherData;
+import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.clock.ClockTimeMarkers;
-import net.minecraft.world.clock.WorldClock;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -132,7 +129,7 @@ public final class Rituals {
 	}
 
 	public static void init() {
-		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> output.accept(RITUAL_TABLET));
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPING.register(Rituals::suspendWards);
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STARTED.register(Rituals::resumeWards);
@@ -256,7 +253,7 @@ public final class Rituals {
 
 	/** Clear Skies and Call Storm. */
 	public static boolean weather(ServerLevel level, boolean storm) {
-		WeatherData weather = level.getWeatherData();
+		ServerLevelData weather = level.getLevelData();
 		if (storm) {
 			weather.setClearWeatherTime(0);
 			weather.setRaining(true);
@@ -270,15 +267,13 @@ public final class Rituals {
 			weather.setThundering(false);
 			weather.setThunderTime(0);
 		}
-		weather.setDirty();
 		return true;
 	}
 
 	/** Dawn: the night ends now. */
 	public static boolean dawn(ServerLevel level) {
-		Holder<WorldClock> clock = level.dimensionType().defaultClock().orElse(null);
-		if (clock == null) return false;
-		level.clockManager().moveToTimeMarker(clock, ClockTimeMarkers.DAY);
+		long day = level.getDayTime();
+		level.setDayTime(day - Math.floorMod(day, 24000L) + 1000L);
 		return true;
 	}
 

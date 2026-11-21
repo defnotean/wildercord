@@ -6,9 +6,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -262,7 +262,7 @@ public final class BoltComets {
 
 		private void quad(QuadParticleRenderState state, TextureAtlasSprite sprite, Vector3f p, Quaternionf q, float half, int argb) {
 			state.add(GlowLayers.GLOW, p.x, p.y, p.z, q.x, q.y, q.z, q.w, half, sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb,
-				LightCoordsUtil.FULL_BRIGHT);
+				LightTexture.FULL_BRIGHT);
 		}
 
 		@Override

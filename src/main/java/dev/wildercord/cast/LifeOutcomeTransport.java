@@ -15,7 +15,7 @@ final class LifeOutcomeTransport {
   Vec3 secondary=e.secondary();
   if(secondary!=null&&(!LifeOutcomePayload.coordinate(secondary)||secondary.distanceToSqr(e.anchor())>64*64
    ||!e.level().isLoaded(net.minecraft.core.BlockPos.containing(secondary))))secondary=null;
-  var payload=new LifeOutcomePayload(e.source(),e.level().dimension().location().toString(),e.rune(),
+  var payload=new LifeOutcomePayload(e.source(),e.level().dimension().identifier().toString(),e.rune(),
    LifeOutcomes.Moment.valueOf(e.moment().name()),e.anchor(),secondary,Math.min(6,e.units()),Math.clamp(e.delta(),-1_000_000,1_000_000),e.tick(),e.normal(),e.standoff());
   // Pure recipe preflight, bounded collection: refuse a future recipe that exceeds the cost contract.
   List<Vec3> points=new ArrayList<>();int[] count={0};boolean[] invalid={false};

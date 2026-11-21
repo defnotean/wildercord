@@ -16,7 +16,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -69,7 +69,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.saveddata.WeatherData;
+import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -164,7 +164,7 @@ public final class WayfarerEffects {
 		ServerLevel level = cast.level;
 		BlockPos pos = ground(hit);
 		Holder<Biome> biome = level.getBiome(pos);
-		Component name = biome.unwrapKey().map(k -> (Component) Component.translatable(Util.makeDescriptionId("biome", k.location())))
+		Component name = biome.unwrapKey().map(k -> (Component) Component.translatable(Util.makeDescriptionId("biome", k.identifier())))
 			.orElse(Component.literal("?"));
 		float warmth = biome.value().getBaseTemperature();
 		String feel = warmth < 0.15f ? "frozen" : warmth < 0.5f ? "cool" : warmth < 1.0f ? "mild" : "hot";
@@ -270,7 +270,7 @@ public final class WayfarerEffects {
 			tell(cast, "sky_reading.none");
 			return;
 		}
-		WeatherData weather = level.getWeatherData();
+		ServerLevelData weather = level.getLevelData();
 		if (weather.getClearWeatherTime() > 0) {
 			tell(cast, "sky_reading.held", WayfarerRules.minutes(weather.getClearWeatherTime()));
 		} else if (weather.isRaining()) {
@@ -768,7 +768,7 @@ public final class WayfarerEffects {
 	}
 
 	private static Optional<Holder.Reference<MobEffect>> effect(String id) {
-		ResourceLocation parsed = ResourceLocation.tryParse(id);
+		Identifier parsed = Identifier.tryParse(id);
 		return parsed == null ? Optional.empty() : BuiltInRegistries.MOB_EFFECT.get(parsed);
 	}
 

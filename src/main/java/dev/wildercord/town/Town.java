@@ -14,7 +14,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -195,7 +195,7 @@ public final class Town {
 			}
 			case GATHER, ESCORT -> { }
 			default -> counted(player, BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString(), victim.getX(), victim.getZ(),
-				victim.level().dimension().location().toString());
+				victim.level().dimension().identifier().toString());
 		}
 	}
 
@@ -223,7 +223,7 @@ public final class Town {
 	/** A creature's or an item's name by its id. */
 	public static Component targetName(String id) {
 		if (id.equals(BountyRules.DUNGEON_GUARDIAN)) return Component.translatable("town.wildercord.dungeon_guardian");
-		ResourceLocation key = ResourceLocation.tryParse(id);
+		Identifier key = Identifier.tryParse(id);
 		if (key == null) return Component.literal(id);
 		Optional<Component> creature = BuiltInRegistries.ENTITY_TYPE.getOptional(key).map(EntityType::getDescription);
 		if (creature.isPresent()) return creature.get();

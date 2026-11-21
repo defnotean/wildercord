@@ -4,9 +4,9 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
@@ -186,12 +186,12 @@ public class RingGlow extends SingleQuadParticle implements SigilGroup.Extent {
 
 	private void quad(TextureAtlasSprite sprite, float x, float y, float z, Quaternionf q, float half, int argb) {
 		state.add(getLayer(), x, y, z, q.x, q.y, q.z, q.w, half, sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb,
-			LightCoordsUtil.FULL_BRIGHT);
+			LightTexture.FULL_BRIGHT);
 	}
 
 	@Override
 	public int getLightCoords(float partial) {
-		return LightCoordsUtil.FULL_BRIGHT;
+		return LightTexture.FULL_BRIGHT;
 	}
 
 	@Override

@@ -14,10 +14,11 @@ import net.minecraft.client.AttackIndicatorStatus;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 
 import java.util.HashMap;
@@ -42,11 +43,11 @@ import java.util.Map;
 public final class SpellHud {
 	private SpellHud() {}
 
-	private static final ResourceLocation FRAME = Wildercord.id("hud/frame");
-	private static final ResourceLocation BADGE = Wildercord.id("hud/badge");
-	private static final ResourceLocation BAR = Wildercord.id("hud/bar_frame");
-	private static final ResourceLocation FILL = Wildercord.id("hud/mana_fill");
-	private static final ResourceLocation BEAT = Wildercord.id("hud/beat_ring");
+	private static final Identifier FRAME = Wildercord.id("hud/frame");
+	private static final Identifier BADGE = Wildercord.id("hud/badge");
+	private static final Identifier BAR = Wildercord.id("hud/bar_frame");
+	private static final Identifier FILL = Wildercord.id("hud/mana_fill");
+	private static final Identifier BEAT = Wildercord.id("hud/beat_ring");
 
 	private static final int HEIGHT = 32;
 	private static final int BODY_X = 28;
@@ -107,7 +108,7 @@ public final class SpellHud {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("spell_hud"), SpellHud::extract);
 		// A Domain's tint goes under everything else on the HUD.
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("domain_tint"),
-			(g, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(g));
+			(wcG, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(new GuiGraphicsExtractor(wcG)));
 		// An overchannelling caster's view closing in, under everything else too.
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("overchannel_strain"),
 			dev.wildercord.client.fx.ScreenEffects::drawStrain);
@@ -174,11 +175,12 @@ public final class SpellHud {
 		return compiled;
 	}
 
-	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
+	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
 	}
 
-	private static void extract(GuiGraphicsExtractor g, DeltaTracker delta) {
+	private static void extract(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
 		drawnTop = -1;

@@ -18,7 +18,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -2047,14 +2047,14 @@ public final class Effects {
 		return ward;
 	}
 
-	private static void modifier(LivingEntity t, Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
+	private static void modifier(LivingEntity t, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation operation) {
 		AttributeInstance instance = t.getAttribute(attribute);
 		if (instance != null) {
 			instance.addOrUpdateTransientModifier(new AttributeModifier(id, amount, operation));
 		}
 	}
 
-	private static void unmodify(LivingEntity t, ResourceLocation id, List<Holder<Attribute>> attributes) {
+	private static void unmodify(LivingEntity t, Identifier id, List<Holder<Attribute>> attributes) {
 		for (Holder<Attribute> attribute : attributes) {
 			AttributeInstance instance = t.getAttribute(attribute);
 			if (instance != null) {
@@ -2091,7 +2091,7 @@ public final class Effects {
 		ExpansionVfx.brace(cast.level, t, Vfx.theme("earth"));
 	}
 
-	private static final ResourceLocation ANCHOR_ID = Wildercord.id("anchor");
+	private static final Identifier ANCHOR_ID = Wildercord.id("anchor");
 	private static final List<Holder<Attribute>> ANCHORED = List.of(Attributes.KNOCKBACK_RESISTANCE, Attributes.EXPLOSION_KNOCKBACK_RESISTANCE, Attributes.ARMOR);
 
 	/** Anchor: no knockback from blows or blasts, and a little armour, for a while. */
@@ -2427,7 +2427,7 @@ public final class Effects {
 		}
 	}
 
-	private static final ResourceLocation CUSHION_ID = Wildercord.id("cushion");
+	private static final Identifier CUSHION_ID = Wildercord.id("cushion");
 
 	/** Cushion: no fall damage, and every hard landing throws a gust at the enemies around. */
 	private static void cushion(Cast cast, LivingEntity t, int ticks, double power) {
@@ -3105,7 +3105,7 @@ public final class Effects {
 		return hexed.bonus();
 	}
 
-	private static final ResourceLocation REND_ID = Wildercord.id("rend");
+	private static final Identifier REND_ID = Wildercord.id("rend");
 
 	/** Rend: less armour for a while, and torn open (bleeding: wind damage on it sets off Rupture). */
 	private static void rend(Cast cast, LivingEntity t, int ticks) {

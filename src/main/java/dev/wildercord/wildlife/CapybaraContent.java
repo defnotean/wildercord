@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.item.ItemGroups;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +44,7 @@ public final class CapybaraContent {
 			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.MIREBATH_CAPYBARA, type, GROUND, level, reason, pos, random));
 		WildlifeSpawns.join(WildlifeRules.MIREBATH_CAPYBARA, MIREBATH_CAPYBARA);
 		FieldGuide.add(new FieldGuide.Entry("wildercord:mirebath_capybara", FieldGuide.Group.WILDLIFE, 0xA8744A));
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
 		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
 	}
 }

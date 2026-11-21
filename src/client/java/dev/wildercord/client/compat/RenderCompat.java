@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.SwingAnimationType;
 import org.joml.Quaternionfc;
 import org.jspecify.annotations.Nullable;
@@ -147,12 +147,12 @@ public final class RenderCompat {
 		return DARK_PARTICLE_PIPELINE;
 	}
 
-	public static RenderType wispGlowRenderType(ResourceLocation texture) {
+	public static RenderType wispGlowRenderType(Identifier texture) {
 		return RenderType.create("wildercord_wisp_glow",
 			RenderSetup.builder(WISP_GLOW_PIPELINE).withTexture("Sampler0", texture).sortOnUpload().createRenderSetup());
 	}
 
-	public static RenderType auraBodyGlowRenderType(ResourceLocation texture) {
+	public static RenderType auraBodyGlowRenderType(Identifier texture) {
 		return RenderType.create("wildercord_aura_body_glow",
 			RenderSetup.builder(AURA_BODY_GLOW_PIPELINE).withTexture("Sampler0", texture).sortOnUpload().createRenderSetup());
 	}

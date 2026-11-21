@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -308,7 +308,7 @@ public final class FormDash {
 		ServerTickEvents.END_SERVER_TICK.register(server -> { for (ServerPlayer player : server.getPlayerList().getPlayers()) tick(player); });
 		// Damage, stance breaks and knockback leases already reach cancel() through MasterForms.cancel.
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer player) retire(player); });
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> retire(player));
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> retire(player));
 		ServerPlayerEvents.AFTER_RESPAWN.register((before, after, alive) -> retire(before));
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> retire(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SESSIONS.clear());

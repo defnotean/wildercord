@@ -11,7 +11,7 @@ import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
 import dev.wildercord.world.dungeons.DungeonWards;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -384,7 +384,7 @@ public final class RelayCircles {
 			if (entity instanceof ServerPlayer player && taken > 0 && FOCI.containsKey(player)) cancel(player);
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { if (entity instanceof ServerPlayer p) retire(p); });
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((p, from, to) -> retire(p));
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((p, from, to) -> retire(p));
 		ServerPlayerEvents.AFTER_RESPAWN.register((old, fresh, alive) -> retire(old));
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> retire(handler.player));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {

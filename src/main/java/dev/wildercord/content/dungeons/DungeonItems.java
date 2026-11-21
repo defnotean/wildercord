@@ -8,7 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
@@ -42,8 +42,8 @@ public final class DungeonItems {
 	}
 
 	public static void init() {
-		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		ItemGroupEvents.modifyEntriesEvent(tab).register(output ->
-			output.insertAfter(WildercordBlocks.ARCHIVE_LECTERN, DungeonBlocks.ALTAR, CINDER_HEART, ASTRAL_LENS, DROWNED_QUILL));
+			output.addAfter(WildercordBlocks.ARCHIVE_LECTERN, DungeonBlocks.ALTAR, CINDER_HEART, ASTRAL_LENS, DROWNED_QUILL));
 	}
 }

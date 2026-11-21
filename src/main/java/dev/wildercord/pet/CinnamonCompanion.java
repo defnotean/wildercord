@@ -14,7 +14,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -202,7 +202,7 @@ final class CinnamonCompanion {
 		if (dog == null || dog.isRemoved()) {
 			// An intentionally parked companion can remain saved and unloaded until her owner calls.
 			if (!REQUESTED.contains(player.getUUID()) && entry.care().sitting() && entry.care().recoveryUntil() <= now
-				&& entry.dimension().equals(player.level().dimension().location().toString())) return;
+				&& entry.dimension().equals(player.level().dimension().identifier().toString())) return;
 			if (!BLOCKED.contains(player.getUUID()) && !LEASE.heldBy(player.getUUID())) recoverChunk(player, entry);
 			return;
 		}
@@ -228,7 +228,7 @@ final class CinnamonCompanion {
 		if (at == null || !mayRecall(player) || !player.getUUID().equals(ownerId(dog))
 			|| identity(player, journal.get(player.getUUID())) != CinnamonIdentityRules.Status.NEW) return;
 		dog.snapTo(at.x, at.y, at.z, player.getYRot(), 0);
-		var entry = new CinnamonJournal.Entry(dog.getUUID(), player.level().dimension().location().toString(),
+		var entry = new CinnamonJournal.Entry(dog.getUUID(), player.level().dimension().identifier().toString(),
 			dog.chunkPosition().x(), dog.chunkPosition().z(), CinnamonJournal.Care.of(dog), 0, false);
 		journal.put(player.getUUID(), entry);
 		if (!player.level().addFreshEntity(dog)) journal.cancelInitial(player.getUUID(), dog.getUUID());
@@ -300,7 +300,7 @@ final class CinnamonCompanion {
 
 	private static void recoverChunk(ServerPlayer player, CinnamonJournal.Entry entry) {
 		ServerLevel level;
-		try { level = player.level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(entry.dimension()))); }
+		try { level = player.level().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, Identifier.parse(entry.dimension()))); }
 		catch (RuntimeException invalid) { recoveryFailed(player); return; }
 		if (level == null || Math.abs((long) entry.chunkX()) > 1_875_000 || Math.abs((long) entry.chunkZ()) > 1_875_000) {
 			recoveryFailed(player); return;

@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -37,7 +37,7 @@ public class ThrownBramble extends ThrowableItemProjectile {
 	@Override
 	public void handleEntityEvent(byte id) {
 		if (id == 3) {
-			ItemParticleOption leaves = new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(new ItemStack(getDefaultItem())));
+			ItemParticleOption leaves = new ItemParticleOption(ParticleTypes.ITEM, ItemStack.fromNonEmptyStack(new ItemStack(getDefaultItem())));
 			for (int i = 0; i < 10; i++) {
 				level().addParticle(leaves, getX(), getY(), getZ(), (random.nextDouble() - 0.5) * 0.15, random.nextDouble() * 0.15,
 					(random.nextDouble() - 0.5) * 0.15);

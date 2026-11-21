@@ -11,14 +11,14 @@ import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -110,8 +110,8 @@ public final class Awakening {
 			.copyOnDeath()
 	);
 
-	private static final ResourceLocation SPEED = Wildercord.id("aura_awakened_speed");
-	private static final ResourceLocation ATTACK_SPEED = Wildercord.id("aura_awakened_attack");
+	private static final Identifier SPEED = Wildercord.id("aura_awakened_speed");
+	private static final Identifier ATTACK_SPEED = Wildercord.id("aura_awakened_attack");
 
 	// ------------------------------------------------------------------ reading (both sides)
 
@@ -333,7 +333,7 @@ public final class Awakening {
 			AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 	}
 
-	private static void modifier(ServerPlayer player, Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
+	private static void modifier(ServerPlayer player, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation operation) {
 		AttributeInstance instance = player.getAttribute(attribute);
 		if (instance == null) {
 			return;
@@ -387,7 +387,7 @@ public final class Awakening {
 			}
 		});
 		// Momentum empties in a new world and isn't saved: an awakening carried there (or back into the game) holds it again.
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, from, to) -> holdAgain(player));
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, from, to) -> holdAgain(player));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> holdAgain(handler.player)));
 	}
 }

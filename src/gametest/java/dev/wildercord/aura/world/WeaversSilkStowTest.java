@@ -2,7 +2,7 @@ package dev.wildercord.aura.world;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.minecraft.client.KeyBinding;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -52,7 +52,7 @@ public final class WeaversSilkStowTest implements FabricClientGameTest {
 			});
 			check(c.computeOnClient(mc -> mc.player.onClimbable()), "Bound and out, the silk holds its wearer to the wall on the client");
 
-			KeyBinding silk = c.computeOnClient(mc -> Arrays.stream(mc.options.keyMappings).filter(k -> k.getName().equals("key.wildercord.weavers_silk")).findFirst().orElse(null));
+			KeyMapping silk = c.computeOnClient(mc -> Arrays.stream(mc.options.keyMappings).filter(k -> k.getName().equals("key.wildercord.weavers_silk")).findFirst().orElse(null));
 			check(silk != null, "The silk key is registered");
 			check(c.computeOnClient(mc -> silk.getDefaultKey().getValue() == com.mojang.blaze3d.platform.InputConstants.KEY_G), "The silk key defaults to G");
 			c.getInput().pressKey(silk);

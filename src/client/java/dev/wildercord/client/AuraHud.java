@@ -10,10 +10,10 @@ import net.minecraft.client.AttackIndicatorStatus;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 
 /**
@@ -34,9 +34,9 @@ import net.minecraft.world.entity.HumanoidArm;
 public final class AuraHud {
 	private AuraHud() {}
 
-	private static final ResourceLocation FRAME = Wildercord.id("hud/frame");
-	private static final ResourceLocation BAR = Wildercord.id("hud/bar_frame");
-	private static final ResourceLocation BEAT = Wildercord.id("hud/beat_ring");
+	private static final Identifier FRAME = Wildercord.id("hud/frame");
+	private static final Identifier BAR = Wildercord.id("hud/bar_frame");
+	private static final Identifier BEAT = Wildercord.id("hud/beat_ring");
 
 	/** The strip's height, and its width when it stands alone. */
 	public static final int HEIGHT = 12;

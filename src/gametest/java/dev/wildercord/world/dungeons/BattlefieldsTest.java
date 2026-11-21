@@ -124,8 +124,8 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 				var nearest=server.overworld().findClosestBiome3d(b -> b.is(net.minecraft.world.level.biome.Biomes.PLAINS),new BlockPos(1024,70,1024),6400,32,64);
 				check(nearest!=null,"Normal world contains the battlefield's plains habitat");
 				var registered=server.overworld().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
-					.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.ResourceLocation.parse("wildercord:old_battlefield")));
-				probe.habitat(nearest.getFirst(),nearest.getSecond().unwrapKey().map(key -> key.location().toString()).orElse("unregistered"),
+					.getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE,net.minecraft.resources.Identifier.parse("wildercord:old_battlefield")));
+				probe.habitat(nearest.getFirst(),nearest.getSecond().unwrapKey().map(key -> key.identifier().toString()).orElse("unregistered"),
 					registered.value().getClass().getName(),registered.value().biomes().contains(nearest.getSecond()));
 				return nearest.getFirst();
 			});

@@ -13,28 +13,28 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 
 /** Mojito (see {@link MojitoModel}), his head nearly three times a player's height, with his eyes, the runes down his blade and the magic at his sides lit whatever the light. */
 public final class MojitoRenderer extends CullableMobRenderer<Mojito,MojitoRenderState,MojitoModel> {
 	public static final ModelLayerLocation LAYER=new ModelLayerLocation(Wildercord.id("mojito"),"main");
-	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/mojito/skin.png");
-	private static final ResourceLocation GLOW=Wildercord.id("textures/entity/mojito/glow.png");
+	private static final Identifier SKIN=Wildercord.id("textures/entity/mojito/skin.png");
+	private static final Identifier GLOW=Wildercord.id("textures/entity/mojito/glow.png");
 	static final float SCALE=2.2F;
 	/** How long one move takes to blend into the next, in ticks. */
 	private static final float BLEND_TICKS=4;
 	public MojitoRenderer(EntityRendererProvider.Context c){super(c,new MojitoModel(c.bakeLayer(LAYER)),2.0F);addLayer(new Eyes(this));}
 	@Override public MojitoRenderState createRenderState(){return new MojitoRenderState();}
-	@Override public ResourceLocation getTextureLocation(MojitoRenderState s){return SKIN;}
+	@Override public Identifier getTextureLocation(MojitoRenderState s){return SKIN;}
 	/** Thrown, his sword can be well off from him, and he should not vanish from view when it is in sight and he isn't, nor it. */
 	@Override protected AABB cullingBounds(Mojito e,float partial){
 		var box=superCullingBounds(e,partial);
 		return e.thrown()?box.minmax(AABB.ofSize(e.swordAt(partial),6,3,6)):box;
 	}
 	@Override public void extractRenderState(Mojito e,MojitoRenderState s,float partial){
-		super.extractRenderState(e,s,partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.rise=MojitoRules.rise(s.move,s.elapsed);
+		super.extractRenderState(e, s, partial);s.move=e.move();s.tell=e.tell();s.side=e.side();s.elapsed=e.elapsed(partial);s.rise=MojitoRules.rise(s.move,s.elapsed);
 		// Blending out of the move before over a few ticks; out of his sleep or back into it the rise does that itself.
 		float now=e.tickCount+partial;
 		// A new move, or the same one begun again (each slash), blends out of the last.

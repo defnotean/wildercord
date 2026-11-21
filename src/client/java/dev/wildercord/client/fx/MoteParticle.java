@@ -7,9 +7,9 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -328,12 +328,12 @@ public class MoteParticle extends SingleQuadParticle implements SigilGroup.Exten
 	private void quad(QuadParticleRenderState state, TextureAtlasSprite sprite, float x, float y, float z, Quaternionf q, float half, int argb,
 			boolean mirrored) {
 		state.add(GlowLayers.GLOW, x, y, z, q.x, q.y, q.z, q.w, half, mirrored ? sprite.getU1() : sprite.getU0(),
-			mirrored ? sprite.getU0() : sprite.getU1(), sprite.getV0(), sprite.getV1(), argb, LightCoordsUtil.FULL_BRIGHT);
+			mirrored ? sprite.getU0() : sprite.getU1(), sprite.getV0(), sprite.getV1(), argb, LightTexture.FULL_BRIGHT);
 	}
 
 	@Override
 	public int getLightCoords(float partial) {
-		return kind == MoteOption.CLOUD ? super.getLightCoords(partial) : LightCoordsUtil.FULL_BRIGHT;
+		return kind == MoteOption.CLOUD ? super.getLightCoords(partial) : LightTexture.FULL_BRIGHT;
 	}
 
 	@Override

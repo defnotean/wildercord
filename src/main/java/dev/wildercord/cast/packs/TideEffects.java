@@ -18,7 +18,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -53,7 +53,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
-import net.minecraft.world.level.block.FarmlandBlock;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
@@ -92,7 +92,7 @@ import java.util.function.BooleanSupplier;
 public final class TideEffects {
 	private TideEffects() {}
 
-	private static final ResourceLocation DIVERS_HANDS = Wildercord.id("divers_hands");
+	private static final Identifier DIVERS_HANDS = Wildercord.id("divers_hands");
 	/** Bobbers Angler's Lure already hurried (once each). */
 	private static final Set<FishingHook> LURED = Collections.newSetFromMap(new WeakHashMap<>());
 	/** Each caster's one Tide Marker. */
@@ -614,7 +614,7 @@ public final class TideEffects {
 			BlockState into = null;
 			String concrete = TideRules.concreteFor(BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath());
 			if (concrete != null) {
-				Block b = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(concrete));
+				Block b = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(concrete));
 				if (b != Blocks.AIR) into = b.defaultBlockState();
 			} else if (s.is(Blocks.DIRT)) {
 				into = Blocks.MUD.defaultBlockState();
@@ -640,9 +640,9 @@ public final class TideEffects {
 		int soaked = 0;
 		for (BlockPos p : around(at, 4)) {
 			BlockState s = level.getBlockState(p);
-			if (s.getBlock() instanceof FarmlandBlock && s.getValue(FarmlandBlock.MOISTURE) < FarmlandBlock.MAX_MOISTURE && editable(cast, p)) {
+			if (s.getBlock() instanceof FarmBlock && s.getValue(FarmBlock.MOISTURE) < FarmBlock.MAX_MOISTURE && editable(cast, p)) {
 				// Wetting farmland makes nothing and takes nothing: it costs no blocks.
-				level.setBlockAndUpdate(p, s.setValue(FarmlandBlock.MOISTURE, FarmlandBlock.MAX_MOISTURE));
+				level.setBlockAndUpdate(p, s.setValue(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE));
 				soaked++;
 			} else if (grown < TideRules.CROP_MAX && s.getBlock() instanceof CropBlock crop && !crop.isMaxAge(s) && take(cast, p)) {
 				level.setBlockAndUpdate(p, s.setValue(CropBlock.AGE, Math.min(crop.getMaxAge(), crop.getAge(s) + 1)));
@@ -661,7 +661,7 @@ public final class TideEffects {
 	}
 
 	private static void stormGlass(Cast cast) {
-		var weather = cast.level.getWeatherData();
+		var weather = cast.level.getLevelData();
 		int turn = TideRules.weatherTurn(weather.isRaining(), weather.getRainTime(), weather.getClearWeatherTime());
 		Component said = turn > 0 ? Component.translatable("message.wildercord.tide.rain_ends", turn)
 			: turn < 0 ? Component.translatable("message.wildercord.tide.rain_starts", -turn)
@@ -705,7 +705,7 @@ public final class TideEffects {
 			BlockState s = level.getBlockState(p);
 			String living = TideRules.livingCoral(BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath());
 			if (living == null || !touchesWater(level, p, s)) continue;
-			Block b = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(living));
+			Block b = BuiltInRegistries.BLOCK.getValue(Identifier.withDefaultNamespace(living));
 			if (b == Blocks.AIR || !take(cast, p)) continue;
 			level.setBlockAndUpdate(p, b.withPropertiesOf(s));
 			emit(level, ParticleTypes.BUBBLE, Vec3.atCenterOf(p), 6, 0.3);

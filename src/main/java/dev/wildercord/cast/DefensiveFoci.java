@@ -34,7 +34,7 @@ public final class DefensiveFoci {
  }
  private static final AttachmentType<Origin> ORIGIN=AttachmentRegistry.create(Wildercord.id("reprieve_origin"),b->b.persistent(Origin.CODEC));
  private static net.minecraft.world.damagesource.DamageSource source(ServerPlayer p){var origin=p.getAttached(ORIGIN);if(origin==null)return p.damageSources().magic();
-  try {var holder=p.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.parse(origin.type)));
+  try {var holder=p.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.Identifier.parse(origin.type)));
    net.minecraft.world.entity.Entity attacker=null;if(!origin.attacker.isEmpty())attacker=p.level().getEntity(java.util.UUID.fromString(origin.attacker));
    return new net.minecraft.world.damagesource.DamageSource(holder,attacker,attacker);
   }catch(IllegalArgumentException|IllegalStateException e){return p.damageSources().magic();}
@@ -75,7 +75,7 @@ public final class DefensiveFoci {
   Light.groundRing(player.level(),player.position(),0xD6BDFF,.2,.8,.025,12);
  }
  public static void defer(ServerPlayer player,float amount,net.minecraft.world.damagesource.DamageSource source){
-  String type=source.typeHolder().unwrapKey().map(k->k.location().toString()).orElse("minecraft:magic");
+  String type=source.typeHolder().unwrapKey().map(k->k.identifier().toString()).orElse("minecraft:magic");
   player.setAttached(ORIGIN,new Origin(type,source.getEntity()==null?"":source.getEntity().getStringUUID()));defer(player,amount);
  }
  public static Vec3 resist(LivingEntity target,Vec3 impulse) {

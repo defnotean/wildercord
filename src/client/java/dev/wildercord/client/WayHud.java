@@ -8,10 +8,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
 public final class WayHud {
 	private WayHud() {}
 
-	private static final ResourceLocation ID = Wildercord.id("aura_crossroads");
+	private static final Identifier ID = Wildercord.id("aura_crossroads");
 	/** The frames a standard's label was drawn, and the last Way named (the game tests read them). */
 	private static int labelFrames;
 	private static String lastNamed = "";
@@ -34,7 +35,8 @@ public final class WayHud {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, ID, WayHud::draw);
 	}
 
-	static void draw(GuiGraphicsExtractor g, DeltaTracker delta) {
+	static void draw(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
 		if (player == null || mc.level == null || mc.screen != null || mc.options.hideGui) {

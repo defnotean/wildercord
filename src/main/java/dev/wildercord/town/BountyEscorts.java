@@ -213,7 +213,7 @@ public final class BountyEscorts {
 		Town.Standing standing = Town.standing(player);
 		if (standing.bounty().isEmpty()) return;
 		Town.Active bounty = standing.bounty().get();
-		if (bounty.type() != BountyRules.Kind.ESCORT || !bounty.dimension().equals(player.level().dimension().location().toString())) return;
+		if (bounty.type() != BountyRules.Kind.ESCORT || !bounty.dimension().equals(player.level().dimension().identifier().toString())) return;
 		ServerLevel level = player.level();
 		Llama llama = llama(player);
 		if (llama == null) return;

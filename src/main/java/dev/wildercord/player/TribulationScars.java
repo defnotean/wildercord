@@ -4,7 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.spell.TribulationRules;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 public final class TribulationScars {
 	private TribulationScars() {}
 
-	private static final ResourceLocation HEALTH = Wildercord.id("tribulation_scars");
+	private static final Identifier HEALTH = Wildercord.id("tribulation_scars");
 
 	public static void init() {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> apply(handler.player)));

@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.FullChunkStatus;
@@ -113,7 +113,7 @@ public final class WorldUpgrades {
 		Files.writeString(s.directory.resolve(plan.siteId()+".preview.txt"),text.toString(),StandardCharsets.UTF_8);
 	}
 	static ServerLevel level(MinecraftServer server,UpgradePlan plan) {
-		return server.getLevel(ResourceKey.create(Registries.DIMENSION,ResourceLocation.parse(plan.dimension())));
+		return server.getLevel(ResourceKey.create(Registries.DIMENSION,Identifier.parse(plan.dimension())));
 	}
 	static UpgradeEngine.World world(ServerLevel level) {
 		var s=session(level.getServer());
@@ -158,7 +158,7 @@ public final class WorldUpgrades {
 	}
 	/** The only terrain reads are from the resident full chunk; structure starts/references are inspected locally. */
 	static String siteRefusal(ServerLevel level,UpgradePlan plan,boolean rollback) {
-		if(!level.dimension().location().toString().equals(plan.dimension()) || level.getSeed()!=plan.seed())return "Wrong world identity";
+		if(!level.dimension().identifier().toString().equals(plan.dimension()) || level.getSeed()!=plan.seed())return "Wrong world identity";
 		if(!level.dimension().equals(Level.OVERWORLD))return "Adapters support the Overworld only";
 		var chunk=level.getChunkSource().getChunkNow(plan.chunkX(),plan.chunkZ());
 		if(chunk==null || !chunk.getFullStatus().isOrAfter(FullChunkStatus.FULL))return "Chunk is unloaded/inaccessible; deferred without loading";
@@ -204,7 +204,7 @@ public final class WorldUpgrades {
 		var own=OWN_WRITE.get();
 		if(own!=null && !own.consumed && own.level==level && own.point.equals(point) && own.replacement.equals(replacement)){own.consumed=true;return true;}
 		var s=SESSIONS.get(level.getServer());if(s==null || s.engine==null)return true;
-		try{s.engine.fence(level.dimension().location().toString(),new UpgradePlan.Point(point.getX(),point.getY(),point.getZ()));return true;}
+		try{s.engine.fence(level.dimension().identifier().toString(),new UpgradePlan.Point(point.getX(),point.getY(),point.getZ()));return true;}
 		catch(IOException ex){s.disable();s.lastResult="Journal failed; protected-region write refused";Wildercord.LOGGER.error("Protected upgrade region write refused: durable edit fence unavailable",ex);return false;}
 	}
 	static BlockPos pos(UpgradePlan.Point point){return new BlockPos(point.x(),point.y(),point.z());}

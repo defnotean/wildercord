@@ -5,7 +5,7 @@ import dev.wildercord.player.WildercordAttachments.Soaring;
 import dev.wildercord.spell.SpellCompiler;
 import dev.wildercord.spell.SpellPlan;
 import dev.wildercord.world.dungeons.DungeonWards;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -112,7 +112,7 @@ public final class Soar {
 				rest(newPlayer);
 			}
 		});
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, from, to) -> end(player, Ending.TRAVELLED));
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, from, to) -> end(player, Ending.TRAVELLED));
 		// Coming down, a landing never hurts. (While flying, a player who may fly takes no fall damage anyway.)
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) ->
 			!(entity instanceof ServerPlayer player && source.is(DamageTypeTags.IS_FALL) && player.hasAttached(WildercordAttachments.SOARING)));

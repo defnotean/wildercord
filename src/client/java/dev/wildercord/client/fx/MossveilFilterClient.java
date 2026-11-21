@@ -11,8 +11,8 @@ public final class MossveilFilterClient{
  private record View(MossveilFilterCue cue,ClientLevel world,long born){}
  private static View active;private static ClientLevel lastWorld;private static long lastNonce=-1,local,accepted,pieces,retired;private static int emitted=-1;
  public static long accepted(){return accepted;}public static long pieces(){return pieces;}public static long retired(){return retired;}
- public static void init(){net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry.getInstance().register(MossveilParticles.FIBER,new MossveilFiberParticle.Provider());ClientPlayNetworking.registerGlobalReceiver(MossveilFilterCue.TYPE,(e,context)->{
-  var mc=context.client();if(mc.level==null||mc.player==null||!e.wearer().equals(mc.player.getUUID())||!mc.level.dimension().location().toString().equals(e.world())||Math.abs(mc.level.getGameTime()-e.tick())>40)return;
+ public static void init(){net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(MossveilParticles.FIBER,new MossveilFiberParticle.Provider());ClientPlayNetworking.registerGlobalReceiver(MossveilFilterCue.TYPE,(e,context)->{
+  var mc=context.client();if(mc.level==null||mc.player==null||!e.wearer().equals(mc.player.getUUID())||!mc.level.dimension().identifier().toString().equals(e.world())||Math.abs(mc.level.getGameTime()-e.tick())>40)return;
   if(lastWorld!=mc.level){lastWorld=mc.level;lastNonce=-1;}if(e.tick()<=lastNonce)return;
   var v=new View(e,mc.level,local);if(!current(mc,v))return;lastNonce=e.tick();active=v;emitted=-1;accepted++;
  });ClientTickEvents.END_CLIENT_TICK.register(MossveilFilterClient::tick);}

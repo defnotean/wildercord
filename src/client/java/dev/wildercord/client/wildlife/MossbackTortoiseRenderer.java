@@ -5,13 +5,11 @@ import com.mojang.math.Axis;
 import dev.wildercord.wildlife.MossbackTortoise;
 import dev.wildercord.wildlife.WildlifeRules.Garden;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelResolver;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,8 +23,6 @@ import java.util.Map;
  * small) rooted in the moss of its crown, following the shell as it rocks and settles. A baby's shell is bare.
  */
 public final class MossbackTortoiseRenderer extends WildlifeRenderer<MossbackTortoise, MossbackTortoiseModel> {
-	private static final BlockDisplayContext DISPLAY = BlockDisplayContext.create();
-
 	/** One plant: what it is, where on the crown (shell pixels, x and z), how big, and which way it's turned. */
 	private record Plant(BlockState block, float x, float z, float size, float turn) {}
 
@@ -47,13 +43,10 @@ public final class MossbackTortoiseRenderer extends WildlifeRenderer<MossbackTor
 			new Plant(Blocks.FERN.defaultBlockState(), -0.4F, 3.2F, 0.45F, 65)));
 	}
 
-	private final BlockModelResolver blocks;
-
 	public MossbackTortoiseRenderer(EntityRendererProvider.Context context) {
 		super(context, new MossbackTortoiseModel(context.bakeLayer(WildlifeRenderers.MOSSBACK_TORTOISE)), 0.95F,
 			WildlifeRenderers.texture("mossback_tortoise"));
-		this.blocks = context.getBlockModelResolver();
-		ResourceLocation glow = WildlifeRenderers.texture("mossback_tortoise_glow");
+		Identifier glow = WildlifeRenderers.texture("mossback_tortoise_glow");
 		glow(state -> glow);
 		addLayer(new GardenLayer(this));
 	}
@@ -67,7 +60,7 @@ public final class MossbackTortoiseRenderer extends WildlifeRenderer<MossbackTor
 		state.glow = 0.75F * WildlifeRenderers.night(tortoise.level());
 		List<Plant> plants = GARDENS.get(tortoise.garden());
 		for (int i = 0; i < state.garden.length; i++) {
-			blocks.update(state.garden[i], plants.get(i).block(), DISPLAY);
+			state.garden[i] = plants.get(i).block();
 		}
 	}
 
@@ -95,7 +88,7 @@ public final class MossbackTortoiseRenderer extends WildlifeRenderer<MossbackTor
 				// A plant sways a little on the walking shell.
 				dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.ZP, Mth.sin(state.ageInTicks * 0.08F + i * 2) * 3);
 				poseStack.translate(-0.5F, 0, -0.5F);
-				state.garden[i].submit(poseStack, collector, light, overlay, state.outlineColor);
+				collector.submitBlock(poseStack, state.garden[i], light, overlay, state.outlineColor);
 				poseStack.popPose();
 			}
 		}

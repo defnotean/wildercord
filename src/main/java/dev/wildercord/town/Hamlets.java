@@ -77,7 +77,7 @@ public final class Hamlets {
 	}
 
 	static String key(ServerLevel level, BlockPos bell) {
-		return level.dimension().location() + "|" + bell.asLong();
+		return level.dimension().identifier() + "|" + bell.asLong();
 	}
 
 	public static String name(BlockPos bell) {

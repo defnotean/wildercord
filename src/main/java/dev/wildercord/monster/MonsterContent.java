@@ -12,8 +12,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.ItemGroup;
-import net.minecraft.world.item.ItemGroups;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Rarity;
@@ -221,7 +221,7 @@ public final class MonsterContent {
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:karakuri_sentinel", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xC89048));
 		FabricDefaultAttributeRegistry.register(PAPER_LANTERN_SPIRIT, PaperLanternSpirit.createAttributes());
 		dev.wildercord.spell.FieldGuide.add(new dev.wildercord.spell.FieldGuide.Entry("wildercord:paper_lantern_spirit", dev.wildercord.spell.FieldGuide.Group.MONSTER, 0xF06848));
-		ResourceKey<ItemGroup> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
+		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
 		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> {
 			output.accept(LIVING_BRAMBLE);
 			output.accept(SHADOW_PELT);
@@ -230,6 +230,6 @@ public final class MonsterContent {
 			output.accept(MANA_GEL);
 			SPAWN_EGGS.forEach(output::accept);
 		});
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(output -> SPAWN_EGGS.forEach(output::accept));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> SPAWN_EGGS.forEach(output::accept));
 	}
 }

@@ -2,7 +2,8 @@ package dev.wildercord.client.fx;
 
 import dev.wildercord.net.WildercordNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import org.joml.Matrix4f;
@@ -189,7 +190,8 @@ public final class ScreenEffects {
 	 * last stage they redden and close faster as the moment it would tear loose comes on. Only the
 	 * caster sees it (everyone sees the circle crack), and the screen-effect setting softens it.
 	 */
-	public static void drawStrain(GuiGraphicsExtractor g, net.minecraft.client.DeltaTracker delta) {
+	public static void drawStrain(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.player == null || mc.level == null) {
 			return;
@@ -272,7 +274,8 @@ public final class ScreenEffects {
 	}
 
 	/** A Domain's tint: a soft coloured band around the edges of the screen. */
-	public static void drawTint(GuiGraphicsExtractor g) {
+	public static void drawTint(GuiGraphics wcG) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 		if (tintAlpha <= 0.01F) {
 			return;
 		}

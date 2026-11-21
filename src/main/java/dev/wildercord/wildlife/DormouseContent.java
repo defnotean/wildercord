@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
-import net.minecraft.world.item.ItemGroups;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +44,7 @@ public final class DormouseContent {
 			(type, level, reason, pos, random) -> WildlifeSpawns.cave(WildlifeRules.GLOWBERRY_DORMOUSE, type, GROUND, level, reason, pos, random));
 		WildlifeSpawns.join(WildlifeRules.GLOWBERRY_DORMOUSE, GLOWBERRY_DORMOUSE);
 		FieldGuide.add(new FieldGuide.Entry("wildercord:glowberry_dormouse", FieldGuide.Group.WILDLIFE, 0xE8A43C));
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(output -> output.accept(EGG));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
 		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
 	}
 }

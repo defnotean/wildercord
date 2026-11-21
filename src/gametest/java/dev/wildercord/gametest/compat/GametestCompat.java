@@ -12,7 +12,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.narration.NarrationThunk;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -83,8 +83,14 @@ public final class GametestCompat {
 	}
 
 	public static void extractMainCamera(GameRenderer gameRenderer, CameraRenderState camera, DeltaTracker delta) {
-		var mainCam = gameRenderer.getMainCamera();
-		mainCam.extractRenderState(camera, mainCam.getCameraEntityPartialTicks(delta));
+		// 1.21.11 has no MainCamera.extractRenderState: the level render state carries the camera's, filled by the last frame.
+		gameRenderer.updateCamera(delta);
+		CameraRenderState source = gameRenderer.getLevelRenderState().cameraRenderState;
+		camera.blockPos = source.blockPos;
+		camera.pos = source.pos;
+		camera.initialized = source.initialized;
+		camera.entityPos = source.entityPos;
+		camera.orientation = source.orientation;
 	}
 
 	public static BlockPos findNearestStructure(ServerLevel level, Holder<Structure> structure, BlockPos origin,

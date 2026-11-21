@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.entity.player.PlayerModelType;
 
 /** One reload-owned shell adapter belonging to exactly one primary player body. */
@@ -67,7 +67,7 @@ public final class ArticulatedAuraShellRenderer {
 			PoseStack stack, SubmitNodeCollector collector) {
 		// Match AuraShellLayer exactly: eyes texture, order one, live ARGB, fullbright, no overlay
 		// and outline zero. A body/team outline must not invent a separate shell outline.
-		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), model, palette, stack, material, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
+		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), model, palette, stack, material, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
 	}
 	public PlayerModel owner() { return owner; }
 	public ArticulatedAuraShellGeometry worldModel() { return world; }

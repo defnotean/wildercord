@@ -3,9 +3,8 @@ package dev.wildercord.runesmith;
 import com.google.common.collect.ImmutableSet;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordItems;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.object.builder.v1.world.poi.PoiHelper;
+import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,7 +18,6 @@ import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.trading.TradeSet;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -56,28 +54,19 @@ public final class Runesmith {
 		return block;
 	}
 
-	private static ResourceKey<TradeSet> trades(int level) {
-		return ResourceKey.create(Registries.TRADE_SET, Wildercord.id("runesmith/level_" + level));
-	}
-
 	public static void init() {
-		PoiHelper.register(POI.location(), 1, 1, SCRIBING_DESK);
+		PointOfInterestHelper.register(POI.identifier(), 1, 1, SCRIBING_DESK);
 		Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, PROFESSION, new VillagerProfession(
 			Component.translatable("entity.wildercord.villager.runesmith"),
 			poi -> poi.is(POI),
 			poi -> poi.is(POI),
 			ImmutableSet.of(),
 			ImmutableSet.of(),
-			SoundEvents.VILLAGER_WORK_LIBRARIAN,
-			Int2ObjectMap.ofEntries(
-				Int2ObjectMap.entry(1, trades(1)),
-				Int2ObjectMap.entry(2, trades(2)),
-				Int2ObjectMap.entry(3, trades(3)),
-				Int2ObjectMap.entry(4, trades(4)),
-				Int2ObjectMap.entry(5, trades(5)))));
+			SoundEvents.VILLAGER_WORK_LIBRARIAN));
+		VillagerTradeCompat.init();
 		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("random_rune"), RandomRuneFunction.MAP_CODEC);
 		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
-			.register(output -> output.insertAfter(WildercordItems.TRAINING_DUMMY, SCRIBING_DESK));
+			.register(output -> output.addAfter(WildercordItems.TRAINING_DUMMY, SCRIBING_DESK));
 		DuplicateSwap.init();
 		Contracts.init();
 	}

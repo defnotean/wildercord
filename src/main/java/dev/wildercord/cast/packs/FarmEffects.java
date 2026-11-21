@@ -17,7 +17,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -56,7 +56,7 @@ import net.minecraft.world.level.block.CaveVines;
 import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.FarmlandBlock;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -226,13 +226,13 @@ public final class FarmEffects {
 		int wetted = 0;
 		for (BlockPos p : patch(center, r, 1)) {
 			BlockState state = cast.level.getBlockState(p);
-			if (!state.is(Blocks.FARMLAND) || state.getValue(FarmlandBlock.MOISTURE) >= FarmlandBlock.MAX_MOISTURE || !mayChange(cast, p)) {
+			if (!state.is(Blocks.FARMLAND) || state.getValue(FarmBlock.MOISTURE) >= FarmBlock.MAX_MOISTURE || !mayChange(cast, p)) {
 				continue;
 			}
 			if (first ? !cast.takeBlock() : wetted >= FarmRules.PULSE_BLOCKS) {
 				break;
 			}
-			cast.level.setBlock(p, state.setValue(FarmlandBlock.MOISTURE, FarmlandBlock.MAX_MOISTURE), Block.UPDATE_CLIENTS);
+			cast.level.setBlock(p, state.setValue(FarmBlock.MOISTURE, FarmBlock.MAX_MOISTURE), Block.UPDATE_CLIENTS);
 			wetted++;
 		}
 		Vec3 at = Vec3.atCenterOf(center).add(0, 1.5, 0);
@@ -1099,12 +1099,12 @@ public final class FarmEffects {
 		if (!state.is(BlockTags.LOGS)) {
 			return null;
 		}
-		ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+		Identifier id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
 		String path = FarmRules.strippedPath(id.getPath());
 		if (path == null) {
 			return null;
 		}
-		Block bare = BuiltInRegistries.BLOCK.getOptional(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), path)).orElse(null);
+		Block bare = BuiltInRegistries.BLOCK.getOptional(Identifier.fromNamespaceAndPath(id.getNamespace(), path)).orElse(null);
 		if (bare == null || bare == Blocks.AIR || bare == state.getBlock()) {
 			return null;
 		}

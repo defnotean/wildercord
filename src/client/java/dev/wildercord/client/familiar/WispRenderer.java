@@ -16,12 +16,12 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -50,8 +50,8 @@ import java.util.WeakHashMap;
  */
 public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("wisp"), "main");
-	private static final ResourceLocation BODY = Wildercord.id("textures/entity/wisp.png");
-	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/wisp_glow.png");
+	private static final Identifier BODY = Wildercord.id("textures/entity/wisp.png");
+	private static final Identifier GLOW = Wildercord.id("textures/entity/wisp_glow.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spell glows. */
 	private static final RenderType GLOW_TYPE = RenderCompat.wispGlowRenderType(GLOW);
@@ -64,7 +64,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	/** The body's half-width at level 1. */
 	private static final float SIZE = 0.16F;
 	private static final int TAIL = 9;
-	private static final int FULL = LightCoordsUtil.FULL_BRIGHT;
+	private static final int FULL = LightTexture.FULL_BRIGHT;
 
 	/** Where each wisp in view has been, a tick at a time: its tail. */
 	private static final Map<Wisp, Trail> TRAILS = new WeakHashMap<>();
@@ -74,7 +74,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(WispRenderState state) {
+	public Identifier getTextureLocation(WispRenderState state) {
 		return BODY;
 	}
 

@@ -10,13 +10,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
@@ -32,7 +32,7 @@ import java.util.WeakHashMap;
  * tree when nothing holds it up.
  */
 public final class SerpentRenderer extends CullableEntityRenderer<RootcoilSerpent,SerpentRenderState> {
-	private static final ResourceLocation SKIN=Wildercord.id("textures/entity/rootcoil_serpent/skin.png"),GLOW=Wildercord.id("textures/entity/rootcoil_serpent/glow.png");
+	private static final Identifier SKIN=Wildercord.id("textures/entity/rootcoil_serpent/skin.png"),GLOW=Wildercord.id("textures/entity/rootcoil_serpent/glow.png");
 	/** Texture size, the ring's sides, and how much wider than tall the body is. */
 	static final float TEX_W=128,TEX_H=64;
 	private static final int SIDES=8;
@@ -60,7 +60,7 @@ public final class SerpentRenderer extends CullableEntityRenderer<RootcoilSerpen
 	}
 
 	@Override public void extractRenderState(RootcoilSerpent serpent,SerpentRenderState state,float partial){
-		super.extractRenderState(serpent,state,partial);
+		super.extractRenderState(serpent, state, partial);
 		Level level=serpent.level();
 		int move=serpent.move();float elapsed=serpent.elapsed(partial);double time=level.getGameTime()+partial;
 		Vec3 foot=serpent.trunk();double[] trunk={foot.x,foot.y,foot.z};float rest=serpent.rest();
@@ -87,8 +87,8 @@ public final class SerpentRenderer extends CullableEntityRenderer<RootcoilSerpen
 		for(int i=0;i<world.length;i++){
 			state.joints[i*3]=(float)(world[i][0]-ox);state.joints[i*3+1]=(float)(world[i][1]-oy);state.joints[i*3+2]=(float)(world[i][2]-oz);
 			at.set(world[i][0],world[i][1]+.3,world[i][2]);
-			// 26.1.2 LightCoordsUtil has no Level overload: pack the two layers by hand.
-			state.lights[i]=LightCoordsUtil.pack(level.getBrightness(LightLayer.BLOCK,at),level.getBrightness(LightLayer.SKY,at));
+			// 26.1.2 LightTexture has no Level overload: pack the two layers by hand.
+			state.lights[i]=LightTexture.pack(level.getBrightness(LightLayer.BLOCK,at),level.getBrightness(LightLayer.SKY,at));
 		}
 		if(SerpentRules.scripted(move)){
 			double x=world[0][0]-world[1][0],y=world[0][1]-world[1][1],z=world[0][2]-world[1][2],l=Math.max(1e-6,Math.sqrt(x*x+y*y+z*z));

@@ -5,12 +5,12 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 
 /** Native ward adapter checks on the actual connected body; admission/payment is covered separately. */
 public final class ArtWardsHardeningTest implements FabricClientGameTest {
-	private static final ResourceLocation MODIFIER = Wildercord.id("art_unmoved");
+	private static final Identifier MODIFIER = Wildercord.id("art_unmoved");
 	private Plan active;
 	private static SetterProbe setterProbe;
 	private static final class SetterProbe {
@@ -83,13 +83,13 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 	}
 
 	@Override public void runTest(ClientGameTestContext context) {
-		ResourceLocation early = Wildercord.id("hardening_test_early"), late = Wildercord.id("hardening_test_late");
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.addPhaseOrdering(early, Event.DEFAULT_PHASE);
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.addPhaseOrdering(Event.DEFAULT_PHASE, late);
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register(early, (player, origin, destination) -> {
+		Identifier early = Wildercord.id("hardening_test_early"), late = Wildercord.id("hardening_test_late");
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.addPhaseOrdering(early, Event.DEFAULT_PHASE);
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.addPhaseOrdering(Event.DEFAULT_PHASE, late);
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(early, (player, origin, destination) -> {
 			if (active != null && active.player == player && earlyTransition != null) earlyTransition.accept(new Transition(player, origin, destination));
 		});
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register(late, (player, origin, destination) -> {
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(late, (player, origin, destination) -> {
 			if (active != null && active.player == player && lateTransition != null) lateTransition.accept(new Transition(player, origin, destination));
 		});
 		ServerPlayerEvents.AFTER_RESPAWN.addPhaseOrdering(early, Event.DEFAULT_PHASE);

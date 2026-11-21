@@ -80,6 +80,6 @@ public final class RootmoltContent {
   });
   BiomeModifications.create(Wildercord.id("rootmolt_caves")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS)),c -> {var s=Config.get().wildlife();if(s.spawns("rootmolt_strider"))dev.wildercord.compat.McWorldgen.addSpawn(c.getMobSpawnSettings(), MobCategory.MONSTER, STRIDER, 1, 1, Math.max(1,(int)(3*Math.max(1,s.spawnMultiplier()))));});
   FieldGuide.add(new FieldGuide.Entry("wildercord:rootmolt_strider",FieldGuide.Group.WILDLIFE,0xAB926B));
-  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(EGG));ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(o -> o.accept(EGG));
+  ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> o.accept(EGG));ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(o -> o.accept(EGG));
  }
 }

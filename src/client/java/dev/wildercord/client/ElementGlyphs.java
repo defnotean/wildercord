@@ -1,7 +1,7 @@
 package dev.wildercord.client;
 
 import dev.wildercord.spell.RuneColors;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 
 import java.util.Map;
 

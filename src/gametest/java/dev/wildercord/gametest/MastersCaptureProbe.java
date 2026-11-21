@@ -5,9 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.renderer.Projection;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -18,7 +17,7 @@ import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /** Test-only observations of the screenshot's native submit paths and unmodified framebuffer. */
 public final class MastersCaptureProbe {
@@ -59,7 +58,7 @@ public final class MastersCaptureProbe {
 	}
 
 	/** Observe the native player-HUD sprites, including the actual heart/armor rows and hotbar. */
-	public static void hudSprite(ResourceLocation sprite, int x, int y, int width, int height, int guiWidth, int guiHeight) {
+	public static void hudSprite(Identifier sprite, int x, int y, int width, int height, int guiWidth, int guiHeight) {
 		if (!armed || !sprite.getNamespace().equals("minecraft")) return;
 		String path = sprite.getPath();
 		if (!(path.startsWith("hud/hotbar") || path.startsWith("hud/heart/") || path.startsWith("hud/armor_")
@@ -84,9 +83,10 @@ public final class MastersCaptureProbe {
 		Minecraft mc = Minecraft.getInstance();
 		var camera = new CameraRenderState();
 		dev.wildercord.gametest.compat.GametestCompat.extractMainCamera(mc.gameRenderer, camera, DELTA);
-		var projection = new Projection();
-		projection.setupPerspective(.05F, camera.depthFar, camera.hudFov, mc.getWindow().getWidth(), mc.getWindow().getHeight());
-		var matrix = projection.getMatrix(new org.joml.Matrix4f()).mul(RenderSystem.getModelViewStack()).mul(pose.last().pose());
+		var projection = new org.joml.Matrix4f().perspective((float) Math.toRadians(70.0),
+			(float) mc.getWindow().getWidth() / (float) Math.max(1, mc.getWindow().getHeight()), .05F,
+			net.minecraft.client.renderer.GameRenderer.PROJECTION_3D_HUD_Z_FAR);
+		var matrix = new org.joml.Matrix4f(projection).mul(RenderSystem.getModelViewStack()).mul(pose.last().pose());
 		handProjection = matrix.get(new float[16]);
 		double[] bounds = {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY};
 		item.visitExtents(point -> {
@@ -113,7 +113,9 @@ public final class MastersCaptureProbe {
 			Vec3 eye = camera.position();
 			check(eye.distanceTo(mc.player.getEyePosition()) > 2, "Third-person camera must not collapse into the fighter");
 			var torso = mc.player.position().add(0, 1, 0).subtract(eye);
-			var projected = camera.getViewRotationProjectionMatrix(new org.joml.Matrix4f())
+			var viewRot = new org.joml.Matrix4f().rotation(camera.rotation());
+			viewRot.invert();
+			var projected = mc.gameRenderer.getProjectionMatrix(70F).mul(viewRot)
 				.transform(new org.joml.Vector4f((float) torso.x, (float) torso.y, (float) torso.z, 1));
 			check(projected.isFinite() && projected.w > 0 && Math.abs(projected.x / projected.w) < .85
 				&& Math.abs(projected.y / projected.w) < .85, "The native body must occupy the camera viewport");

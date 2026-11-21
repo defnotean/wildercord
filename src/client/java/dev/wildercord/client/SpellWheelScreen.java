@@ -16,15 +16,16 @@ import dev.wildercord.spell.RuneFamily;
 import dev.wildercord.spell.SpellCompiler;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.KeyBinding;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.KeyMapping;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.List;
@@ -42,9 +43,9 @@ import java.util.Locale;
  * key is down: it waits for the key's own release event instead.
  */
 public class SpellWheelScreen extends Screen {
-	private static final ResourceLocation RING = Wildercord.id("wheel/ring");
-	private static final ResourceLocation NODE = Wildercord.id("wheel/node");
-	private static final ResourceLocation NODE_HOVER = Wildercord.id("wheel/node_hover");
+	private static final Identifier RING = Wildercord.id("wheel/ring");
+	private static final Identifier NODE = Wildercord.id("wheel/node");
+	private static final Identifier NODE_HOVER = Wildercord.id("wheel/node_hover");
 	private static final int RADIUS = 60;
 	/** Labels sit just outside the 180-wide disc. */
 	private static final int LABEL_RADIUS = 97;
@@ -52,7 +53,7 @@ public class SpellWheelScreen extends Screen {
 	private static final int TEXT = 0xFFE8E4F4;
 	private static final int DIM = 0xFF8A84A0;
 
-	private final KeyBinding key;
+	private final KeyMapping key;
 	/** The pointed node (an index into {@link #slots()}), or -1. */
 	private int hovered = -1;
 	private int opened;
@@ -65,7 +66,7 @@ public class SpellWheelScreen extends Screen {
 	/** Let go without pointing: the wheel stays open until a choice or Esc. */
 	private boolean toggled;
 
-	public SpellWheelScreen(KeyBinding key) {
+	public SpellWheelScreen(KeyMapping key) {
 		super(Component.translatable("screen.wildercord.wheel"));
 		this.key = key;
 	}
@@ -167,8 +168,9 @@ public class SpellWheelScreen extends Screen {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
-		super.extractRenderState(g, mouseX, mouseY, partial);
+	public void render(GuiGraphics wcGui, int mouseX, int mouseY, float partial) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+		super.render(wcGui, mouseX, mouseY, partial);
 		CordTier tier = tier();
 		if (tier == null) {
 			return;

@@ -163,7 +163,7 @@ public final class Wards {
 		});
 		// The copy made in the other world keeps the held one's "no gravity" but not always the note of what it had
 		// before, so it's given back from the original, which knows.
-		net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_ENTITY_CHANGE_LEVEL.register((original, copy, from, to) -> {
+		net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register((original, copy, from, to) -> {
 			Stasis stasis = STASIS.get(original.getUUID());
 			Held held = HELD.get(original.getUUID());
 			Boolean noted = original.getAttached(WildercordAttachments.HELD_GRAVITY);

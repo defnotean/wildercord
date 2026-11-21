@@ -4,7 +4,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.menu.BackpackMenu;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -186,7 +186,7 @@ public final class Backpacks {
 		}
 		spillOverflow(player, place.stack(player));
 		BackpackTier[] opened = new BackpackTier[1];
-		ExtendedMenuProvider<BackpackMenu.Opening> provider = new ExtendedMenuProvider<>() {
+		ExtendedScreenHandlerFactory<BackpackMenu.Opening> provider = new ExtendedScreenHandlerFactory<>() {
 			private Component title = Component.empty();
 
 			@Override

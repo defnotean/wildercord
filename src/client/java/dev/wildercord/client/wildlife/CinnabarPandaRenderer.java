@@ -8,13 +8,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /** The cinnabar panda, rust-red and black with its white mask and ringed tail. */
 public final class CinnabarPandaRenderer extends WildlifeRenderer<CinnabarPanda, CinnabarPandaModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("cinnabar_panda"), "main");
-	private static final ResourceLocation TEXTURE = WildlifeRenderers.texture("cinnabar_panda");
+	private static final Identifier TEXTURE = WildlifeRenderers.texture("cinnabar_panda");
 	static final float SIZE = 0.95F;
 
 	public CinnabarPandaRenderer(EntityRendererProvider.Context context) {

@@ -1,7 +1,8 @@
 package dev.wildercord.client.wildlife;
 
-import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * What every wildlife model needs to pose and light itself, filled by its renderer each frame. Each creature reads only
@@ -55,5 +56,5 @@ public class WildlifeRenderState extends LivingEntityRenderState {
 	public int barding;
 
 	/** A tortoise's garden: up to three plants, each a block model drawn small on its shell. */
-	public final BlockModelRenderState[] garden = {new BlockModelRenderState(), new BlockModelRenderState(), new BlockModelRenderState()};
+	public final BlockState[] garden = {Blocks.air().defaultBlockState(), Blocks.air().defaultBlockState(), Blocks.air().defaultBlockState()};
 }

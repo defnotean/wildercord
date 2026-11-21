@@ -3,7 +3,7 @@ import dev.wildercord.content.VoidOption;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 
 /** Original dark interiors, material edge contrast and timed spatial fragments; no screen overlay. */
 public final class VoidParticle extends SingleQuadParticle implements SigilGroup.Extent {
@@ -39,7 +39,7 @@ public final class VoidParticle extends SingleQuadParticle implements SigilGroup
   setSprite(frames[age<lifetime/2?0:1]);
  }
  @Override protected Layer getLayer(){return Layer.TRANSLUCENT;}
- @Override public int getLightCoords(float partial){return material.style()==VoidOption.SCULK || material.style()==VoidOption.PRESSURE?LightCoordsUtil.FULL_BRIGHT:super.getLightCoords(partial);}
+ @Override public int getLightCoords(float partial){return material.style()==VoidOption.SCULK || material.style()==VoidOption.PRESSURE?LightTexture.FULL_BRIGHT:super.getLightCoords(partial);}
  @Override public ParticleRenderType getGroup(){return SigilGroup.TYPE;}
  @Override public double centreX(){return x;}
  @Override public double centreY(){return y;}

@@ -23,7 +23,7 @@ public final class LifeOutcomeClient {
  public static void init(){
   ClientPlayNetworking.registerGlobalReceiver(LifeOutcomePayload.TYPE,(event,context)->{
    var mc=context.client();var world=mc.level;
-   if(world==null||mc.player==null||!world.dimension().location().toString().equals(event.dimension())
+   if(world==null||mc.player==null||!world.dimension().identifier().toString().equals(event.dimension())
     ||!world.hasChunkAt(BlockPos.containing(event.anchor())))return;
    if(PENDING.size()>=128){dropped++;return;}
    PENDING.add(new Pending(event,world,world.getGameTime()));
@@ -40,7 +40,7 @@ public final class LifeOutcomeClient {
   for(var pending:batch){
    var event=pending.event();long now=mc.level.getGameTime();
    if(pending.world()!=mc.level||now-pending.received()>2||now-pending.received()<0
-    ||Math.abs(now-event.tick())>40||!mc.level.dimension().location().toString().equals(event.dimension())
+    ||Math.abs(now-event.tick())>40||!mc.level.dimension().identifier().toString().equals(event.dimension())
     ||!mc.level.hasChunkAt(BlockPos.containing(event.anchor())))continue;
    // A secondary is decorative direction only; stale/unloaded history must not request a chunk.
    Vec3 second=event.secondary();if(second!=null&&!mc.level.hasChunkAt(BlockPos.containing(second)))second=null;

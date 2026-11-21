@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -240,7 +240,7 @@ public class RimecoatWolverine extends WildMonster {
 		if (now % 5 == 0) {
 			playSound(SoundEvents.FOX_EAT, 0.8F, 0.8F + random.nextFloat() * 0.2F);
 			Vec3 mouth = position().add(getLookAngle().multiply(0.8, 0, 0.8)).add(0, 0.3, 0);
-			level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(food)), mouth.x, mouth.y, mouth.z,
+			level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, ItemStack.fromNonEmptyStack(food)), mouth.x, mouth.y, mouth.z,
 				4, 0.1, 0.05, 0.1, 0.05);
 		}
 		if (now >= eatingUntil) {

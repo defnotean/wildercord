@@ -4,9 +4,9 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -146,12 +146,12 @@ public final class ShieldBreak {
 			int rgb = lerp(color, 0xFFFFFF, Math.min(1, 0.45F + glint));
 			int argb = (Mth.clamp((int) (alpha * 255), 0, 255) << 24) | rgb;
 			state.add(GlowLayers.GLOW, px, py, pz, q.x, q.y, q.z, q.w, size, glass.getU0(), glass.getU1(), glass.getV0(), glass.getV1(), argb,
-				LightCoordsUtil.FULL_BRIGHT);
+				LightTexture.FULL_BRIGHT);
 		}
 
 		@Override
 		public int getLightCoords(float partial) {
-			return LightCoordsUtil.FULL_BRIGHT;
+			return LightTexture.FULL_BRIGHT;
 		}
 
 		@Override
@@ -287,12 +287,12 @@ public final class ShieldBreak {
 			Quaternionf q = new Quaternionf().setFromNormalized(new Matrix3f(d, y, z));
 			float half = Math.max(length / 2 * 1.1F, w);
 			state.add(GlowLayers.GLOW, mid.x, mid.y, mid.z, q.x, q.y, q.z, q.w, half, sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(),
-				argb, LightCoordsUtil.FULL_BRIGHT);
+				argb, LightTexture.FULL_BRIGHT);
 		}
 
 		@Override
 		public int getLightCoords(float partial) {
-			return LightCoordsUtil.FULL_BRIGHT;
+			return LightTexture.FULL_BRIGHT;
 		}
 
 		@Override

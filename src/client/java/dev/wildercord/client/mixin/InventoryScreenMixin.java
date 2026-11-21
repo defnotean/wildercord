@@ -3,7 +3,7 @@ package dev.wildercord.client.mixin;
 import dev.wildercord.client.GearTray;
 import dev.wildercord.client.SlotWell;
 import dev.wildercord.menu.CordSlot;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.inventory.InventoryMenu;

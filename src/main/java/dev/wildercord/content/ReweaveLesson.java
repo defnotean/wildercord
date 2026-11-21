@@ -7,7 +7,7 @@ import dev.wildercord.content.dungeons.DungeonAltarBlockEntity;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.MasterStudies;
 import dev.wildercord.spell.MasterStudyRules;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -87,7 +87,7 @@ public final class ReweaveLesson {
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> RelayLesson.removeInvalid(READINGS, ReweaveLesson::valid, ReweaveLesson::interrupted));
 		dev.wildercord.net.ServerDisconnects.register((handler, server) -> READINGS.remove(handler.player));
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, from, to) -> retire(player));
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, from, to) -> retire(player));
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> READINGS.remove(oldPlayer));
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof ServerPlayer player) retire(player);

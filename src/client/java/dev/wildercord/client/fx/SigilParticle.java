@@ -1,17 +1,17 @@
 package dev.wildercord.client.fx;
 
 import dev.wildercord.content.SigilOption;
-import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteSet;
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -31,7 +31,7 @@ import org.joml.Vector3f;
  */
 public class SigilParticle extends SingleQuadParticle implements SigilGroup.Extent {
 	/** Sprites in {@link SigilOption} style order, set when the provider is created. */
-	static FabricSpriteSet sprites;
+	static FabricSpriteProvider sprites;
 
 	protected float yaw;
 	protected float pitch;
@@ -588,7 +588,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 		if ((argb >>> 24) < 3 || half <= 0) {
 			return;
 		}
-		int light = LightCoordsUtil.FULL_BRIGHT;
+		int light = LightTexture.FULL_BRIGHT;
 		plane.transform(at.set(u, v, 0.002F));
 		turnQ.set(plane).rotateZ(rot);
 		drawing.add(layer, px + at.x, py + at.y, pz + at.z, turnQ.x, turnQ.y, turnQ.z, turnQ.w, half,
@@ -601,7 +601,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 
 	@Override
 	public int getLightCoords(float partial) {
-		return LightCoordsUtil.FULL_BRIGHT;
+		return LightTexture.FULL_BRIGHT;
 	}
 
 	@Override
@@ -656,7 +656,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 	}
 
 	public static class Provider implements ParticleProvider<SigilOption> {
-		public Provider(FabricSpriteSet set) {
+		public Provider(FabricSpriteProvider set) {
 			sprites = set;
 		}
 

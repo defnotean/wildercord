@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/** Renderers that pick a texture by name every frame look it up in a cache instead of building a new ResourceLocation each time. */
+/** Renderers that pick a texture by name every frame look it up in a cache instead of building a new Identifier each time. */
 class TextureIdCacheTest {
 	private static final Path CLIENT = Path.of("src/client/java/dev/wildercord/client");
 
@@ -19,7 +19,7 @@ class TextureIdCacheTest {
 			String source = Files.readString(CLIENT.resolve(file));
 			assertTrue(source.contains("computeIfAbsent"), file + " no longer caches its textures");
 			assertFalse(source.matches("(?s).*return Wildercord\\.id\\(\"textures/[^\"]*\" \\+.*"), file + " builds a texture id on every call");
-			assertFalse(source.contains("ResourceLocation skin = Wildercord.id(") || source.contains("ResourceLocation texture = Wildercord.id("), file + " builds a texture id every frame");
+			assertFalse(source.contains("Identifier skin = Wildercord.id(") || source.contains("Identifier texture = Wildercord.id("), file + " builds a texture id every frame");
 		}
 	}
 }

@@ -7,19 +7,20 @@ import dev.wildercord.content.Inscription;
 import dev.wildercord.spell.MasteryRules;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -60,7 +61,7 @@ public final class MasteryClient {
 			prompt = false;
 			Titles.SHOWN.clear();
 		});
-		ClientTooltipComponentCallback.EVENT.register(data -> data instanceof Inscription inscription ? new SigilTooltip(inscription) : null);
+		TooltipComponentCallback.EVENT.register(data -> data instanceof Inscription inscription ? new SigilTooltip(inscription) : null);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("mastery_titles"), Titles::extract);
 	}
 
@@ -68,7 +69,7 @@ public final class MasteryClient {
 
 	/** "Your spell grows: Adept", with the spell's name in its colour and its sigil where an item would sit. */
 	public static final class RankToast implements Toast {
-		private static final ResourceLocation BACKGROUND = Wildercord.id("toast/grimoire");
+		private static final Identifier BACKGROUND = Wildercord.id("toast/grimoire");
 		private static final long SHOW_MS = 6000;
 		private final MasteryChoices.Rise rise;
 		private Visibility visibility = Visibility.SHOW;
@@ -103,7 +104,8 @@ public final class MasteryClient {
 		}
 
 		@Override
-		public void extractRenderState(GuiGraphicsExtractor g, Font font, long fullyVisibleForMs) {
+		public void render(GuiGraphics wcGui, Font font, long fullyVisibleForMs) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 			g.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 0, 0, width(), height());
 			int color = 0xFF000000 | rise.color();
 			GuiSpellCircle.ring(g, 16, 16, 9, 1, color);
@@ -158,7 +160,8 @@ public final class MasteryClient {
 			return SHOWN.stream().filter(s -> now >= s.start() && now - s.start() <= TICKS).map(Shown::name).toList();
 		}
 
-		static void extract(GuiGraphicsExtractor g, DeltaTracker delta) {
+		static void extract(GuiGraphics wcG, DeltaTracker delta) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 			Minecraft mc = Minecraft.getInstance();
 			if (mc.level == null || SHOWN.isEmpty()) {
 				return;
