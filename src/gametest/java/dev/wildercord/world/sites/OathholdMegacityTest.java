@@ -222,22 +222,22 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			lookAt(context, world, ox - 546, by + 50, oz + 64, ox - 612, by + 10, oz, 10, 72);
 			shot(context, "oathhold_05_outer_metropolis_colosseum");
 
-			lookAt(context, world, ox + 528, by + 22, oz + 88, ox + 760, by + 10, oz - 58, 16, 74);
+			lookAt(context, world, ox + 528, by + 22, oz + 88, ox + 760, by + 10, oz - 58, 18, 74);
 			shot(context, "oathhold_06_harbor_and_outer_gate");
 
-			lookAt(context, world, ox + 2.5, by + 3.0, oz + 340, ox, by + 8, oz + 250, 12, 74);
+			lookAt(context, world, ox + 3.5, by + 2.5, oz + 446, ox, by + 9.0, oz + 360, 16, 76);
 			shot(context, "oathhold_07_causeway_boulevard_sidewalk");
 
-			lookAt(context, world, ox + 15.5, by + 3.0, oz + 102, ox - 4, by + 6, oz + 12, 12, 74);
+			lookAt(context, world, ox + 13.5, by + 2.5, oz + 110, ox + 1.0, by + 4.0, oz + 56, 14, 76);
 			shot(context, "oathhold_08_canal_promenade_alley");
 
-			lookAt(context, world, ox - 24, by + OathholdOrigin.ACROPOLIS_Y + 4.0, oz - 52, ox + 8, by + OathholdOrigin.ACROPOLIS_Y + 18, oz - 118, 12, 76);
+			lookAt(context, world, ox - 5.5, by + OathholdOrigin.ACROPOLIS_Y + 4.5, oz - 48, ox + 4, by + OathholdOrigin.ACROPOLIS_Y + 16, oz - 112, 14, 80);
 			shot(context, "oathhold_09_acropolis_esplanade");
 
-			lookAt(context, world, ox + 60, by + 2.0, oz + 123, ox + 40, by + 4.0, oz + 100, 8, 76);
+			lookAt(context, world, ox + 64.5, by + 1.0, oz + 124.5, ox + 45, by + 2.3, oz + 103, 8, 78);
 			shot(context, "oathhold_10_townhouse_shop_interior");
 
-			lookAt(context, world, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 3.0, oz - 96, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 8, oz - 182, 8, 76);
+			lookAt(context, world, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 2.5, oz - 95, ox + 150.5, by + OathholdOrigin.ACROPOLIS_Y + 9.0, oz - 180, 8, 78);
 			shot(context, "oathhold_11_cathedral_nave_interior");
 		}
 	}

@@ -298,6 +298,9 @@ public final class OathholdStreetscape {
 		int minZ = Math.min(z0, z1), maxZ = Math.max(z0, z1);
 		if (!c.intersects(minX, minZ, maxX, maxZ)) return;
 		BlockState curb = OathholdCanvas.slab(Blocks.STONE_BRICK_SLAB, false);
+		boolean compactKnot = (maxX - minX) >= 6 && (maxX - minX) <= 12 && (maxZ - minZ) >= 6 && (maxZ - minZ) <= 12;
+		int midX = (minX + maxX) / 2;
+		int midZ = (minZ + maxZ) / 2;
 		for (int x = Math.max(minX, c.clipMinLx()); x <= Math.min(maxX, c.clipMaxLx()); x++) {
 			for (int z = Math.max(minZ, c.clipMinLz()); z <= Math.min(maxZ, c.clipMaxLz()); z++) {
 				boolean border = x == minX || x == maxX || z == minZ || z == maxZ;
@@ -311,7 +314,13 @@ public final class OathholdStreetscape {
 					c.set(x, y + 2, z, HEDGE_LEAVES);
 				} else {
 					c.set(x, y, z, GRASS);
-					if (OathholdCanvas.hash(x, y, z) < 35) {
+					if (compactKnot && x == midX && z == midZ) {
+						c.set(x, y + 1, z, HEDGE_LEAVES);
+						c.set(x, y + 2, z, HEDGE_LEAVES);
+						c.set(x, y + 3, z, OathholdCanvas.LANTERN);
+					} else if (compactKnot && (x == midX || z == midZ)) {
+						c.set(x, y + 1, z, HEDGE_LEAVES);
+					} else if (OathholdCanvas.hash(x, y, z) < 35) {
 						c.set(x, y + 1, z, FLOWERS[OathholdCanvas.hash(z, y, x) % FLOWERS.length]);
 					}
 				}
