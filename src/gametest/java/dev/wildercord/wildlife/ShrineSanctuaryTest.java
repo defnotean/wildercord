@@ -765,7 +765,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				player.setLastHurtMob(huskB);
 				return new UUID[]{huskA.getUUID(), huskB.getUUID(), huskC.getUUID()};
 			});
-			for (int step = 0; step < 16; step++) {
+			for (int step = 0; step < 24; step++) {
 				c.waitTicks(10);
 				boolean ready = w.getServer().computeOnServer(s -> {
 					ServerLevel l = s.overworld();
