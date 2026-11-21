@@ -26,7 +26,7 @@ public abstract class PlayerRendererMixin {
 		dev.wildercord.client.combat.ArticulatedArmorLayer.install((PlayerRenderer) (Object) this, context, slim);
 	}
 
-	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;F)V",
+	@Inject(method = "extractRenderState(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;F)V",
 		at = @At("TAIL"))
 	private void wildercord$castingPose(net.minecraft.client.player.AbstractClientPlayer avatar, PlayerRenderState state, float partial, CallbackInfo ci) {
 		dev.wildercord.client.GlaivePose.extract(avatar, state);

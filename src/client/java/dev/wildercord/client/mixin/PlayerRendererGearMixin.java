@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /** Carries the casting gear a player wears (and the aura on their blade) into their render state, where the gear layer (and the blade's) draws it. */
 @Mixin(PlayerRenderer.class)
 public abstract class PlayerRendererGearMixin {
-	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;F)V",
+	@Inject(method = "extractRenderState(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;F)V",
 		at = @At("TAIL"))
 	private void wildercord$gear(net.minecraft.client.player.AbstractClientPlayer avatar, PlayerRenderState state, float partial, CallbackInfo ci) {
 		GearLook.extract(avatar, state);
