@@ -38,6 +38,11 @@ public final class VillagerTradeCompat {
 	private VillagerTradeCompat() {}
 
 	public static void init() {
+		// The manual's item registers in its own class's static init; touch it first so the
+		// cleric and weaponsmith trades below can resolve wildercord:breathing_manual.
+		if (BreathingManualItem.MANUAL == null) {
+			throw new IllegalStateException("breathing manual not registered before trades");
+		}
 		for (int level = 1; level <= 5; level++) {
 			ItemListing[] listings = loadTag("wildercord", "runesmith", "level_" + level);
 			if (listings.length > 0) {
