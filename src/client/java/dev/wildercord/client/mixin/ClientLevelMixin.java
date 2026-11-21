@@ -25,7 +25,8 @@ public abstract class ClientLevelMixin {
 		layers.addTimeBasedLayer(EnvironmentAttributes.CLOUD_COLOR, (color, tick) -> StormSky.tintCloud(color));
 	}
 
-	@ModifyVariable(method = "setTimeFromServer", at = @At("HEAD"), argsOnly = true)
+	// 1.21.11 takes (gameTime, dayTime, tickDayTime); the first long is the game time.
+	@ModifyVariable(method = "setTimeFromServer", at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private long wildercord$adjustPostTickTime(long gameTime) {
 		ClientLevel self = (ClientLevel) (Object) this;
 		if (!dev.wildercord.client.WildercordClient.inStartClientTick && self.tickRateManager().runsNormally()) {
