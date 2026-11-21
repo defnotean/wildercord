@@ -47,7 +47,7 @@ public final class FirstPersonHandView {
 	}
 
 	public float mainHandSwapScale() {
-		return Minecraft.getInstance().getItemModelResolver().swapAnimationScale(mainHandItem());
+		return Minecraft.getInstance().getItemModelResolver().shouldPlaySwapAnimation(mainHandItem()) ? 1.0F : 1.0F;
 	}
 
 	public boolean isScoping() {

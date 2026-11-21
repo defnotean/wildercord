@@ -123,7 +123,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 			layout = "zombie_villager";
 		} else if (model instanceof SkeletonModel<?>) {
 			// The parched is a skeleton with a second, looser body over the first, on a taller skin.
-			layout = type == EntityType.PARCHED ? "parched" : "skeleton";
+			layout = "skeleton";
 		} else if (model instanceof HumanoidModel<?>) {
 			layout = "humanoid";
 		} else {

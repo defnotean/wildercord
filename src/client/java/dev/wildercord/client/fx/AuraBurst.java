@@ -107,11 +107,11 @@ public class AuraBurst extends SingleQuadParticle implements SigilGroup.Extent {
 		float k = (whisper ? 0.5F : 1.0F) * strength;
 		float s = size * (whisper ? 0.32F : 1.0F);
 		Vec3 centre = new Vec3(x, y, z);
-		Vector3f right = camera.leftVector().negate(new Vector3f());
-		Vector3f up = new Vector3f(camera.upVector());
+		Vector3f right = camera.getLeftVector().negate(new Vector3f());
+		Vector3f up = new Vector3f(camera.getUpVector());
 		if (whisper) {
 			// Down by the bottom of the view, a little toward the blade hand: never in the middle of it.
-			Vector3fc fwd = camera.forwardVector();
+			Vector3fc fwd = camera.getLookVector();
 			centre = cam.add(fwd.x() * 1.25 + right.x * 0.22 - up.x * 0.6, fwd.y() * 1.25 + right.y * 0.22 - up.y * 0.6,
 				fwd.z() * 1.25 + right.z * 0.22 - up.z * 0.6);
 		}

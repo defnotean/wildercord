@@ -211,7 +211,7 @@ public final class AuraBanners {
 		}
 		Vec3 head = entity.getEyePosition(partial).add(0, 0.95, 0);
 		Vec3 offset = head.subtract(camera.position());
-		Vector3fc forward = camera.forwardVector();
+		Vector3fc forward = camera.getLookVector();
 		if (offset.x * forward.x() + offset.y * forward.y() + offset.z * forward.z() < 0.5 || offset.lengthSqr() > AuraFxRules.BANNER_SEEN * AuraFxRules.BANNER_SEEN) {
 			return null;
 		}

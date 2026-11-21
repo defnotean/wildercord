@@ -48,12 +48,12 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 	}
 
 	@Override
-	protected void renderSlot(GuiGraphics wcGui, Slot slot, int mouseX, int mouseY) {
+	protected void renderSlot(GuiGraphics wcGui, Slot slot) {
 		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		if (BackpackMenu.isLocked(slot)) {
 			graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, LOCKED_SHADE);
 		}
-		super.renderSlot(wcGui, slot, mouseX, mouseY);
+		super.renderSlot(wcGui, slot);
 	}
 
 	@Override

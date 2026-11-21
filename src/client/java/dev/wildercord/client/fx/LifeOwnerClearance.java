@@ -27,7 +27,7 @@ final class LifeOwnerClearance {
  static boolean clear(Minecraft mc,Camera camera,Vec3 at,boolean own){
   if(mc.player==null||!camera.isInitialized())return false;
   boolean nativeOwnerThirdPerson=own&&!mc.options.getCameraType().isFirstPerson()
-   &&mc.getCameraEntity()==mc.player&&camera.entity()==mc.player&&camera.isDetached();
+   &&mc.getCameraEntity()==mc.player&&camera.getEntity()==mc.player&&camera.isDetached();
   return clear(nativeOwnerThirdPerson,at,mc.player.getEyePosition(),camera.position());
  }
  static boolean visible(UUID source,ClientLevel level,Camera camera,float partial,

@@ -89,7 +89,7 @@ public final class FormDashScreen extends Screen implements CordEditorParent {
 		var button = new net.minecraft.client.gui.components.Button(left() + Math.round(x * factor), top() + Math.round(y * factor),
 			Math.max(1, Math.round(logicalWidth * factor)), Math.max(1, Math.round(20 * factor)), label, ignored -> action.run(),
 			supplier -> supplier.get()) {
-			@Override protected void renderContents(GuiGraphics wcGui, int mx, int my, float partial) {
+			@Override public void renderContents(GuiGraphics wcGui, int mx, int my, float partial) {
 				GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 				g.pose().pushMatrix(); g.pose().translate(getX(), getY()); g.pose().scale(factor, factor);
 				g.fill(0, 0, logicalWidth, 20, isHoveredOrFocused() ? 0xFF6E5A46 : 0xFF46362A);

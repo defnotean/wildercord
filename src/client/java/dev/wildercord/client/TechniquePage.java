@@ -681,7 +681,7 @@ public final class TechniquePage {
 	private static double blade(LocalPlayer player) {
 		double base = player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
 		double held = player.getMainHandItem().getOrDefault(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS,
-			net.minecraft.world.item.component.ItemAttributeModifiers.EMPTY).compute(Attributes.ATTACK_DAMAGE, base, net.minecraft.world.entity.EquipmentSlot.MAINHAND);
+			net.minecraft.world.item.component.ItemAttributeModifiers.EMPTY).compute(base, net.minecraft.world.entity.EquipmentSlot.MAINHAND);
 		return Math.max(1.0, Math.max(held, player.getAttributeValue(Attributes.ATTACK_DAMAGE)));
 	}
 

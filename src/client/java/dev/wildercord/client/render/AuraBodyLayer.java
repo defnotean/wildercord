@@ -159,8 +159,8 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		Minecraft mc = Minecraft.getInstance();
 		var camera = mc.gameRenderer.getMainCamera();
 		Vec3 cam = camera.position();
-		Vector3f camRight = camera.leftVector().negate(new Vector3f());
-		Vector3f camUp = new Vector3f(camera.upVector());
+		Vector3f camRight = camera.getLeftVector().negate(new Vector3f());
+		Vector3f camUp = new Vector3f(camera.getUpVector());
 		float scale = state.scale <= 0 ? 1 : state.scale;
 		Vector3f toCamera = new Vector3f((float) ((cam.x - state.x) / scale), (float) ((cam.y - state.y) / scale), (float) ((cam.z - state.z) / scale));
 		float yaw = state.bodyRot * Mth.DEG_TO_RAD;

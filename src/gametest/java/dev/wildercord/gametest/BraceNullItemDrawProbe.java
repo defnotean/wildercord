@@ -98,7 +98,7 @@ public final class BraceNullItemDrawProbe {
 		check(context == expectedContext && quads != null && !quads.isEmpty(), "Wrong display context or missing actual quads");
 		var vertices = new java.util.ArrayList<Float>();
 		for (var quad : quads) for (int vertex = 0; vertex < 4; vertex++) {
-			var position = quad.position(vertex);
+			var position = dev.wildercord.client.compat.RenderCompat.quadPosition(quad, vertex);
 			for (float component : new float[] {position.x(), position.y(), position.z()}) {
 				check(Float.isFinite(component), "Nonfinite actual item quad"); vertices.add(component);
 			}

@@ -134,8 +134,15 @@ public final class RenderCompat {
 		return stacks != null && stacks.length == 3 ? stacks[2] : ItemStack.EMPTY;
 	}
 
-	public static Object mainHandItemState(ArmedEntityRenderState state) {
+	public static net.minecraft.client.renderer.item.ItemStackRenderState mainHandItemState(ArmedEntityRenderState state) {
 		return state.getMainHandItem();
+	}
+
+	/** A baked quad's corner position: 1.21.10 packs the vertices as ints (stride 8, position first). */
+	public static org.joml.Vector3fc quadPosition(net.minecraft.client.renderer.block.model.BakedQuad quad, int vertex) {
+		int[] v = quad.vertices();
+		int base = vertex * 8;
+		return new org.joml.Vector3f(Float.intBitsToFloat(v[base]), Float.intBitsToFloat(v[base + 1]), Float.intBitsToFloat(v[base + 2]));
 	}
 
 	public static void overrideStabWithWhackGlaive(AvatarRenderState state) {

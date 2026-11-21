@@ -272,14 +272,14 @@ public final class AuraBlade {
 		for (BakedQuad quad : all) {
 			Direction d = quad.direction();
 			if (d == Direction.NORTH || d == Direction.SOUTH) {
-				z = (quad.position(0).z() + (d == Direction.SOUTH ? -1 : 1) * 0.03125F);
+				z = (dev.wildercord.client.compat.RenderCompat.quadPosition(quad, 0).z() + (d == Direction.SOUTH ? -1 : 1) * 0.03125F);
 				continue;
 			}
 			// The two corners on one side of the face's depth: the span in the sprite's plane.
-			Vector3fc a = quad.position(0);
+			Vector3fc a = dev.wildercord.client.compat.RenderCompat.quadPosition(quad, 0);
 			Vector3fc b = null;
 			for (int i = 1; i < 4; i++) {
-				Vector3fc c = quad.position(i);
+				Vector3fc c = dev.wildercord.client.compat.RenderCompat.quadPosition(quad, i);
 				if (Math.abs(c.z() - a.z()) < 1.0E-4 && (Math.abs(c.x() - a.x()) > 1.0E-5 || Math.abs(c.y() - a.y()) > 1.0E-5)) {
 					b = c;
 					break;

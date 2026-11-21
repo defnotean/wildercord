@@ -219,7 +219,7 @@ public class AuraTrail extends SingleQuadParticle implements SigilGroup.Extent {
 		cy = (float) -cam.y;
 		cz = (float) -cam.z;
 		paint = new LightStrokes(state, GlowLayers.GLOW);
-		look = own ? camera.forwardVector() : null;
+		look = own ? camera.getLookVector() : null;
 		// By day, under the open sky, added light alone washes out: a rim of the mod's darkness a little wider than the glow goes under
 		// it (as the slash's crescent has), so it reads against a bright sky. Not in your own first-person trail, kept a whisper.
 		shade = !own && brightBehind(bx, by + 1.2, bz) ? new LightStrokes(state, GlowLayers.DARK) : null;

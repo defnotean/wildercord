@@ -344,7 +344,7 @@ public final class StanceHud {
 	/** Where {@code at} falls on the screen (gui pixels), or null when it's behind the camera or off the edge. */
 	private static float[] screen(Minecraft mc, Camera camera, Vec3 at, int width, int height) {
 		Vec3 offset = at.subtract(camera.position());
-		Vector3fc forward = camera.forwardVector();
+		Vector3fc forward = camera.getLookVector();
 		if (offset.x * forward.x() + offset.y * forward.y() + offset.z * forward.z() < 0.4) {
 			return null;
 		}

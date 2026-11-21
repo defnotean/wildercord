@@ -560,7 +560,7 @@ public final class CounterPeerRenderProbe {
         if(!geometry.matched()||!CounterPeerRenderMath.compare("displayed_anchor",wanted,consumed).matched())s.token.reject("wrong_displayed_item_or_hilt");
         var emitted=new ArrayList<Float>();
         if(quads!=null)for(var quad:quads)for(int v=0;v<4;v++){
-            var point=quad.position(v);for(float component:new float[]{point.x(),point.y(),point.z()}){
+            var point=dev.wildercord.client.compat.RenderCompat.quadPosition(quad, v);for(float component:new float[]{point.x(),point.y(),point.z()}){
                 if(!Float.isFinite(component))s.token.reject("nonfinite_emitted_item_quad");emitted.add(component);
             }
         }

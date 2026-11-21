@@ -92,11 +92,11 @@ public final class GuiGraphicsExtractor {
 	}
 
 	public void outline(int x1, int y1, int x2, int y2, int color) {
-		g.renderOutline(x1, y1, x2, y2, color);
+		g.submitOutline(x1, y1, x2, y2, color);
 	}
 
 	public void textHighlight(int x, int y, int width, int height, boolean below) {
-		g.textHighlight(x, y, width, height, below);
+		g.textHighlight(x, y, width, height);
 	}
 
 	public void text(Font font, String text, int x, int y, int color) {
