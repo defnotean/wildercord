@@ -624,6 +624,7 @@ def _smithing(name, template, base, addition, result_id, forged, rarity="rare", 
     if forged == "skyrend_glaive" and profile is not None and not profile.has_spear_base():
         # 1.21.10 has no spear base items and no swing animation component: forge from swords, swing like a blade.
         base = base.replace("_spear", "_sword")
+        result_id = result_id.replace("_spear", "_sword")
     elif forged == "skyrend_glaive":
         comp_key, comp_val = profile.glaive_swing_component()
         components[comp_key] = comp_val
