@@ -227,7 +227,7 @@ public final class MastersNpcCaptureProbe {
 		bodies = models = 0; rays.clear(); modelReceipts.clear(); handReceipts.clear(); articulatedFrame = null;
 		handEntry = null; enteringHand = null;
 		bodyEntry = viewProjection = null; bodyBounds = new BoundsAccumulator(); bladeBounds = new BoundsAccumulator();
-		zeroToOneDepth = true // 1.21.11 pipelines standardise on the 0..1 depth range;
+		zeroToOneDepth = true /* 1.21.11 pipelines standardise on the 0..1 depth range */;
 		boolean fullWarningCoverage = !closeBody;
 		var result = new CompletableFuture<Evidence>();
 		try {

@@ -29,7 +29,7 @@ class ResidueLedgerTest {
 	void positionsAndChunksPackAsTheGameDoes() {
 		for (int[] p : new int[][] {{0, 0, 0}, {-1, -64, -1}, {12345, 300, -987654}, {-29999999, 2000, 29999999}, {17, -1, 33}}) {
 			assertEquals(BlockPos.asLong(p[0], p[1], p[2]), ResidueLedger.pack(p[0], p[1], p[2]));
-			assertEquals(ChunkPos.pack(new BlockPos(p[0], p[1], p[2])), ResidueLedger.chunkOf(p[0], p[2]));
+			assertEquals(ChunkPos.asLong(new BlockPos(p[0], p[1], p[2])), ResidueLedger.chunkOf(p[0], p[2]));
 		}
 	}
 
