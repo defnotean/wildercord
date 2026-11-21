@@ -157,7 +157,7 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 			if (!announced.contains(player.getUUID()) || !hits(move, d.x, d.y, d.z, aim(), markX(), markZ(), markX2(), markZ2(), pairedMark(), acrossX())) continue;
 			if (player.hurtServer(server, damageSources().mobAttack(this), damage(move)) && move == ANCHOR) {
 				var pull = position().subtract(player.position()).multiply(1, 0, 1).normalize().scale(.35);
-				player.push(pull.x, .08, pull.z); player.needsSync = true;
+				player.push(pull.x, .08, pull.z); player.hasImpulse = true;
 			}
 		}
 		server.playSound(null, blockPosition(), SoundEvents.TRIDENT_HIT_GROUND, SoundSource.HOSTILE, 1.5F, .65F);

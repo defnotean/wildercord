@@ -330,7 +330,7 @@ public final class Soar {
 		}
 		flier.wasFlying = flying;
 		if (flying && now >= flier.nextGust) {
-			Vec3 moved = player.getKnownSpeed();
+			Vec3 moved = player.getDeltaMovement();
 			dev.wildercord.cast.feel.Feels.sound(player.level(), player.position().add(0, 1, 0), "wind_soar_gust", SoarRules.gustVolume(moved.length()), 1.0F);
 			int spread = SoarRules.GUST_TICKS / 3;
 			flier.nextGust = now + SoarRules.GUST_TICKS - spread + player.getRandom().nextInt(2 * spread + 1);
@@ -389,7 +389,7 @@ public final class Soar {
 		takeBack(player, note);
 		player.onUpdateAbilities();
 		if (player.connection != null) {
-			player.connection.resetFlyingTicks();
+			player.connection.resetPosition();
 		}
 		rest(player);
 		long now = player.level().getGameTime();

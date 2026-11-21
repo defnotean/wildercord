@@ -346,7 +346,7 @@ public final class WorldMagic {
 		if (!state.isAir() && !plant) {
 			return false;
 		}
-		if (!level.canSpreadFireAround(pos)) {
+		if (!level.getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_DOFIRETICK).get()) {
 			return false;
 		}
 		BlockState fire = BaseFireBlock.getState(level, pos);
@@ -1075,7 +1075,7 @@ public final class WorldMagic {
 			Vec3 away = blowing(p.position(), from, hit.dir());
 			double speed = Math.max(0.8, p.getDeltaMovement().length() * 0.9);
 			p.setDeltaMovement(away.scale(speed).add(0, 0.15, 0));
-			p.needsSync = true;
+			p.hasImpulse = true;
 			ElementFx.slash(level, p.position(), ElementFx.perp(away), away, ElementFx.WIND.secondary(), 0.5, 2.4, 0.06, 2, 6);
 			deflected++;
 		}
@@ -1089,7 +1089,7 @@ public final class WorldMagic {
 			}
 			Vec3 away = blowing(e.position(), from, hit.dir());
 			e.setDeltaMovement(e.getDeltaMovement().add(away.scale(0.55)).add(0, 0.25, 0));
-			e.needsSync = true;
+			e.hasImpulse = true;
 		}
 		if (loose > 0) {
 			Vfx.emit(level, ParticleTypes.SMALL_GUST, at, 2, r * 0.3, 0.0);
@@ -1298,7 +1298,7 @@ public final class WorldMagic {
 				continue;
 			}
 			e.setDeltaMovement(towards.normalize().scale(Math.min(0.6, 0.15 + d * 0.1)).add(0, 0.12, 0));
-			e.needsSync = true;
+			e.hasImpulse = true;
 			drawn++;
 		}
 		if (drawn > 0) {

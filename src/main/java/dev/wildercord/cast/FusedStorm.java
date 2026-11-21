@@ -1000,7 +1000,7 @@ final class FusedStorm {
 
 	private static void setMotion(LivingEntity t, Vec3 motion) {
 		t.setDeltaMovement(motion);
-		t.needsSync = true;
+		t.hasImpulse = true;
 		if (t instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}

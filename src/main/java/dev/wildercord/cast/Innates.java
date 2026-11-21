@@ -821,7 +821,7 @@ public final class Innates {
 			Statuses.windPush((LivingEntity) e, away.scale(0.6).add(0, 0.2, 0));
 		}
 		player.setDeltaMovement(flat.scale(1.25).add(0, 0.42, 0));
-		player.needsSync = true;
+		player.hasImpulse = true;
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		player.resetFallDistance();
 		ServerLevel level = player.level();

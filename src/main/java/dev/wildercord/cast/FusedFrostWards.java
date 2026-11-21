@@ -212,7 +212,7 @@ final class FusedFrostWards {
 		Spirits.hold(ally, ticks);
 		ally.setDeltaMovement(Vec3.ZERO);
 		ally.resetFallDistance();
-		ally.needsSync = true;
+		ally.hasImpulse = true;
 		if (ally instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}
@@ -444,7 +444,7 @@ final class FusedFrostWards {
 				ally.teleportTo(level, seal.anchor.x, seal.anchor.y, seal.anchor.z, Set.<Relative>of(), ally.getYRot(), ally.getXRot(), false);
 			}
 			ally.resetFallDistance();
-			ally.needsSync = true;
+			ally.hasImpulse = true;
 			if (now >= seal.nextHeal && seal.healsLeft > 0) {
 				ally.heal(seal.healEach);
 				seal.healsLeft--;

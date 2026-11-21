@@ -86,7 +86,7 @@ public final class WorldEvents {
 		EventContent.init();
 		EventCommand.init();
 		// Loading the class registers the storm attachment (synced, so both sides need it).
-		ManaStorm.STORM_UNTIL.location();
+		ManaStorm.STORM_UNTIL.identifier();
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			if (entity.getTags().contains(TAG) && !LIVE.contains(entity.getUUID())) {
 				entity.discard();

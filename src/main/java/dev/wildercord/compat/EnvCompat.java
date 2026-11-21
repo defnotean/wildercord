@@ -15,6 +15,11 @@ public final class EnvCompat {
 		return level.getBiome(pos).value().getBaseTemperature() >= 1.0F;
 	}
 
+	/** The same read from a point rather than a block cell. */
+	public static boolean waterEvaporates(Level level, net.minecraft.world.phys.Vec3 at) {
+		return waterEvaporates(level, BlockPos.containing(at));
+	}
+
 	/** The moon phase (0..7) at the given place; the phase is world-wide, so the position is only kept for call shape. */
 	public static int moonPhase(Level level, BlockPos pos) {
 		return (int) ((level.getDayTime() / 24000L + 180L) % 24000L / 24000L * 8.0);

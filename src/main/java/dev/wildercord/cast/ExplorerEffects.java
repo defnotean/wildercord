@@ -497,7 +497,7 @@ public final class ExplorerEffects {
 			Vec3 v = p.getDeltaMovement();
 			if (v.lengthSqr() > 0.04) {
 				p.setDeltaMovement(v.scale(0.3).add(0, -0.04, 0));
-				p.needsSync = true;
+				p.hasImpulse = true;
 			}
 		}
 	}
@@ -864,7 +864,7 @@ public final class ExplorerEffects {
 				Effects.hurt(cast, t, magic(cast), 2 * power);
 				t.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), t.getYRot(), t.getXRot(), false);
 				t.setDeltaMovement(0, -0.2, 0);
-				t.needsSync = true;
+				t.hasImpulse = true;
 				if (t instanceof Mob mob) {
 					mob.getNavigation().stop();
 				}
@@ -1445,7 +1445,7 @@ public final class ExplorerEffects {
 			if (d > 3.0) {
 				Vec3 back = anchor.subtract(t.position()).normalize().scale(Math.min(1.3, 0.4 + (d - 3.0) * 0.35));
 				t.setDeltaMovement(back.x, Math.max(t.getDeltaMovement().y, back.y), back.z);
-				t.needsSync = true;
+				t.hasImpulse = true;
 				if (t instanceof ServerPlayer player) {
 					player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
 				}
@@ -1912,7 +1912,7 @@ public final class ExplorerEffects {
 	private static void ride(LivingEntity rider, Vec3 dir, double speed) {
 		rider.setDeltaMovement(dir.scale(speed));
 		rider.resetFallDistance();
-		rider.needsSync = true;
+		rider.hasImpulse = true;
 		if (rider instanceof ServerPlayer player) {
 			player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
 		}

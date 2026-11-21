@@ -38,6 +38,7 @@
 		"RunesmithTradeMixin",
 		"HamletTradeMixin",
 		"WanderingTraderTradesMixin",
+		"MobEffectAddCompatMixin",
 		"PathTypeCompatMixin",
 		"SwapOfferMixin",
 		"MobConversionMixin",

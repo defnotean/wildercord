@@ -205,7 +205,7 @@ public class CacklingHyena extends WildMonster {
 		setState(ACTING, true);
 		Vec3 to = target.position().subtract(position()).multiply(1, 0, 1).normalize().scale(HyenaRules.DART_SPEED);
 		setDeltaMovement(to.x, 0.25, to.z);
-		needsSync = true;
+		hasImpulse = true;
 	}
 
 	/** In at a rush: a bite if it gets there, a stumble if it doesn't. */

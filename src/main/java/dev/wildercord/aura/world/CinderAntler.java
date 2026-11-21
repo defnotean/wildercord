@@ -87,7 +87,7 @@ public final class CinderAntler {
 		SPRINT.remove(player.getUUID());
 		mob.knockback(AshenStagRules.ANTLER_SHOVE, player.getX() - mob.getX(), player.getZ() - mob.getZ());
 		mob.setDeltaMovement(mob.getDeltaMovement().add(0, .35, 0));
-		mob.needsSync = true;
+		mob.hasImpulse = true;
 		mob.igniteForTicks(AshenStagRules.ANTLER_BURN);
 		Feels.sound(level, mob.position(), "aura_ashen_stag_gore", 1.0F, 1.2F);
 		Feels.sound(level, mob.position(), "aura_ashen_stag_smoulder", .8F, 1.3F);

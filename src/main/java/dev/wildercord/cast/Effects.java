@@ -1009,7 +1009,7 @@ public final class Effects {
 		Vec3 scaled = target instanceof Player ? impulse : impulse.scale(Math.max(0.0, 1.0 - resist));
 		if (target instanceof ServerPlayer player && scaled.lengthSqr() > 0) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		target.setDeltaMovement(target.getDeltaMovement().add(scaled));
-		target.needsSync = true;
+		target.hasImpulse = true;
 		if (target instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}
@@ -1516,7 +1516,7 @@ public final class Effects {
 		if (caster instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 31);
 		Vec3 pull = to.normalize().scale(Math.min(3.2, 0.8 + distance * 0.12) * Math.sqrt(power)).add(0, 0.35, 0);
 		caster.setDeltaMovement(pull);
-		caster.needsSync = true;
+		caster.hasImpulse = true;
 		if (caster instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}
@@ -1527,7 +1527,7 @@ public final class Effects {
 		ShapeRunners.each(cast, 30, tick -> {
 			if (tick > 2 && caster.position().add(0, 1, 0).distanceTo(point) < 2.0) {
 				caster.setDeltaMovement(caster.getDeltaMovement().scale(0.2));
-				caster.needsSync = true;
+				caster.hasImpulse = true;
 				if (caster instanceof ServerPlayer player) {
 					player.connection.send(new ClientboundSetEntityMotionPacket(player));
 				}
@@ -1844,7 +1844,7 @@ public final class Effects {
 					Reactions.mark(victim, Reactions.Mark.PULLED, tick >= total - 1 ? 60 : 50);
 					if (!Spirits.isBoss(victim) && !VoidTime.anchored(victim) && victim.getY() > point.y + 0.6 && !victim.onGround()) {
 						victim.setDeltaMovement(victim.getDeltaMovement().x, Math.min(victim.getDeltaMovement().y, -0.35), victim.getDeltaMovement().z);
-						victim.needsSync = true;
+						victim.hasImpulse = true;
 					}
 					if (tick >= total - 1) {
 						hurt(cast, victim, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), 4 * power);
@@ -2066,7 +2066,7 @@ public final class Effects {
 	private static void setMotion(LivingEntity target, Vec3 motion) {
 		if (target instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		target.setDeltaMovement(motion);
-		target.needsSync = true;
+		target.hasImpulse = true;
 		if (target instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}
@@ -2505,12 +2505,12 @@ public final class Effects {
 					Vec3 back = shooter.getBoundingBox().getCenter().subtract(p.position());
 					p.setOwner(t);
 					p.setDeltaMovement(back.normalize().scale(Math.max(0.6, v.length() * 0.8)));
-					p.needsSync = true;
+					p.hasImpulse = true;
 					ExpansionVfx.deflectHit(level, p.position(), back.normalize(), theme);
 					continue;
 				}
 				p.setDeltaMovement(away.scale(Math.max(0.4, v.length() * 0.6)).add(0, 0.2, 0));
-				p.needsSync = true;
+				p.hasImpulse = true;
 				ExpansionVfx.deflectHit(level, p.position(), away, theme);
 			}
 			if (level.getGameTime() % 5 == 0) {
@@ -2547,7 +2547,7 @@ public final class Effects {
 					continue;
 				}
 				p.setDeltaMovement(v.subtract(normal.scale(2 * v.dot(normal))).scale(0.6));
-				p.needsSync = true;
+				p.hasImpulse = true;
 				LifeOwnerEvents.point(cast,"haven",LifeOwnerEvents.Moment.TRIGGER,p.position(),centre,1,0);
 			}
 			if (tick % 10 == 0) {

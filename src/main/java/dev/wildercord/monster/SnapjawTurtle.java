@@ -293,7 +293,7 @@ public class SnapjawTurtle extends WildMonster {
 		Vec3 pull = jaws.subtract(prey.position()).multiply(1, 0, 1);
 		if (pull.lengthSqr() > 0.25) {
 			prey.push(pull.normalize().scale(0.08));
-			prey.needsSync = true;
+			prey.hasImpulse = true;
 		}
 		if (SnapjawRules.worries(heldTicks)) {
 			prey.hurtServer(level, damageSources().mobAttack(this), SnapjawRules.WORRY_DAMAGE);

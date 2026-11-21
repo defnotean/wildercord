@@ -48,7 +48,7 @@ final class WallTurn {
 		if (contact == null) return null;
 		return new WallTurn(player, contact);
 	}
-	void brace() { player.setDeltaMovement(Vec3.ZERO); player.needsSync = true; }
+	void brace() { player.setDeltaMovement(Vec3.ZERO); player.hasImpulse = true; }
 	boolean valid() {
 		if (aborted || !owner.valid() || player.level() != level || !MasterForms.able(player)) return false;
 		// Registered movement predicates may synchronously cancel or retire this exact receipt while able() runs.
@@ -93,7 +93,7 @@ final class WallTurn {
 		player.teleportTo(level, to.x, to.y, to.z, Relative.ROTATION, 0, 0, false);
 		player.fallDistance = Math.max(player.fallDistance, fallRisk);
 		player.setDeltaMovement(Vec3.ZERO);
-		player.needsSync = true;
+		player.hasImpulse = true;
 		last = to;
 		return true;
 	}

@@ -1257,7 +1257,7 @@ public final class FarmEffects {
 
 	private static void move(LivingEntity t, Vec3 v) {
 		t.setDeltaMovement(v);
-		t.needsSync = true;
+		t.hasImpulse = true;
 		if (t instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}

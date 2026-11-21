@@ -445,7 +445,7 @@ final class FusedFrost {
 	private static void still(LivingEntity t) {
 		if (!Spirits.isBoss(t)) {
 			t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-			t.needsSync = true;
+			t.hasImpulse = true;
 		}
 	}
 

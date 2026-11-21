@@ -721,7 +721,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		double k=Math.min(1,el/(double)HollowMatronRules.HAUL_PULL);k=k*k;
 		var at=caughtAt.add(stop.subtract(caughtAt).scale(k));
 		if(p.position().distanceToSqr(at)>.01 && level.noCollision(p,p.getBoundingBox().move(at.subtract(p.position()))))p.teleportTo(at.x,at.y,at.z);
-		p.setDeltaMovement(Vec3.ZERO);p.needsSync=true;
+		p.setDeltaMovement(Vec3.ZERO);p.hasImpulse=true;
 		var h=head();
 		thread(level,h,p.position().add(0,p.getBbHeight()*.5,0));
 		if(el<HollowMatronRules.HAUL_PULL){
@@ -1081,7 +1081,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		if(!GuardianBite.land(level,this,p,(float)damage,HollowMatronRules.PIERCE))return;
 		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
-		p.needsSync=true;
+		p.hasImpulse=true;
 	}
 	private Vec3 ahead(float yaw){double r=Math.toRadians(yaw);return new Vec3(-Math.sin(r),0,Math.cos(r));}
 

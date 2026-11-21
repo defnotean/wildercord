@@ -1014,7 +1014,7 @@ public final class WayfarerEffects {
 		caster.resetFallDistance();
 		Vec3 v = caster.getDeltaMovement();
 		caster.setDeltaMovement(v.x, Math.max(0, v.y), v.z);
-		caster.needsSync = true;
+		caster.hasImpulse = true;
 		chime(level, caster.position(), SoundEvents.END_PORTAL_FRAME_FILL, 1.1f);
 	}
 

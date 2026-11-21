@@ -231,7 +231,7 @@ final class ElementalSignature {
 				if (tug[0] == 0 && tug[1] == 0) continue;
 				dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 				player.setDeltaMovement(player.getKnownMovement().add(tug[0], 0, tug[1]));
-				player.needsSync = true;
+				player.hasImpulse = true;
 				player.connection.send(new ClientboundSetEntityMotionPacket(player));
 			}
 			return;

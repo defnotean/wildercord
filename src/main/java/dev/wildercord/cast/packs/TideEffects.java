@@ -939,7 +939,7 @@ public final class TideEffects {
 			if (flat.lengthSqr() < 1.0E-4) return;
 			flat = flat.normalize().scale(0.6);
 			boat.setDeltaMovement(flat.x, boat.getDeltaMovement().y, flat.z);
-			boat.needsSync = true;
+			boat.hasImpulse = true;
 			if (boat.tickCount % 4 == 0) emit(cast.level, ParticleTypes.CLOUD, boat.position().add(0, 1.5, 0), 2, 0.4);
 		});
 		sound(cast.level, caster.position(), SoundEvents.BOAT_PADDLE_WATER, 0.8F);
@@ -955,7 +955,7 @@ public final class TideEffects {
 		every(1, ticks, () -> cast.alive() && caster.isInWater(), () -> {
 			Vec3 v = caster.getDeltaMovement();
 			caster.setDeltaMovement(v.x * 0.6, vertical, v.z * 0.6);
-			caster.needsSync = true;
+			caster.hasImpulse = true;
 			emit(cast.level, ParticleTypes.BUBBLE, caster.position(), 3, 0.3);
 		});
 		sound(cast.level, caster.position(), vertical > 0 ? SoundEvents.BUBBLE_COLUMN_UPWARDS_INSIDE : SoundEvents.BUBBLE_COLUMN_WHIRLPOOL_INSIDE, 1.0F);
@@ -971,7 +971,7 @@ public final class TideEffects {
 		Vec3 flat = new Vec3(look.x, 0, look.z);
 		flat = flat.lengthSqr() < 1.0E-4 ? Vec3.ZERO : flat.normalize();
 		caster.setDeltaMovement(flat.x * 1.2, 0.75, flat.z * 1.2);
-		caster.needsSync = true;
+		caster.hasImpulse = true;
 		every(1, 60, cast::alive, caster::resetFallDistance);
 		emit(cast.level, ParticleTypes.DOLPHIN, caster.position(), 20, 0.5);
 		emit(cast.level, ParticleTypes.SPLASH, caster.position(), 20, 0.5);
@@ -989,12 +989,12 @@ public final class TideEffects {
 			if (t.isInWater() && water(cast.level, feet.above())) {
 				// Under: bob back up.
 				t.setDeltaMovement(v.x, 0.3, v.z);
-				t.needsSync = true;
+				t.hasImpulse = true;
 			} else if (v.y < 0 && water(cast.level, feet) && !t.isInWater()) {
 				// On top: the water holds.
 				t.setDeltaMovement(v.x, 0.0, v.z);
 				t.resetFallDistance();
-				t.needsSync = true;
+				t.hasImpulse = true;
 				if (t.tickCount % 3 == 0) emit(cast.level, ParticleTypes.SPLASH, t.position(), 2, 0.2);
 			}
 		});

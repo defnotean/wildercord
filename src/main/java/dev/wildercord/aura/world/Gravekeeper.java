@@ -440,7 +440,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		if(!p.hurtServer(level,level.damageSources().mobAttack(this),(float)damage))return false;
 		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
-		p.needsSync=true;AuraFx.impact(this,p,0xBDA879,4,AuraFxRules.Weight.FULL);
+		p.hasImpulse=true;AuraFx.impact(this,p,0xBDA879,4,AuraFxRules.Weight.FULL);
 		return true;
 	}
 	/** A spot pulled back inside the arena, if it lies too near the edge. */

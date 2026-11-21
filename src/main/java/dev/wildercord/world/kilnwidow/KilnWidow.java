@@ -194,7 +194,7 @@ public final class KilnWidow extends PathfinderMob implements Enemy {
 			if (player.hurtServer(server, damageSources().mobAttack(this), damage(move)) && move == SLAG) {
 				var pull = position().subtract(player.position()).multiply(1, 0, 1).normalize().scale(.35);
 				player.push(pull.x, .08, pull.z);
-				player.needsSync = true;
+				player.hasImpulse = true;
 			}
 		}
 		server.playSound(null, blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.HOSTILE, 1.2F, .75F);

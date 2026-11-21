@@ -602,7 +602,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 			for(double s=1;s<=BellWardenRules.LASH_REACH;s+=.5){var c=position().add(f.scale(s));level.sendParticles(ParticleTypes.CRIT,c.x,c.y+1.2,c.z,1,.05,.05,.05,0);if(s%2==0)level.sendParticles(ParticleTypes.SPLASH,c.x,c.y+.2,c.z,3,.2,0,.2,.1);}
 			for(var p:prey(level))if(reaches(BellWardenRules.LASH,p) && hit(level,p,BellWardenRules.LASH_DAMAGE,0,position(),0)){
 				double t=BellWardenRules.tug(distanceTo(p));var n=new Vec3(getX()-p.getX(),0,getZ()-p.getZ()).normalize().scale(t);
-				p.setDeltaMovement(p.getKnownMovement().add(n.x,.3,n.z));p.needsSync=true;
+				p.setDeltaMovement(p.getKnownMovement().add(n.x,.3,n.z));p.hasImpulse=true;
 				sound(level,p.position(),SoundEvents.CHAIN_HIT,1.2F,.5F);
 			}
 		}
@@ -702,7 +702,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 			for(var p:prey(level)){
 				double dx=getX()-p.getX(),dz=getZ()-p.getZ(),d=Math.sqrt(dx*dx+dz*dz),g=BellWardenRules.drag(d,c);
 				if(g<=0)continue;
-				p.setDeltaMovement(p.getKnownMovement().add(dx/d*g,0,dz/d*g));p.needsSync=true;
+				p.setDeltaMovement(p.getKnownMovement().add(dx/d*g,0,dz/d*g));p.hasImpulse=true;
 			}
 			return;
 		}
@@ -771,7 +771,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		if(!GuardianBite.land(level,this,p,(float)damage,BellWardenRules.PIERCE))return false;
 		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
-		p.needsSync=true;return true;
+		p.hasImpulse=true;return true;
 	}
 	private Vec3 ahead(float yaw){double r=Math.toRadians(yaw);return new Vec3(-Math.sin(r),0,Math.cos(r));}
 
@@ -816,7 +816,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		long now=level.getGameTime();if(now-lastRing<4)return;lastRing=now;
 		var b=bell();Feels.sound(level,b,"aura_bell_warden_ring",1.4F,.95F+random.nextFloat()*.1F);
 		level.sendParticles(ParticleTypes.GLOW,b.x,b.y-.5,b.z,10,1,.6,1,.05);
-		if(source.getEntity() instanceof LivingEntity e && source.getDirectEntity()==e && e.distanceToSqr(this)<5*5){e.knockback(.8,getX()-e.getX(),getZ()-e.getZ());e.needsSync=true;}
+		if(source.getEntity() instanceof LivingEntity e && source.getDirectEntity()==e && e.distanceToSqr(this)<5*5){e.knockback(.8,getX()-e.getX(),getZ()-e.getZ());e.hasImpulse=true;}
 	}
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);Guardians.reward(server,this,BellWardenRules.TIER,bar,source);bar.removeAllPlayers();}

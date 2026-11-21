@@ -78,7 +78,7 @@ public final class BellShard {
 		double r = BellWardenRules.KNELL_RADIUS;
 		for (var mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(r), m -> m instanceof Enemy && m.isAlive() && m.distanceToSqr(player) <= r * r)) {
 			mob.knockback(BellWardenRules.KNELL_SHOVE, player.getX() - mob.getX(), player.getZ() - mob.getZ());
-			mob.needsSync = true;
+			mob.hasImpulse = true;
 		}
 		player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, BellWardenRules.KNELL_SHIELD, 1, false, true));
 		player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, BellWardenRules.KNELL_GUARD_TICKS, 0, false, true));

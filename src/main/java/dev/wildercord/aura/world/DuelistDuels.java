@@ -215,7 +215,7 @@ public final class DuelistDuels {
 		if (behind == null || !behind.getUUID().equals(active.player)) {
 			return false;
 		}
-		boolean blade = source.getDirectEntity() == behind && (source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.SPEAR)) || source.is(Aura.DAMAGE);
+		boolean blade = source.getDirectEntity() == behind && (source.is(DamageTypes.PLAYER_ATTACK)) || source.is(Aura.DAMAGE);
 		if (!blade && (source.is(DamageTypes.MAGIC) || source.is(DamageTypes.INDIRECT_MAGIC) || source.is(DamageTypeTags.WITCH_RESISTANT_TO)
 				|| dev.wildercord.cast.Effects.applying() != null)) {
 			active.magic = true;

@@ -494,7 +494,7 @@ public final class FormDash {
 				&& (FormDashRules.followUp(form) || !player.isShiftKeyDown()) && Double.isFinite(player.fallDistance) && player.position().distanceToSqr(last) <= .64;
 		}
 		boolean setting() { return set > 0; }
-		void hold() { player.setDeltaMovement(Vec3.ZERO); player.needsSync = true; }
+		void hold() { player.setDeltaMovement(Vec3.ZERO); player.hasImpulse = true; }
 		/** -1 aborts, 0 continues, 1 ends (arrived or stalled). */
 		int tick() {
 			if (!valid()) return -1;
@@ -514,7 +514,7 @@ public final class FormDash {
 			player.teleportTo(level, to.x, to.y, to.z, Relative.ROTATION, 0, 0, false);
 			player.fallDistance = Math.max(player.fallDistance, fallRisk);
 			player.setDeltaMovement(Vec3.ZERO);
-			player.needsSync = true;
+			player.hasImpulse = true;
 			last = to;
 			return true;
 		}

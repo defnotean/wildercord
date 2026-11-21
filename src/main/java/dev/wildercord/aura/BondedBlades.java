@@ -79,7 +79,7 @@ public final class BondedBlades {
 
 	/** The bond, on the blade: who it belongs to, how far it has grown, where it was bonded, its story. */
 	public static final DataComponentType<BladeBond> BOND = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Wildercord.id("bonded_blade"),
-		DataComponentType.<BladeBond>builder().persistent(BladeBond.CODEC).networkSynchronized(BladeBond.STREAM_CODEC).ignoreSwapAnimation().build());
+		DataComponentType.<BladeBond>builder().persistent(BladeBond.CODEC).networkSynchronized(BladeBond.STREAM_CODEC).build());
 	/** What a blade remembers of a bond that ended: a line in its tooltip, nothing more. */
 	public static final DataComponentType<BladeBond.Former> FORMER = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Wildercord.id("former_bond"),
 		DataComponentType.<BladeBond.Former>builder().persistent(BladeBond.Former.CODEC).networkSynchronized(BladeBond.Former.STREAM_CODEC).build());

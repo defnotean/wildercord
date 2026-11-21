@@ -432,7 +432,7 @@ public final class Spars {
 		/** Blades and aura only: a blow of the blade (a swing, a sweep, a spear's thrust) or aura off it; never a spell, a shot or a pet. */
 		@Override
 		public boolean counts(Player attacker, ServerPlayer victim, DamageSource source) {
-			boolean blade = source.getDirectEntity() == attacker && (source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.SPEAR))
+			boolean blade = source.getDirectEntity() == attacker && (source.is(DamageTypes.PLAYER_ATTACK))
 				|| source.is(Aura.DAMAGE) && source.getEntity() == attacker;
 			if (blade && dev.wildercord.cast.Effects.applying() == null) {
 				if (attacker.getUUID().equals(a)) {

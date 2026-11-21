@@ -63,7 +63,7 @@ public final class MonsterMagic {
 
 	/** Tells everyone (the creature's own client above all, if it's a player) that its motion changed. */
 	public static void sync(LivingEntity target) {
-		target.needsSync = true;
+		target.hasImpulse = true;
 		if (target instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}

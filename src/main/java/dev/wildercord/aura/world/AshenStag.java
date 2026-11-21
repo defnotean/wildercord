@@ -843,7 +843,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		var e=level.getEntity(locked);
 		if(!(e instanceof LivingEntity p) || !p.isAlive() || p.distanceTo(this)>AshenStagRules.LOCK_SLIP){locked=null;after(level,AshenStagRules.LOCK,AshenStagRules.LOCK_RECOVER);return;}
 		var hold=position().add(f.scale(AshenStagRules.LOCK_AHEAD));var pull=hold.subtract(p.position()).multiply(1,0,1);
-		if(pull.lengthSqr()>.01){p.setDeltaMovement(p.getDeltaMovement().scale(.5).add(pull.normalize().scale(Math.min(.12,pull.length()*.2))));p.needsSync=true;}
+		if(pull.lengthSqr()>.01){p.setDeltaMovement(p.getDeltaMovement().scale(.5).add(pull.normalize().scale(Math.min(.12,pull.length()*.2))));p.hasImpulse=true;}
 		long held=now-lockedAt;var h=head();
 		if(held>0 && held%AshenStagRules.LOCK_GRIND==0 && held<AshenStagRules.LOCK_HOLD-10){
 			hit(level,p,AshenStagRules.GRIND_DAMAGE,0,position(),0);
@@ -943,7 +943,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		if(!GuardianBite.land(level,this,p,(float)damage,AshenStagRules.PIERCE))return;
 		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
-		p.needsSync=true;
+		p.hasImpulse=true;
 	}
 	private Vec3 ahead(float yaw){double r=Math.toRadians(yaw);return new Vec3(-Math.sin(r),0,Math.cos(r));}
 

@@ -543,7 +543,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 				var to=new Vec3(getX()-p.getX(),0,getZ()-p.getZ());double d=to.length();
 				double speed=LanternBearerRules.pull(d);
 				if(speed>0 && d>1e-3)p.setDeltaMovement(to.scale(speed/d).add(0,.12,0));
-				p.needsSync=true;
+				p.hasImpulse=true;
 				var step=p.position().add(0,1,0).subtract(from);
 				for(int i=1;i<6;i++){var at=from.add(step.scale(i/6.0));level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,at.x,at.y,at.z,1,0,0,0,0);}
 			}
@@ -1062,7 +1062,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 		if(!GuardianBite.land(level,this,p,(float)damage,LanternBearerRules.PIERCE))return;
 		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
-		p.needsSync=true;
+		p.hasImpulse=true;
 	}
 	private Vec3 ahead(float yaw){double r=Math.toRadians(yaw);return new Vec3(-Math.sin(r),0,Math.cos(r));}
 

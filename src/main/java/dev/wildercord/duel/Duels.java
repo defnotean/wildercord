@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -275,7 +274,7 @@ public final class Duels {
 			}
 		});
 		// A harmful effect the opponent lays on a duellist is noted as it lands, so the end takes off that and nothing else.
-		ServerMobEffectEvents.AFTER_ADD.register((effect, entity, context) -> {
+		dev.wildercord.compat.MobEffectCompat.addAfterAdd((effect, entity) -> {
 			if (!BY_PLAYER.isEmpty() && entity instanceof ServerPlayer victim && effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL
 					&& BY_PLAYER.get(victim.getUUID()) instanceof Active active && byOpponent(active, victim)) {
 				active.harms.computeIfAbsent(victim.getUUID(), k -> new HashSet<>()).add(effect.getEffect());

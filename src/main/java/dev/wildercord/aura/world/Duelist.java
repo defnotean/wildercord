@@ -520,7 +520,7 @@ public class Duelist extends AuraFighter {
 		if (dashUntil > 0) {
 			double speed = AuraWorldRules.DASH_DISTANCE / 4.0;
 			setDeltaMovement(dashDir.x * speed, Math.max(0.05, getDeltaMovement().y), dashDir.z * speed);
-			needsSync = true;
+			hasImpulse = true;
 			Motes.glows(level, position().add(0, 1, 0), 2, 0.3, auraColor(), 0.09, 10, Vec3.ZERO, 0.01);
 			if (now >= dashUntil) {
 				dashUntil = 0;

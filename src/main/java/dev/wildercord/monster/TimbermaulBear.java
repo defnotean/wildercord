@@ -1086,7 +1086,7 @@ public class TimbermaulBear extends EliteMonster {
 			return;
 		}
 		victim.setDeltaMovement(spot.subtract(victim.position()).scale(0.5));
-		victim.needsSync = true;
+		victim.hasImpulse = true;
 		victim.resetFallDistance();
 		if (broke >= TimbermaulRules.HUG_BREAK) {
 			// Struck hard enough, it rolls off them, sprawled.
@@ -1181,7 +1181,7 @@ public class TimbermaulBear extends EliteMonster {
 	/** Whoever it struck thrown across the ground and up. */
 	private static void shove(LivingEntity victim, Vec3 push, double lift) {
 		victim.setDeltaMovement(victim.getDeltaMovement().add(push.x, lift, push.z));
-		victim.needsSync = true;
+		victim.hasImpulse = true;
 	}
 
 	/** The way across the ground along a vector, or the fallback if it has none. */

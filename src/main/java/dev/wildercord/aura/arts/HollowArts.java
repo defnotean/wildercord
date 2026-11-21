@@ -123,7 +123,7 @@ public final class HollowArts {
 				}
 				foe.teleportTo(next.x, next.y, next.z);
 				foe.setDeltaMovement(Vec3.ZERO);
-				foe.needsSync = true;
+				foe.hasImpulse = true;
 				tendril(ArtLight.world(player), next.add(0, foe.getBbHeight() * 0.5, 0), to.add(0, 0.9, 0), color, 3);
 				Vfx.emit(level, ParticleTypes.PORTAL, next.add(0, foe.getBbHeight() * 0.5, 0), 3, 0.2, 0.3);
 			});

@@ -27,7 +27,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
 import org.joml.Vector3f;
-import org.joml.Vector3fc;
 import java.util.*;
 
 /**
@@ -53,7 +52,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	/** Which way the slash sweeps, or a hop carries him, for the client: -1 left, 1 right, 0 straight back. */
 	private static final EntityDataAccessor<Integer> SIDE=SynchedEntityData.defineId(Mojito.class,EntityDataSerializers.INT);
 	/** Where the thrown sword is, and whether it is out of his mouth, for the client. */
-	private static final EntityDataAccessor<Vector3fc> SWORD=SynchedEntityData.defineId(Mojito.class,EntityDataSerializers.VECTOR3);
+	private static final EntityDataAccessor<Vector3f> SWORD=SynchedEntityData.defineId(Mojito.class,EntityDataSerializers.VECTOR3);
 	private static final EntityDataAccessor<Boolean> THROWN=SynchedEntityData.defineId(Mojito.class,EntityDataSerializers.BOOLEAN);
 	/** Dirt, and the stars round his head when he is dizzy. */
 	private static final DustParticleOptions EARTH=new DustParticleOptions(0x6B4A2B,1.6F),STAR=new DustParticleOptions(0xFFE066,1.1F),SHADOW=new DustParticleOptions(0x1A1A22,1.8F);
@@ -1013,7 +1012,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		if(!GuardianBite.land(level,this,p,(float)damage,MojitoRules.PIERCE))return;
 		if(shove>0)p.knockback(shove,from.x-p.getX(),from.z-p.getZ());
 		if(lift>0)p.setDeltaMovement(p.getDeltaMovement().add(0,lift,0));
-		p.needsSync=true;
+		p.hasImpulse=true;
 	}
 	private Vec3 ahead(float yaw){double r=Math.toRadians(yaw);return new Vec3(-Math.sin(r),0,Math.cos(r));}
 	private float yawTo(Vec3 at){return (float)Math.toDegrees(Math.atan2(-(at.x-getX()),at.z-getZ()));}

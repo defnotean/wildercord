@@ -244,7 +244,7 @@ public class ReefgraspOctopus extends WildMonster {
 		Vec3 pull = arms.subtract(prey.position());
 		if (pull.lengthSqr() > 0.2) {
 			prey.setDeltaMovement(prey.getDeltaMovement().scale(0.5).add(pull.normalize().scale(0.12)));
-			prey.needsSync = true;
+			prey.hasImpulse = true;
 		}
 		if (prey.isUnderWater()) {
 			prey.setAirSupply(OctopusRules.drains(prey.getAirSupply()));

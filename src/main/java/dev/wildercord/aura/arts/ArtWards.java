@@ -133,7 +133,7 @@ public final class ArtWards {
 		// A frenzied swordsman's blows feed the frenzy; a blow on a foe Thousand Moments stopped is stored to land again.
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
 			if (taken > 0 && source.getEntity() instanceof ServerPlayer player && source.getDirectEntity() == player
-					&& (source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.SPEAR))) {
+					&& (source.is(DamageTypes.PLAYER_ATTACK))) {
 				blowLanded(player, entity, taken);
 			}
 		});
@@ -194,7 +194,7 @@ public final class ArtWards {
 					aim = player.getViewVector(1.0F);
 				}
 				turned.setDeltaMovement(aim.normalize().scale(speed));
-				turned.needsSync = true;
+				turned.hasImpulse = true;
 			});
 		}
 		if (inEye(player)) {
@@ -209,7 +209,7 @@ public final class ArtWards {
 				Vec3 side = new Vec3(-flat.z, 0, flat.x).normalize();
 				double speed = Math.max(0.3, v.length() * 0.6);
 				turned.setDeltaMovement(side.scale(speed).add(flat.normalize().scale(speed * 0.4)).add(0, 0.25, 0));
-				turned.needsSync = true;
+				turned.hasImpulse = true;
 			});
 		}
 		return null;

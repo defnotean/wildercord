@@ -483,7 +483,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			level.sendParticles(ParticleTypes.EXPLOSION,down.x,down.y+.4,down.z,1,0,0,0,0);
 			for(var p:prey(level))if(p.position().distanceToSqr(down)<=SerpentRules.SHOCK_RADIUS*SerpentRules.SHOCK_RADIUS
 				&& GuardianBite.land(level,this,p,(float)SerpentRules.SHOCK_DAMAGE,SerpentRules.SLAM_PIERCE)){
-				p.push(0,.45,0);p.needsSync=true;landed=true;
+				p.push(0,.45,0);p.hasImpulse=true;landed=true;
 			}
 			pelted.clear();
 			for(int i=0;i<SerpentRules.DEBRIS;i++){
@@ -574,7 +574,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 				double[] b=SerpentSpine.fromWorld(new double[]{p.getX()-r.from.x,p.getY()-r.from.y,p.getZ()-r.from.z},r.yaw);
 				if(!SerpentRules.rooted(b[2],b[0],b[1],r0,r1))continue;
 				r.struck.add(p.getUUID());
-				if(hit(level,p,SerpentRules.ROOT_DAMAGE,0)){p.push(0,SerpentRules.ROOT_LIFT,0);p.needsSync=true;}
+				if(hit(level,p,SerpentRules.ROOT_DAMAGE,0)){p.push(0,SerpentRules.ROOT_LIFT,0);p.hasImpulse=true;}
 			}
 			if(r1>=SerpentRules.ROOT_REACH)it.remove();
 		}
@@ -751,7 +751,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 				if(hits>=SerpentRules.DEBRIS_HITS)continue;
 				if(GuardianBite.land(level,this,p,(float)SerpentRules.DEBRIS_DAMAGE,SerpentRules.SLAM_PIERCE)){
 					pelted.put(p.getUUID(),hits+1);
-					var push=c.vel.multiply(1,0,1).normalize();p.knockback(.6,-push.x,-push.z);p.needsSync=true;
+					var push=c.vel.multiply(1,0,1).normalize();p.knockback(.6,-push.x,-push.z);p.hasImpulse=true;
 				}
 				next=p.position().add(0,p.getBbHeight()/2,0);done=true;break;
 			}
@@ -809,7 +809,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		if(p==null || !p.isAlive() || p.isRemoved() || p.level()!=level || p.isCreative() || p.isSpectator()){letGo(false);spent(SerpentRules.CONSTRICT_RECOVER);return;}
 		var grip=position().add(ahead(aim).scale(SerpentSpine.GRIP)).add(0,.6,0);
 		if(p.position().distanceTo(grip)>0.6)p.teleportTo(grip.x,grip.y,grip.z);
-		p.setDeltaMovement(Vec3.ZERO);p.needsSync=true;
+		p.setDeltaMovement(Vec3.ZERO);p.hasImpulse=true;
 		var in=p.getLastClientInput();boolean pressing=in.jump() || in.left() || in.right();
 		if(pressing && !gripping){
 			struggles++;
@@ -831,7 +831,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var p=caught;caught=null;
 		if(p==null || !p.isAlive())return;
 		var out=ahead(aim);
-		p.knockback(broke?.5:.9,-out.x,-out.z);p.needsSync=true;
+		p.knockback(broke?.5:.9,-out.x,-out.z);p.hasImpulse=true;
 		if(broke){
 			p.displayClientMessage(Component.translatable("message.wildercord.rootcoil_serpent.free").withColor(0xA8E070), true);
 			if(level() instanceof ServerLevel server)Feels.sound(server,position().add(0,1.5,0),"aura_serpent_hurt",1.2F,.8F);
@@ -886,7 +886,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			for(var p:prey(level)){
 				if(p.distanceToSqr(this)>4.5*4.5)continue;
 				var out=outward(p.position(),position());
-				p.knockback(1.4,-out.x,-out.z);p.push(0,.5,0);p.needsSync=true;
+				p.knockback(1.4,-out.x,-out.z);p.push(0,.5,0);p.hasImpulse=true;
 			}
 		}
 		int start=tell+(rousing?4:0),span=SerpentRules.DIVE_TICKS-start;
@@ -916,7 +916,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			if(rippled.contains(p.getUUID()))continue;
 			if(!SerpentRules.crosses(Math.hypot(p.getX()-rippleAt.x,p.getZ()-rippleAt.z),r0,r1,p.getY()-rippleAt.y))continue;
 			rippled.add(p.getUUID());
-			if(hit(level,p,SerpentRules.ROUSE_DAMAGE,.6,outward(p.position(),rippleAt))){p.push(0,.4,0);p.needsSync=true;}
+			if(hit(level,p,SerpentRules.ROUSE_DAMAGE,.6,outward(p.position(),rippleAt))){p.push(0,.4,0);p.hasImpulse=true;}
 		}
 		if(r1>=SerpentRules.ROUSE_REACH)rippleAge=-1;
 	}
@@ -989,7 +989,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	/** A blow landing on {@code p}, knocking it {@code shove} along {@code dir}; whether it hurt. */
 	private boolean hit(ServerLevel level,LivingEntity p,double damage,double shove,Vec3 dir){
 		boolean hurt=GuardianBite.land(level,this,p,(float)damage,SerpentRules.PIERCE);
-		if(hurt && shove>0){p.knockback(shove,-dir.x,-dir.z);p.needsSync=true;}
+		if(hurt && shove>0){p.knockback(shove,-dir.x,-dir.z);p.hasImpulse=true;}
 		return hurt;
 	}
 	private void sound(ServerLevel level,Vec3 at,SoundEvent s,float volume,float pitch){level.playSound(null,at.x,at.y,at.z,s,SoundSource.HOSTILE,volume,pitch);}

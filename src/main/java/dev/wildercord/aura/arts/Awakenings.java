@@ -524,7 +524,7 @@ public final class Awakenings {
 					continue;
 				}
 				shot.setDeltaMovement(shot.getDeltaMovement().scale(0.45));
-				shot.needsSync = true;
+				shot.hasImpulse = true;
 				ArtLight.world(owner).slash(shot.position(), ArtKit.UP, new Vec3(1, 0, 0), HourglassArts.gold(owner), 0.35, 1.4, 0.025, 2, 8);
 			}
 		}

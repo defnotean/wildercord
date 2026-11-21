@@ -166,7 +166,7 @@ public final class AuraGuard {
 				aim = player.getViewVector(1.0F);
 			}
 			turned.setDeltaMovement(aim.normalize().scale(speed));
-			turned.needsSync = true;
+			turned.hasImpulse = true;
 		});
 	}
 
@@ -341,7 +341,7 @@ public final class AuraGuard {
 				aim = player.getViewVector(1.0F);
 			}
 			projectile.setDeltaMovement(aim.normalize().scale(Math.min(3.0, speed)));
-			projectile.needsSync = true;
+			projectile.hasImpulse = true;
 			dev.wildercord.compat.McEntities.syncVelocity(projectile);
 		});
 	}

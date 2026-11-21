@@ -102,7 +102,7 @@ public final class FamiliarMagic {
 		Vec3 d = to.subtract(thing.position());
 		if (d.lengthSqr() > 1.5) {
 			thing.setDeltaMovement(d.normalize().scale(0.45));
-			thing.needsSync = true;
+			thing.hasImpulse = true;
 		}
 	}
 

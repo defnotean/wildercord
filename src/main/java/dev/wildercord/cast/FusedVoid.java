@@ -548,7 +548,7 @@ final class FusedVoid {
 
 	private static void setMotion(LivingEntity target, Vec3 motion) {
 		target.setDeltaMovement(motion);
-		target.needsSync = true;
+		target.hasImpulse = true;
 		if (target instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}

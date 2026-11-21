@@ -188,7 +188,7 @@ public class GulperPitcher extends WildMonster {
 		if (pull > 0 && toward.lengthSqr() > 1.0E-4) {
 			toward = toward.normalize().scale(pull);
 			target.setDeltaMovement(toward.x, GulperPitcherRules.PULL_LIFT, toward.z);
-			target.needsSync = true;
+			target.hasImpulse = true;
 		}
 		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.JUNGLE_LEAVES.defaultBlockState()),
 			target.getX(), target.getY() + 1, target.getZ(), 12, 0.3, 0.4, 0.3, 0.1);

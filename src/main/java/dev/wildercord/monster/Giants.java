@@ -231,7 +231,7 @@ public final class Giants {
 			away = away.lengthSqr() < 1.0E-4 ? Vec3.ZERO : away.normalize().scale(GiantRules.STOMP_THROW
 				* (1 - victim.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 			victim.setDeltaMovement(victim.getDeltaMovement().add(away.x, 0.45, away.z));
-			victim.needsSync = true;
+			victim.hasImpulse = true;
 			hit++;
 		}
 		level.sendParticles(ParticleTypes.EXPLOSION, mob.getX(), mob.getY() + 0.2, mob.getZ(), 6, radius / 2, 0.1, radius / 2, 0);

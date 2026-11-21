@@ -726,7 +726,7 @@ public class SandmawWyrm extends EliteMonster {
 		face(dir);
 		Vec3 maw = maw();
 		victim.setDeltaMovement(maw.subtract(victim.position()).scale(0.5));
-		victim.needsSync = true;
+		victim.hasImpulse = true;
 		victim.resetFallDistance();
 		long s = since();
 		if (s % 4 == 0) {
@@ -750,7 +750,7 @@ public class SandmawWyrm extends EliteMonster {
 	private void spitOut(ServerLevel level, LivingEntity victim, double out, double lift) {
 		swallowed = null;
 		victim.setDeltaMovement(dir.x * out, lift, dir.z * out);
-		victim.needsSync = true;
+		victim.hasImpulse = true;
 		playSound(SoundEvents.PLAYER_BURP, 2F, 0.5F);
 		Vec3 maw = maw();
 		level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SAND.defaultBlockState()),
@@ -806,7 +806,7 @@ public class SandmawWyrm extends EliteMonster {
 				}
 				Vec3 in = new Vec3(-to.x, 0, -to.z).normalize();
 				victim.setDeltaMovement(in.x * SandmawRules.SINK_DRAG, victim.getDeltaMovement().y, in.z * SandmawRules.SINK_DRAG);
-				victim.needsSync = true;
+				victim.hasImpulse = true;
 			}
 			if (s % 2 == 0) {
 				BlockParticleOption grit = new BlockParticleOption(ParticleTypes.BLOCK, ground(level, position()));
@@ -1172,7 +1172,7 @@ public class SandmawWyrm extends EliteMonster {
 		}
 		Vec3 away = flat(victim.position().subtract(at), dir).scale(push);
 		victim.setDeltaMovement(victim.getDeltaMovement().add(away.x, lift, away.z));
-		victim.needsSync = true;
+		victim.hasImpulse = true;
 		return true;
 	}
 

@@ -617,7 +617,7 @@ public final class TwistMagic {
 				Vec3 v = shot.getDeltaMovement();
 				if (v.lengthSqr() > 0.02) {
 					shot.setDeltaMovement(v.scale(0.72));
-					shot.needsSync = true;
+					shot.hasImpulse = true;
 				}
 				if (tick % 4 == 0) {
 					TwistVfx.slowed(ride.level(), shot);
@@ -836,7 +836,7 @@ public final class TwistMagic {
 			return;
 		}
 		target.setDeltaMovement(velocity);
-		target.needsSync = true;
+		target.hasImpulse = true;
 		if (target instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}

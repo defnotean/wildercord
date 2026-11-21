@@ -225,7 +225,7 @@ public class Gloomstalker extends WildMonster {
 		double speed = Math.min(1.25, 0.16 * flat + 0.3);
 		Vec3 dir = flat < 1.0E-3 ? getLookAngle() : new Vec3(d.x / flat, 0, d.z / flat);
 		setDeltaMovement(dir.x * speed, 0.36 + 0.025 * flat + Math.max(0, d.y) * 0.08, dir.z * speed);
-		needsSync = true;
+		hasImpulse = true;
 		enter(Phase.POUNCE, now, 40);
 		pounceTicks = 0;
 		Motes.clouds(level, position().add(0, 0.2, 0), 4, 0.4, 0x2A1E36, 0.8, 18, new Vec3(0, 0.01, 0), 0.02, 0.4);

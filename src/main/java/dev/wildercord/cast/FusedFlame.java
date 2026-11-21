@@ -199,7 +199,7 @@ final class FusedFlame {
 
 	private static void setMotion(LivingEntity e, Vec3 motion) {
 		e.setDeltaMovement(motion);
-		e.needsSync = true;
+		e.hasImpulse = true;
 		if (e instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}

@@ -89,7 +89,7 @@ public final class ForgedGear {
 			Vec3 flat = new Vec3(look.x, 0, look.z);
 			Vec3 dir = flat.lengthSqr() > 1.0E-4 ? flat.normalize() : Vec3.ZERO;
 			player.setDeltaMovement(player.getDeltaMovement().multiply(0.3, 0.5, 0.3).add(dir.x * 0.95, 0.25, dir.z * 0.95));
-			player.needsSync = true;
+			player.hasImpulse = true;
 			player.fallDistance = 0;
 			if (world instanceof ServerLevel server && player instanceof ServerPlayer sp) {
 				sp.addEffect(new MobEffectInstance(MobEffects.SPEED, 80, 1, false, true));

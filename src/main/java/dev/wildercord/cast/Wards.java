@@ -503,7 +503,7 @@ public final class Wards {
 			if (t.position().distanceToSqr(held.anchor) > 0.0025) {
 				t.teleportTo(level, held.anchor.x, held.anchor.y, held.anchor.z, Set.<Relative>of(), t.getYRot(), t.getXRot(), false);
 			}
-			t.needsSync = true;
+			t.hasImpulse = true;
 			if (now % 4 == 0) {
 				TechniqueVfx.stasisTick(level, t, (int) (held.until - now));
 			}
@@ -565,7 +565,7 @@ public final class Wards {
 				}
 				p.setDeltaMovement(p.getDeltaMovement().scale(distance < 2.4 ? 0.0 : 0.35));
 				hold(p);
-				p.needsSync = true;
+				p.hasImpulse = true;
 			}
 			if (now % 4 == 0) {
 				// Zeno's bubble: the closer a hostile thing comes, the slower it moves (Slowness II at 5 blocks up to VI within 2).
@@ -614,7 +614,7 @@ public final class Wards {
 				if (!held.projectile().isRemoved()) {
 					unhold(held.projectile(), held.hadNoGravity());
 					held.projectile().setDeltaMovement(0, -0.05, 0);
-					held.projectile().needsSync = true;
+					held.projectile().hasImpulse = true;
 				}
 			}
 		}

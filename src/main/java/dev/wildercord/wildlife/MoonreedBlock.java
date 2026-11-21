@@ -36,7 +36,7 @@ public final class MoonreedBlock extends Block {
  public static boolean canBloom(LevelReader l,BlockPos p,long time) {return WetlandRules.night(time) && moist(l,p) && openSky(l,p);}
  /** A non-air open-sky bud is necessarily WORLD_SURFACE-1: one candidate per resident column.
   * Unlike admission's ordinary moisture read, acquisition never loads a neighboring chunk for water evidence. */
- static @org.jspecify.annotations.Nullable BlockPos findBud(ServerLevel level,BlockPos here) {
+ static BlockPos findBud(ServerLevel level,BlockPos here) {
   var found=MoonreedSearch.find(new MoonreedSearch.View(){
    // Ticket eligibility is not FULL completion. Snapshot only immediately available chunks for this search.
    private final java.util.Map<Long,net.minecraft.world.level.chunk.LevelChunk> resident=new java.util.HashMap<>();

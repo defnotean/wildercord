@@ -379,7 +379,7 @@ public final class FusedEffects {
 			int ticks = Effects.ticks((main ? 2.0 : 1.0) * (t instanceof Player ? 0.5 : 1.0), duration);
 			Spirits.freeze(t, ticks);
 			t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-			t.needsSync = true;
+			t.hasImpulse = true;
 			FusionVfx.glacier(level, t, ticks);
 			// The ice cracks for 2 when its hold is over: one crack a creature however often it's frozen.
 			if (Statuses.claim(t, "glacier", ticks + 20)) {

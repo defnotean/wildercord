@@ -74,7 +74,7 @@ public final class AuraCombat {
 
 	/** Whether {@code source} is {@code player}'s own blow (a swing, a sweep or a spear's thrust). */
 	static boolean melee(ServerPlayer player, DamageSource source) {
-		return source.getDirectEntity() == player && (source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.SPEAR));
+		return source.getDirectEntity() == player && (source.is(DamageTypes.PLAYER_ATTACK));
 	}
 
 	static void forget(UUID id) {

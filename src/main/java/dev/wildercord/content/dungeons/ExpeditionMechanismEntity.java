@@ -144,7 +144,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 			// A one-second poll can miss the entire catch band during a fast fall.
 			for(var p:server.players())if(!p.isSpectator()&&p.getY()<pos.getY()-3 && p.getY()>pos.getY()-12 && p.distanceToSqr(Vec3.atCenterOf(self.ahead(6)))<18*18){
 				p.teleportTo(server,pos.getX()+.5,pos.getY()+1,pos.getZ()+.5,Set.<Relative>of(),p.getYRot(),p.getXRot(),false);
-				p.setDeltaMovement(Vec3.ZERO);p.fallDistance=0;p.needsSync=true;
+				p.setDeltaMovement(Vec3.ZERO);p.fallDistance=0;p.hasImpulse=true;
 				p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(p));
 			}
 		}

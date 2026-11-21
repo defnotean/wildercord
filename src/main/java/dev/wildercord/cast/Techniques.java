@@ -98,7 +98,7 @@ final class Techniques {
 	private static void setMotion(LivingEntity target, Vec3 motion) {
 		if (target instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
 		target.setDeltaMovement(motion);
-		target.needsSync = true;
+		target.hasImpulse = true;
 		if (target instanceof ServerPlayer player) {
 			player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		}

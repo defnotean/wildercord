@@ -471,7 +471,7 @@ public final class ArtKit {
 		Vec3 v = foe.getDeltaMovement();
 		if (foe instanceof ServerPlayer moving) dev.wildercord.aura.MasterFormMovement.begin(moving, 2);
 		foe.setDeltaMovement(v.x * 0.5, Math.max(v.y, power), v.z * 0.5);
-		foe.needsSync = true;
+		foe.hasImpulse = true;
 		MonsterMagic.sync(foe);
 		if (airborneTicks > 0) {
 			Statuses.airborne(foe, airborneTicks);
@@ -1011,7 +1011,7 @@ public final class ArtKit {
 	public static void launch(ServerPlayer player, Vec3 velocity) {
 		dev.wildercord.aura.MasterFormMovement.begin(player, 40);
 		player.setDeltaMovement(velocity);
-		player.needsSync = true;
+		player.hasImpulse = true;
 		MonsterMagic.sync(player);
 	}
 

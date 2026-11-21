@@ -194,7 +194,7 @@ public final class GlassCartographer extends PathfinderMob implements Enemy {
 			if (player.hurtServer(server, damageSources().mobAttack(this), damage(move)) && move == PLUMB) {
 				var pull = position().subtract(player.position()).multiply(1, 0, 1).normalize().scale(.35);
 				player.push(pull.x, .08, pull.z);
-				player.needsSync = true;
+				player.hasImpulse = true;
 			}
 		}
 		server.playSound(null, blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.HOSTILE, 1.4F, .8F);

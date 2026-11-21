@@ -275,7 +275,7 @@ public final class WayEffects {
 			}
 			// Off the rim as off a wall: the part of its flight toward the heart turned outward.
 			p.setDeltaMovement(v.x + 2 * inward * nx, v.y, v.z + 2 * inward * nz);
-			p.needsSync = true;
+			p.hasImpulse = true;
 			turned++;
 			ArtLight.world(owner).flash(pos, AuraVfx.hot(WayRules.BULWARK_COLOR, 0.35), 1.1F);
 			if (turned == 1) {

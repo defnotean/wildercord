@@ -104,7 +104,7 @@ public final class Targets {
 			return false;
 		}
 		if (entity instanceof Player player) {
-			boolean pvp = !(caster instanceof Player) || ((ServerLevel) caster.level()).isPvpAllowed();
+			boolean pvp = !(caster instanceof Player) || ((ServerLevel) caster.level()).getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_PVP).get();
 			return pvp && !player.isCreative() && !player.isSpectator();
 		}
 		if (!(caster instanceof Player)) {
@@ -115,7 +115,7 @@ public final class Targets {
 		}
 		// Another player's pet is as safe as they are: only with pvp on.
 		if (playerPet(entity)) {
-			return ((ServerLevel) caster.level()).isPvpAllowed();
+			return ((ServerLevel) caster.level()).getGameRules().getRule(net.minecraft.world.level.GameRules.RULE_PVP).get();
 		}
 		return true;
 	}

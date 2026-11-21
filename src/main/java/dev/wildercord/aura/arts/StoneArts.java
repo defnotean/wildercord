@@ -323,7 +323,7 @@ public final class StoneArts {
 				} else {
 					foe.teleportTo(want.x, want.y, want.z);
 					foe.setDeltaMovement(dir.scale(0.3));
-					foe.needsSync = true;
+					foe.hasImpulse = true;
 				}
 			}
 			if (last) {

@@ -361,7 +361,7 @@ public final class HourglassArts {
 			}
 			slowed.add(e.getUUID());
 			e.setDeltaMovement(e.getDeltaMovement().scale(ArtRules.BLUR_ARROW));
-			e.needsSync = true;
+			e.hasImpulse = true;
 			ArtLight.world(owner).ring(e.position(), e.getDeltaMovement().lengthSqr() < 1.0E-6 ? ArtKit.UP : e.getDeltaMovement(), color, 0.1, 0.6, 0.04, 6);
 			Feels.sound(level, e.position(), "time_slow_hour", 0.5F, 1.4F);
 		}

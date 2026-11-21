@@ -187,7 +187,7 @@ public final class MountBonds {
 	public static void dash(ServerLevel level, AbstractHorse mount) {
 		double[] v = MountBondRules.dash(mount.getYRot());
 		mount.setDeltaMovement(v[0], mount.getDeltaMovement().y, v[2]);
-		mount.needsSync = true;
+		mount.hasImpulse = true;
 		level.sendParticles(ParticleTypes.CLOUD, mount.getX(), mount.getY() + 0.2, mount.getZ(), 8, 0.4, 0.1, 0.4, 0.02);
 		Fx.sound(level, mount.position(), SoundEvents.HORSE_GALLOP, 1.0F, 1.2F);
 	}
@@ -209,7 +209,7 @@ public final class MountBonds {
 			}
 			Vec3 away = target.position().subtract(mount.position()).multiply(1, 0, 1).normalize().scale(MountBondRules.STRIKE_KNOCKBACK);
 			target.push(away.x, 0.35, away.z);
-			target.needsSync = true;
+			target.hasImpulse = true;
 		}
 		level.sendParticles(ParticleTypes.EXPLOSION, mount.getX(), mount.getY(), mount.getZ(), 1, 0, 0, 0, 0);
 		level.sendParticles(ParticleTypes.CLOUD, mount.getX(), mount.getY() + 0.1, mount.getZ(), 20, 1.4, 0.1, 1.4, 0.05);

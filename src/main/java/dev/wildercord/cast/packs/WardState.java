@@ -288,7 +288,7 @@ public final class WardState {
 			Vec3 away = FxSupportAccess.horizontal(self.position().subtract(direct.position()), self.getLookAngle());
 			Vec3 aside = new Vec3(-away.z, 0, away.x).scale(0.7).add(away.scale(0.3)).add(0, 0.2, 0);
 			self.setDeltaMovement(self.getDeltaMovement().add(aside));
-			self.needsSync = true;
+			self.hasImpulse = true;
 			if (self instanceof ServerPlayer player) {
 				player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
 			}
@@ -622,7 +622,7 @@ public final class WardState {
 						missile.discard();
 					} else if (missile.getDeltaMovement().horizontalDistanceSqr() > 0.01) {
 						missile.setDeltaMovement(0, Math.min(0, missile.getDeltaMovement().y) * 0.2, 0);
-						missile.needsSync = true;
+						missile.hasImpulse = true;
 						WardVfx.refuse(level, missile.position(), 0xD8F4FF);
 					}
 				}

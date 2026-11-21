@@ -214,7 +214,7 @@ public class BloomclawMantis extends WildMonster {
 		Vec3 pull = claws.subtract(prey.position());
 		if (pull.lengthSqr() > 0.2) {
 			prey.setDeltaMovement(prey.getDeltaMovement().scale(0.5).add(pull.normalize().scale(0.12)));
-			prey.needsSync = true;
+			prey.hasImpulse = true;
 		}
 		if (MantisRules.nibbles(heldTicks)) {
 			prey.hurtServer(level, damageSources().mobAttack(this), MantisRules.NIBBLE_DAMAGE);

@@ -253,7 +253,7 @@ public class ResidueBlock extends Block {
 			double distance = toward.length();
 			if (distance > 0.4 && distance <= PULL_RADIUS) {
 				loose.setDeltaMovement(loose.getDeltaMovement().add(toward.normalize().scale(pull)));
-				loose.needsSync = true;
+				loose.hasImpulse = true;
 			}
 		}
 		// Animals shy away from it (looked for less often: they needn't be told every few ticks).

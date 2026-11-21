@@ -601,7 +601,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 		double speed = Math.min(1.2, 0.15 * flat + 0.3);
 		Vec3 dir = flat < 1.0E-3 ? getLookAngle() : new Vec3(d.x / flat, 0, d.z / flat);
 		setDeltaMovement(dir.x * speed, 0.42 + 0.02 * flat + Math.max(0, d.y) * 0.08, dir.z * speed);
-		needsSync = true;
+		hasImpulse = true;
 		enter(Phase.LUNGE);
 		play(level, SoundEvents.CHEST_OPEN, 1.0F, 0.8F);
 	}

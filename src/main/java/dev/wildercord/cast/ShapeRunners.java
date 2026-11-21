@@ -158,7 +158,7 @@ final class ShapeRunners {
 				continue;
 			}
 			p.setDeltaMovement(v.subtract(n.scale(2 * v.dot(n))).scale(0.6));
-			p.needsSync = true;
+			p.hasImpulse = true;
 			Vfx.impact(cast.level, p.position(), Vfx.theme(""), 0.4);
 		}
 		if (cast.level.getGameTime() % 10 == 0) {
