@@ -332,8 +332,8 @@ public class MoteParticle extends SingleQuadParticle implements SigilGroup.Exten
 	}
 
 	@Override
-	public int getLightCoords(float partial) {
-		return kind == MoteOption.CLOUD ? super.getLightCoords(partial) : LightTexture.FULL_BRIGHT;
+	public int getLightColor(float partial) {
+		return kind == MoteOption.CLOUD ? super.getLightColor(partial) : LightTexture.FULL_BRIGHT;
 	}
 
 	@Override

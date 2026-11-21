@@ -188,7 +188,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 
 	/** Small, with no dark plate behind it; clear when you look at it, dimmer otherwise. */
 	@Override
-	protected void submitNameDisplay(WispRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+	protected void submitNameTag(WispRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
 		Component name = state.nameTag;
 		if (name == null || state.nameTagAttachment == null) {
 			return;

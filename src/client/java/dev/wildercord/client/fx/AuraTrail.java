@@ -446,7 +446,7 @@ public class AuraTrail extends SingleQuadParticle implements SigilGroup.Extent {
 	// ------------------------------------------------------------------ the particle's housekeeping
 
 	@Override
-	public int getLightCoords(float partial) {
+	public int getLightColor(float partial) {
 		return LightTexture.FULL_BRIGHT;
 	}
 

@@ -26,7 +26,7 @@ public final class VersionWatch {
 			waiting = -1;
 			Component warning = VersionCheck.mismatch(payload.version(), VersionCheck.version());
 			if (warning != null && context.player() != null) {
-				context.player().sendSystemMessage(warning);
+				context.player().displayClientMessage(warning, false);
 			}
 		});
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
@@ -39,9 +39,9 @@ public final class VersionWatch {
 			waiting = -1;
 			if (client.player != null) {
 				String mine = VersionCheck.version();
-				client.player.sendSystemMessage(Component.translatableWithFallback("message.wildercord.version_server_old",
+				client.player.displayClientMessage(Component.translatableWithFallback("message.wildercord.version_server_old",
 					"This server runs an older Wildercord than yours (%s). Runes it doesn't know show as Silent Runes: the server needs updating, or install the version it runs.",
-					mine).withStyle(ChatFormatting.YELLOW));
+					mine).withStyle(ChatFormatting.YELLOW), false);
 			}
 		});
 	}

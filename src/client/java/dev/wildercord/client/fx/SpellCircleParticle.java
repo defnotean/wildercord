@@ -700,7 +700,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	}
 
 	@Override
-	public int getLightCoords(float partial) {
+	public int getLightColor(float partial) {
 		return LightTexture.FULL_BRIGHT;
 	}
 

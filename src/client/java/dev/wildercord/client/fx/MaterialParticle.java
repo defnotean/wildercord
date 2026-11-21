@@ -56,7 +56,7 @@ public final class MaterialParticle extends SingleQuadParticle implements SigilG
 		if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))super.extract(state,camera,partial);
 	}
 	@Override protected Layer getLayer() { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? Layer.TRANSLUCENT : GlowLayers.GLOW; }
-	@Override public int getLightCoords(float partial) { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? super.getLightCoords(partial) : LightTexture.FULL_BRIGHT; }
+	@Override public int getLightColor(float partial) { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? super.getLightColor(partial) : LightTexture.FULL_BRIGHT; }
 	@Override public ParticleRenderType getGroup(){return SigilGroup.TYPE;}
 	@Override public double centreX(){return x;}
 	@Override public double centreY(){return y;}

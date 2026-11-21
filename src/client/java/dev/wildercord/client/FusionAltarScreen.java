@@ -13,6 +13,7 @@ import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.SpellNames;
 import net.minecraft.ChatFormatting;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -79,7 +80,9 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 	private long circleOpened;
 
 	public FusionAltarScreen(FusionAltarMenu menu, Inventory inventory, Component title) {
-		super(menu, inventory, title, W, H);
+		super(menu, inventory, title);
+		this.imageWidth = W;
+		this.imageHeight = H;
 		this.titleLabelX = 12;
 		this.titleLabelY = 8;
 		this.inventoryLabelX = FusionAltarMenu.INVENTORY_X;
@@ -177,8 +180,9 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
-		super.extractBackground(g, mouseX, mouseY, a);
+	public void renderBackground(GuiGraphics wcGui, int mouseX, int mouseY, float a) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+		super.renderBackground(wcGui, mouseX, mouseY, a);
 		int x = leftPos;
 		int y = topPos;
 		sprite(g, SPR_PANEL, x, y, W, H);
@@ -286,7 +290,8 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 	}
 
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics wcGui, int mouseX, int mouseY) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 		g.text(font, title, titleLabelX, titleLabelY, GOLD, true);
 		g.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, DIM, false);
 		// Your XP, top right: fusions are paid in levels.
@@ -406,8 +411,9 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 	}
 
 	@Override
-	protected void extractTooltip(GuiGraphicsExtractor g, int mouseX, int mouseY) {
-		super.extractTooltip(g, mouseX, mouseY);
+	protected void renderTooltip(GuiGraphics wcGui, int mouseX, int mouseY) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
+		super.renderTooltip(wcGui, mouseX, mouseY);
 		if (hoveredSlot != null && hoveredSlot.hasItem() || !menu.getCarried().isEmpty()) {
 			return;
 		}

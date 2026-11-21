@@ -237,7 +237,8 @@ public final class MasteryClient {
 		}
 
 		@Override
-		public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor g) {
+		public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics wcGui) {
+		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
 			int color = 0xFF000000 | MasteryPanel.rankColor(inscription.rank());
 			GuiSpellCircle.ring(g, x + 13, y + 14, 12, 1, color);
 			GuiSpellCircle.sigil(g, x + 13, y + 14, 9, inscription.seed(), 0xFFE8D8B0, 1.2F);

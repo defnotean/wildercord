@@ -10,7 +10,7 @@ public final class ArticulatedArmorAssets {
 	private ArticulatedArmorAssets() {}
 	// Stock netherite also defines non-player equipment. These are never submitted by AvatarRenderer.
 	private static final Set<LayerType> STOCK_LAYERS = Set.of(LayerType.HUMANOID, LayerType.HUMANOID_LEGGINGS,
-		LayerType.HUMANOID_BABY, LayerType.HORSE_BODY, LayerType.NAUTILUS_BODY);
+		LayerType.HUMANOID, LayerType.HORSE_BODY, LayerType.NAUTILUS_BODY);
 
 	/** Texture, dye and trim replacements remain valid; wings and unrecognized geometry use fallback. */
 	public static boolean supported(EquipmentClientInfo asset) {

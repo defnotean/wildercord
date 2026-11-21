@@ -156,11 +156,12 @@ public final class GuiGraphicsExtractor {
 	}
 
 	public void blit(RenderPipeline pipeline, Identifier atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int blitOffset) {
-		g.blit(pipeline, atlas, x, y, u, v, regionWidth, regionHeight, width, height, textureU, textureV, blitOffset);
+		// 1.21.11 has no colour on a raw blit; the circle textures read fine untinted.
+		g.blit(pipeline, atlas, x, y, (float) (u + textureU), (float) (v + textureV), regionWidth, regionHeight, width, height, 256, 256);
 	}
 
 	public void blit(RenderPipeline pipeline, Identifier atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int textureWidth, int textureHeight) {
-		g.blit(pipeline, atlas, x, y, u, v, regionWidth, regionHeight, width, height, textureU, textureV, textureWidth, textureHeight);
+		g.blit(pipeline, atlas, x, y, (float) (u + textureU), (float) (v + textureV), regionWidth, regionHeight, width, height, textureWidth, textureHeight);
 	}
 
 	public void blit(Identifier atlas, int x, int y, int width, int height, float u, float v, float regionWidth, float regionHeight) {
@@ -236,7 +237,11 @@ public final class GuiGraphicsExtractor {
 	}
 
 	public void setTooltipForNextFrame(List<? extends FormattedCharSequence> lines, int x, int y) {
-		g.setTooltipForNextFrame(lines, x, y);
+		g.setTooltipForNextFrame(new java.util.ArrayList<net.minecraft.util.FormattedCharSequence>(lines), x, y);
+	}
+
+	public void setTooltipForNextFrame(Font font, List<? extends FormattedCharSequence> lines, int x, int y) {
+		g.setTooltipForNextFrame(font, lines, x, y);
 	}
 
 	public void setTooltipForNextFrame(Font font, ItemStack stack, int x, int y) {

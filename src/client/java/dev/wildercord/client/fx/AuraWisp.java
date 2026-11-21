@@ -116,7 +116,7 @@ public class AuraWisp extends SingleQuadParticle implements SigilGroup.Extent {
 	}
 
 	@Override
-	public int getLightCoords(float partial) {
+	public int getLightColor(float partial) {
 		return LightTexture.FULL_BRIGHT;
 	}
 

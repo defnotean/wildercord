@@ -193,7 +193,7 @@ public final class WildercordClient implements ClientModInitializer {
 		});
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.ChargeHum::tick);
 		// Charging casters' incantations, drawn among the frame's other things as vanilla text.
-		net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents.END_EXTRACTION.register(dev.wildercord.client.fx.Incantations::submit);
+		net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents.AFTER_ENTITIES.register(dev.wildercord.client.fx.Incantations::submit);
 		CastingOptions.load();
 		WildercordKeys.init();
 		MastersArtsClient.init();

@@ -105,7 +105,7 @@ public final class TidewardClient {
    if(following!=null)position();quadSize=size*(.8F+Math.min(age,3)*.07F);alpha=Math.min(1,(lifetime-age)/3F)*(MagicQuality.reducedFlash?.75F:1);
   }
   @Override protected Layer getLayer(){return Layer.TRANSLUCENT;}@Override public ParticleRenderType getGroup(){return SigilGroup.TYPE;}
-  @Override public int getLightCoords(float partial){return super.getLightCoords(partial);}
+  @Override public int getLightColor(float partial){return super.getLightColor(partial);}
   @Override public double centreX(){return x;}@Override public double centreY(){return y;}@Override public double centreZ(){return z;}@Override public double reach(){return size*1.8;}
  }
 }

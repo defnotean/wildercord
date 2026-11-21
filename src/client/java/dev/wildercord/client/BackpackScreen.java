@@ -3,6 +3,7 @@ package dev.wildercord.client;
 import dev.wildercord.menu.BackpackMenu;
 import net.minecraft.ChatFormatting;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -28,24 +29,28 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 	private final int rows;
 
 	public BackpackScreen(BackpackMenu menu, Inventory inventory, Component title) {
-		super(menu, inventory, title, 176, 114 + menu.rows() * 18);
+		super(menu, inventory, title);
+		this.imageWidth = 176;
+		this.imageHeight = 114 + menu.rows() * 18;
 		this.rows = menu.rows();
 		this.inventoryLabelY = this.imageHeight - 94;
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		super.extractBackground(graphics, mouseX, mouseY, a);
+	public void renderBackground(GuiGraphics wcGui, int mouseX, int mouseY, float a) {
+		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
+		super.renderBackground(wcGui, mouseX, mouseY, a);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_BACKGROUND, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.rows * 18 + 17, 256, 256);
 		graphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_BACKGROUND, this.leftPos, this.topPos + this.rows * 18 + 17, 0.0F, 126.0F, this.imageWidth, 96, 256, 256);
 	}
 
 	@Override
-	protected void extractSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
+	protected void renderSlot(GuiGraphics wcGui, Slot slot, int mouseX, int mouseY) {
+		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		if (BackpackMenu.isLocked(slot)) {
 			graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, LOCKED_SHADE);
 		}
-		super.extractSlot(graphics, slot, mouseX, mouseY);
+		super.renderSlot(wcGui, slot, mouseX, mouseY);
 	}
 
 	@Override

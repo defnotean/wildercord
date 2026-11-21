@@ -1,8 +1,6 @@
 package dev.wildercord.client.compat;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -33,9 +31,9 @@ public final class RenderCompat {
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withShaderDefine("NO_OVERLAY")
 		.withShaderDefine("NO_CARDINAL_LIGHTING")
-		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+		.withBlend(BlendFunction.LIGHTNING)
 		.withCull(false)
-		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
+		.withDepthWrite(false)
 		.build();
 
 	private static final RenderPipeline AURA_BODY_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENTITY_EMISSIVE_SNIPPET)
@@ -43,23 +41,23 @@ public final class RenderCompat {
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withShaderDefine("NO_OVERLAY")
 		.withShaderDefine("NO_CARDINAL_LIGHTING")
-		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+		.withBlend(BlendFunction.LIGHTNING)
 		.withCull(false)
-		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
+		.withDepthWrite(false)
 		.build();
 
 	private static final RenderPipeline GLOW_PARTICLE_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())
 		.withLocation(Wildercord.id("pipeline/glow_particle"))
-		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
-		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
+		.withBlend(BlendFunction.LIGHTNING)
+		.withDepthWrite(false)
 		.build();
 
 	private static final RenderPipeline DARK_PARTICLE_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())
 		.withLocation(Wildercord.id("pipeline/dark_particle"))
 		// 26.1.2 BlendFunction carries only factors, no blend op: vanilla's INVERT is the
 		// closest darkening blend to the 26.2 SRC_ALPHA/ONE REVERSE_SUBTRACT.
-		.withColorTargetState(new ColorTargetState(BlendFunction.INVERT))
-		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
+		.withBlend(BlendFunction.INVERT)
+		.withDepthWrite(false)
 		.build();
 
 	private RenderCompat() {}
@@ -83,11 +81,15 @@ public final class RenderCompat {
 	}
 
 	public static void startTextInput(Minecraft mc, Screen screen) {
-		mc.textInputManager().startTextInput();
+		// 1.21.11 routes IME focus through the focused widget itself; nothing to start.
+	}
+
+	public static void setTextInputArea(Minecraft mc, Screen screen, int x1, int y1, int x2, int y2) {
+		// 1.21.11 positions the IME candidate box with the focused widget.
 	}
 
 	public static void stopTextInput(Minecraft mc, Screen screen) {
-		mc.textInputManager().stopTextInput();
+		// 1.21.11 clears the IME area with the widget focus.
 	}
 
 	public static float swingProgress(ArmedEntityRenderState state) {

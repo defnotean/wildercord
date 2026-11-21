@@ -219,7 +219,7 @@ public class CordScreen extends Screen {
 		float s = scale();
 		int sx = Math.round(left() + searchX() * s);
 		int sy = Math.round(top() + TABS_TOP * s);
-		minecraft.textInputManager().setTextInputArea(sx, sy, sx + Math.round(SEARCH_W * s), sy + Math.round(13 * s));
+		dev.wildercord.client.compat.RenderCompat.setTextInputArea(minecraft, this, sx, sy, sx + Math.round(SEARCH_W * s), sy + Math.round(13 * s));
 		// A resize runs this again: reading the book then would undo an edit the server hasn't sent back yet.
 		if (!copied) {
 			readBook();

@@ -150,7 +150,7 @@ public final class ShieldBreak {
 		}
 
 		@Override
-		public int getLightCoords(float partial) {
+		public int getLightColor(float partial) {
 			return LightTexture.FULL_BRIGHT;
 		}
 
@@ -291,7 +291,7 @@ public final class ShieldBreak {
 		}
 
 		@Override
-		public int getLightCoords(float partial) {
+		public int getLightColor(float partial) {
 			return LightTexture.FULL_BRIGHT;
 		}
 

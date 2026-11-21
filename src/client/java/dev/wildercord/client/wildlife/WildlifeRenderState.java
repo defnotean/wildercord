@@ -56,5 +56,5 @@ public class WildlifeRenderState extends LivingEntityRenderState {
 	public int barding;
 
 	/** A tortoise's garden: up to three plants, each a block model drawn small on its shell. */
-	public final BlockState[] garden = {Blocks.air().defaultBlockState(), Blocks.air().defaultBlockState(), Blocks.air().defaultBlockState()};
+	public final BlockState[] garden = {Blocks.AIR.defaultBlockState(), Blocks.AIR.defaultBlockState(), Blocks.AIR.defaultBlockState()};
 }

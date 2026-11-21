@@ -36,7 +36,7 @@ public final class EarthParticle extends SingleQuadParticle implements SigilGrou
   setSprite(frames[age<lifetime/2?0:1]);
  }
  @Override protected Layer getLayer(){return Layer.TRANSLUCENT;}
- @Override public int getLightCoords(float partial){return super.getLightCoords(partial);}
+ @Override public int getLightColor(float partial){return super.getLightColor(partial);}
  @Override public ParticleRenderType getGroup(){return SigilGroup.TYPE;}
  @Override public double centreX(){return x;}
  @Override public double centreY(){return y;}

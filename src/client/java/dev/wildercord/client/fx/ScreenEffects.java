@@ -1,5 +1,6 @@
 package dev.wildercord.client.fx;
 
+import net.minecraft.client.DeltaTracker;
 import dev.wildercord.net.WildercordNetworking;
 import net.minecraft.client.Minecraft;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;

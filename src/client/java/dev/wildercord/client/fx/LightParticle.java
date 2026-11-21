@@ -372,7 +372,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 	}
 
 	@Override
-	public int getLightCoords(float partial) {
+	public int getLightColor(float partial) {
 		return LightTexture.FULL_BRIGHT;
 	}
 

@@ -29,7 +29,7 @@ public final class AirflowParticle extends SingleQuadParticle implements SigilGr
         int steps=flow.minimal()?6:16;
         Vec3 origin=new Vec3(x,y,z).subtract(camera.position());
         float crest=.12F+f*.76F;
-        int light=super.getLightCoords(partial);
+        int light=super.getLightColor(partial);
         for(int i=0;i<steps;i++){
             double a=i/(double)steps,b=(i+1)/(double)steps,m=(a+b)*.5;
             Vec3 from=point(flow,a),to=point(flow,b),d=to.subtract(from);

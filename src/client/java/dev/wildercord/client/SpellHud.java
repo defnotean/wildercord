@@ -108,7 +108,7 @@ public final class SpellHud {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("spell_hud"), SpellHud::extract);
 		// A Domain's tint goes under everything else on the HUD.
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("domain_tint"),
-			(wcG, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(new GuiGraphicsExtractor(wcG)));
+			(wcG, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(wcG));
 		// An overchannelling caster's view closing in, under everything else too.
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("overchannel_strain"),
 			dev.wildercord.client.fx.ScreenEffects::drawStrain);

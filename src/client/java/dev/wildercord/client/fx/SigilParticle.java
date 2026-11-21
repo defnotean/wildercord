@@ -225,7 +225,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 		int pieces = Math.max(16, (int) Math.ceil(Mth.TWO_PI * size / BAND_PIECE));
 		float half = Mth.PI * r / pieces * 1.06F;
 		int color = ARGB.colorFromFloat(alpha, rCol, gCol, bCol);
-		int light = getLightCoords(partial);
+		int light = getLightColor(partial);
 		Layer layer = getLayer();
 		for (int i = 0; i < pieces; i++) {
 			float a = Mth.TWO_PI * i / pieces;
@@ -600,7 +600,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 	}
 
 	@Override
-	public int getLightCoords(float partial) {
+	public int getLightColor(float partial) {
 		return LightTexture.FULL_BRIGHT;
 	}
 
