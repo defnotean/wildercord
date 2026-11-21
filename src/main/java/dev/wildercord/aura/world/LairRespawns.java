@@ -195,7 +195,7 @@ public final class LairRespawns extends SavedData {
 				return false;
 			}
 		}
-		if (!level.addFreshEntityWithPassengers(boss)) {
+		if (!level.addFreshEntity(boss)) {
 			return false;
 		}
 		level.sendParticles(ParticleTypes.ENCHANT, home.getX() + 0.5, home.getY() + 1.5, home.getZ() + 0.5, 24, 1.2, 0.8, 1.2, 0.1);
