@@ -119,7 +119,14 @@ public abstract class McQuadParticle extends SingleQuadParticle {
 
 	/** The plain quad vanilla would draw for this particle: its own sprite, colour, roll and light. */
 	protected void extractDefault(QuadParticleRenderState state, Camera camera, float partial) {
-		super.render(state.bufferFor(getLayer()), camera, partial);
+		// Same billboard 1.21.9's extract() builds: the facing mode's rotation, then the particle's roll.
+		// Vanilla's own SingleQuadParticle#render is left alone because it writes only the elements its
+		// own sheet format has, and the layers here (eyes, translucent particles) also want an overlay
+		// and a normal.
+		Quaternionf facing = new Quaternionf();
+		getFacingCameraMode().setRotation(facing, camera, partial);
+		facing.rotateZ(Mth.lerp(partial, oRoll, roll));
+		extractRotatedQuad(state, camera, facing, partial);
 	}
 
 	@Override
