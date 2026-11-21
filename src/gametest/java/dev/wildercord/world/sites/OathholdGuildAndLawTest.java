@@ -132,7 +132,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				.adjustSettings(settings -> settings.setSeed("20261121"))
 				.create()) {
 			context.waitTicks(25);
-			for (String rule : List.of("advance_time false", "advance_weather false")) {
+			for (String rule : List.of("advance_time false", "advance_weather false", "spawn_mobs false")) {
 				world.getServer().runCommand("gamerule " + rule);
 			}
 			world.getServer().runCommand("time set 1200");
@@ -272,7 +272,8 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				check(p.containerMenu instanceof GuildBoardMenu,
 					"Using GuildRequestBoardBlock must open GuildBoardMenu, got " + p.containerMenu);
 			});
-			context.runOnClient(mc -> check(mc.screen != null, "Client screen must open for GuildBoardMenu"));
+			context.runOnClient(mc -> check(mc.player != null && mc.player.containerMenu instanceof net.minecraft.world.inventory.ChestMenu,
+				"Client containerMenu must open ChestMenu for GuildBoardMenu"));
 			shot(context, "oathhold_guild_01_request_board_gui");
 
 			world.getServer().runOnServer(server -> server.getPlayerList().getPlayers().getFirst().closeContainer());

@@ -466,14 +466,7 @@ public final class OathholdInnerCore {
 	}
 
 	public static boolean overlapsInnerLandmark(int x0, int z0, int x1, int z1) {
-		if (x0 <= 26 && x1 >= -26 && z1 >= -44) return true;
-		if (z1 <= -36) return true;
-		if (x1 >= -124 && x0 <= -36 && z1 >= 42 && z0 <= 152) return true;
-		if (x1 >= -190 && x0 <= -134 && z1 >= 50 && z0 <= 96) return true;
-		if (x1 >= -216 && x0 <= -120 && z1 >= 10 && z0 <= 32) return true;
-		if (x1 >= 112 && x0 <= 160 && z1 >= 40 && z0 <= 86) return true;
-		if (x1 >= 32 && x0 <= 78 && z1 >= 92 && z0 <= 152) return true;
-		return false;
+		return OathholdOrigin.overlapsInnerLandmark(x0, z0, x1, z1);
 	}
 
 	/** Reusable detailed half-timbered stone-and-calcite medieval shop-house with furnished interior. */

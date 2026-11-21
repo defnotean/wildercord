@@ -247,4 +247,44 @@ public final class OathholdOrigin {
 	public static BlockPos anchorPos(Origin origin) {
 		return new BlockPos(origin.originX(), origin.baseY(), origin.originZ());
 	}
+
+	/** Pure deterministic coordinate hash [0..99] without initializing Minecraft registries. */
+	public static int hash(int x, int y, int z) {
+		int h = x * 73856093 ^ y * 19349663 ^ z * 83492791;
+		h ^= h >>> 13;
+		h *= 0x5bd1e995;
+		h ^= h >>> 15;
+		return Math.floorMod(h, 100);
+	}
+
+	/** Pure bounding check for Lower Inner City landmarks (kept registry-free for dry-run tests). */
+	public static boolean overlapsInnerLandmark(int x0, int z0, int x1, int z1) {
+		if (x0 <= 26 && x1 >= -26 && z1 >= -44) return true;
+		if (z1 <= -36) return true;
+		if (x1 >= -124 && x0 <= -36 && z1 >= 42 && z0 <= 152) return true;
+		if (x1 >= -190 && x0 <= -134 && z1 >= 50 && z0 <= 96) return true;
+		if (x1 >= -216 && x0 <= -120 && z1 >= 10 && z0 <= 32) return true;
+		if (x1 >= 112 && x0 <= 160 && z1 >= 40 && z0 <= 86) return true;
+		if (x1 >= 32 && x0 <= 78 && z1 >= 92 && z0 <= 152) return true;
+		return false;
+	}
+
+	/** Pure bounding check for Outer Ward major landmarks &amp; roads (kept registry-free for dry-run tests). */
+	public static boolean overlapsMajorFeature(int x0, int z0, int x1, int z1) {
+		int maxC = Math.max(Math.max(Math.abs(x0), Math.abs(x1)), Math.max(Math.abs(z0), Math.abs(z1)));
+		int minXAbs = (x0 <= 0 && x1 >= 0) ? 0 : Math.min(Math.abs(x0), Math.abs(x1));
+		int minZAbs = (z0 <= 0 && z1 >= 0) ? 0 : Math.min(Math.abs(z0), Math.abs(z1));
+
+		if (maxC >= 916) return true;
+		if (minXAbs <= 254 && minZAbs <= 254) return true;
+		if (minXAbs <= 18 || minZAbs <= 18) return true;
+		if ((Math.abs(x0) <= 644 && Math.abs(x1) >= 616) || (Math.abs(z0) <= 644 && Math.abs(z1) >= 616)) {
+			if (Math.max(minXAbs, minZAbs) >= 566) return true;
+		}
+		if (x1 >= 496 && z1 >= -264 && z0 <= 264) return true;
+		if (x0 <= -540 && x1 >= -684 && z1 >= -72 && z0 <= 72) return true;
+		if (x1 >= -72 && x0 <= 72 && z1 >= 532 && z0 <= 676) return true;
+		if (x1 >= -72 && x0 <= 72 && z1 >= -676 && z0 <= -532) return true;
+		return false;
+	}
 }

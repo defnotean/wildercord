@@ -294,21 +294,7 @@ public final class OathholdOuterWards {
 	}
 
 	public static boolean overlapsMajorFeature(int x0, int z0, int x1, int z1) {
-		int maxC = Math.max(Math.max(Math.abs(x0), Math.abs(x1)), Math.max(Math.abs(z0), Math.abs(z1)));
-		int minXAbs = (x0 <= 0 && x1 >= 0) ? 0 : Math.min(Math.abs(x0), Math.abs(x1));
-		int minZAbs = (z0 <= 0 && z1 >= 0) ? 0 : Math.min(Math.abs(z0), Math.abs(z1));
-
-		if (maxC >= 916) return true;
-		if (minXAbs <= 254 && minZAbs <= 254) return true;
-		if (minXAbs <= 18 || minZAbs <= 18) return true;
-		if ((Math.abs(x0) <= 644 && Math.abs(x1) >= 616) || (Math.abs(z0) <= 644 && Math.abs(z1) >= 616)) {
-			if (Math.max(minXAbs, minZAbs) >= 566) return true;
-		}
-		if (x1 >= 496 && z1 >= -264 && z0 <= 264) return true;
-		if (x0 <= -540 && x1 >= -684 && z1 >= -72 && z0 <= 72) return true;
-		if (x1 >= -72 && x0 <= 72 && z1 >= 532 && z0 <= 676) return true;
-		if (x1 >= -72 && x0 <= 72 && z1 >= -676 && z0 <= -532) return true;
-		return false;
+		return OathholdOrigin.overlapsMajorFeature(x0, z0, x1, z1);
 	}
 
 	private static void buildUrbanBlock(OathholdCanvas c, int x0, int z0, int x1, int z1) {

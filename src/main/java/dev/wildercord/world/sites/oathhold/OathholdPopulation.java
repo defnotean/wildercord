@@ -215,8 +215,8 @@ public final class OathholdPopulation {
 			for (int gz = -32; gz <= 160; gz += 32) {
 				int x0 = gx + 3, x1 = gx + 29, z0 = gz + 3, z1 = gz + 29;
 				if (x1 < minX || x0 > maxX || z1 < minZ || z0 > maxZ) continue;
-				if (OathholdInnerCore.overlapsInnerLandmark(x0, z0, x1, z1)) continue;
-				int h = OathholdCanvas.hash(gx, 11, gz);
+				if (OathholdOrigin.overlapsInnerLandmark(x0, z0, x1, z1)) continue;
+				int h = OathholdOrigin.hash(gx, 11, gz);
 				OathholdCitizenRules.Archetype shopRole = switch (h % 5) {
 					case 0 -> OathholdCitizenRules.Archetype.BAKER_COOK;
 					case 1 -> OathholdCitizenRules.Archetype.CLOTHIER_TAILOR;
@@ -235,14 +235,14 @@ public final class OathholdPopulation {
 			int ac = Math.abs(c);
 			if (ac < 268 || (ac >= 530 && ac <= 684)) continue;
 			if (minX <= 12 && maxX >= -12 && c >= minZ && c <= maxZ) {
-				int h = OathholdCanvas.hash(0, 31, c);
+				int h = OathholdOrigin.hash(0, 31, c);
 				out.accept(new PlannedSpawn(-8, 2, c, h % 3 == 0
 					? OathholdCitizenRules.Archetype.STREET_SWEEPER : OathholdCitizenRules.Archetype.TOWNSFOLK, 12, 90.0F));
 				out.accept(new PlannedSpawn(8, 2, c, h % 4 == 0
 					? OathholdCitizenRules.Archetype.CITY_WATCHMAN : OathholdCitizenRules.Archetype.NOBLE_PATRON, 12, -90.0F));
 			}
 			if (minZ <= 12 && maxZ >= -12 && c >= minX && c <= maxX && c < 490) {
-				int h = OathholdCanvas.hash(c, 33, 0);
+				int h = OathholdOrigin.hash(c, 33, 0);
 				out.accept(new PlannedSpawn(c, 2, -8, h % 3 == 0
 					? OathholdCitizenRules.Archetype.CITY_WATCHMAN : OathholdCitizenRules.Archetype.TOWNSFOLK, 12, 0.0F));
 				out.accept(new PlannedSpawn(c, 2, 8, h % 4 == 0
@@ -274,10 +274,10 @@ public final class OathholdPopulation {
 			for (int gz = startGz; gz <= endGz; gz += 48) {
 				int x0 = gx + 4, x1 = gx + 44, z0 = gz + 4, z1 = gz + 44;
 				if (x1 < minX || x0 > maxX || z1 < minZ || z0 > maxZ) continue;
-				if (OathholdOuterWards.overlapsMajorFeature(x0, z0, x1, z1)) continue;
+				if (OathholdOrigin.overlapsMajorFeature(x0, z0, x1, z1)) continue;
 
 				int cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
-				int h = OathholdCanvas.hash(x0, 77, z0);
+				int h = OathholdOrigin.hash(x0, 77, z0);
 				boolean east = cx >= 0;
 				boolean north = cz < 0;
 
