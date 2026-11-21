@@ -248,7 +248,7 @@ class DataPackProfile:
     def _spread_provider(self, provider):
         """1.21.x has no trapezoid int provider; a uniform over the same range is the closest shape."""
         if self.is_obfuscated and isinstance(provider, dict) and provider.get("type") == "minecraft:trapezoid":
-            return {"type": "minecraft:uniform", "min": provider["min"], "max": provider["max"]}
+            return {"type": "minecraft:uniform", "min_inclusive": provider["min"], "max_inclusive": provider["max"]}
         return provider
 
     def placed_offset_modifier(self, x_provider, y_provider, z_provider=None):
