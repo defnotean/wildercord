@@ -14,11 +14,16 @@
     "sky_color": 8103167,
     "water_fog_color": 2640462,
     "fog_color": 2640462,
-    "music": {
-      "max_delay": 24000,
-      "min_delay": 12000,
-      "sound": "minecraft:music.overworld.dripstone_caves"
-    }
+    "music": [
+      {
+        "data": {
+          "max_delay": 24000,
+          "min_delay": 12000,
+          "sound": "minecraft:music.overworld.dripstone_caves"
+        },
+        "weight": 1
+      }
+    ]
   },
   "features": [
     [],

@@ -14,11 +14,16 @@
     "sky_color": 11835252,
     "water_fog_color": 4010794,
     "fog_color": 4010794,
-    "music": {
-      "max_delay": 24000,
-      "min_delay": 12000,
-      "sound": "minecraft:music.overworld.forest"
-    }
+    "music": [
+      {
+        "data": {
+          "max_delay": 24000,
+          "min_delay": 12000,
+          "sound": "minecraft:music.overworld.forest"
+        },
+        "weight": 1
+      }
+    ]
   },
   "features": [
     [],
