@@ -57,6 +57,7 @@
       "dev.wildercord.aura.world.CooldownRestartTest",
       "dev.wildercord.aura.world.OathboundBastionTest",
       "dev.wildercord.aura.world.OathboundBladeChampionTest",
+      "dev.wildercord.aura.world.OathboundHalberdierTest",
       "dev.wildercord.world.dungeons.BattlefieldsTest",
       "dev.wildercord.world.dungeons.SleepingBladeTest",
       "dev.wildercord.world.ferryman.FerrymanCoopTest",

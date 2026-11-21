@@ -33,6 +33,17 @@ LANG = {
     "guide.wildercord.oathbound_blade_champion.hint": (
         "Commands the deepest haunts — strongholds, ancient cities, and sunken expeditions — alongside fallen knights."
     ),
+    "entity.wildercord.oathbound_halberdier": "Oathbound Halberdier",
+    "item.wildercord.oathbound_halberdier_spawn_egg": "Oathbound Halberdier Spawn Egg",
+    "guide.wildercord.oathbound_halberdier": (
+        "A swift storm-glaive sentinel of the Oathbound order in gunmetal-indigo and cobalt plate, masked behind a "
+        "winged falcon-beak helm and glowing cyan eyes. It chains 360-degree Tempest Whirls, high-speed Shadowstep "
+        "Thrusts, Hook-and-Reap pulls, and four-way Thunderbolt Crashes; interrupt its telegraphed halberd windups "
+        "with an axe to break its poise."
+    ),
+    "guide.wildercord.oathbound_halberdier.hint": (
+        "Commands the deepest haunts — strongholds, ancient cities, and sunken expeditions — alongside fallen knights."
+    ),
 }
 
 # Exact UV boxes matching OathboundBastionModel.createLayer() on a 128x128 sheet.
@@ -1037,3 +1048,366 @@ def write(g) -> None:
         {"model": {"type": "minecraft:model", "model": f"wildercord:item/{bc_egg}"}},
     )
     g.write_json(g.DATA / "loot_table/entities/oathbound_blade_champion.json", BLADE_CHAMPION_LOOT)
+
+    g.save(halberdier_skin(glow=False), g.ASSETS / "textures/entity/oathbound_halberdier/skin.png")
+    g.save(halberdier_skin(glow=True), g.ASSETS / "textures/entity/oathbound_halberdier/glow.png")
+    hb_egg = "oathbound_halberdier_spawn_egg"
+    g.save(halberdier_spawn_egg(), g.ASSETS / f"textures/item/{hb_egg}.png")
+    g.item_model(hb_egg, hb_egg)
+    g.write_json(
+        g.ASSETS / f"items/{hb_egg}.json",
+        {"model": {"type": "minecraft:model", "model": f"wildercord:item/{hb_egg}"}},
+    )
+    g.write_json(g.DATA / "loot_table/entities/oathbound_halberdier.json", HALBERDIER_LOOT)
+
+
+# ---------------------------------------------------------------------------
+# Knight #3: Oathbound Halberdier (Way of the Storm-Glaive)
+# ---------------------------------------------------------------------------
+
+HALBERDIER_UV_BOXES = {
+    "head": (0, 0, 8, 8, 8),
+    "beak_upper": (32, 0, 4, 2, 2),
+    "beak_tip": (44, 0, 2, 2, 2),
+    "wing": (52, 0, 1, 5, 6),
+    "body": (0, 18, 9, 12, 5),
+    "cowl": (28, 18, 10, 3, 7),
+    "scarf_base": (62, 18, 3, 8, 1),
+    "scarf_tip": (70, 18, 3, 8, 1),
+    "tabard_front": (28, 28, 5, 8, 1),
+    "tabard_back": (40, 28, 5, 8, 1),
+    "tasset": (52, 28, 2, 6, 5),
+    "upper_arm": (0, 40, 4, 6, 4),
+    "pauldron": (16, 40, 6, 5, 6),
+    "fore_arm": (0, 52, 4, 7, 4),
+    "thigh": (40, 40, 4, 6, 4),
+    "shin": (40, 52, 4, 6, 5),
+    "knee": (58, 52, 4, 3, 2),
+    "halberd_shaft": (0, 66, 2, 32, 2),
+    "halberd_butt": (8, 66, 3, 3, 3),
+    "halberd_tassel": (20, 66, 1, 7, 2),
+    "halberd_axe": (26, 66, 1, 9, 6),
+    "halberd_hook": (40, 66, 1, 4, 4),
+    "halberd_spear": (50, 66, 2, 8, 2),
+    "halberd_star_xy": (60, 66, 12, 12, 0),
+    "halberd_star_zy": (84, 66, 0, 12, 12),
+}
+
+INDIGO = ((32, 40, 64), (48, 62, 98), (72, 94, 144), (112, 138, 188), (168, 194, 232))
+COBALT = ((22, 36, 82), (34, 58, 124), (50, 86, 174), (82, 128, 214))
+FEATHER = ((132, 144, 166), (176, 190, 214), (214, 226, 244), (240, 246, 255))
+CYAN_GLOW = ((32, 176, 206), (62, 234, 255), (144, 248, 255), (222, 255, 255))
+VIOLET_GLOW = ((116, 62, 200), (164, 98, 255), (206, 148, 255))
+
+
+def _storm_star_rgba(size: int = 12) -> Image.Image:
+    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    px = im.load()
+    c = (size - 1) / 2.0
+    for y in range(size):
+        for x in range(size):
+            dx = abs(x - c)
+            dy = abs(y - c)
+            cross = min(dx, dy)
+            diag = abs(dx - dy)
+            dist = math.hypot(dx, dy)
+            if dist <= 1.25:
+                px[x, y] = (*CYAN_GLOW[3], 255)
+            elif cross <= 0.75 and dist <= 5.5:
+                fade = max(0.0, 1.0 - dist / 6.0)
+                px[x, y] = (*_tone(CYAN_GLOW, 2 if dist < 3.0 else 1), int(235 * fade))
+            elif diag <= 0.75 and dist <= 4.3:
+                fade = max(0.0, 1.0 - dist / 4.8)
+                px[x, y] = (*_tone(VIOLET_GLOW, 2 if dist < 2.6 else 1), int(215 * fade))
+    return im
+
+
+def halberdier_skin(glow: bool = False) -> Image.Image:
+    _assert_no_overlap(HALBERDIER_UV_BOXES)
+    img = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    px = img.load()
+
+    if not glow:
+        # 1. Winged falcon-beak helm & swept silver temple wings
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "head", INDIGO, fluted=True, gold_bottom=False, seed=201)
+        hf_x, hf_y, _, _ = box(*HALBERDIER_UV_BOXES["head"])["front"]
+        for ex, ey in ((1, 3), (2, 3), (5, 3), (6, 3)):
+            px[hf_x + ex, hf_y + ey] = (*CYAN_GLOW[1], 255)
+        for lx in range(8):
+            px[hf_x + lx, hf_y + 0] = _rgba(FEATHER[1])
+        for ly in range(8):
+            px[hf_x + 3, hf_y + ly] = _rgba(FEATHER[2])
+            px[hf_x + 4, hf_y + ly] = _rgba(FEATHER[2])
+
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "beak_upper", FEATHER, fluted=False, gold_bottom=False, seed=203)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "beak_tip", FEATHER, fluted=False, gold_bottom=False, seed=205)
+
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "wing", FEATHER, fluted=False, gold_bottom=False, seed=207)
+        for side in ("left", "right"):
+            wx0, wy0, ww, wh = box(*HALBERDIER_UV_BOXES["wing"])[side]
+            for ly in range(wh):
+                for lx in range(ww):
+                    if ly == 0 and lx < 2:
+                        px[wx0 + lx, wy0 + ly] = (0, 0, 0, 0)
+                    elif ly == wh - 1 and lx > ww - 3:
+                        px[wx0 + lx, wy0 + ly] = (0, 0, 0, 0)
+                    elif (ly + lx) % 2 == 0:
+                        px[wx0 + lx, wy0 + ly] = _rgba(FEATHER[3])
+
+        # 2. Gunmetal-indigo & cobalt plate cuirass, dark navy cowl, flowing fringed scarf
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "body", COBALT, fluted=True, gold_bottom=False, seed=211)
+        for face in ("front", "back"):
+            bx0, by0, bw, bh = box(*HALBERDIER_UV_BOXES["body"])[face]
+            for ly in range(bh):
+                for lx in range(bw):
+                    if ly == 9:
+                        px[bx0 + lx, by0 + ly] = _rgba(FEATHER[1])
+                    elif ly in (10, 11):
+                        px[bx0 + lx, by0 + ly] = _rgba(FEATHER[2] if (ly == 10 and lx in (bw // 2 - 1, bw // 2)) else CHARCOAL[1])
+                    elif face == "front" and (lx in (bw // 2 - 1, bw // 2) or ly == 4):
+                        px[bx0 + lx, by0 + ly] = _rgba(FEATHER[2])
+
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "cowl", CHARCOAL, fluted=False, gold_bottom=False, seed=213)
+        for skey, sseed in (("scarf_base", 215), ("scarf_tip", 217)):
+            _paint_ramp_box(img, HALBERDIER_UV_BOXES, skey, CHARCOAL, fluted=False, gold_bottom=False, seed=sseed)
+            for face in ("front", "back"):
+                sx0, sy0, sw, sh = box(*HALBERDIER_UV_BOXES[skey])[face]
+                for ly in range(sh):
+                    for lx in range(sw):
+                        if skey == "scarf_tip" and ly >= sh - 2 and lx == 1:
+                            px[sx0 + lx, sy0 + ly] = (0, 0, 0, 0)
+                        elif lx == 0 or lx == sw - 1:
+                            px[sx0 + lx, sy0 + ly] = _rgba(COBALT[3])
+                        elif (lx + ly) % 2 == 0 and ly > 2:
+                            px[sx0 + lx, sy0 + ly] = _rgba(INDIGO[2])
+
+        for tkey, tseed in (("tabard_front", 219), ("tabard_back", 221)):
+            _paint_ramp_box(img, HALBERDIER_UV_BOXES, tkey, COBALT, fluted=True, gold_bottom=False, seed=tseed)
+            for face in ("front", "back"):
+                tx0, ty0, tw, th = box(*HALBERDIER_UV_BOXES[tkey])[face]
+                for ly in range(th):
+                    for lx in range(tw):
+                        if ly == th - 1 and lx in (0, tw - 1):
+                            px[tx0 + lx, ty0 + ly] = (0, 0, 0, 0)
+                        elif lx == 0 or lx == tw - 1:
+                            px[tx0 + lx, ty0 + ly] = _rgba(FEATHER[2])
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "tasset", INDIGO, fluted=True, gold_bottom=False, seed=223)
+
+        # 3. Pauldrons, rune-lit gauntlets & greaves, knee cops
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "upper_arm", CHARCOAL, fluted=False, gold_bottom=False, seed=225)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "pauldron", INDIGO, fluted=True, gold_bottom=False, seed=227)
+        for face in ("front", "left", "right", "back"):
+            px0, py0, pw, _ = box(*HALBERDIER_UV_BOXES["pauldron"])[face]
+            for lx in range(pw):
+                px[px0 + lx, py0 + 0] = _rgba(FEATHER[2])
+
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "fore_arm", INDIGO, fluted=True, gold_bottom=False, seed=229)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "thigh", CHARCOAL, fluted=False, gold_bottom=False, seed=231)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "shin", INDIGO, fluted=True, gold_bottom=False, seed=233)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "knee", FEATHER, fluted=False, gold_bottom=False, seed=235)
+        for key in ("fore_arm", "shin"):
+            for face in ("front", "left", "right"):
+                x0, y0, w, h = box(*HALBERDIER_UV_BOXES[key])[face]
+                px[x0 + 1, y0 + 2] = (*VIOLET_GLOW[1], 255)
+                px[x0 + 1, y0 + 3] = (*CYAN_GLOW[1], 255)
+                if h >= 5:
+                    px[x0 + min(w - 1, 2), y0 + 4] = (*VIOLET_GLOW[1], 255)
+
+        # 4. Storm-Halberd: iron shaft, glowing cyan tassel, crescent blade w/ lightning veins, rear fluke, spear point
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_shaft", CHARCOAL, fluted=False, gold_bottom=False, seed=237)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_butt", FEATHER, fluted=False, gold_bottom=False, seed=239)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_tassel", CYAN_GLOW, fluted=False, gold_bottom=False, seed=241)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_spear", FEATHER, fluted=False, gold_bottom=False, seed=243)
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_hook", FEATHER, fluted=False, gold_bottom=False, seed=245)
+
+        _paint_ramp_box(img, HALBERDIER_UV_BOXES, "halberd_axe", INDIGO, fluted=False, gold_bottom=False, seed=247)
+        for side in ("left", "right"):
+            ax0, ay0, aw, ah = box(*HALBERDIER_UV_BOXES["halberd_axe"])[side]
+            for ly in range(ah):
+                for lx in range(aw):
+                    if (ly == 0 or ly == ah - 1) and lx in (0, 1):
+                        px[ax0 + lx, ay0 + ly] = (0, 0, 0, 0)
+                    elif lx == 0 or lx == 1:
+                        px[ax0 + lx, ay0 + ly] = _rgba(FEATHER[3])
+                    elif abs(ly - ah // 2) + abs(lx - 3) in (2, 3) and lx >= 2:
+                        px[ax0 + lx, ay0 + ly] = (*CYAN_GLOW[2], 255)
+
+        star_img = _storm_star_rgba(12)
+        for skey in ("halberd_star_xy", "halberd_star_zy"):
+            for _, (x0, y0, w, h) in box(*HALBERDIER_UV_BOXES[skey]).items():
+                if w == 12 and h == 12:
+                    img.paste(star_img, (x0, y0))
+        return img
+
+    # ---- GLOW LAYER (emissive cyan eyes, violet-cyan gauntlet/greave circuits, lightning axe runes, tassel & flare) ----
+    hf_x, hf_y, _, _ = box(*HALBERDIER_UV_BOXES["head"])["front"]
+    for ex, ey in ((1, 3), (2, 3), (5, 3), (6, 3)):
+        px[hf_x + ex, hf_y + ey] = (*CYAN_GLOW[2], 255)
+
+    for key in ("fore_arm", "shin"):
+        for face in ("front", "left", "right"):
+            x0, y0, w, h = box(*HALBERDIER_UV_BOXES[key])[face]
+            px[x0 + 1, y0 + 2] = (*VIOLET_GLOW[2], 220)
+            px[x0 + 1, y0 + 3] = (*CYAN_GLOW[2], 235)
+            if h >= 5:
+                px[x0 + min(w - 1, 2), y0 + 4] = (*VIOLET_GLOW[2], 220)
+
+    tx0, ty0, tw, th = box(*HALBERDIER_UV_BOXES["halberd_tassel"])["front"]
+    for ly in range(th):
+        for lx in range(tw):
+            px[tx0 + lx, ty0 + ly] = (*CYAN_GLOW[1], 190)
+
+    for side in ("left", "right"):
+        ax0, ay0, aw, ah = box(*HALBERDIER_UV_BOXES["halberd_axe"])[side]
+        for ly in range(ah):
+            for lx in range(aw):
+                if (ly == 0 or ly == ah - 1) and lx in (0, 1):
+                    continue
+                if lx == 0 or (abs(ly - ah // 2) + abs(lx - 3) in (2, 3) and lx >= 2):
+                    px[ax0 + lx, ay0 + ly] = (*CYAN_GLOW[2], 245)
+
+    star_img = _storm_star_rgba(12)
+    for skey in ("halberd_star_xy", "halberd_star_zy"):
+        for _, (x0, y0, w, h) in box(*HALBERDIER_UV_BOXES[skey]).items():
+            if w == 12 and h == 12:
+                img.paste(star_img, (x0, y0))
+    return img
+
+
+def halberdier_spawn_egg() -> Image.Image:
+    EGG = """
+        ................
+        ................
+        ......oooo......
+        ....oo1111oo....
+        ...o11111111o...
+        ..o1111111111o..
+        ..o1111111111o..
+        .o111111111111o.
+        .o111111111111o.
+        .o111111111111o.
+        .o111111111111o.
+        ..o1111111111o..
+        ..o1111111111o..
+        ...o11111111o...
+        ....oooooooo....
+        ................
+    """
+    MOTIF = """
+        ................
+        ................
+        ...w........w...
+        ...ww.bbbb.ww...
+        ....wbbbbbbw....
+        .....bcvvcb.....
+        ......bbbb......
+        .....bbssbb.....
+        .......sc.......
+        .......sb.......
+        .......sb.......
+        ................
+    """
+    pal = {
+        "w": hexc("#D8E2F4"),
+        "b": hexc("#3458A8"),
+        "c": hexc("#3EEAFF"),
+        "v": hexc("#9E68FF"),
+        "s": hexc("#98AABF"),
+    }
+    cv = Canvas()
+    dark, mid, light = hexc("#1E2844"), hexc("#30426C"), hexc("#4C669E")
+    edge = mix(dark, (0, 0, 0), 0.55)
+    for y, row in enumerate(r.strip() for r in EGG.strip("\n").splitlines()):
+        for x, ch in enumerate(row):
+            if ch == "o":
+                cv.put(x, y, edge)
+            elif ch == "1":
+                t = (x + y) / 26.0
+                cv.put(x, y, light if t < 0.4 else mid if t < 0.72 else dark)
+    for y, row in enumerate(r.strip() for r in MOTIF.strip("\n").splitlines()):
+        for x, ch in enumerate(row):
+            if ch in pal and cv.get(x, y) is not None:
+                cv.put(x, y, pal[ch])
+    return cv.image()
+
+
+HALBERDIER_LOOT = {
+    "type": "minecraft:entity",
+    "pools": [
+        {
+            "rolls": {"type": "minecraft:uniform", "min": 2, "max": 3},
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:manual_page",
+                    "weight": 3,
+                    "functions": [
+                        {"function": "minecraft:set_components", "components": {"wildercord:breathing_method": "thunder"}},
+                    ],
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:manual_page",
+                    "weight": 2,
+                    "functions": [
+                        {"function": "minecraft:set_components", "components": {"wildercord:breathing_method": "gale"}},
+                    ],
+                },
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "wildercord:aura_shard",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 4}},
+                        {
+                            "function": "minecraft:enchanted_count_increase",
+                            "enchantment": "minecraft:looting",
+                            "count": {"type": "minecraft:uniform", "min": 0.0, "max": 1.0},
+                        },
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_ingot",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 3, "max": 6}},
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:gold_ingot",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 4}},
+                    ],
+                }
+            ],
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond",
+                    "functions": [
+                        {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 2}},
+                    ],
+                }
+            ],
+        },
+    ],
+    "random_sequence": "wildercord:entities/oathbound_halberdier",
+}
