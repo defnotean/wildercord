@@ -200,7 +200,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 			lookAt(context, world, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 4.0, oz - 106, ox + 0.5, by + OathholdOrigin.ACROPOLIS_Y + 17, oz - 196, 10, 74);
 			shot(context, "oathhold_03_great_hall_interior");
 
-			lookAt(context, world, ox - 58, by + 22, oz + 86, ox + 26, by + 18, oz - 56, 16, 76);
+			lookAt(context, world, ox - 88, by + 26, oz + 148, ox + 38, by + 18, oz - 68, 18, 78);
 			shot(context, "oathhold_04_districts_courtyard");
 
 			lookAt(context, world, ox - 546, by + 50, oz + 64, ox - 612, by + 10, oz, 10, 72);
