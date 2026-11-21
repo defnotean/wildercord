@@ -34,6 +34,11 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 
 	private AuraFighterRenderState posedState;
 
+	/** The state the geometry was last posed for: 1.21.8 hand hooks no longer receive it. */
+	public AuraFighterRenderState posedRenderState() {
+		return posedState;
+	}
+
 	@Override
 	public void setupAnim(AuraFighterRenderState state) {
 		posedState = state;

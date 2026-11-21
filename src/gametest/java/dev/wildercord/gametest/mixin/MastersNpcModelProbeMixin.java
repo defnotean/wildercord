@@ -18,13 +18,15 @@ public abstract class MastersNpcModelProbeMixin {
 		MastersNpcCaptureProbe.model((MasterModel) (Object) this, state);
 	}
 
-	@Inject(method = "translateToHand(Ldev/wildercord/client/auraworld/AuraFighterRenderState;Lnet/minecraft/world/entity/HumanoidArm;Lcom/mojang/blaze3d/vertex/PoseStack;)V", at = @At("HEAD"))
-	private void wildercord$beforeNativeHand(AuraFighterRenderState state, HumanoidArm arm, PoseStack stack, CallbackInfo ci) {
-		MastersNpcCaptureProbe.beforeHand(state, arm, stack);
+	// 1.21.8 hands the model an arm and a stack only; the state it was posed for stays on the model.
+	@Inject(method = "translateToHand(Lnet/minecraft/world/entity/HumanoidArm;Lcom/mojang/blaze3d/vertex/PoseStack;)V", at = @At("HEAD"))
+	private void wildercord$beforeNativeHand(HumanoidArm arm, PoseStack stack, CallbackInfo ci) {
+		MastersNpcCaptureProbe.beforeHand(((MasterModel) (Object) this).posedRenderState(), arm, stack);
 	}
 
-	@Inject(method = "translateToHand(Ldev/wildercord/client/auraworld/AuraFighterRenderState;Lnet/minecraft/world/entity/HumanoidArm;Lcom/mojang/blaze3d/vertex/PoseStack;)V", at = @At("RETURN"))
-	private void wildercord$afterNativeHand(AuraFighterRenderState state, HumanoidArm arm, PoseStack stack, CallbackInfo ci) {
-		MastersNpcCaptureProbe.hand((MasterModel) (Object) this, state, arm, stack);
+	@Inject(method = "translateToHand(Lnet/minecraft/world/entity/HumanoidArm;Lcom/mojang/blaze3d/vertex/PoseStack;)V", at = @At("RETURN"))
+	private void wildercord$afterNativeHand(HumanoidArm arm, PoseStack stack, CallbackInfo ci) {
+		MasterModel model = (MasterModel) (Object) this;
+		MastersNpcCaptureProbe.hand(model, model.posedRenderState(), arm, stack);
 	}
 }

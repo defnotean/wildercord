@@ -37,11 +37,14 @@ public abstract class ArticulatedSharedViewMixin {
 	}
 
 	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)Z",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"), require = 1, expect = 1, allow = 1)
+		at = @At(value = "INVOKE", target = "Ldev/wildercord/client/compat/RenderCompat;submitItemState(Lnet/minecraft/client/renderer/item/ItemStackRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;III)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$item(ItemStackRenderState item, PoseStack pose, MultiBufferSource buffer,
 			int light, int overlay, int outline, Operation<Void> original) {
 		original.call(item, pose, buffer, light, overlay, outline);
-		ArticulatedSharedRenderProbe.viewItem(item);
+		// 1.21.8 carries no hand item state, so there is nothing to observe when none is handed over.
+		if (item != null) {
+			ArticulatedSharedRenderProbe.viewItem(item);
+		}
 	}
 
 	@WrapMethod(method = "setupAnim(Ldev/wildercord/client/combat/ArticulatedViewModel$Frame;)V", require = 1, expect = 1, allow = 1)
