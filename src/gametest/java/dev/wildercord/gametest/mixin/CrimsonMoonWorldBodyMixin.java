@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.gametest.CrimsonMoonRenderProbe;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -18,10 +18,10 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class CrimsonMoonWorldBodyMixin {
     @WrapOperation(method="submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
         at=@At(value="INVOKE",target="Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"),require=1,expect=1,allow=1)
-    private void moon$body(SubmitNodeCollector collector,Model<?> model,Object state,PoseStack pose,RenderType material,
+    private void moon$body(MultiBufferSource buffer,Model model,Object state,PoseStack pose,RenderType material,
         int light,int overlay,int color,TextureAtlasSprite uv,int outline,ModelFeatureRenderer.CrumblingOverlay crumbling,Operation<Void> original){
         var root=new org.joml.Matrix4f(pose.last().pose());
-        original.call(collector,model,state,pose,material,light,overlay,color,uv,outline,crumbling);
+        original.call(buffer,model,state,pose,material,light,overlay,color,uv,outline,crumbling);
         CrimsonMoonRenderProbe.worldSubmitted(model,state,root,material);
     }
 }

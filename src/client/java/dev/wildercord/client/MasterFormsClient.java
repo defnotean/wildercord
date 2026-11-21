@@ -18,7 +18,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +107,7 @@ public final class MasterFormsClient {
 		// can never be received in the local future, or every step samples a negative age and shows no pose.
 		EVENTS.put(event.entity(), new Playback(event, Math.min(event.at(), client.level.getGameTime())));
 	}
-	public static Playback timeline(Avatar avatar) {
+	public static Playback timeline(LivingEntity avatar) {
 		if (avatar == null || avatar.level() != level || !avatar.isAlive()) return null;
 		return EVENTS.get(avatar.getId());
 	}

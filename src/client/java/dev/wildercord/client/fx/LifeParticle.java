@@ -4,11 +4,11 @@ import dev.wildercord.content.LifeOption;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.util.RandomSource;
 
 /** Living matter has material-specific movement; all silhouettes use the sampled world light. */
-public final class LifeParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public final class LifeParticle extends McQuadParticle implements SigilGroup.Extent {
  /** Its two animation frames, looked up once instead of by name every tick. */
  private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
  private final LifeOption material;
@@ -21,7 +21,7 @@ public final class LifeParticle extends SingleQuadParticle implements SigilGroup
   xd=option.drift().x;yd=option.drift().y;zd=option.drift().z;oRoll=roll=option.spin();
  }
  @Override public void extract(QuadParticleRenderState state,Camera camera,float partial){
-  if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))super.extract(state,camera,partial);
+  if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))extractDefault(state,camera,partial);
  }
  @Override public void tick() {
   xo=x;yo=y;zo=z;oRoll=roll;if(age++>=lifetime){remove();return;}
@@ -50,6 +50,6 @@ public final class LifeParticle extends SingleQuadParticle implements SigilGroup
  @Override public double centreZ(){return z;}
  @Override public double reach(){return material.size()*1.8;}
  public static final class Provider implements ParticleProvider<LifeOption> {
-  @Override public Particle createParticle(LifeOption option,ClientLevel level,double x,double y,double z,double vx,double vy,double vz,RandomSource random){return new LifeParticle(level,x,y,z,option);}
+  @Override public Particle createParticle(LifeOption option, ClientLevel level, double x, double y, double z, double vx, double vy, double vz){return new LifeParticle(level,x,y,z,option);}
  }
 }

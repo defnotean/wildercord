@@ -25,7 +25,7 @@ public abstract class LivingEntityRendererMixin implements dev.wildercord.client
 	private void wildercord$runeMarks(LivingEntity entity, LivingEntityRenderState state, float partial, CallbackInfo ci) {
 		RuneMarksLayer.extract(entity, state, partial);
 		dev.wildercord.client.compat.RenderCompat.captureHandStacks(entity, state);
-		boolean known = (!(state instanceof net.minecraft.client.renderer.entity.state.AvatarRenderState)
+		boolean known = (!(state instanceof net.minecraft.client.renderer.entity.state.PlayerRenderState)
 			|| model.getClass() == net.minecraft.client.model.PlayerModel.class
 				&& model instanceof dev.wildercord.client.combat.ArticulatedModelAccess owner && owner.wildercord$bodyOwned()) && layers.stream().allMatch(dev.wildercord.client.combat.ArticulatedCombat::knownLayer);
 		state.setData(dev.wildercord.client.combat.ArticulatedCombat.KNOWN_LAYERS, known);

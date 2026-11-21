@@ -5,7 +5,7 @@ import dev.wildercord.client.MastersArtsClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.world.entity.HumanoidArm;
 
 import java.util.IdentityHashMap;
@@ -16,15 +16,15 @@ import java.util.concurrent.atomic.AtomicLong;
 public final class BraceNullCaptureProbe {
 	private static final String RUN = java.util.UUID.randomUUID().toString();
 	private static final AtomicLong SEQUENCE = new AtomicLong();
-	private static final IdentityHashMap<AvatarRenderState, Model<?>> SUBMITTED = new IdentityHashMap<>();
-	private static final IdentityHashMap<AvatarRenderState, float[]> ROOTS = new IdentityHashMap<>();
-	private static final IdentityHashMap<AvatarRenderState, BodyBasis> LAYER_BASES = new IdentityHashMap<>();
-	private static final IdentityHashMap<AvatarRenderState, Long> STATES = new IdentityHashMap<>();
+	private static final IdentityHashMap<PlayerRenderState, Model> SUBMITTED = new IdentityHashMap<>();
+	private static final IdentityHashMap<PlayerRenderState, float[]> ROOTS = new IdentityHashMap<>();
+	private static final IdentityHashMap<PlayerRenderState, BodyBasis> LAYER_BASES = new IdentityHashMap<>();
+	private static final IdentityHashMap<PlayerRenderState, Long> STATES = new IdentityHashMap<>();
 	private static BraceNullPhaseContract.Identity expected;
 	private static BraceNullPhaseContract.Sample consumed;
 	private static List<Float> bodyPalette, expectedBody, bodyBaseline, bodyBind, handMatrix, expectedHand, handEntry, handGrip, expectedGrip;
-	private static final IdentityHashMap<AvatarRenderState, BodyBasis> BODY_BASES = new IdentityHashMap<>();
-	private static final IdentityHashMap<AvatarRenderState, HandBasis> HAND_BASES = new IdentityHashMap<>();
+	private static final IdentityHashMap<PlayerRenderState, BodyBasis> BODY_BASES = new IdentityHashMap<>();
+	private static final IdentityHashMap<PlayerRenderState, HandBasis> HAND_BASES = new IdentityHashMap<>();
 	private record BodyBasis(PlayerModel model, MastersArtPose.Frame frame, float[] baseline, float[] bind) {}
 	private record HandBasis(MastersArtPose.Frame frame, Object hands, Object stack, float attack, float inverseHeight, boolean swing, float[] entry) {}
 	private static long gameTick;
@@ -33,7 +33,7 @@ public final class BraceNullCaptureProbe {
 	private static String rejected;
 	private static final NativeBodySubmission NATIVE_BODY = new NativeBodySubmission();
 	private static final ThreadLocal<Deferred> DEFERRED = new ThreadLocal<>();
-	public record Deferred(Object node, Model<?> model, Object state, NativeBodySubmission.Visit visit, Deferred previous) {}
+	public record Deferred(Object node, Model model, Object state, NativeBodySubmission.Visit visit, Deferred previous) {}
 	private BraceNullCaptureProbe() {}
 	public record Report(BraceNullPhaseContract.Identity identity, BraceNullPhaseContract.Sample consumed,
 		String path, List<Float> consumedRigidPalette, List<Float> expectedRigidPalette, List<Float> nativeBodyBaseline, List<Float> nativeBodyBind,
@@ -54,36 +54,36 @@ public final class BraceNullCaptureProbe {
 	public static <T> T passive(java.util.function.Supplier<T> observer, T fallback) { return NATIVE_BODY.observe(observer, fallback); }
 	public static void passive(Runnable observer) { NATIVE_BODY.observe(observer); }
 	public static void rendering(boolean value) { rendering = value; }
-	public static void submitted(Model<?> model, Object state, com.mojang.blaze3d.vertex.PoseStack stack) {
-		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof AvatarRenderState avatar) || avatar.id != expected.owner()) return;
+	public static void submitted(Model model, Object state, com.mojang.blaze3d.vertex.PoseStack stack) {
+		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof PlayerRenderState avatar) || avatar.id != expected.owner()) return;
 		check(model instanceof PlayerModel, "Counter body is not the registered player model");
 		check(!SUBMITTED.containsKey(avatar), "Duplicate body submission");
 		requireRoot((PlayerModel) model); SUBMITTED.put(avatar, model); ROOTS.put(avatar, stack.last().pose().get(new float[16]));
 	}
-	private static NativeBodySubmission.Frames frames(AvatarRenderState state) { return new NativeBodySubmission.Frames(state.getData(MastersArtPose.FRAME), null); }
-	public static NativeBodySubmission.Origin submissionBegin(Model<?> model, Object state, com.mojang.blaze3d.vertex.PoseStack stack, Object material) {
-		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof AvatarRenderState avatar) || avatar.id != expected.owner()) return null;
+	private static NativeBodySubmission.Frames frames(PlayerRenderState state) { return new NativeBodySubmission.Frames(state.getData(MastersArtPose.FRAME), null); }
+	public static NativeBodySubmission.Origin submissionBegin(Model model, Object state, com.mojang.blaze3d.vertex.PoseStack stack, Object material) {
+		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof PlayerRenderState avatar) || avatar.id != expected.owner()) return null;
 		return NATIVE_BODY.begin(model, state, frames(avatar), material, stack.last().pose().get(new float[16]));
 	}
 	public static void submissionEnd(NativeBodySubmission.Origin call, boolean completed) { if (call != null) NATIVE_BODY.submittedEnd(call, completed); }
-	public static void nativeSubmitted(Object node, Model<?> model, Object state, Object material, float[] root, boolean outline) {
-		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof AvatarRenderState avatar) || avatar.id != expected.owner()) return;
+	public static void nativeSubmitted(Object node, Model model, Object state, Object material, float[] root, boolean outline) {
+		if (expected == null || !rendering || expected.firstPerson() || !(state instanceof PlayerRenderState avatar) || avatar.id != expected.owner()) return;
 		NATIVE_BODY.submitted(node, model, state, frames(avatar), material, root, outline);
 	}
-	public static Deferred deferredEnter(Object node, Model<?> model, Object state, Object material, float[] root) {
+	public static Deferred deferredEnter(Object node, Model model, Object state, Object material, float[] root) {
 		if (expected == null || !rendering || expected.firstPerson()) return null;
 		boolean tracked = NATIVE_BODY.tracked(node);
-		if (!tracked && (!(state instanceof AvatarRenderState avatar) || avatar.id != expected.owner())) return null;
-		check(state instanceof AvatarRenderState, "Tracked native Submit changed state type");
-		var avatar = (AvatarRenderState) state;
+		if (!tracked && (!(state instanceof PlayerRenderState avatar) || avatar.id != expected.owner())) return null;
+		check(state instanceof PlayerRenderState, "Tracked native Submit changed state type");
+		var avatar = (PlayerRenderState) state;
 		var visit = NATIVE_BODY.enter(node, model, state, frames(avatar), material, root);
 		var call = new Deferred(node, model, state, visit, DEFERRED.get()); DEFERRED.set(call); return call;
 	}
-	public static void bodyDrawn(Object node, Model<?> model, Object state, float[] root) {
+	public static void bodyDrawn(Object node, Model model, Object state, float[] root) {
 		var call = DEFERRED.get(); if (call == null) return;
-		check(state instanceof AvatarRenderState, "Native body draw changed state type");
-		observe((AvatarRenderState) state);
-		NATIVE_BODY.drawn(call.visit(), node, model, state, frames((AvatarRenderState) state), root);
+		check(state instanceof PlayerRenderState, "Native body draw changed state type");
+		observe((PlayerRenderState) state);
+		NATIVE_BODY.drawn(call.visit(), node, model, state, frames((PlayerRenderState) state), root);
 	}
 	public static void deferredLeave(Deferred call, boolean completed) {
 		if (call == null) return;
@@ -91,7 +91,7 @@ public final class BraceNullCaptureProbe {
 		finally { if (call.previous() == null) DEFERRED.remove(); else DEFERRED.set(call.previous()); }
 	}
 	/** Observes untouched vanilla output at the production adapter entry, only in the real deferred call. */
-	public static void bodyBefore(PlayerModel model, AvatarRenderState state) {
+	public static void bodyBefore(PlayerModel model, PlayerRenderState state) {
 		if (expected == null || !rendering || expected.firstPerson() || state.id != expected.owner()) return;
 		var deferred = DEFERRED.get();
 		if (deferred == null) {
@@ -105,7 +105,7 @@ public final class BraceNullCaptureProbe {
 		BODY_BASES.put(state, new BodyBasis(model, state.getData(MastersArtPose.FRAME), palette(model, false), palette(model, true)));
 	}
 	/** Called after the complete native PlayerModel.setupAnim, including production tail hooks. */
-	public static void bodyConsumed(PlayerModel model, AvatarRenderState state) {
+	public static void bodyConsumed(PlayerModel model, PlayerRenderState state) {
 		if (expected == null || !rendering || expected.firstPerson() || state.id != expected.owner()) return;
 		var deferred = DEFERRED.get();
 		if (deferred == null || !deferred.visit().primary()) return;
@@ -121,10 +121,10 @@ public final class BraceNullCaptureProbe {
 		bodyPalette = list(actual); expectedBody = list(wanted); bodyBaseline = list(basis.baseline()); bodyBind = list(basis.bind());
 		NATIVE_BODY.palette(deferred.visit(), model, state, frames(state));
 	}
-	public record HandEntry(AvatarRenderState avatar, net.minecraft.world.InteractionHand hand,
+	public record HandEntry(PlayerRenderState avatar, net.minecraft.world.InteractionHand hand,
 		net.minecraft.world.item.ItemStack stack, float attack, float inverseHeight) {}
 	private static final ThreadLocal<HandEntry> HAND_ENTRY = new ThreadLocal<>();
-	public static HandEntry pushHand(AvatarRenderState avatar, net.minecraft.world.InteractionHand hand,
+	public static HandEntry pushHand(PlayerRenderState avatar, net.minecraft.world.InteractionHand hand,
 		net.minecraft.world.item.ItemStack stack, float attack, float inverseHeight) {
 		var prev = HAND_ENTRY.get();
 		if (avatar == null) HAND_ENTRY.remove();
@@ -134,10 +134,10 @@ public final class BraceNullCaptureProbe {
 	public static void popHand(HandEntry prev) { if (prev == null) HAND_ENTRY.remove(); else HAND_ENTRY.set(prev); }
 	public static HandEntry currentHand() { return HAND_ENTRY.get(); }
 
-	/** The outer native submitArmWithItem wrapper runs before any production HEAD injection. */
-	public static BraceNullItemDrawProbe.Call handBefore(AvatarRenderState state, dev.wildercord.client.compat.FirstPersonHandView hands,
+	/** The outer native renderArmWithItem wrapper runs before any production HEAD injection. */
+	public static BraceNullItemDrawProbe.Call handBefore(PlayerRenderState state, dev.wildercord.client.compat.FirstPersonHandView hands,
 		net.minecraft.world.item.ItemStack item, float attack, float inverseHeight,
-		com.mojang.blaze3d.vertex.PoseStack stack, net.minecraft.client.renderer.SubmitNodeCollector collector) {
+		com.mojang.blaze3d.vertex.PoseStack stack, net.minecraft.client.renderer.MultiBufferSource buffer) {
 		if (expected == null || !rendering || !expected.firstPerson() || state.id != expected.owner()) return null;
 		observe(state);
 		check(!state.isUsingItem && !state.isAutoSpinAttack && !hands.isScoping()
@@ -154,10 +154,10 @@ public final class BraceNullCaptureProbe {
 		}
 		check(!HAND_BASES.containsKey(state), "Duplicate native main-hand entry");
 		HAND_BASES.put(state, new HandBasis(state.getData(MastersArtPose.FRAME), hands.stateObject(), stack, attack, inverseHeight, swing, stack.last().pose().get(new float[16])));
-		return BraceNullItemDrawProbe.firstBegin(state, stack, collector);
+		return BraceNullItemDrawProbe.firstBegin(state, stack, buffer);
 	}
-	public static void handConsumed(AvatarRenderState state, dev.wildercord.client.compat.FirstPersonHandView hands,
-		net.minecraft.client.renderer.item.ItemStackRenderState item, com.mojang.blaze3d.vertex.PoseStack stack, float attack, float inverseHeight, net.minecraft.client.renderer.SubmitNodeCollector collector) {
+	public static void handConsumed(PlayerRenderState state, dev.wildercord.client.compat.FirstPersonHandView hands,
+		net.minecraft.client.renderer.item.ItemStackRenderState item, com.mojang.blaze3d.vertex.PoseStack stack, float attack, float inverseHeight, net.minecraft.client.renderer.MultiBufferSource buffer) {
 		if (expected == null || !rendering || !expected.firstPerson() || state.id != expected.owner()) return;
 		observe(state);
 		var basis = HAND_BASES.remove(state);
@@ -168,14 +168,14 @@ public final class BraceNullCaptureProbe {
 		float[] wanted = BraceNullTransformOracle.hand(consumed.pose(), expected.left(), raw.yawDelta(), raw.pitchDelta(), inverseHeight, attack, basis.swing(), basis.entry());
 		float[] actual = stack.last().pose().get(new float[16]);
 		validate(() -> BraceNullTransformOracle.requireHand(wanted, actual));
-		BraceNullItemDrawProbe.firstPre(state, item, stack, collector, wanted);
+		BraceNullItemDrawProbe.firstPre(state, item, stack, buffer, wanted);
 		handMatrix = list(actual); expectedHand = list(wanted); handEntry = list(basis.entry());
 		handGrip = list(BraceNullTransformOracle.grip(actual)); expectedGrip = list(BraceNullTransformOracle.grip(wanted));
 	}
 	static BraceNullPhaseContract.Identity identity() { return rendering ? expected : null; }
-	static long stateIdentity(AvatarRenderState state) { return STATES.getOrDefault(state, 0L); }
-	static void observeFrame(AvatarRenderState state) { check(expected != null && rendering, "Detached native draw"); observe(state); }
-	static float[] worldBody(PlayerModel model, AvatarRenderState state, com.mojang.blaze3d.vertex.PoseStack stack) {
+	static long stateIdentity(PlayerRenderState state) { return STATES.getOrDefault(state, 0L); }
+	static void observeFrame(PlayerRenderState state) { check(expected != null && rendering, "Detached native draw"); observe(state); }
+	static float[] worldBody(PlayerModel model, PlayerRenderState state, com.mojang.blaze3d.vertex.PoseStack stack) {
 		observeFrame(state); requireRoot(model);
 		var basis = LAYER_BASES.remove(state);
 		check(SUBMITTED.get(state) == model && basis != null && basis.model() == model && basis.frame().equals(state.getData(MastersArtPose.FRAME)), "Missing or borrowed attachment body baseline");
@@ -202,7 +202,7 @@ public final class BraceNullCaptureProbe {
 	}
 	private static List<Float> list(float[] values) { var result = new java.util.ArrayList<Float>(); for (float value : values) result.add(value); return List.copyOf(result); }
 
-	private static void observe(AvatarRenderState state) {
+	private static void observe(PlayerRenderState state) {
 		var mc = Minecraft.getInstance();
 		check(mc.player.getId() == expected.owner() && mc.player.getUUID().toString().equals(expected.ownerUuid())
 			&& mc.level.getGameTime() == gameTick && mc.player.tickCount == entityTick

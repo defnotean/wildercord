@@ -1,24 +1,23 @@
 package dev.wildercord.client.fx;
 
-import dev.wildercord.Wildercord;
-import net.minecraft.client.Camera;
-import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.particle.ParticleGroup;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.state.ParticleGroupRenderState;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
-import net.minecraft.world.phys.AABB;
 
 /**
  * Where magic circles are kept and drawn. Ordinary particles are skipped when their centre is off
  * screen, but a circle is big: one lying under your feet has its centre below the view while most
- * of it is in plain sight. Here each circle is culled by its whole extent instead.
+ * of it is in plain sight. On 1.21.8 the particle engine draws every live particle without culling
+ * any of them by view, so a circle is never cut off that way; what is left here is the group the
+ * engine batches them under and the extent interface the circles still carry.
  */
-public class SigilGroup extends ParticleGroup<SingleQuadParticle> {
-	// 26.1.2 ParticleRenderType is a name-only record; the shader mode string is a 26.2 addition.
-	public static final ParticleRenderType TYPE = new ParticleRenderType(Wildercord.id("sigils").toString());
+public final class SigilGroup {
+	private SigilGroup() {}
+
+	/**
+	 * The group the circles are drawn in. 1.21.8 has no particle groups to register (that arrives with
+	 * 1.21.9), so this is the engine's own custom type: it hands each particle the whole buffer source,
+	 * which is what lets a circle pick a different blend per quad.
+	 */
+	public static final ParticleRenderType TYPE = ParticleRenderType.CUSTOM;
 
 	/** A particle that knows its whole extent: a circle's centre and how far it reaches from it. */
 	public interface Extent {
@@ -29,26 +28,5 @@ public class SigilGroup extends ParticleGroup<SingleQuadParticle> {
 		double centreZ();
 
 		double reach();
-	}
-
-	private final QuadParticleRenderState state = new QuadParticleRenderState();
-
-	public SigilGroup(ParticleEngine engine) {
-		super(engine);
-	}
-
-	@Override
-	public ParticleGroupRenderState extractRenderState(Frustum frustum, Camera camera, float partial) {
-		for (SingleQuadParticle particle : particles) {
-			if (!(particle instanceof Extent e)) {
-				particle.extract(state, camera, partial);
-				continue;
-			}
-			double r = e.reach();
-			if (frustum.isVisible(new AABB(e.centreX() - r, e.centreY() - r, e.centreZ() - r, e.centreX() + r, e.centreY() + r, e.centreZ() + r))) {
-				particle.extract(state, camera, partial);
-			}
-		}
-		return state;
 	}
 }

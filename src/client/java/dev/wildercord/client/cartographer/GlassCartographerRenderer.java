@@ -3,11 +3,12 @@ package dev.wildercord.client.cartographer;
 import com.mojang.blaze3d.vertex.*;
 import dev.wildercord.Wildercord;
 import dev.wildercord.world.cartographer.*;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import dev.wildercord.client.compat.RenderCompat;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -22,9 +23,9 @@ public final class GlassCartographerRenderer extends dev.wildercord.client.compa
 	public GlassCartographerRenderer(EntityRendererProvider.Context context) {
 		super(context, new GlassCartographerModel(context.bakeLayer(GlassCartographerModel.LAYER)), 1.3F);
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<GlassCartographerRenderState, GlassCartographerModel>(this) {
-			@Override public void submit(PoseStack pose, SubmitNodeCollector collector, int light, GlassCartographerRenderState state, float yRot, float xRot) {
+			@Override public void render(PoseStack pose, MultiBufferSource buffer, int light, GlassCartographerRenderState state, float yRot, float xRot) {
 				if (!state.isInvisible && state.deathTime <= 0) {
-					dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+					dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 				}
 			}
 		});
@@ -52,13 +53,14 @@ public final class GlassCartographerRenderer extends dev.wildercord.client.compa
 		s.tellProgress = total <= 0 ? 0 : Mth.clamp(s.elapsed / total, 0, 1);
 	}
 
-	@Override public void submit(GlassCartographerRenderState s, PoseStack matrices, SubmitNodeCollector collector, CameraRenderState camera) {
-		super.submit(s, matrices, collector, camera);
+	@Override public void render(GlassCartographerRenderState s, PoseStack matrices, MultiBufferSource buffer, int light) {
+		CameraRenderState camera = RenderCompat.cameraState();
+		super.render(s, matrices, buffer, light);
 		if (s.isInvisible || s.deathTime > 0 || s.move == IDLE || s.elapsed > tell(s.move) + 5) return;
 		float pulse = .55F + .35F * Mth.sin(s.ageInTicks * .35F);
 		int warm = color(s.second ? 0.98F : 0.94F, s.second ? 0.86F : 0.72F, 0.32F, .78F * pulse);
 		int safe = color(0.62F, 0.92F, 0.96F, .85F);
-		collector.order(1).submitCustomGeometry(matrices, RenderType.entityTranslucentEmissive(MARK), (p, consumer) -> {
+		RenderCompat.submitCustomGeometry(buffer, matrices, RenderType.entityTranslucentEmissive(MARK), (p, consumer) -> {
 			if (s.move == SWEEP) drawSweep(consumer, p, s.aim, s.tellProgress, warm);
 			else if (s.move == PLUMB) drawPlumb(consumer, p, s.markX, s.markZ, s.tellProgress, warm);
 			else if (s.move == GRID) drawGrid(consumer, p, s.acrossX, warm, safe);

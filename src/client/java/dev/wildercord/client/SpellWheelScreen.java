@@ -20,8 +20,8 @@ import net.minecraft.client.KeyMapping;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import dev.wildercord.client.compat.McInput.KeyEvent;
+import dev.wildercord.client.compat.McInput.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -133,24 +133,36 @@ public class SpellWheelScreen extends Screen {
 	}
 
 	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		return mouseReleased(new MouseButtonEvent(mouseX, mouseY, button));
+	}
+
 	public boolean mouseReleased(MouseButtonEvent event) {
 		if (!toggled && key.matchesMouse(event)) {
 			released();
 			return true;
 		}
-		return super.mouseReleased(event);
+		return super.mouseReleased(event.x(), event.y(), event.button());
 	}
 
 	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		return keyReleased(new KeyEvent(keyCode, scanCode, modifiers));
+	}
+
 	public boolean keyReleased(KeyEvent event) {
 		if (!toggled && key.matches(event)) {
 			released();
 			return true;
 		}
-		return super.keyReleased(event);
+		return super.keyReleased(event.key(), event.scancode(), event.modifiers());
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
+	}
+
 	public boolean keyPressed(KeyEvent event) {
 		// A spell's number picks it: 5 is the tome's, whatever the Cord.
 		int number = slots().indexOf(event.key() - InputConstants.KEY_1);
@@ -164,7 +176,7 @@ public class SpellWheelScreen extends Screen {
 			choose();
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(event.key(), event.scancode(), event.modifiers());
 	}
 
 	@Override

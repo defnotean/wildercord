@@ -60,8 +60,7 @@ public final class ShieldCircles {
 
 	public static class Provider implements ParticleProvider<ShieldOption> {
 		@Override
-		public Particle createParticle(ShieldOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za,
-				RandomSource random) {
+		public Particle createParticle(ShieldOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za) {
 			Entity found = option.entity() == 0 ? null : level.getEntity(option.entity());
 			LivingEntity entity = found instanceof LivingEntity living ? living : null;
 			Vector3f dir = new Vector3f(option.dx(), option.dy(), option.dz());

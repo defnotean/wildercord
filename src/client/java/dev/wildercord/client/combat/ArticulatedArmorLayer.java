@@ -2,28 +2,28 @@ package dev.wildercord.client.combat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 
 /** Exactly one slot in the original layer list: either the captured vanilla layer or our adapter. */
-public final class ArticulatedArmorLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
-	private final RenderLayer<AvatarRenderState, PlayerModel> fallback;
+public final class ArticulatedArmorLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
+	private final RenderLayer<PlayerRenderState, PlayerModel> fallback;
 	private final ArticulatedArmorRenderer armor;
 
-	private ArticulatedArmorLayer(AvatarRenderer<?> renderer, RenderLayer<AvatarRenderState, PlayerModel> fallback,
+	private ArticulatedArmorLayer(PlayerRenderer renderer, RenderLayer<PlayerRenderState, PlayerModel> fallback,
 			ArticulatedArmorRenderer armor) {
 		super(renderer);
 		this.fallback = fallback;
 		this.armor = armor;
 	}
 
-	/** Called once after AvatarRenderer construction; resource reload creates a fresh complete owner. */
+	/** Called once after PlayerRenderer construction; resource reload creates a fresh complete owner. */
 	@SuppressWarnings("unchecked")
-	public static void install(AvatarRenderer<?> renderer, EntityRendererProvider.Context context, boolean slim) {
+	public static void install(PlayerRenderer renderer, EntityRendererProvider.Context context, boolean slim) {
 		PlayerModel model = renderer.getModel();
 		if (model.getClass() != PlayerModel.class || !(model instanceof ArticulatedModelAccess access)) return;
 		access.wildercord$ownBody(slim);
@@ -41,15 +41,15 @@ public final class ArticulatedArmorLayer extends RenderLayer<AvatarRenderState, 
 			return;
 		}
 		layers.set(layers.indexOf(original), new ArticulatedArmorLayer(renderer,
-			(RenderLayer<AvatarRenderState, PlayerModel>) original, armor));
+			(RenderLayer<PlayerRenderState, PlayerModel>) original, armor));
 		access.wildercord$setArmor(armor);
 	}
 
 	@Override
-	public void submit(PoseStack stack, SubmitNodeCollector collector, int light, AvatarRenderState state, float yaw, float pitch) {
-		if (!armor.submitWorld(getParentModel(), state, stack, collector, light)) fallback.submit(stack, collector, light, state, yaw, pitch);
+	public void render(PoseStack stack, MultiBufferSource buffer, int light, PlayerRenderState state, float yaw, float pitch) {
+		if (!armor.submitWorld(getParentModel(), state, stack, buffer, light)) fallback.submit(stack, buffer, light, state, yaw, pitch);
 	}
 
-	public RenderLayer<AvatarRenderState, PlayerModel> fallback() { return fallback; }
+	public RenderLayer<PlayerRenderState, PlayerModel> fallback() { return fallback; }
 	public ArticulatedArmorRenderer armor() { return armor; }
 }

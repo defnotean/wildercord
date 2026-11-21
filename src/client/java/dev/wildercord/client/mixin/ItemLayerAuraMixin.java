@@ -2,7 +2,7 @@ package dev.wildercord.client.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.client.fx.AuraBlade;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import org.joml.Vector3fc;
@@ -29,8 +29,8 @@ public abstract class ItemLayerAuraMixin {
 	@Shadow
 	private Supplier<Vector3fc[]> extents;
 
-	@Inject(method = "submit", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
-	private void wildercord$aura(PoseStack pose, SubmitNodeCollector collector, int light, int overlay, int outline, CallbackInfo ci) {
-		AuraBlade.layer(pose, collector, quads, extents);
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
+	private void wildercord$aura(PoseStack pose, MultiBufferSource buffer, int light, int overlay, CallbackInfo ci) {
+		AuraBlade.layer(pose, buffer, quads, extents);
 	}
 }

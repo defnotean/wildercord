@@ -90,7 +90,7 @@ public final class TidewardClient {
   }
   for(var floor:new BlockPos[]{points.getFirst(),points.getLast()})mc.particleEngine.add(new Piece(mc.level,surface(mc,floor).add(0,.11,0),"tideward_peg",.19F,12,0,null,valid));
  }
- private static final class Piece extends SingleQuadParticle implements SigilGroup.Extent {
+ private static final class Piece extends McQuadParticle implements SigilGroup.Extent {
   private final float size;private final int index;private final View following;private final BooleanSupplier valid;
   Piece(ClientLevel level,Vec3 at,String sprite,float size,int life,int index,View following,BooleanSupplier valid){
    super(level,at.x,at.y,at.z,SpellCircleParticle.particleSprite(sprite));this.size=size;this.index=index;this.following=following;this.valid=valid;

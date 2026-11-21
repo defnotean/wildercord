@@ -3,11 +3,12 @@ package dev.wildercord.client.kilnwidow;
 import com.mojang.blaze3d.vertex.*;
 import dev.wildercord.Wildercord;
 import dev.wildercord.world.kilnwidow.*;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import dev.wildercord.client.compat.RenderCompat;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -22,9 +23,9 @@ public final class KilnWidowRenderer extends dev.wildercord.client.compat.Cullab
 	public KilnWidowRenderer(EntityRendererProvider.Context context) {
 		super(context, new KilnWidowModel(context.bakeLayer(KilnWidowModel.LAYER)), 1.3F);
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<KilnWidowRenderState, KilnWidowModel>(this) {
-			@Override public void submit(PoseStack pose, SubmitNodeCollector collector, int light, KilnWidowRenderState state, float yRot, float xRot) {
+			@Override public void render(PoseStack pose, MultiBufferSource buffer, int light, KilnWidowRenderState state, float yRot, float xRot) {
 				if (!state.isInvisible && state.deathTime <= 0) {
-					dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+					dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 				}
 			}
 		});
@@ -52,13 +53,14 @@ public final class KilnWidowRenderer extends dev.wildercord.client.compat.Cullab
 		s.tellProgress = total <= 0 ? 0 : Mth.clamp(s.elapsed / total, 0, 1);
 	}
 
-	@Override public void submit(KilnWidowRenderState s, PoseStack matrices, SubmitNodeCollector collector, CameraRenderState camera) {
-		super.submit(s, matrices, collector, camera);
+	@Override public void render(KilnWidowRenderState s, PoseStack matrices, MultiBufferSource buffer, int light) {
+		CameraRenderState camera = RenderCompat.cameraState();
+		super.render(s, matrices, buffer, light);
 		if (s.isInvisible || s.deathTime > 0 || s.move == IDLE || s.elapsed > tell(s.move) + 5) return;
 		float pulse = .55F + .35F * Mth.sin(s.ageInTicks * .35F);
 		int ember = color(0.96F, s.second ? 0.68F : 0.45F, 0.22F, .80F * pulse);
 		int cooled = color(0.58F, 0.86F, 0.78F, .85F);
-		collector.order(1).submitCustomGeometry(matrices, RenderType.entityTranslucentEmissive(MARK), (p, consumer) -> {
+		RenderCompat.submitCustomGeometry(buffer, matrices, RenderType.entityTranslucentEmissive(MARK), (p, consumer) -> {
 			if (s.move == DRAFT) drawDraft(consumer, p, s.tellProgress, ember, cooled);
 			else if (s.move == SLAG) drawSlag(consumer, p, s.markX, s.markZ, s.tellProgress, ember);
 			else if (s.move == SWEEP) drawSweep(consumer, p, s.acrossX, ember, cooled);

@@ -6,7 +6,7 @@ import dev.wildercord.Wildercord;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -70,11 +70,11 @@ public final class MastersCaptureProbe {
 	}
 
 	public static void hand(int id, ItemStackRenderState item, PoseStack pose,
-			net.minecraft.client.renderer.entity.state.AvatarRenderState avatar,
-			dev.wildercord.client.compat.FirstPersonHandView hands, float attack, float inverseHeight, net.minecraft.client.renderer.SubmitNodeCollector collector) {
+			net.minecraft.client.renderer.entity.state.PlayerRenderState avatar,
+			dev.wildercord.client.compat.FirstPersonHandView hands, float attack, float inverseHeight, net.minecraft.client.renderer.MultiBufferSource buffer) {
 		if (!armed || id != owner) return;
 		MastersCaptureProbe.hands++;
-		BraceNullCaptureProbe.handConsumed(avatar, hands, item, pose, attack, inverseHeight, collector);
+		BraceNullCaptureProbe.handConsumed(avatar, hands, item, pose, attack, inverseHeight, buffer);
 		handMotion = new HandMotion(attack, inverseHeight, hands.oldMainHandHeight(), hands.mainHandHeight(),
 			hands.mainHandSwapScale(),
 			hands.mainHandEquipping(),

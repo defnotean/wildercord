@@ -1,6 +1,6 @@
 package dev.wildercord.client;
 
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * How brightly a Cord's beads glow while its wearer isn't casting: fully for the first couple of
  * seconds after it's put on, then fading out, so the glow says "just equipped" instead of being on all
- * the time (charging and casting light the beads up again, see AvatarRendererMixin). Only a Cord seen
+ * the time (charging and casting light the beads up again, see PlayerRendererMixin). Only a Cord seen
  * going on counts: a player who walks into view already wearing one, or your own Cord as you join,
  * doesn't flare.
  */
@@ -31,7 +31,7 @@ public final class CordGlow {
 	private static final Map<UUID, Seen> SEEN = new HashMap<>();
 
 	/** 0 to 1: the idle glow of {@code avatar}'s Cord of {@code tier} ("" when it wears none). */
-	public static float idle(Avatar avatar, String tier, float partial) {
+	public static float idle(LivingEntity avatar, String tier, float partial) {
 		long now = avatar.level().getGameTime();
 		Seen seen = SEEN.get(avatar.getUUID());
 		if (seen == null) {

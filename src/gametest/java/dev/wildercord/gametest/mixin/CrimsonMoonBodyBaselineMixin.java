@@ -4,11 +4,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import dev.wildercord.client.combat.ArticulatedCombat;
 import dev.wildercord.gametest.CrimsonMoonRenderProbe;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 /** Copies vanilla locals at the real production boundary, never resets or prepares the model. */
 @Mixin(value=ArticulatedCombat.class,remap=false)
 public abstract class CrimsonMoonBodyBaselineMixin {
  @WrapMethod(method="applyPlayer",require=1,expect=1,allow=1)
- private static boolean moon$baseline(PlayerModel model,AvatarRenderState state,Operation<Boolean> original){CrimsonMoonRenderProbe.bodyBaseline(model,state);return original.call(model,state);}
+ private static boolean moon$baseline(PlayerModel model,PlayerRenderState state,Operation<Boolean> original){CrimsonMoonRenderProbe.bodyBaseline(model,state);return original.call(model,state);}
 }

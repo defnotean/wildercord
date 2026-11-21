@@ -124,21 +124,29 @@ public class AuraScreen extends Screen implements CordEditorParent {
 	}
 
 	@Override
-	public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
+	}
+
+	public boolean keyPressed(dev.wildercord.client.compat.McInput.KeyEvent event) {
 		if (masterFormsEntry != null && masterFormsEntry.isFocused()
 				&& (event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_RETURN || event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_NUMPADENTER
-					|| event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_SPACE)) return super.keyPressed(event);
+					|| event.key() == com.mojang.blaze3d.platform.InputConstants.KEY_SPACE)) return super.keyPressed(event.key(), event.scancode(), event.modifiers());
 		if (bladeOpen() && bladePage.keyPressed(event)) {
 			return true;
 		}
 		if (writingOpen() && page.keyPressed(event)) {
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(event.key(), event.scancode(), event.modifiers());
 	}
 
 	@Override
-	public boolean charTyped(net.minecraft.client.input.CharacterEvent event) {
+	public boolean charTyped(int codePoint, int modifiers) {
+		return charTyped(new CharacterEvent((char) codePoint, modifiers));
+	}
+
+	public boolean charTyped(dev.wildercord.client.compat.McInput.CharacterEvent event) {
 		setFocused(null);
 		if (bladeOpen() && bladePage.charTyped(event)) {
 			return true;
@@ -146,7 +154,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		if (writingOpen() && page.charTyped(event)) {
 			return true;
 		}
-		return super.charTyped(event);
+		return super.charTyped(event.codepoint(), event.modifiers());
 	}
 
 	/** Whether the writing page is showing (it's open, and techniques work for the player). */
@@ -228,7 +236,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 	}
 
 	@Override
-	public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+	public boolean mouseClicked(dev.wildercord.client.compat.McInput.MouseButtonEvent event, boolean doubleClick) {
 		if (masterFormsEntry != null && masterFormsEntry.isMouseOver(event.x(), event.y())) return super.mouseClicked(event, doubleClick);
 		setFocused(null);
 		if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && tabsY >= 0) {
@@ -674,7 +682,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 				break;
 			}
 		}
-		// ---- the passive, at the foot (the Way tab uses the room for its nodes in full).
+		// ---- the passive, at the foot (the Way tab uses the room for its buffer in full).
 		if (way && wayRight > wayLeft) {
 			return tooltip;
 		}
@@ -836,7 +844,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 
 	/**
 	 * The Way tree: what the swordsman walks (or how to choose one), then a column for each Way (its emblem and name) with its three
-	 * nodes under it, one row a stage (Edge, Form, Sovereign), each node drawn as it stands: in force (lit, framed in gold), waking after
+	 * buffer under it, one row a stage (Edge, Form, Sovereign), each node drawn as it stands: in force (lit, framed in gold), waking after
 	 * a change (half lit, filling), still to come (outlined in its Way's colour), another Way's (dark), or open to choose. Under the tree,
 	 * the picked node in full: its name, its stage, where it stands, its passive and what it changes. At the foot, how to change Way.
 	 */
@@ -935,11 +943,11 @@ public class AuraScreen extends Screen implements CordEditorParent {
 			}
 		}
 		// ---- the picked node, in full.
-		String shown = picked != null && cells.containsKey(picked) ? picked : auto != null ? auto : walking != null ? walking.nodes().getFirst().id()
-			: ways.getFirst().nodes().getFirst().id();
+		String shown = picked != null && cells.containsKey(picked) ? picked : auto != null ? auto : walking != null ? walking.buffer().getFirst().id()
+			: ways.getFirst().buffer().getFirst().id();
 		int dy = rowsY + stages.length * ROW + 1;
 		for (AuraApi.Way w : ways) {
-			for (AuraApi.WayNode node : w.nodes()) {
+			for (AuraApi.WayNode node : w.buffer()) {
 				if (!node.id().equals(shown)) {
 					continue;
 				}

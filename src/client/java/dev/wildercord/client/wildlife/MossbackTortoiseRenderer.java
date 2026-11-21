@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.wildercord.wildlife.MossbackTortoise;
 import dev.wildercord.wildlife.WildlifeRules.Garden;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -71,7 +71,7 @@ public final class MossbackTortoiseRenderer extends WildlifeRenderer<MossbackTor
 		}
 
 		@Override
-		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, WildlifeRenderState state, float yRot, float xRot) {
+		public void render(PoseStack poseStack, MultiBufferSource buffer, int light, WildlifeRenderState state, float yRot, float xRot) {
 			if (state.isBaby || state.isInvisible) {
 				return;
 			}
@@ -88,7 +88,7 @@ public final class MossbackTortoiseRenderer extends WildlifeRenderer<MossbackTor
 				// A plant sways a little on the walking shell.
 				dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.ZP, Mth.sin(state.ageInTicks * 0.08F + i * 2) * 3);
 				poseStack.translate(-0.5F, 0, -0.5F);
-				collector.submitBlock(poseStack, state.garden[i], light, overlay, state.outlineColor);
+				dev.wildercord.client.compat.RenderCompat.submitBlock(buffer, poseStack, state.garden[i], light, overlay);
 				poseStack.popPose();
 			}
 		}

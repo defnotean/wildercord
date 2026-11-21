@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import dev.wildercord.Wildercord;
 import dev.wildercord.monster.RimecoatWolverine;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -52,7 +52,7 @@ public class RimecoatWolverineRenderer extends WildMonsterRenderer<RimecoatWolve
 		}
 
 		@Override
-		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, MonsterRenderState state, float yRot, float xRot) {
+		public void render(PoseStack poseStack, MultiBufferSource buffer, int light, MonsterRenderState state, float yRot, float xRot) {
 			ItemStackRenderState mouth = ((State) state).mouth;
 			if (state.isInvisible || mouth.isEmpty()) {
 				return;
@@ -62,7 +62,7 @@ public class RimecoatWolverineRenderer extends WildMonsterRenderer<RimecoatWolve
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.XP, 90);
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.ZP, 90);
 			poseStack.scale(0.8F, 0.8F, 0.8F);
-			mouth.submit(poseStack, collector, light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
+			mouth.submit(poseStack, buffer, light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
 			poseStack.popPose();
 		}
 	}

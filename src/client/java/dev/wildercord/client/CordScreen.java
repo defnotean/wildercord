@@ -32,9 +32,9 @@ import net.minecraft.client.gui.Font;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import dev.wildercord.client.compat.McInput.CharacterEvent;
+import dev.wildercord.client.compat.McInput.KeyEvent;
+import dev.wildercord.client.compat.McInput.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -2148,10 +2148,14 @@ public class CordScreen extends Screen {
 	// ------------------------------------------------------------------ keyboard: the search box
 
 	@Override
+	public boolean charTyped(int codePoint, int modifiers) {
+		return charTyped(new CharacterEvent((char) codePoint, modifiers));
+	}
+
 	public boolean charTyped(CharacterEvent event) {
 		setFocused(null);
 		if (tier() == null || !event.isAllowedChatCharacter()) {
-			return super.charTyped(event);
+			return super.charTyped(event.codepoint(), event.modifiers());
 		}
 		if (loadouts.isOpen()) {
 			loadouts.charTyped(event);
@@ -2179,6 +2183,10 @@ public class CordScreen extends Screen {
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
+	}
+
 	public boolean keyPressed(KeyEvent event) {
 		updateAuraEntry();
 		if (loadouts.isOpen()) {
@@ -2247,7 +2255,7 @@ public class CordScreen extends Screen {
 				return true;
 			}
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(event.key(), event.scancode(), event.modifiers());
 	}
 
 	// ------------------------------------------------------------------ mouse (all in local coordinates)
@@ -2522,9 +2530,13 @@ public class CordScreen extends Screen {
 	}
 
 	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		return mouseReleased(new MouseButtonEvent(mouseX, mouseY, button));
+	}
+
 	public boolean mouseReleased(MouseButtonEvent event) {
 		if (pressedRune == null && pressedSocket < 0) {
-			return super.mouseReleased(event);
+			return super.mouseReleased(event.x(), event.y(), event.button());
 		}
 		if (event.button() != pressButton) {
 			// Only letting go of the button that pressed ends the press.

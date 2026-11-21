@@ -18,17 +18,16 @@ import dev.wildercord.client.fx.MagicQuality;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -59,7 +58,7 @@ import org.joml.Vector3f;
  * <p>It's light: added to the world, left out of a shader pack's shadows, and under a pack drawn as vanilla's glowing eyes are
  * (see {@link ShaderCompat}). The player's "Body aura" setting calms it or switches it off.</p>
  */
-public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
+public class AuraBodyLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/aura/body.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spells' and the wisps' glows. */
@@ -96,14 +95,14 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
 	public static final RenderStateDataKey<Body> BODY = RenderStateDataKey.create(() -> "wildercord:aura_body");
 
-	public AuraBodyLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent) {
+	public AuraBodyLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent) {
 		super(parent);
 	}
 
 	// ------------------------------------------------------------------ extraction
 
 	/** Carries a player's body aura into their render state as it's extracted. */
-	public static void extract(Avatar avatar, AvatarRenderState state, float partial) {
+	public static void extract(LivingEntity avatar, PlayerRenderState state, float partial) {
 		state.setData(BODY, null);
 		if (!(avatar instanceof Player player) || player.isInvisible() || player.isSpectator() || MagicQuality.bodyAura == MagicQuality.BodyAura.OFF) {
 			return;
@@ -129,7 +128,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	// ------------------------------------------------------------------ drawing
 
 	@Override
-	public void submit(PoseStack pose, SubmitNodeCollector nodes, int light, AvatarRenderState state, float yRot, float xRot) {
+	public void render(PoseStack pose, MultiBufferSource buffer, int light, PlayerRenderState state, float yRot, float xRot) {
 		Body body = state.getData(BODY);
 		if (body == null || state.isInvisible || ShaderCompat.shadowPass()) {
 			return;
@@ -143,7 +142,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.pushPose();
 			if (!dev.wildercord.client.combat.ArticulatedCombat.head(getParentModel(), state, pose)) getParentModel().head.translateAndRotate(pose);
 			for (Ink ink : inks) {
-				nodes.order(2).submitCustomGeometry(pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, buffer) -> eyes(p, buffer, body, ink));
+				RenderCompat.submitCustomGeometry(buffer, pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, buffer) -> eyes(p, buffer, body, ink));
 			}
 			pose.popPose();
 		}
@@ -166,7 +165,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		float yaw = state.bodyRot * Mth.DEG_TO_RAD;
 		Frame frame = new Frame(-Mth.sin(yaw), Mth.cos(yaw), camRight, camUp, toCamera);
 		for (Ink ink : inks) {
-			nodes.order(2).submitCustomGeometry(pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, buffer) -> body(p, buffer, body, frame, ink));
+			RenderCompat.submitCustomGeometry(buffer, pose, ink.plain() ? PLAIN_TYPE : GLOW_TYPE, (p, buffer) -> body(p, buffer, body, frame, ink));
 		}
 		pose.popPose();
 	}
@@ -196,7 +195,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	}
 
 	/** Only upright (not swimming, gliding, sleeping or in a spin), where the body's turn is all there is. */
-	private static boolean upright(AvatarRenderState state) {
+	private static boolean upright(PlayerRenderState state) {
 		return !state.isAutoSpinAttack && !state.isFallFlying && !state.hasPose(Pose.SWIMMING) && !state.hasPose(Pose.SLEEPING) && state.deathTime <= 0
 			&& !state.isUpsideDown;
 	}

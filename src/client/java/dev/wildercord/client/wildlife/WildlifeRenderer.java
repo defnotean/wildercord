@@ -2,7 +2,7 @@ package dev.wildercord.client.wildlife;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -65,12 +65,12 @@ public abstract class WildlifeRenderer<T extends Mob, M extends EntityModel<Wild
 		}
 
 		@Override
-		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, WildlifeRenderState state, float yRot, float xRot) {
+		public void render(PoseStack poseStack, MultiBufferSource buffer, int light, WildlifeRenderState state, float yRot, float xRot) {
 			int alpha = Math.max(0, Math.min(255, (int) (state.glow * 255)));
 			if (state.isInvisible || alpha < 4) {
 				return;
 			}
-			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderType.eyes(texture.apply(state)), light, OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, RenderType.eyes(texture.apply(state)), light, OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, state.outlineColor);
 		}
 	}
 }

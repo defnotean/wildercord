@@ -6,8 +6,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** Woven, double-sided standards on bronze poles. Cloth flexes along its own plane; it never faces the camera. */
-public final class AuraStandard extends SingleQuadParticle implements SigilGroup.Extent {
+public final class AuraStandard extends McQuadParticle implements SigilGroup.Extent {
 	private record Key(int owner, String way, Vec3 at) {}
 	private static final Map<Key, AuraStandard> LIVE = new HashMap<>();
 	private final Key key;

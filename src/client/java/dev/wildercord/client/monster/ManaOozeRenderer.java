@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.monster.ManaOoze;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -32,24 +32,24 @@ public class ManaOozeRenderer extends MobRenderer<ManaOoze, ManaOozeModel.State,
 		// The heart glows: brighter the fuller it is, flaring as it drinks.
 		addLayer(new RenderLayer<>(this) {
 			@Override
-			public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, ManaOozeModel.State state, float yRot, float xRot) {
+			public void render(PoseStack poseStack, MultiBufferSource buffer, int light, ManaOozeModel.State state, float yRot, float xRot) {
 				if (state.isInvisible) {
 					return;
 				}
 				float strength = Mth.clamp(0.7F + 0.3F * state.fill + 0.5F * state.flash, 0, 1) * (state.deathTime > 0 ? 0.4F : 1);
 				int argb = ((int) (strength * 255) << 24) | 0xFFFFFF;
-				dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
+				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
 			}
 		});
 		// The clear outer jelly, last, over everything inside it.
 		addLayer(new RenderLayer<>(this) {
 			@Override
-			public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, ManaOozeModel.State state, float yRot, float xRot) {
+			public void render(PoseStack poseStack, MultiBufferSource buffer, int light, ManaOozeModel.State state, float yRot, float xRot) {
 				if (state.isInvisible) {
 					return;
 				}
 				outer.setupAnim(state);
-				dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(2), outer, state, poseStack, RenderType.entityTranslucent(TEXTURE), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), state.outlineColor);
+				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, outer, state, poseStack, RenderType.entityTranslucent(TEXTURE), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), state.outlineColor);
 			}
 		});
 	}

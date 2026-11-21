@@ -3,8 +3,8 @@ package dev.wildercord.client.fx;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -22,7 +22,7 @@ import java.util.List;
  * the turning shows. Made on the client for the Archive's inlaid floor and the Wellstone's halo;
  * a spawner keeps one alive per place and replaces it as it ends.
  */
-public class RingGlow extends SingleQuadParticle implements SigilGroup.Extent {
+public class RingGlow extends McQuadParticle implements SigilGroup.Extent {
 	private record Ring(float radius, float width, int color, float alpha) {}
 
 	private record Line(float x0, float y0, float x1, float y1, float width, int color, float alpha) {}

@@ -11,12 +11,11 @@ import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.SkeletonModel;
 import net.minecraft.client.model.WitchModel;
 import net.minecraft.client.model.ZombieVillagerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -55,12 +54,12 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 	}
 
 	@Override
-	public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, S state, float yRot, float xRot) {
+	public void render(PoseStack poseStack, MultiBufferSource buffer, int light, S state, float yRot, float xRot) {
 		Integer marks = state.getData(MARKS);
 		if (marks == null || state.isInvisible || state.isBaby) {
 			return;
 		}
-		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, marks, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, marks, state.outlineColor);
 	}
 
 	/** Reads the synced marks into the render state (called as every living entity's state is extracted). */

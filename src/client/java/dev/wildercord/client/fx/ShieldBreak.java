@@ -3,8 +3,8 @@ package dev.wildercord.client.fx;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -33,7 +33,7 @@ public final class ShieldBreak {
 	// ------------------------------------------------------------------ the pieces
 
 	/** One piece of the shell: a flat shard of glassy light that holds its place for a moment, then flies, tumbles and falls. */
-	static class Shard extends SingleQuadParticle {
+	static class Shard extends McQuadParticle {
 		/** Where light comes from, for the glints: high and a little to one side, like the sun. */
 		private static final Vector3f LIGHT = new Vector3f(0.35F, 1, 0.25F).normalize();
 
@@ -166,7 +166,7 @@ public final class ShieldBreak {
 	}
 
 	/** A curved sliver of the circle's rim: a short arc of its frame line, tumbling as it falls. */
-	static class RimShard extends SingleQuadParticle {
+	static class RimShard extends McQuadParticle {
 		private final Quaternionf spin = new Quaternionf();
 		private final Quaternionf oSpin = new Quaternionf();
 		private final Vector3f axis;

@@ -8,8 +8,8 @@ import dev.wildercord.client.FirstPersonAvatarState;
 import dev.wildercord.gametest.CrimsonMoonRenderProbe;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -24,17 +24,17 @@ public abstract class CrimsonMoonFallbackMixin {
 
 	@WrapMethod(method = "renderArmWithItem", require = 1, expect = 1, allow = 1)
 	private void wildercord$moon$fallback(AbstractClientPlayer player, float partial, float xRot, InteractionHand hand,
-			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, SubmitNodeCollector collector,
+			float attack, ItemStack stack, float inverseArmHeight, PoseStack pose, MultiBufferSource buffer,
 			int light, Operation<Void> original) {
 		var hands = dev.wildercord.client.compat.FirstPersonHandView.of((ItemInHandRenderer) (Object) this, player);
-		AvatarRenderState avatar = ((FirstPersonAvatarState) this).wildercord$handsAvatar(player, partial);
+		PlayerRenderState avatar = ((FirstPersonAvatarState) this).wildercord$handsAvatar(player, partial);
 		CrimsonMoonRenderProbe.viewAttempt(avatar, hands, partial, hand);
 		var previous = wildercord$moon$openingFallback.get();
 		var call = CrimsonMoonRenderProbe.fallbackViewBegin(hands, avatar, hand, stack, attack, inverseArmHeight, pose);
 		wildercord$moon$openingFallback.set(call);
 		boolean completed = false;
 		try {
-			original.call(player, partial, xRot, hand, attack, stack, inverseArmHeight, pose, collector, light);
+			original.call(player, partial, xRot, hand, attack, stack, inverseArmHeight, pose, buffer, light);
 			completed = true;
 		} finally {
 			CrimsonMoonRenderProbe.fallbackViewEnd(call, completed);
@@ -43,13 +43,13 @@ public abstract class CrimsonMoonFallbackMixin {
 	}
 
 	@WrapOperation(method = "renderItem", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"), require = 1, expect = 1, allow = 1)
-	private void wildercord$moon$item(ItemStackRenderState item, PoseStack pose, SubmitNodeCollector collector,
+		target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"), require = 1, expect = 1, allow = 1)
+	private void wildercord$moon$item(ItemStackRenderState item, PoseStack pose, MultiBufferSource buffer,
 			int light, int overlay, int outline, Operation<Void> original) {
 		var call = wildercord$moon$openingFallback.get();
 		if (call != null) call.bindItem(item);
 		var submitted = new org.joml.Matrix4f(pose.last().pose());
-		original.call(item, pose, collector, light, overlay, outline);
+		original.call(item, pose, buffer, light, overlay, outline);
 		CrimsonMoonRenderProbe.fallbackViewItem(call, item, submitted);
 	}
 }

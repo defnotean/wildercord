@@ -8,10 +8,10 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +36,7 @@ public final class GlaivePose {
 		return state != null && isGlaive(dev.wildercord.client.compat.RenderCompat.mainHandStack(state));
 	}
 
-	private static boolean eligible(AvatarRenderState state) {
+	private static boolean eligible(PlayerRenderState state) {
 		return state != null && !state.isSpectator && state.deathTime <= 0 && !state.isAutoSpinAttack
 			&& !state.isFallFlying && !state.hasPose(Pose.SWIMMING) && !state.hasPose(Pose.SLEEPING)
 			&& !state.isUpsideDown && !state.isPassenger;
@@ -46,7 +46,7 @@ public final class GlaivePose {
 	 * Strips vanilla's one-handed javelin arm pose and stab swing description when the main hand
 	 * carries Skyrend Glaive so third- and first-person renderers use polearm poses instead.
 	 */
-	public static void extract(Avatar avatar, AvatarRenderState state) {
+	public static void extract(LivingEntity avatar, PlayerRenderState state) {
 		if (!holdsGlaive(state)) {
 			return;
 		}
@@ -64,7 +64,7 @@ public final class GlaivePose {
 	 * Applies the two-handed cross-body polearm guard at rest and a wide two-handed sweeping
 	 * polearm cleave during an attack swing.
 	 */
-	public static boolean applyPlayer(PlayerModel model, AvatarRenderState state) {
+	public static boolean applyPlayer(PlayerModel model, PlayerRenderState state) {
 		if (!holdsGlaive(state) || !eligible(state) || state.isUsingItem) {
 			return false;
 		}
@@ -185,7 +185,7 @@ public final class GlaivePose {
 	 * long polearm extends forward and sweeps its curved cutting edge horizontally through the arc.
 	 */
 	public static void heldItem(ArmedEntityRenderState state, HumanoidArm arm, ItemStack item, PoseStack stack) {
-		if (!(state instanceof AvatarRenderState avatar) || arm != state.mainArm || !isGlaive(item) || !eligible(avatar)) {
+		if (!(state instanceof PlayerRenderState avatar) || arm != state.mainArm || !isGlaive(item) || !eligible(avatar)) {
 			return;
 		}
 		if (dev.wildercord.client.combat.ArticulatedCombat.frame(avatar) != null
@@ -245,7 +245,7 @@ public final class GlaivePose {
 	 * sweeping across the screen when swinging Skyrend Glaive.
 	 */
 	public static boolean firstPersonSwing(float attack, PoseStack pose, int side, HumanoidArm arm,
-			AvatarRenderState state, InteractionHand hand) {
+			PlayerRenderState state, InteractionHand hand) {
 		if (hand != InteractionHand.MAIN_HAND || !holdsGlaive(state)) {
 			return false;
 		}

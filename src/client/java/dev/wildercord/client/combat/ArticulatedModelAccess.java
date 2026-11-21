@@ -1,6 +1,6 @@
 package dev.wildercord.client.combat;
 
-/** Only AvatarRenderer's primary skin model may own a body rig; armor PlayerModels stay untouched. */
+/** Only PlayerRenderer's primary skin model may own a body rig; armor PlayerModels stay untouched. */
 public interface ArticulatedModelAccess {
 	void wildercord$ownBody(boolean slim);
 	boolean wildercord$bodyOwned();

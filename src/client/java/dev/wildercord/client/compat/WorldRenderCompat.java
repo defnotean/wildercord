@@ -5,46 +5,59 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 /**
- * 1.21.9 has no fabric world render events (fabric's {@code WorldRenderEvents} only returns with the
- * 1.21.10 rendering-v1 line): {@code WorldRenderCompatMixin} fires the registered hooks right after
- * vanilla submits entities, handing them the frame's pose stack, level render state and submit collector.
+ * World-space draw hooks. 1.21.8 still has fabric's {@code WorldRenderEvents}, so the hooks ride
+ * fabric's AFTER_ENTITIES; the context is reshaped to the one the newer versions hand over
+ * (see {@link LevelRenderState} and {@link CameraRenderState}), so the callers read the same way
+ * on every version.
  */
 public final class WorldRenderCompat {
-	/** The pieces of the frame a world-space submit hook draws with, shaped like fabric's 1.21.10 context. */
+	/** The pieces of the frame a world-space draw hook needs, shaped like fabric's 1.21.10 context. */
 	public interface Context {
 		PoseStack matrices();
 
-		SubmitNodeCollector commandQueue();
+		MultiBufferSource commandQueue();
 
 		LevelRenderState worldState();
 	}
 
 	private static final List<Consumer<Context>> AFTER_ENTITIES = new ArrayList<>();
+	private static boolean hooked;
 
 	private WorldRenderCompat() {}
 
 	public static void registerAfterEntities(Consumer<Context> hook) {
 		AFTER_ENTITIES.add(hook);
+		if (!hooked) {
+			hooked = true;
+			WorldRenderEvents.AFTER_ENTITIES.register(WorldRenderCompat::fire);
+		}
 	}
 
-	/** Called by the mixin once vanilla has submitted entities, before the translucent passes. */
-	public static void fireAfterEntities(PoseStack pose, LevelRenderState state, SubmitNodeCollector collector) {
+	/** Called by fabric once vanilla has drawn entities, before the translucent passes. */
+	private static void fire(WorldRenderContext context) {
 		if (AFTER_ENTITIES.isEmpty()) {
 			return;
 		}
-		Context context = new Context() {
+		PoseStack pose = context.matrixStack();
+		MultiBufferSource buffers = context.consumers();
+		LevelRenderState state = new LevelRenderState();
+		state.cameraRenderState.pos = context.camera().getPosition();
+		state.cameraRenderState.orientation = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
+		Context view = new Context() {
 			@Override
 			public PoseStack matrices() {
 				return pose;
 			}
 
 			@Override
-			public SubmitNodeCollector commandQueue() {
-				return collector;
+			public MultiBufferSource commandQueue() {
+				return buffers;
 			}
 
 			@Override
@@ -53,7 +66,7 @@ public final class WorldRenderCompat {
 			}
 		};
 		for (Consumer<Context> hook : AFTER_ENTITIES) {
-			hook.accept(context);
+			hook.accept(view);
 		}
 	}
 }

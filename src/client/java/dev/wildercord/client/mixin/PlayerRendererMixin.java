@@ -3,9 +3,10 @@ package dev.wildercord.client.mixin;
 import dev.wildercord.client.CastingPose;
 import dev.wildercord.client.CordGlow;
 import dev.wildercord.player.WildercordAttachments;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.player.AbstractClientPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,17 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * brightly the Cord's beads glow: only for a moment after it's put on (see CordGlow), brighter as a
  * charge builds, and in a flare that fades after a cast.
  */
-@Mixin(AvatarRenderer.class)
-public abstract class AvatarRendererMixin {
+@Mixin(PlayerRenderer.class)
+public abstract class PlayerRendererMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void wildercord$ownArticulatedBody(net.minecraft.client.renderer.entity.EntityRendererProvider.Context context,
 			boolean slim, CallbackInfo ci) {
-		dev.wildercord.client.combat.ArticulatedArmorLayer.install((AvatarRenderer<?>) (Object) this, context, slim);
+		dev.wildercord.client.combat.ArticulatedArmorLayer.install((PlayerRenderer) (Object) this, context, slim);
 	}
 
-	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V",
+	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;F)V",
 		at = @At("TAIL"))
-	private void wildercord$castingPose(Avatar avatar, AvatarRenderState state, float partial, CallbackInfo ci) {
+	private void wildercord$castingPose(net.minecraft.client.player.AbstractClientPlayer avatar, PlayerRenderState state, float partial, CallbackInfo ci) {
 		dev.wildercord.client.GlaivePose.extract(avatar, state);
 		dev.wildercord.client.MastersArtPose.extract(avatar, state, partial);
 		dev.wildercord.client.combat.ArticulatedCombat.extract(avatar, state, partial);

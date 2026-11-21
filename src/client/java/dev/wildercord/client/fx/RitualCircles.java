@@ -9,8 +9,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.client.renderer.LightTexture;
@@ -54,8 +54,7 @@ public final class RitualCircles {
 
 	public static class Provider implements ParticleProvider<RitualOption> {
 		@Override
-		public Particle createParticle(RitualOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za,
-				RandomSource random) {
+		public Particle createParticle(RitualOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za) {
 			Entity found = level.getEntity(option.entity());
 			if (!(found instanceof LivingEntity player)) {
 				return null;
@@ -354,7 +353,7 @@ public final class RitualCircles {
 
 		@Override
 		public void extract(QuadParticleRenderState state, Camera camera, float partial) {
-			super.extract(state, camera, partial);
+			extractDefault(state, camera, partial);
 			float a = fade(partial);
 			if (a <= 0.01F) {
 				return;
@@ -405,7 +404,7 @@ public final class RitualCircles {
 	}
 
 	/** The rune's emblem shining over the hand at the finish, then drifting up and fading. */
-	static final class Emblem extends SingleQuadParticle implements SigilGroup.Extent {
+	static final class Emblem extends McQuadParticle implements SigilGroup.Extent {
 		private static final int LIFE = 46;
 		private final LivingEntity player;
 		private final TextureAtlasSprite mark;

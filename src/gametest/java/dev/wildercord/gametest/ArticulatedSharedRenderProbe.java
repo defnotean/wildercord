@@ -22,7 +22,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -69,10 +69,10 @@ public final class ArticulatedSharedRenderProbe {
 	public static final class Scope {
 		final Token token;
 		final Scope previous;
-		final IdentityHashMap<AvatarRenderState, Body> bodies = new IdentityHashMap<>();
+		final IdentityHashMap<PlayerRenderState, Body> bodies = new IdentityHashMap<>();
 		final IdentityHashMap<ArticulatedViewModel.Frame, View> views = new IdentityHashMap<>();
 		final List<String> extractions = new ArrayList<>();
-		final IdentityHashMap<AvatarRenderState, Extracted> openingExtractions = new IdentityHashMap<>();
+		final IdentityHashMap<PlayerRenderState, Extracted> openingExtractions = new IdentityHashMap<>();
 		int owner;
 		boolean extracting, rendering;
 		RenderTarget renderedTarget;
@@ -82,24 +82,24 @@ public final class ArticulatedSharedRenderProbe {
 		DeferredCall deferredCall;
 		Scope(Token token, Scope previous) { this.token = token; this.previous = previous; }
 	}
-	public record ViewCall(AvatarRenderState avatar, InteractionHand hand, float partial, ViewCall previous) {}
-	public record DeferredCall(Model<?> model, Object state, DeferredCall previous) {}
+	public record ViewCall(PlayerRenderState avatar, InteractionHand hand, float partial, ViewCall previous) {}
+	public record DeferredCall(Model model, Object state, DeferredCall previous) {}
 	private record Expected(int owner, String ownerUuid, int move, long startTick) {}
 	private record Extracted(int owner, String ownerUuid, long stateId, ArticulatedRenderReceipt.Palette palette) {}
 	public static final class FallbackView {
 		private final FirstPersonHandView hands;
-		private final AvatarRenderState avatar;
+		private final PlayerRenderState avatar;
 		private final ArticulatedRenderReceipt.Palette palette;
 		private final Map<String, String> attributes;
 		private ItemStackRenderState item;
-		FallbackView(FirstPersonHandView hands, AvatarRenderState avatar,
+		FallbackView(FirstPersonHandView hands, PlayerRenderState avatar,
 				ArticulatedRenderReceipt.Palette palette, Map<String, String> attributes) {
 			this.hands = hands; this.avatar = avatar; this.palette = palette; this.attributes = attributes;
 			bindItem(hands.initialMainHandRenderState());
 		}
 		public FirstPersonHandView hands() { return hands; }
 		public Object renderer() { return hands.rendererObject(); }
-		public AvatarRenderState avatar() { return avatar; }
+		public PlayerRenderState avatar() { return avatar; }
 		public ArticulatedRenderReceipt.Palette palette() { return palette; }
 		public Map<String, String> attributes() { return Map.copyOf(attributes); }
 		public ItemStackRenderState item() { return item; }
@@ -110,8 +110,8 @@ public final class ArticulatedSharedRenderProbe {
 			}
 		}
 	}
-	private record Body(Model<?> model, long stateId) {}
-	private record View(ArticulatedViewModel model, AvatarRenderState avatar, ArticulatedRenderReceipt.Palette palette,
+	private record Body(Model model, long stateId) {}
+	private record View(ArticulatedViewModel model, PlayerRenderState avatar, ArticulatedRenderReceipt.Palette palette,
 			long stateId, Map<String, String> appearance) {}
 	private record CopyCall(Token token, RenderTarget target, Consumer<NativeImage> consumer, Object texture, long targetId, long textureId,
 			int width, int height, CopyCall previous) {}
@@ -217,7 +217,7 @@ public final class ArticulatedSharedRenderProbe {
 	}
 	public static void extracted(Entity entity, float partial, EntityRenderState state) {
 		Scope scope = CURRENT.get();
-		if (scope == null || !scope.extracting || entity.getId() != scope.owner || !(state instanceof AvatarRenderState avatar)) return;
+		if (scope == null || !scope.extracting || entity.getId() != scope.owner || !(state instanceof PlayerRenderState avatar)) return;
 		guard(scope.token, () -> {
 			var raw = palette(avatar.getData(ArticulatedCombat.FRAME));
 			scope.extractions.add("state=" + identity(avatar) + ",entityPartial=" + partial + ",postHitStop=" + raw);
@@ -241,15 +241,15 @@ public final class ArticulatedSharedRenderProbe {
 		guard(scope.token, () -> { if (completed) scope.token.session.rendered(SEQUENCE.incrementAndGet()); });
 	}
 
-	public static void bodySubmitted(Model<?> model, Object renderState) {
+	public static void bodySubmitted(Model model, Object renderState) {
 		Scope scope = rendering();
-		if (scope == null || !(renderState instanceof AvatarRenderState avatar) || avatar.id != scope.owner) return;
+		if (scope == null || !(renderState instanceof PlayerRenderState avatar) || avatar.id != scope.owner) return;
 		guard(scope.token, () -> {
 			scope.bodies.put(avatar, new Body(model, identity(avatar)));
 			scope.token.session.pass(pass("body_submit", avatar, model, palette(avatar.getData(ArticulatedCombat.FRAME)), appearance(avatar, model)));
 		});
 	}
-	public static void bodyPalette(PlayerModel model, AvatarRenderState avatar) {
+	public static void bodyPalette(PlayerModel model, PlayerRenderState avatar) {
 		Scope scope = rendering(); if (scope == null) return;
 		Body submitted = scope.bodies.get(avatar); if (submitted == null || submitted.model() != model) return;
 		guard(scope.token, () -> {
@@ -269,7 +269,7 @@ public final class ArticulatedSharedRenderProbe {
 			scope.token.session.pass(pass(kind, avatar, model, palette(avatar.getData(ArticulatedCombat.FRAME)), appearance));
 		});
 	}
-	public static ViewCall viewEnter(AvatarRenderState avatar, float partial, InteractionHand hand) {
+	public static ViewCall viewEnter(PlayerRenderState avatar, float partial, InteractionHand hand) {
 		Scope scope = rendering(); if (scope == null || avatar.id != scope.owner) return null;
 		if (opening(scope) && hand == InteractionHand.MAIN_HAND) guard(scope.token, () -> scope.token.session.observe("viewSubmitCalled", true));
 		ViewCall call = new ViewCall(avatar, hand, partial, scope.viewCall); scope.viewCall = call; return call;
@@ -280,7 +280,7 @@ public final class ArticulatedSharedRenderProbe {
 		scope.viewCall = call.previous();
 	}
 	/** The real hand callback, including unsupported/fallback attempts; observations never count as passes. */
-	public static void viewAttempt(AvatarRenderState avatar, FirstPersonHandView hands, float partial, InteractionHand hand) {
+	public static void viewAttempt(PlayerRenderState avatar, FirstPersonHandView hands, float partial, InteractionHand hand) {
 		Scope scope = rendering();
 		if (scope == null || !opening(scope) || avatar == null || avatar.id != scope.owner || hand != InteractionHand.MAIN_HAND) return;
 		guard(scope.token, () -> {
@@ -300,12 +300,12 @@ public final class ArticulatedSharedRenderProbe {
 			s.observe("viewModelSupported", model != null && model.getClass() == PlayerModel.class && model instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned());
 		});
 	}
-	public static void viewSubmitted(Model<?> model, Object renderState) {
+	public static void viewSubmitted(Model model, Object renderState) {
 		Scope scope = rendering();
 		if (scope == null || scope.viewCall == null || scope.viewCall.hand() != InteractionHand.MAIN_HAND
 			|| !(model instanceof ArticulatedViewModel view) || !(renderState instanceof ArticulatedViewModel.Frame frame)) return;
 		guard(scope.token, () -> {
-			AvatarRenderState avatar = scope.viewCall.avatar();
+			PlayerRenderState avatar = scope.viewCall.avatar();
 			var combat = avatar.getData(ArticulatedCombat.FRAME);
 			var observed = combat == null ? null : new ArticulatedRenderReceipt.Palette(combat.activation(), combat.move(),
 				frame.pose().phase().name(), frame.pose().weight(), combat.leftHanded(), combat.master(), localsHash(frame.pose()::local));
@@ -327,20 +327,20 @@ public final class ArticulatedSharedRenderProbe {
 			scope.token.session.pass(new ArticulatedRenderReceipt.Pass(kind, view.stateId(), identity(model), view.avatar().id, view.palette(), attributes));
 		});
 	}
-	public static DeferredCall deferredEnter(Model<?> model, Object state) {
+	public static DeferredCall deferredEnter(Model model, Object state) {
 		Scope scope = rendering(); if (scope == null) return null;
 		DeferredCall call = new DeferredCall(model, state, scope.deferredCall); scope.deferredCall = call; return call;
 	}
 	public static void deferredLeave(DeferredCall call) {
 		Scope scope = rendering(); if (scope != null && call != null) scope.deferredCall = call.previous();
 	}
-	private static boolean deferred(Scope scope, Model<?> model, Object state) {
+	private static boolean deferred(Scope scope, Model model, Object state) {
 		return scope.deferredCall != null && scope.deferredCall.model() == model && scope.deferredCall.state() == state;
 	}
 	public static void viewItem(ItemStackRenderState item) {
 		Scope scope = rendering(); if (scope == null || scope.viewCall == null || scope.viewCall.hand() != InteractionHand.MAIN_HAND) return;
 		guard(scope.token, () -> {
-			AvatarRenderState avatar = scope.viewCall.avatar();
+			PlayerRenderState avatar = scope.viewCall.avatar();
 			List<View> views = scope.views.values().stream().filter(v -> v.avatar() == avatar).toList();
 			if (views.size() != 1 || item != dev.wildercord.client.compat.RenderCompat.mainHandItemState(avatar) || item.isEmpty()) { scope.token.session.reject("wrong_view_item_submission"); return; }
 			View view = views.getFirst();
@@ -350,7 +350,7 @@ public final class ArticulatedSharedRenderProbe {
 	}
 
 	/** The real vanilla sword path has no arm model. Preserve that fact instead of inventing a deferred pass. */
-	public static FallbackView fallbackViewBegin(FirstPersonHandView hands, AvatarRenderState avatar,
+	public static FallbackView fallbackViewBegin(FirstPersonHandView hands, PlayerRenderState avatar,
 			InteractionHand hand, ItemStack stack) {
 		Scope scope = rendering();
 		if (scope == null || !opening(scope) || !ArticulatedRenderReceipt.fallback(scope.token.session.identity().trial())
@@ -456,7 +456,7 @@ public final class ArticulatedSharedRenderProbe {
 		for (WeakIdentity entry : IDENTITIES) if (entry.reference().get() == value) return entry.sequence();
 		long id = SEQUENCE.incrementAndGet(); IDENTITIES.add(new WeakIdentity(new WeakReference<>(value), id)); return id;
 	}
-	private static ArticulatedRenderReceipt.Pass pass(String kind, AvatarRenderState avatar, Model<?> model,
+	private static ArticulatedRenderReceipt.Pass pass(String kind, PlayerRenderState avatar, Model model,
 			ArticulatedRenderReceipt.Palette palette, Map<String, String> attributes) {
 		return new ArticulatedRenderReceipt.Pass(kind, identity(avatar), identity(model), avatar.id, palette, attributes);
 	}
@@ -508,7 +508,7 @@ public final class ArticulatedSharedRenderProbe {
 		return true;
 	}
 	private static void append(StringBuilder out, float... values) { for (float value : values) out.append(Float.toHexString(value)).append(','); out.append('\n'); }
-	private static Map<String, String> appearance(AvatarRenderState avatar, Model<?> model) {
+	private static Map<String, String> appearance(PlayerRenderState avatar, Model model) {
 		Map<String, String> out = new LinkedHashMap<>();
 		out.put("skinModel", avatar.skin == null ? "unknown" : avatar.skin.model().toString());
 		out.put("skinTexture", avatar.skin == null ? "unknown" : avatar.skin.body().texturePath().toString());

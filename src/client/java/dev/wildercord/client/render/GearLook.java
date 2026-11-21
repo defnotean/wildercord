@@ -6,9 +6,9 @@ import dev.wildercord.gear.GearSlot;
 import dev.wildercord.gear.GearSlots;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * The casting gear a player wears in its slots, and their worn backpack, carried from the entity into the
- * render state as it is extracted (see {@code AvatarRendererGearMixin}): a layer only ever sees the state,
+ * render state as it is extracted (see {@code PlayerRendererGearMixin}): a layer only ever sees the state,
  * and an item's model has to be resolved with the entity in hand. {@link GearLayer} draws it.
  */
 public final class GearLook {
@@ -36,7 +36,7 @@ public final class GearLook {
 	/** The backpack on their back; absent means none. */
 	public static final RenderStateDataKey<Pack> PACK = RenderStateDataKey.create(() -> "wildercord:backpack");
 
-	public static void extract(Avatar avatar, AvatarRenderState state) {
+	public static void extract(LivingEntity avatar, PlayerRenderState state) {
 		ItemStack backpack = Backpacks.look(avatar);
 		BackpackTier tier = Backpacks.tierOf(backpack);
 		state.setData(PACK, tier == null ? null : new Pack(tier, DyedItemColor.getOrDefault(backpack, 0xFF000000 | tier.color)));

@@ -6,12 +6,12 @@ import dev.wildercord.client.render.AuraShellLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.client.resources.PlayerSkin.Model;
 
 /** One reload-owned shell adapter belonging to exactly one primary player body. */
 public final class ArticulatedAuraShellRenderer {
@@ -31,17 +31,17 @@ public final class ArticulatedAuraShellRenderer {
 	public static boolean enabled() { return dev.wildercord.client.CombatPresentation.effective().auraShell(); }
 
 	/** Readiness is extracted from the exact layer list before any body or item owns a frame. */
-	public boolean supports(AvatarRenderState state) {
+	public boolean supports(PlayerRenderState state) {
 		return enabled() && owner.getClass() == PlayerModel.class && owner instanceof ArticulatedModelAccess access && access.wildercord$bodyOwned()
-			&& access.wildercord$rig().slim() == slim && state.skin != null && (state.skin.model() == PlayerModelType.SLIM) == slim;
+			&& access.wildercord$rig().slim() == slim && state.skin != null && (state.skin.model() == PlayerSkin.Model.SLIM) == slim;
 	}
-	public static boolean compatible(AvatarRenderState state) {
+	public static boolean compatible(PlayerRenderState state) {
 		if (state.getData(AuraShellLayer.SHELL_GLOW) == null) return true;
 		var adapter = state.getData(READY);
 		return adapter != null && adapter.supports(state);
 	}
 
-	public boolean submitWorld(AvatarRenderState state, PoseStack stack, SubmitNodeCollector collector) {
+	public boolean submitWorld(PlayerRenderState state, PoseStack stack, MultiBufferSource buffer) {
 		if (state.getData(READY) != this || !supports(state) || !ArticulatedCombat.applyPlayer(owner, state)) return false;
 		Integer glow = state.getData(AuraShellLayer.SHELL_GLOW);
 		if (glow == null || state.isInvisible || ShaderCompat.shadowPass()) return true;
@@ -50,24 +50,24 @@ public final class ArticulatedAuraShellRenderer {
 		stack.pushPose();
 		try {
 			owner.root().translateAndRotate(stack);
-			submit(world, palette, glow, stack, collector);
+			submit(world, palette, glow, stack, buffer);
 		} finally { stack.popPose(); }
 		return true;
 	}
 
 	/** Both camera-space arms share the exact final view pose used by the skin, armor and hilt. */
-	public boolean submitView(ArticulatedRig rig, AvatarRenderState state, PoseStack stack, SubmitNodeCollector collector) {
+	public boolean submitView(ArticulatedRig rig, PlayerRenderState state, PoseStack stack, MultiBufferSource buffer) {
 		if (state.getData(READY) != this || !supports(state) || ArticulatedCombat.viewFrame(state) == null) return false;
 		Integer glow = state.getData(AuraShellLayer.SHELL_GLOW);
 		if (glow == null || state.isInvisible || ShaderCompat.shadowPass()) return true;
-		submit(view, ArticulatedArmorGeometry.Palette.capture(rig), glow, stack, collector);
+		submit(view, ArticulatedArmorGeometry.Palette.capture(rig), glow, stack, buffer);
 		return true;
 	}
 	private void submit(ArticulatedAuraShellGeometry model, ArticulatedArmorGeometry.Palette palette, int glow,
-			PoseStack stack, SubmitNodeCollector collector) {
+			PoseStack stack, MultiBufferSource buffer) {
 		// Match AuraShellLayer exactly: eyes texture, order one, live ARGB, fullbright, no overlay
 		// and outline zero. A body/team outline must not invent a separate shell outline.
-		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), model, palette, stack, material, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, palette, stack, material, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
 	}
 	public PlayerModel owner() { return owner; }
 	public ArticulatedAuraShellGeometry worldModel() { return world; }

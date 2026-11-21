@@ -5,9 +5,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.resources.model.EquipmentClientInfo.LayerType;
 import net.minecraft.client.resources.model.EquipmentAssetManager;
@@ -48,7 +48,7 @@ public final class ArticulatedArmorRenderer {
 	/** Unknown items/components always retain the entire previous renderer, including their layers. */
 	public static boolean compatible(HumanoidRenderState state) {
 		if (empty(state.headEquipment) && empty(state.chestEquipment) && empty(state.legsEquipment) && empty(state.feetEquipment)) return true;
-		return state instanceof AvatarRenderState && enabled() && Boolean.TRUE.equals(state.getData(READY)) && supports(state);
+		return state instanceof PlayerRenderState && enabled() && Boolean.TRUE.equals(state.getData(READY)) && supports(state);
 	}
 
 	public static boolean supports(HumanoidRenderState state) {
@@ -71,7 +71,7 @@ public final class ArticulatedArmorRenderer {
 			&& equippable.assetId().filter(EquipmentAssets.NETHERITE::equals).isPresent() && equippable.cameraOverlay().isEmpty();
 	}
 
-	public boolean submitWorld(PlayerModel body, AvatarRenderState state, PoseStack stack, SubmitNodeCollector collector, int light) {
+	public boolean submitWorld(PlayerModel body, PlayerRenderState state, PoseStack stack, MultiBufferSource buffer, int light) {
 		if (!enabled() || !supportsAssets() || !supports(state) || !Boolean.TRUE.equals(state.getData(READY))
 			|| !(body instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned() || access.wildercord$armor() != this
 			|| !ArticulatedCombat.applyPlayer(body, state)) return false;
@@ -81,7 +81,7 @@ public final class ArticulatedArmorRenderer {
 		stack.pushPose();
 		try {
 			body.root().translateAndRotate(stack);
-			for (EquipmentSlot slot : SLOTS) submit(slot, stack(state, slot), models.get(slot), palette, stack, collector, light, state.outlineColor);
+			for (EquipmentSlot slot : SLOTS) submit(slot, stack(state, slot), models.get(slot), palette, stack, buffer, light, state.outlineColor);
 		} finally {
 			stack.popPose();
 		}
@@ -89,20 +89,20 @@ public final class ArticulatedArmorRenderer {
 	}
 
 	/** Intentional enhanced view: only the chestplate's original arm surfaces, never invented gloves. */
-	public boolean submitView(ArticulatedRig viewRig, AvatarRenderState state, PoseStack stack, SubmitNodeCollector collector, int light) {
+	public boolean submitView(ArticulatedRig viewRig, PlayerRenderState state, PoseStack stack, MultiBufferSource buffer, int light) {
 		if (!viewEnabled() || !supportsAssets() || ArticulatedCombat.viewFrame(state) == null || !supports(state) || empty(state.chestEquipment)) return false;
-		submit(EquipmentSlot.CHEST, state.chestEquipment, viewModel, capture(viewRig), stack, collector, light, 0);
+		submit(EquipmentSlot.CHEST, state.chestEquipment, viewModel, capture(viewRig), stack, buffer, light, 0);
 		return true;
 	}
 
 	private void submit(EquipmentSlot slot, ItemStack item, ArticulatedArmorGeometry model, ArticulatedArmorGeometry.Palette palette,
-			PoseStack stack, SubmitNodeCollector collector, int light, int outline) {
+			PoseStack stack, MultiBufferSource buffer, int light, int outline) {
 		if (empty(item)) return;
 		ItemStack snapshot = item.copy();
 		var equippable = snapshot.get(DataComponents.EQUIPPABLE);
 		if (equippable == null || equippable.slot() != slot || equippable.assetId().isEmpty()) throw new IllegalStateException("Armor eligibility changed within submission");
 		equipmentRenderer.renderLayers(slot == EquipmentSlot.LEGS ? LayerType.HUMANOID_LEGGINGS : LayerType.HUMANOID,
-			equippable.assetId().orElseThrow(), model, palette, snapshot, stack, collector, light, outline);
+			equippable.assetId().orElseThrow(), model, palette, snapshot, stack, buffer, light, outline);
 	}
 
 	/** Immutable model-space matrices in pixels; deferred A/B/A passes never read the live skin rig. */

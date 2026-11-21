@@ -6,14 +6,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.RandomSource;
 
 /** Twelve authored materials: flame curls, angular ice, forked sparks, wind ribbons, tumbling
  * stone, fluttering petals, contracting voids, rune fragments, clock gears, drops and vapour. */
-public final class MaterialParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public final class MaterialParticle extends McQuadParticle implements SigilGroup.Extent {
 	/** Its two animation frames, looked up once instead of by name every tick. */
 	private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
 	private final int style;
@@ -53,7 +53,7 @@ public final class MaterialParticle extends SingleQuadParticle implements SigilG
 		setSprite(frames[age/4%2]);
 	}
 	@Override public void extract(QuadParticleRenderState state, Camera camera, float partial) {
-		if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))super.extract(state,camera,partial);
+		if(!outcomeOwner||LifeOwnerClearance.visible(outcomeSource,level,camera,partial,xo,yo,zo,x,y,z))extractDefault(state,camera,partial);
 	}
 	@Override protected Layer getLayer() { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? Layer.TRANSLUCENT : GlowLayers.GLOW; }
 	@Override public int getLightColor(float partial) { return style==MaterialOption.STONE || style==MaterialOption.VAPOUR ? super.getLightColor(partial) : LightTexture.FULL_BRIGHT; }
@@ -63,6 +63,6 @@ public final class MaterialParticle extends SingleQuadParticle implements SigilG
 	@Override public double centreZ(){return z;}
 	@Override public double reach(){return size*2;}
 	public static final class Provider implements ParticleProvider<MaterialOption> {
-		@Override public Particle createParticle(MaterialOption o, ClientLevel level,double x,double y,double z,double vx,double vy,double vz,RandomSource random){return new MaterialParticle(level,x,y,z,o,vx,vy,vz);}
+		@Override public Particle createParticle(MaterialOption o, ClientLevel level, double x, double y, double z, double vx, double vy, double vz){return new MaterialParticle(level,x,y,z,o,vx,vy,vz);}
 	}
 }

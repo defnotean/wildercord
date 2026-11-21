@@ -121,7 +121,7 @@ final class StormFlights {
                 p.arc(0xE1C8F7, -.06, -.14, -.09, .04, .13, .1);
                 p.dot(MaterialOption.STORM, 0xCA9AF4, .04, .13, .1, .045);
             }
-            case "stormweave" -> { // Four marked nodes tighten a charged crossing stitch.
+            case "stormweave" -> { // Four marked buffer tighten a charged crossing stitch.
                 for (int i = 0; i < 4; i++) {
                     double a = Math.PI / 4 + i * Math.PI / 2 + .16 * Math.sin(t + i), r = .17 + .025 * Math.sin(t + i * Math.PI);
                     p.dot(MaterialOption.ARCANE, 0xD5A2D4, Math.cos(a) * r, Math.sin(a) * r, -.04, .045);

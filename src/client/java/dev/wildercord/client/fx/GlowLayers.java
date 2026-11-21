@@ -1,7 +1,7 @@
 package dev.wildercord.client.fx;
 
+import dev.wildercord.client.compat.McQuadParticle;
 import dev.wildercord.client.compat.RenderCompat;
-import net.minecraft.client.particle.SingleQuadParticle;
 
 /**
  * How magic is blended into the world. {@link #GLOW}: light that adds to what's behind it
@@ -13,13 +13,13 @@ public final class GlowLayers {
 	private GlowLayers() {}
 
 	/** Added light: source × alpha + destination. */
-	public static final SingleQuadParticle.Layer GLOW = RenderCompat.glowParticleLayer();
+	public static final McQuadParticle.Layer GLOW = RenderCompat.glowParticleLayer();
 	/**
 	 * Darkness is drawn with the solid particles: Improved Transparency can only add light, never take
 	 * it away, so a translucent darkness layer would have no pipeline there. It writes no depth, so it
 	 * still never hides what's behind it.
 	 */
-	public static final SingleQuadParticle.Layer DARK = RenderCompat.darkParticleLayer();
+	public static final McQuadParticle.Layer DARK = RenderCompat.darkParticleLayer();
 
 	/** The colour flag (see {@code Light.DARK}) that marks a light as darkness. */
 	public static final int DARK_FLAG = 0x01000000;

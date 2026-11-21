@@ -6,6 +6,7 @@ import dev.wildercord.aura.ArticulatedArmorMesh.Region;
 import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.ArticulatedCombatPose.Joint;
 import dev.wildercord.aura.ArticulatedCombatPose.Vec3;
+import dev.wildercord.client.compat.McModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
@@ -32,7 +33,7 @@ import java.util.function.Function;
  * All material passes render this same welded, open-at-internal-cuts mesh and immutable palette.
  * This class owns no texture, GPU resource, skin/sleeve visibility, or entity render state.
  */
-public final class ArticulatedArmorGeometry extends Model<ArticulatedArmorGeometry.Palette> {
+public final class ArticulatedArmorGeometry extends McModel<ArticulatedArmorGeometry.Palette> {
 	/** Immutable final joint-world snapshot. A deferred draw never reads a live player or rig. */
 	public static final class Palette {
 		// Bind transforms are pose-, player- and reload-independent. Only read these matrices;

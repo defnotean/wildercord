@@ -8,7 +8,7 @@ import java.util.Set;
 /** The resolved asset can add geometry-bearing vanilla layers without changing the item or slot bake. */
 public final class ArticulatedArmorAssets {
 	private ArticulatedArmorAssets() {}
-	// Stock netherite also defines non-player equipment. These are never submitted by AvatarRenderer.
+	// Stock netherite also defines non-player equipment. These are never submitted by PlayerRenderer.
 	// 1.21.11 has no HUMANOID_BABY layer; the set must not repeat HUMANOID.
 	private static final Set<LayerType> STOCK_LAYERS = Set.of(LayerType.HUMANOID, LayerType.HUMANOID_LEGGINGS,
 		LayerType.HORSE_BODY);

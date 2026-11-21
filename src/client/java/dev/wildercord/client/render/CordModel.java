@@ -1,5 +1,6 @@
 package dev.wildercord.client.render;
 
+import dev.wildercord.client.compat.McModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -14,7 +15,7 @@ import net.minecraft.util.Unit;
  * The worn Cord, in the right arm's space: a band of cord wound twice round the wrist ({@link #band})
  * or one glowing bead ({@link #bead}, drawn once per rune at a spot along the band).
  */
-public final class CordModel extends Model<Unit> {
+public final class CordModel extends McModel<Unit> {
 	private CordModel(ModelPart root) {
 		super(root, RenderType::entityCutout);
 	}

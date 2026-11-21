@@ -3,8 +3,8 @@ package dev.wildercord.client.fx;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -25,7 +25,7 @@ import org.joml.Vector3f;
  * All of them fade in and out and are drawn at full brightness with the other lights (see
  * {@link SigilGroup}).
  */
-public class Glimmer extends SingleQuadParticle implements SigilGroup.Extent {
+public class Glimmer extends McQuadParticle implements SigilGroup.Extent {
 	private static final int MOTE = 0;
 	private static final int SHAFT = 1;
 	private static final int FLICKER = 2;

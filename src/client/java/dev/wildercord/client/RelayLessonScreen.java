@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
+import dev.wildercord.client.compat.McInput.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -188,6 +188,10 @@ public final class RelayLessonScreen extends Screen implements CordEditorParent 
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
+	}
+
 	public boolean keyPressed(KeyEvent event) {
 		if (event.key() == InputConstants.KEY_HOME || event.key() == InputConstants.KEY_END) {
 			scroll = event.key() == InputConstants.KEY_HOME ? 0 : Integer.MAX_VALUE;
@@ -201,7 +205,7 @@ public final class RelayLessonScreen extends Screen implements CordEditorParent 
 			scroll = Math.max(0, scroll - (event.key() == InputConstants.KEY_PAGEUP ? 8 : 1));
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(event.key(), event.scancode(), event.modifiers());
 	}
 
 	@Override

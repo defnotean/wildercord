@@ -11,12 +11,13 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import dev.wildercord.client.compat.RenderCompat;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -44,7 +45,8 @@ public class BogBubbleRenderer extends EntityRenderer<BogBubble, BogBubbleRender
 	}
 
 	@Override
-	public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+	public void render(State state, PoseStack poseStack, MultiBufferSource buffer, int light) {
+		CameraRenderState camera = RenderCompat.cameraState();
 		poseStack.pushPose();
 		float t = state.ageInTicks;
 		float size = state.engorged ? 1.5F : 1.0F;
@@ -55,10 +57,10 @@ public class BogBubbleRenderer extends EntityRenderer<BogBubble, BogBubbleRender
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.YP, t * 9.0F);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.XP, t * 5.0F);
 		poseStack.translate(0.0F, -1.5F, 0.0F);
-		dev.wildercord.client.compat.RenderCompat.submitModel(collector, model, state, poseStack, RenderType.entityTranslucent(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
-		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), model, state, poseStack, RenderType.eyes(GLOW), state.lightCoords, OverlayTexture.NO_OVERLAY, 0xE0FFFFFF, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, state, poseStack, RenderType.entityTranslucent(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, state, poseStack, RenderType.eyes(GLOW), state.lightCoords, OverlayTexture.NO_OVERLAY, 0xE0FFFFFF, state.outlineColor);
 		poseStack.popPose();
-		super.submit(state, poseStack, collector, camera);
+		super.render(state, poseStack, buffer, light);
 	}
 
 	@Override

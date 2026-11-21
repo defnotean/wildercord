@@ -7,7 +7,6 @@ import dev.wildercord.client.fx.ArchiveAmbience;
 import dev.wildercord.client.fx.ChargeCircles;
 import dev.wildercord.client.fx.LeyMotes;
 import dev.wildercord.client.fx.RuneAura;
-import dev.wildercord.client.fx.SigilGroup;
 import dev.wildercord.client.fx.SigilParticle;
 import dev.wildercord.client.fx.WellstoneHalo;
 import dev.wildercord.client.render.ArchivistModel;
@@ -20,7 +19,6 @@ import dev.wildercord.net.WildercordNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -60,7 +58,7 @@ public final class WildercordClient implements ClientModInitializer {
 		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SHELL, dev.wildercord.client.render.AuraShellLayer::createShell);
 		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SLIM_SHELL, dev.wildercord.client.render.AuraShellLayer::createSlimShell);
 		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
-			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
+			if (renderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer avatar) {
 				helper.register(new dev.wildercord.client.render.CordLayer(avatar, context));
 				helper.register(new dev.wildercord.client.render.GearLayer(avatar, context));
 				helper.register(new dev.wildercord.client.render.AuraShellLayer(avatar, context));
@@ -86,7 +84,6 @@ public final class WildercordClient implements ClientModInitializer {
 		// Magic drawn the plain way under a shader pack (Iris), so the pack's lighting doesn't break on it.
 		dev.wildercord.client.compat.ShaderCompat.init();
 
-		ParticleRendererRegistry.register(SigilGroup.TYPE, SigilGroup::new);
 		ParticleFactoryRegistry.getInstance().register(WildercordParticles.SIGIL, SigilParticle.Provider::new);
 		ParticleFactoryRegistry.getInstance().register(WildercordParticles.SPELL_CIRCLE, new dev.wildercord.client.fx.SpellCircleParticle.Provider());
 		ParticleFactoryRegistry.getInstance().register(WildercordParticles.LIGHT, new dev.wildercord.client.fx.LightParticle.Provider());

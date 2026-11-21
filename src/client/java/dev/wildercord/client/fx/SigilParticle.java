@@ -7,8 +7,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
 import net.minecraft.client.renderer.LightTexture;
@@ -29,7 +29,7 @@ import org.joml.Vector3f;
  * themselves in as they open, the outer rings sweeping round first. Only a small one (under
  * {@link #DRAWN_MIN} blocks) is still a single textured quad. A glow is always one.
  */
-public class SigilParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public class SigilParticle extends McQuadParticle implements SigilGroup.Extent {
 	/** Sprites in {@link SigilOption} style order, set when the provider is created. */
 	static FabricSpriteProvider sprites;
 
@@ -181,7 +181,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 			return;
 		}
 		if (glow) {
-			super.extract(state, camera, partial);
+			extractDefault(state, camera, partial);
 			float r = rCol;
 			float g = gCol;
 			float b = bCol;
@@ -189,7 +189,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 			gCol = 1 - (1 - g) * 0.2F;
 			bCol = 1 - (1 - b) * 0.2F;
 			core = true;
-			super.extract(state, camera, partial);
+			extractDefault(state, camera, partial);
 			core = false;
 			rCol = r;
 			gCol = g;
@@ -661,8 +661,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 		}
 
 		@Override
-		public Particle createParticle(SigilOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za,
-				RandomSource random) {
+		public Particle createParticle(SigilOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za) {
 			return new SigilParticle(level, x, y, z, option);
 		}
 	}

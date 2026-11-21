@@ -5,8 +5,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -89,7 +89,7 @@ public final class BoltComets {
 	}
 
 	/** One bolt's comet. */
-	private static final class Comet extends SingleQuadParticle implements SigilGroup.Extent {
+	private static final class Comet extends McQuadParticle implements SigilGroup.Extent {
 		/** How many past positions the trail remembers (one per tick). */
 		private static final int TRAIL = 7;
 

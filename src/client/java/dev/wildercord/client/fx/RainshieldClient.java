@@ -33,7 +33,7 @@ public final class RainshieldClient {
   for(int i=0;i<ribs;i++)mc.particleEngine.add(new Piece(mc.level,e,"rainshield_rib",i,ribs,e.beat()==1?40:4));
   if(e.beat()==1)for(int i=0;i<(minimal?1:3);i++)mc.particleEngine.add(new Piece(mc.level,e,"rainshield_cloth",i,minimal?1:3,40));
  }
- private static final class Piece extends SingleQuadParticle implements SigilGroup.Extent {
+ private static final class Piece extends McQuadParticle implements SigilGroup.Extent {
   private final RainshieldFx.Event e;private final int index,count;private final String material;private final float size;
   Piece(ClientLevel world,RainshieldFx.Event e,String material,int index,int count,int life){super(world,0,0,0,SpellCircleParticle.particleSprite(material));this.e=e;this.index=index;this.count=count;this.material=material;lifetime=life;hasPhysics=false;size=material.equals("rainshield_splinter")?.16F:.26F;quadSize=size;place();xo=x;yo=y;zo=z;}
   private boolean valid(){var mc=Minecraft.getInstance();if(mc.level!=level||!e.world().equals(level.dimension().location().toString())||!(level.getEntity(e.carrierId()) instanceof Player p)||!p.getUUID().equals(e.carrier())||!(level.getEntity(e.recipientId()) instanceof Player r)||!r.getUUID().equals(e.recipient())||!p.isAlive()||!r.isAlive()||p.distanceToSqr(r)>9)return false;return e.beat()==2||current==e&&p.isUsingItem()&&p.getUseItem().is(RooksRainshield.ITEM)&&(p==r||r.isShiftKeyDown());}

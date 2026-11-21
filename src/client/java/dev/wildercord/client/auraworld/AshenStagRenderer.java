@@ -5,12 +5,11 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AshenStagRules;
 import dev.wildercord.aura.world.AshenStag;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -52,13 +51,13 @@ public final class AshenStagRenderer extends MobRenderer<AshenStag,AshenStagRend
 	private static final class Eyes extends RenderLayer<AshenStagRenderState,AshenStagModel> {
 		private final RenderType type=RenderType.eyes(GLOW);
 		Eyes(RenderLayerParent<AshenStagRenderState,AshenStagModel> parent){super(parent);}
-		@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,AshenStagRenderState s,float yRot,float xRot){
+		@Override public void render(PoseStack pose, MultiBufferSource buffer, int light,AshenStagRenderState s,float yRot,float xRot){
 			if(s.isInvisible)return;
 			float alpha=s.kindled?.85F+.15F*Mth.sin(s.ageInTicks*.3F):.3F+.1F*Mth.sin(s.ageInTicks*.08F)+.6F*s.rise;
 			if(s.move==AshenStagRules.STALK)alpha*=.3F;
 			if(s.deathTime>0)alpha*=Math.max(0,1-s.deathTime/20F);
 			int a=Mth.clamp((int)(alpha*255),0,255);if(a<4)return;
-			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, s.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), s, pose, type, light, OverlayTexture.NO_OVERLAY, (a<<24)|0xFFFFFF, s.outlineColor);
 		}
 	}
 }

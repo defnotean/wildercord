@@ -13,14 +13,14 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import dev.wildercord.client.compat.RenderCompat;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -95,7 +95,7 @@ public final class BondGlow {
 	// ------------------------------------------------------------------ whose and how
 
 	/** Carries {@code avatar}'s part in its blade's glow into its render state. */
-	public static void extract(Avatar avatar, EntityRenderState state) {
+	public static void extract(LivingEntity avatar, EntityRenderState state) {
 		if (!(avatar instanceof Player player)) {
 			state.setData(HOLDER, null);
 			return;
@@ -178,25 +178,25 @@ public final class BondGlow {
 	}
 
 	/** Draws {@code look} round the blade's outline {@code s} (the item model's own space), {@code fp} through its swordsman's own eyes. */
-	static void draw(PoseStack pose, SubmitNodeCollector collector, AuraBlade.Shape s, Look look, float time, boolean fp) {
+	static void draw(PoseStack pose, MultiBufferSource buffer, AuraBlade.Shape s, Look look, float time, boolean fp) {
 		if (ShaderCompat.shadowPass()) {
 			return;
 		}
 		Look l = look;
-		collector.order(4).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> veinGlow(p, buffer, s, l, time, fp));
-		collector.order(4).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> vein(p, buffer, s, l, time, fp));
+		RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, buffer) -> veinGlow(p, buffer, s, l, time, fp));
+		RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> vein(p, buffer, s, l, time, fp));
 		if (l.tier() >= BladeRules.NAMED && !l.cold()) {
-			collector.order(5).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> marks(p, buffer, s, l, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> marks(p, buffer, s, l, time, fp));
 		}
 		if (l.tier() >= BladeRules.AWAKENED && !l.cold() && s.flat()) {
-			collector.order(5).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> tongues(p, buffer, s, l, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> tongues(p, buffer, s, l, time, fp));
 		}
 		if (l.tier() >= BladeRules.SOULFORGED && !l.cold()) {
-			collector.order(4).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> corona(p, buffer, s, l, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, buffer) -> corona(p, buffer, s, l, time, fp));
 			if (s.flat()) {
-				collector.order(6).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> rim(p, buffer, s, l, time, fp));
+				RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> rim(p, buffer, s, l, time, fp));
 			}
-			collector.order(6).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> halo(p, buffer, s, l, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> halo(p, buffer, s, l, time, fp));
 		}
 	}
 
@@ -430,27 +430,27 @@ public final class BondGlow {
 	 * Under a bonded blade lying on the ground (the item entity's own space, its feet at the origin): a pool of its light, wider by tier;
 	 * from a Soulforged one, a thin column of light rising, so it can be found from afar.
 	 */
-	public static void groundExtras(PoseStack pose, SubmitNodeCollector collector, Look look, float time, Quaternionf facing, boolean day) {
+	public static void groundExtras(PoseStack pose, MultiBufferSource buffer, Look look, float time, Quaternionf facing, boolean day) {
 		if (look == null || ShaderCompat.shadowPass()) {
 			return;
 		}
 		if (day) {
 			// By day added light alone washes out on bright ground: a soft shade of its colour lies under the pool, so the light reads.
-			collector.order(0).submitCustomGeometry(pose, SHADE_TYPE, (p, buffer) -> shade(p, buffer, look));
+			RenderCompat.submitCustomGeometry(buffer, pose, SHADE_TYPE, (p, buffer) -> shade(p, buffer, look));
 		}
 		// Under a shader pack the ground's lights are drawn as emissive translucency (a pack lights glowing eyes as it pleases, and a
 		// tall column drawn that way came out dark at night).
 		boolean pack = ShaderCompat.active();
 		RenderType soft = pack ? SOFT_PACK_TYPE : SOFT_TYPE;
-		collector.order(1).submitCustomGeometry(pose, soft, (p, buffer) -> pool(p, buffer, look, time));
+		RenderCompat.submitCustomGeometry(buffer, pose, soft, (p, buffer) -> pool(p, buffer, look, time));
 		// A soft glow round it, turned to whoever looks, so a blade lying in the grass is seen from a way off.
 		pose.pushPose();
 		pose.translate(0, 0.3F, 0);
 		dev.wildercord.client.compat.RenderCompat.rotate(pose, facing);
-		collector.order(1).submitCustomGeometry(pose, soft, (p, buffer) -> aura(p, buffer, look, time));
+		RenderCompat.submitCustomGeometry(buffer, pose, soft, (p, buffer) -> aura(p, buffer, look, time));
 		pose.popPose();
 		if (look.tier() >= BladeRules.SOULFORGED) {
-			collector.order(1).submitCustomGeometry(pose, pack ? HAZE_PACK_TYPE : HAZE_TYPE, (p, buffer) -> column(p, buffer, look, time));
+			RenderCompat.submitCustomGeometry(buffer, pose, pack ? HAZE_PACK_TYPE : HAZE_TYPE, (p, buffer) -> column(p, buffer, look, time));
 		}
 	}
 

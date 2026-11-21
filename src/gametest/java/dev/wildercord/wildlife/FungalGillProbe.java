@@ -67,8 +67,8 @@ public final class FungalGillProbe {
    probe.snapshot("before-harvest",false);
   });
  }
- static void collectorStarted(){var probe=active;if(probe!=null)probe.observe(()->{probe.collectorStarted=probe.level.getGameTime();probe.snapshot("collector-start",false);});}
- static void terminal(){var probe=active;if(probe!=null)probe.observe(()->{probe.terminal=true;probe.snapshot("collector-final",true);});}
+ static void collectorStarted(){var probe=active;if(probe!=null)probe.observe(()->{probe.collectorStarted=probe.level.getGameTime();probe.snapshot("buffer-start",false);});}
+ static void terminal(){var probe=active;if(probe!=null)probe.observe(()->{probe.terminal=true;probe.snapshot("buffer-final",true);});}
  static void finish(){
   var probe=active;
   try{if(probe!=null&&!probe.terminal)probe.observe(()->probe.snapshot("aborted",true));}

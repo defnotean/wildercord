@@ -6,11 +6,11 @@ import dev.wildercord.client.CastingPose;
 import dev.wildercord.player.WildercordAttachments;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +24,7 @@ import net.minecraft.util.Unit;
  * after the Cord is put on, burn brighter while the player charges, and flare after a cast; the rest
  * of the time they show their material without glowing.
  */
-public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
+public class CordLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 	public static final ModelLayerLocation BAND = new ModelLayerLocation(Wildercord.id("cord"), "band");
 	public static final ModelLayerLocation SLIM_BAND = new ModelLayerLocation(Wildercord.id("cord"), "slim_band");
 	public static final ModelLayerLocation BEAD = new ModelLayerLocation(Wildercord.id("cord"), "bead");
@@ -46,7 +46,7 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	private final CordModel slimBand;
 	private final CordModel bead;
 
-	public CordLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
+	public CordLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
 		super(parent);
 		this.band = CordModel.band(context.bakeLayer(BAND));
 		this.slimBand = CordModel.band(context.bakeLayer(SLIM_BAND));
@@ -54,7 +54,7 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	}
 
 	@Override
-	public void submit(PoseStack pose, SubmitNodeCollector nodes, int light, AvatarRenderState state, float yRot, float xRot) {
+	public void render(PoseStack pose, MultiBufferSource buffer, int light, PlayerRenderState state, float yRot, float xRot) {
 		WildercordAttachments.CordLook cord = ((CastingPose) state).wildercord$cord();
 		if (cord.tier().isEmpty() || state.isInvisible) {
 			return;
@@ -63,11 +63,11 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		if (!dev.wildercord.client.combat.ArticulatedCombat.legacyArm(getParentModel(), state, net.minecraft.world.entity.HumanoidArm.RIGHT, pose))
 			getParentModel().rightArm.translateAndRotate(pose);
 		ResourceLocation texture = TIER_TEXTURES.computeIfAbsent(cord.tier(), tier -> Wildercord.id("textures/entity/cord/" + tier + ".png"));
-		boolean slim = state.skin != null && state.skin.model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
+		boolean slim = state.skin != null && state.skin.model() == net.minecraft.client.resources.PlayerSkin.Model.SLIM;
 		float[][] spots = slim ? SLIM_SPOTS : SPOTS;
 		// The colour goes in as the tint; the outline is the player's own (none unless they're Glowing), so the Cord
 		// never carries a glowing outline of its own.
-		dev.wildercord.client.compat.RenderCompat.submitModel(nodes, slim ? slimBand : band, Unit.INSTANCE, pose, RenderType.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, slim ? slimBand : band, Unit.INSTANCE, pose, RenderType.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
 		float glow = ((CastingPose) state).wildercord$glow();
 		// The player's chosen style (see CordStyleLook): the beads' material, and a fixed glow colour or the runes' own.
 		dev.wildercord.cosmetic.CordStyles.Style style = dev.wildercord.client.cosmetic.CordStyleLook.of(state);
@@ -84,10 +84,10 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.translate(spot[0] / 16F, spot[1] / 16F, spot[2] / 16F);
 			int rgb = dev.wildercord.client.cosmetic.CordStyleLook.glowColor(style, cord.beads().get(i)) & 0xFFFFFF;
 			int color = (alpha << 24) | rgb;
-			dev.wildercord.client.compat.RenderCompat.submitModel(nodes, bead, Unit.INSTANCE, pose, RenderType.entityCutout(beadTexture), light, OverlayTexture.NO_OVERLAY, tinted ? 0xFF000000 | rgb : -1, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, bead, Unit.INSTANCE, pose, RenderType.entityCutout(beadTexture), light, OverlayTexture.NO_OVERLAY, tinted ? 0xFF000000 | rgb : -1, state.outlineColor);
 			// The glow is light, not a thing: a shader pack's shadows leave it out.
 			if (alpha > 0 && !dev.wildercord.client.compat.ShaderCompat.shadowPass()) {
-				dev.wildercord.client.compat.RenderCompat.submitModel(nodes, bead, Unit.INSTANCE, pose, RenderType.eyes(glowTexture), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color, 0);
+				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, bead, Unit.INSTANCE, pose, RenderType.eyes(glowTexture), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color, 0);
 			}
 			pose.popPose();
 		}

@@ -4,8 +4,8 @@ import dev.wildercord.client.fx.LightParticle;
 import dev.wildercord.gametest.MastersNpcCaptureProbe;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Final;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LightParticle.class)
-public abstract class MastersNpcWarningProbeMixin extends SingleQuadParticle {
+public abstract class MastersNpcWarningProbeMixin extends McQuadParticle {
 	@Shadow @Final private int kind;
 	@Shadow @Final private int color;
 	@Shadow @Final private float a;

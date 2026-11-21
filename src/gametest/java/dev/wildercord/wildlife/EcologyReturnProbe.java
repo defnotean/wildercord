@@ -85,8 +85,8 @@ public final class EcologyReturnProbe {
   return "now="+mob.level().getGameTime()+" tick="+mob.tickCount+" actor="+mob.getUUID()+" body="+mob.position()+" box="+mob.getBoundingBox()+" delta="+mob.getDeltaMovement()+" ground="+mob.onGround()+" water="+mob.isInWater()+" horizontalCollision="+mob.horizontalCollision+" verticalCollision="+mob.verticalCollision+" bodyCollision="+!mob.level().noCollision(mob,mob.getBoundingBox())+" touchCollision="+!mob.level().noCollision(mob,mob.getBoundingBox().inflate(.001))+extra+" navigationDone="+mob.getNavigation().isDone()+" nativePath="+path(mob.getNavigation().getPath())+" moveControl={type="+move.getClass().getSimpleName()+",operation="+read(move,"operation")+",wanted="+move.hasWanted()+",x="+move.getWantedX()+",y="+move.getWantedY()+",z="+move.getWantedZ()+",speed="+move.getSpeedModifier()+"}";
  }
  static String path(Path path){
-  if(path==null)return "none";var nodes=new ArrayList<String>();for(int i=0;i<Math.min(path.getNodeCount(),NODE_LIMIT);i++){var n=path.getNode(i);nodes.add(i+":"+n.x+","+n.y+","+n.z+":"+n.type+":malus="+n.costMalus);}
-  return "{identity="+System.identityHashCode(path)+",canReach="+path.canReach()+",done="+path.isDone()+",index="+path.getNextNodeIndex()+",count="+path.getNodeCount()+",target="+path.getTarget()+",nodes="+nodes+",omittedNodes="+Math.max(0,path.getNodeCount()-NODE_LIMIT)+"}";
+  if(path==null)return "none";var nodes=new ArrayList<String>();for(int i=0;i<Math.min(path.getNodeCount(),NODE_LIMIT);i++){var n=path.getNode(i);buffer.add(i+":"+n.x+","+n.y+","+n.z+":"+n.type+":malus="+n.costMalus);}
+  return "{identity="+System.identityHashCode(path)+",canReach="+path.canReach()+",done="+path.isDone()+",index="+path.getNextNodeIndex()+",count="+path.getNodeCount()+",target="+path.getTarget()+",nodes="+buffer+",omittedNodes="+Math.max(0,path.getNodeCount()-NODE_LIMIT)+"}";
  }
  private static String routeKey(Path path){return path==null?"none":System.identityHashCode(path)+":"+path.getNextNodeIndex()+":"+path.isDone();}
  private static Object read(Object object,String name){

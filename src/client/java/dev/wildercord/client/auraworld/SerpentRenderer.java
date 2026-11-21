@@ -7,10 +7,11 @@ import dev.wildercord.aura.world.SerpentSpine;
 import dev.wildercord.client.compat.CullableEntityRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import dev.wildercord.client.compat.RenderCompat;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -194,16 +195,17 @@ public final class SerpentRenderer extends CullableEntityRenderer<RootcoilSerpen
 		return Double.NaN;
 	}
 
-	@Override public void submit(SerpentRenderState state,PoseStack poseStack,SubmitNodeCollector collector,CameraRenderState camera){
-		super.submit(state,poseStack,collector,camera);
+	@Override public void render(SerpentRenderState state, PoseStack poseStack, MultiBufferSource buffer, int light) {
+		CameraRenderState camera = RenderCompat.cameraState();
+		super.submit(state,poseStack,buffer,camera);
 		if(state.isInvisible || state.joints.length<6)return;
 		int overlay=OverlayTexture.pack(OverlayTexture.u(0),OverlayTexture.v(state.hurt));
 		SerpentHead head=new SerpentHead(state);
-		collector.order(0).submitCustomGeometry(poseStack,RenderType.entityCutout(SKIN),(pose,buffer)->{
+		RenderCompat.submitCustomGeometry(buffer, poseStack,RenderType.entityCutout(SKIN),(pose,buffer)->{
 			body(state,pose,buffer,overlay);
 			head.skin(pose,buffer,overlay,state.lights[0]);
 		});
-		collector.order(1).submitCustomGeometry(poseStack,RenderType.eyes(GLOW),(pose,buffer)->head.eyes(pose,buffer,overlay));
+		RenderCompat.submitCustomGeometry(buffer, poseStack,RenderType.eyes(GLOW),(pose,buffer)->head.eyes(pose,buffer,overlay));
 	}
 
 	/** The tube: a flattened ring round each joint, joined to the next. Columns of the band run round the ring, dorsal at a quarter. */

@@ -39,8 +39,8 @@ public final class EcologyReturnProbeChecks {
   var marker=new IllegalStateException("native move failed");
   try{EcologyReturnProbe.move(goal,null,null,.7,args->{calls[0]++;throw marker;});throw new AssertionError("exception swallowed");}catch(IllegalStateException failure){check(failure==marker,"native exception identity retained");}
   check(calls[0]==3,"each original invoked exactly once");
-  var nodes=new ArrayList<>(List.of(new Node(1,101,3),new Node(2,102,3),new Node(3,101,3)));var target=new BlockPos(3,101,3);var path=new Path(nodes,target,true);path.setNextNodeIndex(1);
-  var before=new ArrayList<>(nodes);var text=EcologyReturnProbe.path(path);
+  var nodes=new ArrayList<>(List.of(new Node(1,101,3),new Node(2,102,3),new Node(3,101,3)));var target=new BlockPos(3,101,3);var path=new Path(buffer,target,true);path.setNextNodeIndex(1);
+  var before=new ArrayList<>(buffer);var text=EcologyReturnProbe.path(path);
   check(path.getNextNodeIndex()==1&&path.getNodeCount()==3&&path.getTarget()==target&&path.canReach(),"path read preserves native state");
   for(int i=0;i<3;i++)check(path.getNode(i)==before.get(i),"existing node identity preserved");
   check(text.contains("2,102,3")&&text.contains("index=1")&&text.contains("canReach=true"),"actual route height and progress recorded");

@@ -4,7 +4,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.RandomSource;
 /** Physical paper hinges and copper; mana fibres tighten rather than billow as recolored light. */
-public final class CampParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public final class CampParticle extends McQuadParticle implements SigilGroup.Extent {
  /** Its two animation frames, looked up once instead of by name every tick. */
  private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
  private final CampOption material;
@@ -25,5 +25,5 @@ public final class CampParticle extends SingleQuadParticle implements SigilGroup
  @Override protected Layer getLayer(){return Layer.TRANSLUCENT;}
  @Override public ParticleRenderType getGroup(){return SigilGroup.TYPE;}
  @Override public double centreX(){return x;}@Override public double centreY(){return y;}@Override public double centreZ(){return z;}@Override public double reach(){return material.size()*1.8;}
- public static final class Provider implements ParticleProvider<CampOption>{@Override public Particle createParticle(CampOption o,ClientLevel l,double x,double y,double z,double vx,double vy,double vz,RandomSource r){return new CampParticle(l,x,y,z,o);}}
+ public static final class Provider implements ParticleProvider<CampOption>{@Override public Particle createParticle(CampOption o, ClientLevel l, double x, double y, double z, double vx, double vy, double vz){return new CampParticle(l,x,y,z,o);}}
 }

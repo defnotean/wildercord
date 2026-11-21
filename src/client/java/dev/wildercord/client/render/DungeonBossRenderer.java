@@ -3,12 +3,11 @@ package dev.wildercord.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.cast.DungeonBoss;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -92,7 +91,7 @@ public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends Entit
 		}
 
 		@Override
-		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, DungeonBossRenderState state, float yRot, float xRot) {
+		public void render(PoseStack poseStack, MultiBufferSource buffer, int light, DungeonBossRenderState state, float yRot, float xRot) {
 			if (state.isInvisible) {
 				return;
 			}
@@ -100,7 +99,7 @@ public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends Entit
 			if ((argb >>> 24) < 4) {
 				return;
 			}
-			dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, state.outlineColor);
 		}
 	}
 }

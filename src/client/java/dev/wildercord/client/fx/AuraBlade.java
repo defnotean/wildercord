@@ -9,9 +9,9 @@ import dev.wildercord.aura.AuraRules;
 import dev.wildercord.client.compat.ShaderCompat;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import dev.wildercord.client.compat.RenderCompat;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -95,7 +95,7 @@ public final class AuraBlade {
 	}
 
 	/** Carries a player's blade glow into their render state as it's extracted (and their part in a bonded blade's, {@link BondGlow}). */
-	public static void extract(net.minecraft.world.entity.Avatar avatar, EntityRenderState state) {
+	public static void extract(net.minecraft.world.entity.LivingEntity avatar, EntityRenderState state) {
 		state.setData(GLOW, avatar instanceof Player player ? of(player) : null);
 		BondGlow.extract(avatar, state);
 	}
@@ -136,7 +136,7 @@ public final class AuraBlade {
 	 * One layer of the item's model has been submitted, with the pose still on it (in the model's own space: a flat item
 	 * fills x and y from 0 to 1 at z 0.5). The aura is drawn once, round the first layer.
 	 */
-	public static void layer(PoseStack pose, SubmitNodeCollector collector, List<BakedQuad> quads, Supplier<Vector3fc[]> extents) {
+	public static void layer(PoseStack pose, MultiBufferSource buffer, List<BakedQuad> quads, Supplier<Vector3fc[]> extents) {
 		Glow glow = current;
 		BondGlow.Look bond = BondGlow.current();
 		if (glow == null && bond == null || drawn || ShaderCompat.shadowPass()) {
@@ -158,19 +158,19 @@ public final class AuraBlade {
 		boolean fp = firstPerson;
 		if (bond != null) {
 			// A bonded blade's own glow, over the aura's (and on its own, in anyone's hands or lying on the ground).
-			BondGlow.draw(pose, collector, s, bond, time, fp);
+			BondGlow.draw(pose, buffer, s, bond, time, fp);
 		}
 		if (glow == null) {
 			return;
 		}
-		collector.order(1).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> soft(p, buffer, s, glow, time, fp));
-		collector.order(1).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> haze(p, buffer, s, glow, time, fp));
+		RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, buffer) -> soft(p, buffer, s, glow, time, fp));
+		RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> haze(p, buffer, s, glow, time, fp));
 		if (glow.stage() >= AuraRules.EDGE) {
-			collector.order(2).submitCustomGeometry(pose, CRYSTAL_TYPE, (p, buffer) -> crystal(p, buffer, s, glow, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, CRYSTAL_TYPE, (p, buffer) -> crystal(p, buffer, s, glow, time, fp));
 		}
 		if (glow.spell() != 0) {
-			collector.order(3).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> spellGlow(p, buffer, s, glow, time, fp));
-			collector.order(3).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> spellBands(p, buffer, s, glow, time));
+			RenderCompat.submitCustomGeometry(buffer, pose, SOFT_TYPE, (p, buffer) -> spellGlow(p, buffer, s, glow, time, fp));
+			RenderCompat.submitCustomGeometry(buffer, pose, HAZE_TYPE, (p, buffer) -> spellBands(p, buffer, s, glow, time));
 		}
 	}
 

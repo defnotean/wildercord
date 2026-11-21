@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.CameraType;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 

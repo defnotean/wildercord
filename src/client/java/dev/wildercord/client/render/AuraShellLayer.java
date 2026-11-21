@@ -17,21 +17,20 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.PlayerModelType;
+import net.minecraft.client.resources.PlayerSkin.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,7 @@ import java.util.List;
  * Both are vanilla's glowing-eyes and emissive translucent types, so a shader pack draws them as it draws its own glowing
  * things, and neither is in a pack's shadows (see {@link ShaderCompat}).
  */
-public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
+public class AuraShellLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 	public static final ModelLayerLocation SHELL = new ModelLayerLocation(Wildercord.id("aura_shell"), "main");
 	public static final ModelLayerLocation SLIM_SHELL = new ModelLayerLocation(Wildercord.id("aura_shell"), "slim");
 	/** The shell's light, laid out on the skin of each model (the slim one's arms are a pixel narrower). */
@@ -67,7 +66,7 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 	private final ShellModel slimShell;
 	private final ArticulatedAuraShellRenderer articulated;
 
-	public AuraShellLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
+	public AuraShellLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
 		super(parent);
 		this.shell = new ShellModel(context.bakeLayer(SHELL), false);
 		this.slimShell = new ShellModel(context.bakeLayer(SLIM_SHELL), true);
@@ -102,7 +101,7 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		}
 
 		@Override
-		public void setupAnim(AvatarRenderState state) {
+		public void setupAnim(PlayerRenderState state) {
 			super.setupAnim(state);
 			hat.visible = false;
 			jacket.visible = false;
@@ -114,14 +113,14 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 	}
 
 	@Override
-	public void submit(PoseStack pose, SubmitNodeCollector nodes, int light, AvatarRenderState state, float yRot, float xRot) {
+	public void render(PoseStack pose, MultiBufferSource buffer, int light, PlayerRenderState state, float yRot, float xRot) {
 		if (state.isInvisible || ShaderCompat.shadowPass()) {
 			return;
 		}
 		Integer glow = state.getData(SHELL_GLOW);
-		if (glow != null && (articulated == null || !articulated.submitWorld(state, pose, nodes))) {
-			boolean slim = state.skin != null && state.skin.model() == PlayerModelType.SLIM;
-			dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(1), slim ? slimShell : shell, state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
+		if (glow != null && (articulated == null || !articulated.submitWorld(state, pose, buffer))) {
+			boolean slim = state.skin != null && state.skin.model() == PlayerSkin.Model.SLIM;
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, slim ? slimShell : shell, state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, 0);
 		}
 		List<Image> images = state.getData(IMAGES);
 		if (images != null && !images.isEmpty() && upright(state)) {
@@ -142,16 +141,16 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 				// The body as it was, ghostly in the aura's colour, and its outline lit as the shell's is.
 				int alpha = image.color() >>> 24;
 				int ghostColor = (Math.round(alpha * 0.55F) << 24) | (image.color() & 0xFFFFFF);
-				dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(2), getParentModel(), state, pose, ghost, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ghostColor, 0);
-				boolean slim = state.skin != null && state.skin.model() == PlayerModelType.SLIM;
-				dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(3), getParentModel(), state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, image.color(), 0);
+				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, ghost, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ghostColor, 0);
+				boolean slim = state.skin != null && state.skin.model() == PlayerSkin.Model.SLIM;
+				dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, image.color(), 0);
 				pose.popPose();
 			}
 		}
 	}
 
 	/** Afterimages are only drawn standing (not swimming, gliding, sleeping or in a spin), where the body's turn is all there is. */
-	private static boolean upright(AvatarRenderState state) {
+	private static boolean upright(PlayerRenderState state) {
 		return !state.isAutoSpinAttack && !state.isFallFlying && !state.hasPose(Pose.SWIMMING) && !state.hasPose(Pose.SLEEPING) && state.deathTime <= 0
 			&& !state.isUpsideDown;
 	}
@@ -159,7 +158,7 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 	// ------------------------------------------------------------------ extraction
 
 	/** Carries a player's shell and afterimages into their render state as it's extracted. */
-	public static void extract(Avatar avatar, AvatarRenderState state, float partial) {
+	public static void extract(LivingEntity avatar, PlayerRenderState state, float partial) {
 		state.setData(SHELL_GLOW, null);
 		state.setData(IMAGES, null);
 		if (!(avatar instanceof Player player) || player.isInvisible() || player.isSpectator()) {

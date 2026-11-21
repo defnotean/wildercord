@@ -1,5 +1,6 @@
 package dev.wildercord.client.render;
 
+import dev.wildercord.client.compat.McModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -18,7 +19,7 @@ import net.minecraft.util.Unit;
  * <p>Every backpack's textures share one 64x32 layout, drawn by {@code tools/backpack_art.py}: keep the two in
  * step. The straps are a model of their own, since they lie on the chest, wherever the front is.</p>
  */
-public final class BackpackModel extends Model<Unit> {
+public final class BackpackModel extends McModel<Unit> {
 	private BackpackModel(ModelPart root) {
 		super(root, RenderType::entityCutout);
 	}

@@ -1,11 +1,11 @@
 package dev.wildercord.client;
 
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 
-/** Exposes the per-frame extracted AvatarRenderState used during ItemInHandRenderer submission. */
+/** Exposes the per-frame extracted PlayerRenderState used during ItemInHandRenderer submission. */
 public interface FirstPersonAvatarState {
-	AvatarRenderState wildercord$handsAvatar(AbstractClientPlayer player, float partial);
+	PlayerRenderState wildercord$handsAvatar(AbstractClientPlayer player, float partial);
 	void wildercord$prepareHandsAvatar(AbstractClientPlayer player, float partial);
 	void wildercord$clearHandsAvatar();
 }

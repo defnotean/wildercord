@@ -8,7 +8,7 @@ import dev.wildercord.wildlife.TanukiContent;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -46,7 +46,7 @@ public final class BlossomTanukiRenderer extends WildlifeRenderer<BlossomTanuki,
 		}
 
 		@Override
-		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, WildlifeRenderState state, float yRot, float xRot) {
+		public void render(PoseStack poseStack, MultiBufferSource buffer, int light, WildlifeRenderState state, float yRot, float xRot) {
 			if (state.hide < 0.05F || state.isInvisible) {
 				return;
 			}
@@ -64,7 +64,8 @@ public final class BlossomTanukiRenderer extends WildlifeRenderer<BlossomTanuki,
 			poseStack.scale(-size, -size, size);
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(poseStack, Axis.ZP, shiver);
 			poseStack.translate(-0.5F, 0, -0.5F);
-			collector.submitBlock(poseStack, state.garden[0], light, LivingEntityRenderer.getOverlayCoords(state, 0), state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitBlock(buffer, poseStack, state.garden[0], light,
+				LivingEntityRenderer.getOverlayCoords(state, 0));
 			poseStack.popPose();
 		}
 	}

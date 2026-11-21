@@ -6,12 +6,12 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.backpack.BackpackTier;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +42,7 @@ import java.util.Map;
  * a chestplate, a cape or elytra (each puts the back and front surface out by a different amount). Nothing
  * is drawn for an invisible or spectating wearer.</p>
  */
-public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
+public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 	public static final ModelLayerLocation BELT = new ModelLayerLocation(Wildercord.id("gear"), "belt");
 	public static final ModelLayerLocation ARMORED_BELT = new ModelLayerLocation(Wildercord.id("gear"), "armored_belt");
 	public static final ModelLayerLocation TIE = new ModelLayerLocation(Wildercord.id("gear"), "tie");
@@ -93,7 +93,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	private final BackpackModel pack;
 	private final BackpackModel strap;
 
-	public GearLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
+	public GearLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
 		super(parent);
 		this.belt = GearModel.of(context.bakeLayer(BELT));
 		this.armoredBelt = GearModel.of(context.bakeLayer(ARMORED_BELT));
@@ -107,7 +107,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	/** How far out the back of the wearer is, in pixels from the body's middle (skin, chestplate, cape, elytra or a backpack), and whether a chestplate is on. */
 	private record Surface(float back, boolean armored) {}
 
-	private static Surface surface(AvatarRenderState state) {
+	private static Surface surface(PlayerRenderState state) {
 		ItemStack chest = state.chestEquipment;
 		boolean wings = chest.has(DataComponents.GLIDER);
 		boolean armored = !wings && !chest.isEmpty() && chest.has(DataComponents.EQUIPPABLE);
@@ -117,7 +117,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	}
 
 	@Override
-	public void submit(PoseStack pose, SubmitNodeCollector nodes, int light, AvatarRenderState state, float yRot, float xRot) {
+	public void render(PoseStack pose, MultiBufferSource buffer, int light, PlayerRenderState state, float yRot, float xRot) {
 		List<GearLook.Piece> pieces = state.getData(GearLook.PIECES);
 		GearLook.Pack pack = state.getData(GearLook.PACK);
 		if ((pieces == null && pack == null) || state.isInvisible || state.isSpectator) {
@@ -129,7 +129,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.pushPose();
 			getParentModel().body.translateAndRotate(pose);
 			// What's strapped on the back from here on goes over the pack.
-			surface = new Surface(backpack(pack, pose, nodes, light, overlay, state, surface), surface.armored());
+			surface = new Surface(backpack(pack, pose, buffer, light, overlay, state, surface), surface.armored());
 			pose.popPose();
 		}
 		if (pieces == null) {
@@ -139,9 +139,9 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.pushPose();
 			getParentModel().body.translateAndRotate(pose);
 			switch (piece.slot().look()) {
-				case BACK -> back(piece, pose, nodes, light, overlay, state, surface);
-				case SHOULDER -> shoulder(piece, pose, nodes, light, overlay, state);
-				case HIP -> hip(piece, pose, nodes, light, overlay, state, surface);
+				case BACK -> back(piece, pose, buffer, light, overlay, state, surface);
+				case SHOULDER -> shoulder(piece, pose, buffer, light, overlay, state);
+				case HIP -> hip(piece, pose, buffer, light, overlay, state, surface);
 			}
 			pose.popPose();
 		}
@@ -151,7 +151,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	 * A backpack on the back, and its straps down the chest. Returns how far out it reaches (its flap and
 	 * pocket's outer faces), for anything strapped over it.
 	 */
-	private float backpack(GearLook.Pack worn, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state, Surface surface) {
+	private float backpack(GearLook.Pack worn, PoseStack pose, MultiBufferSource buffer, int light, int overlay, PlayerRenderState state, Surface surface) {
 		float size = switch (worn.tier()) {
 			case BACKPACK -> 0.8F;
 			case REINFORCED -> 0.9F;
@@ -167,27 +167,27 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.pushPose();
 		pose.translate(0, (PACK_TOP + BackpackModel.LID * size) / 16, (back + 0.05F) / 16);
 		pose.scale(size, size, size);
-		leather(pack, textures, worn.color(), pose, nodes, light, overlay, state);
+		leather(pack, textures, worn.color(), pose, buffer, light, overlay, state);
 		pose.popPose();
 		float front = surface.armored() ? FRONT_ARMORED : SKIN;
 		for (float x : new float[]{-STRAP_X, STRAP_X}) {
 			pose.pushPose();
 			pose.translate(x / 16, 0, -front / 16);
 			pose.scale(0.6F, 1.0F, 0.5F);
-			leather(strap, textures, worn.color(), pose, nodes, light, overlay, state);
+			leather(strap, textures, worn.color(), pose, buffer, light, overlay, state);
 			pose.popPose();
 		}
 		return back + 0.05F + BackpackModel.DEPTH * size;
 	}
 
 	/** A backpack part: its leather (or cloth) in the backpack's colour, then what isn't dyed over it. */
-	private static void leather(BackpackModel model, ResourceLocation[] textures, int color, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state) {
-		dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(0), model, Unit.INSTANCE, pose, RenderType.entityCutout(textures[0]), light, overlay, color, state.outlineColor);
-		dev.wildercord.client.compat.RenderCompat.submitModel(nodes.order(1), model, Unit.INSTANCE, pose, RenderType.entityCutout(textures[1]), light, overlay, -1, state.outlineColor);
+	private static void leather(BackpackModel model, ResourceLocation[] textures, int color, PoseStack pose, MultiBufferSource buffer, int light, int overlay, PlayerRenderState state) {
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, Unit.INSTANCE, pose, RenderType.entityCutout(textures[0]), light, overlay, color, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, model, Unit.INSTANCE, pose, RenderType.entityCutout(textures[1]), light, overlay, -1, state.outlineColor);
 	}
 
 	/** The staff, strapped across the back. In item space: +x to the wearer's right, +y up, +z out of the back, in pixels of 1/16. */
-	private void back(GearLook.Piece piece, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state, Surface surface) {
+	private void back(GearLook.Piece piece, PoseStack pose, MultiBufferSource buffer, int light, int overlay, PlayerRenderState state, Surface surface) {
 		float sin = Mth.sin(STAFF_LEAN * Mth.DEG_TO_RAD);
 		// The middle of the staff: its low end (leaning towards the body) stays just clear of the back.
 		float rise = STAFF_HALF * 0.894F * sin;
@@ -196,7 +196,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.translate(0.4F / 16, -4.5F / 16, z / 16);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.XP, STAFF_LEAN);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, STAFF_TURN);
-		piece.item().submit(pose, nodes, light, overlay, state.outlineColor);
+		piece.item().submit(pose, buffer, light, overlay, state.outlineColor);
 		// Two ties round the shaft, reaching in to the back.
 		for (float along : new float[]{-6.6F, -0.6F}) {
 			float y = along * 0.894F;
@@ -206,13 +206,13 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.translate(along * SIN45 / 16, along * SIN45 / 16, (0.75F - depth / 2) / 16);
 			dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, -45.0F);
 			pose.scale(1.0F, 1.0F, depth);
-			dev.wildercord.client.compat.RenderCompat.submitModel(nodes, tie, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, tie, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
 			pose.popPose();
 		}
 	}
 
 	/** A focus, hovering off the left shoulder. */
-	private void shoulder(GearLook.Piece piece, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state) {
+	private void shoulder(GearLook.Piece piece, PoseStack pose, MultiBufferSource buffer, int light, int overlay, PlayerRenderState state) {
 		float age = state.ageInTicks;
 		float bob = Mth.sin(age * 0.09F) * 1.0F;
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, 180.0F);
@@ -220,7 +220,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.pushPose();
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, age * 2.6F);
 		pose.scale(0.42F, 0.42F, 0.42F);
-		piece.item().submit(pose, nodes, light, overlay, state.outlineColor);
+		piece.item().submit(pose, buffer, light, overlay, state.outlineColor);
 		pose.popPose();
 		// A faint glimmer circling it, neutral in colour like the focus is in element.
 		for (int i = 0; i < 2; i++) {
@@ -230,14 +230,14 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.scale(0.7F, 0.7F, 0.7F);
 			float fade = 0.35F + 0.25F * Mth.sin(age * 0.2F + i * 2.0F);
 			int alpha = Mth.clamp(Math.round(255 * fade), 0, 255);
-			dev.wildercord.client.compat.RenderCompat.submitModel(nodes, mote, Unit.INSTANCE, pose, RenderType.eyes(MOTE_TEXTURE), LightTexture.FULL_BRIGHT, overlay, (alpha << 24) | 0xE4DCFF, state.outlineColor);
+			dev.wildercord.client.compat.RenderCompat.submitModel(buffer, mote, Unit.INSTANCE, pose, RenderType.eyes(MOTE_TEXTURE), LightTexture.FULL_BRIGHT, overlay, (alpha << 24) | 0xE4DCFF, state.outlineColor);
 			pose.popPose();
 		}
 	}
 
 	/** The tome, hung from a strap on a belt at the left hip. In body space: y down, the front at -z, the wearer's left at +x. */
-	private void hip(GearLook.Piece piece, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state, Surface surface) {
-		dev.wildercord.client.compat.RenderCompat.submitModel(nodes, surface.armored() ? armoredBelt : belt, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
+	private void hip(GearLook.Piece piece, PoseStack pose, MultiBufferSource buffer, int light, int overlay, PlayerRenderState state, Surface surface) {
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, surface.armored() ? armoredBelt : belt, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
 		float outer = surface.armored() ? BELT_ARMORED_OUTER : BELT_OUTER;
 		float top = GearModel.BELT_TOP + GearModel.BELT_HEIGHT;
 		// Swings a little with the wearer's stride, from where the strap meets the belt.
@@ -245,13 +245,13 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.pushPose();
 		pose.translate(TOME_X / 16, top / 16, -(outer + 0.5F) / 16);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.XP, swing);
-		dev.wildercord.client.compat.RenderCompat.submitModel(nodes, loop, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, loop, Unit.INSTANCE, pose, RenderType.entityCutout(LEATHER), light, overlay, state.outlineColor);
 		// Below the strap, the book hangs with its cover out (item space, turned to face the front).
 		pose.translate(0, (LOOP_LENGTH + 0.2F + TOME_SIZE * 8) / 16, -0.75F / 16);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.ZP, 180.0F);
 		dev.wildercord.client.compat.RenderCompat.rotateDegrees(pose, Axis.YP, 180.0F);
 		pose.scale(TOME_SIZE, TOME_SIZE, TOME_SIZE);
-		piece.item().submit(pose, nodes, light, overlay, state.outlineColor);
+		piece.item().submit(pose, buffer, light, overlay, state.outlineColor);
 		pose.popPose();
 	}
 }

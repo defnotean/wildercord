@@ -16,7 +16,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,7 +122,7 @@ public final class MastersArtsClient {
 	}
 
 	/** A cosmetic sample for this avatar, never a prediction that a requested attack succeeded. */
-	public static MastersArtAnimation.Pose pose(Avatar avatar, float partial) {
+	public static MastersArtAnimation.Pose pose(LivingEntity avatar, float partial) {
 		MastersArts.Performed move = timeline(avatar);
 		if (move == null) return MastersArtAnimation.NONE;
 		float age = (avatar.level().getGameTime() - move.startTick()) + partial;
@@ -130,7 +130,7 @@ public final class MastersArtsClient {
 	}
 
 	/** The current accepted timeline, for presentation and native verification; absent after recovery. */
-	public static MastersArts.Performed timeline(Avatar avatar) {
+	public static MastersArts.Performed timeline(LivingEntity avatar) {
 		if (avatar == null || avatar.level() != playbackLevel || !avatar.isAlive()) return null;
 		MastersArts.Performed move = PLAYING.get(avatar.getId());
 		if (move == null) return null;

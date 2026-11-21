@@ -3,9 +3,9 @@ package dev.wildercord.client.wildlife;
 import dev.wildercord.Wildercord;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.SingleQuadParticle;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import org.joml.Quaternionf;
 
 /**
@@ -13,7 +13,7 @@ import org.joml.Quaternionf;
  * seconds. Made straight into the particle engine by {@link RimehareRenderer} on each client, never sent; vanilla's
  * translucent particle layer, so shader packs draw it as they do any particle.
  */
-final class FrostPrint extends SingleQuadParticle {
+final class FrostPrint extends McQuadParticle {
 	private final Quaternionf flat;
 
 	FrostPrint(ClientLevel level, double x, double y, double z, float yaw, float size) {
@@ -28,7 +28,7 @@ final class FrostPrint extends SingleQuadParticle {
 	}
 
 	private static TextureAtlasSprite sprite() {
-		return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES).getSprite(Wildercord.id("frost_print"));
+		return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_PARTICLES).apply(Wildercord.id("frost_print"));
 	}
 
 	@Override

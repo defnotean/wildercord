@@ -14,7 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
-import net.minecraft.client.input.KeyEvent;
+import dev.wildercord.client.compat.McInput.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;

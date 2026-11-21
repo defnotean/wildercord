@@ -4,10 +4,11 @@ import com.mojang.blaze3d.vertex.*;
 import dev.wildercord.Wildercord;
 import dev.wildercord.world.ferryman.ReedCrownedFerryman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import dev.wildercord.client.compat.RenderCompat;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -20,8 +21,8 @@ public final class FerrymanRenderer extends dev.wildercord.client.compat.Cullabl
 	public FerrymanRenderer(EntityRendererProvider.Context c) {
 		super(c,new FerrymanModel(c.bakeLayer(LAYER)),1.7F);
 		addLayer(new net.minecraft.client.renderer.entity.layers.RenderLayer<FerrymanRenderState,FerrymanModel>(this) {
-			@Override public void submit(PoseStack pose,SubmitNodeCollector collector,int light,FerrymanRenderState state,float yRot,float xRot) {
-				if(!state.isInvisible && state.deathTime<=0) dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+			@Override public void render(PoseStack pose, MultiBufferSource buffer, int light,FerrymanRenderState state,float yRot,float xRot) {
+				if(!state.isInvisible && state.deathTime<=0) dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, pose, RenderType.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 			}
 		});
 	}
@@ -36,10 +37,11 @@ public final class FerrymanRenderer extends dev.wildercord.client.compat.Cullabl
 		s.markX2=e.markX2(); s.markZ2=e.markZ2(); s.paired=e.pairedMark();
 		s.hurt=e.hurtTime>0?Math.max(0,(e.hurtTime-partial)/10F):0;
 	}
-	@Override public void submit(FerrymanRenderState s,PoseStack pose,SubmitNodeCollector collector,CameraRenderState camera) {
-		super.submit(s,pose,collector,camera);
+	@Override public void render(FerrymanRenderState s, PoseStack pose, MultiBufferSource buffer, int light) {
+		CameraRenderState camera = RenderCompat.cameraState();
+		super.submit(s,pose,buffer,camera);
 		if(s.isInvisible || s.deathTime>0 || s.move==IDLE || s.elapsed>tell(s.move)+5) return;
-		collector.order(1).submitCustomGeometry(pose,RenderType.entityTranslucentEmissive(MARK),(p,b)->marks(s,p,b));
+		RenderCompat.submitCustomGeometry(buffer, pose,RenderType.entityTranslucentEmissive(MARK),(p,b)->marks(s,p,b));
 	}
 	private static void marks(FerrymanRenderState s,PoseStack.Pose p,VertexConsumer b) {
 		int danger=s.elapsed>=tell(s.move)?0xEFFFF1B0:0xDDF06B91, safe=0xDD73E4D0;

@@ -17,11 +17,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -46,7 +46,7 @@ import java.util.Locale;
  * end, so every line keeps its width and every pattern its size at any radius. Everything is drawn
  * from both sides at full brightness.
  */
-public class SpellCircleParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public class SpellCircleParticle extends McQuadParticle implements SigilGroup.Extent {
 	/** One rune on the circle: its ring pattern, its emblem and its colour. */
 	/** A rune's ring and emblem in its colour, and a fused rune's second half ({@code band2}, {@code mark2}, null for others) in its partner's. */
 	protected record Rune(TextureAtlasSprite band, TextureAtlasSprite mark, int color, TextureAtlasSprite band2, TextureAtlasSprite mark2, int color2) {
@@ -165,12 +165,12 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	}
 
 	static TextureAtlasSprite particleSprite(String path) {
-		return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES).getSprite(Wildercord.id(path));
+		return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_PARTICLES).apply(Wildercord.id(path));
 	}
 
 	/** A rune's pattern ({@code band}) or emblem ({@code mark}), drawn by tools/circle_art.py; add-ons get their family's. */
 	static TextureAtlasSprite runeSprite(String rune, RuneDef def, String part) {
-		TextureAtlas atlas = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES);
+		TextureAtlas atlas = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_PARTICLES);
 		ResourceLocation id = ResourceLocation.tryParse(rune);
 		if (id != null && id.getNamespace().equals(Wildercord.MOD_ID)) {
 			TextureAtlasSprite own = atlas.getSprite(Wildercord.id("circle/" + id.getPath() + "_" + part));
@@ -737,8 +737,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 
 	public static class Provider implements ParticleProvider<SpellCircleOption> {
 		@Override
-		public Particle createParticle(SpellCircleOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za,
-				RandomSource random) {
+		public Particle createParticle(SpellCircleOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za) {
 			return new SpellCircleParticle(level, x, y, z, option);
 		}
 	}

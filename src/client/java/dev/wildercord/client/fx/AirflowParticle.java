@@ -4,7 +4,7 @@ import dev.wildercord.content.AirflowOption;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
@@ -12,7 +12,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 /** Wind-only stream bands: curved, world-lit and translucent, with a crest moving along the flow. */
-public final class AirflowParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public final class AirflowParticle extends McQuadParticle implements SigilGroup.Extent {
     private final AirflowOption flow;
     private final Quaternionf turn = new Quaternionf();
     private final Vector3f tangent = new Vector3f();
@@ -52,7 +52,7 @@ public final class AirflowParticle extends SingleQuadParticle implements SigilGr
     @Override public double centreZ(){return z;}
     @Override public double reach(){return Math.max(flow.control().length(),flow.end().length())+.4;}
     public static final class Provider implements ParticleProvider<AirflowOption>{
-        @Override public Particle createParticle(AirflowOption o,ClientLevel l,double x,double y,double z,double vx,double vy,double vz,RandomSource random){
+        @Override public Particle createParticle(AirflowOption o, ClientLevel l, double x, double y, double z, double vx, double vy, double vz){
             return new AirflowParticle(l,x,y,z,o);
         }
     }

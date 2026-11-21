@@ -6,8 +6,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -24,7 +24,7 @@ import org.joml.Vector3f;
  * add to what's behind them at full brightness; a billow is lit like the world and hides a little of
  * what's behind it. The server sends them, or the client makes them itself (an attunement's motes).
  */
-public class MoteParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public class MoteParticle extends McQuadParticle implements SigilGroup.Extent {
 	private static final int TRAIL = 5;
 	/** Where a glow's turn is worked out: used and done with before the next (render thread only). */
 	private static final Quaternionf FACING = new Quaternionf();
@@ -256,7 +256,7 @@ public class MoteParticle extends SingleQuadParticle implements SigilGroup.Exten
 		}
 		if (kind == MoteOption.CLOUD) {
 			alpha = a * Mth.clamp(extra <= 0 ? 0.45F : extra, 0, 1);
-			super.extract(state, camera, partial);
+			extractDefault(state, camera, partial);
 			return;
 		}
 		Vec3 cam = camera.position();
@@ -368,8 +368,7 @@ public class MoteParticle extends SingleQuadParticle implements SigilGroup.Exten
 
 	public static class Provider implements ParticleProvider<MoteOption> {
 		@Override
-		public Particle createParticle(MoteOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za,
-				RandomSource random) {
+		public Particle createParticle(MoteOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za) {
 			return new MoteParticle(level, x, y, z, option, xa, ya, za);
 		}
 	}

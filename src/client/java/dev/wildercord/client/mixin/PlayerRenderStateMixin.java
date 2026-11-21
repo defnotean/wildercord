@@ -1,13 +1,13 @@
 package dev.wildercord.client.mixin;
 
 import dev.wildercord.client.CastingPose;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 /** Carries a player's casting pose from the renderer to the model. */
-@Mixin(AvatarRenderState.class)
-public abstract class AvatarRenderStateMixin implements CastingPose {
+@Mixin(PlayerRenderState.class)
+public abstract class PlayerRenderStateMixin implements CastingPose {
 	@Unique
 	private String wildercord$shape = "";
 	@Unique
@@ -17,7 +17,7 @@ public abstract class AvatarRenderStateMixin implements CastingPose {
 	@Unique
 	private dev.wildercord.player.WildercordAttachments.CordLook wildercord$cord = dev.wildercord.player.WildercordAttachments.CordLook.NONE;
 	/**
-	 * How brightly the Cord's beads glow. Unlit until the renderer says otherwise (AvatarRendererMixin): a
+	 * How brightly the Cord's beads glow. Unlit until the renderer says otherwise (PlayerRendererMixin): a
 	 * player drawn some other way (another mod's renderer, a preview) mustn't show its beads always lit.
 	 */
 	@Unique

@@ -6,7 +6,7 @@ import net.minecraft.client.particle.*;
 import net.minecraft.util.RandomSource;
 
 /** Faceted stone, soil, roots, bone and crystals: all use the world's light, with physical debris motion. */
-public final class EarthParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public final class EarthParticle extends McQuadParticle implements SigilGroup.Extent {
  /** Its two animation frames, looked up once instead of by name every tick. */
  private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
  private final EarthOption material;
@@ -43,6 +43,6 @@ public final class EarthParticle extends SingleQuadParticle implements SigilGrou
  @Override public double centreZ(){return z;}
  @Override public double reach(){return material.size()*1.8;}
  public static final class Provider implements ParticleProvider<EarthOption> {
-  @Override public Particle createParticle(EarthOption option,ClientLevel level,double x,double y,double z,double vx,double vy,double vz,RandomSource random){return new EarthParticle(level,x,y,z,option);}
+  @Override public Particle createParticle(EarthOption option, ClientLevel level, double x, double y, double z, double vx, double vy, double vz){return new EarthParticle(level,x,y,z,option);}
  }
 }

@@ -13,7 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.client.renderer.LightTexture;
@@ -235,7 +235,8 @@ public final class Incantations {
 		int a = Mth.clamp((int) (alpha * 255), 4, 255);
 		int fill = (a << 24) | lighter(color, 0.55F);
 		int outline = (Mth.clamp((int) (alpha * 200), 4, 255) << 24) | darker(color, 0.35F);
-		context.commandQueue().submitText(pose, x, -y - 9, text, false, Font.DisplayMode.NORMAL, LightTexture.FULL_BRIGHT, fill, 0, outline);
+		dev.wildercord.client.compat.RenderCompat.submitText(context.commandQueue(), pose,
+			net.minecraft.client.Minecraft.getInstance().font, text, x, -y - 9, false, LightTexture.FULL_BRIGHT, fill, outline);
 		pose.popPose();
 	}
 

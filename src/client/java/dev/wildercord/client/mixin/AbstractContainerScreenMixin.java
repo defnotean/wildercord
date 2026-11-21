@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.input.KeyEvent;
+import dev.wildercord.client.compat.McInput.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -61,11 +61,11 @@ public abstract class AbstractContainerScreenMixin {
 	 * key), where the inventory key would close it.
 	 */
 	@Inject(method = "keyPressed", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;checkHotbarKeyPressed(Lnet/minecraft/client/input/KeyEvent;)Z"),
+		target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;checkHotbarKeyPressed(II)Z"),
 		cancellable = true)
-	private void wildercord$backpackKey(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
+	private void wildercord$backpackKey(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
 		Object self = this;
-		if ((self instanceof InventoryScreen || self instanceof CreativeModeInventoryScreen) && WildercordKeys.backpackMapping().matches(event)) {
+		if ((self instanceof InventoryScreen || self instanceof CreativeModeInventoryScreen) && WildercordKeys.backpackMapping().matches(keyCode, scanCode)) {
 			WildercordKeys.openBackpack();
 			cir.setReturnValue(true);
 		}

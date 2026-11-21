@@ -5,7 +5,7 @@ import net.minecraft.ChatFormatting;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.KeyEvent;
+import dev.wildercord.client.compat.McInput.KeyEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -67,8 +67,12 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
+	}
+
 	public boolean keyPressed(KeyEvent event) {
-		if (super.keyPressed(event)) {
+		if (super.keyPressed(event.key(), event.scancode(), event.modifiers())) {
 			return true;
 		}
 		if (WildercordKeys.backpackMapping().matches(event)) {

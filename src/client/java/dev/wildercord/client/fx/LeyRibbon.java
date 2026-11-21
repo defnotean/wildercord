@@ -3,8 +3,8 @@ package dev.wildercord.client.fx;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -20,7 +20,7 @@ import java.util.List;
  * of the land. It fades in, flows the length of its path and fades away. Made on the client by
  * {@link LeyMotes}; the path is traced there, this only draws it.
  */
-public class LeyRibbon extends SingleQuadParticle implements SigilGroup.Extent {
+public class LeyRibbon extends McQuadParticle implements SigilGroup.Extent {
 	private static final int CORE = 0xE4DCFF;
 	private static final int HALO = 0x9C84F0;
 

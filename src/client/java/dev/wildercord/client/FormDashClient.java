@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -133,7 +133,7 @@ public final class FormDashClient {
 				entity.getZ() + oz + (blow ? fz * 1.2 : 0), -fx * .02, .01, -fz * .02);
 		}
 	}
-	public static Playback timeline(Avatar avatar) {
+	public static Playback timeline(LivingEntity avatar) {
 		if (avatar == null || avatar.level() != level || !avatar.isAlive()) return null;
 		return EVENTS.get(avatar.getId());
 	}

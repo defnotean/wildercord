@@ -20,10 +20,10 @@ import net.minecraft.client.*;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.renderer.entity.state.*;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.InteractionHand;
@@ -81,18 +81,18 @@ public final class CounterPeerRenderProbe {
         MastersArtPose.Frame classic,ArticulatedCombat.Frame articulated,PlayerModel model,ItemStack main,ItemStack off,
         ItemStackRenderState item,List<ItemStack> armor,boolean shell,ArticulatedCombatPose.Pose expectedBody,
         ArticulatedCombatPose.ViewPose expectedView,PlayerSkin originalSkin){}
-    private record View(AvatarRenderState avatar,ArticulatedViewModel model,ArticulatedViewModel.Frame frame,ArticulatedCombatPose.ViewPose expectedPose,Matrix4f root,RenderType material){}
-    public record ViewCall(AvatarRenderState avatar,InteractionHand hand,Matrix4f before,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector,ViewCall previous){}
-    public record DeferredCall(Object node,Model<?> model,Object state,NativeBodySubmission.Visit body,DeferredCall previous){}
-    private record World(AvatarRenderState avatar,PlayerModel model,Matrix4f root,Matrix4f modelRoot,boolean modelRootVisible,RenderType material){}
-    public record WorldItem(AvatarRenderState avatar,PlayerModel model,ItemStackRenderState item,Matrix4f expected,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector,WorldItem previous){}
+    private record View(PlayerRenderState avatar,ArticulatedViewModel model,ArticulatedViewModel.Frame frame,ArticulatedCombatPose.ViewPose expectedPose,Matrix4f root,RenderType material){}
+    public record ViewCall(PlayerRenderState avatar,InteractionHand hand,Matrix4f before,PoseStack stack,net.minecraft.client.renderer.MultiBufferSource buffer,ViewCall previous){}
+    public record DeferredCall(Object node,Model model,Object state,NativeBodySubmission.Visit body,DeferredCall previous){}
+    private record World(PlayerRenderState avatar,PlayerModel model,Matrix4f root,Matrix4f modelRoot,boolean modelRootVisible,RenderType material){}
+    public record WorldItem(PlayerRenderState avatar,PlayerModel model,ItemStackRenderState item,Matrix4f expected,PoseStack stack,net.minecraft.client.renderer.MultiBufferSource buffer,WorldItem previous){}
     public static final class FallbackView {
-        final AvatarRenderState avatar;final FirstPersonHandView hands;
-        final Matrix4f before,expectedItem;final PoseStack stack;final net.minecraft.client.renderer.SubmitNodeCollector collector;final float inverse,ownership;ItemStackRenderState item;final FallbackView previous;
+        final PlayerRenderState avatar;final FirstPersonHandView hands;
+        final Matrix4f before,expectedItem;final PoseStack stack;final net.minecraft.client.renderer.MultiBufferSource buffer;final float inverse,ownership;ItemStackRenderState item;final FallbackView previous;
         boolean transform;
-        FallbackView(AvatarRenderState a,FirstPersonHandView h,Matrix4f b,
-            Matrix4f expected,float inverse,float ownership,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector,FallbackView previous){
-            avatar=a;hands=h;before=b;expectedItem=expected;this.stack=stack;this.collector=collector;this.inverse=inverse;this.ownership=ownership;item=h.initialMainHandRenderState();this.previous=previous;
+        FallbackView(PlayerRenderState a,FirstPersonHandView h,Matrix4f b,
+            Matrix4f expected,float inverse,float ownership,PoseStack stack,net.minecraft.client.renderer.MultiBufferSource buffer,FallbackView previous){
+            avatar=a;hands=h;before=b;expectedItem=expected;this.stack=stack;this.collector=buffer;this.inverse=inverse;this.ownership=ownership;item=h.initialMainHandRenderState();this.previous=previous;
         }
         public void bindItem(ItemStackRenderState item){if(this.item==null)this.item=item;}
     }
@@ -113,11 +113,11 @@ public final class CounterPeerRenderProbe {
         PlayerSkin originalSkin;PlayerModel originalModel;
         final NativeBodySubmission nativeBody=new NativeBodySubmission();
         final IdentityHashMap<Object,Long> ids=new IdentityHashMap<>();
-        final IdentityHashMap<AvatarRenderState,Extracted> sources=new IdentityHashMap<>();
+        final IdentityHashMap<PlayerRenderState,Extracted> sources=new IdentityHashMap<>();
         final IdentityHashMap<PlayerModel,Map<String,Part>> baselines=new IdentityHashMap<>();
         final IdentityHashMap<ArticulatedViewModel.Frame,View> views=new IdentityHashMap<>();
-        final IdentityHashMap<AvatarRenderState,World> worlds=new IdentityHashMap<>();
-        final IdentityHashMap<AvatarRenderState,Map<String,Part>> layerBaselines=new IdentityHashMap<>();
+        final IdentityHashMap<PlayerRenderState,World> worlds=new IdentityHashMap<>();
+        final IdentityHashMap<PlayerRenderState,Map<String,Part>> layerBaselines=new IdentityHashMap<>();
         WorldItem worldItem;
         ViewCall view;DeferredCall deferred;FallbackView fallback;
         Scope(Token token,Scope previous){this.token=token;this.previous=previous;}
@@ -172,7 +172,7 @@ public final class CounterPeerRenderProbe {
         try{if(watchedBodies==null)throw new AssertionError("Native receive source was not armed");return watchedBodies.source().require(timeline,accepted);}
         catch(AssertionError rejected){rejectPermanently("native-source-identity",rejected.getMessage());throw rejected;}
     }
-    public static void classicExtracted(Avatar owner,AvatarRenderState state,float partial){
+    public static void classicExtracted(LivingEntity owner,PlayerRenderState state,float partial){
         var watch=watchedBodies;if(watch==null||!owner.getUUID().equals(watch.actor().getUUID()))return;
         try{
             if(watch.actor()!=owner||watch.level()!=owner.level())throw new AssertionError("Original counter source body replaced after arming");
@@ -248,7 +248,7 @@ public final class CounterPeerRenderProbe {
         token.observe("observerUuid",mc.player.getUUID());token.observe("observerEntity",mc.player.getId());
         if(!(actor instanceof net.minecraft.client.player.AbstractClientPlayer connectedActor))throw new AssertionError("Actor is not an actual connected client player");
         s.originalSkin=connectedActor.getSkin();
-        s.originalModel=((net.minecraft.client.renderer.entity.player.AvatarRenderer<?>)mc.getEntityRenderDispatcher().getRenderer(actor)).getModel();
+        s.originalModel=((net.minecraft.client.renderer.entity.player.PlayerRenderer)mc.getEntityRenderDispatcher().getRenderer(actor)).getModel();
         token.observe("connectedSkinTexture",s.originalSkin.body().texturePath());token.observe("connectedSkinModel",s.originalSkin.model());
         if(token.paired!=null){
             var proof=CounterPeerPhaseContract.readAccepted(token.paired.acceptedReceipt(),token.paired.acceptedIdentity());
@@ -272,7 +272,7 @@ public final class CounterPeerRenderProbe {
     public static void extractBegin(DeltaTracker delta){var s=CURRENT.get();if(s!=null){s.extracting=true;s.token.observe("renderPartial",delta.getGameTimeDeltaPartialTick(false));}}
     public static void extractEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.extracting=false;if(completed)s.token.extracted=SEQ.incrementAndGet();}}
     public static void extracted(Entity entity,float partial,EntityRenderState state){
-        var s=CURRENT.get();if(s==null||!s.extracting||entity.getId()!=s.token.expected.owner()||!(state instanceof AvatarRenderState a))return;
+        var s=CURRENT.get();if(s==null||!s.extracting||entity.getId()!=s.token.expected.owner()||!(state instanceof PlayerRenderState a))return;
         var e=s.token.expected;var c=a.getData(MastersArtPose.FRAME);var r=a.getData(ArticulatedCombat.FRAME);
         float age=entity.level().getGameTime()-e.activation()+partial;
         if(c!=null){
@@ -329,27 +329,27 @@ public final class CounterPeerRenderProbe {
     public static <T> T passive(java.util.function.Supplier<T> observer,T fallback){var s=CURRENT.get();return s==null?fallback:s.nativeBody.observe(observer,fallback);}
     public static void passive(Runnable observer){var s=CURRENT.get();if(s!=null)s.nativeBody.observe(observer);}
     private static Scope rendering(){var s=CURRENT.get();return s!=null&&s.rendering?s:null;}
-    private static NativeBodySubmission.Frames bodyFrames(AvatarRenderState a){return new NativeBodySubmission.Frames(a.getData(MastersArtPose.FRAME),a.getData(ArticulatedCombat.FRAME));}
-    public static NativeBodySubmission.Origin worldSubmissionBegin(Model<?> model,Object state,Matrix4fc root,RenderType material){
-        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof AvatarRenderState a)||a.id!=s.token.expected.owner())return null;
+    private static NativeBodySubmission.Frames bodyFrames(PlayerRenderState a){return new NativeBodySubmission.Frames(a.getData(MastersArtPose.FRAME),a.getData(ArticulatedCombat.FRAME));}
+    public static NativeBodySubmission.Origin worldSubmissionBegin(Model model,Object state,Matrix4fc root,RenderType material){
+        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof PlayerRenderState a)||a.id!=s.token.expected.owner())return null;
         return s.nativeBody.begin(model,state,bodyFrames(a),material,root.get(new float[16]));
     }
     public static void worldSubmissionEnd(NativeBodySubmission.Origin call,boolean completed){var s=rendering();if(s!=null&&call!=null)s.nativeBody.submittedEnd(call,completed);}
-    public static void nativeSubmitted(Object node,Model<?> model,Object state,Object material,float[] root,boolean outline){
-        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof AvatarRenderState a)||a.id!=s.token.expected.owner())return;
+    public static void nativeSubmitted(Object node,Model model,Object state,Object material,float[] root,boolean outline){
+        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof PlayerRenderState a)||a.id!=s.token.expected.owner())return;
         s.nativeBody.submitted(node,model,state,bodyFrames(a),material,root,outline);
     }
-    public static DeferredCall deferredEnter(Object node,Model<?> model,Object state,Object material,float[] root){
+    public static DeferredCall deferredEnter(Object node,Model model,Object state,Object material,float[] root){
         var s=rendering();if(s==null)return null;NativeBodySubmission.Visit body=null;
-        if(s.token.expected.view().equals("remote")&&(s.nativeBody.tracked(node)||state instanceof AvatarRenderState a&&a.id==s.token.expected.owner())){
-            if(!(state instanceof AvatarRenderState a))throw new AssertionError("Tracked counter native Submit changed state type");
+        if(s.token.expected.view().equals("remote")&&(s.nativeBody.tracked(node)||state instanceof PlayerRenderState a&&a.id==s.token.expected.owner())){
+            if(!(state instanceof PlayerRenderState a))throw new AssertionError("Tracked counter native Submit changed state type");
             body=s.nativeBody.enter(node,model,state,bodyFrames(a),material,root);
         }
         var call=new DeferredCall(node,model,state,body,s.deferred);s.deferred=call;return call;
     }
-    public static void bodyDrawn(Object node,Model<?> model,Object state,float[] root){
+    public static void bodyDrawn(Object node,Model model,Object state,float[] root){
         var s=rendering();if(s==null||s.deferred==null||s.deferred.body()==null)return;
-        if(!(state instanceof AvatarRenderState a))throw new AssertionError("Counter native body draw changed state type");
+        if(!(state instanceof PlayerRenderState a))throw new AssertionError("Counter native body draw changed state type");
         var source=s.sources.get(a);if(a.id!=s.token.expected.owner()||source==null||!matches(s,source,a))throw new AssertionError("Counter native body draw changed original owner/source");
         s.nativeBody.drawn(s.deferred.body(),node,model,state,bodyFrames(a),root);
     }
@@ -357,14 +357,14 @@ public final class CounterPeerRenderProbe {
         var s=rendering();if(s==null||call==null)return;
         try{if(call.body()!=null)s.nativeBody.leave(call.body(),completed);}finally{s.deferred=call.previous();}
     }
-    public static void bodyBaseline(PlayerModel model,AvatarRenderState a){
+    public static void bodyBaseline(PlayerModel model,PlayerRenderState a){
         var s=rendering();if(s==null||a.id!=s.token.expected.owner())return;
         if(s.deferred==null){if(s.token.expected.view().equals("remote")&&s.sources.containsKey(a)&&s.sources.get(a).model()==model)s.layerBaselines.put(a,rigid(model));return;}
         if(s.deferred.body()==null||!s.deferred.body().primary())return;
         s.nativeBody.baseline(s.deferred.body(),model,a,bodyFrames(a));
         if(s.baselines.put(model,rigid(model))!=null)s.token.reject("duplicate_vanilla_baseline");
     }
-    public static void bodyPalette(PlayerModel model,AvatarRenderState a){
+    public static void bodyPalette(PlayerModel model,PlayerRenderState a){
         var s=rendering();if(s==null||a.id!=s.token.expected.owner()||s.deferred==null||s.deferred.body()==null||!s.deferred.body().primary())return;
         var source=s.sources.get(a);var baseline=s.baselines.remove(model);Comparison proof=null;
         var access=model instanceof ArticulatedModelAccess x&&x.wildercord$bodyOwned()?x:null;
@@ -391,8 +391,8 @@ public final class CounterPeerRenderProbe {
         s.nativeBody.palette(s.deferred.body(),model,a,bodyFrames(a));
     }
     /** Captures the actual body submission and its material, before any deferred model reuse. */
-    public static void worldSubmitted(Model<?> model,Object state,Matrix4fc root,RenderType material){
-        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof AvatarRenderState a)||a.id!=s.token.expected.owner())return;
+    public static void worldSubmitted(Model model,Object state,Matrix4fc root,RenderType material){
+        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof PlayerRenderState a)||a.id!=s.token.expected.owner())return;
         var source=s.sources.get(a);
         if(source==null||source.model()!=model||!(model instanceof PlayerModel player)){s.token.reject("world_submit_without_exact_model");return;}
         var expectedMaterial=player.renderType(source.originalSkin().body().texturePath());
@@ -407,8 +407,8 @@ public final class CounterPeerRenderProbe {
         pass(s,"body_submit",a,model,null,rootProof,s.token.expected.mode().equals("articulated"),s.token.expected.mode().equals("classic"));
     }
     /** The baseline comes from the real vanilla-to-articulated boundary for this same state/model. */
-    public static WorldItem worldItemBegin(Object parent,ArmedEntityRenderState state,ItemStackRenderState item,ItemStack stack,HumanoidArm arm,PoseStack pose,net.minecraft.client.renderer.SubmitNodeCollector collector){
-        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof AvatarRenderState a)||a.id!=s.token.expected.owner()||arm!=a.mainArm)return null;
+    public static WorldItem worldItemBegin(Object parent,ArmedEntityRenderState state,ItemStackRenderState item,ItemStack stack,HumanoidArm arm,PoseStack pose,net.minecraft.client.renderer.MultiBufferSource buffer){
+        var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof PlayerRenderState a)||a.id!=s.token.expected.owner()||arm!=a.mainArm)return null;
         var source=s.sources.get(a);var world=s.worlds.get(a);var baseline=s.layerBaselines.remove(a);
         if(source==null||world==null||parent!=source.model()||world.model()!=parent||baseline==null){s.token.reject("world_item_without_exact_vanilla_baseline");return null;}
         var model=source.model();boolean same=ItemStack.isSameItemSameComponents(stack,source.main())&&stack.getCount()==source.main().getCount();
@@ -428,7 +428,7 @@ public final class CounterPeerRenderProbe {
             var expectedBody=CounterPeerRenderMath.classic(source.classic().pose(),arm==HumanoidArm.LEFT,baseline);
             expected=CounterPeerRenderMath.classicSword(new Matrix4f(world.root()).mul(world.modelRoot()),expectedBody,arm==HumanoidArm.LEFT,rig.slim(),source.classic().bladeTilt());
         }
-        var call=new WorldItem(a,model,item,expected,pose,collector,s.worldItem);s.worldItem=call;return call;
+        var call=new WorldItem(a,model,item,expected,pose,buffer,s.worldItem);s.worldItem=call;return call;
     }
     public static void worldItemSubmitted(WorldItem call,ItemStackRenderState item,Matrix4fc actual){
         var s=rendering();if(s==null||call==null)return;
@@ -437,11 +437,11 @@ public final class CounterPeerRenderProbe {
             CounterPeerRenderMath.values(call.expected()),CounterPeerRenderMath.values(actual)),s.token.expected.mode().equals("articulated"),s.token.expected.mode().equals("classic"));
     }
     public static void worldItemEnd(WorldItem call,boolean completed){var s=rendering();if(s!=null&&call!=null){if(!completed)s.token.reject("incomplete_world_item_scope");s.worldItem=call.previous();}}
-    public static ViewCall viewEnter(AvatarRenderState a,float partial,InteractionHand hand,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector){
-        var s=rendering();if(s==null||a.id!=s.token.expected.owner())return null;var call=new ViewCall(a,hand,new Matrix4f(stack.last().pose()),stack,collector,s.view);s.view=call;return call;
+    public static ViewCall viewEnter(PlayerRenderState a,float partial,InteractionHand hand,PoseStack stack,net.minecraft.client.renderer.MultiBufferSource buffer){
+        var s=rendering();if(s==null||a.id!=s.token.expected.owner())return null;var call=new ViewCall(a,hand,new Matrix4f(stack.last().pose()),stack,buffer,s.view);s.view=call;return call;
     }
     public static void viewLeave(ViewCall call,boolean submitted){var s=rendering();if(s!=null&&call!=null)s.view=call.previous();}
-    public static void viewAttempt(AvatarRenderState a,FirstPersonHandView hands,float partial,InteractionHand hand){
+    public static void viewAttempt(PlayerRenderState a,FirstPersonHandView hands,float partial,InteractionHand hand){
         var s=rendering();if(s==null||a==null||a.id!=s.token.expected.owner()||hand!=InteractionHand.MAIN_HAND)return;
         var source=s.sources.get(a);
         boolean known=hands.equipKnown();boolean equipping=known&&hands.mainHandEquipping();
@@ -452,7 +452,7 @@ public final class CounterPeerRenderProbe {
         s.token.observe("handEquipKnown",known);s.token.observe("handEquipping",equipping);s.token.observe("handSameItem",same);
         s.token.observe("handInterpolatedHeight",height);s.token.observe("ordinaryHandAdmission",CounterPeerRenderMath.handEligible(active,height,same,known,equipping));
     }
-    public static void viewSubmitted(Model<?> model,Object state,Matrix4fc actual,RenderType material){
+    public static void viewSubmitted(Model model,Object state,Matrix4fc actual,RenderType material){
         var s=rendering();if(s==null||s.view==null||s.view.hand()!=InteractionHand.MAIN_HAND||!(model instanceof ArticulatedViewModel view)||!(state instanceof ArticulatedViewModel.Frame frame))return;
         var a=s.view.avatar();var source=s.sources.get(a);if(source==null||source.articulated()==null){s.token.reject("missing_view_source");return;}
         if(!(source.model() instanceof ArticulatedModelAccess access)||access.wildercord$viewModel()!=model)s.token.reject("wrong_owner_view_model");
@@ -483,8 +483,8 @@ public final class CounterPeerRenderProbe {
         var expected=CounterPeerRenderMath.sword(view.root(),CounterPeerRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
         pass(s,"view_item",a,view.model(),item,CounterPeerRenderMath.compare("actual_socket_item_matrix",CounterPeerRenderMath.values(expected),CounterPeerRenderMath.values(actual)),true,false);
     }
-    public static FallbackView fallbackViewBegin(FirstPersonHandView hands,AvatarRenderState a,
-        InteractionHand hand,ItemStack stack,float attack,float inverse,PoseStack pose,net.minecraft.client.renderer.SubmitNodeCollector collector){
+    public static FallbackView fallbackViewBegin(FirstPersonHandView hands,PlayerRenderState a,
+        InteractionHand hand,ItemStack stack,float attack,float inverse,PoseStack pose,net.minecraft.client.renderer.MultiBufferSource buffer){
         var s=rendering();if(s==null||a==null||a.id!=s.token.expected.owner()||hand!=InteractionHand.MAIN_HAND)return null;
         var source=s.sources.get(a);if(source==null){s.token.reject("native_without_extraction");return null;}
         if(!stack.is(Items.DIAMOND_SWORD)||!hands.equipKnown()||!ItemStack.isSameItemSameComponents(stack,hands.mainHandItem())||!ItemStack.isSameItemSameComponents(stack,source.main()))s.token.reject("wrong_native_stack");
@@ -493,9 +493,9 @@ public final class CounterPeerRenderProbe {
         boolean whack=RenderCompat.activeMainHandSwingType(a)==RenderCompat.SwingAnim.WHACK;
         if(a.isUsingItem||a.isAutoSpinAttack||hands.isScoping()||RenderCompat.hasActiveStabSwing(a))s.token.reject("unsupported_native_item_motion");
         var before=new Matrix4f(pose.last().pose());var expected=CounterPeerRenderMath.nativeSword(before,c==null?null:c.pose(),a.mainArm==HumanoidArm.LEFT,inverse,c==null?0:c.yawDelta(),c==null?0:c.pitchDelta(),ownership,attack,whack);
-        var call=new FallbackView(a,hands,before,expected,inverse,ownership,pose,collector,s.fallback);s.fallback=call;return call;
+        var call=new FallbackView(a,hands,before,expected,inverse,ownership,pose,buffer,s.fallback);s.fallback=call;return call;
     }
-    public static ClassicCall classicBegin(PoseStack pose,InteractionHand hand,AvatarRenderState a,float inverse){
+    public static ClassicCall classicBegin(PoseStack pose,InteractionHand hand,PlayerRenderState a,float inverse){
         var s=rendering();if(s==null||s.fallback==null||s.fallback.avatar!=a||hand!=InteractionHand.MAIN_HAND)return null;var call=s.fallback;var source=s.sources.get(a);var c=source==null?null:source.classic();
         var before=new Matrix4f(call.before).translate(0,MastersViewMotion.heightCompensation(call.inverse,call.ownership),0);
         if(inverse!=call.inverse||!CounterPeerRenderMath.compare("height_compensation",CounterPeerRenderMath.values(before),CounterPeerRenderMath.values(pose.last().pose())).matched())s.token.reject("wrong_classic_height_compensation");
@@ -515,27 +515,27 @@ public final class CounterPeerRenderProbe {
         pass(s,"native_item",call.avatar,call.hands.rendererObject(),item,CounterPeerRenderMath.compare("actual_native_item_matrix",CounterPeerRenderMath.values(call.expectedItem),CounterPeerRenderMath.values(actual)),false,true);
     }
     public static void fallbackViewEnd(FallbackView call,boolean completed){var s=rendering();if(s!=null&&call!=null){if(!completed)s.token.reject("incomplete_native_call");s.fallback=call.previous;}}
-    private static void pass(Scope s,String kind,AvatarRenderState a,Object model,Object item,Comparison proof,boolean segmented,boolean rigid){
+    private static void pass(Scope s,String kind,PlayerRenderState a,Object model,Object item,Comparison proof,boolean segmented,boolean rigid){
         var e=s.sources.get(a);boolean matched=e!=null&&matches(s,e,a);if(proof==null||!proof.matched())s.token.reject("geometry_mismatch:"+kind);
         s.token.pass(new Pass(kind,binding(s,a,model,item),proof,segmented,rigid));
     }
-    private static Binding binding(Scope s,AvatarRenderState a,Object model,Object item){
+    private static Binding binding(Scope s,PlayerRenderState a,Object model,Object item){
         var e=s.sources.get(a);boolean matched=e!=null&&matches(s,e,a);
         return new Binding(e==null?0:e.source(),id(s,a),id(s,model),id(s,item!=null?item:s.token.expected.view().equals("remote")&&e!=null?e.item():null),skinMaterial(s,a,model),a.id,e==null?"missing":e.uuid(),
             a.skin.model().toString(),a.skin.body().texturePath().toString(),a.mainArm.name(),e==null?null:e.palette(),matched);
     }
-    /** Deep native draw after baked ItemTransform and localTransform. Missing/foreign nodes cannot satisfy entry receipts. */
+    /** Deep native draw after baked ItemTransform and localTransform. Missing/foreign buffer cannot satisfy entry receipts. */
     public static void itemDraw(ItemStackRenderState item,net.minecraft.client.renderer.block.model.ItemTransform transform,Matrix4fc local,
-        ItemDisplayContext context,List<BakedQuad> quads,Matrix4fc actual,PoseStack stack,net.minecraft.client.renderer.SubmitNodeCollector collector){
-        var s=rendering();if(s==null)return;AvatarRenderState a;Object model;Matrix4f entry;PoseStack entryStack;net.minecraft.client.renderer.SubmitNodeCollector entryCollector;
+        ItemDisplayContext context,List<BakedQuad> quads,Matrix4fc actual,PoseStack stack,net.minecraft.client.renderer.MultiBufferSource buffer){
+        var s=rendering();if(s==null)return;PlayerRenderState a;Object model;Matrix4f entry;PoseStack entryStack;net.minecraft.client.renderer.MultiBufferSource entryCollector;
         boolean remote=s.token.expected.view().equals("remote"),articulated=false;
-        if(remote){var call=s.worldItem;if(call==null||call.item()!=item)return;a=call.avatar();model=call.model();entry=call.expected();entryStack=call.stack();entryCollector=call.collector();}
+        if(remote){var call=s.worldItem;if(call==null||call.item()!=item)return;a=call.avatar();model=call.model();entry=call.expected();entryStack=call.stack();entryCollector=call.buffer();}
         else if(s.view!=null&&s.view.hand()==InteractionHand.MAIN_HAND){
             a=s.view.avatar();var source=s.sources.get(a);if(source==null||source.item()!=item)return;
             var views=s.views.values().stream().filter(v->v.avatar()==a).toList();if(views.size()!=1){s.token.reject("deep_draw_without_unique_view");return;}
-            var view=views.getFirst();model=view.model();articulated=true;entryStack=s.view.stack();entryCollector=s.view.collector();entry=CounterPeerRenderMath.sword(view.root(),CounterPeerRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
-        }else{var call=s.fallback;if(call==null||call.item!=item)return;a=call.avatar;model=call.hands.rendererObject();entry=call.expectedItem;entryStack=call.stack;entryCollector=call.collector;}
-        if(entryStack!=stack||entryCollector!=collector)s.token.reject("substituted_deep_draw_stack_or_collector");
+            var view=views.getFirst();model=view.model();articulated=true;entryStack=s.view.stack();entryCollector=s.view.buffer();entry=CounterPeerRenderMath.sword(view.root(),CounterPeerRenderMath.palette(view.expectedPose()::local),a.mainArm==HumanoidArm.LEFT,view.model().rig().slim());
+        }else{var call=s.fallback;if(call==null||call.item!=item)return;a=call.avatar;model=call.hands.rendererObject();entry=call.expectedItem;entryStack=call.stack;entryCollector=call.buffer;}
+        if(entryStack!=stack||entryCollector!=buffer)s.token.reject("substituted_deep_draw_stack_or_collector");
         // The articulated viewmodel deliberately draws the body's resolved third-person item (ArticulatedCombat.orientItemAtSocket).
         boolean third=remote||articulated;
         var expectedContext=third?(a.mainArm==HumanoidArm.LEFT?ItemDisplayContext.THIRD_PERSON_LEFT_HAND:ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
@@ -566,14 +566,14 @@ public final class CounterPeerRenderProbe {
         }
         var bytes=java.nio.ByteBuffer.allocate(emitted.size()*4);for(float value:emitted)bytes.putInt(Float.floatToRawIntBits(value));
         String quadHash=ArticulatedRenderReceipt.sha256(bytes.array());
-        s.token.draw(new ItemDraw(binding(s,a,model,item),geometry,context.name(),quads==null?0:quads.size(),"stock_diamond_hilt",wanted,consumed,rotation,translation,scale,CounterPeerRenderMath.values(local),List.copyOf(emitted),quadHash,id(s,stack),id(s,collector),id(s,entryStack),id(s,entryCollector)));
+        s.token.draw(new ItemDraw(binding(s,a,model,item),geometry,context.name(),quads==null?0:quads.size(),"stock_diamond_hilt",wanted,consumed,rotation,translation,scale,CounterPeerRenderMath.values(local),List.copyOf(emitted),quadHash,id(s,stack),id(s,buffer),id(s,entryStack),id(s,entryCollector)));
     }
-    private static long skinMaterial(Scope s,AvatarRenderState a,Object model){
+    private static long skinMaterial(Scope s,PlayerRenderState a,Object model){
         var world=s.worlds.get(a);if(world!=null&&world.model()==model)return id(s,world.material());
         var views=s.views.values().stream().filter(v->v.avatar()==a&&v.model()==model).toList();
         return views.size()==1?id(s,views.getFirst().material()):0;
     }
-    private static boolean matches(Scope s,Extracted e,AvatarRenderState a){
+    private static boolean matches(Scope s,Extracted e,PlayerRenderState a){
         if(e.state()!=id(s,a)||e.classic()!=a.getData(MastersArtPose.FRAME)||e.articulated()!=a.getData(ArticulatedCombat.FRAME)
             ||!CounterPeerRenderMath.same(e.palette().classic(),key(a.getData(MastersArtPose.FRAME)))
             ||!CounterPeerRenderMath.same(e.palette().articulated(),key(a.getData(ArticulatedCombat.FRAME)))
@@ -585,7 +585,7 @@ public final class CounterPeerRenderProbe {
     }
     private static Identity key(MastersArtPose.Frame f){return f==null?null:new Identity(f.activation(),f.move(),f.leftHanded(),false,f.yawDelta(),f.pitchDelta(),f.bladeTilt(),false,"n/a",hash(f.pose().toString()));}
     private static Identity key(ArticulatedCombat.Frame f){return f==null?null:new Identity(f.activation(),f.move(),f.leftHanded(),f.master(),f.yawDelta(),f.pitchDelta(),0,f.scriptedFootwork(),Double.toHexString(f.horizontalVelocitySquared()),f.pose().phase().name()+":"+hashPose(f.pose()::local,f.pose().weight())+":"+hashPose(ArticulatedCombatPose.view(f.pose(),f.leftHanded())::local,f.pose().weight()));}
-    private static boolean backend(Expected e,AvatarRenderState a){
+    private static boolean backend(Expected e,PlayerRenderState a){
         boolean enabled=ArticulatedCombat.enabled(),shell=ArticulatedAuraShellRenderer.enabled(),funded=a.getData(AuraShellLayer.SHELL_GLOW)!=null;
         var s=CURRENT.get();var source=s==null?null:s.sources.get(a);PlayerModel model=source==null?null:source.model();
         boolean owned=model instanceof ArticulatedModelAccess access&&access.wildercord$bodyOwned();
@@ -602,15 +602,15 @@ public final class CounterPeerRenderProbe {
         return CounterPeerRenderMath.backend(e.mode(),enabled,shell,funded,compatible)
             &&(e.mode().equals("classic")? !ArticulatedArmorRenderer.enabled()&&!ArticulatedArmorRenderer.viewEnabled():true);
     }
-    private static boolean commonCompatible(AvatarRenderState a){
+    private static boolean commonCompatible(PlayerRenderState a){
         return a.deathTime<=0&&!a.isInvisible&&!a.isBaby&&!a.isUpsideDown&&!a.isAutoSpinAttack&&!a.isFallFlying&&!a.isPassenger&&!a.isUsingItem
             &&!a.hasPose(Pose.SWIMMING)&&!a.hasPose(Pose.SLEEPING)&&Boolean.TRUE.equals(a.getData(ArticulatedCombat.KNOWN_LAYERS))&&a.walkAnimationSpeed<=.2F&&!a.isSpectator
             &&a.arrowCount==0&&a.stingerCount==0&&!a.showExtraEars&&a.parrotOnLeftShoulder==null&&a.parrotOnRightShoulder==null&&(!a.showCape||a.skin.cape()==null)&&a.heldOnHead.isEmpty()
             &&a.getData(dev.wildercord.client.render.GearLook.PACK)==null&&a.getData(dev.wildercord.client.render.GearLook.PIECES)==null&&a.getData(AuraShellLayer.IMAGES)==null
             &&dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD)&&offhand(a).isEmpty();
     }
-    private static ItemStack offhand(AvatarRenderState a){return a.mainArm==HumanoidArm.RIGHT?dev.wildercord.client.compat.RenderCompat.leftHandStack(a):dev.wildercord.client.compat.RenderCompat.rightHandStack(a);}
-    private static List<ItemStack> armor(AvatarRenderState a){return List.of(a.headEquipment,a.chestEquipment,a.legsEquipment,a.feetEquipment);}
+    private static ItemStack offhand(PlayerRenderState a){return a.mainArm==HumanoidArm.RIGHT?dev.wildercord.client.compat.RenderCompat.leftHandStack(a):dev.wildercord.client.compat.RenderCompat.rightHandStack(a);}
+    private static List<ItemStack> armor(PlayerRenderState a){return List.of(a.headEquipment,a.chestEquipment,a.legsEquipment,a.feetEquipment);}
     private static long id(Scope s,Object object){return object==null?0:s.ids.computeIfAbsent(object,key->SEQ.incrementAndGet());}
     private static Part part(ModelPart p){var initial=p.getInitialPose();return new Part(p.x,p.y,p.z,p.xRot,p.yRot,p.zRot,p.xScale,p.yScale,p.zScale,initial.x(),initial.y(),initial.z());}
     private static Map<String,Part> rigid(PlayerModel m){var out=new LinkedHashMap<String,Part>();out.put("head",part(m.head));out.put("body",part(m.body));out.put("leftArm",part(m.leftArm));out.put("rightArm",part(m.rightArm));out.put("leftLeg",part(m.leftLeg));out.put("rightLeg",part(m.rightLeg));return out;}

@@ -2,7 +2,7 @@ package dev.wildercord.client.wildlife;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -51,7 +51,7 @@ public final class MountBardingLayer<M extends EntityModel<WildlifeRenderState>>
 	}
 
 	@Override
-	public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, WildlifeRenderState state, float yRot, float xRot) {
+	public void render(PoseStack poseStack, MultiBufferSource buffer, int light, WildlifeRenderState state, float yRot, float xRot) {
 		if (state.barding == 0 || state.isInvisible) {
 			return;
 		}
@@ -59,7 +59,7 @@ public final class MountBardingLayer<M extends EntityModel<WildlifeRenderState>>
 		poseStack.translate(0, middle, 0);
 		poseStack.scale(GROW, GROW, GROW);
 		poseStack.translate(0, -middle, 0);
-		dev.wildercord.client.compat.RenderCompat.submitModel(collector.order(1), getParentModel(), state, poseStack, RenderType.entityCutout(texture), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), 0xFF000000 | state.barding, state.outlineColor);
+		dev.wildercord.client.compat.RenderCompat.submitModel(buffer, getParentModel(), state, poseStack, RenderType.entityCutout(texture), light, LivingEntityRenderer.getOverlayCoords(state, 0.0F), 0xFF000000 | state.barding, state.outlineColor);
 		poseStack.popPose();
 	}
 }

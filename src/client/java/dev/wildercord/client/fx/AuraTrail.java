@@ -5,8 +5,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -27,7 +27,7 @@ import org.joml.Vector3fc;
  * fading out before it reaches the middle of the view, and leaves out the extras. Third person and everyone else see it whole.
  * Decided every frame, so pressing F5 mid-swing changes it at once.</p>
  */
-public class AuraTrail extends SingleQuadParticle implements SigilGroup.Extent {
+public class AuraTrail extends McQuadParticle implements SigilGroup.Extent {
 	private final Entity anchor;
 	/** Where the swordsman stood when they cut (used once they're gone). */
 	private double baseX;
@@ -79,7 +79,7 @@ public class AuraTrail extends SingleQuadParticle implements SigilGroup.Extent {
 		this.color = color & 0xFFFFFF;
 		this.stage = stage;
 		this.power = Math.max(0.2F, power);
-		var committed = anchor instanceof net.minecraft.world.entity.Avatar avatar
+		var committed = anchor instanceof net.minecraft.world.entity.LivingEntity avatar
 			? dev.wildercord.client.MastersArtsClient.timeline(avatar) : null;
 		double yaw = Math.toRadians(committed == null ? anchor.getYHeadRot() : committed.yaw());
 		this.fx = -Math.sin(yaw);

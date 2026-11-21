@@ -5,8 +5,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Non-emissive impact scars projected onto nearby solid ground, with fragments of the actual floor. */
-public final class AuraGroundScar extends SingleQuadParticle implements SigilGroup.Extent {
+public final class AuraGroundScar extends McQuadParticle implements SigilGroup.Extent {
 	private record Key(Vec3 at, int kind, int radius) {}
 	private static final class Tile {
 		private final BlockPos floor;

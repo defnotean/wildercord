@@ -223,7 +223,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 	}
 	private static void clickNow(CordScreen editor, double[] at) {
 		check(at != null,"Editor control is visible before opening a child");
-		var press=new net.minecraft.client.input.MouseButtonEvent(at[0],at[1],new net.minecraft.client.input.MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT,0));
+		var press=new dev.wildercord.client.compat.McInput.MouseButtonEvent(at[0],at[1],new net.minecraft.client.input.MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT,0));
 		editor.mouseClicked(press,false);editor.mouseReleased(press);
 	}
 	private static void click(ClientGameTestContext c, double[] point) {

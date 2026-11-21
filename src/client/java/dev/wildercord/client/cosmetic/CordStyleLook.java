@@ -4,13 +4,13 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.cosmetic.CordCosmetics;
 import dev.wildercord.cosmetic.CordStyles;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
  * How a player's Cord style reaches the Cord layer: read from the synced attachment into the
- * render state as it's extracted (see {@code AvatarRendererStyleMixin}), then turned into the
+ * render state as it's extracted (see {@code PlayerRendererStyleMixin}), then turned into the
  * beads' textures and colours. The Cosmetics page sets it by hand to preview a style.
  */
 public final class CordStyleLook {
@@ -22,12 +22,12 @@ public final class CordStyleLook {
 	private static final java.util.Map<String, ResourceLocation> BEADS = new java.util.concurrent.ConcurrentHashMap<>();
 	private static final ResourceLocation CORE = Wildercord.id("textures/entity/cord/bead_core.png");
 
-	public static void extract(Avatar avatar, AvatarRenderState state) {
+	public static void extract(LivingEntity avatar, PlayerRenderState state) {
 		CordStyles.Style style = avatar.getAttached(CordCosmetics.STYLE);
 		state.setData(STYLE, style);
 	}
 
-	public static CordStyles.Style of(AvatarRenderState state) {
+	public static CordStyles.Style of(PlayerRenderState state) {
 		CordStyles.Style style = state.getData(STYLE);
 		return style == null ? CordStyles.Style.DEFAULT : style;
 	}

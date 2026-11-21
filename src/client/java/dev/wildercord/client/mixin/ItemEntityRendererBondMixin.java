@@ -3,10 +3,10 @@ package dev.wildercord.client.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.client.fx.AuraBlade;
 import dev.wildercord.client.fx.BondGlow;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.state.ItemEntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,19 +27,19 @@ public abstract class ItemEntityRendererBondMixin {
 		state.setData(BondGlow.GROUND_DAY, look != null && BondGlow.day(entity));
 	}
 
-	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/ItemEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+	@Inject(method = "render(Lnet/minecraft/client/renderer/entity/state/ItemEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
 		at = @At("HEAD"))
-	private void wildercord$bondBegin(ItemEntityRenderState state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera, CallbackInfo ci) {
+	private void wildercord$bondBegin(ItemEntityRenderState state, PoseStack pose, MultiBufferSource buffer, int light, CallbackInfo ci) {
 		BondGlow.Look look = state.getData(BondGlow.GROUND);
 		if (look != null) {
-			BondGlow.groundExtras(pose, collector, look, state.ageInTicks, camera.orientation, Boolean.TRUE.equals(state.getData(BondGlow.GROUND_DAY)));
+			BondGlow.groundExtras(pose, buffer, look, state.ageInTicks, dev.wildercord.client.compat.RenderCompat.cameraState().orientation, Boolean.TRUE.equals(state.getData(BondGlow.GROUND_DAY)));
 		}
 		AuraBlade.beginGround(look);
 	}
 
-	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/ItemEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+	@Inject(method = "render(Lnet/minecraft/client/renderer/entity/state/ItemEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
 		at = @At("RETURN"))
-	private void wildercord$bondEnd(ItemEntityRenderState state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera, CallbackInfo ci) {
+	private void wildercord$bondEnd(ItemEntityRenderState state, PoseStack pose, MultiBufferSource buffer, int light, CallbackInfo ci) {
 		AuraBlade.end();
 	}
 }

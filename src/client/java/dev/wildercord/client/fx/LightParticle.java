@@ -6,8 +6,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
@@ -23,7 +23,7 @@ import org.joml.Vector3f;
  * short pieces of a band texture, so they keep their width at any size; a beam's pieces turn to
  * face the viewer.
  */
-public class LightParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public class LightParticle extends McQuadParticle implements SigilGroup.Extent {
 	private final int kind;
 	private final boolean ownOutbound;
 	private final int color;
@@ -413,8 +413,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 
 	public static class Provider implements ParticleProvider<LightOption> {
 		@Override
-		public Particle createParticle(LightOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za,
-				RandomSource random) {
+		public Particle createParticle(LightOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za) {
 			return new LightParticle(level, x, y, z, option);
 		}
 	}

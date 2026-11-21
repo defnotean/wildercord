@@ -1,5 +1,6 @@
 package dev.wildercord.client.render;
 
+import dev.wildercord.client.compat.McModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -16,7 +17,7 @@ import net.minecraft.util.Unit;
  * skin or over a chestplate), a tie that straps a staff to the back ({@link #tie}) and a small ring for the
  * tome's strap ({@link #loop}). Their texture is one sheet of leather with a gold buckle.
  */
-public final class GearModel extends Model<Unit> {
+public final class GearModel extends McModel<Unit> {
 	private GearModel(ModelPart root) {
 		super(root, RenderType::entityCutout);
 	}

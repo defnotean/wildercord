@@ -3,8 +3,8 @@ package dev.wildercord.client.fx;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
  * tail of light behind it along the way it came; it swells in, thins and is gone. Flow's mark (wisps rising from the shoulders
  * and blade), and from Edge up part of the body's aura in a fight. Drawn with the other lights ({@link SigilGroup}).
  */
-public class AuraWisp extends SingleQuadParticle implements SigilGroup.Extent {
+public class AuraWisp extends McQuadParticle implements SigilGroup.Extent {
 	private static final int TAIL = 10;
 
 	private final int color;

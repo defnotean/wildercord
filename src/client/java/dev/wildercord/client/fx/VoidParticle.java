@@ -6,7 +6,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.client.renderer.LightTexture;
 
 /** Original dark interiors, material edge contrast and timed spatial fragments; no screen overlay. */
-public final class VoidParticle extends SingleQuadParticle implements SigilGroup.Extent {
+public final class VoidParticle extends McQuadParticle implements SigilGroup.Extent {
  /** Its two animation frames, looked up once instead of by name every tick. */
  private net.minecraft.client.renderer.texture.TextureAtlasSprite[] frames;
  private final VoidOption material;
@@ -46,6 +46,6 @@ public final class VoidParticle extends SingleQuadParticle implements SigilGroup
  @Override public double centreZ(){return z;}
  @Override public double reach(){return material.size()*1.8;}
  public static final class Provider implements ParticleProvider<VoidOption>{
-  @Override public Particle createParticle(VoidOption o,ClientLevel l,double x,double y,double z,double vx,double vy,double vz,RandomSource random){return new VoidParticle(l,x,y,z,o);}
+  @Override public Particle createParticle(VoidOption o, ClientLevel l, double x, double y, double z, double vx, double vy, double vz){return new VoidParticle(l,x,y,z,o);}
  }
 }

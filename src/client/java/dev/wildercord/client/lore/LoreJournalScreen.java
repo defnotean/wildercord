@@ -9,7 +9,7 @@ import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
+import dev.wildercord.client.compat.McInput.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -159,6 +159,10 @@ public final class LoreJournalScreen extends Screen {
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
+	}
+
 	public boolean keyPressed(KeyEvent event) {
 		if (LoreJournalClient.mapping() != null && LoreJournalClient.mapping().matches(event)) {
 			onClose();
@@ -181,6 +185,6 @@ public final class LoreJournalScreen extends Screen {
 			showTab(TABS.get(index % TABS.size()));
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(event.key(), event.scancode(), event.modifiers());
 	}
 }

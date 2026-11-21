@@ -5,8 +5,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.McQuadParticle;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -22,7 +22,7 @@ import org.joml.Vector3fc;
  * moved down and aside to the bottom of the view. Everyone else, and the owner in third
  * person, see it whole.</p>
  */
-public class AuraBurst extends SingleQuadParticle implements SigilGroup.Extent {
+public class AuraBurst extends McQuadParticle implements SigilGroup.Extent {
 	private final int color;
 	private final float size;
 	private final int style;

@@ -88,7 +88,7 @@ final class StormFormations {
     p.path(MaterialOption.STORM,0xC68AF3,new double[][]{{-.12,-.4,0},{.06,-.17,0},{-.04,.03,0},{.15,.25,.1*t}});
     p.arc(0xE1C5FF,-.4,.02,0,0,.03,.1);
    }
-   case "stormweave" -> { // Four marked nodes thread a crossing web, tightening into an electrical stitch.
+   case "stormweave" -> { // Four marked buffer thread a crossing web, tightening into an electrical stitch.
     double r=.44-.08*t;
     for(int i=0;i<4;i++){double a=Math.PI/4+i*Math.PI/2,b=a+Math.PI;p.dot(MaterialOption.ARCANE,0xE99FD9,Math.cos(a)*r,Math.sin(a)*r,0,.09);p.arc(0xEDB6F3,Math.cos(a)*r,Math.sin(a)*r,0,Math.cos(b)*r,Math.sin(b)*r,.1);}
     p.dot(MaterialOption.STORM,0xFFF0FF,0,0,.1,.09);
@@ -103,7 +103,7 @@ final class StormFormations {
     for(int i=-1;i<=1;i++)p.dot(MaterialOption.WATER,0xA0CDE7,i*.25,.14-.16*t,0,.065);
     p.path(MaterialOption.STORM,0xE9F2FF,new double[][]{{.08,.34,0},{-.12,.15,0},{.06,.03,0},{-.02,-.25*t,0}});
    }
-   case "frostwire" -> { // Crystalline conductor nodes are joined by a narrow running current.
+   case "frostwire" -> { // Crystalline conductor buffer are joined by a narrow running current.
     for(int i=0;i<4;i++)p.dot(MaterialOption.FROST,0xA5E5FF,i*.25-.375,(i%2==0?-.12:.12),0,.085);
     p.path(MaterialOption.STORM,0xBEEBFF,new double[][]{{-.375,-.12,0},{-.125,.12,0},{.125,-.12,0},{.375,.12,.08*t}});
     p.arc(0xECFCFF,-.375,-.12,0,-.375+.5*t,-.12,0);

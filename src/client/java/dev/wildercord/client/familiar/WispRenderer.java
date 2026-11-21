@@ -11,12 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -116,8 +115,9 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	}
 
 	@Override
-	public void submit(WispRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-		super.submit(state, poseStack, collector, camera);
+	public void render(WispRenderState state, PoseStack poseStack, MultiBufferSource buffer, int light) {
+		CameraRenderState camera = RenderCompat.cameraState();
+		super.render(state, poseStack, buffer, light);
 		if (state.isInvisible) {
 			return;
 		}
@@ -144,7 +144,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 		// Under a shader pack the glow is drawn the plain way, and is left out of its shadows: it's light, not a thing.
 		boolean plain = ShaderCompat.active();
 		if (!ShaderCompat.shadowPass()) {
-			collector.order(0).submitCustomGeometry(poseStack, plain ? PLAIN_GLOW_TYPE : GLOW_TYPE, (pose, buffer) -> {
+			RenderCompat.submitCustomGeometry(buffer, poseStack, plain ? PLAIN_GLOW_TYPE : GLOW_TYPE, (pose, buffer) -> {
 				// The tail, farthest first: beads of light shrinking and flickering along the way it came.
 				for (int i = tail.length / 3 - 1; i >= 0; i--) {
 					float along = (i + 1F) / (TAIL + 1F);
@@ -176,7 +176,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 				quad(buffer, pose, right, up, 0, 0, 0, size * (2.6F + 1.5F * flare), t * 0.03F, SPARK, glow(plain, scale(hot, (0.35F + 0.6F * flare) * bright)));
 			});
 		}
-		collector.order(1).submitCustomGeometry(poseStack, BODY_TYPE, (pose, buffer) -> {
+		RenderCompat.submitCustomGeometry(buffer, poseStack, BODY_TYPE, (pose, buffer) -> {
 			float half = size * (1.0F + 0.04F * breath + 0.12F * flare);
 			quad(buffer, pose, right, up, 0, 0, 0, half, 0, bodyFrame(frame), 0xFF000000 | mix(pale, 0xFFFFFF, 0.25F * flare));
 		});
@@ -187,20 +187,20 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 
 	/** Small, with no dark plate behind it; clear when you look at it, dimmer otherwise. */
 	@Override
-	protected void submitNameTag(WispRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-		Component name = state.nameTag;
+	protected void renderNameTag(WispRenderState state, Component name, PoseStack poseStack, MultiBufferSource buffer, int light) {
 		if (name == null || state.nameTagAttachment == null) {
 			return;
 		}
 		Font font = Minecraft.getInstance().font;
+		CameraRenderState camera = dev.wildercord.client.compat.RenderCompat.cameraState();
 		float alpha = state.looked || state.distanceToCameraSq < 25 ? 1.0F : 0.55F;
 		poseStack.pushPose();
 		poseStack.translate(state.nameTagAttachment.x, state.nameTagAttachment.y + 0.3, state.nameTagAttachment.z);
 		dev.wildercord.client.compat.RenderCompat.rotate(poseStack, camera.orientation);
 		poseStack.scale(0.017F, -0.017F, 0.017F);
 		float x = -font.width(name) / 2.0F;
-		collector.submitText(poseStack, x, 0, name.getVisualOrderText(), true, Font.DisplayMode.NORMAL, FULL,
-			((int) (alpha * 255) << 24) | 0xFFFFFF, 0, 0);
+		dev.wildercord.client.compat.RenderCompat.submitText(buffer, poseStack, font, name.getVisualOrderText(), x, 0,
+			true, FULL, ((int) (alpha * 255) << 24) | 0xFFFFFF, 0);
 		poseStack.popPose();
 	}
 

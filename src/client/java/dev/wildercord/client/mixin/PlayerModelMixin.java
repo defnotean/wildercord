@@ -3,7 +3,7 @@ package dev.wildercord.client.mixin;
 import dev.wildercord.client.CastingPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(PlayerModel.class)
 public abstract class PlayerModelMixin {
-	@Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)V", at = @At("TAIL"))
-	private void wildercord$pose(AvatarRenderState state, CallbackInfo ci) {
+	@Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;)V", at = @At("TAIL"))
+	private void wildercord$pose(PlayerRenderState state, CallbackInfo ci) {
 		if (dev.wildercord.client.combat.ArticulatedCombat.applyPlayer((PlayerModel) (Object) this, state)) return;
 		if (dev.wildercord.client.MastersArtPose.apply((PlayerModel) (Object) this, state)) return;
 		CastingPose pose = (CastingPose) state;

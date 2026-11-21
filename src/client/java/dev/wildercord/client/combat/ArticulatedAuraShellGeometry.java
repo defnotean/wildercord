@@ -6,6 +6,7 @@ import dev.wildercord.aura.ArticulatedArmorMesh.Region;
 import dev.wildercord.aura.ArticulatedCombatPose;
 import dev.wildercord.aura.ArticulatedCombatPose.Vec3;
 import dev.wildercord.client.render.AuraShellLayer;
+import dev.wildercord.client.compat.McModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
@@ -26,7 +27,7 @@ import java.util.Objects;
  * Runtime shell bakes supply the 64x64 UVs and .55px stand-off. No caps, duplicate rigid shell,
  * skin overlays, or copied texture assets are added. Every deferred pass uses its own palette.
  */
-public final class ArticulatedAuraShellGeometry extends Model<ArticulatedArmorGeometry.Palette> {
+public final class ArticulatedAuraShellGeometry extends McModel<ArticulatedArmorGeometry.Palette> {
 	private record Source(Matrix4f pose, ModelPart.Cube cube) {}
 	private record Baked(ModelPart root, ArticulatedArmorMesh.Mesh mesh, List<ModelPart.Cube> faces) {}
 	private final ArticulatedArmorMesh.Mesh mesh;

@@ -17,10 +17,10 @@ import net.minecraft.ChatFormatting;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
+import dev.wildercord.client.compat.McInput.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -343,7 +343,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		if (hovered != null) {
 			style = style.with(hovered);
 		}
-		if (state instanceof AvatarRenderState avatar) {
+		if (state instanceof PlayerRenderState avatar) {
 			avatar.setData(CordStyleLook.STYLE, style);
 			CastingPose pose = (CastingPose) avatar;
 			WildercordAttachments.CordLook cord = pose.wildercord$cord();

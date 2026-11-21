@@ -183,11 +183,11 @@ public final class BrambleFireProbe {
 		List<String> nodes = new ArrayList<>();
 		for (int i = 0; i < Math.min(path.getNodeCount(), NODE_LIMIT); i++) {
 			var n = path.getNode(i);
-			nodes.add(i + ":" + n.x + "," + n.y + "," + n.z + ":" + n.type + ":malus=" + n.costMalus);
+			buffer.add(i + ":" + n.x + "," + n.y + "," + n.z + ":" + n.type + ":malus=" + n.costMalus);
 		}
 		return "{identity=" + System.identityHashCode(path) + ",canReach=" + path.canReach() + ",done=" + path.isDone()
 			+ ",index=" + path.getNextNodeIndex() + ",count=" + path.getNodeCount() + ",target=" + path.getTarget()
-			+ ",next=" + (path.isDone() ? "none" : path.getNextNodePos()) + ",nodes=" + nodes
+			+ ",next=" + (path.isDone() ? "none" : path.getNextNodePos()) + ",nodes=" + buffer
 			+ ",omittedNodes=" + Math.max(0, path.getNodeCount() - NODE_LIMIT) + "}";
 	}
 

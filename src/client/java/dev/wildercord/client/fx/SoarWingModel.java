@@ -6,9 +6,9 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.SingleQuadParticle;
+import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import dev.wildercord.client.compat.QuadParticleRenderState;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
@@ -17,7 +17,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 /** Articulated, double-sided flight feathers rooted to the interpolated shoulder blades. */
-public final class SoarWingModel extends SingleQuadParticle implements SigilGroup.Extent {
+public final class SoarWingModel extends McQuadParticle implements SigilGroup.Extent {
 
     private final AbstractClientPlayer flier;
     private float spread, oldSpread;

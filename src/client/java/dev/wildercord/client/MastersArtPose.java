@@ -6,10 +6,10 @@ import dev.wildercord.aura.MastersArtAnimation;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 
@@ -23,7 +23,7 @@ public final class MastersArtPose {
 	public static final RenderStateDataKey<Frame> FRAME = RenderStateDataKey.create(() -> "wildercord:masters_art_pose");
 
 	/** Captures an immutable frame before drawing; models never look back into the live entity. */
-	public static void extract(Avatar avatar, AvatarRenderState state, float partial) {
+	public static void extract(LivingEntity avatar, PlayerRenderState state, float partial) {
 		MastersArtAnimation.Pose pose = MastersArtsClient.pose(avatar, partial);
 		var timeline = MastersArtsClient.timeline(avatar);
 		state.setData(FRAME, null);
@@ -61,7 +61,7 @@ public final class MastersArtPose {
 	}
 
 	/** Returns true when this art owns the pose, ahead of an older spell-casting gesture. */
-	public static boolean apply(PlayerModel model, AvatarRenderState state) {
+	public static boolean apply(PlayerModel model, PlayerRenderState state) {
 		Frame frame = frame(state);
 		if (frame == null) return false;
 		MastersArtAnimation.Pose pose = frame.pose();
@@ -104,7 +104,7 @@ public final class MastersArtPose {
 	}
 
 	/** The same extracted palette owns residual attack motion; genuine equip/use retains vanilla. */
-	public static float firstPersonOwnership(InteractionHand hand, AvatarRenderState state,
+	public static float firstPersonOwnership(InteractionHand hand, PlayerRenderState state,
 			dev.wildercord.client.compat.FirstPersonHandView hands) {
 		Frame frame = frame(state);
 		boolean owns = hand == InteractionHand.MAIN_HAND && frame != null
@@ -115,7 +115,7 @@ public final class MastersArtPose {
 	}
 
 	/** Main-hand weapon travel follows the same accepted timeline, mirrored for left-handed play. */
-	public static void firstPerson(PoseStack stack, InteractionHand hand, AvatarRenderState state, float inverseArmHeight) {
+	public static void firstPerson(PoseStack stack, InteractionHand hand, PlayerRenderState state, float inverseArmHeight) {
 		Frame frame = frame(state);
 		if (hand != InteractionHand.MAIN_HAND || frame == null) return;
 		MastersArtAnimation.Pose pose = frame.pose();
@@ -135,7 +135,7 @@ public final class MastersArtPose {
 	/** The rigid arm cannot bend its wrist, so thrusts and low cuts turn the held sword about its hilt. */
 	public static void heldSword(net.minecraft.client.renderer.entity.state.ArmedEntityRenderState state, HumanoidArm arm,
 			net.minecraft.world.item.ItemStack item, PoseStack stack) {
-		if (!(state instanceof AvatarRenderState avatar) || arm != state.mainArm || !item.is(net.minecraft.tags.ItemTags.SWORDS)) return;
+		if (!(state instanceof PlayerRenderState avatar) || arm != state.mainArm || !item.is(net.minecraft.tags.ItemTags.SWORDS)) return;
 		Frame frame = frame(avatar);
 		if (dev.wildercord.client.combat.ArticulatedCombat.frame(avatar) != null || frame == null || frame.bladeTilt() == 0) return;
 		// Vanilla handheld display's hilt centre, in the pre-item-submit coordinate frame.
@@ -145,11 +145,11 @@ public final class MastersArtPose {
 		stack.translate(0, -y, -z);
 	}
 
-	private static Frame frame(AvatarRenderState state) {
+	private static Frame frame(PlayerRenderState state) {
 		return eligible(state) ? state.getData(FRAME) : null;
 	}
 
-	private static boolean eligible(AvatarRenderState state) {
+	private static boolean eligible(PlayerRenderState state) {
 		return state != null && !state.isSpectator && state.deathTime <= 0 && !state.isAutoSpinAttack && !state.isFallFlying
 			&& !state.hasPose(Pose.SWIMMING) && !state.hasPose(Pose.SLEEPING) && !state.isUpsideDown;
 	}

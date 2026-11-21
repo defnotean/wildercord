@@ -7,12 +7,12 @@ import dev.wildercord.aura.world.MasterTechniques;
 import dev.wildercord.aura.world.SwordMaster;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.client.fx.AuraBlade;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import dev.wildercord.client.compat.RenderCompat;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.joml.Matrix4f;
@@ -80,8 +80,9 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 	}
 
 	@Override
-	public void submit(AuraFighterRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-		super.submit(state, poseStack, collector, camera);
+	public void render(AuraFighterRenderState state, PoseStack poseStack, MultiBufferSource buffer, int light) {
+		CameraRenderState camera = RenderCompat.cameraState();
+		super.render(state, poseStack, buffer, light);
 		MasterMotion.Frame frame = state.getData(MasterMotion.RIG);
 		MasterRig rig = MasterRig.get();
 		if (frame == null || rig == null || state.isInvisible) return;
@@ -98,16 +99,16 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 		ResourceLocation skin = RIG_SKINS.computeIfAbsent(state.method, method -> Wildercord.id("textures/entity/master_rig/" + (MASTER_SKINS.contains(method) ? method : "base") + ".png"));
 		boolean whole = frame.alpha() >= 0.999F;
 		int body = (Math.round(frame.alpha() * 255) << 24) | 0xFFFFFF;
-		collector.order(0).submitCustomGeometry(poseStack, whole ? RenderType.entityCutout(skin) : RenderType.entityTranslucent(skin),
+		RenderCompat.submitCustomGeometry(buffer, poseStack, whole ? RenderType.entityCutout(skin) : RenderType.entityTranslucent(skin),
 			(pose, buffer) -> rig.emit(placed, bone -> true, mirror < 0, pose, buffer, body, overlay, light));
 		float glow = (.7F + .3F * state.windup) * AuraFighterRenderer.alive(state) * frame.alpha();
 		int eyes = AuraFighterRenderer.tint(glow, state.color);
-		if ((eyes >>> 24) >= 4) collector.order(1).submitCustomGeometry(poseStack, RenderType.eyes(RIG_GLOW),
+		if ((eyes >>> 24) >= 4) RenderCompat.submitCustomGeometry(buffer, poseStack, RenderType.eyes(RIG_GLOW),
 			(pose, buffer) -> rig.emit(placed, bone -> !blade[bone], mirror < 0, pose, buffer, eyes, overlay, light));
 		AuraBlade.Glow aura = state.getData(AuraBlade.GLOW);
 		if (aura != null && state.drawn > 0.5F) {
 			int edge = AuraFighterRenderer.tint(Math.min(1, aura.strength()) * frame.alpha(), aura.color());
-			if ((edge >>> 24) >= 4) collector.order(1).submitCustomGeometry(poseStack, RenderType.eyes(RIG_BLADE),
+			if ((edge >>> 24) >= 4) RenderCompat.submitCustomGeometry(buffer, poseStack, RenderType.eyes(RIG_BLADE),
 				(pose, buffer) -> rig.emit(placed, bone -> blade[bone], mirror < 0, pose, buffer, edge, overlay, light));
 		}
 		poseStack.popPose();
@@ -122,7 +123,7 @@ public final class MasterRenderer extends AuraFighterRenderer<SwordMaster, Maste
 			poseStack.scale(mirror / 16, 1 / 16F, 1 / 16F);
 			Matrix4f[] image = rig.matrices(ghost.pose());
 			int tint = AuraFighterRenderer.tint(ghost.alpha(), state.color);
-			collector.order(2).submitCustomGeometry(poseStack, RenderType.entityTranslucent(skin),
+			RenderCompat.submitCustomGeometry(buffer, poseStack, RenderType.entityTranslucent(skin),
 				(pose, buffer) -> rig.emit(image, bone -> true, mirror < 0, pose, buffer, tint, overlay, light));
 			poseStack.popPose();
 		}

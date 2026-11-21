@@ -22,8 +22,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import dev.wildercord.client.compat.McInput.KeyEvent;
+import dev.wildercord.client.compat.McInput.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
@@ -582,6 +582,10 @@ public final class RuneCatalogScreen extends Screen {
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		return keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
+	}
+
 	public boolean keyPressed(KeyEvent event) {
 		int key = event.key();
 		if (key == InputConstants.KEY_PAGEUP) {
@@ -613,7 +617,7 @@ public final class RuneCatalogScreen extends Screen {
 			search.setValue("");
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(event.key(), event.scancode(), event.modifiers());
 	}
 
 	/** Moves the pick up or down the list, turning the page when it runs off one. */

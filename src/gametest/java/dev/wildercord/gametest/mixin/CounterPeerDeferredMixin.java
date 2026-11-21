@@ -29,7 +29,7 @@ public abstract class CounterPeerDeferredMixin {
 	}
 	@WrapOperation(method = "renderModel(Lnet/minecraft/client/renderer/SubmitNodeStorage$ModelSubmit;Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/renderer/OutlineBufferSource;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/Model;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;III)V"), require = 1, expect = 3, allow = 3)
-	private void drawnNativeBody(Model<?> model, PoseStack pose, VertexConsumer vertices, int light, int overlay, int tint,
+	private void drawnNativeBody(Model model, PoseStack pose, VertexConsumer vertices, int light, int overlay, int tint,
 		Operation<Void> original, @Local(argsOnly = true) SubmitNodeStorage.ModelSubmit<?> node) {
 		float[] root = CounterPeerRenderProbe.passive(() -> pose.last().pose().get(new float[16]), null);
 		original.call(model, pose, vertices, light, overlay, tint);
