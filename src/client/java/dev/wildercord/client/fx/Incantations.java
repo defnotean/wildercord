@@ -8,7 +8,7 @@ import dev.wildercord.spell.Incantation;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+import dev.wildercord.client.compat.WorldRenderCompat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -152,7 +152,7 @@ public final class Incantations {
 	// ------------------------------------------------------------------ drawing
 
 	/** Draws every incantation in the world, facing the camera, among the frame's other translucent things. */
-	public static void submit(WorldRenderContext context) {
+	public static void submit(WorldRenderCompat.Context context) {
 		Minecraft mc = Minecraft.getInstance();
 		ClientLevel level = mc.level;
 		if (level == null || SPOKEN.isEmpty()) {
@@ -226,7 +226,7 @@ public final class Incantations {
 	 * One syllable, facing the camera, {@code x} and {@code y} font pixels from the anchor (y up): its
 	 * rune's colour lightened, with a darker outline, at full brightness, like glowing sign text.
 	 */
-	private static void drawWord(WorldRenderContext context, PoseStack pose, CameraRenderState camera, Vec3 at, FormattedCharSequence text, float x,
+	private static void drawWord(WorldRenderCompat.Context context, PoseStack pose, CameraRenderState camera, Vec3 at, FormattedCharSequence text, float x,
 			float y, int color, float alpha) {
 		pose.pushPose();
 		pose.translate(at.x - camera.pos.x, at.y - camera.pos.y, at.z - camera.pos.z);
