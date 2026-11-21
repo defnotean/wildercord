@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import dev.wildercord.aura.BreathingManualItem;
 import dev.wildercord.aura.BreathingMethods;
 import dev.wildercord.aura.MethodSources;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,7 +60,7 @@ public final class VillagerTradeCompat {
 		if (extra.length == 0) {
 			return;
 		}
-		Int2ObjectOpenHashMap<ItemListing[]> byLevel = VillagerTrades.TRADES.computeIfAbsent(profession, k -> new Int2ObjectOpenHashMap<>());
+		Int2ObjectMap<ItemListing[]> byLevel = VillagerTrades.TRADES.computeIfAbsent(profession, k -> new Int2ObjectOpenHashMap<>());
 		ItemListing[] existing = byLevel.getOrDefault(level, new ItemListing[0]);
 		List<ItemListing> merged = new ArrayList<>(List.of(existing));
 		merged.addAll(List.of(extra));
@@ -128,7 +129,7 @@ public final class VillagerTradeCompat {
 					.orElseGet(() -> BreathingMethods.BUILT_IN.get(dice.nextInt(BreathingMethods.BUILT_IN.size())).id());
 				result.set(BreathingManualItem.METHOD, method);
 			}
-			return new MerchantOffer(costA, java.util.Optional.ofNullable(costB), result, maxUses, xp, priceMultiplier, demand);
+			return new MerchantOffer(costA, java.util.Optional.ofNullable(costB), result, maxUses, xp, demand, priceMultiplier);
 		};
 	}
 
@@ -143,7 +144,7 @@ public final class VillagerTradeCompat {
 
 	private static ItemStack stack(JsonObject json) {
 		Identifier itemId = Identifier.parse(json.get("id").getAsString());
-		ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId));
+		ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId).orElseThrow());
 		if (json.has("count")) {
 			stack.setCount(json.get("count").getAsInt());
 		}

@@ -116,11 +116,11 @@ public final class UpgradeSites extends SavedData {
 			return "Natural placement for "+family.structureSet()+" differs from the reviewed spread; refused";
 		for(var r:regions) {
 			var candidate=spread.getPotentialStructureChunk(state.getLevelSeed(),r.x()*family.spacing(),r.z()*family.spacing());
-			if(!r.equals(UpgradeCatalog.region(family,chunkX,chunkZ)) && Math.max(Math.abs(candidate.x()-chunkX),Math.abs(candidate.z()-chunkZ))>family.separation())continue;
+			if(!r.equals(UpgradeCatalog.region(family,chunkX,chunkZ)) && Math.max(Math.abs(candidate.x-chunkX),Math.abs(candidate.z-chunkZ))>family.separation())continue;
 			for(var entry:set.value().structures()) {
 				var result=level.structureManager().checkStructurePresence(candidate,entry.structure().value(),spread,false);
 				if(result!=StructureCheckResult.START_NOT_PRESENT)
-					return "Natural "+family.structure()+" "+result+" at candidate chunk "+candidate.x()+","+candidate.z()+" in this or a neighbouring spread region";
+					return "Natural "+family.structure()+" "+result+" at candidate chunk "+candidate.x+","+candidate.z+" in this or a neighbouring spread region";
 			}
 		}
 		return "";

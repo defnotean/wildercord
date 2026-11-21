@@ -53,7 +53,7 @@ public final class WorldUpgrades {
 		ServerTickEvents.END_SERVER_TICK.register(WorldUpgrades::tick);
 		PlayerBlockBreakEvents.AFTER.register((level,player,pos,state,entity)->{if(level instanceof ServerLevel serverLevel)UpgradeEdits.successfulPlayerEdit(serverLevel,pos);});
 		CommandRegistrationCallback.EVENT.register((dispatcher,registry,environment)->UpgradeCommands.register(dispatcher));
-		ServerChunkEvents.CHUNK_LOAD.register((level,chunk,fresh)->{
+		ServerChunkEvents.CHUNK_LOAD.register((level,chunk)->{
 			var s=SESSIONS.get(level.getServer());
 			try{UpgradeSites.observe(level,chunk,s==null || s.engine==null?List.of():s.engine.entries());}
 			catch(RuntimeException ex){Wildercord.LOGGER.error("Natural encounter observation failed; unique-encounter upgrades stay refused for unverified regions",ex);}

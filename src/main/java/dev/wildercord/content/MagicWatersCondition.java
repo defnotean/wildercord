@@ -24,14 +24,14 @@ public record MagicWatersCondition(double multiplier) implements LootItemConditi
 		Codec.doubleRange(0, 100).optionalFieldOf("multiplier", 1.0).forGetter(MagicWatersCondition::multiplier)
 	).apply(i, MagicWatersCondition::new));
 
-	public static final LootItemConditionType<MagicWatersCondition> TYPE = new LootItemConditionType<>(MAP_CODEC);
+	public static final LootItemConditionType TYPE = new LootItemConditionType(MAP_CODEC);
 
 	public MapCodec<MagicWatersCondition> codec() {
 		return MAP_CODEC;
 	}
 
 	@Override
-	public LootItemConditionType<MagicWatersCondition> getType() {
+	public LootItemConditionType getType() {
 		return TYPE;
 	}
 
