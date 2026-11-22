@@ -261,7 +261,7 @@ public final class RelayInheritedChecks {
 			if(cells.size()<32)cells.add(pos.getX()+","+pos.getY()+","+pos.getZ()+":"+(state.is(Blocks.ICE)?"arena":"world"));
 		}
 		var primary=frost.primary.getBoundingBox().getCenter();var view=owner.getAttached(RelayState.VIEW);
-		boolean eyeClear=RelayCircles.clear(owner.level(),owner,owner.getEyePosition(),primary);
+		boolean eyeClear=RelayCircles.clear(((ServerLevel) owner.level()),owner,owner.getEyePosition(),primary);
 		boolean focusClear=frost.warning!=null&&RelayCircles.clear(((ServerLevel) owner.level()),owner,frost.warning.focus(),primary);
 		boolean laneClear=frost.warning!=null&&RelayCircles.clear(((ServerLevel) owner.level()),owner,frost.warning.focus(),frost.warning.end());
 		value.addProperty("phase",phase);value.addProperty("geometry",frost.elevated?"clear_lane_positive":"original_ground_diagnostic");

@@ -23,7 +23,7 @@ final class NextSignatureNative {
  static void teach(ServerPlayer p){p.setGameMode(GameType.SURVIVAL);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));
   var book=Spellbooks.get(p).withStarterGiven();for(var rune:Runes.all())book=book.learn(rune.id());Spellbooks.set(p,book);}
  static void floor(ServerPlayer p){for(var at:BlockPos.betweenClosed(new BlockPos(-12,100,-12),new BlockPos(20,100,20)))p.level().setBlock(at,Blocks.STONE_BRICKS.defaultBlockState(),2);teach(p);pose(p,.5,.5,0);}
- static void pose(ServerPlayer p,double x,double z,float pitch){p.teleportTo(p.level(),x,101,z,Set.<Relative>of(),0,pitch,false);}
+ static void pose(ServerPlayer p,double x,double z,float pitch){p.teleportTo(((ServerLevel) p.level()),x,101,z,Set.<Relative>of(),0,pitch,false);}
  /** Native collision with the fixture floor establishes grounding; no onGround flag is injected. */
  static void ground(ServerPlayer p){
   double before=p.getY();p.move(MoverType.SELF,new Vec3(0,-.125,0));
@@ -38,7 +38,7 @@ final class NextSignatureNative {
   check(t instanceof Mob,"Husk fixture");var mob=(Mob)t;mob.setNoAi(true);mob.snapTo(x,101,z,0,0);p.level().addFreshEntity(mob);return mob;}
  static ServerPlayer guest(ServerPlayer p,String name,boolean ally){
   check(name.length()<=16,"Native player profile name fits packet limit: "+name);
-  var guest=new FakePlayer(((ServerLevel) p.level()),new com.mojang.authlib.GameProfile(UUID.nameUUIDFromBytes(name.getBytes(java.nio.charset.StandardCharsets.UTF_8)),name)){
+  var guest=new FakePlayer(p.getServer(),new com.mojang.authlib.GameProfile(UUID.nameUUIDFromBytes(name.getBytes(java.nio.charset.StandardCharsets.UTF_8)),name)){
    @Override public net.minecraft.world.scores.PlayerTeam getTeam(){return level().getScoreboard().getPlayersTeam(getScoreboardName());}
    @Override public boolean isInvulnerableTo(ServerLevel level,net.minecraft.world.damagesource.DamageSource source){return false;}
   };

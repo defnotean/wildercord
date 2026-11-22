@@ -207,7 +207,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 				stand(player);
 				setAura(player, method, s, AuraRules.capacity(s));
 				player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
-				player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(2.9);
+				dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 2.9);
 				// Facing the camera (third person, in front), a little from above.
 				player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 200.0F, 12.0F, false);
 				player.setAttached(AuraPresence.LOOK, AuraPresence.look(player).fightUntil(0));
@@ -267,7 +267,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		context.waitTicks(5);
 		shot(context, "aurafx_body_sovereign_fp_day");
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
 			return null;
 		});
 	}
@@ -403,7 +403,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			setAura(player, "gale", AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_AXE));
 			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.0), 400).addTag("wildercord.aurafx_target");
-			spawn(player.level(), EntityType.HUSK, at(-1.6, 2.3), 400);
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(-1.6, 2.3), 400);
 			spawn(player.level(), EntityType.HUSK, at(1.6, 2.3), 400);
 			return null;
 		});
@@ -421,7 +421,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		context.waitTicks(30);
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
 			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 30.0F, false);
 			return null;
 		});
@@ -430,7 +430,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		context.waitTicks(2);
 		shot(context, "aurafx_sweep_tp");
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
 			return null;
 		});
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
@@ -491,9 +491,9 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			setAura(player, "hollow", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 			for (int i = 0; i < 3; i++) {
-				spawn(player.level(), EntityType.HUSK, at(-2 + 2 * i, 7), 400);
+				spawn(((ServerLevel) player.level()), EntityType.HUSK, at(-2 + 2 * i, 7), 400);
 			}
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.5);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.5);
 			return null;
 		});
 		world.getServer().runCommand("time set 18000");
@@ -536,7 +536,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		on(world, player -> {
 			stand(player);
 			setAura(player, "hollow", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(6.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 6.0);
 			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 35.0F, false);
 			return null;
 		});
@@ -567,7 +567,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		shot(context, "aurafx_dominion_fp");
 		world.getServer().runCommand("time set 3000");
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
 			return null;
 		});
 		// The circle's light runs its whole time on each client: let it go before the next pictures.
@@ -595,10 +595,10 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 				setAura(player, method, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 				player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 				player.removeAttached(SwordStrings.COOLDOWNS);
-				spawn(player.level(), EntityType.HUSK, at(-1.6, 2.4), 400);
+				spawn(((ServerLevel) player.level()), EntityType.HUSK, at(-1.6, 2.4), 400);
 				spawn(((ServerLevel) player.level()), EntityType.HUSK, at(1.6, 2.4), 400);
 				spawn(player.level(), EntityType.HUSK, at(0, 3.0), 400);
-				player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.0);
+				dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
 				player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 30.0F, false);
 				return null;
 			});
@@ -642,7 +642,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		}
 		world.getServer().runCommand("time set 3000");
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
 			return null;
 		});
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
@@ -783,7 +783,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 	private static void freshSwingTarget(TestSingleplayerContext world) {
 		on(world, player -> {
 			kill(player, "wildercord.aurafx_target");
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
 			return null;
 		});
 	}

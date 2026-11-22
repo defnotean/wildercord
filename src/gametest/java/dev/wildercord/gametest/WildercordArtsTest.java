@@ -942,7 +942,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				float taken = on(world, player -> {
 					Mob attacker = foes(player).getFirst();
 					float hp = player.getHealth();
-					attacker.doHurtTarget(player.level(), player);
+					attacker.doHurtTarget(((ServerLevel) player.level()), player);
 					return hp - player.getHealth();
 				});
 				check(taken <= 0, scene.id + ": the guard should have been perfect (took " + taken + ")");
@@ -1017,8 +1017,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			world.getServer().runCommand(night ? "time set 18000" : "time set 3000");
 			set(world, scene);
 			on(world, player -> {
-				player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.5);
-				player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, tpPitch(scene), false);
+				dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.5);
+				player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, tpPitch(scene), false);
 				return null;
 			});
 			context.runOnClient(mc -> {
@@ -1054,7 +1054,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				AuraApi.StringArt art = AuraApi.string(scene.id).orElseThrow();
 				if (step) {
 					// A rush or a blink starts where a step ended: move the swordsman there first.
-					player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ() + 6, Set.<Relative>of(), 0.0F, tpPitch(scene), false);
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ() + 6, Set.<Relative>of(), 0.0F, tpPitch(scene), false);
 				}
 				return SwordStrings.perform(player, art, marks(art)) ? null : scene.id + " didn't go off on the server";
 			});
@@ -1079,7 +1079,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		}
 		context.waitTicks(lingerTicks(scene));
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
 			return null;
 		});
 		world.getServer().runCommand("time set 3000");
@@ -1236,7 +1236,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		check(timing != null, "Moon's toll checks require its real fixed-release profile");
 		context.waitTicks(timing.recovery() + 1);
 		on(world, player -> {
-			check(!player.level().getGameRules().getRule(GameRules.RULE_NATURAL_REGENERATION).get(),
+			check(!((ServerLevel) player.level()).getGameRules().getRule(GameRules.RULE_NATURAL_REGENERATION).get(),
 				"Natural healing remains disabled before asynchronous toll probes");
 			kill(player); return null;
 		});
@@ -1458,7 +1458,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	 */
 	private static String arrowTurned(ClientGameTestContext context, TestSingleplayerContext world, boolean back) {
 		Object[] shot = on(world, player -> {
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			// A skeleton off to the left loosed it (the mirror sends it back at whoever loosed it), from in front and aside, clear of
 			// the husks.
 			Mob archer = spawn(level, EntityType.SKELETON, player.position().add(-4.5, 0, 9), 40);

@@ -110,7 +110,7 @@ public final class StasisDeliveryProbe implements AutoCloseable {
             row.addProperty("owner", ownerId); row.addProperty("expectedTarget", targetId);
             row.addProperty("observedServerTick", tick); row.addProperty("clientGameTime", client.level.getGameTime());
             row.add("ownerState", body(client.player)); row.addProperty("input", client.player.input.keyPresses.toString());
-            row.addProperty("sentInput", client.player.getLastSentInput().toString());
+            row.addProperty("sentInput", client.player.input.keyPresses.toString());
             row.addProperty("jumpDown", client.options.keyJump.isDown()); row.addProperty("shiftDown", client.options.keyShift.isDown());
             row.addProperty("forwardDown", client.options.keyUp.isDown()); row.addProperty("backDown", client.options.keyDown.isDown());
             row.addProperty("leftDown", client.options.keyLeft.isDown()); row.addProperty("rightDown", client.options.keyRight.isDown());

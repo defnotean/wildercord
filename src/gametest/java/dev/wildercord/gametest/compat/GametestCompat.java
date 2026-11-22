@@ -82,7 +82,7 @@ public final class GametestCompat {
 
 	/** 1.21.11 dropped Camera#getViewRotationProjectionMatrix: rebuild it from the camera pose and the perspective. */
 	public static Matrix4f viewProjection(Camera camera, Matrix4f out) {
-		Vec3 pos = camera.position();
+		Vec3 pos = camera.getPosition();
 		out.rotation(camera.rotation()).translate((float) -pos.x, (float) -pos.y, (float) -pos.z);
 		return Minecraft.getInstance().gameRenderer.getProjectionMatrix(reportedFov(camera)).mul(out, out);
 	}
@@ -206,5 +206,13 @@ public final class GametestCompat {
 
 	public static void swingMainHandWithItem(LocalPlayer player) {
 		player.swing(InteractionHand.MAIN_HAND, true);
+	}
+
+	/**
+	 * 1.21.5 has no camera-distance attribute: that arrived with 1.21.6. Third person sits at vanilla
+	 * 's fixed distance here, so the pull-back the tests ask for is a no-op and the spectacle checks
+	 * run at that distance.
+	 */
+	public static void cameraDistance(ServerPlayer player, double distance) {
 	}
 }

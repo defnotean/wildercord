@@ -873,7 +873,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	/** Third person, the view turned {@code yaw} (a side view, so the foe isn't hidden behind the swordsman) and looking {@code pitch} down. */
 	private static void thirdPerson(ClientGameTestContext context, TestSingleplayerContext world, float yaw, float pitch, boolean hud) {
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
 			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), yaw, pitch, false);
 			return null;
 		});
@@ -888,7 +888,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 
 	private static void firstPerson(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
 			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 8.0F, false);
 			return null;
 		});

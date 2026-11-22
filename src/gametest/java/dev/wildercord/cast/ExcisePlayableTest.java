@@ -263,7 +263,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                             probe.cancelledAt = clock; probe.recovery = clock + 12;
                             if (elapsed == 0) ExciseCasting.cancel(old); // explicit cancellation and respawn share this clock
                         }
-                        old.kill(old.level());
+                        old.kill(((ServerLevel) old.level()));
                         old.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
                         var fresh = player(s); probe.player = fresh;
                         fresh.teleportTo(s.overworld(), .5, 150, .5, Set.<Relative>of(), 0, 0, false);

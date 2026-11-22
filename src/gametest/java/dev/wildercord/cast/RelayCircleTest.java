@@ -294,7 +294,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 	}
 	public static void reset(ServerPlayer player, dev.wildercord.spell.RuneDef effect) {
 		RelayCircles.cancel(player);
-		player.teleportTo(player.level(), FEET.x, FEET.y, FEET.z, Set.<Relative>of(), 0, 55, false);
+		player.teleportTo(((ServerLevel) player.level()), FEET.x, FEET.y, FEET.z, Set.<Relative>of(), 0, 55, false);
 		player.setDeltaMovement(Vec3.ZERO); player.setOnGround(true); player.setShiftKeyDown(false);
 		player.setAttached(RelayState.REST, 0L);
 		for (int i = 0; i < dev.wildercord.gear.SpellSlots.ALL; i++) Spellbooks.setReadyAt(player, i, 0);

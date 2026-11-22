@@ -243,11 +243,11 @@ public final class CounterSpellCapture {
 				return true;
 			}));
 			require(result && calls[0] == 1 && s.runeDamage == 1, "Original result and exactly one original call retained");
-			damage(foreign, target, () -> nativeDamage(target, owner.level(), source, () -> {
+			damage(foreign, target, () -> nativeDamage(target, ((ServerLevel) owner.level()), source, () -> {
 				calls[0]++; require(!matches(s, target, source), "An unrelated Cast by the same owner cannot satisfy the rune receipt"); return false;
 			}));
 			require(calls[0] == 2 && s.runeDamage == 1, "Incidental damage is neither suppressed nor counted");
-			damage(expected, target, () -> nativeDamage(target, owner.level(), source, () -> {
+			damage(expected, target, () -> nativeDamage(target, ((ServerLevel) owner.level()), source, () -> {
 				calls[0]++;
 				damage(foreign, target, () -> nativeDamage(target, ((ServerLevel) owner.level()), source, () -> {
 					require(!matches(s, target, source), "Nested unrelated damage cannot borrow an outer rune receipt"); return true;

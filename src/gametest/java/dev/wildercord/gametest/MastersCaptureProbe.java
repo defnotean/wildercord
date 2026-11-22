@@ -111,7 +111,7 @@ public final class MastersCaptureProbe {
 		check(first ? hands > 0 : bodies > 0, "Native screenshot must submit the owner's " + (first ? "main-hand sword" : "body") + ": " + name);
 		if (!first) {
 			var camera = mc.gameRenderer.getMainCamera();
-			Vec3 eye = camera.position();
+			Vec3 eye = camera.getPosition();
 			check(eye.distanceTo(mc.player.getEyePosition()) > 2, "Third-person camera must not collapse into the fighter");
 			var torso = mc.player.position().add(0, 1, 0).subtract(eye);
 			var viewRot = new org.joml.Matrix4f().rotation(camera.rotation());

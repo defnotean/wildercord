@@ -240,7 +240,7 @@ public final class MastersNpcCaptureProbe {
 			}
 			dev.wildercord.gametest.compat.GametestCompat.updateCamera(mc.gameRenderer, DELTA); mc.gameRenderer.render(DELTA, true); dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc, DELTA);
 			
-			Vec3 eye = mc.gameRenderer.getMainCamera().position();
+			Vec3 eye = mc.gameRenderer.getMainCamera().getPosition();
 			ProjectedBounds capturedBodyBounds = articulated ? bodyBounds.snapshot() : null;
 			ProjectedBounds capturedBladeBounds = articulated ? bladeBounds.snapshot() : null;
 			float[] capturedBodyMatrix = bodyEntry == null ? null : bodyEntry.get(new float[16]);
@@ -468,7 +468,7 @@ public final class MastersNpcCaptureProbe {
 	}
 	private static Point project(Minecraft mc, Vec3 point) {
 		var camera = mc.gameRenderer.getMainCamera();
-		Vec3 relative = point.subtract(camera.position());
+		Vec3 relative = point.subtract(camera.getPosition());
 		var clip = dev.wildercord.gametest.compat.GametestCompat.viewProjection(camera, new org.joml.Matrix4f())
 			.transform(new org.joml.Vector4f((float) relative.x, (float) relative.y, (float) relative.z, 1));
 		check(clip.isFinite() && clip.w > 0 && Math.abs(clip.x / clip.w) < .94 && Math.abs(clip.y / clip.w) < .94,
@@ -478,7 +478,7 @@ public final class MastersNpcCaptureProbe {
 	/** Close views retain offscreen endpoints; behind-camera/depth-clipped endpoints have no screen sample. */
 	private static Point projectUnclamped(Minecraft mc, Vec3 point) {
 		var camera = mc.gameRenderer.getMainCamera();
-		Vec3 relative = point.subtract(camera.position());
+		Vec3 relative = point.subtract(camera.getPosition());
 		var clip = dev.wildercord.gametest.compat.GametestCompat.viewProjection(camera, new Matrix4f())
 			.transform(new org.joml.Vector4f((float) relative.x, (float) relative.y, (float) relative.z, 1));
 		if (!clip.isFinite() || clip.w <= 0 || !insideDepth(clip)) return null;

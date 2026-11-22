@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import net.minecraft.server.level.ServerLevel;
 
 /** Real Grimoire/altar interactions and packets, including actual reconnect and body replacement. */
 public final class ExciseLessonChecks {
@@ -140,7 +141,7 @@ public final class ExciseLessonChecks {
 				send(context, dimension, 1); send(context, dimension, 2); send(context, dimension, 3);
 				retrieve(context); long deceased = nonce(context);
 				server.runOnServer(s -> {
-					var original = player(s); original.kill(original.level());
+					var original = player(s); original.kill(((ServerLevel) original.level()));
 					original.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
 					var replacement = player(s);
 					check(replacement != original && replacement.getUUID().equals(original.getUUID()), "Real death and respawn replace the owner body");

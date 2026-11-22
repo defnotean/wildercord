@@ -779,7 +779,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 						spawn(player.level(), EntityType.HUSK, at(1.7, 2.3), 400);
 						spawn(player.level(), EntityType.HUSK, at(0, 3.0), 400);
 					}
-					player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.0);
+					dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
 					// Looking down on the platform from behind (the camera follows the view); in first person, ahead as in a fight.
 					player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, firstPerson ? 8.0F : 38.0F,
 						false);
@@ -804,7 +804,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			}
 		}
 		on(world, player -> {
-			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
+			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
 			return null;
 		});
 		world.getServer().runCommand("time set 3000");
