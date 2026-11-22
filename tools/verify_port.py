@@ -120,7 +120,6 @@ COMPAT_CONTRACT: dict[str, tuple[tuple[str, int], ...]] = {
         ("clearSwingForCustomRig", 1), ("swingObservation", 1),
         ("isStabSwingType", 1), ("hasActiveStabSwing", 1),
         ("activeMainHandSwingType", 1), ("livingModel", 1),
-        ("darkParticlePipeline", 0),
         ("wispGlowRenderType", 1), ("auraBodyGlowRenderType", 1),
         ("glowParticleLayer", 0), ("darkParticleLayer", 0),
     ),

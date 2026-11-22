@@ -30,7 +30,7 @@ public abstract class BraceNullItemDrawMixin {
 		int[] tints, net.minecraft.client.resources.model.BakedModel baked, net.minecraft.client.renderer.RenderType material, ItemStackRenderState.FoilType foil, Operation<Void> original) {
 		var actual = new Matrix4f(pose.last().pose());
 		var display = baked == null ? null : baked.getTransforms().getTransform(context);
-		var quads = baked == null ? java.util.List.<BakedQuad>of() : baked.getQuads(null, null, 0L);
+		var quads = baked == null ? java.util.List.<BakedQuad>of() : baked.getQuads(null, null, net.minecraft.util.RandomSource.create());
 		original.call(context, pose, buffer, light, overlay, tints, baked, material, foil);
 		BraceNullItemDrawProbe.drawn(field_55345, pose, buffer, context, display, new Matrix4f(pose.last().pose()), quads, actual);
 	}
