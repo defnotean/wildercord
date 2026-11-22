@@ -62,8 +62,7 @@ public final class MasteryAttachments {
 
 	public static final AttachmentType<Look> LOOK = McAttachments.create(
 		Wildercord.id("mastery_look"),
-		builder -> builder
-	);
+		builder -> {});
 
 	public static MasteryBook book(Player player) {
 		return player.getAttachedOrElse(MASTERY, MasteryBook.EMPTY);

@@ -88,8 +88,7 @@ public final class Lineage {
 	/** {@code player}'s lineage as their page shows it (rebuilt by the server when it changes; never saved: the registry is what's kept). */
 	public static final AttachmentType<View> VIEW = McAttachments.create(
 		Wildercord.id("lineage"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/**
 	 * A rite under way, as everyone near sees it ({@code kind} 1 a disciple taken, 2 a lesson): when it began, how long it runs, the colour it
@@ -111,8 +110,7 @@ public final class Lineage {
 
 	public static final AttachmentType<Rite> RITE = McAttachments.create(
 		Wildercord.id("lineage_rite"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/** The Lineage tab's ask to end a bond with {@code other} (their master, or one of their disciples). */
 	public record End(UUID other) implements CustomPacketPayload {

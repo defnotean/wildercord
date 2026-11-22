@@ -429,8 +429,7 @@ public final class WildercordAttachments {
 
 	public static final AttachmentType<SpellShield> SPELL_SHIELD = McAttachments.create(
 		Wildercord.id("spell_shield"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/** On an arrow fired from an imbued bow: the spell it releases where it lands, and its colour. Server only. */
 	public record ImbuedShot(List<String> runes, int color) {}
@@ -439,8 +438,7 @@ public final class WildercordAttachments {
 
 	public static final AttachmentType<Charge> CHARGE = McAttachments.create(
 		Wildercord.id("charge"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/**
 	 * How a player's worn Cord looks to others: its tier ("" for none) and a colour per rune of the
@@ -478,8 +476,7 @@ public final class WildercordAttachments {
 
 	public static final AttachmentType<CastPose> CAST_POSE = McAttachments.create(
 		Wildercord.id("cast_pose"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/** Standing on a ley line right now (worked out by the server every few ticks). */
 	public static final AttachmentType<Boolean> ON_LEY = McAttachments.create(
@@ -522,8 +519,7 @@ public final class WildercordAttachments {
 	 */
 	public static final AttachmentType<RuneMarks> RUNE_MARKS = McAttachments.create(
 		Wildercord.id("rune_marks"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/**
 	 * The game time a player's spellguard last held (absent: it never has), so it recharges from then (see

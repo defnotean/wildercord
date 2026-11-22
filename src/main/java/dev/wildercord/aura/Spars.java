@@ -126,8 +126,7 @@ public final class Spars {
 	/** A swordsman's spar, while it lasts and for its moment after (sent to them alone). */
 	public static final AttachmentType<Bout> SPAR = McAttachments.create(
 		Wildercord.id("spar"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/** A salute waiting to be answered, as the one saluted sees it: who, their colour, until when. */
 	public record Offer(UUID from, String name, int color, long until) {
@@ -137,8 +136,7 @@ public final class Spars {
 
 	public static final AttachmentType<Offer> OFFER = McAttachments.create(
 		Wildercord.id("spar_offer"),
-		builder -> builder
-	);
+		builder -> {});
 
 	private static final Codec<SparRules.Log> LOG_CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.INT.optionalFieldOf("wins", 0).forGetter(SparRules.Log::wins),

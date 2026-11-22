@@ -66,8 +66,7 @@ public final class ManaStorm {
 	/** Game time until which a player is under a mana storm. Synced to that player only; not saved. */
 	public static final AttachmentType<Long> STORM_UNTIL = McAttachments.create(
 		Wildercord.id("storm_until"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/** The storm's violet, and its bright core. */
 	public static final int VIOLET = 0xA070FF;

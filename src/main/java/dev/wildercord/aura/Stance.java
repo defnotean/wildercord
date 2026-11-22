@@ -99,8 +99,7 @@ public final class Stance {
 	/** A foe's stance, while it's worn (or opened, or steady): not saved, sent to everyone who can see it. */
 	public static final AttachmentType<State> STANCE = McAttachments.create(
 		Wildercord.id("aura_stance"),
-		builder -> builder
-	);
+		builder -> {});
 
 	// ------------------------------------------------------------------ reading (both sides)
 

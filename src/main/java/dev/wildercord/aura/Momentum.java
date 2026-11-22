@@ -73,8 +73,7 @@ public final class Momentum {
 	/** Each swordsman's momentum: not saved (a fight's, not a path's), gone with a death or a change of world, synced to its owner only. */
 	public static final AttachmentType<State> MOMENTUM = McAttachments.create(
 		Wildercord.id("aura_momentum"),
-		builder -> builder
-	);
+		builder -> {});
 
 	// ------------------------------------------------------------------ reading (both sides)
 

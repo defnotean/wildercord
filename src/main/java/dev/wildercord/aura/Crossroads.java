@@ -101,8 +101,7 @@ public final class Crossroads {
 	/** A swordsman's crossroads while it stands: not saved (a moment, not a path), told to its swordsman alone. */
 	public static final AttachmentType<State> CROSSROADS = McAttachments.create(
 		Wildercord.id("aura_crossroads"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/** Every swordsman with a crossroads standing, for the upkeep. */
 	private static final Set<UUID> STANDING = new HashSet<>();

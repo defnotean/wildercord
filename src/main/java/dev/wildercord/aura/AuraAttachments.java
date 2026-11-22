@@ -140,8 +140,7 @@ public final class AuraAttachments {
 
 	public static final AttachmentType<State> STATE = McAttachments.create(
 		Wildercord.id("aura_state"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/**
 	 * How a player's aura looks to everyone.
@@ -162,8 +161,7 @@ public final class AuraAttachments {
 
 	public static final AttachmentType<Look> LOOK = McAttachments.create(
 		Wildercord.id("aura_look"),
-		builder -> builder
-	);
+		builder -> {});
 
 	public static void init() {}
 }

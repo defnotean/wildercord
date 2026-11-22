@@ -214,8 +214,7 @@ public final class BondedBlades {
 
 	public static final AttachmentType<Rite> RITE = McAttachments.create(
 		Wildercord.id("blade_rite"),
-		builder -> builder
-	);
+		builder -> {});
 
 	// ------------------------------------------------------------------ reading (both sides)
 

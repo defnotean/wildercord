@@ -76,8 +76,7 @@ public final class AuraPresence {
 
 	public static final AttachmentType<Look> LOOK = McAttachments.create(
 		Wildercord.id("aura_presence"),
-		builder -> builder
-	);
+		builder -> {});
 
 	/**
 	 * A player's top-stage timers, in the server's game time.
