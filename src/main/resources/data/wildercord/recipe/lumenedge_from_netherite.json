@@ -8,7 +8,7 @@
     "components": {
       "wildercord:aura_forged": "lumenedge",
       "minecraft:item_model": "wildercord:lumenedge",
-      "minecraft:item_name": "Lumenedge",
+      "minecraft:item_name": "{\"translate\":\"item.wildercord.lumenedge\"}",
       "minecraft:rarity": "rare"
     }
   }

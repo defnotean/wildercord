@@ -11,6 +11,7 @@ top left with a one-pixel outline like the rest of the mod's. Every choice is se
     python tools/aura_world_art.py      renders a review sheet into build/art-preview/aura_world_art.png
 """
 from __future__ import annotations
+import json
 
 import math
 import random
@@ -614,14 +615,15 @@ def egg_icon(kind):
 
 # ============================================================== data
 
-# 1.21.4's item_name persistent codec is string-only (ComponentSerialization.flatCodec wraps
-# Codec.string), so older targets get the literal English name instead of a translate object.
-FORGED_DISPLAY = {"lumenedge": "Lumenedge", "skyrend_glaive": "Skyrend Glaive", "bulwark_maul": "Bulwark Maul"}
+# 1.21.4's item_name persistent codec (ComponentSerialization.flatCodec) decodes a JSON string and
+# parses its contents as a component, so older targets carry the translate object stringified.
+def _stringified_item_name(forged):
+    return json.dumps({"translate": f"item.wildercord.{forged}"}, separators=(",", ":"))
 
 
 def _smithing(name, template, base, addition, result_id, forged, rarity="rare", profile=None):
     if profile is not None and profile.before_1_21_5:
-        item_name = FORGED_DISPLAY[forged]
+        item_name = _stringified_item_name(forged)
     else:
         item_name = {"translate": f"item.wildercord.{forged}"}
     components = {
