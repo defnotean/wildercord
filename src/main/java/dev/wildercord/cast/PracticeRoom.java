@@ -34,7 +34,7 @@ public final class PracticeRoom {
    long now=server.getTickCount();
    if(now%1200==0) ENTERED.values().removeIf(t -> now<t || now-t>=PracticeRules.COOLDOWN_TICKS);
    for(ServerPlayer player:server.getPlayerList().getPlayers()) if(player.level().dimension().equals(DIMENSION) && player.getY()<78)
-    player.teleportTo(player.level(),.5,81,.5,Set.<Relative>of(),0,0,false);
+    player.teleportTo((ServerLevel) player.level(),.5,81,.5,Set.<Relative>of(),0,0,false);
   });
  }
  public static int enter(ServerPlayer player) {

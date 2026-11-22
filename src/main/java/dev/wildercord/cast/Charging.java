@@ -258,7 +258,7 @@ public final class Charging {
 		stop(player);
 		FIZZLED.add(player.getUUID());
 		player.displayClientMessage(Component.translatable("message.wildercord.charge_interrupted").withStyle(ChatFormatting.GRAY), true);
-		Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
+		Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
 		return true;
 	}
 

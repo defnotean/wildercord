@@ -66,7 +66,7 @@ public final class Overcast {
 				.withColor(0xFF8A5A), true);
 			// Not again for a prompt made moments ago (switching spells back and forth).
 			if (!recent) {
-				Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.7F, 0.5F);
+				Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.7F, 0.5F);
 			}
 			return false;
 		}
@@ -124,7 +124,7 @@ public final class Overcast {
 		if (cracks.count() > 0 && player.level().getGameTime() >= cracks.until()) {
 			player.setAttached(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE);
 			player.sendSystemMessage(Component.translatable("message.wildercord.mended").withColor(0x9AD8FF));
-			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.9F, 1.2F);
+			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.9F, 1.2F);
 		}
 	}
 

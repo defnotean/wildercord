@@ -302,8 +302,8 @@ public final class PlayerAffinities {
 			message = Component.translatable("message.wildercord.affinity.rise", name, dev.wildercord.content.RuneItem.roman(level), power);
 		}
 		player.sendSystemMessage(message.copy().withColor(RuneColors.element(element)));
-		Fx.sound(player.level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 0.8F, 0.9F + 0.08F * level);
-		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.6F, 0.8F + 0.1F * level);
+		Fx.sound((ServerLevel) player.level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 0.8F, 0.9F + 0.08F * level);
+		Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.6F, 0.8F + 0.1F * level);
 		if (level == 1) {
 			// A small entry, like a feat: some mana toward the next circle, and no second toast.
 			Grimoire.unlock(player, PlayerAffinity.KEY_PREFIX + element, false);

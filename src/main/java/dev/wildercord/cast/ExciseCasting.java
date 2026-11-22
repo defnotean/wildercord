@@ -48,7 +48,7 @@ public final class ExciseCasting {
                 && NativeZoneEmitters.eligible(player, emitter);
         }
     }
-    public static long now(ServerPlayer p) { return NativeZoneEmitters.clock(p.level()); }
+    public static long now(ServerPlayer p) { return NativeZoneEmitters.clock((ServerLevel) p.level()); }
     public static long rest(ServerPlayer p) { return p.getAttachedOrElse(ExciseState.REST, 0L); }
     public static long recoveryUntil(ServerPlayer p) {
         long until = p.getAttachedOrElse(ExciseState.RECOVERY, 0L);

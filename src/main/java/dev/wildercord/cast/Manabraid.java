@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 /** One actual consensual lossy mana transfer after the normal spell price, with no resource escrow. */
 public final class Manabraid {
  private Manabraid(){}
@@ -17,7 +18,7 @@ public final class Manabraid {
  public static final AttachmentType<Long> RECEIVE_READY=AttachmentRegistry.create(Wildercord.id("manabraid_receive_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
  private static final class Offer {
   final UUID donor,target;final ServerLevel level;final ItemStack donorCord,targetCord,donorCopy,targetCopy;final long until;boolean crouched;
-  Offer(ServerPlayer p,ServerPlayer t,long now){donor=p.getUUID();target=t.getUUID();level=p.level();donorCord=Spellbooks.cord(p);targetCord=Spellbooks.cord(t);donorCopy=donorCord.copy();targetCopy=targetCord.copy();until=now+CampConcordRules.OFFER;crouched=t.isShiftKeyDown();}
+  Offer(ServerPlayer p,ServerPlayer t,long now){donor=p.getUUID();target=t.getUUID();level=(ServerLevel) p.level();donorCord=Spellbooks.cord(p);targetCord=Spellbooks.cord(t);donorCopy=donorCord.copy();targetCopy=targetCord.copy();until=now+CampConcordRules.OFFER;crouched=t.isShiftKeyDown();}
  }
  private static final Map<UUID,Offer> ACTIVE=new HashMap<>();
  public static int active(){return ACTIVE.size();}
@@ -53,7 +54,7 @@ public final class Manabraid {
    pc=Spellbooks.cord(p);tc=Spellbooks.cord(t);pcopy=pc.copy();tcopy=tc.copy();pm=Spellbooks.mana(p);tm=Spellbooks.mana(t);maximum=Mana.max(t);pr=p.getAttachedOrElse(DONOR_READY,0L);tr=t.getAttachedOrElse(RECEIVE_READY,0L);}
   boolean same(ServerPlayer p,ServerPlayer t){return p.position().equals(ppos)&&t.position().equals(tpos)&&Spellbooks.cord(p)==pc&&Spellbooks.cord(t)==tc&&ItemStack.matches(pc,pcopy)&&ItemStack.matches(tc,tcopy)
    &&Spellbooks.mana(p)==pm&&Spellbooks.mana(t)==tm&&Mana.max(t)==maximum&&p.getAttachedOrElse(DONOR_READY,0L)==pr&&t.getAttachedOrElse(RECEIVE_READY,0L)==tr
-   &&CampConcordAdmission.cell(p,p.level(),a)&&CampConcordAdmission.cell(t,t.level(),b)&&p.level().getBlockState(a).equals(as)&&t.level().getBlockState(b).equals(bs);}
+   &&CampConcordAdmission.cell(p,(ServerLevel) p.level(),a)&&CampConcordAdmission.cell(t,(ServerLevel) t.level(),b)&&(ServerLevel) p.level().getBlockState(a).equals(as)&&(ServerLevel) t.level().getBlockState(b).equals(bs);}
  }
  private static void accept(Offer o,ServerPlayer p,ServerPlayer t,long now){
   if(!ACTIVE.remove(o.donor,o))return;

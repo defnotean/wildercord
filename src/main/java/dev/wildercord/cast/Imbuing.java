@@ -237,7 +237,7 @@ public final class Imbuing {
 	 * magic fades (the next time it would release), and the maker is told.
 	 */
 	private static Imbued counted(ServerPlayer maker, List<String> runes, int charges, int color, boolean glint) {
-		long serial = Ledger.of(maker.level()).add(maker.getUUID());
+		long serial = Ledger.of((ServerLevel) maker.level()).add(maker.getUUID());
 		if (Ledger.of((ServerLevel) maker.level()).trimmed(maker.getUUID())) {
 			maker.sendSystemMessage(Component.translatable("message.wildercord.imbue_oldest_faded", maxItems()).withStyle(ChatFormatting.GRAY));
 		}
@@ -451,7 +451,7 @@ public final class Imbuing {
 		if (left <= 0) {
 			dev.wildercord.runesmith.Contracts.onImbueSpent(player, stack);
 			strip(stack, imbued);
-			Ledger.of(player.level()).forget(imbued);
+			Ledger.of((ServerLevel) player.level()).forget(imbued);
 			player.displayClientMessage(Component.translatable("message.wildercord.imbue_spent", stack.getHoverName()).withStyle(ChatFormatting.GRAY), true);
 			Fx.sound((ServerLevel) player.level(), player.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
 		} else {

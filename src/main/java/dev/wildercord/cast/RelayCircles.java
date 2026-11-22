@@ -183,7 +183,7 @@ public final class RelayCircles {
 		}
 		Vec3 eye = player.getEyePosition();
 		Vec3 aim = eye.add(player.getLookAngle().scale(RelayRules.PLACE_RANGE));
-		if (!loaded(player.level(), eye, aim)) { fail(player, "The focus must stay in loaded ground."); return; }
+		if (!loaded((ServerLevel) player.level(), eye, aim)) { fail(player, "The focus must stay in loaded ground."); return; }
 		var hit = player.level().clip(new ClipContext(eye, aim, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		if (hit.getType() != HitResult.Type.BLOCK || hit.getDirection() != Direction.UP) { fail(player, "Aim at visible floor within eight blocks to place the focus."); return; }
 		Vec3 at = hit.getLocation().add(0, 0.12, 0);
@@ -197,7 +197,7 @@ public final class RelayCircles {
 		Focus focus = new Focus(player, slot, runes, compiled, at, hit.getBlockPos());
 		if (!dev.wildercord.api.WildercordEvents.BEFORE_CAST.invoker().allow(player, slot, runes, cost)) return;
 		// An add-on callback may change body, loadout, mana, position or progression. No receipt survives that change.
-		if (!admission.valid() || !focus.valid() || !clear(player.level(), player, player.getEyePosition(), at)
+		if (!admission.valid() || !focus.valid() || !clear((ServerLevel) player.level(), player, player.getEyePosition(), at)
 			|| player.getEyePosition().distanceTo(at) > RelayRules.PLACE_RANGE + .13
 			|| !player.isCreative() && (!Float.isFinite(Spellbooks.mana(player)) || Spellbooks.mana(player) < cost) || FOCI.containsKey(player)
 			|| now < player.getAttachedOrElse(RelayState.REST, 0L)) return;

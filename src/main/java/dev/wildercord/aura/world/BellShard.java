@@ -73,9 +73,9 @@ public final class BellShard {
 		Feels.sound((ServerLevel) level, at.add(0, 1, 0), "aura_bell_warden_knell", 1.3F, 1.25F);
 		for (int i = 0; i < 32; i++) {
 			double a = i * Math.PI * 2 / 32;
-			level.sendParticles(ParticleTypes.GLOW, at.x + Math.cos(a) * 1.5, at.y + 0.2, at.z + Math.sin(a) * 1.5, 1, 0, 0.05, 0, 0);
+			((ServerLevel) level).sendParticles(ParticleTypes.GLOW, at.x + Math.cos(a) * 1.5, at.y + 0.2, at.z + Math.sin(a) * 1.5, 1, 0, 0.05, 0, 0);
 		}
-		level.sendParticles(ParticleTypes.SPLASH, at.x, at.y + 0.2, at.z, 30, 1.2, 0.1, 1.2, 0.3);
+		((ServerLevel) level).sendParticles(ParticleTypes.SPLASH, at.x, at.y + 0.2, at.z, 30, 1.2, 0.1, 1.2, 0.3);
 		double r = BellWardenRules.KNELL_RADIUS;
 		for (var mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(r), m -> m instanceof Enemy && m.isAlive() && m.distanceToSqr(player) <= r * r)) {
 			mob.knockback(BellWardenRules.KNELL_SHOVE, player.getX() - mob.getX(), player.getZ() - mob.getZ());

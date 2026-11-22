@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static net.minecraft.commands.Commands.literal;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Weaver's Silk: a skein of the Hollow Matron's own silk, wound round a bone under her nest. Once she is dead, anyone may take it up,
@@ -107,7 +108,7 @@ public final class WeaversSilk {
 				if (clings(player)) {
 					player.resetFallDistance();
 					if (!player.onGround() && player.tickCount % 8 == 0)
-						player.level().sendParticles(ParticleTypes.ITEM_COBWEB, player.getX(), player.getY() + 1, player.getZ(), 2, .3, .4, .3, .01);
+						(ServerLevel) player.level().sendParticles(ParticleTypes.ITEM_COBWEB, player.getX(), player.getY() + 1, player.getZ(), 2, .3, .4, .3, .01);
 				} else if (offGround(player) == HollowMatronRules.SILK_GRIP && walled(player)) {
 					player.displayClientMessage(Component.translatable("message.wildercord.weavers_silk.slip").withColor(0xC4BEB2), true);
 				}

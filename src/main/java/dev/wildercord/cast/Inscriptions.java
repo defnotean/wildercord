@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Inscribing a mastered spell for someone else. A spell of Adept rank or higher, inscribed onto a Spell Scroll from the
@@ -154,7 +155,7 @@ public final class Inscriptions {
 		player.setAttached(MasteryAttachments.MASTERY, mastery.with(entry, Mastery.threaded(player)));
 		stack.consume(1, player);
 		Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 1.0F, 0.8F);
-		Fx.sound(player.level(), player.position(), SoundEvents.ENCHANTMENT_TABLE_USE, 0.7F, 1.2F);
+		Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.ENCHANTMENT_TABLE_USE, 0.7F, 1.2F);
 		String name = scroll.name().isEmpty() ? dev.wildercord.spell.SpellNames.auto(runes) : scroll.name();
 		player.sendSystemMessage(Component.translatable("message.wildercord.inscription.learned", Component.literal(name).withColor(0xE8D8B0),
 			inscription.author().isEmpty() ? Component.translatable("message.wildercord.inscription.someone") : Component.literal(inscription.author()),

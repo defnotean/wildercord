@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Choosing a mastered spell's traits: the offers made as each rank is reached, the player's choice from the Cord
@@ -155,8 +156,8 @@ public final class MasteryChoices {
 		if (ServerPlayNetworking.canSend(player, Rise.TYPE)) {
 			ServerPlayNetworking.send(player, new Rise(name, entry.rank(), color, entry.pendingSlot() >= 0, entry.seed()));
 		}
-		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.8F + 0.1F * entry.rank());
-		Fx.sound(player.level(), player.position(), SoundEvents.PLAYER_LEVELUP, 0.35F, 1.4F);
+		Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.8F + 0.1F * entry.rank());
+		Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.PLAYER_LEVELUP, 0.35F, 1.4F);
 		player.sendSystemMessage(Component.translatable("message.wildercord.mastery.rank", Component.literal(name).withColor(color),
 			Component.translatable("mastery.wildercord.rank." + entry.rank())).withColor(0xE8D8B0));
 	}
@@ -224,11 +225,11 @@ public final class MasteryChoices {
 		Mastery.refreshLook(player);
 		if (kind == CHOOSE) {
 			MasteryTraits.Trait chosen = MasteryTraits.get(trait).orElseThrow();
-			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
-			Fx.sound(player.level(), player.position(), dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.6F, 1.3F);
+			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
+			Fx.sound((ServerLevel) player.level(), player.position(), dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.6F, 1.3F);
 			return Component.translatable("message.wildercord.mastery.chosen", traitName(chosen)).withColor(0xE8D8B0);
 		}
-		Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.8F, 0.9F);
+		Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.8F, 0.9F);
 		return Component.translatable(kind == REROLL ? "message.wildercord.mastery.rerolled" : "message.wildercord.mastery.unbound").withColor(0xE8D8B0);
 	}
 

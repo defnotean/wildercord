@@ -86,7 +86,7 @@ public final class SleepingBlades {
 		if (BondedBlades.standing(p)) { say(p, "bonded"); return; }
 		if (!ready(p, (ServerLevel) p.level(), at, p.position())) { say(p, "intent"); return; }
 		if (DRAWS.containsKey(p.getUUID())) return;
-		if (drawingAt(p.level(), at)) { say(p, "busy"); return; }
+		if (drawingAt((ServerLevel) p.level(), at)) { say(p, "busy"); return; }
 		stone.phase(0); DRAWS.put(p.getUUID(), new Draw((ServerLevel) p.level(), at.immutable(), p.position(), 0));
 		p.level().scheduleTick(at, STONE, 20);
 		Feels.sound(p.level(), Vec3.atCenterOf(at), "aura_blade_stone_listen", .7F, 1); say(p, "begin");
@@ -138,7 +138,7 @@ public final class SleepingBlades {
 			if (!held(p)) return amount;
 			if (source.equals("guard")) {
 				Feels.sound((ServerLevel) p.level(), p.position(), "aura_oathkeeper_answer", .6F, 1);
-				AuraFx.groundScar(p.level(), p.position(), 1.5, 45, 2);
+				AuraFx.groundScar((ServerLevel) p.level(), p.position(), 1.5, 45, 2);
 			}
 			return amount * SleepingBladeRules.momentum(source);
 		});

@@ -40,7 +40,7 @@ public final class Meditation {
 		if (meditating != was) {
 			player.setAttached(WildercordAttachments.MEDITATING, meditating);
 			if (meditating) {
-				Fx.sound(player.level(), pos, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.8F);
+				Fx.sound((ServerLevel) player.level(), pos, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.8F);
 			}
 		}
 		if (meditating && checks % 2 == 0) {

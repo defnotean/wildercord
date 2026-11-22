@@ -79,7 +79,7 @@ public final class SecretSpells {
 		player.connection.send(new ClientboundSetTitlesAnimationPacket(8, 50, 20));
 		player.connection.send(new ClientboundSetTitleTextPacket(Component.literal(secret.name()).withColor(secret.color())));
 		player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("title.wildercord.secret").withColor(0xE8E0FF)));
-		Fx.sound(player.level(), player.position(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.7F, 1.3F);
+		Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.7F, 1.3F);
 	}
 
 	public static void cast(Cast cast, Secrets.Secret secret) {

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Soar: real flight for a while, as in creative (double-tap jump to take off, jump and sneak to rise and
@@ -208,7 +209,7 @@ public final class Soar {
 		long now = player.level().getGameTime();
 		Abilities abilities = player.getAbilities();
 		SoarRules.Lift lift = SoarRules.lift(player.isCreative() || player.isSpectator(), abilities.mayfly, soaring,
-			DungeonWards.warded(player.level(), player.blockPosition()), SoarRules.resting(now, restingUntil(player)));
+			DungeonWards.warded((ServerLevel) player.level(), player.blockPosition()), SoarRules.resting(now, restingUntil(player)));
 		if (lift != SoarRules.Lift.LIFT) {
 			return lift;
 		}
@@ -320,7 +321,7 @@ public final class Soar {
 		}
 		if (SoarRules.warnNow(now, note.until(), flier.warned)) {
 			flier.warned = true;
-			SoarVfx.fading(player.level(), player);
+			SoarVfx.fading((ServerLevel) player.level(), player);
 			tell(player, "soar_fading", "The wind beneath you is fading...", WIND_TEXT);
 		}
 		boolean flying = abilities.flying;
@@ -331,7 +332,7 @@ public final class Soar {
 		flier.wasFlying = flying;
 		if (flying && now >= flier.nextGust) {
 			Vec3 moved = player.getDeltaMovement();
-			dev.wildercord.cast.feel.Feels.sound(player.level(), player.position().add(0, 1, 0), "wind_soar_gust", SoarRules.gustVolume(moved.length()), 1.0F);
+			dev.wildercord.cast.feel.Feels.sound((ServerLevel) player.level(), player.position().add(0, 1, 0), "wind_soar_gust", SoarRules.gustVolume(moved.length()), 1.0F);
 			int spread = SoarRules.GUST_TICKS / 3;
 			flier.nextGust = now + SoarRules.GUST_TICKS - spread + player.getRandom().nextInt(2 * spread + 1);
 		}
@@ -350,7 +351,7 @@ public final class Soar {
 			Effects.glide(player);
 		}
 		if (flier.drift % 12 == 0) {
-			SoarVfx.drifting(player.level(), player);
+			SoarVfx.drifting((ServerLevel) player.level(), player);
 		}
 	}
 
@@ -402,7 +403,7 @@ public final class Soar {
 				tell(player, "soar_ended", "The wind sets you down gently", WIND_TEXT);
 			}
 			case GROUNDED -> {
-				SoarVfx.grounded(player.level(), player);
+				SoarVfx.grounded((ServerLevel) player.level(), player);
 				tell(player, "soar_grounded", "Grounded! The wind is torn out from under you", WIND_TEXT);
 			}
 			case WARDED -> {
@@ -410,7 +411,7 @@ public final class Soar {
 				tell(player, "soar_warded", "The ward stills the wind here", WARD_TEXT);
 			}
 			case TRAVELLED -> {
-				SoarVfx.setDown(player.level(), player);
+				SoarVfx.setDown((ServerLevel) player.level(), player);
 				tell(player, "soar_travelled", "The wind doesn't follow you between worlds", WIND_TEXT);
 			}
 			case TAKEN -> SoarVfx.setDown(player.level(), player);

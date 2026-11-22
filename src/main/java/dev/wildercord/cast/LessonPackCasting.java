@@ -63,7 +63,7 @@ public final class LessonPackCasting {
         final LessonPackRules.Timeline time;
         boolean retired;
         Placed(ServerPlayer p, Lesson lesson, int slot, int ticks) {
-            this.player = p; this.owner = ReleasedArtOwner.capture(p); this.level = p.level(); this.lesson = lesson; this.slot = slot;
+            this.player = p; this.owner = ReleasedArtOwner.capture(p); this.level = (ServerLevel) p.level(); this.lesson = lesson; this.slot = slot;
             this.time = LessonPackRules.Timeline.start(now(p), ticks);
         }
         boolean valid() { return !retired && owner.valid() && !player.isSpectator() && !time.expired(now(player)); }
@@ -230,7 +230,7 @@ public final class LessonPackCasting {
             fail(p, lessonName + " needs open ground in sight within " + (int) range + " blocks."); return null;
         }
         BlockPos above = hit.getBlockPos().above();
-        if (!Casters.mayEdit(p, p.level(), above) || !sameWard(p.level(), above, p.blockPosition())) {
+        if (!Casters.mayEdit(p, (ServerLevel) p.level(), above) || !sameWard((ServerLevel) p.level(), above, p.blockPosition())) {
             fail(p, lessonName + " cannot be set on ground you may not change."); return null;
         }
         return hit.getLocation();

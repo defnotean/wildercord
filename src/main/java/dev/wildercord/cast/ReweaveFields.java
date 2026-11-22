@@ -58,7 +58,7 @@ public final class ReweaveFields {
         boolean retired, impactActive;
         long observed;
         Field(ServerPlayer p, int slot, int cost, Vec3 center, BlockPos floor, SpellCompiler.Compiled compiled) {
-            this.player = p; this.owner = ReleasedArtOwner.capture(p); this.level = p.level(); this.modeEpoch = MODE_EPOCHS.getOrDefault(p, 0L);
+            this.player = p; this.owner = ReleasedArtOwner.capture(p); this.level = (ServerLevel) p.level(); this.modeEpoch = MODE_EPOCHS.getOrDefault(p, 0L);
             this.slot = slot; this.cost = cost; this.center = center; this.floor = floor.immutable(); this.compiled = compiled;
             this.ward = DungeonWards.movementWard(level, p.blockPosition());
             this.timeline = ReweaveRules.Timeline.start(now(p)); this.observed = now(p);
@@ -208,7 +208,7 @@ public final class ReweaveFields {
         if (tick < rest(p) || p.level().getGameTime() < Spellbooks.readyAt(p, slot)) { fail(p, "Reweave is resting; its eight-second rest is shared across slots."); return; }
         if (WildSurge.freeRecast(p, p.level().getGameTime())) { fail(p, "Reweave cannot spend a free recast; use it with another spell first."); return; }
         Vec3 eye = p.getEyePosition(), aim = eye.add(p.getLookAngle().scale(ReweaveRules.PLACE_RANGE));
-        if (!pathLoaded(p.level(), eye, aim)) return;
+        if (!pathLoaded((ServerLevel) p.level(), eye, aim)) return;
         var hit = p.level().clip(new ClipContext(eye, aim, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, p));
         if (hit.getType() != HitResult.Type.BLOCK || hit.getDirection() != Direction.UP) { fail(p, "Aim at visible floor within eight blocks."); return; }
         Vec3 at = hit.getLocation().add(0, .12, 0);

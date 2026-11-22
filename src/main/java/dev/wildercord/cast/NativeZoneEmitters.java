@@ -116,7 +116,7 @@ public final class NativeZoneEmitters {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 if (!ServerPlayNetworking.canSend(player, dev.wildercord.net.ExciseCores.TYPE)) continue;
                 var visible = EMITTERS.values().stream().filter(e -> e.cast.level == player.level() && e.core.distanceToSqr(player.position()) <= 48 * 48
-                    && loaded(player.level(), BlockPos.containing(e.core)))
+                    && loaded((ServerLevel) player.level(), BlockPos.containing(e.core)))
                     .sorted(java.util.Comparator.comparingDouble(e -> e.core.distanceToSqr(player.position())))
                     .limit(MAX_VISIBLE).map(e -> new dev.wildercord.net.ExciseCores.Core(e.id, e.core, e.expires - clock(e.cast.level))).toList();
                 ServerPlayNetworking.send(player, new dev.wildercord.net.ExciseCores(visible));

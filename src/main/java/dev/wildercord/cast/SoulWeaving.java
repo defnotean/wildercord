@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import java.util.List;
+import net.minecraft.server.level.ServerLevel;
 
 /** A repeatable, paid way to put the owner's awakened innate into an exact fusion. */
 public final class SoulWeaving {
@@ -29,6 +30,6 @@ public final class SoulWeaving {
 		blank.consume(1,player);ItemStack imprint=RuneItem.stack(innate.get());
 		if(!player.getInventory().add(imprint))dev.wildercord.compat.McEntities.drop(player, imprint, false);
 		player.displayClientMessage(Component.literal("Imprinted "+innate.get().name()+". Weave it with an elemental rune and an amethyst block."), true);
-		Vfx.emit(player.level(),SpellMaterials.of(innate.get().element(),Vfx.theme(innate.get().element()).primary(),.16F),player.position().add(0,.6,0),8,.4,.02);
+		Vfx.emit((ServerLevel) player.level(),SpellMaterials.of(innate.get().element(),Vfx.theme(innate.get().element()).primary(),.16F),player.position().add(0,.6,0),8,.4,.02);
 	}
 }

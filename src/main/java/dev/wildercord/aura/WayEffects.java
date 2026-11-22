@@ -180,7 +180,7 @@ public final class WayEffects {
 			return false;
 		}
 		Aura.spend(player, WayRules.BULWARK_SHOT_COST, "guard");
-		Feels.sound(player.level(), player.position().add(0, 1.2, 0), "aura_way_reflect", 0.7F, 1.25F);
+		Feels.sound((ServerLevel) player.level(), player.position().add(0, 1.2, 0), "aura_way_reflect", 0.7F, 1.25F);
 		count("shot");
 		return true;
 	}

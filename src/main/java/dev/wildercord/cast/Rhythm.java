@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Rhythm casting: cast again just as your last spell comes off cooldown, on the beat, and the
@@ -30,11 +31,11 @@ public final class Rhythm {
 		int stacks = onBeat ? Math.min(MAX, rhythm.stacks() + 1) : 0;
 		if (onBeat) {
 			float pitch = 0.9F + 0.25F * stacks;
-			Fx.sound(player.level(), player.position(), SoundEvents.NOTE_BLOCK_CHIME, 0.8F, pitch);
-			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, pitch);
+			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.NOTE_BLOCK_CHIME, 0.8F, pitch);
+			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, pitch);
 			player.displayClientMessage(Component.translatable("message.wildercord.rhythm", stacks, Math.round(stacks * POWER_PER_STACK * 100))
 				.withColor(0xF5D56A).withStyle(ChatFormatting.BOLD), true);
-			TechniqueVfx.rhythm(player.level(), player, stacks);
+			TechniqueVfx.rhythm((ServerLevel) player.level(), player, stacks);
 			if (stacks >= MAX) {
 				Grimoire.feat(player, Feats.RHYTHM);
 			}

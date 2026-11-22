@@ -21,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * The server side of pressing R: checks everything (Cord worn, spell exists, runes learned,
@@ -247,8 +248,8 @@ public final class SpellCaster {
 			spent = blood * 5;
 			if (!player.isCreative()) {
 				player.setHealth(player.getHealth() - blood);
-				Fx.sound(player.level(), player.position(), SoundEvents.PLAYER_HURT, 0.6F, 0.7F);
-				Vfx.emit(player.level(), net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, player.getBoundingBox().getCenter(), 4, 0.3, 0.1);
+				Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.PLAYER_HURT, 0.6F, 0.7F);
+				Vfx.emit((ServerLevel) player.level(), net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, player.getBoundingBox().getCenter(), 4, 0.3, 0.1);
 			}
 		} else if (overcast) {
 			Overcast.crack(player);

@@ -76,13 +76,13 @@ public final class Rimescale {
 		var level = player.level();
 		var at = mob.position().add(0, mob.getBbHeight() / 2, 0);
 		Feels.sound((ServerLevel) level, at, "aura_frost_wyrmling_frost", 1.1F, 1.15F);
-		level.sendParticles(ParticleTypes.SNOWFLAKE, at.x, at.y, at.z, 24, mob.getBbWidth() * .5, mob.getBbHeight() * .4, mob.getBbWidth() * .5, .04);
-		level.sendParticles(ParticleTypes.ITEM_SNOWBALL, at.x, at.y, at.z, 10, .3, .3, .3, .08);
+		((ServerLevel) level).sendParticles(ParticleTypes.SNOWFLAKE, at.x, at.y, at.z, 24, mob.getBbWidth() * .5, mob.getBbHeight() * .4, mob.getBbWidth() * .5, .04);
+		((ServerLevel) level).sendParticles(ParticleTypes.ITEM_SNOWBALL, at.x, at.y, at.z, 10, .3, .3, .3, .08);
 		var from = player.position().add(0, 1, 0);
 		var step = at.subtract(from);
 		for (int i = 0; i <= 6; i++) {
 			var p = from.add(step.scale(i / 6.0));
-			level.sendParticles(ParticleTypes.SNOWFLAKE, p.x, p.y, p.z, 1, .05, .05, .05, 0);
+			((ServerLevel) level).sendParticles(ParticleTypes.SNOWFLAKE, p.x, p.y, p.z, 1, .05, .05, .05, 0);
 		}
 		mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, FrostWyrmlingRules.RIME_SLOW, 1, false, true));
 		if (mob.canFreeze()) mob.setTicksFrozen(Math.max(mob.getTicksFrozen(), FrostWyrmlingRules.RIME_FROST));

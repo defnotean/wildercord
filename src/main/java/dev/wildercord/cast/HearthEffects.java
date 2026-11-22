@@ -874,7 +874,7 @@ public final class HearthEffects {
 			for (Anchor a : e.getValue()) {
 				if (a.dim() == p.level().dimension() && a.at().distanceToSqr(p.position()) < HearthRules.WAYMARK_SIGHT * HearthRules.WAYMARK_SIGHT) {
 					for (int y = 0; y < 12; y += 2) {
-						Fx.sendParticles(p.level(), p, ParticleTypes.END_ROD, true, true, a.at().x, a.at().y + y, a.at().z, 1, 0.02, 0.3, 0.02, 0);
+						Fx.sendParticles((ServerLevel) p.level(), p, ParticleTypes.END_ROD, true, true, a.at().x, a.at().y + y, a.at().z, 1, 0.02, 0.3, 0.02, 0);
 					}
 				}
 			}
@@ -928,7 +928,7 @@ public final class HearthEffects {
 				}
 				BOND_CALLED.put(id, now);
 				hurt.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, false, true));
-				Fx.send(hurt.level(), ParticleTypes.HEART, hurt.position().add(0, 1.8, 0), 4, 0.3, 0.02);
+				Fx.send((ServerLevel) hurt.level(), ParticleTypes.HEART, hurt.position().add(0, 1.8, 0), 4, 0.3, 0.02);
 				for (UUID other : b.members()) {
 					ServerPlayer ally = server.getPlayerList().getPlayer(other);
 					if (ally != null && ally != hurt) {

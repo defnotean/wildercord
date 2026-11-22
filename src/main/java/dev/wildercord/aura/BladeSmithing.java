@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Blade smithing (0.13; the numbers are {@link BladeSmithingRules}'). A Sword Master leaves a sliver of Master's Steel for every
@@ -82,7 +83,7 @@ public final class BladeSmithing {
 	public static void reward(ServerPlayer player, boolean firstClear) {
 		int count = BladeSmithingRules.reward(firstClear);
 		ItemStack stack = new ItemStack(MASTER_STEEL, count);
-		if (!player.getInventory().add(stack)) player.spawnAtLocation(player.level(), stack);
+		if (!player.getInventory().add(stack)) player.spawnAtLocation((ServerLevel) player.level(), stack);
 		player.sendSystemMessage(Component.translatable("message.wildercord.master_steel", count).withStyle(ChatFormatting.GRAY));
 	}
 }

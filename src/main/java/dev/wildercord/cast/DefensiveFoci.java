@@ -73,7 +73,7 @@ public final class DefensiveFoci {
   State s=player.getAttachedOrElse(STATE,State.EMPTY);
   player.setAttached(STATE,new State(amount,amount/4,20,RECHARGE,s.grounding));
   player.displayClientMessage(Component.translatable("message.wildercord.reprieve.held",String.format(java.util.Locale.ROOT,"%.1f",amount)), true);
-  Light.groundRing(player.level(),player.position(),0xD6BDFF,.2,.8,.025,12);
+  Light.groundRing((ServerLevel) player.level(),player.position(),0xD6BDFF,.2,.8,.025,12);
  }
  public static void defer(ServerPlayer player,float amount,net.minecraft.world.damagesource.DamageSource source){
   String type=source.typeHolder().unwrapKey().map(k->k.location().toString()).orElse("minecraft:magic");
