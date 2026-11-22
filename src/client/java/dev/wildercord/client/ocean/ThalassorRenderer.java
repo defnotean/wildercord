@@ -44,7 +44,7 @@ public final class ThalassorRenderer extends MobRenderer<ThalassorBoss, OceanRen
 
 	@Override
 	protected void scale(OceanRenderStates.ThalassorState state, PoseStack pose) {
-		pose.scale(1.15F, 1.15F, 1.15F);
+		pose.scale(0.72F, 0.72F, 0.72F);
 	}
 
 	@Override

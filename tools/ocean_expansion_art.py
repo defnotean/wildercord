@@ -538,6 +538,17 @@ def _egg_icon(primary, spot):
     })
 
 
+import sys as _sys
+from pathlib import Path as _Path
+
+_TOOLS_DIR = str(_Path(__file__).resolve().parent)
+if _TOOLS_DIR not in _sys.path:
+    _sys.path.insert(0, _TOOLS_DIR)
+
+import world_art as _wa  # noqa: E402
+from item_art import mix as _mix  # noqa: E402
+
+
 def _display_poses():
     return {
         "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 7.5, 0.5], "scale": [0.9, 0.9, 0.9]},
@@ -550,10 +561,14 @@ def _display_poses():
     }
 
 
-def _elem(x0, y0, z0, x1, y1, z1, tex):
-    u0, v0 = max(0.0, min(16.0, x0)), max(0.0, min(16.0, 16.0 - y1))
-    u1, v1 = max(0.1, min(16.0, max(u0 + 0.5, x1))), max(0.1, min(16.0, max(v0 + 0.5, 16.0 - y0)))
-    face = {"texture": f"#{tex}", "uv": [u0, v0, u1, v1]}
+def _elem(x0, y0, z0, x1, y1, z1, tex, uv=None):
+    if uv is None:
+        u0 = max(0.0, min(15.5, x0))
+        v0 = max(0.0, min(15.5, 16.0 - y1))
+        u1 = max(u0 + 0.5, min(16.0, x1))
+        v1 = max(v0 + 0.5, min(16.0, 16.0 - y0))
+        uv = [u0, v0, u1, v1]
+    face = {"texture": f"#{tex}", "uv": uv}
     return {
         "from": [x0, y0, z0],
         "to": [x1, y1, z1],
@@ -561,29 +576,63 @@ def _elem(x0, y0, z0, x1, y1, z1, tex):
     }
 
 
-def _build_3d_weapon_models(g):
-    # Shared block textures for 3D held models
-    tex_defs = {
-        "tide_cleaver_harpoon_steel": (188, 206, 222, 255),
-        "tide_cleaver_harpoon_brass": (188, 134, 54, 255),
-        "tide_cleaver_harpoon_teal": (36, 148, 136, 255),
-        "leviathan_glaive_blade": (84, 240, 232, 255),
-        "leviathan_glaive_gold": (212, 162, 62, 255),
-        "leviathan_glaive_pearl": (132, 255, 255, 255),
-        "leviathan_glaive_haft": (26, 98, 102, 255),
-        "tidecaller_conch_shell": (244, 226, 196, 255),
-        "tidecaller_conch_pink": (244, 168, 164, 255),
-    }
-    for name, c in tex_defs.items():
-        tile = Image.new("RGBA", (16, 16), c)
-        px = tile.load()
-        for y in range(16):
-            for x in range(16):
-                if (x + y) % 4 == 0:
-                    px[x, y] = (min(255, c[0] + 18), min(255, c[1] + 18), min(255, c[2] + 18), 255)
-        g.save(tile, g.ASSETS / f"textures/block/{name}.png")
+def _shade_tile(base, hi, lo, accent=None, mode="metal", seed=17):
+    tile = Image.new("RGBA", (32, 32), (*base, 255))
+    px = tile.load()
+    for y in range(32):
+        for x in range(32):
+            n = _wa.noise(x, y, seed)
+            border = x in (0, 31) or y in (0, 31)
+            rivet = (x in (2, 29) and y in (2, 29)) or (x in (2, 29) and y == 16)
+            col = base
+            if mode == "metal":
+                col = _mix(base, lo, 0.38 if border else (0.15 if n < 0.35 else 0.0))
+                if rivet:
+                    col = hi
+                elif (x + y) % 8 == 0:
+                    col = _mix(base, hi, 0.32)
+            elif mode == "pearl":
+                dx, dy = (x - 15.5) / 15.5, (y - 15.5) / 15.5
+                d = (dx * dx + dy * dy) ** 0.5
+                if d < 0.45:
+                    col = hi
+                elif d < 0.85:
+                    col = _mix(hi, base, (d - 0.45) / 0.4)
+                else:
+                    col = lo
+                if accent and ((x + y) % 5 == 0) and d > 0.35:
+                    col = _mix(col, accent, 0.45)
+            elif mode == "molten":
+                col = lo if n < 0.5 else base
+                if accent and (abs(x - 15.5) < 5 or (n > 0.82)):
+                    col = _mix(accent, hi, 0.6 if n > 0.7 else 0.2)
+            elif mode == "shell":
+                band = (x + y * 2) % 6 < 2
+                col = _mix(base, hi if band else lo, 0.35 + n * 0.25)
+            else:
+                col = _mix(base, hi if n > 0.65 else lo, 0.28 if n > 0.65 or n < 0.3 else 0.0)
+                if border:
+                    col = _mix(col, lo, 0.3)
+            px[x, y] = (*col, 255)
+    return tile
 
-    # 1. Tide-Cleaver Harpoon 3D held
+
+def _build_3d_weapon_models(g):
+    tiles = {
+        "tide_cleaver_harpoon_steel": _shade_tile((192, 212, 228), (240, 250, 255), (96, 114, 132), mode="metal", seed=11),
+        "tide_cleaver_harpoon_brass": _shade_tile((188, 134, 52), (236, 186, 86), (112, 74, 28), mode="metal", seed=12),
+        "tide_cleaver_harpoon_teal": _shade_tile((32, 132, 124), (72, 198, 182), (18, 76, 72), mode="wrap", seed=13),
+        "leviathan_glaive_blade": _shade_tile((72, 224, 218), (192, 255, 255), (24, 134, 136), accent=(232, 255, 255), mode="pearl", seed=21),
+        "leviathan_glaive_gold": _shade_tile((212, 162, 58), (255, 224, 128), (134, 92, 26), mode="metal", seed=22),
+        "leviathan_glaive_pearl": _shade_tile((64, 240, 255), (220, 255, 255), (24, 148, 182), accent=(180, 255, 255), mode="pearl", seed=23),
+        "leviathan_glaive_haft": _shade_tile((22, 86, 92), (48, 148, 152), (12, 46, 52), mode="metal", seed=24),
+        "tidecaller_conch_shell": _shade_tile((244, 226, 194), (255, 248, 234), (176, 144, 108), mode="shell", seed=31),
+        "tidecaller_conch_pink": _shade_tile((242, 162, 158), (255, 206, 198), (178, 92, 96), mode="shell", seed=32),
+    }
+    for name, img in tiles.items():
+        g.save(img, g.ASSETS / f"textures/block/{name}.png")
+
+    # 1. Tide-Cleaver Harpoon 3D (24 sculpted elements: shaft, grip rings, loop pommel, winged guard, barbed tip + hanging chain)
     harpoon_in_hand = {
         "textures": {
             "steel": "wildercord:block/tide_cleaver_harpoon_steel",
@@ -592,19 +641,41 @@ def _build_3d_weapon_models(g):
             "particle": "wildercord:block/tide_cleaver_harpoon_steel",
         },
         "elements": [
-            _elem(7.4, -8.0, 7.4, 8.6, 14.0, 8.6, "brass"),       # main shaft
-            _elem(7.2, -3.0, 7.2, 8.8, 4.0, 8.8, "teal"),         # wrapped grip
-            _elem(5.5, 13.5, 7.2, 10.5, 15.0, 8.8, "brass"),      # crescent crossguard
-            _elem(6.8, 15.0, 7.4, 9.2, 25.0, 8.6, "steel"),       # spear tip
-            _elem(5.4, 17.5, 7.5, 10.6, 20.0, 8.5, "steel"),      # barbed wings
-            _elem(7.0, -9.8, 7.0, 9.0, -8.0, 9.0, "brass"),       # pommel ring
-            _elem(9.0, 4.0, 7.5, 12.2, 13.5, 8.5, "steel"),       # hanging retrieval chain arc
+            # Pommel bronze ring loop
+            _elem(6.8, -11.6, 7.2, 9.2, -10.8, 8.8, "brass", [2, 2, 8, 5]),
+            _elem(6.4, -10.8, 7.2, 7.3, -9.2, 8.8, "brass", [2, 2, 5, 5]),
+            _elem(8.7, -10.8, 7.2, 9.6, -9.2, 8.8, "brass", [2, 2, 5, 5]),
+            _elem(6.8, -9.2, 7.2, 9.2, -8.4, 8.8, "brass", [2, 2, 8, 5]),
+            # Main fluted bronze shaft & teal leather-wrapped grip bands
+            _elem(7.4, -8.4, 7.4, 8.6, 14.0, 8.6, "brass"),
+            _elem(7.1, -3.5, 7.1, 8.9, -1.2, 8.9, "teal"),
+            _elem(7.1, -0.5, 7.1, 8.9, 2.2, 8.9, "teal"),
+            _elem(7.1, 2.8, 7.1, 8.9, 5.2, 8.9, "teal"),
+            _elem(7.1, 9.5, 7.1, 8.9, 12.0, 8.9, "teal"),
+            # Crescent bronze crossguard collar & upturned horn wings
+            _elem(6.4, 13.4, 6.8, 9.6, 14.6, 9.2, "brass"),
+            _elem(4.6, 14.0, 7.1, 6.6, 15.2, 8.9, "brass"),
+            _elem(9.4, 14.0, 7.1, 11.4, 15.2, 8.9, "brass"),
+            _elem(3.8, 14.8, 7.3, 5.0, 16.4, 8.7, "brass"),
+            _elem(11.0, 14.8, 7.3, 12.2, 16.4, 8.7, "brass"),
+            # Tapered 6-step crucible-silver barbed harpoon spearhead & twin backward barbs
+            _elem(7.1, 15.0, 7.3, 8.9, 24.5, 8.7, "steel"),
+            _elem(6.3, 17.5, 7.4, 9.7, 22.8, 8.6, "steel"),
+            _elem(5.4, 17.8, 7.5, 10.6, 21.0, 8.5, "steel"),
+            _elem(7.5, 24.5, 7.6, 8.5, 27.2, 8.4, "steel"),
+            _elem(4.6, 16.0, 7.5, 5.6, 18.8, 8.5, "steel"),
+            _elem(10.4, 16.0, 7.5, 11.4, 18.8, 8.5, "steel"),
+            # Trailing catenary iron retrieval chain loop along shaft side
+            _elem(8.8, 12.2, 7.5, 11.2, 13.4, 8.5, "steel"),
+            _elem(10.6, 7.6, 7.5, 11.8, 12.4, 8.5, "steel"),
+            _elem(9.4, 4.2, 7.5, 11.2, 7.8, 8.5, "steel"),
+            _elem(8.6, 1.2, 7.5, 10.2, 4.6, 8.5, "steel"),
         ],
         "display": _display_poses(),
     }
     g.write_json(g.ASSETS / "models/item/tide_cleaver_harpoon_in_hand.json", harpoon_in_hand)
 
-    # 2. Leviathan Glaive 3D held (glowing Heart-Pearl visible front & back!)
+    # 2. Leviathan Glaive 3D (24 sculpted elements: sea-fin crossguard, double-sided glowing Heart-Pearl, curved crescent blade)
     glaive_in_hand = {
         "textures": {
             "blade": "wildercord:block/leviathan_glaive_blade",
@@ -614,18 +685,37 @@ def _build_3d_weapon_models(g):
             "particle": "wildercord:block/leviathan_glaive_blade",
         },
         "elements": [
-            _elem(7.4, -9.0, 7.4, 8.6, 13.0, 8.6, "haft"),        # polearm haft
-            _elem(6.5, -11.5, 7.3, 9.5, -9.0, 8.7, "gold"),       # pommel spike
-            _elem(5.2, 12.0, 6.8, 10.8, 15.5, 9.2, "gold"),       # finned sea-basket guard
-            _elem(6.5, 13.0, 6.2, 9.5, 16.0, 9.8, "pearl"),       # Leviathan Heart-Pearl orb (front + back)
-            _elem(6.8, 16.0, 7.5, 9.6, 29.0, 8.5, "blade"),       # gleaming crescent blade
-            _elem(5.8, 22.0, 7.5, 8.2, 30.5, 8.5, "blade"),       # curved tip
+            # Tapered spiked golden pommel finial + gold haft collar rings
+            _elem(7.5, -12.8, 7.6, 8.5, -9.8, 8.4, "gold"),
+            _elem(6.4, -10.2, 7.2, 9.6, -8.6, 8.8, "gold"),
+            _elem(7.3, -8.6, 7.3, 8.7, 12.2, 8.7, "haft"),
+            _elem(7.0, -3.0, 7.0, 9.0, -1.8, 9.0, "gold"),
+            _elem(7.0, 4.0, 7.0, 9.0, 5.2, 9.0, "gold"),
+            # Sculpted sea-fin crossguard cradling the glowing Heart-Pearl orb
+            _elem(5.4, 11.8, 6.7, 10.6, 13.4, 9.3, "gold"),
+            _elem(4.2, 12.8, 7.1, 6.2, 16.4, 8.9, "gold"),
+            _elem(9.8, 12.8, 7.1, 11.8, 16.4, 8.9, "gold"),
+            _elem(3.2, 13.8, 7.4, 4.6, 15.8, 8.6, "blade"),
+            _elem(11.4, 13.8, 7.4, 12.8, 15.8, 8.6, "blade"),
+            # Dual-sided faceted glowing Leviathan Heart-Pearl orb + inner bezel
+            _elem(6.3, 12.6, 6.0, 9.7, 16.0, 10.0, "pearl", [0, 0, 16, 16]),
+            _elem(6.8, 13.1, 5.5, 9.2, 15.5, 10.5, "pearl", [2, 2, 14, 14]),
+            _elem(6.8, 15.8, 6.9, 9.2, 16.8, 9.1, "gold"),
+            # Towering stepped sweeping curved crescent blade + gold dorsal spine
+            _elem(7.1, 16.6, 7.4, 9.3, 19.6, 8.6, "blade"),
+            _elem(6.8, 19.2, 7.4, 9.7, 23.0, 8.6, "blade"),
+            _elem(6.2, 22.4, 7.5, 9.5, 26.2, 8.5, "blade"),
+            _elem(5.4, 25.4, 7.5, 8.8, 28.8, 8.5, "blade"),
+            _elem(4.6, 28.0, 7.6, 7.6, 30.8, 8.4, "blade"),
+            _elem(3.8, 30.0, 7.7, 6.2, 31.8, 8.3, "blade"),
+            _elem(8.9, 16.6, 7.3, 9.9, 24.5, 8.7, "gold"),
+            _elem(8.4, 24.0, 7.3, 9.4, 27.6, 8.7, "gold"),
         ],
         "display": _display_poses(),
     }
     g.write_json(g.ASSETS / "models/item/leviathan_glaive_in_hand.json", glaive_in_hand)
 
-    # 3. Tidecaller Conch 3D held (10x8x8 stepped cream & pink-ventral spiral voxel shell)
+    # 3. Tidecaller Conch 3D (14 sculpted stepped spiral whorl & flaring pink lip elements)
     conch_in_hand = {
         "textures": {
             "shell": "wildercord:block/tidecaller_conch_shell",
@@ -633,10 +723,15 @@ def _build_3d_weapon_models(g):
             "particle": "wildercord:block/tidecaller_conch_shell",
         },
         "elements": [
-            _elem(3.0, 5.0, 4.0, 13.0, 12.0, 12.0, "shell"),      # outer main whorl [10x7x8]
-            _elem(5.0, 4.0, 5.0, 12.0, 7.0, 11.0, "pink"),        # pink-cream ventral lip opening
-            _elem(1.0, 6.0, 5.5, 3.0, 10.5, 10.5, "shell"),       # mid spiral step
-            _elem(-1.0, 7.0, 6.8, 1.0, 9.5, 9.2, "shell"),        # apex spire
+            _elem(5.0, 5.0, 4.5, 12.0, 12.0, 11.5, "shell"),
+            _elem(7.0, 4.2, 4.0, 13.5, 10.0, 11.0, "pink"),
+            _elem(10.5, 4.0, 5.0, 14.5, 8.2, 10.6, "pink"),
+            _elem(3.0, 5.8, 5.2, 5.4, 11.4, 10.8, "shell"),
+            _elem(1.2, 6.5, 6.0, 3.2, 10.6, 10.0, "shell"),
+            _elem(-0.4, 7.2, 6.7, 1.4, 9.8, 9.3, "shell"),
+            _elem(-1.8, 7.8, 7.3, -0.2, 9.2, 8.7, "shell"),
+            _elem(5.8, 11.6, 5.8, 10.6, 12.6, 10.2, "shell"),
+            _elem(6.8, 5.6, 11.2, 10.8, 10.8, 12.2, "shell"),
         ],
         "display": {
             **_display_poses(),
@@ -662,23 +757,19 @@ def _build_3d_weapon_models(g):
 
 
 def _build_blocks_and_armor_layers(g):
-    # Custom Block Textures (16x16)
-    brass_tex = Image.new("RGBA", (16, 16), (176, 124, 48, 255))
-    pearl_tex = Image.new("RGBA", (16, 16), (186, 68, 255, 255))
-    anvil_tex = Image.new("RGBA", (16, 16), (44, 42, 54, 255))
-    altar_tex = Image.new("RGBA", (16, 16), (22, 62, 68, 255))
-    for i in range(16):
-        brass_tex.putpixel((i, 0), (112, 76, 28, 255))
-        pearl_tex.putpixel((i, i), (56, 245, 255, 255))
-        anvil_tex.putpixel((i, 2), (218, 122, 42, 255))
-        altar_tex.putpixel((i, 3), (222, 178, 62, 255))
-        altar_tex.putpixel((3, i), (64, 245, 232, 255))
+    # Custom 32x32 Shaded Block Textures
+    brass_tex = _shade_tile((186, 132, 52), (236, 186, 86), (112, 74, 28), mode="metal", seed=41)
+    pearl_tex = _shade_tile((196, 68, 255), (124, 252, 255), (112, 24, 186), accent=(64, 245, 255), mode="pearl", seed=42)
+    anvil_tex = _shade_tile((42, 42, 54), (92, 96, 116), (22, 22, 30), mode="metal", seed=43)
+    anvil_lava = _shade_tile((244, 128, 32), (255, 228, 112), (168, 52, 18), accent=(255, 196, 48), mode="molten", seed=44)
+    altar_tex = _shade_tile((22, 62, 68), (58, 148, 152), (12, 34, 40), mode="metal", seed=45)
     g.save(brass_tex, g.ASSETS / "textures/block/siren_pearl_cage.png")
     g.save(pearl_tex, g.ASSETS / "textures/block/siren_pearl_core.png")
     g.save(anvil_tex, g.ASSETS / "textures/block/trench_anvil.png")
+    g.save(anvil_lava, g.ASSETS / "textures/block/trench_anvil_lava.png")
     g.save(altar_tex, g.ASSETS / "textures/block/sovereign_altar.png")
 
-    # Siren-Pearl Lantern block (exact 8x10x8 cage + central 4x4x4 glowing pearl core)
+    # Siren-Pearl Lantern block (22 elements: pedestal, corner bars, pagoda brass crown, ring loop & swirling Pearl)
     lantern_model = {
         "parent": "minecraft:block/block",
         "textures": {
@@ -687,28 +778,52 @@ def _build_blocks_and_armor_layers(g):
             "particle": "wildercord:block/siren_pearl_cage",
         },
         "elements": [
-            _elem(4, 0, 4, 12, 1, 12, "cage"),     # base 8x1x8
-            _elem(4, 8, 4, 12, 9, 12, "cage"),     # top rim 8x1x8
-            _elem(6, 9, 6, 10, 10, 10, "cage"),    # crown ring 4x1x4 (total 10 tall)
-            _elem(4, 1, 4, 5, 8, 5, "cage"),
-            _elem(11, 1, 4, 12, 8, 5, "cage"),
-            _elem(4, 1, 11, 5, 8, 12, "cage"),
-            _elem(11, 1, 11, 12, 8, 12, "cage"),
-            _elem(6, 2, 6, 10, 6, 10, "core"),     # magenta-cyan swirling pearl core
+            _elem(3.0, 0.0, 3.0, 13.0, 1.2, 13.0, "cage"),
+            _elem(4.0, 1.2, 4.0, 12.0, 2.0, 12.0, "cage"),
+            _elem(4.0, 8.2, 4.0, 12.0, 9.2, 12.0, "cage"),
+            _elem(5.0, 9.2, 5.0, 11.0, 10.4, 11.0, "cage"),
+            _elem(6.5, 10.4, 6.5, 9.5, 11.2, 9.5, "cage"),
+            _elem(7.4, 11.2, 7.6, 8.6, 12.8, 8.4, "cage"),
+            # 4 corner brass pillars + crossbars
+            _elem(4.0, 2.0, 4.0, 5.0, 8.2, 5.0, "cage"),
+            _elem(11.0, 2.0, 4.0, 12.0, 8.2, 5.0, "cage"),
+            _elem(4.0, 2.0, 11.0, 5.0, 8.2, 12.0, "cage"),
+            _elem(11.0, 2.0, 11.0, 12.0, 8.2, 12.0, "cage"),
+            _elem(5.0, 4.6, 4.2, 11.0, 5.4, 4.8, "cage"),
+            _elem(5.0, 4.6, 11.2, 11.0, 5.4, 11.8, "cage"),
+            _elem(4.2, 4.6, 5.0, 4.8, 5.4, 11.0, "cage"),
+            _elem(11.2, 4.6, 5.0, 11.8, 5.4, 11.0, "cage"),
+            # Floating faceted glowing Magenta-Cyan Siren Pearl inside cage
+            _elem(5.6, 2.8, 5.6, 10.4, 7.6, 10.4, "core", [0, 0, 16, 16]),
+            _elem(6.2, 2.2, 6.2, 9.8, 8.2, 9.8, "core", [2, 2, 14, 14]),
         ],
     }
     g.write_json(g.ASSETS / "models/block/siren_pearl_lantern.json", lantern_model)
     g.write_json(g.ASSETS / "blockstates/siren_pearl_lantern.json", {"variants": {"": {"model": "wildercord:block/siren_pearl_lantern"}}})
     g.write_json(g.ASSETS / "items/siren_pearl_lantern.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/siren_pearl_lantern"}})
 
-    # Trench Anvil block
+    # Trench Anvil block (16 elements matching 1:1 Voxel Callout: basalt step base, molten core waist, horned anvil face & lava channel)
     anvil_model = {
         "parent": "minecraft:block/block",
-        "textures": {"anvil": "wildercord:block/trench_anvil", "brass": "wildercord:block/siren_pearl_cage", "particle": "wildercord:block/trench_anvil"},
+        "textures": {
+            "anvil": "wildercord:block/trench_anvil",
+            "brass": "wildercord:block/siren_pearl_cage",
+            "lava": "wildercord:block/trench_anvil_lava",
+            "particle": "wildercord:block/trench_anvil",
+        },
         "elements": [
-            _elem(2, 0, 2, 14, 4, 14, "anvil"),    # basalt plinth
-            _elem(4, 4, 5, 12, 10, 11, "brass"),   # brass waist
-            _elem(1, 10, 3, 15, 16, 13, "anvil"),  # horned forge face
+            _elem(1.5, 0.0, 1.5, 14.5, 2.5, 14.5, "anvil"),
+            _elem(3.0, 2.5, 3.0, 13.0, 4.5, 13.0, "anvil"),
+            _elem(4.2, 4.5, 4.8, 11.8, 9.8, 11.2, "lava", [0, 0, 16, 16]),
+            _elem(3.6, 5.0, 4.4, 4.6, 9.4, 11.6, "brass"),
+            _elem(11.4, 5.0, 4.4, 12.4, 9.4, 11.6, "brass"),
+            _elem(4.0, 9.8, 3.2, 12.0, 11.4, 12.8, "anvil"),
+            _elem(2.0, 11.2, 2.5, 14.2, 15.2, 13.5, "anvil"),
+            _elem(-0.5, 12.0, 4.5, 2.2, 15.0, 11.5, "anvil"),
+            _elem(-2.2, 12.8, 6.2, -0.4, 14.6, 9.8, "lava", [2, 2, 14, 14]),
+            _elem(14.0, 11.8, 4.0, 15.6, 15.0, 12.0, "anvil"),
+            # Glowing lava forging groove inlaid on top tabletop
+            _elem(3.2, 15.2, 5.5, 13.0, 16.0, 10.5, "lava", [0, 0, 16, 16]),
         ],
     }
     g.write_json(g.ASSETS / "models/block/trench_anvil.json", anvil_model)
@@ -721,49 +836,185 @@ def _build_blocks_and_armor_layers(g):
     })
     g.write_json(g.ASSETS / "items/trench_anvil.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/trench_anvil"}})
 
-    # Sovereign Altar block
+    # Sovereign Altar block (stepped prismarine plinth, gold inlay & corner mini-obelisks + floating cyan Heart-Crystal)
     altar_model = {
         "parent": "minecraft:block/block",
-        "textures": {"altar": "wildercord:block/sovereign_altar", "core": "wildercord:block/leviathan_glaive_pearl", "particle": "wildercord:block/sovereign_altar"},
+        "textures": {
+            "altar": "wildercord:block/sovereign_altar",
+            "gold": "wildercord:block/leviathan_glaive_gold",
+            "core": "wildercord:block/leviathan_glaive_pearl",
+            "particle": "wildercord:block/sovereign_altar",
+        },
         "elements": [
-            _elem(0, 0, 0, 16, 10, 16, "altar"),
-            _elem(2, 10, 2, 14, 12, 14, "altar"),
-            _elem(5, 12, 5, 11, 14, 11, "core"),
+            _elem(0.0, 0.0, 0.0, 16.0, 6.0, 16.0, "altar"),
+            _elem(0.5, 6.0, 0.5, 15.5, 7.5, 15.5, "gold"),
+            _elem(1.5, 7.5, 1.5, 14.5, 11.0, 14.5, "altar"),
+            # 4 Corner Obsidian-Gold Runic Pylons
+            _elem(1.0, 11.0, 1.0, 3.5, 15.0, 3.5, "altar"),
+            _elem(12.5, 11.0, 1.0, 15.0, 15.0, 3.5, "altar"),
+            _elem(1.0, 11.0, 12.5, 3.5, 15.0, 15.0, "altar"),
+            _elem(12.5, 11.0, 12.5, 15.0, 15.0, 15.0, "altar"),
+            _elem(1.3, 14.8, 1.3, 3.2, 16.0, 3.2, "core", [2, 2, 14, 14]),
+            _elem(12.8, 14.8, 1.3, 14.7, 16.0, 3.2, "core", [2, 2, 14, 14]),
+            _elem(1.3, 14.8, 12.8, 3.2, 16.0, 14.7, "core", [2, 2, 14, 14]),
+            _elem(12.8, 14.8, 12.8, 14.7, 16.0, 14.7, "core", [2, 2, 14, 14]),
+            # Central recessed basin & levitating faceted Cyan Sovereign Crystal
+            _elem(4.5, 11.0, 4.5, 11.5, 12.2, 11.5, "gold"),
+            _elem(5.5, 12.6, 5.5, 10.5, 16.5, 10.5, "core", [0, 0, 16, 16]),
+            _elem(6.4, 16.5, 6.4, 9.6, 18.0, 9.6, "core", [2, 2, 14, 14]),
         ],
     }
     g.write_json(g.ASSETS / "models/block/sovereign_altar.json", altar_model)
     g.write_json(g.ASSETS / "blockstates/sovereign_altar.json", {"variants": {"": {"model": "wildercord:block/sovereign_altar"}}})
     g.write_json(g.ASSETS / "items/sovereign_altar.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/sovereign_altar"}})
 
-    # Worn Armor Material Layers (abyssal_diving)
+    # Detailed Worn Armor Material Layers (abyssal_diving)
     g.write_json(g.ASSETS / "equipment/abyssal_diving.json", {
         "layers": {layer: [{"texture": "wildercord:abyssal_diving"}] for layer in ("humanoid", "humanoid_leggings")}
     })
     humanoid = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
-    _paint_box(humanoid, 0, 0, 8, 8, 8, (186, 132, 54, 255), (124, 84, 34, 255), (218, 168, 78, 255))     # helm base
-    _paint_box(humanoid, 16, 16, 8, 12, 4, (28, 96, 100, 255), (18, 62, 68, 255), (62, 162, 158, 255))   # chest base
-    _paint_box(humanoid, 40, 16, 4, 12, 4, (172, 122, 50, 255), (118, 80, 30, 255), (204, 156, 72, 255)) # arms
-    _paint_box(humanoid, 0, 16, 4, 12, 4, (152, 84, 42, 255), (96, 52, 24, 255), (186, 112, 60, 255))    # boots
+    px_h = humanoid.load()
+    for name, (u, v, w, h, d, c_base, c_hi, c_lo, detail) in (
+        ("helm", (0, 0, 8, 8, 8, (176, 122, 48), (222, 168, 78), (108, 70, 24), "rivet")),
+        ("chest", (16, 16, 8, 12, 4, (28, 92, 98), (58, 152, 154), (16, 54, 60), "rib_belt")),
+        ("arms", (40, 16, 4, 12, 4, (162, 112, 46), (208, 156, 72), (104, 68, 24), "cuff")),
+        ("boots", (0, 16, 4, 12, 4, (148, 84, 42), (192, 118, 62), (86, 46, 20), "cuff")),
+    ):
+        for face, (x0, y0, fw, fh) in _wa.box(u, v, w, h, d).items():
+            for ly in range(fh):
+                for lx in range(fw):
+                    col = _mix(c_base, c_hi if (ly == 0 or lx == 0) else c_lo, 0.25 if _wa.noise(x0 + lx, y0 + ly, 5) > 0.6 else 0.0)
+                    if detail == "rib_belt" and face not in ("top", "bottom"):
+                        if ly in (2, 5, 8):
+                            col = c_hi
+                        elif ly >= fh - 3:
+                            col = (122, 74, 34) if lx not in (3, 4) else (218, 168, 72)
+                    elif detail == "cuff" and face not in ("top", "bottom") and ly in (3, 4, fh - 2):
+                        col = c_hi
+                    px_h[x0 + lx, y0 + ly] = (*col, 255)
     g.save(humanoid, g.ASSETS / "textures/entity/equipment/humanoid/abyssal_diving.png")
 
     legs = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
-    _paint_box(legs, 0, 16, 4, 12, 4, (32, 148, 94, 255), (20, 96, 62, 255), (60, 212, 132, 255))       # kelp greaves
-    _paint_box(legs, 16, 16, 8, 12, 4, (26, 118, 78, 255), (18, 80, 52, 255), (48, 178, 116, 255))     # waist belt
+    px_l = legs.load()
+    for face, (x0, y0, fw, fh) in {**_wa.box(0, 16, 4, 12, 4), **_wa.box(16, 16, 8, 12, 4)}.items():
+        for ly in range(fh):
+            for lx in range(fw):
+                weave = (lx + ly) % 2 == 0
+                col = (28, 134, 86) if weave else (20, 98, 66)
+                if ly in (4, 5) and face in ("front", "left", "right"):
+                    col = (188, 134, 54)  # brass kneecaps
+                elif ly <= 1:
+                    col = (132, 82, 38)   # leather belt
+                px_l[x0 + lx, y0 + ly] = (*col, 255)
     g.save(legs, g.ASSETS / "textures/entity/equipment/humanoid_leggings/abyssal_diving.png")
 
-    # 3D Helm Porthole & Back O2 Tanks layer texture (64x64)
-    layer3d = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    glow3d = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    _paint_box(layer3d, 0, 0, 6, 6, 1, (188, 134, 54, 255), (124, 84, 34, 255), (218, 168, 78, 255))      # bezel
-    _paint_box(layer3d, 14, 0, 4, 4, 2, (48, 245, 255, 255), (24, 168, 198, 255), (192, 255, 255, 255))   # porthole glass
-    _paint_box(glow3d, 14, 0, 4, 4, 2, (48, 245, 255, 255), (32, 200, 232, 255), (210, 255, 255, 255))    # glowing porthole
-    _paint_box(layer3d, 26, 0, 2, 4, 4, (158, 108, 42, 255), (104, 70, 26, 255), (192, 142, 62, 255))     # ear-ports
-    _paint_box(layer3d, 0, 16, 3, 8, 2, (202, 148, 56, 255), (138, 92, 32, 255), (234, 186, 86, 255))     # brass O2 tanks
-    _paint_box(layer3d, 10, 16, 6, 2, 2, (118, 128, 138, 255), (78, 86, 94, 255), (156, 168, 182, 255))   # valve bridge
-    _paint_box(layer3d, 26, 16, 2, 2, 1, (48, 245, 255, 255), (24, 168, 198, 255), (186, 255, 255, 255))   # pressure gauge
-    _paint_box(glow3d, 26, 16, 2, 2, 1, (48, 245, 255, 255), (32, 200, 232, 255), (210, 255, 255, 255))
+    # 3D Helm Porthole & Back O2 Tanks (128x128 sub-voxel sheet matching AbyssalDivingSuitLayer 1:1)
+    layer3d = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    glow3d = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+
+    def _paint_metal_box(img, u, v, w, h, d, base, hi, lo, rivets=True, stripes=False, gauge=False, glow_img=None):
+        px = img.load()
+        gpx = glow_img.load() if glow_img else None
+        for face, (x0, y0, fw, fh) in _wa.box(u, v, w, h, d).items():
+            for ly in range(fh):
+                for lx in range(fw):
+                    n = _wa.noise(x0 + lx, y0 + ly, u + v)
+                    col = _mix(base, hi if face == "top" else lo, 0.25 if face in ("top", "bottom") else (0.18 if n < 0.3 else 0.0))
+                    if face not in ("top", "bottom"):
+                        if lx in (0, fw - 1) or ly in (0, fh - 1):
+                            col = lo
+                        elif rivets and (lx in (1, fw - 2) and ly in (1, fh - 2)):
+                            col = hi
+                        elif stripes and (ly % 4 == 0):
+                            col = hi
+                    if gauge and face == "front":
+                        dx, dy = (lx - (fw - 1) / 2.0), (ly - (fh - 1) / 2.0)
+                        if (dx * dx + dy * dy) <= (fw * 0.42) ** 2:
+                            col = (64, 248, 255)
+                            if gpx:
+                                gpx[x0 + lx, y0 + ly] = (92, 250, 255, 255)
+                    px[x0 + lx, y0 + ly] = (*col, 255)
+
+    B_BASE, B_HI, B_LO = (182, 128, 48), (232, 184, 86), (108, 70, 24)
+    _paint_metal_box(layer3d, 0, 0, 18, 18, 18, (166, 114, 42), B_HI, B_LO)                 # helm dome + rivets
+    _paint_metal_box(layer3d, 74, 0, 12, 3, 12, (192, 138, 56), B_HI, B_LO)                # crown cap
+    _paint_metal_box(layer3d, 0, 38, 13, 12, 3, B_BASE, B_HI, B_LO)                        # front bezel
+    _paint_metal_box(layer3d, 34, 38, 9, 8, 2, (42, 232, 252), (186, 255, 255), (18, 148, 186), rivets=False, glow_img=layer3d)
+    _paint_metal_box(glow3d, 34, 38, 9, 8, 2, (52, 242, 255), (210, 255, 255), (28, 188, 218), rivets=False)
+    _paint_metal_box(layer3d, 58, 38, 1, 9, 2, B_BASE, B_HI, B_LO, rivets=False)           # vertical grille bar
+    _paint_metal_box(layer3d, 66, 38, 9, 1, 2, B_BASE, B_HI, B_LO, rivets=False)           # horizontal grille bar
+    _paint_metal_box(layer3d, 90, 38, 3, 8, 8, (148, 98, 38), B_HI, B_LO)                  # ear-port grate
+    _paint_metal_box(layer3d, 0, 56, 20, 3, 18, (158, 106, 40), B_HI, B_LO)                # shoulder collar
+    _paint_metal_box(layer3d, 0, 80, 6, 17, 6, (206, 154, 58), (248, 206, 108), B_LO, stripes=True)
+    _paint_metal_box(layer3d, 26, 80, 4, 2, 4, B_BASE, B_HI, B_LO, rivets=False)
+    _paint_metal_box(layer3d, 44, 80, 7, 2, 7, (124, 78, 38), (176, 118, 62), (76, 44, 20), rivets=False)
+    _paint_metal_box(layer3d, 74, 80, 14, 3, 4, (116, 126, 138), (168, 182, 198), (72, 82, 92))
+    _paint_metal_box(layer3d, 26, 90, 2, 10, 2, (162, 102, 58), (212, 142, 86), (104, 62, 34), rivets=False)
+    _paint_metal_box(layer3d, 36, 90, 5, 5, 2, B_BASE, B_HI, B_LO, rivets=False, gauge=True, glow_img=glow3d)
     g.save(layer3d, g.ASSETS / "textures/entity/ocean/abyssal_diving_3d.png")
     g.save(glow3d, g.ASSETS / "textures/entity/ocean/abyssal_diving_3d_glow.png")
+
+
+def _paint_textured_box(img, uv_box, painter, glow_img=None, glow_painter=None):
+    u, v, w, h, d = uv_box
+    px = img.load()
+    gpx = glow_img.load() if glow_img else None
+    iw, ih = img.size
+    for face, (x0, y0, fw, fh) in _wa.box(u, v, w, h, d).items():
+        if fw <= 0 or fh <= 0:
+            continue
+        sh = 1 if face == "top" else (-2 if face == "bottom" else (0 if face == "front" else -1))
+        for ly in range(fh):
+            for lx in range(fw):
+                gx, gy = x0 + lx, y0 + ly
+                if 0 <= gx < iw and 0 <= gy < ih:
+                    col = painter(face, lx, ly, fw, fh, sh, gx, gy)
+                    if col is not None:
+                        px[gx, gy] = col
+                    if gpx is not None and glow_painter is not None:
+                        gc = glow_painter(face, lx, ly, fw, fh, sh, gx, gy)
+                        if gc is not None:
+                            gpx[gx, gy] = gc
+
+
+def _verdigris_metal(base, hi, lo, patina=(58, 124, 114), seed=1, alpha=255):
+    def p(face, lx, ly, fw, fh, sh, gx, gy):
+        n = _wa.noise(gx, gy, seed)
+        border = lx in (0, fw - 1) or ly in (0, fh - 1)
+        rivet = (fw >= 5 and fh >= 5) and (lx in (1, fw - 2) and ly in (1, fh - 2))
+        col = _mix(base, hi if sh > 0 else lo, 0.25 if sh != 0 else 0.0)
+        if n > 0.68:
+            col = _mix(col, patina, 0.55)
+        if border:
+            col = _mix(col, lo, 0.48)
+        elif rivet:
+            col = hi
+        return (*col, alpha)
+    return p
+
+
+def _organic_shaded(base, hi, lo, alpha=255, stripe=False, spot=False, seed=7):
+    def p(face, lx, ly, fw, fh, sh, gx, gy):
+        n = _wa.noise(gx, gy, seed)
+        col = _mix(base, hi if sh > 0 else lo, 0.22 if sh != 0 else 0.0)
+        if stripe and face not in ("top", "bottom") and (ly % 3 == 0):
+            col = _mix(col, lo, 0.32)
+        if spot and n > 0.84:
+            col = _mix(col, lo, 0.65)
+        elif n > 0.72:
+            col = _mix(col, hi, 0.22)
+        return (*col, alpha)
+    return p
+
+
+def _glow_fill(color, alpha=255):
+    def p(face, lx, ly, fw, fh, sh, gx, gy):
+        cx, cy = (fw - 1) * 0.5, (fh - 1) * 0.5
+        d = ((lx - cx) ** 2 + (ly - cy) ** 2) ** 0.5
+        rim = max(1.0, min(fw, fh) * 0.5)
+        col = _mix((232, 255, 255), color, min(1.0, d / rim))
+        return (*col, alpha)
+    return p
 
 
 def _build_entity_skins(g):
@@ -772,176 +1023,346 @@ def _build_entity_skins(g):
         if glow is not None:
             g.save(glow, g.ASSETS / f"textures/entity/ocean/{name}_glow.png")
 
-    # 1. Barnacle-Hulk Dredger (128x128)
-    s = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
-    gl = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
-    _paint_box(s, 0, 0, 12, 14, 8, (46, 84, 78, 255), (32, 58, 54, 255), (72, 122, 114, 255))          # torso
-    _paint_box(s, 40, 0, 12, 3, 10, (168, 114, 48, 255), (112, 74, 30, 255), (206, 150, 72, 255))      # collar
-    _paint_box(s, 0, 22, 10, 10, 10, (176, 122, 50, 255), (116, 78, 30, 255), (212, 158, 76, 255))     # bronze head
-    _rect(s, 12, 34, 6, 4, (48, 245, 255, 255))                                                         # cyan grille visor on front face
-    _rect(gl, 12, 34, 6, 4, (48, 245, 255, 255))
-    _paint_box(s, 40, 22, 7, 6, 7, (192, 108, 126, 255), (132, 68, 86, 255), (234, 148, 168, 255))     # R coral pauldron
-    _paint_box(s, 68, 22, 7, 6, 7, (76, 134, 152, 255), (52, 92, 108, 255), (118, 178, 198, 255))      # L pale-blue pauldron
-    _paint_box(s, 0, 42, 5, 14, 5, (52, 92, 86, 255))
-    _paint_box(s, 20, 42, 5, 14, 5, (52, 92, 86, 255))
-    _paint_box(s, 40, 42, 6, 5, 6, (186, 128, 52, 255))
-    _paint_box(s, 64, 42, 4, 10, 4, (192, 138, 58, 255))                                                # twin back tanks
-    _paint_box(s, 80, 42, 6, 2, 3, (94, 106, 118, 255))
-    _paint_box(s, 0, 62, 5, 12, 5, (48, 82, 78, 255))
-    _paint_box(s, 20, 62, 6, 4, 2, (176, 122, 50, 255))
-    _paint_box(s, 40, 62, 1, 12, 1, (104, 114, 124, 255))
-    _paint_box(s, 48, 62, 12, 12, 3, (96, 108, 120, 255), (58, 66, 76, 255), (144, 158, 172, 255))      # Anchor Flail head
-    _paint_box(s, 84, 0, 3, 5, 2, (242, 124, 154, 255))                                                 # pink coral branch
-    _paint_box(s, 94, 0, 2, 4, 2, (148, 224, 245, 255))                                                 # blue coral sprig
+    # 1. Barnacle-Hulk Dredger (256x256)
+    s = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    gl = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    verdigris_suit = _verdigris_metal((48, 88, 82), (82, 136, 126), (26, 52, 48), patina=(118, 92, 58), seed=101)
+    aged_bronze = _verdigris_metal((176, 122, 48), (224, 172, 82), (104, 68, 24), patina=(64, 132, 118), seed=102)
+    steel = _verdigris_metal((104, 116, 128), (156, 172, 188), (58, 66, 74), patina=(74, 96, 98), seed=103)
+    for ub, fn in (
+        ((0, 0, 22, 26, 14), verdigris_suit),
+        ((74, 0, 18, 12, 2), aged_bronze),
+        ((116, 0, 24, 4, 18), aged_bronze),
+        ((84, 130, 20, 2, 16), aged_bronze),
+        ((202, 0, 6, 18, 6), _verdigris_metal((198, 146, 54), (242, 198, 96), (124, 84, 28), patina=(148, 112, 42), seed=104)),
+        ((228, 0, 4, 2, 4), aged_bronze),
+        ((202, 24, 8, 2, 8), _verdigris_metal((112, 72, 34), (152, 102, 52), (68, 42, 18), seed=105)),
+        ((0, 42, 20, 20, 20), aged_bronze),
+        ((82, 42, 14, 3, 14), aged_bronze),
+        ((140, 42, 6, 2, 6), aged_bronze),
+        ((82, 60, 14, 12, 3), aged_bronze),
+        ((142, 60, 1, 9, 2), aged_bronze),
+        ((150, 60, 3, 8, 8), aged_bronze),
+        ((174, 60, 2, 6, 6), steel),
+        ((192, 60, 12, 3, 4), steel),
+        ((226, 60, 3, 8, 3), _organic_shaded((96, 64, 38), (138, 94, 54), (56, 38, 20), stripe=True)),
+        ((0, 84, 14, 11, 14), aged_bronze),
+        ((58, 84, 15, 3, 15), aged_bronze),
+        ((120, 84, 24, 5, 16), _verdigris_metal((118, 76, 38), (162, 108, 56), (68, 44, 20), seed=106)),
+        ((202, 84, 4, 6, 3), _verdigris_metal((136, 88, 44), (178, 122, 66), (82, 50, 22), seed=107)),
+        ((218, 84, 5, 5, 2), _verdigris_metal((212, 162, 62), (248, 208, 106), (138, 98, 32), seed=108)),
+        ((0, 112, 9, 14, 9), verdigris_suit),
+        ((38, 112, 11, 14, 11), aged_bronze),
+        ((84, 112, 12, 4, 12), aged_bronze),
+        ((134, 112, 8, 6, 8), verdigris_suit),
+        ((168, 112, 10, 13, 10), verdigris_suit),
+        ((210, 112, 8, 7, 3), aged_bronze),
+        ((0, 150, 9, 11, 9), verdigris_suit),
+        ((38, 150, 11, 5, 13), aged_bronze),
+        ((88, 150, 3, 12, 3), _organic_shaded((242, 124, 154), (255, 178, 196), (176, 68, 96))),
+        ((102, 150, 2, 7, 2), _organic_shaded((242, 124, 154), (255, 178, 196), (176, 68, 96))),
+        ((112, 150, 3, 10, 3), _organic_shaded((132, 212, 238), (192, 244, 255), (76, 152, 182))),
+        ((126, 150, 2, 6, 2), _organic_shaded((132, 212, 238), (192, 244, 255), (76, 152, 182))),
+        ((136, 150, 6, 3, 6), _organic_shaded((226, 224, 214), (248, 248, 242), (162, 160, 152), spot=True)),
+        ((162, 150, 3, 3, 3), _organic_shaded((232, 228, 216), (252, 250, 244), (146, 144, 134))),
+        ((176, 150, 3, 5, 1), steel),
+        ((186, 150, 1, 5, 3), steel),
+        ((196, 150, 3, 16, 3), steel),
+        ((210, 150, 14, 3, 3), steel),
+        ((0, 172, 18, 4, 4), steel),
+        ((46, 172, 4, 11, 4), steel),
+        ((64, 172, 6, 4, 2), steel),
+    ):
+        _paint_textured_box(s, ub, fn)
+    _paint_textured_box(s, (118, 60, 10, 8, 1), _glow_fill((36, 224, 245)), gl, _glow_fill((52, 245, 255)))
     save_pair("barnacle_hulk_dredger", s, gl)
 
-    # 2. Siren-Veil Jelly (64x64 translucent + glowing core)
-    s = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    gl = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    _paint_box(s, 0, 0, 14, 12, 14, (74, 58, 186, 165), (48, 36, 138, 150), (118, 108, 232, 180))       # outer translucent indigo bell
-    _paint_box(s, 0, 26, 10, 3, 10, (124, 92, 238, 220))                                                # crown cap
-    _paint_box(s, 0, 39, 8, 6, 8, (224, 62, 235, 200))                                                  # magenta inner bell
-    _paint_box(s, 32, 39, 4, 4, 4, (196, 255, 255, 255))                                                # crystal core
-    _paint_box(gl, 32, 39, 4, 4, 4, (196, 255, 255, 255))
-    _paint_box(gl, 0, 39, 8, 6, 8, (200, 48, 220, 160))
-    _paint_box(s, 48, 26, 1, 16, 1, (96, 178, 248, 220))
-    _paint_box(s, 52, 26, 1, 12, 1, (224, 118, 255, 235))
-    save_pair("siren_veil_jelly", s, gl)
-
-    # 3. Coral-Spine Mako (128x64)
-    s = Image.new("RGBA", (128, 64), (0, 0, 0, 0))
-    gl = Image.new("RGBA", (128, 64), (0, 0, 0, 0))
-    _paint_box(s, 0, 0, 10, 7, 12, (28, 72, 136, 255), (20, 50, 98, 255), (44, 104, 178, 255))
-    _rect(s, 2, 14, 2, 2, (255, 196, 48, 255))                                                           # amber eyes on flanks
-    _rect(s, 22, 14, 2, 2, (255, 196, 48, 255))
-    _rect(gl, 2, 14, 2, 2, (255, 196, 48, 255))
-    _rect(gl, 22, 14, 2, 2, (255, 196, 48, 255))
-    _paint_box(s, 44, 0, 8, 3, 10, (174, 196, 212, 255))                                                # pale belly jaw
-    _paint_box(s, 0, 19, 10, 9, 14, (32, 82, 148, 255), (168, 192, 208, 255), (48, 112, 186, 255))      # cobalt dorsal / pale belly
-    _paint_box(s, 48, 19, 8, 7, 10, (32, 82, 148, 255), (168, 192, 208, 255), (48, 112, 186, 255))
-    _paint_box(s, 84, 19, 5, 5, 8, (30, 74, 136, 255))
-    _paint_box(s, 0, 42, 2, 12, 6, (26, 68, 128, 255))
-    _paint_box(s, 16, 42, 2, 8, 5, (40, 94, 158, 255))
-    _paint_box(s, 30, 42, 2, 8, 6, (26, 68, 128, 255))
-    _paint_box(s, 46, 42, 10, 2, 6, (34, 88, 154, 255))
-    _paint_box(s, 46, 50, 5, 1, 4, (96, 142, 192, 255))
-    _paint_box(s, 78, 42, 2, 4, 6, (252, 116, 138, 255), (214, 78, 102, 255), (255, 168, 182, 255))     # coral spine crest
-    _paint_box(gl, 78, 42, 2, 4, 6, (238, 92, 120, 255))
-    save_pair("coral_spine_mako", s, gl)
-
-    # 4. Dread-Nautilus Sentinel (128x64)
-    s = Image.new("RGBA", (128, 64), (0, 0, 0, 0))
-    gl = Image.new("RGBA", (128, 64), (0, 0, 0, 0))
-    _paint_box(s, 0, 0, 10, 20, 20, (56, 124, 112, 255), (38, 86, 78, 255), (176, 118, 54, 255))        # verdigris shell + bronze keel
-    _paint_box(s, 60, 0, 2, 6, 6, (188, 134, 54, 255), (124, 84, 34, 255), (222, 168, 78, 255))         # bronze spiral hubs
-    _paint_box(s, 60, 12, 8, 5, 5, (32, 68, 66, 255))
-    _paint_box(s, 60, 22, 6, 6, 4, (20, 44, 46, 255))
-    _paint_box(s, 80, 22, 4, 4, 2, (56, 248, 255, 255))                                                 # sea-lantern cyan eye
-    _paint_box(gl, 80, 22, 4, 4, 2, (56, 248, 255, 255))
-    _paint_box(s, 60, 32, 2, 2, 8, (168, 116, 48, 255))
-    _paint_box(s, 80, 32, 3, 3, 6, (202, 148, 62, 255))
-    _paint_box(gl, 80, 32, 3, 3, 6, (48, 212, 224, 160))
-    _paint_box(s, 98, 32, 2, 2, 5, (72, 178, 168, 255))
-    save_pair("dread_nautilus_sentinel", s, gl)
-
-    # 5. Thalassor Boss (128x128)
+    # 2. Siren-Veil Jelly (128x128 translucent indigo bell + glowing magenta core + electric shock ring)
     s = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
     gl = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
-    _paint_box(s, 0, 0, 14, 10, 14, (24, 34, 48, 255), (14, 22, 32, 255), (42, 64, 84, 255))
-    _paint_box(s, 56, 0, 10, 6, 10, (26, 42, 58, 255))
-    _paint_box(s, 0, 24, 10, 4, 12, (20, 62, 74, 255), (14, 44, 52, 255), (68, 245, 232, 255))          # glowing aquamarine inner maw
-    _paint_box(gl, 0, 24, 10, 4, 12, (64, 245, 235, 190))
-    _paint_box(s, 44, 24, 10, 6, 2, (54, 228, 222, 255))                                                # crown
-    _paint_box(gl, 44, 24, 10, 6, 2, (54, 228, 222, 255))
-    _paint_box(s, 68, 24, 3, 10, 3, (172, 144, 72, 255))                                                # curved horns
-    _paint_box(s, 80, 24, 1, 10, 8, (48, 224, 212, 220))
-    _paint_box(gl, 80, 24, 1, 10, 8, (48, 224, 212, 220))
-    _paint_box(s, 0, 42, 16, 2, 10, (24, 68, 82, 255), (14, 42, 54, 255), (64, 224, 212, 255))
-    _paint_box(s, 0, 56, 12, 12, 10, (22, 32, 46, 255), (18, 58, 66, 255), (34, 52, 72, 255))           # repeating obsidian segments
-    _rect(s, 2, 68, 6, 3, (48, 245, 255, 255))                                                           # cyan flank runes on segments
-    _rect(s, 24, 68, 6, 3, (48, 245, 255, 255))
-    _rect(gl, 2, 68, 6, 3, (48, 245, 255, 255))
-    _rect(gl, 24, 68, 6, 3, (48, 245, 255, 255))
-    _paint_box(s, 44, 56, 2, 7, 8, (54, 232, 224, 225))
-    _paint_box(gl, 44, 56, 2, 7, 8, (54, 232, 224, 255))
-    _paint_box(s, 64, 56, 10, 2, 12, (28, 72, 86, 255))
-    save_pair("thalassor", s, gl)
+    for ub, a in (((0, 0, 22, 16, 22), 145), ((0, 38, 18, 3, 18), 165), ((0, 59, 12, 2, 12), 180), ((0, 73, 24, 3, 24), 175)):
+        _paint_textured_box(s, ub, _organic_shaded((84, 72, 206), (142, 132, 255), (46, 36, 138), alpha=a, stripe=True))
+    _paint_textured_box(s, (72, 38, 14, 11, 14), _organic_shaded((216, 58, 232), (248, 134, 255), (142, 26, 176), alpha=185), gl, _glow_fill((212, 64, 236), alpha=150))
+    _paint_textured_box(s, (46, 100, 10, 3, 10), _organic_shaded((224, 72, 242), (255, 162, 255), (148, 32, 182), alpha=200), gl, _glow_fill((224, 82, 245), alpha=170))
+    _paint_textured_box(s, (96, 0, 8, 8, 8), _glow_fill((142, 252, 255), alpha=235), gl, _glow_fill((168, 255, 255), alpha=245))
+    _paint_textured_box(s, (96, 16, 4, 4, 4), _glow_fill((236, 255, 255)), gl, _glow_fill((255, 255, 255)))
+    _paint_textured_box(s, (48, 59, 2, 2, 9), _organic_shaded((206, 78, 238), (248, 148, 255), (124, 42, 168), alpha=220))
+    _paint_textured_box(s, (0, 100, 2, 10, 2), _organic_shaded((86, 186, 252), (178, 236, 255), (52, 106, 208), alpha=225), gl, _glow_fill((96, 212, 255), alpha=190))
+    _paint_textured_box(s, (10, 100, 2, 10, 2), _organic_shaded((224, 96, 248), (252, 174, 255), (148, 42, 186), alpha=225), gl, _glow_fill((232, 108, 255), alpha=190))
+    _paint_textured_box(s, (20, 100, 1, 9, 1), _glow_fill((148, 240, 255), alpha=220), gl, _glow_fill((168, 248, 255), alpha=230))
+    _paint_textured_box(s, (26, 100, 6, 2, 3), _glow_fill((118, 248, 255), alpha=220), gl, _glow_fill((162, 255, 255), alpha=240))
+    save_pair("siren_veil_jelly", s, gl)
 
-    # 6. Brine-Merchants x3 professions (64x64 each)
-    profs = {
-        "brine_merchant_jeweler": ((186, 134, 56), (34, 72, 118), (64, 232, 245)),
-        "brine_merchant_cartographer": ((156, 112, 48), (28, 96, 86), (222, 198, 132)),
-        "brine_merchant_alchemist": ((32, 98, 48), (38, 124, 68), (206, 98, 248)),
-    }
-    for pname, (helm_c, robe_c, prop_c) in profs.items():
-        m = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-        _paint_box(m, 0, 0, 8, 10, 8, (182, 138, 108, 255))
-        _paint_box(m, 0, 18, 10, 10 if "alchemist" not in pname else 11, 10, (*helm_c, 220))
-        _rect(m, 12, 30, 6, 4, (64, 232, 245, 210))
-        _paint_box(m, 32, 0, 8, 12, 6, (*robe_c, 255))
-        _paint_box(m, 0, 39, 8, 10, 6, (*robe_c, 255))
-        _paint_box(m, 28, 39, 4, 12, 4, (*robe_c, 255))
-        _paint_box(m, 44, 39, 4, 12, 4, (58, 44, 34, 255))
-        _paint_box(m, 40, 18, 3, 8, 3, (192, 138, 56, 255))
-        _paint_box(m, 0, 55, 3, 4, 3, (255, 224, 96, 255))
-        _paint_box(m, 12, 55, 2, 4, 4, (148, 92, 48, 255))
-        _paint_box(m, 24, 55, 10, 7, 1, (226, 212, 168, 255))
-        _paint_box(m, 46, 55, 4, 4, 4, (*prop_c, 255))
-        save_pair(pname, m)
+    # 3. Coral-Spine Mako (256x256)
+    s = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    gl = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
 
-    # 7. Lumi-Seahorse (64x64 translucent + bio-glow)
-    s = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    gl = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    _paint_box(s, 0, 0, 6, 10, 6, (48, 182, 198, 245), (32, 126, 146, 245), (96, 236, 238, 255))
-    _paint_box(s, 24, 0, 5, 6, 5, (52, 196, 206, 245))
-    _paint_box(s, 0, 16, 6, 6, 6, (58, 204, 212, 245))
-    _paint_box(s, 24, 16, 2, 2, 5, (86, 234, 236, 245))
-    _paint_box(s, 38, 16, 1, 4, 5, (92, 255, 226, 220))
-    _paint_box(gl, 38, 16, 1, 4, 5, (92, 255, 226, 255))
-    _paint_box(s, 44, 0, 2, 3, 1, (92, 255, 226, 220))
-    _paint_box(s, 0, 28, 1, 6, 6, (88, 255, 218, 210))                                                  # translucent sea-mint dorsal fin
-    _paint_box(gl, 0, 28, 1, 6, 6, (88, 255, 218, 235))
-    _paint_box(s, 14, 28, 4, 4, 4, (44, 168, 186, 245))
-    _paint_box(s, 30, 28, 3, 3, 4, (40, 148, 168, 245))
-    _paint_box(s, 44, 28, 2, 2, 3, (36, 128, 152, 245))
-    _paint_box(s, 0, 40, 7, 4, 7, (176, 122, 48, 255), (122, 82, 30, 255), (218, 164, 72, 255))         # saddle
-    _paint_box(s, 28, 40, 1, 4, 1, (208, 158, 62, 255))
-    save_pair("lumi_seahorse", s, gl)
+    def mako_skin(gills=False, jaw=False):
+        def p(face, lx, ly, fw, fh, sh, gx, gy):
+            n = _wa.noise(gx, gy, 303)
+            if jaw or face == "bottom" or (face in ("left", "right", "back", "front") and ly >= fh * 0.66):
+                col = _mix((178, 202, 218), (218, 232, 242), 0.25 if n > 0.6 else 0.0)
+            else:
+                col = _mix((28, 74, 138), (48, 108, 182), 0.25 if (sh > 0 or n > 0.68) else 0.0)
+            if gills and face in ("left", "right") and fw >= 14 and (2 <= lx <= 10) and (lx % 3 == 0) and (2 <= ly <= fh - 4):
+                col = (14, 34, 68)
+            return (*col, 255)
+        return p
 
-    # 8. Pearl-Pup (64x32 + glowing lure pearl)
-    s = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
-    gl = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
-    _paint_box(s, 0, 0, 8, 7, 12, (238, 244, 248, 255), (248, 252, 255, 255), (168, 188, 206, 255))     # white belly, slate dorsal spots
-    _rect(s, 14, 2, 2, 2, (98, 118, 138, 255))
-    _rect(s, 16, 7, 2, 3, (98, 118, 138, 255))
-    _paint_box(s, 0, 19, 7, 6, 7, (238, 244, 248, 255), (248, 252, 255, 255), (168, 188, 206, 255))
-    _rect(s, 8, 28, 1, 1, (22, 28, 36, 255))
-    _rect(s, 12, 28, 1, 1, (22, 28, 36, 255))
-    _paint_box(s, 28, 19, 6, 4, 5, (232, 238, 244, 255))
-    _paint_box(s, 50, 19, 3, 2, 2, (250, 252, 255, 255))
-    _paint_box(s, 50, 23, 3, 3, 3, (112, 252, 255, 255))                                                # glowing forehead lure pearl
-    _paint_box(gl, 50, 23, 3, 3, 3, (112, 252, 255, 255))
-    _paint_box(s, 60, 19, 1, 5, 1, (132, 168, 182, 255))
-    _paint_box(s, 40, 0, 5, 2, 4, (206, 218, 228, 255))
-    _paint_box(s, 40, 6, 4, 2, 5, (192, 206, 218, 255))
-    save_pair("pearl_pup", s, gl)
+    for ub, fn in (
+        ((0, 0, 16, 14, 20), mako_skin(gills=True)),
+        ((72, 0, 14, 3, 18), mako_skin()),
+        ((0, 34, 15, 11, 14), mako_skin()),
+        ((58, 34, 13, 7, 8), mako_skin()),
+        ((100, 34, 9, 5, 5), mako_skin()),
+        ((58, 50, 11, 4, 14), mako_skin(jaw=True)),
+        ((110, 50, 12, 11, 16), mako_skin()),
+        ((168, 50, 8, 8, 12), mako_skin()),
+        ((136, 10, 2, 2, 6), _organic_shaded((16, 36, 72), (24, 52, 98), (10, 20, 44))),
+        ((136, 20, 10, 2, 10), _organic_shaded((142, 34, 48), (178, 54, 68), (94, 18, 28))),
+        ((186, 20, 9, 1, 10), _organic_shaded((142, 34, 48), (178, 54, 68), (94, 18, 28))),
+        ((176, 20, 1, 2, 1), _organic_shaded((248, 250, 252), (255, 255, 255), (206, 214, 224))),
+        ((0, 82, 3, 6, 10), mako_skin()), ((26, 82, 2, 5, 8), mako_skin()),
+        ((46, 82, 2, 4, 6), mako_skin()), ((62, 82, 1, 3, 4), mako_skin()),
+        ((80, 82, 2, 4, 4), mako_skin()), ((94, 82, 7, 2, 6), mako_skin()),
+        ((122, 82, 3, 12, 5), mako_skin()), ((140, 82, 2, 8, 5), mako_skin()),
+        ((156, 82, 2, 6, 5), mako_skin()), ((172, 82, 1, 5, 4), mako_skin()),
+        ((184, 82, 2, 7, 5), mako_skin()), ((200, 82, 1, 5, 4), mako_skin()),
+        ((0, 102, 8, 2, 10), mako_skin()), ((36, 102, 7, 2, 8), mako_skin()), ((66, 102, 6, 1, 6), mako_skin()),
+    ):
+        _paint_textured_box(s, ub, fn)
+    for ub in ((136, 0, 3, 5, 3), (150, 0, 2, 4, 3), (162, 0, 3, 6, 3), (176, 0, 2, 5, 3), (188, 0, 2, 5, 3)):
+        _paint_textured_box(s, ub, _organic_shaded((248, 114, 138), (255, 178, 192), (186, 62, 86)), gl, _glow_fill((242, 92, 122), alpha=180))
+    _paint_textured_box(s, (154, 10, 1, 3, 4), _glow_fill((255, 206, 48)), gl, _glow_fill((255, 212, 56)))
+    save_pair("coral_spine_mako", s, gl)
 
-    # 9. Singing Moon-Whale (256x128 + emissive cyan star-barnacles)
+    # 4. Dread-Nautilus Sentinel (256x128)
     s = Image.new("RGBA", (256, 128), (0, 0, 0, 0))
     gl = Image.new("RGBA", (256, 128), (0, 0, 0, 0))
-    _paint_box(s, 0, 0, 22, 16, 26, (34, 62, 118, 255), (22, 42, 86, 255), (52, 92, 162, 255))
-    _paint_box(s, 0, 42, 20, 8, 24, (218, 206, 168, 255), (178, 162, 124, 255), (244, 228, 178, 255))   # pale-gold baleen jaw
-    _paint_box(s, 96, 0, 8, 2, 8, (64, 114, 186, 255))
-    _paint_box(s, 0, 74, 22, 18, 28, (32, 58, 112, 255), (176, 188, 212, 255), (48, 86, 152, 255))
-    _paint_box(s, 132, 0, 2, 5, 7, (44, 82, 148, 255))
-    _paint_box(s, 132, 16, 22, 2, 10, (42, 78, 142, 255))
-    _paint_box(s, 100, 32, 12, 10, 18, (30, 56, 108, 255))
-    _paint_box(s, 100, 64, 26, 2, 10, (44, 82, 148, 255))
-    # Emissive 4-point cyan star-barnacles on whale dorsal surface & fin rims
-    for bx, by in ((32, 12), (48, 18), (42, 84), (62, 90), (144, 18), (112, 44)):
-        _rect(s, bx, by, 3, 3, (124, 250, 255, 255))
-        _rect(gl, bx, by, 3, 3, (124, 250, 255, 255))
+    for ub, fn in (
+        ((0, 0, 18, 11, 10), _verdigris_metal((166, 106, 48), (218, 152, 78), (94, 58, 24), patina=(54, 132, 118), seed=401)),
+        ((60, 0, 18, 11, 10), _verdigris_metal((52, 126, 114), (86, 172, 156), (32, 76, 70), patina=(156, 104, 52), seed=402)),
+        ((128, 0, 22, 12, 12), _verdigris_metal((184, 128, 52), (232, 178, 86), (108, 72, 26), patina=(58, 128, 116), seed=403)),
+        ((128, 50, 26, 7, 7), _verdigris_metal((198, 144, 58), (242, 192, 96), (118, 82, 30), seed=404)),
+        ((128, 26, 15, 7, 9), _verdigris_metal((32, 68, 66), (54, 104, 100), (18, 40, 42), patina=(148, 96, 42), seed=405)),
+        ((176, 26, 12, 11, 7), _verdigris_metal((22, 46, 48), (40, 74, 76), (12, 26, 28), seed=406)),
+        ((0, 48, 4, 4, 13), _verdigris_metal((188, 136, 56), (236, 186, 88), (116, 80, 28), seed=407)),
+        ((34, 48, 3, 4, 11), _verdigris_metal((202, 148, 62), (244, 198, 98), (126, 86, 32), seed=408)),
+        ((64, 48, 2, 2, 10), _organic_shaded((86, 192, 178), (142, 236, 222), (48, 124, 116))),
+    ):
+        _paint_textured_box(s, ub, fn)
+    _paint_textured_box(s, (214, 26, 7, 7, 4), _glow_fill((56, 248, 255)), gl, _glow_fill((78, 252, 255)))
+    save_pair("dread_nautilus_sentinel", s, gl)
+
+    # 5. Thalassor Boss (512x256)
+    s = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
+    gl = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
+    obsidian = _verdigris_metal((22, 32, 48), (44, 68, 92), (10, 16, 26), patina=(36, 112, 116), seed=501)
+    turq_scale = _organic_shaded((26, 98, 104), (62, 178, 172), (14, 58, 66), stripe=True, seed=502)
+
+    def rune_carapace(face, lx, ly, fw, fh, sh, gx, gy):
+        col = obsidian(face, lx, ly, fw, fh, sh, gx, gy)
+        if face in ("left", "right") and (3 <= lx <= fw - 4) and (3 <= ly <= fh - 4):
+            if ((lx + ly) % 5 == 0) or (ly == fh // 2 and lx % 2 == 0):
+                return (52, 245, 242, 255)
+        return col
+
+    def rune_carapace_glow(face, lx, ly, fw, fh, sh, gx, gy):
+        if face in ("left", "right") and (3 <= lx <= fw - 4) and (3 <= ly <= fh - 4):
+            if ((lx + ly) % 5 == 0) or (ly == fh // 2 and lx % 2 == 0):
+                return (64, 248, 245, 255)
+        return None
+
+    for ub, fn in (
+        ((0, 0, 24, 16, 22), obsidian),
+        ((94, 0, 18, 9, 20), turq_scale),
+        ((172, 0, 16, 6, 18), turq_scale),
+        ((60, 40, 4, 12, 4), _verdigris_metal((164, 142, 74), (218, 194, 108), (96, 82, 40), seed=503)),
+        ((78, 40, 3, 10, 3), _verdigris_metal((184, 162, 88), (236, 212, 124), (112, 96, 48), seed=504)),
+        ((0, 68, 2, 3, 2), _organic_shaded((248, 250, 252), (255, 255, 255), (192, 214, 222))),
+        ((10, 68, 18, 4, 14), _organic_shaded((58, 138, 128), (112, 208, 192), (28, 84, 78), stripe=True)),
+        ((152, 68, 12, 3, 12), _organic_shaded((58, 138, 128), (112, 208, 192), (28, 84, 78), stripe=True)),
+        ((384, 40, 30, 4, 16), _organic_shaded((24, 104, 112), (72, 234, 226), (14, 58, 68), stripe=True)),
+        ((94, 68, 16, 3, 12), _organic_shaded((32, 132, 136), (86, 242, 232), (18, 72, 78))),
+    ):
+        _paint_textured_box(s, ub, fn)
+
+    for seg_uv in ((296, 0, 22, 20, 16), (374, 0, 18, 17, 15), (442, 0, 14, 13, 14)):
+        _paint_textured_box(s, seg_uv, rune_carapace, gl, rune_carapace_glow)
+    for glow_uv, col in (
+        ((242, 0, 12, 8, 14), (72, 248, 242)),
+        ((0, 40, 20, 8, 2), (62, 242, 232)),
+        ((46, 40, 3, 9, 3), (78, 250, 242)),
+        ((76, 68, 2, 4, 6), (86, 252, 255)),
+        ((162, 40, 2, 2, 18), (64, 238, 228)),
+        ((298, 40, 2, 3, 22), (64, 238, 228)),
+    ):
+        _paint_textured_box(s, glow_uv, _glow_fill(col), gl, _glow_fill(col))
+    for translucent_uv in ((92, 40, 18, 2, 16), (204, 40, 28, 3, 18), (348, 40, 3, 11, 14)):
+        _paint_textured_box(s, translucent_uv, _organic_shaded((32, 184, 182), (88, 248, 238), (18, 96, 102), alpha=210, stripe=True), gl, _glow_fill((54, 232, 222), alpha=155))
+    save_pair("thalassor", s, gl)
+
+    # 6. Brine-Merchants x3 Professions (256x256 + glow maps)
+    profs = {
+        "brine_merchant_jeweler": ((166, 114, 44), (34, 82, 112), (178, 232, 248), (64, 236, 248), False),
+        "brine_merchant_cartographer": ((44, 108, 104), (32, 92, 98), (52, 242, 255), (224, 210, 162), True),
+        "brine_merchant_alchemist": ((48, 108, 44), (34, 96, 84), (56, 245, 255), (86, 245, 242), False),
+    }
+    for pname, (helm_c, robe_c, visor_c, prop_c, visor_emissive) in profs.items():
+        m = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+        mgl = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+        brass = _verdigris_metal((182, 128, 48), (228, 178, 84), (108, 70, 26), patina=(62, 124, 112), seed=601)
+        coat = _organic_shaded(robe_c, (min(255, robe_c[0] + 28), min(255, robe_c[1] + 28), min(255, robe_c[2] + 28)), (max(0, robe_c[0] - 18), max(0, robe_c[1] - 18), max(0, robe_c[2] - 18)), stripe=True, seed=602)
+
+        def villager_face(face, lx, ly, fw, fh, sh, gx, gy):
+            col = _organic_shaded((186, 142, 112), (208, 166, 134), (144, 104, 78))(face, lx, ly, fw, fh, sh, gx, gy)
+            if face == "front":
+                if ly in (8, 9) and lx in (3, 4, 11, 12):
+                    return (42, 152, 96, 255)
+                if ly == 6 and (2 <= lx <= 13):
+                    return (104, 72, 48, 255)
+            return col
+
+        for ub, fn in (
+            ((0, 0, 16, 20, 16), villager_face),
+            ((66, 0, 4, 8, 4), _organic_shaded((168, 122, 94), (192, 146, 116), (128, 88, 66))),
+            ((84, 0, 20, 20, 20), _verdigris_metal(helm_c, (min(255, helm_c[0] + 42), min(255, helm_c[1] + 42), min(255, helm_c[2] + 42)), (max(0, helm_c[0] - 32), max(0, helm_c[1] - 32), max(0, helm_c[2] - 32)), seed=603)),
+            ((166, 0, 14, 14, 3), brass),
+            ((228, 0, 3, 7, 7), brass),
+            ((0, 42, 20, 4, 14), brass),
+            ((70, 42, 21, 22, 21), _organic_shaded((68, 116, 46), (102, 158, 64), (42, 74, 28), stripe=True, spot=True)),
+            ((156, 42, 22, 10, 18), _organic_shaded((58, 104, 42), (88, 142, 56), (36, 66, 26), stripe=True)),
+            ((0, 62, 5, 5, 4), brass),
+            ((34, 62, 4, 7, 6), _organic_shaded((186, 162, 128), (218, 194, 158), (124, 104, 78))),
+            ((0, 86, 16, 24, 12), coat),
+            ((58, 86, 12, 2, 2), brass),
+            ((88, 86, 17, 16, 13), coat),
+            ((150, 86, 5, 15, 5), brass),
+            ((172, 86, 14, 3, 5), _verdigris_metal((124, 82, 38), (166, 114, 58), (74, 46, 20))),
+            ((212, 86, 7, 22, 7), coat),
+            ((0, 124, 8, 24, 8), _organic_shaded((62, 46, 36), (88, 68, 54), (38, 28, 22))),
+            ((34, 124, 9, 6, 10), brass),
+            ((164, 124, 3, 14, 3), brass),
+            ((208, 124, 3, 4, 3), _organic_shaded((164, 118, 68), (206, 158, 96), (104, 72, 40))),
+            ((222, 124, 2, 22, 2), _organic_shaded((96, 62, 34), (132, 88, 48), (58, 36, 18))),
+        ):
+            _paint_textured_box(m, ub, fn)
+
+        _paint_textured_box(m, (202, 0, 10, 10, 2), _glow_fill(visor_c, alpha=165 if not visor_emissive else 235), mgl, _glow_fill(visor_c, alpha=90 if not visor_emissive else 230) if visor_emissive else None)
+        _paint_textured_box(m, (20, 62, 4, 4, 2), _glow_fill((108, 248, 162)), mgl, _glow_fill((118, 255, 172)))
+        _paint_textured_box(m, (74, 124, 4, 6, 4), _glow_fill((64, 245, 255)), mgl, _glow_fill((84, 250, 255)))
+        _paint_textured_box(m, (92, 124, 7, 7, 7), _glow_fill(prop_c), mgl, _glow_fill(prop_c))
+        _paint_textured_box(m, (122, 124, 18, 12, 2), _glow_fill((78, 242, 248)), mgl, _glow_fill((92, 248, 255)))
+        _paint_textured_box(m, (178, 124, 7, 7, 7), _glow_fill((86, 248, 242)), mgl, _glow_fill((96, 252, 248)))
+        save_pair(pname, m, mgl)
+
+    # 7. Lumi-Seahorse (256x128)
+    s = Image.new("RGBA", (256, 128), (0, 0, 0, 0))
+    gl = Image.new("RGBA", (256, 128), (0, 0, 0, 0))
+    seahorse_jade = _organic_shaded((42, 178, 152), (104, 236, 198), (22, 106, 98), stripe=True, seed=701)
+    for ub, fn in (
+        ((0, 0, 10, 10, 10), seahorse_jade),
+        ((42, 0, 5, 5, 10), seahorse_jade),
+        ((74, 0, 4, 4, 3), seahorse_jade),
+        ((90, 0, 2, 7, 2), _organic_shaded((238, 188, 62), (255, 228, 118), (168, 118, 28))),
+        ((128, 0, 2, 6, 2), _organic_shaded((238, 188, 62), (255, 228, 118), (168, 118, 28))),
+        ((0, 22, 10, 8, 10), seahorse_jade),
+        ((42, 22, 12, 14, 12), seahorse_jade),
+        ((0, 50, 10, 3, 13), _organic_shaded((112, 234, 196), (178, 252, 224), (58, 168, 142))),
+        ((128, 50, 9, 3, 13), _organic_shaded((112, 234, 196), (178, 252, 224), (58, 168, 142))),
+        ((0, 78, 8, 8, 8), seahorse_jade), ((140, 0, 7, 7, 8), seahorse_jade),
+        ((34, 78, 6, 7, 6), seahorse_jade), ((172, 0, 5, 6, 6), seahorse_jade),
+        ((60, 78, 4, 6, 4), seahorse_jade), ((196, 0, 3, 5, 4), seahorse_jade),
+        ((0, 96, 14, 4, 14), _verdigris_metal((142, 86, 38), (192, 126, 62), (84, 48, 20), seed=702)),
+        ((58, 96, 12, 4, 4), _verdigris_metal((186, 134, 52), (232, 182, 86), (112, 74, 26), seed=703)),
+        ((92, 96, 2, 10, 3), _organic_shaded((118, 72, 32), (162, 104, 52), (72, 42, 18))),
+        ((104, 96, 3, 3, 1), _verdigris_metal((186, 198, 212), (232, 242, 252), (108, 118, 132))),
+    ):
+        _paint_textured_box(s, ub, fn)
+    for ub in ((100, 0, 2, 5, 6), (48, 50, 2, 14, 12), (78, 50, 1, 16, 2), (86, 50, 2, 8, 9)):
+        _paint_textured_box(s, ub, _glow_fill((106, 255, 222), alpha=215), gl, _glow_fill((128, 255, 232), alpha=235))
+    save_pair("lumi_seahorse", s, gl)
+
+    # 8. Pearl-Pup (128x128)
+    s = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    gl = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    seal_coat = _organic_shaded((238, 244, 248), (252, 254, 255), (176, 194, 210), spot=True, seed=801)
+    for ub, fn in (
+        ((0, 0, 16, 13, 16), seal_coat),
+        ((66, 0, 14, 12, 12), seal_coat),
+        ((58, 31, 10, 6, 6), _organic_shaded((172, 186, 198), (212, 222, 232), (118, 132, 146))),
+        ((92, 31, 4, 2, 2), _organic_shaded((24, 32, 42), (54, 68, 86), (12, 16, 22))),
+        ((58, 45, 5, 1, 1), _organic_shaded((124, 138, 152), (168, 182, 194), (82, 94, 108))),
+        ((72, 45, 2, 8, 2), _organic_shaded((148, 188, 198), (192, 226, 236), (96, 134, 146))),
+        ((108, 45, 2, 7, 2), _organic_shaded((148, 188, 198), (192, 226, 236), (96, 134, 146))),
+        ((0, 60, 11, 9, 10), seal_coat), ((44, 60, 8, 7, 8), seal_coat),
+        ((78, 60, 12, 4, 8), seal_coat), ((0, 81, 8, 3, 11), seal_coat), ((40, 81, 8, 3, 6), seal_coat),
+    ):
+        _paint_textured_box(s, ub, fn)
+
+    def pup_head(face, lx, ly, fw, fh, sh, gx, gy):
+        col = seal_coat(face, lx, ly, fw, fh, sh, gx, gy)
+        if face == "front" and ly in (4, 5) and lx in (3, 4, 9, 10):
+            return (24, 30, 40, 255) if (lx in (3, 9) or ly == 5) else (240, 248, 255, 255)
+        return col
+
+    _paint_textured_box(s, (0, 31, 14, 12, 14), pup_head)
+    _paint_textured_box(s, (82, 45, 6, 6, 6), _glow_fill((128, 252, 255)), gl, _glow_fill((168, 255, 255)))
+    save_pair("pearl_pup", s, gl)
+
+    # 9. Singing Moon-Whale (512x256)
+    s = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
+    gl = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
+
+    def whale_body(stars=True):
+        def p(face, lx, ly, fw, fh, sh, gx, gy):
+            n = _wa.noise(gx, gy, 901)
+            if face == "bottom" or (face in ("left", "right") and ly >= fh * 0.72):
+                col = (146, 164, 196) if (lx % 2 == 0) else (106, 124, 158)  # pleated ventral belly grooves
+            else:
+                col = _mix((34, 62, 118), (58, 98, 168), 0.25 if (sh > 0 or n > 0.65) else 0.0)
+                if stars and face in ("top", "left", "right") and n > 0.965:
+                    return (152, 252, 255, 255)
+            return (*col, 255)
+        return p
+
+    def whale_body_glow(face, lx, ly, fw, fh, sh, gx, gy):
+        if face in ("top", "left", "right") and ly < fh * 0.7 and _wa.noise(gx, gy, 901) > 0.965:
+            return (162, 252, 255, 255)
+        return None
+
+    def whale_fin_rim(face, lx, ly, fw, fh, sh, gx, gy):
+        edge = lx <= 1 or lx >= fw - 2 or ly <= 1 or ly >= fh - 2
+        if edge:
+            return (118, 248, 255, 255)
+        return (*_mix((36, 66, 124), (58, 102, 174), 0.25 if _wa.noise(gx, gy, 902) > 0.6 else 0.0), 255)
+
+    def whale_fin_glow(face, lx, ly, fw, fh, sh, gx, gy):
+        if lx <= 1 or lx >= fw - 2 or ly <= 1 or ly >= fh - 2:
+            return (118, 248, 255, 255)
+        return None
+
+    for ub, fn, gfn in (
+        ((0, 0, 36, 26, 40), whale_body(), whale_body_glow),
+        ((154, 0, 34, 28, 44), whale_body(), whale_body_glow),
+        ((312, 0, 32, 12, 36), whale_body(stars=False), None),
+        ((312, 50, 26, 22, 26), whale_body(), whale_body_glow),
+        ((418, 50, 18, 16, 24), whale_body(), whale_body_glow),
+        ((226, 74, 12, 12, 22), whale_body(), whale_body_glow),
+        ((130, 74, 14, 4, 14), whale_body(), None),
+        ((188, 74, 4, 10, 14), whale_fin_rim, whale_fin_glow),
+        ((0, 74, 30, 8, 34), lambda f, lx, ly, fw, fh, sh, gx, gy: (232, 214, 152, 255) if (lx % 2 == 0) else (156, 134, 88, 255), None),
+        ((0, 120, 34, 4, 16), whale_fin_rim, whale_fin_glow),
+        ((102, 120, 24, 3, 12), whale_fin_rim, whale_fin_glow),
+        ((176, 120, 16, 2, 8), whale_fin_rim, whale_fin_glow),
+        ((226, 120, 44, 4, 18), whale_fin_rim, whale_fin_glow),
+        ((352, 120, 22, 3, 12), whale_fin_rim, whale_fin_glow),
+        ((0, 144, 6, 3, 6), _glow_fill((146, 252, 255)), _glow_fill((182, 255, 255))),
+        ((26, 144, 2, 4, 4), _organic_shaded((24, 38, 68), (48, 76, 118), (12, 22, 40)), None),
+    ):
+        _paint_textured_box(s, ub, fn, gl, gfn)
     save_pair("singing_moon_whale", s, gl)
+
 
 
 def _write_entity_loot(g):

@@ -179,28 +179,28 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				l.setBlock(altarPos, OceanBlocks.SOVEREIGN_ALTAR.defaultBlockState(), 3);
 
 				BarnacleHulkDredger hulk = OceanEntities.BARNACLE_HULK_DREDGER.create(l, EntitySpawnReason.COMMAND);
-				hulk.snapTo(-8.5, 90.0, 1.5, -15f, 0f);
+				hulk.snapTo(-8.2, 90.0, 1.8, -18f, 0f);
 				hulk.setNoAi(true);
 				hulk.setPersistenceRequired();
 				l.addFreshEntity(hulk);
 
 				SirenVeilJelly jelly = OceanEntities.SIREN_VEIL_JELLY.create(l, EntitySpawnReason.COMMAND);
-				jelly.snapTo(-4.0, 93.2, 2.5, 0f, 0f);
+				jelly.snapTo(-4.0, 93.4, 2.4, -12f, 0f);
 				jelly.setNoAi(true);
 				l.addFreshEntity(jelly);
 
 				CoralSpineMako mako = OceanEntities.CORAL_SPINE_MAKO.create(l, EntitySpawnReason.COMMAND);
-				mako.snapTo(4.0, 92.2, 2.5, -35f, 0f);
+				mako.snapTo(4.2, 92.2, 2.2, 48f, 0f);
 				mako.setNoAi(true);
 				l.addFreshEntity(mako);
 
 				DreadNautilusSentinel nautilus = OceanEntities.DREAD_NAUTILUS_SENTINEL.create(l, EntitySpawnReason.COMMAND);
-				nautilus.snapTo(8.5, 91.5, 1.5, 20f, 0f);
+				nautilus.snapTo(8.2, 91.6, 1.8, 30f, 0f);
 				nautilus.setNoAi(true);
 				l.addFreshEntity(nautilus);
 
 				ThalassorBoss thalassor = OceanEntities.THALASSOR.create(l, EntitySpawnReason.EVENT);
-				thalassor.snapTo(0.0, 94.5, -2.0, 180f, 0f);
+				thalassor.snapTo(0.8, 94.6, -1.6, 62f, 0f);
 				thalassor.setNoAi(true);
 				thalassor.setArenaCenter(altarPos);
 				l.addFreshEntity(thalassor);
@@ -224,7 +224,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				ids[4] = thalassor.getUUID();
 			});
 
-			director(context, world, new Vec3(0.0, 94.8, 15.5), new Vec3(0.0, 93.0, 0.5));
+			director(context, world, new Vec3(0.0, 93.8, 11.6), new Vec3(0.0, 93.0, 0.5));
 			shot(context, "ocean_live_enemies_and_thalassor");
 			cut(context, world);
 
@@ -265,7 +265,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				for (int i = 0; i < 3; i++) {
 					BrineMerchant m = OceanEntities.BRINE_MERCHANT.create(l, EntitySpawnReason.COMMAND);
 					m.setMerchantProfession(profs[i]);
-					m.snapTo(-8.5 + i * 2.5, 90.0, 3.0, 0f, 0f);
+					m.snapTo(-8.2 + i * 2.5, 90.0, 2.8, (i - 1) * -12f, 0f);
 					m.setNoAi(true);
 					l.addFreshEntity(m);
 					check(m.canBreatheUnderwater(), "Brine-Merchant breathes underwater");
@@ -274,13 +274,13 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				}
 
 				PearlPup pup = OceanEntities.PEARL_PUP.create(l, EntitySpawnReason.COMMAND);
-				pup.snapTo(-1.0, 90.0, 3.5, 10f, 0f);
+				pup.snapTo(-1.0, 90.0, 3.2, -15f, 0f);
 				pup.tame(p);
 				l.addFreshEntity(pup);
 				friendlyIds[4] = pup.getUUID();
 
 				LumiSeahorse seahorse = OceanEntities.LUMI_SEAHORSE.create(l, EntitySpawnReason.COMMAND);
-				seahorse.snapTo(2.0, 92.2, 2.5, -20f, 0f);
+				seahorse.snapTo(2.0, 92.2, 2.6, 50f, 0f);
 				seahorse.setNoAi(true);
 				l.addFreshEntity(seahorse);
 				seahorse.tameWithName(p);
@@ -288,14 +288,14 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				friendlyIds[3] = seahorse.getUUID();
 
 				SingingMoonWhale whale = OceanEntities.SINGING_MOON_WHALE.create(l, EntitySpawnReason.COMMAND);
-				whale.snapTo(6.2, 93.8, -0.5, -135f, 0f);
+				whale.snapTo(5.8, 94.0, -0.5, 58f, 0f);
 				whale.setNoAi(true);
 				l.addFreshEntity(whale);
 				check(whale.getMaxHealth() == OceanRules.MOON_WHALE_HP, "Moon-Whale HP == 220");
 				friendlyIds[5] = whale.getUUID();
 			});
 
-			director(context, world, new Vec3(0.0, 94.8, 15.0), new Vec3(0.0, 92.4, 1.5));
+			director(context, world, new Vec3(0.0, 93.6, 11.4), new Vec3(0.0, 92.4, 1.5));
 			shot(context, "ocean_live_friendlies_and_whale");
 			cut(context, world);
 
@@ -383,13 +383,13 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 					"Harpoon right-click launches ThrownHarpoon projectile");
 
 				// Step onto sunlit dry prismarine promenade beside tank for crystal-clear 3D Suit + Glaive + Lantern photo
-				p.teleportTo(l, 0.5, 90.0, 10.5, Set.<Relative>of(), -140f, 0f, false);
+				p.teleportTo(l, 0.5, 90.0, 10.5, Set.<Relative>of(), -62f, 0f, false);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.LEVIATHAN_GLAIVE));
 				p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(OceanItems.SIREN_PEARL_LANTERN));
 				target.discard();
 			});
 
-			director(context, world, new Vec3(2.8, 91.6, 13.8), new Vec3(0.5, 91.2, 10.5));
+			director(context, world, new Vec3(2.2, 91.4, 12.7), new Vec3(0.5, 91.1, 10.5));
 			shot(context, "ocean_live_diving_suit_and_weapons");
 			cut(context, world);
 
@@ -406,7 +406,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				check(l.getBlockState(lanternPos).getLightEmission() == 15, "Siren-Pearl Lantern emits light 15");
 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, 0.5, 90.0, 12.2, Set.<Relative>of(), 180f, 5f, false);
+				p.teleportTo(l, 0.5, 90.0, 8.9, Set.<Relative>of(), 0f, 5f, false);
 				p.getInventory().clearContent();
 				p.setItemSlot(EquipmentSlot.HEAD, new ItemStack(OceanItems.ABYSSAL_DIVING_HELM));
 				p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(OceanItems.BATHYSPHERE_CHESTPLATE));
@@ -426,10 +426,11 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				p.setItemInHand(InteractionHand.MAIN_HAND, damagedHarpoon);
 				l.getBlockState(forgePos).useItemOn(damagedHarpoon, l, p, InteractionHand.MAIN_HAND, hit);
 				check(damagedHarpoon.getDamageValue() < 600, "Trench Anvil repairs Abyssal gear with Iron Plate");
+				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.TIDE_CLEAVER_HARPOON));
 				p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(OceanItems.TIDECALLER_CONCH));
 			});
 
-			director(context, world, new Vec3(0.5, 92.2, 16.0), new Vec3(0.0, 90.8, 10.8));
+			director(context, world, new Vec3(0.5, 91.6, 13.8), new Vec3(0.3, 90.6, 10.2));
 			shot(context, "ocean_live_trench_anvil_and_lantern");
 			cut(context, world);
 		}

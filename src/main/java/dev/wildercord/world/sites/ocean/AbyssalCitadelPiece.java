@@ -63,55 +63,90 @@ public final class AbyssalCitadelPiece extends OceanPiece {
 
 	private void buildWesternTempleZiggurat(WorldGenLevel level, BoundingBox bb) {
 		footingRect(level, bb, 2, 10, 30, 54, BASE, DARK_PRISMARINE, DEEPSLATE_BRICKS);
-		// 4 stepped pyramid tiers
+		// 4 stepped pyramid tiers with sloped stair buttresses, fluted colonnades & spired turret pinnacles
 		int[][] tiers = {
-			{2, 10, 30, 54, BASE + 1, BASE + 5},
-			{6, 15, 28, 49, BASE + 6, BASE + 11},
-			{10, 20, 26, 44, BASE + 12, BASE + 17},
-			{14, 25, 23, 39, BASE + 18, BASE + 23}
+			{2, 10, 30, 54, BASE + 1, BASE + 4},
+			{6, 15, 28, 49, BASE + 5, BASE + 9},
+			{10, 20, 26, 44, BASE + 10, BASE + 14},
+			{14, 25, 23, 39, BASE + 15, BASE + 19}
 		};
 		for (int t = 0; t < tiers.length; t++) {
 			int x0 = tiers[t][0], z0 = tiers[t][1], x1 = tiers[t][2], z1 = tiers[t][3];
 			int y0 = tiers[t][4], y1 = tiers[t][5];
 			fill(level, bb, x0, y0, z0, x1, y1, z1, t % 2 == 0 ? DARK_PRISMARINE : PRISMARINE_BRICKS);
-			// Gold filigree belt & oxidized copper turret corner spires
+			// Sloped cornice stair trim, fluted pilasters & gold filigree belt
 			for (int x = x0; x <= x1; x++) {
+				boolean pilaster = (x - x0) % 4 == 0;
 				set(level, bb, GOLD, x, y1, z0);
 				set(level, bb, GOLD, x, y1, z1);
+				set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.SOUTH, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, y1 + 1, z0);
+				set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.NORTH, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, y1 + 1, z1);
+				if (pilaster) {
+					for (int py = y0; py < y1; py++) {
+						set(level, bb, py == y0 + 2 ? SEA_LANTERN : CHISELED_DEEPSLATE, x, py, z0);
+						set(level, bb, py == y0 + 2 ? SEA_LANTERN : CHISELED_DEEPSLATE, x, py, z1);
+					}
+				}
 			}
 			for (int z = z0; z <= z1; z++) {
+				boolean pilaster = (z - z0) % 4 == 0;
 				set(level, bb, GOLD, x0, y1, z);
 				set(level, bb, GOLD, x1, y1, z);
+				set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.EAST, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x0, y1 + 1, z);
+				set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.WEST, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x1, y1 + 1, z);
+				if (pilaster) {
+					for (int py = y0; py < y1; py++) {
+						set(level, bb, py == y0 + 2 ? SEA_LANTERN : CHISELED_DEEPSLATE, x0, py, z);
+					}
+				}
 			}
 			for (int cx : new int[] {x0, x1}) {
 				for (int cz : new int[] {z0, z1}) {
 					set(level, bb, COPPER_OXIDIZED, cx, y1 + 1, cz);
-					set(level, bb, SEA_LANTERN, cx, y1 + 2, cz);
+					set(level, bb, GOLD, cx, y1 + 2, cz);
+					set(level, bb, SEA_LANTERN, cx, y1 + 3, cz);
+					set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, y1 + 4, cz);
 				}
 			}
 		}
-		// Crown trident finial at ziggurat peak
-		set(level, bb, GOLD, 18, BASE + 24, CZ);
-		set(level, bb, SEA_LANTERN, 18, BASE + 24, CZ - 2);
-		set(level, bb, SEA_LANTERN, 18, BASE + 24, CZ + 2);
+		// Grand Crown Golden Trident Monument atop Ziggurat Peak (fits cleanly inside HEIGHT=28 -> y<=BASE+24)
+		for (int dy = 20; dy <= 24; dy++) {
+			set(level, bb, dy == 24 ? SEA_LANTERN : GOLD, 18, BASE + dy, CZ);
+		}
+		for (int dz : new int[] {-2, 2}) {
+			set(level, bb, GOLD, 18, BASE + 21, CZ + dz / 2);
+			set(level, bb, GOLD, 18, BASE + 22, CZ + dz);
+			set(level, bb, GOLD, 18, BASE + 23, CZ + dz);
+			set(level, bb, SEA_LANTERN, 18, BASE + 24, CZ + dz);
+		}
 	}
 
 	private void buildInnerSanctum(WorldGenLevel level, BoundingBox bb) {
 		// Vaulted Inner Sovereign Sanctum carved through temple heart + East Gatehouse Arch
 		fill(level, bb, 10, BASE + 1, CZ - 10, 29, BASE + 11, CZ + 10, WATER);
-		// Vertical sea_lantern ribs along Sanctum walls
+		// Vertical sea_lantern ribs + vaulted roof ribs + hanging siren pearl chandeliers
 		for (int x = 12; x <= 26; x += 4) {
 			for (int y = BASE + 1; y <= BASE + 10; y++) {
-				set(level, bb, y % 2 == 0 ? SEA_LANTERN : DARK_PRISMARINE, x, y, CZ - 10);
-				set(level, bb, y % 2 == 0 ? SEA_LANTERN : DARK_PRISMARINE, x, y, CZ + 10);
+				set(level, bb, y % 2 == 0 ? SEA_LANTERN : CHISELED_DEEPSLATE, x, y, CZ - 10);
+				set(level, bb, y % 2 == 0 ? SEA_LANTERN : CHISELED_DEEPSLATE, x, y, CZ + 10);
 			}
+			set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.SOUTH, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 10, CZ - 9);
+			set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.NORTH, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 10, CZ + 9);
+			set(level, bb, Blocks.IRON_CHAIN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 10, CZ);
+			set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), x, BASE + 9, CZ);
 		}
-		// Grand Gatehouse Arch opening east (x=28..30, z=27..37)
+		// Grand Gatehouse Arch opening east (x=28..30, z=27..37) + Flanking Sentinel Pillars
 		fill(level, bb, 28, BASE + 1, CZ - 4, 30, BASE + 9, CZ + 4, WATER);
 		for (int y = BASE + 1; y <= BASE + 11; y++) {
-			set(level, bb, GOLD, 29, y, CZ - 5);
-			set(level, bb, GOLD, 29, y, CZ + 5);
+			set(level, bb, y % 3 == 0 ? SEA_LANTERN : GOLD, 29, y, CZ - 5);
+			set(level, bb, y % 3 == 0 ? SEA_LANTERN : GOLD, 29, y, CZ + 5);
+			if (y <= BASE + 6) {
+				set(level, bb, COPPER_OXIDIZED, 30, y, CZ - 6);
+				set(level, bb, COPPER_OXIDIZED, 30, y, CZ + 6);
+			}
 		}
+		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 30, BASE + 7, CZ - 6);
+		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 30, BASE + 7, CZ + 6);
 		fill(level, bb, 29, BASE + 10, CZ - 5, 29, BASE + 11, CZ + 5, DARK_PRISMARINE);
 
 		// Western gilded trident dais & Citadel vault loot

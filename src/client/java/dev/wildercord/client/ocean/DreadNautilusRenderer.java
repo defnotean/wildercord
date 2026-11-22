@@ -41,6 +41,11 @@ public final class DreadNautilusRenderer extends MobRenderer<DreadNautilusSentin
 		state.laserTicks = entity.getLaserTicks();
 	}
 
+	@Override
+	protected void scale(OceanRenderStates.DreadNautilusState state, PoseStack pose) {
+		pose.scale(0.5F, 0.5F, 0.5F);
+	}
+
 	private static final class GlowLayer extends RenderLayer<OceanRenderStates.DreadNautilusState, DreadNautilusModel> {
 		private final RenderType glowType = RenderTypes.eyes(GLOW);
 

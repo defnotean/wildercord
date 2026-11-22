@@ -41,6 +41,11 @@ public final class BarnacleHulkRenderer extends MobRenderer<BarnacleHulkDredger,
 		state.slamTicks = entity.getSlamTicks();
 	}
 
+	@Override
+	protected void scale(OceanRenderStates.BarnacleHulkState state, PoseStack pose) {
+		pose.scale(0.5F, 0.5F, 0.5F);
+	}
+
 	private static final class GlowLayer extends RenderLayer<OceanRenderStates.BarnacleHulkState, BarnacleHulkModel> {
 		private final RenderType glowType = RenderTypes.eyes(GLOW);
 

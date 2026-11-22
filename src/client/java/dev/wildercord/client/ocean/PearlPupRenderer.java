@@ -41,6 +41,11 @@ public final class PearlPupRenderer extends MobRenderer<PearlPup, OceanRenderSta
 		state.sniffing = entity.isSniffing();
 	}
 
+	@Override
+	protected void scale(OceanRenderStates.PearlPupState state, PoseStack pose) {
+		pose.scale(0.5F, 0.5F, 0.5F);
+	}
+
 	private static final class LureGlowLayer extends RenderLayer<OceanRenderStates.PearlPupState, PearlPupModel> {
 		private final RenderType glowType = RenderTypes.eyes(GLOW);
 

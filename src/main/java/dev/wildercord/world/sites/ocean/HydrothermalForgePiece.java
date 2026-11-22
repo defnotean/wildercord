@@ -102,17 +102,30 @@ public final class HydrothermalForgePiece extends OceanPiece {
 					}
 				}
 			}
-			// Exposed copper duct linking stack into central forge body
+			// Exposed copper duct with elbow collars & magma heat trace linking stack into central forge dome
 			int stepX = Integer.compare(CX, sx);
 			int stepZ = Integer.compare(CZ, sz);
-			for (int k = 1; k <= 4; k++) {
-				set(level, bb, COPPER_EXPOSED, sx + stepX * k, BASE + 6, sz + stepZ * k);
+			for (int k = 1; k <= 5; k++) {
+				int px = sx + stepX * k, pz = sz + stepZ * k;
+				set(level, bb, k == 3 ? COPPER_BLOCK : COPPER_EXPOSED, px, BASE + 6, pz);
+				set(level, bb, k % 2 == 1 ? COPPER_BLOCK : BLACKSTONE_BRICKS, px, BASE + 5, pz);
+				set(level, bb, MAGMA, px, BASE + 1, pz);
 			}
+			// Tall tapered basalt & crying obsidian hydrothermal chimney spire beside stack
+			set(level, bb, BASALT, sx, BASE + 7, sz);
+			set(level, bb, Blocks.CRYING_OBSIDIAN.defaultBlockState(), sx, BASE + 8, sz);
+			set(level, bb, MAGMA, sx, BASE + 9, sz);
 		}
 
-		// 3. Top Dry 11x7x11 Glass Dome housing Trench Anvil (y=10..17)
+		// 3. Top Dry 11x7x11 Copper-Ribbed Glass Dome housing Trench Anvil (y=10..17)
 		int domeY = BASE + 7; // y = 10
 		fill(level, bb, 8, domeY, 8, 18, domeY, 18, BLACKSTONE_BRICKS);
+		for (int i = 8; i <= 18; i++) {
+			set(level, bb, COPPER_BLOCK, i, domeY, 8);
+			set(level, bb, COPPER_BLOCK, i, domeY, 18);
+			set(level, bb, COPPER_BLOCK, 8, domeY, i);
+			set(level, bb, COPPER_BLOCK, 18, domeY, i);
+		}
 		for (int x = 8; x <= 18; x++) {
 			for (int z = 8; z <= 18; z++) {
 				for (int y = domeY + 1; y <= domeY + 6; y++) {
@@ -124,7 +137,12 @@ public final class HydrothermalForgePiece extends OceanPiece {
 				}
 			}
 		}
-		// Ensure dry dome interior & Trench Anvil centerpiece
+		// Crown pressure valve & molten light beacon atop dome peak
+		set(level, bb, COPPER_BLOCK, CX, domeY + 6, CZ);
+		set(level, bb, Blocks.OCHRE_FROGLIGHT.defaultBlockState(), CX, domeY + 7, CZ);
+		set(level, bb, Blocks.LIGHTNING_ROD.waxed().unaffected().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), CX, domeY + 8, CZ);
+
+		// Ensure dry dome interior & richly furnish Trench Anvil smithy
 		for (int x = 9; x <= 17; x++) {
 			for (int z = 9; z <= 17; z++) {
 				for (int y = domeY + 1; y <= domeY + 5; y++) {
@@ -143,6 +161,11 @@ public final class HydrothermalForgePiece extends OceanPiece {
 		set(level, bb, OceanBlocks.TRENCH_ANVIL.defaultBlockState(), CX, domeY + 1, CZ + 2);
 		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), CX - 2, domeY + 1, CZ + 2);
 		set(level, bb, Blocks.BLAST_FURNACE.defaultBlockState(), CX + 2, domeY + 1, CZ + 2);
+		set(level, bb, Blocks.SMITHING_TABLE.defaultBlockState(), CX + 2, domeY + 1, CZ - 1);
+		set(level, bb, Blocks.LAVA_CAULDRON.defaultBlockState(), CX, domeY + 1, CZ - 2);
+		set(level, bb, Blocks.GRINDSTONE.defaultBlockState(), CX - 1, domeY + 1, CZ - 2);
+		chest(level, bb, CX - 2, domeY + 1, CZ - 1, Direction.EAST, OceanSites.FORGE_LOOT, 33L);
+		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HANGING, true), CX, domeY + 4, CZ);
 
 		spawnMob(level, bb, OceanEntities.BARNACLE_HULK_DREDGER, CX, BASE + 1, 22, m -> {});
 	}

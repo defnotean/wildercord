@@ -42,6 +42,11 @@ public final class LumiSeahorseRenderer extends MobRenderer<LumiSeahorse, OceanR
 		state.dashTicks = entity.getDashTicks();
 	}
 
+	@Override
+	protected void scale(OceanRenderStates.LumiSeahorseState state, PoseStack pose) {
+		pose.scale(0.5F, 0.5F, 0.5F);
+	}
+
 	private static final class BioGlowLayer extends RenderLayer<OceanRenderStates.LumiSeahorseState, LumiSeahorseModel> {
 		private final RenderType glowType = RenderTypes.eyes(GLOW);
 

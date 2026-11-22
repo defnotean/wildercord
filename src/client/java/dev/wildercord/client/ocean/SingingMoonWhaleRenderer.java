@@ -42,6 +42,11 @@ public final class SingingMoonWhaleRenderer extends MobRenderer<SingingMoonWhale
 		state.singing = entity.isSinging();
 	}
 
+	@Override
+	protected void scale(OceanRenderStates.MoonWhaleState state, PoseStack pose) {
+		pose.scale(0.72F, 0.72F, 0.72F);
+	}
+
 	private static final class StarBarnacleGlowLayer extends RenderLayer<OceanRenderStates.MoonWhaleState, SingingMoonWhaleModel> {
 		private final RenderType glowType = RenderTypes.eyes(GLOW);
 

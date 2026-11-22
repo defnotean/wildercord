@@ -65,19 +65,20 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 		int bellTop = BASE + 12;
 		int dockY = Math.max(bellTop + 4, totalHeight - 9);
 
-		// 1. Seabed 15x14x15 Dry Diving-Bell Chamber
+		// 1. Seabed 15x14x15 Chamfered Brass-Ribbed Diving-Bell Chamber
 		footingRect(level, bb, 2, 2, 12, 12, BASE, DARK_PRISMARINE, PRISMARINE_BRICKS);
 		fill(level, bb, 3, BASE, 3, 11, BASE, 11, SPRUCE_PLANKS);
 
 		for (int y = BASE + 1; y <= bellTop; y++) {
 			boolean collar = y == BASE + 5 || y == bellTop;
-			for (int x = 2; x <= 12; x++) {
-				for (int z = 2; z <= 12; z++) {
-					boolean edge = x == 2 || x == 12 || z == 2 || z == 12;
+			int inset = (y >= bellTop - 1) ? 1 : 0;
+			for (int x = 2 + inset; x <= 12 - inset; x++) {
+				for (int z = 2 + inset; z <= 12 - inset; z++) {
+					boolean edge = x == 2 + inset || x == 12 - inset || z == 2 + inset || z == 12 - inset;
 					if (!edge) {
 						set(level, bb, AIR, x, y, z);
-					} else if ((x == 2 || x == 12) && (z == 2 || z == 12)) {
-						set(level, bb, DARK_PRISMARINE, x, y, z);
+					} else if ((x == 2 + inset || x == 12 - inset) && (z == 2 + inset || z == 12 - inset)) {
+						set(level, bb, y % 3 == 0 ? COPPER_BLOCK : DARK_PRISMARINE, x, y, z);
 					} else if (collar) {
 						set(level, bb, COPPER_BLOCK, x, y, z);
 					} else if (y >= BASE + 2 && y <= BASE + 4 && Math.abs(x - cx) <= 2 && (z == 2 || z == 12)) {
@@ -90,21 +91,36 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 				}
 			}
 		}
-		// Cap bell ceiling & furnish dry bell
-		fill(level, bb, 2, bellTop, 2, 12, bellTop, 12, DARK_PRISMARINE);
+		// Exterior brass rib buttresses & kelp spire overgrowth around diving bell corners
+		for (int bx : new int[] {1, 13}) {
+			for (int bz : new int[] {1, 13}) {
+				for (int y = BASE + 1; y < dockY - 1; y++) {
+					set(level, bb, Blocks.KELP_PLANT.defaultBlockState(), bx, y, bz);
+				}
+				set(level, bb, Blocks.KELP.defaultBlockState(), bx, dockY - 1, bz);
+			}
+		}
+		// Cap bell ceiling & richly furnish dry bell
+		fill(level, bb, 3, bellTop, 3, 11, bellTop, 11, DARK_PRISMARINE);
+		fill(level, bb, 4, bellTop + 1, 4, 10, bellTop + 1, 10, COPPER_OXIDIZED);
 		chest(level, bb, 4, BASE + 1, 4, Direction.SOUTH, OceanSites.WATCHTOWER_LOOT, 21L);
 		chest(level, bb, 10, BASE + 1, 4, Direction.SOUTH, OceanSites.WATCHTOWER_LOOT, 22L);
+		barrel(level, bb, 4, BASE + 1, 6, Direction.EAST, OceanSites.WATCHTOWER_LOOT, 23L);
 		set(level, bb, Blocks.CRAFTING_TABLE.defaultBlockState(), 4, BASE + 1, 10);
-		set(level, bb, Blocks.LANTERN.defaultBlockState(), 10, BASE + 1, 10);
+		set(level, bb, Blocks.LECTERN.defaultBlockState(), 10, BASE + 1, 6);
+		set(level, bb, Blocks.BLAST_FURNACE.defaultBlockState(), 10, BASE + 1, 10);
+		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), 7, BASE + 1, 10);
+		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 4, bellTop - 1, 4);
 
-		// 2. Twin Bubble-Elevator Shafts (Soul Sand UP at x=6, Magma DOWN at x=8)
+		// 2. Twin Bubble-Elevator Shafts (Soul Sand UP at x=6, Magma DOWN at x=8) + Brass Pressure Rings
 		for (int y = BASE + 1; y <= dockY; y++) {
+			boolean ring = (y - BASE) % 5 == 0;
 			for (int x = 5; x <= 9; x++) {
 				for (int z = 5; z <= 9; z++) {
 					boolean shell = x == 5 || x == 9 || z == 5 || z == 9;
 					if (shell) {
 						boolean pillar = (x == 5 || x == 9) && (z == 5 || z == 9);
-						set(level, bb, pillar ? DARK_PRISMARINE : CYAN_GLASS, x, y, z);
+						set(level, bb, ring ? (pillar ? COPPER_BLOCK : SEA_LANTERN) : (pillar ? DARK_PRISMARINE : CYAN_GLASS), x, y, z);
 					} else if ((x == 6 || x == 8) && z == 7) {
 						set(level, bb, WATER, x, y, z);
 					} else if (x == 7 && z == 7) {
@@ -123,18 +139,25 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 		set(level, bb, Blocks.SOUL_SAND.defaultBlockState(), 6, BASE, 7);
 		set(level, bb, MAGMA, 8, BASE, 7);
 
-		// 3. Surface Spruce Boat Dock at Sea Level
+		// 3. Surface Spruce Boat Dock at Sea Level with Pilings, Mooring Bollards & Crates
 		fill(level, bb, 0, dockY, 0, 14, dockY, 4, SPRUCE_PLANKS);
 		fill(level, bb, 3, dockY, 5, 11, dockY, 11, SPRUCE_PLANKS);
-		for (int x : new int[] {0, 4, 10, 14}) {
-			set(level, bb, STRIPPED_SPRUCE, x, dockY + 1, 0);
-			set(level, bb, Blocks.LANTERN.defaultBlockState(), x, dockY + 2, 0);
-			if (x == 0 || x == 14) {
+		barrel(level, bb, 2, dockY + 1, 2, Direction.UP, OceanSites.WATCHTOWER_LOOT, 24L);
+		chest(level, bb, 12, dockY + 1, 2, Direction.SOUTH, OceanSites.WATCHTOWER_LOOT, 25L);
+		for (int x = 1; x <= 13; x++) {
+			if (x < 5 || x > 9) {
 				set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), x, dockY + 1, 4);
 			}
 		}
+		for (int x : new int[] {0, 4, 10, 14}) {
+			for (int y = dockY - 3; y <= dockY + 1; y++) {
+				set(level, bb, STRIPPED_SPRUCE, x, y, 0);
+			}
+			set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), x, dockY + 2, 0);
+			set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), x, dockY + 1, 4);
+		}
 
-		// 4. Beacon Crown (sea_lantern core + oxidized copper spire)
+		// 4. Tiered Beacon Crown (sea_lantern core + copper ribs + oxidized cupola & spire)
 		int crownBase = dockY + 1;
 		for (int y = crownBase; y <= Math.min(totalHeight - 3, crownBase + 5); y++) {
 			for (int x = 5; x <= 9; x++) {
@@ -143,7 +166,7 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 					if (!edge) {
 						set(level, bb, SEA_LANTERN, x, y, z);
 					} else if ((x == 5 || x == 9) && (z == 5 || z == 9)) {
-						set(level, bb, COPPER_OXIDIZED, x, y, z);
+						set(level, bb, y == crownBase + 2 ? COPPER_BLOCK : COPPER_OXIDIZED, x, y, z);
 					} else if (y == crownBase || y == crownBase + 4) {
 						set(level, bb, DARK_PRISMARINE, x, y, z);
 					} else {
@@ -153,7 +176,9 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 			}
 		}
 		int tipY = Math.min(totalHeight - 1, crownBase + 6);
+		fill(level, bb, 5, tipY - 2, 5, 9, tipY - 2, 9, DARK_PRISMARINE);
 		fill(level, bb, 6, tipY - 1, 6, 8, tipY - 1, 8, COPPER_OXIDIZED);
+		set(level, bb, GOLD, 7, tipY - 1, 7);
 		set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState(), 7, tipY, 7);
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 7, dockY + 3, 2);
 	}

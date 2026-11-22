@@ -41,6 +41,11 @@ public final class CoralSpineMakoRenderer extends MobRenderer<CoralSpineMako, Oc
 		state.lungeTicks = entity.getLungeTicks();
 	}
 
+	@Override
+	protected void scale(OceanRenderStates.CoralMakoState state, PoseStack pose) {
+		pose.scale(0.5F, 0.5F, 0.5F);
+	}
+
 	private static final class GlowLayer extends RenderLayer<OceanRenderStates.CoralMakoState, CoralSpineMakoModel> {
 		private final RenderType glowType = RenderTypes.eyes(GLOW);
 

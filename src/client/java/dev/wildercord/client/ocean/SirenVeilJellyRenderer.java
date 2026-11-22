@@ -41,6 +41,11 @@ public final class SirenVeilJellyRenderer extends MobRenderer<SirenVeilJelly, Oc
 		state.pulseTicks = entity.getPulseTicks();
 	}
 
+	@Override
+	protected void scale(OceanRenderStates.SirenJellyState state, PoseStack pose) {
+		pose.scale(0.5F, 0.5F, 0.5F);
+	}
+
 	private static final class CoreGlowLayer extends RenderLayer<OceanRenderStates.SirenJellyState, SirenVeilJellyModel> {
 		private final RenderType glowType = RenderTypes.eyes(GLOW);
 

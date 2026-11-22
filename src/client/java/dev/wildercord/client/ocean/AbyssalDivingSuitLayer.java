@@ -26,9 +26,11 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Unit;
 
 /**
- * Renders 3D physical attachments on players wearing the Abyssal Diving Suit:
- * - Helm: front riveted bronze frame, 4x4 glowing cyan viewport, and grated ear-ports.
- * - Bathysphere Chestplate: twin vertical 3x8x2 brass oxygen tanks, valve bridge, and cyan pressure gauge.
+ * 1:1 Sub-voxel 3D attachments for players wearing the Abyssal Diving Suit (128x128 sheet, 0.5x scale):
+ * - Helm: full brass bathysphere dome, stepped crown cap, riveted front bezel, glowing cyan viewport
+ *   glass overlaid with crossed protective cage bars, grated ear-ports, and flared bronze collar.
+ * - Bathysphere Chestplate: twin vertical brass O2 cylinders, dual copper clamping straps, upper valve
+ *   bridge, curved air hose running up to helm, and emissive cyan pressure gauge.
  */
 public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	public static final ModelLayerLocation HELM_LAYER = new ModelLayerLocation(Wildercord.id("abyssal_diving_helm_3d"), "main");
@@ -51,27 +53,50 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 	public static LayerDefinition createHelmLayer() {
 		MeshDefinition mesh = new MeshDefinition();
 		PartDefinition root = mesh.getRoot();
+		// Sub-voxel 0.5x around player head [-4..4, -8..0, -4..4] -> [-8..8, -16..0, -8..8]
 		root.addOrReplaceChild("porthole",
 			CubeListBuilder.create()
-				.texOffs(0, 0).addBox(-3.0F, -7.0F, -5.0F, 6, 6, 1)
-				.texOffs(14, 0).addBox(-2.0F, -6.0F, -6.2F, 4, 4, 2)
-				.texOffs(26, 0).addBox(4.0F, -6.0F, -2.0F, 2, 4, 4)
-				.texOffs(26, 0).mirror().addBox(-6.0F, -6.0F, -2.0F, 2, 4, 4),
+				.texOffs(0, 0).addBox(-9.0F, -17.0F, -9.0F, 18, 18, 18)
+				.texOffs(74, 0).addBox(-6.0F, -19.0F, -6.0F, 12, 3, 12)
+				.texOffs(0, 38).addBox(-6.5F, -14.5F, -11.5F, 13, 12, 3)
+				.texOffs(34, 38).addBox(-4.5F, -12.5F, -12.5F, 9, 8, 2)
+				// Protective crossed viewport grille bars
+				.texOffs(58, 38).addBox(-0.5F, -13.0F, -13.2F, 1, 9, 2)
+				.texOffs(66, 38).addBox(-4.5F, -9.0F, -13.2F, 9, 1, 2)
+				// Circular grated side ear-ports
+				.texOffs(90, 38).addBox(8.5F, -12.5F, -4.0F, 3, 8, 8)
+				.texOffs(90, 38).mirror().addBox(-11.5F, -12.5F, -4.0F, 3, 8, 8)
+				// Flared riveted bronze collar gorget
+				.texOffs(0, 56).addBox(-10.0F, -1.0F, -9.0F, 20, 3, 18),
 			PartPose.ZERO);
-		return LayerDefinition.create(mesh, 64, 64);
+		return LayerDefinition.create(mesh, 128, 128);
 	}
 
 	public static LayerDefinition createTanksLayer() {
 		MeshDefinition mesh = new MeshDefinition();
 		PartDefinition root = mesh.getRoot();
+		// Sub-voxel 0.5x around player torso [-4..4, 0..12, -2..2] -> [-8..8, 0..24, -4..4]
 		root.addOrReplaceChild("tanks",
 			CubeListBuilder.create()
-				.texOffs(0, 16).addBox(-3.5F, 1.5F, 2.1F, 3, 8, 2)
-				.texOffs(0, 16).mirror().addBox(0.5F, 1.5F, 2.1F, 3, 8, 2)
-				.texOffs(10, 16).addBox(-3.0F, 0.5F, 2.1F, 6, 2, 2)
-				.texOffs(26, 16).addBox(-1.0F, 3.0F, -2.6F, 2, 2, 1),
+				// Twin back brass O2 cylinders + domed end caps
+				.texOffs(0, 80).addBox(-7.0F, 3.0F, 4.2F, 6, 17, 6)
+				.texOffs(0, 80).mirror().addBox(1.0F, 3.0F, 4.2F, 6, 17, 6)
+				.texOffs(26, 80).addBox(-6.0F, 1.5F, 5.2F, 4, 2, 4)
+				.texOffs(26, 80).mirror().addBox(2.0F, 1.5F, 5.2F, 4, 2, 4)
+				.texOffs(26, 80).addBox(-6.0F, 19.5F, 5.2F, 4, 2, 4)
+				.texOffs(26, 80).mirror().addBox(2.0F, 19.5F, 5.2F, 4, 2, 4)
+				// Dual copper clamping straps around cylinders
+				.texOffs(44, 80).addBox(-7.5F, 7.0F, 3.7F, 7, 2, 7)
+				.texOffs(44, 80).mirror().addBox(0.5F, 7.0F, 3.7F, 7, 2, 7)
+				.texOffs(44, 80).addBox(-7.5F, 14.0F, 3.7F, 7, 2, 7)
+				.texOffs(44, 80).mirror().addBox(0.5F, 14.0F, 3.7F, 7, 2, 7)
+				// Upper valve bridge, vertical air hose rising toward helm, & glowing chest/back gauge
+				.texOffs(74, 80).addBox(-7.0F, 0.0F, 5.0F, 14, 3, 4)
+				.texOffs(26, 90).addBox(2.5F, -8.0F, 5.5F, 2, 10, 2)
+				.texOffs(36, 90).addBox(-2.5F, 5.0F, -5.2F, 5, 5, 2)
+				.texOffs(36, 90).addBox(-2.5F, 3.0F, 8.8F, 5, 5, 2),
 			PartPose.ZERO);
-		return LayerDefinition.create(mesh, 64, 64);
+		return LayerDefinition.create(mesh, 128, 128);
 	}
 
 	@Override
@@ -81,6 +106,7 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 		if (state.headEquipment.is(OceanItems.ABYSSAL_DIVING_HELM)) {
 			pose.pushPose();
 			getParentModel().head.translateAndRotate(pose);
+			pose.scale(0.5F, 0.5F, 0.5F);
 			RenderCompat.submitModel(collector.order(0), helmModel, Unit.INSTANCE, pose, CUTOUT, light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
 			RenderCompat.submitModel(collector.order(1), helmModel, Unit.INSTANCE, pose, EYES, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 			pose.popPose();
@@ -89,6 +115,7 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 		if (state.chestEquipment.is(OceanItems.BATHYSPHERE_CHESTPLATE)) {
 			pose.pushPose();
 			getParentModel().body.translateAndRotate(pose);
+			pose.scale(0.5F, 0.5F, 0.5F);
 			RenderCompat.submitModel(collector.order(0), tanksModel, Unit.INSTANCE, pose, CUTOUT, light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
 			RenderCompat.submitModel(collector.order(1), tanksModel, Unit.INSTANCE, pose, EYES, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 			pose.popPose();

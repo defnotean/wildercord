@@ -7,94 +7,124 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
 
 /**
- * 1:1 360-degree box rig for Lumi-Seahorse Mount (64x64 sheet, entityTranslucent):
- * Crowned crest & tubular snout, curved neck & torso, fluttering sea-mint dorsal fin,
- * 3-joint curled spiral tail, and toggleable brass-and-aqua riding saddle + stirrups.
+ * 1:1 360-degree high-voxel rig for Lumi-Seahorse (128x128 sheet, 0.5x sub-voxel scale):
+ * Curved S-profile emerald seahorse with 5-spike golden coral reef coronet, translucent cheek gill
+ * fins, tubular snout, puffed ribbed emerald/mint chest, glowing 5-ray translucent dorsal fan fin,
+ * swept pectoral fins, 8-segment spiraled curled tail, and detailed leather/brass saddle with stirrups.
  */
 public final class LumiSeahorseModel extends EntityModel<OceanRenderStates.LumiSeahorseState> {
-	private final ModelPart torso;
-	private final ModelPart neck;
+	private final ModelPart chest;
 	private final ModelPart head;
 	private final ModelPart dorsalFin;
+	private final ModelPart tailA;
+	private final ModelPart tailB;
+	private final ModelPart tailC;
 	private final ModelPart saddle;
-	private final ModelPart tail0;
-	private final ModelPart tail1;
-	private final ModelPart tail2;
 
 	public LumiSeahorseModel(ModelPart root) {
-		super(root, RenderTypes::entityTranslucent);
-		this.torso = root.getChild("torso");
-		this.neck = this.torso.getChild("neck");
-		this.head = this.neck.getChild("head");
-		this.dorsalFin = this.torso.getChild("dorsal_fin");
-		this.saddle = this.torso.getChild("saddle");
-		this.tail0 = this.torso.getChild("tail_0");
-		this.tail1 = this.tail0.getChild("tail_1");
-		this.tail2 = this.tail1.getChild("tail_2");
+		super(root);
+		this.chest = root.getChild("chest");
+		this.head = this.chest.getChild("head");
+		this.dorsalFin = this.chest.getChild("dorsal_fin");
+		this.tailA = this.chest.getChild("tail_a");
+		this.tailB = this.tailA.getChild("tail_b");
+		this.tailC = this.tailB.getChild("tail_c");
+		this.saddle = this.chest.getChild("saddle");
 	}
 
 	public static LayerDefinition createLayer() {
 		MeshDefinition mesh = new MeshDefinition();
 		PartDefinition root = mesh.getRoot();
 
-		PartDefinition torso = root.addOrReplaceChild("torso",
-			CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -5.0F, -3.0F, 6, 10, 6),
-			PartPose.offset(0.0F, 12.0F, 0.0F));
-
-		torso.addOrReplaceChild("dorsal_fin",
-			CubeListBuilder.create().texOffs(0, 28).addBox(-0.5F, -3.0F, 0.0F, 1, 6, 6),
-			PartPose.offset(0.0F, -1.0F, 3.0F));
-
-		torso.addOrReplaceChild("saddle",
+		// Puffed ribbed chest + arched neck segments + swept pectoral blades
+		PartDefinition chest = root.addOrReplaceChild("chest",
 			CubeListBuilder.create()
-				.texOffs(0, 40).addBox(-3.5F, -3.0F, -3.5F, 7, 4, 7)
-				.texOffs(28, 40).addBox(3.2F, 1.0F, -0.5F, 1, 4, 1)
-				.texOffs(28, 40).mirror().addBox(-4.2F, 1.0F, -0.5F, 1, 4, 1),
-			PartPose.ZERO);
+				.texOffs(42, 22).addBox(-6.0F, -10.0F, -6.0F, 12, 14, 12)
+				// Ribbed emerald/mint belly armor plates
+				.texOffs(0, 50).addBox(-5.0F, -7.0F, -7.2F, 10, 3, 13)
+				.texOffs(0, 50).addBox(-5.0F, -2.5F, -7.5F, 10, 3, 13)
+				.texOffs(128, 50).addBox(-4.5F, 2.0F, -6.5F, 9, 3, 13)
+				// Arched neck rings rising into head
+				.texOffs(0, 22).addBox(-5.0F, -17.0F, -4.0F, 10, 8, 10)
+				// Swept glowing pectoral cheek fins on chest shoulders
+				.texOffs(86, 50).addBox(5.5F, -8.0F, 0.0F, 2, 8, 9)
+				.texOffs(86, 50).mirror().addBox(-7.5F, -8.0F, 0.0F, 2, 8, 9),
+			PartPose.offset(0.0F, 10.0F, 0.0F));
 
-		PartDefinition neck = torso.addOrReplaceChild("neck",
-			CubeListBuilder.create().texOffs(24, 0).addBox(-2.5F, -6.0F, -2.5F, 5, 6, 5),
-			PartPose.offsetAndRotation(0.0F, -5.0F, -0.5F, 0.25F, 0.0F, 0.0F));
+		// Glowing 5-ray translucent sea-mint Dorsal Fan Fin
+		PartDefinition dorsal = chest.addOrReplaceChild("dorsal_fin",
+			CubeListBuilder.create().texOffs(48, 50).addBox(-1.0F, -9.0F, 4.0F, 2, 14, 12),
+			PartPose.offset(0.0F, -3.0F, 3.0F));
+		for (int i = 0; i < 4; i++) {
+			dorsal.addOrReplaceChild("dray_" + i,
+				CubeListBuilder.create().texOffs(78, 50).addBox(-0.5F, -2.0F, -1.0F, 1, 16, 2),
+				PartPose.offsetAndRotation(0.0F, -2.0F, 6.0F, 0.55F + i * 0.25F, 0.0F, 0.0F));
+		}
 
-		neck.addOrReplaceChild("head",
+		// Sculpted Head + Tubular Flared Snout + Cheek Gill Fins + 5-Spike Golden Reef Coronet
+		chest.addOrReplaceChild("head",
 			CubeListBuilder.create()
-				.texOffs(0, 16).addBox(-3.0F, -6.0F, -3.5F, 6, 6, 6)
-				.texOffs(24, 16).addBox(-1.0F, -3.0F, -8.5F, 2, 2, 5)
-				.texOffs(38, 16).addBox(-0.5F, -10.0F, -2.5F, 1, 4, 5)
-				.texOffs(44, 0).addBox(3.0F, -4.0F, -0.5F, 2, 3, 1)
-				.texOffs(44, 0).mirror().addBox(-5.0F, -4.0F, -0.5F, 2, 3, 1),
-			PartPose.offset(0.0F, -5.5F, 0.0F));
+				.texOffs(0, 0).addBox(-5.0F, -10.0F, -6.0F, 10, 10, 10)
+				.texOffs(42, 0).addBox(-2.5F, -6.0F, -16.0F, 5, 5, 10)
+				.texOffs(74, 0).addBox(-2.0F, -5.5F, -17.5F, 4, 4, 3)
+				// 5-Spike Golden Coral Coronet
+				.texOffs(90, 0).addBox(-1.0F, -17.0F, -4.0F, 2, 7, 2)
+				.texOffs(90, 0).addBox(-1.0F, -16.0F, -1.0F, 2, 7, 2)
+				.texOffs(90, 0).addBox(-1.0F, -14.5F, 2.0F, 2, 7, 2)
+				.texOffs(128, 0).addBox(-3.5F, -14.0F, -2.0F, 2, 6, 2)
+				.texOffs(128, 0).mirror().addBox(1.5F, -14.0F, -2.0F, 2, 6, 2)
+				// Translucent sea-mint cheek gill fins
+				.texOffs(100, 0).addBox(4.8F, -8.0F, -2.0F, 2, 5, 6)
+				.texOffs(100, 0).mirror().addBox(-6.8F, -8.0F, -2.0F, 2, 5, 6),
+			PartPose.offset(0.0F, -16.0F, -1.0F));
 
-		PartDefinition tail0 = torso.addOrReplaceChild("tail_0",
-			CubeListBuilder.create().texOffs(14, 28).addBox(-2.0F, 0.0F, -2.0F, 4, 4, 4),
-			PartPose.offsetAndRotation(0.0F, 5.0F, 0.5F, 0.45F, 0.0F, 0.0F));
-		PartDefinition tail1 = tail0.addOrReplaceChild("tail_1",
-			CubeListBuilder.create().texOffs(30, 28).addBox(-1.5F, 0.0F, -2.0F, 3, 3, 4),
-			PartPose.offsetAndRotation(0.0F, 3.8F, 0.0F, 0.65F, 0.0F, 0.0F));
-		tail1.addOrReplaceChild("tail_2",
-			CubeListBuilder.create().texOffs(44, 28).addBox(-1.0F, 0.0F, -1.5F, 2, 2, 3),
-			PartPose.offsetAndRotation(0.0F, 2.8F, -0.5F, 0.75F, 0.0F, 0.0F));
+		// Leather & Brass Saddle + Arch + Straps + Stirrup Loops (hidden when unsaddled)
+		chest.addOrReplaceChild("saddle",
+			CubeListBuilder.create()
+				.texOffs(0, 96).addBox(-7.0F, -4.0F, -7.0F, 14, 4, 14)
+				.texOffs(58, 96).addBox(-6.0F, -7.0F, 3.0F, 12, 4, 4)
+				.texOffs(58, 96).addBox(-6.0F, -6.0F, -7.0F, 12, 4, 4)
+				.texOffs(92, 96).addBox(-8.2F, 0.0F, -1.5F, 2, 10, 3)
+				.texOffs(92, 96).mirror().addBox(6.2F, 0.0F, -1.5F, 2, 10, 3)
+				.texOffs(104, 96).addBox(-8.8F, 9.0F, -0.5F, 3, 3, 1)
+				.texOffs(104, 96).mirror().addBox(5.8F, 9.0F, -0.5F, 3, 3, 1),
+			PartPose.offset(0.0F, -2.0F, 0.0F));
 
-		return LayerDefinition.create(mesh, 64, 64);
+		// Multi-segment Curled Prehensile Tail coiling through ~270 deg
+		PartDefinition tailA = chest.addOrReplaceChild("tail_a",
+			CubeListBuilder.create()
+				.texOffs(0, 78).addBox(-4.0F, 0.0F, -4.0F, 8, 8, 8)
+				.texOffs(140, 0).addBox(-3.5F, 7.0F, -2.5F, 7, 7, 8),
+			PartPose.offset(0.0F, 4.0F, 1.0F));
+		PartDefinition tailB = tailA.addOrReplaceChild("tail_b",
+			CubeListBuilder.create()
+				.texOffs(34, 78).addBox(-3.0F, 0.0F, -3.0F, 6, 7, 6)
+				.texOffs(172, 0).addBox(-2.5F, 5.5F, -5.0F, 5, 6, 6),
+			PartPose.offsetAndRotation(0.0F, 13.0F, 1.5F, -0.78F, 0.0F, 0.0F));
+		tailB.addOrReplaceChild("tail_c",
+			CubeListBuilder.create()
+				.texOffs(60, 78).addBox(-2.0F, 0.0F, -2.0F, 4, 6, 4)
+				.texOffs(196, 0).addBox(-1.5F, 4.0F, -4.5F, 3, 5, 4),
+			PartPose.offsetAndRotation(0.0F, 9.5F, -2.5F, -1.05F, 0.0F, 0.0F));
+
+		return LayerDefinition.create(mesh, 256, 128);
 	}
 
 	@Override
 	public void setupAnim(OceanRenderStates.LumiSeahorseState state) {
 		super.setupAnim(state);
-		this.saddle.visible = state.saddled;
-		float bob = Mth.sin(state.ageInTicks * 0.14F);
-		this.torso.y = 12.0F + bob * 1.1F;
-		this.head.yRot = state.yRot * Mth.DEG_TO_RAD * 0.5F;
-		this.head.xRot = state.xRot * Mth.DEG_TO_RAD * 0.45F - 0.15F;
-
-		float finRate = state.dashTicks > 0 ? 0.9F : 0.45F;
-		this.dorsalFin.yRot = Mth.sin(state.ageInTicks * finRate) * 0.45F;
-		this.tail0.xRot = 0.45F + Mth.sin(state.ageInTicks * 0.2F) * 0.16F;
-		this.tail1.xRot = 0.65F + Mth.sin(state.ageInTicks * 0.2F - 0.6F) * 0.18F;
-		this.tail2.xRot = 0.75F + Mth.sin(state.ageInTicks * 0.2F - 1.2F) * 0.20F;
+		float bob = Mth.sin(state.ageInTicks * 0.16F);
+		float dash = state.dashTicks > 0 ? 1.0F : 0.0F;
+		chest.y = 10.0F + bob * 1.8F;
+		chest.xRot = state.xRot * Mth.DEG_TO_RAD * 0.45F + dash * 0.35F;
+		head.yRot = state.yRot * Mth.DEG_TO_RAD * 0.65F;
+		dorsalFin.yRot = Mth.sin(state.ageInTicks * 0.42F) * (0.28F + dash * 0.35F);
+		tailA.xRot = 0.25F + 0.14F * bob + dash * 0.3F;
+		tailB.xRot = -0.78F + 0.16F * bob;
+		tailC.xRot = -1.05F + 0.18F * bob;
+		saddle.visible = state.saddled;
 	}
 }
