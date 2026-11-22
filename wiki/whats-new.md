@@ -3,6 +3,16 @@ title: What's New
 nav_order: 1.1
 ---
 
+# What's new in 0.16.0: Sovereigns & Seas
+
+Install `wildercord-0.16.0-alpha+mc26.3.jar` on the server and every client, with Fabric API 0.161.0+26.3 and Fabric Loader 0.19.5 or newer. This update adds entities, structures, items, blocks and packets, so **0.15.x clients must update before joining**. Back up your worlds first.
+
+- **[Oathhold Sovereign Citadel City & Watch Stockade]({{ '/world/oathhold/' | relative_url }})**: explore the `2,048×2,048` walled capital populated with 750+ citizens, `30` Rank `F–S` Adventurer's Guild requests (`/adventurer`), four articulated **Oathbound Champion Knights**, and live city justice where guards arrest house-breakers or TNT saboteurs into an iron-barred Watch Stockade while Master Builders reconstruct damaged structures block by block.
+- **[Deep Ocean Expansion]({{ '/world/deep-ocean/' | relative_url }})**: dive through 5 sunken landmarks (**Coral-Dome Sanctuary**, **Sunken Sovereign Galleon**, **Kelp-Spire Watchtower**, **Hydrothermal Vent Forge**, and **Abyssal Trench Citadel**); meet three **Brine-Merchant** professions; tame the **Pearl-Pup** and mountable **Lumi-Seahorse**; gather **Moon-Whale** ambergris; craft the 3D **Abyssal Diving Suit**, **Tide-Cleaver Harpoon**, **Leviathan Glaive**, and **Tidecaller Conch**; and fight **Thalassor, Abyssal Sovereign**.
+- **[White Rabbit & Hollow Tree Portals]({{ '/world/creatures/' | relative_url }}#white-rabbit)**: follow rare pocket-watch White Rabbits in forest biomes to gnarled hollow trees with portals leading to a crystal cave, the **Wonderland Root-Vault**, or an all-bosses gauntlet.
+- **[Cinnamon Upgrades]({{ '/companions/cinnamon/' | relative_url }})**: Cinnamon heals injured owners and party members below 65% health, grows permanently to 3× size and strength with **Cinnamon's Grand Bow**, and carries up to 4 riders with shared 54-slot side chests, flight, and passive bolts using **Cinnamon's Flying Harness** (pausing 2–3s when hit).
+- **Boss Survivability, Arena Respawns, Readable Fire FX & Structure Non-Overlap**: raised boss health pools (past the vanilla `1,024` HP cap), enabled arena boss respawns (`LairRespawns`), replaced obscuring custom-mob fire overlays with low perimeter embers (`CustomMobFireFx`), and added global `StructureClearance` checks across all 89 structure sets so buildings never spawn inside each other.
+
 # What's new in 0.15.0: Shrine & Sakura
 
 Install `wildercord-0.15.0-alpha+mc26.3.jar` on the server and every client, with Fabric API 0.161.0+26.3 and Fabric Loader 0.19.5 or newer. This update adds entities, structures, items and runes, so **0.14.x clients must update before joining**. Back up your worlds first.
