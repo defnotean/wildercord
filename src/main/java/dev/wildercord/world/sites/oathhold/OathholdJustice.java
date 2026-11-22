@@ -132,14 +132,14 @@ public final class OathholdJustice {
 			this.prisons.addAll(prisons);
 		}
 
-		@Nullable PrisonRecord prisonFor(UUID playerId) {
+		public @Nullable PrisonRecord prisonFor(UUID playerId) {
 			for (PrisonRecord r : prisons) {
 				if (r.prisonerId.equals(playerId)) return r;
 			}
 			return null;
 		}
 
-		@Nullable RepairSite repairFor(UUID siteId) {
+		public @Nullable RepairSite repairFor(UUID siteId) {
 			for (RepairSite s : repairs) {
 				if (s.id.equals(siteId)) return s;
 			}
