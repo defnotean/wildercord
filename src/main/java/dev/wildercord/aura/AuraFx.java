@@ -433,7 +433,7 @@ public final class AuraFx {
 		if (Fx.muted()) {
 			return;
 		}
-		dev.wildercord.cast.Sigils.send(owner.level(), particle, at, owner);
+		dev.wildercord.cast.Sigils.send((ServerLevel) owner.level(), particle, at, owner);
 		if (owner.distanceToSqr(at) <= 128 * 128 && ServerPlayNetworking.canSend(owner, Shown.TYPE)) {
 			ServerPlayNetworking.send(owner, new Shown(particle, at));
 		}
@@ -595,7 +595,7 @@ public final class AuraFx {
 		}
 
 		public Art burst(Vec3 at, float size, int style) {
-			AuraFx.burst(player.level(), player, at, Vec3.ZERO, color, size, style);
+			AuraFx.burst((ServerLevel) player.level(), player, at, Vec3.ZERO, color, size, style);
 			return this;
 		}
 

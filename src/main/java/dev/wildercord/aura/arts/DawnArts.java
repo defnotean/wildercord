@@ -60,15 +60,15 @@ public final class DawnArts {
 		float taken = hits.strike(foe, dawnFactor(factor, undead), weight);
 		MethodsBKit.glow(player, foe, glow);
 		Vec3 c = foe.getBoundingBox().getCenter();
-		Motes.glows(player.level(), c, undead ? 8 : 4, 0.35, undead ? MethodsBKit.ROSE : MethodsBKit.GOLD, 0.09, 16, new Vec3(0, 0.03, 0), 0.03);
-		if (undead) Vfx.emit(player.level(), ParticleTypes.WHITE_SMOKE, c, 6, 0.3, 0.02);
+		Motes.glows((ServerLevel) player.level(), c, undead ? 8 : 4, 0.35, undead ? MethodsBKit.ROSE : MethodsBKit.GOLD, 0.09, 16, new Vec3(0, 0.03, 0), 0.03);
+		if (undead) Vfx.emit((ServerLevel) player.level(), ParticleTypes.WHITE_SMOKE, c, 6, 0.3, 0.02);
 		return taken;
 	}
 
 	// ------------------------------------------------------------------ I. First Light
 
 	static boolean firstLight(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -86,7 +86,7 @@ public final class DawnArts {
 	// ------------------------------------------------------------------ II. Sunrise Arc
 
 	static boolean sunriseArc(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -109,7 +109,7 @@ public final class DawnArts {
 	// ------------------------------------------------------------------ III. Halo Guard
 
 	static boolean haloGuard(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SWEEP, false, 1.3F);
@@ -132,7 +132,7 @@ public final class DawnArts {
 	// ------------------------------------------------------------------ IV. Dawnbreak Rush
 
 	static boolean dawnbreakRush(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, DAWNBREAK_DISTANCE);
@@ -161,7 +161,7 @@ public final class DawnArts {
 	// ------------------------------------------------------------------ V. Noon Zenith
 
 	static boolean noonZenith(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.FALLING, false, 1.6F);

@@ -89,7 +89,7 @@ public final class ArtReleaseTargets {
 		boolean hail = art.equals(RimeArts.HAILFALL);
 		if (!hail && !art.equals(ThunderArts.SKYFALL)) throw new IllegalArgumentException("No target receipt for " + art);
 		Vec3 ahead = player.position().add(aim.scale(hail ? ArtRules.HAIL_AHEAD : ArtRules.SKYFALL_AHEAD));
-		Vec3 floor = ArtKit.floor(player.level(), ahead, 1.5, 3);
+		Vec3 floor = ArtKit.floor((ServerLevel) player.level(), ahead, 1.5, 3);
 		Commit commit = new Commit(player, ReleasedArtOwner.capture(player), art, context.at(), List.copyOf(context.marks()),
 			player.position(), player.getEyePosition(), aim, view, floor == null ? ahead : floor);
 		LivingEntity observed = context.struck();

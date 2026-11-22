@@ -99,7 +99,7 @@ public final class Innates {
 
 	/** The rune wakes: rings of its colour race out over the ground and round the heart, and columns of light rise round you. */
 	private static void awakenFx(ServerPlayer player, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 feet = player.position();
 		ElementFx.groundRing(level, feet, color, 0.3, 3.4, 0.09, 18);
 		ElementFx.groundRing(level, feet, 0xFFFFFF, 0.2, 2.4, 0.04, 22);
@@ -820,7 +820,7 @@ public final class Innates {
 		player.hasImpulse = true;
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		player.resetFallDistance();
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vfx.emit(level, ParticleTypes.GUST, player.position(), 1, 0.0, 0.0);
 		ElementFx.gustRing(level, player.position(), 1.4);
 		ElementFx.ring(level, player.position().add(0, 0.9, 0).subtract(flat.scale(0.9)), flat, ElementFx.WIND.secondary(), 0.3, 1.3, 0.04, 7);

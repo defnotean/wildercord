@@ -282,7 +282,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	private static int spawn(ServerPlayer player, int discipline, boolean enroll) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ACTIVE.removeIf(Entity::isRemoved);
 		if (!mayEnter(player) || level.getDifficulty() == Difficulty.PEACEFUL) {
 			return refuse(player, "unavailable");

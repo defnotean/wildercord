@@ -440,7 +440,7 @@ public final class HearthEffects {
 	}
 
 	private static void tickPlayer(ServerPlayer p, Map<String, Long> timers) {
-		ServerLevel level = p.level();
+		ServerLevel level = (ServerLevel) p.level();
 		Scratch s = scratch(p);
 		// Ended ones go first, and take their leftovers with them.
 		Iterator<Map.Entry<String, Long>> it = timers.entrySet().iterator();
@@ -757,7 +757,7 @@ public final class HearthEffects {
 				it.remove();
 				continue;
 			}
-			ServerLevel level = p.level();
+			ServerLevel level = (ServerLevel) p.level();
 			if (p.position().distanceToSqr(c.from()) > 0.25 || p.getHealth() < c.health()) {
 				it.remove();
 				Fx.sound(level, p.position(), SoundEvents.CANDLE_EXTINGUISH, 0.8f, 1f);

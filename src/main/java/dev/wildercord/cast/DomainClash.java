@@ -59,7 +59,7 @@ public final class DomainClash {
 	}
 
 	private static void clash(Domain a, Domain b) {
-		ServerLevel level = a.level();
+		ServerLevel level = (ServerLevel) a.level();
 		// The incumbent holds a tie.
 		Domain winner = a.strength() > b.strength() ? a : b;
 		Domain loser = winner == a ? b : a;

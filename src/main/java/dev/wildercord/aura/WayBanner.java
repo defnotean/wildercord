@@ -163,7 +163,7 @@ public final class WayBanner {
 		if (!Ways.has(player, WayRules.BANNER_EDGE)) {
 			return;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		double range = range();
 		Vec3 chest = player.position().add(0, 1.2, 0);
 		for (LivingEntity body : company(player, range)) {

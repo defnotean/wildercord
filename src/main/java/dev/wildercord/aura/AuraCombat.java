@@ -267,7 +267,7 @@ public final class AuraCombat {
 			lastAmount = 0;
 			return 0;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		DamageSource source = level.damageSources().source(Aura.DAMAGE, player, player);
 		dev.wildercord.aura.world.MasterHitReceipt.source(player, target, source);
 		double bonus = AuraElements.bonus(player, target, source, Aura.element(player)) * Math.max(0, extra);
@@ -403,7 +403,7 @@ public final class AuraCombat {
 		if (cached != null && now - (long) cached[1] < 20) {
 			return cached[0];
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int foes = level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(MasteryRules.CROWD_RADIUS),
 			m -> m.isAlive() && (m instanceof Enemy || m.getTarget() == player)).size();
 		boolean boss = !level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(MasteryRules.BOSS_RADIUS),
@@ -421,7 +421,7 @@ public final class AuraCombat {
 			return;
 		}
 		int stage = Aura.stage(player);
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		switch (method.flavour()) {
 			case IGNITE -> {
 				if (!target.fireImmune() && level.getRandom().nextDouble() < AuraRules.emberChance(stage)) {
@@ -474,7 +474,7 @@ public final class AuraCombat {
 
 	/** Thunder: a spark leaps from the struck foe to the nearest other, carrying part of the blow as projected aura. */
 	private static void spark(ServerPlayer player, LivingEntity from, float taken) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		LivingEntity next = null;
 		double best = AuraRules.THUNDER_REACH * AuraRules.THUNDER_REACH;
 		for (Entity e : level.getEntities(from, from.getBoundingBox().inflate(AuraRules.THUNDER_REACH),

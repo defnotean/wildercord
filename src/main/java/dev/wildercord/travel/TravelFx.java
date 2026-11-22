@@ -86,7 +86,7 @@ final class TravelFx {
 	 * motes drifting up. Sent past the usual 32 blocks, since it's meant to be seen from afar.
 	 */
 	static void beam(ServerPlayer viewer, Vec3 at, boolean withShaft) {
-		ServerLevel level = viewer.level();
+		ServerLevel level = (ServerLevel) viewer.level();
 		if (withShaft) {
 			dev.wildercord.cast.Fx.sendParticles(level, viewer, new LightOption(LightOption.RAY, SECONDARY, 0F, 24F, 0F, 0.06F, 0F, 0F, 0F, 24), true, true,
 				at.x, at.y, at.z, 1, 0, 0, 0, 0);

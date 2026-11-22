@@ -92,7 +92,7 @@ public final class StarlitArts {
 
 	/** A star bursting at {@code at}: a white flash, a ring snapping out, a star seal and sparks of starlight. */
 	static void burst(ServerPlayer player, Vec3 at, int color, double size, int note) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ArtLight world = ArtLight.world(player);
 		world.flash(at, WHITE, (float) (1.3 * size));
 		world.ring(at, ArtKit.UP, color, 0.1, 1.1 * size, 0.06, 7);
@@ -105,7 +105,7 @@ public final class StarlitArts {
 	// ------------------------------------------------------------------ I. Star Needle
 
 	static boolean starNeedle(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.view(player);
 		Vec3 aim = new Vec3(look.x, look.y * 0.35, look.z).normalize();
@@ -125,7 +125,7 @@ public final class StarlitArts {
 
 	/** One dart of starlight: flying on a tick at a time, turning a little toward the foe nearest its path, until it strikes or is spent. */
 	private static void dart(ServerPlayer player, ArtKit.Hits hits, Vec3 start, Vec3 heading, int color, int index, Set<UUID> paid) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3[] at = {start};
 		Vec3[] dir = {heading};
 		double[] flown = {0};
@@ -192,7 +192,7 @@ public final class StarlitArts {
 	// ------------------------------------------------------------------ II. Meteor Shower
 
 	static boolean meteorShower(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -265,7 +265,7 @@ public final class StarlitArts {
 	 * three ticks with a tail of light, and {@code landed} where it strikes.
 	 */
 	private static void comet(ServerPlayer player, Vec3 drop, Vec3 look, int color, double size, int delay, Runnable landed) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 sky = drop.add(look.scale(-2.5)).add(0, 11, 0);
 		for (int t = 0; t <= 3; t++) {
 			int step = t;
@@ -292,7 +292,7 @@ public final class StarlitArts {
 	private static final double[][] CONSTELLATION = {{-1.05, 0.7, 0.1}, {0.15, 1.3, -0.2}, {1.1, 0.45, 0.15}, {0.35, -0.5, 0.3}};
 
 	static boolean constellationGuard(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CROSS, false, 1.35F);
@@ -385,7 +385,7 @@ public final class StarlitArts {
 	// ------------------------------------------------------------------ IV. Comet Dash
 
 	static boolean cometDash(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.COMET_DISTANCE);
@@ -472,7 +472,7 @@ public final class StarlitArts {
 	// ------------------------------------------------------------------ V. Nova
 
 	static boolean nova(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -513,7 +513,7 @@ public final class StarlitArts {
 
 	/** The nova: a ring of starlight bursting out over everything near, starred foes bursting with it, aura back for each foe struck. */
 	private static void release(ServerPlayer player, ArtKit.Hits hits, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 feet = player.position();
 		hits.fx().trail(AuraFxRules.Stroke.SPIN, false, 1.7F);
 		ArtLight world = ArtLight.world(player);

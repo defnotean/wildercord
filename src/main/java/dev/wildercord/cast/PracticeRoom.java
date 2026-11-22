@@ -79,7 +79,7 @@ public final class PracticeRoom {
   if(!player.level().dimension().equals(DIMENSION))return 0;
   VisualMetrics.reset();
   player.sendSystemMessage(Component.translatable("message.wildercord.practice.benchmark"));
-  ServerLevel world=player.level();
+  ServerLevel world = (ServerLevel) player.level();
   Scheduler.later(200,()-> {
    if(!player.isRemoved() && player.level()==world) player.sendSystemMessage(Component.literal(VisualMetrics.report()));
   });

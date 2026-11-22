@@ -259,7 +259,7 @@ public final class Lineage {
 		int mc = Spars.colour(master);
 		master.setAttached(RITE, new Rite(kind, now, ticks, mc, disciple.getGameProfile().getName(), true));
 		disciple.setAttached(RITE, new Rite(kind, now, ticks, mc, master.getGameProfile().getName(), false));
-		ServerLevel level = master.level();
+		ServerLevel level = (ServerLevel) master.level();
 		if (kind == Rite.TAKE) {
 			Feels.sound(level, master.position().add(0, 1, 0), "aura_lineage_ask", 0.9F, 1.0F);
 			master.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.asks_master", disciple.getDisplayName()).withColor(0xE8D8B0));
@@ -387,7 +387,7 @@ public final class Lineage {
 
 	/** The ceremony as it goes: the asking (a ring under the disciple), the binding (their colours braiding), the sealing (a ring closing in). */
 	private static void takeLook(ServerPlayer master, ServerPlayer disciple, int t) {
-		ServerLevel level = master.level();
+		ServerLevel level = (ServerLevel) master.level();
 		int mc = Spars.colour(master);
 		int dc = Spars.colour(disciple);
 		Vec3 from = master.position().add(0, 1.3, 0);
@@ -433,7 +433,7 @@ public final class Lineage {
 
 	/** The seal: a burst at the disciple's brow, fractured ground and a cloth standard beside them, banners on both screens, and what it means said. */
 	private static void sealed(ServerPlayer master, ServerPlayer disciple, boolean ceremony) {
-		ServerLevel level = master.level();
+		ServerLevel level = (ServerLevel) master.level();
 		int mc = Spars.colour(master);
 		Vec3 brow = disciple.position().add(0, disciple.isCrouching() ? 1.15 : 1.55, 0);
 		Vec3 feet = disciple.position();
@@ -459,7 +459,7 @@ public final class Lineage {
 	// ------------------------------------------------------------------ a lesson
 
 	private static void lessonLook(ServerPlayer master, ServerPlayer disciple, int t) {
-		ServerLevel level = master.level();
+		ServerLevel level = (ServerLevel) master.level();
 		int mc = Spars.colour(master);
 		Vec3 blade = BladeCeremony.hand(master);
 		Vec3 to = disciple.position().add(0, disciple.isCrouching() ? 1.05 : 1.4, 0);

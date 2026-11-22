@@ -102,7 +102,7 @@ public final class Climate {
 
 	/** The conditions where this player stands, worked out at most once a second (and again at once in a new dimension). */
 	public static Set<Condition> conditions(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		long second = level.getGameTime() / 20;
 		Cached cached = CACHE.get(player.getUUID());
 		if (cached != null && cached.second() == second && cached.level() == level) {

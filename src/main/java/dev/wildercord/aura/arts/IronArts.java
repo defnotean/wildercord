@@ -59,7 +59,7 @@ public final class IronArts {
 	// ------------------------------------------------------------------ I. Sunder Cut
 
 	static boolean sunderCut(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.FALLING, false, 1.5F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -80,7 +80,7 @@ public final class IronArts {
 	// ------------------------------------------------------------------ II. Anvil Fall
 
 	static boolean anvilFall(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.FALLING, false, 1.6F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -113,7 +113,7 @@ public final class IronArts {
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
 		if (counter == null || !counter.art().equals(BULWARK) || !counter.valid()) return false;
 		LivingEntity caught = counter.target();
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CROSS, false, 1.4F);
@@ -151,7 +151,7 @@ public final class IronArts {
 	// ------------------------------------------------------------------ IV. Forge Charge
 
 	static boolean forgeCharge(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, IronRules.CHARGE_DISTANCE);
@@ -190,7 +190,7 @@ public final class IronArts {
 	// ------------------------------------------------------------------ V. Worldforge
 
 	static boolean worldforge(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.FALLING, false, 1.8F);

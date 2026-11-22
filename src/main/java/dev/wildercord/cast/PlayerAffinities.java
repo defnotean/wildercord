@@ -412,7 +412,7 @@ public final class PlayerAffinities {
 		if (player.isCreative()) {
 			return;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		BlockPos feet = player.blockPosition();
 		Set<dev.wildercord.spell.ClimateRules.Condition> here = Climate.conditions(player);
 		// Fire: burning (and not shielded from it), or close to lava in the Nether.

@@ -76,7 +76,7 @@ public final class MethodsBKit {
 		MobEffectInstance had = foe.getEffect(MobEffects.POISON);
 		int amp = MethodsBArtRules.toxin(had == null ? -1 : had.getAmplifier(), had != null, foe instanceof Player);
 		foe.addEffect(new MobEffectInstance(MobEffects.POISON, Math.max(ticks, had == null ? 0 : had.getDuration()), amp, false, true), player);
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Motes.glows(level, foe.getBoundingBox().getCenter(), 3 + 2 * amp, 0.3, ACID, 0.08, 18, new Vec3(0, -0.02, 0), 0.02);
 		return amp;
 	}

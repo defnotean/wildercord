@@ -119,7 +119,7 @@ public final class HourglassArts {
 
 	/** Time moving again where {@code foe} was held: a white flash, a gold ring snapping out, sparks of light and its toll. */
 	static void resume(ServerPlayer player, LivingEntity foe, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 c = foe.getBoundingBox().getCenter();
 		ArtLight world = ArtLight.world(player);
 		world.flash(c, WHITE, 2.0F);
@@ -149,7 +149,7 @@ public final class HourglassArts {
 
 	/** A blow stored on a foe Thousand Moments holds (asked by {@link ArtWards}): a glint frozen where it struck. */
 	static void storedLook(ServerPlayer player, LivingEntity foe) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		TimeFx.stasisShard(level, foe, 30);
 		Feels.sound(level, foe.position(), "time_tick", 0.4F, 1.5F);
 	}
@@ -157,7 +157,7 @@ public final class HourglassArts {
 	// ------------------------------------------------------------------ I. Echo Cut
 
 	static boolean echoCut(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		var continuation = dev.wildercord.aura.MastersArts.continuation(player);
 		int color = gold(player);
 		Vec3 look = ArtKit.flat(player);
@@ -196,7 +196,7 @@ public final class HourglassArts {
 	// ------------------------------------------------------------------ II. Rewind Leap
 
 	static boolean rewindLeap(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -248,7 +248,7 @@ public final class HourglassArts {
 	// ------------------------------------------------------------------ III. Stopped Moment
 
 	static boolean stoppedMoment(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 feet = player.position();
 		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
@@ -306,7 +306,7 @@ public final class HourglassArts {
 	// ------------------------------------------------------------------ IV. Blur
 
 	static boolean blur(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.BLUR_DISTANCE);
@@ -351,7 +351,7 @@ public final class HourglassArts {
 
 	/** One tick of Blur's drag round its swordsman. */
 	private static void drag(ServerPlayer owner, ArtFields.Field field, long age, Set<UUID> slowed) {
-		ServerLevel level = field.level();
+		ServerLevel level = (ServerLevel) field.level();
 		Vec3 at = owner.position();
 		int color = gold(owner);
 		for (Entity e : level.getEntities(owner, new AABB(at, at).inflate(ArtRules.BLUR_RADIUS, 3.0, ArtRules.BLUR_RADIUS),
@@ -396,7 +396,7 @@ public final class HourglassArts {
 	// ------------------------------------------------------------------ V. Thousand Moments
 
 	static boolean thousandMoments(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.6F);

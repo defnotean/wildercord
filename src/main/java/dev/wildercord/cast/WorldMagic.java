@@ -592,7 +592,7 @@ public final class WorldMagic {
 	 * world-changing magic or spells' block changes switched off. Returns what was frozen.
 	 */
 	public static List<BlockPos> frostWater(ServerPlayer player, List<BlockPos> spots, int max) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		List<BlockPos> frozen = new ArrayList<>();
 		if (!dev.wildercord.config.Config.get().worldChangingMagic() || !Casters.mayBuild(player)) {
 			return frozen;

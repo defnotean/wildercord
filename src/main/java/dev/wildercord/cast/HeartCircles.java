@@ -258,7 +258,7 @@ public final class HeartCircles {
 		int rank = Heart.ascension(player) + 1;
 		player.setAttached(WildercordAttachments.ASCENSION, rank);
 		Spellbooks.setMana(player, Mana.max(player));
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = heartOf(player);
 		int gold = COLORS[Circles.MAX - 1];
 		Sigils.flash(level, heart.add(0, 0.6, 0), 0xFF000000 | gold, 3.0F);
@@ -287,7 +287,7 @@ public final class HeartCircles {
 		dev.wildercord.player.TribulationScars.apply(player);
 		dev.wildercord.guild.Mentors.formed(player, n);
 		Spellbooks.setMana(player, Mana.max(player));
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = heartOf(player);
 		// The flash goes through Fx.send, which keeps it out of the player's own face.
 		Sigils.flash(level, heart.add(0, 0.6, 0), 0xFF000000 | COLORS[n - 1], 2.6F);
@@ -379,7 +379,7 @@ public final class HeartCircles {
 	 * {@code from} times its size, on its tilt at {@code spin}, round a small glowing heart.
 	 */
 	private static void lightRings(ServerPlayer player, int circles, double spin, double from) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = heartOf(player);
 		Fx.sendOthers(level, player, SigilOption.glow(0xFFE0A0, 0.5F), heart);
 		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
@@ -426,7 +426,7 @@ public final class HeartCircles {
 	 * Only onlookers receive these chest effects; in first person they overlap the camera.
 	 */
 	static void rings(ServerPlayer player, int circles, double spin, float size) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = heartOf(player);
 		Fx.sendOthers(level, player, new DustParticleOptions(0xFFE0A0, 0.8F), heart);
 		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
@@ -460,7 +460,7 @@ public final class HeartCircles {
 
 	/** While a circle forms: the existing rings spin faster, mana streams in, and the new ring draws itself. */
 	private static void forming(ServerPlayer player, int circles, int progress) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = heartOf(player);
 		double t = progress / (double) Circles.FORM_TICKS;
 		rings(player, circles, level.getGameTime() * (0.05 + 0.25 * t), 0.45F);

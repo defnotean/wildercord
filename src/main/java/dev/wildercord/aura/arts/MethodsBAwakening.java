@@ -20,7 +20,7 @@ public final class MethodsBAwakening {
 	static boolean flourish(ServerPlayer player, ArtLight show, ArtLight world, Vec3 feet, Vec3 heart) {
 		String method = Aura.data(player).method();
 		if (method == null) return false;
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		switch (method) {
 			case MethodsBArtRules.ECHO -> {
 				int violet = EchoArts.violet(player);

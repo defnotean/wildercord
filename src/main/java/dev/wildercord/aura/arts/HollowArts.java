@@ -92,7 +92,7 @@ public final class HollowArts {
 	/** Struck by the void: shadowed for a life spell's Blight, and darkness folding in on it. */
 	static void shadow(ServerPlayer player, LivingEntity foe, double size) {
 		Reactions.mark(foe, Reactions.Mark.SHADOWED, 80);
-		AuraPhysicalFx.voidImpact(player.level(), foe.getBoundingBox().getCenter(), size);
+		AuraPhysicalFx.voidImpact((ServerLevel) player.level(), foe.getBoundingBox().getCenter(), size);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public final class HollowArts {
 			ArtKit.pull(foe, to, ArtRules.VOID_DRAW);
 			return;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		for (int t = 1; t <= ticks; t++) {
 			int step = t;
 			Scheduler.later(t, () -> {
@@ -133,7 +133,7 @@ public final class HollowArts {
 	// ------------------------------------------------------------------ I. Void Cut
 
 	static boolean voidCut(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -184,7 +184,7 @@ public final class HollowArts {
 
 	static boolean collapse(ServerPlayer player, AuraApi.StringContext context) {
 		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
-		ServerLevel level = released.level();
+		ServerLevel level = (ServerLevel) released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -200,7 +200,7 @@ public final class HollowArts {
 		world.bare().ground(well, SigilOption.BAND, ABYSS, ArtRules.COLLAPSE_PULL * 0.75, ArtRules.COLLAPSE_TICKS + 8, 0.25);
 		world.ground(well, SigilOption.BAND, color, ArtRules.COLLAPSE_PULL, ArtRules.COLLAPSE_TICKS + 8, -0.18);
 		ArtFields.openReleased(player, released, WELL, ArtFields.disc(() -> well, ArtRules.COLLAPSE_PULL, 2.5), ArtRules.COLLAPSE_TICKS, 1, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			ArtLight w = ArtLight.world(owner);
 			int c = ArtKit.color(owner);
 			double grow = Math.min(1.0, age / (double) ArtRules.COLLAPSE_TICKS);
@@ -251,7 +251,7 @@ public final class HollowArts {
 	static boolean nullParry(ServerPlayer player, AuraApi.StringContext context) {
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
 		if (counter == null || !counter.art().equals(NULL_PARRY) || !counter.valid()) return false;
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		LivingEntity foe = counter.target();
@@ -302,7 +302,7 @@ public final class HollowArts {
 
 	/** Silenced: a crown of darkness over its head and darkness drawn out of its mouth, while it lasts (and the cast lock's own halo). */
 	static void silencedLook(ServerPlayer player, LivingEntity foe, int ticks) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		for (int t = 0; t < ticks; t += 10) {
 			Scheduler.later(t, () -> {
@@ -323,7 +323,7 @@ public final class HollowArts {
 	// ------------------------------------------------------------------ IV. Rift Step
 
 	static boolean riftStep(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 from = player.position();
@@ -399,13 +399,13 @@ public final class HollowArts {
 			});
 		}
 		Vfx.emit(player.level(), ParticleTypes.PORTAL, mid, 12, 0.3, 0.5);
-		Feels.sound(player.level(), mid, "void_unzip", 0.6F, 1.1F);
+		Feels.sound((ServerLevel) player.level(), mid, "void_unzip", 0.6F, 1.1F);
 	}
 
 	// ------------------------------------------------------------------ V. Event Horizon
 
 	static boolean eventHorizon(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -424,7 +424,7 @@ public final class HollowArts {
 		world.ground(base, SigilOption.BAND, color, ArtRules.HORIZON_PULL, ArtRules.HORIZON_TICKS + 10, -0.12);
 		RandomSource r = level.getRandom();
 		ArtFields.open(player, HORIZON, ArtFields.disc(() -> base, ArtRules.HORIZON_PULL, 3.5), ArtRules.HORIZON_TICKS, 1, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			ArtLight w = ArtLight.world(owner);
 			ArtLight show = ArtLight.spectacle(owner);
 			int c = ArtKit.color(owner);
@@ -475,7 +475,7 @@ public final class HollowArts {
 
 	/** The sphere falling in on itself and crushing everything it holds: darkness rushing in, then a violet shockwave out. */
 	private static void crush(ServerPlayer player, ArtKit.Hits hits, Vec3 base, Vec3 heart, int color, RandomSource r) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		ArtLight world = ArtLight.world(player);
 		ArtLight show = ArtLight.spectacle(player);
 		show.bare().orb(heart, ABYSS, 1.6, 3);

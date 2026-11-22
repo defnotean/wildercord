@@ -73,7 +73,7 @@ public final class CrimsonArts {
 
 	/** A deep cut across {@code foe}: a crimson crescent, a paler one inside it, blood thrown off. */
 	static void gash(ServerPlayer player, LivingEntity foe, boolean mirror) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 c = foe.getBoundingBox().getCenter();
 		Vec3 toward = player.position().subtract(foe.position());
 		toward = new Vec3(toward.x, 0, toward.z);
@@ -104,7 +104,7 @@ public final class CrimsonArts {
 
 	/** A splash of blood where a great cut lands on {@code at}: a red flash, a heartbeat ring, drops thrown. */
 	static void splash(ServerPlayer player, Vec3 at, double size) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		ArtLight.world(player).flash(at, ArtKit.color(player), (float) (1.1 * size));
 		AuraPhysicalFx.pulse(level, at, ArtKit.UP, 0.9 * size);
 		drops(level, at, 0.2 * size, (int) Math.max(3, 5 * size));
@@ -112,7 +112,7 @@ public final class CrimsonArts {
 
 	/** Blood drawn to the swordsman: a thin thread of dark red from {@code foe}, drops of it sailing in. */
 	static void drinkLook(ServerPlayer player, LivingEntity foe) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 from = foe.getBoundingBox().getCenter();
 		Vec3 to = player.position().add(0, 0.8, 0);
 		ArtLight world = ArtLight.world(player);
@@ -137,7 +137,7 @@ public final class CrimsonArts {
 
 	/** A swordsman in a frenzy, a beat of it (asked by {@link ArtWards}): a heartbeat ring at their feet, red light off the blade. */
 	static void frenzyLook(ServerPlayer player, int stacks) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		ArtLight world = ArtLight.world(player);
 		world.groundRing(player.position(), color, 0.3, 0.7 + 0.18 * stacks, 0.05, 7);
@@ -150,7 +150,7 @@ public final class CrimsonArts {
 	// ------------------------------------------------------------------ I. Bloodletting
 
 	static boolean bloodletting(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CUT, false, 1.4F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, player.position().add(0, 1, 0), "aura_art_bloodletting", 1.0F, 1.0F);
@@ -172,7 +172,7 @@ public final class CrimsonArts {
 
 	static boolean redRain(ServerPlayer player, AuraApi.StringContext context) {
 		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
-		ServerLevel level = released.level();
+		ServerLevel level = (ServerLevel) released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -209,7 +209,7 @@ public final class CrimsonArts {
 		Vec3 sky = centre.add(0, 3.2, 0);
 		Motes.clouds(level, sky, 7, ArtRules.RAIN_RADIUS * 0.6, 0x7A1424, 1.0, ArtRules.RAIN_TICKS + 8, Vec3.ZERO, 0.01, 0.5);
 		ArtFields.openReleased(player, released, RAIN, ArtFields.disc(() -> centre, ArtRules.RAIN_RADIUS, 2.5), ArtRules.RAIN_TICKS, 2, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			RandomSource r = lv.getRandom();
 			ArtLight rain = ArtLight.world(owner);
 			for (int i = 0; i < 7; i++) {
@@ -247,7 +247,7 @@ public final class CrimsonArts {
 	// ------------------------------------------------------------------ III. Sanguine Parry
 
 	static boolean sanguineParry(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
@@ -296,7 +296,7 @@ public final class CrimsonArts {
 	// ------------------------------------------------------------------ IV. Frenzy
 
 	static boolean frenzy(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.FRENZY_DISTANCE);
@@ -343,7 +343,7 @@ public final class CrimsonArts {
 
 	static boolean crimsonMoon(ServerPlayer player, AuraApi.StringContext context) {
 		ReleasedArtOwner released = ReleasedArtOwner.capture(player);
-		ServerLevel level = released.level();
+		ServerLevel level = (ServerLevel) released.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();

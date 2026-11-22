@@ -26,7 +26,7 @@ public final class RunicAnimations {
     /** Cosmetic-only paid Reweave inscription. No Cast is copied and its closed damage lifetime is never reopened. */
     static void reweave(net.minecraft.server.level.ServerPlayer caster, java.util.function.BooleanSupplier releasedOwner) {
         if (Fx.muted() || !releasedOwner.getAsBoolean()) return;
-        ServerLevel level = caster.level();
+        ServerLevel level = (ServerLevel) caster.level();
         var sequence = RuneChoreography.of(Runes.REWEAVE);
         var beats = List.of(sequence.opening(), sequence.middle(), sequence.finish());
         for (int i = 0; i < beats.size(); i++) {

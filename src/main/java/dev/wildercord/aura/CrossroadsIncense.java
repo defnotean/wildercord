@@ -129,7 +129,7 @@ public class CrossroadsIncense extends Item {
 
 	/** The Way leaving: its standard rising out of the swordsman and breaking apart, smoke, and a falling note. */
 	private static void unbound(ServerPlayer player, AuraApi.Way way) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = way.color();
 		Vec3 feet = player.position();
 		ArtLight.spectacle(player).ray(feet.add(0, 0.2, 0), feet.add(0, 3.4, 0), AuraVfx.hot(color, 0.4), 0.08, 16);

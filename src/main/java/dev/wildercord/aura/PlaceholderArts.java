@@ -145,7 +145,7 @@ public final class PlaceholderArts {
 		AuraVfx.artLine(player, color, ahead, StringRules.FOURTH_LENGTH);
 		Aura.sound(player, "aura_step", 0.7F, 1.3F);
 		Aura.sound(player, "aura_slash", 0.9F, 0.9F);
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		List<LivingEntity> line = new ArrayList<>();
 		for (Entity e : level.getEntities(player, player.getBoundingBox().expandTowards(ahead.scale(StringRules.FOURTH_LENGTH)).inflate(1.5, 1.0, 1.5),
 				e -> e instanceof LivingEntity && Targets.canHarm(player, e))) {
@@ -171,7 +171,7 @@ public final class PlaceholderArts {
 		AuraVfx.artRing(player, color, StringRules.FINAL_RADIUS);
 		Aura.sound(player, "aura_dominion", 0.7F, 1.3F);
 		Aura.sound(player, "aura_slash", 1.0F, 0.8F);
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		List<LivingEntity> ring = new ArrayList<>();
 		for (Entity e : level.getEntities(player, player.getBoundingBox().inflate(StringRules.FINAL_RADIUS, 2.5, StringRules.FINAL_RADIUS),
 				e -> e instanceof LivingEntity && Targets.canHarm(player, e))) {

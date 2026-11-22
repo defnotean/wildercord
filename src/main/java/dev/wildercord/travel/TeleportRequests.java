@@ -148,7 +148,7 @@ public final class TeleportRequests {
 				Travel.fail(t, "tpa_busy", there.getDisplayName());
 				return null;
 			}
-			ServerLevel level = there.level();
+			ServerLevel level = (ServerLevel) there.level();
 			Vec3 pos = Landing.near(level, there.position(), t, false);
 			if (pos == null) {
 				Travel.fail(t, "tpa_unsafe", there.getDisplayName());

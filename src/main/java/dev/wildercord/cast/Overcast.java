@@ -87,7 +87,7 @@ public final class Overcast {
 		long now = player.level().getGameTime();
 		int cracked = Heart.cracked(player) + 1;
 		player.setAttached(WildercordAttachments.CRACKS, new WildercordAttachments.Cracks(cracked, now + MEND_TICKS));
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = player.position().add(0, 1.2, 0);
 		// The ring bursts: it snaps outward in red light and breaks into shards, and the circle breaks on the ground.
 		double r = Circles.ringRadius(active);

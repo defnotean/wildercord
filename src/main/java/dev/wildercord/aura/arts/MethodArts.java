@@ -103,7 +103,7 @@ public final class MethodArts {
 	 * is forgotten all the way down: an art's leap never hurts its swordsman.
 	 */
 	static void whenLanded(ServerPlayer player, int timeout, Consumer<Vec3> action) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		boolean[] airborne = {!player.onGround()};
 		int[] waited = {0};
 		Runnable[] step = new Runnable[1];

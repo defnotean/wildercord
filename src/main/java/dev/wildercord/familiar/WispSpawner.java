@@ -34,7 +34,7 @@ public final class WispSpawner {
 			return;
 		}
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-			ServerLevel level = player.level();
+			ServerLevel level = (ServerLevel) player.level();
 			if (player.isSpectator() || level.dimension() != Level.OVERWORLD || !level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get()) {
 				continue;
 			}

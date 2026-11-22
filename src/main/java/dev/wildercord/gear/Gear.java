@@ -93,7 +93,7 @@ public final class Gear {
 		if (staffs.isEmpty() || charge < 0.2) {
 			return;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		double size = 0.6 + 0.8 * Math.min(1, charge);
 		Vec3 look = player.getLookAngle();
 		Vec3 tip = player.getEyePosition().add(look.scale(0.9)).add(0, -0.25, 0);

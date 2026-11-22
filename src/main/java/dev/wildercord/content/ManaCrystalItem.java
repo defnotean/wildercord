@@ -39,7 +39,7 @@ public class ManaCrystalItem extends Item {
 		}
 		serverPlayer.setAttached(WildercordAttachments.CRYSTALS, crystals + 1);
 		stack.consume(1, player);
-		ServerLevel server = serverPlayer.level();
+		ServerLevel server = (ServerLevel) serverPlayer.level();
 		server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 1.2F);
 		server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.5F, 1.6F);
 		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.ENCHANT, player.getX(), player.getY() + 0.2, player.getZ(), 40, 0.6, 0.2, 0.6, 0.6);

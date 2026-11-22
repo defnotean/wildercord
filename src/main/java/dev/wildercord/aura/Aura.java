@@ -237,7 +237,7 @@ public final class Aura {
 		player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, 0, false, true, true));
 		state(player, state.backlash(now + ticks));
 		if (fresh) {
-			ServerLevel level = player.level();
+			ServerLevel level = (ServerLevel) player.level();
 			Vec3 at = player.position().add(0, 1.0, 0);
 			Feels.sound(level, at, "aura_backlash", 0.9F, 1.0F);
 			Motes.clouds(level, at, 5, 0.35, 0x6A6478, 0.5, 26, new Vec3(0, 0.01, 0), 0.02, 0.35);

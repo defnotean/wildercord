@@ -50,7 +50,7 @@ public final class Meditation {
 
 	/** A few soft lights at ankle height, with inward wisps that stay below the knees. */
 	private static void show(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 feet = player.position().add(0, 0.12, 0);
 		double spin = level.getGameTime() * 0.05;
 		for (int i = 0; i < 5; i++) {

@@ -865,7 +865,7 @@ public final class ArtKit {
 		}
 		Reactions.mark(foe, Reactions.Mark.BLEEDING, times * ArtRules.BLEED_PERIOD + 10);
 		Vec3[] last = {foe.position()};
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		for (int i = 1; i <= times; i++) {
 			Scheduler.later(i * ArtRules.BLEED_PERIOD, () -> {
 				if (!foe.isAlive() || !player.isAlive() || foe.level() != level || !harmable(player, foe)) {
@@ -892,7 +892,7 @@ public final class ArtKit {
 	public static void wound(Hits hits, LivingEntity foe, double factor, int times, Drink drink,
 			java.util.function.Consumer<LivingEntity> drip, ReleasedArtOwner released) {
 		ServerPlayer player = hits.player();
-		ServerLevel level = released.level();
+		ServerLevel level = (ServerLevel) released.level();
 		if (!released.owns(player) || !released.valid() || foe == null || !foe.isAlive() || foe.isRemoved()
 			|| foe.level() != level || times <= 0 || factor <= 0 || !harmable(player, foe)) return;
 		Reactions.mark(foe, Reactions.Mark.BLEEDING, times * ArtRules.BLEED_PERIOD + 10);
@@ -931,7 +931,7 @@ public final class ArtKit {
 	 */
 	public static void dash(ServerPlayer player, List<Vec3> path, int ticks, Stretch stretch) {
 		dev.wildercord.aura.MasterFormMovement.begin(player, ticks + 1);
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int n = Math.max(1, ticks);
 		for (int i = 1; i <= n; i++) {
 			Vec3 point = path.get(Math.min(path.size() - 1, (int) Math.round((path.size() - 1) * i / (double) n)));
@@ -973,7 +973,7 @@ public final class ArtKit {
 
 	/** {@link #beside}, {@code gap} from the foe's middle. */
 	public static Vec3 beside(ServerPlayer player, LivingEntity foe, Vec3 from, double gap) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		Vec3 toward = from.subtract(foe.position());
 		toward = new Vec3(toward.x, 0, toward.z);
 		toward = toward.lengthSqr() < 1.0E-4 ? flat(player).scale(-1) : toward.normalize();
@@ -992,7 +992,7 @@ public final class ArtKit {
 
 	/** Whether the swordsman's body fits at {@code spot}: nothing solid, the same ward, inside the border, no lava or fire. */
 	public static boolean fits(ServerPlayer player, Vec3 spot, boolean warded) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		AABB body = player.getBoundingBox().move(spot.subtract(player.position()));
 		return level.noCollision(player, body) && DungeonWards.warded(level, BlockPos.containing(spot)) == warded
 			&& level.getWorldBorder().isWithinBounds(spot.x, spot.z)
@@ -1002,7 +1002,7 @@ public final class ArtKit {
 	/** Moves the swordsman to {@code spot} at once (the view stays theirs). */
 	public static void blink(ServerPlayer player, Vec3 spot) {
 		dev.wildercord.aura.MasterFormMovement.begin(player, 2);
-		player.teleportTo(player.level(), spot.x, spot.y, spot.z, Relative.ROTATION, 0.0F, 0.0F, false);
+		player.teleportTo((ServerLevel) player.level(), spot.x, spot.y, spot.z, Relative.ROTATION, 0.0F, 0.0F, false);
 		player.resetFallDistance();
 		player.setDeltaMovement(Vec3.ZERO);
 	}

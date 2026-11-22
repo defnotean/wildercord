@@ -113,7 +113,7 @@ final class EmberAfterburn {
 
 	/** Short-lived outlines stop refreshing on cancellation rather than leaving a ghost warning for the whole tell. */
 	static void warnCut(SwordMaster master, Vec3 origin, Vec3 aim, int remaining) {
-		ServerLevel level = (ServerLevel) master.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) master.level();
 		int color = master.auraColor(), life = Math.min(EmberWakeRules.WARNING_REFRESH + 1, remaining);
 		Vec3 side = new Vec3(-aim.z, 0, aim.x), feet = origin.add(0, .1, 0);
 		for (int sign : new int[] {-1, 1}) {

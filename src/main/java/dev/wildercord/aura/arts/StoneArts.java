@@ -71,7 +71,7 @@ public final class StoneArts {
 	// ------------------------------------------------------------------ I. Rockbreaker
 
 	static boolean rockbreaker(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		LivingEntity foe = ArtKit.primary(player, context, ArtRules.ROCK_REACH, 110);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.FALLING, false, 1.5F);
@@ -127,7 +127,7 @@ public final class StoneArts {
 	}
 
 	private static void slam(ServerPlayer player, ArtKit.Hits hits, Vec3 at) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 ground = ArtKit.floor(level, at.add(0, 0.5, 0), 1.0, 3);
 		Vec3 base = ground == null ? at : ground;
@@ -181,7 +181,7 @@ public final class StoneArts {
 	 * through the swordsman's own eyes).
 	 */
 	static void crackUnder(ServerPlayer player, Vec3 feet, double radius, int lifetime, BlockState earth) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ArtLight world = ArtLight.world(player);
 		world.ground(feet, SigilOption.CRACKED, ElementFx.EARTH.secondary(), radius, lifetime, 0.0);
 		world.groundRing(feet, ElementFx.EARTH.primary(), 0.3, radius * 1.15, 0.09, 10);
@@ -203,7 +203,7 @@ public final class StoneArts {
 	static boolean unmoved(ServerPlayer player, AuraApi.StringContext context) {
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
 		if (counter == null || !counter.art().equals(UNMOVED) || !counter.valid()) return false;
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		LivingEntity foe = counter.target();
@@ -239,7 +239,7 @@ public final class StoneArts {
 
 	/** A hardened swordsman, while it lasts: stone dust sifting off them and a faint ring over the ground (asked by {@link ArtWards}). */
 	static void hardenedLook(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		RandomSource r = level.getRandom();
 		BlockState earth = ArtBlocks.ground(level, player.position());
 		for (int i = 0; i < 3; i++) {
@@ -253,7 +253,7 @@ public final class StoneArts {
 	// ------------------------------------------------------------------ IV. Landslide
 
 	static boolean landslide(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.LANDSLIDE_DISTANCE);
@@ -349,7 +349,7 @@ public final class StoneArts {
 	// ------------------------------------------------------------------ V. Mountain Splitter
 
 	static boolean mountainSplitter(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		Vec3 feet = player.position();

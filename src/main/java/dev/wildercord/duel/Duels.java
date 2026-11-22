@@ -563,7 +563,7 @@ public final class Duels {
 	 * them changes: how they are is noted, to put them back that way when it ends.
 	 */
 	public static void start(ServerPlayer a, ServerPlayer b) {
-		ServerLevel level = a.level();
+		ServerLevel level = (ServerLevel) a.level();
 		Vec3 centre = a.position().add(b.position()).scale(0.5);
 		Active active = new Active(new DuelRules.Duel(a.getUUID(), b.getUUID(), level.getGameTime()), level, centre, null);
 		BY_PLAYER.put(a.getUUID(), active);
@@ -580,7 +580,7 @@ public final class Duels {
 	 * Returns its rules.
 	 */
 	public static DuelRules.Duel startBout(ServerPlayer a, ServerPlayer b, DuelRules.Terms terms, Vec3 centre, Watcher watcher) {
-		ServerLevel level = a.level();
+		ServerLevel level = (ServerLevel) a.level();
 		Active active = new Active(new DuelRules.Duel(a.getUUID(), b.getUUID(), level.getGameTime(), terms), level, centre, watcher);
 		BY_PLAYER.put(a.getUUID(), active);
 		BY_PLAYER.put(b.getUUID(), active);

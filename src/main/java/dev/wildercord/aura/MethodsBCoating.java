@@ -32,7 +32,7 @@ public final class MethodsBCoating {
 
 	public static void flavour(ServerPlayer player, String method, LivingEntity target, float taken, int stage, long now) {
 		if (target == null || !target.isAlive()) return;
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		switch (method) {
 			case MethodsBArtRules.ECHO -> {
 				if (echoing || level.getRandom().nextDouble() >= MethodsBArtRules.echoChance(stage)) return;

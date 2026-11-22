@@ -129,7 +129,7 @@ public final class AuraStep {
 	 * where the player stands.
 	 */
 	public static List<Vec3> path(ServerPlayer player, Vec3 dir, double distance) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 start = player.position();
 		boolean warded = DungeonWards.warded(level, player.blockPosition());
 		List<Vec3> points = new ArrayList<>();
@@ -161,7 +161,7 @@ public final class AuraStep {
 
 	/** The dash itself: a few short teleports, the afterimages, light along the way, and a moment no harm can touch. */
 	private static void go(ServerPlayer player, List<Vec3> path, Vec3 dir) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		long now = level.getGameTime();
 		int color = Aura.color(player);
 		Vec3 from = path.getFirst();

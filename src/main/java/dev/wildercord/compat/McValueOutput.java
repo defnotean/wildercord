@@ -2,12 +2,12 @@ package dev.wildercord.compat;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.NbtOps;
-import com.mojang.serialization.RegistryOps;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 
 /**
  * Writes the entity and block entity fields 1.21.6+ save through {@code ValueOutput}. 1.21.5 has no
@@ -75,7 +75,7 @@ public final class McValueOutput {
 	}
 
 	private DynamicOps<Tag> ops() {
-		return RegistryOps.of(NbtOps.INSTANCE, registries);
+		return RegistryOps.create(NbtOps.INSTANCE, registries);
 	}
 
 	/** Appends encoded elements to the list stored under one key. */

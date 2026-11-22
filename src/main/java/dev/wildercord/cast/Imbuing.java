@@ -219,7 +219,7 @@ public final class Imbuing {
 		if (target != held && !player.getInventory().add(target)) {
 			dev.wildercord.compat.McEntities.drop(player, target, false);
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 at = hand(player, hand);
 		Sigils.spell(level, at, player.getLookAngle().scale(-1), stored, color, 0.32F, 30);
 		Sigils.flash(level, at, color, 1.0F);

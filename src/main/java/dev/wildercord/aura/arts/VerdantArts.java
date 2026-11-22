@@ -84,7 +84,7 @@ public final class VerdantArts {
 	 * gone when the hold is), vines of light twisting up round it with blossom at their tips, and the ground cracking under it.
 	 */
 	static void rootsOn(ServerPlayer player, LivingEntity foe, int ticks, int stalks, float height) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		// Out of the ground under it, even if a blow has thrown it up: it comes down into them.
 		Vec3 floor = ArtKit.floor(level, foe.position().add(0, 0.3, 0), 0.3, 5);
 		Vec3 base = floor == null ? foe.position() : floor;
@@ -182,7 +182,7 @@ public final class VerdantArts {
 		if (amount <= 0) {
 			return;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 c = body.getBoundingBox().getCenter();
 		Vfx.emit(level, ParticleTypes.HAPPY_VILLAGER, c, (int) Math.max(2, Math.min(6, amount * 2)), body.getBbWidth() * 0.6, 0.02);
 		if (body == player) {
@@ -203,7 +203,7 @@ public final class VerdantArts {
 	// ------------------------------------------------------------------ I. Thorn Lash
 
 	static boolean thornLash(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -256,7 +256,7 @@ public final class VerdantArts {
 	// ------------------------------------------------------------------ II. Blossom Fall
 
 	static boolean blossomFall(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -304,7 +304,7 @@ public final class VerdantArts {
 			mended(player, ally, ArtKit.mend(player, ally, ArtRules.BLOSSOM_MEND));
 		}
 		ArtFields.open(player, BLOSSOM, ArtFields.disc(() -> centre, ArtRules.BLOSSOM_RADIUS, 1.8), ArtRules.BLOSSOM_TICKS, 5, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			RandomSource rr = lv.getRandom();
 			if (age % 5 == 0) {
 				double a = rr.nextDouble() * Math.PI * 2;
@@ -349,7 +349,7 @@ public final class VerdantArts {
 	// ------------------------------------------------------------------ III. Rooted Parry
 
 	static boolean rootedParry(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
@@ -410,7 +410,7 @@ public final class VerdantArts {
 	// ------------------------------------------------------------------ IV. Wild Growth
 
 	static boolean wildGrowth(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.WILD_DISTANCE);
@@ -466,7 +466,7 @@ public final class VerdantArts {
 		}
 		trail.add(to);
 		ArtFields.open(player, BRAMBLES, ArtFields.strip(trail, 0.9, 1.8), ArtRules.WILD_FIELD, 5, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			if (age % 10 == 0) {
 				RandomSource rr = lv.getRandom();
 				Vec3 p = trail.get(rr.nextInt(trail.size()));
@@ -499,7 +499,7 @@ public final class VerdantArts {
 	// ------------------------------------------------------------------ V. Grove's Heart
 
 	static boolean grovesHeart(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -558,7 +558,7 @@ public final class VerdantArts {
 			});
 		}
 		ArtFields.open(player, GROVE, ArtFields.disc(() -> feet, ArtRules.GROVE_RADIUS, 2.5), ArtRules.GROVE_TICKS, 5, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			RandomSource rr = lv.getRandom();
 			// Blossom drifting down from the canopies, and pollen of light rising through the grove.
 			if (!trees.isEmpty()) {

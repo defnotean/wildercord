@@ -67,7 +67,7 @@ public final class ThunderArts {
 	// ------------------------------------------------------------------ I. Crackle
 
 	static boolean crackle(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		var continuation = dev.wildercord.aura.MastersArts.continuation(player);
 		Vec3 committedFacing = ArtKit.flat(player);
 		int color = ArtKit.color(player);
@@ -124,7 +124,7 @@ public final class ThunderArts {
 	static boolean skyfall(ServerPlayer player, AuraApi.StringContext context) {
 		var release = dev.wildercord.aura.MastersArts.releaseTargets(player, SKYFALL);
 		if (release == null) return false;
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
@@ -171,7 +171,7 @@ public final class ThunderArts {
 
 	/** A bolt out of the sky at {@code at}: the lightning itself, a flash, rings racing over the ground and a scorch. */
 	static void strike(ServerPlayer player, Vec3 at, int color, float size) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ArtLight world = ArtLight.world(player);
 		ElementFx.bolt(level, at.add(0, 13 * size, 0), at, 0.13 * size, 3, 3, WHITE, color);
 		world.flash(at.add(0, 1.0, 0), WHITE, 3.0F * size);
@@ -188,7 +188,7 @@ public final class ThunderArts {
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
 		if (counter == null || !counter.art().equals(STATIC_RIPOSTE) || !counter.valid()) return false;
 		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
-		ServerLevel level = owner.level();
+		ServerLevel level = (ServerLevel) owner.level();
 		int color = ArtKit.color(player);
 		LivingEntity foe = counter.target();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.THRUST, false, 1.4F);
@@ -249,7 +249,7 @@ public final class ThunderArts {
 	// ------------------------------------------------------------------ IV. Bolt Step
 
 	static boolean boltStep(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 eye = player.getEyePosition();
@@ -309,7 +309,7 @@ public final class ThunderArts {
 	// ------------------------------------------------------------------ V. Heaven's Spear
 
 	static boolean heavensSpear(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -351,7 +351,7 @@ public final class ThunderArts {
 	 * to thirty degrees), until something solid stops it.
 	 */
 	private static void loose(ServerPlayer player, ArtKit.Hits hits, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 look = player.getViewVector(1.0F);
 		double pitch = ArtRules.spearTilt(look.y);
 		Vec3 flat = ArtKit.flat(player);

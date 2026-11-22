@@ -41,7 +41,7 @@ public final class EventCommand {
 
 	private static int start(CommandContext<CommandSourceStack> ctx, String kind, boolean here) throws CommandSyntaxException {
 		ServerPlayer player = ctx.getSource().getPlayerOrException();
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		if (!WorldEvents.enabled()) {
 			ctx.getSource().sendFailure(Component.translatable("command.wildercord.event.off"));
 			return 0;

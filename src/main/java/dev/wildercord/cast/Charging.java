@@ -382,7 +382,7 @@ public final class Charging {
 	 * loose magic surges harmlessly ({@link WildSurge#fizzle}). It never deals damage.
 	 */
 	private static void backfire(ServerPlayer player, WildercordAttachments.Charge charge, Overchannel.Tuning tuning) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 eye = player.getEyePosition();
 		Vec3 look = player.getLookAngle();
 		// Where the circle was: behind the shoulders.

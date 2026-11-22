@@ -29,7 +29,7 @@ public final class MethodsAAwakenings {
 
 	/** The burst of the awakening, round the body. */
 	public static void flourish(ServerPlayer player, AwakeningRules.Flavour flavour) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		ArtLight world = ArtLight.world(player);
@@ -108,7 +108,7 @@ public final class MethodsAAwakenings {
 	/** One tick of it standing. */
 	public static void tick(ServerPlayer owner, AwakeningRules.Flavour flavour, List<LivingEntity> foes, long age, boolean ownerInside, Vec3 centre,
 			double radius, int color, ArtKit.Hits hits) {
-		ServerLevel level = owner.level();
+		ServerLevel level = (ServerLevel) owner.level();
 		int pulse = AwakeningRules.Sovereign.PULSE;
 		boolean beat = age > 0 && age % pulse == 0;
 		RandomSource r = level.getRandom();

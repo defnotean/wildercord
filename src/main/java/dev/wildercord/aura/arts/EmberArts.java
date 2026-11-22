@@ -66,7 +66,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ I. Kindling Draw
 
 	static boolean kindlingDraw(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -120,7 +120,7 @@ public final class EmberArts {
 
 	/** Fire catching on one stretch of ground: a run of light along it, flame tongues and embers. */
 	private static void ignitePoint(ServerPlayer player, Vec3 from, Vec3 to, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ArtLight world = ArtLight.world(player);
 		world.ray(from.add(0, 0.08, 0), to.add(0, 0.08, 0), color, 0.55, 18);
 		world.bare().ray(from.add(0, 0.1, 0), to.add(0, 0.1, 0), GOLD, 0.14, 14);
@@ -130,7 +130,7 @@ public final class EmberArts {
 
 	/** A field of fire's beat: flames licking up along it, and what stands in it set alight (each foe at most every half second). */
 	private static void burn(ServerPlayer owner, ArtFields.Field field, List<Vec3> points, long age, int ignite) {
-		ServerLevel level = field.level();
+		ServerLevel level = (ServerLevel) field.level();
 		RandomSource r = level.getRandom();
 		int color = ArtKit.color(owner);
 		ArtLight world = ArtLight.world(owner);
@@ -161,7 +161,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ II. Rising Cinders
 
 	static boolean risingCinders(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -214,7 +214,7 @@ public final class EmberArts {
 	}
 
 	private static void cinders(ServerPlayer player, ArtKit.Hits hits, LivingEntity source, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 above = source.position().add(0, source.getBbHeight() * 0.5, 0);
 		Vec3 ground = ArtKit.floor(level, source.position(), 0.5, 6);
 		Vec3 base = ground == null ? source.position() : ground;
@@ -239,7 +239,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ III. Backdraft
 
 	static boolean backdraft(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -303,7 +303,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ IV. Wildfire Rush
 
 	static boolean wildfireRush(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.WILDFIRE_DISTANCE);
@@ -355,7 +355,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ V. Sunfall
 
 	static boolean sunfall(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		AuraFx.Art fx = AuraFx.art(player);
@@ -403,7 +403,7 @@ public final class EmberArts {
 	}
 
 	private static void sunfallLands(ServerPlayer player, ArtKit.Hits hits, Vec3 at, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		player.resetFallDistance();
 		Vec3 ground = ArtKit.floor(level, at, 0.5, 2);
 		Vec3 base = ground == null ? at : ground;
@@ -436,7 +436,7 @@ public final class EmberArts {
 		Vec3 centre = base;
 		ArtFields.open(player, FIRE_RING, ArtFields.ring(centre, ArtRules.SUNFALL_RING - ArtRules.SUNFALL_RING_BAND / 2,
 			ArtRules.SUNFALL_RING + ArtRules.SUNFALL_RING_BAND / 2, 2.0), ArtRules.SUNFALL_RING_TICKS, 2, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			RandomSource rr = lv.getRandom();
 			int c = ArtKit.color(owner);
 			ArtLight ring = ArtLight.world(owner);

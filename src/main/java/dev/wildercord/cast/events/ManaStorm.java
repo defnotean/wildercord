@@ -302,7 +302,7 @@ public final class ManaStorm {
 		if (surge == EventRules.Surge.NONE) {
 			return;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 at = player.position().add(0, 1.0, 0);
 		Fx.sound(level, at, EventSounds.SURGE, 0.9F, 0.9F + player.getRandom().nextFloat() * 0.2F);
 		ElementFx.ring(level, at, new Vec3(0, 1, 0), VIOLET, 0.3, 2.2, 0.08, 10);
@@ -379,7 +379,7 @@ public final class ManaStorm {
 
 	/** The storm's mana kicks back: a jolt and a shove, never enough to kill, and a little mana spilled. */
 	private static void backfire(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		player.displayClientMessage(Component.translatable("message.wildercord.surge.backfire").withColor(0xFF8C8C), true);
 		float hurt = Math.min(3.0F, player.getHealth() - 2.0F);
 		if (hurt > 0 && !player.isCreative()) {

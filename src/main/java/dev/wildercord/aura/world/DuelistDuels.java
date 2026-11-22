@@ -272,7 +272,7 @@ public final class DuelistDuels {
 
 	/** Starts a duel between a player and a duelist standing near each other, counting down. */
 	public static void start(ServerPlayer player, Duelist duelist) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int stage = AuraWorldRules.duelStage(Aura.stage(player), AuraStages.highest());
 		Vec3 centre = player.position().add(duelist.position()).scale(0.5);
 		Active active = new Active(new DuelRules.Duel(player.getUUID(), duelist.getUUID(), level.getGameTime()), level, centre, player, duelist, stage);

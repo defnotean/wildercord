@@ -99,7 +99,7 @@ public final class BearersLantern {
 	 * they get down (or die), when it sinks back into the earth.
 	 */
 	static boolean steed(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, EntitySpawnReason.TRIGGERED);
 		if (horse == null) return false;
 		horse.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);

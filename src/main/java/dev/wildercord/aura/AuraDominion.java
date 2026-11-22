@@ -154,7 +154,7 @@ public final class AuraDominion {
 		boolean sovereign = Awakening.awakened(player);
 		int ticks = sovereign ? (int) Math.round(settings.dominionTicks() * AwakeningRules.Sovereign.TIME) : settings.dominionTicks();
 		double radius = sovereign ? AuraRules.DOMINION_RADIUS * AwakeningRules.Sovereign.RADIUS : AuraRules.DOMINION_RADIUS;
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 centre = player.position();
 		dev.wildercord.aura.arts.Awakenings.Ground ground = sovereign ? dev.wildercord.aura.arts.Awakenings.ground(player, centre, radius, ticks) : null;
 		Field field = new Field(player.getUUID(), level, centre, radius, now, now + ticks, Aura.color(player), ground);

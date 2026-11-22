@@ -63,7 +63,7 @@ public final class TideArts {
 	// ------------------------------------------------------------------ I. Riptide Cut
 
 	static boolean riptideCut(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SWEEP, false, 1.4F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -87,7 +87,7 @@ public final class TideArts {
 	// ------------------------------------------------------------------ II. Breaker
 
 	static boolean breaker(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		Vec3 from = player.position();
@@ -133,7 +133,7 @@ public final class TideArts {
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
 		if (counter == null || !counter.art().equals(WHIRLPOOL) || !counter.valid()) return false;
 		LivingEntity caught = counter.target();
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.45F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -148,7 +148,7 @@ public final class TideArts {
 		}
 		ArtLight.world(player).ground(heart.add(0, 0.04, 0), SigilOption.RING, FOAM, TideRules.WHIRLPOOL_RADIUS, TideRules.WHIRLPOOL_TICKS, 0.08);
 		ArtFields.open(player, POOL, ArtFields.disc(() -> heart, TideRules.WHIRLPOOL_RADIUS, 2.5), TideRules.WHIRLPOOL_TICKS, 2, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			if (age % 4 == 0) {
 				ArtLight.world(owner).groundRing(heart, color, TideRules.WHIRLPOOL_RADIUS, 0.4, 0.08, 8);
 				double a = age * 0.6;
@@ -173,7 +173,7 @@ public final class TideArts {
 	// ------------------------------------------------------------------ IV. Surge
 
 	static boolean surge(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, TideRules.SURGE_DISTANCE);
@@ -214,7 +214,7 @@ public final class TideArts {
 	// ------------------------------------------------------------------ V. Maelstrom
 
 	static boolean maelstrom(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.5F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, player.position().add(0, 1, 0), "aura_art_maelstrom", 1.3F, 1.0F);
@@ -226,7 +226,7 @@ public final class TideArts {
 
 	/** One wave of the maelstrom; the last one crashes and throws them all. */
 	private static void sea(ServerPlayer owner, ArtFields.Field field, ArtKit.Hits hits, long age, int ticks) {
-		ServerLevel level = field.level();
+		ServerLevel level = (ServerLevel) field.level();
 		int color = ArtKit.color(owner);
 		Vec3 at = owner.position();
 		RandomSource r = level.getRandom();

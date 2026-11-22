@@ -109,7 +109,7 @@ final class WallTurn {
 
 	/** A visible, horizontal collision face within reach. A decoration, liquid or opposite wall cannot be claimed by a packet. */
 	private static BlockHitResult contact(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 chest = player.position().add(0, Math.min(1.2, player.getBbHeight() * .65), 0);
 		BlockHitResult nearest = null;
 		for (Direction face : Direction.Plane.HORIZONTAL) {
@@ -143,7 +143,7 @@ final class WallTurn {
 		return ward.known() && ward.warded() == expectedWarded && swept(player, from, to, ward);
 	}
 	private static boolean clear(ServerPlayer player, AABB box, DungeonWards.MovementWard warded) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		if (!warded.known() || !loaded(level, box) || !level.getWorldBorder().isWithinBounds(box.minX, box.minZ)
 			|| !level.getWorldBorder().isWithinBounds(box.maxX, box.maxZ) || !level.noCollision(player, box)) return false;
 		for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(box.minX, box.minY, box.minZ),
@@ -181,7 +181,7 @@ final class WallTurn {
 	 * sub-step (no drop). Solid walls only clip travel.
 	 */
 	static boolean hingeLane(ServerPlayer player, Vec3 direction) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		var warded = DungeonWards.movementWard(level, player.blockPosition());
 		if (!warded.known() || !finite(direction) || direction.horizontalDistanceSqr() < 1.0E-6 || !finite(player.position())) return false;
 		Vec3 step = new Vec3(direction.x, 0, direction.z).normalize().scale(StoneHingeRules.LANE);

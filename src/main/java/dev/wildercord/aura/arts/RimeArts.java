@@ -84,7 +84,7 @@ public final class RimeArts {
 	// ------------------------------------------------------------------ I. Frostbite
 
 	static boolean frostbite(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -120,7 +120,7 @@ public final class RimeArts {
 
 	/** The crusts a foe carries: a hard white ring at its feet for each, frost creeping under it, ice chipping off. */
 	private static void crustLook(ServerPlayer player, LivingEntity foe, int crusts) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ArtLight world = ArtLight.world(player);
 		Vec3 feet = foe.position();
 		double w = Math.max(0.5, foe.getBbWidth());
@@ -160,7 +160,7 @@ public final class RimeArts {
 	/** Frozen solid: still, iced over (a shell of ice closing round it, a player's only briefly), a ring snapping out. */
 	static boolean freezeSolid(ServerPlayer player, LivingEntity foe, int ticks) {
 		boolean froze = ArtKit.freeze(player, foe, ticks);
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		if (froze) {
 			int t = foe instanceof Player ? ArtRules.PVP_HOLD_TICKS : ticks;
 			BlockFx.encase(level, foe, t);
@@ -178,7 +178,7 @@ public final class RimeArts {
 	static boolean hailfall(ServerPlayer player, AuraApi.StringContext context) {
 		var release = dev.wildercord.aura.MastersArts.releaseTargets(player, HAILFALL);
 		if (release == null) return false;
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
@@ -222,7 +222,7 @@ public final class RimeArts {
 
 	private static void stone(ServerPlayer player, ReleasedArtOwner owner, ArtKit.Hits hits, Vec3 at, int color, Map<UUID, Integer> struckBy) {
 		if (!owner.valid()) return;
-		ServerLevel level = owner.level();
+		ServerLevel level = (ServerLevel) owner.level();
 		Vec3 ground = ArtKit.floor(level, at.add(0, 1, 0), 1.5, 3);
 		Vec3 p = ground == null ? at : ground;
 		ArtLight.world(player).ring(p.add(0, 0.1, 0), ArtKit.UP, WHITE, 0.1, 0.9, 0.05, 6);
@@ -250,7 +250,7 @@ public final class RimeArts {
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
 		if (counter == null || !counter.art().equals(GLACIER_MIRROR) || !counter.valid()) return false;
 		ReleasedArtOwner owner = ReleasedArtOwner.capture(player);
-		ServerLevel level = owner.level();
+		ServerLevel level = (ServerLevel) owner.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -323,7 +323,7 @@ public final class RimeArts {
 
 	/** A projectile turned back by the mirror: a ringing glint where it struck the ice. */
 	static void mirrorTurns(ServerPlayer player, Vec3 at) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ArtLight.world(player).ring(at, at.subtract(player.getEyePosition()), WHITE, 0.1, 0.8, 0.05, 6);
 		ice(level, at, 0.4, 3);
 		Feels.sound(level, at, "frost_mirror", 0.9F, 1.3F);
@@ -332,7 +332,7 @@ public final class RimeArts {
 	// ------------------------------------------------------------------ IV. Skate
 
 	static boolean skate(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.SKATE_DISTANCE);
@@ -424,7 +424,7 @@ public final class RimeArts {
 	 * remembers who was): the balance pass found a packed crowd under Winter's Hush taking every neighbour's shards on top of its own.
 	 */
 	static void shatter(ServerPlayer player, ArtKit.Hits hits, LivingEntity foe, double factor, double shards, double shardFactor, Set<UUID> cut) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 c = foe.getBoundingBox().getCenter();
 		hits.strike(foe, factor, AuraFxRules.Weight.GRAND);
 		Spirits.thawNow(foe);
@@ -443,7 +443,7 @@ public final class RimeArts {
 	// ------------------------------------------------------------------ V. Winter's Hush
 
 	static boolean wintersHush(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();

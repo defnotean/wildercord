@@ -137,7 +137,7 @@ public final class BladeCeremony {
 		int ticks = rite.kind() == BondedBlades.Rite.BOND ? BladeRules.BOND_TICKS : BladeRules.PASS_TICKS;
 		int color = color(player);
 		player.setAttached(BondedBlades.RITE, new BondedBlades.Rite(rite.kind(), now, ticks, color));
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		if (rite.kind() == BondedBlades.Rite.BOND) {
 			BondedBlades.sound(level, hand(player), "aura_bond_kindle", 0.9F, 1.0F);
 			player.displayClientMessage(Component.translatable("message.wildercord.aura.blade.kindling").withColor(0xFF000000 | color), true);
@@ -286,7 +286,7 @@ public final class BladeCeremony {
 	 * blade blazing). Redrawn every few ticks; what lies round the body is spectacle (the swordsman sees it in third person only).
 	 */
 	private static void bondLook(ServerPlayer player, Rite rite, int t) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = color(player);
 		int hot = AuraVfx.hot(color, 0.45);
 		Vec3 feet = player.position();
@@ -353,7 +353,7 @@ public final class BladeCeremony {
 
 	/** The seal: a burst at the blade, a column of light, a ring racing out, the banner, and what it means said in chat. */
 	private static void sealed(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = color(player);
 		int hot = AuraVfx.hot(color, 0.5);
 		Vec3 feet = player.position();
@@ -386,7 +386,7 @@ public final class BladeCeremony {
 
 	/** The passing as it goes: the master's colour flowing to the disciple and the disciple's back, braided, a ring under them. */
 	private static void passLook(ServerPlayer master, ServerPlayer disciple, int t) {
-		ServerLevel level = master.level();
+		ServerLevel level = (ServerLevel) master.level();
 		int mc = color(master);
 		int dc = color(disciple);
 		Vec3 from = hand(master);
@@ -422,7 +422,7 @@ public final class BladeCeremony {
 
 	/** {@code b} reached {@code tier}: a burst at the blade, the body's aura flaring, its voice, the banner, and what it means. */
 	static void tierMoment(ServerPlayer player, BladeBond b, int tier) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = b.color() == 0 ? color(player) : b.color();
 		Vec3 blade = hand(player);
 		ItemStack stack = BondedBlades.carried(player);
@@ -477,7 +477,7 @@ public final class BladeCeremony {
 
 	/** A blade passed from {@code from} to {@code to}. */
 	static void passedMoment(ServerPlayer from, ServerPlayer to, BladeBond b) {
-		ServerLevel level = to.level();
+		ServerLevel level = (ServerLevel) to.level();
 		int color = b.color() == 0 ? color(to) : b.color();
 		Vec3 at = hand(to);
 		BondedBlades.sound(level, at, "aura_bond_pass", 1.0F, 1.0F);

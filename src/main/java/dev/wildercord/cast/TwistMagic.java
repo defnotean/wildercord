@@ -562,7 +562,7 @@ public final class TwistMagic {
 
 	/** Pale Steed: a spectral horse rises under the caster and carries them for half a minute. */
 	private static void paleSteed(Ride ride) {
-		ServerLevel level = ride.level();
+		ServerLevel level = (ServerLevel) ride.level();
 		if (!(ride.caster() instanceof ServerPlayer player) || player.isPassenger() || player.isSpectator()) {
 			TwistVfx.almost(level, ride.caster(), ride.resonance.color());
 			return;

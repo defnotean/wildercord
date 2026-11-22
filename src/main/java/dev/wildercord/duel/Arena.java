@@ -122,7 +122,7 @@ public final class Arena {
 
 	/** A caster's standing this season. */
 	public static ArenaLadder.Standing standing(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		return ArenaLadder.of(level.getServer()).standing(player.getUUID(), player.getGameProfile().getName(), season(level));
 	}
 

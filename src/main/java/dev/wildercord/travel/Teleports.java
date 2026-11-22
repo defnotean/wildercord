@@ -128,7 +128,7 @@ public final class Teleports {
 			finish(player, kind, where, first);
 			return 1;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Pending pending = new Pending(kind, where, destination, player.position(), level.dimension(), level.getServer().getTickCount(), warmup);
 		PENDING.put(player.getUUID(), pending);
 		countdown(player, pending, TravelRules.seconds(warmup));
@@ -223,7 +223,7 @@ public final class Teleports {
 	// ------------------------------------------------------------------ the teleport itself
 
 	private static void finish(ServerPlayer player, Kind kind, Component where, Arrival arrival) {
-		ServerLevel from = player.level();
+		ServerLevel from = (ServerLevel) player.level();
 		Vec3 left = player.position();
 		Travel.update(player, data -> data.withBack(Spot.of(player)));
 		TravelFx.depart(from, left);

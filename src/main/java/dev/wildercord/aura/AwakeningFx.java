@@ -50,7 +50,7 @@ public final class AwakeningFx {
 
 	/** The transformation, as {@code player} awakens for {@code ticks}. */
 	static void transform(ServerPlayer player, int ticks) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = player.position().add(0, 1.0, 0);
 		Feels.sound(level, heart, "aura_awaken", 1.3F, 1.0F);
 		Feels.sound(level, heart, voice(Aura.data(player).method()), 1.15F, 1.0F);
@@ -76,7 +76,7 @@ public final class AwakeningFx {
 
 	/** The burst, a few ticks into it. */
 	private static void burst(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = Aura.color(player);
 		int hot = ArtKit.hot(color, 0.45);
 		Vec3 feet = player.position();
@@ -124,7 +124,7 @@ public final class AwakeningFx {
 
 	/** The awakening burned out: the aura guttering into ash, a long breath out. */
 	static void spent(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = Aura.color(player);
 		Vec3 heart = player.position().add(0, 1.0, 0);
 		Feels.sound(level, heart, "aura_spent", 1.0F, 1.0F);

@@ -291,7 +291,7 @@ public final class Stance {
 		stagger(target, kind, ticks);
 		// The break: a crack and a deep blow for everyone near, a gold flash and ring where it gave way (the breaker's own, so up close
 		// in their first person it's drawn small and low).
-		ServerLevel level = attacker.level();
+		ServerLevel level = (ServerLevel) attacker.level();
 		Vec3 chest = target.getBoundingBox().getCenter();
 		Feels.sound(level, chest, "aura_stance_break", 1.0F, kind == StanceRules.Kind.BOSS ? 0.8F : 1.0F);
 		AuraFx.burst(level, attacker, chest, Vec3.ZERO, OPENED_COLOR, 1.3F + target.getBbWidth(), AuraFx.Burst.FLASH | AuraFx.Burst.RING | AuraFx.Burst.STAR);

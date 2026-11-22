@@ -67,7 +67,7 @@ public final class NativeZoneEmitters {
     }
     /** Resident chunks and resolved identical ward identities are checked before any block clip. */
     static boolean clear(ServerPlayer player, Vec3 to) {
-        ServerLevel level = player.level(); Vec3 from = player.getEyePosition();
+        ServerLevel level = (ServerLevel) player.level(); Vec3 from = player.getEyePosition();
         if (!finite(from) || !finite(to) || from.distanceToSqr(to) > ExciseRules.RANGE * ExciseRules.RANGE) return false;
         if (!loaded(level, player.blockPosition())) return false;
         var ward = DungeonWards.movementWard(level, player.blockPosition());

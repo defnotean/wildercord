@@ -69,7 +69,7 @@ public final class VenomArts {
 	// ------------------------------------------------------------------ I. Fang Strike
 
 	static boolean fangStrike(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = acid(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -91,7 +91,7 @@ public final class VenomArts {
 	// ------------------------------------------------------------------ II. Spitting Cobra
 
 	static boolean spittingCobra(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = acid(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -116,7 +116,7 @@ public final class VenomArts {
 	// ------------------------------------------------------------------ III. Shed Skin
 
 	static boolean shedSkin(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = acid(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -129,7 +129,7 @@ public final class VenomArts {
 		// The husk: where you stood, a coil of green that poisons whoever stands in it.
 		AuraStep.afterimages(player, feet, feet, look, MethodsBKit.BLACK);
 		ArtFields.open(player, HUSK, ArtFields.disc(() -> feet, SHED_RADIUS, 2.0), SHED_TICKS, 5, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			if (age % 10 == 0) {
 				Motes.glows(lv, feet.add(0, 0.3, 0), 6, SHED_RADIUS * 0.6, MethodsBKit.ACID, 0.07, 14, new Vec3(0, 0.02, 0), 0.02);
 				ArtLight.world(owner).groundRing(feet.add(0, 0.05, 0), field.left() < 20 ? MethodsBKit.BLACK : acid(owner), SHED_RADIUS * 0.7, SHED_RADIUS, 0.06, 12);
@@ -150,7 +150,7 @@ public final class VenomArts {
 	// ------------------------------------------------------------------ IV. Serpent Slither
 
 	static boolean serpentSlither(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = acid(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, SLITHER_DISTANCE);
@@ -181,7 +181,7 @@ public final class VenomArts {
 	// ------------------------------------------------------------------ V. Hydra Coil
 
 	static boolean hydraCoil(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = acid(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SWEEP, false, 1.6F);

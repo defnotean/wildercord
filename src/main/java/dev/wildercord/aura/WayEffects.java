@@ -97,7 +97,7 @@ public final class WayEffects {
 	 * (never a player, never a boss), and a crowd falls one after another.
 	 */
 	static void cascade(ServerPlayer attacker, LivingEntity finished) {
-		ServerLevel level = attacker.level();
+		ServerLevel level = (ServerLevel) attacker.level();
 		long now = level.getGameTime();
 		LivingEntity best = null;
 		double nearest = Double.MAX_VALUE;
@@ -338,7 +338,7 @@ public final class WayEffects {
 	 * facing its back, so the counter that follows falls there, and it loses them a moment.
 	 */
 	static void slip(ServerPlayer player, LivingEntity attacker, Vec3 spot) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = attacker.getBoundingBox().getCenter();
 		Vec3 from = player.position();
 		Vec3 look = heart.subtract(spot.add(0, player.getEyeHeight(), 0));
@@ -386,7 +386,7 @@ public final class WayEffects {
 		if (!Ways.has(player, WayRules.SHADOWSTEP_FORM)) {
 			return;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		UNSEEN.put(player.getUUID(), level.getGameTime() + WayRules.UNSEEN_TICKS);
 		int strikes = thousandShadows(player) ? 2 : 1;
 		float yaw = player.getYRot();

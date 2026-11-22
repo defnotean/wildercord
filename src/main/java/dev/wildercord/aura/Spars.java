@@ -310,7 +310,7 @@ public final class Spars {
 
 	/** A salute's look: the blade up in a flash of the swordsman's colour, a thin line of it to the one saluted, steel ringing. */
 	private static void saluteLook(ServerPlayer from, ServerPlayer to) {
-		ServerLevel level = from.level();
+		ServerLevel level = (ServerLevel) from.level();
 		int color = colour(from);
 		Vec3 blade = BladeCeremony.hand(from).add(0, 0.35, 0);
 		dev.wildercord.compat.McEntities.swing(from, InteractionHand.MAIN_HAND, true);
@@ -336,7 +336,7 @@ public final class Spars {
 	}
 
 	private static void begin(ServerPlayer a, ServerPlayer b) {
-		ServerLevel level = a.level();
+		ServerLevel level = (ServerLevel) a.level();
 		long now = level.getGameTime();
 		double radius = Config.get().aura().sparring().ringRadius();
 		Vec3 centre = a.position().add(b.position()).scale(0.5);

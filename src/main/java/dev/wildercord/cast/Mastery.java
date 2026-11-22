@@ -262,7 +262,7 @@ public final class Mastery {
 		String key = keyOf(runes);
 		MasteryBook.Entry entry = MasteryAttachments.book(player).entry(key).orElse(null);
 		List<String> traits = settings.enabled() && settings.traits() && entry != null ? entry.active() : List.of();
-		ServerLevel level = (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int foes = foes(player);
 		boolean boss = bossNear(player);
 		double health = player.getHealth() / Math.max(1F, player.getMaxHealth());
@@ -429,7 +429,7 @@ public final class Mastery {
 	/** Every circumstance {@code player} is casting in right now (the kinds of foe it strikes are added as it strikes them). */
 	static Set<String> circumstances(ServerPlayer player, List<RuneDef> runes, int foes, boolean boss) {
 		Set<String> out = new LinkedHashSet<>();
-		ServerLevel level = (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		BlockPos pos = player.blockPosition();
 		boolean sky = level.dimensionType().hasSkyLight() && !level.dimensionType().hasFixedTime();
 		if (level.isRainingAt(pos.above()) || level.isRainingAt(pos)) {

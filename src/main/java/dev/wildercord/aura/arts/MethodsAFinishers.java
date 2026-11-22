@@ -50,7 +50,7 @@ public final class MethodsAFinishers {
 
 	/** The frame: its trail, a grand impact, the stinger and its voice, and a seal at the foe's feet. Returns the foe's heart. */
 	private static Vec3 frame(ServerPlayer player, LivingEntity foe, AuraFxRules.Stroke stroke, int color, String voice) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = foe.getBoundingBox().getCenter();
 		AuraFx.art(player).color(color).trail(stroke, false, 1.7F).impact(foe, AuraFxRules.Weight.GRAND).flare(40, 1.0F);
 		Feels.sound(level, heart, "aura_finisher", 1.1F, 1.0F);

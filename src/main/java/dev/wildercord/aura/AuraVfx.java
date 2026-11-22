@@ -34,7 +34,7 @@ public final class AuraVfx {
 
 	/** Each breath of the stance: a small ground impression and a few motes drawn up into the body. */
 	static void breathe(ServerPlayer player, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 feet = player.position();
 		AuraFx.groundScar(level, feet, Math.max(0.3, 1.5), Math.max(60, (30) * 3), 1);
 		for (int i = 0; i < 4; i++) {
@@ -46,7 +46,7 @@ public final class AuraVfx {
 
 	/** A breath on the beat: a brighter ring and a soft flash at the heart. */
 	static void beat(ServerPlayer player, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 heart = player.position().add(0, 1.1, 0);
 		AuraFx.groundScar(level, player.position(), Math.max(0.4, 2.2), Math.max(60, (14) * 3), 1);
 		Sigils.flash(level, heart, 0xFF000000 | hot(color, 0.4), 1.1F);
@@ -55,7 +55,7 @@ public final class AuraVfx {
 
 	/** The guard rising: a ring of the aura's light braced in front of the blade. */
 	static void guard(ServerPlayer player, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 look = flat(player);
 		Vec3 at = player.position().add(0, 1.1, 0).add(look.scale(0.8));
 		pressureCut(level, at, look, color, 0.2, 0.9, 0.06, 8);
@@ -64,7 +64,7 @@ public final class AuraVfx {
 
 	/** A blow caught on a held guard: a ripple where it met the blade. */
 	static void held(ServerPlayer player, int color, DamageSource source) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 look = flat(player);
 		Vec3 at = player.position().add(0, 1.1, 0).add(look.scale(0.8));
 		pressureCut(level, at, look, color, 0.1, 1.1, 0.05, 6);
@@ -77,7 +77,7 @@ public final class AuraVfx {
 	 * met the blow; in the guard's own first-person view it's a thin gold glint low across the view, never a flash filling it.
 	 */
 	static void perfect(ServerPlayer player, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 look = flat(player);
 		Vec3 at = player.position().add(0, 1.1, 0).add(look.scale(0.8));
 		AuraFx.burst(level, player, at, look, AuraGuard.PERFECT_COLOR, 3.0F, AuraFx.Burst.GUARD | AuraFx.Burst.ECHO);
@@ -162,7 +162,7 @@ public final class AuraVfx {
 
 	/** A method learned: the aura stirs for the first time, a quiet rise of light. */
 	static void learned(ServerPlayer player, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 feet = player.position();
 		AuraFx.groundScar(level, feet, Math.max(0.2, 2.0), Math.max(60, (20) * 3), 1);
 		Motes.glows(level, feet.add(0, 0.8, 0), 12, 0.5, hot(color, 0.25), 0.09, 30, new Vec3(0, 0.03, 0), 0.01);
@@ -170,7 +170,7 @@ public final class AuraVfx {
 
 	/** A breakthrough: aura bursting out of the body in its colour, a column of light and a ring racing over the ground. */
 	static void breakthrough(ServerPlayer player, int color, int stage) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 feet = player.position();
 		Vec3 heart = feet.add(0, 1.1, 0);
 		double size = 2.5 + stage * 0.8;
@@ -223,7 +223,7 @@ public final class AuraVfx {
 
 	/** Aura armour takes a blow: a ripple across the shell where it struck (the shell itself is drawn by each client). */
 	static void shellStruck(ServerPlayer player, int color, DamageSource source) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 centre = player.getBoundingBox().getCenter();
 		Vec3 from = source.getSourcePosition();
 		Vec3 toward = from == null ? flat(player) : from.subtract(centre);
@@ -291,7 +291,7 @@ public final class AuraVfx {
 
 	/** A spell flowing into the blade: motes of its colour spiralling from the circle into the hand, and a flash on the blade. */
 	static void spellDrawn(ServerPlayer player, int spell, int aura) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 hand = hand(player);
 		Vec3 front = player.getEyePosition().add(player.getViewVector(1.0F).scale(1.4));
 		for (int i = 0; i < 8; i++) {
@@ -363,7 +363,7 @@ public final class AuraVfx {
 	 * alike), for the art that lifts.
 	 */
 	static void artArc(ServerPlayer player, int color, boolean rising) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 look = flat(player);
 		Vec3 feet = player.position();
 		boolean day = brightBehind(level, feet.add(0, 1.5, 0).add(look.scale(2)));
@@ -407,7 +407,7 @@ public final class AuraVfx {
 	 * first-person view clear, and the aura's crescent cut through it.
 	 */
 	static void artCounter(ServerPlayer player, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 look = flat(player);
 		Vec3 at = player.position().add(0, 0.9, 0).add(look.scale(2.0));
 		boolean day = brightBehind(level, at);
@@ -426,7 +426,7 @@ public final class AuraVfx {
 
 	/** The Fourth Art: a line of the aura's light cut low and straight ahead, {@code length} blocks, white-hot down its middle. */
 	static void artLine(ServerPlayer player, int color, Vec3 ahead, double length) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 from = player.position().add(0, 0.95, 0).add(ahead.scale(0.6));
 		Vec3 to = from.add(ahead.scale(length));
 		if (brightBehind(level, to)) {
@@ -445,7 +445,7 @@ public final class AuraVfx {
 	 * the blow (each centred out toward the ring, so they show to the swordsman too) and motes flung up off the rim.
 	 */
 	static void artRing(ServerPlayer player, int color, double radius) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 feet = player.position();
 		Vec3 look = flat(player);
 		boolean day = brightBehind(level, feet.add(0, 1, 0));

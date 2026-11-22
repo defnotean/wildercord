@@ -678,7 +678,7 @@ public final class FireBloodVfx {
 
 	/** Explode, anticipation: three sparks pull in to the hand, white to orange. */
 	public static void cueBlast(FeelCtx ctx) {
-		ServerLevel level = ctx.level();
+		ServerLevel level = (ServerLevel) ctx.level();
 		for (int i = 0; i < 3; i++) {
 			Vec3 from = ctx.at().add(ElementFx.randomDir(level.getRandom()).scale(0.7));
 			Motes.seek(level, from, ctx.at(), i == 0 ? WHITE : ElementFx.FIRE.secondary(), 0.12, 5, 0.0);

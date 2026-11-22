@@ -1062,7 +1062,7 @@ public final class BondedBlades {
 		if (!on(player) || Aura.stage(player) < BladeRules.FROM || !canBond(stack) || standing(player)) {
 			return false;
 		}
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		BlockPos at = player.blockPosition();
 		String biome = level.getBiome(at).unwrapKey().map(k -> k.location().toString()).orElse("");
 		BladeBond.Origin origin = new BladeBond.Origin(day(level), biome, level.dimension().location().toString(), at.getX(), at.getY(), at.getZ(),

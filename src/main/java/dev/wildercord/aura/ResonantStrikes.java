@@ -47,7 +47,7 @@ public final class ResonantStrikes {
 			&& p.level()==t.level() && p.distanceToSqr(t)<=32*32 && Targets.canHarm(p,t) && !Spars.partners(p,t);
 	}
 	private static boolean offer(ServerPlayer incoming, LivingEntity target, String element, float taken, boolean blade, Cast cast) {
-		ServerLevel level=incoming.level();
+		ServerLevel level = (ServerLevel) incoming.level();
 		long now = level.getServer().overworld().getGameTime();
 		SCOPED.keySet().removeIf(key -> !ResonantRules.within(now, key.hit().tick(), ResonantRules.WINDOW));
 		var offered = new ResonantRules.Hit(incoming.getUUID(), element, taken, now, blade, cast != null && (cast.guardedImpact() || cast.hasConsequences()));

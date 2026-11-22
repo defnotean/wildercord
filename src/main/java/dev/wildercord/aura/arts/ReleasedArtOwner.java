@@ -17,7 +17,7 @@ public final class ReleasedArtOwner {
 
 	private ReleasedArtOwner(ServerPlayer player) {
 		this.player = player;
-		this.level = player.level();
+		this.level = (ServerLevel) player.level();
 		this.life = LIVES.capture(player, level);
 	}
 
@@ -58,7 +58,7 @@ public final class ReleasedArtOwner {
 			this.player = player; this.change = change;
 		}
 		@Override public void close() {
-			LIVES.finish(change, player.level());
+			LIVES.finish(change, (ServerLevel) player.level());
 			if (change.changesWorld) ArtWards.worldChanged(player);
 		}
 	}

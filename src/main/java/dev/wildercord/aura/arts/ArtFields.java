@@ -280,7 +280,7 @@ public final class ArtFields {
 	private static Field open(ServerPlayer owner, ReleasedArtOwner releasedOwner, String kind, Shape shape,
 			int ticks, int period, Pulse pulse) {
 		long now = owner.level().getGameTime();
-		Field field = new Field(owner.getUUID(), releasedOwner == null ? owner.level() : releasedOwner.level(), kind, shape, now, now + Math.max(1, ticks), period, pulse, releasedOwner);
+		Field field = new Field(owner.getUUID(), releasedOwner == null ? (ServerLevel) owner.level() : (ServerLevel) releasedOwner.level(), kind, shape, now, now + Math.max(1, ticks), period, pulse, releasedOwner);
 		if (!field.active()) return field;
 		FIELDS.add(field);
 		// Add first: an end callback may open another field, which must see and respect this replacement too.

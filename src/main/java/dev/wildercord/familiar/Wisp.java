@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import dev.wildercord.compat.McEntityReference;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -661,7 +662,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 		output.putByte("mode", mode());
 		output.putString("bond", bondId);
 		output.putInt("level", familiarLevel());
-		EntityReference.store(getOwnerReference(), output, "owner");
+		McEntityReference.store(getOwnerReference(), output, "owner");
 		if (home != null) {
 			output.putDouble("home_x", home.x);
 			output.putDouble("home_y", home.y);
@@ -676,7 +677,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 		entityData.set(DATA_MODE, input.getByteOr("mode", WILD));
 		bondId = input.getStringOr("bond", "");
 		setFamiliarLevel(input.getIntOr("level", 1));
-		EntityReference<LivingEntity> owner = EntityReference.read(input, "owner");
+		EntityReference<LivingEntity> owner = McEntityReference.read(input, "owner");
 		entityData.set(DATA_OWNER, Optional.ofNullable(owner));
 		if (!Double.isNaN(input.getDoubleOr("home_y", Double.NaN))) {
 			home = new Vec3(input.getDoubleOr("home_x", getX()), input.getDoubleOr("home_y", getY()), input.getDoubleOr("home_z", getZ()));

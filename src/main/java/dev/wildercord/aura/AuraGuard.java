@@ -214,7 +214,7 @@ public final class AuraGuard {
 
 	/** A perfect guard: a blow turned aside whole and its attacker staggered, or a projectile sent back at whoever loosed it. */
 	private static void perfect(ServerPlayer player, DamageSource source, float damage) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		long now = level.getGameTime();
 		// The perfect moment answers once.
 		Aura.state(player, Aura.state(player).guard(now - WayEffects.perfectWindow(player) - 1, Aura.state(player).guardUntil()));

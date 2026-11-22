@@ -144,7 +144,7 @@ public final class Attunement {
 
 	/** Everything an attunement rule can ask about where the player sits. */
 	public static Attunements.Place placeOf(ServerPlayer player) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		BlockPos feet = player.blockPosition();
 		BlockPos head = BlockPos.containing(player.getEyePosition());
 		String biome = level.getBiome(feet).unwrapKey().map(k -> k.location().toString()).orElse("");
@@ -187,7 +187,7 @@ public final class Attunement {
 	}
 
 	private static void complete(ServerPlayer player, InteractionHand hand, Attunements.Rule rule, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ItemStack blank = player.getItemInHand(hand);
 		blank.shrink(1);
 		ItemStack rune = RuneItem.stack(rule.rune());

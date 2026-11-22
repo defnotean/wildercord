@@ -69,7 +69,7 @@ public final class GaleArts {
 	// ------------------------------------------------------------------ I. Cutting Breeze
 
 	static boolean cuttingBreeze(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.view(player);
 		Vec3 aim = new Vec3(look.x, look.y * 0.4, look.z).normalize();
@@ -136,7 +136,7 @@ public final class GaleArts {
 	// ------------------------------------------------------------------ II. Updraft
 
 	static boolean updraft(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING, false, 1.5F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -169,7 +169,7 @@ public final class GaleArts {
 	// ------------------------------------------------------------------ III. Eye of the Storm
 
 	static boolean eyeOfTheStorm(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.45F);
@@ -190,7 +190,7 @@ public final class GaleArts {
 		AuraPhysicalFx.gustRing(level, feet, ArtRules.EYE_RADIUS);
 		ArtWards.eye(player, ArtRules.EYE_TICKS);
 		ArtFields.open(player, EYE, ArtFields.disc(player::position, ArtRules.EYE_GUST_RADIUS, 2.5), ArtRules.EYE_TICKS, 3, (field, owner, age) -> {
-			ServerLevel lv = field.level();
+			ServerLevel lv = (ServerLevel) field.level();
 			int c = ArtKit.color(owner);
 			Vec3 at = owner.position();
 			ArtLight show = ArtLight.spectacle(owner);
@@ -224,7 +224,7 @@ public final class GaleArts {
 
 	/** A projectile turned aside by the eye: a puff of wind where it was swung round, and its whistle. */
 	static void eyeTurns(ServerPlayer player, Vec3 at) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		AuraPhysicalFx.windImpact(level, at, 0.7);
 		Feels.sound(level, at, "wind_deflect", 0.8F, 1.1F);
 	}
@@ -232,7 +232,7 @@ public final class GaleArts {
 	// ------------------------------------------------------------------ IV. Tailwind
 
 	static boolean tailwind(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.TAILWIND_DISTANCE);
@@ -276,7 +276,7 @@ public final class GaleArts {
 
 	/** The allies near the way, and the swordsman, swept along faster. */
 	private static void sweep(ServerPlayer player, List<Vec3> path) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		player.addEffect(new MobEffectInstance(MobEffects.SPEED, ArtRules.TAILWIND_SPEED, 0, false, true, true));
 		Set<UUID> swept = new HashSet<>();
 		swept.add(player.getUUID());
@@ -299,7 +299,7 @@ public final class GaleArts {
 	// ------------------------------------------------------------------ V. Hundred Winds
 
 	static boolean hundredWinds(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.5F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -312,7 +312,7 @@ public final class GaleArts {
 
 	/** One beat of the whirlwind: wind wheeling round the swordsman, foes drawn in and cut; at its end, all of them lifted. */
 	private static void winds(ServerPlayer owner, ArtFields.Field field, ArtKit.Hits hits, long age) {
-		ServerLevel level = field.level();
+		ServerLevel level = (ServerLevel) field.level();
 		int color = ArtKit.color(owner);
 		Vec3 at = owner.position();
 		RandomSource r = level.getRandom();

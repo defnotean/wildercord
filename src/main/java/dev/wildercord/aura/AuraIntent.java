@@ -95,7 +95,7 @@ public final class AuraIntent {
 	/** One press of {@code player}'s Intent on everything round them (also the tests, for a simulated player); returns how many it pressed on. */
 	public static int pulse(ServerPlayer player) {
 		long now = player.level().getGameTime();
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		double r = AuraRules.INTENT_RADIUS;
 		int pressed = 0;
 		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(r),

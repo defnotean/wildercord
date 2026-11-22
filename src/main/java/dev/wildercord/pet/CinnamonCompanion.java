@@ -269,7 +269,7 @@ final class CinnamonCompanion {
 		recalling = true;
 		try {
 			Vec3 ownerPosition = player.position(), dogPosition = dog.position();
-			ServerLevel ownerLevel = player.level();
+			ServerLevel ownerLevel = (ServerLevel) player.level();
 			var dogBox = dog.getBoundingBox();
 			long revision = dog.stateRevision();
 			var sourcePermit = CompanionLanding.sourcePermit(player, source, dog);
@@ -281,7 +281,7 @@ final class CinnamonCompanion {
 				|| dog.isPassenger() || dog.isVehicle() || DungeonWards.warded(source, dog.blockPosition())
 				|| !id.equals(ownerId(dog)) || identity(player, entry) != CinnamonIdentityRules.Status.REGISTERED
 				|| CinnamonJournal.of(source.getServer()).get(id) != entry || !sourcePermit.valid(player)) return false;
-			ServerLevel destination = player.level();
+			ServerLevel destination = (ServerLevel) player.level();
 			changed(dog);
 			if (source == destination) {
 				dog.teleportTo(at.x, at.y, at.z); dog.setDeltaMovement(Vec3.ZERO); dog.resetFallDistance();

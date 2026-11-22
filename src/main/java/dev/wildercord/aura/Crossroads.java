@@ -174,7 +174,7 @@ public final class Crossroads {
 		STANDING.add(player.getUUID());
 		REST.remove(player.getUUID());
 		// The moment: a low chord that holds every Way's note, the standards rising out of the ground, and the swordsman told.
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Feels.sound(level, player.position().add(0, 1, 0), "aura_crossroads", 1.0F, 1.0F);
 		AuraFx.banner(player, Component.translatable("aura.wildercord.crossroads"), Component.translatable("aura.wildercord.crossroads.kicker"),
 			0xE8D8B0, AuraFxRules.BannerKind.ART);
@@ -229,7 +229,7 @@ public final class Crossroads {
 
 	/** The ground a standard can stand on {@code radius} out at {@code angle} (radians, as the swordsman's yaw), or null. */
 	private static Vec3 ground(ServerPlayer player, double angle, double radius) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 base = player.position();
 		// A yaw of 0 faces +z; the angle grows clockwise seen from above (to the swordsman's right).
 		double x = base.x - Math.sin(angle) * radius;
@@ -339,7 +339,7 @@ public final class Crossroads {
 			return;
 		}
 		close(player, false);
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = way.color();
 		Vec3 chest = player.position().add(0, 1.1, 0);
 		Vec3 heart = chosen.foot().add(0, 1.4, 0);

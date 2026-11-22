@@ -29,7 +29,7 @@ public final class ListeningBelfryEntity extends BlockEntity {
 	public boolean slain() { return slain; }
 
 	public InteractionResult ring(ServerPlayer player) {
-		ServerLevel server = player.level();
+		ServerLevel server = (ServerLevel) player.level();
 		if (player.isSpectator() || !player.isAlive() || !worldPosition.closerToCenterThan(player.position(), 6)) return InteractionResult.CONSUME;
 		var start = server.structureManager().getStructureWithPieceAt(worldPosition,
 			h -> h.value() instanceof SiteStructure site && site.site().equals(BelowkeeperSites.BELL_SANCTUM));

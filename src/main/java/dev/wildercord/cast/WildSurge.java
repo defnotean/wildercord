@@ -127,7 +127,7 @@ public final class WildSurge {
 	}
 
 	private static void surge(ServerPlayer player, Cast cast, List<RuneDef> runes, Surge surge, Consumer<Cast> release) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		RandomSource random = player.getRandom();
 		Vec3 heart = player.position().add(0, 1.1, 0);
 		switch (surge) {
@@ -288,7 +288,7 @@ public final class WildSurge {
 
 	/** Blinks the caster 3 to 6 blocks away, onto safe, solid ground; nowhere safe, nowhere at all. */
 	private static void blink(ServerPlayer player, RandomSource random) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		for (int attempt = 0; attempt < 12; attempt++) {
 			double a = random.nextDouble() * Math.PI * 2;
 			double d = WildMagic.BLINK_MIN + random.nextDouble() * (WildMagic.BLINK_MAX - WildMagic.BLINK_MIN);
@@ -361,7 +361,7 @@ public final class WildSurge {
 	 * motes spiralling up off the ground into a flash over their head.
 	 */
 	private static void swirl(ServerPlayer player, Vec3 feet, int color) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		double phase = level.getRandom().nextDouble() * Math.PI * 2;
 		int arcs = 9;
 		for (int i = 0; i < arcs; i++) {
@@ -384,7 +384,7 @@ public final class WildSurge {
 
 	/** The swirl of its colour round the caster, and (a moment later, after the crack's own line) what it became. */
 	private static void announce(ServerPlayer player, Surge surge, Object... args) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 feet = player.position();
 		Vec3 heart = feet.add(0, 1.1, 0);
 		swirl(player, feet, surge.color);

@@ -75,7 +75,7 @@ public final class ArtLight {
 		if (spectacle) {
 			AuraFx.spectacle(owner, option, at);
 		} else {
-			Sigils.send(owner.level(), option, at);
+			Sigils.send((ServerLevel) owner.level(), option, at);
 		}
 	}
 
@@ -90,7 +90,7 @@ public final class ArtLight {
 
 	/** A ragged impact depression with fragments of the actual floor. */
 	public ArtLight groundRing(Vec3 at, int color, double from, double to, double width, int life) {
-		AuraFx.groundScar(owner.level(), at, Math.max(from, to), Math.max(60, life * 3), 1);
+		AuraFx.groundScar((ServerLevel) owner.level(), at, Math.max(from, to), Math.max(60, life * 3), 1);
 		return this;
 	}
 

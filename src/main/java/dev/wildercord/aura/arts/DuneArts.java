@@ -70,7 +70,7 @@ public final class DuneArts {
 	// ------------------------------------------------------------------ I. Grit Flick
 
 	static boolean gritFlick(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING, false, 1.3F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -92,7 +92,7 @@ public final class DuneArts {
 	// ------------------------------------------------------------------ II. Quicksand
 
 	static boolean quicksand(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.LOW, false, 1.4F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -125,7 +125,7 @@ public final class DuneArts {
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
 		if (counter == null || !counter.art().equals(SANDVEIL) || !counter.valid()) return false;
 		LivingEntity caught = counter.target();
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.4F);
@@ -153,7 +153,7 @@ public final class DuneArts {
 	// ------------------------------------------------------------------ IV. Dune Runner
 
 	static boolean duneRunner(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, DuneRules.RUNNER_DISTANCE);
@@ -193,7 +193,7 @@ public final class DuneArts {
 	// ------------------------------------------------------------------ V. Sea of Sand
 
 	static boolean seaOfSand(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.5F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, player.position().add(0, 1, 0), "aura_art_sea_of_sand", 1.3F, 1.0F);
@@ -207,7 +207,7 @@ public final class DuneArts {
 
 	/** One gust of the sea of sand; the last one is the dunes falling. */
 	private static void sea(ServerPlayer owner, ArtFields.Field field, ArtKit.Hits hits, Vec3 heart, long age, int ticks) {
-		ServerLevel level = field.level();
+		ServerLevel level = (ServerLevel) field.level();
 		int color = ArtKit.color(owner);
 		RandomSource r = level.getRandom();
 		ArtLight.spectacle(owner).swirl(heart, DuneRules.SEA_RADIUS * 0.7, 3.2, 6, color, GOLD);

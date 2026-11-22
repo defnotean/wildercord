@@ -25,6 +25,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
+import dev.wildercord.compat.McEntityReference;
 import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -43,7 +44,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.ItemStackWithSlot;
+import dev.wildercord.compat.McItemStackWithSlot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -741,13 +742,13 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	@Override
 	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
-		EntityReference.store(getOwnerReference(), output, "Owner");
+		McEntityReference.store(getOwnerReference(), output, "Owner");
 		output.putBoolean("Staying", staying);
-		McValueOutput.TypedOutputList<ItemStackWithSlot> items = output.list("Belly", ItemStackWithSlot.CODEC);
+		McValueOutput.TypedOutputList<McItemStackWithSlot> items = output.list("Belly", McItemStackWithSlot.CODEC);
 		for (int i = 0; i < belly.getContainerSize(); i++) {
 			ItemStack stack = belly.getItem(i);
 			if (!stack.isEmpty()) {
-				items.add(new ItemStackWithSlot(i, stack));
+				items.add(new McItemStackWithSlot(i, stack));
 			}
 		}
 		output.putBoolean("Disguised", disguised());
@@ -763,10 +764,10 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	@Override
 	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		entityData.set(DATA_OWNER, Optional.ofNullable(EntityReference.read(input, "Owner")));
+		entityData.set(DATA_OWNER, Optional.ofNullable(McEntityReference.read(input, "Owner")));
 		staying = input.getBooleanOr("Staying", false);
 		belly.clearContent();
-		for (ItemStackWithSlot item : input.listOrEmpty("Belly", ItemStackWithSlot.CODEC)) {
+		for (McItemStackWithSlot item : input.listOrEmpty("Belly", McItemStackWithSlot.CODEC)) {
 			if (item.isValidInContainer(belly.getContainerSize())) {
 				belly.setItem(item.slot(), item.stack());
 			}
