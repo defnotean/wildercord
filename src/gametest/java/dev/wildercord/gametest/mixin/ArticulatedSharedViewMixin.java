@@ -37,7 +37,7 @@ public abstract class ArticulatedSharedViewMixin {
 	}
 
 	@WrapOperation(method = "submit(Lnet/minecraft/client/renderer/entity/state/PlayerRenderState;Ldev/wildercord/client/compat/FirstPersonHandView;FLnet/minecraft/world/InteractionHand;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)Z",
-		at = @At(value = "INVOKE", target = "Ldev/wildercord/client/compat/RenderCompat;submitItemState(Lnet/minecraft/client/renderer/item/ItemStackRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;III)V"), require = 1, expect = 1, allow = 1)
+		at = @At(value = "INVOKE", target = "Ldev/wildercord/client/compat/RenderCompat;submitItemState(Ldev/wildercord/client/compat/vanilla/ItemStackRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;III)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$item(ItemStackRenderState item, PoseStack pose, MultiBufferSource buffer,
 			int light, int overlay, int outline, Operation<Void> original) {
 		original.call(item, pose, buffer, light, overlay, outline);

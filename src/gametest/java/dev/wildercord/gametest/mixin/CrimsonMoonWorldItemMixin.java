@@ -28,7 +28,7 @@ public abstract class CrimsonMoonWorldItemMixin {
         try{original.call(state,item,arm,pose,buffer,light);completed=true;}
         finally{try{CrimsonMoonRenderProbe.worldItemEnd(call,completed);}finally{if(previous==null)moon$current.remove();else moon$current.set(previous);}}
     }
-    @WrapOperation(method="renderArmWithItem",at=@At(value="INVOKE",target="Lnet/minecraft/client/renderer/item/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"),require=1,expect=1,allow=1)
+    @WrapOperation(method="renderArmWithItem",at=@At(value="INVOKE",target="Ldev/wildercord/client/compat/vanilla/ItemStackRenderState;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V"),require=1,expect=1,allow=1)
     private void moon$item(ItemStackRenderState item,PoseStack pose,MultiBufferSource buffer,int light,int overlay,Operation<Void> original){
         var actual=new org.joml.Matrix4f(pose.last().pose());original.call(item,pose,buffer,light,overlay);
         CrimsonMoonRenderProbe.worldItemSubmitted(moon$current.get(),item,actual);

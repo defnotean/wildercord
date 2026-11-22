@@ -25,7 +25,7 @@ public abstract class BraceNullItemDrawMixin {
 	@Shadow @Final private ItemStackRenderState field_55345;
 	@Shadow private net.minecraft.client.resources.model.BakedModel model;
 	@Shadow private net.minecraft.client.renderer.RenderType renderType;
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;renderItem(Lnet/minecraft/world/item/ItemDisplayContext;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II[ILnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/client/renderer/RenderType;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V"), require = 1, expect = 1, allow = 1)
+	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;renderItem(Lnet/minecraft/world/item/ItemDisplayContext;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II[ILnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/client/renderer/RenderType;Ldev/wildercord/client/compat/vanilla/ItemStackRenderState$FoilType;)V"), require = 1, expect = 1, allow = 1)
 	private void wildercord$braceNullDraw(ItemDisplayContext context, PoseStack pose, MultiBufferSource buffer, int light, int overlay,
 		int[] tints, net.minecraft.client.resources.model.BakedModel baked, net.minecraft.client.renderer.RenderType material, ItemStackRenderState.FoilType foil, Operation<Void> original) {
 		var actual = new Matrix4f(pose.last().pose());
