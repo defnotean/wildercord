@@ -201,12 +201,17 @@ public final class BossDamageTest implements FabricClientGameTest {
 				for (int dx = -12; dx <= 12; dx++) {
 					for (int dz = -12; dz <= 12; dz++) {
 						level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, 100, dz), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+						boolean wall = Math.abs(dx) == 12 || Math.abs(dz) == 12;
 						for (int dy = 101; dy <= 104; dy++) {
-							level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, dy, dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+							var state = (wall && dy <= 103)
+								? net.minecraft.world.level.block.Blocks.STONE.defaultBlockState()
+								: net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+							level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, dy, dz), state);
 						}
 					}
 				}
 				player.setGameMode(GameType.SURVIVAL);
+				player.setHealth(player.getMaxHealth());
 				player.teleportTo(0.5, 101, 7.5);
 				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.RESISTANCE, 600, 3, false, false));
 				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 600, 3, false, false));
@@ -304,6 +309,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				if (boss != null) boss.discard();
 				player.removeAllEffects();
 				player.setGameMode(GameType.CREATIVE);
+				player.setHealth(player.getMaxHealth());
 			});
 
 			// Verify raised boss health pools, dungeon altar respawn, lair guardian respawn, and clean custom-mob fire rendering.
@@ -364,8 +370,20 @@ public final class BossDamageTest implements FabricClientGameTest {
 				dev.wildercord.aura.world.LairRespawns.tickLevel(level);
 				var respawned = level.getEntitiesOfClass(dev.wildercord.aura.world.RootcoilSerpent.class,
 					new net.minecraft.world.phys.AABB(altarPos).inflate(16.0), dev.wildercord.aura.world.RootcoilSerpent::isAlive);
+				var allSerpents = level.getEntitiesOfClass(dev.wildercord.aura.world.RootcoilSerpent.class,
+					new net.minecraft.world.phys.AABB(altarPos).inflate(48.0), e -> true);
 				check(respawned.size() == 1 && respawned.getFirst().getMaxHealth() == 750.0F,
-					"lair guardian respawns in its arena with boosted max health");
+					"lair guardian respawns in its arena with boosted max health (respawned=" + respawned.size()
+					+ ", allSerpents=" + allSerpents.size()
+					+ ", pending=" + dev.wildercord.aura.world.LairRespawns.pendingCount(level)
+					+ ", boundAlive=" + boundSerpent.isAlive()
+					+ ", boundHp=" + boundSerpent.getHealth()
+					+ ", guardiansEnabled=" + dev.wildercord.aura.world.Guardians.enabled()
+					+ ", difficulty=" + level.getDifficulty()
+					+ ", ticking=" + level.isPositionEntityTicking(altarPos)
+					+ ", playerPos=" + player.position()
+					+ ", playerAlive=" + player.isAlive()
+					+ ", gameTime=" + level.getGameTime() + ")");
 				check(dev.wildercord.aura.world.LairRespawns.pendingCount(level) == 0, "lair respawn entry clears once spawned");
 				for (var r : respawned) r.discard();
 				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(savedTime[0]);
@@ -378,6 +396,13 @@ public final class BossDamageTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				var player = p(s);
 				var level = s.overworld();
+				for (int dx = -12; dx <= 12; dx++) {
+					for (int dz = -12; dz <= 12; dz++) {
+						for (int dy = 101; dy <= 103; dy++) {
+							level.setBlockAndUpdate(new net.minecraft.core.BlockPos(dx, dy, dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+						}
+					}
+				}
 				player.setGameMode(GameType.CREATIVE);
 				player.teleportTo(0.5, 101, 5.5);
 				player.setYRot(180.0F);
