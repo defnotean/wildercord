@@ -66,7 +66,7 @@ public final class BurrowAndReefRenderers {
 		@Override
 		public void extractRenderState(DelverMole mole, WildlifeRenderState state, float partial) {
 			super.extractRenderState(mole, state, partial);
-			state.variant = mole.getItemBySlot(EquipmentSlot.SADDLE).isEmpty() ? 0 : 1;
+			state.variant = mole.isSaddled() ? 1 : 0;
 			state.dig = Mth.lerp(partial, mole.digO, mole.dig);
 			state.barding = MountBardingLayer.colour(mole.getItemBySlot(EquipmentSlot.BODY));
 		}
