@@ -511,7 +511,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 			patient.heal(heal);
 			patient.addEffect(new MobEffectInstance(MobEffects.REGENERATION, CinnamonRules.LICK_REGEN_DURATION_TICKS, 0, true, true));
 			level.sendParticles(ParticleTypes.HEART, patient.getX(), patient.getY() + patient.getBbHeight() * 0.6D, patient.getZ(), 8, 0.35D, 0.35D, 0.35D, 0.02D);
-			level.playSound(null, getX(), getEyeY(), getZ(), SoundEvents.WOLF_AMBIENT, SoundSource.NEUTRAL, 0.7F, 1.35F);
+			level.playSound(null, getX(), getEyeY(), getZ(), SoundEvents.SLIME_SQUISH_SMALL, SoundSource.NEUTRAL, 0.7F, 1.35F);
 			if (patient instanceof ServerPlayer sp) {
 				sp.sendOverlayMessage(Component.translatable("message.wildercord.cinnamon.lick_heal"));
 			}
