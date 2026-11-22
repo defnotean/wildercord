@@ -475,7 +475,7 @@ public final class HeartCircles {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 from = heart.add(Math.cos(a) * 1.6, (level.getRandom().nextDouble() - 0.3) * 1.2, Math.sin(a) * 1.6);
 			// A safe starting point alone does not keep a trail's destination out of the camera.
-			Fx.sendOthers(level, player, new net.minecraft.core.particles.TrailParticleOption(heart, COLORS[Math.min(Circles.MAX - 1, circles)], 12), from);
+			Fx.sendOthers(level, player, dev.wildercord.compat.McSpawnEgg.trail(heart, COLORS[Math.min(Circles.MAX - 1, circles)], 12), from);
 		}
 		if (progress % 20 == 0) {
 			Fx.sound(level, heart, SoundEvents.AMETHYST_BLOCK_CHIME, 0.7F, 0.6F + (float) t);

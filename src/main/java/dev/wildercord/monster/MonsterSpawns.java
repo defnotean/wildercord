@@ -66,10 +66,10 @@ public final class MonsterSpawns {
 
 	private static final Set<ResourceKey<Biome>> FORESTS = dev.wildercord.compat.McWorldgen.biomeSetWithOptional(
 		Set.of(Biomes.FOREST, Biomes.FLOWER_FOREST, Biomes.BIRCH_FOREST, Biomes.OLD_GROWTH_BIRCH_FOREST,
-			Biomes.DARK_FOREST, Biomes.PALE_GARDEN, Biomes.SNOWY_TAIGA, Biomes.GROVE),
+			Biomes.DARK_FOREST, Biomes.FOREST, Biomes.SNOWY_TAIGA, Biomes.GROVE),
 		dev.wildercord.compat.McWorldgen.dappledForestBiome());
 	/** Where the woods are darkest: more Bramblewalkers, and Gloomstalkers on the surface. */
-	private static final Set<ResourceKey<Biome>> DARK_WOODS = Set.of(Biomes.DARK_FOREST, Biomes.PALE_GARDEN);
+	private static final Set<ResourceKey<Biome>> DARK_WOODS = Set.of(Biomes.DARK_FOREST, Biomes.FOREST);
 	private static final Set<ResourceKey<Biome>> PEAKS = Set.of(Biomes.JAGGED_PEAKS, Biomes.FROZEN_PEAKS, Biomes.STONY_PEAKS, Biomes.SNOWY_SLOPES,
 		Biomes.WINDSWEPT_HILLS, Biomes.WINDSWEPT_GRAVELLY_HILLS, Biomes.WINDSWEPT_FOREST);
 	private static final Set<ResourceKey<Biome>> SWAMPS = Set.of(Biomes.SWAMP, Biomes.MANGROVE_SWAMP);

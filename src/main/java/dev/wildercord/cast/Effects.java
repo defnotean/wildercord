@@ -1561,7 +1561,7 @@ public final class Effects {
 			}
 			// Replanted from its own drops, as a farmer would: one seed goes back into the ground (none, and it isn't).
 			List<ItemStack> drops = Block.getDrops(state, cast.level, p, null, cast.caster, ItemStack.EMPTY);
-			ItemStack seed = state.getCloneItemStack(cast.level, p, false);
+			ItemStack seed = state.getBlock().getCloneItemStack(cast.level, p, state);
 			boolean replant = false;
 			for (ItemStack drop : drops) {
 				if (!replant && !seed.isEmpty() && ItemStack.isSameItem(drop, seed)) {

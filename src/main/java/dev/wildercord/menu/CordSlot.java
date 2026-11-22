@@ -40,8 +40,8 @@ public class CordSlot extends Slot implements PlacedSlot {
 	}
 
 	@Override
-	public ResourceLocation getNoItemIcon() {
-		return EMPTY_ICON;
+	public com.mojang.datafixers.util.Pair<ResourceLocation,ResourceLocation> getNoItemIcon() {
+		return com.mojang.datafixers.util.Pair.of(EMPTY_ICON, EMPTY_ICON);
 	}
 
 	@Override

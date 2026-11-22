@@ -572,7 +572,7 @@ public final class Shields {
 	private static void send(ServerLevel level, ShieldOption option, Vec3 at) {
 		for (ServerPlayer player : level.players()) {
 			if (player.position().distanceToSqr(at) <= RANGE * RANGE) {
-				level.sendParticles(player, option, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+				level.sendParticles(player, option, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 			}
 		}
 	}

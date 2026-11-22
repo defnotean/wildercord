@@ -38,8 +38,8 @@ public class GearInventorySlot extends Slot implements PlacedSlot {
 	}
 
 	@Override
-	public ResourceLocation getNoItemIcon() {
-		return Wildercord.id(kind.iconPath());
+	public com.mojang.datafixers.util.Pair<ResourceLocation,ResourceLocation> getNoItemIcon() {
+		return com.mojang.datafixers.util.Pair.of(Wildercord.id(kind.iconPath()), Wildercord.id(kind.iconPath()));
 	}
 
 	@Override

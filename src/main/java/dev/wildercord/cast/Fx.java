@@ -145,7 +145,7 @@ public final class Fx {
 	static Packet<?> packet(ParticleOptions particle, boolean far, boolean alwaysShow, double x, double y, double z, int count, double dx, double dy,
 			double dz, double speed) {
 		VisualMetrics.particle();
-		return new ClientboundLevelParticlesPacket(SpellMaterials.custom(particle,new Vec3(x,y,z)), far, alwaysShow, x, y, z, (float) dx, (float) dy, (float) dz, (float) speed, count);
+		return new ClientboundLevelParticlesPacket(SpellMaterials.custom(particle,new Vec3(x,y,z)), far, x, y, z, (float) dx, (float) dy, (float) dz, (float) speed, count);
 	}
 
 	public static void send(ServerLevel level, ParticleOptions particle, Vec3 at, int count, double spread, double speed) {

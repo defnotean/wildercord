@@ -58,7 +58,7 @@ final class FusedLifeVfx {
 	/** Bone, and its shadow. */
 	private static final int BONE = 0xF2EBD9;
 	private static final int BONE_SHADE = 0xCFC3A4;
-	private static final net.minecraft.core.particles.ParticleOptions LEAF = ParticleTypes.PALE_OAK_LEAVES;
+	private static final net.minecraft.core.particles.ParticleOptions LEAF = dev.wildercord.compat.McSpawnEgg.leaves();
 
 	private static Vec3 centre(Entity t) {
 		return t.getBoundingBox().getCenter();

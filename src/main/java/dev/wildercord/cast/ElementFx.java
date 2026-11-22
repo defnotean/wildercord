@@ -484,7 +484,7 @@ public final class ElementFx {
 
 	// ------------------------------------------------------------------ life: petals and leaves, a leaf spiral, a bloom
 
-	private static final net.minecraft.core.particles.ParticleOptions LEAF = ParticleTypes.PALE_OAK_LEAVES;
+	private static final net.minecraft.core.particles.ParticleOptions LEAF = dev.wildercord.compat.McSpawnEgg.leaves();
 
 	/** Petals and leaves drifting down from {@code at}. */
 	public static void petals(ServerLevel level, Vec3 at, double spread, int count) {

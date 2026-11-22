@@ -171,7 +171,7 @@ public final class MonsterContent {
 
 	private static Item egg(String id, EntityType<? extends Mob> type) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(id + "_spawn_egg"));
-		Item egg = Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(type, new Item.Properties().setId(key)));
+		Item egg = Registry.register(BuiltInRegistries.ITEM, key, dev.wildercord.compat.McSpawnEgg.create(type, new Item.Properties().setId(key)));
 		SPAWN_EGGS.add(egg);
 		return egg;
 	}

@@ -8,7 +8,6 @@ import dev.wildercord.world.LeyLines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -72,7 +71,7 @@ public class WellstoneBlockEntity extends BlockEntity {
 			double a = server.getRandom().nextDouble() * Math.PI * 2;
 			double r = 2 + server.getRandom().nextDouble() * 3;
 			Vec3 from = base.add(Math.cos(a) * r, -0.9, Math.sin(a) * r);
-			dev.wildercord.cast.Fx.sendParticles(server, new TrailParticleOption(base.add(0, 0.2, 0), PURPLE, 20), from.x, from.y, from.z, 1, 0, 0, 0, 0);
+			dev.wildercord.cast.Fx.sendParticles(server, dev.wildercord.compat.McSpawnEgg.trail(base.add(0, 0.2, 0), PURPLE, 20), from.x, from.y, from.z, 1, 0, 0, 0, 0);
 		}
 		dev.wildercord.cast.Fx.sendParticles(server, new DustParticleOptions(0xE8E0FF, 1.0F), base.x, base.y + 0.4, base.z, 3, 0.25, 0.3, 0.25, 0);
 		if (time % 80 == 0) {

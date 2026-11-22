@@ -656,7 +656,7 @@ public final class RootGuardian extends DungeonBoss {
 		if (t == 0) { Fx.sound(level, crown, SoundEvents.AZALEA_LEAVES_BREAK, 1.4F, .6F); Fx.sound(level, crown, SoundEvents.BIG_DRIPLEAF_TILT_DOWN, 1, .6F); }
 		if (t < moveTell) {
 			// Its crown swells and shakes, pods fattening among the leaves.
-			if (t % 2 == 0) { Vfx.emit(level, ParticleTypes.PALE_OAK_LEAVES, crown, 2, .8, .02); Motes.glows(level, crown, 2, .7, BARK, .3, 10, Vec3.ZERO, .02); }
+			if (t % 2 == 0) { Vfx.emit(level, dev.wildercord.compat.McSpawnEgg.leaves(), crown, 2, .8, .02); Motes.glows(level, crown, 2, .7, BARK, .3, 10, Vec3.ZERO, .02); }
 			if (t < moveTell - SEEDS_LOCK) {
 				if (t % 3 == 0) for (Vec3 at : aimed(level, target)) ElementFx.groundRing(level, at.add(0, .05, 0), COLOR, SEEDS_RADIUS - .2, SEEDS_RADIUS, .1, 4);
 			} else if (t == moveTell - SEEDS_LOCK) {
@@ -676,7 +676,7 @@ public final class RootGuardian extends DungeonBoss {
 		}
 		if (t == moveTell) {
 			for (Vec3 at : marks) flying.add(new Pod(crown, at, level.getGameTime() + SEEDS_FLIGHT));
-			Vfx.emit(level, ParticleTypes.PALE_OAK_LEAVES, crown, 12, 1, .1);
+			Vfx.emit(level, dev.wildercord.compat.McSpawnEgg.leaves(), crown, 12, 1, .1);
 			Fx.sound(level, crown, SoundEvents.EGG_THROW, 1.4F, .5F);
 			Fx.sound(level, crown, SoundEvents.AZALEA_LEAVES_BREAK, 1.2F, .8F);
 		}
@@ -1045,7 +1045,7 @@ public final class RootGuardian extends DungeonBoss {
 		}
 		if (t < moveTell) {
 			// It raises its arms high and spreads them, and the boughs overhead creak and drop leaves on whoever stands below.
-			if (t % 2 == 0) Vfx.emit(level, ParticleTypes.PALE_OAK_LEAVES, crown, 3, 1.2, .02);
+			if (t % 2 == 0) Vfx.emit(level, dev.wildercord.compat.McSpawnEgg.leaves(), crown, 3, 1.2, .02);
 			if (t % 5 == 0) Fx.sound(level, crown, SoundEvents.WOOD_HIT, 1.2F, .4F + t * .02F);
 			if (t < moveTell - CANOPY_LOCK) {
 				if (t % 3 == 0) for (LivingEntity e : marked) if (e.isAlive()) shadow(level, ground(level, e.position()), COLOR, 4);
@@ -1076,7 +1076,7 @@ public final class RootGuardian extends DungeonBoss {
 		ElementFx.ray(level, at.add(0, 7, 0), at, BARK, .4, 5);
 		ElementFx.earthImpact(level, at, 1.3);
 		ElementFx.stoneShards(level, at.add(0, .2, 0), ElementFx.groundBlock(level, at), 10, .35);
-		Vfx.emit(level, ParticleTypes.PALE_OAK_LEAVES, at.add(0, 1, 0), 18, 1, .1);
+		Vfx.emit(level, dev.wildercord.compat.McSpawnEgg.leaves(), at.add(0, 1, 0), 18, 1, .1);
 		Sigils.flash(level, at.add(0, .1, 0), ACCENT, (float) CANOPY_RADIUS);
 		Fx.sound(level, at, SoundEvents.WOOD_BREAK, 1.6F, .5F);
 		Fx.sound(level, at, SoundEvents.AZALEA_LEAVES_BREAK, 1.2F, .6F);
@@ -1085,7 +1085,7 @@ public final class RootGuardian extends DungeonBoss {
 	/** A bough's shadow on the floor at {@code at}. */
 	private void shadow(ServerLevel level, Vec3 at, int color, int lifetime) {
 		ElementFx.groundRing(level, at.add(0, .05, 0), color, CANOPY_RADIUS - .3, CANOPY_RADIUS, color == ACCENT ? .2 : .1, lifetime);
-		Vfx.emit(level, ParticleTypes.PALE_OAK_LEAVES, at.add(0, 4, 0), 2, .8, 0);
+		Vfx.emit(level, dev.wildercord.compat.McSpawnEgg.leaves(), at.add(0, 4, 0), 2, .8, 0);
 	}
 
 	// ------------------------------------------------------------------ what its moves leave it in
@@ -1132,7 +1132,7 @@ public final class RootGuardian extends DungeonBoss {
 			Vec3 back = ahead(getYRot()).scale(-1);
 			setDeltaMovement(back.x * .4, .1, back.z * .4);
 		}
-		if (t % 4 == 0) Vfx.emit(level, ParticleTypes.PALE_OAK_LEAVES, position().add(0, 3, 0), 4, 1, .02);
+		if (t % 4 == 0) Vfx.emit(level, dev.wildercord.compat.McSpawnEgg.leaves(), position().add(0, 3, 0), 4, 1, .02);
 	}
 
 	// ------------------------------------------------------------------ how its moves end, and what it reaches for next
@@ -1245,7 +1245,7 @@ public final class RootGuardian extends DungeonBoss {
 	@Override protected void dying(ServerLevel level, int tick) {
 		Vec3 c = position().add(0, getBbHeight() * .5, 0);
 		// It splits and sags, its leaves coming down in drifts and its roots letting go of the floor.
-		if (tick % 2 == 0) { Vfx.emit(level, ParticleTypes.PALE_OAK_LEAVES, c.add(0, 1.2, 0), 3, 1, .02); heave(level, position(), 2); }
+		if (tick % 2 == 0) { Vfx.emit(level, dev.wildercord.compat.McSpawnEgg.leaves(), c.add(0, 1.2, 0), 3, 1, .02); heave(level, position(), 2); }
 		if (tick % 6 == 0) Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.MANGROVE_ROOTS.defaultBlockState()), c, 6, .6, .05);
 		if (tick % 4 == 0) Motes.glow(level, heart(), ACCENT, .3 * (1 - tick / (double) DEATH_TICKS), 10, new Vec3(0, .03, 0), .02);
 		if (tick == 1) { Fx.sound(level, c, SoundEvents.WOOD_BREAK, 2, .4F); Fx.sound(level, c, SoundEvents.RAVAGER_DEATH, 1.2F, .6F); }

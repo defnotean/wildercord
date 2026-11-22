@@ -624,7 +624,7 @@ final class TechniqueVfx {
 			if (length > 0.8) {
 				ElementFx.ray(level, a, b.subtract(b.subtract(a).scale(0.6 / length)), TIME, 0.05, 8);
 			}
-			Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(b, TIME, 6), from.x, from.y + 1, from.z, 3, 0.2, 0.3, 0.2, 0);
+			Fx.send(level, dev.wildercord.compat.McSpawnEgg.trail(b, TIME, 6), from.x, from.y + 1, from.z, 3, 0.2, 0.3, 0.2, 0);
 		}
 		dev.wildercord.cast.feel.Feels.sound(level, to, "time_dodge", 0.9F, 1.0F);
 	}

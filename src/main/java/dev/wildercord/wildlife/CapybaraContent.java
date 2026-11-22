@@ -33,7 +33,7 @@ public final class CapybaraContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("mirebath_capybara_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(MIREBATH_CAPYBARA, new Item.Properties().setId(EGG_KEY)));
+		dev.wildercord.compat.McSpawnEgg.create(MIREBATH_CAPYBARA, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a mirebath capybara may stand on to spawn (written by tools/capybara_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/mirebath_capybara"));

@@ -220,7 +220,7 @@ public final class FieldFusions {
                     var state=c.level.getBlockState(at);
                     if(!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state) || !c.takeBlock())continue;
                     var drops=Block.getDrops(state,c.level,at,null,p,ItemStack.EMPTY);
-                    var seed=state.getCloneItemStack(c.level,at,false);boolean replant=false;
+                    var seed=state.getBlock().getCloneItemStack(c.level,at,state);boolean replant=false;
                     for(var stack:drops)if(!replant && !seed.isEmpty() && ItemStack.isSameItem(stack,seed) && !stack.isEmpty()) {stack.shrink(1);replant=true;}
                     c.level.destroyBlock(at,false,p);if(replant)c.level.setBlockAndUpdate(at,crop.getStateForAge(0));
                     state.spawnAfterBreak(c.level,at,ItemStack.EMPTY,true);

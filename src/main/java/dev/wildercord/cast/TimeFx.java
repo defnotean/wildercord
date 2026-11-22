@@ -5,7 +5,6 @@ import dev.wildercord.content.SigilOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -295,6 +294,6 @@ public final class TimeFx {
 
 	/** A trail of gold from {@code a} to {@code b}, for wards that carry something across (a dodge, a stolen effect). */
 	public static void trail(ServerLevel level, Vec3 a, Vec3 b, int color, int ticks) {
-		Fx.send(level, new TrailParticleOption(b, color, ticks), a.x, a.y, a.z, 2, 0.1, 0.1, 0.1, 0);
+		Fx.send(level, dev.wildercord.compat.McSpawnEgg.trail(b, color, ticks), a.x, a.y, a.z, 2, 0.1, 0.1, 0.1, 0);
 	}
 }

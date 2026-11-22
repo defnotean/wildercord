@@ -17,7 +17,7 @@ public final class SpellMaterials {
 	private static int rgb(org.joml.Vector3f c){return ((int)(c.x*255)&255)<<16|((int)(c.y*255)&255)<<8|((int)(c.z*255)&255);}
 	public static ParticleOptions custom(ParticleOptions p,Vec3 origin){
 		if(!BuiltInRegistries.PARTICLE_TYPE.getKey(p.getType()).getNamespace().equals("minecraft"))return p;
-		if(p instanceof TrailParticleOption trail){Vec3 d=trail.target().subtract(origin);return new MoteOption(MoteOption.SEEK,trail.color(),.1F,Math.max(2,Math.min(80,trail.duration())),(float)d.x,(float)d.y,(float)d.z,.75F);}
+		if(dev.wildercord.compat.McSpawnEgg.isTrail(p)){Vec3 d=dev.wildercord.compat.McSpawnEgg.trailTarget(p).subtract(origin);return new MoteOption(MoteOption.SEEK,dev.wildercord.compat.McSpawnEgg.trailColor(p),.1F,24,(float)d.x,(float)d.y,(float)d.z,.75F);}
 		if(p instanceof DustParticleOptions dust)return of("arcane",rgb(dust.getColor()),dust.getScale()*.09F);
 		if(p instanceof DustColorTransitionOptions dust)return of("arcane",rgb(dust.getFromColor()),dust.getScale()*.09F);
 		String id=BuiltInRegistries.PARTICLE_TYPE.getKey(p.getType()).getPath();

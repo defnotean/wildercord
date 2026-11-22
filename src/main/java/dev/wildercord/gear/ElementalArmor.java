@@ -34,7 +34,7 @@ public final class ElementalArmor extends Item {
 			var key=ResourceKey.create(Registries.ITEM,Wildercord.id(path));
 			var armor=new ArmorMaterial(15,Map.of(ArmorType.HELMET,2,ArmorType.CHESTPLATE,4,ArmorType.LEGGINGS,3,ArmorType.BOOTS,1),12,
 				SoundEvents.ARMOR_EQUIP_LEATHER,0,kind==Kind.STONEBOUND?.10F:0,ItemTags.REPAIRS_LEATHER_ARMOR,
-				ResourceKey.create(EquipmentAssets.ROOT_ID,Wildercord.id(material)));
+				dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:"+(kind==Kind.MIRROR_THREAD?"mirror_thread":material)));
 			var properties=armor.humanoidProperties(new Item.Properties().setId(key), type).rarity(Rarity.UNCOMMON);
 			if(kind==Kind.STONEBOUND) {
 				var modifiers=new ArrayList<>(List.of(

@@ -20,7 +20,7 @@ public final class ReedbackContent {
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("reedback_crab"));
  public static final EntityType<ReedbackCrab> CRAB=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(ReedbackCrab::new,MobCategory.CREATURE).sized(1.1F,.7F).eyeHeight(.45F).clientTrackingRange(8).build(KEY));
  private static final ResourceKey<Item> EGG_KEY=ResourceKey.create(Registries.ITEM,Wildercord.id("reedback_crab_spawn_egg"));
- public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,new SpawnEggItem(CRAB, new Item.Properties().setId(EGG_KEY)));
+ public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(CRAB, new Item.Properties().setId(EGG_KEY)));
  public static void init() {
   FabricDefaultAttributeRegistry.register(CRAB,ReedbackCrab.attributes());
   SpawnPlacements.register(CRAB,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(t,l,reason,p,r) -> {

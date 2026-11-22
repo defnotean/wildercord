@@ -11,7 +11,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -68,8 +67,8 @@ public final class Vfx {
 			return dust(scale);
 		}
 
-		TrailParticleOption trail(Vec3 target, int duration) {
-			return new TrailParticleOption(target, primary, duration);
+		ParticleOptions trail(Vec3 target, int duration) {
+			return dev.wildercord.compat.McSpawnEgg.trail(target, primary, duration);
 		}
 
 		SigilOption flash() {

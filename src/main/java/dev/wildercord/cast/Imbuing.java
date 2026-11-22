@@ -1049,7 +1049,7 @@ public final class Imbuing {
 			glyph.runes().stream().limit(dev.wildercord.spell.SpellSigil.MAX_RUNES).toList(), color, circleSize(level, glyph), Sigils.yaw(n), Sigils.pitch(n), 120);
 		for (ServerPlayer player : level.players()) {
 			if (player.position().distanceToSqr(at) <= GLYPH_SEEN * GLYPH_SEEN) {
-				level.sendParticles(player, circle, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+				level.sendParticles(player, circle, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 			}
 		}
 	}

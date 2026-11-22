@@ -33,7 +33,7 @@ public final class HedgehogContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("thistle_hedgehog_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(THISTLE_HEDGEHOG, new Item.Properties().setId(EGG_KEY)));
+		dev.wildercord.compat.McSpawnEgg.create(THISTLE_HEDGEHOG, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a hedgehog may stand on to spawn (written by tools/hedgehog_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/thistle_hedgehog"));

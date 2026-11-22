@@ -33,7 +33,7 @@ public final class PikaContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("tussock_pika_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		new SpawnEggItem(TUSSOCK_PIKA, new Item.Properties().setId(EGG_KEY)));
+		dev.wildercord.compat.McSpawnEgg.create(TUSSOCK_PIKA, new Item.Properties().setId(EGG_KEY)));
 
 	/** What a tussock pika may stand on to spawn (written by tools/pika_art.py). */
 	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/tussock_pika"));

@@ -7,18 +7,18 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 /** A time spell on a furnace, smoker or blast furnace jumps its smelting ahead (and burns its fuel as far). */
 @Mixin(AbstractFurnaceBlockEntity.class)
 public interface AbstractFurnaceBlockEntityAccessor {
-	@Accessor("cookingTimer")
+	@Accessor("cookingProgress")
 	int wildercord$cookingTimer();
 
-	@Accessor("cookingTimer")
+	@Accessor("cookingProgress")
 	void wildercord$setCookingTimer(int ticks);
 
 	@Accessor("cookingTotalTime")
 	int wildercord$cookingTotalTime();
 
-	@Accessor("litTimeRemaining")
+	@Accessor("litTime")
 	int wildercord$litTimeRemaining();
 
-	@Accessor("litTimeRemaining")
+	@Accessor("litTime")
 	void wildercord$setLitTimeRemaining(int ticks);
 }

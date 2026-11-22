@@ -4,7 +4,6 @@ import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -79,7 +78,7 @@ public final class VoidFx {
 				double u = 1.0 - k * 0.22;
 				double a = base + (1 - u) * 2.2;
 				Vec3 from = centre.add(Math.cos(a) * radius * u, 0.12 + (1 - u) * 0.3, Math.sin(a) * radius * u);
-				Fx.send(level, new TrailParticleOption(core, DARK, 14), from.x, from.y, from.z, 1, 0, 0, 0, 0);
+				Fx.send(level, dev.wildercord.compat.McSpawnEgg.trail(core, DARK, 14), from.x, from.y, from.z, 1, 0, 0, 0, 0);
 			}
 		}
 		ElementFx.groundRing(level, centre, VIOLET, radius, radius * 0.3, 0.05, 14);
