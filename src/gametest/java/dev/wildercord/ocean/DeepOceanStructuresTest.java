@@ -140,11 +140,13 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				for (int y = floorY + 1; y <= waterTopY; y++) {
 					l.setBlock(new BlockPos(x, y, z), Blocks.WATER.defaultBlockState(), 2);
 				}
-				for (int y = waterTopY + 1; y <= waterTopY + 24; y++) {
+				for (int y = waterTopY + 1; y <= waterTopY + 54; y++) {
 					l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
 			}
 		}
+		l.getEntitiesOfClass(Entity.class, new AABB(x0, floorY - 2, z0, x1, waterTopY + 60, z1),
+			e -> !(e instanceof ServerPlayer)).forEach(Entity::discard);
 	}
 
 	private static void placePiece(ServerLevel l, StructurePiece piece) {
@@ -204,7 +206,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				p.setGameMode(GameType.CREATIVE);
 				p.teleportTo(l, 24.5, 96.0, 24.5, Set.<Relative>of(), 0f, 35f, false);
 
-				prepareOceanBasin(l, -16, -16, 66, 66, 64, 82);
+				prepareOceanBasin(l, -28, -28, 78, 78, 64, 82);
 				placePiece(l, new CoralDomeSanctuaryPiece(0, 62, 0, Direction.NORTH));
 
 				check(countBlocks(l, 22, 65, 22, 26, 70, 26, Blocks.CONDUIT) == 1, "Coral-Dome has central Conduit");
@@ -225,7 +227,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.teleportTo(l, 123.0, 86.0, 32.0, Set.<Relative>of(), 180f, 35f, false);
 
-				prepareOceanBasin(l, 92, -10, 156, 30, 64, 92);
+				prepareOceanBasin(l, 74, -26, 174, 42, 64, 92);
 				placePiece(l, new SunkenGalleonPiece(100, 62, 0, Direction.SOUTH));
 
 				check(countBlocks(l, 100, 62, 0, 146, 90, 15, Blocks.DISPENSER) >= 4, "Sunken Galleon has broadside cannons");
@@ -234,7 +236,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 					"Sunken Galleon spawns Barnacle-Hulk Dredger");
 			});
 			context.waitTicks(35);
-			directorUnderwater(context, world, new Vec3(146.0, 81.0, 26.0), new Vec3(122.0, 72.0, 7.5));
+			directorUnderwater(context, world, new Vec3(93.0, 81.5, -10.5), new Vec3(123.0, 72.5, 7.5));
 			shot(context, "ocean_live_sunken_galleon");
 			cut(context, world, galleonOrigin);
 
@@ -245,7 +247,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.teleportTo(l, 222.0, 88.0, 34.0, Set.<Relative>of(), 180f, 35f, false);
 
-				prepareOceanBasin(l, 196, -4, 256, 36, 64, 82);
+				prepareOceanBasin(l, 176, -24, 276, 56, 64, 82);
 				// Height 30 reaches y=91 cleanly above waterTopY=82
 				placePiece(l, new KelpSpireWatchtowerPiece(232, 62, 6, Direction.NORTH, 30));
 				placePiece(l, new HydrothermalForgePiece(200, 62, 0, Direction.NORTH));
@@ -257,7 +259,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				check(countBlocks(l, 200, 62, 0, 227, 84, 27, Blocks.BASALT) > 20, "Hydrothermal Forge has basalt chimneys");
 			});
 			context.waitTicks(35);
-			director(context, world, forgeOrigin, new Vec3(248.0, 89.5, 38.0), new Vec3(222.0, 74.5, 13.0));
+			director(context, world, forgeOrigin, new Vec3(252.0, 88.5, 34.0), new Vec3(221.0, 74.0, 14.0));
 			shot(context, "ocean_live_watchtower_and_forge");
 			cut(context, world, forgeOrigin);
 
@@ -268,7 +270,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.teleportTo(l, 332.0, 92.0, 68.0, Set.<Relative>of(), 180f, 35f, false);
 
-				prepareOceanBasin(l, 292, -8, 376, 74, 64, 92);
+				prepareOceanBasin(l, 274, -24, 394, 88, 64, 92);
 				placePiece(l, new AbyssalCitadelPiece(300, 62, 0, Direction.SOUTH));
 
 				// Check 8 eight-tall obelisks (each has 5 sea_lantern blocks => 40 sea lanterns in colosseum ring)
@@ -280,7 +282,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 					"Abyssal Citadel spawns Thalassor above altar");
 			});
 			context.waitTicks(40);
-			directorUnderwater(context, world, new Vec3(370.0, 84.5, 58.0), new Vec3(334.0, 71.0, 32.0));
+			directorUnderwater(context, world, new Vec3(366.0, 83.0, 52.0), new Vec3(328.0, 71.5, 32.0));
 			shot(context, "ocean_live_abyssal_citadel");
 			cut(context, world, citadelOrigin);
 		}

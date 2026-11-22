@@ -290,10 +290,11 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 				set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx + dx, BASE + 8, ccz + dz);
 			}
 		}
-		// Crown spire atop Central Conduit Rotunda
-		set(level, bb, COPPER_OXIDIZED, ccx, BASE + 11, ccz);
-		set(level, bb, SEA_LANTERN, ccx, BASE + 12, ccz);
-		set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx, BASE + 13, ccz);
+		// Crown spire anchored flush atop Central Conduit Rotunda roof
+		set(level, bb, DARK_PRISMARINE, ccx, BASE + 9, ccz);
+		set(level, bb, COPPER_OXIDIZED, ccx, BASE + 10, ccz);
+		set(level, bb, SEA_LANTERN, ccx, BASE + 11, ccz);
+		set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx, BASE + 12, ccz);
 
 		// Living coral & sea-pickle garden pockets nestled in outer quadrants around the domes
 		int[][] coralClusters = {

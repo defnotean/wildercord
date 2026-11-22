@@ -454,7 +454,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				check(l.getBlockState(lanternPos).getLightEmission() == 15, "Siren-Pearl Lantern emits light 15");
 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, 0.5, 90.0, 14.0, Set.<Relative>of(), 180f, 12f, false);
+				p.teleportTo(l, -0.2, 90.0, 14.3, Set.<Relative>of(), 156f, 8f, false);
 				p.getInventory().clearContent();
 				p.setItemSlot(EquipmentSlot.HEAD, new ItemStack(OceanItems.ABYSSAL_DIVING_HELM));
 				p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(OceanItems.BATHYSPHERE_CHESTPLATE));
