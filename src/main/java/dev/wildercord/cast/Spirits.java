@@ -204,6 +204,7 @@ public final class Spirits {
 			|| target instanceof dev.wildercord.world.kilnwidow.KilnWidow
 			|| BossDamage.boss(target)
 			|| target instanceof EliteMonster
+			|| target instanceof dev.wildercord.ocean.ThalassorBoss
 			|| target.entityTags().contains(Giants.TAG)
 			|| OathholdLaw.isKnightEntity(target)
 			|| (target instanceof ShrineCat cat && !cat.isTame() && cat.getRole() == ShrineCatRules.ROLE_GUARDIAN);
