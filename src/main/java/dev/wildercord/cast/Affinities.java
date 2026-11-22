@@ -43,6 +43,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import dev.wildercord.mixin.TextDisplayAccessor;
+import dev.wildercord.mixin.DisplayAccessor;
 
 /**
  * Creature affinities at runtime: a blaze takes frost 50% harder and shrugs off half of fire's blasts,
@@ -280,12 +282,12 @@ public final class Affinities {
 		}
 		Vec3 at = target.position().add((level.getRandom().nextDouble() - 0.5) * 0.4, target.getBbHeight() + 0.45, (level.getRandom().nextDouble() - 0.5) * 0.4);
 		display.setPos(at.x, at.y, at.z);
-		display.setText(text);
-		display.setBillboardConstraints(Display.BillboardConstraints.CENTER);
-		display.setBackgroundColor(0);
-		display.setFlags((byte) (Display.TextDisplay.FLAG_SHADOW | Display.TextDisplay.FLAG_SEE_THROUGH));
-		display.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), new Vector3f(0.9F, 0.9F, 0.9F), new Quaternionf()));
-		display.setPosRotInterpolationDuration(16);
+		((TextDisplayAccessor) display).wildercord$setText(text);
+		((DisplayAccessor) display).wildercord$setBillboardConstraints(Display.BillboardConstraints.CENTER);
+		((TextDisplayAccessor) display).wildercord$setBackgroundColor(0);
+		((TextDisplayAccessor) display).wildercord$setFlags((byte) (Display.TextDisplay.FLAG_SHADOW | Display.TextDisplay.FLAG_SEE_THROUGH));
+		((DisplayAccessor) display).wildercord$setTransformation(new Transformation(new Vector3f(), new Quaternionf(), new Vector3f(0.9F, 0.9F, 0.9F), new Quaternionf()));
+		((DisplayAccessor) display).wildercord$setPosRotInterpolationDuration(16);
 		BlockFx.fresh(display);
 		level.addFreshEntity(display);
 		Scheduler.later(2, () -> {

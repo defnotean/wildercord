@@ -55,6 +55,8 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * The Timbermaul Bear: a huge old brown bear of the taigas, moss and ferns grown in the fur of its back and shoulder hump,
@@ -891,9 +893,9 @@ public class TimbermaulBear extends EliteMonster {
 			return;
 		}
 		shown.setPos(start.x, start.y, start.z);
-		shown.setBlockState(Blocks.SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
-		shown.setTransformation(logShape(dir, 0));
-		shown.setPosRotInterpolationDuration(1);
+		((BlockDisplayAccessor) shown).wildercord$setBlockState(Blocks.SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+		((DisplayAccessor) shown).wildercord$setTransformation(logShape(dir, 0));
+		((DisplayAccessor) shown).wildercord$setPosRotInterpolationDuration(1);
 		BlockFx.fresh(shown);
 		level.addFreshEntity(shown);
 		logs.add(new Log(shown, start, dir));
@@ -924,9 +926,9 @@ public class TimbermaulBear extends EliteMonster {
 			}
 			log.at = next;
 			log.shown.setPos(next.x, next.y, next.z);
-			log.shown.setTransformationInterpolationDelay(0);
-			log.shown.setTransformationInterpolationDuration(1);
-			log.shown.setTransformation(logShape(log.way, log.rolled / (LOG_GIRTH / 2)));
+			((DisplayAccessor) log.shown).wildercord$setTransformationInterpolationDelay(0);
+			((DisplayAccessor) log.shown).wildercord$setTransformationInterpolationDuration(1);
+			((DisplayAccessor) log.shown).wildercord$setTransformation(logShape(log.way, log.rolled / (LOG_GIRTH / 2)));
 			if (tickCount % 2 == 0) {
 				dirt(level, next, 3, LOG_SPAN / 3, 0.05);
 			}

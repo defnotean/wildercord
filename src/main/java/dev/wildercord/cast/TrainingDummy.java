@@ -31,6 +31,8 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import dev.wildercord.mixin.TextDisplayAccessor;
+import dev.wildercord.mixin.DisplayAccessor;
 
 /**
  * A straw practice dummy for trying spells out. It never dies: every hit floats up as a number
@@ -159,13 +161,13 @@ public class TrainingDummy extends LivingEntity {
 		Vec3 at = position().add(side, getBbHeight() + 0.65, (level.getRandom().nextDouble() - 0.5) * 0.9);
 		text.setPos(at.x, at.y, at.z);
 		String shown = amount >= 10 ? String.format(Locale.ROOT, "%.0f", amount) : String.format(Locale.ROOT, "%.1f", amount);
-		text.setText(Component.literal(shown).withColor(color).withStyle(ChatFormatting.BOLD));
-		text.setBillboardConstraints(Display.BillboardConstraints.CENTER);
-		text.setBackgroundColor(0);
-		text.setFlags((byte) (Display.TextDisplay.FLAG_SHADOW | Display.TextDisplay.FLAG_SEE_THROUGH));
+		((TextDisplayAccessor) text).wildercord$setText(Component.literal(shown).withColor(color).withStyle(ChatFormatting.BOLD));
+		((DisplayAccessor) text).wildercord$setBillboardConstraints(Display.BillboardConstraints.CENTER);
+		((TextDisplayAccessor) text).wildercord$setBackgroundColor(0);
+		((TextDisplayAccessor) text).wildercord$setFlags((byte) (Display.TextDisplay.FLAG_SHADOW | Display.TextDisplay.FLAG_SEE_THROUGH));
 		float scale = (float) Math.min(1.8, 0.8 + amount / 25.0);
-		text.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), new Vector3f(scale, scale, scale), new Quaternionf()));
-		text.setPosRotInterpolationDuration(14);
+		((DisplayAccessor) text).wildercord$setTransformation(new Transformation(new Vector3f(), new Quaternionf(), new Vector3f(scale, scale, scale), new Quaternionf()));
+		((DisplayAccessor) text).wildercord$setPosRotInterpolationDuration(14);
 		BlockFx.fresh(text);
 		level.addFreshEntity(text);
 		Scheduler.later(2, () -> {

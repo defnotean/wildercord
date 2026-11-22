@@ -22,6 +22,8 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.List;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * How each twist of a world's resonances looks and sounds (see {@link TwistMagic} for what they do). Built from the
@@ -484,8 +486,8 @@ final class TwistVfx {
 		}
 		float w = width;
 		display.setPos(base.x, base.y, base.z);
-		display.setBlockState(state);
-		display.setTransformation(box(-w / 2, -0.02F, -w / 2, w, 0.02F, w));
+		((BlockDisplayAccessor) display).wildercord$setBlockState(state);
+		((DisplayAccessor) display).wildercord$setTransformation(box(-w / 2, -0.02F, -w / 2, w, 0.02F, w));
 		BlockFx.fresh(display);
 		level.addFreshEntity(display);
 		Scheduler.later(1, () -> tween(display, box(-w / 2, -0.02F, -w / 2, w, height, w), 4));
@@ -501,8 +503,8 @@ final class TwistVfx {
 		if (display.isRemoved()) {
 			return;
 		}
-		display.setTransformationInterpolationDelay(0);
-		display.setTransformationInterpolationDuration(ticks);
-		display.setTransformation(to);
+		((DisplayAccessor) display).wildercord$setTransformationInterpolationDelay(0);
+		((DisplayAccessor) display).wildercord$setTransformationInterpolationDuration(ticks);
+		((DisplayAccessor) display).wildercord$setTransformation(to);
 	}
 }

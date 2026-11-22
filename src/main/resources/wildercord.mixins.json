@@ -87,7 +87,10 @@
 		"FxSupportMobMixin",
 		"FxSupportExplosionMixin",
 		"SignBlockEntityMixin",
-		"PotionBrewingMixin"
+		"PotionBrewingMixin",
+		"DisplayAccessor",
+		"BlockDisplayAccessor",
+		"TextDisplayAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

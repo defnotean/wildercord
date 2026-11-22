@@ -17,6 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * Visuals for the second batch of new runes: Glaive, Imprint and Latch, the cue of On Reaction and On
@@ -233,11 +235,11 @@ final class CraftedVfx {
 			return null;
 		}
 		display.setPos(pos.getX(), pos.getY(), pos.getZ());
-		display.setBlockState(ore);
-		display.setTransformation(new com.mojang.math.Transformation(new org.joml.Vector3f(0.1F, 0.1F, 0.1F), new org.joml.Quaternionf(),
+		((BlockDisplayAccessor) display).wildercord$setBlockState(ore);
+		((DisplayAccessor) display).wildercord$setTransformation(new com.mojang.math.Transformation(new org.joml.Vector3f(0.1F, 0.1F, 0.1F), new org.joml.Quaternionf(),
 			new org.joml.Vector3f(0.8F, 0.8F, 0.8F), new org.joml.Quaternionf()));
 		display.setGlowingTag(true);
-		display.setGlowColorOverride(color);
+		((DisplayAccessor) display).wildercord$setGlowColorOverride(color);
 		display.addTag(PROSPECT_TAG);
 		BlockFx.fresh(display);
 		level.addFreshEntity(display);

@@ -32,6 +32,8 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * The Rootcoil Serpent ({@link SerpentRules}). Generation leaves it coiled round the grove's tree, bound to the trunk and facing
@@ -589,7 +591,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var shown=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(shown==null)return;
 		var turn=new Quaternionf().rotateY((float)Math.toRadians(-yaw)).rotateX(.2F+random.nextFloat()*.35F).rotateY(random.nextFloat()*1.6F);
-		shown.setPos(base.x,base.y-.1,base.z);shown.setBlockState(Blocks.MANGROVE_ROOTS.defaultBlockState());shown.setTransformation(stand(turn,w,.02F));
+		shown.setPos(base.x,base.y-.1,base.z);((BlockDisplayAccessor) shown).wildercord$setBlockState(Blocks.MANGROVE_ROOTS.defaultBlockState());((DisplayAccessor) shown).wildercord$setTransformation(stand(turn,w,.02F));
 		BlockFx.fresh(shown);level.addFreshEntity(shown);spikes.add(shown);
 		Scheduler.later(1,()->tween(shown,stand(turn,w,h),2));
 		Scheduler.later(3+hold,()->tween(shown,stand(turn,w,.02F),6));
@@ -600,7 +602,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var shift=new Vector3f(-w/2,0,-w/2).rotate(turn);return new Transformation(shift,new Quaternionf(turn),new Vector3f(w,h,w),new Quaternionf());
 	}
 	private static void tween(Display.BlockDisplay d,Transformation to,int ticks){
-		if(d.isRemoved())return;d.setTransformationInterpolationDelay(0);d.setTransformationInterpolationDuration(ticks);d.setTransformation(to);
+		if(d.isRemoved())return;((DisplayAccessor) d).wildercord$setTransformationInterpolationDelay(0);((DisplayAccessor) d).wildercord$setTransformationInterpolationDuration(ticks);((DisplayAccessor) d).wildercord$setTransformation(to);
 	}
 	private void dropSpikes(){for(var d:spikes)d.discard();spikes.clear();}
 
@@ -729,7 +731,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var shown=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(shown==null)return;
 		var spin=new Quaternionf().rotateXYZ(random.nextFloat()*6.28F,random.nextFloat()*6.28F,random.nextFloat()*6.28F);
-		shown.setPos(from.x,from.y,from.z);shown.setBlockState(state);shown.setTransformation(clod(spin));shown.setPosRotInterpolationDuration(1);
+		shown.setPos(from.x,from.y,from.z);((BlockDisplayAccessor) shown).wildercord$setBlockState(state);((DisplayAccessor) shown).wildercord$setTransformation(clod(spin));((DisplayAccessor) shown).wildercord$setPosRotInterpolationDuration(1);
 		dev.wildercord.cast.BlockFx.fresh(shown);
 		level.addFreshEntity(shown);
 		clods.add(new Clod(shown,state,from,vel,spin));
@@ -769,7 +771,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			c.shown.setPos(next.x,next.y,next.z);
 			if(c.age%3==0){
 				c.spin.rotateXYZ(.9F,.5F,.3F);
-				c.shown.setTransformationInterpolationDelay(0);c.shown.setTransformationInterpolationDuration(3);c.shown.setTransformation(clod(c.spin));
+				((DisplayAccessor) c.shown).wildercord$setTransformationInterpolationDelay(0);((DisplayAccessor) c.shown).wildercord$setTransformationInterpolationDuration(3);((DisplayAccessor) c.shown).wildercord$setTransformation(clod(c.spin));
 			}
 		}
 	}

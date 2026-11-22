@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * How the fused effects of flame and stone look ({@link FusedFlame}). Like every fused effect, each draws on both of
@@ -479,8 +481,8 @@ final class FusedFlameVfx {
 			return null;
 		}
 		display.setPos(at.x, at.y, at.z);
-		display.setBlockState(state);
-		display.setTransformation(start);
+		((BlockDisplayAccessor) display).wildercord$setBlockState(state);
+		((DisplayAccessor) display).wildercord$setTransformation(start);
 		BlockFx.fresh(display);
 		level.addFreshEntity(display);
 		STONE.add(display);
@@ -491,9 +493,9 @@ final class FusedFlameVfx {
 		if (display.isRemoved()) {
 			return;
 		}
-		display.setTransformationInterpolationDelay(0);
-		display.setTransformationInterpolationDuration(ticks);
-		display.setTransformation(to);
+		((DisplayAccessor) display).wildercord$setTransformationInterpolationDelay(0);
+		((DisplayAccessor) display).wildercord$setTransformationInterpolationDuration(ticks);
+		((DisplayAccessor) display).wildercord$setTransformation(to);
 	}
 
 	private static void drop(Display.BlockDisplay display) {

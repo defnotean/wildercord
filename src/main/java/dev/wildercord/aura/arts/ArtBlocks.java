@@ -16,6 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * Stone and ice that an art raises and lets sink: block displays (as the earth spells' heaved ground and stone spires are), never
@@ -48,8 +50,8 @@ public final class ArtBlocks {
 			return null;
 		}
 		display.setPos(at.x, at.y, at.z);
-		display.setBlockState(state);
-		display.setTransformation(start);
+		((BlockDisplayAccessor) display).wildercord$setBlockState(state);
+		((DisplayAccessor) display).wildercord$setTransformation(start);
 		BlockFx.fresh(display);
 		level.addFreshEntity(display);
 		live++;
@@ -60,9 +62,9 @@ public final class ArtBlocks {
 		if (display.isRemoved()) {
 			return;
 		}
-		display.setTransformationInterpolationDelay(0);
-		display.setTransformationInterpolationDuration(ticks);
-		display.setTransformation(to);
+		((DisplayAccessor) display).wildercord$setTransformationInterpolationDelay(0);
+		((DisplayAccessor) display).wildercord$setTransformationInterpolationDuration(ticks);
+		((DisplayAccessor) display).wildercord$setTransformation(to);
 	}
 
 	/**

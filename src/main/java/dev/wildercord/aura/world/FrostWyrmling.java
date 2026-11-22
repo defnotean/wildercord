@@ -34,6 +34,8 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * The Frost Wyrmling ({@link FrostWyrmlingRules}). Generation leaves it curled up on the snow mound at the back of the Glacier Den's
@@ -767,13 +769,13 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	}
 	private static void tween(Display.BlockDisplay d,com.mojang.math.Transformation to,int ticks){
 		if(d==null || d.isRemoved())return;
-		d.setTransformationInterpolationDelay(0);d.setTransformationInterpolationDuration(ticks);d.setTransformation(to);
+		((DisplayAccessor) d).wildercord$setTransformationInterpolationDelay(0);((DisplayAccessor) d).wildercord$setTransformationInterpolationDuration(ticks);((DisplayAccessor) d).wildercord$setTransformation(to);
 	}
 	/** An icicle growing down out of the dome at {@code top} over {@code at}. */
 	private Display.BlockDisplay hang(ServerLevel level,Vec3 at,double top){
 		var d=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(d==null)return null;
-		d.setPos(at.x,top,at.z);d.setBlockState(Blocks.BLUE_ICE.defaultBlockState());d.setTransformation(spike(.05F,.05F,0));
+		d.setPos(at.x,top,at.z);((BlockDisplayAccessor) d).wildercord$setBlockState(Blocks.BLUE_ICE.defaultBlockState());((DisplayAccessor) d).wildercord$setTransformation(spike(.05F,.05F,0));
 		BlockFx.fresh(d);level.addFreshEntity(d);
 		Scheduler.later(1,()->tween(d,spike(ICICLE_W,ICICLE_H,0),4));
 		return d;

@@ -19,7 +19,6 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.WorldGenLevel;
 
 import java.util.List;
-import dev.wildercord.compat.McAttachments;
 
 /**
  * The Emberwood Kiln Keeper at an Emberwood Charcoal Yard. Normal use opens forge and charcoal-yard trades;
@@ -33,7 +32,7 @@ public final class KilnKeeperResident {
 	public static final int TALK_COOLDOWN = 100;
 	public static final List<String> LINES = List.of("greet", "cinder_fern", "firebreaks", "kiln_widow");
 	public static final List<String> PROGRESS_LINES = List.of("four_lights", "forge_ledger", "kiln_draft", "draft_return", "widow_return");
-	private static final AttachmentType<Integer> LAST_TALK = McAttachments.create(Wildercord.id("kiln_keeper_last_talk"));
+	private static final AttachmentType<Integer> LAST_TALK = AttachmentRegistry.create(Wildercord.id("kiln_keeper_last_talk"));
 	private static final int SPEECH = 0xF0C999;
 
 	public static void init() {

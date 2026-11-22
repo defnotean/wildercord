@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * Spell visuals made of real blocks: block displays that grow, hold and shrink away (stone spires
@@ -49,8 +51,8 @@ public final class BlockFx {
 			return null;
 		}
 		display.setPos(at.x, at.y, at.z);
-		display.setBlockState(state);
-		display.setTransformation(start);
+		((BlockDisplayAccessor) display).wildercord$setBlockState(state);
+		((DisplayAccessor) display).wildercord$setTransformation(start);
 		display.addTag(TAG);
 		FRESH.add(display);
 		level.addFreshEntity(display);
@@ -66,9 +68,9 @@ public final class BlockFx {
 		if (display.isRemoved()) {
 			return;
 		}
-		display.setTransformationInterpolationDelay(0);
-		display.setTransformationInterpolationDuration(ticks);
-		display.setTransformation(to);
+		((DisplayAccessor) display).wildercord$setTransformationInterpolationDelay(0);
+		((DisplayAccessor) display).wildercord$setTransformationInterpolationDuration(ticks);
+		((DisplayAccessor) display).wildercord$setTransformation(to);
 	}
 
 	/**

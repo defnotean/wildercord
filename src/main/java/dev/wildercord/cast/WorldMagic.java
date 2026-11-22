@@ -80,6 +80,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import dev.wildercord.mixin.DisplayAccessor;
+import dev.wildercord.mixin.BlockDisplayAccessor;
 
 /**
  * Magic that changes the world where it lands, so terrain matters: fire burns the grass, lights
@@ -1181,23 +1183,23 @@ public final class WorldMagic {
 		Quaternionf turn = new Quaternionf().rotateY(yaw);
 		Quaternionf tilt = new Quaternionf().rotateY(yaw).rotateX(0.35F);
 		display.setPos(base.x, base.y, base.z);
-		display.setBlockState(state);
-		display.setTransformation(new Transformation(new Vector3f(-w / 2, -0.55F, -w / 2), turn, new Vector3f(w, 0.5F, w), new Quaternionf()));
+		((BlockDisplayAccessor) display).wildercord$setBlockState(state);
+		((DisplayAccessor) display).wildercord$setTransformation(new Transformation(new Vector3f(-w / 2, -0.55F, -w / 2), turn, new Vector3f(w, 0.5F, w), new Quaternionf()));
 		BlockFx.fresh(display);
 		level.addFreshEntity(display);
 		Scheduler.later(delay, () -> {
 			if (!display.isRemoved()) {
-				display.setTransformationInterpolationDelay(0);
-				display.setTransformationInterpolationDuration(3);
-				display.setTransformation(new Transformation(new Vector3f(-w / 2, -0.05F, -w / 2), tilt, new Vector3f(w, 0.5F, w), new Quaternionf()));
+				((DisplayAccessor) display).wildercord$setTransformationInterpolationDelay(0);
+				((DisplayAccessor) display).wildercord$setTransformationInterpolationDuration(3);
+				((DisplayAccessor) display).wildercord$setTransformation(new Transformation(new Vector3f(-w / 2, -0.05F, -w / 2), tilt, new Vector3f(w, 0.5F, w), new Quaternionf()));
 				Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, state), base.add(0, 0.2, 0), 4, 0.25, 0.1);
 			}
 		});
 		Scheduler.later(delay + 18, () -> {
 			if (!display.isRemoved()) {
-				display.setTransformationInterpolationDelay(0);
-				display.setTransformationInterpolationDuration(8);
-				display.setTransformation(new Transformation(new Vector3f(-w / 2, -0.6F, -w / 2), turn, new Vector3f(w, 0.5F, w), new Quaternionf()));
+				((DisplayAccessor) display).wildercord$setTransformationInterpolationDelay(0);
+				((DisplayAccessor) display).wildercord$setTransformationInterpolationDuration(8);
+				((DisplayAccessor) display).wildercord$setTransformation(new Transformation(new Vector3f(-w / 2, -0.6F, -w / 2), turn, new Vector3f(w, 0.5F, w), new Quaternionf()));
 			}
 		});
 		Scheduler.later(delay + 27, display::discard);
