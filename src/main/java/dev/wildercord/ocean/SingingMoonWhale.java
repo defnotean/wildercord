@@ -38,7 +38,7 @@ public class SingingMoonWhale extends PathfinderMob {
 	private static final EntityDataAccessor<Boolean> SINGING = SynchedEntityData.defineId(SingingMoonWhale.class, EntityDataSerializers.BOOLEAN);
 	private int songCooldown = 80;
 	private int songActiveTicks;
-	private int ambergrisCooldown = 200;
+	private int ambergrisCooldown = 0;
 
 	public SingingMoonWhale(EntityType<? extends SingingMoonWhale> type, Level level) {
 		super(type, level);

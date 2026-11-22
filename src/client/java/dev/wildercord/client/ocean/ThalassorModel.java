@@ -101,7 +101,7 @@ public final class ThalassorModel extends EntityModel<OceanRenderStates.Thalasso
 			for (int r = 0; r < 5; r++) {
 				float fanAng = (r - 2) * 0.22F;
 				frill.addOrReplaceChild("ray_" + sName + "_" + r,
-					CubeListBuilder.create().texOffs(162, 40).addBox(side < 0 ? -18.0F : 0.0F, -1.0F, -1.0F, 2, 2, 18),
+					CubeListBuilder.create().texOffs(162, 40).addBox(-1.0F, -1.0F, 0.0F, 2, 2, 18),
 					PartPose.offsetAndRotation(side * 1.0F, 0.0F, 0.0F, fanAng, side * (Mth.HALF_PI - 0.15F), 0.0F));
 			}
 		}
@@ -133,7 +133,7 @@ public final class ThalassorModel extends EntityModel<OceanRenderStates.Thalasso
 						PartPose.offsetAndRotation(side * 10.0F, 1.0F, 4.0F, 0.0F, -side * 0.22F, side * 0.16F));
 					for (int r = 0; r < 5; r++) {
 						wing.addOrReplaceChild("wray_" + r,
-							CubeListBuilder.create().texOffs(298, 40).addBox(side < 0 ? -22.0F : 0.0F, -1.5F, -1.5F, 2, 3, 22),
+							CubeListBuilder.create().texOffs(298, 40).addBox(-1.0F, -1.5F, 0.0F, 2, 3, 22),
 							PartPose.offsetAndRotation(side * 2.0F, 0.0F, 0.0F, 0.0F, side * (Mth.HALF_PI - (r - 2) * 0.14F), 0.0F));
 					}
 				}

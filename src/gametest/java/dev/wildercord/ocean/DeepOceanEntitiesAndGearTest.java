@@ -47,6 +47,17 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 		if (!cond) throw new AssertionError(msg);
 	}
 
+	private static void poseMob(net.minecraft.world.entity.Mob m, double x, double y, double z, float yaw) {
+		m.snapTo(x, y, z, yaw, 0f);
+		m.setYRot(yaw);
+		m.yRotO = yaw;
+		m.setYBodyRot(yaw);
+		m.yBodyRotO = yaw;
+		m.setYHeadRot(yaw);
+		m.yHeadRotO = yaw;
+		m.setNoAi(true);
+	}
+
 	private static float yaw(Vec3 from, Vec3 to) {
 		Vec3 d = to.subtract(from);
 		return (float) Math.toDegrees(Math.atan2(-d.x, d.z));
@@ -84,12 +95,36 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 		context.waitTicks(6);
 	}
 
+	private static void directorUnderwater(ClientGameTestContext context, TestSingleplayerContext world, Vec3 eye, Vec3 target) {
+		world.getServer().runOnServer(server -> {
+			ServerLevel l = server.overworld();
+			ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+			p.setGameMode(GameType.SPECTATOR);
+			p.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 400, 0, false, false, false));
+			p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false, false));
+			p.teleportTo(l, eye.x, eye.y, eye.z, Set.<Relative>of(), yaw(eye, target), pitch(eye, target), false);
+		});
+		context.waitTicks(4);
+		context.runOnClient(mc -> {
+			mc.options.setCameraType(CameraType.FIRST_PERSON);
+			mc.setCameraEntity(mc.player);
+			if (!mc.gui.hud.isHidden()) {
+				mc.gui.hud.toggle();
+			}
+			mc.gui.toastManager().clear();
+			mc.gui.hud.getChat().clearMessages(false);
+		});
+		context.waitTicks(8);
+	}
+
 	private static void cut(ClientGameTestContext context, TestSingleplayerContext world) {
 		context.runOnClient(mc -> mc.setCameraEntity(mc.player));
-		world.getServer().runOnServer(s -> s.overworld()
-			.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(96),
-				e -> e.entityTags().contains(CAM_TAG))
-			.forEach(Entity::discard));
+		world.getServer().runOnServer(s -> {
+			s.overworld().getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(96),
+				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
+			ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
+			p.removeAllEffects();
+		});
 		context.waitTicks(2);
 	}
 
@@ -118,8 +153,9 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 						(lamp ? Blocks.SEA_LANTERN : (sideWall ? Blocks.DARK_PRISMARINE : Blocks.SMOOTH_SANDSTONE)).defaultBlockState(), 2);
 					for (int y = 90; y <= 98; y++) {
 						if (sideWall) {
+							boolean band = (y == 92 || y == 96);
 							l.setBlock(new BlockPos(x, y, z),
-								(y == 94 ? Blocks.SEA_LANTERN : Blocks.DARK_PRISMARINE).defaultBlockState(), 2);
+								(band ? Blocks.SEA_LANTERN : Blocks.PRISMARINE_BRICKS).defaultBlockState(), 2);
 						} else if (frontBarrier) {
 							l.setBlock(new BlockPos(x, y, z), Blocks.BARRIER.defaultBlockState(), 2);
 						} else {
@@ -179,29 +215,24 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				l.setBlock(altarPos, OceanBlocks.SOVEREIGN_ALTAR.defaultBlockState(), 3);
 
 				BarnacleHulkDredger hulk = OceanEntities.BARNACLE_HULK_DREDGER.create(l, EntitySpawnReason.COMMAND);
-				hulk.snapTo(-8.2, 90.0, 1.8, -18f, 0f);
-				hulk.setNoAi(true);
+				poseMob(hulk, -5.8, 90.0, 1.4, -22f);
 				hulk.setPersistenceRequired();
 				l.addFreshEntity(hulk);
 
 				SirenVeilJelly jelly = OceanEntities.SIREN_VEIL_JELLY.create(l, EntitySpawnReason.COMMAND);
-				jelly.snapTo(-4.0, 93.4, 2.4, -12f, 0f);
-				jelly.setNoAi(true);
+				poseMob(jelly, -2.8, 93.0, 1.6, -12f);
 				l.addFreshEntity(jelly);
 
 				CoralSpineMako mako = OceanEntities.CORAL_SPINE_MAKO.create(l, EntitySpawnReason.COMMAND);
-				mako.snapTo(4.2, 92.2, 2.2, 48f, 0f);
-				mako.setNoAi(true);
+				poseMob(mako, 2.7, 92.2, 1.5, 58f);
 				l.addFreshEntity(mako);
 
 				DreadNautilusSentinel nautilus = OceanEntities.DREAD_NAUTILUS_SENTINEL.create(l, EntitySpawnReason.COMMAND);
-				nautilus.snapTo(8.2, 91.6, 1.8, 30f, 0f);
-				nautilus.setNoAi(true);
+				poseMob(nautilus, 5.8, 91.6, 1.4, 34f);
 				l.addFreshEntity(nautilus);
 
 				ThalassorBoss thalassor = OceanEntities.THALASSOR.create(l, EntitySpawnReason.EVENT);
-				thalassor.snapTo(0.8, 94.6, -1.6, 62f, 0f);
-				thalassor.setNoAi(true);
+				poseMob(thalassor, 0.5, 94.3, -2.4, 72f);
 				thalassor.setArenaCenter(altarPos);
 				l.addFreshEntity(thalassor);
 				if (l.getBlockEntity(altarPos) instanceof SovereignAltarBlockEntity altar) {
@@ -224,7 +255,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				ids[4] = thalassor.getUUID();
 			});
 
-			director(context, world, new Vec3(0.0, 93.8, 11.6), new Vec3(0.0, 93.0, 0.5));
+			directorUnderwater(context, world, new Vec3(0.0, 92.4, 6.2), new Vec3(0.0, 92.0, -0.5));
 			shot(context, "ocean_live_enemies_and_thalassor");
 			cut(context, world);
 
@@ -232,6 +263,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+				p.setGameMode(GameType.CREATIVE);
 				ThalassorBoss boss = (ThalassorBoss) l.getEntity(ids[4]);
 				check(OceanRules.thalassorPhase(boss.getHealth(), boss.getMaxHealth()) == 1, "Phase 1 at full HP");
 				boss.setHealth(1200.0f);
@@ -265,8 +297,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				for (int i = 0; i < 3; i++) {
 					BrineMerchant m = OceanEntities.BRINE_MERCHANT.create(l, EntitySpawnReason.COMMAND);
 					m.setMerchantProfession(profs[i]);
-					m.snapTo(-8.2 + i * 2.5, 90.0, 2.8, (i - 1) * -12f, 0f);
-					m.setNoAi(true);
+					poseMob(m, -5.2 + i * 1.9, 90.0, 1.8, (i - 1) * -14f);
 					l.addFreshEntity(m);
 					check(m.canBreatheUnderwater(), "Brine-Merchant breathes underwater");
 					check(!m.getOffers().isEmpty(), "Brine-Merchant has trade offers for " + profs[i]);
@@ -274,28 +305,28 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				}
 
 				PearlPup pup = OceanEntities.PEARL_PUP.create(l, EntitySpawnReason.COMMAND);
-				pup.snapTo(-1.0, 90.0, 3.2, -15f, 0f);
+				poseMob(pup, 0.6, 90.0, 2.6, -18f);
 				pup.tame(p);
 				l.addFreshEntity(pup);
 				friendlyIds[4] = pup.getUUID();
 
 				LumiSeahorse seahorse = OceanEntities.LUMI_SEAHORSE.create(l, EntitySpawnReason.COMMAND);
-				seahorse.snapTo(2.0, 92.2, 2.6, 50f, 0f);
-				seahorse.setNoAi(true);
+				poseMob(seahorse, 2.5, 91.6, 2.0, 80f);
 				l.addFreshEntity(seahorse);
 				seahorse.tameWithName(p);
 				seahorse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
 				friendlyIds[3] = seahorse.getUUID();
 
 				SingingMoonWhale whale = OceanEntities.SINGING_MOON_WHALE.create(l, EntitySpawnReason.COMMAND);
-				whale.snapTo(5.8, 94.0, -0.5, 58f, 0f);
-				whale.setNoAi(true);
+				poseMob(whale, 4.6, 93.8, -1.5, 62f);
 				l.addFreshEntity(whale);
 				check(whale.getMaxHealth() == OceanRules.MOON_WHALE_HP, "Moon-Whale HP == 220");
 				friendlyIds[5] = whale.getUUID();
 			});
 
-			director(context, world, new Vec3(0.0, 93.6, 11.4), new Vec3(0.0, 92.4, 1.5));
+			// Let taming heart particles fade cleanly before hero screenshot
+			context.waitTicks(45);
+			directorUnderwater(context, world, new Vec3(0.0, 92.2, 6.2), new Vec3(0.2, 91.6, 0.8));
 			shot(context, "ocean_live_friendlies_and_whale");
 			cut(context, world);
 
@@ -303,6 +334,10 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+				p.setGameMode(GameType.SURVIVAL);
+				p.teleportTo(l, 2.0, 91.0, 3.0, Set.<Relative>of(), 180f, 0f, false);
+				PearlPup pup = (PearlPup) l.getEntity(friendlyIds[4]);
+				if (pup != null) pup.setNoAi(false);
 				LumiSeahorse seahorse = (LumiSeahorse) l.getEntity(friendlyIds[3]);
 				seahorse.setNoAi(false);
 				check(p.startRiding(seahorse), "Player mounts Lumi-Seahorse");
