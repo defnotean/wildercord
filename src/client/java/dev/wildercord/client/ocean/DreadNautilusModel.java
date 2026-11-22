@@ -39,18 +39,18 @@ public final class DreadNautilusModel extends EntityModel<OceanRenderStates.Drea
 		// Stepped non-coplanar widths: body=17, crest=15, aperture=20, ribs=19, umbilicus=21
 		PartDefinition shell = root.addOrReplaceChild("shell",
 			CubeListBuilder.create()
-				.texOffs(0, 0).addBox(-8.5F, -22.0F, -8.0F, 17, 22, 20)
-				.texOffs(75, 0).addBox(-7.5F, -25.0F, -5.0F, 15, 12, 14)
-				.texOffs(134, 0).addBox(-10.0F, -12.0F, -10.5F, 20, 16, 4)
-				.texOffs(0, 43).addBox(-10.5F, -14.0F, -1.0F, 21, 6, 6),
+				.texOffs(0, 0).addBox(-8.5F, -20.5F, -4.5F, 17, 22, 20)
+				.texOffs(75, 0).addBox(-7.5F, -23.0F, -2.0F, 15, 12, 14)
+				.texOffs(134, 0).addBox(-10.0F, -12.5F, -10.0F, 20, 16, 4)
+				.texOffs(0, 43).addBox(-10.5F, -13.0F, 1.0F, 21, 6, 6),
 			PartPose.offset(0.0F, 16.0F, 0.0F));
 
-		// 14 radiating chambered ribs strictly wider (19) than body (17) so flanks never Z-fight
+		// 14 radiating chambered ribs strictly wider (19) than body (17) wrapping the spiral dome smoothly
 		for (int i = 0; i < 14; i++) {
-			float angle = -0.35F + i * (Mth.TWO_PI * 0.72F / 14.0F);
-			float r = 10.2F - i * 0.14F;
-			float ry = -11.5F - Mth.sin(angle) * r;
-			float rz = 2.0F + Mth.cos(angle) * r;
+			float angle = -0.55F + i * (Mth.TWO_PI * 0.78F / 14.0F);
+			float r = 11.0F - i * 0.14F;
+			float ry = -10.5F - Mth.sin(angle) * r;
+			float rz = 4.0F + Mth.cos(angle) * r;
 			shell.addOrReplaceChild("rib_" + i,
 				CubeListBuilder.create().texOffs(99, 43).addBox(-9.5F, -2.0F, -3.0F, 19, 4, 6),
 				PartPose.offsetAndRotation(0.0F, ry, rz, -angle + 0.15F, 0.0F, 0.0F));
@@ -66,19 +66,19 @@ public final class DreadNautilusModel extends EntityModel<OceanRenderStates.Drea
 				.texOffs(188, 43).addBox(-2.0F, -1.0F, -10.0F, 4, 4, 3),
 			PartPose.offset(0.0F, -4.0F, -8.0F));
 
-		// 10 grasping tentacles arranged cleanly in an oval ring around the beak
+		// 10 grasping tentacles arranged in a flared radial crown around the beak
 		for (int i = 0; i < 10; i++) {
 			float theta = i * (Mth.TWO_PI / 10.0F);
-			float tx = Mth.cos(theta) * 5.2F;
-			float ty = Mth.sin(theta) * 3.8F + 1.0F;
-			float basePitch = 0.25F - Mth.sin(theta) * 0.22F;
-			float baseYaw = Mth.cos(theta) * 0.25F;
+			float tx = Mth.cos(theta) * 5.8F;
+			float ty = Mth.sin(theta) * 4.4F + 0.8F;
+			float basePitch = -Mth.sin(theta) * 0.36F;
+			float baseYaw = -Mth.cos(theta) * 0.38F;
 			PartDefinition t1 = head.addOrReplaceChild("tentacle_" + i,
 				CubeListBuilder.create().texOffs(55, 43).addBox(-1.5F, -1.5F, -8.0F, 3, 3, 8),
 				PartPose.offsetAndRotation(tx, ty, -8.5F, basePitch, baseYaw, 0.0F));
 			t1.addOrReplaceChild("tentacle_tip_" + i,
 				CubeListBuilder.create().texOffs(169, 43).addBox(-1.0F, -1.0F, -7.0F, 2, 2, 7),
-				PartPose.offsetAndRotation(0.0F, 0.0F, -7.8F, 0.25F, 0.0F, 0.0F));
+				PartPose.offsetAndRotation(0.0F, 0.0F, -7.8F, -Mth.sin(theta) * 0.25F, -Mth.cos(theta) * 0.22F, 0.0F));
 		}
 
 		return LayerDefinition.create(mesh, 256, 256);
@@ -98,9 +98,9 @@ public final class DreadNautilusModel extends EntityModel<OceanRenderStates.Drea
 		for (int i = 0; i < 10; i++) {
 			float phase = t * 0.16F + i * 0.628F;
 			float theta = i * (Mth.TWO_PI / 10.0F);
-			tentBase[i].xRot = (0.22F - Mth.sin(theta) * 0.20F) + Mth.sin(phase) * 0.18F - Mth.sin(theta) * flare;
-			tentBase[i].yRot = Mth.cos(theta) * (0.24F + flare) + Mth.cos(phase) * 0.16F;
-			tentTip[i].xRot = 0.26F + Mth.sin(phase - 0.9F) * 0.24F;
+			tentBase[i].xRot = -Mth.sin(theta) * (0.36F + flare) + Mth.sin(phase) * 0.16F;
+			tentBase[i].yRot = -Mth.cos(theta) * (0.38F + flare) + Mth.cos(phase) * 0.14F;
+			tentTip[i].xRot = -Mth.sin(theta) * 0.28F + Mth.sin(phase - 0.9F) * 0.24F;
 		}
 	}
 }

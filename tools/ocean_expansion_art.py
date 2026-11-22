@@ -937,6 +937,9 @@ def _build_blocks_and_armor_layers(g):
         for face, (x0, y0, fw, fh) in _wa.box(u, v, w, h, d).items():
             for ly in range(fh):
                 for lx in range(fw):
+                    if name == "helm" and face == "front" and (2 <= lx <= 5) and (2 <= ly <= 6):
+                        px_h[x0 + lx, y0 + ly] = (0, 0, 0, 0)
+                        continue
                     col = _mix(c_base, c_hi if (ly == 0 or lx == 0) else c_lo, 0.25 if _wa.noise(x0 + lx, y0 + ly, 5) > 0.6 else 0.0)
                     if detail == "rib_belt" and face not in ("top", "bottom"):
                         if ly in (2, 5, 8):
@@ -984,18 +987,18 @@ def _build_blocks_and_armor_layers(g):
 
     def suit_helm_glass(face, lx, ly, fw, fh, sh, gx, gy):
         if lx in (0, fw - 1) or ly in (0, fh - 1):
-            return (156, 248, 255, 190)
-        if lx - ly in (1, 2) and 1 <= lx <= 4:
-            return (236, 255, 255, 175)
-        return (56, 218, 242, 105)
+            return (156, 248, 255, 145)
+        if lx - ly in (1, 2) and 1 <= lx <= 3:
+            return (236, 255, 255, 110)
+        return (72, 224, 245, 38)
 
     def suit_helm_glass_glow(face, lx, ly, fw, fh, sh, gx, gy):
         # Corner/rim HUD ticks only so center faceplate stays crisp and unobstructed
         if face == "front" and (
-            (lx in (0, fw - 1) and (ly <= 2 or ly >= fh - 3))
-            or (ly in (0, fh - 1) and (lx <= 2 or lx >= fw - 3))
+            (lx in (0, fw - 1) and (ly in (0, fh - 1)))
+            or (lx in (1, fw - 2) and ly in (0, fh - 1))
         ):
-            return (92, 248, 255, 185)
+            return (92, 248, 255, 155)
         return None
 
     def suit_cuirass(face, lx, ly, fw, fh, sh, gx, gy):
@@ -1263,20 +1266,25 @@ def _build_entity_skins(g):
     s = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
     gl = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
 
-    def jelly_glass_bell(base, hi, edge_col, interior_alpha=130):
+    def jelly_glass_bell(base, hi, edge_col, interior_alpha=118):
         def p(face, lx, ly, fw, fh, sh, gx, gy):
-            if lx in (0, fw - 1) or ly in (0, fh - 1):
-                return (*edge_col, 235)
             n = _wa.noise(gx, gy, 202)
-            col = _mix(base, hi, 0.35 if n > 0.6 else 0.0)
-            if face == "top" and (lx in (1, fw - 2) or ly in (1, fh - 2)):
-                return (*_mix(hi, edge_col, 0.5), 185)
+            # Soft radial rib stripes and gentle bottom rim instead of harsh box outlines
+            if face == "bottom":
+                return (*_mix(base, edge_col, 0.35), 95)
+            if face != "top" and ly >= fh - 2 and ((lx + 1) % 3 != 0):
+                return (*edge_col, 210)
+            if (lx == fw // 2 or ly == fh // 2) and face == "top":
+                return (*_mix(hi, edge_col, 0.55), 170)
+            col = _mix(base, hi, 0.38 if n > 0.55 else 0.0)
             return (*col, interior_alpha)
         return p
 
     def jelly_bell_rim_glow(face, lx, ly, fw, fh, sh, gx, gy):
-        if lx in (0, fw - 1) or ly in (0, fh - 1):
-            return (112, 246, 255, 220)
+        if face != "top" and face != "bottom" and ly == fh - 1 and ((lx + 1) % 3 != 0):
+            return (124, 244, 255, 185)
+        if face == "top" and (lx == fw // 2 or ly == fh // 2):
+            return (176, 128, 255, 115)
         return None
 
     bell_glass_hi = jelly_glass_bell((104, 64, 212), (168, 128, 255), (128, 246, 255), 145)
@@ -1467,17 +1475,16 @@ def _build_entity_skins(g):
         return p, gp
 
     def thalassor_veined_fin(face, lx, ly, fw, fh, sh, gx, gy):
-        edge = lx in (0, fw - 1) or ly in (0, fh - 1)
-        vein = (lx + ly) % 5 == 0
-        if edge or vein:
-            return (78, 244, 236, 255)
+        vein = ((lx + ly) % 4 == 0) and not (lx in (0, fw - 1) and ly in (0, fh - 1))
+        if vein:
+            return (78, 244, 236, 215)
         n = _wa.noise(gx, gy, 508)
-        col = _mix((24, 148, 152), (54, 212, 206), 0.35 if n > 0.5 else 0.0)
-        return (*col, 185)
+        col = _mix((20, 128, 138), (52, 204, 198), 0.35 if n > 0.5 else 0.0)
+        return (*col, 155)
 
     def thalassor_fin_glow(face, lx, ly, fw, fh, sh, gx, gy):
-        if lx in (0, fw - 1) or ly in (0, fh - 1) or (lx + ly) % 5 == 0:
-            return (86, 248, 240, 225)
+        if ((lx + ly) % 4 == 0) and (1 <= lx <= fw - 2 or fw <= 3):
+            return (86, 248, 240, 175)
         return None
 
     for ub, fn, gfn in (
@@ -1555,12 +1562,12 @@ def _build_entity_skins(g):
 
         def merchant_helm_glass(face, lx, ly, fw, fh, sh, gx, gy):
             if lx in (0, fw - 1) or ly in (0, fh - 1):
-                return (148, 245, 255, 185)
+                return (148, 245, 255, 135)
             if has_sonar and face == "front" and ((lx == 5 and ly in (1, 2, 7, 8)) or (ly == 5 and lx in (1, 2, 7, 8))):
-                return (68, 248, 255, 195)
-            if lx - ly in (1, 2) and 1 <= lx <= 4:
-                return (236, 255, 255, 165)
-            return (64, 218, 242, 105 if has_sonar else 95)
+                return (68, 248, 255, 165)
+            if lx - ly in (1, 2) and 1 <= lx <= 3:
+                return (236, 255, 255, 105)
+            return (64, 218, 242, 42 if has_sonar else 34)
 
         def merchant_glass_glow(face, lx, ly, fw, fh, sh, gx, gy):
             if has_sonar and face == "front" and (

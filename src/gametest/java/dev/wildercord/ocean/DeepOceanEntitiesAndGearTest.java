@@ -228,7 +228,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				l.addFreshEntity(mako);
 
 				DreadNautilusSentinel nautilus = OceanEntities.DREAD_NAUTILUS_SENTINEL.create(l, EntitySpawnReason.COMMAND);
-				poseMob(nautilus, 5.8, 91.6, 1.4, 34f);
+				poseMob(nautilus, 5.8, 92.2, 1.4, 38f);
 				l.addFreshEntity(nautilus);
 
 				ThalassorBoss thalassor = OceanEntities.THALASSOR.create(l, EntitySpawnReason.EVENT);
