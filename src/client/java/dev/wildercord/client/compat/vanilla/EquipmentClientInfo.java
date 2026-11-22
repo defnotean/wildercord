@@ -30,7 +30,7 @@ public final class EquipmentClientInfo {
 	private final Map<LayerType, List<Layer>> layers;
 
 	public EquipmentClientInfo(Map<LayerType, List<Layer>> layers) {
-		this.layers = new EnumMap<>(layers);
+		this.layers = layers == null || layers.isEmpty() ? new EnumMap<>(LayerType.class) : new EnumMap<>(layers);
 	}
 
 	public List<Layer> getLayers(LayerType type) {
