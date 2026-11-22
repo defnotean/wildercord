@@ -1,4 +1,4 @@
-package dev.wildercord.ocean;
+package dev.wildercord.world.sites.ocean;
 
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
