@@ -262,13 +262,13 @@ public class Cinderfox extends TamableAnimal {
 	// ------------------------------------------------------------------ saving
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putLong("brushed_day", entityData.get(DATA_BRUSHED));
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		entityData.set(DATA_BRUSHED, input.getLongOr("brushed_day", -1L));
 	}

@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Aura marks: an elemental aura strike (a coated blow, the slash, a chain or a spark) may leave its element's reaction mark on

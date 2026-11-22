@@ -235,13 +235,13 @@ public class Strawman extends WildMonster {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putByte("Stance", entityData.get(DATA_STANCE));
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		holdStance(input.getByteOr("Stance", (byte) 0));
 	}

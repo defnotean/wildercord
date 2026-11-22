@@ -104,7 +104,7 @@ public final class CrimsonArts {
 
 	/** A splash of blood where a great cut lands on {@code at}: a red flash, a heartbeat ring, drops thrown. */
 	static void splash(ServerPlayer player, Vec3 at, double size) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ArtLight.world(player).flash(at, ArtKit.color(player), (float) (1.1 * size));
 		AuraPhysicalFx.pulse(level, at, ArtKit.UP, 0.9 * size);
 		drops(level, at, 0.2 * size, (int) Math.max(3, 5 * size));
@@ -137,7 +137,7 @@ public final class CrimsonArts {
 
 	/** A swordsman in a frenzy, a beat of it (asked by {@link ArtWards}): a heartbeat ring at their feet, red light off the blade. */
 	static void frenzyLook(ServerPlayer player, int stacks) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		ArtLight world = ArtLight.world(player);
 		world.groundRing(player.position(), color, 0.3, 0.7 + 0.18 * stacks, 0.05, 7);
@@ -247,7 +247,7 @@ public final class CrimsonArts {
 	// ------------------------------------------------------------------ III. Sanguine Parry
 
 	static boolean sanguineParry(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		LivingEntity foe = ArtKit.attacker(player, context, 4.0);

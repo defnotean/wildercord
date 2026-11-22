@@ -23,8 +23,8 @@ public final class Galeclaw extends AuraBeast {
 		boolean livingBefore=target.isAlive();int epoch=attackEpoch(),phase=pose();var owned=hitOwned(level,target,damage,knock);
 		if(owned!=null && target.getLastDamageSource()==owned && livingBefore && attackActive(level,epoch,phase) && target.level()==level && target instanceof Rimehare && !target.isAlive() && target.getHealth()<=0) {ate();setTarget(null);}
 	}
-	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(outTag);out.putLong("fed_until",fedUntil);}
-	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.readAdditionalSaveData(inTag);fedUntil=in.getLongOr("fed_until",0);}
+	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(outTag);out.putLong("fed_until",fedUntil);}
+	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.readAdditionalSaveData(inTag);fedUntil=in.getLongOr("fed_until",0);}
 	@Override protected void act(ServerLevel level) {
 		if(left>0) {
 			getNavigation().stop(); if(pose()==BeastRules.WARN || pose()==BeastRules.LEAP) lockFacing();

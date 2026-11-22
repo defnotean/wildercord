@@ -206,7 +206,7 @@ public class TrainingDummy extends LivingEntity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		// So a DPS nameplate saved mid-fight still clears once the dummy loads again.
 		output.putLong("last_hit", lastHit);
@@ -215,7 +215,7 @@ public class TrainingDummy extends LivingEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		lastHit = input.getLongOr("last_hit", 0L);
 		practiceMoving=input.getBooleanOr("practice_moving",false);

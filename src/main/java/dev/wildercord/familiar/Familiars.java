@@ -121,7 +121,7 @@ public final class Familiars {
 	}
 
 	static void tamingProgress(Wisp wisp, ServerPlayer player, int hits) {
-		ServerLevel level = (ServerLevel) (ServerLevel) wisp.level();
+		ServerLevel level = (ServerLevel) wisp.level();
 		wisp.flare();
 		Fx.sound(level, wisp.position(), FamiliarContent.WISP_CHIME, 0.9F, 0.85F + 0.15F * hits);
 		ElementFx.impact(level, wisp.element(), wisp.position().add(0, 0.2, 0), 0.45);
@@ -130,7 +130,7 @@ public final class Familiars {
 	}
 
 	static void spooked(Wisp wisp, ServerPlayer player, String offered) {
-		ServerLevel level = (ServerLevel) (ServerLevel) wisp.level();
+		ServerLevel level = (ServerLevel) wisp.level();
 		Fx.sound(level, wisp.position(), SoundEvents.AMETHYST_BLOCK_BREAK, 0.6F, 1.8F);
 		Fx.send(level, ParticleTypes.POOF, wisp.position().add(0, 0.2, 0), 6, 0.15, 0.02);
 		player.displayClientMessage(Component.translatable("message.wildercord.wisp.spooked", element(offered), element(wisp.element()))
@@ -163,7 +163,7 @@ public final class Familiars {
 		wisp.updateName(player.getGameProfile().getName(), "");
 		LIVE.put(id, wisp);
 
-		ServerLevel level = (ServerLevel) (ServerLevel) wisp.level();
+		ServerLevel level = (ServerLevel) wisp.level();
 		wisp.flare();
 		Fx.sound(level, wisp.position(), FamiliarContent.WISP_BOND, 1.0F, 1.0F);
 		ElementFx.impact(level, wisp.element(), wisp.position().add(0, 0.2, 0), 1.1);
@@ -308,7 +308,7 @@ public final class Familiars {
 
 	/** A wild wisp fading away (day came, or it has drifted long enough). */
 	static void fade(Wisp wisp) {
-		ServerLevel level = (ServerLevel) (ServerLevel) wisp.level();
+		ServerLevel level = (ServerLevel) wisp.level();
 		Fx.send(level, Wisp.elementParticle(wisp.element()), wisp.position().add(0, 0.2, 0), 6, 0.2, 0.01);
 		Fx.send(level, ParticleTypes.END_ROD, wisp.position().add(0, 0.2, 0), 3, 0.1, 0.02);
 		wisp.discard();
@@ -401,7 +401,7 @@ public final class Familiars {
 		if (grown.level() > before) {
 			wisp.setFamiliarLevel(grown.level());
 			wisp.flare();
-			ServerLevel level = (ServerLevel) (ServerLevel) wisp.level();
+			ServerLevel level = (ServerLevel) wisp.level();
 			Fx.sound(level, wisp.position(), FamiliarContent.WISP_LEVEL, 1.0F, 1.0F);
 			ElementFx.impact(level, wisp.element(), wisp.position().add(0, 0.2, 0), 0.9);
 			player.sendSystemMessage(Component.translatable("message.wildercord.wisp.level", displayName(grown), grown.level(),

@@ -68,7 +68,7 @@ public final class EchoArts {
 	/** One foe struck again by the ring of what struck it, {@code delay} ticks on, wherever it stands then (if still near). */
 	static void echo(ArtKit.Hits hits, LivingEntity foe, double factor, int delay, int reel) {
 		ServerPlayer player = hits.player();
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Scheduler.later(delay, () -> {
 			if (!player.isAlive() || player.level() != level || !foe.isAlive() || foe.level() != level || foe.distanceTo(player) > 16) return;
 			Vec3 c = foe.getBoundingBox().getCenter();
@@ -102,7 +102,7 @@ public final class EchoArts {
 	// ------------------------------------------------------------------ II. Resonant Chord
 
 	static boolean resonantChord(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = violet(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 eye = player.getEyePosition().subtract(0, 0.4, 0);
@@ -149,7 +149,7 @@ public final class EchoArts {
 	// ------------------------------------------------------------------ IV. Reverb Step
 
 	static boolean reverbStep(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = violet(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, REVERB_DISTANCE);

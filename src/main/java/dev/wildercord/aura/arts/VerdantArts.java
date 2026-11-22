@@ -174,7 +174,7 @@ public final class VerdantArts {
 		Vec3 c = foe.getBoundingBox().getCenter().subtract(0, foe.getBbHeight() * 0.2, 0);
 		ArtLight.world(player).bare().shards(c, 0.45, 4, PINK, VINE);
 		leaves((ServerLevel) player.level(), c, 0.25, 2);
-		Feels.sound((ServerLevel) player.level(), c, "life_thorn", 0.35F, 1.3F + (ServerLevel) player.level().getRandom().nextFloat() * 0.2F);
+		Feels.sound((ServerLevel) player.level(), c, "life_thorn", 0.35F, 1.3F + player.level().getRandom().nextFloat() * 0.2F);
 	}
 
 	/** A body mended by an art: a soft bloom round it, petals, and a leaf spiral climbing it (seen from outside for its swordsman). */

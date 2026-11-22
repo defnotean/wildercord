@@ -244,13 +244,13 @@ public class GlowberryDormouse extends Animal {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putInt("Pouch", pouch());
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		entityData.set(POUCH, Math.max(0, Math.min(DormouseRules.POUCH, input.getIntOr("Pouch", 0))));
 	}

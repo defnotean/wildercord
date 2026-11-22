@@ -16,7 +16,9 @@ import java.util.UUID;
 import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerLevel;
 
 /** Saves the identity, never replacing a guardian merely because its chunk is not currently loaded. */
 public final class CrossingBellEntity extends BlockEntity {
@@ -58,10 +60,10 @@ public final class CrossingBellEntity extends BlockEntity {
 		if (slain || !id.equals(guardian)) return false;
 		slain = true; setChanged(); return true;
 	}
-	@Override protected void loadAdditional(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.loadAdditional(inputTag); guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null); slain = input.getBooleanOr("slain", false);
+	@Override protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inputTag, registries); guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null); slain = input.getBooleanOr("slain", false);
 	}
-	@Override protected void saveAdditional(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.saveAdditional(outputTag); if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian); output.putBoolean("slain", slain);
+	@Override protected void saveAdditional(CompoundTag outputTag, HolderLookup.Provider registries) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outputTag, registries); if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian); output.putBoolean("slain", slain);
 	}
 }

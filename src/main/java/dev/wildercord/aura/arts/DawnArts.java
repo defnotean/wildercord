@@ -109,7 +109,7 @@ public final class DawnArts {
 	// ------------------------------------------------------------------ III. Halo Guard
 
 	static boolean haloGuard(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SWEEP, false, 1.3F);
@@ -161,7 +161,7 @@ public final class DawnArts {
 	// ------------------------------------------------------------------ V. Noon Zenith
 
 	static boolean noonZenith(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.FALLING, false, 1.6F);

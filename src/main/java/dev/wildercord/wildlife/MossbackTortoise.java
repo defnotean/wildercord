@@ -258,7 +258,7 @@ public class MossbackTortoise extends Animal {
 	// ------------------------------------------------------------------ saving
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putByte("garden", (byte) garden().ordinal());
 		output.putInt("scute_time", scuteTime);
@@ -266,7 +266,7 @@ public class MossbackTortoise extends Animal {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		setGarden(Garden.byId(input.getByteOr("garden", (byte) 0)));
 		scuteTime = input.getIntOr("scute_time", WildlifeRules.scuteInterval(random.nextDouble()));

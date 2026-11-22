@@ -310,7 +310,7 @@ public class Glimmerwing extends AmbientCreature {
 	// ------------------------------------------------------------------ saving
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putByte("variant", (byte) variant());
 		if (home != null) {
@@ -321,7 +321,7 @@ public class Glimmerwing extends AmbientCreature {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		setVariant(input.getByteOr("variant", (byte) MOONLIT));
 		double y = input.getDoubleOr("home_y", Double.NaN);

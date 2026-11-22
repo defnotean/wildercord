@@ -52,7 +52,7 @@ public final class Awakenings {
 	 * racing out from their feet sweeps across the view); what lies still on the ground everyone sees.
 	 */
 	public static void flourish(ServerPlayer player) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		Vec3 heart = feet.add(0, 1.0, 0);
@@ -370,7 +370,7 @@ public final class Awakenings {
 		 * owner while they stand in it ({@code ownerInside}).
 		 */
 		public void tick(ServerPlayer owner, List<LivingEntity> foes, long age, boolean ownerInside) {
-			ServerLevel level = (ServerLevel) (ServerLevel) owner.level();
+			ServerLevel level = (ServerLevel) owner.level();
 			int pulse = AwakeningRules.Sovereign.PULSE;
 			boolean beat = age > 0 && age % pulse == 0;
 			boolean everyOther = age > 0 && age % (pulse * 2) == 0;

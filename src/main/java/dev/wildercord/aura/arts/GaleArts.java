@@ -136,7 +136,7 @@ public final class GaleArts {
 	// ------------------------------------------------------------------ II. Updraft
 
 	static boolean updraft(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING, false, 1.5F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -224,7 +224,7 @@ public final class GaleArts {
 
 	/** A projectile turned aside by the eye: a puff of wind where it was swung round, and its whistle. */
 	static void eyeTurns(ServerPlayer player, Vec3 at) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		AuraPhysicalFx.windImpact(level, at, 0.7);
 		Feels.sound(level, at, "wind_deflect", 0.8F, 1.1F);
 	}
@@ -276,7 +276,7 @@ public final class GaleArts {
 
 	/** The allies near the way, and the swordsman, swept along faster. */
 	private static void sweep(ServerPlayer player, List<Vec3> path) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		player.addEffect(new MobEffectInstance(MobEffects.SPEED, ArtRules.TAILWIND_SPEED, 0, false, true, true));
 		Set<UUID> swept = new HashSet<>();
 		swept.add(player.getUUID());

@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /** Rebindable combat moves with server-owned aim, eligibility, payment and persistent cooldowns. */
 public final class MastersArts {

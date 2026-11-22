@@ -19,6 +19,7 @@ import java.util.UUID;
 import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 
 /**
@@ -132,15 +133,15 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.loadAdditional(inputTag);
+	protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inputTag, registries);
 		boss = input.read("boss", UUIDUtil.CODEC).orElse(null);
 		slain = input.getBooleanOr("slain", false);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.saveAdditional(outputTag);
+	protected void saveAdditional(CompoundTag outputTag, HolderLookup.Provider registries) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outputTag, registries);
 		if (boss != null) {
 			output.store("boss", UUIDUtil.CODEC, boss);
 		}

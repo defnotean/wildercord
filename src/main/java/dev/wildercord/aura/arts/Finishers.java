@@ -116,7 +116,7 @@ public final class Finishers {
 	 * shared stinger and the method's own voice ({@code voice}, or none), and a seal on the ground in {@code color}.
 	 */
 	private static Where frame(ServerPlayer player, LivingEntity foe, AuraFxRules.Stroke stroke, boolean mirror, int color, String voice) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Where w = where(player, foe);
 		AuraFx.art(player).color(color).trail(stroke, mirror, 1.7F).impact(foe, AuraFxRules.Weight.GRAND).flare(40, 1.0F);
 		Feels.sound(level, w.heart(), "aura_finisher", 1.1F, 1.0F);
@@ -180,7 +180,7 @@ public final class Finishers {
 
 	/** The foe locked in frost for a breath, then the ice bursts outward in shards, spires of ice round its feet. */
 	static void winterbreak(ServerPlayer player, LivingEntity foe, AuraApi.FinisherContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = color(player);
 		int frost = ElementFx.FROST.primary();
 		int pale = ElementFx.FROST.secondary();
@@ -253,7 +253,7 @@ public final class Finishers {
 
 	/** A spiral of wind wraps the foe and lifts it, crescents whirling round it, rings of wind racing over the ground. */
 	static void windscour(ServerPlayer player, LivingEntity foe, AuraApi.FinisherContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = color(player);
 		int teal = ElementFx.WIND.accent();
 		Where w = frame(player, foe, AuraFxRules.Stroke.SPIN, false, color, "aura_finisher_gale");
@@ -317,7 +317,7 @@ public final class Finishers {
 
 	/** Roots seize the foe and a flower of light opens under it; its petals mend the swordsman and their allies near. */
 	static void thornbloom(ServerPlayer player, LivingEntity foe, AuraApi.FinisherContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = color(player);
 		Where w = frame(player, foe, AuraFxRules.Stroke.RISING, false, color, "aura_finisher_verdant");
 		VerdantArts.bloom(ArtLight.world(player), w.feet(), color, 1.15 * w.size(), 40);
@@ -378,7 +378,7 @@ public final class Finishers {
 
 	/** A star kindles in the foe and bursts, rays of light racing out; a star seal on the ground under it. */
 	static void starbreak(ServerPlayer player, LivingEntity foe, AuraApi.FinisherContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = color(player);
 		int pale = ElementFx.ARCANE.secondary();
 		Where w = frame(player, foe, AuraFxRules.Stroke.THRUST, false, color, "aura_finisher_starlit");
@@ -434,7 +434,7 @@ public final class Finishers {
 
 	/** A crimson crescent tears through the foe and back; it bleeds, and the swordsman drinks from it. */
 	static void heartrend(ServerPlayer player, LivingEntity foe, AuraApi.FinisherContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = color(player);
 		int pale = ElementFx.BLOOD.secondary();
 		Where w = frame(player, foe, AuraFxRules.Stroke.CUT, false, color, "aura_finisher_crimson");

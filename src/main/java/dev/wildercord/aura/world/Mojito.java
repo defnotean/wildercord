@@ -1065,14 +1065,14 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 
-	@Override protected void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		out.putBoolean("mojito_bound",bound);out.store("mojito_bed",BlockPos.CODEC,bed);out.putFloat("mojito_rest",rest);
 		out.store("mojito_grove_min",BlockPos.CODEC,groveMin);out.store("mojito_grove_max",BlockPos.CODEC,groveMax);
 		out.putBoolean("mojito_awake",!MojitoRules.scripted(move()));out.putLong("mojito_ticked",lastTick);
 		out.putBoolean("mojito_howled",wild);
 	}
-	@Override protected void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
 		bound=in.getBooleanOr("mojito_bound",false);
 		bed=in.read("mojito_bed",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("mojito_rest",getYRot());

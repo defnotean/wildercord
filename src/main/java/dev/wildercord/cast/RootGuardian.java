@@ -1265,6 +1265,6 @@ public final class RootGuardian extends DungeonBoss {
 	@Override protected SoundEvent getHurtSound(DamageSource source) { return SoundEvents.WOOD_HIT; }
 	@Override protected SoundEvent getDeathSound() { return null; }
 
-	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.addAdditionalSaveData(outTag); out.putInt("bindings", bindings); out.putLong("exposed_until", exposedUntil); }
-	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.readAdditionalSaveData(inTag); bindings = Math.clamp(in.getIntOr("bindings", 3), 0, 3); exposedUntil = in.getLongOr("exposed_until", 0); }
+	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.addAdditionalSaveData(outTag); out.putInt("bindings", bindings); out.putLong("exposed_until", exposedUntil); }
+	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.readAdditionalSaveData(inTag); bindings = Math.clamp(in.getIntOr("bindings", 3), 0, 3); exposedUntil = in.getLongOr("exposed_until", 0); }
 }

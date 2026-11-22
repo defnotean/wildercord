@@ -92,7 +92,7 @@ public final class DuneArts {
 	// ------------------------------------------------------------------ II. Quicksand
 
 	static boolean quicksand(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.LOW, false, 1.4F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -153,7 +153,7 @@ public final class DuneArts {
 	// ------------------------------------------------------------------ IV. Dune Runner
 
 	static boolean duneRunner(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, DuneRules.RUNNER_DISTANCE);

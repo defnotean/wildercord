@@ -89,7 +89,7 @@ public final class AuraMethods {
 		if (!switching) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.aura.learned_how").withColor(0x9A8CD8));
 		}
-		dev.wildercord.cast.Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.8F, 0.9F);
+		dev.wildercord.cast.Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.8F, 0.9F);
 		Aura.sound(player, "aura_breath", 0.9F, 1.0F);
 		AuraVfx.learned(player, color);
 		Grimoire.unlock(player, "aura:method_" + method.id().replace(':', '.'));

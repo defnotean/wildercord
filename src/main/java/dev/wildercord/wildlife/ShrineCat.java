@@ -821,7 +821,7 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putInt("ShrineCatVariant", entityData.get(DATA_VARIANT));
 		output.putInt("ShrineCatRole", getRole());
@@ -838,7 +838,7 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		ShrineCatRules.Variant v = ShrineCatRules.Variant.byId(input.getIntOr("ShrineCatVariant", 0));
 		setVariant(v);

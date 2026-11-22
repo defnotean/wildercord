@@ -1043,13 +1043,13 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();thaw();super.remove(reason);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 
-	@Override protected void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		out.putBoolean("wyrm_bound",bound);out.store("wyrm_mound",BlockPos.CODEC,mound);out.putFloat("wyrm_rest",rest);
 		out.store("wyrm_hall_min",BlockPos.CODEC,hallMin);out.store("wyrm_hall_max",BlockPos.CODEC,hallMax);
 		out.putBoolean("wyrm_awake",!FrostWyrmlingRules.scripted(move()));out.putLong("wyrm_ticked",lastTick);out.putBoolean("wyrm_fierce",fierce);
 	}
-	@Override protected void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
 		bound=in.getBooleanOr("wyrm_bound",false);
 		mound=in.read("wyrm_mound",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("wyrm_rest",getYRot());

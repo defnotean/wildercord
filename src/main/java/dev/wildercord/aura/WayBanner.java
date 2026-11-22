@@ -77,7 +77,7 @@ public final class WayBanner {
 	/** {@code bearer}'s allied swordsmen within {@code range}: allies with a breathing method learned and aura working. */
 	public static List<ServerPlayer> swordsmen(ServerPlayer bearer, double range) {
 		List<ServerPlayer> out = new ArrayList<>();
-		for (ServerPlayer other : bearer.level().players()) {
+		for (ServerPlayer other : ((ServerLevel) bearer.level()).players()) {
 			if (other != bearer && other.distanceToSqr(bearer) <= range * range && Aura.stage(other) >= AuraRules.GLOW && Aura.enabled(other)
 					&& ally(bearer, other)) {
 				out.add(other);
@@ -90,7 +90,7 @@ public final class WayBanner {
 	public static List<LivingEntity> company(ServerPlayer bearer, double range) {
 		List<LivingEntity> out = new ArrayList<>();
 		out.add(bearer);
-		for (ServerPlayer other : bearer.level().players()) {
+		for (ServerPlayer other : ((ServerLevel) bearer.level()).players()) {
 			if (other.distanceToSqr(bearer) <= range * range && ally(bearer, other)) {
 				out.add(other);
 			}
@@ -207,7 +207,7 @@ public final class WayBanner {
 	/** Whether an ally of {@code player}'s walking the Banner at Sovereign stands near them: hits take less of their momentum. */
 	public static boolean bannerNear(ServerPlayer player) {
 		double range = range();
-		for (ServerPlayer other : player.level().players()) {
+		for (ServerPlayer other : ((ServerLevel) player.level()).players()) {
 			if (other != player && other.distanceToSqr(player) <= range * range && Ways.has(other, WayRules.BANNER_SOVEREIGN) && ally(other, player)) {
 				return true;
 			}

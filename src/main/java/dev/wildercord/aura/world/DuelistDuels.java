@@ -263,7 +263,7 @@ public final class DuelistDuels {
 			player.sendSystemMessage(Component.translatable("message.wildercord.duelist.challenge", name, methodName).withColor(0xE8D8B0));
 			player.sendSystemMessage(Component.translatable("message.wildercord.duelist.challenge_how", stageName).withColor(0xB8A8D8));
 			duelist.faceTarget(player);
-			Fx.sound(player.level(), duelist.position(), SoundEvents.BELL_BLOCK, 0.5F, 1.6F);
+			Fx.sound((ServerLevel) player.level(), duelist.position(), SoundEvents.BELL_BLOCK, 0.5F, 1.6F);
 			return;
 		}
 		OFFERS.remove(player.getUUID());

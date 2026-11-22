@@ -209,12 +209,12 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 	}
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }
 	@Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player); bar.removePlayer(player); }
-	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		if (mooring != null) out.store("mooring", BlockPos.CODEC, mooring);
 		if (bell != null) out.store("crossing_bell", BlockPos.CODEC, bell);
 	}
-	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag); mooring = in.read("mooring", BlockPos.CODEC).orElse(null); bell = in.read("crossing_bell", BlockPos.CODEC).orElse(null);
 		// A reload requires another deliberate ring. A saved mid-tell attack cannot become an invisible impact.
 		if (getHealth()>0) rest(); else { retire(); active=false; }

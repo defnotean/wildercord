@@ -271,7 +271,7 @@ public final class MasterForms {
 		}
 		if (dev.wildercord.cast.RelayCircles.pending(player)) dev.wildercord.cast.RelayCircles.cancel(player);
 		plant(player, true);
-		dev.wildercord.cast.Fx.sound(player.level(), player.position(), net.minecraft.sounds.SoundEvents.STONE_HIT, .8F, .6F);
+		dev.wildercord.cast.Fx.sound((ServerLevel) player.level(), player.position(), net.minecraft.sounds.SoundEvents.STONE_HIT, .8F, .6F);
 		emit(player, s, StoneHingeRules.BRACE, StoneHingeRules.BRACE_TICKS, yaw);
 		return true;
 	}

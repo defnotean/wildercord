@@ -246,13 +246,13 @@ public final class KilnWidow extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }
 	@Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player); bar.removePlayer(player); }
 
-	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		if (plinth != null) out.store("plinth", BlockPos.CODEC, plinth);
 		if (heartstone != null) out.store("kiln_heartstone", BlockPos.CODEC, heartstone);
 	}
 
-	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
 		plinth = in.read("plinth", BlockPos.CODEC).orElse(null);
 		heartstone = in.read("kiln_heartstone", BlockPos.CODEC).orElse(null);

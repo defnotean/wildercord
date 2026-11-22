@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
 
 /** Charges the existing recipient budget for the full authored body before one decorative packet. */
 final class LifeOutcomeTransport {
@@ -24,7 +25,7 @@ final class LifeOutcomeTransport {
    points.add(at);
   });
   if(invalid[0]||points.isEmpty()){if(invalid[0])VisualMetrics.dropped();return;}
-  for(var player:e.level().players()){
+  for(var player:((ServerLevel) e.level()).players()){
    // Only the known source may defer eye clearance to its real local camera. The server cannot
    // know whether that camera is in first or third person; range and full recipe cost still apply.
    boolean owner=LifeOutcomePayload.own(e.source(),player.getUUID());

@@ -1008,14 +1008,14 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 
-	@Override protected void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		out.putBoolean("stag_bound",bound);out.store("stag_bed",BlockPos.CODEC,bed);out.putFloat("stag_rest",rest);
 		out.store("stag_glade_min",BlockPos.CODEC,gladeMin);out.store("stag_glade_max",BlockPos.CODEC,gladeMax);
 		out.putBoolean("stag_awake",!AshenStagRules.scripted(move()));out.putLong("stag_ticked",lastTick);
 		out.putBoolean("stag_kindled",kindled());
 	}
-	@Override protected void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
 		bound=in.getBooleanOr("stag_bound",false);
 		bed=in.read("stag_bed",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("stag_rest",getYRot());

@@ -865,7 +865,7 @@ public final class ArtKit {
 		}
 		Reactions.mark(foe, Reactions.Mark.BLEEDING, times * ArtRules.BLEED_PERIOD + 10);
 		Vec3[] last = {foe.position()};
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		for (int i = 1; i <= times; i++) {
 			Scheduler.later(i * ArtRules.BLEED_PERIOD, () -> {
 				if (!foe.isAlive() || !player.isAlive() || foe.level() != level || !harmable(player, foe)) {
@@ -973,7 +973,7 @@ public final class ArtKit {
 
 	/** {@link #beside}, {@code gap} from the foe's middle. */
 	public static Vec3 beside(ServerPlayer player, LivingEntity foe, Vec3 from, double gap) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		Vec3 toward = from.subtract(foe.position());
 		toward = new Vec3(toward.x, 0, toward.z);
 		toward = toward.lengthSqr() < 1.0E-4 ? flat(player).scale(-1) : toward.normalize();

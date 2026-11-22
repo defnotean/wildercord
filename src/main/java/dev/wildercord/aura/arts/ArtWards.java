@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * What an art leaves on a creature for a while, and what the rest of aura asks about it:

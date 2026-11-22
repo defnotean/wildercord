@@ -433,8 +433,8 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		super.die(source);
 	}
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}
-	@Override protected void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(outTag);if(home!=null)out.store("tomb_home",BlockPos.CODEC,home);if(reliquary!=null)out.store("reliquary",BlockPos.CODEC,reliquary);out.putBoolean("fought",fought);out.putBoolean("roused",roused);out.putInt("drill",sequence);}
-	@Override protected void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(outTag);if(home!=null)out.store("tomb_home",BlockPos.CODEC,home);if(reliquary!=null)out.store("reliquary",BlockPos.CODEC,reliquary);out.putBoolean("fought",fought);out.putBoolean("roused",roused);out.putInt("drill",sequence);}
+	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);home=in.read("tomb_home",BlockPos.CODEC).orElse(null);reliquary=in.read("reliquary",BlockPos.CODEC).orElse(null);fought=in.getBooleanOr("fought",false);
 		roused=in.getBooleanOr("roused",false);sequence=Math.min(SwordTombRules.DRILL.length,Math.max(0,in.getIntOr("drill",0)));if(roused)bar.setColor(BossEvent.BossBarColor.RED);
 		pose(SwordTombRules.RECOVER,40);

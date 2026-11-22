@@ -21,6 +21,7 @@ import java.util.*;
 import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 
 /** One keeper per authentic site; saved outcome and claim ledger prevent repeat loot. */
@@ -82,6 +83,6 @@ public final class TombReliquaryEntity extends BlockEntity {
 		self.missingTicks+=20;if(self.missingTicks<200)return;
 		self.guardian=null;self.participants.clear();self.missingTicks=0;self.state(0);self.setChanged();
 	}
-	@Override protected void saveAdditional(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag);out.putBoolean("authentic",authentic);out.putBoolean("cleared",cleared);if(guardian!=null)out.store("guardian",UUIDUtil.CODEC,guardian);out.store("participants",UUIDUtil.CODEC.listOf(),List.copyOf(participants));out.store("claimed",UUIDUtil.CODEC.listOf(),List.copyOf(claimed));}
-	@Override protected void loadAdditional(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag);authentic=in.getBooleanOr("authentic",false);cleared=in.getBooleanOr("cleared",false);guardian=cleared?null:in.read("guardian",UUIDUtil.CODEC).orElse(null);participants.clear();claimed.clear();in.read("participants",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(participants::add);in.read("claimed",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(claimed::add);missingTicks=0;}
+	@Override protected void saveAdditional(CompoundTag outTag, HolderLookup.Provider registries){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag, registries);out.putBoolean("authentic",authentic);out.putBoolean("cleared",cleared);if(guardian!=null)out.store("guardian",UUIDUtil.CODEC,guardian);out.store("participants",UUIDUtil.CODEC.listOf(),List.copyOf(participants));out.store("claimed",UUIDUtil.CODEC.listOf(),List.copyOf(claimed));}
+	@Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag, registries);authentic=in.getBooleanOr("authentic",false);cleared=in.getBooleanOr("cleared",false);guardian=cleared?null:in.read("guardian",UUIDUtil.CODEC).orElse(null);participants.clear();claimed.clear();in.read("participants",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(participants::add);in.read("claimed",UUIDUtil.CODEC.listOf()).orElse(List.of()).stream().limit(64).forEach(claimed::add);missingTicks=0;}
 }

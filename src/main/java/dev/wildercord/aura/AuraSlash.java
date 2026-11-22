@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Aura Slash (Edge): tap the Aura key and the blade looses a crescent of aura that flies ahead at chest height, cutting each

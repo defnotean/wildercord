@@ -8,6 +8,7 @@ import java.util.UUID;
 import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 
 /** A site yields one blade in its lifetime. An ordinary placed stone has no provenance. */
@@ -23,12 +24,12 @@ public final class SleepingBladeEntity extends BlockEntity {
 		if (level != null && getBlockState().getValue(SleepingBladeStone.PHASE) != phase)
 			level.setBlock(worldPosition, getBlockState().setValue(SleepingBladeStone.PHASE, phase), 3);
 	}
-	@Override protected void saveAdditional(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.saveAdditional(outTag); out.putBoolean("authentic", authentic);
+	@Override protected void saveAdditional(CompoundTag outTag, HolderLookup.Provider registries) { McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outTag, registries); out.putBoolean("authentic", authentic);
 		if (claimedBy != null) out.store("claimed_by", UUIDUtil.CODEC, claimedBy);
 	}
-	@Override protected void loadAdditional(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.loadAdditional(inTag); authentic = in.getBooleanOr("authentic", false);
+	@Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries) { McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inTag, registries); authentic = in.getBooleanOr("authentic", false);
 		claimedBy = in.read("claimed_by", UUIDUtil.CODEC).orElse(null);
 	}
 }

@@ -149,7 +149,7 @@ public final class HourglassArts {
 
 	/** A blow stored on a foe Thousand Moments holds (asked by {@link ArtWards}): a glint frozen where it struck. */
 	static void storedLook(ServerPlayer player, LivingEntity foe) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		TimeFx.stasisShard(level, foe, 30);
 		Feels.sound(level, foe.position(), "time_tick", 0.4F, 1.5F);
 	}
@@ -196,7 +196,7 @@ public final class HourglassArts {
 	// ------------------------------------------------------------------ II. Rewind Leap
 
 	static boolean rewindLeap(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = gold(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();

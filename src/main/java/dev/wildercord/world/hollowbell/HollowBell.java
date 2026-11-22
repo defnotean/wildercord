@@ -246,13 +246,13 @@ public final class HollowBell extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }
 	@Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player); bar.removePlayer(player); }
 
-	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		if (plinth != null) out.store("plinth", BlockPos.CODEC, plinth);
 		if (belfry != null) out.store("listening_belfry", BlockPos.CODEC, belfry);
 	}
 
-	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
 		plinth = in.read("plinth", BlockPos.CODEC).orElse(null);
 		belfry = in.read("listening_belfry", BlockPos.CODEC).orElse(null);

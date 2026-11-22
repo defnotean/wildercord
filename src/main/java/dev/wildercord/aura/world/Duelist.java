@@ -536,7 +536,7 @@ public class Duelist extends AuraFighter {
 	// ------------------------------------------------------------------ saved
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putLong("stay_until", stayUntil);
 		output.putLong("rest_until", restUntil);
@@ -547,7 +547,7 @@ public class Duelist extends AuraFighter {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		stayUntil = input.getLongOr("stay_until", 0L);
 		restUntil = input.getLongOr("rest_until", 0L);

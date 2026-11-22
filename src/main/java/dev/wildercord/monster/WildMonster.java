@@ -356,7 +356,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putByte("Variant", entityData.get(DATA_VARIANT));
 		output.putBoolean("Alpha", alpha());
@@ -364,7 +364,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		entityData.set(DATA_VARIANT, input.getByteOr("Variant", (byte) 0));
 		entityData.set(DATA_ALPHA, input.getBooleanOr("Alpha", false));

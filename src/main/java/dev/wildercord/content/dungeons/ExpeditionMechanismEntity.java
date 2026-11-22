@@ -25,6 +25,7 @@ import java.util.Set;
 import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 
 /** Bounded, chunk-local expedition puzzles: stored time, a cleanse/harvest choice, moving stepping stones. */
@@ -151,6 +152,6 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 			}
 		}
 	}
-	@Override protected void saveAdditional(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag);out.putFloat("stored",stored);out.putInt("growth",growth);out.putInt("sky_step",skyStep);out.putBoolean("completed",completed);out.putLong("paused_until",pausedUntil);out.putLong("next_action",nextAction);}
-	@Override protected void loadAdditional(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag);stored=Math.clamp(in.getFloatOr("stored",0),0,12);growth=Math.clamp(in.getIntOr("growth",0),0,4);skyStep=Math.floorMod(in.getIntOr("sky_step",0),3);completed=in.getBooleanOr("completed",false);pausedUntil=in.getLongOr("paused_until",0);nextAction=in.getLongOr("next_action",0);}
+	@Override protected void saveAdditional(CompoundTag outTag, HolderLookup.Provider registries){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag, registries);out.putFloat("stored",stored);out.putInt("growth",growth);out.putInt("sky_step",skyStep);out.putBoolean("completed",completed);out.putLong("paused_until",pausedUntil);out.putLong("next_action",nextAction);}
+	@Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag, registries);stored=Math.clamp(in.getFloatOr("stored",0),0,12);growth=Math.clamp(in.getIntOr("growth",0),0,4);skyStep=Math.floorMod(in.getIntOr("sky_step",0),3);completed=in.getBooleanOr("completed",false);pausedUntil=in.getLongOr("paused_until",0);nextAction=in.getLongOr("next_action",0);}
 }

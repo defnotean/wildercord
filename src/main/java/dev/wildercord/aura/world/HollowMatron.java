@@ -1138,7 +1138,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();reeled=null;super.remove(reason);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}
 
-	@Override protected void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		out.putBoolean("matron_bound",bound);out.store("matron_hang",BlockPos.CODEC,hang);out.putInt("matron_floor",floor);out.putFloat("matron_anchor",anchor());
 		out.putFloat("matron_rest",rest);
@@ -1146,7 +1146,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		out.store("matron_pillars",BlockPos.CODEC.listOf(),pillars);out.store("matron_sacs",BlockPos.CODEC.listOf(),sacs);
 		out.putBoolean("matron_awake",!HollowMatronRules.scripted(move()));out.putBoolean("matron_roused",roused());out.putLong("matron_ticked",lastTick);
 	}
-	@Override protected void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
 		bound=in.getBooleanOr("matron_bound",false);
 		hang=in.read("matron_hang",BlockPos.CODEC).orElse(blockPosition());floor=in.getIntOr("matron_floor",hang.getY());

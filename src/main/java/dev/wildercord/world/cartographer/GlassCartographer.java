@@ -246,13 +246,13 @@ public final class GlassCartographer extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason) { bar.removeAllPlayers(); super.remove(reason); }
 	@Override public void stopSeenByPlayer(ServerPlayer player) { super.stopSeenByPlayer(player); bar.removePlayer(player); }
 
-	@Override protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		if (pedestal != null) out.store("pedestal", BlockPos.CODEC, pedestal);
 		if (astrolabe != null) out.store("survey_astrolabe", BlockPos.CODEC, astrolabe);
 	}
 
-	@Override protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
 		pedestal = in.read("pedestal", BlockPos.CODEC).orElse(null);
 		astrolabe = in.read("survey_astrolabe", BlockPos.CODEC).orElse(null);

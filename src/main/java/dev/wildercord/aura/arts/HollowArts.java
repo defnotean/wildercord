@@ -251,7 +251,7 @@ public final class HollowArts {
 	static boolean nullParry(ServerPlayer player, AuraApi.StringContext context) {
 		var counter = dev.wildercord.aura.MastersArts.earnedCounter(player);
 		if (counter == null || !counter.art().equals(NULL_PARRY) || !counter.valid()) return false;
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 feet = player.position();
 		LivingEntity foe = counter.target();
@@ -323,7 +323,7 @@ public final class HollowArts {
 	// ------------------------------------------------------------------ IV. Rift Step
 
 	static boolean riftStep(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 from = player.position();
@@ -475,7 +475,7 @@ public final class HollowArts {
 
 	/** The sphere falling in on itself and crushing everything it holds: darkness rushing in, then a violet shockwave out. */
 	private static void crush(ServerPlayer player, ArtKit.Hits hits, Vec3 base, Vec3 heart, int color, RandomSource r) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		ArtLight world = ArtLight.world(player);
 		ArtLight show = ArtLight.spectacle(player);
 		show.bare().orb(heart, ABYSS, 1.6, 3);

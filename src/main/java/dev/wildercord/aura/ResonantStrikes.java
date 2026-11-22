@@ -10,6 +10,7 @@ import net.minecraft.world.effect.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 
 /** Successful damage only: shields, friendly fire, misses and corpses never prime a resonance. */
 public final class ResonantStrikes {

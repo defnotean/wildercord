@@ -222,7 +222,7 @@ public final class Vfx {
 
 	/** Self: rings of light close in as they climb the caster, around a rising helix. */
 	public static void self(LivingEntity caster, Theme theme) {
-		ServerLevel level = (ServerLevel) (ServerLevel) caster.level();
+		ServerLevel level = (ServerLevel) caster.level();
 		Vec3 feet = caster.position();
 		for (int i = 0; i < 3; i++) {
 			int k = i;

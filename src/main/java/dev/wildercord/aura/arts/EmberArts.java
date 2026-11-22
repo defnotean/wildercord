@@ -66,7 +66,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ I. Kindling Draw
 
 	static boolean kindlingDraw(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -161,7 +161,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ II. Rising Cinders
 
 	static boolean risingCinders(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -239,7 +239,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ III. Backdraft
 
 	static boolean backdraft(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
@@ -355,7 +355,7 @@ public final class EmberArts {
 	// ------------------------------------------------------------------ V. Sunfall
 
 	static boolean sunfall(ServerPlayer player, AuraApi.StringContext context) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		int color = ArtKit.color(player);
 		Vec3 look = ArtKit.flat(player);
 		AuraFx.Art fx = AuraFx.art(player);
@@ -403,7 +403,7 @@ public final class EmberArts {
 	}
 
 	private static void sunfallLands(ServerPlayer player, ArtKit.Hits hits, Vec3 at, int color) {
-		ServerLevel level = (ServerLevel) (ServerLevel) player.level();
+		ServerLevel level = (ServerLevel) player.level();
 		player.resetFallDistance();
 		Vec3 ground = ArtKit.floor(level, at, 0.5, 2);
 		Vec3 base = ground == null ? at : ground;

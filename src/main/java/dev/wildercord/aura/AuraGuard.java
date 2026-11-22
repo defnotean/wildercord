@@ -254,7 +254,7 @@ public final class AuraGuard {
 	static void feedback(ServerPlayer player) {
 		AuraVfx.perfect(player, Aura.color(player));
 		Aura.sound(player, "aura_perfect_guard", 1.0F, 1.0F);
-		dev.wildercord.cast.Fx.sound(player.level(), player.position(), WildercordSounds.SHIELD_PARRY, 0.8F, 1.2F);
+		dev.wildercord.cast.Fx.sound((ServerLevel) player.level(), player.position(), WildercordSounds.SHIELD_PARRY, 0.8F, 1.2F);
 		ScreenFx.kick(player, 0.35F);
 		player.displayClientMessage(Component.translatable("message.wildercord.aura.perfect_guard").withColor(PERFECT_COLOR), true);
 	}

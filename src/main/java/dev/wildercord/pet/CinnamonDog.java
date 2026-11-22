@@ -594,7 +594,7 @@ public final class CinnamonDog extends TamableAnimal {
 		return deadline <= now ? 0 : Math.min(deadline, now + maximum);
 	}
 
-	@Override protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putBoolean("CinnamonSitting", savedSitting);
 		output.putBoolean("CinnamonBow", bow);
@@ -605,7 +605,7 @@ public final class CinnamonDog extends TamableAnimal {
 		output.putLong("CinnamonDamageImmuneUntil", damageImmuneUntil);
 	}
 
-	@Override protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	@Override public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		restoreState(input.getBooleanOr("CinnamonSitting", isOrderedToSit()), input.getBooleanOr("CinnamonBow", false),
 			input.getDoubleOr("CinnamonScale", 1), input.getLongOr("CinnamonGrowthUntil", 0), input.getFloatOr("CinnamonDamage", 0),

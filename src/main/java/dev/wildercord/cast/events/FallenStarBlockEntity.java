@@ -15,6 +15,7 @@ import java.util.List;
 import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 
 /**
@@ -53,8 +54,8 @@ public class FallenStarBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.loadAdditional(inputTag);
+	protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inputTag, registries);
 		rune = input.getStringOr("rune", "");
 		beaconUntil = input.getLongOr("beacon_until", 0L);
 		fadeAt = input.getLongOr("fade_at", 0L);
@@ -64,8 +65,8 @@ public class FallenStarBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.saveAdditional(outputTag);
+	protected void saveAdditional(CompoundTag outputTag, HolderLookup.Provider registries) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outputTag, registries);
 		output.putString("rune", rune);
 		output.putLong("beacon_until", beaconUntil);
 		output.putLong("fade_at", fadeAt);

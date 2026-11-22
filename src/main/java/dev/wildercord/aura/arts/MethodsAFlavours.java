@@ -52,7 +52,7 @@ public final class MethodsAFlavours {
 		Reactions.mark(foe, Reactions.Mark.WET, ticks);
 		foe.clearFire();
 		ArtKit.slow(player, foe, Math.max(10, ticks / 2), 0);
-		ServerLevel level = (ServerLevel) (ServerLevel) foe.level();
+		ServerLevel level = (ServerLevel) foe.level();
 		Vfx.emit(level, ParticleTypes.SPLASH, foe.getBoundingBox().getCenter(), 8, 0.3, 0.1);
 		Vfx.emit(level, ParticleTypes.FALLING_WATER, foe.position().add(0, foe.getBbHeight(), 0), 4, 0.25, 0.0);
 	}
@@ -97,7 +97,7 @@ public final class MethodsAFlavours {
 			instance.addOrUpdateTransientModifier(new AttributeModifier(SUNDERED, -(sundered + took), AttributeModifier.Operation.ADD_VALUE));
 		}
 		Scheduler.later(ticks + 1, () -> unsunder(foe));
-		ServerLevel level = (ServerLevel) (ServerLevel) foe.level();
+		ServerLevel level = (ServerLevel) foe.level();
 		Vfx.emit(level, ParticleTypes.CRIT, foe.getBoundingBox().getCenter(), 10, 0.35, 0.25);
 		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.IRON_BLOCK.defaultBlockState()), foe.getBoundingBox().getCenter(), 6, 0.3, 0.1);
 		return took;
@@ -136,7 +136,7 @@ public final class MethodsAFlavours {
 			return 0;
 		}
 		int t = DuneRules.blind(ticks, foe instanceof Player, ArtKit.boss(foe));
-		ServerLevel level = (ServerLevel) (ServerLevel) foe.level();
+		ServerLevel level = (ServerLevel) foe.level();
 		Vfx.emit(level, new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.SAND.defaultBlockState()), foe.getEyePosition(), 10, 0.3, 0.02);
 		if (t <= 0) {
 			return 0;
@@ -165,7 +165,7 @@ public final class MethodsAFlavours {
 			Vec3 v = foe.getDeltaMovement();
 			foe.setDeltaMovement(v.x * 0.4, Math.min(v.y, -0.08), v.z * 0.4);
 		}
-		ServerLevel level = (ServerLevel) (ServerLevel) foe.level();
+		ServerLevel level = (ServerLevel) foe.level();
 		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SAND.defaultBlockState()), foe.position().add(0, 0.1, 0), 8, 0.35, 0.05);
 		return true;
 	}

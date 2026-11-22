@@ -656,7 +656,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	// ------------------------------------------------------------------ saving (only ever a waiting familiar)
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putString("element", element());
 		output.putByte("mode", mode());
@@ -671,7 +671,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		setElement(input.getStringOr("element", "arcane"));
 		entityData.set(DATA_MODE, input.getByteOr("mode", WILD));

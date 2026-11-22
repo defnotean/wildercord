@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Breakthroughs: at each stage's threshold aura waits, full to its limit, for a trial. For Flow and Edge either of these makes

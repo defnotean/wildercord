@@ -740,7 +740,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		McEntityReference.store(getOwnerReference(), output, "Owner");
 		output.putBoolean("Staying", staying);
@@ -762,7 +762,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		entityData.set(DATA_OWNER, Optional.ofNullable(McEntityReference.read(input, "Owner")));
 		staying = input.getBooleanOr("Staying", false);

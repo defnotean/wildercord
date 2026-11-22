@@ -4,6 +4,7 @@ import dev.wildercord.cast.ElementFx;
 import dev.wildercord.cast.feel.Feels;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
 
 /** Two open breathing strands at the back and sides; no circles or first-person veil. */
 public final class UnityFx {
@@ -27,7 +28,7 @@ public final class UnityFx {
 	public static void flow(ServerPlayer p,boolean manaToAura) {
 		long now=Unity.now(p);if(now-p.getAttachedOrElse(FLOW_AT,-100L)<4)return;p.setAttached(FLOW_AT,now);
 		var f=forward(p);var side=new Vec3(f.z,0,-f.x);var at=p.position().subtract(f.scale(.32)).add(side.scale(manaToAura?.42:-.42)).add(0,.65,0);
-		for(int i=0;i<3;i++)ElementFx.ray(p.level(),at.add(0,i*.16,0),at.add(side.scale(manaToAura?.11:-.11)).add(0,i*.16+.12,0),manaToAura?auraColor(p):0x79BFFF,.018,8);
+		for(int i=0;i<3;i++)ElementFx.ray((ServerLevel) p.level(),at.add(0,i*.16,0),at.add(side.scale(manaToAura?.11:-.11)).add(0,i*.16+.12,0),manaToAura?auraColor(p):0x79BFFF,.018,8);
 		if(now-p.getAttachedOrElse(VOICE_AT,-100L)>=20){p.setAttached(VOICE_AT,now);Feels.sound((ServerLevel) p.level(),p.position(),"aura_unity_flow",.35F,1);}
 	}
 	public static void breathe(ServerPlayer p) {

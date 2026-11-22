@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.function.Predicate;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Runs from the nearest player it fears, at a walk, then flat out once they're within seven blocks. Like vanilla's
@@ -37,7 +38,7 @@ final class FleeGoal extends Goal {
 	public boolean canUse() {
 		threat = null;
 		double nearest = range * range;
-		for (Player player : mob.level().players()) {
+		for (Player player : ((ServerLevel) mob.level()).players()) {
 			double d = mob.distanceToSqr(player);
 			if (d < nearest && Math.abs(player.getY() - mob.getY()) < 4 && fears.test(player) && (d < 36 || mob.hasLineOfSight(player))) {
 				nearest = d;
