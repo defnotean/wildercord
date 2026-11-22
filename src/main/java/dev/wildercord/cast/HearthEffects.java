@@ -983,7 +983,7 @@ public final class HearthEffects {
 		}
 		caster.openMenu(new SimpleMenuProvider((id, inv, p) -> new ChestMenu(MenuType.GENERIC_9x1, id, inv, box, 1),
 			Component.translatable("container.wildercord.hollow_pocket")));
-		Fx.sound((ServerLevel) (ServerLevel) caster.level(), caster.position(), SoundEvents.BUNDLE_DROP_CONTENTS, 0.7f, 0.8f;
+		Fx.sound((ServerLevel) caster.level(), caster.position(), SoundEvents.BUNDLE_DROP_CONTENTS, 0.7f, 0.8f);
 	}
 
 	private static void skyread(ServerPlayer caster, ServerLevel level) {
@@ -1043,7 +1043,7 @@ public final class HearthEffects {
 			return;
 		}
 		POINTERS.put(p.getUUID(), new Pointer(dim, List.copyOf(to), now + ticks, color, label));
-		Fx.sound((ServerLevel) (ServerLevel) p.level(), p.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8f, 1.2f;
+		Fx.sound((ServerLevel) p.level(), p.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8f, 1.2f);
 	}
 
 	private static boolean overFarmland(ServerLevel level, BlockPos feet) {

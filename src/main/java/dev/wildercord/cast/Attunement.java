@@ -110,8 +110,8 @@ public final class Attunement {
 		} else if (checks < CHECKS && checks % perStage == 0) {
 			int stage = checks / perStage;
 			player.displayClientMessage(Component.translatable("message.wildercord.attune_stage." + stage).withColor(color), true);
-			Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.8F + stage * 0.25F);
-			Sigils.flash((ServerLevel) (ServerLevel) player.level(), hold(player), color, 0.6F + stage * 0.3F);
+			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.8F + stage * 0.25F);
+			Sigils.flash((ServerLevel) player.level(), hold(player), color, 0.6F + stage * 0.3F);
 			// A pulse runs out from the circle's rim, stronger each stage.
 			Light.groundRing(player.level(), player.position(), color, 1.5, 2.4 + stage * 0.5, 0.04 + stage * 0.015, 12);
 		}
@@ -215,7 +215,7 @@ public final class Attunement {
 
 	private static void broken(ServerPlayer player) {
 		player.displayClientMessage(Component.translatable("message.wildercord.attune_broken").withStyle(ChatFormatting.GRAY), true);
-		Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.5F);
+		Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.5F);
 	}
 
 	/** How far along a player's attunement is (0 to 1), for the tests. */

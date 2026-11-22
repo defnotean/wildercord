@@ -255,7 +255,7 @@ public final class Imbuing {
 		}
 		strip(stack, imbued);
 		holder.displayClientMessage(Component.translatable("message.wildercord.imbue_faded", stack.getHoverName()).withStyle(ChatFormatting.GRAY), true);
-		Fx.sound((ServerLevel) (ServerLevel) holder.level(), holder.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F;
+		Fx.sound((ServerLevel) holder.level(), holder.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
 		return false;
 	}
 
@@ -453,7 +453,7 @@ public final class Imbuing {
 			strip(stack, imbued);
 			Ledger.of(player.level()).forget(imbued);
 			player.displayClientMessage(Component.translatable("message.wildercord.imbue_spent", stack.getHoverName()).withStyle(ChatFormatting.GRAY), true);
-			Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F;
+			Fx.sound((ServerLevel) player.level(), player.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
 		} else {
 			stack.set(WildercordComponents.IMBUED, imbued.withCharges(left));
 		}

@@ -154,7 +154,7 @@ public final class Charging {
 		// The spell went off if its cooldown started (not if it lacked mana, or is waiting to overcast).
 		if (Spellbooks.readyAt(player, charge.spell()) != readyAt) {
 			if (progress >= RELEASE_FROM) {
-				Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), WildercordSounds.RELEASE, 0.5F + 0.5F * (float) progress, 1.0F;
+				Fx.sound((ServerLevel) player.level(), player.position(), WildercordSounds.RELEASE, 0.5F + 0.5F * (float) progress, 1.0F);
 				ScreenFx.kick(player, (float) progress);
 			}
 			if (performance.onBeat()) {
@@ -315,7 +315,7 @@ public final class Charging {
 			new WildercordAttachments.Charge(spell, now, List.copyOf(ids), full, stages, 0, now + full, tuning.tracing()));
 		player.getAttribute(Attributes.MOVEMENT_SPEED).addOrUpdateTransientModifier(
 			new AttributeModifier(SLOW, -0.4, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-		Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F;
+		Fx.sound((ServerLevel) player.level(), player.position(), WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F);
 	}
 
 	private static void stop(ServerPlayer player) {
@@ -430,13 +430,13 @@ public final class Charging {
 		long held = player.level().getGameTime() - charge.start();
 		int full = fullTicks(player);
 		if (held >= full && held < full + 5) {
-			Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), WildercordSounds.CHARGE_FULL, 0.8F, 1.0F;
+			Fx.sound((ServerLevel) player.level(), player.position(), WildercordSounds.CHARGE_FULL, 0.8F, 1.0F);
 		}
 		if (held > MAX_HOLD || Spellbooks.tier(player) == null || !player.isAlive() || player.isSpectator()) {
 			stop(player);
 			FIZZLED.add(player.getUUID());
 			player.displayClientMessage(Component.translatable("message.wildercord.charge_fizzled").withStyle(ChatFormatting.GRAY), true);
-			Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F;
+			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
 		}
 	}
 

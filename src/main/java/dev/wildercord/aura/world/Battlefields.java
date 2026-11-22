@@ -73,7 +73,7 @@ public final class Battlefields {
 			player.displayClientMessage(Component.translatable("message.wildercord.battlefield.stance"), true); return;
 		}
 		if (RITES.containsKey(player.getUUID())) return;
-		RITES.put(player.getUUID(),new Rite((ServerLevel) (ServerLevel) player.level(),pos.immutable(),kind,0));
+		RITES.put(player.getUUID(),new Rite((ServerLevel) player.level(),pos.immutable(),kind,0));
 		Feels.sound((ServerLevel) player.level(),Vec3.atCenterOf(pos),"aura_memory_begin",0.6F,1);
 	}
 

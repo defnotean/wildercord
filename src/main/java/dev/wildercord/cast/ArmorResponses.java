@@ -39,7 +39,7 @@ public final class ArmorResponses {
 			boolean hasRime=ElementalArmor.count(p,ElementalArmor.Kind.RIMEBOUND)>0,hasMirror=ElementalArmor.count(p,ElementalArmor.Kind.MIRROR_THREAD)>0;
 			if(edge && (hasRime&&rime==0 || hasMirror&&mirror==0)) {
 				if(hasRime&&rime==0){rime=80;rimeWindow=12;}if(hasMirror&&mirror==0){mirror=100;mirrorWindow=12;}
-				Light.groundRing((ServerLevel) (ServerLevel) p.level(),p.position(),hasMirror?0xEDCAFF:0xA8EAFF,.3,1.1,.025,12);
+				Light.groundRing((ServerLevel) p.level(),p.position(),hasMirror?0xEDCAFF:0xA8EAFF,.3,1.1,.025,12);
 				p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.armor_guard"), true);
 			}
 			var next=new State(rimeWindow,mirrorWindow,rime,mirror,p.isShiftKeyDown());
