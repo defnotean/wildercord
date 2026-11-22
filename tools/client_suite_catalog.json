@@ -24,9 +24,9 @@
     ]
   },
   "area-combat-bosses": {
-    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, a cooperative Ferryman crossing, monsters, aura beasts, Oathbound high knights, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world.",
+    "description": "Combat and bosses: damage gates, wild monster pressure, dungeon guardians, battlefields, sleeping blade, a cooperative Ferryman crossing, monsters, aura beasts, Oathbound high knights, boss damage through armour, trees kept out of boss arenas, a Master gauntlet that ends with its world, and Deep Ocean enemies & Thalassor boss.",
     "purpose": "area",
-    "expectedCount": 16,
+    "expectedCount": 17,
     "entries": [
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.monster.WildMonsterPressureTest",
@@ -43,7 +43,8 @@
       "dev.wildercord.aura.world.OathboundBannerMarshalTest",
       "dev.wildercord.aura.world.BossDamageTest",
       "dev.wildercord.world.dungeons.ArenaTreeClearingTest",
-      "dev.wildercord.aura.world.GauntletRestartTest"
+      "dev.wildercord.aura.world.GauntletRestartTest",
+      "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest"
     ]
   },
   "area-combat-arts": {
@@ -83,9 +84,9 @@
     ]
   },
   "area-regions-worldgen": {
-    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, every dungeon's wards holding their rooms against a survival player, and the forest White Rabbit leading players into Hollow Tree portals.",
+    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, every dungeon's wards holding their rooms against a survival player, the forest White Rabbit leading players into Hollow Tree portals, and the 5 Deep Ocean structures.",
     "purpose": "area",
-    "expectedCount": 12,
+    "expectedCount": 13,
     "entries": [
       "dev.wildercord.wildlife.RootmoltEncounterTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
@@ -98,13 +99,14 @@
       "dev.wildercord.wildlife.RainshieldFaultTest",
       "dev.wildercord.cast.RuneSealDoorTest",
       "dev.wildercord.world.dungeons.DungeonWardSealTest",
-      "dev.wildercord.wildlife.WhiteRabbitHoleTest"
+      "dev.wildercord.wildlife.WhiteRabbitHoleTest",
+      "dev.wildercord.ocean.DeepOceanStructuresTest"
     ]
   },
   "area-items-crafting": {
-    "description": "Items and crafting: research library, learn-all fusion, familiar content systems, Weaver's Silk stow key, casting gear loot, the backpack menu, the fusion altar menu.",
+    "description": "Items and crafting: research library, learn-all fusion, familiar content systems, Weaver's Silk stow key, casting gear loot, the backpack menu, the fusion altar menu, and Abyssal Diving gear, weapons & Trench Anvil forging/repair.",
     "purpose": "area",
-    "expectedCount": 7,
+    "expectedCount": 8,
     "entries": [
       "dev.wildercord.player.ResearchLibraryTest",
       "dev.wildercord.command.LearnAllFusionTest",
@@ -112,7 +114,8 @@
       "dev.wildercord.aura.world.WeaversSilkStowTest",
       "dev.wildercord.gear.GearLootTest",
       "dev.wildercord.backpack.BackpackMenuTest",
-      "dev.wildercord.menu.FusionAltarMenuTest"
+      "dev.wildercord.menu.FusionAltarMenuTest",
+      "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest"
     ]
   },
   "area-guis-hud": {
@@ -139,9 +142,9 @@
     ]
   },
   "area-mounts-taming": {
-    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill, and iron golems passing a tamed one by while still taking up with an untamed one beside it) and berry-tamed thistle hedgehogs (sit, follow, heal, hoglets), the four Shrine Cats (Yuki, Odie, Freya, Kuro), Sakura Village, Cat Sanctuary dungeon yields/perks/taming/persistence, Lantern Bathhouse, custom mobs/NPCs, Ricochet/Suzu Chime/Ofuda Ward runes, and Archivist/Serpent anti-cheese guards, the first ride on a freshly tamed Ridgeback Stag (bond grows, remount starts fresh), mount bond perks (level speed and health, the sprint-key dash, the landing strike sparing pets, kept through reopen, a new rider starting over), the bonded skyray (the bridle call and its cooldown, flying along the look, slow falling on stepping off, lingering then leaving, one at a time, kept through reopen, unhurt by its rider, the fallen cooldown), and Cinnamon's companion upgrades (party low-HP lick healing, universal passive magic, permanent Grand Bow, 4-rider flying harness with 54-slot twin side chests, owner-exclusive steering, 2-3s hit pause, and reopen persistence).",
+    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill, and iron golems passing a tamed one by while still taking up with an untamed one beside it) and berry-tamed thistle hedgehogs (sit, follow, heal, hoglets), the four Shrine Cats (Yuki, Odie, Freya, Kuro), Sakura Village, Cat Sanctuary dungeon yields/perks/taming/persistence, Lantern Bathhouse, custom mobs/NPCs, Ricochet/Suzu Chime/Ofuda Ward runes, and Archivist/Serpent anti-cheese guards, the first ride on a freshly tamed Ridgeback Stag (bond grows, remount starts fresh), mount bond perks (level speed and health, the sprint-key dash, the landing strike sparing pets, kept through reopen, a new rider starting over), the bonded skyray (the bridle call and its cooldown, flying along the look, slow falling on stepping off, lingering then leaving, one at a time, kept through reopen, unhurt by its rider, the fallen cooldown), Cinnamon's companion upgrades, and Lumi-Seahorse / Pearl-Pup / Singing Moon-Whale.",
     "purpose": "area",
-    "expectedCount": 7,
+    "expectedCount": 8,
     "entries": [
       "dev.wildercord.monster.CofferMimicTamingTest",
       "dev.wildercord.wildlife.ThistleHedgehogTamingTest",
@@ -149,13 +152,14 @@
       "dev.wildercord.wildlife.StagFirstRideTest",
       "dev.wildercord.wildlife.MountBondPerksTest",
       "dev.wildercord.wildlife.SkyrayFlightTest",
-      "dev.wildercord.pet.CinnamonCompanionTest"
+      "dev.wildercord.pet.CinnamonCompanionTest",
+      "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest"
     ]
   },
   "area-towns-guards": {
-    "description": "Towns and packet guards: the inn room chest shuts when its traveller walks off; the Cord screen inscribes no scroll for a spectator; an inn raid belongs to its own dimension; camp pot, bounty board, sunder and practice room entry state is forgotten when a world closes; every network payload survives its own codec round trip; homes, warps and /back keep their warmup, cooldown, cancels and home limit; a named-elite bounty sets one marked champion loose 48 to 96 blocks out, and only the hunter's kill of it counts; an escort bounty hands over a tough, chested pack llama on a lead, abandoning it drops its cargo, arriving pays out, a dead llama loses the bounty and one left from an earlier escort loses nothing and is taken back; a wandering caravan camps 24 to 40 blocks off with its two pack llamas, sells a stranger two runes and saffron, keeps a traveller's stock, never camps beside another and moves on when its stay ends; a Room Key lets a room only beside a keeper, a second adds its days, the traveller wakes there after dying with room and chest kept, and a stay that runs out ends; a bell is a hamlet only with three villagers about it, greets the traveller, earns standing from a trade and nearby kills up to a day's limit, makes them known with its favour and keeps it through a reopen.",
+    "description": "Towns and packet guards: inn chests, raid dimensions, session maps, codec round trips, travel commands, bounties, caravans, Room Keys, hamlet standings, and Tidefolk Brine-Merchant trading.",
     "purpose": "area",
-    "expectedCount": 10,
+    "expectedCount": 11,
     "entries": [
       "dev.wildercord.town.InnChestReachTest",
       "dev.wildercord.town.InnRaidDimensionTest",
@@ -166,7 +170,8 @@
       "dev.wildercord.town.BountyEscortTest",
       "dev.wildercord.town.CaravanTest",
       "dev.wildercord.town.InnRoomStayTest",
-      "dev.wildercord.town.HamletStandingTest"
+      "dev.wildercord.town.HamletStandingTest",
+      "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest"
     ]
   },
   "dungeon-ward-seal": {
@@ -213,6 +218,15 @@
       "dev.wildercord.world.sites.OathholdMegacityTest",
       "dev.wildercord.world.sites.OathholdGuildAndLawTest",
       "dev.wildercord.world.sites.OathholdPrisonAndRebuildTest"
+    ]
+  },
+  "deep-ocean": {
+    "description": "Deep Ocean Expansion 1:1 native suite: all 9 entities, 3 Brine-Merchant professions, Lumi-Seahorse 3D riding + dash, Pearl-Pup taming + treasure sniff, Singing Moon-Whale song + ambergris, Thalassor 3-phase boss + Sovereign Altar respawn, Abyssal Diving Suit, 3D Harpoon/Glaive/Conch/Lantern, Trench Anvil forging/repair, and all 5 Deep Ocean structures.",
+    "purpose": "area",
+    "expectedCount": 2,
+    "entries": [
+      "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest",
+      "dev.wildercord.ocean.DeepOceanStructuresTest"
     ]
   },
   "structure-gallery": {

@@ -299,8 +299,23 @@ See [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}) and [Windscar 
 | **Shrine of the Tide** | Ley Walker | Find the shrine on the floor of a warm sea | 20 XP |
 | **Pools Left by the Tide** | Ley Walker | Find a tidepool grotto on a stony shore | 20 XP |
 | **Run of the Mill** | Ley Walker | Find a watermill on a river bank | 20 XP |
+| **Tidefolk Haven** | Ley Walker | Find a Coral-Dome Tidefolk Sanctuary and meet its underwater merchants | 20 XP |
+| **Sunken Flagship** | Ley Walker | Board a Sunken Sovereign Galleon resting on the ocean floor | 20 XP |
+| **Watch Over the Deep** | Ley Walker | Reach a Kelp-Spire Watchtower linking the seabed to the surface | 20 XP |
+| **Volcanic Deep** | Ley Walker | Discover a Hydrothermal Vent Forge and its Trench Anvil | 20 XP |
+| **Throne of Thalassor** | Ley Walker | Enter an Abyssal Trench Citadel and its sunken Boss Colosseum | 20 XP |
 
-See [Water Sites]({{ '/world/water-sites/' | relative_url }}).
+See [Water Sites]({{ '/world/water-sites/' | relative_url }}) and [Deep Ocean Expansion]({{ '/world/deep-ocean/' | relative_url }}).
+
+### Deep Ocean
+
+| Advancement | Parent | How you earn it | Experience |
+|---|---|---|---|
+| **Pressurized Plunge** | Ley Walker | Forge and wear any piece of the Abyssal Diving Suit | 25 XP |
+| **Trench-Forged Arsenal** | Pressurized Plunge | Obtain a Tide-Cleaver Harpoon or Leviathan Glaive | 25 XP |
+| **Salt & Pearl Commerce** | Pressurized Plunge | Trade with a Tidefolk Brine-Merchant inside the depths | 20 XP |
+| **Pocket of Calm** | Pressurized Plunge | Sound a Tidecaller Conch to conjure a breathable Air Dome | 20 XP |
+| **Sovereign of the Trench** | Trench-Forged Arsenal | Defeat Thalassor, Abyssal Sovereign and claim its Heart-Pearl | 100 XP |
 
 ### The wilds
 
@@ -326,14 +341,14 @@ See [Wild Places]({{ '/world/wilds-sites/' | relative_url }}), [Oathhold]({{ '/w
 
 ## Totals
 
-168 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+178 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 121 |
-| Goals | 33 |
+| Tasks | 130 |
+| Goals | 34 |
 | Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 15,000 |
+| Experience for all of them | 15,290 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |

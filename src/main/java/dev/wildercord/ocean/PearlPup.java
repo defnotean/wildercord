@@ -192,7 +192,7 @@ public class PearlPup extends TamableAnimal {
 		int cz0 = origin.getZ() >> 4;
 		for (int dx = -rChunks; dx <= rChunks; dx++) {
 			for (int dz = -rChunks; dz <= rChunks; dz++) {
-				if (!server.hasChunk((cx0 + dx) << 4, (cz0 + dz) << 4)) continue;
+				if (!server.hasChunk(cx0 + dx, cz0 + dz)) continue;
 				LevelChunk chunk = server.getChunk(cx0 + dx, cz0 + dz);
 				for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
 					BlockEntity be = entry.getValue();

@@ -91,6 +91,8 @@
       "dev.wildercord.world.sites.OathholdPrisonAndRebuildTest",
       "dev.wildercord.pet.CinnamonCompanionTest",
       "dev.wildercord.wildlife.WhiteRabbitHoleTest",
+      "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest",
+      "dev.wildercord.ocean.DeepOceanStructuresTest",
       "dev.wildercord.gametest.WildercordFeatureTour"
     ]
   },

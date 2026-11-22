@@ -67,6 +67,7 @@ upgrade tool doesn't add them either, so head out past the edge of your map to f
 | [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }}) | Hills, meadows, underground, Belowkeeper Hollows, badlands, the Nether | Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry, Deepslate Vault, Prospector's Camp, Miner's Rest, Belowkeeper Listening Station, Belowkeeper Bell Sanctum |
 | [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}) | Flat ground and highland shelves across the Overworld | Wayfarer Inn, Watchtower, Broken Bridge, Rune Library, Standing Stones, Caravan Camp, Cartographer's Hut, Vow Circle, Highland Cairn Lodge, Highland Survey Ring |
 | [Water Sites]({{ '/world/water-sites/' | relative_url }}) | Rivers, swamps, Luminous Reedlands, coasts, warm seas, frozen water | Tideward Reedkeeper Landing, The Last Crossing, Stilt Smokehouse, Lighthouse, Watermill, Ice Fishing Camp, Pier and Boathouse, Sunken Shrine, Net-Weavers' Huts, Tidepool Grotto |
+| [Deep Ocean Expansion]({{ '/world/deep-ocean/' | relative_url }}) | Oceans, deep oceans, lukewarm & cold seas | Coral-Dome Tidefolk Sanctuary, Sunken Sovereign Galleon, Kelp-Spire Watchtower, Hydrothermal Vent Forge, Abyssal Trench Citadel |
 | [Wild Places]({{ '/world/wilds-sites/' | relative_url }}) | Jungle, desert, snow, badlands, Emberwood Reach, cherry groves, plains, rivers, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern, Emberwood Charcoal Yard, Emberwood Kiln Court, Sakura Village, Sakura Canal Harbor, Sakura Onsen Village, Sakura Castle-Town |
 
 ## Sword Masters
@@ -175,6 +176,7 @@ A trophy is kept, not spent. Use it for its gift, then it rests for 5 minutes. F
 - [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }})
 - [Roadside Sites]({{ '/world/travel-sites/' | relative_url }})
 - [Water Sites]({{ '/world/water-sites/' | relative_url }})
+- [Deep Ocean Expansion]({{ '/world/deep-ocean/' | relative_url }})
 - [Wild Places]({{ '/world/wilds-sites/' | relative_url }})
 
 **Monsters and creatures**
