@@ -86,7 +86,7 @@ public final class TidewardEquipment {
  private static void sight(ServerPlayer p){
   var state=p.getAttachedOrCreate(SIGHT);var worn=p.getItemBySlot(EquipmentSlot.HEAD);
   if(!actor(p) || !p.isShiftKeyDown() || !worn.is(SPECTACLES) || clock(p)<p.getAttachedOrElse(SIGHT_READY,0L)){
-   state.target=null;state.ticks=0;state.world=p.level();state.worn=worn;return;
+   state.target=null;state.ticks=0;state.world=((ServerLevel) p.level());state.worn=worn;return;
   }
   if(state.world!=((ServerLevel) p.level()) || state.worn!=worn){state.target=null;state.ticks=0;state.world=((ServerLevel) p.level());state.worn=worn;}
   ReedbackCrab crab=state.target!=null && p.level().getEntity(state.target) instanceof ReedbackCrab c?c:null;

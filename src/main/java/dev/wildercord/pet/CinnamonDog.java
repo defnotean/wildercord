@@ -514,7 +514,7 @@ public final class CinnamonDog extends TamableAnimal {
 		settled = 0;
 		player.setAttached(CinnamonState.BOW, on);
 		changed();
-		level().playSound(null, getX(), getY(), getZ(), on ? net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value() : net.minecraft.sounds.SoundEvents.SHEARS_SNIP,
+		level().playSound(null, getX(), getY(), getZ(), on ? net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value() : net.minecraft.sounds.SoundEvents.SHEEP_SHEAR.value(),
 			net.minecraft.sounds.SoundSource.NEUTRAL, 0.8F, 1.3F);
 	}
 

@@ -159,7 +159,7 @@ abstract class TravelPiece extends DungeonPiece {
 		mob.setPersistenceRequired();
 		mob.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
-		mob.setHomeTo(at, radius);
+		mob.setHome(at, radius);
 		level.addFreshEntityWithPassengers(mob);
 	}
 }

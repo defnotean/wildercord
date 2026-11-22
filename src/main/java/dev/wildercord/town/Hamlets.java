@@ -116,7 +116,7 @@ public final class Hamlets {
 	/** Greets a traveller coming into a hamlet, and keeps its favour on them while they stay. */
 	static void visit(ServerPlayer player) {
 		if (player.isSpectator()) return;
-		BlockPos bell = bell(player.level(), player.blockPosition());
+		BlockPos bell = bell(((ServerLevel) player.level()), player.blockPosition());
 		if (bell == null) {
 			IN.remove(player.getUUID());
 			return;

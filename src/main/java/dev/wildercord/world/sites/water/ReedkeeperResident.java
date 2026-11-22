@@ -74,7 +74,7 @@ public final class ReedkeeperResident {
 		resident.setCustomName(Component.translatable("entity.wildercord.reedkeeper"));
 		resident.setCustomNameVisible(true);
 		resident.setPersistenceRequired();
-		resident.setHomeTo(at, 6);
+		resident.setHome(at, 6);
 		resident.addTag(WaterPiece.RESIDENT);
 		resident.addTag(TAG);
 		return level.addFreshEntity(resident);

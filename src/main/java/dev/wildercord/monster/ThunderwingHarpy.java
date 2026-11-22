@@ -117,7 +117,7 @@ public class ThunderwingHarpy extends WildMonster {
 	@Override
 	public void travel(Vec3 input) {
 		if (flying()) {
-			travelFlying(input, 0.02F);
+			travelFlying(input);
 		} else {
 			super.travel(input);
 		}
