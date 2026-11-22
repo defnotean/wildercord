@@ -91,7 +91,7 @@ public final class HollowTreeBuilder {
 	 * glowing {@link RabbitHolePortalBlock} at {@code base}. Returns the portal position.
 	 */
 	public static BlockPos placeHollowTree(ServerLevel level, BlockPos base, Direction facing,
-			@Nullable WhiteRabbitRules.Outcome forcedOutcome) {
+			WhiteRabbitRules.@Nullable Outcome forcedOutcome) {
 		level.getChunk(base);
 		Direction front = facing.getAxis().isHorizontal() ? facing : Direction.SOUTH;
 		Direction back = front.getOpposite();
@@ -99,7 +99,7 @@ public final class HollowTreeBuilder {
 		Direction right = front.getClockWise();
 
 		BlockState wood = Blocks.DARK_OAK_WOOD.defaultBlockState();
-		BlockState darkWall = Blocks.BLACK_CONCRETE.defaultBlockState();
+		BlockState darkWall = Blocks.OBSIDIAN.defaultBlockState();
 		BlockState moss = Blocks.MOSS_BLOCK.defaultBlockState();
 		BlockState leaves = Blocks.DARK_OAK_LEAVES.defaultBlockState().setValue(LeavesBlock.PERSISTENT, true);
 		BlockState lantern = Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true);

@@ -198,7 +198,7 @@ public class WhiteRabbit extends Animal {
 	 * {@code treeBase}, optionally pinning the portal's {@code forcedOutcome} (null for random roll).
 	 */
 	public BlockPos leadToHollowTree(ServerPlayer player, BlockPos treeBase,
-			@Nullable WhiteRabbitRules.Outcome forcedOutcome) {
+			WhiteRabbitRules.@Nullable Outcome forcedOutcome) {
 		if (!(level() instanceof ServerLevel level)) {
 			return treeBase;
 		}
