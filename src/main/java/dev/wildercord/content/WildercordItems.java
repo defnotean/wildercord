@@ -66,6 +66,8 @@ public final class WildercordItems {
 				output.accept(TRAINING_DUMMY);
 				output.accept(dev.wildercord.pet.CinnamonContent.TOY);
 				output.accept(dev.wildercord.pet.CinnamonContent.BOW);
+				output.accept(dev.wildercord.pet.CinnamonContent.GRAND_BOW);
+				output.accept(dev.wildercord.pet.CinnamonContent.HARNESS);
 				output.accept(dev.wildercord.pet.CinnamonContent.WHISTLE);
 				output.accept(BACKPACK);
 				output.accept(REINFORCED_BACKPACK);

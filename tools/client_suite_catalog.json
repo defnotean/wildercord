@@ -138,16 +138,17 @@
     ]
   },
   "area-mounts-taming": {
-    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill, and iron golems passing a tamed one by while still taking up with an untamed one beside it) and berry-tamed thistle hedgehogs (sit, follow, heal, hoglets), the four Shrine Cats (Yuki, Odie, Freya, Kuro), Sakura Village, Cat Sanctuary dungeon yields/perks/taming/persistence, Lantern Bathhouse, custom mobs/NPCs, Ricochet/Suzu Chime/Ofuda Ward runes, and Archivist/Serpent anti-cheese guards, and the first ride on a freshly tamed Ridgeback Stag (bond grows, remount starts fresh), and mount bond perks (level speed and health, the sprint-key dash, the landing strike sparing pets, kept through reopen, a new rider starting over), and the bonded skyray (the bridle call and its cooldown, flying along the look, slow falling on stepping off, lingering then leaving, one at a time, kept through reopen, unhurt by its rider, the fallen cooldown).",
+    "description": "Mounts and taming: book-tamed coffer mimics (follow, chest, pet, stay, save, spill, and iron golems passing a tamed one by while still taking up with an untamed one beside it) and berry-tamed thistle hedgehogs (sit, follow, heal, hoglets), the four Shrine Cats (Yuki, Odie, Freya, Kuro), Sakura Village, Cat Sanctuary dungeon yields/perks/taming/persistence, Lantern Bathhouse, custom mobs/NPCs, Ricochet/Suzu Chime/Ofuda Ward runes, and Archivist/Serpent anti-cheese guards, the first ride on a freshly tamed Ridgeback Stag (bond grows, remount starts fresh), mount bond perks (level speed and health, the sprint-key dash, the landing strike sparing pets, kept through reopen, a new rider starting over), the bonded skyray (the bridle call and its cooldown, flying along the look, slow falling on stepping off, lingering then leaving, one at a time, kept through reopen, unhurt by its rider, the fallen cooldown), and Cinnamon's companion upgrades (party low-HP lick healing, universal passive magic, permanent Grand Bow, 4-rider flying harness with 54-slot twin side chests, owner-exclusive steering, 2-3s hit pause, and reopen persistence).",
     "purpose": "area",
-    "expectedCount": 6,
+    "expectedCount": 7,
     "entries": [
       "dev.wildercord.monster.CofferMimicTamingTest",
       "dev.wildercord.wildlife.ThistleHedgehogTamingTest",
       "dev.wildercord.wildlife.ShrineSanctuaryTest",
       "dev.wildercord.wildlife.StagFirstRideTest",
       "dev.wildercord.wildlife.MountBondPerksTest",
-      "dev.wildercord.wildlife.SkyrayFlightTest"
+      "dev.wildercord.wildlife.SkyrayFlightTest",
+      "dev.wildercord.pet.CinnamonCompanionTest"
     ]
   },
   "area-towns-guards": {
