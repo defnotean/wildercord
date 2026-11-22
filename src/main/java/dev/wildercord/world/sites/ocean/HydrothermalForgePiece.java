@@ -42,7 +42,7 @@ public final class HydrothermalForgePiece extends OceanPiece {
 		ChunkPos cp = ctx.chunkPos();
 		int x = cp.getMinBlockX();
 		int z = cp.getMinBlockZ();
-		BoundingBox probe = StructurePiece.makeBoundingBox(x, 0, z, Direction.NORTH, WIDTH, 1, DEPTH);
+		BoundingBox probe = makeBoundingBox(x, 0, z, Direction.NORTH, WIDTH, 1, DEPTH);
 		var floorOpt = locateSubmergedFloor(ctx, probe, 16, 10);
 		if (floorOpt.isEmpty()) return Optional.empty();
 		int floor = floorOpt.getAsInt();

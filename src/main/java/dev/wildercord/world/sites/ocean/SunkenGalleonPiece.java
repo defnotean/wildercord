@@ -40,7 +40,7 @@ public final class SunkenGalleonPiece extends OceanPiece {
 		ChunkPos cp = ctx.chunkPos();
 		int x = cp.getMinBlockX();
 		int z = cp.getMinBlockZ();
-		BoundingBox probe = StructurePiece.makeBoundingBox(x, 0, z, Direction.EAST, WIDTH, 1, DEPTH);
+		BoundingBox probe = makeBoundingBox(x, 0, z, Direction.EAST, WIDTH, 1, DEPTH);
 		var floorOpt = locateSubmergedFloor(ctx, probe, 18, 10);
 		if (floorOpt.isEmpty()) return Optional.empty();
 		int floor = floorOpt.getAsInt();

@@ -47,7 +47,7 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 		ChunkPos cp = ctx.chunkPos();
 		int x = cp.getMinBlockX();
 		int z = cp.getMinBlockZ();
-		BoundingBox probe = StructurePiece.makeBoundingBox(x, 0, z, Direction.NORTH, WIDTH, 1, DEPTH);
+		BoundingBox probe = makeBoundingBox(x, 0, z, Direction.NORTH, WIDTH, 1, DEPTH);
 		var floorOpt = locateSubmergedFloor(ctx, probe, 16, 12);
 		if (floorOpt.isEmpty()) return Optional.empty();
 		int floor = floorOpt.getAsInt();
