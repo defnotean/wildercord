@@ -41,7 +41,9 @@ public final class TemporaryBlocks extends SavedData {
 		).apply(i, Placed::new));
 	}
 
-	static final Codec<TemporaryBlocks> CODEC = Placed.CODEC.listOf().fieldOf("blocks").xmap(TemporaryBlocks::new, TemporaryBlocks::all);
+	static final Codec<TemporaryBlocks> CODEC = RecordCodecBuilder.create(i -> i.group(
+		Placed.CODEC.listOf().fieldOf("blocks").forGetter(TemporaryBlocks::all)
+	).apply(i, TemporaryBlocks::new));
 	static final McSavedDataType<TemporaryBlocks> TYPE = new McSavedDataType<>("temporary_blocks", TemporaryBlocks::new, CODEC);
 
 	@Override

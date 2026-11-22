@@ -34,7 +34,9 @@ public final class Thaws extends SavedData {
 		).apply(i, Pending::new));
 	}
 
-	static final Codec<Thaws> CODEC = Pending.CODEC.listOf().fieldOf("pending").xmap(Thaws::new, Thaws::all);
+	static final Codec<Thaws> CODEC = RecordCodecBuilder.create(i -> i.group(
+		Pending.CODEC.listOf().fieldOf("pending").forGetter(Thaws::all)
+	).apply(i, Thaws::new));
 	static final McSavedDataType<Thaws> TYPE = new McSavedDataType<>("frost_thaws", Thaws::new, CODEC);
 
 	@Override

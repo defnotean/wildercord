@@ -20,7 +20,7 @@ public final class EventAftermath extends SavedData {
   static final Codec<Echo> CODEC=RecordCodecBuilder.create(i->i.group(Codec.STRING.fieldOf("dimension").forGetter(Echo::dimension),BlockPos.CODEC.fieldOf("pos").forGetter(Echo::pos),Codec.STRING.fieldOf("kind").forGetter(Echo::kind),Codec.LONG.fieldOf("until").forGetter(Echo::until),Codec.STRING.listOf(0,128).fieldOf("claimed").forGetter(Echo::claimed)).apply(i,Echo::new));
  }
  private final List<Echo> echoes=new ArrayList<>();
- static final Codec<EventAftermath> CODEC=Echo.CODEC.listOf(0,32).fieldOf("echoes").xmap(EventAftermath::new,a->List.copyOf(a.echoes));
+ static final Codec<EventAftermath> CODEC=RecordCodecBuilder.create(i->i.group(Echo.CODEC.listOf(0,32).fieldOf("echoes").forGetter(a->List.copyOf(a.echoes))).apply(i,EventAftermath::new));
  static final McSavedDataType<EventAftermath> TYPE=new McSavedDataType<>("event_aftermath", EventAftermath::new, CODEC);
 
 @Override

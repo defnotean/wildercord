@@ -775,9 +775,10 @@ public final class Imbuing {
 		 * Read one glyph at a time: one that no longer reads (its block came from a mod that's gone) is
 		 * dropped on its own, never the whole dimension's glyphs with it.
 		 */
-		static final Codec<Glyphs> CODEC = Glyph.CODEC.xmap(Optional::of, Optional::get).orElse(Optional.empty()).listOf()
-			.fieldOf("glyphs")
-			.xmap(read -> new Glyphs(read.stream().flatMap(Optional::stream).toList()), glyphs -> glyphs.all().stream().map(Optional::of).toList());
+		static final Codec<Glyphs> CODEC = RecordCodecBuilder.create(i -> i.group(
+			Glyph.CODEC.xmap(Optional::of, Optional::get).orElse(Optional.empty()).listOf().fieldOf("glyphs")
+				.forGetter(glyphs -> glyphs.all().stream().map(Optional::of).toList())
+		).apply(i, read -> new Glyphs(read.stream().flatMap(Optional::stream).toList())));
 		static final McSavedDataType<Glyphs> TYPE = new McSavedDataType<>("glyphs", Glyphs::new, CODEC);
 
 		@Override
