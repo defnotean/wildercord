@@ -16,7 +16,7 @@ public final class McEntitySerializers {
 
 	public static final EntityDataSerializer<Optional<EntityReference<LivingEntity>>> OPTIONAL_LIVING_ENTITY_REFERENCE =
 		EntityDataSerializer.forValueType(
-			ByteBufCodecs.optional(ByteBufCodecs.UUID)
+			ByteBufCodecs.optional(ByteBufCodecs.fromCodec(com.mojang.serialization.Codec.UUID))
 				.map(optional -> optional.map(id -> new EntityReference<LivingEntity>(id)),
 					reference -> Optional.of(reference.getUUID())));
 }

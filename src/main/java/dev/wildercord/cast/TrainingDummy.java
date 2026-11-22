@@ -56,6 +56,11 @@ public class TrainingDummy extends LivingEntity {
 
 
 	@Override
+	public Iterable<ItemStack> getArmorSlots() {
+		return java.util.Collections.emptyList();
+	}
+
+	@Override
 	public void setItemSlot(net.minecraft.world.entity.EquipmentSlot slot, ItemStack stack) {}
 
 	@Override

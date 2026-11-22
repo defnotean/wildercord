@@ -90,7 +90,7 @@ public record Imbued(List<String> runes, int charges, int color, boolean glint, 
 		if (tool != null && !(stack.getItem() instanceof net.minecraft.world.item.SwordItem)) {
 			return Release.TOOL;
 		}
-		if (stack.has(DataComponents.WEAPON)) {
+		if (stack.getItem() instanceof net.minecraft.world.item.SwordItem) {
 			return Release.WEAPON;
 		}
 		return Release.USE;

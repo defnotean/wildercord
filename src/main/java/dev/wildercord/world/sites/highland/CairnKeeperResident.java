@@ -76,7 +76,7 @@ public final class CairnKeeperResident {
 		if (resident == null) return false;
 		resident.moveTo(at.getX() + .5, at.getY(), at.getZ() + .5, 0, 0);
 		resident.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
-		resident.setVillagerData(resident.getVillagerData().withProfession(level.registryAccess(), VillagerProfession.CARTOGRAPHER).withLevel(2));
+		resident.setVillagerData(resident.getVillagerData().setProfession(VillagerProfession.CARTOGRAPHER).setLevel(2));
 		resident.setVillagerXp(10);
 		resident.setCustomName(Component.translatable("entity.wildercord.cairn_keeper"));
 		resident.setCustomNameVisible(true);

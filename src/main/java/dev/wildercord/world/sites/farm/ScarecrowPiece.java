@@ -35,7 +35,7 @@ public final class ScarecrowPiece extends FarmPiece {
 				if (n < 52) set(level, bb, s(Blocks.DEAD_BUSH), x, 1, z);
 				else if (n < 58) set(level, bb, s(Blocks.PUMPKIN), x, 1, z);
 				else if (n < 62) set(level, bb, s(Blocks.MELON), x, 1, z);
-			} else if (n < 85) set(level, bb, s(Blocks.TALL_DRY_GRASS), x, 1, z);
+			} else if (n < 85) set(level, bb, s(Blocks.SHORT_DRY_GRASS), x, 1, z);
 		}
 		fill(level, bb, 17, 0, 0, 17, 0, 13, s(Blocks.COARSE_DIRT));
 		// What is left of the field fence: odd posts standing in the grass.

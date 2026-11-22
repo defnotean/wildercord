@@ -219,10 +219,10 @@ public class ResidueBlock extends Block {
 	}
 
 	@Override
-	protected void affectNeighborsAfterRemoval(ServerLevel level, BlockPos pos, boolean movedByPiston) {
-		super.affectNeighborsAfterRemoval(level, pos, movedByPiston);
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		super.onRemove(state, level, pos, newState, movedByPiston);
 		// However it went (broken, blown up, washed away), its record follows at the end of the tick.
-		Residues.gone(level, pos);
+		if (!state.is(newState.getBlock()) && level instanceof ServerLevel server) Residues.gone(server, pos);
 	}
 
 	@Override

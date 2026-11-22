@@ -84,7 +84,7 @@ public class FallenStarBlockEntity extends BlockEntity {
 		super.setRemoved();
 		if (!gone && level instanceof ServerLevel server) {
 			gone = true;
-			FallenStars.cleanUp(server, pos, this);
+			FallenStars.cleanUp(server, getBlockPos(), this);
 		}
 	}
 

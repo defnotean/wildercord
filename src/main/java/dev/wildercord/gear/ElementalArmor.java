@@ -42,7 +42,7 @@ public final class ElementalArmor extends Item {
 					new ItemAttributeModifiers.Entry(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(Wildercord.id("stonebound_knockback_"+type.getName()), .10, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.bySlot(type.getSlot()))));
 				modifiers.add(new ItemAttributeModifiers.Entry(Attributes.MOVEMENT_SPEED,
 					new AttributeModifier(Wildercord.id("stonebound_"+type.getName()),-.03,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),EquipmentSlotGroup.bySlot(type.getSlot())));
-				properties.attributes(new ItemAttributeModifiers(modifiers));
+				properties.attributes(new ItemAttributeModifiers(modifiers, false));
 			}
 			ALL.add(Registry.register(BuiltInRegistries.ITEM,key,new ElementalArmor(kind,properties)));
 		}

@@ -113,7 +113,7 @@ public class BondedSkyray extends Skyray {
 		super.tickRidden(player, input);
 		setRot(player.getYRot(), player.getXRot() * 0.4F);
 		yRotO = yBodyRot = yHeadRot = getYRot();
-		if (canSimulateMovement()) {
+		if (isAlive()) {
 			double[] wanted = SkyMountRules.steer(player.getYRot(), player.getXRot(), player.zza, player.xxa);
 			Vec3 v = getDeltaMovement();
 			setDeltaMovement(SkyMountRules.ease(v.x, wanted[0]), SkyMountRules.ease(v.y, wanted[1]), SkyMountRules.ease(v.z, wanted[2]));

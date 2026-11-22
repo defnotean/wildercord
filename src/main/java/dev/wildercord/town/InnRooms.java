@@ -105,7 +105,7 @@ public final class InnRooms {
 		var respawn = dev.wildercord.compat.McSpawn.ofPlayer(player);
 		if (respawn != null && respawn.forced() && respawn.dimension() == room.bed().dimension()
 			&& respawn.pos().equals(room.bed().pos())) {
-			player.setRespawnPosition(null, false);
+			player.setRespawnPosition(null, null, 0F, false, false);
 		}
 		player.sendSystemMessage(Component.translatable("message.wildercord.room.ended").withStyle(ChatFormatting.GRAY));
 	}

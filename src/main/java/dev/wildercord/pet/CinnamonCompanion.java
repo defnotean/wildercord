@@ -47,7 +47,7 @@ final class CinnamonCompanion {
 	private static boolean uncertainOverflow;
 	private static final CinnamonRecoveryRules LEASE = new CinnamonRecoveryRules();
 	private static final TicketType<ChunkPos> RECOVERY = TicketType.create("cinnamon_recovery",
-		java.util.Comparator.comparingLong(ChunkPos::asLong), CinnamonRecoveryRules.TICKET_TICKS);
+		java.util.Comparator.comparingLong((ChunkPos pos) -> ChunkPos.asLong(pos.x, pos.z)), CinnamonRecoveryRules.TICKET_TICKS);
 	private static ServerLevel ticketLevel;
 	private static ChunkPos ticketChunk;
 	private static CinnamonConfig config = CinnamonConfig.EMPTY;
