@@ -46,10 +46,10 @@ class BossRespawnAndFireRulesTest {
 		assertFalse(CustomMobFireRules.isCustomMobNamespace("minecraft"));
 		assertFalse(CustomMobFireRules.isCustomMobNamespace(null));
 
-		assertTrue(CustomMobFireRules.emberCount(0.5, 0.5) >= 1);
-		assertEquals(3, CustomMobFireRules.emberCount(3.0, 5.0));
-		assertTrue(CustomMobFireRules.perimeterRadius(0.4) >= 0.35);
-		assertTrue(CustomMobFireRules.perimeterRadius(2.4) > 1.2);
+		assertTrue(CustomMobFireRules.emberCount(0.5, 0.5) >= 2);
+		assertEquals(5, CustomMobFireRules.emberCount(3.0, 5.0));
+		assertTrue(CustomMobFireRules.perimeterRadius(0.4) >= 0.42);
+		assertTrue(CustomMobFireRules.perimeterRadius(2.4) > 1.5);
 	}
 
 	@Test

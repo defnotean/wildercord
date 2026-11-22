@@ -382,6 +382,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 						+ ", max=" + respawned.getFirst().getMaxHealth()) + ")");
 				check(dev.wildercord.aura.world.LairRespawns.pendingCount(level) == 0, "lair respawn entry clears once spawned");
 				for (var r : respawned) r.discard();
+				boundSerpent.discard();
 				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(savedTime[0]);
 			});
 
@@ -392,6 +393,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				var player = p(s);
 				var level = s.overworld();
+				for (var e : level.getEntities(player, player.getBoundingBox().inflate(64))) e.discard();
 				for (int dx = -12; dx <= 12; dx++) {
 					for (int dz = -12; dz <= 12; dz++) {
 						for (int dy = 101; dy <= 103; dy++) {
@@ -423,7 +425,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				level.addFreshEntity(zombie);
 				fireIds[1] = zombie.getId();
 			});
-			c.waitTicks(10);
+			c.waitTicks(20);
 			c.runOnClient(mc -> {
 				check(mc.gui.screen() == null, "no modal or death screen open during fire screenshot");
 				mc.player.setYRot(180.0F);
@@ -439,7 +441,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				mc.gui.toastManager().clear();
 				mc.gui.hud.getChat().clearMessages(false);
 			});
-			c.waitTicks(2);
+			c.waitTicks(4);
 			c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("custom_mob_fire_clean").disableCounterPrefix());
 			server.runOnServer(s -> {
 				var level = s.overworld();

@@ -17,11 +17,11 @@ public final class CustomMobFireRules {
 	/** Number of perimeter flame wisps per burst based on the mob's bounding volume. */
 	public static int emberCount(double bbWidth, double bbHeight) {
 		double volume = Math.max(0.1, bbWidth) * Math.max(0.5, bbHeight);
-		return Math.clamp((int) Math.round(volume * 0.45), 1, 3);
+		return Math.clamp((int) Math.round(volume * 0.9), 2, 5);
 	}
 
 	/** Horizontal ring radius keeping fire embers around the mob's silhouette rather than across its face. */
 	public static double perimeterRadius(double bbWidth) {
-		return Math.max(0.35, bbWidth * 0.52 + 0.08);
+		return Math.max(0.42, bbWidth * 0.58 + 0.16);
 	}
 }
