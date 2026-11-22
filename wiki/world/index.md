@@ -51,9 +51,9 @@ Cord, good armour and a plan.
 | 12 | [The Drowned Scriptorium]({{ '/world/drowned-scriptorium/' | relative_url }}) | The deep ocean floor | The Drowned Quill trophy |
 | 13 | [The Astral Observatory]({{ '/world/astral-observatory/' | relative_url }}) | The End's outer islands | The Astral Lens trophy |
 
-## 60 places to explore
+## 89 structures and places across land and sea
 
-Six families of smaller sites dot the world, including the Tideward landing in the Luminous Reedlands, the Cairn Lodge and Survey Ring in the Windscar Highlands, the Listening Station and Bell Sanctum in the Belowkeeper Hollows, the Charcoal Yard and Kiln Court in the Emberwood Reach, and four peaceful Japanese Sakura Village archetypes. Most are peaceful; a few hide a guard, a seal or a
+All **89 structure sets** obey global non-overlapping `StructureClearance` spacing (`96`-block outer buffer around Oathhold), including the Tideward landing in the Luminous Reedlands, the Cairn Lodge and Survey Ring in the Windscar Highlands, the Listening Station and Bell Sanctum in the Belowkeeper Hollows, the Charcoal Yard and Kiln Court in the Emberwood Reach, four peaceful Japanese Sakura Village archetypes, Oathhold, forest Hollow Ancient Trees, and five Deep Ocean landmarks. Most are peaceful; a few hide a guard, a seal or a
 small puzzle in front of their best chest. Walking into one earns its advancement, and many add an entry to your
 [lore journal]({{ '/progression/lore-journal/' | relative_url }}).
 
@@ -62,13 +62,14 @@ upgrade tool doesn't add them either, so head out past the edge of your map to f
 
 | Family | Where | The sites |
 |---|---|---|
+| [Oathhold]({{ '/world/oathhold/' | relative_url }}) | Temperate Overworld lowlands | `2,048×2,048` Sovereign Citadel City, Colosseum, Harbor, Cathedral, Great Hall, Guildhall & Watch Stockade |
 | [Farmstead Sites]({{ '/world/farm-sites/' | relative_url }}) | Plains, forests, meadows, savannas, taigas | Windmill farmstead, herbalist's cottage, beekeeper's apiary, walled orchard, shepherd's hut, sunken mushroom ring, granary barn, scarecrow field |
 | [Master halls and shrines]({{ '/world/masters-sites/' | relative_url }}) | Badlands, Emberwood Reach, windswept hills, peaks, snow, jungles, desert, cherry groves, deep caves | Forge Dojo, Wind Gate, Quarry Hall, Waterfall Shrine, Root Temple, Sundial Court, Star Terrace, Resonance Chamber |
 | [Mines, Forges and Crystals]({{ '/world/mine-sites/' | relative_url }}) | Hills, meadows, underground, Belowkeeper Hollows, badlands, the Nether | Hillside Mine, Mountain Forge Hall, Crystal Survey Lab, Collapsed Delve, Basalt Foundry, Deepslate Vault, Prospector's Camp, Miner's Rest, Belowkeeper Listening Station, Belowkeeper Bell Sanctum |
 | [Roadside Sites]({{ '/world/travel-sites/' | relative_url }}) | Flat ground and highland shelves across the Overworld | Wayfarer Inn, Watchtower, Broken Bridge, Rune Library, Standing Stones, Caravan Camp, Cartographer's Hut, Vow Circle, Highland Cairn Lodge, Highland Survey Ring |
 | [Water Sites]({{ '/world/water-sites/' | relative_url }}) | Rivers, swamps, Luminous Reedlands, coasts, warm seas, frozen water | Tideward Reedkeeper Landing, The Last Crossing, Stilt Smokehouse, Lighthouse, Watermill, Ice Fishing Camp, Pier and Boathouse, Sunken Shrine, Net-Weavers' Huts, Tidepool Grotto |
 | [Deep Ocean Expansion]({{ '/world/deep-ocean/' | relative_url }}) | Oceans, deep oceans, lukewarm & cold seas | Coral-Dome Tidefolk Sanctuary, Sunken Sovereign Galleon, Kelp-Spire Watchtower, Hydrothermal Vent Forge, Abyssal Trench Citadel |
-| [Wild Places]({{ '/world/wilds-sites/' | relative_url }}) | Jungle, desert, snow, badlands, Emberwood Reach, cherry groves, plains, rivers, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern, Emberwood Charcoal Yard, Emberwood Kiln Court, Sakura Village, Sakura Canal Harbor, Sakura Onsen Village, Sakura Castle-Town |
+| [Wild Places]({{ '/world/wilds-sites/' | relative_url }}) | Jungle, desert, snow, badlands, Emberwood Reach, cherry groves, plains, rivers, deep dark, the Nether, the End | Venom Ziggurat, Dune Temple, Rime Monastery, Iron Gatehouse, Dawn Pavilion, Echo Post, Ember Outpost, Void Lantern, Emberwood Charcoal Yard, Emberwood Kiln Court, Sakura Village, Sakura Canal Harbor, Sakura Onsen Village, Sakura Castle-Town, and forest [Hollow Ancient Trees]({{ '/world/creatures/' | relative_url }}#white-rabbit) |
 
 ## Sword Masters
 
@@ -92,7 +93,7 @@ A server owner can also add a plain **Wayfarer Training Pavilion** to an old wor
 | **First door** | Frost + Storm | Fire + Earth | Void + Arcane | Frost + Storm |
 | **Second door** | Fire + Wind | Void + Storm | Time + Wind | Life + Wind |
 | **Vault door** | Arcane + Life | Frost + Fire | Void + Life | Storm + Arcane |
-| **Boss** | The Archivist (400 health) | The Cinder Warden (300) | The Star-Eater (320) | The Tide Scribe (340) |
+| **Boss** | The Archivist (1,650 health) | The Cinder Warden (1,200) | The Star-Eater (1,350) | The Tide Scribe (1,450) |
 | **Its trick** | Blinks and rewrites its spells | Only reactions hurt it | Its shield turns spells back | Floods its pit |
 | **Trophy** | none | Cinder Heart | Astral Lens | Drowned Quill |
 
@@ -107,7 +108,7 @@ Each one has the same shape:
 4. A second seal door, then the boss arena.
 5. A vault behind a third seal door, with two chests.
 
-About a third of the zombies, skeletons, witches and illagers that spawn inside are Runebound.
+Defeated dungeon altars and the Archive lectern rest for **10 minutes** before re-arming so bosses can be fought again. About a third of the zombies, skeletons, witches and illagers that spawn inside are Runebound.
 
 ### Warded arenas
 {: #warded-arenas }

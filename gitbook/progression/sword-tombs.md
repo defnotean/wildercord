@@ -24,7 +24,7 @@ One keeper at a time. It won't wake on Peaceful.
 
 ![The blindfolded stone keeper prepares a broad sword sweep beneath hanging lanterns; its boss bar names the attack and advises leaving the front](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/sword-tomb-keeper.png)
 
-The keeper fights with plain sword strokes, no magic. It has 160 health and 8 armour, and its boss bar names each move
+The keeper fights with plain sword strokes, no magic. It has 700 health and 12 armour, and its boss bar names each move
 and the answer. It **opens with the drill** it was taught: a broad sweep, a straight thrust, then its forward guard. After
 that it picks its blows from what suits where you stand, and never throws the same one twice running.
 
@@ -75,7 +75,7 @@ When the keeper falls, each player who took part can **use the reliquary** once 
 - **The Keeper's Testament**, a three-page book.
 
 Once the keeper is hurt by a player, any living survival player in the arena counts as taking part, healers included.
-Arriving after the fight does not count. Each tomb is cleared once.
+Arriving after the fight does not count. Each player can claim a tomb's reward once, and after 10 minutes of rest the reliquary allows the keeper to be challenged again.
 
 ![The awarded Keeper's Testament open on its first page, explaining the Marchkeepers' buried blades and the keeper's blindfold](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/sword-tomb-testament.png)
 

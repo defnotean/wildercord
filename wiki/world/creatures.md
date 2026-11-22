@@ -187,10 +187,10 @@ struck it. It peeks out after a few seconds, then uncurls.
 
 Four custom-modeled guardian cats preside over the **Cat Sanctuary** pagoda and stroll peacefully through the four **Sakura Villages**:
 
-- **Yuki** (Floor 1, fluffy charcoal-and-cream longhair with whiskers): yields non-lethally to grant **Whisker Ward** (`Resistance I`), and when tamed bolsters nearby combat defence and leaps on foes.
-- **Odie** (Floor 2, sleepy longhair orange tabby who loafs beside kotatsu hearths): grants **Sunbeam Loaf** (`Regeneration I + Fire Resistance`), and when tamed warms and regenerates nearby owners.
-- **Freya** (Floor 3, plush grey shorthair with rose-pink collar and swinging silver Suzu bell): grants **Silver-Bell Chime** (`Absorption I + Haste I`), and when tamed boosts attack/casting tempo and chimes near allies.
-- **Kuro** (Floor 4 roof master, notched left ear & golden eyes): grants **Night-Stalker Grace** (`Speed II, Strength I, Night Vision`) and unlocks taming for all four cats!
+- **Yuki** (Floor 1, `420` health, fluffy charcoal-and-cream longhair with whiskers): yields non-lethally to grant **Whisker Ward** (`Resistance I`), and when tamed bolsters nearby combat defence and leaps on foes.
+- **Odie** (Floor 2, `540` health, sleepy longhair orange tabby who loafs beside kotatsu hearths): grants **Sunbeam Loaf** (`Regeneration I + Fire Resistance`), and when tamed warms and regenerates nearby owners.
+- **Freya** (Floor 3, `680` health, plush grey shorthair with rose-pink collar and swinging silver Suzu bell): grants **Silver-Bell Chime** (`Absorption I + Haste I`), and when tamed boosts attack/casting tempo and chimes near allies.
+- **Kuro** (Floor 4 roof master, `840` health, notched left ear & golden eyes): grants **Night-Stalker Grace** (`Speed II, Strength I, Night Vision`) and unlocks taming for all four cats!
 
 Tame any cleared quartet cat with cooked salmon/cod or a **Suzu Cat-Bell Charm** (which also rings to call following cats back, unseat resting cats when sneaking, and summon back a fallen companion without ever duplicating sitting or distant cats). Sneak-click a tamed cat to toggle between loafing/sitting and following; tamed quartet cats never permanently die to owner hits, thorns, or dungeon hazards.
 
@@ -213,6 +213,9 @@ Six peaceful kimono-clad NPCs bow when greeted and trade role supplies for a sin
 
 ## White Rabbit
 {: #white-rabbit }
+
+<img src="{{ '/assets/images/white-rabbit-tree.jpg' | relative_url }}" alt="The pocket-watch White Rabbit leading through the forest toward a gnarled Hollow Ancient Tree doorway with a glowing portal inside" class="shot">
+<span class="caption">Following the White Rabbit to a Hollow Ancient Tree portal.</span>
 
 A snowy white rabbit wearing a crimson collar ribbon and a brass pocket watch spawns rarely inside forest biomes (oak, birch, flower, dark, taiga, and cherry groves).
 

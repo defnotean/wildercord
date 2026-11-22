@@ -13,7 +13,7 @@ spell. Only an **element reaction** breaks through, so this is where you learn r
 | **Biomes** | Nether wastes, basalt deltas, crimson forests |
 | **How often** | About one in every square 576 blocks across |
 | **Doors** | Fire and Earth, then Void and Storm. The vault's is Frost and Fire |
-| **Boss** | The Cinder Warden, 300 health |
+| **Boss** | The Cinder Warden, 1,200 health |
 | **Its own rune** | [Cinderheart](../runes/world.md#cinderheart) (Tier IV) |
 | **Trophy** | The Cinder Heart |
 | **Runes found only here** | [Cinderbrand](../runes/world.md#cinderbrand), [Ashen Veil](../runes/world.md#ashen_veil), [Kindled](../runes/world.md#kindled) |
@@ -56,7 +56,7 @@ blaze powder, a Mana Crystal, magma cream, gold, or (rarely) netherite scrap.
 ![The Cinder Warden standing on the glowing forge-circle in the middle of its domed arena, a spell circle in its hand, lava pools near the walls](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/world-ember-warden.jpg)
 <span>The Cinder Warden on its forge-circle.</span>
 
-It climbs out of the forge-altar the first time a player comes within **12 blocks**. It's nearly three blocks tall,
+It climbs out of the forge-altar the first time a player comes within **12 blocks**, and after the Warden falls, the forge-altar rests for **10 minutes** before re-arming for a fresh fight. It's nearly three blocks tall,
 walks slowly, can't be knocked back, and never strays more than 22 blocks from its altar. Fire, lava and burning never
 hurt it. It's weak to **frost** (+50%) and resists **fire** (half), but a reaction set off on it lands in full. See
 [Creature Affinities](../spellcraft/affinities.md).
@@ -109,9 +109,9 @@ you keep your distance. The boss bar names each one, and the circle lands 1.4 se
 
 | Phase | Its spells (the reaction it sets up on you) |
 |---|---|
-| **1** (300 to 200) | Frost Bolt › Fire Bolt (Shatter), Fire Pillar, Ember Wave |
-| **2** (200 to 100) | Dash Bolt › Fire Comet (Wildfire), Frost Ring › Fire Ring (Shatter), Fire Rain, Flashfire Cone |
-| **3** (100 to 0) | Drawing Bolt+ (Implode), Frost Bolt+ (Shatter), Inferno Zone, Frost Wave › Fire Wave (Shatter) |
+| **1** (1,200 to 800) | Frost Bolt › Fire Bolt (Shatter), Fire Pillar, Ember Wave |
+| **2** (800 to 400) | Dash Bolt › Fire Comet (Wildfire), Frost Ring › Fire Ring (Shatter), Fire Rain, Flashfire Cone |
+| **3** (400 to 0) | Drawing Bolt+ (Implode), Frost Bolt+ (Shatter), Inferno Zone, Frost Wave › Fire Wave (Shatter) |
 
 **What each phase changes.** In phase 2, Haul, Slag and Bellows join in, the Sweep turns back the other way, the
 Vent's cone grows and it rests less between moves. In phase 3 the Flare joins in, the Seam fans out into three, the

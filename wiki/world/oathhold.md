@@ -7,7 +7,7 @@ permalink: /world/oathhold/
 
 # Oathhold, Sovereign Citadel City
 
-**Oathhold** is a colossal walled medieval-fantasy capital city spanning **2,048 × 2,048 blocks** across temperate Overworld lowlands (`/locate structure wildercord:oathhold`).
+**Oathhold** is a colossal walled medieval-fantasy capital city spanning **2,048 × 2,048 blocks** across temperate Overworld lowlands (`/locate structure wildercord:oathhold`), protected by a `96`-block outer `StructureClearance` buffer so surrounding structures never overlap its walls.
 
 ## Layout & Major Districts
 
@@ -30,6 +30,9 @@ permalink: /world/oathhold/
 - **Over 750 Named Citizens & Merchants**: Oathhold is populated across all districts, guildhalls, boulevards, canal promenades, plazas, and outer residential blocks by articulated humanoid inhabitants spanning 16 professions (Guild Receptionists, Guild Master, Blacksmiths, Herbalists, Bakers, Clothiers, Fishmongers, Scholars, Bullionists, Colosseum Promoters, Builders, Prelates, Watchmen, Street Sweepers, Townsfolk, and Court Patricians). Merchant trades scale with your **Adventurer Guild Rank** (`F–S`).
 - **Neutral High Knights & City Law**: Patrolling **Oathbound High Knights** do **not** attack peaceful players — they protect the capital from monsters and maintain order. Committing crimes inside Oathhold walls (**Assault**, **Murder**, **Theft** from district chests/barrels, **Vandalism**, or **TNT Demolition**) marks you **Wanted** with an Emerald bounty and alerts nearby Knights. Sneak-speak with a Sanctuary Prelate or Watchman carrying Emeralds — or run `/adventurer payfine` — to pay restitution and restore peaceful standing.
 - **Guard-Witnessed House Breaking, Imprisonment & Live Rebuilding**: When a patrolling Knight or City Watchman sees or hears you break house blocks or detonate TNT against city buildings, you are immediately persecuted and arrested into a temporary iron-barred **Oathhold Watch Stockade** overlooking the damaged house (15–45 seconds depending on severity). From your cell you can watch **Master Builder** NPCs walk up, swing their hammers, and reconstruct every damaged block in order before you are released with a clean slate and the stockade is dismantled.
+
+<img src="{{ '/assets/images/oathhold-stockade-rebuild.jpg' | relative_url }}" alt="View from inside the iron-barred Oathhold Watch Stockade watching Master Builders repair a TNT-damaged townhouse block by block" class="shot">
+<span class="caption">From inside the Watch Stockade as Master Builders rebuild a damaged city house.</span>
 
 ## Adventurer's Guild Requests (Ranks F–S)
 
