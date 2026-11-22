@@ -1,4 +1,4 @@
-package dev.wildercord.gametest.mixin;
+﻿package dev.wildercord.gametest.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -31,9 +31,7 @@ public abstract class BraceNullItemDrawMixin {
 		var actual = new Matrix4f(pose.last().pose());
 		var display = baked == null ? null : baked.getTransforms().getTransform(context);
 		var quads = baked == null ? java.util.List.<BakedQuad>of() : baked.getQuads(null, null, 0L);
-		var display = baked == null ? null : baked.getTransforms().getTransform(context);
-		var quads = baked == null ? java.util.List.<BakedQuad>of() : baked.getQuads(null, null, 0L);
 		original.call(context, pose, buffer, light, overlay, tints, baked, material, foil);
-		BraceNullItemDrawProbe.drawn(field_55345, pose, buffer, context, transform, new Matrix4f(pose.last().pose()), quads, actual);
+		BraceNullItemDrawProbe.drawn(field_55345, pose, buffer, context, display, new Matrix4f(pose.last().pose()), quads, actual);
 	}
 }

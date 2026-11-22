@@ -1,4 +1,4 @@
-package dev.wildercord.aura;
+﻿package dev.wildercord.aura;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -45,7 +45,9 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 			Codec.STRING.listOf().optionalFieldOf("lineage", List.of()).forGetter(Who::lineage)
 		).apply(i, Who::new));
 
-		public static final StreamCodec<ByteBuf, Who> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
+		public static final StreamCodec<ByteBuf, Who> STREAM_CODEC = StreamCodec.composite(
+			UUIDUtil.STREAM_CODEC, Who::id, UUIDUtil.STREAM_CODEC, Who::owner, ByteBufCodecs.stringUtf8(64), Who::ownerName,
+			ByteBufCodecs.stringUtf8(64).apply(ByteBufCodecs.list(BladeRules.MAX_LINEAGE)), Who::lineage, Who::new);
 	}
 
 	/**
@@ -144,10 +146,7 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 			Codec.STRING.optionalFieldOf("how", "").forGetter(Origin::how)
 		).apply(i, Origin::new));
 
-		public static final StreamCodec<ByteBuf, Origin> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.VAR_LONG, Origin::day, ByteBufCodecs.stringUtf8(128), Origin::biome, ByteBufCodecs.stringUtf8(128), Origin::dimension,
-			ByteBufCodecs.VAR_INT, Origin::x, ByteBufCodecs.VAR_INT, Origin::y, ByteBufCodecs.VAR_INT, Origin::z, ByteBufCodecs.stringUtf8(96),
-			Origin::method, ByteBufCodecs.stringUtf8(64), Origin::how, Origin::new);
+		public static final StreamCodec<ByteBuf, Origin> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 	}
 
 	/**
