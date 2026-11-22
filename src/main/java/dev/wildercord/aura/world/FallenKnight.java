@@ -256,7 +256,7 @@ public class FallenKnight extends AuraFighter implements Enemy {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		rank = AuraWorldRules.clampRank(input.getIntOr("rank", 1));
+		rank = AuraWorldRules.clampRank((input.contains("rank", 3) ? input.getInt("rank") :  1));
 	}
 
 	// ------------------------------------------------------------------ sounds

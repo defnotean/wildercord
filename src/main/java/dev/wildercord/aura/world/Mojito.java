@@ -1082,13 +1082,13 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	}
 	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
-		bound=in.getBooleanOr("mojito_bound",false);
-		bed=in.read("mojito_bed",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("mojito_rest",getYRot());
+		bound=(in.contains("mojito_bound", 1) ? in.getBoolean("mojito_bound") : false);
+		bed=in.read("mojito_bed",BlockPos.CODEC).orElse(blockPosition());rest=(in.contains("mojito_rest", 5) ? in.getFloat("mojito_rest") : getYRot());
 		groveMin=in.read("mojito_grove_min",BlockPos.CODEC).orElse(bed);groveMax=in.read("mojito_grove_max",BlockPos.CODEC).orElse(bed);
-		lastTick=in.getLongOr("mojito_ticked",-1L);
-		wild=in.getBooleanOr("mojito_howled",false);
+		lastTick=(in.contains("mojito_ticked", 4) ? in.getLong("mojito_ticked") : -1L);
+		wild=(in.contains("mojito_howled", 1) ? in.getBoolean("mojito_howled") : false);
 		if(wild)bar.setColor(BossEvent.BossBarColor.GREEN);
 		// Mid-fight he comes back on his feet, whatever he was doing when the chunk unloaded.
-		if(in.getBooleanOr("mojito_awake",false)){pose(MojitoRules.WATCH,MojitoRules.GAP);lastCut=0;}else pose(MojitoRules.DORMANT,0);
+		if((in.contains("mojito_awake", 1) ? in.getBoolean("mojito_awake") : false)){pose(MojitoRules.WATCH,MojitoRules.GAP);lastCut=0;}else pose(MojitoRules.DORMANT,0);
 	}
 }

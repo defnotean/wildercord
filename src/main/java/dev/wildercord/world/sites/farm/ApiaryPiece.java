@@ -55,7 +55,7 @@ public final class ApiaryPiece extends FarmPiece {
 			int y = z < 6 ? 1 : z < 12 ? 2 : 3;
 			int n = noise(x, z);
 			if (n < 35) set(level, bb, s(FLOWERS[n % FLOWERS.length]), x, y, z);
-			else if (n < 50) set(level, bb, s(Blocks.WILDFLOWERS), x, y, z);
+			else if (n < 50) set(level, bb, s(Blocks.POPPY), x, y, z);
 		}
 		for (int x : new int[]{0, 18}) {
 			fill(level, bb, x, 1, 6, x, 2, 6, chiseled); set(level, bb, lantern, x, 3, 6);
@@ -203,7 +203,7 @@ public final class ApiaryPiece extends FarmPiece {
 			if (!bb.isInside(at) || !level.getBlockState(at).isAir()) continue;
 			int n = noise(x, z);
 			if (n < 18) set(level, bb, s(FLOWERS[n % FLOWERS.length]), x, 1, z);
-			else if (n < 32) set(level, bb, s(Blocks.WILDFLOWERS), x, 1, z);
+			else if (n < 32) set(level, bb, s(Blocks.POPPY), x, 1, z);
 		}
 	}
 }

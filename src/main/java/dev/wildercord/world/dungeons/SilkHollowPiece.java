@@ -52,7 +52,7 @@ public final class SilkHollowPiece extends DungeonPiece {
 	private static final BlockState LOG=Blocks.SPRUCE_LOG.defaultBlockState();
 
 	public SilkHollowPiece(int x,int y,int z,Direction facing,int top){super(DungeonWorldgen.SILK_HOLLOW_PIECE,x,y,z,WIDTH,HEIGHT,DEPTH,facing);this.top=top;}
-	public SilkHollowPiece(CompoundTag tag){super(DungeonWorldgen.SILK_HOLLOW_PIECE,tag);top=tag.getIntOr(TOP,HEIGHT-8);}
+	public SilkHollowPiece(CompoundTag tag){super(DungeonWorldgen.SILK_HOLLOW_PIECE,tag);top=(tag.contains(TOP, 3) ? tag.getInt(TOP) : HEIGHT-8);}
 	@Override protected void addAdditionalSaveData(net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext context,CompoundTag tag){
 		super.addAdditionalSaveData(context,tag);tag.putInt(TOP,top);
 	}

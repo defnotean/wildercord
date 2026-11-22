@@ -1496,7 +1496,7 @@ public class Archivist extends SpellcasterIllager {
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		home = input.read("home", BlockPos.CODEC).orElse(null);
-		phase = input.getIntOr("phase", 1);
+		phase = (input.contains("phase", 3) ? input.getInt("phase") :  1);
 		minions.clear();
 		input.read("minions", UUIDUtil.CODEC.listOf()).ifPresent(minions::addAll);
 	}

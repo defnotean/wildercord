@@ -190,7 +190,6 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 		entityData.set(DATA_FLARE, level().getGameTime());
 	}
 
-	@Override
 	public  EntityReference<LivingEntity> getOwnerReference() {
 		return entityData.get(DATA_OWNER).orElse(null);
 	}
@@ -675,14 +674,14 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		setElement(input.getStringOr("element", "arcane"));
-		entityData.set(DATA_MODE, input.getByteOr("mode", WILD));
-		bondId = input.getStringOr("bond", "");
-		setFamiliarLevel(input.getIntOr("level", 1));
+		setElement((input.contains("element", 8) ? input.getString("element") :  "arcane"));
+		entityData.set(DATA_MODE, (input.contains("mode", 1) ? input.getByte("mode") :  WILD));
+		bondId = (input.contains("bond", 8) ? input.getString("bond") :  "");
+		setFamiliarLevel((input.contains("level", 3) ? input.getInt("level") :  1));
 		EntityReference<LivingEntity> owner = McEntityReference.read(input, "owner");
 		entityData.set(DATA_OWNER, Optional.ofNullable(owner));
-		if (!Double.isNaN(input.getDoubleOr("home_y", Double.NaN))) {
-			home = new Vec3(input.getDoubleOr("home_x", getX()), input.getDoubleOr("home_y", getY()), input.getDoubleOr("home_z", getZ()));
+		if (!Double.isNaN((input.contains("home_y", 6) ? input.getDouble("home_y") :  Double.NaN))) {
+			home = new Vec3((input.contains("home_x", 6) ? input.getDouble("home_x") :  getX()), (input.contains("home_y", 6) ? input.getDouble("home_y") :  getY()), (input.contains("home_z", 6) ? input.getDouble("home_z") :  getZ()));
 		}
 	}
 }

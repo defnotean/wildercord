@@ -1276,7 +1276,7 @@ public class TimbermaulBear extends EliteMonster {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		roused = input.getBooleanOr("Roused", false);
+		roused = (input.contains("Roused", 1) ? input.getBoolean("Roused") :  false);
 		entityData.set(ROUSED, roused);
 	}
 

@@ -1017,14 +1017,14 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	}
 	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
-		bound=in.getBooleanOr("stag_bound",false);
-		bed=in.read("stag_bed",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("stag_rest",getYRot());
+		bound=(in.contains("stag_bound", 1) ? in.getBoolean("stag_bound") : false);
+		bed=in.read("stag_bed",BlockPos.CODEC).orElse(blockPosition());rest=(in.contains("stag_rest", 5) ? in.getFloat("stag_rest") : getYRot());
 		gladeMin=in.read("stag_glade_min",BlockPos.CODEC).orElse(bed);gladeMax=in.read("stag_glade_max",BlockPos.CODEC).orElse(bed);
-		lastTick=in.getLongOr("stag_ticked",-1L);
+		lastTick=(in.contains("stag_ticked", 4) ? in.getLong("stag_ticked") : -1L);
 		// Mid-fight it comes back on its feet, whatever it was doing when the chunk unloaded, and still kindled if it had.
-		if(in.getBooleanOr("stag_awake",false)){
+		if((in.contains("stag_awake", 1) ? in.getBoolean("stag_awake") : false)){
 			pose(AshenStagRules.WATCH,AshenStagRules.GAP);lastCut=0;
-			boolean k=in.getBooleanOr("stag_kindled",false);entityData.set(KINDLED,k);if(k)bar.setColor(BossEvent.BossBarColor.YELLOW);
+			boolean k=(in.contains("stag_kindled", 1) ? in.getBoolean("stag_kindled") : false);entityData.set(KINDLED,k);if(k)bar.setColor(BossEvent.BossBarColor.YELLOW);
 		}else pose(AshenStagRules.DORMANT,0);
 	}
 }

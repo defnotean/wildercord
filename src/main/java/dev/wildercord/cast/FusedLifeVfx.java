@@ -4,7 +4,6 @@ import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -59,7 +58,7 @@ final class FusedLifeVfx {
 	/** Bone, and its shadow. */
 	private static final int BONE = 0xF2EBD9;
 	private static final int BONE_SHADE = 0xCFC3A4;
-	private static final ColorParticleOption LEAF = ColorParticleOption.create(ParticleTypes.PALE_OAK_LEAVES, 0xFF000000 | LIFE.primary());
+	private static final net.minecraft.core.particles.ParticleOptions LEAF = ParticleTypes.PALE_OAK_LEAVES;
 
 	private static Vec3 centre(Entity t) {
 		return t.getBoundingBox().getCenter();

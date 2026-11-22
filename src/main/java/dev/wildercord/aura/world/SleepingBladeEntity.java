@@ -29,7 +29,7 @@ public final class SleepingBladeEntity extends BlockEntity {
 		if (claimedBy != null) out.store("claimed_by", UUIDUtil.CODEC, claimedBy);
 	}
 	@Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries) { McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
-		super.loadAdditional(inTag, registries); authentic = in.getBooleanOr("authentic", false);
+		super.loadAdditional(inTag, registries); authentic = (in.contains("authentic", 1) ? in.getBoolean("authentic") :  false);
 		claimedBy = in.read("claimed_by", UUIDUtil.CODEC).orElse(null);
 	}
 }

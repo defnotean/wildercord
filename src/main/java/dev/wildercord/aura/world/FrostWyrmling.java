@@ -1051,13 +1051,13 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	}
 	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
-		bound=in.getBooleanOr("wyrm_bound",false);
-		mound=in.read("wyrm_mound",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("wyrm_rest",getYRot());
+		bound=(in.contains("wyrm_bound", 1) ? in.getBoolean("wyrm_bound") : false);
+		mound=in.read("wyrm_mound",BlockPos.CODEC).orElse(blockPosition());rest=(in.contains("wyrm_rest", 5) ? in.getFloat("wyrm_rest") : getYRot());
 		hallMin=in.read("wyrm_hall_min",BlockPos.CODEC).orElse(mound);hallMax=in.read("wyrm_hall_max",BlockPos.CODEC).orElse(mound);
-		lastTick=in.getLongOr("wyrm_ticked",-1L);
+		lastTick=(in.contains("wyrm_ticked", 4) ? in.getLong("wyrm_ticked") : -1L);
 		// Once out of its shell it stays fierce, unloaded or not.
-		fierce=in.getBooleanOr("wyrm_fierce",false);bar.setColor(fierce?BossEvent.BossBarColor.WHITE:BossEvent.BossBarColor.BLUE);
+		fierce=(in.contains("wyrm_fierce", 1) ? in.getBoolean("wyrm_fierce") : false);bar.setColor(fierce?BossEvent.BossBarColor.WHITE:BossEvent.BossBarColor.BLUE);
 		// Mid-fight it comes back on its feet, whatever it was doing when the chunk unloaded.
-		if(in.getBooleanOr("wyrm_awake",false)){pose(FrostWyrmlingRules.WATCH,FrostWyrmlingRules.GAP);lastCut=0;}else pose(FrostWyrmlingRules.DORMANT,0);
+		if((in.contains("wyrm_awake", 1) ? in.getBoolean("wyrm_awake") : false)){pose(FrostWyrmlingRules.WATCH,FrostWyrmlingRules.GAP);lastCut=0;}else pose(FrostWyrmlingRules.DORMANT,0);
 	}
 }

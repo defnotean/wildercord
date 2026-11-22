@@ -243,7 +243,7 @@ public class Strawman extends WildMonster {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		holdStance(input.getByteOr("Stance", (byte) 0));
+		holdStance((input.contains("Stance", 1) ? input.getByte("Stance") :  (byte) 0));
 	}
 
 	// It makes no sound of its own: only the rustle as it comes, and the straw when it's struck.

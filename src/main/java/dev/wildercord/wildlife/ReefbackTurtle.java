@@ -65,7 +65,7 @@ public class ReefbackTurtle extends AbstractHorse {
 	@Override
 	protected void tickRidden(Player player, Vec3 input) {
 		super.tickRidden(player, input);
-		if (isInWater() && canSimulateMovement()) {
+		if (isInWater() && isAlive()) {
 			double[] wanted = ReefbackRules.swim(player.getYRot(), player.getXRot(), player.zza, player.xxa);
 			Vec3 v = getDeltaMovement();
 			setDeltaMovement(ReefbackRules.ease(v.x, wanted[0]), ReefbackRules.ease(v.y, wanted[1]), ReefbackRules.ease(v.z, wanted[2]));

@@ -786,7 +786,7 @@ public abstract class DungeonBoss extends Monster {
 
 	/** Who struck the last blow (or, for a death by burning and the like, who hurt it last), if they're still here. */
 	private ServerPlayer killer(ServerLevel level, DamageSource source) {
-		ServerPlayer killer = source.getEntity() instanceof ServerPlayer p ? p : getLastHurtByPlayer() instanceof ServerPlayer q ? q : null;
+		ServerPlayer killer = source.getEntity() instanceof ServerPlayer p ? p : lastHurtByPlayer instanceof ServerPlayer q ? q : null;
 		return killer != null && killer.isAlive() && killer.level() == level ? killer : null;
 	}
 
@@ -846,7 +846,7 @@ public abstract class DungeonBoss extends Monster {
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		home = input.read("home", BlockPos.CODEC).orElse(null);
-		phase = input.getIntOr("phase", 1);
+		phase = (input.contains("phase", 3) ? input.getInt("phase") :  1);
 		fighters.clear();
 		input.read("fighters", UUIDUtil.CODEC.listOf()).ifPresent(fighters::addAll);
 		minions.clear();

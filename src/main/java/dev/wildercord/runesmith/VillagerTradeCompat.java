@@ -46,7 +46,7 @@ public final class VillagerTradeCompat {
 		for (int level = 1; level <= 5; level++) {
 			ItemListing[] listings = loadTag("wildercord", "runesmith", "level_" + level);
 			if (listings.length > 0) {
-				VillagerTrades.TRADES.computeIfAbsent(Runesmith.PROFESSION, k -> new Int2ObjectOpenHashMap<>())
+				VillagerTrades.TRADES.computeIfAbsent(BuiltInRegistries.VILLAGER_PROFESSION.get(Runesmith.PROFESSION), k -> new Int2ObjectOpenHashMap<>())
 					.put(level, listings);
 			}
 		}
@@ -75,7 +75,7 @@ public final class VillagerTradeCompat {
 		}
 	}
 
-	private static void addVanilla(ResourceKey<VillagerProfession> profession, int level, ItemListing[] extra) {
+	private static void addVanilla(VillagerProfession profession, int level, ItemListing[] extra) {
 		if (extra.length == 0) {
 			return;
 		}

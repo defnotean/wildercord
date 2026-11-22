@@ -36,7 +36,7 @@ public final class SerpentGrovePiece extends DungeonPiece {
 	private int top;
 
 	public SerpentGrovePiece(int x,int y,int z,Direction facing,int top){super(DungeonWorldgen.SERPENT_GROVE_PIECE,x,y,z,WIDTH,HEIGHT,DEPTH,facing);this.top=top;}
-	public SerpentGrovePiece(CompoundTag tag){super(DungeonWorldgen.SERPENT_GROVE_PIECE,tag);top=tag.getIntOr(TOP,HEIGHT-6);}
+	public SerpentGrovePiece(CompoundTag tag){super(DungeonWorldgen.SERPENT_GROVE_PIECE,tag);top=(tag.contains(TOP, 3) ? tag.getInt(TOP) : HEIGHT-6);}
 	@Override protected void addAdditionalSaveData(net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext context,CompoundTag tag){
 		super.addAdditionalSaveData(context,tag);tag.putInt(TOP,top);
 	}

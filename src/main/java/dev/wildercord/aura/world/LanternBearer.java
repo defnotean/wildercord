@@ -303,7 +303,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 
 	/** The nearest player in the field close enough to its grave to wake it, if it is dark out. */
 	private ServerPlayer wakeful(ServerLevel level){
-		var t=spot();boolean dark=level.isDarkOutside();
+		var t=spot();boolean dark=(!(level.isDay() && level.dimensionType().hasSkyLight()));
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inHall(p.position(),0)
 			&& LanternBearerRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z,dark)).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
@@ -1138,14 +1138,14 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	}
 	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
-		bound=in.getBooleanOr("bearer_bound",false);
-		grave=in.read("bearer_grave",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("bearer_rest",getYRot());
+		bound=(in.contains("bearer_bound", 1) ? in.getBoolean("bearer_bound") : false);
+		grave=in.read("bearer_grave",BlockPos.CODEC).orElse(blockPosition());rest=(in.contains("bearer_rest", 5) ? in.getFloat("bearer_rest") : getYRot());
 		hallMin=in.read("bearer_hall_min",BlockPos.CODEC).orElse(grave);hallMax=in.read("bearer_hall_max",BlockPos.CODEC).orElse(grave);
 		hook=in.read("bearer_hook",BlockPos.CODEC).orElse(grave.above(5));
 		candles=new ArrayList<>(in.read("bearer_candles",BlockPos.CODEC.listOf()).orElse(List.of()));
-		lastTick=in.getLongOr("bearer_ticked",-1L);
+		lastTick=(in.contains("bearer_ticked", 4) ? in.getLong("bearer_ticked") : -1L);
 		// Mid-fight it comes back up, whatever it was doing when the chunk unloaded, roused still if it had held its rite.
-		boolean awake=in.getBooleanOr("bearer_awake",false),roused=awake && in.getBooleanOr("bearer_roused",false);
+		boolean awake=(in.contains("bearer_awake", 1) ? in.getBoolean("bearer_awake") : false),roused=awake && (in.contains("bearer_roused", 1) ? in.getBoolean("bearer_roused") : false);
 		entityData.set(ROUSED,roused);bar.setColor(roused?BossEvent.BossBarColor.PURPLE:BossEvent.BossBarColor.BLUE);
 		if(awake){pose(LanternBearerRules.WATCH,LanternBearerRules.GAP);lastCut=0;}else pose(LanternBearerRules.DORMANT,0);
 	}

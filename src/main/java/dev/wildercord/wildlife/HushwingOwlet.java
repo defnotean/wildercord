@@ -165,7 +165,7 @@ public class HushwingOwlet extends Animal {
 		super.customServerAiStep(level);
 		long now = level.getGameTime();
 		if (tickCount % 20 == 0) {
-			boolean sleepy = OwletRules.sleeps(!level.isDarkOutside(), wokenAt < 0 ? -1 : now - wokenAt)
+			boolean sleepy = OwletRules.sleeps(!(!(level.isDay() && level.dimensionType().hasSkyLight())), wokenAt < 0 ? -1 : now - wokenAt)
 				&& onGround() && !isInWater() && truster() == null && stare == null;
 			if (sleepy != asleep()) {
 				entityData.set(ASLEEP, sleepy);

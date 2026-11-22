@@ -104,7 +104,7 @@ public final class BearersLantern {
 		horse.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 		horse.setTamed(true);
 		horse.setOwnerUUID(player.getUUID());
-		horse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
+		horse.equipSaddle(new ItemStack(Items.SADDLE), null);
 		dev.wildercord.compat.McEntities.setPermanentlyInvulnerable(horse, true);
 		horse.setPersistenceRequired();
 		horse.setCustomName(Component.translatable("entity.wildercord.barrow_steed"));

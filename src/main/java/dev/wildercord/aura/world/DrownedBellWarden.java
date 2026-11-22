@@ -843,14 +843,14 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	}
 	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
-		bound=in.getBooleanOr("warden_bound",false);
-		vigil=in.read("warden_vigil",BlockPos.CODEC).orElse(blockPosition());rest=in.getFloatOr("warden_rest",getYRot());
+		bound=(in.contains("warden_bound", 1) ? in.getBoolean("warden_bound") : false);
+		vigil=in.read("warden_vigil",BlockPos.CODEC).orElse(blockPosition());rest=(in.contains("warden_rest", 5) ? in.getFloat("warden_rest") : getYRot());
 		hallMin=in.read("warden_hall_min",BlockPos.CODEC).orElse(vigil);hallMax=in.read("warden_hall_max",BlockPos.CODEC).orElse(vigil);
-		lastTick=in.getLongOr("warden_ticked",-1L);
+		lastTick=(in.contains("warden_ticked", 4) ? in.getLong("warden_ticked") : -1L);
 		// Mid-fight it comes back on its feet, whatever it was doing when the chunk unloaded, its bell as cracked as it left it.
-		if(in.getBooleanOr("warden_awake",false)){
+		if((in.contains("warden_awake", 1) ? in.getBoolean("warden_awake") : false)){
 			pose(BellWardenRules.WATCH,BellWardenRules.GAP);lastCut=0;
-			boolean c=in.getBooleanOr("warden_cracked",false);entityData.set(CRACKED,c);if(c)bar.setColor(BossEvent.BossBarColor.PURPLE);
+			boolean c=(in.contains("warden_cracked", 1) ? in.getBoolean("warden_cracked") : false);entityData.set(CRACKED,c);if(c)bar.setColor(BossEvent.BossBarColor.PURPLE);
 		}else pose(BellWardenRules.DORMANT,0);
 	}
 }

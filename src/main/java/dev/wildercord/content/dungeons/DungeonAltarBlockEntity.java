@@ -144,7 +144,7 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 	protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
 		super.loadAdditional(inputTag, registries);
 		boss = input.read("boss", UUIDUtil.CODEC).orElse(null);
-		slain = input.getBooleanOr("slain", false);
+		slain = (input.contains("slain", 1) ? input.getBoolean("slain") :  false);
 	}
 
 	@Override

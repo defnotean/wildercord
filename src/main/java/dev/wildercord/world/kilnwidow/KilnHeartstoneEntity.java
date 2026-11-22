@@ -75,7 +75,7 @@ public final class KilnHeartstoneEntity extends BlockEntity {
 	@Override protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
 		super.loadAdditional(inputTag, registries);
 		guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null);
-		slain = input.getBooleanOr("slain", false);
+		slain = (input.contains("slain", 1) ? input.getBoolean("slain") :  false);
 	}
 	@Override protected void saveAdditional(CompoundTag outputTag, HolderLookup.Provider registries) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
 		super.saveAdditional(outputTag, registries);

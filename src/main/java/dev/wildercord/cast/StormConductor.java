@@ -930,5 +930,5 @@ public final class StormConductor extends DungeonBoss {
 	}
 
 	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.addAdditionalSaveData(outTag); out.putInt("rod_index",rodIndex); out.putLong("grounded_until",groundedUntil); out.putLong("next_ground",nextGround); }
-	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.readAdditionalSaveData(inTag); rodIndex=Math.floorMod(in.getIntOr("rod_index",0),3); groundedUntil=in.getLongOr("grounded_until",0); nextGround=in.getLongOr("next_ground",0); }
+	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.readAdditionalSaveData(inTag); rodIndex=Math.floorMod((in.contains("rod_index", 3) ? in.getInt("rod_index") : 0),3); groundedUntil=(in.contains("grounded_until", 4) ? in.getLong("grounded_until") : 0); nextGround=(in.contains("next_ground", 4) ? in.getLong("next_ground") : 0); }
 }

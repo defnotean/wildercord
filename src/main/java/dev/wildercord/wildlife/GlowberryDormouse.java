@@ -148,7 +148,7 @@ public class GlowberryDormouse extends Animal {
 		super.customServerAiStep(level);
 		long now = level.getGameTime();
 		if (tickCount % 20 == 0) {
-			boolean sleepy = DormouseRules.sleeps(!level.isDarkOutside(), wokenAt < 0 ? -1 : now - wokenAt)
+			boolean sleepy = DormouseRules.sleeps(!(!(level.isDay() && level.dimensionType().hasSkyLight())), wokenAt < 0 ? -1 : now - wokenAt)
 				&& onGround() && !isInWater() && getTarget() == null && truster() == null;
 			if (sleepy != asleep()) {
 				entityData.set(ASLEEP, sleepy);
@@ -252,7 +252,7 @@ public class GlowberryDormouse extends Animal {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		entityData.set(POUCH, Math.max(0, Math.min(DormouseRules.POUCH, input.getIntOr("Pouch", 0))));
+		entityData.set(POUCH, Math.max(0, Math.min(DormouseRules.POUCH, (input.contains("Pouch", 3) ? input.getInt("Pouch") :  0))));
 	}
 
 	// ------------------------------------------------------------------ sound: little squeaks and sniffs

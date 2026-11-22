@@ -59,8 +59,7 @@ public final class InnRooms {
 		Room old = player.getAttached(ROOM);
 		Room room = new Room(InnRoomRules.extend(old == null ? 0 : old.until(), now), GlobalPos.of(player.level().dimension(), player.blockPosition()));
 		player.setAttached(ROOM, room);
-		player.setRespawnPosition(new ServerPlayer.RespawnConfig(room.bed().dimension(), room.bed().pos(),
-			player.getYRot(), true), false);
+		player.setRespawnPosition(room.bed().dimension(), room.bed().pos(), player.getYRot(), true, false);
 		player.level().playSound(null, player.blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 0.8F, 1.4F);
 		boolean extended = old != null && InnRoomRules.rented(old.until(), now);
 		player.sendSystemMessage(Component.translatable(extended ? "message.wildercord.room.extended" : "message.wildercord.room.rented",

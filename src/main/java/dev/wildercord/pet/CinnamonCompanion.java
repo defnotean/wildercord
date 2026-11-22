@@ -46,8 +46,8 @@ final class CinnamonCompanion {
 	private static final Set<UUID> UNCERTAIN_OWNERS = new HashSet<>(), WARNED_IDENTITY = new HashSet<>();
 	private static boolean uncertainOverflow;
 	private static final CinnamonRecoveryRules LEASE = new CinnamonRecoveryRules();
-	private static final TicketType RECOVERY = Registry.register(BuiltInRegistries.TICKET_TYPE, Wildercord.id("cinnamon_recovery"),
-		new TicketType(CinnamonRecoveryRules.TICKET_TICKS, true, TicketType.TicketUse.LOADING_AND_SIMULATION));
+	private static final TicketType<ChunkPos> RECOVERY = TicketType.create("cinnamon_recovery",
+		java.util.Comparator.comparingLong(ChunkPos::asLong), CinnamonRecoveryRules.TICKET_TICKS);
 	private static ServerLevel ticketLevel;
 	private static ChunkPos ticketChunk;
 	private static CinnamonConfig config = CinnamonConfig.EMPTY;
@@ -308,7 +308,7 @@ final class CinnamonCompanion {
 		if (!LEASE.acquire(player.getUUID(), player.level().getServer().overworld().getGameTime())) return;
 		ticketLevel = level; ticketChunk = new ChunkPos(entry.chunkX(), entry.chunkZ());
 		// Only the journal's existing body location. No destination tickets, searches or moving self-loading trail.
-		level.getChunkSource().addTicketWithRadius(RECOVERY, ticketChunk, CinnamonRecoveryRules.TICKET_RADIUS);
+		level.getChunkSource().addRegionTicket(RECOVERY, ticketChunk, CinnamonRecoveryRules.TICKET_RADIUS, ticketChunk);
 	}
 	private static CinnamonIdentityRules.Status identity(ServerPlayer player, CinnamonJournal.Entry entry) {
 		return CinnamonIdentityRules.status(player.getAttached(CinnamonState.IDENTITY), entry == null ? null : entry.entity(),
@@ -329,7 +329,7 @@ final class CinnamonCompanion {
 		if (REQUESTED.remove(player.getUUID())) message(player, "recall_missing");
 	}
 	private static void release() {
-		if (ticketLevel != null) ticketLevel.getChunkSource().removeTicketWithRadius(RECOVERY, ticketChunk, CinnamonRecoveryRules.TICKET_RADIUS);
+		if (ticketLevel != null) ticketLevel.getChunkSource().removeRegionTicket(RECOVERY, ticketChunk, CinnamonRecoveryRules.TICKET_RADIUS, ticketChunk);
 		ticketLevel = null; ticketChunk = null; LEASE.clear();
 	}
 	private static void clear() { release(); LIVE.clear(); BLOCKED.clear(); REQUESTED.clear(); UNCERTAIN_OWNERS.clear(); WARNED_IDENTITY.clear(); uncertainOverflow = false; lastModified = -1; recalling = false; }

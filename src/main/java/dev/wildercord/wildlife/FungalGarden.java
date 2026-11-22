@@ -43,7 +43,7 @@ public final class FungalGarden {
  public static final AttachmentType<Long> BREATHER_READY=AttachmentRegistry.create(Wildercord.id("cave_breather_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
  private static long clock(ServerPlayer p) {return p.level().getServer().overworld().getGameTime();}
  public static final Item BREATHER=Registry.register(BuiltInRegistries.ITEM,itemKey("cave_breather"),new AuraWorld.Lore("cave_breather",new Item.Properties().setId(itemKey("cave_breather")).durability(32)) {
-  @Override public void onCraftedBy(ItemStack stack,Player p) {super.onCraftedBy(stack,p);if(p instanceof ServerPlayer sp)FungalInvestigation.crafted(sp);}
+  @Override public void onCraftedBy(ItemStack stack,Level l,Player p) {super.onCraftedBy(stack,l,p);if(p instanceof ServerPlayer sp)FungalInvestigation.crafted(sp);}
   @Override public InteractionResult use(Level l,Player p,InteractionHand hand) {
    if(p.isSpectator() || !p.isAlive() || hand!=InteractionHand.OFF_HAND)return InteractionResult.PASS;
    if(p instanceof ServerPlayer sp) {

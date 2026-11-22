@@ -4,7 +4,6 @@ import dev.wildercord.content.LightOption;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -485,7 +484,7 @@ public final class ElementFx {
 
 	// ------------------------------------------------------------------ life: petals and leaves, a leaf spiral, a bloom
 
-	private static final ColorParticleOption LEAF = ColorParticleOption.create(ParticleTypes.PALE_OAK_LEAVES, 0xFF000000 | LIFE.primary);
+	private static final net.minecraft.core.particles.ParticleOptions LEAF = ParticleTypes.PALE_OAK_LEAVES;
 
 	/** Petals and leaves drifting down from {@code at}. */
 	public static void petals(ServerLevel level, Vec3 at, double spread, int count) {

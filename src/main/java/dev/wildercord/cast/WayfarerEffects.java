@@ -506,7 +506,7 @@ public final class WayfarerEffects {
 
 	private static boolean trades(Villager villager) {
 		VillagerProfession job = villager.getVillagerData().getProfession();
-		return !villager.isBaby() && !job == VillagerProfession.NONE && !job == VillagerProfession.NITWIT;
+		return !villager.isBaby() && job != VillagerProfession.NONE && job != VillagerProfession.NITWIT;
 	}
 
 	private static void appraise(Cast cast, Cast.Hit hit) {

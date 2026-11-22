@@ -229,7 +229,7 @@ public class BrookbillDuck extends Animal {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		String id = input.getStringOr("imprint", "");
+		String id = (input.contains("imprint", 8) ? input.getString("imprint") :  "");
 		try {
 			imprint = id.isEmpty() ? null : UUID.fromString(id);
 		} catch (IllegalArgumentException e) {

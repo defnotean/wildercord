@@ -15,6 +15,6 @@ public final class BattlefieldMemoryEntity extends BlockEntity {
 	public BattlefieldMemoryEntity(BlockPos pos,BlockState state) { super(Battlefields.MEMORY_ENTITY,pos,state); }
 	public boolean oldGround() { return oldGround; }
 	public void awaken() { oldGround=true; setChanged(); }
-	@Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries) { McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess())); super.loadAdditional(inTag, registries); oldGround=in.getBooleanOr("old_ground",false); }
+	@Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries) { McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess())); super.loadAdditional(inTag, registries); oldGround=(in.contains("old_ground", 1) ? in.getBoolean("old_ground") : false); }
 	@Override protected void saveAdditional(CompoundTag outTag, HolderLookup.Provider registries) { McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess())); super.saveAdditional(outTag, registries); out.putBoolean("old_ground",oldGround); }
 }

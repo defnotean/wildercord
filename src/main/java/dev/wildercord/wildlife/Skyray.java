@@ -266,13 +266,13 @@ public class Skyray extends AmbientCreature {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		double y = input.getDoubleOr("anchor_y", Double.NaN);
+		double y = (input.contains("anchor_y", 6) ? input.getDouble("anchor_y") :  Double.NaN);
 		if (!Double.isNaN(y)) {
-			anchor = new Vec3(input.getDoubleOr("anchor_x", getX()), y, input.getDoubleOr("anchor_z", getZ()));
+			anchor = new Vec3((input.contains("anchor_x", 6) ? input.getDouble("anchor_x") :  getX()), y, (input.contains("anchor_z", 6) ? input.getDouble("anchor_z") :  getZ()));
 		}
-		radius = input.getDoubleOr("radius", 18);
-		altitude = input.getDoubleOr("altitude", 0.5);
-		way = input.getIntOr("way", 1) < 0 ? -1 : 1;
-		membraneTime = input.getIntOr("membrane_time", WildlifeRules.membraneInterval(random.nextDouble()));
+		radius = (input.contains("radius", 6) ? input.getDouble("radius") :  18);
+		altitude = (input.contains("altitude", 6) ? input.getDouble("altitude") :  0.5);
+		way = (input.contains("way", 3) ? input.getInt("way") :  1) < 0 ? -1 : 1;
+		membraneTime = (input.contains("membrane_time", 3) ? input.getInt("membrane_time") :  WildlifeRules.membraneInterval(random.nextDouble()));
 	}
 }

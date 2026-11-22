@@ -268,8 +268,8 @@ public class MossbackTortoise extends Animal {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		setGarden(Garden.byId(input.getByteOr("garden", (byte) 0)));
-		scuteTime = input.getIntOr("scute_time", WildlifeRules.scuteInterval(random.nextDouble()));
-		entityData.set(DATA_HIDING, input.getIntOr("hiding", 0));
+		setGarden(Garden.byId((input.contains("garden", 1) ? input.getByte("garden") :  (byte) 0)));
+		scuteTime = (input.contains("scute_time", 3) ? input.getInt("scute_time") :  WildlifeRules.scuteInterval(random.nextDouble()));
+		entityData.set(DATA_HIDING, (input.contains("hiding", 3) ? input.getInt("hiding") :  0));
 	}
 }

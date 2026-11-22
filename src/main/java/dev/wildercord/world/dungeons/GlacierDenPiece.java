@@ -56,7 +56,7 @@ public final class GlacierDenPiece extends DungeonPiece {
 	private static final BlockState SNOW=Blocks.SNOW_BLOCK.defaultBlockState();
 
 	public GlacierDenPiece(int x,int y,int z,Direction facing,int top){super(DungeonWorldgen.GLACIER_DEN_PIECE,x,y,z,WIDTH,HEIGHT,DEPTH,facing);this.top=top;}
-	public GlacierDenPiece(CompoundTag tag){super(DungeonWorldgen.GLACIER_DEN_PIECE,tag);top=tag.getIntOr(TOP,FLOOR+12);}
+	public GlacierDenPiece(CompoundTag tag){super(DungeonWorldgen.GLACIER_DEN_PIECE,tag);top=(tag.contains(TOP, 3) ? tag.getInt(TOP) : FLOOR+12);}
 	@Override protected void addAdditionalSaveData(net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext context,CompoundTag tag){
 		super.addAdditionalSaveData(context,tag);tag.putInt(TOP,top);
 	}

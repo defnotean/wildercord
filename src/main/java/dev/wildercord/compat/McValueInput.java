@@ -37,6 +37,44 @@ public final class McValueInput {
 	}
 
 	/** Decodes {@code key} with {@code codec}, or empty when it is absent or malformed. */
+
+	/** Plain {@link CompoundTag} reads: the getXxxOr call sites became contains/get pairs. */
+	public boolean contains(String key, int type) {
+		return tag.contains(key, type);
+	}
+
+	public boolean getBoolean(String key) {
+		return tag.getBoolean(key);
+	}
+
+	public byte getByte(String key) {
+		return tag.getByte(key);
+	}
+
+	public short getShort(String key) {
+		return tag.getShort(key);
+	}
+
+	public int getInt(String key) {
+		return tag.getInt(key);
+	}
+
+	public long getLong(String key) {
+		return tag.getLong(key);
+	}
+
+	public float getFloat(String key) {
+		return tag.getFloat(key);
+	}
+
+	public double getDouble(String key) {
+		return tag.getDouble(key);
+	}
+
+	public String getString(String key) {
+		return tag.getString(key);
+	}
+
 	public <T> Optional<T> read(String key, Codec<T> codec) {
 		Tag value = tag.get(key);
 		if (value == null) {

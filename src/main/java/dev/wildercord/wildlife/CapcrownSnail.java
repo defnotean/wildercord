@@ -290,9 +290,9 @@ public class CapcrownSnail extends Animal implements Shearable {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		entityData.set(COLOUR, input.getIntOr("Cap", RED) == BROWN ? BROWN : RED);
-		entityData.set(CAPPED, input.getBooleanOr("Capped", true));
-		regrowAt = input.getLongOr("Regrow", -1);
+		entityData.set(COLOUR, (input.contains("Cap", 3) ? input.getInt("Cap") :  RED) == BROWN ? BROWN : RED);
+		entityData.set(CAPPED, (input.contains("Capped", 1) ? input.getBoolean("Capped") :  true));
+		regrowAt = (input.contains("Regrow", 4) ? input.getLong("Regrow") :  -1);
 	}
 
 	// ------------------------------------------------------------------ sound: soft squelches

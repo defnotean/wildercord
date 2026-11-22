@@ -1740,7 +1740,7 @@ public class TideScribe extends DungeonBoss {
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		try {
-			tide = Tide.valueOf(input.getStringOr("tide", "LOW"));
+			tide = Tide.valueOf((input.contains("tide", 8) ? input.getString("tide") :  "LOW"));
 		} catch (IllegalArgumentException e) {
 			tide = Tide.LOW;
 		}
@@ -1748,7 +1748,7 @@ public class TideScribe extends DungeonBoss {
 		step = 0;
 		// When the tide next turns, so a reload doesn't turn it at once; never further off than the longest wait (a clock that jumped).
 		long now = level().getGameTime();
-		tideUntil = Math.min(input.getLongOr("tide_until", now), now + Math.max(LOW_TICKS[1], HIGH_TICKS[1]));
+		tideUntil = Math.min((input.contains("tide_until", 4) ? input.getLong("tide_until") :  now), now + Math.max(LOW_TICKS[1], HIGH_TICKS[1]));
 	}
 
 	/** The game time the tide next turns (low to rising, high to ebbing), for the tests. */

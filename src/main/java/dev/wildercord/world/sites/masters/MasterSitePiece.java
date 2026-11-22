@@ -49,7 +49,7 @@ public abstract class MasterSitePiece extends DungeonPiece {
 
 	protected MasterSitePiece(StructurePieceType type, CompoundTag tag) {
 		super(type, tag);
-		alt = tag.getBooleanOr("MasterAlt", false);
+		alt = (tag.contains("MasterAlt", 1) ? tag.getBoolean("MasterAlt") :  false);
 	}
 
 	@Override

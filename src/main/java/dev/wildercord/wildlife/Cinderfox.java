@@ -270,7 +270,7 @@ public class Cinderfox extends TamableAnimal {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		entityData.set(DATA_BRUSHED, input.getLongOr("brushed_day", -1L));
+		entityData.set(DATA_BRUSHED, (input.contains("brushed_day", 4) ? input.getLong("brushed_day") :  -1L));
 	}
 
 	/** 1.21.11 dropped Animal#feed(Player, InteractionHand, ItemStack, float, float); this keeps its shape. */

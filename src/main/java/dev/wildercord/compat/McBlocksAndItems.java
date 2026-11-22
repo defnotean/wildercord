@@ -95,7 +95,7 @@ public final class McBlocksAndItems {
 
 	/** Primes a TNT block at {@code pos} respecting {@code TNT_EXPLODES}, returning true if primed. */
 	public static boolean primeTnt(ServerLevel level, BlockPos pos,  LivingEntity igniter) {
-		if (!level.getGameRules().getRule(GameRules.RULE_MOB_GRIEFING).get()) {
+		if (!level.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get()) {
 			return false;
 		}
 		PrimedTnt tnt = new PrimedTnt(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, igniter);

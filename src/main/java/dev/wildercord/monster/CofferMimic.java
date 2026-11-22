@@ -159,7 +159,6 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	// ------------------------------------------------------------------ owner
 
 	@Override
-	@Override
 	public java.util.UUID getOwnerUUID() {
 		EntityReference<LivingEntity> ref = getOwnerReference();
 		return ref == null ? null : ref.getUUID();
@@ -771,19 +770,19 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		entityData.set(DATA_OWNER, Optional.ofNullable(McEntityReference.read(input, "Owner")));
-		staying = input.getBooleanOr("Staying", false);
+		staying = (input.contains("Staying", 1) ? input.getBoolean("Staying") :  false);
 		belly.clearContent();
 		for (McItemStackWithSlot item : input.listOrEmpty("Belly", McItemStackWithSlot.CODEC)) {
 			if (item.isValidInContainer(belly.getContainerSize())) {
 				belly.setItem(item.slot(), item.stack());
 			}
 		}
-		boolean shutUp = input.getBooleanOr("Disguised", true);
+		boolean shutUp = (input.contains("Disguised", 1) ? input.getBoolean("Disguised") :  true);
 		setState(VEILED, shutUp);
 		phase = shutUp ? Phase.DISGUISED : Phase.HUNT;
-		if (input.getBooleanOr("HasHome", false)) {
-			home = new BlockPos(input.getIntOr("HomeX", 0), input.getIntOr("HomeY", 0), input.getIntOr("HomeZ", 0));
-			homeYaw = input.getFloatOr("HomeYaw", 0);
+		if ((input.contains("HasHome", 1) ? input.getBoolean("HasHome") :  false)) {
+			home = new BlockPos((input.contains("HomeX", 3) ? input.getInt("HomeX") :  0), (input.contains("HomeY", 3) ? input.getInt("HomeY") :  0), (input.contains("HomeZ", 3) ? input.getInt("HomeZ") :  0));
+			homeYaw = (input.contains("HomeYaw", 5) ? input.getFloat("HomeYaw") :  0);
 		}
 	}
 

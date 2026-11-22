@@ -32,8 +32,8 @@ public final class TidewardEquipment {
  private static ResourceKey<Item> key(String n){return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}
  private static final ArmorMaterial WADER_MATERIAL=new ArmorMaterial(8,Map.of(ArmorType.HELMET,0,ArmorType.CHESTPLATE,0,ArmorType.LEGGINGS,0,ArmorType.BOOTS,1),8,SoundEvents.ARMOR_EQUIP_LEATHER,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_reedwater")),ResourceKey.create(EquipmentAssets.ROOT_ID,Wildercord.id("reedwater")));
  private static final ArmorMaterial GLASS_MATERIAL=new ArmorMaterial(6,Map.of(ArmorType.HELMET,0,ArmorType.CHESTPLATE,0,ArmorType.LEGGINGS,0,ArmorType.BOOTS,0),4,SoundEvents.ARMOR_EQUIP_LEATHER,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_dewglass")),ResourceKey.create(EquipmentAssets.ROOT_ID,Wildercord.id("dewglass")));
- public static final Item WADERS=Registry.register(BuiltInRegistries.ITEM,key("reedwater_waders"),new AuraWorld.Lore("reedwater_waders",new Item.Properties().setId(key("reedwater_waders")).humanoidArmor(WADER_MATERIAL,ArmorType.BOOTS).rarity(Rarity.UNCOMMON)));
- public static final Item SPECTACLES=Registry.register(BuiltInRegistries.ITEM,key("dewglass_spectacles"),new AuraWorld.Lore("dewglass_spectacles",new Item.Properties().setId(key("dewglass_spectacles")).humanoidArmor(GLASS_MATERIAL,ArmorType.HELMET).rarity(Rarity.UNCOMMON)));
+ public static final Item WADERS=Registry.register(BuiltInRegistries.ITEM,key("reedwater_waders"),new AuraWorld.Lore("reedwater_waders",WADER_MATERIAL.humanoidProperties(new Item.Properties().setId(key("reedwater_waders")), ArmorType.BOOTS).rarity(Rarity.UNCOMMON)));
+ public static final Item SPECTACLES=Registry.register(BuiltInRegistries.ITEM,key("dewglass_spectacles"),new AuraWorld.Lore("dewglass_spectacles",GLASS_MATERIAL.humanoidProperties(new Item.Properties().setId(key("dewglass_spectacles")), ArmorType.HELMET).rarity(Rarity.UNCOMMON)));
  private static AttachmentType<Long> rest(String name){return AttachmentRegistry.create(Wildercord.id(name),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());}
  public static final AttachmentType<Long> WALK_READY=rest("tideward_walk_ready"),SIGHT_READY=rest("tideward_sight_ready");
  public static final AttachmentType<Integer> WALK_PROGRESS=AttachmentRegistry.create(Wildercord.id("tideward_walk_progress"),b -> b.initializer(() -> 0).persistent(Codec.intRange(0,WALK_WINDOW-1)).copyOnDeath());
@@ -89,7 +89,7 @@ public final class TidewardEquipment {
    state.target=null;state.ticks=0;state.world=((ServerLevel) p.level());state.worn=worn;return;
   }
   if(state.world!=((ServerLevel) p.level()) || state.worn!=worn){state.target=null;state.ticks=0;state.world=((ServerLevel) p.level());state.worn=worn;}
-  ReedbackCrab crab=state.target!=null && p.level().getEntity(state.target) instanceof ReedbackCrab c?c:null;
+  ReedbackCrab crab=state.target!=null && p.serverLevel().getEntity(state.target) instanceof ReedbackCrab c?c:null;
   if(crab==null || !visibleWarning(p,crab)){
    state.target=null;state.ticks=0;
    if(p.tickCount%10!=0)return;

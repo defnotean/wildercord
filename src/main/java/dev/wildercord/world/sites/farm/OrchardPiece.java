@@ -90,7 +90,7 @@ public final class OrchardPiece extends FarmPiece {
 			if (x >= 9 && x <= 15 && z >= 9 && z <= 15 || x >= 11 && x <= 13 && z < 9 || x >= 16 && z >= 17) continue;
 			int n = noise(x + 7, z);
 			if (n < 10) set(level, bb, s(Blocks.SHORT_GRASS), x, 1, z);
-			else if (n < 16) set(level, bb, s(Blocks.LEAF_LITTER), x, 1, z);
+			else if (n < 16) set(level, bb, s(Blocks.OAK_LEAVES), x, 1, z);
 		}
 		for (int z : new int[]{4, 7}) for (int x : new int[]{10, 14}) {
 			set(level, bb, s(Blocks.MOSSY_STONE_BRICK_WALL), x, 1, z);

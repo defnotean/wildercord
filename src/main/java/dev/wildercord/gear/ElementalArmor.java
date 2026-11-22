@@ -35,9 +35,11 @@ public final class ElementalArmor extends Item {
 			var armor=new ArmorMaterial(15,Map.of(ArmorType.HELMET,2,ArmorType.CHESTPLATE,4,ArmorType.LEGGINGS,3,ArmorType.BOOTS,1),12,
 				SoundEvents.ARMOR_EQUIP_LEATHER,0,kind==Kind.STONEBOUND?.10F:0,ItemTags.REPAIRS_LEATHER_ARMOR,
 				ResourceKey.create(EquipmentAssets.ROOT_ID,Wildercord.id(material)));
-			var properties=new Item.Properties().setId(key).humanoidArmor(armor,type).rarity(Rarity.UNCOMMON);
+			var properties=armor.humanoidProperties(new Item.Properties().setId(key), type).rarity(Rarity.UNCOMMON);
 			if(kind==Kind.STONEBOUND) {
-				var modifiers=new ArrayList<>(armor.createAttributes(type).modifiers());
+				var modifiers=new ArrayList<>(List.of(
+					new ItemAttributeModifiers.Entry(Attributes.ARMOR, new AttributeModifier(Wildercord.id("stonebound_defense_"+type.getName()), armor.defense().get(type), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.bySlot(type.getSlot())),
+					new ItemAttributeModifiers.Entry(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(Wildercord.id("stonebound_knockback_"+type.getName()), .10, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.bySlot(type.getSlot()))));
 				modifiers.add(new ItemAttributeModifiers.Entry(Attributes.MOVEMENT_SPEED,
 					new AttributeModifier(Wildercord.id("stonebound_"+type.getName()),-.03,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),EquipmentSlotGroup.bySlot(type.getSlot())));
 				properties.attributes(new ItemAttributeModifiers(modifiers));

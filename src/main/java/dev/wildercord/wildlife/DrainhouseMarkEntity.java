@@ -14,6 +14,6 @@ public final class DrainhouseMarkEntity extends BlockEntity {
  public DrainhouseMarkEntity(BlockPos p,BlockState s){super(DrainhouseContent.MARK_ENTITY,p,s);}
  public boolean authentic(){return authentic;}
  void awaken(){authentic=true;setChanged();}
- @Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag, registries);authentic=in.getBooleanOr("drainhouse_authentic",false);}
+ @Override protected void loadAdditional(CompoundTag inTag, HolderLookup.Provider registries){ McValueInput in = new McValueInput(inTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.loadAdditional(inTag, registries);authentic=(in.contains("drainhouse_authentic", 1) ? in.getBoolean("drainhouse_authentic") : false);}
  @Override protected void saveAdditional(CompoundTag outTag, HolderLookup.Provider registries){ McValueOutput out = new McValueOutput(outTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));super.saveAdditional(outTag, registries);out.putBoolean("drainhouse_authentic",authentic);}
 }

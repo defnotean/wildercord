@@ -295,8 +295,8 @@ public class LumenStag extends Animal {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		entityData.set(DATA_SHED_DAY, input.getLongOr("shed_day", -1L));
-		fright = input.getIntOr("fright", 0);
+		entityData.set(DATA_SHED_DAY, (input.contains("shed_day", 4) ? input.getLong("shed_day") :  -1L));
+		fright = (input.contains("fright", 3) ? input.getInt("fright") :  0);
 	}
 
 	// ------------------------------------------------------------------ goals

@@ -57,7 +57,7 @@ public final class Runesmith {
 	public static void init() {
 		PointOfInterestHelper.register(POI.location(), 1, 1, SCRIBING_DESK);
 		Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, PROFESSION, new VillagerProfession(
-			Component.translatable("entity.wildercord.villager.runesmith"),
+			"runesmith",
 			poi -> poi.is(POI),
 			poi -> poi.is(POI),
 			ImmutableSet.of(),
@@ -73,7 +73,6 @@ public final class Runesmith {
 
 	/** Whether this villager is a Runesmith. */
 	public static boolean is(Villager villager) {
-		Holder<VillagerProfession> profession = villager.getVillagerData().profession();
-		return profession.is(PROFESSION);
+		return villager.getVillagerData().getProfession() == BuiltInRegistries.VILLAGER_PROFESSION.get(PROFESSION);
 	}
 }

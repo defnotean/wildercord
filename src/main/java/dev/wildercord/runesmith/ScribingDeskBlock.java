@@ -29,9 +29,35 @@ import java.util.Map;
  */
 public class ScribingDeskBlock extends Block {
 	public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-	private static final VoxelShape COLLISION = Shapes.or(Block.column(16.0, 0.0, 2.0), Block.column(8.0, 2.0, 14.0));
-	private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
-		Block.boxZ(16.0, 10.0, 14.0, 1.0, 5.333333), Block.boxZ(16.0, 12.0, 16.0, 5.333333, 9.666667), Block.boxZ(16.0, 14.0, 18.0, 9.666667, 14.0), COLLISION));
+	private static VoxelShape column(double width, double yBottom, double height) {
+		double edge = (16.0 - width) / 32.0;
+		return Shapes.box(edge, yBottom / 16.0, edge, 1.0 - edge, (yBottom + height) / 16.0, 1.0 - edge);
+	}
+
+	private static VoxelShape boxZ(double width, double zBottom, double zTop, double yBottom, double yTop) {
+		double edge = (16.0 - width) / 32.0;
+		return Shapes.box(edge, yBottom / 16.0, zBottom / 16.0, 1.0 - edge, yTop / 16.0, zTop / 16.0);
+	}
+
+	/** 1.21.4 has no Shapes.rotateHorizontal: the desk only ever turns about Y. */
+	private static VoxelShape turn(VoxelShape shape, Direction dir) {
+		if (dir == Direction.NORTH) return shape;
+		var boxes = new java.util.ArrayList<VoxelShape>();
+		for (var box : shape.toAabbs()) {
+			double x1 = box.minX, y1 = box.minY, z1 = box.minZ, x2 = box.maxX, y2 = box.maxY, z2 = box.maxZ;
+			if (dir == Direction.SOUTH) boxes.add(Shapes.box(1.0 - x2, y1, 1.0 - z2, 1.0 - x1, y2, 1.0 - z1));
+			else if (dir == Direction.EAST) boxes.add(Shapes.box(z1, y1, 1.0 - x2, z2, y2, 1.0 - x1));
+			else boxes.add(Shapes.box(1.0 - z2, y1, x1, 1.0 - z1, y2, x2));
+		}
+		return Shapes.or(Shapes.empty(), boxes.toArray(new VoxelShape[0]));
+	}
+
+	private static final VoxelShape COLLISION = Shapes.or(column(16.0, 0.0, 2.0), column(8.0, 2.0, 14.0));
+	private static final VoxelShape DESK = Shapes.or(
+		boxZ(16.0, 10.0, 14.0, 1.0, 5.333333), boxZ(16.0, 12.0, 16.0, 5.333333, 9.666667), boxZ(16.0, 14.0, 18.0, 9.666667, 14.0), COLLISION);
+	private static final Map<Direction, VoxelShape> SHAPES = new java.util.EnumMap<>(Map.of(
+		Direction.NORTH, DESK, Direction.SOUTH, turn(DESK, Direction.SOUTH),
+		Direction.EAST, turn(DESK, Direction.EAST), Direction.WEST, turn(DESK, Direction.WEST)));
 
 	public ScribingDeskBlock(BlockBehaviour.Properties properties) {
 		super(properties);

@@ -165,8 +165,8 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		setMethod(BreathingMethods.byId(input.getStringOr("method", "")).orElse(BreathingMethods.EMBER));
-		setStage(input.getIntOr("aura_stage", AuraRules.GLOW));
+		setMethod(BreathingMethods.byId((input.contains("method", 8) ? input.getString("method") :  "")).orElse(BreathingMethods.EMBER));
+		setStage((input.contains("aura_stage", 3) ? input.getInt("aura_stage") :  AuraRules.GLOW));
 	}
 
 	// ------------------------------------------------------------------ poses

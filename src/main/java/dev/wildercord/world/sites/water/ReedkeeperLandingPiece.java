@@ -34,7 +34,7 @@ public final class ReedkeeperLandingPiece extends WaterPiece {
 
 	public ReedkeeperLandingPiece(CompoundTag tag) {
 		super(WaterSites.REEDKEEPER_LANDING, tag);
-		residentPlaced = tag.getBooleanOr("ReedkeeperPlaced", false);
+		residentPlaced = (tag.contains("ReedkeeperPlaced", 1) ? tag.getBoolean("ReedkeeperPlaced") :  false);
 	}
 
 	@Override

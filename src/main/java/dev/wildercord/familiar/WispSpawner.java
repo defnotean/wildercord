@@ -46,7 +46,7 @@ public final class WispSpawner {
 	public static Wisp trySpawn(ServerLevel level, ServerPlayer player) {
 		RandomSource random = level.getRandom();
 		boolean well = player.getAttachedOrElse(WildercordAttachments.WELL_UNTIL, 0L) > level.getGameTime();
-		boolean night = level.isDarkOutside();
+		boolean night = (!(level.isDay() && level.dimensionType().hasSkyLight()));
 		if (!well && !night) {
 			return null;
 		}

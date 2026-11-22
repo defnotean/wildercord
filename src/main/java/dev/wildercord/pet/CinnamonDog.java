@@ -107,7 +107,7 @@ public final class CinnamonDog extends TamableAnimal {
 
 	void bind(ServerPlayer owner) {
 		setTame(true, false);
-		setOwner(owner);
+		setOwnerUUID(owner.getUUID());
 		setOrderedToSit(owner.getAttachedOrElse(CinnamonState.SITTING, false));
 		bow = owner.getAttachedOrElse(CinnamonState.BOW, false);
 		setCustomName(Component.literal("Cinnamon"));
@@ -607,8 +607,8 @@ public final class CinnamonDog extends TamableAnimal {
 
 	@Override public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		restoreState(input.getBooleanOr("CinnamonSitting", isOrderedToSit()), input.getBooleanOr("CinnamonBow", false),
-			input.getDoubleOr("CinnamonScale", 1), input.getLongOr("CinnamonGrowthUntil", 0), input.getFloatOr("CinnamonDamage", 0),
-			input.getLongOr("CinnamonRecoveryUntil", 0), input.getLongOr("CinnamonDamageImmuneUntil", 0));
+		restoreState((input.contains("CinnamonSitting", 1) ? input.getBoolean("CinnamonSitting") :  isOrderedToSit()), (input.contains("CinnamonBow", 1) ? input.getBoolean("CinnamonBow") :  false),
+			(input.contains("CinnamonScale", 6) ? input.getDouble("CinnamonScale") :  1), (input.contains("CinnamonGrowthUntil", 4) ? input.getLong("CinnamonGrowthUntil") :  0), (input.contains("CinnamonDamage", 5) ? input.getFloat("CinnamonDamage") :  0),
+			(input.contains("CinnamonRecoveryUntil", 4) ? input.getLong("CinnamonRecoveryUntil") :  0), (input.contains("CinnamonDamageImmuneUntil", 4) ? input.getLong("CinnamonDamageImmuneUntil") :  0));
 	}
 }

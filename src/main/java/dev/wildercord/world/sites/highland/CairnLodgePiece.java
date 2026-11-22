@@ -30,7 +30,7 @@ public final class CairnLodgePiece extends HighlandPiece {
 	}
 	public CairnLodgePiece(CompoundTag tag) {
 		super(HighlandSites.LODGE_PIECE, tag);
-		residentPlaced = tag.getBooleanOr("CairnKeeperPlaced", false);
+		residentPlaced = (tag.contains("CairnKeeperPlaced", 1) ? tag.getBoolean("CairnKeeperPlaced") :  false);
 	}
 
 	@Override

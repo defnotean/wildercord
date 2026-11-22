@@ -191,7 +191,7 @@ public class BondedSkyray extends Skyray {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		String id = input.getStringOr("owner", "");
+		String id = (input.contains("owner", 8) ? input.getString("owner") :  "");
 		try {
 			owner = id.isEmpty() ? null : UUID.fromString(id);
 		} catch (IllegalArgumentException e) {

@@ -1055,11 +1055,11 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	}
 	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
-		bound=in.getBooleanOr("serpent_bound",false);
+		bound=(in.contains("serpent_bound", 1) ? in.getBoolean("serpent_bound") : false);
 		entityData.set(TREE,in.read("serpent_tree",BlockPos.CODEC).orElse(blockPosition()));entityData.set(LANDING,in.read("serpent_landing",BlockPos.CODEC).orElse(tree()));
-		entityData.set(REST,in.getFloatOr("serpent_rest",getYRot()));
-		dived=in.getBooleanOr("serpent_dived",false);lastTick=in.getLongOr("serpent_ticked",-1L);
+		entityData.set(REST,(in.contains("serpent_rest", 5) ? in.getFloat("serpent_rest") : getYRot()));
+		dived=(in.contains("serpent_dived", 1) ? in.getBoolean("serpent_dived") : false);lastTick=(in.contains("serpent_ticked", 4) ? in.getLong("serpent_ticked") : -1L);
 		// Mid-fight it comes back ashore and on its feet, whatever it was doing when the chunk unloaded.
-		if(in.getBooleanOr("serpent_awake",false)){pose(SerpentRules.WATCH,SerpentRules.GAP);lastCut=0;if(dived)bar.setColor(BossEvent.BossBarColor.RED);}else pose(SerpentRules.DORMANT,0);
+		if((in.contains("serpent_awake", 1) ? in.getBoolean("serpent_awake") : false)){pose(SerpentRules.WATCH,SerpentRules.GAP);lastCut=0;if(dived)bar.setColor(BossEvent.BossBarColor.RED);}else pose(SerpentRules.DORMANT,0);
 	}
 }

@@ -215,6 +215,6 @@ public class SakuraVillager extends PathfinderMob {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		configure(input.getIntOr("SakuraRole", TEA_MASTER));
+		configure((input.contains("SakuraRole", 3) ? input.getInt("SakuraRole") :  TEA_MASTER));
 	}
 }

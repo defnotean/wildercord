@@ -230,7 +230,7 @@ public class WayfarerKeeper extends WanderingTrader {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		role = Role.of(input.getStringOr("Role", Role.COOK.id));
+		role = Role.of((input.contains("Role", 8) ? input.getString("Role") :  Role.COOK.id));
 		if (role != Role.CARAVANEER) setDespawnDelay(0);
 	}
 }

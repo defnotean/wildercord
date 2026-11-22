@@ -840,13 +840,13 @@ public class ShrineCat extends TamableAnimal {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		ShrineCatRules.Variant v = ShrineCatRules.Variant.byId(input.getIntOr("ShrineCatVariant", 0));
+		ShrineCatRules.Variant v = ShrineCatRules.Variant.byId((input.contains("ShrineCatVariant", 3) ? input.getInt("ShrineCatVariant") :  0));
 		setVariant(v);
-		setRole(input.getIntOr("ShrineCatRole", isTame() ? ShrineCatRules.ROLE_TAMED : ShrineCatRules.ROLE_VILLAGE));
-		setLoafing(input.getBooleanOr("ShrineCatLoafing", false));
-		sanctuaryFinished = input.getBooleanOr("SanctuaryFinished", isTame());
-		wave1Summoned = input.getBooleanOr("Wave1Summoned", false);
-		wave2Summoned = input.getBooleanOr("Wave2Summoned", false);
+		setRole((input.contains("ShrineCatRole", 3) ? input.getInt("ShrineCatRole") :  isTame() ? ShrineCatRules.ROLE_TAMED : ShrineCatRules.ROLE_VILLAGE));
+		setLoafing((input.contains("ShrineCatLoafing", 1) ? input.getBoolean("ShrineCatLoafing") :  false));
+		sanctuaryFinished = (input.contains("SanctuaryFinished", 1) ? input.getBoolean("SanctuaryFinished") :  isTame());
+		wave1Summoned = (input.contains("Wave1Summoned", 1) ? input.getBoolean("Wave1Summoned") :  false);
+		wave2Summoned = (input.contains("Wave2Summoned", 1) ? input.getBoolean("Wave2Summoned") :  false);
 		homePos = input.read("ShrineCatHome", BlockPos.CODEC).orElse(null);
 		sanctuaryHeart = input.read("SanctuaryHeart", BlockPos.CODEC).orElse(null);
 		if (isTame() && getRole() == ShrineCatRules.ROLE_TAMED) {

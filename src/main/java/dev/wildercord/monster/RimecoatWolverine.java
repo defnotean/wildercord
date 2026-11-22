@@ -301,7 +301,7 @@ public class RimecoatWolverine extends WildMonster {
 			return -1;
 		}
 		Inventory inventory = player.getInventory();
-		if (isFood(inventory.getSelectedItem())) {
+		if (isFood(inventory.getSelected())) {
 			return inventory.selected;
 		}
 		List<Integer> slots = new ArrayList<>();

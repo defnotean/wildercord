@@ -54,6 +54,14 @@ public class TrainingDummy extends LivingEntity {
 	private double practiceX, practiceZ;
 	public void setPracticeMoving(boolean moving) { practiceMoving=moving; practiceX=getX(); practiceZ=getZ(); }
 
+
+	@Override
+	public void setItemSlot(net.minecraft.world.entity.EquipmentSlot slot, ItemStack stack) {}
+
+	@Override
+	public ItemStack getItemBySlot(net.minecraft.world.entity.EquipmentSlot slot) {
+		return ItemStack.EMPTY;
+	}
 	public TrainingDummy(EntityType<? extends TrainingDummy> type, Level level) {
 		super(type, level);
 	}
@@ -217,8 +225,8 @@ public class TrainingDummy extends LivingEntity {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		lastHit = input.getLongOr("last_hit", 0L);
-		practiceMoving=input.getBooleanOr("practice_moving",false);
-		practiceX=input.getDoubleOr("practice_x",getX()); practiceZ=input.getDoubleOr("practice_z",getZ());
+		lastHit = (input.contains("last_hit", 4) ? input.getLong("last_hit") :  0L);
+		practiceMoving=(input.contains("practice_moving", 1) ? input.getBoolean("practice_moving") : false);
+		practiceX=(input.contains("practice_x", 6) ? input.getDouble("practice_x") : getX()); practiceZ=(input.contains("practice_z", 6) ? input.getDouble("practice_z") : getZ());
 	}
 }

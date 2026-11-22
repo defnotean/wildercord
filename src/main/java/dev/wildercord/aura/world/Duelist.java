@@ -549,10 +549,10 @@ public class Duelist extends AuraFighter {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		stayUntil = input.getLongOr("stay_until", 0L);
-		restUntil = input.getLongOr("rest_until", 0L);
-		long hosted=input.getLongOr("tournament",Long.MIN_VALUE);tournament=hosted==Long.MIN_VALUE?null:BlockPos.of(hosted);tournamentSlot=Math.clamp(input.getIntOr("tournament_slot",0),0,2);
-		long campAt = input.getLongOr("camp", Long.MIN_VALUE);
+		stayUntil = (input.contains("stay_until", 4) ? input.getLong("stay_until") :  0L);
+		restUntil = (input.contains("rest_until", 4) ? input.getLong("rest_until") :  0L);
+		long hosted=(input.contains("tournament", 4) ? input.getLong("tournament") : Long.MIN_VALUE);tournament=hosted==Long.MIN_VALUE?null:BlockPos.of(hosted);tournamentSlot=Math.clamp((input.contains("tournament_slot", 3) ? input.getInt("tournament_slot") : 0),0,2);
+		long campAt = (input.contains("camp", 4) ? input.getLong("camp") :  Long.MIN_VALUE);
 		camp = campAt == Long.MIN_VALUE ? null : BlockPos.of(campAt);
 		// A duel never survives a reload: whatever it was doing, it's done.
 		setState(DRAWN, false);

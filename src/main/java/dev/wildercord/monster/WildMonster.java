@@ -366,9 +366,9 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		entityData.set(DATA_VARIANT, input.getByteOr("Variant", (byte) 0));
-		entityData.set(DATA_ALPHA, input.getBooleanOr("Alpha", false));
-		entityData.set(GIANT_ROUSED, input.getBooleanOr("GiantRoused", false));
+		entityData.set(DATA_VARIANT, (input.contains("Variant", 1) ? input.getByte("Variant") :  (byte) 0));
+		entityData.set(DATA_ALPHA, (input.contains("Alpha", 1) ? input.getBoolean("Alpha") :  false));
+		entityData.set(GIANT_ROUSED, (input.contains("GiantRoused", 1) ? input.getBoolean("GiantRoused") :  false));
 	}
 
 	/** Turns its body, head and look to face a creature (before an aimed attack goes off, so it flies true). */

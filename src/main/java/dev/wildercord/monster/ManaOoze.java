@@ -300,7 +300,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		entityData.set(DATA_FULLNESS, input.getFloatOr("fullness", 0.0F));
+		entityData.set(DATA_FULLNESS, (input.contains("fullness", 5) ? input.getFloat("fullness") :  0.0F));
 	}
 
 	/** Unused by the game: a Mana Ooze never breeds. */

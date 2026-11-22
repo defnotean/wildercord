@@ -56,10 +56,10 @@ public class FallenStarBlockEntity extends BlockEntity {
 	@Override
 	protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
 		super.loadAdditional(inputTag, registries);
-		rune = input.getStringOr("rune", "");
-		beaconUntil = input.getLongOr("beacon_until", 0L);
-		fadeAt = input.getLongOr("fade_at", 0L);
-		guarded = input.getBooleanOr("guarded", false);
+		rune = (input.contains("rune", 8) ? input.getString("rune") :  "");
+		beaconUntil = (input.contains("beacon_until", 4) ? input.getLong("beacon_until") :  0L);
+		fadeAt = (input.contains("fade_at", 4) ? input.getLong("fade_at") :  0L);
+		guarded = (input.contains("guarded", 1) ? input.getBoolean("guarded") :  false);
 		crater.clear();
 		input.listOrEmpty("crater", Changed.CODEC).stream().forEach(crater::add);
 	}
@@ -80,9 +80,9 @@ public class FallenStarBlockEntity extends BlockEntity {
 	 * the ledger still go, and its crater is still filled back in.
 	 */
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		super.onRemove(state, level, pos, newState, movedByPiston);
-		if (!gone && !state.is(newState.getBlock()) && level instanceof ServerLevel server) {
+	public void setRemoved() {
+		super.setRemoved();
+		if (!gone && level instanceof ServerLevel server) {
 			gone = true;
 			FallenStars.cleanUp(server, pos, this);
 		}

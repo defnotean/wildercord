@@ -209,7 +209,7 @@ public class BlossomTanuki extends Animal {
 
 	/** Under the full moon, sat up, drumming its belly. */
 	private void drum(ServerLevel level, long now) {
-		boolean night = level.isDarkOutside() && !level.dimensionType().hasFixedTime();
+		boolean night = (!(level.isDay() && level.dimensionType().hasSkyLight())) && !level.dimensionType().hasFixedTime();
 		boolean should = !isBaby() && onGround() && !isInWater() && getNavigation().isDone() && truster() == null
 			&& TanukiRules.drums(night, ClimateRules.moonPhase(dev.wildercord.compat.McTime.overworldClock(level)), hidden());
 		if (should != drumming()) {

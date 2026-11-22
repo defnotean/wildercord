@@ -371,7 +371,7 @@ public class Dunestinger extends WildMonster {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		setState(VEILED, input.getBooleanOr("Buried", false));
+		setState(VEILED, (input.contains("Buried", 1) ? input.getBoolean("Buried") :  false));
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public final class CharcoalYardPiece extends EmberwoodPiece {
 	}
 	public CharcoalYardPiece(CompoundTag tag) {
 		super(EmberwoodSites.YARD_PIECE, tag);
-		residentPlaced = tag.getBooleanOr("KilnKeeperPlaced", false);
+		residentPlaced = (tag.contains("KilnKeeperPlaced", 1) ? tag.getBoolean("KilnKeeperPlaced") :  false);
 	}
 
 	@Override

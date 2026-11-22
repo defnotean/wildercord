@@ -32,7 +32,7 @@ public final class ListeningStationPiece extends BelowkeeperPiece {
 	}
 	public ListeningStationPiece(CompoundTag tag) {
 		super(BelowkeeperSites.STATION_PIECE, tag);
-		residentPlaced = tag.getBooleanOr("ListenerPlaced", false);
+		residentPlaced = (tag.contains("ListenerPlaced", 1) ? tag.getBoolean("ListenerPlaced") :  false);
 	}
 
 	@Override

@@ -189,7 +189,7 @@ public final class DuplicateSwap {
 				other.setToOutOfStock();
 			}
 		}
-		player.sendMerchantOffers(player.containerMenu.containerId, villager.getOffers(), villager.getVillagerData().level(), villager.getVillagerXp(),
+		player.sendMerchantOffers(player.containerMenu.containerId, villager.getOffers(), villager.getVillagerData().getLevel(), villager.getVillagerXp(),
 			villager.showProgressBar(), villager.canRestock());
 	}
 

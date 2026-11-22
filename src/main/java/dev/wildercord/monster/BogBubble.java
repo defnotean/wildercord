@@ -191,7 +191,7 @@ public class BogBubble extends Projectile {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		setEngorged(input.getBooleanOr("engorged", false));
-		life = input.getIntOr("life", 0);
+		setEngorged((input.contains("engorged", 1) ? input.getBoolean("engorged") :  false));
+		life = (input.contains("life", 3) ? input.getInt("life") :  0);
 	}
 }

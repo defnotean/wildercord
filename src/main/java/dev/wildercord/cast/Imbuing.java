@@ -843,6 +843,13 @@ public final class Imbuing {
 		).apply(i, Ledger::new));
 		static final McSavedDataType<Ledger> TYPE = new McSavedDataType<>("imbued_items", Ledger::new, CODEC);
 
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
+
 		private final Map<UUID, List<Long>> byMaker = new HashMap<>();
 		private long next;
 

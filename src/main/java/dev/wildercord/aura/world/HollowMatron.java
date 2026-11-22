@@ -1148,16 +1148,16 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	}
 	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
-		bound=in.getBooleanOr("matron_bound",false);
-		hang=in.read("matron_hang",BlockPos.CODEC).orElse(blockPosition());floor=in.getIntOr("matron_floor",hang.getY());
-		entityData.set(ANCHOR,in.getFloatOr("matron_anchor",hang.getY()+5));rest=in.getFloatOr("matron_rest",getYRot());
+		bound=(in.contains("matron_bound", 1) ? in.getBoolean("matron_bound") : false);
+		hang=in.read("matron_hang",BlockPos.CODEC).orElse(blockPosition());floor=(in.contains("matron_floor", 3) ? in.getInt("matron_floor") : hang.getY());
+		entityData.set(ANCHOR,(in.contains("matron_anchor", 5) ? in.getFloat("matron_anchor") : hang.getY()+5));rest=(in.contains("matron_rest", 5) ? in.getFloat("matron_rest") : getYRot());
 		hallMin=in.read("matron_hall_min",BlockPos.CODEC).orElse(hang);hallMax=in.read("matron_hall_max",BlockPos.CODEC).orElse(hang);
-		lastTick=in.getLongOr("matron_ticked",-1L);
+		lastTick=(in.contains("matron_ticked", 4) ? in.getLong("matron_ticked") : -1L);
 		pillars=in.read("matron_pillars",BlockPos.CODEC.listOf()).orElse(List.of());sacs=in.read("matron_sacs",BlockPos.CODEC.listOf()).orElse(List.of());
 		// Mid-fight she comes back on her feet, whatever she was doing when the chunk unloaded.
-		if(in.getBooleanOr("matron_awake",false)){
+		if((in.contains("matron_awake", 1) ? in.getBoolean("matron_awake") : false)){
 			pose(HollowMatronRules.WATCH,HollowMatronRules.GAP);setNoGravity(false);lastCut=0;
-			boolean r=in.getBooleanOr("matron_roused",false);entityData.set(ROUSED,r);bar.setColor(r?BossEvent.BossBarColor.RED:BossEvent.BossBarColor.WHITE);
+			boolean r=(in.contains("matron_roused", 1) ? in.getBoolean("matron_roused") : false);entityData.set(ROUSED,r);bar.setColor(r?BossEvent.BossBarColor.RED:BossEvent.BossBarColor.WHITE);
 		}else{pose(HollowMatronRules.DORMANT,0);setNoGravity(true);}
 	}
 }

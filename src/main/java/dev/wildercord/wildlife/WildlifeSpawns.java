@@ -153,7 +153,7 @@ public final class WildlifeSpawns {
 		if (!natural(reason)) {
 			return true;
 		}
-		if (!level.getLevel().isDarkOutside() || !level.getBlockState(pos).isAir() || !level.getFluidState(pos.below()).isEmpty()) {
+		if (!(!(level.getLevel().isDay() && level.getLevel().dimensionType().hasSkyLight())) || !level.getBlockState(pos).isAir() || !level.getFluidState(pos.below()).isEmpty()) {
 			return false;
 		}
 		int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());

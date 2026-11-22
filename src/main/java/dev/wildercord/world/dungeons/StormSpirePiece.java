@@ -38,7 +38,7 @@ public class StormSpirePiece extends DungeonPiece {
 
 	public StormSpirePiece(CompoundTag tag) {
 		super(DungeonWorldgen.STORM_SPIRE_PIECE, tag);
-		modern=tag.getIntOr("StormLayout",1)>=2;
+		modern=(tag.contains("StormLayout", 3) ? tag.getInt("StormLayout") : 1)>=2;
 	}
 
 	static Optional<Structure.GenerationStub> locate(Structure.GenerationContext context) {

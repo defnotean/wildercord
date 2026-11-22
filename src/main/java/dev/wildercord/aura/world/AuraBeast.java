@@ -169,5 +169,5 @@ public abstract class AuraBeast extends PathfinderMob {
 	}
 	protected abstract void act(ServerLevel level);
 	@Override public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.addAdditionalSaveData(outTag); if(home!=null) out.store("beast_home",BlockPos.CODEC,home); out.putLong("next_shed",nextShed); out.putInt("calm",calm); }
-	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.readAdditionalSaveData(inTag); home=in.read("beast_home",BlockPos.CODEC).orElse(null); nextShed=in.getLongOr("next_shed",0); calm=Math.clamp(in.getIntOr("calm",0),0,200); aggression=0; pose(BeastRules.RECOVER,BeastRules.RECOVERY); }
+	@Override public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess())); super.readAdditionalSaveData(inTag); home=in.read("beast_home",BlockPos.CODEC).orElse(null); nextShed=(in.contains("next_shed", 4) ? in.getLong("next_shed") : 0); calm=Math.clamp((in.contains("calm", 3) ? in.getInt("calm") : 0),0,200); aggression=0; pose(BeastRules.RECOVER,BeastRules.RECOVERY); }
 }

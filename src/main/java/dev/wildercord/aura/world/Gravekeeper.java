@@ -435,8 +435,8 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}
 	@Override public void addAdditionalSaveData(CompoundTag outTag){ McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));super.addAdditionalSaveData(outTag);if(home!=null)out.store("tomb_home",BlockPos.CODEC,home);if(reliquary!=null)out.store("reliquary",BlockPos.CODEC,reliquary);out.putBoolean("fought",fought);out.putBoolean("roused",roused);out.putInt("drill",sequence);}
 	@Override public void readAdditionalSaveData(CompoundTag inTag){ McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
-		super.readAdditionalSaveData(inTag);home=in.read("tomb_home",BlockPos.CODEC).orElse(null);reliquary=in.read("reliquary",BlockPos.CODEC).orElse(null);fought=in.getBooleanOr("fought",false);
-		roused=in.getBooleanOr("roused",false);sequence=Math.min(SwordTombRules.DRILL.length,Math.max(0,in.getIntOr("drill",0)));if(roused)bar.setColor(BossEvent.BossBarColor.RED);
+		super.readAdditionalSaveData(inTag);home=in.read("tomb_home",BlockPos.CODEC).orElse(null);reliquary=in.read("reliquary",BlockPos.CODEC).orElse(null);fought=(in.contains("fought", 1) ? in.getBoolean("fought") : false);
+		roused=(in.contains("roused", 1) ? in.getBoolean("roused") : false);sequence=Math.min(SwordTombRules.DRILL.length,Math.max(0,(in.contains("drill", 3) ? in.getInt("drill") : 0)));if(roused)bar.setColor(BossEvent.BossBarColor.RED);
 		pose(SwordTombRules.RECOVER,40);
 	}
 	private List<ServerPlayer> prey(ServerLevel level){var c=home==null?position():Vec3.atCenterOf(home);return level.getEntitiesOfClass(ServerPlayer.class,new AABB(c,c).inflate(20,8,20),p->p.isAlive() && !p.isCreative() && !p.isSpectator());}

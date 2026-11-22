@@ -35,7 +35,7 @@ public class RidgebackDeedItem extends Item {
 			stag.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 			stag.finalizeSpawn(server, server.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 			stag.tameWithName(player);
-			stag.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
+			stag.equipSaddle(new ItemStack(Items.SADDLE), null);
 			stag.setPersistenceRequired();
 			server.addFreshEntity(stag);
 			server.playSound(null, player.blockPosition(), SoundEvents.HORSE_SADDLE, SoundSource.NEUTRAL, 1.0F, 0.9F);

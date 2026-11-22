@@ -176,7 +176,7 @@ public class Glimmerwing extends AmbientCreature {
 		zza = 0.5F;
 
 		// They belong to the night: by day, one by one, they fade.
-		if (!level.isDarkOutside() && !isPersistenceRequired() && level.getBrightness(LightLayer.SKY, blockPosition()) > 8 && random.nextInt(240) == 0) {
+		if (!(!(level.isDay() && level.dimensionType().hasSkyLight())) && !isPersistenceRequired() && level.getBrightness(LightLayer.SKY, blockPosition()) > 8 && random.nextInt(240) == 0) {
 			fade(level);
 		}
 	}
@@ -323,10 +323,10 @@ public class Glimmerwing extends AmbientCreature {
 	@Override
 	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
-		setVariant(input.getByteOr("variant", (byte) MOONLIT));
-		double y = input.getDoubleOr("home_y", Double.NaN);
+		setVariant((input.contains("variant", 1) ? input.getByte("variant") :  (byte) MOONLIT));
+		double y = (input.contains("home_y", 6) ? input.getDouble("home_y") :  Double.NaN);
 		if (!Double.isNaN(y)) {
-			home = new Vec3(input.getDoubleOr("home_x", getX()), y, input.getDoubleOr("home_z", getZ()));
+			home = new Vec3((input.contains("home_x", 6) ? input.getDouble("home_x") :  getX()), y, (input.contains("home_z", 6) ? input.getDouble("home_z") :  getZ()));
 		}
 	}
 }
