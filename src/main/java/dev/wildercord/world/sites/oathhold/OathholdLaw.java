@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -42,11 +43,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.BarrelBlock;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.BarrelBlock;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.phys.AABB;
@@ -55,6 +60,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -230,9 +236,10 @@ public final class OathholdLaw {
 				return false;
 			}
 			level.levelEvent(2001, pos, Block.getId(state));
-			level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-			OathholdJustice.onCityDamaged(level, server, pos,
-				List.of(new OathholdJustice.SavedBlock(pos.immutable(), state)), false);
+			LinkedHashMap<BlockPos, BlockState> captured = new LinkedHashMap<>();
+			captureTargetWithPartner(level, captured, pos);
+			List<OathholdJustice.SavedBlock> damaged = clearCapturedWithCascade(level, captured);
+			OathholdJustice.onCityDamaged(level, server, pos, damaged, false);
 			return false;
 		});
 
@@ -360,7 +367,7 @@ public final class OathholdLaw {
 			return;
 		}
 		CityLedger ledger = ledger(level.getServer());
-		List<OathholdJustice.SavedBlock> damaged = new ArrayList<>();
+		LinkedHashMap<BlockPos, BlockState> captured = new LinkedHashMap<>();
 		for (Iterator<BlockPos> it = blown.iterator(); it.hasNext(); ) {
 			BlockPos pos = it.next();
 			if (OathholdJustice.isProtectedPrisonBlock(level.getServer(), pos)) {
@@ -378,14 +385,86 @@ public final class OathholdLaw {
 			if (ledger.consumePlaced(pos.asLong())) {
 				continue;
 			}
-			damaged.add(new OathholdJustice.SavedBlock(pos.immutable(), state));
-			level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+			captureTargetWithPartner(level, captured, pos);
 			it.remove();
 		}
-		if (!damaged.isEmpty()) {
+		if (!captured.isEmpty()) {
+			List<OathholdJustice.SavedBlock> damaged = clearCapturedWithCascade(level, captured);
 			ServerPlayer culprit = OathholdJustice.findExplosionCulprit(level, explosion, center);
 			OathholdJustice.onCityDamaged(level, culprit, BlockPos.containing(center), damaged, true);
 		}
+	}
+
+	private static boolean captureTargetWithPartner(ServerLevel level, LinkedHashMap<BlockPos, BlockState> captured, BlockPos rawPos) {
+		BlockPos pos = rawPos.immutable();
+		if (captured.containsKey(pos) || OathholdJustice.isProtectedPrisonBlock(level.getServer(), pos)) {
+			return false;
+		}
+		BlockState state = level.getBlockState(pos);
+		if (state.isAir() || state.is(Blocks.TNT) || state.getBlock() instanceof GuildRequestBoardBlock) {
+			return false;
+		}
+		captured.put(pos, state);
+		if (state.getBlock() instanceof DoorBlock) {
+			BlockPos other = state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
+			BlockState otherState = level.getBlockState(other);
+			if (otherState.is(state.getBlock()) && !captured.containsKey(other)) {
+				captured.put(other.immutable(), otherState);
+			}
+		} else if (state.getBlock() instanceof DoublePlantBlock) {
+			BlockPos other = state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
+			BlockState otherState = level.getBlockState(other);
+			if (otherState.is(state.getBlock()) && !captured.containsKey(other)) {
+				captured.put(other.immutable(), otherState);
+			}
+		} else if (state.getBlock() instanceof BedBlock) {
+			Direction dir = BedBlock.getNeighbourDirection(state.getValue(BedBlock.PART), state.getValue(BedBlock.FACING));
+			BlockPos other = pos.relative(dir);
+			BlockState otherState = level.getBlockState(other);
+			if (otherState.is(state.getBlock()) && !captured.containsKey(other)) {
+				captured.put(other.immutable(), otherState);
+			}
+		}
+		return true;
+	}
+
+	private static List<OathholdJustice.SavedBlock> clearCapturedWithCascade(ServerLevel level, LinkedHashMap<BlockPos, BlockState> captured) {
+		List<BlockPos> frontier = new ArrayList<>(captured.keySet());
+		for (BlockPos p : frontier) {
+			level.setBlock(p, Blocks.AIR.defaultBlockState(), 18);
+		}
+		for (int pass = 0; pass < 3 && !frontier.isEmpty(); pass++) {
+			List<BlockPos> nextFrontier = new ArrayList<>();
+			for (BlockPos c : frontier) {
+				for (Direction dir : Direction.values()) {
+					BlockPos nb = c.relative(dir);
+					if (captured.containsKey(nb) || OathholdJustice.isProtectedPrisonBlock(level.getServer(), nb)) {
+						continue;
+					}
+					BlockState nbState = level.getBlockState(nb);
+					if (nbState.isAir() || nbState.is(Blocks.TNT) || nbState.getBlock() instanceof GuildRequestBoardBlock) {
+						continue;
+					}
+					if (!nbState.canSurvive(level, nb)) {
+						int prevSize = captured.size();
+						captureTargetWithPartner(level, captured, nb);
+						if (captured.size() > prevSize) {
+							List<BlockPos> added = new ArrayList<>(captured.keySet()).subList(prevSize, captured.size());
+							for (BlockPos ap : added) {
+								level.setBlock(ap, Blocks.AIR.defaultBlockState(), 18);
+								nextFrontier.add(ap);
+							}
+						}
+					}
+				}
+			}
+			frontier = nextFrontier;
+		}
+		List<OathholdJustice.SavedBlock> result = new ArrayList<>(captured.size());
+		for (var entry : captured.entrySet()) {
+			result.add(new OathholdJustice.SavedBlock(entry.getKey(), entry.getValue()));
+		}
+		return result;
 	}
 
 	public static void pacifyKnightsFor(ServerPlayer player) {

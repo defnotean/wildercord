@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,8 +32,10 @@ import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.phys.AABB;
@@ -662,8 +665,8 @@ public final class OathholdJustice {
 			}
 
 			BlockState state = next.state();
-			int flags = (state.getBlock() instanceof DoorBlock || state.getBlock() instanceof BedBlock) ? 18 : 3;
-			level.setBlock(next.pos(), state, flags);
+			level.setBlock(next.pos(), state, 18);
+			placePartnerHalfIfPresent(level, site.remaining, next.pos(), state);
 			level.playSound(null, next.pos(), state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 0.75F, 1.0F);
 			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state),
 				next.pos().getX() + 0.5, next.pos().getY() + 0.5, next.pos().getZ() + 0.5, 6, 0.25, 0.25, 0.25, 0.05);
@@ -674,6 +677,26 @@ public final class OathholdJustice {
 				releaseCrew(site.id, crew);
 				it.remove();
 				data.setDirty();
+			}
+		}
+	}
+
+	private static void placePartnerHalfIfPresent(ServerLevel level, List<SavedBlock> remaining, BlockPos pos, BlockState state) {
+		BlockPos partnerPos = null;
+		if (state.getBlock() instanceof DoorBlock) {
+			partnerPos = state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
+		} else if (state.getBlock() instanceof DoublePlantBlock) {
+			partnerPos = state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
+		} else if (state.getBlock() instanceof BedBlock) {
+			partnerPos = pos.relative(BedBlock.getNeighbourDirection(state.getValue(BedBlock.PART), state.getValue(BedBlock.FACING)));
+		}
+		if (partnerPos == null) return;
+		for (Iterator<SavedBlock> remIt = remaining.iterator(); remIt.hasNext(); ) {
+			SavedBlock b = remIt.next();
+			if (b.pos().equals(partnerPos)) {
+				remIt.remove();
+				level.setBlock(b.pos(), b.state(), 18);
+				break;
 			}
 		}
 	}

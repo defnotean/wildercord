@@ -301,6 +301,11 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+				for (OathholdCitizen watchman : l.getEntitiesOfClass(OathholdCitizen.class, new AABB(STAGE).inflate(40.0),
+						c -> c.isAlive() && c.archetype() == OathholdCitizenRules.Archetype.CITY_WATCHMAN)) {
+					watchman.snapTo(8.5, 120.0, 2.5, 20.0F, 0.0F);
+					watchman.getNavigation().stop();
+				}
 				p.setHealth(p.getMaxHealth());
 				p.teleportTo(l, -1.5, 120.0, -4.8, Set.<Relative>of(), 170.0F, 15.0F, false);
 				BlockPos tntPlaceFloor = new BlockPos(-1, 119, -6);
