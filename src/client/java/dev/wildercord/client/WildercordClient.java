@@ -65,6 +65,7 @@ public final class WildercordClient implements ClientModInitializer {
 				helper.register(new dev.wildercord.client.render.GearLayer(avatar, context));
 				helper.register(new dev.wildercord.client.render.AuraShellLayer(avatar, context));
 				helper.register(new dev.wildercord.client.render.AuraBodyLayer(avatar));
+				helper.register(new dev.wildercord.client.ocean.AbyssalDivingSuitLayer(avatar, context));
 			}
 		});
 		EntityRendererRegistry.register(WildercordEntities.TRAINING_DUMMY, TrainingDummyRenderer::new);
@@ -83,6 +84,7 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.monster.MonsterClient.init();
 		dev.wildercord.client.auraworld.AuraWorldClient.init();
 		dev.wildercord.client.wildlife.WildlifeClient.init();
+		dev.wildercord.client.ocean.OceanClient.init();
 		net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(dev.wildercord.town.Town.KEEPER, net.minecraft.client.renderer.entity.WanderingTraderRenderer::new);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.oathhold.OathholdCitizenRenderer.LAYER, dev.wildercord.client.oathhold.OathholdCitizenModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.sites.oathhold.OathholdContent.CITIZEN, dev.wildercord.client.oathhold.OathholdCitizenRenderer::new);

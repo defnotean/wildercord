@@ -65,6 +65,8 @@ public final class Sites {
 		dev.wildercord.world.sites.travel.TravelSites.init();
 		// ---- sites-water pack
 		dev.wildercord.world.sites.water.WaterSites.init();
+		// ---- deep-ocean expansion pack
+		dev.wildercord.world.sites.ocean.OceanSites.init();
 		// ---- sites-highland pack
 		dev.wildercord.world.sites.highland.HighlandSites.init();
 		// ---- sites-belowkeeper pack
