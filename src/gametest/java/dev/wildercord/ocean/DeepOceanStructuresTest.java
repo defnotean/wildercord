@@ -122,7 +122,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 		BoundingBox bb = piece.getBoundingBox();
 		ChunkGenerator gen = l.getChunkSource().getGenerator();
 		RandomSource rand = RandomSource.create(20261122L);
-		piece.postProcess(l, l.structureManager(), gen, rand, bb, new ChunkPos(bb.getCenter()), bb.getCenter());
+		piece.postProcess(l, l.structureManager(), gen, rand, bb, ChunkPos.containing(bb.getCenter()), bb.getCenter());
 	}
 
 	private static int countBlocks(ServerLevel l, int x0, int y0, int z0, int x1, int y1, int z1, net.minecraft.world.level.block.Block block) {
@@ -180,7 +180,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 
 				check(countBlocks(l, 22, 65, 22, 26, 70, 26, Blocks.CONDUIT) == 1, "Coral-Dome has central Conduit");
 				check(l.getBlockState(new BlockPos(24, 67, 9)).isAir(), "North Coral-Dome interior is dry AIR");
-				check(countBlocks(l, 0, 64, 0, 49, 76, 49, Blocks.CYAN_STAINED_GLASS) > 80, "Coral-Dome cyan stained-glass domes built");
+				check(countBlocks(l, 0, 64, 0, 49, 76, 49, Blocks.STAINED_GLASS.cyan()) > 80, "Coral-Dome cyan stained-glass domes built");
 				check(l.getEntitiesOfClass(BrineMerchant.class, new AABB(0, 62, 0, 49, 80, 49)).size() >= 3,
 					"Coral-Dome spawns all 3 Brine-Merchants");
 			});
@@ -199,7 +199,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				placePiece(l, new SunkenGalleonPiece(100, 62, 0, Direction.EAST));
 
 				check(countBlocks(l, 100, 62, 0, 146, 90, 15, Blocks.DISPENSER) >= 4, "Sunken Galleon has broadside cannons");
-				check(countBlocks(l, 100, 62, 0, 146, 90, 15, Blocks.WHITE_WOOL) > 10, "Sunken Galleon has tattered sails");
+				check(countBlocks(l, 100, 62, 0, 146, 90, 15, Blocks.WOOL.white()) > 10, "Sunken Galleon has tattered sails");
 				check(!l.getEntitiesOfClass(BarnacleHulkDredger.class, new AABB(98, 60, -2, 148, 92, 18)).isEmpty(),
 					"Sunken Galleon spawns Barnacle-Hulk Dredger");
 			});
