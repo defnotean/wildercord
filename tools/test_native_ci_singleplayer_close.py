@@ -42,9 +42,10 @@ class NativeSingleplayerCloseTests(unittest.TestCase):
         self.assertIn('Lnet/minecraft/client/server/IntegratedServer;executeBlocking(Ljava/lang/Runnable;)V', hook)
         self.assertIn('require = 1, allow = 1', hook)
         self.assertIn('original.call(server, task)', hook)
-        bridge = (SOURCE / "mixin/NativeClientPhaseAccess.java").read_text(encoding="utf-8")
-        self.assertIn('priority = 900', bridge)
-        self.assertIn('@Invoker(value = "postRunTasks", remap = false)', bridge)
+        adapter = (SOURCE / "NativeSingleplayerClose.java").read_text(encoding="utf-8")
+        # 1.21.3 has no postRunTasks(); the pump is the event-loop pollTask loop.
+        self.assertIn('while (client.pollTask()) { }', adapter)
+        self.assertNotIn('NativeClientPhaseAccess', adapter)
 
     def test_no_timeout_or_forced_phase_and_native_acceptance_is_retained(self):
         gate = (SOURCE / "NativeHaltHandshake.java").read_text(encoding="utf-8")
