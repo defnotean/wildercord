@@ -312,7 +312,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.FLINT_AND_STEEL));
 				p.gameMode.useItemOn(p, l, p.getMainHandItem(), InteractionHand.MAIN_HAND,
 					new BlockHitResult(Vec3.atCenterOf(tntPos), Direction.SOUTH, tntPos, false));
-				p.teleportTo(l, -1.5, 120.0, -1.5, Set.<Relative>of(), 180.0F, 0.0F, false);
+				p.teleportTo(l, -1.5, 120.0, 4.5, Set.<Relative>of(), 180.0F, 0.0F, false);
 			});
 
 			// Wait for 80-tick TNT detonation + crater creation
