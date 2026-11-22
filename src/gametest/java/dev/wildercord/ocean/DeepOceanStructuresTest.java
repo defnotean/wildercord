@@ -184,6 +184,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				check(l.getEntitiesOfClass(BrineMerchant.class, new AABB(0, 62, 0, 49, 80, 49)).size() >= 3,
 					"Coral-Dome spawns all 3 Brine-Merchants");
 			});
+			context.waitTicks(35);
 			director(context, world, domeOrigin, new Vec3(5.0, 86.0, 49.0), new Vec3(24.5, 67.5, 24.5));
 			shot(context, "ocean_live_coral_dome_sanctuary");
 			cut(context, world, domeOrigin);
@@ -203,6 +204,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				check(!l.getEntitiesOfClass(BarnacleHulkDredger.class, new AABB(98, 60, -2, 148, 92, 18)).isEmpty(),
 					"Sunken Galleon spawns Barnacle-Hulk Dredger");
 			});
+			context.waitTicks(35);
 			director(context, world, galleonOrigin, new Vec3(147.0, 88.0, 34.0), new Vec3(122.0, 72.0, 7.5));
 			shot(context, "ocean_live_sunken_galleon");
 			cut(context, world, galleonOrigin);
@@ -225,6 +227,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 					"Hydrothermal Forge houses Trench Anvil");
 				check(countBlocks(l, 200, 62, 0, 227, 84, 27, Blocks.BASALT) > 20, "Hydrothermal Forge has basalt chimneys");
 			});
+			context.waitTicks(35);
 			director(context, world, forgeOrigin, new Vec3(249.0, 91.0, 44.0), new Vec3(222.0, 75.0, 13.0));
 			shot(context, "ocean_live_watchtower_and_forge");
 			cut(context, world, forgeOrigin);
@@ -247,6 +250,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				check(!l.getEntitiesOfClass(ThalassorBoss.class, new AABB(300, 60, 0, 366, 100, 66)).isEmpty(),
 					"Abyssal Citadel spawns Thalassor above altar");
 			});
+			context.waitTicks(40);
 			director(context, world, citadelOrigin, new Vec3(372.0, 92.0, 58.0), new Vec3(336.0, 70.0, 32.0));
 			shot(context, "ocean_live_abyssal_citadel");
 			cut(context, world, citadelOrigin);
