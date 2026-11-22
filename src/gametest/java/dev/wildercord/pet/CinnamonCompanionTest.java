@@ -237,7 +237,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 						mate.setGameMode(GameType.SURVIVAL);
 						mate.snapTo(1.5 + i, 101, 3.0, 0, 0);
 						level.addNewPlayer(mate);
-						PartyTestHooks.join(server, p.getUUID(), mate.getUUID(), now);
+						PartyTestHooks.join(server, p.getUUID(), mate.getUUID(), now + (i + 1) * 25L);
 						partyRiders[i] = mate;
 					}
 					nonPartyRider[0] = new PartyMate(level, "Outsider");
@@ -312,7 +312,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					dog.setOrderedToSit(false);
 					dog.showOff(120);
 					check(dog.accumulatedDamage() == 0.0F, "Cinnamon takes zero fall damage");
-					aimAtCinnamon(server, p, dog, -3.2, 102.6, -1.8);
+					aimAtCinnamon(server, p, dog, -3.2, 101.0, -1.6);
 				});
 				context.waitTicks(6);
 				context.runOnClient(mc -> mc.gui.hud.getChat().clearMessages(false));
