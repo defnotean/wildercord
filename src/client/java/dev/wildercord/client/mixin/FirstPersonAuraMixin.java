@@ -98,21 +98,21 @@ public abstract class FirstPersonAuraMixin implements dev.wildercord.client.Firs
 
 	@WrapOperation(method = "renderArmWithItem", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;applyItemArmAttackTransform(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/HumanoidArm;F)V"))
-	private void wildercord$blendAttack(PoseStack pose, HumanoidArm arm, float attack, Operation<Void> original) {
+	private void wildercord$blendAttack(ItemInHandRenderer renderer, PoseStack pose, HumanoidArm arm, float attack, Operation<Void> original) {
 		PlayerRenderState avatar = wildercord$swingAvatar;
 		InteractionHand hand = wildercord$swingHand;
 		float ownership = wildercord$swingOwnership;
 		int side = arm == HumanoidArm.RIGHT ? 1 : -1;
 		if (ownership <= 0) {
 			if (avatar != null && dev.wildercord.client.GlaivePose.firstPersonSwing(attack, pose, side, arm, avatar, hand)) return;
-			original.call(pose, arm, attack);
+			original.call(renderer, pose, arm, attack);
 			return;
 		}
 		if (ownership >= 1) return;
 		// Capture the native delta at its real phase, then fade its amplitude. Scaling the phase
 		// would turn a nearly finished neutral swing into a large mid-swing during recovery.
 		PoseStack delta = new PoseStack();
-		original.call(delta, arm, attack);
+		original.call(renderer, delta, arm, attack);
 		pose.mulPose(MastersViewMotion.fadeSwing(delta.last().pose(), ownership));
 	}
 
