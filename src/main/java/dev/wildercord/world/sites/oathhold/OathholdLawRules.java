@@ -59,7 +59,7 @@ public final class OathholdLawRules {
 	}
 
 	public static long sentenceTicks(int damagedBlocks, boolean isExplosion) {
-		long raw = PRISON_MIN_TICKS + Math.max(1, damagedBlocks) * 10L + (isExplosion ? 100L : 0L);
+		long raw = PRISON_MIN_TICKS + Math.max(0, damagedBlocks - 1) * 10L + (isExplosion ? 100L : 0L);
 		return Math.clamp(raw, PRISON_MIN_TICKS, PRISON_MAX_TICKS);
 	}
 
