@@ -26,11 +26,7 @@ public final class ShaderCompat {
 		if (!IRIS) {
 			return;
 		}
-		try {
-			IrisBridge.assignPipelines();
-		} catch (Throwable e) {
-			Wildercord.LOGGER.warn("Couldn't tell Iris how to draw Wildercord's magic; it may look wrong under shader packs", e);
-		}
+		// Iris 1.8.8, this version's pin, has no pipeline assignment to hand over.
 		ClientTickEvents.START_CLIENT_TICK.register(mc -> {
 			if (broken) {
 				return;

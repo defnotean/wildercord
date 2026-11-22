@@ -116,7 +116,7 @@ public final class RenderCompat {
 	}
 
 	public static void rotate(PoseStack stack, Quaternionfc orientation) {
-		stack.mulPose(orientation);
+		stack.mulPose(new org.joml.Quaternionf(orientation));
 	}
 
 	/** The frame's camera, in the shape the newer render states hand to a renderer. */
@@ -234,7 +234,10 @@ public final class RenderCompat {
 	}
 
 	public static Model livingModel(EntityRenderState state) {
-		return Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(state) instanceof LivingEntityRenderer<?, ?, ?> living
+		// 1.21.4’s dispatcher only answers for entities: this seam serves the local player’s view model.
+		net.minecraft.client.player.AbstractClientPlayer player = Minecraft.getInstance().player;
+		return player != null
+			&& Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player) instanceof LivingEntityRenderer<?, ?, ?> living
 			? living.getModel()
 			: null;
 	}

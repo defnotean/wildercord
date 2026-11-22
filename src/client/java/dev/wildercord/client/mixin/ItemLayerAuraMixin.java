@@ -23,6 +23,6 @@ public abstract class ItemLayerAuraMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
 	private void wildercord$aura(PoseStack pose, MultiBufferSource buffer, int light, int overlay, CallbackInfo ci) {
-		AuraBlade.layer(pose, buffer, model == null ? null : model.getQuads(null, null, 0L), () -> null);
+		AuraBlade.layer(pose, buffer, model == null ? null : model.getQuads(null, null, net.minecraft.util.RandomSource.create()), () -> null);
 	}
 }

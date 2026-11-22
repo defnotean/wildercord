@@ -37,7 +37,7 @@ public final class BurrowAndReefRenderers {
 		@Override
 		public void extractRenderState(ReefbackTurtle turtle, WildlifeRenderState state, float partial) {
 			super.extractRenderState(turtle, state, partial);
-			state.variant = turtle.getItemBySlot(EquipmentSlot.SADDLE).isEmpty() ? 0 : 1;
+			state.variant = turtle.isSaddled() ? 1 : 0;
 			state.swim = Mth.lerp(partial, turtle.swimO, turtle.swim);
 			state.barding = MountBardingLayer.colour(turtle.getItemBySlot(EquipmentSlot.BODY));
 		}

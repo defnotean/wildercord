@@ -54,7 +54,7 @@ public final class GearLook {
 				continue;
 			}
 			ItemStackRenderState item = new ItemStackRenderState();
-			Minecraft.getInstance().getItemModelResolver().updateForLiving(item, stack, ItemDisplayContext.NONE, avatar);
+			Minecraft.getInstance().getItemModelResolver().updateForLiving(item, stack, ItemDisplayContext.NONE, false, avatar);
 			if (!item.isEmpty()) {
 				pieces.add(new Piece(entry.getKey(), item));
 			}

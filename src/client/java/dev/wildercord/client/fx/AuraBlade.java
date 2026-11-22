@@ -271,7 +271,7 @@ public final class AuraBlade {
 		double sy = 0;
 		float z = 0.5F;
 		for (BakedQuad quad : all) {
-			Direction d = quad.direction();
+			Direction d = quad.getDirection();
 			if (d == Direction.NORTH || d == Direction.SOUTH) {
 				z = (dev.wildercord.client.compat.RenderCompat.quadPosition(quad, 0).z() + (d == Direction.SOUTH ? -1 : 1) * 0.03125F);
 				continue;

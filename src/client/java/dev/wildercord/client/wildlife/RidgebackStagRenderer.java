@@ -26,7 +26,7 @@ public final class RidgebackStagRenderer extends WildlifeRenderer<RidgebackStag,
 	@Override
 	public void extractRenderState(RidgebackStag stag, WildlifeRenderState state, float partial) {
 		super.extractRenderState(stag, state, partial);
-		state.variant = stag.getItemBySlot(EquipmentSlot.SADDLE).isEmpty() ? 0 : 1;
+		state.variant = stag.isSaddled() ? 1 : 0;
 		state.graze = stag.getEatAnim(partial);
 		state.bow = 0;
 		state.watch = 0;

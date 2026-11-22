@@ -37,7 +37,7 @@ public class RimecoatWolverineRenderer extends WildMonsterRenderer<RimecoatWolve
 	@Override
 	public void extractRenderState(RimecoatWolverine wolverine, MonsterRenderState state, float partial) {
 		super.extractRenderState(wolverine, state, partial);
-		items.updateForLiving(((State) state).mouth, wolverine.getMainHandItem(), ItemDisplayContext.GROUND, wolverine);
+		items.updateForLiving(((State) state).mouth, wolverine.getMainHandItem(), ItemDisplayContext.GROUND, false, wolverine);
 	}
 
 	/** Its pose, and what it carries. */
