@@ -645,7 +645,7 @@ public class TimbermaulBear extends EliteMonster {
 				if (TimbermaulRules.inFan(to.horizontalDistance(), dir.dot(flat(to, dir))) && Math.abs(to.y) < 2.5
 					&& hit(level, victim, TimbermaulRules.CRUSH_DAMAGE)) {
 					shove(victim, flat(to, dir).scale(0.4), TimbermaulRules.CRUSH_LIFT);
-					victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, TimbermaulRules.CRUSH_SLOW, 1), this);
+					victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, TimbermaulRules.CRUSH_SLOW, 1), this);
 				}
 			}
 			return;
@@ -890,7 +890,7 @@ public class TimbermaulBear extends EliteMonster {
 		if (shown == null) {
 			return;
 		}
-		shown.snapTo(start.x, start.y, start.z);
+		shown.setPos(start.x, start.y, start.z);
 		shown.setBlockState(Blocks.SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
 		shown.setTransformation(logShape(dir, 0));
 		shown.setPosRotInterpolationDuration(1);
@@ -1016,7 +1016,7 @@ public class TimbermaulBear extends EliteMonster {
 					struck.add(victim.getUUID());
 					shove(victim, flat(to, dir).scale(0.3), 0.1);
 					victim.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0), this);
-					victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 0), this);
+					victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0), this);
 				}
 			}
 			return;

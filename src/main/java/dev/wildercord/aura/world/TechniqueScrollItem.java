@@ -110,7 +110,8 @@ public class TechniqueScrollItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		String part = partOf(stack).orElse(null);
 		if (part == null) {
 			builder.accept(Component.translatable("tooltip.wildercord.technique_scroll.unknown").withStyle(ChatFormatting.DARK_GRAY));

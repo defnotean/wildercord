@@ -282,7 +282,7 @@ public final class Awakening {
 				return;
 			}
 			// The slow holds the whole spent time (milk doesn't wash a spent body clean); the Way of the Bulwark at Sovereign keeps its feet.
-			if ((now + player.getId()) % 20 == 0 && !player.hasEffect(MobEffects.SLOWNESS) && WayEffects.spentSlows(player)) {
+			if ((now + player.getId()) % 20 == 0 && !player.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && WayEffects.spentSlows(player)) {
 				slow(player, (int) (s.spentUntil() - now));
 			}
 		}
@@ -321,7 +321,7 @@ public final class Awakening {
 
 	private static void slow(ServerPlayer player, int ticks) {
 		if (ticks > 0) {
-			player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, AwakeningRules.SPENT_SLOW, false, true, true));
+			player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, AwakeningRules.SPENT_SLOW, false, true, true));
 		}
 	}
 

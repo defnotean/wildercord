@@ -174,13 +174,13 @@ final class FusedLife {
 			// Clear air: the breeze also blows away what blinds, sickens or slows (a hold stays).
 			t.removeEffect(MobEffects.BLINDNESS);
 			t.removeEffect(MobEffects.DARKNESS);
-			t.removeEffect(MobEffects.NAUSEA);
-			MobEffectInstance slow = t.getEffect(MobEffects.SLOWNESS);
+			t.removeEffect(MobEffects.CONFUSION);
+			MobEffectInstance slow = t.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			if (slow != null && slow.getAmplifier() < 6) {
-				t.removeEffect(MobEffects.SLOWNESS);
+				t.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			}
-			t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, level2, false, true));
-			t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks, level2, false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, level2, false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.JUMP, ticks, level2, false, true));
 			t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks, level2, false, true));
 			FusedLifeVfx.zephyrTouch(level, t);
 		}
@@ -604,7 +604,7 @@ final class FusedLife {
 		if (source.is(DamageTypeTags.BYPASSES_EFFECTS)) {
 			return damage;
 		}
-		MobEffectInstance resistance = e.getEffect(MobEffects.RESISTANCE);
+		MobEffectInstance resistance = e.getEffect(MobEffects.DAMAGE_RESISTANCE);
 		if (resistance != null && !source.is(DamageTypeTags.BYPASSES_RESISTANCE)) {
 			damage = Math.max(0, damage * (25 - (resistance.getAmplifier() + 1) * 5) / 25.0F);
 		}
@@ -760,7 +760,7 @@ final class FusedLife {
 		e.setHealth(FusedLifeRules.secondWindHealth(wind.power, e.getMaxHealth()));
 		e.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(4, wind.duration), 1, false, true));
 		// The way out: a burst of speed and a gust that clears the enemies round them (a creature gets out, it doesn't stand and fight: that is Reversal).
-		e.addEffect(new MobEffectInstance(MobEffects.SPEED, Effects.ticks(4, wind.duration), 1, false, true));
+		e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Effects.ticks(4, wind.duration), 1, false, true));
 		for (Entity near : level.getEntities(e, e.getBoundingBox().inflate(3.0), x -> Targets.canHarm(wind.cast.caster, x) && x instanceof LivingEntity)) {
 			if (!Spirits.isBoss(near) && near.distanceTo(e) <= 3.0) {
 				Effects.push((LivingEntity) near, Effects.horizontal(near.position().subtract(e.position()), e.getLookAngle()).scale(1.6).add(0, 0.35, 0));

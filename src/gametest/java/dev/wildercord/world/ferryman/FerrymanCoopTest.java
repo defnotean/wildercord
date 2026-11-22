@@ -101,7 +101,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				var fake = new Oarsman(s.overworld());
 				fake.getAttribute(Attributes.MAX_HEALTH).setBaseValue(500);
 				fake.setHealth(500);
-				fake.snapTo(crossing[3].getX() + .5, crossing[3].getY(), crossing[3].getZ() + .5, 0, 0);
+				fake.moveTo(crossing[3].getX() + .5, crossing[3].getY(), crossing[3].getZ() + .5, 0, 0);
 				fake.setOnGround(true);
 				fake.setGameMode(GameType.SURVIVAL);
 				p.connection.send(net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(fake)));

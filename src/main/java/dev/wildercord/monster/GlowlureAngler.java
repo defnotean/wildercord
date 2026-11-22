@@ -189,7 +189,7 @@ public class GlowlureAngler extends WildMonster {
 			for (LivingEntity hit : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(0.5),
 				e -> e != this && e.isAlive() && !(e instanceof GlowlureAngler) && Targets.canHarm(this, e))) {
 				if (hit.hurtServer(level, damageSources().mobAttack(this), AnglerRules.SNAP_DAMAGE)) {
-					hit.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, AnglerRules.SNAP_SLOW_TICKS, 1, false, true), this);
+					hit.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, AnglerRules.SNAP_SLOW_TICKS, 1, false, true), this);
 					playSound(SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 0.6F);
 				}
 				landed = true;

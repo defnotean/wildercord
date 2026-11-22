@@ -537,7 +537,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			if(struck!=null){
 				splat(level,struck.position().add(0,struck.getBbHeight()*.5,0));
 				if(g.volley.add(struck.getUUID()) && GuardianBite.land(level,this,struck,(float)HollowMatronRules.SPIT_DAMAGE,HollowMatronRules.PIERCE))
-					struck.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,HollowMatronRules.WEB_SLOW_TICKS,2,false,true),this);
+					struck.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,HollowMatronRules.WEB_SLOW_TICKS,2,false,true),this);
 				it.remove();continue;
 			}
 			if(hitBlock.getType()!=HitResult.Type.MISS){var at=hitBlock.getLocation();splat(level,at);patch(level,at);it.remove();continue;}
@@ -834,7 +834,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			level.sendParticles(ParticleTypes.ITEM_COBWEB,at.x,at.y+.5,at.z,20,.7,.4,.7,.05);
 			for(var p:prey(level))if(HollowMatronRules.snared(p.getX()-at.x,p.getY()-at.y,p.getZ()-at.z)){
 				hit(level,p,HollowMatronRules.SNARE_DAMAGE,0,at,0);
-				p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,HollowMatronRules.SNARE_ROOT,5,false,true),this);
+				p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,HollowMatronRules.SNARE_ROOT,5,false,true),this);
 			}
 			patch(level,at.add(0,.5,0));it.remove();
 		}
@@ -849,7 +849,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 		for(var c:patches){
 			var at=c.at();
 			for(var p:prey)if(HollowMatronRules.sticks(p.getX()-at.x,p.getY()-at.y,p.getZ()-at.z))
-				p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,10,3,false,false),this);
+				p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,10,3,false,false),this);
 			if(now%4==0)level.sendParticles(ParticleTypes.ITEM_COBWEB,at.x,at.y+.1,at.z,2,HollowMatronRules.PATCH_RADIUS*.5,0,HollowMatronRules.PATCH_RADIUS*.5,0);
 		}
 	}
@@ -990,7 +990,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 			in=in.lengthSqr()<1e-4?Vec3.ZERO:in.normalize();
 			var at=new Vec3(sac.getX()+.5+in.x*2,sac.getY(),sac.getZ()+.5+in.z*2);
 			var spider=EntityType.CAVE_SPIDER.create(level,EntitySpawnReason.MOB_SUMMONED);if(spider==null)continue;
-			spider.snapTo(at.x,at.y,at.z,random.nextFloat()*360,0);
+			spider.moveTo(at.x,at.y,at.z,random.nextFloat()*360,0);
 			spider.finalizeSpawn(level,level.getCurrentDifficultyAt(BlockPos.containing(at)),EntitySpawnReason.MOB_SUMMONED,null);
 			spider.addTag(BROOD);
 			if(target!=null)spider.setTarget(target);

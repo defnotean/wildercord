@@ -223,7 +223,7 @@ abstract class WaterPiece extends DungeonPiece {
 		if (entity == null) {
 			return;
 		}
-		entity.snapTo(pos.getX() + 0.5, pos.getY() + lift, pos.getZ() + 0.5, 0, 0);
+		entity.moveTo(pos.getX() + 0.5, pos.getY() + lift, pos.getZ() + 0.5, 0, 0);
 		entity.addTag(RESIDENT);
 		if (entity instanceof net.minecraft.world.entity.Mob mob) {
 			mob.setPersistenceRequired();

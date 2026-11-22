@@ -321,7 +321,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		// ------------------------------------------------------------ Rime
 		out.add(new Scene(RimeArts.FROSTBITE, "rime", AuraApi.ArtSlot.FIRST, List.of(foe(0, 2.2)), 2, 4, (p, b) -> {
 			Mob a = foes(p).getFirst();
-			MobEffectInstance slow = a.getEffect(MobEffects.SLOWNESS);
+			MobEffectInstance slow = a.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			if (slow == null || slow.getAmplifier() < 1) {
 				return "the cut should crust and slow the husk (" + slow + ")";
 			}
@@ -333,7 +333,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		out.add(new Scene(RimeArts.HAILFALL, "rime", AuraApi.ArtSlot.SECOND, List.of(foe(0, 2.2), foe(0.8, 3.6), foe(-1.0, 3.9)), 10, 12, (p, b) -> {
 			int struck = 0;
 			for (Mob m : foes(p)) {
-				MobEffectInstance slow = m.getEffect(MobEffects.SLOWNESS);
+				MobEffectInstance slow = m.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 				if (m.getHealth() < b.health(m) && slow != null) {
 					struck++;
 				}
@@ -361,7 +361,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (frozen.isNoAi()) {
 				return "and thaw";
 			}
-			if (ArtFields.count(p, RimeArts.ICE_PATH) != 1 || !p.hasEffect(MobEffects.SPEED)) {
+			if (ArtFields.count(p, RimeArts.ICE_PATH) != 1 || !p.hasEffect(MobEffects.MOVEMENT_SPEED)) {
 				return "the ice path should lie behind, quick under the swordsman";
 			}
 			BlockPos water = waterSpot();
@@ -473,11 +473,11 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (a.getHealth() >= b.health(a)) {
 				return "the husk in the way should be cut and shoved aside";
 			}
-			if (!p.hasEffect(MobEffects.SPEED)) {
+			if (!p.hasEffect(MobEffects.MOVEMENT_SPEED)) {
 				return "the wind at the swordsman's back should speed them";
 			}
 			List<Wolf> wolves = p.level().getEntitiesOfClass(Wolf.class, p.getBoundingBox().inflate(32), w -> w.getTags().contains(TAG));
-			MobEffectInstance swift = wolves.isEmpty() ? null : wolves.getFirst().getEffect(MobEffects.SPEED);
+			MobEffectInstance swift = wolves.isEmpty() ? null : wolves.getFirst().getEffect(MobEffects.MOVEMENT_SPEED);
 			return swift != null && swift.getAmplifier() >= 1 ? null : "the ally near the way should be swept along faster (" + swift + ")";
 		}));
 		out.add(new Scene(GaleArts.HUNDRED_WINDS, "gale", AuraApi.ArtSlot.FINAL, List.of(foe(0, 2.2), foe(-3.0, 1.0), foe(3.2, -1.0)), 20, 30, (p, b) -> {
@@ -500,7 +500,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				if (!dev.wildercord.cast.Reactions.has(a, dev.wildercord.cast.Reactions.Mark.CRACKED)) {
 					return "the husk struck should be cracked";
 				}
-				MobEffectInstance slow = a.getEffect(MobEffects.SLOWNESS);
+				MobEffectInstance slow = a.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 				if (slow == null || slow.getAmplifier() < 2) {
 					return "and heavy-footed (" + slow + ")";
 				}
@@ -510,7 +510,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			6, 4, (p, b) -> {
 				int thrown = 0;
 				for (Mob m : foes(p)) {
-					if (m.getHealth() < b.health(m) && m.hasEffect(MobEffects.SLOWNESS)) {
+					if (m.getHealth() < b.health(m) && m.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
 						thrown++;
 					}
 				}
@@ -521,7 +521,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (a.position().distanceTo(p.position()) < b.at(a).distanceTo(b.player()) + 1.0) {
 				return "whoever struck should be hurled back (" + (a.position().distanceTo(p.position()) - b.at(a).distanceTo(b.player())) + ")";
 			}
-			if (!ArtWards.hardened(p) || !p.hasEffect(MobEffects.RESISTANCE) || p.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) < 0.99) {
+			if (!ArtWards.hardened(p) || !p.hasEffect(MobEffects.DAMAGE_RESISTANCE) || p.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) < 0.99) {
 				return "and the swordsman hardened like stone";
 			}
 			return null;
@@ -570,7 +570,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (wolf == null || wolf.getHealth() <= b.health(wolf)) {
 				return "the ally on the blossom should be mended (" + (wolf == null ? "no wolf" : b.health(wolf) + " to " + wolf.getHealth()) + ")";
 			}
-			return a.hasEffect(MobEffects.SLOWNESS) ? null : "a foe on the blossom should be slowed";
+			return a.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) ? null : "a foe on the blossom should be slowed";
 		}));
 		out.add(new Scene(VerdantArts.ROOTED_PARRY, "verdant", AuraApi.ArtSlot.THIRD, List.of(foe(0, 1.6), foe(1.6, 0.8)), 3, 4, (p, b) -> {
 			List<Mob> foes = foes(p);
@@ -756,7 +756,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		}));
 		out.add(new Scene(HourglassArts.REWIND_LEAP, "hourglass", AuraApi.ArtSlot.SECOND, List.of(foe(0, 3.4)), 3, 10, (p, b) -> {
 			Mob a = foes(p).getFirst();
-			MobEffectInstance slow = a.getEffect(MobEffects.SLOWNESS);
+			MobEffectInstance slow = a.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			if (a.getHealth() >= b.health(a) || slow == null || slow.getAmplifier() < 2) {
 				return "the falling cut should strike the husk and drag it in time (" + slow + ")";
 			}
@@ -778,7 +778,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				return "the swordsman should rush on past the step (" + (p.getZ() - b.player().z) + " blocks)";
 			}
 			for (Mob m : foes(p)) {
-				if (m.getHealth() >= b.health(m) || !m.hasEffect(MobEffects.SLOWNESS)) {
+				if (m.getHealth() >= b.health(m) || !m.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
 					return "each husk in the way should be cut and slowed";
 				}
 			}
@@ -1402,7 +1402,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				Vec3 spot = scene.id.equals(VerdantArts.BLOSSOM_FALL) ? at(-1.2, 1.6) : scene.id.equals(VerdantArts.WILD_GROWTH) ? at(0.8, 10.0) : at(-1.5, -1.0);
 				Wolf ally = EntityType.WOLF.create(level, EntitySpawnReason.COMMAND);
 				if (ally != null) {
-					ally.snapTo(spot.x, spot.y, spot.z, 180, 0);
+					ally.moveTo(spot.x, spot.y, spot.z, 180, 0);
 					ally.tame(player);
 					ally.setOrderedToSit(true);
 					ally.addTag(TAG);
@@ -1418,7 +1418,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				Wolf wolf = EntityType.WOLF.create(level, EntitySpawnReason.COMMAND);
 				if (wolf != null) {
 					Vec3 p = at(2.5, 9.0);
-					wolf.snapTo(p.x, p.y, p.z, 180, 0);
+					wolf.moveTo(p.x, p.y, p.z, 180, 0);
 					wolf.tame(player);
 					wolf.setOrderedToSit(true);
 					wolf.addTag(TAG);
@@ -1466,7 +1466,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			Arrow arrow = new Arrow(EntityType.ARROW, level);
 			Vec3 from = player.getEyePosition().add(-1.6, -0.3, 2.6);
 			Vec3 aim = player.getEyePosition().subtract(0, 0.3, 0).subtract(from).normalize();
-			arrow.snapTo(from.x, from.y, from.z);
+			arrow.setPos(from.x, from.y, from.z);
 			arrow.setOwner(archer);
 			arrow.setDeltaMovement(aim.scale(1.6));
 			level.addFreshEntity(arrow);
@@ -1501,7 +1501,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			Arrow arrow = new Arrow(EntityType.ARROW, level);
 			Vec3 from = player.getEyePosition().add(1.0, 0.2, 4.2);
 			Vec3 aim = player.getEyePosition().subtract(0, 0.3, 0).subtract(from).normalize();
-			arrow.snapTo(from.x, from.y, from.z);
+			arrow.setPos(from.x, from.y, from.z);
 			arrow.setDeltaMovement(aim.scale(2.0));
 			level.addFreshEntity(arrow);
 			return new Object[] {arrow.getUUID(), 2.0};
@@ -1670,7 +1670,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		if (mob == null) {
 			throw new AssertionError("couldn't make a " + type);
 		}
-		mob.snapTo(at.x, at.y, at.z, 180, 0);
+		mob.moveTo(at.x, at.y, at.z, 180, 0);
 		mob.addTag(TAG);
 		mob.addTag("wildercord.rolled");
 		// Keep the authored ordinary body. Runebound's rolled marker does not stop

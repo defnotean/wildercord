@@ -48,7 +48,7 @@ public final class AuraBeasts {
 				var stack=p.getItemInHand(hand); if(p.getCooldowns().isOnCooldown(stack)) return InteractionResult.PASS;
 				if(level instanceof ServerLevel server) {
 					if(id.equals("bastion_poultice")) {
-						p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE,200,0)); p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,200,0));
+						p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,200,0)); p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,200,0));
 						p.getCooldowns().addCooldown(stack,600); if(!p.getAbilities().instabuild) stack.shrink(1);
 						Feels.sound(server,p.position(),"aura_stonehorn_forage",.6F,.8F);
 					} else {

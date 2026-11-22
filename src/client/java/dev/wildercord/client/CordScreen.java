@@ -1909,7 +1909,7 @@ public class CordScreen extends Screen {
 		double warded = SpellDefenceRules.wardedShare(wardedLevel);
 		double focus = dev.wildercord.gear.Gear.of(player).pieces().contains(dev.wildercord.gear.GearDef.RESOLVE)
 			? dev.wildercord.gear.GearDef.RESOLVE_PROTECTION : 0;
-		MobEffectInstance resistanceEffect = player.getEffect(MobEffects.RESISTANCE);
+		MobEffectInstance resistanceEffect = player.getEffect(MobEffects.DAMAGE_RESISTANCE);
 		int resistanceLevel = resistanceEffect == null ? 0 : resistanceEffect.getAmplifier() + 1;
 		double resistance = Math.min(1.0, resistanceLevel * 0.2);
 		double total = SpellDefenceRules.combined(armour, enchant, warded, focus, resistance);

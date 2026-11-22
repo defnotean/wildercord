@@ -42,7 +42,7 @@ public final class BountyHunts {
 			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 			if (!level.getFluidState(ground.below()).isEmpty() || !level.getFluidState(ground).isEmpty()) continue;
 			if (!(type.get().create(level, EntitySpawnReason.EVENT) instanceof Mob mob)) return null;
-			mob.snapTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
+			mob.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 			if (!level.noCollision(mob)) continue;
 			int threat = Math.max(BountyRules.ELITE_THREAT_MIN, TemperingRules.threat(Heart.circles(player), Aura.stage(player)));
 			TemperingRules.Elite[] kinds = TemperingRules.Elite.values();

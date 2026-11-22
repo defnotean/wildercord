@@ -605,7 +605,7 @@ public class SandmawWyrm extends EliteMonster {
 					struck.add(victim.getUUID());
 					if (strike(level, victim, SandmawRules.SPIT_DAMAGE, mouth, 0.2, 0.1)) {
 						victim.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0), this);
-						victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 1), this);
+						victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this);
 					}
 				}
 			}

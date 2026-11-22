@@ -401,7 +401,7 @@ public class ShrineCat extends TamableAnimal {
 				}
 				if (distanceToSqr(challenger) <= 25.0) {
 					challenger.hurtServer(level, damageSources().mobAttack(this), dmg);
-					challenger.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 1, false, true));
+					challenger.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1, false, true));
 				}
 			}
 			case ODIE -> {
@@ -424,10 +424,10 @@ public class ShrineCat extends TamableAnimal {
 				level.sendParticles(ParticleTypes.CHERRY_LEAVES, getX(), getY() + 0.9, getZ(), 18, 2.0, 0.5, 2.0, 0.05);
 				level.sendParticles(ParticleTypes.END_ROD, getX(), getY() + 0.6, getZ(), 10, 1.4, 0.3, 1.4, 0.04);
 				addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 60, 0, true, false));
-				addEffect(new MobEffectInstance(MobEffects.SPEED, 60, 0, true, false));
+				addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 60, 0, true, false));
 				if (distanceToSqr(challenger) <= 28.0) {
 					challenger.hurtServer(level, damageSources().indirectMagic(this, this), dmg);
-					challenger.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 0, false, true));
+					challenger.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0, false, true));
 					Vec3 away = challenger.position().subtract(position()).multiply(1, 0, 1);
 					if (away.lengthSqr() > 0.01) {
 						Vec3 push = away.normalize().scale(0.85);
@@ -473,13 +473,13 @@ public class ShrineCat extends TamableAnimal {
 		BlockPos spiritPos = findOpenNearby(level, blockPosition().offset(-3, 0, 0));
 		KarakuriSentinel sentinel = MonsterContent.KARAKURI_SENTINEL.create(level, EntitySpawnReason.REINFORCEMENT);
 		if (sentinel != null) {
-			sentinel.snapTo(sentinelPos.getX() + 0.5, sentinelPos.getY(), sentinelPos.getZ() + 0.5, getYRot(), 0.0F);
+			sentinel.moveTo(sentinelPos.getX() + 0.5, sentinelPos.getY(), sentinelPos.getZ() + 0.5, getYRot(), 0.0F);
 			sentinel.finalizeSpawn(level, level.getCurrentDifficultyAt(sentinelPos), EntitySpawnReason.REINFORCEMENT, null);
 			level.addFreshEntity(sentinel);
 		}
 		PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(level, EntitySpawnReason.REINFORCEMENT);
 		if (spirit != null) {
-			spirit.snapTo(spiritPos.getX() + 0.5, spiritPos.getY() + 0.5, spiritPos.getZ() + 0.5, getYRot(), 0.0F);
+			spirit.moveTo(spiritPos.getX() + 0.5, spiritPos.getY() + 0.5, spiritPos.getZ() + 0.5, getYRot(), 0.0F);
 			spirit.finalizeSpawn(level, level.getCurrentDifficultyAt(spiritPos), EntitySpawnReason.REINFORCEMENT, null);
 			level.addFreshEntity(spirit);
 		}
@@ -627,18 +627,18 @@ public class ShrineCat extends TamableAnimal {
 		ShrineCatRules.Variant v = variant();
 		for (ServerPlayer player : delvers) {
 			switch (v) {
-				case YUKI -> player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 120, 0, true, false));
+				case YUKI -> player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 120, 0, true, false));
 				case ODIE -> {
 					player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 120, 0, true, false));
 					player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 120, 0, true, false));
 				}
 				case FREYA -> {
 					player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 120, 0, true, false));
-					player.addEffect(new MobEffectInstance(MobEffects.HASTE, 120, 0, true, false));
+					player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 120, 0, true, false));
 				}
 				case KURO -> {
-					player.addEffect(new MobEffectInstance(MobEffects.SPEED, 120, 1, true, false));
-					player.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 120, 0, true, false));
+					player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 120, 1, true, false));
+					player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 120, 0, true, false));
 					player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 240, 0, true, false));
 				}
 			}
@@ -656,11 +656,11 @@ public class ShrineCat extends TamableAnimal {
 		ShrineCatRules.Variant v = variant();
 		switch (v) {
 			case YUKI -> {
-				owner.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 140, 0, true, false));
+				owner.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 140, 0, true, false));
 				LivingEntity foe = owner.getLastHurtByMob();
 				if (foe != null && foe.isAlive() && foe.distanceToSqr(this) <= 36.0 && Targets.canHarm(owner, foe)) {
 					triggerAction();
-					foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 120, 1, false, true));
+					foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 1, false, true));
 					foe.hurtServer(level, damageSources().mobAttack(this), 3.0F);
 					level.sendParticles(ParticleTypes.SNOWFLAKE, foe.getX(), foe.getEyeY(), foe.getZ(), 8, 0.3, 0.3, 0.3, 0.02);
 				}
@@ -688,8 +688,8 @@ public class ShrineCat extends TamableAnimal {
 				triggerAction();
 				level.playSound(null, blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.NEUTRAL, 0.6F, 1.6F);
 				owner.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 160, 1, true, false));
-				owner.addEffect(new MobEffectInstance(MobEffects.HASTE, 160, 0, true, false));
-				owner.removeEffect(MobEffects.SLOWNESS);
+				owner.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 160, 0, true, false));
+				owner.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 				owner.removeEffect(MobEffects.WEAKNESS);
 				level.sendParticles(ParticleTypes.NOTE, getX(), getY() + 0.6, getZ(), 6, 0.7, 0.2, 0.7, 0.05);
 				for (Monster mob : level.getEntitiesOfClass(Monster.class, getBoundingBox().inflate(5.0), LivingEntity::isAlive)) {
@@ -707,8 +707,8 @@ public class ShrineCat extends TamableAnimal {
 				}
 			}
 			case KURO -> {
-				owner.addEffect(new MobEffectInstance(MobEffects.SPEED, 140, 1, true, false));
-				owner.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 140, 0, true, false));
+				owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 140, 1, true, false));
+				owner.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 140, 0, true, false));
 				if (level.getMaxLocalRawBrightness(owner.blockPosition()) < 9) {
 					owner.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 240, 0, true, false));
 				}
@@ -896,7 +896,7 @@ public class ShrineCat extends TamableAnimal {
 				continue;
 			}
 			double ox = (restored - 1) * 1.1;
-			cat.snapTo(owner.getX() + ox, owner.getY(), owner.getZ() + 1.2, owner.getYRot(), 0.0F);
+			cat.moveTo(owner.getX() + ox, owner.getY(), owner.getZ() + 1.2, owner.getYRot(), 0.0F);
 			cat.setVariant(v);
 			cat.tame(owner);
 			cat.setRole(ShrineCatRules.ROLE_TAMED);

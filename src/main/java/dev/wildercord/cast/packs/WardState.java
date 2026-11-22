@@ -463,7 +463,7 @@ public final class WardState {
 				FxSupportAccess.saved(e);
 				GRACE_SPENT.put(e.getUUID(), now);
 				e.setHealth(Math.min(e.getMaxHealth(), 2.0F));
-				e.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 60, 2, false, true));
+				e.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 2, false, true));
 				WardVfx.saved(level, e, 0xFFE7A0);
 				return false;
 			}

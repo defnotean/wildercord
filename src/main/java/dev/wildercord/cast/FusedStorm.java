@@ -546,7 +546,7 @@ final class FusedStorm {
 					continue;
 				}
 				pinned++;
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, DOWNDRAFT_PIN_TICKS, 2, false, true), cast.caster);
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, DOWNDRAFT_PIN_TICKS, 2, false, true), cast.caster);
 				Effects.hurt(cast, t, wind(cast), DOWNDRAFT_PIN_DAMAGE * power);
 			}
 		}

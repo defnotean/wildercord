@@ -92,7 +92,7 @@ public final class ForgedGear {
 			player.hasImpulse = true;
 			player.fallDistance = 0;
 			if (world instanceof ServerLevel server && player instanceof ServerPlayer sp) {
-				sp.addEffect(new MobEffectInstance(MobEffects.SPEED, 80, 1, false, true));
+				sp.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 80, 1, false, true));
 				server.sendParticles(FETCH_MINT, sp.getX(), sp.getY() + 0.9, sp.getZ(), 24, 0.5, 0.4, 0.5, 0);
 				server.playSound(null, sp.getX(), sp.getY(), sp.getZ(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), SoundSource.PLAYERS, 1.0F, 1.15F);
 				AuraSlash.fetchCrescent(sp, AuraWorldRules.FETCHBLADE_DASH_DAMAGE);

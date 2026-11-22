@@ -89,7 +89,7 @@ final class AerialMove extends FormDash.Move {
 	private void release() {
 		released = true;
 		player.setDeltaMovement(form == FormDashRules.AIR_STEP ? direction.scale(FormDashRules.AIR_STEP_DRIFT) : Vec3.ZERO);
-		player.fallDistance = Math.max(player.fallDistance, fallRisk);
+		player.fallDistance = (float) Math.max(player.fallDistance, fallRisk);
 		player.hasImpulse = true;
 		// The owning client moves its own body: send it the released motion, as a knockback would.
 		if (player.connection != null) player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));

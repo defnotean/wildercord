@@ -253,7 +253,7 @@ public final class ArtWards {
 		/** One finalized paid dispatch grants one native Resistance effect and one nonrefreshable knockback lease. */
 		public boolean grant() {
 			if (!HARDENED.grant(lease)) { syncHardening(player); return false; }
-			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true, true));
+			player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, 0, false, true, true));
 			syncHardening(player);
 			return HARDENED.active(lease);
 		}
@@ -282,7 +282,7 @@ public final class ArtWards {
 		var lease = HARDENED.receipt(player, owner.level(), HardeningLeases.Source.MOUNTAIN,
 			owner.level().getGameTime(), ticks, owner::valid, owner.level()::getGameTime);
 		if (!HARDENED.grant(lease)) { syncHardening(player); return; }
-		player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true, true));
+		player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, 0, false, true, true));
 		syncHardening(player);
 	}
 

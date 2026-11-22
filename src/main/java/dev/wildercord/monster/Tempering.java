@@ -170,7 +170,7 @@ public final class Tempering {
 			copy.addTag(TAG);
 			copy.addTag(THREAT_TAG + threat(mob));
 			double angle = Math.PI * 2 * i / TemperingRules.SPLIT_COUNT;
-			copy.snapTo(mob.getX() + Math.cos(angle) * 0.6, mob.getY(), mob.getZ() + Math.sin(angle) * 0.6, mob.getYRot(), 0);
+			copy.moveTo(mob.getX() + Math.cos(angle) * 0.6, mob.getY(), mob.getZ() + Math.sin(angle) * 0.6, mob.getYRot(), 0);
 			double health = TemperingRules.health(threat(mob)) * TemperingRules.SPLIT_HEALTH;
 			if (modify(copy, Attributes.MAX_HEALTH, SPLIT_HEALTH, health - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)) {
 				copy.setHealth(copy.getMaxHealth());

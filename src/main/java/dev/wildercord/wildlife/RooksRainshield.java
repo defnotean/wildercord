@@ -95,7 +95,7 @@ public final class RooksRainshield {
   f.held.hurtAndBreak(WEAR,f.carrier,dev.wildercord.compat.McHands.slot(f.hand));
   // Cost is not refunded if an external wear callback invalidates actor, recipient or projectile ownership.
   if(!facts(f)||!f.carrier.position().equals(carrierAt)||!f.carrier.getDeltaMovement().equals(carrierVelocity)||!r.getDeltaMovement().equals(recipientVelocity)||f.carrier.getHealth()!=carrierHealth||r.getHealth()!=recipientHealth||f.carrier.getAttached(FAN)!=null||r.getAttached(COVER)!=null||f.carrier.getAttachedOrElse(READY,0L)!=deadline||r.getAttachedOrElse(READY,0L)!=deadline||!arrow.isAlive()||arrow.isRemoved()||arrow.level()!=l||l.getEntity(arrow.getUUID())!=arrow||arrow.hasAttached(WildercordAttachments.IMBUED_SHOT)||arrow.getDeltaMovement().distanceToSqr(velocity)>.000001||!arrow.position().equals(position)||arrow.getOwner()!=owner||!r.position().equals(recipientAt)){clear(f,true);return false;}
-  arrow.discard();f.carrier.stopUsingItem();f.carrier.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE,40,0));Feels.sound(l,collision,"rainshield_catch",.55F,1);RainshieldFx.send(f.carrier,r,f.normal,2,f.nonce,f.generation);return true;
+  arrow.discard();f.carrier.stopUsingItem();f.carrier.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN,40,0));Feels.sound(l,collision,"rainshield_catch",.55F,1);RainshieldFx.send(f.carrier,r,f.normal,2,f.nonce,f.generation);return true;
  }
  /** Input intent identifies only this player's exact transient draw; never grants or renews cover/rest. */
  static void releaseInput(ServerPlayer p,UUID nonce){

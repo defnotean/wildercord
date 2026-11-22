@@ -19,7 +19,8 @@ public class CastingGearItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		builder.accept(Gear.effect(def).copy().withStyle(ChatFormatting.GRAY));
 		if (def.kind().staff()) {
 			builder.accept(Component.translatable("tooltip.wildercord.gear.flourish").withStyle(ChatFormatting.GRAY));

@@ -215,7 +215,7 @@ public final class Tribulation {
 	private void strike(Vec3 at) {
 		LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
 		if (bolt == null) return;
-		bolt.snapTo(at.x, at.y, at.z);
+		bolt.setPos(at.x, at.y, at.z);
 		bolt.setVisualOnly(true);
 		level.addFreshEntity(bolt);
 	}

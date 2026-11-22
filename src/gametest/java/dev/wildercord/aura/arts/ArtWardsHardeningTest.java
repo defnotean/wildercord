@@ -152,67 +152,67 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					ArtWards.Hardened unmoved = grant(player);
 					ArtWards.harden(player, 25);
 					plan.at(10, () -> {
-						MobEffectInstance resistance = player.getEffect(MobEffects.RESISTANCE);
+						MobEffectInstance resistance = player.getEffect(MobEffects.DAMAGE_RESISTANCE);
 						check(resistance != null, "A real native Resistance instance exists before retirement");
 						int duration = resistance.getDuration();
 						unmoved.retire();
 						check(!unmoved.active(), "The exact Unmoved token retires"); ward(player, true);
-						check(player.getEffect(MobEffects.RESISTANCE) == resistance && resistance.getDuration() == duration,
+						check(player.getEffect(MobEffects.DAMAGE_RESISTANCE) == resistance && resistance.getDuration() == duration,
 							"Lease retirement never removes, replaces or refreshes native Resistance");
 					});
 					plan.at(25, () -> ward(player, true));
 					plan.at(26, () -> {
 						ward(player, false);
-						check(player.hasEffect(MobEffects.RESISTANCE), "Vanilla Resistance may naturally outlive both knockback leases");
+						check(player.hasEffect(MobEffects.DAMAGE_RESISTANCE), "Vanilla Resistance may naturally outlive both knockback leases");
 					});
 				});
 				scenario(context, world, "replay_never_refreshes", plan -> {
 					ServerPlayer player = plan.player;
 					ArtWards.Hardened unmoved = grant(player);
 					plan.at(10, () -> {
-						MobEffectInstance resistance = player.getEffect(MobEffects.RESISTANCE);
+						MobEffectInstance resistance = player.getEffect(MobEffects.DAMAGE_RESISTANCE);
 						check(resistance != null && resistance.getDuration() < 80, "Native Resistance genuinely counted down");
 						int duration = resistance.getDuration();
 						check(!unmoved.grant(), "The same receipt cannot be granted twice");
-						check(player.getEffect(MobEffects.RESISTANCE) == resistance && resistance.getDuration() == duration,
+						check(player.getEffect(MobEffects.DAMAGE_RESISTANCE) == resistance && resistance.getDuration() == duration,
 							"Rejected replay cannot replace or refresh the native effect"); ward(player, true);
 					});
 					plan.at(81, () -> {
 						ward(player, false);
-						check(!unmoved.grant() && !player.hasEffect(MobEffects.RESISTANCE), "Expired replay never rearms either effect");
+						check(!unmoved.grant() && !player.hasEffect(MobEffects.DAMAGE_RESISTANCE), "Expired replay never rearms either effect");
 					});
 				});
 				scenario(context, world, "stronger_longer_resistance_survives", plan -> {
 					ServerPlayer player = plan.player;
-					player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 240, 2));
-					MobEffectInstance stronger = player.getEffect(MobEffects.RESISTANCE);
+					player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 240, 2));
+					MobEffectInstance stronger = player.getEffect(MobEffects.DAMAGE_RESISTANCE);
 					ArtWards.Hardened unmoved = grant(player);
 					ArtWards.harden(player, 25);
-					check(player.getEffect(MobEffects.RESISTANCE) == stronger
+					check(player.getEffect(MobEffects.DAMAGE_RESISTANCE) == stronger
 							&& stronger.getAmplifier() == dev.wildercord.cast.DefenceCaps.RESISTANCE_CAP
 							&& stronger.getDuration() == 240,
 						"Both native addEffect calls preserve an existing stronger, longer effect");
 					plan.at(10, () -> {
 						int duration = stronger.getDuration(); unmoved.retire();
-						check(player.getEffect(MobEffects.RESISTANCE) == stronger
+						check(player.getEffect(MobEffects.DAMAGE_RESISTANCE) == stronger
 								&& stronger.getAmplifier() == dev.wildercord.cast.DefenceCaps.RESISTANCE_CAP
 								&& stronger.getDuration() == duration,
 							"Retiring Unmoved never strips an unrelated stronger Resistance"); ward(player, true);
 					});
-					plan.at(26, () -> { ward(player, false); check(player.getEffect(MobEffects.RESISTANCE) == stronger, "Mountain expiry also leaves stronger Resistance intact"); });
+					plan.at(26, () -> { ward(player, false); check(player.getEffect(MobEffects.DAMAGE_RESISTANCE) == stronger, "Mountain expiry also leaves stronger Resistance intact"); });
 				});
 				scenario(context, world, "original_world_round_trip", plan -> {
 					ServerPlayer player = plan.player;
 					ArtWards.Hardened unmoved = grant(player);
 					ArtWards.harden(player, 25);
 					plan.at(10, () -> {
-						MobEffectInstance resistance = player.getEffect(MobEffects.RESISTANCE);
+						MobEffectInstance resistance = player.getEffect(MobEffects.DAMAGE_RESISTANCE);
 						int duration = resistance.getDuration();
 						check(player.teleportTo(plan.level.getServer().getLevel(Level.NETHER), .5, 120, .5, Set.of(), 0, 0, false), "The actual original body leaves its world");
 						check(player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0, false), "The actual body returns in the same callback without polling the old lease");
 						ward(player, false);
 						check(!unmoved.active() && !unmoved.grant(), "A round trip permanently retires the old Unmoved receipt");
-						check(player.getEffect(MobEffects.RESISTANCE) == resistance && resistance.getDuration() == duration,
+						check(player.getEffect(MobEffects.DAMAGE_RESISTANCE) == resistance && resistance.getDuration() == duration,
 							"World retirement never blanket-removes native Resistance");
 						ArtWards.harden(player, 25); ward(player, true);
 						unmoved.retire(); ward(player, true);

@@ -15,13 +15,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public abstract class ResistanceCapMixin {
 	@ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), argsOnly = true)
 	private MobEffectInstance wildercord$capResistance(MobEffectInstance effect, MobEffectInstance same, Entity source) {
-		if (!((Object) this instanceof Player) || effect == null || !effect.is(MobEffects.RESISTANCE)) {
+		if (!((Object) this instanceof Player) || effect == null || !effect.is(MobEffects.DAMAGE_RESISTANCE)) {
 			return effect;
 		}
 		int capped = DefenceCaps.resistance(effect.getAmplifier(), effect.getDuration());
 		if (capped == effect.getAmplifier()) {
 			return effect;
 		}
-		return new MobEffectInstance(MobEffects.RESISTANCE, effect.getDuration(), capped, effect.isAmbient(), effect.isVisible(), effect.showIcon());
+		return new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, effect.getDuration(), capped, effect.isAmbient(), effect.isVisible(), effect.showIcon());
 	}
 }

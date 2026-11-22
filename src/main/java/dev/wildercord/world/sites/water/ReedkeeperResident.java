@@ -67,7 +67,7 @@ public final class ReedkeeperResident {
 	static boolean spawn(WorldGenLevel level, BlockPos at) {
 		Villager resident = EntityType.VILLAGER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 		if (resident == null) return false;
-		resident.snapTo(at.getX() + .5, at.getY(), at.getZ() + .5, 0, 0);
+		resident.moveTo(at.getX() + .5, at.getY(), at.getZ() + .5, 0, 0);
 		resident.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
 		resident.setVillagerData(resident.getVillagerData().withProfession(level.registryAccess(), VillagerProfession.FISHERMAN).withLevel(2));
 		resident.setVillagerXp(10);

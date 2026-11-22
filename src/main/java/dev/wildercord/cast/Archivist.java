@@ -236,7 +236,7 @@ public class Archivist extends SpellcasterIllager {
 			return null;
 		}
 		Vec3 at = Vec3.atBottomCenterOf(lectern).add(0, 1.2, 0);
-		boss.snapTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
+		boss.moveTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
 		boss.home = lectern.above();
 		boss.setPersistenceRequired();
 		boss.readyAt = level.getGameTime() + 60;
@@ -496,7 +496,7 @@ public class Archivist extends SpellcasterIllager {
 			}
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 spot = CastEngine.ground(level, c.add(Math.cos(a) * 5, 2, Math.sin(a) * 5));
-			guard.snapTo(spot.x, spot.y, spot.z, 0, 0);
+			guard.moveTo(spot.x, spot.y, spot.z, 0, 0);
 			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 			// Bound before it enters the world, so the Archive's own roll doesn't bind it a second time.
 			Runebound.bind(guard, phase == 3);
@@ -860,7 +860,7 @@ public class Archivist extends SpellcasterIllager {
 				ElementFx.ray(level, hands, to, GOLD, 0.12, 6);
 				Vfx.emit(level, GOLD_DUST, to, 10, 0.3, 0.02);
 				strike(level, p, ArchivistRules.BIND_DAMAGE);
-				p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ArchivistRules.BIND_SLOW, 1), this);
+				p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ArchivistRules.BIND_SLOW, 1), this);
 				// In its last Cord the chains drag the bound in toward it.
 				if (phase >= 3) {
 					Vec3 in = flat(position().subtract(p.position()), aim.reverse());

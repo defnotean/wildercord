@@ -577,7 +577,7 @@ public final class VerdantArts {
 					mended(owner, ally, ArtKit.mend(owner, ally, ArtRules.GROVE_MEND));
 				}
 				for (LivingEntity foe : field.foes(owner)) {
-					foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 25, 0, false, true), owner);
+					foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 25, 0, false, true), owner);
 					hits.strike(foe, ArtRules.GROVE_PRICK, AuraFxRules.Weight.LIGHT);
 					prick(owner, foe);
 				}

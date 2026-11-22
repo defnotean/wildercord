@@ -91,13 +91,13 @@ final class WallTurn {
 		// Minecraft's teleport path may clear fall state. Put back every pre-existing metre plus actual controlled descent.
 		fallRisk = Math.max(fallRisk, player.fallDistance) + Math.max(0, from.y - to.y);
 		player.teleportTo(level, to.x, to.y, to.z, Relative.ROTATION, 0, 0, false);
-		player.fallDistance = Math.max(player.fallDistance, fallRisk);
+		player.fallDistance = (float) Math.max(player.fallDistance, fallRisk);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.hasImpulse = true;
 		last = to;
 		return true;
 	}
-	void abort() { aborted = true; if (owner.valid()) player.fallDistance = Math.max(player.fallDistance, fallRisk); }
+	void abort() { aborted = true; if (owner.valid()) player.fallDistance = (float) Math.max(player.fallDistance, fallRisk); }
 	boolean finished() { return kicking && step >= WallTurnRules.KICK_TICKS; }
 	boolean kicking() { return kicking; }
 	int remaining() { return WallTurnRules.KICK_TICKS - step; }

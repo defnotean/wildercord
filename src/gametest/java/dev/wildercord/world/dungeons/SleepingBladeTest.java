@@ -78,7 +78,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			world.getServer().runOnServer(s->{var stone=(SleepingBladeEntity)s.overworld().getBlockEntity(at);stone.phase(3);s.overworld().scheduleTick(at,SleepingBlades.STONE,1);});c.waitTicks(10);
 			check(world.getServer().computeOnServer(s->s.overworld().getBlockState(at).getValue(SleepingBladeStone.PHASE)==0),"Orphan lift pose resets on its scheduled tick");
 			use(c,at);c.waitTicks(55);check(world.getServer().computeOnServer(s->s.overworld().getBlockState(at).getValue(SleepingBladeStone.PHASE)>0),"Steel visibly lifts during the actual draw");
-			world.getServer().runOnServer(s->{var rival=new Rival(s.overworld());rival.snapTo(at.getX()+.5,at.getY(),at.getZ()-1.7,0,15);rival.setOnGround(true);rival.setShiftKeyDown(true);rival.setGameMode(GameType.SURVIVAL);rival.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",4,0,100,0));SleepingBlades.begin(rival,at);check(SleepingBlades.activeDraws()==1,"Another qualified swordsman cannot start a concurrent draw at the same site");});
+			world.getServer().runOnServer(s->{var rival=new Rival(s.overworld());rival.moveTo(at.getX()+.5,at.getY(),at.getZ()-1.7,0,15);rival.setOnGround(true);rival.setShiftKeyDown(true);rival.setGameMode(GameType.SURVIVAL);rival.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",4,0,100,0));SleepingBlades.begin(rival,at);check(SleepingBlades.activeDraws()==1,"Another qualified swordsman cannot start a concurrent draw at the same site");});
 			c.runOnClient(mc->mc.player.setXRot(0));shot(c,"sleeping_blade_lifting");
 			c.waitTicks(85);
 			world.getServer().runOnServer(s->{
@@ -91,7 +91,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				check(restored.claimedBy().equals(p.getUUID()),"Claim owner survives serialization");s.overworld().setBlockEntity(restored);
 			});
 			use(c,at);c.waitTicks(130);world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(blades(p)==1 && books(p)==1,"Reloaded site cannot mint a second blade or book");});
-			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var rival=new Rival(s.overworld());rival.snapTo(p.getX(),p.getY(),p.getZ(),0,0);rival.setGameMode(GameType.SURVIVAL);check(!BondedBlades.mayTake(rival,p.getMainHandItem()),"Another survival player cannot take the acquired bonded blade");SleepingBlades.begin(rival,at);check(blades(rival)==0 && books(rival)==1,"Later visitor receives history, not a second blade");SleepingBlades.begin(rival,at);check(books(rival)==1,"History discovery remains finite for the other visitor");});
+			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var rival=new Rival(s.overworld());rival.moveTo(p.getX(),p.getY(),p.getZ(),0,0);rival.setGameMode(GameType.SURVIVAL);check(!BondedBlades.mayTake(rival,p.getMainHandItem()),"Another survival player cannot take the acquired bonded blade");SleepingBlades.begin(rival,at);check(blades(rival)==0 && books(rival)==1,"Later visitor receives history, not a second blade");SleepingBlades.begin(rival,at);check(books(rival)==1,"History discovery remains finite for the other visitor");});
 			c.runOnClient(mc->{mc.options.keyShift.setDown(false);mc.player.setXRot(0);});c.waitTicks(10);shot(c,"sleeping_blade_drawn_first_person");c.runOnClient(mc->mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));shot(c,"sleeping_blade_drawn_third_person");c.runOnClient(mc->{mc.options.setCameraType(CameraType.FIRST_PERSON);mc.options.keyShift.setDown(true);});c.waitTicks(10);
 			// The acquired weapon participates in real Aura Guard harm handling, not just a tooltip.
 			world.getServer().runOnServer(s->{
@@ -101,7 +101,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 				p.getInventory().setItem(8,ItemStack.EMPTY);p.setItemInHand(InteractionHand.MAIN_HAND,blade);
 				p.setAttached(AuraAttachments.STATE,AuraAttachments.State.NONE);p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",4,0,100,0));
 				check(AuraGuard.raise(p),"Oathkeeper raises guard");check(Math.abs((100-Aura.aura(p))-ordinary*.85)<.001,"Actual guard raise costs 15% less");
-				Momentum.reset(p);p.setYRot(0);p.setXRot(0);var enemy=EntityType.ZOMBIE.create(s.overworld(),EntitySpawnReason.COMMAND);enemy.snapTo(p.getX(),p.getY(),p.getZ()+2,0,0);enemy.setNoAi(true);s.overworld().addFreshEntity(enemy);
+				Momentum.reset(p);p.setYRot(0);p.setXRot(0);var enemy=EntityType.ZOMBIE.create(s.overworld(),EntitySpawnReason.COMMAND);enemy.moveTo(p.getX(),p.getY(),p.getZ()+2,0,0);enemy.setNoAi(true);s.overworld().addFreshEntity(enemy);
 				float health=p.getHealth();p.hurtServer(s.overworld(),s.overworld().damageSources().mobAttack(enemy),4);
 				check(p.getHealth()==health,"Actual perfect guard turns the blow aside");check(Math.abs(Momentum.value(p)-MomentumRules.PERFECT_GUARD*MomentumRules.temper("stone").guard()*1.3)<.01,"Perfect guard actually builds 30% more momentum");
 				var guardPaid=new double[]{-1};var playerId=p.getUUID();AuraApi.onSpend((who,paid,reason,backlash)->{if(who.getUUID().equals(playerId) && reason.equals("guard"))guardPaid[0]=paid;});

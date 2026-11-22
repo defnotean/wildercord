@@ -125,8 +125,8 @@ public final class WardEffects {
 			case "rally" -> {
 				if (!cast.once("fxs:rally")) return;
 				for (LivingEntity a : around(cast, hit.point(), 8.0 * radius, true)) {
-					a.addEffect(new MobEffectInstance(MobEffects.SPEED, FxSupportAccess.ticks(12, duration), 0, false, true));
-					a.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, FxSupportAccess.ticks(12, duration), 0, false, true));
+					a.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, FxSupportAccess.ticks(12, duration), 0, false, true));
+					a.addEffect(new MobEffectInstance(MobEffects.JUMP, FxSupportAccess.ticks(12, duration), 0, false, true));
 					WardVfx.buff(level, a, 0xCFF2E0);
 				}
 			}
@@ -153,7 +153,7 @@ public final class WardEffects {
 				WardVfx.guard(level, t, 0x9E7BFF);
 			});
 			case "stoutheart" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, FxSupportAccess.ticks(10, duration), Math.min(1, amplify), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, FxSupportAccess.ticks(10, duration), Math.min(1, amplify), false, true));
 				WardVfx.guard(level, t, 0xC9A36B);
 			});
 			case "ironhold" -> helped.forEach(t -> {
@@ -171,7 +171,7 @@ public final class WardEffects {
 				WardVfx.guard(level, t, 0xFF8A4A);
 			});
 			case "beastguard" -> keptCreatures(cast, hit, true).forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, FxSupportAccess.ticks(60, duration), 1, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, FxSupportAccess.ticks(60, duration), 1, false, true));
 				t.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, FxSupportAccess.ticks(60, duration), 0, false, true));
 				WardVfx.guard(level, t, 0xFFB3D9);
 			});
@@ -263,7 +263,7 @@ public final class WardEffects {
 					}
 				}
 				if (any && cast.once("fxs:taunt")) {
-					caster.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, FxSupportAccess.ticks(6, duration), 0, false, true));
+					caster.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, FxSupportAccess.ticks(6, duration), 0, false, true));
 					WardVfx.guard(level, caster, 0xD8424A);
 				}
 			}
@@ -273,7 +273,7 @@ public final class WardEffects {
 				dev.wildercord.cast.Fx.send(level, net.minecraft.core.particles.ParticleTypes.CLOUD, t.position().add(0, 0.5, 0), 6, 0.3, 0.02);
 			});
 			case "hobble" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, FxSupportAccess.ticks(4, duration), 2, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, FxSupportAccess.ticks(4, duration), 2, false, true));
 				WardVfx.bind(level, t, 0x7A6AA8);
 			});
 			case "corral" -> {
@@ -294,7 +294,7 @@ public final class WardEffects {
 					WardState.calm(mob, FxSupportAccess.ticks(3, duration), mob.position().add(away.scale(10.0)));
 					WardState.CALMED.get(mob).value = 1.4;
 				} else {
-					t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, FxSupportAccess.ticks(3, duration), 1, false, true));
+					t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, FxSupportAccess.ticks(3, duration), 1, false, true));
 				}
 				WardVfx.calm(level, t, 0x5A4A7A);
 			});
@@ -327,7 +327,7 @@ public final class WardEffects {
 				if (!cast.once("fxs:shieldwall")) return;
 				int ticks = FxSupportAccess.ticks(8, duration);
 				for (LivingEntity a : around(cast, hit.point(), 5.0 * radius, true)) {
-					a.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true));
+					a.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, 0, false, true));
 					AttributeInstance resist = a.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
 					if (resist != null) {
 						resist.addOrUpdateTransientModifier(new AttributeModifier(SHIELDWALL, 1.0, AttributeModifier.Operation.ADD_VALUE));
@@ -373,7 +373,7 @@ public final class WardEffects {
 				}
 				int ticks = FxSupportAccess.ticks(4, duration);
 				t.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, ticks, 0, false, false));
-				t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 1, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, 1, false, true));
 				WardState.mark(WardState.WITHDRAWN, t, ticks);
 				for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(32.0), x -> x instanceof Mob)) {
 					Mob mob = (Mob) e;

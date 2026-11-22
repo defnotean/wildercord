@@ -323,10 +323,10 @@ public final class Stance {
 	private static void stagger(LivingEntity target, StanceRules.Kind kind, int ticks) {
 		Statuses.interrupt(target);
 		switch (kind) {
-			case BOSS -> target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 2, false, true));
+			case BOSS -> target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 2, false, true));
 			case PLAYER -> {
 				Player player = (Player) target;
-				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 0, false, true, true));
+				target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 0, false, true, true));
 				player.resetAttackStrengthTicker();
 				if (player.isUsingItem()) {
 					player.stopUsingItem();

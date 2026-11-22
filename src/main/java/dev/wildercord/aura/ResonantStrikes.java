@@ -115,14 +115,14 @@ public final class ResonantStrikes {
 		boolean pvp=target instanceof Player;
 		switch(pair.spell().element()) {
 			case "fire" -> Stance.art(striker,target,2,1,pvp?1:3);
-			case "frost" -> target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,pvp?12:40,0,false,true),mage);
+			case "frost" -> target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,pvp?12:40,0,false,true),mage);
 			case "storm" -> Stance.art(striker,target,4,1,pvp?2:5);
-			case "wind" -> striker.addEffect(new MobEffectInstance(MobEffects.SPEED,40,0,false,true),mage);
+			case "wind" -> striker.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,40,0,false,true),mage);
 			case "earth" -> Stance.art(striker,target,8,1,pvp?3:8);
 			case "life" -> { if(!pvp && !(target instanceof TrainingDummy) && target.level().dimension()!=PracticeRoom.DIMENSION) striker.heal(Math.min(1,pair.spell().taken()*.1F)); }
 			case "void" -> { if(!pvp) target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,40,0,false,true),mage); }
 			case "arcane" -> Reactions.mark(target,Reactions.Mark.EXPOSED,pvp?12:40);
-			case "time" -> striker.addEffect(new MobEffectInstance(MobEffects.RESISTANCE,pvp?12:30,0,false,true),mage);
+			case "time" -> striker.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,pvp?12:30,0,false,true),mage);
 			case "blood" -> { if(!pvp) Stance.art(striker,target,4+Math.min(4,target.getMaxHealth()-target.getHealth()),1,6); }
 			default -> { }
 		}

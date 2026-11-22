@@ -386,7 +386,7 @@ public final class ExplorerEffects {
 			Scheduler.later(delay, () -> ExplorerVfx.echo(cast.level, t));
 		}
 		for (LivingEntity t : harmed) {
-			effect(t, MobEffects.SLOWNESS, Effects.ticks(3, duration), 1, cast);
+			effect(t, MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(3, duration), 1, cast);
 			// Dazed in the dark: shadowed, so life damage sets off Blight.
 			Reactions.mark(t, Reactions.Mark.SHADOWED, Effects.ticks(3, duration));
 		}
@@ -455,7 +455,7 @@ public final class ExplorerEffects {
 	/** Infest: silverfish chew at the target from the stone around it. Infesting it again starts the chewing over. */
 	private static void infest(Cast cast, LivingEntity t, double power, double duration) {
 		int ticks = Effects.ticks(4, duration);
-		effect(t, MobEffects.SLOWNESS, ticks, 0, cast);
+		effect(t, MobEffects.MOVEMENT_SLOWDOWN, ticks, 0, cast);
 		ExplorerVfx.infest(cast.level, t, true);
 		Linger key = new Linger(t.getUUID(), cast.caster.getUUID(), "infest");
 		Object token = linger(key);
@@ -480,7 +480,7 @@ public final class ExplorerEffects {
 				for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
 					Effects.hurt(cast, t, magic(cast), 2 * power);
 					effect(t, MobEffects.BLINDNESS, 30, 0, cast);
-					effect(t, MobEffects.SLOWNESS, 30, 1, cast);
+					effect(t, MobEffects.MOVEMENT_SLOWDOWN, 30, 1, cast);
 				}
 			}
 		}, () -> { });
@@ -507,7 +507,7 @@ public final class ExplorerEffects {
 		LifeOwnerEvents.mutation(cast,"vinelash",t,LifeOwnerEvents.Moment.TRIGGER,cast.caster.getBoundingBox().getCenter(),()->Effects.hurt(cast,t,magic(cast),5*power));
 		// Hauled in, so a blast now makes Implode; and tripped where it lands.
 		Reactions.mark(t, Reactions.Mark.PULLED);
-		effect(t, MobEffects.SLOWNESS, 40, 1, cast);
+		effect(t, MobEffects.MOVEMENT_SLOWDOWN, 40, 1, cast);
 		if (!Spirits.isBoss(t) && t.isAlive()) {
 			Vec3 toward = cast.caster.position().subtract(t.position());
 			double distance = toward.horizontalDistance();
@@ -522,8 +522,8 @@ public final class ExplorerEffects {
 	/** Remedy: cures allies, and readies a zombie villager for its golden apple. */
 	/** Remedy's transmutations: each ailment and the boon it becomes. */
 	private static final Map<Holder<MobEffect>, Holder<MobEffect>> MOBEFFECT_PAIRS = Map.of(
-		MobEffects.POISON, MobEffects.REGENERATION, MobEffects.SLOWNESS, MobEffects.SPEED, MobEffects.WEAKNESS, MobEffects.STRENGTH,
-		MobEffects.BLINDNESS, MobEffects.NIGHT_VISION, MobEffects.DARKNESS, MobEffects.NIGHT_VISION, MobEffects.MINING_FATIGUE, MobEffects.HASTE,
+		MobEffects.POISON, MobEffects.REGENERATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.MOVEMENT_SPEED, MobEffects.WEAKNESS, MobEffects.DAMAGE_BOOST,
+		MobEffects.BLINDNESS, MobEffects.NIGHT_VISION, MobEffects.DARKNESS, MobEffects.NIGHT_VISION, MobEffects.DIG_SLOWDOWN, MobEffects.DIG_SPEED,
 		MobEffects.LEVITATION, MobEffects.SLOW_FALLING);
 
 	private static void remedy(Cast cast, Cast.Hit hit, List<LivingEntity> helped, double power, double duration) {
@@ -563,8 +563,8 @@ public final class ExplorerEffects {
 		rallied.addAll(alliesAround(cast, centre, radius));
 		FireBloodVfx.warcry(cast.level, centre, radius);
 		for (LivingEntity t : rallied) {
-			t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, 0, false, true));
-			t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 0, false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, ticks, 0, false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, 0, false, true));
 			BLOODLUST.put(t.getUUID(), cast.level.getGameTime() + ticks);
 			dev.wildercord.spell.StatePrune.expired(BLOODLUST, cast.level.getGameTime());
 			ExplorerVfx.rallied(cast.level, t);
@@ -633,7 +633,7 @@ public final class ExplorerEffects {
 
 	/** Undertow: drags the target down; in water, under. */
 	private static void undertow(Cast cast, LivingEntity t, double power, double duration) {
-		effect(t, MobEffects.SLOWNESS, Effects.ticks(3, duration), 2, cast);
+		effect(t, MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(3, duration), 2, cast);
 		Reactions.mark(t, Reactions.Mark.SOAKED, Effects.ticks(3, duration) + 40);
 		ExplorerVfx.undertow(cast.level, t);
 		if (t.isInWater()) {
@@ -807,8 +807,8 @@ public final class ExplorerEffects {
 
 	/** Shulkershell: a guard under the player's defence cap that holds still and lifts attackers when it opens. */
 	private static void shulkershell(Cast cast, LivingEntity t, int ticks) {
-		t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 3, false, true));
-		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 6, false, false));
+		t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, 3, false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 6, false, false));
 		AttributeInstance knockback = t.getAttribute(Attributes.KNOCKBACK_RESISTANCE);
 		if (knockback != null) {
 			knockback.addOrUpdateTransientModifier(new AttributeModifier(SHELL_ID, 1.0, AttributeModifier.Operation.ADD_VALUE));
@@ -889,7 +889,7 @@ public final class ExplorerEffects {
 			for (LivingEntity other : enemiesAround(cast, at, 2.0)) {
 				if (other != fallen) {
 					Effects.hurt(cast, other, magic(cast), 3 * power);
-					other.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 2, false, true), cast.caster);
+					other.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 2, false, true), cast.caster);
 				}
 			}
 			Vfx.shockwave(cast.level, at, 2.0, Vfx.theme("void"), 3);
@@ -970,7 +970,7 @@ public final class ExplorerEffects {
 			int stage = i;
 			Scheduler.later(1 + i * 20, () -> {
 				if (cast.alive() && onHand(cast, t)) {
-					effect(t, MobEffects.SLOWNESS, 25, stage, cast);
+					effect(t, MobEffects.MOVEMENT_SLOWDOWN, 25, stage, cast);
 					t.setTicksFrozen(Math.min(t.getTicksRequiredToFreeze() - 1, t.getTicksFrozen() + 50));
 					ExplorerVfx.hoarfrost(cast.level, t, stage);
 				}
@@ -1001,7 +1001,7 @@ public final class ExplorerEffects {
 			}
 			struck++;
 			Effects.hurt(cast, other, frost(cast), 3 * power);
-			effect(other, MobEffects.SLOWNESS, 40, 2, cast);
+			effect(other, MobEffects.MOVEMENT_SLOWDOWN, 40, 2, cast);
 			ExplorerVfx.hoarfrost(cast.level, other, 3);
 		}
 	}
@@ -1040,7 +1040,7 @@ public final class ExplorerEffects {
 			if (t instanceof Mob mob && !Spirits.isBoss(mob)) {
 				confuse(cast, mob, Effects.ticks(5, duration));
 			} else {
-				effect(t, MobEffects.NAUSEA, Effects.ticks(6, duration), 0, cast);
+				effect(t, MobEffects.CONFUSION, Effects.ticks(6, duration), 0, cast);
 			}
 		}
 		for (LivingEntity t : alliesAround(cast, centre.add(0, 1, 0), radius)) {
@@ -1095,7 +1095,7 @@ public final class ExplorerEffects {
 
 	/** Mire: the ground turns to mud under the target. */
 	private static void mire(Cast cast, LivingEntity t, int ticks) {
-		effect(t, MobEffects.SLOWNESS, ticks, 3, cast);
+		effect(t, MobEffects.MOVEMENT_SLOWDOWN, ticks, 3, cast);
 		Reactions.mark(t, Reactions.Mark.SOAKED, ticks + 20);
 		AttributeInstance jump = t.getAttribute(Attributes.JUMP_STRENGTH);
 		if (jump != null) {
@@ -1215,7 +1215,7 @@ public final class ExplorerEffects {
 				if (!onHand(cast, t) || last[0] == null) {
 					return;
 				}
-				effect(t, MobEffects.SLOWNESS, 10, 1, cast);
+				effect(t, MobEffects.MOVEMENT_SLOWDOWN, 10, 1, cast);
 				Vec3 now = t.position();
 				moved[0] += now.subtract(last[0]).horizontalDistance();
 				last[0] = now;
@@ -1433,7 +1433,7 @@ public final class ExplorerEffects {
 		Vec3 anchor = CastEngine.ground(cast.level, point.add(0, 0.5, 0));
 		ExplorerVfx.tether(cast.level, anchor, t, true);
 		if (Spirits.isBoss(t)) {
-			effect(t, MobEffects.SLOWNESS, ticks, 1, cast);
+			effect(t, MobEffects.MOVEMENT_SLOWDOWN, ticks, 1, cast);
 			return;
 		}
 		long[] lastYank = {-100};
@@ -1547,7 +1547,7 @@ public final class ExplorerEffects {
 		}
 		HEARTS.put(t.getUUID(), now + ticks + HEART_COOL);
 		dev.wildercord.spell.StatePrune.expired(HEARTS, now);
-		t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, 1, false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, ticks, 1, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, ticks, 0, false, true));
 		t.clearFire();
 		FireBloodVfx.heartLit(cast.level, t);

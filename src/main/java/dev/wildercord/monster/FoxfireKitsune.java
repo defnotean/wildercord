@@ -282,7 +282,7 @@ public class FoxfireKitsune extends WildMonster {
 			if (!level.noCollision(copy, copy.getDimensions(copy.getPose()).makeBoundingBox(spot))) {
 				spot = home;
 			}
-			copy.snapTo(spot.x, spot.y, spot.z, getYRot(), getXRot());
+			copy.moveTo(spot.x, spot.y, spot.z, getYRot(), getXRot());
 			copy.entityData.set(DATA_DECOY, true);
 			copy.makerId = getId();
 			copy.splitsDone = KitsuneRules.MAX_SPLITS;
@@ -302,7 +302,7 @@ public class FoxfireKitsune extends WildMonster {
 		if (swap != null) {
 			// Trade places, so you can't keep your eye on the real one.
 			Vec3 there = swap.position();
-			swap.snapTo(home.x, home.y, home.z, swap.getYRot(), swap.getXRot());
+			swap.moveTo(home.x, home.y, home.z, swap.getYRot(), swap.getXRot());
 			snapTo(there.x, there.y, there.z, getYRot(), getXRot());
 		}
 		playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);

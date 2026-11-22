@@ -1,5 +1,6 @@
 package dev.wildercord.town;
 
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,7 +40,8 @@ public class RoomKeyItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 		out.accept(Component.translatable("tooltip.wildercord.room_key", InnRoomRules.RENT_DAYS).withStyle(ChatFormatting.GRAY));
 	}
 }

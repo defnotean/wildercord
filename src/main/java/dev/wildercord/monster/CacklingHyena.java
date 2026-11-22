@@ -214,7 +214,7 @@ public class CacklingHyena extends WildMonster {
 			bitten = true;
 			face(target);
 			if (doHurtTarget(level, target)) {
-				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, HyenaRules.HAMSTRING_TICKS, 0), this);
+				target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, HyenaRules.HAMSTRING_TICKS, 0), this);
 			}
 			playSound(SoundEvents.FOX_BITE, 1.0F, 0.7F);
 			cackle(level);

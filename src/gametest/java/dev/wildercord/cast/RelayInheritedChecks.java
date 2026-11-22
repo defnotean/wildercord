@@ -91,15 +91,15 @@ public final class RelayInheritedChecks {
 					RelayCircleTest.prepare(owner,Runes.FROST);CampConcordNative.config(CampConcordNative.copy(original,Map.of("maxCreatures",1,"maxBlocks",blocks)));
 					BlockPos altar=new BlockPos(8,150,6);
 					((ServerLevel) owner.level()).setBlock(altar,dev.wildercord.content.dungeons.DungeonBlocks.ALTAR.defaultBlockState().setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.KIND,dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.TIDE).setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.AWAKE,true),2);
-					scribe[0]=TideScribe.rise(((ServerLevel) owner.level()),altar);RelayCircleTest.check(scribe[0]!=null,"Native frost arena creates");scribe[0].setNoAi(true);scribe[0].setNoGravity(true);scribe[0].forceTide(true);scribe[0].mechanic(((ServerLevel) owner.level()),((ServerLevel) owner.level()).getGameTime());scribe[0].snapTo(2.5,150,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
+					scribe[0]=TideScribe.rise(((ServerLevel) owner.level()),altar);RelayCircleTest.check(scribe[0]!=null,"Native frost arena creates");scribe[0].setNoAi(true);scribe[0].setNoGravity(true);scribe[0].forceTide(true);scribe[0].mechanic(((ServerLevel) owner.level()),((ServerLevel) owner.level()).getGameTime());scribe[0].moveTo(2.5,150,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
 					for(int x=-1;x<=4;x++)for(int z=5;z<=8;z++)for(int y=150;y<=151;y++)owner.level().setBlock(new BlockPos(x,y,z),Blocks.WATER.defaultBlockState(),2);
 					wet[0]=dummy(owner,.5,6.5);
 					if(elevated){
 						// Two-deep water ends at y152. Both complete creature rays stay above it.
 						for(int x=-1;x<=1;x++)for(int z=-1;z<=1;z++)((ServerLevel) owner.level()).setBlock(new BlockPos(x,151,z),Blocks.STONE.defaultBlockState(),2);
 						owner.teleportTo(((ServerLevel) owner.level()),.5,152,.5,Set.of(),0,55,false);owner.setDeltaMovement(Vec3.ZERO);
-						wet[0].snapTo(.5,151.2,6.5,180,0);wet[0].setDeltaMovement(Vec3.ZERO);
-						scribe[0].snapTo(2.5,151.2,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
+						wet[0].moveTo(.5,151.2,6.5,180,0);wet[0].setDeltaMovement(Vec3.ZERO);
+						scribe[0].moveTo(2.5,151.2,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
 						RelayCircleTest.check(owner.level().getBlockState(FROST_CELL).is(Blocks.WATER),"Arena-only candidate starts as real flood water");
 						// Ordinary surface Frost requires air above; the Tide arena also freezes under lily pads.
 						owner.level().setBlock(FROST_CELL.above(),Blocks.LILY_PAD.defaultBlockState(),2);
@@ -176,7 +176,7 @@ public final class RelayInheritedChecks {
 						RelayCircleTest.check(ResonantStrikes.reactions()==resonance.reactions+(retire?0:1),"Only the admitted complete resonance reaches its utility and completion callback");
 						if(retire)RelayCircleTest.check(resonance.retired,"Replacing the actual Cord inside the bonus callback retires that original receipt immediately");
 						RelayCircleTest.check(watched.hitSequence()==(retire?2:3),"Pre-damage callback can reject only the resonance bonus while retaining the earlier actual blade and frost hits");
-						if(retire)RelayCircleTest.check(!watched.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS)&&watched.getTicksFrozen()==0,"Retired resonance cannot resume utility or Frost follow-up writes");
+						if(retire)RelayCircleTest.check(!watched.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN)&&watched.getTicksFrozen()==0,"Retired resonance cannot resume utility or Frost follow-up writes");
 						watched.discard();watched=null;retireBonus=false;resonance=null;
 					});c.waitTicks(12);
 				}
@@ -196,7 +196,7 @@ public final class RelayInheritedChecks {
 				LivingEntity[] pet=new LivingEntity[1];TrainingDummy[] behind=new TrainingDummy[1];
 				world.getServer().runOnServer(s->{
 					RelayCircleTest.prepare(owner,Runes.HARM);behind[0]=dummy(owner,.5,6.5);
-					var wolf=EntityType.WOLF.create(((ServerLevel) owner.level()),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.snapTo(.5,150,4.5,0,0);((ServerLevel) owner.level()).addFreshEntity(wolf);pet[0]=wolf;
+					var wolf=EntityType.WOLF.create(((ServerLevel) owner.level()),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.moveTo(.5,150,4.5,0,0);((ServerLevel) owner.level()).addFreshEntity(wolf);pet[0]=wolf;
 					RelayCircleTest.directDown(owner);owner.teleportTo(((ServerLevel) owner.level()),-1.5,150,.5,Set.of(),0,0,false);
 				});c.waitTicks(2);
 				world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,behind[0].getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);
@@ -288,6 +288,6 @@ public final class RelayInheritedChecks {
 	}
 
 	private static TrainingDummy dummy(ServerPlayer player,double x,double z){
-		var dummy=WildercordEntities.TRAINING_DUMMY.create(player.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(dummy!=null,"Native dummy creates");dummy.snapTo(x,150,z,180,0);dummy.setNoGravity(true);player.level().addFreshEntity(dummy);return dummy;
+		var dummy=WildercordEntities.TRAINING_DUMMY.create(player.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(dummy!=null,"Native dummy creates");dummy.moveTo(x,150,z,180,0);dummy.setNoGravity(true);player.level().addFreshEntity(dummy);return dummy;
 	}
 }

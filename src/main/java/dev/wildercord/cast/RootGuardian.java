@@ -365,7 +365,7 @@ public final class RootGuardian extends DungeonBoss {
 		}
 		if ((cloudUntil - now) % CLOUD_EVERY == 0) for (LivingEntity t : in) {
 			hurt(level, t, CLOUD_DAMAGE);
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 0, false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0, false, true));
 			t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 30, 0, false, true));
 		}
 	}
@@ -421,7 +421,7 @@ public final class RootGuardian extends DungeonBoss {
 			}
 			if ((b.until() - now) % BRIAR_EVERY == 0) for (LivingEntity t : in) {
 				hurt(level, t, BRIAR_DAMAGE);
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 0, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 0, false, true));
 				Fx.sound(level, t.position(), SoundEvents.SWEET_BERRY_BUSH_BREAK, .8F, 1.2F);
 			}
 		}
@@ -457,7 +457,7 @@ public final class RootGuardian extends DungeonBoss {
 				ElementFx.ray(level, p.from().add(s).add(0, .06, 0), p.to().add(s).add(0, .06, 0), SAP_TINT, .08, 5);
 				ElementFx.ray(level, p.from().subtract(s).add(0, .06, 0), p.to().subtract(s).add(0, .06, 0), SAP_TINT, .08, 5);
 			}
-			for (LivingEntity t : on) t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 10, 2, false, true));
+			for (LivingEntity t : on) t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 2, false, true));
 		}
 	}
 
@@ -821,7 +821,7 @@ public final class RootGuardian extends DungeonBoss {
 		}
 		Vec3 in = new Vec3(feet.x - e.getX(), 0, feet.z - e.getZ()).normalize().scale(DRAG_SPEED);
 		e.setDeltaMovement(in.x, Math.min(.1, e.getDeltaMovement().y), in.z);
-		e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 6, 6, false, false, true));
+		e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 6, 6, false, false, true));
 		MonsterMagic.sync(e);
 		tip = e.position();
 		ElementFx.ray(level, feet.add(ahead(getYRot()).scale(.6)).add(0, .3, 0), e.position().add(0, .4, 0), BARK, .16, 2);

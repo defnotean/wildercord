@@ -147,7 +147,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 	private static Husk spawnHusk(ServerLevel l, double x, double y, double z, boolean noAi) {
 		Husk husk = EntityType.HUSK.create(l, EntitySpawnReason.COMMAND);
 		check(husk != null, "Husk created");
-		husk.snapTo(x, y, z, 0.0F, 0.0F);
+		husk.moveTo(x, y, z, 0.0F, 0.0F);
 		husk.setNoAi(noAi);
 		husk.setPersistenceRequired();
 		var maxHp = husk.getAttribute(Attributes.MAX_HEALTH);
@@ -234,7 +234,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				for (int i = 0; i < order.length; i++) {
 					ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.COMMAND);
 					check(cat != null, "ShrineCat created");
-					cat.snapTo(xs[i], 101.0, 3.2, 180.0F, 0.0F);
+					cat.moveTo(xs[i], 101.0, 3.2, 180.0F, 0.0F);
 					cat.configureVillage(order[i], new BlockPos((int) xs[i], 101, 3));
 					cat.setLoafing(false);
 					check(order[i].sanctuaryFloor == i + 1, "Ordered sanctuary floor " + order[i].displayName);
@@ -278,7 +278,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				for (int role = 0; role < SakuraVillager.ROLE_COUNT; role++) {
 					SakuraVillager v = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
 					check(v != null, "SakuraVillager role " + role + " created");
-					v.snapTo(vx[role], 101.0, 6.8, 180.0F, 0.0F);
+					v.moveTo(vx[role], 101.0, 6.8, 180.0F, 0.0F);
 					v.configure(role);
 					face(v, 180.0F);
 					v.setNoAi(true);
@@ -296,7 +296,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				ServerLevel l = s.overworld();
 				SakuraVillager tea = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
 				check(tea != null, "Tea Master created");
-				tea.snapTo(-3.0, 101.0, 5.5, 180.0F, 0.0F);
+				tea.moveTo(-3.0, 101.0, 5.5, 180.0F, 0.0F);
 				tea.configure(SakuraVillager.TEA_MASTER);
 				face(tea, 180.0F);
 				tea.setNoAi(true);
@@ -304,7 +304,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				SakuraVillager maiden = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
 				check(maiden != null, "Shrine Maiden created");
-				maiden.snapTo(-1.0, 101.0, 5.5, 180.0F, 0.0F);
+				maiden.moveTo(-1.0, 101.0, 5.5, 180.0F, 0.0F);
 				maiden.configure(SakuraVillager.SHRINE_MAIDEN);
 				face(maiden, 180.0F);
 				maiden.setNoAi(true);
@@ -318,14 +318,14 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				KarakuriSentinel karakuri = MonsterContent.KARAKURI_SENTINEL.create(l, EntitySpawnReason.COMMAND);
 				check(karakuri != null, "KarakuriSentinel created");
-				karakuri.snapTo(1.0, 101.0, 5.5, 180.0F, 0.0F);
+				karakuri.moveTo(1.0, 101.0, 5.5, 180.0F, 0.0F);
 				face(karakuri, 180.0F);
 				karakuri.setNoAi(true);
 				l.addFreshEntity(karakuri);
 
 				PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, EntitySpawnReason.COMMAND);
 				check(spirit != null, "PaperLanternSpirit created");
-				spirit.snapTo(3.0, 101.5, 5.5, 180.0F, 0.0F);
+				spirit.moveTo(3.0, 101.5, 5.5, 180.0F, 0.0F);
 				face(spirit, 180.0F);
 				spirit.setNoAi(true);
 				l.addFreshEntity(spirit);
@@ -434,14 +434,14 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 						}
 					}
 				}
-				player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 200, 3, true, false));
+				player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 3, true, false));
 				player.teleportTo(l, -28.0, 101.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 
 				KarakuriSentinel k2 = MonsterContent.KARAKURI_SENTINEL.create(l, EntitySpawnReason.COMMAND);
 				PaperLanternSpirit p2 = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, EntitySpawnReason.COMMAND);
 				check(k2 != null && p2 != null, "Active combat test mobs created");
-				k2.snapTo(-25.5, 101.0, -4.0, 90.0F, 0.0F);
-				p2.snapTo(-30.5, 101.5, -4.0, -90.0F, 0.0F);
+				k2.moveTo(-25.5, 101.0, -4.0, 90.0F, 0.0F);
+				p2.moveTo(-30.5, 101.5, -4.0, -90.0F, 0.0F);
 				l.addFreshEntity(k2);
 				l.addFreshEntity(p2);
 				return new UUID[]{k2.getUUID(), p2.getUUID()};
@@ -682,7 +682,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				yuki.hurtServer(l, l.damageSources().playerAttack(player), yuki.getMaxHealth() * 0.85F);
 				check(yuki.isAlive() && yuki.getRole() == ShrineCatRules.ROLE_CLEARED, "Yuki yields non-lethally");
 				check(yuki.getHealth() >= yuki.getMaxHealth(), "Yuki restores full health on yield");
-				check(player.hasEffect(MobEffects.RESISTANCE), "Yuki grants Whisker Ward (Resistance I)");
+				check(player.hasEffect(MobEffects.DAMAGE_RESISTANCE), "Yuki grants Whisker Ward (Resistance I)");
 
 				yuki.mobInteract(player, InteractionHand.MAIN_HAND);
 				check(!yuki.isTame(), "Cannot tame cleared Yuki before clearing Kuro on Floor 4");
@@ -694,13 +694,13 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				freya.hurtServer(l, l.damageSources().playerAttack(player), freya.getMaxHealth() * 0.85F);
 				check(freya.getRole() == ShrineCatRules.ROLE_CLEARED, "Freya yields non-lethally");
-				check(player.hasEffect(MobEffects.ABSORPTION) && player.hasEffect(MobEffects.HASTE),
+				check(player.hasEffect(MobEffects.ABSORPTION) && player.hasEffect(MobEffects.DIG_SPEED),
 					"Freya grants Silver-Bell Chime (Absorption I + Haste I)");
 
 				player.teleportTo(l, kuro.getX(), kuro.getY(), kuro.getZ() - 2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				kuro.hurtServer(l, l.damageSources().playerAttack(player), kuro.getMaxHealth() * 0.85F);
 				check(kuro.isAlive() && kuro.getRole() == ShrineCatRules.ROLE_CLEARED, "Kuro yields non-lethally");
-				check(player.hasEffect(MobEffects.SPEED) && player.hasEffect(MobEffects.STRENGTH) && player.hasEffect(MobEffects.NIGHT_VISION),
+				check(player.hasEffect(MobEffects.MOVEMENT_SPEED) && player.hasEffect(MobEffects.DAMAGE_BOOST) && player.hasEffect(MobEffects.NIGHT_VISION),
 					"Kuro grants Night-Stalker Grace (Speed II, Strength I, Night Vision)");
 
 				// Now tame all 4 Shrine Cats (Freya & Yuki with salmon; Kuro & Odie with Suzu Cat-Bell Charm).
@@ -777,13 +777,13 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					if (huskB != null) {
 						player.setLastHurtMob(huskB);
 					}
-					return player.hasEffect(MobEffects.RESISTANCE)
-						&& huskA != null && huskA.hasEffect(MobEffects.SLOWNESS) && huskA.getHealth() < huskA.getMaxHealth()
+					return player.hasEffect(MobEffects.DAMAGE_RESISTANCE)
+						&& huskA != null && huskA.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && huskA.getHealth() < huskA.getMaxHealth()
 						&& player.hasEffect(MobEffects.REGENERATION) && player.hasEffect(MobEffects.FIRE_RESISTANCE)
 						&& player.getHealth() > 12.0F
 						&& player.hasEffect(MobEffects.ABSORPTION)
 						&& huskC != null && huskC.getHealth() < huskC.getMaxHealth()
-						&& player.hasEffect(MobEffects.SPEED) && player.hasEffect(MobEffects.STRENGTH)
+						&& player.hasEffect(MobEffects.MOVEMENT_SPEED) && player.hasEffect(MobEffects.DAMAGE_BOOST)
 						&& huskB != null && huskB.getHealth() < huskB.getMaxHealth();
 				});
 				if (ready) {
@@ -799,8 +799,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(huskA != null && huskB != null && huskC != null, "Companion power targets present");
 
 				// 1. Yuki: Resistance + Frost-Whisker Counter on attacker.
-				check(player.hasEffect(MobEffects.RESISTANCE), "Tamed Yuki grants Resistance");
-				check(huskA.hasEffect(MobEffects.SLOWNESS) && huskA.getHealth() < huskA.getMaxHealth(),
+				check(player.hasEffect(MobEffects.DAMAGE_RESISTANCE), "Tamed Yuki grants Resistance");
+				check(huskA.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && huskA.getHealth() < huskA.getMaxHealth(),
 					"Tamed Yuki slows and damages owner's attacker");
 
 				// 2. Odie: Regeneration, Fire Resistance & heal.
@@ -813,7 +813,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(huskC.getHealth() < huskC.getMaxHealth(), "Tamed Freya Suzu Resonance damages nearby monster");
 
 				// 4. Kuro: Speed II, Strength & Shadow Pounce on prey.
-				check(player.hasEffect(MobEffects.SPEED) && player.hasEffect(MobEffects.STRENGTH),
+				check(player.hasEffect(MobEffects.MOVEMENT_SPEED) && player.hasEffect(MobEffects.DAMAGE_BOOST),
 					"Tamed Kuro grants Speed and Strength");
 				check(huskB.getHealth() < huskB.getMaxHealth(), "Tamed Kuro strikes owner's prey");
 
@@ -1100,7 +1100,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(!serpents.isEmpty(), "SerpentGrovePiece spawned RootcoilSerpent");
 				RootcoilSerpent serpent = serpents.getFirst();
 				BlockPos trunk = serpent.tree();
-				player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 240, 3, true, false));
+				player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 240, 3, true, false));
 				player.teleportTo(l, trunk.getX() + 4.5, trunk.getY(), trunk.getZ() + 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
 			});
 			c.waitTicks(95);

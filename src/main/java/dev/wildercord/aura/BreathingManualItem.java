@@ -79,7 +79,8 @@ public class BreathingManualItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		BreathingMethod method = methodOf(stack).orElse(null);
 		if (method == null) {
 			builder.accept(Component.translatable("tooltip.wildercord.breathing_manual.unknown").withStyle(ChatFormatting.DARK_GRAY));

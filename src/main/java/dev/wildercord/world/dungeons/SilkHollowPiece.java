@@ -126,7 +126,7 @@ public final class SilkHollowPiece extends DungeonPiece {
 		var drift=getWorldPos(CX,REST_Y,CZ-10);
 		float rest=(float)Math.toDegrees(Math.atan2(-(drift.getX()-hang.getX()),drift.getZ()-hang.getZ()));
 		var matron=dev.wildercord.aura.world.Guardians.HOLLOW_MATRON.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(matron==null)return;
-		matron.snapTo(hang.getX()+.5,hang.getY(),hang.getZ()+.5,rest,0);
+		matron.moveTo(hang.getX()+.5,hang.getY(),hang.getZ()+.5,rest,0);
 		matron.finalizeSpawn(level,level.getCurrentDifficultyAt(hang),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
 		// Her thread hangs from the underside of the nest, at its deepest.
 		float anchor=getWorldPos(CX,dome(0)-nest(0)+1,CZ).getY();

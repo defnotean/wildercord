@@ -284,7 +284,7 @@ public class SnapjawTurtle extends WildMonster {
 			return;
 		}
 		face(prey);
-		prey.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 10, 6, false, false));
+		prey.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 6, false, false));
 		// Its jaws drag its prey in towards it a little.
 		Vec3 jaws = position().add(getLookAngle().multiply(1.2, 0, 1.2));
 		Vec3 pull = jaws.subtract(prey.position()).multiply(1, 0, 1);
@@ -329,7 +329,7 @@ public class SnapjawTurtle extends WildMonster {
 		boolean in = withdrawn(now);
 		float dealt = SnapjawRules.damage(damage, shell, in);
 		if (shell || in) {
-			playSound(SoundEvents.SHIELD_BLOCK.value(), 0.8F, 0.7F);
+			playSound(SoundEvents.SHIELD_BLOCK, 0.8F, 0.7F);
 		}
 		boolean hurt = super.hurtServer(level, source, dealt);
 		if (hurt && isAlive()) {

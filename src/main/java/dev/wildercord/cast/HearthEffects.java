@@ -160,8 +160,8 @@ public final class HearthEffects {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
 			if (source.getEntity() instanceof ServerPlayer attacker && active(attacker, "wayfarer_hymn")) {
 				timers(attacker).remove("wayfarer_hymn");
-				drop(attacker, MobEffects.SPEED);
-				drop(attacker, MobEffects.JUMP_BOOST);
+				drop(attacker, MobEffects.MOVEMENT_SPEED);
+				drop(attacker, MobEffects.JUMP);
 			}
 		});
 	}
@@ -248,8 +248,8 @@ public final class HearthEffects {
 				int ticks = Effects.ticks(HearthRules.SHORT, duration);
 				for (LivingEntity s : steeds) {
 					if (path.equals("steedsong")) {
-						s.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 1, false, true));
-						s.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks, 1, false, true));
+						s.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, 1, false, true));
+						s.addEffect(new MobEffectInstance(MobEffects.JUMP, ticks, 1, false, true));
 					} else {
 						s.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks, 0, false, true));
 					}
@@ -259,8 +259,8 @@ public final class HearthEffects {
 			case "wayfarer_hymn" -> {
 				int ticks = Effects.ticks(HearthRules.SHORT, duration);
 				for (LivingEntity t : allies(caster, level, caster.position(), 10)) {
-					t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 0, false, true));
-					t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks, 0, false, true));
+					t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, 0, false, true));
+					t.addEffect(new MobEffectInstance(MobEffects.JUMP, ticks, 0, false, true));
 					if (t instanceof ServerPlayer p) {
 						start(p, path, ticks);
 					}
@@ -273,7 +273,7 @@ public final class HearthEffects {
 				int count = 0;
 				for (TamableAnimal pet : level.getEntitiesOfClass(TamableAnimal.class, caster.getBoundingBox().inflate(16),
 					a -> a.isTame() && a.getOwner() == caster)) {
-					pet.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true));
+					pet.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, 0, false, true));
 					glow(level, pet, path);
 					count++;
 				}
@@ -849,8 +849,8 @@ public final class HearthEffects {
 				}
 				if (now % 80 == 0) {
 					for (LivingEntity t : allies(owner, level, at, HearthRules.RALLY_RADIUS)) {
-						t.addEffect(new MobEffectInstance(MobEffects.HASTE, 120, 0, true, true));
-						t.addEffect(new MobEffectInstance(MobEffects.SPEED, 120, 0, true, true));
+						t.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 120, 0, true, true));
+						t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 120, 0, true, true));
 					}
 					Fx.sound(level, at, SoundEvents.BEACON_AMBIENT, 0.6f, 1.4f);
 				}

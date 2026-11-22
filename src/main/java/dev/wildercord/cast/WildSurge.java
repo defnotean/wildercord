@@ -219,7 +219,7 @@ public final class WildSurge {
 			}
 			case SLOW_TIME -> {
 				for (LivingEntity t : near(player, WildMagic.NEAR, true)) {
-					t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 2, false, true));
+					t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 2, false, true));
 				}
 				ElementFx.groundRing(level, player.position(), ElementFx.TIME.primary(), WildMagic.NEAR, 0.5, 0.08, 16);
 				Fx.sound(level, heart, SoundEvents.BELL_BLOCK, 0.8F, 0.5F);

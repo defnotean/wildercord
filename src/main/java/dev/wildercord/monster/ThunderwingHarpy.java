@@ -337,7 +337,7 @@ public class ThunderwingHarpy extends WildMonster {
 		if (bolt != null) {
 			// The flash and the thunder only: the harm is the harpy's own, through every spell defence.
 			bolt.setVisualOnly(true);
-			bolt.snapTo(mark.x, mark.y, mark.z);
+			bolt.setPos(mark.x, mark.y, mark.z);
 			level.addFreshEntity(bolt);
 		}
 		AABB area = new AABB(mark, mark).inflate(BOLT_RADIUS, 2.5, BOLT_RADIUS);

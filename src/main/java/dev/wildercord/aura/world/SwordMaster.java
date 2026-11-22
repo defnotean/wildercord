@@ -306,7 +306,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 				|| !level.getFluidState(feet).isEmpty()) {
 				continue;
 			}
-			master.snapTo(feet.getX() + 0.5, feet.getY(), feet.getZ() + 0.5, 0, 0);
+			master.moveTo(feet.getX() + 0.5, feet.getY(), feet.getZ() + 0.5, 0, 0);
 			if (!level.noCollision(master, master.getBoundingBox()) || !master.hasLineOfSight(player)) {
 				continue;
 			}

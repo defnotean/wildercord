@@ -50,8 +50,8 @@ public final class MageHunters {
 			for (int i = 0; i < count; i++) {
 				MageHunter hunter = MonsterContent.MAGE_HUNTER.create(level, EntitySpawnReason.EVENT);
 				if (hunter == null) break;
-				hunter.snapTo(ground.getX() + 0.5 + i * 1.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
-				if (!level.noCollision(hunter)) hunter.snapTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, 0, 0);
+				hunter.moveTo(ground.getX() + 0.5 + i * 1.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
+				if (!level.noCollision(hunter)) hunter.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, 0, 0);
 				if (!level.noCollision(hunter)) continue;
 				hunter.finalizeSpawn(level, level.getCurrentDifficultyAt(ground), EntitySpawnReason.EVENT, null);
 				hunter.setTarget(player);

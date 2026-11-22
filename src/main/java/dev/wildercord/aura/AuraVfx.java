@@ -127,7 +127,7 @@ public final class AuraVfx {
 
 	/** Whether the sky is bright behind a point: day, in a world with a sky, and nothing overhead. */
 	public static boolean brightBehind(ServerLevel level, Vec3 at) {
-		return level.isBrightOutside() && level.canSeeSky(net.minecraft.core.BlockPos.containing(at));
+		return level.isDay() && level.dimensionType().hasSkyLight() && level.canSeeSky(net.minecraft.core.BlockPos.containing(at));
 	}
 
 	/** The slash breaking on a wall. */

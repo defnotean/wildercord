@@ -761,7 +761,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			level.sendParticles(ParticleTypes.POOF,to.x,to.y+.3,to.z,6,.5,.2,.5,.02);
 			for(var p:prey)if(MojitoRules.clods(to.x-p.getX(),to.y-p.getY(),to.z-p.getZ())){
 				hit(level,p,MojitoRules.DIG_DAMAGE,.3,to,.15);
-				p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,MojitoRules.DIG_SLOW,1,false,true),this);
+				p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,MojitoRules.DIG_SLOW,1,false,true),this);
 			}
 			it.remove();
 		}

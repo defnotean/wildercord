@@ -56,7 +56,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 				owner = RelayCircleTest.player(server); RelayCircleTest.prepare(owner, Runes.FROST);
 				server.setPvpAllowed(true);
 				guest = new Guest(((ServerLevel) owner.level())); guest.setGameMode(GameType.SURVIVAL);
-				guest.snapTo(.5,150,6.5,180,0); guest.setNoGravity(true); ((ServerLevel) owner.level()).addNewPlayer(guest);
+				guest.moveTo(.5,150,6.5,180,0); guest.setNoGravity(true); ((ServerLevel) owner.level()).addNewPlayer(guest);
 				incoming=0;
 			});
 			context.waitTicks(3);
@@ -77,9 +77,9 @@ public final class RelayImpactTest implements FabricClientGameTest {
 				world.getServer().runOnServer(server -> { RelayCircleTest.aim(owner, guest.getBoundingBox().getCenter()); RelayCircleTest.downAfterUp(owner); });
 				context.waitTicks(8);
 				world.getServer().runOnServer(server -> {
-					if (probe==0) RelayCircleTest.check(guest.getHealth()<guest.getMaxHealth() && guest.hasEffect(MobEffects.SLOWNESS) && guest.getTicksFrozen()>0, "Control release actually damages and freezes");
-					if (probe==1 || probe==3) RelayCircleTest.check(guest.getHealth()==guest.getMaxHealth() && !guest.hasEffect(MobEffects.SLOWNESS) && guest.getTicksFrozen()==0, "SPELL_HIT mutation vetoes damage and all follow-up writes");
-					if (probe==2 || probe==4) RelayCircleTest.check(guest.getHealth()<guest.getMaxHealth() && !guest.hasEffect(MobEffects.SLOWNESS) && guest.getTicksFrozen()==0, "Actual wound callback can retire permission before Frost's later status writes");
+					if (probe==0) RelayCircleTest.check(guest.getHealth()<guest.getMaxHealth() && guest.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && guest.getTicksFrozen()>0, "Control release actually damages and freezes");
+					if (probe==1 || probe==3) RelayCircleTest.check(guest.getHealth()==guest.getMaxHealth() && !guest.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && guest.getTicksFrozen()==0, "SPELL_HIT mutation vetoes damage and all follow-up writes");
+					if (probe==2 || probe==4) RelayCircleTest.check(guest.getHealth()<guest.getMaxHealth() && !guest.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && guest.getTicksFrozen()==0, "Actual wound callback can retire permission before Frost's later status writes");
 					RelayCircleTest.check(Effects.applying()==null && Effects.applyingCast()==null, "Paid impact scope is restored after nested callbacks");
 					if (owner.level()!=server.overworld()) owner.teleportTo(server.overworld(), .5,150,.5, java.util.Set.of(),0,55,false);
 				});
@@ -95,7 +95,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				for(int i=0;i<2;i++) {
 					var target=EntityType.HUSK.create(owner.level(), EntitySpawnReason.MOB_SUMMONED); RelayCircleTest.check(target!=null,"Shock witness creates");
-					target.snapTo(.5+i*2,150,6.5,180,0);target.setNoAi(true);target.setNoGravity(true);owner.level().addFreshEntity(target);targets[i]=target;
+					target.moveTo(.5+i*2,150,6.5,180,0);target.setNoAi(true);target.setNoGravity(true);owner.level().addFreshEntity(target);targets[i]=target;
 				}
 				RelayCircleTest.reset(owner,Runes.SHOCK);RelayCircleTest.directDown(owner);
 			});

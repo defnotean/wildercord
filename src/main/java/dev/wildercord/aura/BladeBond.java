@@ -45,9 +45,7 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 			Codec.STRING.listOf().optionalFieldOf("lineage", List.of()).forGetter(Who::lineage)
 		).apply(i, Who::new));
 
-		public static final StreamCodec<ByteBuf, Who> STREAM_CODEC = StreamCodec.composite(
-			UUIDUtil.STREAM_CODEC, Who::id, UUIDUtil.STREAM_CODEC, Who::owner, ByteBufCodecs.stringUtf8(64), Who::ownerName,
-			ByteBufCodecs.stringUtf8(64).apply(ByteBufCodecs.list(BladeRules.MAX_LINEAGE)), Who::lineage, Who::new);
+		public static final StreamCodec<ByteBuf, Who> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 	}
 
 	/**
@@ -88,11 +86,7 @@ public record BladeBond(Who who, Growth growth, Origin origin, History history) 
 			Codec.BOOL.optionalFieldOf("rechoose", false).forGetter(Growth::rechoose)
 		).apply(i, Growth::new));
 
-		public static final StreamCodec<ByteBuf, Growth> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT, Growth::color, ByteBufCodecs.VAR_INT, Growth::tier, ByteBufCodecs.FLOAT, Growth::resonance,
-			ByteBufCodecs.stringUtf8(128), Growth::name, ByteBufCodecs.VAR_LONG, Growth::namedDay, ByteBufCodecs.stringUtf8(96), Growth::trait,
-			ByteBufCodecs.stringUtf8(128), Growth::traitArt, ByteBufCodecs.stringUtf8(96).apply(ByteBufCodecs.list(8)), Growth::offer, ByteBufCodecs.BOOL,
-			Growth::rechoose, Growth::new);
+		public static final StreamCodec<ByteBuf, Growth> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
 		public Growth withResonance(float resonance) {
 			return new Growth(color, tier, resonance, name, namedDay, trait, traitArt, offer, rechoose);

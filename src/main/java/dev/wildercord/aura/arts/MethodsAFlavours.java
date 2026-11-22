@@ -124,7 +124,7 @@ public final class MethodsAFlavours {
 
 	/** The heavy guard: Resistance and knockback resistance for {@code ticks}. */
 	public static void bulwark(ServerPlayer player, int ticks, int resist) {
-		player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, resist, false, false, true));
+		player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, resist, false, false, true));
 		ArtWards.harden(player, ticks);
 	}
 
@@ -145,7 +145,7 @@ public final class MethodsAFlavours {
 		if (foe instanceof Mob mob) {
 			mob.setTarget(null);
 			mob.getNavigation().stop();
-			mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, t, 1, false, true), player);
+			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, t, 1, false, true), player);
 		}
 		return t;
 	}
@@ -159,7 +159,7 @@ public final class MethodsAFlavours {
 		if (amp < 0) {
 			return false;
 		}
-		foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, amp, false, true), player);
+		foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, amp, false, true), player);
 		if (!(foe instanceof Player)) {
 			// A creature's feet are taken: what way it was going stops short (a player's own client moves them; Slowness is enough).
 			Vec3 v = foe.getDeltaMovement();

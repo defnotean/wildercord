@@ -1,5 +1,6 @@
 package dev.wildercord.aura;
 
+import java.util.List;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.arts.ArtLight;
@@ -140,7 +141,8 @@ public class CrossroadsIncense extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 		out.accept(Component.translatable("item.wildercord.crossroads_incense.lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
 		out.accept(Component.translatable("item.wildercord.crossroads_incense.use").withColor(0xB8D8A8));
 	}

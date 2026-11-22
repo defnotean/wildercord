@@ -219,7 +219,7 @@ public class DripfangLurker extends WildMonster {
 			double distance = Math.sqrt(Math.pow(hit.getX() - getX(), 2) + Math.pow(hit.getZ() - getZ(), 2));
 			float damage = DripfangRules.landing(distance);
 			if (damage > 0 && hit.hurtServer(level, damageSources().mobAttack(this), damage)) {
-				hit.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, DripfangRules.SLOW_TICKS, 1, false, true), this);
+				hit.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, DripfangRules.SLOW_TICKS, 1, false, true), this);
 				playSound(SoundEvents.POINTED_DRIPSTONE_BREAK, 1.2F, 0.8F);
 			}
 		}

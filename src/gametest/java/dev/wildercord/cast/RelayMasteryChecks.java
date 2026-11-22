@@ -76,6 +76,6 @@ public final class RelayMasteryChecks {
     }
     private static TrainingDummy dummy(double x,double z) {
         var d=WildercordEntities.TRAINING_DUMMY.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);
-        RelayCircleTest.check(d!=null,"Native Mastery dummy creates");d.snapTo(x,150,z,180,0);d.setNoGravity(true);owner.level().addFreshEntity(d);return d;
+        RelayCircleTest.check(d!=null,"Native Mastery dummy creates");d.moveTo(x,150,z,180,0);d.setNoGravity(true);owner.level().addFreshEntity(d);return d;
     }
 }

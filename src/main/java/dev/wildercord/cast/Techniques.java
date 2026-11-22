@@ -187,8 +187,8 @@ final class Techniques {
 		TechniqueVfx.blackspark(cast.level, t, spark);
 		Effects.hurt(cast, t, magic(cast), 8 * power * (spark ? 2.5 : 1.0));
 		if (spark) {
-			cast.caster.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 120, 0, false, true));
-			cast.caster.addEffect(new MobEffectInstance(MobEffects.SPEED, 120, 0, false, true));
+			cast.caster.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 120, 0, false, true));
+			cast.caster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 120, 0, false, true));
 			Reactions.callout(cast, "blackspark", 0xD2283C);
 			Residues.reaction(cast, "blood", t);
 			// The spark arcs on to the next enemy near it.
@@ -571,7 +571,7 @@ final class Techniques {
 	static void shackle(Cast cast, LivingEntity t, int ticks) {
 		if (Spirits.isBoss(t)) {
 			// Bosses can't be held in place, only slowed.
-			t.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, ticks, 1, false, true));
+			t.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, ticks, 1, false, true));
 			TechniqueVfx.chain(cast.level, t.position(), t, true);
 			return;
 		}
@@ -615,7 +615,7 @@ final class Techniques {
 			Spirits.hold(t, ticks);
 		} else {
 			t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks, 0, false, false));
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, false));
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 3, false, false));
 		}
 		Feels.sound(cast.level, t.position(), "frost_bubble_in", 0.9F, 1.0F);
 		for (int i = 0; i < ticks; i += 2) {
@@ -650,9 +650,9 @@ final class Techniques {
 	/** Overdrive: strength, speed and haste, paid for with a little health every two seconds. */
 	static void overdrive(Cast cast, LivingEntity t, int ticks, int amplify) {
 		OVERDRIVE_AMP.put(t.getUUID(), amplify);
-		t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, painStrength(t, amplify), false, true));
-		t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 1, false, true));
-		t.addEffect(new MobEffectInstance(MobEffects.HASTE, ticks, 1, false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, ticks, painStrength(t, amplify), false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, 1, false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, ticks, 1, false, true));
 		FireBloodVfx.overdrive(cast.level, t, true, painStrength(t, amplify) - 1 - amplify);
 		// One drain per target, however often Overdrive is renewed (a passive renews it every 2 s).
 		long until = cast.level.getGameTime() + ticks;
@@ -687,7 +687,7 @@ final class Techniques {
 			}
 			// The weaker it leaves them, the harder they hit.
 			int left = (int) Math.max(1, until - level.getGameTime());
-			t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, left, painStrength(t, OVERDRIVE_AMP.getOrDefault(t.getUUID(), 0)), false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, left, painStrength(t, OVERDRIVE_AMP.getOrDefault(t.getUUID(), 0)), false, true));
 			overdriveDrain(level, t);
 		});
 	}
@@ -728,10 +728,10 @@ final class Techniques {
 
 	/** Accelerate: time runs faster for the target. */
 	static void accelerate(Cast cast, LivingEntity t, int ticks, int amplify) {
-		t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, Math.min(4, 1 + amplify), false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, Math.min(4, 1 + amplify), false, true));
 		// Haste III is the mark of hurried time: it fills your charge faster and speeds your Bolts (see VoidTime.hurried).
-		t.addEffect(new MobEffectInstance(MobEffects.HASTE, ticks, Math.min(4, 2 + amplify), false, true));
-		t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks, 1, false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, ticks, Math.min(4, 2 + amplify), false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.JUMP, ticks, 1, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks, 0, false, true));
 		TechniqueVfx.accelerate(cast.level, t);
 		// Time slowing back to its own pace: a ring closes on the waist and a tick.
@@ -910,7 +910,7 @@ final class Techniques {
 		caster.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));
 		// Half a second out of time: nothing can hurt you as you come out (not again for 5 s). A dodge, not a guard.
 		if (VoidTime.skipReady(caster)) {
-			caster.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, DefenceCaps.DODGE_TICKS, 4, false, true));
+			caster.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, DefenceCaps.DODGE_TICKS, 4, false, true));
 		}
 		for (Entity e : level.getEntities(caster, caster.getBoundingBox().inflate(16.0), e -> e instanceof Mob)) {
 			Mob mob = (Mob) e;
@@ -1066,7 +1066,7 @@ final class Techniques {
 						continue;
 					}
 					Effects.hurt(cast, target, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), BIRD_DAMAGE * power * Reactions.storm(cast, target));
-					target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 2, false, false));
+					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 2, false, false));
 				}
 			});
 		}

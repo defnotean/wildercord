@@ -1,5 +1,6 @@
 package dev.wildercord.monster;
 
+import java.util.List;
 import dev.wildercord.player.Mana;
 import dev.wildercord.player.Spellbooks;
 import net.minecraft.ChatFormatting;
@@ -37,7 +38,8 @@ public class MonsterDropItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 		out.accept(Component.translatable("item.wildercord." + id + ".lore").withStyle(ChatFormatting.ITALIC).withColor(0x9A94A8));
 		out.accept(Component.translatable("item.wildercord." + id + ".use").withColor(0xB8D8A8));
 	}

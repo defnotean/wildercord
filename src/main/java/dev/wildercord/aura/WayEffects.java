@@ -167,7 +167,7 @@ public final class WayEffects {
 		}
 		if (Ways.has(player, WayRules.BULWARK_FORM) && attacker instanceof Mob mob && !Spirits.isBoss(mob)
 				&& rested(STAGGERED, player, attacker, now, WayRules.BULWARK_STAGGER_REST)) {
-			mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, WayRules.BULWARK_STAGGER, 1, false, true), player);
+			mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, WayRules.BULWARK_STAGGER, 1, false, true), player);
 			mob.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, WayRules.BULWARK_STAGGER, 0, false, true), player);
 			mob.getNavigation().stop();
 			count("stagger");

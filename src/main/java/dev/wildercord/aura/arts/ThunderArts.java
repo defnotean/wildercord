@@ -315,7 +315,7 @@ public final class ThunderArts {
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, player.position().add(0, 1, 0), "aura_art_heavens_spear", 1.3F, 1.0F);
 		// The charge: a deliberate stance, lightning gathering on the blade and crackling round the swordsman.
-		player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ArtRules.SPEAR_CHARGE, 2, false, false, true));
+		player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ArtRules.SPEAR_CHARGE, 2, false, false, true));
 		fx.flare(ArtRules.SPEAR_CHARGE + 10, 1.0F);
 		ArtLight show = ArtLight.spectacle(player);
 		for (int t = 0; t < ArtRules.SPEAR_CHARGE; t += 2) {

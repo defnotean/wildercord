@@ -157,7 +157,7 @@ final class FusedFrost {
 			}
 			boolean bite = tick % 20 == 0;
 			for (LivingEntity t : inside(cast, here, radius, 3.2)) {
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 1, false, true), cast.caster);
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 1, false, true), cast.caster);
 				chill(t, 30);
 				Reactions.mark(t, Reactions.Mark.FROZEN, 30);
 				if (bite) {
@@ -325,7 +325,7 @@ final class FusedFrost {
 		long now = cast.level.getGameTime();
 		int n = coldConditions(t);
 		boolean cold = n > 0 && now >= ZERO_LOCKED.getOrDefault(t.getUUID(), Long.MIN_VALUE);
-		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(3, duration), 3, false, true), cast.caster);
+		t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(3, duration), 3, false, true), cast.caster);
 		if (!cold) {
 			if (show) {
 				FusedFrostVfx.absoluteZero(cast.level, t);
@@ -351,7 +351,7 @@ final class FusedFrost {
 
 	/** How many of the four signs of cold a creature shows (0 to 4): slowed, the FROZEN mark, frozen skin, held. */
 	static int coldConditions(LivingEntity t) {
-		return (t.hasEffect(MobEffects.SLOWNESS) ? 1 : 0) + (Reactions.has(t, Reactions.Mark.FROZEN) ? 1 : 0) + (t.isFullyFrozen() ? 1 : 0)
+		return (t.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) ? 1 : 0) + (Reactions.has(t, Reactions.Mark.FROZEN) ? 1 : 0) + (t.isFullyFrozen() ? 1 : 0)
 			+ (t.hasAttached(WildercordAttachments.FROZEN_UNTIL) ? 1 : 0);
 	}
 
@@ -414,7 +414,7 @@ final class FusedFrost {
 	/** Geode: Resistance II for 5 seconds, and for as long whatever strikes the ally is cut for 2 damage (see {@link FusedFrostWards}). */
 	private static void geode(Cast cast, LivingEntity t, double power, double duration, int amplify) {
 		int ticks = Effects.ticks(5, duration);
-		t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, Math.min(3, 1 + Math.max(0, amplify)), false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, Math.min(3, 1 + Math.max(0, amplify)), false, true));
 		boolean fresh = FusedFrostWards.geode(cast, t, ticks, 2 * power);
 		if (fresh || !cast.passive) {
 			FusedFrostVfx.geode(cast.level, t);
@@ -450,7 +450,7 @@ final class FusedFrost {
 	}
 
 	private static void slow(Cast cast, LivingEntity t, int amplifier, int ticks) {
-		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, amplifier, false, true), cast.caster);
+		t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, amplifier, false, true), cast.caster);
 	}
 
 	/** Frost on the skin, well short of frozen solid: it creeps back on for {@code ticks} more. */

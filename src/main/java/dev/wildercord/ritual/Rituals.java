@@ -1,5 +1,6 @@
 package dev.wildercord.ritual;
 
+import dev.wildercord.compat.McSavedDataType;
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.WildercordItems;

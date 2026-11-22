@@ -497,7 +497,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 			if(blocked(h,p.getX(),p.getZ()) || covered(level,h,p))continue;
 			struck.add(p.getUUID());
 			hit(level,p,FrostWyrmlingRules.BREATH_DAMAGE,.3,position(),0);
-			p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,FrostWyrmlingRules.BREATH_SLOW,1,false,true));
+			p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,FrostWyrmlingRules.BREATH_SLOW,1,false,true));
 			if(p.canFreeze())p.setTicksFrozen(Math.min(p.getTicksRequiredToFreeze()+40,p.getTicksFrozen()+FrostWyrmlingRules.BREATH_FROST));
 			level.sendParticles(ParticleTypes.SNOWFLAKE,p.getX(),p.getY()+1,p.getZ(),8,.3,.5,.3,.01);
 		}
@@ -773,7 +773,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	private Display.BlockDisplay hang(ServerLevel level,Vec3 at,double top){
 		var d=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(d==null)return null;
-		d.snapTo(at.x,top,at.z);d.setBlockState(Blocks.BLUE_ICE.defaultBlockState());d.setTransformation(spike(.05F,.05F,0));
+		d.setPos(at.x,top,at.z);d.setBlockState(Blocks.BLUE_ICE.defaultBlockState());d.setTransformation(spike(.05F,.05F,0));
 		BlockFx.fresh(d);level.addFreshEntity(d);
 		Scheduler.later(1,()->tween(d,spike(ICICLE_W,ICICLE_H,0),4));
 		return d;
@@ -804,7 +804,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 			BlockFx.shard(level,i.at.add(0,-.3,0),1.1F,.5F,random.nextDouble()-.5,random.nextDouble()-.5,.25F,10);
 			for(var p:prey(level))if(!struck.contains(p.getUUID()) && FrostWyrmlingRules.lands(p.getX()-i.at.x,p.getZ()-i.at.z,p.getY()-i.at.y,FrostWyrmlingRules.ICICLE_RADIUS)){
 				struck.add(p.getUUID());hit(level,p,FrostWyrmlingRules.ICICLE_DAMAGE,.4,i.at,0);
-				p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,30,1,false,true));
+				p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,30,1,false,true));
 			}
 		}
 	}
@@ -932,7 +932,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 					if(!FrostWyrmlingRules.lanced(dx*f.x+dz*f.z,dx*-f.z+dz*f.x,p.getY()-slam.y,front))continue;
 					lanced.add(p.getUUID());
 					hit(level,p,FrostWyrmlingRules.LANCE_DAMAGE,.3,slam,FrostWyrmlingRules.LANCE_LIFT);
-					p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,FrostWyrmlingRules.BREATH_SLOW,1,false,true));
+					p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,FrostWyrmlingRules.BREATH_SLOW,1,false,true));
 					level.sendParticles(crack,p.getX(),p.getY()+.5,p.getZ(),14,.3,.4,.3,.15);
 					break;
 				}

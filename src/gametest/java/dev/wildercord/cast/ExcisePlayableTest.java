@@ -342,9 +342,9 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
         p.setAttached(ExciseState.REST, 0L); for (int slot = 0; slot < 4; slot++) Spellbooks.setReadyAt(p,slot,0);
         Spellbooks.set(p, Spellbooks.get(p).withSelected(0).withSpell(0,ExciseRules.IDS).withSpell(1,List.of(Runes.BEAM.id(),Runes.HARM.id())));
         Spellbooks.setMana(p,200); Mastery.flush(p); probe.masteryBefore = mastery();
-        probe.target = new TrainingDummy(WildercordEntities.TRAINING_DUMMY,p.level()); probe.target.snapTo(.5,150,6.5,0,0); probe.target.setNoGravity(true); p.level().addFreshEntity(probe.target);
+        probe.target = new TrainingDummy(WildercordEntities.TRAINING_DUMMY,p.level()); probe.target.moveTo(.5,150,6.5,0,0); probe.target.setNoGravity(true); p.level().addFreshEntity(probe.target);
         probe.witch = EntityType.WITCH.create(p.level(), EntitySpawnReason.COMMAND); check(probe.witch != null,"Native Witch exists");
-        probe.witch.setNoAi(true); probe.witch.setNoGravity(true); probe.witch.addTag("wildercord.rolled"); probe.witch.snapTo(8.5,150,6.5,90,0);
+        probe.witch.setNoAi(true); probe.witch.setNoGravity(true); probe.witch.addTag("wildercord.rolled"); probe.witch.moveTo(8.5,150,6.5,90,0);
         probe.witch.setTarget(probe.target); p.level().addFreshEntity(probe.witch);
         Vec3 delta = probe.target.position().subtract(probe.witch.getEyePosition());
         probe.witch.setYRot((float)Math.toDegrees(Math.atan2(-delta.x,delta.z)));

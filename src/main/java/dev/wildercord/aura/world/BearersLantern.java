@@ -101,7 +101,7 @@ public final class BearersLantern {
 		ServerLevel level = (ServerLevel) player.level();
 		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, EntitySpawnReason.TRIGGERED);
 		if (horse == null) return false;
-		horse.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
+		horse.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 		horse.setTamed(true);
 		horse.setOwner(player);
 		horse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
@@ -175,7 +175,8 @@ public final class BearersLantern {
 		}
 
 		@Override
-		public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+		public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 			out.accept(Component.translatable("item.wildercord.bearers_lantern.lore").withStyle(ChatFormatting.ITALIC).withColor(0x8AC8D0));
 			out.accept(Component.translatable("item.wildercord.bearers_lantern.use").withColor(0xB8D8A8));
 		}

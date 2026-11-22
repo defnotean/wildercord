@@ -57,7 +57,7 @@ public final class MossveilCowl{
    ((MossveilEffectAccess)(Object)old).mossveil$duration(after);
    ((MossveilEffectNotice)(Object)p).mossveil$updated(old,false,source);
    if(!paidCurrent(p,world,worn,source,sourceBody,body,old,home,facts)||old.getDuration()!=after)return;
-   p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,20,0));
+   p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,20,0));
    if(paidCurrent(p,world,worn,source,sourceBody,body,old,home,facts)&&old.getDuration()==after){MossveilFilterCue.send(p,source,trim);p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.mossveil.trim",trim), true);dev.wildercord.cast.feel.Feels.sound(world,p.position(),"mossveil_filter",.3F,1);}
   }finally{a.clear();a.operating=false;}
  }

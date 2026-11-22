@@ -170,7 +170,7 @@ public final class FusedEffects {
 				FusionVfx.plasma(level, hit.origin(), t);
 			});
 			case "hail" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(4, duration), 1, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(4, duration), 1, false, true));
 				Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 				// A pummel: each stone staggers it for 5 ticks, so it can't finish a swing, a draw or a cast under the hail.
 				// Only one pummel's flinch at a time on a creature, so a Zone's every pulse can't lock it for ever.
@@ -225,8 +225,8 @@ public final class FusedEffects {
 			}
 			case "surge" -> helped.forEach(t -> {
 				int extra = boost(power, amplify);
-				t.addEffect(new MobEffectInstance(MobEffects.SPEED, Effects.ticks(8, duration), Math.min(3, extra), false, true));
-				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, Effects.ticks(8, duration), Math.min(1, extra), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Effects.ticks(8, duration), Math.min(3, extra), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, Effects.ticks(8, duration), Math.min(1, extra), false, true));
 				// Static discharge: for as long as it lasts, the blows it lands arc on to a neighbour (see SurgeArcs).
 				SurgeArcs.charge(cast, t, power, Effects.ticks(8, duration));
 				StormEarthFx.surgeAura(level, t, Effects.ticks(8, duration));
@@ -500,8 +500,8 @@ public final class FusedEffects {
 		cast.caster.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 20, 0, false, false));
 		if (Targets.canHarm(cast.caster, partner)) {
 			Reactions.mark(partner, Reactions.Mark.PULLED, 80);
-			partner.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(2, duration), 1, false, true));
-			partner.addEffect(new MobEffectInstance(MobEffects.NAUSEA, Effects.ticks(2, duration), 0, false, false));
+			partner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(2, duration), 1, false, true));
+			partner.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Effects.ticks(2, duration), 0, false, false));
 		}
 	}
 

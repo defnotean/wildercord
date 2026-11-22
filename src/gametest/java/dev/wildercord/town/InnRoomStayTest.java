@@ -63,7 +63,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 				}
 				WayfarerKeeper cook = Town.KEEPER.create(l, EntitySpawnReason.COMMAND);
 				cook.setRole(WayfarerKeeper.Role.COOK);
-				cook.snapTo(0.5, 101, 4.5, 180, 0);
+				cook.moveTo(0.5, 101, 4.5, 180, 0);
 				cook.setNoAi(true);
 				l.addFreshEntity(cook);
 				p(s).setGameMode(GameType.SURVIVAL);

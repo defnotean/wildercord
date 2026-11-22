@@ -54,7 +54,7 @@ public class FrostLynx extends BlackBobcat {
 
 	/** The lynx's perk: slows what it bit and frosts it over (the frost is only a look unless it's already near frozen). */
 	public void chill(LivingEntity bitten) {
-		bitten.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, PredatorRules.CHILL_TICKS, PredatorRules.CHILL_AMPLIFIER), this);
+		bitten.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, PredatorRules.CHILL_TICKS, PredatorRules.CHILL_AMPLIFIER), this);
 		if (bitten.canFreeze()) {
 			bitten.setTicksFrozen(PredatorRules.chilled(bitten.getTicksFrozen(), bitten.getTicksRequiredToFreeze()));
 		}

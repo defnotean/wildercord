@@ -109,7 +109,7 @@ public final class Charging {
 		speed *= Mastery.chargeSpeed(caster);
 		boolean hurried = VoidTime.hurried(caster);
 		// Quick hands: Haste fills the charge 30% sooner (hurried time, Accelerate's Haste III, fills it 40% sooner and does not stack with that).
-		if (!hurried && caster instanceof net.minecraft.world.entity.LivingEntity hasty && hasty.hasEffect(net.minecraft.world.effect.MobEffects.HASTE)) {
+		if (!hurried && caster instanceof net.minecraft.world.entity.LivingEntity hasty && hasty.hasEffect(net.minecraft.world.effect.MobEffects.DIG_SPEED)) {
 			speed *= 1.3;
 		}
 		return Math.max(1, (int) Math.round(FULL / (speed * (hurried ? VoidTime.HURRY_CHARGE : 1.0))));
@@ -396,7 +396,7 @@ public final class Charging {
 		}
 		if (backfire.stunTicks() > 0) {
 			CastLock.daze(player, backfire.stunTicks());
-			player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, backfire.stunTicks(), 2, false, false, true));
+			player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, backfire.stunTicks(), 2, false, false, true));
 		}
 		Sigils.flash(level, at, color, 1.8F);
 		Sigils.flash(level, at, 0xFFFFFF, 1.1F);

@@ -142,7 +142,7 @@ public final class MasterForms {
 	}
 	/** Body and action state shared by every equipped form: no mount, flight, fluid, lock, guard, art or open menu. */
 	static boolean free(ServerPlayer player) {
-		var slow = player.getEffect(MobEffects.SLOWNESS);
+		var slow = player.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 		return original(player) && !player.isSpectator() && !player.isSleeping() && Aura.enabled(player) && Aura.holdsWeapon(player)
 			&& !player.isPassenger() && !player.isFallFlying() && !player.getAbilities().flying && !player.getAbilities().mayfly
 			&& !player.isNoGravity() && !player.isInWater() && !player.isInLava() && !player.onClimbable() && !player.isUsingItem()

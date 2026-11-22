@@ -309,7 +309,7 @@ public final class Finishers {
 		Feels.sound(level, w.feet(), "earth_quake", 1.0F, 0.9F);
 		if (foe.isAlive()) {
 			Reactions.mark(foe, Reactions.Mark.CRACKED, 100);
-			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, foe instanceof Player ? 0 : 1, false, true), player);
+			foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, foe instanceof Player ? 0 : 1, false, true), player);
 		}
 	}
 

@@ -137,8 +137,8 @@ public class ResidueBlock extends Block {
 				}
 			}
 			case FULGURITE -> {
-				if (!level.isClientSide() && entity instanceof LivingEntity living && !living.hasEffect(MobEffects.SPEED)) {
-					living.addEffect(new MobEffectInstance(MobEffects.SPEED, 60, 0, false, true));
+				if (!level.isClientSide() && entity instanceof LivingEntity living && !living.hasEffect(MobEffects.MOVEMENT_SPEED)) {
+					living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 60, 0, false, true));
 					level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.6F, 1.6F);
 					ResidueAmbience.jolt(level, pos);
 				}
@@ -164,8 +164,8 @@ public class ResidueBlock extends Block {
 				// Time runs thick here: what walks it slows, and what's dropped on it stops ageing.
 				if (entity instanceof ItemEntity item) {
 					item.setUnlimitedLifetime();
-				} else if (entity instanceof LivingEntity living && !living.hasEffect(MobEffects.SLOWNESS)) {
-					living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 0, false, true));
+				} else if (entity instanceof LivingEntity living && !living.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
+					living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0, false, true));
 				}
 			}
 			default -> {

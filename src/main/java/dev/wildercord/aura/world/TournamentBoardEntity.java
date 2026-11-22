@@ -76,7 +76,7 @@ public final class TournamentBoardEntity extends BlockEntity {
 		if(d==null || !d.isAlive() || !hosts(d.getUUID())){say(p,"interrupted");reset();return;}
 		Vec3 center=Vec3.atBottomCenterOf(arena());
 		// A fresh registration starts at the stand, six blocks from the centre; later rounds require returning to it.
-		d.snapTo(center.x,center.y,center.z-3,0,0);d.getNavigation().stop();
+		d.moveTo(center.x,center.y,center.z-3,0,0);d.getNavigation().stop();
 		long event=begins;UUID id=p.getUUID();
 		if(!DuelistDuels.startHosted(p,d,center,(player,won,magic,ending)->{
 			if(isRemoved() || level!=s || s.getBlockEntity(worldPosition)!=this || begins!=event || !id.equals(challenger))return;
@@ -116,7 +116,7 @@ public final class TournamentBoardEntity extends BlockEntity {
 		close(s);begins=s.getGameTime();ends=begins+TournamentRules.WINDOW;next=begins+TournamentRules.PERIOD;winners.clear();
 		for(int i=0;i<3;i++){
 			var d=AuraWorld.DUELIST.create(s,EntitySpawnReason.EVENT);if(d==null){close(s);ends=begins;return;}
-			BlockPos at=waiting(i);d.snapTo(at.getX()+.5,at.getY(),at.getZ()+.5,180,0);d.setMethod(BreathingMethods.BUILT_IN.get(TournamentRules.method(worldPosition.asLong(),begins,i)));d.gather(worldPosition,i,ends);
+			BlockPos at=waiting(i);d.moveTo(at.getX()+.5,at.getY(),at.getZ()+.5,180,0);d.setMethod(BreathingMethods.BUILT_IN.get(TournamentRules.method(worldPosition.asLong(),begins,i)));d.gather(worldPosition,i,ends);
 			if(!s.addFreshEntity(d)){close(s);ends=begins;return;}roster[i]=d.getUUID();
 		}
 		Feels.sound(s,Vec3.atCenterOf(worldPosition),"aura_tournament_open",1,1);setChanged();

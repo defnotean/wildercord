@@ -403,7 +403,7 @@ public final class RimeArts {
 		});
 		ArtFields.open(player, ICE_PATH, ArtFields.strip(trail, 0.8, 1.5), ArtRules.SKATE_PATH_TICKS, 5, (field, owner, age) -> {
 			for (LivingEntity ally : field.allies(owner)) {
-				ally.addEffect(new MobEffectInstance(MobEffects.SPEED, 15, 0, false, false, true));
+				ally.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 15, 0, false, false, true));
 			}
 			for (LivingEntity foe : field.foes(owner)) {
 				ArtKit.chill(owner, foe, 15, 1);

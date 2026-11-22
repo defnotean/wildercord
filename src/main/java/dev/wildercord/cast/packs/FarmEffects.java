@@ -38,7 +38,7 @@ import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.goat.Goat;
 import net.minecraft.world.entity.animal.Rabbit;
-import net.minecraft.world.entity.animal.sheep.Sheep;
+import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -165,7 +165,7 @@ public final class FarmEffects {
 				Fx.sound(cast.level, t.position(), SoundEvents.AZALEA_LEAVES_BREAK, 0.8F, 1.0F);
 			});
 			case "barkhide" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, FarmRules.ticks(12, duration), 0, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, FarmRules.ticks(12, duration), 0, false, true));
 				glow(cast.level, t, ParticleTypes.COMPOSTER, 12);
 				Fx.sound(cast.level, t.position(), SoundEvents.WOOD_BREAK, 0.8F, 0.8F);
 			});
@@ -177,8 +177,8 @@ public final class FarmEffects {
 			case "trot" -> trot(cast, hit, helped, duration);
 			case "beeline" -> beeline(cast, hit, power);
 			case "fieldstride" -> movers(cast, hit, helped).forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.SPEED, FarmRules.ticks(20, duration), 0, false, true));
-				t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, FarmRules.ticks(20, duration), 0, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, FarmRules.ticks(20, duration), 0, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.JUMP, FarmRules.ticks(20, duration), 0, false, true));
 				glow(cast.level, t, ParticleTypes.CLOUD, 6);
 				Fx.sound(cast.level, t.position(), SoundEvents.GRASS_BREAK, 0.6F, 1.3F);
 			});
@@ -743,7 +743,7 @@ public final class FarmEffects {
 			// A panicking animal runs from what last hurt it: forgetting that, and a slow, calm step, settles it.
 			animal.setLastHurtByMob(null);
 			animal.getNavigation().stop();
-			animal.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, FarmRules.ticks(8, duration), 1, false, false));
+			animal.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, FarmRules.ticks(8, duration), 1, false, false));
 			Vfx.emit(cast.level, ParticleTypes.NOTE, animal.position().add(0, animal.getBbHeight() + 0.3, 0), 1, 0.1, 0.0);
 		}
 		Fx.sound(cast.level, hit.point(), SoundEvents.NOTE_BLOCK_BELL.value(), 0.5F, 0.6F);
@@ -1195,8 +1195,8 @@ public final class FarmEffects {
 			}
 		}
 		for (LivingEntity mount : mounts) {
-			mount.addEffect(new MobEffectInstance(MobEffects.SPEED, FarmRules.ticks(20, duration), 1, false, true));
-			mount.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, FarmRules.ticks(20, duration), 0, false, true));
+			mount.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, FarmRules.ticks(20, duration), 1, false, true));
+			mount.addEffect(new MobEffectInstance(MobEffects.JUMP, FarmRules.ticks(20, duration), 0, false, true));
 			Vfx.emit(cast.level, ParticleTypes.CLOUD, mount.position(), 8, 0.5, 0.02);
 			Fx.sound(cast.level, mount.position(), SoundEvents.HORSE_GALLOP, 0.8F, 1.0F);
 		}

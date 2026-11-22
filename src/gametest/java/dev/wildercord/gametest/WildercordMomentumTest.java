@@ -323,7 +323,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
 			TrainingDummy dummy = WildercordEntities.TRAINING_DUMMY.create(player.level(), EntitySpawnReason.COMMAND);
 			Vec3 p = at(0, 2.2);
-			dummy.snapTo(p.x, p.y, p.z, 180, 0);
+			dummy.moveTo(p.x, p.y, p.z, 180, 0);
 			dummy.addTag(TAG);
 			player.level().addFreshEntity(dummy);
 			player.setAttached(Momentum.MOMENTUM, new Momentum.State(70, player.level().getGameTime() + 100000, 0, 0, 0));
@@ -367,7 +367,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 				} else {
 					Entity boat = EntityType.OAK_BOAT.create(player.level(), EntitySpawnReason.COMMAND);
 					Vec3 p = at(0, 2.4);
-					boat.snapTo(p.x, p.y, p.z, 180, 0);
+					boat.moveTo(p.x, p.y, p.z, 180, 0);
 					boat.addTag(TAG);
 					player.level().addFreshEntity(boat);
 					husk.startRiding(boat);
@@ -626,7 +626,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			if (!Stance.opened(guardian)) {
 				return "worn through, a boss opens too";
 			}
-			if (guardian.hasAttached(WildercordAttachments.FROZEN_UNTIL) || guardian.getEffect(MobEffects.SLOWNESS) == null) {
+			if (guardian.hasAttached(WildercordAttachments.FROZEN_UNTIL) || guardian.getEffect(MobEffects.MOVEMENT_SLOWDOWN) == null) {
 				return "an opened boss should be slowed, never held";
 			}
 			return null;
@@ -702,7 +702,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		check(most <= StanceRules.PLAYER_POOL * StanceRules.PVP_BLOW_CAP + 1.0E-3, "no blow should wear more than a third of it (" + most + ")");
 		String staggered = on(world, player -> {
 			Rival rival = rival(player);
-			if (rival.getEffect(MobEffects.SLOWNESS) == null) {
+			if (rival.getEffect(MobEffects.MOVEMENT_SLOWDOWN) == null) {
 				return "an opened player should be slowed";
 			}
 			if (!rival.getCooldowns().isOnCooldown(new ItemStack(Items.SHIELD))) {
@@ -770,7 +770,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			rival.removeAttached(Stance.STANCE);
 			rival.removeAllEffects();
 			Vec3 p = at(0, 3.0);
-			rival.snapTo(p.x, p.y, p.z, 180, 0);
+			rival.moveTo(p.x, p.y, p.z, 180, 0);
 			rival.setYHeadRot(180);
 			return null;
 		});
@@ -994,7 +994,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		if (mob == null) {
 			throw new AssertionError("couldn't make a " + type);
 		}
-		mob.snapTo(at.x, at.y, at.z, 180, 0);
+		mob.moveTo(at.x, at.y, at.z, 180, 0);
 		mob.addTag(TAG);
 		mob.addTag("wildercord.rolled");
 		// Not tempered to the tester's aura, so its health, and its stance, are what the test sets.
@@ -1086,7 +1086,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		if (rival == null || rival.isRemoved() || rival.level() != player.level()) {
 			rival = new Rival(((ServerLevel) player.level()));
 			Vec3 p = at(0, 2.0);
-			rival.snapTo(p.x, p.y, p.z, 180, 0);
+			rival.moveTo(p.x, p.y, p.z, 180, 0);
 			rival.setYHeadRot(180);
 			// The swordsman's client is told who they are first, or it won't show a player it has never heard of.
 			player.connection.send(net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(rival)));

@@ -93,7 +93,7 @@ public final class SerpentGrovePiece extends DungeonPiece {
 		var herb=getWorldPos(HERB_X,FLOOR+2,HERB_Z);
 		float rest=(float)Math.toDegrees(Math.atan2(-(herb.getX()-foot.getX()),herb.getZ()-foot.getZ()));
 		var serpent=Guardians.SERPENT.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(serpent==null)return;
-		serpent.snapTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
+		serpent.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
 		serpent.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
 		serpent.bind(foot,rest);
 		level.addFreshEntityWithPassengers(serpent);

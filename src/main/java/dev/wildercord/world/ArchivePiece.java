@@ -689,7 +689,7 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 			return;
 		}
 		mob.setPersistenceRequired();
-		mob.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
+		mob.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 		Runebound.bindAtGeneration(mob, adept);
 		level.addFreshEntityWithPassengers(mob);

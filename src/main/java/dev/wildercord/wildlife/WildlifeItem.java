@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -20,7 +21,8 @@ public class WildlifeItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 		String key = "item." + BuiltInRegistries.ITEM.getKey(this).toLanguageKey();
 		out.accept(Component.translatable(key + ".lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
 		out.accept(Component.translatable(key + ".use").withColor(0xB8B0C8));

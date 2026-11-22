@@ -679,7 +679,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 				if(!BellWardenRules.peals(dx*f.x+dz*f.z,dx*-f.z+dz*f.x,p.getY()-getY(),c))continue;
 				// A pillar or a wall between them takes it.
 				if(level.clip(new ClipContext(b,p.getEyePosition(),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,this)).getType()!=HitResult.Type.MISS)continue;
-				if(hit(level,p,BellWardenRules.PEAL_DAMAGE,.3,position(),0))p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,BellWardenRules.PEAL_SLOW,1,false,true),this);
+				if(hit(level,p,BellWardenRules.PEAL_DAMAGE,.3,position(),0))p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,BellWardenRules.PEAL_SLOW,1,false,true),this);
 			}
 		}
 		if(k>=BellWardenRules.PEAL_TICKS)after(level,BellWardenRules.PEAL,BellWardenRules.PEAL_RECOVER);

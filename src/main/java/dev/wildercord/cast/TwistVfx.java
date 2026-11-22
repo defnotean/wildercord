@@ -483,7 +483,7 @@ final class TwistVfx {
 			return;
 		}
 		float w = width;
-		display.snapTo(base.x, base.y, base.z);
+		display.setPos(base.x, base.y, base.z);
 		display.setBlockState(state);
 		display.setTransformation(box(-w / 2, -0.02F, -w / 2, w, 0.02F, w));
 		BlockFx.fresh(display);

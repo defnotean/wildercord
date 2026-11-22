@@ -214,7 +214,7 @@ final class ElementalSignature {
 		for (ServerPlayer player : challengers()) {
 			if (!VerdantBloomRules.hits(player.getX() - centre.x, player.getZ() - centre.z, player.getY() - centre.y)) continue;
 			strike(player, VerdantBloomRules.DAMAGE);
-			if (player.isAlive()) player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, VerdantBloomRules.ROOT_TICKS,
+			if (player.isAlive()) player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, VerdantBloomRules.ROOT_TICKS,
 				VerdantBloomRules.ROOT_AMPLIFIER, false, true), master);
 		}
 	}

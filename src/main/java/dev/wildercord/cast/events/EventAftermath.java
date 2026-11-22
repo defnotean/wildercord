@@ -1,5 +1,6 @@
 package dev.wildercord.cast.events;
-import com.mojang.serialization.Codec;
+
+import dev.wildercord.compat.McSavedDataType;import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -51,7 +52,7 @@ public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net
   if(e.until<=p.level().getGameTime()||!e.dimension.equals(p.level().dimension().location().toString())||p.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(e.pos))>=16||e.claimed.contains(p.getStringUUID())||e.claimed.size()>=128)return false;
   var ids=new ArrayList<>(e.claimed);ids.add(p.getStringUUID());echoes.set(index,new Echo(e.dimension,e.pos,e.kind,e.until,ids));setDirty();
   if(e.kind.equals("star")){p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,1200,0));p.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,200,0));}
-  else if(e.kind.equals("rift"))p.addEffect(new MobEffectInstance(MobEffects.RESISTANCE,400,0));
+  else if(e.kind.equals("rift"))p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,400,0));
   else p.addEffect(new MobEffectInstance(MobEffects.REGENERATION,200,0));
   p.sendSystemMessage(Component.translatable("message.wildercord.aftermath",Component.translatable("aftermath.wildercord."+e.kind)));return true;
  }

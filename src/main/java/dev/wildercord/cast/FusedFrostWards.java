@@ -265,7 +265,7 @@ final class FusedFrostWards {
 		answering = true;
 		try {
 			if (bloom != null && live(BLOOMS, bloom, entity, now) && punishable(bloom, attacker)) {
-				attacker.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, bloom.slowTicks, 2, false, true), bloom.cast.caster);
+				attacker.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, bloom.slowTicks, 2, false, true), bloom.cast.caster);
 				FusedFrostVfx.frostbloomStrike(level, entity, attacker);
 				// Being struck is rewarded: each striker frozen heals the ally a point, up to four a cast.
 				if (bloom.healed < FusedFrostRules.BLOOM_HEALS) {
@@ -495,7 +495,7 @@ final class FusedFrostWards {
 					Effects.push(t, away.scale(FusedFrostRules.BURST_KNOCK).add(0, 0.3, 0));
 				}
 				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, cast.caster), FusedFrostRules.BURST_DAMAGE);
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, FusedFrostRules.BURST_SLOW_TICKS, 1, false, true), cast.caster);
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, FusedFrostRules.BURST_SLOW_TICKS, 1, false, true), cast.caster);
 				Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 			}
 		});

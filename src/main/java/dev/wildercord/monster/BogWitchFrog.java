@@ -269,7 +269,7 @@ public class BogWitchFrog extends WildMonster {
 		enter(Phase.IDLE, now, 0);
 		if (at instanceof Player player && player.isBlocking()) {
 			// A raised shield turns the tongue.
-			playSound(SoundEvents.SHIELD_BLOCK.value(), 1.0F, 1.0F);
+			playSound(SoundEvents.SHIELD_BLOCK, 1.0F, 1.0F);
 			return;
 		}
 		if (at instanceof LivingEntity living && living.hurtServer(level, damageSources().mobAttack(this), TONGUE_DAMAGE)) {

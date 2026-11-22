@@ -479,7 +479,7 @@ public final class StarlitArts {
 		Feels.sound(level, player.position().add(0, 1, 0), "aura_art_nova", 1.3F, 1.0F);
 		// The gathering: starlight drawn in to the blade from all round, stars wheeling round you (seen from outside), and you held a
 		// moment in the stance.
-		player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ArtRules.NOVA_GATHER, 2, false, false, true));
+		player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ArtRules.NOVA_GATHER, 2, false, false, true));
 		fx.flare(ArtRules.NOVA_GATHER + 10, 1.0F);
 		ArtLight show = ArtLight.spectacle(player);
 		for (int t = 0; t < ArtRules.NOVA_GATHER; t += 2) {

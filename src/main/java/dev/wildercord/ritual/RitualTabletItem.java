@@ -98,7 +98,8 @@ public class RitualTabletItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		Ritual ritual = Rituals.ritual(stack);
 		builder.accept(Component.translatable("tooltip.wildercord.ritual_tablet.set", Component.translatable("ritual.wildercord." + ritual.id))
 			.withStyle(ChatFormatting.LIGHT_PURPLE));

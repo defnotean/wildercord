@@ -157,13 +157,13 @@ public final class MasterSchoolMotionChecks {
 			target.setGameMode(GameType.SURVIVAL);
 			target.getAttribute(Attributes.MAX_HEALTH).setBaseValue(HEALTH);
 			target.setHealth(HEALTH);
-			target.snapTo(origin.x, origin.y, origin.z + 4, 180, 0);
+			target.moveTo(origin.x, origin.y, origin.z + 4, 180, 0);
 			target.setYHeadRot(180); target.setYBodyRot(180);
 			level.addNewPlayer(target);
 			master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
 			check(master != null, "The registered master must exist");
 			master.setDiscipline(school);
-			master.snapTo(origin.x, origin.y, origin.z, 0, 0);
+			master.moveTo(origin.x, origin.y, origin.z, 0, 0);
 			level.addFreshEntity(master);
 			master.mobInteract(target, InteractionHand.MAIN_HAND);
 			master.mobInteract(target, InteractionHand.MAIN_HAND);

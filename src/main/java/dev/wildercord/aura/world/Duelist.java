@@ -306,7 +306,7 @@ public class Duelist extends AuraFighter {
 
 	@Override
 	protected void onStaggered(LivingEntity attacker) {
-		DuelistDuels.harmed(this, attacker, net.minecraft.world.effect.MobEffects.SLOWNESS, net.minecraft.world.effect.MobEffects.WEAKNESS);
+		DuelistDuels.harmed(this, attacker, net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, net.minecraft.world.effect.MobEffects.WEAKNESS);
 	}
 
 	@Override

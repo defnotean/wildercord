@@ -164,7 +164,7 @@ final class ShapeRunners {
 		if (cast.level.getGameTime() % 10 == 0) {
 			for (Entity e : cast.level.getEntities((Entity) null, box, e -> e instanceof LivingEntity && Targets.canHarm(cast.caster, e))) {
 				if (distanceToSegment(e.position(), a, b) <= 1.0) {
-					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 25, 0, false, true));
+					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 25, 0, false, true));
 				}
 			}
 		}
@@ -394,7 +394,7 @@ final class ShapeRunners {
 			List<Entity> inside = CastEngine.inRadius(cast, center.add(0, 1, 0), radius);
 			for (Entity e : inside) {
 				if (Targets.canHarm(cast.caster, e)) {
-					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, interval + 10, 1, false, false));
+					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, interval + 10, 1, false, false));
 				}
 			}
 			TechniqueVfx.domainStrike(cast.level, center, radius, theme);

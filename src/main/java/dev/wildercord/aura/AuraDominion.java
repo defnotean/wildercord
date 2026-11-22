@@ -230,7 +230,7 @@ public final class AuraDominion {
 		for (LivingEntity e : foes(owner, field)) {
 			boolean player = e instanceof Player;
 			int level = player ? AuraRules.DOMINION_SLOW_PLAYER : Spirits.isBoss(e) ? 0 : AuraRules.DOMINION_SLOW_CREATURE + more;
-			e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 15, level, true, true), owner);
+			e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 15, level, true, true), owner);
 			if (e instanceof ServerPlayer other) {
 				ScreenFx.tint(other, field.color(), 15);
 			}

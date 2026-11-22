@@ -686,7 +686,7 @@ public final class Mastery {
 	private static void strikeEffect(Cast cast, LivingEntity target, MasteryTraits.Trait t) {
 		if (!cast.admits(target)) return;
 		switch (t.param()) {
-			case "slow" -> target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, (int) Math.round(20 * t.amount()), 0, false, true), cast.caster);
+			case "slow" -> target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, (int) Math.round(20 * t.amount()), 0, false, true), cast.caster);
 			case "glow" -> target.addEffect(new MobEffectInstance(MobEffects.GLOWING, 60, 0, false, false), cast.caster);
 			case "ignite" -> Effects.feedOrIgnite(target, 40);
 			case "push" -> {
@@ -811,8 +811,8 @@ public final class Mastery {
 			int ticks = (int) t.amount();
 			switch (t.param()) {
 				case "regeneration" -> living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks, 0, false, true), player);
-				case "speed" -> living.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 0, false, true), player);
-				case "resistance" -> living.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true), player);
+				case "speed" -> living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, 0, false, true), player);
+				case "resistance" -> living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, 0, false, true), player);
 				case "night_vision" -> living.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, ticks, 0, false, false), player);
 				case "cleanse" -> {
 					living.removeEffect(MobEffects.POISON);

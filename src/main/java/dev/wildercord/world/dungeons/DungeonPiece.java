@@ -192,7 +192,7 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 			return;
 		}
 		mob.setPersistenceRequired();
-		mob.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
+		mob.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 		Runebound.bindAtGeneration(mob, spell, adept);
 		level.addFreshEntityWithPassengers(mob);
@@ -209,7 +209,7 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 			return;
 		}
 		mob.setPersistenceRequired();
-		mob.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
+		mob.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 		level.addFreshEntityWithPassengers(mob);
 	}

@@ -309,7 +309,7 @@ public final class AuraGuard {
 			attacker.knockback(0.9, -flat.x, -flat.z);
 			dev.wildercord.compat.McEntities.syncVelocity(attacker);
 		}
-		attacker.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, AuraRules.STAGGER_TICKS, Spirits.isBoss(attacker) ? 0 : 2, false, true), player);
+		attacker.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, AuraRules.STAGGER_TICKS, Spirits.isBoss(attacker) ? 0 : 2, false, true), player);
 		if (!Spirits.isBoss(attacker)) {
 			attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, AuraRules.STAGGER_TICKS, 0, false, true), player);
 			if (attacker instanceof Mob mob) {

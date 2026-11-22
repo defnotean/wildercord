@@ -175,7 +175,7 @@ final class SignatureFusions {
 		ServerLevel level = cast.level;
 		List<LivingEntity> origins = first(harmed, SignatureRules.FROSTWIRE_ORIGINS);
 		for (LivingEntity t : harmed) {
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(SignatureRules.FROSTWIRE_SLOW_SECONDS, duration), 1, false, true), cast.caster);
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(SignatureRules.FROSTWIRE_SLOW_SECONDS, duration), 1, false, true), cast.caster);
 			Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 			chill(t, 40);
 			if (origins.contains(t)) {
@@ -235,7 +235,7 @@ final class SignatureFusions {
 			Spirits.hold(t, ticks);
 		} else {
 			t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks, 0, false, false));
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, false));
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 3, false, false));
 		}
 		SignatureVfx.seetheTrap(level, t);
 		DamageSource heat = level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster);
@@ -945,7 +945,7 @@ final class SignatureFusions {
 			boolean bare = t.getItemBySlot(EquipmentSlot.HEAD).isEmpty();
 			SignatureVfx.avalancheBury(level, t, bare);
 			Effects.hurt(cast, t, cold, SignatureRules.avalancheDamage(bare) * power);
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(SignatureRules.AVALANCHE_SLOW_SECONDS, duration), 2, false, true), cast.caster);
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(SignatureRules.AVALANCHE_SLOW_SECONDS, duration), 2, false, true), cast.caster);
 			Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 			chill(t, 60);
 		}

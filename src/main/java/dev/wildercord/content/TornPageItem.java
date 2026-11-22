@@ -73,7 +73,8 @@ public class TornPageItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		builder.accept(Component.translatable("tooltip.wildercord.torn_page").withStyle(ChatFormatting.GRAY));
 	}
 }

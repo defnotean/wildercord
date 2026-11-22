@@ -637,7 +637,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 				level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,w.at.x,w.at.y,w.at.z,10,.2,.2,.2,.06);
 				Feels.sound(level,w.at,"aura_lantern_bearer_burst",1,1+random.nextFloat()*.2F);
 				if(landed && GuardianBite.land(level,this,p,(float)LanternBearerRules.WISP_DAMAGE,LanternBearerRules.PIERCE))
-					p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,LanternBearerRules.WISP_SLOW,1,false,true));
+					p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,LanternBearerRules.WISP_SLOW,1,false,true));
 			}
 		}
 	}

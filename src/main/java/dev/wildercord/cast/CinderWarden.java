@@ -1360,7 +1360,7 @@ public class CinderWarden extends DungeonBoss {
 			}
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 spot = CastEngine.ground(level, c.add(Math.cos(a) * 6, 2, Math.sin(a) * 6));
-			guard.snapTo(spot.x, spot.y, spot.z, 0, 0);
+			guard.moveTo(spot.x, spot.y, spot.z, 0, 0);
 			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 			Runebound.bind(guard, i == 0 ? List.of(Runes.BOLT, Runes.FIRE) : List.of(Runes.ARC, Runes.FROST), phase == 3);
 			level.addFreshEntity(guard);

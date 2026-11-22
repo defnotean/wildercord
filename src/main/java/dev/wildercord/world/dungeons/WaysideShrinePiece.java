@@ -188,7 +188,7 @@ public final class WaysideShrinePiece extends DungeonPiece {
 		float yaw=(float)Math.toDegrees(Math.atan2(-(toward.getX()-foot.getX()),toward.getZ()-foot.getZ()));
 		var mimic=MonsterContent.COFFER_MIMIC.create(level.getLevel(),EntitySpawnReason.STRUCTURE);if(mimic==null)return;
 		mimic.setPersistenceRequired();
-		mimic.snapTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,yaw,0);
+		mimic.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,yaw,0);
 		mimic.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),EntitySpawnReason.STRUCTURE,null);
 		mimic.settleHere(yaw);
 		level.addFreshEntityWithPassengers(mimic);

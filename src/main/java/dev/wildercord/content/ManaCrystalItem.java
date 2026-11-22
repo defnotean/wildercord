@@ -49,7 +49,8 @@ public class ManaCrystalItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		builder.accept(Component.translatable("tooltip.wildercord.mana_crystal", Mana.CRYSTAL_MANA, Mana.MAX_CRYSTALS).withStyle(ChatFormatting.GRAY));
 		builder.accept(Component.translatable("tooltip.wildercord.mana_crystal.use").withStyle(ChatFormatting.DARK_AQUA));
 	}

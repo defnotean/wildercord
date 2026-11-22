@@ -122,8 +122,8 @@ final class FusedVoid {
 				// Like Surge: Amplify (and rank III) adds a level; charge and gear only make it last longer.
 				int extra = Math.min(2, Math.max(0, amplify));
 				for (LivingEntity t : helped) {
-					t.addEffect(new MobEffectInstance(MobEffects.HASTE, ticks, extra, false, true), caster);
-					t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, extra, false, true), caster);
+					t.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, ticks, extra, false, true), caster);
+					t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks, extra, false, true), caster);
 					int turned = t instanceof ServerPlayer player ? turnClock(cast, player, power, ticks) : 0;
 					FusedVoidVfx.chronoshift(level, t, turned);
 				}
@@ -298,10 +298,10 @@ final class FusedVoid {
 		LivingEntity caster = cast.caster;
 		if (taken.isEmpty() && !boss) {
 			// Nothing to steal: it steals a moment instead. It drags for 2 s; you are quickened for 2 s.
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, false, true), caster);
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1, false, true), caster);
 			if (caster.isAlive()) {
-				caster.addEffect(new MobEffectInstance(MobEffects.SPEED, 40, 0, false, true), caster);
-				caster.addEffect(new MobEffectInstance(MobEffects.HASTE, 40, 0, false, true), caster);
+				caster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 0, false, true), caster);
+				caster.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 40, 0, false, true), caster);
 			}
 		}
 		List<Integer> colours = new ArrayList<>();

@@ -1180,7 +1180,7 @@ public final class WorldMagic {
 		float w = 0.7F;
 		Quaternionf turn = new Quaternionf().rotateY(yaw);
 		Quaternionf tilt = new Quaternionf().rotateY(yaw).rotateX(0.35F);
-		display.snapTo(base.x, base.y, base.z);
+		display.setPos(base.x, base.y, base.z);
 		display.setBlockState(state);
 		display.setTransformation(new Transformation(new Vector3f(-w / 2, -0.55F, -w / 2), turn, new Vector3f(w, 0.5F, w), new Quaternionf()));
 		BlockFx.fresh(display);

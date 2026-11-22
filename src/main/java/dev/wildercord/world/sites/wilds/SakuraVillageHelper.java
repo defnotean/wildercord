@@ -33,7 +33,7 @@ final class SakuraVillageHelper {
 		if (villager == null) {
 			return;
 		}
-		villager.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0F, 0.0F);
+		villager.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0F, 0.0F);
 		villager.configure(role);
 		level.addFreshEntityWithPassengers(villager);
 	}
@@ -46,7 +46,7 @@ final class SakuraVillageHelper {
 		if (cat == null) {
 			return;
 		}
-		cat.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0F, 0.0F);
+		cat.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0.0F, 0.0F);
 		cat.configureVillage(variant, pos);
 		level.addFreshEntityWithPassengers(cat);
 	}

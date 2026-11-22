@@ -348,7 +348,7 @@ public final class InnRaid {
 			if (!level.isPositionEntityTicking(column)) continue;
 			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 			if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
-			mob.snapTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, (float) Math.toDegrees(angle) + 90, 0);
+			mob.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, (float) Math.toDegrees(angle) + 90, 0);
 			if (level.noCollision(mob)) at = ground;
 		}
 		if (at == null) return;

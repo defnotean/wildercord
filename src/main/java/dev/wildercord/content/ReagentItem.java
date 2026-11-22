@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import java.util.List;
 import dev.wildercord.cast.TemporaryBlocks;
 import dev.wildercord.mixin.AbstractFurnaceBlockEntityAccessor;
 import dev.wildercord.world.ResidueRules.Kind;
@@ -73,7 +74,8 @@ public class ReagentItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 		out.accept(Component.translatable("item.wildercord." + kind.reagent + ".altar").withColor(0xC8A8F0));
 		out.accept(Component.translatable("item.wildercord." + kind.reagent + ".use").withColor(0xB8B0C8));
 	}

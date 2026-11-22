@@ -239,7 +239,7 @@ public final class MethodsBMasters {
 	/** What a signature leaves on a player it caught, beyond the cut. */
 	static void afflict(MethodsBSignatureRules.Signature signature, SwordMaster master, ServerPlayer player) {
 		switch (signature) {
-			case TOLL -> player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, MethodsBSignatureRules.TOLL_REEL, 0, false, true), master);
+			case TOLL -> player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, MethodsBSignatureRules.TOLL_REEL, 0, false, true), master);
 			case GLARE -> player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, MethodsBSignatureRules.GLARE_BLIND, 0, false, true), master);
 			case COIL -> player.addEffect(new MobEffectInstance(MobEffects.POISON, MethodsBSignatureRules.COIL_POISON, 0, false, true), master);
 		}

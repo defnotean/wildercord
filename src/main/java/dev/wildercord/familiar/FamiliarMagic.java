@@ -131,7 +131,7 @@ public final class FamiliarMagic {
 				ElementFx.ray(level, from, at, ElementFx.FROST.primary(), 0.1, 6);
 				ElementFx.frostImpact(level, at, 0.6);
 				SpellDefence.hurt(level, target, level.damageSources().indirectMagic(wisp, owner), (float) (1.5 * power));
-				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, (int) (80 * power), 1, false, true), owner);
+				target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, (int) (80 * power), 1, false, true), owner);
 			}
 			case "storm" -> {
 				if (target == null) {
@@ -154,7 +154,7 @@ public final class FamiliarMagic {
 				if (!fighting(owner)) {
 					return false;
 				}
-				owner.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, (int) (160 * power), familiarLevel >= 3 ? 1 : 0, false, true));
+				owner.addEffect(new MobEffectInstance(MobEffects.JUMP, (int) (160 * power), familiarLevel >= 3 ? 1 : 0, false, true));
 				owner.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, (int) (60 * power), 0, false, true));
 				ElementFx.windImpact(level, owner.position().add(0, 0.2, 0), 0.7);
 			}
@@ -162,7 +162,7 @@ public final class FamiliarMagic {
 				if (owner.tickCount - owner.getLastHurtByMobTimestamp() > IN_COMBAT || owner.getLastHurtByMob() == null) {
 					return false;
 				}
-				owner.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, (int) (80 * power), 0, false, true));
+				owner.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, (int) (80 * power), 0, false, true));
 				ElementFx.earthImpact(level, owner.position().add(0, 0.1, 0), 0.6);
 			}
 			case "arcane" -> {

@@ -1172,7 +1172,7 @@ public class TideScribe extends DungeonBoss {
 				if (TideScribeRules.inked(dx * f.x + dz * f.z, dx * -f.z + dz * f.x, p.getY() - getY(), wide)
 					&& strike(level, p, TideScribeRules.INK_DAMAGE, struck)) {
 					p.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, TideScribeRules.INK_BLIND, 0, false, true), this);
-					p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, TideScribeRules.INK_SLOW, 0, false, true), this);
+					p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, TideScribeRules.INK_SLOW, 0, false, true), this);
 				}
 			}
 			for (int i = -3; i <= 3; i++) {
@@ -1628,7 +1628,7 @@ public class TideScribe extends DungeonBoss {
 			}
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 spot = Vec3.atBottomCenterOf(home).add(Math.cos(a) * 9, 0.2, Math.sin(a) * 9);
-			guard.snapTo(spot.x, spot.y, spot.z, 0, 0);
+			guard.moveTo(spot.x, spot.y, spot.z, 0, 0);
 			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 			Runebound.bind(guard, i == 0 ? List.of(Runes.BOLT, Runes.SHOCK) : List.of(Runes.TOUCH, Runes.FROST), phase == 3);
 			level.addFreshEntity(guard);

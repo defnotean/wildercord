@@ -15,7 +15,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.core.component.DataComponentExactPredicate;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -194,7 +194,7 @@ public final class DuplicateSwap {
 	}
 
 	private static ItemCost cost(String runeId) {
-		return new ItemCost(WildercordItems.RUNE.builtInRegistryHolder(), 1, DataComponentExactPredicate.expect(WildercordComponents.RUNE, runeId));
+		return new ItemCost(WildercordItems.RUNE.builtInRegistryHolder(), 1, DataComponentPredicate.builder().expect(WildercordComponents.RUNE, runeId).build());
 	}
 
 	/** Every plain (rank I) rune in the player's inventory that they already know, and how many of each. */

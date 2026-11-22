@@ -366,7 +366,7 @@ public final class WorldEvents {
 			return null;
 		}
 		float yaw = target == null ? level.getRandom().nextFloat() * 360 : (float) Math.toDegrees(Math.atan2(-(target.getX() - at.x), target.getZ() - at.z));
-		mob.snapTo(at.x, at.y, at.z, yaw, 0);
+		mob.moveTo(at.x, at.y, at.z, yaw, 0);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.EVENT, mob instanceof Zombie ? new Zombie.ZombieGroupData(false, false) : null);
 		// It never picks anything up: it goes when its event does, and whatever it carried (a fallen player's gear) would go with it.
 		mob.setCanPickUpLoot(false);

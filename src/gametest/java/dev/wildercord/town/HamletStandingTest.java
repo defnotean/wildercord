@@ -45,7 +45,7 @@ public final class HamletStandingTest implements FabricClientGameTest {
 
 	private static void villager(ServerLevel l, double x, double z) {
 		Villager villager = EntityType.VILLAGER.create(l, EntitySpawnReason.COMMAND);
-		villager.snapTo(x, 101, z, 0, 0);
+		villager.moveTo(x, 101, z, 0, 0);
 		villager.setNoAi(true);
 		l.addFreshEntity(villager);
 	}
@@ -54,7 +54,7 @@ public final class HamletStandingTest implements FabricClientGameTest {
 	private static void slay(MinecraftServer s, BlockPos pos) {
 		ServerLevel l = s.overworld();
 		var zombie = EntityType.ZOMBIE.create(l, EntitySpawnReason.COMMAND);
-		zombie.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
+		zombie.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
 		zombie.setNoAi(true);
 		l.addFreshEntity(zombie);
 		zombie.hurtServer(l, p(s).damageSources().playerAttack(p(s)), 1000);

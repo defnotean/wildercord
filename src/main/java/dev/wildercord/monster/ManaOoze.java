@@ -216,7 +216,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 			}
 			child.setSize(half, true);
 			double side = i == 0 ? -0.6 : 0.6;
-			child.snapTo(getX() + side, getY() + 0.5, getZ() + side * 0.5, getRandom().nextFloat() * 360, 0);
+			child.moveTo(getX() + side, getY() + 0.5, getZ() + side * 0.5, getRandom().nextFloat() * 360, 0);
 			child.setDeltaMovement(side * 0.3, 0.35, side * 0.15);
 			child.addTag("wildercord.rolled");
 			if (getTarget() != null) {

@@ -175,7 +175,7 @@ public class MirebathCapybara extends Animal {
 			if (cleansing) {
 				e.removeEffect(MobEffects.POISON);
 				e.removeEffect(MobEffects.HUNGER);
-				e.removeEffect(MobEffects.NAUSEA);
+				e.removeEffect(MobEffects.CONFUSION);
 			}
 		}
 		if (getRandom().nextInt(3) == 0) {

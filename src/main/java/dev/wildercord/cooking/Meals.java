@@ -104,7 +104,8 @@ public final class Meals {
 		}
 
 		@Override
-		public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+		public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 			out.accept(Component.translatable(recipe.rare() ? "tooltip.wildercord.rare_meal" : "tooltip.wildercord.meal").withStyle(ChatFormatting.GOLD));
 			for (CookingRules.Buff buff : recipe.buffs()) {
 				out.accept(Component.literal(" ").append(describe(buff)).withStyle(ChatFormatting.BLUE));

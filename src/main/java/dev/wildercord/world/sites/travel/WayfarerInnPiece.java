@@ -173,7 +173,7 @@ public final class WayfarerInnPiece extends TravelPiece {
 		if (keeper == null) return;
 		keeper.setRole(role);
 		keeper.setPersistenceRequired();
-		keeper.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
+		keeper.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
 		keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
 		keeper.restrictTo(at, radius);
 		level.addFreshEntity(keeper);

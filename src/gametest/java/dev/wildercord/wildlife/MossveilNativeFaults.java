@@ -17,7 +17,7 @@ public final class MossveilNativeFaults{
   if(request==1)source.discard();
   if(request==2)p.setItemSlot(EquipmentSlot.HEAD,new ItemStack(MossveilCowl.ITEM));
   if(request==3)p.addEffect(new MobEffectInstance(MobEffects.POISON,1000,2));
-  if(request==4)source.snapTo(source.getX()+.25,source.getY(),source.getZ(),0,0);
+  if(request==4)source.moveTo(source.getX()+.25,source.getY(),source.getZ(),0,0);
   if(request==5)p.teleportTo(((ServerLevel) p.level()),p.getX()+.25,p.getY(),p.getZ(),Set.<net.minecraft.world.entity.Relative>of(),p.getYRot(),p.getXRot(),false);
   if(request==6){check(source.hurtServer(((ServerLevel) p.level()),((ServerLevel) p.level()).damageSources().generic(),100),"Actual admitted source death callback");check(!source.isAlive(),"Source actually died in the native callback");}
  }

@@ -144,7 +144,7 @@ public class TrainingDummy extends LivingEntity {
 		}
 		double side = (level.getRandom().nextDouble() - 0.5) * 0.9;
 		Vec3 at = position().add(side, getBbHeight() + 0.65, (level.getRandom().nextDouble() - 0.5) * 0.9);
-		text.snapTo(at.x, at.y, at.z);
+		text.setPos(at.x, at.y, at.z);
 		String shown = amount >= 10 ? String.format(Locale.ROOT, "%.0f", amount) : String.format(Locale.ROOT, "%.1f", amount);
 		text.setText(Component.literal(shown).withColor(color).withStyle(ChatFormatting.BOLD));
 		text.setBillboardConstraints(Display.BillboardConstraints.CENTER);

@@ -97,14 +97,14 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var res = net.fabricmc.fabric.api.event.player.UseItemCallback.EVENT.invoker().interact(player, s.overworld(), net.minecraft.world.InteractionHand.MAIN_HAND);
 				check(res.consumesAction(), "Using Mojito's Fetchblade triggers its Fetch bound");
 				check(player.getCooldowns().isOnCooldown(fetchblade), "Fetchblade enters cooldown after bounding");
-				check(player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "Fetchblade bound grants Speed II");
+				check(player.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED), "Fetchblade bound grants Speed II");
 
 				// Upgraded Dungeon Boss Trophy: Cinder Heart grants Fire Resistance, Strength, and Regeneration on a 90s rest.
 				var heart = new net.minecraft.world.item.ItemStack(dev.wildercord.content.dungeons.DungeonItems.CINDER_HEART);
 				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, heart);
 				heart.use(s.overworld(), player, net.minecraft.world.InteractionHand.MAIN_HAND);
 				check(player.hasEffect(net.minecraft.world.effect.MobEffects.FIRE_RESISTANCE)
-					&& player.hasEffect(net.minecraft.world.effect.MobEffects.STRENGTH)
+					&& player.hasEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST)
 					&& player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION),
 					"Cinder Heart grants Fire Resistance, Strength, and Regeneration");
 				check(dev.wildercord.content.dungeons.TrophyItem.REST == 20 * 90, "Trophy cooldown is 90 seconds");

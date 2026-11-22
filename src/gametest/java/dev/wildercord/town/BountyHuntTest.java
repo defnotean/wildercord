@@ -99,7 +99,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 				var l = s.overworld();
 				var type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse(TARGET));
 				Mob plain = (Mob) type.create(l, EntitySpawnReason.COMMAND);
-				plain.snapTo(p(s).getX() + 2, Y + 1, p(s).getZ(), 0, 0);
+				plain.moveTo(p(s).getX() + 2, Y + 1, p(s).getZ(), 0, 0);
 				l.addFreshEntity(plain);
 				plain.hurtServer(l, p(s).damageSources().playerAttack(p(s)), 1.0E6F);
 				check(!plain.isAlive(), "the plain one died");

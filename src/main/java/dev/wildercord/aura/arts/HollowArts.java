@@ -457,7 +457,7 @@ public final class HollowArts {
 				for (LivingEntity foe : ArtKit.around(owner, base, ArtRules.HORIZON_CORE, 1.5, 3.5, ArtRules.HORIZON_TARGETS)) {
 					hits.strike(foe, ArtRules.HORIZON_GRIP, AuraFxRules.Weight.LIGHT);
 					if (foe.isAlive()) {
-						foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 10, foe instanceof Player ? 1 : 3, false, true), owner);
+						foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, foe instanceof Player ? 1 : 3, false, true), owner);
 						Reactions.mark(foe, Reactions.Mark.SHADOWED, 60);
 						Vfx.emit(lv, ParticleTypes.REVERSE_PORTAL, foe.getBoundingBox().getCenter(), 3, 0.25, 0.05);
 					}

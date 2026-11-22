@@ -195,7 +195,7 @@ public final class RiftSiege {
 		if (stand == null) {
 			return;
 		}
-		stand.snapTo(base.x, base.y + 0.2, base.z);
+		stand.setPos(base.x, base.y + 0.2, base.z);
 		stand.setInvisible(true);
 		stand.setNoGravity(true);
 		dev.wildercord.compat.McEntities.setPermanentlyInvulnerable(stand, true);

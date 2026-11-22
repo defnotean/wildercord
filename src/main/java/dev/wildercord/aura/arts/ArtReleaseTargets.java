@@ -107,7 +107,7 @@ public final class ArtReleaseTargets {
 
 	private static boolean visible(ServerPlayer player, LivingEntity entity) {
 		return entity != null && entity.isAlive() && !entity.isRemoved() && entity.level() == player.level()
-			&& player.level().getEntity(entity.getUUID()) == entity && ArtKit.harmable(player, entity) && player.hasLineOfSight(entity);
+			&& player.level() instanceof net.minecraft.server.level.ServerLevel level && level.getEntity(entity.getUUID()) == entity && ArtKit.harmable(player, entity) && player.hasLineOfSight(entity);
 	}
 
 	private static boolean cone(ServerPlayer player, LivingEntity entity, Vec3 aim, double width) {

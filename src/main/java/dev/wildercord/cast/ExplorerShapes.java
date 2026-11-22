@@ -106,7 +106,7 @@ final class ExplorerShapes {
 			// Tripped: whoever it catches stumbles for a second.
 			for (Entity e : caught) {
 				if (Targets.canHarm(caster, e)) {
-					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 20, 1, false, true));
+					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 20, 1, false, true));
 				}
 			}
 			CastEngine.onHit(cast.pulse(), g, new Cast.Hit(caught, spot, flat, a, null, null, false), anchored);

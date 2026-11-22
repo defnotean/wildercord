@@ -50,7 +50,7 @@ public final class TombReliquaryEntity extends BlockEntity {
 			p.displayClientMessage(Component.translatable("message.wildercord.tomb.obstructed"), true);return;
 		}
 		var keeper=SwordTombs.KEEPER.create(server,EntitySpawnReason.TRIGGERED);if(keeper==null)return;
-		keeper.bind(worldPosition,home);keeper.snapTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
+		keeper.bind(worldPosition,home);keeper.moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
 		if(!server.addFreshEntity(keeper))return;
 		guardian=keeper.getUUID();missingTicks=0;participants.clear();state(1);setChanged();
 		Feels.sound(server,Vec3.atCenterOf(worldPosition),"aura_tomb_awake",1,1);

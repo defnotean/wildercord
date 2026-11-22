@@ -474,7 +474,7 @@ public final class CraftedRunes {
 			Spirits.freeze(t, ticks);
 			BlockFx.encase(cast.level, t, ticks);
 		} else {
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(3, duration), 1, false, true), cast.caster);
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Effects.ticks(3, duration), 1, false, true), cast.caster);
 			// A dry one is left brittle for two seconds: the strike still primes Shatter.
 			Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 		}
@@ -489,7 +489,7 @@ public final class CraftedRunes {
 	private static void drowse(Cast cast, LivingEntity t, int ticks) {
 		if (Spirits.isBoss(t)) {
 			// A boss's fight must never stop: it only grows drowsy.
-			if(t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,ticks,DROWSY_AMPLIFIER,false,true),cast.caster))LifeOwnerEvents.admitted(cast,"drowse",t,LifeOwnerEvents.Moment.APPLY,1,null);
+			if(t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,ticks,DROWSY_AMPLIFIER,false,true),cast.caster))LifeOwnerEvents.admitted(cast,"drowse",t,LifeOwnerEvents.Moment.APPLY,1,null);
 			return;
 		}
 		long now = cast.level.getGameTime();
@@ -537,9 +537,9 @@ public final class CraftedRunes {
 			}
 		}
 		// Spirits.hold's crawl, if it's still the sleep's (no longer than the sleep had left).
-		MobEffectInstance slow = t.getEffect(MobEffects.SLOWNESS);
+		MobEffectInstance slow = t.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 		if (slow != null && slow.getAmplifier() == 6 && slow.getDuration() <= left + 2) {
-			t.removeEffect(MobEffects.SLOWNESS);
+			t.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 		}
 		MobEffectInstance weak = t.getEffect(MobEffects.WEAKNESS);
 		if (weak != null && weak.getAmplifier() == 4 && weak.getDuration() <= left + 2) {

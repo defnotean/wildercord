@@ -729,7 +729,7 @@ final class FusedFrostVfx {
 		if (display == null) {
 			return null;
 		}
-		display.snapTo(at.x, at.y, at.z);
+		display.setPos(at.x, at.y, at.z);
 		display.setBlockState(state);
 		display.setTransformation(pillar(base, w * 0.3F, 0.02F, d * 0.3F, turn));
 		BlockFx.fresh(display);

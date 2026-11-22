@@ -477,7 +477,7 @@ final class MatriarchFight extends GiantFight {
 			if (pup == null) {
 				continue;
 			}
-			pup.snapTo(at.x, at.y, at.z, mob.getYRot(), 0);
+			pup.moveTo(at.x, at.y, at.z, mob.getYRot(), 0);
 			pup.setVariant(MonsterVariantRules.Variant.FROST, false);
 			pup.addTag(PUP);
 			if (target != null) {
@@ -766,7 +766,7 @@ final class MatriarchFight extends GiantFight {
 	/** Cold that frosts someone over and slows them. */
 	private void chill(LivingEntity e, int ticks) {
 		e.setTicksFrozen(Math.min(e.getTicksRequiredToFreeze() + CHILL_MOST, Math.max(e.getTicksFrozen(), 0) + ticks));
-		e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Math.max(30, ticks), ticks >= 60 ? 1 : 0, false, true), mob);
+		e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, Math.max(30, ticks), ticks >= 60 ? 1 : 0, false, true), mob);
 	}
 
 	/** A step of her own across the ground, held down on it. */

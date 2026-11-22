@@ -174,7 +174,7 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 	private void place(Mob mob, ServerLevel level, ServerPlayer player, double distance) {
 		// Keep these ordinary-mob witnesses out of the random Runebound roll on entity load.
 		mob.addTag("wildercord.rolled");
-		mob.snapTo(stage.getX() + .5, stage.getY() + 1, stage.getZ() + .5 + distance, 180, 0);
+		mob.moveTo(stage.getX() + .5, stage.getY() + 1, stage.getZ() + .5 + distance, 180, 0);
 		mob.setNoAi(true);
 		mob.setOnGround(true);
 		mob.setTarget(player);

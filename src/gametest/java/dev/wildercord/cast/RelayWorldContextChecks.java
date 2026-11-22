@@ -73,10 +73,10 @@ public final class RelayWorldContextChecks {
                         owner.setAttached(MasteryAttachments.MASTERY,new MasteryBook(List.of(entry)));
                         for(int x=-1;x<=7;x++) for(int z=5;z<=7;z++) owner.level().setBlock(new BlockPos(x,150,z),Blocks.WATER.defaultBlockState(),2);
                         primary[0]=EntityType.CREEPER.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);
-                        RelayCircleTest.check(primary[0]!=null,"Native primary creeper creates");primary[0].snapTo(.5,150,6.5,180,0);primary[0].setNoAi(true);primary[0].setNoGravity(true);owner.level().addFreshEntity(primary[0]);
+                        RelayCircleTest.check(primary[0]!=null,"Native primary creeper creates");primary[0].moveTo(.5,150,6.5,180,0);primary[0].setNoAi(true);primary[0].setNoGravity(true);owner.level().addFreshEntity(primary[0]);
                         secondary=dryResidueSite?WildercordEntities.TRAINING_DUMMY.create(owner.level(),EntitySpawnReason.MOB_SUMMONED)
                             :new ChargeWitness(((ServerLevel) owner.level()));
-                        RelayCircleTest.check(secondary!=null,"Native water collateral creates");secondary.snapTo(6.5,150,6.5,180,0);secondary.setNoGravity(true);owner.level().addFreshEntity(secondary);
+                        RelayCircleTest.check(secondary!=null,"Native water collateral creates");secondary.moveTo(6.5,150,6.5,180,0);secondary.setNoGravity(true);owner.level().addFreshEntity(secondary);
                         Shields.raise(new Cast(owner).weigh(100),primary[0],200);
                         Reactions.callout(new Cast(owner),"conduct",0xFFE650);
                         collateral=0;retire=mode.equals("retired_charge");caseMode=mode;
@@ -103,7 +103,7 @@ public final class RelayWorldContextChecks {
                     TrainingDummy[] primary=new TrainingDummy[1];BlockPos seal=new BlockPos(1,150,6);
                     world.getServer().runOnServer(s->{
                         RelayCircleTest.prepare(owner,Runes.HARM);owner.setAttached(MasteryAttachments.MASTERY,MasteryBook.EMPTY);CampConcordNative.config(original);
-                        primary[0]=WildercordEntities.TRAINING_DUMMY.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(primary[0]!=null,"Native seal target creates");primary[0].snapTo(.5,150,6.5,180,0);primary[0].setNoGravity(true);owner.level().addFreshEntity(primary[0]);
+                        primary[0]=WildercordEntities.TRAINING_DUMMY.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(primary[0]!=null,"Native seal target creates");primary[0].moveTo(.5,150,6.5,180,0);primary[0].setNoGravity(true);owner.level().addFreshEntity(primary[0]);
                         owner.level().setBlock(seal,WildercordBlocks.RUNE_SEAL.defaultBlockState().setValue(RuneSealBlock.ELEMENT,RuneSealBlock.Element.ARCANE),2);
                         if(covered)for(int y=150;y<=152;y++)owner.level().setBlock(new BlockPos(1,y,5),Blocks.STONE.defaultBlockState(),2);
                         RelayCircleTest.directDown(owner);
@@ -122,7 +122,7 @@ public final class RelayWorldContextChecks {
                         CampConcordNative.config(CampConcordNative.copy(original,Map.of("maxCreatures",mode.equals("reveal_budget")?1:64)));
                         for(int i=0;i<(mode.equals("reveal_overflow")?65:2);i++) {
                             var d=WildercordEntities.TRAINING_DUMMY.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(d!=null,"Native shimmer dummy creates");
-                            d.snapTo(i==0?.5:2.5,150,6.5,180,0);d.setNoGravity(true);owner.level().addFreshEntity(d);bodies.add(d);
+                            d.moveTo(i==0?.5:2.5,150,6.5,180,0);d.setNoGravity(true);owner.level().addFreshEntity(d);bodies.add(d);
                             if(i>0)d.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.INVISIBILITY,2000,0,false,false));
                         }
                         if(mode.equals("reveal_cover"))for(int y=150;y<=152;y++)owner.level().setBlock(new BlockPos(1,y,6),Blocks.STONE.defaultBlockState(),2);

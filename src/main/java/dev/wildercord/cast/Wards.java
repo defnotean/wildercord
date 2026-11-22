@@ -208,7 +208,7 @@ public final class Wards {
 			TimeFx.stasisColumn(cast.level, t, ticks);
 		}
 		if (Spirits.isBoss(t)) {
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 4, false, true));
+			t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 4, false, true));
 			return;
 		}
 		Stasis held = STASIS.get(t.getUUID());
@@ -453,7 +453,7 @@ public final class Wards {
 		bad.forEach(entity::removeEffect);
 		entity.clearFire();
 		entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1, false, true));
-		entity.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 60, 1, false, true));
+		entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 1, false, true));
 		LifeOwnerEvents.transition(level,"reversal",entity,LifeOwnerEvents.Moment.TRIGGER,1,entity.getHealth()-reversalBefore,null);
 		if (entity instanceof ServerPlayer player) {
 			player.displayClientMessage(Component.translatable("message.wildercord.reversal").withColor(0x6EDC64), true);
@@ -572,7 +572,7 @@ public final class Wards {
 				for (Entity e : level.getEntities(who, who.getBoundingBox().inflate(ZENO_REACH), e -> e instanceof LivingEntity && Targets.canHarm(ward.caster, e))) {
 					double d = e.getBoundingBox().getCenter().distanceTo(centre);
 					if (d <= ZENO_REACH) {
-						((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 8, zenoLevel(d), false, false), ward.caster);
+						((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 8, zenoLevel(d), false, false), ward.caster);
 					}
 				}
 			}

@@ -362,7 +362,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	/** Whoever struck into its perfect guard: thrown back, slowed and weakened a moment, their swing spent. */
 	protected void stagger(LivingEntity attacker) {
 		MonsterMagic.knock(attacker, position(), 0.7);
-		attacker.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, AuraWorldRules.MOB_STAGGER_TICKS, 1, false, true), this);
+		attacker.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, AuraWorldRules.MOB_STAGGER_TICKS, 1, false, true), this);
 		attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, AuraWorldRules.MOB_STAGGER_TICKS, 0, false, true), this);
 		if (attacker instanceof Player player) {
 			player.resetAttackStrengthTicker();
@@ -383,7 +383,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 		Vec3 at = position().add(0, 1.1, 0).add(flatLook().scale(0.7));
 		Fx.send(level, ParticleTypes.CRIT, at, 10, 0.35, 0.3);
 		Motes.burst(level, at, 8, auraColor(), 0.09, 16, 0.18);
-		Fx.sound(level, at, net.minecraft.sounds.SoundEvents.SHIELD_BREAK.value(), 1.0F, 0.9F);
+		Fx.sound(level, at, net.minecraft.sounds.SoundEvents.SHIELD_BREAK, 1.0F, 0.9F);
 		MonsterMagic.tell(by, Component.translatable("message.wildercord.aura_world.guard_broken", getDisplayName()).withColor(0xE8D8B0));
 	}
 
@@ -515,7 +515,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 
 	/** Whether it's caught out right now (staggered or its guard broken). */
 	public boolean staggered() {
-		return level().getGameTime() < staggerUntil || hasEffect(MobEffects.SLOWNESS) && getEffect(MobEffects.SLOWNESS).getAmplifier() >= 2;
+		return level().getGameTime() < staggerUntil || hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && getEffect(MobEffects.MOVEMENT_SLOWDOWN).getAmplifier() >= 2;
 	}
 
 	/** Keeps its stagger pose current. */

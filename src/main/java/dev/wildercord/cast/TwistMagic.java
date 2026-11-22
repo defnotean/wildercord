@@ -182,7 +182,7 @@ public final class TwistMagic {
 		for (LivingEntity foe : foes(cast, hit.point(), 1.8)) {
 			if (cast.takeEntities(1) == 1) {
 				hurt(cast, foe, "", magic(cast), 2.0);
-				foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 0, false, true));
+				foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0, false, true));
 			}
 		}
 	}
@@ -312,7 +312,7 @@ public final class TwistMagic {
 				continue;
 			}
 			ride.procs++;
-			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 0, false, true));
+			foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 0, false, true));
 			TwistVfx.thorns(((ServerLevel) ride.level()), foe, true);
 			every(ride.cast, 10, 6, tick -> {
 				if (!foe.isAlive()) {
@@ -550,7 +550,7 @@ public final class TwistMagic {
 			}
 			boolean boss = Spirits.isBoss(foe);
 			int hold = foe instanceof Player ? 15 : 30;
-			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, hold, boss ? 1 : 9, false, true));
+			foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, hold, boss ? 1 : 9, false, true));
 			if (!boss && !VoidTime.anchored(foe)) {
 				move(foe, new Vec3(0, Math.min(0, foe.getDeltaMovement().y), 0));
 			}
@@ -571,7 +571,7 @@ public final class TwistMagic {
 		if (horse == null) {
 			return;
 		}
-		horse.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
+		horse.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 		horse.setTamed(true);
 		horse.setOwner(player);
 		horse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
@@ -729,7 +729,7 @@ public final class TwistMagic {
 						continue;
 					}
 					for (LivingEntity foe : foes(ride.cast, flowers.get(i), 1.1)) {
-						foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, false, true));
+						foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1, false, true));
 					}
 				}
 			}
@@ -742,14 +742,14 @@ public final class TwistMagic {
 		LivingEntity caster = ride.caster();
 		TwistVfx.bell(((ServerLevel) ride.level()), caster);
 		for (LivingEntity foe : foes(ride.cast, caster.position(), 6.0)) {
-			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 0, false, true));
+			foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 0, false, true));
 			foe.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 0, false, true));
 			if (!Spirits.isBoss(foe)) {
 				push(foe, away(caster.position(), foe).scale(0.4).add(0, 0.15, 0));
 			}
 		}
 		for (LivingEntity ally : friends(ride.cast, caster.position(), 6.0)) {
-			ally.addEffect(new MobEffectInstance(MobEffects.SPEED, 80, 0, false, true));
+			ally.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 80, 0, false, true));
 		}
 	}
 

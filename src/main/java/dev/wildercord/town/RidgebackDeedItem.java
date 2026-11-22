@@ -1,5 +1,6 @@
 package dev.wildercord.town;
 
+import java.util.List;
 import dev.wildercord.wildlife.MountContent;
 import dev.wildercord.wildlife.RidgebackStag;
 import net.minecraft.ChatFormatting;
@@ -31,20 +32,21 @@ public class RidgebackDeedItem extends Item {
 		if (level instanceof ServerLevel server) {
 			RidgebackStag stag = MountContent.RIDGEBACK_STAG.create(server, EntitySpawnReason.MOB_SUMMONED);
 			if (stag == null) return InteractionResult.FAIL;
-			stag.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
+			stag.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 			stag.finalizeSpawn(server, server.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 			stag.tameWithName(player);
 			stag.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
 			stag.setPersistenceRequired();
 			server.addFreshEntity(stag);
-			server.playSound(null, player.blockPosition(), SoundEvents.HORSE_SADDLE.value(), SoundSource.NEUTRAL, 1.0F, 0.9F);
+			server.playSound(null, player.blockPosition(), SoundEvents.HORSE_SADDLE, SoundSource.NEUTRAL, 1.0F, 0.9F);
 			if (!player.getAbilities().instabuild) player.getItemInHand(hand).shrink(1);
 		}
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 		out.accept(Component.translatable("tooltip.wildercord.ridgeback_deed").withStyle(ChatFormatting.GRAY));
 	}
 }

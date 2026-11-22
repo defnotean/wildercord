@@ -179,7 +179,7 @@ public final class PhysicalMagic {
 					Reactions.mark(target,Reactions.Mark.SOAKED,100);
 					Effects.hurt(cast,target,cast.level.damageSources().indirectMagic(cast.caster,cast.caster),(name.equals("tidal_lift")?4:5)*power);
 					if(name.equals("boiling_surge"))target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,40,0,false,false));
-					if(name.equals("thunder_tide"))target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,20,0,false,false));
+					if(name.equals("thunder_tide"))target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,20,0,false,false));
 				}
 			}));}
 			Scheduler.later(36+offset,()->{if(previous[0]!=null)restore(cast.level,previous[0],previousCell[0]);restore(cast.level,source,reservedCell);});

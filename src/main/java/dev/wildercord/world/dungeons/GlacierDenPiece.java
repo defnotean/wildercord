@@ -148,7 +148,7 @@ public final class GlacierDenPiece extends DungeonPiece {
 		var mouth=getWorldPos(NEST_X,REST_Y,NEST_Z-10);
 		float rest=(float)Math.toDegrees(Math.atan2(-(mouth.getX()-at.getX()),mouth.getZ()-at.getZ()));
 		var wyrmling=dev.wildercord.aura.world.Guardians.FROST_WYRMLING.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(wyrmling==null)return;
-		wyrmling.snapTo(at.getX()+.5,at.getY(),at.getZ()+.5,rest,0);
+		wyrmling.moveTo(at.getX()+.5,at.getY(),at.getZ()+.5,rest,0);
 		wyrmling.finalizeSpawn(level,level.getCurrentDifficultyAt(at),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
 		wyrmling.bind(at,rest,worldBox(CX-RADIUS,FLOOR,CZ-RADIUS,CX+RADIUS,FLOOR+DOME,CZ+RADIUS));
 		level.addFreshEntityWithPassengers(wyrmling);

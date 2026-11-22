@@ -165,7 +165,7 @@ public final class TideEffects {
 			case "skimstep" -> helped.forEach(t -> skimstep(cast, t, ticks(15, duration, passive)));
 			case "skaters_edge" -> helped.forEach(t -> {
 				boolean ice = level.getBlockState(t.getBlockPosBelowThatAffectsMyMovement()).is(BlockTags.ICE);
-				t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks(30, duration, passive), TideRules.skateAmplifier(ice), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ticks(30, duration, passive), TideRules.skateAmplifier(ice), false, true));
 				emit(level, ParticleTypes.SNOWFLAKE, t.position(), 12, 0.4);
 			});
 			case "air_pocket" -> helped.forEach(t -> {
@@ -180,8 +180,8 @@ public final class TideEffects {
 				sound(level, t.position(), SoundEvents.CONDUIT_ACTIVATE, 1.4F);
 			});
 			case "sea_breeze" -> helped.forEach(t -> {
-				t.removeEffect(MobEffects.MINING_FATIGUE);
-				t.removeEffect(MobEffects.NAUSEA);
+				t.removeEffect(MobEffects.DIG_SLOWDOWN);
+				t.removeEffect(MobEffects.CONFUSION);
 				t.removeEffect(MobEffects.HUNGER);
 				emit(level, ParticleTypes.CLOUD, t.position().add(0, 1, 0), 10, 0.5);
 				sound(level, t.position(), SoundEvents.BOAT_PADDLE_WATER, 1.3F);
@@ -194,7 +194,7 @@ public final class TideEffects {
 			});
 			case "shellback" -> helped.forEach(t -> {
 				int seconds = TideRules.shellbackSeconds(t.isInWaterOrRain());
-				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks(seconds, duration, passive), 0, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks(seconds, duration, passive), 0, false, true));
 				emit(level, ParticleTypes.NAUTILUS, t.position().add(0, 1, 0), 10, 0.5);
 				sound(level, t.position(), SoundEvents.TURTLE_EGG_CRACK, 0.8F);
 			});

@@ -90,7 +90,7 @@ public class KarakuriSentinel extends WildMonster {
 				}
 				if (distanceToSqr(target) <= 13.0) {
 					target.hurtServer(level, damageSources().mobAttack(this), 9.0F);
-					target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 0, false, true));
+					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0, false, true));
 					Vec3 push = target.position().subtract(position()).multiply(1, 0, 1);
 					if (push.lengthSqr() > 0.01) {
 						Vec3 v = push.normalize().scale(0.55);

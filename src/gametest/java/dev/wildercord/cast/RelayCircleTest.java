@@ -66,7 +66,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 				prepare(probe.owner, Runes.HARM);
 				probe.dummy = WildercordEntities.TRAINING_DUMMY.create(probe.owner.level(), EntitySpawnReason.MOB_SUMMONED);
 				check(probe.dummy != null, "Dummy creates");
-				probe.dummy.snapTo(.5, 150, 6.5, 180, 0);
+				probe.dummy.moveTo(.5, 150, 6.5, 180, 0);
 				probe.owner.level().addFreshEntity(probe.dummy);
 			});
 			context.waitTicks(10);

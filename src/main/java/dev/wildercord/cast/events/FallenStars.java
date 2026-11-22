@@ -409,7 +409,7 @@ public final class FallenStars {
 				continue;
 			}
 			float size = 0.7F + random.nextFloat() * 0.5F;
-			mark.snapTo(x + 0.5, y + 0.005 + i * 0.0015, z + 0.5);
+			mark.setPos(x + 0.5, y + 0.005 + i * 0.0015, z + 0.5);
 			mark.setBlockState((i % 3 == 0 ? Blocks.BLACKSTONE : Blocks.COAL_BLOCK).defaultBlockState());
 			mark.setTransformation(new Transformation(new Vector3f(-size / 2, 0, -size / 2),
 				new Quaternionf().rotationY((float) (random.nextDouble() * Math.PI)), new Vector3f(size, 0.01F, size), new Quaternionf()));

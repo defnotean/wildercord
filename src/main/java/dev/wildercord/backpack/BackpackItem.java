@@ -55,7 +55,8 @@ public class BackpackItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		int used = Backpacks.used(stack);
 		builder.accept(Component.translatable(used >= tier.slots() ? "tooltip.wildercord.backpack.full" : "tooltip.wildercord.backpack.fill", used, tier.slots())
 			.withStyle(used >= tier.slots() ? ChatFormatting.GOLD : ChatFormatting.GRAY));

@@ -53,11 +53,11 @@ public class ResinGlob extends ThrowableItemProjectile {
 		Entity entity = result.getEntity();
 		if (level() instanceof ServerLevel level && entity instanceof LivingEntity living && entity != getOwner()) {
 			living.hurtServer(level, damageSources().thrown(this, getOwner()), 2.0F);
-			MobEffectInstance slow = living.getEffect(MobEffects.SLOWNESS);
+			MobEffectInstance slow = living.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			if (PitchbackRules.sticks(slow == null ? -1 : slow.getAmplifier())) {
 				MonsterMagic.root(level, living, PitchbackRules.STUCK_TICKS);
 			} else {
-				living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, PitchbackRules.GUM_TICKS, PitchbackRules.GUM_LEVEL), getEffectSource());
+				living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, PitchbackRules.GUM_TICKS, PitchbackRules.GUM_LEVEL), getEffectSource());
 			}
 		}
 	}

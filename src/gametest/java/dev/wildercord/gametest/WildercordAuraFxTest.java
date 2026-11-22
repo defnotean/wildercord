@@ -660,7 +660,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			Mob husk = spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0.6, 3.2), 400);
 			husk.addTag("wildercord.aurafx_other");
 			husk.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.NETHERITE_SWORD));
-			husk.snapTo(husk.getX(), husk.getY(), husk.getZ(), 150, 0);
+			husk.moveTo(husk.getX(), husk.getY(), husk.getZ(), 150, 0);
 			husk.setYHeadRot(150);
 			husk.yBodyRot = 150;
 			return null;
@@ -850,7 +850,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		if (mob == null) {
 			throw new AssertionError("couldn't make a " + type);
 		}
-		mob.snapTo(at.x, at.y, at.z, 180, 0);
+		mob.moveTo(at.x, at.y, at.z, 180, 0);
 		mob.setNoAi(true);
 		mob.addTag(TAG);
 		mob.addTag("wildercord.rolled");

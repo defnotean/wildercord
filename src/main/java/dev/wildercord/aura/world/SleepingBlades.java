@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import java.util.List;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.Aura;
@@ -45,7 +46,8 @@ public final class SleepingBlades {
 	private static final ResourceKey<Item> BLADE_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("oathkeeper"));
 	public static final Item BLADE = Registry.register(BuiltInRegistries.ITEM, BLADE_KEY,
 		new Item(new Item.Properties().setId(BLADE_KEY).sword(ToolMaterial.DIAMOND, 3, -2.4F).fireResistant().rarity(Rarity.EPIC)) {
-			@Override public void appendHoverText(ItemStack stack, TooltipContext c, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
+			@Override public void appendHoverText(ItemStack stack,TooltipContext c,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;
 				out.accept(Component.translatable("item.wildercord.oathkeeper.lore").withColor(0xB8BFC6));
 				out.accept(Component.translatable("item.wildercord.oathkeeper.use").withColor(0xD9BD7E));
 			}

@@ -126,7 +126,7 @@ public final class AuraIntent {
 
 	/** A weaker creature: slowed for a moment, and now and then it falters where it stands. */
 	private static void pressCreature(ServerPlayer player, Mob mob) {
-		mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, AuraRules.INTENT_SLOW_TICKS, 0, true, false), player);
+		mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, AuraRules.INTENT_SLOW_TICKS, 0, true, false), player);
 		if (mob.getRandom().nextDouble() < AuraRules.INTENT_FALTER) {
 			mob.getNavigation().stop();
 			AuraVfx.falter((ServerLevel) player.level(), mob, Aura.color(player));

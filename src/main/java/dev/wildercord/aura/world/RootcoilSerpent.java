@@ -589,7 +589,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var shown=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(shown==null)return;
 		var turn=new Quaternionf().rotateY((float)Math.toRadians(-yaw)).rotateX(.2F+random.nextFloat()*.35F).rotateY(random.nextFloat()*1.6F);
-		shown.snapTo(base.x,base.y-.1,base.z);shown.setBlockState(Blocks.MANGROVE_ROOTS.defaultBlockState());shown.setTransformation(stand(turn,w,.02F));
+		shown.setPos(base.x,base.y-.1,base.z);shown.setBlockState(Blocks.MANGROVE_ROOTS.defaultBlockState());shown.setTransformation(stand(turn,w,.02F));
 		BlockFx.fresh(shown);level.addFreshEntity(shown);spikes.add(shown);
 		Scheduler.later(1,()->tween(shown,stand(turn,w,h),2));
 		Scheduler.later(3+hold,()->tween(shown,stand(turn,w,.02F),6));
@@ -633,7 +633,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			double[] b=SerpentSpine.fromWorld(new double[]{p.getX()-getX(),p.getY()-getY(),p.getZ()-getZ()},aim);
 			if(!SerpentRules.sprays(jet,Math.toDegrees(Math.atan2(b[0],b[2])),Math.hypot(b[0],b[2]),b[1]))continue;
 			splashed.put(p.getUUID(),hits+1);
-			if(hit(level,p,SerpentRules.SPRAY_DAMAGE,0)){landed=true;p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,SerpentRules.SPRAY_SLOW,1),this);}
+			if(hit(level,p,SerpentRules.SPRAY_DAMAGE,0)){landed=true;p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,SerpentRules.SPRAY_SLOW,1),this);}
 		}
 		if(tick>=SerpentRules.SPRAY_TICKS)after(level,SerpentRules.HOOD_SPRAY,SerpentRules.SPRAY_RECOVER);
 	}
@@ -729,7 +729,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		var shown=EntityType.BLOCK_DISPLAY.create(level,EntitySpawnReason.TRIGGERED);
 		if(shown==null)return;
 		var spin=new Quaternionf().rotateXYZ(random.nextFloat()*6.28F,random.nextFloat()*6.28F,random.nextFloat()*6.28F);
-		shown.snapTo(from.x,from.y,from.z);shown.setBlockState(state);shown.setTransformation(clod(spin));shown.setPosRotInterpolationDuration(1);
+		shown.setPos(from.x,from.y,from.z);shown.setBlockState(state);shown.setTransformation(clod(spin));shown.setPosRotInterpolationDuration(1);
 		dev.wildercord.cast.BlockFx.fresh(shown);
 		level.addFreshEntity(shown);
 		clods.add(new Clod(shown,state,from,vel,spin));

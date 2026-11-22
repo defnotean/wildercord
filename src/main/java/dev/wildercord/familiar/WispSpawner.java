@@ -81,7 +81,7 @@ public final class WispSpawner {
 			return null;
 		}
 		wisp.setElement(element);
-		wisp.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, level.getRandom().nextFloat() * 360, 0);
+		wisp.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, level.getRandom().nextFloat() * 360, 0);
 		level.addFreshEntity(wisp);
 		return wisp;
 	}

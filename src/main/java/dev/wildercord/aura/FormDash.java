@@ -512,7 +512,7 @@ public final class FormDash {
 			if (!from.equals(to) && !WallTurn.swept(player, from, to, warded)) return false;
 			fallRisk = Math.max(fallRisk, player.fallDistance) + Math.max(0, from.y - to.y);
 			player.teleportTo(level, to.x, to.y, to.z, Relative.ROTATION, 0, 0, false);
-			player.fallDistance = Math.max(player.fallDistance, fallRisk);
+			player.fallDistance = (float) Math.max(player.fallDistance, fallRisk);
 			player.setDeltaMovement(Vec3.ZERO);
 			player.hasImpulse = true;
 			last = to;
@@ -535,7 +535,7 @@ public final class FormDash {
 				if (level.clip(new ClipContext(from, at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getType() == HitResult.Type.MISS) return true;
 			return false;
 		}
-		void abort() { aborted = true; if (owner.valid()) { player.fallDistance = Math.max(player.fallDistance, fallRisk); hold(); } }
+		void abort() { aborted = true; if (owner.valid()) { player.fallDistance = (float) Math.max(player.fallDistance, fallRisk); hold(); } }
 		// ---- moves pack
 		/** The phase this travel ends on; aerial forms override it with how they came down. */
 		int end() { return FormDashRules.endPhase(form, stalled); }
@@ -585,7 +585,7 @@ public final class FormDash {
 			} else if (form == FormDashRules.GUARD_BREAK) {
 				sound(player, SoundEvents.ANVIL_LAND, .7F, .7F);
 				AuraCombat.artStrike(player, foe, ArtKit.weapon(player) * FormDashRules.GUARD_BREAK_SCALE * ArtKit.scale(), ArtRules.PVP_ART_CAP, false);
-				foe.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, FormDashRules.GUARD_BREAK_SLOW, 1), player);
+				foe.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, FormDashRules.GUARD_BREAK_SLOW, 1), player);
 				if (foe instanceof ServerPlayer guard) AuraGuard.lowerForCounter(guard);
 			}
 		}

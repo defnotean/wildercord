@@ -190,7 +190,7 @@ public final class BellChapelPiece extends DungeonPiece {
 		var door=getWorldPos(REST_X,F+1,REST_Z-10);
 		float rest=(float)Math.toDegrees(Math.atan2(-(door.getX()-foot.getX()),door.getZ()-foot.getZ()));
 		var warden=dev.wildercord.aura.world.Guardians.BELL_WARDEN.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(warden==null)return;
-		warden.snapTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
+		warden.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
 		warden.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
 		warden.bind(foot,rest,worldBox(4,F,19,26,F+14,65));
 		level.addFreshEntityWithPassengers(warden);

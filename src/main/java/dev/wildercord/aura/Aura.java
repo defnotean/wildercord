@@ -233,7 +233,7 @@ public final class Aura {
 		long now = player.level().getGameTime();
 		AuraAttachments.State state = state(player);
 		boolean fresh = now >= state.backlashUntil() - ticks + AuraRules.BACKLASH_REST;
-		player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 0, false, true, true));
+		player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 0, false, true, true));
 		player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, 0, false, true, true));
 		state(player, state.backlash(now + ticks));
 		if (fresh) {

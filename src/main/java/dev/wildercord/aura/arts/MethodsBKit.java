@@ -39,10 +39,10 @@ public final class MethodsBKit {
 	public static void reel(ServerPlayer player, LivingEntity foe, int ticks) {
 		if (!ArtKit.harmable(player, foe) || !foe.isAlive() || ticks <= 0 || ArtKit.boss(foe)) return;
 		if (foe instanceof Player) {
-			foe.addEffect(new MobEffectInstance(MobEffects.NAUSEA, Math.max(20, ArtRules.hold(ticks, true, false) * 2), 0, false, true), player);
+			foe.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Math.max(20, ArtRules.hold(ticks, true, false) * 2), 0, false, true), player);
 			return;
 		}
-		foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 0, false, true), player);
+		foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 0, false, true), player);
 		foe.setYRot(foe.getYRot() + (foe.getRandom().nextBoolean() ? 35 : -35));
 		foe.setYHeadRot(foe.getYRot());
 	}

@@ -279,7 +279,7 @@ public final class Affinities {
 			return;
 		}
 		Vec3 at = target.position().add((level.getRandom().nextDouble() - 0.5) * 0.4, target.getBbHeight() + 0.45, (level.getRandom().nextDouble() - 0.5) * 0.4);
-		display.snapTo(at.x, at.y, at.z);
+		display.setPos(at.x, at.y, at.z);
 		display.setText(text);
 		display.setBillboardConstraints(Display.BillboardConstraints.CENTER);
 		display.setBackgroundColor(0);

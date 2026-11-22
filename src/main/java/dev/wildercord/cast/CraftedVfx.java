@@ -232,7 +232,7 @@ final class CraftedVfx {
 		if (display == null) {
 			return null;
 		}
-		display.snapTo(pos.getX(), pos.getY(), pos.getZ());
+		display.setPos(pos.getX(), pos.getY(), pos.getZ());
 		display.setBlockState(ore);
 		display.setTransformation(new com.mojang.math.Transformation(new org.joml.Vector3f(0.1F, 0.1F, 0.1F), new org.joml.Quaternionf(),
 			new org.joml.Vector3f(0.8F, 0.8F, 0.8F), new org.joml.Quaternionf()));

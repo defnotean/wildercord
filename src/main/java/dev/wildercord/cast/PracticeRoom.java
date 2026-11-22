@@ -70,7 +70,7 @@ public final class PracticeRoom {
   for(int i=0;i<count;i++) {
    var dummy=WildercordEntities.TRAINING_DUMMY.create(world,EntitySpawnReason.TRIGGERED);
    if(dummy==null)continue;
-   dummy.snapTo((i%5-2)*4+.5,81,10+(i/5)*4+.5);
+   dummy.setPos((i%5-2)*4+.5,81,10+(i/5)*4+.5);
    dummy.setPracticeMoving(moving); world.addFreshEntity(dummy);
   }
   return count;

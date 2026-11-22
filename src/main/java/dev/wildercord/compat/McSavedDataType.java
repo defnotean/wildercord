@@ -27,7 +27,7 @@ public final class McSavedDataType<T extends SavedData> {
 
 	/** The 1.21.4 factory shape: fresh through the supplier, loaded by decoding the tag with the codec. */
 	public SavedData.Factory<T> vanilla() {
-		return new SavedData.Factory<>(factory, (tag, registries) -> decode(tag, registries));
+		return new SavedData.Factory<>(factory, (tag, registries) -> decode(tag, registries), null);
 	}
 
 	public T decode(CompoundTag tag, HolderLookup.Provider registries) {

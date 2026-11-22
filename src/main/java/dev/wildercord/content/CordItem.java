@@ -19,7 +19,8 @@ public class CordItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		builder.accept(Component.translatable("tooltip.wildercord.cord.stats", tier.sockets, tier.spells, tier.maxMana).withStyle(ChatFormatting.GRAY));
 		builder.accept(Component.translatable("tooltip.wildercord.cord.tier", RuneItem.roman(tier.maxRuneTier)).withStyle(ChatFormatting.GRAY));
 		builder.accept(Component.translatable("tooltip.wildercord.cord.wear").withStyle(ChatFormatting.DARK_AQUA));

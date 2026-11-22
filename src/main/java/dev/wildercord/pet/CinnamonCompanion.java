@@ -227,7 +227,7 @@ final class CinnamonCompanion {
 		Vec3 at = CompanionLanding.find(((ServerLevel) player.level()), player.position(), dog);
 		if (at == null || !mayRecall(player) || !player.getUUID().equals(ownerId(dog))
 			|| identity(player, journal.get(player.getUUID())) != CinnamonIdentityRules.Status.NEW) return;
-		dog.snapTo(at.x, at.y, at.z, player.getYRot(), 0);
+		dog.moveTo(at.x, at.y, at.z, player.getYRot(), 0);
 		var entry = new CinnamonJournal.Entry(dog.getUUID(), player.level().dimension().location().toString(),
 			dog.chunkPosition().x, dog.chunkPosition().z, CinnamonJournal.Care.of(dog), 0, false);
 		journal.put(player.getUUID(), entry);

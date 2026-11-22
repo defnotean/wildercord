@@ -1,5 +1,6 @@
 package dev.wildercord.gear;
 
+import java.util.List;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -50,7 +51,8 @@ public final class ElementalArmor extends Item {
 			if(holder.getItemBySlot(slot).getItem() instanceof ElementalArmor armor && armor.kind==kind)n++;
 		return n;
 	}
-	@Override public void appendHoverText(ItemStack stack,TooltipContext context,TooltipDisplay display,Consumer<Component> text,TooltipFlag flag) {
+	@Override public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> text = wildercord$lines::add;
 		text.accept(Component.translatable("tooltip.wildercord.armor."+kind.name().toLowerCase(Locale.ROOT)).withStyle(net.minecraft.ChatFormatting.GRAY));
 	}
 }

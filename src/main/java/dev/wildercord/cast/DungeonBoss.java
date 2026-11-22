@@ -274,7 +274,7 @@ public abstract class DungeonBoss extends Monster {
 			return null;
 		}
 		Vec3 at = Vec3.atBottomCenterOf(altar).add(0, lift, 0);
-		boss.snapTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
+		boss.moveTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
 		boss.home = altar.immutable();
 		boss.readyAt = level.getGameTime() + 60;
 		return level.addFreshEntity(boss) ? boss : null;

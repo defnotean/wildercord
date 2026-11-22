@@ -146,7 +146,7 @@ public final class DuneArts {
 		sand(level, feet.add(0, 0.6, 0), 30, DuneRules.VEIL_RADIUS * 0.5);
 		// Hidden in the sand a while: shots turn aside (the eye's ward), and you step light.
 		ArtWards.eye(player, DuneRules.VEIL_TICKS);
-		player.addEffect(new MobEffectInstance(MobEffects.SPEED, DuneRules.VEIL_TICKS, 0, false, false, true));
+		player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, DuneRules.VEIL_TICKS, 0, false, false, true));
 		return true;
 	}
 

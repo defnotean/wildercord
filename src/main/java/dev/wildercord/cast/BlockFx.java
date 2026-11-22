@@ -48,7 +48,7 @@ public final class BlockFx {
 		if (display == null) {
 			return null;
 		}
-		display.snapTo(at.x, at.y, at.z);
+		display.setPos(at.x, at.y, at.z);
 		display.setBlockState(state);
 		display.setTransformation(start);
 		display.addTag(TAG);

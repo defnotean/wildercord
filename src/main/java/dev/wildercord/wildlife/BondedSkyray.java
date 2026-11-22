@@ -67,7 +67,7 @@ public class BondedSkyray extends Skyray {
 		if (ray == null) {
 			return null;
 		}
-		ray.snapTo(player.getX(), player.getY() + 0.2, player.getZ(), player.getYRot(), 0);
+		ray.moveTo(player.getX(), player.getY() + 0.2, player.getZ(), player.getYRot(), 0);
 		ray.setOwner(player.getUUID());
 		level.addFreshEntity(ray);
 		player.startRiding(ray);

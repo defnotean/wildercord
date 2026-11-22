@@ -101,7 +101,7 @@ public final class DuelistSpawner {
 			return null;
 		}
 		BlockPos at = spot.pos();
-		duelist.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360, 0);
+		duelist.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360, 0);
 		duelist.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.EVENT, null);
 		if (spot.place() == Place.CAMP && camps && level.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get()) {
 			duelist.camp = lightFire(level, at, duelist.stayUntil + 200);

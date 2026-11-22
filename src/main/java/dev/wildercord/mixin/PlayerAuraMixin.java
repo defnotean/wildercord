@@ -50,11 +50,11 @@ public abstract class PlayerAuraMixin {
 	}
 
 	@WrapOperation(method = "attack", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/world/entity/LivingEntity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-	private boolean wildercord$auraSweepBlow(LivingEntity target, ServerLevel level, DamageSource source, float damage, Operation<Boolean> original) {
+		target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)V"))
+	private void wildercord$auraSweepBlow(LivingEntity target, DamageSource source, float damage, Operation<Void> original) {
 		wildercord$swept = true;
 		AuraCombat.sweep((Player) (Object) this);
-		return AuraCombat.blow((Player) (Object) this, target, source, damage, false, amount -> original.call(target, level, source, amount));
+		AuraCombat.blow((Player) (Object) this, target, source, damage, false, amount -> { original.call(target, source, amount); return true; });
 	}
 
 	/** Flow sweeps with every aura weapon: where vanilla's inlined sweep did not run, the aura crescent is drawn on its own. */

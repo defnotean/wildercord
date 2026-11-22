@@ -159,10 +159,10 @@ public final class BountyEscorts {
 		Llama llama = EntityType.LLAMA.create(level, EntitySpawnReason.EVENT);
 		if (llama == null) return null;
 		BlockPos at = player.blockPosition();
-		llama.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, player.getYRot(), 0);
+		llama.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, player.getYRot(), 0);
 		if (!level.noCollision(llama)) {
 			at = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, board.relative(Direction.SOUTH, 3));
-			llama.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
+			llama.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
 			if (!level.noCollision(llama)) return null;
 		}
 		double angle = level.getRandom().nextDouble() * Math.PI * 2;
@@ -253,7 +253,7 @@ public final class BountyEscorts {
 				if (!level.isPositionEntityTicking(column)) continue;
 				BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 				if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
-				mob.snapTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
+				mob.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 				if (!level.noCollision(mob)) continue;
 				mob.finalizeSpawn(level, level.getCurrentDifficultyAt(ground), EntitySpawnReason.EVENT, null);
 				mob.setCanPickUpLoot(false);

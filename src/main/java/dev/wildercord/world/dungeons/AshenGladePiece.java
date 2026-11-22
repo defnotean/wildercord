@@ -88,7 +88,7 @@ public final class AshenGladePiece extends DungeonPiece {
 		var gate=getWorldPos(REST_X,F+1,REST_Z-10);
 		float rest=(float)Math.toDegrees(Math.atan2(-(gate.getX()-foot.getX()),gate.getZ()-foot.getZ()));
 		var stag=dev.wildercord.aura.world.Guardians.ASHEN_STAG.create(level.getLevel(),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);if(stag==null)return;
-		stag.snapTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
+		stag.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
 		stag.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.EntitySpawnReason.STRUCTURE,null);
 		stag.bind(foot,rest,worldBox(CX-(int)R,F,CZ-(int)R,CX+(int)R,F+14,CZ+(int)R));
 		level.addFreshEntityWithPassengers(stag);

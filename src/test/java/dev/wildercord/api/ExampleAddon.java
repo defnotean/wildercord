@@ -31,7 +31,7 @@ public class ExampleAddon implements WildercordAddon {
 			.onApply(ctx -> {
 				for (LivingEntity target : ctx.harmed()) {
 					api.mark(target, SOAKED, (int) Math.round(120 * ctx.duration()));
-					target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, (int) Math.round(120 * ctx.duration()), 0));
+					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, (int) Math.round(120 * ctx.duration()), 0));
 				}
 			})
 			.register();

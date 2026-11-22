@@ -82,7 +82,7 @@ public final class BellShard {
 			mob.hasImpulse = true;
 		}
 		player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, BellWardenRules.KNELL_SHIELD, 1, false, true));
-		player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, BellWardenRules.KNELL_GUARD_TICKS, 0, false, true));
+		player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, BellWardenRules.KNELL_GUARD_TICKS, 0, false, true));
 		player.displayClientMessage(Component.translatable("message.wildercord.bell_shard.knell").withColor(0x9FE0CC), true);
 	}
 }

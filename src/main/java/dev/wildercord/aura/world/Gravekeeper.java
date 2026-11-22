@@ -336,7 +336,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 				var d=p.position().subtract(at);
 				if(d.x*d.x+d.z*d.z>r*r || d.y<-1 || d.y>1.5 || grasped.getOrDefault(p.getUUID(),-1L)==g.wave())continue;
 				grasped.put(p.getUUID(),g.wave());
-				if(hit(level,p,SwordTombRules.damage(SwordTombRules.HANDS),0,at,.7))p.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,40,1,false,true),this);
+				if(hit(level,p,SwordTombRules.damage(SwordTombRules.HANDS),0,at,.7))p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,40,1,false,true),this);
 			}
 		}
 	}

@@ -189,7 +189,7 @@ public final class Familiars {
 		}
 		wisp.setElement(bond.element());
 		Vec3 at = wisp.shoulder(player);
-		wisp.snapTo(at.x, at.y, at.z, player.getYRot(), 0);
+		wisp.moveTo(at.x, at.y, at.z, player.getYRot(), 0);
 		wisp.bondId = bond.id();
 		wisp.setOwner(player.getUUID());
 		wisp.setMode(Wisp.FOLLOW);

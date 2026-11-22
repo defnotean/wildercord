@@ -27,8 +27,8 @@ public abstract class GaleVaultEntityMixin {
         var trial = GaleVaultProbe.current((Entity) (Object) this); if (trial != null) trial.afterMove();
     }
     @WrapOperation(method = "checkFallDamage", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/world/level/block/Block;fallOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;D)V"))
-    private void gale$originalFallOn(Block block, Level sourceLevel, BlockState state, BlockPos pos, Entity entity, double argument, Operation<Void> original) throws Throwable {
+        target = "Lnet/minecraft/world/level/block/Block;fallOn(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/Entity;F)V"))
+    private void gale$originalFallOn(Block block, Level sourceLevel, BlockState state, BlockPos pos, Entity entity, float argument, Operation<Void> original) throws Throwable {
         var trial = GaleVaultProbe.current((Entity) (Object) this);
         if (trial == null) { original.call(block, sourceLevel, state, pos, entity, argument); return; }
         trial.fallTrace.callback(() -> original.call(block, sourceLevel, state, pos, entity, argument),

@@ -361,7 +361,7 @@ public final class LessonPackCasting {
             g.tolled.add(e.getUUID()); g.lastAcross.remove(e.getUUID());
             if (!VoidTime.anchored(e)) e.setDeltaMovement(0, Math.min(0, e.getDeltaMovement().y), 0);
             Effects.push(e, normal.scale(side * LessonPackRules.GATE_PUSH).add(0, .15, 0));
-            e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, LessonPackRules.GATE_SLOW_TICKS, 1, false, true), g.player);
+            e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, LessonPackRules.GATE_SLOW_TICKS, 1, false, true), g.player);
             Fx.sound(g.level, e.position(), SoundEvents.BELL_BLOCK, .8F, 1.2F + .15F * (LessonPackRules.GATE_TOLLS - g.tolls));
             Fx.particle(g.level, ParticleTypes.WAX_OFF, e.position().add(0, e.getBbHeight() * .5, 0), 10, .3, .05);
             if (e instanceof Enemy && !g.practiced) { g.practiced = true; MasterStudies.completePractice(g.player, Lesson.TOLLGATE); }

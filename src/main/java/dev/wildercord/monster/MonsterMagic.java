@@ -37,7 +37,7 @@ public final class MonsterMagic {
 	 * not walk away. Roots twist up round its legs while they last.
 	 */
 	public static void root(ServerLevel level, LivingEntity target, int ticks) {
-		target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 6, false, false, true));
+		target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 6, false, false, true));
 		target.setDeltaMovement(0, Math.min(0, target.getDeltaMovement().y), 0);
 		sync(target);
 		Vfx.root(level, target, ticks);
@@ -71,7 +71,7 @@ public final class MonsterMagic {
 
 	/** Whether {@code target} is held by vines right now (the slow only a root gives). */
 	public static boolean rooted(LivingEntity target) {
-		MobEffectInstance slow = target.getEffect(MobEffects.SLOWNESS);
+		MobEffectInstance slow = target.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 		return slow != null && slow.getAmplifier() >= 6;
 	}
 

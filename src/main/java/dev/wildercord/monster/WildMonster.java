@@ -320,7 +320,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 		if (hit && target instanceof LivingEntity living) {
 			switch (variant()) {
 				case FROST -> {
-					living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, MonsterVariantRules.FROST_SLOW_TICKS, 0), this);
+					living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, MonsterVariantRules.FROST_SLOW_TICKS, 0), this);
 					if (living.canFreeze()) {
 						living.setTicksFrozen(Math.max(living.getTicksFrozen(), MonsterVariantRules.FROST_CHILL_TICKS));
 					}

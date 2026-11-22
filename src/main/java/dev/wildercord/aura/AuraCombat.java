@@ -428,7 +428,7 @@ public final class AuraCombat {
 					target.igniteForTicks(Math.max(target.getRemainingFireTicks(), AuraRules.emberTicks(stage)));
 				}
 			}
-			case CHILL -> target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, AuraRules.rimeTicks(stage), 0, false, true), player);
+			case CHILL -> target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, AuraRules.rimeTicks(stage), 0, false, true), player);
 			case SPARK -> {
 				if (level.getRandom().nextDouble() < AuraRules.thunderChance(stage)) {
 					spark(player, target, taken);

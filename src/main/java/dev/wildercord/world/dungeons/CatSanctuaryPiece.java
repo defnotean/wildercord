@@ -603,7 +603,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		if (bb.isInside(keeperPos)) {
 			SakuraVillager keeper = ShrineCatContent.SAKURA_VILLAGER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
 			if (keeper != null) {
-				keeper.snapTo(keeperPos.getX() + 0.5, keeperPos.getY(), keeperPos.getZ() + 0.5, 180.0F, 0.0F);
+				keeper.moveTo(keeperPos.getX() + 0.5, keeperPos.getY(), keeperPos.getZ() + 0.5, 180.0F, 0.0F);
 				keeper.configure(SakuraVillager.TEA_MASTER);
 				level.addFreshEntityWithPassengers(keeper);
 			}
@@ -669,7 +669,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		if (cat == null) {
 			return;
 		}
-		cat.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 180.0F, 0.0F);
+		cat.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 180.0F, 0.0F);
 		cat.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
 		cat.configureGuardian(variant, pos, heart);
 		level.addFreshEntityWithPassengers(cat);

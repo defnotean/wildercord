@@ -144,7 +144,7 @@ public final class KnightSpawner {
 		if (knight == null) {
 			return null;
 		}
-		knight.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360, 0);
+		knight.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360, 0);
 		knight.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
 		knight.setRank(haunt.rank());
 		knight.setMethod(method(haunt.source(), random));

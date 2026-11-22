@@ -835,7 +835,7 @@ public final class Vfx {
 		double w = Math.max(0.5, target.getBbWidth());
 		// Only a mob frozen solid is closed in ice: players and bosses are just slowed, and keep moving.
 		if (target instanceof Mob mob && mob.isAlive() && mob.isNoAi()) {
-			MobEffectInstance held = mob.getEffect(MobEffects.SLOWNESS);
+			MobEffectInstance held = mob.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			BlockFx.encase(level, mob, held != null ? Math.max(10, held.getDuration() - 4) : 46);
 		}
 		Sigils.flash(level, c, ElementFx.FROST.secondary(), 1.4F);

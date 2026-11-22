@@ -223,7 +223,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 	/** A monster at {@code at}, facing {@code yaw}, never a random Runebound (tests pick their monsters), kept from despawning. */
 	private static <T extends Mob> T spawn(ServerLevel level, EntityType<T> type, Vec3 at, float yaw, boolean ai) {
 		T mob = type.create(level, EntitySpawnReason.COMMAND);
-		mob.snapTo(at.x, at.y, at.z, yaw, 0);
+		mob.moveTo(at.x, at.y, at.z, yaw, 0);
 		mob.setYHeadRot(yaw);
 		mob.setYBodyRot(yaw);
 		mob.addTag("wildercord.rolled");
@@ -266,7 +266,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, new AABB(base, base).inflate(400),
 				e -> e.getTags().contains("wildercord.camera")).forEach(Entity::discard);
 			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
-			camera.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			camera.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			camera.addTag("wildercord.camera");
 			camera.addTag("wildercord.rolled");
 			level.addFreshEntity(camera);
@@ -755,7 +755,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			((BogWitchFrog) level.getEntity(id)).holdPose(0);
 			((BogWitchFrog) level.getEntity(id)).setNoAi(false);
 			Chicken snack = EntityType.CHICKEN.create(level, EntitySpawnReason.COMMAND);
-			snack.snapTo(spot.x + 3, spot.y, spot.z, 0, 0);
+			snack.moveTo(spot.x + 3, spot.y, spot.z, 0, 0);
 			snack.setNoAi(true);
 			level.addFreshEntity(snack);
 			return snack.getId();
@@ -818,7 +818,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		heal(world, GameType.CREATIVE);
 		int id = world.getServer().computeOnServer(server -> {
 			var serpent = dev.wildercord.aura.world.Guardians.SERPENT.create(level(server), EntitySpawnReason.COMMAND);
-			serpent.snapTo(tree.getX() + 0.5, tree.getY(), tree.getZ() + 0.5, 180, 0);
+			serpent.moveTo(tree.getX() + 0.5, tree.getY(), tree.getZ() + 0.5, 180, 0);
 			serpent.bind(tree, 180);
 			serpent.addTag("wildercord.rolled");
 			serpent.setNoAi(true);

@@ -1,5 +1,6 @@
 package dev.wildercord.compat;
 
+import dev.wildercord.compat.McSavedDataType;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 

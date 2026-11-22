@@ -141,7 +141,7 @@ public final class Giants {
 		WildMonster mob = (kind == GiantRules.Kind.MATRIARCH ? MonsterContent.GLOOMSTALKER : MonsterContent.BRAMBLEWALKER)
 			.create(level, EntitySpawnReason.EVENT);
 		if (mob == null) return null;
-		mob.snapTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
+		mob.moveTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
 		// The matriarch leads every pack in the snow.
 		mob.setVariant(kind.variant, kind == GiantRules.Kind.MATRIARCH);
 		modifier(mob, Attributes.SCALE, SCALE, GiantRules.SCALE, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);

@@ -225,7 +225,7 @@ public final class VoidTime {
 		if (!(who instanceof LivingEntity living)) {
 			return false;
 		}
-		net.minecraft.world.effect.MobEffectInstance haste = living.getEffect(net.minecraft.world.effect.MobEffects.HASTE);
+		net.minecraft.world.effect.MobEffectInstance haste = living.getEffect(net.minecraft.world.effect.MobEffects.DIG_SPEED);
 		return haste != null && haste.getAmplifier() >= 2;
 	}
 

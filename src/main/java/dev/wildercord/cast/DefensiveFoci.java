@@ -85,7 +85,7 @@ public final class DefensiveFoci {
   State s=player.getAttachedOrElse(STATE,State.EMPTY);
   if(s.grounding>0) return impulse;
   player.setAttached(STATE,new State(s.owed,s.installment,s.delay,s.reprieve,RECHARGE));
-  player.addEffect(new MobEffectInstance(MobEffects.SPEED,40,0));
+  player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,40,0));
   Light.groundRing((ServerLevel) player.level(),player.position(),0x98D5B7,.2,1.2,.035,10);
   player.displayClientMessage(Component.translatable("message.wildercord.grounding"), true);
   return impulse.scale(.30);

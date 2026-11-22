@@ -51,15 +51,15 @@ public final class Caravans {
 			if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
 			WayfarerKeeper keeper = Town.KEEPER.create(level, EntitySpawnReason.EVENT);
 			if (keeper == null) return null;
-			keeper.snapTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
+			keeper.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 			if (!level.noCollision(keeper)) continue;
 			keeper.setRole(WayfarerKeeper.Role.CARAVANEER);
 			level.addFreshEntity(keeper);
 			for (int i = 0; i < CaravanRules.LLAMAS; i++) {
 				TraderLlama llama = EntityType.TRADER_LLAMA.create(level, EntitySpawnReason.EVENT);
 				if (llama == null) continue;
-				llama.snapTo(ground.getX() + 0.5 + (i == 0 ? 2 : -2), ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
-				if (!level.noCollision(llama)) llama.snapTo(keeper.getX(), keeper.getY(), keeper.getZ(), 0, 0);
+				llama.moveTo(ground.getX() + 0.5 + (i == 0 ? 2 : -2), ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
+				if (!level.noCollision(llama)) llama.moveTo(keeper.getX(), keeper.getY(), keeper.getZ(), 0, 0);
 				level.addFreshEntity(llama);
 				llama.setLeashedTo(keeper, true);
 			}

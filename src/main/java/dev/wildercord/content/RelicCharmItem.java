@@ -1,5 +1,6 @@
 package dev.wildercord.content;
-import dev.wildercord.player.Heart;
+
+import java.util.List;import dev.wildercord.player.Heart;
 import net.minecraft.world.item.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.Component;
@@ -9,7 +10,8 @@ public final class RelicCharmItem extends Item {
  public enum Kind{HOURGLASS,SEEDPOD,SKY_FEATHER}
  public final Kind kind;
  public RelicCharmItem(Kind k,Properties p){super(p);kind=k;}
- public void appendHoverText(ItemStack s,TooltipContext c,TooltipDisplay d,Consumer<Component> out,TooltipFlag flag){out.accept(Component.translatable(getDescriptionId()+".desc").withColor(0xB8B0C8));}
+ public void appendHoverText(ItemStack s,TooltipContext c,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<Component> out = wildercord$lines::add;out.accept(Component.translatable(getDescriptionId()+".desc").withColor(0xB8B0C8));}
  public static Heart.Bonuses apply(Player p,Heart.Bonuses b){if(!(p.getOffhandItem().getItem() instanceof RelicCharmItem charm))return b;
   return switch(charm.kind){
    case HOURGLASS->new Heart.Bonuses(b.power()*.85,b.duration()*1.30,b.cost(),b.cooldown());

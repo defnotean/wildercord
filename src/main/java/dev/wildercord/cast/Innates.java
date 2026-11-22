@@ -278,7 +278,7 @@ public final class Innates {
 			case "stoneform" -> helped.forEach(t -> {
 				int ticks = Effects.ticks(8, duration);
 				STONEFORM.put(t.getUUID(), cast.level.getGameTime() + ticks);
-				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, ticks, 0, false, true));
 				t.getAttribute(Attributes.KNOCKBACK_RESISTANCE).addOrUpdateTransientModifier(
 					new AttributeModifier(STONE_KNOCKBACK, 1.0, AttributeModifier.Operation.ADD_VALUE));
 				// Its own stance, in deepslate: not Stoneskin's sandstone cast.
@@ -581,7 +581,7 @@ public final class Innates {
 		if (body == null) {
 			return;
 		}
-		body.snapTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
+		body.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
 		body.setYHeadRot(player.getYHeadRot());
 		body.setCustomName(Component.translatable("entity.wildercord.afterimage", player.getName()).withColor(0xB45AF0));
 		body.addEffect(new MobEffectInstance(MobEffects.GLOWING, ticks, 0, false, false));

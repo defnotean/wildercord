@@ -85,7 +85,7 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SURVIVAL);
 				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<Relative>of(), 0, 10, false);
 				RidgebackStag stag = MountContent.RIDGEBACK_STAG.create(l, EntitySpawnReason.COMMAND);
-				stag.snapTo(0.5, 101, 1.5, 0, 0);
+				stag.moveTo(0.5, 101, 1.5, 0, 0);
 				l.addFreshEntity(stag);
 				stag.tameWithName(p(s));
 				stag.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
@@ -122,12 +122,12 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 				perks(stag(s), 5, "At bond 5");
 				double x = stag(s).getX(), z = stag(s).getZ();
 				var pig = EntityType.PIG.create(l, EntitySpawnReason.COMMAND);
-				pig.snapTo(x + 2, 101, z, 0, 0);
+				pig.moveTo(x + 2, 101, z, 0, 0);
 				pig.setNoAi(true);
 				l.addFreshEntity(pig);
 				pigId = pig.getUUID();
 				Wolf wolf = EntityType.WOLF.create(l, EntitySpawnReason.COMMAND);
-				wolf.snapTo(x - 2, 101, z, 0, 0);
+				wolf.moveTo(x - 2, 101, z, 0, 0);
 				wolf.setNoAi(true);
 				wolf.tame(p(s));
 				l.addFreshEntity(wolf);

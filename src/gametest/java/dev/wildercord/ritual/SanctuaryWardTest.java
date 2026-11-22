@@ -29,7 +29,7 @@ public final class SanctuaryWardTest implements FabricClientGameTest {
 		ServerLevel level = ((ServerLevel) player.level());
 		Mob mob = type.create(level, EntitySpawnReason.COMMAND);
 		mob.setNoAi(true);
-		mob.snapTo(player.getX() + dx, player.getY(), player.getZ() + 4);
+		mob.setPos(player.getX() + dx, player.getY(), player.getZ() + 4);
 		level.addFreshEntity(mob);
 		mob.setTarget(player);
 		return mob;

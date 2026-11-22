@@ -16,7 +16,7 @@ public final class McDecoys {
 	/** A body to pose as the caster, or null when one cannot be placed. */
 	public static LivingEntity afterimageBody(ServerLevel level, Player caster) {
 		ArmorStand body = new ArmorStand(EntityType.ARMOR_STAND, level);
-		body.snapTo(caster.getX(), caster.getY(), caster.getZ(), caster.getYRot(), caster.getXRot());
+		body.moveTo(caster.getX(), caster.getY(), caster.getZ(), caster.getYRot(), caster.getXRot());
 		body.setYHeadRot(caster.getYHeadRot());
 		body.setNoGravity(true);
 		body.setNoBasePlate(true);

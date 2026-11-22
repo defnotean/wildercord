@@ -487,7 +487,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			+ PERFORMED + ")");
 		String staggered = on(world, player -> {
 			Mob husk = tagged(player, "wildercord.string_target");
-			MobEffectInstance slow = husk.getEffect(MobEffects.SLOWNESS);
+			MobEffectInstance slow = husk.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 			if (!ART_HITS.contains(husk.getUUID())) {
 				return "the counter should cut the husk that struck";
 			}
@@ -887,7 +887,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		if (mob == null) {
 			throw new AssertionError("couldn't make a " + type);
 		}
-		mob.snapTo(at.x, at.y, at.z, 180, 0);
+		mob.moveTo(at.x, at.y, at.z, 180, 0);
 		mob.setNoAi(true);
 		mob.addTag(TAG);
 		mob.addTag("wildercord.rolled");

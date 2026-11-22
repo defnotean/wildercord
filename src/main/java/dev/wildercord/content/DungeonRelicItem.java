@@ -33,7 +33,8 @@ public class DungeonRelicItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		java.util.function.Consumer<Component> builder = wildercord$lines::add;
 		builder.accept(Component.translatable("item.wildercord." + (kind == Kind.ROOT ? "rootbound_relic" : "stormglass_relic") + ".desc")
 			.withStyle(ChatFormatting.GRAY));
 	}
@@ -56,15 +57,15 @@ public class DungeonRelicItem extends Item {
 		if (kind == Kind.ROOT) {
 			player.heal(6);
 			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 160, 1));
-			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 160, 0));
+			player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 160, 0));
 			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(6), m -> m instanceof Enemy)) {
 				mob.hurtServer(server, server.damageSources().indirectMagic(player, player), 4.0F);
-				mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 120, 2), player);
+				mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, 2), player);
 			}
 			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1, player.getZ(), 32, 2, 1, 2, 0.1);
 			level.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1, 0.75F);
 		} else {
-			player.addEffect(new MobEffectInstance(MobEffects.SPEED, 240, 1));
+			player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 240, 1));
 			player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 240, 0));
 			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(6), m -> m instanceof Enemy)) {
 				mob.hurtServer(server, server.damageSources().indirectMagic(player, player), 5.0F);

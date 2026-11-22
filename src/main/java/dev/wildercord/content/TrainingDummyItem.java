@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import java.util.List;
 import dev.wildercord.cast.TrainingDummy;
 import dev.wildercord.cast.WildercordEntities;
 import net.minecraft.core.BlockPos;
@@ -38,7 +39,7 @@ public class TrainingDummyItem extends Item {
 			return InteractionResult.FAIL;
 		}
 		float yaw = context.getPlayer() == null ? 0 : context.getPlayer().getYRot() + 180;
-		dummy.snapTo(at.x, at.y, at.z, yaw, 0);
+		dummy.moveTo(at.x, at.y, at.z, yaw, 0);
 		dummy.setYHeadRot(yaw);
 		dummy.setYBodyRot(yaw);
 		level.addFreshEntity(dummy);
@@ -51,7 +52,8 @@ public class TrainingDummyItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<net.minecraft.network.chat.Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
+		Consumer<net.minecraft.network.chat.Component> builder = wildercord$lines::add;
 		builder.accept(net.minecraft.network.chat.Component.translatable("tooltip.wildercord.training_dummy").withStyle(net.minecraft.ChatFormatting.GRAY));
 	}
 }

@@ -277,7 +277,7 @@ public final class GaleArts {
 	/** The allies near the way, and the swordsman, swept along faster. */
 	private static void sweep(ServerPlayer player, List<Vec3> path) {
 		ServerLevel level = (ServerLevel) player.level();
-		player.addEffect(new MobEffectInstance(MobEffects.SPEED, ArtRules.TAILWIND_SPEED, 0, false, true, true));
+		player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ArtRules.TAILWIND_SPEED, 0, false, true, true));
 		Set<UUID> swept = new HashSet<>();
 		swept.add(player.getUUID());
 		for (int i = 0; i < path.size(); i += 5) {
@@ -289,7 +289,7 @@ public final class GaleArts {
 				}
 				swept.add(e.getUUID());
 				LivingEntity ally = (LivingEntity) e;
-				ally.addEffect(new MobEffectInstance(MobEffects.SPEED, ArtRules.TAILWIND_SPEED, 1, false, true, true), player);
+				ally.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, ArtRules.TAILWIND_SPEED, 1, false, true, true), player);
 				AuraPhysicalFx.gustRing(level, ally.position(), 1.2);
 				ElementFx.swirl(level, ally.position(), 0.7, 1.8, 3);
 			}

@@ -162,7 +162,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			Vec3 d = target.subtract(eye);
 			float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
 			float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
-			camera.snapTo(eye.x, eye.y, eye.z, yaw, pitch);
+			camera.moveTo(eye.x, eye.y, eye.z, yaw, pitch);
 			camera.addTag("wildercord.camera");
 			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
 			camera.addTag("wildercord.rolled");
@@ -394,7 +394,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 						Vec3 spot = secret.id().equals("glacial_lance")
 							? new Vec3(at.x + (i % 2 == 0 ? -0.3 : 0.3), at.y, at.z + 6 + i * 3)
 							: new Vec3(at.x + (i - 1.5) * 2.5, at.y, at.z + 10 + (i % 2) * 3);
-						husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
+						husk.moveTo(spot.x, spot.y, spot.z, 180, 0);
 						husk.setNoAi(true);
 						husk.addTag("wildercord.tour");
 						// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -463,7 +463,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 					if (husk != null) {
 						// Close up for the shapes that strike what's in front of you, further for the rest.
 						double near = far == 0 ? 1.8 : 6;
-						husk.snapTo(at.x + (i - 1) * 1.6, at.y, at.z + near + i * 1.5, 180, 0);
+						husk.moveTo(at.x + (i - 1) * 1.6, at.y, at.z + near + i * 1.5, 180, 0);
 						husk.setNoAi(true);
 						husk.addTag("wildercord.tour");
 						// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -539,7 +539,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				if (husk != null) {
 					// Beside and behind the caster (who faces the camera), never between them and it.
 					double a = Math.PI * (0.12 + 0.38 * i);
-					husk.snapTo(stage.x + Math.cos(a) * 2.2, stage.y, stage.z + Math.sin(a) * 2.2, 180, 0);
+					husk.moveTo(stage.x + Math.cos(a) * 2.2, stage.y, stage.z + Math.sin(a) * 2.2, 180, 0);
 					husk.setNoAi(true);
 					husk.addTag("wildercord.tour");
 					// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -564,7 +564,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			for (int i = 0; i < 3; i++) {
 				Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 				if (husk != null) {
-					husk.snapTo(stage.x + (i - 1) * 2.2, stage.y, stage.z - 2 + (i % 2) * 2, 180, 0);
+					husk.moveTo(stage.x + (i - 1) * 2.2, stage.y, stage.z - 2 + (i % 2) * 2, 180, 0);
 					husk.setNoAi(true);
 					husk.addTag("wildercord.tour");
 					// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -599,7 +599,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			place(player, stage.add(0, 0, -10), 0, 0);
 			Mob zombie = EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
 			if (zombie != null) {
-				zombie.snapTo(stage.x, stage.y, stage.z, 200, 0);
+				zombie.moveTo(stage.x, stage.y, stage.z, 200, 0);
 				zombie.setNoAi(true);
 				zombie.addTag("wildercord.tour");
 				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -619,7 +619,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			server.setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
 			ServerPlayer player = player(server);
 			player.setGameMode(GameType.SURVIVAL);
-			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 2400, 4, false, false));
+			player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 2400, 4, false, false));
 			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2400, 2, false, false));
 			ServerLevel level = ((ServerLevel) player.level());
 			player.setTicksFrozen(0);
@@ -627,7 +627,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			place(player, at, 0, 0);
 			Mob caster = EntityType.PILLAGER.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, 9);
-			caster.snapTo(spot.x, spot.y, spot.z, 180, 0);
+			caster.moveTo(spot.x, spot.y, spot.z, 180, 0);
 			caster.addTag("wildercord.tour");
 			caster.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, ItemStack.EMPTY);
 			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -665,7 +665,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			place(player, at, 0, 2);
 			TrainingDummy dummy = WildercordEntities.TRAINING_DUMMY.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, 7);
-			dummy.snapTo(spot.x, spot.y, spot.z, 180, 0);
+			dummy.moveTo(spot.x, spot.y, spot.z, 180, 0);
 			dummy.setYHeadRot(180);
 			dummy.setYBodyRot(180);
 			dummy.addTag("wildercord.tour");
@@ -719,7 +719,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(30), m -> m.getTags().contains("wildercord.tour")).forEach(Mob::discard);
 			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, SHIELD_RANGE);
-			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
+			husk.moveTo(spot.x, spot.y, spot.z, 180, 0);
 			husk.setYHeadRot(180);
 			husk.setYBodyRot(180);
 			husk.setNoAi(true);
@@ -893,7 +893,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			SpellCaster.cast(player, 0);
 			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = player.position().add(player.getLookAngle().multiply(1, 0, 1).normalize().scale(1.6));
-			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
+			husk.moveTo(spot.x, spot.y, spot.z, 180, 0);
 			husk.setNoAi(true);
 			husk.addTag("wildercord.tour");
 			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -983,7 +983,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerLevel level = ((ServerLevel) player.level());
 			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, 1.6);
-			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
+			husk.moveTo(spot.x, spot.y, spot.z, 180, 0);
 			husk.setNoAi(true);
 			husk.addTag("wildercord.tour");
 			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -1085,7 +1085,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerLevel level = ((ServerLevel) player(server).level());
 			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
-			husk.snapTo(top.x, top.y, top.z, 200, 0);
+			husk.moveTo(top.x, top.y, top.z, 200, 0);
 			husk.setNoAi(true);
 			husk.addTag("wildercord.tour");
 			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -1124,7 +1124,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			place(player, at, 0, -6);
 			Mob witch = EntityType.WITCH.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, 15);
-			witch.snapTo(spot.x, spot.y, spot.z, 180, 0);
+			witch.moveTo(spot.x, spot.y, spot.z, 180, 0);
 			witch.setNoAi(true);
 			witch.addTag("wildercord.tour");
 			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
@@ -1426,7 +1426,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.setGameMode(GameType.SURVIVAL);
-			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 2400, 4, false, false));
+			player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 2400, 4, false, false));
 			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2400, 3, false, false));
 		});
 		dev.wildercord.gametest.compat.GametestCompat.waitFor(context, world.getServer(), server -> {
@@ -1488,7 +1488,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			// Nothing leads it out of the Archive: no boat, no portal.
 			Entity boat = EntityType.OAK_BOAT.create(level, EntitySpawnReason.COMMAND);
 			check(boat != null, "a boat should spawn");
-			boat.snapTo(archivist.getX(), archivist.getY(), archivist.getZ(), 0, 0);
+			boat.moveTo(archivist.getX(), archivist.getY(), archivist.getZ(), 0, 0);
 			level.addFreshEntity(boat);
 			check(!archivist.startRiding(boat) && !archivist.isPassenger(), "the Archivist shouldn't be caught in a boat");
 			check(!archivist.canUsePortal(false), "the Archivist shouldn't go through a portal");

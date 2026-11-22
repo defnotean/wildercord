@@ -371,7 +371,7 @@ public final class HourglassArts {
 			}
 		}
 		if (age % 10 == 0) {
-			owner.addEffect(new MobEffectInstance(MobEffects.SPEED, 15, 0, false, false, true));
+			owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 15, 0, false, false, true));
 			ArtLight world = ArtLight.world(owner);
 			world.groundRing(at, color, ArtRules.BLUR_RADIUS, ArtRules.BLUR_RADIUS * 0.85, 0.05, 12);
 			RandomSource r = level.getRandom();
