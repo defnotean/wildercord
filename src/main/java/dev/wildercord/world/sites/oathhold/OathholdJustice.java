@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -681,15 +682,23 @@ public final class OathholdJustice {
 		}
 	}
 
-	private static void placePartnerHalfIfPresent(ServerLevel level, List<SavedBlock> remaining, BlockPos pos, BlockState state) {
-		BlockPos partnerPos = null;
+	/** Returns the linked half position for two-block fixtures (doors, beds, tall plants), or null. */
+	public static @Nullable BlockPos partnerBlockPos(BlockPos pos, BlockState state) {
 		if (state.getBlock() instanceof DoorBlock) {
-			partnerPos = state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
-		} else if (state.getBlock() instanceof DoublePlantBlock) {
-			partnerPos = state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
-		} else if (state.getBlock() instanceof BedBlock) {
-			partnerPos = pos.relative(BedBlock.getNeighbourDirection(state.getValue(BedBlock.PART), state.getValue(BedBlock.FACING)));
+			return state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
 		}
+		if (state.getBlock() instanceof DoublePlantBlock) {
+			return state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
+		}
+		if (state.getBlock() instanceof BedBlock) {
+			Direction facing = state.getValue(BedBlock.FACING);
+			return pos.relative(state.getValue(BedBlock.PART) == BedPart.HEAD ? facing.getOpposite() : facing);
+		}
+		return null;
+	}
+
+	private static void placePartnerHalfIfPresent(ServerLevel level, List<SavedBlock> remaining, BlockPos pos, BlockState state) {
+		BlockPos partnerPos = partnerBlockPos(pos, state);
 		if (partnerPos == null) return;
 		for (Iterator<SavedBlock> remIt = remaining.iterator(); remIt.hasNext(); ) {
 			SavedBlock b = remIt.next();

@@ -44,14 +44,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.BarrelBlock;
-import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.phys.AABB;
@@ -405,24 +401,11 @@ public final class OathholdLaw {
 			return false;
 		}
 		captured.put(pos, state);
-		if (state.getBlock() instanceof DoorBlock) {
-			BlockPos other = state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
-			BlockState otherState = level.getBlockState(other);
-			if (otherState.is(state.getBlock()) && !captured.containsKey(other)) {
-				captured.put(other.immutable(), otherState);
-			}
-		} else if (state.getBlock() instanceof DoublePlantBlock) {
-			BlockPos other = state.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
-			BlockState otherState = level.getBlockState(other);
-			if (otherState.is(state.getBlock()) && !captured.containsKey(other)) {
-				captured.put(other.immutable(), otherState);
-			}
-		} else if (state.getBlock() instanceof BedBlock) {
-			Direction dir = BedBlock.getNeighbourDirection(state.getValue(BedBlock.PART), state.getValue(BedBlock.FACING));
-			BlockPos other = pos.relative(dir);
-			BlockState otherState = level.getBlockState(other);
-			if (otherState.is(state.getBlock()) && !captured.containsKey(other)) {
-				captured.put(other.immutable(), otherState);
+		BlockPos partner = OathholdJustice.partnerBlockPos(pos, state);
+		if (partner != null && !captured.containsKey(partner)) {
+			BlockState partnerState = level.getBlockState(partner);
+			if (partnerState.is(state.getBlock())) {
+				captured.put(partner.immutable(), partnerState);
 			}
 		}
 		return true;
