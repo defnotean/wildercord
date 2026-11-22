@@ -56,7 +56,7 @@ public final class McWorldgen {
 	public static List<EntityType<?>> biomeSpawnTypes(Holder<Biome> biome, MobCategory category) {
 		MobSpawnSettings settings = biome.value().getMobSettings();
 		List<EntityType<?>> types = new ArrayList<>();
-		settings.getMobs(category).unwrap().forEach(w -> types.add(w.type()));
+		settings.getMobs(category).unwrap().forEach(w -> types.add(w.type));
 		return types;
 	}
 
