@@ -82,7 +82,7 @@ public final class AuraStandard extends McQuadParticle implements SigilGroup.Ext
 			&& mc.options.getCameraType().isFirstPerson()) return;
 		float fade = Math.min(1, (age + partial) / 8F) * Mth.clamp((keep + 8 - quiet - partial) / 8F, 0, 1);
 		if (fade <= 0.01F) return;
-		Vec3 base = new Vec3(x, y, z).subtract(camera.position());
+		Vec3 base = new Vec3(x, y, z).subtract(camera.getPosition());
 		// The outer rally standard flies inward, so its hem stays in the choice's first-person view.
 		boolean inward = scale >= 0.9F && key.way().equals(WayRules.BANNER);
 		Vec3 side = new Vec3(facing.z, 0, -facing.x).scale(inward ? -1 : 1);

@@ -259,7 +259,7 @@ public class MoteParticle extends McQuadParticle implements SigilGroup.Extent {
 			extractDefault(state, camera, partial);
 			return;
 		}
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		float px = (float) (Mth.lerp(partial, xo, x) - cam.x);
 		float py = (float) (Mth.lerp(partial, yo, y) - cam.y);
 		float pz = (float) (Mth.lerp(partial, zo, z) - cam.z);

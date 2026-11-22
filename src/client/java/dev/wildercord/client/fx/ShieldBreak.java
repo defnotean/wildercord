@@ -122,7 +122,7 @@ public final class ShieldBreak {
 			if (fade <= 0.01F) {
 				return;
 			}
-			Vec3 cam = camera.position();
+			Vec3 cam = camera.getPosition();
 			float px = (float) (Mth.lerp(partial, xo, x) - cam.x);
 			float py = (float) (Mth.lerp(partial, yo, y) - cam.y);
 			float pz = (float) (Mth.lerp(partial, zo, z) - cam.z);
@@ -245,7 +245,7 @@ public final class ShieldBreak {
 			if (fade <= 0.01F) {
 				return;
 			}
-			Vec3 cam = camera.position();
+			Vec3 cam = camera.getPosition();
 			Vector3f centre = new Vector3f((float) (Mth.lerp(partial, xo, x) - cam.x), (float) (Mth.lerp(partial, yo, y) - cam.y),
 				(float) (Mth.lerp(partial, zo, z) - cam.z));
 			if (centre.lengthSquared() < 0.16F) {

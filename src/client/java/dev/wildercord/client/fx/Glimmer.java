@@ -136,7 +136,7 @@ public class Glimmer extends McQuadParticle implements SigilGroup.Extent {
 
 	@Override
 	public void extract(QuadParticleRenderState state, Camera camera, float partial) {
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		float cx = (float) (Mth.lerp(partial, xo, x) - cam.x);
 		float cy = (float) (Mth.lerp(partial, yo, y) - cam.y);
 		float cz = (float) (Mth.lerp(partial, zo, z) - cam.z);

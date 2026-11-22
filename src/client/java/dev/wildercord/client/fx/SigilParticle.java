@@ -198,14 +198,14 @@ public class SigilParticle extends McQuadParticle implements SigilGroup.Extent {
 		}
 		float turn = Mth.lerp(partial, oRoll, roll);
 		if (drawn) {
-			Vec3 cam = camera.position();
+			Vec3 cam = camera.getPosition();
 			extractDrawn(state, (float) (Mth.lerp(partial, xo, x) - cam.x), (float) (Mth.lerp(partial, yo, y) - cam.y),
 				(float) (Mth.lerp(partial, zo, z) - cam.z), turn, partial);
 			return;
 		}
 		Quaternionf front = new Quaternionf().rotationYXZ((float) Math.toRadians(-yaw), (float) Math.toRadians(pitch), turn);
 		if (band) {
-			Vec3 cam = camera.position();
+			Vec3 cam = camera.getPosition();
 			extractBand(state, front, (float) (Mth.lerp(partial, xo, x) - cam.x), (float) (Mth.lerp(partial, yo, y) - cam.y),
 				(float) (Mth.lerp(partial, zo, z) - cam.z), partial);
 			return;

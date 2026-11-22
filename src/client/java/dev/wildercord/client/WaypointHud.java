@@ -6,8 +6,6 @@ import dev.wildercord.travel.TravelRules;
 import dev.wildercord.travel.Waypoints;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -16,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * The tracked waypoint, as one small line in the top-left corner (clear of the hotbar, the spell
@@ -41,7 +40,7 @@ public final class WaypointHud {
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(Waypoints.Track.TYPE, (payload, context) -> tracked = payload.none() ? null : payload);
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> tracked = null);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.BOSS_BAR, Wildercord.id("waypoint"), WaypointHud::extract);
+		HudCompat.after(HudCompat.Anchor.BOSS_BAR, Wildercord.id("waypoint"), WaypointHud::extract);
 	}
 
 	/** The waypoint this client was told is tracked, or null. */

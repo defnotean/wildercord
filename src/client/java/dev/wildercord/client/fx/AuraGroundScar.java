@@ -125,8 +125,8 @@ public final class AuraGroundScar extends McQuadParticle implements SigilGroup.E
 			float u0 = (float) ((px - width / 2 - x + radius) / (2 * radius));
 			float v0 = (float) ((pz - width / 2 - z + radius) / (2 * radius));
 			float span = (float) (width / (2 * radius));
-			state.add(Layer.TRANSLUCENT, (float)(px - camera.position().x), (float)(tile.height() - camera.position().y),
-				(float)(pz - camera.position().z), q.x, q.y, q.z, q.w, (float)(width * 0.501),
+			state.add(Layer.TRANSLUCENT, (float)(px - camera.getPosition().x), (float)(tile.height() - camera.getPosition().y),
+				(float)(pz - camera.getPosition().z), q.x, q.y, q.z, q.w, (float)(width * 0.501),
 				Mth.lerp(u0, sprite.getU0(), sprite.getU1()), Mth.lerp(u0 + span, sprite.getU0(), sprite.getU1()),
 				Mth.lerp(v0, sprite.getV0(), sprite.getV1()), Mth.lerp(v0 + span, sprite.getV0(), sprite.getV1()), ink, tile.lighting);
 		}

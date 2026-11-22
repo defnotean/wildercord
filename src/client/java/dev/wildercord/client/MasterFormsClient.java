@@ -12,8 +12,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -22,6 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.Map;
+import dev.wildercord.client.compat.HudCompat;
 
 /** Fresh key edges and bounded playback from actual movement events; menus never queue a future activation. */
 public final class MasterFormsClient {
@@ -45,7 +44,7 @@ public final class MasterFormsClient {
 		});
 		ClientTickEvents.END_CLIENT_TICK.register(MasterFormsClient::tick);
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> clear());
-		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("master_form_state"), (wcG, delta) -> {
+		HudCompat.before(HudCompat.Anchor.HOTBAR, Wildercord.id("master_form_state"), (wcG, delta) -> {
 					GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcG);
 			Minecraft client = Minecraft.getInstance();
 			if (client.player == null || client.screen != null || client.options.hideGui || MasterForms.data(client.player).equipped() == 0) return;

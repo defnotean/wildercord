@@ -61,12 +61,12 @@ public final class SoarWingModel extends McQuadParticle implements SigilGroup.Ex
         float yaw = (flier.yBodyRotO + Mth.wrapDegrees(flier.yBodyRot - flier.yBodyRotO) * partial) * Mth.DEG_TO_RAD;
         Vec3 position = new Vec3(Mth.lerp(partial, flier.xo, flier.getX()), Mth.lerp(partial, flier.yo, flier.getY()), Mth.lerp(partial, flier.zo, flier.getZ()));
         Vec3 back = new Vec3(Math.sin(yaw), 0, -Math.cos(yaw));
-        Vec3 root = position.add(0, flier.getBbHeight() * 0.72, 0).add(back.scale(0.31)).subtract(camera.position());
+        Vec3 root = position.add(0, flier.getBbHeight() * 0.72, 0).add(back.scale(0.31)).subtract(camera.getPosition());
         float time = age + partial;
         float beat = (float)Math.sin(Mth.lerp(partial, oldPhase, phase)) * 0.24F * open;
         int light = LightTexture.pack(Math.max(8, level.getBrightness(LightLayer.BLOCK, flier.blockPosition())), level.getBrightness(LightLayer.SKY, flier.blockPosition()));
         int ink = (Math.round(alpha * 255) << 24) | 0xFFFFFF;
-        boolean distant = flier.position().distanceToSqr(camera.position()) > 24 * 24;
+        boolean distant = flier.position().distanceToSqr(camera.getPosition()) > 24 * 24;
         boolean calm = MagicQuality.bodyAura != MagicQuality.BodyAura.FULL;
         int flights = distant ? 6 : calm ? 9 : 12;
         int coverts = distant ? 4 : calm ? 6 : 8;

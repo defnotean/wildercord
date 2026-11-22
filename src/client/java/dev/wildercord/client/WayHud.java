@@ -3,8 +3,6 @@ package dev.wildercord.client;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.Crossroads;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -16,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * The crossroads on the swordsman's own screen: only words, small and low, never over the middle of the view. Looking at a standard,
@@ -32,7 +31,7 @@ public final class WayHud {
 	private static String lastNamed = "";
 
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, ID, WayHud::draw);
+		HudCompat.after(HudCompat.Anchor.CROSSHAIR, ID, WayHud::draw);
 	}
 
 	static void draw(GuiGraphics wcG, DeltaTracker delta) {

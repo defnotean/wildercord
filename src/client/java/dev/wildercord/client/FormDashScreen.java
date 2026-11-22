@@ -38,7 +38,7 @@ public final class FormDashScreen extends Screen implements CordEditorParent {
 	private int learnedCount() { int n = 0; for (int f : ORDER) if (data().knows(f)) n++; return n; }
 	private float scale() {
 		double fit = Math.min(1, Math.min((width - 8) / (double) W, (height - 8) / (double) H));
-		int gui = Math.max(1, minecraft.getWindow().getGuiScale());
+		int gui = Math.max(1, (int) minecraft.getWindow().getGuiScale());
 		int physical = (int) Math.floor(gui * fit);
 		return physical >= 1 ? physical / (float) gui : (float) fit;
 	}

@@ -115,7 +115,7 @@ public class LeyRibbon extends McQuadParticle implements SigilGroup.Extent {
 		if (fade <= 0.01F) {
 			return;
 		}
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		Vector3f base = new Vector3f((float) (x - cam.x), (float) (y - cam.y), (float) (z - cam.z));
 		// The head runs from the start to past the end, so the streak slides in and out along the line.
 		float head = f * (length + tail);

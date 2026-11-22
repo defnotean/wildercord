@@ -1,6 +1,5 @@
 package dev.wildercord.client.fx;
 import dev.wildercord.Wildercord;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import java.util.*;

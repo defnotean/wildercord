@@ -12,12 +12,11 @@ import dev.wildercord.spell.RelayInputRules;
 import dev.wildercord.spell.ReweaveRules;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.client.compat.HudCompat;
 
 /** Fresh physical edges and essential paid-field tells. Menus release input, never cancel released magic. */
 public final class ReweaveClient {
@@ -80,7 +79,7 @@ public final class ReweaveClient {
     }
     public static void init() {
         ClientTickEvents.END_CLIENT_TICK.register(ReweaveClient::draw);
-        HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("reweave_hud"), (wcG, delta) -> {
+        HudCompat.after(HudCompat.Anchor.HOTBAR, Wildercord.id("reweave_hud"), (wcG, delta) -> {
 					GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
             Minecraft client = Minecraft.getInstance();
             if (client.player == null || client.level == null) return;

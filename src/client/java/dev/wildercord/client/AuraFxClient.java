@@ -22,8 +22,6 @@ import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
@@ -46,6 +44,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * Aura's feel on the client (the server's side is {@link AuraFx}): every trail, impact, banner, burst and flare it hears of is
@@ -106,7 +105,7 @@ public final class AuraFxClient {
 		ClientPlayNetworking.registerGlobalReceiver(AuraFx.Shown.TYPE, (payload, context) -> shown(payload));
 		ClientTickEvents.END_CLIENT_TICK.register(AuraFxClient::tick);
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> reset());
-		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("aura_whisper"), AuraFxClient::whisper);
+		HudCompat.before(HudCompat.Anchor.HOTBAR, Wildercord.id("aura_whisper"), AuraFxClient::whisper);
 		AuraBanners.init();
 		StanceHud.init();
 		AwakeningHud.init();

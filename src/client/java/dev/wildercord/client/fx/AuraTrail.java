@@ -206,7 +206,7 @@ public class AuraTrail extends McQuadParticle implements SigilGroup.Extent {
 			return;
 		}
 		boolean own = ownView();
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		double bx = Mth.lerp(partial, xo, x);
 		double by = Mth.lerp(partial, yo, y);
 		double bz = Mth.lerp(partial, zo, z);

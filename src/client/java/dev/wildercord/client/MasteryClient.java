@@ -8,8 +8,6 @@ import dev.wildercord.spell.MasteryRules;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -30,6 +28,7 @@ import org.joml.Vector3fc;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * Spell mastery on the client: the toast when one of your spells reaches a rank (with its sigil for an icon), the
@@ -62,7 +61,7 @@ public final class MasteryClient {
 			Titles.SHOWN.clear();
 		});
 		TooltipComponentCallback.EVENT.register(data -> data instanceof Inscription inscription ? new SigilTooltip(inscription) : null);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("mastery_titles"), Titles::extract);
+		HudCompat.after(HudCompat.Anchor.HOTBAR, Wildercord.id("mastery_titles"), Titles::extract);
 	}
 
 	// ------------------------------------------------------------------ the toast
@@ -209,12 +208,12 @@ public final class MasteryClient {
 				return null;
 			}
 			Vec3 head = caster.getEyePosition(partial).add(0, 0.8, 0);
-			Vec3 offset = head.subtract(camera.position());
+			Vec3 offset = head.subtract(camera.getPosition());
 			Vector3fc forward = camera.getLookVector();
 			if (offset.x * forward.x() + offset.y * forward.y() + offset.z * forward.z() < 0.5 || offset.lengthSqr() > 48 * 48) {
 				return null;
 			}
-			Vec3 ndc = mc.gameRenderer.projectPointToScreen(head);
+			Vec3 ndc = dev.wildercord.client.compat.McCamera.projectToScreen(mc, head);
 			if (!Double.isFinite(ndc.x) || !Double.isFinite(ndc.y) || Math.abs(ndc.x) > 0.95 || Math.abs(ndc.y) > 0.95) {
 				return null;
 			}

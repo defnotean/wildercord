@@ -28,7 +28,7 @@ public final class AirflowParticle extends McQuadParticle implements SigilGroup.
         float fade=Math.min(1,(age+partial)*2)*Math.min(1,(1-f)*3);
         if(MagicQuality.reducedFlash)fade*=.65F;
         int steps=flow.minimal()?6:16;
-        Vec3 origin=new Vec3(x,y,z).subtract(camera.position());
+        Vec3 origin=new Vec3(x,y,z).subtract(camera.getPosition());
         float crest=.12F+f*.76F;
         int light=super.getLightColor(partial);
         for(int i=0;i<steps;i++){

@@ -7,8 +7,6 @@ import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.StringReader;
 import dev.wildercord.aura.SwordString;
 import dev.wildercord.client.fx.MagicQuality;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
@@ -17,6 +15,7 @@ import net.minecraft.client.player.LocalPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * The sword string indicator: a short row of small marks a little below the crosshair (or, by the player's choice, above the aura
@@ -64,7 +63,7 @@ public final class StringHud {
 	private static long now;
 
 	static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Wildercord.id("sword_strings"), StringHud::extract);
+		HudCompat.after(HudCompat.Anchor.CROSSHAIR, Wildercord.id("sword_strings"), StringHud::extract);
 	}
 
 	// ------------------------------------------------------------------ what happened

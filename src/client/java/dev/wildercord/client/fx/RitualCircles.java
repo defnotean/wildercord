@@ -365,7 +365,7 @@ public final class RitualCircles {
 				gathered = f < 1 ? 1 + f * 0.8F : Math.max(0, 1.8F - (f - 1) * 0.6F);
 			}
 			Vec3 at = hand(player, partial);
-			Vec3 cam = camera.position();
+			Vec3 cam = camera.getPosition();
 			float beat = 0.85F + 0.15F * Mth.sin((age + partial) * 0.5F);
 			Minecraft mc = Minecraft.getInstance();
 			// In your own first-person view the hand is right under your eyes: the gathering light is left to everyone else.
@@ -453,7 +453,7 @@ public final class RitualCircles {
 			Minecraft mc = Minecraft.getInstance();
 			boolean own = player == mc.getCameraEntity() && mc.options.getCameraType().isFirstPerson();
 			float half = (own ? 0.09F : 0.24F) * (0.4F + 0.6F * (1 - (1 - grow) * (1 - grow)));
-			Vec3 cam = camera.position();
+			Vec3 cam = camera.getPosition();
 			float px = (float) (Mth.lerp(partial, xo, x) - cam.x);
 			float py = (float) (Mth.lerp(partial, yo, y) - cam.y);
 			float pz = (float) (Mth.lerp(partial, zo, z) - cam.z);

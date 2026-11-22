@@ -102,7 +102,7 @@ public class AuraBurst extends McQuadParticle implements SigilGroup.Extent {
 
 	@Override
 	public void extract(QuadParticleRenderState state, Camera camera, float partial) {
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		float t = age + partial;
 		float k = (whisper ? 0.5F : 1.0F) * strength;
 		float s = size * (whisper ? 0.32F : 1.0F);

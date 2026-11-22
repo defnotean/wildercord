@@ -115,7 +115,7 @@ public class RingGlow extends McQuadParticle implements SigilGroup.Extent {
 			return;
 		}
 		this.state = state;
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		cx = (float) (x - cam.x);
 		cy = (float) (y - cam.y);
 		cz = (float) (z - cam.z);

@@ -28,7 +28,7 @@ final class LifeOwnerClearance {
   if(mc.player==null||!camera.isInitialized())return false;
   boolean nativeOwnerThirdPerson=own&&!mc.options.getCameraType().isFirstPerson()
    &&mc.getCameraEntity()==mc.player&&camera.getEntity()==mc.player&&camera.isDetached();
-  return clear(nativeOwnerThirdPerson,at,mc.player.getEyePosition(),camera.position());
+  return clear(nativeOwnerThirdPerson,at,mc.player.getEyePosition(),camera.getPosition());
  }
  static boolean visible(UUID source,ClientLevel level,Camera camera,float partial,
                         double xo,double yo,double zo,double x,double y,double z){

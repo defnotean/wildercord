@@ -9,10 +9,9 @@ import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.LessonPackRules;
 import dev.wildercord.spell.RelayInputRules;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import dev.wildercord.client.compat.HudCompat;
 
 /** Fresh physical edges for the pack lessons, and the owner's readout of the object they placed. */
 public final class LessonPackClient {
@@ -68,7 +67,7 @@ public final class LessonPackClient {
         };
     }
     public static void init() {
-        HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("lesson_pack_hud"), (wcG, delta) -> {
+        HudCompat.after(HudCompat.Anchor.HOTBAR, Wildercord.id("lesson_pack_hud"), (wcG, delta) -> {
 					GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
             Minecraft client = Minecraft.getInstance();
             if (client.player == null || client.level == null) return;

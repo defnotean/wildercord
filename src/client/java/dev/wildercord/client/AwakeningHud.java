@@ -5,14 +5,13 @@ import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.Awakening;
 import dev.wildercord.aura.AwakeningRules;
 import dev.wildercord.client.fx.MagicQuality;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * Awakening on the swordsman's own screen, all of it small and at the edges:
@@ -33,8 +32,8 @@ public final class AwakeningHud {
 	private static int glowFrames;
 
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Wildercord.id("aura_awakening_charge"), AwakeningHud::charge);
-		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("aura_awakening_glow"), AwakeningHud::glow);
+		HudCompat.after(HudCompat.Anchor.CROSSHAIR, Wildercord.id("aura_awakening_charge"), AwakeningHud::charge);
+		HudCompat.before(HudCompat.Anchor.HOTBAR, Wildercord.id("aura_awakening_glow"), AwakeningHud::glow);
 	}
 
 	// ------------------------------------------------------------------ the charge by the crosshair

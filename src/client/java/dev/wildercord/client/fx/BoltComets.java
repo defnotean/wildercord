@@ -189,7 +189,7 @@ public final class BoltComets {
 		public void extract(QuadParticleRenderState state, Camera camera, float partial) {
 			// Authored fire flights replace the generic comet rather than layering another full comet over it.
 			if (authored) return;
-			Vec3 cam = camera.position();
+			Vec3 cam = camera.getPosition();
 			Vec3 head = bolt.isRemoved() ? (trail.isEmpty() ? bolt.position() : trail.peekFirst()) : bolt.getPosition(partial);
 			float fade = gone >= 0 ? Math.max(0, gone / (float) TRAIL) : Mth.clamp((age + partial) / 2F, 0, 1);
 			Vector3f h = new Vector3f((float) (head.x - cam.x), (float) (head.y - cam.y), (float) (head.z - cam.z));

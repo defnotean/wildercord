@@ -370,7 +370,7 @@ public class CordScreen extends Screen {
 		if (fit >= 1.0) {
 			return 1.0F;
 		}
-		int guiScale = Math.max(1, minecraft.getWindow().getGuiScale());
+		int guiScale = Math.max(1, (int) minecraft.getWindow().getGuiScale());
 		int physical = (int) Math.floor(guiScale * fit);
 		return physical >= 1 ? physical / (float) guiScale : (float) fit;
 	}

@@ -288,7 +288,7 @@ public class SpellCircleParticle extends McQuadParticle implements SigilGroup.Ex
 		float open = opening(partial);
 		plane.set(orientation(partial));
 		Vec3 c = centre(partial);
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		cx = (float) (c.x - cam.x);
 		cy = (float) (c.y - cam.y);
 		cz = (float) (c.z - cam.z);

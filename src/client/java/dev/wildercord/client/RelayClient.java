@@ -11,11 +11,10 @@ import dev.wildercord.spell.RelayInputRules;
 import dev.wildercord.spell.RelayRules;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import dev.wildercord.client.compat.HudCompat;
 
 /** Existing spell bindings provide fresh physical edges; server attachments only draw the committed focus. */
 public final class RelayClient {
@@ -90,7 +89,7 @@ public final class RelayClient {
 			}
 		});
 		ClientTickEvents.END_CLIENT_TICK.register(RelayClient::drawWorld);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("relay_hud"), (wcG, delta) -> {
+		HudCompat.after(HudCompat.Anchor.HOTBAR, Wildercord.id("relay_hud"), (wcG, delta) -> {
 					GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcG);
 			Minecraft client = Minecraft.getInstance();
 			if (client.player == null || client.level == null) return;

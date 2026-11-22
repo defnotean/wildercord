@@ -8,8 +8,6 @@ import dev.wildercord.player.Spellbook;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.SpellCompiler;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.AttackIndicatorStatus;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -25,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * The spell panel right of the hotbar, bottom-aligned with it:
@@ -105,15 +104,15 @@ public final class SpellHud {
 	private static final Map<List<RuneDef>, SpellCompiler.Compiled> READ = new HashMap<>();
 
 	public static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("spell_hud"), SpellHud::extract);
+		HudCompat.after(HudCompat.Anchor.HOTBAR, Wildercord.id("spell_hud"), SpellHud::extract);
 		// A Domain's tint goes under everything else on the HUD.
-		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("domain_tint"),
+		HudCompat.before(HudCompat.Anchor.MISC_OVERLAYS, Wildercord.id("domain_tint"),
 			(wcG, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(wcG));
 		// An overchannelling caster's view closing in, under everything else too.
-		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("overchannel_strain"),
+		HudCompat.before(HudCompat.Anchor.MISC_OVERLAYS, Wildercord.id("overchannel_strain"),
 			dev.wildercord.client.fx.ScreenEffects::drawStrain);
 		// The glyph to trace, round the crosshair.
-		HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Wildercord.id("sigil_trace"), SigilTrace::draw);
+		HudCompat.after(HudCompat.Anchor.CROSSHAIR, Wildercord.id("sigil_trace"), SigilTrace::draw);
 	}
 
 	/** The panel's left edge, and whether it's lifted by {@link #RAISE}. */

@@ -5,8 +5,6 @@ import dev.wildercord.aura.AuraFx;
 import dev.wildercord.aura.AuraFxRules;
 import dev.wildercord.aura.AuraGuard;
 import dev.wildercord.client.fx.MagicQuality;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -23,6 +21,7 @@ import org.joml.Vector3fc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * Technique banners ({@link AuraFx#banner}): a named art, a Dominion, later a finisher, shown briefly in the method's colour.
@@ -50,7 +49,7 @@ public final class AuraBanners {
 	private static String lastName = "";
 
 	static void init() {
-		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("aura_banners"), AuraBanners::extract);
+		HudCompat.after(HudCompat.Anchor.HOTBAR, Wildercord.id("aura_banners"), AuraBanners::extract);
 	}
 
 	static void reset() {
@@ -210,12 +209,12 @@ public final class AuraBanners {
 			return null;
 		}
 		Vec3 head = entity.getEyePosition(partial).add(0, 0.95, 0);
-		Vec3 offset = head.subtract(camera.position());
+		Vec3 offset = head.subtract(camera.getPosition());
 		Vector3fc forward = camera.getLookVector();
 		if (offset.x * forward.x() + offset.y * forward.y() + offset.z * forward.z() < 0.5 || offset.lengthSqr() > AuraFxRules.BANNER_SEEN * AuraFxRules.BANNER_SEEN) {
 			return null;
 		}
-		Vec3 ndc = mc.gameRenderer.projectPointToScreen(head);
+		Vec3 ndc = dev.wildercord.client.compat.McCamera.projectToScreen(mc, head);
 		if (!Double.isFinite(ndc.x) || !Double.isFinite(ndc.y) || Math.abs(ndc.x) > 0.95 || Math.abs(ndc.y) > 0.95) {
 			return null;
 		}

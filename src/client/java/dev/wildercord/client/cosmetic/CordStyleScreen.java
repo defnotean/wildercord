@@ -106,7 +106,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		if (fit >= 1.0) {
 			return 1.0F;
 		}
-		int guiScale = Math.max(1, minecraft.getWindow().getGuiScale());
+		int guiScale = Math.max(1, (int) minecraft.getWindow().getGuiScale());
 		int physical = (int) Math.floor(guiScale * fit);
 		return physical >= 1 ? physical / (float) guiScale : (float) fit;
 	}
@@ -358,7 +358,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 		int y1 = Math.round(top() + (PREVIEW_Y + PREVIEW_H - 2) * s);
 		// Close enough to see the beads: the frame shows about a block and a half, centred just above the wrist.
 		float size = (y1 - y0) / 1.55F;
-		g.entity(state, size, new Vector3f(0, 0.95F, 0), new Quaternionf().rotateZ((float) Math.PI), null, x0, y0, x1, y1);
+		g.entity(renderer, state, size, new Vector3f(0, 0.95F, 0), new Quaternionf().rotateZ((float) Math.PI), null, x0, y0, x1, y1);
 		if (hovered != null && hovered.group().equals(CordStyles.TRAIL) && !hovered.id().equals("none")) {
 			drawTrailPreview(g, hovered.id(), (x0 + x1) / 2, (y0 + y1) / 2 + Math.round(size * 0.1F), seconds, size);
 		}

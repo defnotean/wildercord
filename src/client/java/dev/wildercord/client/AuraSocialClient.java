@@ -9,8 +9,6 @@ import dev.wildercord.content.WildercordSounds;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
@@ -21,6 +19,7 @@ import net.minecraft.util.Mth;
 
 import java.util.HashMap;
 import java.util.Map;
+import dev.wildercord.client.compat.HudCompat;
 
 /** Compact, server-confirmed rhythm and consent cues, clear of the aiming area. */
 public final class AuraSocialClient {
@@ -73,7 +72,7 @@ public final class AuraSocialClient {
                 }
             }
         });
-        HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Wildercord.id("aura_social"), AuraSocialClient::draw);
+        HudCompat.after(HudCompat.Anchor.CROSSHAIR, Wildercord.id("aura_social"), AuraSocialClient::draw);
     }
 
     private static Lock own() {

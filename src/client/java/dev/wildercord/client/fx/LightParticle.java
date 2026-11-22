@@ -136,7 +136,7 @@ public class LightParticle extends McQuadParticle implements SigilGroup.Extent {
 	@Override
 	public void extract(QuadParticleRenderState state, Camera camera, float partial) {
 		this.state = state;
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		cx = (float) (Mth.lerp(partial, xo, x) - cam.x);
 		cy = (float) (Mth.lerp(partial, yo, y) - cam.y);
 		cz = (float) (Mth.lerp(partial, zo, z) - cam.z);

@@ -4,8 +4,6 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.Stance;
 import dev.wildercord.aura.StanceRules;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -22,6 +20,7 @@ import org.joml.Vector3fc;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * Stance, as a swordsman reads it (the rules are {@code aura.StanceRules}, what's synced {@code aura.Stance.STANCE}):
@@ -61,7 +60,7 @@ public final class StanceHud {
 	private static float ownShown;
 
 	static void init() {
-		HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, Wildercord.id("stance"), StanceHud::extract);
+		HudCompat.before(HudCompat.Anchor.CROSSHAIR, Wildercord.id("stance"), StanceHud::extract);
 	}
 
 	/** One foe to draw: it, its stance and how far it is. */
@@ -82,7 +81,7 @@ public final class StanceHud {
 		long now = level.getGameTime();
 		float time = now + partial;
 		Camera camera = mc.gameRenderer.getMainCamera();
-		Vec3 cam = camera.position();
+		Vec3 cam = camera.getPosition();
 		boolean firstPerson = mc.getCameraEntity() == player && mc.options.getCameraType().isFirstPerson();
 		Entity target = mc.crosshairPickEntity;
 		List<Foe> foes = new ArrayList<>();
@@ -343,12 +342,12 @@ public final class StanceHud {
 
 	/** Where {@code at} falls on the screen (gui pixels), or null when it's behind the camera or off the edge. */
 	private static float[] screen(Minecraft mc, Camera camera, Vec3 at, int width, int height) {
-		Vec3 offset = at.subtract(camera.position());
+		Vec3 offset = at.subtract(camera.getPosition());
 		Vector3fc forward = camera.getLookVector();
 		if (offset.x * forward.x() + offset.y * forward.y() + offset.z * forward.z() < 0.4) {
 			return null;
 		}
-		Vec3 ndc = mc.gameRenderer.projectPointToScreen(at);
+		Vec3 ndc = dev.wildercord.client.compat.McCamera.projectToScreen(mc, at);
 		if (!Double.isFinite(ndc.x) || !Double.isFinite(ndc.y) || Math.abs(ndc.x) > 0.97 || Math.abs(ndc.y) > 0.97) {
 			return null;
 		}

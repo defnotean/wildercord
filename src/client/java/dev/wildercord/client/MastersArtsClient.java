@@ -9,8 +9,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -22,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import dev.wildercord.client.compat.HudCompat;
 
 /**
  * Dedicated, rebindable combat inputs and server-confirmed art playback. The request contains
@@ -45,7 +44,7 @@ public final class MastersArtsClient {
 		ClientPlayNetworking.registerGlobalReceiver(MastersArts.Performed.TYPE, (payload, context) -> receive(context.client(), payload));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> clear());
 		ClientTickEvents.END_CLIENT_TICK.register(MastersArtsClient::tick);
-		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("masters_committed_aim"), MastersArtsClient::aimHint);
+		HudCompat.before(HudCompat.Anchor.HOTBAR, Wildercord.id("masters_committed_aim"), MastersArtsClient::aimHint);
 	}
 
 	/** The registered mapping, also used by the client game tests to press the real combat controls. */
