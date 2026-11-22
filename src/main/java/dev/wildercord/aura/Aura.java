@@ -320,7 +320,7 @@ public final class Aura {
 			if (!state.breathing() && stance.still >= dev.wildercord.aura.world.ForgedGear.settleTicks(player)) {
 				state = state.settled(now);
 				state(player, state);
-				Feels.sound(player.level(), pos, "aura_breath", 0.45F, 1.0F);
+				Feels.sound((ServerLevel) player.level(), pos, "aura_breath", 0.45F, 1.0F);
 				AuraSense.pulse(player);
 			}
 		} else if (state.breathing()) {
@@ -634,6 +634,6 @@ public final class Aura {
 
 	/** Plays one of aura's sounds where {@code player} is. */
 	public static void sound(ServerPlayer player, String name, float volume, float pitch) {
-		Feels.sound(player.level(), player.position().add(0, 1, 0), name, volume, pitch);
+		Feels.sound((ServerLevel) player.level(), player.position().add(0, 1, 0), name, volume, pitch);
 	}
 }

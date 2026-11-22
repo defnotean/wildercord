@@ -166,14 +166,14 @@ public final class VerdantArts {
 		ArtLight world = ArtLight.world(player);
 		world.flash(c, PALE, (float) (1.1 * size));
 		world.bare().ring(c, ArtKit.UP, ArtKit.color(player), 0.15 * size, 1.0 * size, 0.05 * size, 12);
-		petals(player.level(), c, 0.3 * size, (int) Math.max(2, 4 * size));
+		petals((ServerLevel) player.level(), c, 0.3 * size, (int) Math.max(2, 4 * size));
 	}
 
 	/** Thorns pricking: a few small pink and green splinters out of {@code foe}, and a tick of sound. */
 	static void prick(ServerPlayer player, LivingEntity foe) {
 		Vec3 c = foe.getBoundingBox().getCenter().subtract(0, foe.getBbHeight() * 0.2, 0);
 		ArtLight.world(player).bare().shards(c, 0.45, 4, PINK, VINE);
-		leaves(player.level(), c, 0.25, 2);
+		leaves((ServerLevel) player.level(), c, 0.25, 2);
 		Feels.sound(player.level(), c, "life_thorn", 0.35F, 1.3F + player.level().getRandom().nextFloat() * 0.2F);
 	}
 

@@ -88,7 +88,7 @@ public final class BladeCeremony {
 		if (Aura.stage(player) < BladeRules.FROM || !BondedBlades.canBond(hand) || Crossroads.standing(player)) {
 			return;
 		}
-		boolean power = !Config.get().aura().bonds().bondAtPower() || PowerPlaces.isPlaceOfPower(player.level(), player.blockPosition());
+		boolean power = !Config.get().aura().bonds().bondAtPower() || PowerPlaces.isPlaceOfPower((ServerLevel) player.level(), player.blockPosition());
 		if (!power) {
 			return;
 		}
@@ -101,7 +101,7 @@ public final class BladeCeremony {
 			}
 			return;
 		}
-		long seed = LeyWalker.seed(player.level());
+		long seed = LeyWalker.seed((ServerLevel) player.level());
 		double[] lines = LeyLines.directions(seed, player.getX(), player.getZ());
 		begin(player, new Rite(BondedBlades.Rite.BOND, now, hand, lines[0], lines[1], null), now);
 	}
@@ -167,7 +167,7 @@ public final class BladeCeremony {
 		end(player, rite);
 		BondedBlades.sound(player.level(), hand(player), "aura_bond_fail", 0.7F, 1.0F);
 		player.displayClientMessage(Component.translatable(why).withColor(0xC8A0A0), true);
-		Motes.glows(player.level(), hand(player), 6, 0.2, AuraRules.mix(color(player), 0x6A6478, 0.5), 0.1, 20, new Vec3(0, -0.02, 0), 0.02);
+		Motes.glows((ServerLevel) player.level(), hand(player), 6, 0.2, AuraRules.mix(color(player), 0x6A6478, 0.5), 0.1, 20, new Vec3(0, -0.02, 0), 0.02);
 	}
 
 	private static void advance(ServerPlayer player, Rite rite, long now) {
@@ -447,8 +447,8 @@ public final class BladeCeremony {
 	static void namedMoment(ServerPlayer player, BladeBond b) {
 		int color = b.color() == 0 ? color(player) : b.color();
 		Vec3 blade = hand(player);
-		BondedBlades.sound(player.level(), blade, "aura_bond_name", 0.8F, 1.0F);
-		Motes.glows(player.level(), blade, 8, 0.2, color, 0.1, 26, new Vec3(0, 0.02, 0), 0.02);
+		BondedBlades.sound((ServerLevel) player.level(), blade, "aura_bond_name", 0.8F, 1.0F);
+		Motes.glows((ServerLevel) player.level(), blade, 8, 0.2, color, 0.1, 26, new Vec3(0, 0.02, 0), 0.02);
 		player.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.named", Component.literal(b.shownName()).withColor(0xFF000000 | color))
 			.withColor(0xE8D8B0));
 	}
@@ -457,8 +457,8 @@ public final class BladeCeremony {
 	static void traitMoment(ServerPlayer player, BladeBond b) {
 		int color = b.color() == 0 ? color(player) : b.color();
 		Vec3 blade = hand(player);
-		BondedBlades.sound(player.level(), blade, "aura_bond_trait", 0.9F, 1.0F);
-		AuraFx.burst(player.level(), player, blade, Vec3.ZERO, color, 0.9F, AuraFx.Burst.FLASH | AuraFx.Burst.RING);
+		BondedBlades.sound((ServerLevel) player.level(), blade, "aura_bond_trait", 0.9F, 1.0F);
+		AuraFx.burst((ServerLevel) player.level(), player, blade, Vec3.ZERO, color, 0.9F, AuraFx.Burst.FLASH | AuraFx.Burst.RING);
 		AuraFx.bodyAuraFlare(player, 26, 0.6F);
 		ItemStack stack = BondedBlades.carried(player);
 		player.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.traited", BondedBlades.name(stack.isEmpty() ? player.getMainHandItem() : stack, b)
@@ -469,8 +469,8 @@ public final class BladeCeremony {
 	/** A bond released. */
 	static void releaseMoment(ServerPlayer player, Component name, int color) {
 		Vec3 at = player.position().add(0, 1.0, 0);
-		BondedBlades.sound(player.level(), at, "aura_bond_release", 0.9F, 1.0F);
-		Motes.glows(player.level(), at, 10, 0.4, AuraRules.mix(color == 0 ? 0xC8C0E0 : color, 0x6A6478, 0.4), 0.12, 30, new Vec3(0, -0.015, 0), 0.02);
+		BondedBlades.sound((ServerLevel) player.level(), at, "aura_bond_release", 0.9F, 1.0F);
+		Motes.glows((ServerLevel) player.level(), at, 10, 0.4, AuraRules.mix(color == 0 ? 0xC8C0E0 : color, 0x6A6478, 0.4), 0.12, 30, new Vec3(0, -0.015, 0), 0.02);
 		player.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.released", name.copy().withColor(0xFF000000 | (color == 0 ? 0xC8C0E0 : color)))
 			.withColor(0xC8B89A));
 	}

@@ -284,7 +284,7 @@ public final class Lineage {
 	private static void cancel(ServerPlayer master, Under rite) {
 		ServerPlayer disciple = find(master, rite.disciple());
 		end(master, rite);
-		Feels.sound(master.level(), master.position().add(0, 1, 0), "aura_bond_fail", 0.6F, 1.1F);
+		Feels.sound((ServerLevel) master.level(), master.position().add(0, 1, 0), "aura_bond_fail", 0.6F, 1.1F);
 		Component line = Component.translatable(rite.kind() == Rite.LESSON ? "message.wildercord.aura.lineage.lesson_broken" : "message.wildercord.aura.lineage.broken").withColor(0xC8A0A0);
 		master.displayClientMessage(line, true);
 		if (disciple != null) {
@@ -326,7 +326,7 @@ public final class Lineage {
 			}
 			takeLook(master, disciple, t);
 			if (t == LineageRules.ASK_END) {
-				Feels.sound(master.level(), master.position().add(disciple.position()).scale(0.5).add(0, 1, 0), "aura_lineage_bind", 0.9F, 1.0F);
+				Feels.sound((ServerLevel) master.level(), master.position().add(disciple.position()).scale(0.5).add(0, 1, 0), "aura_lineage_bind", 0.9F, 1.0F);
 			}
 			if (t >= LineageRules.CEREMONY_TICKS) {
 				end(master, rite);
@@ -476,8 +476,8 @@ public final class Lineage {
 		LineageRegistry r = LineageRegistry.of(master.level().getServer());
 		r.masterOf(disciple.getUUID()).ifPresent(b -> r.put(b.lessoned(master.level().getGameTime())));
 		int mc = Spars.colour(master);
-		Feels.sound(master.level(), disciple.position().add(0, 1, 0), "aura_lineage_lesson", 1.0F, 1.15F);
-		AuraFx.burst(master.level(), disciple, disciple.position().add(0, 1.2, 0), Vec3.ZERO, mc, 0.7F, AuraFx.Burst.FLASH | AuraFx.Burst.STAR);
+		Feels.sound((ServerLevel) master.level(), disciple.position().add(0, 1, 0), "aura_lineage_lesson", 1.0F, 1.15F);
+		AuraFx.burst((ServerLevel) master.level(), disciple, disciple.position().add(0, 1.2, 0), Vec3.ZERO, mc, 0.7F, AuraFx.Burst.FLASH | AuraFx.Burst.STAR);
 		List<String> teachable = new ArrayList<>();
 		if (Techniques.on(master) && Techniques.on(disciple)) {
 			for (String part : TechniqueRules.allParts()) {
@@ -567,8 +567,8 @@ public final class Lineage {
 	/** A master paid a share: experience, a soft glitter, and a word of whose road it was. */
 	private static void paid(ServerPlayer master, double share, String discipleName, int stage) {
 		double got = AuraExperience.earn(master, share, false);
-		Feels.sound(master.level(), master.position().add(0, 1, 0), "aura_lineage_share", 0.8F, 1.0F);
-		Motes.glows(master.level(), master.position().add(0, 1.2, 0), 8, 0.4, Spars.colour(master), 0.08, 26, new Vec3(0, 0.02, 0), 0.01);
+		Feels.sound((ServerLevel) master.level(), master.position().add(0, 1, 0), "aura_lineage_share", 0.8F, 1.0F);
+		Motes.glows((ServerLevel) master.level(), master.position().add(0, 1.2, 0), 8, 0.4, Spars.colour(master), 0.08, 26, new Vec3(0, 0.02, 0), 0.01);
 		Component stageName = Component.translatable("aura.wildercord.stage." + AuraStages.id(stage));
 		master.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.share", Component.literal(discipleName), stageName,
 			String.format(java.util.Locale.ROOT, "%.0f", got)).withColor(0xE8D8B0));
@@ -581,13 +581,13 @@ public final class Lineage {
 		r.honour(bond.master(), new LineageRegistry.Honoured(disciple.getUUID(), disciple.getGameProfile().getName(), bond.since(),
 			disciple.level().getGameTime(), Spars.colour(disciple)));
 		int dc = Spars.colour(disciple);
-		Feels.sound(disciple.level(), disciple.position().add(0, 1, 0), "aura_lineage_graduate", 1.0F, 1.0F);
+		Feels.sound((ServerLevel) disciple.level(), disciple.position().add(0, 1, 0), "aura_lineage_graduate", 1.0F, 1.0F);
 		AuraFx.banner(disciple, Component.translatable("aura.wildercord.lineage.graduated"), Component.literal(bond.masterName()), dc,
 			AuraFxRules.BannerKind.GRAND);
 		disciple.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.graduated_disciple", Component.literal(bond.masterName()))
 			.withColor(0xFFE8C46A));
 		if (master != null) {
-			Feels.sound(master.level(), master.position().add(0, 1, 0), "aura_lineage_graduate", 0.8F, 1.1F);
+			Feels.sound((ServerLevel) master.level(), master.position().add(0, 1, 0), "aura_lineage_graduate", 0.8F, 1.1F);
 			AuraFx.banner(master, Component.translatable("aura.wildercord.lineage.graduated_master"), Component.literal(disciple.getGameProfile().getName()),
 				Spars.colour(master), AuraFxRules.BannerKind.ART);
 			master.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.graduated_master_line", disciple.getDisplayName())
@@ -649,7 +649,7 @@ public final class Lineage {
 		ServerPlayer them = find(player, other);
 		Component otherName = them != null ? them.getDisplayName() : Component.literal(bond.get().master().equals(other) ? bond.get().masterName()
 			: bond.get().discipleName());
-		Feels.sound(player.level(), player.position().add(0, 1, 0), "aura_lineage_release", 0.8F, 1.0F);
+		Feels.sound((ServerLevel) player.level(), player.position().add(0, 1, 0), "aura_lineage_release", 0.8F, 1.0F);
 		player.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.ended", otherName).withColor(0xC8B89A));
 		if (them != null) {
 			them.sendSystemMessage(Component.translatable("message.wildercord.aura.lineage.ended_by", player.getDisplayName()).withColor(0xC8B89A));

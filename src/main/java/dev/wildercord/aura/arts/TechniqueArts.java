@@ -132,7 +132,7 @@ public final class TechniqueArts {
 
 		Cast(ServerPlayer player, AuraApi.StringContext context, TechniqueRules.Profile p, Techniques.Use use) {
 			this.player = player;
-			this.level = player.level();
+			this.level = (ServerLevel) player.level();
 			this.context = context;
 			this.p = p;
 			this.use = use;

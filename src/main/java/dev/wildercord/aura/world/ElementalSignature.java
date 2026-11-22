@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McMoveControl;
 
 /**
  * One owned, stationary signature of the Rime, Thunder, Verdant or Hollow Master. Like the Kiln it is admitted only on flat,
@@ -106,7 +107,7 @@ final class ElementalSignature {
 	}
 
 	private void hold() {
-		master.getNavigation().stop(); master.getMoveControl().setWait(); master.setSpeed(0);
+		master.getNavigation().stop(); McMoveControl.hold(master.getMoveControl()); master.setSpeed(0);
 		master.xxa = 0; master.yya = 0; master.zza = 0;
 		master.setDeltaMovement(0, master.getDeltaMovement().y, 0);
 		master.setYRot(yaw); master.setYHeadRot(yaw); master.setYBodyRot(yaw);

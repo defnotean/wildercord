@@ -22,6 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
+import dev.wildercord.compat.McMoveControl;
 
 /** One server-owned dash and strike. No scheduler, teleport, target transfer, or retargeting survives this attempt. */
 final class MasterPursuit {
@@ -84,7 +85,7 @@ final class MasterPursuit {
 		if (master.getDeltaMovement().horizontalDistanceSqr() > .0025) return cancel();
 		master.getNavigation().stop();
 		// PathNavigation runs before custom AI; its already queued MOVE_TO runs afterward unless explicitly cleared.
-		master.getMoveControl().setWait();
+		McMoveControl.hold(master.getMoveControl());
 		master.setSpeed(0);
 		master.xxa = 0; master.yya = 0; master.zza = 0;
 		master.setDeltaMovement(0, master.getDeltaMovement().y, 0);

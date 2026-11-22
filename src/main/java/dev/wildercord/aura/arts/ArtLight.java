@@ -59,7 +59,7 @@ public final class ArtLight {
 	}
 
 	private boolean rimAt(Vec3 at) {
-		return rim && day(owner.level(), at);
+		return rim && day((ServerLevel) owner.level(), at);
 	}
 
 	/** Whether it's bright behind {@code at} (day, under the open sky): lay a rim of darkness under light there. */
@@ -82,7 +82,7 @@ public final class ArtLight {
 	/** A shockwave racing out from {@code from} to {@code to} blocks in the plane facing {@code normal}. */
 	public ArtLight ring(Vec3 at, Vec3 normal, int color, double from, double to, double width, int life) {
 		if (Math.abs(normal.y) > 0.95 && at.y < owner.position().y + 0.4) {
-			AuraFx.groundScar(owner.level(), at, Math.max(from, to), Math.max(40, life * 3), 0);
+			AuraFx.groundScar((ServerLevel) owner.level(), at, Math.max(from, to), Math.max(40, life * 3), 0);
 			return this;
 		}
 		return slash(at, normal, ElementFx.perp(normal), color, Math.max(from, to), 1.8, width, 2, life);
@@ -205,7 +205,7 @@ public final class ArtLight {
 
 	/** A physical fracture, impact depression or blade gouge projected onto solid ground. */
 	public ArtLight ground(Vec3 feet, int style, int color, double size, int life, double spin) {
-		AuraFx.groundScar(owner.level(), feet, size, life, style == SigilOption.STAR ? 2 : style == SigilOption.CRACKED ? 0 : 1);
+		AuraFx.groundScar((ServerLevel) owner.level(), feet, size, life, style == SigilOption.STAR ? 2 : style == SigilOption.CRACKED ? 0 : 1);
 		return this;
 	}
 

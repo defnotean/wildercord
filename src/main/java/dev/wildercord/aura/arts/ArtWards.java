@@ -572,7 +572,7 @@ public final class ArtWards {
 			if (!syncHardening(player)) {
 				if (player.isAlive() && !player.isRemoved()
 					&& server.getPlayerList().getPlayer(player.getUUID()) == player)
-					Feels.sound(player.level(), player.position(), "earth_creak", 0.4F, 1.2F);
+					Feels.sound((ServerLevel) player.level(), player.position(), "earth_creak", 0.4F, 1.2F);
 			} else if ((player.level().getGameTime() + player.getId()) % 10 == 0) {
 				StoneArts.hardenedLook(player);
 			}

@@ -76,7 +76,7 @@ public final class MethodsAFinishers {
 		Vec3 dir = away(player, foe);
 		show.slash(heart.add(0, 0.5, 0), ArtKit.UP.add(dir.scale(0.4)).normalize(), dir, color, 1.6, 2.6, 0.3, 1, 10);
 		show.bare().slash(heart.add(0, 0.6, 0), ArtKit.UP.add(dir.scale(0.4)).normalize(), dir, MethodsAFlavours.FOAM, 1.5, 2.2, 0.1, 1, 9);
-		Vfx.emit(player.level(), ParticleTypes.SPLASH, heart, 40, 0.8, 0.3);
+		Vfx.emit((ServerLevel) player.level(), ParticleTypes.SPLASH, heart, 40, 0.8, 0.3);
 		Scheduler.later(3, () -> ArtLight.world(player).ground(foe.position(), SigilOption.RING, MethodsAFlavours.FOAM, 1.8, 40, 0.05));
 		if (foe.isAlive()) {
 			MethodsAFlavours.soak(player, foe, 80);
@@ -92,8 +92,8 @@ public final class MethodsAFinishers {
 		show.bare().ray(heart.add(0, 4, 0), heart, MethodsAFlavours.SPARK, 0.35, 8);
 		show.shards(heart, 2.2, 14, color, MethodsAFlavours.SPARK);
 		show.flash(heart, MethodsAFlavours.SPARK, 1.8F);
-		Vfx.emit(player.level(), ParticleTypes.LAVA, heart, 6, 0.4, 0.2);
-		Vfx.emit(player.level(), ParticleTypes.CRIT, heart, 24, 0.6, 0.4);
+		Vfx.emit((ServerLevel) player.level(), ParticleTypes.LAVA, heart, 6, 0.4, 0.2);
+		Vfx.emit((ServerLevel) player.level(), ParticleTypes.CRIT, heart, 24, 0.6, 0.4);
 		ArtLight.world(player).ground(foe.position(), SigilOption.TARGET, color | ArtLight.DARK, 1.8, 50, 0);
 		if (foe.isAlive()) {
 			MethodsAFlavours.sunder(player, foe, IronRules.FINISHER_ARMOUR, 100);
@@ -105,7 +105,7 @@ public final class MethodsAFinishers {
 		int color = Aura.color(player);
 		Vec3 heart = frame(player, foe, AuraFxRules.Stroke.SPIN, color, "aura_finisher_dune");
 		ArtLight.spectacle(player).swirl(foe.position(), Math.max(0.8, foe.getBbWidth()) + 0.4, foe.getBbHeight() + 2.0, 6, color, MethodsAFlavours.GOLD);
-		Vfx.emit(player.level(), new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.SAND.defaultBlockState()), heart.add(0, 1, 0), 40, 0.9, 0.05);
+		Vfx.emit((ServerLevel) player.level(), new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.SAND.defaultBlockState()), heart.add(0, 1, 0), 40, 0.9, 0.05);
 		ArtLight.world(player).ground(foe.position(), SigilOption.CRACKED, color, 1.8, 50, 0.04);
 		if (foe.isAlive()) {
 			MethodsAFlavours.blind(player, foe, DuneRules.FINISHER_BLIND);

@@ -16,6 +16,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
+import dev.wildercord.compat.McMoveControl;
 
 /** One lateral step and one locked reply. No target polling alters its accepted geometry. */
 final class GaleReprise {
@@ -65,7 +66,7 @@ final class GaleReprise {
 		lastTick = now;
 		if (master.getDeltaMovement().horizontalDistanceSqr() > .0025) return cancel();
 		master.getNavigation().stop();
-		master.getMoveControl().setWait();
+		McMoveControl.hold(master.getMoveControl());
 		master.setSpeed(0);
 		master.xxa = 0; master.yya = 0; master.zza = 0;
 		master.setDeltaMovement(0, master.getDeltaMovement().y, 0);

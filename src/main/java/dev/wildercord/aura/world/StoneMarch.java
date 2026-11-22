@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McMoveControl;
 
 /** One paid, planted action owns all three exact-tick pulses, immutable warning geometry and one attempt per participant. */
 final class StoneMarch {
@@ -230,7 +231,7 @@ final class StoneMarch {
 			&& velocity.horizontalDistanceSqr() <= .0025 && Math.abs(velocity.y) <= .1;
 	}
 	private void plant() {
-		master.getNavigation().stop(); master.getMoveControl().setWait(); master.setSpeed(0);
+		master.getNavigation().stop(); McMoveControl.hold(master.getMoveControl()); master.setSpeed(0);
 		master.xxa = 0; master.yya = 0; master.zza = 0;
 		master.setDeltaMovement(0, master.getDeltaMovement().y, 0);
 		float yaw = (float) Math.toDegrees(Math.atan2(-aim.x, aim.z));

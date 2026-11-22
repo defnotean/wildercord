@@ -94,6 +94,6 @@ public final class AuraMarks {
 				return;
 			}
 		}
-		AuraVfx.marked(player.level(), target, Aura.color(player));
+		AuraVfx.marked((ServerLevel) player.level(), target, Aura.color(player));
 	}
 }

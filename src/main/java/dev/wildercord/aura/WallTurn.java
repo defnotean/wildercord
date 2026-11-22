@@ -33,7 +33,7 @@ final class WallTurn {
 	private boolean kicking, aborted;
 
 	private WallTurn(ServerPlayer player, BlockHitResult contact) {
-		this.player = player; level = player.level(); owner = ReleasedArtOwner.capture(player);
+		this.player = player; level = (ServerLevel) player.level(); owner = ReleasedArtOwner.capture(player);
 		blade = player.getMainHandItem(); method = Aura.data(player).method();
 		start = player.position(); last = start; wall = contact.getBlockPos().immutable();
 		normal = Vec3.atLowerCornerOf(contact.getDirection().getUnitVec3i());
@@ -42,7 +42,7 @@ final class WallTurn {
 	}
 	static WallTurn accept(ServerPlayer player) {
 		if (!Double.isFinite(player.fallDistance) || player.onGround() || !finite(player.position()) || !finite(player.getDeltaMovement()) || player.isShiftKeyDown()) return null;
-		var warded = DungeonWards.movementWard(player.level(), player.blockPosition());
+		var warded = DungeonWards.movementWard((ServerLevel) player.level(), player.blockPosition());
 		if (!clear(player, player.getBoundingBox(), warded)) return null;
 		BlockHitResult contact = contact(player);
 		if (contact == null) return null;
@@ -139,7 +139,7 @@ final class WallTurn {
 	}
 	/** Native geometry fixtures can state the expected broad ward state, but unknown or different rooms still refuse. */
 	static boolean swept(ServerPlayer player, Vec3 from, Vec3 to, boolean expectedWarded) {
-		var ward = DungeonWards.movementWard(player.level(), BlockPos.containing(from));
+		var ward = DungeonWards.movementWard((ServerLevel) player.level(), BlockPos.containing(from));
 		return ward.known() && ward.warded() == expectedWarded && swept(player, from, to, ward);
 	}
 	private static boolean clear(ServerPlayer player, AABB box, DungeonWards.MovementWard warded) {
@@ -169,11 +169,11 @@ final class WallTurn {
 	static boolean footing(ServerPlayer player, Vec3 at, DungeonWards.MovementWard warded) {
 		if (!finite(at)) return false;
 		AABB body = player.getBoundingBox().move(at.subtract(player.position()));
-		if (!clear(player, body, warded) || !loaded(player.level(), body.move(0, -.08, 0))
+		if (!clear(player, body, warded) || !loaded((ServerLevel) player.level(), body.move(0, -.08, 0))
 			|| player.level().noCollision(player, body.move(0, -.08, 0))) return false;
 		for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(body.minX, body.minY - .08, body.minZ),
 			BlockPos.containing(body.maxX - 1.0E-6, body.minY - 1.0E-6, body.maxZ - 1.0E-6)))
-			if (dangerous(player.level(), pos)) return false;
+			if (dangerous((ServerLevel) player.level(), pos)) return false;
 		return true;
 	}
 	/**
@@ -202,11 +202,11 @@ final class WallTurn {
 			|| player.getDeltaMovement().y > .01) return false;
 		AABB body = player.getBoundingBox();
 		var warded = DungeonWards.movementWard(player.level(), player.blockPosition());
-		if (!clear(player, body, warded) || !loaded(player.level(), body.move(0, -.08, 0))
+		if (!clear(player, body, warded) || !loaded((ServerLevel) player.level(), body.move(0, -.08, 0))
 			|| player.level().noCollision(player, body.move(0, -.08, 0))) return false;
 		for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(body.minX, body.minY - .08, body.minZ),
 			BlockPos.containing(body.maxX - 1.0E-6, body.minY - 1.0E-6, body.maxZ - 1.0E-6)))
-			if (dangerous(player.level(), pos)) return false;
+			if (dangerous((ServerLevel) player.level(), pos)) return false;
 		return true;
 	}
 }

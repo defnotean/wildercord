@@ -79,7 +79,7 @@ public final class AuraSlash {
 		if (carrying) {
 			Aura.sound(player, "aura_spellblade", 1.0F, 1.25F);
 		}
-		AuraVfx.slashStart(player.level(), origin, flat, color);
+		AuraVfx.slashStart((ServerLevel) player.level(), origin, flat, color);
 		// The blade's draw as the crescent leaves it, and the method's technique sound under the slash's own.
 		AuraFx.trail(player, AuraFxRules.Stroke.DRAW, false, weak ? 1.0F : 1.3F);
 		AuraFx.sound(player, AuraFx.Sound.ART, 0.6F, weak ? 0.85F : 1.1F);

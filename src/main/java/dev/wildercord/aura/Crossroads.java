@@ -327,7 +327,7 @@ public final class Crossroads {
 		ArtLight.spectacle(player).flash(head, AuraVfx.hot(color, 0.4), 1.6F);
 		ArtLight.world(player).flash(head, AuraVfx.hot(color, 0.4), 0.6F).groundRing(standard.foot(), color, 0.2, 1.4, 0.08, 14)
 			.ray(standard.foot(), head.add(0, 0.6, 0), AuraVfx.hot(color, 0.6), 0.07, 10);
-		Feels.sound(player.level(), head, "aura_way_lean", 1.0F, Feels.step(index));
+		Feels.sound((ServerLevel) player.level(), head, "aura_way_lean", 1.0F, Feels.step(index));
 		player.displayClientMessage(Component.translatable("message.wildercord.aura.way.lean", Component.translatable(way.nameKey())
 			.withColor(0xFF000000 | color)).withColor(0xE8D8B0), true);
 	}
@@ -408,7 +408,7 @@ public final class Crossroads {
 		for (Standard standard : s.standards()) {
 			int c = color(standard.way());
 			Vec3 mid = standard.foot().add(0, 1.2, 0);
-			Motes.burst(player.level(), mid, 6, AuraVfx.hot(c, 0.2), 0.06, 26, 0.05);
+			Motes.burst((ServerLevel) player.level(), mid, 6, AuraVfx.hot(c, 0.2), 0.06, 26, 0.05);
 		}
 		if (player.isAlive() && Ways.wayless(player)) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.aura.way.faded").withColor(0xB8A8D8));

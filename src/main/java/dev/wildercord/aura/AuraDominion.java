@@ -301,7 +301,7 @@ public final class AuraDominion {
 		LivingEntity from = struck;
 		for (int i = 0; i < chains; i++) {
 			LivingEntity next = others.get(i);
-			AuraVfx.dominionChain(player.level(), from, next, field.color());
+			AuraVfx.dominionChain((ServerLevel) player.level(), from, next, field.color());
 			if (AuraCombat.projected(player, next, Math.max(1.0, taken * AuraRules.DOMINION_CHAIN_SHARE) * Config.get().aura().damageScale(), false) > 0) {
 				AuraFx.impact(player, next, field.color(), Aura.stage(player), AuraFxRules.Weight.FULL);
 			}

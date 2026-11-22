@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McMoveControl;
 
 /**
  * One owned, stationary Tide, Iron or Dune signature (see {@link MethodsASignatureRules}). The master stays planted for
@@ -93,7 +94,7 @@ final class MethodsASignature {
 	}
 
 	private void hold() {
-		master.getNavigation().stop(); master.getMoveControl().setWait(); master.setSpeed(0);
+		master.getNavigation().stop(); McMoveControl.hold(master.getMoveControl()); master.setSpeed(0);
 		master.xxa = 0; master.yya = 0; master.zza = 0;
 		master.setDeltaMovement(0, master.getDeltaMovement().y, 0);
 		master.setYRot(yaw); master.setYHeadRot(yaw); master.setYBodyRot(yaw);

@@ -70,7 +70,7 @@ public class CrossroadsIncense extends Item {
 			return "message.wildercord.aura.way.incense_none";
 		}
 		if (player instanceof ServerPlayer server && Config.get().aura().ways().changeAtPower()
-				&& !PowerPlaces.isPlaceOfPower(server.level(), server.blockPosition())) {
+				&& !PowerPlaces.isPlaceOfPower((ServerLevel) server.level(), server.blockPosition())) {
 			return "message.wildercord.aura.way.incense_place";
 		}
 		return null;

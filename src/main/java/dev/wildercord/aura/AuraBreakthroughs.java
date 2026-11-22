@@ -97,7 +97,7 @@ public final class AuraBreakthroughs {
 		if (!ready(player)) {
 			return null;
 		}
-		boolean power = PowerPlaces.isPlaceOfPower(player.level(), player.blockPosition());
+		boolean power = PowerPlaces.isPlaceOfPower((ServerLevel) player.level(), player.blockPosition());
 		if (allowed(player, STILLNESS) && (power || dev.wildercord.aura.world.TrainingGrounds.ground(player)
 			!= dev.wildercord.aura.world.TrainingRules.Ground.NONE)) {
 			return STILLNESS;

@@ -387,7 +387,7 @@ public final class Clashes {
 			axis = axis.lengthSqr() < 1.0E-4 ? player.getViewVector(1.0F) : axis.normalize();
 			Vec3 at = best.front.subtract(axis.scale(0.4));
 			lock(ClashRules.Kind.ART_CRESCENT, side(player, false, Spars.colour(player), null, Held.capture(player, art, marks, counter)),
-				side(best.caster, best.pierce, best.color, best, null), player.level(), at, axis, 0, 0);
+				side(best.caster, best.pierce, best.color, best, null), (ServerLevel) player.level(), at, axis, 0, 0);
 			return true;
 		}
 		// An answer to a foe's art that struck a moment ago.
@@ -409,7 +409,7 @@ public final class Clashes {
 		Vec3 axis = first.getEyePosition().subtract(player.getEyePosition());
 		axis = axis.lengthSqr() < 1.0E-4 ? player.getViewVector(1.0F) : axis.normalize();
 		lock(ClashRules.Kind.ARTS, side(player, false, Spars.colour(player), null, Held.capture(player, art, marks, counter)),
-			side(first, false, Spars.colour(first), null, null), player.level(), mid, axis, struck.taken(), struck.amount());
+			side(first, false, Spars.colour(first), null, null), (ServerLevel) player.level(), mid, axis, struck.taken(), struck.amount());
 		return true;
 	}
 

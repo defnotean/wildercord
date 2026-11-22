@@ -109,7 +109,7 @@ public final class AwakeningFx {
 		ArtLight.spectacle(player).groundRing(player.position(), color, 0.4, 1.8, 0.08, 12);
 		if (left <= AwakeningRules.GUTTER) {
 			// Ending: motes falling away from it.
-			Motes.burst(player.level(), player.position().add(0, 1.0, 0), 4, color, 0.06, 16, 0.05);
+			Motes.burst((ServerLevel) player.level(), player.position().add(0, 1.0, 0), 4, color, 0.06, 16, 0.05);
 		}
 	}
 
@@ -117,9 +117,9 @@ public final class AwakeningFx {
 	static void fed(ServerPlayer player) {
 		int color = Aura.color(player);
 		Vec3 heart = player.position().add(0, 1.0, 0);
-		AuraFx.burst(player.level(), player, heart, Vec3.ZERO, ArtKit.hot(color, 0.3), 1.4F, AuraFx.Burst.FLASH | AuraFx.Burst.RING);
+		AuraFx.burst((ServerLevel) player.level(), player, heart, Vec3.ZERO, ArtKit.hot(color, 0.3), 1.4F, AuraFx.Burst.FLASH | AuraFx.Burst.RING);
 		AuraFx.bodyAuraFlare(player, 24, 0.8F);
-		Feels.sound(player.level(), heart, "aura_awaken_fed", 0.7F, 1.0F);
+		Feels.sound((ServerLevel) player.level(), heart, "aura_awaken_fed", 0.7F, 1.0F);
 	}
 
 	/** The awakening burned out: the aura guttering into ash, a long breath out. */
@@ -137,7 +137,7 @@ public final class AwakeningFx {
 	/** Spent no longer: the aura stirring again (only the swordsman hears it). */
 	static void recovered(ServerPlayer player) {
 		Feels.sound(player.level(), player.position().add(0, 1.0, 0), "aura_recovered", 0.6F, 1.0F);
-		Motes.burst(player.level(), player.position().add(0, 0.6, 0), 5, Aura.color(player), 0.06, 14, 0.04);
+		Motes.burst((ServerLevel) player.level(), player.position().add(0, 0.6, 0), 5, Aura.color(player), 0.06, 14, 0.04);
 		player.displayClientMessage(Component.translatable("message.wildercord.aura.recovered").withColor(0xFF000000 | Aura.color(player)), true);
 	}
 }

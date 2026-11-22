@@ -371,7 +371,7 @@ public final class AuraFx {
 	// ------------------------------------------------------------------ banners
 
 	public static void standard(ServerPlayer owner, Vec3 at, Vec3 facing, String way, int color, float emphasis, float scale, int ticks) {
-		send(owner.level(), at, new Standard(owner.getId(), at, facing, way, color & 0xFFFFFF, emphasis, scale, ticks), AuraFxRules.SEEN);
+		send((ServerLevel) owner.level(), at, new Standard(owner.getId(), at, facing, way, color & 0xFFFFFF, emphasis, scale, ticks), AuraFxRules.SEEN);
 	}
 
 	/** Physical ground damage impressions: fracture (0), crater (1), or blade gouges (2). */
@@ -511,7 +511,7 @@ public final class AuraFx {
 
 	/** One of the player's method's sounds, for everyone near (the player too). */
 	public static void sound(ServerPlayer player, Sound sound, float volume, float pitch) {
-		Feels.sound(player.level(), player.position().add(0, 1.1, 0), family(Aura.data(player).method()).of(sound), volume, pitch);
+		Feels.sound((ServerLevel) player.level(), player.position().add(0, 1.1, 0), family(Aura.data(player).method()).of(sound), volume, pitch);
 	}
 
 	/** One of the player's method's sounds for everyone near but the player (whose own client played it already, at once). */
@@ -600,7 +600,7 @@ public final class AuraFx {
 		}
 
 		public Art burst(Vec3 at, Vec3 facing, float size, int style) {
-			AuraFx.burst(player.level(), player, at, facing, color, size, style);
+			AuraFx.burst((ServerLevel) player.level(), player, at, facing, color, size, style);
 			return this;
 		}
 

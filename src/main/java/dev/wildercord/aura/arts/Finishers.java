@@ -101,7 +101,7 @@ public final class Finishers {
 
 	private static Where where(ServerPlayer player, LivingEntity foe) {
 		Vec3 heart = foe.getBoundingBox().getCenter();
-		Vec3 floor = ArtKit.floor(player.level(), foe.position().add(0, 0.3, 0), 0.3, 4);
+		Vec3 floor = ArtKit.floor((ServerLevel) player.level(), foe.position().add(0, 0.3, 0), 0.3, 4);
 		Vec3 feet = floor == null ? foe.position() : floor;
 		Vec3 toward = player.position().subtract(foe.position());
 		toward = new Vec3(toward.x, 0, toward.z);

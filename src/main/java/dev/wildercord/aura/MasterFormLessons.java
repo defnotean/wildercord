@@ -59,7 +59,7 @@ public final class MasterFormLessons {
 		OFFERS.entrySet().removeIf(entry -> entry.getKey().isRemoved() || !entry.getValue().owner().valid()
 			|| entry.getValue().until() < MasterForms.now(entry.getKey()));
 		long nonce = ++nonces;
-		OFFERS.put(player, new Offer(teacher, player.level(), MasterForms.now(player) + 2400, nonce,
+		OFFERS.put(player, new Offer(teacher, (ServerLevel) player.level(), MasterForms.now(player) + 2400, nonce,
 			dev.wildercord.aura.arts.ReleasedArtOwner.capture(player), form));
 		if (ServerPlayNetworking.canSend(player, Open.TYPE)) ServerPlayNetworking.send(player, new Open(nonce, MasterForms.data(player).knows(form), form));
 		return true;

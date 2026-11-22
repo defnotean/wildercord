@@ -398,7 +398,7 @@ public final class HollowArts {
 				}
 			});
 		}
-		Vfx.emit(player.level(), ParticleTypes.PORTAL, mid, 12, 0.3, 0.5);
+		Vfx.emit((ServerLevel) player.level(), ParticleTypes.PORTAL, mid, 12, 0.3, 0.5);
 		Feels.sound((ServerLevel) player.level(), mid, "void_unzip", 0.6F, 1.1F);
 	}
 

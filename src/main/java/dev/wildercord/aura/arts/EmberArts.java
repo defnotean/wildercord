@@ -379,7 +379,7 @@ public final class EmberArts {
 					show.ring(sun, ArtKit.UP, color, r * 1.2, r * 2.6, 0.06, 8);
 					show.flash(sun, GOLD, (float) (r * 3));
 				}
-				Motes.seek(player.level(), sun.add((level.getRandom().nextDouble() - 0.5) * 3, (level.getRandom().nextDouble() - 0.5) * 2,
+				Motes.seek((ServerLevel) player.level(), sun.add((level.getRandom().nextDouble() - 0.5) * 3, (level.getRandom().nextDouble() - 0.5) * 2,
 					(level.getRandom().nextDouble() - 0.5) * 3), sun, GOLD, 0.09, 6, 0.3);
 				player.resetFallDistance();
 			});

@@ -87,7 +87,7 @@ public final class AuraVfx {
 
 	/** The slash leaving the blade: a bright crescent at the hand and a flash. */
 	static void slashStart(ServerPlayer player, Vec3 origin, Vec3 aim, Vec3 side, int color) {
-		slashStart(player.level(), origin, aim, color);
+		slashStart((ServerLevel) player.level(), origin, aim, color);
 	}
 
 	/** The slash leaving whatever blade loosed it (a player's, a duelist's, a knight's, or a guard sending one back). */
@@ -235,7 +235,7 @@ public final class AuraVfx {
 
 	/** Intent takes hold: a slow, low ring of the aura's colour spreading from the feet, faint, like heat over the ground. */
 	static void intent(ServerPlayer player, int color) {
-		AuraFx.groundScar(player.level(), player.position(), Math.max(0.6, AuraRules.INTENT_RADIUS * 0.85), Math.max(60, (18) * 3), 1);
+		AuraFx.groundScar((ServerLevel) player.level(), player.position(), Math.max(0.6, AuraRules.INTENT_RADIUS * 0.85), Math.max(60, (18) * 3), 1);
 	}
 
 	/** A creature falters under Intent: a cold shiver of dark motes falling off it. */
@@ -307,12 +307,12 @@ public final class AuraVfx {
 	static void spellRiding(ServerPlayer player, int spell) {
 		Vec3 hand = hand(player);
 		Vec3 up = player.getViewVector(1.0F).scale(0.35).add(0, 0.25, 0);
-		Motes.glow(player.level(), hand.add(up), hot(spell, 0.2), 0.06, 10, new Vec3(0, 0.02, 0), 0.02);
+		Motes.glow((ServerLevel) player.level(), hand.add(up), hot(spell, 0.2), 0.06, 10, new Vec3(0, 0.02, 0), 0.02);
 	}
 
 	/** A spell slipping off the blade unused: it leaves as cast, with a puff of its colour at the hand. */
 	static void spellSlips(ServerPlayer player, int spell) {
-		Motes.burst(player.level(), hand(player), 5, spell, 0.07, 10, 0.05);
+		Motes.burst((ServerLevel) player.level(), hand(player), 5, spell, 0.07, 10, 0.05);
 	}
 
 	/** One step of a slash carrying a spell: a band of the spell's colour along the crescent's leading edge. */

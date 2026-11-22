@@ -71,7 +71,7 @@ public final class FormDashLessons {
 		OFFERS.entrySet().removeIf(entry -> entry.getKey().isRemoved() || !entry.getValue().owner().valid()
 			|| entry.getValue().until() < MasterForms.now(entry.getKey()));
 		long nonce = ++nonces;
-		OFFERS.put(player, new Offer(teacher, form, player.level(), MasterForms.now(player) + 2400, nonce, dev.wildercord.aura.arts.ReleasedArtOwner.capture(player)));
+		OFFERS.put(player, new Offer(teacher, form, (ServerLevel) player.level(), MasterForms.now(player) + 2400, nonce, dev.wildercord.aura.arts.ReleasedArtOwner.capture(player)));
 		if (ServerPlayNetworking.canSend(player, Open.TYPE)) ServerPlayNetworking.send(player, new Open(nonce, form, FormDash.data(player).knows(form)));
 		return true;
 	}

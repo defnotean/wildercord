@@ -317,7 +317,7 @@ public final class RimeArts {
 		if (first) {
 			show.flash(at, WHITE, 1.8F);
 			// Through your own eyes: a thin cold glint low in the view, nothing across it.
-			AuraFx.burst(player.level(), player, at, look, WHITE, 2.0F, AuraFx.Burst.RING | AuraFx.Burst.STAR);
+			AuraFx.burst((ServerLevel) player.level(), player, at, look, WHITE, 2.0F, AuraFx.Burst.RING | AuraFx.Burst.STAR);
 		}
 	}
 

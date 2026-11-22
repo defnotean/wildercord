@@ -42,7 +42,7 @@ public final class ReleasedArtOwner {
 	 * Each actual departure retires the current generation. A later outer event cannot retire a nested return's fresh generation.
 	 */
 	public static WorldChange changingWorld(ServerPlayer player, ServerLevel destination) {
-		var change = LIVES.begin(player, player.level(), destination);
+		var change = LIVES.begin(player, (ServerLevel) player.level(), destination);
 		if (change.changesWorld) ArtWards.worldChanging(player);
 		return new WorldChange(player, change);
 	}

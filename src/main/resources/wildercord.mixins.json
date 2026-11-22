@@ -44,6 +44,7 @@
 		"MobGoalSelectorMixin",
 		"IronGolemCofferKinMixin",
 		"ItemEntityAccessor",
+		"MoveControlWaitAccessor",
 		"TemporaryBlockDropsMixin",
 		"EvokerFangsMixin",
 		"EndermanMixin",

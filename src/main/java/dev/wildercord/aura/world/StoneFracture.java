@@ -15,6 +15,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
+import dev.wildercord.compat.McMoveControl;
 
 /** A stationary, fixed-facing brace and one separately warned reply, owned by its live trial. */
 final class StoneFracture {
@@ -55,7 +56,7 @@ final class StoneFracture {
 		if (now == lastTick) return true;
 		lastTick = now;
 		master.getNavigation().stop();
-		master.getMoveControl().setWait();
+		McMoveControl.hold(master.getMoveControl());
 		master.setSpeed(0);
 		master.xxa = 0; master.yya = 0; master.zza = 0;
 		master.setDeltaMovement(0, master.getDeltaMovement().y, 0);
