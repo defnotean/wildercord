@@ -301,6 +301,13 @@ class DataPackProfile:
             biome = dict(biome)
             biome["features"] = [[f for f in stage if f not in POST_1_21_4_PLACED_FEATURES]
                                  for stage in biome["features"]]
+            # Vanilla 1.21.4 biomes place sugar_cane before pumpkin (addDefaultExtraVegetation).
+            # FeatureSorter needs one global order: the inverse pair cycles against deep_dark.
+            for stage in biome["features"]:
+                if "minecraft:patch_pumpkin" in stage and "minecraft:patch_sugar_cane" in stage:
+                    p, s = stage.index("minecraft:patch_pumpkin"), stage.index("minecraft:patch_sugar_cane")
+                    if p < s:
+                        stage[p], stage[s] = stage[s], stage[p]
         costs = {} if spawn_costs is None else dict(spawn_costs)
         if not self.has_biome_attributes:
             # Before 1.21.11 biomes have no attributes block: fold the visual/audio attributes
