@@ -42,7 +42,7 @@ final class NextSignatureNative {
    @Override public net.minecraft.world.scores.PlayerTeam getTeam(){return level().getScoreboard().getPlayersTeam(getScoreboardName());}
    @Override public boolean isInvulnerableTo(ServerLevel level,net.minecraft.world.damagesource.DamageSource source){return false;}
   };
-  teach(guest);guest.snapTo(.5,101,3.5,180,0);p.connection.send(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(guest)));p.level().addNewPlayer(guest);ground(guest);
+  teach(guest);guest.snapTo(.5,101,3.5,180,0);p.connection.send(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(guest)));((ServerLevel) p.level()).addNewPlayer(guest);ground(guest);
   if(ally){var scoreboard=p.level().getScoreboard();var team=scoreboard.getPlayerTeam("nextsignature_allies");if(team==null)team=scoreboard.addPlayerTeam("nextsignature_allies");
    team.setAllowFriendlyFire(false);scoreboard.addPlayerToTeam(p.getScoreboardName(),team);scoreboard.addPlayerToTeam(guest.getScoreboardName(),team);}
   return guest;

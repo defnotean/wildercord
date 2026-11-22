@@ -26,7 +26,7 @@ public final class SanctuaryWardTest implements FabricClientGameTest {
 	}
 
 	private static Mob spawn(ServerPlayer player, EntityType<? extends Mob> type, double dx) {
-		ServerLevel level = player.level();
+		ServerLevel level = ((ServerLevel) player.level());
 		Mob mob = type.create(level, EntitySpawnReason.COMMAND);
 		mob.setNoAi(true);
 		mob.snapTo(player.getX() + dx, player.getY(), player.getZ() + 4);
@@ -48,7 +48,7 @@ public final class SanctuaryWardTest implements FabricClientGameTest {
 				riftcaller.addTag(RiftSiege.RIFTCALLER_TAG);
 				Mob boss = spawn(player, EntityType.ELDER_GUARDIAN, 3);
 				try {
-					Rituals.sanctuary(player.level(), player.position());
+					Rituals.sanctuary(((ServerLevel) player.level()), player.position());
 					check(common.hasEffect(MobEffects.WEAKNESS) && common.getTarget() == null, "a common monster is weakened and forgets the player");
 					check(!riftcaller.hasEffect(MobEffects.WEAKNESS) && riftcaller.getTarget() == player, "the Riftcaller isn't turned aside");
 					check(!boss.hasEffect(MobEffects.WEAKNESS) && boss.getTarget() == player, "a boss isn't turned aside");

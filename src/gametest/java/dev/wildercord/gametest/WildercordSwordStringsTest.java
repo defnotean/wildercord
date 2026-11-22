@@ -414,7 +414,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		// Looking down a little more, so the leaping swing still finds the husk from the top of the jump.
@@ -452,7 +452,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityType.HUSK, at(0, 1.6), 200).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 1.6), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -468,7 +468,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		float taken = on(world, player -> {
 			Mob husk = tagged(player, "wildercord.string_target");
 			float before = player.getHealth();
-			husk.doHurtTarget(player.level(), player);
+			husk.doHurtTarget(((ServerLevel) player.level()), player);
 			return before - player.getHealth();
 		});
 		check(taken <= 0, "the guard should have been perfect (took " + taken + ")");
@@ -504,7 +504,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			// Past where the step lands (six blocks on), a line of husks for the cut ahead.
 			for (int i = 0; i < 3; i++) {
-				spawn(player.level(), EntityType.HUSK, at(0, 8 + 1.5 * i), 200).addTag("wildercord.string_line");
+				spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 8 + 1.5 * i), 200).addTag("wildercord.string_line");
 			}
 			return null;
 		});
@@ -546,9 +546,9 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			player.setAttached(dev.wildercord.aura.Momentum.MOMENTUM,
 				new dev.wildercord.aura.Momentum.State(100, player.level().getGameTime() + 100000, 0, 0, 0));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.string_target");
-			spawn(player.level(), EntityType.HUSK, at(-2.5, 0.5), 200).addTag("wildercord.string_ring");
-			spawn(player.level(), EntityType.HUSK, at(2.5, -1.5), 200).addTag("wildercord.string_ring");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(-2.5, 0.5), 200).addTag("wildercord.string_ring");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(2.5, -1.5), 200).addTag("wildercord.string_ring");
 			return null;
 		});
 		// Filmed at night, where its light reads.
@@ -658,7 +658,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		boolean off = context.computeOnClient(mc -> !dev.wildercord.config.Config.strings(mc.player));
 		check(off, "the client should learn strings are off");
 		on(world, player -> {
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(10);
@@ -692,7 +692,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "hollow", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN) * 0.6F);
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.runOnClient(mc -> MagicQuality.stringIndicator = MagicQuality.StringIndicator.HOTBAR);
@@ -772,16 +772,16 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 					player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 					player.removeAttached(SwordStrings.COOLDOWNS);
 					if (line) {
-						spawn(player.level(), EntityType.HUSK, at(0.3, 2.6), 400);
-						spawn(player.level(), EntityType.HUSK, at(-0.3, 4.4), 400);
+						spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0.3, 2.6), 400);
+						spawn(((ServerLevel) player.level()), EntityType.HUSK, at(-0.3, 4.4), 400);
 					} else {
-						spawn(player.level(), EntityType.HUSK, at(-1.7, 2.3), 400);
-						spawn(player.level(), EntityType.HUSK, at(1.7, 2.3), 400);
-						spawn(player.level(), EntityType.HUSK, at(0, 3.0), 400);
+						spawn(((ServerLevel) player.level()), EntityType.HUSK, at(-1.7, 2.3), 400);
+						spawn(((ServerLevel) player.level()), EntityType.HUSK, at(1.7, 2.3), 400);
+						spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 3.0), 400);
 					}
 					dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
 					// Looking down on the platform from behind (the camera follows the view); in first person, ahead as in a fight.
-					player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, firstPerson ? 8.0F : 38.0F,
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, firstPerson ? 8.0F : 38.0F,
 						false);
 					return null;
 				});
@@ -849,7 +849,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	/** The player back on the spot, facing +z, healthy, nothing lingering. */
 	private static void stand(ServerPlayer player) {
-		player.teleportTo(player.level(), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
+		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.removeAllEffects();
 		player.setHealth(player.getMaxHealth());

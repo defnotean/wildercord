@@ -31,7 +31,7 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 			world.getServer().runCommand("gamerule doMobSpawning false");
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
-				ServerLevel level = player.level();
+				ServerLevel level = ((ServerLevel) player.level());
 				stage = new BlockPos(player.getBlockX(), 180, player.getBlockZ());
 				for (int x = -16; x <= 16; x++) for (int z = -20; z <= 20; z++) {
 					level.setBlockAndUpdate(stage.offset(x, 0, z), Blocks.STONE.defaultBlockState());
@@ -46,7 +46,7 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 			world.getServer().runCommand("difficulty easy");
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
-				ServerLevel level = player.level();
+				ServerLevel level = ((ServerLevel) player.level());
 				Gloomstalker gloom = gloom(level, player, 9.75);
 				Goal hunt = goal(gloom, "HuntGoal");
 				hunt.start();

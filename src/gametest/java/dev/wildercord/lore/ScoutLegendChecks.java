@@ -83,7 +83,7 @@ final class ScoutLegendChecks {
 			check(dev.wildercord.player.Heart.discovered(p, "aura:sleeping_blade"), "An authentic stone shares history before the player can draw");
 			UseBlockCallback.EVENT.invoker().interact(p, p.level(), InteractionHand.MAIN_HAND, hit);
 			check(p.getInventory().countItem(net.minecraft.world.item.Items.WRITTEN_BOOK) == books + 1, "The Last Oath is given once per visitor");
-			check(stone.claimedBy() == null && !SleepingBlades.drawingAt(p.level(), at), "Reading never claims or draws the blade");
+			check(stone.claimedBy() == null && !SleepingBlades.drawingAt(((ServerLevel) p.level()), at), "Reading never claims or draws the blade");
 		});
 		await(c, world, "oath_at_rest", LoreQuestRules.DONE);
 		world.getServer().runOnServer(s -> {
@@ -119,7 +119,7 @@ final class ScoutLegendChecks {
 
 	/** Build the real piece, retain its authored book, and register its structure start as generation does. */
 	private static void visit(ServerPlayer player, DungeonPiece piece, String id, int localX, int localZ, int pages) {
-		ServerLevel level = player.level();
+		ServerLevel level = ((ServerLevel) player.level());
 		BoundingBox box = piece.getBoundingBox();
 		boolean book = false;
 		for (int x = box.minX() >> 4; x <= box.maxX() >> 4; x++) for (int z = box.minZ() >> 4; z <= box.maxZ() >> 4; z++) {

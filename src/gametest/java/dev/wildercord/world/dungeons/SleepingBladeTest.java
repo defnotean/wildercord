@@ -1,5 +1,6 @@
 package dev.wildercord.world.dungeons;
 
+import net.minecraft.server.level.ServerLevel;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.*;
 import dev.wildercord.aura.world.*;
@@ -68,7 +69,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(AuraApi.bondBlade(p,InteractionHand.MAIN_HAND,"test"),"Fixture bonds an ordinary blade");var old=p.getMainHandItem();p.setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);p.getInventory().setItem(8,old);});
 			use(c,at);c.waitTicks(15);check(!world.getServer().computeOnServer(s->SleepingBlades.drawingAt(s.overworld(),at)),"Standing bond refuses another blade");
 			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(BondedBlades.release(p),"Deliberate release succeeds");p.getInventory().setItem(8,ItemStack.EMPTY);});c.waitTicks(10);
-			use(c,at);c.waitTicks(40);world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(p.level(),p.getX()+.7,p.getY(),p.getZ(),Set.<Relative>of(),p.getYRot(),p.getXRot(),false);});c.waitTicks(15);
+			use(c,at);c.waitTicks(40);world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(((ServerLevel) p.level()),p.getX()+.7,p.getY(),p.getZ(),Set.<Relative>of(),p.getYRot(),p.getXRot(),false);});c.waitTicks(15);
 			unclaimed(world,at,"Movement cancels without claiming");check(!world.getServer().computeOnServer(s->SleepingBlades.drawingAt(s.overworld(),at)),"Movement removes the active draw");
 			c.runOnClient(mc->mc.options.keyShift.setDown(false));stand(world,at,4);c.waitTicks(20);aim(c,at);c.runOnClient(mc->mc.options.keyShift.setDown(true));c.waitTicks(10);
 			use(c,at);c.waitTicks(35);world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.hurtServer(s.overworld(),s.overworld().damageSources().generic(),1);});c.waitTicks(20);

@@ -55,8 +55,8 @@ public final class RelayImpactTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				owner = RelayCircleTest.player(server); RelayCircleTest.prepare(owner, Runes.FROST);
 				server.setPvpAllowed(true);
-				guest = new Guest(owner.level()); guest.setGameMode(GameType.SURVIVAL);
-				guest.snapTo(.5,150,6.5,180,0); guest.setNoGravity(true); owner.level().addNewPlayer(guest);
+				guest = new Guest(((ServerLevel) owner.level())); guest.setGameMode(GameType.SURVIVAL);
+				guest.snapTo(.5,150,6.5,180,0); guest.setNoGravity(true); ((ServerLevel) owner.level()).addNewPlayer(guest);
 				incoming=0;
 			});
 			context.waitTicks(3);

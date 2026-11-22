@@ -422,7 +422,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
 		on(world, player -> {
 			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
-			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 30.0F, false);
+			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 30.0F, false);
 			return null;
 		});
 		context.waitTicks(10);
@@ -599,7 +599,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 				spawn(((ServerLevel) player.level()), EntityType.HUSK, at(1.6, 2.4), 400);
 				spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 3.0), 400);
 				dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
-				player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 30.0F, false);
+				player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 30.0F, false);
 				return null;
 			});
 			context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
@@ -805,7 +805,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 	}
 
 	private static void stand(ServerPlayer player) {
-		player.teleportTo(player.level(), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
+		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.removeAllEffects();
 		player.setHealth(player.getMaxHealth());

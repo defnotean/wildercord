@@ -1,5 +1,6 @@
 package dev.wildercord.town;
 
+import net.minecraft.server.level.ServerLevel;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
@@ -95,7 +96,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				stand(s, FAR);
 				ServerPlayer old = p(s);
-				old.kill(old.level());
+				old.kill(((ServerLevel) old.level()));
 				old.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
 				ServerPlayer fresh = p(s);
 				check(fresh != old, "The traveller respawns");

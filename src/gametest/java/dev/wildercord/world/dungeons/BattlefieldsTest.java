@@ -1,5 +1,6 @@
 package dev.wildercord.world.dungeons;
 
+import net.minecraft.server.level.ServerLevel;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraAttachments;
@@ -71,7 +72,7 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 				context.runOnClient(mc -> mc.options.keyShift.setDown(false));context.waitTicks(15);
 				world.getServer().runOnServer(server -> {
 					var p=server.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);
-					p.teleportTo(p.level(),at.getX()+.5,at.getY(),at.getZ()-1.5,Set.<Relative>of(),0,12,false);
+					p.teleportTo(((ServerLevel) p.level()),at.getX()+.5,at.getY(),at.getZ()-1.5,Set.<Relative>of(),0,12,false);
 					p.fallDistance=0;
 					p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",AuraRules.GLOW,0,20,0));
 					p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_SWORD));
@@ -168,7 +169,7 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 				var level=server.overworld();
 				check(level.getBlockState(at).is(Battlefields.MEMORIAL),"Representative generated marker has the registered memorial block type");
 				check(level.getBlockEntity(at) instanceof BattlefieldMemoryEntity m && m.oldGround(),"Exact representative memorial retains generated provenance");
-				var p=server.getPlayerList().getPlayers().getFirst();p.teleportTo(p.level(),at.getX()+.5,at.getY()+9,at.getZ()-14.5,Set.<Relative>of(),0,27,false);
+				var p=server.getPlayerList().getPlayers().getFirst();p.teleportTo(((ServerLevel) p.level()),at.getX()+.5,at.getY()+9,at.getZ()-14.5,Set.<Relative>of(),0,27,false);
 				p.getAbilities().flying=true;p.onUpdateAbilities();
 			});
 			context.waitTicks(50);natural.getClientWorld().waitForChunksRender();shot(context,"battlefield_natural_terrain");
