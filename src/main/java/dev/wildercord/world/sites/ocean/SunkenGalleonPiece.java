@@ -40,11 +40,13 @@ public final class SunkenGalleonPiece extends OceanPiece {
 		ChunkPos cp = ctx.chunkPos();
 		int x = cp.getMinBlockX();
 		int z = cp.getMinBlockZ();
-		int floor = oceanFloorY(ctx, x + WIDTH / 2, z + DEPTH / 2);
-		int sea = ctx.chunkGenerator().getSeaLevel();
-		if (sea - floor < 18) return Optional.empty();
+		BoundingBox probe = StructurePiece.makeBoundingBox(x, 0, z, Direction.EAST, WIDTH, 1, DEPTH);
+		var floorOpt = locateSubmergedFloor(ctx, probe, 18, 10);
+		if (floorOpt.isEmpty()) return Optional.empty();
+		int floor = floorOpt.getAsInt();
 		SunkenGalleonPiece piece = new SunkenGalleonPiece(x, floor - BASE, z, Direction.EAST);
-		return Optional.of(new Structure.GenerationStub(new BlockPos(x + WIDTH / 2, floor, z + DEPTH / 2), b -> b.addPiece(piece)));
+		BlockPos center = probe.getCenter();
+		return Optional.of(new Structure.GenerationStub(new BlockPos(center.getX(), floor, center.getZ()), b -> b.addPiece(piece)));
 	}
 
 	@Override
@@ -130,12 +132,23 @@ public final class SunkenGalleonPiece extends OceanPiece {
 		barrel(level, bb, 16, BASE + 1, zMid + 2, Direction.UP, OceanSites.GALLEON_LOOT, 12L);
 		chest(level, bb, 28, BASE + 1, zMid, Direction.WEST, OceanSites.GALLEON_LOOT, 13L);
 
-		// Main Gun Deck cannons with dark-oak carriages + froglights + port/starboard gunport trim
+		// Sculpted stepped bowsprit figurehead spar (x=0..4) + golden lantern finial
+		set(level, bb, STRIPPED_SPRUCE, 4, BASE + 8, zMid);
+		set(level, bb, STRIPPED_SPRUCE, 3, BASE + 9, zMid);
+		set(level, bb, COPPER_OXIDIZED, 2, BASE + 9, zMid);
+		set(level, bb, STRIPPED_SPRUCE, 1, BASE + 10, zMid);
+		set(level, bb, GOLD, 0, BASE + 10, zMid);
+		set(level, bb, dev.wildercord.ocean.OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState()
+			.trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 0, BASE + 9, zMid);
+
+		// Main Gun Deck cannons with dark-oak carriages, gunport collars + froglights
 		for (int gx : new int[] {14, 20, 26, 31}) {
 			set(level, bb, stair(Blocks.DARK_OAK_STAIRS, Direction.SOUTH, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), gx, BASE + 5, zMid - 3);
 			set(level, bb, Blocks.DISPENSER.defaultBlockState().setValue(DispenserBlock.FACING, Direction.NORTH), gx, BASE + 5, zMid - 4);
+			set(level, bb, COPPER_OXIDIZED, gx, BASE + 6, zMid - 5);
 			set(level, bb, stair(Blocks.DARK_OAK_STAIRS, Direction.NORTH, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), gx, BASE + 5, zMid + 3);
 			set(level, bb, Blocks.DISPENSER.defaultBlockState().setValue(DispenserBlock.FACING, Direction.SOUTH), gx, BASE + 5, zMid + 4);
+			set(level, bb, COPPER_OXIDIZED, gx, BASE + 6, zMid + 5);
 			set(level, bb, Blocks.OCHRE_FROGLIGHT.defaultBlockState(), gx, BASE + 7, zMid);
 		}
 
@@ -144,6 +157,7 @@ public final class SunkenGalleonPiece extends OceanPiece {
 		fill(level, bb, 21, BASE + 8, zMid - 1, 24, BASE + 8, zMid + 1, WATER);
 		set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 36, BASE + 11, zMid);
 		set(level, bb, GOLD, 36, BASE + 12, zMid);
+		set(level, bb, stair(Blocks.DARK_OAK_STAIRS, Direction.EAST, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 37, BASE + 11, zMid);
 
 		// Ornate Gilded Stern Captain's Cabin (x=34..43) + Gallery Windows & Hanging Lanterns
 		fill(level, bb, 34, BASE + 8, zMid - 5, 34, BASE + 10, zMid + 5, DARK_OAK_PLANKS);

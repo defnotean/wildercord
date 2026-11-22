@@ -1,14 +1,19 @@
 package dev.wildercord.world.sites.ocean;
 
+import java.util.OptionalInt;
 import java.util.function.Consumer;
+import dev.wildercord.compat.McWorldgen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
@@ -169,6 +174,49 @@ public abstract class OceanPiece extends StructurePiece {
 			ctx.heightAccessor(),
 			ctx.randomState()
 		);
+	}
+
+	/**
+	 * Verifies that every sampled corner and center across a structure's placed XZ footprint lies
+	 * in an ocean biome, has open water at least {@code minDepthBelowSea} deep above the floor,
+	 * and stays within {@code maxFloorRelief} vertical blocks so structures never clip into islands,
+	 * coastal cliffs, or emerge into air. Returns the minimum floor Y across the footprint.
+	 */
+	protected static OptionalInt locateSubmergedFloor(
+			Structure.GenerationContext ctx, BoundingBox rawFootprint, int minDepthBelowSea, int maxFloorRelief) {
+		int sea = ctx.chunkGenerator().getSeaLevel();
+		int minX = rawFootprint.minX();
+		int midX = (rawFootprint.minX() + rawFootprint.maxX()) / 2;
+		int maxX = rawFootprint.maxX();
+		int minZ = rawFootprint.minZ();
+		int midZ = (rawFootprint.minZ() + rawFootprint.maxZ()) / 2;
+		int maxZ = rawFootprint.maxZ();
+
+		int[] xs = {minX, midX, maxX};
+		int[] zs = {minZ, midZ, maxZ};
+		int floorMin = Integer.MAX_VALUE;
+		int floorMax = Integer.MIN_VALUE;
+
+		for (int px : xs) {
+			for (int pz : zs) {
+				int surf = ctx.chunkGenerator().getFirstOccupiedHeight(
+					px, pz, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState());
+				int floor = oceanFloorY(ctx, px, pz);
+				Holder<Biome> biome = McWorldgen.getNoiseBiome(ctx, px, Math.max(ctx.heightAccessor().getMinY() + 1, Math.min(sea - 2, floor)), pz);
+				if (!biome.is(BiomeTags.IS_OCEAN)) {
+					return OptionalInt.empty();
+				}
+				if (surf < sea || floor > surf - 4 || sea - floor < minDepthBelowSea) {
+					return OptionalInt.empty();
+				}
+				floorMin = Math.min(floorMin, floor);
+				floorMax = Math.max(floorMax, floor);
+			}
+		}
+		if (floorMax - floorMin > maxFloorRelief) {
+			return OptionalInt.empty();
+		}
+		return OptionalInt.of(floorMin);
 	}
 
 	protected static double dist2(double x1, double z1, double x2, double z2) {

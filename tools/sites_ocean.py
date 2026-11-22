@@ -98,6 +98,10 @@ def write(gen):
                 "spacing": spacing,
                 "separation": separation,
                 "salt": salt,
+                "exclusion_zone": {
+                    "other_set": "minecraft:ocean_monuments",
+                    "chunk_count": 6,
+                },
             },
         })
         gen.write_json(gen.DATA / f"loot_table/chests/{sid}.json", {

@@ -179,6 +179,34 @@ public final class OathholdOrigin {
 		return Optional.empty();
 	}
 
+	/**
+	 * Returns {@code true} if block {@code (blockX, blockZ)} lies within Oathhold's
+	 * {@code 2,048x2,048} city footprint expanded by {@code paddingBlocks} on each side.
+	 */
+	public static boolean isNearAnyCity(Structure.GenerationContext ctx, int blockX, int blockZ, int paddingBlocks) {
+		int half = HALF_SIZE + Math.max(0, paddingBlocks);
+		int cx = Math.floorDiv(blockX, 16);
+		int cz = Math.floorDiv(blockZ, 16);
+		int baseRx = Math.floorDiv(cx, MACRO_SPACING);
+		int baseRz = Math.floorDiv(cz, MACRO_SPACING);
+		Set<ChunkPos> checked = new HashSet<>();
+		for (int drx = -1; drx <= 1; drx++) {
+			for (int drz = -1; drz <= 1; drz++) {
+				int sampleCx = (baseRx + drx) * MACRO_SPACING;
+				int sampleCz = (baseRz + drz) * MACRO_SPACING;
+				ChunkPos center = macroCenterChunk(ctx.seed(), sampleCx, sampleCz);
+				if (!checked.add(center)) continue;
+				int ox = center.x() * 16 + 8;
+				int oz = center.z() * 16 + 8;
+				if (Math.abs(blockX - ox) <= half && Math.abs(blockZ - oz) <= half
+						&& resolve(ctx, center.x(), center.z()).isPresent()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/** Computes city-local X relative to {@link Origin}. */
 	public static int localX(Origin origin, int worldX) {
 		return worldX - origin.originX();

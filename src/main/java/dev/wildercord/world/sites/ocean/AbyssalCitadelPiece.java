@@ -44,11 +44,13 @@ public final class AbyssalCitadelPiece extends OceanPiece {
 		ChunkPos cp = ctx.chunkPos();
 		int x = cp.getMinBlockX();
 		int z = cp.getMinBlockZ();
-		int floor = oceanFloorY(ctx, x + ARENA_CX, z + CZ);
-		int sea = ctx.chunkGenerator().getSeaLevel();
-		if (sea - floor < 20) return Optional.empty();
+		BoundingBox probe = StructurePiece.makeBoundingBox(x, 0, z, Direction.EAST, WIDTH, 1, DEPTH);
+		var floorOpt = locateSubmergedFloor(ctx, probe, 20, 12);
+		if (floorOpt.isEmpty()) return Optional.empty();
+		int floor = floorOpt.getAsInt();
 		AbyssalCitadelPiece piece = new AbyssalCitadelPiece(x, floor - BASE, z, Direction.EAST);
-		return Optional.of(new Structure.GenerationStub(new BlockPos(x + ARENA_CX, floor, z + CZ), b -> b.addPiece(piece)));
+		BlockPos center = probe.getCenter();
+		return Optional.of(new Structure.GenerationStub(new BlockPos(center.getX(), floor, center.getZ()), b -> b.addPiece(piece)));
 	}
 
 	@Override
@@ -185,12 +187,16 @@ public final class AbyssalCitadelPiece extends OceanPiece {
 				}
 			}
 		}
-		// Ruined Eastern Portal Arches
+		// Ruined Eastern Portal Arches + Ceremonial Lanterns
 		for (int y = BASE + 1; y <= BASE + 10; y++) {
 			set(level, bb, DARK_PRISMARINE, 62, y, CZ - 5);
 			set(level, bb, DARK_PRISMARINE, 62, y, CZ + 5);
 		}
 		fill(level, bb, 62, BASE + 9, CZ - 5, 62, BASE + 10, CZ + 5, GOLD);
+		set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.SOUTH, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 62, BASE + 8, CZ - 4);
+		set(level, bb, stair(Blocks.DARK_PRISMARINE_STAIRS, Direction.NORTH, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 62, BASE + 8, CZ + 4);
+		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 62, BASE + 11, CZ - 5);
+		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 62, BASE + 11, CZ + 5);
 
 		// Citadel Sentinel guards
 		spawnMob(level, bb, OceanEntities.DREAD_NAUTILUS_SENTINEL, 36, BASE + 2, CZ - 11, m -> {});
@@ -214,9 +220,15 @@ public final class AbyssalCitadelPiece extends OceanPiece {
 	}
 
 	private void placeSovereignAltarAndBoss(WorldGenLevel level, BoundingBox bb) {
-		// Central 5x5 stepped Sovereign Awakening Altar
+		// Central 5x5 stepped Sovereign Awakening Altar with corner beacons
 		fill(level, bb, ARENA_CX - 2, BASE, CZ - 2, ARENA_CX + 2, BASE, CZ + 2, DARK_PRISMARINE);
 		fill(level, bb, ARENA_CX - 1, BASE + 1, CZ - 1, ARENA_CX + 1, BASE + 1, CZ + 1, GOLD);
+		for (int sx : new int[] {ARENA_CX - 2, ARENA_CX + 2}) {
+			for (int sz : new int[] {CZ - 2, CZ + 2}) {
+				set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState()
+					.trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), sx, BASE + 1, sz);
+			}
+		}
 		set(level, bb, OceanBlocks.SOVEREIGN_ALTAR.defaultBlockState()
 			.setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ARENA_CX, BASE + 2, CZ);
 

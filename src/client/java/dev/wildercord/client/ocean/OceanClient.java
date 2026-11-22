@@ -24,6 +24,10 @@ public final class OceanClient {
 
 		ModelLayerRegistry.registerModelLayer(AbyssalDivingSuitLayer.HELM_LAYER, AbyssalDivingSuitLayer::createHelmLayer);
 		ModelLayerRegistry.registerModelLayer(AbyssalDivingSuitLayer.TANKS_LAYER, AbyssalDivingSuitLayer::createTanksLayer);
+		ModelLayerRegistry.registerModelLayer(AbyssalDivingSuitLayer.RIGHT_ARM_LAYER, AbyssalDivingSuitLayer::createRightArmLayer);
+		ModelLayerRegistry.registerModelLayer(AbyssalDivingSuitLayer.LEFT_ARM_LAYER, AbyssalDivingSuitLayer::createLeftArmLayer);
+		ModelLayerRegistry.registerModelLayer(AbyssalDivingSuitLayer.RIGHT_LEG_LAYER, AbyssalDivingSuitLayer::createRightLegLayer);
+		ModelLayerRegistry.registerModelLayer(AbyssalDivingSuitLayer.LEFT_LEG_LAYER, AbyssalDivingSuitLayer::createLeftLegLayer);
 
 		EntityRendererRegistry.register(OceanEntities.BARNACLE_HULK_DREDGER, BarnacleHulkRenderer::new);
 		EntityRendererRegistry.register(OceanEntities.SIREN_VEIL_JELLY, SirenVeilJellyRenderer::new);

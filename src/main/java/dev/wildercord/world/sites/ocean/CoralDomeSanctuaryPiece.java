@@ -51,11 +51,13 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 		ChunkPos cp = ctx.chunkPos();
 		int x = cp.getMinBlockX();
 		int z = cp.getMinBlockZ();
-		int floor = oceanFloorY(ctx, x + CX, z + CZ);
-		int sea = ctx.chunkGenerator().getSeaLevel();
-		if (sea - floor < 14) return Optional.empty();
+		BoundingBox probe = StructurePiece.makeBoundingBox(x, 0, z, Direction.NORTH, WIDTH, 1, DEPTH);
+		var floorOpt = locateSubmergedFloor(ctx, probe, 14, 10);
+		if (floorOpt.isEmpty()) return Optional.empty();
+		int floor = floorOpt.getAsInt();
 		CoralDomeSanctuaryPiece piece = new CoralDomeSanctuaryPiece(x, floor - BASE, z, Direction.NORTH);
-		return Optional.of(new Structure.GenerationStub(new BlockPos(x + CX, floor, z + CZ), b -> b.addPiece(piece)));
+		BlockPos center = probe.getCenter();
+		return Optional.of(new Structure.GenerationStub(new BlockPos(center.getX(), floor, center.getZ()), b -> b.addPiece(piece)));
 	}
 
 	@Override
@@ -177,9 +179,15 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 			set(level, bb, rib ? CUT_COPPER_OXIDIZED : WATER, cx - 2, BASE + 5, z);
 			set(level, bb, rib ? CUT_COPPER_OXIDIZED : WATER, cx + 2, BASE + 5, z);
 			if (z == z0 || z == z1) {
-				for (int y = BASE + 1; y <= BASE + 3; y++) {
-					set(level, bb, AIR, cx, y, z);
-				}
+				set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.WEST, true), cx - 1, BASE + 3, z);
+				set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.EAST, true), cx + 1, BASE + 3, z);
+				set(level, bb, AIR, cx, BASE + 1, z);
+				set(level, bb, AIR, cx, BASE + 2, z);
+				set(level, bb, AIR, cx, BASE + 3, z);
+			}
+			if (rib) {
+				set(level, bb, COPPER_WEATHERED, cx - 3, BASE + 3, z);
+				set(level, bb, COPPER_WEATHERED, cx + 3, BASE + 3, z);
 			}
 		}
 	}
@@ -202,9 +210,15 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 			set(level, bb, rib ? CUT_COPPER_OXIDIZED : WATER, x, BASE + 5, cz - 2);
 			set(level, bb, rib ? CUT_COPPER_OXIDIZED : WATER, x, BASE + 5, cz + 2);
 			if (x == x0 || x == x1) {
-				for (int y = BASE + 1; y <= BASE + 3; y++) {
-					set(level, bb, AIR, x, y, cz);
-				}
+				set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, true), x, BASE + 3, cz - 1);
+				set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.SOUTH, true), x, BASE + 3, cz + 1);
+				set(level, bb, AIR, x, BASE + 1, cz);
+				set(level, bb, AIR, x, BASE + 2, cz);
+				set(level, bb, AIR, x, BASE + 3, cz);
+			}
+			if (rib) {
+				set(level, bb, COPPER_WEATHERED, x, BASE + 3, cz - 3);
+				set(level, bb, COPPER_WEATHERED, x, BASE + 3, cz + 3);
 			}
 		}
 	}
@@ -290,12 +304,11 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 				set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx + dx, BASE + 8, ccz + dz);
 			}
 		}
-		// Crown spire anchored flush atop Central Conduit Rotunda roof
-		set(level, bb, DARK_PRISMARINE, ccx, BASE + 8, ccz);
-		set(level, bb, DARK_PRISMARINE, ccx, BASE + 9, ccz);
-		set(level, bb, COPPER_OXIDIZED, ccx, BASE + 10, ccz);
-		set(level, bb, SEA_LANTERN, ccx, BASE + 11, ccz);
-		set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx, BASE + 12, ccz);
+		// Crown spire anchored flush atop Central Conduit Rotunda roof (roof ledge ends at BASE + 5)
+		set(level, bb, DARK_PRISMARINE, ccx, BASE + 6, ccz);
+		set(level, bb, COPPER_OXIDIZED, ccx, BASE + 7, ccz);
+		set(level, bb, SEA_LANTERN, ccx, BASE + 8, ccz);
+		set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx, BASE + 9, ccz);
 
 		// Living coral & sea-pickle garden pockets nestled in outer quadrants around the domes
 		int[][] coralClusters = {

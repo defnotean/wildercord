@@ -3,6 +3,7 @@ package dev.wildercord.world.sites;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.wildercord.world.StructureClearance;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 
@@ -31,6 +32,10 @@ public class SiteStructure extends Structure {
 
 	@Override
 	protected Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
+		if (!"oathhold".equals(site) && !"oathhold_sector".equals(site)
+				&& StructureClearance.isBlocked(context, site)) {
+			return Optional.empty();
+		}
 		var locator = Sites.locator(site);
 		return locator == null ? Optional.empty() : locator.locate(context);
 	}

@@ -47,15 +47,17 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 		ChunkPos cp = ctx.chunkPos();
 		int x = cp.getMinBlockX();
 		int z = cp.getMinBlockZ();
-		int cx = x + 7;
-		int cz = z + 7;
-		int floor = oceanFloorY(ctx, cx, cz);
+		BoundingBox probe = StructurePiece.makeBoundingBox(x, 0, z, Direction.NORTH, WIDTH, 1, DEPTH);
+		var floorOpt = locateSubmergedFloor(ctx, probe, 16, 12);
+		if (floorOpt.isEmpty()) return Optional.empty();
+		int floor = floorOpt.getAsInt();
 		int sea = ctx.chunkGenerator().getSeaLevel();
 		int depthBelowSea = sea - floor;
-		if (depthBelowSea < 16 || depthBelowSea > 50) return Optional.empty();
+		if (depthBelowSea > 50) return Optional.empty();
 		int h = Math.clamp(depthBelowSea + BASE + 10, OceanRules.WATCHTOWER_MIN_HEIGHT, 64);
 		KelpSpireWatchtowerPiece piece = new KelpSpireWatchtowerPiece(x, floor - BASE, z, Direction.NORTH, h);
-		return Optional.of(new Structure.GenerationStub(new BlockPos(cx, floor, cz), b -> b.addPiece(piece)));
+		BlockPos center = probe.getCenter();
+		return Optional.of(new Structure.GenerationStub(new BlockPos(center.getX(), floor, center.getZ()), b -> b.addPiece(piece)));
 	}
 
 	@Override
@@ -91,10 +93,17 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 				}
 			}
 		}
-		// Exterior brass rib buttresses & kelp spire overgrowth around diving bell corners
+		// Exterior brass rib buttresses, diagonal stair braces & kelp spire overgrowth around diving bell corners
+		set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.SOUTH, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 1, 1);
+		set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.NORTH, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 1, 13);
+		set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.EAST, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 1, BASE + 1, cz);
+		set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.WEST, false).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 13, BASE + 1, cz);
 		for (int bx : new int[] {1, 13}) {
 			for (int bz : new int[] {1, 13}) {
-				for (int y = BASE + 1; y < dockY - 1; y++) {
+				set(level, bb, COPPER_OXIDIZED, bx, BASE, bz);
+				set(level, bb, dev.wildercord.ocean.OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState()
+					.trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), bx, BASE + 1, bz);
+				for (int y = BASE + 2; y < dockY - 1; y++) {
 					set(level, bb, Blocks.KELP_PLANT.defaultBlockState(), bx, y, bz);
 				}
 				set(level, bb, Blocks.KELP.defaultBlockState(), bx, dockY - 1, bz);

@@ -42,11 +42,13 @@ public final class HydrothermalForgePiece extends OceanPiece {
 		ChunkPos cp = ctx.chunkPos();
 		int x = cp.getMinBlockX();
 		int z = cp.getMinBlockZ();
-		int floor = oceanFloorY(ctx, x + CX, z + CZ);
-		int sea = ctx.chunkGenerator().getSeaLevel();
-		if (sea - floor < 16) return Optional.empty();
+		BoundingBox probe = StructurePiece.makeBoundingBox(x, 0, z, Direction.NORTH, WIDTH, 1, DEPTH);
+		var floorOpt = locateSubmergedFloor(ctx, probe, 16, 10);
+		if (floorOpt.isEmpty()) return Optional.empty();
+		int floor = floorOpt.getAsInt();
 		HydrothermalForgePiece piece = new HydrothermalForgePiece(x, floor - BASE, z, Direction.NORTH);
-		return Optional.of(new Structure.GenerationStub(new BlockPos(x + CX, floor, z + CZ), b -> b.addPiece(piece)));
+		BlockPos center = probe.getCenter();
+		return Optional.of(new Structure.GenerationStub(new BlockPos(center.getX(), floor, center.getZ()), b -> b.addPiece(piece)));
 	}
 
 	@Override
@@ -125,6 +127,13 @@ public final class HydrothermalForgePiece extends OceanPiece {
 			set(level, bb, COPPER_BLOCK, i, domeY, 18);
 			set(level, bb, COPPER_BLOCK, 8, domeY, i);
 			set(level, bb, COPPER_BLOCK, 18, domeY, i);
+		}
+		// Stepped blackstone stair corbel collars bracing the overhanging forge dome
+		for (int i = 9; i <= 17; i += 2) {
+			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.SOUTH, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), i, domeY - 1, 7);
+			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.NORTH, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), i, domeY - 1, 19);
+			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.EAST, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 7, domeY - 1, i);
+			set(level, bb, stair(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS, Direction.WEST, true).trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), 19, domeY - 1, i);
 		}
 		for (int x = 8; x <= 18; x++) {
 			for (int z = 8; z <= 18; z++) {

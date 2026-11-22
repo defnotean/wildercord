@@ -319,6 +319,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 
 				SingingMoonWhale whale = OceanEntities.SINGING_MOON_WHALE.create(l, EntitySpawnReason.COMMAND);
 				poseMob(whale, 2.8, 94.0, -2.0, 64f);
+				whale.setSinging(true);
 				l.addFreshEntity(whale);
 				check(whale.getMaxHealth() == OceanRules.MOON_WHALE_HP, "Moon-Whale HP == 220");
 				friendlyIds[5] = whale.getUUID();

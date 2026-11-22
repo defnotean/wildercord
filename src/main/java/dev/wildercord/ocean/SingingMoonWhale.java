@@ -64,6 +64,11 @@ public class SingingMoonWhale extends PathfinderMob {
 		return entityData.get(SINGING);
 	}
 
+	public void setSinging(boolean singing) {
+		this.songActiveTicks = singing ? 60 : 0;
+		entityData.set(SINGING, singing);
+	}
+
 	@Override
 	protected void registerGoals() {
 		goalSelector.addGoal(4, new RandomSwimmingGoal(this, 0.85, 60));
