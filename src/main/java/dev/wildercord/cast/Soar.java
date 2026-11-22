@@ -399,7 +399,7 @@ public final class Soar {
 		cushion(player);
 		switch (ending) {
 			case RAN_OUT -> {
-				SoarVfx.setDown(player.level(), player);
+				SoarVfx.setDown(((ServerLevel) player.level()).level(), player);
 				tell(player, "soar_ended", "The wind sets you down gently", WIND_TEXT);
 			}
 			case GROUNDED -> {
@@ -414,7 +414,7 @@ public final class Soar {
 				SoarVfx.setDown((ServerLevel) player.level(), player);
 				tell(player, "soar_travelled", "The wind doesn't follow you between worlds", WIND_TEXT);
 			}
-			case TAKEN -> SoarVfx.setDown(player.level(), player);
+			case TAKEN -> SoarVfx.setDown(((ServerLevel) player.level()).level(), player);
 		}
 	}
 

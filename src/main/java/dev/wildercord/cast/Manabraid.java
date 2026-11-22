@@ -54,7 +54,7 @@ public final class Manabraid {
    pc=Spellbooks.cord(p);tc=Spellbooks.cord(t);pcopy=pc.copy();tcopy=tc.copy();pm=Spellbooks.mana(p);tm=Spellbooks.mana(t);maximum=Mana.max(t);pr=p.getAttachedOrElse(DONOR_READY,0L);tr=t.getAttachedOrElse(RECEIVE_READY,0L);}
   boolean same(ServerPlayer p,ServerPlayer t){return p.position().equals(ppos)&&t.position().equals(tpos)&&Spellbooks.cord(p)==pc&&Spellbooks.cord(t)==tc&&ItemStack.matches(pc,pcopy)&&ItemStack.matches(tc,tcopy)
    &&Spellbooks.mana(p)==pm&&Spellbooks.mana(t)==tm&&Mana.max(t)==maximum&&p.getAttachedOrElse(DONOR_READY,0L)==pr&&t.getAttachedOrElse(RECEIVE_READY,0L)==tr
-   &&CampConcordAdmission.cell(p,(ServerLevel) p.level(),a)&&CampConcordAdmission.cell(t,(ServerLevel) t.level(),b)&&(ServerLevel) p.level().getBlockState(a).equals(as)&&(ServerLevel) t.level().getBlockState(b).equals(bs);}
+   &&CampConcordAdmission.cell(p,(ServerLevel) p.level(),a)&&CampConcordAdmission.cell(t,(ServerLevel) t.level(),b)&&p.level().getBlockState(a).equals(as)&&t.level().getBlockState(b).equals(bs);}
  }
  private static void accept(Offer o,ServerPlayer p,ServerPlayer t,long now){
   if(!ACTIVE.remove(o.donor,o))return;

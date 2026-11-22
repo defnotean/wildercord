@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.*;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 /** Functional fungal garden and investigation. Plants never spread; neither shelter nor magic prints resources. */
 public final class FungalGarden {
  private FungalGarden() {}
@@ -47,7 +48,7 @@ public final class FungalGarden {
    if(p.isSpectator() || !p.isAlive() || hand!=InteractionHand.OFF_HAND)return InteractionResult.PASS;
    if(p instanceof ServerPlayer sp) {
     if(!p.hasEffect(net.minecraft.world.effect.MobEffects.POISON) || clock(sp)<sp.getAttachedOrElse(BREATHER_READY,0L)) {p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.fungal.filter_rest"), true);return InteractionResult.SUCCESS;}
-    sp.setAttached(BREATHER_READY,clock(sp)+200);var stack=p.getItemInHand(hand);p.getCooldowns().addCooldown(stack,200);stack.hurtAndBreak(1,sp,dev.wildercord.compat.McHands.slot(hand));p.removeEffect(net.minecraft.world.effect.MobEffects.POISON);p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS,60,0));Feels.sound(sp.level(),p.position(),"fungal_filter",.5F,1);
+    sp.setAttached(BREATHER_READY,clock(sp)+200);var stack=p.getItemInHand(hand);p.getCooldowns().addCooldown(stack,200);stack.hurtAndBreak(1,sp,dev.wildercord.compat.McHands.slot(hand));p.removeEffect(net.minecraft.world.effect.MobEffects.POISON);p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS,60,0));Feels.sound(((ServerLevel) sp.level()).level(),p.position(),"fungal_filter",.5F,1);
    }return InteractionResult.SUCCESS;
   }
  });
@@ -62,7 +63,7 @@ public final class FungalGarden {
   ServerPlayConnectionEvents.JOIN.register((handler,sender,server) -> {var p=handler.player;long left=p.getAttachedOrElse(BREATHER_READY,0L)-clock(p);if(left>0)p.getCooldowns().addCooldown(new ItemStack(BREATHER),(int)Math.min(200,left));});
   WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {
    if(!(caster instanceof ServerPlayer p) || !Casters.mayBuild(p) || effects.stream().noneMatch(e -> e.element().equals("life")))return;
-   var center=BlockPos.containing(point);for(var at:BlockPos.betweenClosed(center.offset(-1,-1,-1),center.offset(1,1,1))) {if(!p.level().hasChunkAt(at) || !Casters.mayEdit(p,p.level(),at))continue;var s=p.level().getBlockState(at);if(s.is(GLOWCAP) && s.getValue(GlowcapBlock.AGE)==0 && GlowcapBlock.conditions(p.level(),at))p.level().setBlock(at,s.setValue(GlowcapBlock.AGE,1),Block.UPDATE_CLIENTS);}
+   var center=BlockPos.containing(point);for(var at:BlockPos.betweenClosed(center.offset(-1,-1,-1),center.offset(1,1,1))) {if(!((ServerLevel) p.level()).level().hasChunkAt(at) || !Casters.mayEdit(p,((ServerLevel) p.level()).level(),at))continue;var s=((ServerLevel) p.level()).level().getBlockState(at);if(s.is(GLOWCAP) && s.getValue(GlowcapBlock.AGE)==0 && GlowcapBlock.conditions(((ServerLevel) p.level()).level(),at))((ServerLevel) p.level()).level().setBlock(at,s.setValue(GlowcapBlock.AGE,1),Block.UPDATE_CLIENTS);}
   });
  }
 }

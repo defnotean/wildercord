@@ -26,7 +26,7 @@ public final class EventCommand {
 	public static void init() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
 			Commands.literal("wildercord")
-				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+				.requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(Commands.literal("event")
 					.then(kind("mana_storm"))
 					.then(kind("starfall"))

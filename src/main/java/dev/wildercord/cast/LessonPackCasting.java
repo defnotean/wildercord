@@ -400,7 +400,7 @@ public final class LessonPackCasting {
         boolean removed = switch (placed) {
             case Gate g -> GATES.remove(g.player, g); case Line l -> LINES.remove(l.player, l); case Rod r -> RODS.remove(r.player, r); default -> false;
         };
-        if (placed instanceof Line l && removed && l.level == l.player.level()) Fx.sound(l.level, l.player.position(), SoundEvents.LEAD_BREAK, .5F, 1.2F);
+        if (placed instanceof Line l && removed && l.level == ((ServerLevel) l.player.level()).level()) Fx.sound(l.level, l.player.position(), SoundEvents.LEAD_BREAK, .5F, 1.2F);
         var view = placed.player.getAttached(LessonPackState.VIEW);
         if (view != null && view.lesson() == placed.lesson.ordinal()) placed.player.removeAttached(LessonPackState.VIEW);
     }

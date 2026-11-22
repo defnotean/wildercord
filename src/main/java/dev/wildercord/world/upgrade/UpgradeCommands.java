@@ -18,7 +18,7 @@ public final class UpgradeCommands {
 		catch(Exception ex){context.getSource().sendFailure(Component.literal("World upgrade refused: "+ex.getMessage()));return 0;}
 	}
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-		var root=Commands.literal("wildercord-upgrade").requires(Commands.hasPermission(Commands.LEVEL_OWNERS));
+		var root=Commands.literal("wildercord-upgrade").requires(s -> s.hasPermission(Commands.LEVEL_OWNERS));
 		root.then(Commands.literal("status").executes(c->run(c,ctx->{
 			var s=WorldUpgrades.session(ctx.getSource().getServer());
 			return "Writes: "+(s.enabled?"enabled this session":"OFF")+"; claims: "+(UpgradeClaims.configured()?"adapters configured":s.manualNoClaims?"MANUAL REVIEW, no automatic claim verification":"NO_PROVIDER_CONFIGURED")

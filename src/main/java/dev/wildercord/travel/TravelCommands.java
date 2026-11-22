@@ -69,9 +69,9 @@ public final class TravelCommands {
 			.executes(ctx -> Warps.list(player(ctx)))
 			.then(argument(NAME, StringArgumentType.word()).suggests(WARPS).executes(ctx -> Warps.go(player(ctx), name(ctx), operator(ctx)))));
 		dispatcher.register(literal("warps").executes(ctx -> Warps.list(player(ctx))));
-		dispatcher.register(literal("setwarp").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+		dispatcher.register(literal("setwarp").requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
 			.then(argument(NAME, StringArgumentType.word()).suggests(WARPS).executes(ctx -> Warps.set(player(ctx), name(ctx)))));
-		dispatcher.register(literal("delwarp").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+		dispatcher.register(literal("delwarp").requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
 			.then(argument(NAME, StringArgumentType.word()).suggests(WARPS).executes(ctx -> Warps.delete(player(ctx), name(ctx)))));
 
 		dispatcher.register(literal("tpa")

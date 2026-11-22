@@ -22,6 +22,7 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerLevel;
 /** Territorial cap consumer with a committed physical root rake and a short releasable hold. */
 public final class RootmoltStrider extends Monster {
  public static final int IDLE=0,WARNING=1,RAKING=2,HOLDING=3,RECOVERING=4,BROWSING=5;
@@ -50,7 +51,7 @@ public final class RootmoltStrider extends Monster {
  private void release() {if(held!=null && held.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(getUUID())) {held.removeEffect(RootmoltContent.TETHER);held.setAttached(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER);}held=null;}
  private void recover(ServerLevel l) {release();setTarget(null);attackReady=Math.max(attackReady,l.getGameTime()+RootmoltRules.ATTACK_REST);pose(RECOVERING,RootmoltRules.RECOVERY);}
  /** Authoritative visible bell answer. Range/ownership/rest are checked by the relic caller too. */
- public boolean answerBell(ServerPlayer p) {if(!(level() instanceof ServerLevel l) || !isAlive() || isRemoved() || p.isSpectator() || p.isCreative() || !p.isAlive() || p.level()!=l || distanceToSqr(p)>25 || !hasLineOfSight(p) || (pose()!=WARNING && pose()!=RAKING && pose()!=HOLDING))return false;RootmoltContent.countered(p,this);recover(l);Feels.sound(l,position(),"rootmolt_release",.5F,1);return true;}
+ public boolean answerBell(ServerPlayer p) {if(!(level() instanceof ServerLevel l) || !isAlive() || isRemoved() || p.isSpectator() || p.isCreative() || !p.isAlive() || ((ServerLevel) p.level()).level()!=l || distanceToSqr(p)>25 || !hasLineOfSight(p) || (pose()!=WARNING && pose()!=RAKING && pose()!=HOLDING))return false;RootmoltContent.countered(p,this);recover(l);Feels.sound(l,position(),"rootmolt_release",.5F,1);return true;}
  @Override public boolean hurtServer(ServerLevel l,DamageSource source,float amount) {boolean wasCounter=pose()==WARNING || pose()==RAKING || pose()==HOLDING;boolean hit=super.hurtServer(l,source,amount);if(hit) {if(wasCounter && source.getEntity() instanceof ServerPlayer p && source.getDirectEntity()==p && source.is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK) && !dev.wildercord.cast.Dungeons.spellLanding())RootmoltContent.countered(p,this);recover(l);if(source.getEntity() instanceof LivingEntity e && valid(e))setTarget(e);}return hit;}
  @Override public void die(DamageSource s) {release();super.die(s);}
  @Override public void remove(RemovalReason reason) {release();super.remove(reason);}

@@ -221,7 +221,7 @@ public final class RelayCircles {
 		HeartCircles.onCast(player);
 		if (!focus.valid()) { cancel(player); return; }
 		player.setAttached(RelayState.VIEW, new RelayState(RelayState.PLACED, slot, focus.created, focus.expires, at, at, focus.color));
-		Fx.sound(player.level(), at, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME, .55F, 1.1F);
+		Fx.sound(((ServerLevel) player.level()).level(), at, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME, .55F, 1.1F);
 		dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(player, slot, runes, cost);
 		if (!focus.valid()) cancel(player);
 	}

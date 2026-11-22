@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Warps: public places anyone can go to with {@code /warp <name>}, set and removed by operators
@@ -79,7 +80,7 @@ public final class Warps extends SavedData {
 		}
 		boolean moved = of(player.level().getServer()).put(name, Spot.of(player));
 		Travel.good(player, moved ? "warp_moved" : "warp_set", Travel.name(name));
-		TravelFx.mark(player.level(), player.position());
+		TravelFx.mark(((ServerLevel) player.level()).level(), player.position());
 		return 1;
 	}
 

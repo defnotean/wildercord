@@ -6,6 +6,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Homes: {@code /sethome [name]}, {@code /home [name]}, {@code /renamehome <name> <new name>}, {@code /delhome <name>} and {@code /homes}
@@ -37,7 +38,7 @@ public final class Homes {
 		boolean usual = name.equals(TravelRules.DEFAULT_HOME);
 		String key = (check == TravelRules.HomeCheck.REPLACE ? "home_moved" : "home_set") + (usual ? "_default" : "");
 		Travel.good(player, key, Travel.name(name));
-		TravelFx.mark(player.level(), player.position());
+		TravelFx.mark(((ServerLevel) player.level()).level(), player.position());
 		return 1;
 	}
 

@@ -89,7 +89,7 @@ public final class SleepingBlades {
 		if (drawingAt((ServerLevel) p.level(), at)) { say(p, "busy"); return; }
 		stone.phase(0); DRAWS.put(p.getUUID(), new Draw((ServerLevel) p.level(), at.immutable(), p.position(), 0));
 		p.level().scheduleTick(at, STONE, 20);
-		Feels.sound(p.level(), Vec3.atCenterOf(at), "aura_blade_stone_listen", .7F, 1); say(p, "begin");
+		Feels.sound(((ServerLevel) p.level()).level(), Vec3.atCenterOf(at), "aura_blade_stone_listen", .7F, 1); say(p, "begin");
 	}
 	private static boolean ready(ServerPlayer p, ServerLevel level, BlockPos at, Vec3 start) {
 		return SleepingBladeRules.intent(Aura.stage(p), BondedBlades.on(p), p.getMainHandItem().isEmpty(), BondedBlades.standing(p))
@@ -113,7 +113,7 @@ public final class SleepingBlades {
 			if (elapsed < SleepingBladeRules.DRAW_TICKS) {
 				e.setValue(new Draw(d.level(), d.at(), d.start(), elapsed)); stone.phase(Math.min(3, elapsed / 30));
 				if (elapsed % 30 == 0) {
-					Feels.sound(d.level(), Vec3.atCenterOf(d.at()), "aura_blade_stone_strain", .65F, .85F + elapsed / 240F);
+					Feels.sound(((ServerLevel) d.level()).level(), Vec3.atCenterOf(d.at()), "aura_blade_stone_strain", .65F, .85F + elapsed / 240F);
 					AuraFx.groundScar(d.level(), Vec3.atBottomCenterOf(d.at()), 1.5 + elapsed / 60F, 35, 2);
 				}
 				if (elapsed % 20 == 0) p.displayClientMessage(Component.translatable("message.wildercord.sleeping_blade.progress", elapsed / 20, 6), true);
@@ -124,7 +124,7 @@ public final class SleepingBlades {
 				p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY); stone.phase(0); say(p, "failed"); continue;
 			}
 			stone.claim(p.getUUID()); AuraApi.addResonance(p, SleepingBladeRules.RESONANCE, "sleeping_blade"); history(p);
-			Feels.sound(d.level(), Vec3.atCenterOf(d.at()), "aura_blade_stone_draw", .85F, 1);
+			Feels.sound(((ServerLevel) d.level()).level(), Vec3.atCenterOf(d.at()), "aura_blade_stone_draw", .85F, 1);
 			AuraFx.groundScar(d.level(), Vec3.atBottomCenterOf(d.at()), 3.5, 100, 2); say(p, "claimed");
 		}
 	}

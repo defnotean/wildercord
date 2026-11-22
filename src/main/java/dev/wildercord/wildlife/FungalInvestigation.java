@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 /** Six finite discovery flags and one claimed reward, shared across sites and retained through death. */
 public final class FungalInvestigation {
  private FungalInvestigation() {}
@@ -21,7 +22,7 @@ public final class FungalInvestigation {
   if(!(p.level().getBlockEntity(at) instanceof BreathmarkEntity e) || !e.authentic()) {p.displayClientMessage(Component.translatable("message.wildercord.fungal.replica"), true);return;}
   if(!knows(p,FIRST)) {hint(p);return;}
   int kind=p.level().getBlockState(at).getValue(BreathmarkBlock.KIND);String key=kind==0?ROOT:AIR;
-  if(remember(p,key)) {give(p,new ItemStack(kind==0?FungalGarden.ROOT_NOTES:FungalGarden.AIR_NOTES));Feels.sound(p.level(),p.position(),"fungal_mark_read",.45F,1);}
+  if(remember(p,key)) {give(p,new ItemStack(kind==0?FungalGarden.ROOT_NOTES:FungalGarden.AIR_NOTES));Feels.sound(((ServerLevel) p.level()).level(),p.position(),"fungal_mark_read",.45F,1);}
   hint(p);
  }
  public static String next(ServerPlayer p) {for(var k:List.of(FIRST,ROOT,AIR,HARVEST,ROOF,CRAFT))if(!knows(p,k))return switch(k) {case FIRST -> "snail";case ROOT -> "root";case AIR -> "air";case HARVEST -> "harvest";case ROOF -> "roof";default -> "breather";};return knows(p,DONE)?"done":"return";}
@@ -29,7 +30,7 @@ public final class FungalInvestigation {
  public static boolean finish(ServerPlayer p,BlockPos at) {
   if(!actor(p) || !(p.getMainHandItem().is(FungalGarden.BREATHER) || p.getOffhandItem().is(FungalGarden.BREATHER)) || !p.level().hasChunkAt(at) || !p.level().getBlockState(at).is(FungalGarden.NURSERY) || p.distanceToSqr(at.getX()+.5,at.getY()+.5,at.getZ()+.5)>16 || !p.level().mayInteract(p,at) || !visible(p,at))return false;
   if(!next(p).equals("return")) {hint(p);return false;}
-  remember(p,DONE);give(p,new ItemStack(FungalGarden.CONCLUSION));give(p,new ItemStack(dev.wildercord.content.WildercordItems.BLANK_RUNE,3));Feels.sound(p.level(),p.position(),"fungal_nursery_settle",.5F,1);hint(p);return true;
+  remember(p,DONE);give(p,new ItemStack(FungalGarden.CONCLUSION));give(p,new ItemStack(dev.wildercord.content.WildercordItems.BLANK_RUNE,3));Feels.sound(((ServerLevel) p.level()).level(),p.position(),"fungal_nursery_settle",.5F,1);hint(p);return true;
  }
  public static void harvested(ServerPlayer p) {if(actor(p) && knows(p,ROOT) && knows(p,AIR)) {remember(p,HARVEST);hint(p);}}
  public static void placed(ServerPlayer p) {if(actor(p) && knows(p,HARVEST)) {remember(p,ROOF);hint(p);}}

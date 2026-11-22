@@ -195,7 +195,7 @@ public final class AuraDominion {
 			if (owner == null || !owner.isAlive() || owner.level() != field.level() || now > field.until()) {
 				it.remove();
 				AuraVfx.dominionEnd(field.level(), field.centre(), field.radius(), field.color());
-				dev.wildercord.cast.feel.Feels.sound(field.level(), field.centre().add(0, 1, 0), "aura_dominion_fade", 1.0F, 1.0F);
+				dev.wildercord.cast.feel.Feels.sound(((ServerLevel) field.level()).level(), field.centre().add(0, 1, 0), "aura_dominion_fade", 1.0F, 1.0F);
 				if (owner != null) {
 					AuraPresence.Timers timers = AuraPresence.timers(owner);
 					if (timers.dominionUntil() > now) {

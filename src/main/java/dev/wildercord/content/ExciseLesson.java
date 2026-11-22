@@ -114,7 +114,7 @@ public final class ExciseLesson {
 		}
 		long nonce;
 		do { nonce = player.getRandom().nextLong(); } while (nonce == 0);
-		Reading reading = new Reading(player.level(), nonce, request, player.level().getGameTime(), 0);
+		Reading reading = new Reading(((ServerLevel) player.level()).level(), nonce, request, ((ServerLevel) player.level()).level().getGameTime(), 0);
 		if (!valid(player, reading)) return;
 		READINGS.put(player, reading);
 		ServerPlayNetworking.send(player, new Show(nonce, 0, true, false, request));
@@ -131,7 +131,7 @@ public final class ExciseLesson {
 		}
 		if (!MasterStudyRules.nextPage(reading.page(), packet.page())) return;
 		if (packet.page() < MasterStudyRules.PAGES) {
-			READINGS.put(player, new Reading(reading.level(), reading.nonce(), reading.request(), reading.began(), packet.page()));
+			READINGS.put(player, new Reading(((ServerLevel) reading.level()).level(), reading.nonce(), reading.request(), reading.began(), packet.page()));
 			ServerPlayNetworking.send(player, new Show(reading.nonce(), packet.page(), true, false));
 			return;
 		}

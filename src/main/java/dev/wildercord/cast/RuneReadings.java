@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Reading runes at runtime (see {@link RuneReading}): a rune learned starts unread, and each cast that holds it, and each
@@ -148,7 +149,7 @@ public final class RuneReadings {
 			player.displayClientMessage(Component.translatable("message.wildercord.rune_glimpsed", name).withStyle(ChatFormatting.GRAY), true);
 		} else if (stage == RuneReading.Stage.UNDERSTOOD) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.rune_understood", name).withColor(0xC8D8F0));
-			Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.6F, 1.25F);
+			Fx.sound(((ServerLevel) player.level()).level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.6F, 1.25F);
 		}
 	}
 }

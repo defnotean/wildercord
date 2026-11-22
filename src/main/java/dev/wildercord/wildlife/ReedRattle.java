@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
+import net.minecraft.server.level.ServerLevel;
 
 /** A physical warning-window answer; neither a spell nor a tame, with saved player and crab rests. */
 public final class ReedRattle {
@@ -46,7 +47,7 @@ public final class ReedRattle {
         p.setAttached(READY, now + REST_TICKS);
         p.getCooldowns().addCooldown(stack, REST_TICKS);
         stack.hurtAndBreak(1, p, dev.wildercord.compat.McHands.slot(hand));
-        Feels.sound(p.level(), crab.position(), "wetland_reed_rattle", .6F, 1);
+        Feels.sound(((ServerLevel) p.level()).level(), crab.position(), "wetland_reed_rattle", .6F, 1);
         p.displayClientMessage(Component.translatable("message.wildercord.reed_rattle.settle"), true);
         return true;
     }

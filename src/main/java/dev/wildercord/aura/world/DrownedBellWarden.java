@@ -120,7 +120,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	@Override protected void registerGoals(){}
 	@Override public boolean isPushable(){return false;}
 	@Override protected void doPush(Entity entity){}
-	@Override public boolean canBreatheUnderwater(){return true;}
+	@Override protected int decreaseAirSupply(int air){return air;} // 1.21.5 makes canBreatheUnderwater final
 	@Override public boolean removeWhenFarAway(double distance){return false;}
 
 	private void pose(int move,int ticks){pose(move,ticks,0);}

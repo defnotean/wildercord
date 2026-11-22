@@ -60,31 +60,31 @@ public final class McValueInput {
 	}
 
 	public boolean getBooleanOr(String key, boolean fallback) {
-		return tag.contains(key) ? tag.getBoolean(key) : fallback;
+		return tag.getBooleanOr(key, fallback);
 	}
 
 	public byte getByteOr(String key, byte fallback) {
-		return tag.contains(key) ? tag.getByte(key) : fallback;
+		return tag.getByteOr(key, fallback);
 	}
 
 	public int getIntOr(String key, int fallback) {
-		return tag.contains(key) ? tag.getInt(key) : fallback;
+		return tag.getIntOr(key, fallback);
 	}
 
 	public long getLongOr(String key, long fallback) {
-		return tag.contains(key) ? tag.getLong(key) : fallback;
+		return tag.getLongOr(key, fallback);
 	}
 
 	public float getFloatOr(String key, float fallback) {
-		return tag.contains(key) ? tag.getFloat(key) : fallback;
+		return tag.getFloatOr(key, fallback);
 	}
 
 	public double getDoubleOr(String key, double fallback) {
-		return tag.contains(key) ? tag.getDouble(key) : fallback;
+		return tag.getDoubleOr(key, fallback);
 	}
 
 	public String getStringOr(String key, String fallback) {
-		return tag.contains(key) ? tag.getString(key) : fallback;
+		return tag.getStringOr(key, fallback);
 	}
 
 	private DynamicOps<Tag> ops() {

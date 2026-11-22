@@ -213,7 +213,7 @@ public final class Familiars {
 		Wisp wisp = live(player);
 		if (wisp != null) {
 			if (!quiet) {
-				Fx.sound(player.level(), wisp.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.6F, 1.6F);
+				Fx.sound(((ServerLevel) player.level()).level(), wisp.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.6F, 1.6F);
 			}
 			Fx.send((ServerLevel) wisp.level(), Wisp.elementParticle(out.element()), wisp.position().add(0, 0.2, 0), 8, 0.15, 0.02);
 			wisp.discard();
@@ -235,7 +235,7 @@ public final class Familiars {
 		}
 		set(player, bonds.withOut(bond.id()));
 		summon(player, bond);
-		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.4F);
+		Fx.sound(((ServerLevel) player.level()).level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.4F);
 		player.displayClientMessage(Component.translatable("message.wildercord.wisp.out", displayName(bond), bond.level()).withColor(color(bond)), true);
 	}
 
@@ -276,7 +276,7 @@ public final class Familiars {
 			default -> { }
 		}
 		wisp.flare();
-		Fx.sound(player.level(), wisp.position(), FamiliarContent.WISP_CHIME, 0.7F, wisp.mode() == Wisp.FOLLOW ? 1.3F : 0.9F);
+		Fx.sound(((ServerLevel) player.level()).level(), wisp.position(), FamiliarContent.WISP_CHIME, 0.7F, wisp.mode() == Wisp.FOLLOW ? 1.3F : 0.9F);
 	}
 
 	private static boolean wellstoneNear(ServerLevel level, BlockPos at) {

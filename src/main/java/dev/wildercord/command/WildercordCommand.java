@@ -38,7 +38,7 @@ public final class WildercordCommand {
 	public static void init() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
 			Commands.literal("wildercord")
-				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+				.requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(Commands.literal("practice")
 					.then(Commands.literal("enter").executes(ctx -> dev.wildercord.cast.PracticeRoom.enter(ctx.getSource().getPlayerOrException())))
 					.then(Commands.literal("leave").executes(ctx -> dev.wildercord.cast.PracticeRoom.leave(ctx.getSource().getPlayerOrException())))

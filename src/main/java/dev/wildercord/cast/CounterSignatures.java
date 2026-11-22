@@ -8,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 
 /** Finite counterplay signatures with post-bonus damage admission and permanent projectile provenance. */
 public final class CounterSignatures {
@@ -51,7 +52,7 @@ public final class CounterSignatures {
   var c=s.cast();var t=s.target();if(SCREENS.get(t.getUUID())!=s)return;
   String id=s.quiet()?"quietus":"nullcatch";
   if(!valid(c,t,s.quiet()) || c.level.getGameTime()>=s.until() || NextSignaturePayments.of(c).left(id+"_capture",1)<=0){
-   SCREENS.remove(t.getUUID());if(t.isAlive() && t.level()==c.level)CounterSignatureFx.release(c.level,t,s.quiet());return;
+   SCREENS.remove(t.getUUID());if(t.isAlive() && ((ServerLevel) t.level()).level()==c.level)CounterSignatureFx.release(c.level,t,s.quiet());return;
   }
   var batch=nearby(c,t);
   if(batch.saturated()){
