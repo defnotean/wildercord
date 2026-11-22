@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import dev.wildercord.client.compat.CameraRenderState;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.LivingEntity;

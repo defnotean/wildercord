@@ -1,7 +1,7 @@
 package dev.wildercord.client.combat;
 
-import net.minecraft.client.resources.model.EquipmentClientInfo;
-import net.minecraft.client.resources.model.EquipmentClientInfo.LayerType;
+import dev.wildercord.client.compat.vanilla.EquipmentClientInfo;
+import dev.wildercord.client.compat.vanilla.EquipmentClientInfo.LayerType;
 
 import java.util.Set;
 

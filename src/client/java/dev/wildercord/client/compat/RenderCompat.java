@@ -182,12 +182,12 @@ public final class RenderCompat {
 	}
 
 	/** 1.21.3 carries no item render state for the hands: only what the entity wears on its head. */
-	public static net.minecraft.client.renderer.item.ItemStackRenderState mainHandItemState(LivingEntityRenderState state) {
+	public static dev.wildercord.client.compat.vanilla.ItemStackRenderState mainHandItemState(LivingEntityRenderState state) {
 		return null;
 	}
 
 	/** Draws an item render state, if the platform has one. 1.21.8 draws hands from the stack instead. */
-	public static void submitItemState(net.minecraft.client.renderer.item.ItemStackRenderState item, PoseStack pose,
+	public static void submitItemState(dev.wildercord.client.compat.vanilla.ItemStackRenderState item, PoseStack pose,
 			MultiBufferSource buffers, int light, int overlay, int outlineColor) {
 		if (item != null) {
 			item.render(pose, buffers, light, overlay);
@@ -279,22 +279,22 @@ public final class RenderCompat {
 	}
 
 	/** 1.21.3 has no {@code Minecraft#getItemModelResolver}; the stand-in records what the item renderer needs. */
-	public static void resolveForLiving(net.minecraft.client.renderer.item.ItemStackRenderState state, ItemStack stack,
+	public static void resolveForLiving(dev.wildercord.client.compat.vanilla.ItemStackRenderState state, ItemStack stack,
 			net.minecraft.world.item.ItemDisplayContext context, net.minecraft.world.entity.LivingEntity entity) {
 		itemModelResolver().updateForLiving(state, stack, context, false, entity);
 	}
 
-	public static net.minecraft.client.renderer.item.ItemModelResolver itemModelResolver() {
-		return new net.minecraft.client.renderer.item.ItemModelResolver();
+	public static dev.wildercord.client.compat.vanilla.ItemModelResolver itemModelResolver() {
+		return new dev.wildercord.client.compat.vanilla.ItemModelResolver();
 	}
 
 	public static boolean shouldPlaySwapAnimation(ItemStack stack) {
 		return itemModelResolver().shouldPlaySwapAnimation(stack);
 	}
 
-	public static net.minecraft.client.resources.model.EquipmentAssetManager equipmentAssets(
+	public static dev.wildercord.client.compat.vanilla.EquipmentAssetManager equipmentAssets(
 			net.minecraft.client.renderer.entity.EntityRendererProvider.Context context) {
-		return new net.minecraft.client.resources.model.EquipmentAssetManager(context.getEquipmentModels());
+		return new dev.wildercord.client.compat.vanilla.EquipmentAssetManager(context.getEquipmentModels());
 	}
 
 	/** 1.21.3 names worn stacks {@code *Item} on Living/HumanoidRenderState, not {@code *Equipment}. */

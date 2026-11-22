@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.gametest.BraceNullItemDrawProbe;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 
 /** A displayed callback counts only while the original bound ItemStackRenderState.render executes. */

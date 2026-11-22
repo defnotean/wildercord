@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemModelResolver;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 
 /**

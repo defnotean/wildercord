@@ -166,7 +166,7 @@ public final class GametestCompat {
 	}
 
 	/** 1.21.4 carries no extents on the item render state: the display transform over the unit cube stands in. */
-	public static void visitItemExtents(net.minecraft.client.renderer.item.ItemStackRenderState item,
+	public static void visitItemExtents(dev.wildercord.client.compat.vanilla.ItemStackRenderState item,
 			java.util.function.Consumer<org.joml.Vector3f> point) {
 		var pose = new com.mojang.blaze3d.vertex.PoseStack();
 		item.transform().apply(false, pose);

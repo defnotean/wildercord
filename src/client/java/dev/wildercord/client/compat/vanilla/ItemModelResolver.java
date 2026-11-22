@@ -1,4 +1,4 @@
-package net.minecraft.client.renderer.item;
+package dev.wildercord.client.compat.vanilla;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;

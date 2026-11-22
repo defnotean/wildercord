@@ -10,7 +10,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

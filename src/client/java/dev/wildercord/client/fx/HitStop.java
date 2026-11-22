@@ -1,7 +1,7 @@
 package dev.wildercord.client.fx;
 
 import dev.wildercord.aura.AuraFxRules;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import dev.wildercord.client.compat.vanilla.ArmedEntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.Entity;

@@ -7,7 +7,7 @@ import dev.wildercord.gear.GearSlots;
 import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;

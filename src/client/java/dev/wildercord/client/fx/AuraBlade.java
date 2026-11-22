@@ -105,7 +105,7 @@ public final class AuraBlade {
 	public static void beginThirdPerson(EntityRenderState state, HumanoidArm arm, ItemStack stack) {
 		Glow glow = RenderStateData.get(state, GLOW);
 		current = glow != null && glow.arm() == arm && stack.is(Aura.WEAPONS) ? glow : null;
-		BondGlow.beginThirdPerson(state, state instanceof net.minecraft.client.renderer.entity.state.ArmedEntityRenderState armed && armed.mainArm == arm, stack);
+		BondGlow.beginThirdPerson(state, state instanceof dev.wildercord.client.compat.vanilla.ArmedEntityRenderState armed && armed.mainArm == arm, stack);
 		drawn = false;
 		firstPerson = false;
 	}

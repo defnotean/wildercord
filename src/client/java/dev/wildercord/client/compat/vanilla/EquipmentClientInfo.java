@@ -1,4 +1,4 @@
-package net.minecraft.client.resources.model;
+package dev.wildercord.client.compat.vanilla;
 
 import java.util.EnumMap;
 import java.util.List;

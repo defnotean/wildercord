@@ -1,4 +1,4 @@
-package net.minecraft.client.renderer.item;
+package dev.wildercord.client.compat.vanilla;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

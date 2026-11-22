@@ -9,13 +9,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.resources.model.EquipmentClientInfo.LayerType;
-import net.minecraft.client.resources.model.EquipmentAssetManager;
+import dev.wildercord.client.compat.vanilla.EquipmentClientInfo.LayerType;
+import dev.wildercord.client.compat.vanilla.EquipmentAssetManager;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.equipment.EquipmentAssets;
+import dev.wildercord.client.compat.vanilla.EquipmentAssets;
 
 import java.util.EnumMap;
 import dev.wildercord.client.render.RenderStateData;

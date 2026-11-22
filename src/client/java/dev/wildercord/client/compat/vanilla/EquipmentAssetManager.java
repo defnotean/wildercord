@@ -1,9 +1,10 @@
-package net.minecraft.client.resources.model;
+package dev.wildercord.client.compat.vanilla;
 
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.client.resources.model.EquipmentModelSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.equipment.EquipmentModel;
 

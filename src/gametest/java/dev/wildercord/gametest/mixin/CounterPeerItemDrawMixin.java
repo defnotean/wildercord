@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.gametest.CounterPeerRenderProbe;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.world.item.ItemDisplayContext;

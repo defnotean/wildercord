@@ -158,7 +158,7 @@ public final class BraceNullCaptureProbe {
 		return BraceNullItemDrawProbe.firstBegin(state, stack, buffer);
 	}
 	public static void handConsumed(PlayerRenderState state, dev.wildercord.client.compat.FirstPersonHandView hands,
-		net.minecraft.client.renderer.item.ItemStackRenderState item, com.mojang.blaze3d.vertex.PoseStack stack, float attack, float inverseHeight, net.minecraft.client.renderer.MultiBufferSource buffer) {
+		dev.wildercord.client.compat.vanilla.ItemStackRenderState item, com.mojang.blaze3d.vertex.PoseStack stack, float attack, float inverseHeight, net.minecraft.client.renderer.MultiBufferSource buffer) {
 		if (expected == null || !rendering || !expected.firstPerson() || state.id != expected.owner()) return;
 		observe(state);
 		var basis = HAND_BASES.remove(state);

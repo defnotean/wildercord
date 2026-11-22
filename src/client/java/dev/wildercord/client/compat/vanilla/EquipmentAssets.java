@@ -1,4 +1,4 @@
-package net.minecraft.world.item.equipment;
+package dev.wildercord.client.compat.vanilla;
 
 import net.minecraft.resources.ResourceLocation;
 

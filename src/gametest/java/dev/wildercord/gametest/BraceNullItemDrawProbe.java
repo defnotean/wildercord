@@ -5,7 +5,7 @@ import dev.wildercord.client.MastersArtPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import java.util.List;
 import net.minecraft.client.renderer.block.model.BakedQuad;

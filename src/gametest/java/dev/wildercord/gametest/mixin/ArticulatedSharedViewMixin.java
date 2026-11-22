@@ -10,7 +10,7 @@ import dev.wildercord.gametest.ArticulatedSharedRenderProbe;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.InteractionHand;
 import org.spongepowered.asm.mixin.Mixin;

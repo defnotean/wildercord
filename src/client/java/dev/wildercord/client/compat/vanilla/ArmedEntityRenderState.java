@@ -1,7 +1,7 @@
-package net.minecraft.client.renderer.entity.state;
+package dev.wildercord.client.compat.vanilla;
 
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
 /**
  * 1.21.3 stand-in for the 1.21.4 {@code ArmedEntityRenderState}. 1.21.3 has no such class: its

@@ -22,7 +22,7 @@ import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.renderer.entity.state.*;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.*;

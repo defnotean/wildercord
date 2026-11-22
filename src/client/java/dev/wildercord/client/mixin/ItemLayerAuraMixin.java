@@ -3,7 +3,7 @@ package dev.wildercord.client.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.client.fx.AuraBlade;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.client.resources.model.BakedModel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

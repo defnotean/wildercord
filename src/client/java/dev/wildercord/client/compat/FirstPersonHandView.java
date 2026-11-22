@@ -4,7 +4,7 @@ import dev.wildercord.client.MastersHandMotionState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import dev.wildercord.client.compat.vanilla.ItemStackRenderState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 
