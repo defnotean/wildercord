@@ -1033,11 +1033,16 @@ def _write_recipes_and_advancements(g):
         },
         any_of=True, xp=25,
     )
+    def entity_cond(entity_id):
+        if g.profile.is_26_2:
+            return [{"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"type": entity_id}}]
+        return {"type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": entity_id}}
+
     g.adv(
         "ocean/sanctuary_trader", "ocean/deep_diver", g.item("wildercord:abyssal_pearl"),
         LANG["advancements.wildercord.ocean.sanctuary_trader.title"],
         LANG["advancements.wildercord.ocean.sanctuary_trader.description"],
-        {"trigger": "minecraft:villager_trade", "conditions": {"villager": [{"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"type": "wildercord:brine_merchant"}}]}},
+        {"trigger": "minecraft:villager_trade", "conditions": {"villager": entity_cond("wildercord:brine_merchant")}},
         xp=20,
     )
     g.adv(
@@ -1050,7 +1055,7 @@ def _write_recipes_and_advancements(g):
         "ocean/sovereign_slayer", "ocean/trench_forged", g.item("wildercord:leviathan_heart_pearl"),
         LANG["advancements.wildercord.ocean.sovereign_slayer.title"],
         LANG["advancements.wildercord.ocean.sovereign_slayer.description"],
-        {"trigger": "minecraft:player_killed_entity", "conditions": {"entity": [{"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"type": "wildercord:thalassor"}}]}},
+        {"trigger": "minecraft:player_killed_entity", "conditions": {"entity": entity_cond("wildercord:thalassor")}},
         frame="goal", xp=100,
     )
 
