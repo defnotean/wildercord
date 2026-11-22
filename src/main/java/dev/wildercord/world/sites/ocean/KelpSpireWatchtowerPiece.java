@@ -154,7 +154,7 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 		}
 		int tipY = Math.min(totalHeight - 1, crownBase + 6);
 		fill(level, bb, 6, tipY - 1, 6, 8, tipY - 1, 8, COPPER_OXIDIZED);
-		set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState(), 7, tipY, 7);
+		set(level, bb, Blocks.LIGHTNING_ROD.waxed().oxidized().defaultBlockState(), 7, tipY, 7);
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 7, dockY + 3, 2);
 	}
 }
