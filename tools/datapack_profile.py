@@ -19,6 +19,16 @@ SPAWNER_CATEGORIES = (
     "water_creature",
 )
 
+# Placed features the authored regional biomes reuse from vanilla pools but which only
+# exist from 1.21.5 on; pre-1.21.5 profiles drop them so the registry can bind.
+POST_1_21_4_PLACED_FEATURES = frozenset({
+    "minecraft:patch_bush",
+    "minecraft:patch_firefly_bush_near_water",
+    "minecraft:patch_firefly_bush_near_water_swamp",
+    "minecraft:patch_firefly_bush_swamp",
+    "minecraft:trees_birch_and_oak_leaf_litter",
+})
+
 
 def read_mc_version(root=None):
     """Read minecraft_version from gradle.properties."""
@@ -92,6 +102,17 @@ class DataPackProfile:
     @property
     def before_26_2(self) -> bool:
         return self.version_tuple[:2] < (26, 2)
+
+    @property
+    def before_1_21_5(self) -> bool:
+        # 26.x tuples sort above (1, 21, 5), so this stays False for the modern branch.
+        return self.version_tuple < (1, 21, 5)
+
+    def item_model_definition(self, cases_model, fallback_model):
+        """Item definitions may only select by component from 1.21.5 on; older targets take the fallback."""
+        if self.before_1_21_5:
+            return {"type": "minecraft:model", "model": fallback_model}
+        return cases_model
 
     @property
     def is_obfuscated(self) -> bool:
@@ -274,6 +295,12 @@ class DataPackProfile:
 
     def apply_biome_spawns(self, biome, spawns_by_category, spawn_costs=None):
         """Attach mob spawns either at top level (26.2) or via natural_mob_spawns attribute (26.3)."""
+        if self.before_1_21_5 and "features" in biome:
+            # The authored biomes reuse vanilla feature pools; drop the placed features the
+            # target version never registered (firefly bushes, the savanna bush, leaf litter).
+            biome = dict(biome)
+            biome["features"] = [[f for f in stage if f not in POST_1_21_4_PLACED_FEATURES]
+                                 for stage in biome["features"]]
         costs = {} if spawn_costs is None else dict(spawn_costs)
         if not self.has_biome_attributes:
             # Before 1.21.11 biomes have no attributes block: fold the visual/audio attributes

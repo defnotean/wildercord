@@ -398,9 +398,9 @@ def write(g):
         cases.append({"when": method_id, "model": {"type": "minecraft:model", "model": f"wildercord:item/breathing_manual/{method_id}"}})
     g.save(manual_icon("unknown", 0x8A84A0, 0xD8D0F0), tex / "unknown.png")
     g.item_model("breathing_manual/unknown", "breathing_manual/unknown")
-    g.write_json(g.ASSETS / "items/breathing_manual.json", {"model": {
+    g.write_json(g.ASSETS / "items/breathing_manual.json", {"model": g.profile.item_model_definition({
         "type": "minecraft:select", "property": "minecraft:component", "component": "wildercord:breathing_method", "cases": cases,
-        "fallback": {"type": "minecraft:model", "model": "wildercord:item/breathing_manual/unknown"}}})
+        "fallback": {"type": "minecraft:model", "model": "wildercord:item/breathing_manual/unknown"}}, "wildercord:item/breathing_manual/unknown")})
 
     glow = g.ASSETS / "textures/entity/aura"
     g.save(white(), glow / "haze.png")

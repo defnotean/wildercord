@@ -1269,6 +1269,9 @@ def write(g):
         g.write_json(g.DATA / f"loot_table/entities/{creature}.json", LOOT[creature])
 
     for creature, ground in SPAWNS_ON.items():
+        # The camels_spawnable_on tag only exists from 1.21.5 on; older targets keep the sand entries.
+        if g.profile.before_1_21_5:
+            ground = [entry for entry in ground if entry != "#minecraft:camels_spawnable_on"]
         g.write_json(g.DATA / f"tags/block/spawns_on/{creature}.json", {"values": ground})
     g.write_json(g.RES / "data/minecraft/tags/item/repairs_turtle_helmet.json", {"replace": False, "values": ["wildercord:mossback_scute"]})
 

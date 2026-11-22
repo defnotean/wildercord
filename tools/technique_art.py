@@ -377,9 +377,9 @@ def write(g):
             cases.append({"when": part, "model": {"type": "minecraft:model", "model": f"wildercord:item/technique_scroll/{family}"}})
     g.save(scroll_icon(0x8A84A0), tex / "technique_scroll/unknown.png")
     g.item_model("technique_scroll/unknown", "technique_scroll/unknown")
-    g.write_json(g.ASSETS / "items/technique_scroll.json", {"model": {
+    g.write_json(g.ASSETS / "items/technique_scroll.json", {"model": g.profile.item_model_definition({
         "type": "minecraft:select", "property": "minecraft:component", "component": "wildercord:technique_part", "cases": cases,
-        "fallback": {"type": "minecraft:model", "model": "wildercord:item/technique_scroll/unknown"}}})
+        "fallback": {"type": "minecraft:model", "model": "wildercord:item/technique_scroll/unknown"}}, "wildercord:item/technique_scroll/unknown")})
 
 
 # ============================================================== English

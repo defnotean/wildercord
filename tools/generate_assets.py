@@ -321,9 +321,9 @@ def main():
         cases.append({"when": f"wildercord:{r['path']}", "model": {"type": "minecraft:model", "model": f"wildercord:item/rune/{r['path']}"}})
     save(item_art.silent_rune_icon() if item_art else stone("shape", (0x77, 0x72, 0x88), [[int(c) for c in row] for row in QUESTION], body=(0x24, 0x22, 0x2C)), tex / "rune/silent.png")
     item_model("rune/silent", "rune/silent")
-    write_json(ASSETS / "items/rune.json", {"model": {
+    write_json(ASSETS / "items/rune.json", {"model": profile.item_model_definition({
         "type": "minecraft:select", "property": "minecraft:component", "component": "wildercord:rune", "cases": cases,
-        "fallback": {"type": "minecraft:model", "model": "wildercord:item/rune/silent"}}})
+        "fallback": {"type": "minecraft:model", "model": "wildercord:item/rune/silent"}}, "wildercord:item/rune/silent")})
 
     save(item_art.blank_rune_icon() if item_art else stone("shape", (0x9A, 0x96, 0xA8), None, body=(0x6B, 0x67, 0x80)), tex / "blank_rune.png")
     item_model("blank_rune", "blank_rune")

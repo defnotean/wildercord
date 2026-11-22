@@ -677,9 +677,9 @@ def write(g):
         cases.append({"when": method_id, "model": {"type": "minecraft:model", "model": f"wildercord:item/manual_page/{method_id}"}})
     g.save(page_icon("unknown", 0x8A84A0, 0xD8D0F0), tex / "manual_page/unknown.png")
     g.item_model("manual_page/unknown", "manual_page/unknown")
-    g.write_json(g.ASSETS / "items/manual_page.json", {"model": {
+    g.write_json(g.ASSETS / "items/manual_page.json", {"model": g.profile.item_model_definition({
         "type": "minecraft:select", "property": "minecraft:component", "component": "wildercord:breathing_method", "cases": cases,
-        "fallback": {"type": "minecraft:model", "model": "wildercord:item/manual_page/unknown"}}})
+        "fallback": {"type": "minecraft:model", "model": "wildercord:item/manual_page/unknown"}}, "wildercord:item/manual_page/unknown")})
     for name in ("aura_shard", "breath_sash"):
         g.save(icon(name), tex / f"{name}.png")
         g.item_model(name, name)
