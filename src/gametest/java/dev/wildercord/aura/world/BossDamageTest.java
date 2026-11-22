@@ -425,7 +425,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 			});
 			c.waitTicks(10);
 			c.runOnClient(mc -> {
-				check(mc.screen == null, "no modal or death screen open during fire screenshot");
+				check(mc.gui.screen() == null, "no modal or death screen open during fire screenshot");
 				mc.player.setYRot(180.0F);
 				mc.player.setXRot(6.0F);
 				var custom = mc.level.getEntity(fireIds[0]);
