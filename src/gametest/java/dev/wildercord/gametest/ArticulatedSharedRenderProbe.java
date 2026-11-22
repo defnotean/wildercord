@@ -230,7 +230,7 @@ public final class ArticulatedSharedRenderProbe {
 		scope.rendering = true;
 		guard(scope.token, () -> {
 			scope.renderedTarget = Minecraft.getInstance().getMainRenderTarget();
-			scope.renderedTexture = scope.renderedTarget.getColorTexture();
+			scope.renderedTexture = scope.renderedTarget.getColorTextureId();
 			scope.renderWidth = scope.renderedTarget.width; scope.renderHeight = scope.renderedTarget.height;
 			scope.token.session.observe("renderTargetGeneration", identity(scope.renderedTarget));
 			scope.token.session.observe("renderTextureGeneration", identity(scope.renderedTexture));
@@ -401,19 +401,24 @@ public final class ArticulatedSharedRenderProbe {
 			if (token.session.ended()) persist(token, "late");
 		}, originalConsumer);
 		guard(token, () -> {
-			if (target != scope.renderedTarget || target.getColorTexture() != scope.renderedTexture
+			if (target != scope.renderedTarget || !java.util.Objects.equals(target.getColorTextureId(), scope.renderedTexture)
 				|| target.width != scope.renderWidth || target.height != scope.renderHeight) token.session.reject("render_target_changed_after_render");
-			COPYING.set(new CopyCall(token, target, wrapped, target.getColorTexture(), identity(target),
-				identity(target.getColorTexture()), target.width, target.height, previous));
+			COPYING.set(new CopyCall(token, target, wrapped, target.getColorTextureId(), identity(target),
+				identity(target.getColorTextureId()), target.width, target.height, previous));
 		});
 		try { originalCall.accept(target, wrapped); }
 		finally { COPYING.set(previous); }
+	}
+	public static void copyEnqueued(Object texture, int mip, RenderTarget target) {
+		CopyCall call = COPYING.get();
+		if (call == null || target != call.target()) return;
+		copyEnqueued(texture, mip, target, call.consumer());
 	}
 	public static void copyEnqueued(Object texture, int mip, RenderTarget target, Consumer<NativeImage> consumer) {
 		CopyCall call = COPYING.get();
 		if (call == null || target != call.target() || consumer != call.consumer()) return;
 		guard(call.token(), () -> {
-			if (texture != call.texture() || call.target().getColorTexture() != texture
+			if (!java.util.Objects.equals(texture, call.texture()) || !java.util.Objects.equals(call.target().getColorTextureId(), texture)
 				|| call.target().width != call.width() || call.target().height != call.height()) call.token().session.reject("render_target_changed_before_copy");
 			call.token().session.enqueue(SEQUENCE.incrementAndGet(), new ArticulatedRenderReceipt.Target(
 				call.targetId(), identity(texture), call.width(), call.height(), mip));

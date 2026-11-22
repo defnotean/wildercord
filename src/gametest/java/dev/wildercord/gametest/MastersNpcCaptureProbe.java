@@ -316,8 +316,7 @@ public final class MastersNpcCaptureProbe {
 			var projectedRays = capturedRays.stream().map(ray -> projectRay(mc, ray, fullWarningCoverage)).toList();
 			String renderFailure = failure;
 			Double capturedBodyProbeHeight = bodyProbeHeightPixels;
-			net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget(), image -> {
-				try (image) {
+			try (com.mojang.blaze3d.platform.NativeImage image = net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget())) {
 					var path = FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name + ".png");
 					Files.createDirectories(path.getParent());
 					image.writeToFile(path); // Exact native framebuffer, including failed evidence.
@@ -353,8 +352,7 @@ public final class MastersNpcCaptureProbe {
 						name, articulated ? "segmented" : "rigid", capturedTimeline.attackId, capturedTimeline.acceptedTick,
 						capturedTimeline.age, capturedBodies, capturedModels, capturedHands.size(), warnings.size());
 					result.complete(evidence);
-				} catch (Throwable problem) { result.completeExceptionally(problem); }
-			});
+			} catch (Throwable problem) { result.completeExceptionally(problem); }
 			
 			for (int spin = 0; spin < 200 && !result.isDone(); spin++) {
 				RenderSystem.executePendingTasks();

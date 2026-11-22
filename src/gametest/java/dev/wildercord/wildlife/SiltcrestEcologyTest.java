@@ -155,7 +155,7 @@ public final class SiltcrestEcologyTest implements FabricClientGameTest {
    mc.player.setYRot((float)Math.toDegrees(Math.atan2(-delta.x,delta.z)));mc.player.setXRot((float)-Math.toDegrees(Math.atan2(delta.y,delta.horizontalDistance())));
    // Render the identified current native model now. Readback/file I/O never waits or advances the harness here.
    var result=new CompletableFuture<Void>();dev.wildercord.gametest.compat.GametestCompat.updateCamera(mc.gameRenderer, DeltaTracker.ONE);mc.gameRenderer.render(DeltaTracker.ONE,true);dev.wildercord.gametest.compat.GametestCompat.renderFrame(mc,DeltaTracker.ONE);
-   net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget(),image->{try(image){var path=java.nio.file.Path.of("screenshots",filename+".png");java.nio.file.Files.createDirectories(path.getParent());image.writeToFile(path);result.complete(null);}catch(Throwable error){result.completeExceptionally(error);}});
+   try(var image=net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget())){var path=java.nio.file.Path.of("screenshots",filename+".png");java.nio.file.Files.createDirectories(path.getParent());image.writeToFile(path);result.complete(null);}catch(Throwable error){result.completeExceptionally(error);}
    return result;
   });
   if(frame==null)return null;

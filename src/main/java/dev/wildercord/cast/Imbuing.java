@@ -858,7 +858,7 @@ public final class Imbuing {
 		}
 
 		public static Ledger of(ServerLevel level) {
-			return level.getServer()dev.wildercord.compat.McSavedData.computeIfAbsent(.overworld().getDataStorage(), TYPE);
+			return dev.wildercord.compat.McSavedData.computeIfAbsent(level.getServer().overworld().getDataStorage(), TYPE);
 		}
 
 		/** Counts a new imbued item of {@code maker}'s and returns its serial. */

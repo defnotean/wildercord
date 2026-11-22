@@ -326,7 +326,7 @@ public final class CounterPeerRenderProbe {
         s.token.observe("actualArmor",armor(a));s.token.observe("actualShell",shell);s.token.observe("articulation",ArticulatedCombat.enabled());
         s.token.observe("shellAdapter",ArticulatedAuraShellRenderer.enabled());s.token.observe("originalTexture",source.texture());
     }
-    public static void renderBegin(){var s=CURRENT.get();if(s!=null){s.rendering=true;s.target=Minecraft.getInstance().getMainRenderTarget();s.texture=s.target.getColorTexture();}}
+    public static void renderBegin(){var s=CURRENT.get();if(s!=null){s.rendering=true;s.target=Minecraft.getInstance().getMainRenderTarget();s.texture=s.target.getColorTextureId();}}
     public static void renderEnd(boolean completed){var s=CURRENT.get();if(s!=null){s.rendering=false;if(completed){try{s.nativeBody.requireHealthy();if(s.token.expected.view().equals("remote")){s.nativeBody.requireComplete();s.token.observe("exactPrimaryBodySubmitVerified",true);}}catch(Throwable failure){s.token.reject("native_body_observer:"+failure);}s.token.rendered=SEQ.incrementAndGet();}}}
     public static <T> T passive(java.util.function.Supplier<T> observer,T fallback){var s=CURRENT.get();return s==null?fallback:s.nativeBody.observe(observer,fallback);}
     public static void passive(Runnable observer){var s=CURRENT.get();if(s!=null)s.nativeBody.observe(observer);}
@@ -635,7 +635,7 @@ public final class CounterPeerRenderProbe {
     private static String hashPose(java.util.function.Function<ArticulatedCombatPose.Joint,ArticulatedCombatPose.Transform> source,float weight){var text=new StringBuilder(Float.toHexString(weight));for(var j:ArticulatedCombatPose.Joint.values())text.append(j).append(source.apply(j));return hash(text.toString());}
     public static void screenshot(RenderTarget target,Consumer<NativeImage> consumer,java.util.function.BiConsumer<RenderTarget,Consumer<NativeImage>> original){
         var s=CURRENT.get();if(s==null){original.accept(target,consumer);return;}var token=s.token;
-        if(target!=s.target||target.getColorTexture()!=s.texture)token.reject("changed_render_target");
+        if(target!=s.target||!java.util.Objects.equals(target.getColorTextureId(),s.texture))token.reject("changed_render_target");
         validateStages(token, false);
         if(!token.failures.isEmpty())throw new AssertionError("Counter pre-readback render receipt rejected: "+token.failures);
         Consumer<NativeImage> wrapped=image->{synchronized(token){
@@ -644,11 +644,12 @@ public final class CounterPeerRenderProbe {
             if(!token.failures.isEmpty()){image.close();throw new AssertionError("Counter callback cannot save rejected frame: "+token.failures);}
             token.pixels=ArticulatedRenderReceipt.pixels(image.getWidth(),image.getHeight(),image::getPixel);
         }consumer.accept(image);};
-        var previous=COPYING.get();COPYING.set(new CopyCall(token,target,target.getColorTexture(),wrapped));try{original.accept(target,wrapped);}finally{COPYING.set(previous);}
+        var previous=COPYING.get();COPYING.set(new CopyCall(token,target,target.getColorTextureId(),wrapped));try{original.accept(target,wrapped);}finally{COPYING.set(previous);}
     }
+    public static void copyEnqueued(Object texture,int mip,RenderTarget target){var call=COPYING.get();if(call==null||call.target()!=target)return;copyEnqueued(texture,mip,target,call.consumer());}
     public static void copyEnqueued(Object texture,int mip,RenderTarget target,Consumer<NativeImage> consumer){
         var call=COPYING.get();if(call==null||call.target()!=target||call.consumer()!=consumer)return;var t=call.token();
-        if(texture!=call.texture()||target.getColorTexture()!=texture||mip!=0)t.reject("changed_copy_texture");
+        if(!java.util.Objects.equals(texture,call.texture())||!java.util.Objects.equals(target.getColorTextureId(),texture)||mip!=0)t.reject("changed_copy_texture");
         synchronized(t){if(t.copy!=null)t.reject("duplicate_copy");else t.copy=new Copy(t.extracted,t.rendered,SEQ.incrementAndGet(),target.width,target.height,Map.copyOf(t.observations),List.copyOf(t.passes),List.copyOf(t.draws));}
     }
     public static void success(Token t,Path path){try{t.image=ArticulatedRenderReceipt.bind(path,FabricLoader.getInstance().getGameDir());}catch(Exception failure){t.reject("png_binding:"+failure);}

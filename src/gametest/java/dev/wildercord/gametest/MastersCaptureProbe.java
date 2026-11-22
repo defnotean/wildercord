@@ -164,8 +164,7 @@ public final class MastersCaptureProbe {
 			float[] capturedProjection = handProjection;
 			HandMotion capturedMotion = handMotion;
 			int capturedHands = hands, capturedBodies = bodies;
-			net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget(), image -> {
-				try (image) {
+			try (com.mojang.blaze3d.platform.NativeImage image = net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget())) {
 					var path = FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name + ".png");
 					Files.createDirectories(path.getParent());
 					image.writeToFile(path); // Persist the exact native buffer, including rejected evidence.
@@ -178,8 +177,7 @@ public final class MastersCaptureProbe {
 						name, capturedHud, capturedBlade, pixels.cyan, pixels.largestSpanGui, pixels.fireFraction);
 					assertPixels(first, name, capturedBlade, pixels);
 					result.complete(null);
-				} catch (Throwable failure) { result.completeExceptionally(failure); }
-			});
+			} catch (Throwable failure) { result.completeExceptionally(failure); }
 			
 			for (int spin = 0; spin < 200 && !result.isDone(); spin++) {
 				RenderSystem.executePendingTasks();
