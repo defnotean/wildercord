@@ -233,6 +233,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	 * his flank, one every {@link MojitoRules#GUARD_EVERY} ticks, nearest first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
+		if(entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var box=new AABB(Vec3.atLowerCornerOf(groveMin),Vec3.atLowerCornerOf(groveMax).add(1,1,1));
 		var h=head();
 		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof Mojito) && inGrove(e.position(),0))
@@ -251,8 +252,9 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	/** The nearest player in the grove close enough to his bed to wake him, if any. */
 	private ServerPlayer wakeful(ServerLevel level){
 		var t=spot();
+		boolean rush=entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inGrove(p.position(),0)
-			&& MojitoRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z)).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
+			&& (rush || MojitoRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z))).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
 
 	private void dormant(ServerLevel level){

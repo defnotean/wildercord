@@ -183,6 +183,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	 * {@link SerpentRules#GUARD_EVERY} ticks, nearest the trunk first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
+		if(entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var t=trunk();
 		var box=new AABB(t,t).inflate(SerpentRules.ARENA,SerpentRules.LAIR_HEIGHT,SerpentRules.ARENA);
 		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof RootcoilSerpent)
@@ -200,7 +201,9 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	/** The nearest player close enough to the trunk to wake it, if any. */
 	private ServerPlayer wakeful(ServerLevel level){
 		var t=trunk();
-		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && SerpentRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z))
+		boolean rush=entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
+		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator()
+				&& ((rush && p.distanceToSqr(t)<=36*36) || SerpentRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z)))
 			.min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
 

@@ -226,6 +226,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	 * {@link HollowMatronRules#GUARD_EVERY} ticks, nearest first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
+		if(entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var box=new AABB(Vec3.atLowerCornerOf(hallMin),Vec3.atLowerCornerOf(hallMax).add(1,1,1));
 		var h=head();
 		// Her brood she spares while she fights; once she is back on her thread, they go too.
@@ -246,8 +247,9 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	/** The nearest player in the hall close enough to the floor under her to wake her, if any. */
 	private ServerPlayer wakeful(ServerLevel level){
 		var t=spot();
+		boolean rush=entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inHall(p.position(),0)
-			&& HollowMatronRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z)).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
+			&& (rush || HollowMatronRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z))).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
 
 	private void dormant(ServerLevel level){
