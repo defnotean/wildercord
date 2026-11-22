@@ -1125,7 +1125,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){
 			Feels.sound(server,head(),"aura_hollow_matron_death",1.8F,1);Guardians.reward(server,this,HollowMatronRules.TIER,bar,source);bar.removeAllPlayers();setNoGravity(false);
-			if(bound){LairRespawns.schedule(server,new LairRespawns.Entry("hollow_matron",hang.immutable(),rest,hallMin.immutable(),hallMax.immutable(),floor,entityData.get(ANCHOR),BlockPos.ZERO,List.copyOf(pillars),List.copyOf(sacs),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+			if(bound && !entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,new LairRespawns.Entry("hollow_matron",hang.immutable(),rest,hallMin.immutable(),hallMax.immutable(),floor,entityData.get(ANCHOR),BlockPos.ZERO,List.copyOf(pillars),List.copyOf(sacs),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		reeled=null;super.die(source);
 	}

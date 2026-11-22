@@ -1113,7 +1113,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			server.sendParticles(ParticleTypes.SOUL,getX(),getY()+1.6,getZ(),50,.8,1.2,.8,.05);
 			server.sendParticles(ParticleTypes.LARGE_SMOKE,getX(),getY()+1.6,getZ(),30,.6,1.2,.6,.03);
 			candles(server,false);lantern(server,false);
-			if(bound){LairRespawns.schedule(server,new LairRespawns.Entry("lantern_bearer",grave.immutable(),rest,hallMin.immutable(),hallMax.immutable(),0,0F,hook.immutable(),List.copyOf(candles),List.of(),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+			if(bound && !entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,new LairRespawns.Entry("lantern_bearer",grave.immutable(),rest,hallMin.immutable(),hallMax.immutable(),0,0F,hook.immutable(),List.copyOf(candles),List.of(),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		super.die(source);
 	}

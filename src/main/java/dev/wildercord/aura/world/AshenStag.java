@@ -995,7 +995,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){
 			Feels.sound(server,head(),"aura_ashen_stag_death",1.8F,1);Guardians.reward(server,this,AshenStagRules.TIER,bar,source);bar.removeAllPlayers();
-			if(bound){LairRespawns.schedule(server,LairRespawns.Entry.simple("ashen_stag",bed,rest,gladeMin,gladeMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+			if(bound && !entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,LairRespawns.Entry.simple("ashen_stag",bed,rest,gladeMin,gladeMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		super.die(source);
 	}

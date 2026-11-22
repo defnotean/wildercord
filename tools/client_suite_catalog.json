@@ -83,9 +83,9 @@
     ]
   },
   "area-regions-worldgen": {
-    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, and every dungeon's wards holding their rooms against a survival player.",
+    "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, every dungeon's wards holding their rooms against a survival player, and the forest White Rabbit leading players into Hollow Tree portals.",
     "purpose": "area",
-    "expectedCount": 11,
+    "expectedCount": 12,
     "entries": [
       "dev.wildercord.wildlife.RootmoltEncounterTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
@@ -97,7 +97,8 @@
       "dev.wildercord.wildlife.RainshieldAckTest",
       "dev.wildercord.wildlife.RainshieldFaultTest",
       "dev.wildercord.cast.RuneSealDoorTest",
-      "dev.wildercord.world.dungeons.DungeonWardSealTest"
+      "dev.wildercord.world.dungeons.DungeonWardSealTest",
+      "dev.wildercord.wildlife.WhiteRabbitHoleTest"
     ]
   },
   "area-items-crafting": {

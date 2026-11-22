@@ -41,6 +41,7 @@ For wetland, cave and highland wildlife, see [Lights Along the Bank]({{ '/world/
 | [Shrine Cats](#shrine-cats) | Cat Sanctuary, Sakura Villages | 4 unique guardians (`Yuki`, `Odie`, `Freya`, `Kuro`) | Sanctuary buffs & unique companion powers | Yield on Sanctuary floors, then tame with fish or Suzu Cat-Bell Charm |
 | [Sakura Villagers](#sakura-villagers) | Cat Sanctuary, Sakura Villages | 2 to 4 per village | Suzu Cat-Bell Charms, Blank Runes, lanterns, golden carrots, salmon | Use an emerald to trade |
 | [Thistle Hedgehog](#thistle-hedgehog) | Meadows, plains and forests | 1 to 3 | Nothing; brings you finds | A tameable pet that forages for you |
+| [White Rabbit](#white-rabbit) | Forests, birch forests, dark forests, taigas, cherry groves | Rare, alone | Leads you to a Hollow Ancient Tree | Step into its portal for a cave, treasure vault, or all bosses at once |
 
 Glimmer Dust, Mossback Scutes, Ember Tufts and Skyray Membranes each brew their potion from an Awkward Potion.
 
@@ -205,6 +206,18 @@ Six peaceful kimono-clad NPCs bow when greeted and trade role supplies for a sin
 | **Sakura Lantern Artisan** | Vermilion kimono, flat cap, brass spectacles, glowing dangling *chochin* pole | `4x Lantern` |
 | **Sakura Onsen Hostess** | Wisteria-blush *yukata*, gold obi bow, cedar towel bucket | `3x Golden Carrot` |
 | **Sakura Koi Fisherman** | Indigo wave-hem *happi*, weathered *kasa* hat, creel basket, bamboo rod | `4x Raw Salmon` |
+
+## White Rabbit
+{: #white-rabbit }
+
+A snowy white rabbit wearing a crimson collar ribbon and a brass pocket watch spawns rarely inside forest biomes (oak, birch, flower, dark, taiga, and cherry groves).
+
+- **Follow the trail.** Come near one and it checks its watch, chimes softly, and bounds ahead along an enchanted trail, pausing to wait if you fall too far behind.
+- **Hollow Ancient Tree.** At the end of its run sits a gnarled oak tree whose open doorway conceals a swirling **Rabbit-Hole Portal**. Once you catch up, the rabbit leaps straight down the burrow.
+- **Three Possible Fates.** Step into (or interact with) the dark portal inside the roots to tumble into one of three random destinations — each equipped with a **Return Burrow Portal** back to the woods:
+  1. **Random Underground Cavern:** drops you into a quiet crystal-and-ore cave deep beneath the earth.
+  2. **Wonderland Root-Vault:** a lantern-lit treasury packed with chests holding emeralds, diamonds, Mana Crystals, Aura Shards, and Torn Pages.
+  3. **All Bosses at Once:** a sunken deepslate colosseum where all **17 Wildercord bosses** awaken together in one colossal battle!
 
 ## Camp cooking
 

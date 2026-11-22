@@ -821,7 +821,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){
 			Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);Guardians.reward(server,this,BellWardenRules.TIER,bar,source);bar.removeAllPlayers();
-			if(bound){LairRespawns.schedule(server,LairRespawns.Entry.simple("drowned_bell_warden",vigil,rest,hallMin,hallMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+			if(bound && !entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,LairRespawns.Entry.simple("drowned_bell_warden",vigil,rest,hallMin,hallMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		super.die(source);
 	}

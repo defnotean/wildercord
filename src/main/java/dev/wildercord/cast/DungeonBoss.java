@@ -278,6 +278,11 @@ public abstract class DungeonBoss extends Monster {
 		return level.addFreshEntity(boss) ? boss : null;
 	}
 
+	/** Public arena-spawn entry point used by boss-rush chambers. */
+	public static <T extends DungeonBoss> T spawnInArena(ServerLevel level, EntityType<T> type, BlockPos altar, double lift) {
+		return place(level, type, altar, lift);
+	}
+
 	/** Tells everyone near. */
 	protected void announce(ServerLevel level, String key, int color) {
 		for (ServerPlayer player : level.players()) {

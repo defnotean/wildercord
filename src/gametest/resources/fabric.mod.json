@@ -90,6 +90,7 @@
       "dev.wildercord.world.sites.OathholdGuildAndLawTest",
       "dev.wildercord.world.sites.OathholdPrisonAndRebuildTest",
       "dev.wildercord.pet.CinnamonCompanionTest",
+      "dev.wildercord.wildlife.WhiteRabbitHoleTest",
       "dev.wildercord.gametest.WildercordFeatureTour"
     ]
   },

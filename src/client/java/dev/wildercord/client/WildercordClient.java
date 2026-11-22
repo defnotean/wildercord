@@ -77,6 +77,8 @@ public final class WildercordClient implements ClientModInitializer {
 		EntityRendererRegistry.register(dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT, dev.wildercord.client.wildlife.ShrineCatRenderer::new);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.SakuraVillagerRenderer.LAYER, dev.wildercord.client.wildlife.SakuraVillagerModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.wildlife.ShrineCatContent.SAKURA_VILLAGER, dev.wildercord.client.wildlife.SakuraVillagerRenderer::new);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.WhiteRabbitRenderer.LAYER, dev.wildercord.client.wildlife.WhiteRabbitModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.wildlife.WhiteRabbitContent.WHITE_RABBIT, dev.wildercord.client.wildlife.WhiteRabbitRenderer::new);
 		// The magical monsters of the wilds.
 		dev.wildercord.client.monster.MonsterClient.init();
 		dev.wildercord.client.auraworld.AuraWorldClient.init();

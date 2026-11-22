@@ -1077,6 +1077,9 @@ def write_lang(runes):
     import oathhold_citizens_art
     lang.update(oathhold_citizens_art.LANG)
     oathhold_citizens_art.write(sys.modules[__name__])
+    import white_rabbit_art
+    lang.update(white_rabbit_art.LANG)
+    white_rabbit_art.write(sys.modules[__name__])
     import magic_art  # 0.13 magic: the mage-hunter's skin, egg and loot.
     lang.update(magic_art.LANG)
     magic_art.write(sys.modules[__name__])

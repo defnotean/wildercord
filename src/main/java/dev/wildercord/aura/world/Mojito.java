@@ -1051,7 +1051,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			sound(server,head(),voice().deathSound().value(),2F,.5F);
 			Guardians.reward(server,this,MojitoRules.TIER,bar,source);
 			bar.removeAllPlayers();bolts.clear();trail.clear();waves.clear();clods.clear();entityData.set(THROWN,false);
-			if(bound){LairRespawns.schedule(server,LairRespawns.Entry.simple("mojito",bed,rest,groveMin,groveMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+			if(bound && !entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,LairRespawns.Entry.simple("mojito",bed,rest,groveMin,groveMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		super.die(source);
 	}
