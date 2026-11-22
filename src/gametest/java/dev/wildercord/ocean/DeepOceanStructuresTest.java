@@ -20,6 +20,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -85,12 +87,39 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 		context.waitTicks(5);
 	}
 
+	private static void directorUnderwater(ClientGameTestContext context, TestSingleplayerContext world, Vec3 eye, Vec3 target) {
+		world.getServer().runOnServer(server -> {
+			ServerLevel l = server.overworld();
+			ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+			p.setGameMode(GameType.SPECTATOR);
+			p.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 400, 0, false, false, false));
+			p.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, false, false, false));
+			p.teleportTo(l, eye.x, eye.y, eye.z, Set.<Relative>of(), yaw(eye, target), pitch(eye, target), false);
+		});
+		context.waitTicks(4);
+		context.runOnClient(mc -> {
+			mc.options.setCameraType(CameraType.FIRST_PERSON);
+			mc.setCameraEntity(mc.player);
+			if (!mc.gui.hud.isHidden()) {
+				mc.gui.hud.toggle();
+			}
+			mc.gui.toastManager().clear();
+			mc.gui.hud.getChat().clearMessages(false);
+		});
+		context.waitTicks(8);
+	}
+
 	private static void cut(ClientGameTestContext context, TestSingleplayerContext world, BlockPos anchor) {
 		context.runOnClient(mc -> mc.setCameraEntity(mc.player));
-		world.getServer().runOnServer(s -> s.overworld()
-			.getEntitiesOfClass(Display.TextDisplay.class, new AABB(anchor).inflate(140),
-				e -> e.entityTags().contains(CAM_TAG))
-			.forEach(Entity::discard));
+		world.getServer().runOnServer(s -> {
+			s.overworld()
+				.getEntitiesOfClass(Display.TextDisplay.class, new AABB(anchor).inflate(140),
+					e -> e.entityTags().contains(CAM_TAG))
+				.forEach(Entity::discard);
+			ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
+			p.removeAllEffects();
+			p.setGameMode(GameType.CREATIVE);
+		});
 		context.waitTicks(2);
 	}
 
@@ -175,7 +204,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				p.setGameMode(GameType.CREATIVE);
 				p.teleportTo(l, 24.5, 96.0, 24.5, Set.<Relative>of(), 0f, 35f, false);
 
-				prepareOceanBasin(l, -4, -4, 54, 54, 64, 80);
+				prepareOceanBasin(l, -16, -16, 66, 66, 64, 82);
 				placePiece(l, new CoralDomeSanctuaryPiece(0, 62, 0, Direction.NORTH));
 
 				check(countBlocks(l, 22, 65, 22, 26, 70, 26, Blocks.CONDUIT) == 1, "Coral-Dome has central Conduit");
@@ -185,7 +214,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 					"Coral-Dome spawns all 3 Brine-Merchants");
 			});
 			context.waitTicks(35);
-			director(context, world, domeOrigin, new Vec3(7.0, 84.5, 44.5), new Vec3(24.5, 67.5, 24.5));
+			directorUnderwater(context, world, new Vec3(6.0, 77.5, 48.0), new Vec3(24.5, 67.5, 24.5));
 			shot(context, "ocean_live_coral_dome_sanctuary");
 			cut(context, world, domeOrigin);
 
@@ -196,8 +225,8 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.teleportTo(l, 123.0, 86.0, 32.0, Set.<Relative>of(), 180f, 35f, false);
 
-				prepareOceanBasin(l, 96, -4, 152, 24, 64, 82);
-				placePiece(l, new SunkenGalleonPiece(100, 62, 0, Direction.EAST));
+				prepareOceanBasin(l, 92, -10, 156, 30, 64, 92);
+				placePiece(l, new SunkenGalleonPiece(100, 62, 0, Direction.SOUTH));
 
 				check(countBlocks(l, 100, 62, 0, 146, 90, 15, Blocks.DISPENSER) >= 4, "Sunken Galleon has broadside cannons");
 				check(countBlocks(l, 100, 62, 0, 146, 90, 15, Blocks.WOOL.white()) > 10, "Sunken Galleon has tattered sails");
@@ -205,7 +234,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 					"Sunken Galleon spawns Barnacle-Hulk Dredger");
 			});
 			context.waitTicks(35);
-			director(context, world, galleonOrigin, new Vec3(143.5, 86.0, 28.0), new Vec3(121.0, 72.5, 7.5));
+			directorUnderwater(context, world, new Vec3(146.0, 81.0, 26.0), new Vec3(122.0, 72.0, 7.5));
 			shot(context, "ocean_live_sunken_galleon");
 			cut(context, world, galleonOrigin);
 
@@ -228,7 +257,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				check(countBlocks(l, 200, 62, 0, 227, 84, 27, Blocks.BASALT) > 20, "Hydrothermal Forge has basalt chimneys");
 			});
 			context.waitTicks(35);
-			director(context, world, forgeOrigin, new Vec3(246.0, 89.0, 38.0), new Vec3(222.0, 74.5, 13.0));
+			director(context, world, forgeOrigin, new Vec3(248.0, 89.5, 38.0), new Vec3(222.0, 74.5, 13.0));
 			shot(context, "ocean_live_watchtower_and_forge");
 			cut(context, world, forgeOrigin);
 
@@ -239,8 +268,8 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				p.teleportTo(l, 332.0, 92.0, 68.0, Set.<Relative>of(), 180f, 35f, false);
 
-				prepareOceanBasin(l, 296, -4, 370, 70, 64, 82);
-				placePiece(l, new AbyssalCitadelPiece(300, 62, 0, Direction.EAST));
+				prepareOceanBasin(l, 292, -8, 376, 74, 64, 92);
+				placePiece(l, new AbyssalCitadelPiece(300, 62, 0, Direction.SOUTH));
 
 				// Check 8 eight-tall obelisks (each has 5 sea_lantern blocks => 40 sea lanterns in colosseum ring)
 				int ringLanterns = countBlocks(l, 326, 65, 10, 369, 74, 55, Blocks.SEA_LANTERN);
@@ -251,7 +280,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 					"Abyssal Citadel spawns Thalassor above altar");
 			});
 			context.waitTicks(40);
-			director(context, world, citadelOrigin, new Vec3(368.0, 89.5, 56.0), new Vec3(334.0, 71.0, 32.0));
+			directorUnderwater(context, world, new Vec3(370.0, 84.5, 58.0), new Vec3(334.0, 71.0, 32.0));
 			shot(context, "ocean_live_abyssal_citadel");
 			cut(context, world, citadelOrigin);
 		}

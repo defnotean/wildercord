@@ -137,17 +137,17 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 	}
 
 	private static void buildAquariumStage(ServerLevel l) {
-		// Solid non-falling base at y=88..89 so water never leaks; barrier front wall at z=7 eliminates glass streaks.
+		// Solid non-falling base at y=88..89 so water never leaks; barrier front wall at z=9 eliminates glass streaks.
 		for (int x = -16; x <= 16; x++) {
-			for (int z = -9; z <= 18; z++) {
+			for (int z = -9; z <= 20; z++) {
 				l.setBlock(new BlockPos(x, 88, z), Blocks.STONE.defaultBlockState(), 2);
 				for (int y = 90; y <= 108; y++) {
 					l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				boolean inTank = Math.abs(x) <= 13 && z >= -7 && z <= 7;
+				boolean inTank = Math.abs(x) <= 13 && z >= -7 && z <= 9;
 				if (inTank) {
 					boolean sideWall = Math.abs(x) == 13 || z == -7;
-					boolean frontBarrier = z == 7 && Math.abs(x) < 13;
+					boolean frontBarrier = z == 9 && Math.abs(x) < 13;
 					boolean lamp = Math.floorMod(x, 4) == 0 && Math.floorMod(z, 4) == 0;
 					l.setBlock(new BlockPos(x, 89, z),
 						(lamp ? Blocks.SEA_LANTERN : (sideWall ? Blocks.DARK_PRISMARINE : Blocks.SMOOTH_SANDSTONE)).defaultBlockState(), 2);
@@ -232,7 +232,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				l.addFreshEntity(nautilus);
 
 				ThalassorBoss thalassor = OceanEntities.THALASSOR.create(l, EntitySpawnReason.EVENT);
-				poseMob(thalassor, 0.5, 94.3, -2.4, 72f);
+				poseMob(thalassor, -0.4, 94.3, -2.2, 70f);
 				thalassor.setArenaCenter(altarPos);
 				l.addFreshEntity(thalassor);
 				if (l.getBlockEntity(altarPos) instanceof SovereignAltarBlockEntity altar) {
@@ -255,7 +255,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				ids[4] = thalassor.getUUID();
 			});
 
-			directorUnderwater(context, world, new Vec3(0.0, 92.4, 6.2), new Vec3(0.0, 92.0, -0.5));
+			directorUnderwater(context, world, new Vec3(0.0, 92.6, 8.4), new Vec3(0.0, 92.2, 0.0));
 			shot(context, "ocean_live_enemies_and_thalassor");
 			cut(context, world);
 
@@ -305,7 +305,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				}
 
 				PearlPup pup = OceanEntities.PEARL_PUP.create(l, EntitySpawnReason.COMMAND);
-				poseMob(pup, 0.6, 90.0, 2.6, -18f);
+				poseMob(pup, 0.3, 90.0, 1.8, -14f);
 				pup.tame(p);
 				l.addFreshEntity(pup);
 				friendlyIds[4] = pup.getUUID();
@@ -318,7 +318,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				friendlyIds[3] = seahorse.getUUID();
 
 				SingingMoonWhale whale = OceanEntities.SINGING_MOON_WHALE.create(l, EntitySpawnReason.COMMAND);
-				poseMob(whale, 4.6, 93.8, -1.5, 62f);
+				poseMob(whale, 2.8, 94.0, -2.0, 64f);
 				l.addFreshEntity(whale);
 				check(whale.getMaxHealth() == OceanRules.MOON_WHALE_HP, "Moon-Whale HP == 220");
 				friendlyIds[5] = whale.getUUID();
@@ -326,7 +326,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 
 			// Let taming heart particles fade cleanly before hero screenshot
 			context.waitTicks(45);
-			directorUnderwater(context, world, new Vec3(0.0, 92.2, 6.2), new Vec3(0.2, 91.6, 0.8));
+			directorUnderwater(context, world, new Vec3(0.0, 92.4, 8.4), new Vec3(0.0, 91.6, 0.5));
 			shot(context, "ocean_live_friendlies_and_whale");
 			cut(context, world);
 
@@ -418,20 +418,33 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 					"Harpoon right-click launches ThrownHarpoon projectile");
 
 				// Step onto sunlit dry prismarine promenade beside tank for crystal-clear 3D Suit + Glaive + Lantern photo
-				p.teleportTo(l, 0.5, 90.0, 10.5, Set.<Relative>of(), -62f, 0f, false);
+				p.teleportTo(l, 0.5, 90.0, 12.5, Set.<Relative>of(), 0f, 0f, false);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.LEVIATHAN_GLAIVE));
 				p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(OceanItems.SIREN_PEARL_LANTERN));
 				target.discard();
 			});
 
-			director(context, world, new Vec3(2.2, 91.4, 12.7), new Vec3(0.5, 91.1, 10.5));
+			context.runOnClient(mc -> {
+				mc.particleEngine.clearParticles();
+				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+				mc.setCameraEntity(mc.player);
+				mc.options.fov().set(55);
+				mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+				mc.options.broadcastOptions();
+			});
+			context.waitTicks(8);
 			shot(context, "ocean_live_diving_suit_and_weapons");
+			context.runOnClient(mc -> {
+				mc.options.fov().set(72);
+				mc.options.setCameraType(CameraType.FIRST_PERSON);
+				mc.options.broadcastOptions();
+			});
 			cut(context, world);
 
 			// Part 4: Trench Anvil Forging + Repair, Sovereign Altar & Siren-Pearl Lantern
-			BlockPos forgePos = new BlockPos(-2, 90, 10);
-			BlockPos lanternPos = new BlockPos(0, 90, 10);
-			BlockPos displayAltarPos = new BlockPos(2, 90, 10);
+			BlockPos forgePos = new BlockPos(-2, 90, 12);
+			BlockPos lanternPos = new BlockPos(0, 90, 12);
+			BlockPos displayAltarPos = new BlockPos(2, 90, 12);
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				clearMobs(l);
@@ -441,7 +454,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				check(l.getBlockState(lanternPos).getLightEmission() == 15, "Siren-Pearl Lantern emits light 15");
 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				p.teleportTo(l, 0.5, 90.0, 8.9, Set.<Relative>of(), 0f, 5f, false);
+				p.teleportTo(l, 0.5, 90.0, 14.0, Set.<Relative>of(), 180f, 12f, false);
 				p.getInventory().clearContent();
 				p.setItemSlot(EquipmentSlot.HEAD, new ItemStack(OceanItems.ABYSSAL_DIVING_HELM));
 				p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(OceanItems.BATHYSPHERE_CHESTPLATE));
@@ -464,9 +477,28 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(OceanItems.TIDE_CLEAVER_HARPOON));
 				p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(OceanItems.TIDECALLER_CONCH));
 			});
+			context.waitTicks(2);
+			world.getServer().runOnServer(server -> {
+				ServerLevel l = server.overworld();
+				// Discard auto-spawned Thalassor above displayAltarPos (puts altar into 20-min cooldown)
+				l.getEntitiesOfClass(ThalassorBoss.class, new AABB(displayAltarPos).inflate(40)).forEach(Entity::discard);
+			});
 
-			director(context, world, new Vec3(0.5, 91.6, 13.8), new Vec3(0.3, 90.6, 10.2));
+			context.runOnClient(mc -> {
+				mc.particleEngine.clearParticles();
+				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+				mc.setCameraEntity(mc.player);
+				mc.options.fov().set(68);
+				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+				mc.options.broadcastOptions();
+			});
+			context.waitTicks(8);
 			shot(context, "ocean_live_trench_anvil_and_lantern");
+			context.runOnClient(mc -> {
+				mc.options.fov().set(72);
+				mc.options.setCameraType(CameraType.FIRST_PERSON);
+				mc.options.broadcastOptions();
+			});
 			cut(context, world);
 		}
 	}
