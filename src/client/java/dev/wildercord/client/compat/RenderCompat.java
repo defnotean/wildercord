@@ -15,9 +15,9 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -147,49 +147,42 @@ public final class RenderCompat {
 	/** 1.21.8 has no swing animation component: every native swing is a plain whack. */
 	public enum SwingAnim { NONE, WHACK, STAB }
 
-	public static float swingProgress(ArmedEntityRenderState state) {
+	public static float swingProgress(LivingEntityRenderState state) {
 		return state instanceof HumanoidRenderState humanoid ? humanoid.attackTime : 0F;
 	}
 
-	public static void setSwingProgress(ArmedEntityRenderState state, float progress) {
+	public static void setSwingProgress(LivingEntityRenderState state, float progress) {
 		if (state instanceof HumanoidRenderState humanoid) {
 			humanoid.attackTime = progress;
 		}
 	}
 
-	/** 1.21.8 render states carry no ItemStacks: the renderer mixin notes the entity's real stacks as each state is extracted. */
+	/** 1.21.3 render states already carry the real hand stacks; there is nothing to note on extraction. */
 	public static void captureHandStacks(net.minecraft.world.entity.LivingEntity entity, Object state) {
-		if (!(state instanceof ArmedEntityRenderState armed) || !(armed instanceof dev.wildercord.client.HandStacks carried)) {
-			return;
-		}
-		ItemStack main = entity.getMainHandItem();
-		ItemStack off = entity.getOffhandItem();
-		ItemStack left = entity.getMainArm() == net.minecraft.world.entity.HumanoidArm.LEFT ? main : off;
-		ItemStack right = entity.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT ? main : off;
-		carried.wildercord$setHandStacks(new ItemStack[]{main.copy(), left.copy(), right.copy()});
+		// 1.21.3: the state's *HandItem fields are read directly by the seams below.
 	}
 
-	private static ItemStack[] carriedStacks(ArmedEntityRenderState state) {
-		return state instanceof dev.wildercord.client.HandStacks carried ? carried.wildercord$handStacks() : null;
+	private static ItemStack[] carriedStacks(LivingEntityRenderState state) {
+		ItemStack main = state.getMainHandItem();
+		ItemStack left = state.mainArm == net.minecraft.world.entity.HumanoidArm.LEFT ? main : state.leftHandItem;
+		ItemStack right = state.mainArm == net.minecraft.world.entity.HumanoidArm.RIGHT ? main : state.rightHandItem;
+		return new ItemStack[]{main, left, right};
 	}
 
-	public static ItemStack mainHandStack(ArmedEntityRenderState state) {
-		ItemStack[] stacks = carriedStacks(state);
-		return stacks != null && stacks.length == 3 ? stacks[0] : ItemStack.EMPTY;
+	public static ItemStack mainHandStack(LivingEntityRenderState state) {
+		return carriedStacks(state)[0];
 	}
 
-	public static ItemStack leftHandStack(ArmedEntityRenderState state) {
-		ItemStack[] stacks = carriedStacks(state);
-		return stacks != null && stacks.length == 3 ? stacks[1] : ItemStack.EMPTY;
+	public static ItemStack leftHandStack(LivingEntityRenderState state) {
+		return carriedStacks(state)[1];
 	}
 
-	public static ItemStack rightHandStack(ArmedEntityRenderState state) {
-		ItemStack[] stacks = carriedStacks(state);
-		return stacks != null && stacks.length == 3 ? stacks[2] : ItemStack.EMPTY;
+	public static ItemStack rightHandStack(LivingEntityRenderState state) {
+		return carriedStacks(state)[2];
 	}
 
-	/** 1.21.8 carries no item render state for the hands: only what the entity wears on its head. */
-	public static net.minecraft.client.renderer.item.ItemStackRenderState mainHandItemState(ArmedEntityRenderState state) {
+	/** 1.21.3 carries no item render state for the hands: only what the entity wears on its head. */
+	public static net.minecraft.client.renderer.item.ItemStackRenderState mainHandItemState(LivingEntityRenderState state) {
 		return null;
 	}
 
@@ -212,7 +205,12 @@ public final class RenderCompat {
 		// 1.21.8 has no stab/whack distinction; nothing to override.
 	}
 
-	public static void clearSwingForCustomRig(ArmedEntityRenderState state) {
+	/** 1.21.3 has no arm-pose fields on its render states; the 1.21.4 spear-to-item fix is inert. */
+	public static void stripSpearArmPose(LivingEntityRenderState state) {
+		// no-op on 1.21.3: LivingEntityRenderState answers poses through hasPose(Pose).
+	}
+
+	public static void clearSwingForCustomRig(LivingEntityRenderState state) {
 		setSwingProgress(state, 0F);
 	}
 
@@ -268,7 +266,61 @@ public final class RenderCompat {
 	 * vanilla render type, and the translucent one writes no depth, so it never hides what's behind it.
 	 */
 	public static McQuadParticle.Layer darkParticleLayer() {
-		return new McQuadParticle.Layer(RenderType.translucentParticle(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES));
+		return new McQuadParticle.Layer(translucentParticleRenderType());
+	}
+
+	/** 1.21.3 has no particle render types; the translucent and cutout types stand in. */
+	public static RenderType translucentParticleRenderType() {
+		return RenderType.translucent();
+	}
+
+	public static RenderType opaqueParticleRenderType() {
+		return RenderType.entityCutoutNoCull(net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES);
+	}
+
+	/** 1.21.3 has no {@code Minecraft#getItemModelResolver}; the stand-in records what the item renderer needs. */
+	public static void resolveForLiving(net.minecraft.client.renderer.item.ItemStackRenderState state, ItemStack stack,
+			net.minecraft.world.item.ItemDisplayContext context, net.minecraft.world.entity.LivingEntity entity) {
+		itemModelResolver().updateForLiving(state, stack, context, false, entity);
+	}
+
+	public static net.minecraft.client.renderer.item.ItemModelResolver itemModelResolver() {
+		return new net.minecraft.client.renderer.item.ItemModelResolver();
+	}
+
+	public static boolean shouldPlaySwapAnimation(ItemStack stack) {
+		return itemModelResolver().shouldPlaySwapAnimation(stack);
+	}
+
+	public static net.minecraft.client.resources.model.EquipmentAssetManager equipmentAssets(
+			net.minecraft.client.renderer.entity.EntityRendererProvider.Context context) {
+		return new net.minecraft.client.resources.model.EquipmentAssetManager(context.getEquipmentModels());
+	}
+
+	/** 1.21.3 names worn stacks {@code *Item} on Living/HumanoidRenderState, not {@code *Equipment}. */
+	public static ItemStack equipment(LivingEntityRenderState state, net.minecraft.world.entity.EquipmentSlot slot) {
+		return switch (slot) {
+			case HEAD -> state.headItem;
+			case CHEST -> state instanceof HumanoidRenderState humanoid ? humanoid.chestItem : ItemStack.EMPTY;
+			case LEGS -> state instanceof HumanoidRenderState humanoid ? humanoid.legsItem : ItemStack.EMPTY;
+			case FEET -> state instanceof HumanoidRenderState humanoid ? humanoid.feetItem : ItemStack.EMPTY;
+			default -> ItemStack.EMPTY;
+		};
+	}
+
+	public static ItemStack heldOnHead(LivingEntityRenderState state) {
+		return state.headItem;
+	}
+
+	/** 1.21.3's {@code Equippable#model} is the id 1.21.4 renamed to {@code assetId}. */
+	public static java.util.Optional<ResourceLocation> assetId(net.minecraft.world.item.equipment.Equippable equippable) {
+		return equippable == null ? java.util.Optional.empty() : equippable.model();
+	}
+
+	/** 1.21.3's {@code Level#addParticle} has no trailing colour arguments. */
+	public static void spawnParticle(net.minecraft.world.level.Level level, net.minecraft.core.particles.ParticleOptions options,
+			double x, double y, double z) {
+		level.addParticle(options, true, true, x, y, z);
 	}
 
 	/**

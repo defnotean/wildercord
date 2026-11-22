@@ -52,11 +52,7 @@ public final class GlaivePose {
 			return;
 		}
 		if (!state.isUsingItem) {
-			if (state.mainArm == HumanoidArm.RIGHT && state.rightArmPose == HumanoidModel.ArmPose.ITEM) {
-				state.rightArmPose = HumanoidModel.ArmPose.ITEM;
-			} else if (state.mainArm == HumanoidArm.LEFT && state.leftArmPose == HumanoidModel.ArmPose.ITEM) {
-				state.leftArmPose = HumanoidModel.ArmPose.ITEM;
-			}
+			dev.wildercord.client.compat.RenderCompat.stripSpearArmPose(state);
 		}
 		dev.wildercord.client.compat.RenderCompat.overrideStabWithWhackGlaive(state);
 	}

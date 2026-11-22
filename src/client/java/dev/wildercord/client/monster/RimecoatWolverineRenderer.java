@@ -25,7 +25,7 @@ public class RimecoatWolverineRenderer extends WildMonsterRenderer<RimecoatWolve
 
 	public RimecoatWolverineRenderer(EntityRendererProvider.Context context) {
 		super(context, new RimecoatWolverineModel(context.bakeLayer(LAYER)), 0.6F, Wildercord.id("textures/entity/rimecoat_wolverine.png"));
-		this.items = context.getItemModelResolver();
+		this.items = dev.wildercord.client.compat.RenderCompat.itemModelResolver();
 		addLayer(new MouthLayer(this));
 	}
 

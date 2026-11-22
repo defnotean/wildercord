@@ -160,7 +160,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 						net.minecraft.world.item.ItemDisplayContext.GROUND
 					}) {
 						var state = new net.minecraft.client.renderer.item.ItemStackRenderState();
-						mc.getItemModelResolver().updateForLiving(state, mc.player.getMainHandItem(), ctx, false, mc.player);
+						dev.wildercord.client.compat.RenderCompat.resolveForLiving(state, mc.player.getMainHandItem(), ctx, mc.player);
 						check(!state.isEmpty(), name + " resolves a non-empty model in " + ctx);
 					}
 					mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);

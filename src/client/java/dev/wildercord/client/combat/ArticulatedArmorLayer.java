@@ -35,7 +35,8 @@ public final class ArticulatedArmorLayer extends RenderLayer<PlayerRenderState, 
 		var original = armorLayers.getFirst();
 		ArticulatedArmorRenderer armor;
 		try {
-			armor = new ArticulatedArmorRenderer(context.getModelSet(), slim, context.getEquipmentRenderer(), context.getEquipmentAssets());
+			armor = new ArticulatedArmorRenderer(context.getModelSet(), slim, context.getEquipmentRenderer(),
+				dev.wildercord.client.compat.RenderCompat.equipmentAssets(context));
 		} catch (IllegalArgumentException unsupportedGeometry) {
 			// A geometry-changing mod/resource must keep the complete original layer and body gate.
 			return;

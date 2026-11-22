@@ -109,7 +109,7 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 	private record Surface(float back, boolean armored) {}
 
 	private static Surface surface(PlayerRenderState state) {
-		ItemStack chest = state.chestEquipment;
+		ItemStack chest = dev.wildercord.client.compat.RenderCompat.equipment(state, net.minecraft.world.entity.EquipmentSlot.CHEST);
 		boolean wings = chest.has(DataComponents.GLIDER);
 		boolean armored = !wings && !chest.isEmpty() && chest.has(DataComponents.EQUIPPABLE);
 		boolean cape = !wings && state.showCape && state.skin != null && state.skin.capeTexture() != null;
@@ -159,7 +159,8 @@ public class GearLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 			case RUNEWOVEN -> 1.0F;
 		};
 		float back = surface.back();
-		if (state.isFallFlying && state.chestEquipment.has(DataComponents.GLIDER)) {
+		if (state.isFallFlying && dev.wildercord.client.compat.RenderCompat.equipment(state,
+			net.minecraft.world.entity.EquipmentSlot.CHEST).has(DataComponents.GLIDER)) {
 			// Gliding, the wings spread away from the back, and the pack comes in against it between them.
 			float spread = Mth.clamp((-state.elytraRotZ - Mth.PI / 12) / (Mth.PI / 2 - Mth.PI / 12), 0.0F, 1.0F);
 			back = Mth.lerp(spread, back, SKIN);

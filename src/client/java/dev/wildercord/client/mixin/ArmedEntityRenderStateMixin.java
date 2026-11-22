@@ -1,13 +1,13 @@
 package dev.wildercord.client.mixin;
 
 import dev.wildercord.client.HandStacks;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-/** Carries the entity's real hand stacks on an armed render state (1.21.10 states keep no ItemStacks). */
-@Mixin(ArmedEntityRenderState.class)
+/** 1.21.3 states already carry their stacks; this duck stays attached for callers that still ask for it. */
+@Mixin(LivingEntityRenderState.class)
 public abstract class ArmedEntityRenderStateMixin implements HandStacks {
 	@Unique
 	private ItemStack[] wildercord$stacks = new ItemStack[0];

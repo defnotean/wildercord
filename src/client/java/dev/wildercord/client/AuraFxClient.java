@@ -334,7 +334,7 @@ public final class AuraFxClient {
 		}
 		shown++;
 		Vec3 at = payload.at();
-		level.addParticle(payload.particle(), true, true, at.x, at.y, at.z, 0, 0, 0);
+		dev.wildercord.client.compat.RenderCompat.spawnParticle(level, payload.particle(), at.x, at.y, at.z);
 	}
 
 	static void flare(AuraFx.Flare payload) {

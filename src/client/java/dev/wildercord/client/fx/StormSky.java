@@ -1,6 +1,7 @@
 package dev.wildercord.client.fx;
 
 import dev.wildercord.cast.events.ManaStorm;
+import dev.wildercord.client.compat.ColorCompat;
 import dev.wildercord.content.LightOption;
 import dev.wildercord.world.LeyLines;
 import net.minecraft.client.Minecraft;
@@ -92,16 +93,16 @@ public final class StormSky {
 
 	public static int tintSky(int argb) {
 		Vector3fc c = tintSky(ARGB.vector3fFromRGB24(argb));
-		return ARGB.colorFromFloat(ARGB.alphaFloat(argb), c.x(), c.y(), c.z());
+		return ARGB.colorFromFloat(ColorCompat.alphaFloat(argb), c.x(), c.y(), c.z());
 	}
 
 	public static int tintFog(int argb) {
 		Vector3fc c = tintFog(ARGB.vector3fFromRGB24(argb));
-		return ARGB.colorFromFloat(ARGB.alphaFloat(argb), c.x(), c.y(), c.z());
+		return ARGB.colorFromFloat(ColorCompat.alphaFloat(argb), c.x(), c.y(), c.z());
 	}
 
 	public static int tintCloud(int argb) {
-		Vector4fc c = tintCloud(new Vector4f(ARGB.redFloat(argb), ARGB.greenFloat(argb), ARGB.blueFloat(argb), ARGB.alphaFloat(argb)));
+		Vector4fc c = tintCloud(new Vector4f(ColorCompat.redFloat(argb), ColorCompat.greenFloat(argb), ColorCompat.blueFloat(argb), ColorCompat.alphaFloat(argb)));
 		return ARGB.colorFromFloat(c.w(), c.x(), c.y(), c.z());
 	}
 

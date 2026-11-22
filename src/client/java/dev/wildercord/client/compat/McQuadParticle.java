@@ -27,9 +27,9 @@ public abstract class McQuadParticle extends SingleQuadParticle {
 	/** How a quad is blended: 1.21.9's {@code McQuadParticle.Layer}, which 1.21.8 has no equivalent of. */
 	public static final class Layer {
 		/** Vanilla's translucent particles: light that hides a little of what's behind it. */
-		public static final Layer TRANSLUCENT = new Layer(RenderType.translucentParticle(TextureAtlas.LOCATION_PARTICLES));
+		public static final Layer TRANSLUCENT = new Layer(RenderCompat.translucentParticleRenderType());
 		/** Vanilla's solid particles. */
-		public static final Layer OPAQUE = new Layer(RenderType.opaqueParticle(TextureAtlas.LOCATION_PARTICLES));
+		public static final Layer OPAQUE = new Layer(RenderCompat.opaqueParticleRenderType());
 
 		private final RenderType renderType;
 
@@ -112,7 +112,7 @@ public abstract class McQuadParticle extends SingleQuadParticle {
 		extract(new QuadParticleRenderState(Minecraft.getInstance().renderBuffers().bufferSource()), camera, partial);
 	}
 
-	@Override
+	// 1.21.3 has no Particle#renderCustom: this method is kept for the newer callers and is not invoked here.
 	public void renderCustom(PoseStack pose, MultiBufferSource buffers, Camera camera, float partial) {
 		extract(new QuadParticleRenderState(buffers), camera, partial);
 	}

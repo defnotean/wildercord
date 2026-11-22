@@ -178,7 +178,8 @@ public final class GuiGraphicsExtractor {
 	}
 
 	public void textWithWordWrap(Font font, FormattedText text, int x, int y, int width, int color, boolean shadow) {
-		g.drawWordWrap(font, text, x, y, width, color, shadow);
+		// 1.21.3's drawWordWrap has no shadow argument; wrapped text is drawn unshadowed.
+		g.drawWordWrap(font, text, x, y, width, color);
 	}
 
 	public void textWithBackdrop(Font font, Component text, int x, int y, int width, int color) {

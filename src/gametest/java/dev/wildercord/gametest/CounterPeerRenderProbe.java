@@ -316,8 +316,8 @@ public final class CounterPeerRenderProbe {
         s.sources.put(a,source);
         if(!entity.getUUID().toString().equals(e.uuid())||!dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD)||!off.isEmpty())s.token.reject("wrong_owner_weapon_offhand");
         if(!a.mainArm.name().equals(e.hand())||!a.skin.model().toString().equalsIgnoreCase(e.skin())||shell!=e.shell())s.token.reject("wrong_original_appearance");
-        boolean armor=e.armor()?a.headEquipment.is(Items.NETHERITE_HELMET)&&a.chestEquipment.is(Items.NETHERITE_CHESTPLATE)
-            &&a.legsEquipment.is(Items.NETHERITE_LEGGINGS)&&a.feetEquipment.is(Items.NETHERITE_BOOTS)&&armor(a).stream().allMatch(ItemStack::hasFoil):armor(a).stream().allMatch(ItemStack::isEmpty);
+        boolean armor=e.armor()?dev.wildercord.client.compat.RenderCompat.equipment(a, net.minecraft.world.entity.EquipmentSlot.HEAD).is(Items.NETHERITE_HELMET)&&dev.wildercord.client.compat.RenderCompat.equipment(a, net.minecraft.world.entity.EquipmentSlot.CHEST).is(Items.NETHERITE_CHESTPLATE)
+            &&dev.wildercord.client.compat.RenderCompat.equipment(a, net.minecraft.world.entity.EquipmentSlot.LEGS).is(Items.NETHERITE_LEGGINGS)&&dev.wildercord.client.compat.RenderCompat.equipment(a, net.minecraft.world.entity.EquipmentSlot.FEET).is(Items.NETHERITE_BOOTS)&&armor(a).stream().allMatch(ItemStack::hasFoil):armor(a).stream().allMatch(ItemStack::isEmpty);
         if(!armor)s.token.reject("wrong_actual_armor");
         if(!backend(e,a))s.token.reject("wrong_backend_or_fallback_reason");
         if(e.mode().equals("articulated")?(ArticulatedCombat.viewFrame(a)==null||!phase.equals("NONE")&&ArticulatedCombat.frame(a)==null)
@@ -610,12 +610,12 @@ public final class CounterPeerRenderProbe {
     private static boolean commonCompatible(PlayerRenderState a){
         return a.deathTime<=0&&!a.isInvisible&&!a.isBaby&&!a.isUpsideDown&&!a.isAutoSpinAttack&&!a.isFallFlying&&!a.isPassenger&&!a.isUsingItem
             &&!a.hasPose(Pose.SWIMMING)&&!a.hasPose(Pose.SLEEPING)&&Boolean.TRUE.equals(RenderStateData.get(a, ArticulatedCombat.KNOWN_LAYERS))&&a.walkAnimationSpeed<=.2F&&!a.isSpectator
-            &&a.arrowCount==0&&a.stingerCount==0&&true&&a.parrotOnLeftShoulder==null&&a.parrotOnRightShoulder==null&&(!a.showCape||a.skin.capeTexture()==null)&&a.heldOnHead.isEmpty()
+            &&a.arrowCount==0&&a.stingerCount==0&&true&&a.parrotOnLeftShoulder==null&&a.parrotOnRightShoulder==null&&(!a.showCape||a.skin.capeTexture()==null)&&dev.wildercord.client.compat.RenderCompat.heldOnHead(a).isEmpty()
             &&RenderStateData.get(a, dev.wildercord.client.render.GearLook.PACK)==null&&RenderStateData.get(a, dev.wildercord.client.render.GearLook.PIECES)==null&&RenderStateData.get(a, AuraShellLayer.IMAGES)==null
             &&dev.wildercord.client.compat.RenderCompat.mainHandStack(a).is(Items.DIAMOND_SWORD)&&offhand(a).isEmpty();
     }
     private static ItemStack offhand(PlayerRenderState a){return a.mainArm==HumanoidArm.RIGHT?dev.wildercord.client.compat.RenderCompat.leftHandStack(a):dev.wildercord.client.compat.RenderCompat.rightHandStack(a);}
-    private static List<ItemStack> armor(PlayerRenderState a){return List.of(a.headEquipment,a.chestEquipment,a.legsEquipment,a.feetEquipment);}
+    private static List<ItemStack> armor(PlayerRenderState a){return List.of(dev.wildercord.client.compat.RenderCompat.equipment(a, net.minecraft.world.entity.EquipmentSlot.HEAD),dev.wildercord.client.compat.RenderCompat.equipment(a, net.minecraft.world.entity.EquipmentSlot.CHEST),dev.wildercord.client.compat.RenderCompat.equipment(a, net.minecraft.world.entity.EquipmentSlot.LEGS),dev.wildercord.client.compat.RenderCompat.equipment(a, net.minecraft.world.entity.EquipmentSlot.FEET));}
     private static long id(Scope s,Object object){return object==null?0:s.ids.computeIfAbsent(object,key->SEQ.incrementAndGet());}
     private static Part part(ModelPart p){var initial=p.getInitialPose();return new Part(p.x,p.y,p.z,p.xRot,p.yRot,p.zRot,p.xScale,p.yScale,p.zScale,initial.x(),initial.y(),initial.z());}
     private static Map<String,Part> rigid(PlayerModel m){var out=new LinkedHashMap<String,Part>();out.put("head",part(m.head));out.put("body",part(m.body));out.put("leftArm",part(m.leftArm));out.put("rightArm",part(m.rightArm));out.put("leftLeg",part(m.leftLeg));out.put("rightLeg",part(m.rightLeg));return out;}

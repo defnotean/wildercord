@@ -540,8 +540,8 @@ public final class ArticulatedSharedRenderProbe {
 			out.put("shellAdapterEnabled", String.valueOf(ArticulatedAuraShellRenderer.enabled()));
 		}
 		out.put("mainArm", avatar.mainArm.name());
-		out.put("mainHand", item(dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar))); out.put("head", item(avatar.headEquipment));
-		out.put("chest", item(avatar.chestEquipment)); out.put("legs", item(avatar.legsEquipment)); out.put("feet", item(avatar.feetEquipment));
+		out.put("mainHand", item(dev.wildercord.client.compat.RenderCompat.mainHandStack(avatar))); out.put("head", item(dev.wildercord.client.compat.RenderCompat.equipment(avatar, net.minecraft.world.entity.EquipmentSlot.HEAD)));
+		out.put("chest", item(dev.wildercord.client.compat.RenderCompat.equipment(avatar, net.minecraft.world.entity.EquipmentSlot.CHEST))); out.put("legs", item(dev.wildercord.client.compat.RenderCompat.equipment(avatar, net.minecraft.world.entity.EquipmentSlot.LEGS))); out.put("feet", item(dev.wildercord.client.compat.RenderCompat.equipment(avatar, net.minecraft.world.entity.EquipmentSlot.FEET)));
 		return out;
 	}
 	private static String item(ItemStack stack) { return stack == null || stack.isEmpty() ? "empty" : BuiltInRegistries.ITEM.getKey(stack.getItem()) + ":foil=" + stack.hasFoil(); }

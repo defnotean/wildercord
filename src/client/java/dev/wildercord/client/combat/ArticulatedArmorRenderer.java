@@ -50,7 +50,7 @@ public final class ArticulatedArmorRenderer {
 
 	/** Unknown items/components always retain the entire previous renderer, including their layers. */
 	public static boolean compatible(HumanoidRenderState state) {
-		if (empty(state.headEquipment) && empty(state.chestEquipment) && empty(state.legsEquipment) && empty(state.feetEquipment)) return true;
+		if (noEquipment(state)) return true;
 		return state instanceof PlayerRenderState && enabled() && Boolean.TRUE.equals(RenderStateData.get(state, READY)) && supports(state);
 	}
 
@@ -71,14 +71,15 @@ public final class ArticulatedArmorRenderer {
 		};
 		var equippable = stack.get(DataComponents.EQUIPPABLE);
 		return item && equippable != null && equippable.slot() == slot
-			&& equippable.assetId().filter(EquipmentAssets.NETHERITE::equals).isPresent() && equippable.cameraOverlay().isEmpty();
+			&& dev.wildercord.client.compat.RenderCompat.assetId(equippable).filter(EquipmentAssets.NETHERITE::equals).isPresent()
+			&& equippable.cameraOverlay().isEmpty();
 	}
 
 	public boolean submitWorld(PlayerModel body, PlayerRenderState state, PoseStack stack, MultiBufferSource buffer, int light) {
 		if (!enabled() || !supportsAssets() || !supports(state) || !Boolean.TRUE.equals(RenderStateData.get(state, READY))
 			|| !(body instanceof ArticulatedModelAccess access) || !access.wildercord$bodyOwned() || access.wildercord$armor() != this
 			|| !ArticulatedCombat.applyPlayer(body, state)) return false;
-		if (empty(state.headEquipment) && empty(state.chestEquipment) && empty(state.legsEquipment) && empty(state.feetEquipment)) return true;
+		if (noEquipment(state)) return true;
 		// applyPlayer includes vanilla held-item/breathing and bounded head look. Capture AFTER it.
 		var palette = capture(access.wildercord$rig()).withHat(state.showHat);
 		stack.pushPose();
@@ -93,8 +94,10 @@ public final class ArticulatedArmorRenderer {
 
 	/** Intentional enhanced view: only the chestplate's original arm surfaces, never invented gloves. */
 	public boolean submitView(ArticulatedRig viewRig, PlayerRenderState state, PoseStack stack, MultiBufferSource buffer, int light) {
-		if (!viewEnabled() || !supportsAssets() || ArticulatedCombat.viewFrame(state) == null || !supports(state) || empty(state.chestEquipment)) return false;
-		submit(EquipmentSlot.CHEST, state.chestEquipment, viewModel, capture(viewRig), stack, buffer, light, 0);
+		if (!viewEnabled() || !supportsAssets() || ArticulatedCombat.viewFrame(state) == null || !supports(state)
+			|| empty(dev.wildercord.client.compat.RenderCompat.equipment(state, EquipmentSlot.CHEST))) return false;
+		submit(EquipmentSlot.CHEST, dev.wildercord.client.compat.RenderCompat.equipment(state, EquipmentSlot.CHEST),
+			viewModel, capture(viewRig), stack, buffer, light, 0);
 		return true;
 	}
 
@@ -103,10 +106,11 @@ public final class ArticulatedArmorRenderer {
 		if (empty(item)) return;
 		ItemStack snapshot = item.copy();
 		var equippable = snapshot.get(DataComponents.EQUIPPABLE);
-		if (equippable == null || equippable.slot() != slot || equippable.assetId().isEmpty()) throw new IllegalStateException("Armor eligibility changed within submission");
+		var assetId = dev.wildercord.client.compat.RenderCompat.assetId(equippable);
+		if (equippable == null || equippable.slot() != slot || assetId.isEmpty()) throw new IllegalStateException("Armor eligibility changed within submission");
 		model.setupAnim(palette);
-		equipmentRenderer.renderLayers(slot == EquipmentSlot.LEGS ? LayerType.HUMANOID_LEGGINGS : LayerType.HUMANOID,
-			equippable.assetId().orElseThrow(), model, snapshot, stack, buffer, light);
+		equipmentRenderer.renderLayers(slot == EquipmentSlot.LEGS ? LayerType.HUMANOID_LEGGINGS.vanilla() : LayerType.HUMANOID.vanilla(),
+			assetId.orElseThrow(), model, snapshot, stack, buffer, light);
 	}
 
 	/** Immutable model-space matrices in pixels; deferred A/B/A passes never read the live skin rig. */
@@ -115,14 +119,14 @@ public final class ArticulatedArmorRenderer {
 	}
 
 	private static ItemStack stack(HumanoidRenderState state, EquipmentSlot slot) {
-		return switch (slot) {
-			case HEAD -> state.headEquipment;
-			case CHEST -> state.chestEquipment;
-			case LEGS -> state.legsEquipment;
-			case FEET -> state.feetEquipment;
-			default -> ItemStack.EMPTY;
-		};
+		return dev.wildercord.client.compat.RenderCompat.equipment(state, slot);
 	}
+
+	private static boolean noEquipment(HumanoidRenderState state) {
+		for (EquipmentSlot slot : SLOTS) if (!empty(stack(state, slot))) return false;
+		return true;
+	}
+
 	private static boolean empty(ItemStack stack) { return stack == null || stack.isEmpty(); }
 	public boolean supportsAssets() { return ArticulatedArmorAssets.supported(equipmentAssets.get(EquipmentAssets.NETHERITE)); }
 	public EquipmentAssetManager equipmentAssets() { return equipmentAssets; }

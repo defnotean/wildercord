@@ -154,7 +154,7 @@ public final class ArticulatedCombat {
 			if (frame.master() || avatar.isSpectator || avatar.skin == null
 				|| avatar.arrowCount > 0 || avatar.stingerCount > 0 || false
 				|| avatar.parrotOnLeftShoulder != null || avatar.parrotOnRightShoulder != null
-				|| avatar.showCape && avatar.skin.capeTexture() != null || !avatar.heldOnHead.isEmpty()
+				|| avatar.showCape && avatar.skin.capeTexture() != null || !dev.wildercord.client.compat.RenderCompat.heldOnHead(avatar).isEmpty()
 				|| RenderStateData.get(state, GearLook.PACK) != null || RenderStateData.get(state, GearLook.PIECES) != null
 				|| !ArticulatedAuraShellRenderer.compatible(avatar) || RenderStateData.get(state, AuraShellLayer.IMAGES) != null) return null;
 		} else if (!(state instanceof AuraFighterRenderState fighter) || !frame.master() || fighter.sit > 0 || fighter.yield > 0 || fighter.stagger > 0) return null;
