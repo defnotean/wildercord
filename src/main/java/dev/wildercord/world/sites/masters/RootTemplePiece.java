@@ -39,7 +39,7 @@ public final class RootTemplePiece extends MasterSitePiece {
 			BoundingBox bb, ChunkPos chunk, BlockPos reference) {
 		BlockState wall = alt ? s(Blocks.MUD_BRICKS) : s(Blocks.MOSSY_STONE_BRICKS), light = alt ? s(Blocks.OCHRE_FROGLIGHT) : s(Blocks.VERDANT_FROGLIGHT);
 		BlockState leaves = (alt ? s(Blocks.DARK_OAK_LEAVES) : s(Blocks.FLOWERING_AZALEA_LEAVES)).setValue(LeavesBlock.PERSISTENT, true);
-		BlockState chiseled = alt ? s(Blocks.CHISELED_RESIN_BRICKS) : s(Blocks.CHISELED_STONE_BRICKS);
+		BlockState chiseled = alt ? s(Blocks.CHISELED_TUFF_BRICKS) : s(Blocks.CHISELED_STONE_BRICKS);
 		BlockState rail = alt ? s(Blocks.MUD_BRICK_WALL) : s(Blocks.MOSSY_STONE_BRICK_WALL);
 		BlockState slab = alt ? s(Blocks.MUD_BRICK_SLAB) : s(Blocks.MOSSY_STONE_BRICK_SLAB);
 		Palette masonry = alt ? Palette.of(Blocks.MUD_BRICKS, 7, Blocks.PACKED_MUD, 2, Blocks.MOSSY_COBBLESTONE, 1)

@@ -26,7 +26,7 @@ public final class McSpawnEgg {
 		int seed = type.getDescriptionId().hashCode();
 		int base = 0xFF000000 | ((seed >>> 16) & 0x7F7F7F);
 		int high = 0xFF000000 | ((seed >>> 24) & 0x7F) << 16 | ((seed >>> 8) & 0x7F) << 8 | (seed & 0x7F);
-		return dev.wildercord.compat.McSpawnEgg.create(type, base, high, properties);
+		return new SpawnEggItem(type, base, high, properties);
 	}
 
 	/** A travelling tinted trail to {@code target}; the 1.21.3 option has no duration field. */
