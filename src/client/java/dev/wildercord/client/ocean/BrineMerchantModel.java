@@ -117,13 +117,12 @@ public final class BrineMerchantModel extends EntityModel<OceanRenderStates.Brin
 		leftArm.addOrReplaceChild("prop_pearl",
 			CubeListBuilder.create().texOffs(92, 124).addBox(0.0F, 14.0F, -11.0F, 7, 7, 7),
 			PartPose.ZERO);
-		PartDefinition scroll = leftArm.addOrReplaceChild("prop_scroll",
+		leftArm.addOrReplaceChild("prop_scroll",
 			CubeListBuilder.create()
 				.texOffs(122, 124).addBox(-4.0F, 12.0F, -12.0F, 18, 12, 2)
 				.texOffs(164, 124).addBox(-6.0F, 11.0F, -12.5F, 3, 14, 3)
 				.texOffs(164, 124).mirror().addBox(13.0F, 11.0F, -12.5F, 3, 14, 3),
-			PartPose.ZERO);
-		scroll.setRotation(0.28F, 0.0F, 0.0F);
+			PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.28F, 0.0F, 0.0F));
 		leftArm.addOrReplaceChild("prop_potion",
 			CubeListBuilder.create()
 				.texOffs(178, 124).addBox(0.0F, 13.0F, -11.0F, 7, 7, 7)
