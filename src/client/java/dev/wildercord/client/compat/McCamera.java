@@ -19,9 +19,10 @@ public final class McCamera {
 	public static Vec3 projectToScreen(Minecraft mc, Vec3 world) {
 		Camera camera = mc.gameRenderer.getMainCamera();
 		Vec3 eye = camera.getPosition();
-		Matrix4f view = new Matrix4f(camera.rotation());
+		Matrix4f view = new Matrix4f().rotation(camera.rotation());
 		view.translate((float) -eye.x, (float) -eye.y, (float) -eye.z);
-		Matrix4f clip = new Matrix4f(mc.gameRenderer.getProjectionMatrix(mc.getFrameTime()));
+		Matrix4f clip = new Matrix4f(mc.gameRenderer.getProjectionMatrix(
+			mc.getDeltaTracker().getGameTimeDeltaPartialTick(false)));
 		clip.mul(view);
 		Vector4f p = new Vector4f((float) world.x, (float) world.y, (float) world.z, 1.0F);
 		p.mul(clip);

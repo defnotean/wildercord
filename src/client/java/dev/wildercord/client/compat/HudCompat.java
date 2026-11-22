@@ -30,4 +30,9 @@ public final class HudCompat {
 	public static void before(Anchor anchor, ResourceLocation id, BiConsumer<GuiGraphics, DeltaTracker> renderer) {
 		HudRenderCallback.EVENT.register(renderer::accept);
 	}
+
+	/** The old {@code addLast}: everything already lands last here. */
+	public static void last(ResourceLocation id, BiConsumer<GuiGraphics, DeltaTracker> renderer) {
+		HudRenderCallback.EVENT.register(renderer::accept);
+	}
 }

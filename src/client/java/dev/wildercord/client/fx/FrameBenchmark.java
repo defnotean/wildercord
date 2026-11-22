@@ -8,7 +8,7 @@ public final class FrameBenchmark {
  private FrameBenchmark() {}
  private static final double[] SAMPLES=new double[8192];private static int count,total,throttled;private static long start,last,droppedAtStart;private static Object world;private static String lastResult="";
  public static String lastResult(){return lastResult;}
- public static void init(){HudElementRegistry.addLast(Wildercord.id("frame_benchmark"),(g,delta)->frame());}
+ public static void init(){dev.wildercord.client.compat.HudCompat.last(Wildercord.id("frame_benchmark"),(g,delta)->frame());}
  public static void start(){var mc=Minecraft.getInstance();if(mc.level==null)return;count=total=throttled=0;start=System.nanoTime();last=0;lastResult="";droppedAtStart=SpellFormations.dropped();world=mc.level;
   if(mc.player!=null)mc.player.displayClientMessage(Component.translatable("message.wildercord.frame_start"), false);}
  private static void frame(){if(start==0)return;var mc=Minecraft.getInstance();if(mc.level!=world||mc.isPaused()){start=0;return;}

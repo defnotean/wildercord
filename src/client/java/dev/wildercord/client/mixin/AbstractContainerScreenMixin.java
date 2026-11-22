@@ -53,7 +53,7 @@ public abstract class AbstractContainerScreenMixin {
 		} else {
 			return;
 		}
-		graphics.setTooltipForNextFrame(Minecraft.getInstance().font, lines, Optional.empty(), mouseX, mouseY);
+		graphics.renderTooltip(Minecraft.getInstance().font, lines, Optional.empty(), mouseX, mouseY);
 	}
 
 	/**

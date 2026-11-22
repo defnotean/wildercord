@@ -26,7 +26,7 @@ public final class MossveilFilterClient{
   var p=mc.player;var horizontal=p.getLookAngle().multiply(1,0,1).normalize();var side=new Vec3(-horizontal.z,0,horizontal.x);
   for(int i=0;i<count;i++){
    double sign=i%2==0?-1:1;var at=p.position().add(side.scale(sign*(.62+i*.015))).add(0,.78+beat*.08,0);
-   if(at.distanceToSqr(p.getEyePosition())<.49||at.distanceToSqr(mc.gameRenderer.getMainCamera().position())<.49)continue;
+   if(at.distanceToSqr(p.getEyePosition())<.49||at.distanceToSqr(mc.gameRenderer.getMainCamera().getPosition())<.49)continue;
    var drift=side.scale(sign*.006).add(0,.007,0);mc.particleEngine.add(new MossveilFiberParticle(mc.level,at,drift,i));pieces++;
   }
  }
