@@ -81,7 +81,7 @@ public final class KilnKeeperResident {
 		resident.setCustomName(Component.translatable("entity.wildercord.kiln_keeper"));
 		resident.setCustomNameVisible(true);
 		resident.setPersistenceRequired();
-		resident.setHome(at, 6);
+		resident.restrictTo(at, 6);
 		resident.addTag(TAG);
 		return level.addFreshEntity(resident);
 	}

@@ -175,7 +175,7 @@ public final class WayfarerInnPiece extends TravelPiece {
 		keeper.setPersistenceRequired();
 		keeper.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
 		keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
-		keeper.setHome(at, radius);
+		keeper.restrictTo(at, radius);
 		level.addFreshEntity(keeper);
 	}
 }

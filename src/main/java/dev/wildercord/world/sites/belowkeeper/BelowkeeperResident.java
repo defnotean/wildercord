@@ -81,7 +81,7 @@ public final class BelowkeeperResident {
 		resident.setCustomName(Component.translatable("entity.wildercord.belowkeeper_listener"));
 		resident.setCustomNameVisible(true);
 		resident.setPersistenceRequired();
-		resident.setHome(at, 6);
+		resident.restrictTo(at, 6);
 		resident.addTag(TAG);
 		return level.addFreshEntity(resident);
 	}
