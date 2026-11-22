@@ -16,7 +16,6 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 
@@ -48,7 +47,7 @@ public final class OceanContent {
 		OceanItems.init();
 
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
-			.register((CreativeModeTab.Output out) -> List.of(
+			.register(out -> List.of(
 				BARNACLE_HULK_SPAWN_EGG,
 				SIREN_JELLY_SPAWN_EGG,
 				CORAL_MAKO_SPAWN_EGG,

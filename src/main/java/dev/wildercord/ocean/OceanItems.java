@@ -44,7 +44,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -209,7 +208,7 @@ public final class OceanItems {
 		ServerDisconnects.register((handler, server) -> removeModifiers(handler.player));
 
 		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
-			.register((CreativeModeTab.Output out) -> List.of(
+			.register(out -> List.of(
 				ABYSSAL_DIVING_HELM,
 				BATHYSPHERE_CHESTPLATE,
 				KELP_WEAVE_GREAVES,
@@ -419,7 +418,7 @@ public final class OceanItems {
 							2, 0.1, 0.08, 0.1, 0.02);
 					}
 				}
-				server.playSound(null, player.blockPosition(), SoundEvents.TRIDENT_RIPTIDE_1, SoundSource.PLAYERS, 1.0f, 1.25f);
+				server.playSound(null, player.blockPosition(), SoundEvents.TRIDENT_RIPTIDE_1.value(), SoundSource.PLAYERS, 1.0f, 1.25f);
 				if (!player.getAbilities().instabuild && hits > 0) {
 					held.hurtAndBreak(1, player, hand.asEquipmentSlot());
 				}
