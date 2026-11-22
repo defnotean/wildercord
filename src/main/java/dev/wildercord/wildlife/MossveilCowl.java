@@ -16,6 +16,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.equipment.*;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 
 /** A small physical poison filter; no damage multiplier, healing, effect-chain replacement or immunity. */
 public final class MossveilCowl{
@@ -29,16 +30,16 @@ public final class MossveilCowl{
  private static final AttachmentType<Prep> STATE=AttachmentRegistry.create(Wildercord.id("mossveil_filter_preparation"),b->b.initializer(Prep::new));
  private static boolean actor(ServerPlayer p){return p.isAlive()&&!p.isRemoved()&&!p.isCreative()&&!p.isSpectator()&&p.level().getEntity(p.getUUID())==p&&p.isShiftKeyDown()&&p.onGround()&&!p.isPassenger();}
  private static boolean poison(MobEffectInstance e){return e!=null&&!e.isInfiniteDuration()&&e.getDuration()>=8;}
- private static boolean pet(ServerPlayer p,MossveilDormouse e){return e!=null&&e.live(p.level())&&e.isTame()&&e.isOwnedBy(p)&&e.isOrderedToSit()&&e.isInSittingPose()&&p.distanceToSqr(e)<=9&&p.hasLineOfSight(e)&&MossveilDormouse.clock(p.level())>=e.filterReady();}
+ private static boolean pet(ServerPlayer p,MossveilDormouse e){return e!=null&&e.live(((ServerLevel) p.level()))&&e.isTame()&&e.isOwnedBy(p)&&e.isOrderedToSit()&&e.isInSittingPose()&&p.distanceToSqr(e)<=9&&p.hasLineOfSight(e)&&MossveilDormouse.clock(((ServerLevel) p.level()))>=e.filterReady();}
  private static boolean current(ServerPlayer p,Prep a){return actor(p)&&p.level()==a.world&&p.getItemBySlot(EquipmentSlot.HEAD)==a.worn&&a.worn!=null&&a.worn.is(ITEM)&&MossveilRules.planted(p.position().distanceToSqr(a.planted))&&p.getEffect(MobEffects.POISON)==a.poison&&poison(a.poison)&&a.facts.matches(a.poison)&&pet(p,a.pet)&&a.home!=null&&a.home.world()==p.level()&&a.home.current()&&Vec3.atCenterOf(a.home.canopy()).distanceToSqr(p.position())<=9&&Vec3.atCenterOf(a.home.canopy()).distanceToSqr(a.pet.position())<=9;}
  static void tick(ServerPlayer p){
   var a=p.getAttachedOrCreate(STATE);if(a.operating)return;
   if(!actor(p)||!p.getItemBySlot(EquipmentSlot.HEAD).is(ITEM)||!poison(p.getEffect(MobEffects.POISON))||MossveilDormouse.clock(p.level())<p.getAttachedOrElse(READY,0L)){a.clear();return;}
   if(a.worn==null){
-   if(p.tickCount%10!=0)return;var pool=WetlandQueries.scan(p.level(),MossveilDormouse.class,p.getBoundingBox().inflate(3),null);if(pool.saturated())return;
+   if(p.tickCount%10!=0)return;var pool=WetlandQueries.scan(((ServerLevel) p.level()),MossveilDormouse.class,p.getBoundingBox().inflate(3),null);if(pool.saturated())return;
    var found=pool.entities().stream().filter(e->pet(p,e)).min(Comparator.comparingDouble(p::distanceToSqr)).orElse(null);if(found==null)return;
-   var home=MossveilHome.find(p.level(),p.blockPosition(),p.position(),found.position());if(home==null)return;
-   a.worn=p.getItemBySlot(EquipmentSlot.HEAD);a.world=p.level();a.pet=found;a.home=home;a.poison=p.getEffect(MobEffects.POISON);a.facts=Facts.of(a.poison);a.planted=p.position();a.ticks=0;
+   var home=MossveilHome.find(((ServerLevel) p.level()),p.blockPosition(),p.position(),found.position());if(home==null)return;
+   a.worn=p.getItemBySlot(EquipmentSlot.HEAD);a.world=((ServerLevel) p.level());a.pet=found;a.home=home;a.poison=p.getEffect(MobEffects.POISON);a.facts=Facts.of(a.poison);a.planted=p.position();a.ticks=0;
   }
   if(!current(p,a)){a.clear();return;}if(++a.ticks>=PREP)commit(p,a);
  }

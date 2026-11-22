@@ -90,7 +90,7 @@ public final class Tribulation {
 
 	private Tribulation(ServerPlayer player, int circle) {
 		this.player = player;
-		this.level = player.level();
+		this.level = ((ServerLevel) player.level());
 		this.circle = circle;
 		this.centre = player.position();
 		this.bar = new ServerBossEvent(Component.translatable("boss.wildercord.tribulation", Circles.ordinal(circle), 1,

@@ -152,7 +152,7 @@ final class CinnamonCompanion {
 		if (stopping || !matches(player) || !player.isAlive() || player.isRemoved() || player.isSpectator()
 			|| player.isPassenger() || Duels.inDuel(player) || DuelistDuels.inDuel(player)
 			|| player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player
-			|| DungeonWards.warded(player.level(), player.blockPosition())) return false;
+			|| DungeonWards.warded(((ServerLevel) player.level()), player.blockPosition())) return false;
 		var nearby = new java.util.ArrayList<SwordMaster>();
 		player.level().getEntities(EntityTypeTestHolder.MASTERS, player.getBoundingBox().inflate(96), master -> master.distanceToSqr(player) <= 96 * 96, nearby, 17);
 		if (nearby.size() > 16) return false;

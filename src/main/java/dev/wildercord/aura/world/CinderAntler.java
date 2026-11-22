@@ -92,7 +92,7 @@ public final class CinderAntler {
 		mob.igniteForTicks(AshenStagRules.ANTLER_BURN);
 		Feels.sound((ServerLevel) level, mob.position(), "aura_ashen_stag_gore", 1.0F, 1.2F);
 		Feels.sound((ServerLevel) level, mob.position(), "aura_ashen_stag_smoulder", .8F, 1.3F);
-		level.sendParticles(ParticleTypes.FLAME, mob.getX(), mob.getY() + mob.getBbHeight() / 2, mob.getZ(), 16, .3, .4, .3, .06);
+		((ServerLevel) level).sendParticles(ParticleTypes.FLAME, mob.getX(), mob.getY() + mob.getBbHeight() / 2, mob.getZ(), 16, .3, .4, .3, .06);
 		((ServerLevel) level).sendParticles(ParticleTypes.LAVA, mob.getX(), mob.getY() + mob.getBbHeight() / 2, mob.getZ(), 4, .2, .2, .2, 0);
 		player.displayClientMessage(Component.translatable("message.wildercord.cinder_antler.gore").withColor(0xF08A3C), true);
 	}

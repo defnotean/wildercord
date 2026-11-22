@@ -121,7 +121,7 @@ public final class Hamlets {
 			IN.remove(player.getUUID());
 			return;
 		}
-		Standing standing = standing(player, player.level(), bell);
+		Standing standing = standing(player, ((ServerLevel) player.level()), bell);
 		String key = key(player.level(), bell);
 		if (!key.equals(IN.put(player.getUUID(), key))) {
 			player.displayClientMessage(Component.translatable("message.wildercord.hamlet.enter", name(bell),

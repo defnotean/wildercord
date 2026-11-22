@@ -63,7 +63,7 @@ public final class RelayCircles {
 		boolean retired;
 
 		Focus(ServerPlayer player, int slot, List<RuneDef> runes, SpellCompiler.Compiled compiled, Vec3 pos, BlockPos floor) {
-			this.player = player; this.owner = ReleasedArtOwner.capture(player); this.level = player.level();
+			this.player = player; this.owner = ReleasedArtOwner.capture(player); this.level = ((ServerLevel) player.level());
 			this.cord = Spellbooks.cord(player); this.slot = slot; this.selected = Spellbooks.get(player).selected();
 			this.ids = List.copyOf(Spellbooks.get(player).spells().get(slot)); this.runes = List.copyOf(runes); this.compiled = compiled;
 			this.pos = pos; this.floor = floor.immutable(); this.placedFrom = player.position();
@@ -187,7 +187,7 @@ public final class RelayCircles {
 		var hit = player.level().clip(new ClipContext(eye, aim, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
 		if (hit.getType() != HitResult.Type.BLOCK || hit.getDirection() != Direction.UP) { fail(player, "Aim at visible floor within eight blocks to place the focus."); return; }
 		Vec3 at = hit.getLocation().add(0, 0.12, 0);
-		if (!clear(player.level(), player, eye, at)) { fail(player, "Both sides of the margin need clear sight; wards close it."); return; }
+		if (!clear(((ServerLevel) player.level()), player, eye, at)) { fail(player, "Both sides of the margin need clear sight; wards close it."); return; }
 		List<RuneDef> runes = SpellCaster.activeRunes(Spellbooks.get(player), slot, CordTier.ECHO);
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		if (compiled.isEmpty()) return;

@@ -213,7 +213,7 @@ public final class LessonPackCasting {
         switch (placed) {
             case Gate g -> Fx.sound(g.level, g.centre, SoundEvents.BELL_BLOCK, .5F, .7F);
             case Line l -> {
-                Fx.sound(l.level, l.ally.position(), SoundEvents.LEAD_TIED, .9F, 1.3F);
+                Fx.sound(l.level, l.ally.position(), SoundEvents.LEASH_KNOT_PLACE, .9F, 1.3F);
                 if (l.ally instanceof ServerPlayer friend) friend.sendSystemMessage(Component.translatable("message.wildercord.lifeline_lesson.offered", p.getDisplayName()));
             }
             case Rod r -> Fx.sound(r.level, r.top, SoundEvents.LIGHTNING_BOLT_IMPACT, .35F, 1.7F);

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * The travel pack: eight peaceful roadside sites (an inn, a watchtower, a broken bridge, a rune library, standing
@@ -82,7 +83,7 @@ public final class TravelSites {
 					if (site.site().equals(INN)) {
 						for (var piece : start.getPieces()) {
 							if (piece instanceof WayfarerInnPiece inn) {
-								inn.retrofit(player.level());
+								inn.retrofit(((ServerLevel) player.level()));
 								dev.wildercord.town.InnRaid.chance(player, inn.getBoundingBox().getCenter());
 							}
 						}

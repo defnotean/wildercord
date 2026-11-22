@@ -306,7 +306,7 @@ public final class WorldResonances {
 		Resonance resonance = match.get();
 		for (WakeCondition condition : conditions()) {
 			if (!condition.allows(player, resonance)) {
-				TwistVfx.almost(player.level(), player, resonance.color());
+				TwistVfx.almost(((ServerLevel) player.level()), player, resonance.color());
 				return;
 			}
 		}

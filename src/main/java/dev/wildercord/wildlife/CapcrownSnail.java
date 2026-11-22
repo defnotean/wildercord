@@ -45,6 +45,7 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.entity.EquipmentSlot;
 
 /**
  * A capcrown snail: a plump grey-violet snail of the mushroom fields whose shell has grown a mushroom cap, red and white-spotted
@@ -227,7 +228,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 			if (level() instanceof ServerLevel level) {
 				shear(level, SoundSource.PLAYERS, held);
 				gameEvent(GameEvent.SHEAR, player);
-				held.hurtAndBreak(1, player, hand);
+				held.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 			}
 			return InteractionResult.SUCCESS;
 		}

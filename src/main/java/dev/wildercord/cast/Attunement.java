@@ -183,7 +183,7 @@ public final class Attunement {
 	 */
 	private static void show(ServerPlayer player, Attunements.Rule rule, int color, float progress) {
 		Vec3 feet = player.position();
-		Fx.sendAll(player.level(), new RitualOption(player.getId(), rule.rune().id(), color & 0xFFFFFF, progress), feet, 1, 0, 0);
+		Fx.sendAll(((ServerLevel) player.level()), new RitualOption(player.getId(), rule.rune().id(), color & 0xFFFFFF, progress), feet, 1, 0, 0);
 	}
 
 	private static void complete(ServerPlayer player, InteractionHand hand, Attunements.Rule rule, int color) {

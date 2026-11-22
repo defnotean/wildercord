@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.*;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 /** Finite complete-pool camp observations, not a trap or a damage ward. */
 public final class Watchweft {
  private Watchweft(){}
@@ -18,7 +19,7 @@ public final class Watchweft {
  private record Seen(Monster entity,boolean inside){}
  private static final class Watch {
   final UUID owner;final ServerLevel level;final BlockPos floor;final BlockState state;final long until;final Map<UUID,Seen> history=new HashMap<>();long sampled;boolean obscured;
-  Watch(ServerPlayer p,BlockPos at,BlockState state,long now){owner=p.getUUID();level=p.level();floor=at.immutable();this.state=state;until=now+CampConcordRules.WATCH;sampled=now-10;}
+  Watch(ServerPlayer p,BlockPos at,BlockState state,long now){owner=p.getUUID();level=((ServerLevel) p.level());floor=at.immutable();this.state=state;until=now+CampConcordRules.WATCH;sampled=now-10;}
   Vec3 surface(){return Vec3.atCenterOf(floor).add(0,.52,0);}
  }
  private static final Map<UUID,Watch> ACTIVE=new HashMap<>();

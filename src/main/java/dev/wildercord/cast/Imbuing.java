@@ -679,7 +679,7 @@ public final class Imbuing {
 		if (!(player instanceof ServerPlayer server)) {
 			return;
 		}
-		keep(server.level(), player, pos, state);
+		keep(((ServerLevel) server.level()), player, pos, state);
 		ItemStack tool = server.getMainHandItem();
 		Imbued imbued = tool.get(WildercordComponents.IMBUED);
 		if (imbued != null && Imbued.release(tool) == Imbued.Release.TOOL && ready(server) && holds(server, tool, imbued)) {

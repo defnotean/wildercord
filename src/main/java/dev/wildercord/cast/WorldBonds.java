@@ -103,7 +103,7 @@ public final class WorldBonds {
 			for (RuneDef rune : spell) {
 				if (rune.is(quirk.rune())) {
 					if (here == null) {
-						here = WorldQuirks.placeAt(caster.level(), caster.position());
+						here = WorldQuirks.placeAt(((ServerLevel) caster.level()), caster.position());
 					}
 					if (quirk.holds(here)) {
 						return true;

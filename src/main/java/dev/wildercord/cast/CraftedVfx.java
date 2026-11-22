@@ -126,7 +126,7 @@ final class CraftedVfx {
 		Vec3 c = target.getBoundingBox().getCenter();
 		Light.ray(level, from, c, theme.primary(), 0.08, 6);
 		Sigils.layer(level, c, unit(c.subtract(from)), SigilOption.TARGET, theme.primary(), (float) Math.max(0.8, target.getBbWidth() + 0.4), 10, 0.2F);
-		Fx.sound(level, c, SoundEvents.LEAD_TIED, 0.8F, 1.4F);
+		Fx.sound(level, c, SoundEvents.LEASH_KNOT_PLACE, 0.8F, 1.4F);
 		// (the element's cast sound already played once, with the cast circle)
 	}
 

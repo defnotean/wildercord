@@ -204,7 +204,7 @@ public final class BountyEscorts {
 		String tag = Town.ESCORT_TAG + player.getUUID();
 		for (Llama stale : player.level().getEntitiesOfClass(Llama.class, player.getBoundingBox().inflate(64),
 				l -> l.isAlive() && l.getTags().contains(tag) && !current(player, l))) {
-			release(player.level(), stale);
+			release(((ServerLevel) player.level()), stale);
 		}
 	}
 

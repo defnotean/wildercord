@@ -21,6 +21,7 @@ import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerLevel;
 
 /** Owner-configured home projects and a small shared ritual. No tickets or offline production. */
 public final class RunicHearthEntity extends BlockEntity {
@@ -31,7 +32,7 @@ public final class RunicHearthEntity extends BlockEntity {
  public RunicHearthEntity(BlockPos p,BlockState s){super(WildercordBlocks.HEARTH_ENTITY,p,s);}
  public String project(){return project;}public int charge(){return charge;}
  private ServerPlayer owner(ServerLevel s){try{return s.getServer().getPlayerList().getPlayer(UUID.fromString(owner));}catch(IllegalArgumentException e){return null;}}
- private boolean allowed(ServerPlayer p){var o=owner(p.level());return owner.isEmpty()||owner.equals(p.getStringUUID())||o!=null&&Targets.canHelp(o,p);}
+ private boolean allowed(ServerPlayer p){var o=owner(((ServerLevel) p.level()));return owner.isEmpty()||owner.equals(p.getStringUUID())||o!=null&&Targets.canHelp(o,p);}
  public void use(Player player,ItemStack held) {
   if(!(player instanceof ServerPlayer p)||!(level instanceof ServerLevel s)||p.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(worldPosition))>36)return;
   if(held.is(Items.BOOK)){dev.wildercord.net.NotebookPayload.open(p);return;}

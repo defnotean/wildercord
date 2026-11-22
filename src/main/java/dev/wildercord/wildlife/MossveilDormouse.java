@@ -15,6 +15,7 @@ import dev.wildercord.compat.McValueInput;
 import dev.wildercord.compat.McValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerLevel;
 
 /** Gentle fungal companion; actual feeding and ownership, no combat, breeding or material output. */
 public final class MossveilDormouse extends TamableAnimal {
@@ -39,7 +40,7 @@ public final class MossveilDormouse extends TamableAnimal {
  private void voice(String n){if(level() instanceof ServerLevel l)dev.wildercord.cast.feel.Feels.sound(l,position(),"mossveil_"+n,.25F,1);}
  @Override protected void playStepSound(net.minecraft.core.BlockPos at,net.minecraft.world.level.block.state.BlockState state){voice("step");}
  public boolean live(ServerLevel l){return isAlive()&&!isRemoved()&&level()==l&&l.hasChunkAt(blockPosition())&&l.getEntity(getUUID())==this;}
- private boolean actor(ServerPlayer p){return live(p.level())&&p.isAlive()&&!p.isRemoved()&&!p.isCreative()&&!p.isSpectator()&&p.level().getEntity(p.getUUID())==p&&p.distanceToSqr(this)<=9&&p.hasLineOfSight(this);}
+ private boolean actor(ServerPlayer p){return live(((ServerLevel) p.level()))&&p.isAlive()&&!p.isRemoved()&&!p.isCreative()&&!p.isSpectator()&&((ServerLevel) p.level()).getEntity(p.getUUID())==p&&p.distanceToSqr(this)<=9&&p.hasLineOfSight(this);}
  @Override public InteractionResult mobInteract(Player who,InteractionHand hand){
   if(!(who instanceof ServerPlayer p))return who.isSpectator()?InteractionResult.PASS:InteractionResult.SUCCESS;
   if(operating||!actor(p))return InteractionResult.PASS;operating=true;

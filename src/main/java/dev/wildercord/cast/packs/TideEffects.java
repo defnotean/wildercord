@@ -80,6 +80,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BooleanSupplier;
+import net.minecraft.world.entity.EquipmentSlot;
 
 /**
  * The fishing, water and coast pack (fx-fish): 48 gentle effects, handed here by name from
@@ -249,7 +250,7 @@ public final class TideEffects {
 		// Exactly what using the rod does: vanilla's own catch, and the rod wears as it would.
 		int wear = hook.retrieve(rod);
 		if (wear > 0) {
-			rod.hurtAndBreak(wear, player, hand);
+			rod.hurtAndBreak(wear, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 		}
 		emit(cast.level, ParticleTypes.SPLASH, at, 16, 0.4);
 		sound(cast.level, player.position(), SoundEvents.FISHING_BOBBER_RETRIEVE, 1.0F);

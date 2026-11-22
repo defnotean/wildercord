@@ -85,7 +85,7 @@ public final class TidewardSurvey {
   if(now<p.getAttachedOrElse(READY,0L))return refuse(p,"rest");
   var floor=c.getClickedPos().immutable();if(!visibleBank(p,floor))return refuse(p,"bank");
   if(!current(p,s) || now>=s.until || s.first==null){
-   clear(p,s);s.world=p.level();s.held=held;s.hand=c.getHand();s.first=floor;s.until=now+ANCHOR_LIFE;
+   clear(p,s);s.world=((ServerLevel) p.level());s.held=held;s.hand=c.getHand();s.first=floor;s.until=now+ANCHOR_LIFE;
    p.displayClientMessage(Component.translatable("message.wildercord.bank_line.first"), true);return true;
   }
   var cells=columns(s.first,floor);if(!route(p,cells) || !current(p,s))return refuse(p,"crossing");

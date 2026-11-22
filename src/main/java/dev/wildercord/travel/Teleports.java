@@ -201,7 +201,7 @@ public final class Teleports {
 				countdown(player, pending, TravelRules.seconds(pending.warmup() - elapsed));
 			}
 			if (elapsed % 4 == 2) {
-				TravelFx.mote(player.level(), pending.start(), player.getRandom());
+				TravelFx.mote(((ServerLevel) player.level()), pending.start(), player.getRandom());
 			}
 		}
 	}
@@ -209,14 +209,14 @@ public final class Teleports {
 	/** Shows the seconds left above the hotbar, and renews the circle. */
 	private static void countdown(ServerPlayer player, Pending pending, long seconds) {
 		player.displayClientMessage(Travel.text("countdown", pending.where(), seconds).withColor(Travel.ARCANE), true);
-		TravelFx.circle(player.level(), pending.start(), seconds);
+		TravelFx.circle(((ServerLevel) player.level()), pending.start(), seconds);
 	}
 
 	private static void cancel(ServerPlayer player, Pending pending, String why) {
 		if (PENDING.remove(player.getUUID(), pending)) {
 			player.displayClientMessage(Travel.text("cancel." + why).withStyle(ChatFormatting.RED), true);
 			Travel.fail(player, "cancel." + why);
-			TravelFx.fizzle(player.level(), pending.start());
+			TravelFx.fizzle(((ServerLevel) player.level()), pending.start());
 		}
 	}
 
@@ -231,7 +231,7 @@ public final class Teleports {
 		player.teleportTo(arrival.level(), arrival.pos().x, arrival.pos().y, arrival.pos().z, Set.<Relative>of(), arrival.yaw(), arrival.pitch(), true);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.resetFallDistance();
-		TravelFx.arrive(arrival.level(), arrival.pos());
+		TravelFx.arrive(((ServerLevel) arrival.level()), arrival.pos());
 		READY_AT.computeIfAbsent(player.getUUID(), id -> new EnumMap<>(Kind.class))
 			.put(kind, arrival.level().getServer().getTickCount() + cooldownTicks(kind));
 		player.displayClientMessage(Travel.text("arrived", where).withColor(Travel.ARCANE), true);

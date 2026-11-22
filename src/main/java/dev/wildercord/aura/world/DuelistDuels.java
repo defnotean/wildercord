@@ -289,7 +289,7 @@ public final class DuelistDuels {
 				|| !Aura.enabled(player) || !Aura.holdsWeapon(player)) return false;
 		int stage=AuraWorldRules.duelStage(Aura.stage(player),AuraStages.highest());
 		var terms=new DuelRules.Terms(8,60,2400,0,1,false);
-		Active active=new Active(new DuelRules.Duel(player.getUUID(),duelist.getUUID(),(ServerLevel) player.level().getGameTime(),terms),(ServerLevel) player.level(),centre,player,duelist,stage);
+		Active active=new Active(new DuelRules.Duel(player.getUUID(),duelist.getUUID(),((ServerLevel) player.level()).getGameTime(),terms),(ServerLevel) player.level(),centre,player,duelist,stage);
 		active.listener=listener; BY_PLAYER.put(active.player,active); BY_DUELIST.put(active.duelist,active); duelist.begin(player,stage); return true;
 	}
 

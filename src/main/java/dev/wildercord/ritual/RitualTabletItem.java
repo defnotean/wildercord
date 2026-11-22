@@ -44,7 +44,7 @@ public class RitualTabletItem extends Item {
 			return InteractionResult.SUCCESS;
 		}
 		if (player instanceof ServerPlayer server) {
-			Rituals.Result result = Rituals.check(server.level(), server, Rituals.ritual(stack));
+			Rituals.Result result = Rituals.check(((ServerLevel) server.level()), server, Rituals.ritual(stack));
 			if (result != Rituals.Result.DONE) {
 				refuse(server, Rituals.ritual(stack), result);
 				return InteractionResult.FAIL;

@@ -5,12 +5,13 @@ import net.minecraft.server.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 
 /** Fixed small supported canopy snapshot; no scans generate chunks or edit a garden. */
 final class MossveilHome{
  record Home(ServerLevel world,BlockPos canopy,Map<BlockPos,BlockState> cells){
   boolean current(){for(var e:cells.entrySet())if(!world.hasChunkAt(e.getKey())||world.getBlockState(e.getKey())!=e.getValue())return false;return supported(world,canopy);}
-  boolean allowed(ServerPlayer p){for(var at:cells.keySet())if(!TidewardReadAdmission.allows(p,world,at))return false;return p.level()==world&&current();}
+  boolean allowed(ServerPlayer p){for(var at:cells.keySet())if(!TidewardReadAdmission.allows(p,world,at))return false;return ((ServerLevel) p.level())==world&&current();}
  }
  static boolean supported(ServerLevel l,BlockPos canopy){
   var feet=canopy.below();var floor=canopy.below(2);

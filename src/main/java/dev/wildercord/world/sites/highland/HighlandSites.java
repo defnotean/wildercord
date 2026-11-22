@@ -24,6 +24,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * The highland sites pack: two Windscar Highlands landmarks — the Highland Cairn Lodge (a Marchkeeper ridge
@@ -52,7 +53,7 @@ public final class HighlandSites {
 	public static void observe(ServerPlayer player) {
 		if (player.isSpectator() || !player.isAlive()) return;
 		var level = player.level();
-		var start = level.structureManager().getStructureWithPieceAt(player.blockPosition(),
+		var start = ((ServerLevel) level).structureManager().getStructureWithPieceAt(player.blockPosition(),
 			holder -> holder.value() instanceof SiteStructure site && IDS.contains(site.site()));
 		if (!start.isValid() || !(start.getStructure() instanceof SiteStructure site)) return;
 		LoreJournal.record(player, "place:" + site.site(), true);

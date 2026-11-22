@@ -326,7 +326,7 @@ public final class Wards {
 		}
 		Vec3 from = player.position();
 		// Never back into lava, a wall or thin air: time will not put you somewhere that would kill you.
-		if (!Effects.safeSpot(player.level(), player, pick.pos())) {
+		if (!Effects.safeSpot(((ServerLevel) player.level()), player, pick.pos())) {
 			player.displayClientMessage(Component.translatable("message.wildercord.rewind_unsafe"), true);
 			return;
 		}

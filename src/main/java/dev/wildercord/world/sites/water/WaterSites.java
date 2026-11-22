@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.server.level.ServerLevel;
 
 /**
 	 * The water pack: places on rivers, swamps, coasts, the sea floor and frozen lakes, for anglers and those who
@@ -62,7 +63,7 @@ public final class WaterSites {
 	public static void observe(ServerPlayer player) {
 		if (player.isSpectator() || !player.isAlive()) return;
 		var level = player.level();
-		var start = level.structureManager().getStructureWithPieceAt(player.blockPosition(),
+		var start = ((ServerLevel) level).structureManager().getStructureWithPieceAt(player.blockPosition(),
 			holder -> holder.value() instanceof SiteStructure site && IDS.contains(site.site()));
 		if (!start.isValid() || !(start.getStructure() instanceof SiteStructure site)) return;
 		LoreJournal.record(player, "place:" + site.site(), true);

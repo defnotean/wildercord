@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Mentoring (0.13; the rules are {@link MentorRules}): a seasoned mage takes an apprentice with {@code /mentor take}, the
@@ -160,7 +161,7 @@ public final class Mentors {
 
 	private static void give(ServerPlayer player, int crystals) {
 		ItemStack stack = new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, crystals);
-		if (!player.getInventory().add(stack)) player.spawnAtLocation(player.level(), stack);
+		if (!player.getInventory().add(stack)) player.spawnAtLocation((ServerLevel) player.level(), stack);
 	}
 
 	public static Ledger ledger(MinecraftServer server) {

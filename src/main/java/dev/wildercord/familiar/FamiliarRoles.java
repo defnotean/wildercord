@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.*;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 
 /** A chosen job replaces the familiar's elemental assistance. It never adds an extra combat spell. */
 public final class FamiliarRoles {
@@ -23,20 +24,20 @@ public final class FamiliarRoles {
    case GUARDIAN -> {
     var threat=p.getLastHurtByMob();if(threat==null||!threat.isAlive()||p.tickCount-p.getLastHurtByMobTimestamp()>100||p.hasEffect(MobEffects.ABSORPTION))return false;
     p.addEffect(new MobEffectInstance(MobEffects.ABSORPTION,100,0,false,true));
-    dev.wildercord.cast.ElementFx.earthImpact(p.level(),p.position(),.6);return true;
+    dev.wildercord.cast.ElementFx.earthImpact(((ServerLevel) p.level()),p.position(),.6);return true;
    }
    case SCOUT -> {
     var enemies=p.level().getEntitiesOfClass(net.minecraft.world.entity.Mob.class,p.getBoundingBox().inflate(16),e->e instanceof net.minecraft.world.entity.monster.Enemy&&e.isAlive()&&!e.hasEffect(MobEffects.GLOWING));
     var nearest=enemies.stream().min(java.util.Comparator.comparingDouble(e->e.distanceToSqr(p)));
     if(nearest.isEmpty())return false;nearest.get().addEffect(new MobEffectInstance(MobEffects.GLOWING,100,0,false,false),p);
-    dev.wildercord.cast.Light.ray(p.level(),wisp.position(),nearest.get().getEyePosition(),0xEED499,.025F,8);return true;
+    dev.wildercord.cast.Light.ray(((ServerLevel) p.level()),wisp.position(),nearest.get().getEyePosition(),0xEED499,.025F,8);return true;
    }
    case GARDENER -> {
     // Shows ripe crops without harvesting or changing a player's farm. The role spends its turn on utility.
     for(var pos:BlockPos.betweenClosed(p.blockPosition().offset(-4,-1,-4),p.blockPosition().offset(4,1,4))) {
      if(!p.level().hasChunkAt(pos))continue;var state=p.level().getBlockState(pos);
      if(state.getBlock() instanceof CropBlock crop&&crop.isMaxAge(state)) {
-      dev.wildercord.cast.Fx.sendParticles(p.level(), ParticleTypes.HAPPY_VILLAGER,pos.getX()+.5,pos.getY()+.8,pos.getZ()+.5,5,.3,.2,.3,0);
+      dev.wildercord.cast.Fx.sendParticles(((ServerLevel) p.level()), ParticleTypes.HAPPY_VILLAGER,pos.getX()+.5,pos.getY()+.8,pos.getZ()+.5,5,.3,.2,.3,0);
       p.displayClientMessage(Component.translatable("message.wildercord.familiar_harvest"), true);return true;
      }
     }

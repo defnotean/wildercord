@@ -38,13 +38,13 @@ public final class RooksRainshield {
  private static final double FRONT_COS=Math.cos(Math.toRadians(35));
  private static final class Selection {
   final ServerLevel level;final UUID recipient;final ServerPlayer recipientBody;final long until;final ItemStack held;final InteractionHand hand;boolean previousShift,consented;
-  Selection(ServerPlayer p,ServerPlayer r,ItemStack stack,InteractionHand h){level=p.level();recipient=r.getUUID();recipientBody=r;until=now(p)+40;held=stack;hand=h;previousShift=r.isShiftKeyDown();}
+  Selection(ServerPlayer p,ServerPlayer r,ItemStack stack,InteractionHand h){level=((ServerLevel) p.level());recipient=r.getUUID();recipientBody=r;until=now(p)+40;held=stack;hand=h;previousShift=r.isShiftKeyDown();}
   ServerLevel level(){return level;}UUID recipient(){return recipient;}long until(){return until;}
  }
  private record Draw(ServerLevel level,ItemStack held,InteractionHand hand,UUID nonce) {}
  private static final class Fan {
   final ServerLevel level;final ServerPlayer carrier,recipient;final ItemStack held;final InteractionHand hand;final Vec3 origin,normal;final long start,until,generation;final UUID nonce=UUID.randomUUID();boolean spent;int beat;
-  Fan(ServerPlayer p,ServerPlayer r,InteractionHand h,long generation){this.generation=generation;level=p.level();carrier=p;recipient=r;held=p.getItemInHand(h);hand=h;origin=p.position();normal=p.getLookAngle().multiply(1,0,1).normalize();start=now(p);until=start+PREP+WINDOW;}
+  Fan(ServerPlayer p,ServerPlayer r,InteractionHand h,long generation){this.generation=generation;level=((ServerLevel) p.level());carrier=p;recipient=r;held=p.getItemInHand(h);hand=h;origin=p.position();normal=p.getLookAngle().multiply(1,0,1).normalize();start=now(p);until=start+PREP+WINDOW;}
  }
  private static final AttachmentType<Selection> SELECT=AttachmentRegistry.create(Wildercord.id("rainshield_selection"),b->{});
  private static final AttachmentType<Long> GENERATION=AttachmentRegistry.create(Wildercord.id("rainshield_generation"),b->b.initializer(()->0L));

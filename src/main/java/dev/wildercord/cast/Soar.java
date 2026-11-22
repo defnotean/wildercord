@@ -315,7 +315,7 @@ public final class Soar {
 			end(player, Ending.RAN_OUT);
 			return;
 		}
-		if ((now + player.getId()) % SoarRules.WARD_CHECK_TICKS == 0 && DungeonWards.warded(player.level(), player.blockPosition())) {
+		if ((now + player.getId()) % SoarRules.WARD_CHECK_TICKS == 0 && DungeonWards.warded(((ServerLevel) player.level()), player.blockPosition())) {
 			end(player, Ending.WARDED);
 			return;
 		}
@@ -326,7 +326,7 @@ public final class Soar {
 		}
 		boolean flying = abilities.flying;
 		if (flying && !flier.wasFlying) {
-			SoarVfx.takeOff(player.level(), player);
+			SoarVfx.takeOff(((ServerLevel) player.level()), player);
 			flier.nextGust = now + SoarRules.GUST_TICKS;
 		}
 		flier.wasFlying = flying;
@@ -407,7 +407,7 @@ public final class Soar {
 				tell(player, "soar_grounded", "Grounded! The wind is torn out from under you", WIND_TEXT);
 			}
 			case WARDED -> {
-				SoarVfx.stilled(player.level(), player);
+				SoarVfx.stilled(((ServerLevel) player.level()), player);
 				tell(player, "soar_warded", "The ward stills the wind here", WARD_TEXT);
 			}
 			case TRAVELLED -> {

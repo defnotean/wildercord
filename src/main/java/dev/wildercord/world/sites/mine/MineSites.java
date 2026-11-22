@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * The mining sites: mines, caves, forges and crystals, each pointing at the mining and crafting runes and the Iron and Stone
@@ -54,7 +55,7 @@ public final class MineSites {
 		if (server.getTickCount() % JOURNAL_TICKS != 0) return;
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			if (player.isSpectator()) continue;
-			var start = player.level().structureManager().getStructureWithPieceAt(player.blockPosition(), Sites.ALL_SITES);
+			var start = ((ServerLevel) player.level()).structureManager().getStructureWithPieceAt(player.blockPosition(), Sites.ALL_SITES);
 			if (start.isValid() && start.getStructure() instanceof SiteStructure site && site.site().startsWith("mine_")) {
 				LoreJournal.record(player, "place:" + site.site(), true);
 			}

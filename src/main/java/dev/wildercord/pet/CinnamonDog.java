@@ -286,7 +286,7 @@ public final class CinnamonDog extends TamableAnimal {
 		var ownerPosition = player.position();
 		float previousScale = getScale();
 		long revision = stateRevision;
-		boolean safe = CompanionLanding.safe(player.level(), this, proposed);
+		boolean safe = CompanionLanding.safe(((ServerLevel) player.level()), this, proposed);
 		// Protection hooks can re-enter, transfer ownership, or replace the hand stack. Fail closed.
 		if (!safe || !CinnamonCompanion.active(this) || !isOwnedBy(player) || player.level() != level()
 			|| stateRevision != revision || !getBoundingBox().equals(before) || !player.position().equals(ownerPosition)

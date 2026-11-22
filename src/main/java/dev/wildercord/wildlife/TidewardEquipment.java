@@ -57,7 +57,7 @@ public final class TidewardEquipment {
   var state=p.getAttachedOrCreate(WALK);var worn=p.getItemBySlot(EquipmentSlot.FEET);var pos=p.position();
   boolean same=state.world==p.level() && state.worn==worn;
   boolean eligible=same && worn.is(WADERS) && shallow(p) && clock(p)>=p.getAttachedOrElse(WALK_READY,0L);
-  if(!eligible){removeWalk(p);state.world=p.level();state.worn=worn;state.at=pos;return;}
+  if(!eligible){removeWalk(p);state.world=((ServerLevel) p.level());state.worn=worn;state.at=pos;return;}
   double distance=pos.subtract(state.at).multiply(1,0,1).lengthSqr();state.at=pos;
   // A teleport does not pay or earn a walking window.
   if(distance>.25){removeWalk(p);return;}
@@ -88,7 +88,7 @@ public final class TidewardEquipment {
   if(!actor(p) || !p.isShiftKeyDown() || !worn.is(SPECTACLES) || clock(p)<p.getAttachedOrElse(SIGHT_READY,0L)){
    state.target=null;state.ticks=0;state.world=p.level();state.worn=worn;return;
   }
-  if(state.world!=p.level() || state.worn!=worn){state.target=null;state.ticks=0;state.world=p.level();state.worn=worn;}
+  if(state.world!=((ServerLevel) p.level()) || state.worn!=worn){state.target=null;state.ticks=0;state.world=((ServerLevel) p.level());state.worn=worn;}
   ReedbackCrab crab=state.target!=null && p.level().getEntity(state.target) instanceof ReedbackCrab c?c:null;
   if(crab==null || !visibleWarning(p,crab)){
    state.target=null;state.ticks=0;

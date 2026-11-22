@@ -207,7 +207,7 @@ public final class InnRaid {
 
 	/** Begins a raid on the inn with its middle at {@code centre}, sized to {@code player}'s standing. */
 	public static void begin(ServerPlayer player, BlockPos centre, long today) {
-		if (active(player.level(), centre)) return;
+		if (active(((ServerLevel) player.level()), centre)) return;
 		InnRaid raid = new InnRaid(player.level(), Vec3.atBottomCenterOf(centre), BountyRules.Tier.of(Math.max(Town.standing(player).reputation(),
 			InnRaidRules.MIN_TIER.needs)), today);
 		ACTIVE.put(new Key(player.level().dimension(), centre.asLong()), raid);
