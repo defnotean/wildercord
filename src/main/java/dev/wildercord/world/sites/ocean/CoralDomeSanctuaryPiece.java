@@ -291,6 +291,7 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 			}
 		}
 		// Crown spire anchored flush atop Central Conduit Rotunda roof
+		set(level, bb, DARK_PRISMARINE, ccx, BASE + 8, ccz);
 		set(level, bb, DARK_PRISMARINE, ccx, BASE + 9, ccz);
 		set(level, bb, COPPER_OXIDIZED, ccx, BASE + 10, ccz);
 		set(level, bb, SEA_LANTERN, ccx, BASE + 11, ccz);
