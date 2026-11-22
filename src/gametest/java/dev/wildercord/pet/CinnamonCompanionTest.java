@@ -5,11 +5,12 @@ import dev.wildercord.party.PartyTestHooks;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
-import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.fabricmc.fabric.impl.event.interaction.FakePlayerPacketListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -59,10 +60,14 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 		return found.getFirst();
 	}
 
-	private static final class PartyMate extends FakePlayer {
+	private static final class PartyMate extends ServerPlayer {
 		PartyMate(ServerLevel level, String name) {
-			super(level, new GameProfile(UUID.randomUUID(), name));
+			super(level.getServer(), level, new GameProfile(UUID.randomUUID(), name), ClientInformation.createDefault());
+			this.connection = new FakePlayerPacketListener(this);
 		}
+
+		@Override
+		public void tick() {}
 
 		@Override
 		public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
@@ -74,7 +79,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 		player.teleportTo(server.overworld(), px, py, pz, Set.<Relative>of(), 0, 0, false);
 		player.setDeltaMovement(0, 0, 0);
 		double dx = dog.getX() - player.getX();
-		double dy = (dog.getY() + dog.getBbHeight() * 0.5D) - player.getEyeY();
+		double dy = (dog.getY() + dog.getBbHeight() * 0.35D) - player.getEyeY();
 		double dz = dog.getZ() - player.getZ();
 		double horiz = Math.sqrt(dx * dx + dz * dz);
 		float yaw = (float) (Math.toDegrees(Math.atan2(-dx, dz)));
@@ -276,6 +281,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 				});
 
 				// 5. Flight takeoff & climb + airborne screenshot + dismount Slow Falling.
+				context.waitTicks(3);
 				context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
 				context.getInput().holdKey(o -> o.keyJump);
 				context.waitTicks(24);
