@@ -5,10 +5,11 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 
 /**
  * 1.21.3 stand-in for the 1.21.4 {@code ArmedEntityRenderState}. 1.21.3 has no such class: its
- * {@link HumanoidRenderState} already carries {@code mainArm}, {@code attackTime}, {@code attackArm}
- * and the four worn {@code *Item} stacks, so the only additions here are the arm poses 1.21.4 moved
- * onto this type. Kept so the shared client and gametest source sets compile unchanged; no vanilla
- * 1.21.3 render state extends it, so the pose fields are inert here.
+ * {@link LivingEntityRenderState} already carries {@code mainArm} and {@code headItem}, and its
+ * {@link HumanoidRenderState} subclass carries {@code attackTime}, {@code attackArm} and the other
+ * worn {@code *Item} stacks. The only additions here are the arm poses 1.21.4 moved onto this type.
+ * Kept so the shared client and gametest source sets compile unchanged; no vanilla 1.21.3 render
+ * state extends it, so the pose fields are inert here.
  */
 public class ArmedEntityRenderState extends HumanoidRenderState {
 	public HumanoidModel.ArmPose rightArmPose = HumanoidModel.ArmPose.EMPTY;
