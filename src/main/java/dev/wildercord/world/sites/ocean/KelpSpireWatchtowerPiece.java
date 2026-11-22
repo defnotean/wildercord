@@ -109,7 +109,7 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 		set(level, bb, Blocks.CRAFTING_TABLE.defaultBlockState(), 4, BASE + 1, 10);
 		set(level, bb, Blocks.LECTERN.defaultBlockState(), 10, BASE + 1, 6);
 		set(level, bb, Blocks.BLAST_FURNACE.defaultBlockState(), 10, BASE + 1, 10);
-		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), 7, BASE + 1, 10);
+		set(level, bb, dev.wildercord.ocean.OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), 7, BASE + 1, 10);
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), 4, bellTop - 1, 4);
 
 		// 2. Twin Bubble-Elevator Shafts (Soul Sand UP at x=6, Magma DOWN at x=8) + Brass Pressure Rings
@@ -153,7 +153,7 @@ public final class KelpSpireWatchtowerPiece extends OceanPiece {
 			for (int y = dockY - 3; y <= dockY + 1; y++) {
 				set(level, bb, STRIPPED_SPRUCE, x, y, 0);
 			}
-			set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), x, dockY + 2, 0);
+			set(level, bb, dev.wildercord.ocean.OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), x, dockY + 2, 0);
 			set(level, bb, Blocks.SPRUCE_FENCE.defaultBlockState(), x, dockY + 1, 4);
 		}
 
