@@ -96,7 +96,7 @@ public final class MasteryClient {
 			visibility = fullyVisibleForMs >= SHOW_MS * manager.getNotificationDisplayTimeMultiplier() ? Visibility.HIDE : Visibility.SHOW;
 		}
 
-		@Override
+		// The 1.21.4 Toast interface has no sound hook; the manager plays its own.
 		public SoundEvent getSoundEvent() {
 			return SoundEvents.AMETHYST_BLOCK_RESONATE;
 		}
