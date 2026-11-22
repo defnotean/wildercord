@@ -1,5 +1,6 @@
 package dev.wildercord.ocean;
 
+import java.util.EnumSet;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,12 +16,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
-import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
@@ -73,9 +75,65 @@ public class PearlPup extends TamableAnimal {
 	@Override
 	protected void registerGoals() {
 		goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
-		goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.15, 7.0F, 2.5F));
+		goalSelector.addGoal(2, new SwimFollowOwnerGoal(this, 1.15, 7.0F, 2.5F));
 		goalSelector.addGoal(6, new RandomStrollGoal(this, 0.9, 60));
 		goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 10.0F));
+	}
+
+	/** Amphibious-safe follow-owner goal (vanilla FollowOwnerGoal rejects AmphibiousPathNavigation). */
+	private static final class SwimFollowOwnerGoal extends Goal {
+		private final PearlPup pup;
+		private final double speedModifier;
+		private final float startDistance;
+		private final float stopDistance;
+		private int timeToRecalcPath;
+
+		SwimFollowOwnerGoal(PearlPup pup, double speedModifier, float startDistance, float stopDistance) {
+			this.pup = pup;
+			this.speedModifier = speedModifier;
+			this.startDistance = startDistance;
+			this.stopDistance = stopDistance;
+			setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+		}
+
+		@Override
+		public boolean canUse() {
+			LivingEntity owner = pup.getOwner();
+			return owner != null && !owner.isSpectator() && !pup.isOrderedToSit()
+				&& pup.distanceToSqr(owner) >= (double) (startDistance * startDistance);
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			LivingEntity owner = pup.getOwner();
+			return owner != null && !pup.isOrderedToSit() && !pup.getNavigation().isDone()
+				&& pup.distanceToSqr(owner) > (double) (stopDistance * stopDistance);
+		}
+
+		@Override
+		public void start() {
+			timeToRecalcPath = 0;
+		}
+
+		@Override
+		public void stop() {
+			pup.getNavigation().stop();
+		}
+
+		@Override
+		public void tick() {
+			LivingEntity owner = pup.getOwner();
+			if (owner == null) return;
+			pup.getLookControl().setLookAt(owner, 10.0F, pup.getMaxHeadXRot());
+			if (--timeToRecalcPath <= 0) {
+				timeToRecalcPath = adjustedTickDelay(10);
+				if (pup.distanceToSqr(owner) >= 324.0 && !pup.isLeashed()) {
+					pup.snapTo(owner.getX() + 1.5, owner.getY(), owner.getZ() + 1.5, pup.getYRot(), pup.getXRot());
+				} else {
+					pup.getNavigation().moveTo(owner, speedModifier);
+				}
+			}
+		}
 	}
 
 	@Override
