@@ -69,7 +69,7 @@ dependencies {
 	modCompileOnly "maven.modrinth:iris:${project.iris_version}"
 	// The shader test switches a test pack on through Iris itself.
 	modGametestCompileOnly "maven.modrinth:iris:${project.iris_version}"
-	// 1.21.3's Fabric API predates fabric-client-gametest-api-v1 (added for 1.21.4), so the gametest
+	// 1.21.2's Fabric API predates fabric-client-gametest-api-v1 (added for 1.21.4), so the gametest
 	// source set has no harness on its classpath. Pin the dev-only module jar for compilation;
 	// client gametests are not runnable on this version and no API stand-ins are shipped.
 	modGametestCompileOnly "net.fabricmc.fabric-api:fabric-client-gametest-api-v1:4.1.1+6816ccd404"
