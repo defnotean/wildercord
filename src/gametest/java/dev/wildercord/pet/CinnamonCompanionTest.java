@@ -1,8 +1,7 @@
 package dev.wildercord.pet;
 
 import com.mojang.authlib.GameProfile;
-import dev.wildercord.party.Parties;
-import dev.wildercord.party.PartyRules;
+import dev.wildercord.party.PartyTestHooks;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
@@ -17,10 +16,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.monster.zombie.Husk;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -143,9 +142,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					level.addNewPlayer(stranger);
 					stranger.setHealth(6.0F);
 					long now = level.getGameTime();
-					PartyRules rules = Parties.session(server).rules;
-					rules.invite(p.getUUID(), ally.getUUID(), now);
-					rules.accept(ally.getUUID(), p.getUUID(), now);
+					PartyTestHooks.join(server, p.getUUID(), ally.getUUID(), now);
 					mates[0] = ally;
 					mates[1] = stranger;
 				});
@@ -164,14 +161,14 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					mates[1].discard();
 				});
 
-				// 2. Universal passive magic at normal size (against a hostile Zombie).
-				Zombie[] passiveTarget = new Zombie[1];
+				// 2. Universal passive magic at normal size (against a hostile Husk that won't burn in sunlight).
+				Husk[] passiveTarget = new Husk[1];
 				world.getServer().runOnServer(server -> {
 					ServerLevel level = server.overworld();
 					CinnamonDog dog = findCinnamon(server);
 					dog.teleportTo(0.5, 101, 2.5);
-					Zombie z = EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
-					check(z != null, "Spawn passive magic zombie target");
+					Husk z = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+					check(z != null, "Spawn passive magic husk target");
 					z.setPos(0.5, 101, 8.5);
 					z.setNoAi(true);
 					level.addFreshEntity(z);
@@ -235,14 +232,12 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					check(dog.wearingHarness(), "Flying Harness equips cleanly");
 
 					long now = level.getGameTime();
-					PartyRules rules = Parties.session(server).rules;
 					for (int i = 0; i < 4; i++) {
 						PartyMate mate = new PartyMate(level, "Rider" + i);
 						mate.setGameMode(GameType.SURVIVAL);
 						mate.snapTo(1.5 + i, 101, 3.0, 0, 0);
 						level.addNewPlayer(mate);
-						rules.invite(p.getUUID(), mate.getUUID(), now);
-						rules.accept(mate.getUUID(), p.getUUID(), now);
+						PartyTestHooks.join(server, p.getUUID(), mate.getUUID(), now);
 						partyRiders[i] = mate;
 					}
 					nonPartyRider[0] = new PartyMate(level, "Outsider");
@@ -300,7 +295,7 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 						mate.discard();
 					}
 					nonPartyRider[0].discard();
-					Parties.session(server).rules.clear();
+					PartyTestHooks.clear(server);
 				});
 
 				// Settle back on grass for crisp daylight 3/4 portrait showing Grand Bow + harness + twin side chests.
@@ -324,11 +319,11 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 				context.takeScreenshot(TestScreenshotOptions.of("cinnamon_grand_harness_chests").disableCounterPrefix());
 
 				// 6. 2-3 second hit pause balance when attacked by an enemy.
-				Zombie[] attacker = new Zombie[1];
+				Husk[] attacker = new Husk[1];
 				world.getServer().runOnServer(server -> {
 					ServerLevel level = server.overworld();
 					CinnamonDog dog = findCinnamon(server);
-					Zombie z = EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
+					Husk z = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
 					check(z != null, "Spawn hit-pause attacker");
 					z.setPos(2.0, 101, 2.5);
 					z.setNoAi(true);
