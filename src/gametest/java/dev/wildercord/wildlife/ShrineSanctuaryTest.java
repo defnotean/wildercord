@@ -800,6 +800,11 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				// 1. Yuki: Resistance + Frost-Whisker Counter on attacker.
 				check(player.hasEffect(MobEffects.DAMAGE_RESISTANCE), "Tamed Yuki grants Resistance");
+				System.out.println("WILDERCORD_YUKI_DIAG foe=" + player.getLastHurtByMob()
+					+ " slow=" + huskA.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)
+					+ " hp=" + huskA.getHealth() + "/" + huskA.getMaxHealth()
+					+ " canHarm=" + dev.wildercord.cast.Targets.canHarm(player, huskA)
+					+ " resist=" + player.hasEffect(MobEffects.DAMAGE_RESISTANCE));
 				check(huskA.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && huskA.getHealth() < huskA.getMaxHealth(),
 					"Tamed Yuki slows and damages owner's attacker");
 
