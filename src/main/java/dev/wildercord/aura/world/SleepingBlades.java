@@ -45,7 +45,7 @@ public final class SleepingBlades {
 		Wildercord.id("sleeping_blade_stone"), FabricBlockEntityTypeBuilder.create(SleepingBladeEntity::new, STONE).build());
 	private static final ResourceKey<Item> BLADE_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("oathkeeper"));
 	public static final Item BLADE = Registry.register(BuiltInRegistries.ITEM, BLADE_KEY,
-		new Item(new Item.Properties().setId(BLADE_KEY).sword(ToolMaterial.DIAMOND, 3, -2.4F).fireResistant().rarity(Rarity.EPIC)) {
+		new net.minecraft.world.item.SwordItem(ToolMaterial.DIAMOND, 3, -2.4F, new Item.Properties().setId(BLADE_KEY).fireResistant().rarity(Rarity.EPIC)) {
 			@Override public void appendHoverText(ItemStack stack,TooltipContext c,List<Component> wildercord$lines,TooltipFlag flag) {
 		Consumer<Component> out = wildercord$lines::add;
 				out.accept(Component.translatable("item.wildercord.oathkeeper.lore").withColor(0xB8BFC6));

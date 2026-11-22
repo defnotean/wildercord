@@ -220,7 +220,7 @@ public class Cinderfox extends TamableAnimal {
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		Cinderfox kit = Wildlife.CINDERFOX.create(level, EntitySpawnReason.BREEDING);
 		if (kit != null && isTame()) {
-			kit.setOwnerReference(getOwnerReference());
+			kit.setOwnerUUID(getOwnerUUID());
 			kit.setTame(true, true);
 		}
 		return kit;

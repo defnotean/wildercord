@@ -271,7 +271,7 @@ public class AuraTrail extends McQuadParticle implements SigilGroup.Extent {
 
 	/** Whether the sky is bright behind a point: day, in a world with a sky, and nothing overhead. */
 	private boolean brightBehind(double x, double y, double z) {
-		return level.isBrightOutside() && level.canSeeSky(net.minecraft.core.BlockPos.containing(x, y, z));
+		return (level.isDay() && level.dimensionType().hasSkyLight()) && level.canSeeSky(net.minecraft.core.BlockPos.containing(x, y, z));
 	}
 
 	/** A line the ribbon is laid along, from its tail ({@code q} 0) to its head (1), world coordinates. */

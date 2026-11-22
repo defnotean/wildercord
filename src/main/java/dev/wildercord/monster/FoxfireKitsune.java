@@ -303,7 +303,7 @@ public class FoxfireKitsune extends WildMonster {
 			// Trade places, so you can't keep your eye on the real one.
 			Vec3 there = swap.position();
 			swap.moveTo(home.x, home.y, home.z, swap.getYRot(), swap.getXRot());
-			snapTo(there.x, there.y, there.z, getYRot(), getXRot());
+			moveTo(there.x, there.y, there.z, getYRot(), getXRot());
 		}
 		playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);
 	}

@@ -371,7 +371,7 @@ public class Gloomstalker extends WildMonster {
 	}
 
 	@Override
-	public boolean causeFallDamage(double fallDistance, float multiplier, DamageSource source) {
+	public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
 		// It lands on its feet, as cats do.
 		return super.causeFallDamage(fallDistance - 4, multiplier, source);
 	}

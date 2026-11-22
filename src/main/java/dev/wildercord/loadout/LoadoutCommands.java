@@ -65,8 +65,8 @@ final class LoadoutCommands {
 				line.append(Component.literal(", ").withStyle(ChatFormatting.DARK_GRAY));
 			}
 			MutableComponent button = Loadouts.name(name).withStyle(style -> style.withUnderlined(true)
-				.withClickEvent(new ClickEvent.RunCommand("/loadout load " + name))
-				.withHoverEvent(new HoverEvent.ShowText(Loadouts.text("list_hover", name))));
+				.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/loadout load " + name))
+				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Loadouts.text("list_hover", name))));
 			if (i == data.current()) {
 				button.append(Component.literal(" \u2022").withColor(0x7FE0F0));
 			}

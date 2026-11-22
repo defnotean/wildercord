@@ -69,8 +69,8 @@ public class RuneItem extends Item {
 	 * wakes as a random rune of Tier I to IV, as a Runesmith would pick one. A whole stack becomes the same rune.
 	 */
 	@Override
-	public void inventoryTick(ItemStack stack, ServerLevel level, Entity owner,  EquipmentSlot slot) {
-		if (stack.get(WildercordComponents.RUNE) == null && owner instanceof Player) {
+	public void inventoryTick(ItemStack stack, Level level, Entity owner, int slotId, boolean isSelected) {
+		if (level instanceof ServerLevel && stack.get(WildercordComponents.RUNE) == null && owner instanceof Player) {
 			dev.wildercord.runesmith.RuneTrades.random(1, 4, new java.util.Random(level.getRandom().nextLong()))
 				.ifPresent(rune -> stack.set(WildercordComponents.RUNE, rune.id()));
 		}

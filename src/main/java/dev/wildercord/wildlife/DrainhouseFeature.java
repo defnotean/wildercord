@@ -137,7 +137,7 @@ public class DrainhouseFeature extends SimpleWorldFeature {
   }
   return false;
  }
- static final int WRITE_FLAGS=Block.UPDATE_CLIENTS|Block.UPDATE_KNOWN_SHAPE|Block.UPDATE_SUPPRESS_DROPS|Block.UPDATE_SKIP_ON_PLACE;
+ static final int WRITE_FLAGS=Block.UPDATE_CLIENTS|Block.UPDATE_KNOWN_SHAPE|Block.UPDATE_SUPPRESS_DROPS;
  @FunctionalInterface interface PlacementWriter {boolean set(BlockPos at,BlockState state);}
  private static void put(Map<BlockPos,BlockState> plan,BlockPos at,Block block){plan.put(at.immutable(),block.defaultBlockState());}
  static LinkedHashMap<BlockPos,BlockState> plan(BlockPos p){var plan=new LinkedHashMap<BlockPos,BlockState>();

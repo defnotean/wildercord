@@ -156,7 +156,7 @@ public class HushwingOwlet extends Animal {
 	}
 
 	@Override
-	public boolean causeFallDamage(double distance, float multiplier, DamageSource source) {
+	public boolean causeFallDamage(float distance, float multiplier, DamageSource source) {
 		return false;
 	}
 

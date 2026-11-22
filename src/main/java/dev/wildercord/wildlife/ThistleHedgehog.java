@@ -283,7 +283,7 @@ public class ThistleHedgehog extends TamableAnimal {
 		}
 		// A tame pair's hoglet is its owner's too.
 		if (isTame()) {
-			hoglet.setOwnerReference(getOwnerReference());
+			hoglet.setOwnerUUID(getOwnerUUID());
 			hoglet.setTame(true, true);
 		}
 		return hoglet;

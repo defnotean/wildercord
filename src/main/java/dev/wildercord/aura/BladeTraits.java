@@ -216,7 +216,7 @@ public final class BladeTraits {
 			return 1.0;
 		}
 		double gain = BladeRules.hitGain(BondedBlades.heldTier(player));
-		if (has(player, BladeRules.MOONWAKE) && player.level().dimension() == Level.OVERWORLD && !player.level().isBrightOutside()) {
+		if (has(player, BladeRules.MOONWAKE) && player.level().dimension() == Level.OVERWORLD && !(player.level().isDay() && player.level().dimensionType().hasSkyLight())) {
 			gain *= BladeRules.scaled(BladeRules.MOONWAKE_GAIN, strength(player));
 		}
 		return gain;

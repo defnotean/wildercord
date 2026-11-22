@@ -88,7 +88,7 @@ public class AuraWisp extends McQuadParticle implements SigilGroup.Extent {
 		Vec3 cam = camera.getPosition();
 		LightStrokes paint = new LightStrokes(state, GlowLayers.GLOW);
 		// By day under the open sky, a faint rim of shade under it, so a pale wisp still reads against the sky.
-		LightStrokes shade = level.isBrightOutside() && level.canSeeSky(net.minecraft.core.BlockPos.containing(x, y, z))
+		LightStrokes shade = (level.isDay() && level.dimensionType().hasSkyLight()) && level.canSeeSky(net.minecraft.core.BlockPos.containing(x, y, z))
 			? new LightStrokes(state, GlowLayers.DARK) : null;
 		float hx = (float) (Mth.lerp(partial, xo, x) - cam.x);
 		float hy = (float) (Mth.lerp(partial, yo, y) - cam.y);

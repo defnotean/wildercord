@@ -278,7 +278,7 @@ final class FieldShapes {
 			case "herd" -> around(cast, center, reach, e -> e instanceof Animal && (!Targets.playerPet(e) || Targets.isAlly(caster, e)));
 			case "fellowship" -> around(cast, center, reach, e -> Targets.canHelp(caster, e));
 			case "saddle" -> riders(caster);
-			case "packbond" -> around(cast, center, reach, e -> e != caster && e instanceof OwnableEntity own && own.getRootOwner() == caster);
+			case "packbond" -> around(cast, center, reach, e -> e != caster && e instanceof OwnableEntity own && dev.wildercord.compat.McOwnable.rootOwner(own) == caster);
 			case "nursery" -> around(cast, center, reach, e -> e instanceof AgeableMob young && young.isBaby());
 			case "shoal" -> around(cast, center, reach, e -> e != caster && e.isInWater());
 			case "rearguard" -> {

@@ -488,11 +488,11 @@ public final class Duels {
 		CHALLENGES.add(new DuelRules.Challenge(from.getUUID(), to.getUUID(), now));
 		String name = from.getGameProfile().getName();
 		MutableComponent accept = Component.translatable("message.wildercord.duel_accept").withStyle(style -> style.withColor(ChatFormatting.GREEN).withBold(true)
-			.withClickEvent(new ClickEvent.RunCommand("/duel accept " + name))
-			.withHoverEvent(new HoverEvent.ShowText(Component.translatable("message.wildercord.duel_accept_hover", from.getDisplayName()))));
+			.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel accept " + name))
+			.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.wildercord.duel_accept_hover", from.getDisplayName()))));
 		MutableComponent decline = Component.translatable("message.wildercord.duel_decline").withStyle(style -> style.withColor(ChatFormatting.RED).withBold(true)
-			.withClickEvent(new ClickEvent.RunCommand("/duel decline " + name))
-			.withHoverEvent(new HoverEvent.ShowText(Component.translatable("message.wildercord.duel_decline_hover"))));
+			.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel decline " + name))
+			.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.wildercord.duel_decline_hover"))));
 		to.sendSystemMessage(Component.translatable("message.wildercord.duel_challenged", from.getDisplayName()).withStyle(ChatFormatting.GOLD)
 			.append(Component.literal("  ")).append(accept).append(Component.literal(" ")).append(decline));
 		if (!renewed) {

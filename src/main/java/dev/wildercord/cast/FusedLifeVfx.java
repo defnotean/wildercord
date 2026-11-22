@@ -59,7 +59,7 @@ final class FusedLifeVfx {
 	/** Bone, and its shadow. */
 	private static final int BONE = 0xF2EBD9;
 	private static final int BONE_SHADE = 0xCFC3A4;
-	private static final ColorParticleOption LEAF = ColorParticleOption.create(ParticleTypes.TINTED_LEAVES, 0xFF000000 | LIFE.primary());
+	private static final ColorParticleOption LEAF = ColorParticleOption.create(ParticleTypes.PALE_OAK_LEAVES, 0xFF000000 | LIFE.primary());
 
 	private static Vec3 centre(Entity t) {
 		return t.getBoundingBox().getCenter();

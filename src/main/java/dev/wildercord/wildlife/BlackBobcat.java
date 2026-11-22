@@ -154,7 +154,7 @@ public class BlackBobcat extends TamableAnimal {
 			return null;
 		}
 		if (isTame()) {
-			kitten.setOwnerReference(getOwnerReference());
+			kitten.setOwnerUUID(getOwnerUUID());
 			kitten.setTame(true, true);
 		}
 		return kitten;

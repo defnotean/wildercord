@@ -481,7 +481,7 @@ public final class WayfarerEffects {
 				}
 				for (BrushableBlockEntity relic : relics) {
 					if (!relic.isRemoved() && level.getBlockEntity(relic.getBlockPos()) == relic) {
-						relic.brush(level.getGameTime(), level, caster, Direction.UP, stroke);
+						relic.brush(level.getGameTime(), level, caster instanceof Player brushUser ? brushUser : null, Direction.UP, stroke);
 						Fx.send(level, ParticleTypes.DUST_PLUME, Vec3.atCenterOf(relic.getBlockPos()).add(0, 0.6, 0), 3, 0.25, 0.01);
 						Fx.sound(level, Vec3.atCenterOf(relic.getBlockPos()), SoundEvents.BRUSH_SAND, 0.5f, 1.0f);
 					}
@@ -505,8 +505,8 @@ public final class WayfarerEffects {
 	}
 
 	private static boolean trades(Villager villager) {
-		Holder<VillagerProfession> job = villager.getVillagerData().profession();
-		return !villager.isBaby() && !job.is(VillagerProfession.NONE) && !job.is(VillagerProfession.NITWIT);
+		VillagerProfession job = villager.getVillagerData().getProfession();
+		return !villager.isBaby() && !job == VillagerProfession.NONE && !job == VillagerProfession.NITWIT;
 	}
 
 	private static void appraise(Cast cast, Cast.Hit hit) {
@@ -526,7 +526,7 @@ public final class WayfarerEffects {
 				out++;
 			}
 		}
-		tell(cast, "appraise", villager.getVillagerData().profession().value().name(), villager.getVillagerData().level(), out, all);
+		tell(cast, "appraise", villager.getVillagerData().getProfession().name(), villager.getVillagerData().getLevel(), out, all);
 		Fx.send(cast.level, ParticleTypes.HAPPY_VILLAGER, villager.getEyePosition().add(0, 0.4, 0), 6, 0.3, 0.01);
 		chime(cast.level, villager.position(), SoundEvents.VILLAGER_TRADE, 1.0f);
 	}
@@ -578,12 +578,12 @@ public final class WayfarerEffects {
 		AABB box = new AABB(hit.point(), hit.point()).inflate(reach);
 		int working = 0, jobless = 0, nitwits = 0, children = 0;
 		for (Villager villager : cast.level.getEntitiesOfClass(Villager.class, box)) {
-			Holder<VillagerProfession> job = villager.getVillagerData().profession();
+			VillagerProfession job = villager.getVillagerData().getProfession();
 			if (villager.isBaby()) {
 				children++;
-			} else if (job.is(VillagerProfession.NITWIT)) {
+			} else if (job == VillagerProfession.NITWIT) {
 				nitwits++;
-			} else if (job.is(VillagerProfession.NONE)) {
+			} else if (job == VillagerProfession.NONE) {
 				jobless++;
 			} else {
 				working++;
@@ -750,8 +750,8 @@ public final class WayfarerEffects {
 			return;
 		}
 		CompoundTag saved = beacon.saveCustomOnly(level.registryAccess());
-		int levels = saved.getIntOr("Levels", 0);
-		String primary = saved.getStringOr("primary_effect", ""), secondary = saved.getStringOr("secondary_effect", "");
+		int levels = saved.getInt("Levels");
+		String primary = saved.getString("primary_effect"), secondary = saved.getString("secondary_effect");
 		if (levels <= 0 || primary.isEmpty()) {
 			return;
 		}

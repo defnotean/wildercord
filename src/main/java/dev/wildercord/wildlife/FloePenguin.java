@@ -492,7 +492,7 @@ public class FloePenguin extends Animal {
 				return false;
 			}
 			List<FloePenguin> colony = colony();
-			if (!PenguinRules.huddles(!level().isBrightOutside(), !isBaby(), colony.size(), truster() != null)) {
+			if (!PenguinRules.huddles(!(level().isDay() && level().dimensionType().hasSkyLight()), !isBaby(), colony.size(), truster() != null)) {
 				return false;
 			}
 			heart = heartOf(colony);
@@ -501,7 +501,7 @@ public class FloePenguin extends Animal {
 
 		@Override
 		public boolean canContinueToUse() {
-			return !level().isBrightOutside() && truster() == null && carrying() == PenguinRules.NOTHING && !isInWater() && heart != null
+			return !(level().isDay() && level().dimensionType().hasSkyLight()) && truster() == null && carrying() == PenguinRules.NOTHING && !isInWater() && heart != null
 				&& (getLastHurtByMob() == null || tickCount - getLastHurtByMobTimestamp() > 60);
 		}
 

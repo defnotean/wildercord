@@ -88,8 +88,8 @@ public final class MountBonds {
 
 	/** Whether {@code player} owns {@code mount} (a tame one they tamed or were given). */
 	public static boolean owns(Player player, AbstractHorse mount) {
-		EntityReference<LivingEntity> owner = ((OwnableEntity) mount).getOwnerReference();
-		return mount.isTamed() && owner != null && owner.getUUID().equals(player.getUUID());
+		UUID owner = ((OwnableEntity) mount).getOwnerUUID();
+		return mount.isTamed() && owner != null && owner.equals(player.getUUID());
 	}
 
 	/**
@@ -200,7 +200,7 @@ public final class MountBonds {
 		int struck = 0;
 		for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, mount.getBoundingBox().inflate(MountBondRules.STRIKE_RADIUS),
 			e -> e != mount && e != rider && !(e instanceof Player) && !e.isPassengerOfSameVehicle(rider) && e.isAlive()
-				&& !(e instanceof OwnableEntity pet && pet.getOwnerReference() != null && pet.getOwnerReference().getUUID().equals(rider.getUUID())))) {
+				&& !(e instanceof OwnableEntity pet && pet.getOwnerUUID() != null && pet.getOwnerUUID().equals(rider.getUUID())))) {
 			if (target.distanceToSqr(mount) > MountBondRules.STRIKE_RADIUS * MountBondRules.STRIKE_RADIUS) {
 				continue;
 			}

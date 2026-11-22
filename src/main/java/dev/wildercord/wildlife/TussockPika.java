@@ -246,14 +246,14 @@ public class TussockPika extends Animal {
 				return false;
 			}
 			long now = level().getGameTime();
-			return PikaRules.basks(level().isBrightOutside(), getNavigation().isDone(), onSunnyRock(), baskedAt < 0 ? -1 : now - baskedAt)
+			return PikaRules.basks((level().isDay() && level().dimensionType().hasSkyLight()), getNavigation().isDone(), onSunnyRock(), baskedAt < 0 ? -1 : now - baskedAt)
 				&& !disturbed();
 		}
 
 		@Override
 		public boolean canContinueToUse() {
 			boolean disturbed = (tickCount % 10 == 0 && disturbed()) || getLastHurtByMob() != null && tickCount - getLastHurtByMobTimestamp() < 40;
-			return basking() && PikaRules.staysBasking(level().isBrightOutside(), disturbed, since, length);
+			return basking() && PikaRules.staysBasking((level().isDay() && level().dimensionType().hasSkyLight()), disturbed, since, length);
 		}
 
 		@Override

@@ -244,7 +244,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	private void land(ServerLevel level){
 		var at=Vec3.atBottomCenterOf(landing());var t=trunk();
 		float facing=(float)Math.toDegrees(Math.atan2(-(at.x-t.x),at.z-t.z));
-		pose(SerpentRules.WATCH,SerpentRules.GAP);snapTo(at.x,at.y,at.z,facing,0);yBodyRot=facing;yHeadRot=facing;setDeltaMovement(Vec3.ZERO);
+		pose(SerpentRules.WATCH,SerpentRules.GAP);moveTo(at.x,at.y,at.z,facing,0);yBodyRot=facing;yHeadRot=facing;setDeltaMovement(Vec3.ZERO);
 		lastCut=level.getGameTime();quiet=0;deck.clear();links=0;
 		Feels.sound(level,at.add(0,2.5,0),"aura_serpent_challenge",1.6F,1);
 	}

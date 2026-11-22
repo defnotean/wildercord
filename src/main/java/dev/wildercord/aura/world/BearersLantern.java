@@ -103,7 +103,7 @@ public final class BearersLantern {
 		if (horse == null) return false;
 		horse.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 		horse.setTamed(true);
-		horse.setOwner(player);
+		horse.setOwnerUUID(player.getUUID());
 		horse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
 		dev.wildercord.compat.McEntities.setPermanentlyInvulnerable(horse, true);
 		horse.setPersistenceRequired();

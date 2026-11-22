@@ -82,12 +82,12 @@ public record Imbued(List<String> runes, int charges, int color, boolean glint, 
 			return Release.SHOT;
 		}
 		Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
-		if (equippable != null && equippable.slot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR || stack.has(DataComponents.BLOCKS_ATTACKS)) {
+		if (equippable != null && equippable.slot().getType() == EquipmentSlot.Type.HUMANOID_ARMOR || stack.getItem() instanceof net.minecraft.world.item.ShieldItem) {
 			return Release.WORN;
 		}
 		// Swords carry a tool component too (for cobwebs), but one that can't break blocks in creative: they're weapons.
 		net.minecraft.world.item.component.Tool tool = stack.get(DataComponents.TOOL);
-		if (tool != null && tool.canDestroyBlocksInCreative()) {
+		if (tool != null && !(stack.getItem() instanceof net.minecraft.world.item.SwordItem)) {
 			return Release.TOOL;
 		}
 		if (stack.has(DataComponents.WEAPON)) {

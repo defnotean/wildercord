@@ -212,7 +212,7 @@ public class TideScribe extends DungeonBoss {
 	/** How many rings each layer of the pit pours (or drains) in, one a tick. */
 	private static final int RINGS = (int) Math.floor(PIT_RADIUS) + 1;
 	/** Block changes in the pit: seen by players, but no neighbour updates, so the water never flows or spreads. */
-	private static final int QUIET = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_SKIP_ON_PLACE;
+	private static final int QUIET = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
 
 	/** The cells that flood: two layers over the pit floor, within {@link #PIT_RADIUS} of the core. */
 	private List<BlockPos> cells(ServerLevel level) {

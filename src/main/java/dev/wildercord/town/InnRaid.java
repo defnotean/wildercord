@@ -205,7 +205,7 @@ public final class InnRaid {
 	/** {@code player} is inside the inn with its middle at {@code centre}: at night, now and then, the bandits come. */
 	public static void chance(ServerPlayer player, BlockPos centre) {
 		ServerLevel level = (ServerLevel) player.level();
-		if (level.isBrightOutside() || level.getDifficulty() == Difficulty.PEACEFUL || player.isCreative() || active(level, centre)) return;
+		if ((level.isDay() && level.dimensionType().hasSkyLight()) || level.getDifficulty() == Difficulty.PEACEFUL || player.isCreative() || active(level, centre)) return;
 		Town.Standing standing = Town.standing(player);
 		long today = level.getGameTime() / BountyRules.DAY;
 		if (!InnRaidRules.due(standing.tier(), standing.lastRaidDay(), today)) return;

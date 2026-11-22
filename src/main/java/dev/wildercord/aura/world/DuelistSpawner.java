@@ -53,7 +53,7 @@ public final class DuelistSpawner {
 		}
 		WildercordConfig.AuraWorldSettings settings = Config.get().auraWorld();
 		ServerLevel level = server.overworld();
-		if (!settings.duelistsSpawn() || !level.isBrightOutside() || !level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get()) {
+		if (!settings.duelistsSpawn() || !(level.isDay() && level.dimensionType().hasSkyLight()) || !level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get()) {
 			return;
 		}
 		List<ServerPlayer> players = level.players().stream().filter(p -> !p.isSpectator()).toList();

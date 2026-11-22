@@ -58,7 +58,7 @@ public final class VillageTournaments {
 		ServerLifecycleEvents.SERVER_STOPPED.register(s->LOADED.clear());
 		ServerTickEvents.END_SERVER_TICK.register(server->{
 			if(server.getTickCount()%1200!=0 || !Config.get().auraWorld().tournaments())return;
-			ServerLevel s=server.overworld();if(!s.isBrightOutside() || !s.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get() || !s.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get())return;
+			ServerLevel s=server.overworld();if(!(s.isDay() && s.dimensionType().hasSkyLight()) || !s.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).get() || !s.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get())return;
 			var players=s.players().stream().filter(p->!p.isSpectator()).toList();if(players.isEmpty())return;
 			var random=s.getRandom();var p=players.get(random.nextInt(players.size()));
 			var bell=s.getPoiManager().findClosest(t->t.is(PoiTypes.MEETING),p.blockPosition(),96,PoiManager.Occupancy.ANY).orElse(null);if(!inhabited(s,bell))return;

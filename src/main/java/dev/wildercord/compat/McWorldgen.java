@@ -49,14 +49,14 @@ public final class McWorldgen {
 	/** Adds a mob spawn entry directly onto a {@link BiomeModificationContext.SpawnSettingsContext}. */
 	public static void addSpawn(BiomeModificationContext.SpawnSettingsContext spawns, MobCategory category,
 			EntityType<?> type, int minGroup, int maxGroup, int weight) {
-		spawns.addSpawn(category, new MobSpawnSettings.SpawnerData(type, minGroup, maxGroup), weight);
+		spawns.addSpawn(category, new MobSpawnSettings.SpawnerData(type, weight, minGroup, maxGroup));
 	}
 
 	/** Returns natural spawn entity types registered in {@code biome} for {@code category}. */
 	public static List<EntityType<?>> biomeSpawnTypes(Holder<Biome> biome, MobCategory category) {
 		MobSpawnSettings settings = biome.value().getMobSettings();
 		List<EntityType<?>> types = new ArrayList<>();
-		settings.getMobs(category).unwrap().forEach(w -> types.add(w.value().type()));
+		settings.getMobs(category).unwrap().forEach(w -> types.add(w.type()));
 		return types;
 	}
 

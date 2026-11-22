@@ -200,7 +200,7 @@ public final class DuplicateSwap {
 	/** Every plain (rank I) rune in the player's inventory that they already know, and how many of each. */
 	static Map<String, Integer> knownHeld(ServerPlayer player) {
 		Map<String, Integer> held = new LinkedHashMap<>();
-		List<ItemStack> items = player.getInventory().getNonEquipmentItems();
+		List<ItemStack> items = player.getInventory().items.subList(0, 36);
 		for (ItemStack stack : items) {
 			String id = stack.is(WildercordItems.RUNE) && pays(stack) ? stack.get(WildercordComponents.RUNE) : null;
 			if (id != null && Spellbooks.knows(player, id)) {

@@ -199,6 +199,11 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 		entityData.set(DATA_OWNER, Optional.ofNullable(owner).map(id -> new EntityReference<LivingEntity>(id)));
 	}
 
+	@Override
+	public UUID getOwnerUUID() {
+		return ownerId();
+	}
+
 	public  UUID ownerId() {
 		EntityReference<LivingEntity> ref = getOwnerReference();
 		return ref == null ? null : ref.getUUID();
@@ -331,7 +336,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 				taming = WispRules.Taming.NONE;
 			}
 			// Wild wisps are passing things: they fade with the day, or after a while.
-			if (life > WILD_LIFE || life > 600 && level.isBrightOutside() && random.nextInt(400) == 0) {
+			if (life > WILD_LIFE || life > 600 && (level.isDay() && level.dimensionType().hasSkyLight()) && random.nextInt(400) == 0) {
 				Familiars.fade(this);
 			}
 			return;
@@ -569,7 +574,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	@Override
-	public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource damageSource) {
+	public boolean causeFallDamage(float fallDistance, float damageModifier, DamageSource damageSource) {
 		return false;
 	}
 

@@ -50,8 +50,8 @@ public final class CircleVowCommands {
 
 	private static MutableComponent button(CircleVows.Option option) {
 		return Component.literal("[" + option.name() + "]").withStyle(style -> style.withColor(ChatFormatting.AQUA)
-			.withClickEvent(new ClickEvent.RunCommand("/vow take " + option.id()))
-			.withHoverEvent(new HoverEvent.ShowText(Component.literal(option.text()))));
+			.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/vow take " + option.id()))
+			.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(option.text()))));
 	}
 
 	static int list(ServerPlayer player) {
@@ -66,8 +66,8 @@ public final class CircleVowCommands {
 				line.append(Component.literal(option.name() + " - " + option.text()).withStyle(ChatFormatting.WHITE));
 				if (active < vow.circle()) line.append(text("silent", " (silent while this circle is unformed or cracked)").withStyle(ChatFormatting.GRAY));
 				line.append(Component.literal(" ")).append(Component.literal("[Release]").withStyle(style -> style.withColor(ChatFormatting.RED)
-					.withClickEvent(new ClickEvent.SuggestCommand("/vow release " + vow.circle()))
-					.withHoverEvent(new HoverEvent.ShowText(text("release_hover", "Costs %s levels; choose again afterwards for free", CircleVows.RELEASE_LEVELS)))));
+					.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/vow release " + vow.circle()))
+					.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text("release_hover", "Costs %s levels; choose again afterwards for free", CircleVows.RELEASE_LEVELS)))));
 			} else if (active >= vow.circle()) {
 				line.append(button(vow.first())).append(Component.literal(" or ")).append(button(vow.second()));
 			} else {

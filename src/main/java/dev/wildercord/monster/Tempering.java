@@ -73,7 +73,7 @@ public final class Tempering {
 	/** Whether {@code mob} is one the world tempers: hostile, wild, and not a summoned or tamed thing. */
 	static boolean temperable(Mob mob) {
 		if (!(mob instanceof Enemy) || mob.isNoAi()) return false;
-		return !(mob instanceof OwnableEntity owned && owned.getOwnerReference() != null);
+		return !(mob instanceof OwnableEntity owned && owned.getOwnerUUID() != null);
 	}
 
 	private static void temper(Mob mob, ServerLevel level) {

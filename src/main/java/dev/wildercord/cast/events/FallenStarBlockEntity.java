@@ -80,9 +80,9 @@ public class FallenStarBlockEntity extends BlockEntity {
 	 * the ledger still go, and its crater is still filled back in.
 	 */
 	@Override
-	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-		super.preRemoveSideEffects(pos, state);
-		if (!gone && level instanceof ServerLevel server) {
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		super.onRemove(state, level, pos, newState, movedByPiston);
+		if (!gone && !state.is(newState.getBlock()) && level instanceof ServerLevel server) {
 			gone = true;
 			FallenStars.cleanUp(server, pos, this);
 		}

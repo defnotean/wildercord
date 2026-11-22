@@ -187,7 +187,7 @@ public final class WardEffects {
 			case "heel" -> {
 				if (!(caster instanceof Player) || !cast.once("fxs:heel")) return;
 				AABB box = caster.getBoundingBox().inflate(32.0);
-				for (Entity e : level.getEntities(caster, box, x -> x instanceof TamableAnimal pet && pet.isAlive() && pet.getRootOwner() == caster && !pet.isOrderedToSit())) {
+				for (Entity e : level.getEntities(caster, box, x -> x instanceof TamableAnimal pet && pet.isAlive() && dev.wildercord.compat.McOwnable.rootOwner(pet) == caster && !pet.isOrderedToSit())) {
 					if (e.distanceTo(caster) > 3.0) {
 						Vec3 side = FxSupportAccess.horizontal(caster.getLookAngle(), new Vec3(1, 0, 0));
 						Vec3 to = caster.position().add(-side.z * 1.2, 0, side.x * 1.2);
@@ -398,7 +398,7 @@ public final class WardEffects {
 			case "faithful" -> {
 				if (!(caster instanceof Player)) return;
 				for (Entity e : hit.entities()) {
-					if (e instanceof LivingEntity pet && pet instanceof OwnableEntity owned && pet.isAlive() && owned.getRootOwner() == caster) {
+					if (e instanceof LivingEntity pet && pet instanceof OwnableEntity owned && pet.isAlive() && dev.wildercord.compat.McOwnable.rootOwner(owned) == caster) {
 						WardState.Mark m = WardState.mark(WardState.FAITHFUL, pet, FxSupportAccess.ticks(300, duration));
 						m.other = caster;
 						WardVfx.guard(level, pet, 0xFFB3D9);
@@ -468,7 +468,7 @@ public final class WardEffects {
 		for (Entity e : hit.entities()) {
 			if (!(e instanceof LivingEntity t) || !t.isAlive() || t instanceof Player || t instanceof Enemy || !cast.admitsConsequence(t)) continue;
 			boolean kept;
-			if (t instanceof OwnableEntity owned && owned.getOwnerReference() != null) {
+			if (t instanceof OwnableEntity owned && owned.getOwnerUUID() != null) {
 				kept = Targets.isAlly(cast.caster, t);
 			} else {
 				kept = t instanceof Animal || !petsOnly && (t instanceof AbstractVillager || t instanceof AbstractGolem);

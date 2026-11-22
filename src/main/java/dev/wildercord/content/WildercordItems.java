@@ -105,8 +105,7 @@ public final class WildercordItems {
 		// One to a slot, empty to begin with (an emptied one matches a new one); the runes keep the best one from burning.
 		// The game's own list of what's inside is left out of the tooltip, which lists it itself (see BackpackItem).
 		Item.Properties properties = new Item.Properties().stacksTo(1).rarity(rarity)
-			.component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-			.component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.CONTAINER, true));
+			.component(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
 		if (tier == BackpackTier.RUNEWOVEN) {
 			properties.fireResistant();
 		}

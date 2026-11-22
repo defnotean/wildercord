@@ -36,7 +36,7 @@ public final class DefensiveFoci {
  private static final AttachmentType<Origin> ORIGIN=AttachmentRegistry.create(Wildercord.id("reprieve_origin"),b->b.persistent(Origin.CODEC));
  private static net.minecraft.world.damagesource.DamageSource source(ServerPlayer p){var origin=p.getAttached(ORIGIN);if(origin==null)return p.damageSources().magic();
   try {var holder=p.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.parse(origin.type)));
-   net.minecraft.world.entity.Entity attacker=null;if(!origin.attacker.isEmpty())attacker=p.level().getEntity(java.util.UUID.fromString(origin.attacker));
+   net.minecraft.world.entity.Entity attacker=null;if(!origin.attacker.isEmpty() && p.level() instanceof net.minecraft.server.level.ServerLevel flevel)attacker=flevel.getEntity(java.util.UUID.fromString(origin.attacker));
    return new net.minecraft.world.damagesource.DamageSource(holder,attacker,attacker);
   }catch(IllegalArgumentException|IllegalStateException e){return p.damageSources().magic();}
  }

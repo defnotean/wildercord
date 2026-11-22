@@ -262,7 +262,7 @@ public final class Mentors {
 		long now = mentor.level().getServer().overworld().getGameTime();
 		ledger.offer(apprentice.getUUID(), mentor.getUUID(), now);
 		MutableComponent accept = text("accept_button").withStyle(style -> style.withColor(ChatFormatting.GREEN)
-			.withClickEvent(new ClickEvent.RunCommand("/mentor accept")));
+			.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mentor accept")));
 		apprentice.sendSystemMessage(text("offered", mentor.getDisplayName()).append(Component.literal(" ")).append(accept));
 		mentor.sendSystemMessage(text("offer_sent", apprentice.getDisplayName()));
 		return 1;

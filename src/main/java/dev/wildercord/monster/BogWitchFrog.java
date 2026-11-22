@@ -297,7 +297,7 @@ public class BogWitchFrog extends WildMonster {
 
 	/** Whether a creature is a frog's snack: small, wild and nameless. */
 	public static boolean small(Mob mob) {
-		if (mob.hasCustomName() || mob.isPersistenceRequired() || mob instanceof OwnableEntity owned && owned.getOwnerReference() != null) {
+		if (mob.hasCustomName() || mob.isPersistenceRequired() || mob instanceof OwnableEntity owned && owned.getOwnerUUID() != null) {
 			return false;
 		}
 		if (mob instanceof Slime cube) {

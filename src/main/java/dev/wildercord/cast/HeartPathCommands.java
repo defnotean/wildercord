@@ -50,8 +50,8 @@ public final class HeartPathCommands {
 		for (HeartPaths.Path path : HeartPaths.Path.values()) {
 			if (path.ordinal() > 0) out.append(Component.literal(" "));
 			out.append(Component.literal("[").append(name(path)).append("]").withStyle(style -> style.withColor(ChatFormatting.AQUA)
-				.withClickEvent(new ClickEvent.RunCommand("/path walk " + path.id))
-				.withHoverEvent(new HoverEvent.ShowText(about(path)))));
+				.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/path walk " + path.id))
+				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, about(path)))));
 		}
 		return out;
 	}
@@ -68,8 +68,8 @@ public final class HeartPathCommands {
 		}
 		if (walking != null) {
 			player.sendSystemMessage(Component.literal("[").append(text("leave_button", "Leave your path")).append("]").withStyle(style -> style.withColor(ChatFormatting.RED)
-				.withClickEvent(new ClickEvent.SuggestCommand("/path leave"))
-				.withHoverEvent(new HoverEvent.ShowText(text("leave_hover", "Costs %s levels; choose again afterwards for free", HeartPaths.LEAVE_LEVELS)))));
+				.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/path leave"))
+				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, text("leave_hover", "Costs %s levels; choose again afterwards for free", HeartPaths.LEAVE_LEVELS)))));
 		} else if (Heart.active(player) >= HeartPaths.CIRCLE) {
 			player.sendSystemMessage(buttons());
 		}

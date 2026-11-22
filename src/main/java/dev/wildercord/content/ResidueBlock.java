@@ -219,8 +219,8 @@ public class ResidueBlock extends Block {
 	}
 
 	@Override
-	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-		super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+	protected void affectNeighborsAfterRemoval(ServerLevel level, BlockPos pos, boolean movedByPiston) {
+		super.affectNeighborsAfterRemoval(level, pos, movedByPiston);
 		// However it went (broken, blown up, washed away), its record follows at the end of the tick.
 		Residues.gone(level, pos);
 	}

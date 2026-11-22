@@ -551,7 +551,7 @@ public final class HearthEffects {
 		}
 		if (now % 120 == 0 && timers.containsKey("sunbask")) {
 			BlockPos head = BlockPos.containing(p.getEyePosition());
-			boolean sun = level.isBrightOutside() && level.canSeeSky(head) && !level.isRainingAt(head);
+			boolean sun = (level.isDay() && level.dimensionType().hasSkyLight()) && level.canSeeSky(head) && !level.isRainingAt(head);
 			if (sun && p.getHealth() >= s.sunHealth && p.getHealth() < p.getMaxHealth()) {
 				p.heal(1);
 				Fx.send(level, ParticleTypes.WAX_OFF, p.position().add(0, 1.2, 0), 3, 0.3, 0.02);

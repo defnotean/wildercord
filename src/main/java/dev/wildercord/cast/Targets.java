@@ -39,7 +39,7 @@ public final class Targets {
 		}
 		// Your pets, and your team's.
 		if (entity instanceof OwnableEntity ownable) {
-			LivingEntity owner = ownable.getRootOwner();
+			LivingEntity owner = dev.wildercord.compat.McOwnable.rootOwner(ownable);
 			if (owner == caster || owner instanceof Player && caster.isAlliedTo(owner)) {
 				return true;
 			}
@@ -57,10 +57,10 @@ public final class Targets {
 	 * summoned by a spell), whether or not they're online.
 	 */
 	public static boolean playerPet(Entity entity) {
-		if (!(entity instanceof OwnableEntity ownable) || ownable.getOwnerReference() == null) {
+		if (!(entity instanceof OwnableEntity ownable) || ownable.getOwnerUUID() == null) {
 			return false;
 		}
-		LivingEntity owner = ownable.getRootOwner();
+		LivingEntity owner = dev.wildercord.compat.McOwnable.rootOwner(ownable);
 		if (owner != null) {
 			return owner instanceof Player;
 		}

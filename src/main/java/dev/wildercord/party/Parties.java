@@ -138,7 +138,7 @@ public final class Parties {
 				entity = owner;
 			} else if (entity instanceof OwnableEntity ownable) {
 				Entity owner = ownable.getOwner();
-				if (owner == null) return ownable.getOwnerReference() == null ? null : ownable.getOwnerReference().getUUID();
+				if (owner == null) return ownable.getOwnerUUID();
 				entity = owner;
 			} else {
 				return null;

@@ -163,7 +163,7 @@ public final class Backpacks {
 
 		/** The slot the item in this hand is in. */
 		public static Place hand(Player player, InteractionHand hand) {
-			return new Place(hand == InteractionHand.MAIN_HAND ? player.getInventory().getSelectedSlot() : Inventory.SLOT_OFFHAND);
+			return new Place(hand == InteractionHand.MAIN_HAND ? player.getInventory().selected : Inventory.SLOT_OFFHAND);
 		}
 
 		public boolean worn() {

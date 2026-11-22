@@ -23,7 +23,7 @@ public final class MageHunters {
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (server.getTickCount() % MageHunterRules.CHECK_TICKS != 0) return;
 			ServerLevel level = server.overworld();
-			if (level.getDifficulty() == Difficulty.PEACEFUL || level.isBrightOutside()) return;
+			if (level.getDifficulty() == Difficulty.PEACEFUL || (level.isDay() && level.dimensionType().hasSkyLight())) return;
 			RandomSource random = level.getRandom();
 			for (ServerPlayer player : level.players()) {
 				if (player.isAlive() && !player.isSpectator() && !player.isCreative() && MageHunterRules.hunted(Heart.circles(player))

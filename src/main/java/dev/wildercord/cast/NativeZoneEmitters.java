@@ -84,7 +84,7 @@ public final class NativeZoneEmitters {
     static boolean eligible(ServerPlayer player, Emitter emitter) {
         if (emitter == null || EMITTERS.get(emitter.id) != emitter || !emitter.targetable() || emitter.cast.level != player.level()
             || !loaded((ServerLevel) player.level(), emitter.cast.caster.blockPosition())
-            || player.level().getEntity(emitter.cast.caster.getUUID()) != emitter.cast.caster
+            || !(player.level() instanceof net.minecraft.server.level.ServerLevel nlevel) || nlevel.getEntity(emitter.cast.caster.getUUID()) != emitter.cast.caster
             || !Targets.canHarm(emitter.cast.caster, player) || !Targets.canHarm(player, emitter.cast.caster)) return false;
         return clear(player, emitter.core);
     }

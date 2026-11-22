@@ -124,7 +124,7 @@ final class CinnamonCompanion {
 	}
 
 	static UUID ownerId(CinnamonDog dog) {
-		return dog.getOwnerReference() == null ? null : dog.getOwnerReference().getUUID();
+		return dog.getOwnerUUID();
 	}
 	static ServerPlayer ownerOf(CinnamonDog dog) {
 		UUID id = ownerId(dog);

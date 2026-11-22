@@ -257,7 +257,7 @@ public final class Guilds {
 		long now = from.level().getServer().overworld().getGameTime();
 		ledger.invite(to.getUUID(), kind, guild.name(), now);
 		MutableComponent accept = text(kind, "accept_button").withStyle(style -> style.withColor(ChatFormatting.GREEN)
-			.withClickEvent(new ClickEvent.RunCommand("/" + kind.key() + " accept")));
+			.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + kind.key() + " accept")));
 		to.sendSystemMessage(text(kind, "invited", from.getDisplayName(), guild.name()).append(Component.literal(" ")).append(accept));
 		from.sendSystemMessage(text(kind, "invite_sent", to.getDisplayName()));
 		return 1;

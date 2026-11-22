@@ -111,8 +111,8 @@ public final class HearthLinks {
 		BlockPos feet = caster.blockPosition();
 		BlockPos head = BlockPos.containing(caster.getEyePosition());
 		return switch (id.substring(id.indexOf(':') + 1)) {
-			case "if_night" -> !level.isBrightOutside();
-			case "if_day" -> level.isBrightOutside();
+			case "if_night" -> !(level.isDay() && level.dimensionType().hasSkyLight());
+			case "if_day" -> (level.isDay() && level.dimensionType().hasSkyLight());
 			case "if_raining" -> falling(level, head);
 			case "if_underground" -> !level.canSeeSky(head);
 			case "if_alone" -> level.getEntitiesOfClass(LivingEntity.class, caster.getBoundingBox().inflate(HearthLinkRules.ALONE_RADIUS),

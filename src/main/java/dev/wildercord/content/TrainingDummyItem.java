@@ -1,5 +1,6 @@
 package dev.wildercord.content;
 
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import dev.wildercord.cast.TrainingDummy;
 import dev.wildercord.cast.WildercordEntities;

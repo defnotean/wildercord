@@ -63,7 +63,10 @@ public class BackpackItem extends Item {
 		ItemContainerContents contents = stack.get(DataComponents.CONTAINER);
 		if (contents != null) {
 			// The game's own list (five items and "and N more"), in the middle where it reads best.
-			contents.addToTooltip(context, line -> builder.accept(line.copy().withStyle(ChatFormatting.GRAY)), flag, stack);
+			java.util.List<ItemStack> wildercord$stored = contents.nonEmptyStream().toList();
+			int wildercord$shown = Math.min(5, wildercord$stored.size());
+			for (int wildercord$i = 0; wildercord$i < wildercord$shown; wildercord$i++) builder.accept(wildercord$stored.get(wildercord$i).getHoverName().copy().withStyle(ChatFormatting.GRAY));
+			if (wildercord$stored.size() > wildercord$shown) builder.accept(Component.translatable("container.shulkerBox.more", wildercord$stored.size() - wildercord$shown).copy().withStyle(ChatFormatting.GRAY));
 		}
 		builder.accept(Component.translatable("tooltip.wildercord.backpack.open", Component.keybind("key.wildercord.open_backpack"))
 			.withStyle(ChatFormatting.DARK_AQUA));

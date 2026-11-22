@@ -447,7 +447,7 @@ public final class BondedBlades {
 		if (target.getType().is(EntityTypeTags.UNDEAD)) {
 			count(player, BladeRules.UNDEAD, 1);
 		}
-		if (player.level().dimension() == Level.OVERWORLD && !player.level().isBrightOutside()) {
+		if (player.level().dimension() == Level.OVERWORLD && !(player.level().isDay() && player.level().dimensionType().hasSkyLight())) {
 			count(player, BladeRules.NIGHT, 1);
 		}
 		if (player.getHealth() < player.getMaxHealth() * BladeRules.LAST_LIGHT_BELOW) {

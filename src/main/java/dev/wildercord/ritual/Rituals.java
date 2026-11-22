@@ -194,7 +194,7 @@ public final class Rituals {
 		if (!RitualRules.canLead(ritual, Heart.circles(leader))) return Result.LOW_CIRCLE;
 		boolean sky = level.dimension() == Level.OVERWORLD;
 		if ((ritual == Ritual.CLEAR_SKIES || ritual == Ritual.CALL_STORM || ritual == Ritual.DAWN) && !sky) return Result.WRONG_PLACE;
-		if (ritual == Ritual.DAWN && level.isBrightOutside()) return Result.WRONG_PLACE;
+		if (ritual == Ritual.DAWN && (level.isDay() && level.dimensionType().hasSkyLight())) return Result.WRONG_PLACE;
 		if (!leader.isCreative() && Inventories.slotOf(leader.getInventory(), reagent(ritual)) < 0) return Result.NO_REAGENT;
 		if (!leader.isCreative() && split(level, leader, ritual) == null) return Result.LOW_MANA;
 		return Result.DONE;

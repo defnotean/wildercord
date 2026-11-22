@@ -485,7 +485,7 @@ public final class ElementFx {
 
 	// ------------------------------------------------------------------ life: petals and leaves, a leaf spiral, a bloom
 
-	private static final ColorParticleOption LEAF = ColorParticleOption.create(ParticleTypes.TINTED_LEAVES, 0xFF000000 | LIFE.primary);
+	private static final ColorParticleOption LEAF = ColorParticleOption.create(ParticleTypes.PALE_OAK_LEAVES, 0xFF000000 | LIFE.primary);
 
 	/** Petals and leaves drifting down from {@code at}. */
 	public static void petals(ServerLevel level, Vec3 at, double spread, int count) {

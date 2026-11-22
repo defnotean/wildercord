@@ -108,7 +108,7 @@ public final class FungalGillProbe {
   try{var p=mc.player;if(p==null||!p.getUUID().equals(player.getUUID()))return;
    client="time="+(mc.level==null?"none":mc.level.getGameTime())+" position="+p.position()+" velocity="+p.getDeltaMovement()+" body="+p.getBoundingBox()
     +" input="+p.input.keyPresses+" sentInput="+p.input.keyPresses+" keys[up,down,left,right,jump,shift,sprint]="+mc.options.keyUp.isDown()+","+mc.options.keyDown.isDown()+","+mc.options.keyLeft.isDown()+","+mc.options.keyRight.isDown()+","+mc.options.keyJump.isDown()+","+mc.options.keyShift.isDown()+","+mc.options.keySprint.isDown()
-    +" selected="+p.getInventory().getSelectedSlot()+" held="+p.getMainHandItem()+" inventory="+p.getInventory().countItem(FungalGarden.GILLS)+" screen="+(mc.screen==null?"none":mc.screen.getClass().getSimpleName());
+    +" selected="+p.getInventory().selected+" held="+p.getMainHandItem()+" inventory="+p.getInventory().countItem(FungalGarden.GILLS)+" screen="+(mc.screen==null?"none":mc.screen.getClass().getSimpleName());
   }catch(Exception|AssertionError|LinkageError failure){client="observationError="+failure.getClass().getSimpleName();}
  }
  private AABB pickupBox(){return player.isPassenger()&&player.getVehicle()!=null&&!player.getVehicle().isRemoved()?player.getBoundingBox().minmax(player.getVehicle().getBoundingBox()).inflate(1,0,1):player.getBoundingBox().inflate(1,.5,1);}
@@ -130,7 +130,7 @@ public final class FungalGillProbe {
    +" before="+before+" actualCount="+player.getInventory().countItem(FungalGarden.GILLS)+" baselineResident="+baselineResident+" blockDrops="+level.getGameRules().getRule(GameRules.RULE_DOBLOCKDROPS).get()
    +" player="+player.getUUID()+" position="+player.position()+" velocity="+player.getDeltaMovement()+" body="+player.getBoundingBox()+" pickupBox="+pickup+" ground="+player.onGround()+" water="+player.isInWater()
    +" horizontalCollision="+player.horizontalCollision+" verticalCollision="+player.verticalCollision+" mode="+player.gameMode.getGameModeForPlayer()+" alive="+player.isAlive()+" spectator="+player.isSpectator()+" sameLevel="+(player.level()==level)
-   +" selected="+player.getInventory().getSelectedSlot()+" freeSlot="+player.getInventory().getFreeSlot()+" inventory="+stacks+" drops="+items+" touchEntries="+touchEntries+" touchReturns="+touchReturns
+   +" selected="+player.getInventory().selected+" freeSlot="+player.getInventory().getFreeSlot()+" inventory="+stacks+" drops="+items+" touchEntries="+touchEntries+" touchReturns="+touchReturns
    +" lastTouchEnter={"+lastTouchEnter+"} lastTouchReturn={"+lastTouchReturn+"} budget="+rows+"/"+MAX_ROWS+" suppressed="+suppressed+" omittedDrops="+omittedDrops+" errors="+errors+" client={"+client+"} geometry={"+FungalNurseryProbe.observe(this::geometry)+"}";
   output.accept(row);
  }

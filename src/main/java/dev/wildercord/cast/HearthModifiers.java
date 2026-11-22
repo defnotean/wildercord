@@ -175,7 +175,7 @@ public final class HearthModifiers {
 		}
 		if (ctx.has("sunlit")) {
 			BlockPos at = BlockPos.containing(hit.point()).above();
-			power *= HearthLinkRules.sunlit(level.isBrightOutside() && level.canSeeSky(at));
+			power *= HearthLinkRules.sunlit((level.isDay() && level.dimensionType().hasSkyLight()) && level.canSeeSky(at));
 		}
 		// Who it may help (helpful effects help whoever the shape reached).
 		if (ctx.has("inward")) {
@@ -654,21 +654,21 @@ public final class HearthModifiers {
 	private static void fleece(Context ctx, Cast.Hit hit, AABB itemBox) {
 		ServerLevel level = ctx.cast.level;
 		LivingEntity caster = ctx.caster;
-		List<net.minecraft.world.entity.animal.sheep.Sheep> sheep = new ArrayList<>();
+		List<net.minecraft.world.entity.animal.Sheep> sheep = new ArrayList<>();
 		for (Entity e : hit.entities()) {
-			if (e instanceof net.minecraft.world.entity.animal.sheep.Sheep s) {
+			if (e instanceof net.minecraft.world.entity.animal.Sheep s) {
 				sheep.add(s);
 			}
 		}
 		if (sheep.isEmpty()) {
-			sheep.addAll(level.getEntitiesOfClass(net.minecraft.world.entity.animal.sheep.Sheep.class, new AABB(BlockPos.containing(hit.point())).inflate(3)));
+			sheep.addAll(level.getEntitiesOfClass(net.minecraft.world.entity.animal.Sheep.class, new AABB(BlockPos.containing(hit.point())).inflate(3)));
 		}
 		Set<UUID> before = new HashSet<>();
 		for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, itemBox)) {
 			before.add(item.getUUID());
 		}
 		boolean any = false;
-		for (net.minecraft.world.entity.animal.sheep.Sheep s : sheep) {
+		for (net.minecraft.world.entity.animal.Sheep s : sheep) {
 			if (s.readyForShearing()) {
 				s.shear(level, SoundSource.PLAYERS, new ItemStack(Items.SHEARS));
 				any = true;

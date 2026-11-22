@@ -159,6 +159,12 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	// ------------------------------------------------------------------ owner
 
 	@Override
+	@Override
+	public java.util.UUID getOwnerUUID() {
+		EntityReference<LivingEntity> ref = getOwnerReference();
+		return ref == null ? null : ref.getUUID();
+	}
+
 	public  EntityReference<LivingEntity> getOwnerReference() {
 		return entityData.get(DATA_OWNER).orElse(null);
 	}

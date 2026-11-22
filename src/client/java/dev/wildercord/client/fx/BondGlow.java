@@ -465,7 +465,7 @@ public final class BondGlow {
 
 	/** Whether a blade lying at {@code entity} lies under a bright sky (day, nothing overhead). */
 	public static boolean day(ItemEntity entity) {
-		return entity.level().isBrightOutside() && entity.level().canSeeSky(entity.blockPosition());
+		return (entity.level().isDay() && entity.level().dimensionType().hasSkyLight()) && entity.level().canSeeSky(entity.blockPosition());
 	}
 
 	private static void pool(PoseStack.Pose pose, VertexConsumer buffer, Look l, float time) {

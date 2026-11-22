@@ -82,8 +82,8 @@ public final class SpellChat {
 		}
 		hover.append("\n").append(Component.translatable("chat.wildercord.spell_copy").withColor(0x8A84A0));
 		return Component.literal("[✦ " + SpellNames.auto(runes) + "]").withStyle(Style.EMPTY.withColor(color)
-			.withHoverEvent(new HoverEvent.ShowText(hover))
-			.withClickEvent(new ClickEvent.CopyToClipboard(code))
+			.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover))
+			.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, code))
 			.withUnderlined(false));
 	}
 }

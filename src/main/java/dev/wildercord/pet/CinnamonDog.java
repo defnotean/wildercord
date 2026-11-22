@@ -407,7 +407,7 @@ public final class CinnamonDog extends TamableAnimal {
 
 	private static boolean duellingOwner(Entity target) {
 		LivingEntity responsible = target instanceof Player player ? player
-			: target instanceof OwnableEntity pet ? pet.getRootOwner() : null;
+			: target instanceof OwnableEntity pet ? dev.wildercord.compat.McOwnable.rootOwner(pet) : null;
 		return responsible instanceof Player player && Duels.inDuel(player);
 	}
 

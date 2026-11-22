@@ -50,9 +50,9 @@ final class PartyCommands {
 		if (!check(from, result)) return 0;
 		String sender = from.getGameProfile().getName();
 		MutableComponent accept = text("accept", "[Accept]").withStyle(style -> style.withColor(ChatFormatting.GREEN)
-			.withClickEvent(new ClickEvent.RunCommand("/party accept " + sender)));
+			.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party accept " + sender)));
 		MutableComponent decline = text("decline", "[Decline]").withStyle(style -> style.withColor(ChatFormatting.RED)
-			.withClickEvent(new ClickEvent.RunCommand("/party decline " + sender)));
+			.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party decline " + sender)));
 		to.sendSystemMessage(text("invited", "%s invited you to a party. Expires in 60 seconds. ", from.getDisplayName())
 			.append(accept).append(Component.literal(" ")).append(decline));
 		from.sendSystemMessage(text("sent", "Party invitation sent to %s. They must accept to join.", to.getDisplayName()));

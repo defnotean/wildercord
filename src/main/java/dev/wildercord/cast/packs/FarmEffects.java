@@ -33,7 +33,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.Cow;
-import net.minecraft.world.entity.animal.Mooshroom;
+import net.minecraft.world.entity.animal.MushroomCow;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.goat.Goat;
@@ -534,7 +534,7 @@ public final class FarmEffects {
 		}
 		int fed = 0;
 		int limit = FarmRules.batch(power);
-		List<ItemStack> items = player.getInventory().getNonEquipmentItems();
+		List<ItemStack> items = player.getInventory().items.subList(0, 36);
 		for (ItemStack stack : items) {
 			while (fed < limit && !stack.isEmpty() && state.getValue(ComposterBlock.LEVEL) < ComposterBlock.MAX_LEVEL - 1) {
 				int before = stack.getCount();
@@ -704,7 +704,7 @@ public final class FarmEffects {
 			if (milked >= FarmRules.HERD_MAX) {
 				break;
 			}
-			if (animal.isBaby() || !(animal instanceof Cow || animal instanceof Mooshroom || animal instanceof Goat)) {
+			if (animal.isBaby() || !(animal instanceof Cow || animal instanceof MushroomCow || animal instanceof Goat)) {
 				continue;
 			}
 			ItemStack bucket = find(player, s -> s.is(Items.BUCKET));
@@ -836,7 +836,7 @@ public final class FarmEffects {
 		}
 		int limit = FarmRules.batch(power);
 		int cooked = 0;
-		List<ItemStack> items = player.getInventory().getNonEquipmentItems();
+		List<ItemStack> items = player.getInventory().items.subList(0, 36);
 		List<ItemStack> made = new ArrayList<>();
 		for (ItemStack stack : items) {
 			while (cooked < limit && !stack.isEmpty()) {
@@ -1269,7 +1269,7 @@ public final class FarmEffects {
 	}
 
 	private static ItemStack find(ServerPlayer player, java.util.function.Predicate<ItemStack> wanted) {
-		for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
+		for (ItemStack stack : player.getInventory().items.subList(0, 36)) {
 			if (!stack.isEmpty() && wanted.test(stack)) {
 				return stack;
 			}
@@ -1279,7 +1279,7 @@ public final class FarmEffects {
 
 	private static int count(ServerPlayer player, Item item) {
 		int n = 0;
-		for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
+		for (ItemStack stack : player.getInventory().items.subList(0, 36)) {
 			if (stack.is(item)) {
 				n += stack.getCount();
 			}
@@ -1289,7 +1289,7 @@ public final class FarmEffects {
 
 	/** Takes {@code n} of an item out of the inventory (all of it must be there: counted first). */
 	private static void take(ServerPlayer player, Item item, int n) {
-		for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
+		for (ItemStack stack : player.getInventory().items.subList(0, 36)) {
 			if (n <= 0) {
 				return;
 			}

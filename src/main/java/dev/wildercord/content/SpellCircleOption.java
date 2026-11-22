@@ -44,17 +44,7 @@ public record SpellCircleOption(List<String> runes, int color, float radius, flo
 		Codec.INT.optionalFieldOf("flags", 0).forGetter(SpellCircleOption::flags)
 	).apply(i, SpellCircleOption::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, SpellCircleOption> STREAM_CODEC = StreamCodec.composite(
-		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), SpellCircleOption::runes,
-		ByteBufCodecs.INT, SpellCircleOption::color,
-		ByteBufCodecs.FLOAT, SpellCircleOption::radius,
-		ByteBufCodecs.FLOAT, SpellCircleOption::yaw,
-		ByteBufCodecs.FLOAT, SpellCircleOption::pitch,
-		ByteBufCodecs.VAR_INT, SpellCircleOption::lifetime,
-		ByteBufCodecs.VAR_INT, SpellCircleOption::rank,
-		ByteBufCodecs.VAR_LONG, SpellCircleOption::sigil,
-		ByteBufCodecs.VAR_INT, SpellCircleOption::flags,
-		SpellCircleOption::new);
+	public static final StreamCodec<RegistryFriendlyByteBuf, SpellCircleOption> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC.codec());
 
 	@Override
 	public ParticleType<SpellCircleOption> getType() {
