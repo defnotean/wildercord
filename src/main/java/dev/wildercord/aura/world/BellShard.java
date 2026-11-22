@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * The Bell Shard: the broken lip of the Drowned Bell-Warden's bell, laid on the chapel's altar. Once the Warden is dead, anyone may
@@ -69,7 +70,7 @@ public final class BellShard {
 	private static void knell(ServerPlayer player) {
 		var level = player.level();
 		var at = player.position();
-		Feels.sound(level, at.add(0, 1, 0), "aura_bell_warden_knell", 1.3F, 1.25F);
+		Feels.sound((ServerLevel) level, at.add(0, 1, 0), "aura_bell_warden_knell", 1.3F, 1.25F);
 		for (int i = 0; i < 32; i++) {
 			double a = i * Math.PI * 2 / 32;
 			level.sendParticles(ParticleTypes.GLOW, at.x + Math.cos(a) * 1.5, at.y + 0.2, at.z + Math.sin(a) * 1.5, 1, 0, 0.05, 0, 0);

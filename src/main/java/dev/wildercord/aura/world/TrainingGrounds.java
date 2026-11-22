@@ -38,7 +38,7 @@ public final class TrainingGrounds {
 		if (old != null && old.level() == player.level() && old.feet().equals(player.blockPosition())
 			&& now >= old.at() && now - old.at() < TrainingRules.CHECK_TICKS) return old.ground();
 		var ground = inspect(player);
-		SAMPLES.put(player.getUUID(), new Sample(player.level(), player.blockPosition(), now, ground));
+		SAMPLES.put(player.getUUID(), new Sample((ServerLevel) player.level(), player.blockPosition(), now, ground));
 		return ground;
 	}
 

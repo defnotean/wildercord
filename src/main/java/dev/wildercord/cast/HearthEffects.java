@@ -903,7 +903,7 @@ public final class HearthEffects {
 				dir = dir.normalize();
 				for (double d = 1.2; d <= 3.2; d += 0.5) {
 					Vec3 at = eye.add(dir.scale(d));
-					Fx.sendParticles(p.level(), p, Fx.dust(ptr.color(), 0.8f), false, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+					Fx.sendParticles((ServerLevel) p.level(), p, Fx.dust(ptr.color(), 0.8f), false, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 				}
 			}
 			if (ptr.label() != null && now % 40 == 0) {
@@ -935,7 +935,7 @@ public final class HearthEffects {
 						Fx.sound(ally.level(), ally.position(), SoundEvents.NOTE_BLOCK_BELL, 0.8f, 0.8f);
 						Casters.tell(ally, Component.translatable("message.wildercord.hearth.bond_low", hurt.getDisplayName()));
 						if (ally.level() == hurt.level()) {
-							Fx.sendParticles(hurt.level(), ally, ParticleTypes.END_ROD, true, true, hurt.getX(), hurt.getY() + 2.5, hurt.getZ(), 1, 0, 0, 0, 0);
+							Fx.sendParticles((ServerLevel) hurt.level(), ally, ParticleTypes.END_ROD, true, true, hurt.getX(), hurt.getY() + 2.5, hurt.getZ(), 1, 0, 0, 0, 0);
 						}
 					}
 				}
@@ -983,7 +983,7 @@ public final class HearthEffects {
 		}
 		caster.openMenu(new SimpleMenuProvider((id, inv, p) -> new ChestMenu(MenuType.GENERIC_9x1, id, inv, box, 1),
 			Component.translatable("container.wildercord.hollow_pocket")));
-		Fx.sound(caster.level(), caster.position(), SoundEvents.BUNDLE_DROP_CONTENTS, 0.7f, 0.8f);
+		Fx.sound((ServerLevel) (ServerLevel) caster.level(), caster.position(), SoundEvents.BUNDLE_DROP_CONTENTS, 0.7f, 0.8f;
 	}
 
 	private static void skyread(ServerPlayer caster, ServerLevel level) {
@@ -1043,7 +1043,7 @@ public final class HearthEffects {
 			return;
 		}
 		POINTERS.put(p.getUUID(), new Pointer(dim, List.copyOf(to), now + ticks, color, label));
-		Fx.sound(p.level(), p.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8f, 1.2f);
+		Fx.sound((ServerLevel) (ServerLevel) p.level(), p.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8f, 1.2f;
 	}
 
 	private static boolean overFarmland(ServerLevel level, BlockPos feet) {

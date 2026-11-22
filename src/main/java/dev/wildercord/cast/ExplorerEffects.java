@@ -1804,7 +1804,7 @@ public final class ExplorerEffects {
 		double back = ExplorerNumbers.manatideRefund(spent, tide[1]);
 		tide[1] += back;
 		Mana.restore(player, (float) back);
-		ExplorerVfx.manatide(player.level(), player, false);
+		ExplorerVfx.manatide((ServerLevel) player.level(), player, false);
 	}
 
 	// ------------------------------------------------------------------ fished from open water

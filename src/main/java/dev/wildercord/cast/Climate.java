@@ -118,7 +118,7 @@ public final class Climate {
 		var power = Config.get().power();
 		boolean ley = LeyWalker.onLine(player) || ManaStorm.inside(player);
 		boolean crossing = power.leyCrossings() && LeyWalker.atCrossing(player);
-		return surroundings(player.level(), player.blockPosition(), BlockPos.containing(player.getEyePosition()), ley, crossing);
+		return surroundings((ServerLevel) player.level(), player.blockPosition(), BlockPos.containing(player.getEyePosition()), ley, crossing);
 	}
 
 	/** What the world says about a spot (feet and head height), with whether a ley line and a ley crossing run there. */

@@ -14,6 +14,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
 
 /** Defensive sidegrades. Debt and recharge time persist across logout and equipment changes. */
 public final class DefensiveFoci {
@@ -52,7 +53,7 @@ public final class DefensiveFoci {
      // These installments ignore vanilla's recent-hit timer but retain Resistance and absorption.
      var savedCooldown = dev.wildercord.compat.McEntities.saveHurtCooldown(player);
      Effects.readyToHurt(player);
-     try { SpellDefence.guarded(player, () -> player.hurtServer(player.level(),source(player),due)); }
+     try { SpellDefence.guarded(player, () -> player.hurtServer((ServerLevel) player.level(),source(player),due)); }
      finally { dev.wildercord.compat.McEntities.restoreHurtCooldown(player, savedCooldown); }
      owed = Math.max(0,owed-due); delay = owed > 0 ? 10 : 0;
      player.displayClientMessage(Component.translatable("message.wildercord.reprieve.debt", String.format(java.util.Locale.ROOT,"%.1f",owed)), true);
@@ -85,7 +86,7 @@ public final class DefensiveFoci {
   if(s.grounding>0) return impulse;
   player.setAttached(STATE,new State(s.owed,s.installment,s.delay,s.reprieve,RECHARGE));
   player.addEffect(new MobEffectInstance(MobEffects.SPEED,40,0));
-  Light.groundRing(player.level(),player.position(),0x98D5B7,.2,1.2,.035,10);
+  Light.groundRing((ServerLevel) player.level(),player.position(),0x98D5B7,.2,1.2,.035,10);
   player.displayClientMessage(Component.translatable("message.wildercord.grounding"), true);
   return impulse.scale(.30);
  }

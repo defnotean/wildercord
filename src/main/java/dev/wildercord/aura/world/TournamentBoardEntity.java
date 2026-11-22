@@ -104,7 +104,7 @@ public final class TournamentBoardEntity extends BlockEntity {
 		}
 		pending.remove(p.getUUID());choices.remove(p.getUUID());setChanged();
 		give(p,AuraApi.techniqueScroll(chosen));give(p,new ItemStack(AuraWorld.AURA_SHARD,3));give(p,VillageTournaments.history());
-		Feels.sound(p.level(),p.position(),"aura_tournament_prize",.8F,1);say(p,"reward",Component.translatable(TechniqueRules.nameKey(chosen)));
+		Feels.sound((ServerLevel) p.level(),p.position(),"aura_tournament_prize",.8F,1);say(p,"reward",Component.translatable(TechniqueRules.nameKey(chosen)));
 	}
 	private static void give(ServerPlayer p,ItemStack stack){if(!p.getInventory().add(stack))dev.wildercord.compat.McEntities.drop(p, stack, false);}
 	private void reset(){challenger=null;wins=0;dirty=false;betweenUntil=0;setChanged();}

@@ -37,7 +37,7 @@ public final class ExciseCasting {
         final long began;
         boolean retired;
         Focus(ServerPlayer p, int slot, int requested, int cost, NativeZoneEmitters.Emitter emitter) {
-            this.player = p; this.owner = ReleasedArtOwner.capture(p); this.level = p.level(); this.emitter = emitter;
+            this.player = p; this.owner = ReleasedArtOwner.capture(p); this.level = (ServerLevel) p.level(); this.emitter = emitter;
             this.cord = Spellbooks.cord(p); this.start = p.position(); this.slot = slot; this.requested = requested; this.selected = Spellbooks.get(p).selected();
             this.cost = cost; this.began = now(p);
         }

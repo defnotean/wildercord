@@ -35,6 +35,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import net.minecraft.server.level.ServerLevel;
 
 /** One learned/equipped Master-form slot, separate from written techniques and fixed-release combat arts. */
 public final class MasterForms {
@@ -301,10 +302,10 @@ public final class MasterForms {
 		if (turned == null || !WallTurn.hingeLane(player, new Vec3(turned[0] - before.x * .5, 0, turned[1] - before.z * .5))) return false;
 		player.setDeltaMovement(new Vec3(turned[0], player.getDeltaMovement().y, turned[1]));
 		var level = player.level();
-		dev.wildercord.cast.Fx.sound(level, player.position(), net.minecraft.sounds.SoundEvents.SHIELD_BLOCK, .9F, .7F);
-		dev.wildercord.cast.Fx.sound(level, player.position(), net.minecraft.sounds.SoundEvents.STONE_BREAK, .8F, .6F);
+		dev.wildercord.cast.Fx.sound((ServerLevel) level, player.position(), net.minecraft.sounds.SoundEvents.SHIELD_BLOCK, .9F, .7F;
+		dev.wildercord.cast.Fx.sound((ServerLevel) level, player.position(), net.minecraft.sounds.SoundEvents.STONE_BREAK, .8F, .6F;
 		var ground = level.getBlockState(player.getOnPos());
-		if (!ground.isAir()) dev.wildercord.cast.Vfx.emit(level, new net.minecraft.core.particles.BlockParticleOption(
+		if (!ground.isAir()) dev.wildercord.cast.Vfx.emit((ServerLevel) level, new net.minecraft.core.particles.BlockParticleOption(
 			net.minecraft.core.particles.ParticleTypes.BLOCK, ground), player.position().add(0, .1, 0), 14, .45, .12);
 		settleHinge(player, s, StoneHingeRules.TURN);
 		return true;

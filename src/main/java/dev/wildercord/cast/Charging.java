@@ -154,12 +154,12 @@ public final class Charging {
 		// The spell went off if its cooldown started (not if it lacked mana, or is waiting to overcast).
 		if (Spellbooks.readyAt(player, charge.spell()) != readyAt) {
 			if (progress >= RELEASE_FROM) {
-				Fx.sound(player.level(), player.position(), WildercordSounds.RELEASE, 0.5F + 0.5F * (float) progress, 1.0F);
+				Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), WildercordSounds.RELEASE, 0.5F + 0.5F * (float) progress, 1.0F;
 				ScreenFx.kick(player, (float) progress);
 			}
 			if (performance.onBeat()) {
 				// A bright chime, a step up the scale for every stage it was let go at.
-				dev.wildercord.cast.feel.Feels.sound(player.level(), player.position(), "beat_release", 0.8F,
+				dev.wildercord.cast.feel.Feels.sound((ServerLevel) player.level(), player.position(), "beat_release", 0.8F,
 					dev.wildercord.cast.feel.Feels.step(performance.stage()));
 			}
 			if (performance.shown()) {
@@ -315,7 +315,7 @@ public final class Charging {
 			new WildercordAttachments.Charge(spell, now, List.copyOf(ids), full, stages, 0, now + full, tuning.tracing()));
 		player.getAttribute(Attributes.MOVEMENT_SPEED).addOrUpdateTransientModifier(
 			new AttributeModifier(SLOW, -0.4, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-		Fx.sound(player.level(), player.position(), WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F);
+		Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F;
 	}
 
 	private static void stop(ServerPlayer player) {
@@ -371,7 +371,7 @@ public final class Charging {
 			int next = stage + 1;
 			player.setAttached(WildercordAttachments.CHARGE, charge.withStage(next, now));
 			// A crack through the circle, higher with each stage.
-			dev.wildercord.cast.feel.Feels.sound(player.level(), player.position().add(0, 1.2, 0), "overchannel_crack", 0.55F + 0.15F * next,
+			dev.wildercord.cast.feel.Feels.sound((ServerLevel) player.level(), player.position().add(0, 1.2, 0), "overchannel_crack", 0.55F + 0.15F * next,
 				dev.wildercord.cast.feel.Feels.step(next - 1));
 		}
 	}
@@ -430,13 +430,13 @@ public final class Charging {
 		long held = player.level().getGameTime() - charge.start();
 		int full = fullTicks(player);
 		if (held >= full && held < full + 5) {
-			Fx.sound(player.level(), player.position(), WildercordSounds.CHARGE_FULL, 0.8F, 1.0F);
+			Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), WildercordSounds.CHARGE_FULL, 0.8F, 1.0F;
 		}
 		if (held > MAX_HOLD || Spellbooks.tier(player) == null || !player.isAlive() || player.isSpectator()) {
 			stop(player);
 			FIZZLED.add(player.getUUID());
 			player.displayClientMessage(Component.translatable("message.wildercord.charge_fizzled").withStyle(ChatFormatting.GRAY), true);
-			Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
+			Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F;
 		}
 	}
 

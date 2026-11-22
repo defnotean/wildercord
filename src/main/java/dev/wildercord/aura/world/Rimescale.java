@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * The Rimescale: a scale the Frost Wyrmling shed, standing up in the snow of its mound, white with frost. Once the Wyrmling is dead,
@@ -74,7 +75,7 @@ public final class Rimescale {
 	private static void bite(ServerPlayer player, Mob mob) {
 		var level = player.level();
 		var at = mob.position().add(0, mob.getBbHeight() / 2, 0);
-		Feels.sound(level, at, "aura_frost_wyrmling_frost", 1.1F, 1.15F);
+		Feels.sound((ServerLevel) level, at, "aura_frost_wyrmling_frost", 1.1F, 1.15F);
 		level.sendParticles(ParticleTypes.SNOWFLAKE, at.x, at.y, at.z, 24, mob.getBbWidth() * .5, mob.getBbHeight() * .4, mob.getBbWidth() * .5, .04);
 		level.sendParticles(ParticleTypes.ITEM_SNOWBALL, at.x, at.y, at.z, 10, .3, .3, .3, .08);
 		var from = player.position().add(0, 1, 0);
@@ -85,7 +86,7 @@ public final class Rimescale {
 		}
 		mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, FrostWyrmlingRules.RIME_SLOW, 1, false, true));
 		if (mob.canFreeze()) mob.setTicksFrozen(Math.max(mob.getTicksFrozen(), FrostWyrmlingRules.RIME_FROST));
-		mob.hurtServer(level, player.damageSources().freeze(), (float) FrostWyrmlingRules.RIME_DAMAGE);
+		mob.hurtServer((ServerLevel) level, player.damageSources().freeze(), (float) FrostWyrmlingRules.RIME_DAMAGE);
 		player.displayClientMessage(Component.translatable("message.wildercord.rimescale.rime").withColor(0xA8DCF4), true);
 	}
 }

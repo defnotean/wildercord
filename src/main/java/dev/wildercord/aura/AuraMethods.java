@@ -15,6 +15,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Learning a breathing method (from its manual, or taught outright through {@code api.AuraApi.grantMethod}). The first method

@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * The Cinder Antler: one the Ashen Stag shed, lying smouldering at the foot of the burnt stump. Once the stag is dead, anyone may take
@@ -89,7 +90,7 @@ public final class CinderAntler {
 		mob.setDeltaMovement(mob.getDeltaMovement().add(0, .35, 0));
 		mob.hasImpulse = true;
 		mob.igniteForTicks(AshenStagRules.ANTLER_BURN);
-		Feels.sound(level, mob.position(), "aura_ashen_stag_gore", 1.0F, 1.2F);
+		Feels.sound((ServerLevel) level, mob.position(), "aura_ashen_stag_gore", 1.0F, 1.2F);
 		Feels.sound(level, mob.position(), "aura_ashen_stag_smoulder", .8F, 1.3F);
 		level.sendParticles(ParticleTypes.FLAME, mob.getX(), mob.getY() + mob.getBbHeight() / 2, mob.getZ(), 16, .3, .4, .3, .06);
 		level.sendParticles(ParticleTypes.LAVA, mob.getX(), mob.getY() + mob.getBbHeight() / 2, mob.getZ(), 4, .2, .2, .2, 0);

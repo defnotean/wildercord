@@ -13,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Writes discoveries into a player's Grimoire. The first time for each entry, a little mana
@@ -52,8 +53,8 @@ public final class Grimoire {
 		if (!key.startsWith("hint:")) {
 			player.setAttached(WildercordAttachments.CONDENSED, dev.wildercord.spell.Circles.addCondensed(Heart.condensed(player), Feats.reward(key)));
 			if (announce) {
-				Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 1.1F);
-				Fx.sound(player.level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 0.9F, 1.0F);
+				Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 1.1F;
+				Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 0.9F, 1.0F;
 			}
 		}
 		if (announce) {

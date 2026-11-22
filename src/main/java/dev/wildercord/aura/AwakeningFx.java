@@ -136,7 +136,7 @@ public final class AwakeningFx {
 
 	/** Spent no longer: the aura stirring again (only the swordsman hears it). */
 	static void recovered(ServerPlayer player) {
-		Feels.sound(player.level(), player.position().add(0, 1.0, 0), "aura_recovered", 0.6F, 1.0F);
+		Feels.sound((ServerLevel) (ServerLevel) player.level(), player.position().add(0, 1.0, 0), "aura_recovered", 0.6F, 1.0F);
 		Motes.burst((ServerLevel) player.level(), player.position().add(0, 0.6, 0), 5, Aura.color(player), 0.06, 14, 0.04);
 		player.displayClientMessage(Component.translatable("message.wildercord.aura.recovered").withColor(0xFF000000 | Aura.color(player)), true);
 	}

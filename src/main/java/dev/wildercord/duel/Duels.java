@@ -520,7 +520,7 @@ public final class Duels {
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_you_declined", from.getDisplayName()).withStyle(ChatFormatting.GRAY));
 			return 1;
 		}
-		if (!allowed(to.level())) {
+		if (!allowed((ServerLevel) to.level())) {
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_disabled").withStyle(ChatFormatting.RED));
 			return 0;
 		}

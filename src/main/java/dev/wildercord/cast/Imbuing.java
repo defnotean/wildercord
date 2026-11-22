@@ -210,7 +210,7 @@ public final class Imbuing {
 		Imbued old = target.get(WildercordComponents.IMBUED);
 		boolean glint = old != null ? old.glint() : !target.has(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
 		if (old != null) {
-			Ledger.of(player.level()).forget(old);
+			Ledger.of((ServerLevel) player.level()).forget(old);
 		}
 		target.set(WildercordComponents.IMBUED, counted(player, stored.stream().map(RuneDef::id).toList(), SpellNumbers.IMBUE_CHARGES, color, glint));
 		if (glint) {
@@ -238,7 +238,7 @@ public final class Imbuing {
 	 */
 	private static Imbued counted(ServerPlayer maker, List<String> runes, int charges, int color, boolean glint) {
 		long serial = Ledger.of(maker.level()).add(maker.getUUID());
-		if (Ledger.of(maker.level()).trimmed(maker.getUUID())) {
+		if (Ledger.of((ServerLevel) maker.level()).trimmed(maker.getUUID())) {
 			maker.sendSystemMessage(Component.translatable("message.wildercord.imbue_oldest_faded", maxItems()).withStyle(ChatFormatting.GRAY));
 		}
 		return new Imbued(runes, charges, color, glint, maker.getUUID(), serial);
@@ -255,7 +255,7 @@ public final class Imbuing {
 		}
 		strip(stack, imbued);
 		holder.displayClientMessage(Component.translatable("message.wildercord.imbue_faded", stack.getHoverName()).withStyle(ChatFormatting.GRAY), true);
-		Fx.sound(holder.level(), holder.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
+		Fx.sound((ServerLevel) (ServerLevel) holder.level(), holder.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F;
 		return false;
 	}
 
@@ -439,7 +439,7 @@ public final class Imbuing {
 		int color = imbued.color();
 		Scheduler.later(1, () -> {
 			if (player.isAlive() && !player.isRemoved()) {
-				Sigils.flash(player.level(), at.pos(), color, 1.2F);
+				Sigils.flash((ServerLevel) player.level(), at.pos(), color, 1.2F);
 				cast(player, runes, at);
 			}
 		});
@@ -453,7 +453,7 @@ public final class Imbuing {
 			strip(stack, imbued);
 			Ledger.of(player.level()).forget(imbued);
 			player.displayClientMessage(Component.translatable("message.wildercord.imbue_spent", stack.getHoverName()).withStyle(ChatFormatting.GRAY), true);
-			Fx.sound(player.level(), player.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
+			Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F;
 		} else {
 			stack.set(WildercordComponents.IMBUED, imbued.withCharges(left));
 		}
@@ -569,7 +569,7 @@ public final class Imbuing {
 		}
 		Scheduler.later(1, () -> {
 			if (owner.isAlive() && !owner.isRemoved() && owner.level() == projectile.level()) {
-				Sigils.flash(owner.level(), at.pos(), shot.color(), 1.3F);
+				Sigils.flash((ServerLevel) owner.level(), at.pos(), shot.color(), 1.3F);
 				cast(owner, shot.runes(), at);
 			}
 		});

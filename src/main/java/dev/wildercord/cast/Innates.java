@@ -91,7 +91,7 @@ public final class Innates {
 		player.connection.send(new ClientboundSetTitleTextPacket(Component.literal(rune.name()).withColor(color)));
 		player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("title.wildercord.innate").withColor(0xE8E0FF)));
 		player.sendSystemMessage(Component.translatable("message.wildercord.innate", Component.literal(rune.name()).withColor(color)).withColor(0xE8E0FF));
-		Sigils.ground(player.level(), player.position(), color, 0xFFFFFF, 2.2F, 50);
+		Sigils.ground((ServerLevel) player.level(), player.position(), color, 0xFFFFFF, 2.2F, 50);
 		awakenFx(player, color);
 		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 1.0F, 0.8F);
 		Grimoire.feat(player, Feats.INNATE);
@@ -207,7 +207,7 @@ public final class Innates {
 			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
 				player.displayClientMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A), true);
-				TimeFx.stasisRelease(player.level(), player, 0);
+				TimeFx.stasisRelease((ServerLevel) player.level(), player, 0);
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Innates::tick);
@@ -492,9 +492,9 @@ public final class Innates {
 		float total = owed * BORROW_INTEREST + (old == null ? 0 : old.left());
 		DEBTS.put(player.getUUID(), new Debt(total, total / 10F, now + 200));
 		TechniqueVfx.rewind(player.level(), player.position(), player.position());
-		ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
+		ElementFx.goldenTicks((ServerLevel) player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
 		ElementFx.groundRing(player.level(), player.position(), ElementFx.TIME.primary(), 1.8, 0.4, 0.06, 14);
-		dev.wildercord.cast.feel.Feels.sound(player.level(), player.position(), "time_sand", 0.9F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound((ServerLevel) player.level(), player.position(), "time_sand", 0.9F, 1.0F);
 		player.displayClientMessage(Component.translatable("message.wildercord.borrowed", Math.round(owed)).withColor(0xF2D98A), true);
 	}
 
@@ -765,7 +765,7 @@ public final class Innates {
 						repaying = false;
 					}
 					// A coin of gold falls from you with a low tock: every payment is heard.
-					TimeFx.coin(player.level(), player);
+					TimeFx.coin((ServerLevel) player.level(), player);
 				});
 			}
 			THREADS.values().removeIf(t -> now > t.until());

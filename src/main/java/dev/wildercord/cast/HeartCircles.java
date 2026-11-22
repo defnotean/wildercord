@@ -76,7 +76,7 @@ public final class HeartCircles {
 				// Forming a circle takes unbroken concentration.
 				if (FORMING.remove(player.getUUID()) != null) {
 					player.displayClientMessage(Component.translatable("message.wildercord.circle_broken").withStyle(ChatFormatting.RED), true);
-					Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_CLUSTER_BREAK, 0.8F, 0.6F);
+					Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_CLUSTER_BREAK, 0.8F, 0.6F;
 				}
 			}
 		});
@@ -209,7 +209,7 @@ public final class HeartCircles {
 				player.sendSystemMessage(Component.translatable("message.wildercord.tribulation.warn", Circles.ordinal(next),
 					dev.wildercord.spell.TribulationRules.waves(next)).withColor(0xE8D8B0));
 			}
-			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
+			Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F;
 		}
 		if (meditating && circles > 0 && !ready) {
 			rings(player, circles, player.level().getGameTime() * 0.05, 0.45F);
@@ -226,7 +226,7 @@ public final class HeartCircles {
 			if (NOTIFIED.getOrDefault(id, 0) != -rank) {
 				NOTIFIED.put(id, -rank);
 				player.sendSystemMessage(Component.translatable("message.wildercord.ascension.ready", dev.wildercord.spell.AscensionRules.numeral(rank)).withColor(0xF5C46A));
-				Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.4F);
+				Fx.sound((ServerLevel) (ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.4F;
 			}
 			if (meditating && !dev.wildercord.cast.events.Tribulation.active(player)) {
 				int progress = FORMING.merge(id, player.getAttachedOrElse(WildercordAttachments.ON_LEY, false) ? 10 : 5, Integer::sum);
@@ -412,8 +412,8 @@ public final class HeartCircles {
 		float cost = ManaSkinRules.payment(player.getHealth() - healthAfter, mana);
 		if (cost <= 0) return;
 		Spellbooks.setMana(player, mana - cost);
-		Vfx.emit(player.level(), new DustParticleOptions(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 4, 0.35, 0.0);
-		ElementFx.ring(player.level(), player.getBoundingBox().getCenter(), UP, 0x7FB0FF, 0.9, 0.45, 0.03, 7);
+		Vfx.emit((ServerLevel) player.level(), new DustParticleOptions(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 4, 0.35, 0.0);
+		ElementFx.ring((ServerLevel) player.level(), player.getBoundingBox().getCenter(), UP, 0x7FB0FF, 0.9, 0.45, 0.03, 7);
 	}
 
 	private static Vec3 heartOf(ServerPlayer player) {

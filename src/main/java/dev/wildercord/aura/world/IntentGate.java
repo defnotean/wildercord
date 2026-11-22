@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
 
 /** One bounded nine-panel gate opens to a blade carrying sufficient Aura. No block ticker. */
 public final class IntentGate extends Block {
@@ -35,6 +36,6 @@ public final class IntentGate extends Block {
 			var pos=at.relative(side,dx).offset(0,dy,0);
 			if(level.hasChunkAt(pos) && level.getBlockState(pos).equals(s))level.setBlockAndUpdate(pos,Blocks.AIR.defaultBlockState());
 		}
-		Feels.sound(level,Vec3.atCenterOf(at),"aura_tomb_gate",.8F,1);
+		Feels.sound((ServerLevel) level,Vec3.atCenterOf(at),"aura_tomb_gate",.8F,1);
 	}
 }
