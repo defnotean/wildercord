@@ -30,5 +30,5 @@ public final class McEntitySerializers {
 				},
 				(ByteBuf buf) -> buf.readBoolean() ? Optional.of(new UUID(buf.readLong(), buf.readLong())) : Optional.empty())
 				.map(optional -> optional.map(id -> new EntityReference<LivingEntity>(id)),
-					reference -> Optional.of(reference.getUUID())));
+					optional -> optional.map(EntityReference::getUUID)));
 }
