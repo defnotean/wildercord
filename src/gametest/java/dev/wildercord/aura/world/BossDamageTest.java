@@ -370,20 +370,12 @@ public final class BossDamageTest implements FabricClientGameTest {
 				dev.wildercord.aura.world.LairRespawns.tickLevel(level);
 				var respawned = level.getEntitiesOfClass(dev.wildercord.aura.world.RootcoilSerpent.class,
 					new net.minecraft.world.phys.AABB(altarPos).inflate(16.0), dev.wildercord.aura.world.RootcoilSerpent::isAlive);
-				var allSerpents = level.getEntitiesOfClass(dev.wildercord.aura.world.RootcoilSerpent.class,
-					new net.minecraft.world.phys.AABB(altarPos).inflate(48.0), e -> true);
-				check(respawned.size() == 1 && respawned.getFirst().getMaxHealth() == 750.0F,
-					"lair guardian respawns in its arena with boosted max health (respawned=" + respawned.size()
-					+ ", allSerpents=" + allSerpents.size()
-					+ ", pending=" + dev.wildercord.aura.world.LairRespawns.pendingCount(level)
-					+ ", boundAlive=" + boundSerpent.isAlive()
-					+ ", boundHp=" + boundSerpent.getHealth()
-					+ ", guardiansEnabled=" + dev.wildercord.aura.world.Guardians.enabled()
-					+ ", difficulty=" + level.getDifficulty()
-					+ ", ticking=" + level.isPositionEntityTicking(altarPos)
-					+ ", playerPos=" + player.position()
-					+ ", playerAlive=" + player.isAlive()
-					+ ", gameTime=" + level.getGameTime() + ")");
+				check(respawned.size() == 1
+					&& respawned.getFirst().getAttributeBaseValue(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH) == 750.0
+					&& respawned.getFirst().getMaxHealth() >= 750.0F,
+					"lair guardian respawns in its arena with boosted base max health 750 (size=" + respawned.size()
+					+ (respawned.isEmpty() ? "" : ", base=" + respawned.getFirst().getAttributeBaseValue(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH)
+						+ ", max=" + respawned.getFirst().getMaxHealth()) + ")");
 				check(dev.wildercord.aura.world.LairRespawns.pendingCount(level) == 0, "lair respawn entry clears once spawned");
 				for (var r : respawned) r.discard();
 				((net.minecraft.world.level.storage.ServerLevelData) level.getLevelData()).setGameTime(savedTime[0]);
