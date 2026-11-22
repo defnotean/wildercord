@@ -5,8 +5,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /** A staff, the Tome of the Fifth Page or a focus: worn in its gear slot (or held, while the slot is empty), it changes your spells. */
@@ -19,7 +19,7 @@ public class CastingGearItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
 		builder.accept(Gear.effect(def).copy().withStyle(ChatFormatting.GRAY));
 		if (def.kind().staff()) {
 			builder.accept(Component.translatable("tooltip.wildercord.gear.flourish").withStyle(ChatFormatting.GRAY));

@@ -32,7 +32,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.entity.animal.Chicken;
-import net.minecraft.world.entity.animal.AbstractCow;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.Mooshroom;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.goat.Goat;
@@ -703,7 +704,7 @@ public final class FarmEffects {
 			if (milked >= FarmRules.HERD_MAX) {
 				break;
 			}
-			if (animal.isBaby() || !(animal instanceof AbstractCow || animal instanceof Goat)) {
+			if (animal.isBaby() || !(animal instanceof Cow || animal instanceof Mooshroom || animal instanceof Goat)) {
 				continue;
 			}
 			ItemStack bucket = find(player, s -> s.is(Items.BUCKET));

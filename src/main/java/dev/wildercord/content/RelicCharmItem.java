@@ -1,7 +1,6 @@
 package dev.wildercord.content;
 import dev.wildercord.player.Heart;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.chat.Component;
 import java.util.function.Consumer;

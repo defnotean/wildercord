@@ -13,9 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -55,7 +55,7 @@ public class BackpackItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
 		int used = Backpacks.used(stack);
 		builder.accept(Component.translatable(used >= tier.slots() ? "tooltip.wildercord.backpack.full" : "tooltip.wildercord.backpack.fill", used, tier.slots())
 			.withStyle(used >= tier.slots() ? ChatFormatting.GOLD : ChatFormatting.GRAY));

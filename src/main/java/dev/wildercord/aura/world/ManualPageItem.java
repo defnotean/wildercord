@@ -7,9 +7,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -40,7 +40,7 @@ public class ManualPageItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
 		builder.accept(Component.translatable("item.wildercord.manual_page.lore").withStyle(ChatFormatting.ITALIC).withColor(0xC8B89A));
 		methodOf(stack).ifPresent(method -> {
 			if (!method.element().isEmpty()) {

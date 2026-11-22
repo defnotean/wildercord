@@ -26,7 +26,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import dev.wildercord.compat.McEntityReference;
-import net.minecraft.world.entity.EntityReference;
+import dev.wildercord.compat.EntityReference;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -77,7 +77,7 @@ import net.minecraft.core.RegistryAccess;
  */
 public class CofferMimic extends WildMonster implements OwnableEntity {
 	private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_OWNER =
-		SynchedEntityData.defineId(CofferMimic.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
+		SynchedEntityData.defineId(CofferMimic.class, dev.wildercord.compat.McEntitySerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
 
 	private enum Phase { DISGUISED, WAKE, HUNT, BITE, LASH, CROUCH, LUNGE, FLIPPED, CLAMP }
 

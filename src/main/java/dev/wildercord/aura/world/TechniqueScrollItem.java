@@ -23,10 +23,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -110,7 +110,7 @@ public class TechniqueScrollItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> builder, TooltipFlag flag) {
 		String part = partOf(stack).orElse(null);
 		if (part == null) {
 			builder.accept(Component.translatable("tooltip.wildercord.technique_scroll.unknown").withStyle(ChatFormatting.DARK_GRAY));

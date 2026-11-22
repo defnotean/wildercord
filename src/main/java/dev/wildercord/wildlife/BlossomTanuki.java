@@ -181,7 +181,7 @@ public class BlossomTanuki extends Animal {
 		for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(range), e -> e != this && e.isAlive())) {
 			boolean frightening = e instanceof Player player
 				? player != friend && player.isSprinting() && !player.isSpectator()
-				: e instanceof Enemy || e instanceof net.minecraft.world.entity.animal.wolf.Wolf || e instanceof net.minecraft.world.entity.animal.Fox;
+				: e instanceof Enemy || e instanceof net.minecraft.world.entity.animal.Wolf || e instanceof net.minecraft.world.entity.animal.Fox;
 			double d = distanceTo(e);
 			if (frightening && d <= range && d < bestDistance) {
 				best = e;

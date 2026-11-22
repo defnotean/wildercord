@@ -18,7 +18,6 @@ import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import dev.wildercord.client.compat.McInput.CharacterEvent;
 import dev.wildercord.client.compat.McInput.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -226,7 +225,7 @@ public final class TechniquePage {
 		t = slots(g, player, mx, my, color, now);
 		tip = t != null ? t : tip;
 		// The scroll: the inset the Cord's readout sits in, a gold rule along its top.
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_INSET, 10, SCROLL_Y, W - 20, SCROLL_BOTTOM - SCROLL_Y);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_INSET, 10, SCROLL_Y, W - 20, SCROLL_BOTTOM - SCROLL_Y);
 		g.fill(13, SCROLL_Y + 1, W - 13, SCROLL_Y + 2, 0x66000000 | (GOLD & 0xFFFFFF));
 		t = name(g, player, d, mx, my, color, now);
 		tip = t != null ? t : tip;
@@ -316,7 +315,7 @@ public final class TechniquePage {
 			boolean selected = i == slot;
 			Techniques.Written w = book.slot(i);
 			boolean hover = inside(mx, my, x, y, CARD_W, CARD_H);
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, !unlocked ? SPR_ROW_LOCKED : selected ? SPR_ROW_SELECTED : SPR_ROW, x, y, CARD_W, CARD_H);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, !unlocked ? SPR_ROW_LOCKED : selected ? SPR_ROW_SELECTED : SPR_ROW, x, y, CARD_W, CARD_H);
 			if (hover && !selected) {
 				g.fill(x + 2, y + 2, x + CARD_W - 2, y + CARD_H - 2, 0x14FFFFFF);
 			}
@@ -452,7 +451,7 @@ public final class TechniquePage {
 		TechniqueRules.Family[] families = TechniqueRules.Family.values();
 		int cy = SEALS_Y + SEAL / 2;
 		// The cord the three are threaded on, as the Cord threads its runes.
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_THREAD, sealX(0) + SEAL / 2, cy - 2, sealX(2) - sealX(0), 4);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_THREAD, sealX(0) + SEAL / 2, cy - 2, sealX(2) - sealX(0), 4);
 		double ink = Math.max(0, 1 - (now + partial - inkAt) / 24.0);
 		for (int i = 0; i < 3; i++) {
 			TechniqueRules.Family family = families[i];
@@ -464,13 +463,13 @@ public final class TechniquePage {
 			int fam = Techniques.familyColor(family);
 			// Its kind over it.
 			smallCentered(g, Component.translatable("screen.wildercord.aura.writing." + family.id), x + SEAL / 2, y - 9, 0xFF000000 | fam, 0.75F);
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, isOpen ? SPR_SEAL_OPEN : SPR_SEAL, x, y, SEAL, SEAL);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, isOpen ? SPR_SEAL_OPEN : SPR_SEAL, x, y, SEAL, SEAL);
 			if (hover) {
 				g.fill(x + 4, y + 4, x + SEAL - 4, y + SEAL - 4, 0x18FFFFFF);
 			}
 			boolean known = Techniques.knows(player, part);
 			int tint = known ? 0xFF000000 | AuraHud.mix(fam, 0xFFFFFF, 0.35) : 0xFF4A4458;
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, glyph(part), x + 5, y + 5, 16, 16, tint);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, glyph(part), x + 5, y + 5, 16, 16, tint);
 			if (ink > 0) {
 				// Just written: the aura's ink running through the seals, one after another.
 				double k = Math.max(0, Math.min(1, ink * 3 - i * 0.6));
@@ -556,12 +555,12 @@ public final class TechniquePage {
 			boolean known = Techniques.knows(player, part);
 			boolean hover = inside(mx, my, x, y, cell, cell);
 			boolean selected = part.equals(chosen);
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, hover || selected ? SPR_SOCKET_HOVER : SPR_SOCKET, x, y, cell, cell);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, hover || selected ? SPR_SOCKET_HOVER : SPR_SOCKET, x, y, cell, cell);
 			int tint = known ? 0xFF000000 | AuraHud.mix(fam, 0xFFFFFF, selected ? 0.5 : 0.2) : 0x664A4458;
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, glyph(part), x + 1, y + 1, 16, 16, tint);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, glyph(part), x + 1, y + 1, 16, 16, tint);
 			if (!known) {
 				// Not known yet: dark, a lock on it.
-				g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_LOCK, x + cell - 7, y + cell - 8, 7, 8);
+				g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_LOCK, x + cell - 7, y + cell - 8, 7, 8);
 			} else if (Techniques.lent(player, part) && !Techniques.learned(player, part)) {
 				// Lent by a Way: a dot of its colour in the corner.
 				int wc = 0xFF000000 | wayColor(TechniqueRules.lendingWay(part));
@@ -1074,7 +1073,7 @@ public final class TechniquePage {
 				boolean can = TechniqueRules.scrollable(part);
 				boolean hover = inside(mx, my, ix, cy, 14, 14);
 				g.fill(ix, cy, ix + 14, cy + 14, can && hover ? 0xFF3A3050 : 0xFF221E30);
-				g.blitSprite(RenderPipelines.GUI_TEXTURED, glyph(part), ix + 1, cy + 1, 12, 12,
+				g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, glyph(part), ix + 1, cy + 1, 12, 12,
 					can ? 0xFF000000 | AuraHud.mix(Techniques.familyColor(TechniqueRules.family(part).orElseThrow()), 0xFFFFFF, 0.3) : 0x663A3450);
 				target("inscribe:" + part, ix, cy, 14, 14);
 				if (hover) {

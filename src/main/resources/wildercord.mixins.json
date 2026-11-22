@@ -6,7 +6,6 @@
 		"ExcisePlayerRemovalMixin",
 		"ReedlandPlacementMixin",
 		"ArenaTreeMixin",
-		"ArenaFallenTreeMixin",
 		"ReedlandSurfaceComputeMixin",
 		"RelayLivingDamageMixin",
 		"RelayPlayerDamageMixin",

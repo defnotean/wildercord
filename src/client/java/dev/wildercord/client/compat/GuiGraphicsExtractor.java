@@ -1,6 +1,5 @@
 package dev.wildercord.client.compat;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +118,7 @@ public final class GuiGraphicsExtractor {
 		g.fill(x1, y1, x2, y2, color);
 	}
 
-	public void fill(RenderPipeline pipeline, int x1, int y1, int x2, int y2, int color) {
+	public void fill(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, int x1, int y1, int x2, int y2, int color) {
 		g.fill(x1, y1, x2, y2, color);
 	}
 
@@ -186,21 +185,21 @@ public final class GuiGraphicsExtractor {
 		g.drawStringWithBackdrop(font, text, x, y, width, color);
 	}
 
-	public void blit(RenderPipeline pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height) {
+	public void blit(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height) {
 		g.blit(RenderType::guiTextured, atlas, x, y, u, v, regionWidth, regionHeight, width, height);
 	}
 
-	public void blit(RenderPipeline pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int blitOffset) {
+	public void blit(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int blitOffset) {
 		g.blit(RenderType::guiTextured, atlas, x, y, u, v, regionWidth, regionHeight, width, height, blitOffset);
 	}
 
-	public void blit(RenderPipeline pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int blitOffset) {
+	public void blit(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int blitOffset) {
 		// 1.21.5 has no colour on a raw blit; the circle textures read fine untinted.
 		g.blit(RenderType::guiTextured, atlas, x, y, (float) (u + textureU), (float) (v + textureV),
 			regionWidth, regionHeight, width, height, 256, 256);
 	}
 
-	public void blit(RenderPipeline pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int textureWidth, int textureHeight) {
+	public void blit(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation atlas, int x, int y, float u, float v, int regionWidth, int regionHeight, int width, int height, int textureU, int textureV, int textureWidth, int textureHeight) {
 		g.blit(RenderType::guiTextured, atlas, x, y, (float) (u + textureU), (float) (v + textureV),
 			regionWidth, regionHeight, width, height, textureWidth, textureHeight);
 	}
@@ -209,11 +208,11 @@ public final class GuiGraphicsExtractor {
 		g.blit(RenderType::guiTextured, atlas, x, y, u, v, (int) regionWidth, (int) regionHeight, width, height, 0);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height) {
+	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height) {
 		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height, float blitOffset) {
+	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height, float blitOffset) {
 		// No offset on this version's sprite blits; the depth is carried on the pose instead.
 		g.pose().pushPose();
 		g.pose().translate(0.0F, 0.0F, blitOffset);
@@ -221,26 +220,26 @@ public final class GuiGraphicsExtractor {
 		g.pose().popPose();
 	}
 
-	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height, int color) {
+	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height, int color) {
 		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height, color);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight) {
+	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight) {
 		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height, u, v, regionWidth, regionHeight);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, ResourceLocation sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight, int blitOffset) {
+	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, ResourceLocation sprite, int x, int y, int width, int height, int u, int v, int regionWidth, int regionHeight, int blitOffset) {
 		g.pose().pushPose();
 		g.pose().translate(0.0F, 0.0F, blitOffset);
 		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height, u, v, regionWidth, regionHeight);
 		g.pose().popPose();
 	}
 
-	public void blitSprite(RenderPipeline pipeline, TextureAtlasSprite sprite, int x, int y, int width, int height) {
+	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, TextureAtlasSprite sprite, int x, int y, int width, int height) {
 		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height);
 	}
 
-	public void blitSprite(RenderPipeline pipeline, TextureAtlasSprite sprite, int x, int y, int width, int height, int blitOffset) {
+	public void blitSprite(java.util.function.Function<ResourceLocation, net.minecraft.client.renderer.RenderType> pipeline, TextureAtlasSprite sprite, int x, int y, int width, int height, int blitOffset) {
 		g.pose().pushPose();
 		g.pose().translate(0.0F, 0.0F, blitOffset);
 		g.blitSprite(RenderType::guiTextured, sprite, x, y, width, height);

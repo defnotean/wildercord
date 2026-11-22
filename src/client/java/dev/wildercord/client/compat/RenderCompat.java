@@ -2,16 +2,10 @@ package dev.wildercord.client.compat;
 
 import java.util.function.BiConsumer;
 
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.platform.DestFactor;
-import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.wildercord.Wildercord;
-import dev.wildercord.client.mixin.RenderPipelinesAccessor;
 import dev.wildercord.client.compat.McQuadParticle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -44,48 +38,13 @@ import org.joml.Quaternionfc;
  * them; the quads themselves go on vanilla's particle and eye layers, which every pack handles.
  */
 public final class RenderCompat {
-	private static final RenderPipeline WISP_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$entitySnippet())
-		.withLocation(Wildercord.id("pipeline/wisp_glow"))
-		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
-		.withShaderDefine("NO_OVERLAY")
-		.withShaderDefine("NO_CARDINAL_LIGHTING")
-		.withBlend(BlendFunction.LIGHTNING)
-		.withCull(false)
-		.withDepthWrite(false)
-		.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-		.build();
 
-	private static final RenderPipeline AURA_BODY_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$entitySnippet())
-		.withLocation(Wildercord.id("pipeline/aura_body_glow"))
-		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
-		.withShaderDefine("NO_OVERLAY")
-		.withShaderDefine("NO_CARDINAL_LIGHTING")
-		.withBlend(BlendFunction.LIGHTNING)
-		.withCull(false)
-		.withDepthWrite(false)
-		.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-		.build();
 
-	private static final RenderPipeline GLOW_PARTICLE_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())
-		.withLocation(Wildercord.id("pipeline/glow_particle"))
-		.withBlend(BlendFunction.LIGHTNING)
-		.withDepthWrite(false)
-		.build();
 
-	/**
-	 * Vanilla's INVERT blend. 1.21.6's BlendFunction has no constant for it, so it is built from the
-	 * factors 1.21.8 declares it with: ONE_MINUS_DST_COLOR/ONE_MINUS_SRC_COLOR, ONE/ZERO. Like every
-	 * blend here it carries factors only, no blend op, which is the closest darkening to the
-	 * SRC_ALPHA/ONE REVERSE_SUBTRACT the newer versions use.
-	 */
-	private static final BlendFunction INVERT = new BlendFunction(
-		SourceFactor.ONE_MINUS_DST_COLOR, DestFactor.ONE_MINUS_SRC_COLOR, SourceFactor.ONE, DestFactor.ZERO);
 
-	private static final RenderPipeline DARK_PARTICLE_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())
-		.withLocation(Wildercord.id("pipeline/dark_particle"))
-		.withBlend(INVERT)
-		.withDepthWrite(false)
-		.build();
+
+	/** Where 1.21.5+ names a pipeline, 1.21.4 wants this: the gui textured layer for a sprite sheet. */
+	public static final java.util.function.Function<ResourceLocation, RenderType> GUI_TEXTURED = RenderType::guiTextured;
 
 	private RenderCompat() {}
 
@@ -244,7 +203,7 @@ public final class RenderCompat {
 
 	/** A baked quad's corner position: 1.21.8 packs the vertices as ints (stride 8, position first). */
 	public static org.joml.Vector3fc quadPosition(net.minecraft.client.renderer.block.model.BakedQuad quad, int vertex) {
-		int[] v = quad.vertices();
+		int[] v = quad.getVertices();
 		int base = vertex * 8;
 		return new org.joml.Vector3f(Float.intBitsToFloat(v[base]), Float.intBitsToFloat(v[base + 1]), Float.intBitsToFloat(v[base + 2]));
 	}
@@ -280,21 +239,9 @@ public final class RenderCompat {
 			: null;
 	}
 
-	public static RenderPipeline wispGlowPipeline() {
-		return WISP_GLOW_PIPELINE;
-	}
 
-	public static RenderPipeline auraBodyGlowPipeline() {
-		return AURA_BODY_GLOW_PIPELINE;
-	}
 
-	public static RenderPipeline glowParticlePipeline() {
-		return GLOW_PARTICLE_PIPELINE;
-	}
 
-	public static RenderPipeline darkParticlePipeline() {
-		return DARK_PARTICLE_PIPELINE;
-	}
 
 	public static RenderType wispGlowRenderType(ResourceLocation texture) {
 		// 1.21.8 has no RenderSetup: vanilla's emissive eyes layer is the same additive, depthless glow.

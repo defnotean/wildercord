@@ -15,7 +15,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.component.TooltipDisplay;
 import java.util.*;
 import java.util.function.Consumer;
 

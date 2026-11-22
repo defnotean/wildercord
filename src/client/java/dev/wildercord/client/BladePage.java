@@ -18,7 +18,6 @@ import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import dev.wildercord.client.compat.McInput.CharacterEvent;
 import dev.wildercord.client.compat.McInput.KeyEvent;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -183,11 +182,11 @@ final class BladePage {
 		String[] steps = {"step_blade", "step_crossing", "step_kneel"};
 		for (int i = 0; i < steps.length; i++) {
 			int sy = y + i * 24;
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_INSET, 14, sy, 20, 20);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_INSET, 14, sy, 20, 20);
 			if (i == 0) {
 				g.item(shown, 16, sy + 2);
 			} else {
-				g.blitSprite(RenderPipelines.GUI_TEXTURED, Wildercord.id(i == 1 ? "aura/blade/crossing" : "aura/blade/kneel"), 16, sy + 2, 16, 16,
+				g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, Wildercord.id(i == 1 ? "aura/blade/crossing" : "aura/blade/kneel"), 16, sy + 2, 16, 16,
 					0xFF000000 | AuraHud.mix(color, 0xFFFFFF, 0.25));
 			}
 			small(g, Component.literal((i + 1) + ".").withColor(GOLD), 38, sy + 2, GOLD, 0.9F);
@@ -231,7 +230,7 @@ final class BladePage {
 			int cx = x + (t - 1) * cell;
 			boolean lit = reached >= t;
 			int tint = lit ? 0xFF000000 | color : reached < 0 ? 0xFF000000 | AuraHud.mix(color, 0x8A84A0, 0.5) : 0xFF3A3450;
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, tierSprite(t), cx + cell / 2 - 8, y, 16, 16, tint);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, tierSprite(t), cx + cell / 2 - 8, y, 16, 16, tint);
 			Component name = Component.translatable("aura.wildercord.blade.tier." + BladeRules.tierId(t));
 			int nw = Math.round(font.width(name) * 0.8F);
 			small(g, name, cx + (cell - nw) / 2, y + 18, lit || reached < 0 ? TEXT : FAINT, 0.8F);
@@ -256,7 +255,7 @@ final class BladePage {
 		BondedBlades.Shown shown = state.shown();
 		int bc = 0xFF000000 | (shown.color() == 0 ? color : shown.color());
 		int y = top + 2;
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_INSET, 12, y, 64, 64);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_INSET, 12, y, 64, 64);
 		ItemStack icon = icon(shown);
 		g.pose().pushMatrix();
 		g.pose().translate(20, y + 8);
@@ -267,7 +266,7 @@ final class BladePage {
 		int tx = 86;
 		Component name = shown.name().isEmpty() ? Component.translatable("screen.wildercord.aura.blade.unnamed") : Component.literal(BladeRules.cleanName(shown.name()));
 		g.text(font, name, tx, y + 2, shown.name().isEmpty() ? DIM : bc, true);
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, tierSprite(shown.tier()), tx, y + 15, 12, 12, bc);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, tierSprite(shown.tier()), tx, y + 15, 12, 12, bc);
 		small(g, Component.translatable("aura.wildercord.blade.tier." + BladeRules.tierId(Math.max(1, shown.tier()))), tx + 15, y + 17, TEXT, 0.9F);
 		int ay = y + 32;
 		ay = para(g, Component.translatable("screen.wildercord.aura.blade.away"), tx, ay, W - tx - 14, AMBER, 0.85F, 2);
@@ -313,7 +312,7 @@ final class BladePage {
 		int bc = 0xFF000000 | (b.color() == 0 ? 0xD8D0F0 : b.color());
 		int y = top + 2;
 		// ---- the blade in its frame: a glow of its colour behind it, breathing, brighter by tier.
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_INSET, 12, y, 64, 64);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_INSET, 12, y, 64, 64);
 		float breath = 0.5F + 0.5F * (float) Math.sin((now + partial) * 0.08);
 		int glowA = (int) ((0x18 + 0x10 * tier) * (0.7F + 0.3F * breath));
 		for (int r = 0; r < 4; r++) {
@@ -344,7 +343,7 @@ final class BladePage {
 		g.pose().scale(1.25F, 1.25F);
 		g.text(font, name, 0, 0, b.shownName().isEmpty() ? DIM : bc, true);
 		g.pose().popMatrix();
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, tierSprite(tier), tx, y + 15, 12, 12, bc);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, tierSprite(tier), tx, y + 15, 12, 12, bc);
 		Component tierLine = Component.translatable("screen.wildercord.aura.blade.tier_line", Component.translatable("aura.wildercord.blade.tier."
 			+ BladeRules.tierId(tier)).withColor(GOLD), b.origin().day());
 		small(g, tierLine, tx + 15, y + 17, TEXT, 0.85F);
@@ -501,7 +500,7 @@ final class BladePage {
 					continue;
 				}
 				double w = BladeRules.weight(t, habits);
-				g.blitSprite(RenderPipelines.GUI_TEXTURED, traitSprite(id), 16, cy, 10, 10, w > 0 ? 0xFF000000 | AuraHud.mix(bc, 0x8A84A0, 0.4) : 0x663A3450);
+				g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, traitSprite(id), 16, cy, 10, 10, w > 0 ? 0xFF000000 | AuraHud.mix(bc, 0x8A84A0, 0.4) : 0x663A3450);
 				small(g, traitName(id, b, w > 0 ? TEXT : FAINT), 30, cy + 2, TEXT, 0.75F);
 				Component why = w > 0 ? Component.translatable(t.nameKey() + ".habit", habitArgs(id, b)) : Component.translatable("screen.wildercord.aura.blade.trait_faint");
 				small(g, why, 130, cy + 2, DIM, 0.7F);
@@ -538,7 +537,7 @@ final class BladePage {
 			g.fill(cx, cy + ch - 1, cx + cw, cy + ch, edge);
 			g.fill(cx, cy, cx + 1, cy + ch, edge);
 			g.fill(cx + cw - 1, cy, cx + cw, cy + ch, edge);
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, traitSprite(id), cx + cw / 2 - 7, cy + 3, 14, 14, chosen ? GOLD : 0xFF000000 | AuraHud.mix(bc, 0xFFFFFF, 0.2));
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, traitSprite(id), cx + cw / 2 - 7, cy + 3, 14, 14, chosen ? GOLD : 0xFF000000 | AuraHud.mix(bc, 0xFFFFFF, 0.2));
 			Component nm = traitName(id, b, chosen ? GOLD : TEXT);
 			float ns = font.width(nm) > cw - 6 ? 0.7F : 0.8F;
 			int nw = Math.round(font.width(nm) * ns);
@@ -575,7 +574,7 @@ final class BladePage {
 
 	/** Its story, in an inset: where and when, its deeds counted, its favourite art, and its latest notable deeds. */
 	private List<Component> story(GuiGraphicsExtractor g, BladeBond b, int y, int mx, int my, int bc) {
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_INSET, 10, y, W - 20, 90);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_INSET, 10, y, W - 20, 90);
 		g.fill(13, y + 1, W - 13, y + 2, 0x66000000 | (GOLD & 0xFFFFFF));
 		small(g, Component.translatable("screen.wildercord.aura.blade.story"), 16, y + 5, GOLD, 0.85F);
 		BladeBond.Origin o = b.origin();

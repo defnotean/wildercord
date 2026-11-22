@@ -5,8 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,14 @@ public final class LineageRegistry extends SavedData {
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Honoured.CODEC.listOf()).optionalFieldOf("honoured", Map.of()).forGetter(r -> r.honoured),
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.DOUBLE).optionalFieldOf("owed_after", Map.of()).forGetter(r -> r.owedAfter)
 	).apply(i, LineageRegistry::new));
-	static final SavedDataType<LineageRegistry> TYPE = new SavedDataType<>("lineage", LineageRegistry::new, CODEC, null);
+	static final McSavedDataType<LineageRegistry> TYPE = new McSavedDataType<>("lineage", LineageRegistry::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 
 	/** Every standing bond, by disciple. */
 	private final Map<UUID, Bond> bonds = new HashMap<>();
@@ -99,7 +107,7 @@ public final class LineageRegistry extends SavedData {
 	}
 
 	public static LineageRegistry of(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE);
 	}
 
 	/** {@code disciple}'s bond with their master, if they have one. */

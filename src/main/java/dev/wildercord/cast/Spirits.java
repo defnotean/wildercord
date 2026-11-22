@@ -16,8 +16,8 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.animal.wolf.WolfVariants;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.WolfVariants;
 import net.minecraft.world.phys.Vec3;
 
 /**

@@ -52,8 +52,9 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -290,7 +291,7 @@ public final class Imbuing {
 		long now = level.getGameTime();
 		List<Map.Entry<ServerLevel, Glyph>> mine = new ArrayList<>();
 		for (ServerLevel world : level.getServer().getAllLevels()) {
-			Glyphs held = world == level ? glyphs : world.getDataStorage().get(Glyphs.TYPE);
+			Glyphs held = world == level ? glyphs : dev.wildercord.compat.McSavedData.get(world.getDataStorage(), Glyphs.TYPE);
 			if (held != null) {
 				held.all().stream().filter(g -> g.owner().equals(player.getUUID())).forEach(g -> mine.add(Map.entry(world, g)));
 			}
@@ -580,7 +581,7 @@ public final class Imbuing {
 	 * spell is for them, or from the block itself for {@code by == null}. Returns whether it went off.
 	 */
 	private static boolean trigger(ServerLevel level, BlockPos pos, LivingEntity by) {
-		Glyphs glyphs = level.getDataStorage().get(Glyphs.TYPE);
+		Glyphs glyphs = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Glyphs.TYPE);
 		Glyph glyph = glyphs == null ? null : glyphs.at(pos).orElse(null);
 		if (glyph == null) {
 			return false;
@@ -616,7 +617,7 @@ public final class Imbuing {
 	private static boolean beforeBreak(Level level, Player player, BlockPos pos, BlockState state, net.minecraft.world.level.block.entity.BlockEntity be) {
 		// A probe only asks whether the block may be changed; the glyph waits for a real break.
 		if (level instanceof ServerLevel server && !Casters.probing()) {
-			Glyphs glyphs = server.getDataStorage().get(Glyphs.TYPE);
+			Glyphs glyphs = dev.wildercord.compat.McSavedData.get(server.getDataStorage(), Glyphs.TYPE);
 			Glyph glyph = glyphs == null ? null : glyphs.at(pos).orElse(null);
 			if (glyph != null && !glyph.owner().equals(player.getUUID())) {
 				trigger(server, pos, player);
@@ -630,7 +631,7 @@ public final class Imbuing {
 	 * block drops itself); anyone else's break, or a block that drops something else, lets it fade.
 	 */
 	private static void keep(ServerLevel level, Player player, BlockPos pos, BlockState state) {
-		Glyphs glyphs = level.getDataStorage().get(Glyphs.TYPE);
+		Glyphs glyphs = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Glyphs.TYPE);
 		Glyph glyph = glyphs == null ? null : glyphs.at(pos).orElse(null);
 		if (glyph == null) {
 			return;
@@ -776,7 +777,14 @@ public final class Imbuing {
 		 */
 		static final Codec<Glyphs> CODEC = Glyph.CODEC.xmap(Optional::of, Optional::get).orElse(Optional.empty()).listOf()
 			.xmap(read -> new Glyphs(read.stream().flatMap(Optional::stream).toList()), glyphs -> glyphs.all().stream().map(Optional::of).toList());
-		static final SavedDataType<Glyphs> TYPE = new SavedDataType<>("glyphs", Glyphs::new, CODEC, null);
+		static final McSavedDataType<Glyphs> TYPE = new McSavedDataType<>("glyphs", Glyphs::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 
 		private final Map<BlockPos, Glyph> byPos = new LinkedHashMap<>();
 		/** Not saved: when each last went off, whether it was powered last time it was looked at, and whom it last went off at. */
@@ -792,7 +800,7 @@ public final class Imbuing {
 		}
 
 		public static Glyphs of(ServerLevel level) {
-			return level.getDataStorage().computeIfAbsent(TYPE);
+			return dev.wildercord.compat.McSavedData.computeIfAbsent(level.getDataStorage(), TYPE);
 		}
 
 		public List<Glyph> all() {
@@ -833,7 +841,7 @@ public final class Imbuing {
 			Codec.LONG.optionalFieldOf("next", 0L).forGetter(ledger -> ledger.next),
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.LONG.listOf()).optionalFieldOf("makers", Map.of()).forGetter(ledger -> ledger.byMaker)
 		).apply(i, Ledger::new));
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("imbued_items", Ledger::new, CODEC, null);
+		static final McSavedDataType<Ledger> TYPE = new McSavedDataType<>("imbued_items", Ledger::new, CODEC);
 
 		private final Map<UUID, List<Long>> byMaker = new HashMap<>();
 		private long next;
@@ -850,7 +858,7 @@ public final class Imbuing {
 		}
 
 		public static Ledger of(ServerLevel level) {
-			return level.getServer().overworld().getDataStorage().computeIfAbsent(TYPE);
+			return level.getServer()dev.wildercord.compat.McSavedData.computeIfAbsent(.overworld().getDataStorage(), TYPE);
 		}
 
 		/** Counts a new imbued item of {@code maker}'s and returns its serial. */
@@ -918,7 +926,7 @@ public final class Imbuing {
 			READY_AT.values().removeIf(at -> at <= now || at - now > STALE);
 		}
 		for (ServerLevel level : server.getAllLevels()) {
-			Glyphs glyphs = level.getDataStorage().get(Glyphs.TYPE);
+			Glyphs glyphs = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Glyphs.TYPE);
 			if (glyphs == null || glyphs.isEmpty()) {
 				continue;
 			}

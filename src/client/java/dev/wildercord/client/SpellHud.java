@@ -15,7 +15,6 @@ import net.minecraft.client.gui.Font;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 
@@ -175,7 +174,7 @@ public final class SpellHud {
 	}
 
 	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, id, x, y, w, h);
 	}
 
 	private static void extract(GuiGraphics wcG, DeltaTracker delta) {
@@ -341,7 +340,7 @@ public final class SpellHud {
 			boolean onBeat = until <= 0;
 			int size = onBeat ? 22 : 22 + (int) Math.round(18 * Math.min(1, until / 16.0));
 			int alpha = onBeat ? 0xFF : (int) (0x60 + 0x9F * (1 - Math.min(1, until / 16.0)));
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, bx + 10 - size / 2, by + 10 - size / 2, size, size, (alpha << 24) | 0xFFFFFF);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BEAT, bx + 10 - size / 2, by + 10 - size / 2, size, size, (alpha << 24) | 0xFFFFFF);
 			if (onBeat) {
 				g.fill(bx + 3, by + 3, bx + 17, by + 17, 0x40F5D56A);
 			}
@@ -483,7 +482,7 @@ public final class SpellHud {
 		boolean filled = now >= charge.start() + charge.full();
 		if (filled && dev.wildercord.spell.Overchannel.onBeat(now, beat, charge.stages())) {
 			// On the beat: let go now.
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, bx - 1, by - 1, 22, 22, 0xFFFFFFFF);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BEAT, bx - 1, by - 1, 22, 22, 0xFFFFFFFF);
 			g.fill(bx + 3, by + 3, bx + 17, by + 17, 0x50E8E0FF);
 		}
 		long next = dev.wildercord.spell.Overchannel.nextBeat(charge.start(), charge.full(), charge.stages(), stage, charge.stageTime(), now);
@@ -498,7 +497,7 @@ public final class SpellHud {
 		int size = 22 + (int) Math.round(18 * Math.min(1, until / 16.0));
 		int alpha = (int) (0x60 + 0x9F * (1 - Math.min(1, until / 16.0)));
 		int tint = tear ? 0xFF5A4A : 0xD8D0FF;
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, bx + 10 - size / 2, by + 10 - size / 2, size, size, (alpha << 24) | tint);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BEAT, bx + 10 - size / 2, by + 10 - size / 2, size, size, (alpha << 24) | tint);
 	}
 
 	/** How long (ms) the reasons stay up after a new condition comes into force, and how long of that they spend fading. */

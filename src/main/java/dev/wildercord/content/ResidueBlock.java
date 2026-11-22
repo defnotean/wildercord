@@ -15,7 +15,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -129,7 +128,7 @@ public class ResidueBlock extends Block {
 	// ------------------------------------------------------------------ what it does
 
 	@Override
-	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effects) {
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
 		switch (kind) {
 			case SMOULDERING_ASH -> {
 				// Still warm: nothing standing in the ash freezes.

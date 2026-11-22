@@ -14,8 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -89,7 +90,14 @@ public final class InnRaid {
 	/** The raids under way when the server last stopped. */
 	public static final class Ledger extends SavedData {
 		static final Codec<Ledger> CODEC = Saved.CODEC.listOf().optionalFieldOf("raids", List.of()).xmap(Ledger::new, l -> l.raids).codec();
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("inn_raids", Ledger::new, CODEC, null);
+		static final McSavedDataType<Ledger> TYPE = new McSavedDataType<>("inn_raids", Ledger::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 
 		private List<Saved> raids;
 
@@ -112,7 +120,7 @@ public final class InnRaid {
 	}
 
 	private static Ledger ledger(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(Ledger.TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), Ledger.TYPE);
 	}
 
 	private InnRaid(ServerLevel level, Vec3 centre, BountyRules.Tier tier, long day) {

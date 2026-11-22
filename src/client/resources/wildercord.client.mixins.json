@@ -8,7 +8,6 @@
 		"AbstractRecipeBookScreenMixin",
 		"AbstractContainerScreenMixin",
 		"PlayerRendererMixin",
-		"RenderPipelinesAccessor",
 		"GameRendererMixin",
 		"CameraMixin",
 		"PlayerRenderStateMixin",

@@ -20,8 +20,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.Level;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -56,7 +57,14 @@ public final class Arena {
 	/** The casters waiting at the stones when the server last stopped, taken up again when it starts. */
 	public static final class Queue extends SavedData {
 		static final Codec<Queue> CODEC = Queued.CODEC.listOf().optionalFieldOf("waiting", List.of()).xmap(Queue::new, q -> q.waiting).codec();
-		static final SavedDataType<Queue> TYPE = new SavedDataType<>("arena_queue", Queue::new, CODEC, null);
+		static final McSavedDataType<Queue> TYPE = new McSavedDataType<>("arena_queue", Queue::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 
 		private List<Queued> waiting;
 
@@ -75,7 +83,7 @@ public final class Arena {
 	}
 
 	private static Queue queue(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(Queue.TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), Queue.TYPE);
 	}
 
 	/** The server is stopping: who waits at which stone is saved for {@link #resumeWaiting}. */

@@ -7,8 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,14 @@ public final class EventLedger extends SavedData {
 		Codec.unboundedMap(Codec.STRING, Codec.LONG).optionalFieldOf("next", Map.of()).forGetter(ledger -> ledger.next),
 		Star.CODEC.listOf().optionalFieldOf("stars", List.of()).forGetter(ledger -> ledger.stars)
 	).apply(i, EventLedger::new));
-	static final SavedDataType<EventLedger> TYPE = new SavedDataType<>("world_events", EventLedger::new, CODEC, null);
+	static final McSavedDataType<EventLedger> TYPE = new McSavedDataType<>("world_events", EventLedger::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 
 	/** When each thing may next happen: {@code star:<world>}, {@code rift:<world>}, {@code storm:<region>}. */
 	private final Map<String, Long> next = new HashMap<>();
@@ -50,7 +58,7 @@ public final class EventLedger extends SavedData {
 	}
 
 	static EventLedger of(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE);
 	}
 
 	private static String world(ResourceKey<Level> level) {

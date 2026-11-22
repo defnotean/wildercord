@@ -25,8 +25,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public final class ArenaTrees {
 					it.remove();
 					continue;
 				}
-				Swept record = level.getDataStorage().computeIfAbsent(Swept.TYPE);
+				Swept record = dev.wildercord.compat.McSavedData.computeIfAbsent(level.getDataStorage(), Swept.TYPE);
 				boolean later = false;
 				for (BoundingBox box : piecesIn(level, chunk)) {
 					if (record.boxes.contains(box)) {
@@ -115,7 +116,14 @@ public final class ArenaTrees {
 		private static final Codec<Swept> CODEC = RecordCodecBuilder.create(i -> i.group(
 			BoundingBox.CODEC.listOf().optionalFieldOf("swept", List.of()).forGetter(w -> new ArrayList<>(w.boxes))
 		).apply(i, Swept::new));
-		static final SavedDataType<Swept> TYPE = new SavedDataType<>("arena_trees", Swept::new, CODEC, null);
+		static final McSavedDataType<Swept> TYPE = new McSavedDataType<>("arena_trees", Swept::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 		final Set<BoundingBox> boxes = new HashSet<>();
 
 		Swept() {

@@ -16,7 +16,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -105,7 +104,7 @@ public final class MasteryClient {
 		@Override
 		public void render(GuiGraphics wcGui, Font font, long fullyVisibleForMs) {
 		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 0, 0, width(), height());
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BACKGROUND, 0, 0, width(), height());
 			int color = 0xFF000000 | rise.color();
 			GuiSpellCircle.ring(g, 16, 16, 9, 1, color);
 			GuiSpellCircle.sigil(g, 16, 16, 7, rise.seed(), 0xFF000000 | MasteryPanel.rankColor(rise.rank()), 1.1F);

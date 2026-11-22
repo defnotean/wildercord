@@ -6,7 +6,7 @@ import dev.wildercord.Wildercord;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,11 +51,18 @@ final class CinnamonJournal extends SavedData {
 	private static final Codec<CinnamonJournal> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Entry.CODEC).optionalFieldOf("companions", Map.of()).forGetter(j -> j.entries)
 	).apply(i, CinnamonJournal::new));
-	private static final SavedDataType<CinnamonJournal> TYPE = new SavedDataType<>("cinnamon_companions", CinnamonJournal::new, CODEC, null);
+	private static final McSavedDataType<CinnamonJournal> TYPE = new McSavedDataType<>("cinnamon_companions", CinnamonJournal::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 	private final Map<UUID, Entry> entries = new HashMap<>();
 	CinnamonJournal() {}
 	private CinnamonJournal(Map<UUID, Entry> entries) { this.entries.putAll(entries); }
-	static CinnamonJournal of(MinecraftServer server) { return server.overworld().getDataStorage().computeIfAbsent(TYPE); }
+	static CinnamonJournal of(MinecraftServer server) { return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE); }
 	Entry get(UUID owner) { return entries.get(owner); }
 	boolean canRegister(UUID owner) { return entries.containsKey(owner) || entries.size() < MAX_OWNERS; }
 	void put(UUID owner, Entry entry) {

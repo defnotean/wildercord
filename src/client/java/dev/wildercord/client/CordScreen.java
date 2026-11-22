@@ -35,7 +35,6 @@ import net.minecraft.client.gui.screens.Screen;
 import dev.wildercord.client.compat.McInput.CharacterEvent;
 import dev.wildercord.client.compat.McInput.KeyEvent;
 import dev.wildercord.client.compat.McInput.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -844,7 +843,7 @@ public class CordScreen extends Screen {
 	// ------------------------------------------------------------------ drawing
 
 	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, id, x, y, w, h);
 	}
 
 	/** Draws text cut to {@code maxWidth} with an ellipsis if it would not fit. */

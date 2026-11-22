@@ -18,7 +18,6 @@ import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import dev.wildercord.client.compat.McInput.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -162,7 +161,7 @@ public class CordStyleScreen extends Screen implements dev.wildercord.client.Cor
 	// ------------------------------------------------------------------ drawing
 
 	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, id, x, y, w, h);
 	}
 
 	@Override

@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.StructureCheckResult;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 import net.minecraft.world.phys.AABB;
 import java.util.*;
 
@@ -37,13 +37,20 @@ public final class UpgradeSites extends SavedData {
 		SITE.listOf().fieldOf("sites").forGetter(d->List.copyOf(d.sites.values())),
 		Codec.BOOL.optionalFieldOf("saturated",false).forGetter(d->d.saturated)
 	).apply(i,UpgradeSites::new));
-	private static final SavedDataType<UpgradeSites> TYPE=new SavedDataType<>("upgrade_sites",UpgradeSites::new,CODEC,null);
+	private static final McSavedDataType<UpgradeSites> TYPE=new McSavedDataType<>("upgrade_sites", UpgradeSites::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 	private final Map<String,Site> sites=new LinkedHashMap<>();
 	private boolean saturated;
 	public UpgradeSites() {}
 	private UpgradeSites(List<Site> list,boolean saturated){for(var s:list)if(sites.size()<MAX_SITES)sites.put(key(s),s);this.saturated=saturated || list.size()>MAX_SITES;}
 	private static String key(Site s){return s.family()+"@"+s.chunkX()+","+s.chunkZ()+"/"+s.origin();}
-	static UpgradeSites of(ServerLevel level){return level.getDataStorage().computeIfAbsent(TYPE);}
+	static UpgradeSites of(ServerLevel level){return dev.wildercord.compat.McSavedData.computeIfAbsent(level.getDataStorage(), TYPE);}
 	public List<Site> sites(){return List.copyOf(sites.values());}
 	public boolean saturated(){return saturated;}
 	/** Upsert; overflow fails closed for every unique family instead of forgetting evidence. */

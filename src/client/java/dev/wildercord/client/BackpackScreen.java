@@ -6,7 +6,6 @@ import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import dev.wildercord.client.compat.McInput.KeyEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,8 +42,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackMenu> {
 	public void renderBackground(GuiGraphics wcGui, int mouseX, int mouseY, float a) {
 		GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(wcGui);
 		super.renderBackground(wcGui, mouseX, mouseY, a);
-		graphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_BACKGROUND, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.rows * 18 + 17, 256, 256);
-		graphics.blit(RenderPipelines.GUI_TEXTURED, CONTAINER_BACKGROUND, this.leftPos, this.topPos + this.rows * 18 + 17, 0.0F, 126.0F, this.imageWidth, 96, 256, 256);
+		graphics.blit(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, CONTAINER_BACKGROUND, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.rows * 18 + 17, 256, 256);
+		graphics.blit(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, CONTAINER_BACKGROUND, this.leftPos, this.topPos + this.rows * 18 + 17, 0.0F, 126.0F, this.imageWidth, 96, 256, 256);
 	}
 
 	@Override

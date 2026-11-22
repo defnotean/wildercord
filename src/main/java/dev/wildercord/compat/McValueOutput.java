@@ -95,7 +95,7 @@ public final class McValueOutput {
 				return;
 			}
 			codec.encodeStart(ops(), value).result().ifPresent(encoded -> {
-				ListTag list = tag.getList(key).orElseGet(ListTag::new);
+				ListTag list = tag.contains(key, Tag.TAG_LIST) ? tag.getList(key, Tag.TAG_LIST) : new ListTag();
 				list.add(encoded);
 				tag.put(key, list);
 			});

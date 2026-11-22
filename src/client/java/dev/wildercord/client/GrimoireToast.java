@@ -12,7 +12,6 @@ import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -225,7 +224,7 @@ public class GrimoireToast implements Toast {
 	@Override
 	public void render(GuiGraphics wcGui, Font font, long fullyVisibleForMs) {
 		GuiGraphicsExtractor g = new GuiGraphicsExtractor(wcGui);
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 0, 0, width(), height());
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BACKGROUND, 0, 0, width(), height());
 		if (glyph != null) {
 			// The element's mark at twice its size, where an item would sit.
 			g.pose().pushMatrix();

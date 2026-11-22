@@ -11,7 +11,6 @@ import dev.wildercord.spell.Runes;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -85,7 +84,7 @@ public class ContractBoardScreen extends Screen {
 	}
 
 	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, id, x, y, w, h);
 	}
 
 	@Override

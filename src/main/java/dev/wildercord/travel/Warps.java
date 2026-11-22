@@ -8,8 +8,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,14 @@ public final class Warps extends SavedData {
 	static final Codec<Warps> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.unboundedMap(Codec.STRING, Spot.CODEC).optionalFieldOf("warps", Map.of()).forGetter(warps -> warps.byName)
 	).apply(i, Warps::new));
-	static final SavedDataType<Warps> TYPE = new SavedDataType<>("warps", Warps::new, CODEC, null);
+	static final McSavedDataType<Warps> TYPE = new McSavedDataType<>("warps", Warps::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 
 	private final Map<String, Spot> byName = new TreeMap<>();
 
@@ -39,7 +47,7 @@ public final class Warps extends SavedData {
 	}
 
 	public static Warps of(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE);
 	}
 
 	public Spot get(String name) {

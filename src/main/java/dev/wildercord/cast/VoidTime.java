@@ -348,7 +348,7 @@ public final class VoidTime {
 				attacker.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER, 60, 0, false, true));
 			}
 		}
-		if (source.getEntity() instanceof net.minecraft.world.entity.animal.wolf.Wolf wolf && wolf.getTags().contains(SHADE_TAG)) {
+		if (source.getEntity() instanceof net.minecraft.world.entity.animal.Wolf wolf && wolf.getTags().contains(SHADE_TAG)) {
 			Reactions.mark(entity, Reactions.Mark.SHADOWED, 100);
 		}
 	}

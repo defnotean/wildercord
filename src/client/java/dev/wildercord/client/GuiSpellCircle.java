@@ -10,7 +10,6 @@ import dev.wildercord.spell.RuneFamily;
 import dev.wildercord.spell.SpellSigil;
 import dev.wildercord.spell.WovenRunes;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -302,7 +301,7 @@ public final class GuiSpellCircle {
 		g.pose().translate(x, y);
 		g.pose().rotate(rot);
 		g.pose().scale(w / 16F, h / 16F);
-		g.blit(RenderPipelines.GUI_TEXTURED, texture, -8, -8, 0, 0, 16, 16, 16, 16, 16, 16, argb);
+		g.blit(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, texture, -8, -8, 0, 0, 16, 16, 16, 16, 16, 16, argb);
 		g.pose().popMatrix();
 	}
 }

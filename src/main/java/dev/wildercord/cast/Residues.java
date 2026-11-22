@@ -38,8 +38,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -99,7 +100,14 @@ public final class Residues {
 	/** One dimension's residues, saved with it. */
 	static final class Record extends SavedData {
 		static final Codec<Record> CODEC = Row.CODEC.listOf().xmap(Record::new, Record::rows);
-		static final SavedDataType<Record> TYPE = new SavedDataType<>("residues", Record::new, CODEC, null);
+		static final McSavedDataType<Record> TYPE = new McSavedDataType<>("residues", Record::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 
 		final ResidueLedger<Blocks> ledger = new ResidueLedger<>();
 
@@ -137,7 +145,7 @@ public final class Residues {
 		ServerTickEvents.END_SERVER_TICK.register(Residues::tick);
 		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
 		// 1.21.11 has no full-chunk-status hook: chunk load is when a resident chunk is accessible again.
-			Record record = level.getDataStorage().get(Record.TYPE);
+			Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 			long key = ChunkPos.asLong(chunk.getPos().x, chunk.getPos().z);
 			if (record != null && record.ledger.inChunk(key) > 0) {
 				// Include scheduled records: one may become due before this future completes.
@@ -247,7 +255,7 @@ public final class Residues {
 		if (!cfg.enabled()) {
 			return 0;
 		}
-		Record record = level.getDataStorage().computeIfAbsent(Record.TYPE);
+		Record record = dev.wildercord.compat.McSavedData.computeIfAbsent(level.getDataStorage(), Record.TYPE);
 		ResidueLedger.Caps caps = new ResidueLedger.Caps(cfg.maxPerChunk(), ResidueRules.PER_AREA, ResidueRules.AREA_RADIUS, cfg.maxPerDimension(),
 			ResidueRules.PER_OWNER);
 		String owner = by instanceof ServerPlayer player ? player.getUUID().toString() : "";
@@ -312,7 +320,7 @@ public final class Residues {
 		BlockState here = level.getBlockState(pos);
 		BlockPos below = pos.below();
 		BlockState under = level.getBlockState(below);
-		Record record = level.getDataStorage().get(Record.TYPE);
+		Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 		boolean temporary = Effects.isTemporary(level, pos) || record != null && record.ledger.get(pos.asLong()) != null;
 		Site site = new Site(spot(level, pos, here), spot(level, below, under), spot(level, pos.above(), level.getBlockState(pos.above())),
 			under.isFaceSturdy(level, below, Direction.UP), temporary, level.getBlockEntity(pos) != null, true, false, true,
@@ -403,7 +411,7 @@ public final class Residues {
 
 	/** How many residues a dimension holds. */
 	public static int count(ServerLevel level) {
-		Record record = level.getDataStorage().get(Record.TYPE);
+		Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 		return record == null ? 0 : record.ledger.size();
 	}
 
@@ -414,7 +422,7 @@ public final class Residues {
 	}
 
 	private static ResidueLedger. Entry<Blocks> entry(ServerLevel level, BlockPos pos) {
-		Record record = level.getDataStorage().get(Record.TYPE);
+		Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 		return record == null ? null : record.ledger.get(pos.asLong());
 	}
 
@@ -428,7 +436,7 @@ public final class Residues {
 
 	/** A residue was harvested (broken by a player, or bottled): its record goes, and the ground it took comes back. */
 	public static void harvested(ServerLevel level, BlockPos pos, BlockState state,  ServerPlayer by) {
-		Record record = level.getDataStorage().get(Record.TYPE);
+		Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 		ResidueLedger.Entry<Blocks> entry = record == null ? null : record.ledger.remove(pos.asLong());
 		if (entry == null) {
 			return;
@@ -453,7 +461,7 @@ public final class Residues {
 	 * most, with its owner's permission (only while they're on the server), never outliving it.
 	 */
 	public static void seed(ServerLevel level, BlockPos pos, RandomSource random) {
-		Record record = level.getDataStorage().get(Record.TYPE);
+		Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 		ResidueLedger.Entry<Blocks> parent = record == null ? null : record.ledger.get(pos.asLong());
 		if (parent == null || parent.generation() >= ResidueRules.BLOOM_GENERATIONS || random.nextInt(4) != 0 || !Config.get().residues().enabled()) {
 			return;
@@ -487,7 +495,7 @@ public final class Residues {
 		if (!GONE.isEmpty()) {
 			for (Map.Entry<ResourceKey<Level>, Set<BlockPos>> gone : GONE.entrySet()) {
 				ServerLevel level = server.getLevel(gone.getKey());
-				Record record = level == null ? null : level.getDataStorage().get(Record.TYPE);
+				Record record = level == null ? null : dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 				if (record == null) {
 					continue;
 				}
@@ -503,7 +511,7 @@ public final class Residues {
 			return;
 		}
 		for (ServerLevel level : server.getAllLevels()) {
-			Record record = level.getDataStorage().get(Record.TYPE);
+			Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 			if (record == null || record.ledger.isEmpty()) {
 				continue;
 			}
@@ -580,7 +588,7 @@ public final class Residues {
 
 	/** Moves every residue in a dimension {@code ticks} on, as if that much time had passed for them. */
 	public static void fastForward(ServerLevel level, long ticks) {
-		Record record = level.getDataStorage().get(Record.TYPE);
+		Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 		if (record != null) {
 			record.ledger.shift(ticks);
 			record.setDirty();
@@ -599,7 +607,7 @@ public final class Residues {
 
 	/** Every residue position in a dimension (tests, debugging). */
 	public static List<BlockPos> all(ServerLevel level) {
-		Record record = level.getDataStorage().get(Record.TYPE);
+		Record record = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), Record.TYPE);
 		List<BlockPos> out = new ArrayList<>();
 		if (record != null) {
 			record.ledger.all().forEach(e -> out.add(new BlockPos(e.x(), e.y(), e.z())));

@@ -20,7 +20,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import dev.wildercord.compat.McEntityReference;
-import net.minecraft.world.entity.EntityReference;
+import dev.wildercord.compat.EntityReference;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -66,7 +66,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 
 	private static final EntityDataAccessor<String> DATA_ELEMENT = SynchedEntityData.defineId(Wisp.class, EntityDataSerializers.STRING);
 	private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_OWNER =
-		SynchedEntityData.defineId(Wisp.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
+		SynchedEntityData.defineId(Wisp.class, dev.wildercord.compat.McEntitySerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
 	private static final EntityDataAccessor<Byte> DATA_MODE = SynchedEntityData.defineId(Wisp.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Integer> DATA_LEVEL = SynchedEntityData.defineId(Wisp.class, EntityDataSerializers.INT);
 	/** The game time of its last flare (a cast, a chime): the client draws it brighter for a moment. */

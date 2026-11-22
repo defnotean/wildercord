@@ -5,8 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -40,7 +41,14 @@ public final class ArenaLadder extends SavedData {
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Standing.CODEC).optionalFieldOf("standings", Map.of()).forGetter(l -> l.standings)
 	).apply(i, ArenaLadder::new));
 
-	static final SavedDataType<ArenaLadder> TYPE = new SavedDataType<>("arena_ladder", ArenaLadder::new, CODEC, null);
+	static final McSavedDataType<ArenaLadder> TYPE = new McSavedDataType<>("arena_ladder", ArenaLadder::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 
 	private final Map<UUID, Standing> standings;
 
@@ -53,7 +61,7 @@ public final class ArenaLadder extends SavedData {
 	}
 
 	public static ArenaLadder of(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE);
 	}
 
 	/** A caster's standing in {@code season} (a fresh one if they've never fought). */

@@ -74,8 +74,15 @@ public final class Rituals {
 	/** The Sanctuaries held when the server last stopped, taken up again when it starts. */
 	public static final class Sanctuaries extends net.minecraft.world.level.saveddata.SavedData {
 		static final Codec<Sanctuaries> CODEC = Ward.CODEC.listOf().optionalFieldOf("wards", List.of()).xmap(Sanctuaries::new, s -> s.wards).codec();
-		static final net.minecraft.world.level.saveddata.SavedDataType<Sanctuaries> TYPE =
-			new net.minecraft.world.level.saveddata.SavedDataType<>("sanctuaries", Sanctuaries::new, CODEC, null);
+		static final dev.wildercord.compat.McSavedDataType<Sanctuaries> TYPE =
+			new dev.wildercord.compat.McSavedDataType<>("sanctuaries", Sanctuaries::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 
 		private List<Ward> wards;
 
@@ -94,7 +101,7 @@ public final class Rituals {
 	}
 
 	private static Sanctuaries sanctuaries(net.minecraft.server.MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(Sanctuaries.TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), Sanctuaries.TYPE);
 	}
 
 	/** The server is stopping: the Sanctuaries still held are saved for {@link #resumeWards}. */

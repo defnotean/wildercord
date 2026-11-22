@@ -20,9 +20,16 @@ public final class EventAftermath extends SavedData {
  }
  private final List<Echo> echoes=new ArrayList<>();
  static final Codec<EventAftermath> CODEC=Echo.CODEC.listOf(0,32).xmap(EventAftermath::new,a->List.copyOf(a.echoes));
- static final SavedDataType<EventAftermath> TYPE=new SavedDataType<>("event_aftermath",EventAftermath::new,CODEC,null);
+ static final McSavedDataType<EventAftermath> TYPE=new McSavedDataType<>("event_aftermath", EventAftermath::new, CODEC);
+
+@Override
+public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+	return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+		net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+		.result().orElseThrow();
+}
  public EventAftermath(){}private EventAftermath(List<Echo> list){echoes.addAll(list);}
- public static EventAftermath of(MinecraftServer s){return s.overworld().getDataStorage().computeIfAbsent(TYPE);}
+ public static EventAftermath of(MinecraftServer s){return dev.wildercord.compat.McSavedData.computeIfAbsent(s.overworld().getDataStorage(), TYPE);}
  public List<Echo> echoes(){return List.copyOf(echoes);}
  public static void leave(ServerLevel level,BlockPos pos,String kind){
   var a=of(level.getServer());a.echoes.removeIf(e->e.until<=level.getGameTime());

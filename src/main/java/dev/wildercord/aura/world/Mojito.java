@@ -16,8 +16,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
-import net.minecraft.world.entity.animal.wolf.WolfSoundVariant;
-import net.minecraft.world.entity.animal.wolf.WolfSoundVariants;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -167,11 +165,21 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	@Override protected void doPush(Entity entity){}
 	@Override public boolean removeWhenFarAway(double distance){return false;}
 
-	private static WolfSoundVariant voice(){return SoundEvents.WOLF_SOUNDS.get(WolfSoundVariants.SoundSet.BIG);}
+	private static Voice voice(){return Voice.BIG;}
+	/** 1.21.4 has no wolf sound variants: the plain wolf events stand in for his voice. */
+	private enum Voice {
+		BIG;
+		SoundEvent growlSound(){return SoundEvents.WOLF_GROWL;}
+		SoundEvent ambientSound(){return SoundEvents.WOLF_AMBIENT;}
+		SoundEvent whineSound(){return SoundEvents.WOLF_WHINE;}
+		SoundEvent pantSound(){return SoundEvents.WOLF_PANT;}
+		SoundEvent deathSound(){return SoundEvents.WOLF_DEATH;}
+		SoundEvent hurtSound(){return SoundEvents.WOLF_HURT;}
+	}
 	private void sound(ServerLevel level,Vec3 at,SoundEvent s,float volume,float pitch){level.playSound(null,at.x,at.y,at.z,s,SoundSource.HOSTILE,volume,pitch);}
 	/** His voice, deep for his size. */
-	private void growl(ServerLevel level,float volume){sound(level,head(),voice().growlSound().value(),volume,.55F+random.nextFloat()*.1F);}
-	private void bark(ServerLevel level,float volume,float pitch){sound(level,head(),voice().ambientSound().value(),volume,pitch);}
+	private void growl(ServerLevel level,float volume){sound(level,head(),voice().growlSound(),volume,.55F+random.nextFloat()*.1F);}
+	private void bark(ServerLevel level,float volume,float pitch){sound(level,head(),voice().ambientSound(),volume,pitch);}
 
 	private void pose(int move,int ticks){pose(move,ticks,0);}
 	private void pose(int move,int ticks,int tell){
@@ -262,7 +270,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		hold();if(getHealth()<getMaxHealth())setHealth(getMaxHealth());
 		if(tickCount%5==0 && Guardians.enabled() && wakeful(level)!=null)wake(level,0);
 		// Snoring softly, now and then a sleepy whine.
-		else if(random.nextInt(140)==0)sound(level,head(),random.nextInt(4)==0?voice().whineSound().value():voice().pantSound().value(),.5F,.45F+random.nextFloat()*.1F);
+		else if(random.nextInt(140)==0)sound(level,head(),random.nextInt(4)==0?voice().whineSound():voice().pantSound(),.5F,.45F+random.nextFloat()*.1F);
 	}
 
 	/** Begin getting up, {@code already} ticks in (when he is woken half way back down). */
@@ -338,7 +346,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			var at=spot();
 			if(quiet>=MojitoRules.RETURN_TICKS && distanceToSqr(at)>1.5)getNavigation().moveTo(at.x,at.y,at.z,1);
 			if(quiet>=MojitoRules.RESET_TICKS && (distanceToSqr(at)<=2.5 || quiet>=MojitoRules.RESET_TICKS+100)){
-				bar.removeAllPlayers();pose(MojitoRules.BED,MojitoRules.RISE_TICKS);hold();sound(level,head(),voice().whineSound().value(),1,.5F);
+				bar.removeAllPlayers();pose(MojitoRules.BED,MojitoRules.RISE_TICKS);hold();sound(level,head(),voice().whineSound(),1,.5F);
 			}
 			return;
 		}
@@ -380,7 +388,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			case MojitoRules.BOLTS->{pose(move,0,MojitoRules.BOLT_TELL);sound(level,position().add(0,3,0),SoundEvents.AMETHYST_BLOCK_RESONATE,2F,.7F);}
 			case MojitoRules.FETCH->{fetchStage=0;trampled.clear();pose(move,0,MojitoRules.FETCH_TELL);bark(level,1.8F,.85F);}
 			case MojitoRules.DIG->{pose(move,0,MojitoRules.DIG_TELL);sound(level,position(),SoundEvents.SNIFFER_DIGGING,1.8F,.6F);}
-			case MojitoRules.SHAKE->{pose(move,0,MojitoRules.SHAKE_TELL);sound(level,head(),voice().whineSound().value(),1.4F,.6F);}
+			case MojitoRules.SHAKE->{pose(move,0,MojitoRules.SHAKE_TELL);sound(level,head(),voice().whineSound(),1.4F,.6F);}
 			case MojitoRules.HOWL->{wild=true;bar.setColor(BossEvent.BossBarColor.GREEN);pose(move,0,MojitoRules.HOWL_TELL);sound(level,head(),SoundEvents.WARDEN_SONIC_CHARGE,1.6F,1.3F);}
 			case MojitoRules.HOP->hopFrom(level,target==null?position().add(ahead(getYRot())):target.position());
 			case MojitoRules.ZOOMIES->{zoomStruck.clear();dashAt=-1;pose(move,0,MojitoRules.ZOOM_TELL);bark(level,2F,.75F);}
@@ -499,7 +507,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	 */
 	private void chase(ServerLevel level,LivingEntity target){
 		long el=since();int tell=tell(),s=side();
-		if(el<tell){still();face(aim);if(el%4==0)sound(level,head(),voice().pantSound().value(),1F,1F);return;}
+		if(el<tell){still();face(aim);if(el%4==0)sound(level,head(),voice().pantSound(),1F,1F);return;}
 		long k=el-tell;
 		float yaw=aim+s*(float)(360.0*MojitoRules.CHASE_TURNS*k/MojitoRules.CHASE_TICKS);face(yaw);
 		var drift=target==null?Vec3.ZERO:target.position().subtract(position()).multiply(1,0,1);
@@ -516,7 +524,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			level.sendParticles(MINT,x,getY()+2.5,z,2,.3,.2,.3,0);
 		}
 		for(var p:prey(level))if(!struck.contains(p.getUUID()) && reaches(MojitoRules.CHASE,p)){struck.add(p.getUUID());hit(level,p,MojitoRules.CHASE_DAMAGE,1.6,position(),.3);}
-		if(k>=MojitoRules.CHASE_TICKS){pose(MojitoRules.DIZZY,MojitoRules.DIZZY_TICKS);still();sound(level,head(),voice().whineSound().value(),1.4F,.7F);}
+		if(k>=MojitoRules.CHASE_TICKS){pose(MojitoRules.DIZZY,MojitoRules.DIZZY_TICKS);still();sound(level,head(),voice().whineSound(),1.4F,.7F);}
 	}
 	/** Dizzy after his tail: swaying where he stands, stars wheeling round his head. Open. */
 	private void dizzy(ServerLevel level){
@@ -524,7 +532,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		face(getYRot()+(float)Math.sin(el*.35)*3);
 		var h=head();
 		for(int i=0;i<3;i++){double a=el*.3+i*Math.PI*2/3;level.sendParticles(STAR,h.x+Math.cos(a)*1.1,h.y+.9,h.z+Math.sin(a)*1.1,1,0,0,0,0);}
-		if(el%14==0)sound(level,h,voice().whineSound().value(),1F,.6F+random.nextFloat()*.1F);
+		if(el%14==0)sound(level,h,voice().whineSound(),1F,.6F+random.nextFloat()*.1F);
 		if(el%10==5)sound(level,position(),SoundEvents.WOLF_STEP,1F,.5F);
 		if(--left<=0){pose(MojitoRules.WATCH,gap());growl(level,1.2F);}
 	}
@@ -609,7 +617,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			if(el<=tell-MojitoRules.FETCH_LOCK && target!=null)turn(yawTo(target.position()),10);
 			aim=getYRot();face(aim);
 			if(el%4==0){var h=head();level.sendParticles(MINT,h.x,h.y-.6,h.z,3,.8,.2,.8,0);}
-			if(el%5==0)sound(level,head(),voice().pantSound().value(),1.2F,1.1F);
+			if(el%5==0)sound(level,head(),voice().pantSound(),1.2F,1.1F);
 			return;
 		}
 		long k=el-tell;
@@ -665,7 +673,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 			// Can't get to it: a wall in the way, or too long at it.
 			if((k>6 && horizontalCollision) || k>=MojitoRules.FETCH_RUN_TICKS){
 				fetchStage=3;entityData.set(SIDE,3);struck.clear();still();
-				sound(level,sword,SoundEvents.TRIDENT_RETURN,2F,.6F);sound(level,head(),voice().whineSound().value(),1.4F,.8F);
+				sound(level,sword,SoundEvents.TRIDENT_RETURN,2F,.6F);sound(level,head(),voice().whineSound(),1.4F,.8F);
 			}
 		}else if(fetchStage==3){
 			// Back to him on its own, spinning, striking whoever it passes.
@@ -851,7 +859,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		long k=el-tell;int every=MojitoRules.HOWL_EVERY;
 		if(k%every==0 && k/every<MojitoRules.HOWL_RINGS){
 			int i=(int)(k/every);
-			sound(level,h,voice().whineSound().value(),3F,.45F+i*.08F);
+			sound(level,h,voice().whineSound(),3F,.45F+i*.08F);
 			sound(level,h,i==0?SoundEvents.EVOKER_PREPARE_ATTACK:SoundEvents.AMETHYST_BLOCK_RESONATE,2F,.5F+i*.1F);
 			level.sendParticles(ParticleTypes.SONIC_BOOM,h.x,h.y+.5,h.z,1,0,0,0,0);
 			level.sendParticles(ParticleTypes.END_ROD,h.x,h.y,h.z,12,.5,.5,.5,.1);
@@ -891,7 +899,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	 */
 	private void zoomies(ServerLevel level,LivingEntity target){
 		long el=since();int tell=tell();
-		if(el<tell){still();face(aim);if(el%6==0)sound(level,head(),voice().pantSound().value(),1F,.7F);return;}
+		if(el<tell){still();face(aim);if(el%6==0)sound(level,head(),voice().pantSound(),1F,.7F);return;}
 		long now=level.getGameTime(),z=el-tell;
 		if(z==0){
 			zoomAt=spot();zoomWay=random.nextBoolean()?1:-1;
@@ -976,7 +984,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	}
 
 	/** Panting, tongue out, while he catches his breath. */
-	private void pant(ServerLevel level){if(since()%12==0)sound(level,head(),voice().pantSound().value(),1.2F,.55F+random.nextFloat()*.1F);}
+	private void pant(ServerLevel level){if(since()%12==0)sound(level,head(),voice().pantSound(),1.2F,.55F+random.nextFloat()*.1F);}
 	/** Spent after an attack for {@code ticks}. */
 	private void spent(int ticks){pose(MojitoRules.RECOVER,ticks);still();}
 	/** A quick hop back away from {@code from}. */
@@ -1051,7 +1059,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	}
 	@Override public void die(DamageSource source){
 		if(level() instanceof ServerLevel server){
-			sound(server,head(),voice().deathSound().value(),2F,.5F);
+			sound(server,head(),voice().deathSound(),2F,.5F);
 			Guardians.reward(server,this,MojitoRules.TIER,bar,source);
 			bar.removeAllPlayers();bolts.clear();trail.clear();waves.clear();clods.clear();entityData.set(THROWN,false);
 		}
@@ -1060,7 +1068,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}
 	@Override protected void actuallyHurt(ServerLevel level,DamageSource source,float damage){
 		super.actuallyHurt(level,source,damage);
-		if(random.nextInt(3)==0)sound(level,head(),voice().hurtSound().value(),1.4F,.55F+random.nextFloat()*.1F);
+		if(random.nextInt(3)==0)sound(level,head(),voice().hurtSound(),1.4F,.55F+random.nextFloat()*.1F);
 	}
 	@Override public void remove(RemovalReason reason){bar.removeAllPlayers();super.remove(reason);}
 	@Override public void stopSeenByPlayer(ServerPlayer player){super.stopSeenByPlayer(player);bar.removePlayer(player);}

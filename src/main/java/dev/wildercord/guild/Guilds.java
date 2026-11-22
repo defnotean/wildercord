@@ -22,8 +22,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,7 +62,14 @@ public final class Guilds {
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.STRING).optionalFieldOf("names", Map.of()).forGetter(l -> l.names),
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.unboundedMap(KIND, INVITE)).optionalFieldOf("invites", Map.of()).forGetter(l -> l.invites)
 		).apply(i, Ledger::new));
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("guilds", Ledger::new, CODEC, null);
+		static final McSavedDataType<Ledger> TYPE = new McSavedDataType<>("guilds", Ledger::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 
 		final GuildRules.Roster roster;
 		private final Map<UUID, String> names;
@@ -132,7 +140,7 @@ public final class Guilds {
 	}
 
 	public static Ledger ledger(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(Ledger.TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), Ledger.TYPE);
 	}
 
 	/** The guild or coven {@code player} is in, or null. */

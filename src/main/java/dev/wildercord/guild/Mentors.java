@@ -19,8 +19,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,14 @@ public final class Mentors {
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT).optionalFieldOf("paid", Map.of()).forGetter(l -> l.tutelage.paidThrough()),
 			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT).optionalFieldOf("owed", Map.of()).forGetter(l -> l.tutelage.owed())
 		).apply(i, Ledger::new));
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("mentors", Ledger::new, CODEC, null);
+		static final McSavedDataType<Ledger> TYPE = new McSavedDataType<>("mentors", Ledger::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 
 		final MentorRules.Book book;
 		private final Map<UUID, String> names;
@@ -165,7 +173,7 @@ public final class Mentors {
 	}
 
 	public static Ledger ledger(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(Ledger.TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), Ledger.TYPE);
 	}
 
 	/** Whether {@code apprentice}'s mentor is close enough to teach. */

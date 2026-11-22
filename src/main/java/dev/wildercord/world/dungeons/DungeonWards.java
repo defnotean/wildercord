@@ -21,7 +21,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,14 @@ public final class DungeonWards extends SavedData {
 		Codec.LONG.listOf().optionalFieldOf("placed", List.of()).forGetter(w -> new ArrayList<>(w.placed)),
 		BoundingBox.CODEC.listOf().optionalFieldOf("rooms", List.of()).forGetter(w -> w.rooms)
 	).apply(i, DungeonWards::new));
-	private static final SavedDataType<DungeonWards> TYPE = new SavedDataType<>("dungeon_wards", DungeonWards::new, CODEC, null);
+	private static final McSavedDataType<DungeonWards> TYPE = new McSavedDataType<>("dungeon_wards", DungeonWards::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 
 	/**
 	 * Rooms written down by pieces being built, not yet in their world's record. Pieces are built wherever chunks
@@ -94,7 +101,7 @@ public final class DungeonWards extends SavedData {
 				if (level == null) {
 					continue;
 				}
-				DungeonWards wards = level.getDataStorage().computeIfAbsent(TYPE);
+				DungeonWards wards = dev.wildercord.compat.McSavedData.computeIfAbsent(level.getDataStorage(), TYPE);
 				for (BoundingBox room : built.getValue()) {
 					if (!wards.rooms.contains(room)) {
 						wards.rooms.add(room);
@@ -110,7 +117,7 @@ public final class DungeonWards extends SavedData {
 
 	/** Whether {@code pos} is inside a dungeon's warded room (its boss arena or vault). */
 	public static boolean warded(ServerLevel level, BlockPos pos) {
-		DungeonWards wards = level.getDataStorage().get(TYPE);
+		DungeonWards wards = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
 		if (wards != null) {
 			for (BoundingBox room : wards.rooms) {
 				if (room.isInside(pos)) {
@@ -169,7 +176,7 @@ public final class DungeonWards extends SavedData {
 		var chunk = level.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
 		if (chunk == null) return MovementWard.UNKNOWN;
 		java.util.Set<MovementRoom> found = new java.util.HashSet<>();
-		DungeonWards wards = level.getDataStorage().get(TYPE);
+		DungeonWards wards = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
 		if (wards != null) for (BoundingBox room : wards.rooms) if (room.isInside(pos)) found.add(MovementRoom.of(room));
 		for (StructureStart start : chunk.getAllStarts().values()) movementRooms(start, pos, found);
 		int references = 0;
@@ -199,7 +206,7 @@ public final class DungeonWards extends SavedData {
 	 */
 	public static List<BoundingBox> boxesNear(ServerLevel level, BlockPos pos, int chunkRadius) {
 		List<BoundingBox> boxes = new ArrayList<>();
-		DungeonWards wards = level.getDataStorage().get(TYPE);
+		DungeonWards wards = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
 		if (wards != null) {
 			BoundingBox area = new BoundingBox(pos).inflatedBy(16 * chunkRadius + 16);
 			for (BoundingBox room : wards.rooms) {
@@ -262,7 +269,7 @@ public final class DungeonWards extends SavedData {
 		if (player == null || player.isCreative() || !warded(level, pos)) {
 			return;
 		}
-		DungeonWards wards = level.getDataStorage().computeIfAbsent(TYPE);
+		DungeonWards wards = dev.wildercord.compat.McSavedData.computeIfAbsent(level.getDataStorage(), TYPE);
 		if (wards.placed.add(pos.asLong())) {
 			wards.setDirty();
 		}
@@ -270,7 +277,7 @@ public final class DungeonWards extends SavedData {
 
 	/** Whether a player put the block at {@code pos} down (and forgets it: it's being broken). */
 	public static boolean forgetPlaced(ServerLevel level, BlockPos pos) {
-		DungeonWards wards = level.getDataStorage().get(TYPE);
+		DungeonWards wards = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
 		if (wards != null && wards.placed.remove(pos.asLong())) {
 			wards.setDirty();
 			return true;
@@ -280,7 +287,7 @@ public final class DungeonWards extends SavedData {
 
 	/** Whether a player put the block at {@code pos} down (without forgetting it). */
 	public static boolean placedHere(ServerLevel level, BlockPos pos) {
-		DungeonWards wards = level.getDataStorage().get(TYPE);
+		DungeonWards wards = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
 		return wards != null && wards.placed.contains(pos.asLong());
 	}
 

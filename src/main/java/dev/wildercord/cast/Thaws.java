@@ -8,8 +8,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,14 @@ public final class Thaws extends SavedData {
 	}
 
 	static final Codec<Thaws> CODEC = Pending.CODEC.listOf().xmap(Thaws::new, Thaws::all);
-	static final SavedDataType<Thaws> TYPE = new SavedDataType<>("frost_thaws", Thaws::new, CODEC, null);
+	static final McSavedDataType<Thaws> TYPE = new McSavedDataType<>("frost_thaws", Thaws::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 
 	/** How often (in ticks) the waiting ice is looked over. */
 	private static final int SWEEP = 20;
@@ -70,7 +78,7 @@ public final class Thaws extends SavedData {
 
 	/** Whether the block at {@code pos} is written down to thaw (for the tests). */
 	public static boolean waiting(ServerLevel level, BlockPos pos) {
-		Thaws thaws = level.getDataStorage().get(TYPE);
+		Thaws thaws = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
 		List<Pending> inChunk = thaws == null ? null : thaws.byChunk.get(chunk(pos));
 		return inChunk != null && inChunk.stream().anyMatch(p -> p.pos().equals(pos));
 	}
@@ -80,7 +88,7 @@ public final class Thaws extends SavedData {
 		if (ice.isEmpty()) {
 			return;
 		}
-		Thaws thaws = level.getDataStorage().computeIfAbsent(TYPE);
+		Thaws thaws = dev.wildercord.compat.McSavedData.computeIfAbsent(level.getDataStorage(), TYPE);
 		for (BlockPos pos : ice) {
 			thaws.add(new Pending(pos.immutable(), due));
 		}
@@ -92,7 +100,7 @@ public final class Thaws extends SavedData {
 			return;
 		}
 		for (ServerLevel level : server.getAllLevels()) {
-			Thaws thaws = level.getDataStorage().get(TYPE);
+			Thaws thaws = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
 			if (thaws != null && !thaws.byChunk.isEmpty()) {
 				thaws.sweep(level);
 			}

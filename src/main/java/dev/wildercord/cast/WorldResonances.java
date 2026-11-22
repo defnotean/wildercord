@@ -29,8 +29,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,7 +167,14 @@ public final class WorldResonances {
 			QUIRK.listOf().optionalFieldOf("quirks", List.of()).forGetter(l -> l.quirks),
 			Codec.unboundedMap(Codec.STRING, Finding.CODEC).optionalFieldOf("found", Map.of()).forGetter(l -> l.found)
 		).apply(i, Ledger::new));
-		static final SavedDataType<Ledger> TYPE = new SavedDataType<>("resonances", Ledger::new, CODEC, null);
+		static final McSavedDataType<Ledger> TYPE = new McSavedDataType<>("resonances", Ledger::new, CODEC);
+
+		@Override
+		public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+			return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+				net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+				.result().orElseThrow();
+		}
 
 		private boolean drawn;
 		private long seed;
@@ -209,7 +217,7 @@ public final class WorldResonances {
 		}
 
 		static Ledger of(MinecraftServer server) {
-			return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+			return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE);
 		}
 
 		boolean drawnFor(long seed, WildercordConfig.ResonanceSettings settings) {

@@ -6,8 +6,9 @@ import dev.wildercord.Wildercord;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,14 @@ public final class BladeRegistry extends SavedData {
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, Entry.CODEC).optionalFieldOf("bonds", Map.of()).forGetter(r -> r.bonds),
 		Codec.unboundedMap(UUIDUtil.STRING_CODEC, ItemStack.CODEC.listOf()).optionalFieldOf("homeward", Map.of()).forGetter(r -> r.homeward)
 	).apply(i, BladeRegistry::new));
-	static final SavedDataType<BladeRegistry> TYPE = new SavedDataType<>("bonded_blades", BladeRegistry::new, CODEC, null);
+	static final McSavedDataType<BladeRegistry> TYPE = new McSavedDataType<>("bonded_blades", BladeRegistry::new, CODEC);
+
+	@Override
+	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
+			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
+			.result().orElseThrow();
+	}
 
 	private final Map<UUID, Entry> bonds = new HashMap<>();
 	private final Map<UUID, List<ItemStack>> homeward = new HashMap<>();
@@ -60,7 +68,7 @@ public final class BladeRegistry extends SavedData {
 	}
 
 	public static BladeRegistry of(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+		return dev.wildercord.compat.McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE);
 	}
 
 	public Optional<Entry> entry(UUID bond) {

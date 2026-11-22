@@ -16,7 +16,6 @@ import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -486,7 +485,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 	private record Row(Component name, int stage, Component how, double cost, Component desc) {}
 
 	private List<Component> draw(GuiGraphicsExtractor g, int mx, int my, float partial) {
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_PANEL, 0, 0, W, H);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_PANEL, 0, 0, W, H);
 		LocalPlayer player = minecraft.player;
 		g.text(font, title, 13, 10, GOLD, true);
 		if (player == null) {
@@ -538,7 +537,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		}
 
 		// ---- the method: its cover, large, in a frame of its colour.
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_INSET, 12, 26, 58, 58);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_INSET, 12, 26, 58, 58);
 		g.fill(13, 27, 69, 28, color);
 		g.fill(13, 82, 69, 83, color);
 		g.pose().pushMatrix();
@@ -586,8 +585,8 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		var unity=dev.wildercord.aura.Unity.state(player);
 		String refusal=dev.wildercord.aura.Unity.refusal(player);
 		boolean together=dev.wildercord.aura.Unity.active(player);
-		g.blitSprite(RenderPipelines.GUI_TEXTURED,SPR_INSET,14,86,W-28,14);
-		g.blitSprite(RenderPipelines.GUI_TEXTURED,Wildercord.id("aura/unity"),17,87,12,12);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED,SPR_INSET,14,86,W-28,14);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED,Wildercord.id("aura/unity"),17,87,12,12);
 		Component unityText=together?Component.translatable("screen.wildercord.unity.active",(unity.until()-now+19)/20)
 			: now<unity.readyAt()?Component.translatable("screen.wildercord.unity.rest",(unity.readyAt()-now+19)/20)
 			: Component.translatable("screen.wildercord.unity.start");
@@ -892,7 +891,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 				g.fill(cx - colW / 2 + 2, headerY - 2, cx + colW / 2 - 2, headerY + 24 + 3 * ROW, 0x1E000000 | (wc & 0xFFFFFF));
 			}
 			int tint = other ? 0xFF000000 | AuraHud.mix(wc, 0x2A2438, 0.65) : 0xFF000000 | wc;
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, emblem(w.id()), cx - 8, headerY, 16, 16, tint);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, emblem(w.id()), cx - 8, headerY, 16, 16, tint);
 			Component shortName = Component.translatable(w.nameKey() + ".short");
 			String fitted = font.plainSubstrByWidth(shortName.getString(), colW - 2);
 			g.pose().pushMatrix();
@@ -1018,7 +1017,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 		}
 		g.fill(x - 1, y - 1, x + size + 1, y + size + 1, frame);
 		g.fill(x, y, x + size, y + size, fill);
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, emblem(w.id()), x + 1, y + 1, size - 2, size - 2, tint);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, emblem(w.id()), x + 1, y + 1, size - 2, size - 2, tint);
 		// Its stage as pips in the corner: one at Edge, two at Form, three at Sovereign.
 		int pips = Math.max(1, node.stage() - dev.wildercord.aura.WayRules.FROM + 1);
 		for (int p = 0; p < pips; p++) {
@@ -1334,7 +1333,7 @@ public class AuraScreen extends Screen implements CordEditorParent {
 	}
 
 	private void bar(GuiGraphicsExtractor g, int x, int y, int w, double share, int color) {
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_BAR, x, y, w, 6);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, SPR_BAR, x, y, w, 6);
 		int filled = (int) ((w - 2) * Math.max(0, Math.min(1, share)));
 		if (filled > 0) {
 			int c = color & 0xFFFFFF;

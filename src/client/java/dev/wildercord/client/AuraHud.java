@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 
@@ -105,7 +104,7 @@ public final class AuraHud {
 		int color = Aura.color(player);
 		boolean backlash = now < state.backlashUntil();
 		boolean guarding = state.guarding(now);
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, FRAME, x, y, width, HEIGHT);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, FRAME, x, y, width, HEIGHT);
 		if (guarding) {
 			// A raised guard: the strip edged in gold.
 			int a = 0xFF;
@@ -152,7 +151,7 @@ public final class AuraHud {
 		// The awakening's mark, after the diamonds.
 		px += AwakeningHud.mark(g, player, px, py, color, now, partial);
 		if(dev.wildercord.aura.Unity.active(player)) {
-			g.blitSprite(RenderPipelines.GUI_TEXTURED,dev.wildercord.Wildercord.id("aura/unity"),px,py-1,9,9);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED,dev.wildercord.Wildercord.id("aura/unity"),px,py-1,9,9);
 			px+=10;
 		}
 		int pipsRight = px;
@@ -176,11 +175,11 @@ public final class AuraHud {
 			int cx = x + 4 + (open * step) / 2 - 1;
 			int cy = y + HEIGHT / 2;
 			if (onBeat) {
-				g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, cx - 9, cy - 9, 18, 18, 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 4));
+				g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BEAT, cx - 9, cy - 9, 18, 18, 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 4));
 			} else if (until <= 16) {
 				int size = 18 + (int) Math.round(16 * Math.min(1, until / 16.0));
 				int alpha = (int) (0x50 + 0xAF * (1 - Math.min(1, until / 16.0)));
-				g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, cx - size / 2, cy - size / 2, size, size, (alpha << 24) | color);
+				g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BEAT, cx - size / 2, cy - size / 2, size, size, (alpha << 24) | color);
 			}
 		}
 
@@ -189,7 +188,7 @@ public final class AuraHud {
 		int countW = font.width(count);
 		int bx = pipsRight + 2;
 		int bw = Math.max(12, x + width - 4 - countW - 3 - bx);
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, BAR, bx, y + 3, bw, 6);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BAR, bx, y + 3, bw, 6);
 		int inner = bw - 2;
 		int filled = (int) (inner * Math.max(0, Math.min(1, shown / capacity)));
 		if (filled > 0) {

@@ -20,7 +20,6 @@ import net.minecraft.client.gui.Font;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import dev.wildercord.client.compat.McInput.CharacterEvent;
 import dev.wildercord.client.compat.McInput.KeyEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -205,7 +204,7 @@ final class LoadoutPanel {
 	// ------------------------------------------------------------------ drawing
 
 	private static void sprite(GuiGraphicsExtractor g, ResourceLocation id, int x, int y, int w, int h) {
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, id, x, y, w, h);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, id, x, y, w, h);
 	}
 
 	private static void fitText(GuiGraphicsExtractor g, Font font, Component text, int x, int y, int maxWidth, int color, boolean shadow) {

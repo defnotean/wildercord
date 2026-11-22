@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import dev.wildercord.client.compat.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -140,10 +139,10 @@ public final class AuraBanners {
 		int hot = mix(color, 0xFFFFFF, 0.65F);
 		int accent = grand ? AuraGuard.PERFECT_COLOR : hot;
 		// Woven fabric and stitched edging, tinted by the method and dark enough for the name to read on any sky.
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, BAND, x, y, bandW, bandH, argb(mix(color, 0xFFFFFF, 0.55F), alpha));
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, BAND, x, y, bandW, bandH, argb(mix(color, 0xFFFFFF, 0.55F), alpha));
 		String way = dev.wildercord.api.AuraApi.wayOf(Minecraft.getInstance().player)
 			.map(dev.wildercord.api.AuraApi.Way::id).filter(dev.wildercord.aura.WayRules.BUILT_IN::contains).orElse("unknown");
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, Wildercord.id("aura/way_" + way), x + 9, y + bandH / 2 - 10, 20, 20, argb(accent, alpha));
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, Wildercord.id("aura/way_" + way), x + 9, y + bandH / 2 - 10, 20, 20, argb(accent, alpha));
 		int tx = x + pad;
 		int ty = y + 6;
 		if (!kicker.isEmpty()) {

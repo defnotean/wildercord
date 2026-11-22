@@ -22,7 +22,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import dev.wildercord.client.compat.McInput.KeyEvent;
 import dev.wildercord.client.compat.McInput.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -200,7 +199,7 @@ public class SpellWheelScreen extends Screen {
 		int cy = height / 2;
 		float open = Math.min(1F, (opened + partial) / 3F);
 		int radius = Math.round(RADIUS * (0.6F + 0.4F * open));
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, RING, cx - 90, cy - 90, 180, 180);
+		g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, RING, cx - 90, cy - 90, 180, 180);
 		double dx = mouseX - cx;
 		double dy = mouseY - cy;
 		if (startX == Integer.MIN_VALUE) {
@@ -229,7 +228,7 @@ public class SpellWheelScreen extends Screen {
 			boolean isHovered = i == hovered;
 			boolean isSelected = slot == book.selected();
 			List<RuneDef> runes = SpellCaster.activeRunes(book, slot, tier);
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, isHovered ? NODE_HOVER : NODE, x - 16, y - 16, 32, 32);
+			g.blitSprite(dev.wildercord.client.compat.RenderCompat.GUI_TEXTURED, isHovered ? NODE_HOVER : NODE, x - 16, y - 16, 32, 32);
 			// The node's colour: the spell's first element.
 			int color = 0xFF40C8BE;
 			for (RuneDef rune : runes) {
