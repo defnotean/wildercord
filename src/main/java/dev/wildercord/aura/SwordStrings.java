@@ -8,7 +8,6 @@ import dev.wildercord.config.Config;
 import dev.wildercord.net.PacketThrottle;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Sword strings on the server: the player's client reads its swings ({@link StringReader}) and, when a string is played, asks
@@ -146,12 +146,11 @@ public final class SwordStrings {
 	}
 
 	/** Each player's arts' rests: saved (game time carries over a restart), kept through death, synced to its owner (the reader asks). */
-	public static final AttachmentType<Cooldowns> COOLDOWNS = AttachmentRegistry.create(
+	public static final AttachmentType<Cooldowns> COOLDOWNS = McAttachments.create(
 		Wildercord.id("aura_arts"),
 		builder -> builder
 			.initializer(() -> Cooldowns.NONE)
 			.persistent(Cooldowns.CODEC)
-			.syncWith(Cooldowns.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 

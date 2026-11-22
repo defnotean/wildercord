@@ -23,6 +23,7 @@ import net.minecraft.world.level.storage.LevelData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import dev.wildercord.compat.McAttachments;
 
 /** Rooms at the Wayfarer Inns: who has one, until when, and their room's chest. See {@link InnRoomRules}. */
 public final class InnRooms {
@@ -35,10 +36,10 @@ public final class InnRooms {
 			GlobalPos.CODEC.fieldOf("bed").forGetter(Room::bed)).apply(i, Room::new));
 	}
 
-	public static final AttachmentType<Room> ROOM = AttachmentRegistry.create(Wildercord.id("inn_room"),
+	public static final AttachmentType<Room> ROOM = McAttachments.create(Wildercord.id("inn_room"),
 		builder -> builder.persistent(Room.CODEC).copyOnDeath());
 	/** The room chest: kept between stays, and through death. */
-	public static final AttachmentType<List<ItemStack>> CHEST = AttachmentRegistry.create(Wildercord.id("inn_chest"),
+	public static final AttachmentType<List<ItemStack>> CHEST = McAttachments.create(Wildercord.id("inn_chest"),
 		builder -> builder.persistent(ItemStack.OPTIONAL_CODEC.listOf()).copyOnDeath());
 
 	public static void init() {

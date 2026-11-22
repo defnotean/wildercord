@@ -18,6 +18,7 @@ import net.minecraft.network.codec.*;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import dev.wildercord.compat.McAttachments;
 
 /** One brief performance of both paths. Prices, remaining allowances and rest survive saves. */
 public final class Unity {
@@ -33,8 +34,8 @@ public final class Unity {
 		ByteBufCodecs.VAR_LONG,UnityRules.State::since,ByteBufCodecs.VAR_LONG,UnityRules.State::until,
 		ByteBufCodecs.VAR_LONG,UnityRules.State::readyAt,ByteBufCodecs.FLOAT,UnityRules.State::manaReturned,
 		ByteBufCodecs.FLOAT,UnityRules.State::auraReturned,UnityRules.State::new);
-	public static final AttachmentType<UnityRules.State> STATE=AttachmentRegistry.create(Wildercord.id("unity"),
-		b -> b.initializer(() -> UnityRules.State.NONE).persistent(CODEC).copyOnDeath().syncWith(STREAM,AttachmentSyncPredicate.targetOnly()));
+	public static final AttachmentType<UnityRules.State> STATE=McAttachments.create(Wildercord.id("unity"),
+		b -> b.initializer(() -> UnityRules.State.NONE).persistent(CODEC).copyOnDeath());
 	public record Activate() implements CustomPacketPayload {
 		public static final Type<Activate> TYPE=new Type<>(Wildercord.id("unity"));
 		public static final StreamCodec<RegistryFriendlyByteBuf,Activate> STREAM_CODEC=StreamCodec.unit(new Activate());

@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The hearth pack: gentle, long-lasting self and ally utility for travel, camps and survival (see
@@ -84,10 +85,10 @@ public final class HearthEffects {
 		"steedmend", "dynamo_stride", "tarry", "clot", "heartsense", "quench", "hearthbond", "springseek", "savor", "deepwarn", "enderhush");
 
 	/** Where Homeward takes you: a block in a world. Kept through death. */
-	public static final AttachmentType<GlobalPos> LODESTAR = AttachmentRegistry.create(Wildercord.id("lodestar"),
+	public static final AttachmentType<GlobalPos> LODESTAR = McAttachments.create(Wildercord.id("lodestar"),
 		b -> b.persistent(GlobalPos.CODEC).copyOnDeath());
 	/** The Hollow Pocket's nine slots. Kept through death, like an Ender Chest's. */
-	public static final AttachmentType<List<ItemStack>> POCKET = AttachmentRegistry.create(Wildercord.id("hollow_pocket"),
+	public static final AttachmentType<List<ItemStack>> POCKET = McAttachments.create(Wildercord.id("hollow_pocket"),
 		b -> b.persistent(ItemStack.OPTIONAL_CODEC.listOf()).copyOnDeath());
 
 	private static final net.minecraft.resources.ResourceLocation STEP_ID = Wildercord.id("surefoot");

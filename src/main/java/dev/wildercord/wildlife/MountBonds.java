@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Mount bonds (0.13, see {@link MountBondRules}): any tame horse-like mount (a horse, donkey, mule or camel, a Ridgeback
@@ -51,7 +52,7 @@ public final class MountBonds {
 		}
 	}
 
-	public static final AttachmentType<Bond> BOND = AttachmentRegistry.create(Wildercord.id("mount_bond"),
+	public static final AttachmentType<Bond> BOND = McAttachments.create(Wildercord.id("mount_bond"),
 		builder -> builder.initializer(() -> Bond.NONE).persistent(Bond.CODEC));
 
 	private static final ResourceLocation SPEED = Wildercord.id("mount_bond_speed");

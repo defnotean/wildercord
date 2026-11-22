@@ -10,13 +10,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.projectile.Projectile;
+import dev.wildercord.compat.McAttachments;
 
 /** Persistent first clears, separate from temporary encounters and existing technique-use stage restrictions. */
 public final class MasterVictories {
 	private MasterVictories() {}
 
 	public static final Codec<MasterVictoryRules.Progress> CODEC = Codec.INT.xmap(MasterVictoryRules.Progress::new, MasterVictoryRules.Progress::schools);
-	public static final AttachmentType<MasterVictoryRules.Progress> RECORD = AttachmentRegistry.create(Wildercord.id("master_victories"),
+	public static final AttachmentType<MasterVictoryRules.Progress> RECORD = McAttachments.create(Wildercord.id("master_victories"),
 		builder -> builder.initializer(() -> MasterVictoryRules.Progress.NONE).persistent(CODEC).copyOnDeath());
 
 	/** Load the attachment registration during initialization, before any entities enter the world. */

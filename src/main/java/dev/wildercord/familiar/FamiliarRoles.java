@@ -9,12 +9,13 @@ import net.minecraft.world.effect.*;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** A chosen job replaces the familiar's elemental assistance. It never adds an extra combat spell. */
 public final class FamiliarRoles {
  private FamiliarRoles() {}
  public enum Role { COMPANION, SCOUT, GUARDIAN, GARDENER }
- public static final AttachmentType<String> ROLE=AttachmentRegistry.create(Wildercord.id("familiar_role"),b->b.initializer(()->"companion").persistent(Codec.STRING).copyOnDeath());
+ public static final AttachmentType<String> ROLE=McAttachments.create(Wildercord.id("familiar_role"),b->b.initializer(()->"companion").persistent(Codec.STRING).copyOnDeath());
  public static Role get(ServerPlayer p){try{return Role.valueOf(p.getAttachedOrElse(ROLE,"companion").toUpperCase(java.util.Locale.ROOT));}catch(IllegalArgumentException e){return Role.COMPANION;}}
  public static int choose(ServerPlayer p,String role){Role r;try{r=Role.valueOf(role.toUpperCase(java.util.Locale.ROOT));}catch(IllegalArgumentException e){return 0;}
   p.setAttached(ROLE,r.name().toLowerCase(java.util.Locale.ROOT));p.sendSystemMessage(Component.translatable("message.wildercord.familiar_role",Component.translatable("role.wildercord."+role)));return 1;}

@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Duels: {@code /duel <player>} challenges someone nearby (they accept or decline from chat). On
@@ -123,15 +124,11 @@ public final class Duels {
 	}
 
 	/** Wins and losses. Saved, kept through death, and sent to its player (for the Grimoire). */
-	public static final AttachmentType<Record> RECORD = AttachmentRegistry.create(
+	public static final AttachmentType<Record> RECORD = McAttachments.create(
 		Wildercord.id("duel_record"),
 		builder -> builder
 			.initializer(() -> Record.NONE)
 			.persistent(Record.CODEC)
-			.syncWith(net.minecraft.network.codec.StreamCodec.composite(
-				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, Record::wins,
-				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, Record::losses, Record::new),
-				net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 

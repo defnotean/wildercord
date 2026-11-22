@@ -15,6 +15,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** Defensive sidegrades. Debt and recharge time persist across logout and equipment changes. */
 public final class DefensiveFoci {
@@ -28,12 +29,12 @@ public final class DefensiveFoci {
    Codec.INT.fieldOf("delay").forGetter(State::delay), Codec.INT.fieldOf("reprieve").forGetter(State::reprieve),
    Codec.INT.fieldOf("grounding").forGetter(State::grounding)).apply(i,State::new));
  }
- public static final AttachmentType<State> STATE = AttachmentRegistry.create(Wildercord.id("defensive_foci"),
+ public static final AttachmentType<State> STATE = McAttachments.create(Wildercord.id("defensive_foci"),
   b -> b.initializer(() -> State.EMPTY).persistent(State.CODEC));
  public record Origin(String type,String attacker) {
   static final Codec<Origin> CODEC=RecordCodecBuilder.create(i->i.group(Codec.STRING.fieldOf("type").forGetter(Origin::type),Codec.STRING.fieldOf("attacker").forGetter(Origin::attacker)).apply(i,Origin::new));
  }
- private static final AttachmentType<Origin> ORIGIN=AttachmentRegistry.create(Wildercord.id("reprieve_origin"),b->b.persistent(Origin.CODEC));
+ private static final AttachmentType<Origin> ORIGIN=McAttachments.create(Wildercord.id("reprieve_origin"),b->b.persistent(Origin.CODEC));
  private static net.minecraft.world.damagesource.DamageSource source(ServerPlayer p){var origin=p.getAttached(ORIGIN);if(origin==null)return p.damageSources().magic();
   try {var holder=p.level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE).getOrThrow(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DAMAGE_TYPE,net.minecraft.resources.ResourceLocation.parse(origin.type)));
    net.minecraft.world.entity.Entity attacker=null;if(!origin.attacker.isEmpty() && p.level() instanceof net.minecraft.server.level.ServerLevel flevel)attacker=flevel.getEntity(java.util.UUID.fromString(origin.attacker));

@@ -11,11 +11,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 /** One actual consensual lossy mana transfer after the normal spell price, with no resource escrow. */
 public final class Manabraid {
  private Manabraid(){}
- public static final AttachmentType<Long> DONOR_READY=AttachmentRegistry.create(Wildercord.id("manabraid_donor_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
- public static final AttachmentType<Long> RECEIVE_READY=AttachmentRegistry.create(Wildercord.id("manabraid_receive_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Long> DONOR_READY=McAttachments.create(Wildercord.id("manabraid_donor_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Long> RECEIVE_READY=McAttachments.create(Wildercord.id("manabraid_receive_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
  private static final class Offer {
   final UUID donor,target;final ServerLevel level;final ItemStack donorCord,targetCord,donorCopy,targetCopy;final long until;boolean crouched;
   Offer(ServerPlayer p,ServerPlayer t,long now){donor=p.getUUID();target=t.getUUID();level=(ServerLevel) p.level();donorCord=Spellbooks.cord(p);targetCord=Spellbooks.cord(t);donorCopy=donorCord.copy();targetCopy=targetCord.copy();until=now+CampConcordRules.OFFER;crouched=t.isShiftKeyDown();}

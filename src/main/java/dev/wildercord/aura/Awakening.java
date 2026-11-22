@@ -9,7 +9,6 @@ import dev.wildercord.config.Config;
 import dev.wildercord.config.WildercordConfig;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -28,6 +27,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Awakening at runtime (the rules and numbers are {@link AwakeningRules}): a swordsman's awakening, kept on the server, saved (game
@@ -101,12 +101,11 @@ public final class Awakening {
 	}
 
 	/** Each swordsman's awakening: saved, kept through death (the rest still runs), synced to everyone near. */
-	public static final AttachmentType<State> AWAKENING = AttachmentRegistry.create(
+	public static final AttachmentType<State> AWAKENING = McAttachments.create(
 		Wildercord.id("aura_awakening"),
 		builder -> builder
 			.initializer(() -> State.NONE)
 			.persistent(State.CODEC)
-			.syncWith(State.STREAM_CODEC, AttachmentSyncPredicate.all())
 			.copyOnDeath()
 	);
 

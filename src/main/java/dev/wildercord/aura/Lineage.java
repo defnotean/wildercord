@@ -11,7 +11,6 @@ import dev.wildercord.content.SigilOption;
 import dev.wildercord.net.PacketThrottle;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -37,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Masters and disciples (the rules and numbers are {@link LineageRules}; the record of who is whose is {@link LineageRegistry}).
@@ -86,9 +86,9 @@ public final class Lineage {
 	}
 
 	/** {@code player}'s lineage as their page shows it (rebuilt by the server when it changes; never saved: the registry is what's kept). */
-	public static final AttachmentType<View> VIEW = AttachmentRegistry.create(
+	public static final AttachmentType<View> VIEW = McAttachments.create(
 		Wildercord.id("lineage"),
-		builder -> builder.syncWith(View.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+		builder -> builder
 	);
 
 	/**
@@ -109,9 +109,9 @@ public final class Lineage {
 		}
 	}
 
-	public static final AttachmentType<Rite> RITE = AttachmentRegistry.create(
+	public static final AttachmentType<Rite> RITE = McAttachments.create(
 		Wildercord.id("lineage_rite"),
-		builder -> builder.syncWith(Rite.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	/** The Lineage tab's ask to end a bond with {@code other} (their master, or one of their disciples). */

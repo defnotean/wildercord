@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** Rebindable combat moves with server-owned aim, eligibility, payment and persistent cooldowns. */
 public final class MastersArts {
@@ -73,7 +74,7 @@ public final class MastersArts {
 		}
 	}
 
-	private static final AttachmentType<Rest> REST = AttachmentRegistry.create(Wildercord.id("masters_art_rests"),
+	private static final AttachmentType<Rest> REST = McAttachments.create(Wildercord.id("masters_art_rests"),
 		builder -> builder.initializer(() -> Rest.NONE).persistent(Rest.CODEC).copyOnDeath());
 	private record Aim(ServerPlayer player, Vec3 direction, Vec3 view) {}
 	private static Aim activeAim;

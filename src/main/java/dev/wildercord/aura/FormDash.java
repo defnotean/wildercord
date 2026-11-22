@@ -9,7 +9,6 @@ import dev.wildercord.aura.world.MasterVictories;
 import dev.wildercord.world.dungeons.DungeonWards;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -41,6 +40,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Cinder Lunge and Reed Slip: grounded field forms in the one Master-form slot. Each accepted step sweeps the real body and
@@ -68,9 +68,9 @@ public final class FormDash {
 			ByteBufCodecs.VAR_LONG, Progress::recoveryUntil, ByteBufCodecs.VAR_INT, Progress::practiced, Progress::new);
 	}
 	/** Absent on old saves, which read as no field form learned. */
-	public static final AttachmentType<Progress> PROGRESS = AttachmentRegistry.create(Wildercord.id("field_forms"),
+	public static final AttachmentType<Progress> PROGRESS = McAttachments.create(Wildercord.id("field_forms"),
 		builder -> builder.initializer(() -> Progress.NONE).persistent(Progress.CODEC).copyOnDeath()
-			.syncWith(Progress.STREAM_CODEC, AttachmentSyncPredicate.targetOnly()));
+			);
 	/** {@code window} counts down the follow-up moment a perfect guard opened; the form key answers it while it lasts. */
 	public record View(long epoch, int form, int phase, int ticks, int rest, int recovery, int window) {
 		public static final View NONE = new View(0, 0, 0, 0, 0, 0, 0);
@@ -78,8 +78,8 @@ public final class FormDash {
 			ByteBufCodecs.VAR_INT, View::form, ByteBufCodecs.VAR_INT, View::phase, ByteBufCodecs.VAR_INT, View::ticks,
 			ByteBufCodecs.VAR_INT, View::rest, ByteBufCodecs.VAR_INT, View::recovery, ByteBufCodecs.VAR_INT, View::window, View::new);
 	}
-	public static final AttachmentType<View> VIEW = AttachmentRegistry.create(Wildercord.id("field_form_view"),
-		builder -> builder.syncWith(View.CODEC, AttachmentSyncPredicate.targetOnly()));
+	public static final AttachmentType<View> VIEW = McAttachments.create(Wildercord.id("field_form_view"),
+		builder -> {});
 	/** Shares Wall Turn's action numbers; {@code form} only matters for EQUIP. */
 	public record Action(int action, int form, long epoch, long sequence) implements CustomPacketPayload {
 		public static final Type<Action> TYPE = new Type<>(Wildercord.id("field_form_action"));

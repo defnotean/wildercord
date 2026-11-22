@@ -13,7 +13,6 @@ import dev.wildercord.duel.DuelRules;
 import dev.wildercord.duel.Duels;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -41,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Sparring: two swordsmen trying their blades on each other in a ring of light (the rules and numbers are {@link SparRules}).
@@ -124,9 +124,9 @@ public final class Spars {
 	}
 
 	/** A swordsman's spar, while it lasts and for its moment after (sent to them alone). */
-	public static final AttachmentType<Bout> SPAR = AttachmentRegistry.create(
+	public static final AttachmentType<Bout> SPAR = McAttachments.create(
 		Wildercord.id("spar"),
-		builder -> builder.syncWith(Bout.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+		builder -> builder
 	);
 
 	/** A salute waiting to be answered, as the one saluted sees it: who, their colour, until when. */
@@ -135,9 +135,9 @@ public final class Spars {
 			ByteBufCodecs.stringUtf8(64), Offer::name, ByteBufCodecs.INT, Offer::color, ByteBufCodecs.VAR_LONG, Offer::until, Offer::new);
 	}
 
-	public static final AttachmentType<Offer> OFFER = AttachmentRegistry.create(
+	public static final AttachmentType<Offer> OFFER = McAttachments.create(
 		Wildercord.id("spar_offer"),
-		builder -> builder.syncWith(Offer.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+		builder -> builder
 	);
 
 	private static final Codec<SparRules.Log> LOG_CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -152,9 +152,9 @@ public final class Spars {
 		ByteBufCodecs.VAR_INT, SparRules.Log::losses, ByteBufCodecs.VAR_INT, SparRules.Log::evens, (w, l, e) -> new SparRules.Log(w, l, e, Long.MIN_VALUE, Map.of()));
 
 	/** Each swordsman's sparring record (saved, kept through death; its wins, losses and evens sent to them for the Aura page). */
-	public static final AttachmentType<SparRules.Log> LOG = AttachmentRegistry.create(
+	public static final AttachmentType<SparRules.Log> LOG = McAttachments.create(
 		Wildercord.id("spar_log"),
-		builder -> builder.initializer(() -> SparRules.Log.NONE).persistent(LOG_CODEC).syncWith(LOG_STREAM, AttachmentSyncPredicate.targetOnly()).copyOnDeath()
+		builder -> builder.initializer(() -> SparRules.Log.NONE).persistent(LOG_CODEC).copyOnDeath()
 	);
 
 	// ------------------------------------------------------------------ reading (both sides)

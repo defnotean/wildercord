@@ -9,7 +9,6 @@ import dev.wildercord.config.Config;
 import dev.wildercord.net.PacketThrottle;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -36,6 +35,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Techniques of a swordsman's own, at runtime (the rules and every number are {@link TechniqueRules}; a technique performed is
@@ -246,12 +246,11 @@ public final class Techniques {
 	}
 
 	/** Each swordsman's techniques: saved, kept through death (they're the swordsman's own), synced to its owner (the reader and the page ask). */
-	public static final AttachmentType<Book> BOOK = AttachmentRegistry.create(
+	public static final AttachmentType<Book> BOOK = McAttachments.create(
 		Wildercord.id("aura_techniques"),
 		builder -> builder
 			.initializer(() -> Book.EMPTY)
 			.persistent(Book.CODEC)
-			.syncWith(Book.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 

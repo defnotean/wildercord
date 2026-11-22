@@ -30,6 +30,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** Plants, pollinators and a field instrument. No ticking blocks, resource cache or forced chunk loads. */
 public final class WetlandGarden {
@@ -38,7 +39,7 @@ public final class WetlandGarden {
  private static ResourceKey<Item> key(String id) {return ResourceKey.create(Registries.ITEM,Wildercord.id(id));}
  public static final Item CUTTING=Registry.register(BuiltInRegistries.ITEM,key("moonreed"),new BlockItem(REED,new Item.Properties().setId(key("moonreed")).useBlockDescriptionPrefix()));
  public static final Item FLOSS=Registry.register(BuiltInRegistries.ITEM,key("moonreed_floss"),new AuraWorld.Lore("moonreed_floss",new Item.Properties().setId(key("moonreed_floss"))));
- public static final AttachmentType<Long> LENS_READY=AttachmentRegistry.create(Wildercord.id("dewglass_lens_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Long> LENS_READY=McAttachments.create(Wildercord.id("dewglass_lens_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
  private static long clock(ServerPlayer p) {return p.level().getServer().overworld().getGameTime();}
  private static boolean begin(ServerPlayer p,InteractionHand hand) {
   if(p.isSpectator())return false;

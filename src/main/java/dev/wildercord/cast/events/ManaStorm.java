@@ -25,7 +25,6 @@ import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
 import dev.wildercord.world.LeyLines;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -49,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * A mana storm: for three to five minutes the world's mana boils up over a stretch of ley line.
@@ -64,9 +64,9 @@ import java.util.UUID;
  */
 public final class ManaStorm {
 	/** Game time until which a player is under a mana storm. Synced to that player only; not saved. */
-	public static final AttachmentType<Long> STORM_UNTIL = AttachmentRegistry.create(
+	public static final AttachmentType<Long> STORM_UNTIL = McAttachments.create(
 		Wildercord.id("storm_until"),
-		builder -> builder.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly())
+		builder -> builder
 	);
 
 	/** The storm's violet, and its bright core. */

@@ -17,6 +17,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.WorldGenLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** A persistent fisher who keeps the first-crossing stories; ordinary trade and villager life remain available. */
 public final class ReedkeeperResident {
@@ -24,7 +25,7 @@ public final class ReedkeeperResident {
 	public static final String TAG = "wildercord.reedkeeper";
 	public static final String ENTRY = "person:reedkeeper";
 	public static final int TALK_COOLDOWN = 100;
-	private static final AttachmentType<Integer> LAST_TALK = AttachmentRegistry.create(Wildercord.id("reedkeeper_last_talk"));
+	private static final AttachmentType<Integer> LAST_TALK = McAttachments.create(Wildercord.id("reedkeeper_last_talk"));
 	private static final String[] LINES = {"greet", "garden", "crossing", "ferryman"};
 
 	public static void init() {

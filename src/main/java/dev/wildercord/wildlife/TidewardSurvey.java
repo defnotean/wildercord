@@ -24,6 +24,7 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.phys.*;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** A bounded private read of actual footing, never a terrain mutation or companion command. */
 public final class TidewardSurvey {
@@ -33,9 +34,9 @@ public final class TidewardSurvey {
  public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,KEY,new AuraWorld.Lore("bank_surveyors_line",new Item.Properties().setId(KEY).durability(96)){
   @Override public InteractionResult useOn(UseOnContext c){if(c.getPlayer() instanceof ServerPlayer p)survey(p,c);return InteractionResult.SUCCESS;}
  });
- public static final AttachmentType<Long> READY=AttachmentRegistry.create(Wildercord.id("bank_survey_ready"),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Long> READY=McAttachments.create(Wildercord.id("bank_survey_ready"),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
  private static final class State {ServerLevel world;ItemStack held=ItemStack.EMPTY;InteractionHand hand;boolean reading;BlockPos first;List<BlockPos> route=List.of();long until,nonce;}
- private static final AttachmentType<State> STATE=AttachmentRegistry.create(Wildercord.id("bank_survey_state"),b -> b.initializer(State::new));
+ private static final AttachmentType<State> STATE=McAttachments.create(Wildercord.id("bank_survey_state"),b -> b.initializer(State::new));
  private static boolean current(ServerPlayer p,State s){return TidewardReadAdmission.actor(p) && s.world==p.level() && s.hand!=null && p.getItemInHand(s.hand)==s.held && s.held.is(ITEM);}
  private static void clear(ServerPlayer p,State s){if(!s.route.isEmpty())TidewardCue.clear(p,s.nonce);s.route=List.of();s.first=null;s.until=0;}
  private static boolean refuse(ServerPlayer p,String reason){p.displayClientMessage(Component.translatable("message.wildercord.bank_line."+reason), true);return false;}

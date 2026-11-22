@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.codec.ByteBufCodecs;
 import java.util.*;
+import dev.wildercord.compat.McAttachments;
 
 /** Twenty-four named builds, independent of currently equipped Cord spell slots. Loading is atomic. */
 public final class SpellLibrary {
@@ -23,7 +24,7 @@ public final class SpellLibrary {
  }
  public static final int MAX_BUILDS=24;
  public static final Codec<List<Build>> CODEC=Build.CODEC.listOf(0,MAX_BUILDS);
- public static final AttachmentType<List<Build>> BUILDS=AttachmentRegistry.create(Wildercord.id("spell_library"),b->b.initializer(List::of).persistent(CODEC).syncWith(ByteBufCodecs.fromCodec(CODEC),AttachmentSyncPredicate.targetOnly()).copyOnDeath());
+ public static final AttachmentType<List<Build>> BUILDS=McAttachments.create(Wildercord.id("spell_library"),b->b.initializer(List::of).persistent(CODEC).copyOnDeath());
  public static void init() {}
  public static List<Build> list(Player p){return p.getAttachedOrElse(BUILDS,List.of());}
  public static int save(ServerPlayer p,String name,int slot) {

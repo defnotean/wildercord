@@ -19,6 +19,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.level.WorldGenLevel;
 
 import java.util.List;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The Belowkeeper Listener at a Belowkeeper Listening Station. Normal use opens subterranean supply trades;
@@ -32,7 +33,7 @@ public final class BelowkeeperResident {
 	public static final int TALK_COOLDOWN = 100;
 	public static final List<String> LINES = List.of("greet", "glowcap", "pressure", "hollow_bell");
 	public static final List<String> PROGRESS_LINES = List.of("four_lights", "deep_records", "station_gauge", "gauge_return", "bell_return");
-	private static final AttachmentType<Integer> LAST_TALK = AttachmentRegistry.create(Wildercord.id("belowkeeper_listener_last_talk"));
+	private static final AttachmentType<Integer> LAST_TALK = McAttachments.create(Wildercord.id("belowkeeper_listener_last_talk"));
 	private static final int SPEECH = 0xB8E2DC;
 
 	public static void init() {

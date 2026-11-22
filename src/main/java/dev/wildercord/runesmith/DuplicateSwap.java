@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Duplicates always have value: while a player trades with a Runesmith, its list gains offers made
@@ -59,7 +60,7 @@ public final class DuplicateSwap {
 	}
 
 	/** Each player's buybacks today. Saved and kept through death, so logging off or dying doesn't reset it. */
-	public static final AttachmentType<Sold> SOLD = AttachmentRegistry.create(
+	public static final AttachmentType<Sold> SOLD = McAttachments.create(
 		Wildercord.id("runes_sold"),
 		builder -> builder
 			.initializer(() -> Sold.NONE)

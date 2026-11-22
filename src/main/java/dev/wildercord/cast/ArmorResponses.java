@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import java.util.WeakHashMap;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** Edge-triggered crouch guards, capped armour contributions and a weak, non-recursive reflected fragment. */
 public final class ArmorResponses {
@@ -24,7 +25,7 @@ public final class ArmorResponses {
 			Codec.intRange(0,100).fieldOf("rime_cooldown").forGetter(State::rimeCooldown),Codec.intRange(0,100).fieldOf("mirror_cooldown").forGetter(State::mirrorCooldown),
 			Codec.BOOL.fieldOf("sneaking").forGetter(State::sneaking)).apply(i,State::new));
 	}
-	public static final AttachmentType<State> STATE=AttachmentRegistry.create(Wildercord.id("armor_response"),b->b.initializer(()->State.EMPTY).persistent(State.CODEC));
+	public static final AttachmentType<State> STATE=McAttachments.create(Wildercord.id("armor_response"),b->b.initializer(()->State.EMPTY).persistent(State.CODEC));
 	private record Motion(Vec3 last,boolean moving) {}
 	private static final WeakHashMap<ServerPlayer,Motion> MOTION=new WeakHashMap<>();
 	private static boolean reflecting;

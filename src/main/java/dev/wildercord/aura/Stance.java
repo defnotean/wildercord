@@ -12,7 +12,6 @@ import dev.wildercord.config.Config;
 import dev.wildercord.player.WildercordAttachments;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -33,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Stance and openings at runtime (the rules and numbers are {@link StanceRules}). A foe's stance is kept on it as it's worn
@@ -97,9 +97,9 @@ public final class Stance {
 	}
 
 	/** A foe's stance, while it's worn (or opened, or steady): not saved, sent to everyone who can see it. */
-	public static final AttachmentType<State> STANCE = AttachmentRegistry.create(
+	public static final AttachmentType<State> STANCE = McAttachments.create(
 		Wildercord.id("aura_stance"),
-		builder -> builder.syncWith(State.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	// ------------------------------------------------------------------ reading (both sides)

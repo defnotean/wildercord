@@ -18,12 +18,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import java.util.Set;
+import dev.wildercord.compat.McAttachments;
 
 /** A dedicated test arena, leaving the player's ordinary world intact. Shared by server operators. */
 public final class PracticeRoom {
  private PracticeRoom() {}
  public static final ResourceKey<Level> DIMENSION = ResourceKey.create(Registries.DIMENSION,Wildercord.id("practice"));
- private static final AttachmentType<GlobalPos> RETURN = AttachmentRegistry.create(Wildercord.id("practice_return"),
+ private static final AttachmentType<GlobalPos> RETURN = McAttachments.create(Wildercord.id("practice_return"),
   b -> b.persistent(GlobalPos.CODEC).copyOnDeath());
  /** When each player last stepped in (server ticks, not saved): entry has a cooldown. */
  private static final java.util.Map<java.util.UUID,Long> ENTERED=new java.util.HashMap<>();

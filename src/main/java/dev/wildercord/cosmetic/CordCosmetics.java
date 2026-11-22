@@ -9,7 +9,6 @@ import dev.wildercord.cosmetic.CordStyles.Style;
 import dev.wildercord.player.Heart;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -29,6 +28,7 @@ import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Cord cosmetics on the server: each player's chosen style (saved, and synced to everyone nearby
@@ -49,21 +49,19 @@ public final class CordCosmetics {
 		ByteBufCodecs.stringUtf8(32), Style::material, ByteBufCodecs.stringUtf8(32), Style::glow, ByteBufCodecs.stringUtf8(32), Style::trail, Style::new);
 
 	/** How the player's Cord looks. Saved, kept through death, and synced to everyone nearby. */
-	public static final AttachmentType<Style> STYLE = AttachmentRegistry.create(
+	public static final AttachmentType<Style> STYLE = McAttachments.create(
 		Wildercord.id("cord_style"),
 		builder -> builder
 			.persistent(STYLE_CODEC)
-			.syncWith(STYLE_STREAM_CODEC, AttachmentSyncPredicate.all())
 			.copyOnDeath()
 	);
 
 	/** Options bought in the Cosmetics page ({@code material:gold}...). Saved, kept through death, synced to the player. */
-	public static final AttachmentType<List<String>> BOUGHT = AttachmentRegistry.create(
+	public static final AttachmentType<List<String>> BOUGHT = McAttachments.create(
 		Wildercord.id("cord_styles_bought"),
 		builder -> builder
 			.initializer(List::of)
 			.persistent(Codec.STRING.listOf())
-			.syncWith(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 

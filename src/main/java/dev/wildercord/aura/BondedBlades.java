@@ -12,7 +12,6 @@ import dev.wildercord.config.Config;
 import dev.wildercord.net.PacketThrottle;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -55,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The bonded blade at runtime (the rules and every number are {@link BladeRules}; the ceremonies are {@link BladeCeremony}; what its
@@ -173,12 +173,11 @@ public final class BondedBlades {
 	}
 
 	/** Each swordsman's bond: saved, kept through death, synced to its owner (the page, the reader's prices). */
-	public static final AttachmentType<State> STATE = AttachmentRegistry.create(
+	public static final AttachmentType<State> STATE = McAttachments.create(
 		Wildercord.id("blade_bond"),
 		builder -> builder
 			.initializer(() -> State.NONE)
 			.persistent(State.CODEC)
-			.syncWith(State.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -191,7 +190,7 @@ public final class BondedBlades {
 	}
 
 	/** The blades a death is keeping for the next body (saved, so a swordsman who leaves on the death screen still gets theirs). */
-	public static final AttachmentType<List<Kept>> KEPT = AttachmentRegistry.create(
+	public static final AttachmentType<List<Kept>> KEPT = McAttachments.create(
 		Wildercord.id("blade_kept"),
 		builder -> builder.persistent(Kept.CODEC.listOf()).copyOnDeath()
 	);
@@ -213,9 +212,9 @@ public final class BondedBlades {
 		}
 	}
 
-	public static final AttachmentType<Rite> RITE = AttachmentRegistry.create(
+	public static final AttachmentType<Rite> RITE = McAttachments.create(
 		Wildercord.id("blade_rite"),
-		builder -> builder.syncWith(Rite.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	// ------------------------------------------------------------------ reading (both sides)

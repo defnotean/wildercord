@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
+import dev.wildercord.compat.McAttachments;
 
 /** Highland agriculture and tools: native effects save/sync normally, with no player/world cache. */
 public final class HighlandContent {
@@ -37,8 +38,8 @@ public final class HighlandContent {
 	public static final Holder<MobEffect> DOWNWIND=Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,Wildercord.id("downwind"),
 		new MobEffect(MobEffectCategory.BENEFICIAL,0x9FAE83) {}.addAttributeModifier(Attributes.MOVEMENT_SPEED,Wildercord.id("downwind_pace"),-.10,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 	public static final Item DRAFT_KITE=tool("draft_kite",true), WINDREED_BRAID=tool("windreed_braid",false);
-	public static final AttachmentType<Long> KITE_READY=AttachmentRegistry.create(Wildercord.id("draft_kite_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
-	public static final AttachmentType<Long> BRAID_READY=AttachmentRegistry.create(Wildercord.id("windreed_braid_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+	public static final AttachmentType<Long> KITE_READY=McAttachments.create(Wildercord.id("draft_kite_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+	public static final AttachmentType<Long> BRAID_READY=McAttachments.create(Wildercord.id("windreed_braid_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
 	private static long clock(ServerPlayer p) {return p.level().getServer().overworld().getGameTime();}
 	public static boolean quiet(LivingEntity who) {return who.hasEffect(DOWNWIND) && !who.isSprinting();}
 	private static Item tool(String id,boolean kite) {

@@ -28,6 +28,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /** Every village as a hamlet with its own name and standing. See {@link HamletRules}. */
 public final class Hamlets {
@@ -47,7 +48,7 @@ public final class Hamlets {
 	}
 
 	/** Each hamlet's standing, by its bell ({@code dimension|pos}). Kept through death. */
-	public static final AttachmentType<Map<String, Standing>> STANDINGS = AttachmentRegistry.create(Wildercord.id("hamlet_standings"),
+	public static final AttachmentType<Map<String, Standing>> STANDINGS = McAttachments.create(Wildercord.id("hamlet_standings"),
 		builder -> builder.initializer(Map::of).persistent(Codec.unboundedMap(Codec.STRING, Standing.CODEC)).copyOnDeath());
 
 	/** The hamlet each traveller was last in, so they're greeted only on the way in. */

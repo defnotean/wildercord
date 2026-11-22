@@ -5,10 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Aura's per-player state, in three parts, like spell mastery's:
@@ -78,12 +78,11 @@ public final class AuraAttachments {
 		}
 	}
 
-	public static final AttachmentType<Data> AURA = AttachmentRegistry.create(
+	public static final AttachmentType<Data> AURA = McAttachments.create(
 		Wildercord.id("aura"),
 		builder -> builder
 			.initializer(() -> Data.NONE)
 			.persistent(Data.CODEC)
-			.syncWith(Data.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -139,9 +138,9 @@ public final class AuraAttachments {
 		}
 	}
 
-	public static final AttachmentType<State> STATE = AttachmentRegistry.create(
+	public static final AttachmentType<State> STATE = McAttachments.create(
 		Wildercord.id("aura_state"),
-		builder -> builder.syncWith(State.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+		builder -> builder
 	);
 
 	/**
@@ -161,9 +160,9 @@ public final class AuraAttachments {
 			ByteBufCodecs.BOOL, Look::breathing, Look::new);
 	}
 
-	public static final AttachmentType<Look> LOOK = AttachmentRegistry.create(
+	public static final AttachmentType<Look> LOOK = McAttachments.create(
 		Wildercord.id("aura_look"),
-		builder -> builder.syncWith(Look.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	public static void init() {}

@@ -21,11 +21,12 @@ import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import java.util.*;
+import dev.wildercord.compat.McAttachments;
 /** Cap competition and owned physical control; observations are facts, never item rewards. */
 public final class RootmoltContent {
  private RootmoltContent() {}
  public static final UUID NO_OWNER=new UUID(0,0);
- public static final AttachmentType<UUID> GRAB_OWNER=AttachmentRegistry.create(Wildercord.id("root_grab_owner"),b -> b.initializer(() -> NO_OWNER));
+ public static final AttachmentType<UUID> GRAB_OWNER=McAttachments.create(Wildercord.id("root_grab_owner"),b -> b.initializer(() -> NO_OWNER));
  public static final Holder<MobEffect> TETHER=Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,Wildercord.id("root_tether"),new RootTetherEffect());
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("rootmolt_strider"));
  public static final EntityType<RootmoltStrider> STRIDER=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(RootmoltStrider::new,MobCategory.MONSTER).sized(1.05F,.8F).eyeHeight(.48F).clientTrackingRange(8).build(KEY));

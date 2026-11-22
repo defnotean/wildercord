@@ -5,14 +5,15 @@ import dev.wildercord.cast.feel.Feels;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** Two open breathing strands at the back and sides; no circles or first-person veil. */
 public final class UnityFx {
 	private UnityFx() {}
 	private static final net.fabricmc.fabric.api.attachment.v1.AttachmentType<Long> FLOW_AT=
-		net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry.create(dev.wildercord.Wildercord.id("unity_flow_at"),b -> b.initializer(() -> -100L));
+		McAttachments.create(dev.wildercord.Wildercord.id("unity_flow_at"),b -> b.initializer(() -> -100L));
 	private static final net.fabricmc.fabric.api.attachment.v1.AttachmentType<Long> VOICE_AT=
-		net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry.create(dev.wildercord.Wildercord.id("unity_voice_at"),b -> b.initializer(() -> -100L));
+		McAttachments.create(dev.wildercord.Wildercord.id("unity_voice_at"),b -> b.initializer(() -> -100L));
 	private static Vec3 forward(ServerPlayer p) {double yaw=Math.toRadians(p.getYRot());return new Vec3(-Math.sin(yaw),0,Math.cos(yaw));}
 	private static int auraColor(ServerPlayer p) { return AuraRules.mix(Aura.color(p),0xE9B461,.65); }
 	public static void begin(ServerPlayer p) {

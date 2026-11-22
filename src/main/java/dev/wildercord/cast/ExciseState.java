@@ -3,11 +3,11 @@ package dev.wildercord.cast;
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.compat.McAttachments;
 
 /** Commitment/presentation are body-bound. Only absolute recovery/rest deadlines survive replacement. */
 public record ExciseState(int phase, int slot, long emitter, long began, long until, Vec3 core, long serverTick, long levelTick) {
@@ -18,9 +18,9 @@ public record ExciseState(int phase, int slot, long emitter, long began, long un
         b.writeDouble(s.core.x); b.writeDouble(s.core.y); b.writeDouble(s.core.z); b.writeLong(s.serverTick); b.writeLong(s.levelTick);
     }, b -> new ExciseState(b.readVarInt(), b.readVarInt(), b.readLong(), b.readLong(), b.readLong(),
         new Vec3(b.readDouble(), b.readDouble(), b.readDouble()), b.readLong(), b.readLong()));
-    public static final AttachmentType<ExciseState> VIEW = AttachmentRegistry.create(Wildercord.id("excise_view"), b -> b.syncWith(STREAM, AttachmentSyncPredicate.all()));
-    public static final AttachmentType<Long> RECOVERY = AttachmentRegistry.create(Wildercord.id("excise_recovery"),
-        b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath().syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly()));
-    public static final AttachmentType<Long> REST = AttachmentRegistry.create(Wildercord.id("excise_rest"),
-        b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath().syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly()));
+    public static final AttachmentType<ExciseState> VIEW = McAttachments.create(Wildercord.id("excise_view"), b -> {});
+    public static final AttachmentType<Long> RECOVERY = McAttachments.create(Wildercord.id("excise_recovery"),
+        b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
+    public static final AttachmentType<Long> REST = McAttachments.create(Wildercord.id("excise_rest"),
+        b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
 }

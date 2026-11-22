@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The daily contract board at the Scribing Desk: three contracts a day for each player (see
@@ -58,7 +59,7 @@ public final class Contracts {
 	).apply(i, ContractRules.Board::new));
 
 	/** Each player's board. Saved, kept through death, never synced (the board is read out in chat). */
-	public static final AttachmentType<ContractRules.Board> BOARD = AttachmentRegistry.create(
+	public static final AttachmentType<ContractRules.Board> BOARD = McAttachments.create(
 		Wildercord.id("contracts"),
 		builder -> builder
 			.initializer(() -> ContractRules.Board.EMPTY)

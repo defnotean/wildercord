@@ -12,10 +12,11 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.*;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 /** Finite complete-pool camp observations, not a trap or a damage ward. */
 public final class Watchweft {
  private Watchweft(){}
- public static final AttachmentType<Long> READY=AttachmentRegistry.create(Wildercord.id("watchweft_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Long> READY=McAttachments.create(Wildercord.id("watchweft_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
  private record Seen(Monster entity,boolean inside){}
  private static final class Watch {
   final UUID owner;final ServerLevel level;final BlockPos floor;final BlockState state;final long until;final Map<UUID,Seen> history=new HashMap<>();long sampled;boolean obscured;

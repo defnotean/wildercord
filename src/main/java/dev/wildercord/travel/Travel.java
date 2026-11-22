@@ -18,6 +18,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.function.UnaryOperator;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The travel commands: homes, public warps, personal waypoints, teleport requests, {@code /back},
@@ -35,7 +36,7 @@ public final class Travel {
 	private Travel() {}
 
 	/** Each player's homes, waypoints, back location and request switch. Saved, and kept through death. */
-	public static final AttachmentType<TravelData> DATA = AttachmentRegistry.create(
+	public static final AttachmentType<TravelData> DATA = McAttachments.create(
 		Wildercord.id("travel"),
 		builder -> builder
 			.initializer(() -> TravelData.EMPTY)

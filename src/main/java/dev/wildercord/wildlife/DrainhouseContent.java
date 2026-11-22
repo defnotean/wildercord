@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import java.util.*;
+import dev.wildercord.compat.McAttachments;
 /** A three-room cave investigation with finite restoration and two lasting fieldcraft rewards. */
 public final class DrainhouseContent {
  private DrainhouseContent() {}
@@ -23,7 +24,7 @@ public final class DrainhouseContent {
  private static ResourceKey<Item> i(String n){return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}
  public static final DrainhouseMark MARK=Registry.register(BuiltInRegistries.BLOCK,b("drainhouse_mark"),new DrainhouseMark(BlockBehaviour.Properties.of().setId(b("drainhouse_mark")).strength(-1,3600000).noLootTable().noOcclusion().sound(SoundType.COPPER).lightLevel(s -> s.getValue(DrainhouseMark.RESTORED)?3:0)));
  public static final BlockEntityType<DrainhouseMarkEntity> MARK_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("drainhouse_mark"),FabricBlockEntityTypeBuilder.create(DrainhouseMarkEntity::new,MARK).build());
- public static final AttachmentType<Long> REPAIR_READY=AttachmentRegistry.create(Wildercord.id("drainhouse_repair_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Long> REPAIR_READY=McAttachments.create(Wildercord.id("drainhouse_repair_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
  private static Item journal(String n,String title,int text){return Registry.register(BuiltInRegistries.ITEM,i(n),new WrittenBookItem(new Item.Properties().setId(i(n)).stacksTo(1).component(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT,new net.minecraft.world.item.component.WrittenBookContent(net.minecraft.server.network.Filterable.passThrough(title),"Mara, Belowkeeper",0,java.util.stream.IntStream.rangeClosed(1,3).mapToObj(page -> net.minecraft.server.network.Filterable.<net.minecraft.network.chat.Component>passThrough(net.minecraft.network.chat.Component.translatable("book.wildercord.drainhouse."+text+"."+page))).toList(),true))));}
  public static final Item ENTRANCE_NOTES=journal("drainhouse_threshold","The Borrowed Third Breath",0),GARDEN_NOTES=journal("drainhouse_garden","Six Feet at the Table",1),ALCOVE_NOTES=journal("drainhouse_alcove","What the Empty Bell Keeps",2);
  public static void init(){

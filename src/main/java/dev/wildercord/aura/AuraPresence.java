@@ -5,12 +5,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * What the top stages and the spellblade keep about a player, beside {@link AuraAttachments} (which stays as wave one left
@@ -74,9 +74,9 @@ public final class AuraPresence {
 		}
 	}
 
-	public static final AttachmentType<Look> LOOK = AttachmentRegistry.create(
+	public static final AttachmentType<Look> LOOK = McAttachments.create(
 		Wildercord.id("aura_presence"),
-		builder -> builder.syncWith(Look.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	/**
@@ -108,12 +108,11 @@ public final class AuraPresence {
 		}
 	}
 
-	public static final AttachmentType<Timers> TIMERS = AttachmentRegistry.create(
+	public static final AttachmentType<Timers> TIMERS = McAttachments.create(
 		Wildercord.id("aura_timers"),
 		builder -> builder
 			.initializer(() -> Timers.NONE)
 			.persistent(Timers.CODEC)
-			.syncWith(Timers.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 

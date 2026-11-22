@@ -3,11 +3,11 @@ package dev.wildercord.cast;
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.compat.McAttachments;
 
 /** Server-owned footprint presentation; only the separate rest survives a body/world/session transition. */
 public record ReweaveState(int phase, int slot, long fieldId, long created, long expires, long warningUntil,
@@ -22,8 +22,8 @@ public record ReweaveState(int phase, int slot, long fieldId, long created, long
         b.writeBoolean(s.blocked); b.writeLong(s.serverTick); b.writeLong(s.levelTick);
     }, b -> new ReweaveState(b.readVarInt(), b.readVarInt(), b.readLong(), b.readLong(), b.readLong(), b.readLong(), b.readVarInt(),
         new Vec3(b.readDouble(), b.readDouble(), b.readDouble()), new Vec3(b.readDouble(), b.readDouble(), b.readDouble()), b.readBoolean(), b.readLong(), b.readLong()));
-    public static final AttachmentType<ReweaveState> VIEW = AttachmentRegistry.create(Wildercord.id("reweave_view"),
-        b -> b.syncWith(STREAM, AttachmentSyncPredicate.all()));
-    public static final AttachmentType<Long> REST = AttachmentRegistry.create(Wildercord.id("reweave_rest"),
-        b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath().syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly()));
+    public static final AttachmentType<ReweaveState> VIEW = McAttachments.create(Wildercord.id("reweave_view"),
+        b -> {});
+    public static final AttachmentType<Long> REST = McAttachments.create(Wildercord.id("reweave_rest"),
+        b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
 }

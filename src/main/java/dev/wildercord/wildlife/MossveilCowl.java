@@ -17,6 +17,7 @@ import net.minecraft.world.item.equipment.*;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** A small physical poison filter; no damage multiplier, healing, effect-chain replacement or immunity. */
 public final class MossveilCowl{
@@ -24,10 +25,10 @@ public final class MossveilCowl{
  private static ResourceKey<Item> key(){return ResourceKey.create(Registries.ITEM,Wildercord.id("mossveil_cowl"));}
  private static final ArmorMaterial MATERIAL=new ArmorMaterial(6,Map.of(ArmorType.HELMET,1,ArmorType.CHESTPLATE,0,ArmorType.LEGGINGS,0,ArmorType.BOOTS,0),5,net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER,0,0,net.minecraft.tags.TagKey.create(Registries.ITEM,Wildercord.id("repairs_mossveil")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:mossveil"));
  public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,key(),new AuraWorld.Lore("mossveil_cowl",MATERIAL.humanoidProperties(new Item.Properties().setId(key()), ArmorType.HELMET).rarity(Rarity.UNCOMMON)));
- public static final AttachmentType<Long> READY=AttachmentRegistry.create(Wildercord.id("mossveil_filter_ready"),b->b.initializer(()->0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Long> READY=McAttachments.create(Wildercord.id("mossveil_filter_ready"),b->b.initializer(()->0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
  private record Facts(int amplifier,boolean ambient,boolean visible,boolean icon){static Facts of(MobEffectInstance e){return new Facts(e.getAmplifier(),e.isAmbient(),e.isVisible(),e.showIcon());}boolean matches(MobEffectInstance e){return e!=null&&amplifier==e.getAmplifier()&&ambient==e.isAmbient()&&visible==e.isVisible()&&icon==e.showIcon();}}
  private static final class Prep{boolean operating;ItemStack worn;ServerLevel world;MossveilDormouse pet;MossveilHome.Home home;MobEffectInstance poison;Facts facts;Vec3 planted;int ticks;void clear(){worn=null;world=null;pet=null;home=null;poison=null;facts=null;planted=null;ticks=0;}}
- private static final AttachmentType<Prep> STATE=AttachmentRegistry.create(Wildercord.id("mossveil_filter_preparation"),b->b.initializer(Prep::new));
+ private static final AttachmentType<Prep> STATE=McAttachments.create(Wildercord.id("mossveil_filter_preparation"),b->b.initializer(Prep::new));
  private static boolean actor(ServerPlayer p){return p.isAlive()&&!p.isRemoved()&&!p.isCreative()&&!p.isSpectator()&&p.serverLevel().getEntity(p.getUUID())==p&&p.isShiftKeyDown()&&p.onGround()&&!p.isPassenger();}
  private static boolean poison(MobEffectInstance e){return e!=null&&!e.isInfiniteDuration()&&e.getDuration()>=8;}
  private static boolean pet(ServerPlayer p,MossveilDormouse e){return e!=null&&e.live(((ServerLevel) p.level()))&&e.isTame()&&e.isOwnedBy(p)&&e.isOrderedToSit()&&e.isInSittingPose()&&p.distanceToSqr(e)<=9&&p.hasLineOfSight(e)&&MossveilDormouse.clock(((ServerLevel) p.level()))>=e.filterReady();}

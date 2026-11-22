@@ -18,6 +18,7 @@ import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import java.util.*;
+import dev.wildercord.compat.McAttachments;
 
 /** Fish friendship for both fox species; vanilla trust remains intact. */
 public final class FoxCompanions {
@@ -25,7 +26,7 @@ public final class FoxCompanions {
  public record Bond(UUID owner,boolean sitting) {
   public static final Codec<Bond> CODEC=RecordCodecBuilder.create(i -> i.group(UUIDUtil.CODEC.fieldOf("owner").forGetter(Bond::owner),Codec.BOOL.optionalFieldOf("sitting",true).forGetter(Bond::sitting)).apply(i,Bond::new));
  }
- public static final AttachmentType<Bond> BOND=AttachmentRegistry.create(Wildercord.id("fox_companion"),b -> b.persistent(Bond.CODEC).syncWith(ByteBufCodecs.fromCodec(Bond.CODEC),AttachmentSyncPredicate.all()));
+ public static final AttachmentType<Bond> BOND=McAttachments.create(Wildercord.id("fox_companion"),b -> b.persistent(Bond.CODEC));
  public static boolean fish(ItemStack stack) {return stack.is(FISH);}
  public static void init() {UseEntityCallback.EVENT.register((p,l,h,e,hit) -> e instanceof Fox f ? use(f,p,h) : InteractionResult.PASS);}
  public static InteractionResult use(Fox fox,Player p,InteractionHand hand) {

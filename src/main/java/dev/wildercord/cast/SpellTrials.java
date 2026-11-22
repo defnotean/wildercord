@@ -8,10 +8,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import java.util.*;
+import dev.wildercord.compat.McAttachments;
 /** Optional challenges use paid casts and actual dummy hits. First completions award a single page. */
 public final class SpellTrials {
  private SpellTrials() {}
- private static final AttachmentType<List<String>> COMPLETED=AttachmentRegistry.create(Wildercord.id("completed_trials"),b->b.initializer(List::of).persistent(com.mojang.serialization.Codec.STRING.listOf(0,3)).copyOnDeath());
+ private static final AttachmentType<List<String>> COMPLETED=McAttachments.create(Wildercord.id("completed_trials"),b->b.initializer(List::of).persistent(com.mojang.serialization.Codec.STRING.listOf(0,3)).copyOnDeath());
  private static final WeakHashMap<ServerPlayer,Attempt> RUNNING=new WeakHashMap<>();
  private static final class Attempt {String kind;long until;double mana;int hits,casts;Set<String> shapes=new HashSet<>(),fusions=new HashSet<>();Attempt(String k,long t){kind=k;until=t;}}
  public static void init(){ServerLifecycleEvents.SERVER_STOPPED.register(s->RUNNING.clear());ServerTickEvents.END_SERVER_TICK.register(s->{

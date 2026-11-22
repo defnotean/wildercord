@@ -9,7 +9,6 @@ import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.feel.Feels;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The crossroads: where a swordsman chooses their Way (the rules are {@link WayRules}). As the Edge breakthrough settles (or when a
@@ -99,9 +99,9 @@ public final class Crossroads {
 	}
 
 	/** A swordsman's crossroads while it stands: not saved (a moment, not a path), told to its swordsman alone. */
-	public static final AttachmentType<State> CROSSROADS = AttachmentRegistry.create(
+	public static final AttachmentType<State> CROSSROADS = McAttachments.create(
 		Wildercord.id("aura_crossroads"),
-		builder -> builder.syncWith(State.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+		builder -> builder
 	);
 
 	/** Every swordsman with a crossroads standing, for the upkeep. */

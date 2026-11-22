@@ -5,7 +5,6 @@ import dev.wildercord.spell.MasteryRules;
 import dev.wildercord.spell.RuneDef;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Spell mastery's per-player state: the whole {@link MasteryBook} (private: saved, kept through death, synced to its
@@ -23,12 +23,11 @@ public final class MasteryAttachments {
 	private MasteryAttachments() {}
 
 	/** Every spell's record. Kept through death. */
-	public static final AttachmentType<MasteryBook> MASTERY = AttachmentRegistry.create(
+	public static final AttachmentType<MasteryBook> MASTERY = McAttachments.create(
 		Wildercord.id("mastery"),
 		builder -> builder
 			.initializer(() -> MasteryBook.EMPTY)
 			.persistent(MasteryBook.CODEC)
-			.syncWith(MasteryBook.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -61,9 +60,9 @@ public final class MasteryAttachments {
 		}
 	}
 
-	public static final AttachmentType<Look> LOOK = AttachmentRegistry.create(
+	public static final AttachmentType<Look> LOOK = McAttachments.create(
 		Wildercord.id("mastery_look"),
-		builder -> builder.syncWith(Look.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	public static MasteryBook book(Player player) {

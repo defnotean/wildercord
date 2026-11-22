@@ -12,7 +12,6 @@ import dev.wildercord.config.Config;
 import dev.wildercord.player.WildercordAttachments;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Momentum at runtime (the rules and numbers are {@link MomentumRules}): each swordsman's meter, kept on the server and sent to its
@@ -71,9 +71,9 @@ public final class Momentum {
 	}
 
 	/** Each swordsman's momentum: not saved (a fight's, not a path's), gone with a death or a change of world, synced to its owner only. */
-	public static final AttachmentType<State> MOMENTUM = AttachmentRegistry.create(
+	public static final AttachmentType<State> MOMENTUM = McAttachments.create(
 		Wildercord.id("aura_momentum"),
-		builder -> builder.syncWith(State.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+		builder -> builder
 	);
 
 	// ------------------------------------------------------------------ reading (both sides)

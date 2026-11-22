@@ -24,7 +24,6 @@ import dev.wildercord.aura.world.VillageTournaments;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Heart;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -47,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The lore journal on the server: the per-player record, the discovery quests, and the short conversation
@@ -55,9 +55,9 @@ import java.util.UUID;
 public final class LoreJournal {
 	private LoreJournal() {}
 
-	public static final AttachmentType<LoreJournalData> JOURNAL = AttachmentRegistry.create(Wildercord.id("lore_journal"),
+	public static final AttachmentType<LoreJournalData> JOURNAL = McAttachments.create(Wildercord.id("lore_journal"),
 		builder -> builder.initializer(() -> LoreJournalData.EMPTY).persistent(LoreJournalData.CODEC)
-			.syncWith(LoreJournalData.STREAM_CODEC, AttachmentSyncPredicate.targetOnly()).copyOnDeath());
+			.copyOnDeath());
 
 	/** How often each player's journal is brought up to date, in ticks. */
 	public static final int POLL_TICKS = 40;

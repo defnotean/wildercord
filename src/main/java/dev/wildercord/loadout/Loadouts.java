@@ -12,7 +12,6 @@ import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.network.chat.Component;
@@ -22,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Loadouts: saved Cord setups a player can save, name, load and delete, from the Cord screen, the
@@ -37,12 +37,11 @@ public final class Loadouts {
 	private Loadouts() {}
 
 	/** Each player's loadouts. Saved, kept through death, and synced to that player for the Cord screen. */
-	public static final AttachmentType<LoadoutData> DATA = AttachmentRegistry.create(
+	public static final AttachmentType<LoadoutData> DATA = McAttachments.create(
 		Wildercord.id("loadouts"),
 		builder -> builder
 			.initializer(() -> LoadoutData.EMPTY)
 			.persistent(LoadoutData.CODEC)
-			.syncWith(LoadoutData.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 

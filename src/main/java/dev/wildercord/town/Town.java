@@ -32,6 +32,7 @@ import net.minecraft.world.level.material.MapColor;
 
 import java.util.Optional;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The Wayfarer Inn's town life (0.12 "Tempering"): its bounty board, the keepers who trade there (a cook, a stablemaster and a
@@ -124,7 +125,7 @@ public final class Town {
 		}
 	}
 
-	public static final AttachmentType<Standing> STANDING = AttachmentRegistry.create(Wildercord.id("town_standing"),
+	public static final AttachmentType<Standing> STANDING = McAttachments.create(Wildercord.id("town_standing"),
 		builder -> builder.initializer(() -> Standing.NONE).persistent(Standing.CODEC).copyOnDeath());
 
 	public static Standing standing(ServerPlayer player) {

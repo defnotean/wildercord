@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import java.util.List;
+import dev.wildercord.compat.McAttachments;
 
 /** One lasting inscription, paid with mana each time an art or finisher wakes it. */
 public final class RuneEtchings {
@@ -26,7 +27,7 @@ public final class RuneEtchings {
 		Wildercord.id("blade_rune"), DataComponentType.<String>builder().persistent(Codec.STRING)
 			.networkSynchronized(ByteBufCodecs.STRING_UTF8).build());
 	/** Saved on the swordsman: putting a blade away, relogging or dying never buys another immediate activation. */
-	public static final AttachmentType<Long> READY = AttachmentRegistry.create(Wildercord.id("blade_rune_ready"),
+	public static final AttachmentType<Long> READY = McAttachments.create(Wildercord.id("blade_rune_ready"),
 		b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
 	private static boolean waking;
 	public static ItemStack etch(ItemStack blade, ItemStack rune, net.minecraft.world.entity.player.Player smith) {

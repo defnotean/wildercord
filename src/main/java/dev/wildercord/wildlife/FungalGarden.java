@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.*;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 /** Functional fungal garden and investigation. Plants never spread; neither shelter nor magic prints resources. */
 public final class FungalGarden {
  private FungalGarden() {}
@@ -40,7 +41,7 @@ public final class FungalGarden {
  public static final Item NURSERY_ITEM=Registry.register(BuiltInRegistries.ITEM,itemKey("fungal_nursery"),new BlockItem(NURSERY,new Item.Properties().setId(itemKey("fungal_nursery")).useBlockDescriptionPrefix()) {
   @Override protected boolean placeBlock(BlockPlaceContext c,BlockState state) {boolean ok=super.placeBlock(c,state);if(ok && c.getPlayer() instanceof ServerPlayer p)FungalInvestigation.placed(p);return ok;}
  });
- public static final AttachmentType<Long> BREATHER_READY=AttachmentRegistry.create(Wildercord.id("cave_breather_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Long> BREATHER_READY=McAttachments.create(Wildercord.id("cave_breather_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
  private static long clock(ServerPlayer p) {return p.level().getServer().overworld().getGameTime();}
  public static final Item BREATHER=Registry.register(BuiltInRegistries.ITEM,itemKey("cave_breather"),new AuraWorld.Lore("cave_breather",new Item.Properties().setId(itemKey("cave_breather")).durability(32)) {
   @Override public void onCraftedBy(ItemStack stack,Level l,Player p) {super.onCraftedBy(stack,l,p);if(p instanceof ServerPlayer sp)FungalInvestigation.crafted(sp);}

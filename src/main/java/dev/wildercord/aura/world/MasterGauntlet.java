@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * The Master Gauntlet (0.13): every Sword Master again, back to back. See {@link GauntletRules} for the numbers. A run is lost
@@ -35,7 +36,7 @@ public final class MasterGauntlet {
 	private MasterGauntlet() {}
 
 	/** The best full run in seconds (0 for none yet). */
-	public static final AttachmentType<Integer> BEST = AttachmentRegistry.create(Wildercord.id("gauntlet_best"),
+	public static final AttachmentType<Integer> BEST = McAttachments.create(Wildercord.id("gauntlet_best"),
 		builder -> builder.initializer(() -> 0).persistent(Codec.INT).copyOnDeath());
 	private static final Set<String> BLADES = Set.of("crimson", "dawn", "dune", "echo", "ember", "gale", "hollow", "hourglass", "iron", "rime",
 		"starlit", "stone", "thunder", "tide", "venom", "verdant");

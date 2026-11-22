@@ -28,6 +28,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.*;
 import java.util.UUID;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** One finite planted fan, one real frontal vanilla arrow, one exact consenting recipient. */
 public final class RooksRainshield {
@@ -46,11 +47,11 @@ public final class RooksRainshield {
   final ServerLevel level;final ServerPlayer carrier,recipient;final ItemStack held;final InteractionHand hand;final Vec3 origin,normal;final long start,until,generation;final UUID nonce=UUID.randomUUID();boolean spent;int beat;
   Fan(ServerPlayer p,ServerPlayer r,InteractionHand h,long generation){this.generation=generation;level=((ServerLevel) p.level());carrier=p;recipient=r;held=p.getItemInHand(h);hand=h;origin=p.position();normal=p.getLookAngle().multiply(1,0,1).normalize();start=now(p);until=start+PREP+WINDOW;}
  }
- private static final AttachmentType<Selection> SELECT=AttachmentRegistry.create(Wildercord.id("rainshield_selection"),b->{});
- private static final AttachmentType<Long> GENERATION=AttachmentRegistry.create(Wildercord.id("rainshield_generation"),b->b.initializer(()->0L));
- private static final AttachmentType<Draw> DRAW=AttachmentRegistry.create(Wildercord.id("rainshield_draw"),b->{});
- private static final AttachmentType<Fan> FAN=AttachmentRegistry.create(Wildercord.id("rainshield_fan"),b->{}),COVER=AttachmentRegistry.create(Wildercord.id("rainshield_cover"),b->{});
- public static final AttachmentType<Long> READY=AttachmentRegistry.create(Wildercord.id("rainshield_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
+ private static final AttachmentType<Selection> SELECT=McAttachments.create(Wildercord.id("rainshield_selection"),b->{});
+ private static final AttachmentType<Long> GENERATION=McAttachments.create(Wildercord.id("rainshield_generation"),b->b.initializer(()->0L));
+ private static final AttachmentType<Draw> DRAW=McAttachments.create(Wildercord.id("rainshield_draw"),b->{});
+ private static final AttachmentType<Fan> FAN=McAttachments.create(Wildercord.id("rainshield_fan"),b->{}),COVER=McAttachments.create(Wildercord.id("rainshield_cover"),b->{});
+ public static final AttachmentType<Long> READY=McAttachments.create(Wildercord.id("rainshield_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
  private static ResourceKey<Item> key(){return ResourceKey.create(Registries.ITEM,Wildercord.id("rooks_rainshield"));}
  // The final pivot point is retained: a draw requires at least five durability, so wear cannot break ownership during callbacks.
  public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,key(),new AuraWorld.Lore("rooks_rainshield",new Item.Properties().setId(key()).durability(65).rarity(Rarity.RARE)){

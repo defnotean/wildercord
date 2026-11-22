@@ -23,6 +23,7 @@ import net.minecraft.world.item.equipment.*;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** Shallow-water footwear and a single visible creature-warning observation. */
 public final class TidewardEquipment {
@@ -34,15 +35,15 @@ public final class TidewardEquipment {
  private static final ArmorMaterial GLASS_MATERIAL=new ArmorMaterial(6,Map.of(ArmorType.HELMET,0,ArmorType.CHESTPLATE,0,ArmorType.LEGGINGS,0,ArmorType.BOOTS,0),4,SoundEvents.ARMOR_EQUIP_LEATHER,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_dewglass")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:dewglass"));
  public static final Item WADERS=Registry.register(BuiltInRegistries.ITEM,key("reedwater_waders"),new AuraWorld.Lore("reedwater_waders",WADER_MATERIAL.humanoidProperties(new Item.Properties().setId(key("reedwater_waders")), ArmorType.BOOTS).rarity(Rarity.UNCOMMON)));
  public static final Item SPECTACLES=Registry.register(BuiltInRegistries.ITEM,key("dewglass_spectacles"),new AuraWorld.Lore("dewglass_spectacles",GLASS_MATERIAL.humanoidProperties(new Item.Properties().setId(key("dewglass_spectacles")), ArmorType.HELMET).rarity(Rarity.UNCOMMON)));
- private static AttachmentType<Long> rest(String name){return AttachmentRegistry.create(Wildercord.id(name),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());}
+ private static AttachmentType<Long> rest(String name){return McAttachments.create(Wildercord.id(name),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());}
  public static final AttachmentType<Long> WALK_READY=rest("tideward_walk_ready"),SIGHT_READY=rest("tideward_sight_ready");
- public static final AttachmentType<Integer> WALK_PROGRESS=AttachmentRegistry.create(Wildercord.id("tideward_walk_progress"),b -> b.initializer(() -> 0).persistent(Codec.intRange(0,WALK_WINDOW-1)).copyOnDeath());
+ public static final AttachmentType<Integer> WALK_PROGRESS=McAttachments.create(Wildercord.id("tideward_walk_progress"),b -> b.initializer(() -> 0).persistent(Codec.intRange(0,WALK_WINDOW-1)).copyOnDeath());
  private static final ResourceLocation WALK_ID=Wildercord.id("reedwater_walk");
  private static final AttributeModifier WALK_MODIFIER=new AttributeModifier(WALK_ID,.25,AttributeModifier.Operation.ADD_VALUE);
  private static final class Walk {ItemStack worn=ItemStack.EMPTY;ServerLevel world;Vec3 at=Vec3.ZERO;}
  private static final class Sight {ItemStack worn=ItemStack.EMPTY;ServerLevel world;UUID target;int ticks;}
- private static final AttachmentType<Walk> WALK=AttachmentRegistry.create(Wildercord.id("tideward_walk"),b -> b.initializer(Walk::new));
- private static final AttachmentType<Sight> SIGHT=AttachmentRegistry.create(Wildercord.id("tideward_sight"),b -> b.initializer(Sight::new));
+ private static final AttachmentType<Walk> WALK=McAttachments.create(Wildercord.id("tideward_walk"),b -> b.initializer(Walk::new));
+ private static final AttachmentType<Sight> SIGHT=McAttachments.create(Wildercord.id("tideward_sight"),b -> b.initializer(Sight::new));
  public static long clock(ServerPlayer p){return p.level().getServer().overworld().getGameTime();}
  public static boolean actor(ServerPlayer p){return p.isAlive() && !p.isRemoved() && !p.isSpectator() && !p.isCreative();}
  public static boolean shallow(ServerPlayer p){

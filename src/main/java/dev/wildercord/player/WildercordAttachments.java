@@ -3,7 +3,6 @@ package dev.wildercord.player;
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.ItemStack;
@@ -14,18 +13,18 @@ import net.minecraft.network.codec.StreamCodec;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import dev.wildercord.compat.McAttachments;
 
 /** Per-player state. Saved with the player and synced only to that player. */
 public final class WildercordAttachments {
 	private WildercordAttachments() {}
 
 	/** The Cord worn in the Cord slot. Kept through death. */
-	public static final AttachmentType<ItemStack> CORD = AttachmentRegistry.create(
+	public static final AttachmentType<ItemStack> CORD = McAttachments.create(
 		Wildercord.id("cord"),
 		builder -> builder
 			.initializer(() -> ItemStack.EMPTY)
 			.persistent(ItemStack.OPTIONAL_CODEC)
-			.syncWith(ItemStack.OPTIONAL_STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -35,12 +34,12 @@ public final class WildercordAttachments {
 	 * Cord it isn't kept through death: it drops like the rest of the inventory, or is carried over with it
 	 * under keepInventory (see {@code gear.GearSlots}).
 	 */
-	public static final AttachmentType<Map<String, ItemStack>> GEAR = AttachmentRegistry.create(
+	public static final AttachmentType<Map<String, ItemStack>> GEAR = McAttachments.create(
 		Wildercord.id("gear"),
 		builder -> builder
 			.initializer(Map::of)
 			.persistent(Codec.unboundedMap(Codec.STRING, ItemStack.OPTIONAL_CODEC))
-			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ItemStack.OPTIONAL_STREAM_CODEC), AttachmentSyncPredicate.all())
+			
 	);
 
 	/**
@@ -48,78 +47,75 @@ public final class WildercordAttachments {
 	 * player and synced only to them: what's inside is nobody else's business. Like the gear it isn't kept
 	 * through death: it drops, or is carried over under keepInventory.
 	 */
-	public static final AttachmentType<ItemStack> BACKPACK = AttachmentRegistry.create(
+	public static final AttachmentType<ItemStack> BACKPACK = McAttachments.create(
 		Wildercord.id("backpack"),
 		builder -> builder
 			.persistent(ItemStack.OPTIONAL_CODEC)
-			.syncWith(ItemStack.OPTIONAL_STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+			
 	);
 
 	/**
 	 * How the worn backpack looks: the bare item and its colour, none of its contents. Synced to everyone who
 	 * can see the wearer, who see it on their back. Saved alongside {@link #BACKPACK}, and always set with it.
 	 */
-	public static final AttachmentType<ItemStack> BACKPACK_LOOK = AttachmentRegistry.create(
+	public static final AttachmentType<ItemStack> BACKPACK_LOOK = McAttachments.create(
 		Wildercord.id("backpack_look"),
 		builder -> builder
 			.persistent(ItemStack.OPTIONAL_CODEC)
-			.syncWith(ItemStack.OPTIONAL_STREAM_CODEC, AttachmentSyncPredicate.all())
+			
 	);
 
 	/** Learned runes and threaded spells. Kept through death. */
-	public static final AttachmentType<Spellbook> SPELLBOOK = AttachmentRegistry.create(
+	public static final AttachmentType<Spellbook> SPELLBOOK = McAttachments.create(
 		Wildercord.id("spellbook"),
 		builder -> builder
 			.initializer(() -> Spellbook.EMPTY)
 			.persistent(Spellbook.CODEC)
-			.syncWith(Spellbook.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Current mana. Refills from zero after a respawn. */
-	public static final AttachmentType<Float> MANA = AttachmentRegistry.create(
+	public static final AttachmentType<Float> MANA = McAttachments.create(
 		Wildercord.id("mana"),
 		builder -> builder
 			.initializer(() -> 0.0F)
 			.persistent(Codec.FLOAT)
-			.syncWith(ByteBufCodecs.FLOAT, AttachmentSyncPredicate.targetOnly())
+			
 	);
 
 	/**
 	 * Game time at which each spell is ready again. Synced for the HUD's cooldown ring. Saved and
 	 * kept through death, so logging out and back in doesn't reset a long cooldown.
 	 */
-	public static final AttachmentType<List<Long>> COOLDOWNS = AttachmentRegistry.create(
+	public static final AttachmentType<List<Long>> COOLDOWNS = McAttachments.create(
 		Wildercord.id("cooldowns"),
 		builder -> builder
 			.initializer(() -> List.of(0L, 0L, 0L, 0L))
 			.persistent(Codec.LONG.listOf())
 			.copyOnDeath()
-			.syncWith(ByteBufCodecs.VAR_LONG.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.targetOnly())
+			
 	);
 
 	/** Mana Crystals used: each is +10 max mana, forever. */
-	public static final AttachmentType<Integer> CRYSTALS = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> CRYSTALS = McAttachments.create(
 		Wildercord.id("crystals"),
 		builder -> builder
 			.initializer(() -> 0)
 			.persistent(Codec.INT)
-			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Heart Circles formed (0 to 20; the original integer save format is unchanged). Kept through death. */
-	public static final AttachmentType<Integer> CIRCLES = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> CIRCLES = McAttachments.create(
 		Wildercord.id("circles"),
 		builder -> builder
 			.initializer(() -> 0)
 			.persistent(Codec.INT)
-			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Which tempering this heart was last measured under (0: before 0.12). See {@link dev.wildercord.player.Retemper}. */
-	public static final AttachmentType<Integer> TEMPERED = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> TEMPERED = McAttachments.create(
 		Wildercord.id("tempered"),
 		builder -> builder
 			.initializer(() -> 0)
@@ -128,142 +124,130 @@ public final class WildercordAttachments {
 	);
 
 	/** Mana spent on spells, in total: it condenses toward the next circle. Kept through death. */
-	public static final AttachmentType<Integer> CONDENSED = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> CONDENSED = McAttachments.create(
 		Wildercord.id("condensed"),
 		builder -> builder
 			.initializer(() -> 0)
 			.persistent(Codec.INT)
-			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Monsters defeated with spells, in total (a breakthrough for several Heart Circles). Kept through death. */
-	public static final AttachmentType<Integer> SPELL_KILLS = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> SPELL_KILLS = McAttachments.create(
 		Wildercord.id("spell_kills"),
 		builder -> builder
 			.initializer(() -> 0)
 			.persistent(Codec.INT)
-			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Has eaten of the Coilroot the Rootcoil Serpent guards: more aura breathed in, and a trickle besides, for good. Kept through death. */
-	public static final AttachmentType<Boolean> COILROOT = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> COILROOT = McAttachments.create(
 		Wildercord.id("coilroot"),
 		builder -> builder
 			.initializer(() -> false)
 			.persistent(Codec.BOOL)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Has laid a hand on the Bell Shard the Drowned Bell-Warden guards: near death, it tolls for them. Kept through death. */
-	public static final AttachmentType<Boolean> BELL_SHARD = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> BELL_SHARD = McAttachments.create(
 		Wildercord.id("bell_shard"),
 		builder -> builder
 			.initializer(() -> false)
 			.persistent(Codec.BOOL)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Has taken up the Weaver's Silk the Hollow Matron guards: walls can be climbed. Kept through death. */
-	public static final AttachmentType<Boolean> WEAVERS_SILK = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> WEAVERS_SILK = McAttachments.create(
 		Wildercord.id("weavers_silk"),
 		builder -> builder
 			.initializer(() -> false)
 			.persistent(Codec.BOOL)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Has put the Weaver's Silk away (the silk key, or /silk): walls stop holding them until they take it out again. Kept through death. */
-	public static final AttachmentType<Boolean> WEAVERS_SILK_STOWED = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> WEAVERS_SILK_STOWED = McAttachments.create(
 		Wildercord.id("weavers_silk_stowed"),
 		builder -> builder
 			.initializer(() -> false)
 			.persistent(Codec.BOOL)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Whether this player has taken the Bearer's Lantern from the foot of the Barrow Field's gibbet (and the gravedigger's book with it). */
-	public static final AttachmentType<Boolean> BARROW_LANTERN = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> BARROW_LANTERN = McAttachments.create(
 		Wildercord.id("barrow_lantern"),
 		builder -> builder
 			.initializer(() -> false)
 			.persistent(Codec.BOOL)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Whether this player has taken up the Rimescale from the Frost Wyrmling's mound. */
-	public static final AttachmentType<Boolean> RIMESCALE = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> RIMESCALE = McAttachments.create(
 		Wildercord.id("rimescale"),
 		builder -> builder
 			.initializer(() -> false)
 			.persistent(Codec.BOOL)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Has taken up the Cinder Antler the Ashen Stag guards: a sprint ends in a gore. Kept through death. */
-	public static final AttachmentType<Boolean> CINDER_ANTLER = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> CINDER_ANTLER = McAttachments.create(
 		Wildercord.id("cinder_antler"),
 		builder -> builder
 			.initializer(() -> false)
 			.persistent(Codec.BOOL)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Has helped slay a boss (the 7th Circle's breakthrough). Kept through death. */
-	public static final AttachmentType<Boolean> BOSS_SLAIN = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> BOSS_SLAIN = McAttachments.create(
 		Wildercord.id("boss_slain"),
 		builder -> builder
 			.initializer(() -> false)
 			.persistent(Codec.BOOL)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Whether the player is meditating (sneaking and still). Worked out by the server. */
-	public static final AttachmentType<Boolean> MEDITATING = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> MEDITATING = McAttachments.create(
 		Wildercord.id("meditating"),
 		builder -> builder
 			.initializer(() -> false)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			
 	);
 
 	/** On a summoned spirit wolf: the game time it fades. Saved, so a reload can't make it permanent. */
-	public static final AttachmentType<Long> SPIRIT_UNTIL = AttachmentRegistry.create(
+	public static final AttachmentType<Long> SPIRIT_UNTIL = McAttachments.create(
 		Wildercord.id("spirit_until"),
 		builder -> builder.persistent(Codec.LONG)
 	);
 
 	/** On a mob frozen by Freeze: the game time its AI comes back. Saved, so a reload can't leave it frozen. */
-	public static final AttachmentType<Long> FROZEN_UNTIL = AttachmentRegistry.create(
+	public static final AttachmentType<Long> FROZEN_UNTIL = McAttachments.create(
 		Wildercord.id("frozen_until"),
 		builder -> builder.persistent(Codec.LONG)
 	);
 
 	/** The Grimoire: every reaction, secret spell, feat and hint discovered (see {@code spell.Feats}). Kept through death. */
-	public static final AttachmentType<List<String>> GRIMOIRE = AttachmentRegistry.create(
+	public static final AttachmentType<List<String>> GRIMOIRE = McAttachments.create(
 		Wildercord.id("grimoire"),
 		builder -> builder
 			.initializer(List::of)
 			.persistent(Codec.STRING.listOf())
-			.syncWith(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** The innate rune awakened at the 1st Circle (a rune id), or empty before then. Kept through death. */
-	public static final AttachmentType<String> INNATE = AttachmentRegistry.create(
+	public static final AttachmentType<String> INNATE = McAttachments.create(
 		Wildercord.id("innate"),
 		builder -> builder
 			.initializer(() -> "")
 			.persistent(Codec.STRING)
-			.syncWith(ByteBufCodecs.STRING_UTF8, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -271,12 +255,11 @@ public final class WildercordAttachments {
 	 * Casts per element, as leaning counted them before affinities existed. No longer counted: read once,
 	 * when a caster first gets affinities, to give them a start (see {@code cast.PlayerAffinities}).
 	 */
-	public static final AttachmentType<Map<String, Integer>> ELEMENT_CASTS = AttachmentRegistry.create(
+	public static final AttachmentType<Map<String, Integer>> ELEMENT_CASTS = McAttachments.create(
 		Wildercord.id("element_casts"),
 		builder -> builder
 			.initializer(Map::of)
 			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
-			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -284,11 +267,10 @@ public final class WildercordAttachments {
 	 * A player's affinity points with each element (element to points; see {@code spell.PlayerAffinity}).
 	 * Synced for the Grimoire page, the readout and the cost the HUD shows. Kept through death.
 	 */
-	public static final AttachmentType<Map<String, Integer>> AFFINITY = AttachmentRegistry.create(
+	public static final AttachmentType<Map<String, Integer>> AFFINITY = McAttachments.create(
 		Wildercord.id("affinity"),
 		builder -> builder
 			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
-			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -314,7 +296,7 @@ public final class WildercordAttachments {
 	}
 
 	/** The day's affinity allowances (server only: nobody else needs them). Saved and kept through death, so neither resets them. */
-	public static final AttachmentType<AffinityTally> AFFINITY_TALLY = AttachmentRegistry.create(
+	public static final AttachmentType<AffinityTally> AFFINITY_TALLY = McAttachments.create(
 		Wildercord.id("affinity_tally"),
 		builder -> builder
 			.initializer(() -> AffinityTally.NONE)
@@ -326,12 +308,11 @@ public final class WildercordAttachments {
 	 * The rank each rune has reached at the Fusion Altar (rune id to 2 or 3; a rune not listed is rank I).
 	 * Synced so the Cord screen and tooltips can show it. Kept through death.
 	 */
-	public static final AttachmentType<Map<String, Integer>> RUNE_RANKS = AttachmentRegistry.create(
+	public static final AttachmentType<Map<String, Integer>> RUNE_RANKS = McAttachments.create(
 		Wildercord.id("rune_ranks"),
 		builder -> builder
 			.initializer(Map::of)
 			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
-			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -339,12 +320,11 @@ public final class WildercordAttachments {
 	 * The runes the player has twisted with a flawed or corrupted copy (rune id to twist id; see
 	 * {@link dev.wildercord.spell.RuneTwistRules}). Synced so tooltips can show it. Kept through death.
 	 */
-	public static final AttachmentType<Map<String, String>> RUNE_TWISTS = AttachmentRegistry.create(
+	public static final AttachmentType<Map<String, String>> RUNE_TWISTS = McAttachments.create(
 		Wildercord.id("rune_twists"),
 		builder -> builder
 			.initializer(Map::of)
 			.persistent(Codec.unboundedMap(Codec.STRING, Codec.STRING))
-			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.STRING_UTF8), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -352,22 +332,20 @@ public final class WildercordAttachments {
 	 * When the player last attuned in each land (attunement id to game time), so a land gives its rune
 	 * once a day. Synced so the Grimoire can show when each land is ready again. Kept through death.
 	 */
-	public static final AttachmentType<Map<String, Long>> ATTUNED_AT = AttachmentRegistry.create(
+	public static final AttachmentType<Map<String, Long>> ATTUNED_AT = McAttachments.create(
 		Wildercord.id("attuned_at"),
 		builder -> builder
 			.initializer(Map::of)
 			.persistent(Codec.unboundedMap(Codec.STRING, Codec.LONG))
-			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_LONG), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Runebound slain (a breakthrough for the 6th Circle). Kept through death. */
-	public static final AttachmentType<Integer> RUNEBOUND_SLAIN = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> RUNEBOUND_SLAIN = McAttachments.create(
 		Wildercord.id("runebound_slain"),
 		builder -> builder
 			.initializer(() -> 0)
 			.persistent(Codec.INT)
-			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -386,12 +364,11 @@ public final class WildercordAttachments {
 		}
 	}
 
-	public static final AttachmentType<Cracks> CRACKS = AttachmentRegistry.create(
+	public static final AttachmentType<Cracks> CRACKS = McAttachments.create(
 		Wildercord.id("cracks"),
 		builder -> builder
 			.initializer(() -> Cracks.NONE)
 			.persistent(Cracks.CODEC)
-			.syncWith(Cracks.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -402,11 +379,11 @@ public final class WildercordAttachments {
 			ByteBufCodecs.VAR_INT, Rhythm::stacks, ByteBufCodecs.VAR_LONG, Rhythm::windowStart, ByteBufCodecs.VAR_LONG, Rhythm::windowEnd, Rhythm::new);
 	}
 
-	public static final AttachmentType<Rhythm> RHYTHM = AttachmentRegistry.create(
+	public static final AttachmentType<Rhythm> RHYTHM = McAttachments.create(
 		Wildercord.id("rhythm"),
 		builder -> builder
 			.initializer(() -> Rhythm.NONE)
-			.syncWith(Rhythm.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+			
 	);
 
 	/**
@@ -450,19 +427,19 @@ public final class WildercordAttachments {
 		}
 	}
 
-	public static final AttachmentType<SpellShield> SPELL_SHIELD = AttachmentRegistry.create(
+	public static final AttachmentType<SpellShield> SPELL_SHIELD = McAttachments.create(
 		Wildercord.id("spell_shield"),
-		builder -> builder.syncWith(SpellShield.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	/** On an arrow fired from an imbued bow: the spell it releases where it lands, and its colour. Server only. */
 	public record ImbuedShot(List<String> runes, int color) {}
 
-	public static final AttachmentType<ImbuedShot> IMBUED_SHOT = AttachmentRegistry.create(Wildercord.id("imbued_shot"), builder -> {});
+	public static final AttachmentType<ImbuedShot> IMBUED_SHOT = McAttachments.create(Wildercord.id("imbued_shot"), builder -> {});
 
-	public static final AttachmentType<Charge> CHARGE = AttachmentRegistry.create(
+	public static final AttachmentType<Charge> CHARGE = McAttachments.create(
 		Wildercord.id("charge"),
-		builder -> builder.syncWith(Charge.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	/**
@@ -475,10 +452,10 @@ public final class WildercordAttachments {
 			ByteBufCodecs.STRING_UTF8, CordLook::tier, ByteBufCodecs.INT.apply(ByteBufCodecs.list(12)), CordLook::beads, CordLook::new);
 	}
 
-	public static final AttachmentType<CordLook> CORD_LOOK = AttachmentRegistry.create(
+	public static final AttachmentType<CordLook> CORD_LOOK = McAttachments.create(
 		Wildercord.id("cord_look"),
 		// Kept through death with the Cord itself, so it doesn't vanish from a respawned player for a moment.
-		builder -> builder.syncWith(CordLook.STREAM_CODEC, AttachmentSyncPredicate.all()).copyOnDeath()
+		builder -> builder.copyOnDeath()
 	);
 
 	/**
@@ -486,7 +463,7 @@ public final class WildercordAttachments {
 	 * gravity before. Saved, so something held when it was saved (a player logging out, a server
 	 * stopping) gets its gravity back when it loads, instead of floating forever.
 	 */
-	public static final AttachmentType<Boolean> HELD_GRAVITY = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> HELD_GRAVITY = McAttachments.create(
 		Wildercord.id("held_gravity"),
 		builder -> builder.persistent(Codec.BOOL)
 	);
@@ -499,29 +476,29 @@ public final class WildercordAttachments {
 		public static final int TICKS = 12;
 	}
 
-	public static final AttachmentType<CastPose> CAST_POSE = AttachmentRegistry.create(
+	public static final AttachmentType<CastPose> CAST_POSE = McAttachments.create(
 		Wildercord.id("cast_pose"),
-		builder -> builder.syncWith(CastPose.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	/** Standing on a ley line right now (worked out by the server every few ticks). */
-	public static final AttachmentType<Boolean> ON_LEY = AttachmentRegistry.create(
+	public static final AttachmentType<Boolean> ON_LEY = McAttachments.create(
 		Wildercord.id("on_ley"),
 		builder -> builder
 			.initializer(() -> false)
-			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+			
 	);
 
 	/** Near an awake Wellstone: the game time that stops counting unless it's renewed. */
-	public static final AttachmentType<Long> WELL_UNTIL = AttachmentRegistry.create(
+	public static final AttachmentType<Long> WELL_UNTIL = McAttachments.create(
 		Wildercord.id("well_until"),
 		builder -> builder
 			.initializer(() -> 0L)
-			.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly())
+			
 	);
 
 	/** On a Runebound monster: the runes of the spell it casts. Saved with the monster. */
-	public static final AttachmentType<List<String>> RUNEBOUND = AttachmentRegistry.create(
+	public static final AttachmentType<List<String>> RUNEBOUND = McAttachments.create(
 		Wildercord.id("runebound"),
 		builder -> builder.persistent(Codec.STRING.listOf())
 	);
@@ -543,9 +520,9 @@ public final class WildercordAttachments {
 	 * On a Runebound monster: its rune marks. Not saved (worked out again from its spell as it
 	 * loads); synced to everyone tracking it, who draw the glowing marks on its body.
 	 */
-	public static final AttachmentType<RuneMarks> RUNE_MARKS = AttachmentRegistry.create(
+	public static final AttachmentType<RuneMarks> RUNE_MARKS = McAttachments.create(
 		Wildercord.id("rune_marks"),
-		builder -> builder.syncWith(RuneMarks.STREAM_CODEC, AttachmentSyncPredicate.all())
+		builder -> builder
 	);
 
 	/**
@@ -553,11 +530,11 @@ public final class WildercordAttachments {
 	 * {@code cast.SpellDefence}). Saved, so leaving and coming back doesn't recharge it; synced, for the Cord screen's
 	 * readout. Not kept through death: a player who respawns starts with it ready.
 	 */
-	public static final AttachmentType<Long> SPELLGUARD = AttachmentRegistry.create(
+	public static final AttachmentType<Long> SPELLGUARD = McAttachments.create(
 		Wildercord.id("spellguard"),
 		builder -> builder
 			.persistent(Codec.LONG)
-			.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly())
+			
 );
 
 	/**
@@ -578,11 +555,11 @@ public final class WildercordAttachments {
 			ByteBufCodecs.VAR_LONG, Soaring::until, ByteBufCodecs.FLOAT, Soaring::speed, ByteBufCodecs.BOOL, Soaring::falling, Soaring::new);
 	}
 
-	public static final AttachmentType<Soaring> SOARING = AttachmentRegistry.create(
+	public static final AttachmentType<Soaring> SOARING = McAttachments.create(
 		Wildercord.id("soaring"),
 		builder -> builder
 			.persistent(Soaring.CODEC)
-			.syncWith(Soaring.STREAM_CODEC, AttachmentSyncPredicate.all())
+			
 	);
 
 	/**
@@ -590,7 +567,7 @@ public final class WildercordAttachments {
 	 * that ends for any reason but death rests them for 30 seconds; see {@code cast.SoarRules#REST_TICKS}).
 	 * Saved, so logging out doesn't cut it short, and kept through death, so dying doesn't either. Server only.
 	 */
-	public static final AttachmentType<Long> SOAR_REST = AttachmentRegistry.create(
+	public static final AttachmentType<Long> SOAR_REST = McAttachments.create(
 		Wildercord.id("soar_rest"),
 		builder -> builder.persistent(Codec.LONG).copyOnDeath()
 	);
@@ -601,12 +578,11 @@ public final class WildercordAttachments {
 	 * needs nothing here; an entry is dropped the moment its rune is understood. Saved, synced for the Codex, kept
 	 * through death.
 	 */
-	public static final AttachmentType<Map<String, Integer>> RUNE_READING = AttachmentRegistry.create(
+	public static final AttachmentType<Map<String, Integer>> RUNE_READING = McAttachments.create(
 		Wildercord.id("rune_reading"),
 		builder -> builder
 			.initializer(Map::of)
 			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
-			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
@@ -647,51 +623,47 @@ public final class WildercordAttachments {
 			WorldLore::new);
 	}
 
-	public static final AttachmentType<WorldLore> WORLD_LORE = AttachmentRegistry.create(
+	public static final AttachmentType<WorldLore> WORLD_LORE = McAttachments.create(
 		Wildercord.id("world_lore"),
 		builder -> builder
 			.initializer(() -> WorldLore.NONE)
-			.syncWith(WorldLore.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+			
 	);
 
 	// ---- prog pack
 	/** Circle Vows taken (two bits per vow, see {@link dev.wildercord.spell.CircleVows}); absent in old saves, which means none. Kept through death. */
-	public static final AttachmentType<Integer> CIRCLE_VOWS = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> CIRCLE_VOWS = McAttachments.create(
 		Wildercord.id("circle_vows"),
 		builder -> builder
 			.initializer(() -> 0)
 			.persistent(Codec.INT)
-			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** The Heart Path walked from the Tenth Circle (see {@link dev.wildercord.spell.HeartPaths}); 0 is none. Kept through death. */
-	public static final AttachmentType<Integer> HEART_PATH = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> HEART_PATH = McAttachments.create(
 		Wildercord.id("heart_path"),
 		builder -> builder
 			.initializer(() -> 0)
 			.persistent(Codec.INT)
-			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** Ascensions formed past the Twentieth Circle (see {@link dev.wildercord.spell.AscensionRules}); absent in old saves. Kept through death. */
-	public static final AttachmentType<Integer> ASCENSION = AttachmentRegistry.create(
+	public static final AttachmentType<Integer> ASCENSION = McAttachments.create(
 		Wildercord.id("ascension"),
 		builder -> builder
 			.initializer(() -> 0)
 			.persistent(Codec.INT)
-			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
 	/** The codex bestiary's tally (see {@link dev.wildercord.spell.CodexRules}): kills of each field-guide creature by type id. Kept through death. */
-	public static final AttachmentType<Map<String, Integer>> CODEX = AttachmentRegistry.create(
+	public static final AttachmentType<Map<String, Integer>> CODEX = McAttachments.create(
 		Wildercord.id("codex"),
 		builder -> builder
 			.initializer(Map::of)
 			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
-			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 

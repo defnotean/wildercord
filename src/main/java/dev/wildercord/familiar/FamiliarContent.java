@@ -2,7 +2,6 @@ package dev.wildercord.familiar;
 
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -16,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Everything familiars register: the wisp, the Wisp Lantern, their sounds (synthesised by
@@ -53,12 +53,11 @@ public final class FamiliarContent {
 	public static final SoundEvent WISP_LEVEL = sound("wisp_level");
 
 	/** Each player's familiars. Saved, kept through death, and synced to them for the lantern's tooltip. */
-	public static final AttachmentType<Bonds> BONDS = AttachmentRegistry.create(
+	public static final AttachmentType<Bonds> BONDS = McAttachments.create(
 		Wildercord.id("familiars"),
 		builder -> builder
 			.initializer(() -> Bonds.NONE)
 			.persistent(Bonds.CODEC)
-			.syncWith(Bonds.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 

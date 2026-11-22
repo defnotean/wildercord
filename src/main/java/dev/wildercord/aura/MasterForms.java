@@ -11,7 +11,6 @@ import dev.wildercord.cast.VoidTime;
 import dev.wildercord.player.WildercordAttachments;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -36,6 +35,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** One learned/equipped Master-form slot, separate from written techniques and fixed-release combat arts. */
 public final class MasterForms {
@@ -65,9 +65,9 @@ public final class MasterForms {
 			ByteBufCodecs.VAR_LONG, Progress::recoveryUntil, ByteBufCodecs.VAR_LONG, Progress::landingUntil,
 			ByteBufCodecs.BOOL, Progress::hingeLearned, Progress::new);
 	}
-	public static final AttachmentType<Progress> PROGRESS = AttachmentRegistry.create(Wildercord.id("master_forms"),
+	public static final AttachmentType<Progress> PROGRESS = McAttachments.create(Wildercord.id("master_forms"),
 		builder -> builder.initializer(() -> Progress.NONE).persistent(Progress.CODEC).copyOnDeath()
-			.syncWith(Progress.STREAM_CODEC, AttachmentSyncPredicate.targetOnly()));
+			);
 	/** Remaining times are relative ticks, so the HUD is correct in worlds with different clocks. */
 	public record View(long epoch, int phase, int ticks, int rest, int recovery, int commitment) {
 		public static final View NONE = new View(0, 0, 0, 0, 0, 0);
@@ -75,8 +75,8 @@ public final class MasterForms {
 			ByteBufCodecs.VAR_INT, View::phase, ByteBufCodecs.VAR_INT, View::ticks, ByteBufCodecs.VAR_INT, View::rest,
 			ByteBufCodecs.VAR_INT, View::recovery, ByteBufCodecs.VAR_INT, View::commitment, View::new);
 	}
-	public static final AttachmentType<View> VIEW = AttachmentRegistry.create(Wildercord.id("master_form_view"),
-		builder -> builder.syncWith(View.CODEC, AttachmentSyncPredicate.targetOnly()));
+	public static final AttachmentType<View> VIEW = McAttachments.create(Wildercord.id("master_form_view"),
+		builder -> {});
 	public record Action(int action, long epoch, long sequence) implements CustomPacketPayload {
 		public static final Type<Action> TYPE = new Type<>(Wildercord.id("master_form_action"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Action> CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, Action::action,

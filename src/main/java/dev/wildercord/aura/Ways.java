@@ -8,7 +8,6 @@ import dev.wildercord.cast.Grimoire;
 import dev.wildercord.config.Config;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
@@ -19,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 import java.util.Optional;
+import dev.wildercord.compat.McAttachments;
 
 /**
  * Ways at runtime (the rules and numbers are {@link WayRules}): which Way a swordsman walks, kept on them, saved, kept through death
@@ -83,12 +83,11 @@ public final class Ways {
 	}
 
 	/** Each swordsman's Way: saved, kept through death (the path itself), synced to everyone near (an ally's client can see a Banner). */
-	public static final AttachmentType<State> WAY = AttachmentRegistry.create(
+	public static final AttachmentType<State> WAY = McAttachments.create(
 		Wildercord.id("aura_way"),
 		builder -> builder
 			.initializer(() -> State.NONE)
 			.persistent(State.CODEC)
-			.syncWith(State.STREAM_CODEC, AttachmentSyncPredicate.all())
 			.copyOnDeath()
 	);
 

@@ -3,11 +3,11 @@ package dev.wildercord.cast;
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
-import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
+import dev.wildercord.compat.McAttachments;
 
 /** Presentation only: endpoints and lifetime are chosen by the server and never sent back by a client. */
 public record RelayState(int phase, int slot, long start, long until, Vec3 focus, Vec3 end, int color) {
@@ -18,9 +18,9 @@ public record RelayState(int phase, int slot, long start, long until, Vec3 focus
 		b.writeDouble(s.end.x); b.writeDouble(s.end.y); b.writeDouble(s.end.z); b.writeInt(s.color);
 	}, b -> new RelayState(b.readVarInt(), b.readVarInt(), b.readLong(), b.readLong(),
 		new Vec3(b.readDouble(), b.readDouble(), b.readDouble()), new Vec3(b.readDouble(), b.readDouble(), b.readDouble()), b.readInt()));
-	public static final AttachmentType<RelayState> VIEW = AttachmentRegistry.create(Wildercord.id("relay_view"),
-		b -> b.syncWith(STREAM, AttachmentSyncPredicate.all()));
+	public static final AttachmentType<RelayState> VIEW = McAttachments.create(Wildercord.id("relay_view"),
+		b -> {});
 	/** A global-world clock, persisted through reconnect and copied through death; never reset by slot changes. */
-	public static final AttachmentType<Long> REST = AttachmentRegistry.create(Wildercord.id("relay_rest"),
-		b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath().syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly()));
+	public static final AttachmentType<Long> REST = McAttachments.create(Wildercord.id("relay_rest"),
+		b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
 }

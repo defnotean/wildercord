@@ -17,6 +17,7 @@ import net.minecraft.world.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.server.level.ServerLevel;
+import dev.wildercord.compat.McAttachments;
 
 /** A physical warning-window answer; neither a spell nor a tame, with saved player and crab rests. */
 public final class ReedRattle {
@@ -26,7 +27,7 @@ public final class ReedRattle {
     private static final ResourceKey<Item> KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("reed_rattle"));
     public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, KEY,
         new AuraWorld.Lore("reed_rattle", new Item.Properties().setId(KEY).durability(USES)));
-    public static final AttachmentType<Long> READY = AttachmentRegistry.create(Wildercord.id("reed_rattle_ready"),
+    public static final AttachmentType<Long> READY = McAttachments.create(Wildercord.id("reed_rattle_ready"),
         b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
     private static long clock(ServerPlayer p) { return p.level().getServer().overworld().getGameTime(); }
     private static boolean refuse(ServerPlayer p, String reason, Object... args) {

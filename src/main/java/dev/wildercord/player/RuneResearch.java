@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import java.util.*;
+import dev.wildercord.compat.McAttachments;
 
 /** Small permanent experiments, not repeatable chores. Rewards are granted once and offer fusion hints. */
 public final class RuneResearch {
@@ -21,7 +22,7 @@ public final class RuneResearch {
    Codec.STRING.listOf(0,128).fieldOf("fusions").forGetter(Notebook::fusions),Codec.BOOL.fieldOf("garden").forGetter(Notebook::garden),
    Codec.intRange(0,7).fieldOf("rewarded").forGetter(Notebook::rewarded)).apply(i,Notebook::new));
  }
- public static final AttachmentType<Notebook> NOTES=AttachmentRegistry.create(Wildercord.id("rune_research"),b->b.initializer(()->Notebook.EMPTY).persistent(Notebook.CODEC).copyOnDeath());
+ public static final AttachmentType<Notebook> NOTES=McAttachments.create(Wildercord.id("rune_research"),b->b.initializer(()->Notebook.EMPTY).persistent(Notebook.CODEC).copyOnDeath());
  public static void init() {}
  public static void cast(ServerPlayer p,List<RuneDef> runes) {
   if(p.isCreative()||p.isSpectator())return;

@@ -14,6 +14,7 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
+import dev.wildercord.compat.McAttachments;
 
 /** Two separate ordinary mana payments relocate one exact young fern; no plant or item escrow. */
 public final class RootCarry {
@@ -23,8 +24,8 @@ public final class RootCarry {
  public record Selection(ResourceKey<Level> dimension,BlockPos at,BlockState state,long until){
   public Selection{at=at.immutable();if(state==null||dimension==null||until<0)throw new IllegalArgumentException("Invalid selected root");}
  }
- public static final AttachmentType<Selection> SELECT=AttachmentRegistry.create(Wildercord.id("root_carry_selection"),b->{});
- public static final AttachmentType<Long> READY=AttachmentRegistry.create(Wildercord.id("root_carry_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
+ public static final AttachmentType<Selection> SELECT=McAttachments.create(Wildercord.id("root_carry_selection"),b->{});
+ public static final AttachmentType<Long> READY=McAttachments.create(Wildercord.id("root_carry_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
  private static long now(ServerPlayer p){return p.level().getServer().overworld().getGameTime();}
  private static boolean actor(Cast c){return c.alive()&&!c.passive&&c.caster instanceof ServerPlayer p&&!p.isCreative()&&!p.isSpectator()&&p.level()==c.level&&Casters.mayBuild(p);}
  private static boolean cell(Cast c,BlockPos p){return actor(c)&&c.level.hasChunkAt(p)&&c.level.getWorldBorder().isWithinBounds(p)&&c.caster.getEyePosition().distanceToSqr(point(p))<=36&&c.level.mayInteract((ServerPlayer)c.caster,p)&&!dev.wildercord.cast.Effects.isTemporary(c.level,p)&&c.level.getBlockEntity(p)==null&&actor(c)&&c.caster.getEyePosition().distanceToSqr(point(p))<=36&&visible(c,p);}
