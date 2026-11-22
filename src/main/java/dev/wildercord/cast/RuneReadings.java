@@ -149,7 +149,7 @@ public final class RuneReadings {
 			player.displayClientMessage(Component.translatable("message.wildercord.rune_glimpsed", name).withStyle(ChatFormatting.GRAY), true);
 		} else if (stage == RuneReading.Stage.UNDERSTOOD) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.rune_understood", name).withColor(0xC8D8F0));
-			Fx.sound(((ServerLevel) player.level()).level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.6F, 1.25F);
+			Fx.sound(((ServerLevel) player.level()), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.6F, 1.25F);
 		}
 	}
 }

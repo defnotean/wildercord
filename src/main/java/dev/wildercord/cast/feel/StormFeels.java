@@ -40,8 +40,8 @@ final class StormFeels {
 		// A steady beam in a violet sheath; its touch is violet too, not the storm's yellow.
 		Signature.of("plasma").accent(0xD070FF).sound(Phase.CUE, "storm_sizzle", 0.4F, 1.26F)
 			.replace(Phase.HIT).hook(Phase.HIT, ctx -> {
-				Vfx.emit(((ServerLevel) ctx.level()).level(), SigilOption.glow(0xD070FF, 0.9F), ctx.at(), 1, 0.0, 0.0);
-				Vfx.emit(((ServerLevel) ctx.level()).level(), ParticleTypes.ELECTRIC_SPARK, ctx.at(), 2, 0.3, 0.02);
+				Vfx.emit(((ServerLevel) ctx.level()), SigilOption.glow(0xD070FF, 0.9F), ctx.at(), 1, 0.0, 0.0);
+				Vfx.emit(((ServerLevel) ctx.level()), ParticleTypes.ELECTRIC_SPARK, ctx.at(), 2, 0.3, 0.02);
 			}).register();
 		// Lightning in the hands: storm with a life accent, a rising whine.
 		Signature.of("surge").accent(0x6EDC64).sound(Phase.CUE, "storm_whine", 0.6F, 1.0F).register();
@@ -52,8 +52,8 @@ final class StormFeels {
 		Signature.of("thunderhead").accent(0x8A9AB0).register();
 		// A current through the cold: frost-blue, so its touch is blue as well.
 		Signature.of("frostwire").accent(0x8CDCFF).replace(Phase.HIT).hook(Phase.HIT, ctx -> {
-			Vfx.emit(((ServerLevel) ctx.level()).level(), SigilOption.glow(0x8CDCFF, 0.9F), ctx.at(), 1, 0.0, 0.0);
-			Vfx.emit(((ServerLevel) ctx.level()).level(), ParticleTypes.SNOWFLAKE, ctx.at(), 3, 0.3, 0.02);
+			Vfx.emit(((ServerLevel) ctx.level()), SigilOption.glow(0x8CDCFF, 0.9F), ctx.at(), 1, 0.0, 0.0);
+			Vfx.emit(((ServerLevel) ctx.level()), ParticleTypes.SNOWFLAKE, ctx.at(), 3, 0.3, 0.02);
 		}).register();
 		Signature.of("thunderstep").accent(WHITE).register();
 		// ---- fx-explore pack

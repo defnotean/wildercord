@@ -932,7 +932,7 @@ public final class HearthEffects {
 				for (UUID other : b.members()) {
 					ServerPlayer ally = server.getPlayerList().getPlayer(other);
 					if (ally != null && ally != hurt) {
-						Fx.sound(((ServerLevel) ally.level()).level(), ally.position(), SoundEvents.NOTE_BLOCK_BELL, 0.8f, 0.8f);
+						Fx.sound(((ServerLevel) ally.level()), ally.position(), SoundEvents.NOTE_BLOCK_BELL, 0.8f, 0.8f);
 						Casters.tell(ally, Component.translatable("message.wildercord.hearth.bond_low", hurt.getDisplayName()));
 						if (ally.level() == hurt.level()) {
 							Fx.sendParticles((ServerLevel) hurt.level(), ally, ParticleTypes.END_ROD, true, true, hurt.getX(), hurt.getY() + 2.5, hurt.getZ(), 1, 0, 0, 0, 0);

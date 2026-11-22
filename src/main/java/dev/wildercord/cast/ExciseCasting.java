@@ -127,7 +127,7 @@ public final class ExciseCasting {
             dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(p, slot, ExciseRules.RUNES, cost);
             if (!focus.valid()) cancel(p); else {
                 publish(focus, ExciseState.HOLDING, tick + ExciseRules.COMMIT_TICKS);
-                dev.wildercord.cast.feel.Feels.sound(((ServerLevel) p.level()).level(), p.position(), "life_stinger_thorn", .3F, 1.12F);
+                dev.wildercord.cast.feel.Feels.sound(((ServerLevel) p.level()), p.position(), "life_stinger_thorn", .3F, 1.12F);
             }
             } finally { ADMITTING.remove(p.getUUID()); }
         }

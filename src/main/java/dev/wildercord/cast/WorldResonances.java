@@ -325,8 +325,8 @@ public final class WorldResonances {
 		player.connection.send(new ClientboundSetTitlesAnimationPacket(8, 60, 20));
 		player.connection.send(new ClientboundSetTitleTextPacket(Component.literal(capital(resonance.name())).withColor(resonance.color())));
 		player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("title.wildercord.resonance").withColor(0xE8E0FF)));
-		Fx.sound(((ServerLevel) player.level()).level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 0.9F);
-		Fx.sound(((ServerLevel) player.level()).level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 1.0F, 0.85F);
+		Fx.sound(((ServerLevel) player.level()), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 0.9F);
+		Fx.sound(((ServerLevel) player.level()), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 1.0F, 0.85F);
 		ServerPlayNetworking.send(player, new Revealed(Revealed.RESONANCE, resonance.name(), resonance.color()));
 		TwistVfx.revealed(player.level(), player, resonance.color());
 		Component name = Component.literal(resonance.name()).withColor(resonance.color());

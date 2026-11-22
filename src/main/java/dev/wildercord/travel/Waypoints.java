@@ -109,7 +109,7 @@ public final class Waypoints {
 			"/waypoint track " + name, Travel.text("waypoint_track_hover", Travel.name(name)));
 		player.sendSystemMessage(Travel.text(moved ? "waypoint_moved" : "waypoint_added", Travel.name(name), spot.describe(), track).withColor(Travel.ARCANE));
 		if (spot.in(player.level()) && spot.pos().distanceToSqr(player.position()) < 4) {
-			TravelFx.mark(((ServerLevel) player.level()).level(), player.position());
+			TravelFx.mark(((ServerLevel) player.level()), player.position());
 		}
 		if (name.equals(data.tracked())) {
 			sync(player);

@@ -47,7 +47,7 @@ public final class ReedRattle {
         p.setAttached(READY, now + REST_TICKS);
         p.getCooldowns().addCooldown(stack, REST_TICKS);
         stack.hurtAndBreak(1, p, dev.wildercord.compat.McHands.slot(hand));
-        Feels.sound(((ServerLevel) p.level()).level(), crab.position(), "wetland_reed_rattle", .6F, 1);
+        Feels.sound(((ServerLevel) p.level()), crab.position(), "wetland_reed_rattle", .6F, 1);
         p.displayClientMessage(Component.translatable("message.wildercord.reed_rattle.settle"), true);
         return true;
     }

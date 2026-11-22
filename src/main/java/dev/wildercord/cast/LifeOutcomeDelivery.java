@@ -17,7 +17,7 @@ final class LifeOutcomeDelivery {
   Long last=VOICES.get(key);if(last!=null&&now-last<delay)return;
   if(VOICES.size()>=128)prune(e.level().getServer());
   if(VOICES.size()>=128&&!VOICES.containsKey(key))return;
-  VOICES.put(key,now);Feels.sound(((ServerLevel) e.level()).level(),e.anchor(),sound,e.moment()==LifeOwnerEvents.Moment.PULSE?.12F:.38F,1);
+  VOICES.put(key,now);Feels.sound(((ServerLevel) e.level()),e.anchor(),sound,e.moment()==LifeOwnerEvents.Moment.PULSE?.12F:.38F,1);
  }
  static void prune(net.minecraft.server.MinecraftServer server){
   // Use each voice owner's world clock; a full old dimension cannot starve another dimension.

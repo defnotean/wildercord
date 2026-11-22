@@ -75,7 +75,7 @@ public final class TidewardEquipment {
     return;
    }
   }
-  if(rest){removeWalk(p);Feels.sound(((ServerLevel) p.level()).level(),p.position(),"tideward_weave_rest",.25F,1);}
+  if(rest){removeWalk(p);Feels.sound(((ServerLevel) p.level()),p.position(),"tideward_weave_rest",.25F,1);}
  }
  public static boolean visibleWarning(ServerPlayer p,ReedbackCrab crab){
   return actor(p) && p.isShiftKeyDown() && !p.isPassenger() && crab.level()==p.level()
@@ -108,7 +108,7 @@ public final class TidewardEquipment {
   if(p.getItemBySlot(EquipmentSlot.HEAD)!=worn || !worn.is(SPECTACLES) || !visibleWarning(p,crab))return;
   p.setAttached(SIGHT_READY,clock(p)+SIGHT_REST);
   TidewardCue.warning(p,crab);
-  Feels.sound(((ServerLevel) p.level()).level(),p.position(),"tideward_glass_warning",.3F,1);
+  Feels.sound(((ServerLevel) p.level()),p.position(),"tideward_glass_warning",.3F,1);
  }
  public static void init(){
   ServerTickEvents.END_SERVER_TICK.register(s -> s.getPlayerList().getPlayers().forEach(p -> {walk(p);sight(p);}));

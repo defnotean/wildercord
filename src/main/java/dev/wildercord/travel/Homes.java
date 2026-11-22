@@ -38,7 +38,7 @@ public final class Homes {
 		boolean usual = name.equals(TravelRules.DEFAULT_HOME);
 		String key = (check == TravelRules.HomeCheck.REPLACE ? "home_moved" : "home_set") + (usual ? "_default" : "");
 		Travel.good(player, key, Travel.name(name));
-		TravelFx.mark(((ServerLevel) player.level()).level(), player.position());
+		TravelFx.mark(((ServerLevel) player.level()), player.position());
 		return 1;
 	}
 

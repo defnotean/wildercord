@@ -320,7 +320,7 @@ public final class SpellCaster {
 		}
 		if (charge < 0.2) {
 			// A tap has no release sound of its own (the charged release has): a short snap so it doesn't leave in silence.
-			dev.wildercord.cast.feel.Feels.sound(((ServerLevel) player.level()).level(), player.position(), "tap_release", 0.45F, 1.0F);
+			dev.wildercord.cast.feel.Feels.sound(((ServerLevel) player.level()), player.position(), "tap_release", 0.45F, 1.0F);
 		}
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
@@ -374,7 +374,7 @@ public final class SpellCaster {
 		if (Innates.consumeTwin(player)) {
 			Scheduler.later(8, () -> {
 				if (cast.alive()) {
-					TechniqueVfx.twinStar(((ServerLevel) player.level()).level(), player);
+					TechniqueVfx.twinStar(((ServerLevel) player.level()), player);
 					// The twin is a shade weaker than the caster (75%): a free second cast is not a free double.
 					Cast again = cast.again(Innates.TWIN_POWER);
 					if (secret.isPresent()) {
@@ -655,7 +655,7 @@ public final class SpellCaster {
 	private static void fail(ServerPlayer player, Component message) {
 		player.displayClientMessage(message.copy().withStyle(ChatFormatting.RED), true);
 		// A quiet fizzle, so a cast that didn't go off is heard as well as read.
-		dev.wildercord.cast.feel.Feels.sound(((ServerLevel) player.level()).level(), player.position(), "fizzle", 0.4F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(((ServerLevel) player.level()), player.position(), "fizzle", 0.4F, 1.0F);
 	}
 
 	/** Mana regeneration and the starter runes, checked every few ticks. */

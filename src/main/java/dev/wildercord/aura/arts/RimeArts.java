@@ -411,7 +411,7 @@ public final class RimeArts {
 			if (age % 10 == 0) {
 				RandomSource r = field.level().getRandom();
 				Vec3 p = trail.get(r.nextInt(trail.size()));
-				Vfx.emit(((ServerLevel) field.level()).level(), ParticleTypes.SNOWFLAKE, p.add(0, 0.2, 0), 2, 0.4, 0.01);
+				Vfx.emit(((ServerLevel) field.level()), ParticleTypes.SNOWFLAKE, p.add(0, 0.2, 0), 2, 0.4, 0.01);
 				Motes.glow(field.level(), p.add((r.nextDouble() - 0.5) * 0.8, 0.12, (r.nextDouble() - 0.5) * 0.8), WHITE, 0.07, 14, new Vec3(0, 0.01, 0), 0.0);
 			}
 		});

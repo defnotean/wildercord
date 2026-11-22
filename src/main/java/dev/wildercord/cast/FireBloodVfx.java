@@ -687,7 +687,7 @@ public final class FireBloodVfx {
 
 	/** Meteor, anticipation: a ring of fire lifts off the hand and closes, the arm raised. */
 	public static void cueCall(FeelCtx ctx) {
-		ElementFx.ring(((ServerLevel) ctx.level()).level(), ctx.at().add(0, 0.25, 0), UP, ElementFx.FIRE.primary(), 0.7, 0.1, 0.04, 6);
+		ElementFx.ring(((ServerLevel) ctx.level()), ctx.at().add(0, 0.25, 0), UP, ElementFx.FIRE.primary(), 0.7, 0.1, 0.04, 6);
 	}
 
 	/** Cleave and Sanguine Rite, anticipation: a thin red line drawn in the air at the hand. */

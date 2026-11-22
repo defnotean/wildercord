@@ -80,7 +80,7 @@ public final class Warps extends SavedData {
 		}
 		boolean moved = of(player.level().getServer()).put(name, Spot.of(player));
 		Travel.good(player, moved ? "warp_moved" : "warp_set", Travel.name(name));
-		TravelFx.mark(((ServerLevel) player.level()).level(), player.position());
+		TravelFx.mark(((ServerLevel) player.level()), player.position());
 		return 1;
 	}
 

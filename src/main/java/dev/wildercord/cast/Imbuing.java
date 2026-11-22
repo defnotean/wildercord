@@ -250,7 +250,7 @@ public final class Imbuing {
 	 */
 	private static boolean holds(ServerPlayer holder, ItemStack stack, Imbued imbued) {
 		if (imbued != null && (dev.wildercord.spell.RelayRules.containsIds(imbued.runes()) || dev.wildercord.spell.ReweaveRules.containsIds(imbued.runes()) || dev.wildercord.spell.ExciseRules.containsIds(imbued.runes()) || dev.wildercord.spell.LessonPackRules.containsIds(imbued.runes()))) return false;
-		if (!imbued.counted() || Ledger.of(((ServerLevel) holder.level()).level()).has(imbued)) {
+		if (!imbued.counted() || Ledger.of(((ServerLevel) holder.level())).has(imbued)) {
 			return true;
 		}
 		strip(stack, imbued);

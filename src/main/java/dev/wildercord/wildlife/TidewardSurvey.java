@@ -93,7 +93,7 @@ public final class TidewardSurvey {
   p.setAttached(READY,now+REST);p.getCooldowns().addCooldown(held,REST);held.hurtAndBreak(2,p,dev.wildercord.compat.McHands.slot(c.getHand()));
   if(!current(p,s) || !route(p,cells)){clear(p,s);return false;}
   s.first=null;s.route=cells;s.until=now+ROUTE_LIFE;s.nonce=p.level().getGameTime();
-  TidewardCue.route(p,s.nonce,cells);Feels.sound(((ServerLevel) p.level()).level(),p.position(),"tideward_spool_commit",.35F,1);return true;
+  TidewardCue.route(p,s.nonce,cells);Feels.sound(((ServerLevel) p.level()),p.position(),"tideward_spool_commit",.35F,1);return true;
  }
  private static void tick(ServerPlayer p){
   var s=p.getAttached(STATE);if(s==null)return;

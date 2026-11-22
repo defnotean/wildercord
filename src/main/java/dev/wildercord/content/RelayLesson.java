@@ -114,7 +114,7 @@ public final class RelayLesson {
 			|| player.distanceToSqr(Vec3.atCenterOf(pos)) > MasterStudyRules.REACH * MasterStudyRules.REACH
 			|| !player.level().clip(new ClipContext(player.getEyePosition(), Vec3.atCenterOf(pos),
 				ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player)).getBlockPos().equals(pos)) return;
-		if (!(((ServerLevel) player.level()).level().getBlockEntity(pos) instanceof ArchiveLecternBlockEntity lectern) || !quiet(((ServerLevel) player.level()).level(), pos, lectern)) {
+		if (!(((ServerLevel) player.level()).getBlockEntity(pos) instanceof ArchiveLecternBlockEntity lectern) || !quiet(((ServerLevel) player.level()), pos, lectern)) {
 			player.displayClientMessage(Component.translatable("message.wildercord.relay_lesson.quiet"), true);
 			return;
 		}
@@ -144,7 +144,7 @@ public final class RelayLesson {
 		}
 		long nonce;
 		do { nonce = player.getRandom().nextLong(); } while (nonce == 0);
-		Reading reading = new Reading(((ServerLevel) player.level()).level(), nonce, request, ((ServerLevel) player.level()).level().getGameTime(), 0);
+		Reading reading = new Reading(((ServerLevel) player.level()), nonce, request, ((ServerLevel) player.level()).getGameTime(), 0);
 		if (!valid(player, reading)) return;
 		READINGS.put(player, reading);
 		ServerPlayNetworking.send(player, new Show(nonce, 0, true, false, request));
@@ -161,7 +161,7 @@ public final class RelayLesson {
 		}
 		if (!MasterStudyRules.nextPage(reading.page(), packet.page())) return;
 		if (packet.page() < MasterStudyRules.PAGES) {
-			READINGS.put(player, new Reading(((ServerLevel) reading.level()).level(), reading.nonce(), reading.request(), reading.began(), packet.page()));
+			READINGS.put(player, new Reading(((ServerLevel) reading.level()), reading.nonce(), reading.request(), reading.began(), packet.page()));
 			ServerPlayNetworking.send(player, new Show(reading.nonce(), packet.page(), true, false));
 			return;
 		}

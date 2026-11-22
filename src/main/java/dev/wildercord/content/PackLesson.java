@@ -98,7 +98,7 @@ public final class PackLesson {
 		}
 		long nonce;
 		do { nonce = player.getRandom().nextLong(); } while (nonce == 0);
-		Reading reading = new Reading(lesson, ((ServerLevel) player.level()).level(), nonce, request, ((ServerLevel) player.level()).level().getGameTime(), 0);
+		Reading reading = new Reading(lesson, ((ServerLevel) player.level()), nonce, request, ((ServerLevel) player.level()).getGameTime(), 0);
 		if (!valid(player, reading)) return;
 		READINGS.put(player, reading);
 		ServerPlayNetworking.send(player, new Show(lesson.ordinal(), nonce, 0, true, false, request));
@@ -116,7 +116,7 @@ public final class PackLesson {
 		if (!MasterStudyRules.nextPage(reading.page(), packet.page())) return;
 		int lesson = reading.lesson().ordinal();
 		if (packet.page() < MasterStudyRules.PAGES) {
-			READINGS.put(player, new Reading(reading.lesson(), ((ServerLevel) reading.level()).level(), reading.nonce(), reading.request(), reading.began(), packet.page()));
+			READINGS.put(player, new Reading(reading.lesson(), ((ServerLevel) reading.level()), reading.nonce(), reading.request(), reading.began(), packet.page()));
 			ServerPlayNetworking.send(player, new Show(lesson, reading.nonce(), packet.page(), true, false, 0));
 			return;
 		}

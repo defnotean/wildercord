@@ -108,7 +108,7 @@ public final class WorldQuirks {
 		player.sendSystemMessage(Component.translatable("message.wildercord.quirk_met", Component.literal(quirk.text()).withColor(color))
 			.withStyle(ChatFormatting.ITALIC).withColor(0xB8C8E8));
 		ServerPlayNetworking.send(player, new WorldResonances.Revealed(WorldResonances.Revealed.QUIRK, quirk.text(), color));
-		TwistVfx.quirk(((ServerLevel) player.level()).level(), at, color);
+		TwistVfx.quirk(((ServerLevel) player.level()), at, color);
 		WorldResonances.refresh(player);
 	}
 
