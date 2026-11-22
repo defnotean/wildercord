@@ -129,7 +129,7 @@ public final class AuraIntent {
 		mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, AuraRules.INTENT_SLOW_TICKS, 0, true, false), player);
 		if (mob.getRandom().nextDouble() < AuraRules.INTENT_FALTER) {
 			mob.getNavigation().stop();
-			AuraVfx.falter(player.level(), mob, Aura.color(player));
+			AuraVfx.falter((ServerLevel) player.level(), mob, Aura.color(player));
 		}
 	}
 

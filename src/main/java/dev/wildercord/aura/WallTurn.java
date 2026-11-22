@@ -201,7 +201,7 @@ final class WallTurn {
 		if (MasterFormMovement.occupied(player) || !player.onGround() || !finite(player.position()) || player.isPassenger() || player.getAbilities().flying || player.isFallFlying()
 			|| player.getDeltaMovement().y > .01) return false;
 		AABB body = player.getBoundingBox();
-		var warded = DungeonWards.movementWard(player.level(), player.blockPosition());
+		var warded = DungeonWards.movementWard((ServerLevel) player.level(), player.blockPosition());
 		if (!clear(player, body, warded) || !loaded((ServerLevel) player.level(), body.move(0, -.08, 0))
 			|| player.level().noCollision(player, body.move(0, -.08, 0))) return false;
 		for (BlockPos pos : BlockPos.betweenClosed(BlockPos.containing(body.minX, body.minY - .08, body.minZ),

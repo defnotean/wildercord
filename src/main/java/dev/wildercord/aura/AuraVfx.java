@@ -216,7 +216,7 @@ public final class AuraVfx {
 	/** A step with nowhere to go: the aura bumping the wall in front, and nothing more. */
 	static void stepBlocked(ServerPlayer player, int color, Vec3 dir) {
 		Vec3 at = player.position().add(0, 1.0, 0).add(dir.scale(0.6));
-		pressureCut(player.level(), at, dir, color, 0.1, 0.7, 0.04, 5);
+		pressureCut((ServerLevel) player.level(), at, dir, color, 0.1, 0.7, 0.04, 5);
 	}
 
 	// ------------------------------------------------------------------ Form: aura armour and Intent

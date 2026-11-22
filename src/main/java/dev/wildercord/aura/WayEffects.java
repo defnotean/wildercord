@@ -160,8 +160,8 @@ public final class WayEffects {
 			float back = AuraCombat.projected(player, attacker, absorbed * WayRules.BULWARK_REFLECT, false);
 			if (back > 0) {
 				Vec3 at = attacker.getBoundingBox().getCenter();
-				AuraFx.burst(player.level(), player, at, Vec3.ZERO, AuraVfx.hot(WayRules.BULWARK_COLOR, 0.3), 1.0F, AuraFx.Burst.FLASH | AuraFx.Burst.RING);
-				Feels.sound(player.level(), at, "aura_way_reflect", 0.8F, 1.0F);
+				AuraFx.burst((ServerLevel) player.level(), player, at, Vec3.ZERO, AuraVfx.hot(WayRules.BULWARK_COLOR, 0.3), 1.0F, AuraFx.Burst.FLASH | AuraFx.Burst.RING);
+				Feels.sound((ServerLevel) player.level(), at, "aura_way_reflect", 0.8F, 1.0F);
 				count("reflect");
 			}
 		}
@@ -231,7 +231,7 @@ public final class WayEffects {
 			}
 			mob.setTarget(player);
 			turned++;
-			AuraFx.burst(player.level(), player, new Vec3(mob.getX(), mob.getBoundingBox().maxY + 0.35, mob.getZ()), Vec3.ZERO, WayRules.BULWARK_COLOR,
+			AuraFx.burst((ServerLevel) player.level(), player, new Vec3(mob.getX(), mob.getBoundingBox().maxY + 0.35, mob.getZ()), Vec3.ZERO, WayRules.BULWARK_COLOR,
 				0.6F, AuraFx.Burst.FLASH | AuraFx.Burst.STAR);
 		}
 		if (turned > 0) {

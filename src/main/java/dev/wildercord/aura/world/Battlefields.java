@@ -69,12 +69,12 @@ public final class Battlefields {
 			READ_AT.put(player,now);
 			for (int page=1;page<=3;page++) player.sendSystemMessage(Component.translatable("book.wildercord.battlefield."+BattlefieldRules.memory(kind).id()+"."+page)); return;
 		}
-		if (!holding(player,player.level(),pos)) {
+		if (!holding(player,(ServerLevel) player.level(),pos)) {
 			player.displayClientMessage(Component.translatable("message.wildercord.battlefield.stance"), true); return;
 		}
 		if (RITES.containsKey(player.getUUID())) return;
 		RITES.put(player.getUUID(),new Rite(player.level(),pos.immutable(),kind,0));
-		Feels.sound(player.level(),Vec3.atCenterOf(pos),"aura_memory_begin",0.6F,1);
+		Feels.sound((ServerLevel) player.level(),Vec3.atCenterOf(pos),"aura_memory_begin",0.6F,1);
 	}
 
 	private static boolean holding(ServerPlayer p,ServerLevel level,BlockPos at) {

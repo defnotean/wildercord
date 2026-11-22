@@ -144,7 +144,7 @@ public final class AuraSlash {
 		Vec3 origin = player.getEyePosition().subtract(0, 0.45, 0);
 		int color = 0x7CFFB2;
 		dev.wildercord.compat.McEntities.swing(player, InteractionHand.MAIN_HAND, true);
-		AuraVfx.slashStart(player.level(), origin, flat, color);
+		AuraVfx.slashStart((ServerLevel) player.level(), origin, flat, color);
 		Crescents.launch(player, origin, flat, color, damage, 1.0, AuraRules.SLASH_SPEED * 1.1,
 			AuraRules.SLASH_RANGE * AuraWorldRules.FETCHBLADE_REACH, AuraRules.SLASH_WIDTH * AuraWorldRules.FETCHBLADE_REACH,
 			AuraRules.SLASH_TARGETS + AuraWorldRules.FETCHBLADE_TARGETS, false, e -> Targets.canHarm(player, e), cutter(player));

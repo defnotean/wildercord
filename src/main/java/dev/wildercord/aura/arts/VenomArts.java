@@ -62,7 +62,7 @@ public final class VenomArts {
 		ServerPlayer player = hits.player();
 		float taken = hits.strike(foe, factor, weight);
 		if (taken > 0) MethodsBKit.toxin(player, foe, TOXIN_TICKS);
-		Vfx.emit(player.level(), ParticleTypes.ITEM_SLIME, foe.getBoundingBox().getCenter(), 4, 0.25, 0.05);
+		Vfx.emit((ServerLevel) player.level(), ParticleTypes.ITEM_SLIME, foe.getBoundingBox().getCenter(), 4, 0.25, 0.05);
 		return taken;
 	}
 

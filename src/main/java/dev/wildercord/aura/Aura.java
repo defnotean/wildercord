@@ -361,7 +361,7 @@ public final class Aura {
 			return;
 		}
 		double got = gain(player, AuraRules.BEAT_GAIN, "beat");
-		Feels.sound(player.level(), player.position(), "aura_breath", 0.7F, Feels.step(2));
+		Feels.sound((ServerLevel) player.level(), player.position(), "aura_breath", 0.7F, Feels.step(2));
 		AuraVfx.beat(player, color(player));
 		if (got > 0) {
 			player.displayClientMessage(Component.translatable("message.wildercord.aura.beat").withColor(0xFF000000 | color(player)), true);

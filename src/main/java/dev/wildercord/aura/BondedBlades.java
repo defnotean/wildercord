@@ -845,7 +845,7 @@ public final class BondedBlades {
 				Component.literal(holder.getGameProfile().getName())).withColor(0xE8D8B0));
 			BladeCeremony.homeFx((ServerLevel) holder.level(), from, owner, b.color());
 		} else {
-			BladeCeremony.homeFx(holder.level(), from, null, b.color());
+			BladeCeremony.homeFx((ServerLevel) holder.level(), from, null, b.color());
 		}
 		returns++;
 	}

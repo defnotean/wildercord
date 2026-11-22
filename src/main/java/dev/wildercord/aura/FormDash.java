@@ -431,7 +431,7 @@ public final class FormDash {
 		boolean stalled, aborted;
 		double fallRisk;
 		Move(ServerPlayer player, int form, Vec3 direction, float yaw) {
-			this.player = player; level = player.level(); owner = ReleasedArtOwner.capture(player); blade = player.getMainHandItem();
+			this.player = player; level = (ServerLevel) player.level(); owner = ReleasedArtOwner.capture(player); blade = player.getMainHandItem();
 			method = Aura.data(player).method(); this.form = form; start = player.position(); last = start; this.direction = direction; this.yaw = yaw;
 			warded = DungeonWards.movementWard(level, player.blockPosition()); fallRisk = Math.max(0, player.fallDistance);
 			set = FormDashRules.setTicks(form);

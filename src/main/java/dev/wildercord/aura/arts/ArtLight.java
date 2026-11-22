@@ -68,7 +68,7 @@ public final class ArtLight {
 	}
 
 	public ServerLevel level() {
-		return owner.level();
+		return (ServerLevel) owner.level();
 	}
 
 	private void send(ParticleOptions option, Vec3 at) {

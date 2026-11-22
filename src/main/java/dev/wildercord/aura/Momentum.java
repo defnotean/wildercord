@@ -249,7 +249,7 @@ public final class Momentum {
 			AuraFx.bodyAuraFlare(player, 40, 0.75F);
 			Grimoire.unlock(player, "aura:peak_momentum");
 		} else {
-			Feels.sound(player.level(), player.position().add(0, 1, 0), "aura_momentum_rise", 0.45F, Feels.step(to - 1));
+			Feels.sound((ServerLevel) player.level(), player.position().add(0, 1, 0), "aura_momentum_rise", 0.45F, Feels.step(to - 1));
 		}
 	}
 

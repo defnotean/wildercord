@@ -165,7 +165,7 @@ public final class BladeCeremony {
 
 	private static void cancel(ServerPlayer player, Rite rite, String why) {
 		end(player, rite);
-		BondedBlades.sound(player.level(), hand(player), "aura_bond_fail", 0.7F, 1.0F);
+		BondedBlades.sound((ServerLevel) player.level(), hand(player), "aura_bond_fail", 0.7F, 1.0F);
 		player.displayClientMessage(Component.translatable(why).withColor(0xC8A0A0), true);
 		Motes.glows((ServerLevel) player.level(), hand(player), 6, 0.2, AuraRules.mix(color(player), 0x6A6478, 0.5), 0.1, 20, new Vec3(0, -0.02, 0), 0.02);
 	}

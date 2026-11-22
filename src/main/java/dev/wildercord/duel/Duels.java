@@ -457,7 +457,7 @@ public final class Duels {
 	}
 
 	private static int challenge(ServerPlayer from, ServerPlayer to) {
-		if (!allowed(from.level())) {
+		if (!allowed((ServerLevel) from.level())) {
 			from.sendSystemMessage(Component.translatable("message.wildercord.duel_disabled").withStyle(ChatFormatting.RED));
 			return 0;
 		}

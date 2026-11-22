@@ -92,7 +92,7 @@ public final class MastersArts {
 
 		Continuation(ServerPlayer player, int recovery) {
 			this.player = player;
-			this.level = player.level();
+			this.level = (ServerLevel) player.level();
 			this.blade = player.getMainHandItem();
 			this.method = Aura.data(player).method();
 			this.until = level.getGameTime() + recovery;

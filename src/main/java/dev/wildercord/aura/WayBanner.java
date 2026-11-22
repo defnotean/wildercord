@@ -312,7 +312,7 @@ public final class WayBanner {
 				for (ServerPlayer ally : swordsmen(player, range())) {
 					if (!Awakening.awakened(ally)) {
 						Momentum.hold(ally, WayRules.RALLY_FLOOR, ticks);
-						AuraFx.burst(player.level(), ally, ally.position().add(0, 2.2, 0), Vec3.ZERO, WayRules.BANNER_COLOR, 0.8F,
+						AuraFx.burst((ServerLevel) player.level(), ally, ally.position().add(0, 2.2, 0), Vec3.ZERO, WayRules.BANNER_COLOR, 0.8F,
 							AuraFx.Burst.FLASH | AuraFx.Burst.STAR);
 					}
 				}

@@ -20,19 +20,19 @@ public final class UnityFx {
 			double a=i/7.0,b=(i+1)/7.0,sign=strand==0?1:-1;
 			var from=foot.add(side.scale(sign*.44*Math.cos(a*Math.PI*2))).add(0,.12+a*1.5,0);
 			var to=foot.add(side.scale(sign*.44*Math.cos(b*Math.PI*2))).add(0,.12+b*1.5,0);
-			ElementFx.ray(p.level(),from,to,strand==0?auraColor(p):0x79BFFF,.022,14);
+			ElementFx.ray((ServerLevel) p.level(),from,to,strand==0?auraColor(p):0x79BFFF,.022,14);
 		}
-		Feels.sound(p.level(),p.position(),"aura_unity_begin",.7F,1);
+		Feels.sound((ServerLevel) p.level(),p.position(),"aura_unity_begin",.7F,1);
 	}
 	public static void flow(ServerPlayer p,boolean manaToAura) {
 		long now=Unity.now(p);if(now-p.getAttachedOrElse(FLOW_AT,-100L)<4)return;p.setAttached(FLOW_AT,now);
 		var f=forward(p);var side=new Vec3(f.z,0,-f.x);var at=p.position().subtract(f.scale(.32)).add(side.scale(manaToAura?.42:-.42)).add(0,.65,0);
 		for(int i=0;i<3;i++)ElementFx.ray(p.level(),at.add(0,i*.16,0),at.add(side.scale(manaToAura?.11:-.11)).add(0,i*.16+.12,0),manaToAura?auraColor(p):0x79BFFF,.018,8);
-		if(now-p.getAttachedOrElse(VOICE_AT,-100L)>=20){p.setAttached(VOICE_AT,now);Feels.sound(p.level(),p.position(),"aura_unity_flow",.35F,1);}
+		if(now-p.getAttachedOrElse(VOICE_AT,-100L)>=20){p.setAttached(VOICE_AT,now);Feels.sound((ServerLevel) p.level(),p.position(),"aura_unity_flow",.35F,1);}
 	}
 	public static void breathe(ServerPlayer p) {
 		var f=forward(p);var side=new Vec3(f.z,0,-f.x);var at=p.position().subtract(f.scale(.4)).add(0,.6,0);
-		for(int i=0;i<2;i++){var start=at.add(side.scale(i==0?.35:-.35));ElementFx.ray(p.level(),start,start.add(0,.45,0),i==0?auraColor(p):0x79BFFF,.012,10);}
+		for(int i=0;i<2;i++){var start=at.add(side.scale(i==0?.35:-.35));ElementFx.ray((ServerLevel) p.level(),start,start.add(0,.45,0),i==0?auraColor(p):0x79BFFF,.012,10);}
 	}
-	public static void end(ServerPlayer p) {Feels.sound(p.level(),p.position(),"aura_unity_end",.45F,1);}
+	public static void end(ServerPlayer p) {Feels.sound((ServerLevel) p.level(),p.position(),"aura_unity_end",.45F,1);}
 }
