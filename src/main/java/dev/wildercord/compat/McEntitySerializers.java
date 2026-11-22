@@ -1,7 +1,9 @@
 package dev.wildercord.compat;
 
 import java.util.Optional;
-import net.minecraft.network.codec.ByteBufCodecs;
+import java.util.UUID;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -16,7 +18,17 @@ public final class McEntitySerializers {
 
 	public static final EntityDataSerializer<Optional<EntityReference<LivingEntity>>> OPTIONAL_LIVING_ENTITY_REFERENCE =
 		EntityDataSerializer.forValueType(
-			ByteBufCodecs.optional(ByteBufCodecs.fromCodec(com.mojang.serialization.Codec.UUID))
+			StreamCodec.of(
+				(buf, reference) -> {
+					if (reference.isPresent()) {
+						buf.writeBoolean(true);
+						buf.writeLong(reference.get().getMostSignificantBits());
+						buf.writeLong(reference.get().getLeastSignificantBits());
+					} else {
+						buf.writeBoolean(false);
+					}
+				},
+				buf -> buf.readBoolean() ? Optional.of(new UUID(buf.readLong(), buf.readLong())) : Optional.empty())
 				.map(optional -> optional.map(id -> new EntityReference<LivingEntity>(id)),
 					reference -> Optional.of(reference.getUUID())));
 }

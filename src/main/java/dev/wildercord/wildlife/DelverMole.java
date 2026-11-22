@@ -103,7 +103,7 @@ public class DelverMole extends AbstractHorse {
 			if (state.isAir() || !DelverRules.digs(state.is(BlockTags.MINEABLE_WITH_SHOVEL), state.getDestroySpeed(level, pos), state.hasBlockEntity())) {
 				continue;
 			}
-			if (Casters.mayEdit(rider, level, pos) && !rider.blockActionRestricted(level, pos, rider.gameMode) && level.destroyBlock(pos, true, rider)) {
+			if (Casters.mayEdit(rider, level, pos) && !rider.blockActionRestricted(level, pos, rider.gameMode.getGameModeForPlayer()) && level.destroyBlock(pos, true, rider)) {
 				dug++;
 			}
 		}
