@@ -15,8 +15,6 @@
     "CounterPeerViewMixin",
     "CounterPeerShellAccess",
     "CounterPeerWorldBodyMixin",
-    "CounterPeerWorldItemMixin",
-    "CounterPeerItemDrawMixin",
     "CounterPeerAcceptedSourceMixin",
     "CounterPeerAdmissionSendMixin",
     "CounterPeerAdmissionMixin",

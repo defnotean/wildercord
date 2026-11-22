@@ -14,8 +14,7 @@
     "CrimsonMoonScreenshotMixin",
     "CrimsonMoonViewMixin",
     "CrimsonMoonShellAccess",
-    "CrimsonMoonWorldBodyMixin",
-    "CrimsonMoonWorldItemMixin"
+    "CrimsonMoonWorldBodyMixin"
   ],
   "injectors": {
     "defaultRequire": 1
