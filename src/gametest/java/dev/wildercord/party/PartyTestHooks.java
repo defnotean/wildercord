@@ -11,11 +11,11 @@ public final class PartyTestHooks {
 	public static void join(MinecraftServer server, UUID leader, UUID member, long now) {
 		PartyRules rules = Parties.session(server).rules;
 		PartyRules.Result invited = rules.invite(leader, member, now);
-		if (invited != PartyRules.Result.OK && invited != PartyRules.Result.ALREADY_IN_PARTY) {
+		if (invited != PartyRules.Result.OK) {
 			throw new AssertionError("Party invite failed: " + invited);
 		}
 		PartyRules.Result accepted = rules.accept(member, leader, now);
-		if (accepted != PartyRules.Result.OK && accepted != PartyRules.Result.ALREADY_IN_PARTY) {
+		if (accepted != PartyRules.Result.OK) {
 			throw new AssertionError("Party accept failed: " + accepted);
 		}
 	}
