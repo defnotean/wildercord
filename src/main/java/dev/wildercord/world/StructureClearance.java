@@ -48,6 +48,28 @@ public final class StructureClearance {
 		END
 	}
 
+	public static final class LazyPlacement {
+		private final int spacing;
+		private final int separation;
+		private final int salt;
+		private volatile RandomSpreadStructurePlacement instance;
+
+		public LazyPlacement(int spacing, int separation, int salt) {
+			this.spacing = spacing;
+			this.separation = separation;
+			this.salt = salt;
+		}
+
+		public RandomSpreadStructurePlacement get() {
+			RandomSpreadStructurePlacement p = instance;
+			if (p == null) {
+				p = new RandomSpreadStructurePlacement(spacing, separation, RandomSpreadType.LINEAR, salt);
+				instance = p;
+			}
+			return p;
+		}
+	}
+
 	public record Entry(
 		String structureId,
 		String structureSetId,
@@ -58,8 +80,12 @@ public final class StructureClearance {
 		int halfExtent,
 		boolean underground,
 		TagKey<Biome> biomeTag,
-		RandomSpreadStructurePlacement placement
+		LazyPlacement placement
 	) implements Comparable<Entry> {
+		public RandomSpreadStructurePlacement resolvePlacement() {
+			return placement.get();
+		}
+
 		@Override
 		public int compareTo(Entry other) {
 			int byExtent = Integer.compare(other.halfExtent, this.halfExtent);
@@ -181,7 +207,7 @@ public final class StructureClearance {
 			halfExtent,
 			underground,
 			TagKey.create(Registries.BIOME, Wildercord.id("has_structure/" + structureId)),
-			new RandomSpreadStructurePlacement(spacing, separation, RandomSpreadType.LINEAR, salt)
+			new LazyPlacement(spacing, separation, salt)
 		);
 		ENTRIES.put(structureId, entry);
 		BY_DOMAIN.get(domain).add(entry);
@@ -239,7 +265,7 @@ public final class StructureClearance {
 			int baseRz = Math.floorDiv(cz, other.spacing);
 			for (int drx = -1; drx <= 1; drx++) {
 				for (int drz = -1; drz <= 1; drz++) {
-					ChunkPos oc = other.placement.getPotentialStructureChunk(
+					ChunkPos oc = other.resolvePlacement().getPotentialStructureChunk(
 						seed, (baseRx + drx) * other.spacing, (baseRz + drz) * other.spacing);
 					int ox = oc.x() * 16 + 8;
 					int oz = oc.z() * 16 + 8;
@@ -273,7 +299,7 @@ public final class StructureClearance {
 			int baseRz = Math.floorDiv(chunkZ, other.spacing);
 			for (int drx = -1; drx <= 1; drx++) {
 				for (int drz = -1; drz <= 1; drz++) {
-					ChunkPos oc = other.placement.getPotentialStructureChunk(
+					ChunkPos oc = other.resolvePlacement().getPotentialStructureChunk(
 						seed, (baseRx + drx) * other.spacing, (baseRz + drz) * other.spacing);
 					int ox = oc.x() * 16 + 8;
 					int oz = oc.z() * 16 + 8;

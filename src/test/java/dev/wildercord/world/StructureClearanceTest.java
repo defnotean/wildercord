@@ -3,7 +3,10 @@ package dev.wildercord.world;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.wildercord.world.dungeons.DungeonStructure;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.world.level.ChunkPos;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -27,6 +30,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class StructureClearanceTest {
 	private static final Path WORLDGEN = Path.of("src/main/resources/data/wildercord/worldgen");
+
+	@BeforeAll
+	static void bootstrapRegistries() {
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
+	}
 
 	@Test
 	void entriesMatchAllWorldgenStructureSetsAndDungeons() throws IOException {
@@ -76,7 +85,7 @@ class StructureClearanceTest {
 			int step = entry.spacing();
 			for (int cx = -64; cx < 64; cx += step) {
 				for (int cz = -64; cz < 64; cz += step) {
-					ChunkPos candidate = entry.placement().getPotentialStructureChunk(seed, cx, cz);
+					ChunkPos candidate = entry.resolvePlacement().getPotentialStructureChunk(seed, cx, cz);
 					if (!seen.add(candidate)) continue;
 					if (StructureClearance.blockingPlacementCandidate(seed, entry, candidate.x(), candidate.z()).isEmpty()) {
 						survivors.add(new Placed(entry, candidate.x(), candidate.z()));
