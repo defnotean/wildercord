@@ -24,6 +24,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * The Emberwood sites pack: two Emberwood Reach landmarks — the Emberwood Charcoal Yard (a brick-and-timber
@@ -51,7 +52,7 @@ public final class EmberwoodSites {
 
 	public static void observe(ServerPlayer player) {
 		if (player.isSpectator() || !player.isAlive()) return;
-		var level = player.level();
+		var level = (ServerLevel) player.level();
 		var start = level.structureManager().getStructureWithPieceAt(player.blockPosition(),
 			holder -> holder.value() instanceof SiteStructure site && IDS.contains(site.site()));
 		if (!start.isValid() || !(start.getStructure() instanceof SiteStructure site)) return;
