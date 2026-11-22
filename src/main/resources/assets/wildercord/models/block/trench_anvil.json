@@ -1,0 +1,214 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "anvil": "wildercord:block/trench_anvil",
+    "brass": "wildercord:block/siren_pearl_cage",
+    "particle": "wildercord:block/trench_anvil"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        14,
+        4,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#anvil",
+          "uv": [
+            2,
+            12.0,
+            14,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#anvil",
+          "uv": [
+            2,
+            12.0,
+            14,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#anvil",
+          "uv": [
+            2,
+            12.0,
+            14,
+            16.0
+          ]
+        },
+        "west": {
+          "texture": "#anvil",
+          "uv": [
+            2,
+            12.0,
+            14,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#anvil",
+          "uv": [
+            2,
+            12.0,
+            14,
+            16.0
+          ]
+        },
+        "down": {
+          "texture": "#anvil",
+          "uv": [
+            2,
+            12.0,
+            14,
+            16.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        4,
+        5
+      ],
+      "to": [
+        12,
+        10,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#brass",
+          "uv": [
+            4,
+            6.0,
+            12,
+            12.0
+          ]
+        },
+        "south": {
+          "texture": "#brass",
+          "uv": [
+            4,
+            6.0,
+            12,
+            12.0
+          ]
+        },
+        "east": {
+          "texture": "#brass",
+          "uv": [
+            4,
+            6.0,
+            12,
+            12.0
+          ]
+        },
+        "west": {
+          "texture": "#brass",
+          "uv": [
+            4,
+            6.0,
+            12,
+            12.0
+          ]
+        },
+        "up": {
+          "texture": "#brass",
+          "uv": [
+            4,
+            6.0,
+            12,
+            12.0
+          ]
+        },
+        "down": {
+          "texture": "#brass",
+          "uv": [
+            4,
+            6.0,
+            12,
+            12.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        10,
+        3
+      ],
+      "to": [
+        15,
+        16,
+        13
+      ],
+      "faces": {
+        "north": {
+          "texture": "#anvil",
+          "uv": [
+            1,
+            0.0,
+            15,
+            6.0
+          ]
+        },
+        "south": {
+          "texture": "#anvil",
+          "uv": [
+            1,
+            0.0,
+            15,
+            6.0
+          ]
+        },
+        "east": {
+          "texture": "#anvil",
+          "uv": [
+            1,
+            0.0,
+            15,
+            6.0
+          ]
+        },
+        "west": {
+          "texture": "#anvil",
+          "uv": [
+            1,
+            0.0,
+            15,
+            6.0
+          ]
+        },
+        "up": {
+          "texture": "#anvil",
+          "uv": [
+            1,
+            0.0,
+            15,
+            6.0
+          ]
+        },
+        "down": {
+          "texture": "#anvil",
+          "uv": [
+            1,
+            0.0,
+            15,
+            6.0
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "wildercord:ocean_coral_dome_sanctuary",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 36,
+    "separation": 12,
+    "salt": 2026112201
+  }
+}

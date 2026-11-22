@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "wildercord:ocean_sunken_galleon",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 10,
+    "salt": 2026112202
+  }
+}

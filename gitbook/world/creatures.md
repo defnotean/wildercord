@@ -34,8 +34,12 @@ For wetland, cave and highland wildlife, see [Lights Along the Bank](luminous-we
 | [Sakura Villagers](#sakura-villagers) | Cat Sanctuary, Sakura Villages | 2 to 4 per village | Suzu Cat-Bell Charms, Blank Runes, lanterns, golden carrots, salmon | Use an emerald to trade |
 | [Thistle Hedgehog](#thistle-hedgehog) | Meadows, plains and forests | 1 to 3 | Nothing; brings you finds | A tameable pet that forages for you |
 | [White Rabbit](#white-rabbit) | Forests, birch forests, dark forests, taigas, cherry groves | Rare, alone | Leads you to a Hollow Ancient Tree | Step into its portal for a cave, treasure vault, or all bosses at once |
+| [Brine-Merchants](deep-ocean.md) | Coral-Dome Tidefolk Sanctuaries (oceans) | 1 to 3 per sanctuary | Trade inventory | Tidefolk traders dealing in pearls, charts, conches, and sea ramen |
+| [Lumi-Seahorse](deep-ocean.md) | Warm and deep oceans | Small pods | Prismarine Crystals | Tameable 3D underwater mount with burst dash |
+| [Pearl-Pup](deep-ocean.md) | Oceans, coral domes, coasts | 1 to 2 | Raw Cod | Tameable glowing seal pup that sniffs out treasure and pearls |
+| [Singing Moon-Whale](deep-ocean.md) | Deep oceans | Rare, alone or pairs | Star-Barnacle Ambergris | Gentle singing leviathan granting Dolphin's Grace and Conduit Power |
 
-Glimmer Dust, Mossback Scutes, Ember Tufts and Skyray Membranes each brew their potion from an Awkward Potion.
+Glimmer Dust, Mossback Scutes, Ember Tufts and Skyray Membranes each brew their potion from an Awkward Potion. See also the [Deep Ocean Expansion](deep-ocean.md) guide for deep-sea monsters, Thalassor, diving gear, and structures.
 
 ## Glimmerwing
 

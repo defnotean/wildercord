@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "wildercord:ocean_hydrothermal_forge",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 34,
+    "separation": 11,
+    "salt": 2026112204
+  }
+}

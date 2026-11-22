@@ -131,6 +131,7 @@
   * [Lair Bosses](world/lair-bosses.md)
   * [Expeditions and Relics](world/expeditions.md)
   * [Magic that Changes the World](world/world-magic.md)
+  * [Deep Ocean Expansion](world/deep-ocean.md)
   * [Residues and Reagents](world/residues.md)
   * [Places and Times of Power](world/places-of-power.md)
   * [Creatures](world/creatures.md)

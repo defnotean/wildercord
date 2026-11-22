@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "wildercord:ocean_abyssal_citadel",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 48,
+    "separation": 16,
+    "salt": 2026112205
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "altar": "wildercord:block/sovereign_altar",
+    "core": "wildercord:block/leviathan_glaive_pearl",
+    "particle": "wildercord:block/sovereign_altar"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        10,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#altar",
+          "uv": [
+            0.0,
+            6.0,
+            16.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#altar",
+          "uv": [
+            0.0,
+            6.0,
+            16.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#altar",
+          "uv": [
+            0.0,
+            6.0,
+            16.0,
+            16.0
+          ]
+        },
+        "west": {
+          "texture": "#altar",
+          "uv": [
+            0.0,
+            6.0,
+            16.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#altar",
+          "uv": [
+            0.0,
+            6.0,
+            16.0,
+            16.0
+          ]
+        },
+        "down": {
+          "texture": "#altar",
+          "uv": [
+            0.0,
+            6.0,
+            16.0,
+            16.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        10,
+        2
+      ],
+      "to": [
+        14,
+        12,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#altar",
+          "uv": [
+            2,
+            4.0,
+            14,
+            6.0
+          ]
+        },
+        "south": {
+          "texture": "#altar",
+          "uv": [
+            2,
+            4.0,
+            14,
+            6.0
+          ]
+        },
+        "east": {
+          "texture": "#altar",
+          "uv": [
+            2,
+            4.0,
+            14,
+            6.0
+          ]
+        },
+        "west": {
+          "texture": "#altar",
+          "uv": [
+            2,
+            4.0,
+            14,
+            6.0
+          ]
+        },
+        "up": {
+          "texture": "#altar",
+          "uv": [
+            2,
+            4.0,
+            14,
+            6.0
+          ]
+        },
+        "down": {
+          "texture": "#altar",
+          "uv": [
+            2,
+            4.0,
+            14,
+            6.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        12,
+        5
+      ],
+      "to": [
+        11,
+        14,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#core",
+          "uv": [
+            5,
+            2.0,
+            11,
+            4.0
+          ]
+        },
+        "south": {
+          "texture": "#core",
+          "uv": [
+            5,
+            2.0,
+            11,
+            4.0
+          ]
+        },
+        "east": {
+          "texture": "#core",
+          "uv": [
+            5,
+            2.0,
+            11,
+            4.0
+          ]
+        },
+        "west": {
+          "texture": "#core",
+          "uv": [
+            5,
+            2.0,
+            11,
+            4.0
+          ]
+        },
+        "up": {
+          "texture": "#core",
+          "uv": [
+            5,
+            2.0,
+            11,
+            4.0
+          ]
+        },
+        "down": {
+          "texture": "#core",
+          "uv": [
+            5,
+            2.0,
+            11,
+            4.0
+          ]
+        }
+      }
+    }
+  ]
+}
