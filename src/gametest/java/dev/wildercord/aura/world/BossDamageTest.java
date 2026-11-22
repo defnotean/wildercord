@@ -214,7 +214,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				player.setHealth(player.getMaxHealth());
 				player.teleportTo(0.5, 101, 7.5);
 				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.RESISTANCE, 600, 3, false, false));
-				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 600, 3, false, false));
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 600, 5, false, false));
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 600, 24, false, false));
 
 				var wardenType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:cinder_warden"));
 				var serpentType = BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse("wildercord:rootcoil_serpent"));
@@ -291,6 +292,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				check(boss != null && boss.isAlive(), "boss alive during counterattack pursuit");
 				check(boss.getTarget() == player, "boss continues targeting player after breakout");
 				check(boss.distanceTo(player) < distAtBreakout[0] - 0.5, "boss closes distance to resume attacking after breakout");
+				player.setHealth(player.getMaxHealth());
+				player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 600, 24, false, false));
 			});
 			c.waitTicks(90);
 			server.runOnServer(s -> {
@@ -307,6 +310,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var boss = (Mob) level.getEntity(liveBossId[0]);
 				check(boss != null && !dev.wildercord.cast.Spirits.bossHeld(boss), "second temporary hold also breaks out within 38 ticks");
 				if (boss != null) boss.discard();
+				check(player.isAlive(), "player survives Bastion hold test");
 				player.removeAllEffects();
 				player.setGameMode(GameType.CREATIVE);
 				player.setHealth(player.getMaxHealth());
@@ -395,10 +399,9 @@ public final class BossDamageTest implements FabricClientGameTest {
 						}
 					}
 				}
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.ItemStack.EMPTY);
 				player.setGameMode(GameType.CREATIVE);
-				player.teleportTo(0.5, 101, 5.5);
-				player.setYRot(180.0F);
-				player.setXRot(8.0F);
+				player.teleportTo(level, 2.0, 101.0, 7.2, java.util.Set.of(), 180.0F, 6.0F, false);
 
 				var bastion = dev.wildercord.aura.world.AuraWorld.OATHBOUND_BASTION.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 				bastion.setNoAi(true);
@@ -406,19 +409,25 @@ public final class BossDamageTest implements FabricClientGameTest {
 				bastion.setYRot(0.0F);
 				bastion.setYHeadRot(0.0F);
 				bastion.setYBodyRot(0.0F);
-				bastion.setRemainingFireTicks(200);
+				bastion.setRemainingFireTicks(400);
 				level.addFreshEntity(bastion);
 				fireIds[0] = bastion.getId();
 
 				var zombie = net.minecraft.world.entity.EntityTypes.ZOMBIE.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 				zombie.setNoAi(true);
 				zombie.setPos(3.5, 101, 0.5);
-				zombie.setRemainingFireTicks(200);
+				zombie.setYRot(0.0F);
+				zombie.setYHeadRot(0.0F);
+				zombie.setYBodyRot(0.0F);
+				zombie.setRemainingFireTicks(400);
 				level.addFreshEntity(zombie);
 				fireIds[1] = zombie.getId();
 			});
-			c.waitTicks(6);
+			c.waitTicks(10);
 			c.runOnClient(mc -> {
+				check(mc.screen == null, "no modal or death screen open during fire screenshot");
+				mc.player.setYRot(180.0F);
+				mc.player.setXRot(6.0F);
 				var custom = mc.level.getEntity(fireIds[0]);
 				var vanilla = mc.level.getEntity(fireIds[1]);
 				check(custom != null && custom.displayFireAnimation(), "burning custom mob logically displays fire");
@@ -430,7 +439,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 				mc.gui.toastManager().clear();
 				mc.gui.hud.getChat().clearMessages(false);
 			});
-			c.waitTicks(4);
+			c.waitTicks(2);
 			c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("custom_mob_fire_clean").disableCounterPrefix());
 			server.runOnServer(s -> {
 				var level = s.overworld();
