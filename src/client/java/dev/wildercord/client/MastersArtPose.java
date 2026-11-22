@@ -134,7 +134,7 @@ public final class MastersArtPose {
 	}
 
 	/** The rigid arm cannot bend its wrist, so thrusts and low cuts turn the held sword about its hilt. */
-	public static void heldSword(net.minecraft.client.renderer.entity.state.ArmedEntityRenderState state, HumanoidArm arm,
+	public static void heldSword(net.minecraft.client.renderer.entity.state.LivingEntityRenderState state, HumanoidArm arm,
 			net.minecraft.world.item.ItemStack item, PoseStack stack) {
 		if (!(state instanceof PlayerRenderState avatar) || arm != state.mainArm || !item.is(net.minecraft.tags.ItemTags.SWORDS)) return;
 		Frame frame = frame(avatar);

@@ -320,7 +320,7 @@ public final class RenderCompat {
 	/** 1.21.3's {@code Level#addParticle} has no trailing colour arguments. */
 	public static void spawnParticle(net.minecraft.world.level.Level level, net.minecraft.core.particles.ParticleOptions options,
 			double x, double y, double z) {
-		level.addParticle(options, true, true, x, y, z);
+		level.addParticle(options, true, x, y, z, 0.0, 0.0, 0.0);
 	}
 
 	/**

@@ -6,7 +6,7 @@ import dev.wildercord.aura.world.MasterAnimationRules;
 import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
@@ -115,7 +115,7 @@ public final class MasterModel extends HumanoidModel<AuraFighterRenderState> {
 	}
 
 	/** Uses vanilla's held-item attachment and only rotates the blade around its existing hilt. */
-	public static void heldSword(ArmedEntityRenderState state, HumanoidArm arm, ItemStack item, PoseStack stack) {
+	public static void heldSword(LivingEntityRenderState state, HumanoidArm arm, ItemStack item, PoseStack stack) {
 		if (dev.wildercord.client.combat.ArticulatedCombat.frame(state) != null) return;
 		if (!(state instanceof AuraFighterRenderState fighter) || fighter.deathTime > 0 || fighter.isUpsideDown
 			|| arm != state.mainArm || !item.is(ItemTags.SWORDS)) return;

@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
  * {@code ResourceKey<EquipmentAsset>}. Only the netherite id is used by the mod.
  */
 public final class EquipmentAssets {
-	public static final ResourceLocation NETHERITE = new ResourceLocation("minecraft", "netherite");
+	public static final ResourceLocation NETHERITE = ResourceLocation.fromNamespaceAndPath("minecraft", "netherite");
 
 	private EquipmentAssets() {}
 }

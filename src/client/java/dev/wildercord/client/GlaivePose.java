@@ -7,7 +7,7 @@ import dev.wildercord.aura.world.ForgedGear;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +33,7 @@ public final class GlaivePose {
 		return stack != null && !stack.isEmpty() && ForgedGear.of(stack) == AuraWorldRules.Forged.SKYREND_GLAIVE;
 	}
 
-	private static boolean holdsGlaive(ArmedEntityRenderState state) {
+	private static boolean holdsGlaive(LivingEntityRenderState state) {
 		return state != null && isGlaive(dev.wildercord.client.compat.RenderCompat.mainHandStack(state));
 	}
 
@@ -181,7 +181,7 @@ public final class GlaivePose {
 	 * shaft passes diagonally across the chest through the support hand, and during a swing the
 	 * long polearm extends forward and sweeps its curved cutting edge horizontally through the arc.
 	 */
-	public static void heldItem(ArmedEntityRenderState state, HumanoidArm arm, ItemStack item, PoseStack stack) {
+	public static void heldItem(LivingEntityRenderState state, HumanoidArm arm, ItemStack item, PoseStack stack) {
 		if (!(state instanceof PlayerRenderState avatar) || arm != state.mainArm || !isGlaive(item) || !eligible(avatar)) {
 			return;
 		}

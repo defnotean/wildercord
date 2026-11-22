@@ -3,6 +3,7 @@ package net.minecraft.client.renderer.item;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +23,7 @@ public class ItemStackRenderState {
 	/** The 1.21.4 layer state, reduced to the two members the aura/brace mixins shadow or inject. */
 	public static class LayerRenderState {
 		BakedModel model;
+		RenderType renderType;
 		final ItemStackRenderState field_55345;
 
 		public LayerRenderState(ItemStackRenderState owner) {

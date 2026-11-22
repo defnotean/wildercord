@@ -11,7 +11,7 @@ import dev.wildercord.client.render.GearLook;
 import dev.wildercord.client.compat.RenderStateDataKey;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.LivingEntity;
@@ -134,12 +134,12 @@ public final class ArticulatedCombat {
 			ArticulatedCombatPose.masterFootwork(master.attackAnimation(), elapsed, master.attackTellTicks()), master.getDeltaMovement().horizontalDistanceSqr()));
 	}
 
-	public static Frame frame(ArmedEntityRenderState state) { return compatible(state, false); }
+	public static Frame frame(LivingEntityRenderState state) { return compatible(state, false); }
 
 	/** Independent camera-space idle/attack ownership; locomotion remains the world model's job. */
 	public static Frame viewFrame(PlayerRenderState state) { return compatible(state, true); }
 
-	private static Frame compatible(ArmedEntityRenderState state, boolean view) {
+	private static Frame compatible(LivingEntityRenderState state, boolean view) {
 		if (!enabled() || !(state instanceof HumanoidRenderState humanoid) || !upright(humanoid) || !plainSword(dev.wildercord.client.compat.RenderCompat.mainHandStack(state))
 			|| !Boolean.TRUE.equals(RenderStateData.get(state, KNOWN_LAYERS))) return null;
 		Frame frame = RenderStateData.get(state, FRAME);
