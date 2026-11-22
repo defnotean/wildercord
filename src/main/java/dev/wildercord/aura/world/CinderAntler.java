@@ -62,7 +62,7 @@ public final class CinderAntler {
 					int run = SPRINT.merge(player.getUUID(), 1, Integer::sum);
 					// Ready: embers kicked up off its heels.
 					if (run >= AshenStagRules.ANTLER_SPRINT && ready(player) && run % 3 == 0) {
-						(ServerLevel) player.level().sendParticles(ParticleTypes.FLAME, player.getX(), player.getY() + .1, player.getZ(), 2, .2, .05, .2, .01);
+						((ServerLevel) player.level()).sendParticles(ParticleTypes.FLAME, player.getX(), player.getY() + .1, player.getZ(), 2, .2, .05, .2, .01);
 					}
 				} else {
 					SPRINT.remove(player.getUUID());

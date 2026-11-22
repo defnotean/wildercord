@@ -108,7 +108,7 @@ public final class WeaversSilk {
 				if (clings(player)) {
 					player.resetFallDistance();
 					if (!player.onGround() && player.tickCount % 8 == 0)
-						(ServerLevel) player.level().sendParticles(ParticleTypes.ITEM_COBWEB, player.getX(), player.getY() + 1, player.getZ(), 2, .3, .4, .3, .01);
+						((ServerLevel) player.level()).sendParticles(ParticleTypes.ITEM_COBWEB, player.getX(), player.getY() + 1, player.getZ(), 2, .3, .4, .3, .01);
 				} else if (offGround(player) == HollowMatronRules.SILK_GRIP && walled(player)) {
 					player.displayClientMessage(Component.translatable("message.wildercord.weavers_silk.slip").withColor(0xC4BEB2), true);
 				}
