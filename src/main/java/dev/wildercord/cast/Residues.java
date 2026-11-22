@@ -99,7 +99,7 @@ public final class Residues {
 
 	/** One dimension's residues, saved with it. */
 	static final class Record extends SavedData {
-		static final Codec<Record> CODEC = Row.CODEC.listOf().xmap(Record::new, Record::rows);
+		static final Codec<Record> CODEC = Row.CODEC.listOf().fieldOf("rows").xmap(Record::new, Record::rows);
 		static final McSavedDataType<Record> TYPE = new McSavedDataType<>("residues", Record::new, CODEC);
 
 		@Override

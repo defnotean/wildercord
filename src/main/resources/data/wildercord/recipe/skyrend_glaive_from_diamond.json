@@ -8,9 +8,7 @@
     "components": {
       "wildercord:aura_forged": "skyrend_glaive",
       "minecraft:item_model": "wildercord:skyrend_glaive",
-      "minecraft:item_name": {
-        "translate": "item.wildercord.skyrend_glaive"
-      },
+      "minecraft:item_name": "Skyrend Glaive",
       "minecraft:rarity": "rare"
     }
   }

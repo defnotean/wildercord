@@ -776,6 +776,7 @@ public final class Imbuing {
 		 * dropped on its own, never the whole dimension's glyphs with it.
 		 */
 		static final Codec<Glyphs> CODEC = Glyph.CODEC.xmap(Optional::of, Optional::get).orElse(Optional.empty()).listOf()
+			.fieldOf("glyphs")
 			.xmap(read -> new Glyphs(read.stream().flatMap(Optional::stream).toList()), glyphs -> glyphs.all().stream().map(Optional::of).toList());
 		static final McSavedDataType<Glyphs> TYPE = new McSavedDataType<>("glyphs", Glyphs::new, CODEC);
 

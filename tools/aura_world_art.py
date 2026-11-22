@@ -614,11 +614,20 @@ def egg_icon(kind):
 
 # ============================================================== data
 
+# 1.21.4's item_name persistent codec is string-only (ComponentSerialization.flatCodec wraps
+# Codec.string), so older targets get the literal English name instead of a translate object.
+FORGED_DISPLAY = {"lumenedge": "Lumenedge", "skyrend_glaive": "Skyrend Glaive", "bulwark_maul": "Bulwark Maul"}
+
+
 def _smithing(name, template, base, addition, result_id, forged, rarity="rare", profile=None):
+    if profile is not None and profile.before_1_21_5:
+        item_name = FORGED_DISPLAY[forged]
+    else:
+        item_name = {"translate": f"item.wildercord.{forged}"}
     components = {
         "wildercord:aura_forged": forged,
         "minecraft:item_model": f"wildercord:{forged}",
-        "minecraft:item_name": {"translate": f"item.wildercord.{forged}"},
+        "minecraft:item_name": item_name,
         "minecraft:rarity": rarity,
     }
     if forged == "skyrend_glaive" and profile is not None and not profile.has_spear_base():
