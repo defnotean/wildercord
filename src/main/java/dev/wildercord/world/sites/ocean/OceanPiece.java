@@ -206,7 +206,8 @@ public abstract class OceanPiece extends StructurePiece {
 				if (!biome.is(BiomeTags.IS_OCEAN)) {
 					return OptionalInt.empty();
 				}
-				if (surf < sea || floor > surf - 4 || sea - floor < minDepthBelowSea) {
+				// Overworld seaLevel is 63 while the topmost water block sits at 62 (sea - 1).
+				if (surf < sea - 1 || floor > surf - 4 || sea - floor < minDepthBelowSea) {
 					return OptionalInt.empty();
 				}
 				floorMin = Math.min(floorMin, floor);
