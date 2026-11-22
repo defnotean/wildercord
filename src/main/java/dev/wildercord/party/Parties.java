@@ -133,8 +133,7 @@ public final class Parties {
 			if (entity instanceof Projectile projectile) {
 				Entity owner = projectile.getOwner();
 				if (owner == null) {
-					var reference = ((dev.wildercord.mixin.ProjectileOwnerAccessor) projectile).wildercord$ownerReference();
-					return reference == null ? null : reference.getUUID();
+					return ((dev.wildercord.mixin.ProjectileOwnerAccessor) projectile).wildercord$ownerUuid();
 				}
 				entity = owner;
 			} else if (entity instanceof OwnableEntity ownable) {

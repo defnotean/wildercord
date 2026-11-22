@@ -226,7 +226,7 @@ public final class FungalNurseryTest implements FabricClientGameTest {
       if(p(s).getInventory().countItem(SporebackContent.DEW)>before)return true;
       var found=s.overworld().getEntity(drop);check(found instanceof net.minecraft.world.entity.item.ItemEntity,"Tracked drop remains while earned inventory has not increased");
       var item=(net.minecraft.world.entity.item.ItemEntity)found;var access=(dev.wildercord.mixin.ItemEntityAccessor)item;
-      dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PICKUP player="+p(s).position()+" item="+item.position()+" velocity="+item.getDeltaMovement()+" age="+item.getAge()+" delay="+item.hasPickUpDelay()+" target="+access.wildercord$target()+" thrower="+(access.wildercord$thrower()==null?"none":access.wildercord$thrower().getUUID())+" collisionFree="+s.overworld().noCollision(p(s),p(s).getBoundingBox())+" inventory="+p(s).getInventory().countItem(SporebackContent.DEW));return false;
+      dev.wildercord.Wildercord.LOGGER.info("FUNGAL_PICKUP player="+p(s).position()+" item="+item.position()+" velocity="+item.getDeltaMovement()+" age="+item.getAge()+" delay="+item.hasPickUpDelay()+" target="+access.wildercord$target()+" thrower="+(access.wildercord$thrower()==null?"none":access.wildercord$thrower())+" collisionFree="+s.overworld().noCollision(p(s),p(s).getBoundingBox())+" inventory="+p(s).getInventory().countItem(SporebackContent.DEW));return false;
      });
      if(pickedUp)return;
     }

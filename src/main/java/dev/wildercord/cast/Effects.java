@@ -1668,7 +1668,7 @@ public final class Effects {
 		if (!item.isAlive() || item.hasPickUpDelay()) return false;
 		var ownership = (ItemEntityAccessor) item;
 		return (ownership.wildercord$target() == null || ownership.wildercord$target().equals(caster.getUUID()))
-			&& (ownership.wildercord$thrower() == null || ownership.wildercord$thrower().getUUID().equals(caster.getUUID()));
+			&& (ownership.wildercord$thrower() == null || ownership.wildercord$thrower().equals(caster.getUUID()));
 	}
 
 	/** Excavate: mines a 3x3 face of blocks around the block hit. */

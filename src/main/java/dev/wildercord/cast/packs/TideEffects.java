@@ -904,7 +904,7 @@ public final class TideEffects {
 		if (item.hasPickUpDelay()) return false;
 		var ownership = (ItemEntityAccessor) item;
 		return (ownership.wildercord$target() == null || ownership.wildercord$target().equals(caster.getUUID()))
-			&& (ownership.wildercord$thrower() == null || ownership.wildercord$thrower().getUUID().equals(caster.getUUID()));
+			&& (ownership.wildercord$thrower() == null || ownership.wildercord$thrower().equals(caster.getUUID()));
 	}
 
 	private static void mooringCall(Cast cast) {

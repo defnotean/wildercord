@@ -102,7 +102,7 @@ public final class FieldFusions {
         for(var item:drops) {
             if(used>=FieldFusionRules.SIEVE_ITEMS)break;
             var ownership=(ItemEntityAccessor)item;
-            if(ownership.wildercord$thrower()!=null && !ownership.wildercord$thrower().getUUID().equals(p.getUUID()))continue;
+            if(ownership.wildercord$thrower()!=null && !ownership.wildercord$thrower().equals(p.getUUID()))continue;
             if(ownership.wildercord$target()!=null && !ownership.wildercord$target().equals(p.getUUID()))continue;
             if(item.distanceToSqr(point)>FieldFusionRules.SIEVE_REACH*FieldFusionRules.SIEVE_REACH
                 || !editable(c,item.blockPosition().below()) || !open(c,p.getEyePosition(),item.position().add(0,.1,0)))continue;

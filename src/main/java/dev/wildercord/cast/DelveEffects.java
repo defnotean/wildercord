@@ -1641,7 +1641,7 @@ final class DelveEffects {
 		}
 		var ownership = (ItemEntityAccessor) item;
 		return (ownership.wildercord$target() == null || ownership.wildercord$target().equals(to.getUUID()))
-			&& (ownership.wildercord$thrower() == null || ownership.wildercord$thrower().getUUID().equals(to.getUUID()));
+			&& (ownership.wildercord$thrower() == null || ownership.wildercord$thrower().equals(to.getUUID()));
 	}
 
 	/** Lodepull: loose drops around the target drift to it for a while. */

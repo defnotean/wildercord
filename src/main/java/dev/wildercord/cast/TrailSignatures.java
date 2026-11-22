@@ -79,7 +79,7 @@ public final class TrailSignatures {
   for(var loose:candidates){
    if(count>=16)break;var owner=(ItemEntityAccessor)loose;
    if(!NextSignatureRules.reservedFor(p.getUUID(),owner.wildercord$target(),
-      owner.wildercord$thrower()==null?null:owner.wildercord$thrower().getUUID())
+      owner.wildercord$thrower()==null?null:owner.wildercord$thrower())
     || loose.distanceToSqr(hit.point())>9 || !NextSignatureSafety.editable(c,loose.blockPosition().below())
     || !NextSignatureSafety.open(c,loose.position().add(0,.1,0),intake,4))continue;
    var input=loose.getItem();int amount=Math.min(16-count,input.getCount());
@@ -103,7 +103,7 @@ public final class TrailSignatures {
     || dev.wildercord.world.dungeons.DungeonWards.warded(c.level,item.blockPosition().below())
     || !ItemStack.matches(item.getItem(),job.snapshot())
     || !NextSignatureRules.reservedFor(p.getUUID(),reservation.wildercord$target(),
-      reservation.wildercord$thrower()==null?null:reservation.wildercord$thrower().getUUID()))return;
+      reservation.wildercord$thrower()==null?null:reservation.wildercord$thrower()))return;
   }
   if(!NextSignaturePayments.of(c).once("pocket_current"))return;
   for(int i=0;i<slots.size();i++)destination.setItem(i,slots.get(i));destination.setChanged();

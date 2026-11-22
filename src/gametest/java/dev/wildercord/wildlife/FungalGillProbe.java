@@ -121,7 +121,7 @@ public final class FungalGillProbe {
    items.add(FungalNurseryProbe.observe(()->{
    var access=(dev.wildercord.mixin.ItemEntityAccessor)item;
    return "uuid="+item.getUUID()+" id="+item.getId()+" preexisting="+existing.get(item.getUUID())+" stack="+item.getItem()+" count="+item.getItem().getCount()+" age="+item.getAge()
-    +" pickupDelay="+((ItemDelay)item).wildercord$gillPickupDelay()+" target="+access.wildercord$target()+" thrower="+(access.wildercord$thrower()==null?"none":access.wildercord$thrower().getUUID())
+    +" pickupDelay="+((ItemDelay)item).wildercord$gillPickupDelay()+" target="+access.wildercord$target()+" thrower="+(access.wildercord$thrower()==null?"none":access.wildercord$thrower())
     +" position="+item.position()+" velocity="+item.getDeltaMovement()+" body="+item.getBoundingBox()+" ground="+item.onGround()+" water="+item.isInWater()+" removed="+item.isRemoved()+" reason="+item.getRemovalReason()
     +" pickupOverlap="+pickup.intersects(item.getBoundingBox())+" horizontalCollision="+item.horizontalCollision+" verticalCollision="+item.verticalCollision;
    }));

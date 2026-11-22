@@ -1,7 +1,6 @@
 package dev.wildercord.mixin;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityReference;
+import java.util.UUID;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -11,5 +10,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ItemEntityAccessor {
 	@Accessor("target") java.util.UUID wildercord$target();
 	@Accessor("thrower")
-	EntityReference<Entity> wildercord$thrower();
+	UUID wildercord$thrower();
 }
