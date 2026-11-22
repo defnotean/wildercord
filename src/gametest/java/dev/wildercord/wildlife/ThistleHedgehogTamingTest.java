@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Relative;
@@ -14,10 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
 /** Sweet berries tame a thistle hedgehog through the real use key; tame, it heals on berries, sits and follows when told, keeps up with its owner, and its hoglets are theirs. */
 public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 	private static UUID id;
@@ -145,10 +143,10 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				var h = hog(s);
 				h.setOrderedToSit(true);
-				var saved = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
+				CompoundTag saved = new CompoundTag();
 				h.saveWithoutId(saved);
 				var restored = HedgehogContent.THISTLE_HEDGEHOG.create(s.overworld(), EntitySpawnReason.LOAD);
-				restored.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), saved.buildResult()));
+				restored.load(saved);
 				check(restored.isTame() && restored.isOwnedBy(p(s)), "Its owner survives a save");
 				check(restored.isOrderedToSit(), "Its order to sit survives a save");
 				restored.discard();

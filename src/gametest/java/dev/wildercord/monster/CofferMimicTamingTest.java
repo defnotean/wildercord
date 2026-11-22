@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -19,11 +18,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
 /** Books tame a coffer mimic through the real use key; tamed, it follows, opens as a chest for its owner alone, keeps what it holds and spills it when it dies. */
 public final class CofferMimicTamingTest implements FabricClientGameTest {
 	private static UUID id;
@@ -237,10 +235,10 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			// It keeps its owner, its orders and its belly through a save.
 			w.getServer().runOnServer(s -> {
 				var m = mimic(s);
-				var saved = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
+				CompoundTag saved = new CompoundTag();
 				m.saveWithoutId(saved);
 				var restored = MonsterContent.COFFER_MIMIC.create(s.overworld(), EntitySpawnReason.LOAD);
-				restored.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), saved.buildResult()));
+				restored.load(saved);
 				check(restored.isOwnedBy(p(s)), "Its owner survives a save");
 				check(restored.belly().getItem(0).getCount() == 3 && restored.belly().getItem(26).getCount() == 5, "Its belly survives a save");
 				restored.discard();

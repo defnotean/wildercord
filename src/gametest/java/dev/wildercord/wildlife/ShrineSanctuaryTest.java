@@ -37,7 +37,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -60,8 +59,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -71,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
 
 /**
  * Full end-to-end in-game verification suite for:
@@ -403,19 +401,19 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				fisher.mobInteract(player, InteractionHand.MAIN_HAND);
 				check(player.getInventory().hasAnyOf(Set.of(Items.SALMON)), "Koi Fisherman trades fresh Salmon");
 
-				var savedV = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
+				CompoundTag savedV = new CompoundTag();
 				maiden.saveWithoutId(savedV);
 				SakuraVillager loadedV = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.LOAD);
 				check(loadedV != null, "Restored villager created");
-				loadedV.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), savedV.buildResult()));
+				loadedV.load(savedV);
 				check(loadedV.role() == SakuraVillager.SHRINE_MAIDEN, "SakuraVillager role persisted via NBT");
 				loadedV.discard();
 
-				var savedF = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
+				CompoundTag savedF = new CompoundTag();
 				fisher.saveWithoutId(savedF);
 				SakuraVillager loadedF = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.LOAD);
 				check(loadedF != null, "Restored fisherman created");
-				loadedF.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), savedF.buildResult()));
+				loadedF.load(savedF);
 				check(loadedF.role() == SakuraVillager.FISHERMAN, "SakuraVillager fisherman role persisted via NBT");
 				loadedF.discard();
 
@@ -838,11 +836,11 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				player.setShiftKeyDown(false);
 				check(freya.isLoafing(), "Sneak-interact curls Freya into loaf");
 
-				var saved = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, s.registryAccess());
+				CompoundTag saved = new CompoundTag();
 				freya.saveWithoutId(saved);
 				ShrineCat restored = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.LOAD);
 				check(restored != null, "Restored cat created");
-				restored.load(TagValueInput.create(ProblemReporter.DISCARDING, s.registryAccess(), saved.buildResult()));
+				restored.load(saved);
 				check(restored.variant() == ShrineCatRules.Variant.FREYA, "Variant preserved in save");
 				check(restored.isTame() && restored.isOwnedBy(player), "Owner preserved in save");
 				check(restored.getRole() == ShrineCatRules.ROLE_TAMED && restored.isLoafing(), "Role and loaf preserved in save");

@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.*;
 import net.minecraft.world.phys.*;
 import java.util.*;
+import net.minecraft.nbt.CompoundTag;
 
 /** Real spell resistance, attack openings, acquisition/persistence, tools and rendered custom animals. */
 public final class AuraBeastsTest implements FabricClientGameTest {
@@ -66,7 +67,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 			for(int index=0;index<2;index++) {
 				int which=index,id=ids[index];w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var beast=(AuraBeast)s.overworld().getEntity(id);p.teleportTo(s.overworld(),beast.getX(),101,beast.getZ()-2.5,Set.<Relative>of(),0,0,false);p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(which==0?Items.WHEAT:Items.RABBIT,2));});c.waitTicks(10);
 				feed(c,id);c.waitTicks(10);feed(c,id);c.waitTicks(10);
-				w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var beast=(AuraBeast)s.overworld().getEntity(id);check(p.getMainHandItem().getCount()==1,"Only successful feeding consumes food");check(drops(s.overworld(),which==0?AuraBeasts.STONEHORN_PLATE:AuraBeasts.GALECLAW_PLUME)==1,"Exactly one material is shed");var saved=TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING,s.registryAccess());beast.saveWithoutId(saved);var restored=(AuraBeast)beast.getType().create(s.overworld(),EntitySpawnReason.LOAD);restored.load(TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING,s.registryAccess(),saved.buildResult()));check(restored.pose()==BeastRules.RECOVER && restored.calmTicks()>0,"Load resumes safely and preserves calm");restored.mobInteract(p,InteractionHand.MAIN_HAND);check(p.getMainHandItem().getCount()==1 && drops(s.overworld(),which==0?AuraBeasts.STONEHORN_PLATE:AuraBeasts.GALECLAW_PLUME)==1,"Saved shed cooldown prevents repeat material");restored.discard();beast.pose(BeastRules.IDLE,0);});
+				w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var beast=(AuraBeast)s.overworld().getEntity(id);check(p.getMainHandItem().getCount()==1,"Only successful feeding consumes food");check(drops(s.overworld(),which==0?AuraBeasts.STONEHORN_PLATE:AuraBeasts.GALECLAW_PLUME)==1,"Exactly one material is shed");CompoundTag saved = new CompoundTag();beast.saveWithoutId(saved);var restored=(AuraBeast)beast.getType().create(s.overworld(),EntitySpawnReason.LOAD);restored.load(saved);check(restored.pose()==BeastRules.RECOVER && restored.calmTicks()>0,"Load resumes safely and preserves calm");restored.mobInteract(p,InteractionHand.MAIN_HAND);check(p.getMainHandItem().getCount()==1 && drops(s.overworld(),which==0?AuraBeasts.STONEHORN_PLATE:AuraBeasts.GALECLAW_PLUME)==1,"Saved shed cooldown prevents repeat material");restored.discard();beast.pose(BeastRules.IDLE,0);});
 			}
 			// Photograph authored silhouettes without using frozen AI to prove behavior.
 			view(w,c,ids[0],"stonehorn_grazer");view(w,c,ids[1],"galeclaw_ridge_runner");

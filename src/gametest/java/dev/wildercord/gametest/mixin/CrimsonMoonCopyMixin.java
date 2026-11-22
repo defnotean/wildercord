@@ -1,4 +1,4 @@
-package dev.wildercord.gametest.mixin;
+﻿package dev.wildercord.gametest.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 /** Inert unless the exact Fabric shared-player screenshot call has armed its synchronous scope. */
 @Mixin(Screenshot.class)
 public abstract class CrimsonMoonCopyMixin {
-	@WrapOperation(method = "takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V",
+	@WrapOperation(method = "takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;Ljava/util/function/Consumer;)V",
 		at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;ILjava/lang/Runnable;I)V"), require = 1, expect = 1, allow = 1)
 	private static void wildercord$moon$copy(CommandEncoder encoder, GpuTexture texture, GpuBuffer buffer,
 			int offset, Runnable callback, int mip, Operation<Void> original,

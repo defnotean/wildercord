@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -43,7 +44,7 @@ import org.joml.Quaternionfc;
  * them; the quads themselves go on vanilla's particle and eye layers, which every pack handles.
  */
 public final class RenderCompat {
-	private static final RenderPipeline WISP_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$entityEmissiveSnippet())
+	private static final RenderPipeline WISP_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$entitySnippet())
 		.withLocation(Wildercord.id("pipeline/wisp_glow"))
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withShaderDefine("NO_OVERLAY")
@@ -51,9 +52,10 @@ public final class RenderCompat {
 		.withBlend(BlendFunction.LIGHTNING)
 		.withCull(false)
 		.withDepthWrite(false)
+		.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 		.build();
 
-	private static final RenderPipeline AURA_BODY_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$entityEmissiveSnippet())
+	private static final RenderPipeline AURA_BODY_GLOW_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$entitySnippet())
 		.withLocation(Wildercord.id("pipeline/aura_body_glow"))
 		.withShaderDefine("ALPHA_CUTOUT", 0.1F)
 		.withShaderDefine("NO_OVERLAY")
@@ -61,6 +63,7 @@ public final class RenderCompat {
 		.withBlend(BlendFunction.LIGHTNING)
 		.withCull(false)
 		.withDepthWrite(false)
+		.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 		.build();
 
 	private static final RenderPipeline GLOW_PARTICLE_PIPELINE = RenderPipeline.builder(RenderPipelinesAccessor.wildercord$particleSnippet())

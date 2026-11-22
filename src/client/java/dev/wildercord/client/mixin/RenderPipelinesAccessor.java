@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-/** The vanilla particle pipeline's shared settings (shaders, vertex format, samplers), to build glow pipelines from. */
+/** The vanilla particle and entity pipelines' shared settings (shaders, vertex format, samplers), to build glow pipelines from. */
 @Mixin(RenderPipelines.class)
 public interface RenderPipelinesAccessor {
 	@Accessor("PARTICLE_SNIPPET")
@@ -13,8 +13,8 @@ public interface RenderPipelinesAccessor {
 		throw new AssertionError();
 	}
 
-	@Accessor("ENTITY_EMISSIVE_SNIPPET")
-	static RenderPipeline.Snippet wildercord$entityEmissiveSnippet() {
+	@Accessor("ENTITY_SNIPPET")
+	static RenderPipeline.Snippet wildercord$entitySnippet() {
 		throw new AssertionError();
 	}
 }

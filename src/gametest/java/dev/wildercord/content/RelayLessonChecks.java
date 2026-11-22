@@ -21,15 +21,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -38,6 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import net.minecraft.nbt.CompoundTag;
 
 /** Real lectern-use and page packets; call from the registered Relay suite. No direct teaching hooks. */
 public final class RelayLessonChecks {
@@ -393,7 +391,7 @@ public final class RelayLessonChecks {
 		Rewards originalRewards = rewards(player, learned ? "learned_before_detached_load" : "copied_before_detached_load");
 		Spellbook originalBook = Spellbooks.get(player);
 		var connection = player.connection;
-		var saved = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.level().registryAccess());
+		CompoundTag saved = new CompoundTag();
 		player.saveWithoutId(saved);
 		// The supported 26.3 constructor makes stats/advancement cache entries even before joining.
 		// Use a unique profile, then clear only this temporary probe's entries and listeners in finally.
@@ -418,7 +416,7 @@ public final class RelayLessonChecks {
 				"Detached constructor owns only its unique profile's temporary cache entries");
 			check(restored.connection == null && !players.getPlayers().contains(restored) && !player.level().players().contains(restored),
 				"Persistence probe has no connection and is never registered or ticked");
-			restored.load(TagValueInput.create(ProblemReporter.DISCARDING, player.level().registryAccess(), saved.buildResult()));
+			restored.load(saved);
 			check(MasterStudies.hasRelayLesson(restored) && MasterStudies.knowsRelay(restored) == learned
 				&& Spellbooks.knows(restored, Runes.RELAY.id()) == learned && lessonState(restored).equals(before)
 				&& Spellbooks.get(restored).equals(originalBook), "Detached original player-type load retains copied/learned/rune data");
