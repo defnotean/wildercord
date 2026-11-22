@@ -205,12 +205,13 @@
     ]
   },
   "oathhold-city": {
-    "description": "Oathhold 2,048x2,048 Sovereign Megacity: real Overworld /locate placement, continuous 1,920-block walled span verification, outer/inner landmarks, 750+ named citizens, neutral-until-crime Knights, Guild Request Board, and 1:1 visual showcase screenshots.",
+    "description": "Oathhold 2,048x2,048 Sovereign Megacity: real Overworld /locate placement, continuous 1,920-block walled span verification, outer/inner landmarks, 750+ named citizens, neutral-until-crime Knights, Guild Request Board, guard-witnessed vandalism/TNT persecution, temporary Watch Stockade imprisonment, live NPC house rebuilding, and 1:1 visual showcase screenshots.",
     "purpose": "area",
-    "expectedCount": 2,
+    "expectedCount": 3,
     "entries": [
       "dev.wildercord.world.sites.OathholdMegacityTest",
-      "dev.wildercord.world.sites.OathholdGuildAndLawTest"
+      "dev.wildercord.world.sites.OathholdGuildAndLawTest",
+      "dev.wildercord.world.sites.OathholdPrisonAndRebuildTest"
     ]
   },
   "structure-gallery": {

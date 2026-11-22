@@ -40,7 +40,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.BarrelBlock;
@@ -48,9 +50,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -153,21 +157,36 @@ public final class OathholdLaw {
 	private static final Map<UUID, Long> LAST_THEFT_WARN = new HashMap<>();
 
 	public static void init() {
+		OathholdJustice.init();
 		ServerState.forgetOnDisconnect(LAST_THEFT_WARN);
 		ServerState.resetOnStop(LAST_THEFT_WARN);
 		ServerLifecycleEvents.SERVER_STOPPED.register(s -> PENDING_CITIES.clear());
 
 		ServerTickEvents.END_SERVER_TICK.register(OathholdLaw::flushPendingCities);
+		ServerLivingEntityEvents.ALLOW_DAMAGE.register(OathholdJustice::allowDamage);
 
 		UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
 			if (!(world instanceof ServerLevel level) || !(player instanceof ServerPlayer server)) {
 				return InteractionResult.PASS;
 			}
+			if (OathholdJustice.isImprisoned(server)) {
+				server.sendOverlayMessage(Component.literal("You are imprisoned in the Watch Stockade until your sentence ends.")
+					.withStyle(ChatFormatting.RED));
+				return InteractionResult.FAIL;
+			}
 			BlockPos pos = hit.getBlockPos();
 			BlockState state = level.getBlockState(pos);
 			CityLedger ledger = ledger(level.getServer());
-			if (!server.isSpectator() && server.getItemInHand(hand).getItem() instanceof BlockItem) {
-				ledger.markPlaced(pos.relative(hit.getDirection()).asLong());
+			ItemStack held = server.getItemInHand(hand);
+			if (!server.isSpectator() && held.getItem() instanceof BlockItem bi) {
+				BlockPos placedPos = pos.relative(hit.getDirection());
+				ledger.markPlaced(placedPos.asLong());
+				if (bi.getBlock() == Blocks.TNT) {
+					OathholdJustice.recordTntPlaced(server, placedPos, level.getGameTime());
+				}
+			}
+			if (!server.isSpectator() && state.is(Blocks.TNT) && (held.is(Items.FLINT_AND_STEEL) || held.is(Items.FIRE_CHARGE))) {
+				OathholdJustice.recordTntPlaced(server, pos, level.getGameTime());
 			}
 			if (!server.isCreative() && !server.isSpectator()
 					&& (state.getBlock() instanceof ChestBlock || state.getBlock() instanceof BarrelBlock)
@@ -188,6 +207,9 @@ public final class OathholdLaw {
 			if (!(world instanceof ServerLevel level) || !(player instanceof ServerPlayer server)) {
 				return true;
 			}
+			if (OathholdJustice.isImprisoned(server) || OathholdJustice.isProtectedPrisonBlock(level.getServer(), pos)) {
+				return false;
+			}
 			if (OathholdQuests.onBlockBroken(level, server, pos, state)) {
 				return true;
 			}
@@ -204,7 +226,13 @@ public final class OathholdLaw {
 			if (state.isAir() || state.canBeReplaced()) {
 				return true;
 			}
-			recordCrime(server, OathholdLawRules.CrimeKind.VANDALISM);
+			if (state.getBlock() instanceof GuildRequestBoardBlock) {
+				return false;
+			}
+			level.levelEvent(2001, pos, Block.getId(state));
+			level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+			OathholdJustice.onCityDamaged(level, server, pos,
+				List.of(new OathholdJustice.SavedBlock(pos.immutable(), state)), false);
 			return false;
 		});
 
@@ -327,9 +355,41 @@ public final class OathholdLaw {
 		}
 	}
 
-	public static void clearCrime(ServerPlayer player, boolean pacifyNearbyKnights) {
-		player.setAttached(CRIME, CrimeRecord.CLEAN);
-		if (pacifyNearbyKnights && player.level() instanceof ServerLevel level) {
+	public static void onExplosionBlocks(ServerLevel level, ServerExplosion explosion, Vec3 center, List<BlockPos> blown) {
+		if (blown.isEmpty() || findContainingCity(level, BlockPos.containing(center)).isEmpty()) {
+			return;
+		}
+		CityLedger ledger = ledger(level.getServer());
+		List<OathholdJustice.SavedBlock> damaged = new ArrayList<>();
+		for (Iterator<BlockPos> it = blown.iterator(); it.hasNext(); ) {
+			BlockPos pos = it.next();
+			if (OathholdJustice.isProtectedPrisonBlock(level.getServer(), pos)) {
+				it.remove();
+				continue;
+			}
+			BlockState state = level.getBlockState(pos);
+			if (state.getBlock() instanceof GuildRequestBoardBlock) {
+				it.remove();
+				continue;
+			}
+			if (state.isAir() || state.is(Blocks.TNT)) {
+				continue;
+			}
+			if (ledger.consumePlaced(pos.asLong())) {
+				continue;
+			}
+			damaged.add(new OathholdJustice.SavedBlock(pos.immutable(), state));
+			level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+			it.remove();
+		}
+		if (!damaged.isEmpty()) {
+			ServerPlayer culprit = OathholdJustice.findExplosionCulprit(level, explosion, center);
+			OathholdJustice.onCityDamaged(level, culprit, BlockPos.containing(center), damaged, true);
+		}
+	}
+
+	public static void pacifyKnightsFor(ServerPlayer player) {
+		if (player.level() instanceof ServerLevel level) {
 			AABB box = player.getBoundingBox().inflate(64.0);
 			for (Mob knight : level.getEntitiesOfClass(Mob.class, box, m -> isKnightEntity(m) && m.isAlive())) {
 				if (knight.getTarget() == player) {
@@ -342,6 +402,13 @@ public final class OathholdLaw {
 					knight.setLastHurtByPlayer((Player) null, 0);
 				}
 			}
+		}
+	}
+
+	public static void clearCrime(ServerPlayer player, boolean pacifyNearbyKnights) {
+		player.setAttached(CRIME, CrimeRecord.CLEAN);
+		if (pacifyNearbyKnights) {
+			pacifyKnightsFor(player);
 		}
 	}
 
@@ -383,13 +450,13 @@ public final class OathholdLaw {
 
 	/** True when {@code knight} is permitted to initiate combat against {@code player}. */
 	public static boolean shouldKnightAttack(Mob knight, ServerPlayer player) {
-		if (!player.isAlive() || player.isCreative() || player.isSpectator()) {
+		if (!player.isAlive() || player.isCreative() || player.isSpectator() || OathholdJustice.isImprisoned(player)) {
 			return false;
 		}
 		if (knight.entityTags().contains(ARENA_DUELIST_TAG)) {
 			return knight.entityTags().contains(OathholdQuests.challengerTag(player.getUUID()));
 		}
-		return isWanted(player);
+		return isWanted(player) || OathholdJustice.isPersecuted(player);
 	}
 
 	/**

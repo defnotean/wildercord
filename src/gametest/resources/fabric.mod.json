@@ -88,6 +88,7 @@
       "dev.wildercord.wildlife.SiltcrestPresentationTest",
       "dev.wildercord.world.sites.OathholdMegacityTest",
       "dev.wildercord.world.sites.OathholdGuildAndLawTest",
+      "dev.wildercord.world.sites.OathholdPrisonAndRebuildTest",
       "dev.wildercord.pet.CinnamonCompanionTest",
       "dev.wildercord.gametest.WildercordFeatureTour"
     ]

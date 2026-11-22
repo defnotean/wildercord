@@ -101,4 +101,24 @@ final class OathholdLivingSystemsTest {
 			assertTrue(cats.contains(OathholdQuestRules.JobCategory.ARENA_BOUT));
 		}
 	}
+
+	@Test
+	void prisonRebuildAndCellRulesMatchContracts() {
+		assertEquals(35, OathholdLawRules.CrimeKind.DEMOLITION.bountyEmeralds);
+		assertEquals(OathholdLawRules.PRISON_MIN_TICKS, OathholdLawRules.sentenceTicks(1, false));
+		assertTrue(OathholdLawRules.sentenceTicks(20, true) > OathholdLawRules.sentenceTicks(5, false));
+		assertEquals(OathholdLawRules.PRISON_MAX_TICKS, OathholdLawRules.sentenceTicks(500, true));
+
+		assertEquals(1, OathholdLawRules.repairCrewSize(2));
+		assertEquals(2, OathholdLawRules.repairCrewSize(8));
+		assertEquals(OathholdLawRules.MAX_REPAIR_CREW, OathholdLawRules.repairCrewSize(40));
+
+		// Bottom-up & solid before non-solid ordering keeps foundations and walls under fixtures/doors.
+		assertTrue(OathholdLawRules.compareForRebuild(0, 10, 0, false, 0, 11, 0, true) < 0);
+		assertTrue(OathholdLawRules.compareForRebuild(0, 10, 0, true, 0, 10, 0, false) < 0);
+
+		assertTrue(OathholdLawRules.isInsideCell(10.5, 120.0, -4.5, 10, 120, -5));
+		assertFalse(OathholdLawRules.isInsideCell(12.2, 120.0, -4.5, 10, 120, -5));
+		assertFalse(OathholdLawRules.isInsideCell(10.5, 124.0, -4.5, 10, 120, -5));
+	}
 }

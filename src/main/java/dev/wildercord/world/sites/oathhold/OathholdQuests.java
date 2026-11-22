@@ -626,7 +626,9 @@ public final class OathholdQuests {
 					"=== Adventurer License ===\n"
 						+ "Rank: " + rank.name() + " (" + rank.sealMaterial + ") | Guild Points: " + prof.rankPoints()
 						+ " | Completed: " + prof.completedCount() + "\n"
-						+ "Law Status: " + (OathholdLaw.isWanted(p) ? "WANTED (" + OathholdLaw.bountyOf(p) + " Emeralds)" : "Good Standing") + "\n"
+						+ "Law Status: " + (OathholdJustice.isImprisoned(p)
+							? "IMPRISONED (" + Math.max(1L, (OathholdJustice.remainingSentenceTicks(p) + 19L) / 20L) + "s remaining)"
+							: OathholdLaw.isWanted(p) ? "WANTED (" + OathholdLaw.bountyOf(p) + " Emeralds)" : "Good Standing") + "\n"
 						+ "Active Request: " + prof.activeJob().map(j -> j.jobId() + " (" + j.progress() + "/" + j.needed() + ")").orElse("None"))
 					.withStyle(ChatFormatting.GOLD));
 				return 1;
@@ -636,6 +638,13 @@ public final class OathholdQuests {
 				return 1;
 			}))
 			.then(literal("payfine").executes(ctx -> OathholdLaw.tryPayFine(ctx.getSource().getPlayerOrException()) ? 1 : 0))
+			.then(literal("release")
+				.requires(src -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(src)
+					|| (src.getEntity() instanceof ServerPlayer sp && sp.isCreative()))
+				.executes(ctx -> {
+					OathholdJustice.forceRelease(ctx.getSource().getPlayerOrException());
+					return 1;
+				}))
 		);
 	}
 }

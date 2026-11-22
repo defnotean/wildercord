@@ -42,9 +42,11 @@ import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Articulated humanoid inhabitant of Oathhold spanning 16 distinct civic, guild, merchant,
@@ -66,6 +68,9 @@ public class OathholdCitizen extends WanderingTrader {
 	private int homeZ;
 	private int tetherRadius = 12;
 	private boolean hasHome;
+	private boolean temporaryCrew;
+	private @Nullable BlockPos repairTargetPos;
+	private @Nullable UUID pursuitTargetId;
 	private int dialogueIndex;
 
 	public OathholdCitizen(EntityType<? extends WanderingTrader> type, Level level) {
@@ -94,10 +99,44 @@ public class OathholdCitizen extends WanderingTrader {
 		goalSelector.addGoal(1, new TradeWithPlayerGoal(this));
 		goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Zombie.class, 8.0F, 0.5, 0.55));
 		goalSelector.addGoal(1, new LookAtTradingPlayerGoal(this));
+		goalSelector.addGoal(2, new WatchmanPursuitGoal(this, 0.72));
+		goalSelector.addGoal(2, new RepairWorkGoal(this, 0.62));
 		goalSelector.addGoal(4, new HomeTetherGoal(this, 0.42));
 		goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.30));
 		goalSelector.addGoal(9, new InteractGoal(this, Player.class, 3.0F, 0.5F));
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+	}
+
+	public void triggerWorkSwing() {
+		entityData.set(DATA_WAVE_TICK, 16);
+	}
+
+	public void assignRepairTarget(BlockPos pos) {
+		this.repairTargetPos = pos.immutable();
+	}
+
+	public void clearRepairTarget() {
+		this.repairTargetPos = null;
+	}
+
+	public void assignPursuit(UUID targetId) {
+		this.pursuitTargetId = targetId;
+	}
+
+	public void clearPursuit() {
+		this.pursuitTargetId = null;
+	}
+
+	public @Nullable UUID pursuitTargetId() {
+		return pursuitTargetId;
+	}
+
+	public void markTemporaryCrew(boolean temp) {
+		this.temporaryCrew = temp;
+	}
+
+	public boolean isTemporaryCrew() {
+		return temporaryCrew;
 	}
 
 	public OathholdCitizenRules.Archetype archetype() {
@@ -330,6 +369,7 @@ public class OathholdCitizen extends WanderingTrader {
 		output.putInt("HomeY", homeY);
 		output.putInt("HomeZ", homeZ);
 		output.putInt("TetherRadius", tetherRadius);
+		output.putBoolean("OathholdTempCrew", temporaryCrew);
 	}
 
 	@Override
@@ -344,7 +384,82 @@ public class OathholdCitizen extends WanderingTrader {
 		homeY = input.getIntOr("HomeY", 64);
 		homeZ = input.getIntOr("HomeZ", 0);
 		tetherRadius = Math.max(2, input.getIntOr("TetherRadius", 12));
+		temporaryCrew = input.getBooleanOr("OathholdTempCrew", false);
 		setPersistenceRequired();
+	}
+
+	private static final class WatchmanPursuitGoal extends Goal {
+		private final OathholdCitizen mob;
+		private final double speed;
+
+		WatchmanPursuitGoal(OathholdCitizen mob, double speed) {
+			this.mob = mob;
+			this.speed = speed;
+			setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+		}
+
+		@Override
+		public boolean canUse() {
+			return mob.pursuitTargetId != null && mob.level() instanceof ServerLevel sl
+				&& sl.getServer().getPlayerList().getPlayer(mob.pursuitTargetId) != null;
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			if (mob.pursuitTargetId == null || !(mob.level() instanceof ServerLevel sl)) return false;
+			ServerPlayer target = sl.getServer().getPlayerList().getPlayer(mob.pursuitTargetId);
+			if (target == null || !target.isAlive() || !OathholdJustice.isPersecuted(target)) {
+				mob.pursuitTargetId = null;
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		public void tick() {
+			if (!(mob.level() instanceof ServerLevel sl) || mob.pursuitTargetId == null) return;
+			ServerPlayer target = sl.getServer().getPlayerList().getPlayer(mob.pursuitTargetId);
+			if (target == null || !OathholdJustice.isPersecuted(target)) {
+				mob.pursuitTargetId = null;
+				return;
+			}
+			mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+			mob.getNavigation().moveTo(target, speed);
+		}
+	}
+
+	private static final class RepairWorkGoal extends Goal {
+		private final OathholdCitizen mob;
+		private final double speed;
+
+		RepairWorkGoal(OathholdCitizen mob, double speed) {
+			this.mob = mob;
+			this.speed = speed;
+			setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+		}
+
+		@Override
+		public boolean canUse() {
+			return mob.repairTargetPos != null;
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return mob.repairTargetPos != null;
+		}
+
+		@Override
+		public void tick() {
+			BlockPos pos = mob.repairTargetPos;
+			if (pos == null) return;
+			mob.getLookControl().setLookAt(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 30.0F, 30.0F);
+			double d2 = mob.distanceToSqr(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+			if (d2 > 6.25) {
+				mob.getNavigation().moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, speed);
+			} else {
+				mob.getNavigation().stop();
+			}
+		}
 	}
 
 	/** Version-independent stroll tether keeping merchants and guards near their assigned post. */
@@ -360,7 +475,7 @@ public class OathholdCitizen extends WanderingTrader {
 
 		@Override
 		public boolean canUse() {
-			if (!mob.hasHome) return false;
+			if (!mob.hasHome || mob.repairTargetPos != null || mob.pursuitTargetId != null) return false;
 			double dx = mob.getX() - (mob.homeX + 0.5);
 			double dy = mob.getY() - mob.homeY;
 			double dz = mob.getZ() - (mob.homeZ + 0.5);
