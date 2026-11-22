@@ -1,13 +1,12 @@
 package dev.wildercord.gametest;
 
-import dev.wildercord.gametest.mixin.NativeClientPhaseAccess;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.MinecraftServer;
 
-/** GameTest-only adaptation of the pinned Fabric 6.0.7 / Minecraft 26.3 close handshake. */
+/** GameTest-only adaptation of the Fabric close handshake. 1.21.3 has no `postRunTasks()`; the pump is the event loop `pollTask` loop, which is what 1.21.4 runs there. */
 public final class NativeSingleplayerClose {
 	private static final NativeHaltHandshake.Gate GATE = new NativeHaltHandshake.Gate();
 	private static volatile Receipt last;
@@ -34,7 +33,7 @@ public final class NativeSingleplayerClose {
 			&& ThreadingImpl.taskToRun == null);
 		if (scope == null) return false;
 		Minecraft client = Minecraft.getInstance();
-		scope.execute(task, server::submit, ((NativeClientPhaseAccess) client)::wildercord$runFabricPhase, () -> {
+		scope.execute(task, server::submit, () -> { while (client.pollTask()) { } }, () -> {
 			if (!ThreadingImpl.isGameCrashed() && ThreadingImpl.isServerRunning) return null;
 			Throwable recorded = ThreadingImpl.testFailureException;
 			return recorded != null ? recorded : new IllegalStateException("Native server stopped before its shutdown task completed");

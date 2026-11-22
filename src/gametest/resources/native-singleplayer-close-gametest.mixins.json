@@ -3,6 +3,6 @@
   "package": "dev.wildercord.gametest.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": ["PlayerSaveDiagnosticsMixin", "PlayerAttachmentThreadDiagnosticsMixin", "ExciseLifecycleDiagnosticsMixin"],
-  "client": ["NativeClientPhaseAccess", "NativeSingleplayerCloseScopeMixin", "NativeIntegratedServerHaltMixin"],
+  "client": ["NativeSingleplayerCloseScopeMixin", "NativeIntegratedServerHaltMixin"],
   "injectors": {"defaultRequire": 1}
 }
