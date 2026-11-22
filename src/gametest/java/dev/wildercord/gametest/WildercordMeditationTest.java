@@ -61,7 +61,7 @@ public final class WildercordMeditationTest implements FabricClientGameTest {
 					+ ", grounded=" + player.onGround() + ", position=" + player.position() + ", cord=" + Spellbooks.tier(player));
 				check(Spellbooks.mana(player) > 100, "Meditation must still restore mana");
 			});
-			context.runOnClient(mc -> { mc.getToastManager().clear(); mc.gui.clearTitles(); });
+			context.runOnClient(mc -> { mc.getToastManager().clear(); dev.wildercord.gametest.compat.GametestCompat.clearTitles(mc); });
 			shot(context, "meditation_eight_circles_first_person");
 			context.runOnClient(mc -> mc.player.setXRot(55));
 			context.waitTicks(5);

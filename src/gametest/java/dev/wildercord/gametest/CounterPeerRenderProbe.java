@@ -409,7 +409,7 @@ public final class CounterPeerRenderProbe {
         pass(s,"body_submit",a,model,null,rootProof,s.token.expected.mode().equals("articulated"),s.token.expected.mode().equals("classic"));
     }
     /** The baseline comes from the real vanilla-to-articulated boundary for this same state/model. */
-    public static WorldItem worldItemBegin(Object parent,ArmedEntityRenderState state,ItemStackRenderState item,ItemStack stack,HumanoidArm arm,PoseStack pose,net.minecraft.client.renderer.MultiBufferSource buffer){
+    public static WorldItem worldItemBegin(Object parent,net.minecraft.client.renderer.entity.state.LivingEntityRenderState state,ItemStackRenderState item,ItemStack stack,HumanoidArm arm,PoseStack pose,net.minecraft.client.renderer.MultiBufferSource buffer){
         var s=rendering();if(s==null||!s.token.expected.view().equals("remote")||!(state instanceof PlayerRenderState a)||a.id!=s.token.expected.owner()||arm!=a.mainArm)return null;
         var source=s.sources.get(a);var world=s.worlds.get(a);var baseline=s.layerBaselines.remove(a);
         if(source==null||world==null||parent!=source.model()||world.model()!=parent||baseline==null){s.token.reject("world_item_without_exact_vanilla_baseline");return null;}

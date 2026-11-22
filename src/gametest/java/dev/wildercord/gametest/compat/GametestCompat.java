@@ -148,9 +148,15 @@ public final class GametestCompat {
 	public static StructureStart generateStructureStart(ServerLevel level, Holder<Structure> structure, ChunkPos chunk) {
 		var cs = level.getChunkSource();
 		var gen = cs.getGenerator();
-		return structure.value().generate(structure, level.dimension(), level.registryAccess(), gen,
+		// 1.21.3's Structure#generate dropped the dimension ResourceKey argument.
+		return structure.value().generate(level.registryAccess(), gen,
 			gen.getBiomeSource(), cs.randomState(), level.getStructureManager(), level.getSeed(),
 			chunk, 0, level, structure.value().biomes()::contains);
+	}
+
+	/** 1.21.3's Gui names title clearing {@code clear()}, not {@code clearTitles()}. */
+	public static void clearTitles(net.minecraft.client.Minecraft mc) {
+		mc.gui.clear();
 	}
 
 	public static Pair<BlockPos, Holder<Biome>> findBiomeHorizontal(BiomeSource source, int x, int y, int z,

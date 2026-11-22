@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.gametest.BraceNullItemDrawProbe;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
-import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.entity.HumanoidArm;
@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class BraceNullWorldItemMixin {
 	@Unique private static final ThreadLocal<BraceNullItemDrawProbe.Call> wildercord$braceNullItem = new ThreadLocal<>();
 	@WrapMethod(method = "renderArmWithItem", require = 1, expect = 1, allow = 1)
-	private void wildercord$braceNullWorld(ArmedEntityRenderState state, ItemStackRenderState item, HumanoidArm arm,
+	private void wildercord$braceNullWorld(LivingEntityRenderState state, ItemStackRenderState item, HumanoidArm arm,
 		PoseStack pose, MultiBufferSource buffer, int light, Operation<Void> original) {
 		ItemStack sword = arm == HumanoidArm.LEFT ? dev.wildercord.client.compat.RenderCompat.leftHandStack(state) : dev.wildercord.client.compat.RenderCompat.rightHandStack(state);
 		var call = state instanceof PlayerRenderState avatar ? BraceNullItemDrawProbe.worldBegin(((ItemInHandLayer<?, ?>) (Object) this).getParentModel(), avatar, item, sword, arm, pose, buffer) : null;
