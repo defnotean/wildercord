@@ -36,6 +36,7 @@ import java.util.Set;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 
 /** Real lectern-use and page packets; call from the registered Relay suite. No direct teaching hooks. */
 public final class RelayLessonChecks {
@@ -154,7 +155,7 @@ public final class RelayLessonChecks {
 					&& afterRepeat.grimoire().stream().filter(MasterStudyRules.RELAY_COPIED::equals).count() == 1,
 					"Repeated real copying is idempotent and grants no rewards, duplicate receipt or runes: before=" + beforeRepeat + ", after=" + afterRepeat);
 				roundTrip(player, false);
-				player.teleportTo(player.level(), 25.5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
+				player.teleportTo(((ServerLevel) player.level()), 25.5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
 			});
 			context.waitTicks(3);
 			assertClientLesson(context, copiedState, "after_copied_round_trip");

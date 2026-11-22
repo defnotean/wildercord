@@ -54,7 +54,7 @@ public final class StasisDeliveryProbe implements AutoCloseable {
     }
 
     private StasisDeliveryProbe(ServerPlayer owner, LivingEntity target) {
-        this.owner = owner; this.level = owner.level(); this.target = target;
+        this.owner = owner; this.level = ((ServerLevel) owner.level()); this.target = target;
         ownerId = owner.getUUID().toString(); targetId = target.getUUID().toString();
         serverTick = level.getServer().getTickCount(); scope = new Scope(owner, level, serverTick);
     }

@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import net.minecraft.server.level.ServerLevel;
 
 /** Connected ordinary study/equip/rebound hold; real Witch native Zones are the counterproof. */
 public final class ExcisePlayableTest implements FabricClientGameTest {
@@ -169,14 +170,14 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                         check(ExciseCasting.pending(probe.player), "Fixture accepted before " + reason);
                         int payments = probe.payments; float mana = Spellbooks.mana(probe.player); long rest = ExciseCasting.rest(probe.player);
                         switch (reason) {
-                            case "damage" -> { Effects.readyToHurt(probe.player); probe.player.hurtServer(probe.player.level(), probe.player.damageSources().magic(), 1); }
-                            case "movement" -> probe.player.teleportTo(probe.player.level(), 2.0, 150, .5, Set.<Relative>of(), 0, 0, false);
+                            case "damage" -> { Effects.readyToHurt(probe.player); probe.player.hurtServer(((ServerLevel) probe.player.level()), probe.player.damageSources().magic(), 1); }
+                            case "movement" -> probe.player.teleportTo(((ServerLevel) probe.player.level()), 2.0, 150, .5, Set.<Relative>of(), 0, 0, false);
                             case "sight" -> { for (int y = 150; y <= 152; y++) probe.player.level().setBlock(new BlockPos(0, y, 3), Blocks.STONE.defaultBlockState(), 2); }
                             case "row" -> Spellbooks.set(probe.player, Spellbooks.get(probe.player).withSelected(1));
                             case "cord" -> Spellbooks.setCord(probe.player, new ItemStack(WildercordItems.ECHO_CORD));
                             case "eligibility" -> probe.player.setAttached(WildercordAttachments.CIRCLES, 15);
                             case "spectator" -> { probe.player.setGameMode(GameType.SPECTATOR); probe.player.setGameMode(GameType.SURVIVAL); }
-                            case "target death" -> probe.witch.kill(probe.player.level());
+                            case "target death" -> probe.witch.kill(((ServerLevel) probe.player.level()));
                         }
                         check(probe.payments == payments && ExciseCasting.rest(probe.player) == rest && Spellbooks.mana(probe.player) <= mana, reason + " does not undo the paid ledger");
                     });
@@ -335,8 +336,8 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
         probe.cut = null;
         if (probe.witch != null) probe.witch.discard(); if (probe.target != null) probe.target.discard();
         ExciseCasting.cancel(p); p.setGameMode(GameType.SURVIVAL); p.setHealth(p.getMaxHealth());
-        for (int y = 150; y <= 152; y++) p.level().setBlock(new BlockPos(0,y,3), Blocks.AIR.defaultBlockState(), 2);
-        p.teleportTo(p.level(), .5, 150, .5, Set.<Relative>of(), 0, 0, false); p.setDeltaMovement(Vec3.ZERO);
+        for (int y = 150; y <= 152; y++) ((ServerLevel) p.level()).setBlock(new BlockPos(0,y,3), Blocks.AIR.defaultBlockState(), 2);
+        p.teleportTo(((ServerLevel) p.level()), .5, 150, .5, Set.<Relative>of(), 0, 0, false); p.setDeltaMovement(Vec3.ZERO);
         p.setAttached(WildercordAttachments.CIRCLES, 16); p.setAttached(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE);
         p.setAttached(ExciseState.REST, 0L); for (int slot = 0; slot < 4; slot++) Spellbooks.setReadyAt(p,slot,0);
         Spellbooks.set(p, Spellbooks.get(p).withSelected(0).withSpell(0,ExciseRules.IDS).withSpell(1,List.of(Runes.BEAM.id(),Runes.HARM.id())));
@@ -463,7 +464,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
         private static final int FAR = 10000;
         UnloadedStart(ServerPlayer player) { this(player, player.blockPosition(), null); }
         private UnloadedStart(ServerPlayer player, BlockPos footprint, AssertionError failAfterInsert) {
-            level = player.level();
+            level = ((ServerLevel) player.level());
             chunk = level.getChunkSource().getChunkNow(footprint.getX() >> 4, footprint.getZ() >> 4);
             check(chunk != null, "Excise regression uses an already resident FULL footprint chunk");
             original = references(chunk);

@@ -33,6 +33,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Set;
+import net.minecraft.server.level.ServerLevel;
 
 /** Native lesson and real rebound-key loop, followed by production admission/cancellation probes. */
 public final class RelayCircleTest implements FabricClientGameTest {
@@ -88,7 +89,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 				context.takeScreenshot(TestScreenshotOptions.of("relay_focus_set_rebound_key").disableCounterPrefix());
 				context.getInput().releaseKey(WildercordKeys.castMapping()); context.waitTicks(3);
 				world.getServer().runOnServer(server -> {
-					probe.owner.teleportTo(probe.owner.level(), -1.5, 150, .5, Set.<Relative>of(), 0, 0, false);
+					probe.owner.teleportTo(((ServerLevel) probe.owner.level()), -1.5, 150, .5, Set.<Relative>of(), 0, 0, false);
 					aim(probe.owner, probe.dummy.getBoundingBox().getCenter());
 				});
 				context.waitTicks(5);
@@ -306,7 +307,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 		Vec3 to = target.subtract(player.getEyePosition());
 		float yaw = (float)Math.toDegrees(Math.atan2(-to.x, to.z));
 		float pitch = (float)-Math.toDegrees(Math.atan2(to.y, Math.sqrt(to.x*to.x+to.z*to.z)));
-		player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), yaw, pitch, false);
+		player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), yaw, pitch, false);
 	}
 	public static ServerPlayer player(MinecraftServer server) { return server.getPlayerList().getPlayers().getFirst(); }
 	public static boolean close(double a, double b) { return Math.abs(a-b) < .01; }

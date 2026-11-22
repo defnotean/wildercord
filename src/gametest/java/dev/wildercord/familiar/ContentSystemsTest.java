@@ -14,12 +14,13 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.*;
 import java.util.*;
+import net.minecraft.server.level.ServerLevel;
 /** Exercises utility roles, saved event discoveries, charm tradeoffs and real dummy trial hits. */
 public final class ContentSystemsTest implements FabricClientGameTest {
  public void runTest(ClientGameTestContext context){try(var world=context.worldBuilder().create()){
   context.waitTicks(35);
-  world.getServer().runOnServer(server->{var p=server.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);var level=p.level();
-   var at=p.blockPosition();EventAftermath.leave(level,at,"star");var aftermath=EventAftermath.of(server);
+  world.getServer().runOnServer(server->{var p=server.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);var level=((ServerLevel) p.level());
+   var at=p.blockPosition();EventAftermath.leave((ServerLevel) level,at,"star");var aftermath=EventAftermath.of(server);
    check(aftermath.claim(p,0)&&p.hasEffect(MobEffects.NIGHT_VISION),"star echo discoverable");check(!aftermath.claim(p,0),"echo cannot be claimed twice");
    p.setItemSlot(EquipmentSlot.OFFHAND,new ItemStack(WildercordItems.KEEPERS_HOURGLASS));var hour=Heart.bonuses(p);p.setItemSlot(EquipmentSlot.OFFHAND,ItemStack.EMPTY);var base=Heart.bonuses(p);
    check(close(hour.duration(),base.duration()*1.3)&&close(hour.power(),base.power()*.85),"hourglass benefit and drawback");
@@ -32,10 +33,10 @@ public final class ContentSystemsTest implements FabricClientGameTest {
    var crop=at.offset(1,0,0);level.setBlockAndUpdate(crop.below(),Blocks.FARMLAND.defaultBlockState());level.setBlockAndUpdate(crop,((CropBlock)Blocks.WHEAT).getStateForAge(7));FamiliarRoles.choose(p,"gardener");check(FamiliarRoles.help(p,wisp)&&((CropBlock)Blocks.WHEAT).isMaxAge(level.getBlockState(crop)),"gardener marks crop without harvesting");
    FamiliarRoles.choose(p,"companion");check(FamiliarRoles.get(p)==FamiliarRoles.Role.COMPANION,"restore original elemental assistance");
    PracticeRoom.enter(p);check(SpellTrials.start(p,"precision")==1,"optional trial starts in practice survival");
-   var dummy=p.level().getEntitiesOfClass(TrainingDummy.class,p.getBoundingBox().inflate(40)).getFirst();
-   for(int i=0;i<5;i++){SpellTrials.cast(p,List.of(Runes.BOLT,Runes.FIRE),10);Effects.readyToHurt(dummy);SpellDefence.hurt(p.level(),dummy,p.damageSources().indirectMagic(p,p),2);}
+   var dummy=((ServerLevel) p.level()).getEntitiesOfClass(TrainingDummy.class,p.getBoundingBox().inflate(40)).getFirst();
+   for(int i=0;i<5;i++){SpellTrials.cast(p,List.of(Runes.BOLT,Runes.FIRE),10);Effects.readyToHurt(dummy);SpellDefence.hurt(((ServerLevel) p.level()),dummy,p.damageSources().indirectMagic(p,p),2);}
    int pages=p.getInventory().countItem(WildercordItems.TORN_PAGE);check(pages==1,"actual dummy hits complete precision");
-   SpellTrials.start(p,"precision");for(int i=0;i<5;i++){SpellTrials.cast(p,List.of(Runes.BOLT,Runes.FIRE),10);Effects.readyToHurt(dummy);SpellDefence.hurt(p.level(),dummy,p.damageSources().indirectMagic(p,p),2);}
+   SpellTrials.start(p,"precision");for(int i=0;i<5;i++){SpellTrials.cast(p,List.of(Runes.BOLT,Runes.FIRE),10);Effects.readyToHurt(dummy);SpellDefence.hurt(((ServerLevel) p.level()),dummy,p.damageSources().indirectMagic(p,p),2);}
    check(p.getInventory().countItem(WildercordItems.TORN_PAGE)==pages,"repeat trial awards no duplicate page");
    check(PracticeRoom.leave(p)==1,"normal player returns from trial arena");
   });

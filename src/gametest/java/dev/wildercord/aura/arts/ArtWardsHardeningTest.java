@@ -62,7 +62,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 		boolean done;
 
 		Plan(String name, ServerPlayer player) {
-			this.name = name; this.player = player; this.level = player.level(); this.start = level.getGameTime();
+			this.name = name; this.player = player; this.level = ((ServerLevel) player.level()); this.start = level.getGameTime();
 		}
 
 		void at(int age, Runnable check) {

@@ -19,6 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import net.minecraft.server.level.ServerLevel;
 
 /** Test-only observation. Never cancels damage, knockback, movement, or the existing Master-form cancellation. */
 public final class StoneHingeImpulseProbe {
@@ -176,7 +177,7 @@ public final class StoneHingeImpulseProbe {
 		float healthLost, absorptionLost;
 		private Hit(Trial trial, DamageSource source, Hit previous) {
 			this.trial = trial; this.source = source; this.previous = previous;
-			ServerPlayer player = trial.player; level = player.level(); position = player.position();
+			ServerPlayer player = trial.player; level = ((ServerLevel) player.level()); position = player.position();
 			tick = level.getGameTime(); sourceIdentity = sourceIdentity(source);
 			healthBefore = player.getHealth(); maxHealthBefore = player.getMaxHealth(); absorptionBefore = player.getAbsorptionAmount();
 			fallDistanceBefore = player.fallDistance; groundedBefore = player.onGround(); velocityBefore = player.getDeltaMovement();

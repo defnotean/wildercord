@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.minecraft.server.level.ServerLevel;
 
 /** Native regressions for inherited elemental hooks, scoped resonance and bounded physical target selection. */
 public final class RelayInheritedChecks {
@@ -65,8 +66,8 @@ public final class RelayInheritedChecks {
 					owner.level().setBlock(altar,dev.wildercord.content.dungeons.DungeonBlocks.ALTAR.defaultBlockState()
 						.setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.KIND,dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.TIDE)
 						.setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.AWAKE,true),2);
-					scribe[0]=TideScribe.rise(owner.level(),altar);RelayCircleTest.check(scribe[0]!=null,"Real Tide Scribe and altar create");
-					scribe[0].setNoAi(true);scribe[0].forceTide(true);scribe[0].mechanic(owner.level(),owner.level().getGameTime());
+					scribe[0]=TideScribe.rise(((ServerLevel) owner.level()),altar);RelayCircleTest.check(scribe[0]!=null,"Real Tide Scribe and altar create");
+					scribe[0].setNoAi(true);scribe[0].forceTide(true);scribe[0].mechanic(((ServerLevel) owner.level()),((ServerLevel) owner.level()).getGameTime());
 					scribeHealth[0]=scribe[0].getHealth();
 				});c.waitTicks(3);
 				world.getServer().runOnServer(s->{
@@ -89,14 +90,14 @@ public final class RelayInheritedChecks {
 				world.getServer().runOnServer(s->{
 					RelayCircleTest.prepare(owner,Runes.FROST);CampConcordNative.config(CampConcordNative.copy(original,Map.of("maxCreatures",1,"maxBlocks",blocks)));
 					BlockPos altar=new BlockPos(8,150,6);
-					owner.level().setBlock(altar,dev.wildercord.content.dungeons.DungeonBlocks.ALTAR.defaultBlockState().setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.KIND,dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.TIDE).setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.AWAKE,true),2);
-					scribe[0]=TideScribe.rise(owner.level(),altar);RelayCircleTest.check(scribe[0]!=null,"Native frost arena creates");scribe[0].setNoAi(true);scribe[0].setNoGravity(true);scribe[0].forceTide(true);scribe[0].mechanic(owner.level(),owner.level().getGameTime());scribe[0].snapTo(2.5,150,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
+					((ServerLevel) owner.level()).setBlock(altar,dev.wildercord.content.dungeons.DungeonBlocks.ALTAR.defaultBlockState().setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.KIND,dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.TIDE).setValue(dev.wildercord.content.dungeons.DungeonAltarBlock.AWAKE,true),2);
+					scribe[0]=TideScribe.rise(((ServerLevel) owner.level()),altar);RelayCircleTest.check(scribe[0]!=null,"Native frost arena creates");scribe[0].setNoAi(true);scribe[0].setNoGravity(true);scribe[0].forceTide(true);scribe[0].mechanic(((ServerLevel) owner.level()),((ServerLevel) owner.level()).getGameTime());scribe[0].snapTo(2.5,150,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
 					for(int x=-1;x<=4;x++)for(int z=5;z<=8;z++)for(int y=150;y<=151;y++)owner.level().setBlock(new BlockPos(x,y,z),Blocks.WATER.defaultBlockState(),2);
 					wet[0]=dummy(owner,.5,6.5);
 					if(elevated){
 						// Two-deep water ends at y152. Both complete creature rays stay above it.
-						for(int x=-1;x<=1;x++)for(int z=-1;z<=1;z++)owner.level().setBlock(new BlockPos(x,151,z),Blocks.STONE.defaultBlockState(),2);
-						owner.teleportTo(owner.level(),.5,152,.5,Set.of(),0,55,false);owner.setDeltaMovement(Vec3.ZERO);
+						for(int x=-1;x<=1;x++)for(int z=-1;z<=1;z++)((ServerLevel) owner.level()).setBlock(new BlockPos(x,151,z),Blocks.STONE.defaultBlockState(),2);
+						owner.teleportTo(((ServerLevel) owner.level()),.5,152,.5,Set.of(),0,55,false);owner.setDeltaMovement(Vec3.ZERO);
 						wet[0].snapTo(.5,151.2,6.5,180,0);wet[0].setDeltaMovement(Vec3.ZERO);
 						scribe[0].snapTo(2.5,151.2,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
 						RelayCircleTest.check(owner.level().getBlockState(FROST_CELL).is(Blocks.WATER),"Arena-only candidate starts as real flood water");
@@ -195,8 +196,8 @@ public final class RelayInheritedChecks {
 				LivingEntity[] pet=new LivingEntity[1];TrainingDummy[] behind=new TrainingDummy[1];
 				world.getServer().runOnServer(s->{
 					RelayCircleTest.prepare(owner,Runes.HARM);behind[0]=dummy(owner,.5,6.5);
-					var wolf=EntityType.WOLF.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.snapTo(.5,150,4.5,0,0);owner.level().addFreshEntity(wolf);pet[0]=wolf;
-					RelayCircleTest.directDown(owner);owner.teleportTo(owner.level(),-1.5,150,.5,Set.of(),0,0,false);
+					var wolf=EntityType.WOLF.create(((ServerLevel) owner.level()),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.snapTo(.5,150,4.5,0,0);((ServerLevel) owner.level()).addFreshEntity(wolf);pet[0]=wolf;
+					RelayCircleTest.directDown(owner);owner.teleportTo(((ServerLevel) owner.level()),-1.5,150,.5,Set.of(),0,0,false);
 				});c.waitTicks(2);
 				world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,behind[0].getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);
 				world.getServer().runOnServer(s->RelayCircleTest.check(behind[0].hitSequence()==0&&pet[0].getHealth()==pet[0].getMaxHealth(),"Protected nearest focus-lane body stops the unpiercing ray without receiving harm"));
@@ -261,8 +262,8 @@ public final class RelayInheritedChecks {
 		}
 		var primary=frost.primary.getBoundingBox().getCenter();var view=owner.getAttached(RelayState.VIEW);
 		boolean eyeClear=RelayCircles.clear(owner.level(),owner,owner.getEyePosition(),primary);
-		boolean focusClear=frost.warning!=null&&RelayCircles.clear(owner.level(),owner,frost.warning.focus(),primary);
-		boolean laneClear=frost.warning!=null&&RelayCircles.clear(owner.level(),owner,frost.warning.focus(),frost.warning.end());
+		boolean focusClear=frost.warning!=null&&RelayCircles.clear(((ServerLevel) owner.level()),owner,frost.warning.focus(),primary);
+		boolean laneClear=frost.warning!=null&&RelayCircles.clear(((ServerLevel) owner.level()),owner,frost.warning.focus(),frost.warning.end());
 		value.addProperty("phase",phase);value.addProperty("geometry",frost.elevated?"clear_lane_positive":"original_ground_diagnostic");
 		value.addProperty("tick",owner.level().getGameTime());value.addProperty("blockLimit",frost.blocks);
 		value.addProperty("primaryHits",frost.primary.hitSequence());value.addProperty("lastDamage",frost.primary.lastDamage());

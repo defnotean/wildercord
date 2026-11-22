@@ -36,7 +36,7 @@ public final class StasisMechanicsProbe implements AutoCloseable {
 
 	private StasisMechanicsProbe(ServerPlayer owner, LivingEntity target, RuneDef attack) {
 		this.owner = owner;
-		this.level = owner.level();
+		this.level = ((ServerLevel) owner.level());
 		this.target = target;
 		this.attack = attack;
 		try {

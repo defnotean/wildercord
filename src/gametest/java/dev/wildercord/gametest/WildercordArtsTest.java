@@ -1047,7 +1047,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				context.getInput().pressKey(WildercordKeys.auraMapping());
 				for (int t = 0; t < 4 && !on(world, AuraGuard::perfectNow); t++) context.waitTicks(1);
 				on(world, player -> { check(AuraGuard.perfectNow(player), "Repeated counter presentation earns its real guard");
-					foes(player).getFirst().doHurtTarget(player.level(), player); return null; });
+					foes(player).getFirst().doHurtTarget(((ServerLevel) player.level()), player); return null; });
 				context.waitTicks(2); swing(context);
 			}
 			String done = earnedCounter ? null : on(world, player -> {
@@ -1063,7 +1063,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				// Seen from straight behind, the lance hides behind its swordsman: once it's loosed, the view turns to look across it.
 				context.waitTicks(ArtRules.SPEAR_CHARGE + 1);
 				on(world, player -> {
-					player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), -48.0F, 22.0F, false);
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), -48.0F, 22.0F, false);
 					return null;
 				});
 				context.waitTicks(Math.max(1, scene.tpDelay - ArtRules.SPEAR_CHARGE - 1));
@@ -1377,7 +1377,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			}
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 			player.removeAttached(SwordStrings.COOLDOWNS);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			boolean step = scene.slot == AuraApi.ArtSlot.FOURTH;
 			for (double[] f : scene.foes) {
 				spawn(level, EntityType.HUSK, at(f[0], f[1]), 400);
@@ -1497,7 +1497,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	 */
 	private static String arrowSlowed(ClientGameTestContext context, TestSingleplayerContext world) {
 		Object[] shot = on(world, player -> {
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			Arrow arrow = new Arrow(EntityType.ARROW, level);
 			Vec3 from = player.getEyePosition().add(1.0, 0.2, 4.2);
 			Vec3 aim = player.getEyePosition().subtract(0, 0.3, 0).subtract(from).normalize();

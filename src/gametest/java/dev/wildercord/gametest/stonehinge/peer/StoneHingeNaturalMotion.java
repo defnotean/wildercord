@@ -27,7 +27,7 @@ public final class StoneHingeNaturalMotion {
         final ServerEntity tracker;
         final StoneHingeNativeDispatch proof;
         Observation(StoneHingeOwnerProbe.Trace trace, LivingEntity source) {
-            this.trace = trace; this.source = source; owner = trace.server; connection = owner.connection; level = owner.level();
+            this.trace = trace; this.source = source; owner = trace.server; connection = owner.connection; level = ((ServerLevel) owner.level());
             tracker = StoneHingePeerProbe.retainedTracker(owner);
             proof = new StoneHingeNativeDispatch(frame("natural-release"), 1, tracker, StoneHingePeerProbe.trackerWitnessIndex(owner));
         }

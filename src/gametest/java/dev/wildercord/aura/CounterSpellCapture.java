@@ -236,7 +236,7 @@ public final class CounterSpellCapture {
 		int[] calls = {0};
 		try {
 			current = s; s.etching = expected;
-			boolean result = damage(expected, target, () -> nativeDamage(target, owner.level(), source, () -> {
+			boolean result = damage(expected, target, () -> nativeDamage(target, ((ServerLevel) owner.level()), source, () -> {
 				calls[0]++; require(matches(s, target, source), "Control matches the exact Cast/body/source/session");
 				require(!matches(stale, target, source) && !matches(s, owner, source) && !matches(s, target, otherSource),
 					"Stale session, foreign recipient and equivalent-but-distinct damage sources do not qualify");
@@ -249,7 +249,7 @@ public final class CounterSpellCapture {
 			require(calls[0] == 2 && s.runeDamage == 1, "Incidental damage is neither suppressed nor counted");
 			damage(expected, target, () -> nativeDamage(target, owner.level(), source, () -> {
 				calls[0]++;
-				damage(foreign, target, () -> nativeDamage(target, owner.level(), source, () -> {
+				damage(foreign, target, () -> nativeDamage(target, ((ServerLevel) owner.level()), source, () -> {
 					require(!matches(s, target, source), "Nested unrelated damage cannot borrow an outer rune receipt"); return true;
 				}));
 				require(matches(s, target, source), "Nested invocation restores its exact caller"); return false;
@@ -258,7 +258,7 @@ public final class CounterSpellCapture {
 				require(!matches(s, target, source), "Untyped nested damage cannot borrow a typed caller's Cast"); return true;
 			})));
 			require(s.runeDamage == 1, "Untyped ordinary damage remains uncredited");
-			damage(expected, target, () -> identity(expected.identity(), () -> nativeDamage(target, owner.level(), source, () -> {
+			damage(expected, target, () -> identity(expected.identity(), () -> nativeDamage(target, ((ServerLevel) owner.level()), source, () -> {
 				require(matches(s, target, source), "Exact original native Cast identity retains its typed receipt"); return false;
 			})));
 			double reacted = reaction(expected, target, "arcane", () -> {
@@ -271,7 +271,7 @@ public final class CounterSpellCapture {
 			require(reacted == 1.25 && !exactReaction(s, target), "Native reaction return value preserved and frame cleared");
 			RuntimeException originalFailure = new RuntimeException("native sentinel");
 			try {
-				damage(expected, target, () -> nativeDamage(target, owner.level(), source, () -> { calls[0]++; throw originalFailure; }));
+				damage(expected, target, () -> nativeDamage(target, ((ServerLevel) owner.level()), source, () -> { calls[0]++; throw originalFailure; }));
 				throw new AssertionError("Native exception must propagate");
 			} catch (RuntimeException actual) { require(actual == originalFailure, "Original throwable identity retained"); }
 			require(calls[0] == 4 && s.runeDamage == 1, "Exceptions and false returns cannot create damage receipts");

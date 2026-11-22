@@ -253,7 +253,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			}
 		});
 		on(world, player -> {
-			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 6.0F, false);
+			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 6.0F, false);
 			return null;
 		});
 		fight(world, 400);
@@ -402,7 +402,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "gale", AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_AXE));
-			spawn(player.level(), EntityType.HUSK, at(0, 2.0), 400).addTag("wildercord.aurafx_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.0), 400).addTag("wildercord.aurafx_target");
 			spawn(player.level(), EntityType.HUSK, at(-1.6, 2.3), 400);
 			spawn(player.level(), EntityType.HUSK, at(1.6, 2.3), 400);
 			return null;
@@ -460,7 +460,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			float taken = on(world, player -> {
 				Mob husk = tagged(player, "wildercord.aurafx_target");
 				float health = player.getHealth();
-				husk.doHurtTarget(player.level(), player);
+				husk.doHurtTarget(((ServerLevel) player.level()), player);
 				return health - player.getHealth();
 			});
 			check(taken <= 0, "the guard should have been perfect (took " + taken + ")");
@@ -537,7 +537,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 			stand(player);
 			setAura(player, "hollow", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(6.0);
-			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 35.0F, false);
+			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 35.0F, false);
 			return null;
 		});
 		context.waitTicks(10);
@@ -560,7 +560,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		check(surging, "Dominion should surge the body's aura");
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
 		on(world, player -> {
-			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 10.0F, false);
+			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 10.0F, false);
 			return null;
 		});
 		context.waitTicks(4);
@@ -596,7 +596,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 				player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 				player.removeAttached(SwordStrings.COOLDOWNS);
 				spawn(player.level(), EntityType.HUSK, at(-1.6, 2.4), 400);
-				spawn(player.level(), EntityType.HUSK, at(1.6, 2.4), 400);
+				spawn(((ServerLevel) player.level()), EntityType.HUSK, at(1.6, 2.4), 400);
 				spawn(player.level(), EntityType.HUSK, at(0, 3.0), 400);
 				player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.0);
 				player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 30.0F, false);
@@ -627,7 +627,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 				on(world, player -> {
 					player.removeAttached(SwordStrings.COOLDOWNS);
 					setAura(player, method, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
-					player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 8.0F, false);
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 8.0F, false);
 					return null;
 				});
 				context.waitTicks(10);
@@ -690,7 +690,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "verdant", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 400).addTag("wildercord.aurafx_target");
 			return null;
 		});
 		context.waitTicks(20);

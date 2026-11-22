@@ -53,7 +53,7 @@ public final class RelayWorldContextChecks {
                 }
                 // Keep the existing residue fixture's seed schedule. Charge cases pin after
                 // TrainingDummy has also finished its real wound record and floating-number draws.
-                if(dryResidueSite)pinNextCharge(owner.level());
+                if(dryResidueSite)pinNextCharge(((ServerLevel) owner.level()));
             });
         }
         try(var world=c.worldBuilder().create()) {

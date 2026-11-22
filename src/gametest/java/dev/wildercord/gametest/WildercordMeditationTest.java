@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 
 import java.util.Set;
+import net.minecraft.server.level.ServerLevel;
 
 /** First-person meditation at eight circles, formation, and late-stage rune attunement. */
 public final class WildercordMeditationTest implements FabricClientGameTest {
@@ -82,7 +83,7 @@ public final class WildercordMeditationTest implements FabricClientGameTest {
 			for (int i = 0; i < 12; i++) {
 				world.getServer().runOnServer(server -> {
 					var player = server.getPlayerList().getPlayers().getFirst();
-					Fx.sendAll(player.level(), new RitualOption(player.getId(), "wildercord:fire", 0xFF8030, 0.9F), player.position(), 1, 0, 0);
+					Fx.sendAll(((ServerLevel) player.level()), new RitualOption(player.getId(), "wildercord:fire", 0xFF8030, 0.9F), player.position(), 1, 0, 0);
 				});
 				context.waitTicks(5);
 			}
