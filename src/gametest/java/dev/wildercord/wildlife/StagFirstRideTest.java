@@ -45,7 +45,7 @@ public final class StagFirstRideTest implements FabricClientGameTest {
 				stag.setPos(0.5, 101, 1.5);
 				l.addFreshEntity(stag);
 				stag.tameWithName(p(s));
-				stag.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
+				stag.equipSaddle(new ItemStack(Items.SADDLE), null);
 				id = stag.getUUID();
 				check(MountBonds.owns(p(s), stag), "the stag belongs to whoever tamed it");
 				check(MountBonds.bond(stag, p(s)).points() == 0, "a fresh stag has no bond yet");

@@ -1477,7 +1477,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (player.getHealth() < (float) shot[2]) {
 				return "the arrow should never have hurt the swordsman";
 			}
-			net.minecraft.world.entity.Entity arrow = player.level().getEntity((java.util.UUID) shot[0]);
+			net.minecraft.world.entity.Entity arrow = player.serverLevel().getEntity((java.util.UUID) shot[0]);
 			if (arrow == null) {
 				return "the arrow should still be flying, turned (it's gone)";
 			}
@@ -1508,7 +1508,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		});
 		context.waitTicks(1);
 		return on(world, player -> {
-			net.minecraft.world.entity.Entity arrow = player.level().getEntity((java.util.UUID) shot[0]);
+			net.minecraft.world.entity.Entity arrow = player.serverLevel().getEntity((java.util.UUID) shot[0]);
 			if (arrow == null) {
 				return "the arrow should still be flying, slowed (it's gone)";
 			}

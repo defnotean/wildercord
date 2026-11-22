@@ -159,8 +159,20 @@ public final class GametestCompat {
 		return source.findBiomeHorizontal(x, y, z, radius, increment, target, random, findClosest, randomState.sampler());
 	}
 
+	/** 1.21.4 carries no extents on the item render state: the display transform over the unit cube stands in. */
+	public static void visitItemExtents(net.minecraft.client.renderer.item.ItemStackRenderState item,
+			java.util.function.Consumer<org.joml.Vector3f> point) {
+		var pose = new com.mojang.blaze3d.vertex.PoseStack();
+		item.transform().apply(false, pose);
+		var m = pose.last().pose();
+		for (int corner = 0; corner < 8; corner++) {
+			point.accept(m.transformPosition(new org.joml.Vector3f((corner & 1) != 0 ? 1F : 0F,
+				(corner & 2) != 0 ? 1F : 0F, (corner & 4) != 0 ? 1F : 0F)));
+		}
+	}
+
 	public static boolean biomeHasMob(Biome biome, MobCategory category, EntityType<?> type) {
-		return biome.getMobSettings().getMobs(category).unwrap().stream().anyMatch(entry -> entry.value().type() == type);
+		return biome.getMobSettings().getMobs(category).unwrap().stream().anyMatch(entry -> entry.type == type);
 	}
 
 	public static Feature<?> configuredFeatureValue(PlacedFeature placed) {

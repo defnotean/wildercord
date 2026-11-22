@@ -90,7 +90,7 @@ public final class MastersCaptureProbe {
 		var matrix = new org.joml.Matrix4f(projection).mul(RenderSystem.getModelViewStack()).mul(pose.last().pose());
 		handProjection = matrix.get(new float[16]);
 		double[] bounds = {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY};
-		item.visitExtents(point -> {
+		dev.wildercord.gametest.compat.GametestCompat.visitItemExtents(item, point -> {
 			var projected = matrix.transform(new org.joml.Vector4f(point.x(), point.y(), point.z(), 1));
 			if (!projected.isFinite() || projected.w <= .05F) return;
 			double x = (projected.x / projected.w + 1) / 2, y = (1 - projected.y / projected.w) / 2;
@@ -180,7 +180,7 @@ public final class MastersCaptureProbe {
 			} catch (Throwable failure) { result.completeExceptionally(failure); }
 			
 			for (int spin = 0; spin < 200 && !result.isDone(); spin++) {
-				RenderSystem.executePendingTasks();
+				try{RenderSystem.replayQueue();}catch(Throwable ignored){}
 				if (!result.isDone()) {
 					try {
 						Thread.sleep(1);

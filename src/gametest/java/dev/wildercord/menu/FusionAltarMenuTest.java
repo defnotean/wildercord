@@ -123,7 +123,7 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 				p(s).teleportTo(l, 0.5, 101, 2.5, Set.<Relative>of(), 180, 30, false);
 				var inv = p(s).getInventory();
 				inv.clearContent();
-				inv.setSelectedSlot(8);
+				inv.setSelectedHotbarSlot(8);
 				ItemStack three = RuneItem.stack(ranked);
 				three.setCount(3);
 				inv.setItem(0, three);

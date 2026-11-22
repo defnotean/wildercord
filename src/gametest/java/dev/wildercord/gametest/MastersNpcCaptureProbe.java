@@ -197,7 +197,7 @@ public final class MastersNpcCaptureProbe {
 		// plus vanilla's fixed adult offsets is its input matrix. No authored blade dimensions are assumed.
 		if (arm == state.mainArm && viewProjection != null) {
 			Matrix4f projected = new Matrix4f(viewProjection).mul(actual.last().pose());
-			dev.wildercord.client.compat.RenderCompat.mainHandItemState(state).visitExtents(point -> bladeBounds.add(projected, point.x(), point.y(), point.z()));
+			dev.wildercord.gametest.compat.GametestCompat.visitItemExtents(dev.wildercord.client.compat.RenderCompat.mainHandItemState(state), point -> bladeBounds.add(projected, point.x(), point.y(), point.z()));
 		}
 		handEntry = null; enteringHand = null;
 	}
@@ -355,7 +355,7 @@ public final class MastersNpcCaptureProbe {
 			} catch (Throwable problem) { result.completeExceptionally(problem); }
 			
 			for (int spin = 0; spin < 200 && !result.isDone(); spin++) {
-				RenderSystem.executePendingTasks();
+				try{RenderSystem.replayQueue();}catch(Throwable ignored){}
 				if (!result.isDone()) {
 					try {
 						Thread.sleep(1);

@@ -235,7 +235,7 @@ public final class RelayCircleTest implements FabricClientGameTest {
 		String knot=dev.wildercord.spell.Knots.id(List.of(Runes.RELAY,Runes.HARM),"");
 		for(String code:List.of("wc:"+"harm.".repeat(12)+"relay",dev.wildercord.spell.SpellCodes.encode(List.of(Runes.SELF.id(),Runes.HEAL.id(),knot)))) {
 			var card=SpellChat.decorate(net.minecraft.network.chat.Component.literal("Try "+code+" !"));
-			var copied=card.getSiblings().stream().map(part->part.getStyle().getClickEvent()).filter(event->event instanceof net.minecraft.network.chat.ClickEvent.CopyToClipboard).map(event->((net.minecraft.network.chat.ClickEvent.CopyToClipboard)event).value()).toList();
+			var copied=card.getSiblings().stream().map(part->part.getStyle().getClickEvent()).filter(event->event!=null&&event.getAction()==net.minecraft.network.chat.ClickEvent.Action.COPY_TO_CLIPBOARD).map(net.minecraft.network.chat.ClickEvent::getValue).toList();
 			check(copied.equals(List.of(code)),"Actual chat card CopyToClipboard preserves the complete refused token");
 			check(RelayRules.containsIds(dev.wildercord.spell.SpellCodes.decode(copied.getFirst())),"Copy/paste cannot erase the forbidden Relay suffix or composite");
 		}

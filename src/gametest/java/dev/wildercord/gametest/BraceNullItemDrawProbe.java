@@ -104,10 +104,10 @@ public final class BraceNullItemDrawProbe {
 			}
 		}
 		float side = id.left() ? -1 : 1;
-		check(display.rotation().x() == 0 && display.rotation().y() == -90 * side && display.rotation().z() == (call.first ? 25 : 55) * side
-			&& display.translation().x() == (call.first ? 1.13F / 16 : 0) && display.translation().y() == (call.first ? 3.2F : 4F) / 16
-			&& display.translation().z() == (call.first ? 1.13F : .5F) / 16 && display.scale().x() == (call.first ? .68F : .85F)
-			&& display.scale().y() == display.scale().x() && display.scale().z() == display.scale().x(), "Stock sword display transform changed");
+		check(display.rotation.x() == 0 && display.rotation.y() == -90 * side && display.rotation.z() == (call.first ? 25 : 55) * side
+			&& display.translation.x() == (call.first ? 1.13F / 16 : 0) && display.translation.y() == (call.first ? 3.2F : 4F) / 16
+			&& display.translation.z() == (call.first ? 1.13F : .5F) / 16 && display.scale.x() == (call.first ? .68F : .85F)
+			&& display.scale.y() == display.scale.x() && display.scale.z() == display.scale.x(), "Stock sword display transform changed");
 		BraceNullTransformOracle.requireHand(new org.joml.Matrix4f().get(new float[16]), local.get(new float[16]));
 		float[] wanted = BraceNullTransformOracle.displayed(array(preExpected), call.first, id.left()); float[] actual = submittedMatrix.get(new float[16]);
 		try { BraceNullTransformOracle.requireDisplayed(wanted, actual); } catch (AssertionError mismatch) { failure = mismatch.getMessage(); throw mismatch; }

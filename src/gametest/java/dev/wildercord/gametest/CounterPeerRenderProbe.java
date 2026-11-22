@@ -140,7 +140,7 @@ public final class CounterPeerRenderProbe {
                 var path=FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name+".png");
                 Files.createDirectories(path.getParent());if(Files.exists(path))throw new AssertionError("Counter image cannot be replaced");
                 image.writeToFile(path);output.complete(path);
-            }catch(Throwable failure){output.completeExceptionally(failure);}},net.minecraft.client.Screenshot::takeScreenshot);
+            }catch(Throwable failure){output.completeExceptionally(failure);}},(shotTarget,shotConsumer)->shotConsumer.accept(net.minecraft.client.Screenshot.takeScreenshot(shotTarget)));
         }catch(Throwable failure){failed(token,failure);throw failure;}
         finally{leave(scope);unregister(options,token);}
         return output.thenApply(path->{success(token,path);return requireArtifact(name);});
@@ -546,17 +546,17 @@ public final class CounterPeerRenderProbe {
         var expectedContext=third?(a.mainArm==HumanoidArm.LEFT?ItemDisplayContext.THIRD_PERSON_LEFT_HAND:ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
             :(a.mainArm==HumanoidArm.LEFT?ItemDisplayContext.FIRST_PERSON_LEFT_HAND:ItemDisplayContext.FIRST_PERSON_RIGHT_HAND);
         if(context!=expectedContext||quads==null||quads.isEmpty())s.token.reject("wrong_or_empty_deep_item_draw");
-        var rotation=List.of(transform.rotation().x(),transform.rotation().y(),transform.rotation().z());
-        var translation=List.of(transform.translation().x(),transform.translation().y(),transform.translation().z());
-        var scale=List.of(transform.scale().x(),transform.scale().y(),transform.scale().z());
-        var stockRotation=List.of(0F,context.leftHand()?90F:-90F,(context.leftHand()?-1:1)*(third?55F:25F));
+        var rotation=List.of(transform.rotation.x(),transform.rotation.y(),transform.rotation.z());
+        var translation=List.of(transform.translation.x(),transform.translation.y(),transform.translation.z());
+        var scale=List.of(transform.scale.x(),transform.scale.y(),transform.scale.z());
+        var stockRotation=List.of(0F,(context==ItemDisplayContext.THIRD_PERSON_LEFT_HAND||context==ItemDisplayContext.FIRST_PERSON_LEFT_HAND)?90F:-90F,((context==ItemDisplayContext.THIRD_PERSON_LEFT_HAND||context==ItemDisplayContext.FIRST_PERSON_LEFT_HAND)?-1:1)*(third?55F:25F));
         var stockTranslation=third?List.of(0F,4F/16,.5F/16):List.of(1.13F/16,3.2F/16,1.13F/16);
         float size=third?.85F:.68F;
         if(!CounterPeerRenderMath.compare("stock_display_rotation",stockRotation,rotation).matched()
             ||!CounterPeerRenderMath.compare("stock_display_translation",stockTranslation,translation).matched()
             ||!CounterPeerRenderMath.compare("stock_display_scale",List.of(size,size,size),scale).matched()
             ||!CounterPeerRenderMath.compare("stock_display_local",CounterPeerRenderMath.values(new Matrix4f()),CounterPeerRenderMath.values(local)).matched())s.token.reject("changed_original_diamond_display");
-        var display=CounterPeerRenderMath.display(new Matrix4f(),context.leftHand(),transform.rotation(),transform.translation(),transform.scale(),
+        var display=CounterPeerRenderMath.display(new Matrix4f(),(context==ItemDisplayContext.THIRD_PERSON_LEFT_HAND||context==ItemDisplayContext.FIRST_PERSON_LEFT_HAND),transform.rotation,transform.translation,transform.scale,
             transform==net.minecraft.client.renderer.block.model.ItemTransform.NO_TRANSFORM,local);
         var expected=new Matrix4f(entry).mul(display);
         var modelPoint=new org.joml.Vector3f(3.5F/16,3.5F/16,8F/16);

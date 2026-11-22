@@ -88,7 +88,7 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 				stag.moveTo(0.5, 101, 1.5, 0, 0);
 				l.addFreshEntity(stag);
 				stag.tameWithName(p(s));
-				stag.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
+				stag.equipSaddle(new ItemStack(Items.SADDLE), null);
 				stagId = stag.getUUID();
 				check(p(s).startRiding(stag), "the owner climbs on");
 				perks(stag, 0, "A fresh stag");

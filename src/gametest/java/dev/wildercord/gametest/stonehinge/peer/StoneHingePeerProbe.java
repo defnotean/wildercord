@@ -64,7 +64,7 @@ public final class StoneHingePeerProbe {
         synchronized void add(String kind, String digest, Vec3 target, Player body, int acceptance, int send, boolean tracker) {
             if (packets.size() >= 256) throw new AssertionError("Bounded peer packet ledger overflow");
             packets.add(new PacketProof(packets.size() + 1, kind, digest, Vector.of(target), Vector.of(body.position()),
-                body.level().getGameTime(), acceptance, send, tracker, body.isInterpolating()));
+                body.level().getGameTime(), acceptance, send, tracker, body.position().distanceToSqr(body.lerpTargetX(), body.lerpTargetY(), body.lerpTargetZ()) > 1.0E-7));
         }
         void healthy() { if (failure != null) throw new AssertionError("Passive peer observation failed", failure); }
     }

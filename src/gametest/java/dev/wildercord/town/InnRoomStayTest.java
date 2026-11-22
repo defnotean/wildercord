@@ -80,8 +80,8 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 				var room = InnRooms.room(p(s));
 				check(room.isPresent() && room.get().bed().pos().equals(ROOM), "A room is let where the key was used");
 				check(InnRoomRules.daysLeft(room.get().until(), now) == InnRoomRules.RENT_DAYS, "for a key's days");
-				var respawn = p(s).getRespawnConfig();
-				check(respawn != null && respawn.forced() && respawn.pos().equals(ROOM), "The traveller now wakes at the inn");
+				var respawn = p(s).getRespawnPosition();
+				check(respawn != null && p(s).isRespawnForced() && respawn.equals(ROOM), "The traveller now wakes at the inn");
 
 				// A second key adds to the stay rather than starting it over.
 				check(useKey(s), "A second key is spent");
@@ -116,7 +116,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 			c.waitTicks(210);
 			w.getServer().runOnServer(s -> {
 				check(!p(s).hasAttached(InnRooms.ROOM), "A stay that ran out ends");
-				check(p(s).getRespawnConfig() == null, "and the traveller no longer wakes at the inn");
+				check(p(s).getRespawnPosition() == null, "and the traveller no longer wakes at the inn");
 				check(!p(s).getAttachedOrElse(InnRooms.CHEST, List.<ItemStack>of()).isEmpty(), "Their room chest is kept for the next stay");
 			});
 		}
