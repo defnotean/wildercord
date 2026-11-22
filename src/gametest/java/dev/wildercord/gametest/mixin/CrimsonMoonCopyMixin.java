@@ -1,4 +1,4 @@
-﻿package dev.wildercord.gametest.mixin;
+package dev.wildercord.gametest.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
