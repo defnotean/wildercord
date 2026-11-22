@@ -122,7 +122,7 @@ public final class Hamlets {
 			return;
 		}
 		Standing standing = standing(player, ((ServerLevel) player.level()), bell);
-		String key = key(player.level(), bell);
+		String key = key(((ServerLevel) player.level()), bell);
 		if (!key.equals(IN.put(player.getUUID(), key))) {
 			player.displayClientMessage(Component.translatable("message.wildercord.hamlet.enter", name(bell),
 				BountyBoardBlock.tierName(standing.tier())).withStyle(ChatFormatting.GOLD), true);

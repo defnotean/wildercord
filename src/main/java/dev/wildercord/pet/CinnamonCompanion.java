@@ -224,7 +224,7 @@ final class CinnamonCompanion {
 		CinnamonDog dog = CinnamonContent.CINNAMON.create(player.level(), EntitySpawnReason.EVENT);
 		if (dog == null) return;
 		dog.bind(player); // Old saves migrate their player-owned sit/bow choices once, here.
-		Vec3 at = CompanionLanding.find(player.level(), player.position(), dog);
+		Vec3 at = CompanionLanding.find(((ServerLevel) player.level()), player.position(), dog);
 		if (at == null || !mayRecall(player) || !player.getUUID().equals(ownerId(dog))
 			|| identity(player, journal.get(player.getUUID())) != CinnamonIdentityRules.Status.NEW) return;
 		dog.snapTo(at.x, at.y, at.z, player.getYRot(), 0);

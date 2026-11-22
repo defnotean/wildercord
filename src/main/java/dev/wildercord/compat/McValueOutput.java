@@ -95,7 +95,7 @@ public final class McValueOutput {
 				return;
 			}
 			codec.encodeStart(ops(), value).result().ifPresent(encoded -> {
-				ListTag list = tag.getList(key, Tag.TAG_COMPOUND);
+				ListTag list = tag.getList(key);
 				list.add(encoded);
 				tag.put(key, list);
 			});

@@ -41,7 +41,7 @@ public final class LeyWalker {
 
 	/** Whether a player stands where two ley lines cross (Overworld only, as the lines are). */
 	public static boolean atCrossing(ServerPlayer player) {
-		return (ServerLevel) player.level().dimension() == Level.OVERWORLD && LeyLines.atCrossing(seed((ServerLevel) player.level()), player.getX(), player.getZ());
+		return player.level().dimension() == Level.OVERWORLD && LeyLines.atCrossing(seed((ServerLevel) player.level()), player.getX(), player.getZ());
 	}
 
 	public static boolean onLine(ServerPlayer player) {

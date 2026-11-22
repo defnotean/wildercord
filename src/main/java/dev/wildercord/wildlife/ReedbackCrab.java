@@ -29,7 +29,7 @@ public final class ReedbackCrab extends PathfinderMob {
  public ReedbackCrab(EntityType<? extends ReedbackCrab> t,Level l) {super(t,l);setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER,0);xpReward=2;}
  public static AttributeSupplier.Builder attributes() {return createMobAttributes().add(Attributes.MAX_HEALTH,24).add(Attributes.MOVEMENT_SPEED,.18).add(Attributes.FOLLOW_RANGE,12).add(Attributes.ATTACK_DAMAGE,5).add(Attributes.STEP_HEIGHT,.6).add(Attributes.KNOCKBACK_RESISTANCE,.3);}
  @Override protected PathNavigation createNavigation(Level l) {return new AmphibiousPathNavigation(this,l);}
- @Override public boolean canBreatheUnderwater() {return true;}
+ @Override protected int decreaseAirSupply(int air) { return air; } // 1.21.5 makes canBreatheUnderwater final
  @Override protected void defineSynchedData(SynchedEntityData.Builder b) {super.defineSynchedData(b);b.define(POSE,IDLE);}
  @Override protected void registerGoals() {goalSelector.addGoal(6,new WaterAvoidingRandomStrollGoal(this,.65));goalSelector.addGoal(7,new LookAtPlayerGoal(this,Player.class,6));}
  public float claws,clawsO,strike,strikeO,settle,settleO;

@@ -18,7 +18,7 @@ final class FrostWindFx {
 	/** Frost: a small frost seal on the ground under the impact and a few flakes drifting down through it. */
 	static void frostPatch(FeelCtx ctx) {
 		double r = 0.6 + 0.35 * Math.min(2.0, ctx.feel().scale());
-		ElementFx.frostCreep(ctx.level(), ctx.at().add(0, -0.15, 0), r, 30);
+		ElementFx.frostCreep(((ServerLevel) ctx.level()), ctx.at().add(0, -0.15, 0), r, 30);
 		Motes.clouds(ctx.level(), ctx.at().add(0, 0.6, 0), 2, 0.3, 0xEAF8FF, 0.35, 26, new Vec3(0, -0.02, 0), 0.01, 0.25);
 	}
 

@@ -90,10 +90,7 @@ public class ReefgraspOctopus extends WildMonster {
 		return new WaterBoundPathNavigation(this, level);
 	}
 
-	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
-	}
+	@Override protected int decreaseAirSupply(int air) { return air; } // 1.21.5 makes canBreatheUnderwater final
 
 	@Override
 	public boolean isPushedByFluid() {

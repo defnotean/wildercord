@@ -331,7 +331,7 @@ public final class Wards {
 			return;
 		}
 		dev.wildercord.aura.MasterFormMovement.begin(player, 2);
-		player.teleportTo(player.level(), pick.pos().x, pick.pos().y, pick.pos().z, Set.<Relative>of(), pick.yRot(), pick.xRot(), false);
+		player.teleportTo(((ServerLevel) player.level()), pick.pos().x, pick.pos().y, pick.pos().z, Set.<Relative>of(), pick.yRot(), pick.xRot(), false);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		player.resetFallDistance();

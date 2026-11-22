@@ -382,7 +382,7 @@ public final class LessonPackCasting {
             case Line l -> Light.ray(l.level, l.player.position().add(0, 1.1, 0), l.ally.position().add(0, l.ally.getBbHeight() * .6, 0), color, .03, 6);
             case Rod r -> {
                 Light.ray(r.level, r.top, r.top.add(0, 2.2, 0), color, r.spark >= 0 ? .14 : .07, 6);
-                if (r.spark >= 0) Fx.particle(r.player.level(), ParticleTypes.ELECTRIC_SPARK, r.player.position().add(0, 1, 0), 4, .4, .05);
+                if (r.spark >= 0) Fx.particle(((ServerLevel) r.player.level()), ParticleTypes.ELECTRIC_SPARK, r.player.position().add(0, 1, 0), 4, .4, .05);
             }
             default -> {}
         }
@@ -400,7 +400,7 @@ public final class LessonPackCasting {
         boolean removed = switch (placed) {
             case Gate g -> GATES.remove(g.player, g); case Line l -> LINES.remove(l.player, l); case Rod r -> RODS.remove(r.player, r); default -> false;
         };
-        if (placed instanceof Line l && removed && l.level == ((ServerLevel) l.player.level())) Fx.sound(l.level, l.player.position(), SoundEvents.LEAD_BREAK, .5F, 1.2F);
+        if (placed instanceof Line l && removed && l.level == ((ServerLevel) l.player.level())) Fx.sound(l.level, l.player.position(), SoundEvents.LEASH_KNOT_BREAK, .5F, 1.2F);
         var view = placed.player.getAttached(LessonPackState.VIEW);
         if (view != null && view.lesson() == placed.lesson.ordinal()) placed.player.removeAttached(LessonPackState.VIEW);
     }

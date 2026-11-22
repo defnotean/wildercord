@@ -123,7 +123,7 @@ public final class WorldBonds {
 	private static boolean wakesHere(ServerPlayer caster, Resonance resonance) {
 		boolean crossings = Config.get().elementalClimate() && Config.get().power().leyCrossings();
 		if (!crossings || !crossingBound(resonance) || WorldResonances.discovered(caster, resonance.id())
-			|| PowerPlaces.isPlaceOfPower(caster.level(), caster.blockPosition())) {
+			|| PowerPlaces.isPlaceOfPower(((ServerLevel) caster.level()), caster.blockPosition())) {
 			return true;
 		}
 		long now = caster.level().getGameTime();

@@ -102,7 +102,7 @@ public final class Waypoints {
 			Travel.fail(player, "waypoints_full", TravelRules.MAX_WAYPOINTS);
 			return 0;
 		}
-		ServerLevel in = level != null ? level : player.level();
+		ServerLevel in = level != null ? level : ((ServerLevel) player.level());
 		Spot spot = pos == null && level == null ? Spot.of(player) : Spot.at(in, pos != null ? pos : player.position());
 		Travel.update(player, d -> d.withWaypoint(name, spot));
 		MutableComponent track = Travel.button(Component.literal("/waypoint track " + name).withStyle(ChatFormatting.UNDERLINE),

@@ -59,7 +59,7 @@ public final class WetlandGarden {
      double d=at.distToCenterSqr(p.position());if(d<distance && l.clip(new ClipContext(p.getEyePosition(),Vec3.atCenterOf(at),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,p)).getType()==net.minecraft.world.phys.HitResult.Type.MISS) {distance=d;best=at.immutable();}
     }
     if(best==null)p.displayClientMessage(Component.translatable("message.wildercord.dewglass.none"), true);
-    else {var a=p.getEyePosition();var b=Vec3.atCenterOf(best).add(0,.5,0);for(int i=1;i<=8;i++) {var v=a.lerp(b,i/8.0);sp.level().sendParticles(ParticleTypes.GLOW,v.x,v.y,v.z,1,0,0,0,0);}inspect(sp,best);}
+    else {var a=p.getEyePosition();var b=Vec3.atCenterOf(best).add(0,.5,0);for(int i=1;i<=8;i++) {var v=a.lerp(b,i/8.0);((ServerLevel) sp.level()).sendParticles(ParticleTypes.GLOW,v.x,v.y,v.z,1,0,0,0,0);}inspect(sp,best);}
    }
    return InteractionResult.SUCCESS;
   }

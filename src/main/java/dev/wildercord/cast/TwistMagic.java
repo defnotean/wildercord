@@ -120,7 +120,7 @@ public final class TwistMagic {
 			case "paper_storm" -> paperStorm(ride);
 			case "mirror_shards" -> mirrorShards(ride);
 			case "aurora" -> aurora(ride);
-			case "red_moon" -> TwistVfx.redMoon(ride.level(), ride.caster());
+			case "red_moon" -> TwistVfx.redMoon(((ServerLevel) ride.level()), ride.caster());
 			case "lantern_flies" -> lanternFlies(ride);
 			case "rime_steps" -> rimeSteps(ride);
 			case "great_bell" -> greatBell(ride);
@@ -178,7 +178,7 @@ public final class TwistMagic {
 			return;
 		}
 		ride.procs++;
-		TwistVfx.glass(ride.level(), hit.point());
+		TwistVfx.glass(((ServerLevel) ride.level()), hit.point());
 		for (LivingEntity foe : foes(cast, hit.point(), 1.8)) {
 			if (cast.takeEntities(1) == 1) {
 				hurt(cast, foe, "", magic(cast), 2.0);
@@ -193,7 +193,7 @@ public final class TwistMagic {
 			if (ride.procs < 8 && ride.touched.add(ally.getUUID())) {
 				ride.procs++;
 				ally.heal((float) (2.5 * ride.cast.power));
-				TwistVfx.kindly(ride.level(), ally);
+				TwistVfx.kindly(((ServerLevel) ride.level()), ally);
 			}
 		}
 	}
@@ -202,20 +202,20 @@ public final class TwistMagic {
 	private static void lightBirds(Ride ride, Cast.Hit hit) {
 		Vec3 at = hit.point();
 		int color = ride.resonance.color();
-		TwistVfx.birdsTakeOff(ride.level(), at, color);
+		TwistVfx.birdsTakeOff(((ServerLevel) ride.level()), at, color);
 		List<LivingEntity> foes = foes(ride.cast, at, 9.0);
 		for (int i = 0; i < 5; i++) {
 			int ticks = 10 + i * 2;
 			if (foes.isEmpty()) {
-				TwistVfx.bird(ride.level(), at, at.add(ElementFx.flatDir(i * 1.25).scale(4)).add(0, 5, 0), color, ticks);
+				TwistVfx.bird(((ServerLevel) ride.level()), at, at.add(ElementFx.flatDir(i * 1.25).scale(4)).add(0, 5, 0), color, ticks);
 				continue;
 			}
 			LivingEntity prey = foes.get(i % foes.size());
-			TwistVfx.bird(ride.level(), at, prey.getBoundingBox().getCenter(), color, ticks);
+			TwistVfx.bird(((ServerLevel) ride.level()), at, prey.getBoundingBox().getCenter(), color, ticks);
 			Scheduler.later(ticks, () -> {
 				if (ride.cast.alive() && prey.isAlive() && ride.cast.takeEntities(1) == 1) {
 					hurt(ride.cast, prey, "", magic(ride.cast), 2.0);
-					TwistVfx.peck(ride.level(), prey.getBoundingBox().getCenter(), color);
+					TwistVfx.peck(((ServerLevel) ride.level()), prey.getBoundingBox().getCenter(), color);
 				}
 			});
 		}
@@ -227,7 +227,7 @@ public final class TwistMagic {
 			return;
 		}
 		ride.procs++;
-		TwistVfx.blossom(ride.level(), hit.point());
+		TwistVfx.blossom(((ServerLevel) ride.level()), hit.point());
 		for (LivingEntity ally : friends(ride.cast, hit.point(), 3.0)) {
 			ally.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0, false, true));
 		}
@@ -236,7 +236,7 @@ public final class TwistMagic {
 	/** Upfall: foes near where it lands fall upward, hang, and come crashing down. */
 	private static void upfall(Ride ride, Cast cast, Cast.Hit hit) {
 		Vec3 at = hit.point();
-		TwistVfx.upfallOmen(ride.level(), at, 4.5);
+		TwistVfx.upfallOmen(((ServerLevel) ride.level()), at, 4.5);
 		List<LivingEntity> lifted = new ArrayList<>();
 		for (LivingEntity foe : foes(cast, at, 4.5)) {
 			if (!Spirits.isBoss(foe) && !VoidTime.anchored(foe) && cast.takeEntities(1) == 1) {
@@ -254,13 +254,13 @@ public final class TwistMagic {
 					Vec3 v = foe.getDeltaMovement();
 					move(foe, new Vec3(v.x * 0.6, 0.12 + tick * 0.014, v.z * 0.6));
 					if (tick % 3 == 0) {
-						TwistVfx.floating(ride.level(), foe);
+						TwistVfx.floating(((ServerLevel) ride.level()), foe);
 					}
 				} else if (tick < 23) {
 					move(foe, new Vec3(0, 0.0, 0));
 				} else {
 					move(foe, new Vec3(0, -1.5, 0));
-					TwistVfx.slam(ride.level(), foe);
+					TwistVfx.slam(((ServerLevel) ride.level()), foe);
 					hurt(ride.cast, foe, "", magic(ride.cast), 3.0);
 				}
 			}
@@ -276,7 +276,7 @@ public final class TwistMagic {
 			if (!ride.cast.alive() || ride.cast.info.root() == null) {
 				return;
 			}
-			TwistVfx.secondVoice(ride.level(), hit.point(), ride.cast.info.spell(), ride.resonance.color());
+			TwistVfx.secondVoice(((ServerLevel) ride.level()), hit.point(), ride.cast.info.spell(), ride.resonance.color());
 			// A copy for the same payment, with a budget of its own; it carries no twist, so it never echoes again.
 			Cast echo = ride.cast.again(0.5);
 			CastEngine.runSegment(echo, ride.cast.info.root(), new Cast.Trigger(at, dir, null, null, null));
@@ -290,12 +290,12 @@ public final class TwistMagic {
 			int star = k;
 			double a = ride.level().getRandom().nextDouble() * Math.PI * 2;
 			double d = 0.8 + ride.level().getRandom().nextDouble() * 1.7;
-			Vec3 where = TwistVfx.groundAt(ride.level(), at.add(Math.cos(a) * d, 0, Math.sin(a) * d));
+			Vec3 where = TwistVfx.groundAt(((ServerLevel) ride.level()), at.add(Math.cos(a) * d, 0, Math.sin(a) * d));
 			Scheduler.later(6 + 5 * k, () -> {
 				if (!ride.cast.alive()) {
 					return;
 				}
-				TwistVfx.star(ride.level(), where, star);
+				TwistVfx.star(((ServerLevel) ride.level()), where, star);
 				for (LivingEntity foe : foes(ride.cast, where, 1.6)) {
 					if (ride.cast.takeEntities(1) == 1) {
 						hurt(ride.cast, foe, "", magic(ride.cast), 2.5);
@@ -313,12 +313,12 @@ public final class TwistMagic {
 			}
 			ride.procs++;
 			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 0, false, true));
-			TwistVfx.thorns(ride.level(), foe, true);
+			TwistVfx.thorns(((ServerLevel) ride.level()), foe, true);
 			every(ride.cast, 10, 6, tick -> {
 				if (!foe.isAlive()) {
 					return false;
 				}
-				TwistVfx.thorns(ride.level(), foe, false);
+				TwistVfx.thorns(((ServerLevel) ride.level()), foe, false);
 				if (tick % 2 == 1) {
 					Effects.lingering(() -> hurt(ride.cast, foe, "", magic(ride.cast), 1.0));
 				}
@@ -339,7 +339,7 @@ public final class TwistMagic {
 					continue;
 				}
 				ride.procs++;
-				TwistVfx.lantern(ride.level(), foe.getBoundingBox().getCenter(), ride.caster().getBoundingBox().getCenter());
+				TwistVfx.lantern(((ServerLevel) ride.level()), foe.getBoundingBox().getCenter(), ride.caster().getBoundingBox().getCenter());
 				Scheduler.later(24, () -> {
 					if (ride.caster().isAlive()) {
 						ride.caster().heal((float) (2.0 * ride.cast.power));
@@ -357,7 +357,7 @@ public final class TwistMagic {
 		}
 		ride.procs++;
 		Vec3 at = hit.point();
-		TwistVfx.tide(ride.level(), at, 4.0);
+		TwistVfx.tide(((ServerLevel) ride.level()), at, 4.0);
 		for (LivingEntity foe : foes(cast, at, 4.0)) {
 			if (cast.takeEntities(1) == 1) {
 				Reactions.mark(foe, Reactions.Mark.SOAKED);
@@ -374,7 +374,7 @@ public final class TwistMagic {
 	/** Standing Stones: a ring of stones heaves up where it lands, battering and tossing the foes inside. */
 	private static void standingStones(Ride ride, Cast cast, Cast.Hit hit) {
 		Vec3 at = hit.point();
-		TwistVfx.stones(ride.level(), at, 2.6);
+		TwistVfx.stones(((ServerLevel) ride.level()), at, 2.6);
 		for (LivingEntity foe : foes(cast, at, 3.2)) {
 			if (cast.takeEntities(1) == 1) {
 				hurt(cast, foe, "", magic(cast), 3.0);
@@ -396,10 +396,10 @@ public final class TwistMagic {
 				if (!foe.isAlive()) {
 					return false;
 				}
-				TwistVfx.cloud(ride.level(), foe);
+				TwistVfx.cloud(((ServerLevel) ride.level()), foe);
 				if (tick % 4 == 3) {
 					int zap = tick / 4;
-					TwistVfx.zap(ride.level(), foe, zap);
+					TwistVfx.zap(((ServerLevel) ride.level()), foe, zap);
 					Effects.lingering(() -> hurt(ride.cast, foe, "storm", ride.level().damageSources().source(DamageTypes.LIGHTNING_BOLT, ride.caster()), 1.5));
 				}
 				return true;
@@ -414,7 +414,7 @@ public final class TwistMagic {
 				continue;
 			}
 			ride.procs++;
-			TwistVfx.drop(ride.level(), foe.getBoundingBox().getCenter(), ride.caster().getBoundingBox().getCenter());
+			TwistVfx.drop(((ServerLevel) ride.level()), foe.getBoundingBox().getCenter(), ride.caster().getBoundingBox().getCenter());
 			Scheduler.later(12, () -> {
 				if (ride.caster().isAlive()) {
 					ride.caster().heal((float) (1.0 * ride.cast.power));
@@ -427,9 +427,9 @@ public final class TwistMagic {
 	private static void sunSeal(Ride ride, Cast.Hit hit) {
 		Vec3 at = hit.point();
 		double radius = 2.5;
-		TwistVfx.sunSeal(ride.level(), at, radius);
+		TwistVfx.sunSeal(((ServerLevel) ride.level()), at, radius);
 		every(ride.cast, 20, 3, tick -> {
-			TwistVfx.sunPulse(ride.level(), at, radius);
+			TwistVfx.sunPulse(((ServerLevel) ride.level()), at, radius);
 			Cast pulse = ride.cast.pulse();
 			for (LivingEntity foe : foes(pulse, at, radius)) {
 				if (pulse.takeEntities(1) == 1) {
@@ -451,10 +451,10 @@ public final class TwistMagic {
 			}
 			int blade = k;
 			Vec3 over = foe.position().add(0, foe.getBbHeight() + 2.5, 0);
-			TwistVfx.bladeHangs(ride.level(), over);
+			TwistVfx.bladeHangs(((ServerLevel) ride.level()), over);
 			Scheduler.later(12 + 4 * k, () -> {
 				if (ride.cast.alive() && foe.isAlive()) {
-					TwistVfx.bladeFalls(ride.level(), over, foe, blade);
+					TwistVfx.bladeFalls(((ServerLevel) ride.level()), over, foe, blade);
 					hurt(ride.cast, foe, "", magic(ride.cast), 3.0);
 					Reactions.mark(foe, Reactions.Mark.BLEEDING);
 				}
@@ -466,10 +466,10 @@ public final class TwistMagic {
 	private static void eddy(Ride ride, Cast.Hit hit) {
 		Vec3 centre = hit.point();
 		double radius = 3.5;
-		TwistVfx.eddy(ride.level(), centre, radius, true);
+		TwistVfx.eddy(((ServerLevel) ride.level()), centre, radius, true);
 		every(ride.cast, 2, 20, tick -> {
 			if (tick % 4 == 0) {
-				TwistVfx.eddy(ride.level(), centre, radius, false);
+				TwistVfx.eddy(((ServerLevel) ride.level()), centre, radius, false);
 			}
 			boolean last = tick == 19;
 			Cast pulse = last ? ride.cast.pulse() : null;
@@ -504,9 +504,9 @@ public final class TwistMagic {
 					return false;
 				}
 				if (tick < 3) {
-					TwistVfx.clockOver(ride.level(), foe);
+					TwistVfx.clockOver(((ServerLevel) ride.level()), foe);
 				} else {
-					TwistVfx.toll(ride.level(), foe);
+					TwistVfx.toll(((ServerLevel) ride.level()), foe);
 					hurt(ride.cast, foe, "", magic(ride.cast), 3.0);
 				}
 				return true;
@@ -530,7 +530,7 @@ public final class TwistMagic {
 				if (!ride.cast.alive()) {
 					return;
 				}
-				TwistVfx.crackle(ride.level(), at, burst);
+				TwistVfx.crackle(((ServerLevel) ride.level()), at, burst);
 				for (LivingEntity foe : foes(ride.cast, at, 1.6)) {
 					if (ride.touched.add(foe.getUUID()) && ride.cast.takeEntities(1) == 1) {
 						hurt(ride.cast, foe, "", ride.level().damageSources().source(DamageTypes.LIGHTNING_BOLT, ride.caster()), 2.0);
@@ -543,7 +543,7 @@ public final class TwistMagic {
 	/** Sudden Thicket: a thicket bursts up where it lands and holds the foes in it fast for a moment. */
 	private static void thicket(Ride ride, Cast cast, Cast.Hit hit) {
 		Vec3 at = hit.point();
-		TwistVfx.thicket(ride.level(), at, 3.0);
+		TwistVfx.thicket(((ServerLevel) ride.level()), at, 3.0);
 		for (LivingEntity foe : foes(cast, at, 3.0)) {
 			if (cast.takeEntities(1) != 1) {
 				continue;
@@ -610,7 +610,7 @@ public final class TwistMagic {
 
 	/** Slow Hour: for six seconds, arrows and thrown things near the caster crawl through the air. */
 	private static void slowHour(Ride ride) {
-		TwistVfx.slowHour(ride.level(), ride.caster(), true);
+		TwistVfx.slowHour(((ServerLevel) ride.level()), ride.caster(), true);
 		every(ride.cast, 1, 120, tick -> {
 			LivingEntity caster = ride.caster();
 			for (Projectile shot : ride.level().getEntitiesOfClass(Projectile.class, caster.getBoundingBox().inflate(8.0), p -> !friendly(caster, p))) {
@@ -620,11 +620,11 @@ public final class TwistMagic {
 					shot.hasImpulse = true;
 				}
 				if (tick % 4 == 0) {
-					TwistVfx.slowed(ride.level(), shot);
+					TwistVfx.slowed(((ServerLevel) ride.level()), shot);
 				}
 			}
 			if (tick % 20 == 19) {
-				TwistVfx.slowHour(ride.level(), caster, false);
+				TwistVfx.slowHour(((ServerLevel) ride.level()), caster, false);
 			}
 			return true;
 		});
@@ -633,13 +633,13 @@ public final class TwistMagic {
 	/** Paper Storm: three whirls of pages round the caster, cutting and lighting up the foes they catch. */
 	private static void paperStorm(Ride ride) {
 		every(ride.cast, 20, 3, tick -> {
-			TwistVfx.pages(ride.level(), ride.caster(), tick);
+			TwistVfx.pages(((ServerLevel) ride.level()), ride.caster(), tick);
 			Cast pulse = ride.cast.pulse();
 			for (LivingEntity foe : foes(pulse, ride.caster().position().add(0, 1, 0), 5.0)) {
 				if (pulse.takeEntities(1) == 1) {
 					hurt(pulse, foe, "", magic(pulse), 1.5);
 					foe.addEffect(new MobEffectInstance(MobEffects.GLOWING, 80, 0, false, false));
-					TwistVfx.pageCut(ride.level(), foe);
+					TwistVfx.pageCut(((ServerLevel) ride.level()), foe);
 				}
 			}
 			return true;
@@ -651,7 +651,7 @@ public final class TwistMagic {
 		int[] left = {3};
 		every(ride.cast, 2, 100, tick -> {
 			LivingEntity caster = ride.caster();
-			TwistVfx.shards(ride.level(), caster, left[0], tick);
+			TwistVfx.shards(((ServerLevel) ride.level()), caster, left[0], tick);
 			if (tick % 3 == 0) {
 				List<LivingEntity> near = foes(ride.cast, caster.getBoundingBox().getCenter(), 3.5);
 				if (!near.isEmpty()) {
@@ -659,7 +659,7 @@ public final class TwistMagic {
 					Cast pulse = ride.cast.pulse();
 					if (pulse.takeEntities(1) == 1) {
 						left[0]--;
-						TwistVfx.shardStrike(ride.level(), caster.getBoundingBox().getCenter(), foe.getBoundingBox().getCenter(), 3 - left[0]);
+						TwistVfx.shardStrike(((ServerLevel) ride.level()), caster.getBoundingBox().getCenter(), foe.getBoundingBox().getCenter(), 3 - left[0]);
 						hurt(pulse, foe, "", magic(pulse), 3.0);
 						if (!Spirits.isBoss(foe)) {
 							push(foe, away(caster.position(), foe).scale(0.6).add(0, 0.2, 0));
@@ -677,7 +677,7 @@ public final class TwistMagic {
 			int b = band;
 			Scheduler.later(1 + band * 6, () -> {
 				if (ride.cast.alive()) {
-					TwistVfx.aurora(ride.level(), ride.caster(), b);
+					TwistVfx.aurora(((ServerLevel) ride.level()), ride.caster(), b);
 				}
 			});
 		}
@@ -685,7 +685,7 @@ public final class TwistMagic {
 			ally.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 200, 0, false, true));
 			// Never more than two hearts of it, and never less than what they had.
 			ally.setAbsorptionAmount(Math.max(ally.getAbsorptionAmount(), 4.0F));
-			TwistVfx.shimmer(ride.level(), ally);
+			TwistVfx.shimmer(((ServerLevel) ride.level()), ally);
 		}
 	}
 
@@ -695,7 +695,7 @@ public final class TwistMagic {
 			int w = wave;
 			Scheduler.later(1 + wave * 10, () -> {
 				if (ride.cast.alive()) {
-					TwistVfx.fireflies(ride.level(), ride.caster(), w);
+					TwistVfx.fireflies(((ServerLevel) ride.level()), ride.caster(), w);
 				}
 			});
 		}
@@ -721,7 +721,7 @@ public final class TwistMagic {
 				last[0] = caster.position();
 				flowers.add(caster.position());
 				until.add(tick + 100);
-				TwistVfx.rime(ride.level(), caster.position(), flowers.size() == 1);
+				TwistVfx.rime(((ServerLevel) ride.level()), caster.position(), flowers.size() == 1);
 			}
 			if (tick % 5 == 0) {
 				for (int i = 0; i < flowers.size(); i++) {
@@ -740,7 +740,7 @@ public final class TwistMagic {
 	/** Great Bell: a bell rings out over the caster; foes nearby reel, allies are quickened. */
 	private static void greatBell(Ride ride) {
 		LivingEntity caster = ride.caster();
-		TwistVfx.bell(ride.level(), caster);
+		TwistVfx.bell(((ServerLevel) ride.level()), caster);
 		for (LivingEntity foe : foes(ride.cast, caster.position(), 6.0)) {
 			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 0, false, true));
 			foe.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 0, false, true));

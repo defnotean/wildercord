@@ -328,7 +328,7 @@ public final class WorldResonances {
 		Fx.sound(((ServerLevel) player.level()), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 0.9F);
 		Fx.sound(((ServerLevel) player.level()), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 1.0F, 0.85F);
 		ServerPlayNetworking.send(player, new Revealed(Revealed.RESONANCE, resonance.name(), resonance.color()));
-		TwistVfx.revealed(player.level(), player, resonance.color());
+		TwistVfx.revealed(((ServerLevel) player.level()), player, resonance.color());
 		Component name = Component.literal(resonance.name()).withColor(resonance.color());
 		if (first && Config.get().resonances().announce()) {
 			server.getPlayerList().broadcastSystemMessage(

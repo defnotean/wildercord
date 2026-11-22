@@ -53,7 +53,7 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 			.add(Attributes.MOVEMENT_SPEED, 0).add(Attributes.ATTACK_DAMAGE, 6).add(Attributes.FOLLOW_RANGE, 40).add(Attributes.KNOCKBACK_RESISTANCE, 1);
 	}
 	@Override protected void registerGoals() {}
-	@Override public boolean canBreatheUnderwater() { return true; }
+	@Override protected int decreaseAirSupply(int air) { return air; } // 1.21.5 makes canBreatheUnderwater final
 	@Override public boolean isPushable() { return false; }
 	@Override protected void doPush(Entity other) {}
 	@Override public boolean removeWhenFarAway(double distance) { return false; }

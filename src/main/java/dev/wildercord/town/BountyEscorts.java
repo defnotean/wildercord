@@ -151,7 +151,7 @@ public final class BountyEscorts {
 	public static void abandon(ServerPlayer player) {
 		ROADS.remove(player.getUUID());
 		Llama llama = llama(player);
-		if (llama != null) release(player.level(), llama);
+		if (llama != null) release(((ServerLevel) player.level()), llama);
 	}
 
 	/** Hands {@code player} the escort's pack llama by the board; returns the bounty bound for its end, or null with no room. */

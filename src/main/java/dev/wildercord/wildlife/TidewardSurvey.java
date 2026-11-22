@@ -47,7 +47,7 @@ public final class TidewardSurvey {
   return List.copyOf(cells);
  }
  public static boolean footing(ServerPlayer p,BlockPos floor){
-  var l=p.level();var feet=floor.above();var head=feet.above();
+  var l=(ServerLevel) p.level();var feet=floor.above();var head=feet.above();
   if(!l.hasChunkAt(floor) || !l.hasChunkAt(feet) || !l.hasChunkAt(head))return false;
   var f=l.getBlockState(floor);var low=l.getBlockState(feet);var high=l.getBlockState(head);
   if(!f.isCollisionShapeFullBlock(l,floor) || !f.getFluidState().isEmpty() || !low.getCollisionShape(l,feet).isEmpty() || !high.getCollisionShape(l,head).isEmpty()

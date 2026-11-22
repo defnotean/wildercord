@@ -147,7 +147,7 @@ final class CraftedVfx {
 	/** The thread snaps: a spray of motes where it broke. */
 	static void latchSnap(ServerLevel level, Vec3 at, Vfx.Theme theme) {
 		Vfx.radial(level, theme.mote(), at, 8, 0.12);
-		Fx.sound(level, at, SoundEvents.LEAD_BREAK, 0.7F, 1.3F);
+		Fx.sound(level, at, SoundEvents.LEASH_KNOT_BREAK, 0.7F, 1.3F);
 	}
 
 	// ------------------------------------------------------------------ On Reaction, On Weakness

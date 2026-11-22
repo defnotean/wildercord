@@ -493,7 +493,7 @@ public final class Innates {
 		DEBTS.put(player.getUUID(), new Debt(total, total / 10F, now + 200));
 		TechniqueVfx.rewind((ServerLevel) player.level(), player.position(), player.position());
 		ElementFx.goldenTicks((ServerLevel) player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
-		ElementFx.groundRing(player.level(), player.position(), ElementFx.TIME.primary(), 1.8, 0.4, 0.06, 14);
+		ElementFx.groundRing(((ServerLevel) player.level()), player.position(), ElementFx.TIME.primary(), 1.8, 0.4, 0.06, 14);
 		dev.wildercord.cast.feel.Feels.sound((ServerLevel) player.level(), player.position(), "time_sand", 0.9F, 1.0F);
 		player.displayClientMessage(Component.translatable("message.wildercord.borrowed", Math.round(owed)).withColor(0xF2D98A), true);
 	}
@@ -759,7 +759,7 @@ public final class Innates {
 					repaying = true;
 					try {
 						Effects.readyToHurt(player);
-						player.hurtServer((ServerLevel) player.level(), (ServerLevel) player.level().damageSources().magic(), pay);
+						player.hurtServer((ServerLevel) player.level(), player.level().damageSources().magic(), pay);
 					} finally {
 						echoing = false;
 						repaying = false;

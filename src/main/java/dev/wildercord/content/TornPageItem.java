@@ -17,6 +17,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import java.util.function.Consumer;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * A Torn Page from an old grimoire: read it to learn the riddle of a secret spell you haven't
@@ -50,7 +51,7 @@ public class TornPageItem extends Item {
 				Component.literal(r.name()).withColor(r.color())).withColor(0xC8B8F0).withStyle(ChatFormatting.ITALIC)));
 			// The margin: a sketch of the way to the nearest Archive, in the overworld.
 			if (serverPlayer.level().dimension() == Level.OVERWORLD) {
-				net.minecraft.core.BlockPos archive = serverPlayer.level().findNearestMapStructure(dev.wildercord.world.WildercordWorldgen.ARCHIVES,
+				net.minecraft.core.BlockPos archive = ((ServerLevel) serverPlayer.level()).findNearestMapStructure(dev.wildercord.world.WildercordWorldgen.ARCHIVES,
 					serverPlayer.blockPosition(), 48, false);
 				if (archive != null) {
 					double dx = archive.getX() - serverPlayer.getX();

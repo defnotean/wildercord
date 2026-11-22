@@ -694,11 +694,11 @@ public final class FireBloodVfx {
 	public static void cueCut(FeelCtx ctx) {
 		Vec3 d = ctx.dir();
 		Vec3 side = ElementFx.perp(d);
-		ElementFx.ray(ctx.level(), ctx.at().add(side.scale(-0.4)), ctx.at().add(side.scale(0.4)), ElementFx.BLOOD.primary(), 0.03, 5);
+		ElementFx.ray(((ServerLevel) ctx.level()), ctx.at().add(side.scale(-0.4)), ctx.at().add(side.scale(0.4)), ElementFx.BLOOD.primary(), 0.03, 5);
 	}
 
 	/** Blood runes with a pulse (Overdrive, Bloodboil): a drop of blood gathers at the hand. */
 	public static void cueDrop(FeelCtx ctx) {
-		ElementFx.drip(ctx.level(), ctx.at(), 0.1, 2);
+		ElementFx.drip(((ServerLevel) ctx.level()), ctx.at(), 0.1, 2);
 	}
 }

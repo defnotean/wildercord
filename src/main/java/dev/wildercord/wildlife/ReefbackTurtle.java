@@ -83,10 +83,7 @@ public class ReefbackTurtle extends AbstractHorse {
 		return 0.96F;
 	}
 
-	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
-	}
+	@Override protected int decreaseAirSupply(int air) { return air; } // 1.21.5 makes canBreatheUnderwater final
 
 	@Override
 	public boolean dismountsUnderwater() {

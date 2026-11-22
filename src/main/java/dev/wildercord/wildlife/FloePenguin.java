@@ -86,10 +86,7 @@ public class FloePenguin extends Animal {
 		return new AmphibiousPathNavigation(this, level);
 	}
 
-	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
-	}
+	@Override protected int decreaseAirSupply(int air) { return air; } // 1.21.5 makes canBreatheUnderwater final
 
 	/** In the water it swims, not wades: the swimming control's push, without the drag a land animal feels. */
 	@Override

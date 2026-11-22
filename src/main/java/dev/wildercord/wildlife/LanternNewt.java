@@ -57,7 +57,7 @@ public final class LanternNewt extends PathfinderMob {
 	public static AttributeSupplier.Builder attributes() {return createMobAttributes().add(Attributes.MAX_HEALTH,10).add(Attributes.MOVEMENT_SPEED,.22).add(Attributes.FOLLOW_RANGE,12).add(Attributes.TEMPT_RANGE,10).add(Attributes.STEP_HEIGHT,.6);}
 	@Override protected PathNavigation createNavigation(Level level) {return new NewtPathNavigation(this,level);}
 	boolean beneathRefuge(BlockPos roof) {return Math.abs(getX()-(roof.getX()+.5))<.28 && Math.abs(getZ()-(roof.getZ()+.5))<.28 && getY()<roof.getY()+.3 && isInWater();}
-	@Override public boolean canBreatheUnderwater() {return true;}
+	@Override protected int decreaseAirSupply(int air) { return air; } // 1.21.5 makes canBreatheUnderwater final
 	/** Swimming control supplies scaled movement input; use aquatic travel rather than land-mob fluid drag. */
 	@Override public void travel(net.minecraft.world.phys.Vec3 input) {
 		if (isEffectiveAi() && isInWater()) {
