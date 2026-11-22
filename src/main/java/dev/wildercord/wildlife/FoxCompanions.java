@@ -34,7 +34,7 @@ public final class FoxCompanions {
   if(bond==null && fish(held)) {
    if(fox.level() instanceof ServerLevel level) {
     held.consume(1,p);boolean success=fox.getRandom().nextDouble()<WildlifeRules.TAME_CHANCE;
-    if(success) {fox.setAttached(BOND,new Bond(p.getUUID(),true));fox.setPersistenceRequired();((FoxAccessor)fox).wildercord$trust(p);wake(fox);fox.setSitting(true);fox.getNavigation().stop();fox.setTarget(null);}
+    if(success) {fox.setAttached(BOND,new Bond(p.getUUID(),true));fox.setPersistenceRequired();((FoxAccessor)fox).wildercord$trust(p.getUUID());wake(fox);fox.setSitting(true);fox.getNavigation().stop();fox.setTarget(null);}
     level.sendParticles(success?ParticleTypes.HEART:ParticleTypes.SMOKE,fox.getX(),fox.getY()+.5,fox.getZ(),7,.3,.25,.3,.01);
    }
    return InteractionResult.SUCCESS;

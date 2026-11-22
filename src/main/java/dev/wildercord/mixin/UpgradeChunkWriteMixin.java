@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /** Persist an edit fence before protected region mutation, including a later identical replacement (ABA). */
 @Mixin(LevelChunk.class)
 public abstract class UpgradeChunkWriteMixin {
-	@Inject(method="setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Lnet/minecraft/world/level/block/state/BlockState;",at=@At("HEAD"),cancellable=true)
-	private void wildercord$upgradeFence(BlockPos point,BlockState replacement,int flags,CallbackInfoReturnable<BlockState> result) {
+	@Inject(method="setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;",at=@At("HEAD"),cancellable=true)
+	private void wildercord$upgradeFence(BlockPos point,BlockState replacement,boolean flags,CallbackInfoReturnable<BlockState> result) {
 		var chunk=(LevelChunk)(Object)this;
 		if(chunk.getLevel() instanceof ServerLevel level && !chunk.getBlockState(point).equals(replacement)
 				&& !WorldUpgrades.beforeExternalWrite(level,point,replacement))result.setReturnValue(null);

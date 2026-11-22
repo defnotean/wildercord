@@ -1,4 +1,4 @@
-﻿package dev.wildercord.aura;
+package dev.wildercord.aura;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

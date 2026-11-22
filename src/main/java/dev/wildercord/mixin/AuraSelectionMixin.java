@@ -13,28 +13,22 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /** Held-slot changes are events, not just impact-time comparisons: switching away and back never restores a paid windup. */
 @Mixin(Inventory.class)
 public abstract class AuraSelectionMixin {
 	@Shadow @Final public Player player;
 
-	@Inject(method = "setSelectedSlot", at = @At("HEAD"))
+	@Inject(method = "setSelectedHotbarSlot", at = @At("HEAD"))
 	private void wildercord$selectedSlot(int slot, CallbackInfo ci) {
 		Inventory inventory = (Inventory) (Object) this;
 		if (Inventory.isHotbarSlot(slot) && slot != inventory.getSelectedSlot()) wildercord$equipmentChanged();
 	}
 
-	@Inject(method = "setSelectedItem", at = @At("HEAD"))
-	private void wildercord$selectedItem(ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
-		if (((Inventory) (Object) this).getSelectedItem() != stack) wildercord$equipmentChanged();
-	}
-
 	@Inject(method = "setItem", at = @At("HEAD"))
 	private void wildercord$contents(int slot, ItemStack stack, CallbackInfo ci) {
 		Inventory inventory = (Inventory) (Object) this;
-		if (slot == inventory.getSelectedSlot() && inventory.getSelectedItem() != stack) wildercord$equipmentChanged();
+		if (slot == inventory.getSelectedSlot() && inventory.getItem(slot) != stack) wildercord$equipmentChanged();
 	}
 
 	@Unique
