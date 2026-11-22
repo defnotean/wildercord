@@ -1110,7 +1110,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		String failure;
 		boolean closed;
 		NullSilenceAudit(ServerPlayer owner) {
-			this.owner = owner; level = owner.level(); entity = owner.getId();
+			this.owner = owner; level = ((ServerLevel) owner.level()); entity = owner.getId();
 			spend = (player, amount, reason, backlash) -> {
 				if (closed || !player.getUUID().equals(owner.getUUID())) return;
 				try {
@@ -1591,7 +1591,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	}
 
 	private static void stand(ServerPlayer player) {
-		player.teleportTo(player.level(), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
+		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.removeAllEffects();
 		player.setHealth(player.getMaxHealth());

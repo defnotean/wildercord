@@ -75,7 +75,7 @@ public final class RelayWorldContextChecks {
                         primary[0]=EntityType.CREEPER.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);
                         RelayCircleTest.check(primary[0]!=null,"Native primary creeper creates");primary[0].snapTo(.5,150,6.5,180,0);primary[0].setNoAi(true);primary[0].setNoGravity(true);owner.level().addFreshEntity(primary[0]);
                         secondary=dryResidueSite?WildercordEntities.TRAINING_DUMMY.create(owner.level(),EntitySpawnReason.MOB_SUMMONED)
-                            :new ChargeWitness(owner.level());
+                            :new ChargeWitness(((ServerLevel) owner.level()));
                         RelayCircleTest.check(secondary!=null,"Native water collateral creates");secondary.snapTo(6.5,150,6.5,180,0);secondary.setNoGravity(true);owner.level().addFreshEntity(secondary);
                         Shields.raise(new Cast(owner).weigh(100),primary[0],200);
                         Reactions.callout(new Cast(owner),"conduct",0xFFE650);

@@ -30,13 +30,13 @@ public final class WildercordMeditationTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				var player = server.getPlayerList().getPlayers().getFirst();
 				player.setGameMode(GameType.CREATIVE);
-				player.teleportTo(player.level(), 0.5, 160, 0.5, Set.<Relative>of(), 0, 0, false);
+				player.teleportTo(((ServerLevel) player.level()), 0.5, 160, 0.5, Set.<Relative>of(), 0, 0, false);
 			});
 			context.waitTicks(30);
 			world.getServer().runCommand("fill -12 159 -12 12 159 20 polished_deepslate");
 			world.getServer().runOnServer(server -> {
 				var player = server.getPlayerList().getPlayers().getFirst();
-				player.teleportTo(player.level(), 0.5, 160, 0.5, Set.<Relative>of(), 0, 0, false);
+				player.teleportTo(((ServerLevel) player.level()), 0.5, 160, 0.5, Set.<Relative>of(), 0, 0, false);
 				player.setGameMode(GameType.SURVIVAL);
 				player.fallDistance = 0;
 				player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);

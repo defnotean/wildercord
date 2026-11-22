@@ -254,7 +254,7 @@ public final class CounterSpellCapture {
 				}));
 				require(matches(s, target, source), "Nested invocation restores its exact caller"); return false;
 			}));
-			damage(expected, target, () -> identity(new Object(), () -> nativeDamage(target, owner.level(), source, () -> {
+			damage(expected, target, () -> identity(new Object(), () -> nativeDamage(target, ((ServerLevel) owner.level()), source, () -> {
 				require(!matches(s, target, source), "Untyped nested damage cannot borrow a typed caller's Cast"); return true;
 			})));
 			require(s.runeDamage == 1, "Untyped ordinary damage remains uncredited");

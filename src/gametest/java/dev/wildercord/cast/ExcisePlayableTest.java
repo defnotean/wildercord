@@ -349,7 +349,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
         Vec3 delta = probe.target.position().subtract(probe.witch.getEyePosition());
         probe.witch.setYRot((float)Math.toDegrees(Math.atan2(-delta.x,delta.z)));
         probe.witch.setXRot((float)-Math.toDegrees(Math.atan2(delta.y,Math.sqrt(delta.x*delta.x+delta.z*delta.z))));
-        Runebound.cast(p.level(),probe.witch,split ? List.of(Runes.ZONE,Runes.SPLIT_MOD,Runes.VENOM) : List.of(Runes.ZONE,Runes.VENOM),1);
+        Runebound.cast(((ServerLevel) p.level()),probe.witch,split ? List.of(Runes.ZONE,Runes.SPLIT_MOD,Runes.VENOM) : List.of(Runes.ZONE,Runes.VENOM),1);
         probe.emitters = NativeZoneEmitters.snapshot().stream().filter(e -> e.cast.caster == probe.witch).toList();
         check(!probe.emitters.isEmpty(),"Native Zone branch registered actual centers"); probe.selected = probe.emitters.getFirst();
         RelayCircleTest.aim(p,probe.selected.core);

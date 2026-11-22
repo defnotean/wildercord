@@ -160,7 +160,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 	}
 
 	private static void place(ServerPlayer player, Vec3 at, float yaw, float pitch) {
-		player.teleportTo(player.level(), at.x, at.y, at.z, Set.<Relative>of(), yaw, pitch, false);
+		player.teleportTo(((ServerLevel) player.level()), at.x, at.y, at.z, Set.<Relative>of(), yaw, pitch, false);
 	}
 
 	/** Where to film a monster facing north from: ahead of it and off to one side, {@code distance} away and {@code height} up. */
@@ -262,7 +262,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 	/** Films from a fixed point: the client looks through an invisible marker placed there. */
 	private static void director(ClientGameTestContext context, TestSingleplayerContext world, Vec3 eye, Vec3 target) {
 		int id = world.getServer().computeOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, new AABB(base, base).inflate(400),
 				e -> e.getTags().contains("wildercord.camera")).forEach(Entity::discard);
 			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
@@ -314,7 +314,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 
 	private static void clear(TestSingleplayerContext world) {
 		world.getServer().runOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			for (Entity e : level.getEntities((Entity) null, new AABB(base, base).inflate(400), e -> e instanceof WildMonster || e instanceof ManaOoze
 					|| e instanceof BogBubble || e instanceof Chicken || e instanceof net.minecraft.world.entity.AreaEffectCloud)) {
 				e.discard();
@@ -359,7 +359,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 					return EntityType.getKey(type) + " shouldn't be allowed on Peaceful";
 				}
 			}
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			BlockPos low = BlockPos.containing(base);
 			// A harpy keeps to the peaks: never down here, whatever the light.
 			if (SpawnPlacements.checkSpawnRules(MonsterContent.THUNDERWING_HARPY, level, EntitySpawnReason.NATURAL, low, level.getRandom())) {
@@ -395,7 +395,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 				if (!Config.get().monsters().spawns("gloomstalker")) {
 					return "switching one off shouldn't stop the others";
 				}
-				ServerLevel level = player(server).level();
+				ServerLevel level = ((ServerLevel) player(server).level());
 				return SpawnPlacements.checkSpawnRules(MonsterContent.BRAMBLEWALKER, level, EntitySpawnReason.NATURAL, BlockPos.containing(base),
 					level.getRandom()) ? "a Bramblewalker switched off shouldn't pass its spawn rule" : null;
 			});
@@ -421,7 +421,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		world.getServer().runCommand("place feature minecraft:fancy_oak %d %d %d".formatted(c.getX() + 5, c.getY(), c.getZ() + 12));
 		Vec3 spot = at.add(0, 0, 6);
 		Vec3 eye = threeQuarter(spot, 4.0, 2.0);
-		int id = world.getServer().computeOnServer(server -> spawn(player(server).level(), MonsterContent.BRAMBLEWALKER, spot, 180, false).getId());
+		int id = world.getServer().computeOnServer(server -> spawn(((ServerLevel) player(server).level()), MonsterContent.BRAMBLEWALKER, spot, 180, false).getId());
 		portraits(context, world, id, eye, spot.add(0, 1.1, 0), "bramblewalker", new int[] {0, WildMonster.WINDUP, WildMonster.ACTING},
 			new String[] {"", "_rear", "_lash"});
 
@@ -459,7 +459,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 				Bramblewalker walker = (Bramblewalker) player.level().getEntity(id);
 				walker.setTarget(null);
 				walker.igniteForSeconds(5);
-				trace[0] = BrambleFireProbe.begin(player.level(), walker, player);
+				trace[0] = BrambleFireProbe.begin(((ServerLevel) player.level()), walker, player);
 				return walker.distanceTo(player);
 			});
 			context.waitTicks(40);
@@ -500,7 +500,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		Vec3 eye = threeQuarter(spot, 2.9, 1.2);
 		heal(world, GameType.CREATIVE);
 		world.getServer().runOnServer(server -> place(player(server), at.add(0, 0, -3), 0, 0));
-		int id = world.getServer().computeOnServer(server -> spawn(player(server).level(), MonsterContent.GLOOMSTALKER, spot, 180, false).getId());
+		int id = world.getServer().computeOnServer(server -> spawn(((ServerLevel) player(server).level()), MonsterContent.GLOOMSTALKER, spot, 180, false).getId());
 		portraits(context, world, id, eye, spot.add(0, 0.5, 0), "gloomstalker", new int[] {0, WildMonster.WINDUP, WildMonster.ACTING, WildMonster.STUNNED,
 			WildMonster.VEILED}, new String[] {"", "_crouch", "_leap", "_sprawl", "_hidden"});
 
@@ -567,7 +567,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			c.getZ() + 14));
 		Vec3 spot = at.add(0, 2.0, 6);
 		Vec3 eye = threeQuarter(spot, 3.8, 1.0);
-		int id = world.getServer().computeOnServer(server -> spawn(player(server).level(), MonsterContent.THUNDERWING_HARPY, spot, 180, false).getId());
+		int id = world.getServer().computeOnServer(server -> spawn(((ServerLevel) player(server).level()), MonsterContent.THUNDERWING_HARPY, spot, 180, false).getId());
 		portraits(context, world, id, eye, spot.add(0, 0.6, 0), "thunderwing_harpy", new int[] {0, WildMonster.WINDUP, WildMonster.ACTING, WildMonster.ALT},
 			new String[] {"", "_shriek", "_dive", "_call"});
 
@@ -588,9 +588,9 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			harpy.discard();
 		});
 		int live = world.getServer().computeOnServer(server -> {
-			ThunderwingHarpy harpy = spawn(player(server).level(), MonsterContent.THUNDERWING_HARPY, at.add(3, 7, 5), 180, true);
+			ThunderwingHarpy harpy = spawn(((ServerLevel) player(server).level()), MonsterContent.THUNDERWING_HARPY, at.add(3, 7, 5), 180, true);
 			harpy.setTarget(player(server));
-			harpy.shriekNow(player(server).level());
+			harpy.shriekNow(((ServerLevel) player(server).level()));
 			return harpy.getId();
 		});
 		director(context, world, at.add(-8, 4, -3), at.add(1, 3.5, 3));
@@ -614,7 +614,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		String guard = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			ThunderwingHarpy harpy = (ThunderwingHarpy) player.level().getEntity(live);
-			MonsterMagic.hurt(player.level(), harpy, player, 200);
+			MonsterMagic.hurt(((ServerLevel) player.level()), harpy, player, 200);
 			return player.isAlive() && player.getHealth() <= 2.5F ? null
 				: "the spellguard should leave a full-health player on one heart (health " + player.getHealth() + ", alive " + player.isAlive() + ")";
 		});
@@ -632,7 +632,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			}
 			ThunderwingHarpy harpy = (ThunderwingHarpy) player.level().getEntity(id);
 			Effects.readyToHurt(player);
-			harpy.callNow(player.level(), player);
+			harpy.callNow(((ServerLevel) player.level()), player);
 		});
 		context.waitTicks(4);
 		if (!warded) {
@@ -658,7 +658,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		world.getServer().runCommand("setblock %d %d %d large_amethyst_bud".formatted(c.getX() + 2, c.getY() + 3, c.getZ() + 11));
 		Vec3 spot = at.add(0, 0, 6);
 		Vec3 eye = threeQuarter(spot, 2.8, 1.4);
-		int id = world.getServer().computeOnServer(server -> spawn(player(server).level(), MonsterContent.GEODE_CRAWLER, spot, 180, false).getId());
+		int id = world.getServer().computeOnServer(server -> spawn(((ServerLevel) player(server).level()), MonsterContent.GEODE_CRAWLER, spot, 180, false).getId());
 		portraits(context, world, id, eye, spot.add(0, 0.4, 0), "geode_crawler", new int[] {0, WildMonster.GUARD, WildMonster.GUARD | WildMonster.WINDUP,
 			WildMonster.STUNNED}, new String[] {"", "_curled", "_rattle", "_dazed"});
 
@@ -666,7 +666,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		heal(world, GameType.CREATIVE);
 		String curl = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			GeodeCrawler crawler = (GeodeCrawler) level.getEntity(id);
 			crawler.holdPose(0);
 			crawler.setNoAi(false);
@@ -696,7 +696,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		check(curl == null, curl);
 		// A shock cracks it too.
 		int second = world.getServer().computeOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			level.getEntity(id).discard();
 			GeodeCrawler crawler = spawn(level, MonsterContent.GEODE_CRAWLER, spot, 180, true);
 			crawler.curl(level, 200);
@@ -711,7 +711,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		heal(world, GameType.SURVIVAL);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			level.getEntity(second).discard();
 			place(player, at, 0, 0);
 			GeodeCrawler crawler = spawn(level, MonsterContent.GEODE_CRAWLER, at.add(0, 0, 7), 180, true);
@@ -727,7 +727,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 	}
 
 	private static ServerLevel level(MinecraftServer server) {
-		return player(server).level();
+		return ((ServerLevel) player(server).level());
 	}
 
 	// ------------------------------------------------------------------ the Bog Witch-Frog
@@ -744,7 +744,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		world.getServer().runCommand("place feature minecraft:mangrove %d %d %d".formatted(c.getX() + 5, c.getY(), c.getZ() + 8));
 		Vec3 spot = at.add(0, 0, 5);
 		Vec3 eye = threeQuarter(spot, 3.3, 1.6);
-		int id = world.getServer().computeOnServer(server -> spawn(player(server).level(), MonsterContent.BOG_WITCH_FROG, spot, 180, false).getId());
+		int id = world.getServer().computeOnServer(server -> spawn(((ServerLevel) player(server).level()), MonsterContent.BOG_WITCH_FROG, spot, 180, false).getId());
 		portraits(context, world, id, eye, spot.add(0, 0.6, 0), "bog_witch_frog", new int[] {0, WildMonster.WINDUP, WildMonster.ALT, WildMonster.GUARD},
 			new String[] {"", "_swell", "_mouth", "_gulp"});
 

@@ -59,7 +59,7 @@ public final class MasterSchoolMotionChecks {
 				"gamerule doDaylightCycle false", "time set 3000", "weather clear")) world.getServer().runCommand(command);
 			world.getServer().runOnServer(server -> {
 				ServerPlayer observer = server.getPlayerList().getPlayers().getFirst();
-				level = observer.level();
+				level = ((ServerLevel) observer.level());
 				origin = new Vec3(observer.getBlockX() + .5, 181, observer.getBlockZ() + .5);
 				for (int x = -16; x <= 16; x++) for (int z = -16; z <= 16; z++)
 					level.setBlockAndUpdate(BlockPos.containing(origin).offset(x, -1, z), Blocks.POLISHED_DEEPSLATE.defaultBlockState());

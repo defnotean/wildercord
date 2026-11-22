@@ -86,7 +86,7 @@ public final class MastersCaptureProbe {
 		dev.wildercord.gametest.compat.GametestCompat.extractMainCamera(mc.gameRenderer, camera, DELTA);
 		var projection = new org.joml.Matrix4f().perspective((float) Math.toRadians(70.0),
 			(float) mc.getWindow().getWidth() / (float) Math.max(1, mc.getWindow().getHeight()), .05F,
-			net.minecraft.client.renderer.GameRenderer.PROJECTION_3D_HUD_Z_FAR);
+			10000.0F);
 		var matrix = new org.joml.Matrix4f(projection).mul(RenderSystem.getModelViewStack()).mul(pose.last().pose());
 		handProjection = matrix.get(new float[16]);
 		double[] bounds = {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY};

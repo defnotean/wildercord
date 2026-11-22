@@ -130,7 +130,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 
 	/** Stands the player at a point, looking a given way. */
 	private static void place(ServerPlayer player, Vec3 at, float yaw, float pitch) {
-		player.teleportTo(player.level(), at.x, at.y, at.z, Set.<Relative>of(), yaw, pitch, false);
+		player.teleportTo(((ServerLevel) player.level()), at.x, at.y, at.z, Set.<Relative>of(), yaw, pitch, false);
 	}
 
 	private static Vec3 ground(ServerLevel level, double x, double z) {
@@ -155,7 +155,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 	/** Films from a fixed point: the client looks through an invisible marker placed there. */
 	private static void director(ClientGameTestContext context, TestSingleplayerContext world, Vec3 eye, Vec3 target) {
 		int id = world.getServer().computeOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, player(server).getBoundingBox().inflate(128),
 				e -> e.getTags().contains("wildercord.camera")).forEach(net.minecraft.world.entity.Entity::discard);
 			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
@@ -219,7 +219,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 	private static void setup(TestSingleplayerContext world) {
 		int[] where = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
-			Vec3 at = ground(player.level(), player.getX(), player.getZ());
+			Vec3 at = ground(((ServerLevel) player.level()), player.getX(), player.getZ());
 			return new int[] {(int) Math.floor(at.x), (int) at.y - 1, (int) Math.floor(at.z)};
 		});
 		clear(world, where[0], where[1], where[2], 32);
@@ -380,7 +380,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			camera(context, CameraType.THIRD_PERSON_BACK);
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = player(server);
-				ServerLevel level = player.level();
+				ServerLevel level = ((ServerLevel) player.level());
 				Vec3 at = stage.add(0, 0, -8);
 				place(player, at, 0, secret.id().equals("sunfall") ? -12 : 4);
 				if (!secret.id().equals("sunfall")) {
@@ -455,7 +455,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			camera(context, CameraType.THIRD_PERSON_BACK);
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = player(server);
-				ServerLevel level = player.level();
+				ServerLevel level = ((ServerLevel) player.level());
 				Vec3 at = stage.add(0, 0, -8);
 				place(player, at, 0, 12);
 				for (int i = 0; i < 3; i++) {
@@ -533,7 +533,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		// The release, still facing the camera: a nova of fire bursting out round the caster, over husks.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			for (int i = 0; i < 3; i++) {
 				Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 				if (husk != null) {
@@ -559,7 +559,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		// A Domain unfolding over three husks, from above and to the side.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			place(player, stage.add(0, 0, -8), 0, 20);
 			for (int i = 0; i < 3; i++) {
 				Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
@@ -595,7 +595,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		world.getServer().runCommand("time set 18000");
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			place(player, stage.add(0, 0, -10), 0, 0);
 			Mob zombie = EntityType.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
 			if (zombie != null) {
@@ -621,7 +621,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			player.setGameMode(GameType.SURVIVAL);
 			player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 2400, 4, false, false));
 			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2400, 2, false, false));
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			player.setTicksFrozen(0);
 			Vec3 at = stage.add(0, 0, -6);
 			place(player, at, 0, 0);
@@ -658,7 +658,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 	private static void dummy(ClientGameTestContext context, TestSingleplayerContext world) {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			player.setTicksFrozen(0);
 			player.removeAllEffects();
 			Vec3 at = stage.add(16, 0, 12);
@@ -713,7 +713,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 	private static void shieldedHusk(TestSingleplayerContext world, float strength) {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			Vec3 at = stage.add(SHIELD_SPOT);
 			place(player, at, 0, 0);
 			level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(30), m -> m.getTags().contains("wildercord.tour")).forEach(Mob::discard);
@@ -864,7 +864,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		}
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			check(sticks.stream().allMatch(s -> s.has(WildercordComponents.IMBUED)), "every stick should take the spell");
 			check(Imbuing.Ledger.of(level).count(player.getUUID()) == Imbuing.MAX_ITEMS, "only the newest " + Imbuing.MAX_ITEMS + " imbued items should count");
 			// The first one's magic has faded: using it releases nothing and leaves a plain stick.
@@ -885,7 +885,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		// A sword that holds only a Heal heals its wielder when it strikes, instead of the foe.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			SpellCaster.edit(player, 0, List.of());
 			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.HEAL));
@@ -925,7 +925,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		context.waitTicks(20);
 		BlockPos written = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel here = player.level();
+			ServerLevel here = ((ServerLevel) player.level());
 			ServerLevel nether = server.getLevel(net.minecraft.world.level.Level.NETHER);
 			Imbued frost = new Imbued(List.of(Runes.FROST.id()), 3, 0x9BE7FF, true, player.getUUID(), 0L);
 			for (int i = 0; i < Imbuing.maxGlyphs(); i++) {
@@ -980,7 +980,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		// A strike with it lets the fire go at what it hits.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 spot = at.add(0, 0, 1.6);
 			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
@@ -1024,7 +1024,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		// Any block holds magic: a plank imbued in hand, placed, is a glyph; broken by its maker, it comes back still imbued.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.OAK_PLANKS));
 			Spellbooks.setReadyAt(player, 0, 0);
 			SpellCaster.edit(player, 0, List.of());
@@ -1034,7 +1034,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		context.waitTicks(8);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			ItemStack plank = player.getMainHandItem();
 			check(plank.has(WildercordComponents.IMBUED) && Imbued.release(plank) == Imbued.Release.PLACE, "a block item in hand should take the magic");
 			BlockPos under = BlockPos.containing(at.add(2, -1, 0));
@@ -1050,7 +1050,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		context.waitTicks(3);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			BlockPos placed = BlockPos.containing(at.add(2, -1, 0)).above();
 			boolean kept = !level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(placed).inflate(1.5),
 				e -> e.getItem().is(Items.OAK_PLANKS) && e.getItem().has(WildercordComponents.IMBUED)).isEmpty();
@@ -1073,7 +1073,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		});
 		context.waitTicks(8);
 		BlockPos glyph = world.getServer().computeOnServer(server -> {
-			List<Imbuing.Glyph> mine = Imbuing.Glyphs.of(player(server).level()).all().stream()
+			List<Imbuing.Glyph> mine = Imbuing.Glyphs.of(((ServerLevel) player(server).level())).all().stream()
 				.filter(g -> g.owner().equals(player(server).getUUID())).toList();
 			return mine.isEmpty() ? null : mine.getLast().pos();
 		});
@@ -1083,7 +1083,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		context.waitTicks(12);
 		shot(context, "imbue_glyph");
 		world.getServer().runOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			Mob husk = EntityType.HUSK.create(level, EntitySpawnReason.COMMAND);
 			husk.snapTo(top.x, top.y, top.z, 200, 0);
 			husk.setNoAi(true);
@@ -1104,7 +1104,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			Mob husk = tourHusk(server);
 			check(husk != null && husk.getHealth() < husk.getMaxHealth() && husk.getTicksFrozen() > 0, "a husk stepping on a Frost glyph should be frozen");
-			int charges = Imbuing.Glyphs.of(player(server).level()).at(glyph).map(Imbuing.Glyph::charges).orElse(0);
+			int charges = Imbuing.Glyphs.of(((ServerLevel) player(server).level())).at(glyph).map(Imbuing.Glyph::charges).orElse(0);
 			// It re-arms after a second, so a husk left standing on it through the burst may spend more than one.
 			check(charges < SpellNumbers.IMBUE_CHARGES, "the glyph should have spent a charge, has " + charges);
 		});
@@ -1119,7 +1119,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		camera(context, CameraType.THIRD_PERSON_BACK);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			Vec3 at = stage.add(0, 0, -12);
 			place(player, at, 0, -6);
 			Mob witch = EntityType.WITCH.create(level, EntitySpawnReason.COMMAND);
@@ -1201,7 +1201,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		camera(context, CameraType.FIRST_PERSON);
 		Vec3 found = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			long seed = LeyWalker.seed(level);
 			for (int r = 16; r < 900; r += 8) {
 				for (int k = 0; k < 64; k++) {
@@ -1222,12 +1222,12 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			player.getAbilities().flying = true;
 			player.onUpdateAbilities();
 			player.level().getChunk(BlockPos.containing(found));
-			place(player, ground(player.level(), found.x, found.z).add(0, 20, 0), 0, 60);
+			place(player, ground(((ServerLevel) player.level()), found.x, found.z).add(0, 20, 0), 0, 60);
 		});
 		context.waitTicks(80);
 		int[] ground = world.getServer().computeOnServer(server -> {
 			// The block nearby where the line runs strongest: a narrow line can miss a rounded-off point.
-			long seed = LeyWalker.seed(player(server).level());
+			long seed = LeyWalker.seed(((ServerLevel) player(server).level()));
 			double bestX = found.x;
 			double bestZ = found.z;
 			double best = -1;
@@ -1243,14 +1243,14 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 					}
 				}
 			}
-			Vec3 at = ground(player(server).level(), bestX, bestZ);
+			Vec3 at = ground(((ServerLevel) player(server).level()), bestX, bestZ);
 			return new int[] {(int) Math.floor(at.x), (int) at.y - 1, (int) Math.floor(at.z)};
 		});
 		clear(world, ground[0], ground[1], ground[2], 16);
 		Vec3 heart = new Vec3(ground[0] + 0.5, ground[1] + 1, ground[2] + 0.5);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			long seed = LeyWalker.seed(level);
 			// The Wellstone goes on the line, a few steps along it; the player stands on the line too.
 			// The player always stands on the line's heart; the Wellstone goes where the line runs
@@ -1297,7 +1297,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			player.getAbilities().flying = true;
 			player.onUpdateAbilities();
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			// Dry ground: an entrance at the edge of a lake films badly.
 			BlockPos to = null;
 			for (int k = 0; k < 12 && to == null; k++) {
@@ -1323,7 +1323,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			// Over the mouth of the stairway: its highest step.
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = player(server);
-				ServerLevel level = player.level();
+				ServerLevel level = ((ServerLevel) player.level());
 				BlockPos mouth = null;
 				for (BlockPos pos : BlockPos.betweenClosed(origin.offset(-100, -30, -100), origin.offset(100, 12, 100))) {
 					if (level.isLoaded(pos) && level.getBlockState(pos).is(net.minecraft.world.level.block.Blocks.DEEPSLATE_BRICK_STAIRS)
@@ -1345,7 +1345,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			// Find its heart: the lectern. The grander Archive puts it beyond the camera's loaded chunks,
 			// so the scan reads (and loads) the placed chunks rather than skipping them.
 			lectern = world.getServer().computeOnServer(server -> {
-				ServerLevel level = player(server).level();
+				ServerLevel level = ((ServerLevel) player(server).level());
 				for (int dx = -100; dx <= 100; dx++) {
 					for (int dz = -100; dz <= 100; dz++) {
 						for (int y = level.getMinY() + 1; y < origin.getY() + 10; y++) {
@@ -1362,7 +1362,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		}
 		// All three seal doors are there (the first two were once walled over by their rooms).
 		int seals = world.getServer().computeOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			int n = 0;
 			for (BlockPos pos : BlockPos.betweenClosed(lectern.offset(-96, -8, -96), lectern.offset(96, 8, 96))) {
 				if (level.getBlockState(pos).is(WildercordBlocks.RUNE_SEAL)) {
@@ -1374,7 +1374,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		check(seals >= 60, "the Archive should have all three seal doors (found " + seals + " seal blocks)");
 		// A seal door, from a few steps back.
 		BlockPos seal = world.getServer().computeOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			BlockPos best = null;
 			for (BlockPos pos : BlockPos.betweenClosed(lectern.offset(-96, -8, -96), lectern.offset(96, 8, 96))) {
 				if (level.getBlockState(pos).is(WildercordBlocks.RUNE_SEAL) && (best == null || pos.distSqr(lectern) > best.distSqr(lectern))) {
@@ -1387,7 +1387,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 6000, 0, false, false));
 			if (seal != null) {
-				ServerLevel level = player.level();
+				ServerLevel level = ((ServerLevel) player.level());
 				// The door lies across one axis; stand in front of it on the lectern's side... or the other.
 				boolean alongX = level.getBlockState(seal.east()).is(WildercordBlocks.RUNE_SEAL) || level.getBlockState(seal.west()).is(WildercordBlocks.RUNE_SEAL);
 				for (int side : new int[] {-1, 1}) {
@@ -1452,7 +1452,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			cut(context);
 		}
 		world.getServer().runOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			check(!level.getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40)).isEmpty(), "the Archivist wakes when a player comes near");
 		});
 		// A lectern woken before lecterns remembered their Archivist (awake, knowing none) takes the one about the Archive
@@ -1462,7 +1462,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			WildercordBlocks.ARCHIVE_LECTERN.defaultBlockState().setValue(dev.wildercord.content.ArchiveLecternBlock.AWAKE, true)));
 		context.waitTicks(105);
 		world.getServer().runOnServer(server -> {
-			ServerLevel level = player(server).level();
+			ServerLevel level = ((ServerLevel) player(server).level());
 			List<Archivist> found = level.getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40));
 			boolean adopted = level.getBlockEntity(old) instanceof ArchiveLecternBlockEntity keeper && keeper.keeper() != null
 				&& found.stream().anyMatch(a -> a.getUUID().equals(keeper.keeper()));
@@ -1473,7 +1473,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		// and the rewriting begins at once, untouchable.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
+			ServerLevel level = ((ServerLevel) player.level());
 			List<Archivist> found = level.getEntitiesOfClass(Archivist.class, player.getBoundingBox().inflate(40));
 			if (found.isEmpty()) {
 				return;

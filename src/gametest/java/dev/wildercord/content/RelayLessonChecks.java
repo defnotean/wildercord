@@ -408,7 +408,7 @@ public final class RelayLessonChecks {
 		Object createdStats = null;
 		net.minecraft.server.PlayerAdvancements createdAdvancements = null;
 		try {
-			restored = new ServerPlayer(server, player.level(),
+			restored = new ServerPlayer(server, ((ServerLevel) player.level()),
 				new com.mojang.authlib.GameProfile(probeId, "RelaySaveProbe"), player.clientInformation());
 			// Capture the constructor's unique profile keys and objects before load can replace entity UUID.
 			createdStats = stats.get(probeId);

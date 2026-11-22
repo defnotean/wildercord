@@ -38,7 +38,7 @@ final class NextSignatureNative {
   check(t instanceof Mob,"Husk fixture");var mob=(Mob)t;mob.setNoAi(true);mob.snapTo(x,101,z,0,0);p.level().addFreshEntity(mob);return mob;}
  static ServerPlayer guest(ServerPlayer p,String name,boolean ally){
   check(name.length()<=16,"Native player profile name fits packet limit: "+name);
-  var guest=new FakePlayer(p.getServer(),new com.mojang.authlib.GameProfile(UUID.nameUUIDFromBytes(name.getBytes(java.nio.charset.StandardCharsets.UTF_8)),name)){
+  var guest=new FakePlayer((ServerLevel) p.level(),new com.mojang.authlib.GameProfile(UUID.nameUUIDFromBytes(name.getBytes(java.nio.charset.StandardCharsets.UTF_8)),name)){
    @Override public net.minecraft.world.scores.PlayerTeam getTeam(){return level().getScoreboard().getPlayersTeam(getScoreboardName());}
    @Override public boolean isInvulnerableTo(ServerLevel level,net.minecraft.world.damagesource.DamageSource source){return false;}
   };

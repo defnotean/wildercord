@@ -198,7 +198,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -275,7 +275,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, "verdant", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -314,7 +314,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(20);
@@ -375,7 +375,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 		// In a fight, a whiff counts: strike a husk, then swing past it.
 		on(world, player -> {
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
 		});
 		context.waitTicks(10);

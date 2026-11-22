@@ -130,7 +130,7 @@ public final class RelayInheritedChecks {
 					if(elevated){
 						RelayCircleTest.check(blocks==1||scribe[0].icedCells()>0,"The clear-lane actual Relay Frost reaches the admitted native arena ice mechanic");
 						RelayCircleTest.check(aboveSurface(frost,evidence.highestIce())&&evidence.eyeClear()&&evidence.focusClear()&&evidence.laneClear(),"Both complete rays remain above every newly frozen surface after the real release");
-						RelayCircleTest.check(RelayCircles.clear(owner.level(),owner,wet[0].getBoundingBox().getCenter(),scribe[0].getBoundingBox().getCenter()),"New ice does not hide the nearby Scribe behind the exhausted creature-budget check");
+						RelayCircleTest.check(RelayCircles.clear(((ServerLevel) owner.level()),owner,wet[0].getBoundingBox().getCenter(),scribe[0].getBoundingBox().getCenter()),"New ice does not hide the nearby Scribe behind the exhausted creature-budget check");
 						RelayCircleTest.check(blocks==1?scribe[0].icedCells()==0:owner.level().getBlockState(FROST_CELL).is(Blocks.ICE),"The admitted arena-only cell freezes only when the shared block allowance remains");
 					}else if(scribe[0].icedCells()==0){
 						RelayCircleTest.check(!evidence.eyeClear()||!evidence.focusClear()||!evidence.laneClear()||remainingBlocks(frost)==0,"Ground-level skipped arena icing has observed cover or exhausted allowance (diagnostic, not the positive control)");

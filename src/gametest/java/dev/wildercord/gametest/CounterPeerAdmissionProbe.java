@@ -1,5 +1,6 @@
 package dev.wildercord.gametest;
 
+import net.minecraft.server.level.ServerLevel;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.*;
 import dev.wildercord.gametest.mixin.CounterPeerPendingAccess;
@@ -33,7 +34,7 @@ public final class CounterPeerAdmissionProbe {
         String busy="NOT_REACHED",excise="NOT_REACHED",performed="NOT_REACHED",performMarks="NOT_REACHED",sentMarks="NOT_REACHED",requestMarks="NOT_REACHED";
         Watch(String generation,String armedSha,ServerPlayer actor,String art,AuraGuard.Caught caught,int move,int windup,int recovery){
             this.generation=generation;this.armedSha=armedSha;this.actor=actor;this.art=art;this.caught=caught;
-            this.move=move;this.windup=windup;this.recovery=recovery;level=actor.level();connection=actor.connection;armedTick=level.getGameTime();
+            this.move=move;this.windup=windup;this.recovery=recovery;level=((ServerLevel) actor.level());connection=actor.connection;armedTick=level.getGameTime();
             trace=new CounterPeerAdmissionTrace(generation,actor,level,connection,art);
         }
         public void bindClient(Minecraft mc){

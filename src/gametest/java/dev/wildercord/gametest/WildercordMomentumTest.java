@@ -166,7 +166,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200);
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200);
 			return null;
 		});
 		context.waitTicks(20);
@@ -211,7 +211,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			spawn(player.level(), EntityType.HUSK, at(0, 1.6), 200);
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 1.6), 200);
 			long now = player.level().getGameTime();
 			player.setAttached(Momentum.MOMENTUM, new Momentum.State(80, now + 40, (float) (MomentumRules.EBB / 20.0 * 1.4), 0, 0));
 			return null;
@@ -220,7 +220,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		String struck = on(world, player -> {
 			double before = Momentum.value(player);
 			Mob husk = foes(player).getFirst();
-			husk.doHurtTarget(player.level(), player);
+			husk.doHurtTarget(((ServerLevel) player.level()), player);
 			double after = Momentum.value(player);
 			double lost = before - after;
 			return lost > 10 && lost < 35 ? null : "a husk's blow should knock off a share (" + before + " to " + after + ")";
@@ -259,7 +259,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			reset(context, world);
 			on(world, player -> {
 				setAura(player, "ember", AuraRules.SOVEREIGN);
-				Mob husk = spawn(player.level(), EntityType.HUSK, at(0, 2.0), 300);
+				Mob husk = spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.0), 300);
 				husk.getAttribute(Attributes.ARMOR).setBaseValue(0);
 				setMomentumNow(player, pass == 0 ? 0 : 100);
 				return null;
@@ -282,7 +282,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			steady(spawn(player.level(), EntityType.HUSK, at(0, 2.2), 400));
+			steady(spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 400));
 			setMomentumNow(player, 50);
 			return null;
 		});
@@ -361,7 +361,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			reset(context, world);
 			on(world, player -> {
 				setAura(player, "ember", AuraRules.SOVEREIGN);
-				Mob husk = spawn(player.level(), EntityType.HUSK, at(0, 2.2), 200);
+				Mob husk = spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 200);
 				if (which.equals("mindless")) {
 					husk.setNoAi(true);
 				} else {
@@ -398,7 +398,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.SOVEREIGN);
-			steady(spawn(player.level(), EntityType.HUSK, at(0, 2.2), 600));
+			steady(spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 600));
 			return null;
 		});
 		context.waitTicks(20);
@@ -422,7 +422,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			reset(context, world);
 			on(world, player -> {
 				setAura(player, methods[pass], AuraRules.SOVEREIGN);
-				spawn(player.level(), EntityType.HUSK, at(0, 2.2), 100);
+				spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 100);
 				return null;
 			});
 			context.waitTicks(20);
@@ -463,7 +463,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			spawn(player.level(), EntityType.HUSK, at(0, 2.0), 100);
+			spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.0), 100);
 			return null;
 		});
 		context.waitTicks(10);
@@ -489,7 +489,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
 			// Half a pool, so the aura a finisher gives back has room to land.
 			player.setAttached(AuraAttachments.AURA, Aura.data(player).withAura(60));
-			Mob husk = spawn(player.level(), EntityType.HUSK, at(0, 2.2), 60);
+			Mob husk = spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.2), 60);
 			husk.setHealth(30);
 			// Worn almost through: the next blow breaks it.
 			double worn = Stance.wear(player, husk, StanceRules.pool(StanceRules.Kind.CREATURE, 60, 0) - 2, StanceRules.Source.BLOW);
@@ -567,7 +567,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			reset(context, world);
 			on(world, player -> {
 				setAura(player, method, AuraRules.SOVEREIGN);
-				Mob husk = spawn(player.level(), EntityType.HUSK, at(0, 2.4), 80);
+				Mob husk = spawn(((ServerLevel) player.level()), EntityType.HUSK, at(0, 2.4), 80);
 				husk.setHealth(40);
 				// Its stance broken outright (by the swordsman: it's theirs to finish).
 				double worn = Stance.wear(player, husk, StanceRules.pool(StanceRules.Kind.CREATURE, 80, 0), StanceRules.Source.BLOW);
@@ -585,7 +585,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 				// Struck looking at the foe; then the view swings round to the side, so the foe isn't hidden behind the swordsman.
 				context.waitTicks(1);
 				on(world, player -> {
-					player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), -58.0F, 28.0F, false);
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), -58.0F, 28.0F, false);
 					return null;
 				});
 			}
@@ -607,7 +607,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "stone", AuraRules.SOVEREIGN);
-			Mob guardian = spawn(player.level(), EntityType.ELDER_GUARDIAN, at(0, 3.2), 80);
+			Mob guardian = spawn(((ServerLevel) player.level()), EntityType.ELDER_GUARDIAN, at(0, 3.2), 80);
 			guardian.setNoAi(true);
 			guardian.setHealth(40);
 			return null;
@@ -874,7 +874,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	private static void thirdPerson(ClientGameTestContext context, TestSingleplayerContext world, float yaw, float pitch, boolean hud) {
 		on(world, player -> {
 			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
-			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), yaw, pitch, false);
+			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), yaw, pitch, false);
 			return null;
 		});
 		context.runOnClient(mc -> {
@@ -889,7 +889,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	private static void firstPerson(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
 			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
-			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 8.0F, false);
+			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 8.0F, false);
 			return null;
 		});
 		context.runOnClient(mc -> {
@@ -917,7 +917,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	}
 
 	private static void stand(ServerPlayer player) {
-		player.teleportTo(player.level(), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
+		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.removeAllEffects();
 		player.setHealth(player.getMaxHealth());
@@ -1084,13 +1084,13 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	/** The duel's other player, in front of the swordsman. */
 	private static Rival rival(ServerPlayer player) {
 		if (rival == null || rival.isRemoved() || rival.level() != player.level()) {
-			rival = new Rival(player.level());
+			rival = new Rival(((ServerLevel) player.level()));
 			Vec3 p = at(0, 2.0);
 			rival.snapTo(p.x, p.y, p.z, 180, 0);
 			rival.setYHeadRot(180);
 			// The swordsman's client is told who they are first, or it won't show a player it has never heard of.
 			player.connection.send(net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(rival)));
-			player.level().addNewPlayer(rival);
+			((ServerLevel) player.level()).addNewPlayer(rival);
 		}
 		return rival;
 	}
