@@ -3,6 +3,7 @@
     "steel": "wildercord:block/tide_cleaver_harpoon_steel",
     "brass": "wildercord:block/tide_cleaver_harpoon_brass",
     "teal": "wildercord:block/tide_cleaver_harpoon_teal",
+    "rune": "wildercord:block/tide_cleaver_harpoon_rune",
     "particle": "wildercord:block/tide_cleaver_harpoon_steel"
   },
   "elements": [
@@ -277,6 +278,75 @@
           ]
         }
       }
+    },
+    {
+      "from": [
+        7.4,
+        -10.4,
+        7.1
+      ],
+      "to": [
+        8.6,
+        -9.4,
+        8.9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "south": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "east": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "west": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "up": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "down": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        }
+      },
+      "light_emission": 12
     },
     {
       "from": [
@@ -1232,6 +1302,75 @@
     },
     {
       "from": [
+        7.6,
+        16.2,
+        7.1
+      ],
+      "to": [
+        8.4,
+        23.6,
+        8.9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "south": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "east": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "west": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "up": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        },
+        "down": {
+          "texture": "#rune",
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ]
+        }
+      },
+      "light_emission": 12
+    },
+    {
+      "from": [
         4.6,
         16.0,
         7.5
@@ -1362,6 +1501,142 @@
             0.0,
             11.4,
             0.5
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        4.1,
+        15.0,
+        7.6
+      ],
+      "to": [
+        4.9,
+        17.0,
+        8.4
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            4.1,
+            0.0,
+            4.9,
+            1.0
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            4.1,
+            0.0,
+            4.9,
+            1.0
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            4.1,
+            0.0,
+            4.9,
+            1.0
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            4.1,
+            0.0,
+            4.9,
+            1.0
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            4.1,
+            0.0,
+            4.9,
+            1.0
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            4.1,
+            0.0,
+            4.9,
+            1.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        11.1,
+        15.0,
+        7.6
+      ],
+      "to": [
+        11.9,
+        17.0,
+        8.4
+      ],
+      "faces": {
+        "north": {
+          "texture": "#steel",
+          "uv": [
+            11.1,
+            0.0,
+            11.9,
+            1.0
+          ]
+        },
+        "south": {
+          "texture": "#steel",
+          "uv": [
+            11.1,
+            0.0,
+            11.9,
+            1.0
+          ]
+        },
+        "east": {
+          "texture": "#steel",
+          "uv": [
+            11.1,
+            0.0,
+            11.9,
+            1.0
+          ]
+        },
+        "west": {
+          "texture": "#steel",
+          "uv": [
+            11.1,
+            0.0,
+            11.9,
+            1.0
+          ]
+        },
+        "up": {
+          "texture": "#steel",
+          "uv": [
+            11.1,
+            0.0,
+            11.9,
+            1.0
+          ]
+        },
+        "down": {
+          "texture": "#steel",
+          "uv": [
+            11.1,
+            0.0,
+            11.9,
+            1.0
           ]
         }
       }
