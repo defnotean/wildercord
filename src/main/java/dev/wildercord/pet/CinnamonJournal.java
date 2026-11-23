@@ -3,9 +3,9 @@ package dev.wildercord.pet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
+import dev.wildercord.compat.McItemStackWithSlot;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
@@ -19,7 +19,7 @@ final class CinnamonJournal extends SavedData {
 	static final int MAX_OWNERS = 64;
 	record Care(boolean sitting, boolean bow, boolean grandBow, boolean harness,
 			double scale, long growthUntil, float damage, long recoveryUntil, long immuneUntil,
-			long hitPauseUntil, List<ItemStackWithSlot> saddlebags) {
+			long hitPauseUntil, List<McItemStackWithSlot> saddlebags) {
 		static final Codec<Care> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.BOOL.optionalFieldOf("sitting", false).forGetter(Care::sitting),
 			Codec.BOOL.optionalFieldOf("bow", false).forGetter(Care::bow),
@@ -31,7 +31,7 @@ final class CinnamonJournal extends SavedData {
 			Codec.LONG.optionalFieldOf("recovery_until", 0L).forGetter(Care::recoveryUntil),
 			Codec.LONG.optionalFieldOf("immune_until", 0L).forGetter(Care::immuneUntil),
 			Codec.LONG.optionalFieldOf("hit_pause_until", 0L).forGetter(Care::hitPauseUntil),
-			ItemStackWithSlot.CODEC.listOf().optionalFieldOf("saddlebags", List.of()).forGetter(Care::saddlebags)
+			McItemStackWithSlot.CODEC.listOf().optionalFieldOf("saddlebags", List.of()).forGetter(Care::saddlebags)
 		).apply(i, Care::new));
 		static Care of(CinnamonDog dog) {
 			return new Care(dog.savedSitting(), dog.wearingBow(), dog.wearingGrandBow(), dog.wearingHarness(),

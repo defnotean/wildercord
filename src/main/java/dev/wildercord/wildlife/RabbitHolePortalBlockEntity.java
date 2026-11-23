@@ -1,9 +1,13 @@
 package dev.wildercord.wildlife;
 
 import dev.wildercord.cast.Vfx;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,8 +17,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
@@ -143,8 +145,8 @@ public class RabbitHolePortalBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(ValueInput input) {
-		super.loadAdditional(input);
+	protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inputTag, registries);
 		outcome = WhiteRabbitRules.Outcome.fromId(input.getStringOr("Outcome", WhiteRabbitRules.Outcome.RANDOM_CAVE.id()));
 		returnPortal = input.getBooleanOr("ReturnPortal", false);
 		destinationBuilt = input.getBooleanOr("DestBuilt", false);
@@ -152,8 +154,8 @@ public class RabbitHolePortalBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(ValueOutput output) {
-		super.saveAdditional(output);
+	protected void saveAdditional(CompoundTag outputTag, HolderLookup.Provider registries) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outputTag, registries);
 		output.putString("Outcome", outcome.id());
 		output.putBoolean("ReturnPortal", returnPortal);
 		output.putBoolean("DestBuilt", destinationBuilt);

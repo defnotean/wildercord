@@ -1,9 +1,13 @@
 package dev.wildercord.ocean;
 
 import dev.wildercord.aura.world.BossDamage;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -19,8 +23,6 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -192,8 +194,8 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		dealtDamage = input.getBooleanOr("DealtDamage", false);
 		anchorTicks = input.getIntOr("AnchorTicks", 0);
 		Optional<Boolean> ret = input.read("Returning", com.mojang.serialization.Codec.BOOL);
@@ -201,8 +203,8 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putBoolean("DealtDamage", dealtDamage);
 		output.putInt("AnchorTicks", anchorTicks);
 		output.putBoolean("Returning", isReturning());
