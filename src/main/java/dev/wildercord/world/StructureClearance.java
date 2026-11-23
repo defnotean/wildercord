@@ -182,6 +182,7 @@ public final class StructureClearance {
 		register("wilds_ember_outpost", "wilds_ember_outpost", Domain.NETHER, 32, 12, 2026101507, 24, true);
 		register("wilds_iron_gatehouse", "wilds_iron_gatehouse", Domain.LAND, 40, 14, 2026101504, 24, false);
 		register("wilds_rime_monastery", "wilds_rime_monastery", Domain.LAND, 34, 12, 2026101503, 24, false);
+		register("wilds_sacred_pig_village", "wilds_sacred_pig_village", Domain.LAND, 24, 8, 2026112301, 12, false);
 		register("wilds_sakura_canal_town", "wilds_sakura_canal_town", Domain.LAND, 36, 12, 20261122, 30, false);
 		register("wilds_sakura_castle_town", "wilds_sakura_castle_town", Domain.LAND, 36, 12, 20261124, 30, false);
 		register("wilds_sakura_onsen_village", "wilds_sakura_onsen_village", Domain.LAND, 36, 12, 20261123, 30, false);
