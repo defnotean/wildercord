@@ -93,6 +93,7 @@
       "dev.wildercord.wildlife.WhiteRabbitHoleTest",
       "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest",
       "dev.wildercord.ocean.DeepOceanStructuresTest",
+      "dev.wildercord.ocean.DeepOceanPlacementTest",
       "dev.wildercord.gametest.WildercordFeatureTour"
     ]
   },

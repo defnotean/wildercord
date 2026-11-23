@@ -80,6 +80,21 @@ public final class GametestCompat {
 			chunk, 0, level, structure.value().biomes()::contains);
 	}
 
+	/**
+	 * A real {@link Structure.GenerationContext} backed by the level's actual chunk generator, biome
+	 * source and climate sampler, so a site locator can be exercised against genuine terrain heightmaps
+	 * (the same inputs {@link #generateStructureStart} feeds through {@code Structure.generate}). The
+	 * biome predicate accepts everything; each locator does its own biome eligibility check.
+	 */
+	public static Structure.GenerationContext realStructureContext(ServerLevel level, ChunkPos chunk) {
+		var cs = level.getChunkSource();
+		var gen = cs.getGenerator();
+		var randomState = cs.randomState();
+		var sampler = randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED);
+		return new Structure.GenerationContext(level.registryAccess(), gen, gen.getBiomeSource(), sampler,
+			randomState, level.getStructureTemplateManager(), level.getSeed(), chunk, level, biome -> true);
+	}
+
 	public static Pair<BlockPos, Holder<Biome>> findBiomeHorizontal(BiomeSource source, int x, int y, int z,
 			int radius, int increment, Predicate<Holder<Biome>> target, RandomSource random, boolean findClosest,
 			RandomState randomState) {

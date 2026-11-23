@@ -86,7 +86,7 @@
   "area-regions-worldgen": {
     "description": "Regions and worldgen: Siltcrest wetlands, rootmolt placement and attack cycle, fungal nursery, reed refuge, rainshield, rune-seal doors, every dungeon's wards holding their rooms against a survival player, the forest White Rabbit leading players into Hollow Tree portals, and the 5 Deep Ocean structures.",
     "purpose": "area",
-    "expectedCount": 13,
+    "expectedCount": 14,
     "entries": [
       "dev.wildercord.wildlife.RootmoltEncounterTest",
       "dev.wildercord.wildlife.SiltcrestWaterControlTest",
@@ -100,7 +100,8 @@
       "dev.wildercord.cast.RuneSealDoorTest",
       "dev.wildercord.world.dungeons.DungeonWardSealTest",
       "dev.wildercord.wildlife.WhiteRabbitHoleTest",
-      "dev.wildercord.ocean.DeepOceanStructuresTest"
+      "dev.wildercord.ocean.DeepOceanStructuresTest",
+      "dev.wildercord.ocean.DeepOceanPlacementTest"
     ]
   },
   "area-items-crafting": {
@@ -221,12 +222,13 @@
     ]
   },
   "deep-ocean": {
-    "description": "Deep Ocean Expansion 1:1 native suite: all 9 entities, 3 Brine-Merchant professions, Lumi-Seahorse 3D riding + dash, Pearl-Pup taming + treasure sniff, Singing Moon-Whale song + ambergris, Thalassor 3-phase boss + Sovereign Altar respawn, Abyssal Diving Suit, 3D Harpoon/Glaive/Conch/Lantern, Trench Anvil forging/repair, and all 5 Deep Ocean structures.",
+    "description": "Deep Ocean Expansion 1:1 native suite: all 9 entities, 3 Brine-Merchant professions, Lumi-Seahorse 3D riding + dash, Pearl-Pup taming + treasure sniff, Singing Moon-Whale song + ambergris, Thalassor 3-phase boss + Sovereign Altar respawn, Abyssal Diving Suit, 3D Harpoon/Glaive/Conch/Lantern, Trench Anvil forging/repair, all 5 Deep Ocean structures, and natural deep-ocean placement (sea-1 surface regression).",
     "purpose": "area",
-    "expectedCount": 2,
+    "expectedCount": 3,
     "entries": [
       "dev.wildercord.ocean.DeepOceanEntitiesAndGearTest",
-      "dev.wildercord.ocean.DeepOceanStructuresTest"
+      "dev.wildercord.ocean.DeepOceanStructuresTest",
+      "dev.wildercord.ocean.DeepOceanPlacementTest"
     ]
   },
   "structure-gallery": {
