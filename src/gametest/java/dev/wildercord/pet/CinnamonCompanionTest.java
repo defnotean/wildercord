@@ -5,7 +5,7 @@ import dev.wildercord.party.PartyTestHooks;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
-import net.fabricmc.fabric.impl.event.interaction.FakePlayerPacketListener;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.CameraType;
 import net.minecraft.core.BlockPos;
@@ -60,10 +60,9 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 		return found.getFirst();
 	}
 
-	private static final class PartyMate extends ServerPlayer {
+	private static final class PartyMate extends FakePlayer {
 		PartyMate(ServerLevel level, String name) {
-			super(level.getServer(), level, new GameProfile(UUID.randomUUID(), name), ClientInformation.createDefault());
-			this.connection = new FakePlayerPacketListener(this);
+			super(level, new GameProfile(UUID.randomUUID(), name));
 		}
 
 		@Override
