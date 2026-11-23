@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
@@ -207,7 +207,7 @@ public final class OceanItems {
 
 		ServerDisconnects.register((handler, server) -> removeModifiers(handler.player));
 
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(out -> List.of(
 				ABYSSAL_DIVING_HELM,
 				BATHYSPHERE_CHESTPLATE,

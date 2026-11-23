@@ -1,7 +1,7 @@
 package dev.wildercord.world.sites.oathhold;
 
 import dev.wildercord.Wildercord;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -68,12 +68,12 @@ public final class OathholdContent {
 
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(CITIZEN, OathholdCitizen.createAttributes());
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(output -> {
 				output.accept(CITIZEN_SPAWN_EGG);
 				output.accept(GUILD_REQUEST_BOARD_ITEM);
 			});
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS)
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS)
 			.register(output -> output.accept(CITIZEN_SPAWN_EGG));
 		OathholdLaw.init();
 		OathholdQuests.init();

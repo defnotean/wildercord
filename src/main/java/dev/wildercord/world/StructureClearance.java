@@ -236,8 +236,8 @@ public final class StructureClearance {
 		if (self == null) {
 			return false;
 		}
-		int cx = context.chunkPos().x();
-		int cz = context.chunkPos().z();
+		int cx = context.chunkPos().x;
+		int cz = context.chunkPos().z;
 		int mx = cx * 16 + 8;
 		int mz = cz * 16 + 8;
 
@@ -268,8 +268,8 @@ public final class StructureClearance {
 				for (int drz = -1; drz <= 1; drz++) {
 					ChunkPos oc = other.resolvePlacement().getPotentialStructureChunk(
 						seed, (baseRx + drx) * other.spacing, (baseRz + drz) * other.spacing);
-					int ox = oc.x() * 16 + 8;
-					int oz = oc.z() * 16 + 8;
+					int ox = oc.x * 16 + 8;
+					int oz = oc.z * 16 + 8;
 					if (Math.abs(mx - ox) < req && Math.abs(mz - oz) < req) {
 						int sampleY = other.underground ? caveSampleY : surfaceSampleY;
 						Holder<Biome> biome = McWorldgen.getNoiseBiome(context, ox, sampleY, oz);
@@ -302,8 +302,8 @@ public final class StructureClearance {
 				for (int drz = -1; drz <= 1; drz++) {
 					ChunkPos oc = other.resolvePlacement().getPotentialStructureChunk(
 						seed, (baseRx + drx) * other.spacing, (baseRz + drz) * other.spacing);
-					int ox = oc.x() * 16 + 8;
-					int oz = oc.z() * 16 + 8;
+					int ox = oc.x * 16 + 8;
+					int oz = oc.z * 16 + 8;
 					if (Math.abs(mx - ox) < req && Math.abs(mz - oz) < req) {
 						return Optional.of(other);
 					}

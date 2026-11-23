@@ -37,8 +37,8 @@ public final class SacredPigQuest {
 		UseEntityCallback.EVENT.register((Player player, Level level, InteractionHand hand, Entity entity, EntityHitResult hit) -> {
 			if (level.isClientSide() || hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
 			if (!(player instanceof ServerPlayer sp)) return InteractionResult.PASS;
-			if (!entity.entityTags().contains(PRIEST_TAG)) return InteractionResult.PASS;
-			if (entity.entityTags().contains(DONE_TAG)) {
+			if (!entity.getTags().contains(PRIEST_TAG)) return InteractionResult.PASS;
+			if (entity.getTags().contains(DONE_TAG)) {
 				sp.sendSystemMessage(Component.translatable("message.wildercord.sacred_pig.done").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 				return InteractionResult.SUCCESS;
 			}

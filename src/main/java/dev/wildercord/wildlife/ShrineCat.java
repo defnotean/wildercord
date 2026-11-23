@@ -904,8 +904,8 @@ public class ShrineCat extends TamableAnimal {
 			if (live != null && live.isAlive() && !live.isRemoved()) {
 				if (live.level() != level) {
 					if (sneakRecallAll) {
-						owner.sendSystemMessage(Component.literal("[" + v.displayName + "] Is currently in " + entry.dimension()
-							+ " near (" + entry.lastPos().getX() + ", " + entry.lastPos().getY() + ", " + entry.lastPos().getZ() + ")."));
+						owner.displayClientMessage(Component.literal("[" + v.displayName + "] Is currently in " + entry.dimension()
+							+ " near (" + entry.lastPos().getX() + ", " + entry.lastPos().getY() + ", " + entry.lastPos().getZ() + ")."), false);
 					}
 					continue;
 				}
@@ -927,8 +927,8 @@ public class ShrineCat extends TamableAnimal {
 			}
 			if (!entry.retired()) {
 				if (sneakRecallAll) {
-					owner.sendSystemMessage(Component.literal("[" + v.displayName + "] Is resting in an unloaded chunk near ("
-						+ entry.lastPos().getX() + ", " + entry.lastPos().getY() + ", " + entry.lastPos().getZ() + ")."));
+					owner.displayClientMessage(Component.literal("[" + v.displayName + "] Is resting in an unloaded chunk near ("
+						+ entry.lastPos().getX() + ", " + entry.lastPos().getY() + ", " + entry.lastPos().getZ() + ")."), false);
 				}
 				continue;
 			}
@@ -960,7 +960,7 @@ public class ShrineCat extends TamableAnimal {
 				ShrineCatJournal.registerTamed(server, ownerUuid, cat);
 				level.addFreshEntity(cat);
 				level.playSound(null, cat.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.NEUTRAL, 0.85F, 1.35F);
-				owner.sendSystemMessage(Component.literal("[" + v.displayName + "] Rings her Suzu bell and rejoins your side!"));
+				owner.displayClientMessage(Component.literal("[" + v.displayName + "] Rings her Suzu bell and rejoins your side!"), false);
 				recalled++;
 			}
 		}
