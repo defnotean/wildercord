@@ -6,13 +6,13 @@
       "conditions": {
         "player": [
           {
+            "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
               "minecraft:location": {
                 "structures": "wildercord:ocean_hydrothermal_forge"
               }
-            },
-            "condition": "minecraft:entity_properties"
+            }
           }
         ]
       }

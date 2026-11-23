@@ -9,12 +9,12 @@
           "name": "wildercord:abyssal_iron_plate",
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         }
@@ -28,12 +28,12 @@
           "name": "minecraft:prismarine_shard",
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 3
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         }
@@ -49,8 +49,8 @@
       ],
       "conditions": [
         {
-          "chance": 0.35,
-          "condition": "minecraft:random_chance"
+          "condition": "minecraft:random_chance",
+          "chance": 0.35
         }
       ]
     }

@@ -18,12 +18,12 @@
           "name": "minecraft:copper_ingot",
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              },
-              "function": "minecraft:set_count"
+              }
             }
           ]
         }
@@ -39,8 +39,8 @@
       ],
       "conditions": [
         {
-          "chance": 0.5,
-          "condition": "minecraft:random_chance"
+          "condition": "minecraft:random_chance",
+          "chance": 0.5
         }
       ]
     }
