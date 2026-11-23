@@ -147,7 +147,7 @@ final class ShrineCatJournal extends SavedData {
 	}
 
 	static ShrineCatJournal of(MinecraftServer server) {
-		return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+		return McSavedData.computeIfAbsent(server.overworld().getDataStorage(), TYPE);
 	}
 
 	Entry get(UUID owner, ShrineCatRules.Variant variant) {
