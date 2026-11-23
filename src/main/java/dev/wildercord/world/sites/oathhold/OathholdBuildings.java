@@ -51,6 +51,10 @@ public final class OathholdBuildings {
 	public static void build(OathholdCanvas c, int baseY, int x0, int z0, int x1, int z1, int stories,
 			Block roofStair, Block roofSlab, boolean copperAccent, Theme theme, boolean spawnResident, int seed) {
 		if (!c.intersects(x0 - 3, z0 - 3, x1 + 3, z1 + 3)) return;
+		if (theme != Theme.CITADEL && (x1 - x0 + 1) >= 21 && (z1 - z0 + 1) >= 21 && Math.floorMod(seed, 3) == 0
+				&& OathholdSchematic.placeHouse1(c, baseY, x0, z0, x1, z1, spawnResident, seed)) {
+			return;
+		}
 
 		int roofY = baseY + stories * 5 + 1;
 		int mx = (x0 + x1) / 2;
