@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(Player.class)
 public abstract class PlayerStoneHingeMixin {
 	@WrapMethod(method = "hurt")
-	private boolean wildercord$stoneHingeHit(ServerLevel level, DamageSource source, float amount, Operation<Boolean> original) {
-		return StoneHingeReceipt.hurt(source, () -> original.call(level, source, amount));
+	private boolean wildercord$stoneHingeHit(DamageSource source, float amount, Operation<Boolean> original) {
+		return StoneHingeReceipt.hurt(source, () -> original.call(source, amount));
 	}
 
 	@WrapMethod(method = "actuallyHurt")
-	private void wildercord$stoneHingeWound(ServerLevel level, DamageSource source, float amount, Operation<Void> original) {
-		StoneHingeReceipt.wound((Player) (Object) this, source, () -> original.call(level, source, amount));
+	private void wildercord$stoneHingeWound(DamageSource source, float amount, Operation<Void> original) {
+		StoneHingeReceipt.wound((Player) (Object) this, source, () -> original.call(source, amount));
 	}
 }

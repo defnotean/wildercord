@@ -94,7 +94,7 @@ public class Dunestinger extends WildMonster {
 		targetSelector.addGoal(1, new HurtByTargetGoal(this));
 		// Buried, it feels for footsteps instead (see below); up, it hunts like anything else.
 		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false,
-			(target, level) -> !buried()));
+			(target) -> !buried()));
 	}
 
 	@Override

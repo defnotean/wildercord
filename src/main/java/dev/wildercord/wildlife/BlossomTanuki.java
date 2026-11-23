@@ -77,7 +77,7 @@ public class BlossomTanuki extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 10.0).add(Attributes.MOVEMENT_SPEED, 0.24);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 10.0).add(Attributes.MOVEMENT_SPEED, 0.24);
 	}
 
 	@Override
@@ -273,7 +273,7 @@ public class BlossomTanuki extends Animal {
 			level().broadcastEntityEvent(this, (byte) 18);
 			playSound(SoundEvents.FOX_EAT, 0.6F, 1.3F);
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	@Override

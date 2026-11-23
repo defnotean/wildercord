@@ -254,6 +254,7 @@ public class TimbermaulBear extends EliteMonster {
 
 	@Override
 	protected void customServerAiStep() {
+\t\tServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (!isAlive()) {
 			return;

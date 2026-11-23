@@ -66,7 +66,7 @@ public final class GearLoot {
 
 	public static void init() {
 		Map<ResourceKey<LootTable>, Pool> mobTables = new HashMap<>();
-		BOSSES.forEach((type, pool) -> type.getDefaultLootTable().ifPresent(key -> mobTables.put(key, pool)));
+		BOSSES.forEach((type, pool) -> { ResourceKey<LootTable> key = type.getDefaultLootTable(); if (key != null) mobTables.put(key, pool); });
 		LootTableEvents.MODIFY.register((key, table, source, registries) -> {
 			if (!source.isBuiltin()) {
 				return;

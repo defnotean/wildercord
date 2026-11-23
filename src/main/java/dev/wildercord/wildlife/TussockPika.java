@@ -73,7 +73,7 @@ public class TussockPika extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.3);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.3);
 	}
 
 	@Override
@@ -193,7 +193,7 @@ public class TussockPika extends Animal {
 			level().broadcastEntityEvent(this, (byte) 18);
 			playSound(SoundEvents.RABBIT_AMBIENT, 0.7F, 1.9F);
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	@Override

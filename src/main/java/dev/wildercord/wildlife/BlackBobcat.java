@@ -60,7 +60,7 @@ public class BlackBobcat extends TamableAnimal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 30.0).add(Attributes.MOVEMENT_SPEED, 0.3).add(Attributes.ATTACK_DAMAGE, 6.0)
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 30.0).add(Attributes.MOVEMENT_SPEED, 0.3).add(Attributes.ATTACK_DAMAGE, 6.0)
 			.add(Attributes.FOLLOW_RANGE, 28.0).add(Attributes.STEP_HEIGHT, 1.0);
 	}
 
@@ -118,7 +118,7 @@ public class BlackBobcat extends TamableAnimal {
 						level().broadcastEntityEvent(this, (byte) 6);
 					}
 				}
-				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 			}
 			return super.mobInteract(player, hand);
 		}
@@ -132,7 +132,7 @@ public class BlackBobcat extends TamableAnimal {
 			jumping = false;
 			getNavigation().stop();
 			setTarget(null);
-			return InteractionResult.SUCCESS.withoutItem();
+			return InteractionResult.SUCCESS;
 		}
 		return result;
 	}

@@ -236,7 +236,7 @@ public class GeodeCrawler extends WildMonster {
 
 	/** Whether a blow is the kind that cracks crystal: a mace, a pickaxe, a blast, lightning, or a storm spell. */
 	public static boolean cracking(DamageSource source) {
-		if (source.is(DamageTypes.MACE_SMASH) || source.is(DamageTypeTags.IS_EXPLOSION) || source.is(DamageTypeTags.IS_LIGHTNING)) {
+		if (source.is(DamageTypeTags.IS_EXPLOSION) || source.is(DamageTypeTags.IS_LIGHTNING)) {
 			return true;
 		}
 		if (MonsterMagic.spellLanding() && MonsterMagic.spellElement().equals("storm")) {

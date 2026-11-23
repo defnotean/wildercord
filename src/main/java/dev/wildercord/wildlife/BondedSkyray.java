@@ -171,7 +171,7 @@ public class BondedSkyray extends Skyray {
 	public void die(DamageSource source) {
 		super.die(source);
 		if (level() instanceof ServerLevel level && owner != null && level.getPlayerByUUID(owner) instanceof Player rider) {
-			rider.getCooldowns().addCooldown(new ItemStack(MountContent.SKYRAY_BRIDLE), SkyMountRules.FALLEN_COOLDOWN);
+			rider.getCooldowns().addCooldown(MountContent.SKYRAY_BRIDLE, SkyMountRules.FALLEN_COOLDOWN);
 		}
 	}
 

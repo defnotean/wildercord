@@ -380,7 +380,7 @@ public final class WildercordLoot {
 		Map<ResourceKey<LootTable>, List<Map.Entry<Integer, RuneDef>>> mobTables = new HashMap<>();
 		MOB_DROPS.forEach((type, drop) -> { ResourceKey<LootTable> table = type.getDefaultLootTable(); if (table != null) mobTables.put(table, drop); });
 		Map<ResourceKey<LootTable>, SourcePool> guardianTables = new HashMap<>();
-		SOURCE_GUARDIANS.forEach((type, pool) -> type.getDefaultLootTable().ifPresent(key -> guardianTables.put(key, pool)));
+		SOURCE_GUARDIANS.forEach((type, pool) -> { ResourceKey<LootTable> key = type.getDefaultLootTable(); if (key != null) guardianTables.put(key, pool); });
 
 		LootTableEvents.MODIFY.register((key, table, source, registries) -> {
 			if (!source.isBuiltin()) {

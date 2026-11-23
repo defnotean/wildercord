@@ -50,14 +50,14 @@ public final class McArmor {
 		}
 	}
 
-	/** Creates an armour material holder from the mod's call-site shape. */
+	/** Creates an armour material holder from the mod's call-site shape. A null repair tag repairs with leather. */
 	public static Holder<ArmorMaterial> material(Map<ArmorItem.Type, Integer> defense, int enchantmentValue,
 			float toughness, float knockbackResistance, net.minecraft.tags.TagKey<net.minecraft.world.item.Item> repairTag, ResourceLocation model) {
 		ArmorMaterial material = new ArmorMaterial(
 			defense,
 			enchantmentValue,
 			Holder.direct(net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value()),
-			() -> Ingredient.of(repairTag),
+			() -> repairTag == null ? Ingredient.of(net.minecraft.world.item.Items.LEATHER) : Ingredient.of(repairTag),
 			List.of(new ArmorMaterial.Layer(model)),
 			toughness,
 			knockbackResistance);

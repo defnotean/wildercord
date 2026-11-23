@@ -253,7 +253,7 @@ public class FoxfireKitsune extends WildMonster {
 
 		if (decoy()) {
 			// Any blow scatters a copy.
-			if (!isInvulnerableTo(level, source)) {
+			if (!isInvulnerableTo(source)) {
 				poof(level);
 				discard();
 			}

@@ -86,7 +86,11 @@ public class ResidueBlock extends Block {
 
 	@Override
 	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return kind == Kind.WILDBLOOM ? shape.move(state.getOffset(level, pos)) : shape;
+		if (kind != Kind.WILDBLOOM) {
+			return shape;
+		}
+		net.minecraft.world.phys.Vec3 offset = state.getOffset(level, pos);
+		return shape.move(offset.x, offset.y, offset.z);
 	}
 
 	@Override

@@ -78,7 +78,7 @@ public class FloePenguin extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.2).add(Attributes.TEMPT_RANGE, 10);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.2);
 	}
 
 	@Override
@@ -257,7 +257,7 @@ public class FloePenguin extends Animal {
 			level().broadcastEntityEvent(this, (byte) 18);
 			playSound(SoundEvents.PARROT_EAT, 0.8F, 0.9F);
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	@Override

@@ -20,5 +20,5 @@ public final class BreathmarkBlock extends Block implements EntityBlock {
  @Override public BlockEntity newBlockEntity(BlockPos p,BlockState s) {return new BreathmarkEntity(p,s);}
  @Override protected VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c) {return Block.box(2,0,2,14,13,14);}
  @Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult h) {if(who instanceof net.minecraft.server.level.ServerPlayer player)FungalInvestigation.read(player,p);return InteractionResult.SUCCESS;}
- @Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {return useWithoutItem(s,l,p,who,h);}
+ @Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {return dev.wildercord.compat.McBlocksAndItems.itemResult(useWithoutItem(s,l,p,who,h));}
 }

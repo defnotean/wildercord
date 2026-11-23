@@ -79,7 +79,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 10.0).add(Attributes.MOVEMENT_SPEED, SPEED).add(Attributes.ARMOR, 2.0);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 10.0).add(Attributes.MOVEMENT_SPEED, SPEED).add(Attributes.ARMOR, 2.0);
 	}
 
 	@Override
@@ -260,7 +260,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 			level().broadcastEntityEvent(this, (byte) 18);
 			playSound(SoundEvents.GENERIC_EAT, 0.5F, 1.5F);
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	// ------------------------------------------------------------------ colour, breeding and saving

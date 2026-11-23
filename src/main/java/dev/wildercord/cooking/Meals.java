@@ -72,7 +72,7 @@ public final class Meals {
 	}
 
 	public static Holder<MobEffect> effect(String id) {
-		return BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(id)).orElseThrow(() -> new IllegalStateException("no effect " + id));
+		return BuiltInRegistries.MOB_EFFECT.getHolder(ResourceLocation.parse(id)).orElseThrow(() -> new IllegalStateException("no effect " + id));
 	}
 
 	public static List<MobEffectInstance> effects(CookingRules.Recipe recipe) {

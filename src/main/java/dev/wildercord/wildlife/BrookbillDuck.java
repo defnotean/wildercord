@@ -74,7 +74,7 @@ public class BrookbillDuck extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.22).add(Attributes.TEMPT_RANGE, 10);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.22);
 	}
 
 	@Override
@@ -125,6 +125,7 @@ public class BrookbillDuck extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+\t\tServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		boolean afloat = isInWater();
 		if (DuckRules.shakes(wasAfloat, afloat, onGround())) {
@@ -181,7 +182,7 @@ public class BrookbillDuck extends Animal {
 				level().broadcastEntityEvent(this, (byte) 18);
 				playSound(SoundEvents.PARROT_AMBIENT, 0.6F, 1.8F);
 			}
-			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(player, hand);
 	}

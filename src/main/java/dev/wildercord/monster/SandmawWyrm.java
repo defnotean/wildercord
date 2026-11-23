@@ -188,6 +188,7 @@ public class SandmawWyrm extends EliteMonster {
 
 	@Override
 	protected void customServerAiStep() {
+\t\tServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		if (!isAlive()) {
 			return;
@@ -1251,7 +1252,7 @@ public class SandmawWyrm extends EliteMonster {
 	public boolean hurt(DamageSource source, float damage) {
 		ServerLevel level = (ServerLevel) level();
 
-		float dealt = SandmawRules.hurt(burrowed(), move());
+		float dealt = SandmawRules.hurt(damage, burrowed(), move());
 		if (dealt <= 0 && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 			return false;
 		}

@@ -40,7 +40,7 @@ public abstract class EliteMonster extends WildMonster {
 		setPersistenceRequired();
 		bar.setProgress(getHealth() / getMaxHealth());
 		for (ServerPlayer player : new ArrayList<>(bar.getPlayers())) {
-			if (player.level != level || !player.isAlive() || player.distanceToSqr(this) > BAR_HIDE * BAR_HIDE) {
+			if (player.level() != level || !player.isAlive() || player.distanceToSqr(this) > BAR_HIDE * BAR_HIDE) {
 				bar.removePlayer(player);
 			}
 		}

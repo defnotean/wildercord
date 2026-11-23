@@ -47,7 +47,7 @@ public final class FoxCompanions {
   }
   if(held.isEmpty()) {
    if(!fox.level().isClientSide()) {fox.setAttached(BOND,new Bond(bond.owner(),!bond.sitting()));wake(fox);fox.setSitting(!bond.sitting());fox.getNavigation().stop();fox.setTarget(null);}
-   return InteractionResult.SUCCESS.withoutItem();
+   return InteractionResult.SUCCESS;
   }
   return InteractionResult.PASS;
  }

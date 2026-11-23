@@ -1,6 +1,5 @@
 package dev.wildercord.wildlife;
-
-import net.minecraft.world.InteractionResultHolder;import dev.wildercord.Wildercord;
+import dev.wildercord.Wildercord;
 import dev.wildercord.api.WildercordEvents;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.cast.Casters;
@@ -33,9 +32,20 @@ public final class FungalGarden {
  private FungalGarden() {}
  private static ResourceKey<Block> blockKey(String n) {return ResourceKey.create(Registries.BLOCK,Wildercord.id(n));}
  private static ResourceKey<Item> itemKey(String n) {return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}
- public static final GlowcapBlock GLOWCAP=Registry.register(BuiltInRegistries.BLOCK,blockKey("glowcap"),new GlowcapBlock(BlockBehaviour.Properties.of().durability(32)) {
+ public static final GlowcapBlock GLOWCAP=Registry.register(BuiltInRegistries.BLOCK,blockKey("glowcap"),new GlowcapBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.FUNGUS).lightLevel(s -> s.getValue(GlowcapBlock.AGE)==2?4:0)));
+ public static final FungalNurseryBlock NURSERY=Registry.register(BuiltInRegistries.BLOCK,blockKey("fungal_nursery"),new FungalNurseryBlock(BlockBehaviour.Properties.of().strength(.8F).noOcclusion().sound(SoundType.WOOD)));
+ public static final BreathmarkBlock BREATHMARK=Registry.register(BuiltInRegistries.BLOCK,blockKey("breathmark"),new BreathmarkBlock(BlockBehaviour.Properties.of().strength(-1,3600000).noLootTable().noOcclusion().sound(SoundType.DEEPSLATE)));
+ public static final BlockEntityType<BreathmarkEntity> BREATHMARK_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("breathmark"),FabricBlockEntityTypeBuilder.create(BreathmarkEntity::new,BREATHMARK).build());
+ public static final Item CUTTING=Registry.register(BuiltInRegistries.ITEM,itemKey("glowcap"),new BlockItem(GLOWCAP,new Item.Properties()));
+ public static final Item GILLS=Registry.register(BuiltInRegistries.ITEM,itemKey("dried_glowcap_gills"),new AuraWorld.Lore("dried_glowcap_gills",new Item.Properties()));
+ public static final Item NURSERY_ITEM=Registry.register(BuiltInRegistries.ITEM,itemKey("fungal_nursery"),new BlockItem(NURSERY,new Item.Properties()) {
+  @Override protected boolean placeBlock(BlockPlaceContext c,BlockState state) {boolean ok=super.placeBlock(c,state);if(ok && c.getPlayer() instanceof ServerPlayer p)FungalInvestigation.placed(p);return ok;}
+ });
+ public static final AttachmentType<Long> BREATHER_READY=McAttachments.create(Wildercord.id("cave_breather_ready"),b -> b.initializer(() -> 0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
+ private static long clock(ServerPlayer p) {return p.level().getServer().overworld().getGameTime();}
+ public static final Item BREATHER=Registry.register(BuiltInRegistries.ITEM,itemKey("cave_breather"),new AuraWorld.Lore("cave_breather",new Item.Properties().durability(32)) {
   @Override public void onCraftedBy(ItemStack stack,Level l,Player p) {super.onCraftedBy(stack,l,p);if(p instanceof ServerPlayer sp)FungalInvestigation.crafted(sp);}
-  @Override public InteractionResultHolder<ItemStack> use(Level l,Player p,InteractionHand hand) { ItemStack mcUseStack = p.getItemInHand(hand);
+  @Override public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level l,Player p,InteractionHand hand) { ItemStack mcUseStack = p.getItemInHand(hand);
    if(p.isSpectator() || !p.isAlive() || hand!=InteractionHand.OFF_HAND)return InteractionResultHolder.pass(mcUseStack);
    if(p instanceof ServerPlayer sp) {
     if(!p.hasEffect(net.minecraft.world.effect.MobEffects.POISON) || clock(sp)<sp.getAttachedOrElse(BREATHER_READY,0L)) {p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.fungal.filter_rest"), true);return InteractionResultHolder.success(mcUseStack);}
@@ -43,7 +53,13 @@ public final class FungalGarden {
    }return InteractionResultHolder.success(mcUseStack);
   }
  });
- private static Item journal(String n,String title,int text) {return Registry.register(BuiltInRegistries.ITEM,itemKey(n),new WrittenBookItem(new Item.Properties()));
+ private static Item journal(String n,String title,int text) {return Registry.register(BuiltInRegistries.ITEM,itemKey(n),new WrittenBookItem(new Item.Properties().setId(itemKey(n)).stacksTo(1).component(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT,new net.minecraft.world.item.component.WrittenBookContent(net.minecraft.server.network.Filterable.passThrough(title),"Mara, Belowkeeper",0,java.util.stream.IntStream.rangeClosed(1,3).mapToObj(i -> net.minecraft.server.network.Filterable.<net.minecraft.network.chat.Component>passThrough(net.minecraft.network.chat.Component.translatable("book.wildercord.fungal."+text+"."+i))).toList(),true))));}
+ public static final Item ROOT_NOTES=journal("breathmark_roots","Where the Roots Drink",0),AIR_NOTES=journal("breathmark_air","The Second Breath",1),CONCLUSION=journal("nursery_journal","Three Breathmarks",2);
+ public static void init() {
+  dev.wildercord.compat.McWorldgen.registerFeature("glowcap_patch", new GlowcapFeature());dev.wildercord.compat.McWorldgen.registerFeature("breathmark_site", new BreathmarkFeature());
+  var biomes=BiomeSelectors.includeByKey(Set.of(Biomes.LUSH_CAVES,Biomes.DRIPSTONE_CAVES,dev.wildercord.world.biome.BelowkeeperClimate.HOLLOWS));
+  BiomeModifications.addFeature(biomes,GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("glowcap_patch")));
+  BiomeModifications.addFeature(biomes,GenerationStep.Decoration.VEGETAL_DECORATION,ResourceKey.create(Registries.PLACED_FEATURE,Wildercord.id("breathmark_site")));
   ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,Wildercord.id("wildercord"))).register(o -> List.of(CUTTING,GILLS,NURSERY_ITEM,BREATHER,ROOT_NOTES,AIR_NOTES,CONCLUSION).forEach(o::accept));
   ServerPlayConnectionEvents.JOIN.register((handler,sender,server) -> {var p=handler.player;long left=p.getAttachedOrElse(BREATHER_READY,0L)-clock(p);if(left>0)p.getCooldowns().addCooldown(BREATHER,(int)Math.min(200,left));});
   WildercordEvents.SPELL_HIT.register((caster,targets,point,effects) -> {

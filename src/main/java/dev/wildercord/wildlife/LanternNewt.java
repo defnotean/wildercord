@@ -54,7 +54,7 @@ public final class LanternNewt extends PathfinderMob {
 		};
 		setPathfindingMalus(net.minecraft.world.level.pathfinder.PathType.WATER,0);xpReward=0;
 	}
-	public static AttributeSupplier.Builder attributes() {return createMobAttributes().add(Attributes.MAX_HEALTH,10).add(Attributes.MOVEMENT_SPEED,.22).add(Attributes.FOLLOW_RANGE,12).add(Attributes.TEMPT_RANGE,10).add(Attributes.STEP_HEIGHT,.6);}
+	public static AttributeSupplier.Builder attributes() {return createMobAttributes().add(Attributes.MAX_HEALTH,10).add(Attributes.MOVEMENT_SPEED,.22).add(Attributes.FOLLOW_RANGE,12).add(Attributes.STEP_HEIGHT,.6);}
 	@Override protected PathNavigation createNavigation(Level level) {return new NewtPathNavigation(this,level);}
 	boolean beneathRefuge(BlockPos roof) {return Math.abs(getX()-(roof.getX()+.5))<.28 && Math.abs(getZ()-(roof.getZ()+.5))<.28 && getY()<roof.getY()+.3 && isInWater();}
 	@Override protected int decreaseAirSupply(int air) { return air; } // 1.21.5 makes canBreatheUnderwater final

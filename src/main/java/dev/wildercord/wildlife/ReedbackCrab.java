@@ -81,7 +81,7 @@ public final class ReedbackCrab extends PathfinderMob {
    var delta=getTarget().position().subtract(position()).multiply(1,0,1);if(delta.lengthSqr()>.01)facing=delta.normalize();pose(WARNING,40);sound("warn");
   } else if(distanceToSqr(Vec3.atBottomCenterOf(home))>100)getNavigation().moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,.7);
  }
- @Override public boolean hurt(DamageSource source, float amount) {boolean hit=super.hurt(s,amount);if(hit && s.getEntity() instanceof LivingEntity e) {calmUntil=0;if(pose()==CALM)pose(IDLE,0);if(valid(e))setTarget(e);}return hit;}
+ @Override public boolean hurt(DamageSource s, float amount) {boolean hit=super.hurt(s,amount);if(hit && s.getEntity() instanceof LivingEntity e) {calmUntil=0;if(pose()==CALM)pose(IDLE,0);if(valid(e))setTarget(e);}return hit;}
  private boolean current(ServerLevel l,int action,Vec3 origin,LivingEntity quarry) {
   return isAlive()&&!isRemoved()&&level()==l&&l.getEntity(getUUID())==this
    &&pose()==SWEEP&&epoch==action&&position().equals(origin)&&getTarget()==quarry

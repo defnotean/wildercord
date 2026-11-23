@@ -77,7 +77,7 @@ public class GlowberryDormouse extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.28);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.28);
 	}
 
 	@Override
@@ -236,7 +236,7 @@ public class GlowberryDormouse extends Animal {
 			level().broadcastEntityEvent(this, (byte) 18);
 			playSound(SoundEvents.GENERIC_EAT, 0.4F, 1.8F);
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	@Override

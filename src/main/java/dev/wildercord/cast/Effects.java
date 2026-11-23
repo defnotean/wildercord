@@ -2771,7 +2771,7 @@ public final class Effects {
 			return stack;
 		}
 		out.setCount(Math.min(out.getMaxStackSize(), out.getCount() * stack.getCount()));
-		xp[0] += recipe.get().value().experience() * stack.getCount();
+		xp[0] += recipe.get().value().getExperience() * stack.getCount();
 		return out;
 	}
 

@@ -78,7 +78,7 @@ public class StonecrestPuffin extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.22);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 6.0).add(Attributes.MOVEMENT_SPEED, 0.22);
 	}
 
 	@Override
@@ -390,7 +390,7 @@ public class StonecrestPuffin extends Animal {
 			level().broadcastEntityEvent(this, (byte) 18);
 			playSound(SoundEvents.PARROT_EAT, 0.7F, 0.8F);
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	// ------------------------------------------------------------------ breeding: a puffling

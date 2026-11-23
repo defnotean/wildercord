@@ -87,7 +87,7 @@ public class Strawman extends WildMonster {
 		targetSelector.addGoal(1, new HurtByTargetGoal(this));
 		// It hunts only by night; by day only a blow wakes it.
 		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, false, false,
-			(target, level) -> !(level.isDay() && level.dimensionType().hasSkyLight())));
+			(target) -> !(level().isDay() && level().dimensionType().hasSkyLight())));
 	}
 
 	@Override

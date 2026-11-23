@@ -45,7 +45,7 @@ public final class WildercordNetworking {
 		public static final StreamCodec<RegistryFriendlyByteBuf, EditSpell> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, EditSpell::spell,
 			ByteBufCodecs.stringUtf8(dev.wildercord.spell.Knots.MAX_ID_LENGTH).apply(ByteBufCodecs.list(32)), EditSpell::runes,
-			ByteBufCodecs.LONG, EditSpell::editorSession, ByteBufCodecs.LONG, EditSpell::editorRevision,
+			ByteBufCodecs.VAR_LONG, EditSpell::editorSession, ByteBufCodecs.VAR_LONG, EditSpell::editorRevision,
 			EditSpell::new).cast();
 
 		@Override

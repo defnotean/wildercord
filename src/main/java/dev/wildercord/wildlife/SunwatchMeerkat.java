@@ -70,7 +70,7 @@ public class SunwatchMeerkat extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.3);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.3);
 	}
 
 	@Override
@@ -139,6 +139,7 @@ public class SunwatchMeerkat extends Animal {
 
 	@Override
 	protected void customServerAiStep() {
+\t\tServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		int pose = pose(), left = poseLeft();
 		if (pose == MeerkatRules.HIDE) {
@@ -319,7 +320,7 @@ public class SunwatchMeerkat extends Animal {
 			level().broadcastEntityEvent(this, (byte) 18);
 			playSound(SoundEvents.FOX_EAT, 0.7F, 1.8F);
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	// ------------------------------------------------------------------ breeding: a pup

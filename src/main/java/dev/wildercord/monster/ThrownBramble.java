@@ -25,7 +25,7 @@ public class ThrownBramble extends ThrowableItemProjectile {
 	}
 
 	public ThrownBramble(Level level, LivingEntity thrower, ItemStack stack) {
-		super(MonsterContent.THROWN_BRAMBLE, thrower, level, stack);
+		super(MonsterContent.THROWN_BRAMBLE, thrower, level);
 	}
 
 	@Override

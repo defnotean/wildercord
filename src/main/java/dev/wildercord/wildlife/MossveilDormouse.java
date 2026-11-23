@@ -24,7 +24,7 @@ public final class MossveilDormouse extends TamableAnimal {
  private UUID claimant;private int fed;private long claimUntil,feedReady,filterReady;private boolean operating;private Follow follow;
  public float curl,curlO,sniff,sniffO;
  public MossveilDormouse(EntityType<? extends MossveilDormouse> type,Level l){super(type,l);}
- public static AttributeSupplier.Builder attributes(){return createAnimalAttributes().add(Attributes.MAX_HEALTH,8).add(Attributes.MOVEMENT_SPEED,.23).add(Attributes.FOLLOW_RANGE,16).add(Attributes.STEP_HEIGHT,.6);}
+ public static AttributeSupplier.Builder attributes(){return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH,8).add(Attributes.MOVEMENT_SPEED,.23).add(Attributes.FOLLOW_RANGE,16).add(Attributes.STEP_HEIGHT,.6);}
  @Override protected void defineSynchedData(SynchedEntityData.Builder b){super.defineSynchedData(b);b.define(SNIFF,0);}
  @Override protected void registerGoals(){
   goalSelector.addGoal(0,new FloatGoal(this));goalSelector.addGoal(1,new SitWhenOrderedToGoal(this));
@@ -66,7 +66,7 @@ public final class MossveilDormouse extends TamableAnimal {
     heal(Math.min(2,getMaxHealth()-getHealth()));if(actor(p)&&p.level()==world&&position().equals(body)&&p.position().equals(payer)&&isOwnedBy(p)&&getHealth()>before)voice("nibble");return InteractionResult.SUCCESS;
    }
    if(!held.isEmpty())return InteractionResult.PASS;
-   setOrderedToSit(!isOrderedToSit());getNavigation().stop();setTarget(null);setDeltaMovement(0,getDeltaMovement().y,0);voice(isOrderedToSit()?"curl":"idle");return InteractionResult.SUCCESS.withoutItem();
+   setOrderedToSit(!isOrderedToSit());getNavigation().stop();setTarget(null);setDeltaMovement(0,getDeltaMovement().y,0);voice(isOrderedToSit()?"curl":"idle");return InteractionResult.SUCCESS;
   }finally{operating=false;}
  }
  @Override public boolean isFood(ItemStack s){return false;}

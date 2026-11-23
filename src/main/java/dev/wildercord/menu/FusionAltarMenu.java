@@ -100,7 +100,14 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 				return false;
 			}
 		});
-		addStandardInventorySlots(inventory, INVENTORY_X, INVENTORY_Y);
+		for (int row = 0; row < 3; ++row) {
+			for (int col = 0; col < 9; ++col) {
+				addSlot(new Slot(inventory, col + row * 9 + 9, INVENTORY_X + col * 18, INVENTORY_Y + row * 18));
+			}
+		}
+		for (int col = 0; col < 9; ++col) {
+			addSlot(new Slot(inventory, col, INVENTORY_X + col * 18, INVENTORY_Y + 58));
+		}
 	}
 
 	/** What can go on the altar: a rune (not a Knot), a Blank Rune, or a reagent. Woven runes may be ranked up. */

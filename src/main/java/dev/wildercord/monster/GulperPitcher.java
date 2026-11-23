@@ -71,7 +71,7 @@ public class GulperPitcher extends WildMonster {
 		// Rooted: no walking, no floating off. It only watches for who comes near (see below).
 		targetSelector.addGoal(1, new HurtByTargetGoal(this));
 		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false,
-			(target, level) -> GulperPitcherRules.notices(target.distanceTo(this), target.isShiftKeyDown())));
+			(target) -> GulperPitcherRules.notices(target.distanceTo(this), target.isShiftKeyDown())));
 	}
 
 	@Override

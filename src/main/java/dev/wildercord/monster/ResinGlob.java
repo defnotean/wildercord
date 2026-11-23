@@ -28,7 +28,7 @@ public class ResinGlob extends ThrowableItemProjectile {
 	}
 
 	public ResinGlob(Level level, LivingEntity thrower) {
-		super(MonsterContent.RESIN_GLOB, thrower, level, new ItemStack(Items.SLIME_BALL));
+		super(MonsterContent.RESIN_GLOB, thrower, level);
 	}
 
 	@Override

@@ -163,7 +163,7 @@ public final class VillagerTradeCompat {
 
 	private static ItemStack stack(JsonObject json) {
 		ResourceLocation itemId = ResourceLocation.parse(json.get("id").getAsString());
-		ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(itemId).orElseThrow());
+		ItemStack stack = new ItemStack(java.util.Objects.requireNonNull(BuiltInRegistries.ITEM.get(itemId)));
 		if (json.has("count")) {
 			stack.setCount(json.get("count").getAsInt());
 		}

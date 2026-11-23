@@ -65,7 +65,7 @@ public class ThistleHedgehog extends TamableAnimal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.22);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.22);
 	}
 
 	@Override
@@ -260,7 +260,7 @@ public class ThistleHedgehog extends TamableAnimal {
 				level().broadcastEntityEvent(this, (byte) 18);
 			}
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	@Override

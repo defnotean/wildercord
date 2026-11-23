@@ -113,7 +113,7 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes()
+		return net.minecraft.world.entity.Mob.createMobAttributes()
 			.add(Attributes.MAX_HEALTH, 80.0)
 			.add(Attributes.ARMOR, 10.0)
 			.add(Attributes.MOVEMENT_SPEED, 0.30)
@@ -275,7 +275,7 @@ public class ShrineCat extends TamableAnimal {
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,  SpawnGroupData data) {
 		SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
-		if (reason == MobSpawnType.SPAWN_ITEM_USE || reason == MobSpawnType.COMMAND) {
+		if (reason == MobSpawnType.SPAWN_EGG || reason == MobSpawnType.COMMAND) {
 			if (entityData.get(DATA_VARIANT) == 0 && !hasCustomName()) {
 				setVariant(ShrineCatRules.Variant.byId(random.nextInt(4)));
 			} else {
@@ -304,6 +304,7 @@ public class ShrineCat extends TamableAnimal {
 
 	@Override
 	protected void customServerAiStep() {
+\t\tServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		int role = getRole();
 		if (role == ShrineCatRules.ROLE_GUARDIAN) {
@@ -738,7 +739,7 @@ public class ShrineCat extends TamableAnimal {
 				if (!level().isClientSide()) {
 					player.displayClientMessage(Component.literal(variant().displayName + " is still guarding Floor " + variant().sanctuaryFloor + "!"), true);
 				}
-				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 			}
 			if (bellItem || fishItem) {
 				if (level() instanceof ServerLevel server) {
@@ -747,7 +748,7 @@ public class ShrineCat extends TamableAnimal {
 					}
 					if (!ShrineCatRules.canTame(role, sanctuaryFinished, bellItem)) {
 						player.displayClientMessage(Component.literal("Finish all 4 Sanctuary floors (defeat Kuro on Floor 4) before taming!"), true);
-						return InteractionResult.SUCCESS_SERVER;
+						return InteractionResult.SUCCESS;
 					}
 					if (fishItem) {
 						held.consume(1, player);
@@ -772,7 +773,7 @@ public class ShrineCat extends TamableAnimal {
 					server.playSound(null, blockPosition(), SoundEvents.CAT_PURR, SoundSource.NEUTRAL, 1.0F, 1.2F);
 					player.displayClientMessage(Component.literal("You tamed " + variant().displayName + "! Unique Power: " + variant().tamedPower), false);
 				}
-				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 			}
 		}
 		if (isTame() && isOwnedBy(player)) {
@@ -782,7 +783,7 @@ public class ShrineCat extends TamableAnimal {
 					heal(6.0F);
 					level().broadcastEntityEvent(this, (byte) 7);
 				}
-				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 			}
 			if (!level().isClientSide()) {
 				if (player.isShiftKeyDown()) {
@@ -797,7 +798,7 @@ public class ShrineCat extends TamableAnimal {
 					setTarget(null);
 				}
 			}
-			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(player, hand);
 	}

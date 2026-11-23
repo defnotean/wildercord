@@ -73,7 +73,7 @@ public final class SiltcrestBittern extends PathfinderMob {
   stack.shrink(1);cancel(0);huntReady=clock(level())+APPETITE;pose(PREENING,PREEN);Feels.sound((ServerLevel)level(),position(),"bittern_rustle",.35F,1);return InteractionResult.SUCCESS;}
  @Override public boolean hurt(DamageSource source, float amount){
 		ServerLevel level = (ServerLevel) level();
-float before=getHealth();boolean hit=super.hurt(source,amount);if(hit&&getHealth()<before&&isAlive()&&!isRemoved()&&level()==l)retreat();return hit;}
+float before=getHealth();boolean hit=super.hurt(source,amount);if(hit&&getHealth()<before&&isAlive()&&!isRemoved())retreat();return hit;}
  @Override public void tick(){super.tick();if(level().isClientSide()){coilO=coil;strikeO=strike;preenO=preen;restO=rest;coil=WildlifeRules.approach(coil,pose()==COILING?1:0,.12F);strike=WildlifeRules.approach(strike,pose()==STRIKING?1:0,.65F);preen=WildlifeRules.approach(preen,pose()==PREENING?1:0,.1F);rest=WildlifeRules.approach(rest,pose()==SHELTERING?1:0,.1F);}}
  @Override protected void customServerAiStep() {
 		ServerLevel level = (ServerLevel) level();

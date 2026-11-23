@@ -59,7 +59,9 @@ public class MonsterDropItem extends Item {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F,
 				0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 			if (level instanceof ServerLevel server) {
-				Projectile.spawnProjectileFromRotation(ThrownBramble::new, server, stack, player, 0.0F, 1.3F, 1.0F);
+				ThrownBramble bramble = new ThrownBramble(server, player, stack);
+				bramble.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.3F, 1.0F);
+				server.addFreshEntity(bramble);
 			}
 			player.getCooldowns().addCooldown(stack.getItem(), 10);
 			player.awardStat(Stats.ITEM_USED.get(this));

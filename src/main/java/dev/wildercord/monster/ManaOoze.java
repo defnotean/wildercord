@@ -88,7 +88,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	protected void registerGoals() {
 		super.registerGoals();
 		goalSelector.addGoal(2, cubeAttackGoal());
-		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target, level) -> Math.abs(target.getY() - getY()) <= 4.0));
+		targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target) -> Math.abs(target.getY() - getY()) <= 4.0));
 		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
 	}
 

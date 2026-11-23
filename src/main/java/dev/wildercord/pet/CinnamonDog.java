@@ -101,7 +101,7 @@ public final class CinnamonDog extends TamableAnimal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 20).add(Attributes.MOVEMENT_SPEED, 0.27)
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 20).add(Attributes.MOVEMENT_SPEED, 0.27)
 			.add(Attributes.FOLLOW_RANGE, 32).add(Attributes.ATTACK_DAMAGE, 3);
 	}
 
@@ -422,7 +422,7 @@ public final class CinnamonDog extends TamableAnimal {
 
 	/** Final bite sink: a target admitted by an earlier AI tick can become protected in the meantime. */
 	@Override public boolean doHurtTarget(Entity target) {
-		return target instanceof LivingEntity living && target.level() == level && canAttack(living)
+		return target instanceof LivingEntity living && target.level() == level() && canAttack(living)
 			&& attackReady(getOwner()) && super.doHurtTarget(target);
 	}
 
@@ -533,7 +533,7 @@ public final class CinnamonDog extends TamableAnimal {
 	private boolean countDamage(ServerLevel level, DamageSource source, float amount) {
 		long now = clock();
 		if (!CinnamonCompanion.active(this) || level != level() || !isAlive() || !Float.isFinite(amount) || amount <= 0
-			|| isInvulnerableTo(level, source) || isExhausted() || now < damageImmuneUntil) return false;
+			|| isInvulnerableTo(source) || isExhausted() || now < damageImmuneUntil) return false;
 		long revision = stateRevision;
 		LivingEntity owner = getOwner();
 		// An immortal override must still honor the same protection event as vanilla hurtServer.

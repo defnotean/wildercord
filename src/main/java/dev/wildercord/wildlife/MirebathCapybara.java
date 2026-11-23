@@ -71,7 +71,7 @@ public class MirebathCapybara extends Animal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 14.0).add(Attributes.MOVEMENT_SPEED, 0.2);
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 14.0).add(Attributes.MOVEMENT_SPEED, 0.2);
 	}
 
 	@Override
@@ -246,7 +246,7 @@ public class MirebathCapybara extends Animal {
 				playSound(SoundEvents.ARMADILLO_PEEK, 0.6F, 1.2F);
 				Fx.send(level, ParticleTypes.HEART, getX(), getY() + 1.0, getZ(), 2, 0.2, 0.1, 0.2, 0.01);
 			}
-			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(player, hand);
 	}

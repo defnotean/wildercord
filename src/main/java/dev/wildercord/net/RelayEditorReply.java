@@ -20,8 +20,8 @@ public record RelayEditorReply(int slot, String request, List<String> accepted, 
 	public static final StreamCodec<RegistryFriendlyByteBuf, RelayEditorReply> CODEC = StreamCodec.composite(
 		ByteBufCodecs.VAR_INT, RelayEditorReply::slot, ByteBufCodecs.stringUtf8(64), RelayEditorReply::request,
 		ByteBufCodecs.stringUtf8(dev.wildercord.spell.Knots.MAX_ID_LENGTH).apply(ByteBufCodecs.list(12)), RelayEditorReply::accepted,
-		ByteBufCodecs.stringUtf8(1024), RelayEditorReply::reason, ByteBufCodecs.LONG, RelayEditorReply::session,
-		ByteBufCodecs.LONG, RelayEditorReply::revision, RelayEditorReply::new).cast();
+		ByteBufCodecs.stringUtf8(1024), RelayEditorReply::reason, ByteBufCodecs.VAR_LONG, RelayEditorReply::session,
+		ByteBufCodecs.VAR_LONG, RelayEditorReply::revision, RelayEditorReply::new).cast();
 	@Override public Type<RelayEditorReply> type() { return TYPE; }
 	public static String key(List<String> ids) {
 		try {

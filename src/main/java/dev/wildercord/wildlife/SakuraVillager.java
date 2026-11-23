@@ -134,7 +134,7 @@ public class SakuraVillager extends PathfinderMob {
 	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
 			 SpawnGroupData data) {
 		SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
-		if ((reason == MobSpawnType.SPAWN_ITEM_USE || reason == MobSpawnType.COMMAND) && !hasCustomName()) {
+		if ((reason == MobSpawnType.SPAWN_EGG || reason == MobSpawnType.COMMAND) && !hasCustomName()) {
 			configure(random.nextInt(ROLE_COUNT));
 		}
 		return out;
@@ -203,7 +203,7 @@ public class SakuraVillager extends PathfinderMob {
 				player.displayClientMessage(Component.literal("[" + SHORT_NAMES[r] + "] " + line), false);
 			}
 		}
-		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+		return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS;
 	}
 
 	@Override

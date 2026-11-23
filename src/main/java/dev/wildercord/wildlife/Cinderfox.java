@@ -77,7 +77,7 @@ public class Cinderfox extends TamableAnimal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 14.0).add(Attributes.MOVEMENT_SPEED, 0.31).add(Attributes.ATTACK_DAMAGE, 3.0)
+		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 14.0).add(Attributes.MOVEMENT_SPEED, 0.31).add(Attributes.ATTACK_DAMAGE, 3.0)
 			.add(Attributes.FOLLOW_RANGE, 24.0);
 	}
 
@@ -135,7 +135,7 @@ public class Cinderfox extends TamableAnimal {
 				} else {
 					level().broadcastEntityEvent(this, (byte) 6);
 				}
-				return InteractionResult.SUCCESS_SERVER;
+				return InteractionResult.SUCCESS;
 			}
 			return super.mobInteract(player, hand);
 		}
@@ -159,7 +159,7 @@ public class Cinderfox extends TamableAnimal {
 			jumping = false;
 			getNavigation().stop();
 			setTarget(null);
-			return InteractionResult.SUCCESS.withoutItem();
+			return InteractionResult.SUCCESS;
 		}
 		return result;
 	}

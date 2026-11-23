@@ -80,7 +80,7 @@ public class ScribingDeskBlock extends Block {
 	}
 
 	@Override
-	protected VoxelShape getOcclusionShape(BlockState state) {
+	protected VoxelShape getOcclusionShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
 		return COLLISION;
 	}
 

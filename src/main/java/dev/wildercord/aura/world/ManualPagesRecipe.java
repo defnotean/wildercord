@@ -52,6 +52,11 @@ public final class ManualPagesRecipe implements CraftingRecipe {
 	private final ShapelessRecipe shapeless;
 
 	@Override
+	public boolean canCraftInDimensions(int width, int height) {
+		return shapeless.canCraftInDimensions(width, height);
+	}
+
+	@Override
 	public ItemStack getResultItem(net.minecraft.core.HolderLookup.Provider registries) {
 		return result;
 	}

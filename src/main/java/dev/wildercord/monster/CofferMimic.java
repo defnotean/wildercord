@@ -153,7 +153,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	protected void registerGoals() {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		targetSelector.addGoal(1, new HurtByTargetGoal(this));
-		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target, level) -> !disguised() && !tamed()));
+		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target) -> !disguised() && !tamed()));
 	}
 
 	// ------------------------------------------------------------------ owner
@@ -732,9 +732,9 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	@Override
-	protected void dropEquipment(ServerLevel level) {
-		super.dropEquipment(level);
-		Containers.dropContents(level, this, belly);
+	protected void dropEquipment() {
+		super.dropEquipment();
+		Containers.dropContents((ServerLevel) level(), this, belly);
 	}
 
 	@Override

@@ -56,6 +56,6 @@ public final class WildercordBrewing {
 	}
 
 	private static Holder<Potion> potion(String id) {
-		return BuiltInRegistries.POTION.get(ResourceKey.create(Registries.POTION, ResourceLocation.parse(id)));
+		return BuiltInRegistries.POTION.getHolder(ResourceKey.create(Registries.POTION, ResourceLocation.parse(id))).orElse(null);
 	}
 }
