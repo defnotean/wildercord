@@ -155,7 +155,7 @@ final class CinnamonCompanion {
 		if (stopping || !matches(player) || !player.isAlive() || player.isRemoved() || player.isSpectator()
 			|| Duels.inDuel(player) || DuelistDuels.inDuel(player)
 			|| player.level().getServer().getPlayerList().getPlayer(player.getUUID()) != player
-			|| DungeonWards.warded((ServerLevel) player.level()), player.blockPosition())) return false;
+			|| DungeonWards.warded((ServerLevel) player.level(), player.blockPosition())) return false;
 		if (player.isPassenger() && (dog == null || player.getVehicle() != dog)) return false;
 		var nearby = new java.util.ArrayList<SwordMaster>();
 		player.level().getEntities(EntityTypeTestHolder.MASTERS, player.getBoundingBox().inflate(96), master -> master.distanceToSqr(player) <= 96 * 96, nearby, 17);
@@ -233,7 +233,7 @@ final class CinnamonCompanion {
 		CinnamonDog dog = CinnamonContent.CINNAMON.create(player.level(), EntitySpawnReason.EVENT);
 		if (dog == null) return;
 		dog.bind(player); // Old saves migrate their player-owned sit/bow choices once, here.
-		Vec3 at = CompanionLanding.find((ServerLevel) player.level()), player.position(), dog);
+		Vec3 at = CompanionLanding.find((ServerLevel) player.level(), player.position(), dog);
 		if (at == null || !mayRecall(player) || !player.getUUID().equals(ownerId(dog))
 			|| identity(player, journal.get(player.getUUID())) != CinnamonIdentityRules.Status.NEW) return;
 		dog.snapTo(at.x, at.y, at.z, player.getYRot(), 0);
