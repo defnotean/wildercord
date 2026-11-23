@@ -269,6 +269,13 @@ public final class GametestCompat {
 	 * TestSingleplayerContext#getConnection; before it, waiting for the chunk download
 	 * to settle is what drains the client's inbound queue.
 	 */
+	/**
+	 * 1.21.5 has no camera-distance attribute: that arrived with 1.21.6. Third person sits at vanilla
+	 * 's fixed distance here, so the pull-back the tests ask for is a no-op and the spectacle checks
+	 * run at that distance.
+	 */
+	public static void cameraDistance(ServerPlayer player, double distance) {
+	}
 	public static void awaitClientPackets(TestSingleplayerContext world) {
 		world.getClientWorld().waitForChunksDownload();
 	}
