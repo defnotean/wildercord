@@ -50,26 +50,4 @@ public final class PredatorContent {
 
 	private static Item egg(String name, EntityType<? extends Mob> type) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(name + "_spawn_egg"));
-		return Registry.register(BuiltInRegistries.ITEM, key, dev.wildercord.compat.McSpawnEgg.create(type, new Item.Properties().setId(key)));
-	}
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(FROST_LYNX, FrostLynx.createAttributes());
-		FabricDefaultAttributeRegistry.register(DUNE_COUGAR, DuneCougar.createAttributes());
-		SpawnPlacements.register(FROST_LYNX, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.FROST_LYNX, type, LYNX_GROUND, level, reason, pos, random));
-		SpawnPlacements.register(DUNE_COUGAR, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.DUNE_COUGAR, type, COUGAR_GROUND, level, reason, pos, random));
-		WildlifeSpawns.join(WildlifeRules.FROST_LYNX, FROST_LYNX);
-		WildlifeSpawns.join(WildlifeRules.DUNE_COUGAR, DUNE_COUGAR);
-		FieldGuide.add(new FieldGuide.Entry("wildercord:frost_lynx", FieldGuide.Group.WILDLIFE, 0xB8B4AC));
-		FieldGuide.add(new FieldGuide.Entry("wildercord:dune_cougar", FieldGuide.Group.WILDLIFE, 0xB8864E));
-		for (ResourceKey<CreativeModeTab> tab : List.of(CreativeModeTabs.SPAWN_EGGS,
-			ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))) {
-			ItemGroupEvents.modifyEntriesEvent(tab).register(output -> {
-				output.accept(LYNX_EGG);
-				output.accept(COUGAR_EGG);
-			});
-		}
-	}
-}
+		return Registry.register(BuiltInRegistries.ITEM, key, dev.wildercord.compat.McSpawnEgg.create(type, new Item.Properties()

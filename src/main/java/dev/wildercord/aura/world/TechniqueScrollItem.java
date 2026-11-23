@@ -46,75 +46,7 @@ public class TechniqueScrollItem extends Item {
 
 	private static final ResourceKey<Item> KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("technique_scroll"));
 	public static final Item SCROLL = Registry.register(BuiltInRegistries.ITEM, KEY,
-		new TechniqueScrollItem(new Item.Properties().setId(KEY).stacksTo(16).rarity(Rarity.UNCOMMON)));
-
-	public TechniqueScrollItem(Properties properties) {
-		super(properties);
-	}
-
-	/** A scroll of part {@code partId}. */
-	public static ItemStack of(String partId) {
-		ItemStack stack = new ItemStack(SCROLL);
-		stack.set(PART, partId);
-		return stack;
-	}
-
-	/** The part {@code stack} teaches, if it's a part at all. */
-	public static Optional<String> partOf(ItemStack stack) {
-		String id = stack.getOrDefault(PART, "");
-		return TechniqueRules.family(id).isPresent() ? Optional.of(id) : Optional.empty();
-	}
-
-	@Override
-	public Component getName(ItemStack stack) {
-		return partOf(stack).<Component>map(p -> Component.translatable("item.wildercord.technique_scroll.named", Component.translatable(TechniqueRules.nameKey(p))))
-			.orElseGet(() -> Component.translatable("item.wildercord.technique_scroll"));
-	}
-
-	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
-		ItemStack stack = player.getItemInHand(hand);
-		String part = partOf(stack).orElse(null);
-		if (part == null) {
-			return InteractionResult.FAIL;
-		}
-		if (player instanceof ServerPlayer server) {
-			String why = refusal(server, part);
-			if (why != null) {
-				server.displayClientMessage(Component.translatable(why, Component.translatable(TechniqueRules.nameKey(part))).withColor(0xA89CC8), true);
-				return InteractionResult.FAIL;
-			}
-			if (!Techniques.teach(server, part, "scroll")) {
-				return InteractionResult.FAIL;
-			}
-			stack.consume(1, player);
-		}
-		return InteractionResult.SUCCESS;
-	}
-
-	/** Why {@code player} can't learn {@code part} from a scroll now, as a language key (given the part's name), or null. */
-	static String refusal(ServerPlayer player, String part) {
-		if (!Aura.enabled(player)) {
-			return "message.wildercord.aura.disabled";
-		}
-		if (!Techniques.on(player)) {
-			return "message.wildercord.aura.technique.off";
-		}
-		if (Aura.stage(player) <= dev.wildercord.aura.AuraRules.NONE) {
-			return "message.wildercord.aura.technique.scroll_method";
-		}
-		if (Techniques.learned(player, part)) {
-			return "message.wildercord.aura.technique.scroll_known";
-		}
-		return null;
-	}
-
-	@Override
-	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
-		java.util.function.Consumer<Component> builder = wildercord$lines::add;
-		String part = partOf(stack).orElse(null);
-		if (part == null) {
-			builder.accept(Component.translatable("tooltip.wildercord.technique_scroll.unknown").withStyle(ChatFormatting.DARK_GRAY));
+		new TechniqueScrollItem(new Item.Properties().withStyle(ChatFormatting.DARK_GRAY));
 			return;
 		}
 		TechniqueRules.Family family = TechniqueRules.family(part).orElseThrow();

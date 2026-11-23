@@ -12,7 +12,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +39,7 @@ public class BreathingManualItem extends Item {
 
 	private static final ResourceKey<Item> KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("breathing_manual"));
 	public static final Item MANUAL = Registry.register(BuiltInRegistries.ITEM, KEY,
-		new BreathingManualItem(new Item.Properties().setId(KEY).stacksTo(16).rarity(Rarity.UNCOMMON)));
+		new BreathingManualItem(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
 
 	public BreathingManualItem(Properties properties) {
 		super(properties);
@@ -63,24 +63,24 @@ public class BreathingManualItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		BreathingMethod method = methodOf(stack).orElse(null);
 		if (method == null) {
-			return InteractionResult.FAIL;
+			return InteractionResultHolder.fail(stack);
 		}
 		if (player instanceof ServerPlayer server) {
 			if (!AuraMethods.learn(server, method, "manual", false)) {
-				return InteractionResult.FAIL;
+				return InteractionResultHolder.fail(stack);
 			}
 			stack.consume(1, player);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResultHolder.success(stack);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> wildercord$lines,TooltipFlag flag) {
-		java.util.function.Consumer<Component> builder = wildercord$lines::add;
+	public void appendHoverText(ItemStack stack,TooltipContext context,List<Component> lines,TooltipFlag flag) {
+		Consumer<Component> builder = lines::add;
 		BreathingMethod method = methodOf(stack).orElse(null);
 		if (method == null) {
 			builder.accept(Component.translatable("tooltip.wildercord.breathing_manual.unknown").withStyle(ChatFormatting.DARK_GRAY));

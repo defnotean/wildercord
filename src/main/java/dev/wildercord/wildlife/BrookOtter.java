@@ -376,7 +376,7 @@ public class BrookOtter extends Animal {
 			default -> new ItemStack(Items.GOLD_NUGGET);
 		};
 		getLookControl().setLookAt(player, 30, 30);
-		spawnAtLocation(level, gift);
+		spawnAtLocation(gift);
 		playSound(SoundEvents.FOX_SPIT, 0.6F, 1.6F);
 		level.broadcastEntityEvent(this, (byte) 18);
 	}

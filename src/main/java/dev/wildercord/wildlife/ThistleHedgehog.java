@@ -194,7 +194,7 @@ public class ThistleHedgehog extends TamableAnimal {
 		if (random.nextDouble() >= HedgehogRules.GIFT_CHANCE) {
 			return;
 		}
-		spawnAtLocation(level, new ItemStack(GIFTS[HedgehogRules.gift(random.nextDouble())]));
+		spawnAtLocation(new ItemStack(GIFTS[HedgehogRules.gift(random.nextDouble())]));
 		level.sendParticles(ParticleTypes.HAPPY_VILLAGER, getX(), getY() + 0.5, getZ(), 6, 0.3, 0.2, 0.3, 0);
 		playSound(SoundEvents.FOX_SNIFF, 0.8F, 1.7F);
 	}

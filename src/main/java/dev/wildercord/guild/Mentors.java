@@ -169,7 +169,7 @@ public final class Mentors {
 
 	private static void give(ServerPlayer player, int crystals) {
 		ItemStack stack = new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, crystals);
-		if (!player.getInventory().add(stack)) player.spawnAtLocation((ServerLevel) player.level(), stack);
+		if (!player.getInventory().add(stack)) player.spawnAtLocation(stack);
 	}
 
 	public static Ledger ledger(MinecraftServer server) {

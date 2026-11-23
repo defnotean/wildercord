@@ -54,31 +54,7 @@ public final class RooksRainshield {
  public static final AttachmentType<Long> READY=McAttachments.create(Wildercord.id("rainshield_ready"),b->b.initializer(()->0L).persistent(Codec.LONG).copyOnDeath());
  private static ResourceKey<Item> key(){return ResourceKey.create(Registries.ITEM,Wildercord.id("rooks_rainshield"));}
  // The final pivot point is retained: a draw requires at least five durability, so wear cannot break ownership during callbacks.
- public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,key(),new AuraWorld.Lore("rooks_rainshield",new Item.Properties().setId(key()).durability(65).rarity(Rarity.RARE)){
-  @Override public int getUseDuration(ItemStack stack,LivingEntity e){return PREP+WINDOW+1;}
-  @Override public UseAnim getUseAnimation(ItemStack stack){return UseAnim.BLOCK;}
-  @Override public InteractionResult interactLivingEntity(ItemStack stack,Player user,LivingEntity target,InteractionHand h){
-   if(!(user instanceof ServerPlayer p))return InteractionResult.SUCCESS;
-   if(!(target instanceof ServerPlayer r)||p==r||!pair(p,r)||!stack.is(ITEM)||p.getItemInHand(h)!=stack||p.getAttached(FAN)!=null||p.getAttached(COVER)!=null||r.getAttached(COVER)!=null)return InteractionResult.FAIL;
-   var selection=p.getAttached(SELECT);
-   if(selection!=null&&selection.level==p.level()&&selection.recipient.equals(r.getUUID())&&selection.recipientBody==r&&selection.held==stack&&selection.hand==h&&now(p)<=selection.until&&selection.consented&&r.isShiftKeyDown())return use(p.level(),p,h);
-   p.setAttached(SELECT,new Selection(p,r,stack,h));r.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.rainshield.offer",p.getDisplayName()), true);return InteractionResult.SUCCESS;
-  }
-  @Override public InteractionResult use(Level l,Player user,InteractionHand h){
-   if(!(user instanceof ServerPlayer p)){if(user.isAlive()&&!user.isSpectator()){user.startUsingItem(h);return InteractionResult.CONSUME;}return InteractionResult.FAIL;}
-   var drawn=p.getAttached(DRAW);if(drawn!=null&&(drawn.level()!=p.level()||drawn.held()!=p.getItemInHand(drawn.hand())))p.removeAttached(DRAW);
-   if(l!=p.level()||p.getAttached(DRAW)!=null||p.isUsingItem()||!actor(p)||!p.getItemInHand(h).is(ITEM)||p.getAttached(FAN)!=null||p.getAttached(COVER)!=null||now(p)<p.getAttachedOrElse(READY,0L)||p.getItemInHand(h).getMaxDamage()-p.getItemInHand(h).getDamageValue()<=WEAR)return InteractionResult.FAIL;
-   var selection=p.getAttached(SELECT);ServerPlayer r=p;
-   if(selection!=null){if(now(p)>selection.until()){p.removeAttached(SELECT);selection=null;}else{if(selection.level()!=p.level()||p.getItemInHand(h)!=selection.held||h!=selection.hand||!(p.serverLevel().getEntity(selection.recipient()) instanceof ServerPlayer selected)||selected!=selection.recipientBody||!pair(p,selected)||!selection.consented||!selected.isShiftKeyDown())return InteractionResult.FAIL;r=selected;}}
-   if(!pair(p,r)||r.getAttached(COVER)!=null||now(p)<r.getAttachedOrElse(READY,0L))return InteractionResult.FAIL;
-   long generation=p.getAttachedOrElse(GENERATION,0L);if(generation==Long.MAX_VALUE)return InteractionResult.FAIL;var fan=new Fan(p,r,h,generation+1);if(fan.normal.lengthSqr()<.9||!front(fan))return InteractionResult.FAIL;
-   p.removeAttached(SELECT);p.setAttached(GENERATION,fan.generation);p.setAttached(DRAW,new Draw(((ServerLevel) p.level()),fan.held,h,fan.nonce));p.setAttached(FAN,fan);r.setAttached(COVER,fan);p.startUsingItem(h);RainshieldFx.send(p,r,fan.normal,0,fan.nonce,fan.generation);Feels.sound(((ServerLevel) p.level()),p.position(),"rainshield_pivot",.3F,1);return InteractionResult.CONSUME;
-  }
-  @Override public ItemStack finishUsingItem(ItemStack stack,Level l,LivingEntity e){if(e instanceof ServerPlayer p){var f=p.getAttached(FAN);if(f!=null&&f.level==l&&f.held==stack&&p.isUsingItem()&&p.getUseItem()==stack&&p.getUseItemRemainingTicks()==0)clear(f,true);}return stack;}
-  @Override public boolean releaseUsing(ItemStack stack,Level l,LivingEntity e,int left){if(e instanceof ServerPlayer p){var f=p.getAttached(FAN);if(f!=null&&f.level==l&&f.held==stack&&p.isUsingItem()&&p.getUseItem()==stack&&left==p.getUseItemRemainingTicks()){var d=p.getAttached(DRAW);if(d!=null&&d.nonce().equals(f.nonce))p.removeAttached(DRAW);clear(f,false);}}return false;}
- });
- private static long now(ServerPlayer p){return p.level().getServer().overworld().getGameTime();}
- private static boolean actor(ServerPlayer p){return p.isAlive()&&!p.isRemoved()&&p.gameMode.getGameModeForPlayer()==GameType.SURVIVAL&&!p.isPassenger()&&!p.isInWater()&&p.onGround()&&p.level().hasChunkAt(p.blockPosition())&&p.serverLevel().getEntity(p.getUUID())==p&&p.level().getServer().getPlayerList().getPlayer(p.getUUID())==p;}
+ public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,key(),new AuraWorld.Lore("rooks_rainshield",new Item.Properties()==p&&p.level().getServer().getPlayerList().getPlayer(p.getUUID())==p;}
  private static boolean pair(ServerPlayer p,ServerPlayer r){return actor(p)&&actor(r)&&p.level()==r.level()&&(p==r||p.getTeam()!=null&&p.isAlliedTo(r))&&p.distanceToSqr(r)<=RANGE_SQR&&loadedSpan(p,r)&&p.hasLineOfSight(r);}
  private static boolean loadedSpan(ServerPlayer p,ServerPlayer r){var a=p.getBoundingBox();var b=r.getBoundingBox();int minX=net.minecraft.core.BlockPos.containing(Math.min(a.minX,b.minX),0,0).getX()>>4,maxX=net.minecraft.core.BlockPos.containing(Math.max(a.maxX,b.maxX),0,0).getX()>>4,minZ=net.minecraft.core.BlockPos.containing(0,0,Math.min(a.minZ,b.minZ)).getZ()>>4,maxZ=net.minecraft.core.BlockPos.containing(0,0,Math.max(a.maxZ,b.maxZ)).getZ()>>4;if(maxX-minX>1||maxZ-minZ>1)return false;for(int x=minX;x<=maxX;x++)for(int z=minZ;z<=maxZ;z++)if(!p.level().hasChunkAt(new net.minecraft.core.BlockPos(x<<4,p.blockPosition().getY(),z<<4)))return false;return true;}
  private static boolean front(Fan f){var d=f.recipient.position().subtract(f.carrier.position()).multiply(1,0,1);return f.carrier==f.recipient||d.lengthSqr()>.04&&d.normalize().dot(f.normal)>=.5;}

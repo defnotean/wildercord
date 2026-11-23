@@ -33,18 +33,4 @@ public final class PikaContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("tussock_pika_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(TUSSOCK_PIKA, new Item.Properties().setId(EGG_KEY)));
-
-	/** What a tussock pika may stand on to spawn (written by tools/pika_art.py). */
-	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/tussock_pika"));
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(TUSSOCK_PIKA, TussockPika.createAttributes());
-		SpawnPlacements.register(TUSSOCK_PIKA, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.TUSSOCK_PIKA, type, GROUND, level, reason, pos, random));
-		WildlifeSpawns.join(WildlifeRules.TUSSOCK_PIKA, TUSSOCK_PIKA);
-		FieldGuide.add(new FieldGuide.Entry("wildercord:tussock_pika", FieldGuide.Group.WILDLIFE, 0x9C8A70));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
-		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
-	}
-}
+		dev.wildercord.compat.McSpawnEgg.create(TUSSOCK_PIKA, new Item.Properties()

@@ -33,18 +33,4 @@ public final class DormouseContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("glowberry_dormouse_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(GLOWBERRY_DORMOUSE, new Item.Properties().setId(EGG_KEY)));
-
-	/** What a glowberry dormouse may stand on to spawn (written by tools/dormouse_art.py). */
-	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/glowberry_dormouse"));
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(GLOWBERRY_DORMOUSE, GlowberryDormouse.createAttributes());
-		SpawnPlacements.register(GLOWBERRY_DORMOUSE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-			(type, level, reason, pos, random) -> WildlifeSpawns.cave(WildlifeRules.GLOWBERRY_DORMOUSE, type, GROUND, level, reason, pos, random));
-		WildlifeSpawns.join(WildlifeRules.GLOWBERRY_DORMOUSE, GLOWBERRY_DORMOUSE);
-		FieldGuide.add(new FieldGuide.Entry("wildercord:glowberry_dormouse", FieldGuide.Group.WILDLIFE, 0xE8A43C));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
-		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
-	}
-}
+		dev.wildercord.compat.McSpawnEgg.create(GLOWBERRY_DORMOUSE, new Item.Properties()

@@ -31,22 +31,7 @@ public final class RootmoltContent {
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("rootmolt_strider"));
  public static final EntityType<RootmoltStrider> STRIDER=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(RootmoltStrider::new,MobCategory.MONSTER).sized(1.05F,.8F).eyeHeight(.48F).clientTrackingRange(8).build(KEY));
  private static final ResourceKey<Item> EGG_KEY=ResourceKey.create(Registries.ITEM,Wildercord.id("rootmolt_strider_spawn_egg"));
- public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(STRIDER, new Item.Properties().setId(EGG_KEY)));
- @FunctionalInterface public interface RootResistance {boolean resist(LivingEntity victim,RootmoltStrider source);}
- /** Providers must admit and spend their finite equipment preparation atomically, after actual contact. */
- public static final Event<RootResistance> ROOT_RESISTANCE=EventFactory.createArrayBacked(RootResistance.class,callbacks -> (victim,source) -> {for(var callback:callbacks){if(!contact(victim,source))return false;if(callback.resist(victim,source))return true;}return false;});
- private static boolean contact(LivingEntity victim,RootmoltStrider source) {return victim.isAlive() && !victim.isRemoved() && source.isAlive() && !source.isRemoved() && victim.level()==source.level() && source.pose()==RootmoltStrider.RAKING && source.getTarget()==victim && source.distanceToSqr(victim)<16 && source.hasLineOfSight(victim) && source.onLine(victim.position()) && victim.getAttachedOrElse(GRAB_OWNER,NO_OWNER).equals(NO_OWNER) && !(victim instanceof net.minecraft.world.entity.player.Player p && (p.isCreative() || p.isSpectator()));}
- static boolean resistRoot(LivingEntity victim,RootmoltStrider source) {return contact(victim,source) && ROOT_RESISTANCE.invoker().resist(victim,source);}
- private static boolean observer(ServerPlayer p,RootmoltStrider source) {return p.isAlive() && !p.isSpectator() && !p.isCreative() && p.level()==source.level() && p.distanceToSqr(source)<=36 && source.hasLineOfSight(p);}
- static void observedMeal(RootmoltStrider source,BlockPos cap) {if(!(source.level() instanceof ServerLevel l))return;for(var p:l.getEntitiesOfClass(ServerPlayer.class,source.getBoundingBox().inflate(6),p -> observer(p,source)))FungalInvestigation.remember(p,"field:rootmolt_meal");}
- static void countered(ServerPlayer p,RootmoltStrider source) {if(observer(p,source) && FungalInvestigation.knows(p,"field:rootmolt_meal"))FungalInvestigation.remember(p,"field:rootmolt_counter");}
- static final int ALARM_INSPECT=32;
- /** A full small pool permits deterministic ordering; a truncated pool never biases the receivers. */
- static List<SporebackSnail> alarmCandidates(RootmoltStrider source) {
-  if(!(source.level() instanceof ServerLevel l))return List.of();
-  var nearby=new ArrayList<SporebackSnail>(ALARM_INSPECT+1);
-  // Include hidden/dead candidates before admission so rejected prefixes cannot defeat the cap.
-  l.getEntities(EntityTypeTest.<Entity,SporebackSnail>forClass(SporebackSnail.class),source.getBoundingBox().inflate(4),e -> true,nearby,ALARM_INSPECT+1);
+ public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(STRIDER, new Item.Properties(),source.getBoundingBox().inflate(4),e -> true,nearby,ALARM_INSPECT+1);
   if(nearby.size()>ALARM_INSPECT)return List.of();
   nearby.removeIf(e -> !e.isAlive() || e.isRemoved() || e.pose()==2 || source.distanceToSqr(e)>16);
   nearby.sort(Comparator.<SporebackSnail>comparingDouble(source::distanceToSqr).thenComparing(e -> e.getUUID().toString()));

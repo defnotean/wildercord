@@ -192,7 +192,7 @@ public class SakuraVillager extends PathfinderMob {
 				held.consume(1, player);
 				ItemStack reward = emeraldReward(r);
 				if (!player.getInventory().add(reward)) {
-					spawnAtLocation((ServerLevel) level(), reward);
+					spawnAtLocation(reward);
 				}
 				level().playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL, 0.9F, 1.35F);
 				player.displayClientMessage(Component.literal("[" + SHORT_NAMES[r] + "] Please take this gift with our blessings."), false);

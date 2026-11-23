@@ -114,12 +114,4 @@ public final class WildercordItems {
 
 	private static <T extends Item> T register(String path, Function<Item.Properties, T> factory, Item.Properties properties) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(path));
-		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(properties.setId(key)));
-	}
-
-	public static CordTier tierOf(ItemStack stack) {
-		return stack.getItem() instanceof CordItem cord ? cord.tier : null;
-	}
-
-	public static void init() {}
-}
+		return Registry.register(BuiltInRegistries.ITEM, key, factory.apply(properties

@@ -33,8 +33,4 @@ public final class EventContent {
 
 	private static FallenStarBlock register(String path, BlockBehaviour.Properties properties) {
 		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Wildercord.id(path));
-		return Registry.register(BuiltInRegistries.BLOCK, key, new FallenStarBlock(properties.setId(key)));
-	}
-
-	public static void init() {}
-}
+		return Registry.register(BuiltInRegistries.BLOCK, key, new FallenStarBlock(properties

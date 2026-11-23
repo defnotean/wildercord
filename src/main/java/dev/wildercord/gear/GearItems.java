@@ -28,19 +28,4 @@ public final class GearItems {
 				case GREATER_STAFF -> Rarity.EPIC;
 			};
 			ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(def.path()));
-			CastingGearItem item = new CastingGearItem(def, new Item.Properties().stacksTo(1).rarity(rarity).setId(key));
-			BY_PATH.put(def.path(), Registry.register(BuiltInRegistries.ITEM, key, item));
-		}
-	}
-
-	/** Every gear item, in {@link GearDef} order (the tome, the foci, the staffs, the greater staffs). */
-	public static List<CastingGearItem> all() {
-		return Collections.unmodifiableList(new ArrayList<>(BY_PATH.values()));
-	}
-
-	public static CastingGearItem get(GearDef def) {
-		return BY_PATH.get(def.path());
-	}
-
-	public static void init() {}
-}
+			CastingGearItem item = new CastingGearItem(def, new Item.Properties().stacksTo(1).rarity(rarity)

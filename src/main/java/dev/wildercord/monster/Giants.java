@@ -66,66 +66,7 @@ public final class Giants {
 
 	private static Item heart() {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id("giant_heart"));
-		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key).rarity(Rarity.RARE)));
-	}
-
-	/** The giants loaded right now, each with its bar. */
-	private static final Map<UUID, Tracked> GIANTS = new HashMap<>();
-
-	private record Tracked(Mob mob, ServerBossEvent bar) {}
-
-	public static void init() {
-		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			if (server.getTickCount() % GiantRules.CHECK_TICKS == 0 && server.getTickCount() > 0) check(server);
-			tick(server);
-		});
-		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity instanceof Mob mob && is(mob)) track(mob);
-		});
-		ServerEntityEvents.ENTITY_UNLOAD.register((entity, level) -> forget(entity.getUUID()));
-		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-			if (entity instanceof Mob mob && is(mob) && mob.level() instanceof ServerLevel level) fall(level, mob);
-		});
-		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
-			.register(output -> output.accept(GIANT_HEART));
-	}
-
-	public static boolean is(Mob mob) {
-		return mob.getTags().contains(TAG);
-	}
-
-	// ------------------------------------------------------------------ waking
-
-	private static void check(MinecraftServer server) {
-		ServerLevel level = server.overworld();
-		if (level.getDifficulty() == Difficulty.PEACEFUL) return;
-		RandomSource random = level.getRandom();
-		if (random.nextDouble() >= GiantRules.CHANCE) return;
-		List<ServerPlayer> players = level.players().stream().filter(p -> p.isAlive() && !p.isSpectator()).toList();
-		if (players.isEmpty()) return;
-		wake(level, players.get(random.nextInt(players.size())));
-	}
-
-	/** Wakes a giant somewhere near {@code player}; returns it, or null with nowhere to stand or another giant close by. */
-	public static  Mob wake(ServerLevel level, ServerPlayer player) {
-		double apart = GiantRules.APART * GiantRules.APART;
-		for (Tracked giant : GIANTS.values()) {
-			if (giant.mob().level() == level && giant.mob().distanceToSqr(player) < apart) return null;
-		}
-		RandomSource random = level.getRandom();
-		for (int attempt = 0; attempt < 12; attempt++) {
-			double angle = random.nextDouble() * Math.PI * 2;
-			double distance = GiantRules.WAKE_NEAR + random.nextDouble() * (GiantRules.WAKE_FAR - GiantRules.WAKE_NEAR);
-			BlockPos column = BlockPos.containing(player.getX() + Math.cos(angle) * distance, player.getY(), player.getZ() + Math.sin(angle) * distance);
-			if (!level.isPositionEntityTicking(column)) continue;
-			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
-			if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
-			var biome = level.getBiome(ground).value();
-			GiantRules.Kind kind = GiantRules.kind(biome.getBaseTemperature(), biome.coldEnoughToSnow(ground, level.getSeaLevel()));
-			int threat = Math.max(GiantRules.THREAT_MIN, TemperingRules.threat(Heart.circles(player), Aura.stage(player)));
-			Mob giant = make(level, kind, new Vec3(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5), threat, false);
-			if (giant == null) return null;
-			if (!level.noCollision(giant)) continue;
+		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties()) continue;
 			level.addFreshEntity(giant);
 			level.playSound(null, giant.blockPosition(), SoundEvents.RAVAGER_ROAR, SoundSource.HOSTILE, 4.0F, 0.5F);
 			Direction way = Direction.getNearest(giant.getX() - player.getX(), 0, giant.getZ() - player.getZ());
@@ -250,9 +191,9 @@ public final class Giants {
 
 	/** It falls: it drops its heart, Aura Shards, and a Mana Crystal, and everyone near is told. */
 	private static void fall(ServerLevel level, Mob mob) {
-		mob.spawnAtLocation(level, new ItemStack(GIANT_HEART, GiantRules.hearts(level.getRandom().nextDouble())));
-		mob.spawnAtLocation(level, new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
-		mob.spawnAtLocation(level, new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, 1));
+		mob.spawnAtLocation(new ItemStack(GIANT_HEART, GiantRules.hearts(level.getRandom().nextDouble())));
+		mob.spawnAtLocation(new ItemStack(dev.wildercord.aura.world.AuraWorld.AURA_SHARD, 2));
+		mob.spawnAtLocation(new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL, 1));
 		net.minecraft.world.entity.ExperienceOrb.award(level, mob.position(), 150);
 		Component message = Component.translatable("message.wildercord.giant.falls", mob.getDisplayName()).withStyle(ChatFormatting.GOLD);
 		double range = GiantRules.BAR_RANGE * GiantRules.BAR_RANGE;

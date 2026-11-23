@@ -60,63 +60,7 @@ public final class ShrineCatContent {
 	public static final Item CAT_BELL_CHARM = Registry.register(
 		BuiltInRegistries.ITEM,
 		CAT_BELL_KEY,
-		new CatBellCharmItem(new Item.Properties().setId(CAT_BELL_KEY).stacksTo(16).rarity(Rarity.UNCOMMON))
-	);
-
-	private static final ResourceKey<Item> SHRINE_CAT_EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("shrine_cat_spawn_egg"));
-	public static final Item SHRINE_CAT_EGG = Registry.register(
-		BuiltInRegistries.ITEM,
-		SHRINE_CAT_EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(SHRINE_CAT, new Item.Properties().setId(SHRINE_CAT_EGG_KEY))
-	);
-
-	private static final ResourceKey<Item> SAKURA_VILLAGER_EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("sakura_villager_spawn_egg"));
-	public static final Item SAKURA_VILLAGER_EGG = Registry.register(
-		BuiltInRegistries.ITEM,
-		SAKURA_VILLAGER_EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(SAKURA_VILLAGER, new Item.Properties().setId(SAKURA_VILLAGER_EGG_KEY))
-	);
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(SHRINE_CAT, ShrineCat.createAttributes());
-		FabricDefaultAttributeRegistry.register(SAKURA_VILLAGER, SakuraVillager.createAttributes());
-		FieldGuide.add(new FieldGuide.Entry("wildercord:shrine_cat", FieldGuide.Group.WILDLIFE, 0xE6A15C));
-		FieldGuide.add(new FieldGuide.Entry("wildercord:sakura_villager", FieldGuide.Group.WANDERER, 0xF2B8C6));
-		ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"));
-		ItemGroupEvents.modifyEntriesEvent(tab).register(output -> {
-			output.accept(CAT_BELL_CHARM);
-			output.accept(SHRINE_CAT_EGG);
-			output.accept(SAKURA_VILLAGER_EGG);
-		});
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> {
-			output.accept(SHRINE_CAT_EGG);
-			output.accept(SAKURA_VILLAGER_EGG);
-		});
-	}
-
-	/** Calls tamed Shrine Cats back to the holder's side when rung in the air, or tames eligible cats on direct use. */
-	public static final class CatBellCharmItem extends Item {
-		public CatBellCharmItem(Properties properties) {
-			super(properties);
-		}
-
-		@Override
-		public InteractionResult use(Level level, Player player, InteractionHand hand) {
-			if (level.isClientSide()) {
-				return InteractionResult.SUCCESS;
-			}
-			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.85F, 1.5F);
-			int recalled = 0;
-			if (level instanceof ServerLevel server) {
-				recalled += ShrineCat.ensureQuartetReunited(server, player, player.isShiftKeyDown());
-			}
-			List<ShrineCat> mine = level.getEntitiesOfClass(ShrineCat.class, player.getBoundingBox().inflate(48.0),
-				cat -> cat.isTame() && cat.isOwnedBy(player));
-			for (ShrineCat cat : mine) {
-				if (cat.isOrderedToSit()) {
-					cat.setOrderedToSit(false);
-				}
-				if (cat.distanceToSqr(player) > 25.0) {
+		new CatBellCharmItem(new Item.Properties() > 25.0) {
 					cat.teleportTo(player.getX() + (level.getRandom().nextDouble() - 0.5) * 1.5, player.getY(),
 						player.getZ() + (level.getRandom().nextDouble() - 0.5) * 1.5);
 				}

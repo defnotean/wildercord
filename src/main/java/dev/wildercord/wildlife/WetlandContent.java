@@ -27,17 +27,7 @@ public final class WetlandContent {
 	private static final ResourceKey<EntityType<?>> ENTITY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("lantern_newt"));
 	public static final EntityType<LanternNewt> NEWT=Registry.register(BuiltInRegistries.ENTITY_TYPE,ENTITY,EntityType.Builder.of(LanternNewt::new,MobCategory.CREATURE).sized(.6F,.4F).eyeHeight(.25F).clientTrackingRange(8).build(ENTITY));
 	private static final ResourceKey<Block> BLOCK=ResourceKey.create(Registries.BLOCK,Wildercord.id("marshlight"));
-	public static final MarshlightBlock MARSHLIGHT=Registry.register(BuiltInRegistries.BLOCK,BLOCK,new MarshlightBlock(BlockBehaviour.Properties.of().setId(BLOCK).strength(.6F).noOcclusion().lightLevel(s -> 12).sound(SoundType.BAMBOO)));
-	private static ResourceKey<Item> itemKey(String name) {return ResourceKey.create(Registries.ITEM,Wildercord.id(name));}
-	public static final Item DUSK_PEARL=Registry.register(BuiltInRegistries.ITEM,itemKey("dusk_pearl"),new AuraWorld.Lore("dusk_pearl",new Item.Properties().setId(itemKey("dusk_pearl")).rarity(Rarity.UNCOMMON)));
-	public static final Item MARSHLIGHT_ITEM=Registry.register(BuiltInRegistries.ITEM,itemKey("marshlight"),new BlockItem(MARSHLIGHT,new Item.Properties().setId(itemKey("marshlight")).useBlockDescriptionPrefix()));
-	public static final Item NEWT_EGG=Registry.register(BuiltInRegistries.ITEM,itemKey("lantern_newt_spawn_egg"),dev.wildercord.compat.McSpawnEgg.create(NEWT, new Item.Properties().setId(itemKey("lantern_newt_spawn_egg"))));
-	public static final Item FIELD_NOTES=Registry.register(BuiltInRegistries.ITEM,itemKey("tideward_notes"),new WrittenBookItem(new Item.Properties().setId(itemKey("tideward_notes")).stacksTo(1).component(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT,
-		new net.minecraft.world.item.component.WrittenBookContent(net.minecraft.server.network.Filterable.passThrough("Lights Along the Bank"),"Iona of the Tideward",0,
-			java.util.stream.IntStream.rangeClosed(1,3).mapToObj(i -> net.minecraft.server.network.Filterable.<net.minecraft.network.chat.Component>passThrough(net.minecraft.network.chat.Component.translatable("book.wildercord.tideward."+i))).toList(),true))));
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(NEWT,LanternNewt.attributes());
-		SpawnPlacements.register(NEWT,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(type,l,reason,p,r) -> {
+	public static final MarshlightBlock MARSHLIGHT=Registry.register(BuiltInRegistries.BLOCK,BLOCK,new MarshlightBlock(BlockBehaviour.Properties.of() -> {
 			if(reason==MobSpawnType.CHUNK_GENERATION)return false;if(reason!=MobSpawnType.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;
 			var settings=Config.get().wildlife();if(!settings.spawns("lantern_newt") || r.nextDouble()>=Math.min(1,.35*settings.spawnMultiplier()))return false;
 			// Shallow water over solid footing, with air above, not an ocean-depth or cave spawn.

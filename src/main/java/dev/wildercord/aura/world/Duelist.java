@@ -359,6 +359,7 @@ public class Duelist extends AuraFighter {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
 		super.customServerAiStep();
 		long now = level.getGameTime();
 		tickGuard(now);

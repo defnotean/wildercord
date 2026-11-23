@@ -37,6 +37,6 @@ public final class McLoot {
 	/** Rolls {@code table} for this death and drops the stacks where the entity lies. */
 	public static void dropFromLootTable(LivingEntity entity, ServerLevel level, DamageSource source,
 			boolean playerKilled, ResourceKey<LootTable> table) {
-		dropFromLootTable(entity, level, source, playerKilled, table, stack -> entity.spawnAtLocation(level, stack));
+		dropFromLootTable(entity, level, source, playerKilled, table, stack -> entity.spawnAtLocation(stack));
 	}
 }

@@ -26,28 +26,7 @@ public final class ReedRattle {
     public static final double REACH = 3;
     private static final ResourceKey<Item> KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("reed_rattle"));
     public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, KEY,
-        new AuraWorld.Lore("reed_rattle", new Item.Properties().setId(KEY).durability(USES)));
-    public static final AttachmentType<Long> READY = McAttachments.create(Wildercord.id("reed_rattle_ready"),
-        b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());
-    private static long clock(ServerPlayer p) { return p.level().getServer().overworld().getGameTime(); }
-    private static boolean refuse(ServerPlayer p, String reason, Object... args) {
-        p.displayClientMessage(Component.translatable("message.wildercord.reed_rattle." + reason, args), true);
-        return false;
-    }
-
-    /** The server alone admits use; failure spends neither durability nor either saved clock. */
-    public static boolean soothe(ServerPlayer p, InteractionHand hand, ReedbackCrab crab) {
-        var stack = p.getItemInHand(hand);
-        if (!stack.is(ITEM) || p.isSpectator() || !p.isAlive() || crab.level() != p.level() || !crab.isAlive()) return false;
-        if (!p.isShiftKeyDown()) return refuse(p, "crouch");
-        if (p.distanceToSqr(crab) > REACH * REACH || !p.hasLineOfSight(crab)) return refuse(p, "reach");
-        long now = clock(p), remaining = p.getAttachedOrElse(READY, 0L) - now;
-        if (remaining > 0) return refuse(p, "rest", (remaining + 19) / 20);
-        if (crab.pose() != ReedbackCrab.WARNING) return refuse(p, "warning");
-        if (!crab.answerRattle()) return refuse(p, "crab_rest");
-        p.setAttached(READY, now + REST_TICKS);
-        p.getCooldowns().addCooldown(stack, REST_TICKS);
-        stack.hurtAndBreak(1, p, dev.wildercord.compat.McHands.slot(hand));
+        new AuraWorld.Lore("reed_rattle", new Item.Properties());
         Feels.sound(((ServerLevel) p.level()), crab.position(), "wetland_reed_rattle", .6F, 1);
         p.displayClientMessage(Component.translatable("message.wildercord.reed_rattle.settle"), true);
         return true;

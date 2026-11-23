@@ -27,16 +27,4 @@ public final class PhysicalBlocks {
 	public static final Block THUNDER=block("thunder_step",true,false,6);
 	private static Block block(String name,boolean step,boolean ghost,int light){
 		var key=ResourceKey.create(Registries.BLOCK,Wildercord.id(name));
-		var p=BlockBehaviour.Properties.of().setId(key).strength(.6F,2).noLootTable().noOcclusion().lightLevel(s->light)
-			.sound(step?SoundType.WOOL:SoundType.STONE);
-		if(ghost)p.noCollission().strength(-1,3600000);
-		return Registry.register(BuiltInRegistries.BLOCK,key,step?new Step(p):new Block(p));
-	}
-	private static final class Step extends Block {
-		Step(Properties p){super(p);}
-		@Override protected VoxelShape getShape(BlockState state,BlockGetter level,BlockPos pos,CollisionContext context){return Block.box(0,0,0,16,3,16);}
-	}
-	public static boolean isConstruct(BlockState state){return state.is(STRATA)||state.is(CINDER)||state.is(ROOT)||state.is(WATER)||state.is(RESERVATION)||isStep(state);}
-	public static boolean isStep(BlockState state){return state.is(WIND)||state.is(RIME)||state.is(THUNDER);}
-	public static void init(){}
-}
+		var p=BlockBehaviour.Properties.of()

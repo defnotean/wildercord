@@ -27,24 +27,4 @@ public final class Coilroot {
 
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("coilroot"));
 	public static final CoilrootBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new CoilrootBlock(BlockBehaviour.Properties.of()
-		.setId(KEY).noCollission().noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.AZALEA).lightLevel(state -> 6)
-		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
-	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("coilroot"));
-	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
-		new BlockItem(BLOCK, new Item.Properties().setId(ITEM_KEY).useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
-
-	/** Whether this player has eaten of it. */
-	public static boolean eaten(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.COILROOT, false);
-	}
-
-	public static void init() {
-		AuraApi.onGain((player, amount, source) -> eaten(player) ? SerpentRules.coilroot(source, amount) : amount);
-		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			if (server.getTickCount() % 20 != 0) return;
-			for (var player : server.getPlayerList().getPlayers()) {
-				if (player.isAlive() && eaten(player)) Aura.gain(player, SerpentRules.COILROOT_TRICKLE, "coilroot");
-			}
-		});
-	}
-}
+		

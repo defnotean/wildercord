@@ -33,18 +33,4 @@ public final class OtterContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("brook_otter_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(BROOK_OTTER, new Item.Properties().setId(EGG_KEY)));
-
-	/** What an otter may stand on to spawn (written by tools/otter_art.py). */
-	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/brook_otter"));
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(BROOK_OTTER, BrookOtter.createAttributes());
-		SpawnPlacements.register(BROOK_OTTER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.BROOK_OTTER, type, GROUND, level, reason, pos, random));
-		WildlifeSpawns.join(WildlifeRules.BROOK_OTTER, BROOK_OTTER);
-		FieldGuide.add(new FieldGuide.Entry("wildercord:brook_otter", FieldGuide.Group.WILDLIFE, 0x7A5434));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
-		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
-	}
-}
+		dev.wildercord.compat.McSpawnEgg.create(BROOK_OTTER, new Item.Properties()

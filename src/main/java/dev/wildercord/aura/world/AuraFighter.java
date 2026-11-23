@@ -219,6 +219,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
+		ServerLevel level = (ServerLevel) level();
 		coat();
 		boolean hit = super.doHurtTarget(target);
 		if (hit) {

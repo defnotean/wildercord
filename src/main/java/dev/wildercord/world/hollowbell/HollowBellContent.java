@@ -24,17 +24,7 @@ public final class HollowBellContent {
 	private HollowBellContent() {}
 	private static final ResourceKey<Block> BELFRY_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("listening_belfry"));
 	public static final ListeningBelfryBlock BELFRY = Registry.register(BuiltInRegistries.BLOCK, BELFRY_KEY,
-		new ListeningBelfryBlock(BlockBehaviour.Properties.of().setId(BELFRY_KEY).strength(-1, 3600000).noOcclusion().noLootTable().lightLevel(s -> 9).sound(SoundType.COPPER)));
-	public static final Item BELFRY_ITEM = Registry.register(BuiltInRegistries.ITEM, ResourceKey.create(Registries.ITEM, Wildercord.id("listening_belfry")),
-		new BlockItem(BELFRY, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Wildercord.id("listening_belfry"))).useBlockDescriptionPrefix()));
-	public static final BlockEntityType<ListeningBelfryEntity> BELFRY_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("listening_belfry"),
-		FabricBlockEntityTypeBuilder.create(ListeningBelfryEntity::new, BELFRY).build());
-	private static final ResourceKey<Item> COMPASS_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("quiet_bell_compass"));
-	public static final Item COMPASS = Registry.register(BuiltInRegistries.ITEM, COMPASS_KEY,
-		new AuraWorld.Lore("quiet_bell_compass", new Item.Properties().setId(COMPASS_KEY).stacksTo(1).rarity(Rarity.UNCOMMON)));
-	private static final ResourceKey<EntityType<?>> ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("hollow_bell"));
-	public static final EntityType<HollowBell> BELL = Registry.register(BuiltInRegistries.ENTITY_TYPE, ENTITY_KEY,
-		EntityType.Builder.of(HollowBell::new, MobCategory.MONSTER).sized(2.8F, 3.4F).eyeHeight(2.6F).clientTrackingRange(14).build(ENTITY_KEY));
+		new ListeningBelfryBlock(BlockBehaviour.Properties.of().clientTrackingRange(14).build(ENTITY_KEY));
 
 	public static ItemStack compassTo(ServerLevel level, BlockPos pos) {
 		var stack = new ItemStack(COMPASS);

@@ -450,7 +450,7 @@ public final class CinnamonDog extends TamableAnimal {
 			if (held.is(Items.SHEARS) && bow) {
 				wearBow(player, false);
 				ItemStack ribbon = new ItemStack(CinnamonContent.BOW);
-				if (!player.getInventory().add(ribbon)) spawnAtLocation((ServerLevel) level(), ribbon);
+				if (!player.getInventory().add(ribbon)) spawnAtLocation(ribbon);
 				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.bow_off"), true);
 				return InteractionResult.SUCCESS;
 			}

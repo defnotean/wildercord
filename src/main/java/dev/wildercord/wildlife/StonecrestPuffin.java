@@ -556,7 +556,7 @@ public class StonecrestPuffin extends Animal {
 				chick.playSound(SoundEvents.PARROT_EAT, 0.5F, 1.6F);
 			} else {
 				// Dropped at your feet: a present.
-				spawnAtLocation(level, new ItemStack(random.nextInt(4) == 0 ? Items.SALMON : Items.COD));
+				spawnAtLocation(new ItemStack(random.nextInt(4) == 0 ? Items.SALMON : Items.COD));
 				gifted = true;
 				level.broadcastEntityEvent(StonecrestPuffin.this, (byte) 18);
 				playSound(SoundEvents.PARROT_AMBIENT, 0.6F, 0.7F);

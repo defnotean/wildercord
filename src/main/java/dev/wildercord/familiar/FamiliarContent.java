@@ -39,36 +39,4 @@ public final class FamiliarContent {
 
 	/** Where familiars rest: use it to call one out or send it home, sneak-use to call the next. */
 	public static final Item WISP_LANTERN = Registry.register(BuiltInRegistries.ITEM, LANTERN_KEY,
-		new WispLanternItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).setId(LANTERN_KEY)));
-
-	/** A wisp's soft, airy chime as it drifts. */
-	public static final SoundEvent WISP_AMBIENT = sound("wisp_ambient");
-	/** A wild wisp drinking a spell of its element: a note that climbs with each offering. */
-	public static final SoundEvent WISP_CHIME = sound("wisp_chime");
-	/** A wisp bonding: a bright chord blooming. */
-	public static final SoundEvent WISP_BOND = sound("wisp_bond");
-	/** A familiar's little spell leaving it. */
-	public static final SoundEvent WISP_CAST = sound("wisp_cast");
-	/** A familiar growing stronger. */
-	public static final SoundEvent WISP_LEVEL = sound("wisp_level");
-
-	/** Each player's familiars. Saved, kept through death, and synced to them for the lantern's tooltip. */
-	public static final AttachmentType<Bonds> BONDS = McAttachments.create(
-		Wildercord.id("familiars"),
-		builder -> builder
-			.initializer(() -> Bonds.NONE)
-			.persistent(Bonds.CODEC)
-			.copyOnDeath()
-	);
-
-	private static SoundEvent sound(String path) {
-		ResourceLocation id = Wildercord.id(path);
-		return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
-	}
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(WISP, Wisp.createAttributes());
-		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
-			.register(output -> output.accept(WISP_LANTERN));
-	}
-}
+		new WispLanternItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)

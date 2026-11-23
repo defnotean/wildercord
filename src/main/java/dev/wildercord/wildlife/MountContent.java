@@ -45,36 +45,7 @@ public final class MountContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("ridgeback_stag_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(RIDGEBACK_STAG, new Item.Properties().setId(EGG_KEY)));
-
-	private static final ResourceKey<EntityType<?>> BONDED_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("bonded_skyray"));
-	/** A tribulation's skyray, called down by its bridle to carry its rider through the air. */
-	public static final EntityType<BondedSkyray> BONDED_SKYRAY = Registry.register(BuiltInRegistries.ENTITY_TYPE, BONDED_KEY,
-		EntityType.Builder.of(BondedSkyray::new, MobCategory.MISC).sized(2.4F, 0.55F).eyeHeight(0.3F).passengerAttachments(0.45F)
-			.clientTrackingRange(14).build(BONDED_KEY));
-
-	private static final ResourceKey<Item> BRIDLE_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("skyray_bridle"));
-	/** The reward for the Tenth Circle's tribulation: calls your skyray down. */
-	public static final Item SKYRAY_BRIDLE = Registry.register(BuiltInRegistries.ITEM, BRIDLE_KEY,
-		new SkyrayBridleItem(new Item.Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.EPIC).setId(BRIDLE_KEY)));
-
-	private static final ResourceKey<EntityType<?>> TURTLE_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("reefback_turtle"));
-	/** The water mount (0.13). */
-	public static final EntityType<ReefbackTurtle> REEFBACK_TURTLE = Registry.register(BuiltInRegistries.ENTITY_TYPE, TURTLE_KEY,
-		EntityType.Builder.of(ReefbackTurtle::new, MobCategory.CREATURE).sized(1.6F, 0.9F).eyeHeight(0.6F).passengerAttachments(0.95F)
-			.clientTrackingRange(10).build(TURTLE_KEY));
-	private static final ResourceKey<Item> TURTLE_EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("reefback_turtle_spawn_egg"));
-	public static final Item TURTLE_EGG = Registry.register(BuiltInRegistries.ITEM, TURTLE_EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(REEFBACK_TURTLE, new Item.Properties().setId(TURTLE_EGG_KEY)));
-
-	private static final ResourceKey<EntityType<?>> MOLE_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("delver_mole"));
-	/** The burrowing mount (0.13). */
-	public static final EntityType<DelverMole> DELVER_MOLE = Registry.register(BuiltInRegistries.ENTITY_TYPE, MOLE_KEY,
-		EntityType.Builder.of(DelverMole::new, MobCategory.CREATURE).sized(1.3F, 1.1F).eyeHeight(0.8F).passengerAttachments(1.2F)
-			.clientTrackingRange(10).build(MOLE_KEY));
-	private static final ResourceKey<Item> MOLE_EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("delver_mole_spawn_egg"));
-	public static final Item MOLE_EGG = Registry.register(BuiltInRegistries.ITEM, MOLE_EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(DELVER_MOLE, new Item.Properties().setId(MOLE_EGG_KEY)));
+		dev.wildercord.compat.McSpawnEgg.create(RIDGEBACK_STAG, new Item.Properties()));
 
 	/** What each may stand on to spawn (written by tools/mount_art.py). */
 	public static final TagKey<Block> TURTLE_GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/reefback_turtle"));

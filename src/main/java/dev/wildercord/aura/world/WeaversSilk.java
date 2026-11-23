@@ -38,43 +38,7 @@ public final class WeaversSilk {
 
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("weavers_silk"));
 	public static final WeaversSilkBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new WeaversSilkBlock(BlockBehaviour.Properties.of()
-		.setId(KEY).noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.WOOL).lightLevel(state -> 3)
-		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
-	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("weavers_silk"));
-	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
-		new BlockItem(BLOCK, new Item.Properties().setId(ITEM_KEY).useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
-
-	/** When each player last stood on the ground, by their own tick count; the client and the server keep their own. */
-	private static final Map<UUID, Integer> GROUNDED = new HashMap<>(), GROUNDED_CLIENT = new HashMap<>();
-
-	/** Whether the silk is with this player. */
-	public static boolean bound(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.WEAVERS_SILK, false);
-	}
-
-	/** Whether this player has put the silk away. */
-	public static boolean stowed(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.WEAVERS_SILK_STOWED, false);
-	}
-
-	/** Puts the silk away or takes it out again, and says which; a player without it is told so. */
-	public static void toggle(ServerPlayer player) {
-		if (!bound(player)) {
-			player.displayClientMessage(Component.translatable("message.wildercord.weavers_silk.none").withColor(0xC4BEB2), true);
-			return;
-		}
-		boolean stow = !stowed(player);
-		player.setAttached(WildercordAttachments.WEAVERS_SILK_STOWED, stow);
-		player.displayClientMessage(Component.translatable(stow ? "message.wildercord.weavers_silk.stowed" : "message.wildercord.weavers_silk.unstowed")
-			.withColor(0xE2DCCC), true);
-	}
-
-	/** How long this player has been off the ground, in ticks. */
-	private static int offGround(Player player) {
-		var seen = player.level().isClientSide() ? GROUNDED_CLIENT : GROUNDED;
-		if (player.onGround() || player.isInWater() || player.isInLava() || player.isPassenger()) seen.put(player.getUUID(), player.tickCount);
-		// No mark yet, or one from before the count restarted: start counting from now, so the grip still runs out.
-		int mark = seen.computeIfAbsent(player.getUUID(), id -> player.tickCount);
+		;
 		if (mark > player.tickCount) seen.put(player.getUUID(), mark = player.tickCount);
 		return (int) HollowMatronRules.offGround(player.tickCount, mark);
 	}

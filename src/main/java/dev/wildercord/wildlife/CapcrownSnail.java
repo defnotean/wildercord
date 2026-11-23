@@ -218,7 +218,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 		entityData.set(CAPPED, false);
 		regrowAt = level.getGameTime() + SnailRules.REGROW_TICKS;
 		int count = SnailRules.yield(random.nextDouble());
-		spawnAtLocation(level, new ItemStack(colour() == BROWN ? Items.BROWN_MUSHROOM : Items.RED_MUSHROOM, count));
+		spawnAtLocation(new ItemStack(colour() == BROWN ? Items.BROWN_MUSHROOM : Items.RED_MUSHROOM, count));
 		level.sendParticles(ParticleTypes.MYCELIUM, getX(), getY() + 0.8, getZ(), 16, 0.3, 0.2, 0.3, 0.04);
 		hideAway(level, SnailRules.POKE_TICKS);
 	}

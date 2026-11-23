@@ -62,7 +62,7 @@ boolean hit=super.hurt(source,amount);if(hit) {hiddenUntil=level().getGameTime()
    if(!player.isShiftKeyDown()) {player.displayClientMessage(Component.translatable("message.wildercord.sporeback.quiet"), true);return InteractionResult.SUCCESS;}
    if(!isAlive() || pose()==2 || l.getGameTime()<hiddenUntil || !dew() || l.getGameTime()<gatherReady) {player.displayClientMessage(Component.translatable("message.wildercord.sporeback.wait"), true);return InteractionResult.SUCCESS;}
    entityData.set(DEW,false);gatherReady=l.getGameTime()+SporebackRules.GATHER_REST;
-   spawnAtLocation(l,new ItemStack(SporebackContent.DEW));Feels.sound(l,position(),"sporeback_gather",.5F,1);
+   spawnAtLocation(new ItemStack(SporebackContent.DEW));Feels.sound(l,position(),"sporeback_gather",.5F,1);
    var notes=new java.util.ArrayList<>(dev.wildercord.player.Heart.grimoire(player));
    if(!notes.contains("field:sporeback")) {notes.add("field:sporeback");player.setAttached(dev.wildercord.player.WildercordAttachments.GRIMOIRE,List.copyOf(notes));dev.wildercord.compat.McEntities.placeItemBackInInventory(player, new ItemStack(SporebackContent.JOURNAL));}
   }return InteractionResult.SUCCESS;

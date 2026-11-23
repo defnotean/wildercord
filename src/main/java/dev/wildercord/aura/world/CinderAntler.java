@@ -37,41 +37,7 @@ public final class CinderAntler {
 
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("cinder_antler"));
 	public static final CinderAntlerBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new CinderAntlerBlock(BlockBehaviour.Properties.of()
-		.setId(KEY).noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.BONE_BLOCK).lightLevel(state -> 6)
-		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
-	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinder_antler"));
-	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,
-		new BlockItem(BLOCK, new Item.Properties().setId(ITEM_KEY).useBlockDescriptionPrefix().rarity(Rarity.EPIC)));
-
-	/** How long each player has been sprinting, and when their antler last gored, in server ticks. Forgotten on restart. */
-	private static final Map<UUID, Integer> SPRINT = new HashMap<>();
-	private static final Map<UUID, Long> LAST = new HashMap<>();
-
-	/** Whether the antler runs with this player. */
-	public static boolean bound(Player player) {
-		return player.getAttachedOrElse(WildercordAttachments.CINDER_ANTLER, false);
-	}
-
-	public static void init() {
-		// Tick counts restart with the server, so a remembered tick from the last world would make the cooldown look stuck.
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> { LAST.clear(); SPRINT.clear(); });
-		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			for (var player : server.getPlayerList().getPlayers()) {
-				if (!bound(player)) continue;
-				if (player.isSprinting()) {
-					int run = SPRINT.merge(player.getUUID(), 1, Integer::sum);
-					// Ready: embers kicked up off its heels.
-					if (run >= AshenStagRules.ANTLER_SPRINT && ready(player) && run % 3 == 0) {
-						((ServerLevel) player.level()).sendParticles(ParticleTypes.FLAME, player.getX(), player.getY() + .1, player.getZ(), 2, .2, .05, .2, .01);
-					}
-				} else {
-					SPRINT.remove(player.getUUID());
-				}
-			}
-		});
-		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
-			if (!(source.getEntity() instanceof ServerPlayer player) || source.getDirectEntity() != player || taken <= 0) return;
-			if (!(entity instanceof Enemy) || !entity.isAlive() || !bound(player)) return;
+		 || !entity.isAlive() || !bound(player)) return;
 			long since = player.level().getServer().getTickCount() - LAST.getOrDefault(player.getUUID(), Long.MIN_VALUE / 2);
 			if (AshenStagRules.gores(SPRINT.getOrDefault(player.getUUID(), 0), since)) gore(player, entity);
 		});

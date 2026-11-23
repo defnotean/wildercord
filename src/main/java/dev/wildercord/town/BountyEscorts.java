@@ -141,7 +141,7 @@ public final class BountyEscorts {
 			var slot = llama.getSlot(AbstractHorse.INVENTORY_SLOT_OFFSET + i);
 			ItemStack stack = slot.get();
 			if (stack.isEmpty()) continue;
-			llama.spawnAtLocation(level, stack.copy());
+			llama.spawnAtLocation(stack.copy());
 			slot.set(ItemStack.EMPTY);
 		}
 		level.sendParticles(ParticleTypes.POOF, llama.getX(), llama.getY() + 0.8, llama.getZ(), 12, 0.5, 0.5, 0.5, 0.02);

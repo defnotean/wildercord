@@ -33,18 +33,4 @@ public final class CapybaraContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("mirebath_capybara_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(MIREBATH_CAPYBARA, new Item.Properties().setId(EGG_KEY)));
-
-	/** What a mirebath capybara may stand on to spawn (written by tools/capybara_art.py). */
-	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/mirebath_capybara"));
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(MIREBATH_CAPYBARA, MirebathCapybara.createAttributes());
-		SpawnPlacements.register(MIREBATH_CAPYBARA, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.MIREBATH_CAPYBARA, type, GROUND, level, reason, pos, random));
-		WildlifeSpawns.join(WildlifeRules.MIREBATH_CAPYBARA, MIREBATH_CAPYBARA);
-		FieldGuide.add(new FieldGuide.Entry("wildercord:mirebath_capybara", FieldGuide.Group.WILDLIFE, 0xA8744A));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
-		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
-	}
-}
+		dev.wildercord.compat.McSpawnEgg.create(MIREBATH_CAPYBARA, new Item.Properties()

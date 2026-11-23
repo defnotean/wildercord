@@ -129,7 +129,7 @@ public abstract class AuraBeast extends PathfinderMob {
 			if(!p.getAbilities().instabuild) stack.shrink(1);
 			if(this instanceof Galeclaw runner) runner.ate();
 			nextShed=server.getGameTime()+BeastRules.SHED_INTERVAL; calm=200; setTarget(null); pose(BeastRules.FORAGE,60);
-			spawnAtLocation(server,new ItemStack(gale()?AuraBeasts.GALECLAW_PLUME:AuraBeasts.STONEHORN_PLATE)); sound(gale()?"land":"forage");
+			spawnAtLocation(new ItemStack(gale()?AuraBeasts.GALECLAW_PLUME:AuraBeasts.STONEHORN_PLATE)); sound(gale()?"land":"forage");
 		}
 		return InteractionResult.SUCCESS;
 	}

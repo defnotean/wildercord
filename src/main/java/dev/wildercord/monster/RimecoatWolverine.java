@@ -287,7 +287,7 @@ public class RimecoatWolverine extends WildMonster {
 		ItemStack food = getMainHandItem();
 		if (!food.isEmpty()) {
 			setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-			ItemEntity dropped = spawnAtLocation(level, food);
+			ItemEntity dropped = spawnAtLocation(food);
 			if (dropped != null) {
 				dropped.setPickUpDelay(40);
 			}

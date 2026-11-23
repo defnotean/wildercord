@@ -33,18 +33,4 @@ public final class PuffinContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("stonecrest_puffin_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(STONECREST_PUFFIN, new Item.Properties().setId(EGG_KEY)));
-
-	/** What a stonecrest puffin may stand on to spawn (written by tools/puffin_art.py). */
-	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/stonecrest_puffin"));
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(STONECREST_PUFFIN, StonecrestPuffin.createAttributes());
-		SpawnPlacements.register(STONECREST_PUFFIN, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.STONECREST_PUFFIN, type, GROUND, level, reason, pos, random));
-		WildlifeSpawns.join(WildlifeRules.STONECREST_PUFFIN, STONECREST_PUFFIN);
-		FieldGuide.add(new FieldGuide.Entry("wildercord:stonecrest_puffin", FieldGuide.Group.WILDLIFE, 0xE8642A));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
-		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
-	}
-}
+		dev.wildercord.compat.McSpawnEgg.create(STONECREST_PUFFIN, new Item.Properties()

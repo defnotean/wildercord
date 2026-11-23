@@ -105,7 +105,7 @@ public final class LanternNewt extends PathfinderMob {
 			if(!WetlandRules.ready(l.getGameTime(),pearlReady)) {p.displayClientMessage(Component.translatable("message.wildercord.lantern_newt.rest"), true);return InteractionResult.SUCCESS;}
 			if(!p.getAbilities().instabuild)stack.shrink(1);
 			pearlReady=l.getGameTime()+WetlandRules.PEARL_REST;browseReady=l.getGameTime()+WetlandRules.BROWSE_REST;
-			spawnAtLocation(l,new ItemStack(WetlandContent.DUSK_PEARL));entityData.set(RESPONSE,l.getGameTime()+60);Feels.sound(l,position(),"wetland_newt_pearl",.7F,1);
+			spawnAtLocation(new ItemStack(WetlandContent.DUSK_PEARL));entityData.set(RESPONSE,l.getGameTime()+60);Feels.sound(l,position(),"wetland_newt_pearl",.7F,1);
 		}
 		return InteractionResult.SUCCESS;
 	}

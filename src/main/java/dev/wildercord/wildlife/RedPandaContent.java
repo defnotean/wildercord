@@ -33,18 +33,4 @@ public final class RedPandaContent {
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinnabar_panda_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
-		dev.wildercord.compat.McSpawnEgg.create(CINNABAR_PANDA, new Item.Properties().setId(EGG_KEY)));
-
-	/** What a cinnabar panda may stand on to spawn (written by tools/red_panda_art.py). */
-	public static final TagKey<Block> GROUND = TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/cinnabar_panda"));
-
-	public static void init() {
-		FabricDefaultAttributeRegistry.register(CINNABAR_PANDA, CinnabarPanda.createAttributes());
-		SpawnPlacements.register(CINNABAR_PANDA, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-			(type, level, reason, pos, random) -> WildlifeSpawns.creature(WildlifeRules.CINNABAR_PANDA, type, GROUND, level, reason, pos, random));
-		WildlifeSpawns.join(WildlifeRules.CINNABAR_PANDA, CINNABAR_PANDA);
-		FieldGuide.add(new FieldGuide.Entry("wildercord:cinnabar_panda", FieldGuide.Group.WILDLIFE, 0xC0502A));
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> output.accept(EGG));
-		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord"))).register(output -> output.accept(EGG));
-	}
-}
+		dev.wildercord.compat.McSpawnEgg.create(CINNABAR_PANDA, new Item.Properties()

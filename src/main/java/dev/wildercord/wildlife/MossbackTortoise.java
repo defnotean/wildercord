@@ -168,7 +168,7 @@ public class MossbackTortoise extends Animal {
 
 	/** Lets a scute go, with a little puff of moss. */
 	public void dropScute(ServerLevel level) {
-		spawnAtLocation(level, new ItemStack(Wildlife.MOSSBACK_SCUTE));
+		spawnAtLocation(new ItemStack(Wildlife.MOSSBACK_SCUTE));
 		SoundEvent sound = Wildlife.sound("tortoise_scute");
 		if (sound != null) {
 			level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 0.8F, 1.0F);

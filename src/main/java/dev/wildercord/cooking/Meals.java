@@ -38,32 +38,7 @@ public final class Meals {
 		WildercordEffects.init();
 		for (CookingRules.Recipe recipe : CookingRules.RECIPES) {
 			ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(recipe.id()));
-			Item.Properties properties = new Item.Properties().setId(key).stacksTo(CookingRules.STACK)
-				.rarity(recipe.rare() ? net.minecraft.world.item.Rarity.EPIC : net.minecraft.world.item.Rarity.COMMON)
-				.food(new FoodProperties(recipe.nutrition(), recipe.saturation(), true, 1.0F,
-					java.util.Optional.of(new ItemStack(Items.BOWL)),
-					effects(recipe).stream().map(e -> new FoodProperties.PossibleEffect(e, 1.0F)).toList()));
-			MEALS.put(recipe.id(), Registry.register(BuiltInRegistries.ITEM, key, new MealItem(recipe, properties)));
-		}
-	}
-
-	public static final CampPotBlock CAMP_POT = pot();
-
-	/** The far-off spice every rare meal needs, sold by the wandering caravans. */
-	public static final Item WAYFARER_SAFFRON = saffron();
-
-	private static Item saffron() {
-		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, ResourceLocation.parse(CookingRules.SAFFRON));
-		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key).rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
-	}
-
-	private static CampPotBlock pot() {
-		ResourceKey<net.minecraft.world.level.block.Block> key = ResourceKey.create(Registries.BLOCK, Wildercord.id("camp_pot"));
-		CampPotBlock block = Registry.register(BuiltInRegistries.BLOCK, key, new CampPotBlock(BlockBehaviour.Properties.of()
-			.mapColor(MapColor.METAL).sound(SoundType.LANTERN).strength(2.0F, 6.0F).noOcclusion().setId(key)));
-		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Wildercord.id("camp_pot"));
-		Registry.register(BuiltInRegistries.ITEM, itemKey, new net.minecraft.world.item.BlockItem(block,
-			new Item.Properties().setId(itemKey).useBlockDescriptionPrefix()));
+			Item.Properties properties = new Item.Properties().useBlockDescriptionPrefix()));
 		return block;
 	}
 
