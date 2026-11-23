@@ -22,17 +22,17 @@ abstract class ReedlandSurfaceComputeMixin {
 	// 26.1.2 has no BuiltInRegistries.BIOME field; the biome registry is only reachable via REGISTRY.
 	@SuppressWarnings("unchecked")
 	private static Registry<Biome> wildercord$biomes() {
-		return (Registry<Biome>) BuiltInRegistries.REGISTRY.getValue(ResourceLocation.withDefaultNamespace("biome"));
+		return (Registry<Biome>) BuiltInRegistries.REGISTRY.get(ResourceLocation.withDefaultNamespace("biome"));
 	}
 
 	@WrapOperation(method = "compute()Z", at = @At(value = "INVOKE",
 		target = "Lnet/minecraft/core/Holder;is(Ljava/util/function/Predicate;)Z"))
 	private boolean wildercord$regionalSurfaceContains(Holder<Biome> current, Predicate<Biome> nameTest, Operation<Boolean> original) {
 		if (original.call(current, nameTest)) return true;
-		if (current.is(ReedlandClimate.REEDLANDS) && nameTest.test(wildercord$biomes().getValue(Biomes.SWAMP))) return true;
-		if (current.is(WindscarClimate.WINDSCAR) && nameTest.test(wildercord$biomes().getValue(Biomes.WINDSWEPT_HILLS))) return true;
-		if (current.is(BelowkeeperClimate.HOLLOWS) && nameTest.test(wildercord$biomes().getValue(Biomes.DRIPSTONE_CAVES))) return true;
-		if (current.is(EmberwoodClimate.EMBERWOOD) && nameTest.test(wildercord$biomes().getValue(Biomes.OLD_GROWTH_PINE_TAIGA))) return true;
+		if (current.is(ReedlandClimate.REEDLANDS) && nameTest.test(wildercord$biomes().get(Biomes.SWAMP))) return true;
+		if (current.is(WindscarClimate.WINDSCAR) && nameTest.test(wildercord$biomes().get(Biomes.WINDSWEPT_HILLS))) return true;
+		if (current.is(BelowkeeperClimate.HOLLOWS) && nameTest.test(wildercord$biomes().get(Biomes.DRIPSTONE_CAVES))) return true;
+		if (current.is(EmberwoodClimate.EMBERWOOD) && nameTest.test(wildercord$biomes().get(Biomes.OLD_GROWTH_PINE_TAIGA))) return true;
 		return false;
 	}
 }

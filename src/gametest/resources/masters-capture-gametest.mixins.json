@@ -3,12 +3,7 @@
   "package": "dev.wildercord.gametest.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "BraceNullPlayerWidthMixin",
-    "BraceNullDeferredPaletteMixin",
-    "BraceNullNativeSubmitMixin",
-    "BraceNullPlayerPaletteMixin",
-    "MastersBodyRenderProbeMixin",
-    "MastersHudRenderProbeMixin"
+    "BraceNullPlayerWidthMixin"
   ],
   "injectors": {
     "defaultRequire": 1

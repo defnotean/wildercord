@@ -1008,6 +1008,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}
 	@Override protected void actuallyHurt(DamageSource source, float damage){
+		ServerLevel level = (ServerLevel) level();
 		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)Feels.sound(level,head(),"aura_ashen_stag_hurt",1.2F,.9F+random.nextFloat()*.2F);
 	}

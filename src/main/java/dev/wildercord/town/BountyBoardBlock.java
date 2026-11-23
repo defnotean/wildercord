@@ -199,7 +199,7 @@ public class BountyBoardBlock extends Block {
 
 	private static Item goods(Town.Active bounty) {
 		ResourceLocation id = ResourceLocation.tryParse(bounty.target());
-		return id == null ? Items.AIR : BuiltInRegistries.ITEM.getValue(id);
+		return id == null ? Items.AIR : java.util.Objects.requireNonNullElse(BuiltInRegistries.ITEM.get(id), Items.AIR);
 	}
 
 	static void turnIn(ServerPlayer player, ServerLevel level, BlockPos pos, Town.Standing standing, Town.Active bounty, long today) {

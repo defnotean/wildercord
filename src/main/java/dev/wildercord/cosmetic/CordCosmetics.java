@@ -148,7 +148,7 @@ public final class CordCosmetics {
 		}
 		CordStyles.Progress progress = progress(player);
 		if (!CordStyles.unlocked(option, progress)) {
-			Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(option.unlock().what()));
+			Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(option.unlock().what()));
 			int need = option.unlock().amount();
 			int have = dev.wildercord.compat.McBlocksAndItems.countMatchingItems(player.getInventory(), stack -> stack.is(item), player.inventoryMenu.getCraftSlots());
 			if (have < need) {

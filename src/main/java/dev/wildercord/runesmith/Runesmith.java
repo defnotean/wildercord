@@ -73,6 +73,6 @@ public final class Runesmith {
 
 	/** Whether this villager is a Runesmith. */
 	public static boolean is(Villager villager) {
-		return villager.getVillagerData().getProfession() == BuiltInRegistries.VILLAGER_PROFESSION.getValue(PROFESSION);
+		return villager.getVillagerData().getProfession() == BuiltInRegistries.VILLAGER_PROFESSION.get(PROFESSION);
 	}
 }

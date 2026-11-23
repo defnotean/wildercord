@@ -4,11 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "CrimsonMoonCopyMixin",
-    "CrimsonMoonDeferredMixin",
-    "CrimsonMoonExtractionMixin",
-    "CrimsonMoonPlayerPaletteMixin",
-    "CrimsonMoonScreenshotMixin",
-    "CrimsonMoonWorldBodyMixin"
+    "CrimsonMoonScreenshotMixin"
   ],
   "injectors": {
     "defaultRequire": 1

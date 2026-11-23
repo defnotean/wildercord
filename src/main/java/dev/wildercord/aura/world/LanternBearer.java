@@ -1128,6 +1128,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}
 	@Override protected void actuallyHurt(DamageSource source, float damage){
+		ServerLevel level = (ServerLevel) level();
 		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)Feels.sound(level,head(),"aura_lantern_bearer_hurt",1.2F,.9F+random.nextFloat()*.2F);
 	}

@@ -1,7 +1,7 @@
 package dev.wildercord.mixin;
 
 import dev.wildercord.menu.PlacedSlot;
-import net.minecraft.network.protocol.game.ServerboundSelectSlotPacket;
+import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.network.protocol.game.ServerboundSetCreativeModeSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -56,8 +56,8 @@ public abstract class ServerGamePacketListenerImplMixin {
 	}
 
 	/** Held-slot changes are events, not just impact-time comparisons: switching away and back never restores a paid windup. */
-	@Inject(method = "handleSelectSlot", at = @At("HEAD"))
-	private void wildercord$selectedHotbar(ServerboundSelectSlotPacket packet, CallbackInfo ci) {
+	@Inject(method = "handleSetCarriedItem", at = @At("HEAD"))
+	private void wildercord$selectedHotbar(ServerboundSetCarriedItemPacket packet, CallbackInfo ci) {
 		int slot = packet.getSlot();
 		if (net.minecraft.world.entity.player.Inventory.isHotbarSlot(slot) && slot != this.player.getInventory().selected) {
 			dev.wildercord.aura.MastersArts.cancel(this.player);

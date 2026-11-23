@@ -730,13 +730,14 @@ public abstract class DungeonBoss extends Monster {
 
 	/** Its loot table's drops (trophies and all) go to its killer, or onto its altar if there's nobody to take them. */
 	@Override
-	protected void dropFromLootTable(ServerLevel level, DamageSource source) {
+	protected void dropFromLootTable(DamageSource source, boolean playerKilled) {
 		ResourceKey<LootTable> table = getLootTable();
 		if (table == null) {
 			return;
 		}
+		ServerLevel level = (ServerLevel) level();
 		ServerPlayer killer = killer(level, source);
-		dev.wildercord.compat.McLoot.dropFromLootTable(this, level, source, source.getEntity() instanceof Player, table,
+		dev.wildercord.compat.McLoot.dropFromLootTable(this, level, source, playerKilled, table,
 			stack -> give(level, killer, stack));
 	}
 

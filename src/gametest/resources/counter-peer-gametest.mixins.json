@@ -4,12 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "CounterPeerCopyMixin",
-    "CounterPeerDeferredMixin",
-    "CounterPeerNativeSubmitMixin",
-    "CounterPeerExtractionMixin",
-    "CounterPeerPlayerPaletteMixin",
     "CounterPeerScreenshotMixin",
-    "CounterPeerWorldBodyMixin",
     "CounterPeerAdmissionSendMixin",
     "CounterPeerAdmissionMixin",
     "CounterPeerAdmissionSourceMixin",

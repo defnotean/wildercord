@@ -1073,6 +1073,7 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}
 	@Override protected void actuallyHurt(DamageSource source, float damage){
+		ServerLevel level = (ServerLevel) level();
 		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)sound(level,head(),voice().hurtSound(),1.4F,.55F+random.nextFloat()*.1F);
 	}

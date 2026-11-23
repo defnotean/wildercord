@@ -1050,6 +1050,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}
 	@Override protected void actuallyHurt(DamageSource source, float damage){
+		ServerLevel level = (ServerLevel) level();
 		super.actuallyHurt(source, damage);
 		if(random.nextInt(3)==0)Feels.sound(level,position().add(0,2,0),"aura_serpent_hurt",1,.9F+random.nextFloat()*.2F);
 	}

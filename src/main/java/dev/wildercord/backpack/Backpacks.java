@@ -77,7 +77,7 @@ public final class Backpacks {
 		if (stack.isEmpty()) {
 			return true;
 		}
-		if (isBackpack(stack) || stack.is(NOT_FOR_BACKPACKS) || stack.is(ItemTags.BUNDLES)
+		if (isBackpack(stack) || !stack.getItem().canFitInsideContainerItems() || stack.is(NOT_FOR_BACKPACKS) || stack.is(ItemTags.BUNDLES)
 				|| stack.getItem() instanceof BundleItem || stack.has(DataComponents.BUNDLE_CONTENTS)
 				|| stack.has(DataComponents.BLOCK_ENTITY_DATA)) {
 			return false;

@@ -536,7 +536,7 @@ public final class HearthEffects {
 			}
 		}
 		if (timers.containsKey("tinker_hum") && now % HearthRules.TINKER_EVERY == 0 && s.tinkerGiven < HearthRules.TINKER_MAX) {
-			for (EquipmentSlot slot : EquipmentSlot.values()()) {
+			for (EquipmentSlot slot : EquipmentSlot.values()) {
 				ItemStack stack = p.getItemBySlot(slot);
 				if (stack.isDamageableItem() && stack.isDamaged()) {
 					stack.setDamageValue(stack.getDamageValue() - 1);

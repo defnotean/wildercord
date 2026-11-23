@@ -4,10 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "ArticulatedSharedScreenshotMixin",
-    "ArticulatedSharedCopyMixin",
-    "ArticulatedSharedPlayerPaletteMixin",
-    "ArticulatedSharedDeferredMixin",
-    "ArticulatedSharedExtractionMixin"
+    "ArticulatedSharedCopyMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -686,7 +686,7 @@ public final class FarmEffects {
 				break;
 			}
 			if (animal instanceof Sheep sheep && sheep.readyForShearing()) {
-				sheep.shear(cast.level, SoundSource.PLAYERS, new ItemStack(Items.SHEARS));
+				sheep.shear(SoundSource.PLAYERS);
 				shorn++;
 			}
 		}

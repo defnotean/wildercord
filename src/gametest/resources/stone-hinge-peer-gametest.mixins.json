@@ -10,7 +10,6 @@
     "StoneHingeServerConnectionAccess"
   ],
   "client": [
-    "StoneHingePeerClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -456,7 +456,7 @@ final class FusedLifeVfx {
 			Vec3 start = prev;
 			Scheduler.later(1 + k * 6 / n, () -> ElementFx.ray(level, start, p, color, 0.06, 10));
 			// Motes of blood along the way, fading green.
-			Fx.send(level, new DustColorTransitionOptions(BLOOD.primary(), LIFE.primary(), new org.joml.Vector3f(1.0F, 1.0F, 1.0F)), p, 1, 0.05, 0.0);
+			Fx.send(level, dev.wildercord.compat.McParticles.dustTransition(BLOOD.primary(), LIFE.primary(), 1.0F), p, 1, 0.05, 0.0);
 			prev = p;
 		}
 		Motes.seek(level, a, b, BLOOD.secondary(), 0.14, 9, 1.0);

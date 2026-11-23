@@ -20,6 +20,16 @@ public final class McParticles {
 		return new DustParticleOptions(color, scale);
 	}
 
+	/** A dust particle fading between two raw colours: 1.21.1's ctor takes Vector3f colours, not ints. */
+	public static net.minecraft.core.particles.DustColorTransitionOptions dustTransition(int fromArgb, int toArgb, float scale) {
+		return new net.minecraft.core.particles.DustColorTransitionOptions(vec(fromArgb), vec(toArgb), scale);
+	}
+
+	private static Vector3f vec(int argb) {
+		int rgb = argb & 0xFFFFFF;
+		return new Vector3f((rgb >> 16 & 0xFF) / 255.0F, (rgb >> 8 & 0xFF) / 255.0F, (rgb & 0xFF) / 255.0F);
+	}
+
 	/** A tinted dust particle: 1.21.1's dust ctor takes a Vector3f colour, not an int. */
 	public static DustParticleOptions dust(int argb, float scale) {
 		int rgb = argb & 0xFFFFFF;

@@ -139,7 +139,7 @@ public class CampPotBlock extends Block {
 	}
 
 	private static Item item(String id) {
-		return BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(id));
+		return BuiltInRegistries.ITEM.get(ResourceLocation.parse(id));
 	}
 
 	static Map<String, Integer> pantry(Inventory inventory) {
