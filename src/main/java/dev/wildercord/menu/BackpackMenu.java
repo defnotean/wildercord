@@ -1,5 +1,7 @@
 package dev.wildercord.menu;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import dev.wildercord.backpack.BackpackTier;
 import dev.wildercord.backpack.Backpacks;
 import io.netty.buffer.ByteBuf;

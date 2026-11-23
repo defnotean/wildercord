@@ -1,5 +1,7 @@
 package dev.wildercord.compat;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

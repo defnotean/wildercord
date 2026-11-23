@@ -1,5 +1,7 @@
 package dev.wildercord.loadout;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;

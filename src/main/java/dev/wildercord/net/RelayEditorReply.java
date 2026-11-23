@@ -1,5 +1,7 @@
 package dev.wildercord.net;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import dev.wildercord.Wildercord;
 import dev.wildercord.player.Spellbooks;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;

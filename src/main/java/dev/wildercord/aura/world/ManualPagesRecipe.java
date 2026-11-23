@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.aura.BreathingManualItem;

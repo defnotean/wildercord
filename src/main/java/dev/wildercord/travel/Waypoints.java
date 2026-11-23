@@ -1,5 +1,7 @@
 package dev.wildercord.travel;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;

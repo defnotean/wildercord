@@ -1,5 +1,7 @@
 package dev.wildercord.player;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import dev.wildercord.Wildercord;
 import dev.wildercord.spell.MasteryRules;
 import dev.wildercord.spell.RuneDef;

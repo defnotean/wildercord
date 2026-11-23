@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.SpellMasteryApi;
 import dev.wildercord.config.Config;

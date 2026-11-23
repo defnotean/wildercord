@@ -1,5 +1,7 @@
 package dev.wildercord.aura;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import dev.wildercord.compat.McVec3;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;

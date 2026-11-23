@@ -1,5 +1,7 @@
 package dev.wildercord.content;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;

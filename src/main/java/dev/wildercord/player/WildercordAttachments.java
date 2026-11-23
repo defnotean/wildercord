@@ -1,5 +1,7 @@
 package dev.wildercord.player;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;

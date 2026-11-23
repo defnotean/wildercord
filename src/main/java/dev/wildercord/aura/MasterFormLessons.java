@@ -1,5 +1,7 @@
 package dev.wildercord.aura;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.Duelist;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;

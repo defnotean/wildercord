@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McStreamCodec;
+
 import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.events.ManaStorm;
