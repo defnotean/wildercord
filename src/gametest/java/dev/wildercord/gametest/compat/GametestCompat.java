@@ -223,11 +223,20 @@ public final class GametestCompat {
 	}
 
 	/**
+	 * Recomputes the GUI scale and re-inits the HUD. 26.x calls this Minecraft#resizeGui;
+	 * this branch still routes it through the window-resize handler, which is what rebuilds
+	 * the panes and the chat/scale state.
+	 */
+	public static void resizeGui(Minecraft mc) {
+		mc.resizeDisplay();
+	}
+
+	/**
 	 * Pumps the client until queued clientbound packets are processed. 26.3 added
 	 * TestSingleplayerContext#getConnection; before it, waiting for the chunk download
 	 * to settle is what drains the client's inbound queue.
 	 */
 	public static void awaitClientPackets(TestSingleplayerContext world) {
-		world.getClientLevel().waitForChunksDownload();
+		world.getClientWorld().waitForChunksDownload();
 	}
 }

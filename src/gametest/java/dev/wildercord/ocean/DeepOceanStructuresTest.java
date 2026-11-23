@@ -1,5 +1,6 @@
 package dev.wildercord.ocean;
 
+import dev.wildercord.gametest.compat.GametestCompat;
 import dev.wildercord.world.StructureClearance;
 import dev.wildercord.world.sites.ocean.AbyssalCitadelPiece;
 import dev.wildercord.world.sites.ocean.CoralDomeSanctuaryPiece;
@@ -154,7 +155,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 		BoundingBox bb = piece.getBoundingBox();
 		ChunkGenerator gen = l.getChunkSource().getGenerator();
 		RandomSource rand = RandomSource.create(20261122L);
-		piece.postProcess(l, l.structureManager(), gen, rand, bb, ChunkPos.containing(bb.getCenter()), bb.getCenter());
+		piece.postProcess(l, l.structureManager(), gen, rand, bb, new ChunkPos(bb.minX() >> 4, bb.minZ() >> 4), bb.getCenter());
 	}
 
 	private static int countBlocks(ServerLevel l, int x0, int y0, int z0, int x1, int y1, int z1, net.minecraft.world.level.block.Block block) {
@@ -187,7 +188,7 @@ public final class DeepOceanStructuresTest implements FabricClientGameTest {
 				mc.options.renderDistance().set(12);
 				mc.options.fov().set(75);
 				mc.options.broadcastOptions();
-				mc.resizeGui();
+				GametestCompat.resizeGui(mc);
 			});
 
 			// Stage all 4 Ocean bays inside the seed-invariant Oathhold-free ocean corridor [2664..2912]

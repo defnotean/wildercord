@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.gametest.compat.GametestCompat;
 import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.cast.DungeonEntities;
 import dev.wildercord.cast.WildercordEntities;
@@ -142,7 +143,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 				mc.options.renderDistance().set(10);
 				mc.options.fov().set(74);
 				mc.options.broadcastOptions();
-				mc.resizeGui();
+				GametestCompat.resizeGui(mc);
 				if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 			});
 
