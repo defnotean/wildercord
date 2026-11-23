@@ -1349,7 +1349,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				ServerLevel level = ((ServerLevel) player(server).level());
 				for (int dx = -100; dx <= 100; dx++) {
 					for (int dz = -100; dz <= 100; dz++) {
-						for (int y = level.getMinY() + 1; y < origin.getY() + 10; y++) {
+						for (int y = level.getMinBuildHeight() + 1; y < origin.getY() + 10; y++) {
 							BlockPos pos = new BlockPos(origin.getX() + dx, y, origin.getZ() + dz);
 							if (level.getBlockState(pos).is(WildercordBlocks.ARCHIVE_LECTERN)) {
 								return observation.scanned(level, pos);
@@ -1481,10 +1481,10 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			}
 			Archivist archivist = found.getFirst();
 			float max = archivist.getMaxHealth();
-			archivist.hurtServer(level, level.damageSources().playerAttack(player), max * 10);
+			archivist.hurt(level.damageSources().playerAttack(player), max * 10);
 			check(archivist.isAlive() && Math.abs(archivist.getHealth() - max * 2 / 3) < 0.01F,
 				"one huge blow should stop at the start of the Archivist's next phase (health " + archivist.getHealth() + " of " + max + ")");
-			boolean again = archivist.hurtServer(level, level.damageSources().playerAttack(player), max * 10);
+			boolean again = archivist.hurt(level.damageSources().playerAttack(player), max * 10);
 			check(!again && Math.abs(archivist.getHealth() - max * 2 / 3) < 0.01F, "the Archivist shouldn't be hurt while it rewrites its Cord");
 			// Nothing leads it out of the Archive: no boat, no portal.
 			Entity boat = McEntities.create(EntityType.OAK_BOAT, level, MobSpawnType.COMMAND);

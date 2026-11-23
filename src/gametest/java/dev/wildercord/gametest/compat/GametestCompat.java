@@ -3,6 +3,7 @@ package dev.wildercord.gametest.compat;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -107,20 +109,22 @@ public final class GametestCompat {
 	public static void swingMainHandWithItem(LocalPlayer player) {}
 
 	/**
-	 * Waits for the server to satisfy {@code ready}, looking once a tick. The newer versions hand this to
-	 * fabric's own waiters; 1.21.1's harness has none, so it polls from the calling thread and stops after
-	 * {@code ticks} either way, leaving the caller's own checks to report what the server actually did.
-	 * The server handle is the harness's own context object, which these waiters only wake.
+	 * Waits for the server to satisfy {@code ready}, looking once a tick, and returns the ticks waited.
+	 * The newer versions hand this to fabric's own waiters; 1.21.1's harness has none, so each attempt
+	 * asks the server itself through {@code computeOnServer} and then advances the world with one
+	 * client tick, leaving the caller's own checks to report what the server actually did.
 	 */
-	public static void waitFor(ClientGameTestContext client, Object server,
-			java.util.function.Predicate<Object> ready, int ticks) {
+	public static int waitFor(ClientGameTestContext client, TestServerContext server,
+			java.util.function.Predicate<MinecraftServer> ready, int ticks) {
+		int waited = 0;
 		for (int i = 0; i < Math.max(1, ticks); i++) {
-			if (ready.test(server)) {
-				return;
+			if (Boolean.TRUE.equals(server.computeOnServer(ready::test))) {
+				return waited;
 			}
 			client.waitTicks(1);
+			waited++;
 		}
-		ready.test(server);
+		return waited;
 	}
 
 	/** Empties the particle engine between screenshots. 1.21.1's engine has no public clear. */

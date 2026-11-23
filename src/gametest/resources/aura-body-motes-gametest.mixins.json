@@ -2,7 +2,9 @@
   "required": true,
   "package": "dev.wildercord.gametest.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": [],
+  "client": [
+    "AuraBodyMoteProbeMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
