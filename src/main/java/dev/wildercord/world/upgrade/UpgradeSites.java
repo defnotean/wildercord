@@ -71,7 +71,7 @@ public final class UpgradeSites extends SavedData {
 		if(!level.dimension().equals(Level.OVERWORLD))return;
 		var structures=level.registryAccess().lookupOrThrow(Registries.STRUCTURE);var pos=chunk.getPos();
 		for(var start:chunk.getAllStarts().entrySet()) {
-			if(!start.getValue().isValid())continue;var id=structures.getKey(start.getKey());if(id==null)continue;
+			if(!start.getValue().isValid())continue;var id=start.getKey().location();if(id==null)continue;
 			UpgradeCatalog.byStructure(id.toString()).ifPresent(f->of(level).record(new Site(f.id(),pos.x,pos.z,Site.NATURAL,0,"PRESENT")));
 		}
 		for(var be:chunk.getBlockEntities().values()) {

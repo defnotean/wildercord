@@ -198,6 +198,7 @@ public class Cinderfox extends TamableAnimal {
 
 	@Override
 	public boolean doHurtTarget(Entity target) {
+		ServerLevel level = (ServerLevel) level();
 		boolean weak = weakToFire(target);
 		float bite = WildlifeRules.sparkBite((float) getAttributeValue(Attributes.ATTACK_DAMAGE), weak);
 		boolean hit = target.hurt(damageSources().mobAttack(this), bite);

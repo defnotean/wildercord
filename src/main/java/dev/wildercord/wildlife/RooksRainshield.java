@@ -62,7 +62,7 @@ public final class RooksRainshield {
    if(!(user instanceof ServerPlayer p))return InteractionResult.SUCCESS;
    if(!(target instanceof ServerPlayer r)||p==r||!pair(p,r)||!stack.is(ITEM)||p.getItemInHand(h)!=stack||p.getAttached(FAN)!=null||p.getAttached(COVER)!=null||r.getAttached(COVER)!=null)return InteractionResult.FAIL;
    var selection=p.getAttached(SELECT);
-   if(selection!=null&&selection.level==p.level()&&selection.recipient.equals(r.getUUID())&&selection.recipientBody==r&&selection.held==stack&&selection.hand==h&&now(p)<=selection.until&&selection.consented&&r.isShiftKeyDown())return use(p.level(),p,h);
+   if(selection!=null&&selection.level==p.level()&&selection.recipient.equals(r.getUUID())&&selection.recipientBody==r&&selection.held==stack&&selection.hand==h&&now(p)<=selection.until&&selection.consented&&r.isShiftKeyDown())return use(p.level(),p,h).getResult();
    p.setAttached(SELECT,new Selection(p,r,stack,h));r.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.rainshield.offer",p.getDisplayName()), true);return InteractionResult.SUCCESS;
   }
   @Override public InteractionResultHolder<ItemStack> use(Level l,Player user,InteractionHand h){ ItemStack mcUseStack = user.getItemInHand(h);
@@ -76,7 +76,7 @@ public final class RooksRainshield {
    p.removeAttached(SELECT);p.setAttached(GENERATION,fan.generation);p.setAttached(DRAW,new Draw(((ServerLevel) p.level()),fan.held,h,fan.nonce));p.setAttached(FAN,fan);r.setAttached(COVER,fan);p.startUsingItem(h);RainshieldFx.send(p,r,fan.normal,0,fan.nonce,fan.generation);Feels.sound(((ServerLevel) p.level()),p.position(),"rainshield_pivot",.3F,1);return InteractionResultHolder.consume(mcUseStack);
   }
   @Override public ItemStack finishUsingItem(ItemStack stack,Level l,LivingEntity e){if(e instanceof ServerPlayer p){var f=p.getAttached(FAN);if(f!=null&&f.level==l&&f.held==stack&&p.isUsingItem()&&p.getUseItem()==stack&&p.getUseItemRemainingTicks()==0)clear(f,true);}return stack;}
-  @Override public boolean releaseUsing(ItemStack stack,Level l,LivingEntity e,int left){if(e instanceof ServerPlayer p){var f=p.getAttached(FAN);if(f!=null&&f.level==l&&f.held==stack&&p.isUsingItem()&&p.getUseItem()==stack&&left==p.getUseItemRemainingTicks()){var d=p.getAttached(DRAW);if(d!=null&&d.nonce().equals(f.nonce))p.removeAttached(DRAW);clear(f,false);}}return false;}
+  @Override public void releaseUsing(ItemStack stack,Level l,LivingEntity e,int left){if(e instanceof ServerPlayer p){var f=p.getAttached(FAN);if(f!=null&&f.level==l&&f.held==stack&&p.isUsingItem()&&p.getUseItem()==stack&&left==p.getUseItemRemainingTicks()){var d=p.getAttached(DRAW);if(d!=null&&d.nonce().equals(f.nonce))p.removeAttached(DRAW);clear(f,false);}}}
  });
  private static long now(ServerPlayer p){return p.level().getServer().overworld().getGameTime();}
  private static boolean actor(ServerPlayer p){return p.isAlive()&&!p.isRemoved()&&p.gameMode.getGameModeForPlayer()==GameType.SURVIVAL&&!p.isPassenger()&&!p.isInWater()&&p.onGround()&&p.level().hasChunkAt(p.blockPosition())&&p.serverLevel().getEntity(p.getUUID())==p&&p.level().getServer().getPlayerList().getPlayer(p.getUUID())==p;}

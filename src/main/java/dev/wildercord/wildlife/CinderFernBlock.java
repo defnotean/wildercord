@@ -25,7 +25,7 @@ public final class CinderFernBlock extends Block {
  @Override protected boolean isRandomlyTicking(BlockState s){return s.getValue(AGE)<2 || !s.getValue(COOLED);}
  @Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r){if(!s.canSurvive(l,p)||r.nextInt(16)!=0)return;var next=s;if(l.isRainingAt(p.above()) && !s.getValue(COOLED))next=s.setValue(COOLED,true);else if(s.getValue(COOLED)&&s.getValue(AGE)<2&&l.getMaxLocalRawBrightness(p)>=8)next=s.setValue(AGE,s.getValue(AGE)+1);if(!next.equals(s))l.setBlock(p,next,Block.UPDATE_CLIENTS);}
  @Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult hit){return harvest(s,l,p,who);}
- @Override protected ItemInteractionResult useItemOn(ItemStack i,BlockState s,Level l,BlockPos p,Player who,InteractionHand h,BlockHitResult hit){return s.getValue(AGE)==2?harvest(s,l,p,who):super.useItemOn(i,s,l,p,who,h,hit);}
+ @Override protected ItemInteractionResult useItemOn(ItemStack i,BlockState s,Level l,BlockPos p,Player who,InteractionHand h,BlockHitResult hit){return s.getValue(AGE)==2?dev.wildercord.compat.McBlocksAndItems.itemResult(harvest(s,l,p,who)):super.useItemOn(i,s,l,p,who,h,hit);}
  private InteractionResult harvest(BlockState s,Level l,BlockPos p,Player who){
   if(!s.is(this)||s.getValue(AGE)!=2||!s.getValue(COOLED))return InteractionResult.PASS;
   return l instanceof ServerLevel server?harvest(s,server,p,who,EmberPlantAdmission.WORLD):InteractionResult.SUCCESS;

@@ -241,7 +241,7 @@ public class LumenStag extends Animal {
 	}
 
 	@Override
-	protected int getBaseExperienceReward(ServerLevel level) {
+	protected int getBaseExperienceReward() {
 		return 0;
 	}
 

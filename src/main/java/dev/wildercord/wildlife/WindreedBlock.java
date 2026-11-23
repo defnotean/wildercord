@@ -29,7 +29,7 @@ public final class WindreedBlock extends Block {
 	}
 	@Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult hit) {return harvest(s,l,p,who);}
 	@Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult hit) {
-		return s.getValue(AGE)==2?harvest(s,l,p,who):super.useItemOn(stack,s,l,p,who,hand,hit);
+		return s.getValue(AGE)==2?dev.wildercord.compat.McBlocksAndItems.itemResult(harvest(s,l,p,who)):super.useItemOn(stack,s,l,p,who,hand,hit);
 	}
 	private InteractionResult harvest(BlockState s,Level l,BlockPos p,Player who) {
 		if(s.getValue(AGE)!=2 || !who.mayBuild() || !l.mayInteract(who,p))return InteractionResult.PASS;

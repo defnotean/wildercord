@@ -214,7 +214,8 @@ public class CapcrownSnail extends Animal implements Shearable {
 	}
 
 	@Override
-	public void shear(ServerLevel level, SoundSource source, ItemStack tool) {
+	public void shear(SoundSource source) {
+		ServerLevel level = (ServerLevel) level();
 		level.playSound(null, this, SoundEvents.MOOSHROOM_SHEAR, source, 1.0F, 1.2F);
 		entityData.set(CAPPED, false);
 		regrowAt = level.getGameTime() + SnailRules.REGROW_TICKS;
@@ -229,7 +230,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 		ItemStack held = player.getItemInHand(hand);
 		if (held.is(Items.SHEARS) && readyForShearing()) {
 			if (level() instanceof ServerLevel level) {
-				shear(level, SoundSource.PLAYERS, held);
+				shear(SoundSource.PLAYERS);
 				gameEvent(GameEvent.SHEAR, player);
 				held.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 			}

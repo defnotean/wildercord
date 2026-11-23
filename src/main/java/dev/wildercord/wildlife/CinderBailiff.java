@@ -56,7 +56,7 @@ public final class CinderBailiff extends PathfinderMob {
  private void recover(ServerLevel l){epoch++;setTarget(null);entityData.set(VENT,-1);attackReady=Math.max(attackReady,clock(l)+EmberRules.ATTACK_REST);pose(RECOVERING,EmberRules.RECOVERY);}
  /** Only call from admitted real Water/Frost outcome on this actual target. */
  public boolean cool(ServerPlayer p){if(!(level() instanceof ServerLevel l)||!isAlive()||isRemoved()||!valid(p)||!hasLineOfSight(p)||pose()!=WARNING)return false;recover((ServerLevel) level());Feels.sound(l,position(),"ember_bailiff_cool",.5F,1);return true;}
- @Override public boolean hurt(DamageSource source, float amount){
+ @Override public boolean hurt(DamageSource s, float amount){
 		ServerLevel level = (ServerLevel) level();
 float before=getHealth();boolean hit=super.hurt(s,amount);if(hit && before>getHealth() && isAlive()&&!isRemoved()){if(pose()==RESTING||pose()==BROWSING||pose()==WARNING&&s.getEntity() instanceof ServerPlayer p&&s.getDirectEntity()==p&&s.is(DamageTypes.PLAYER_ATTACK)&&!dev.wildercord.cast.Dungeons.spellLanding())recover((ServerLevel) level());if(s.getEntity() instanceof LivingEntity e&&valid(e)&&pose()!=FANNING)setTarget(e);}return hit;}
  @Override public void tick(){super.tick();if(level().isClientSide()){warningO=warning;fanO=fan;restO=rest;warning=WildlifeRules.approach(warning,pose()==WARNING?1:0,.1F);fan=WildlifeRules.approach(fan,pose()==FANNING?1:0,.2F);rest=WildlifeRules.approach(rest,pose()==RESTING?1:0,.06F);}}

@@ -167,7 +167,7 @@ public final class SerpentGrovePiece extends DungeonPiece {
 	private void skin(WorldGenLevel level,BoundingBox bb,int x0,int z0,int length,double heading,int y){
 		double x=x0,z=z0,a=heading;
 		for(int i=0;i<length*2;i++){
-			set(level,bb,Blocks.PALE_MOSS_CARPET.defaultBlockState(),(int)Math.round(x),y,(int)Math.round(z));
+			set(level,bb,Blocks.MOSS_CARPET.defaultBlockState(),(int)Math.round(x),y,(int)Math.round(z));
 			a+=Math.sin(i*0.7)*0.45;x+=Math.cos(a)*0.5;z+=Math.sin(a)*0.5;
 		}
 	}
