@@ -24,7 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.portal.TeleportTransition;
+import java.util.Set;
 import net.minecraft.world.phys.Vec3;
 
 import java.io.IOException;
@@ -286,9 +286,8 @@ final class CinnamonCompanion {
 			if (source == destination) {
 				dog.teleportTo(at.x, at.y, at.z); dog.setDeltaMovement(Vec3.ZERO); dog.resetFallDistance();
 			} else {
-				Entity moved = dog.teleport(new TeleportTransition(destination, at, Vec3.ZERO, player.getYRot(), 0, TeleportTransition.DO_NOTHING));
-				if (!(moved instanceof CinnamonDog next) || next.isRemoved() || !next.getUUID().equals(entry.entity())) return false;
-				dog = next;
+				if (!dog.teleportTo(destination, at.x, at.y, at.z, Set.of(), player.getYRot(), 0)) return false;
+				if (dog.isRemoved() || !dog.getUUID().equals(entry.entity())) return false;
 				if (LIVE.get(id) != dog) loaded(dog, destination);
 			}
 			if (LIVE.get(id) != dog || dog.isRemoved()) return false;

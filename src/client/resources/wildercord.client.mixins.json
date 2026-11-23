@@ -1,41 +1,17 @@
 {
-	"required": true,
-	"package": "dev.wildercord.client.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"InventoryScreenMixin",
-		"CreativeModeInventoryScreenMixin",
-		"AbstractRecipeBookScreenMixin",
-		"AbstractContainerScreenMixin",
-		"PlayerRendererMixin",
-		"GameRendererMixin",
-		"CameraMixin",
-		"PlayerRenderStateMixin",
-		"ArmedEntityRenderStateMixin",
-		"PlayerModelMixin",
-		"ModelPartChildrenAccessor",
-		"ArticulatedPlayerModelMixin",
-		"LivingEntityRendererMixin",
-		"PlayerRendererStyleMixin",
-		"PlayerRendererGearMixin",
-		"BossHealthOverlayAccessor",
-		"SubtitleOverlayMixin",
-		"ServerStatusPingerMixin",
-		"MouseHandlerMixin",
-		"ItemInHandLayerAuraMixin",
-		"FirstPersonAuraMixin",
-		"MastersHandEquipMixin",
-		"ItemLayerAuraMixin",
-		"EntityRendererAuraSenseMixin",
-		"MinecraftStringsMixin",
-		"EntityRenderDispatcherHitStopMixin",
-		"ItemEntityRendererBondMixin",
-		"MinecraftSpellCutMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
-	}
+  "required": true,
+  "package": "dev.wildercord.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ModelPartChildrenAccessor",
+    "BossHealthOverlayAccessor",
+    "ServerStatusPingerMixin",
+    "MastersHandEquipMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
 }

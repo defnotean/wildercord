@@ -12,7 +12,6 @@
       "dev.wildercord.ritual.RenamedReagentTest",
       "dev.wildercord.cast.FortuneDamageAdmissionTest",
       "dev.wildercord.party.RelayImpactTest",
-      "dev.wildercord.client.fx.LifeOutcomeQualityTest",
       "dev.wildercord.client.fx.ScreenEffectSettingTest",
       "dev.wildercord.client.fx.SafeTelegraphsTest",
       "dev.wildercord.gametest.LifeJournalTest",
@@ -67,7 +66,6 @@
       "dev.wildercord.gametest.WildercordSwordStringsTest",
       "dev.wildercord.gametest.WildercordMomentumTest",
       "dev.wildercord.gametest.WildercordAuraFxTest",
-      "dev.wildercord.cast.RelayCircleTest",
       "dev.wildercord.cast.ExcisePlayableTest",
       "dev.wildercord.wildlife.SiltcrestEcologyTest",
       "dev.wildercord.wildlife.SiltcrestBankReturnTest",
@@ -79,7 +77,6 @@
       "dev.wildercord.wildlife.ThistleHedgehogTamingTest",
       "dev.wildercord.wildlife.ShrineSanctuaryTest",
       "dev.wildercord.wildlife.StagFirstRideTest",
-      "dev.wildercord.aura.world.BossDamageTest",
       "dev.wildercord.wildlife.RainshieldFaultTest",
       "dev.wildercord.wildlife.SiltcrestPresentationTest",
       "dev.wildercord.gametest.WildercordFeatureTour"

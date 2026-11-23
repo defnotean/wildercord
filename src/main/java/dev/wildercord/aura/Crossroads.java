@@ -1,5 +1,6 @@
 package dev.wildercord.aura;
 
+import dev.wildercord.compat.McVec3;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.arts.ArtLight;
@@ -58,7 +59,7 @@ public final class Crossroads {
 	/** One standard: the Way it stands for and where its foot is. */
 	public record Standard(String way, Vec3 foot) {
 		public static final StreamCodec<ByteBuf, Standard> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.stringUtf8(128), Standard::way, Vec3.STREAM_CODEC, Standard::foot, Standard::new);
+			ByteBufCodecs.stringUtf8(128), Standard::way, McVec3.STREAM_CODEC, Standard::foot, Standard::new);
 	}
 
 	/**
@@ -74,7 +75,7 @@ public final class Crossroads {
 	 */
 	public record State(Vec3 centre, List<Standard> standards, long opened, long until, String leaning, long leanUntil, int reason) {
 		public static final StreamCodec<ByteBuf, State> STREAM_CODEC = StreamCodec.composite(
-			Vec3.STREAM_CODEC, State::centre, Standard.STREAM_CODEC.apply(ByteBufCodecs.list(8)), State::standards, ByteBufCodecs.VAR_LONG, State::opened,
+			McVec3.STREAM_CODEC, State::centre, Standard.STREAM_CODEC.apply(ByteBufCodecs.list(8)), State::standards, ByteBufCodecs.VAR_LONG, State::opened,
 			ByteBufCodecs.VAR_LONG, State::until, ByteBufCodecs.stringUtf8(128), State::leaning, ByteBufCodecs.VAR_LONG, State::leanUntil,
 			ByteBufCodecs.VAR_INT, State::reason, State::new);
 

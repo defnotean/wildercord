@@ -9,9 +9,7 @@ import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,7 +27,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.enchantment.Repairable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,10 +138,6 @@ public final class Wildlife {
 		});
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(output -> EGGS.forEach(output::accept));
 
-		// A skyray's membrane mends an elytra as well as a phantom's does.
-		DefaultItemComponentEvents.MODIFY.register(context -> context.modify(Items.ELYTRA, builder ->
-			builder.set(DataComponents.REPAIRABLE, new Repairable(HolderSet.direct(Items.PHANTOM_MEMBRANE.builtInRegistryHolder(),
-				SKYRAY_MEMBRANE.builtInRegistryHolder())))));
 
 		// Glimmerwings are drawn to fresh magic: remember when each player last cast.
 		WildercordEvents.AFTER_CAST.register((player, spell, runes, spent) -> LAST_CAST.put(player.getUUID(), player.level().getGameTime()));

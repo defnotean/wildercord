@@ -1,5 +1,6 @@
 package dev.wildercord.aura;
 
+import dev.wildercord.compat.McVec3;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.cast.Fx;
@@ -87,7 +88,7 @@ public final class AuraFx {
 	public record Impact(int attacker, int target, Vec3 at, int color, int stage, int weight) implements CustomPacketPayload {
 		public static final Type<Impact> TYPE = new Type<>(Wildercord.id("aura_fx_impact"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Impact> CODEC = StreamCodec.composite(
-			ByteBufCodecs.VAR_INT, Impact::attacker, ByteBufCodecs.VAR_INT, Impact::target, Vec3.STREAM_CODEC, Impact::at, ByteBufCodecs.INT, Impact::color,
+			ByteBufCodecs.VAR_INT, Impact::attacker, ByteBufCodecs.VAR_INT, Impact::target, McVec3.STREAM_CODEC, Impact::at, ByteBufCodecs.INT, Impact::color,
 			ByteBufCodecs.VAR_INT, Impact::stage, ByteBufCodecs.VAR_INT, Impact::weight, Impact::new).cast();
 
 		@Override
@@ -113,7 +114,7 @@ public final class AuraFx {
 	public record GroundScar(Vec3 at, float radius, int ticks, int kind) implements CustomPacketPayload {
 		public static final Type<GroundScar> TYPE = new Type<>(Wildercord.id("aura_fx_ground_scar"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, GroundScar> CODEC = StreamCodec.composite(
-			Vec3.STREAM_CODEC, GroundScar::at, ByteBufCodecs.FLOAT, GroundScar::radius,
+			McVec3.STREAM_CODEC, GroundScar::at, ByteBufCodecs.FLOAT, GroundScar::radius,
 			ByteBufCodecs.VAR_INT, GroundScar::ticks, ByteBufCodecs.VAR_INT, GroundScar::kind, GroundScar::new).cast();
 		@Override public Type<GroundScar> type() { return TYPE; }
 	}
@@ -122,7 +123,7 @@ public final class AuraFx {
 	public record Standard(int owner, Vec3 at, Vec3 facing, String way, int color, float emphasis, float scale, int ticks) implements CustomPacketPayload {
 		public static final Type<Standard> TYPE = new Type<>(Wildercord.id("aura_fx_standard"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Standard> CODEC = StreamCodec.composite(
-			ByteBufCodecs.VAR_INT, Standard::owner, Vec3.STREAM_CODEC, Standard::at, Vec3.STREAM_CODEC, Standard::facing,
+			ByteBufCodecs.VAR_INT, Standard::owner, McVec3.STREAM_CODEC, Standard::at, McVec3.STREAM_CODEC, Standard::facing,
 			ByteBufCodecs.STRING_UTF8, Standard::way, ByteBufCodecs.INT, Standard::color, ByteBufCodecs.FLOAT, Standard::emphasis,
 			ByteBufCodecs.FLOAT, Standard::scale, ByteBufCodecs.VAR_INT, Standard::ticks, Standard::new).cast();
 		@Override public Type<Standard> type() { return TYPE; }
@@ -136,7 +137,7 @@ public final class AuraFx {
 	public record BurstCue(int owner, Vec3 at, Vec3 facing, int color, float size, int style) implements CustomPacketPayload {
 		public static final Type<BurstCue> TYPE = new Type<>(Wildercord.id("aura_fx_burst"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, BurstCue> CODEC = StreamCodec.composite(
-			ByteBufCodecs.VAR_INT, BurstCue::owner, Vec3.STREAM_CODEC, BurstCue::at, Vec3.STREAM_CODEC, BurstCue::facing, ByteBufCodecs.INT, BurstCue::color,
+			ByteBufCodecs.VAR_INT, BurstCue::owner, McVec3.STREAM_CODEC, BurstCue::at, McVec3.STREAM_CODEC, BurstCue::facing, ByteBufCodecs.INT, BurstCue::color,
 			ByteBufCodecs.FLOAT, BurstCue::size, ByteBufCodecs.VAR_INT, BurstCue::style, BurstCue::new).cast();
 
 		@Override
@@ -164,7 +165,7 @@ public final class AuraFx {
 	public record Shown(net.minecraft.core.particles.ParticleOptions particle, Vec3 at) implements CustomPacketPayload {
 		public static final Type<Shown> TYPE = new Type<>(Wildercord.id("aura_fx_shown"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Shown> CODEC = StreamCodec.composite(
-			net.minecraft.core.particles.ParticleTypes.STREAM_CODEC, Shown::particle, Vec3.STREAM_CODEC, Shown::at, Shown::new);
+			net.minecraft.core.particles.ParticleTypes.STREAM_CODEC, Shown::particle, McVec3.STREAM_CODEC, Shown::at, Shown::new);
 
 		@Override
 		public Type<Shown> type() {
