@@ -6,7 +6,7 @@ import dev.wildercord.aura.world.OathboundBladeChampion;
 import dev.wildercord.aura.world.OathboundBladeChampionRules;
 import dev.wildercord.client.compat.RenderCompat;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -89,7 +89,7 @@ public final class OathboundBladeChampionRenderer
 		}
 
 		@Override
-		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, OathboundBladeChampionRenderState s, float yRot, float xRot) {
+		public void render(PoseStack poseStack, MultiBufferSource collector, int light, OathboundBladeChampionRenderState s, float yRot, float xRot) {
 			if (s.isInvisible) {
 				return;
 			}
@@ -106,7 +106,7 @@ public final class OathboundBladeChampionRenderer
 			if (alpha <= 4) {
 				return;
 			}
-			RenderCompat.submitModel(collector.order(1), getParentModel(), s, poseStack, type, light,
+			RenderCompat.submitModel(collector, getParentModel(), s, poseStack, type, light,
 				OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, s.outlineColor);
 		}
 	}

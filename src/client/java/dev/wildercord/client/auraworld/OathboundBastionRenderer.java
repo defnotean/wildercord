@@ -6,7 +6,7 @@ import dev.wildercord.aura.world.OathboundBastion;
 import dev.wildercord.aura.world.OathboundBastionRules;
 import dev.wildercord.client.compat.RenderCompat;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -85,7 +85,7 @@ public final class OathboundBastionRenderer extends MobRenderer<OathboundBastion
 		}
 
 		@Override
-		public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, OathboundBastionRenderState s, float yRot, float xRot) {
+		public void render(PoseStack poseStack, MultiBufferSource collector, int light, OathboundBastionRenderState s, float yRot, float xRot) {
 			if (s.isInvisible) {
 				return;
 			}
@@ -102,7 +102,7 @@ public final class OathboundBastionRenderer extends MobRenderer<OathboundBastion
 			if (alpha < 4) {
 				return;
 			}
-			RenderCompat.submitModel(collector.order(1), getParentModel(), s, poseStack, type, light,
+			RenderCompat.submitModel(collector, getParentModel(), s, poseStack, type, light,
 				OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, s.outlineColor);
 		}
 	}
