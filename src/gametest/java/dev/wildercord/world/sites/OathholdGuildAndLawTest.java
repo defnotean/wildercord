@@ -1,5 +1,6 @@
 package dev.wildercord.world.sites;
 
+import dev.wildercord.gametest.compat.GametestCompat;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.aura.world.OathboundBastion;
 import dev.wildercord.aura.world.OathboundHalberdier;
@@ -143,7 +144,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				mc.options.renderDistance().set(10);
 				mc.options.fov().set(72);
 				mc.options.broadcastOptions();
-				mc.resizeGui();
+				GametestCompat.resizeGui(mc);
 				if (dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 			});
 

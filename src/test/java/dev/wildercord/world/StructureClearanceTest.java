@@ -87,8 +87,8 @@ class StructureClearanceTest {
 				for (int cz = -64; cz < 64; cz += step) {
 					ChunkPos candidate = entry.resolvePlacement().getPotentialStructureChunk(seed, cx, cz);
 					if (!seen.add(candidate)) continue;
-					if (StructureClearance.blockingPlacementCandidate(seed, entry, candidate.x(), candidate.z()).isEmpty()) {
-						survivors.add(new Placed(entry, candidate.x(), candidate.z()));
+					if (StructureClearance.blockingPlacementCandidate(seed, entry, candidate.x, candidate.z).isEmpty()) {
+						survivors.add(new Placed(entry, candidate.x, candidate.z));
 					}
 				}
 			}

@@ -1,5 +1,6 @@
 package dev.wildercord.world.sites;
 
+import dev.wildercord.gametest.compat.GametestCompat;
 import dev.wildercord.Wildercord;
 import dev.wildercord.compat.McWorldgen;
 import dev.wildercord.world.sites.oathhold.OathholdCitizen;
@@ -77,9 +78,9 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 		});
 		ctx.waitTicks(40);
 		try {
-			world.getClientLevel().waitForChunksDownload();
+			world.getClientWorld().waitForChunksDownload();
 			dev.wildercord.gametest.compat.GametestCompat.awaitClientPackets(world);
-			world.getClientLevel().waitForChunksRender();
+			world.getClientWorld().waitForChunksRender();
 		} catch (AssertionError | RuntimeException ignored) {
 		}
 		ctx.waitTicks(40);
@@ -109,7 +110,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				mc.options.simulationDistance().set(5);
 				mc.options.fov().set(74);
 				mc.options.broadcastOptions();
-				mc.resizeGui();
+				GametestCompat.resizeGui(mc);
 				if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 			});
 			world.getServer().runOnServer(s -> {
