@@ -315,7 +315,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				poseMob(seahorse, 2.5, 91.6, 2.0, 80f);
 				l.addFreshEntity(seahorse);
 				seahorse.tameWithName(p);
-				seahorse.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
+				seahorse.equipSaddle(new ItemStack(Items.SADDLE), net.minecraft.sounds.SoundSource.NEUTRAL);
 				friendlyIds[3] = seahorse.getUUID();
 
 				SingingMoonWhale whale = OceanEntities.SINGING_MOON_WHALE.create(l, EntitySpawnReason.COMMAND);
