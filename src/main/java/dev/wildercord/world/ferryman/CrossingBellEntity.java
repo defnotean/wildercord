@@ -3,9 +3,12 @@ package dev.wildercord.world.ferryman;
 import dev.wildercord.compat.McEntities;
 
 import dev.wildercord.aura.world.Guardians;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import dev.wildercord.world.sites.SiteStructure;
 import dev.wildercord.world.sites.water.LastCrossingPiece;
 import net.minecraft.core.*;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.*;
 import net.minecraft.sounds.*;
@@ -65,10 +68,10 @@ public final class CrossingBellEntity extends BlockEntity {
 		if (slain || !id.equals(guardian)) return false;
 		slain = true; slainAt = level != null ? level.getGameTime() : 0L; setChanged(); return true;
 	}
-	@Override protected void loadAdditional(ValueInput input) {
-		super.loadAdditional(input); guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null); slain = input.getBooleanOr("slain", false); slainAt = input.getLongOr("slain_at", 0L);
+	@Override protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.loadAdditional(inputTag, registries); guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null); slain = input.getBooleanOr("slain", false); slainAt = input.getLongOr("slain_at", 0L);
 	}
-	@Override protected void saveAdditional(ValueOutput output) {
-		super.saveAdditional(output); if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian); output.putBoolean("slain", slain); output.putLong("slain_at", slainAt);
+	@Override protected void saveAdditional(CompoundTag outputTag, HolderLookup.Provider registries) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
+		super.saveAdditional(outputTag, registries); if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian); output.putBoolean("slain", slain); output.putLong("slain_at", slainAt);
 	}
 }

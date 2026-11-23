@@ -1,11 +1,15 @@
 package dev.wildercord.world.sites.oathhold;
 
 import dev.wildercord.aura.world.AuraWorld;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.cooking.Meals;
 import dev.wildercord.wildlife.WetlandGarden;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -40,8 +44,6 @@ import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.EnumSet;
 import java.util.Optional;
@@ -358,8 +360,8 @@ public class OathholdCitizen extends WanderingTrader {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		output.putString("Archetype", archetype().id);
 		output.putInt("SkinTone", skinTone());
 		output.putString("GivenName", givenName);
@@ -372,8 +374,8 @@ public class OathholdCitizen extends WanderingTrader {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		OathholdCitizenRules.Archetype role = OathholdCitizenRules.Archetype.ofId(input.getStringOr("Archetype", "townsfolk"));
 		entityData.set(DATA_ARCHETYPE, role.ordinal());
 		entityData.set(DATA_SKIN_TONE, input.getIntOr("SkinTone", 0));
