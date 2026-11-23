@@ -32,6 +32,7 @@ public final class Wildercord implements ModInitializer {
 		WildercordBlocks.init();
 		dev.wildercord.content.ResidueBlocks.init();
 		WildercordItems.init();
+		dev.wildercord.content.SacredPigQuest.init();
 		dev.wildercord.cooking.Meals.init();
 		dev.wildercord.content.Reagents.init();
 		dev.wildercord.content.UpgradeRecipe.init();
