@@ -247,7 +247,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				// Killed, it spills what it holds (its owner steps away first, so they don't pick it straight up).
 				stand(s, 0.5, 18.5);
 				fell = m.getBoundingBox();
-				m.kill(s.overworld());
+				m.kill();
 			});
 			c.waitTicks(5);
 			w.getServer().runOnServer(s -> {

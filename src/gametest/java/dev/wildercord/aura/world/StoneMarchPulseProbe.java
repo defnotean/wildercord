@@ -3,7 +3,6 @@ package dev.wildercord.aura.world;
 import dev.wildercord.Wildercord;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public final class StoneMarchPulseProbe {
 	record State(long acceptedTick, long gameTick, long lastMarchTick, int pulse, int resolvingPulse, int consumedMask,
 		boolean installedSource, boolean finished, boolean released, boolean alreadyAttempted,
 		boolean originalRosterBody, boolean currentLevelBody, int attackId, float attackAge) {}
-	record Body(Vec3 position, Vec3 relative, Vec3 velocity, Input receivedInput, float health, float absorption,
+	record Body(Vec3 position, Vec3 relative, Vec3 velocity, Object receivedInput, float health, float absorption,
 		float yaw, float pitch, boolean alive, boolean onGround, boolean spectator, int band) {}
 	record Decision(State state, Geometry geometry, Body body, boolean originalCanHit) {}
 	static final class Receipt {
@@ -112,7 +111,7 @@ public final class StoneMarchPulseProbe {
 				((Set<UUID>) StoneMarchFixture.field(accepted, "attempted")).contains(body.getUUID()),
 				((Map<UUID, ServerPlayer>) StoneMarchFixture.field(accepted, "bodies")).get(body.getUUID()) == body,
 				level.getPlayerByUUID(body.getUUID()) == body, master.attackAnimation(), master.attackElapsed(0));
-			Body snapshot = new Body(position, relative, body.getDeltaMovement(), body.getLastClientInput(), body.getHealth(),
+			Body snapshot = new Body(position, relative, body.getDeltaMovement(), dev.wildercord.gametest.compat.GametestCompat.lastClientInput(body), body.getHealth(),
 				body.getAbsorptionAmount(), body.getYRot(), body.getXRot(), body.isAlive(), body.onGround(), body.isSpectator(),
 				StoneMarchRules.band(relative.dot(geometry.aim), relative.dot(geometry.side), relative.y));
 			session.recordOriginalReturn(source, body, new Decision(state, geometry, snapshot, result));

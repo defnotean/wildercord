@@ -167,7 +167,7 @@ public final class StoneHingePeerProbe {
         ServerEntity tracker = TRACKER.get();
         // Observation errors never suppress or replay the original native operation.
         Object[] observation = h.observe(() -> {
-            if (packet instanceof ClientboundTeleportEntityPacket t && t.id() == h.owner.getId()) h.correction = true;
+            if (packet instanceof ClientboundTeleportEntityPacket t && t.getId() == h.owner.getId()) h.correction = true;
             if (tracker == null || !positionPacket(packet, h.owner)) return null;
             var accepted = h.ownerTrace.provenOwnerPositions();
             if (accepted.isEmpty()) return null;
@@ -186,7 +186,7 @@ public final class StoneHingePeerProbe {
         Peer p = peer; Minecraft mc = Minecraft.getInstance();
         if (p == null || !mc.isSameThread() || mc.level != p.owner.level()) { original.run(); return; }
         Object[] observation = p.observe(() -> {
-            if (packet instanceof ClientboundTeleportEntityPacket t && t.id() == p.owner.getId()) p.correction = true;
+            if (packet instanceof ClientboundTeleportEntityPacket t && t.getId() == p.owner.getId()) p.correction = true;
             if (!positionPacket(packet, p.owner)) return null;
             return new Object[] { packet.getClass().getSimpleName(), digest(packet), target(packet, p.owner.getPositionCodec().getBase()) };
         });
@@ -199,10 +199,10 @@ public final class StoneHingePeerProbe {
     }
     private static boolean positionPacket(Packet<?> packet, Player owner) {
         return packet instanceof ClientboundMoveEntityPacket move && move.hasPosition() && move.getEntity(owner.level()) == owner
-            || packet instanceof ClientboundEntityPositionSyncPacket sync && sync.id() == owner.getId();
+            || packet instanceof ClientboundTeleportEntityPacket sync && sync.getId() == owner.getId();
     }
     private static Vec3 target(Packet<?> packet, Vec3 base) {
-        if (packet instanceof ClientboundEntityPositionSyncPacket sync) return dev.wildercord.gametest.compat.GametestCompat.entityPositionSyncTarget(sync);
+        if (packet instanceof ClientboundTeleportEntityPacket sync) return dev.wildercord.gametest.compat.GametestCompat.entityPositionSyncTarget(sync);
         return dev.wildercord.gametest.compat.GametestCompat.moveEntityDeltaTarget((ClientboundMoveEntityPacket) packet, base);
     }
     /** Hash each original codec payload including entity ID, preserving every path step and rotation bit. */
@@ -212,7 +212,7 @@ public final class StoneHingePeerProbe {
             switch (packet) {
                 case ClientboundMoveEntityPacket.Pos p -> ClientboundMoveEntityPacket.Pos.STREAM_CODEC.encode(buffer, p);
                 case ClientboundMoveEntityPacket.PosRot p -> ClientboundMoveEntityPacket.PosRot.STREAM_CODEC.encode(buffer, p);
-                case ClientboundEntityPositionSyncPacket p -> ClientboundEntityPositionSyncPacket.STREAM_CODEC.encode(buffer, p);
+                case ClientboundTeleportEntityPacket p -> ClientboundTeleportEntityPacket.STREAM_CODEC.encode(buffer, p);
                 default -> throw new AssertionError("Unrecognized native position packet");
             }
             check(buffer.readableBytes() <= 16384, "Bounded native movement payload");

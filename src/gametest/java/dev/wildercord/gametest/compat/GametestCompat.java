@@ -58,8 +58,31 @@ public final class GametestCompat {
 		return null;
 	}
 
+	/** 1.21.1 sends an entity's absolute position in a teleport packet; the target is the packet's own position. */
 	public static Vec3 entityPositionSyncTarget(Object sync) {
+		if (sync instanceof net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket teleport) {
+			return new Vec3(teleport.getX(), teleport.getY(), teleport.getZ());
+		}
 		return Vec3.ZERO;
+	}
+
+	/**
+	 * Whether the player is sending no movement input. 1.21.1 has no {@code Input} record and no
+	 * {@code ServerPlayer#getLastClientInput}: the client's own input state is read directly, and a
+	 * server-side player is judged by what that input has made them do.
+	 */
+	public static boolean inputIdle(net.minecraft.world.entity.player.Player player) {
+		if (player instanceof LocalPlayer client) {
+			net.minecraft.client.player.Input keys = client.input;
+			return keys.forwardImpulse == 0.0F && keys.leftImpulse == 0.0F && !keys.up && !keys.down
+				&& !keys.left && !keys.right && !keys.jumping && !keys.shiftKeyDown;
+		}
+		return !player.isShiftKeyDown() && !player.isSprinting() && player.getDeltaMovement().lengthSqr() < 1.0E-7;
+	}
+
+	/** The last input the client sent this player. 1.21.1 keeps it in private fields with no accessor. */
+	public static Object lastClientInput(ServerPlayer player) {
+		return null;
 	}
 
 	public static Vec3 moveEntityDeltaTarget(Object move, Vec3 base) {
@@ -79,4 +102,20 @@ public final class GametestCompat {
 	}
 
 	public static void swingMainHandWithItem(LocalPlayer player) {}
+
+	/**
+	 * Waits for the server to satisfy {@code ready}, looking once a tick. The newer versions hand this to
+	 * fabric's own waiters; 1.21.1's harness has none, so it polls from the calling thread and stops after
+	 * {@code ticks} either way, leaving the caller's own checks to report what the server actually did.
+	 */
+	public static void waitFor(ClientGameTestContext client, net.minecraft.server.MinecraftServer server,
+			java.util.function.Predicate<net.minecraft.server.MinecraftServer> ready, int ticks) {
+		for (int i = 0; i < Math.max(1, ticks); i++) {
+			if (ready.test(server)) {
+				return;
+			}
+			client.waitTicks(1);
+		}
+		ready.test(server);
+	}
 }

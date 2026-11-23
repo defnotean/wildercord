@@ -154,14 +154,14 @@ class SandmawRulesTest {
 
 	@Test
 	void itCannotBeHurtUnderTheSandAndIsOpenWhenCaughtOut() {
-		assertEquals(0, SandmawRules.hurt(true, SandmawRules.STUCK));
-		assertEquals(15, SandmawRules.hurt(false, SandmawRules.STUCK));
-		assertEquals(15, SandmawRules.hurt(false, SandmawRules.CHOKING));
-		assertEquals(15, SandmawRules.hurt(false, SandmawRules.BEACHED));
-		assertEquals(12.5F, SandmawRules.hurt(false, SandmawRules.SINKHOLE));
-		assertEquals(12.5F, SandmawRules.hurt(false, SandmawRules.GULPED), "hit it to make it let go");
-		assertEquals(5, SandmawRules.hurt(false, SandmawRules.THRASH));
-		assertEquals(10, SandmawRules.hurt(false, SandmawRules.SLAM));
+		assertEquals(0, SandmawRules.hurt(10, true, SandmawRules.STUCK));
+		assertEquals(15, SandmawRules.hurt(10, false, SandmawRules.STUCK));
+		assertEquals(15, SandmawRules.hurt(10, false, SandmawRules.CHOKING));
+		assertEquals(15, SandmawRules.hurt(10, false, SandmawRules.BEACHED));
+		assertEquals(12.5F, SandmawRules.hurt(10, false, SandmawRules.SINKHOLE));
+		assertEquals(12.5F, SandmawRules.hurt(10, false, SandmawRules.GULPED), "hit it to make it let go");
+		assertEquals(5, SandmawRules.hurt(10, false, SandmawRules.THRASH));
+		assertEquals(10, SandmawRules.hurt(10, false, SandmawRules.SLAM));
 	}
 
 	@Test

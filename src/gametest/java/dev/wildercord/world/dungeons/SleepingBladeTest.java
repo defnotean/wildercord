@@ -180,7 +180,7 @@ public final class SleepingBladeTest implements FabricClientGameTest {
 	private static int books(net.minecraft.server.level.ServerPlayer p) {int n=0;for(int i=0;i<p.getInventory().getContainerSize();i++)if(p.getInventory().getItem(i).has(DataComponents.WRITTEN_BOOK_CONTENT))n++;return n;}
 	private static void use(ClientGameTestContext c,BlockPos at) {c.runOnClient(mc->mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(Vec3.atCenterOf(at),Direction.UP,at,false)));}
 	private static void aim(ClientGameTestContext c,BlockPos at) {c.runOnClient(mc->{var d=Vec3.atCenterOf(at).subtract(mc.player.getEyePosition());mc.player.setYRot((float)Math.toDegrees(Math.atan2(-d.x,d.z)));mc.player.setXRot((float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())));});}
-	private static void shot(ClientGameTestContext c,String name) {c.runOnClient(mc->{mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);});c.waitTicks(1);c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
+	private static void shot(ClientGameTestContext c,String name) {c.runOnClient(mc->{mc.getToasts().clear();mc.gui.getChat().clearMessages(false);});c.waitTicks(1);c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
 	private static final class Rival extends net.fabricmc.fabric.api.entity.FakePlayer {
 		Rival(net.minecraft.server.level.ServerLevel level) { super(level,new com.mojang.authlib.GameProfile(java.util.UUID.nameUUIDFromBytes("sleeping-blade-rival".getBytes(java.nio.charset.StandardCharsets.UTF_8)),"Rival")); }
 	}

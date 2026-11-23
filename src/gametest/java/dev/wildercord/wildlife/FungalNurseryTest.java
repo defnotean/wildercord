@@ -257,6 +257,6 @@ public final class FungalNurseryTest implements FabricClientGameTest {
  private static ServerPlayer p(MinecraftServer s) {return s.getPlayerList().getPlayers().getFirst();}
  private static void move(MinecraftServer s,double x,double z) {p(s).teleportTo(s.overworld(),x,30,z,Set.<RelativeMovement>of(),0,30);}
  private static void view(MinecraftServer s,Vec3 focus,double x,double z) {var eye=new Vec3(x,30+p(s).getEyeHeight(),z);var d=focus.subtract(eye);p(s).teleportTo(s.overworld(),x,30,z,Set.<RelativeMovement>of(),(float)Math.toDegrees(Math.atan2(-d.x,d.z)),(float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())));}
- private static void shot(ClientGameTestContext c,String n) {c.runOnClient(mc -> {mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);});c.takeScreenshot(TestScreenshotOptions.of(n).disableCounterPrefix());}
+ private static void shot(ClientGameTestContext c,String n) {c.runOnClient(mc -> {mc.getToasts().clear();mc.gui.getChat().clearMessages(false);});c.takeScreenshot(TestScreenshotOptions.of(n).disableCounterPrefix());}
  private static void check(boolean b,String why) {if(!b)throw new AssertionError(why);}
 }

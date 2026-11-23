@@ -12,13 +12,11 @@ import dev.wildercord.gametest.stonehinge.peer.StoneHingeNativeDispatch;
 import java.security.MessageDigest;
 import java.util.HexFormat;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
@@ -37,8 +35,7 @@ public final class StoneHingeOwnerProbe {
 
 	public record Body(Vec3 position, Vec3 motion, double fall, boolean grounded, boolean neutral, float health, int entity, long tick, boolean horizontalCollision, StoneHingeNativeDispatch.Pose pose) {
 		public static Body of(Player player) {
-			boolean neutral = player instanceof ServerPlayer server ? server.getLastClientInput().equals(Input.EMPTY)
-				: player instanceof LocalPlayer client && client.input.keyPresses.equals(Input.EMPTY);
+			boolean neutral = dev.wildercord.gametest.compat.GametestCompat.inputIdle(player);
 			return new Body(player.position(), player.getDeltaMovement(), player.fallDistance, player.onGround(), neutral,
 				player.getHealth(), player.getId(), player.level().getGameTime(), player.horizontalCollision,
                 new StoneHingeNativeDispatch.Pose(player.getYRot(), player.getXRot(), player.yHeadRot, player.yBodyRot, player.getPose().name()));
@@ -242,7 +239,7 @@ public final class StoneHingeOwnerProbe {
 
 	public static void serverSend(ServerPlayer player, Packet<?> packet, Runnable original) {
 		Trace trace = serverTrace(player); if (trace == null) { original.run(); return; }
-        if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.id() == player.getId())
+        if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.getId() == player.getId())
             dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.contaminate(player, "Correction or teleport during natural dispatch");
         if (packet instanceof ClientboundSetEntityMotionPacket motion)
             dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.otherMotion(player, motion);
@@ -254,9 +251,9 @@ public final class StoneHingeOwnerProbe {
             sent.completed = true; trace.record("server-motion-sent", "ordinal=" + sent.ordinal + " manual=" + sent.manual + " raw=" + sent.raw + " wire=" + sent.wire, null, trace.snapshot(player));
         }
 		else trace.observe(() -> {
-			if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.id() == player.getId())
+			if (packet instanceof ClientboundPlayerPositionPacket || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.getId() == player.getId())
 				trace.record("server-correction-sent", packet.toString(), null, trace.snapshot(player));
-			else if (packet instanceof ClientboundEntityPositionSyncPacket sync && sync.id() == player.getId())
+			else if (packet instanceof ClientboundTeleportEntityPacket sync && sync.getId() == player.getId())
 				trace.record("server-entity-position-sent", packet.toString(), null, trace.snapshot(player));
 			return null;
 		});
@@ -272,7 +269,7 @@ public final class StoneHingeOwnerProbe {
 	}
 	public static void clientCorrection(Packet<?> packet, Runnable original) {
 		Minecraft client = Minecraft.getInstance(); Trace trace = clientTrace(client);
-		if (trace == null || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.id() != trace.owner.getId()) { original.run(); return; }
+		if (trace == null || packet instanceof ClientboundTeleportEntityPacket teleport && teleport.getId() != trace.owner.getId()) { original.run(); return; }
         dev.wildercord.gametest.stonehinge.peer.StoneHingeNaturalMotion.contaminate(trace.server, "Owner correction during natural dispatch");
 		Body before = trace.snapshot(client.player); trace.observe(() -> trace.record("client-correction-start", packet.toString(), before, null));
 		original.run(); trace.observe(() -> trace.record("client-correction-processed", packet.toString(), before, trace.snapshot(client.player)));

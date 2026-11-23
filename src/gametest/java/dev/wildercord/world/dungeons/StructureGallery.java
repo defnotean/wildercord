@@ -219,7 +219,7 @@ final class StructureGallery {
 
 	private static void shot(ClientGameTestContext c, String name) {
 		// Quest and advancement toasts still draw with the HUD hidden.
-		c.runOnClient(mc -> mc.getToastManager().clear());
+		c.runOnClient(mc -> mc.getToasts().clear());
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 

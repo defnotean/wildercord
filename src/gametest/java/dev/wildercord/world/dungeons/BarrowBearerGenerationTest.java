@@ -50,7 +50,7 @@ public final class BarrowBearerGenerationTest implements FabricClientGameTest {
 			int move = world.getServer().computeOnServer(s -> s.overworld().getEntitiesOfClass(LanternBearer.class, box).getFirst().move());
 			check(move == LanternBearerRules.DORMANT, "The bearer lies dormant in its grave, move " + move);
 			c.waitTicks(60);
-			c.runOnClient(mc -> mc.getToastManager().clear());
+			c.runOnClient(mc -> mc.getToasts().clear());
 			c.takeScreenshot(TestScreenshotOptions.of("barrow_bearer_generated").disableCounterPrefix());
 		}
 	}

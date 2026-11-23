@@ -41,7 +41,7 @@ final class NextSignatureNative {
   check(name.length()<=16,"Native player profile name fits packet limit: "+name);
   var guest=new FakePlayer((ServerLevel) p.level(),new com.mojang.authlib.GameProfile(UUID.nameUUIDFromBytes(name.getBytes(java.nio.charset.StandardCharsets.UTF_8)),name)){
    @Override public net.minecraft.world.scores.PlayerTeam getTeam(){return level().getScoreboard().getPlayersTeam(getScoreboardName());}
-   @Override public boolean isInvulnerableTo(ServerLevel level,net.minecraft.world.damagesource.DamageSource source){return false;}
+   @Override public boolean isInvulnerableTo(net.minecraft.world.damagesource.DamageSource source){return false;}
   };
   teach(guest);guest.moveTo(.5,101,3.5,180,0);p.connection.send(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(guest)));((ServerLevel) p.level()).addNewPlayer(guest);ground(guest);
   if(ally){var scoreboard=p.level().getScoreboard();var team=scoreboard.getPlayerTeam("nextsignature_allies");if(team==null)team=scoreboard.addPlayerTeam("nextsignature_allies");

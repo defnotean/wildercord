@@ -98,7 +98,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				stand(s, FAR);
 				ServerPlayer old = p(s);
-				old.kill(((ServerLevel) old.level()));
+				old.kill();
 				old.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
 				ServerPlayer fresh = p(s);
 				check(fresh != old, "The traveller respawns");

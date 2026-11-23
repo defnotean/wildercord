@@ -61,7 +61,7 @@ public final class BasinfillTest implements FabricClientGameTest {
                 basin(p,90,2,2);p.level().setBlockAndUpdate(new BlockPos(90,101,0),Blocks.DANDELION.defaultBlockState());
                 check(!fill(p,90,new Cast(p)),"Plants and occupied blocks preserved");
                 check(p.level().getBlockState(new BlockPos(90,101,0)).is(Blocks.DANDELION),"No plant destruction");
-                var recipe=s.getRecipeManager().byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE,net.minecraft.resources.ResourceLocation.parse("wildercord:rune_basinfill")));
+                var recipe=s.getRecipeManager().byKey(net.minecraft.resources.ResourceLocation.parse("wildercord:rune_basinfill"));
                 check(recipe.isPresent(),"Generated acquisition recipe loaded");
                 var input=net.minecraft.world.item.crafting.CraftingInput.of(3,1,List.of(new ItemStack(WildercordItems.BLANK_RUNE),new ItemStack(net.minecraft.world.item.Items.CLAY_BALL),new ItemStack(net.minecraft.world.item.Items.WATER_BUCKET)));
                 var crafted=s.getRecipeManager().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING,input,s.overworld());
@@ -98,7 +98,7 @@ public final class BasinfillTest implements FabricClientGameTest {
         for(int i=0;i<width;i++)for(int j=0;j<length;j++)check(p.level().getBlockState(new BlockPos(x+i,101,j)).isAir(),"Refusal places no partial water");
     }
     private static void shot(ClientGameTestContext c,String name) {
-        c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.resizeDisplay();mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);});
+        c.runOnClient(mc -> {mc.getWindow().setWindowed(1280,720);mc.resizeDisplay();mc.getToasts().clear();mc.gui.getChat().clearMessages(false);});
         c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
     }
     private static void check(boolean yes,String why) {if(!yes)throw new AssertionError(why);}

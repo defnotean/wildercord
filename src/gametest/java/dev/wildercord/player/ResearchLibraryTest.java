@@ -46,7 +46,7 @@ public final class ResearchLibraryTest implements FabricClientGameTest {
    check(context.computeOnClient(mc->spoken(mc,"<")).contains("Previous Page")&&context.computeOnClient(mc->spoken(mc,">")).contains("Next Page"),"the notebook's arrow buttons are named for a screen reader");
    context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.options.guiScale().set(2);mc.resizeDisplay();
     var screen=mc.screen;screen.children().stream().filter(e->e instanceof net.minecraft.client.gui.components.EditBox).map(e->(net.minecraft.client.gui.components.EditBox)e).findFirst().orElseThrow().setValue("Warm breeze");});
-   context.waitTicks(8);context.runOnClient(mc->mc.getToastManager().clear());context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("research_library_before").disableCounterPrefix());
+   context.waitTicks(8);context.runOnClient(mc->mc.getToasts().clear());context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("research_library_before").disableCounterPrefix());
    click(context,"screen.wildercord.notebook.save");context.waitTicks(15);
    world.getServer().runOnServer(server->{var p=server.getPlayerList().getPlayers().getFirst();check(SpellLibrary.list(p).size()==1,"native save button reaches the authoritative library");Spellbooks.set(p,Spellbooks.get(p).withSpell(0,List.of(Runes.SELF.id(),Runes.HEAL.id())));});
    click(context,"screen.wildercord.notebook.load");context.waitTicks(5);
@@ -60,7 +60,7 @@ public final class ResearchLibraryTest implements FabricClientGameTest {
    check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.screen).savedSpellCount().getString().equals("Saved spells: 0 / 24")),"creation screen reflects native library deletion");
    world.getServer().runOnServer(server->check(SpellLibrary.save(server.getPlayerList().getPlayers().getFirst(),"Counter build",0)==1,"save while creation screen remains open"));context.waitTicks(10);
    check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.screen).savedSpellCount().getString().equals("Saved spells: 1 / 24")),"live owner sync updates creation counter");
-   context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.resizeDisplay();mc.getToastManager().clear();});context.waitTicks(5);
+   context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.resizeDisplay();mc.getToasts().clear();});context.waitTicks(5);
    context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("saved_spell_counter").disableCounterPrefix());
    world.getServer().runOnServer(server->SpellLibrary.save(server.getPlayerList().getPlayers().getFirst(),"COUNTER BUILD",0));context.waitTicks(5);
    check(context.computeOnClient(mc->SpellLibrary.list(mc.player).size()==1),"replacing a named build does not inflate saved count");

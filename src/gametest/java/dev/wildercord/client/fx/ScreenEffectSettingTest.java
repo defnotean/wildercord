@@ -39,7 +39,7 @@ public final class ScreenEffectSettingTest implements FabricClientGameTest {
 
 	private static void shot(ClientGameTestContext c, String name) {
 		c.waitTicks(3);
-		c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.resizeDisplay(); mc.getToastManager().clear(); mc.gui.getChat().clearMessages(false); });
+		c.runOnClient(mc -> { mc.getWindow().setWindowed(1280, 720); mc.resizeDisplay(); mc.getToasts().clear(); mc.gui.getChat().clearMessages(false); });
 		c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 

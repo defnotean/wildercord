@@ -235,7 +235,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					};
 					ArtWards.harden(oldPlayer, 25);
 					plan.at(10, () -> {
-						oldPlayer.kill(plan.level);
+						oldPlayer.kill();
 						check(!oldPlayer.isAlive(), "The actual connected body died");
 						ward(oldPlayer, false);
 						oldPlayer.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));

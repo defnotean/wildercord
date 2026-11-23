@@ -282,7 +282,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 				if (!mc.options.hideGui) {
 					mc.options.hideGui = !mc.options.hideGui;
 				}
-				mc.getToastManager().clear();
+				mc.getToasts().clear();
 			}
 		});
 	}
