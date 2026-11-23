@@ -238,7 +238,7 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), cx, BASE + 5, cz);
 		chest(level, bb, cx + 2, BASE + 1, cz - 3, Direction.SOUTH, OceanSites.SANCTUARY_LOOT, 101L);
 		barrel(level, bb, cx - 2, BASE + 1, cz - 3, Direction.UP, OceanSites.SANCTUARY_LOOT, 105L);
-		set(level, bb, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 7, cz);
+		set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 7, cz);
 		spawnMob(level, bb, OceanEntities.BRINE_MERCHANT, cx, BASE + 1, cz,
 			m -> m.setMerchantProfession(OceanRules.MerchantProfession.PEARL_JEWELER));
 	}
@@ -254,7 +254,7 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), cx + 3, BASE + 2, cz);
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), cx, BASE + 5, cz);
 		chest(level, bb, cx + 1, BASE + 1, cz - 3, Direction.SOUTH, OceanSites.SANCTUARY_LOOT, 202L);
-		set(level, bb, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 7, cz);
+		set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 7, cz);
 		spawnMob(level, bb, OceanEntities.BRINE_MERCHANT, cx, BASE + 1, cz,
 			m -> m.setMerchantProfession(OceanRules.MerchantProfession.ABYSSAL_CARTOGRAPHER));
 	}
@@ -272,7 +272,7 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 		set(level, bb, stair(Blocks.PRISMARINE_BRICK_STAIRS, Direction.SOUTH, false), cx + 1, BASE + 1, cz + 3);
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), cx, BASE + 5, cz);
 		barrel(level, bb, cx + 2, BASE + 1, cz + 3, Direction.NORTH, OceanSites.SANCTUARY_LOOT, 303L);
-		set(level, bb, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 7, cz);
+		set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 7, cz);
 		spawnMob(level, bb, OceanEntities.BRINE_MERCHANT, cx, BASE + 1, cz,
 			m -> m.setMerchantProfession(OceanRules.MerchantProfession.KELP_ALCHEMIST));
 	}
@@ -286,7 +286,7 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 		set(level, bb, Blocks.CRAFTING_TABLE.defaultBlockState(), cx + 1, BASE + 1, cz + 3);
 		set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), cx, BASE + 5, cz);
 		set(level, bb, OceanBlocks.SIREN_PEARL_LANTERN.defaultBlockState(), cx + 2, BASE + 1, cz + 2);
-		set(level, bb, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 7, cz);
+		set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), cx, BASE + 7, cz);
 		chest(level, bb, cx + 2, BASE + 1, cz - 3, Direction.SOUTH, OceanSites.SANCTUARY_LOOT, 404L);
 		spawnMob(level, bb, OceanEntities.PEARL_PUP, cx, BASE + 1, cz, pup -> {});
 		decorateExteriorReef(level, bb);
@@ -301,14 +301,14 @@ public final class CoralDomeSanctuaryPiece extends OceanPiece {
 					set(level, bb, y == BASE + 5 ? SEA_LANTERN : DARK_PRISMARINE, ccx + dx, y, ccz + dz);
 				}
 				set(level, bb, COPPER_OXIDIZED, ccx + dx, BASE + 7, ccz + dz);
-				set(level, bb, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx + dx, BASE + 8, ccz + dz);
+				set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx + dx, BASE + 8, ccz + dz);
 			}
 		}
 		// Crown spire anchored flush atop Central Conduit Rotunda roof (roof ledge ends at BASE + 5)
 		set(level, bb, DARK_PRISMARINE, ccx, BASE + 6, ccz);
 		set(level, bb, COPPER_OXIDIZED, ccx, BASE + 7, ccz);
 		set(level, bb, SEA_LANTERN, ccx, BASE + 8, ccz);
-		set(level, bb, Blocks.WAXED_OXIDIZED_LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx, BASE + 9, ccz);
+		set(level, bb, Blocks.LIGHTNING_ROD.defaultBlockState().trySetValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, true), ccx, BASE + 9, ccz);
 
 		// Living coral & sea-pickle garden pockets nestled in outer quadrants around the domes
 		int[][] coralClusters = {
