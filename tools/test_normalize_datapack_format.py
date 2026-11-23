@@ -110,6 +110,14 @@ class NormalizeAdvancementTests(unittest.TestCase):
         once = ndf.normalize_advancement(P262, self.LOCATION_263)
         self.assertEqual(once, ndf.normalize_advancement(P262, once))
 
+    def test_normalizing_does_not_mutate_the_input(self):
+        import copy
+        for payload in (self.LOCATION_263, ADVANCEMENT_263, CHEST_263):
+            original = copy.deepcopy(payload)
+            ndf.normalize_advancement(P262, payload)
+            ndf.normalize_loot(P262, payload)
+            self.assertEqual(payload, original, "input was rewritten in place")
+
 
 class RewriteTreeTests(unittest.TestCase):
     def _repo(self, tmp, relative, payload):
