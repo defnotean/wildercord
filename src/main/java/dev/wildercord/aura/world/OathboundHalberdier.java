@@ -216,7 +216,7 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 				Light.groundRing(level, position(), HEX_CYAN, 0.35, 2.6, 0.08, tell);
 			}
 			case OathboundHalberdierRules.STAGGERED ->
-				sound(level, chest, SoundEvents.SHIELD_BREAK.value(), 1.25F, 0.92F);
+				sound(level, chest, SoundEvents.SHIELD_BREAK, 1.25F, 0.92F);
 			default -> {
 				OathboundTechnique tech = OathboundHalberdierRules.technique(nextMove);
 				if (tech != null) {
@@ -376,7 +376,7 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 								foe.setDeltaMovement(vel);
 								McEntities.syncVelocity(foe);
 							}
-							foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, OathboundHalberdierRules.HOOK_SLOW_TICKS, 1));
+							foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, OathboundHalberdierRules.HOOK_SLOW_TICKS, 1));
 							Sigils.flash(level, foe.position().add(0, 1.0, 0), 0xFF48F0FF, 1.4F);
 						}
 					}

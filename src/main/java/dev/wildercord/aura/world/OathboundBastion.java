@@ -227,7 +227,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 			case OathboundBastionRules.PHALANX_BRACE -> {
 				entityData.set(BARRIER, 1.0F);
 				Feels.sound(level, chest, "aura_bell_warden_shell", 1.1F, 1.15F);
-				sound(level, chest, SoundEvents.SHIELD_BLOCK.value(), 1.0F, 0.8F);
+				sound(level, chest, SoundEvents.SHIELD_BLOCK, 1.0F, 0.8F);
 			}
 			case OathboundBastionRules.SHIELD_RAM -> {
 				entityData.set(BARRIER, 0.85F);
@@ -248,7 +248,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 			}
 			case OathboundBastionRules.STAGGERED -> {
 				entityData.set(BARRIER, 0.0F);
-				sound(level, chest, SoundEvents.SHIELD_BREAK.value(), 1.3F, 0.85F);
+				sound(level, chest, SoundEvents.SHIELD_BREAK, 1.3F, 0.85F);
 			}
 			default -> {
 				OathboundTechnique tech = OathboundBastionRules.technique(nextMove);
@@ -535,7 +535,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 				double relYaw = yawTo(foe.position()) - getYRot();
 				if (OathboundBastionRules.inCone(dist, foe.getY() - getY(), relYaw, OathboundBastionRules.BASH_REACH, OathboundBastionRules.BASH_HALF_ANGLE_DEG)) {
 					if (landBlow(level, foe, dmg, OathboundBastionRules.BASH_KNOCKBACK, position(), 0.25)) {
-						foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, OathboundBastionRules.BASH_SLOW_TICKS, 1, false, true), this);
+						foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, OathboundBastionRules.BASH_SLOW_TICKS, 1, false, true), this);
 					}
 				}
 			}
@@ -664,7 +664,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		Entity shooter = projectile.getOwner();
 		double speed = Math.min(2.6, Math.max(0.9, projectile.getDeltaMovement().length()) * 1.15);
 		Feels.sound(server, chestPos(), "aura_bell_warden_ring", 1.2F, 1.15F);
-		sound(server, chestPos(), SoundEvents.SHIELD_BLOCK.value(), 1.1F, 1.1F);
+		sound(server, chestPos(), SoundEvents.SHIELD_BLOCK, 1.1F, 1.1F);
 		server.sendParticles(ParticleTypes.WAX_ON, chestPos().x, chestPos().y, chestPos().z, 10, 0.4, 0.4, 0.4, 0.08);
 		return McEntities.projectileDeflection((turned, by, rng) -> {
 			Vec3 back;
@@ -723,7 +723,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		boolean inAnvilRecovery = curMove == OathboundBastionRules.ANVIL_SLAM && since() >= tell();
 		float scaled = damage * (float) OathboundBastionRules.damageMultiplier(curMove, frontal, inAnvilRecovery);
 		if (curMove == OathboundBastionRules.PHALANX_BRACE && frontal) {
-			sound(level, chestPos(), SoundEvents.SHIELD_BLOCK.value(), 1.0F, 0.9F);
+			sound(level, chestPos(), SoundEvents.SHIELD_BLOCK, 1.0F, 0.9F);
 			level.sendParticles(ParticleTypes.WAX_ON, chestPos().x, chestPos().y, chestPos().z, 6, 0.3, 0.4, 0.3, 0.05);
 		}
 		boolean hurt = super.hurtServer(level, source, scaled);

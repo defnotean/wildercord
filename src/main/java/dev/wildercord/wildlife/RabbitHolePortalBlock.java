@@ -7,7 +7,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -44,8 +43,7 @@ public class RabbitHolePortalBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
-			InsideBlockEffectApplier effects) {
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
 		if (level instanceof ServerLevel server && entity instanceof ServerPlayer sp && !sp.isSpectator()) {
 			if (server.getBlockEntity(pos) instanceof RabbitHolePortalBlockEntity portal) {
 				portal.enter(server, sp);

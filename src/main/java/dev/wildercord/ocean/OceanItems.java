@@ -52,7 +52,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Consumables;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -465,9 +464,9 @@ public final class OceanItems {
 		}
 
 		@Override
-		public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
-			out.accept(Component.translatable("item.wildercord.siren_pearl_lantern.lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
-			out.accept(Component.translatable("item.wildercord.siren_pearl_lantern.use").withColor(0xB8D8A8));
+		public void appendHoverText(ItemStack stack, TooltipContext context, java.util.List<Component> tooltip, TooltipFlag flag) {
+			tooltip.add(Component.translatable("item.wildercord.siren_pearl_lantern.lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
+			tooltip.add(Component.translatable("item.wildercord.siren_pearl_lantern.use").withColor(0xB8D8A8));
 		}
 	}
 
@@ -480,9 +479,9 @@ public final class OceanItems {
 		}
 
 		@Override
-		public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> out, TooltipFlag flag) {
-			out.accept(Component.translatable("item.wildercord." + id + ".lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
-			out.accept(Component.translatable("item.wildercord." + id + ".use").withColor(0xB8D8A8));
+		public void appendHoverText(ItemStack stack, TooltipContext context, java.util.List<Component> tooltip, TooltipFlag flag) {
+			tooltip.add(Component.translatable("item.wildercord." + id + ".lore").withStyle(ChatFormatting.ITALIC).withColor(0xB8A8D8));
+			tooltip.add(Component.translatable("item.wildercord." + id + ".use").withColor(0xB8D8A8));
 		}
 	}
 }

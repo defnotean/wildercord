@@ -81,14 +81,14 @@ public final class SacredPigQuest {
 	public static void spawnNpc(ServerLevel level, double x, double y, double z) {
 		Entity pig = create(level, "minecraft:pig");
 		if (pig instanceof Pig p) {
-			p.snapTo(x + 0.5, y, z + 0.5, 180.0F, 0.0F);
+			p.moveTo(x + 0.5, y, z + 0.5, 180.0F, 0.0F);
 			p.setCustomName(Component.literal("Sacred Pig").withStyle(ChatFormatting.LIGHT_PURPLE));
 			p.setCustomNameVisible(true);
 			p.addTag(PIG_TAG);
 			p.setNoAi(true);
 			level.addFreshEntityWithPassengers(p);
 		} else if (pig != null) {
-			pig.snapTo(x + 0.5, y, z + 0.5, 180.0F, 0.0F);
+			pig.moveTo(x + 0.5, y, z + 0.5, 180.0F, 0.0F);
 			pig.setCustomName(Component.literal("Sacred Pig").withStyle(ChatFormatting.LIGHT_PURPLE));
 			pig.setCustomNameVisible(true);
 			pig.addTag(PIG_TAG);
@@ -96,7 +96,7 @@ public final class SacredPigQuest {
 		}
 		Entity priest = create(level, "minecraft:villager");
 		if (priest instanceof Villager v) {
-			v.snapTo(x + 2.5, y, z + 0.5, 180.0F, 0.0F);
+			v.moveTo(x + 2.5, y, z + 0.5, 180.0F, 0.0F);
 			v.setCustomName(Component.literal("Pig Priest").withStyle(ChatFormatting.GOLD));
 			v.setCustomNameVisible(true);
 			v.addTag(PRIEST_TAG);

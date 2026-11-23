@@ -244,7 +244,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 				Light.groundRing(level, position(), HEX_CRIMSON, 0.35, 2.2, 0.08, tell);
 			}
 			case OathboundBladeChampionRules.STAGGERED ->
-				sound(level, chest, SoundEvents.SHIELD_BREAK.value(), 1.3F, 0.9F);
+				sound(level, chest, SoundEvents.SHIELD_BREAK, 1.3F, 0.9F);
 			default -> {
 				OathboundTechnique tech = OathboundBladeChampionRules.technique(nextMove);
 				if (tech != null) {
@@ -413,7 +413,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 								boolean shattered = shatterShield(level, foe);
 								strikeWithKnockback(level, foe, OathboundBladeChampionRules.POMMEL_DAMAGE * mult,
 									OathboundBladeChampionRules.POMMEL_KNOCKBACK, 0.16);
-								foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, OathboundBladeChampionRules.POMMEL_SLOW_TICKS, 1));
+								foe.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, OathboundBladeChampionRules.POMMEL_SLOW_TICKS, 1));
 								Sigils.flash(level, foe.position().add(0, foe.getBbHeight() * 0.55, 0),
 									shattered ? 0xFFFFD048 : 0xFFFF4838, shattered ? 1.8F : 1.2F);
 								Feels.sound(level, foe.position(), shattered ? "aura_perfect_guard" : "aura_guard", 1.25F, 0.85F);
@@ -546,7 +546,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		player.getCooldowns().addCooldown(new ItemStack(Items.SHIELD), OathboundBladeChampionRules.POMMEL_SHIELD_DISABLE_TICKS);
 		if (blocking) {
 			level.playSound(null, player.getX(), player.getY(), player.getZ(),
-				SoundEvents.SHIELD_BREAK.value(), SoundSource.PLAYERS, 1.2F, 0.9F);
+				SoundEvents.SHIELD_BREAK, SoundSource.PLAYERS, 1.2F, 0.9F);
 			return true;
 		}
 		return false;

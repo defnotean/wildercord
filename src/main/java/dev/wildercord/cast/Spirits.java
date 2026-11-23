@@ -26,8 +26,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.animal.wolf.WolfVariants;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.WolfVariants;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -128,7 +128,7 @@ public final class Spirits {
 			}
 			double a = Math.PI * 2 * i / count;
 			Vec3 spot = CastEngine.ground(level, around.add(Math.cos(a) * 1.6, 1.0, Math.sin(a) * 1.6));
-			wolf.snapTo(spot.x, spot.y, spot.z, caster.getYRot(), 0);
+			wolf.moveTo(spot.x, spot.y, spot.z, caster.getYRot(), 0);
 			wolf.tame(caster);
 			if (shadow) {
 				level.registryAccess().lookupOrThrow(Registries.WOLF_VARIANT).get(WolfVariants.BLACK)
@@ -142,13 +142,13 @@ public final class Spirits {
 				wolf.setCustomName(Component.translatable("entity.wildercord.spirit_wolf").withColor(0xE678DC));
 				wolf.addEffect(new MobEffectInstance(MobEffects.GLOWING, lifetime, 0, false, false));
 			}
-			wolf.addEffect(new MobEffectInstance(MobEffects.SPEED, lifetime, 1, false, false));
+			wolf.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, lifetime, 1, false, false));
 			// Shades are frail: no Strength by default, only in dim light (the aura loop below). A spirit wolf bites for a wolf's 4 unless
 			// the spell is Amplified (Strength I from one Amplify).
 			if (!shadow) {
 				int strength = (int) Math.round(power) - 2;
 				if (strength >= 0) {
-					wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, strength, false, false));
+					wolf.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, lifetime, strength, false, false));
 				}
 				PACKS.computeIfAbsent(caster.getUUID(), k -> new java.util.ArrayList<>()).add(wolf);
 			}
@@ -164,7 +164,7 @@ public final class Spirits {
 						if (!wolf.isRemoved()) {
 							TechniqueVfx.shadeAura(level, wolf);
 							if (level.getMaxLocalRawBrightness(wolf.blockPosition()) <= 7 || VoidTime.darkened(wolf)) {
-								wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 25, (int) Math.max(0, Math.round(power) - 1), false, false));
+								wolf.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 25, (int) Math.max(0, Math.round(power) - 1), false, false));
 							}
 						}
 					});
@@ -268,7 +268,7 @@ public final class Spirits {
 		if (ticks >= 16 && target.level() instanceof ServerLevel level) {
 			// The tell: in its last half second the ice shows hairline cracks (only if it is still the same hold).
 			Scheduler.later(ticks - 10, () -> {
-				MobEffectInstance slow = target.getEffect(MobEffects.SLOWNESS);
+				MobEffectInstance slow = target.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 				if (target.isAlive() && slow != null && slow.getAmplifier() >= 6 && slow.getDuration() <= 14) {
 					Vfx.iceCracking(level, target);
 				}
@@ -287,9 +287,9 @@ public final class Spirits {
 		if (target instanceof Mob mob) {
 			thaw(mob);
 		}
-		MobEffectInstance slow = target.getEffect(MobEffects.SLOWNESS);
+		MobEffectInstance slow = target.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
 		if (slow != null && slow.getAmplifier() >= 6) {
-			target.removeEffect(MobEffects.SLOWNESS);
+			target.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 		}
 		MobEffectInstance weak = target.getEffect(MobEffects.WEAKNESS);
 		if (weak != null && weak.getAmplifier() >= 4) {
@@ -311,11 +311,11 @@ public final class Spirits {
 				return;
 			}
 			int capped = BossRules.bossHoldTicks(ticks);
-			target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, capped, 6, false, false));
+			target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, capped, 6, false, false));
 			target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, capped, 4, false, false));
 			return;
 		}
-		target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 6, false, false));
+		target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 6, false, false));
 		target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, 4, false, false));
 		if (target instanceof Mob mob && (!mob.isNoAi() || mob.hasAttached(WildercordAttachments.FROZEN_UNTIL))) {
 			long until = mob.level().getGameTime() + ticks;
@@ -338,7 +338,7 @@ public final class Spirits {
 		if (window != null && level.getGameTime() < window.heldUntil()) {
 			return;
 		}
-		target.removeEffect(MobEffects.SLOWNESS);
+		target.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
 		MobEffectInstance weakness = target.getEffect(MobEffects.WEAKNESS);
 		if (weakness != null && weakness.getAmplifier() >= 3) {
 			target.removeEffect(MobEffects.WEAKNESS);

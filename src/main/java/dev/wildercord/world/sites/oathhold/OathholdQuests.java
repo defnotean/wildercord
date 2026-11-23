@@ -426,7 +426,7 @@ public final class OathholdQuests {
 		Mob duelist = createArenaDuelist(level, job.targetKey());
 		if (duelist == null) return false;
 		BlockPos spawnAt = anchorPos;
-		duelist.snapTo(spawnAt.getX() + 0.5, spawnAt.getY(), spawnAt.getZ() + 0.5, 0.0F, 0.0F);
+		duelist.moveTo(spawnAt.getX() + 0.5, spawnAt.getY(), spawnAt.getZ() + 0.5, 0.0F, 0.0F);
 		duelist.addTag(OathholdLaw.ARENA_DUELIST_TAG);
 		duelist.addTag(cTag);
 		duelist.setCustomName(Component.literal("Colosseum Challenger — " + duelist.getType().getDescription().getString())
@@ -567,7 +567,7 @@ public final class OathholdQuests {
 				BlockPos p = new BlockPos(rx, center.getY(), rz);
 				if (level.getBlockState(p).isAir() && level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)) {
 					if (type.get().create(level, EntitySpawnReason.EVENT) instanceof Mob mob) {
-						mob.snapTo(rx + 0.5, p.getY(), rz + 0.5, rng.nextFloat() * 360.0F, 0.0F);
+						mob.moveTo(rx + 0.5, p.getY(), rz + 0.5, rng.nextFloat() * 360.0F, 0.0F);
 						mob.addTag(QUEST_PEST_PREFIX + playerId);
 						mob.setCustomName(Component.literal("Guild Subjugation Target"));
 						level.addFreshEntity(mob);

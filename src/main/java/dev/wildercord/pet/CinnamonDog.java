@@ -196,7 +196,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 
 	@Override public boolean canUsePortal(boolean allowPassengers) { return false; }
 
-	@Override public boolean causeFallDamage(double fallDistance, float damageMultiplier, DamageSource source) {
+	@Override public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource source) {
 		if (harness || flying || grandBow) {
 			resetFallDistance();
 			return false;

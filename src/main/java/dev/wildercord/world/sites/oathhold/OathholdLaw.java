@@ -22,7 +22,11 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,7 +53,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import dev.wildercord.compat.McSavedData;
+import dev.wildercord.compat.McSavedDataType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -98,12 +103,18 @@ public final class OathholdLaw {
 			ORIGIN_CODEC.listOf().optionalFieldOf("cities", List.of()).forGetter(l -> l.cities),
 			Codec.LONG.listOf().optionalFieldOf("placed", List.of()).forGetter(l -> new ArrayList<>(l.placed))
 		).apply(i, CityLedger::new));
-		static final SavedDataType<CityLedger> TYPE = new SavedDataType<>("oathhold_law", CityLedger::new, CODEC, null);
+		static final McSavedDataType<CityLedger> TYPE = new McSavedDataType<>("oathhold_law", CityLedger::new, CODEC);
 
 		private final List<OathholdOrigin.Origin> cities = new ArrayList<>();
 		private final LongSet placed = new LongOpenHashSet();
 
 		public CityLedger() {}
+
+		@Override
+		public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+			return (CompoundTag) CODEC.encodeStart(RegistryOps.create(NbtOps.INSTANCE, registries), this)
+					.result().orElseThrow();
+		}
 
 		private CityLedger(List<OathholdOrigin.Origin> cities, List<Long> placed) {
 			this.cities.addAll(cities);

@@ -233,7 +233,7 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 			}
 			case OathboundBannerMarshalRules.SOLAR_AEGIS_GUARD -> {
 				Feels.sound(level, chest, "aura_guard", 1.15F, 0.95F);
-				sound(level, chest, SoundEvents.SHIELD_BLOCK.value(), 1.0F, 0.85F);
+				sound(level, chest, SoundEvents.SHIELD_BLOCK, 1.0F, 0.85F);
 			}
 			case OathboundBannerMarshalRules.RADIANT_SUNBLADE_CLEAVE ->
 				Feels.sound(level, chest, "duelist_knight_windup", 1.1F, 1.05F);
@@ -242,7 +242,7 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 				Light.groundRing(level, position(), HEX_SOLAR, 0.5, OathboundBannerMarshalRules.JUDGMENT_OUTER_RADIUS, 0.10, tell);
 			}
 			case OathboundBannerMarshalRules.STAGGERED ->
-				sound(level, chest, SoundEvents.SHIELD_BREAK.value(), 1.3F, 0.85F);
+				sound(level, chest, SoundEvents.SHIELD_BREAK, 1.3F, 0.85F);
 			default -> {
 				OathboundTechnique tech = OathboundBannerMarshalRules.technique(nextMove);
 				if (tech != null) {
@@ -360,8 +360,8 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 					Feels.sound(level, chestPos(), "duelist_clash", 1.3F, 0.90F);
 					for (LivingEntity ally : nearbyAlliedKnights(level)) {
 						ally.heal(OathboundBannerMarshalRules.DECREE_HEAL);
-						ally.addEffect(new MobEffectInstance(MobEffects.STRENGTH, OathboundBannerMarshalRules.DECREE_BUFF_TICKS, 0));
-						ally.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, OathboundBannerMarshalRules.DECREE_BUFF_TICKS, 0));
+						ally.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, OathboundBannerMarshalRules.DECREE_BUFF_TICKS, 0));
+						ally.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, OathboundBannerMarshalRules.DECREE_BUFF_TICKS, 0));
 						Sigils.flash(level, ally.position().add(0, ally.getBbHeight() * 0.6, 0), 0xFFFFE066, 1.4F);
 					}
 				}
@@ -482,8 +482,8 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 					|| move == OathboundBannerMarshalRules.SOLAR_FLARE) {
 				for (LivingEntity ally : nearbyAlliedKnights(level)) {
 					ally.heal(6.0F);
-					ally.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 100, 0, false, true), this);
-					ally.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 100, 0, false, true), this);
+					ally.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 100, 0, false, true), this);
+					ally.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 0, false, true), this);
 					Sigils.flash(level, ally.position().add(0, ally.getBbHeight() * 0.6, 0), 0xFFFFE066, 1.2F);
 				}
 			}
