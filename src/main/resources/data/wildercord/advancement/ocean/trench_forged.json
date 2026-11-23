@@ -1,0 +1,45 @@
+{
+  "parent": "wildercord:ocean/deep_diver",
+  "criteria": {
+    "harpoon": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:tide_cleaver_harpoon"
+          }
+        ]
+      }
+    },
+    "glaive": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:leviathan_glaive"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:leviathan_glaive"
+    },
+    "title": {
+      "translate": "advancements.wildercord.ocean.trench_forged.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.ocean.trench_forged.description"
+    }
+  },
+  "requirements": [
+    [
+      "harpoon",
+      "glaive"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

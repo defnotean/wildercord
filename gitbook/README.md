@@ -8,7 +8,15 @@ Wear a Cord, thread runes from left to right, and cast the whole sequence with o
 
 ![The Cord editor previews a magic circle while explaining the spell.](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/circle-editor.jpg)
 
-## The current update: 0.15, Shrine & Sakura
+## The current update: 0.16, Sovereigns & Seas
+
+- **[Oathhold, 750+ Citizens, Oathbound Knights & Watch Stockade](world/oathhold.md)**: explore the `2,048×2,048` walled capital, take on `F–S` Adventurer's Guild requests, battle four Champion Knights, and experience live guard persecution and NPC rebuilding in the Watch Stockade.
+- **[Deep Ocean Expansion](world/deep-ocean.md)**: conquer 5 sunken landmarks up to **Thalassor, Abyssal Sovereign** inside the **Abyssal Trench Citadel**, craft the 3D **Abyssal Diving Suit** and sea weapons at the **Trench Anvil**, ride **Lumi-Seahorses**, and tame **Pearl-Pups**.
+- **[White Rabbit](world/creatures.md#white-rabbit), [Cinnamon Upgrades](companions/cinnamon.md) & Boss Balance**: follow forest White Rabbits into cave, treasure, or all-boss portals; equip **Cinnamon's Grand Bow** and 4-rider **Flying Chest Harness**; fight higher-HP respawning bosses with clear perimeter fire FX and non-overlapping structures (`StructureClearance`).
+
+Read [What's New](whats-new.md) for everything in the update.
+
+## Earlier: 0.15, Shrine & Sakura
 
 - **Cat Sanctuary & four Shrine Cats**: conquer the four-tier Japanese pagoda behind **Karakuri Sentinels** and **Paper Lantern Spirits** to earn sanctuary buffs and tame **Yuki**, **Odie**, **Freya**, and **Kuro**, plus explore the steaming **Lantern Bathhouse**.
 - **Four Sakura Villages & six kimono NPCs**: visit **Sakura Village**, **Sakura Canal Harbor**, **Sakura Onsen Village**, and **Sakura Castle-Town**, and trade with six themed Sakura Villagers.

@@ -55,7 +55,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import dev.wildercord.compat.McValueInput;
@@ -94,7 +93,6 @@ public class ShrineCat extends TamableAnimal {
 	private int specialCooldown = 36;
 	private int perkCooldown = 20;
 	private int companionPowerCooldown = 80;
-	private int quartetCheckCooldown = 60;
 	private int earFlickTicks;
 
 	public ShrineCat(EntityType<? extends ShrineCat> type, Level level) {
@@ -253,7 +251,7 @@ public class ShrineCat extends TamableAnimal {
 		setVariant(v);
 		setRole(ShrineCatRules.ROLE_VILLAGE);
 		this.homePos = home.immutable();
-		this.sanctuaryFinished = true;
+		this.sanctuaryFinished = false;
 		setPersistenceRequired();
 		setLoafing(v == ShrineCatRules.Variant.ODIE);
 		setOrderedToSit(v == ShrineCatRules.Variant.FREYA);
@@ -279,7 +277,6 @@ public class ShrineCat extends TamableAnimal {
 			} else {
 				setVariant(variant());
 			}
-			sanctuaryFinished = true;
 		}
 		return out;
 	}
@@ -330,12 +327,6 @@ public class ShrineCat extends TamableAnimal {
 		}
 		if (role == ShrineCatRules.ROLE_TAMED && isTame() && getOwner() instanceof LivingEntity owner) {
 			tickTamedPower(level, owner);
-			if (sanctuaryFinished && owner instanceof Player pl
-					&& (Math.abs(pl.getX()) > 500.0 || Math.abs(pl.getZ()) > 500.0)
-					&& distanceToSqr(pl) <= 64.0 && --quartetCheckCooldown <= 0) {
-				quartetCheckCooldown = 100;
-				ensureQuartetReunited(level, pl, false);
-			}
 		}
 	}
 
@@ -745,6 +736,11 @@ public class ShrineCat extends TamableAnimal {
 						player.displayClientMessage(Component.literal("Finish all 4 Sanctuary floors (defeat Kuro on Floor 4) before taming!"), true);
 						return InteractionResult.SUCCESS_SERVER;
 					}
+					if (!ShrineCatJournal.canTame(server.getServer(), player.getUUID(), variant())) {
+						player.displayClientMessage(Component.literal("You already have " + variant().displayName
+							+ " as a companion! Ring a Suzu Cat-Bell Charm to call them."), true);
+						return InteractionResult.SUCCESS_SERVER;
+					}
 					if (fishItem) {
 						held.consume(1, player);
 					}
@@ -763,6 +759,7 @@ public class ShrineCat extends TamableAnimal {
 						armor.setBaseValue(10.0);
 					}
 					setHealth(getMaxHealth());
+					ShrineCatJournal.registerTamed(server.getServer(), player.getUUID(), this);
 					triggerAction();
 					server.broadcastEntityEvent(this, (byte) 7);
 					server.playSound(null, blockPosition(), SoundEvents.CAT_PURR, SoundSource.NEUTRAL, 1.0F, 1.2F);
@@ -780,7 +777,7 @@ public class ShrineCat extends TamableAnimal {
 				}
 				return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 			}
-			if (!level().isClientSide()) {
+			if (level() instanceof ServerLevel server) {
 				if (player.isShiftKeyDown()) {
 					setLoafing(!isLoafing());
 					setOrderedToSit(isLoafing());
@@ -792,6 +789,7 @@ public class ShrineCat extends TamableAnimal {
 					getNavigation().stop();
 					setTarget(null);
 				}
+				ShrineCatJournal.snapshotLive(server.getServer(), player.getUUID(), this);
 			}
 			return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 		}
@@ -868,58 +866,106 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	/**
-	 * Restores any missing member of the quartet ({@code Yuki}, {@code Odie}, {@code Freya}, {@code Kuro}) beside
-	 * {@code owner} when a tamed cat is lost or when the owner calls them with the Suzu Cat-Bell Charm.
+	 * Calls owned Shrine Cats back to {@code owner}'s side when ringing the Suzu Cat-Bell Charm, and recovers
+	 * only companions whose canonical registered body genuinely died ({@code retired == true}), never duplicating
+	 * sitting, unloaded-chunk, or cross-dimension cats.
 	 */
-	public static int ensureQuartetReunited(ServerLevel level, Player owner, boolean forceIfAnyTamed) {
-		List<ShrineCat> mine = level.getEntitiesOfClass(ShrineCat.class, owner.getBoundingBox().inflate(128.0),
-			cat -> cat.isAlive() && cat.isTame() && cat.isOwnedBy(owner));
-		if (mine.isEmpty()) {
-			return 0;
+	public static int ringBellCharm(ServerLevel level, Player owner, boolean sneakRecallAll) {
+		var server = level.getServer();
+		var ownerUuid = owner.getUUID();
+		ShrineCatJournal journal = ShrineCatJournal.of(server);
+
+		// Adopt any pre-journal live owned cats nearby before reconciling.
+		List<ShrineCat> nearby = level.getEntitiesOfClass(ShrineCat.class, owner.getBoundingBox().inflate(64.0),
+			cat -> cat.isAlive() && !cat.isRemoved() && cat.isTame() && cat.isOwnedBy(owner));
+		for (ShrineCat near : nearby) {
+			ShrineCatJournal.Entry existing = journal.get(ownerUuid, near.variant());
+			if (existing == null) {
+				ShrineCatJournal.registerTamed(server, ownerUuid, near);
+			} else if (!existing.entityId().equals(near.getUUID())) {
+				near.discard();
+			}
 		}
-		EnumSet<ShrineCatRules.Variant> have = EnumSet.noneOf(ShrineCatRules.Variant.class);
-		boolean anyFinished = false;
-		for (ShrineCat cat : mine) {
-			have.add(cat.variant());
-			anyFinished |= cat.sanctuaryFinished;
-		}
-		if (!forceIfAnyTamed && (!anyFinished || have.size() < 3)) {
-			return 0;
-		}
-		int restored = 0;
+
+		int recalled = 0;
 		for (ShrineCatRules.Variant v : ShrineCatRules.Variant.values()) {
-			if (have.contains(v)) {
+			ShrineCatJournal.Entry entry = journal.get(ownerUuid, v);
+			if (entry == null) {
 				continue;
 			}
-			ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level, EntitySpawnReason.COMMAND);
-			if (cat == null) {
+			ShrineCat live = ShrineCatJournal.liveCat(ownerUuid, v);
+			if (live == null && !entry.retired()) {
+				for (ServerLevel lvl : server.getAllLevels()) {
+					if (lvl.getEntity(entry.entityId()) instanceof ShrineCat found && found.isAlive() && !found.isRemoved()) {
+						live = found;
+						ShrineCatJournal.registerTamed(server, ownerUuid, found);
+						break;
+					}
+				}
+			}
+			if (live != null && live.isAlive() && !live.isRemoved()) {
+				if (live.level() != level) {
+					if (sneakRecallAll) {
+						owner.displayClientMessage(Component.literal("[" + v.displayName + "] Is currently in " + entry.dimension()
+							+ " near (" + entry.lastPos().getX() + ", " + entry.lastPos().getY() + ", " + entry.lastPos().getZ() + ")."), false);
+					}
+					continue;
+				}
+				boolean resting = live.isOrderedToSit() || live.isLoafing();
+				if (resting && !sneakRecallAll) {
+					continue;
+				}
+				live.setLoafing(false);
+				live.setOrderedToSit(false);
+				live.setInSittingPose(false);
+				live.setTarget(null);
+				if (live.distanceToSqr(owner) > 16.0) {
+					double ox = ((recalled % 4) - 1.5) * 0.9;
+					live.teleportTo(owner.getX() + ox, owner.getY(), owner.getZ() + 1.0);
+				}
+				ShrineCatJournal.registerTamed(server, ownerUuid, live);
+				recalled++;
 				continue;
 			}
-			double ox = (restored - 1) * 1.1;
-			cat.snapTo(owner.getX() + ox, owner.getY(), owner.getZ() + 1.2, owner.getYRot(), 0.0F);
-			cat.setVariant(v);
-			cat.tame(owner);
-			cat.setRole(ShrineCatRules.ROLE_TAMED);
-			cat.sanctuaryFinished = true;
-			cat.setPersistenceRequired();
-			cat.setLoafing(false);
-			cat.setOrderedToSit(false);
-			cat.setInSittingPose(false);
-			var maxHp = cat.getAttribute(Attributes.MAX_HEALTH);
-			if (maxHp != null) {
-				maxHp.setBaseValue(80.0);
+			if (!entry.retired()) {
+				if (sneakRecallAll) {
+					owner.displayClientMessage(Component.literal("[" + v.displayName + "] Is resting in an unloaded chunk near ("
+						+ entry.lastPos().getX() + ", " + entry.lastPos().getY() + ", " + entry.lastPos().getZ() + ")."), false);
+				}
+				continue;
 			}
-			var armor = cat.getAttribute(Attributes.ARMOR);
-			if (armor != null) {
-				armor.setBaseValue(10.0);
+			if (ShrineCatIdentityRules.shouldRespawnOnBell(entry.entityId(), entry.retired())) {
+				ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level, EntitySpawnReason.COMMAND);
+				if (cat == null) {
+					continue;
+				}
+				double ox = ((recalled % 4) - 1.5) * 0.9;
+				cat.snapTo(owner.getX() + ox, owner.getY(), owner.getZ() + 1.2, owner.getYRot(), 0.0F);
+				cat.setVariant(v);
+				cat.tame(owner);
+				cat.setRole(ShrineCatRules.ROLE_TAMED);
+				cat.sanctuaryFinished = true;
+				cat.setPersistenceRequired();
+				cat.setLoafing(false);
+				cat.setOrderedToSit(false);
+				cat.setInSittingPose(false);
+				var maxHp = cat.getAttribute(Attributes.MAX_HEALTH);
+				if (maxHp != null) {
+					maxHp.setBaseValue(80.0);
+				}
+				var armor = cat.getAttribute(Attributes.ARMOR);
+				if (armor != null) {
+					armor.setBaseValue(10.0);
+				}
+				cat.setHealth(cat.getMaxHealth());
+				cat.triggerAction();
+				ShrineCatJournal.registerTamed(server, ownerUuid, cat);
+				level.addFreshEntity(cat);
+				level.playSound(null, cat.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.NEUTRAL, 0.85F, 1.35F);
+				owner.displayClientMessage(Component.literal("[" + v.displayName + "] Rings her Suzu bell and rejoins your side!"), false);
+				recalled++;
 			}
-			cat.setHealth(cat.getMaxHealth());
-			cat.triggerAction();
-			level.addFreshEntity(cat);
-			level.playSound(null, cat.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.NEUTRAL, 0.85F, 1.35F);
-			owner.displayClientMessage(Component.literal("[" + v.displayName + "] Rings her Suzu bell and rejoins your side!"), false);
-			restored++;
 		}
-		return restored;
+		return recalled;
 	}
 }

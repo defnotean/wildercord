@@ -287,6 +287,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 	 * lantern, one every {@link LanternBearerRules#GUARD_EVERY} ticks, nearest first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
+		if(getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var box=new AABB(Vec3.atLowerCornerOf(hallMin),Vec3.atLowerCornerOf(hallMax).add(1,1,1));
 		var from=LanternBearerRules.holdsLantern(LanternBearerRules.rise(move(),since()))?lamp():Vec3.atCenterOf(hook);
 		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof LanternBearer) && inHall(e.position(),0))
@@ -303,9 +304,10 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 
 	/** The nearest player in the field close enough to its grave to wake it, if it is dark out. */
 	private ServerPlayer wakeful(ServerLevel level){
-		var t=spot();boolean dark=level.isDarkOutside();
+		boolean rush=getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
+		var t=spot();boolean dark=rush || level.isDarkOutside();
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inHall(p.position(),0)
-			&& LanternBearerRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z,dark)).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
+			&& (rush || LanternBearerRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z,dark))).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
 
 	private void dormant(ServerLevel level){
@@ -338,7 +340,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			var at=spot();teleportTo(at.x,at.y,at.z);setDeltaMovement(Vec3.ZERO);getNavigation().stop();links=0;pose(LanternBearerRules.WATCH,LanternBearerRules.GAP);
 		}
 		long now=level.getGameTime();float heal=LanternBearerRules.regen(getMaxHealth(),now-lastCut);if(heal>0 && getHealth()<getMaxHealth())heal(heal);
-		light=level.isBrightOutside()?light+1:0;
+		light=(!getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG) && level.isBrightOutside())?light+1:0;
 		if(LanternBearerRules.dawn(light)){sink(level);return;}
 		if(tickCount%10==0){
 			bar.setProgress(getHealth()/getMaxHealth());
@@ -1117,6 +1119,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			server.sendParticles(ParticleTypes.SOUL,getX(),getY()+1.6,getZ(),50,.8,1.2,.8,.05);
 			server.sendParticles(ParticleTypes.LARGE_SMOKE,getX(),getY()+1.6,getZ(),30,.6,1.2,.6,.03);
 			candles(server,false);lantern(server,false);
+			if(bound && !getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,new LairRespawns.Entry("lantern_bearer",grave.immutable(),rest,hallMin.immutable(),hallMax.immutable(),0,0F,hook.immutable(),List.copyOf(candles),List.of(),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		super.die(source);
 	}

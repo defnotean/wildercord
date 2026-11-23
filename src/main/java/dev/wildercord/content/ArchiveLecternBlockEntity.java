@@ -36,6 +36,7 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 
 	private UUID boss;
 	private boolean slain;
+	private long slainAt;
 	/** When players were first in the Archive with its keeper missing (not saved: the count starts again). */
 	private long missingSince;
 
@@ -43,9 +44,10 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 		super(WildercordBlocks.ARCHIVE_LECTERN_ENTITY, pos, state);
 	}
 
-	/** The Archivist has fallen: the lectern goes quiet for good. */
+	/** The Archivist has fallen: the lectern rests for {@link dev.wildercord.cast.BossRules#BOSS_RESPAWN_TICKS} before re-arming. */
 	public void slain() {
 		slain = true;
+		slainAt = level != null ? level.getGameTime() : 0L;
 		setChanged();
 	}
 
@@ -87,10 +89,10 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 		}
 	}
 
-	/** Awake: every few seconds, whether the Archivist is still about, and if it's long gone, re-arms. */
+	/** Awake: every few seconds, whether the Archivist is still about or due to respawn, and re-arms when ready. */
 	private void watch(ServerLevel level, BlockPos pos, BlockState state) {
 		long time = level.getGameTime();
-		if (slain || (time + pos.asLong()) % 100 != 0 || !level.isPositionEntityTicking(pos)) {
+		if ((time + pos.asLong()) % 100 != 0 || !level.isPositionEntityTicking(pos)) {
 			return;
 		}
 		Vec3 heart = Vec3.atCenterOf(pos);
@@ -100,6 +102,17 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 				watched = true;
 				break;
 			}
+		}
+		if (slain) {
+			if (watched && dev.wildercord.cast.BossRules.canRespawn(slainAt, time) && !bossHere(level, pos)) {
+				slain = false;
+				slainAt = 0L;
+				missingSince = 0L;
+				boss = null;
+				setChanged();
+				level.setBlock(pos, state.setValue(ArchiveLecternBlock.AWAKE, false), Block.UPDATE_ALL);
+			}
+			return;
 		}
 		// A lectern that never knew its Archivist (woken before lecterns remembered them) adopts the one about the
 		// Archive, or, finding none, counts it missing like any other: one that fell would have said so.
@@ -137,6 +150,7 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 		super.loadAdditional(inputTag, registries);
 		boss = input.read("boss", UUIDUtil.CODEC).orElse(null);
 		slain = input.getBooleanOr("slain", false);
+		slainAt = input.getLongOr("slain_at", 0L);
 	}
 
 	@Override
@@ -146,5 +160,6 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 			output.store("boss", UUIDUtil.CODEC, boss);
 		}
 		output.putBoolean("slain", slain);
+		output.putLong("slain_at", slainAt);
 	}
 }

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -82,7 +83,7 @@ public final class GametestCompat {
 
 	/** 1.21.11 dropped Camera#getViewRotationProjectionMatrix: rebuild it from the camera pose and the perspective. */
 	public static Matrix4f viewProjection(Camera camera, Matrix4f out) {
-		Vec3 pos = camera.getPosition();
+		Vec3 pos = camera.position();
 		out.rotation(camera.rotation()).translate((float) -pos.x, (float) -pos.y, (float) -pos.z);
 		return Minecraft.getInstance().gameRenderer.getProjectionMatrix(reportedFov(camera)).mul(out, out);
 	}
@@ -172,6 +173,20 @@ public final class GametestCompat {
 			721, chunk, height, biome -> true);
 	}
 
+	/**
+	 * A real {@link Structure.GenerationContext} backed by the level's actual chunk generator, biome
+	 * source and random state, so a site locator can be exercised against genuine terrain heightmaps
+	 * (the same inputs {@link #generateStructureStart} feeds through {@code Structure.generate}). The
+	 * biome predicate accepts everything; each locator does its own biome eligibility check. 26.2 keeps
+	 * the climate sampler off this record - {@code BiomeSource} takes it per call instead.
+	 */
+	public static Structure.GenerationContext realStructureContext(ServerLevel level, ChunkPos chunk) {
+		var cs = level.getChunkSource();
+		var gen = cs.getGenerator();
+		return new Structure.GenerationContext(level.registryAccess(), gen, gen.getBiomeSource(),
+			cs.randomState(), level.getStructureManager(), level.getSeed(), chunk, level, biome -> true);
+	}
+
 	public static Vec3 entityPositionSyncTarget(ClientboundEntityPositionSyncPacket sync) {
 		return sync.values().position();
 	}
@@ -208,11 +223,41 @@ public final class GametestCompat {
 		player.swing(InteractionHand.MAIN_HAND, true);
 	}
 
+	/** Clears the toast stack. 26.3 moved the toast manager from Minecraft onto Gui. */
+	public static void clearToasts(Minecraft mc) {
+		mc.getToastManager().clear();
+	}
+
+	/** Clears the chat line list. 26.3 reaches it through Gui#hud. */
+	public static void clearChat(Minecraft mc) {
+		mc.gui.getChat().clearMessages(false);
+	}
+
+	/** Whether the HUD is hidden (the F3+A state). 26.3 moved it behind Gui#hud. */
+	public static boolean hudHidden(Minecraft mc) {
+		return mc.options.hideGui;
+	}
+
+	/** Flips HUD visibility, so a screenshot can be taken without the hotbar and crosshair. */
+	public static void toggleHud(Minecraft mc) {
+		mc.options.hideGui = !mc.options.hideGui;
+	}
+
 	/**
-	 * 1.21.5 has no camera-distance attribute: that arrived with 1.21.6. Third person sits at vanilla
-	 * 's fixed distance here, so the pull-back the tests ask for is a no-op and the spectacle checks
-	 * run at that distance.
+	 * Recomputes the GUI scale and re-inits the HUD. 26.x calls this Minecraft#resizeGui;
+	 * this branch still routes it through the window-resize handler, which is what rebuilds
+	 * the panes and the chat/scale state.
 	 */
-	public static void cameraDistance(ServerPlayer player, double distance) {
+	public static void resizeGui(Minecraft mc) {
+		mc.resizeDisplay();
+	}
+
+	/**
+	 * Pumps the client until queued clientbound packets are processed. 26.3 added
+	 * TestSingleplayerContext#getConnection; before it, waiting for the chunk download
+	 * to settle is what drains the client's inbound queue.
+	 */
+	public static void awaitClientPackets(TestSingleplayerContext world) {
+		world.getClientWorld().waitForChunksDownload();
 	}
 }

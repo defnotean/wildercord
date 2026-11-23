@@ -391,7 +391,7 @@ final class FusedFrost {
 				return;
 			}
 			int hold = Effects.ticks(t instanceof Player ? 1 : 2, duration);
-			Spirits.hold(t, hold);
+			Spirits.hold(t, hold, cast.caster);
 			still(t);
 			// The stone is brittle: whatever follows lands 20% harder for as long as it holds.
 			Reactions.mark(t, Reactions.Mark.CRACKED, Math.max(1, hold - 4));

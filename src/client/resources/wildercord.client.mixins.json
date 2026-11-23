@@ -28,6 +28,7 @@
 		"MastersHandEquipMixin",
 		"ItemLayerAuraMixin",
 		"EntityRendererAuraSenseMixin",
+		"EntityRendererCustomFireMixin",
 		"MinecraftStringsMixin",
 		"EntityRenderDispatcherHitStopMixin",
 		"ItemEntityRendererBondMixin",

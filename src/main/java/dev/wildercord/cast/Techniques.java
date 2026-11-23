@@ -517,16 +517,26 @@ final class Techniques {
 		long until = cast.level.getGameTime() + DECREE_CONDEMNED_TICKS;
 		for (LivingEntity t : harmed) {
 			CONDEMNED.put(t.getUUID(), new Condemned(caster.getUUID(), until, DECREE_HITS));
-			Spirits.hold(t, ticks);
-			if (t instanceof Mob mob) {
+			Spirits.hold(t, ticks, cast.caster);
+			if (t instanceof Mob mob && !Spirits.isBoss(mob)) {
 				mob.setTarget(null);
 			}
 			TechniqueVfx.decree(cast.level, caster.getEyePosition(), t);
 		}
 	}
 
+	static void clearWeigh(UUID id) {
+		WEIGHED.remove(id);
+	}
+
 	/** Weigh: triple gravity, slow legs and weak jumps for a while; fliers are dragged down. */
 	static void weigh(Cast cast, LivingEntity t, int ticks) {
+		if (Spirits.isBoss(t)) {
+			if (!Spirits.tryClaimBossHold(t, ticks, cast.caster)) {
+				return;
+			}
+			ticks = BossRules.bossHoldTicks(ticks);
+		}
 		modifier(t, Attributes.GRAVITY, 2.0, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 		modifier(t, Attributes.MOVEMENT_SPEED, -0.6, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 		modifier(t, Attributes.JUMP_STRENGTH, -0.7, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
@@ -570,8 +580,11 @@ final class Techniques {
 	/** Shackle: the target is chained to where it stood, and yanked back if it strays. */
 	static void shackle(Cast cast, LivingEntity t, int ticks) {
 		if (Spirits.isBoss(t)) {
-			// Bosses can't be held in place, only slowed.
-			t.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, ticks, 1, false, true));
+			if (!Spirits.tryClaimBossHold(t, ticks, cast.caster)) {
+				return;
+			}
+			// Bosses break out quickly instead of remaining chained.
+			t.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, BossRules.bossHoldTicks(ticks), 1, false, true));
 			TechniqueVfx.chain(cast.level, t.position(), t, true);
 			return;
 		}
@@ -612,7 +625,7 @@ final class Techniques {
 		}
 		double lift = 2.5 / Math.max(1, ticks / 2);
 		if (t instanceof Mob) {
-			Spirits.hold(t, ticks);
+			Spirits.hold(t, ticks, cast.caster);
 		} else {
 			t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks, 0, false, false));
 			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, false));
@@ -914,7 +927,7 @@ final class Techniques {
 		}
 		for (Entity e : level.getEntities(caster, caster.getBoundingBox().inflate(16.0), e -> e instanceof Mob)) {
 			Mob mob = (Mob) e;
-			if (mob.getTarget() == caster) {
+			if (mob.getTarget() == caster && !Spirits.isBoss(mob)) {
 				mob.setTarget(null);
 			}
 		}
@@ -995,6 +1008,10 @@ final class Techniques {
 			level.setBlockAndUpdate(pos, replaced);
 		}
 		TemporaryBlocks.remove(level, pos);
+	}
+
+	static void evictRampart(ServerLevel level, BlockPos pos) {
+		RAMPART.remove(GlobalPos.of(level.dimension(), pos.immutable()));
 	}
 
 	/**

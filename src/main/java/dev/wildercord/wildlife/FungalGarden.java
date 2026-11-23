@@ -4,6 +4,7 @@ import dev.wildercord.api.WildercordEvents;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.cast.Casters;
 import dev.wildercord.cast.feel.Feels;
+import dev.wildercord.compat.McHands;
 import net.fabricmc.fabric.api.attachment.v1.*;
 import net.fabricmc.fabric.api.biome.v1.*;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;

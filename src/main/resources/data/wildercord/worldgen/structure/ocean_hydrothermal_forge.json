@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:site",
+  "biomes": "#wildercord:has_structure/ocean_hydrothermal_forge",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "site": "ocean_hydrothermal_forge"
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "VPV",
+    " C "
+  ],
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "V": "wildercord:voltaic_jelly_sac",
+    "P": "wildercord:abyssal_pearl"
+  },
+  "result": {
+    "id": "wildercord:siren_pearl_lantern",
+    "count": 1
+  }
+}

@@ -34,7 +34,7 @@ its next survey before the strike lands.
 The ground markings remain readable with **Minimal** particles. Each attack can hit
 you once, and every recovery window leaves time to answer on foot. Base damage is
 6 for the transit sweep, 5 for the plumb drop and 7 for the meridian grid, before
-ordinary difficulty, tempering and defences. Base health is 180 with 6 armour.
+ordinary difficulty, tempering and defences. Base health is 720 with 10 armour and 5 armour toughness.
 
 At half health the Cartographer shifts its survey order and rotates later safe
 meridian lanes between the east-west and north-south axes. A tell already underway
@@ -65,6 +65,6 @@ Return to a Highland Cairn Keeper after the victory. Once you have heard the
 keeper's four stories, they recognize the compass you carry and record their
 parting acknowledgement in your journal's Talk tab.
 
-The astrolabe stays complete after victory and does not repeat its reward. Leaving
+After victory, the astrolabe rests for **10 minutes** before allowing a fresh challenge, while one-time journal entries and compasses are awarded once per player. Leaving
 an attempt or reloading clears that attempt's participation. The peaceful Highland
 cairn route keeps its own clues and rewards.

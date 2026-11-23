@@ -8,6 +8,7 @@ SALT_OVERRIDES = {
     "wilds_sakura_canal_town": 20261122,
     "wilds_sakura_onsen_village": 20261123,
     "wilds_sakura_castle_town": 20261124,
+    "wilds_sacred_pig_village": 2026112301,
 }
 
 # id: (name, step, biomes, spacing, separation, advancement title, advancement text, icon item)
@@ -45,6 +46,10 @@ SITES = {
     "wilds_sakura_castle_town": ("Sakura Castle-Town", "surface_structures",
                                  ["minecraft:cherry_grove", "minecraft:plains", "minecraft:meadow", "minecraft:forest", "minecraft:birch_forest"], 36, 12,
                                  "Blossom Citadel", "Find a Sakura Feudal Castle-Town & Dojo Village", "minecraft:bell"),
+    "wilds_sacred_pig_village": ("Sacred Pig Village", "surface_structures",
+                                 ["minecraft:forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest",
+                                  "minecraft:dark_forest", "minecraft:taiga", "minecraft:plains"], 24, 8,
+                                 "The Sacred Pig", "Find the Sacred Pig Village and its wheezing sacred pig", "minecraft:carrot"),
 }
 
 # id: (breathing method, vault runes, hall runes, vault extras, hall extras)
@@ -137,6 +142,11 @@ def write(g):
             "placement": placement, "structures": [{"structure": f"wildercord:{site_id}", "weight": 1}]})
         g.write_json(g.DATA / f"tags/worldgen/biome/has_structure/{site_id}.json", {"replace": False, "values": biomes})
 
+        if site_id not in LOOT:
+            # The sacred pig village's priest-hut chest is authored by hand with the
+            # quest, so the generator only owns its worldgen, tag and advancement.
+            g.adv(f"world/{site_id}", "world/archive", g.item(icon), title, text, g.in_structure(f"wildercord:{site_id}"), xp=20)
+            continue
         method, vault_runes, hall_runes, vault_extras, hall_extras = LOOT[site_id]
         for r in vault_runes + hall_runes:
             assert r in known, f"{site_id}: no rune {r}"
