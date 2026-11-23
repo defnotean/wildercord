@@ -29,7 +29,8 @@ def _player_condition(profile: DataPackProfile, node):
     """Swap the advancement ``player`` condition: a list of conditions before 26.3, one object after."""
     if not isinstance(node, dict) or "player" not in node:
         return node
-    value = node["player"]
+    out = dict(node)
+    value = out["player"]
     items = value if isinstance(value, list) else [value]
     converted = []
     for item in items:
@@ -44,10 +45,10 @@ def _player_condition(profile: DataPackProfile, node):
             item["type"] = item.pop("condition")
         converted.append(item)
     if profile.is_26_2:
-        node["player"] = converted
+        out["player"] = converted
     else:
-        node["player"] = converted[0] if len(converted) == 1 else {"type": "minecraft:all_of", "terms": converted}
-    return node
+        out["player"] = converted[0] if len(converted) == 1 else {"type": "minecraft:all_of", "terms": converted}
+    return out
 
 
 def _recipe_unlock_condition(profile: DataPackProfile, node):
