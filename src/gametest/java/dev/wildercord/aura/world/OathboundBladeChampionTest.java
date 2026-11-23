@@ -298,11 +298,11 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
 				c.setTarget(p);
-				c.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(c);
 				float hpBefore = c.getHealth();
 				c.hurtServer(level(s), level(s).damageSources().playerAttack(p), 10.0F);
 				float dealt = hpBefore - c.getHealth();
@@ -326,7 +326,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				p.teleportTo(l, 0.5, 121.0, -2.2, Set.<Relative>of(), 0.0F, 0.0F, false);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 				OathboundBladeChampion c = (OathboundBladeChampion) l.getEntity(champId);
-				c.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(c);
 				c.hurtServer(l, l.damageSources().playerAttack(p), 12.0F);
 				check(c.move() == OathboundBladeChampionRules.STAGGERED,
 					"Diamond Axe hitting active Wrathful Riposte must shatter guard into STAGGERED, was " + c.move());
@@ -344,7 +344,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SHIELD));
 			});
@@ -377,7 +377,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.stopUsingItem();
 				p.teleportTo(level(s), 0.5, 121.0, -4.2, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
@@ -415,7 +415,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				reloaded.discard();
 
 				p.setGameMode(GameType.CREATIVE);
-				c.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(c);
 				c.hurtServer(l, l.damageSources().playerAttack(p), 5000.0F);
 			});
 			context.waitTicks(4);

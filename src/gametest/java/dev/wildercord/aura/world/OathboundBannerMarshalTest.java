@@ -321,7 +321,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				}
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 				OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(marshalId);
 				m.setTarget(p);
@@ -367,7 +367,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBannerMarshal m = (OathboundBannerMarshal) l.getEntity(marshalId);
 				m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);

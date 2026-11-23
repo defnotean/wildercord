@@ -271,7 +271,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, 3.8, Set.<Relative>of(), 180.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
@@ -287,7 +287,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.removeAllEffects();
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
@@ -303,7 +303,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 5.2, 121.0, 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
@@ -340,7 +340,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerLevel l = level(s);
 				ServerPlayer p = player(s);
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);

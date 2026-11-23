@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McEntities;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -297,7 +298,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				check(nonAxeLost < 6.0F, "Frontal non-axe strike heavily blocked by Phalanx Brace (lost " + nonAxeLost + ")");
 
 				b.setHealth(b.getMaxHealth());
-				b.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(b);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
 				b.hurtServer(l, l.damageSources().playerAttack(p), 12.0F);
 				p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -341,7 +342,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				p.removeAllEffects();
 				p.setHealth(p.getMaxHealth());
-				p.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 				b.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
@@ -376,7 +377,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				restored.discard();
 
 				p.setGameMode(GameType.CREATIVE);
-				b.setInvulnerableTime(0);
+				McEntities.clearHurtCooldown(b);
 				b.hurtServer(l, l.damageSources().playerAttack(p), 5000.0F);
 			});
 			context.waitTicks(4);

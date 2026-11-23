@@ -28,7 +28,6 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -111,7 +110,7 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 				var randomState = cs.randomState();
 				int sea = gen.getSeaLevel();
 				var resolver = gen.getBiomeSource()
-					.createResolver(randomState.createClimateSampler(SamplerContext.EMPTY_UNCACHED));
+					.createResolver(randomState.sampler());
 
 				List<ChunkPos> candidates = new ArrayList<>();
 				for (int cx = -128; cx <= 128; cx += 4) {
