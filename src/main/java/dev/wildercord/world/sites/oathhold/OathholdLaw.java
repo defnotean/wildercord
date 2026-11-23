@@ -344,7 +344,7 @@ public final class OathholdLaw {
 
 		criminal.sendSystemMessage(Component.literal(
 			"[Oathhold Watch] Crime committed (" + crime.id + ")! Bounty is now " + nextBounty
-				+ " Emeralds — Oathbound Knights are hostile! Sneak-pay a Watchman/Prelate or run /adventurer payfine.")
+				+ " Emeralds. Guards are watching - you will be imprisoned at one heart. Sneak-pay a Watchman/Prelate or run /adventurer payfine.")
 			.withStyle(ChatFormatting.RED));
 		criminal.level().playSound(null, criminal.blockPosition(), SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 0.55F, 1.25F);
 		alertNearbyKnights((ServerLevel) criminal.level(), criminal);
@@ -354,7 +354,11 @@ public final class OathholdLaw {
 		AABB box = criminal.getBoundingBox().inflate(44.0);
 		for (Mob knight : level.getEntitiesOfClass(Mob.class, box,
 				m -> isKnightEntity(m) && m.isAlive() && !m.entityTags().contains(ARENA_DUELIST_TAG))) {
-			knight.setTarget(criminal);
+			// Guards watch; do not force attack target.
+			knight.getLookControl().setLookAt(criminal, 30.0F, 30.0F);
+			if (knight.getTarget() == criminal) {
+				knight.setTarget(null);
+			}
 		}
 	}
 
@@ -522,8 +526,8 @@ public final class OathholdLaw {
 	}
 
 	/**
-	 * Replaces unconditional {@code NearestAttackableTargetGoal<Player>} on Oathbound Knights:
-	 * knights remain neutral until a player commits a crime or steps into a sanctioned Arena bout against them.
+	 * Oathhold guards watch wanted/persecuted players instead of attacking. Arrest happens
+	 * through OathholdJustice when the player reaches one heart.
 	 */
 	public static final class LawEnforcementTargetGoal extends TargetGoal {
 		private ServerPlayer candidate;
@@ -557,23 +561,33 @@ public final class OathholdLaw {
 
 		@Override
 		public void start() {
-			mob.setTarget(candidate);
+			// Watch, don't attack.
+			mob.setTarget(null);
 			super.start();
 		}
 
 		@Override
+		public void tick() {
+			if (candidate != null && candidate.isAlive()) {
+				mob.getLookControl().setLookAt(candidate, 30.0F, 30.0F);
+				if (mob.distanceToSqr(candidate) > 16.0) {
+					mob.getNavigation().moveTo(candidate, 0.8);
+				}
+			}
+		}
+
+		@Override
 		public boolean canContinueToUse() {
-			LivingEntity current = mob.getTarget();
-			if (!(current instanceof ServerPlayer sp) || !current.isAlive()) {
+			if (!(candidate instanceof ServerPlayer sp) || !sp.isAlive()) {
 				return false;
 			}
 			if (sp.isCreative() || sp.isSpectator()) {
 				return false;
 			}
-			if (!shouldKnightAttack(mob, sp) && mob.getLastHurtByMob() != sp) {
+			if (!shouldKnightAttack(mob, sp)) {
 				return false;
 			}
-			return current.distanceToSqr(mob) <= getFollowDistance() * getFollowDistance();
+			return sp.distanceToSqr(mob) <= getFollowDistance() * getFollowDistance();
 		}
 
 		@Override

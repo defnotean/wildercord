@@ -266,6 +266,13 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				check(OathholdLaw.isWanted(p) && OathholdLaw.bountyOf(p) >= OathholdLawRules.CrimeKind.VANDALISM.bountyEmeralds,
 					"Guard-witnessed house break marks player Wanted");
 				check(OathholdJustice.isPersecuted(p), "Guard-witnessed house break puts player into active Persecution");
+				check(!OathholdJustice.isImprisoned(p), "Healthy wanted player must not be imprisoned immediately");
+			});
+			context.waitTicks(20);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+				check(!OathholdJustice.isImprisoned(p), "Guards still watching - no imprisonment above one heart");
+				p.setHealth(2.0F); // one heart
 			});
 			for (int i = 0; i < 40; i++) {
 				boolean imprisoned = world.getServer().computeOnServer(server ->
@@ -276,7 +283,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 			world.getServer().runOnServer(server -> {
 				ServerLevel l = server.overworld();
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
-				check(OathholdJustice.isImprisoned(p), "Pursuing guard arrests and imprisons the vandal in Watch Stockade");
+				check(OathholdJustice.isImprisoned(p), "Guard arrests and imprisons the vandal at one heart in Watch Stockade");
 				OathholdJustice.PrisonRecord rec = OathholdJustice.ledger(server).prisonFor(p.getUUID());
 				check(rec != null, "PrisonRecord exists while imprisoned");
 				BlockPos barPos = rec.cellCenter.offset(0, 1, -2);
@@ -332,8 +339,14 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				check(OathholdLaw.bountyOf(p) >= OathholdLawRules.CrimeKind.DEMOLITION.bountyEmeralds,
 					"Player TNT blast triggers DEMOLITION bounty, got " + OathholdLaw.bountyOf(p));
-				check(OathholdJustice.isPersecuted(p) || OathholdJustice.isImprisoned(p),
-					"Guards must persecute/arrest player after TNT demolition");
+				check(OathholdJustice.isPersecuted(p), "Guards must persecute player after TNT demolition");
+				check(!OathholdJustice.isImprisoned(p), "Healthy bomber must not be imprisoned immediately");
+			});
+			context.waitTicks(20);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
+				check(!OathholdJustice.isImprisoned(p), "Guards still watching bomber above one heart");
+				p.setHealth(2.0F);
 			});
 
 			// Wait for arrest into street-side Watch Stockade overlooking the blasted house

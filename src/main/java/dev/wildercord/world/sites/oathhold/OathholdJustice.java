@@ -318,7 +318,7 @@ public final class OathholdJustice {
 			data.setDirty();
 			dispatchGuardsForArrest(level, culprit);
 			culprit.sendSystemMessage(Component.literal(
-				"[Oathhold Watch] Guards witnessed your destruction! High Knights and Watchmen are closing in to imprison you while builders restore the house.")
+				"[Oathhold Watch] Guards witnessed your destruction! They are watching you - if you fall to one heart, you will be imprisoned while builders restore the house.")
 				.withStyle(ChatFormatting.RED));
 		} else if (!createdNew && data.prisonFor(culprit == null ? UUID.randomUUID() : culprit.getUUID()) != null) {
 			targetSite.startRepairAt = Math.min(targetSite.startRepairAt, now + 20L);
@@ -339,9 +339,11 @@ public final class OathholdJustice {
 		if (!(entity instanceof ServerPlayer sp)) return true;
 		if (isImprisoned(sp)) return false;
 		if (isPersecuted(sp) && isGuardEntity(source.getEntity()) && sp.level() instanceof ServerLevel level) {
+			// Guards watch instead of attacking; arrest only at one heart.
 			Persecution p = PERSECUTION.get(sp.getUUID());
-			sp.setHealth(Math.max(6.0F, sp.getHealth()));
-			imprisonPlayer(level, sp, p);
+			if (sp.getHealth() <= 2.0F) {
+				imprisonPlayer(level, sp, p);
+			}
 			return false;
 		}
 		return true;
@@ -589,7 +591,7 @@ public final class OathholdJustice {
 			if (player.level() != overworld) continue;
 			AABB captureBox = player.getBoundingBox().inflate(OathholdLawRules.ARREST_CAPTURE_RANGE);
 			List<Mob> capturingGuards = overworld.getEntitiesOfClass(Mob.class, captureBox, OathholdJustice::isGuardEntity);
-			if (!capturingGuards.isEmpty()) {
+			if (!capturingGuards.isEmpty() && player.getHealth() <= 2.0F) {
 				it.remove();
 				imprisonPlayer(overworld, player, p);
 				continue;
