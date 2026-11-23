@@ -103,7 +103,7 @@ public final class OathboundBastionRenderer extends MobRenderer<OathboundBastion
 				return;
 			}
 			RenderCompat.submitModel(collector, getParentModel(), s, poseStack, type, light,
-				OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, s.outlineColor);
+				OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF, RenderCompat.outlineOf(s));
 		}
 	}
 }

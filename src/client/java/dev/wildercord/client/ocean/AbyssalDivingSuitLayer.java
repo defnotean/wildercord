@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.LightTexture;
@@ -189,8 +190,8 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<PlayerRenderState,
 		pose.pushPose();
 		anchor.translateAndRotate(pose);
 		pose.scale(0.5F, 0.5F, 0.5F);
-		RenderCompat.submitModel(collector, model, Unit.INSTANCE, pose, baseType, light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
-		RenderCompat.submitModel(collector, model, Unit.INSTANCE, pose, EYES, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+		RenderCompat.submitModel(collector, model, Unit.INSTANCE, pose, baseType, light, OverlayTexture.NO_OVERLAY, -1, RenderCompat.outlineOf(state));
+		RenderCompat.submitModel(collector, model, Unit.INSTANCE, pose, EYES, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, RenderCompat.outlineOf(state));
 		pose.popPose();
 	}
 

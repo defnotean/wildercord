@@ -59,7 +59,7 @@ public final class SingingMoonWhaleRenderer extends MobRenderer<SingingMoonWhale
 			if (state.isInvisible) return;
 			float pulse = state.singing ? (0.75F + 0.25F * Mth.sin(state.ageInTicks * 0.35F)) : 0.65F;
 			int a = Mth.clamp(Math.round(pulse * 255), 0, 255);
-			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, (a << 24) | 0xFFFFFF, state.outlineColor);
+			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, (a << 24) | 0xFFFFFF, RenderCompat.outlineOf(state));
 		}
 	}
 }
