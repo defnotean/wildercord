@@ -1,4 +1,4 @@
-﻿package dev.wildercord.compat;
+package dev.wildercord.compat;
 
 import com.mojang.datafixers.util.Function7;
 import com.mojang.datafixers.util.Function8;
