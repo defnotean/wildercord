@@ -109,16 +109,16 @@ public class DripfangLurker extends WildMonster {
 	// ------------------------------------------------------------------ the wait
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		LivingEntity target = getTarget();
 		boolean hunting = target != null && target.isAlive() && Targets.canHarm(this, target);
 		if (!placed) {
 			// Born (or loaded) where it can, it goes straight up to the roof.
 			placed = true;
 			if (!hunting && phase == Phase.ROAM) {
-				BlockPos roof = roof(level);
+				BlockPos roof = roof(level());
 				if (roof != null) {
 					hang(roof);
 				}
@@ -126,8 +126,8 @@ public class DripfangLurker extends WildMonster {
 		}
 
 		switch (phase) {
-			case HANG -> waiting(level, now);
-			case FALL -> fall(level, now);
+			case HANG -> waiting(level(), now);
+			case FALL -> fall(level(), now);
 			case FLIPPED -> {
 				getNavigation().stop();
 				if (now >= phaseUntil) {
@@ -135,8 +135,8 @@ public class DripfangLurker extends WildMonster {
 					playSound(SoundEvents.SPIDER_STEP, 1.0F, 0.6F);
 				}
 			}
-			case CLIMB -> climb(level, hunting);
-			default -> roam(level, target, hunting, now);
+			case CLIMB -> climb(level(), hunting);
+			default -> roam(level(), target, hunting, now);
 		}
 		if (phase != Phase.HANG && phase != Phase.CLIMB && isNoGravity()) {
 			setNoGravity(false);

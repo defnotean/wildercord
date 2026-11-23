@@ -147,22 +147,22 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		return BellWardenRules.within(at.x,at.y,at.z,hallMin.getX(),hallMin.getY(),hallMin.getZ(),hallMax.getX(),hallMax.getY(),hallMax.getZ(),margin);
 	}
 
-	@Override protected void customServerAiStep(ServerLevel level){
-		super.customServerAiStep(level);if(!isAlive())return;
+	@Override protected void customServerAiStep() {
+		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-11,b.getY()-1,b.getZ()-33,b.getX()+11,b.getY()+13,b.getZ()+13));}
 		// Left alone long enough (its prey died and went home, say) and it has knelt again in the meantime.
-		long now=level.getGameTime();
+		long now=level().getGameTime();
 		if(lastTick>=0 && move()!=BellWardenRules.DORMANT && BellWardenRules.forgets(now-lastTick))kneelDown();
 		lastTick=now;
-		if(tickCount%BellWardenRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
+		if(tickCount%BellWardenRules.GUARD_EVERY==0 && Guardians.enabled())guard(level());
 		switch(move()){
-			case BellWardenRules.DORMANT->dormant(level);
-			case BellWardenRules.RISE->{hold();if(--left<=0)stand(level);else if(left==BellWardenRules.RISE_TICKS-BellWardenRules.TOLL_AT)toll(level,1.6F,1);}
-			case BellWardenRules.KNEEL->{hold();if(wakeful(level)!=null)wake(level,BellWardenRules.RISE_TICKS-left);else if(--left<=0)kneelDown();}
-			default->awake(level);
+			case BellWardenRules.DORMANT->dormant(level());
+			case BellWardenRules.RISE->{hold();if(--left<=0)stand(level());else if(left==BellWardenRules.RISE_TICKS-BellWardenRules.TOLL_AT)toll(level(),1.6F,1);}
+			case BellWardenRules.KNEEL->{hold();if(wakeful(level())!=null)wake(level(),BellWardenRules.RISE_TICKS-left);else if(--left<=0)kneelDown();}
+			default->awake(level());
 		}
-		if(!waves.isEmpty())waves(level);
-		if(!volleys.isEmpty())volleys(level);
+		if(!waves.isEmpty())waves(level());
+		if(!volleys.isEmpty())volleys(level());
 	}
 
 	/** Its bell, ringing: the sound, and a ring of drowned light rolling off it. */

@@ -1702,11 +1702,11 @@ public class TideScribe extends DungeonBoss {
 	}
 
 	@Override
-	public void onRemoval(RemovalReason reason) {
+	public void remove(RemovalReason reason) {
 		if (!level().isClientSide()) {
 			AWAKE.remove(this);
 		}
-		super.onRemoval(reason);
+		super.remove(reason);
 	}
 
 	@Override

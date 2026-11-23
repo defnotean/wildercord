@@ -130,13 +130,13 @@ public class ReefgraspOctopus extends WildMonster {
 	// ------------------------------------------------------------------ the hide, the grab, the ink
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		setState(ACTING, now < actingUntil);
 
 		if (!isInWater()) {
-			dryOut(level, now);
+			dryOut(level(), now);
 		}
 
 		if (jetUntil >= 0) {
@@ -154,7 +154,7 @@ public class ReefgraspOctopus extends WildMonster {
 		}
 
 		if (held != null) {
-			hold(level, now);
+			hold(level(), now);
 			return;
 		}
 		setState(ALT, false);
@@ -174,7 +174,7 @@ public class ReefgraspOctopus extends WildMonster {
 			face(target);
 			getNavigation().stop();
 			if (now >= grabAt) {
-				reach(level, target, now);
+				reach(level(), target, now);
 			}
 			return;
 		}

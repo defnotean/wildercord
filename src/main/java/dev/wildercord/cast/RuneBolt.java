@@ -531,13 +531,13 @@ public class RuneBolt extends Projectile {
 	}
 
 	@Override
-	public void onRemoval(RemovalReason reason) {
+	public void remove(RemovalReason reason) {
 		// Every removal path (discard, chunk unload, dimension change) ends up here once.
 		if (cast != null) {
 			LIVE.computeIfPresent(cast.caster.getUUID(), (k, n) -> n <= 1 ? null : n - 1);
 			cast = null;
 		}
-		super.onRemoval(reason);
+		super.remove(reason);
 	}
 
 	@Override

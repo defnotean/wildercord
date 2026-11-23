@@ -29,7 +29,7 @@ public final class GlowcapBlock extends Block {
  }
  public static boolean footing(LevelReader l,BlockPos p) {return l.hasChunkAt(p.below()) && (l.getBlockState(p.below()).is(Blocks.MOSS_BLOCK) || l.getBlockState(p.below()).is(Blocks.CLAY));}
  public static boolean structuralCover(LevelReader l,BlockPos p) {
-  for(int y=1;y<=8;y++)if(l.hasChunkAt(p.above(y)) && (l.getBlockState(p.above(y)).isSolidRender() || l.getBlockState(p.above(y)).is(FungalGarden.NURSERY)))return true;
+  for(int y=1;y<=8;y++)if(l.hasChunkAt(p.above(y)) && (l.getBlockState(p.above(y)).isSolidRender(l, p.above(y)) || l.getBlockState(p.above(y)).is(FungalGarden.NURSERY)))return true;
   return false;
  }
  public static boolean conditions(LevelReader l,BlockPos p) {return footing(l,p) && moist(l,p) && structuralCover(l,p) && (!(l instanceof Level level) || level.getMaxLocalRawBrightness(p)<=8);}

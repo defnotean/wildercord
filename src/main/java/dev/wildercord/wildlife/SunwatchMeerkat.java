@@ -138,32 +138,32 @@ public class SunwatchMeerkat extends Animal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		int pose = pose(), left = poseLeft();
 		if (pose == MeerkatRules.HIDE) {
 			// Halfway through peeking it has a good look round: still there, and it ducks straight back down.
-			if (left == MeerkatRules.PEEK_TICKS / 2 && threat(level, false) != null) {
+			if (left == MeerkatRules.PEEK_TICKS / 2 && threat(level(), false) != null) {
 				entityData.set(LEFT, MeerkatRules.HIDE_TICKS);
 				playSound(SoundEvents.FOX_AMBIENT, 0.4F, 2.0F);
 				return;
 			}
 		} else if (tickCount % (pose == MeerkatRules.WATCH ? 5 : 10) == 0 && !isInWater()) {
-			Entity threat = threat(level, pose == MeerkatRules.WATCH);
+			Entity threat = threat(level(), pose == MeerkatRules.WATCH);
 			if (threat != null) {
-				alarm(level, threat);
+				alarm(level(), threat);
 				return;
 			}
 		}
 		if (pose != MeerkatRules.IDLE) {
-			if (pose == MeerkatRules.SLEEP && !MeerkatRules.night(dev.wildercord.compat.McTime.overworldClock(level)) && left > 20) {
+			if (pose == MeerkatRules.SLEEP && !MeerkatRules.night(dev.wildercord.compat.McTime.overworldClock(level())) && left > 20) {
 				entityData.set(LEFT, left = 20);
 			}
 			if (pose == MeerkatRules.DIG && left % 8 == 0) {
-				scrape(level);
+				scrape(level());
 			}
 			if (pose == MeerkatRules.EAT && left % 12 == 0) {
-				munch(level);
+				munch(level());
 			}
 			if (pose == MeerkatRules.WATCH && left % 80 == 40) {
 				// The sentry's soft little peep: all's well.
@@ -179,7 +179,7 @@ public class SunwatchMeerkat extends Animal {
 		if (isInWater() || !onGround()) {
 			return;
 		}
-		long time = dev.wildercord.compat.McTime.overworldClock(level);
+		long time = dev.wildercord.compat.McTime.overworldClock(level());
 		if (MeerkatRules.night(time)) {
 			return;
 		}
@@ -187,7 +187,7 @@ public class SunwatchMeerkat extends Animal {
 			pose(MeerkatRules.SUN, MeerkatRules.SUN_TICKS + random.nextInt(100));
 		} else if (random.nextInt(MeerkatRules.DIG_ODDS) == 0) {
 			pose(MeerkatRules.DIG, MeerkatRules.DIG_TICKS + random.nextInt(40));
-		} else if (!isBaby() && !wantsWatch && random.nextInt(MeerkatRules.WATCH_ODDS) == 0 && MeerkatRules.takesWatch(nearestWatcher(level))) {
+		} else if (!isBaby() && !wantsWatch && random.nextInt(MeerkatRules.WATCH_ODDS) == 0 && MeerkatRules.takesWatch(nearestWatcher(level()))) {
 			wantsWatch = true;
 		}
 	}

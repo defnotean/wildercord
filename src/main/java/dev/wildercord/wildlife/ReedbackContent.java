@@ -26,7 +26,7 @@ public final class ReedbackContent {
   SpawnPlacements.register(CRAB,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(t,l,reason,p,r) -> {
    if(reason==MobSpawnType.CHUNK_GENERATION)return false;if(reason!=MobSpawnType.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;
    var config=Config.get().wildlife();if(!config.spawns("reedback_crab") || l.getDifficulty()==net.minecraft.world.Difficulty.PEACEFUL || r.nextDouble()>=Math.min(1,.2*config.spawnMultiplier()))return false;
-   if(!l.canSeeSky(p.above()) || !l.getBlockState(p.below()).isSolidRender() || !l.getBlockState(p).getCollisionShape(l,p).isEmpty() || !l.getBlockState(p.above()).isAir())return false;
+   if(!l.canSeeSky(p.above()) || !l.getBlockState(p.below()).isSolidRender(l, p.below()) || !l.getBlockState(p).getCollisionShape(l,p).isEmpty() || !l.getBlockState(p.above()).isAir())return false;
    boolean wet=l.getFluidState(p).is(FluidTags.WATER);for(var d:Direction.Plane.HORIZONTAL)wet|=l.getFluidState(p.relative(d)).is(FluidTags.WATER);
    return wet && WetlandQueries.populationRoom(l.getLevel(),ReedbackCrab.class,new AABB(p).inflate(32),2);
   });

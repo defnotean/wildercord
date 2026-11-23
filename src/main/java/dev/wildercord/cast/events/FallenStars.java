@@ -252,7 +252,7 @@ public final class FallenStars {
 		int h = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
 		BlockPos surface = new BlockPos(x, h - 1, z);
 		BlockState ground = level.getBlockState(surface);
-		if (!ground.isSolidRender() || ground.is(BlockTags.LEAVES) || !level.getFluidState(surface).isEmpty()) {
+		if (!ground.isSolidRender(level, surface) || ground.is(BlockTags.LEAVES) || !level.getFluidState(surface).isEmpty()) {
 			return null;
 		}
 		// Keep clear of water and lava: a crater beside them would flood.

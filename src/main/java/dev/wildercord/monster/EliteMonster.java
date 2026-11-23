@@ -29,8 +29,8 @@ public abstract class EliteMonster extends WildMonster {
 	public abstract EliteTier tier();
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (getTarget() == null || !getTarget().isAlive()) {
 			bar.removeAllPlayers();
 			return;
@@ -38,11 +38,11 @@ public abstract class EliteMonster extends WildMonster {
 		setPersistenceRequired();
 		bar.setProgress(getHealth() / getMaxHealth());
 		for (ServerPlayer player : new ArrayList<>(bar.getPlayers())) {
-			if (player.level() != level || !player.isAlive() || player.distanceToSqr(this) > BAR_HIDE * BAR_HIDE) {
+			if (player.level()() != level() || !player.isAlive() || player.distanceToSqr(this) > BAR_HIDE * BAR_HIDE) {
 				bar.removePlayer(player);
 			}
 		}
-		for (ServerPlayer player : level.players()) {
+		for (ServerPlayer player : level().players()) {
 			if (player.isAlive() && !player.isSpectator() && player.distanceToSqr(this) < BAR_SHOW * BAR_SHOW) {
 				bar.addPlayer(player);
 			}

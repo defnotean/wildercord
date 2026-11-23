@@ -141,9 +141,9 @@ public class ThunderwingHarpy extends WildMonster {
 	// ------------------------------------------------------------------ the hunt
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		if (home == null) {
 			home = position();
 		}
@@ -157,7 +157,7 @@ public class ThunderwingHarpy extends WildMonster {
 					setNoGravity(true);
 					setDeltaMovement(getDeltaMovement().add(0, 0.6, 0));
 					enter(Phase.CLIMB, now, 18);
-					Motes.clouds(level, position(), 5, 0.6, 0xD8E8F0, 0.9, 20, new Vec3(0, 0.03, 0), 0.03, 0.35);
+					Motes.clouds(level(), position(), 5, 0.6, 0xD8E8F0, 0.9, 20, new Vec3(0, 0.03, 0), 0.03, 0.35);
 				}
 			}
 			case IDLE -> {
@@ -166,7 +166,7 @@ public class ThunderwingHarpy extends WildMonster {
 					angle = Math.atan2(getZ() - target.getZ(), getX() - target.getX());
 				} else {
 					if (goal == null || now >= phaseUntil || goal.distanceToSqr(position()) < 2) {
-						goal = wanderPoint(level);
+						goal = wanderPoint(level());
 						phaseUntil = now + 100 + getRandom().nextInt(80);
 					}
 					steer(goal, 0.22);
@@ -181,11 +181,11 @@ public class ThunderwingHarpy extends WildMonster {
 				goal = target.position().add(Math.cos(angle) * 7.0, 8.0 + Math.sin(now * 0.05) * 1.2, Math.sin(angle) * 7.0);
 				steer(goal, 0.45);
 				if (now >= phaseUntil && hasLineOfSight(target)) {
-					if (level.isThundering() && now >= nextCall && level.canSeeSky(target.blockPosition())) {
-						call(level, target, now);
+					if (level().isThundering() && now >= nextCall && level().canSeeSky(target.blockPosition())) {
+						call(level(), target, now);
 					} else {
 						enter(Phase.SHRIEK, now, SHRIEK);
-						MonsterMagic.sound(level, position(), "monster_harpy_shriek", 2.2F, 1.0F);
+						MonsterMagic.sound(level(), position(), "monster_harpy_shriek", 2.2F, 1.0F);
 					}
 				}
 			}
@@ -195,13 +195,13 @@ public class ThunderwingHarpy extends WildMonster {
 					face(target);
 				}
 				if (now % 3 == 0) {
-					ElementFx.sparks(level, position().add(0, getBbHeight() * 0.6, 0), 3, 0.15);
+					ElementFx.sparks(level(), position().add(0, getBbHeight() * 0.6, 0), 3, 0.15);
 				}
 				if (now >= phaseUntil) {
 					if (!hunting) {
 						enter(Phase.IDLE, now, 0);
 					} else {
-						dive(level, target, now);
+						dive(level(), target, now);
 					}
 				}
 			}
@@ -209,12 +209,12 @@ public class ThunderwingHarpy extends WildMonster {
 				diveTicks++;
 				setDeltaMovement(diveDir.scale(DIVE_SPEED));
 				if (diveTicks % 2 == 0) {
-					Motes.glows(level, position().add(0, getBbHeight() * 0.5, 0), 1, 0.2, STORM_BLUE, 0.14, 8, Vec3.ZERO, 0.0);
+					Motes.glows(level(), position().add(0, getBbHeight() * 0.5, 0), 1, 0.2, STORM_BLUE, 0.14, 8, Vec3.ZERO, 0.0);
 				}
 				if (target != null && target.isAlive() && getBoundingBox().inflate(0.3).intersects(target.getBoundingBox())) {
-					strike(level, target, now);
+					strike(level(), target, now);
 				} else if (diveTicks > 2 && (horizontalCollision || verticalCollision || onGround())) {
-					crash(level, now);
+					crash(level(), now);
 				} else if (diveTicks > 28) {
 					enter(Phase.CLIMB, now, 20);
 				}
@@ -232,11 +232,11 @@ public class ThunderwingHarpy extends WildMonster {
 					face(target);
 				}
 				if (now % 4 == 0 && mark != null) {
-					ElementFx.arc(level, position().add(0, getBbHeight() * 0.9, 0), position().add(getRandom().nextGaussian() * 0.8, getBbHeight() + 1.2,
+					ElementFx.arc(level(), position().add(0, getBbHeight() * 0.9, 0), position().add(getRandom().nextGaussian() * 0.8, getBbHeight() + 1.2,
 						getRandom().nextGaussian() * 0.8), STORM, 0.05, 1, false, 4);
 				}
 				if (now >= phaseUntil) {
-					lightning(level, now);
+					lightning(level(), now);
 					enter(hunting ? Phase.CIRCLE : Phase.IDLE, now, 60 + getRandom().nextInt(40));
 				}
 			}

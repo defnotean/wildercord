@@ -200,7 +200,7 @@ final class MasterPursuit {
 				for (int z = (int) Math.floor(body.minZ + .001); z <= (int) Math.floor(body.maxZ - .001); z++) {
 					BlockPos floor = new BlockPos(x, y, z);
 					var state = level.getBlockState(floor);
-					if (!level.hasChunkAt(floor) || !state.isSolidRender() || !state.getFluidState().isEmpty() || hazardous(state)) return false;
+					if (!level.hasChunkAt(floor) || !state.isSolidRender(level, floor) || !state.getFluidState().isEmpty() || hazardous(state)) return false;
 				}
 			}
 		}

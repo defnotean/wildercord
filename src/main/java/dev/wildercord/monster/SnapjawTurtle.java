@@ -132,9 +132,9 @@ public class SnapjawTurtle extends WildMonster {
 	// ------------------------------------------------------------------ the lurk and the snap
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		setState(ACTING, now < actingUntil);
 		setState(STUNNED, now < stunnedUntil);
 
@@ -154,7 +154,7 @@ public class SnapjawTurtle extends WildMonster {
 		}
 
 		if (held != null) {
-			hold(level, now);
+			hold(level(), now);
 			return;
 		}
 		setState(ALT, false);
@@ -168,7 +168,7 @@ public class SnapjawTurtle extends WildMonster {
 		if (!hunting) {
 			snapAt = -1;
 			setState(WINDUP, false);
-			lurk(level);
+			lurk(level());
 			return;
 		}
 		double distance = distanceTo(target);
@@ -177,7 +177,7 @@ public class SnapjawTurtle extends WildMonster {
 		if (snapAt >= 0) {
 			face(target);
 			if (now >= snapAt) {
-				snap(level, target, now);
+				snap(level(), target, now);
 			}
 			return;
 		}

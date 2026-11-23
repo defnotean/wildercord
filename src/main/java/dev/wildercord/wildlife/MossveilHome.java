@@ -41,7 +41,7 @@ final class MossveilHome{
    ||!l.getBlockState(feet).getCollisionShape(l,feet).isEmpty()||!l.getBlockState(feet.above()).getCollisionShape(l,feet.above()).isEmpty()
    ||!(l.getBlockState(feet.below()).is(Blocks.MOSS_BLOCK)||l.getBlockState(feet.below()).is(Blocks.CLAY))||l.getMaxLocalRawBrightness(feet)>8)return false;
   boolean cover=false,mature=false;
-  for(int i=1;i<=4;i++){var at=feet.above(i);if(l.hasChunkAt(at)&&(l.getBlockState(at).isSolidRender()||l.getBlockState(at).is(FungalGarden.NURSERY)))cover=true;}
+  for(int i=1;i<=4;i++){var at=feet.above(i);if(l.hasChunkAt(at)&&(l.getBlockState(at).isSolidRender(l, at)||l.getBlockState(at).is(FungalGarden.NURSERY)))cover=true;}
   for(var at:BlockPos.betweenClosed(feet.offset(-3,-1,-3),feet.offset(3,1,3)))if(l.hasChunkAt(at)){var state=l.getBlockState(at);if(state.is(FungalGarden.GLOWCAP)&&state.getValue(GlowcapBlock.AGE)==2&&GlowcapBlock.conditions(l,at))mature=true;}
   return cover&&mature;
  }

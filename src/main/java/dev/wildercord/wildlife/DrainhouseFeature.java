@@ -16,7 +16,7 @@ public class DrainhouseFeature extends SimpleWorldFeature {
  private static void observe(WorldGenLevel l,String event,int index,BlockPos origin,BlockPos cell,BlockState state,String reason){var current=observer;if(current!=null)current.event(l,event,index,origin,cell,state,reason);}
 
  private static boolean writable(WorldGenLevel l,BlockPos p){return !l.isOutsideBuildHeight(p) && dev.wildercord.compat.McWorldgen.withinWriteZone(l, p);}
- private static boolean foundation(WorldGenLevel l,BlockPos p){var state=l.getBlockState(p);return state.isSolidRender() && state.getDestroySpeed(l,p)>=0 && !state.hasBlockEntity() && state.getFluidState().isEmpty();}
+ private static boolean foundation(WorldGenLevel l,BlockPos p){var state=l.getBlockState(p);return state.isSolidRender(l, p) && state.getDestroySpeed(l,p)>=0 && !state.hasBlockEntity() && state.getFluidState().isEmpty();}
  /** Narrow three-room embedded station; guarded ordinary terrain only, with real existing cave access. */
  static final int MAX_CARVES=256,MAX_DECORATION=96,MAX_SUPPORTS=32,MAX_CLEARS=MAX_DECORATION;
  private static final Set<Block> ORES=Set.of(Blocks.COAL_ORE,Blocks.DEEPSLATE_COAL_ORE,Blocks.COPPER_ORE,Blocks.DEEPSLATE_COPPER_ORE,Blocks.IRON_ORE,Blocks.DEEPSLATE_IRON_ORE,Blocks.GOLD_ORE,Blocks.DEEPSLATE_GOLD_ORE,Blocks.LAPIS_ORE,Blocks.DEEPSLATE_LAPIS_ORE,Blocks.REDSTONE_ORE,Blocks.DEEPSLATE_REDSTONE_ORE,Blocks.DIAMOND_ORE,Blocks.DEEPSLATE_DIAMOND_ORE,Blocks.EMERALD_ORE,Blocks.DEEPSLATE_EMERALD_ORE);
@@ -85,7 +85,7 @@ public class DrainhouseFeature extends SimpleWorldFeature {
     var cell=p.offset(x,y,z);if(!loadedWritable(l,cell))return refuse(l,p,cell,null,"unloaded_interior");BlockState old=l.getBlockState(cell),desired=blueprint.get(cell);
     if(old.hasBlockEntity())return refuse(l,p,cell,old,"block_entity");if(!old.getFluidState().isEmpty())return refuse(l,p,cell,old,"fluid");
     if(ore(old)){
-     if(desired!=null && !desired.hasBlockEntity() && foundation(l,cell) && (desired.isSolidRender() || desired.isAir() && unusedDoor(p,cell,primary))){writes.put(cell.immutable(),old);continue;}
+     if(desired!=null && !desired.hasBlockEntity() && foundation(l,cell) && (desired.isSolidRender(l, cell) || desired.isAir() && unusedDoor(p,cell,primary))){writes.put(cell.immutable(),old);continue;}
      return refuse(l,p,cell,old,"ore_in_required_opening");
     }
     if(old.isAir())continue;
@@ -108,7 +108,7 @@ public class DrainhouseFeature extends SimpleWorldFeature {
   }
   writes.putAll(blueprint);
   // Preserve existing solid ore in solid architecture or unused exterior doorway infill only.
-  for(var e:writes.entrySet()){var old=l.getBlockState(e.getKey());if(ore(old)){if(!foundation(l,e.getKey()) || !(e.getValue().isSolidRender() || e.getValue().isAir() && unusedDoor(p,e.getKey(),primary)) || e.getValue().hasBlockEntity() || !e.getValue().getFluidState().isEmpty())return refuse(l,p,e.getKey(),old,"ore_in_required_gutter_or_opening");e.setValue(old);}}
+  for(var e:writes.entrySet()){var old=l.getBlockState(e.getKey());if(ore(old)){if(!foundation(l,e.getKey()) || !(e.getValue().isSolidRender(l, e.getKey()) || e.getValue().isAir() && unusedDoor(p,e.getKey(),primary)) || e.getValue().hasBlockEntity() || !e.getValue().getFluidState().isEmpty())return refuse(l,p,e.getKey(),old,"ore_in_required_gutter_or_opening");e.setValue(old);}}
   if(writes.size()>918)return refuse(l,p,p,null,"write_budget");return new Fit(writes,"accepted");
  }
  private static LinkedHashMap<BlockPos,BlockState> fit(WorldGenLevel l,BlockPos p){return analyze(l,p).writes();}

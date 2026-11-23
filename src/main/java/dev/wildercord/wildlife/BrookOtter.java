@@ -185,9 +185,9 @@ public class BrookOtter extends Animal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		if (isPassenger()) {
 			// A pup rides until it has grown, or now and then slips off for a swim of its own.
 			if (!isBaby() || random.nextInt(900) == 0) {
@@ -198,15 +198,15 @@ public class BrookOtter extends Animal {
 		if (isVehicle() && !floating()) {
 			ejectPassengers();
 		}
-		gift(level, now);
+		gift(level(), now);
 		int pose = pose(), left = poseLeft();
 		if (pose != OtterRules.IDLE) {
 			if (pose == OtterRules.CRACK) {
-				knock(level, left);
+				knock(level(), left);
 			} else if (pose == OtterRules.JUGGLE && left % 12 == 0) {
 				playSound(SoundEvents.STONE_HIT, 0.2F, 1.9F);
 			} else if (pose == OtterRules.FLOAT && tickCount % 20 == 0) {
-				seekHand(level);
+				seekHand(level());
 				if (pose() == OtterRules.FLOAT && random.nextInt(OtterRules.CRACK_ODDS / 20) == 0) {
 					entityData.set(HELD, OtterRules.SHELL);
 					pose(OtterRules.CRACK, OtterRules.CRACK_TICKS);

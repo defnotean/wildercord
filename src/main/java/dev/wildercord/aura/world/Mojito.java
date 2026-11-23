@@ -214,22 +214,22 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		var f=ahead(getYRot());return position().add(-f.z*side*2.4,3.2,f.x*side*2.4);
 	}
 
-	@Override protected void customServerAiStep(ServerLevel level){
-		super.customServerAiStep(level);if(!isAlive())return;
+	@Override protected void customServerAiStep() {
+		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-20,b.getY()-1,b.getZ()-20,b.getX()+20,b.getY()+16,b.getZ()+20));}
 		// Left alone long enough (his prey died and went home, say) and he has curled up again in the meantime.
-		long now=level.getGameTime();
+		long now=level().getGameTime();
 		if(lastTick>=0 && move()!=MojitoRules.DORMANT && MojitoRules.forgets(now-lastTick))bedDown();
 		lastTick=now;
-		if(tickCount%MojitoRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
+		if(tickCount%MojitoRules.GUARD_EVERY==0 && Guardians.enabled())guard(level());
 		switch(move()){
-			case MojitoRules.DORMANT->dormant(level);
-			case MojitoRules.RISE->{hold();rising(level,MojitoRules.RISE_TICKS-left);if(--left<=0)stand(level);}
-			case MojitoRules.BED->{hold();if(wakeful(level)!=null)wake(level,MojitoRules.RISE_TICKS-left);else if(--left<=0)bedDown();}
-			default->awake(level);
+			case MojitoRules.DORMANT->dormant(level());
+			case MojitoRules.RISE->{hold();rising(level(),MojitoRules.RISE_TICKS-left);if(--left<=0)stand(level());}
+			case MojitoRules.BED->{hold();if(wakeful(level())!=null)wake(level(),MojitoRules.RISE_TICKS-left);else if(--left<=0)bedDown();}
+			default->awake(level());
 		}
-		fly(level);linger(level);waves(level);clods(level);
-		if(tickCount%4==0)glow(level);
+		fly(level());linger(level());waves(level());clods(level());
+		if(tickCount%4==0)glow(level());
 	}
 
 	/** The magic about him: a wisp now and then off the sword as he sleeps, wisps on both flanks on his feet. */

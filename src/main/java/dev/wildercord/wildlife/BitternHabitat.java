@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.Blocks;
 /** Physical feet, shallow water and overhead cover; bounded reads never generate chunks. */
 final class BitternHabitat {
  private BitternHabitat(){}
- static boolean bank(LevelReader l,BlockPos p){if(!l.hasChunkAt(p)||!l.getBlockState(p.below()).isSolidRender()||!l.getBlockState(p.above()).getCollisionShape(l,p.above()).isEmpty()||!l.getFluidState(p.above()).isEmpty())return false;if(l.getFluidState(p).is(FluidTags.WATER))return l.getBlockState(p).getCollisionShape(l,p).isEmpty();if(!l.getBlockState(p).getCollisionShape(l,p).isEmpty()||!l.getFluidState(p).isEmpty())return false;for(var d:Direction.Plane.HORIZONTAL){var at=p.relative(d);if(l.hasChunkAt(at)&&(l.getFluidState(at).is(FluidTags.WATER)||l.getFluidState(at.below()).is(FluidTags.WATER)))return true;}return false;}
+ static boolean bank(LevelReader l,BlockPos p){if(!l.hasChunkAt(p)||!l.getBlockState(p.below()).isSolidRender(l, p.below())||!l.getBlockState(p.above()).getCollisionShape(l,p.above()).isEmpty()||!l.getFluidState(p.above()).isEmpty())return false;if(l.getFluidState(p).is(FluidTags.WATER))return l.getBlockState(p).getCollisionShape(l,p).isEmpty();if(!l.getBlockState(p).getCollisionShape(l,p).isEmpty()||!l.getFluidState(p).isEmpty())return false;for(var d:Direction.Plane.HORIZONTAL){var at=p.relative(d);if(l.hasChunkAt(at)&&(l.getFluidState(at).is(FluidTags.WATER)||l.getFluidState(at.below()).is(FluidTags.WATER)))return true;}return false;}
  /** Mud's actual top lies inside its block cell. Normalize only proven dry partial footing. */
  static boolean standingBank(SiltcrestBittern bird){
   var l=bird.level();var p=bird.blockPosition();if(bank(l,p))return true;

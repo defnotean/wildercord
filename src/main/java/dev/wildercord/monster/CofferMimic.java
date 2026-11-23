@@ -296,9 +296,9 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	// ------------------------------------------------------------------ shut
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		if (home == null) {
 			home = blockPosition();
 			homeYaw = MimicRules.snapYaw(getYRot());
@@ -307,27 +307,27 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 		LivingEntity target = getTarget();
 		boolean live = target != null && target.isAlive() && Targets.canHarm(this, target);
 		switch (phase) {
-			case DISGUISED -> lieStill(level, now);
+			case DISGUISED -> lieStill(level(), now);
 			case WAKE -> {
 				getNavigation().stop();
 				if (live) {
 					face(target);
 				}
 				if (phaseTicks == MimicRules.WAKE_BITE_AT) {
-					ambush(level);
+					ambush(level());
 				}
 				if (phaseTicks >= MimicRules.WAKE_TICKS) {
 					enter(Phase.HUNT);
 				}
 			}
-			case HUNT -> hunt(level, target, live, now);
+			case HUNT -> hunt(level(), target, live, now);
 			case BITE -> {
 				getNavigation().stop();
 				if (live) {
 					face(target);
 				}
 				if (phaseTicks == MimicRules.BITE_AT) {
-					play(level, SoundEvents.EVOKER_FANGS_ATTACK, 0.9F, 1.3F);
+					play(level(), SoundEvents.EVOKER_FANGS_ATTACK, 0.9F, 1.3F);
 					if (live && distanceTo(target) <= MimicRules.BITE_REACH + 0.6) {
 						doHurtTarget(target);
 					}
@@ -342,7 +342,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 					face(target);
 				}
 				if (phaseTicks == MimicRules.LASH_AT && live && hasLineOfSight(target) && distanceTo(target) <= MimicRules.LASH_MAX + 1.0) {
-					pull(level, target, now);
+					pull(level(), target, now);
 				}
 				if (phaseTicks >= MimicRules.LASH_TICKS) {
 					enter(Phase.HUNT);
@@ -356,11 +356,11 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 					face(target);
 					if (phaseTicks % 4 == 0) {
 						// The lid chattering: the tell before it leaps.
-						play(level, SoundEvents.CHEST_CLOSE, 0.5F, 1.6F + random.nextFloat() * 0.3F);
+						play(level(), SoundEvents.CHEST_CLOSE, 0.5F, 1.6F + random.nextFloat() * 0.3F);
 					}
 					if (phaseTicks >= MimicRules.LUNGE_CROUCH) {
 						if (hasLineOfSight(target)) {
-							leap(level, target);
+							leap(level(), target);
 						} else {
 							enter(Phase.HUNT);
 						}
@@ -372,15 +372,15 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 					if (target.hurt(damageSources().mobAttack(this), MimicRules.LUNGE_DAMAGE)) {
 						MonsterMagic.knock(target, position(), 0.7);
 					}
-					play(level, SoundEvents.EVOKER_FANGS_ATTACK, 1.0F, 1.0F);
+					play(level(), SoundEvents.EVOKER_FANGS_ATTACK, 1.0F, 1.0F);
 					setDeltaMovement(getDeltaMovement().scale(0.2));
 					enter(Phase.HUNT);
 					nextBite = now + 10;
 				} else if ((onGround() && phaseTicks > 4) || phaseTicks > 30) {
 					// It missed: it comes down on its back, legs kicking, and for a while it's soft.
 					enter(Phase.FLIPPED);
-					play(level, SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, 0.8F, 0.8F);
-					splinters(level, 10);
+					play(level(), SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, 0.8F, 0.8F);
+					splinters(level(), 10);
 				}
 			}
 			case FLIPPED -> {
@@ -388,14 +388,14 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 				if (phaseTicks >= MimicRules.FLIPPED) {
 					enter(Phase.HUNT);
 					setDeltaMovement(getDeltaMovement().add(0, 0.3, 0));
-					play(level, SoundEvents.CHEST_CLOSE, 0.8F, 0.7F);
+					play(level(), SoundEvents.CHEST_CLOSE, 0.8F, 0.7F);
 				}
 			}
 			case CLAMP -> {
 				getNavigation().stop();
 				if (phaseTicks >= MimicRules.CLAMP_TICKS) {
 					enter(Phase.HUNT);
-					play(level, SoundEvents.CHEST_OPEN, 0.9F, 0.7F);
+					play(level(), SoundEvents.CHEST_OPEN, 0.9F, 0.7F);
 					// It comes out of it biting.
 					nextBite = now;
 				}

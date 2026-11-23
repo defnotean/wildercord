@@ -159,11 +159,11 @@ public class HushwingOwlet extends Animal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		if (tickCount % 20 == 0) {
-			boolean sleepy = OwletRules.sleeps(!(!(level.isDay() && level.dimensionType().hasSkyLight())), wokenAt < 0 ? -1 : now - wokenAt)
+			boolean sleepy = OwletRules.sleeps(!(!(level().isDay() && level().dimensionType().hasSkyLight())), wokenAt < 0 ? -1 : now - wokenAt)
 				&& onGround() && !isInWater() && truster() == null && stare == null;
 			if (sleepy != asleep()) {
 				entityData.set(ASLEEP, sleepy);
@@ -174,7 +174,7 @@ public class HushwingOwlet extends Animal {
 			}
 		}
 		if (tickCount % 10 == 0) {
-			stare = watch(level);
+			stare = watch(level());
 		}
 		entityData.set(STARING, stare != null);
 		if (hootAgain >= 0 && now >= hootAgain) {

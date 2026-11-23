@@ -620,8 +620,8 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	}
 
 	@Override
-	public void onRemoval(RemovalReason reason) {
-		super.onRemoval(reason);
+	public void remove(RemovalReason reason) {
+		super.remove(reason);
 		if (!level().isClientSide()) {
 			Familiars.forget(this);
 		}

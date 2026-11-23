@@ -144,11 +144,11 @@ public class GlowberryDormouse extends Animal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		if (tickCount % 20 == 0) {
-			boolean sleepy = DormouseRules.sleeps(!(!(level.isDay() && level.dimensionType().hasSkyLight())), wokenAt < 0 ? -1 : now - wokenAt)
+			boolean sleepy = DormouseRules.sleeps(!(!(level().isDay() && level().dimensionType().hasSkyLight())), wokenAt < 0 ? -1 : now - wokenAt)
 				&& onGround() && !isInWater() && getTarget() == null && truster() == null;
 			if (sleepy != asleep()) {
 				entityData.set(ASLEEP, sleepy);
@@ -159,7 +159,7 @@ public class GlowberryDormouse extends Animal {
 		}
 		Player friend = truster();
 		if (friend != null && DormouseRules.gives(pouch(), distanceTo(friend), gaveAt < 0 ? -1 : now - gaveAt)) {
-			give(level, friend, now);
+			give(level(), friend, now);
 		} else if (friend == null && pouch() > 0 && !asleep()) {
 			if (eatAt == 0) {
 				eatAt = now + DormouseRules.EAT_TICKS;

@@ -91,10 +91,10 @@ public final class LanternNewt extends PathfinderMob {
 		if(!(level() instanceof ServerLevel l) || !isAlive() || !isInWaterOrRain() || l.getGameTime()<responseReady || l.getGameTime()<frightenedUntil)return false;
 		responseReady=l.getGameTime()+WetlandRules.RESPONSE_REST;entityData.set(RESPONSE,l.getGameTime()+80);Feels.sound(l,position(),"wetland_newt_answer",.65F,1);return true;
 	}
-	@Override protected void customServerAiStep(ServerLevel l) {
-		super.customServerAiStep(l);
-		if(isInWaterOrRain() && (response()>0 || WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(l))) && tickCount%20==0)
-			l.sendParticles(net.minecraft.core.particles.ParticleTypes.GLOW,getX(),getY()+.3,getZ(),2,.16,.05,.16,0);
+	@Override protected void customServerAiStep() {
+		super.customServerAiStep();
+		if(isInWaterOrRain() && (response()>0 || WetlandRules.night(dev.wildercord.compat.McTime.overworldClock(level()))) && tickCount%20==0)
+			level().sendParticles(net.minecraft.core.particles.ParticleTypes.GLOW,getX(),getY()+.3,getZ(),2,.16,.05,.16,0);
 	}
 	@Override public boolean hurt(DamageSource source, float amount) {boolean hit=super.hurt(source,amount);if(hit) {frightenedUntil=l.getGameTime()+200;entityData.set(RESPONSE,0L);entityData.set(RESTING,false);}return hit;}
 	@Override protected InteractionResult mobInteract(Player p,InteractionHand hand) {

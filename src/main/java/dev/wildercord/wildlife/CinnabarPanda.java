@@ -130,21 +130,21 @@ public class CinnabarPanda extends Animal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		int pose = pose(), left = poseLeft();
 		// A stranger near: it rears up, even out of a nap if they come right up to it.
-		if ((pose == RedPandaRules.IDLE || pose == RedPandaRules.SLEEP) && tickCount % 5 == 0 && now >= rearAgain && stranger(level, pose == RedPandaRules.SLEEP)) {
+		if ((pose == RedPandaRules.IDLE || pose == RedPandaRules.SLEEP) && tickCount % 5 == 0 && now >= rearAgain && stranger(level(), pose == RedPandaRules.SLEEP)) {
 			rear(now);
 			return;
 		}
 		if (pose != RedPandaRules.IDLE) {
-			if (pose == RedPandaRules.SLEEP && !RedPandaRules.drowsy(dev.wildercord.compat.McTime.overworldClock(level)) && left > 20) {
+			if (pose == RedPandaRules.SLEEP && !RedPandaRules.drowsy(dev.wildercord.compat.McTime.overworldClock(level())) && left > 20) {
 				entityData.set(LEFT, left = 20);
 			}
 			if (pose == RedPandaRules.EAT && left % 12 == 0) {
-				munch(level);
+				munch(level());
 			}
 			if (pose == RedPandaRules.TUMBLE && left % (RedPandaRules.ROLL_TICKS + RedPandaRules.ROLL_PAUSE) == 0) {
 				playSound(SoundEvents.PANDA_AMBIENT, 0.4F, 1.9F + random.nextFloat() * 0.2F);
@@ -159,12 +159,12 @@ public class CinnabarPanda extends Animal {
 		if (isInWater()) {
 			return;
 		}
-		if (RedPandaRules.drowsy(dev.wildercord.compat.McTime.overworldClock(level)) && random.nextInt(RedPandaRules.SLEEP_ODDS) == 0 && onGround()) {
+		if (RedPandaRules.drowsy(dev.wildercord.compat.McTime.overworldClock(level())) && random.nextInt(RedPandaRules.SLEEP_ODDS) == 0 && onGround()) {
 			pose(RedPandaRules.SLEEP, RedPandaRules.SLEEP_TICKS + random.nextInt(300));
 		} else if (random.nextInt(RedPandaRules.WASH_ODDS) == 0) {
 			pose(RedPandaRules.WASH, RedPandaRules.WASH_TICKS);
 		} else if (random.nextInt(isBaby() ? RedPandaRules.PLAY_ODDS / 3 : RedPandaRules.PLAY_ODDS) == 0) {
-			play(level);
+			play(level());
 		}
 	}
 

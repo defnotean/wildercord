@@ -135,17 +135,17 @@ public class SnowcapStoat extends Animal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		if (tickCount % 100 == 1) {
 			BlockPos at = blockPosition();
-			entityData.set(WINTER, StoatRules.winterCoat(level.getBiome(at).value().coldEnoughToSnow(at, level.getSeaLevel())));
+			entityData.set(WINTER, StoatRules.winterCoat(level().getBiome(at).value().coldEnoughToSnow(at, level().getSeaLevel())));
 		}
 		int pose = pose(), left = poseLeft();
 		if (pose != StoatRules.IDLE) {
 			if (pose == StoatRules.DIVE) {
-				dig(level, left);
+				dig(level(), left);
 			}
 			if (left <= 1) {
 				pose(StoatRules.IDLE, 0);
@@ -157,7 +157,7 @@ public class SnowcapStoat extends Animal {
 		if (hunting || isBaby() && random.nextInt(3) != 0) {
 			return;
 		}
-		if (tickCount % 5 == 0 && now >= standAgain && looker(level) != null) {
+		if (tickCount % 5 == 0 && now >= standAgain && looker(level()) != null) {
 			stand(now);
 		} else if (random.nextInt(StoatRules.STAND_ODDS) == 0) {
 			stand(now);

@@ -41,7 +41,7 @@ public final class WetlandContent {
 			if(reason==MobSpawnType.CHUNK_GENERATION)return false;if(reason!=MobSpawnType.NATURAL)return true;if(!(l instanceof net.minecraft.server.level.ServerLevel level)||!level.getServer().isSameThread())return false;
 			var settings=Config.get().wildlife();if(!settings.spawns("lantern_newt") || r.nextDouble()>=Math.min(1,.35*settings.spawnMultiplier()))return false;
 			// Shallow water over solid footing, with air above, not an ocean-depth or cave spawn.
-			return l.getFluidState(p).is(FluidTags.WATER) && l.getFluidState(p.above()).isEmpty() && l.getBlockState(p.below()).isSolidRender()
+			return l.getFluidState(p).is(FluidTags.WATER) && l.getFluidState(p.above()).isEmpty() && l.getBlockState(p.below()).isSolidRender(l, p.below())
 				&& l.canSeeSky(p.above()) && WetlandQueries.populationRoom(l.getLevel(),LanternNewt.class,new AABB(p).inflate(24),3);
 		});
 		BiomeModifications.create(Wildercord.id("wetland_newts")).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(Set.of(Biomes.SWAMP,Biomes.MANGROVE_SWAMP,dev.wildercord.world.biome.ReedlandClimate.REEDLANDS)),c -> {

@@ -167,21 +167,21 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	private boolean inGlade(Vec3 at,double margin){
 		return AshenStagRules.within(at.x,at.y,at.z,gladeMin.getX(),gladeMin.getY(),gladeMin.getZ(),gladeMax.getX(),gladeMax.getY(),gladeMax.getZ(),margin);
 	}
-	@Override protected void customServerAiStep(ServerLevel level){
-		super.customServerAiStep(level);if(!isAlive())return;
+	@Override protected void customServerAiStep() {
+		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-17,b.getY()-1,b.getZ()-9,b.getX()+17,b.getY()+13,b.getZ()+25));}
 		// Left alone long enough (its prey died and went home, say) and it has bedded down again in the meantime.
-		long now=level.getGameTime();
+		long now=level().getGameTime();
 		if(lastTick>=0 && move()!=AshenStagRules.DORMANT && AshenStagRules.forgets(now-lastTick))bedDown();
 		lastTick=now;
-		if(tickCount%AshenStagRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
+		if(tickCount%AshenStagRules.GUARD_EVERY==0 && Guardians.enabled())guard(level());
 		switch(move()){
-			case AshenStagRules.DORMANT->dormant(level);
-			case AshenStagRules.RISE->{hold();if(--left<=0)stand(level);else if(left==AshenStagRules.RISE_TICKS-AshenStagRules.BELLOW_AT)bellow(level,1.6F,1);}
-			case AshenStagRules.BED->{hold();if(wakeful(level)!=null)wake(level,AshenStagRules.RISE_TICKS-left);else if(--left<=0)bedDown();}
-			default->awake(level);
+			case AshenStagRules.DORMANT->dormant(level());
+			case AshenStagRules.RISE->{hold();if(--left<=0)stand(level());else if(left==AshenStagRules.RISE_TICKS-AshenStagRules.BELLOW_AT)bellow(level(),1.6F,1);}
+			case AshenStagRules.BED->{hold();if(wakeful(level())!=null)wake(level(),AshenStagRules.RISE_TICKS-left);else if(--left<=0)bedDown();}
+			default->awake(level());
 		}
-		if(tickCount%3==0)embers(level);
+		if(tickCount%3==0)embers(level());
 	}
 
 	/** Its antlers smoulder whatever it is doing; on its feet, its cracks shed sparks. Stalking, its glow is banked; kindled, its antlers burn. */

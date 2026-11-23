@@ -51,7 +51,7 @@ public final class SporebackSnail extends PathfinderMob {
   else if(l.getGameTime()>=hiddenUntil) {answerUntil=l.getGameTime()+60;Feels.sound(l,position(),"sporeback_answer",.4F,1);}
   return true;
  }
- @Override protected void customServerAiStep(ServerLevel l) {super.customServerAiStep(l);if(l.getGameTime()<hiddenUntil) {entityData.set(POSE,2);getNavigation().stop();setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);}else if(pose()==2 && !shelterRest)entityData.set(POSE,0);if(answerUntil>l.getGameTime() && tickCount%12==0)l.sendParticles(net.minecraft.core.particles.ParticleTypes.SPORE_BLOSSOM_AIR,getX(),getY()+.5,getZ(),2,.12,.05,.12,0);}
+ @Override protected void customServerAiStep() {super.customServerAiStep();if(level().getGameTime()<hiddenUntil) {entityData.set(POSE,2);getNavigation().stop();setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);}else if(pose()==2 && !shelterRest)entityData.set(POSE,0);if(answerUntil>level().getGameTime() && tickCount%12==0)level().sendParticles(net.minecraft.core.particles.ParticleTypes.SPORE_BLOSSOM_AIR,getX(),getY()+.5,getZ(),2,.12,.05,.12,0);}
  @Override public boolean hurt(DamageSource source, float amount) {boolean hit=super.hurt(s,amount);if(hit) {hiddenUntil=l.getGameTime()+SporebackRules.HIDE_TICKS;answerUntil=0;entityData.set(POSE,2);getNavigation().stop();}return hit;}
  @Override protected InteractionResult mobInteract(Player player,InteractionHand hand) {
   if(player.isSpectator() || !player.isAlive() || player.level()!=level() || distanceToSqr(player)>9 || !player.hasLineOfSight(this))return InteractionResult.PASS;
@@ -74,7 +74,7 @@ public final class SporebackSnail extends PathfinderMob {
   private HabitatSweep sweep;private BlockPos destination;private int scanAt,left,chew,searchAt,retries;private boolean shelter,nursery;
   Visit() {setFlags(EnumSet.of(Flag.MOVE,Flag.LOOK));}
   private boolean wantsShelter() {return level().getMaxLocalRawBrightness(blockPosition())>8 || (dew() && level().getGameTime()>=nurseryReady);}
-  private boolean cover(BlockPos p) {if(!level().hasChunkAt(p) || level().getMaxLocalRawBrightness(p)>8)return false;for(int y=1;y<=3;y++)if(level().hasChunkAt(p.above(y)) && (level().getBlockState(p.above(y)).isSolidRender() || level().getBlockState(p.above(y)).is(FungalGarden.NURSERY)))return true;return false;}
+  private boolean cover(BlockPos p) {if(!level().hasChunkAt(p) || level().getMaxLocalRawBrightness(p)>8)return false;for(int y=1;y<=3;y++)if(level().hasChunkAt(p.above(y)) && (level().getBlockState(p.above(y)).isSolidRender(level(), p.above(y)) || level().getBlockState(p.above(y)).is(FungalGarden.NURSERY)))return true;return false;}
   private boolean nursery(BlockPos p) {boolean roof=false;for(int y=1;y<=3;y++)if(level().hasChunkAt(p.above(y)) && level().getBlockState(p.above(y)).is(FungalGarden.NURSERY))roof=true;return roof && level().getEntitiesOfClass(SporebackSnail.class,new net.minecraft.world.phys.AABB(p).inflate(1),n -> n!=SporebackSnail.this && n.pose()==2).isEmpty();}
   private boolean habitat(BlockPos p) {return shelter?level().hasChunkAt(p) && level().getBlockState(p).isAir() && cover(p) && (!nursery || nursery(p)):fungus(level(),p);}
   @Override public boolean canUse() {return tickCount>=searchAt && level().getGameTime()>=hiddenUntil && (wantsShelter() || (!dew() && level().getGameTime()>=forageReady));}

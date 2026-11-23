@@ -26,7 +26,7 @@ public final class HighlandShelterGoal extends Goal {
 	public static boolean covered(PathfinderMob mob,BlockPos at) {
 		var level=mob.level();
 		return level.hasChunkAt(at) && !level.canSeeSky(at) && level.getFluidState(at).isEmpty()
-			&& level.getBlockState(at.below()).isSolidRender() && level.getBlockState(at).getCollisionShape(level,at).isEmpty()
+			&& level.getBlockState(at.below()).isSolidRender(level, at.below()) && level.getBlockState(at).getCollisionShape(level,at).isEmpty()
 			&& level.getBlockState(at.above()).getCollisionShape(level,at.above()).isEmpty();
 	}
 	@Override public boolean canUse() {

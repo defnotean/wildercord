@@ -128,20 +128,20 @@ public final class GlassCartographer extends PathfinderMob implements Enemy {
 		setHealth(getMaxHealth());
 	}
 
-	@Override protected void customServerAiStep(ServerLevel server) {
-		super.customServerAiStep(server);
+	@Override protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (!isAlive()) return;
 		hold();
-		if (astrolabe != null && server.getBlockEntity(astrolabe) instanceof SurveyAstrolabeEntity entity && entity.slain()) {
+		if (astrolabe != null && level().getBlockEntity(astrolabe) instanceof SurveyAstrolabeEntity entity && entity.slain()) {
 			discard();
 			return;
 		}
 		if (!active) return;
-		if (server.getDifficulty() == Difficulty.PEACEFUL || !dev.wildercord.aura.world.Guardians.enabled()) {
+		if (level().getDifficulty() == Difficulty.PEACEFUL || !dev.wildercord.aura.world.Guardians.enabled()) {
 			rest();
 			return;
 		}
-		var players = server.players().stream().filter(this::eligible).limit(MAX_CHALLENGERS).toList();
+		var players = level().players().stream().filter(this::eligible).limit(MAX_CHALLENGERS).toList();
 		for (var old : List.copyOf(bar.getPlayers())) if (!players.contains(old)) bar.removePlayer(old);
 		for (var player : players) bar.addPlayer(player);
 		bar.setProgress(getHealth() / getMaxHealth());
@@ -151,16 +151,16 @@ public final class GlassCartographer extends PathfinderMob implements Enemy {
 			return;
 		}
 		quiet = 0;
-		long now = server.getGameTime();
+		long now = level().getGameTime();
 		if (move() != IDLE) {
 			if (impacted) {
 				if (elapsed(0) >= tell(move()) + recovery(move())) { retire(); readyAt = now; }
 				return;
 			}
-			var target = server.getPlayerByUUID(lockedTarget);
+			var target = level().getPlayerByUUID(lockedTarget);
 			if (!(target instanceof ServerPlayer player) || !eligible(player)) { retire(); readyAt = now + RETIRE; return; }
-			if (elapsed(0) >= tell(move())) { impact(server, players); return; }
-		} else if (now >= readyAt) begin(server, players);
+			if (elapsed(0) >= tell(move())) { impact(level(), players); return; }
+		} else if (now >= readyAt) begin(level(), players);
 	}
 
 	private void begin(ServerLevel server, List<ServerPlayer> players) {

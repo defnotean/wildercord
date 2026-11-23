@@ -126,8 +126,8 @@ public class TussockPika extends Animal {
 	}
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
+	protected void customServerAiStep() {
+		super.customServerAiStep();
 		if (home == null) {
 			home = blockPosition();
 		}

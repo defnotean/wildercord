@@ -56,7 +56,7 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 				check(stalk >= 40 && stalk <= 79, "Easy's original initial stalk interval remains wired to the goal");
 				gloom.discard();
 				BogWitchFrog frog = frog(level, player, 5);
-				frog.customServerAiStep(level);
+				frog.customServerAiStep();
 				check(frog.swelling(), "Easy still chooses a bubble before its tongue at five blocks");
 				long interval = (Long) read(frog, "nextBubble") - level.getGameTime();
 				check(interval >= 80 && interval <= 129, "Easy's original bubble cadence remains wired to the entity");
@@ -94,7 +94,7 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 		check(!gloom.hasLineOfSight(player), "The stone wall really occludes the target");
 		float health = player.getHealth();
 		write(gloom, "phaseUntil", level.getGameTime());
-		gloom.customServerAiStep(level);
+		gloom.customServerAiStep();
 		check(!gloom.crouching() && !gloom.pouncing() && player.getHealth() == health,
 			"Moving behind cover during the tell cancels the leap without damage");
 		check((Long) read(gloom, "nextPounce") - level.getGameTime() == 20, "A canceled leap cannot restart its tell immediately");
@@ -107,13 +107,13 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 		write(hunt, "stalkTime", 0);
 		hunt.tick();
 		write(gloom, "phaseUntil", level.getGameTime());
-		gloom.customServerAiStep(level);
+		gloom.customServerAiStep();
 		check(gloom.pouncing() && gloom.getDeltaMovement().lengthSqr() > 0, "An unobstructed tell still releases a real leap");
 		write(gloom, "pounceTicks", 30);
-		gloom.customServerAiStep(level);
+		gloom.customServerAiStep();
 		check(gloom.state(WildMonster.STUNNED), "A missed leap still exposes the monster");
 		check((Long) read(gloom, "phaseUntil") - level.getGameTime() == 30, "All thirty missed-pounce recovery ticks remain");
-		gloom.customServerAiStep(level);
+		gloom.customServerAiStep();
 		check(gloom.state(WildMonster.STUNNED), "Pressure changes cannot skip the live recovery window");
 		gloom.discard();
 	}
@@ -121,13 +121,13 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 	private void frogPressureAndSafety(ServerLevel level, ServerPlayer player) {
 		BogWitchFrog frog = frog(level, player, 5);
 		check(frog.getMaxHealth() == 32, "Ordinary frog health is unchanged");
-		frog.customServerAiStep(level);
+		frog.customServerAiStep();
 		check(frog.state(WildMonster.ALT) && !frog.swelling(), "Normal chooses its ready tongue before the bubble at five blocks");
 		check((Long) read(frog, "phaseUntil") - level.getGameTime() == 10, "Tongue priority preserves the full mouth-open tell");
 		frog.discard();
 
 		frog = frog(level, player, 8);
-		frog.customServerAiStep(level);
+		frog.customServerAiStep();
 		check(frog.swelling(), "A visible ranged target still starts the bubble tell");
 		check((Long) read(frog, "phaseUntil") - level.getGameTime() == 18, "All eighteen swelling ticks remain");
 		long next = (Long) read(frog, "nextBubble");
@@ -136,7 +136,7 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 		wall(level, true);
 		check(!frog.hasLineOfSight(player), "The target is actually behind cover");
 		write(frog, "phaseUntil", level.getGameTime());
-		frog.customServerAiStep(level);
+		frog.customServerAiStep();
 		check(!frog.swelling() && level.getEntitiesOfClass(BogBubble.class, frog.getBoundingBox().inflate(24)).size() == bubbles,
 			"A target taking cover during swelling does not receive a blind bubble");
 		check((Long) read(frog, "nextBubble") == next, "Canceling a covered shot keeps its already reserved cooldown");

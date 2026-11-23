@@ -97,14 +97,14 @@ public class PitchbackBeetle extends WildMonster {
 	// ------------------------------------------------------------------ the fight
 
 	@Override
-	protected void customServerAiStep(ServerLevel level) {
-		super.customServerAiStep(level);
-		long now = level.getGameTime();
+	protected void customServerAiStep() {
+		super.customServerAiStep();
+		long now = level().getGameTime();
 		boolean full = sacFull(now);
 		setState(ALT, !full);
 		setState(ACTING, now < actingUntil);
 		if (PitchbackRules.bursts(full, isOnFire())) {
-			burst(level, now);
+			burst(level(), now);
 			full = false;
 		}
 
@@ -125,7 +125,7 @@ public class PitchbackBeetle extends WildMonster {
 				lobAt = -1;
 				setState(WINDUP, false);
 			} else if (now >= lobAt) {
-				lob(level, target, now);
+				lob(level(), target, now);
 			}
 			return;
 		}

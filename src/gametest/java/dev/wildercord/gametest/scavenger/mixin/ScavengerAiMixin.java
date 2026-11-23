@@ -7,6 +7,6 @@ import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 @Mixin(value=AuraBeast.class,remap=false)
 public abstract class ScavengerAiMixin {
- @WrapMethod(method="customServerAiStep(Lnet/minecraft/server/level/ServerLevel;)V",require=1,expect=1,allow=1)
- private void wildercord$scavengerAi(ServerLevel level,Operation<Void> original){ScavengerFoodProbe.ai(this,level,original);}
+ @WrapMethod(method="customServerAiStep()V",require=1,expect=1,allow=1)
+ private void wildercord$scavengerAi(Operation<Void> original){ScavengerFoodProbe.ai(this,(ServerLevel)((AuraBeast)(Object)this).level(),original);}
 }

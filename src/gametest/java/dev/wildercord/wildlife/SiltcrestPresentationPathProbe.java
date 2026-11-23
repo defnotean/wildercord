@@ -95,7 +95,7 @@ final class SiltcrestPresentationPathProbe implements AutoCloseable {
   var out=new JsonObject();out.addProperty("position",at.toString());boolean loaded=level.hasChunkAt(at)&&level.hasChunkAt(at.above())&&level.hasChunkAt(at.below());out.addProperty("loaded",loaded);if(!loaded)return out;
   var feet=level.getBlockState(at);var below=level.getBlockState(at.below());var head=level.getBlockState(at.above());
   out.addProperty("nativeBank",BitternHabitat.bank(level,at));out.addProperty("fluidEmpty",level.getFluidState(at).isEmpty());out.addProperty("dryBank",BitternHabitat.bank(level,at)&&level.getFluidState(at).isEmpty());
-  out.addProperty("feetBlock",feet.toString());out.addProperty("feetCollisionEmpty",feet.getCollisionShape(level,at).isEmpty());out.addProperty("supportBlock",below.toString());out.addProperty("supportSolid",below.isSolidRender());
+  out.addProperty("feetBlock",feet.toString());out.addProperty("feetCollisionEmpty",feet.getCollisionShape(level,at).isEmpty());out.addProperty("supportBlock",below.toString());out.addProperty("supportSolid",below.isSolidRender(level, at.below()));
   out.addProperty("headCollisionEmpty",head.getCollisionShape(level,at.above()).isEmpty());out.addProperty("headFluidEmpty",level.getFluidState(at.above()).isEmpty());return out;
  }
  private static JsonObject fish(ServerLevel level,SiltcrestBittern bird,AbstractFish fish) {
