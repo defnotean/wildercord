@@ -5,7 +5,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.ocean.SirenVeilJelly;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -54,9 +54,9 @@ public final class SirenVeilJellyRenderer extends MobRenderer<SirenVeilJelly, Oc
 		}
 
 		@Override
-		public void submit(PoseStack pose, SubmitNodeCollector collector, int light, OceanRenderStates.SirenJellyState state, float yaw, float pitch) {
+		public void render(PoseStack pose, MultiBufferSource collector, int light, OceanRenderStates.SirenJellyState state, float yaw, float pitch) {
 			if (state.isInvisible) return;
-			RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 		}
 	}
 }
