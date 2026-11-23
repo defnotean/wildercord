@@ -41,7 +41,6 @@ public final class AuraClient {
 		FormDashClient.init();
 		// A bonded blade's tooltip tells its story; one lying on the ground lets motes drift up.
 		BladeTooltip.init();
-		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.BondGlow::motes);
 		ClientPlayNetworking.registerGlobalReceiver(AuraSense.Sensed.TYPE, (payload, context) -> receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(AuraStep.Stepped.TYPE, (payload, context) -> stepped(payload));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {

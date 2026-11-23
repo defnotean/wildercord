@@ -18,9 +18,7 @@ public final class CombatPresentation {
  public static Launch launch(){refresh();return launch;}
  public static void loaded(Parsed parsed){saved=parsed.saved();warning=parsed.warning();dirty=true;}
  public static void applied(Saved selection) {
-  saved=selection;warning=Warning.NONE;dirty=true;
-  // Only local cosmetics are discarded. Accepted activations, input and server clocks remain intact.
-  dev.wildercord.client.fx.HitStop.clear();
+  saved=selection;warning=Warning.NONE;dirty=true;  // Only local cosmetics are discarded. Accepted activations, input and server clocks remain intact.
   dev.wildercord.client.fx.ScreenEffects.clearCameraMotion();
  }
  public static Effective effective(){if(rendering)return frame;refresh();return effective;}

@@ -1,13 +1,13 @@
 package dev.wildercord.client.compat;
 
-import net.minecraft.util.ARGB;
-
-/** 1.21.3 names the per-channel float helpers on {@code ARGB} differently from 1.21.4. */
+/** 1.21.1 has no {@code net.minecraft.util.ARGB}; the per-channel float helpers are done by hand here. */
 public final class ColorCompat {
 	private ColorCompat() {}
 
-	public static float alphaFloat(int argb) { return ARGB.from8BitChannel(ARGB.alpha(argb)); }
-	public static float redFloat(int argb) { return ARGB.from8BitChannel(ARGB.red(argb)); }
-	public static float greenFloat(int argb) { return ARGB.from8BitChannel(ARGB.green(argb)); }
-	public static float blueFloat(int argb) { return ARGB.from8BitChannel(ARGB.blue(argb)); }
+	private static float from8BitChannel(int channel) { return channel / 255.0F; }
+
+	public static float alphaFloat(int argb) { return from8BitChannel((argb >> 24) & 0xFF); }
+	public static float redFloat(int argb) { return from8BitChannel((argb >> 16) & 0xFF); }
+	public static float greenFloat(int argb) { return from8BitChannel((argb >> 8) & 0xFF); }
+	public static float blueFloat(int argb) { return from8BitChannel(argb & 0xFF); }
 }

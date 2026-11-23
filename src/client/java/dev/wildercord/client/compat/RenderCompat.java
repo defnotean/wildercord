@@ -25,8 +25,6 @@ public final class RenderCompat {
 	public static <S> void submitModel(MultiBufferSource buffers, Model model, S state, PoseStack pose, RenderType type,
 			int light, int overlay, int color, int outlineColor) {}
 
-	public static void rotate(PoseStack stack, com.mojang.math.Quaternionfc orientation) {}
-
 	public static void rotateDegrees(PoseStack stack, Axis axis, float degrees) {}
 
 	public static void startTextInput(Minecraft mc, Screen screen) {}
