@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "wildercord:abyssal_diving"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "wildercord:abyssal_diving"
+      }
+    ]
+  }
+}

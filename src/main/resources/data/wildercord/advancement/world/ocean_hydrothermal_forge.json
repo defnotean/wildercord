@@ -1,0 +1,40 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "ocean_hydrothermal_forge": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:ocean_hydrothermal_forge"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:trench_anvil"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.ocean_hydrothermal_forge.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.ocean_hydrothermal_forge.description"
+    }
+  },
+  "requirements": [
+    [
+      "ocean_hydrothermal_forge"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

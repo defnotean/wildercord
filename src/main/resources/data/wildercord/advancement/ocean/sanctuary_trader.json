@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:ocean/deep_diver",
+  "criteria": {
+    "sanctuary_trader": {
+      "trigger": "minecraft:villager_trade",
+      "conditions": {
+        "villager": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "wildercord:brine_merchant"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:abyssal_pearl"
+    },
+    "title": {
+      "translate": "advancements.wildercord.ocean.sanctuary_trader.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.ocean.sanctuary_trader.description"
+    }
+  },
+  "requirements": [
+    [
+      "sanctuary_trader"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

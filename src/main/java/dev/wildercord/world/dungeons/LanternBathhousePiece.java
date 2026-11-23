@@ -182,6 +182,13 @@ public final class LanternBathhousePiece extends DungeonPiece {
 						set(level, bb, DEEPSLATE, x, y, z);
 					} else if (y == F + 6 || y == F + 7) {
 						set(level, bb, DARK_OAK, x, y, z);
+					} else if ((y == F + 4 || y == F + 5) && z < 34) {
+						boolean glow = (y == F + 4) || ((x + z) & 1) == 0;
+						set(level, bb, glow ? Blocks.OCHRE_FROGLIGHT.defaultBlockState() : SHOJI, x, y, z);
+						if (onX && y == F + 4 && (z - 8) % 5 != 0) {
+							set(level, bb, JapaneseArchitecture.openTrapdoor(Blocks.SPRUCE_TRAPDOOR, x == 4 ? Direction.EAST : Direction.WEST),
+								x == 4 ? 5 : 33, y, z);
+						}
 					} else {
 						set(level, bb, SHOJI, x, y, z);
 					}
@@ -305,6 +312,13 @@ public final class LanternBathhousePiece extends DungeonPiece {
 				set(level, bb, Blocks.CHAIN.defaultBlockState(), lx, F + 6, z);
 				set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), lx, F + 5, z);
 			}
+		}
+		// Central multi-tier hanging onsen lantern chandelier cluster over the hinoki bridge
+		for (int[] cl : new int[][]{{18, 17, 6}, {20, 17, 6}, {19, 19, 5}, {18, 22, 6}, {20, 22, 6}, {19, 25, 5}}) {
+			for (int cy = F + 7; cy >= F + cl[2] + 1; cy--) {
+				set(level, bb, Blocks.CHAIN.defaultBlockState(), cl[0], cy, cl[1]);
+			}
+			set(level, bb, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), cl[0], F + cl[2], cl[1]);
 		}
 	}
 

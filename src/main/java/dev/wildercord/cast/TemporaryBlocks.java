@@ -7,10 +7,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import dev.wildercord.compat.McSavedDataType;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,17 +43,8 @@ public final class TemporaryBlocks extends SavedData {
 		).apply(i, Placed::new));
 	}
 
-	static final Codec<TemporaryBlocks> CODEC = RecordCodecBuilder.create(i -> i.group(
-		Placed.CODEC.listOf().fieldOf("blocks").forGetter(TemporaryBlocks::all)
-	).apply(i, TemporaryBlocks::new));
-	static final McSavedDataType<TemporaryBlocks> TYPE = new McSavedDataType<>("temporary_blocks", TemporaryBlocks::new, CODEC);
-
-	@Override
-	public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
-		return (net.minecraft.nbt.CompoundTag) CODEC.encodeStart(
-			net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), this)
-			.result().orElseThrow();
-	}
+	static final Codec<TemporaryBlocks> CODEC = Placed.CODEC.listOf().xmap(TemporaryBlocks::new, TemporaryBlocks::all);
+	static final SavedDataType<TemporaryBlocks> TYPE = new SavedDataType<>("temporary_blocks", TemporaryBlocks::new, CODEC, null);
 
 	/** How often (in ticks) the written-down blocks are looked over. */
 	private static final int SWEEP = 20;
@@ -84,7 +77,7 @@ public final class TemporaryBlocks extends SavedData {
 
 	/** Whether the block at {@code pos} is written down as a spell's, to go (for the tests). */
 	public static boolean recorded(ServerLevel level, BlockPos pos) {
-		TemporaryBlocks blocks = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
+		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
 		List<Placed> inChunk = blocks == null ? null : blocks.byChunk.get(Thaws.chunk(pos));
 		return inChunk != null && inChunk.stream().anyMatch(p -> p.pos().equals(pos));
 	}
@@ -103,7 +96,7 @@ public final class TemporaryBlocks extends SavedData {
 	 * drops nothing).
 	 */
 	static Placed find(ServerLevel level, BlockPos pos, net.minecraft.world.level.block.Block block) {
-		TemporaryBlocks blocks = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
+		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
 		List<Placed> inChunk = blocks == null ? null : blocks.byChunk.get(Thaws.chunk(pos));
 		if (inChunk == null) {
 			return null;
@@ -118,7 +111,7 @@ public final class TemporaryBlocks extends SavedData {
 
 	/** Writes down a block a spell just put at {@code pos} in place of {@code replaced}, to go at game time {@code due}. */
 	public static void put(ServerLevel level, BlockPos pos, BlockState placed, BlockState replaced, long due) {
-		TemporaryBlocks blocks = dev.wildercord.compat.McSavedData.computeIfAbsent(level.getDataStorage(), TYPE);
+		TemporaryBlocks blocks = level.getDataStorage().computeIfAbsent(TYPE);
 		BlockPos at = pos.immutable();
 		blocks.drop(at);
 		blocks.add(new Placed(at, placed, replaced, due));
@@ -127,7 +120,7 @@ public final class TemporaryBlocks extends SavedData {
 
 	/** Its spell took the block at {@code pos} down (or it was broken): nothing is left to do for it. */
 	static void remove(ServerLevel level, BlockPos pos) {
-		TemporaryBlocks blocks = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
+		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
 		if (blocks != null && blocks.drop(pos)) {
 			blocks.setDirty();
 		}
@@ -149,7 +142,7 @@ public final class TemporaryBlocks extends SavedData {
 			return;
 		}
 		for (ServerLevel level : server.getAllLevels()) {
-			TemporaryBlocks blocks = dev.wildercord.compat.McSavedData.get(level.getDataStorage(), TYPE);
+			TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
 			if (blocks != null && !blocks.byChunk.isEmpty()) {
 				blocks.sweep(level);
 			}
@@ -192,6 +185,47 @@ public final class TemporaryBlocks extends SavedData {
 		}
 		if (changed) {
 			setDirty();
+		}
+	}
+
+	/** Shatters temporary spell blocks intersecting {@code area} (leaving Light blocks intact). */
+	static void shatterAround(ServerLevel level, AABB area) {
+		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+		if (blocks == null || blocks.byChunk.isEmpty()) {
+			return;
+		}
+		BlockPos min = BlockPos.containing(area.minX, area.minY, area.minZ);
+		BlockPos max = BlockPos.containing(area.maxX, area.maxY, area.maxZ);
+		List<Placed> hit = new ArrayList<>();
+		for (int cx = min.getX() >> 4; cx <= (max.getX() >> 4); cx++) {
+			for (int cz = min.getZ() >> 4; cz <= (max.getZ() >> 4); cz++) {
+				List<Placed> inChunk = blocks.byChunk.get(Thaws.chunk(new BlockPos(cx << 4, 0, cz << 4)));
+				if (inChunk == null) {
+					continue;
+				}
+				for (Placed p : inChunk) {
+					if (!p.placed().is(Blocks.LIGHT)
+							&& p.pos().getX() >= min.getX() && p.pos().getX() <= max.getX()
+							&& p.pos().getY() >= min.getY() && p.pos().getY() <= max.getY()
+							&& p.pos().getZ() >= min.getZ() && p.pos().getZ() <= max.getZ()) {
+						hit.add(p);
+					}
+				}
+			}
+		}
+		for (Placed p : hit) {
+			PhysicalMagic.evict(level, p.pos());
+			Techniques.evictRampart(level, p.pos());
+			BlockState standing = level.getBlockState(p.pos());
+			if (standing.equals(p.placed())) {
+				level.setBlockAndUpdate(p.pos(), p.replaced());
+				Vfx.emit(level, new net.minecraft.core.particles.BlockParticleOption(
+					net.minecraft.core.particles.ParticleTypes.BLOCK, p.placed()), Vec3.atCenterOf(p.pos()), 6, 0.3, 0.05);
+			}
+			blocks.drop(p.pos());
+		}
+		if (!hit.isEmpty()) {
+			blocks.setDirty();
 		}
 	}
 }

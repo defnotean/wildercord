@@ -206,6 +206,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	 * every {@link FrostWyrmlingRules#GUARD_EVERY} ticks, nearest first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
+		if(getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var box=new AABB(Vec3.atLowerCornerOf(hallMin),Vec3.atLowerCornerOf(hallMax).add(1,1,1));
 		var h=head();
 		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof FrostWyrmling) && inHall(e.position(),0))
@@ -224,8 +225,9 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	/** The nearest player in the hall close enough to its mound to wake it, if any. */
 	private ServerPlayer wakeful(ServerLevel level){
 		var t=spot();
+		boolean rush=getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inHall(p.position(),0)
-			&& FrostWyrmlingRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z)).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
+			&& (rush || FrostWyrmlingRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z))).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
 
 	private void dormant(ServerLevel level){
@@ -1034,6 +1036,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 		if(level() instanceof ServerLevel server){
 			Feels.sound(server,head(),"aura_frost_wyrmling_death",1.8F,1);Guardians.reward(server,this,FrostWyrmlingRules.TIER,bar,source);bar.removeAllPlayers();
 			server.sendParticles(ParticleTypes.SNOWFLAKE,getX(),getY()+1.2,getZ(),60,1.6,.8,1.6,.04);
+			if(bound && !getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,LairRespawns.Entry.simple("frost_wyrmling",mound,rest,hallMin,hallMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		super.die(source);
 	}

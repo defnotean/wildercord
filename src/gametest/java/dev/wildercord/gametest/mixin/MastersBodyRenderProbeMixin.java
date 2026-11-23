@@ -10,6 +10,7 @@ import dev.wildercord.gametest.BraceNullCaptureProbe;
 import dev.wildercord.gametest.MastersCaptureProbe;
 import dev.wildercord.gametest.MastersNpcCaptureProbe;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;

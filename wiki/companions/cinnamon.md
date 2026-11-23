@@ -40,21 +40,27 @@ Only her owner can command her.
 
 | Action | Result |
 |---|---|
-| Use her (empty hand) | Switch between sitting and following |
-| Sneak and use her | Pet her |
+| Use her (empty hand, unharnessed) | Switch between sitting and following |
+| Use her (empty hand, harnessed) | Mount Cinnamon (owner steers; party up to 4 riders) |
+| Sneak and use her (unharnessed) | Pet her |
+| Sneak and use her (harnessed) | Open her 54-slot twin side chests |
 | Use **Cinnamon's Red Bone** | Play with her |
 | Use **Cinnamon's Bow** | She wears it |
-| Use shears | Take her bow back |
+| Use **Cinnamon's Grand Bow** | Permanently grows to 3× size and empowers her stats & magic |
+| Use **Cinnamon's Flying Harness** | Equips twin side chests, 4-seat riding, and 3D flight |
+| Use shears | Take her Grand Bow, regular bow, or harness off (spilling chest contents safely if harness removed) |
 | Feed her dog food (such as beef) | She grows for a while |
 
-Her sit or follow choice and her bow are saved. They stay through logging out, your death and dimension travel.
+Her sit or follow choice, bow, Grand Bow, harness and saddlebag contents are saved. They stay through logging out, your death and dimension travel.
 
 ### Crafting
 
-| Item | Shapeless recipe |
+| Item | Recipe |
 |---|---|
 | Cinnamon's Red Bone | Bone, Red Dye, Slime Ball |
 | Cinnamon's Bow | 2 String, Pink Dye |
+| Cinnamon's Grand Bow | 4 Gold Ingots, Cinnamon's Bow, 2 Amethyst Shards, Mana Crystal |
+| Cinnamon's Flying Harness | 4 Leather, Saddle, 2 Chests, Gold Ingot, Feather |
 | Cinnamon's Summoning Whistle | Copper Ingot, Bone, String |
 
 ### Her bell and habits
@@ -63,30 +69,27 @@ Her sit or follow choice and her bow are saved. They stay through logging out, y
   `"bell": false` to the config file.
 - She sometimes sticks the tip of her tongue out, even asleep.
 - After sitting quietly for ten seconds she curls up and closes her eyes.
+- When you or any member of your party drops below **65% health**, Cinnamon walks or flies over and **licks** you back to health (healing 6 HP normally, or 10 HP when big or wearing the Grand Bow) and grants **Regeneration I** for 4 seconds.
 
-### She defends you
+### She defends you & casts passive magic
 
 Anyone who hurts you gets bitten, like with a tame wolf. She does not attack while sitting, and leaves alone
-creepers, your other pets and players you aren't allowed to fight.
+creepers, your other pets, Sword Masters, and players you aren't allowed to fight.
 
-### Treats make her bigger
+Even at normal size, Cinnamon passively casts fire, frost, shock, and arcane bolts at nearby hostile targets.
+While temporarily grown or permanently empowered with her **Grand Bow**:
 
-Each treat makes her **0.5×** bigger, up to **3×** her normal size. She shrinks back **60 seconds** after the first
-treat; more treats don't extend that time. She only grows if there is clear, solid room for her bigger body.
+- **Cinnamon's Grand Bow** makes her permanently **3×** size with **80** max health, **15** attack damage, **+10** armour, **+4** toughness, stronger knockback resistance, faster speed (**+0.11**), **60** damage budget before tiring, **24-block** spell range, **1.6×** spell power, and faster casting every **2.75 seconds**.
+- Below half health, she sends a healing beam at you or injured party members every 15 seconds.
+- **Hit pause balance:** whenever an enemy lands a hit on Cinnamon, she briefly pauses attacking, casting, and moving for **2 to 3 seconds** before jumping back into action.
 
-### Big Cinnamon is stronger, and casts magic
+### Flying Harness & Multi-Rider Saddlebags
 
-While she's bigger than normal, each treat's growth also makes her stronger. At full **3×** size:
+Equipping **Cinnamon's Flying Harness** unlocks shared mount travel and storage:
 
-- Her bite does **11** damage instead of 3. She has **40** health instead of 20, plus armour, and she's harder to knock back.
-- She tires only after **40 damage** instead of 20.
-- She joins any fight you start, not only the ones started against you.
-- She casts spells. Every few seconds she throws a fire, frost, lightning or arcane bolt at whatever she's fighting, up
-  to 20 blocks away. If your health drops below half, she casts a healing beam at you, at most once every 15 seconds.
-
-Her spells follow your own friendly-fire rules, so they never hurt you, your party or your pets. They also never hurt
-other players unless you are allowed to fight them. When she shrinks back to normal size, the extra strength and the
-magic go away.
+- Up to **4 riders** (her owner plus same-party members) can ride Cinnamon at once, with one seat always reserved for her owner. Only the owner can steer and fly her.
+- Jump to take off and climb through the air, steer in 3D along your look pitch, and touch down to walk on land. Both Cinnamon and dismounting airborne riders avoid fall damage (**Slow Falling** applies on midair dismount).
+- Press your inventory key while riding—or Sneak + Right-Click while on foot—to open her **54-slot twin side chests**, shared with your party.
 
 ### She can't die
 

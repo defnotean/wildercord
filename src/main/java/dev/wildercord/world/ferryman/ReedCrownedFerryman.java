@@ -49,7 +49,7 @@ public final class ReedCrownedFerryman extends PathfinderMob implements Enemy {
 		super(type, level); setPersistenceRequired(); setNoGravity(true); xpReward = 0;
 	}
 	public static AttributeSupplier.Builder createAttributes() {
-		return createMobAttributes().add(Attributes.MAX_HEALTH, HEALTH).add(Attributes.ARMOR, 4).add(Attributes.ARMOR_TOUGHNESS, 2)
+		return createMobAttributes().add(Attributes.MAX_HEALTH, HEALTH).add(Attributes.ARMOR, 10).add(Attributes.ARMOR_TOUGHNESS, 5)
 			.add(Attributes.MOVEMENT_SPEED, 0).add(Attributes.ATTACK_DAMAGE, 6).add(Attributes.FOLLOW_RANGE, 40).add(Attributes.KNOCKBACK_RESISTANCE, 1);
 	}
 	@Override protected void registerGoals() {}

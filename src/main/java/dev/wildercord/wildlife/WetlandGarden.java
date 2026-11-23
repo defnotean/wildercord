@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McHands;
 import dev.wildercord.compat.McTime;
 import dev.wildercord.Wildercord;
 import dev.wildercord.api.WildercordEvents;

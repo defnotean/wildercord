@@ -839,11 +839,11 @@ public final class BondedBlades {
 		holder.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.slips", name.copy().withColor(color),
 			Component.literal(b.who().ownerName())).withColor(0xC8B8A0));
 		if (owner != null && owner != holder) {
-			owner.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.came_home", name.copy().withColor(color),
-				Component.literal(holder.getGameProfile().getName())).withColor(0xE8D8B0));
-			BladeCeremony.homeFx((ServerLevel) holder.level(), from, owner, b.color());
+			owner.displayClientMessage(Component.translatable("message.wildercord.aura.blade.came_home", name.copy().withColor(color),
+				Component.literal(holder.getGameProfile().getName())).withColor(0xE8D8B0), false);
+			BladeCeremony.homeFx(holder.level(), from, owner, b.color());
 		} else {
-			BladeCeremony.homeFx((ServerLevel) holder.level(), from, null, b.color());
+			BladeCeremony.homeFx(holder.level(), from, null, b.color());
 		}
 		returns++;
 	}
@@ -898,9 +898,9 @@ public final class BondedBlades {
 		ServerPlayer owner = level.getServer().getPlayerList().getPlayer(b.owner());
 		deliver(level.getServer(), owner, b.owner(), blade);
 		if (owner != null) {
-			owner.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.from_the_void", name(blade, b).copy()
-				.withColor(0xFF000000 | b.color())).withColor(0xE8D8B0));
-			BladeCeremony.homeFx((ServerLevel) owner.level(), owner.position().add(0, 6, 0), owner, b.color());
+			owner.displayClientMessage(Component.translatable("message.wildercord.aura.blade.from_the_void", name(blade, b).copy()
+				.withColor(0xFF000000 | b.color())).withColor(0xE8D8B0), false);
+			BladeCeremony.homeFx(owner.level(), owner.position().add(0, 6, 0), owner, b.color());
 		}
 		returns++;
 		return true;
@@ -1060,7 +1060,7 @@ public final class BondedBlades {
 		if (!on(player) || Aura.stage(player) < BladeRules.FROM || !canBond(stack) || standing(player)) {
 			return false;
 		}
-		ServerLevel level = (ServerLevel) player.level();
+		ServerLevel level = player.level();
 		BlockPos at = player.blockPosition();
 		String biome = level.getBiome(at).unwrapKey().map(k -> k.location().toString()).orElse("");
 		BladeBond.Origin origin = new BladeBond.Origin(day(level), biome, level.dimension().location().toString(), at.getX(), at.getY(), at.getZ(),
