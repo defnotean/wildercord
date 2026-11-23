@@ -322,7 +322,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			TrainingDummy dummy = WildercordEntities.TRAINING_DUMMY.create(player.level(), MobSpawnType.COMMAND);
+			TrainingDummy dummy = McEntities.create(WildercordEntities.TRAINING_DUMMY, player.level(), MobSpawnType.COMMAND);
 			Vec3 p = at(0, 2.2);
 			dummy.moveTo(p.x, p.y, p.z, 180, 0);
 			dummy.addTag(TAG);
@@ -366,7 +366,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 				if (which.equals("mindless")) {
 					husk.setNoAi(true);
 				} else {
-					Entity boat = EntityType.OAK_BOAT.create(player.level(), MobSpawnType.COMMAND);
+					Entity boat = McEntities.create(EntityType.BOAT, player.level(), MobSpawnType.COMMAND);
 					Vec3 p = at(0, 2.4);
 					boat.moveTo(p.x, p.y, p.z, 180, 0);
 					boat.addTag(TAG);
@@ -706,7 +706,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			if (rival.getEffect(MobEffects.MOVEMENT_SLOWDOWN) == null) {
 				return "an opened player should be slowed";
 			}
-			if (!rival.getCooldowns().isOnCooldown(new ItemStack(Items.SHIELD))) {
+			if (!rival.getCooldowns().isOnCooldown(Items.SHIELD)) {
 				return "and their shield broken for the moment";
 			}
 			return rival.hasAttached(WildercordAttachments.FROZEN_UNTIL) ? "but never held" : null;
@@ -1070,7 +1070,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		}
 
 		@Override
-		public boolean isInvulnerableTo(ServerLevel level, net.minecraft.world.damagesource.DamageSource source) {
+		public boolean isInvulnerableTo(net.minecraft.world.damagesource.DamageSource source) {
 			return false;
 		}
 

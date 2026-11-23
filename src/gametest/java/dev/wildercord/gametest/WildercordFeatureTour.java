@@ -1487,7 +1487,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			boolean again = archivist.hurt(level.damageSources().playerAttack(player), max * 10);
 			check(!again && Math.abs(archivist.getHealth() - max * 2 / 3) < 0.01F, "the Archivist shouldn't be hurt while it rewrites its Cord");
 			// Nothing leads it out of the Archive: no boat, no portal.
-			Entity boat = McEntities.create(EntityType.OAK_BOAT, level, MobSpawnType.COMMAND);
+			Entity boat = McEntities.create(EntityType.BOAT, level, MobSpawnType.COMMAND);
 			check(boat != null, "a boat should spawn");
 			boat.moveTo(archivist.getX(), archivist.getY(), archivist.getZ(), 0, 0);
 			level.addFreshEntity(boat);
@@ -1498,7 +1498,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			List<Mob> allies = level.getEntitiesOfClass(Mob.class, archivist.getBoundingBox().inflate(10),
 				m -> m != archivist && m.isAlive() && (m.getType() == EntityType.SKELETON || m.getType() == EntityType.PILLAGER));
 			// A command's kill goes through even while it rewrites; its allies go with it, and its lectern goes quiet for good.
-			archivist.kill(level);
+			archivist.kill();
 			check(archivist.isDeadOrDying(), "a command's kill should go through while the Archivist rewrites its Cord");
 			for (Mob ally : allies) {
 				check(ally.isRemoved(), "the allies the Archivist called should go when it falls (a " + ally.getType().getDescription().getString() + " stayed)");
