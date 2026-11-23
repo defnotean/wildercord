@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,10 +27,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -50,12 +50,25 @@ import java.util.function.Consumer;
 public class CrossroadsIncense extends Item {
 	private static final ResourceKey<Item> KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("crossroads_incense"));
 	public static final Item INCENSE = Registry.register(BuiltInRegistries.ITEM, KEY, new CrossroadsIncense(new Item.Properties().setId(KEY)
-		.stacksTo(16).rarity(Rarity.RARE)
-		.component(DataComponents.CONSUMABLE, Consumable.builder().consumeSeconds(2.0F).animation(ItemUseAnimation.BLOCK)
-			.sound(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.CAMPFIRE_CRACKLE)).hasConsumeParticles(false).build())));
+		.stacksTo(16).rarity(Rarity.RARE)));
 
 	public CrossroadsIncense(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.BLOCK;
+	}
+
+	@Override
+	public int getUseDuration(ItemStack stack, LivingEntity entity) {
+		return 40;
+	}
+
+	@Override
+	public SoundEvent getEatingSound() {
+		return SoundEvents.CAMPFIRE_CRACKLE;
 	}
 
 	/** Why {@code player} can't burn one here, or null when they can. Both sides (the place of power only on the server). */

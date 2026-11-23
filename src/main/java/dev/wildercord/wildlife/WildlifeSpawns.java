@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
@@ -103,8 +103,8 @@ public final class WildlifeSpawns {
 	}
 
 	/** Whether a spawn is the world's own doing (and so held to the config, rarity and crowding). */
-	private static boolean natural(EntitySpawnReason reason) {
-		return reason == EntitySpawnReason.NATURAL || reason == EntitySpawnReason.CHUNK_GENERATION;
+	private static boolean natural(MobSpawnType reason) {
+		return reason == MobSpawnType.NATURAL || reason == MobSpawnType.CHUNK_GENERATION;
 	}
 
 	/** The config, the kind's rarity and its crowding, for a natural spawn. */
@@ -118,17 +118,17 @@ public final class WildlifeSpawns {
 	}
 
 	static <T extends Mob> boolean creature(Kind kind, EntityType<T> type, TagKey<Block> ground, ServerLevelAccessor level,
-			EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+			MobSpawnType reason, BlockPos pos, RandomSource random) {
 		if (!level.getBlockState(pos.below()).is(ground)) {
 			return false;
 		}
-		boolean lit = EntitySpawnReason.ignoresLightRequirements(reason) || level.getRawBrightness(pos, 0) > 8;
+		boolean lit = MobSpawnType.ignoresLightRequirements(reason) || level.getRawBrightness(pos, 0) > 8;
 		return lit && (!natural(reason) || allowed(kind, type, level, pos, random));
 	}
 
 	/** Underground, out of the sky's sight, where it's dark: like {@link #creature} but with no call for light. */
 	static <T extends Mob> boolean cave(Kind kind, EntityType<T> type, TagKey<Block> ground, ServerLevelAccessor level,
-			EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+			MobSpawnType reason, BlockPos pos, RandomSource random) {
 		if (!natural(reason)) {
 			return true;
 		}
@@ -140,7 +140,7 @@ public final class WildlifeSpawns {
 
 	/** On its ground, light or dark (under a canopy no light gets through): like {@link #creature} but with no call for light. */
 	static <T extends Mob> boolean shaded(Kind kind, EntityType<T> type, TagKey<Block> ground, ServerLevelAccessor level,
-			EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+			MobSpawnType reason, BlockPos pos, RandomSource random) {
 		if (!level.getBlockState(pos.below()).is(ground)) {
 			return false;
 		}
@@ -148,7 +148,7 @@ public final class WildlifeSpawns {
 	}
 
 	/** In open air at night, within reach of the ground, under the sky (a forest's leaves let enough through). */
-	private static boolean glimmerwing(EntityType<Glimmerwing> type, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos,
+	private static boolean glimmerwing(EntityType<Glimmerwing> type, ServerLevelAccessor level, MobSpawnType reason, BlockPos pos,
 			RandomSource random) {
 		if (!natural(reason)) {
 			return true;
@@ -165,7 +165,7 @@ public final class WildlifeSpawns {
 	}
 
 	/** On an open summit or ridge, from which it climbs to its cruise. */
-	private static boolean skyray(EntityType<Skyray> type, ServerLevelAccessor level, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+	private static boolean skyray(EntityType<Skyray> type, ServerLevelAccessor level, MobSpawnType reason, BlockPos pos, RandomSource random) {
 		if (!natural(reason)) {
 			return true;
 		}

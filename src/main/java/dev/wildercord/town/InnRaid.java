@@ -30,7 +30,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
@@ -337,7 +337,7 @@ public final class InnRaid {
 	private void emerge(EntityType<? extends Mob> type, double side, boolean captain) {
 		pending = Math.max(0, pending - 1);
 		if (!ACTIVE.containsValue(this)) return;
-		Mob mob = type.create(level, EntitySpawnReason.EVENT);
+		Mob mob = type.create(level, MobSpawnType.EVENT);
 		if (mob == null) return;
 		RandomSource random = level.getRandom();
 		BlockPos at = null;
@@ -352,7 +352,7 @@ public final class InnRaid {
 			if (level.noCollision(mob)) at = ground;
 		}
 		if (at == null) return;
-		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.EVENT, null);
+		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.EVENT, null);
 		mob.setCanPickUpLoot(false);
 		mob.setPersistenceRequired();
 		mob.addTag(TAG);

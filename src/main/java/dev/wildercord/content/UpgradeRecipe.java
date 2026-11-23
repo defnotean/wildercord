@@ -15,12 +15,8 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.level.Level;
 
 /**
@@ -56,7 +52,7 @@ public final class UpgradeRecipe implements CraftingRecipe {
 		this.category = category;
 		this.result = result;
 		this.ingredients = ingredients;
-		this.shapeless = new ShapelessRecipe("", category, result, ingredients);
+		this.shapeless = new ShapelessRecipe("", category, result, nonNull(ingredients));
 	}
 
 	private static RecipeSerializer<UpgradeRecipe> serializer(MapCodec<UpgradeRecipe> codec, StreamCodec<RegistryFriendlyByteBuf, UpgradeRecipe> streamCodec) {
@@ -100,28 +96,14 @@ public final class UpgradeRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public List<RecipeDisplay> display() {
-		return shapeless.display();
-	}
-
-	@Override
-	public PlacementInfo placementInfo() {
-		return shapeless.placementInfo();
-	}
-
-	@Override
 	public CraftingBookCategory category() {
 		return category;
 	}
 
-	@Override
-	public RecipeBookCategory recipeBookCategory() {
-		return switch (category) {
-			case BUILDING -> RecipeBookCategories.CRAFTING_BUILDING_BLOCKS;
-			case REDSTONE -> RecipeBookCategories.CRAFTING_REDSTONE;
-			case EQUIPMENT -> RecipeBookCategories.CRAFTING_EQUIPMENT;
-			default -> RecipeBookCategories.CRAFTING_MISC;
-		};
+	private static net.minecraft.core.NonNullList<Ingredient> nonNull(List<Ingredient> list) {
+		net.minecraft.core.NonNullList<Ingredient> out = net.minecraft.core.NonNullList.create();
+		for (Ingredient ingredient : list) out.add(ingredient);
+		return out;
 	}
 
 	@Override

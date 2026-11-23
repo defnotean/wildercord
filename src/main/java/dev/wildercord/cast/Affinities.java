@@ -27,7 +27,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -276,7 +276,7 @@ public final class Affinities {
 		if (Fx.muted()) {
 			return;
 		}
-		Display.TextDisplay display = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.TextDisplay display = EntityType.TEXT_DISPLAY.create(level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return;
 		}

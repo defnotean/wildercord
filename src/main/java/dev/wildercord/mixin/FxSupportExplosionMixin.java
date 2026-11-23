@@ -3,7 +3,7 @@ package dev.wildercord.mixin;
 import dev.wildercord.cast.packs.WardState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ServerExplosion;
+import net.minecraft.world.level.Explosion;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** No explosion breaks a block inside a Blastward or a Citadel, nor one under Keepsafe. */
-@Mixin(ServerExplosion.class)
+@Mixin(Explosion.class)
 public abstract class FxSupportExplosionMixin {
 	@Shadow
 	@Final

@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -122,7 +122,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 			// Carry anyone standing on this stone before transferring its collision block.
 			for(ServerPlayer p:server.getEntitiesOfClass(ServerPlayer.class,new AABB(previous).move(0,1,0).inflate(.05,.1,.05))) {
 				Vec3 delta=Vec3.atCenterOf(next).subtract(Vec3.atCenterOf(previous));
-				p.teleportTo(server,p.getX()+delta.x,p.getY(),p.getZ()+delta.z,Set.<Relative>of(),p.getYRot(),p.getXRot(),false);
+				p.teleportTo(server,p.getX()+delta.x,p.getY(),p.getZ()+delta.z,Set.<RelativeMovement>of(),p.getYRot(),p.getXRot());
 			}
 			server.setBlockAndUpdate(previous,Blocks.AIR.defaultBlockState());server.setBlockAndUpdate(next,Blocks.IRON_BLOCK.defaultBlockState());
 		}
@@ -146,7 +146,7 @@ public final class ExpeditionMechanismEntity extends BlockEntity {
 			if(now%20==0&&now>=self.nextAction){self.shiftPlatforms(server);self.nextAction=now+80;}
 			// A one-second poll can miss the entire catch band during a fast fall.
 			for(var p:server.players())if(!p.isSpectator()&&p.getY()<pos.getY()-3 && p.getY()>pos.getY()-12 && p.distanceToSqr(Vec3.atCenterOf(self.ahead(6)))<18*18){
-				p.teleportTo(server,pos.getX()+.5,pos.getY()+1,pos.getZ()+.5,Set.<Relative>of(),p.getYRot(),p.getXRot(),false);
+				p.teleportTo(server,pos.getX()+.5,pos.getY()+1,pos.getZ()+.5,Set.<RelativeMovement>of(),p.getYRot(),p.getXRot());
 				p.setDeltaMovement(Vec3.ZERO);p.fallDistance=0;p.hasImpulse=true;
 				p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(p));
 			}

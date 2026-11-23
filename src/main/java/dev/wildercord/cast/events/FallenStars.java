@@ -29,7 +29,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -406,7 +406,7 @@ public final class FallenStars {
 			if (Math.abs(y - cell.getY()) > 2) {
 				continue;
 			}
-			Display.BlockDisplay mark = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+			Display.BlockDisplay mark = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
 			if (mark == null) {
 				continue;
 			}

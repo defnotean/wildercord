@@ -2,7 +2,6 @@ package dev.wildercord.compat;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.TargetColorParticleOption;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -11,17 +10,17 @@ import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Version seams for the 1.21.3 API below the 1.21.4 item/render/particle reshuffle.
+ * Version seams for the 1.21.1 API below the 1.21.3 particle/spawn-egg reshuffle.
  *
- * <p>1.21.4 folded the spawn-egg colours into the item and renamed the trail particle option;
- * 1.21.3 still takes explicit colours and calls the option TargetColorParticleOption. Keeping
- * these in one place lets gameplay callers stay version-neutral.
+ * <p>1.21.1 has no {@code TargetColorParticleOption}, so the travelling trail is approximated
+ * by a plain particle at the origin point. The 1.21.2 trail keeps its target only through
+ * 1.21.3+; here {@link #isTrail} is always false so callers take the vanilla path.
  */
 public final class McSpawnEgg {
 
 	private McSpawnEgg() {}
 
-	/** A spawn egg for {@code type}; 1.21.3 colours are a neutral pair read from the type id. */
+	/** A spawn egg for {@code type}; the colours are a neutral pair read from the type id. */
 	public static Item create(EntityType<? extends Mob> type, Item.Properties properties) {
 		int seed = type.getDescriptionId().hashCode();
 		int base = 0xFF000000 | ((seed >>> 16) & 0x7F7F7F);
@@ -29,32 +28,32 @@ public final class McSpawnEgg {
 		return new SpawnEggItem(type, base, high, properties);
 	}
 
-	/** A travelling tinted trail to {@code target}; the 1.21.3 option has no duration field. */
+	/** A plain particle at the origin point; 1.21.1 has no trail target. */
 	public static ParticleOptions trail(Vec3 target, int color, int duration) {
-		return new TargetColorParticleOption(target, color);
+		return ParticleTypes.ENCHANT;
 	}
 
-	/** The trail's target on 1.21.3. */
+	/** The trail target is gone in 1.21.1. */
 	public static Vec3 trailTarget(ParticleOptions options) {
-		return options instanceof TargetColorParticleOption trail ? trail.target() : Vec3.ZERO;
+		return Vec3.ZERO;
 	}
 
-	/** The trail's tint on 1.21.3. */
+	/** The trail tint is gone in 1.21.1. */
 	public static int trailColor(ParticleOptions options) {
-		return options instanceof TargetColorParticleOption trail ? trail.color() : -1;
+		return -1;
 	}
 
-	/** Whether a particle option is a trail on 1.21.3. */
+	/** 1.21.1 has no trail options. */
 	public static boolean isTrail(ParticleOptions options) {
-		return options instanceof TargetColorParticleOption;
+		return false;
 	}
 
-	/** Leaf-litter particles: 1.21.3 has cherry leaves but not pale oak leaves. */
+	/** Leaf-litter particles; 1.21.1 has cherry leaves. */
 	public static ParticleOptions leaves() {
 		return ParticleTypes.CHERRY_LEAVES;
 	}
 
-	/** The armour model id: 1.21.3 armour materials carry a plain resource location. */
+	/** The armour model id; 1.21.1 armour materials carry a plain resource location. */
 	public static ResourceLocation armorModel(String path) {
 		return ResourceLocation.tryParse(path);
 	}

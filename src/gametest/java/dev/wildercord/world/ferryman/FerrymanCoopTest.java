@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -167,7 +167,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				// The traveller steps out as an observer: nothing can drop them to a death screen, which would stall the clock.
 				var p = traveller(s, oarsman);
 				p.setGameMode(GameType.SPECTATOR);
-				p.teleportTo(s.overworld(), crossing[4].getX() + .5, crossing[4].getY(), crossing[4].getZ() + .5, Set.<Relative>of(), 0, 0, false);
+				p.teleportTo(s.overworld(), crossing[4].getX() + .5, crossing[4].getY(), crossing[4].getZ() + .5, Set.<RelativeMovement>of(), 0, 0);
 			});
 			blows = 0;
 			boolean struck = false;
@@ -196,7 +196,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 				var p = traveller(s, oarsman);
 				p.setGameMode(GameType.SURVIVAL);
 				p.setHealth(20);
-				p.teleportTo(s.overworld(), mooring.getX() + .5, mooring.getY(), mooring.getZ() - 3.5, Set.<Relative>of(), 0, 0, false);
+				p.teleportTo(s.overworld(), mooring.getX() + .5, mooring.getY(), mooring.getZ() - 3.5, Set.<RelativeMovement>of(), 0, 0);
 				f.setHealth(1);
 				dev.wildercord.cast.Effects.readyToHurt(f);
 				f.hurtServer(s.overworld(), s.overworld().damageSources().playerAttack(p), 20);
@@ -255,7 +255,7 @@ public final class FerrymanCoopTest implements FabricClientGameTest {
 		w.getServer().runOnServer(s -> {
 			var p = s.getPlayerList().getPlayers().getFirst();
 			p.setGameMode(GameType.SURVIVAL);
-			p.teleportTo(s.overworld(), at.getX() + .5, at.getY(), at.getZ() + .5, Set.<Relative>of(), 0, 0, false);
+			p.teleportTo(s.overworld(), at.getX() + .5, at.getY(), at.getZ() + .5, Set.<RelativeMovement>of(), 0, 0);
 			p.setHealth(20);
 			p.fallDistance = 0;
 			p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));

@@ -20,7 +20,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -99,7 +99,7 @@ public final class BearersLantern {
 	 */
 	static boolean steed(ServerPlayer player) {
 		ServerLevel level = (ServerLevel) player.level();
-		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, EntitySpawnReason.TRIGGERED);
+		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, MobSpawnType.TRIGGERED);
 		if (horse == null) return false;
 		horse.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 		horse.setTamed(true);

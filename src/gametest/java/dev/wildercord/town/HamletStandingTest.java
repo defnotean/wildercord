@@ -10,9 +10,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -44,7 +44,7 @@ public final class HamletStandingTest implements FabricClientGameTest {
 	}
 
 	private static void villager(ServerLevel l, double x, double z) {
-		Villager villager = EntityType.VILLAGER.create(l, EntitySpawnReason.COMMAND);
+		Villager villager = EntityType.VILLAGER.create(l, MobSpawnType.COMMAND);
 		villager.moveTo(x, 101, z, 0, 0);
 		villager.setNoAi(true);
 		l.addFreshEntity(villager);
@@ -53,7 +53,7 @@ public final class HamletStandingTest implements FabricClientGameTest {
 	/** The traveller kills a monster at {@code pos} with their own hand. */
 	private static void slay(MinecraftServer s, BlockPos pos) {
 		ServerLevel l = s.overworld();
-		var zombie = EntityType.ZOMBIE.create(l, EntitySpawnReason.COMMAND);
+		var zombie = EntityType.ZOMBIE.create(l, MobSpawnType.COMMAND);
 		zombie.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
 		zombie.setNoAi(true);
 		l.addFreshEntity(zombie);
@@ -88,7 +88,7 @@ public final class HamletStandingTest implements FabricClientGameTest {
 				l.setBlock(FAR.below(), Blocks.STONE.defaultBlockState(), 2);
 				l.setBlock(BELL, Blocks.BELL.defaultBlockState(), 3);
 				p(s).setGameMode(GameType.SURVIVAL);
-				p(s).teleportTo(l, 0.5, 101, -5.5, Set.<Relative>of(), 0, 10, false);
+				p(s).teleportTo(l, 0.5, 101, -5.5, Set.<RelativeMovement>of(), 0, 10);
 
 				villager(l, 3.5, 3.5);
 				villager(l, -3.5, 3.5);

@@ -12,7 +12,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -567,7 +567,7 @@ public final class TwistMagic {
 			TwistVfx.almost(level, ride.caster(), ride.resonance.color());
 			return;
 		}
-		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, EntitySpawnReason.TRIGGERED);
+		SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level, MobSpawnType.TRIGGERED);
 		if (horse == null) {
 			return;
 		}

@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -75,7 +75,7 @@ public final class RelayMasteryChecks {
         } finally {owner=null;secondary=null;retire=false;}
     }
     private static TrainingDummy dummy(double x,double z) {
-        var d=WildercordEntities.TRAINING_DUMMY.create(owner.level(),EntitySpawnReason.MOB_SUMMONED);
+        var d=WildercordEntities.TRAINING_DUMMY.create(owner.level(),MobSpawnType.MOB_SUMMONED);
         RelayCircleTest.check(d!=null,"Native Mastery dummy creates");d.moveTo(x,150,z,180,0);d.setNoGravity(true);owner.level().addFreshEntity(d);return d;
     }
 }

@@ -16,7 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
@@ -72,7 +72,7 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 				context.runOnClient(mc -> mc.options.keyShift.setDown(false));context.waitTicks(15);
 				world.getServer().runOnServer(server -> {
 					var p=server.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);
-					p.teleportTo(((ServerLevel) p.level()),at.getX()+.5,at.getY(),at.getZ()-1.5,Set.<Relative>of(),0,12,false);
+					p.teleportTo(((ServerLevel) p.level()),at.getX()+.5,at.getY(),at.getZ()-1.5,Set.<RelativeMovement>of(),0,12);
 					p.fallDistance=0;
 					p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",AuraRules.GLOW,0,20,0));
 					p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_SWORD));
@@ -169,7 +169,7 @@ public final class BattlefieldsTest implements FabricClientGameTest {
 				var level=server.overworld();
 				check(level.getBlockState(at).is(Battlefields.MEMORIAL),"Representative generated marker has the registered memorial block type");
 				check(level.getBlockEntity(at) instanceof BattlefieldMemoryEntity m && m.oldGround(),"Exact representative memorial retains generated provenance");
-				var p=server.getPlayerList().getPlayers().getFirst();p.teleportTo(((ServerLevel) p.level()),at.getX()+.5,at.getY()+9,at.getZ()-14.5,Set.<Relative>of(),0,27,false);
+				var p=server.getPlayerList().getPlayers().getFirst();p.teleportTo(((ServerLevel) p.level()),at.getX()+.5,at.getY()+9,at.getZ()-14.5,Set.<RelativeMovement>of(),0,27);
 				p.getAbilities().flying=true;p.onUpdateAbilities();
 			});
 			context.waitTicks(50);natural.getClientWorld().waitForChunksRender();shot(context,"battlefield_natural_terrain");

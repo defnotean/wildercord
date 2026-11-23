@@ -16,7 +16,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -441,7 +441,7 @@ final class FusedFrostWards {
 			}
 			ally.setDeltaMovement(Vec3.ZERO);
 			if (ally.position().distanceToSqr(seal.anchor) > 0.0025) {
-				ally.teleportTo(level, seal.anchor.x, seal.anchor.y, seal.anchor.z, Set.<Relative>of(), ally.getYRot(), ally.getXRot(), false);
+				ally.teleportTo(level, seal.anchor.x, seal.anchor.y, seal.anchor.z, Set.<RelativeMovement>of(), ally.getYRot(), ally.getXRot());
 			}
 			ally.resetFallDistance();
 			ally.hasImpulse = true;

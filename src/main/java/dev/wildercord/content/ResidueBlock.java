@@ -25,7 +25,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -110,13 +109,6 @@ public class ResidueBlock extends Block {
 		return level.getBlockState(below).isFaceSturdy(level, below, Direction.UP);
 	}
 
-	@Override
-	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction direction, BlockPos neighbourPos,
-			BlockState neighbourState, RandomSource random) {
-		// Whatever it lay on is gone: it goes too (as a flower would, giving what it gives).
-		return direction == Direction.DOWN && !canSurvive(state, level, pos) ? Blocks.AIR.defaultBlockState()
-			: super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
-	}
 
 	// ------------------------------------------------------------------ close up
 

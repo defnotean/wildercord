@@ -19,7 +19,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.equipment.*;
+import net.minecraft.world.item.*;
+import dev.wildercord.compat.McArmor;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
@@ -31,10 +32,10 @@ public final class TidewardEquipment {
  public static final int WALK_WEAR=20,WALK_WINDOW=100,WALK_REST=40,SIGHT_PREP=10,SIGHT_REST=60;
  public static final double SIGHT_RANGE=8;
  private static ResourceKey<Item> key(String n){return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}
- private static final ArmorMaterial WADER_MATERIAL=new ArmorMaterial(8,Map.of(ArmorType.HELMET,0,ArmorType.CHESTPLATE,0,ArmorType.LEGGINGS,0,ArmorType.BOOTS,1),8,SoundEvents.ARMOR_EQUIP_LEATHER,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_reedwater")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:reedwater"));
- private static final ArmorMaterial GLASS_MATERIAL=new ArmorMaterial(6,Map.of(ArmorType.HELMET,0,ArmorType.CHESTPLATE,0,ArmorType.LEGGINGS,0,ArmorType.BOOTS,0),4,SoundEvents.ARMOR_EQUIP_LEATHER,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_dewglass")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:dewglass"));
- public static final Item WADERS=Registry.register(BuiltInRegistries.ITEM,key("reedwater_waders"),new AuraWorld.Lore("reedwater_waders",WADER_MATERIAL.humanoidProperties(new Item.Properties().setId(key("reedwater_waders")), ArmorType.BOOTS).rarity(Rarity.UNCOMMON)));
- public static final Item SPECTACLES=Registry.register(BuiltInRegistries.ITEM,key("dewglass_spectacles"),new AuraWorld.Lore("dewglass_spectacles",GLASS_MATERIAL.humanoidProperties(new Item.Properties().setId(key("dewglass_spectacles")), ArmorType.HELMET).rarity(Rarity.UNCOMMON)));
+ private static final net.minecraft.core.Holder<ArmorMaterial> WADER_MATERIAL=McArmor.material(Map.of(ArmorItem.Type.HELMET,0,ArmorItem.Type.CHESTPLATE,0,ArmorItem.Type.LEGGINGS,0,ArmorItem.Type.BOOTS,1),8,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_reedwater")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:reedwater"));
+ private static final net.minecraft.core.Holder<ArmorMaterial> GLASS_MATERIAL=McArmor.material(Map.of(ArmorItem.Type.HELMET,0,ArmorItem.Type.CHESTPLATE,0,ArmorItem.Type.LEGGINGS,0,ArmorItem.Type.BOOTS,0),4,0,0,TagKey.create(Registries.ITEM,Wildercord.id("repairs_dewglass")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:dewglass"));
+ public static final Item WADERS=Registry.register(BuiltInRegistries.ITEM,key("reedwater_waders"),new McArmor.LoreArmor("reedwater_waders",WADER_MATERIAL,ArmorItem.Type.BOOTS,new Item.Properties().setId(key("reedwater_waders")).rarity(Rarity.UNCOMMON)));
+ public static final Item SPECTACLES=Registry.register(BuiltInRegistries.ITEM,key("dewglass_spectacles"),new McArmor.LoreArmor("dewglass_spectacles",GLASS_MATERIAL,ArmorItem.Type.HELMET,new Item.Properties().setId(key("dewglass_spectacles")).rarity(Rarity.UNCOMMON)));
  private static AttachmentType<Long> rest(String name){return McAttachments.create(Wildercord.id(name),b -> b.initializer(() -> 0L).persistent(Codec.LONG).copyOnDeath());}
  public static final AttachmentType<Long> WALK_READY=rest("tideward_walk_ready"),SIGHT_READY=rest("tideward_sight_ready");
  public static final AttachmentType<Integer> WALK_PROGRESS=McAttachments.create(Wildercord.id("tideward_walk_progress"),b -> b.initializer(() -> 0).persistent(Codec.intRange(0,WALK_WINDOW-1)).copyOnDeath());

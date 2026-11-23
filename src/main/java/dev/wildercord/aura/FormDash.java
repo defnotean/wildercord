@@ -30,7 +30,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -511,7 +511,7 @@ public final class FormDash {
 			Vec3 from = player.position();
 			if (!from.equals(to) && !WallTurn.swept(player, from, to, warded)) return false;
 			fallRisk = Math.max(fallRisk, player.fallDistance) + Math.max(0, from.y - to.y);
-			player.teleportTo(level, to.x, to.y, to.z, Relative.ROTATION, 0, 0, false);
+			player.teleportTo(level, to.x, to.y, to.z, RelativeMovement.ROTATION, 0, 0);
 			player.fallDistance = (float) Math.max(player.fallDistance, fallRisk);
 			player.setDeltaMovement(Vec3.ZERO);
 			player.hasImpulse = true;

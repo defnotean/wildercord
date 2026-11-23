@@ -8,7 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.DyeColor;
@@ -684,13 +684,13 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		Mob mob = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		Mob mob = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
 		if (mob == null) {
 			return;
 		}
 		mob.setPersistenceRequired();
 		mob.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
-		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null);
 		Runebound.bindAtGeneration(mob, adept);
 		level.addFreshEntityWithPassengers(mob);
 	}

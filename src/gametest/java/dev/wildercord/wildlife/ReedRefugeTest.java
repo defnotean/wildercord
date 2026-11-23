@@ -65,7 +65,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    verifyNavigationCases(c,w);
   }
  }
- private static LanternNewt spawn(MinecraftServer s,double x,double z) {var n=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);n.moveTo(x,101.1,z,0,0);n.getRandom().setSeed(314);s.overworld().addFreshEntity(n);return n;}
+ private static LanternNewt spawn(MinecraftServer s,double x,double z) {var n=WetlandContent.NEWT.create(s.overworld(),MobSpawnType.COMMAND);n.moveTo(x,101.1,z,0,0);n.getRandom().setSeed(314);s.overworld().addFreshEntity(n);return n;}
  private static void awaitRest(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> target,String why) {
   awaitRest(c,w,target,why,false);
  }
@@ -112,7 +112,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   w.getServer().runCommand("weather clear");w.getServer().runCommand("time set 6000");
   w.getServer().runOnServer(s -> {
    s.overworld().setBlock(ROOF,WetlandShelters.REFUGE.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,true),2);
-   surfaceVisitor=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);surfaceVisitor.moveTo(.5,101.6,3.5,0,0);surfaceVisitor.getRandom().setSeed(314);s.overworld().addFreshEntity(surfaceVisitor);
+   surfaceVisitor=WetlandContent.NEWT.create(s.overworld(),MobSpawnType.COMMAND);surfaceVisitor.moveTo(.5,101.6,3.5,0,0);surfaceVisitor.getRandom().setSeed(314);s.overworld().addFreshEntity(surfaceVisitor);
   });c.waitTicks(1);
   w.getServer().runOnServer(s -> {
    check(surfaceVisitor.isInWater() && surfaceVisitor.getY()>=101.5,"Surface swimmer has wet feet but a dry rounded native start");
@@ -162,8 +162,8 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    // complete result, then prove actual dry walking separately with TemptGoal.
    check(sameNativeRoute(expected,actual,dry),"After a refuge query, native and custom dry searches return identical target, nodes, costs, cursor and reachability, including partial paths");
    routeVisitor.setNoAi(true);checkOrdinaryLook(routeVisitor,"removed refuge");checkNativeSwimControl(routeVisitor,true,"removed refuge");
-   walker=WetlandContent.NEWT.create(s.overworld(),EntitySpawnReason.COMMAND);walker.moveTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
-   p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<Relative>of(),180,0,false);
+   walker=WetlandContent.NEWT.create(s.overworld(),MobSpawnType.COMMAND);walker.moveTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
+   p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<RelativeMovement>of(),180,0);
   });
   boolean tempted=false;
   for(int i=0;i<100;i++) {c.waitTicks(2);if(w.getServer().computeOnServer(s -> walker.getZ()>3.5 && !walker.isInWater() && dev.wildercord.compat.McEntities.goalSelector(walker).getAvailableGoals().stream().anyMatch(g -> g.isRunning() && g.getGoal() instanceof net.minecraft.world.entity.ai.goal.TemptGoal))) {tempted=true;break;}}
@@ -332,7 +332,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
  private static void place(ClientGameTestContext c,BlockPos ground) {c.runOnClient(mc -> mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(Vec3.atCenterOf(ground),Direction.UP,ground,false)));}
  private static int pearls(MinecraftServer s) {return s.overworld().getEntitiesOfClass(ItemEntity.class,new AABB(-12,100,-8,12,106,12),e -> e.getItem().is(WetlandContent.DUSK_PEARL)).stream().mapToInt(e -> e.getItem().getCount()).sum()+java.util.stream.IntStream.range(0,p(s).getInventory().getContainerSize()).map(i -> p(s).getInventory().getItem(i).is(WetlandContent.DUSK_PEARL)?p(s).getInventory().getItem(i).getCount():0).sum();}
  private static ServerPlayer p(MinecraftServer s) {return s.getPlayerList().getPlayers().getFirst();}
- private static void aim(MinecraftServer s,Vec3 target,double distance) {var p=p(s);if(p.getAbilities().mayfly) {p.getAbilities().flying=true;p.onUpdateAbilities();}var at=target.add(0,.2,-distance);var d=target.add(0,.15,0).subtract(at.add(0,p.getEyeHeight(),0));p.teleportTo(s.overworld(),at.x,at.y,at.z,Set.<Relative>of(),(float)Math.toDegrees(Math.atan2(-d.x,d.z)),(float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())),false);}
+ private static void aim(MinecraftServer s,Vec3 target,double distance) {var p=p(s);if(p.getAbilities().mayfly) {p.getAbilities().flying=true;p.onUpdateAbilities();}var at=target.add(0,.2,-distance);var d=target.add(0,.15,0).subtract(at.add(0,p.getEyeHeight(),0));p.teleportTo(s.overworld(),at.x,at.y,at.z,Set.<RelativeMovement>of(),(float)Math.toDegrees(Math.atan2(-d.x,d.z)),(float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())));}
  private static void shot(ClientGameTestContext c,String name) {c.runOnClient(mc -> {mc.getToastManager().clear();mc.gui.getChat().clearMessages(false);});c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}
  private static void check(boolean b,String why) {if(!b)throw new AssertionError(why);}
 }

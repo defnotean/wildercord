@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.*;
@@ -71,9 +71,9 @@ public final class SwordTombTest implements FabricClientGameTest {
 			lane(world,keeper,3);c.waitTicks(38);
 			world.getServer().runOnServer(s->check(s.getPlayerList().getPlayers().getFirst().getHealth()==20,"Stepping out of the locked thrust lane avoids damage"));
 			await(c,world,keeper,SwordTombRules.GUARD);c.waitTicks(8);aim(c,home,1.2);shot(c,"sword_tomb_forward_guard");
-			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);var p=s.getPlayerList().getPlayers().getFirst();var at=k.position().add(k.getViewVector(1).multiply(1,0,1).normalize().scale(2));p.teleportTo(s.overworld(),at.x,at.y,at.z,Set.<Relative>of(),180,0,false);p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_AXE));k.hurtServer(s.overworld(),s.overworld().damageSources().playerAttack(p),8);check(k.move()==SwordTombRules.BROKEN,"Frontal axe breaks the actual guard");});
+			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);var p=s.getPlayerList().getPlayers().getFirst();var at=k.position().add(k.getViewVector(1).multiply(1,0,1).normalize().scale(2));p.teleportTo(s.overworld(),at.x,at.y,at.z,Set.<RelativeMovement>of(),180,0);p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_AXE));k.hurtServer(s.overworld(),s.overworld().damageSources().playerAttack(p),8);check(k.move()==SwordTombRules.BROKEN,"Frontal axe breaks the actual guard");});
 			c.waitTicks(8);aim(c,home,1.2);shot(c,"sword_tomb_broken_guard");c.waitTicks(15);
-			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);CompoundTag saved = new CompoundTag();k.saveWithoutId(saved);var restored=SwordTombs.KEEPER.create(s.overworld(),net.minecraft.world.entity.EntitySpawnReason.LOAD);restored.load(saved);check(restored.home().equals(k.home()) && restored.getHealth()==k.getHealth(),"Keeper home and damaged health survive save/load");check(restored.move()==SwordTombRules.RECOVER,"Reload grants recovery instead of releasing a stale attack");restored.discard();});
+			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);CompoundTag saved = new CompoundTag();k.saveWithoutId(saved);var restored=SwordTombs.KEEPER.create(s.overworld(),net.minecraft.world.entity.MobSpawnType.LOAD);restored.load(saved);check(restored.home().equals(k.home()) && restored.getHealth()==k.getHealth(),"Keeper home and damaged health survive save/load");check(restored.move()==SwordTombRules.RECOVER,"Reload grants recovery instead of releasing a stale attack");restored.discard();});
 			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);var p=s.getPlayerList().getPlayers().getFirst();k.setHealth(1);k.hurtServer(s.overworld(),s.overworld().damageSources().playerAttack(p),20);check(((TombReliquaryEntity)s.overworld().getBlockEntity(altar)).cleared(),"Keeper death resolves the saved encounter");});
 			placePlayer(world,altar.relative(facing.getOpposite(),2),3);c.waitTicks(15);use(c,altar);c.waitTicks(10);
 			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(scrolls(p)==2,"Participant receives two distinct technique scrolls");var t=(TombReliquaryEntity)s.overworld().getBlockEntity(altar);var restored=(TombReliquaryEntity)BlockEntity.loadStatic(altar,t.getBlockState(),t.saveWithFullMetadata(s.registryAccess()),s.registryAccess());check(restored.cleared() && restored.guardian()==null,"Cleared state survives load");s.overworld().setBlockEntity(restored);});
@@ -94,7 +94,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 			});
 			BlockPos at=site.altar();
 			BlockPos entrance=natural.getServer().computeOnServer(s->at.relative(s.overworld().getBlockState(at).getValue(TombReliquary.FACING).getOpposite(),42).above(12));
-			natural.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),entrance.getX()+7.5,entrance.getY()+5,entrance.getZ()+7.5,Set.<Relative>of(),0,25,false);p.getAbilities().flying=true;p.onUpdateAbilities();});
+			natural.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(s.overworld(),entrance.getX()+7.5,entrance.getY()+5,entrance.getZ()+7.5,Set.<RelativeMovement>of(),0,25);p.getAbilities().flying=true;p.onUpdateAbilities();});
 			c.waitTicks(30);aim(c,entrance,0);c.waitTicks(30);natural.getClientWorld().waitForChunksRender();shot(c,"sword_tomb_natural_entrance");
 		}
 	}
@@ -119,12 +119,12 @@ public final class SwordTombTest implements FabricClientGameTest {
 		}
 		throw new AssertionError("No valid registered tomb start within 32 chunks of "+habitat.getFirst()+" in seed "+level.getSeed());
 	}
-	private static void placePlayer(TestSingleplayerContext w,BlockPos at,int stage){w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),at.getX()+.5,at.getY(),at.getZ()+.5,Set.<Relative>of(),0,0,false);p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",stage,0,70,0));p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_SWORD));p.fallDistance=0;});}
+	private static void placePlayer(TestSingleplayerContext w,BlockPos at,int stage){w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),at.getX()+.5,at.getY(),at.getZ()+.5,Set.<RelativeMovement>of(),0,0);p.setAttached(AuraAttachments.AURA,new AuraAttachments.Data("stone",stage,0,70,0));p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_SWORD));p.fallDistance=0;});}
 	private static void await(ClientGameTestContext c,TestSingleplayerContext w,UUID id,int move){for(int i=0;i<240;i++){if(w.getServer().computeOnServer(s->s.overworld().getEntity(id) instanceof Gravekeeper k && k.move()==move))return;c.waitTicks(1);}throw new AssertionError("Keeper did not reach move "+move);}
 	private static int scrolls(net.minecraft.server.level.ServerPlayer p){int n=0;for(int i=0;i<p.getInventory().getContainerSize();i++)if(p.getInventory().getItem(i).has(TechniqueScrollItem.PART))n+=p.getInventory().getItem(i).getCount();return n;}
 	private static void use(ClientGameTestContext c,BlockPos p){c.runOnClient(mc->mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(Vec3.atCenterOf(p),Direction.UP,p,false)));}
 	private static void shot(ClientGameTestContext c,String n){c.takeScreenshot(TestScreenshotOptions.of(n).disableCounterPrefix());}
-	private static void lane(TestSingleplayerContext w,UUID id,double sideways){w.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(id);var d=k.attackDirection();var v=k.position().add(d.scale(4)).add(new Vec3(-d.z,0,d.x).scale(sideways));var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(s.overworld(),v.x,v.y,v.z,Set.<Relative>of(),p.getYRot(),p.getXRot(),false);p.setHealth(20);});}
+	private static void lane(TestSingleplayerContext w,UUID id,double sideways){w.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(id);var d=k.attackDirection();var v=k.position().add(d.scale(4)).add(new Vec3(-d.z,0,d.x).scale(sideways));var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(s.overworld(),v.x,v.y,v.z,Set.<RelativeMovement>of(),p.getYRot(),p.getXRot());p.setHealth(20);});}
 	private static void aim(ClientGameTestContext c,BlockPos at,double lift){c.runOnClient(mc->{var v=Vec3.atCenterOf(at).add(0,lift,0).subtract(mc.player.getEyePosition());mc.player.setYRot((float)(Math.atan2(-v.x,v.z)*180/Math.PI));mc.player.setXRot((float)(-Math.atan2(v.y,Math.sqrt(v.x*v.x+v.z*v.z))*180/Math.PI));});}
 	private static void check(boolean value,String message){if(!value)throw new AssertionError(message);}
 }

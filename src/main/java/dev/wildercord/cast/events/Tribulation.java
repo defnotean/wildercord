@@ -23,7 +23,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
@@ -213,7 +213,7 @@ public final class Tribulation {
 
 	/** A bolt of light that burns nothing. */
 	private void strike(Vec3 at) {
-		LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.EVENT);
+		LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, MobSpawnType.EVENT);
 		if (bolt == null) return;
 		bolt.setPos(at.x, at.y, at.z);
 		bolt.setVisualOnly(true);

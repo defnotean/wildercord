@@ -25,7 +25,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -1634,14 +1634,14 @@ public class StarEater extends DungeonBoss {
 		ElementFx.blackCore(level, c, 1.5, SHIFT_TICKS);
 		announce(level, "message.wildercord.star_eater_phase." + phase, COLOR);
 		for (int i = 0; i < 2; i++) {
-			Mob guard = (i == 0 ? EntityType.STRAY : EntityType.SKELETON).create(level, EntitySpawnReason.MOB_SUMMONED);
+			Mob guard = (i == 0 ? EntityType.STRAY : EntityType.SKELETON).create(level, MobSpawnType.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 spot = CastEngine.ground(level, centre().add(Math.cos(a) * 7, 2, Math.sin(a) * 7));
 			guard.moveTo(spot.x, spot.y, spot.z, 0, 0);
-			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
 			Runebound.bind(guard, i == 0 ? List.of(Runes.SPARK, Runes.HARM) : List.of(Runes.BOLT, Runes.BLIND), phase == 3);
 			level.addFreshEntity(guard);
 			minion(guard);

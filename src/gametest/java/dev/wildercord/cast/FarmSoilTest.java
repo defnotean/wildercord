@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -90,7 +90,7 @@ public final class FarmSoilTest implements FabricClientGameTest {
                 check(l.getBlockState(new BlockPos(41, 101, 0)).is(Blocks.PUMPKIN), "The pumpkin sets on the side with grass below");
                 var stem = l.getBlockState(new BlockPos(40, 101, 0));
                 check(stem.is(Blocks.ATTACHED_PUMPKIN_STEM) && stem.getValue(AttachedStemBlock.FACING) == net.minecraft.core.Direction.EAST, "The stem turns to its pumpkin");
-                p(s).teleportTo(l, 30.5, 106, -8.5, Set.<Relative>of(), 0, 25, false);
+                p(s).teleportTo(l, 30.5, 106, -8.5, Set.<RelativeMovement>of(), 0, 25);
             });
             c.waitTicks(10);
             shot(c, "farm_coppice_gourdcall_grass");
@@ -109,7 +109,7 @@ public final class FarmSoilTest implements FabricClientGameTest {
     private static void cast(ClientGameTestContext c, TestSingleplayerContext w, RuneDef rune, double x, double z, float yaw, float pitch) {
         w.getServer().runOnServer(s -> {
             var p = p(s);
-            p.teleportTo(s.overworld(), x, 101, z, Set.<Relative>of(), yaw, pitch, false);
+            p.teleportTo(s.overworld(), x, 101, z, Set.<RelativeMovement>of(), yaw, pitch);
             check(SpellCaster.edit(p, 0, List.of(Runes.TOUCH.id(), rune.id())) == null, "Touch and " + rune.id() + " make a spell");
             Spellbooks.setMana(p, 100);
             Spellbooks.setReadyAt(p, 0, 0);

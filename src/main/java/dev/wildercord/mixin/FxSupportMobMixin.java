@@ -1,7 +1,7 @@
 package dev.wildercord.mixin;
 
 import dev.wildercord.cast.packs.WardState;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
@@ -27,10 +27,10 @@ public abstract class FxSupportMobMixin {
 	}
 
 	@Inject(method = "checkSpawnRules", at = @At("HEAD"), cancellable = true)
-	private void wildercord$fxSupportSanctuary(LevelAccessor world, EntitySpawnReason reason, CallbackInfoReturnable<Boolean> cir) {
+	private void wildercord$fxSupportSanctuary(LevelAccessor world, MobSpawnType reason, CallbackInfoReturnable<Boolean> cir) {
 		Mob self = (Mob) (Object) this;
 		if (self instanceof Enemy && world instanceof Level level && !level.isClientSide()
-				&& (reason == EntitySpawnReason.NATURAL || reason == EntitySpawnReason.REINFORCEMENT || reason == EntitySpawnReason.PATROL)
+				&& (reason == MobSpawnType.NATURAL || reason == MobSpawnType.REINFORCEMENT || reason == MobSpawnType.PATROL)
 				&& WardState.forbidsSpawn(level, self.getX(), self.getY(), self.getZ())) {
 			cir.setReturnValue(false);
 		}

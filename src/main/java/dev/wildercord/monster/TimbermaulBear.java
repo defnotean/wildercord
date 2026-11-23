@@ -25,7 +25,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -888,7 +888,7 @@ public class TimbermaulBear extends EliteMonster {
 		sound(level, start, SoundEvents.WOOD_BREAK, 1.4F, 0.6F);
 		sound(level, start, SoundEvents.POLAR_BEAR_WARNING, 1.6F, 0.7F);
 		dirt(level, start, 20, 1.0, 0.15);
-		Display.BlockDisplay shown = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.BlockDisplay shown = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
 		if (shown == null) {
 			return;
 		}

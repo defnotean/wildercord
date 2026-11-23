@@ -27,7 +27,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -361,13 +361,13 @@ public final class WorldEvents {
 		if (!level.isPositionEntityTicking(pos)) {
 			return null;
 		}
-		Mob mob = type.create(level, EntitySpawnReason.EVENT);
+		Mob mob = type.create(level, MobSpawnType.EVENT);
 		if (mob == null) {
 			return null;
 		}
 		float yaw = target == null ? level.getRandom().nextFloat() * 360 : (float) Math.toDegrees(Math.atan2(-(target.getX() - at.x), target.getZ() - at.z));
 		mob.moveTo(at.x, at.y, at.z, yaw, 0);
-		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.EVENT, mob instanceof Zombie ? new Zombie.ZombieGroupData(false, false) : null);
+		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.EVENT, mob instanceof Zombie ? new Zombie.ZombieGroupData(false, false) : null);
 		// It never picks anything up: it goes when its event does, and whatever it carried (a fallen player's gear) would go with it.
 		mob.setCanPickUpLoot(false);
 		if (spell == null) {

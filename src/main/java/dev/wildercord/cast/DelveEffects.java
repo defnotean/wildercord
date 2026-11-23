@@ -21,7 +21,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -1003,7 +1003,7 @@ final class DelveEffects {
 			return;
 		}
 		Vec3 up = caster.position().add(0, column.size(), 0);
-		caster.teleportTo(level, up.x, up.y, up.z, Set.<Relative>of(), caster.getYRot(), caster.getXRot(), false);
+		caster.teleportTo(level, up.x, up.y, up.z, Set.<RelativeMovement>of(), caster.getYRot(), caster.getXRot());
 		caster.resetFallDistance();
 		int ticks = Effects.ticks(30, duration);
 		for (BlockPos p : column) {
@@ -1752,7 +1752,7 @@ final class DelveEffects {
 			RETURNING.remove(id);
 			MARKS.remove(id);
 			Vfx.emit(level, SpellMaterials.of("void", 0xB45AF0, .16F), player.position().add(0, 1, 0), 16, .4, .05);
-			player.teleportTo(level, to.x, to.y, to.z, Set.<Relative>of(), player.getYRot(), player.getXRot(), false);
+			player.teleportTo(level, to.x, to.y, to.z, Set.<RelativeMovement>of(), player.getYRot(), player.getXRot());
 			player.resetFallDistance();
 			Vfx.emit(level, SpellMaterials.of("void", 0xE0B0FF, .16F), to.add(0, 1, 0), 16, .4, .05);
 			dev.wildercord.cast.feel.Feels.sound(level, to, "void_warp_ping", .8F, 1.12F);

@@ -31,7 +31,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -942,7 +942,7 @@ public final class ArtKit {
 				if (!player.isAlive() || player.level() != level || player.isPassenger()) {
 					return;
 				}
-				player.teleportTo(level, point.x, point.y, point.z, Relative.ROTATION, 0.0F, 0.0F, false);
+				player.teleportTo(level, point.x, point.y, point.z, RelativeMovement.ROTATION, 0.0F, 0.0F);
 				player.resetFallDistance();
 				if (last) {
 					player.setDeltaMovement(Vec3.ZERO);
@@ -1002,7 +1002,7 @@ public final class ArtKit {
 	/** Moves the swordsman to {@code spot} at once (the view stays theirs). */
 	public static void blink(ServerPlayer player, Vec3 spot) {
 		dev.wildercord.aura.MasterFormMovement.begin(player, 2);
-		player.teleportTo((ServerLevel) player.level(), spot.x, spot.y, spot.z, Relative.ROTATION, 0.0F, 0.0F, false);
+		player.teleportTo((ServerLevel) player.level(), spot.x, spot.y, spot.z, RelativeMovement.ROTATION, 0.0F, 0.0F);
 		player.resetFallDistance();
 		player.setDeltaMovement(Vec3.ZERO);
 	}

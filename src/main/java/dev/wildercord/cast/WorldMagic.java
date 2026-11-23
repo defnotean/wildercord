@@ -28,7 +28,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -61,7 +61,6 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -1038,7 +1037,7 @@ public final class WorldMagic {
 	private static void pulse(ServerLevel level, BlockPos pos, BlockState rod) {
 		level.setBlockAndUpdate(pos, rod.setValue(LightningRodBlock.POWERED, true));
 		Direction front = rod.getValue(BlockStateProperties.FACING).getOpposite();
-		level.updateNeighborsAt(pos.relative(front), rod.getBlock(), ExperimentalRedstoneUtils.initialOrientation(level, front, null));
+		level.updateNeighborsAt(pos.relative(front), rod.getBlock());
 		level.scheduleTick(pos, rod.getBlock(), 8);
 		level.levelEvent(LevelEvent.PARTICLES_ELECTRIC_SPARK, pos, rod.getValue(BlockStateProperties.FACING).getAxis().ordinal());
 		ElementFx.arc(level, Vec3.atCenterOf(pos).add(0, 0.6, 0), Vec3.atCenterOf(pos).add(0, -0.4, 0), SHOCK, 0.05, 1, false, 6);
@@ -1175,7 +1174,7 @@ public final class WorldMagic {
 
 	/** One slab of ground: a block display that tilts up out of the floor, holds, and sinks back. */
 	private static void slab(ServerLevel level, Vec3 base, BlockState state, float yaw, int delay) {
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return;
 		}

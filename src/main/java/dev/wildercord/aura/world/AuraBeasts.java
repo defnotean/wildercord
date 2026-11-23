@@ -60,9 +60,9 @@ public final class AuraBeasts {
 			}
 		});
 	}
-	public static boolean maySpawn(EntityType<?> type,ServerLevelAccessor level,EntitySpawnReason reason,BlockPos at) {
-		if(reason==EntitySpawnReason.CHUNK_GENERATION)return false;
-		if(reason!=EntitySpawnReason.NATURAL)return true;
+	public static boolean maySpawn(EntityType<?> type,ServerLevelAccessor level,MobSpawnType reason,BlockPos at) {
+		if(reason==MobSpawnType.CHUNK_GENERATION)return false;
+		if(reason!=MobSpawnType.NATURAL)return true;
 		if(!(level instanceof ServerLevel actual)||!actual.getServer().isSameThread())return false;
 		var ground=TagKey.create(Registries.BLOCK,Wildercord.id("aura_beast_ground"));
 		var nearby=new ArrayList<Entity>(2);actual.getEntities(type,new AABB(at).inflate(96),e->e.isAlive(),nearby,2);int near=nearby.size();

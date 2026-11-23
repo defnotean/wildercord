@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -72,10 +72,10 @@ public final class BelowkeeperResident {
 
 	/** The owning structure chunk calls this once, then persists its successful spawn flag. */
 	public static boolean spawn(WorldGenLevel level, BlockPos at) {
-		Villager resident = EntityType.VILLAGER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		Villager resident = EntityType.VILLAGER.create(level.getLevel(), MobSpawnType.STRUCTURE);
 		if (resident == null) return false;
 		resident.moveTo(at.getX() + .5, at.getY(), at.getZ() + .5, 0, 0);
-		resident.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
+		resident.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.STRUCTURE, null);
 		resident.setVillagerData(resident.getVillagerData().setProfession(VillagerProfession.LIBRARIAN).setLevel(2));
 		resident.setVillagerXp(10);
 		resident.setCustomName(Component.translatable("entity.wildercord.belowkeeper_listener"));

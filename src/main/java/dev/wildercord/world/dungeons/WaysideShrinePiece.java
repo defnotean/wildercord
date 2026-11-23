@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -186,10 +186,10 @@ public final class WaysideShrinePiece extends DungeonPiece {
 		var foot=getWorldPos(x,1,z);if(!bb.isInside(foot))return;
 		var toward=getWorldPos(tx,1,tz);
 		float yaw=(float)Math.toDegrees(Math.atan2(-(toward.getX()-foot.getX()),toward.getZ()-foot.getZ()));
-		var mimic=MonsterContent.COFFER_MIMIC.create(level.getLevel(),EntitySpawnReason.STRUCTURE);if(mimic==null)return;
+		var mimic=MonsterContent.COFFER_MIMIC.create(level.getLevel(),MobSpawnType.STRUCTURE);if(mimic==null)return;
 		mimic.setPersistenceRequired();
 		mimic.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,yaw,0);
-		mimic.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),EntitySpawnReason.STRUCTURE,null);
+		mimic.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),MobSpawnType.STRUCTURE,null);
 		mimic.settleHere(yaw);
 		level.addFreshEntityWithPassengers(mimic);
 	}

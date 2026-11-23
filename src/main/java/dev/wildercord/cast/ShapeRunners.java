@@ -589,7 +589,7 @@ final class ShapeRunners {
 		}
 		TechniqueVfx.blitz(cast.level, a, b, theme);
 		if (end != start) {
-			caster.teleportTo(cast.level, end.x, end.y, end.z, Set.<net.minecraft.world.entity.Relative>of(), caster.getYRot(), caster.getXRot(), false);
+			caster.teleportTo(cast.level, end.x, end.y, end.z, Set.<net.minecraft.world.entity.RelativeMovement>of(), caster.getYRot(), caster.getXRot());
 			caster.resetFallDistance();
 		}
 		CastEngine.onHit(cast, g, new Cast.Hit(hits, b, dir, a, null, null, false), anchored);

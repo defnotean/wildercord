@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -169,12 +169,12 @@ public final class WayfarerInnPiece extends TravelPiece {
 
 	private void keeper(ServerLevel level, int x, int y, int z, int radius, WayfarerKeeper.Role role) {
 		BlockPos at = getWorldPos(x, y, z).immutable();
-		WayfarerKeeper keeper = Town.KEEPER.create(level, EntitySpawnReason.STRUCTURE);
+		WayfarerKeeper keeper = Town.KEEPER.create(level, MobSpawnType.STRUCTURE);
 		if (keeper == null) return;
 		keeper.setRole(role);
 		keeper.setPersistenceRequired();
 		keeper.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
-		keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
+		keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.STRUCTURE, null);
 		keeper.restrictTo(at, radius);
 		level.addFreshEntity(keeper);
 	}

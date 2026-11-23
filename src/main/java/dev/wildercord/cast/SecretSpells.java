@@ -446,7 +446,7 @@ public final class SecretSpells {
 				if (!level.noCollision(caster, caster.getDimensions(caster.getPose()).makeBoundingBox(spot))) {
 					spot = target.position().add(0, target.getBbHeight() + 0.1, 0);
 				}
-				caster.teleportTo(level, spot.x, spot.y, spot.z, Set.of(), caster.getYRot(), caster.getXRot(), false);
+				caster.teleportTo(level, spot.x, spot.y, spot.z, Set.of(), caster.getYRot(), caster.getXRot());
 				caster.resetFallDistance();
 				Vec3 c = target.getBoundingBox().getCenter();
 				Vfx.shockArc(level, before, c);

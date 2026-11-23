@@ -13,11 +13,8 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.level.Level;
 
 /**
@@ -57,7 +54,7 @@ public final class ManualPagesRecipe implements CraftingRecipe {
 		this.category = category;
 		this.result = result;
 		this.ingredients = ingredients;
-		this.shapeless = new ShapelessRecipe("", category, result, ingredients);
+		this.shapeless = new ShapelessRecipe("", category, result, nonNull(ingredients));
 	}
 
 	@Override
@@ -93,24 +90,16 @@ public final class ManualPagesRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public List<RecipeDisplay> display() {
-		return shapeless.display();
-	}
-
-	@Override
-	public PlacementInfo placementInfo() {
-		return shapeless.placementInfo();
-	}
-
-	@Override
 	public CraftingBookCategory category() {
 		return category;
 	}
 
-	@Override
-	public net.minecraft.world.item.crafting.RecipeBookCategory recipeBookCategory() {
-		return RecipeBookCategories.CRAFTING_MISC;
+	private static net.minecraft.core.NonNullList<Ingredient> nonNull(List<Ingredient> list) {
+		net.minecraft.core.NonNullList<Ingredient> out = net.minecraft.core.NonNullList.create();
+		for (Ingredient ingredient : list) out.add(ingredient);
+		return out;
 	}
+
 
 	@Override
 	public RecipeSerializer<ManualPagesRecipe> getSerializer() {

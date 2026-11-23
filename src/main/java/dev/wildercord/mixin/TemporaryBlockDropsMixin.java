@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class TemporaryBlockDropsMixin {
 	@Inject(method = "getDrops", at = @At("HEAD"), cancellable = true)
 	private void wildercord$nothingFromSpells(LootParams.Builder params, CallbackInfoReturnable<List<ItemStack>> cir) {
-		Vec3 origin = params.getOptionalParameter(LootContextParams.ORIGIN);
+		Vec3 origin = params.getParamOrNull(LootContextParams.ORIGIN);
 		if (origin != null && TemporaryBlocks.holds(params.getLevel(), BlockPos.containing(origin), (BlockState) (Object) this)) {
 			cir.setReturnValue(new ArrayList<>());
 		}

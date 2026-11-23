@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -140,12 +140,12 @@ public final class KnightSpawner {
 
 	/** A knight of {@code haunt}'s rank and one of its methods, standing at {@code at}. */
 	public static  FallenKnight raise(ServerLevel level, BlockPos at, Haunt haunt, RandomSource random) {
-		FallenKnight knight = AuraWorld.FALLEN_KNIGHT.create(level, EntitySpawnReason.NATURAL);
+		FallenKnight knight = AuraWorld.FALLEN_KNIGHT.create(level, MobSpawnType.NATURAL);
 		if (knight == null) {
 			return null;
 		}
 		knight.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360, 0);
-		knight.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.NATURAL, null);
+		knight.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.NATURAL, null);
 		knight.setRank(haunt.rank());
 		knight.setMethod(method(haunt.source(), random));
 		level.addFreshEntityWithPassengers(knight);

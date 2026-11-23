@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
@@ -90,7 +90,7 @@ final class WallTurn {
 		if (!swept(player, from, to, warded)) return false;
 		// Minecraft's teleport path may clear fall state. Put back every pre-existing metre plus actual controlled descent.
 		fallRisk = Math.max(fallRisk, player.fallDistance) + Math.max(0, from.y - to.y);
-		player.teleportTo(level, to.x, to.y, to.z, Relative.ROTATION, 0, 0, false);
+		player.teleportTo(level, to.x, to.y, to.z, RelativeMovement.ROTATION, 0, 0);
 		player.fallDistance = (float) Math.max(player.fallDistance, fallRisk);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.hasImpulse = true;

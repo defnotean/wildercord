@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.ArrayList;
@@ -48,12 +48,12 @@ public final class MageHunters {
 			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 			if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
 			for (int i = 0; i < count; i++) {
-				MageHunter hunter = MonsterContent.MAGE_HUNTER.create(level, EntitySpawnReason.EVENT);
+				MageHunter hunter = MonsterContent.MAGE_HUNTER.create(level, MobSpawnType.EVENT);
 				if (hunter == null) break;
 				hunter.moveTo(ground.getX() + 0.5 + i * 1.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 				if (!level.noCollision(hunter)) hunter.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, 0, 0);
 				if (!level.noCollision(hunter)) continue;
-				hunter.finalizeSpawn(level, level.getCurrentDifficultyAt(ground), EntitySpawnReason.EVENT, null);
+				hunter.finalizeSpawn(level, level.getCurrentDifficultyAt(ground), MobSpawnType.EVENT, null);
 				hunter.setTarget(player);
 				level.addFreshEntity(hunter);
 				band.add(hunter);

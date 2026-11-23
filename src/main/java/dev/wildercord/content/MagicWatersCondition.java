@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.cast.Fishing;
-import net.minecraft.util.context.ContextKey;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -36,7 +36,7 @@ public record MagicWatersCondition(double multiplier) implements LootItemConditi
 	}
 
 	@Override
-	public Set<ContextKey<?>> getReferencedContextParams() {
+	public Set<LootContextParam<?>> getReferencedContextParams() {
 		return Set.of(LootContextParams.ORIGIN, LootContextParams.THIS_ENTITY);
 	}
 

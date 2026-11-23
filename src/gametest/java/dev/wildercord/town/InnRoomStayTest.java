@@ -9,8 +9,8 @@ import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -37,7 +37,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 	}
 
 	private static void stand(MinecraftServer s, double z) {
-		p(s).teleportTo(s.overworld(), 0.5, 101, z, Set.<Relative>of(), 0, 10, false);
+		p(s).teleportTo(s.overworld(), 0.5, 101, z, Set.<RelativeMovement>of(), 0, 10);
 		p(s).setDeltaMovement(0, 0, 0);
 	}
 
@@ -61,7 +61,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.OAK_PLANKS.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				WayfarerKeeper cook = Town.KEEPER.create(l, EntitySpawnReason.COMMAND);
+				WayfarerKeeper cook = Town.KEEPER.create(l, MobSpawnType.COMMAND);
 				cook.setRole(WayfarerKeeper.Role.COOK);
 				cook.moveTo(0.5, 101, 4.5, 180, 0);
 				cook.setNoAi(true);

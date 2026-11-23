@@ -65,7 +65,6 @@ public final class MoonreedBlock extends Block {
   },here.getX(),here.getY(),here.getZ(),dev.wildercord.compat.McTime.overworldClock(level));
   return found==null?null:new BlockPos(found.x(),found.y(),found.z());
  }
- @Override protected BlockState updateShape(BlockState s,LevelReader l,ScheduledTickAccess t,BlockPos p,Direction d,BlockPos np,BlockState ns,RandomSource r) {return canSurvive(s,l,p)?super.updateShape(s,l,t,p,d,np,ns,r):Blocks.AIR.defaultBlockState();}
  @Override protected boolean isRandomlyTicking(BlockState s) {return s.getValue(AGE)==0;}
  @Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r) {if(s.getValue(AGE)==0 && canBloom(l,p,dev.wildercord.compat.McTime.overworldClock(l)) && r.nextInt(8)==0)l.setBlock(p,s.setValue(AGE,1),Block.UPDATE_CLIENTS);}
  public static boolean pollinate(ServerLevel l,BlockPos p,Vec3 moth) {return pollinate(l,p,moth,MoonreedAdmission.WORLD);}
@@ -128,3 +127,4 @@ public final class MoonreedBlock extends Block {
   }
  }
 }
+

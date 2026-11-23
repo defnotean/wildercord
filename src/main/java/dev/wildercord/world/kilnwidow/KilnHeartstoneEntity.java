@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.*;
 import net.minecraft.sounds.*;
 import net.minecraft.world.*;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.*;
@@ -48,7 +48,7 @@ public final class KilnHeartstoneEntity extends BlockEntity {
 			} else say(player, "waiting");
 			return InteractionResult.SUCCESS;
 		}
-		var widow = KilnWidowContent.WIDOW.create(server, EntitySpawnReason.STRUCTURE);
+		var widow = KilnWidowContent.WIDOW.create(server, MobSpawnType.STRUCTURE);
 		if (widow == null) return InteractionResult.FAIL;
 		widow.bind(court.plinth(), worldPosition);
 		if (!server.addFreshEntity(widow)) return InteractionResult.FAIL;

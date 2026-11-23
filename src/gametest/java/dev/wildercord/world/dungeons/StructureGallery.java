@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -210,7 +210,7 @@ final class StructureGallery {
 			var level = s.getLevel(dim);
 			for (int cx = ccx - 6; cx <= ccx + 6; cx++) for (int cz = ccz - 6; cz <= ccz + 6; cz++) level.getChunk(cx, cz);
 			var p = s.getPlayerList().getPlayers().getFirst();
-			p.teleportTo(level, x, y, z, Set.<Relative>of(), yaw, pitch, false);
+			p.teleportTo(level, x, y, z, Set.<RelativeMovement>of(), yaw, pitch);
 		});
 		// A fixed wait: on the VPS waitForChunksRender always ran into its minute-long timeout over far horizon chunks,
 		// and the ground is already generated, so a few seconds draws everything near the camera.

@@ -18,7 +18,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -331,7 +331,7 @@ public final class Wards {
 			return;
 		}
 		dev.wildercord.aura.MasterFormMovement.begin(player, 2);
-		player.teleportTo(((ServerLevel) player.level()), pick.pos().x, pick.pos().y, pick.pos().z, Set.<Relative>of(), pick.yRot(), pick.xRot(), false);
+		player.teleportTo(((ServerLevel) player.level()), pick.pos().x, pick.pos().y, pick.pos().z, Set.<RelativeMovement>of(), pick.yRot(), pick.xRot());
 		player.setDeltaMovement(Vec3.ZERO);
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		player.resetFallDistance();
@@ -394,7 +394,7 @@ public final class Wards {
 			for (int sign : new int[] {1, -1}) {
 				Vec3 spot = start.add(side.scale(sign * dist));
 				if (level.noCollision(entity, entity.getBoundingBox().move(spot.subtract(start)))) {
-					entity.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), entity.getYRot(), entity.getXRot(), false);
+					entity.teleportTo(level, spot.x, spot.y, spot.z, Set.<RelativeMovement>of(), entity.getYRot(), entity.getXRot());
 					TechniqueVfx.dodge(level, entity, start, spot);
 					return;
 				}
@@ -501,7 +501,7 @@ public final class Wards {
 			}
 			t.setDeltaMovement(Vec3.ZERO);
 			if (t.position().distanceToSqr(held.anchor) > 0.0025) {
-				t.teleportTo(level, held.anchor.x, held.anchor.y, held.anchor.z, Set.<Relative>of(), t.getYRot(), t.getXRot(), false);
+				t.teleportTo(level, held.anchor.x, held.anchor.y, held.anchor.z, Set.<RelativeMovement>of(), t.getYRot(), t.getXRot());
 			}
 			t.hasImpulse = true;
 			if (now % 4 == 0) {

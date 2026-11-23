@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -480,7 +480,7 @@ final class TwistVfx {
 
 	/** A block display of {@code state} that grows up out of the ground at {@code base}, holds, and sinks away again. */
 	static void rise(ServerLevel level, Vec3 base, BlockState state, float width, float height, int hold) {
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return;
 		}

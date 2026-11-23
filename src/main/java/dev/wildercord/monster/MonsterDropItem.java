@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -102,6 +104,21 @@ public class MonsterDropItem extends Item {
 
 		public ManaGel(Properties properties) {
 			super("mana_gel", properties);
+		}
+
+		@Override
+		public UseAnim getUseAnimation(ItemStack stack) {
+			return UseAnim.EAT;
+		}
+
+		@Override
+		public int getUseDuration(ItemStack stack, LivingEntity entity) {
+			return 20;
+		}
+
+		@Override
+		public SoundEvent getEatingSound() {
+			return SoundEvents.HONEY_DRINK;
 		}
 
 		@Override

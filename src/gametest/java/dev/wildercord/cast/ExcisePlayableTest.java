@@ -30,9 +30,9 @@ import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -171,7 +171,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                         int payments = probe.payments; float mana = Spellbooks.mana(probe.player); long rest = ExciseCasting.rest(probe.player);
                         switch (reason) {
                             case "damage" -> { Effects.readyToHurt(probe.player); probe.player.hurtServer(((ServerLevel) probe.player.level()), probe.player.damageSources().magic(), 1); }
-                            case "movement" -> probe.player.teleportTo(((ServerLevel) probe.player.level()), 2.0, 150, .5, Set.<Relative>of(), 0, 0, false);
+                            case "movement" -> probe.player.teleportTo(((ServerLevel) probe.player.level()), 2.0, 150, .5, Set.<RelativeMovement>of(), 0, 0);
                             case "sight" -> { for (int y = 150; y <= 152; y++) probe.player.level().setBlock(new BlockPos(0, y, 3), Blocks.STONE.defaultBlockState(), 2); }
                             case "row" -> Spellbooks.set(probe.player, Spellbooks.get(probe.player).withSelected(1));
                             case "cord" -> Spellbooks.setCord(probe.player, new ItemStack(WildercordItems.ECHO_CORD));
@@ -266,7 +266,7 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
                         old.kill(((ServerLevel) old.level()));
                         old.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
                         var fresh = player(s); probe.player = fresh;
-                        fresh.teleportTo(s.overworld(), .5, 150, .5, Set.<Relative>of(), 0, 0, false);
+                        fresh.teleportTo(s.overworld(), .5, 150, .5, Set.<RelativeMovement>of(), 0, 0);
                         check(old != fresh && ExciseCasting.now(fresh) == clock, "Real respawn replaces the body at the same authoritative clock");
                         check(ExciseCasting.rest(fresh) == probe.rest && !ExciseCasting.pending(fresh) && !fresh.hasAttached(ExciseState.VIEW) && !probe.selected.excised,
                             "Respawn keeps rest while clearing every pending target and view");
@@ -337,13 +337,13 @@ public final class ExcisePlayableTest implements FabricClientGameTest {
         if (probe.witch != null) probe.witch.discard(); if (probe.target != null) probe.target.discard();
         ExciseCasting.cancel(p); p.setGameMode(GameType.SURVIVAL); p.setHealth(p.getMaxHealth());
         for (int y = 150; y <= 152; y++) ((ServerLevel) p.level()).setBlock(new BlockPos(0,y,3), Blocks.AIR.defaultBlockState(), 2);
-        p.teleportTo(((ServerLevel) p.level()), .5, 150, .5, Set.<Relative>of(), 0, 0, false); p.setDeltaMovement(Vec3.ZERO);
+        p.teleportTo(((ServerLevel) p.level()), .5, 150, .5, Set.<RelativeMovement>of(), 0, 0); p.setDeltaMovement(Vec3.ZERO);
         p.setAttached(WildercordAttachments.CIRCLES, 16); p.setAttached(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE);
         p.setAttached(ExciseState.REST, 0L); for (int slot = 0; slot < 4; slot++) Spellbooks.setReadyAt(p,slot,0);
         Spellbooks.set(p, Spellbooks.get(p).withSelected(0).withSpell(0,ExciseRules.IDS).withSpell(1,List.of(Runes.BEAM.id(),Runes.HARM.id())));
         Spellbooks.setMana(p,200); Mastery.flush(p); probe.masteryBefore = mastery();
         probe.target = new TrainingDummy(WildercordEntities.TRAINING_DUMMY,p.level()); probe.target.moveTo(.5,150,6.5,0,0); probe.target.setNoGravity(true); p.level().addFreshEntity(probe.target);
-        probe.witch = EntityType.WITCH.create(p.level(), EntitySpawnReason.COMMAND); check(probe.witch != null,"Native Witch exists");
+        probe.witch = EntityType.WITCH.create(p.level(), MobSpawnType.COMMAND); check(probe.witch != null,"Native Witch exists");
         probe.witch.setNoAi(true); probe.witch.setNoGravity(true); probe.witch.addTag("wildercord.rolled"); probe.witch.moveTo(8.5,150,6.5,90,0);
         probe.witch.setTarget(probe.target); p.level().addFreshEntity(probe.witch);
         Vec3 delta = probe.target.position().subtract(probe.witch.getEyePosition());

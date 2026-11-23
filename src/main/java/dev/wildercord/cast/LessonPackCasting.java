@@ -289,7 +289,7 @@ public final class LessonPackCasting {
         if (best == null) { fail(p, "No safe ground beside you for the Lifeline."); return; }
         if (ally.level() != level || p.level() != level) return;
         Vec3 from = ally.position();
-        if (ally instanceof ServerPlayer friend) friend.teleportTo(level, best.x, best.y, best.z, Set.of(), friend.getYRot(), friend.getXRot(), false);
+        if (ally instanceof ServerPlayer friend) friend.teleportTo(level, best.x, best.y, best.z, Set.of(), friend.getYRot(), friend.getXRot());
         else { ally.teleportTo(best.x, best.y, best.z); if (ally instanceof Mob mob) mob.getNavigation().stop(); }
         ally.setDeltaMovement(Vec3.ZERO); ally.resetFallDistance();
         Light.ray(level, from.add(0, ally.getBbHeight() * .5, 0), best.add(0, ally.getBbHeight() * .5, 0), Vfx.theme(line.lesson.rune).primary(), .08, 10);
@@ -333,7 +333,7 @@ public final class LessonPackCasting {
             Fx.sound(level, rod.top, SoundEvents.BEACON_DEACTIVATE, .6F, 1.6F); publish(rod); return;
         }
         Vec3 from = p.position();
-        p.teleportTo(level, rod.top.x, rod.top.y, rod.top.z, Set.of(), p.getYRot(), p.getXRot(), false);
+        p.teleportTo(level, rod.top.x, rod.top.y, rod.top.z, Set.of(), p.getYRot(), p.getXRot());
         p.setDeltaMovement(Vec3.ZERO); p.resetFallDistance();
         int color = Vfx.theme(rod.lesson.rune).primary();
         Light.ray(level, from.add(0, 1, 0), rod.top.add(0, 1, 0), color, .12, 8);

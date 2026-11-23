@@ -24,7 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -350,7 +350,7 @@ public final class ExplorerEffects {
 	}
 
 	private static void teleport(Entity entity, ServerLevel level, Vec3 to) {
-		entity.teleportTo(level, to.x, to.y, to.z, Set.<Relative>of(), entity.getYRot(), entity.getXRot(), false);
+		entity.teleportTo(level, to.x, to.y, to.z, Set.<RelativeMovement>of(), entity.getYRot(), entity.getXRot());
 		entity.resetFallDistance();
 		if (entity instanceof Mob mob) {
 			mob.getNavigation().stop();
@@ -862,7 +862,7 @@ public final class ExplorerEffects {
 					ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, t)).getType() == HitResult.Type.MISS) {
 				ExplorerVfx.portalfall(level, from, spot);
 				Effects.hurt(cast, t, magic(cast), 2 * power);
-				t.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), t.getYRot(), t.getXRot(), false);
+				t.teleportTo(level, spot.x, spot.y, spot.z, Set.<RelativeMovement>of(), t.getYRot(), t.getXRot());
 				t.setDeltaMovement(0, -0.2, 0);
 				t.hasImpulse = true;
 				if (t instanceof Mob mob) {

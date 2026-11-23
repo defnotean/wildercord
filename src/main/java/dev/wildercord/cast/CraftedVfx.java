@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -230,7 +230,7 @@ final class CraftedVfx {
 	 * Prospect of the same caster's can put it out early.
 	 */
 	static Display oreGlow(ServerLevel level, BlockPos pos, BlockState ore, int color, int ticks) {
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return null;
 		}

@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 import net.minecraft.core.*;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -29,14 +29,14 @@ public final class BasinfillTest implements FabricClientGameTest {
                 Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));
                 var b=Spellbooks.get(p).withStarterGiven().learn(Runes.TOUCH.id()).learn(Runes.BASINFILL.id());
                 Spellbooks.set(p,b);basin(p,0,2,2);
-                p.teleportTo(s.overworld(),.5,102,-.5,Set.<Relative>of(),0,60,false);
+                p.teleportTo(s.overworld(),.5,102,-.5,Set.<RelativeMovement>of(),0,60);
                 check(SpellCaster.edit(p,0,List.of(Runes.TOUCH.id(),Runes.BASINFILL.id()))==null,"Editable normal spell");
                 Spellbooks.setMana(p,100);Spellbooks.setReadyAt(p,0,0);
             });c.waitTicks(8);
             shot(c,"basinfill_before");
             w.getServer().runOnServer(s -> {
                 var p=s.getPlayerList().getPlayers().getFirst();
-                p.teleportTo(s.overworld(),.5,102,-.5,Set.<Relative>of(),0,60,false);
+                p.teleportTo(s.overworld(),.5,102,-.5,Set.<RelativeMovement>of(),0,60);
                 var aim=s.overworld().clip(new net.minecraft.world.level.ClipContext(p.getEyePosition(),p.getEyePosition().add(p.getLookAngle().scale(4.5)),net.minecraft.world.level.ClipContext.Block.OUTLINE,net.minecraft.world.level.ClipContext.Fluid.NONE,p));
                 System.out.println("BASINFILL_AIM "+aim.getBlockPos()+" "+aim.getDirection()+" from="+p.getEyePosition());
                 float before=Spellbooks.mana(p);
@@ -72,9 +72,9 @@ public final class BasinfillTest implements FabricClientGameTest {
                 net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.BEFORE.register((level,player,pos,state,entity) -> !veto.get() || !pos.equals(new BlockPos(101,101,1)));
                 try {check(!fill(p,100,new Cast(p)),"Claim veto refuses entire basin");air(p,100,2,2);}finally{veto.set(false);}
                 var nether=s.getLevel(net.minecraft.world.level.Level.NETHER);
-                p.teleportTo(nether,.5,102,-.5,Set.<Relative>of(),0,60,false);basin(p,0,2,2);
+                p.teleportTo(nether,.5,102,-.5,Set.<RelativeMovement>of(),0,60);basin(p,0,2,2);
                 check(!fill(p,0,new Cast(p)),"Evaporating Nether refuses water");air(p,0,2,2);
-                p.teleportTo(s.overworld(),.5,102,-.5,Set.<Relative>of(),0,60,false);
+                p.teleportTo(s.overworld(),.5,102,-.5,Set.<RelativeMovement>of(),0,60);
             });c.waitTicks(30);
             w.getServer().runOnServer(s -> sources(s.getPlayerList().getPlayers().getFirst(),0,2,2));
             save=w.getWorldSave();

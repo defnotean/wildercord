@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
@@ -473,7 +473,7 @@ final class MatriarchFight extends GiantFight {
 		for (int i = 0; i < count; i++) {
 			double way = (i % 2 == 0 ? 1 : -1) * (70 + i * 10);
 			Vec3 at = floor(feet.add(turned(way).scale(hw() + 2)));
-			Gloomstalker pup = MonsterContent.GLOOMSTALKER.create(level, EntitySpawnReason.MOB_SUMMONED);
+			Gloomstalker pup = MonsterContent.GLOOMSTALKER.create(level, MobSpawnType.MOB_SUMMONED);
 			if (pup == null) {
 				continue;
 			}

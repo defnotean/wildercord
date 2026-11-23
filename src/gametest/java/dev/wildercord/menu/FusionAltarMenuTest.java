@@ -17,7 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -120,7 +120,7 @@ public final class FusionAltarMenuTest implements FabricClientGameTest {
 				}
 				l.setBlock(ALTAR, WildercordBlocks.FUSION_ALTAR.defaultBlockState(), 3);
 				p(s).setGameMode(GameType.SURVIVAL);
-				p(s).teleportTo(l, 0.5, 101, 2.5, Set.<Relative>of(), 180, 30, false);
+				p(s).teleportTo(l, 0.5, 101, 2.5, Set.<RelativeMovement>of(), 180, 30);
 				var inv = p(s).getInventory();
 				inv.clearContent();
 				inv.setSelectedHotbarSlot(8);

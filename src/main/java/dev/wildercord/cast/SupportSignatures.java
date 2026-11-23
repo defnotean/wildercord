@@ -8,7 +8,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
@@ -115,7 +115,7 @@ public final class SupportSignatures {
    if(p.distanceToSqr(l.original())>64 || !NextSignatureSafety.body(c,p,l.original(),true)
     || !NextSignatureSafety.open(c,p.getEyePosition(),l.original().add(0,p.getEyeHeight(),0),9))return;
    SupportSignatureFx.lantern(c.level,l.original(),true);
-   p.teleportTo(c.level,l.original().x,l.original().y,l.original().z,Set.<Relative>of(),p.getYRot(),p.getXRot(),false);p.resetFallDistance();return;
+   p.teleportTo(c.level,l.original().x,l.original().y,l.original().z,Set.<RelativeMovement>of(),p.getYRot(),p.getXRot());p.resetFallDistance();return;
   }
   var next=new Lantern(c,p,l.original(),l.until(),crouch);LANTERNS.put(p.getUUID(),next);
   if(c.level.getGameTime()%10==0)SupportSignatureFx.lantern(c.level,l.original(),false);

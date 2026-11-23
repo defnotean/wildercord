@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.CameraType;
 import dev.wildercord.client.compat.QuadParticleRenderState;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.Vec3;
 
 /** Real clientbound quality/channel acceptance, separate from paid owner gameplay suites. */
@@ -22,7 +22,7 @@ public final class LifeOutcomeQualityTest implements FabricClientGameTest {
   try(var w=c.worldBuilder().create()){
    c.waitTicks(40);c.runOnClient(mc->{mc.setCameraEntity(mc.player);mc.options.setCameraType(CameraType.FIRST_PERSON);});w.getServer().runCommand("gamerule doMobSpawning false");
    w.getServer().runCommand("fill -10 100 -10 10 100 10 stone");
-   w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);
+   w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.teleportTo(s.overworld(),.5,101,.5,Set.<RelativeMovement>of(),0,0);
     var known=new LifeOutcomePayload(p.getUUID(),s.overworld().dimension().location().toString(),"heal",LifeOutcomes.Moment.APPLY,new Vec3(.5,102,4.5),null,1,2,s.overworld().getGameTime(),new Vec3(0,0,-1),.38);
     var buffer=new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(),s.registryAccess());
     try{LifeOutcomePayload.CODEC.encode(buffer,known);check(known.equals(LifeOutcomePayload.CODEC.decode(buffer)),"Wire preserves actual source and observed values");}finally{buffer.release();}

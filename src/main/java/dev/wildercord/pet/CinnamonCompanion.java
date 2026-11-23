@@ -21,7 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.portal.TeleportTransition;
@@ -221,7 +221,7 @@ final class CinnamonCompanion {
 
 	private static void createFirst(ServerPlayer player, CinnamonJournal journal) {
 		if (!journal.canRegister(player.getUUID()) || identity(player, journal.get(player.getUUID())) != CinnamonIdentityRules.Status.NEW) return;
-		CinnamonDog dog = CinnamonContent.CINNAMON.create(player.level(), EntitySpawnReason.EVENT);
+		CinnamonDog dog = CinnamonContent.CINNAMON.create(player.level(), MobSpawnType.EVENT);
 		if (dog == null) return;
 		dog.bind(player); // Old saves migrate their player-owned sit/bow choices once, here.
 		Vec3 at = CompanionLanding.find(((ServerLevel) player.level()), player.position(), dog);

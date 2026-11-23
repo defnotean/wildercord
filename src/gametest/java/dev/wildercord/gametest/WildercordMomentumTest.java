@@ -38,12 +38,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
@@ -321,7 +321,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		reset(context, world);
 		on(world, player -> {
 			setAura(player, "ember", AuraRules.SOVEREIGN);
-			TrainingDummy dummy = WildercordEntities.TRAINING_DUMMY.create(player.level(), EntitySpawnReason.COMMAND);
+			TrainingDummy dummy = WildercordEntities.TRAINING_DUMMY.create(player.level(), MobSpawnType.COMMAND);
 			Vec3 p = at(0, 2.2);
 			dummy.moveTo(p.x, p.y, p.z, 180, 0);
 			dummy.addTag(TAG);
@@ -365,7 +365,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 				if (which.equals("mindless")) {
 					husk.setNoAi(true);
 				} else {
-					Entity boat = EntityType.OAK_BOAT.create(player.level(), EntitySpawnReason.COMMAND);
+					Entity boat = EntityType.OAK_BOAT.create(player.level(), MobSpawnType.COMMAND);
 					Vec3 p = at(0, 2.4);
 					boat.moveTo(p.x, p.y, p.z, 180, 0);
 					boat.addTag(TAG);
@@ -585,7 +585,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 				// Struck looking at the foe; then the view swings round to the side, so the foe isn't hidden behind the swordsman.
 				context.waitTicks(1);
 				on(world, player -> {
-					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), -58.0F, 28.0F, false);
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), -58.0F, 28.0F);
 					return null;
 				});
 			}
@@ -874,7 +874,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	private static void thirdPerson(ClientGameTestContext context, TestSingleplayerContext world, float yaw, float pitch, boolean hud) {
 		on(world, player -> {
 			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
-			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), yaw, pitch, false);
+			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), yaw, pitch);
 			return null;
 		});
 		context.runOnClient(mc -> {
@@ -889,7 +889,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	private static void firstPerson(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
 			dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 4.0);
-			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 8.0F, false);
+			player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), 0.0F, 8.0F);
 			return null;
 		});
 		context.runOnClient(mc -> {
@@ -917,7 +917,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 	}
 
 	private static void stand(ServerPlayer player) {
-		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
+		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<RelativeMovement>of(), 0.0F, 8.0F);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.removeAllEffects();
 		player.setHealth(player.getMaxHealth());
@@ -990,7 +990,7 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 
 	/** A foe that stands its ground: no speed, no sight, its AI left on (so a lift or a throw carries it, and it can fight back). */
 	private static <T extends Mob> T spawn(ServerLevel level, EntityType<T> type, Vec3 at, double health) {
-		T mob = type.create(level, EntitySpawnReason.COMMAND);
+		T mob = type.create(level, MobSpawnType.COMMAND);
 		if (mob == null) {
 			throw new AssertionError("couldn't make a " + type);
 		}

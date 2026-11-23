@@ -8,7 +8,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -66,7 +66,7 @@ public class RidgebackStag extends AbstractHorse {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		RidgebackStag calf = MountContent.RIDGEBACK_STAG.create(level, EntitySpawnReason.BREEDING);
+		RidgebackStag calf = MountContent.RIDGEBACK_STAG.create(level, MobSpawnType.BREEDING);
 		if (calf != null) {
 			setOffspringAttributes(partner, calf);
 		}

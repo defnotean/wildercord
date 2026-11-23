@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.minecraft.client.CameraType;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 
@@ -30,13 +30,13 @@ public final class WildercordMeditationTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				var player = server.getPlayerList().getPlayers().getFirst();
 				player.setGameMode(GameType.CREATIVE);
-				player.teleportTo(((ServerLevel) player.level()), 0.5, 160, 0.5, Set.<Relative>of(), 0, 0, false);
+				player.teleportTo(((ServerLevel) player.level()), 0.5, 160, 0.5, Set.<RelativeMovement>of(), 0, 0);
 			});
 			context.waitTicks(30);
 			world.getServer().runCommand("fill -12 159 -12 12 159 20 polished_deepslate");
 			world.getServer().runOnServer(server -> {
 				var player = server.getPlayerList().getPlayers().getFirst();
-				player.teleportTo(((ServerLevel) player.level()), 0.5, 160, 0.5, Set.<Relative>of(), 0, 0, false);
+				player.teleportTo(((ServerLevel) player.level()), 0.5, 160, 0.5, Set.<RelativeMovement>of(), 0, 0);
 				player.setGameMode(GameType.SURVIVAL);
 				player.fallDistance = 0;
 				player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);

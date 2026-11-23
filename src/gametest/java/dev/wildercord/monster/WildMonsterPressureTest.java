@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -38,7 +38,7 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 					for (int y = 1; y <= 6; y++) level.setBlockAndUpdate(stage.offset(x, y, z), Blocks.AIR.defaultBlockState());
 				}
 				player.setGameMode(GameType.SURVIVAL);
-				player.teleportTo(level, stage.getX() + .5, stage.getY() + 1, stage.getZ() + .5, Set.of(), 0, 0, false);
+				player.teleportTo(level, stage.getX() + .5, stage.getY() + 1, stage.getZ() + .5, Set.of(), 0, 0);
 				player.setHealth(player.getMaxHealth());
 				gloomPressureAndSafety(level, player);
 				frogPressureAndSafety(level, player);
@@ -158,14 +158,14 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 	}
 
 	private Gloomstalker gloom(ServerLevel level, ServerPlayer player, double distance) {
-		Gloomstalker mob = MonsterContent.GLOOMSTALKER.create(level, EntitySpawnReason.COMMAND);
+		Gloomstalker mob = MonsterContent.GLOOMSTALKER.create(level, MobSpawnType.COMMAND);
 		check(mob != null, "Registered Gloomstalker constructs");
 		place(mob, level, player, distance);
 		return mob;
 	}
 
 	private BogWitchFrog frog(ServerLevel level, ServerPlayer player, double distance) {
-		BogWitchFrog mob = MonsterContent.BOG_WITCH_FROG.create(level, EntitySpawnReason.COMMAND);
+		BogWitchFrog mob = MonsterContent.BOG_WITCH_FROG.create(level, MobSpawnType.COMMAND);
 		check(mob != null, "Registered Bog Witch-Frog constructs");
 		place(mob, level, player, distance);
 		return mob;

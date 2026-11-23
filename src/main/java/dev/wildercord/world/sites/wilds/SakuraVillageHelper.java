@@ -5,7 +5,7 @@ import dev.wildercord.wildlife.ShrineCat;
 import dev.wildercord.wildlife.ShrineCatContent;
 import dev.wildercord.wildlife.ShrineCatRules;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SeaPickleBlock;
@@ -29,7 +29,7 @@ final class SakuraVillageHelper {
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		SakuraVillager villager = ShrineCatContent.SAKURA_VILLAGER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		SakuraVillager villager = ShrineCatContent.SAKURA_VILLAGER.create(level.getLevel(), MobSpawnType.STRUCTURE);
 		if (villager == null) {
 			return;
 		}
@@ -42,7 +42,7 @@ final class SakuraVillageHelper {
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level.getLevel(), MobSpawnType.STRUCTURE);
 		if (cat == null) {
 			return;
 		}

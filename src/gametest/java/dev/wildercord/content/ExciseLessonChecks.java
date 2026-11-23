@@ -26,7 +26,7 @@ import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -76,7 +76,7 @@ public final class ExciseLessonChecks {
 					}
 					var p = player(s);
 					p.setGameMode(GameType.SURVIVAL);
-					p.teleportTo(s.overworld(), .5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
+					p.teleportTo(s.overworld(), .5, 180, -2.5, Set.<RelativeMovement>of(), 0, 22);
 					p.getInventory().clearContent();
 					Spellbooks.setCord(p, new ItemStack(WildercordItems.ECHO_CORD));
 					Spellbooks.set(p, Spellbook.EMPTY);
@@ -134,9 +134,9 @@ public final class ExciseLessonChecks {
 				send(context, expired, 1); send(context, expired, 2); send(context, expired, 3);
 
 				retrieve(context); long dimension = nonce(context);
-				server.runOnServer(s -> check(player(s).teleportTo(s.getLevel(Level.NETHER), .5, 180, -2.5, Set.of(), 0, 22, false), "Native dimension change succeeds"));
+				server.runOnServer(s -> check(player(s).teleportTo(s.getLevel(Level.NETHER), .5, 180, -2.5, Set.of(), 0, 22), "Native dimension change succeeds"));
 				context.waitTicks(20); notReading(context, "Dimension change retires the reading");
-				server.runOnServer(s -> player(s).teleportTo(s.overworld(), .5, 180, -2.5, Set.of(), 0, 22, false));
+				server.runOnServer(s -> player(s).teleportTo(s.overworld(), .5, 180, -2.5, Set.of(), 0, 22));
 				context.waitTicks(20);
 				send(context, dimension, 1); send(context, dimension, 2); send(context, dimension, 3);
 				retrieve(context); long deceased = nonce(context);
@@ -145,7 +145,7 @@ public final class ExciseLessonChecks {
 					original.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
 					var replacement = player(s);
 					check(replacement != original && replacement.getUUID().equals(original.getUUID()), "Real death and respawn replace the owner body");
-					replacement.teleportTo(s.overworld(), .5, 180, -2.5, Set.of(), 0, 22, false);
+					replacement.teleportTo(s.overworld(), .5, 180, -2.5, Set.of(), 0, 22);
 				});
 				context.waitTicks(20);
 				send(context, deceased, 1); send(context, deceased, 2); send(context, deceased, 3);

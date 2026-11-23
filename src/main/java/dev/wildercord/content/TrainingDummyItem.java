@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -35,7 +35,7 @@ public class TrainingDummyItem extends Item {
 		}
 		BlockPos pos = context.getClickedPos().relative(context.getClickedFace());
 		Vec3 at = Vec3.atBottomCenterOf(pos);
-		TrainingDummy dummy = WildercordEntities.TRAINING_DUMMY.create(level, EntitySpawnReason.SPAWN_ITEM_USE);
+		TrainingDummy dummy = WildercordEntities.TRAINING_DUMMY.create(level, MobSpawnType.SPAWN_ITEM_USE);
 		if (dummy == null || !level.noCollision(dummy, dummy.getDimensions(dummy.getPose()).makeBoundingBox(at))) {
 			return InteractionResult.FAIL;
 		}

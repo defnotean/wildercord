@@ -5,7 +5,7 @@ import dev.wildercord.world.sites.Sites;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.ItemFrame;
@@ -153,12 +153,12 @@ abstract class TravelPiece extends DungeonPiece {
 			java.util.function.Consumer<? super T> setup) {
 		BlockPos at = getWorldPos(x, y, z).immutable();
 		if (!bb.isInside(at)) return;
-		T mob = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		T mob = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
 		if (mob == null) return;
 		setup.accept(mob);
 		mob.setPersistenceRequired();
 		mob.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
-		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.STRUCTURE, null);
+		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.STRUCTURE, null);
 		mob.restrictTo(at, radius);
 		level.addFreshEntityWithPassengers(mob);
 	}

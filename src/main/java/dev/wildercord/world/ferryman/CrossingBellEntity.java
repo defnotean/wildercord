@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.*;
 import net.minecraft.sounds.*;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.*;
@@ -45,7 +45,7 @@ public final class CrossingBellEntity extends BlockEntity {
 			} else say(player, "waiting");
 			return;
 		}
-		var ferryman = FerrymanContent.FERRYMAN.create(server, EntitySpawnReason.STRUCTURE);
+		var ferryman = FerrymanContent.FERRYMAN.create(server, MobSpawnType.STRUCTURE);
 		if (ferryman == null) return;
 		ferryman.bind(crossing.mooringPosition(), worldPosition);
 		// Store identity only after successful insertion. No cost, and no discarded challenge on a failed spawn.

@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.*;
 import net.minecraft.client.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.phys.Vec3;
@@ -24,7 +24,7 @@ public final class SiltcrestPresentationTest implements FabricClientGameTest {
    for(var quality:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))try(var w=c.worldBuilder().create()){
     try{
     String prefix="siltcrest_"+quality.name().toLowerCase(Locale.ROOT);c.waitTicks(25);w.getServer().runCommand("gamerule doMobSpawning false");w.getServer().runCommand("time set 18000");w.getServer().runCommand("weather clear");
-    w.getServer().runOnServer(s->{var l=s.overworld();dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.SiltcrestPresentationTest#"+quality.name().toLowerCase(Locale.ROOT)+"\",\"seed\":\""+l.getSeed()+"\"}");floor(l);for(var light:List.of(new BlockPos(0,100,-2),new BlockPos(5,100,2),new BlockPos(-3,100,-2)))l.setBlock(light,Blocks.SEA_LANTERN.defaultBlockState(),2);var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(l,.5,101,-2,Set.<Relative>of(),0,0,false);for(int i=0;i<3;i++)fish(l,i);source=bird(l,.5,.5);entityId=source.getId();check(BitternHabitat.bank(l,source.blockPosition())&&l.getFluidState(source.blockPosition()).isEmpty(),"Actual initial dry supported bank is adjacent to the supplied pond");observation=SiltcrestPresentationProbe.begin(l,source,prefix);});
+    w.getServer().runOnServer(s->{var l=s.overworld();dev.wildercord.Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"dev.wildercord.wildlife.SiltcrestPresentationTest#"+quality.name().toLowerCase(Locale.ROOT)+"\",\"seed\":\""+l.getSeed()+"\"}");floor(l);for(var light:List.of(new BlockPos(0,100,-2),new BlockPos(5,100,2),new BlockPos(-3,100,-2)))l.setBlock(light,Blocks.SEA_LANTERN.defaultBlockState(),2);var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);p.teleportTo(l,.5,101,-2,Set.<RelativeMovement>of(),0,0);for(int i=0;i<3;i++)fish(l,i);source=bird(l,.5,.5);entityId=source.getId();check(BitternHabitat.bank(l,source.blockPosition())&&l.getFluidState(source.blockPosition()).isEmpty(),"Actual initial dry supported bank is adjacent to the supplied pond");observation=SiltcrestPresentationProbe.begin(l,source,prefix);});
     c.runOnClient(mc->{MagicQuality.own=quality;MagicQuality.others=quality;MagicQuality.reducedFlash=false;clean(mc);});
     var hunt=witness(c,w,prefix);
     long meal=w.getServer().computeOnServer(s->{check(source.isAlive()&&!source.isRemoved()&&source.huntReady()>SiltcrestBittern.clock(s.overworld())+SiltcrestBittern.APPETITE-100,"Real admitted fish death earns original finite appetite");check(source.preyPool(s.overworld()).size()>=2,"Real hunt leaves at least two live eligible fish");return source.huntReady();});

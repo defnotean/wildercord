@@ -8,7 +8,7 @@ import dev.wildercord.duel.DuelRules;
 import net.minecraft.core.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.*;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -115,7 +115,7 @@ public final class TournamentBoardEntity extends BlockEntity {
 		for(int i=0;i<3;i++)if(!s.hasChunkAt(waiting(i)))return;
 		close(s);begins=s.getGameTime();ends=begins+TournamentRules.WINDOW;next=begins+TournamentRules.PERIOD;winners.clear();
 		for(int i=0;i<3;i++){
-			var d=AuraWorld.DUELIST.create(s,EntitySpawnReason.EVENT);if(d==null){close(s);ends=begins;return;}
+			var d=AuraWorld.DUELIST.create(s,MobSpawnType.EVENT);if(d==null){close(s);ends=begins;return;}
 			BlockPos at=waiting(i);d.moveTo(at.getX()+.5,at.getY(),at.getZ()+.5,180,0);d.setMethod(BreathingMethods.BUILT_IN.get(TournamentRules.method(worldPosition.asLong(),begins,i)));d.gather(worldPosition,i,ends);
 			if(!s.addFreshEntity(d)){close(s);ends=begins;return;}roster[i]=d.getUUID();
 		}

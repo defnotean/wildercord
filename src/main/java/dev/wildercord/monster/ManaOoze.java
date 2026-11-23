@@ -23,7 +23,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -139,7 +139,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 	}
 
 	@Override
-	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
 			 SpawnGroupData groupData) {
 		// 26.1.2 has no setSpawnSize hook: roll the size here, before the vanilla finalise pass.
 		// Mostly small, sometimes middling, now and then big.
@@ -210,7 +210,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 		Vec3 c = getBoundingBox().getCenter();
 		int half = MonsterRules.MAX_OOZE / 2;
 		for (int i = 0; i < 2; i++) {
-			ManaOoze child = MonsterContent.MANA_OOZE.create(level, EntitySpawnReason.TRIGGERED);
+			ManaOoze child = MonsterContent.MANA_OOZE.create(level, MobSpawnType.TRIGGERED);
 			if (child == null) {
 				continue;
 			}

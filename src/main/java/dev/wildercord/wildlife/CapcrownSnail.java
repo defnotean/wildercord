@@ -14,7 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Shearable;
@@ -263,7 +263,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 	// ------------------------------------------------------------------ colour, breeding and saving
 
 	@Override
-	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
 			 SpawnGroupData group) {
 		entityData.set(COLOUR, random.nextInt(3) == 0 ? BROWN : RED);
 		return super.finalizeSpawn(level, difficulty, reason, group);
@@ -271,7 +271,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		if (getType().create(level, EntitySpawnReason.BREEDING) instanceof CapcrownSnail young) {
+		if (getType().create(level, MobSpawnType.BREEDING) instanceof CapcrownSnail young) {
 			int colour = partner instanceof CapcrownSnail other && random.nextBoolean() ? other.colour() : colour();
 			young.entityData.set(COLOUR, colour);
 			return young;

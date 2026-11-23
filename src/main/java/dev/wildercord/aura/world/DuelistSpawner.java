@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.block.Blocks;
@@ -96,13 +96,13 @@ public final class DuelistSpawner {
 
 	/** Brings a duelist to a spot found for it (and, at a camp, lights its fire). */
 	public static  Duelist spawnAt(ServerLevel level, Spot spot, boolean camps, RandomSource random) {
-		Duelist duelist = AuraWorld.DUELIST.create(level, EntitySpawnReason.EVENT);
+		Duelist duelist = AuraWorld.DUELIST.create(level, MobSpawnType.EVENT);
 		if (duelist == null) {
 			return null;
 		}
 		BlockPos at = spot.pos();
 		duelist.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360, 0);
-		duelist.finalizeSpawn(level, level.getCurrentDifficultyAt(at), EntitySpawnReason.EVENT, null);
+		duelist.finalizeSpawn(level, level.getCurrentDifficultyAt(at), MobSpawnType.EVENT, null);
 		if (spot.place() == Place.CAMP && camps && level.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get()) {
 			duelist.camp = lightFire(level, at, duelist.stayUntil + 200);
 		}

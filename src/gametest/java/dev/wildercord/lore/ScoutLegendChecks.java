@@ -24,7 +24,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -141,6 +141,6 @@ final class ScoutLegendChecks {
 		for (int x = box.minX() >> 4; x <= box.maxX() >> 4; x++) for (int z = box.minZ() >> 4; z <= box.maxZ() >> 4; z++)
 			level.getChunk(x, z).addReferenceForStructure(structure, origin.toLong());
 		BlockPos at = piece.localPosition(localX, 1, localZ);
-		player.teleportTo(level, at.getX() + .5, at.getY(), at.getZ() + .5, Set.<Relative>of(), 0, 0, false);
+		player.teleportTo(level, at.getX() + .5, at.getY(), at.getZ() + .5, Set.<RelativeMovement>of(), 0, 0);
 	}
 }

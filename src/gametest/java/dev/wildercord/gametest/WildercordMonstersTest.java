@@ -40,10 +40,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.Chicken;
@@ -160,7 +160,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 	}
 
 	private static void place(ServerPlayer player, Vec3 at, float yaw, float pitch) {
-		player.teleportTo(((ServerLevel) player.level()), at.x, at.y, at.z, Set.<Relative>of(), yaw, pitch, false);
+		player.teleportTo(((ServerLevel) player.level()), at.x, at.y, at.z, Set.<RelativeMovement>of(), yaw, pitch);
 	}
 
 	/** Where to film a monster facing north from: ahead of it and off to one side, {@code distance} away and {@code height} up. */
@@ -222,7 +222,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 
 	/** A monster at {@code at}, facing {@code yaw}, never a random Runebound (tests pick their monsters), kept from despawning. */
 	private static <T extends Mob> T spawn(ServerLevel level, EntityType<T> type, Vec3 at, float yaw, boolean ai) {
-		T mob = type.create(level, EntitySpawnReason.COMMAND);
+		T mob = type.create(level, MobSpawnType.COMMAND);
 		mob.moveTo(at.x, at.y, at.z, yaw, 0);
 		mob.setYHeadRot(yaw);
 		mob.setYBodyRot(yaw);
@@ -265,7 +265,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			ServerLevel level = ((ServerLevel) player(server).level());
 			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, new AABB(base, base).inflate(400),
 				e -> e.getTags().contains("wildercord.camera")).forEach(Entity::discard);
-			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
+			net.minecraft.world.entity.Display.TextDisplay camera = EntityType.TEXT_DISPLAY.create(level, MobSpawnType.COMMAND);
 			camera.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			camera.addTag("wildercord.camera");
 			camera.addTag("wildercord.rolled");
@@ -362,12 +362,12 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			ServerLevel level = ((ServerLevel) player(server).level());
 			BlockPos low = BlockPos.containing(base);
 			// A harpy keeps to the peaks: never down here, whatever the light.
-			if (SpawnPlacements.checkSpawnRules(MonsterContent.THUNDERWING_HARPY, level, EntitySpawnReason.NATURAL, low, level.getRandom())) {
+			if (SpawnPlacements.checkSpawnRules(MonsterContent.THUNDERWING_HARPY, level, MobSpawnType.NATURAL, low, level.getRandom())) {
 				return "a harpy shouldn't spawn at y " + low.getY();
 			}
 			// Daylight on open ground: no Gloomstalker, no Bramblewalker.
 			for (int i = 0; i < 20; i++) {
-				if (SpawnPlacements.checkSpawnRules(MonsterContent.BRAMBLEWALKER, level, EntitySpawnReason.NATURAL, low, level.getRandom())) {
+				if (SpawnPlacements.checkSpawnRules(MonsterContent.BRAMBLEWALKER, level, MobSpawnType.NATURAL, low, level.getRandom())) {
 					return "a Bramblewalker shouldn't spawn in broad daylight";
 				}
 			}
@@ -396,7 +396,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 					return "switching one off shouldn't stop the others";
 				}
 				ServerLevel level = ((ServerLevel) player(server).level());
-				return SpawnPlacements.checkSpawnRules(MonsterContent.BRAMBLEWALKER, level, EntitySpawnReason.NATURAL, BlockPos.containing(base),
+				return SpawnPlacements.checkSpawnRules(MonsterContent.BRAMBLEWALKER, level, MobSpawnType.NATURAL, BlockPos.containing(base),
 					level.getRandom()) ? "a Bramblewalker switched off shouldn't pass its spawn rule" : null;
 			});
 			check(off == null, off);
@@ -754,7 +754,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			ServerLevel level = level(server);
 			((BogWitchFrog) level.getEntity(id)).holdPose(0);
 			((BogWitchFrog) level.getEntity(id)).setNoAi(false);
-			Chicken snack = EntityType.CHICKEN.create(level, EntitySpawnReason.COMMAND);
+			Chicken snack = EntityType.CHICKEN.create(level, MobSpawnType.COMMAND);
 			snack.moveTo(spot.x + 3, spot.y, spot.z, 0, 0);
 			snack.setNoAi(true);
 			level.addFreshEntity(snack);
@@ -817,7 +817,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		world.getServer().runCommand("fill %d %d %d %d %d %d oak_log".formatted(tree.getX(), tree.getY(), tree.getZ(), tree.getX(), tree.getY() + 6, tree.getZ()));
 		heal(world, GameType.CREATIVE);
 		int id = world.getServer().computeOnServer(server -> {
-			var serpent = dev.wildercord.aura.world.Guardians.SERPENT.create(level(server), EntitySpawnReason.COMMAND);
+			var serpent = dev.wildercord.aura.world.Guardians.SERPENT.create(level(server), MobSpawnType.COMMAND);
 			serpent.moveTo(tree.getX() + 0.5, tree.getY(), tree.getZ() + 0.5, 180, 0);
 			serpent.bind(tree, 180);
 			serpent.addTag("wildercord.rolled");
@@ -966,7 +966,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 				}
 			}
 			for (EntityType<? extends Mob> type : MonsterContent.types()) {
-				if (SpawnPlacements.checkSpawnRules(type, level, EntitySpawnReason.NATURAL, BlockPos.containing(base), level.getRandom())) {
+				if (SpawnPlacements.checkSpawnRules(type, level, MobSpawnType.NATURAL, BlockPos.containing(base), level.getRandom())) {
 					return EntityType.getKey(type) + " shouldn't pass its spawn rule on Peaceful";
 				}
 			}

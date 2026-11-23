@@ -21,7 +21,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -186,7 +186,7 @@ public final class AuraStep {
 					return;
 				}
 				// The view stays where the player has it: only the body moves.
-				player.teleportTo(level, point.x, point.y, point.z, Relative.ROTATION, 0.0F, 0.0F, false);
+				player.teleportTo(level, point.x, point.y, point.z, RelativeMovement.ROTATION, 0.0F, 0.0F);
 				player.resetFallDistance();
 				AuraVfx.stepTrail(level, prev, point, color);
 				if (last) {

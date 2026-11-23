@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -30,10 +30,10 @@ public class RidgebackDeedItem extends Item {
 	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (level instanceof ServerLevel server) {
-			RidgebackStag stag = MountContent.RIDGEBACK_STAG.create(server, EntitySpawnReason.MOB_SUMMONED);
+			RidgebackStag stag = MountContent.RIDGEBACK_STAG.create(server, MobSpawnType.MOB_SUMMONED);
 			if (stag == null) return InteractionResult.FAIL;
 			stag.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
-			stag.finalizeSpawn(server, server.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+			stag.finalizeSpawn(server, server.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
 			stag.tameWithName(player);
 			stag.equipSaddle(new ItemStack(Items.SADDLE), null);
 			stag.setPersistenceRequired();

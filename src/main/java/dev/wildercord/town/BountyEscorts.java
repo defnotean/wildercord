@@ -15,7 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -156,7 +156,7 @@ public final class BountyEscorts {
 
 	/** Hands {@code player} the escort's pack llama by the board; returns the bounty bound for its end, or null with no room. */
 	public static Town.Active start(ServerPlayer player, ServerLevel level, BlockPos board, Town.Active bounty) {
-		Llama llama = EntityType.LLAMA.create(level, EntitySpawnReason.EVENT);
+		Llama llama = EntityType.LLAMA.create(level, MobSpawnType.EVENT);
 		if (llama == null) return null;
 		BlockPos at = player.blockPosition();
 		llama.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, player.getYRot(), 0);
@@ -245,7 +245,7 @@ public final class BountyEscorts {
 		int spawned = 0;
 		for (int i = 0; i < count; i++) {
 			EntityType<? extends Mob> type = AMBUSHERS.get(random.nextInt(AMBUSHERS.size()));
-			if (!(type.create(level, EntitySpawnReason.EVENT) instanceof Mob mob)) continue;
+			if (!(type.create(level, MobSpawnType.EVENT) instanceof Mob mob)) continue;
 			for (int attempt = 0; attempt < 6; attempt++) {
 				double angle = side + (random.nextDouble() - 0.5);
 				double distance = 14 + random.nextDouble() * 6;
@@ -255,7 +255,7 @@ public final class BountyEscorts {
 				if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
 				mob.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 				if (!level.noCollision(mob)) continue;
-				mob.finalizeSpawn(level, level.getCurrentDifficultyAt(ground), EntitySpawnReason.EVENT, null);
+				mob.finalizeSpawn(level, level.getCurrentDifficultyAt(ground), MobSpawnType.EVENT, null);
 				mob.setCanPickUpLoot(false);
 				level.addFreshEntity(mob);
 				mob.setTarget(llama);

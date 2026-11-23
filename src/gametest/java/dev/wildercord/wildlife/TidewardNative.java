@@ -8,7 +8,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.*;
 import net.minecraft.server.level.*;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.block.Blocks;
 import dev.wildercord.client.fx.MagicQuality;
 import java.util.*;
@@ -24,7 +24,7 @@ final class TidewardNative implements AutoCloseable {
  private static KeyMapping[] keys(Minecraft mc){return new KeyMapping[]{mc.options.keyUp,mc.options.keyDown,mc.options.keyLeft,mc.options.keyRight,mc.options.keyShift,mc.options.keyJump,mc.options.keyUse,mc.options.keyAttack,mc.options.keySprint};}
  static ServerPlayer player(MinecraftServer s){return s.getPlayerList().getPlayers().getFirst();}
  static void check(boolean yes,String why){if(!yes)throw new AssertionError(why);}
- static void place(ServerPlayer p,double x,double y,double z){p.teleportTo(((ServerLevel) p.level()),x,y,z,Set.<Relative>of(),0,10,false);}
+ static void place(ServerPlayer p,double x,double y,double z){p.teleportTo(((ServerLevel) p.level()),x,y,z,Set.<RelativeMovement>of(),0,10);}
  static void floor(ServerLevel l){for(int x=-5;x<=5;x++)for(int z=-5;z<=24;z++)for(int y=100;y<=104;y++)l.setBlock(new BlockPos(x,y,z),y==100?Blocks.STONE.defaultBlockState():Blocks.AIR.defaultBlockState(),2);}
  static void await(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Predicate<MinecraftServer> predicate,int ticks,String why){for(int i=0;i<ticks;i++){c.waitTicks(1);if(w.getServer().computeOnServer(predicate::test))return;}throw new AssertionError(why);}
  static void shot(ClientGameTestContext c,String name){c.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());}

@@ -177,7 +177,7 @@ public final class FieldFusions {
             if(delta.lengthSqr()>64 || !safeBody(c,t,m.origin(),true)
                 || !open(c,t.getEyePosition(),m.origin().add(0,t.getEyeHeight(),0)))return;
             FieldFusionFx.clockReturn(c.level,t.position(),m.origin());
-            t.teleportTo(c.level,m.origin().x,m.origin().y,m.origin().z,Set.<Relative>of(),t.getYRot(),t.getXRot(),false);
+            t.teleportTo(c.level,m.origin().x,m.origin().y,m.origin().z,Set.<RelativeMovement>of(),t.getYRot(),t.getXRot());
             t.resetFallDistance();return;
         }
         if(c.level.getGameTime()%10==0)FieldFusionFx.imprint(c.level,m.origin());

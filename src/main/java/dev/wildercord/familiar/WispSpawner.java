@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -76,7 +76,7 @@ public final class WispSpawner {
 
 	/** A wild wisp of {@code element} at {@code at}. */
 	public static Wisp spawn(ServerLevel level, BlockPos at, String element) {
-		Wisp wisp = FamiliarContent.WISP.create(level, EntitySpawnReason.NATURAL);
+		Wisp wisp = FamiliarContent.WISP.create(level, MobSpawnType.NATURAL);
 		if (wisp == null) {
 			return null;
 		}

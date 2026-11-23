@@ -22,7 +22,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -58,7 +58,7 @@ public final class RelayLessonChecks {
 				check(!((ArchiveLecternBlockEntity) level.getBlockEntity(LECTERN)).isSlain(), "Legacy spent lectern has no modern slain flag");
 				var player = player(server);
 				player.setGameMode(GameType.SURVIVAL);
-				player.teleportTo(level, .5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
+				player.teleportTo(level, .5, 180, -2.5, Set.<RelativeMovement>of(), 0, 22);
 				player.getInventory().clearContent();
 				player.setItemInHand(InteractionHand.MAIN_HAND, RelayLesson.book());
 				Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));
@@ -155,7 +155,7 @@ public final class RelayLessonChecks {
 					&& afterRepeat.grimoire().stream().filter(MasterStudyRules.RELAY_COPIED::equals).count() == 1,
 					"Repeated real copying is idempotent and grants no rewards, duplicate receipt or runes: before=" + beforeRepeat + ", after=" + afterRepeat);
 				roundTrip(player, false);
-				player.teleportTo(((ServerLevel) player.level()), 25.5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
+				player.teleportTo(((ServerLevel) player.level()), 25.5, 180, -2.5, Set.<RelativeMovement>of(), 0, 22);
 			});
 			context.waitTicks(3);
 			assertClientLesson(context, copiedState, "after_copied_round_trip");
@@ -168,13 +168,13 @@ public final class RelayLessonChecks {
 			assertPage(context, 0, true);
 			world.getServer().runOnServer(server -> {
 				check(!server.overworld().getBlockState(LECTERN).getValue(ArchiveLecternBlock.AWAKE), "Legacy missing-boss rearm is not delayed by reading");
-				player(server).teleportTo(server.overworld(), .5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
+				player(server).teleportTo(server.overworld(), .5, 180, -2.5, Set.<RelativeMovement>of(), 0, 22);
 			});
 			context.waitTicks(25);
 			world.getServer().runOnServer(server -> {
 				check(!server.overworld().getEntitiesOfClass(dev.wildercord.cast.Archivist.class,
 					new net.minecraft.world.phys.AABB(LECTERN).inflate(48), dev.wildercord.cast.Archivist::isAlive).isEmpty(), "Existing boss respawn behaviour remains active");
-				player(server).teleportTo(server.overworld(), 25.5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
+				player(server).teleportTo(server.overworld(), 25.5, 180, -2.5, Set.<RelativeMovement>of(), 0, 22);
 			});
 			context.waitTicks(3);
 			assertPage(context, 0, true);
@@ -251,7 +251,7 @@ public final class RelayLessonChecks {
 				for (var keeper : server.overworld().getEntitiesOfClass(dev.wildercord.cast.Archivist.class,
 					new net.minecraft.world.phys.AABB(LECTERN).inflate(48), dev.wildercord.cast.Archivist::isAlive)) keeper.discard();
 				((ArchiveLecternBlockEntity) server.overworld().getBlockEntity(LECTERN)).slain();
-				player(server).teleportTo(server.overworld(), .5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
+				player(server).teleportTo(server.overworld(), .5, 180, -2.5, Set.<RelativeMovement>of(), 0, 22);
 			});
 			context.waitTicks(5);
 			use(context);
@@ -297,7 +297,7 @@ public final class RelayLessonChecks {
 					}
 					level.setBlock(LECTERN, WildercordBlocks.ARCHIVE_LECTERN.defaultBlockState().setValue(ArchiveLecternBlock.AWAKE, true), 3);
 					var player = player(s); player.setGameMode(GameType.SURVIVAL);
-					player.teleportTo(level, .5, 180, -2.5, Set.<Relative>of(), 0, 22, false);
+					player.teleportTo(level, .5, 180, -2.5, Set.<RelativeMovement>of(), 0, 22);
 					player.setAttached(WildercordAttachments.CIRCLES, 8);
 					player.setAttached(WildercordAttachments.GRIMOIRE, List.of("feat:archivist"));
 					Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));

@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.GameType;
@@ -44,7 +44,7 @@ public final class CaravanTest implements FabricClientGameTest {
 			w.getServer().runCommand("forceload add -" + SPAN + " -" + SPAN + " " + SPAN + " " + SPAN);
 			w.getServer().runOnServer(s -> {
 				p(s).setGameMode(GameType.CREATIVE);
-				p(s).teleportTo(s.overworld(), 0.5, Y + 1, 0.5, Set.<Relative>of(), 0, 0, false);
+				p(s).teleportTo(s.overworld(), 0.5, Y + 1, 0.5, Set.<RelativeMovement>of(), 0, 0);
 			});
 			for (int i = 0; i < 60 && !w.getServer().computeOnServer(s -> s.overworld().isLoaded(new BlockPos(SPAN, Y, SPAN))
 				&& s.overworld().isLoaded(new BlockPos(-SPAN, Y, -SPAN))); i++) {
@@ -78,7 +78,7 @@ public final class CaravanTest implements FabricClientGameTest {
 				// Stand a few blocks off, facing the camp, for the screenshot.
 				double dx = keeper.getX() - p(s).getX(), dz = keeper.getZ() - p(s).getZ(), back = 6 / d;
 				float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
-				p(s).teleportTo(s.overworld(), keeper.getX() - dx * back, Y + 1, keeper.getZ() - dz * back, Set.<Relative>of(), yaw, 10, false);
+				p(s).teleportTo(s.overworld(), keeper.getX() - dx * back, Y + 1, keeper.getZ() - dz * back, Set.<RelativeMovement>of(), yaw, 10);
 				keeper.setNoAi(true);
 			});
 			c.waitTicks(30);

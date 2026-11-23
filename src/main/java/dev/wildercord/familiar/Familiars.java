@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.monster.Enemy;
@@ -183,7 +183,7 @@ public final class Familiars {
 	/** Calls a familiar out next to its owner. */
 	static Wisp summon(ServerPlayer player, Bonds.Bond bond) {
 		ServerLevel level = (ServerLevel) player.level();
-		Wisp wisp = FamiliarContent.WISP.create(level, EntitySpawnReason.MOB_SUMMONED);
+		Wisp wisp = FamiliarContent.WISP.create(level, MobSpawnType.MOB_SUMMONED);
 		if (wisp == null) {
 			return null;
 		}

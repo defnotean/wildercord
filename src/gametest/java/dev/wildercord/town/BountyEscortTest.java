@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -62,7 +62,7 @@ public final class BountyEscortTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SURVIVAL);
 				p(s).getInventory().clearContent();
 				Town.set(p(s), Town.Standing.NONE);
-				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<Relative>of(), 0, 0, false);
+				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 0);
 			});
 			c.waitTicks(5);
 
@@ -76,7 +76,7 @@ public final class BountyEscortTest implements FabricClientGameTest {
 				check(Math.abs(llama.getMaxHealth() - 40) < 0.01 && Math.abs(llama.getHealth() - 40) < 0.01, "it's as tough as an escort should be (" + llama.getMaxHealth() + ")");
 				check(llama.isLeashed() && llama.getLeashHolder() == p(s), "it's on the hunter's lead");
 				check(llama.hasCustomName() && llama.getCustomName().getString().contains("Old Maren"), "it carries the traveller's name");
-				p(s).teleportTo(s.overworld(), llama.getX(), 101, llama.getZ() + 4, Set.<Relative>of(), 180, 15, false);
+				p(s).teleportTo(s.overworld(), llama.getX(), 101, llama.getZ() + 4, Set.<RelativeMovement>of(), 180, 15);
 			});
 			c.waitTicks(20);
 			c.takeScreenshot(TestScreenshotOptions.of("bounty_escort_llama").withSize(854, 480));
@@ -99,7 +99,7 @@ public final class BountyEscortTest implements FabricClientGameTest {
 				Town.Active bound = take(s);
 				var llama = BountyEscorts.llama(p(s));
 				llama.teleportTo(bound.destX() + 0.5, 101, bound.destZ() + 0.5);
-				p(s).teleportTo(s.overworld(), bound.destX() + 2.5, 101, bound.destZ() + 0.5, Set.<Relative>of(), 90, 0, false);
+				p(s).teleportTo(s.overworld(), bound.destX() + 2.5, 101, bound.destZ() + 0.5, Set.<RelativeMovement>of(), 90, 0);
 			});
 			c.waitTicks(45);
 			w.getServer().runOnServer(s -> {
@@ -113,7 +113,7 @@ public final class BountyEscortTest implements FabricClientGameTest {
 			// A llama left from an earlier escort is not the new one's: its death loses nothing, and the traveller takes it back.
 			Llama[] earlier = new Llama[2];
 			w.getServer().runOnServer(s -> {
-				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<Relative>of(), 0, 0, false);
+				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 0);
 				take(s);
 				earlier[0] = BountyEscorts.llama(p(s));
 				take(s);
@@ -133,7 +133,7 @@ public final class BountyEscortTest implements FabricClientGameTest {
 
 			// Lost: a llama that dies loses the bounty, with nothing paid.
 			w.getServer().runOnServer(s -> {
-				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<Relative>of(), 0, 0, false);
+				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 0);
 				take(s);
 				var llama = BountyEscorts.llama(p(s));
 				llama.hurtServer(s.overworld(), s.overworld().damageSources().generic(), 1000F);

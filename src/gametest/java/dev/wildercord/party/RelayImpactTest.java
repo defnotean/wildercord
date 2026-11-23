@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.GameType;
@@ -71,7 +71,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 					if (probe==1) onHit = RelayImpactTest::join;
 					if (probe==2) afterDamage = RelayImpactTest::join;
 					if (probe==3) onHit = () -> Spellbooks.setCord(owner, new net.minecraft.world.item.ItemStack(dev.wildercord.content.WildercordItems.ECHO_CORD));
-					if (probe==4) afterDamage = () -> owner.teleportTo(server.getLevel(net.minecraft.world.level.Level.NETHER), .5,150,.5, java.util.Set.of(),0,0,false);
+					if (probe==4) afterDamage = () -> owner.teleportTo(server.getLevel(net.minecraft.world.level.Level.NETHER), .5,150,.5, java.util.Set.of(),0,0);
 				});
 				context.waitTicks(2);
 				world.getServer().runOnServer(server -> { RelayCircleTest.aim(owner, guest.getBoundingBox().getCenter()); RelayCircleTest.downAfterUp(owner); });
@@ -81,7 +81,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 					if (probe==1 || probe==3) RelayCircleTest.check(guest.getHealth()==guest.getMaxHealth() && !guest.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && guest.getTicksFrozen()==0, "SPELL_HIT mutation vetoes damage and all follow-up writes");
 					if (probe==2 || probe==4) RelayCircleTest.check(guest.getHealth()<guest.getMaxHealth() && !guest.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) && guest.getTicksFrozen()==0, "Actual wound callback can retire permission before Frost's later status writes");
 					RelayCircleTest.check(Effects.applying()==null && Effects.applyingCast()==null, "Paid impact scope is restored after nested callbacks");
-					if (owner.level()!=server.overworld()) owner.teleportTo(server.overworld(), .5,150,.5, java.util.Set.of(),0,55,false);
+					if (owner.level()!=server.overworld()) owner.teleportTo(server.overworld(), .5,150,.5, java.util.Set.of(),0,55);
 				});
 				context.waitTicks(13);
 			}
@@ -94,7 +94,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 			LivingEntity[] targets = new LivingEntity[2];
 			world.getServer().runOnServer(server -> {
 				for(int i=0;i<2;i++) {
-					var target=EntityType.HUSK.create(owner.level(), EntitySpawnReason.MOB_SUMMONED); RelayCircleTest.check(target!=null,"Shock witness creates");
+					var target=EntityType.HUSK.create(owner.level(), MobSpawnType.MOB_SUMMONED); RelayCircleTest.check(target!=null,"Shock witness creates");
 					target.moveTo(.5+i*2,150,6.5,180,0);target.setNoAi(true);target.setNoGravity(true);owner.level().addFreshEntity(target);targets[i]=target;
 				}
 				RelayCircleTest.reset(owner,Runes.SHOCK);RelayCircleTest.directDown(owner);

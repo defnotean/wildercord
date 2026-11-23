@@ -13,7 +13,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -29,7 +29,6 @@ import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.monster.creaking.Creaking;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -56,7 +55,7 @@ public class HushwingOwlet extends Animal {
 	private static final EntityDataAccessor<Boolean> STARING = SynchedEntityData.defineId(HushwingOwlet.class, EntityDataSerializers.BOOLEAN);
 
 	/** What it stares down (server only); when something last woke it, who fed it last and when, when it last warned them, and its second hoot. */
-	private  Creaking stare;
+	private  Object stare; // 1.21.1: Creaking is absent; the stare is inert
 	private long wokenAt = -1;
 	private  UUID truster;
 	private long fedAt = -1;
@@ -90,9 +89,8 @@ public class HushwingOwlet extends Animal {
 	}
 
 	/** Whether any owlet near a creaking is staring it down (so it can't move). */
-	public static boolean pinned(Creaking creaking) {
-		return !creaking.level().getEntitiesOfClass(HushwingOwlet.class, creaking.getBoundingBox().inflate(OwletRules.STARE_RANGE),
-			owlet -> owlet.stare == creaking).isEmpty();
+	public static boolean pinned(java.lang.Object creaking) {
+		return false; // 1.21.1: no Creaking to pin
 	}
 
 	@Override
@@ -190,23 +188,11 @@ public class HushwingOwlet extends Animal {
 	}
 
 	/** The nearest creaking it can see to stare down, if any. */
-	private  Creaking watch(ServerLevel level) {
+	private  Object watch(ServerLevel level) {
 		if (asleep() || isBaby()) {
 			return null;
 		}
-		Creaking best = null;
-		double bestDistance = Double.MAX_VALUE;
-		for (Creaking creaking : level.getEntitiesOfClass(Creaking.class, getBoundingBox().inflate(OwletRules.STARE_RANGE), Creaking::isActive)) {
-			double d = distanceTo(creaking);
-			if (d < bestDistance && OwletRules.stares(false, d, hasLineOfSight(creaking))) {
-				best = creaking;
-				bestDistance = d;
-			}
-		}
-		if (best != null && best != stare) {
-			hoot(level.getGameTime());
-		}
-		return best;
+		return null; // 1.21.1: no Creaking to stare down
 	}
 
 	/** Whatever is stalking its friend, hooted out so it shows through the dark a few seconds. */
@@ -279,7 +265,7 @@ public class HushwingOwlet extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, EntitySpawnReason.BREEDING) instanceof HushwingOwlet young ? young : null;
+		return getType().create(level, MobSpawnType.BREEDING) instanceof HushwingOwlet young ? young : null;
 	}
 
 	// ------------------------------------------------------------------ sound: soft chirrs and, now and then, a hoot
@@ -368,10 +354,7 @@ public class HushwingOwlet extends Animal {
 
 		@Override
 		public void tick() {
-			Creaking creaking = stare;
-			if (creaking != null) {
-				getLookControl().setLookAt(creaking.getX(), creaking.getEyeY(), creaking.getZ(), 60, 60);
-			}
+			// 1.21.1: no Creaking to look at
 		}
 	}
 

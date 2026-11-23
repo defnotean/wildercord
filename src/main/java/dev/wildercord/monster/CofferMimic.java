@@ -28,7 +28,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import dev.wildercord.compat.McEntityReference;
 import dev.wildercord.compat.EntityReference;
 import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
@@ -257,7 +257,7 @@ public class CofferMimic extends WildMonster implements OwnableEntity {
 	}
 
 	@Override
-	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
 			 SpawnGroupData groupData) {
 		SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, groupData);
 		settleHere(getYRot());

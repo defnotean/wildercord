@@ -33,11 +33,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
@@ -781,8 +781,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 					}
 					dev.wildercord.gametest.compat.GametestCompat.cameraDistance(player, 5.0);
 					// Looking down on the platform from behind (the camera follows the view); in first person, ahead as in a fight.
-					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, firstPerson ? 8.0F : 38.0F,
-						false);
+					player.teleportTo(((ServerLevel) player.level()), player.getX(), player.getY(), player.getZ(), Set.<RelativeMovement>of(), 0.0F, firstPerson ? 8.0F : 38.0F);
 					return null;
 				});
 				context.runOnClient(mc -> {
@@ -849,7 +848,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	/** The player back on the spot, facing +z, healthy, nothing lingering. */
 	private static void stand(ServerPlayer player) {
-		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
+		player.teleportTo(((ServerLevel) player.level()), STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<RelativeMovement>of(), 0.0F, 8.0F);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.removeAllEffects();
 		player.setHealth(player.getMaxHealth());
@@ -883,7 +882,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 	}
 
 	private static <T extends Mob> T spawn(ServerLevel level, EntityType<T> type, Vec3 at, double health) {
-		T mob = type.create(level, EntitySpawnReason.COMMAND);
+		T mob = type.create(level, MobSpawnType.COMMAND);
 		if (mob == null) {
 			throw new AssertionError("couldn't make a " + type);
 		}

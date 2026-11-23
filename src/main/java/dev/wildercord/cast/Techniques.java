@@ -20,7 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -110,7 +110,7 @@ final class Techniques {
 
 	private static void teleport(Entity entity, ServerLevel level, Vec3 to, float yRot, float xRot) {
 		if (entity instanceof ServerPlayer player) dev.wildercord.aura.MasterFormMovement.begin(player, 2);
-		entity.teleportTo(level, to.x, to.y, to.z, Set.<Relative>of(), yRot, xRot, false);
+		entity.teleportTo(level, to.x, to.y, to.z, Set.<RelativeMovement>of(), yRot, xRot);
 		entity.resetFallDistance();
 	}
 

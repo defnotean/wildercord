@@ -33,7 +33,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.AgeableWaterCreature;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.AbstractFish;
@@ -43,7 +42,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
-import net.minecraft.world.entity.vehicle.AbstractBoat;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -304,7 +303,7 @@ public final class TideEffects {
 	// ==================================================================== creatures
 
 	private static boolean aquatic(Entity e) {
-		return e instanceof WaterAnimal || e instanceof AgeableWaterCreature || e instanceof Axolotl || e instanceof Turtle;
+		return e instanceof WaterAnimal || e instanceof Axolotl || e instanceof Turtle;
 	}
 
 	private static <T extends Mob> List<T> near(Cast cast, Class<T> type, Vec3 at, double radius, java.util.function.Predicate<T> test, int cap) {
@@ -362,7 +361,7 @@ public final class TideEffects {
 	}
 
 	private static void refloat(Cast cast, Vec3 at) {
-		List<Mob> stranded = near(cast, Mob.class, at, 6.0, m -> (m instanceof WaterAnimal || m instanceof AgeableWaterCreature) && !m.isInWater(), 8);
+		List<Mob> stranded = near(cast, Mob.class, at, 6.0, m -> (m instanceof WaterAnimal || m instanceof Axolotl) && !m.isInWater(), 8);
 		int saved = 0;
 		for (Mob m : stranded) {
 			BlockPos water = nearestWater(cast.level, m.blockPosition(), 8);
@@ -910,7 +909,7 @@ public final class TideEffects {
 
 	private static void mooringCall(Cast cast) {
 		LivingEntity caster = cast.caster;
-		AbstractBoat boat = cast.level.getEntitiesOfClass(AbstractBoat.class, caster.getBoundingBox().inflate(24.0),
+		Boat boat = cast.level.getEntitiesOfClass(Boat.class, caster.getBoundingBox().inflate(24.0),
 				b -> b.isAlive() && b.getPassengers().isEmpty() && b.distanceToSqr(caster) <= 24.0 * 24.0).stream()
 			.min(Comparator.comparingDouble(b -> b.distanceToSqr(caster))).orElse(null);
 		if (boat == null) {
@@ -930,7 +929,7 @@ public final class TideEffects {
 
 	private static void fairWind(Cast cast, int ticks) {
 		LivingEntity caster = cast.caster;
-		if (!(caster.getVehicle() instanceof AbstractBoat boat)) {
+		if (!(caster.getVehicle() instanceof Boat boat)) {
 			Casters.tell(caster, Component.translatable("message.wildercord.tide.not_in_boat"));
 			return;
 		}

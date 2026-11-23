@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -27,7 +27,7 @@ final class StoneMarchFixture {
 	StoneMarchFixture(ServerLevel level, Vec3 origin, List<? extends ServerPlayer> party) {
 		this.level = level; this.origin = origin; this.party = List.copyOf(party);
 		staging = party.stream().map(ServerPlayer::position).toList();
-		master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
+		master = AuraWorld.SWORD_MASTER.create(level, MobSpawnType.COMMAND);
 		check(master != null, "Registered Stone Master exists");
 		master.plainOrdinaryOnly(); master.setDiscipline(MastersRules.STONE); master.moveTo(origin.x, origin.y, origin.z, 0, 0); level.addFreshEntity(master);
 		// Exact debit/refund assertions exclude the separate multiplayer Aura trickle.
@@ -59,7 +59,7 @@ final class StoneMarchFixture {
 				ServerPlayer player = party.get(i); Vec3 place = staging.get(i);
 				player.setHealth(player.getMaxHealth());
 				if (player.position().distanceToSqr(place) > .0001)
-					player.teleportTo(level, place.x, place.y, place.z, Set.of(), 180, 10, false);
+					player.teleportTo(level, place.x, place.y, place.z, Set.of(), 180, 10);
 				player.setDeltaMovement(0, player.getDeltaMovement().y, 0);
 			}
 			before[0] = master.auraRemaining();
@@ -76,7 +76,7 @@ final class StoneMarchFixture {
 	}
 	void place(ServerPlayer player, double side, double forward) { place(player, side, 0, forward); }
 	void place(ServerPlayer player, double side, double height, double forward) {
-		player.teleportTo(level, origin.x + side, origin.y + height, origin.z + forward, Set.of(), 180, 10, false);
+		player.teleportTo(level, origin.x + side, origin.y + height, origin.z + forward, Set.of(), 180, 10);
 		player.setDeltaMovement(Vec3.ZERO);
 	}
 	long readyAt() { return (long) field(master, "marchReadyAt"); }

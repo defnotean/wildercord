@@ -10,8 +10,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 
@@ -48,7 +48,7 @@ public final class RootmoltEncounterTest implements FabricClientGameTest {
 	/** Puts the player {@code dz} blocks south of wherever the Rootmolt has wandered, facing it. */
 	private static void stand(MinecraftServer s, double dz) {
 		var r = rootmolt(s);
-		p(s).teleportTo(s.overworld(), r == null ? 0.5 : r.getX(), 101, (r == null ? 0.5 : r.getZ()) + dz, Set.<Relative>of(), 180, 20, false);
+		p(s).teleportTo(s.overworld(), r == null ? 0.5 : r.getX(), 101, (r == null ? 0.5 : r.getZ()) + dz, Set.<RelativeMovement>of(), 180, 20);
 	}
 
 	private static boolean held(MinecraftServer s) {
@@ -82,8 +82,8 @@ public final class RootmoltEncounterTest implements FabricClientGameTest {
 				}
 				p(s).setGameMode(GameType.CREATIVE);
 				p(s).addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 6000));
-				p(s).teleportTo(l, 0.5, 101, 2.5, Set.<Relative>of(), 180, 20, false);
-				RootmoltStrider rootmolt = RootmoltContent.STRIDER.create(l, EntitySpawnReason.COMMAND);
+				p(s).teleportTo(l, 0.5, 101, 2.5, Set.<RelativeMovement>of(), 180, 20);
+				RootmoltStrider rootmolt = RootmoltContent.STRIDER.create(l, MobSpawnType.COMMAND);
 				rootmolt.moveTo(0.5, 101, 0.5, 0, 0);
 				rootmolt.setPersistenceRequired();
 				l.addFreshEntity(rootmolt);
@@ -102,7 +102,7 @@ public final class RootmoltEncounterTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SURVIVAL);
 				p(s).setHealth(p(s).getMaxHealth());
 				stand(s, 2);
-				SporebackSnail snail = SporebackContent.SNAIL.create(l, EntitySpawnReason.COMMAND);
+				SporebackSnail snail = SporebackContent.SNAIL.create(l, MobSpawnType.COMMAND);
 				snail.moveTo(rootmolt(s).getX() + 2, 101, rootmolt(s).getZ(), 0, 0);
 				l.addFreshEntity(snail);
 				snailId = snail.getUUID();

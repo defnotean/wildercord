@@ -96,6 +96,6 @@ public final class FortuneDamageAdmissionTest implements FabricClientGameTest {
  private double unmarked;
  private float positiveBefore;
  private static boolean trigger(LifeOwnerEvents.Event e){return e.rune().equals("fortune")&&e.moment()==LifeOwnerEvents.Moment.TRIGGER;}
- private static Pillager foe(ServerPlayer p){var t=EntityType.PILLAGER.create(p.level(),EntitySpawnReason.COMMAND);check(t!=null,"Real hostile fixture");t.setNoAi(true);t.moveTo(.5,101,8.5,180,0);p.level().addFreshEntity(t);return t;}
+ private static Pillager foe(ServerPlayer p){var t=EntityType.PILLAGER.create(p.level(),MobSpawnType.COMMAND);check(t!=null,"Real hostile fixture");t.setNoAi(true);t.moveTo(.5,101,8.5,180,0);p.level().addFreshEntity(t);return t;}
  private static void check(boolean yes,String message){if(!yes)throw new AssertionError(message);}
 }

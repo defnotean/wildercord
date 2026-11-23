@@ -41,10 +41,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.item.Item;
@@ -140,12 +140,12 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 		double len = Math.max(1.0E-4, delta.length());
 		float yaw = (float) Math.toDegrees(Math.atan2(-delta.x, delta.z));
 		float pitch = (float) Math.toDegrees(-Math.asin(Math.max(-1.0, Math.min(1.0, delta.y / len))));
-		player.teleportTo(l, feetPos.x, feetPos.y, feetPos.z, Set.<Relative>of(), yaw, pitch, false);
+		player.teleportTo(l, feetPos.x, feetPos.y, feetPos.z, Set.<RelativeMovement>of(), yaw, pitch);
 		player.setYHeadRot(yaw);
 	}
 
 	private static Husk spawnHusk(ServerLevel l, double x, double y, double z, boolean noAi) {
-		Husk husk = EntityType.HUSK.create(l, EntitySpawnReason.COMMAND);
+		Husk husk = EntityType.HUSK.create(l, MobSpawnType.COMMAND);
 		check(husk != null, "Husk created");
 		husk.moveTo(x, y, z, 0.0F, 0.0F);
 		husk.setNoAi(noAi);
@@ -232,7 +232,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				ShrineCatRules.Variant[] order = ShrineCatRules.Variant.values();
 				check(order.length == 4, "Four real Shrine Cat variants registered");
 				for (int i = 0; i < order.length; i++) {
-					ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.COMMAND);
+					ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(l, MobSpawnType.COMMAND);
 					check(cat != null, "ShrineCat created");
 					cat.moveTo(xs[i], 101.0, 3.2, 180.0F, 0.0F);
 					cat.configureVillage(order[i], new BlockPos((int) xs[i], 101, 3));
@@ -244,7 +244,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					lineupIds.put(order[i], cat.getUUID());
 				}
 				p(s).setGameMode(GameType.SPECTATOR);
-				p(s).teleportTo(l, 0.0, 100.1, -0.2, Set.<Relative>of(), 0.0F, 10.0F, false);
+				p(s).teleportTo(l, 0.0, 100.1, -0.2, Set.<RelativeMovement>of(), 0.0F, 10.0F);
 			});
 			c.waitTicks(14);
 			shot(c, "shrine_cats_lineup_yuki_odie_freya_kuro");
@@ -276,7 +276,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				UUID[] ids = new UUID[SakuraVillager.ROLE_COUNT];
 				double[] vx = {-4.5, -2.7, -0.9, 0.9, 2.7, 4.5};
 				for (int role = 0; role < SakuraVillager.ROLE_COUNT; role++) {
-					SakuraVillager v = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
+					SakuraVillager v = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.COMMAND);
 					check(v != null, "SakuraVillager role " + role + " created");
 					v.moveTo(vx[role], 101.0, 6.8, 180.0F, 0.0F);
 					v.configure(role);
@@ -286,7 +286,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					ids[role] = v.getUUID();
 				}
 				p(s).setGameMode(GameType.SPECTATOR);
-				p(s).teleportTo(l, 0.0, 100.3, 0.2, Set.<Relative>of(), 0.0F, 6.0F, false);
+				p(s).teleportTo(l, 0.0, 100.3, 0.2, Set.<RelativeMovement>of(), 0.0F, 6.0F);
 				return ids;
 			});
 			c.waitTicks(14);
@@ -294,7 +294,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 			UUID[] duoIds = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
-				SakuraVillager tea = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
+				SakuraVillager tea = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.COMMAND);
 				check(tea != null, "Tea Master created");
 				tea.moveTo(-3.0, 101.0, 5.5, 180.0F, 0.0F);
 				tea.configure(SakuraVillager.TEA_MASTER);
@@ -302,7 +302,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				tea.setNoAi(true);
 				l.addFreshEntity(tea);
 
-				SakuraVillager maiden = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.COMMAND);
+				SakuraVillager maiden = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.COMMAND);
 				check(maiden != null, "Shrine Maiden created");
 				maiden.moveTo(-1.0, 101.0, 5.5, 180.0F, 0.0F);
 				maiden.configure(SakuraVillager.SHRINE_MAIDEN);
@@ -316,14 +316,14 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					}
 				}
 
-				KarakuriSentinel karakuri = MonsterContent.KARAKURI_SENTINEL.create(l, EntitySpawnReason.COMMAND);
+				KarakuriSentinel karakuri = MonsterContent.KARAKURI_SENTINEL.create(l, MobSpawnType.COMMAND);
 				check(karakuri != null, "KarakuriSentinel created");
 				karakuri.moveTo(1.0, 101.0, 5.5, 180.0F, 0.0F);
 				face(karakuri, 180.0F);
 				karakuri.setNoAi(true);
 				l.addFreshEntity(karakuri);
 
-				PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, EntitySpawnReason.COMMAND);
+				PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, MobSpawnType.COMMAND);
 				check(spirit != null, "PaperLanternSpirit created");
 				spirit.moveTo(3.0, 101.5, 5.5, 180.0F, 0.0F);
 				face(spirit, 180.0F);
@@ -334,7 +334,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(spirit.runeboundSpells().size() == 2, "PaperLanternSpirit runeboundSpells defined");
 
 				p(s).setGameMode(GameType.SPECTATOR);
-				p(s).teleportTo(l, 0.0, 100.3, 0.6, Set.<Relative>of(), 0.0F, 6.0F, false);
+				p(s).teleportTo(l, 0.0, 100.3, 0.6, Set.<RelativeMovement>of(), 0.0F, 6.0F);
 				return new UUID[]{tea.getUUID(), maiden.getUUID()};
 			});
 			c.waitTicks(14);
@@ -403,7 +403,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag savedV = new CompoundTag();
 				maiden.saveWithoutId(savedV);
-				SakuraVillager loadedV = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.LOAD);
+				SakuraVillager loadedV = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.LOAD);
 				check(loadedV != null, "Restored villager created");
 				loadedV.load(savedV);
 				check(loadedV.role() == SakuraVillager.SHRINE_MAIDEN, "SakuraVillager role persisted via NBT");
@@ -411,7 +411,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag savedF = new CompoundTag();
 				fisher.saveWithoutId(savedF);
-				SakuraVillager loadedF = ShrineCatContent.SAKURA_VILLAGER.create(l, EntitySpawnReason.LOAD);
+				SakuraVillager loadedF = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.LOAD);
 				check(loadedF != null, "Restored fisherman created");
 				loadedF.load(savedF);
 				check(loadedF.role() == SakuraVillager.FISHERMAN, "SakuraVillager fisherman role persisted via NBT");
@@ -435,10 +435,10 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					}
 				}
 				player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 3, true, false));
-				player.teleportTo(l, -28.0, 101.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, -28.0, 101.0, -4.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 
-				KarakuriSentinel k2 = MonsterContent.KARAKURI_SENTINEL.create(l, EntitySpawnReason.COMMAND);
-				PaperLanternSpirit p2 = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, EntitySpawnReason.COMMAND);
+				KarakuriSentinel k2 = MonsterContent.KARAKURI_SENTINEL.create(l, MobSpawnType.COMMAND);
+				PaperLanternSpirit p2 = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, MobSpawnType.COMMAND);
 				check(k2 != null && p2 != null, "Active combat test mobs created");
 				k2.moveTo(-25.5, 101.0, -4.0, 90.0F, 0.0F);
 				p2.moveTo(-30.5, 101.5, -4.0, -90.0F, 0.0F);
@@ -488,7 +488,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = piece.getBoundingBox();
 				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 26.0, b.minZ() - 14.0,
-					Set.<Relative>of(), 0.0F, 22.0F, false);
+					Set.<RelativeMovement>of(), 0.0F, 22.0F);
 				return piece;
 			});
 			c.waitTicks(50);
@@ -518,7 +518,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = canal.getBoundingBox();
 				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 26.0, b.minZ() - 14.0,
-					Set.<Relative>of(), 0.0F, 22.0F, false);
+					Set.<RelativeMovement>of(), 0.0F, 22.0F);
 			});
 			c.waitTicks(45);
 			shot(c, "shrine_sakura_canal_town");
@@ -538,7 +538,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = onsen.getBoundingBox();
 				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 27.0, b.minZ() - 14.0,
-					Set.<Relative>of(), 0.0F, 22.0F, false);
+					Set.<RelativeMovement>of(), 0.0F, 22.0F);
 			});
 			c.waitTicks(45);
 			shot(c, "shrine_sakura_onsen_village");
@@ -559,7 +559,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = castle.getBoundingBox();
 				p(s).teleportTo(l, b.minX() + b.getXSpan() * 0.5, b.minY() + 28.0, b.minZ() - 14.0,
-					Set.<Relative>of(), 0.0F, 22.0F, false);
+					Set.<RelativeMovement>of(), 0.0F, 22.0F);
 			});
 			c.waitTicks(45);
 			shot(c, "shrine_sakura_castle_town");
@@ -575,7 +575,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SPECTATOR);
 				var b = piece.getBoundingBox();
 				p(s).teleportTo(l, b.minX() - 18.0, b.minY() + 40.0, b.minZ() - 18.0,
-					Set.<Relative>of(), -42.0F, 14.0F, false);
+					Set.<RelativeMovement>of(), -42.0F, 14.0F);
 				return piece;
 			});
 			c.waitTicks(50);
@@ -654,7 +654,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(odie != null, "Odie present for floor seal check");
 				player.removeAllEffects();
 				player.setGameMode(GameType.SURVIVAL);
-				player.teleportTo(l, odie.getX(), odie.getY(), odie.getZ(), Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, odie.getX(), odie.getY(), odie.getZ(), Set.<RelativeMovement>of(), 0.0F, 0.0F);
 			});
 			c.waitTicks(4);
 
@@ -670,7 +670,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(player.getY() < yuki.getY() + 4.0,
 					"Floor Progression Seal returned player trying to skip Floor 1 (y=" + player.getY() + ")");
 
-				player.teleportTo(l, yuki.getX(), yuki.getY(), yuki.getZ() - 2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, yuki.getX(), yuki.getY(), yuki.getZ() - 2.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				float preAegisHp = yuki.getHealth();
 				yuki.hurtServer(l, l.damageSources().playerAttack(player), 10.0F);
 				check(yuki.getHealth() > preAegisHp - 3.5F,
@@ -697,7 +697,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				check(player.hasEffect(MobEffects.ABSORPTION) && player.hasEffect(MobEffects.DIG_SPEED),
 					"Freya grants Silver-Bell Chime (Absorption I + Haste I)");
 
-				player.teleportTo(l, kuro.getX(), kuro.getY(), kuro.getZ() - 2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, kuro.getX(), kuro.getY(), kuro.getZ() - 2.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				kuro.hurtServer(l, l.damageSources().playerAttack(player), kuro.getMaxHealth() * 0.85F);
 				check(kuro.isAlive() && kuro.getRole() == ShrineCatRules.ROLE_CLEARED, "Kuro yields non-lethally");
 				check(player.hasEffect(MobEffects.MOVEMENT_SPEED) && player.hasEffect(MobEffects.DAMAGE_BOOST) && player.hasEffect(MobEffects.NIGHT_VISION),
@@ -735,7 +735,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				player.removeAllEffects();
 				player.getFoodData().setFoodLevel(14);
 				player.setHealth(12.0F);
-				player.teleportTo(l, 180.5, 111.0, 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, 180.5, 111.0, 0.5, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 
 				ShrineCat yuki = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.YUKI));
 				ShrineCat odie = (ShrineCat) l.getEntity(guardianIds.get(ShrineCatRules.Variant.ODIE));
@@ -838,7 +838,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag saved = new CompoundTag();
 				freya.saveWithoutId(saved);
-				ShrineCat restored = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.LOAD);
+				ShrineCat restored = ShrineCatContent.SHRINE_CAT.create(l, MobSpawnType.LOAD);
 				check(restored != null, "Restored cat created");
 				restored.load(saved);
 				check(restored.variant() == ShrineCatRules.Variant.FREYA, "Variant preserved in save");
@@ -864,7 +864,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				var b = piece.getBoundingBox();
 				p(s).setGameMode(GameType.SPECTATOR);
 				p(s).teleportTo(l, b.minX() - 8.0, b.minY() + 18.0, b.minZ() - 10.0,
-					Set.<Relative>of(), -40.0F, 16.0F, false);
+					Set.<RelativeMovement>of(), -40.0F, 16.0F);
 				return piece;
 			});
 			c.waitTicks(50);
@@ -919,7 +919,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					}
 				}
 				player.setGameMode(GameType.SURVIVAL);
-				player.teleportTo(l, 1.0, 101.0, -30.5, Set.<Relative>of(), 125.0F, -11.0F, false);
+				player.teleportTo(l, 1.0, 101.0, -30.5, Set.<RelativeMovement>of(), 125.0F, -11.0F);
 				player.setYHeadRot(125.0F);
 			});
 			c.waitTicks(30);
@@ -947,7 +947,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				Husk bounceTarget = spawnHusk(l, 1.56, 101.0, -37.89, true);
 				Husk thornsAttacker = spawnHusk(l, 2.0, 101.0, -29.0, true);
 
-				player.teleportTo(l, 1.0, 101.0, -30.5, Set.<Relative>of(), 125.0F, -11.0F, false);
+				player.teleportTo(l, 1.0, 101.0, -30.5, Set.<RelativeMovement>of(), 125.0F, -11.0F);
 				player.setYRot(125.0F);
 				player.setXRot(-11.0F);
 				player.setYHeadRot(125.0F);
@@ -1001,7 +1001,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				placePiece(l, piece, 505L);
 				player.setGameMode(GameType.SPECTATOR);
 				player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 300, 0, true, false));
-				player.teleportTo(l, -230.0, 80.0, 130.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, -230.0, 80.0, 130.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				return piece;
 			});
 			c.waitTicks(30);
@@ -1044,12 +1044,12 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				archivist.setNoAi(true);
 
 				// (a) Dist > 14.5 rejected.
-				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 1.0, lectern.getZ() + 17.5, Set.<Relative>of(), 180.0F, 0.0F, false);
+				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 1.0, lectern.getZ() + 17.5, Set.<RelativeMovement>of(), 180.0F, 0.0F);
 				check(!archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
 					"Archivist rejects out-of-arena attack at dist > 14.5");
 
 				// (b) Vertical dy > 16.0 rejected.
-				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 18.0, lectern.getZ() + 0.5, Set.<Relative>of(), 0.0F, 90.0F, false);
+				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 18.0, lectern.getZ() + 0.5, Set.<RelativeMovement>of(), 0.0F, 90.0F);
 				check(!archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
 					"Archivist rejects overhead roof attack at dy > 16.0");
 
@@ -1058,13 +1058,13 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					l.setBlock(lectern.offset(11, dy, 0), Blocks.DEEPSLATE_BRICKS.defaultBlockState(), 2);
 					l.setBlock(lectern.offset(13, dy, 0), Blocks.AIR.defaultBlockState(), 2);
 				}
-				player.teleportTo(l, lectern.getX() + 13.6, lectern.getY() + 1.0, lectern.getZ() + 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
+				player.teleportTo(l, lectern.getX() + 13.6, lectern.getY() + 1.0, lectern.getZ() + 0.5, Set.<RelativeMovement>of(), 90.0F, 0.0F);
 				check(!archivist.hasLineOfSight(player), "Outer rim wall blocks Archivist line of sight");
 				check(!archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
 					"Archivist rejects wall-hole cheese attack at dist > 12.6 without line of sight");
 
 				// (d) Direct in-arena fight hit accepted.
-				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 1.0, lectern.getZ() - 4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
+				player.teleportTo(l, lectern.getX() + 0.5, lectern.getY() + 1.0, lectern.getZ() - 4.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 				check(archivist.hurtServer(l, l.damageSources().playerAttack(player), 12.0F),
 					"Archivist accepts normal in-arena attack");
 
@@ -1087,7 +1087,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				ServerPlayer player = p(s);
 				loadArea(l, new BoundingBox(-112, 70, 48, -48, 120, 112));
 				player.setGameMode(GameType.SPECTATOR);
-				player.teleportTo(l, -80.0, 88.0, 80.0, Set.<Relative>of(), 180.0F, 15.0F, false);
+				player.teleportTo(l, -80.0, 88.0, 80.0, Set.<RelativeMovement>of(), 180.0F, 15.0F);
 			});
 			c.waitTicks(25);
 			w.getServer().runOnServer(s -> {
@@ -1101,7 +1101,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				RootcoilSerpent serpent = serpents.getFirst();
 				BlockPos trunk = serpent.tree();
 				player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 240, 3, true, false));
-				player.teleportTo(l, trunk.getX() + 4.5, trunk.getY(), trunk.getZ() + 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
+				player.teleportTo(l, trunk.getX() + 4.5, trunk.getY(), trunk.getZ() + 0.5, Set.<RelativeMovement>of(), 90.0F, 0.0F);
 			});
 			c.waitTicks(95);
 			w.getServer().runOnServer(s -> {

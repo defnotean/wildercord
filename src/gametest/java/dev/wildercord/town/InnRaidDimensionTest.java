@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -24,7 +24,7 @@ public final class InnRaidDimensionTest implements FabricClientGameTest {
 				var p = s.getPlayerList().getPlayers().getFirst();
 				for (int x = -6; x <= 6; x++) for (int z = -6; z <= 6; z++) s.overworld().setBlock(new BlockPos(x, 99, z), Blocks.STONE.defaultBlockState(), 2);
 				p.setGameMode(GameType.SURVIVAL);
-				p.teleportTo(s.overworld(), 0.5, 100, 4.5, Set.<Relative>of(), 180, 0, false);
+				p.teleportTo(s.overworld(), 0.5, 100, 4.5, Set.<RelativeMovement>of(), 180, 0);
 				InnRaid.begin(p, inn, 0);
 				check(InnRaid.active(s.overworld(), inn), "The raid starts on the Overworld inn");
 				check(!InnRaid.active(s.getLevel(Level.NETHER), inn), "The same spot in the Nether is not under raid");

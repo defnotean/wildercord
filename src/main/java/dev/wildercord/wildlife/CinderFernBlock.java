@@ -21,7 +21,6 @@ public final class CinderFernBlock extends Block {
  @Override protected VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c){return Block.box(2,0,2,14,5+s.getValue(AGE)*5,14);}
  static boolean footing(BlockState s){return s.is(Blocks.GRASS_BLOCK)||s.is(Blocks.DIRT)||s.is(Blocks.COARSE_DIRT)||s.is(Blocks.ROOTED_DIRT)||s.is(Blocks.PODZOL);}
  @Override protected boolean canSurvive(BlockState s,LevelReader l,BlockPos p){return footing(l.getBlockState(p.below())) && l.getFluidState(p).isEmpty();}
- @Override protected BlockState updateShape(BlockState s,LevelReader l,ScheduledTickAccess t,BlockPos p,Direction d,BlockPos np,BlockState ns,RandomSource r){return !canSurvive(s,l,p)?Blocks.AIR.defaultBlockState():super.updateShape(s,l,t,p,d,np,ns,r);}
  @Override protected boolean isRandomlyTicking(BlockState s){return s.getValue(AGE)<2 || !s.getValue(COOLED);}
  @Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r){if(!s.canSurvive(l,p)||r.nextInt(16)!=0)return;var next=s;if(l.isRainingAt(p.above()) && !s.getValue(COOLED))next=s.setValue(COOLED,true);else if(s.getValue(COOLED)&&s.getValue(AGE)<2&&l.getMaxLocalRawBrightness(p)>=8)next=s.setValue(AGE,s.getValue(AGE)+1);if(!next.equals(s))l.setBlock(p,next,Block.UPDATE_CLIENTS);}
  @Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult hit){return harvest(s,l,p,who);}
@@ -45,3 +44,4 @@ public final class CinderFernBlock extends Block {
   }
  }
 }
+

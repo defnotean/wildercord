@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -49,7 +49,7 @@ public final class TombReliquaryEntity extends BlockEntity {
 		if(!server.hasChunkAt(home) || !server.getBlockState(home).isAir() || !server.getBlockState(home.above()).isAir() || !server.getBlockState(home.above(2)).isAir()){
 			p.displayClientMessage(Component.translatable("message.wildercord.tomb.obstructed"), true);return;
 		}
-		var keeper=SwordTombs.KEEPER.create(server,EntitySpawnReason.TRIGGERED);if(keeper==null)return;
+		var keeper=SwordTombs.KEEPER.create(server,MobSpawnType.TRIGGERED);if(keeper==null)return;
 		keeper.bind(worldPosition,home);keeper.moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,0,0);
 		if(!server.addFreshEntity(keeper))return;
 		guardian=keeper.getUUID();missingTicks=0;participants.clear();state(1);setChanged();

@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.util.context.ContextKey;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
@@ -24,8 +24,8 @@ public final class McLootAndTriggers {
 	}
 
 	/** Reads an optional parameter from {@link LootContext}. */
-	public static <T>  T getOptionalParam(LootContext context, ContextKey<T> param) {
-		return context.getOptionalParameter(param);
+	public static <T>  T getOptionalParam(LootContext context, LootContextParam<T> param) {
+		return context.getParamOrNull(param);
 	}
 
 	/** Version-neutral wrapper around the active MC {@code SimpleInstance#player()} predicate type. */

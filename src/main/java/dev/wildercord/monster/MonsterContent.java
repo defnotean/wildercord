@@ -4,21 +4,17 @@ import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.component.Consumable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,9 +109,7 @@ public final class MonsterContent {
 	public static final Item SHADOW_PELT = item("shadow_pelt", p -> new MonsterDropItem("shadow_pelt", p.rarity(Rarity.UNCOMMON)));
 	public static final Item STORM_FEATHER = item("storm_feather", p -> new MonsterDropItem.StormFeather(p.stacksTo(16)));
 	public static final Item BOG_GLAND = item("bog_gland", p -> new MonsterDropItem("bog_gland", p));
-	public static final Item MANA_GEL = item("mana_gel", p -> new MonsterDropItem.ManaGel(p.stacksTo(16)
-		.component(DataComponents.CONSUMABLE, Consumable.builder().consumeSeconds(1.0F).animation(ItemUseAnimation.EAT)
-			.sound(SoundEvents.HONEY_DRINK).hasConsumeParticles(false).build())));
+	public static final Item MANA_GEL = item("mana_gel", p -> new MonsterDropItem.ManaGel(p.stacksTo(16)));
 
 	/** The spawn eggs, in the order the monsters are listed. */
 	public static final List<Item> SPAWN_EGGS = new ArrayList<>();

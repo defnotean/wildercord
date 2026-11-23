@@ -14,7 +14,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
@@ -142,75 +142,75 @@ public final class MonsterSpawns {
 	public static void init() {
 		SpawnPlacements.register(MonsterContent.BRAMBLEWALKER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, MonsterRules.Kind.BRAMBLEWALKER)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.GLOOMSTALKER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, MonsterRules.Kind.GLOOMSTALKER)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || deep(level, pos)
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || deep(level, pos)
 					|| level.canSeeSky(pos) && inside(level, pos, DARK_WOODS)));
 		SpawnPlacements.register(MonsterContent.THUNDERWING_HARPY, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, MonsterRules.Kind.THUNDERWING_HARPY)
 				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random)
-				&& (EntitySpawnReason.isSpawner(reason) || pos.getY() >= MonsterRules.HARPY_MIN_Y && level.canSeeSky(pos)));
+				&& (MobSpawnType.isSpawner(reason) || pos.getY() >= MonsterRules.HARPY_MIN_Y && level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.GEODE_CRAWLER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, MonsterRules.Kind.GEODE_CRAWLER)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason)
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason)
 					|| pos.getY() < MonsterRules.CRAWLER_Y && !level.canSeeSky(pos)
 						&& (nearAmethyst(level, pos, random) || random.nextDouble() < MonsterRules.CRAWLER_AWAY_FROM_GEODES)));
 		SpawnPlacements.register(MonsterContent.BOG_WITCH_FROG, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, MonsterRules.Kind.BOG_WITCH_FROG)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.MANA_OOZE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, MonsterRules.Kind.MANA_OOZE)
 				// 1.21.10 types the check as EntityType<? extends Monster>; the ooze is a cube mob, and the check only reads the entity type.
-				&& Monster.checkMonsterSpawnRules((net.minecraft.world.entity.EntityType<? extends Monster>) (net.minecraft.world.entity.EntityType<?>) type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || deep(level, pos)
+				&& Monster.checkMonsterSpawnRules((net.minecraft.world.entity.EntityType<? extends Monster>) (net.minecraft.world.entity.EntityType<?>) type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || deep(level, pos)
 					|| pos.getY() < MonsterRules.LEY_OOZE_Y && !level.canSeeSky(pos) && onLey(level, pos)));
 		SpawnPlacements.register(MonsterContent.STRAWMAN, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, STRAWMAN)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.DUNESTINGER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, DUNESTINGER)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.GULPER_PITCHER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, GULPER_PITCHER)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || pos.getY() >= level.getSeaLevel()));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || pos.getY() >= level.getSeaLevel()));
 		SpawnPlacements.register(MonsterContent.CACKLING_HYENA, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, CACKLING_HYENA)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.PITCHBACK_BEETLE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, PITCHBACK_BEETLE)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || pos.getY() >= level.getSeaLevel()));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || pos.getY() >= level.getSeaLevel()));
 		SpawnPlacements.register(MonsterContent.RIMECOAT_WOLVERINE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, RIMECOAT_WOLVERINE)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || pos.getY() >= level.getSeaLevel()));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || pos.getY() >= level.getSeaLevel()));
 		SpawnPlacements.register(MonsterContent.SNAPJAW_TURTLE, SpawnPlacementTypes.IN_WATER, Heightmap.Types.OCEAN_FLOOR,
 			(type, level, reason, pos, random) -> allowed(reason, SNAPJAW_TURTLE)
 				&& level.getDifficulty() != net.minecraft.world.Difficulty.PEACEFUL
 				&& level.getFluidState(pos).is(net.minecraft.tags.FluidTags.WATER) && !level.getFluidState(pos.below()).is(net.minecraft.tags.FluidTags.WATER)
-				&& (EntitySpawnReason.isSpawner(reason) || (pos.getY() < level.getSeaLevel() && Monster.isDarkEnoughToSpawn(level, pos, random))));
+				&& (MobSpawnType.isSpawner(reason) || (pos.getY() < level.getSeaLevel() && Monster.isDarkEnoughToSpawn(level, pos, random))));
 		SpawnPlacements.register(MonsterContent.REEFGRASP_OCTOPUS, SpawnPlacementTypes.IN_WATER, Heightmap.Types.OCEAN_FLOOR,
 			(type, level, reason, pos, random) -> allowed(reason, REEFGRASP_OCTOPUS)
 				&& level.getDifficulty() != net.minecraft.world.Difficulty.PEACEFUL
 				&& level.getFluidState(pos).is(net.minecraft.tags.FluidTags.WATER) && !level.getFluidState(pos.below()).is(net.minecraft.tags.FluidTags.WATER)
-				&& (EntitySpawnReason.isSpawner(reason) || (pos.getY() < level.getSeaLevel() && Monster.isDarkEnoughToSpawn(level, pos, random))));
+				&& (MobSpawnType.isSpawner(reason) || (pos.getY() < level.getSeaLevel() && Monster.isDarkEnoughToSpawn(level, pos, random))));
 		SpawnPlacements.register(MonsterContent.FOXFIRE_KITSUNE, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, FOXFIRE_KITSUNE)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.CRAGCLEAVER_RAM, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, CRAGCLEAVER_RAM)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.DRIPFANG_LURKER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, DRIPFANG_LURKER) && Monster.checkMonsterSpawnRules(type, level, reason, pos, random));
 		SpawnPlacements.register(MonsterContent.GLOWLURE_ANGLER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, GLOWLURE_ANGLER) && Monster.checkMonsterSpawnRules(type, level, reason, pos, random));
 		SpawnPlacements.register(MonsterContent.BLOOMCLAW_MANTIS, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, BLOOMCLAW_MANTIS)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.SANDMAW_WYRM, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, SANDMAW_WYRM)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 		SpawnPlacements.register(MonsterContent.TIMBERMAUL_BEAR, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
 			(type, level, reason, pos, random) -> allowed(reason, TIMBERMAUL_BEAR)
-				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (EntitySpawnReason.isSpawner(reason) || level.canSeeSky(pos)));
+				&& Monster.checkMonsterSpawnRules(type, level, reason, pos, random) && (MobSpawnType.isSpawner(reason) || level.canSeeSky(pos)));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
 		// Every overworld biome, by the vanilla tag as well as by where they generate, so a world whose overworld makes only a few
@@ -335,12 +335,12 @@ public final class MonsterSpawns {
 	}
 
 	/** Natural spawns (not spawners, eggs or commands) ask the server's switches. */
-	private static boolean allowed(EntitySpawnReason reason, MonsterRules.Kind kind) {
+	private static boolean allowed(MobSpawnType reason, MonsterRules.Kind kind) {
 		return allowed(reason, kind.id);
 	}
 
-	private static boolean allowed(EntitySpawnReason reason, String id) {
-		if (reason != EntitySpawnReason.NATURAL && reason != EntitySpawnReason.CHUNK_GENERATION) {
+	private static boolean allowed(MobSpawnType reason, String id) {
+		if (reason != MobSpawnType.NATURAL && reason != MobSpawnType.CHUNK_GENERATION) {
 			return true;
 		}
 		return Config.get().monsters().spawns(id);

@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -49,14 +49,14 @@ public final class Caravans {
 			if (!level.isPositionEntityTicking(column)) continue;
 			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 			if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
-			WayfarerKeeper keeper = Town.KEEPER.create(level, EntitySpawnReason.EVENT);
+			WayfarerKeeper keeper = Town.KEEPER.create(level, MobSpawnType.EVENT);
 			if (keeper == null) return null;
 			keeper.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 			if (!level.noCollision(keeper)) continue;
 			keeper.setRole(WayfarerKeeper.Role.CARAVANEER);
 			level.addFreshEntity(keeper);
 			for (int i = 0; i < CaravanRules.LLAMAS; i++) {
-				TraderLlama llama = EntityType.TRADER_LLAMA.create(level, EntitySpawnReason.EVENT);
+				TraderLlama llama = EntityType.TRADER_LLAMA.create(level, MobSpawnType.EVENT);
 				if (llama == null) continue;
 				llama.moveTo(ground.getX() + 0.5 + (i == 0 ? 2 : -2), ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 				if (!level.noCollision(llama)) llama.moveTo(keeper.getX(), keeper.getY(), keeper.getZ(), 0, 0);

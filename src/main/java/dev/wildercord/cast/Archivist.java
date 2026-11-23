@@ -36,7 +36,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -231,7 +231,7 @@ public class Archivist extends SpellcasterIllager {
 
 	/** Wakes the Archivist above its lectern (null if it couldn't be made). */
 	public static Archivist rise(ServerLevel level, BlockPos lectern) {
-		Archivist boss = WildercordEntities.ARCHIVIST.create(level, EntitySpawnReason.TRIGGERED);
+		Archivist boss = WildercordEntities.ARCHIVIST.create(level, MobSpawnType.TRIGGERED);
 		if (boss == null) {
 			return null;
 		}
@@ -490,14 +490,14 @@ public class Archivist extends SpellcasterIllager {
 		}
 		// Allies from the stacks: Runebound, woken to defend the Archive.
 		for (int i = 0; i < 2; i++) {
-			Mob guard = (i == 0 ? EntityType.SKELETON : EntityType.PILLAGER).create(level, EntitySpawnReason.MOB_SUMMONED);
+			Mob guard = (i == 0 ? EntityType.SKELETON : EntityType.PILLAGER).create(level, MobSpawnType.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 spot = CastEngine.ground(level, c.add(Math.cos(a) * 5, 2, Math.sin(a) * 5));
 			guard.moveTo(spot.x, spot.y, spot.z, 0, 0);
-			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
 			// Bound before it enters the world, so the Archive's own roll doesn't bind it a second time.
 			Runebound.bind(guard, phase == 3);
 			level.addFreshEntity(guard);

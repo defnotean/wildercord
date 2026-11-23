@@ -6,7 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PointedDripstoneBlock;
@@ -46,7 +46,7 @@ public final class BlockFx {
 	}
 
 	private static Display.BlockDisplay display(ServerLevel level, Vec3 at, BlockState state, Transformation start) {
-		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
+		Display.BlockDisplay display = EntityType.BLOCK_DISPLAY.create(level, MobSpawnType.TRIGGERED);
 		if (display == null) {
 			return null;
 		}

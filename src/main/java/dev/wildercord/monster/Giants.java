@@ -27,7 +27,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -139,7 +139,7 @@ public final class Giants {
 	/** Makes a giant of {@code kind} at {@code at}, tempered to {@code threat}; adds it to the world only if {@code add}. */
 	public static  Mob make(ServerLevel level, GiantRules.Kind kind, Vec3 at, int threat, boolean add) {
 		WildMonster mob = (kind == GiantRules.Kind.MATRIARCH ? MonsterContent.GLOOMSTALKER : MonsterContent.BRAMBLEWALKER)
-			.create(level, EntitySpawnReason.EVENT);
+			.create(level, MobSpawnType.EVENT);
 		if (mob == null) return null;
 		mob.moveTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
 		// The matriarch leads every pack in the snow.

@@ -17,8 +17,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.Consumables;
-import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -40,10 +38,11 @@ public final class Meals {
 		WildercordEffects.init();
 		for (CookingRules.Recipe recipe : CookingRules.RECIPES) {
 			ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(recipe.id()));
-			Item.Properties properties = new Item.Properties().setId(key).stacksTo(CookingRules.STACK).usingConvertsTo(Items.BOWL)
+			Item.Properties properties = new Item.Properties().setId(key).stacksTo(CookingRules.STACK)
 				.rarity(recipe.rare() ? net.minecraft.world.item.Rarity.EPIC : net.minecraft.world.item.Rarity.COMMON)
-				.food(new FoodProperties.Builder().nutrition(recipe.nutrition()).saturationModifier(recipe.saturation()).alwaysEdible().build(),
-					Consumables.defaultFood().onConsume(new ApplyStatusEffectsConsumeEffect(effects(recipe))).build());
+				.food(new FoodProperties(recipe.nutrition(), recipe.saturation(), true, 1.0F,
+					java.util.Optional.of(new ItemStack(Items.BOWL)),
+					effects(recipe).stream().map(e -> new FoodProperties.PossibleEffect(e, 1.0F)).toList()));
 			MEALS.put(recipe.id(), Registry.register(BuiltInRegistries.ITEM, key, new MealItem(recipe, properties)));
 		}
 	}

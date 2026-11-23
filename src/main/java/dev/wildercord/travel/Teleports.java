@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
@@ -228,7 +228,7 @@ public final class Teleports {
 		Travel.update(player, data -> data.withBack(Spot.of(player)));
 		TravelFx.depart(from, left);
 		player.stopRiding();
-		player.teleportTo(arrival.level(), arrival.pos().x, arrival.pos().y, arrival.pos().z, Set.<Relative>of(), arrival.yaw(), arrival.pitch(), true);
+		player.teleportTo(arrival.level(), arrival.pos().x, arrival.pos().y, arrival.pos().z, Set.<RelativeMovement>of(), arrival.yaw(), arrival.pitch());
 		player.setDeltaMovement(Vec3.ZERO);
 		player.resetFallDistance();
 		TravelFx.arrive(((ServerLevel) arrival.level()), arrival.pos());

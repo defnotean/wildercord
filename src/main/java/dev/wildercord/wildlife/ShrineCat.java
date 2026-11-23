@@ -25,7 +25,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -271,9 +271,9 @@ public class ShrineCat extends TamableAnimal {
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,  SpawnGroupData data) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,  SpawnGroupData data) {
 		SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
-		if (reason == EntitySpawnReason.SPAWN_ITEM_USE || reason == EntitySpawnReason.COMMAND) {
+		if (reason == MobSpawnType.SPAWN_ITEM_USE || reason == MobSpawnType.COMMAND) {
 			if (entityData.get(DATA_VARIANT) == 0 && !hasCustomName()) {
 				setVariant(ShrineCatRules.Variant.byId(random.nextInt(4)));
 			} else {
@@ -347,7 +347,7 @@ public class ShrineCat extends TamableAnimal {
 			}
 			double horizSq = (sp.getX() - getX()) * (sp.getX() - getX()) + (sp.getZ() - getZ()) * (sp.getZ() - getZ());
 			if (horizSq <= 24.0 * 24.0 && sp.getY() > getY() + 5.5 && sp.getY() < getY() + 26.0) {
-				sp.teleportTo(level, getX(), getY(), getZ() - 3.0, Set.of(), sp.getYRot(), sp.getXRot(), false);
+				sp.teleportTo(level, getX(), getY(), getZ() - 3.0, Set.of(), sp.getYRot(), sp.getXRot());
 				level.playSound(null, sp.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 0.9F, 0.85F);
 				level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, sp.getX(), sp.getY() + 1.0, sp.getZ(), 14, 0.4, 0.4, 0.4, 0.04);
 				sp.displayClientMessage(Component.literal("Floor " + variant().sanctuaryFloor + " is sealed! Defeat "
@@ -471,16 +471,16 @@ public class ShrineCat extends TamableAnimal {
 		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 0.8, getZ(), 20, 1.4, 0.4, 1.4, 0.05);
 		BlockPos sentinelPos = findOpenNearby(level, blockPosition().offset(3, 0, 0));
 		BlockPos spiritPos = findOpenNearby(level, blockPosition().offset(-3, 0, 0));
-		KarakuriSentinel sentinel = MonsterContent.KARAKURI_SENTINEL.create(level, EntitySpawnReason.REINFORCEMENT);
+		KarakuriSentinel sentinel = MonsterContent.KARAKURI_SENTINEL.create(level, MobSpawnType.REINFORCEMENT);
 		if (sentinel != null) {
 			sentinel.moveTo(sentinelPos.getX() + 0.5, sentinelPos.getY(), sentinelPos.getZ() + 0.5, getYRot(), 0.0F);
-			sentinel.finalizeSpawn(level, level.getCurrentDifficultyAt(sentinelPos), EntitySpawnReason.REINFORCEMENT, null);
+			sentinel.finalizeSpawn(level, level.getCurrentDifficultyAt(sentinelPos), MobSpawnType.REINFORCEMENT, null);
 			level.addFreshEntity(sentinel);
 		}
-		PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(level, EntitySpawnReason.REINFORCEMENT);
+		PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(level, MobSpawnType.REINFORCEMENT);
 		if (spirit != null) {
 			spirit.moveTo(spiritPos.getX() + 0.5, spiritPos.getY() + 0.5, spiritPos.getZ() + 0.5, getYRot(), 0.0F);
-			spirit.finalizeSpawn(level, level.getCurrentDifficultyAt(spiritPos), EntitySpawnReason.REINFORCEMENT, null);
+			spirit.finalizeSpawn(level, level.getCurrentDifficultyAt(spiritPos), MobSpawnType.REINFORCEMENT, null);
 			level.addFreshEntity(spirit);
 		}
 		for (ServerPlayer player : level.players()) {
@@ -891,7 +891,7 @@ public class ShrineCat extends TamableAnimal {
 			if (have.contains(v)) {
 				continue;
 			}
-			ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level, EntitySpawnReason.COMMAND);
+			ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level, MobSpawnType.COMMAND);
 			if (cat == null) {
 				continue;
 			}

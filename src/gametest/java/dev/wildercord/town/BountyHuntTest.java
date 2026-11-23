@@ -12,9 +12,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -49,7 +49,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 			w.getServer().runCommand("forceload add -" + SPAN + " -" + SPAN + " " + SPAN + " " + SPAN);
 			w.getServer().runOnServer(s -> {
 				p(s).setGameMode(GameType.CREATIVE);
-				p(s).teleportTo(s.overworld(), 0.5, Y + 1, 0.5, Set.<Relative>of(), 0, 0, false);
+				p(s).teleportTo(s.overworld(), 0.5, Y + 1, 0.5, Set.<RelativeMovement>of(), 0, 0);
 			});
 			for (int i = 0; i < 60 && !w.getServer().computeOnServer(s -> s.overworld().hasChunkAt(new BlockPos(SPAN, Y, SPAN))
 				&& s.overworld().hasChunkAt(new BlockPos(-SPAN, Y, -SPAN))); i++) {
@@ -82,13 +82,13 @@ public final class BountyHuntTest implements FabricClientGameTest {
 				check(BuiltInRegistries.ENTITY_TYPE.getKey(elite.getType()).toString().equals(TARGET), "it's the bounty's creature");
 				check(elite.hasCustomName() && elite.getCustomName().getString().contains("Grimjaw"), "it carries the bounty's name");
 				check(elite.isCustomNameVisible() && elite.isPersistenceRequired(), "its name shows and it never despawns");
-				check(elite.getMaxHealth() > ((Mob) elite.getType().create(s.overworld(), EntitySpawnReason.COMMAND)).getMaxHealth() * 2,
+				check(elite.getMaxHealth() > ((Mob) elite.getType().create(s.overworld(), MobSpawnType.COMMAND)).getMaxHealth() * 2,
 					"a champion is far tougher than a plain one");
 				// Stand a few blocks off, facing it, for the screenshot.
 				double back = 5 / d;
 				double px = elite.getX() - dx * back, pz = elite.getZ() - dz * back;
 				float yaw = (float) (Math.toDegrees(Math.atan2(-dx, dz)));
-				p(s).teleportTo(s.overworld(), px, Y + 1, pz, Set.<Relative>of(), yaw, 10, false);
+				p(s).teleportTo(s.overworld(), px, Y + 1, pz, Set.<RelativeMovement>of(), yaw, 10);
 				elite.setNoAi(true);
 			});
 			c.waitTicks(30);
@@ -98,7 +98,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				var l = s.overworld();
 				var type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse(TARGET));
-				Mob plain = (Mob) type.create(l, EntitySpawnReason.COMMAND);
+				Mob plain = (Mob) type.create(l, MobSpawnType.COMMAND);
 				plain.moveTo(p(s).getX() + 2, Y + 1, p(s).getZ(), 0, 0);
 				l.addFreshEntity(plain);
 				plain.hurtServer(l, p(s).damageSources().playerAttack(p(s)), 1.0E6F);

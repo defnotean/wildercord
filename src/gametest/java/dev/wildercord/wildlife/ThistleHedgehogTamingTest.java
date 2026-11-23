@@ -7,8 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -24,7 +24,7 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 	private static ThistleHedgehog hog(MinecraftServer s) { return (ThistleHedgehog) s.overworld().getEntity(id); }
 	/** Stands the player at (x, z) looking south and down. */
 	private static void stand(MinecraftServer s, double x, double z) {
-		p(s).teleportTo(s.overworld(), x, 101, z, Set.<Relative>of(), 0, 35, false);
+		p(s).teleportTo(s.overworld(), x, 101, z, Set.<RelativeMovement>of(), 0, 35);
 		p(s).setDeltaMovement(0, 0, 0);
 	}
 	/** Puts the hedgehog two blocks in front of a player standing at the start, under the crosshair. */
@@ -49,7 +49,7 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.GRASS_BLOCK.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				var h = HedgehogContent.THISTLE_HEDGEHOG.create(l, EntitySpawnReason.COMMAND);
+				var h = HedgehogContent.THISTLE_HEDGEHOG.create(l, MobSpawnType.COMMAND);
 				h.setPos(0.5, 101, 2.5);
 				l.addFreshEntity(h);
 				id = h.getUUID();
@@ -145,13 +145,13 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 				h.setOrderedToSit(true);
 				CompoundTag saved = new CompoundTag();
 				h.saveWithoutId(saved);
-				var restored = HedgehogContent.THISTLE_HEDGEHOG.create(s.overworld(), EntitySpawnReason.LOAD);
+				var restored = HedgehogContent.THISTLE_HEDGEHOG.create(s.overworld(), MobSpawnType.LOAD);
 				restored.load(saved);
 				check(restored.isTame() && restored.isOwnedBy(p(s)), "Its owner survives a save");
 				check(restored.isOrderedToSit(), "Its order to sit survives a save");
 				restored.discard();
 
-				var mate = HedgehogContent.THISTLE_HEDGEHOG.create(s.overworld(), EntitySpawnReason.COMMAND);
+				var mate = HedgehogContent.THISTLE_HEDGEHOG.create(s.overworld(), MobSpawnType.COMMAND);
 				mate.tame(p(s));
 				var hoglet = h.getBreedOffspring(s.overworld(), mate);
 				check(hoglet instanceof ThistleHedgehog baby && baby.isTame() && baby.isOwnedBy(p(s)), "A tame pair's hoglet belongs to their owner");

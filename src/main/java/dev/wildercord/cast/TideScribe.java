@@ -26,7 +26,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -1622,14 +1622,14 @@ public class TideScribe extends DungeonBoss {
 			startRising(level);
 		}
 		for (int i = 0; i < 2; i++) {
-			Mob guard = EntityType.DROWNED.create(level, EntitySpawnReason.MOB_SUMMONED);
+			Mob guard = EntityType.DROWNED.create(level, MobSpawnType.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 spot = Vec3.atBottomCenterOf(home).add(Math.cos(a) * 9, 0.2, Math.sin(a) * 9);
 			guard.moveTo(spot.x, spot.y, spot.z, 0, 0);
-			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
 			Runebound.bind(guard, i == 0 ? List.of(Runes.BOLT, Runes.SHOCK) : List.of(Runes.TOUCH, Runes.FROST), phase == 3);
 			level.addFreshEntity(guard);
 			minion(guard);

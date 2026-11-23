@@ -22,9 +22,6 @@ public final class WindreedBlock extends Block {
 	@Override protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> b) {b.add(AGE);}
 	@Override protected VoxelShape getShape(BlockState s,BlockGetter l,BlockPos p,CollisionContext c) {return Block.box(3,0,3,13,6+s.getValue(AGE)*5,13);}
 	@Override protected boolean canSurvive(BlockState s,LevelReader l,BlockPos p) {return l.getBlockState(p.below()).is(GROUND) && l.getFluidState(p).isEmpty();}
-	@Override protected BlockState updateShape(BlockState s,LevelReader l,ScheduledTickAccess ticks,BlockPos p,Direction d,BlockPos np,BlockState ns,RandomSource r) {
-		return !canSurvive(s,l,p)?Blocks.AIR.defaultBlockState():super.updateShape(s,l,ticks,p,d,np,ns,r);
-	}
 	@Override protected boolean isRandomlyTicking(BlockState s) {return s.getValue(AGE)<2;}
 	@Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r) {
 		if(s.getValue(AGE)<2 && l.getMaxLocalRawBrightness(p)>=9 && l.canSeeSky(p) && r.nextInt(12)==0)l.setBlock(p,s.setValue(AGE,s.getValue(AGE)+1),Block.UPDATE_CLIENTS);
@@ -43,3 +40,4 @@ public final class WindreedBlock extends Block {
 		return InteractionResult.SUCCESS;
 	}
 }
+

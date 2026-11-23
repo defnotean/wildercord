@@ -25,8 +25,8 @@ public final class MossveilContent{
  public static void init(){
   FabricDefaultAttributeRegistry.register(DORMOUSE,MossveilDormouse.attributes());MossveilParticles.init();MossveilFilterCue.init();MossveilCowl.init();
   SpawnPlacements.register(DORMOUSE,SpawnPlacementTypes.NO_RESTRICTIONS,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(type,l,reason,p,r)->{
-   if(reason==EntitySpawnReason.CHUNK_GENERATION)return false;
-   if(reason!=EntitySpawnReason.NATURAL)return true;
+   if(reason==MobSpawnType.CHUNK_GENERATION)return false;
+   if(reason!=MobSpawnType.NATURAL)return true;
    // Chunk-generation accessors cannot safely enumerate live actor populations.
    if(!(l instanceof ServerLevel actual)||!actual.getServer().isSameThread())return false;
    var cfg=Config.get().wildlife();return cfg.spawns("mossveil_dormouse")&&r.nextDouble()<Math.min(1,.08*cfg.spawnMultiplier())&&MossveilHome.natural(actual,p)&&room(actual,p);

@@ -8,9 +8,9 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -40,8 +40,8 @@ public final class StagFirstRideTest implements FabricClientGameTest {
 					for (int y = 101; y <= 105; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
 				p(s).setGameMode(GameType.SURVIVAL);
-				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<Relative>of(), 0, 10, false);
-				var stag = MountContent.RIDGEBACK_STAG.create(l, EntitySpawnReason.COMMAND);
+				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 10);
+				var stag = MountContent.RIDGEBACK_STAG.create(l, MobSpawnType.COMMAND);
 				stag.setPos(0.5, 101, 1.5);
 				l.addFreshEntity(stag);
 				stag.tameWithName(p(s));

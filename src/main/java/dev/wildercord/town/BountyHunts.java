@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.levelgen.Heightmap;
 
@@ -41,7 +41,7 @@ public final class BountyHunts {
 			if (!level.hasChunkAt(column)) continue;
 			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 			if (!level.getFluidState(ground.below()).isEmpty() || !level.getFluidState(ground).isEmpty()) continue;
-			if (!(type.get().create(level, EntitySpawnReason.EVENT) instanceof Mob mob)) return null;
+			if (!(type.get().create(level, MobSpawnType.EVENT) instanceof Mob mob)) return null;
 			mob.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 			if (!level.noCollision(mob)) continue;
 			int threat = Math.max(BountyRules.ELITE_THREAT_MIN, TemperingRules.threat(Heart.circles(player), Aura.stage(player)));

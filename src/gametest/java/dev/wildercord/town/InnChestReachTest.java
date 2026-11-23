@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -24,7 +24,7 @@ public final class InnChestReachTest implements FabricClientGameTest {
 	private static void check(boolean x, String why) { if (!x) throw new AssertionError(why); }
 	private static ServerPlayer p(MinecraftServer s) { return s.getPlayerList().getPlayers().getFirst(); }
 	private static void stand(MinecraftServer s, double z) {
-		p(s).teleportTo(s.overworld(), 0.5, 101, z, Set.<Relative>of(), 0, 10, false);
+		p(s).teleportTo(s.overworld(), 0.5, 101, z, Set.<RelativeMovement>of(), 0, 10);
 		p(s).setDeltaMovement(0, 0, 0);
 	}
 	private static int scrolls(ServerPlayer p) { return p.getInventory().countItem(WildercordItems.SPELL_SCROLL); }

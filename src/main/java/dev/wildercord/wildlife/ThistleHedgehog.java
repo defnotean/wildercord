@@ -11,7 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
@@ -278,7 +278,7 @@ public class ThistleHedgehog extends TamableAnimal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		if (!(getType().create(level, EntitySpawnReason.BREEDING) instanceof ThistleHedgehog hoglet)) {
+		if (!(getType().create(level, MobSpawnType.BREEDING) instanceof ThistleHedgehog hoglet)) {
 			return null;
 		}
 		// A tame pair's hoglet is its owner's too.

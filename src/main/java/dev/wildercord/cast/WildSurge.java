@@ -23,7 +23,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -301,7 +301,7 @@ public final class WildSurge {
 			boolean solid = level.getBlockState(below).isFaceSturdy(level, below, Direction.UP) && !level.getBlockState(below).is(Blocks.MAGMA_BLOCK);
 			if (solid && level.noCollision(player, box) && !level.containsAnyLiquid(box.inflate(0, 0.5, 0)) && level.getWorldBorder().isWithinBounds(spot.x, spot.z)) {
 				Vec3 from = player.position();
-				player.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), player.getYRot(), player.getXRot(), false);
+				player.teleportTo(level, spot.x, spot.y, spot.z, Set.<RelativeMovement>of(), player.getYRot(), player.getXRot());
 				player.resetFallDistance();
 				Vfx.blink(level, from, spot);
 				Fx.sound(level, spot, WildercordSounds.BLINK, 0.9F, 1.1F);

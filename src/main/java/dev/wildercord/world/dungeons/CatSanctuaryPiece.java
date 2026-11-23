@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -601,7 +601,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 
 		BlockPos keeperPos = getWorldPos(28, F1 + 1, 20);
 		if (bb.isInside(keeperPos)) {
-			SakuraVillager keeper = ShrineCatContent.SAKURA_VILLAGER.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+			SakuraVillager keeper = ShrineCatContent.SAKURA_VILLAGER.create(level.getLevel(), MobSpawnType.STRUCTURE);
 			if (keeper != null) {
 				keeper.moveTo(keeperPos.getX() + 0.5, keeperPos.getY(), keeperPos.getZ() + 0.5, 180.0F, 0.0F);
 				keeper.configure(SakuraVillager.TEA_MASTER);
@@ -665,12 +665,12 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level.getLevel(), MobSpawnType.STRUCTURE);
 		if (cat == null) {
 			return;
 		}
 		cat.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 180.0F, 0.0F);
-		cat.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+		cat.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null);
 		cat.configureGuardian(variant, pos, heart);
 		level.addFreshEntityWithPassengers(cat);
 	}

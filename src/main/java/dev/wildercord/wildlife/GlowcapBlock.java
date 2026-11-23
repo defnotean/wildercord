@@ -34,7 +34,6 @@ public final class GlowcapBlock extends Block {
  }
  public static boolean conditions(LevelReader l,BlockPos p) {return footing(l,p) && moist(l,p) && structuralCover(l,p) && (!(l instanceof Level level) || level.getMaxLocalRawBrightness(p)<=8);}
  @Override protected boolean canSurvive(BlockState s,LevelReader l,BlockPos p) {return footing(l,p) && l.getFluidState(p).isEmpty();}
- @Override protected BlockState updateShape(BlockState s,LevelReader l,ScheduledTickAccess t,BlockPos p,Direction d,BlockPos np,BlockState ns,RandomSource r) {return canSurvive(s,l,p)?super.updateShape(s,l,t,p,d,np,ns,r):Blocks.AIR.defaultBlockState();}
  @Override protected boolean isRandomlyTicking(BlockState s) {return s.getValue(AGE)==0;}
  @Override protected void randomTick(BlockState s,ServerLevel l,BlockPos p,RandomSource r) {if(s.getValue(AGE)==0 && conditions(l,p) && r.nextInt(8)==0)l.setBlock(p,s.setValue(AGE,1),Block.UPDATE_CLIENTS);}
  /** Call only after a native uninterrupted Sporeback browse; excludes remote visitation. */
@@ -48,3 +47,4 @@ public final class GlowcapBlock extends Block {
   if(l instanceof ServerLevel server) {popResource(l,p,new ItemStack(FungalGarden.GILLS));l.setBlock(p,s.setValue(AGE,0),Block.UPDATE_CLIENTS);if(who instanceof net.minecraft.server.level.ServerPlayer player)FungalInvestigation.harvested(player);Feels.sound(server,Vec3.atCenterOf(p),"fungal_cap_harvest",.4F,1);}return InteractionResult.SUCCESS;
  }
 }
+

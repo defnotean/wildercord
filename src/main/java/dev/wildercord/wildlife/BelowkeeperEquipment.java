@@ -10,6 +10,7 @@ import net.minecraft.core.*;
 import net.minecraft.core.registries.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.*;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.*;
@@ -18,9 +19,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.Consumable;
-import net.minecraft.world.item.equipment.*;
-import net.minecraft.core.component.DataComponents;
+import dev.wildercord.compat.McArmor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
@@ -43,12 +42,15 @@ public final class BelowkeeperEquipment {
  private static boolean actor(ServerPlayer p){return p.isAlive() && !p.isSpectator() && !p.isCreative();}
  private static RootmoltStrider active(ServerPlayer p){var l=p.level();var owned=p.serverLevel().getEntity(p.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER));if(owned instanceof RootmoltStrider r && reachable(p,r))return r;return l.getEntitiesOfClass(RootmoltStrider.class,p.getBoundingBox().inflate(5),r -> reachable(p,r)).stream().min(Comparator.comparingDouble(p::distanceToSqr)).orElse(null);}
  private static boolean reachable(ServerPlayer p,RootmoltStrider r){return r.isAlive() && !r.isRemoved() && r.level()==p.level() && p.distanceToSqr(r)<=25 && p.hasLineOfSight(r) && (r.pose()==RootmoltStrider.WARNING || r.pose()==RootmoltStrider.RAKING || r.pose()==RootmoltStrider.HOLDING);}
- public static final Item BELL=Registry.register(BuiltInRegistries.ITEM,key("maras_empty_bell"),new AuraWorld.Lore("maras_empty_bell",new Item.Properties().setId(key("maras_empty_bell")).durability(32).rarity(Rarity.RARE).component(DataComponents.CONSUMABLE,Consumable.builder().consumeSeconds(1F).animation(ItemUseAnimation.BLOCK).sound(BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.COPPER_BULB_HIT)).hasConsumeParticles(false).build())) {
+	public static final Item BELL=Registry.register(BuiltInRegistries.ITEM,key("maras_empty_bell"),new AuraWorld.Lore("maras_empty_bell",new Item.Properties().setId(key("maras_empty_bell")).durability(32).rarity(Rarity.RARE)) {
+  @Override public UseAnim getUseAnimation(ItemStack stack){return UseAnim.BLOCK;}
+  @Override public int getUseDuration(ItemStack stack,LivingEntity entity){return 20;}
+  @Override public SoundEvent getEatingSound(){return SoundEvents.COPPER_BULB_HIT;}
   @Override public InteractionResult use(Level l,Player user,InteractionHand hand){if(!user.isAlive() || user.isSpectator())return InteractionResult.PASS;if(user instanceof ServerPlayer p){var source=active(p);if(!actor(p) || now(p)<p.getAttachedOrElse(BELL_READY,0L) || source==null)return InteractionResult.FAIL;p.setAttached(RING,new Ring(source.getUUID(),p.getItemInHand(hand),hand,((ServerLevel) p.level()),p.position()));}user.startUsingItem(hand);return InteractionResult.CONSUME;}
   @Override public ItemStack finishUsingItem(ItemStack stack,Level l,LivingEntity e){if(!(e instanceof ServerPlayer p))return stack;var ring=p.getAttached(RING);if(now(p)<p.getAttachedOrElse(BELL_READY,0L) || !committed(p,ring) || dev.wildercord.compat.McHands.ticksUsing(p)<20 || ring.held()!=stack){clearRing(p);return stack;}var r=(RootmoltStrider)((ServerLevel) ring.level()).getEntity(ring.source());p.removeAttached(RING);if(!r.answerBell(p))return stack;p.setAttached(BELL_READY,now(p)+BELL_REST);p.getCooldowns().addCooldown(stack,BELL_REST);stack.hurtAndBreak(1,p,dev.wildercord.compat.McHands.slot(p.getUsedItemHand()));p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,40));p.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN,40));Feels.sound(((ServerLevel) p.level()),p.position(),"belowkeeper_bell",.65F,1);return stack;}
  });
- private static final ArmorMaterial MATERIAL=new ArmorMaterial(8,Map.of(ArmorType.HELMET,0,ArmorType.CHESTPLATE,0,ArmorType.LEGGINGS,0,ArmorType.BOOTS,1),8,SoundEvents.ARMOR_EQUIP_LEATHER,0,0,ItemTags.REPAIRS_LEATHER_ARMOR,dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:rootbound"));
- public static final Item GREAVES=Registry.register(BuiltInRegistries.ITEM,key("rootbound_greaves"),new AuraWorld.Lore("rootbound_greaves",MATERIAL.humanoidProperties(new Item.Properties().setId(key("rootbound_greaves")), ArmorType.BOOTS).rarity(Rarity.UNCOMMON)));
+ private static final net.minecraft.core.Holder<ArmorMaterial> MATERIAL=McArmor.material(Map.of(ArmorItem.Type.HELMET,0,ArmorItem.Type.CHESTPLATE,0,ArmorItem.Type.LEGGINGS,0,ArmorItem.Type.BOOTS,1),8,0,0,ItemTags.REPAIRS_LEATHER_ARMOR,dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:rootbound"));
+ public static final Item GREAVES=Registry.register(BuiltInRegistries.ITEM,key("rootbound_greaves"),new McArmor.LoreArmor("rootbound_greaves",MATERIAL,ArmorItem.Type.BOOTS,new Item.Properties().setId(key("rootbound_greaves")).rarity(Rarity.UNCOMMON)));
  public static int prepared(ServerPlayer p){return p.getAttachedOrCreate(PREP).ticks;}
  private static void tick(ServerPlayer p){var ring=p.getAttached(RING);if(ring!=null && !committed(p,ring))clearRing(p);var boots=p.getItemBySlot(EquipmentSlot.FEET);if(!boots.is(GREAVES)){var old=p.getAttached(PREP);if(old!=null){old.ticks=0;old.worn=ItemStack.EMPTY;old.level=null;}return;}var prep=p.getAttachedOrCreate(PREP);boolean still=actor(p) && prep.level==((ServerLevel) p.level()) && boots.is(GREAVES) && p.onGround() && p.isShiftKeyDown() && !p.isSprinting() && !p.isPassenger() && !p.isInWater() && p.position().distanceToSqr(prep.at)<.0009 && now(p)>=p.getAttachedOrElse(GREAVES_READY,0L);if(still && prep.worn==boots)prep.ticks=Math.min(PREP_TICKS,prep.ticks+1);else {prep.ticks=0;prep.at=p.position();}prep.worn=boots;prep.level=((ServerLevel) p.level());}
  private static boolean resist(LivingEntity victim,RootmoltStrider source){if(!(victim instanceof ServerPlayer p) || !actor(p))return false;var boots=p.getItemBySlot(EquipmentSlot.FEET);if(!boots.is(GREAVES))return false;var prep=p.getAttachedOrCreate(PREP);if(!boots.is(GREAVES) || prep.level!=((ServerLevel) p.level()) || prep.worn!=boots || prep.ticks<PREP_TICKS || !p.onGround() || !p.isShiftKeyDown() || p.isSprinting() || p.isPassenger() || p.isInWater() || p.position().distanceToSqr(prep.at)>=.0009 || now(p)<p.getAttachedOrElse(GREAVES_READY,0L))return false;prep.ticks=0;p.setAttached(GREAVES_READY,now(p)+GREAVES_REST);boots.hurtAndBreak(8,p,EquipmentSlot.FEET);p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,40));Feels.sound(((ServerLevel) p.level()),p.position(),"belowkeeper_anchor",.5F,1);return true;}

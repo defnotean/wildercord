@@ -13,13 +13,13 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -306,7 +306,7 @@ final class SignatureFusions {
 				Casters.tell(caster, Component.translatableWithFallback("message.wildercord.step_nowhere", "Nowhere safe to set foot there").withColor(0x6EDC64));
 				return;
 			}
-			boolean stepped=caster.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), caster.getYRot(), caster.getXRot(), false);
+			boolean stepped=caster.teleportTo(level, spot.x, spot.y, spot.z, Set.<RelativeMovement>of(), caster.getYRot(), caster.getXRot());
 			if(!stepped || !cast.alive() || caster.position().distanceToSqr(spot)>.0001){
 				LifeOwnerEvents.refused(cast,"bloomstep",caster);return;
 			}
@@ -552,7 +552,7 @@ final class SignatureFusions {
 				Vec3 look = enemy.position().subtract(found);
 				yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
 			}
-			caster.teleportTo(level, found.x, found.y, found.z, Set.<Relative>of(), yaw, caster.getXRot(), false);
+			caster.teleportTo(level, found.x, found.y, found.z, Set.<RelativeMovement>of(), yaw, caster.getXRot());
 			caster.resetFallDistance();
 			spot = found;
 			SignatureVfx.thunderstepLeave(level, from);
@@ -1096,7 +1096,7 @@ final class SignatureFusions {
 	}
 
 	private static void teleport(Entity entity, ServerLevel level, Vec3 to) {
-		entity.teleportTo(level, to.x, to.y, to.z, Set.<Relative>of(), entity.getYRot(), entity.getXRot(), false);
+		entity.teleportTo(level, to.x, to.y, to.z, Set.<RelativeMovement>of(), entity.getYRot(), entity.getXRot());
 		entity.resetFallDistance();
 	}
 

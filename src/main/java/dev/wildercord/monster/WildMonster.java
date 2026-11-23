@@ -17,7 +17,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -278,7 +278,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 	}
 
 	@Override
-	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
 			 SpawnGroupData groupData) {
 		SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, groupData);
 		if (hasVariants() || packHunter()) {
@@ -287,7 +287,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 				? MonsterVariantRules.of(biome.getBaseTemperature(), biome.coldEnoughToSnow(blockPosition(), level.getSeaLevel()))
 				: MonsterVariantRules.Variant.NONE;
 			// The first of a group is the one finalized with no group data yet.
-			boolean alpha = packHunter() && groupData == null && reason == EntitySpawnReason.NATURAL
+			boolean alpha = packHunter() && groupData == null && reason == MobSpawnType.NATURAL
 				&& random.nextDouble() < MonsterVariantRules.ALPHA_CHANCE;
 			setVariant(variant, alpha);
 			setHealth(getMaxHealth());

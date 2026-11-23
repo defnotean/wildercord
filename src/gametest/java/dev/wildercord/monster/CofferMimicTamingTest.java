@@ -8,9 +8,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.ChestMenu;
@@ -34,7 +34,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 	private static CofferMimic mimic(MinecraftServer s) { return (CofferMimic) s.overworld().getEntity(id); }
 	/** Stands the player at (x, z) looking south at a mimic three blocks off. */
 	private static void stand(MinecraftServer s, double x, double z) {
-		p(s).teleportTo(s.overworld(), x, 101, z, Set.<Relative>of(), 0, 21, false);
+		p(s).teleportTo(s.overworld(), x, 101, z, Set.<RelativeMovement>of(), 0, 21);
 		p(s).setDeltaMovement(0, 0, 0);
 	}
 	private static void hold(MinecraftServer s, ItemStack stack) { p(s).setItemInHand(InteractionHand.MAIN_HAND, stack); }
@@ -54,7 +54,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				var m = MonsterContent.COFFER_MIMIC.create(l, EntitySpawnReason.COMMAND);
+				var m = MonsterContent.COFFER_MIMIC.create(l, MobSpawnType.COMMAND);
 				m.setPos(0.5, 101, 3.5);
 				m.settleHere(180);
 				l.addFreshEntity(m);
@@ -177,7 +177,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				check(m.disguised(), "Left beside its owner, it shuts up as a coffer");
 				// It settled behind the player, who faces south; turn round to look at it for the shot.
 				float yaw = (float) Math.toDegrees(Math.atan2(m.getZ() - p(s).getZ(), m.getX() - p(s).getX())) - 90F;
-				p(s).teleportTo(s.overworld(), p(s).getX(), p(s).getY(), p(s).getZ(), Set.<Relative>of(), yaw, 35, false);
+				p(s).teleportTo(s.overworld(), p(s).getX(), p(s).getY(), p(s).getZ(), Set.<RelativeMovement>of(), yaw, 35);
 			});
 			c.waitTicks(3);
 			shot(c, "coffer_mimic_tamed_settled");
@@ -192,12 +192,12 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				var wild = MonsterContent.COFFER_MIMIC.create(l, EntitySpawnReason.COMMAND);
+				var wild = MonsterContent.COFFER_MIMIC.create(l, MobSpawnType.COMMAND);
 				wild.setPos(20.5, 101, 20.5);
 				wild.settleHere(180);
 				l.addFreshEntity(wild);
 				wildId = wild.getUUID();
-				var golem = EntityType.IRON_GOLEM.create(l, EntitySpawnReason.COMMAND);
+				var golem = EntityType.IRON_GOLEM.create(l, MobSpawnType.COMMAND);
 				check(golem != null, "A real iron golem stands in the square");
 				golem.setPos(20.5, 101, 23.5);
 				l.addFreshEntity(golem);
@@ -228,7 +228,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 			});
 			// Turn to face the two coffers and the golem between them: the camera was left looking the other way.
 			w.getServer().runOnServer(s -> p(s).teleportTo(s.overworld(), p(s).getX(), p(s).getY(), p(s).getZ(),
-				Set.<Relative>of(), 180F, 15F, false));
+				Set.<RelativeMovement>of(), 180F, 15F));
 			c.waitTicks(3);
 			shot(c, "coffer_mimic_golem_passes_by");
 
@@ -237,7 +237,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				var m = mimic(s);
 				CompoundTag saved = new CompoundTag();
 				m.saveWithoutId(saved);
-				var restored = MonsterContent.COFFER_MIMIC.create(s.overworld(), EntitySpawnReason.LOAD);
+				var restored = MonsterContent.COFFER_MIMIC.create(s.overworld(), MobSpawnType.LOAD);
 				restored.load(saved);
 				check(restored.isOwnedBy(p(s)), "Its owner survives a save");
 				check(restored.belly().getItem(0).getCount() == 3 && restored.belly().getItem(26).getCount() == 5, "Its belly survives a save");

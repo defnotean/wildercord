@@ -11,7 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -65,7 +65,7 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 					for (int y = 101; y <= 106; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
 				p(s).setGameMode(GameType.SURVIVAL);
-				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<Relative>of(), 180, -30, false);
+				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<RelativeMovement>of(), 180, -30);
 				p(s).setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(MountContent.SKYRAY_BRIDLE));
 			});
 			c.waitTicks(5);
@@ -103,7 +103,7 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 				check(p(s).hasEffect(MobEffects.SLOW_FALLING), "Stepping off in the air brings slow falling");
 				check(ray(s) != null && !ray(s).isVehicle(), "The skyray stays a while without a rider");
 				// Back to the pad: it flew out over unknown ground, far below it.
-				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<Relative>of(), 180, 0, false);
+				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<RelativeMovement>of(), 180, 0);
 			});
 
 			// Riderless it lingers, then goes back to the sky.
@@ -113,13 +113,13 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 			server.runOnServer(s -> check(rays(s).isEmpty(), "Left unridden it goes back to the sky"));
 
 			// A new call, then another from the ground: one skyray at a time.
-			server.runOnServer(s -> p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<Relative>of(), 180, 0, false));
+			server.runOnServer(s -> p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<RelativeMovement>of(), 180, 0));
 			c.waitTicks(10);
 			callDown(c);
 			server.runOnServer(s -> {
 				check(p(s).getVehicle() == ray(s), "Once the cooldown is over it can be called again");
 				p(s).stopRiding();
-				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<Relative>of(), 180, 0, false);
+				p(s).teleportTo(s.overworld(), 0.5, 101, 0.5, Set.<RelativeMovement>of(), 180, 0);
 			});
 			// The cooldown runs out well before the riderless one would leave on its own.
 			c.waitTicks(SkyMountRules.CALL_COOLDOWN + 5);

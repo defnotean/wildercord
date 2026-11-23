@@ -36,6 +36,11 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -58,6 +63,25 @@ import java.util.function.Consumer;
  * </ul>
  */
 public class ReagentItem extends Item {
+	@Override
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return kind == Kind.LINGERING_EDDY ? UseAnim.DRINK : UseAnim.NONE;
+	}
+
+	@Override
+	public int getUseDuration(ItemStack stack, LivingEntity entity) {
+		return kind == Kind.LINGERING_EDDY ? 24 : 0;
+	}
+
+	@Override
+	public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+		if (kind == Kind.LINGERING_EDDY && level instanceof ServerLevel server && entity instanceof ServerPlayer player) {
+			player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 600));
+			return new ItemStack(Items.GLASS_BOTTLE);
+		}
+		return super.finishUsingItem(stack, level, entity);
+	}
+
 	/** How long Star Dust's light hangs, in ticks. */
 	public static final int STARLIGHT_TICKS = 6000;
 	/** How far Hollow Dust reaches. */

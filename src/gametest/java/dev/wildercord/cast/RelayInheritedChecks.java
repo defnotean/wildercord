@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -97,7 +97,7 @@ public final class RelayInheritedChecks {
 					if(elevated){
 						// Two-deep water ends at y152. Both complete creature rays stay above it.
 						for(int x=-1;x<=1;x++)for(int z=-1;z<=1;z++)((ServerLevel) owner.level()).setBlock(new BlockPos(x,151,z),Blocks.STONE.defaultBlockState(),2);
-						owner.teleportTo(((ServerLevel) owner.level()),.5,152,.5,Set.of(),0,55,false);owner.setDeltaMovement(Vec3.ZERO);
+						owner.teleportTo(((ServerLevel) owner.level()),.5,152,.5,Set.of(),0,55);owner.setDeltaMovement(Vec3.ZERO);
 						wet[0].moveTo(.5,151.2,6.5,180,0);wet[0].setDeltaMovement(Vec3.ZERO);
 						scribe[0].moveTo(2.5,151.2,6.5,0,0);scribe[0].setDeltaMovement(Vec3.ZERO);
 						RelayCircleTest.check(owner.level().getBlockState(FROST_CELL).is(Blocks.WATER),"Arena-only candidate starts as real flood water");
@@ -196,8 +196,8 @@ public final class RelayInheritedChecks {
 				LivingEntity[] pet=new LivingEntity[1];TrainingDummy[] behind=new TrainingDummy[1];
 				world.getServer().runOnServer(s->{
 					RelayCircleTest.prepare(owner,Runes.HARM);behind[0]=dummy(owner,.5,6.5);
-					var wolf=EntityType.WOLF.create(((ServerLevel) owner.level()),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.moveTo(.5,150,4.5,0,0);((ServerLevel) owner.level()).addFreshEntity(wolf);pet[0]=wolf;
-					RelayCircleTest.directDown(owner);owner.teleportTo(((ServerLevel) owner.level()),-1.5,150,.5,Set.of(),0,0,false);
+					var wolf=EntityType.WOLF.create(((ServerLevel) owner.level()),MobSpawnType.MOB_SUMMONED);RelayCircleTest.check(wolf!=null,"Protected physical blocker creates");wolf.tame(owner);wolf.setNoAi(true);wolf.setNoGravity(true);wolf.moveTo(.5,150,4.5,0,0);((ServerLevel) owner.level()).addFreshEntity(wolf);pet[0]=wolf;
+					RelayCircleTest.directDown(owner);owner.teleportTo(((ServerLevel) owner.level()),-1.5,150,.5,Set.of(),0,0);
 				});c.waitTicks(2);
 				world.getServer().runOnServer(s->{RelayCircleTest.aim(owner,behind[0].getBoundingBox().getCenter());RelayCircleTest.downAfterUp(owner);});c.waitTicks(8);
 				world.getServer().runOnServer(s->RelayCircleTest.check(behind[0].hitSequence()==0&&pet[0].getHealth()==pet[0].getMaxHealth(),"Protected nearest focus-lane body stops the unpiercing ray without receiving harm"));
@@ -288,6 +288,6 @@ public final class RelayInheritedChecks {
 	}
 
 	private static TrainingDummy dummy(ServerPlayer player,double x,double z){
-		var dummy=WildercordEntities.TRAINING_DUMMY.create(player.level(),EntitySpawnReason.MOB_SUMMONED);RelayCircleTest.check(dummy!=null,"Native dummy creates");dummy.moveTo(x,150,z,180,0);dummy.setNoGravity(true);player.level().addFreshEntity(dummy);return dummy;
+		var dummy=WildercordEntities.TRAINING_DUMMY.create(player.level(),MobSpawnType.MOB_SUMMONED);RelayCircleTest.check(dummy!=null,"Native dummy creates");dummy.moveTo(x,150,z,180,0);dummy.setNoGravity(true);player.level().addFreshEntity(dummy);return dummy;
 	}
 }

@@ -15,7 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -162,7 +162,7 @@ public class DelverMole extends AbstractHorse {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		DelverMole pup = MountContent.DELVER_MOLE.create(level, EntitySpawnReason.BREEDING);
+		DelverMole pup = MountContent.DELVER_MOLE.create(level, MobSpawnType.BREEDING);
 		if (pup != null) {
 			setOffspringAttributes(partner, pup);
 		}

@@ -29,13 +29,13 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -1308,7 +1308,7 @@ public final class Effects {
 			if (footing(cast.level, spot) && cast.level.noCollision(caster, box) && cast.level.getWorldBorder().isWithinBounds(spot.x, spot.z)
 					&& cast.level.getBlockStates(box.inflate(0, 0.5, 0)).noneMatch(s -> s.getFluidState().is(FluidTags.LAVA) || s.is(BlockTags.FIRE))) {
 				Vec3 from = caster.position();
-				caster.teleportTo(cast.level, spot.x, spot.y, spot.z, Set.<Relative>of(), caster.getYRot(), caster.getXRot(), false);
+				caster.teleportTo(cast.level, spot.x, spot.y, spot.z, Set.<RelativeMovement>of(), caster.getYRot(), caster.getXRot());
 				caster.resetFallDistance();
 				Vfx.blink(cast.level, from, spot);
 				return;
@@ -3286,7 +3286,7 @@ public final class Effects {
 				continue;
 			}
 			ExpansionVfx.banish(level, t, from, spot);
-			t.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), t.getYRot(), t.getXRot(), false);
+			t.teleportTo(level, spot.x, spot.y, spot.z, Set.<RelativeMovement>of(), t.getYRot(), t.getXRot());
 			t.resetFallDistance();
 			if (t instanceof Mob mob) {
 				mob.getNavigation().stop();

@@ -36,7 +36,7 @@ public final class SporebackContent {
  public static void init() {
   FabricDefaultAttributeRegistry.register(SNAIL,SporebackSnail.attributes());
   SpawnPlacements.register(SNAIL,SpawnPlacementTypes.ON_GROUND,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(type,l,reason,p,r) -> {
-   if(reason!=EntitySpawnReason.NATURAL && reason!=EntitySpawnReason.CHUNK_GENERATION)return true;
+   if(reason!=MobSpawnType.NATURAL && reason!=MobSpawnType.CHUNK_GENERATION)return true;
    var settings=Config.get().wildlife();if(!settings.spawns("sporeback_snail") || r.nextDouble()>=Math.min(1,.3*settings.spawnMultiplier()))return false;
    var ground=l.getBlockState(p.below());return p.getY()<48 && !l.canSeeSky(p) && l.getMaxLocalRawBrightness(p)<=8 && l.getFluidState(p).isEmpty() && (ground.is(Blocks.MOSS_BLOCK) || ground.is(Blocks.CLAY)) && SporebackRules.room(l.getEntities(type,new AABB(p).inflate(24),e -> e.isAlive()).size());
   });

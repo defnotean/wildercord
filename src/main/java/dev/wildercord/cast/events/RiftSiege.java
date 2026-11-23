@@ -29,7 +29,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -191,7 +191,7 @@ public final class RiftSiege {
 		if (!level.isPositionEntityTicking(net.minecraft.core.BlockPos.containing(base))) {
 			return;
 		}
-		ArmorStand stand = EntityType.ARMOR_STAND.create(level, EntitySpawnReason.EVENT);
+		ArmorStand stand = EntityType.ARMOR_STAND.create(level, MobSpawnType.EVENT);
 		if (stand == null) {
 			return;
 		}

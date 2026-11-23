@@ -31,7 +31,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -291,7 +291,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			|| master.level() == level && master.distanceToSqr(player) < 64 * 64)) {
 			return refuse(player, "occupied");
 		}
-		SwordMaster master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.TRIGGERED);
+		SwordMaster master = AuraWorld.SWORD_MASTER.create(level, MobSpawnType.TRIGGERED);
 		if (master == null) {
 			return refuse(player, "obstructed");
 		}
@@ -1609,9 +1609,8 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 	}
 
 	@Override
-	public boolean teleportTo(ServerLevel level, double x, double y, double z, Set<net.minecraft.world.entity.Relative> relatives, float yRot, float xRot,
-			boolean resetCamera) {
-		return !underSpell() && super.teleportTo(level, x, y, z, relatives, yRot, xRot, resetCamera);
+	public boolean teleportTo(ServerLevel level, double x, double y, double z, Set<net.minecraft.world.entity.RelativeMovement> relatives, float yRot, float xRot) {
+		return !underSpell() && super.teleportTo(level, x, y, z, relatives, yRot, xRot);
 	}
 
 	@Override

@@ -18,7 +18,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.monster.Blaze;
@@ -962,7 +962,7 @@ final class FusedStorm {
 	}
 
 	private static void move(LivingEntity t, ServerLevel level, Vec3 to) {
-		t.teleportTo(level, to.x, to.y, to.z, Set.<Relative>of(), t.getYRot(), t.getXRot(), false);
+		t.teleportTo(level, to.x, to.y, to.z, Set.<RelativeMovement>of(), t.getYRot(), t.getXRot());
 		t.resetFallDistance();
 		if (t instanceof Mob mob) {
 			mob.getNavigation().stop();

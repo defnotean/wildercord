@@ -6,7 +6,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ public final class WeaversSilkStowTest implements FabricClientGameTest {
 	/** Hangs the player in the air against the stone wall, with nothing under them. */
 	private static void hang(MinecraftServer s) {
 		var p = p(s);
-		p.teleportTo(s.overworld(), .7, 103, .5, Set.<Relative>of(), 90, 0, false);
+		p.teleportTo(s.overworld(), .7, 103, .5, Set.<RelativeMovement>of(), 90, 0);
 		p.setDeltaMovement(0, 0, 0);
 	}
 	@SuppressWarnings("unchecked")

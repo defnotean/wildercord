@@ -208,8 +208,8 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					plan.at(10, () -> {
 						MobEffectInstance resistance = player.getEffect(MobEffects.DAMAGE_RESISTANCE);
 						int duration = resistance.getDuration();
-						check(player.teleportTo(plan.level.getServer().getLevel(Level.NETHER), .5, 120, .5, Set.of(), 0, 0, false), "The actual original body leaves its world");
-						check(player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0, false), "The actual body returns in the same callback without polling the old lease");
+						check(player.teleportTo(plan.level.getServer().getLevel(Level.NETHER), .5, 120, .5, Set.of(), 0, 0), "The actual original body leaves its world");
+						check(player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0), "The actual body returns in the same callback without polling the old lease");
 						ward(player, false);
 						check(!unmoved.active() && !unmoved.grant(), "A round trip permanently retires the old Unmoved receipt");
 						check(player.getEffect(MobEffects.DAMAGE_RESISTANCE) == resistance && resistance.getDuration() == duration,
@@ -278,13 +278,13 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					check(incoming[0].valid() && freshWard[0].active(), "A destination receipt inside the setter remains eligible");
 				});
 				setterProbe = probe;
-				try { check(plan.player.teleportTo(next, .5, 120, .5, Set.of(), 0, 0, false), "The native transition completes normally through both passive observers"); }
+				try { check(plan.player.teleportTo(next, .5, 120, .5, Set.of(), 0, 0), "The native transition completes normally through both passive observers"); }
 				finally { setterProbe = null; }
 				if (probe.failure != null) throw new AssertionError("Native setter capture probe", probe.failure);
 				check(probe.heads == 1 && probe.tails == 1, "Exactly one original setter invocation was observed");
 				check(!old.valid() && !oldWard.active() && !outgoing[0].valid() && incoming[0].valid() && freshWard[0].active(),
 					"Completion retains only the actual incoming generation");
-				check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0, false), "The actual body returns to its original world");
+				check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0), "The actual body returns to its original world");
 				check(!outgoing[0].valid() && !incoming[0].valid() && !freshWard[0].active(), "Neither old outgoing nor intermediate incoming receipts revive on return");
 			});
 		});
@@ -303,10 +303,10 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 			};
 			lateTransition = transition -> check(destination[0].valid() && freshWard[0].active(), "Default and late origin listeners cannot retire a fresh destination generation");
 			plan.at(1, () -> {
-				check(plan.player.teleportTo(next, .5, 120, .5, Set.of(), 0, 0, false), "Real connected body crosses worlds");
+				check(plan.player.teleportTo(next, .5, 120, .5, Set.of(), 0, 0), "Real connected body crosses worlds");
 				check(destination[0] != null && destination[0].valid() && freshWard[0].active(), "New generation remains valid after all AFTER listeners complete");
 				earlyTransition = null; lateTransition = null;
-				check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0, false), "Body returns after destination-grant check");
+				check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0), "Body returns after destination-grant check");
 				check(!destination[0].valid() && !freshWard[0].active(), "The next real departure retires the destination generation");
 			});
 		});
@@ -326,7 +326,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 					check(transition.origin() == plan.level && transition.destination() == next, "Outer native transition is A to B");
 					if (captureIntermediate) middleB[0] = ReleasedArtOwner.capture(plan.player);
 					// The false case intentionally never captures or polls ANY receipt in B before returning to A.
-					check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0, false), "Early outer listener performs actual nested B to A transition");
+					check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0), "Early outer listener performs actual nested B to A transition");
 				} else if (early[0] == 2) {
 					check(transition.origin() == next && transition.destination() == plan.level, "Inner native transition returns B to A");
 					freshA[0] = ReleasedArtOwner.capture(plan.player); freshWard[0] = grant(plan.player);
@@ -350,7 +350,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 				}
 			};
 			plan.at(1, () -> {
-				check(plan.player.teleportTo(next, .5, 120, .5, Set.of(), 0, 0, false), "Native outer teleport dispatches the adversarial listener order");
+				check(plan.player.teleportTo(next, .5, 120, .5, Set.of(), 0, 0), "Native outer teleport dispatches the adversarial listener order");
 				check(plan.player.level() == next && early[0] == 3 && late[0] == 3, "Nested, stale outer and follow callbacks all actually ran");
 				check(!oldA.valid() && !freshA[0].valid() && followB[0].valid(), "Actual assignment generation, not world equality, owns the surviving release");
 				if (captureIntermediate) check(!middleB[0].valid(), "The captured intermediate B release is retired too");
@@ -358,7 +358,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 			});
 			plan.at(2, () -> {
 				check(!oldA.valid() && !freshA[0].valid() && !freshMirror[0].active() && followB[0].valid(), "Already-released Mirror and delayed-owner validity keep the correct generation on the next native tick");
-				check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0, false), "Body returns to A");
+				check(plan.player.teleportTo(plan.level, .5, 120, .5, Set.of(), 0, 0), "Body returns to A");
 				check(!followB[0].valid(), "The return retires the follow's generation");
 			});
 		});
@@ -372,7 +372,7 @@ public final class ArtWardsHardeningTest implements FabricClientGameTest {
 			earlyTransition = null; lateTransition = null; earlyRespawn = null; lateRespawn = null; setterProbe = null; ArtWards.clear();
 			player.setGameMode(GameType.SURVIVAL); player.removeAllEffects(); player.getInventory().clearContent();
 			player.setHealth(player.getMaxHealth()); player.setNoGravity(true); player.setDeltaMovement(Vec3.ZERO);
-			check(player.teleportTo(server.overworld(), .5, 120, .5, Set.of(), 0, 0, false), "The connected fixture is in the original world");
+			check(player.teleportTo(server.overworld(), .5, 120, .5, Set.of(), 0, 0), "The connected fixture is in the original world");
 			player.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
 			ward(player, false);
 			active = new Plan(name, player); body.accept(active);

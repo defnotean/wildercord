@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -273,7 +273,7 @@ public class FoxfireKitsune extends WildMonster {
 		LivingEntity target = getTarget();
 		FoxfireKitsune swap = null;
 		for (int i = 0; i < KitsuneRules.DECOYS; i++) {
-			FoxfireKitsune copy = MonsterContent.FOXFIRE_KITSUNE.create(level, EntitySpawnReason.MOB_SUMMONED);
+			FoxfireKitsune copy = MonsterContent.FOXFIRE_KITSUNE.create(level, MobSpawnType.MOB_SUMMONED);
 			if (copy == null) {
 				continue;
 			}

@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.cast.Fishing;
-import net.minecraft.util.context.ContextKey;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -30,7 +30,7 @@ public record FishedRuneFunction(boolean magic) implements LootItemFunction {
 	}
 
 	@Override
-	public Set<ContextKey<?>> getReferencedContextParams() {
+	public Set<LootContextParam<?>> getReferencedContextParams() {
 		return Set.of(LootContextParams.THIS_ENTITY);
 	}
 

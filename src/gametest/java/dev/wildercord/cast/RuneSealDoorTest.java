@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import java.util.Set;
@@ -68,7 +68,7 @@ public final class RuneSealDoorTest implements FabricClientGameTest {
 				build(l);
 				var p = s.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SURVIVAL);
-				p.teleportTo(l, 0.5, 101, 1.5, Set.<Relative>of(), 0, 0, false);
+				p.teleportTo(l, 0.5, 101, 1.5, Set.<RelativeMovement>of(), 0, 0);
 			});
 			c.waitTicks(5);
 

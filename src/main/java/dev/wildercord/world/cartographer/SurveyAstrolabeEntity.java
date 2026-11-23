@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.*;
 import net.minecraft.sounds.*;
 import net.minecraft.world.*;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.*;
@@ -48,7 +48,7 @@ public final class SurveyAstrolabeEntity extends BlockEntity {
 			} else say(player, "waiting");
 			return InteractionResult.SUCCESS;
 		}
-		var cartographer = CartographerContent.CARTOGRAPHER.create(server, EntitySpawnReason.STRUCTURE);
+		var cartographer = CartographerContent.CARTOGRAPHER.create(server, MobSpawnType.STRUCTURE);
 		if (cartographer == null) return InteractionResult.FAIL;
 		cartographer.bind(ring.pedestal(), worldPosition);
 		if (!server.addFreshEntity(cartographer)) return InteractionResult.FAIL;

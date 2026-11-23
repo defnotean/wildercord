@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -68,7 +68,7 @@ public final class MasterSchoolMotionChecks {
 				Vec3 look = focus.subtract(camera.add(0, observer.getEyeHeight(), 0));
 				float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
 				float pitch = (float) -Math.toDegrees(Math.atan2(look.y, look.horizontalDistance()));
-				observer.teleportTo(level, camera.x, camera.y, camera.z, Set.of(), yaw, pitch, false);
+				observer.teleportTo(level, camera.x, camera.y, camera.z, Set.of(), yaw, pitch);
 			});
 			context.runOnClient(MastersNpcCaptureProbe::configure);
 			context.waitTicks(10);
@@ -146,7 +146,7 @@ public final class MasterSchoolMotionChecks {
 			Vec3 look = focus.subtract(camera.add(0, observer.getEyeHeight(), 0));
 			float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
 			float pitch = (float) -Math.toDegrees(Math.atan2(look.y, look.horizontalDistance()));
-			observer.teleportTo(level, camera.x, camera.y, camera.z, Set.of(), yaw, pitch, false);
+			observer.teleportTo(level, camera.x, camera.y, camera.z, Set.of(), yaw, pitch);
 			observer.setDeltaMovement(Vec3.ZERO);
 		});
 	}
@@ -160,7 +160,7 @@ public final class MasterSchoolMotionChecks {
 			target.moveTo(origin.x, origin.y, origin.z + 4, 180, 0);
 			target.setYHeadRot(180); target.setYBodyRot(180);
 			level.addNewPlayer(target);
-			master = AuraWorld.SWORD_MASTER.create(level, EntitySpawnReason.COMMAND);
+			master = AuraWorld.SWORD_MASTER.create(level, MobSpawnType.COMMAND);
 			check(master != null, "The registered master must exist");
 			master.setDiscipline(school);
 			master.moveTo(origin.x, origin.y, origin.z, 0, 0);
@@ -185,7 +185,7 @@ public final class MasterSchoolMotionChecks {
 				&& Math.abs(master.auraRemaining() - (MastersRules.AURA_MAX - MastersRules.ATTACK_COST)) < .01, "Opening and its paid recovery must complete naturally");
 			// Challenger fixture placement only between completed attacks, never inside a captured form.
 			target.setHealth(HEALTH);
-			target.teleportTo(level, origin.x, origin.y, origin.z + 4, Set.of(), 180, 0, false);
+			target.teleportTo(level, origin.x, origin.y, origin.z + 4, Set.of(), 180, 0);
 			target.setDeltaMovement(Vec3.ZERO);
 			master.setTarget(target);
 			return true;

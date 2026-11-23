@@ -12,7 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -102,7 +102,7 @@ public final class Spirits {
 		int lifetime = (int) Math.round((shadow ? 15 : 20) * 20 * duration);
 		LivingEntity target = caster.getLastHurtMob() != null && caster.getLastHurtMob().isAlive() ? caster.getLastHurtMob() : null;
 		for (int i = 0; i < count; i++) {
-			Wolf wolf = EntityType.WOLF.create(level, EntitySpawnReason.MOB_SUMMONED);
+			Wolf wolf = EntityType.WOLF.create(level, MobSpawnType.MOB_SUMMONED);
 			if (wolf == null) {
 				continue;
 			}

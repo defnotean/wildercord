@@ -10,7 +10,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.AABB;
 import java.util.Set;
@@ -37,7 +37,7 @@ public final class BarrowBearerGenerationTest implements FabricClientGameTest {
 			world.getServer().runOnServer(s -> {
 				var p = s.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.SPECTATOR);
-				p.teleportTo(s.overworld(), found.getX() + .5, 140, found.getZ() + .5, Set.<Relative>of(), 0, 60, false);
+				p.teleportTo(s.overworld(), found.getX() + .5, 140, found.getZ() + .5, Set.<RelativeMovement>of(), 0, 60);
 			});
 			// Generation now runs as it would for any player arriving; a hang shows up as the run timing out here.
 			var box = new AABB(found.getX() - 64, -64, found.getZ() - 64, found.getX() + 64, 320, found.getZ() + 64);

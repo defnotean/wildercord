@@ -19,7 +19,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
@@ -343,7 +343,7 @@ public final class WayEffects {
 		Vec3 from = player.position();
 		Vec3 look = heart.subtract(spot.add(0, player.getEyeHeight(), 0));
 		float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
-		player.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), yaw, player.getXRot(), false);
+		player.teleportTo(level, spot.x, spot.y, spot.z, Set.<RelativeMovement>of(), yaw, player.getXRot());
 		player.resetFallDistance();
 		player.setDeltaMovement(Vec3.ZERO);
 		long now = level.getGameTime();

@@ -3,7 +3,7 @@ package dev.wildercord.mixin;
 import dev.wildercord.world.dungeons.DungeonWards;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ServerExplosion;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Final;
@@ -20,7 +20,7 @@ import java.util.List;
  * No explosion blasts a dungeon's warded arena or vault open (TNT, creepers, fireballs, a spell's blast): the blocks
  * it would break there stay. Anything a player put there goes as usual.
  */
-@Mixin(ServerExplosion.class)
+@Mixin(Explosion.class)
 public abstract class ServerExplosionMixin {
 	@Shadow
 	@Final

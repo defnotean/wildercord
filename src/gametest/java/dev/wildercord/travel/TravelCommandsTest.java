@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptio
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 
@@ -22,7 +22,7 @@ public final class TravelCommandsTest implements FabricClientGameTest {
 	private static void check(boolean x, String why) { if (!x) throw new AssertionError(why); }
 	private static ServerPlayer p(MinecraftServer s) { return s.getPlayerList().getPlayers().getFirst(); }
 	private static void put(MinecraftServer s, double x) {
-		p(s).teleportTo(s.overworld(), x, 101, 0.5, Set.<Relative>of(), 0, 0, false);
+		p(s).teleportTo(s.overworld(), x, 101, 0.5, Set.<RelativeMovement>of(), 0, 0);
 		p(s).setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
 	}
 	private static boolean near(MinecraftServer s, double x) { return Math.abs(p(s).getX() - x) < 2 && Math.abs(p(s).getZ() - 0.5) < 2; }

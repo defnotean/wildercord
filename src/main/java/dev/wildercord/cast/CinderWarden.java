@@ -22,7 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -1354,14 +1354,14 @@ public class CinderWarden extends DungeonBoss {
 		announce(level, "message.wildercord.cinder_warden_phase." + phase, COLOR);
 		// Two of its keepers climb out of the forge: Runebound, carrying fire (Adepts the second time).
 		for (int i = 0; i < 2; i++) {
-			Mob guard = EntityType.WITHER_SKELETON.create(level, EntitySpawnReason.MOB_SUMMONED);
+			Mob guard = EntityType.WITHER_SKELETON.create(level, MobSpawnType.MOB_SUMMONED);
 			if (guard == null) {
 				continue;
 			}
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 spot = CastEngine.ground(level, c.add(Math.cos(a) * 6, 2, Math.sin(a) * 6));
 			guard.moveTo(spot.x, spot.y, spot.z, 0, 0);
-			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
 			Runebound.bind(guard, i == 0 ? List.of(Runes.BOLT, Runes.FIRE) : List.of(Runes.ARC, Runes.FROST), phase == 3);
 			level.addFreshEntity(guard);
 			minion(guard);

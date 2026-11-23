@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -219,7 +219,7 @@ abstract class WaterPiece extends DungeonPiece {
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		Entity entity = type.create(level.getLevel(), EntitySpawnReason.STRUCTURE);
+		Entity entity = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
 		if (entity == null) {
 			return;
 		}
@@ -227,7 +227,7 @@ abstract class WaterPiece extends DungeonPiece {
 		entity.addTag(RESIDENT);
 		if (entity instanceof net.minecraft.world.entity.Mob mob) {
 			mob.setPersistenceRequired();
-			mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.STRUCTURE, null);
+			mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null);
 		}
 		level.addFreshEntityWithPassengers(entity);
 	}

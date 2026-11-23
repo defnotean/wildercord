@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -95,7 +95,7 @@ public final class ArenaTreeClearingTest implements FabricClientGameTest {
 
 				var p = s.getPlayerList().getPlayers().getFirst();
 				p.setGameMode(GameType.CREATIVE);
-				p.teleportTo(l, box.maxX() + ArenaTrees.OVERHANG + 22.5, 118, cz + 0.5, Set.<Relative>of(), 90, 32, false);
+				p.teleportTo(l, box.maxX() + ArenaTrees.OVERHANG + 22.5, 118, cz + 0.5, Set.<RelativeMovement>of(), 90, 32);
 				p.getAbilities().flying = true;
 				p.onUpdateAbilities();
 			});

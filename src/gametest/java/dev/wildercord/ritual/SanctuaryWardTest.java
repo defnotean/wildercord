@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.GameType;
@@ -27,7 +27,7 @@ public final class SanctuaryWardTest implements FabricClientGameTest {
 
 	private static Mob spawn(ServerPlayer player, EntityType<? extends Mob> type, double dx) {
 		ServerLevel level = ((ServerLevel) player.level());
-		Mob mob = type.create(level, EntitySpawnReason.COMMAND);
+		Mob mob = type.create(level, MobSpawnType.COMMAND);
 		mob.setNoAi(true);
 		mob.setPos(player.getX() + dx, player.getY(), player.getZ() + 4);
 		level.addFreshEntity(mob);

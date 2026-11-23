@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -35,7 +35,7 @@ public final class PracticeRoom {
    long now=server.getTickCount();
    if(now%1200==0) ENTERED.values().removeIf(t -> now<t || now-t>=PracticeRules.COOLDOWN_TICKS);
    for(ServerPlayer player:server.getPlayerList().getPlayers()) if(player.level().dimension().equals(DIMENSION) && player.getY()<78)
-    player.teleportTo((ServerLevel) player.level(),.5,81,.5,Set.<Relative>of(),0,0,false);
+    player.teleportTo((ServerLevel) player.level(),.5,81,.5,Set.<RelativeMovement>of(),0,0);
   });
  }
  public static int enter(ServerPlayer player) {
@@ -50,7 +50,7 @@ public final class PracticeRoom {
   if(!inside) ENTERED.put(player.getUUID(),now);
   if(!player.level().dimension().equals(DIMENSION)) player.setAttached(RETURN,GlobalPos.of(player.level().dimension(),player.blockPosition()));
   build(world);
-  player.teleportTo(world,.5,81,.5,Set.<Relative>of(),0,0,false);
+  player.teleportTo(world,.5,81,.5,Set.<RelativeMovement>of(),0,0);
   if(world.getEntitiesOfClass(TrainingDummy.class,new AABB(-12,79,-8,13,85,33)).isEmpty()) targets(world,3,false);
   player.sendSystemMessage(Component.translatable("message.wildercord.practice.enter"));
   return 1;
@@ -60,7 +60,7 @@ public final class PracticeRoom {
   if(back==null || !player.level().dimension().equals(DIMENSION)) return 0;
   ServerLevel world=player.level().getServer().getLevel(back.dimension());
   if(world==null)return 0;
-  var at=back.pos(); player.teleportTo(world,at.getX()+.5,at.getY(),at.getZ()+.5,Set.<Relative>of(),player.getYRot(),player.getXRot(),false);
+  var at=back.pos(); player.teleportTo(world,at.getX()+.5,at.getY(),at.getZ()+.5,Set.<RelativeMovement>of(),player.getYRot(),player.getXRot());
   player.removeAttached(RETURN);
   return 1;
  }
@@ -69,7 +69,7 @@ public final class PracticeRoom {
   count=Math.clamp(count,1,24);
   world.getEntitiesOfClass(TrainingDummy.class,new AABB(-12,79,-8,13,85,33)).forEach(TrainingDummy::discard);
   for(int i=0;i<count;i++) {
-   var dummy=WildercordEntities.TRAINING_DUMMY.create(world,EntitySpawnReason.TRIGGERED);
+   var dummy=WildercordEntities.TRAINING_DUMMY.create(world,MobSpawnType.TRIGGERED);
    if(dummy==null)continue;
    dummy.setPos((i%5-2)*4+.5,81,10+(i/5)*4+.5);
    dummy.setPracticeMoving(moving); world.addFreshEntity(dummy);

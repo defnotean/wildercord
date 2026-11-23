@@ -12,7 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -103,7 +103,7 @@ public class MossbackTortoise extends Animal {
 	}
 
 	@Override
-	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
+	public  SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
 			 SpawnGroupData group) {
 		Garden here = gardenAt(level, blockPosition());
 		setGarden(here != null ? here : Garden.byId(random.nextInt(Garden.values().length)));
@@ -215,7 +215,7 @@ public class MossbackTortoise extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		MossbackTortoise baby = Wildlife.MOSSBACK_TORTOISE.create(level, EntitySpawnReason.BREEDING);
+		MossbackTortoise baby = Wildlife.MOSSBACK_TORTOISE.create(level, MobSpawnType.BREEDING);
 		if (baby != null) {
 			Garden here = gardenAt(level, blockPosition());
 			baby.setGarden(here != null ? here : (random.nextBoolean() || !(partner instanceof MossbackTortoise other) ? garden() : other.garden()));

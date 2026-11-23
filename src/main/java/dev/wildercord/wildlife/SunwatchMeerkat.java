@@ -18,7 +18,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -324,7 +324,7 @@ public class SunwatchMeerkat extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, EntitySpawnReason.BREEDING) instanceof SunwatchMeerkat pup ? pup : null;
+		return getType().create(level, MobSpawnType.BREEDING) instanceof SunwatchMeerkat pup ? pup : null;
 	}
 
 	// ------------------------------------------------------------------ sound: chirps and peeps

@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -333,7 +333,7 @@ public class ThunderwingHarpy extends WildMonster {
 		if (mark == null) {
 			return;
 		}
-		LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
+		LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, MobSpawnType.TRIGGERED);
 		if (bolt != null) {
 			// The flash and the thunder only: the harm is the harpy's own, through every spell defence.
 			bolt.setVisualOnly(true);

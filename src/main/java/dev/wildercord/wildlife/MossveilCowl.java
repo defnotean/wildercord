@@ -13,7 +13,8 @@ import net.minecraft.server.level.*;
 import net.minecraft.world.effect.*;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.equipment.*;
+import net.minecraft.world.item.*;
+import dev.wildercord.compat.McArmor;
 import net.minecraft.world.phys.Vec3;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
@@ -23,8 +24,8 @@ import dev.wildercord.compat.McAttachments;
 public final class MossveilCowl{
  public static final int PREP=40,REST=200,MAX_TRIM=MossveilRules.MAX_TRIM;
  private static ResourceKey<Item> key(){return ResourceKey.create(Registries.ITEM,Wildercord.id("mossveil_cowl"));}
- private static final ArmorMaterial MATERIAL=new ArmorMaterial(6,Map.of(ArmorType.HELMET,1,ArmorType.CHESTPLATE,0,ArmorType.LEGGINGS,0,ArmorType.BOOTS,0),5,net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER,0,0,net.minecraft.tags.TagKey.create(Registries.ITEM,Wildercord.id("repairs_mossveil")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:mossveil"));
- public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,key(),new AuraWorld.Lore("mossveil_cowl",MATERIAL.humanoidProperties(new Item.Properties().setId(key()), ArmorType.HELMET).rarity(Rarity.UNCOMMON)));
+ private static final net.minecraft.core.Holder<ArmorMaterial> MATERIAL=McArmor.material(Map.of(ArmorItem.Type.HELMET,1,ArmorItem.Type.CHESTPLATE,0,ArmorItem.Type.LEGGINGS,0,ArmorItem.Type.BOOTS,0),5,0,0,net.minecraft.tags.TagKey.create(Registries.ITEM,Wildercord.id("repairs_mossveil")),dev.wildercord.compat.McSpawnEgg.armorModel("wildercord:mossveil"));
+ public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,key(),new McArmor.LoreArmor("mossveil_cowl",MATERIAL,ArmorItem.Type.HELMET,new Item.Properties().setId(key()).rarity(Rarity.UNCOMMON)));
  public static final AttachmentType<Long> READY=McAttachments.create(Wildercord.id("mossveil_filter_ready"),b->b.initializer(()->0L).persistent(com.mojang.serialization.Codec.LONG).copyOnDeath());
  private record Facts(int amplifier,boolean ambient,boolean visible,boolean icon){static Facts of(MobEffectInstance e){return new Facts(e.getAmplifier(),e.isAmbient(),e.isVisible(),e.showIcon());}boolean matches(MobEffectInstance e){return e!=null&&amplifier==e.getAmplifier()&&ambient==e.isAmbient()&&visible==e.isVisible()&&icon==e.showIcon();}}
  private static final class Prep{boolean operating;ItemStack worn;ServerLevel world;MossveilDormouse pet;MossveilHome.Home home;MobEffectInstance poison;Facts facts;Vec3 planted;int ticks;void clear(){worn=null;world=null;pet=null;home=null;poison=null;facts=null;planted=null;ticks=0;}}

@@ -22,7 +22,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -269,7 +269,7 @@ public abstract class DungeonBoss extends Monster {
 
 	/** Sets it up over its altar: its home, its first pause, then into the world. */
 	protected static <T extends DungeonBoss> T place(ServerLevel level, EntityType<T> type, BlockPos altar, double lift) {
-		T boss = type.create(level, EntitySpawnReason.TRIGGERED);
+		T boss = type.create(level, MobSpawnType.TRIGGERED);
 		if (boss == null) {
 			return null;
 		}

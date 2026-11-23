@@ -3,21 +3,21 @@ package dev.wildercord.content;
 import dev.wildercord.Wildercord;
 import dev.wildercord.world.ResidueRules.Kind;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.sounds.SoundEvents;
+
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
-import net.minecraft.world.item.Items;
+
+
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.component.Consumable;
-import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+
+
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -41,10 +41,7 @@ public final class Reagents {
 		dev.wildercord.compat.McBlocksAndItems.cookingFuelProperties(new Item.Properties(), 800, 1.25F));
 	public static final Item EVERFROST_SHARD = register(Kind.EVERFROST, new Item.Properties());
 	public static final Item FULGURITE_SHARD = register(Kind.FULGURITE, new Item.Properties());
-	public static final Item BOTTLED_GALE = register(Kind.LINGERING_EDDY, new Item.Properties().stacksTo(16)
-		.component(DataComponents.CONSUMABLE, Consumable.builder().consumeSeconds(1.2F).animation(ItemUseAnimation.DRINK).sound(SoundEvents.GENERIC_DRINK)
-			.hasConsumeParticles(false).onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 600))).build())
-		.usingConvertsTo(Items.GLASS_BOTTLE));
+	public static final Item BOTTLED_GALE = register(Kind.LINGERING_EDDY, new Item.Properties().stacksTo(16));
 	public static final Item GEODE_GRIT = register(Kind.RIVEN_STONE, new Item.Properties());
 	public static final Item WILDBLOOM_PETAL = register(Kind.WILDBLOOM, new Item.Properties());
 	public static final Item HOLLOW_DUST = register(Kind.VOID_SCAR, new Item.Properties().rarity(Rarity.UNCOMMON));

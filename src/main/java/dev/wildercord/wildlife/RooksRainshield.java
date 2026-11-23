@@ -56,7 +56,7 @@ public final class RooksRainshield {
  // The final pivot point is retained: a draw requires at least five durability, so wear cannot break ownership during callbacks.
  public static final Item ITEM=Registry.register(BuiltInRegistries.ITEM,key(),new AuraWorld.Lore("rooks_rainshield",new Item.Properties().setId(key()).durability(65).rarity(Rarity.RARE)){
   @Override public int getUseDuration(ItemStack stack,LivingEntity e){return PREP+WINDOW+1;}
-  @Override public ItemUseAnimation getUseAnimation(ItemStack stack){return ItemUseAnimation.BLOCK;}
+  @Override public UseAnim getUseAnimation(ItemStack stack){return UseAnim.BLOCK;}
   @Override public InteractionResult interactLivingEntity(ItemStack stack,Player user,LivingEntity target,InteractionHand h){
    if(!(user instanceof ServerPlayer p))return InteractionResult.SUCCESS;
    if(!(target instanceof ServerPlayer r)||p==r||!pair(p,r)||!stack.is(ITEM)||p.getItemInHand(h)!=stack||p.getAttached(FAN)!=null||p.getAttached(COVER)!=null||r.getAttached(COVER)!=null)return InteractionResult.FAIL;

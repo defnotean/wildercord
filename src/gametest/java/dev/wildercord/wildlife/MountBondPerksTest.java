@@ -10,11 +10,11 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.item.ItemStack;
@@ -83,8 +83,8 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 					for (int y = 101; y <= 110; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
 				p(s).setGameMode(GameType.SURVIVAL);
-				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<Relative>of(), 0, 10, false);
-				RidgebackStag stag = MountContent.RIDGEBACK_STAG.create(l, EntitySpawnReason.COMMAND);
+				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 10);
+				RidgebackStag stag = MountContent.RIDGEBACK_STAG.create(l, MobSpawnType.COMMAND);
 				stag.moveTo(0.5, 101, 1.5, 0, 0);
 				l.addFreshEntity(stag);
 				stag.tameWithName(p(s));
@@ -121,18 +121,18 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 				check(MountBonds.grow(l, p(s), stag(s), 6000).level() == MountBondRules.STRIKE_LEVEL, "Enough points make bond 5");
 				perks(stag(s), 5, "At bond 5");
 				double x = stag(s).getX(), z = stag(s).getZ();
-				var pig = EntityType.PIG.create(l, EntitySpawnReason.COMMAND);
+				var pig = EntityType.PIG.create(l, MobSpawnType.COMMAND);
 				pig.moveTo(x + 2, 101, z, 0, 0);
 				pig.setNoAi(true);
 				l.addFreshEntity(pig);
 				pigId = pig.getUUID();
-				Wolf wolf = EntityType.WOLF.create(l, EntitySpawnReason.COMMAND);
+				Wolf wolf = EntityType.WOLF.create(l, MobSpawnType.COMMAND);
 				wolf.moveTo(x - 2, 101, z, 0, 0);
 				wolf.setNoAi(true);
 				wolf.tame(p(s));
 				l.addFreshEntity(wolf);
 				wolfId = wolf.getUUID();
-				stag(s).teleportTo(l, x, 105, z, Set.<Relative>of(), 0, 0, false);
+				stag(s).teleportTo(l, x, 105, z, Set.<RelativeMovement>of(), 0, 0);
 			});
 			c.waitTicks(30);
 			w.getServer().runOnServer(s -> {
