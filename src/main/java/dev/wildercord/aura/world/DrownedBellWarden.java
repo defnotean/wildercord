@@ -195,6 +195,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	 * {@link BellWardenRules#GUARD_EVERY} ticks, nearest first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
+		if(getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var box=new AABB(Vec3.atLowerCornerOf(hallMin),Vec3.atLowerCornerOf(hallMax).add(1,1,1));
 		var b=bell();
 		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof DrownedBellWarden) && inHall(e.position(),0))
@@ -212,8 +213,9 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 	/** The nearest player in the hall close enough to its vigil to wake it, if any. */
 	private ServerPlayer wakeful(ServerLevel level){
 		var t=spot();
+		boolean rush=getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inHall(p.position(),0)
-			&& BellWardenRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z)).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
+			&& (rush || BellWardenRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z))).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
 
 	private void dormant(ServerLevel level){
@@ -819,7 +821,10 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		if(source.getEntity() instanceof LivingEntity e && source.getDirectEntity()==e && e.distanceToSqr(this)<5*5){e.knockback(.8,getX()-e.getX(),getZ()-e.getZ());e.hasImpulse=true;}
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);Guardians.reward(server,this,BellWardenRules.TIER,bar,source);bar.removeAllPlayers();}
+		if(level() instanceof ServerLevel server){
+			Feels.sound(server,bell(),"aura_bell_warden_death",1.8F,1);Guardians.reward(server,this,BellWardenRules.TIER,bar,source);bar.removeAllPlayers();
+			if(bound && !getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,LairRespawns.Entry.simple("drowned_bell_warden",vigil,rest,hallMin,hallMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+		}
 		super.die(source);
 	}
 	@Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource source){return null;}

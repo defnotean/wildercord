@@ -89,7 +89,10 @@
         "FxSupportMobMixin",
         "FxSupportExplosionMixin",
         "SignBlockEntityMixin",
-        "PotionBrewingMixin"
+        "PotionBrewingMixin",
+        "OathholdSnowMixin",
+        "OathholdWeatherSnowMixin",
+        "RangedAttributeMaxHealthMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

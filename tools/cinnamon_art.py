@@ -76,6 +76,43 @@ cube(40,100,1,1,1,(196,64,122))             # the knot
 cube(46,100,2,2,1,(240,116,170))            # the loops
 draw.point((47,101), fill=(255,186,214,255)); draw.point((49,101), fill=(255,186,214,255))
 
+# Harness saddle pad, girth straps, twin side chests + latches, and ornate Grand Bow.
+saddle_leather = (112, 62, 34)
+strap_leather = (92, 52, 28)
+oak_wood = (156, 108, 56)
+gold_trim = (242, 200, 68)
+royal_crimson = (216, 46, 114)
+
+cube(60, 82, 12, 1, 10, saddle_leather)
+# Stitch highlights & crimson trim on saddle pad top (x=70..82, y=82..92)
+draw.rectangle((70, 82, 81, 91), outline=(165, 38, 48, 255))
+for rx in (71, 80):
+    for ry in (83, 90):
+        draw.point((rx, ry), fill=gold_trim + (255,))
+cube(60, 96, 12, 9, 2, strap_leather)
+for ry in (99, 103):
+    draw.point((63, ry), fill=gold_trim + (255,))
+    draw.point((75, ry), fill=gold_trim + (255,))
+
+# Twin wooden side chests (u=92, v=96, w=4, h=6, d=7) with crisp plank/iron banding
+cube(92, 96, 4, 6, 7, oak_wood)
+# Top face: 99..103 x 96..103, side faces: y=103..109, x=92..114
+draw.rectangle((99, 96, 102, 102), outline=(58, 56, 62, 255))
+for sx0, sx1 in ((92, 99), (99, 103), (103, 110), (110, 114)):
+    draw.rectangle((sx0, 103, sx1 - 1, 108), outline=(58, 56, 62, 255))
+    draw.line((sx0 + 1, 105, sx1 - 2, 105), fill=(96, 64, 32, 255))
+cube(116, 96, 1, 2, 1, gold_trim)
+
+# Grand Bow: gold gem knot (88,0, 2x2x2), royal crimson loops (98,0, 4x3x2), flowing tails (112,0, 2x3x1)
+cube(88, 0, 2, 2, 2, gold_trim)
+draw.point((90, 2), fill=(255, 110, 165, 255))
+cube(98, 0, 4, 3, 2, royal_crimson)
+for lx in range(98, 110):
+    draw.point((lx, 2), fill=gold_trim + (255,))
+    draw.point((lx, 4), fill=(150, 24, 78, 255))
+cube(112, 0, 2, 3, 1, royal_crimson)
+draw.line((113, 3, 116, 3), fill=gold_trim + (255,))
+
 # Plain black eyes under little angry brows, a shade darker than her face, dipping toward the middle.
 # The fur speckle is smoothed away around them so they read.
 face((59,7,68,10), tan, fur=False, light=8)
@@ -129,3 +166,30 @@ w.line((4, 7, 7, 5, 10, 6), fill=(255, 186, 119, 255))
 w.rectangle((9, 7, 14, 9), fill=(198, 112, 66, 255), outline=(83, 48, 39, 255))
 w.rectangle((7, 7, 8, 8), fill=(55, 40, 36, 255))
 whistle.save(OUT.parents[1]/"item/cinnamon_whistle.png")
+
+# Grand Bow item: royal crimson & gold-trimmed bow with an amethyst gem center.
+grand_bow = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+gb = ImageDraw.Draw(grand_bow)
+crimson, deep_crimson, gold, gold_edge, gem = (216, 46, 114, 255), (146, 24, 76, 255), (242, 200, 68, 255), (168, 120, 28, 255), (192, 122, 255, 255)
+for side in (-1, 1):
+    cx = 8 + side * 5
+    gb.polygon([(8, 6), (cx, 2), (cx + side, 4), (cx + side, 10), (cx, 12), (8, 9)], fill=crimson, outline=deep_crimson)
+    gb.line((8 + side * 2, 5, cx, 3), fill=gold)
+    gb.line((8 + side, 9, 8 + side * 4, 14), fill=crimson)
+    gb.point((8 + side * 4, 14), fill=gold)
+gb.rectangle((6, 5, 9, 9), fill=gold, outline=gold_edge)
+gb.rectangle((7, 6, 8, 8), fill=gem)
+grand_bow.save(OUT.parents[1] / "item/cinnamon_grand_bow.png")
+
+# Flying Harness item: saddle leather, twin oak chests on either side, and sky-white feather wings.
+harness_icon = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+hi = ImageDraw.Draw(harness_icon)
+hi.rectangle((4, 3, 11, 11), fill=(112, 62, 34, 255), outline=(66, 36, 18, 255))
+hi.rectangle((5, 4, 10, 8), fill=(165, 38, 48, 255))
+hi.line((5, 9, 10, 9), fill=(242, 200, 68, 255))
+for cx in (1, 12):
+    hi.rectangle((cx, 6, cx + 2, 12), fill=(156, 108, 56, 255), outline=(58, 56, 62, 255))
+    hi.point((cx + 1, 8), fill=(242, 200, 68, 255))
+hi.line((3, 3, 1, 1), fill=(242, 246, 255, 255))
+hi.line((12, 3, 14, 1), fill=(242, 246, 255, 255))
+harness_icon.save(OUT.parents[1] / "item/cinnamon_harness.png")

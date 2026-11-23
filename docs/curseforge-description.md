@@ -8,7 +8,17 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 **[Read the player guide](https://defnotean.github.io/wildercord/) · [Browse the changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md) · [Report an issue](https://github.com/defnotean/wildercord/issues)**
 
-## New in 0.15.0: Shrine & Sakura
+## New in 0.16.0: Sovereigns & Seas
+
+- **Oathhold Sovereign Citadel City, 750+ Citizens, Oathbound Knights & City Law:** explore a `2,048×2,048` fortified capital with Guild Rank `F–S` requests, battle four articulated **Oathbound Champion Knights**, and watch patrolling guards arrest house-breakers or TNT saboteurs into the temporary **Watch Stockade** while builders reconstruct every damaged block live.
+- **Deep Ocean Expansion & 1:1 High-Voxel Polish:** sail and dive into 5 underwater landmarks (**Coral-Dome Sanctuary**, **Sunken Sovereign Galleon**, **Kelp-Spire Watchtower**, **Hydrothermal Vent Forge**, and **Abyssal Trench Citadel**), befriend **Pearl-Pup**, ride **Lumi-Seahorses**, collect ambergris from **Moon-Whales**, forge the 3D **Abyssal Diving Suit**, **Harpoon**, **Leviathan Glaive**, and **Conch**, and challenge the 14-segment serpent boss **Thalassor**.
+- **Forest White Rabbit & Hollow Tree Portals:** follow the pocket-watch **White Rabbit** to an ancient hollow tree that warps randomly into a crystal cave, a **Wonderland Root-Vault** treasury, or an all-bosses gauntlet.
+- **Cinnamon Upgrades:** party-lick healing for injured owners and teammates, **Cinnamon's Grand Bow** (permanent `3×` growth and boosted power), and **Cinnamon's Flying Harness** (4-rider party flight, 54-slot shared side chests, passive bolts, and a 2–3s hit pause for balance).
+- **Boss & World Polish:** higher boss health pools, timed boss arena respawns, readable perimeter fire embers on custom mobs, and global `StructureClearance` spacing across all 89 structure sets so buildings never spawn inside one another.
+
+0.15.x clients must update before joining. [Read the full 0.16.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.16.0-alpha).
+
+## Earlier in 0.15.0: Shrine & Sakura
 
 - **Four Shrine Cats (`Yuki`, `Odie`, `Freya`, `Kuro`), Cat Sanctuary & Lantern Bathhouse:** conquer the four-tier Japanese pagoda dungeon behind 36 **Karakuri Sentinels** and **Paper Lantern Spirits**, Floor Progression Seals, and Guardian Shrine Aegis to unlock sanctuary buffs and tame all four immortal companion cats with fish or a **Suzu Cat-Bell Charm**, plus clear the steaming **Lantern Bathhouse**.
 - **Four Sakura Villages & six kimono NPCs:** explore **Sakura Village**, **Sakura Canal Harbor**, **Sakura Onsen Village**, and **Sakura Castle-Town**, and trade emeralds with **Tea Masters**, **Shrine Maidens**, **Katana Swordsmiths**, **Lantern Artisans**, **Onsen Hostesses**, and **Koi Canal Fishermen**.
@@ -139,11 +149,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.15.0-alpha
+## Install 0.16.0-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client: a 0.15.0 server needs 0.15.0 players. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.16.0 server needs 0.16.0 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 

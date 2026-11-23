@@ -841,8 +841,8 @@ public final class BondedBlades {
 		holder.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.slips", name.copy().withColor(color),
 			Component.literal(b.who().ownerName())).withColor(0xC8B8A0));
 		if (owner != null && owner != holder) {
-			owner.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.came_home", name.copy().withColor(color),
-				Component.literal(holder.getGameProfile().name())).withColor(0xE8D8B0));
+			owner.displayClientMessage(Component.translatable("message.wildercord.aura.blade.came_home", name.copy().withColor(color),
+				Component.literal(holder.getGameProfile().name())).withColor(0xE8D8B0), false);
 			BladeCeremony.homeFx(holder.level(), from, owner, b.color());
 		} else {
 			BladeCeremony.homeFx(holder.level(), from, null, b.color());
@@ -900,8 +900,8 @@ public final class BondedBlades {
 		ServerPlayer owner = level.getServer().getPlayerList().getPlayer(b.owner());
 		deliver(level.getServer(), owner, b.owner(), blade);
 		if (owner != null) {
-			owner.sendSystemMessage(Component.translatable("message.wildercord.aura.blade.from_the_void", name(blade, b).copy()
-				.withColor(0xFF000000 | b.color())).withColor(0xE8D8B0));
+			owner.displayClientMessage(Component.translatable("message.wildercord.aura.blade.from_the_void", name(blade, b).copy()
+				.withColor(0xFF000000 | b.color())).withColor(0xE8D8B0), false);
 			BladeCeremony.homeFx(owner.level(), owner.position().add(0, 6, 0), owner, b.color());
 		}
 		returns++;

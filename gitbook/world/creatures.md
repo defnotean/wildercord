@@ -33,8 +33,13 @@ For wetland, cave and highland wildlife, see [Lights Along the Bank](luminous-we
 | [Shrine Cats](#shrine-cats) | Cat Sanctuary, Sakura Villages | 4 unique guardians (`Yuki`, `Odie`, `Freya`, `Kuro`) | Sanctuary buffs & unique companion powers | Yield on Sanctuary floors, then tame with fish or Suzu Cat-Bell Charm |
 | [Sakura Villagers](#sakura-villagers) | Cat Sanctuary, Sakura Villages | 2 to 4 per village | Suzu Cat-Bell Charms, Blank Runes, lanterns, golden carrots, salmon | Use an emerald to trade |
 | [Thistle Hedgehog](#thistle-hedgehog) | Meadows, plains and forests | 1 to 3 | Nothing; brings you finds | A tameable pet that forages for you |
+| [White Rabbit](#white-rabbit) | Forests, birch forests, dark forests, taigas, cherry groves | Rare, alone | Leads you to a Hollow Ancient Tree | Step into its portal for a cave, treasure vault, or all bosses at once |
+| [Brine-Merchants](deep-ocean.md) | Coral-Dome Tidefolk Sanctuaries (oceans) | 1 to 3 per sanctuary | Trade inventory | Tidefolk traders dealing in pearls, charts, conches, and sea ramen |
+| [Lumi-Seahorse](deep-ocean.md) | Warm and deep oceans | Small pods | Prismarine Crystals | Tameable 3D underwater mount with burst dash |
+| [Pearl-Pup](deep-ocean.md) | Oceans, coral domes, coasts | 1 to 2 | Raw Cod | Tameable glowing seal pup that sniffs out treasure and pearls |
+| [Singing Moon-Whale](deep-ocean.md) | Deep oceans | Rare, alone or pairs | Star-Barnacle Ambergris | Gentle singing leviathan granting Dolphin's Grace and Conduit Power |
 
-Glimmer Dust, Mossback Scutes, Ember Tufts and Skyray Membranes each brew their potion from an Awkward Potion.
+Glimmer Dust, Mossback Scutes, Ember Tufts and Skyray Membranes each brew their potion from an Awkward Potion. See also the [Deep Ocean Expansion](deep-ocean.md) guide for deep-sea monsters, Thalassor, diving gear, and structures.
 
 ## Glimmerwing
 
@@ -174,12 +179,12 @@ struck it. It peeks out after a few seconds, then uncurls.
 
 Four custom-modeled guardian cats preside over the **Cat Sanctuary** pagoda and stroll peacefully through the four **Sakura Villages**:
 
-- **Yuki** (Floor 1, fluffy charcoal-and-cream longhair with whiskers): yields non-lethally to grant **Whisker Ward** (`Resistance I`), and when tamed bolsters nearby combat defence and leaps on foes.
-- **Odie** (Floor 2, sleepy longhair orange tabby who loafs beside kotatsu hearths): grants **Sunbeam Loaf** (`Regeneration I + Fire Resistance`), and when tamed warms and regenerates nearby owners.
-- **Freya** (Floor 3, plush grey shorthair with rose-pink collar and swinging silver Suzu bell): grants **Silver-Bell Chime** (`Absorption I + Haste I`), and when tamed boosts attack/casting tempo and chimes near allies.
-- **Kuro** (Floor 4 roof master, notched left ear & golden eyes): grants **Night-Stalker Grace** (`Speed II, Strength I, Night Vision`) and unlocks taming for all four cats!
+- **Yuki** (Floor 1, `420` health, fluffy charcoal-and-cream longhair with whiskers): yields non-lethally to grant **Whisker Ward** (`Resistance I`), and when tamed bolsters nearby combat defence and leaps on foes.
+- **Odie** (Floor 2, `540` health, sleepy longhair orange tabby who loafs beside kotatsu hearths): grants **Sunbeam Loaf** (`Regeneration I + Fire Resistance`), and when tamed warms and regenerates nearby owners.
+- **Freya** (Floor 3, `680` health, plush grey shorthair with rose-pink collar and swinging silver Suzu bell): grants **Silver-Bell Chime** (`Absorption I + Haste I`), and when tamed boosts attack/casting tempo and chimes near allies.
+- **Kuro** (Floor 4 roof master, `840` health, notched left ear & golden eyes): grants **Night-Stalker Grace** (`Speed II, Strength I, Night Vision`) and unlocks taming for all four cats!
 
-Tame any cleared quartet cat with cooked salmon/cod or a **Suzu Cat-Bell Charm** (which also rings to call tamed cats back and reunites lost quartet companions). Sneak-click a tamed cat to toggle between loafing/sitting and following; tamed quartet cats never permanently die to owner hits, thorns, or dungeon hazards.
+Tame any cleared quartet cat with cooked salmon/cod or a **Suzu Cat-Bell Charm** (which also rings to call following cats back, unseat resting cats when sneaking, and summon back a fallen companion without ever duplicating sitting or distant cats). Sneak-click a tamed cat to toggle between loafing/sitting and following; tamed quartet cats never permanently die to owner hits, thorns, or dungeon hazards.
 
 ## Sakura Villagers
 
@@ -197,6 +202,21 @@ Six peaceful kimono-clad NPCs bow when greeted and trade role supplies for a sin
 | **Sakura Lantern Artisan** | Vermilion kimono, flat cap, brass spectacles, glowing dangling *chochin* pole | `4x Lantern` |
 | **Sakura Onsen Hostess** | Wisteria-blush *yukata*, gold obi bow, cedar towel bucket | `3x Golden Carrot` |
 | **Sakura Koi Fisherman** | Indigo wave-hem *happi*, weathered *kasa* hat, creel basket, bamboo rod | `4x Raw Salmon` |
+
+## White Rabbit
+
+
+![The pocket-watch White Rabbit leading through the forest toward a gnarled Hollow Ancient Tree doorway with a glowing portal inside](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/white-rabbit-tree.jpg)
+<span>Following the White Rabbit to a Hollow Ancient Tree portal.</span>
+
+A snowy white rabbit wearing a crimson collar ribbon and a brass pocket watch spawns rarely inside forest biomes (oak, birch, flower, dark, taiga, and cherry groves).
+
+- **Follow the trail.** Come near one and it checks its watch, chimes softly, and bounds ahead along an enchanted trail, pausing to wait if you fall too far behind.
+- **Hollow Ancient Tree.** At the end of its run sits a gnarled oak tree whose open doorway conceals a swirling **Rabbit-Hole Portal**. Once you catch up, the rabbit leaps straight down the burrow.
+- **Three Possible Fates.** Step into (or interact with) the dark portal inside the roots to tumble into one of three random destinations — each equipped with a **Return Burrow Portal** back to the woods:
+  1. **Random Underground Cavern:** drops you into a quiet crystal-and-ore cave deep beneath the earth.
+  2. **Wonderland Root-Vault:** a lantern-lit treasury packed with chests holding emeralds, diamonds, Mana Crystals, Aura Shards, and Torn Pages.
+  3. **All Bosses at Once:** a sunken deepslate colosseum where all **17 Wildercord bosses** awaken together in one colossal battle!
 
 ## Camp cooking
 
