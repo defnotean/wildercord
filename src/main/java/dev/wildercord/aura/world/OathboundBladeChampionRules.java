@@ -115,7 +115,7 @@ public final class OathboundBladeChampionRules {
 	public static final double ARMOR = 15.0;
 	public static final double ARMOR_TOUGHNESS = 7.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.72;
-	public static final double MOVEMENT_SPEED = 0.30;
+	public static final double MOVEMENT_SPEED = 0.42;
 	public static final double FOLLOW_RANGE = 32.0;
 	public static final float SCALE = 1.20F;
 	public static final int XP_REWARD = 50;
@@ -147,7 +147,7 @@ public final class OathboundBladeChampionRules {
 	public static final int POMMEL_TELL = 10;
 	public static final int POMMEL_LUNGE_TICKS = 8;
 	public static final int POMMEL_DURATION = POMMEL_TELL + POMMEL_LUNGE_TICKS + 8;
-	public static final double POMMEL_LUNGE_SPEED = 0.92;
+	public static final double POMMEL_LUNGE_SPEED = 1.30;
 	public static final double POMMEL_REACH = 2.1;
 	public static final double POMMEL_DAMAGE = 10.0;
 	public static final double POMMEL_KNOCKBACK = 1.55;
@@ -182,11 +182,15 @@ public final class OathboundBladeChampionRules {
 		return maxHealth > 0.0F && (health / maxHealth) < EMPOWERED_RATIO;
 	}
 
+	/** Global combat speed multiplier - lower is faster. */
+	public static final double SPEED = 0.55;
+
 	/** Windup ticks for a given move, sped up slightly in Crimson Overdrive. */
 	public static int tellTicks(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			return empowered ? Math.max(4, (int) Math.round(tech.tell() * EMPOWERED_TELL_SCALE)) : tech.tell();
+			int base = Math.max(3, (int) Math.round(tech.tell() * SPEED));
+			return empowered ? Math.max(2, (int) Math.round(base * EMPOWERED_TELL_SCALE)) : base;
 		}
 		int base = switch (move) {
 			case WRATHFUL_RIPOSTE -> RIPOSTE_TELL;
@@ -195,21 +199,24 @@ public final class OathboundBladeChampionRules {
 			case GUILLOTINE_SLAM -> GUILLOTINE_TELL;
 			default -> 0;
 		};
-		return base == 0 ? 0 : Math.max(4, (int) Math.round(base * (empowered ? EMPOWERED_TELL_SCALE : 1.0)));
+		base = base == 0 ? 0 : Math.max(3, (int) Math.round(base * SPEED));
+		return base == 0 ? 0 : Math.max(2, (int) Math.round(base * (empowered ? EMPOWERED_TELL_SCALE : 1.0)));
 	}
 
 	/** Total duration of a scripted combat move in ticks. */
 	public static int moveDuration(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			return tellTicks(move, empowered) + tech.active() + tech.recovery();
+			return tellTicks(move, empowered)
+				+ Math.max(2, (int) Math.round(tech.active() * SPEED))
+				+ Math.max(2, (int) Math.round(tech.recovery() * SPEED));
 		}
 		int tell = tellTicks(move, empowered);
 		return switch (move) {
-			case WRATHFUL_RIPOSTE -> tell + RIPOSTE_WINDOW + 6;
-			case CRESCENT_CLEAVE -> tell + (CRESCENT_DURATION - CRESCENT_TELL);
-			case POMMEL_BREAK -> tell + POMMEL_LUNGE_TICKS + 8;
-			case GUILLOTINE_SLAM -> tell + GUILLOTINE_RECOVERY;
+			case WRATHFUL_RIPOSTE -> tell + Math.max(2, (int) Math.round(RIPOSTE_WINDOW * SPEED)) + 3;
+			case CRESCENT_CLEAVE -> tell + Math.max(2, (int) Math.round((CRESCENT_DURATION - CRESCENT_TELL) * SPEED));
+			case POMMEL_BREAK -> tell + Math.max(2, (int) Math.round(POMMEL_LUNGE_TICKS * SPEED)) + 4;
+			case GUILLOTINE_SLAM -> tell + Math.max(3, (int) Math.round(GUILLOTINE_RECOVERY * SPEED));
 			case STAGGERED -> STAGGER_AXE_TICKS;
 			default -> 0;
 		};
@@ -312,8 +319,8 @@ public final class OathboundBladeChampionRules {
 	public static int moveCooldown(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			int base = Math.max(18, tech.tell() + tech.recovery());
-			return empowered ? Math.max(14, (int) Math.round(base * 0.78)) : base;
+			int base = Math.max(10, (int) Math.round((tech.tell() + tech.recovery()) * SPEED));
+			return empowered ? Math.max(8, (int) Math.round(base * 0.78)) : base;
 		}
 		int base = switch (move) {
 			case WRATHFUL_RIPOSTE -> 75;
@@ -322,6 +329,7 @@ public final class OathboundBladeChampionRules {
 			case GUILLOTINE_SLAM -> 95;
 			default -> 20;
 		};
+		base = Math.max(10, (int) Math.round(base * SPEED));
 		return empowered ? Math.max(18, (int) Math.round(base * 0.78)) : base;
 	}
 }

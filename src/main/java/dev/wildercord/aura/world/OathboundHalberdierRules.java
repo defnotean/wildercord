@@ -117,7 +117,7 @@ public final class OathboundHalberdierRules {
 	public static final double ARMOR = 13.0;
 	public static final double ARMOR_TOUGHNESS = 6.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.60;
-	public static final double MOVEMENT_SPEED = 0.33;
+	public static final double MOVEMENT_SPEED = 0.46;
 	public static final double FOLLOW_RANGE = 32.0;
 	public static final float SCALE = 1.18F;
 	public static final int XP_REWARD = 50;
@@ -139,7 +139,7 @@ public final class OathboundHalberdierRules {
 	public static final int THRUST_TELL = 9;
 	public static final int THRUST_DASH_TICKS = 7;
 	public static final int THRUST_DURATION = 24;
-	public static final double THRUST_SPEED = 1.08;
+	public static final double THRUST_SPEED = 1.45;
 	public static final double THRUST_LENGTH = 4.2;
 	public static final double THRUST_HALF_WIDTH = 1.25;
 	public static final double THRUST_DAMAGE = 15.0;
@@ -150,7 +150,7 @@ public final class OathboundHalberdierRules {
 	public static final double HOOK_LENGTH = 5.4;
 	public static final double HOOK_HALF_WIDTH = 1.35;
 	public static final double HOOK_DAMAGE = 10.0;
-	public static final double HOOK_PULL_SPEED = 0.95;
+	public static final double HOOK_PULL_SPEED = 1.30;
 	public static final int HOOK_SLOW_TICKS = 45;
 
 	public static final int CRASH_TELL = 18;
@@ -178,11 +178,15 @@ public final class OathboundHalberdierRules {
 		return maxHealth > 0.0F && (health / maxHealth) < EMPOWERED_RATIO;
 	}
 
+	/** Global combat speed multiplier - lower is faster. */
+	public static final double SPEED = 0.55;
+
 	/** Windup ticks for a given move, accelerated during Overdrive. */
 	public static int tellTicks(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			return empowered ? Math.max(4, (int) Math.round(tech.tell() * EMPOWERED_TELL_SCALE)) : tech.tell();
+			int base = Math.max(3, (int) Math.round(tech.tell() * SPEED));
+			return empowered ? Math.max(2, (int) Math.round(base * EMPOWERED_TELL_SCALE)) : base;
 		}
 		int base = switch (move) {
 			case TEMPEST_WHIRL -> WHIRL_TELL;
@@ -191,21 +195,24 @@ public final class OathboundHalberdierRules {
 			case SKY_VAULT_CRASH -> CRASH_TELL;
 			default -> 0;
 		};
-		return base == 0 ? 0 : Math.max(4, (int) Math.round(base * (empowered ? EMPOWERED_TELL_SCALE : 1.0)));
+		base = base == 0 ? 0 : Math.max(3, (int) Math.round(base * SPEED));
+		return base == 0 ? 0 : Math.max(2, (int) Math.round(base * (empowered ? EMPOWERED_TELL_SCALE : 1.0)));
 	}
 
 	/** Total duration of a combat move in ticks. */
 	public static int moveDuration(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			return tellTicks(move, empowered) + tech.active() + tech.recovery();
+			return tellTicks(move, empowered)
+				+ Math.max(2, (int) Math.round(tech.active() * SPEED))
+				+ Math.max(2, (int) Math.round(tech.recovery() * SPEED));
 		}
 		int tell = tellTicks(move, empowered);
 		return switch (move) {
-			case TEMPEST_WHIRL -> tell + (WHIRL_DURATION - WHIRL_TELL);
-			case SHADOWSTEP_THRUST -> tell + THRUST_DASH_TICKS + (THRUST_DURATION - THRUST_TELL - THRUST_DASH_TICKS);
-			case HOOK_AND_REAP -> tell + (HOOK_DURATION - HOOK_TELL);
-			case SKY_VAULT_CRASH -> tell + CRASH_RECOVERY;
+			case TEMPEST_WHIRL -> tell + Math.max(2, (int) Math.round((WHIRL_DURATION - WHIRL_TELL) * SPEED));
+			case SHADOWSTEP_THRUST -> tell + Math.max(2, (int) Math.round(THRUST_DASH_TICKS * SPEED)) + Math.max(2, (int) Math.round((THRUST_DURATION - THRUST_TELL - THRUST_DASH_TICKS) * SPEED));
+			case HOOK_AND_REAP -> tell + Math.max(2, (int) Math.round((HOOK_DURATION - HOOK_TELL) * SPEED));
+			case SKY_VAULT_CRASH -> tell + Math.max(3, (int) Math.round(CRASH_RECOVERY * SPEED));
 			case STAGGERED -> STAGGER_TICKS;
 			default -> 0;
 		};
@@ -279,8 +286,8 @@ public final class OathboundHalberdierRules {
 	public static int moveCooldown(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			int base = Math.max(16, tech.tell() + tech.recovery());
-			return empowered ? Math.max(12, (int) Math.round(base * 0.78)) : base;
+			int base = Math.max(10, (int) Math.round((tech.tell() + tech.recovery()) * SPEED));
+			return empowered ? Math.max(8, (int) Math.round(base * 0.78)) : base;
 		}
 		int base = switch (move) {
 			case TEMPEST_WHIRL -> 34;
@@ -289,6 +296,7 @@ public final class OathboundHalberdierRules {
 			case SKY_VAULT_CRASH -> 88;
 			default -> 20;
 		};
-		return empowered ? Math.max(16, (int) Math.round(base * 0.78)) : base;
+		base = Math.max(10, (int) Math.round(base * SPEED));
+		return empowered ? Math.max(8, (int) Math.round(base * 0.78)) : base;
 	}
 }

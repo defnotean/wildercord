@@ -119,7 +119,7 @@ public final class OathboundBastionRules {
 	public static final double ARMOR = 18.0;
 	public static final double ARMOR_TOUGHNESS = 8.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.85;
-	public static final double MOVEMENT_SPEED = 0.24;
+	public static final double MOVEMENT_SPEED = 0.34;
 	public static final double FOLLOW_RANGE = 32.0;
 	public static final float SCALE = 1.25F;
 	public static final int XP_REWARD = 45;
@@ -138,7 +138,7 @@ public final class OathboundBastionRules {
 	public static final int RAM_TELL = 14;
 	public static final int RAM_CHARGE_TICKS = 22;
 	public static final int RAM_DURATION = RAM_TELL + RAM_CHARGE_TICKS + 4;
-	public static final double RAM_SPEED = 0.78;
+	public static final double RAM_SPEED = 1.10;
 	public static final double RAM_DAMAGE = 13.0;
 	public static final double RAM_KNOCKBACK = 1.7;
 	public static final double RAM_HIT_RADIUS = 1.8;
@@ -205,11 +205,15 @@ public final class OathboundBastionRules {
 		return maxHealth > 0 && health <= maxHealth * EMPOWERED_RATIO;
 	}
 
+	/** Global combat speed multiplier - lower is faster. */
+	public static final double SPEED = 0.55;
+
 	/** Windup/tell ticks before {@code move} strikes (compressed by 15% when empowered). */
 	public static int tellTicks(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			return empowered ? Math.max(4, (int) Math.round(tech.tell() * EMPOWERED_TELL_SCALE)) : tech.tell();
+			int base = Math.max(3, (int) Math.round(tech.tell() * SPEED));
+			return empowered ? Math.max(2, (int) Math.round(base * EMPOWERED_TELL_SCALE)) : base;
 		}
 		int base = switch (move) {
 			case PHALANX_BRACE -> PHALANX_TELL;
@@ -219,25 +223,28 @@ public final class OathboundBastionRules {
 			case MACE_CLEAVE -> CLEAVE_TELL;
 			default -> 0;
 		};
+		base = Math.max(0, (int) Math.round(base * SPEED));
 		if (base <= 0 || !empowered) {
 			return base;
 		}
-		return Math.max(5, (int) Math.round(base * EMPOWERED_TELL_SCALE));
+		return Math.max(3, (int) Math.round(base * EMPOWERED_TELL_SCALE));
 	}
 
 	/** Total ticks {@code move} runs before returning to {@link #IDLE_MARCH}. */
 	public static int moveDuration(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			return tellTicks(move, empowered) + tech.active() + tech.recovery();
+			return tellTicks(move, empowered)
+				+ Math.max(2, (int) Math.round(tech.active() * SPEED))
+				+ Math.max(2, (int) Math.round(tech.recovery() * SPEED));
 		}
 		int tell = tellTicks(move, empowered);
 		return switch (move) {
-			case PHALANX_BRACE -> PHALANX_DURATION;
-			case SHIELD_RAM -> tell + RAM_CHARGE_TICKS + 4;
-			case ANVIL_SLAM -> tell + ANVIL_RECOVERY;
-			case SHIELD_BASH -> tell + (BASH_DURATION - BASH_TELL);
-			case MACE_CLEAVE -> tell + (CLEAVE_DURATION - CLEAVE_TELL);
+			case PHALANX_BRACE -> Math.max(tell + 2, (int) Math.round(PHALANX_DURATION * SPEED));
+			case SHIELD_RAM -> tell + Math.max(2, (int) Math.round(RAM_CHARGE_TICKS * SPEED)) + 2;
+			case ANVIL_SLAM -> tell + Math.max(3, (int) Math.round(ANVIL_RECOVERY * SPEED));
+			case SHIELD_BASH -> tell + Math.max(2, (int) Math.round((BASH_DURATION - BASH_TELL) * SPEED));
+			case MACE_CLEAVE -> tell + Math.max(2, (int) Math.round((CLEAVE_DURATION - CLEAVE_TELL) * SPEED));
 			case STAGGERED -> STAGGER_AXE_TICKS;
 			default -> 0;
 		};

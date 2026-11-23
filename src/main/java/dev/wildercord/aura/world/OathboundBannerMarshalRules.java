@@ -120,7 +120,7 @@ public final class OathboundBannerMarshalRules {
 	public static final double ARMOR = 17.0;
 	public static final double ARMOR_TOUGHNESS = 8.0;
 	public static final double KNOCKBACK_RESISTANCE = 0.80;
-	public static final double MOVEMENT_SPEED = 0.26;
+	public static final double MOVEMENT_SPEED = 0.36;
 	public static final double FOLLOW_RANGE = 32.0;
 	public static final float SCALE = 1.24F;
 	public static final int XP_REWARD = 55;
@@ -181,11 +181,15 @@ public final class OathboundBannerMarshalRules {
 		return maxHealth > 0.0F && (health / maxHealth) < EMPOWERED_RATIO;
 	}
 
+	/** Global combat speed multiplier - lower is faster. */
+	public static final double SPEED = 0.55;
+
 	/** Windup ticks for a given move, sped up slightly when Empowered. */
 	public static int tellTicks(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			return empowered ? Math.max(4, (int) Math.round(tech.tell() * EMPOWERED_TELL_SCALE)) : tech.tell();
+			int base = Math.max(3, (int) Math.round(tech.tell() * SPEED));
+			return empowered ? Math.max(2, (int) Math.round(base * EMPOWERED_TELL_SCALE)) : base;
 		}
 		int base = switch (move) {
 			case DECREE_OF_THE_STANDARD -> DECREE_TELL;
@@ -194,21 +198,24 @@ public final class OathboundBannerMarshalRules {
 			case SOVEREIGN_JUDGMENT -> JUDGMENT_TELL;
 			default -> 0;
 		};
-		return base == 0 ? 0 : Math.max(4, (int) Math.round(base * (empowered ? EMPOWERED_TELL_SCALE : 1.0)));
+		base = base == 0 ? 0 : Math.max(3, (int) Math.round(base * SPEED));
+		return base == 0 ? 0 : Math.max(2, (int) Math.round(base * (empowered ? EMPOWERED_TELL_SCALE : 1.0)));
 	}
 
 	/** Total duration of a scripted combat move in ticks. */
 	public static int moveDuration(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			return tellTicks(move, empowered) + tech.active() + tech.recovery();
+			return tellTicks(move, empowered)
+				+ Math.max(2, (int) Math.round(tech.active() * SPEED))
+				+ Math.max(2, (int) Math.round(tech.recovery() * SPEED));
 		}
 		int tell = tellTicks(move, empowered);
 		return switch (move) {
-			case DECREE_OF_THE_STANDARD -> tell + (DECREE_DURATION - DECREE_TELL);
-			case SOLAR_AEGIS_GUARD -> tell + GUARD_WINDOW + 5;
-			case RADIANT_SUNBLADE_CLEAVE -> tell + (CLEAVE_DURATION - CLEAVE_TELL);
-			case SOVEREIGN_JUDGMENT -> tell + JUDGMENT_RECOVERY;
+			case DECREE_OF_THE_STANDARD -> tell + Math.max(2, (int) Math.round((DECREE_DURATION - DECREE_TELL) * SPEED));
+			case SOLAR_AEGIS_GUARD -> tell + Math.max(2, (int) Math.round(GUARD_WINDOW * SPEED)) + 3;
+			case RADIANT_SUNBLADE_CLEAVE -> tell + Math.max(2, (int) Math.round((CLEAVE_DURATION - CLEAVE_TELL) * SPEED));
+			case SOVEREIGN_JUDGMENT -> tell + Math.max(3, (int) Math.round(JUDGMENT_RECOVERY * SPEED));
 			case STAGGERED -> STAGGER_AXE_TICKS;
 			default -> 0;
 		};
@@ -284,8 +291,8 @@ public final class OathboundBannerMarshalRules {
 	public static int moveCooldown(int move, boolean empowered) {
 		OathboundTechnique tech = technique(move);
 		if (tech != null) {
-			int base = Math.max(20, tech.tell() + tech.recovery());
-			return empowered ? Math.max(16, (int) Math.round(base * 0.78)) : base;
+			int base = Math.max(10, (int) Math.round((tech.tell() + tech.recovery()) * SPEED));
+			return empowered ? Math.max(8, (int) Math.round(base * 0.78)) : base;
 		}
 		int base = switch (move) {
 			case DECREE_OF_THE_STANDARD -> 140;
@@ -294,6 +301,7 @@ public final class OathboundBannerMarshalRules {
 			case SOVEREIGN_JUDGMENT -> 95;
 			default -> 20;
 		};
-		return empowered ? Math.max(20, (int) Math.round(base * 0.78)) : base;
+		base = Math.max(10, (int) Math.round(base * SPEED));
+		return empowered ? Math.max(8, (int) Math.round(base * 0.78)) : base;
 	}
 }

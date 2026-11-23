@@ -215,16 +215,32 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			);
 
 			for (StudioShot sShot : shots) {
-				server.runOnServer(s -> {
-					OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(studioId);
-					m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
-					m.setYBodyRot(180.0F);
-					m.setYHeadRot(180.0F);
-					m.poseForPreview(sShot.move(), sShot.tell(), sShot.elapsed(), sShot.counter());
-				});
+				int tellT = sShot.tell() > 0 ? (int) sShot.tell() : OathboundBannerMarshalRules.tellTicks(sShot.move(), false);
+				int dur = Math.max(tellT + 6, OathboundBannerMarshalRules.moveDuration(sShot.move(), false));
+				boolean sequence = sShot.name().contains("_08_") || sShot.name().contains("_09_") || sShot.name().contains("_10_")
+					|| sShot.name().contains("_11_") || sShot.name().contains("_12_") || sShot.name().contains("_13_")
+					|| sShot.name().contains("_14_") || sShot.name().contains("_15_") || sShot.name().contains("_16_")
+					|| sShot.name().contains("_17_") || sShot.name().contains("_18_") || sShot.name().contains("_19_")
+					|| sShot.name().contains("_20_");
+				float[] frames = sequence
+					? new float[]{Math.max(1, tellT * 0.25F), Math.max(2, tellT * 0.75F), tellT + 1.0F,
+						tellT + Math.max(2, (dur - tellT) * 0.35F), tellT + Math.max(3, (dur - tellT) * 0.65F), Math.max(tellT + 2, dur - 2.0F)}
+					: new float[]{sShot.elapsed()};
 				director(context, world, sShot.cam(), sShot.look());
-				context.waitTicks(8);
-				shot(context, sShot.name());
+				for (int fi = 0; fi < frames.length; fi++) {
+					final float fe = frames[fi];
+					final int ft = tellT;
+					server.runOnServer(s -> {
+						OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(studioId);
+						m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						m.setYBodyRot(180.0F);
+						m.setYHeadRot(180.0F);
+						m.poseForPreview(sShot.move(), ft, fe, sShot.counter());
+					});
+					context.waitTicks(4);
+					String name = sequence ? sShot.name() + "_f" + fi : sShot.name();
+					shot(context, name);
+				}
 			}
 			cut(context);
 

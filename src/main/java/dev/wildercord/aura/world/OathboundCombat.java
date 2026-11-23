@@ -162,7 +162,7 @@ public final class OathboundCombat {
 		switch (t.motion()) {
 			case DASH -> {
 				if (active <= t.committedTicks()) {
-					double speed = t.speed() > 0.0 ? t.speed() : 0.7;
+					double speed = t.speed() > 0.0 ? t.speed() * 1.35 : 0.95;
 					self.setDeltaMovement(forward.x * speed, Math.min(0.0, self.getDeltaMovement().y), forward.z * speed);
 					self.move(MoverType.SELF, self.getDeltaMovement());
 					self.setDeltaMovement(Vec3.ZERO);
@@ -170,13 +170,13 @@ public final class OathboundCombat {
 			}
 			case LEAP -> {
 				if (active == 0L) {
-					double speed = t.speed() > 0.0 ? t.speed() : 0.55;
+					double speed = t.speed() > 0.0 ? t.speed() * 1.35 : 0.75;
 					self.setDeltaMovement(forward.x * speed, 0.52, forward.z * speed);
 				}
 			}
 			case BACKSTEP -> {
 				if (active <= 6L) {
-					double speed = t.speed() > 0.0 ? t.speed() : 0.5;
+					double speed = t.speed() > 0.0 ? t.speed() * 1.35 : 0.70;
 					self.setDeltaMovement(-forward.x * speed, Math.min(0.0, self.getDeltaMovement().y), -forward.z * speed);
 					self.move(MoverType.SELF, self.getDeltaMovement());
 					self.setDeltaMovement(Vec3.ZERO);
