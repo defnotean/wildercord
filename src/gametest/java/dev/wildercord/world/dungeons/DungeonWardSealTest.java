@@ -272,7 +272,7 @@ public final class DungeonWardSealTest implements FabricClientGameTest {
 	}
 
 	private static String block(ServerLevel l, BlockState st) {
-		return String.valueOf(l.registryAccess().lookupOrThrow(Registries.BLOCK).getKey(st.getBlock()));
+		return String.valueOf(l.registryAccess().registryOrThrow(Registries.BLOCK).getKey(st.getBlock()));
 	}
 
 	/** One warded room of one dungeon, as it was built. */

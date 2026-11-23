@@ -31,14 +31,14 @@ public final class RootmoltPlacementTest implements FabricClientGameTest {
     BlockPos high=SITE.above(18);habitat(l,high);refuse(l,high,"Height48 boundary");
     RootmoltStrider a=spawn(l,SITE.east(5)),b=spawn(l,SITE.west(5));refuse(l,SITE,"Two alive local Rootmolts reach actual cap");b.discard();diagnose(l,a,b);check(RootmoltContent.localRoom(l,RootmoltContent.STRIDER,SITE),"Actual one-peer native population query reopens after discard");check(rule(l,SITE,MobSpawnType.NATURAL),"Removing one actual local animal reopens capacity");a.discard();
     var nether=s.getLevel(Level.NETHER);check(nether!=null,"Actual Nether level exists");habitat(nether,SITE);refuse(nether,SITE,"Covered eligible non-Overworld habitat");
-    check(rule(nether,SITE,MobSpawnType.COMMAND)&&rule(nether,SITE,MobSpawnType.SPAWN_ITEM_USE),"Explicit command and egg predicate bypass remains intact");
+    check(rule(nether,SITE,MobSpawnType.COMMAND)&&rule(nether,SITE,MobSpawnType.SPAWN_EGG),"Explicit command and egg predicate bypass remains intact");
     for(var values:List.of(Map.<String,Object>of("enabled",false,"rootmoltStrider",true,"spawnMultiplier",6.0),Map.<String,Object>of("enabled",true,"rootmoltStrider",false,"spawnMultiplier",6.0),Map.<String,Object>of("enabled",true,"rootmoltStrider",true,"spawnMultiplier",0.0))){set(original,values);refuse(l,SITE,"Live wildlife master/creature/zero-multiplier switch");check(rule(l,SITE,MobSpawnType.COMMAND),"Natural switches do not block command branch");}
     set(original,Map.of("enabled",true,"rootmoltStrider",true,"spawnMultiplier",6.0));
    });
    w.getServer().runOnServer(s->s.overworld().setBlock(SITE.above(),Blocks.GLOWSTONE.defaultBlockState(),2));c.waitTicks(15);
    w.getServer().runOnServer(s->{check(s.overworld().getMaxLocalRawBrightness(SITE)>8,"Actual propagated block light reaches bright refusal fixture");refuse(s.overworld(),SITE,"Actually bright covered candidate");s.overworld().removeBlock(SITE.above(),false);});c.waitTicks(15);
    w.getServer().runOnServer(s->check(rule(s.overworld(),SITE,MobSpawnType.NATURAL),"Removing actual light reopens otherwise eligible habitat"));
-   w.getServer().runOnServer(s->{var l=s.overworld();for(int y=SITE.getY()+3;y<=l.getMaxY();y++)l.removeBlock(new BlockPos(SITE.getX(),y,SITE.getZ()),false);});
+   w.getServer().runOnServer(s->{var l=s.overworld();for(int y=SITE.getY()+3;y<=l.getMaxBuildHeight();y++)l.removeBlock(new BlockPos(SITE.getX(),y,SITE.getZ()),false);});
    // The actual light engine propagates the opened column between server ticks.
    boolean exposed=false;for(int i=0;i<30;i++){c.waitTicks(3);if(w.getServer().computeOnServer(s->s.overworld().canSeeSky(SITE))){exposed=true;break;}}
    check(exposed,"Sky refusal fixture exposes actual candidate column through propagated skylight");

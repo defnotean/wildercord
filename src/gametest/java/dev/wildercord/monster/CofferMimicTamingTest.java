@@ -238,7 +238,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				var m = mimic(s);
 				CompoundTag saved = new CompoundTag();
 				m.saveWithoutId(saved);
-				var restored = McEntities.create(MonsterContent.COFFER_MIMIC, s.overworld(), MobSpawnType.LOAD);
+				var restored = McEntities.create(MonsterContent.COFFER_MIMIC, s.overworld(), MobSpawnType.MOB_SUMMONED);
 				restored.load(saved);
 				check(restored.isOwnedBy(p(s)), "Its owner survives a save");
 				check(restored.belly().getItem(0).getCount() == 3 && restored.belly().getItem(26).getCount() == 5, "Its belly survives a save");

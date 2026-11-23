@@ -305,7 +305,7 @@ public final class GaleVaultProbe {
     public static Result residentBounds(ServerLevel level, AABB body) {
         // Collision shapes may extend from neighboring blocks: certify the entire one-block query halo before any read.
         AABB halo = body.inflate(1);
-        if (halo.minY < level.getMinY() || halo.maxY >= level.getMaxY()) return Result.UNLOADED_GEOMETRY;
+        if (halo.minY < level.getMinBuildHeight() || halo.maxY >= level.getMaxBuildHeight()) return Result.UNLOADED_GEOMETRY;
         if (!level.getWorldBorder().isWithinBounds(halo.minX, halo.minZ) || !level.getWorldBorder().isWithinBounds(halo.maxX, halo.maxZ))
             return Result.OUTSIDE_BORDER;
         for (int x = ((int) Math.floor(halo.minX)) >> 4; x <= ((int) Math.floor(halo.maxX)) >> 4; x++)

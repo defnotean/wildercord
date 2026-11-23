@@ -29,7 +29,7 @@ public final class ArchivePlacementProbe {
 
 	static Session begin(ServerLevel level, BlockPos origin) {
 		Wildercord.LOGGER.info("WILDERCORD_NATIVE_WORLD {\"suite\":\"" + SUITE + "\",\"seed\":\"" + level.getSeed() + "\"}");
-		return new Session(level, level.getSeed(), level.getMinY(), origin, line -> Wildercord.LOGGER.info(line));
+		return new Session(level, level.getSeed(), level.getMinBuildHeight(), origin, line -> Wildercord.LOGGER.info(line));
 	}
 
 	static boolean matches(Session session, String suite, Object world, long seed, String structure, BlockPos origin) {

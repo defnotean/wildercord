@@ -147,7 +147,7 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 				h.setOrderedToSit(true);
 				CompoundTag saved = new CompoundTag();
 				h.saveWithoutId(saved);
-				var restored = McEntities.create(HedgehogContent.THISTLE_HEDGEHOG, s.overworld(), MobSpawnType.LOAD);
+				var restored = McEntities.create(HedgehogContent.THISTLE_HEDGEHOG, s.overworld(), MobSpawnType.MOB_SUMMONED);
 				restored.load(saved);
 				check(restored.isTame() && restored.isOwnedBy(p(s)), "Its owner survives a save");
 				check(restored.isOrderedToSit(), "Its order to sit survives a save");

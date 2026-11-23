@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -370,17 +371,26 @@ public final class RelayLessonChecks {
 	private static void checkNotReading(ClientGameTestContext context, String reason) {
 		context.runOnClient(mc -> check(!(mc.screen instanceof RelayLessonScreen), reason));
 	}
+	/**
+	 * 1.21.1 has no item_model component: the lesson is the book its lectern writes, so its
+	 * title and author are what mark it.
+	 */
+	private static boolean lesson(ItemStack stack) {
+		WrittenBookContent content = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
+		return content != null && RelayLesson.TITLE.equals(content.title().raw()) && RelayLesson.AUTHOR.equals(content.author());
+	}
+
 	private static int books(ServerPlayer player) {
 		int count = 0;
 		for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
 			ItemStack stack = player.getInventory().getItem(slot);
-			if (Wildercord.id("relay_lesson").equals(stack.get(DataComponents.ITEM_MODEL))) count += stack.getCount();
+			if (lesson(stack)) count += stack.getCount();
 		}
 		return count;
 	}
 	private static void removeBooks(ServerPlayer player) {
 		for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
-			if (Wildercord.id("relay_lesson").equals(player.getInventory().getItem(slot).get(DataComponents.ITEM_MODEL)))
+			if (lesson(player.getInventory().getItem(slot)))
 				player.getInventory().setItem(slot, ItemStack.EMPTY);
 		}
 	}

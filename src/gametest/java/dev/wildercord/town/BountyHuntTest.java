@@ -99,7 +99,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 			// A plain creature of the same kind doesn't count; the hunter's kill of the marked elite does.
 			w.getServer().runOnServer(s -> {
 				var l = s.overworld();
-				var type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse(TARGET));
+				var type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(TARGET));
 				Mob plain = (Mob) McEntities.create(type, l, MobSpawnType.COMMAND);
 				plain.moveTo(p(s).getX() + 2, Y + 1, p(s).getZ(), 0, 0);
 				l.addFreshEntity(plain);

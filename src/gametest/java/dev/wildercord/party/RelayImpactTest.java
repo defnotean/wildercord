@@ -39,7 +39,7 @@ public final class RelayImpactTest implements FabricClientGameTest {
 	private static int incoming;
 	private static final class Guest extends FakePlayer {
 		Guest(ServerLevel level) { super(level, new GameProfile(UUID.randomUUID(), "RelayWitness")); }
-		@Override public boolean isInvulnerableTo(ServerLevel level, DamageSource source) { return false; }
+		@Override public boolean isInvulnerableTo(DamageSource source) { return false; }
 		@Override public boolean hurt(DamageSource source, float amount) {
 			if (source instanceof RelayDamageSource) {
 				incoming++;

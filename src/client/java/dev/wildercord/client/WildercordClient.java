@@ -65,6 +65,11 @@ public final class WildercordClient implements ClientModInitializer {
 
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) ->
 			dev.wildercord.client.fx.LeyMotes.setSeed(payload.seed()));
+		// The runelab's notebook: the server sends the snapshot, the screen shows it over the last one.
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.net.NotebookPayload.TYPE, (payload, context) -> {
+			var previous = context.client().screen instanceof RuneNotebookScreen board ? board : null;
+			context.client().setScreen(new RuneNotebookScreen(payload, previous));
+		});
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.ScreenFx.TYPE,
 			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
 		// The server's cost and regeneration multipliers, for the Cord screen and HUD; forgotten on leaving.

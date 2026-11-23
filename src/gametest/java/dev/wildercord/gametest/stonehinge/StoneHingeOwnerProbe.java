@@ -51,7 +51,7 @@ public final class StoneHingeOwnerProbe {
 	private record PositionKey(String type, double x, double y, double z, boolean rotation, float yaw, float pitch, boolean ground, boolean collision) {
 		static PositionKey of(ServerboundMovePlayerPacket packet) {
 			return new PositionKey(packet.getClass().getSimpleName(), packet.getX(Double.NaN), packet.getY(Double.NaN), packet.getZ(Double.NaN),
-				packet.hasRotation(), packet.getYRot(Float.NaN), packet.getXRot(Float.NaN), packet.isOnGround(), packet.horizontalCollision());
+				packet.hasRotation(), packet.getYRot(Float.NaN), packet.getXRot(Float.NaN), packet.isOnGround(), false);
 		}
 	}
 	private static final class MotionSend {
@@ -310,7 +310,7 @@ public final class StoneHingeOwnerProbe {
         }
         return new StoneHingeNativeDispatch.OwnerPacket(packet.getClass().getSimpleName(),
             new StoneHingeNativeDispatch.Vector(packet.getX(0), packet.getY(0), packet.getZ(0)), packet.hasRotation(),
-            packet.getYRot(0), packet.getXRot(0), packet.isOnGround(), packet.horizontalCollision(), digest);
+            packet.getYRot(0), packet.getXRot(0), packet.isOnGround(), false, digest);
     }
 	public static void ownerPosition(ServerPlayer player, double x, double y, double z, Runnable original) {
 		Trace trace = serverTrace(player); PositionSend sent = MOVEMENT.get();

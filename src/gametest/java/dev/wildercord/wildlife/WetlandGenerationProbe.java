@@ -62,14 +62,14 @@ public final class WetlandGenerationProbe {
  public static Source beginPlacement(WorldGenLevel level,ChunkGenerator generator,PlacedFeature feature,boolean biomeCheck) {
   var session=active;
   if(session==null || !biomeCheck || !(dev.wildercord.gametest.compat.GametestCompat.configuredFeatureValue(feature) instanceof MoonreedFeature) || !inScope(session,level))return null;
-  String placedKey=String.valueOf(level.registryAccess().lookupOrThrow(Registries.PLACED_FEATURE).getKey(feature));
+  String placedKey=String.valueOf(level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE).getKey(feature));
   if(!FEATURE.equals(placedKey))return null;
   var center=((WorldGenRegion)level).getCenter();
   // Native applyBiomeDecoration already evaluated this memoized supplier before calling FeaturePlacer.
   var steps=((WetlandFeatureIndexAccessor)generator).wildercord$featuresPerStep().get();
   int stage=GenerationStep.Decoration.VEGETAL_DECORATION.ordinal();
   var data=steps.get(stage);int index=data.indexMapping().applyAsInt(feature);
-  session.featureGraph(data.features().stream().map(entry -> String.valueOf(level.registryAccess().lookupOrThrow(Registries.PLACED_FEATURE).getKey(entry))).toList());
+  session.featureGraph(data.features().stream().map(entry -> String.valueOf(level.registryAccess().registryOrThrow(Registries.PLACED_FEATURE).getKey(entry))).toList());
   var source=session.claim(center.x,center.z);
   if(source==null)return null;
   session.index(index,data.features().size());

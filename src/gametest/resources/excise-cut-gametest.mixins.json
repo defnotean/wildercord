@@ -1,7 +1,0 @@
-{
-  "required": true,
-  "package": "dev.wildercord.gametest.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": ["ExciseCutProbeMixin"],
-  "injectors": {"defaultRequire": 1}
-}

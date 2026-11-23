@@ -38,11 +38,14 @@ public final class GametestCompat {
 		return null;
 	}
 
-	public static Object generateStructureStart(ServerLevel level, Holder<net.minecraft.world.level.levelgen.structure.Structure> structure, Object chunk) {
+	public static net.minecraft.world.level.levelgen.structure.StructureStart generateStructureStart(ServerLevel level, Holder<net.minecraft.world.level.levelgen.structure.Structure> structure, Object chunk) {
 		return null;
 	}
 
-	public static Object findBiomeHorizontal(Object source, int x, int y, int z, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5, Object arg6) {
+	public static com.mojang.datafixers.util.Pair<BlockPos, Holder<net.minecraft.world.level.biome.Biome>> findBiomeHorizontal(
+		Object source, int x, int y, int z, int radius, int spacing,
+		java.util.function.Predicate<Holder<net.minecraft.world.level.biome.Biome>> biome,
+		net.minecraft.util.RandomSource random, boolean flag, Object randomState) {
 		return null;
 	}
 
@@ -124,6 +127,25 @@ public final class GametestCompat {
 	public static void clearParticles(Object particleEngine) {}
 
 	/** The keys the client is holding, as one string for a probe row. 1.21.1 keeps them as plain fields. */
+	/** Clears the title and action bar between screenshots; 1.21.1's Gui has no single call for it. */
+	public static void clearTitles(Minecraft mc) {
+		mc.gui.clear();
+		mc.gui.resetTitleTimes();
+	}
+
+	/** Whether the server still holds this player's live connection. */
+	public static boolean clientLoaded(ServerPlayer player) {
+		return player.connection != null && player.connection.player == player;
+	}
+
+	/** The velocity a motion packet carries. 1.21.1 names its accessors by axis. */
+	public static Vec3 motionOf(net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket packet) {
+		return packet == null ? null : new Vec3(packet.getXa(), packet.getYa(), packet.getZa());
+	}
+
+	/** 1.21.1 rebuilds the camera inside GameRenderer.render, so there is nothing to do first. */
+	public static void updateCamera(GameRenderer renderer, DeltaTracker delta) {}
+
 	public static String inputSummary(LocalPlayer player) {
 		net.minecraft.client.player.Input keys = player.input;
 		return "[up=" + keys.up + ", down=" + keys.down + ", left=" + keys.left + ", right=" + keys.right

@@ -167,7 +167,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 	}
 
 	private static Item item(String id) {
-		Item resolved = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(id));
+		Item resolved = BuiltInRegistries.ITEM.get(ResourceLocation.parse(id));
 		check(resolved != Items.AIR, "Registered item exists: " + id);
 		return resolved;
 	}
@@ -404,7 +404,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag savedV = new CompoundTag();
 				maiden.saveWithoutId(savedV);
-				SakuraVillager loadedV = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.LOAD);
+				SakuraVillager loadedV = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.MOB_SUMMONED);
 				check(loadedV != null, "Restored villager created");
 				loadedV.load(savedV);
 				check(loadedV.role() == SakuraVillager.SHRINE_MAIDEN, "SakuraVillager role persisted via NBT");
@@ -412,7 +412,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag savedF = new CompoundTag();
 				fisher.saveWithoutId(savedF);
-				SakuraVillager loadedF = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.LOAD);
+				SakuraVillager loadedF = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.MOB_SUMMONED);
 				check(loadedF != null, "Restored fisherman created");
 				loadedF.load(savedF);
 				check(loadedF.role() == SakuraVillager.FISHERMAN, "SakuraVillager fisherman role persisted via NBT");
@@ -839,7 +839,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag saved = new CompoundTag();
 				freya.saveWithoutId(saved);
-				ShrineCat restored = McEntities.create(ShrineCatContent.SHRINE_CAT, l, MobSpawnType.LOAD);
+				ShrineCat restored = McEntities.create(ShrineCatContent.SHRINE_CAT, l, MobSpawnType.MOB_SUMMONED);
 				check(restored != null, "Restored cat created");
 				restored.load(saved);
 				check(restored.variant() == ShrineCatRules.Variant.FREYA, "Variant preserved in save");

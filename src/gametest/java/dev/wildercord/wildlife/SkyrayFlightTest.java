@@ -75,7 +75,7 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				check(rays(s).size() == 1, "The bridle calls one skyray, had " + rays(s).size());
 				check(p(s).getVehicle() == ray(s), "The caller is put on it");
-				check(p(s).getCooldowns().isOnCooldown(p(s).getMainHandItem()), "The call starts the bridle's cooldown");
+				check(p(s).getCooldowns().isOnCooldown(p(s).getMainHandItem().getItem()), "The call starts the bridle's cooldown");
 			});
 
 			// The forward key flies it along the rider's look: north, and up while they look up.
@@ -150,7 +150,7 @@ public final class SkyrayFlightTest implements FabricClientGameTest {
 				ray.hurt(l.damageSources().fellOutOfWorld(), 1000);
 				check(!ray.isAlive(), "It dies");
 				var bridle = new ItemStack(MountContent.SKYRAY_BRIDLE);
-				check(p(s).getCooldowns().isOnCooldown(bridle) && p(s).getCooldowns().getCooldownPercent(bridle, 0) > 0.99F,
+				check(p(s).getCooldowns().isOnCooldown(bridle.getItem()) && p(s).getCooldowns().getCooldownPercent(bridle.getItem(), 0) > 0.99F,
 					"Its death puts the bridle on the long fallen cooldown");
 			});
 		}
