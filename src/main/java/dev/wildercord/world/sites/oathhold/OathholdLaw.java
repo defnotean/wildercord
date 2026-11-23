@@ -98,7 +98,7 @@ public final class OathholdLaw {
 			ORIGIN_CODEC.listOf().optionalFieldOf("cities", List.of()).forGetter(l -> l.cities),
 			Codec.LONG.listOf().optionalFieldOf("placed", List.of()).forGetter(l -> new ArrayList<>(l.placed))
 		).apply(i, CityLedger::new));
-		static final SavedDataType<CityLedger> TYPE = new SavedDataType<>(Wildercord.id("oathhold_law"), CityLedger::new, CODEC, null);
+		static final SavedDataType<CityLedger> TYPE = new SavedDataType<>("oathhold_law", CityLedger::new, CODEC, null);
 
 		private final List<OathholdOrigin.Origin> cities = new ArrayList<>();
 		private final LongSet placed = new LongOpenHashSet();

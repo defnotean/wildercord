@@ -124,7 +124,7 @@ public final class OathholdJustice {
 			RepairSite.CODEC.listOf().optionalFieldOf("repairs", List.of()).forGetter(l -> List.copyOf(l.repairs)),
 			PrisonRecord.CODEC.listOf().optionalFieldOf("prisons", List.of()).forGetter(l -> List.copyOf(l.prisons))
 		).apply(i, JusticeLedger::new));
-		static final SavedDataType<JusticeLedger> TYPE = new SavedDataType<>(Wildercord.id("oathhold_justice"), JusticeLedger::new, CODEC, null);
+		static final SavedDataType<JusticeLedger> TYPE = new SavedDataType<>("oathhold_justice", JusticeLedger::new, CODEC, null);
 
 		final List<RepairSite> repairs = new ArrayList<>();
 		final List<PrisonRecord> prisons = new ArrayList<>();

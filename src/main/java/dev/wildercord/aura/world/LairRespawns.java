@@ -67,7 +67,7 @@ public final class LairRespawns extends SavedData {
 	}
 
 	private static final Codec<LairRespawns> CODEC = Entry.CODEC.listOf().xmap(LairRespawns::new, LairRespawns::entries);
-	private static final SavedDataType<LairRespawns> TYPE = new SavedDataType<>(Wildercord.id("lair_respawns"), LairRespawns::new, CODEC, null);
+	private static final SavedDataType<LairRespawns> TYPE = new SavedDataType<>("lair_respawns", LairRespawns::new, CODEC, null);
 
 	private final List<Entry> pending = new ArrayList<>();
 

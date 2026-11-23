@@ -82,8 +82,7 @@ final class ShrineCatJournal extends SavedData {
 			.optionalFieldOf("companions", Map.of())
 			.forGetter(ShrineCatJournal::encodeEntries)
 	).apply(i, ShrineCatJournal::new));
-	private static final SavedDataType<ShrineCatJournal> TYPE = new SavedDataType<>(
-		Wildercord.id("shrine_cat_companions"),
+	private static final SavedDataType<ShrineCatJournal> TYPE = new SavedDataType<>("shrine_cat_companions",
 		ShrineCatJournal::new,
 		CODEC,
 		null
