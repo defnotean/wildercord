@@ -1,5 +1,6 @@
 package dev.wildercord.client.ocean;
 
+import net.minecraft.client.renderer.LightTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.wildercord.Wildercord;
 import dev.wildercord.client.compat.RenderCompat;
@@ -22,7 +23,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Unit;
 
 /**
@@ -190,7 +190,7 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 		anchor.translateAndRotate(pose);
 		pose.scale(0.5F, 0.5F, 0.5F);
 		RenderCompat.submitModel(collector.order(0), model, Unit.INSTANCE, pose, baseType, light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
-		RenderCompat.submitModel(collector.order(1), model, Unit.INSTANCE, pose, EYES, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+		RenderCompat.submitModel(collector.order(1), model, Unit.INSTANCE, pose, EYES, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 		pose.popPose();
 	}
 

@@ -78,7 +78,7 @@ public final class WildercordClient implements ClientModInitializer {
 		EntityRendererRegistry.register(dev.wildercord.wildlife.ShrineCatContent.SHRINE_CAT, dev.wildercord.client.wildlife.ShrineCatRenderer::new);
 		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.SakuraVillagerRenderer.LAYER, dev.wildercord.client.wildlife.SakuraVillagerModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.wildlife.ShrineCatContent.SAKURA_VILLAGER, dev.wildercord.client.wildlife.SakuraVillagerRenderer::new);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.WhiteRabbitRenderer.LAYER, dev.wildercord.client.wildlife.WhiteRabbitModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.wildlife.WhiteRabbitRenderer.LAYER, dev.wildercord.client.wildlife.WhiteRabbitModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.wildlife.WhiteRabbitContent.WHITE_RABBIT, dev.wildercord.client.wildlife.WhiteRabbitRenderer::new);
 		// The magical monsters of the wilds.
 		dev.wildercord.client.monster.MonsterClient.init();
@@ -86,7 +86,7 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.wildlife.WildlifeClient.init();
 		dev.wildercord.client.ocean.OceanClient.init();
 		net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(dev.wildercord.town.Town.KEEPER, net.minecraft.client.renderer.entity.WanderingTraderRenderer::new);
-		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.oathhold.OathholdCitizenRenderer.LAYER, dev.wildercord.client.oathhold.OathholdCitizenModel::createLayer);
+		EntityModelLayerRegistry.registerModelLayer(dev.wildercord.client.oathhold.OathholdCitizenRenderer.LAYER, dev.wildercord.client.oathhold.OathholdCitizenModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.world.sites.oathhold.OathholdContent.CITIZEN, dev.wildercord.client.oathhold.OathholdCitizenRenderer::new);
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.cosmetic.CordTrails::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.CustomMobFireFx::tick);
