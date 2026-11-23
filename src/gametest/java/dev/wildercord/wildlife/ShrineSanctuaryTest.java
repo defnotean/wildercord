@@ -910,7 +910,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				// Attempt taming a second village Freya with Suzu Cat-Bell Charm -> refused by ShrineCatJournal.canTame.
 				ShrineCat extraVillageFreya = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.COMMAND);
 				check(extraVillageFreya != null, "Duplicate tame candidate created");
-				extraVillageFreya.snapTo(222.5, 111.0, 0.5, 0.0F, 0.0F);
+				extraVillageFreya.moveTo(222.5, 111.0, 0.5, 0.0F, 0.0F);
 				extraVillageFreya.configureVillage(ShrineCatRules.Variant.FREYA, new BlockPos(222, 111, 0));
 				extraVillageFreya.setNoAi(true);
 				l.addFreshEntity(extraVillageFreya);
@@ -921,7 +921,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				// Attempt loading a bogus clone -> immediately discarded by ShrineCatJournal ENTITY_LOAD guard.
 				ShrineCat bogusClone = ShrineCatContent.SHRINE_CAT.create(l, EntitySpawnReason.COMMAND);
 				check(bogusClone != null, "Bogus clone test entity created");
-				bogusClone.snapTo(223.0, 111.0, 1.5, 0.0F, 0.0F);
+				bogusClone.moveTo(223.0, 111.0, 1.5, 0.0F, 0.0F);
 				bogusClone.setVariant(ShrineCatRules.Variant.FREYA);
 				bogusClone.tame(player);
 				bogusClone.setRole(ShrineCatRules.ROLE_TAMED);

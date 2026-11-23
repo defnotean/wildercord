@@ -70,7 +70,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
 				e -> e.getTags().contains("wildercord.marshal_cam")).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.marshal_cam");
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -116,7 +116,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 
 	private static OathboundBannerMarshal spawnMarshal(ServerLevel l, Vec3 pos, float yaw, boolean ai) {
 		OathboundBannerMarshal m = AuraWorld.OATHBOUND_BANNER_MARSHAL.create(l, EntitySpawnReason.COMMAND);
-		m.snapTo(pos.x, pos.y, pos.z, yaw, 0.0F);
+		m.moveTo(pos.x, pos.y, pos.z, yaw, 0.0F);
 		m.setYHeadRot(yaw);
 		m.setYBodyRot(yaw);
 		m.setPersistenceRequired();
@@ -231,7 +231,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 					final int ft = tellT;
 					server.runOnServer(s -> {
 						OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(studioId);
-						m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 						m.setYBodyRot(180.0F);
 						m.setYHeadRot(180.0F);
 						m.poseForPreview(sShot.move(), ft, fe, sShot.counter());
@@ -270,7 +270,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			int allyId = server.computeOnServer(s -> {
 				ServerLevel l = level(s);
 				OathboundHalberdier ally = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
-				ally.snapTo(4.5, 121.0, 2.5, 180.0F, 0.0F);
+				ally.moveTo(4.5, 121.0, 2.5, 180.0F, 0.0F);
 				ally.setNoAi(true);
 				ally.setHealth(80.0F);
 				l.addFreshEntity(ally);
@@ -295,7 +295,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			// 2b. Solar Aegis Guard: arrow deflection + frontal melee block + counter-thrust
 			server.runOnServer(s -> {
 				OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(marshalId);
-				m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				m.setTarget(null);
 				m.startMove(level(s), OathboundBannerMarshalRules.SOLAR_AEGIS_GUARD, null);
 			});
@@ -338,7 +338,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				OathboundBannerMarshal m = (OathboundBannerMarshal) level(s).getEntity(marshalId);
 				m.setNoAi(true);
-				m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				m.startMove(level(s), OathboundBannerMarshalRules.SOLAR_AEGIS_GUARD, null);
 			});
 			context.waitTicks(OathboundBannerMarshalRules.GUARD_TELL + 2);
@@ -369,7 +369,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBannerMarshal m = (OathboundBannerMarshal) l.getEntity(marshalId);
-				m.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				m.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				m.startMove(l, OathboundBannerMarshalRules.SOVEREIGN_JUDGMENT, p);
 			});
 			check(await(context, world, 36, s -> player(s).getHealth() < 20.0F),

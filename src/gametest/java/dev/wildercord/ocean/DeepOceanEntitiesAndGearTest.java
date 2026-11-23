@@ -49,7 +49,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 	}
 
 	private static void poseMob(net.minecraft.world.entity.Mob m, double x, double y, double z, float yaw) {
-		m.snapTo(x, y, z, yaw, 0f);
+		m.moveTo(x, y, z, yaw, 0f);
 		m.setYRot(yaw);
 		m.yRotO = yaw;
 		m.setYBodyRot(yaw);
@@ -75,7 +75,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(96),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -400,7 +400,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				check(p.getAirSupply() == p.getMaxAirSupply(), "Pressurized tank preserves air underwater");
 
 				CoralSpineMako target = OceanEntities.CORAL_SPINE_MAKO.create(l, EntitySpawnReason.COMMAND);
-				target.snapTo(0.5, 92.0, -1.0, 0f, 0f);
+				target.moveTo(0.5, 92.0, -1.0, 0f, 0f);
 				target.setNoAi(true);
 				l.addFreshEntity(target);
 				float beforeHp = target.getHealth();

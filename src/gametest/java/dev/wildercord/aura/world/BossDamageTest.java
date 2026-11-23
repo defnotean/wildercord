@@ -363,7 +363,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 
 				// Test LairRespawns scheduling on bound guardian death and respawn at home.
 				var boundSerpent = (dev.wildercord.aura.world.RootcoilSerpent) serpentType.create(level, net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);
-				boundSerpent.snapTo(0.5, 101, 0.5, 0.0F, 0.0F);
+				boundSerpent.moveTo(0.5, 101, 0.5, 0.0F, 0.0F);
 				boundSerpent.bind(altarPos, 0.0F);
 				level.addFreshEntity(boundSerpent);
 				boundSerpent.setHealth(1.0F);

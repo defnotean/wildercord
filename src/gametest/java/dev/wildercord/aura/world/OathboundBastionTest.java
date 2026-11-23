@@ -70,7 +70,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
 				e -> e.getTags().contains("wildercord.bastion_cam")).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.bastion_cam");
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -116,7 +116,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 
 	private static OathboundBastion spawnBastion(ServerLevel l, Vec3 pos, float yaw, boolean ai) {
 		OathboundBastion b = AuraWorld.OATHBOUND_BASTION.create(l, EntitySpawnReason.COMMAND);
-		b.snapTo(pos.x, pos.y, pos.z, yaw, 0.0F);
+		b.moveTo(pos.x, pos.y, pos.z, yaw, 0.0F);
 		b.setYHeadRot(yaw);
 		b.setYBodyRot(yaw);
 		b.setPersistenceRequired();
@@ -225,7 +225,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 					final int ft = tellT;
 					server.runOnServer(s -> {
 						OathboundBastion b = (OathboundBastion) level(s).getEntity(studioId);
-						b.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						b.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 						b.poseForPreview(sShot.move(), ft, fe, sShot.barrier());
 					});
 					context.waitTicks(4);
@@ -312,7 +312,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				p.setGameMode(GameType.CREATIVE);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
 				b.setNoAi(false);
-				b.snapTo(0.5, 121.0, 1.5, 0.0F, 0.0F);
+				b.moveTo(0.5, 121.0, 1.5, 0.0F, 0.0F);
 				b.setTarget(null);
 				b.startMove(l, OathboundBastionRules.SHIELD_RAM, null);
 			});
@@ -328,7 +328,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				p.setHealth(p.getMaxHealth());
 				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
-				b.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				b.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				b.setTarget(p);
 				b.startMove(l, OathboundBastionRules.ANVIL_SLAM, p);
 			});
@@ -344,7 +344,7 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBastion b = (OathboundBastion) l.getEntity(combatId);
-				b.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				b.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				b.setTarget(p);
 				b.startMove(l, OathboundBastionRules.SHIELD_BASH, p);
 			});

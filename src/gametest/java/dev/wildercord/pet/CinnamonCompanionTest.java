@@ -137,12 +137,12 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					dog.teleportTo(0.5, 101, 2.5);
 					PartyMate ally = new PartyMate(level, "CinnamonMate1");
 					ally.setGameMode(GameType.SURVIVAL);
-					ally.snapTo(1.8, 101, 2.5, 0, 0);
+					ally.moveTo(1.8, 101, 2.5, 0, 0);
 					level.addNewPlayer(ally);
 					ally.setHealth(6.0F);
 					PartyMate stranger = new PartyMate(level, "CinnamonStranger");
 					stranger.setGameMode(GameType.SURVIVAL);
-					stranger.snapTo(-2.0, 101, 2.5, 0, 0);
+					stranger.moveTo(-2.0, 101, 2.5, 0, 0);
 					level.addNewPlayer(stranger);
 					stranger.setHealth(6.0F);
 					long now = level.getGameTime();
@@ -239,14 +239,14 @@ public final class CinnamonCompanionTest implements FabricClientGameTest {
 					for (int i = 0; i < 4; i++) {
 						PartyMate mate = new PartyMate(level, "Rider" + i);
 						mate.setGameMode(GameType.SURVIVAL);
-						mate.snapTo(1.5 + i, 101, 3.0, 0, 0);
+						mate.moveTo(1.5 + i, 101, 3.0, 0, 0);
 						level.addNewPlayer(mate);
 						PartyTestHooks.join(server, p.getUUID(), mate.getUUID(), now + (i + 1) * 25L);
 						partyRiders[i] = mate;
 					}
 					nonPartyRider[0] = new PartyMate(level, "Outsider");
 					nonPartyRider[0].setGameMode(GameType.SURVIVAL);
-					nonPartyRider[0].snapTo(-2.5, 101, 3.0, 0, 0);
+					nonPartyRider[0].moveTo(-2.5, 101, 3.0, 0, 0);
 					level.addNewPlayer(nonPartyRider[0]);
 
 					check(!nonPartyRider[0].startRiding(dog), "Non-party outsider cannot ride Cinnamon");

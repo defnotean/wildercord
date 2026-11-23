@@ -71,7 +71,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(80),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -251,14 +251,14 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 
 				OathboundHalberdier halberdier = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
 				check(halberdier != null, "Spawn Oathbound Halberdier guard");
-				halberdier.snapTo(-5.5, 120.0, 0.5, -20.0F, 0.0F);
+				halberdier.moveTo(-5.5, 120.0, 0.5, -20.0F, 0.0F);
 				halberdier.finalizeSpawn(l, l.getCurrentDifficultyAt(halberdier.blockPosition()), EntitySpawnReason.COMMAND, null);
 				l.addFreshEntity(halberdier);
 
 				OathholdCitizen watchman = OathholdContent.CITIZEN.create(l, EntitySpawnReason.COMMAND);
 				check(watchman != null, "Spawn City Watchman guard");
 				watchman.configure(OathholdCitizenRules.Archetype.CITY_WATCHMAN, 6, 120, 0, new BlockPos(6, 120, 0), 14);
-				watchman.snapTo(6.5, 120.0, 0.5, 20.0F, 0.0F);
+				watchman.moveTo(6.5, 120.0, 0.5, 20.0F, 0.0F);
 				watchman.finalizeSpawn(l, l.getCurrentDifficultyAt(watchman.blockPosition()), EntitySpawnReason.COMMAND, null);
 				l.addFreshEntity(watchman);
 
@@ -311,7 +311,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				for (OathholdCitizen watchman : l.getEntitiesOfClass(OathholdCitizen.class, new AABB(STAGE).inflate(40.0),
 						c -> c.isAlive() && c.archetype() == OathholdCitizenRules.Archetype.CITY_WATCHMAN)) {
-					watchman.snapTo(8.5, 120.0, 2.5, 20.0F, 0.0F);
+					watchman.moveTo(8.5, 120.0, 2.5, 20.0F, 0.0F);
 					watchman.getNavigation().stop();
 				}
 				p.setHealth(p.getMaxHealth());

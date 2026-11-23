@@ -69,7 +69,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
 				e -> e.getTags().contains("wildercord.blade_cam")).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.blade_cam");
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -115,7 +115,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 
 	private static OathboundBladeChampion spawnChampion(ServerLevel l, Vec3 pos, float yaw, boolean ai) {
 		OathboundBladeChampion c = AuraWorld.OATHBOUND_BLADE_CHAMPION.create(l, EntitySpawnReason.COMMAND);
-		c.snapTo(pos.x, pos.y, pos.z, yaw, 0.0F);
+		c.moveTo(pos.x, pos.y, pos.z, yaw, 0.0F);
 		c.setYHeadRot(yaw);
 		c.setYBodyRot(yaw);
 		c.setPersistenceRequired();
@@ -231,7 +231,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 					final int ft = tellT;
 					server.runOnServer(s -> {
 						OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(studioId);
-						c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 						c.poseForPreview(sShot.move(), ft, fe, sShot.counter());
 					});
 					context.waitTicks(4);
@@ -267,7 +267,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			// 2a. Projectile Deflection during Wrathful Riposte
 			server.runOnServer(s -> {
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
-				c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				c.setTarget(null);
 				c.startMove(level(s), OathboundBladeChampionRules.WRATHFUL_RIPOSTE, null);
 			});
@@ -315,7 +315,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			server.runOnServer(s -> {
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
 				c.setNoAi(true);
-				c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				c.startMove(level(s), OathboundBladeChampionRules.WRATHFUL_RIPOSTE, null);
 			});
 			context.waitTicks(OathboundBladeChampionRules.RIPOSTE_TELL + 2);
@@ -360,7 +360,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 					ServerPlayer p = player(s);
 					check(p.isBlocking(), "Player shield must be active before Pommel-Break test");
 					OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
-					c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+					c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 					c.startMove(level(s), OathboundBladeChampionRules.POMMEL_BREAK, p);
 				});
 				boolean shieldShattered = await(context, world, 30, s -> {
@@ -380,7 +380,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				p.stopUsingItem();
 				p.teleportTo(level(s), 0.5, 121.0, -4.2, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundBladeChampion c = (OathboundBladeChampion) level(s).getEntity(champId);
-				c.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				c.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				c.startMove(level(s), OathboundBladeChampionRules.GUILLOTINE_SLAM, p);
 			});
 			boolean guillotineLanded = await(context, world, 36, s -> player(s).getHealth() < 20.0F);

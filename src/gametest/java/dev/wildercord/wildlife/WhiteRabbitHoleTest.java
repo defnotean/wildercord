@@ -70,7 +70,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(260),
 				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = net.minecraft.world.entity.EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -167,7 +167,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 
 				WhiteRabbit rabbit = WhiteRabbitContent.WHITE_RABBIT.create(l, EntitySpawnReason.COMMAND);
 				check(rabbit != null, "Create WhiteRabbit");
-				rabbit.snapTo(3.5, 101.0, 0.5, -90.0F, 0.0F);
+				rabbit.moveTo(3.5, 101.0, 0.5, -90.0F, 0.0F);
 				l.addFreshEntity(rabbit);
 				BlockPos portal = rabbit.leadToHollowTree(p, treeBase, WhiteRabbitRules.Outcome.RANDOM_CAVE);
 				check(l.getBlockState(portal).is(WhiteRabbitContent.RABBIT_HOLE_PORTAL),

@@ -69,7 +69,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
 				e -> e.getTags().contains("wildercord.halberdier_cam")).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
-			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
+			cam.moveTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.halberdier_cam");
 			l.addFreshEntity(cam);
 			return cam.getId();
@@ -115,7 +115,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 
 	private static OathboundHalberdier spawnHalberdier(ServerLevel l, Vec3 pos, float yaw, boolean ai) {
 		OathboundHalberdier h = AuraWorld.OATHBOUND_HALBERDIER.create(l, EntitySpawnReason.COMMAND);
-		h.snapTo(pos.x, pos.y, pos.z, yaw, 0.0F);
+		h.moveTo(pos.x, pos.y, pos.z, yaw, 0.0F);
 		h.setYHeadRot(yaw);
 		h.setYBodyRot(yaw);
 		h.setPersistenceRequired();
@@ -230,7 +230,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 					final int ft = tellT;
 					server.runOnServer(s -> {
 						OathboundHalberdier h = (OathboundHalberdier) level(s).getEntity(studioId);
-						h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+						h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 						h.setYBodyRot(180.0F);
 						h.setYHeadRot(180.0F);
 						h.poseForPreview(sShot.move(), ft, fe);
@@ -273,7 +273,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, 3.8, Set.<Relative>of(), 180.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.setTarget(p);
 				h.startMove(l, OathboundHalberdierRules.TEMPEST_WHIRL, null);
 			});
@@ -289,7 +289,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -4.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.HOOK_AND_REAP, p);
 			});
 			check(await(context, world, 20, s -> {
@@ -305,7 +305,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 5.2, 121.0, 0.5, Set.<Relative>of(), 90.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SKY_VAULT_CRASH, null);
 			});
 			check(await(context, world, 30, s -> player(s).getHealth() < 20.0F),
@@ -317,7 +317,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				ServerPlayer p = player(s);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
 				h.setNoAi(true);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SKY_VAULT_CRASH, null);
 				p.teleportTo(l, 0.5, 121.0, -2.0, Set.<Relative>of(), 0.0F, 0.0F, false);
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
@@ -342,7 +342,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 				McEntities.clearHurtCooldown(p);
 				p.teleportTo(l, 0.5, 121.0, -3.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 				OathboundHalberdier h = (OathboundHalberdier) l.getEntity(halberdierId);
-				h.snapTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
+				h.moveTo(STAGE.x, STAGE.y, STAGE.z, 180.0F, 0.0F);
 				h.startMove(l, OathboundHalberdierRules.SHADOWSTEP_THRUST, p);
 			});
 			check(await(context, world, 24, s -> {
