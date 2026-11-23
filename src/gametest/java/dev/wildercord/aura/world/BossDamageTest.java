@@ -427,7 +427,7 @@ public final class BossDamageTest implements FabricClientGameTest {
 			});
 			c.waitTicks(20);
 			c.runOnClient(mc -> {
-				check(mc.gui.screen() == null, "no modal or death screen open during fire screenshot");
+				check(mc.screen == null, "no modal or death screen open during fire screenshot");
 				mc.player.setYRot(180.0F);
 				mc.player.setXRot(6.0F);
 				var custom = mc.level.getEntity(fireIds[0]);
@@ -438,8 +438,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var vanillaState = mc.getEntityRenderDispatcher().extractEntity(vanilla, 0.0F);
 				check(!customState.displayFireAnimation, "custom mob suppresses obscuring vanilla fire billboard");
 				check(vanillaState.displayFireAnimation, "vanilla mob preserves vanilla fire billboard");
-				GametestCompat.clearToasts(mc);
-				GametestCompat.clearChat(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearChat(mc);
 			});
 			c.waitTicks(4);
 			c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("custom_mob_fire_clean").disableCounterPrefix());

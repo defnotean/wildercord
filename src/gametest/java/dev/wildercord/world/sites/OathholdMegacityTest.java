@@ -1,5 +1,4 @@
 package dev.wildercord.world.sites;
-import dev.wildercord.gametest.compat.GametestCompat;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.compat.McWorldgen;
@@ -78,16 +77,16 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 		});
 		ctx.waitTicks(40);
 		try {
-			world.getConnection().waitForChunksDownload();
-			world.getConnection().waitForClientboundPackets();
-			world.getConnection().waitForChunksRender();
+			world.getClientWorld().waitForChunksDownload();
+			dev.wildercord.gametest.compat.GametestCompat.awaitClientPackets(world);
+			world.getClientWorld().waitForChunksRender();
 		} catch (AssertionError | RuntimeException ignored) {
 		}
 		ctx.waitTicks(40);
 	}
 
 	private static void shot(ClientGameTestContext ctx, String name) {
-		ctx.runOnClient(mc -> GametestCompat.clearToasts(mc));
+		ctx.runOnClient(mc -> dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc));
 		ctx.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 
@@ -111,7 +110,7 @@ public final class OathholdMegacityTest implements FabricClientGameTest {
 				mc.options.fov().set(74);
 				mc.options.broadcastOptions();
 				mc.resizeGui();
-				if (!GametestCompat.hudHidden(mc)) GametestCompat.toggleHud(mc);
+				if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 			});
 			world.getServer().runOnServer(s -> {
 				ServerPlayer p = s.getPlayerList().getPlayers().getFirst();

@@ -1,5 +1,4 @@
 package dev.wildercord.aura.world;
-import dev.wildercord.gametest.compat.GametestCompat;
 
 import dev.wildercord.compat.McEntities;
 import dev.wildercord.spell.FieldGuide;
@@ -82,11 +81,11 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 			if (cam != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(cam);
-				if (!GametestCompat.hudHidden(mc)) {
-					GametestCompat.toggleHud(mc);
+				if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) {
+					dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 				}
-				GametestCompat.clearToasts(mc);
-				GametestCompat.clearChat(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc);
+				dev.wildercord.gametest.compat.GametestCompat.clearChat(mc);
 			}
 		});
 	}
@@ -95,8 +94,8 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 		context.runOnClient(mc -> {
 			mc.setCameraEntity(mc.player);
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (GametestCompat.hudHidden(mc)) {
-				GametestCompat.toggleHud(mc);
+			if (dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) {
+				dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 			}
 		});
 	}
@@ -350,7 +349,7 @@ public final class OathboundBladeChampionTest implements FabricClientGameTest {
 				p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SHIELD));
 			});
 			context.runOnClient(mc -> {
-				mc.gui.setScreen(null);
+				mc.setScreen(null);
 				mc.options.keyUse.setDown(true);
 				if (mc.player != null) {
 					mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
