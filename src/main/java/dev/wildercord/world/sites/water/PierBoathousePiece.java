@@ -197,6 +197,8 @@ public class PierBoathousePiece extends WaterPiece {
 		set(level, bb, Blocks.LANTERN.defaultBlockState(), 9, DECK + 2, 22);
 		lectern(level, bb, 1, DECK + 1, 24, Direction.EAST, "The Second Count",
 			"book.wildercord.water_boathouse", 3, "Tideward boatkeepers");
-		spawn(level, bb, EntityType.SPRUCE_BOAT, 5, BASE, 24, 0.6);
+		// 1.21.1 has one boat entity type; the wood is a variant on it.
+		if (spawn(level, bb, EntityType.BOAT, 5, BASE, 24, 0.6) instanceof net.minecraft.world.entity.vehicle.Boat boat)
+			boat.setVariant(net.minecraft.world.entity.vehicle.Boat.Type.SPRUCE);
 	}
 }

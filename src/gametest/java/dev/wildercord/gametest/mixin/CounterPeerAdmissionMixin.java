@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.aura.*;
+import dev.wildercord.aura.SwordStrings;
 import dev.wildercord.gametest.CounterPeerAdmissionProbe;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;

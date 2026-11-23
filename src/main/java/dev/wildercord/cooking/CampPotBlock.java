@@ -90,7 +90,7 @@ public class CampPotBlock extends Block {
 	@Override
 	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!stack.is(Items.BOWL)) {
-			return ItemInteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
 		if (!(player instanceof ServerPlayer server) || !(level instanceof ServerLevel serverLevel)) return ItemInteractionResult.SUCCESS;
 		if (!heated(level, pos)) {

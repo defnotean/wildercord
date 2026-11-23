@@ -216,14 +216,14 @@ abstract class WaterPiece extends DungeonPiece {
 	static final String RESIDENT = "wildercord.site_resident";
 
 	/** An entity that isn't a guard (a boat at its mooring, a villager at work), placed once: by the chunk it's in. */
-	protected void spawn(WorldGenLevel level, BoundingBox bb, EntityType<?> type, int x, int y, int z, double lift) {
+	protected Entity spawn(WorldGenLevel level, BoundingBox bb, EntityType<?> type, int x, int y, int z, double lift) {
 		BlockPos pos = getWorldPos(x, y, z);
 		if (!bb.isInside(pos)) {
-			return;
+			return null;
 		}
 		Entity entity = McEntities.create(type, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (entity == null) {
-			return;
+			return null;
 		}
 		entity.moveTo(pos.getX() + 0.5, pos.getY() + lift, pos.getZ() + 0.5, 0, 0);
 		entity.addTag(RESIDENT);
@@ -232,5 +232,6 @@ abstract class WaterPiece extends DungeonPiece {
 			mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.STRUCTURE, null);
 		}
 		level.addFreshEntityWithPassengers(entity);
+		return entity;
 	}
 }

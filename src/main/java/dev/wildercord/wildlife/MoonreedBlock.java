@@ -98,7 +98,7 @@ public final class MoonreedBlock extends Block {
   }
  }
  @Override protected InteractionResult useWithoutItem(BlockState s,Level l,BlockPos p,Player who,BlockHitResult h) {return harvest(s,l,p,who);}
- @Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {return stack.is(WetlandGarden.LENS)?ItemInteractionResult.PASS:s.getValue(AGE)==2?dev.wildercord.compat.McBlocksAndItems.itemResult(harvest(s,l,p,who)):super.useItemOn(stack,s,l,p,who,hand,h);}
+ @Override protected ItemInteractionResult useItemOn(ItemStack stack,BlockState s,Level l,BlockPos p,Player who,InteractionHand hand,BlockHitResult h) {return stack.is(WetlandGarden.LENS)?ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION:s.getValue(AGE)==2?dev.wildercord.compat.McBlocksAndItems.itemResult(harvest(s,l,p,who)):super.useItemOn(stack,s,l,p,who,hand,h);}
  private InteractionResult harvest(BlockState s,Level l,BlockPos p,Player who) {
   if(!s.is(this) || s.getValue(AGE)!=2)return InteractionResult.PASS;
   return l instanceof ServerLevel server?harvest(s,server,p,who,MoonreedAdmission.WORLD):InteractionResult.SUCCESS;
