@@ -26,6 +26,6 @@ public abstract class CullableMobRenderer<T extends Mob, M extends EntityModel<T
 	}
 
 	protected final AABB superCullingBounds(T entity, float partial) {
-		return super.getBoundingBoxForCulling(entity);
+		return entity.getBoundingBox();
 	}
 }

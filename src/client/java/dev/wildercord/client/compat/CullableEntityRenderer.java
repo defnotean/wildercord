@@ -26,6 +26,6 @@ public abstract class CullableEntityRenderer<T extends Entity, M extends EntityM
 	}
 
 	protected final AABB superCullingBounds(T entity, float partial) {
-		return super.getBoundingBoxForCulling(entity);
+		return entity.getBoundingBox();
 	}
 }

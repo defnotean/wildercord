@@ -15,7 +15,7 @@ public final class FrameBenchmark {
   long now=System.nanoTime();if(last==0){last=now;return;}  SAMPLES[total++%SAMPLES.length]=(now-last)/1e6;count=Math.min(total,SAMPLES.length);last=now;if(now-start<30_000_000_000L)return;
   start=0;double[] sorted=Arrays.copyOf(SAMPLES,count);Arrays.sort(sorted);if(count==0)return;
   String result=String.format(Locale.ROOT,"own=%s others=%s flash=%s shake=%s frames=%d samples=%d median=%.2fms p95=%.2fms p99=%.2fms formationsLimited=%d",MagicQuality.own,MagicQuality.others,MagicQuality.reducedFlash,MagicQuality.cameraShake,total,count,sorted[count/2],sorted[(int)((count-1)*.95)],sorted[(int)((count-1)*.99)],SpellFormations.dropped()-droppedAtStart);lastResult=result;
-  result+=" idle/menu-throttled-frames="+throttled+" current-limit="+mc.getFramerateLimit();lastResult=result;
+  result+=" idle/menu-throttled-frames="+throttled+" current-limit="+mc.options.framerateLimit().get();lastResult=result;
   Wildercord.LOGGER.info("Wildercord frame benchmark: {}",result);if(mc.player!=null)mc.player.displayClientMessage(Component.literal(result), false);
   try{var path=net.fabricmc.loader.api.FabricLoader.getInstance().getGameDir().resolve("logs/wildercord-frame-benchmarks.txt");java.nio.file.Files.createDirectories(path.getParent());java.nio.file.Files.writeString(path,java.time.Instant.now()+" "+result+System.lineSeparator(),java.nio.file.StandardOpenOption.CREATE,java.nio.file.StandardOpenOption.APPEND);}catch(java.io.IOException e){Wildercord.LOGGER.warn("Cannot write frame benchmark",e);}
  }
