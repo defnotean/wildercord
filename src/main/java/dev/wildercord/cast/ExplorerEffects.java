@@ -949,7 +949,7 @@ public final class ExplorerEffects {
 
 	/** Moonpetal: moonlit petals cut enemies and mend allies alike. */
 	private static void moonpetal(Cast cast, Vec3 point, double radius, double power) {
-		power *= ExplorerNumbers.moonFactor(dev.wildercord.compat.EnvCompat.moonPhase(cast.level, BlockPos.containing(point)), !cast.(level.isDay() && level.dimensionType().hasSkyLight()) && cast.level.canSeeSky(BlockPos.containing(point)));
+		power *= ExplorerNumbers.moonFactor(dev.wildercord.compat.EnvCompat.moonPhase(cast.level, BlockPos.containing(point)), !(cast.level.isDay() && cast.level.dimensionType().hasSkyLight()) && cast.level.canSeeSky(BlockPos.containing(point)));
 		for (LivingEntity t : enemiesAround(cast, point, radius)) {
 			final double observedPower=power;
 			LifeOwnerEvents.mutation(cast,"moonpetal",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast,t,magic(cast),5*observedPower));
@@ -1072,7 +1072,7 @@ public final class ExplorerEffects {
 
 	/** Sunscorch: the noon sun, focused; fiercer under an open sky by day. */
 	private static void sunscorch(Cast cast, LivingEntity t, double power, double duration) {
-		boolean sunlit = cast.(level.isDay() && level.dimensionType().hasSkyLight()) && cast.level.canSeeSky(t.blockPosition().above());
+		boolean sunlit = (cast.level.isDay() && cast.level.dimensionType().hasSkyLight()) && cast.level.canSeeSky(t.blockPosition().above());
 		// Bright light of its own (a torch, lava, glowstone) counts as dusk where there is no sun.
 		boolean dusk = !sunlit && cast.level.getBrightness(net.minecraft.world.level.LightLayer.BLOCK, t.blockPosition()) >= 12;
 		FireBloodVfx.sunscorch(cast.level, t, sunlit);
