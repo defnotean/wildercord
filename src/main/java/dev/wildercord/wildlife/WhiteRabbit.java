@@ -1,11 +1,15 @@
 package dev.wildercord.wildlife;
 
 import dev.wildercord.cast.Vfx;
+import dev.wildercord.compat.McValueInput;
+import dev.wildercord.compat.McValueOutput;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,8 +33,6 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
@@ -270,8 +272,8 @@ public class WhiteRabbit extends Animal {
 	}
 
 	@Override
-	public void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.addAdditionalSaveData(outputTag);
 		if (targetTreePos != null) output.store("TargetTree", BlockPos.CODEC, targetTreePos);
 		if (portalPos != null) output.store("PortalPos", BlockPos.CODEC, portalPos);
 		if (leadPlayerId != null) output.store("LeadPlayer", UUIDUtil.CODEC, leadPlayerId);
@@ -280,8 +282,8 @@ public class WhiteRabbit extends Animal {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
+	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+		super.readAdditionalSaveData(inputTag);
 		targetTreePos = input.read("TargetTree", BlockPos.CODEC).orElse(null);
 		portalPos = input.read("PortalPos", BlockPos.CODEC).orElse(null);
 		leadPlayerId = input.read("LeadPlayer", UUIDUtil.CODEC).orElse(null);

@@ -90,7 +90,8 @@
         "PotionBrewingMixin",
         "OathholdSnowMixin",
         "OathholdWeatherSnowMixin",
-        "RangedAttributeMaxHealthMixin"
+        "RangedAttributeMaxHealthMixin",
+		"LivingEntityJumpingAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
