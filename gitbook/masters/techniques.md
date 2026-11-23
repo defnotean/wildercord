@@ -186,7 +186,7 @@ Jump to a school: [Ember](#ember) · [Gale](#gale) · [Stone](#stone) · [Rime](
 | **Stone Rain** | Dropping cut → Dropping cut → Dropping cut | Sidestep → Sidestep → Sidestep | 0.6 s | 0.55 s | 47.0 |
 | **Menhir** | Heavy thrust → Heavy thrust | Sidestep → Sidestep | 0.9 s | 0.7 s | 54.1 |
 | **Deep Quarry** | Cleave with a 2-block step in → Heavy spinning sweeping cut | Sidestep → Leave the circle | 0.9 s | 0.7 s | 48.5 |
-| **Earthsplitter** | Heavy cleave → Falling cut → Heavy cleave | Sidestep → Sidestep → Sidestep | 1.05 s | 0.75 s | 57.7 |
+| **Earthsplitter** | Heavy cleave → Falling cut → Heavy cleave | Sidestep → Sidestep → Sidestep | 1.05 s | 0.75 s | 57.8 |
 | **Last Stone** | Low sweep → Heavy upward cut → Spinning sweeping cut → Heavy cleave | Jump → Sidestep → Leave the circle → Sidestep | 1.4 s | 0.8 s | 57.8 |
 
 ## Rime Master

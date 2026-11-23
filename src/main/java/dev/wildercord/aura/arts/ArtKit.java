@@ -609,8 +609,12 @@ public final class ArtKit {
 			return false;
 		}
 		if (boss(foe)) {
-			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, true), player);
-			Reactions.mark(foe, Reactions.Mark.FROZEN, ticks);
+			if (!Spirits.tryClaimBossHold(foe, ticks, player)) {
+				return false;
+			}
+			int capped = dev.wildercord.cast.BossRules.bossHoldTicks(ticks);
+			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, capped, 3, false, true), player);
+			Reactions.mark(foe, Reactions.Mark.FROZEN, capped);
 			return false;
 		}
 		int t = holdFor(foe, ticks);
@@ -633,7 +637,10 @@ public final class ArtKit {
 			return false;
 		}
 		if (boss(foe)) {
-			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 1, false, true), player);
+			if (!Spirits.tryClaimBossHold(foe, ticks, player)) {
+				return false;
+			}
+			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, dev.wildercord.cast.BossRules.bossHoldTicks(ticks), 1, false, true), player);
 			return false;
 		}
 		int t = holdFor(foe, ticks);
@@ -705,7 +712,10 @@ public final class ArtKit {
 			return false;
 		}
 		if (boss(foe)) {
-			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 1, false, true), player);
+			if (!Spirits.tryClaimBossHold(foe, ticks, player)) {
+				return false;
+			}
+			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, dev.wildercord.cast.BossRules.bossHoldTicks(ticks), 1, false, true), player);
 			return false;
 		}
 		int t = holdFor(foe, ticks);
