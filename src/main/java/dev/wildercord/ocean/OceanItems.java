@@ -5,6 +5,7 @@ import dev.wildercord.ServerState;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.aura.world.BossDamage;
+import dev.wildercord.compat.McHands;
 import dev.wildercord.net.ServerDisconnects;
 import java.util.List;
 import java.util.Map;
@@ -361,7 +362,7 @@ public final class OceanItems {
 			ItemStack held = player.getItemInHand(hand);
 			if (level instanceof ServerLevel server) {
 				if (!player.getAbilities().instabuild) {
-					held.hurtAndBreak(1, player, hand.asEquipmentSlot());
+					held.hurtAndBreak(1, player, McHands.slot(hand));
 				}
 				ThrownHarpoon harpoon = new ThrownHarpoon(server, player, held);
 				harpoon.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f, 2.35f, 0.6f);
@@ -420,7 +421,7 @@ public final class OceanItems {
 				}
 				server.playSound(null, player.blockPosition(), SoundEvents.TRIDENT_RIPTIDE_1.value(), SoundSource.PLAYERS, 1.0f, 1.25f);
 				if (!player.getAbilities().instabuild && hits > 0) {
-					held.hurtAndBreak(1, player, hand.asEquipmentSlot());
+					held.hurtAndBreak(1, player, McHands.slot(hand));
 				}
 				player.getCooldowns().addCooldown(held, OceanRules.GLAIVE_COOLDOWN_TICKS);
 			}
@@ -450,7 +451,7 @@ public final class OceanItems {
 				server.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.2f, 0.65f);
 				server.sendParticles(ParticleTypes.BUBBLE_POP, player.getX(), player.getEyeY(), player.getZ(), 28, 1.8, 1.0, 1.8, 0.06);
 				if (!player.getAbilities().instabuild) {
-					held.hurtAndBreak(1, player, hand.asEquipmentSlot());
+					held.hurtAndBreak(1, player, McHands.slot(hand));
 				}
 				player.getCooldowns().addCooldown(held, OceanRules.CONCH_COOLDOWN_TICKS);
 			}

@@ -46,19 +46,19 @@ public final class AuraWorld {
 		EntityType.Builder.of(Duelist::new, MobCategory.CREATURE).sized(0.6F, 1.95F).eyeHeight(1.62F).clientTrackingRange(10));
 	/** An old suit of armour that aura still walks in. */
 	public static final EntityType<FallenKnight> FALLEN_KNIGHT = register("fallen_knight",
-		EntityType.Builder.of(FallenKnight::new, MobCategory.MONSTER).sized(0.7F, 2.05F).eyeHeight(1.72F).clientTrackingRange(8).notInPeaceful());
+		EntityType.Builder.of(FallenKnight::new, MobCategory.MONSTER).sized(0.7F, 2.05F).eyeHeight(1.72F).clientTrackingRange(8));
 	/** Knight #1 (Way of the Bulwark): a towering Oathbound champion behind a Sun-Anvil greatshield. */
 	public static final EntityType<OathboundBastion> OATHBOUND_BASTION = register("oathbound_bastion",
-		EntityType.Builder.of(OathboundBastion::new, MobCategory.MONSTER).sized(0.95F, 2.5F).eyeHeight(2.15F).clientTrackingRange(10).notInPeaceful());
+		EntityType.Builder.of(OathboundBastion::new, MobCategory.MONSTER).sized(0.95F, 2.5F).eyeHeight(2.15F).clientTrackingRange(10));
 	/** Knight #2 (Way of the Blade): a crimson-plumed duel master wielding a Zweihänder greatsword. */
 	public static final EntityType<OathboundBladeChampion> OATHBOUND_BLADE_CHAMPION = register("oathbound_blade_champion",
-		EntityType.Builder.of(OathboundBladeChampion::new, MobCategory.MONSTER).sized(0.85F, 2.3F).eyeHeight(1.98F).clientTrackingRange(10).notInPeaceful());
+		EntityType.Builder.of(OathboundBladeChampion::new, MobCategory.MONSTER).sized(0.85F, 2.3F).eyeHeight(1.98F).clientTrackingRange(10));
 	/** Knight #3 (Way of the Storm-Glaive): a winged houndskull sentinel wielding a lightning Storm-Halberd. */
 	public static final EntityType<OathboundHalberdier> OATHBOUND_HALBERDIER = register("oathbound_halberdier",
-		EntityType.Builder.of(OathboundHalberdier::new, MobCategory.MONSTER).sized(0.82F, 2.25F).eyeHeight(1.95F).clientTrackingRange(10).notInPeaceful());
+		EntityType.Builder.of(OathboundHalberdier::new, MobCategory.MONSTER).sized(0.82F, 2.25F).eyeHeight(1.95F).clientTrackingRange(10));
 	/** Knight #4 (Way of the Sovereign Banner): a laurel-crowned commander rallying knights beneath a Sovereign War-Banner. */
 	public static final EntityType<OathboundBannerMarshal> OATHBOUND_BANNER_MARSHAL = register("oathbound_banner_marshal",
-		EntityType.Builder.of(OathboundBannerMarshal::new, MobCategory.MONSTER).sized(0.92F, 2.48F).eyeHeight(2.12F).clientTrackingRange(10).notInPeaceful());
+		EntityType.Builder.of(OathboundBannerMarshal::new, MobCategory.MONSTER).sized(0.92F, 2.48F).eyeHeight(2.12F).clientTrackingRange(10));
 
 	/** An opt-in endgame encounter; never part of natural spawning. */
 	public static final EntityType<SwordMaster> SWORD_MASTER = register("sword_master",
@@ -90,7 +90,7 @@ public final class AuraWorld {
 
 	private static Item egg(String id, EntityType<? extends Mob> type) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Wildercord.id(id + "_spawn_egg"));
-		Item egg = Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(new Item.Properties().spawnEgg(type).setId(key)));
+		Item egg = Registry.register(BuiltInRegistries.ITEM, key, new SpawnEggItem(type, new Item.Properties().setId(key)));
 		SPAWN_EGGS.add(egg);
 		return egg;
 	}

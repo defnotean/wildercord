@@ -56,7 +56,7 @@ public final class WhiteRabbitContent {
 		new RabbitHolePortalBlock(BlockBehaviour.Properties.of()
 			.setId(PORTAL_KEY)
 			.mapColor(MapColor.COLOR_PURPLE)
-			.noCollision()
+			.noCollission()
 			.strength(-1.0F, 3600000.0F)
 			.lightLevel(state -> 9)
 			.sound(SoundType.AMETHYST)
@@ -82,7 +82,7 @@ public final class WhiteRabbitContent {
 	public static final Item WHITE_RABBIT_SPAWN_EGG = Registry.register(
 		BuiltInRegistries.ITEM,
 		EGG_KEY,
-		new SpawnEggItem(new Item.Properties().spawnEgg(WHITE_RABBIT).setId(EGG_KEY)));
+		new SpawnEggItem(WHITE_RABBIT, new Item.Properties().setId(EGG_KEY)));
 
 	public static final TagKey<Block> GROUND =
 		TagKey.create(Registries.BLOCK, Wildercord.id("spawns_on/white_rabbit"));
