@@ -232,7 +232,7 @@ final class SignatureFusions {
 		ServerLevel level = cast.level;
 		int ticks = Effects.ticks(SignatureRules.SEETHE_SECONDS, duration);
 		if (t instanceof Mob) {
-			Spirits.hold(t, ticks);
+			Spirits.hold(t, ticks, cast.caster);
 		} else {
 			t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks, 0, false, false));
 			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, false));
@@ -563,7 +563,7 @@ final class SignatureFusions {
 		DamageSource shock = level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster);
 		for (LivingEntity t : caught) {
 			Effects.hurt(cast, t, shock, SignatureRules.THUNDERSTEP_DAMAGE * power * Reactions.storm(cast, t));
-			Spirits.hold(t, SignatureRules.THUNDERSTEP_STUN);
+			Spirits.hold(t, SignatureRules.THUNDERSTEP_STUN, caster);
 		}
 	}
 

@@ -463,15 +463,20 @@ public final class dev.wildercord.cast.Wards {
             # A real zip carrying the Mojang-mapped marker, or find_mc_jars rejects it.
             with zipfile.ZipFile(jar, "w") as archive:
                 archive.writestr(verify_port._MOJANG_MARKERS[0], b"")
-            prev = os.environ.get("GRADLE_USER_HOME")
+            # _gradle_bases() also looks at Path.home()/.gradle, so a developer machine that has
+            # ever built 1.21.11 would answer this from its own cache. Point HOME at the fixture too.
+            prev = {k: os.environ.get(k) for k in ("GRADLE_USER_HOME", "HOME", "USERPROFILE")}
             try:
                 os.environ["GRADLE_USER_HOME"] = str(gh)
+                os.environ["HOME"] = str(tmp / "no_home")
+                os.environ["USERPROFILE"] = str(tmp / "no_home")
                 found = verify_port.find_mc_jars(tmp / "repo", "1.21.11")
             finally:
-                if prev is None:
-                    os.environ.pop("GRADLE_USER_HOME", None)
-                else:
-                    os.environ["GRADLE_USER_HOME"] = prev
+                for key, value in prev.items():
+                    if value is None:
+                        os.environ.pop(key, None)
+                    else:
+                        os.environ[key] = value
             self.assertEqual(found, [jar])
 
     def test_compat_contract_and_descriptor_alignment_checks(self):

@@ -278,6 +278,11 @@ public abstract class DungeonBoss extends Monster {
 		return level.addFreshEntity(boss) ? boss : null;
 	}
 
+	/** Public arena-spawn entry point used by boss-rush chambers. */
+	public static <T extends DungeonBoss> T spawnInArena(ServerLevel level, EntityType<T> type, BlockPos altar, double lift) {
+		return place(level, type, altar, lift);
+	}
+
 	/** Tells everyone near. */
 	protected void announce(ServerLevel level, String key, int color) {
 		for (ServerPlayer player : level.players()) {
@@ -765,6 +770,11 @@ public abstract class DungeonBoss extends Monster {
 		// Now and then a greater staff, alongside its loot table's exclusive runes and treasures.
 		dev.wildercord.gear.GearLoot.bossStaff(level.getRandom(), 45, dev.wildercord.gear.GearDef.ELEMENTS)
 			.ifPresent(staff -> give(level, killer, staff));
+		// Rare: a soggy map to a forest village where a sacred pig needs help.
+		if (level.getRandom().nextInt(100) < 25) {
+			ServerPlayer recipient = !earned.isEmpty() ? earned.get(level.getRandom().nextInt(earned.size())) : killer;
+			give(level, recipient, new ItemStack(dev.wildercord.content.WildercordItems.SACRED_PIG_MAP));
+		}
 		ExperienceOrb.award(level, lootSpot(), 250);
 	}
 

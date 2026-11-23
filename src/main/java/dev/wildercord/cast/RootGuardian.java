@@ -110,7 +110,7 @@ public final class RootGuardian extends DungeonBoss {
 	public RootGuardian(EntityType<? extends RootGuardian> type, Level level) { super(type, level, BossEvent.BossBarColor.GREEN); }
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return createMonsterAttributes().add(Attributes.MAX_HEALTH, 220).add(Attributes.MOVEMENT_SPEED, .20)
+		return createMonsterAttributes().add(Attributes.MAX_HEALTH, 850).add(Attributes.MOVEMENT_SPEED, .20)
 			.add(Attributes.FOLLOW_RANGE, 32).add(Attributes.KNOCKBACK_RESISTANCE, 1).add(Attributes.ATTACK_DAMAGE, 7);
 	}
 

@@ -20,6 +20,7 @@ public final class CastLock {
 	private static final Map<UUID, Long> UNTIL = new HashMap<>();
 	private record PlayerWindow(long until, long readyAt) {}
 	private static final Map<ServerPlayer, PlayerWindow> PLAYER_WINDOWS = new java.util.WeakHashMap<>();
+	private static final Map<UUID, PlayerWindow> BOSS_WINDOWS = new HashMap<>();
 	/** Players get a two-second maximum cast lock followed by two seconds to respond. */
 	public static final int PLAYER_LOCK_CAP = 40, PLAYER_RECOVERY = 40;
 
@@ -39,6 +40,21 @@ public final class CastLock {
 			PLAYER_WINDOWS.put(player, new PlayerWindow(now + duration, now + duration + PLAYER_RECOVERY));
 			interrupt(who, duration);
 			player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.control_lock"), true);
+			return;
+		}
+		if (Spirits.isBoss(who)) {
+			long now = who.level().getGameTime();
+			var window = BOSS_WINDOWS.get(who.getUUID());
+			if (window != null && now < window.readyAt()) {
+				return;
+			}
+			int duration = BossRules.bossHoldTicks(ticks);
+			if (duration <= 0) {
+				return;
+			}
+			BOSS_WINDOWS.put(who.getUUID(), new PlayerWindow(now + duration, now + duration + BossRules.BOSS_HOLD_IMMUNE_TICKS));
+			UNTIL.put(who.getUUID(), now + duration);
+			interrupt(who, duration);
 			return;
 		}
 		long until = who.level().getGameTime() + ticks;
@@ -101,5 +117,6 @@ public final class CastLock {
 	static void clear() {
 		UNTIL.clear();
 		PLAYER_WINDOWS.clear();
+		BOSS_WINDOWS.clear();
 	}
 }

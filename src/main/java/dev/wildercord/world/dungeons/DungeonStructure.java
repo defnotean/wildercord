@@ -3,6 +3,7 @@ package dev.wildercord.world.dungeons;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.wildercord.world.StructureClearance;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -61,6 +62,9 @@ public class DungeonStructure extends Structure {
 
 	@Override
 	protected Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
+		if (StructureClearance.isBlocked(context, kind.getSerializedName())) {
+			return Optional.empty();
+		}
 		return switch (kind) {
 			case EMBER_SANCTUM -> EmberSanctumPiece.locate(context);
 			case ASTRAL_OBSERVATORY -> AstralObservatoryPiece.locate(context);

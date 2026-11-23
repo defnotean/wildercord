@@ -16,7 +16,7 @@ public final class MastersRules {
 	public static final int ENCOUNTER_TICKS = 20 * 60 * 20;
 	public static final double ARENA_RADIUS = 24.0;
 	public static final double PROJECTILE_RANGE = ARENA_RADIUS * 2 + 4;
-	public static final double HEALTH = 480.0;
+	public static final double HEALTH = 2200.0;
 	public static final double ARMOUR = 12.0;
 	public static final int AIM_LOCK = 2;
 	/** A Master's guard is a snap brace between flurries, not a long stand; and it is ready again soon after. */
