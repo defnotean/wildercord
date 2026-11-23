@@ -335,20 +335,21 @@ See [Water Sites]({{ '/world/water-sites/' | relative_url }}) and [Deep Ocean Ex
 | **Lantern Canals** | The Buried Library | Find a Sakura Canal & Lantern Harbor Village | 20 XP |
 | **Steaming Blossoms** | The Buried Library | Find a Sakura Mountain Onsen Resort Village | 20 XP |
 | **Blossom Citadel** | The Buried Library | Find a Sakura Feudal Castle-Town & Dojo Village | 20 XP |
+| **The Sacred Pig** | The Buried Library | Find the Sacred Pig Village and its wheezing sacred pig | 20 XP |
 | **Oathhold, Sovereign Citadel** | The Buried Library | Cross the great walls of Oathhold, a walled metropolis spanning two thousand blocks | 100 XP |
 
 See [Wild Places]({{ '/world/wilds-sites/' | relative_url }}), [Oathhold]({{ '/world/oathhold/' | relative_url }}), and [Emberwood Reach]({{ '/world/emberwood-reach/' | relative_url }}).
 
 ## Totals
 
-178 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
+179 visible advancements, counting the root. Recipe-unlock bookkeeping is excluded.
 
 | | Count |
 |---|---|
-| Tasks | 130 |
+| Tasks | 131 |
 | Goals | 34 |
 | Challenges | 14 |
 | Hidden | 4 |
-| Experience for all of them | 15,290 |
+| Experience for all of them | 15,310 |
 | Blank Runes | 48 (six stacks of 8) |
 | Mana Crystals | 29 |
