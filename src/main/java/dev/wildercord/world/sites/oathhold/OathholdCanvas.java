@@ -604,9 +604,11 @@ public final class OathholdCanvas {
 
 	/** Places a bed spanning from {@code (fx, ly, fz)} toward {@code headDir}. */
 	public void bed(int fx, int ly, int fz, DyeColor color, Direction headDir) {
-		set(fx, ly, fz, Blocks.BED.pick(color).defaultBlockState().setValue(BedBlock.FACING, headDir).setValue(BedBlock.PART, BedPart.FOOT));
+		Block bed = dev.wildercord.compat.McBlocksAndItems.dyedBlock("bed", color);
+		BlockState state = (bed == null ? Blocks.RED_BED : bed).defaultBlockState();
+		set(fx, ly, fz, state.setValue(BedBlock.FACING, headDir).setValue(BedBlock.PART, BedPart.FOOT));
 		set(fx + headDir.getStepX(), ly, fz + headDir.getStepZ(),
-			Blocks.BED.pick(color).defaultBlockState().setValue(BedBlock.FACING, headDir).setValue(BedBlock.PART, BedPart.HEAD));
+			state.setValue(BedBlock.FACING, headDir).setValue(BedBlock.PART, BedPart.HEAD));
 	}
 
 	/** Places a two-high wooden door facing {@code facing}. */
