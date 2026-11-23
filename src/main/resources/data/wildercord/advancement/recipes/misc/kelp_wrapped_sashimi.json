@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:kelp_wrapped_sashimi"
+        "recipe": "wildercord:kelp_wrapped_sashimi"
       }
     }
   },

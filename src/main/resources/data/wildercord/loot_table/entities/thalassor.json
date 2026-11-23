@@ -7,14 +7,16 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:leviathan_heart_pearl",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 2
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         }
       ]
     },
@@ -24,14 +26,16 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:abyssal_pearl",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 3,
-              "max": 5
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 3,
+                "max": 5
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         }
       ]
     },
@@ -41,14 +45,16 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:abyssal_iron_plate",
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 4,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         }
       ]
     }

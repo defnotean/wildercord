@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:trench_anvil"
+        "recipe": "wildercord:trench_anvil"
       }
     }
   },
