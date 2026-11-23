@@ -26,7 +26,7 @@ public final class CrossingBellEntity extends BlockEntity {
 	public UUID guardian() { return guardian; }
 	public boolean slain() { return slain; }
 	public void use(ServerPlayer player) {
-		ServerLevel server = player.level();
+		ServerLevel server = (ServerLevel) player.level();
 		if (player.isSpectator() || !player.isAlive() || !worldPosition.closerToCenterThan(player.position(), 6)) return;
 		var start = server.structureManager().getStructureWithPieceAt(worldPosition,
 			h -> h.value() instanceof SiteStructure site && site.site().equals("water_last_crossing"));

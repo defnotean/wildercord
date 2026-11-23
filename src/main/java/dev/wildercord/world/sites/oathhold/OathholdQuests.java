@@ -640,7 +640,7 @@ public final class OathholdQuests {
 			}))
 			.then(literal("payfine").executes(ctx -> OathholdLaw.tryPayFine(ctx.getSource().getPlayerOrException()) ? 1 : 0))
 			.then(literal("release")
-				.requires(src -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(src)
+				.requires(src -> src.hasPermission(Commands.LEVEL_GAMEMASTERS)
 					|| (src.getEntity() instanceof ServerPlayer sp && sp.isCreative()))
 				.executes(ctx -> {
 					OathholdJustice.forceRelease(ctx.getSource().getPlayerOrException());
