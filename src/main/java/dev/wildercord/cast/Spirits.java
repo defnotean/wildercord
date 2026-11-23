@@ -29,7 +29,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.animal.wolf.WolfVariants;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -232,7 +231,7 @@ public final class Spirits {
 	 * Claims a brief 1–1.75s hold window on a boss and schedules active breakout and 5s immunity.
 	 * Returns {@code false} for non-bosses or if the boss is already held or unstoppable.
 	 */
-	public static boolean tryClaimBossHold(LivingEntity target, int ticks, @Nullable LivingEntity attacker) {
+	public static boolean tryClaimBossHold(LivingEntity target, int ticks, LivingEntity attacker) {
 		if (!isBoss(target) || target.level().isClientSide() || dev.wildercord.party.Parties.blocksCurrentHarm(target)) {
 			return false;
 		}
@@ -304,7 +303,7 @@ public final class Spirits {
 	}
 
 	/** Stops a mob's AI for {@code ticks}; bosses are capped to 1–1.75s, break free, and counterattack. */
-	public static void hold(LivingEntity target, int ticks, @Nullable LivingEntity attacker) {
+	public static void hold(LivingEntity target, int ticks, LivingEntity attacker) {
 		if (dev.wildercord.party.Parties.blocksCurrentHarm(target)) return;
 		if (target instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		if (isBoss(target)) {
@@ -331,7 +330,7 @@ public final class Spirits {
 		}
 	}
 
-	private static void breakOutBoss(LivingEntity target, @Nullable UUID attackerId) {
+	private static void breakOutBoss(LivingEntity target, UUID attackerId) {
 		if (!target.isAlive() || target.isRemoved() || !(target.level() instanceof ServerLevel level)) {
 			return;
 		}

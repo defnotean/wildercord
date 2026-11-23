@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -55,9 +55,9 @@ public final class BrineMerchantRenderer extends MobRenderer<BrineMerchant, Ocea
 	}
 
 	private static final class PropGlowLayer extends RenderLayer<OceanRenderStates.BrineMerchantState, BrineMerchantModel> {
-		private final RenderType glowJeweler = RenderTypes.eyes(GLOW_JEWELER);
-		private final RenderType glowCartographer = RenderTypes.eyes(GLOW_CARTOGRAPHER);
-		private final RenderType glowAlchemist = RenderTypes.eyes(GLOW_ALCHEMIST);
+		private final RenderType glowJeweler = RenderType.eyes(GLOW_JEWELER);
+		private final RenderType glowCartographer = RenderType.eyes(GLOW_CARTOGRAPHER);
+		private final RenderType glowAlchemist = RenderType.eyes(GLOW_ALCHEMIST);
 
 		PropGlowLayer(RenderLayerParent<OceanRenderStates.BrineMerchantState, BrineMerchantModel> parent) {
 			super(parent);

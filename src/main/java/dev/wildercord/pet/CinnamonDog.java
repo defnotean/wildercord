@@ -60,7 +60,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,8 +100,8 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	/** Client side: how far into the lick she is, counted from when it showed up. */
 	public int lickAge;
 	private int castCooldown = 40, healCooldown, castWindup, spellIndex;
-	private @Nullable List<dev.wildercord.spell.RuneDef> casting;
-	private @Nullable LivingEntity castTarget;
+	private List<dev.wildercord.spell.RuneDef> casting;
+	private LivingEntity castTarget;
 	private int nextRing = 100 + getRandom().nextInt(300);
 	private boolean bow, grandBow, harness, flying, loadingSaddlebags;
 	private boolean savedSitting, resizing, feeding, countingDamage;
@@ -442,7 +441,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		}
 	}
 
-	private @Nullable LivingEntity findMendingPatient(ServerLevel level, @Nullable LivingEntity owner, double range) {
+	private LivingEntity findMendingPatient(ServerLevel level, LivingEntity owner, double range) {
 		if (owner != null && owner.isAlive() && owner.getHealth() < owner.getMaxHealth() * 0.5F
 			&& distanceTo(owner) <= range && hasLineOfSight(owner)) {
 			return owner;
@@ -458,7 +457,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		return best;
 	}
 
-	private @Nullable LivingEntity findPassiveMagicTarget(ServerLevel level, @Nullable LivingEntity owner, double range) {
+	private LivingEntity findPassiveMagicTarget(ServerLevel level, LivingEntity owner, double range) {
 		LivingEntity best = null;
 		double bestDist = Double.MAX_VALUE;
 		for (LivingEntity candidate : level.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(range),
@@ -482,7 +481,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	}
 
 	/** The target, her owner and her own state are checked again: anything may have changed during the windup. */
-	private void release(ServerLevel level, @Nullable LivingEntity owner) {
+	private void release(ServerLevel level, LivingEntity owner) {
 		List<dev.wildercord.spell.RuneDef> spell = casting;
 		LivingEntity target = castTarget;
 		casting = null;
@@ -521,7 +520,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		}
 	}
 
-	private @Nullable Player findLickPatient(ServerLevel level) {
+	private Player findLickPatient(ServerLevel level) {
 		Player best = null;
 		double bestDist = Double.MAX_VALUE;
 		for (Player candidate : level.getEntitiesOfClass(Player.class, getBoundingBox().inflate(CinnamonRules.PARTY_HEAL_SEARCH_RADIUS),
@@ -624,7 +623,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 			&& Targets.canHarm(owner, target);
 	}
 
-	private boolean attackReady(@Nullable LivingEntity owner) {
+	private boolean attackReady(LivingEntity owner) {
 		return CinnamonCompanion.active(this) && !isExhausted() && !isHitPaused() && !isOrderedToSit()
 			&& owner instanceof ServerPlayer player && getOwner() == owner && owner.level() == level()
 			&& CinnamonCompanion.mayActWith(player, this);
@@ -676,7 +675,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 	}
 
 	@Override
-	public @Nullable LivingEntity getControllingPassenger() {
+	public LivingEntity getControllingPassenger() {
 		for (Entity passenger : getPassengers()) {
 			if (passenger instanceof Player player && isOwnedBy(player)) return player;
 		}

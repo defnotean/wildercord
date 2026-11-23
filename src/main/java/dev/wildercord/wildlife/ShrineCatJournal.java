@@ -15,7 +15,6 @@ import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -143,7 +142,7 @@ final class ShrineCatJournal extends SavedData {
 		return server.overworld().getDataStorage().computeIfAbsent(TYPE);
 	}
 
-	@Nullable Entry get(UUID owner, ShrineCatRules.Variant variant) {
+	Entry get(UUID owner, ShrineCatRules.Variant variant) {
 		EnumMap<ShrineCatRules.Variant, Entry> byVar = entries.get(owner);
 		return byVar == null ? null : byVar.get(variant);
 	}
@@ -155,7 +154,7 @@ final class ShrineCatJournal extends SavedData {
 		}
 	}
 
-	static @Nullable UUID ownerUuid(ShrineCat cat) {
+	static UUID ownerUuid(ShrineCat cat) {
 		EntityReference<LivingEntity> ref = cat.getOwnerReference();
 		return ref == null ? null : ref.getUUID();
 	}
@@ -172,7 +171,7 @@ final class ShrineCatJournal extends SavedData {
 		of(server).put(owner, variant, Entry.snapshot(cat));
 	}
 
-	static @Nullable ShrineCat liveCat(UUID owner, ShrineCatRules.Variant variant) {
+	static ShrineCat liveCat(UUID owner, ShrineCatRules.Variant variant) {
 		pruneDeadLive(owner, variant);
 		EnumMap<ShrineCatRules.Variant, ShrineCat> byVar = LIVE.get(owner);
 		return byVar == null ? null : byVar.get(variant);

@@ -22,14 +22,13 @@ import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Lumi-Seahorse: glowing aquamarine reef-coronet underwater steed. Can be tamed, saddled, and ridden
@@ -180,7 +179,7 @@ public class LumiSeahorse extends AbstractHorse {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		LumiSeahorse foal = OceanEntities.LUMI_SEAHORSE.create(level, EntitySpawnReason.BREEDING);
 		if (foal != null) {
 			setOffspringAttributes(partner, foal);

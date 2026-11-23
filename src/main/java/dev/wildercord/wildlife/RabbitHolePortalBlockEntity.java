@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class RabbitHolePortalBlockEntity extends BlockEntity {
 	private WhiteRabbitRules.Outcome outcome = WhiteRabbitRules.Outcome.RANDOM_CAVE;
 	private boolean returnPortal;
 	private boolean destinationBuilt;
-	private @Nullable BlockPos destinationPos;
+	private BlockPos destinationPos;
 
 	public RabbitHolePortalBlockEntity(BlockPos pos, BlockState state) {
 		super(WhiteRabbitContent.RABBIT_HOLE_PORTAL_ENTITY, pos, state);
@@ -71,7 +70,7 @@ public class RabbitHolePortalBlockEntity extends BlockEntity {
 		return returnPortal;
 	}
 
-	public @Nullable BlockPos destinationPos() {
+	public BlockPos destinationPos() {
 		return destinationPos;
 	}
 

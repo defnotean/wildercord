@@ -33,7 +33,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -53,7 +53,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -190,7 +189,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 	}
 
 	/** Starts a live combat move from AI or test harnesses. */
-	public void startMove(ServerLevel level, int nextMove, @Nullable LivingEntity target) {
+	public void startMove(ServerLevel level, int nextMove, LivingEntity target) {
 		boolean emp = empowered();
 		int tell = OathboundBladeChampionRules.tellTicks(nextMove, emp);
 		int duration = nextMove == OathboundBladeChampionRules.STAGGERED
@@ -199,7 +198,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		startMoveWithDuration(level, nextMove, tell, duration, target);
 	}
 
-	private void startMoveWithDuration(ServerLevel level, int nextMove, int tell, int duration, @Nullable LivingEntity target) {
+	private void startMoveWithDuration(ServerLevel level, int nextMove, int tell, int duration, LivingEntity target) {
 		entityData.set(PREVIEW_ELAPSED, -1.0F);
 		entityData.set(MOVE, nextMove);
 		entityData.set(TELL, tell);
@@ -331,7 +330,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		return deck.pick(moves, weights, random.nextDouble());
 	}
 
-	private void tickActiveMove(ServerLevel level, int move, @Nullable LivingEntity target) {
+	private void tickActiveMove(ServerLevel level, int move, LivingEntity target) {
 		long el = since();
 		int tell = tell();
 		boolean emp = empowered();
@@ -460,7 +459,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		}
 	}
 
-	private void tickTechnique(ServerLevel level, int move, @Nullable LivingEntity target) {
+	private void tickTechnique(ServerLevel level, int move, LivingEntity target) {
 		OathboundTechnique tech = OathboundBladeChampionRules.technique(move);
 		if (tech == null) {
 			return;

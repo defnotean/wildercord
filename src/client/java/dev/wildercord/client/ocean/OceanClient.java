@@ -2,7 +2,7 @@ package dev.wildercord.client.ocean;
 
 import dev.wildercord.ocean.OceanEntities;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 
 /**

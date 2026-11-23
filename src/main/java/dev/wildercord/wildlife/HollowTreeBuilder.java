@@ -43,7 +43,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -56,7 +55,7 @@ public final class HollowTreeBuilder {
 	private HollowTreeBuilder() {}
 
 	/** Finds an unobstructed forest surface spot 10–30 blocks away from {@code origin}. */
-	public static @Nullable BlockPos findTreeSite(ServerLevel level, BlockPos origin, RandomSource random) {
+	public static BlockPos findTreeSite(ServerLevel level, BlockPos origin, RandomSource random) {
 		for (int pass = 0; pass < 2; pass++) {
 			int minR = pass == 0 ? WhiteRabbitRules.TREE_MIN_DIST : 10;
 			int maxR = pass == 0 ? WhiteRabbitRules.TREE_MAX_DIST : 24;
@@ -91,7 +90,7 @@ public final class HollowTreeBuilder {
 	 * glowing {@link RabbitHolePortalBlock} at {@code base}. Returns the portal position.
 	 */
 	public static BlockPos placeHollowTree(ServerLevel level, BlockPos base, Direction facing,
-			WhiteRabbitRules.@Nullable Outcome forcedOutcome) {
+			WhiteRabbitRules.Outcome forcedOutcome) {
 		level.getChunk(base);
 		Direction front = facing.getAxis().isHorizontal() ? facing : Direction.SOUTH;
 		Direction back = front.getOpposite();
@@ -236,7 +235,7 @@ public final class HollowTreeBuilder {
 		setSafe(level, landing.offset(-1, 1, 2), Blocks.TORCH.defaultBlockState());
 	}
 
-	private static @Nullable BlockPos tryFindNaturalCave(ServerLevel level, BlockPos origin, RandomSource random) {
+	private static BlockPos tryFindNaturalCave(ServerLevel level, BlockPos origin, RandomSource random) {
 		int minY = Math.max(level.getMinY() + 14, -32);
 		int maxY = Math.min(origin.getY() - 16, 28);
 		if (maxY <= minY) {
@@ -411,7 +410,7 @@ public final class HollowTreeBuilder {
 	 * Wildercord bosses simultaneously (with a Return Burrow Portal in the South alcove).
 	 */
 	public static BlockPos buildAllBossesArena(ServerLevel level, BlockPos treePortalPos,
-			@Nullable ServerPlayer triggerPlayer, RandomSource random) {
+			ServerPlayer triggerPlayer, RandomSource random) {
 		int cx = treePortalPos.getX() - 64;
 		int cz = treePortalPos.getZ() + 64;
 		int floorY = Math.max(level.getMinY() + 18, -42);
@@ -482,7 +481,7 @@ public final class HollowTreeBuilder {
 	}
 
 	private static void spawnAllBosses(ServerLevel level, BlockPos center, BoundingBox arenaBox,
-			@Nullable ServerPlayer triggerPlayer) {
+			ServerPlayer triggerPlayer) {
 		// 1-4: Encounter bosses placed within ±8 X/Z of South landing pad (cx, y+1, cz+14) so eligible() passes cleanly.
 		spawnEncounterBosses(level, center, triggerPlayer);
 
@@ -567,7 +566,7 @@ public final class HollowTreeBuilder {
 		tagBoss(DungeonBoss.spawnInArena(level, DungeonEntities.TIDE_SCRIBE, arcSpots.get(10), 0.2));
 	}
 
-	private static void spawnEncounterBosses(ServerLevel level, BlockPos center, @Nullable ServerPlayer triggerPlayer) {
+	private static void spawnEncounterBosses(ServerLevel level, BlockPos center, ServerPlayer triggerPlayer) {
 		BlockPos ferrySpot = center.offset(-6, 1, 11);
 		ReedCrownedFerryman ferryman = FerrymanContent.FERRYMAN.create(level, EntitySpawnReason.TRIGGERED);
 		if (ferryman != null) {
@@ -614,7 +613,7 @@ public final class HollowTreeBuilder {
 		for (KilnWidow e : level.getEntitiesOfClass(KilnWidow.class, box)) e.challenge(player);
 	}
 
-	private static void tagBoss(@Nullable Mob boss) {
+	private static void tagBoss(Mob boss) {
 		if (boss != null) {
 			boss.addTag(WhiteRabbitRules.BOSS_RUSH_TAG);
 			boss.setPersistenceRequired();

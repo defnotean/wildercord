@@ -33,7 +33,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -52,7 +52,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -186,7 +185,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 	}
 
 	/** Starts a live combat move from AI or test harnesses. */
-	public void startMove(ServerLevel level, int nextMove, @Nullable LivingEntity target) {
+	public void startMove(ServerLevel level, int nextMove, LivingEntity target) {
 		boolean emp = empowered();
 		int tell = OathboundBastionRules.tellTicks(nextMove, emp);
 		int duration = nextMove == OathboundBastionRules.STAGGERED
@@ -195,7 +194,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		startMoveWithDuration(level, nextMove, tell, duration, target);
 	}
 
-	private void startMoveWithDuration(ServerLevel level, int nextMove, int tell, int duration, @Nullable LivingEntity target) {
+	private void startMoveWithDuration(ServerLevel level, int nextMove, int tell, int duration, LivingEntity target) {
 		entityData.set(PREVIEW_ELAPSED, -1.0F);
 		entityData.set(MOVE, nextMove);
 		entityData.set(TELL, tell);
@@ -311,7 +310,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		}
 	}
 
-	private void tickIdleMarch(ServerLevel level, @Nullable LivingEntity target) {
+	private void tickIdleMarch(ServerLevel level, LivingEntity target) {
 		entityData.set(BARRIER, empowered() ? 0.35F : 0.18F);
 		if (getDeltaMovement().horizontalDistanceSqr() > 0.0005 && tickCount % 16 == 0) {
 			Feels.sound(level, position(), "duelist_knight_step", 0.9F, 0.72F + random.nextFloat() * 0.1F);
@@ -372,7 +371,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		return deck.pick(OathboundBastionRules.COMBAT_MOVES, weights, random.nextDouble());
 	}
 
-	private void tickPhalanx(ServerLevel level, @Nullable LivingEntity target) {
+	private void tickPhalanx(ServerLevel level, LivingEntity target) {
 		still();
 		if (target != null) {
 			turnToward(yawTo(target.position()), 8.0F);
@@ -389,7 +388,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		}
 	}
 
-	private void tickShieldRam(ServerLevel level, @Nullable LivingEntity target) {
+	private void tickShieldRam(ServerLevel level, LivingEntity target) {
 		long el = since();
 		int tell = tell();
 		if (el < tell) {
@@ -454,7 +453,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		return !state.getCollisionShape(level, bp).isEmpty();
 	}
 
-	private void tickAnvilSlam(ServerLevel level, @Nullable LivingEntity target) {
+	private void tickAnvilSlam(ServerLevel level, LivingEntity target) {
 		still();
 		long el = since();
 		int tell = tell();
@@ -507,7 +506,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		}
 	}
 
-	private void tickShieldBash(ServerLevel level, @Nullable LivingEntity target) {
+	private void tickShieldBash(ServerLevel level, LivingEntity target) {
 		still();
 		long el = since();
 		int tell = tell();
@@ -545,7 +544,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		}
 	}
 
-	private void tickMaceCleave(ServerLevel level, @Nullable LivingEntity target) {
+	private void tickMaceCleave(ServerLevel level, LivingEntity target) {
 		still();
 		long el = since();
 		int tell = tell();
@@ -582,7 +581,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		}
 	}
 
-	private void tickTechnique(ServerLevel level, @Nullable LivingEntity target) {
+	private void tickTechnique(ServerLevel level, LivingEntity target) {
 		OathboundTechnique tech = OathboundBastionRules.technique(move());
 		if (tech == null) {
 			tickIdleMarch(level, target);
@@ -640,7 +639,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		}
 	}
 
-	private void finishMove(ServerLevel level, int completedMove, @Nullable LivingEntity target) {
+	private void finishMove(ServerLevel level, int completedMove, LivingEntity target) {
 		// Below 50% HP, Shield-Bash occasionally chains straight into Anvil Slam.
 		if (empowered() && completedMove == OathboundBastionRules.SHIELD_BASH && target != null
 			&& target.isAlive() && distanceTo(target) <= 5.5 && random.nextDouble() < 0.45) {

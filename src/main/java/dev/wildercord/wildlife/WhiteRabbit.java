@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -52,9 +51,9 @@ public class WhiteRabbit extends Animal {
 	private static final EntityDataAccessor<Boolean> DATA_CHECKING_WATCH =
 		SynchedEntityData.defineId(WhiteRabbit.class, EntityDataSerializers.BOOLEAN);
 
-	private @Nullable BlockPos targetTreePos;
-	private @Nullable BlockPos portalPos;
-	private @Nullable UUID leadPlayerId;
+	private BlockPos targetTreePos;
+	private BlockPos portalPos;
+	private UUID leadPlayerId;
 	private int divePauseTicks;
 	private boolean dived;
 	private boolean announcedLead;
@@ -92,11 +91,11 @@ public class WhiteRabbit extends Animal {
 		return entityData.get(DATA_CHECKING_WATCH);
 	}
 
-	public @Nullable BlockPos portalPos() {
+	public BlockPos portalPos() {
 		return portalPos;
 	}
 
-	public @Nullable BlockPos targetTreePos() {
+	public BlockPos targetTreePos() {
 		return targetTreePos;
 	}
 
@@ -198,7 +197,7 @@ public class WhiteRabbit extends Animal {
 	 * {@code treeBase}, optionally pinning the portal's {@code forcedOutcome} (null for random roll).
 	 */
 	public BlockPos leadToHollowTree(ServerPlayer player, BlockPos treeBase,
-			WhiteRabbitRules.@Nullable Outcome forcedOutcome) {
+			WhiteRabbitRules.Outcome forcedOutcome) {
 		if (!(level() instanceof ServerLevel level)) {
 			return treeBase;
 		}
@@ -242,7 +241,7 @@ public class WhiteRabbit extends Animal {
 		return dz >= 0 ? Direction.SOUTH : Direction.NORTH;
 	}
 
-	private @Nullable ServerPlayer nearestActivePlayer(ServerLevel level, double radius) {
+	private ServerPlayer nearestActivePlayer(ServerLevel level, double radius) {
 		ServerPlayer best = null;
 		double bestSqr = radius * radius;
 		for (ServerPlayer player : level.players()) {
@@ -258,7 +257,7 @@ public class WhiteRabbit extends Animal {
 		return best;
 	}
 
-	private @Nullable ServerPlayer resolveFollower(ServerLevel level) {
+	private ServerPlayer resolveFollower(ServerLevel level) {
 		if (leadPlayerId != null && level.getPlayerByUUID(leadPlayerId) instanceof ServerPlayer sp
 			&& sp.isAlive() && !sp.isSpectator() && sp.distanceToSqr(this) <= 40.0 * 40.0) {
 			return sp;
@@ -296,22 +295,22 @@ public class WhiteRabbit extends Animal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
 		return null;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getAmbientSound() {
+	protected SoundEvent getAmbientSound() {
 		return SoundEvents.RABBIT_AMBIENT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+	protected SoundEvent getHurtSound(DamageSource source) {
 		return SoundEvents.RABBIT_HURT;
 	}
 
 	@Override
-	protected @Nullable SoundEvent getDeathSound() {
+	protected SoundEvent getDeathSound() {
 		return SoundEvents.RABBIT_DEATH;
 	}
 

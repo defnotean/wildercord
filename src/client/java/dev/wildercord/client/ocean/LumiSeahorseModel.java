@@ -7,7 +7,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 
 /**
@@ -25,7 +25,7 @@ public final class LumiSeahorseModel extends EntityModel<OceanRenderStates.LumiS
 	private final ModelPart[] tailSegs = new ModelPart[7];
 
 	public LumiSeahorseModel(ModelPart root) {
-		super(root, RenderTypes::entityTranslucent);
+		super(root, RenderType::entityTranslucent);
 		this.chest = root.getChild("chest");
 		this.neck = this.chest.getChild("neck");
 		this.head = this.neck.getChild("head");

@@ -30,8 +30,8 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.LookAtTradingPlayerGoal;
 import net.minecraft.world.entity.ai.goal.TradeWithPlayerGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.monster.zombie.Zombie;
-import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +42,6 @@ import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Optional;
@@ -69,8 +68,8 @@ public class OathholdCitizen extends WanderingTrader {
 	private int tetherRadius = 12;
 	private boolean hasHome;
 	private boolean temporaryCrew;
-	private @Nullable BlockPos repairTargetPos;
-	private @Nullable UUID pursuitTargetId;
+	private BlockPos repairTargetPos;
+	private UUID pursuitTargetId;
 	private int dialogueIndex;
 
 	public OathholdCitizen(EntityType<? extends WanderingTrader> type, Level level) {
@@ -127,7 +126,7 @@ public class OathholdCitizen extends WanderingTrader {
 		this.pursuitTargetId = null;
 	}
 
-	public @Nullable UUID pursuitTargetId() {
+	public UUID pursuitTargetId() {
 		return pursuitTargetId;
 	}
 

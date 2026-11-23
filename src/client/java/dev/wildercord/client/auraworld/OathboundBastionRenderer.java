@@ -11,8 +11,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -78,7 +78,7 @@ public final class OathboundBastionRenderer extends MobRenderer<OathboundBastion
 	}
 
 	private static final class EmissiveLayer extends RenderLayer<OathboundBastionRenderState, OathboundBastionModel> {
-		private final RenderType type = RenderTypes.eyes(GLOW);
+		private final RenderType type = RenderType.eyes(GLOW);
 
 		EmissiveLayer(RenderLayerParent<OathboundBastionRenderState, OathboundBastionModel> parent) {
 			super(parent);

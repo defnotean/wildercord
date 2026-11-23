@@ -15,7 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,7 +24,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Thrown Tide-Cleaver Harpoon entity. Punctures submerged foes with bonus damage and reels them back
@@ -35,7 +34,7 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 	private static final EntityDataAccessor<Boolean> ANCHORED = SynchedEntityData.defineId(ThrownHarpoon.class, EntityDataSerializers.BOOLEAN);
 	private boolean dealtDamage;
 	private int anchorTicks;
-	private @Nullable BlockPos anchorPos;
+	private BlockPos anchorPos;
 
 	public ThrownHarpoon(EntityType<? extends ThrownHarpoon> type, Level level) {
 		super(type, level);

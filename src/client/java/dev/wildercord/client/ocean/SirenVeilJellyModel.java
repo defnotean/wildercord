@@ -7,7 +7,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 
 /**
@@ -26,7 +26,7 @@ public final class SirenVeilJellyModel extends EntityModel<OceanRenderStates.Sir
 	private final ModelPart[] tendSeg3 = new ModelPart[8];
 
 	public SirenVeilJellyModel(ModelPart root) {
-		super(root, RenderTypes::entityTranslucent);
+		super(root, RenderType::entityTranslucent);
 		this.core = root.getChild("core");
 		for (int i = 0; i < 4; i++) {
 			this.oralUpper[i] = root.getChild("oral_" + i);

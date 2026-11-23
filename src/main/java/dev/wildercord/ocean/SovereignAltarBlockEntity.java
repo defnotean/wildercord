@@ -21,14 +21,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Server-side arena controller for Thalassor inside the Abyssal Trench Citadel Colosseum.
  * Handles initial guardian binding, automatic arena respawn after countdown, and pearl offering summons.
  */
 public final class SovereignAltarBlockEntity extends BlockEntity {
-	private @Nullable UUID bossUuid;
+	private UUID bossUuid;
 	private int respawnTicksRemaining = -1;
 	private boolean initialSpawnDone = false;
 
@@ -117,7 +116,7 @@ public final class SovereignAltarBlockEntity extends BlockEntity {
 		return InteractionResult.SUCCESS;
 	}
 
-	public @Nullable ThalassorBoss summonThalassor(ServerLevel server) {
+	public ThalassorBoss summonThalassor(ServerLevel server) {
 		ThalassorBoss boss = OceanEntities.THALASSOR.create(server, EntitySpawnReason.EVENT);
 		if (boss == null) return null;
 		boss.setPos(worldPosition.getX() + 0.5, worldPosition.getY() + 3.0, worldPosition.getZ() + 0.5);
@@ -138,7 +137,7 @@ public final class SovereignAltarBlockEntity extends BlockEntity {
 		return boss;
 	}
 
-	public @Nullable UUID getBossUuid() {
+	public UUID getBossUuid() {
 		return bossUuid;
 	}
 

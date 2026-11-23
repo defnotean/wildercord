@@ -12,17 +12,17 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Unit;
 
 /**
@@ -43,9 +43,9 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 
 	private static final ResourceLocation TEXTURE = Wildercord.id("textures/entity/ocean/abyssal_diving_3d.png");
 	private static final ResourceLocation GLOW = Wildercord.id("textures/entity/ocean/abyssal_diving_3d_glow.png");
-	private static final RenderType CUTOUT = RenderTypes.entityCutout(TEXTURE);
-	private static final RenderType TRANSLUCENT = RenderTypes.entityTranslucent(TEXTURE);
-	private static final RenderType EYES = RenderTypes.eyes(GLOW);
+	private static final RenderType CUTOUT = RenderType.entityCutout(TEXTURE);
+	private static final RenderType TRANSLUCENT = RenderType.entityTranslucent(TEXTURE);
+	private static final RenderType EYES = RenderType.eyes(GLOW);
 
 	private final SuitGlassModel helmModel;
 	private final SuitPartModel tanksModel;
@@ -190,19 +190,19 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 		anchor.translateAndRotate(pose);
 		pose.scale(0.5F, 0.5F, 0.5F);
 		RenderCompat.submitModel(collector.order(0), model, Unit.INSTANCE, pose, baseType, light, OverlayTexture.NO_OVERLAY, -1, state.outlineColor);
-		RenderCompat.submitModel(collector.order(1), model, Unit.INSTANCE, pose, EYES, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+		RenderCompat.submitModel(collector.order(1), model, Unit.INSTANCE, pose, EYES, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 		pose.popPose();
 	}
 
 	private static final class SuitPartModel extends Model<Unit> {
 		SuitPartModel(ModelPart root) {
-			super(root, RenderTypes::entityCutout);
+			super(root, RenderType::entityCutout);
 		}
 	}
 
 	private static final class SuitGlassModel extends Model<Unit> {
 		SuitGlassModel(ModelPart root) {
-			super(root, RenderTypes::entityTranslucent);
+			super(root, RenderType::entityTranslucent);
 		}
 	}
 
@@ -211,7 +211,7 @@ public final class AbyssalDivingSuitLayer extends RenderLayer<AvatarRenderState,
 		private final ModelPart boots;
 
 		LegSuitModel(ModelPart root) {
-			super(root, RenderTypes::entityCutout);
+			super(root, RenderType::entityCutout);
 			this.greaves = root.getChild("greaves");
 			this.boots = root.getChild("boots");
 		}

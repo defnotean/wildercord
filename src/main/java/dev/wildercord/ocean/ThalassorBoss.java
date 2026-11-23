@@ -35,7 +35,6 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Thalassor, Abyssal Sovereign: 14-segment serpentine trench leviathan guarding the Abyssal Trench Citadel.
@@ -53,7 +52,7 @@ public class ThalassorBoss extends Monster {
 		BossEvent.BossBarOverlay.NOTCHED_10
 	);
 
-	private @Nullable BlockPos arenaCenter;
+	private BlockPos arenaCenter;
 	private int actionCooldown = 40;
 	private int activeAttackTicks;
 	private int summonCooldown = 140;
@@ -91,11 +90,11 @@ public class ThalassorBoss extends Monster {
 		return entityData.get(ATTACK_MODE);
 	}
 
-	public void setArenaCenter(@Nullable BlockPos pos) {
+	public void setArenaCenter(BlockPos pos) {
 		this.arenaCenter = pos;
 	}
 
-	public @Nullable BlockPos getArenaCenter() {
+	public BlockPos getArenaCenter() {
 		return arenaCenter;
 	}
 

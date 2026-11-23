@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -47,7 +47,7 @@ public final class DreadNautilusRenderer extends MobRenderer<DreadNautilusSentin
 	}
 
 	private static final class GlowLayer extends RenderLayer<OceanRenderStates.DreadNautilusState, DreadNautilusModel> {
-		private final RenderType glowType = RenderTypes.eyes(GLOW);
+		private final RenderType glowType = RenderType.eyes(GLOW);
 
 		GlowLayer(RenderLayerParent<OceanRenderStates.DreadNautilusState, DreadNautilusModel> parent) {
 			super(parent);

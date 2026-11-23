@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Pearl-Pup (Lantern Seal): tameable spotted amphibious pup carrying a glowing forehead pearl lure
@@ -48,7 +47,7 @@ public class PearlPup extends TamableAnimal {
 	private static final EntityDataAccessor<Boolean> SNIFFING = SynchedEntityData.defineId(PearlPup.class, EntityDataSerializers.BOOLEAN);
 	private int sniffTimer = 60;
 	private int sniffHighlightTicks;
-	private @Nullable BlockPos detectedChest;
+	private BlockPos detectedChest;
 
 	public PearlPup(EntityType<? extends PearlPup> type, Level level) {
 		super(type, level);
@@ -241,7 +240,7 @@ public class PearlPup extends TamableAnimal {
 		}
 	}
 
-	private @Nullable BlockPos findNearestTreasure(ServerLevel server) {
+	private BlockPos findNearestTreasure(ServerLevel server) {
 		BlockPos origin = blockPosition();
 		int rChunks = 2;
 		BlockPos best = null;
@@ -267,7 +266,7 @@ public class PearlPup extends TamableAnimal {
 	}
 
 	@Override
-	public @Nullable AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
+	public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		PearlPup pup = OceanEntities.PEARL_PUP.create(level, EntitySpawnReason.BREEDING);
 		if (pup != null && isTame() && getOwner() instanceof Player owner) {
 			pup.tame(owner);

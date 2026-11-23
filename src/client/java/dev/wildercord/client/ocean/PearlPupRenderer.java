@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -47,7 +47,7 @@ public final class PearlPupRenderer extends MobRenderer<PearlPup, OceanRenderSta
 	}
 
 	private static final class LureGlowLayer extends RenderLayer<OceanRenderStates.PearlPupState, PearlPupModel> {
-		private final RenderType glowType = RenderTypes.eyes(GLOW);
+		private final RenderType glowType = RenderType.eyes(GLOW);
 
 		LureGlowLayer(RenderLayerParent<OceanRenderStates.PearlPupState, PearlPupModel> parent) {
 			super(parent);

@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 
 /**
@@ -37,7 +37,7 @@ public final class BrineMerchantModel extends EntityModel<OceanRenderStates.Brin
 	private final ModelPart propPotion;
 
 	public BrineMerchantModel(ModelPart root) {
-		super(root, RenderTypes::entityTranslucent);
+		super(root, RenderType::entityTranslucent);
 		this.head = root.getChild("head");
 		this.divingHelm = this.head.getChild("diving_helm");
 		this.kelpHood = this.head.getChild("kelp_hood");

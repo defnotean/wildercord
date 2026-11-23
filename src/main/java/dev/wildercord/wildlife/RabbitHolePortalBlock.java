@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Swirling dark burrow portal nestled inside the base of an ancient hollow tree (or waiting at
@@ -29,7 +28,7 @@ public class RabbitHolePortalBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new RabbitHolePortalBlockEntity(pos, state);
 	}
 

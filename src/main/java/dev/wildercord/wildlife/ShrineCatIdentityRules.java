@@ -1,6 +1,5 @@
 package dev.wildercord.wildlife;
 
-import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -21,12 +20,12 @@ public final class ShrineCatIdentityRules {
 	private ShrineCatIdentityRules() {}
 
 	/** Whether {@code owner} may tame a new cat of {@code variant} given any journaled identity. */
-	public static boolean canTameVariant(@Nullable UUID canonicalEntityId, boolean retired) {
+	public static boolean canTameVariant(UUID canonicalEntityId, boolean retired) {
 		return canonicalEntityId == null || retired;
 	}
 
 	/** Decides how a loaded tamed {@code ShrineCat} body reconciles against the durable journal record. */
-	public static LoadResolution resolveLoadedBody(@Nullable UUID bodyId, @Nullable UUID canonicalEntityId,
+	public static LoadResolution resolveLoadedBody(UUID bodyId, UUID canonicalEntityId,
 			boolean retired, boolean transferring) {
 		if (bodyId == null) {
 			return LoadResolution.DISCARD_DUPLICATE;
@@ -44,12 +43,12 @@ public final class ShrineCatIdentityRules {
 	}
 
 	/** Only the currently active canonical body may retire its journal entry when killed or discarded. */
-	public static boolean mayRetire(@Nullable UUID bodyId, @Nullable UUID canonicalEntityId, boolean retired) {
+	public static boolean mayRetire(UUID bodyId, UUID canonicalEntityId, boolean retired) {
 		return !retired && bodyId != null && canonicalEntityId != null && canonicalEntityId.equals(bodyId);
 	}
 
 	/** Ringing the Suzu Cat-Bell Charm may respawn a variant only after its canonical body genuinely died. */
-	public static boolean shouldRespawnOnBell(@Nullable UUID canonicalEntityId, boolean retired) {
+	public static boolean shouldRespawnOnBell(UUID canonicalEntityId, boolean retired) {
 		return canonicalEntityId != null && retired;
 	}
 }

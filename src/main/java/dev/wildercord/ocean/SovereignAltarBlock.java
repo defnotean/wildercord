@@ -26,7 +26,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Centerpiece Sovereign Awakening Altar in the Abyssal Trench Citadel Colosseum. Tracks boss state
@@ -79,13 +78,13 @@ public final class SovereignAltarBlock extends Block implements EntityBlock, Sim
 	}
 
 	@Override
-	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new SovereignAltarBlockEntity(pos, state);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return level.isClientSide() || type != OceanBlocks.SOVEREIGN_ALTAR_ENTITY
 			? null
 			: (BlockEntityTicker<T>) (BlockEntityTicker<SovereignAltarBlockEntity>) SovereignAltarBlockEntity::serverTick;

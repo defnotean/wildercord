@@ -25,7 +25,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ServerExplosion;
@@ -44,7 +44,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,14 +135,14 @@ public final class OathholdJustice {
 			this.prisons.addAll(prisons);
 		}
 
-		public @Nullable PrisonRecord prisonFor(UUID playerId) {
+		public PrisonRecord prisonFor(UUID playerId) {
 			for (PrisonRecord r : prisons) {
 				if (r.prisonerId.equals(playerId)) return r;
 			}
 			return null;
 		}
 
-		public @Nullable RepairSite repairFor(UUID siteId) {
+		public RepairSite repairFor(UUID siteId) {
 			for (RepairSite s : repairs) {
 				if (s.id.equals(siteId)) return s;
 			}
@@ -179,7 +178,7 @@ public final class OathholdJustice {
 		}
 	}
 
-	public static @Nullable ServerPlayer findExplosionCulprit(ServerLevel level, ServerExplosion explosion, Vec3 center) {
+	public static ServerPlayer findExplosionCulprit(ServerLevel level, ServerExplosion explosion, Vec3 center) {
 		LivingEntity indirect = explosion.getIndirectSourceEntity();
 		if (indirect instanceof ServerPlayer sp) return sp;
 		Entity direct = explosion.getDirectSourceEntity();
@@ -200,7 +199,7 @@ public final class OathholdJustice {
 		return null;
 	}
 
-	public static boolean isGuardEntity(@Nullable Entity e) {
+	public static boolean isGuardEntity(Entity e) {
 		if (e == null || !e.isAlive() || e.getTags().contains(OathholdLaw.ARENA_DUELIST_TAG)) return false;
 		if (OathholdLaw.isKnightEntity(e)) return true;
 		if (e instanceof IronGolem) return true;
@@ -271,7 +270,7 @@ public final class OathholdJustice {
 			|| hit.getBlockPos().distSqr(targetPos) <= 2.0;
 	}
 
-	public static void onCityDamaged(ServerLevel level, @Nullable ServerPlayer culprit, BlockPos anchor,
+	public static void onCityDamaged(ServerLevel level, ServerPlayer culprit, BlockPos anchor,
 			List<SavedBlock> brokenBlocks, boolean isExplosion) {
 		if (brokenBlocks.isEmpty()) return;
 		MinecraftServer server = level.getServer();
@@ -685,7 +684,7 @@ public final class OathholdJustice {
 	}
 
 	/** Returns the linked half position for two-block fixtures (doors, beds, tall plants), or null. */
-	public static @Nullable BlockPos partnerBlockPos(BlockPos pos, BlockState state) {
+	public static BlockPos partnerBlockPos(BlockPos pos, BlockState state) {
 		if (state.getBlock() instanceof DoorBlock) {
 			return state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
 		}
