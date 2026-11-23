@@ -1,6 +1,7 @@
 package dev.wildercord.client.auraworld;
 
 import dev.wildercord.aura.world.OathboundBladeChampionRules;
+import dev.wildercord.aura.world.OathboundTechnique;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -43,6 +44,7 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 	private final ModelPart shinL;
 
 	private final PoseBlend blender;
+	private final OathboundPose.Rig rig;
 
 	public OathboundBladeChampionModel(ModelPart root) {
 		super(root);
@@ -77,6 +79,7 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 			legR, shinR, legL, shinL
 		};
 		blender = new PoseBlend(posed);
+		rig = new OathboundPose.Rig(body, head, right, foreR, left, foreL, greatsword, null, legL, shinL, legR, shinR);
 	}
 
 	public static LayerDefinition createLayer() {
@@ -484,7 +487,13 @@ public final class OathboundBladeChampionModel extends EntityModel<OathboundBlad
 				foreL.xRot = -0.30F;
 				bend(0.24F);
 			}
-			default -> {}
+			default -> {
+				OathboundTechnique tech = OathboundBladeChampionRules.technique(move);
+				if (tech != null) {
+					OathboundPose.apply(rig, tech.archetype(), el, tellTicks,
+						OathboundBladeChampionRules.moveDuration(move, false), move);
+				}
+			}
 		}
 	}
 

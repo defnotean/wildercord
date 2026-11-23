@@ -43,12 +43,22 @@ class OathboundBastionRulesTest {
 		assertTrue(empowered(20.0F, 150.0F));
 		assertFalse(empowered(10.0F, 0.0F));
 
-		for (int move : COMBAT_MOVES) {
+		for (int move : new int[]{PHALANX_BRACE, SHIELD_RAM, ANVIL_SLAM, SHIELD_BASH, MACE_CLEAVE}) {
 			int normalTell = tellTicks(move, false);
 			int fastTell = tellTicks(move, true);
 			assertTrue(normalTell >= 8, "tell readable for " + moveKey(move));
 			assertTrue(fastTell < normalTell && fastTell >= 5, "empowered tell quicker yet readable for " + moveKey(move));
 			assertTrue(moveDuration(move, false) > normalTell);
+		}
+		for (int move : COMBAT_MOVES) {
+			OathboundTechnique tech = technique(move);
+			if (tech == null) {
+				continue;
+			}
+			int normalTell = tellTicks(move, false);
+			assertTrue(normalTell >= 4, "technique tell readable for " + moveKey(move));
+			assertTrue(moveDuration(move, false) > normalTell);
+			assertTrue(tech.damage() > 0.0);
 		}
 	}
 

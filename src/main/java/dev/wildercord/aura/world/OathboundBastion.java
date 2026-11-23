@@ -82,7 +82,7 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 	public float shownElapsed, prevElapsed, switchedAt = -100.0F;
 
 	private final MoveDeck deck = new MoveDeck(OathboundBastionRules.MEMORY);
-	private final long[] lastUsed = new long[8];
+	private final long[] lastUsed = new long[32];
 	private final Set<UUID> struck = new HashSet<>();
 
 	private float aim;
@@ -91,6 +91,8 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 	private boolean anvilHitFired;
 	private boolean bashHitFired;
 	private boolean cleaveHitFired;
+	private boolean techHitFired;
+	private int techHitCount;
 	private long recentDamageWindowEnd;
 	private float recentDamage;
 
@@ -202,6 +204,8 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 		anvilHitFired = false;
 		bashHitFired = false;
 		cleaveHitFired = false;
+		techHitFired = false;
+		techHitCount = 0;
 		struck.clear();
 		getNavigation().stop();
 
@@ -245,7 +249,15 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 				entityData.set(BARRIER, 0.0F);
 				sound(level, chest, SoundEvents.SHIELD_BREAK.value(), 1.3F, 0.85F);
 			}
-			default -> entityData.set(BARRIER, empowered() ? 0.35F : 0.18F);
+			default -> {
+				OathboundTechnique tech = OathboundBastionRules.technique(nextMove);
+				if (tech != null) {
+					entityData.set(BARRIER, tech.archetype() == OathboundTechnique.Archetype.GUARD_BRACE ? 0.85F : 0.30F);
+					Feels.sound(level, chest, "duelist_knight_windup", 1.2F, 0.9F);
+				} else {
+					entityData.set(BARRIER, empowered() ? 0.35F : 0.18F);
+				}
+			}
 		}
 	}
 
@@ -289,7 +301,13 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 			case OathboundBastionRules.SHIELD_BASH -> tickShieldBash(level, target);
 			case OathboundBastionRules.MACE_CLEAVE -> tickMaceCleave(level, target);
 			case OathboundBastionRules.STAGGERED -> tickStaggered(level);
-			default -> tickIdleMarch(level, target);
+			default -> {
+				if (OathboundBastionRules.technique(move()) != null) {
+					tickTechnique(level, target);
+				} else {
+					tickIdleMarch(level, target);
+				}
+			}
 		}
 	}
 
@@ -341,7 +359,14 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 					(dist <= 3.7 && sinceLast >= (emp ? 45 : 65)) ? 2.5 : 0.0;
 				case OathboundBastionRules.MACE_CLEAVE ->
 					(dist <= 4.0 && sinceLast >= (emp ? 40 : 55)) ? 2.6 : 0.0;
-				default -> 0.0;
+				default -> {
+					OathboundTechnique tech = OathboundBastionRules.technique(m);
+					if (tech == null || (tech.empoweredOnly() && !emp) || !tech.inRange(dist)
+							|| sinceLast < (emp ? 26 : 38)) {
+						yield 0.0;
+					}
+					yield 1.5 + random.nextDouble() * 0.5;
+				}
 			};
 		}
 		return deck.pick(OathboundBastionRules.COMBAT_MOVES, weights, random.nextDouble());
@@ -554,6 +579,51 @@ public final class OathboundBastion extends PathfinderMob implements Enemy {
 
 		if (--moveTicksLeft <= 0) {
 			finishMove(level, OathboundBastionRules.MACE_CLEAVE, target);
+		}
+	}
+
+	private void tickTechnique(ServerLevel level, @Nullable LivingEntity target) {
+		OathboundTechnique tech = OathboundBastionRules.technique(move());
+		if (tech == null) {
+			tickIdleMarch(level, target);
+			return;
+		}
+		long el = since();
+		int tell = tell();
+		boolean emp = empowered();
+		if (el < tell) {
+			still();
+			if (target != null && el <= tell - 3) {
+				aim = Mth.rotLerp(0.22F, aim, yawTo(target.position()));
+			}
+			face(aim);
+			if (el % 4 == 0) {
+				OathboundCombat.windupFx(level, this, tech, aim, el);
+			}
+			moveTicksLeft--;
+			return;
+		}
+		face(aim);
+		long active = el - tell;
+		OathboundCombat.motion(this, tech, aim, active);
+		if (tech.motion() == OathboundTechnique.Motion.PLANTED) {
+			still();
+		}
+		if (!techHitFired && active >= tech.hitDelay()) {
+			techHitFired = true;
+			techHitCount = 1;
+			OathboundCombat.strike(level, this, tech, aim, struck, emp, OathboundBastionRules.PIERCE);
+			OathboundCombat.strikeFx(level, this, tech, aim);
+		} else if (tech.shape() == OathboundTechnique.Shape.MULTI_HIT && techHitCount < tech.hits()
+				&& active >= tech.hitDelay() + techHitCount * 4L) {
+			techHitCount++;
+			OathboundCombat.strike(level, this, tech, aim, struck, emp, OathboundBastionRules.PIERCE);
+		}
+		if (tech.motion() == OathboundTechnique.Motion.DASH && active % 2 == 0) {
+			dust(level, position(), 4, 0.3);
+		}
+		if (--moveTicksLeft <= 0) {
+			finishMove(level, move(), target);
 		}
 	}
 

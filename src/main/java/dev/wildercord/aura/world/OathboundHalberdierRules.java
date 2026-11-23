@@ -1,5 +1,10 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.aura.world.OathboundTechnique.Archetype;
+import dev.wildercord.aura.world.OathboundTechnique.Effect;
+import dev.wildercord.aura.world.OathboundTechnique.Motion;
+import dev.wildercord.aura.world.OathboundTechnique.Shape;
+
 /**
  * Pure combat, timing, scaling, and spawn rules for {@link OathboundHalberdier} — Knight #3 (Way of the Storm-Glaive).
  * Kept free of Minecraft runtime state so every frame window, whirl radius, thrust/hook line, 4-way thunder cross,
@@ -23,7 +28,88 @@ public final class OathboundHalberdierRules {
 	/** Interrupted mid-windup by a heavy axe blow. */
 	public static final int STAGGERED = 5;
 
-	public static final int[] COMBAT_MOVES = {TEMPEST_WHIRL, SHADOWSTEP_THRUST, HOOK_AND_REAP, SKY_VAULT_CRASH};
+	// ------------------------------------------------------------------ expanded technique sheet (ids 6..18)
+
+	public static final int GLAIVE_SWEEP = 6;
+	public static final int POLE_VAULT_KICK = 7;
+	public static final int STORM_JAB = 8;
+	public static final int CYCLONE_DANCE = 9;
+	public static final int LIGHTNING_LUNGE = 10;
+	public static final int REAPING_CIRCLE = 11;
+	public static final int GLAIVE_THROW = 12;
+	public static final int THUNDER_STOMP = 13;
+	public static final int RISING_GLAIVE = 14;
+	public static final int SHADOW_CLONE_STRIKE = 15;
+	public static final int WHIRLWIND_PULL = 16;
+	public static final int SKYFALL_CLEAVE = 17;
+	public static final int STORMBREAKER = 18;
+
+	public static final int[] COMBAT_MOVES = {
+		TEMPEST_WHIRL, SHADOWSTEP_THRUST, HOOK_AND_REAP, SKY_VAULT_CRASH,
+		GLAIVE_SWEEP, POLE_VAULT_KICK, STORM_JAB, CYCLONE_DANCE, LIGHTNING_LUNGE, REAPING_CIRCLE,
+		GLAIVE_THROW, THUNDER_STOMP, RISING_GLAIVE, SHADOW_CLONE_STRIKE, WHIRLWIND_PULL,
+		SKYFALL_CLEAVE, STORMBREAKER
+	};
+
+	private static final int CYAN = 0x48F0FF;
+	private static final int VIOLET = 0x9A68FF;
+
+	private static final OathboundTechnique[] TECHNIQUES = {
+		OathboundTechnique.b(GLAIVE_SWEEP, "glaive_sweep", Shape.WIDE_ARC, Archetype.HORIZONTAL_SWEEP)
+			.tell(8).active(6).recovery(10)
+			.damage(11.0).knockback(1.10).reach(4.6).half(100.0).color(CYAN).build(),
+		OathboundTechnique.b(POLE_VAULT_KICK, "pole_vault_kick", Shape.CONE, Archetype.UPPERCUT)
+			.tell(7).active(6).recovery(10)
+			.damage(10.0).knockback(1.00).reach(2.8).half(50.0).lift(0.50).color(CYAN)
+			.effect(Effect.LAUNCH, 0).build(),
+		OathboundTechnique.b(STORM_JAB, "storm_jab", Shape.MULTI_HIT, Archetype.FLURRY)
+			.tell(5).active(8).recovery(8).hitDelay(1)
+			.damage(4.5).knockback(0.20).reach(4.0).half(25.0).hits(3).color(CYAN).build(),
+		OathboundTechnique.b(CYCLONE_DANCE, "cyclone_dance", Shape.MULTI_HIT, Archetype.SPIN_SWEEP)
+			.motion(Motion.DASH).tell(10).active(12).recovery(12).hitDelay(1)
+			.damage(6.0).knockback(0.60).reach(4.8).half(180.0).color(CYAN).speed(0.45).hits(3).build(),
+		OathboundTechnique.b(LIGHTNING_LUNGE, "lightning_lunge", Shape.LINE, Archetype.THRUST)
+			.motion(Motion.DASH).tell(7).active(7).recovery(12)
+			.damage(17.0).knockback(1.00).reach(5.2).half(0.9).color(CYAN).speed(1.10).build(),
+		OathboundTechnique.b(REAPING_CIRCLE, "reaping_circle", Shape.PULL_RADIUS, Archetype.WEAPON_TWIRL)
+			.tell(10).active(6).recovery(14)
+			.damage(8.0).knockback(0.0).reach(6.0).color(VIOLET).speed(1.10)
+			.effect(Effect.SLOW, 40).build(),
+		OathboundTechnique.b(GLAIVE_THROW, "glaive_throw", Shape.LINE, Archetype.OVERHAND_THROW)
+			.tell(10).active(8).recovery(14)
+			.damage(13.0).knockback(1.20).reach(9.0).half(0.9).color(CYAN).build(),
+		OathboundTechnique.b(THUNDER_STOMP, "thunder_stomp", Shape.CROSS, Archetype.STOMP)
+			.tell(12).active(6).recovery(14)
+			.damage(10.0).knockback(0.80).reach(6.0).inner(1.8).half(1.1).color(CYAN).build(),
+		OathboundTechnique.b(RISING_GLAIVE, "rising_glaive", Shape.CONE, Archetype.UPPERCUT)
+			.tell(8).active(4).recovery(10)
+			.damage(12.0).knockback(0.30).reach(2.8).half(45.0).lift(0.65).color(CYAN)
+			.effect(Effect.LAUNCH, 0).build(),
+		OathboundTechnique.b(SHADOW_CLONE_STRIKE, "shadow_clone_strike", Shape.TWIN_LINE, Archetype.DIAGONAL_SLASH)
+			.tell(8).active(6).recovery(12)
+			.damage(14.0).knockback(1.00).reach(4.4).half(0.9).color(VIOLET).build(),
+		OathboundTechnique.b(WHIRLWIND_PULL, "whirlwind_pull", Shape.PULL_RADIUS, Archetype.SPIN_SWEEP)
+			.tell(10).active(8).recovery(12)
+			.damage(7.0).knockback(0.20).reach(5.0).color(VIOLET).speed(1.0)
+			.effect(Effect.WEAKNESS, 50).build(),
+		OathboundTechnique.b(SKYFALL_CLEAVE, "skyfall_cleave", Shape.LINE, Archetype.LEAP_SLAM)
+			.motion(Motion.LEAP).tell(12).active(8).recovery(12).hitDelay(5)
+			.damage(16.0).knockback(0.80).reach(5.5).half(1.0).color(CYAN).speed(0.50).build(),
+		OathboundTechnique.b(STORMBREAKER, "stormbreaker", Shape.CROSS, Archetype.OVERHEAD_SLAM)
+			.tell(16).active(8).recovery(18)
+			.damage(18.0).knockback(1.30).reach(6.5).inner(2.4).half(1.3).color(VIOLET)
+			.empoweredOnly().build()
+	};
+
+	/** The extra technique with {@code id}, or {@code null} for a signature move. */
+	public static OathboundTechnique technique(int id) {
+		for (OathboundTechnique t : TECHNIQUES) {
+			if (t.id() == id) {
+				return t;
+			}
+		}
+		return null;
+	}
 
 	// ------------------------------------------------------------------ core attributes & thresholds
 
@@ -94,6 +180,10 @@ public final class OathboundHalberdierRules {
 
 	/** Windup ticks for a given move, accelerated during Overdrive. */
 	public static int tellTicks(int move, boolean empowered) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			return empowered ? Math.max(4, (int) Math.round(tech.tell() * EMPOWERED_TELL_SCALE)) : tech.tell();
+		}
 		int base = switch (move) {
 			case TEMPEST_WHIRL -> WHIRL_TELL;
 			case SHADOWSTEP_THRUST -> THRUST_TELL;
@@ -106,6 +196,10 @@ public final class OathboundHalberdierRules {
 
 	/** Total duration of a combat move in ticks. */
 	public static int moveDuration(int move, boolean empowered) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			return tellTicks(move, empowered) + tech.active() + tech.recovery();
+		}
 		int tell = tellTicks(move, empowered);
 		return switch (move) {
 			case TEMPEST_WHIRL -> tell + (WHIRL_DURATION - WHIRL_TELL);
@@ -183,6 +277,11 @@ public final class OathboundHalberdierRules {
 
 	/** Cooldown in ticks between uses of a specific combat move. */
 	public static int moveCooldown(int move, boolean empowered) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			int base = Math.max(16, tech.tell() + tech.recovery());
+			return empowered ? Math.max(12, (int) Math.round(base * 0.78)) : base;
+		}
 		int base = switch (move) {
 			case TEMPEST_WHIRL -> 34;
 			case SHADOWSTEP_THRUST -> 48;

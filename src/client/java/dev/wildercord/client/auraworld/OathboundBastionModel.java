@@ -1,6 +1,7 @@
 package dev.wildercord.client.auraworld;
 
 import dev.wildercord.aura.world.OathboundBastionRules;
+import dev.wildercord.aura.world.OathboundTechnique;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -43,6 +44,7 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 
 	private final ModelPart[] posed;
 	private final PoseBlend blender;
+	private final OathboundPose.Rig rig;
 
 	public OathboundBastionModel(ModelPart root) {
 		super(root);
@@ -72,6 +74,7 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 			right, foreR, mace, left, foreL, shield, legR, shinR, legL, shinL
 		};
 		blender = new PoseBlend(posed);
+		rig = new OathboundPose.Rig(body, head, right, foreR, left, foreL, mace, shield, legL, shinL, legR, shinR);
 	}
 
 	public static LayerDefinition createLayer() {
@@ -460,7 +463,13 @@ public final class OathboundBastionModel extends EntityModel<OathboundBastionRen
 				right.zRot = 0.38F;
 				bend(0.20F);
 			}
-			default -> {}
+			default -> {
+				OathboundTechnique tech = OathboundBastionRules.technique(move);
+				if (tech != null) {
+					OathboundPose.apply(rig, tech.archetype(), el, tellTicks,
+						OathboundBastionRules.moveDuration(move, false), move);
+				}
+			}
 		}
 	}
 

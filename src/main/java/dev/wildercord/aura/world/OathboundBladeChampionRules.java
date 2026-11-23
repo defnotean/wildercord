@@ -1,5 +1,10 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.aura.world.OathboundTechnique.Archetype;
+import dev.wildercord.aura.world.OathboundTechnique.Effect;
+import dev.wildercord.aura.world.OathboundTechnique.Motion;
+import dev.wildercord.aura.world.OathboundTechnique.Shape;
+
 /**
  * Pure combat, timing, scaling, and spawn rules for {@link OathboundBladeChampion} — Knight #2 (Way of the Blade).
  * Kept free of Minecraft runtime state so every frame window, parry arc, axe guard break, crescent cleave,
@@ -23,7 +28,86 @@ public final class OathboundBladeChampionRules {
 	/** Guard shattered by an axe during Wrathful Riposte. */
 	public static final int STAGGERED = 5;
 
-	public static final int[] COMBAT_MOVES = {WRATHFUL_RIPOSTE, CRESCENT_CLEAVE, POMMEL_BREAK, GUILLOTINE_SLAM};
+	// ------------------------------------------------------------------ expanded technique sheet (ids 6..18)
+
+	public static final int LUNGE_THRUST = 6;
+	public static final int RISING_SLASH = 7;
+	public static final int CROSS_CUT = 8;
+	public static final int BLADE_FLURRY = 9;
+	public static final int SPIN_SLASH = 10;
+	public static final int BACKSTEP_SLASH = 11;
+	public static final int MIRROR_STANCE = 12;
+	public static final int SEVERING_ARC = 13;
+	public static final int PIERCING_RAIN = 14;
+	public static final int BLADE_BIND = 15;
+	public static final int CRIMSON_TEMPEST = 16;
+	public static final int EXECUTIONER_DROP = 17;
+	public static final int PHANTOM_STRIKE = 18;
+
+	public static final int[] COMBAT_MOVES = {
+		WRATHFUL_RIPOSTE, CRESCENT_CLEAVE, POMMEL_BREAK, GUILLOTINE_SLAM,
+		LUNGE_THRUST, RISING_SLASH, CROSS_CUT, BLADE_FLURRY, SPIN_SLASH, BACKSTEP_SLASH,
+		MIRROR_STANCE, SEVERING_ARC, PIERCING_RAIN, BLADE_BIND, CRIMSON_TEMPEST,
+		EXECUTIONER_DROP, PHANTOM_STRIKE
+	};
+
+	private static final int CRIMSON = 0xE63830;
+	private static final int GOLD = 0xFFD048;
+
+	private static final OathboundTechnique[] TECHNIQUES = {
+		OathboundTechnique.b(LUNGE_THRUST, "lunge_thrust", Shape.LINE, Archetype.THRUST)
+			.motion(Motion.DASH).tell(8).active(6).recovery(10)
+			.damage(16.0).knockback(0.90).reach(4.6).half(0.8).color(CRIMSON).speed(1.0).build(),
+		OathboundTechnique.b(RISING_SLASH, "rising_slash", Shape.CONE, Archetype.UPPERCUT)
+			.tell(7).active(4).recovery(10)
+			.damage(11.0).knockback(0.40).reach(2.6).half(55.0).lift(0.60).color(CRIMSON)
+			.effect(Effect.LAUNCH, 0).build(),
+		OathboundTechnique.b(CROSS_CUT, "cross_cut", Shape.WIDE_ARC, Archetype.CROSS_CUT)
+			.tell(10).active(6).recovery(12)
+			.damage(13.0).knockback(1.00).reach(3.9).half(85.0).color(CRIMSON).build(),
+		OathboundTechnique.b(BLADE_FLURRY, "blade_flurry", Shape.MULTI_HIT, Archetype.FLURRY)
+			.tell(6).active(10).recovery(10).hitDelay(1)
+			.damage(5.0).knockback(0.30).reach(3.2).half(65.0).hits(4).color(GOLD).build(),
+		OathboundTechnique.b(SPIN_SLASH, "spin_slash", Shape.RADIUS, Archetype.SPIN_SWEEP)
+			.tell(9).active(8).recovery(12)
+			.damage(12.0).knockback(1.30).reach(3.9).color(CRIMSON).build(),
+		OathboundTechnique.b(BACKSTEP_SLASH, "backstep_slash", Shape.CONE, Archetype.BACKSTEP)
+			.motion(Motion.BACKSTEP).tell(6).active(5).recovery(10)
+			.damage(10.0).knockback(0.80).reach(3.4).half(70.0).color(CRIMSON).speed(0.60).build(),
+		OathboundTechnique.b(MIRROR_STANCE, "mirror_stance", Shape.CONE, Archetype.GUARD_BRACE)
+			.tell(4).active(8).recovery(14)
+			.damage(12.0).knockback(1.10).reach(3.6).half(80.0).color(GOLD).build(),
+		OathboundTechnique.b(SEVERING_ARC, "severing_arc", Shape.WIDE_ARC, Archetype.HORIZONTAL_SWEEP)
+			.tell(12).active(7).recovery(14)
+			.damage(15.0).knockback(1.40).reach(4.6).half(135.0).color(CRIMSON).build(),
+		OathboundTechnique.b(PIERCING_RAIN, "piercing_rain", Shape.RADIUS, Archetype.LEAP_SLAM)
+			.motion(Motion.LEAP).tell(10).active(8).recovery(14).hitDelay(5)
+			.damage(14.0).knockback(0.90).reach(3.6).color(CRIMSON).speed(0.50).build(),
+		OathboundTechnique.b(BLADE_BIND, "blade_bind", Shape.CONE, Archetype.SHIELD_PUSH)
+			.tell(8).active(5).recovery(12)
+			.damage(8.0).knockback(0.20).reach(2.2).half(50.0).color(GOLD)
+			.effect(Effect.WEAKNESS, 60).build(),
+		OathboundTechnique.b(CRIMSON_TEMPEST, "crimson_tempest", Shape.MULTI_HIT, Archetype.SPIN_SWEEP)
+			.tell(12).active(12).recovery(14).hitDelay(1)
+			.damage(6.0).knockback(0.50).reach(4.4).half(180.0).hits(5).color(CRIMSON)
+			.empoweredOnly().build(),
+		OathboundTechnique.b(EXECUTIONER_DROP, "executioner_drop", Shape.LINE, Archetype.OVERHEAD_SLAM)
+			.tell(18).active(5).recovery(16)
+			.damage(22.0).knockback(0.60).reach(5.0).half(1.0).color(CRIMSON).build(),
+		OathboundTechnique.b(PHANTOM_STRIKE, "phantom_strike", Shape.TWIN_LINE, Archetype.DIAGONAL_SLASH)
+			.motion(Motion.DASH).tell(8).active(6).recovery(12)
+			.damage(14.0).knockback(1.10).reach(4.2).half(1.0).color(GOLD).speed(0.60).build()
+	};
+
+	/** The extra technique with {@code id}, or {@code null} for a signature move. */
+	public static OathboundTechnique technique(int id) {
+		for (OathboundTechnique t : TECHNIQUES) {
+			if (t.id() == id) {
+				return t;
+			}
+		}
+		return null;
+	}
 
 	// ------------------------------------------------------------------ core attributes & thresholds
 
@@ -100,6 +184,10 @@ public final class OathboundBladeChampionRules {
 
 	/** Windup ticks for a given move, sped up slightly in Crimson Overdrive. */
 	public static int tellTicks(int move, boolean empowered) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			return empowered ? Math.max(4, (int) Math.round(tech.tell() * EMPOWERED_TELL_SCALE)) : tech.tell();
+		}
 		int base = switch (move) {
 			case WRATHFUL_RIPOSTE -> RIPOSTE_TELL;
 			case CRESCENT_CLEAVE -> CRESCENT_TELL;
@@ -112,6 +200,10 @@ public final class OathboundBladeChampionRules {
 
 	/** Total duration of a scripted combat move in ticks. */
 	public static int moveDuration(int move, boolean empowered) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			return tellTicks(move, empowered) + tech.active() + tech.recovery();
+		}
 		int tell = tellTicks(move, empowered);
 		return switch (move) {
 			case WRATHFUL_RIPOSTE -> tell + RIPOSTE_WINDOW + 6;
@@ -218,6 +310,11 @@ public final class OathboundBladeChampionRules {
 
 	/** Cooldown in ticks between uses of a specific combat move. */
 	public static int moveCooldown(int move, boolean empowered) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			int base = Math.max(18, tech.tell() + tech.recovery());
+			return empowered ? Math.max(14, (int) Math.round(base * 0.78)) : base;
+		}
 		int base = switch (move) {
 			case WRATHFUL_RIPOSTE -> 75;
 			case CRESCENT_CLEAVE -> 24;

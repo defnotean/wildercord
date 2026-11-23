@@ -53,7 +53,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * The Oathbound Banner-Marshal — Knight #4 (Way of the Sovereign Banner), an ivory-white and burnished-gold commander
@@ -79,7 +82,8 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 	public float shownElapsed, prevElapsed, switchedAt = -100.0F;
 
 	private final MoveDeck deck = new MoveDeck(OathboundBannerMarshalRules.MEMORY);
-	private final long[] lastUsed = new long[8];
+	private final long[] lastUsed = new long[32];
+	private final Set<UUID> struck = new HashSet<>();
 
 	private float aim;
 	private int moveTicksLeft;
@@ -88,6 +92,8 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 	private boolean cleaveHitFired;
 	private boolean judgmentHitFired;
 	private boolean counterHitFired;
+	private boolean techHitFired;
+	private int techHitCount;
 
 	{
 		Arrays.fill(lastUsed, -9999L);
@@ -201,6 +207,9 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 		cleaveHitFired = false;
 		judgmentHitFired = false;
 		counterHitFired = false;
+		techHitFired = false;
+		techHitCount = 0;
+		struck.clear();
 		getNavigation().stop();
 
 		if (target != null) {
@@ -233,7 +242,12 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 			}
 			case OathboundBannerMarshalRules.STAGGERED ->
 				sound(level, chest, SoundEvents.SHIELD_BREAK.value(), 1.3F, 0.85F);
-			default -> {}
+			default -> {
+				OathboundTechnique tech = OathboundBannerMarshalRules.technique(nextMove);
+				if (tech != null) {
+					Feels.sound(level, chest, "aura_bell_warden_shell", 1.1F, 1.1F);
+				}
+			}
 		}
 	}
 
@@ -303,7 +317,13 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 				case OathboundBannerMarshalRules.SOLAR_AEGIS_GUARD -> dist <= 4.5 ? 1.55 : 0.4;
 				case OathboundBannerMarshalRules.RADIANT_SUNBLADE_CLEAVE -> dist <= 4.3 ? 2.1 : 0.0;
 				case OathboundBannerMarshalRules.SOVEREIGN_JUDGMENT -> dist <= 5.8 ? (emp ? 1.85 : 1.35) : 0.0;
-				default -> 0.0;
+				default -> {
+					OathboundTechnique tech = OathboundBannerMarshalRules.technique(m);
+					if (tech == null || (tech.empoweredOnly() && !emp) || !tech.inRange(dist)) {
+						yield 0.0;
+					}
+					yield 1.4 + random.nextDouble() * 0.5;
+				}
 			};
 		}
 		return deck.pick(moves, weights, random.nextDouble());
@@ -408,9 +428,72 @@ public final class OathboundBannerMarshal extends PathfinderMob implements Enemy
 				still();
 				face(aim);
 			}
-			default -> {}
+			default -> {
+				if (OathboundBannerMarshalRules.technique(move) != null) {
+					tickTechnique(level, move, target);
+					return;
+				}
+			}
 		}
 
+		moveTicksLeft--;
+		if (moveTicksLeft <= 0) {
+			entityData.set(MOVE, OathboundBannerMarshalRules.SOVEREIGN_MARCH);
+			entityData.set(TELL, 0);
+			entityData.set(GUARD_COUNTERED, false);
+			gapTicks = emp ? OathboundBannerMarshalRules.MOVE_GAP_EMPOWERED : OathboundBannerMarshalRules.MOVE_GAP_TICKS;
+		}
+	}
+
+	private void tickTechnique(ServerLevel level, int move, @Nullable LivingEntity target) {
+		OathboundTechnique tech = OathboundBannerMarshalRules.technique(move);
+		if (tech == null) {
+			return;
+		}
+		long el = since();
+		int tell = tell();
+		boolean emp = empowered();
+		if (el < tell) {
+			still();
+			if (target != null && el <= tell - 3) {
+				aim = Mth.rotLerp(0.20F, aim, yawTo(target.position()));
+			}
+			face(aim);
+			if (el % 4 == 0) {
+				OathboundCombat.windupFx(level, this, tech, aim, el);
+			}
+			moveTicksLeft--;
+			return;
+		}
+		face(aim);
+		long active = el - tell;
+		OathboundCombat.motion(this, tech, aim, active);
+		if (tech.motion() == OathboundTechnique.Motion.PLANTED) {
+			still();
+		}
+		if (!techHitFired && active >= tech.hitDelay()) {
+			techHitFired = true;
+			techHitCount = 1;
+			OathboundCombat.strike(level, this, tech, aim, struck, emp, OathboundBannerMarshalRules.PIERCE);
+			OathboundCombat.strikeFx(level, this, tech, aim);
+			if (move == OathboundBannerMarshalRules.RALLYING_CRY
+					|| move == OathboundBannerMarshalRules.BANNER_PLANT
+					|| move == OathboundBannerMarshalRules.SOLAR_FLARE) {
+				for (LivingEntity ally : nearbyAlliedKnights(level)) {
+					ally.heal(6.0F);
+					ally.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 100, 0, false, true), this);
+					ally.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 100, 0, false, true), this);
+					Sigils.flash(level, ally.position().add(0, ally.getBbHeight() * 0.6, 0), 0xFFFFE066, 1.2F);
+				}
+			}
+		} else if (tech.shape() == OathboundTechnique.Shape.MULTI_HIT && techHitCount < tech.hits()
+				&& active >= tech.hitDelay() + techHitCount * 3L) {
+			techHitCount++;
+			OathboundCombat.strike(level, this, tech, aim, struck, emp, OathboundBannerMarshalRules.PIERCE);
+		}
+		if (tech.motion() == OathboundTechnique.Motion.DASH && active % 2 == 0) {
+			dust(level, position(), 3, 0.25);
+		}
 		moveTicksLeft--;
 		if (moveTicksLeft <= 0) {
 			entityData.set(MOVE, OathboundBannerMarshalRules.SOVEREIGN_MARCH);

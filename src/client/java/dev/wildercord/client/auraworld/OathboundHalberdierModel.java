@@ -1,6 +1,7 @@
 package dev.wildercord.client.auraworld;
 
 import dev.wildercord.aura.world.OathboundHalberdierRules;
+import dev.wildercord.aura.world.OathboundTechnique;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -42,6 +43,7 @@ public final class OathboundHalberdierModel extends EntityModel<OathboundHalberd
 	private final ModelPart shinL;
 
 	private final PoseBlend blender;
+	private final OathboundPose.Rig rig;
 
 	public OathboundHalberdierModel(ModelPart root) {
 		super(root);
@@ -75,6 +77,7 @@ public final class OathboundHalberdierModel extends EntityModel<OathboundHalberd
 			legR, shinR, legL, shinL
 		};
 		blender = new PoseBlend(posed);
+		rig = new OathboundPose.Rig(body, head, right, foreR, left, foreL, halberd, null, legL, shinL, legR, shinR);
 	}
 
 	public static LayerDefinition createLayer() {
@@ -400,7 +403,13 @@ public final class OathboundHalberdierModel extends EntityModel<OathboundHalberd
 				foreL.xRot = -0.28F;
 				bend(0.24F);
 			}
-			default -> {}
+			default -> {
+				OathboundTechnique tech = OathboundHalberdierRules.technique(move);
+				if (tech != null) {
+					OathboundPose.apply(rig, tech.archetype(), el, tellTicks,
+						OathboundHalberdierRules.moveDuration(move, false), move);
+				}
+			}
 		}
 	}
 

@@ -1,6 +1,7 @@
 package dev.wildercord.client.auraworld;
 
 import dev.wildercord.aura.world.OathboundBannerMarshalRules;
+import dev.wildercord.aura.world.OathboundTechnique;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -41,6 +42,7 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 	private final ModelPart shinL;
 
 	private final PoseBlend blender;
+	private final OathboundPose.Rig rig;
 
 	public OathboundBannerMarshalModel(ModelPart root) {
 		super(root);
@@ -72,6 +74,7 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 			legR, shinR, legL, shinL
 		};
 		blender = new PoseBlend(posed);
+		rig = new OathboundPose.Rig(body, head, right, foreR, left, foreL, sunblade, aegisShield, legL, shinL, legR, shinR);
 	}
 
 	public static LayerDefinition createLayer() {
@@ -409,7 +412,13 @@ public final class OathboundBannerMarshalModel extends EntityModel<OathboundBann
 				right.zRot = 0.38F;
 				bend(0.20F);
 			}
-			default -> {}
+			default -> {
+				OathboundTechnique tech = OathboundBannerMarshalRules.technique(move);
+				if (tech != null) {
+					OathboundPose.apply(rig, tech.archetype(), el, tellTicks,
+						OathboundBannerMarshalRules.moveDuration(move, false), move);
+				}
+			}
 		}
 	}
 

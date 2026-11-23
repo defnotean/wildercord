@@ -86,7 +86,7 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 	public float shownElapsed, prevElapsed, switchedAt = -100.0F;
 
 	private final MoveDeck deck = new MoveDeck(OathboundBladeChampionRules.MEMORY);
-	private final long[] lastUsed = new long[8];
+	private final long[] lastUsed = new long[32];
 	private final Set<UUID> struck = new HashSet<>();
 
 	private float aim;
@@ -96,6 +96,8 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 	private boolean pommelHitFired;
 	private boolean guillotineHitFired;
 	private boolean riposteCounterHitFired;
+	private boolean techHitFired;
+	private int techHitCount;
 
 	{
 		Arrays.fill(lastUsed, -9999L);
@@ -209,6 +211,8 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		pommelHitFired = false;
 		guillotineHitFired = false;
 		riposteCounterHitFired = false;
+		techHitFired = false;
+		techHitCount = 0;
 		struck.clear();
 		getNavigation().stop();
 
@@ -240,7 +244,12 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 			}
 			case OathboundBladeChampionRules.STAGGERED ->
 				sound(level, chest, SoundEvents.SHIELD_BREAK.value(), 1.3F, 0.9F);
-			default -> {}
+			default -> {
+				OathboundTechnique tech = OathboundBladeChampionRules.technique(nextMove);
+				if (tech != null) {
+					Feels.sound(level, chest, "duelist_knight_windup", 1.1F, 1.0F);
+				}
+			}
 		}
 	}
 
@@ -310,7 +319,13 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 				case OathboundBladeChampionRules.CRESCENT_CLEAVE -> dist <= 4.6 ? 2.1 : 0.0;
 				case OathboundBladeChampionRules.POMMEL_BREAK -> (dist >= 1.8 && dist <= 7.4) ? (targetBlocking ? 3.2 : 1.55) : 0.0;
 				case OathboundBladeChampionRules.GUILLOTINE_SLAM -> dist <= 6.2 ? (emp ? 1.85 : 1.25) : 0.0;
-				default -> 0.0;
+				default -> {
+					OathboundTechnique tech = OathboundBladeChampionRules.technique(m);
+					if (tech == null || (tech.empoweredOnly() && !emp) || !tech.inRange(dist)) {
+						yield 0.0;
+					}
+					yield 1.4 + random.nextDouble() * 0.5;
+				}
 			};
 		}
 		return deck.pick(moves, weights, random.nextDouble());
@@ -428,7 +443,12 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 				still();
 				face(aim);
 			}
-			default -> {}
+			default -> {
+				if (OathboundBladeChampionRules.technique(move) != null) {
+					tickTechnique(level, move, target);
+					return;
+				}
+			}
 		}
 
 		moveTicksLeft--;
@@ -440,8 +460,55 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 		}
 	}
 
-	private void landGuillotine(ServerLevel level) {
-		Vec3 forward = ahead(aim);
+	private void tickTechnique(ServerLevel level, int move, @Nullable LivingEntity target) {
+		OathboundTechnique tech = OathboundBladeChampionRules.technique(move);
+		if (tech == null) {
+			return;
+		}
+		long el = since();
+		int tell = tell();
+		boolean emp = empowered();
+		if (el < tell) {
+			still();
+			if (target != null && el <= tell - 3) {
+				aim = Mth.rotLerp(0.24F, aim, yawTo(target.position()));
+			}
+			face(aim);
+			if (el % 4 == 0) {
+				OathboundCombat.windupFx(level, this, tech, aim, el);
+			}
+			moveTicksLeft--;
+			return;
+		}
+		face(aim);
+		long active = el - tell;
+		OathboundCombat.motion(this, tech, aim, active);
+		if (tech.motion() == OathboundTechnique.Motion.PLANTED) {
+			still();
+		}
+		if (!techHitFired && active >= tech.hitDelay()) {
+			techHitFired = true;
+			techHitCount = 1;
+			OathboundCombat.strike(level, this, tech, aim, struck, emp, OathboundBladeChampionRules.PIERCE);
+			OathboundCombat.strikeFx(level, this, tech, aim);
+		} else if (tech.shape() == OathboundTechnique.Shape.MULTI_HIT && techHitCount < tech.hits()
+				&& active >= tech.hitDelay() + techHitCount * 3L) {
+			techHitCount++;
+			OathboundCombat.strike(level, this, tech, aim, struck, emp, OathboundBladeChampionRules.PIERCE);
+		}
+		if (tech.motion() == OathboundTechnique.Motion.DASH && active % 2 == 0) {
+			dust(level, position(), 3, 0.25);
+		}
+		moveTicksLeft--;
+		if (moveTicksLeft <= 0) {
+			entityData.set(MOVE, OathboundBladeChampionRules.IDLE_STALK);
+			entityData.set(TELL, 0);
+			entityData.set(RIPOSTE_TRIGGERED, false);
+			gapTicks = emp ? OathboundBladeChampionRules.MOVE_GAP_EMPOWERED : OathboundBladeChampionRules.MOVE_GAP_TICKS;
+		}
+	}
+
+	private void landGuillotine(ServerLevel level) {		Vec3 forward = ahead(aim);
 		Vec3 impact = position().add(forward.scale(2.1));
 		boolean emp = empowered();
 

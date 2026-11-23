@@ -1,5 +1,10 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.aura.world.OathboundTechnique.Archetype;
+import dev.wildercord.aura.world.OathboundTechnique.Effect;
+import dev.wildercord.aura.world.OathboundTechnique.Motion;
+import dev.wildercord.aura.world.OathboundTechnique.Shape;
+
 /**
  * Pure combat, timing, scaling, and spawn rules for {@link OathboundBastion} — Knight #1 (Way of the Bulwark).
  * Kept free of Minecraft runtime state so every frame window, shield angle, shockwave falloff, and guard break
@@ -25,7 +30,88 @@ public final class OathboundBastionRules {
 	/** Guard shattered by an axe or self-stunned by crashing into stone during Shield-Ram. */
 	public static final int STAGGERED = 6;
 
-	public static final int[] COMBAT_MOVES = {PHALANX_BRACE, SHIELD_RAM, ANVIL_SLAM, SHIELD_BASH, MACE_CLEAVE};
+	// ------------------------------------------------------------------ expanded technique sheet (ids 7..19)
+
+	public static final int AEGIS_TOSS = 7;
+	public static final int EARTHSPLIT_STOMP = 8;
+	public static final int MACE_OVERHEAD = 9;
+	public static final int SHIELD_WALL_SLIDE = 10;
+	public static final int WHIRLING_BULWARK = 11;
+	public static final int GAUNTLET_UPPERCUT = 12;
+	public static final int ANVIL_DROP = 13;
+	public static final int CROSS_GUARD_COUNTER = 14;
+	public static final int SHIELD_RICOCHET = 15;
+	public static final int MACE_SWEEP_LOW = 16;
+	public static final int BULWARK_ROAR = 17;
+	public static final int SEISMIC_LINE = 18;
+	public static final int SUN_ANVIL_JUDGMENT = 19;
+
+	public static final int[] COMBAT_MOVES = {
+		PHALANX_BRACE, SHIELD_RAM, ANVIL_SLAM, SHIELD_BASH, MACE_CLEAVE,
+		AEGIS_TOSS, EARTHSPLIT_STOMP, MACE_OVERHEAD, SHIELD_WALL_SLIDE, WHIRLING_BULWARK,
+		GAUNTLET_UPPERCUT, ANVIL_DROP, CROSS_GUARD_COUNTER, SHIELD_RICOCHET, MACE_SWEEP_LOW,
+		BULWARK_ROAR, SEISMIC_LINE, SUN_ANVIL_JUDGMENT
+	};
+
+	private static final int GOLD = 0xFFD048;
+
+	private static final OathboundTechnique[] TECHNIQUES = {
+		OathboundTechnique.b(AEGIS_TOSS, "aegis_toss", Shape.LINE, Archetype.OVERHAND_THROW)
+			.tell(12).active(8).recovery(14).hitDelay(2)
+			.damage(12.0).knockback(1.20).reach(9.0).half(0.9).color(GOLD).build(),
+		OathboundTechnique.b(EARTHSPLIT_STOMP, "earthsplit_stomp", Shape.RING, Archetype.STOMP)
+			.tell(14).active(6).recovery(12).hitDelay(3)
+			.damage(9.0).knockback(0.90).reach(5.0).inner(1.0).color(GOLD)
+			.effect(Effect.SLOW, 40).build(),
+		OathboundTechnique.b(MACE_OVERHEAD, "mace_overhead", Shape.CONE, Archetype.OVERHEAD_SLAM)
+			.tell(16).active(4).recovery(14)
+			.damage(18.0).knockback(0.60).reach(3.0).half(28.0).color(GOLD).build(),
+		OathboundTechnique.b(SHIELD_WALL_SLIDE, "shield_wall_slide", Shape.LINE, Archetype.SHIELD_PUSH)
+			.motion(Motion.DASH).tell(10).active(10).recovery(10)
+			.damage(8.0).knockback(1.50).reach(2.4).half(1.6).color(GOLD).speed(0.70).build(),
+		OathboundTechnique.b(WHIRLING_BULWARK, "whirling_bulwark", Shape.RADIUS, Archetype.SPIN_SWEEP)
+			.tell(12).active(10).recovery(12)
+			.damage(11.0).knockback(1.60).reach(3.8).color(GOLD).build(),
+		OathboundTechnique.b(GAUNTLET_UPPERCUT, "gauntlet_uppercut", Shape.CONE, Archetype.UPPERCUT)
+			.tell(6).active(4).recovery(10)
+			.damage(9.0).knockback(0.30).reach(2.2).half(45.0).lift(0.55).color(GOLD)
+			.effect(Effect.LAUNCH, 0).build(),
+		OathboundTechnique.b(ANVIL_DROP, "anvil_drop", Shape.RADIUS, Archetype.LEAP_SLAM)
+			.motion(Motion.LEAP).tell(14).active(10).recovery(14).hitDelay(6)
+			.damage(15.0).knockback(1.10).reach(4.2).color(GOLD).speed(0.40).build(),
+		OathboundTechnique.b(CROSS_GUARD_COUNTER, "cross_guard_counter", Shape.CONE, Archetype.CROSS_CUT)
+			.tell(5).active(6).recovery(14)
+			.damage(14.0).knockback(0.80).reach(3.6).half(70.0).color(GOLD).build(),
+		OathboundTechnique.b(SHIELD_RICOCHET, "shield_ricochet", Shape.MULTI_HIT, Archetype.WEAPON_TWIRL)
+			.tell(10).active(6).recovery(14).hitDelay(2)
+			.damage(7.0).knockback(0.80).reach(7.0).half(18.0).hits(3).color(GOLD).build(),
+		OathboundTechnique.b(MACE_SWEEP_LOW, "mace_sweep_low", Shape.WIDE_ARC, Archetype.HORIZONTAL_SWEEP)
+			.tell(10).active(6).recovery(12)
+			.damage(9.0).knockback(1.00).reach(4.2).half(110.0).color(GOLD)
+			.effect(Effect.SLOW, 60).build(),
+		OathboundTechnique.b(BULWARK_ROAR, "bulwark_roar", Shape.RADIUS, Archetype.ROAR)
+			.tell(12).active(8).recovery(16)
+			.damage(5.0).knockback(1.40).reach(6.0).color(GOLD)
+			.effect(Effect.FEAR, 80).build(),
+		OathboundTechnique.b(SEISMIC_LINE, "seismic_line", Shape.LINE, Archetype.KNEEL_STRIKE)
+			.tell(14).active(8).recovery(12)
+			.damage(13.0).knockback(0.90).reach(8.0).half(1.2).color(GOLD)
+			.effect(Effect.SLOW, 30).build(),
+		OathboundTechnique.b(SUN_ANVIL_JUDGMENT, "sun_anvil_judgment", Shape.CROSS, Archetype.OVERHEAD_SLAM)
+			.tell(20).active(8).recovery(18)
+			.damage(20.0).knockback(1.60).reach(6.5).inner(2.8).half(1.3).color(GOLD)
+			.effect(Effect.LAUNCH, 0).lift(0.35).empoweredOnly().build()
+	};
+
+	/** The extra technique with {@code id}, or {@code null} for a signature move. */
+	public static OathboundTechnique technique(int id) {
+		for (OathboundTechnique t : TECHNIQUES) {
+			if (t.id() == id) {
+				return t;
+			}
+		}
+		return null;
+	}
 
 	// ------------------------------------------------------------------ core attributes & thresholds
 
@@ -121,6 +207,10 @@ public final class OathboundBastionRules {
 
 	/** Windup/tell ticks before {@code move} strikes (compressed by 15% when empowered). */
 	public static int tellTicks(int move, boolean empowered) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			return empowered ? Math.max(4, (int) Math.round(tech.tell() * EMPOWERED_TELL_SCALE)) : tech.tell();
+		}
 		int base = switch (move) {
 			case PHALANX_BRACE -> PHALANX_TELL;
 			case SHIELD_RAM -> RAM_TELL;
@@ -137,6 +227,10 @@ public final class OathboundBastionRules {
 
 	/** Total ticks {@code move} runs before returning to {@link #IDLE_MARCH}. */
 	public static int moveDuration(int move, boolean empowered) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			return tellTicks(move, empowered) + tech.active() + tech.recovery();
+		}
 		int tell = tellTicks(move, empowered);
 		return switch (move) {
 			case PHALANX_BRACE -> PHALANX_DURATION;
@@ -207,6 +301,10 @@ public final class OathboundBastionRules {
 
 	/** Translation key fragment for a move. */
 	public static String moveKey(int move) {
+		OathboundTechnique tech = technique(move);
+		if (tech != null) {
+			return tech.key();
+		}
 		return switch (move) {
 			case PHALANX_BRACE -> "phalanx_brace";
 			case SHIELD_RAM -> "shield_ram";

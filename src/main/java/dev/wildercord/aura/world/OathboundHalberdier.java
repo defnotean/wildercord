@@ -77,7 +77,7 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 	public float shownElapsed, prevElapsed, switchedAt = -100.0F;
 
 	private final MoveDeck deck = new MoveDeck(OathboundHalberdierRules.MEMORY);
-	private final long[] lastUsed = new long[8];
+	private final long[] lastUsed = new long[32];
 	private final Set<UUID> struck = new HashSet<>();
 
 	private float aim;
@@ -86,6 +86,8 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 	private boolean whirlHitFired;
 	private boolean hookHitFired;
 	private boolean crashHitFired;
+	private boolean techHitFired;
+	private int techHitCount;
 
 	{
 		Arrays.fill(lastUsed, -9999L);
@@ -181,6 +183,8 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 		whirlHitFired = false;
 		hookHitFired = false;
 		crashHitFired = false;
+		techHitFired = false;
+		techHitCount = 0;
 		struck.clear();
 		getNavigation().stop();
 
@@ -212,7 +216,12 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 			}
 			case OathboundHalberdierRules.STAGGERED ->
 				sound(level, chest, SoundEvents.SHIELD_BREAK.value(), 1.25F, 0.92F);
-			default -> {}
+			default -> {
+				OathboundTechnique tech = OathboundHalberdierRules.technique(nextMove);
+				if (tech != null) {
+					Feels.sound(level, chest, "duelist_knight_windup", 1.1F, 1.2F);
+				}
+			}
 		}
 	}
 
@@ -281,7 +290,13 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 				case OathboundHalberdierRules.SHADOWSTEP_THRUST -> (dist >= 2.2 && dist <= 8.2) ? (emp ? 2.3 : 1.7) : 0.0;
 				case OathboundHalberdierRules.HOOK_AND_REAP -> (dist >= 2.8 && dist <= 6.2) ? 1.55 : 0.0;
 				case OathboundHalberdierRules.SKY_VAULT_CRASH -> dist <= 6.2 ? (emp ? 1.8 : 1.25) : 0.0;
-				default -> 0.0;
+				default -> {
+					OathboundTechnique tech = OathboundHalberdierRules.technique(m);
+					if (tech == null || (tech.empoweredOnly() && !emp) || !tech.inRange(dist)) {
+						yield 0.0;
+					}
+					yield 1.4 + random.nextDouble() * 0.5;
+				}
 			};
 		}
 		return deck.pick(moves, weights, random.nextDouble());
@@ -384,9 +399,61 @@ public final class OathboundHalberdier extends PathfinderMob implements Enemy {
 				still();
 				face(aim);
 			}
-			default -> {}
+			default -> {
+				if (OathboundHalberdierRules.technique(move) != null) {
+					tickTechnique(level, move, target);
+					return;
+				}
+			}
 		}
 
+		moveTicksLeft--;
+		if (moveTicksLeft <= 0) {
+			entityData.set(MOVE, OathboundHalberdierRules.LOW_GLAIVE_STALK);
+			entityData.set(TELL, 0);
+			gapTicks = emp ? OathboundHalberdierRules.MOVE_GAP_EMPOWERED : OathboundHalberdierRules.MOVE_GAP_TICKS;
+		}
+	}
+
+	private void tickTechnique(ServerLevel level, int move, @Nullable LivingEntity target) {
+		OathboundTechnique tech = OathboundHalberdierRules.technique(move);
+		if (tech == null) {
+			return;
+		}
+		long el = since();
+		int tell = tell();
+		boolean emp = empowered();
+		if (el < tell) {
+			still();
+			if (target != null && el <= tell - 3) {
+				aim = Mth.rotLerp(0.28F, aim, yawTo(target.position()));
+			}
+			face(aim);
+			if (el % 4 == 0) {
+				OathboundCombat.windupFx(level, this, tech, aim, el);
+			}
+			moveTicksLeft--;
+			return;
+		}
+		face(aim);
+		long active = el - tell;
+		OathboundCombat.motion(this, tech, aim, active);
+		if (tech.motion() == OathboundTechnique.Motion.PLANTED) {
+			still();
+		}
+		if (!techHitFired && active >= tech.hitDelay()) {
+			techHitFired = true;
+			techHitCount = 1;
+			OathboundCombat.strike(level, this, tech, aim, struck, emp, OathboundHalberdierRules.PIERCE);
+			OathboundCombat.strikeFx(level, this, tech, aim);
+		} else if (tech.shape() == OathboundTechnique.Shape.MULTI_HIT && techHitCount < tech.hits()
+				&& active >= tech.hitDelay() + techHitCount * 3L) {
+			techHitCount++;
+			OathboundCombat.strike(level, this, tech, aim, struck, emp, OathboundHalberdierRules.PIERCE);
+		}
+		if (tech.motion() == OathboundTechnique.Motion.DASH && active % 2 == 0) {
+			level.sendParticles(ParticleTypes.ELECTRIC_SPARK, getX(), getY() + 1.0, getZ(), 4, 0.3, 0.35, 0.3, 0.05);
+		}
 		moveTicksLeft--;
 		if (moveTicksLeft <= 0) {
 			entityData.set(MOVE, OathboundHalberdierRules.LOW_GLAIVE_STALK);
