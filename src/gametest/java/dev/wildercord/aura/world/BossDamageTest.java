@@ -1,7 +1,4 @@
 package dev.wildercord.aura.world;
-}
-import dev.wildercord.gametest.compat.GametestCompat;
-package dev.wildercord.aura.world;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.core.registries.BuiltInRegistries;
