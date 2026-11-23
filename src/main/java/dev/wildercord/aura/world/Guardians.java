@@ -61,6 +61,7 @@ public final class Guardians {
 		FieldGuide.add(new FieldGuide.Entry("wildercord:lantern_bearer",FieldGuide.Group.MONSTER,0x6FE8E0));
 		FabricDefaultAttributeRegistry.register(MOJITO,Mojito.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:mojito",FieldGuide.Group.MONSTER,0x7CFFB2));
+		LairRespawns.init();
 	}
 
 	/**

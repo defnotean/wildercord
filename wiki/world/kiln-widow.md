@@ -42,7 +42,7 @@ before the heat lands.
 The ground markings remain readable with **Minimal** particles. Each attack can hit
 you once, and every recovery window leaves time to answer on foot. Base damage is
 6 for the kiln draft, 5 for the slag pour and 7 for the firebreak sweep, before
-ordinary difficulty, tempering and defences. Base health is 180 with 4 armour.
+ordinary difficulty, tempering and defences. Base health is 720 with 10 armour and 5 armour toughness.
 
 At half health the Kiln Widow shifts its firing cadence and rotates later cooled
 firebreak lanes between the east-west and north-south causeways. A tell already
@@ -72,6 +72,6 @@ Return to an Emberwood Kiln Keeper after the victory. Once you have heard the ke
 four stories, they recognize the cooled compass you carry and record their parting
 acknowledgement in your journal's Talk tab.
 
-The heartstone stays complete after victory and does not repeat its reward. Leaving an
+After victory, the heartstone rests for **10 minutes** before allowing a fresh challenge, while one-time journal entries and compasses are awarded once per player. Leaving an
 attempt or reloading clears that attempt's participation. The peaceful Charcoal Yard
 route keeps its own clues and rewards.

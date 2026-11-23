@@ -1,0 +1,40 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "ocean_coral_dome_sanctuary": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:ocean_coral_dome_sanctuary"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:siren_pearl_lantern"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.ocean_coral_dome_sanctuary.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.ocean_coral_dome_sanctuary.description"
+    }
+  },
+  "requirements": [
+    [
+      "ocean_coral_dome_sanctuary"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

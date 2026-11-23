@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "wildercord:item/oathbound_halberdier_spawn_egg"
+  }
+}

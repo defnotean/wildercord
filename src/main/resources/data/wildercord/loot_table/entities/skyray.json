@@ -9,21 +9,21 @@
           "name": "wildercord:skyray_membrane",
           "functions": [
             {
+              "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
-              },
-              "function": "minecraft:set_count"
+              }
             },
             {
+              "function": "minecraft:enchanted_count_increase",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 0.0,
                 "max": 1.0
               },
-              "enchantment": "minecraft:looting",
-              "function": "minecraft:enchanted_count_increase"
+              "enchantment": "minecraft:looting"
             }
           ]
         }

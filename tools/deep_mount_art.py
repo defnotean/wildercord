@@ -225,9 +225,22 @@ def write(g):
                 {'function': 'minecraft:enchanted_count_increase', 'enchantment': 'minecraft:looting', 'count': {'type': 'minecraft:uniform', 'min': 0, 'max': 1}}]}]}],
             'random_sequence': f'wildercord:entities/{creature}'})
         g.write_json(g.DATA / f'tags/block/spawns_on/{creature}.json', {'replace': False, 'values': ground})
-    # A saddle goes only on what vanilla's tag names, so every Wildercord mount joins it; the reefback breathes water.
+    # A saddle goes only on what vanilla's tag names, so every Wildercord mount joins it; aquatic ocean entities breathe water.
     tags = g.DATA.parent / 'minecraft/tags/entity_type'
     mounts = ['wildercord:ridgeback_stag', 'wildercord:reefback_turtle', 'wildercord:delver_mole']
-    g.write_json(tags / 'can_equip_saddle.json', {'replace': False, 'values': mounts})
+    saddle_mounts = mounts + ['wildercord:lumi_seahorse']
+    aquatic_entities = [
+        'wildercord:reefback_turtle',
+        'wildercord:barnacle_hulk_dredger',
+        'wildercord:siren_veil_jelly',
+        'wildercord:coral_spine_mako',
+        'wildercord:dread_nautilus_sentinel',
+        'wildercord:thalassor',
+        'wildercord:brine_merchant',
+        'wildercord:lumi_seahorse',
+        'wildercord:pearl_pup',
+        'wildercord:singing_moon_whale',
+    ]
+    g.write_json(tags / 'can_equip_saddle.json', {'replace': False, 'values': saddle_mounts})
     g.write_json(tags / 'can_wear_horse_armor.json', {'replace': False, 'values': mounts})
-    g.write_json(tags / 'can_breathe_under_water.json', {'replace': False, 'values': ['wildercord:reefback_turtle']})
+    g.write_json(tags / 'can_breathe_under_water.json', {'replace': False, 'values': aquatic_entities})

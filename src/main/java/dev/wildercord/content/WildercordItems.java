@@ -43,6 +43,8 @@ public final class WildercordItems {
 	public static final CordItem ECHO_CORD = cord(CordTier.ECHO, Rarity.RARE);
 	public static final Item SPELL_SCROLL = register("spell_scroll", SpellScrollItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
 	public static final Item TORN_PAGE = register("torn_page", TornPageItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+	public static final Item SACRED_PIG_MAP = register("sacred_pig_map", SacredPigMapItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+	public static final Item SACRED_PIG_LEFT_NIPPLE = register("sacred_pig_left_nipple", SacredPigLeftNippleItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.EPIC));
 	public static final Item TRAINING_DUMMY = register("training_dummy", TrainingDummyItem::new, new Item.Properties().stacksTo(16));
 	public static final BackpackItem BACKPACK = backpack(BackpackTier.BACKPACK, Rarity.COMMON);
 	public static final BackpackItem REINFORCED_BACKPACK = backpack(BackpackTier.REINFORCED, Rarity.COMMON);
@@ -63,9 +65,13 @@ public final class WildercordItems {
 				dev.wildercord.gear.ElementalArmor.ALL.forEach(output::accept);
 				output.accept(MANA_CRYSTAL);
 				output.accept(TORN_PAGE);
+				output.accept(SACRED_PIG_MAP);
+				output.accept(SACRED_PIG_LEFT_NIPPLE);
 				output.accept(TRAINING_DUMMY);
 				output.accept(dev.wildercord.pet.CinnamonContent.TOY);
 				output.accept(dev.wildercord.pet.CinnamonContent.BOW);
+				output.accept(dev.wildercord.pet.CinnamonContent.GRAND_BOW);
+				output.accept(dev.wildercord.pet.CinnamonContent.HARNESS);
 				output.accept(dev.wildercord.pet.CinnamonContent.WHISTLE);
 				output.accept(BACKPACK);
 				output.accept(REINFORCED_BACKPACK);

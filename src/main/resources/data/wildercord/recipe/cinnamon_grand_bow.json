@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "GBG",
+    "ACA"
+  ],
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "B": "wildercord:cinnamon_bow",
+    "A": "minecraft:amethyst_shard",
+    "C": "wildercord:mana_crystal"
+  },
+  "result": {
+    "id": "wildercord:cinnamon_grand_bow"
+  }
+}
