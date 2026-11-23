@@ -1,4 +1,5 @@
 package dev.wildercord.wildlife;
+import dev.wildercord.gametest.compat.GametestCompat;
 
 import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.cast.DungeonEntities;
@@ -80,11 +81,11 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 			if (cam != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(cam);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!GametestCompat.hudHidden(mc)) {
+					GametestCompat.toggleHud(mc);
 				}
-				mc.gui.toastManager().clear();
-				mc.gui.hud.getChat().clearMessages(false);
+				GametestCompat.clearToasts(mc);
+				GametestCompat.clearChat(mc);
 			}
 		});
 		context.waitTicks(3);
@@ -101,8 +102,8 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 
 	private static void shot(ClientGameTestContext context, String name) {
 		context.runOnClient(mc -> {
-			mc.gui.toastManager().clear();
-			mc.gui.hud.getChat().clearMessages(false);
+			GametestCompat.clearToasts(mc);
+			GametestCompat.clearChat(mc);
 		});
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
@@ -143,7 +144,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 				mc.options.fov().set(74);
 				mc.options.broadcastOptions();
 				mc.resizeGui();
-				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+				if (!GametestCompat.hudHidden(mc)) GametestCompat.toggleHud(mc);
 			});
 
 			// Build a flat oak forest clearing at y=100 for the White Rabbit & Hollow Tree.

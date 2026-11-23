@@ -1,4 +1,5 @@
 package dev.wildercord.aura.world;
+import dev.wildercord.gametest.compat.GametestCompat;
 
 import dev.wildercord.compat.McEntities;
 import dev.wildercord.spell.FieldGuide;
@@ -82,11 +83,11 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 			if (cam != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(cam);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!GametestCompat.hudHidden(mc)) {
+					GametestCompat.toggleHud(mc);
 				}
-				mc.gui.toastManager().clear();
-				mc.gui.hud.getChat().clearMessages(false);
+				GametestCompat.clearToasts(mc);
+				GametestCompat.clearChat(mc);
 			}
 		});
 	}
@@ -95,8 +96,8 @@ public final class OathboundBastionTest implements FabricClientGameTest {
 		context.runOnClient(mc -> {
 			mc.setCameraEntity(mc.player);
 			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
+			if (GametestCompat.hudHidden(mc)) {
+				GametestCompat.toggleHud(mc);
 			}
 		});
 	}

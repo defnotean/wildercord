@@ -1,4 +1,7 @@
 package dev.wildercord.aura.world;
+}
+import dev.wildercord.gametest.compat.GametestCompat;
+package dev.wildercord.aura.world;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -438,8 +441,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var vanillaState = mc.getEntityRenderDispatcher().extractEntity(vanilla, 0.0F);
 				check(!customState.displayFireAnimation, "custom mob suppresses obscuring vanilla fire billboard");
 				check(vanillaState.displayFireAnimation, "vanilla mob preserves vanilla fire billboard");
-				mc.gui.toastManager().clear();
-				mc.gui.hud.getChat().clearMessages(false);
+				GametestCompat.clearToasts(mc);
+				GametestCompat.clearChat(mc);
 			});
 			c.waitTicks(4);
 			c.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("custom_mob_fire_clean").disableCounterPrefix());

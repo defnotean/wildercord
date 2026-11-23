@@ -224,9 +224,9 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(mc.player);
-				if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
-				mc.gui.toastManager().clear();
-				mc.gui.hud.getChat().clearMessages(false);
+				if (!GametestCompat.hudHidden(mc)) GametestCompat.toggleHud(mc);
+				GametestCompat.clearToasts(mc);
+				GametestCompat.clearChat(mc);
 			});
 			context.waitTicks(8);
 			context.takeScreenshot(TestScreenshotOptions.of("ocean_placement_coral_dome").disableCounterPrefix());

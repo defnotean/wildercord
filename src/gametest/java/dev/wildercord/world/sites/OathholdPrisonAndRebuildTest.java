@@ -1,4 +1,5 @@
 package dev.wildercord.world.sites;
+import dev.wildercord.gametest.compat.GametestCompat;
 
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.aura.world.OathboundHalberdier;
@@ -81,11 +82,11 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 			if (cam != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(cam);
-				if (!mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
+				if (!GametestCompat.hudHidden(mc)) {
+					GametestCompat.toggleHud(mc);
 				}
-				mc.gui.toastManager().clear();
-				mc.gui.hud.getChat().clearMessages(false);
+				GametestCompat.clearToasts(mc);
+				GametestCompat.clearChat(mc);
 			}
 		});
 		context.waitTicks(3);
@@ -102,8 +103,8 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 
 	private static void shot(ClientGameTestContext context, String name) {
 		context.runOnClient(mc -> {
-			mc.gui.toastManager().clear();
-			mc.gui.hud.getChat().clearMessages(false);
+			GametestCompat.clearToasts(mc);
+			GametestCompat.clearChat(mc);
 		});
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
@@ -202,7 +203,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 				mc.options.fov().set(74);
 				mc.options.broadcastOptions();
 				mc.resizeGui();
-				if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+				if (GametestCompat.hudHidden(mc)) GametestCompat.toggleHud(mc);
 			});
 
 			Map<BlockPos, BlockState> houseSnapshot = new HashMap<>();
@@ -376,7 +377,7 @@ public final class OathholdPrisonAndRebuildTest implements FabricClientGameTest 
 			context.waitTicks(4);
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
-				if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+				if (GametestCompat.hudHidden(mc)) GametestCompat.toggleHud(mc);
 			});
 			shot(context, "oathhold_prison_view_rebuilding");
 
