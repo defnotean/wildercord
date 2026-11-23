@@ -23,9 +23,27 @@ public final class OathholdSchematic {
 	private record Schematic(int width, int height, int length, BlockState[] palette, int[] indices) {}
 
 	private static volatile Schematic house1;
+	private static volatile Schematic house2;
 
 	public static boolean placeHouse1(OathholdCanvas c, int baseY, int x0, int z0, int x1, int z1, boolean spawnResident, int seed) {
-		Schematic s = loadHouse1();
+		Schematic s = house1;
+		if (s == null) {
+			s = load("/data/wildercord/oathhold/house1.schem");
+			house1 = s;
+		}
+		return place(s, c, baseY, x0, z0, x1, z1, spawnResident, seed);
+	}
+
+	public static boolean placeHouse2(OathholdCanvas c, int baseY, int x0, int z0, int x1, int z1, boolean spawnResident, int seed) {
+		Schematic s = house2;
+		if (s == null) {
+			s = load("/data/wildercord/oathhold/house2.schem");
+			house2 = s;
+		}
+		return place(s, c, baseY, x0, z0, x1, z1, spawnResident, seed);
+	}
+
+	private static boolean place(Schematic s, OathholdCanvas c, int baseY, int x0, int z0, int x1, int z1, boolean spawnResident, int seed) {
 		if (s == null) return false;
 		Rotation rot = Rotation.values()[Math.floorMod(seed, 4)];
 		int rw = (rot == Rotation.CLOCKWISE_90 || rot == Rotation.COUNTERCLOCKWISE_90) ? s.length : s.width;
@@ -65,10 +83,8 @@ public final class OathholdSchematic {
 		return true;
 	}
 
-	private static Schematic loadHouse1() {
-		Schematic cached = house1;
-		if (cached != null) return cached;
-		try (InputStream in = OathholdSchematic.class.getResourceAsStream("/data/wildercord/oathhold/house1.schem")) {
+	private static Schematic load(String resourcePath) {
+		try (InputStream in = OathholdSchematic.class.getResourceAsStream(resourcePath)) {
 			if (in == null) return null;
 			CompoundTag root = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
 			CompoundTag schem = root.contains("Schematic") ? root.getCompoundOrEmpty("Schematic") : root;
@@ -110,11 +126,9 @@ public final class OathholdSchematic {
 				}
 				indices[idx++] = val;
 			}
-			cached = new Schematic(w, h, l, palette, indices);
-			house1 = cached;
-			return cached;
+			return new Schematic(w, h, l, palette, indices);
 		} catch (Exception e) {
-			Wildercord.LOGGER.warn("Failed to load house1.schem", e);
+			Wildercord.LOGGER.warn("Failed to load {}", resourcePath, e);
 			return null;
 		}
 	}
