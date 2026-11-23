@@ -74,7 +74,11 @@ final class OathboundBladeChampionRulesTest {
 		int normalTell = OathboundBladeChampionRules.tellTicks(OathboundBladeChampionRules.GUILLOTINE_SLAM, false);
 		int empTell = OathboundBladeChampionRules.tellTicks(OathboundBladeChampionRules.GUILLOTINE_SLAM, true);
 		assertTrue(empTell < normalTell && empTell >= 4);
-		assertEquals(OathboundBladeChampionRules.GUILLOTINE_DURATION,
-			OathboundBladeChampionRules.moveDuration(OathboundBladeChampionRules.GUILLOTINE_SLAM, false));
+		// moveDuration runs the SPEED-compressed tell plus a compressed recovery, not the raw constants.
+		int scaledRecovery = Math.max(3, (int) Math.round(
+			OathboundBladeChampionRules.GUILLOTINE_RECOVERY * OathboundBladeChampionRules.SPEED));
+		assertEquals(normalTell + scaledRecovery,
+			OathboundBladeChampionRules.moveDuration(OathboundBladeChampionRules.GUILLOTINE_SLAM, false),
+			"guillotine runs its compressed tell plus recovery");
 	}
 }

@@ -12,45 +12,53 @@
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:pillar"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "components": {
+                "wildercord:rune": "wildercord:pillar"
+              },
+              "function": "minecraft:set_components"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:nova"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "components": {
+                "wildercord:rune": "wildercord:nova"
+              },
+              "function": "minecraft:set_components"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 2,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:comet"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "components": {
+                "wildercord:rune": "wildercord:comet"
+              },
+              "function": "minecraft:set_components"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 2,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:beam"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "components": {
+                "wildercord:rune": "wildercord:beam"
+              },
+              "function": "minecraft:set_components"
+            }
+          ]
         }
       ]
     },
@@ -65,79 +73,91 @@
           "type": "minecraft:item",
           "name": "wildercord:abyssal_iron_plate",
           "weight": 12,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:voltaic_jelly_sac",
           "weight": 10,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:abyssal_pearl",
           "weight": 10,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:raw_copper",
           "weight": 12,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 5,
-              "max": 10
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 5,
+                "max": 10
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:diamond",
           "weight": 5,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 3
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:magma_cream",
           "weight": 8,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         }
       ]
     }

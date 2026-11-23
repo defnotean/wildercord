@@ -47,6 +47,7 @@ public final class SiteFamilies {
 		worldgen("wildercord:wilds_sakura_canal_town", "Peaceful Sakura canal harbor village with watermill, pier, five-Torii hill shrine, residents, and shrine cats; new chunks only.");
 		worldgen("wildercord:wilds_sakura_onsen_village", "Peaceful mountain onsen resort village with ryokan inn, steaming rotenburo baths, residents, and shrine cats; new chunks only.");
 		worldgen("wildercord:wilds_sakura_castle_town", "Peaceful feudal Sakura castle-town with Shirakabe walls, bell-pagoda, kendo dojo, forge, market arcade, residents, and shrine cats; new chunks only.");
+		worldgen("wildercord:wilds_sacred_pig_village", "Tiny forest village with a sick sacred pig, a pig pen and a priest-hut loot chest; the quest fires on first visit, so new chunks only.");
 		// ---- sites-travel pack
 		worldgen("wildercord:travel_wayfarer_inn", "Crossroads inn with beds, a ledger and a pantry chest; new chunks only so no inn is built into existing land.");
 		worldgen("wildercord:travel_watchtower", "Hilltop tower with a signal fire and watch chest; new chunks only.");

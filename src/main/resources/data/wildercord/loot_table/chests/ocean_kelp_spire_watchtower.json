@@ -12,45 +12,53 @@
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:ray"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "components": {
+                "wildercord:rune": "wildercord:ray"
+              },
+              "function": "minecraft:set_components"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:spark"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "components": {
+                "wildercord:rune": "wildercord:spark"
+              },
+              "function": "minecraft:set_components"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 2,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:wave"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "components": {
+                "wildercord:rune": "wildercord:wave"
+              },
+              "function": "minecraft:set_components"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 2,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:burst"
-            },
-            "type": "minecraft:set_components"
-          }
+          "functions": [
+            {
+              "components": {
+                "wildercord:rune": "wildercord:burst"
+              },
+              "function": "minecraft:set_components"
+            }
+          ]
         }
       ]
     },
@@ -65,53 +73,61 @@
           "type": "minecraft:item",
           "name": "wildercord:kelp_wrapped_sashimi",
           "weight": 12,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:dried_kelp",
           "weight": 14,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 6,
-              "max": 14
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 6,
+                "max": 14
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:copper_ingot",
           "weight": 12,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 4,
-              "max": 9
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 9
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:abyssal_pearl",
           "weight": 8,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 1,
-              "max": 2
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -122,14 +138,16 @@
           "type": "minecraft:item",
           "name": "minecraft:soul_sand",
           "weight": 8,
-          "modifier": {
-            "count": {
-              "type": "minecraft:uniform",
-              "min": 2,
-              "max": 4
-            },
-            "type": "minecraft:set_count"
-          }
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 4
+              },
+              "function": "minecraft:set_count"
+            }
+          ]
         }
       ]
     }

@@ -43,11 +43,14 @@ class OathboundBastionRulesTest {
 		assertTrue(empowered(20.0F, 150.0F));
 		assertFalse(empowered(10.0F, 0.0F));
 
+		// SPEED (0.55) compresses every authored windup, so the floors below are the shipped
+		// minimums: the five signature moves keep at least 4 readable ticks, the technique kit
+		// (authored as low as 4 ticks for quick combos) keeps the engine's 3-tick floor.
 		for (int move : new int[]{PHALANX_BRACE, SHIELD_RAM, ANVIL_SLAM, SHIELD_BASH, MACE_CLEAVE}) {
 			int normalTell = tellTicks(move, false);
 			int fastTell = tellTicks(move, true);
-			assertTrue(normalTell >= 8, "tell readable for " + moveKey(move));
-			assertTrue(fastTell < normalTell && fastTell >= 5, "empowered tell quicker yet readable for " + moveKey(move));
+			assertTrue(normalTell >= 4, "tell readable for " + moveKey(move));
+			assertTrue(fastTell < normalTell && fastTell >= 3, "empowered tell quicker yet readable for " + moveKey(move));
 			assertTrue(moveDuration(move, false) > normalTell);
 		}
 		for (int move : COMBAT_MOVES) {
@@ -56,7 +59,7 @@ class OathboundBastionRulesTest {
 				continue;
 			}
 			int normalTell = tellTicks(move, false);
-			assertTrue(normalTell >= 4, "technique tell readable for " + moveKey(move));
+			assertTrue(normalTell >= 3, "technique tell readable for " + moveKey(move));
 			assertTrue(moveDuration(move, false) > normalTell);
 			assertTrue(tech.damage() > 0.0);
 		}

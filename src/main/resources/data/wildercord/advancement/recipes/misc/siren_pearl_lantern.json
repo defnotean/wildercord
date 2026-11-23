@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipes": "wildercord:siren_pearl_lantern"
+        "recipe": "wildercord:siren_pearl_lantern"
       }
     }
   },
