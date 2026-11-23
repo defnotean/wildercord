@@ -217,9 +217,6 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			case MastersRules.STONE -> BreathingMethods.STONE;
 			default -> BreathingMethods.EMBER;
 		});
-		// The school's own blade on the master's sword. It never drops, so the look cannot leave the fight.
-		ItemStack sword = getMainHandItem();
-		if (sword.is(Items.NETHERITE_SWORD))
 	}
 
 	/** The school shown and credited: Ember, Gale or Stone, or a {@link MethodsBMasters} school. */
@@ -230,8 +227,6 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 		setDiscipline(MethodsBMasters.base(school));
 		packSchool = school;
 		BreathingMethods.byId(MethodsBMasters.id(school)).ifPresent(this::setMethod);
-		ItemStack sword = getMainHandItem();
-		if (sword.is(Items.NETHERITE_SWORD))
 	}
 
 	/** Starts a bounded trial on safe, loaded ground without changing blocks or enrolling bystanders. */
