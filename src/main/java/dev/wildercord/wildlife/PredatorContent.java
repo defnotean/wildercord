@@ -45,7 +45,7 @@ public final class PredatorContent {
 
 	private static <T extends BlackBobcat> EntityType<T> entity(String name, EntityType.Builder<T> builder) {
 		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id(name));
-		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
+		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key.location().toString()));
 	}
 
 	private static Item egg(String name, EntityType<? extends Mob> type) {

@@ -34,7 +34,7 @@ public final class CartographerContent {
 		new AuraWorld.Lore("high_meridian_compass", new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 	private static final ResourceKey<EntityType<?>> ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("glass_cartographer"));
 	public static final EntityType<GlassCartographer> CARTOGRAPHER = Registry.register(BuiltInRegistries.ENTITY_TYPE, ENTITY_KEY,
-		EntityType.Builder.of(GlassCartographer::new, MobCategory.MONSTER).sized(2.8F, 3.4F).eyeHeight(2.6F).clientTrackingRange(14).build(ENTITY_KEY));
+		EntityType.Builder.of(GlassCartographer::new, MobCategory.MONSTER).sized(2.8F, 3.4F).eyeHeight(2.6F).clientTrackingRange(14).build(ENTITY_KEY.location().toString()));
 
 	public static ItemStack compassTo(ServerLevel level, BlockPos pos) {
 		var stack = new ItemStack(COMPASS);

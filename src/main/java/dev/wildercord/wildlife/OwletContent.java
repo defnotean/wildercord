@@ -29,7 +29,7 @@ public final class OwletContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("hushwing_owlet"));
 	public static final EntityType<HushwingOwlet> HUSHWING_OWLET = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(HushwingOwlet::new, MobCategory.CREATURE).sized(0.45F, 0.7F).eyeHeight(0.55F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(HushwingOwlet::new, MobCategory.CREATURE).sized(0.45F, 0.7F).eyeHeight(0.55F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("hushwing_owlet_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

@@ -21,7 +21,7 @@ public final class WildercordEntities {
 			.sized(0.3F, 0.3F)
 			.clientTrackingRange(8)
 			.updateInterval(1)
-			.build(RUNE_BOLT_KEY));
+			.build(RUNE_BOLT_KEY.location().toString()));
 
 	private static final ResourceKey<EntityType<?>> ARCHIVIST_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("archivist"));
 	private static final ResourceKey<EntityType<?>> DUMMY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("training_dummy"));
@@ -33,14 +33,14 @@ public final class WildercordEntities {
 			.eyeHeight(2.05F)
 			.clientTrackingRange(10)
 			.fireImmune()
-			.build(ARCHIVIST_KEY));
+			.build(ARCHIVIST_KEY.location().toString()));
 
 	public static final EntityType<TrainingDummy> TRAINING_DUMMY = Registry.register(BuiltInRegistries.ENTITY_TYPE, DUMMY_KEY,
 		EntityType.Builder.<TrainingDummy>of(TrainingDummy::new, MobCategory.MISC)
 			.sized(0.8F, 1.95F)
 			.eyeHeight(1.6F)
 			.clientTrackingRange(10)
-			.build(DUMMY_KEY));
+			.build(DUMMY_KEY.location().toString()));
 
 	public static void init() {
 		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(ARCHIVIST, Archivist.createAttributes());

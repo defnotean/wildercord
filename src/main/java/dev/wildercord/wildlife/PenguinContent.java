@@ -29,7 +29,7 @@ public final class PenguinContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("floe_penguin"));
 	public static final EntityType<FloePenguin> FLOE_PENGUIN = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(FloePenguin::new, MobCategory.CREATURE).sized(0.5F, 0.85F).eyeHeight(0.75F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(FloePenguin::new, MobCategory.CREATURE).sized(0.5F, 0.85F).eyeHeight(0.75F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("floe_penguin_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

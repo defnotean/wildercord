@@ -22,7 +22,7 @@ import java.util.*;
 public final class EmberContent {
  private EmberContent(){}
  private static final ResourceKey<EntityType<?>> ENTITY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("cinder_bailiff"));
- public static final EntityType<CinderBailiff> BAILIFF=Registry.register(BuiltInRegistries.ENTITY_TYPE,ENTITY,EntityType.Builder.of(CinderBailiff::new,MobCategory.MONSTER).sized(1.15F,1.0F).eyeHeight(.75F).clientTrackingRange(8).build(ENTITY));
+ public static final EntityType<CinderBailiff> BAILIFF=Registry.register(BuiltInRegistries.ENTITY_TYPE,ENTITY,EntityType.Builder.of(CinderBailiff::new,MobCategory.MONSTER).sized(1.15F,1.0F).eyeHeight(.75F).clientTrackingRange(8).build(ENTITY.location().toString()));
  private static final ResourceKey<Block> BLOCK=ResourceKey.create(Registries.BLOCK,Wildercord.id("cinder_fern"));
  public static final CinderFernBlock FERN=Registry.register(BuiltInRegistries.BLOCK,BLOCK,new CinderFernBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.AZALEA)));
  private static ResourceKey<Item> item(String n){return ResourceKey.create(Registries.ITEM,Wildercord.id(n));}

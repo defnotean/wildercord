@@ -41,7 +41,7 @@ public final class MountContent {
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("ridgeback_stag"));
 	public static final EntityType<RidgebackStag> RIDGEBACK_STAG = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
 		EntityType.Builder.of(RidgebackStag::new, MobCategory.CREATURE).sized(1.3F, 1.6F).eyeHeight(1.5F).passengerAttachments(1.2F)
-			.clientTrackingRange(10).build(KEY));
+			.clientTrackingRange(10).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("ridgeback_stag_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

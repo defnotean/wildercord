@@ -30,7 +30,7 @@ public final class SwordTombs {
 	public static final TombReliquary RELIQUARY=Registry.register(BuiltInRegistries.BLOCK,RELIQUARY_KEY,new TombReliquary(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.STONE).noLootTable().noOcclusion()));
 	public static final BlockEntityType<TombReliquaryEntity> RELIQUARY_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("tomb_reliquary"),FabricBlockEntityTypeBuilder.create(TombReliquaryEntity::new,RELIQUARY).build());
 	private static final ResourceKey<EntityType<?>> KEEPER_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("gravekeeper"));
-	public static final EntityType<Gravekeeper> KEEPER=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEEPER_KEY,EntityType.Builder.of(Gravekeeper::new,MobCategory.MONSTER).sized(1.0F,2.9F).eyeHeight(2.35F).clientTrackingRange(10).build(KEEPER_KEY));
+	public static final EntityType<Gravekeeper> KEEPER=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEEPER_KEY,EntityType.Builder.of(Gravekeeper::new,MobCategory.MONSTER).sized(1.0F,2.9F).eyeHeight(2.35F).clientTrackingRange(10).build(KEEPER_KEY.location().toString()));
 	public static ItemStack history(){
 		var s=new ItemStack(Items.WRITTEN_BOOK);
 		s.set(DataComponents.WRITTEN_BOOK_CONTENT,new WrittenBookContent(Filterable.passThrough("The Keeper's Testament"),"The Marchkeepers",0,List.of(

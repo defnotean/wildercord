@@ -21,7 +21,7 @@ public final class DungeonEntities {
 			.sized(1.4F, 2.9F)
 			.eyeHeight(2.45F)
 			.clientTrackingRange(10)
-			.build(CINDER_WARDEN_KEY));
+			.build(CINDER_WARDEN_KEY.location().toString()));
 
 	private static final ResourceKey<EntityType<?>> STAR_EATER_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("star_eater"));
 
@@ -32,7 +32,7 @@ public final class DungeonEntities {
 			.eyeHeight(0.8F)
 			.clientTrackingRange(10)
 			.fireImmune()
-			.build(STAR_EATER_KEY));
+			.build(STAR_EATER_KEY.location().toString()));
 
 	private static final ResourceKey<EntityType<?>> TIDE_SCRIBE_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("tide_scribe"));
 
@@ -42,7 +42,7 @@ public final class DungeonEntities {
 			.sized(0.9F, 2.3F)
 			.eyeHeight(1.95F)
 			.clientTrackingRange(10)
-			.build(TIDE_SCRIBE_KEY));
+			.build(TIDE_SCRIBE_KEY.location().toString()));
 
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(ROOT_GUARDIAN, RootGuardian.createAttributes());
@@ -53,8 +53,8 @@ public final class DungeonEntities {
 	}
 	private static final ResourceKey<EntityType<?>> ROOT_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("root_guardian"));
 	public static final EntityType<RootGuardian> ROOT_GUARDIAN = Registry.register(BuiltInRegistries.ENTITY_TYPE, ROOT_KEY,
-		EntityType.Builder.<RootGuardian>of(RootGuardian::new, MobCategory.MONSTER).sized(1.5F, 2.8F).eyeHeight(2.4F).clientTrackingRange(10).build(ROOT_KEY));
+		EntityType.Builder.<RootGuardian>of(RootGuardian::new, MobCategory.MONSTER).sized(1.5F, 2.8F).eyeHeight(2.4F).clientTrackingRange(10).build(ROOT_KEY.location().toString()));
 	private static final ResourceKey<EntityType<?>> STORM_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("storm_conductor"));
 	public static final EntityType<StormConductor> STORM_CONDUCTOR = Registry.register(BuiltInRegistries.ENTITY_TYPE, STORM_KEY,
-		EntityType.Builder.<StormConductor>of(StormConductor::new, MobCategory.MONSTER).sized(1.3F, 2.4F).eyeHeight(2.0F).clientTrackingRange(10).build(STORM_KEY));
+		EntityType.Builder.<StormConductor>of(StormConductor::new, MobCategory.MONSTER).sized(1.3F, 2.4F).eyeHeight(2.0F).clientTrackingRange(10).build(STORM_KEY.location().toString()));
 }

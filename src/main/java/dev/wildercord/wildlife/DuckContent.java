@@ -29,7 +29,7 @@ public final class DuckContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("brookbill_duck"));
 	public static final EntityType<BrookbillDuck> BROOKBILL_DUCK = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(BrookbillDuck::new, MobCategory.CREATURE).sized(0.5F, 0.7F).eyeHeight(0.6F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(BrookbillDuck::new, MobCategory.CREATURE).sized(0.5F, 0.7F).eyeHeight(0.6F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("brookbill_duck_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

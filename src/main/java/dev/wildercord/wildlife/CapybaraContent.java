@@ -29,7 +29,7 @@ public final class CapybaraContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("mirebath_capybara"));
 	public static final EntityType<MirebathCapybara> MIREBATH_CAPYBARA = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(MirebathCapybara::new, MobCategory.CREATURE).sized(0.85F, 0.75F).eyeHeight(0.6F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(MirebathCapybara::new, MobCategory.CREATURE).sized(0.85F, 0.75F).eyeHeight(0.6F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("mirebath_capybara_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

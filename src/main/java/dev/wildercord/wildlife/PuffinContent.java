@@ -29,7 +29,7 @@ public final class PuffinContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("stonecrest_puffin"));
 	public static final EntityType<StonecrestPuffin> STONECREST_PUFFIN = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(StonecrestPuffin::new, MobCategory.CREATURE).sized(0.45F, 0.65F).eyeHeight(0.55F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(StonecrestPuffin::new, MobCategory.CREATURE).sized(0.45F, 0.65F).eyeHeight(0.55F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("stonecrest_puffin_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

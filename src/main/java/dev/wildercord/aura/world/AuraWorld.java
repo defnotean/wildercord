@@ -63,7 +63,7 @@ public final class AuraWorld {
 
 	private static <T extends net.minecraft.world.entity.Entity> EntityType<T> register(String id, EntityType.Builder<T> builder) {
 		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id(id));
-		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
+		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key.location().toString()));
 	}
 
 	private static Item item(String id, Function<Item.Properties, Item> factory) {

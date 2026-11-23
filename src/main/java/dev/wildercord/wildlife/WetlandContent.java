@@ -25,7 +25,7 @@ import java.util.*;
 public final class WetlandContent {
 	private WetlandContent() {}
 	private static final ResourceKey<EntityType<?>> ENTITY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("lantern_newt"));
-	public static final EntityType<LanternNewt> NEWT=Registry.register(BuiltInRegistries.ENTITY_TYPE,ENTITY,EntityType.Builder.of(LanternNewt::new,MobCategory.CREATURE).sized(.6F,.4F).eyeHeight(.25F).clientTrackingRange(8).build(ENTITY));
+	public static final EntityType<LanternNewt> NEWT=Registry.register(BuiltInRegistries.ENTITY_TYPE,ENTITY,EntityType.Builder.of(LanternNewt::new,MobCategory.CREATURE).sized(.6F,.4F).eyeHeight(.25F).clientTrackingRange(8).build(ENTITY.location().toString()));
 	private static final ResourceKey<Block> BLOCK=ResourceKey.create(Registries.BLOCK,Wildercord.id("marshlight"));
 	public static final MarshlightBlock MARSHLIGHT=Registry.register(BuiltInRegistries.BLOCK,BLOCK,new MarshlightBlock(BlockBehaviour.Properties.of().strength(.6F).noOcclusion().lightLevel(s -> 12).sound(SoundType.BAMBOO)));
 	private static ResourceKey<Item> itemKey(String name) {return ResourceKey.create(Registries.ITEM,Wildercord.id(name));}

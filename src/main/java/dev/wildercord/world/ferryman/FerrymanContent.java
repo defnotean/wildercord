@@ -22,7 +22,7 @@ public final class FerrymanContent {
 		Wildercord.id("crossing_bell"), FabricBlockEntityTypeBuilder.create(CrossingBellEntity::new, BELL).build());
 	private static final ResourceKey<EntityType<?>> ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("reed_crowned_ferryman"));
 	public static final EntityType<ReedCrownedFerryman> FERRYMAN = Registry.register(BuiltInRegistries.ENTITY_TYPE, ENTITY_KEY,
-		EntityType.Builder.of(ReedCrownedFerryman::new, MobCategory.MONSTER).sized(3.2F, 3.2F).eyeHeight(2.5F).clientTrackingRange(14).build(ENTITY_KEY));
+		EntityType.Builder.of(ReedCrownedFerryman::new, MobCategory.MONSTER).sized(3.2F, 3.2F).eyeHeight(2.5F).clientTrackingRange(14).build(ENTITY_KEY.location().toString()));
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(FERRYMAN, ReedCrownedFerryman.createAttributes());
 		FieldGuide.add(new FieldGuide.Entry("wildercord:reed_crowned_ferryman", FieldGuide.Group.MONSTER, 0x83B8A0));

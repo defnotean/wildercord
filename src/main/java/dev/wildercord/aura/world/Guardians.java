@@ -25,25 +25,25 @@ public final class Guardians {
 	private Guardians(){}
 	private static final ResourceKey<EntityType<?>> SERPENT_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("rootcoil_serpent"));
 	public static final EntityType<RootcoilSerpent> SERPENT=Registry.register(BuiltInRegistries.ENTITY_TYPE,SERPENT_KEY,
-		EntityType.Builder.of(RootcoilSerpent::new,MobCategory.MONSTER).sized(3.0F,3.0F).eyeHeight(2.6F).clientTrackingRange(12).build(SERPENT_KEY));
+		EntityType.Builder.of(RootcoilSerpent::new,MobCategory.MONSTER).sized(3.0F,3.0F).eyeHeight(2.6F).clientTrackingRange(12).build(SERPENT_KEY.location().toString()));
 	private static final ResourceKey<EntityType<?>> BELL_WARDEN_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("drowned_bell_warden"));
 	public static final EntityType<DrownedBellWarden> BELL_WARDEN=Registry.register(BuiltInRegistries.ENTITY_TYPE,BELL_WARDEN_KEY,
-		EntityType.Builder.of(DrownedBellWarden::new,MobCategory.MONSTER).sized(2.4F,4.6F).eyeHeight(4.0F).clientTrackingRange(12).build(BELL_WARDEN_KEY));
+		EntityType.Builder.of(DrownedBellWarden::new,MobCategory.MONSTER).sized(2.4F,4.6F).eyeHeight(4.0F).clientTrackingRange(12).build(BELL_WARDEN_KEY.location().toString()));
 	private static final ResourceKey<EntityType<?>> ASHEN_STAG_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("ashen_stag"));
 	public static final EntityType<AshenStag> ASHEN_STAG=Registry.register(BuiltInRegistries.ENTITY_TYPE,ASHEN_STAG_KEY,
-		EntityType.Builder.of(AshenStag::new,MobCategory.MONSTER).sized(2.4F,3.6F).eyeHeight(3.0F).clientTrackingRange(12).fireImmune().build(ASHEN_STAG_KEY));
+		EntityType.Builder.of(AshenStag::new,MobCategory.MONSTER).sized(2.4F,3.6F).eyeHeight(3.0F).clientTrackingRange(12).fireImmune().build(ASHEN_STAG_KEY.location().toString()));
 	private static final ResourceKey<EntityType<?>> HOLLOW_MATRON_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("hollow_matron"));
 	public static final EntityType<HollowMatron> HOLLOW_MATRON=Registry.register(BuiltInRegistries.ENTITY_TYPE,HOLLOW_MATRON_KEY,
-		EntityType.Builder.of(HollowMatron::new,MobCategory.MONSTER).sized(3.6F,2.2F).eyeHeight(1.4F).clientTrackingRange(12).build(HOLLOW_MATRON_KEY));
+		EntityType.Builder.of(HollowMatron::new,MobCategory.MONSTER).sized(3.6F,2.2F).eyeHeight(1.4F).clientTrackingRange(12).build(HOLLOW_MATRON_KEY.location().toString()));
 	private static final ResourceKey<EntityType<?>> FROST_WYRMLING_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("frost_wyrmling"));
 	public static final EntityType<FrostWyrmling> FROST_WYRMLING=Registry.register(BuiltInRegistries.ENTITY_TYPE,FROST_WYRMLING_KEY,
-		EntityType.Builder.of(FrostWyrmling::new,MobCategory.MONSTER).sized(2.8F,3.0F).eyeHeight(2.6F).clientTrackingRange(12).build(FROST_WYRMLING_KEY));
+		EntityType.Builder.of(FrostWyrmling::new,MobCategory.MONSTER).sized(2.8F,3.0F).eyeHeight(2.6F).clientTrackingRange(12).build(FROST_WYRMLING_KEY.location().toString()));
 	private static final ResourceKey<EntityType<?>> LANTERN_BEARER_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("lantern_bearer"));
 	public static final EntityType<LanternBearer> LANTERN_BEARER=Registry.register(BuiltInRegistries.ENTITY_TYPE,LANTERN_BEARER_KEY,
-		EntityType.Builder.of(LanternBearer::new,MobCategory.MONSTER).sized(1.4F,3.4F).eyeHeight(3.0F).clientTrackingRange(12).build(LANTERN_BEARER_KEY));
+		EntityType.Builder.of(LanternBearer::new,MobCategory.MONSTER).sized(1.4F,3.4F).eyeHeight(3.0F).clientTrackingRange(12).build(LANTERN_BEARER_KEY.location().toString()));
 	private static final ResourceKey<EntityType<?>> MOJITO_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("mojito"));
 	public static final EntityType<Mojito> MOJITO=Registry.register(BuiltInRegistries.ENTITY_TYPE,MOJITO_KEY,
-		EntityType.Builder.of(Mojito::new,MobCategory.MONSTER).sized(3.6F,5.0F).eyeHeight(4.4F).clientTrackingRange(12).build(MOJITO_KEY));
+		EntityType.Builder.of(Mojito::new,MobCategory.MONSTER).sized(3.6F,5.0F).eyeHeight(4.4F).clientTrackingRange(12).build(MOJITO_KEY.location().toString()));
 	/** Whether guardians wake at all (config: aura_world.guardians). */
 	public static boolean enabled(){return dev.wildercord.config.Config.get().auraWorld().guardians();}
 	public static void init(){

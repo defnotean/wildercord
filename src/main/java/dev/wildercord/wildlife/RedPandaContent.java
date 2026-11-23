@@ -29,7 +29,7 @@ public final class RedPandaContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("cinnabar_panda"));
 	public static final EntityType<CinnabarPanda> CINNABAR_PANDA = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(CinnabarPanda::new, MobCategory.CREATURE).sized(0.6F, 0.6F).eyeHeight(0.5F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(CinnabarPanda::new, MobCategory.CREATURE).sized(0.6F, 0.6F).eyeHeight(0.5F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinnabar_panda_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

@@ -42,7 +42,7 @@ public final class ShrineCatContent {
 			.sized(0.65F, 0.72F)
 			.eyeHeight(0.55F)
 			.clientTrackingRange(10)
-			.build(SHRINE_CAT_KEY)
+			.build(SHRINE_CAT_KEY.location().toString())
 	);
 
 	private static final ResourceKey<EntityType<?>> SAKURA_VILLAGER_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("sakura_villager"));
@@ -53,7 +53,7 @@ public final class ShrineCatContent {
 			.sized(0.6F, 1.95F)
 			.eyeHeight(1.62F)
 			.clientTrackingRange(8)
-			.build(SAKURA_VILLAGER_KEY)
+			.build(SAKURA_VILLAGER_KEY.location().toString())
 	);
 
 	private static final ResourceKey<Item> CAT_BELL_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cat_bell_charm"));

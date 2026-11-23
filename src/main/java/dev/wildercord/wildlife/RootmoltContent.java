@@ -29,7 +29,7 @@ public final class RootmoltContent {
  public static final AttachmentType<UUID> GRAB_OWNER=McAttachments.create(Wildercord.id("root_grab_owner"),b -> b.initializer(() -> NO_OWNER));
  public static final Holder<MobEffect> TETHER=Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,Wildercord.id("root_tether"),new RootTetherEffect());
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("rootmolt_strider"));
- public static final EntityType<RootmoltStrider> STRIDER=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(RootmoltStrider::new,MobCategory.MONSTER).sized(1.05F,.8F).eyeHeight(.48F).clientTrackingRange(8).build(KEY));
+ public static final EntityType<RootmoltStrider> STRIDER=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(RootmoltStrider::new,MobCategory.MONSTER).sized(1.05F,.8F).eyeHeight(.48F).clientTrackingRange(8).build(KEY.location().toString()));
  private static final ResourceKey<Item> EGG_KEY=ResourceKey.create(Registries.ITEM,Wildercord.id("rootmolt_strider_spawn_egg"));
  public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(STRIDER, new Item.Properties()));
  @FunctionalInterface public interface RootResistance {boolean resist(LivingEntity victim,RootmoltStrider source);}

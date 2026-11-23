@@ -155,7 +155,7 @@ public final class Town {
 
 	private static final ResourceKey<EntityType<?>> KEEPER_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("wayfarer_keeper"));
 	public static final EntityType<WayfarerKeeper> KEEPER = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEEPER_KEY,
-		EntityType.Builder.of(WayfarerKeeper::new, MobCategory.MISC).sized(0.6F, 1.95F).eyeHeight(1.62F).clientTrackingRange(10).build(KEEPER_KEY));
+		EntityType.Builder.of(WayfarerKeeper::new, MobCategory.MISC).sized(0.6F, 1.95F).eyeHeight(1.62F).clientTrackingRange(10).build(KEEPER_KEY.location().toString()));
 
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(KEEPER, Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.5));

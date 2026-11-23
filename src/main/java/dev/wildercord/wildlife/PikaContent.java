@@ -29,7 +29,7 @@ public final class PikaContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("tussock_pika"));
 	public static final EntityType<TussockPika> TUSSOCK_PIKA = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(TussockPika::new, MobCategory.CREATURE).sized(0.45F, 0.4F).eyeHeight(0.3F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(TussockPika::new, MobCategory.CREATURE).sized(0.45F, 0.4F).eyeHeight(0.3F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("tussock_pika_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

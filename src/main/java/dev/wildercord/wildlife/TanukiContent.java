@@ -29,7 +29,7 @@ public final class TanukiContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("blossom_tanuki"));
 	public static final EntityType<BlossomTanuki> BLOSSOM_TANUKI = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(BlossomTanuki::new, MobCategory.CREATURE).sized(0.6F, 0.6F).eyeHeight(0.45F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(BlossomTanuki::new, MobCategory.CREATURE).sized(0.6F, 0.6F).eyeHeight(0.45F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("blossom_tanuki_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,

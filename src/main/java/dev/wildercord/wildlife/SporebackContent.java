@@ -21,7 +21,7 @@ import java.util.*;
 public final class SporebackContent {
  private SporebackContent() {}
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("sporeback_snail"));
- public static final EntityType<SporebackSnail> SNAIL=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(SporebackSnail::new,MobCategory.CREATURE).sized(.7F,.6F).eyeHeight(.32F).clientTrackingRange(8).build(KEY));
+ public static final EntityType<SporebackSnail> SNAIL=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(SporebackSnail::new,MobCategory.CREATURE).sized(.7F,.6F).eyeHeight(.32F).clientTrackingRange(8).build(KEY.location().toString()));
  private static ResourceKey<Item> key(String s) {return ResourceKey.create(Registries.ITEM,Wildercord.id(s));}
  public static final Item DEW=Registry.register(BuiltInRegistries.ITEM,key("mycelial_dew"),new AuraWorld.Lore("mycelial_dew",new Item.Properties().stacksTo(1).component(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT,new net.minecraft.world.item.component.WrittenBookContent(net.minecraft.server.network.Filterable.passThrough("The Patient Spiral"),"Mara, Belowkeeper",0,java.util.stream.IntStream.rangeClosed(1,3).mapToObj(i -> net.minecraft.server.network.Filterable.<net.minecraft.network.chat.Component>passThrough(net.minecraft.network.chat.Component.translatable("book.wildercord.sporeback."+i))).toList(),true))));
  public static void init() {

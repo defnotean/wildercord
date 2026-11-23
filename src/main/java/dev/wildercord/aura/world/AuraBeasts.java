@@ -35,10 +35,44 @@ public final class AuraBeasts {
 	public static final Item RIDGE_WHISTLE=item("ridge_whistle",true);
 	private static final Item STONE_EGG=egg("stonehorn",STONEHORN), GALE_EGG=egg("galeclaw",GALECLAW);
 	private static <T extends Entity> EntityType<T> entity(String id,EntityType.Builder<T> builder) {
-		var key=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id(id)); return Registry.register(BuiltInRegistries.ENTITY_TYPE,key,builder.build(key));
+		var key=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id(id)); return Registry.register(BuiltInRegistries.ENTITY_TYPE,key,builder.build(key.location().toString()));
 	}
 	private static Item egg(String id,EntityType<? extends Mob> type) {
-		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id+"_spawn_egg")); return Registry.register(BuiltInRegistries.ITEM,key,dev.wildercord.compat.McSpawnEgg.create(type, new Item.Properties().map(s->ResourceKey.create(Registries.BIOME,ResourceLocation.parse(s))).collect(java.util.stream.Collectors.toSet());
+		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id+"_spawn_egg")); return Registry.register(BuiltInRegistries.ITEM,key,dev.wildercord.compat.McSpawnEgg.create(type, new Item.Properties()));
+	}
+	private static Item item(String id,boolean usable) {
+		var key=ResourceKey.create(Registries.ITEM,Wildercord.id(id));
+		return Registry.register(BuiltInRegistries.ITEM,key,new AuraWorld.Lore(id,new Item.Properties().stacksTo(id.equals("ridge_whistle")?1:64)) {
+			@Override public InteractionResult use(Level level,Player p,InteractionHand hand) {
+				if(!usable) return InteractionResult.PASS;
+				var stack=p.getItemInHand(hand); if(p.getCooldowns().isOnCooldown(stack)) return InteractionResult.PASS;
+				if(level instanceof ServerLevel server) {
+					if(id.equals("bastion_poultice")) {
+						p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE,200,0)); p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,200,0));
+						p.getCooldowns().addCooldown(stack,600); if(!p.getAbilities().instabuild) stack.shrink(1);
+						Feels.sound(server,p.position(),"aura_stonehorn_forage",.6F,.8F);
+					} else {
+						for(var beast:AuraBeastQueries.complete(server,Galeclaw.class,p.getBoundingBox().inflate(16),b->b.isAlive()).stream().filter(p::hasLineOfSight).toList()) beast.distract(p.position());
+						p.getCooldowns().addCooldown(stack,200); Feels.sound(server,p.position(),"aura_galeclaw_whistle",.8F,1);
+					}
+				}
+				return InteractionResult.SUCCESS;
+			}
+		});
+	}
+	public static boolean maySpawn(EntityType<?> type,ServerLevelAccessor level,MobSpawnType reason,BlockPos at) {
+		if(reason==MobSpawnType.CHUNK_GENERATION)return false;
+		if(reason!=MobSpawnType.NATURAL)return true;
+		if(!(level instanceof ServerLevel actual)||!actual.getServer().isSameThread())return false;
+		var ground=TagKey.create(Registries.BLOCK,Wildercord.id("aura_beast_ground"));
+		var nearby=new ArrayList<Entity>(2);actual.getEntities(type,new AABB(at).inflate(96),e->e.isAlive(),nearby,2);int near=nearby.size();
+		return BeastRules.habitat(Config.get().auraWorld().auraBeasts(),level.getDifficulty()==Difficulty.PEACEFUL,
+			level.getBlockState(at.below()).is(ground),level.canSeeSky(at),at.getY(),level.getSeaLevel(),near)
+			&& level.getFluidState(at).isEmpty() && level.getBlockState(at).isAir() && level.getBlockState(at.above()).isAir();
+	}
+	private static <T extends AuraBeast> void spawn(EntityType<T> type,String id,int weight,String... ids) {
+		SpawnPlacements.register(type,SpawnPlacementTypes.ON_GROUND,Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,(t,l,r,p,random)->maySpawn(t,l,r,p));
+		var biomes=Arrays.stream(ids).map(s->ResourceKey.create(Registries.BIOME,ResourceLocation.parse(s))).collect(java.util.stream.Collectors.toSet());
 		BiomeModifications.create(Wildercord.id("aura_beasts/"+id)).add(ModificationPhase.ADDITIONS,BiomeSelectors.includeByKey(biomes),c->{
 			if(Config.get().auraWorld().auraBeasts()) dev.wildercord.compat.McWorldgen.addSpawn(c.getSpawnSettings(), MobCategory.CREATURE, type, 1, 1, weight);
 		});

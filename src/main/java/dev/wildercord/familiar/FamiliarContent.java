@@ -33,7 +33,7 @@ public final class FamiliarContent {
 			.eyeHeight(0.25F)
 			.clientTrackingRange(8)
 			.fireImmune()
-			.build(WISP_KEY));
+			.build(WISP_KEY.location().toString()));
 
 	private static final ResourceKey<Item> LANTERN_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("wisp_lantern"));
 

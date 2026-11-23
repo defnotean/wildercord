@@ -19,7 +19,7 @@ import java.util.*;
 public final class SiltcrestContent {
  private SiltcrestContent(){}
  private static final ResourceKey<EntityType<?>> KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("siltcrest_bittern"));
- public static final EntityType<SiltcrestBittern> BITTERN=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(SiltcrestBittern::new,MobCategory.CREATURE).sized(.65F,1.6F).eyeHeight(1.30F).clientTrackingRange(8).build(KEY));
+ public static final EntityType<SiltcrestBittern> BITTERN=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEY,EntityType.Builder.of(SiltcrestBittern::new,MobCategory.CREATURE).sized(.65F,1.6F).eyeHeight(1.30F).clientTrackingRange(8).build(KEY.location().toString()));
  private static final ResourceKey<Item> EGG_KEY=ResourceKey.create(Registries.ITEM,Wildercord.id("siltcrest_bittern_spawn_egg"));
  public static final Item EGG=Registry.register(BuiltInRegistries.ITEM,EGG_KEY,dev.wildercord.compat.McSpawnEgg.create(BITTERN, new Item.Properties()));
  static boolean room(net.minecraft.server.level.ServerLevel l,BlockPos p){var peers=new ArrayList<SiltcrestBittern>(2);l.getEntities(BITTERN,new AABB(p).inflate(32),Entity::isAlive,peers,2);return peers.size()<2;}

@@ -29,7 +29,7 @@ public final class HedgehogContent {
 
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("thistle_hedgehog"));
 	public static final EntityType<ThistleHedgehog> THISTLE_HEDGEHOG = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
-		EntityType.Builder.of(ThistleHedgehog::new, MobCategory.CREATURE).sized(0.7F, 0.55F).eyeHeight(0.35F).clientTrackingRange(8).build(KEY));
+		EntityType.Builder.of(ThistleHedgehog::new, MobCategory.CREATURE).sized(0.7F, 0.55F).eyeHeight(0.35F).clientTrackingRange(8).build(KEY.location().toString()));
 
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("thistle_hedgehog_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
