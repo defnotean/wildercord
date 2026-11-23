@@ -341,7 +341,7 @@ public final class FormDash {
 	private static boolean followUp(ServerPlayer player, Session s, dev.wildercord.cast.ActionAdmission admission, long now) {
 		Progress p = data(player);
 		// The client's move intent is in world space: turn it into the player's own forward and sideways keys.
-		Vec3 intent = player.getLastClientMoveIntent();
+		Vec3 intent = dev.wildercord.compat.McHands.lastClientMoveIntent(player);
 		double rad = Math.toRadians(player.getYRot()), x = Double.isFinite(intent.x) ? intent.x : 0, z = Double.isFinite(intent.z) ? intent.z : 0;
 		int form = FormDashRules.pick(p.learned(), x * -Math.sin(rad) + z * Math.cos(rad), x * Math.cos(rad) + z * Math.sin(rad));
 		LivingEntity foe = s.foe;
@@ -453,7 +453,7 @@ public final class FormDash {
 				direction = direction.normalize();
 				yaw = (float) Math.toDegrees(Math.atan2(-direction.x, direction.z));
 			} else {
-				Vec3 intent = player.getLastClientMoveIntent();
+				Vec3 intent = dev.wildercord.compat.McHands.lastClientMoveIntent(player);
 				double[] lane = FormDashRules.slip(player.getYRot(), Double.isFinite(intent.x) ? intent.x : 0, Double.isFinite(intent.z) ? intent.z : 0);
 				direction = new Vec3(lane[0], 0, lane[1]);
 				yaw = player.getYRot();

@@ -60,7 +60,7 @@ final class WallTurn {
 		if (kicking || !valid() || level.getGameTime() <= accepted || level.getGameTime() - accepted >= WallTurnRules.BRACE_TICKS) return false;
 		BlockHitResult contact = contact(player);
 		if (contact == null || !contact.getBlockPos().equals(wall)) return false;
-		Vec3 motion = player.getLastClientMoveIntent();
+		Vec3 motion = dev.wildercord.compat.McHands.lastClientMoveIntent(player);
 		if (!finite(motion)) return false;
 		Vec3 desired = new Vec3(motion.x, 0, motion.z);
 		if (desired.lengthSqr() < .001) desired = normal;

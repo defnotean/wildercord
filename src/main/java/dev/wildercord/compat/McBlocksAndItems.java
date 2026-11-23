@@ -1,6 +1,5 @@
 package dev.wildercord.compat;
 
-import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -127,7 +126,6 @@ public final class McBlocksAndItems {
 
 	/** Registers furnace burn duration onto Fabric's registry event in 26.2 (no-op in 26.3). */
 	public static void registerFuel(ItemLike item, int burnTicks) {
-		FuelRegistryEvents.BUILD.register((builder, context) -> builder.add(item, burnTicks));
 	}
 
 	/** Configures medium compostability when encoded on item properties (no-op in 26.2). */

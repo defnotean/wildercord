@@ -114,7 +114,7 @@ public final class AuraStep {
 
 	/** Which way a step goes: the way the player is moving (as their keys say), or ahead of them, level. */
 	static Vec3 direction(ServerPlayer player) {
-		Vec3 moving = player.getLastClientMoveIntent();
+		Vec3 moving = dev.wildercord.compat.McHands.lastClientMoveIntent(player);
 		Vec3 flat = new Vec3(moving.x, 0, moving.z);
 		if (flat.lengthSqr() > 1.0E-4) {
 			return flat.normalize();

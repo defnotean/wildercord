@@ -5,11 +5,11 @@
   "client": [
     "ArticulatedSharedScreenshotMixin",
     "ArticulatedSharedCopyMixin",
-    "ArticulatedSharedViewMixin",
     "ArticulatedSharedPlayerPaletteMixin",
     "ArticulatedSharedDeferredMixin",
-    "ArticulatedSharedExtractionMixin",
-    "ArticulatedOpeningFallbackMixin"
+    "ArticulatedSharedExtractionMixin"
   ],
-  "injectors": {"defaultRequire": 1}
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
