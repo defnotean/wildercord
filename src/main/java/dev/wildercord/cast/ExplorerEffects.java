@@ -395,7 +395,7 @@ public final class ExplorerEffects {
 	/** Resonant Shriek: sound that goes straight through armour, darkness, and an echo a second later. */
 	private static void resonantShriek(Cast cast, LivingEntity t, double power, double duration) {
 		ExplorerVfx.shriek(cast.level, cast.caster, t, false);
-		Effects.hurt(t, cast.level.damageSources().sonicBoom(cast.caster), 8 * power);
+		Effects.hurt(cast, t, cast.level.damageSources().sonicBoom(cast.caster), 8 * power);
 		effect(t, MobEffects.DARKNESS, Effects.ticks(6, duration), 0, cast);
 		Reactions.mark(t, Reactions.Mark.SHADOWED, Effects.ticks(6, duration));
 		// The shriek rocks it: half a second of stagger, enough to lose a step.
@@ -405,7 +405,7 @@ public final class ExplorerEffects {
 		Scheduler.later(20, Effects.carryContext(() -> {
 			if (cast.alive() && onHand(cast, t)) {
 				ExplorerVfx.shriek(cast.level, cast.caster, t, true);
-				Effects.hurt(t, cast.level.damageSources().sonicBoom(cast.caster), 4 * power);
+				Effects.hurt(cast, t, cast.level.damageSources().sonicBoom(cast.caster), 4 * power);
 			}
 		}));
 	}
@@ -416,7 +416,7 @@ public final class ExplorerEffects {
 		ExplorerVfx.tidecall(cast.level, centre, radius);
 		List<LivingEntity> caught = enemiesAround(cast, centre.add(0, 1, 0), radius);
 		for (LivingEntity t : caught) {
-			Effects.hurt(t, magic(cast), 6 * power);
+			Effects.hurt(cast, t, magic(cast), 6 * power);
 			Reactions.mark(t, Reactions.Mark.SOAKED);
 			// Dragged in like a Pull: Collapse and Implode work on what the tide gathered.
 			Reactions.mark(t, Reactions.Mark.PULLED);
@@ -442,7 +442,7 @@ public final class ExplorerEffects {
 					}
 				}
 				if (neighbours > 0 && Statuses.claim(t, "tidebunch", 40)) {
-					Effects.hurt(t, magic(cast), Math.min(4, neighbours) * power);
+					Effects.hurt(cast, t, magic(cast), Math.min(4, neighbours) * power);
 				}
 			}
 		});
@@ -462,7 +462,7 @@ public final class ExplorerEffects {
 		repeat(cast, ticks, 10, tick -> {
 			if (current(key, token) && onHand(cast, t)) {
 				ExplorerVfx.infest(cast.level, t, false);
-				Effects.hurt(t, magic(cast), 1 * power);
+				Effects.hurt(cast, t, magic(cast), 1 * power);
 			}
 		}, () -> release(key, token));
 	}
@@ -478,7 +478,7 @@ public final class ExplorerEffects {
 			choke(cast, centre, radius);
 			if (tick % 20 == 0) {
 				for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
-					Effects.hurt(t, magic(cast), 2 * power);
+					Effects.hurt(cast, t, magic(cast), 2 * power);
 					effect(t, MobEffects.BLINDNESS, 30, 0, cast);
 					effect(t, MobEffects.MOVEMENT_SLOWDOWN, 30, 1, cast);
 				}
@@ -504,7 +504,7 @@ public final class ExplorerEffects {
 
 	/** Vinelash: a thorned vine lashes the target and hauls it toward the caster. */
 	private static void vinelash(Cast cast, LivingEntity t, double power) {
-		LifeOwnerEvents.mutation(cast,"vinelash",t,LifeOwnerEvents.Moment.TRIGGER,cast.caster.getBoundingBox().getCenter(),()->Effects.hurt(t,magic(cast),5*power));
+		LifeOwnerEvents.mutation(cast,"vinelash",t,LifeOwnerEvents.Moment.TRIGGER,cast.caster.getBoundingBox().getCenter(),()->Effects.hurt(cast, t,magic(cast),5*power));
 		// Hauled in, so a blast now makes Implode; and tripped where it lands.
 		Reactions.mark(t, Reactions.Mark.PULLED);
 		effect(t, MobEffects.MOVEMENT_SLOWDOWN, 40, 1, cast);
@@ -607,7 +607,7 @@ public final class ExplorerEffects {
 		Bite bite = new Bite(t.getUUID());
 		bite.hurt = Effects.carryContext(() -> {
 			if (cast.alive() && bite.victim != null && Targets.canHarm(cast.caster, bite.victim)) {
-				Effects.hurt(bite.victim, magic(cast), 6 * power);
+				Effects.hurt(cast, bite.victim, magic(cast), 6 * power);
 			}
 		});
 		for (int i = 0; i < 5; i++) {
@@ -626,7 +626,7 @@ public final class ExplorerEffects {
 		ExplorerVfx.fangs(level, t);
 		Scheduler.later(8, Effects.carryContext(() -> {
 			if (cast.alive() && onHand(cast, t)) {
-				Effects.hurt(t, magic(cast), 6 * power);
+				Effects.hurt(cast, t, magic(cast), 6 * power);
 			}
 		}));
 	}
@@ -641,13 +641,13 @@ public final class ExplorerEffects {
 				Vec3 v = t.getDeltaMovement();
 				Effects.push(t, new Vec3(-v.x * 0.5, Math.min(0, -v.y) - 0.9, -v.z * 0.5));
 			}
-			Effects.hurt(t, cast.level.damageSources().source(DamageTypes.DROWN, cast.caster), 5 * power);
+			Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.DROWN, cast.caster), 5 * power);
 			return;
 		}
 		// Out of the water it drags toward the nearest water within 6 blocks; with none near, the ground turns to slurry.
 		BlockPos water = nearestWater(cast.level, t.blockPosition(), UNDERTOW_REACH);
 		if (water == null) {
-			Effects.hurt(t, magic(cast), 3 * power);
+			Effects.hurt(cast, t, magic(cast), 3 * power);
 		} else if (!Spirits.isBoss(t)) {
 			Vec3 toward = Vec3.atCenterOf(water).subtract(t.position());
 			Vec3 flat = new Vec3(toward.x, 0, toward.z);
@@ -735,7 +735,7 @@ public final class ExplorerEffects {
 				if (t != runner && tossed.add(t.getUUID())) {
 					// Momentum: 3, and 0.8 more for every block run up before the blow (up to 8: 9.4).
 					double run = Math.min(8.0, Math.hypot(runner.getX() - start.x, runner.getZ() - start.z));
-					Effects.hurt(t, magic(cast), (3 + 0.8 * run) * power);
+					Effects.hurt(cast, t, magic(cast), (3 + 0.8 * run) * power);
 					if (!Spirits.isBoss(t)) {
 						Effects.push(t, dir.scale(0.5).add(0, 0.8, 0));
 						Reactions.mark(t, Reactions.Mark.WINDSWEPT);
@@ -760,7 +760,7 @@ public final class ExplorerEffects {
 				FireBloodVfx.fireball(cast.level, t, shot);
 				double react = Reactions.fire(cast, t);
 				t.igniteForSeconds(3);
-				Effects.hurt(t, fire(cast), 3 * power * react);
+				Effects.hurt(cast, t, fire(cast), 3 * power * react);
 				// Each fireball staggers: three of them pin a creature for most of a second.
 				Spirits.hold(t, BLAZE_STAGGER);
 			}));
@@ -798,7 +798,7 @@ public final class ExplorerEffects {
 		for (int i = 0; i < Math.min(SHELL_BULLETS, foes.size()); i++) {
 			LivingEntity foe = foes.get(i);
 			Vfx.stream(cast.level, origin, foe.getBoundingBox().getCenter(), Vfx.theme("void"), 4);
-			Effects.hurt(foe, magic(cast), each);
+			Effects.hurt(cast, foe, magic(cast), each);
 			if (!Spirits.isBoss(foe)) {
 				foe.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 40, 0, false, true), cast.caster);
 			}
@@ -853,7 +853,7 @@ public final class ExplorerEffects {
 		Vec3 from = t.position();
 		if (Spirits.isBoss(t) || VoidTime.anchored(t)) {
 			ExplorerVfx.portalfall(level, from, null);
-			Effects.hurt(t, magic(cast), 2 * power);
+			Effects.hurt(cast, t, magic(cast), 2 * power);
 			return;
 		}
 		for (int up = 7; up >= 3; up--) {
@@ -861,7 +861,7 @@ public final class ExplorerEffects {
 			if (fits(level, t, spot) && level.clip(new ClipContext(from.add(0, t.getBbHeight(), 0), spot.add(0, t.getBbHeight(), 0),
 					ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, t)).getType() == HitResult.Type.MISS) {
 				ExplorerVfx.portalfall(level, from, spot);
-				Effects.hurt(t, magic(cast), 2 * power);
+				Effects.hurt(cast, t, magic(cast), 2 * power);
 				t.teleportTo(level, spot.x, spot.y, spot.z, Set.<RelativeMovement>of(), t.getYRot(), t.getXRot());
 				t.setDeltaMovement(0, -0.2, 0);
 				t.hasImpulse = true;
@@ -873,7 +873,7 @@ public final class ExplorerEffects {
 			}
 		}
 		ExplorerVfx.portalfall(level, from, null);
-		Effects.hurt(t, magic(cast), 2 * power);
+		Effects.hurt(cast, t, magic(cast), 2 * power);
 	}
 
 	/** Portalfall's landing: where it comes down, the creatures beside it are thrown and hurt (3, and a stagger). */
@@ -888,7 +888,7 @@ public final class ExplorerEffects {
 			Vec3 at = fallen.position();
 			for (LivingEntity other : enemiesAround(cast, at, 2.0)) {
 				if (other != fallen) {
-					Effects.hurt(other, magic(cast), 3 * power);
+					Effects.hurt(cast, other, magic(cast), 3 * power);
 					other.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 2, false, true), cast.caster);
 				}
 			}
@@ -952,7 +952,7 @@ public final class ExplorerEffects {
 		power *= ExplorerNumbers.moonFactor(dev.wildercord.compat.EnvCompat.moonPhase(cast.level, BlockPos.containing(point)), !(cast.level.isDay() && cast.level.dimensionType().hasSkyLight()) && cast.level.canSeeSky(BlockPos.containing(point)));
 		for (LivingEntity t : enemiesAround(cast, point, radius)) {
 			final double observedPower=power;
-			LifeOwnerEvents.mutation(cast,"moonpetal",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(t,magic(cast),5*observedPower));
+			LifeOwnerEvents.mutation(cast,"moonpetal",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast, t,magic(cast),5*observedPower));
 		}
 		for (LivingEntity t : alliesAround(cast, point, radius)) {
 			final double observedPower=power;
@@ -985,7 +985,7 @@ public final class ExplorerEffects {
 		Scheduler.later(60, Effects.carryContext(() -> {
 			if (cast.alive() && onHand(cast, t)) {
 				Spirits.freeze(t, Effects.ticks(2, duration));
-				Effects.hurt(t, frost(cast), 6 * power);
+				Effects.hurt(cast, t, frost(cast), 6 * power);
 				ExplorerVfx.hoarfrost(cast.level, t, 3);
 				bloom(cast, t, power);
 			}
@@ -1000,7 +1000,7 @@ public final class ExplorerEffects {
 				continue;
 			}
 			struck++;
-			Effects.hurt(other, frost(cast), 3 * power);
+			Effects.hurt(cast, other, frost(cast), 3 * power);
 			effect(other, MobEffects.MOVEMENT_SLOWDOWN, 40, 2, cast);
 			ExplorerVfx.hoarfrost(cast.level, other, 3);
 		}
@@ -1078,7 +1078,7 @@ public final class ExplorerEffects {
 		FireBloodVfx.sunscorch(cast.level, t, sunlit);
 		double react = Reactions.fire(cast, t);
 		t.igniteForSeconds((float) (5 * duration));
-		Effects.hurt(t, fire(cast), 8 * power * react * (sunlit ? 1.5 : dusk ? 1.25 : 1.0));
+		Effects.hurt(cast, t, fire(cast), 8 * power * react * (sunlit ? 1.5 : dusk ? 1.25 : 1.0));
 		// The light dazzles: it glows for the whole party to see, and by day it is blinded too.
 		if (t.isAlive()) {
 			t.addEffect(new MobEffectInstance(MobEffects.GLOWING, (int) Math.round(120 * duration), 0, false, false), cast.caster);
@@ -1197,7 +1197,7 @@ public final class ExplorerEffects {
 			Spirits.hold(t,ticks);
 			LifeOwnerEvents.admitted(cast,"rootsnare",t,LifeOwnerEvents.Moment.APPLY,1,null);
 			t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-			LifeOwnerEvents.mutation(cast,"rootsnare",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(t,magic(cast),3*power));
+			LifeOwnerEvents.mutation(cast,"rootsnare",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast, t,magic(cast),3*power));
 			thornTax(cast, t, ticks, power);
 		}
 	}
@@ -1222,7 +1222,7 @@ public final class ExplorerEffects {
 				while (moved[0] >= 1.5 && hurt[0] < 5) {
 					moved[0] -= 1.5;
 					hurt[0]++;
-					LifeOwnerEvents.mutation(cast,"rootsnare",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(t,magic(cast),power));
+					LifeOwnerEvents.mutation(cast,"rootsnare",t,LifeOwnerEvents.Moment.TRIGGER,null,()->Effects.hurt(cast, t,magic(cast),power));
 				}
 			}, () -> { });
 		}));
@@ -1240,7 +1240,7 @@ public final class ExplorerEffects {
 			if (onHand(cast, t) && t.position().distanceTo(spot) <= 1.3 + t.getBbWidth() / 2) {
 				ExplorerVfx.stalactite(cast.level, t);
 				boolean bare = t.getItemBySlot(EquipmentSlot.HEAD).isEmpty();
-				Effects.hurt(t, cast.level.damageSources().source(DamageTypes.FALLING_STALACTITE, cast.caster), 7 * power * (bare ? 1.3 : 1.0));
+				Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.FALLING_STALACTITE, cast.caster), 7 * power * (bare ? 1.3 : 1.0));
 			} else {
 				ExplorerVfx.stalactiteMiss(cast.level, spot);
 			}
@@ -1267,7 +1267,7 @@ public final class ExplorerEffects {
 		// Thin air: the wind is a fifth stronger above y=120.
 		double thin = caster.getY() >= THIN_AIR ? 1.2 : 1.0;
 		for (LivingEntity t : enemiesAround(cast, centre, radius)) {
-			Effects.hurt(t, cast.level.damageSources().source(DamageTypes.WIND_CHARGE, caster), 5 * power * thin);
+			Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.WIND_CHARGE, caster), 5 * power * thin);
 			if (!Spirits.isBoss(t)) {
 				Vec3 away = Effects.horizontal(t.position().subtract(centre), hit.dir());
 				Statuses.windPush(t, away.scale(0.9 * Math.sqrt(power) * thin).add(0, 1.1, 0));
@@ -1296,7 +1296,7 @@ public final class ExplorerEffects {
 			double react = tick == 0 ? Reactions.fire(cast, t) : 1.0;
 			float before = t.getHealth() + t.getAbsorptionAmount();
 			// Soul fire: water can't dull it and the fire-proof can't shrug it off (it is fire damage that isn't burning).
-			Effects.soulFire(() -> Effects.hurt(t, magic(cast), 3 * power * react));
+			Effects.soulFire(() -> Effects.hurt(cast, t, magic(cast), 3 * power * react));
 			float dealt = Math.max(0.0F, before - (t.getHealth() + t.getAbsorptionAmount()));
 			if (cast.caster instanceof ServerPlayer player) {
 				// One cap per payment: a storm's echo or Twin Star of the same spell shares it.
@@ -1367,7 +1367,7 @@ public final class ExplorerEffects {
 				return;
 			}
 			float before = t.getHealth();
-			Effects.hurt(t, magic(cast), 1 * power);
+			Effects.hurt(cast, t, magic(cast), 1 * power);
 			float taken = Math.max(0.0F, before - t.getHealth());
 			if (taken > 0 && cast.caster.isAlive()) {
 				// The moss feeds whoever is most wounded among you and your allies nearby (you, if that's no one else).
@@ -1417,7 +1417,7 @@ public final class ExplorerEffects {
 				ExplorerVfx.basaltColumn(level, at, width, step < 1.6, step + 1.25 > length);
 				for (LivingEntity t : enemiesAround(cast, at.add(0, 1, 0), width)) {
 					if (struck.add(t.getUUID())) {
-						Effects.hurt(t, magic(cast), 7 * power);
+						Effects.hurt(cast, t, magic(cast), 7 * power);
 						if (!Spirits.isBoss(t)) {
 							Effects.push(t, new Vec3(0, 0.95, 0).add(dir.scale(0.2)));
 							Reactions.mark(t, Reactions.Mark.WINDSWEPT);
@@ -1451,7 +1451,7 @@ public final class ExplorerEffects {
 				}
 				if (tick - lastYank[0] >= 20) {
 					lastYank[0] = tick;
-					Effects.hurt(t, magic(cast), 1 * power);
+					Effects.hurt(cast, t, magic(cast), 1 * power);
 					ExplorerVfx.tether(cast.level, anchor, t, true);
 				}
 			}
@@ -1466,7 +1466,7 @@ public final class ExplorerEffects {
 	/** Cinderbrand: a brand that makes the caster's fire burn the target hotter. */
 	private static void cinderbrand(Cast cast, LivingEntity t, double power, int ticks) {
 		FireBloodVfx.brand(cast.level, t);
-		Effects.hurt(t, fire(cast), 3 * power * Reactions.fire(cast, t));
+		Effects.hurt(cast, t, fire(cast), 3 * power * Reactions.fire(cast, t));
 		mark(BRANDED, cast, t, ticks);
 		// The brand also stokes the burn: while it burns, half a point more each second (the brand's own 1.5x on top of a third).
 		Linger key = new Linger(t.getUUID(), cast.caster.getUUID(), "cinderbrand");
@@ -1476,7 +1476,7 @@ public final class ExplorerEffects {
 				// The brand hangs over its head for as long as it holds.
 				FireBloodVfx.brandGlyph(cast.level, t);
 				if (t.isOnFire() && !t.fireImmune()) {
-					Effects.hurt(t, fire(cast), 0.33 * power);
+					Effects.hurt(cast, t, fire(cast), 0.33 * power);
 					FireBloodVfx.brandStoke(cast.level, t);
 				}
 			}
@@ -1559,7 +1559,7 @@ public final class ExplorerEffects {
 			for (LivingEntity near : enemiesAround(cast, t.getBoundingBox().getCenter(), 4.0)) {
 				// The heat doesn't go through walls.
 				if (near != t && t.hasLineOfSight(near)) {
-					Effects.hurt(near, fire(cast), 3 * power);
+					Effects.hurt(cast, near, fire(cast), 3 * power);
 					near.igniteForSeconds(2);
 				}
 			}
@@ -1587,7 +1587,7 @@ public final class ExplorerEffects {
 				effect(t, MobEffects.BLINDNESS, 30, 0, cast);
 				Reactions.mark(t, Reactions.Mark.SHADOWED, 30);
 				if (VoidTime.once(cast, "eclipse.pulse", t, 15)) {
-					Effects.hurt(t, magic(cast), 2 * power);
+					Effects.hurt(cast, t, magic(cast), 2 * power);
 				}
 			}
 		}, () -> { });
@@ -1607,7 +1607,7 @@ public final class ExplorerEffects {
 		int hearts = (int) Math.floor(t.getAbsorptionAmount() / 2.0F);
 		t.setAbsorptionAmount(0);
 		ExplorerVfx.starmaw(cast.level, t, good.size() + wards);
-		Effects.hurt(t, magic(cast), (14 + 4 * (good.size() + wards) + hearts) * power);
+		Effects.hurt(cast, t, magic(cast), (14 + 4 * (good.size() + wards) + hearts) * power);
 	}
 
 	/** Drowning Word: water fills the target's lungs wherever it stands. Speaking it again starts it over. */
@@ -1627,7 +1627,7 @@ public final class ExplorerEffects {
 			t.setAirSupply(Math.min(t.getAirSupply(), 0));
 			ExplorerVfx.drowningWord(cast.level, t, false);
 			if (tick % 20 == 0) {
-				Effects.hurt(t, cast.level.damageSources().source(DamageTypes.DROWN, cast.caster), 2 * power);
+				Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.DROWN, cast.caster), 2 * power);
 			}
 		}, () -> release(key, token));
 	}
@@ -1658,7 +1658,7 @@ public final class ExplorerEffects {
 						continue;
 					}
 					LivingEntity t = (LivingEntity) e;
-					Effects.hurt(t, magic(cast), 10 * power);
+					Effects.hurt(cast, t, magic(cast), 10 * power);
 					Reactions.mark(t, Reactions.Mark.SOAKED);
 					if (!Spirits.isBoss(t)) {
 						Effects.push(t, dir.scale(1.6).add(0, 0.35, 0));
@@ -1671,7 +1671,7 @@ public final class ExplorerEffects {
 	/** Starshard: a shard of the fallen star that splinters into sparks. */
 	private static void starshard(Cast cast, LivingEntity t, double power) {
 		ExplorerVfx.starshard(cast.level, t);
-		Effects.hurt(t, magic(cast), 11 * power);
+		Effects.hurt(cast, t, magic(cast), 11 * power);
 		List<LivingEntity> near = enemiesAround(cast, t.getBoundingBox().getCenter(), 8.0);
 		near.remove(t);
 		// Sparks only leap to what the shard can see.
@@ -1683,7 +1683,7 @@ public final class ExplorerEffects {
 			Scheduler.later(4 + i * 2, Effects.carryContext(() -> {
 				if (cast.alive() && onHand(cast, other)) {
 					ExplorerVfx.starSpark(cast.level, from, other);
-					Effects.hurt(other, magic(cast), 4 * power);
+					Effects.hurt(cast, other, magic(cast), 4 * power);
 				}
 			}));
 		}
@@ -1713,7 +1713,7 @@ public final class ExplorerEffects {
 					}
 				}
 				if (tick % 20 == 0) {
-					Effects.hurt(t, magic(cast), 2 * power);
+					Effects.hurt(cast, t, magic(cast), 2 * power);
 				}
 			}
 		}, Effects.carryContext(() -> {
@@ -1723,7 +1723,7 @@ public final class ExplorerEffects {
 			double grown = Math.min(RIFT_MAX_HELD, held[0]);
 			ExplorerVfx.riftClose(cast.level, centre, radius);
 			for (LivingEntity t : enemiesAround(cast, centre, (radius + 0.5 * grown) * 0.5)) {
-				Effects.hurt(t, magic(cast), (6 + grown) * power);
+				Effects.hurt(cast, t, magic(cast), (6 + grown) * power);
 			}
 		}));
 	}
@@ -1751,7 +1751,7 @@ public final class ExplorerEffects {
 			caster = true;
 		}
 		ExplorerVfx.manaburn(cast.level, t, caster);
-		Effects.hurt(t, magic(cast), (caster ? 9 : 5) * power);
+		Effects.hurt(cast, t, magic(cast), (caster ? 9 : 5) * power);
 		// It cuts in: a charge in hand or a telegraphed cast is cancelled (Silence, by contrast, locks out for a while).
 		if (caster) {
 			CastLock.interrupt(t, 80);
@@ -1816,7 +1816,7 @@ public final class ExplorerEffects {
 	 */
 	private static void tidehook(Cast cast, LivingEntity t, double power) {
 		ExplorerVfx.tidehook(cast.level, cast.caster, t);
-		Effects.hurt(t, magic(cast), 4 * power);
+		Effects.hurt(cast, t, magic(cast), 4 * power);
 		Reactions.mark(t, Reactions.Mark.SOAKED);
 		if (Spirits.isBoss(t)) {
 			return;

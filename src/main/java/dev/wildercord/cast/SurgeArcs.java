@@ -77,7 +77,7 @@ final class SurgeArcs {
 		c.arcs++;
 		LivingEntity target = next;
 		Vfx.shockArc(level, victim.getBoundingBox().getCenter(), target.getBoundingBox().getCenter());
-		Effects.asElement("storm", () -> Effects.lingering(() -> Effects.hurt(target,
+		Effects.asElement("storm", () -> Effects.lingering(() -> Effects.hurt(c.cast, target,
 			level.damageSources().source(DamageTypes.LIGHTNING_BOLT, c.cast.caster), DAMAGE * c.power * Reactions.storm(c.cast, target))));
 	}
 

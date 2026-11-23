@@ -288,7 +288,7 @@ public final class AuraCombat {
 		// Aura off the blade lands through a foe's moment of invulnerability, as a spell does.
 		dev.wildercord.cast.Effects.readyToHurt(target);
 		float dealt = (float) amount;
-		boolean hurt = target instanceof Player ? SpellDefence.hurt(target, source, dealt) : target.hurt(source, dealt);
+		boolean hurt = target instanceof Player ? SpellDefence.hurt(level, target, source, dealt) : target.hurt(source, dealt);
 		float taken = target instanceof TrainingDummy dummy ? dummy.lastDamage() : Math.max(0, before - Math.max(0, target.getHealth()));
 		// A field removed inside the damage callback cannot resume passives or resonance after that hit.
 		if (dev.wildercord.aura.arts.ArtFields.blocksRetiredHarm(player, target) || counter != null && !counter.afterDamage(target)) return taken;

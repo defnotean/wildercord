@@ -344,7 +344,7 @@ public class ThunderwingHarpy extends WildMonster {
 		AABB area = new AABB(mark, mark).inflate(BOLT_RADIUS, 2.5, BOLT_RADIUS);
 		for (Entity e : level.getEntities(this, area, e -> Targets.canHarm(this, e))) {
 			if (e.position().distanceTo(mark) <= BOLT_RADIUS + 0.5) {
-				MonsterMagic.hurt(this, (LivingEntity) e, BOLT_DAMAGE);
+				MonsterMagic.hurt(level, this, (LivingEntity) e, BOLT_DAMAGE);
 			}
 		}
 		ElementFx.stormImpact(level, mark.add(0, 0.2, 0), 1.2);

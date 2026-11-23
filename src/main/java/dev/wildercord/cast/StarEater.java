@@ -420,7 +420,7 @@ public class StarEater extends DungeonBoss {
 		if (hit != null && !hit.add(foe.getUUID())) {
 			return false;
 		}
-		SpellDefence.hurt(foe, level.damageSources().indirectMagic(this, this), hurtBy(level, share));
+		SpellDefence.hurt(level, foe, level.damageSources().indirectMagic(this, this), hurtBy(level, share));
 		return true;
 	}
 
@@ -1684,7 +1684,7 @@ public class StarEater extends DungeonBoss {
 				LivingEntity t = (LivingEntity) e;
 				Vec3 out = t.position().subtract(c);
 				Vec3 flat = new Vec3(out.x, 0, out.z).lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : new Vec3(out.x, 0, out.z).normalize();
-				SpellDefence.hurt(t, level.damageSources().indirectMagic(this, this), (float) (5 * Runebound.power(level)));
+				SpellDefence.hurt(level, t, level.damageSources().indirectMagic(this, this), (float) (5 * Runebound.power(level)));
 				Effects.push(t, new Vec3(flat.x * 1.5, 0.4, flat.z * 1.5));
 			}
 			Vfx.radial(level, ParticleTypes.END_ROD, c, 60, 0.5);

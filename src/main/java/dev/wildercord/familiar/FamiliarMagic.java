@@ -120,7 +120,7 @@ public final class FamiliarMagic {
 				ElementFx.ray(level, from, at, ElementFx.FIRE.primary(), 0.12, 6);
 				ElementFx.embers(level, at, 0.3, 6);
 				ElementFx.fireImpact(level, at, 0.5);
-				SpellDefence.hurt(target, level.damageSources().indirectMagic(wisp, owner), (float) (3 * power));
+				SpellDefence.hurt(level, target, level.damageSources().indirectMagic(wisp, owner), (float) (3 * power));
 				target.igniteForTicks(40);
 			}
 			case "frost" -> {
@@ -130,7 +130,7 @@ public final class FamiliarMagic {
 				Vec3 at = target.getBoundingBox().getCenter();
 				ElementFx.ray(level, from, at, ElementFx.FROST.primary(), 0.1, 6);
 				ElementFx.frostImpact(level, at, 0.6);
-				SpellDefence.hurt(target, level.damageSources().indirectMagic(wisp, owner), (float) (1.5 * power));
+				SpellDefence.hurt(level, target, level.damageSources().indirectMagic(wisp, owner), (float) (1.5 * power));
 				target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, (int) (80 * power), 1, false, true), owner);
 			}
 			case "storm" -> {
@@ -140,7 +140,7 @@ public final class FamiliarMagic {
 				Vec3 at = target.getBoundingBox().getCenter();
 				ElementFx.bolt(level, from, at, 0.06, 1, 2);
 				ElementFx.stormImpact(level, at, 0.5);
-				SpellDefence.hurt(target, level.damageSources().indirectMagic(wisp, owner), (float) (4 * power));
+				SpellDefence.hurt(level, target, level.damageSources().indirectMagic(wisp, owner), (float) (4 * power));
 			}
 			case "life" -> {
 				if (owner.getHealth() > owner.getMaxHealth() - 2) {

@@ -230,7 +230,7 @@ final class SignatureWards {
 		if (striker.level() == level && striker.distanceToSqr(entity) <= SignatureRules.RIPOSTE_REACH * SignatureRules.RIPOSTE_REACH) {
 			answering = true;
 			try {
-				guard.context.accept(() -> Effects.hurt(striker, SignatureFusions.magic(guard.cast),
+				guard.context.accept(() -> Effects.hurt(guard.cast, striker, SignatureFusions.magic(guard.cast),
 					Math.max(SignatureRules.RIPOSTE_MIN, Math.min(SignatureRules.RIPOSTE_MAX, amount)) * guard.power));
 			} finally {
 				answering = false;
@@ -417,7 +417,7 @@ final class SignatureWards {
 				if (!VoidTime.once(cast, "doomclock", t, 200)) {
 					continue;
 				}
-				Effects.hurt(t, SignatureFusions.magic(cast), damage);
+				Effects.hurt(cast, t, SignatureFusions.magic(cast), damage);
 				Vec3 away = t.getBoundingBox().getCenter().subtract(clock.at);
 				if (!Spirits.isBoss(t)) {
 					Effects.push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(0, 1, 0) : away.normalize()).scale(0.6).add(0, 0.3, 0));

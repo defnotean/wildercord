@@ -191,7 +191,7 @@ public final class Reactions {
 				if (!cast.admitsConsequence(other)) continue;
 				reacted(other);
 				other.igniteForSeconds(4);
-				Effects.hurt(other, level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3);
+				Effects.hurt(cast, other, level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3);
 				if (!cast.consequencesValid(other)) return 1;
 				ReactionVfx.wildfireLeap(level, target, other);
 			}
@@ -287,7 +287,7 @@ public final class Reactions {
 	private static void reactionHurt(Cast cast, LivingEntity from, LivingEntity target, net.minecraft.world.damagesource.DamageSource source, double amount) {
 		Vec3 previous = cast.incoming();
 		if (cast.guardedImpact()) cast.incoming(from.getBoundingBox().getCenter());
-		try { Effects.hurt(target, source, amount); }
+		try { Effects.hurt(cast, target, source, amount); }
 		finally { if (cast.guardedImpact()) cast.incoming(previous); }
 	}
 
@@ -414,7 +414,7 @@ public final class Reactions {
 			affected++;
 			reacted(t);
 			t.addEffect(new MobEffectInstance(MobEffects.POISON, ReactionRules.BLIGHT_POISON_TICKS, 0, false, true), cast.caster);
-			Effects.hurt(t, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.BLIGHT_DAMAGE);
+			Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.BLIGHT_DAMAGE);
 			if (!cast.consequencesValid(t)) return 1;
 		}
 		if (!cast.consequencesValid(target)) return 1;
@@ -447,7 +447,7 @@ public final class Reactions {
 		clear(target, Mark.BLEEDING);
 		reacted(target);
 		ReactionVfx.rupture(level, target, cast.caster);
-		Effects.hurt(target, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.RUPTURE_DAMAGE);
+		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.RUPTURE_DAMAGE);
 		if (!cast.consequencesValid(target)) return 1;
 		heal(cast, ReactionRules.RUPTURE, ReactionRules.RUPTURE_HEAL);
 		if (!cast.consequencesValid(target)) return 1;
@@ -482,7 +482,7 @@ public final class Reactions {
 		}
 		reacted(target);
 		ReactionVfx.elapse(level, target, fire > 0, poison != null, wither != null);
-		Effects.hurt(target, level.damageSources().indirectMagic(cast.caster, cast.caster), damage);
+		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), damage);
 		if (!cast.consequencesValid(target)) return 1;
 		callout(cast, ReactionRules.ELAPSE, ReactionRules.color(ReactionRules.ELAPSE));
 		Residues.reaction(cast, "time", target);

@@ -1144,7 +1144,7 @@ public class Archivist extends SpellcasterIllager {
 	/** A blow from one of its tricks, as strong as its spells. */
 	private void strike(ServerLevel level, LivingEntity victim, double damage) {
 		Effects.readyToHurt(victim);
-		SpellDefence.hurt(victim, level.damageSources().indirectMagic(this, this), (float) (damage * power()));
+		SpellDefence.hurt(level, victim, level.damageSources().indirectMagic(this, this), (float) (damage * power()));
 	}
 
 	/** Turns it to face {@code dir} across the floor, head and body. */

@@ -467,7 +467,7 @@ public class TideScribe extends DungeonBoss {
 				// The Scribe is the water's own: the shock runs straight through it, and it reels.
 				shocking = true;
 				try {
-					RelayCircles.from(cast, at, () -> Effects.hurt(this, source, shock * 5));
+					RelayCircles.from(cast, at, () -> Effects.hurt(cast, this, source, shock * 5));
 				} finally {
 					shocking = false;
 				}
@@ -480,7 +480,7 @@ public class TideScribe extends DungeonBoss {
 			if (t != cast.caster && !Targets.canHarm(cast.caster, t)) {
 				continue;
 			}
-			RelayCircles.from(cast, at, () -> Effects.hurt(t, source, shock));
+			RelayCircles.from(cast, at, () -> Effects.hurt(cast, t, source, shock));
 		}
 		// Sparks skitter across the whole surface.
 		Vec3 c = Vec3.atBottomCenterOf(home).add(0, 2.0, 0);

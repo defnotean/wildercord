@@ -35,9 +35,9 @@ public final class ContentSystemsTest implements FabricClientGameTest {
    FamiliarRoles.choose(p,"companion");check(FamiliarRoles.get(p)==FamiliarRoles.Role.COMPANION,"restore original elemental assistance");
    PracticeRoom.enter(p);check(SpellTrials.start(p,"precision")==1,"optional trial starts in practice survival");
    var dummy=((ServerLevel) p.level()).getEntitiesOfClass(TrainingDummy.class,p.getBoundingBox().inflate(40)).getFirst();
-   for(int i=0;i<5;i++){SpellTrials.cast(p,List.of(Runes.BOLT,Runes.FIRE),10);Effects.readyToHurt(dummy);SpellDefence.hurt(dummy,p.damageSources().indirectMagic(p,p),2);}
+   for(int i=0;i<5;i++){SpellTrials.cast(p,List.of(Runes.BOLT,Runes.FIRE),10);Effects.readyToHurt(dummy);SpellDefence.hurt(((ServerLevel) p.level()), dummy,p.damageSources().indirectMagic(p,p),2);}
    int pages=p.getInventory().countItem(WildercordItems.TORN_PAGE);check(pages==1,"actual dummy hits complete precision");
-   SpellTrials.start(p,"precision");for(int i=0;i<5;i++){SpellTrials.cast(p,List.of(Runes.BOLT,Runes.FIRE),10);Effects.readyToHurt(dummy);SpellDefence.hurt(dummy,p.damageSources().indirectMagic(p,p),2);}
+   SpellTrials.start(p,"precision");for(int i=0;i<5;i++){SpellTrials.cast(p,List.of(Runes.BOLT,Runes.FIRE),10);Effects.readyToHurt(dummy);SpellDefence.hurt(((ServerLevel) p.level()), dummy,p.damageSources().indirectMagic(p,p),2);}
    check(p.getInventory().countItem(WildercordItems.TORN_PAGE)==pages,"repeat trial awards no duplicate page");
    check(PracticeRoom.leave(p)==1,"normal player returns from trial arena");
   });

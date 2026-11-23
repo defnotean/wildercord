@@ -311,7 +311,7 @@ public class RuneBolt extends Projectile {
 			if (damage > 0) {
 				for (Entity victim : CastEngine.inRadius(owner, at, radius)) {
 					if (Targets.canHarm(player, victim)) {
-						Effects.hurt((LivingEntity) victim, server.damageSources().indirectMagic(player, player), damage * owner.power);
+						Effects.hurt(owner, (LivingEntity) victim, server.damageSources().indirectMagic(player, player), damage * owner.power);
 					}
 				}
 			}

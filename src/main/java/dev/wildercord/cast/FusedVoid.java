@@ -95,7 +95,7 @@ final class FusedVoid {
 				for (LivingEntity t : harmed) {
 					FusedVoidVfx.hemomancy(level, caster, t, bonus);
 					float before = t.getHealth();
-					Effects.hurt(t, magic(cast), (FusedVoidRules.HEMOMANCY_DAMAGE + bonus) * power);
+					Effects.hurt(cast, t, magic(cast), (FusedVoidRules.HEMOMANCY_DAMAGE + bonus) * power);
 					// Hurt badly, the blood takes back a quarter of what it deals.
 					if (caster.isAlive() && caster.getHealth() < caster.getMaxHealth() * FusedVoidRules.HEMOMANCY_HEAL_BELOW) {
 						caster.heal(Math.max(0.0F, before - t.getHealth()) * FusedVoidRules.HEMOMANCY_HEAL_SHARE);
@@ -114,7 +114,7 @@ final class FusedVoid {
 				}
 				List<Integer> marks = useMarks(t);
 				FusedVoidVfx.prismaticBurst(level, t, marks);
-				Effects.hurt(t, magic(cast), FusedVoidRules.prismaticDamage(marks.size()) * power);
+				Effects.hurt(cast, t, magic(cast), FusedVoidRules.prismaticDamage(marks.size()) * power);
 				spreadMarks(cast, t, burning, had);
 			});
 			case "chronoshift" -> {
@@ -220,7 +220,7 @@ final class FusedVoid {
 		strip(t, unravel.step);
 		double amount = FusedVoidRules.entropyWound(unravel.step) * unravel.power;
 		FusedVoidVfx.entropyTick(cast.level, t, cast.caster, unravel.step, unravel.last, last);
-		Effects.lingering(() -> Effects.hurt(t, magic(cast), amount));
+		Effects.lingering(() -> Effects.hurt(cast, t, magic(cast), amount));
 		if (last || !t.isAlive()) {
 			UNRAVELLING.remove(t.getUUID(), unravel);
 			unstrip(t);
@@ -234,7 +234,7 @@ final class FusedVoid {
 	/** Devour: a void maw closes on the target; if the bite kills, the caster feeds. */
 	private static void devour(Cast cast, LivingEntity t, double power, boolean full) {
 		ServerLevel level = cast.level;
-		Effects.hurt(t, magic(cast), FusedVoidRules.devourDamage(t.getHealth(), t.getMaxHealth()) * power);
+		Effects.hurt(cast, t, magic(cast), FusedVoidRules.devourDamage(t.getHealth(), t.getMaxHealth()) * power);
 		boolean killed = !t.isAlive() || t.isDeadOrDying();
 		FusedVoidVfx.devour(level, t, killed, full);
 		// A cast feeds at most twice (a Burst through a flock of chickens isn't a mana well); its echoes share the two.
@@ -425,7 +425,7 @@ final class FusedVoid {
 		}
 		settling = true;
 		try {
-			Effects.lingering(() -> Effects.hurt(t, magic(cast), due));
+			Effects.lingering(() -> Effects.hurt(cast, t, magic(cast), due));
 				// The tax is collected: a share of what comes due heals whoever opened the ledger.
 				if (cast.caster.isAlive() && cast.caster != t) {
 					cast.caster.heal(FusedVoidRules.reckoningHeal(due));
@@ -571,7 +571,7 @@ final class FusedVoid {
 			if (!onHand(cast, v) || v.getBoundingBox().getCenter().distanceTo(centre) > radius + 1.5) {
 				continue;
 			}
-			Effects.hurt(v, magic(cast), FusedVoidRules.SINGULARITY_DAMAGE * power + swallowed);
+			Effects.hurt(cast, v, magic(cast), FusedVoidRules.SINGULARITY_DAMAGE * power + swallowed);
 			if (Spirits.isBoss(v) || !v.isAlive()) {
 				continue;
 			}

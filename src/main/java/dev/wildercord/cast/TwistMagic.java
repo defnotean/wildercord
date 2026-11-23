@@ -813,7 +813,7 @@ public final class TwistMagic {
 
 	/** Damage from a twist: through the one door every spell's damage goes through, as its own element (or none). */
 	private static void hurt(Cast cast, LivingEntity target, String element, DamageSource source, double amount) {
-		Effects.asElement(element, () -> Effects.hurt(target, source, amount * cast.power));
+		Effects.asElement(element, () -> Effects.hurt(cast, target, source, amount * cast.power));
 	}
 
 	private static DamageSource magic(Cast cast) {

@@ -120,7 +120,7 @@ final class Techniques {
 	static void cleave(Cast cast, LivingEntity t, double power, java.util.Set<java.util.UUID> struck, int[] budget) {
 		double amount = cleaveDamage(t.getMaxHealth()) * power;
 		TechniqueVfx.cleave(cast.level, t, cast.caster.getLookAngle());
-		Effects.hurt(t, strike(cast), amount);
+		Effects.hurt(cast, t, strike(cast), amount);
 		// A deep cut: bleeding for a few seconds, so wind damage sets off Rupture.
 		Reactions.mark(t, Reactions.Mark.BLEEDING, 60);
 		// The axe swings on: enemies beside it take half (three at most).
@@ -136,7 +136,7 @@ final class Techniques {
 			}
 			budget[0]--;
 			struck.add(other.getUUID());
-			Effects.hurt(other, strike(cast), cleaveDamage(other.getMaxHealth()) * power * 0.5);
+			Effects.hurt(cast, other, strike(cast), cleaveDamage(other.getMaxHealth()) * power * 0.5);
 			Reactions.mark(other, Reactions.Mark.BLEEDING, 60);
 			FireBloodVfx.cleaveSweep(cast.level, t, other);
 		}
@@ -164,7 +164,7 @@ final class Techniques {
 	/** Dismantle: three slashes a tenth of a second apart, through armour; the last is a backstab. */
 	static void dismantle(Cast cast, LivingEntity t, double power) {
 		FireBloodVfx.dismantle(cast.level, t, 0, false);
-		Effects.hurt(t, magic(cast), 3 * power);
+		Effects.hurt(cast, t, magic(cast), 3 * power);
 		// Cut three times over: bleeding until a little after the last, so wind damage sets off Rupture.
 		Reactions.mark(t, Reactions.Mark.BLEEDING, 64);
 		for (int i = 1; i < 3; i++) {
@@ -175,7 +175,7 @@ final class Techniques {
 					// The last slash is a backstab, twice as deep, if its bearer isn't facing the caster.
 					boolean back = slash == 2 && !facing(t, cast.caster);
 					FireBloodVfx.dismantle(cast.level, t, slash, back);
-					Effects.hurt(t, magic(cast), 3 * power * (back ? 2.0 : 1.0));
+					Effects.hurt(cast, t, magic(cast), 3 * power * (back ? 2.0 : 1.0));
 				}
 			});
 		}
@@ -185,7 +185,7 @@ final class Techniques {
 	static void blackspark(Cast cast, LivingEntity t, double power) {
 		boolean spark = cast.level.getRandom().nextFloat() < 0.25F;
 		TechniqueVfx.blackspark(cast.level, t, spark);
-		Effects.hurt(t, magic(cast), 8 * power * (spark ? 2.5 : 1.0));
+		Effects.hurt(cast, t, magic(cast), 8 * power * (spark ? 2.5 : 1.0));
 		if (spark) {
 			cast.caster.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 120, 0, false, true));
 			cast.caster.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 120, 0, false, true));
@@ -202,7 +202,7 @@ final class Techniques {
 				}
 			}
 			if (next != null) {
-				Effects.hurt(next, magic(cast), 8 * power);
+				Effects.hurt(cast, next, magic(cast), 8 * power);
 			}
 		}
 	}
@@ -210,7 +210,7 @@ final class Techniques {
 	/** Aftershock: a hit now, and a second impact half a second later. */
 	static void aftershock(Cast cast, LivingEntity t, double power) {
 		TechniqueVfx.aftershock(cast.level, t, false);
-		Effects.hurt(t, strike(cast), 5 * power);
+		Effects.hurt(cast, t, strike(cast), 5 * power);
 		// The ground remembers the blow: half a second later the same spot is struck again, hitting whoever stands
 		// there (the target if it stayed, its neighbours too). Step aside and it misses.
 		Vec3 spot = t.position();
@@ -224,7 +224,7 @@ final class Techniques {
 			for (Entity e : cast.level.getEntities((Entity) null, new AABB(spot, spot).inflate(1.5, 1.5, 1.5), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity other = (LivingEntity) e;
 				if (other.position().distanceTo(spot) <= 1.5 + other.getBbWidth() / 2) {
-					Effects.lingering(() -> Effects.hurt(other, strike(cast), 5 * power));
+					Effects.lingering(() -> Effects.hurt(cast, other, strike(cast), 5 * power));
 					Effects.push(other, new Vec3(0, 0.35, 0));
 				}
 			}
@@ -246,10 +246,10 @@ final class Techniques {
 			}
 		}
 		TechniqueVfx.resonance(cast.level, t, linked);
-		Effects.hurt(t, magic(cast), amount);
+		Effects.hurt(cast, t, magic(cast), amount);
 		Reactions.mark(t, Reactions.Mark.RESONANT, markTicks);
 		for (LivingEntity other : linked) {
-			Effects.hurt(other, magic(cast), amount * 0.5);
+			Effects.hurt(cast, other, magic(cast), amount * 0.5);
 		}
 	}
 
@@ -261,7 +261,7 @@ final class Techniques {
 		double amount = 6 * power * (t.isInvertedHealAndHarm() ? 2.0 : 1.0) * Reactions.storm(cast, t);
 		TechniqueVfx.ripple(cast.level, t);
 		float before = t.getHealth();
-		Effects.hurt(t, magic(cast), amount);
+		Effects.hurt(cast, t, magic(cast), amount);
 		float taken = Math.max(0.0F, before - Math.max(0.0F, t.getHealth()));
 		if (taken > 0 && cast.caster.isAlive()) {
 			cast.caster.heal(Math.min(6.0F, taken / 4.0F));
@@ -281,7 +281,7 @@ final class Techniques {
 					continue;
 				}
 				float was = other.getHealth();
-				Effects.lingering(() -> Effects.hurt(other, magic(cast), 3 * power));
+				Effects.lingering(() -> Effects.hurt(cast, other, magic(cast), 3 * power));
 				if (healed < 3 && was > other.getHealth() && cast.caster.isAlive()) {
 					cast.caster.heal(1.0F);
 					healed++;
@@ -374,7 +374,7 @@ final class Techniques {
 				return;
 			}
 			TechniqueVfx.blackflame(cast.level, t);
-			Effects.hurt(t, magic(cast), 3 * power);
+			Effects.hurt(cast, t, magic(cast), 3 * power);
 			burnTick(cast, t, power, spread, spent);
 		});
 	}
@@ -418,7 +418,7 @@ final class Techniques {
 					return;
 				}
 				if (direct != null && direct.isAlive()) {
-					Effects.hurt(direct, cast.level.damageSources().sonicBoom(cast.caster), 20 * power);
+					Effects.hurt(cast, direct, cast.level.damageSources().sonicBoom(cast.caster), 20 * power);
 				}
 				for (Entity e : cast.level.getEntities((Entity) null, new AABB(c, c).inflate(radius), e -> Targets.canHarm(cast.caster, e))) {
 					LivingEntity other = (LivingEntity) e;
@@ -429,7 +429,7 @@ final class Techniques {
 					Vec3 towards = c.subtract(other.position());
 					Effects.push(other, towards.normalize().scale(Math.min(1.6, 0.4 + d * 0.25)));
 					Reactions.mark(other, Reactions.Mark.PULLED);
-					Effects.hurt(other, magic(cast), 8 * power);
+					Effects.hurt(cast, other, magic(cast), 8 * power);
 				}
 			});
 		}
@@ -446,7 +446,7 @@ final class Techniques {
 				continue;
 			}
 			double react = Reactions.collapse(cast, t);
-			Effects.hurt(t, magic(cast), 4 * power * react);
+			Effects.hurt(cast, t, magic(cast), 4 * power * react);
 			Vec3 away = Effects.horizontal(t.position().subtract(c), cast.caster.getLookAngle());
 			double falloff = 1.0 - 0.4 * Math.min(1.0, d / Math.max(0.5, radius));
 			Statuses.windPush(t, away.scale(2.4 * power * falloff).add(0, 0.5, 0));
@@ -591,7 +591,7 @@ final class Techniques {
 					setMotion(t, new Vec3(back.x, Math.max(t.getDeltaMovement().y, back.y), back.z));
 					// The chain bites: 2 for a yank, at most once a second.
 					if (tick % 20 == 0) {
-						Effects.lingering(() -> Effects.hurt(t, magic(cast), 2));
+						Effects.lingering(() -> Effects.hurt(cast, t, magic(cast), 2));
 					}
 					if (tick % 6 == 0) {
 						Fx.sound(cast.level, t.position(), SoundEvents.CHAIN_HIT, 0.7F, 0.8F);
@@ -640,7 +640,7 @@ final class Techniques {
 			// The bubble's own hold lets go now by itself (Spirits.hold); forcing a thaw would also end a longer
 			// Freeze on the same creature.
 			TechniqueVfx.bubblePop(cast.level, t);
-			Effects.hurt(t, magic(cast), 4 * power);
+			Effects.hurt(cast, t, magic(cast), 4 * power);
 			Reactions.mark(t, Reactions.Mark.SOAKED);
 		});
 	}
@@ -1065,7 +1065,7 @@ final class Techniques {
 					if (target.position().distanceTo(spot) > 1.5 + target.getBbWidth() / 2) {
 						continue;
 					}
-					Effects.hurt(target, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), BIRD_DAMAGE * power * Reactions.storm(cast, target));
+					Effects.hurt(cast, target, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), BIRD_DAMAGE * power * Reactions.storm(cast, target));
 					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 2, false, false));
 				}
 			});

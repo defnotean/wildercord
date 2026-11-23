@@ -134,7 +134,7 @@ public class BogBubble extends Projectile {
 				if (t.getBoundingBox().getCenter().distanceTo(at) > radius + t.getBbWidth() * 0.5) {
 					continue;
 				}
-				MonsterMagic.hurt(frog, t, DAMAGE * (big ? 1.5F : 1.0F));
+				MonsterMagic.hurt(level, frog, t, DAMAGE * (big ? 1.5F : 1.0F));
 				t.addEffect(new MobEffectInstance(MobEffects.POISON, POISON, big ? 1 : 0), frog);
 			}
 			AreaEffectCloud mist = new AreaEffectCloud(level, at.x, at.y - 0.3, at.z);

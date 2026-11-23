@@ -215,7 +215,7 @@ final class FusedStorm {
 			if (torn) {
 				FusedStormVfx.riftbolt(level, origin(cast, hit), t, full);
 			}
-			Effects.hurt(t, lightning(cast), RIFTBOLT_DAMAGE * power * Reactions.storm(cast, t));
+			Effects.hurt(cast, t, lightning(cast), RIFTBOLT_DAMAGE * power * Reactions.storm(cast, t));
 			if (!onHand(cast, t)) {
 				continue;
 			}
@@ -306,7 +306,7 @@ final class FusedStorm {
 			// A lone target has no web to run through, so the lightning anchors to the ground through it: 2 more.
 			double each = (weaveDamage(caught.size()) + (caught.size() == 1 ? WEAVE_ANCHOR : 0)) * power;
 			for (LivingEntity t : caught) {
-				Effects.hurt(t, lightning(cast), each * Reactions.storm(cast, t));
+				Effects.hurt(cast, t, lightning(cast), each * Reactions.storm(cast, t));
 			}
 		});
 	}
@@ -332,7 +332,7 @@ final class FusedStorm {
 		}
 		// The first strike lands on every target; only the clocks are few.
 		for (LivingEntity t : harmed) {
-			Effects.hurt(t, lightning(cast), CLOCK_FIRST_DAMAGE * power * Reactions.storm(cast, t));
+			Effects.hurt(cast, t, lightning(cast), CLOCK_FIRST_DAMAGE * power * Reactions.storm(cast, t));
 		}
 	}
 
@@ -371,7 +371,7 @@ final class FusedStorm {
 			FusedStormVfx.clockStrike(level, face, normal, spot, size, age >= last);
 			Effects.lingering(() -> {
 				for (LivingEntity e : enemiesUnder(cast, spot, radius)) {
-					Effects.hurt(e, lightning(cast), CLOCK_STRIKE_DAMAGE * power * Reactions.storm(cast, e));
+					Effects.hurt(cast, e, lightning(cast), CLOCK_STRIKE_DAMAGE * power * Reactions.storm(cast, e));
 				}
 			});
 			return age < last;
@@ -393,7 +393,7 @@ final class FusedStorm {
 	private static void heartstopper(Cast cast, Cast.Hit hit, LivingEntity t, double power, double duration, boolean skipping) {
 		ServerLevel level = cast.level;
 		FusedStormVfx.heartstopper(level, origin(cast, hit), t);
-		Effects.hurt(t, lightning(cast), HEART_DAMAGE * power * Reactions.storm(cast, t));
+		Effects.hurt(cast, t, lightning(cast), HEART_DAMAGE * power * Reactions.storm(cast, t));
 		if (!skipping || !onHand(cast, t)) {
 			return;
 		}
@@ -512,7 +512,7 @@ final class FusedStorm {
 		FusedStormVfx.cloudStrike(level, c, victim);
 		// The cloud's own rain soaks whoever it strikes, so its bolts Conduct (+50%, arcs on to two more).
 		Reactions.mark(victim, Reactions.Mark.WET, 40);
-		Effects.lingering(() -> Effects.hurt(victim, lightning(cast), CLOUD_STRIKE_DAMAGE * cloud.power * Reactions.storm(cast, victim)));
+		Effects.lingering(() -> Effects.hurt(cast, victim, lightning(cast), CLOUD_STRIKE_DAMAGE * cloud.power * Reactions.storm(cast, victim)));
 	}
 
 	// ------------------------------------------------------------------ Downdraft
@@ -547,7 +547,7 @@ final class FusedStorm {
 				}
 				pinned++;
 				t.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, DOWNDRAFT_PIN_TICKS, 2, false, true), cast.caster);
-				Effects.hurt(t, wind(cast), DOWNDRAFT_PIN_DAMAGE * power);
+				Effects.hurt(cast, t, wind(cast), DOWNDRAFT_PIN_DAMAGE * power);
 			}
 		}
 	}
@@ -560,14 +560,14 @@ final class FusedStorm {
 		if (ground == null || !safe(level, t, ground)) {
 			// Nowhere safe to put it (a boss, lava or the void below): the wind only strikes it where it is.
 			FusedStormVfx.buffeted(level, t);
-			Effects.hurt(t, wind(cast), SLAM_DAMAGE * power);
+			Effects.hurt(cast, t, wind(cast), SLAM_DAMAGE * power);
 			return;
 		}
 		double fallen = Math.max(0, from.y - ground.y);
 		boolean flyer = flyer(t);
 		FusedStormVfx.slam(level, from, ground, t, fallen);
 		move(t, level, ground);
-		Effects.hurt(t, wind(cast), slamDamage(fallen) * power);
+		Effects.hurt(cast, t, wind(cast), slamDamage(fallen) * power);
 		if (onHand(cast, t)) {
 			setMotion(t, Vec3.ZERO);
 			Reactions.mark(t, Reactions.Mark.WINDSWEPT);
@@ -673,7 +673,7 @@ final class FusedStorm {
 		}
 		// Down on the ground it's no longer airborne: the smash itself isn't a fifth harder for having lifted it.
 		Reactions.clear(t, Reactions.Mark.AIRBORNE);
-		Effects.hurt(t, wind(cast), damage);
+		Effects.hurt(cast, t, wind(cast), damage);
 		if (down && onHand(cast, t)) {
 			setMotion(t, Vec3.ZERO);
 		}
@@ -801,7 +801,7 @@ final class FusedStorm {
 			if (back) {
 				move(t, level, home);
 			}
-			Effects.hurt(t, wind(cast), snap.damage()[0]);
+			Effects.hurt(cast, t, wind(cast), snap.damage()[0]);
 			if (back && onHand(cast, t)) {
 				setMotion(t, Vec3.ZERO);
 			}

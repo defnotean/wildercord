@@ -509,7 +509,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 		double amount = target instanceof Player ? damage * SpellDefenceRules.capBonus(bonus, Config.get().defence().maxBonus()) : damage * bonus;
 		float before = target.getHealth();
 		Effects.readyToHurt(target);
-		SpellDefence.hurt(target, source, (float) amount);
+		SpellDefence.hurt(level, target, source, (float) amount);
 		return Math.max(0, before - Math.max(0, target.getHealth()));
 	}
 

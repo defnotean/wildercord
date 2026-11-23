@@ -677,7 +677,7 @@ public final class Mastery {
 		Light.ray(cast.level, from.getBoundingBox().getCenter(), next.getBoundingBox().getCenter(), 0xBFE8FF, 0.05, 6);
 		tally.chaining = true;
 		try {
-			RelayCircles.from(cast, origin, () -> Effects.hurt(target, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), dealt * LEAP_SHARE));
+			RelayCircles.from(cast, origin, () -> Effects.hurt(cast, target, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), dealt * LEAP_SHARE));
 		} finally {
 			tally.chaining = false;
 		}

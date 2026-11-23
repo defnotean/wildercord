@@ -185,7 +185,7 @@ public final class SecretSpells {
 				if (!cast.alive() || !t.isAlive()) {
 					return;
 				}
-				Effects.hurt(t, level.damageSources().source(DamageTypes.FREEZE, caster), 7 * power);
+				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 7 * power);
 				Spirits.freeze(t, 50);
 				BlockFx.encase(level, t, 50);
 				t.setTicksFrozen(t.getTicksRequiredToFreeze() + 60);
@@ -211,7 +211,7 @@ public final class SecretSpells {
 				}
 				Vec3 c = t.getBoundingBox().getCenter();
 				Vfx.shockArc(level, prev, c);
-				Effects.hurt(t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 5 * power);
+				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 5 * power);
 				prev = c;
 			}
 			Fx.sound(level, from, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.8F, 1.5F);
@@ -301,7 +301,7 @@ public final class SecretSpells {
 					}
 					for (LivingEntity t : enemiesNear(pulse, point.add(0, 1, 0), 5.5)) {
 						t.igniteForSeconds(3);
-						Effects.hurt(t, level.damageSources().source(DamageTypes.IN_FIRE, pulse.caster), 2 * power);
+						Effects.hurt(pulse, t, level.damageSources().source(DamageTypes.IN_FIRE, pulse.caster), 2 * power);
 					}
 				});
 			}
@@ -343,7 +343,7 @@ public final class SecretSpells {
 					}
 					LivingEntity target = (LivingEntity) e;
 					double extra = Math.min(40, target.getMaxHealth() * 0.1);
-					Effects.hurt(target, magic(cast), 12 * power + extra);
+					Effects.hurt(cast, target, magic(cast), 12 * power + extra);
 					TechniqueVfx.cleave(level, target, fwd);
 				}
 			});
@@ -399,7 +399,7 @@ public final class SecretSpells {
 							Vfx.emit(level, ParticleTypes.HEART, target.getEyePosition().add(0, 0.4, 0), 1, 0.2, 0.0);
 						} else if (Targets.canHarm(caster, target)) {
 							target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 1, false, true));
-							Effects.hurt(target, magic(pulse), 2 * power);
+							Effects.hurt(pulse, target, magic(pulse), 2 * power);
 							Vec3 hit = target.getBoundingBox().getCenter();
 							Vec3 bulge = ElementFx.flatDir(level.getRandom().nextDouble() * Math.PI * 2).add(0, 0.6, 0).normalize();
 							ElementFx.slash(level, hit.subtract(bulge.scale(0.7)), bulge.cross(new Vec3(0, 1, 0)), bulge, 0xF080C0, 0.7, 1.8, 0.1, 1, 5);
@@ -456,7 +456,7 @@ public final class SecretSpells {
 				ElementFx.bolt(level, c.add(0.4, 7, -0.3), c, 0.07, 2, 2);
 				ElementFx.stormImpact(level, c, 1.2);
 				ElementFx.groundRing(level, target.position(), ElementFx.STORM.primary(), 0.3, 2.4, 0.08, 8);
-				Effects.hurt(target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 8 * power * Reactions.storm(cast, target));
+				Effects.hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 8 * power * Reactions.storm(cast, target));
 				Effects.push(target, away.scale(0.6).add(0, 0.3, 0));
 				Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.6F, 1.8F);
 			});
@@ -519,7 +519,7 @@ public final class SecretSpells {
 						Reactions.mark(t2, Reactions.Mark.PULLED);
 					}
 					if (tick % 20 == 0) {
-						Effects.hurt(t2, magic(pulse), 3 * power);
+						Effects.hurt(pulse, t2, magic(pulse), 3 * power);
 					}
 				}
 				if (tick % 20 == 0) {
@@ -638,7 +638,7 @@ public final class SecretSpells {
 		Cast blast = new Cast(entity);
 		for (LivingEntity t : enemiesNear(blast, c, 6)) {
 			t.igniteForSeconds(5);
-			Effects.hurt(t, level.damageSources().source(DamageTypes.IN_FIRE, entity), 14 * power);
+			Effects.hurt(blast, t, level.damageSources().source(DamageTypes.IN_FIRE, entity), 14 * power);
 		}
 		Sigils.ground(level, entity.position(), 0xFF7040, 0xFFE0A0, 3.0F, 30);
 		Sigils.flash(level, c, 0xFFFFA040, 3.0F);
@@ -699,7 +699,7 @@ public final class SecretSpells {
 				}
 				for (LivingEntity t : enemiesNear(cast, p.add(0, 1, 0), 1.8)) {
 					if (hit.add(t.getUUID())) {
-						Effects.hurt(t, cast.level.damageSources().source(DamageTypes.FALLING_STALACTITE, caster), 10 * power);
+						Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.FALLING_STALACTITE, caster), 10 * power);
 						Effects.push(t, new Vec3(0, 1.1, 0).add(fwd.scale(0.3)));
 					}
 				}
@@ -736,7 +736,7 @@ public final class SecretSpells {
 					return;
 				}
 				for (LivingEntity t : enemiesNear(pulse, target.add(0, 0.8, 0), 1.9)) {
-					Effects.hurt(t, magic(pulse), 7 * power);
+					Effects.hurt(pulse, t, magic(pulse), 7 * power);
 				}
 			});
 		}

@@ -161,7 +161,7 @@ final class FusedFrost {
 				chill(t, 30);
 				Reactions.mark(t, Reactions.Mark.FROZEN, 30);
 				if (bite) {
-					Effects.hurt(t, cold, FusedFrostRules.BLIZZARD_BITE * power);
+					Effects.hurt(cast, t, cold, FusedFrostRules.BLIZZARD_BITE * power);
 					FusedFrostVfx.blizzardBite(level, t);
 				}
 			}
@@ -239,7 +239,7 @@ final class FusedFrost {
 				sealed.add(id);
 				int hold = Effects.ticks(t instanceof Player ? 1 : 1.5, duration);
 				freeze(t, hold);
-				Effects.hurt(t, cold, 3 * power);
+				Effects.hurt(cast, t, cold, 3 * power);
 				FusedFrostVfx.rimeFreeze(level, t, centre, hold);
 			}
 			// Stepping off starts the count again.
@@ -275,7 +275,7 @@ final class FusedFrost {
 		ServerLevel level = cast.level;
 		DamageSource cold = frost(cast);
 		FusedFrostVfx.frostbite(level, t, cast.caster.getEyePosition());
-		Effects.hurt(t, cold, 3 * power);
+		Effects.hurt(cast, t, cold, 3 * power);
 		slow(cast, t, 0, 30);
 		chill(t, 30);
 		if (!sets) {
@@ -299,7 +299,7 @@ final class FusedFrost {
 					slow(cast, t, stage, 30);
 					chill(t, 40);
 					FusedFrostVfx.frostbiteBeat(level, t, stage);
-					Effects.hurt(t, cold, power);
+					Effects.hurt(cast, t, cold, power);
 				});
 				if (beat == beats) {
 					release(key, token);
@@ -341,7 +341,7 @@ final class FusedFrost {
 		if (show) {
 			FusedFrostVfx.absoluteZeroSolid(cast.level, t, hold);
 		}
-		Effects.hurt(t, frost(cast), FusedFrostRules.zeroDamage(n) * power);
+		Effects.hurt(cast, t, frost(cast), FusedFrostRules.zeroDamage(n) * power);
 	}
 
 	/** Whether a creature is already slowed or frozen, for Absolute Zero. */
@@ -403,7 +403,7 @@ final class FusedFrost {
 				release(key, token);
 				if (cast.alive() && onHand(cast, t)) {
 					FusedFrostVfx.fossilizeCrack(level, t);
-					Effects.hurt(t, level.damageSources().indirectMagic(cast.caster, cast.caster), 6 * power);
+					Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), 6 * power);
 				}
 			}));
 		}));

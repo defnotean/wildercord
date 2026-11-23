@@ -871,7 +871,7 @@ public final class WorldMagic {
 			admitted++;
 			shockThrough(level, strike, t, waterY, i);
 			double amount = WorldRules.conductDamage(Math.sqrt(t.distanceToSqr(origin))) * power;
-			RelayCircles.from(cast, strike, () -> Effects.hurt(t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), amount));
+			RelayCircles.from(cast, strike, () -> Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), amount));
 		}
 		if (admitted > 0) {
 			Reactions.callout(cast, "conduct", 0xFFE650);

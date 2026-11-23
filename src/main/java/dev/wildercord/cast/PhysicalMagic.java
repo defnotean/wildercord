@@ -40,7 +40,7 @@ public final class PhysicalMagic {
 						if(c.placed.is(PhysicalBlocks.ROOT)&&Targets.canHelp(c.cast.caster,t)){
 							if(!t.hasEffect(MobEffects.REGENERATION))t.addEffect(new MobEffectInstance(MobEffects.REGENERATION,100,0,false,false));
 						}
-						else if(Targets.canHarm(c.cast.caster,t)&&c.cast.once("terrain-contact:"+t.getUUID()))Effects.hurt(t,level.damageSources().indirectMagic(c.cast.caster,c.cast.caster),2*c.cast.power);
+						else if(Targets.canHarm(c.cast.caster,t)&&c.cast.once("terrain-contact:"+t.getUUID()))Effects.hurt(c.cast, t,level.damageSources().indirectMagic(c.cast.caster,c.cast.caster),2*c.cast.power);
 					}
 				}
 				if(PhysicalBlocks.isStep(c.placed)&&c.due-level.getGameTime()<=20){
@@ -177,7 +177,7 @@ public final class PhysicalMagic {
 				for(LivingEntity target:cast.level.getEntitiesOfClass(LivingEntity.class,new AABB(p).inflate(.6))){
 					if(!Targets.canHarm(cast.caster,target)||!struck.add(target.getUUID())||cast.takeEntities(1)==0)continue;
 					Reactions.mark(target,Reactions.Mark.SOAKED,100);
-					Effects.hurt(target,cast.level.damageSources().indirectMagic(cast.caster,cast.caster),(name.equals("tidal_lift")?4:5)*power);
+					Effects.hurt(cast, target,cast.level.damageSources().indirectMagic(cast.caster,cast.caster),(name.equals("tidal_lift")?4:5)*power);
 					if(name.equals("boiling_surge"))target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,40,0,false,false));
 					if(name.equals("thunder_tide"))target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,20,0,false,false));
 				}

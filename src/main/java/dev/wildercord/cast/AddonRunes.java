@@ -220,7 +220,7 @@ public final class AddonRunes {
 
 		@Override
 		public void hurt(LivingEntity target, DamageSource source, double amount) {
-			Effects.hurt(target, source, amount);
+			Effects.hurt(cast, target, source, amount);
 		}
 
 		@Override

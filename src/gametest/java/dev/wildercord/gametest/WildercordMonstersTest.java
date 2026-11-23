@@ -615,7 +615,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		String guard = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			ThunderwingHarpy harpy = (ThunderwingHarpy) player.level().getEntity(live);
-			MonsterMagic.hurt(harpy, player, 200);
+			MonsterMagic.hurt(((ServerLevel) player.level()), harpy, player, 200);
 			return player.isAlive() && player.getHealth() <= 2.5F ? null
 				: "the spellguard should leave a full-health player on one heart (health " + player.getHealth() + ", alive " + player.isAlive() + ")";
 		});

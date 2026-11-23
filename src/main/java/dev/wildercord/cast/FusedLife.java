@@ -110,7 +110,7 @@ final class FusedLife {
 						FusedLifeVfx.sanguineLance(level, caster, t);
 					}
 					// Indirect magic: straight through armour.
-					Effects.hurt(t, level.damageSources().indirectMagic(caster, caster), 12 * power);
+					Effects.hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 12 * power);
 				}
 			}
 			default -> {
@@ -307,7 +307,7 @@ final class FusedLife {
 				FusedLifeVfx.crimsonMistBleed(level, t);
 				// Bleeding while it stands in the mist: wind damage on it sets off Rupture.
 				Reactions.mark(t, Reactions.Mark.BLEEDING, 30);
-				Effects.hurt(t, level.damageSources().indirectMagic(cast.caster, cast.caster), MIST_HARM * mist.power);
+				Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), MIST_HARM * mist.power);
 			} else {
 				veil(t, mist);
 				if (t.getHealth() < t.getMaxHealth()) {
@@ -934,7 +934,7 @@ final class FusedLife {
 					return;
 				}
 				FusedLifeVfx.bonespur(level, t);
-				Effects.hurt(t, strike(cast), 5 * power);
+				Effects.hurt(cast, t, strike(cast), 5 * power);
 				if (t.isAlive()) {
 					bleed(cast, t, power, bleedTicks);
 				}
@@ -975,7 +975,7 @@ final class FusedLife {
 					return;
 				}
 				FireBloodVfx.bleedDrip(level, t, false);
-				Effects.lingering(() -> Effects.hurt(t, source, 1 * power));
+				Effects.lingering(() -> Effects.hurt(cast, t, source, 1 * power));
 			}));
 		}
 	}

@@ -422,7 +422,7 @@ public final class Wards {
 		reflecting = true;
 		try {
 			Effects.readyToHurt(attacker);
-			SpellDefence.hurt(attacker, level.damageSources().indirectMagic(entity, entity), (float) (damage * ward.fraction()));
+			SpellDefence.hurt(level, attacker, level.damageSources().indirectMagic(entity, entity), (float) (damage * ward.fraction()));
 			ward.until -= 20;
 			if (--ward.left <= 0) {
 				REFLECT.remove(entity.getUUID(), ward);

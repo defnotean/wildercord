@@ -252,7 +252,7 @@ public final class CraftedRunes {
 				return;
 			}
 			CraftedVfx.spellbrandBurst(owner.level, target);
-			Effects.asElement(trigger, () -> Effects.hurt(target, magic(owner), BRAND_BURST * brand.power()));
+			Effects.asElement(trigger, () -> Effects.hurt(owner, target, magic(owner), BRAND_BURST * brand.power()));
 			if (trigger.equals("fire") && target.isAlive()) {
 				target.igniteForSeconds(3);
 			}
@@ -266,7 +266,7 @@ public final class CraftedRunes {
 
 	private static void gash(Cast cast, LivingEntity t, double power, int ticks) {
 		CraftedVfx.gash(cast.level, t);
-		Effects.hurt(t, magic(cast), GASH_DAMAGE * power);
+		Effects.hurt(cast, t, magic(cast), GASH_DAMAGE * power);
 		if (!t.isAlive()) {
 			return;
 		}
@@ -276,7 +276,7 @@ public final class CraftedRunes {
 		Reactions.mark(t, Reactions.Mark.BLEEDING, ticks);
 		// The wound that won't close weeps in proportion to its bearer: a fixed sliver plus a share of its health, every second.
 		double weep = (GASH_WEEP + GASH_WEEP_SHARE * t.getMaxHealth()) * power;
-		Runnable bleed = Effects.carryContext(() -> Effects.hurt(t, magic(cast), weep));
+		Runnable bleed = Effects.carryContext(() -> Effects.hurt(cast, t, magic(cast), weep));
 		ShapeRunners.each(cast, ticks, tick -> {
 			if (!t.isAlive() || !gashed(t)) {
 				return false;
@@ -452,7 +452,7 @@ public final class CraftedRunes {
 		target.igniteForSeconds(SEAR_BURN_SECONDS);
 		double react = Reactions.fire(cast, target);
 		CraftedVfx.searingHit(cast.level, target);
-		Effects.asElement("fire", () -> Effects.hurt(target, cast.level.damageSources().source(DamageTypes.IN_FIRE, attacker), SEAR_DAMAGE * edge.power() * react));
+		Effects.asElement("fire", () -> Effects.hurt(cast, target, cast.level.damageSources().source(DamageTypes.IN_FIRE, attacker), SEAR_DAMAGE * edge.power() * react));
 	}
 
 	// ------------------------------------------------------------------ Flash Freeze
@@ -461,7 +461,7 @@ public final class CraftedRunes {
 		boolean wet = WorldMagic.wet(t);
 		// Soaked (in water, or by a water rune, Tidebreath or a Bubble) freezes hardest; only rained on, less.
 		boolean soaked = t.isInWater() || Reactions.has(t, Reactions.Mark.WET) || Reactions.has(t, Reactions.Mark.SOAKED);
-		Effects.hurt(t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), FLASH_FREEZE_DAMAGE * power);
+		Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), FLASH_FREEZE_DAMAGE * power);
 		if (!t.isAlive()) {
 			return;
 		}
@@ -645,7 +645,7 @@ public final class CraftedRunes {
 		int light = cast.level.getMaxLocalRawBrightness(BlockPos.containing(t.getEyePosition()));
 		boolean dim = light <= UMBRA_DIM || VoidTime.darkened(t);
 		CraftedVfx.umbra(cast.level, t, dim);
-		Effects.hurt(t, magic(cast), UMBRA_DAMAGE * power * (dim ? 2 : 1));
+		Effects.hurt(cast, t, magic(cast), UMBRA_DAMAGE * power * (dim ? 2 : 1));
 		// The dark stays on it: life damage then sets off Blight.
 		Reactions.mark(t, Reactions.Mark.SHADOWED);
 	}

@@ -226,7 +226,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 		}
 		for (Entity e : level.getEntities(this, new AABB(c, c).inflate(3.0), e -> Targets.canHarm(this, e))) {
 			if (e.distanceToSqr(c) <= 9) {
-				MonsterMagic.hurt(this, (LivingEntity) e, BURST_DAMAGE);
+				MonsterMagic.hurt(level, this, (LivingEntity) e, BURST_DAMAGE);
 			}
 		}
 		dev.wildercord.cast.Sigils.flash(level, c, PINK, 3.0F);
