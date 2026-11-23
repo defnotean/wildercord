@@ -29,6 +29,21 @@ if earlier and not args.again:
 token = os.environ.get("CURSEFORGE_TOKEN")
 if not token:
     sys.exit("CURSEFORGE_TOKEN is required in the process environment.")
+# Game-version ids from minecraft.curseforge.com/api/game/versions (read 2026-11-23 with
+# the upload token; the Core API key is not needed for that endpoint). Each Minecraft
+# version has several records there; the 26.3 upload used the dedicated record for the
+# version family, so the map below keeps that same record per version. Java is 25 on the
+# 26.x line and 21 on 1.21.x, Fabric/Client/Server are shared ids.
+MC_GAME_VERSION = {
+    "26.3": 17045, "26.2": 16498, "26.1.2": 16082, "26.1": 15933,
+    "1.21.11": 14406, "1.21.10": 13964, "1.21.9": 13927, "1.21.8": 13620,
+    "1.21.7": 13506, "1.21.6": 13422, "1.21.5": 12934, "1.21.4": 12281,
+    "1.21.3": 12084, "1.21.2": 12079, "1.21.1": 11779,
+}
+FABRIC_ID = 7499
+JAVA_ID = {"26": 14454, "1.21": 11135}
+CLIENT_ID, SERVER_ID = 9638, 9639
+
 with zipfile.ZipFile(args.file) as archive:
     version = args.version or json.loads(archive.read("fabric.mod.json"))["version"].split("+mc")[0]
 metadata = {
@@ -41,7 +56,14 @@ metadata = {
 if args.parent:
     metadata["parentFileID"] = args.parent
 else:
-    metadata["gameVersions"] = [17045, 7499, 14454, 9638, 9639]
+    mc = args.file.name.split("+mc", 1)[1].split("-", 1)[0] if "+mc" in args.file.name else None
+    if mc and mc.endswith(".jar"):
+        mc = mc[:-len(".jar")]
+    if mc not in MC_GAME_VERSION:
+        sys.exit(f"{args.file.name} carries no mapped Minecraft version (found {mc!r}); "
+                 f"known: {', '.join(MC_GAME_VERSION)}")
+    metadata["gameVersions"] = [MC_GAME_VERSION[mc], FABRIC_ID,
+                                JAVA_ID["26" if mc.startswith("26") else "1.21"], CLIENT_ID, SERVER_ID]
     metadata["relations"] = {"projects": [{"slug": "fabric-api", "projectID": 306612,
                                              "type": "requiredDependency"}]}
 import requests  # only needed once the guards above have passed
