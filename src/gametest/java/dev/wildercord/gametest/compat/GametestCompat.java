@@ -83,7 +83,7 @@ public final class GametestCompat {
 
 	/** 1.21.11 dropped Camera#getViewRotationProjectionMatrix: rebuild it from the camera pose and the perspective. */
 	public static Matrix4f viewProjection(Camera camera, Matrix4f out) {
-		Vec3 pos = camera.position();
+		Vec3 pos = camera.getPosition();
 		out.rotation(camera.rotation()).translate((float) -pos.x, (float) -pos.y, (float) -pos.z);
 		return Minecraft.getInstance().gameRenderer.getProjectionMatrix(reportedFov(camera)).mul(out, out);
 	}
