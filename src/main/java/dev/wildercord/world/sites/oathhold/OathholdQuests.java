@@ -417,7 +417,7 @@ public final class OathholdQuests {
 		}
 		String cTag = challengerTag(player.getUUID());
 		var existing = level.getEntitiesOfClass(Mob.class, new AABB(anchorPos).inflate(96.0),
-			m -> m.isAlive() && m.entityTags().contains(OathholdLaw.ARENA_DUELIST_TAG) && m.entityTags().contains(cTag));
+			m -> m.isAlive() && m.getTags().contains(OathholdLaw.ARENA_DUELIST_TAG) && m.getTags().contains(cTag));
 		if (!existing.isEmpty()) {
 			player.sendSystemMessage(Component.literal("[Colosseum] Defeat your active Arena opponent first!").withStyle(ChatFormatting.YELLOW));
 			return true;
@@ -461,8 +461,8 @@ public final class OathholdQuests {
 		ActiveJob job = prof.activeJob().get();
 
 		if (OathholdQuestRules.JobCategory.ARENA_BOUT.id.equals(job.category())) {
-			if (victim.entityTags().contains(OathholdLaw.ARENA_DUELIST_TAG)
-					&& victim.entityTags().contains(challengerTag(killer.getUUID()))) {
+			if (victim.getTags().contains(OathholdLaw.ARENA_DUELIST_TAG)
+					&& victim.getTags().contains(challengerTag(killer.getUUID()))) {
 				completeJob(killer, prof, job.withProgress(job.needed()));
 			}
 			return;
@@ -472,7 +472,7 @@ public final class OathholdQuests {
 			boolean match = job.targetKey().equals("dungeon_boss")
 				? victim instanceof DungeonBoss
 				: BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString().equals(job.targetKey())
-					|| victim.entityTags().contains(QUEST_PEST_PREFIX + killer.getUUID());
+					|| victim.getTags().contains(QUEST_PEST_PREFIX + killer.getUUID());
 			if (match) {
 				int next = job.progress() + 1;
 				ActiveJob updated = job.withProgress(next);

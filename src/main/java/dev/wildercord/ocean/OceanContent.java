@@ -7,7 +7,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -46,7 +46,7 @@ public final class OceanContent {
 		OceanEntities.init();
 		OceanItems.init();
 
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(out -> List.of(
 				BARNACLE_HULK_SPAWN_EGG,
 				SIREN_JELLY_SPAWN_EGG,
@@ -61,7 +61,7 @@ public final class OceanContent {
 
 		BiomeModifications.create(Wildercord.id("deep_ocean_expansion_spawns"))
 			.add(ModificationPhase.ADDITIONS, BiomeSelectors.tag(BiomeTags.IS_OCEAN), context -> {
-				var spawns = context.getMobSpawnSettings();
+				var spawns = context.getSpawnSettings();
 				McWorldgen.addSpawn(spawns, MobCategory.MONSTER, OceanEntities.BARNACLE_HULK_DREDGER, 1, 1, 5);
 				McWorldgen.addSpawn(spawns, MobCategory.MONSTER, OceanEntities.SIREN_VEIL_JELLY, 1, 3, 14);
 				McWorldgen.addSpawn(spawns, MobCategory.MONSTER, OceanEntities.CORAL_SPINE_MAKO, 1, 2, 12);

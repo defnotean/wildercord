@@ -303,7 +303,7 @@ public final class OathholdLaw {
 	}
 
 	public static boolean isProtectedPerson(net.minecraft.world.entity.Entity e) {
-		if (e.entityTags().contains(ARENA_DUELIST_TAG)) {
+		if (e.getTags().contains(ARENA_DUELIST_TAG)) {
 			return false;
 		}
 		return e instanceof OathholdCitizen
@@ -353,7 +353,7 @@ public final class OathholdLaw {
 	public static void alertNearbyKnights(ServerLevel level, ServerPlayer criminal) {
 		AABB box = criminal.getBoundingBox().inflate(44.0);
 		for (Mob knight : level.getEntitiesOfClass(Mob.class, box,
-				m -> isKnightEntity(m) && m.isAlive() && !m.entityTags().contains(ARENA_DUELIST_TAG))) {
+				m -> isKnightEntity(m) && m.isAlive() && !m.getTags().contains(ARENA_DUELIST_TAG))) {
 			// Guards watch; do not force attack target.
 			knight.getLookControl().setLookAt(criminal, 30.0F, 30.0F);
 			if (knight.getTarget() == criminal) {
@@ -519,8 +519,8 @@ public final class OathholdLaw {
 		if (!player.isAlive() || player.isCreative() || player.isSpectator() || OathholdJustice.isImprisoned(player)) {
 			return false;
 		}
-		if (knight.entityTags().contains(ARENA_DUELIST_TAG)) {
-			return knight.entityTags().contains(OathholdQuests.challengerTag(player.getUUID()));
+		if (knight.getTags().contains(ARENA_DUELIST_TAG)) {
+			return knight.getTags().contains(OathholdQuests.challengerTag(player.getUUID()));
 		}
 		return isWanted(player) || OathholdJustice.isPersecuted(player);
 	}
@@ -608,7 +608,7 @@ public final class OathholdLaw {
 
 		@Override
 		public boolean canUse() {
-			if (mob.entityTags().contains(ARENA_DUELIST_TAG)) return false;
+			if (mob.getTags().contains(ARENA_DUELIST_TAG)) return false;
 			if (!(mob.level() instanceof ServerLevel level)) return false;
 			if (scanCooldown > 0) {
 				scanCooldown--;

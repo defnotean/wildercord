@@ -68,7 +68,7 @@ public final class OathboundHalberdierTest implements FabricClientGameTest {
 		int camId = world.getServer().computeOnServer(server -> {
 			ServerLevel l = level(server);
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE, STAGE).inflate(64),
-				e -> e.entityTags().contains("wildercord.halberdier_cam")).forEach(Entity::discard);
+				e -> e.getTags().contains("wildercord.halberdier_cam")).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
 			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag("wildercord.halberdier_cam");

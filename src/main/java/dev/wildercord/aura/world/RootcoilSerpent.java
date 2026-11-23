@@ -183,7 +183,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	 * {@link SerpentRules#GUARD_EVERY} ticks, nearest the trunk first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
-		if(entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
+		if(getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var t=trunk();
 		var box=new AABB(t,t).inflate(SerpentRules.ARENA,SerpentRules.LAIR_HEIGHT,SerpentRules.ARENA);
 		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof RootcoilSerpent)
@@ -201,7 +201,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 	/** The nearest player close enough to the trunk to wake it, if any. */
 	private ServerPlayer wakeful(ServerLevel level){
 		var t=trunk();
-		boolean rush=entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
+		boolean rush=getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator()
 				&& ((rush && p.distanceToSqr(t)<=36*36) || SerpentRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z)))
 			.min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
@@ -1037,7 +1037,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 		letGo(false);dropClods();dropSpikes();roots.clear();rippleAge=-1;
 		if(level() instanceof ServerLevel server){
 			Feels.sound(server,position().add(0,2,0),"aura_serpent_death",1.6F,1);Guardians.reward(server,this,SerpentRules.TIER,bar,source);bar.removeAllPlayers();
-			if(bound && !entityTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,LairRespawns.Entry.simple("rootcoil_serpent",tree(),rest(),tree(),tree(),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+			if(bound && !getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,LairRespawns.Entry.simple("rootcoil_serpent",tree(),rest(),tree(),tree(),server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
 		}
 		super.die(source);
 	}

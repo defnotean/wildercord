@@ -74,7 +74,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 		int camId = world.getServer().computeOnServer(server -> {
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(80),
-				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
+				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
 			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
@@ -101,7 +101,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 		context.runOnClient(mc -> mc.setCameraEntity(mc.player));
 		world.getServer().runOnServer(s -> s.overworld()
 			.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(80),
-				e -> e.entityTags().contains(CAM_TAG))
+				e -> e.getTags().contains(CAM_TAG))
 			.forEach(Entity::discard));
 		context.waitTicks(2);
 	}
@@ -453,7 +453,7 @@ public final class OathholdGuildAndLawTest implements FabricClientGameTest {
 				ServerPlayer p = server.getPlayerList().getPlayers().getFirst();
 				String cTag = OathholdQuests.challengerTag(p.getUUID());
 				List<Mob> duelists = l.getEntitiesOfClass(Mob.class, new AABB(ARENA_CENTER).inflate(32.0),
-					m -> m.entityTags().contains(OathholdLaw.ARENA_DUELIST_TAG) && m.entityTags().contains(cTag));
+					m -> m.getTags().contains(OathholdLaw.ARENA_DUELIST_TAG) && m.getTags().contains(cTag));
 				check(duelists.size() == 1, "Expected 1 active Arena Duelist, found " + duelists.size());
 				Mob duelist = duelists.getFirst();
 				duelist.hurtServer(l, l.damageSources().playerAttack(p), 500.0F);

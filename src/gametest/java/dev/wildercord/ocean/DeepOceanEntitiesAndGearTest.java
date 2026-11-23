@@ -72,7 +72,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 		int camId = world.getServer().computeOnServer(server -> {
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(96),
-				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
+				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
 			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
@@ -121,7 +121,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 		context.runOnClient(mc -> mc.setCameraEntity(mc.player));
 		world.getServer().runOnServer(s -> {
 			s.overworld().getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(96),
-				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
+				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			ServerPlayer p = s.getPlayerList().getPlayers().getFirst();
 			p.removeAllEffects();
 		});

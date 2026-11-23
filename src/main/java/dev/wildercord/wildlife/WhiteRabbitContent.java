@@ -3,7 +3,7 @@ package dev.wildercord.wildlife;
 import dev.wildercord.Wildercord;
 import dev.wildercord.net.ServerDisconnects;
 import dev.wildercord.spell.FieldGuide;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -98,9 +98,9 @@ public final class WhiteRabbitContent {
 		WildlifeSpawns.join(WildlifeRules.WHITE_RABBIT, WHITE_RABBIT);
 		FieldGuide.add(new FieldGuide.Entry("wildercord:white_rabbit", FieldGuide.Group.WILDLIFE, 0xF4F2FA));
 
-		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS)
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS)
 			.register(output -> output.accept(WHITE_RABBIT_SPAWN_EGG));
-		CreativeModeTabEvents.modifyOutputEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
+		ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Wildercord.id("wildercord")))
 			.register(output -> output.accept(WHITE_RABBIT_SPAWN_EGG));
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> RabbitHolePortalBlockEntity.clearCooldowns());

@@ -67,7 +67,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 		int camId = world.getServer().computeOnServer(server -> {
 			ServerLevel l = server.overworld();
 			l.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(260),
-				e -> e.entityTags().contains(CAM_TAG)).forEach(Entity::discard);
+				e -> e.getTags().contains(CAM_TAG)).forEach(Entity::discard);
 			Display.TextDisplay cam = net.minecraft.world.entity.EntityType.TEXT_DISPLAY.create(l, EntitySpawnReason.COMMAND);
 			cam.snapTo(eye.x, eye.y, eye.z, yaw(eye, target), pitch(eye, target));
 			cam.addTag(CAM_TAG);
@@ -94,7 +94,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 		context.runOnClient(mc -> mc.setCameraEntity(mc.player));
 		world.getServer().runOnServer(s -> s.overworld()
 			.getEntitiesOfClass(Display.TextDisplay.class, new AABB(STAGE).inflate(260),
-				e -> e.entityTags().contains(CAM_TAG))
+				e -> e.getTags().contains(CAM_TAG))
 			.forEach(Entity::discard));
 		context.waitTicks(2);
 	}
@@ -325,7 +325,7 @@ public final class WhiteRabbitHoleTest implements FabricClientGameTest {
 				AABB arenaArea = new AABB(p.blockPosition()).inflate(40.0);
 				for (EntityType<?> bossType : expectedBosses) {
 					List<Mob> found = l.getEntitiesOfClass(Mob.class, arenaArea,
-						m -> m.getType() == bossType && m.isAlive() && m.entityTags().contains(WhiteRabbitRules.BOSS_RUSH_TAG));
+						m -> m.getType() == bossType && m.isAlive() && m.getTags().contains(WhiteRabbitRules.BOSS_RUSH_TAG));
 					check(!found.isEmpty(), "Missing live tagged boss-rush entity: " + bossType.getDescription().getString());
 				}
 				return p.blockPosition();

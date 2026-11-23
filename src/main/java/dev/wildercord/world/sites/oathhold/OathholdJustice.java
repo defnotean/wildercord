@@ -201,7 +201,7 @@ public final class OathholdJustice {
 	}
 
 	public static boolean isGuardEntity(@Nullable Entity e) {
-		if (e == null || !e.isAlive() || e.entityTags().contains(OathholdLaw.ARENA_DUELIST_TAG)) return false;
+		if (e == null || !e.isAlive() || e.getTags().contains(OathholdLaw.ARENA_DUELIST_TAG)) return false;
 		if (OathholdLaw.isKnightEntity(e)) return true;
 		if (e instanceof IronGolem) return true;
 		return e instanceof OathholdCitizen citizen && citizen.archetype() == OathholdCitizenRules.Archetype.CITY_WATCHMAN;

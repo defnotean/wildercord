@@ -40,7 +40,7 @@ public final class OathholdSites {
 
 	private static Optional<Structure.GenerationStub> locateCity(Structure.GenerationContext ctx) {
 		ChunkPos cp = ctx.chunkPos();
-		return OathholdOrigin.resolve(ctx, cp.x(), cp.z()).map(origin ->
+		return OathholdOrigin.resolve(ctx, cp.x, cp.z).map(origin ->
 			new Structure.GenerationStub(OathholdOrigin.anchorPos(origin), builder ->
 				builder.addPiece(new OathholdAnchorPiece(origin.originX(), origin.baseY(), origin.originZ()))
 			)
@@ -49,9 +49,9 @@ public final class OathholdSites {
 
 	private static Optional<Structure.GenerationStub> locateSector(Structure.GenerationContext ctx) {
 		ChunkPos cp = ctx.chunkPos();
-		return OathholdOrigin.findOwningCity(ctx, cp.x(), cp.z()).map(origin ->
+		return OathholdOrigin.findOwningCity(ctx, cp.x, cp.z).map(origin ->
 			new Structure.GenerationStub(cp.getWorldPosition().atY(origin.baseY()), builder ->
-				builder.addPiece(new OathholdSectorPiece(cp.x(), cp.z(), origin.originX(), origin.baseY(), origin.originZ()))
+				builder.addPiece(new OathholdSectorPiece(cp.x, cp.z, origin.originX(), origin.baseY(), origin.originZ()))
 			)
 		);
 	}

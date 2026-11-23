@@ -11,7 +11,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -89,7 +89,7 @@ public final class GuildBoardMenu extends ChestMenu {
 	}
 
 	@Override
-	public void clicked(int slotIndex, int buttonNum, ContainerInput input, Player player) {
+	public void clicked(int slotIndex, int buttonNum, ClickType input, Player player) {
 		if (slotIndex < 0 || slotIndex >= 54) {
 			if (slotIndex >= 54) return;
 			super.clicked(slotIndex, buttonNum, input, player);

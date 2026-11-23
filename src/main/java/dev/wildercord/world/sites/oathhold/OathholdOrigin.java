@@ -166,11 +166,11 @@ public final class OathholdOrigin {
 				int sampleCz = (baseRz + drz) * MACRO_SPACING;
 				ChunkPos center = macroCenterChunk(ctx.seed(), sampleCx, sampleCz);
 				if (!checked.add(center)) continue;
-				int ox = center.x() * 16 + 8;
-				int oz = center.z() * 16 + 8;
+				int ox = center.x * 16 + 8;
+				int oz = center.z * 16 + 8;
 				if (ox + HALF_SIZE - 1 < minX || ox - HALF_SIZE > maxX) continue;
 				if (oz + HALF_SIZE - 1 < minZ || oz - HALF_SIZE > maxZ) continue;
-				Optional<Origin> origin = resolve(ctx, center.x(), center.z());
+				Optional<Origin> origin = resolve(ctx, center.x, center.z);
 				if (origin.isPresent()) {
 					return origin;
 				}
@@ -196,10 +196,10 @@ public final class OathholdOrigin {
 				int sampleCz = (baseRz + drz) * MACRO_SPACING;
 				ChunkPos center = macroCenterChunk(ctx.seed(), sampleCx, sampleCz);
 				if (!checked.add(center)) continue;
-				int ox = center.x() * 16 + 8;
-				int oz = center.z() * 16 + 8;
+				int ox = center.x * 16 + 8;
+				int oz = center.z * 16 + 8;
 				if (Math.abs(blockX - ox) <= half && Math.abs(blockZ - oz) <= half
-						&& resolve(ctx, center.x(), center.z()).isPresent()) {
+						&& resolve(ctx, center.x, center.z).isPresent()) {
 					return true;
 				}
 			}
