@@ -427,7 +427,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			});
 
 			context.runOnClient(mc -> {
-				mc.particleEngine.clearParticles();
+				dev.wildercord.gametest.compat.GametestCompat.clearParticles(mc.particleEngine);
 				if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 				mc.setCameraEntity(mc.player);
 				mc.options.fov().set(55);
@@ -487,7 +487,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 			});
 
 			context.runOnClient(mc -> {
-				mc.particleEngine.clearParticles();
+				dev.wildercord.gametest.compat.GametestCompat.clearParticles(mc.particleEngine);
 				if (!dev.wildercord.gametest.compat.GametestCompat.hudHidden(mc)) dev.wildercord.gametest.compat.GametestCompat.toggleHud(mc);
 				mc.setCameraEntity(mc.player);
 				mc.options.fov().set(68);

@@ -434,8 +434,8 @@ public final class BossDamageTest implements FabricClientGameTest {
 				var vanilla = mc.level.getEntity(fireIds[1]);
 				check(custom != null && custom.displayFireAnimation(), "burning custom mob logically displays fire");
 				check(vanilla != null && vanilla.displayFireAnimation(), "burning vanilla mob logically displays fire");
-				var customState = mc.getEntityRenderDispatcher().extractEntity(custom, 0.0F);
-				var vanillaState = mc.getEntityRenderDispatcher().extractEntity(vanilla, 0.0F);
+				var customState = (net.minecraft.client.renderer.entity.state.EntityRenderState) mc.getEntityRenderDispatcher().getRenderer(custom).createRenderState(custom, 0.0F);
+				var vanillaState = (net.minecraft.client.renderer.entity.state.EntityRenderState) mc.getEntityRenderDispatcher().getRenderer(vanilla).createRenderState(vanilla, 0.0F);
 				check(!customState.displayFireAnimation, "custom mob suppresses obscuring vanilla fire billboard");
 				check(vanillaState.displayFireAnimation, "vanilla mob preserves vanilla fire billboard");
 				dev.wildercord.gametest.compat.GametestCompat.clearToasts(mc);
