@@ -36,7 +36,7 @@ crossing paths give sword users dry footing close to the raft.
 The markings remain visible with **Minimal** particles. Each attack can hit you
 once, and there is time to answer between attacks. The base damage is 6 for the
 oar, 5 for the anchor and 7 for the wake, before the world's normal difficulty,
-tempering and your defences. Base health is 180 with 4 armour; progression and
+tempering and your defences. Base health is 720 with 10 armour and 5 armour toughness; progression and
 nearby challengers can increase its health through normal boss tempering.
 
 At half health the Ferryman changes its move order and rotates later safe
@@ -67,6 +67,6 @@ Return to a Tideward Reedkeeper after the victory. Once you have heard the
 keeper's original four stories, they acknowledge the crossing you completed and
 the compass you brought home. Their response remains in your journal's Talk tab.
 
-The bell stays complete after victory and cannot repeat the reward. Leaving an
+After victory, the bell rests for **10 minutes** before allowing a fresh challenge, while one-time journal entries and compasses are awarded once per player. Leaving an
 attempt or reloading it clears that attempt's participation. The peaceful coastal
 journal route keeps its own clues and rewards.

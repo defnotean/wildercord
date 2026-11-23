@@ -488,8 +488,13 @@ public final class CraftedRunes {
 
 	private static void drowse(Cast cast, LivingEntity t, int ticks) {
 		if (Spirits.isBoss(t)) {
-			// A boss's fight must never stop: it only grows drowsy.
-			if(t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,ticks,DROWSY_AMPLIFIER,false,true),cast.caster))LifeOwnerEvents.admitted(cast,"drowse",t,LifeOwnerEvents.Moment.APPLY,1,null);
+			if (!Spirits.tryClaimBossHold(t, ticks, cast.caster)) {
+				LifeOwnerEvents.refused(cast, "drowse", t);
+				return;
+			}
+			int capped = BossRules.bossHoldTicks(ticks);
+			// A boss's fight only pauses briefly: it grows drowsy for 1–1.75s then breaks free.
+			if(t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS,capped,DROWSY_AMPLIFIER,false,true),cast.caster))LifeOwnerEvents.admitted(cast,"drowse",t,LifeOwnerEvents.Moment.APPLY,1,null);
 			return;
 		}
 		long now = cast.level.getGameTime();

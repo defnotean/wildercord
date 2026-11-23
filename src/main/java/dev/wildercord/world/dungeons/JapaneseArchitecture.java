@@ -181,6 +181,29 @@ public final class JapaneseArchitecture {
 		}
 	}
 
+	/** Broad two-ring curved dark pagoda roof apron for monumental tiered pagoda stories. */
+	public static void pagodaTierRoofApron(BlockPlacer p, int x0, int z0, int x1, int z1, int y,
+			Block stairs, Block slabBlock, BlockState underTrim) {
+		upturnedEaveSkirt(p, x0, z0, x1, z1, y, stairs, slabBlock, underTrim, true);
+		int ox0 = x0 - 1, oz0 = z0 - 1, ox1 = x1 + 1, oz1 = z1 + 1, oy = y - 1;
+		for (int x = ox0 + 1; x < ox1; x++) {
+			p.set(x, oy, oz0, stair(stairs, Direction.NORTH, false));
+			p.set(x, oy, oz1, stair(stairs, Direction.SOUTH, false));
+		}
+		for (int z = oz0 + 1; z < oz1; z++) {
+			p.set(ox0, oy, z, stair(stairs, Direction.EAST, false));
+			p.set(ox1, oy, z, stair(stairs, Direction.WEST, false));
+		}
+		p.set(ox0, oy, oz0, stair(stairs, Direction.NORTH, false).setValue(StairBlock.SHAPE, StairsShape.OUTER_RIGHT));
+		p.set(ox1, oy, oz0, stair(stairs, Direction.NORTH, false).setValue(StairBlock.SHAPE, StairsShape.OUTER_LEFT));
+		p.set(ox0, oy, oz1, stair(stairs, Direction.SOUTH, false).setValue(StairBlock.SHAPE, StairsShape.OUTER_LEFT));
+		p.set(ox1, oy, oz1, stair(stairs, Direction.SOUTH, false).setValue(StairBlock.SHAPE, StairsShape.OUTER_RIGHT));
+		for (int[] c : new int[][]{{ox0 - 1, oz0 - 1, ox0, oz0}, {ox1 + 1, oz0 - 1, ox1, oz0}, {ox0 - 1, oz1 + 1, ox0, oz1}, {ox1 + 1, oz1 + 1, ox1, oz1}}) {
+			p.set(c[0], oy, c[1], slab(slabBlock, SlabType.TOP));
+			p.set(c[2], oy - 1, c[3], Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true));
+		}
+	}
+
 	/** Open-front Tea-House Checkpoint Pavilion matching Floors 1–3 interior references (never encloses airtight walls). */
 	public static void teaCheckpointPavilion(BlockPlacer p, int x0, int floorY, int z0, int x1, int z1,
 			BlockState postBlock, BlockState roofBlock, BlockState carpetBlock, Direction openTowardRoom) {

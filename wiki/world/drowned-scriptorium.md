@@ -20,7 +20,7 @@ wading in it, the Scribe hardest of all.
 | **Biomes** | Deep oceans (deep, deep cold, deep lukewarm, deep frozen) |
 | **How often** | About one in every square 640 blocks across |
 | **Doors** | Frost and Storm, then Life and Wind. The vault's is Storm and Arcane |
-| **Boss** | The Tide Scribe, 340 health |
+| **Boss** | The Tide Scribe, 1,450 health |
 | **Its own rune** | [Tidewrit]({{ '/runes/world/' | relative_url }}#tidewrit) (Tier IV) |
 | **Trophy** | The Drowned Quill |
 | **Runes found only here** | [Drowning Word]({{ '/runes/world/' | relative_url }}#drowning_word), [If Wet]({{ '/runes/world/' | relative_url }}#if_wet) |
@@ -59,13 +59,13 @@ prismarine crystals, a Mana Crystal, ink sacs, nautilus shells, or (rarely) a he
 <img src="{{ '/assets/images/world-tide-pit.jpg' | relative_url }}" alt="The Scriptorium's arena from the balcony with the tide out: a dry pit with rings of brick and sea lanterns round the core, six pedestals, and a glass dome above" class="shot">
 <span class="caption">The pit with the tide out. The pedestals and the balcony stay dry when it floods.</span>
 
-It rises over its core the first time a player comes within **14 blocks**. It floats, can't be knocked back, breathes
+It rises over its core the first time a player comes within **14 blocks**. After the Scribe falls, the core rests for **10 minutes** before re-arming for a fresh fight. It floats, can't be knocked back, breathes
 under water and never strays more than 16 blocks from the core. It's weak to **life** (+50%) and resists **frost**
 (half), though frost still freezes its flood. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}).
 
 | | |
 |---|---|
-| **Health** | 340 (phases change at about 227 and 113) |
+| **Health** | 1,450 (phases change at about 967 and 483) |
 | **Armour** | 6 |
 | **Immune to** | Falls and other monsters |
 | **Boss bar** | Blue. Between spells it shows the tide: rising, flooded, going out, or *stranded in the ice!* |

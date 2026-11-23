@@ -21,6 +21,16 @@ public final class CinnamonContent {
 	public static final net.minecraft.world.item.Item BOW = Registry.register(BuiltInRegistries.ITEM, BOW_KEY,
 		new net.minecraft.world.item.Item(new net.minecraft.world.item.Item.Properties().setId(BOW_KEY).stacksTo(1)));
 
+	private static final ResourceKey<net.minecraft.world.item.Item> GRAND_BOW_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinnamon_grand_bow"));
+	/** A royal ribbon bow that permanently enlarges and empowers Cinnamon. */
+	public static final net.minecraft.world.item.Item GRAND_BOW = Registry.register(BuiltInRegistries.ITEM, GRAND_BOW_KEY,
+		new net.minecraft.world.item.Item(new net.minecraft.world.item.Item.Properties().setId(GRAND_BOW_KEY).stacksTo(1)));
+
+	private static final ResourceKey<net.minecraft.world.item.Item> HARNESS_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinnamon_harness"));
+	/** A twin-chest flying harness allowing Cinnamon's owner and party to ride together. */
+	public static final net.minecraft.world.item.Item HARNESS = Registry.register(BuiltInRegistries.ITEM, HARNESS_KEY,
+		new net.minecraft.world.item.Item(new net.minecraft.world.item.Item.Properties().setId(HARNESS_KEY).stacksTo(1)));
+
 	private static final ResourceKey<net.minecraft.world.item.Item> WHISTLE_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinnamon_whistle"));
 	public static final net.minecraft.world.item.Item WHISTLE = Registry.register(BuiltInRegistries.ITEM, WHISTLE_KEY,
 		new CinnamonWhistleItem(new net.minecraft.world.item.Item.Properties().setId(WHISTLE_KEY).stacksTo(1)));

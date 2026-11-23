@@ -121,7 +121,7 @@ public class CinderWarden extends DungeonBoss {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		return createMonsterAttributes()
-			.add(Attributes.MAX_HEALTH, 300.0)
+			.add(Attributes.MAX_HEALTH, 1200.0)
 			.add(Attributes.MOVEMENT_SPEED, 0.23)
 			.add(Attributes.FOLLOW_RANGE, 40.0)
 			.add(Attributes.ARMOR, 4.0)
