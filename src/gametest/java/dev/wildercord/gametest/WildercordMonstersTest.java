@@ -328,7 +328,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 	private static void spawns(TestSingleplayerContext world) {
 		String failure = world.getServer().computeOnServer(server -> {
 			Registry<Biome> biomes = server.registryAccess().registryOrThrow(Registries.BIOME);
-			Function<ResourceKey<Biome>, Holder<Biome>> biome = key -> biomes.getOrThrow(key);
+			Function<ResourceKey<Biome>, Holder<Biome>> biome = key -> biomes.getHolderOrThrow(key);
 			Object[][] expected = {
 				{Biomes.DARK_FOREST, MonsterContent.BRAMBLEWALKER, true}, {Biomes.FOREST, MonsterContent.BRAMBLEWALKER, true},
 				{Biomes.PLAINS, MonsterContent.BRAMBLEWALKER, false}, {Biomes.DESERT, MonsterContent.BRAMBLEWALKER, false},

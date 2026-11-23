@@ -99,7 +99,7 @@ final class StructureGallery {
 
 	/** The dimension whose biomes can host {@code id}: the overworld unless only the Nether's or the End's biomes are in its tag. */
 	private static ServerLevel home(net.minecraft.server.MinecraftServer server, String id) {
-		var biomes = server.overworld().registryAccess().lookupOrThrow(Registries.STRUCTURE).getValueOrThrow(ResourceKey.create(Registries.STRUCTURE,
+		var biomes = server.overworld().registryAccess().registryOrThrow(Registries.STRUCTURE).getOrThrow(ResourceKey.create(Registries.STRUCTURE,
 			net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("wildercord", id))).biomes();
 		for (ServerLevel level : server.getAllLevels())
 			if (level.getChunkSource().getGenerator().getBiomeSource().possibleBiomes().stream().anyMatch(biomes::contains)) return level;
