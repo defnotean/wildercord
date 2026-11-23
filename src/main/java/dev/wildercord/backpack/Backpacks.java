@@ -77,7 +77,7 @@ public final class Backpacks {
 		if (stack.isEmpty()) {
 			return true;
 		}
-		if (isBackpack(stack) || !stack.getItem().canFitInsideContainerItems() || stack.is(NOT_FOR_BACKPACKS) || stack.is(ItemTags.BUNDLES)
+		if (isBackpack(stack) || stack.is(NOT_FOR_BACKPACKS) || stack.is(ItemTags.BUNDLES)
 				|| stack.getItem() instanceof BundleItem || stack.has(DataComponents.BUNDLE_CONTENTS)
 				|| stack.has(DataComponents.BLOCK_ENTITY_DATA)) {
 			return false;
@@ -216,7 +216,7 @@ public final class Backpacks {
 		if (player.openMenu(provider).isEmpty() || opened[0] == null) {
 			return false;
 		}
-		player.level().playSound(null, player, dev.wildercord.compat.McBlocksAndItems.sound(SoundEvents.ARMOR_EQUIP_LEATHER), SoundSource.PLAYERS, 0.8F, 1.1F + player.getRandom().nextFloat() * 0.1F);
+		player.level().playSound(null, player, dev.wildercord.compat.McBlocksAndItems.sound(SoundEvents.ARMOR_EQUIP_LEATHER.value()), SoundSource.PLAYERS, 0.8F, 1.1F + player.getRandom().nextFloat() * 0.1F);
 		if (opened[0] == BackpackTier.RUNEWOVEN) {
 			player.level().playSound(null, player, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.7F, 1.3F);
 		}

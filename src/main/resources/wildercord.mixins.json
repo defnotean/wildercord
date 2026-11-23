@@ -68,7 +68,6 @@
     "BondedBladeMendingMixin",
     "BondedBladeRepairMixin",
     "BondedBladeIngredientMixin",
-    "BondedBladeSmeltingMixin",
     "FoxAccessor",
     "PackLlamaAccessor",
     "HorseInventoryAccessor",

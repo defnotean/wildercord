@@ -64,7 +64,7 @@ public final class ArmorResponses {
 		reflecting=true;
 		try {
 			if (scoped == null) SpellDefence.hurt(level, attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F));
-			else SpellDefence.hurt(attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F),scoped);
+			else SpellDefence.hurt(level, attacker,level.damageSources().indirectMagic(p,p),Math.min(2,damage*.20F),scoped);
 			Light.ray(level,p.getEyePosition(),attacker.getEyePosition(),0xEED5FF,.045F,8);
 		} finally { reflecting=false; }
 	}

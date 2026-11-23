@@ -151,7 +151,7 @@ public final class Attunement {
 		String dimension = level.dimension().location().toString();
 		long time = Math.floorMod(dev.wildercord.compat.McTime.overworldClock(level), 24000L);
 		int moon = dev.wildercord.compat.EnvCompat.moonPhase(level, feet);
-		Biome.Precipitation falling = level.getBiome(head).value().getPrecipitationAt(head, level.getSeaLevel());
+		Biome.Precipitation falling = level.getBiome(head).value().getPrecipitationAt(head);
 		String precipitation = falling == Biome.Precipitation.RAIN ? "rain" : falling == Biome.Precipitation.SNOW ? "snow" : "none";
 		boolean sculk = biome.equals("minecraft:deep_dark") && nearSculk(level, feet);
 		return new Attunements.Place(biome, dimension, feet.getY(), time, moon, precipitation, level.canSeeSky(head), sculk);

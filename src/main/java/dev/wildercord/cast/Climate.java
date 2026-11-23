@@ -130,7 +130,7 @@ public final class Climate {
 		long time = Math.floorMod(clock, 24000L);
 		int moon = fixedTime ? -1 : ClimateRules.moonPhase(clock);
 		return new ClimateRules.Surroundings(level.dimension().location().toString(), !fixedTime, time, level.canSeeSky(head),
-			level.isRaining(), level.isThundering(), level.isRainingAt(head), biome.coldEnoughToSnow(feet, level.getSeaLevel()),
+			level.isRaining(), level.isThundering(), level.isRainingAt(head), biome.coldEnoughToSnow(feet),
 			biome.getBaseTemperature(), !biome.hasPrecipitation(), feet.getY(), ley, crossing, moon, Config.get().power().celestial());
 	}
 

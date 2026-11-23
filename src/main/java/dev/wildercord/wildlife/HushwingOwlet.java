@@ -180,7 +180,7 @@ public class HushwingOwlet extends Animal {
 		entityData.set(STARING, stare != null);
 		if (hootAgain >= 0 && now >= hootAgain) {
 			hootAgain = -1;
-			playSound(SoundEvents.NOTE_BLOCK_FLUTE, 0.7F, 0.53F);
+			playSound(SoundEvents.NOTE_BLOCK_FLUTE.value(), 0.7F, 0.53F);
 		}
 		Player friend = truster();
 		if (friend != null && tickCount % 20 == 5) {
@@ -213,7 +213,7 @@ public class HushwingOwlet extends Animal {
 
 	/** Hoo-hoo: two low notes. */
 	private void hoot(long now) {
-		playSound(SoundEvents.NOTE_BLOCK_FLUTE, 0.7F, 0.6F);
+		playSound(SoundEvents.NOTE_BLOCK_FLUTE.value(), 0.7F, 0.6F);
 		hootAgain = now + 7;
 	}
 

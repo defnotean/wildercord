@@ -7,7 +7,6 @@ import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.ItemCombinerMenu;
-import net.minecraft.world.inventory.ItemCombinerMenuSlotDefinition;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
@@ -30,7 +29,6 @@ public abstract class BondedBladeSmithingMixin extends ItemCombinerMenu {
 	@Final
 	private DataSlot cost;
 	@Shadow private int repairItemCountCost;
-	@Shadow private boolean onlyRenaming;
 
 	/** Master's Steel on the right tempers a bonded blade on the left (see {@link dev.wildercord.aura.BladeSmithing}). */
 	@Inject(method = "createResult", at = @At("HEAD"), cancellable = true)
@@ -40,7 +38,6 @@ public abstract class BondedBladeSmithingMixin extends ItemCombinerMenu {
 		resultSlots.setItem(0, result == null ? ItemStack.EMPTY : result.out());
 		cost.set(result == null ? 0 : result.levels());
 		repairItemCountCost = result == null ? 0 : result.steel();
-		onlyRenaming = false;
 		broadcastChanges();
 		ci.cancel();
 	}
@@ -52,13 +49,12 @@ public abstract class BondedBladeSmithingMixin extends ItemCombinerMenu {
 		resultSlots.setItem(0, result);
 		cost.set(result.isEmpty() ? 0 : dev.wildercord.aura.RuneEtchingRules.LEVELS);
 		repairItemCountCost = result.isEmpty() ? 0 : 1;
-		onlyRenaming = false;
 		broadcastChanges();
 		ci.cancel();
 	}
 
-	private BondedBladeSmithingMixin(MenuType<?> type, int id, Inventory inventory, ContainerLevelAccess access, ItemCombinerMenuSlotDefinition slots) {
-		super(type, id, inventory, access, slots);
+	private BondedBladeSmithingMixin(MenuType<?> type, int id, Inventory inventory, ContainerLevelAccess access) {
+		super(type, id, inventory, access);
 	}
 
 	@Inject(method = "createResult", at = @At("TAIL"))

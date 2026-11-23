@@ -57,6 +57,16 @@ public final class McBlocksAndItems {
 
 	private McBlocksAndItems() {}
 
+	/** Maps an {@code InteractionResult} onto the 1.21.1 {@code ItemInteractionResult} enum. */
+	public static net.minecraft.world.ItemInteractionResult itemResult(net.minecraft.world.InteractionResult result) {
+		return switch (result) {
+			case SUCCESS -> net.minecraft.world.ItemInteractionResult.SUCCESS;
+			case CONSUME, CONSUMED -> net.minecraft.world.ItemInteractionResult.CONSUME;
+			case FAIL -> net.minecraft.world.ItemInteractionResult.FAIL;
+			default -> net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		};
+	}
+
 	/** Push reaction preventing pistons from moving authored sanctuary/mechanised blocks. */
 	public static PushReaction immovablePushReaction() {
 		return PushReaction.BLOCK;
@@ -212,7 +222,7 @@ public final class McBlocksAndItems {
 
 	/** Block of the dyed family {@code suffix} (e.g. {@code "wall_banner"}) in {@code color}, or null when absent. */
 	public static  Block dyedBlock(String suffix, DyeColor color) {
-		Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(color.getName() + "_" + suffix));
+		Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.withDefaultNamespace(color.getName() + "_" + suffix));
 		return block == Blocks.AIR ? null : block;
 	}
 

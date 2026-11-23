@@ -51,6 +51,11 @@ public final class ManualPagesRecipe implements CraftingRecipe {
 	private final List<Ingredient> ingredients;
 	private final ShapelessRecipe shapeless;
 
+	@Override
+	public ItemStack getResultItem(net.minecraft.core.HolderLookup.Provider registries) {
+		return result;
+	}
+
 	public ManualPagesRecipe(CraftingBookCategory category, ItemStack result, List<Ingredient> ingredients) {
 		this.category = category;
 		this.result = result;

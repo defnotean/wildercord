@@ -40,7 +40,7 @@ public final class CoilrootBlock extends Block {
 	}
 
 	@Override protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		return eat(level, pos, player);
+		return dev.wildercord.compat.McBlocksAndItems.itemResult(eat(level, pos, player));
 	}
 
 	private static InteractionResult eat(Level level, BlockPos pos, Player who) {

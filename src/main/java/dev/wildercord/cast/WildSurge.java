@@ -233,7 +233,7 @@ public final class WildSurge {
 				Motes.clouds(level, heart, 5, 0.35, Motes.SMOKE, 1.1, 34, new Vec3(0, 0.03, 0), 0.06, 0.45);
 				Motes.burst(level, heart, 14, surge.color, 0.16, 18, 0.22);
 				Sigils.flash(level, heart, surge.color, 1.6F);
-				Fx.sound(level, heart, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.6F);
+				Fx.sound(level, heart, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 1.6F);
 			}
 			case FREE_RECAST -> {
 				release.accept(cast);

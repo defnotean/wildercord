@@ -259,7 +259,7 @@ public final class SpellDefence {
 			return 0;
 		}
 		int levels = 0;
-		for (EquipmentSlot slot : EquipmentSlot.VALUES) {
+		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
 				levels += Math.min(SpellDefenceRules.WARDING_MAX_LEVEL, EnchantmentHelper.getItemEnchantmentLevel(warding.get(), player.getItemBySlot(slot)));
 			}
@@ -275,7 +275,7 @@ public final class SpellDefence {
 			return 0;
 		}
 		int levels = 0;
-		for (EquipmentSlot slot : EquipmentSlot.VALUES) {
+		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
 				levels += EnchantmentHelper.getItemEnchantmentLevel(protection.get(), player.getItemBySlot(slot));
 			}

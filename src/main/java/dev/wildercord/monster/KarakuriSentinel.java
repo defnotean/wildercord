@@ -107,7 +107,7 @@ public class KarakuriSentinel extends WildMonster {
 		} else if (distanceToSqr(target) <= 12.0) {
 			spinCooldown = 45;
 			windupTicks = 14;
-			level.playSound(null, blockPosition(), SoundEvents.NOTE_BLOCK_CHIME, SoundSource.HOSTILE, 0.8F, 1.1F);
+			level.playSound(null, blockPosition(), SoundEvents.NOTE_BLOCK_CHIME.value(), SoundSource.HOSTILE, 0.8F, 1.1F);
 		}
 	}
 }

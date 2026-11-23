@@ -49,6 +49,11 @@ public final class UpgradeRecipe implements CraftingRecipe {
 	/** The same recipe as a plain shapeless one: it does the matching and the recipe book's display. */
 	private final ShapelessRecipe shapeless;
 
+	@Override
+	public ItemStack getResultItem(net.minecraft.core.HolderLookup.Provider registries) {
+		return result;
+	}
+
 	public UpgradeRecipe(CraftingBookCategory category, ItemStack result, List<Ingredient> ingredients) {
 		this.category = category;
 		this.result = result;

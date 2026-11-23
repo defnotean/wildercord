@@ -402,7 +402,7 @@ public final class WorldEvents {
 		dev.wildercord.cast.Fx.sendParticles(level, ParticleTypes.REVERSE_PORTAL, at.x, at.y, at.z, 20, 0.3, 0.5, 0.3, 0.05);
 		dev.wildercord.cast.Fx.sendParticles(level, ParticleTypes.END_ROD, at.x, at.y, at.z, 6, 0.3, 0.5, 0.3, 0.03);
 		if (entity instanceof Mob mob) {
-			mob.dropPreservedEquipment(level);
+			mob.dropPreservedEquipment();
 		}
 		LIVE.remove(entity.getUUID());
 		entity.discard();

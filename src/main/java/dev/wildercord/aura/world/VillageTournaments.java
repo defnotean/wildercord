@@ -31,8 +31,8 @@ import java.util.*;
 public final class VillageTournaments {
 	private VillageTournaments(){}
 	private static final ResourceKey<Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("tournament_board")),FLAG_KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("tournament_standard"));
-	public static final TournamentBoard BOARD=Registry.register(BuiltInRegistries.BLOCK,KEY,new TournamentBoard(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.WOOD).noLootTable().noOcclusion()));
-	public static final Block STANDARD=Registry.register(BuiltInRegistries.BLOCK,FLAG_KEY,new Block(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.WOOL).noLootTable().noOcclusion()));
+	public static final TournamentBoard BOARD=Registry.register(BuiltInRegistries.BLOCK,KEY,new TournamentBoard(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.WOOD).noOcclusion()));
+	public static final Block STANDARD=Registry.register(BuiltInRegistries.BLOCK,FLAG_KEY,new Block(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.WOOL).noOcclusion()));
 	public static final BlockEntityType<TournamentBoardEntity> BOARD_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("tournament_board"),FabricBlockEntityTypeBuilder.create(TournamentBoardEntity::new,BOARD).build());
 	private static final Map<ServerLevel,Map<BlockPos,TournamentBoardEntity>> LOADED=new HashMap<>();
 	static void loaded(TournamentBoardEntity b){if(b.getLevel() instanceof ServerLevel s){var sites=LOADED.computeIfAbsent(s,k->new HashMap<>());sites.values().removeIf(BlockEntity::isRemoved);if(sites.size()<128 || sites.containsKey(b.getBlockPos()))sites.put(b.getBlockPos(),b);}}
@@ -52,7 +52,7 @@ public final class VillageTournaments {
 		for(int x:new int[]{-8,8})for(int z:new int[]{-8,8})s.setBlockAndUpdate(center.offset(x,0,z),STANDARD.defaultBlockState());
 		return b;
 	}
-	public static ItemStack history(){var stack=new ItemStack(Items.WRITTEN_BOOK);stackstack.set(DataComponents.WRITTEN_BOOK_CONTENT,new WrittenBookContent(Filterable.passThrough("The Three Bows"),"The Village Stewards",0,List.of(Filterable.passThrough(Component.translatable("book.wildercord.tournament.1")),Filterable.passThrough(Component.translatable("book.wildercord.tournament.2")),Filterable.passThrough(Component.translatable("book.wildercord.tournament.3"))),true));return stack;}
+	public static ItemStack history(){var stack=new ItemStack(Items.WRITTEN_BOOK);stack.set(DataComponents.WRITTEN_BOOK_CONTENT,new WrittenBookContent(Filterable.passThrough("The Three Bows"),"The Village Stewards",0,List.of(Filterable.passThrough(Component.translatable("book.wildercord.tournament.1")),Filterable.passThrough(Component.translatable("book.wildercord.tournament.2")),Filterable.passThrough(Component.translatable("book.wildercord.tournament.3"))),true));return stack;}
 	public static void init(){
 		UseBlockCallback.EVENT.register((p,l,h,hit)->{if(!l.getBlockState(hit.getBlockPos()).is(BOARD))return InteractionResult.PASS;if(h==net.minecraft.world.InteractionHand.MAIN_HAND && p instanceof net.minecraft.server.level.ServerPlayer player && l.getBlockEntity(hit.getBlockPos()) instanceof TournamentBoardEntity b)b.use(player);return InteractionResult.SUCCESS;});
 		ServerLifecycleEvents.SERVER_STOPPED.register(s->LOADED.clear());

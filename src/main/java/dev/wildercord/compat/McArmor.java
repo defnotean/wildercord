@@ -56,7 +56,7 @@ public final class McArmor {
 		ArmorMaterial material = new ArmorMaterial(
 			defense,
 			enchantmentValue,
-			Holder.direct(net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER),
+			Holder.direct(net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value()),
 			() -> Ingredient.of(repairTag),
 			List.of(new ArmorMaterial.Layer(model)),
 			toughness,

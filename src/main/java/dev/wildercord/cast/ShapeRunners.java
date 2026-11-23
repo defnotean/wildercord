@@ -250,7 +250,7 @@ final class ShapeRunners {
 				}
 			});
 		}
-		Fx.sound(cast.level, origin, net.minecraft.sounds.SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 0.8F);
+		Fx.sound(cast.level, origin, net.minecraft.sounds.SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.8F, 0.8F);
 	}
 
 	/** Pillar: a column erupting from the ground at the point. */

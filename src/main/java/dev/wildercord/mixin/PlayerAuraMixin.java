@@ -43,18 +43,18 @@ public abstract class PlayerAuraMixin {
 	}
 
 	@WrapOperation(method = "attack", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+		target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private boolean wildercord$auraBlow(Entity target, DamageSource source, float damage, Operation<Boolean> original) {
 		if ((Object) this instanceof net.minecraft.server.level.ServerPlayer player) dev.wildercord.aura.MasterForms.cancel(player);
 		return AuraCombat.blow((Player) (Object) this, target, source, damage, true, amount -> original.call(target, source, amount));
 	}
 
 	@WrapOperation(method = "attack", at = @At(value = "INVOKE",
-		target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)V"))
-	private void wildercord$auraSweepBlow(LivingEntity target, DamageSource source, float damage, Operation<Void> original) {
+		target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+	private boolean wildercord$auraSweepBlow(LivingEntity target, DamageSource source, float damage, Operation<Boolean> original) {
 		wildercord$swept = true;
 		AuraCombat.sweep((Player) (Object) this);
-		AuraCombat.blow((Player) (Object) this, target, source, damage, false, amount -> { original.call(target, source, amount); return true; });
+		return AuraCombat.blow((Player) (Object) this, target, source, damage, false, amount -> original.call(target, source, amount));
 	}
 
 	/** Flow sweeps with every aura weapon: where vanilla's inlined sweep did not run, the aura crescent is drawn on its own. */
@@ -65,7 +65,7 @@ public abstract class PlayerAuraMixin {
 			return;
 		}
 		double max = self.getSpeed() * 2.5;
-		if (self.getKnownMovement().horizontalDistanceSqr() < max * max) {
+		if (self.getDeltaMovement().horizontalDistanceSqr() < max * max) {
 			self.sweepAttack();
 			AuraCombat.sweep(self);
 		}

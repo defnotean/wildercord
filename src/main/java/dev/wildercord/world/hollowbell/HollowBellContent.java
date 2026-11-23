@@ -24,7 +24,7 @@ public final class HollowBellContent {
 	private HollowBellContent() {}
 	private static final ResourceKey<Block> BELFRY_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("listening_belfry"));
 	public static final ListeningBelfryBlock BELFRY = Registry.register(BuiltInRegistries.BLOCK, BELFRY_KEY,
-		new ListeningBelfryBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().noLootTable().lightLevel(s -> 9).sound(SoundType.COPPER)));
+		new ListeningBelfryBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().lightLevel(s -> 9).sound(SoundType.COPPER)));
 	public static final Item BELFRY_ITEM = Registry.register(BuiltInRegistries.ITEM, ResourceKey.create(Registries.ITEM, Wildercord.id("listening_belfry")),
 		new BlockItem(BELFRY, new Item.Properties()));
 	public static final BlockEntityType<ListeningBelfryEntity> BELFRY_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("listening_belfry"),

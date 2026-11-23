@@ -286,7 +286,7 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 		if (hasVariants() || packHunter()) {
 			var biome = level.getBiome(blockPosition()).value();
 			MonsterVariantRules.Variant variant = hasVariants()
-				? MonsterVariantRules.of(biome.getBaseTemperature(), biome.coldEnoughToSnow(blockPosition(), level.getSeaLevel()))
+				? MonsterVariantRules.of(biome.getBaseTemperature(), biome.coldEnoughToSnow(blockPosition()))
 				: MonsterVariantRules.Variant.NONE;
 			// The first of a group is the one finalized with no group data yet.
 			boolean alpha = packHunter() && groupData == null && reason == MobSpawnType.NATURAL

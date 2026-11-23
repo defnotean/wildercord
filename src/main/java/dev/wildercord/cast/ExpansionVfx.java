@@ -206,7 +206,7 @@ final class ExpansionVfx {
 		Vfx.radial(level, theme.spark(), at, 14, 0.35);
 		Vfx.radial(level, theme.mote(), at, 18, 0.2);
 		Vfx.emit(level, theme.sparkle(), at, 6, radius * 0.3, 0.0);
-		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.5F);
+		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 1.5F);
 		Fx.sound(level, at, theme.impact(), 0.8F, 1.0F);
 	}
 
@@ -301,7 +301,7 @@ final class ExpansionVfx {
 		}
 		Sigils.flash(level, to, theme.primary(), 1.6F);
 		Light.ring(level, to, dir, theme.primary(), 0.2, 1.4, 0.06, 9);
-		Fx.sound(level, from, SoundEvents.TRIDENT_THROW, 0.8F, 0.7F);
+		Fx.sound(level, from, SoundEvents.TRIDENT_THROW.value(), 0.8F, 0.7F);
 		Fx.sound(level, from, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.3F);
 	}
 

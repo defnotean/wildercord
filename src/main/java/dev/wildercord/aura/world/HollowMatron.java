@@ -785,7 +785,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 				double a=Math.toRadians(aim+180)+i*half/5;
 				for(int j=1;j<=6;j++){double r=j*HollowMatronRules.BRISTLE_REACH/6;level.sendParticles(HAIR,getX()-Math.sin(a)*r,getY()+1.1,getZ()+Math.cos(a)*r,1,.1,.1,.1,0);}
 			}
-			sound(level,tail,SoundEvents.BREEZE_WIND_CHARGE_BURST,1.1F,1.6F);sound(level,tail,SoundEvents.SILVERFISH_AMBIENT,1.2F,1.4F);
+			sound(level,tail,SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.1F,1.6F);sound(level,tail,SoundEvents.SILVERFISH_AMBIENT,1.2F,1.4F);
 		}
 		if(roused() && again==0 && el>=tell+3){again=1;struck.clear();pose(HollowMatronRules.BRISTLE,0,HollowMatronRules.BRISTLE_AGAIN);return;}
 		if(el>=tell+HollowMatronRules.BRISTLE_OPEN)after(level,HollowMatronRules.BRISTLE,6);
@@ -880,7 +880,7 @@ public final class HollowMatron extends PathfinderMob implements Enemy {
 				hit(level,p,HollowMatronRules.ROUSE_DAMAGE,1.6,position(),.6);
 			entityData.set(ROUSED,true);bar.setColor(BossEvent.BossBarColor.RED);
 			for(int i=0;i<6;i++){double a=i*Math.PI/3+random.nextDouble()*.5,r=2.5+random.nextDouble()*4;patch(level,position().add(Math.cos(a)*r,.5,Math.sin(a)*r));}
-			sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST,1.8F,.6F);hiss(level,2,.8F);
+			sound(level,position(),SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.8F,.6F);hiss(level,2,.8F);
 			level.sendParticles(ParticleTypes.ITEM_COBWEB,getX(),getY()+1,getZ(),60,2.5,1,2.5,.2);
 			level.sendParticles(ParticleTypes.POOF,getX(),getY()+.3,getZ(),30,2.5,.2,2.5,.08);
 		}

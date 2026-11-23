@@ -43,6 +43,11 @@ public final class MountContent {
 		EntityType.Builder.of(RidgebackStag::new, MobCategory.CREATURE).sized(1.3F, 1.6F).eyeHeight(1.5F).passengerAttachments(1.2F)
 			.clientTrackingRange(10).build(KEY.location().toString()));
 
+	private static final ResourceKey<Item> BRIDLE_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("skyray_bridle"));
+	/** The reward for the Tenth Circle's tribulation: calls your skyray down. */
+	public static final Item SKYRAY_BRIDLE = Registry.register(BuiltInRegistries.ITEM, BRIDLE_KEY,
+		new SkyrayBridleItem(new Item.Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.EPIC)));
+
 	private static final ResourceKey<Item> EGG_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("ridgeback_stag_spawn_egg"));
 	public static final Item EGG = Registry.register(BuiltInRegistries.ITEM, EGG_KEY,
 		dev.wildercord.compat.McSpawnEgg.create(RIDGEBACK_STAG, new Item.Properties()));

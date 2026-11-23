@@ -2762,7 +2762,7 @@ public final class Effects {
 	/** What a furnace would make of a stack (or the stack itself), adding the experience it gives to {@code xp}. */
 	private static ItemStack smelted(ServerLevel level, ItemStack stack, double[] xp) {
 		SingleRecipeInput input = new SingleRecipeInput(stack);
-		var recipe = level.recipeAccess().getRecipeFor(RecipeType.SMELTING, input, level);
+		var recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, input, level);
 		if (recipe.isEmpty()) {
 			return stack;
 		}

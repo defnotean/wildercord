@@ -41,12 +41,12 @@ public final class SleepingBlades {
 	private SleepingBlades() {}
 	private static final ResourceKey<net.minecraft.world.level.block.Block> STONE_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("sleeping_blade_stone"));
 	public static final SleepingBladeStone STONE = Registry.register(BuiltInRegistries.BLOCK, STONE_KEY,
-		new SleepingBladeStone(BlockBehaviour.Properties.of().strength(-1, 3600000).sound(SoundType.STONE).noOcclusion().noLootTable()));
+		new SleepingBladeStone(BlockBehaviour.Properties.of().strength(-1, 3600000).sound(SoundType.STONE).noOcclusion()));
 	public static final BlockEntityType<SleepingBladeEntity> STONE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
 		Wildercord.id("sleeping_blade_stone"), FabricBlockEntityTypeBuilder.create(SleepingBladeEntity::new, STONE).build());
 	private static final ResourceKey<Item> BLADE_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("oathkeeper"));
 	public static final Item BLADE = Registry.register(BuiltInRegistries.ITEM, BLADE_KEY,
-		new net.minecraft.world.item.SwordItem(ToolMaterial.DIAMOND, 3, -2.4F, new Item.Properties().fireResistant().rarity(Rarity.EPIC)) {
+		new net.minecraft.world.item.SwordItem(net.minecraft.world.item.Tiers.DIAMOND, new Item.Properties().fireResistant().rarity(Rarity.EPIC)) {
 			@Override public void appendHoverText(ItemStack stack,TooltipContext c,List<Component> wildercord$lines,TooltipFlag flag) {
 		Consumer<Component> out = wildercord$lines::add;
 				out.accept(Component.translatable("item.wildercord.oathkeeper.lore").withColor(0xB8BFC6));

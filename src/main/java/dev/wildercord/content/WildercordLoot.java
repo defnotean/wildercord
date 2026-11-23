@@ -378,7 +378,7 @@ public final class WildercordLoot {
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Wildercord.id("magic_waters"), MagicWatersCondition.TYPE);
 		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("fished_rune"), FishedRuneFunction.TYPE);
 		Map<ResourceKey<LootTable>, List<Map.Entry<Integer, RuneDef>>> mobTables = new HashMap<>();
-		MOB_DROPS.forEach((type, drop) -> type.getDefaultLootTable().ifPresent(key -> mobTables.put(key, drop)));
+		MOB_DROPS.forEach((type, drop) -> { ResourceKey<LootTable> table = type.getDefaultLootTable(); if (table != null) mobTables.put(table, drop); });
 		Map<ResourceKey<LootTable>, SourcePool> guardianTables = new HashMap<>();
 		SOURCE_GUARDIANS.forEach((type, pool) -> type.getDefaultLootTable().ifPresent(key -> guardianTables.put(key, pool)));
 

@@ -311,7 +311,7 @@ public final class CinnamonDog extends TamableAnimal {
 			ringTicks--;
 			int ding = RING_TICKS - 1 - ringTicks;
 			if (ding % 3 == 0 && ding < 9) {
-				level().playSound(null, getX(), getY() + 0.5, getZ(), net.minecraft.sounds.SoundEvents.NOTE_BLOCK_BELL,
+				level().playSound(null, getX(), getY() + 0.5, getZ(), net.minecraft.sounds.SoundEvents.NOTE_BLOCK_BELL.value(),
 					net.minecraft.sounds.SoundSource.NEUTRAL, 1.6F - ding * 0.12F, 1.85F + getRandom().nextFloat() * 0.15F);
 			}
 			return;
@@ -514,7 +514,7 @@ public final class CinnamonDog extends TamableAnimal {
 		settled = 0;
 		player.setAttached(CinnamonState.BOW, on);
 		changed();
-		level().playSound(null, getX(), getY(), getZ(), on ? net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER : net.minecraft.sounds.SoundEvents.SHEEP_SHEAR,
+		level().playSound(null, getX(), getY(), getZ(), on ? net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value() : net.minecraft.sounds.SoundEvents.SHEEP_SHEAR,
 			net.minecraft.sounds.SoundSource.NEUTRAL, 0.8F, 1.3F);
 	}
 

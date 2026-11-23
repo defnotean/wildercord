@@ -237,7 +237,7 @@ final class TechniqueVfx {
 			Light.slash(level, b, up.subtract(side).normalize(), dir, theme.secondary(), 0.9, 2.2, 0.16, 1, 5);
 		}
 		Sigils.flash(level, b, theme.primary(), 1.8F);
-		Fx.sound(level, a, SoundEvents.TRIDENT_RIPTIDE_1, 1.0F, 1.4F);
+		Fx.sound(level, a, SoundEvents.TRIDENT_RIPTIDE_1.value(), 1.0F, 1.4F);
 		// (the element's cast sound already played once, with the cast circle)
 	}
 

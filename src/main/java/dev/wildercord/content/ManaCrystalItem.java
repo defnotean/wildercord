@@ -31,7 +31,7 @@ public class ManaCrystalItem extends Item {
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) { ItemStack mcUseStack = player.getItemInHand(hand);
 		ItemStack stack = player.getItemInHand(hand);
 		if (!(player instanceof ServerPlayer serverPlayer)) {
-			return Mana.crystals(player) < Mana.MAX_CRYSTALS ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+			return Mana.crystals(player) < Mana.MAX_CRYSTALS ? InteractionResultHolder.success(stack) : InteractionResultHolder.fail(stack);
 		}
 		int crystals = Mana.crystals(serverPlayer);
 		if (crystals >= Mana.MAX_CRYSTALS) {

@@ -19,12 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class AuraSelectionMixin {
 	@Shadow @Final public Player player;
 
-	@Inject(method = "setSelectedHotbarSlot", at = @At("HEAD"))
-	private void wildercord$selectedSlot(int slot, CallbackInfo ci) {
-		Inventory inventory = (Inventory) (Object) this;
-		if (Inventory.isHotbarSlot(slot) && slot != inventory.selected) wildercord$equipmentChanged();
-	}
-
 	@Inject(method = "setItem", at = @At("HEAD"))
 	private void wildercord$contents(int slot, ItemStack stack, CallbackInfo ci) {
 		Inventory inventory = (Inventory) (Object) this;

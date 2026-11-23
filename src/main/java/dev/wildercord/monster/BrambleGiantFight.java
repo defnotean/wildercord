@@ -249,7 +249,7 @@ final class BrambleGiantFight extends GiantFight {
 			return;
 		}
 		if (t == tell) {
-			sound(level, feet, SoundEvents.GENERIC_EXPLODE, 2.5F, 0.5F);
+			sound(level, feet, SoundEvents.GENERIC_EXPLODE.value(), 2.5F, 0.5F);
 			sound(level, feet, SoundEvents.MACE_SMASH_GROUND_HEAVY, 2.5F, 0.6F);
 			ElementFx.crack(level, feet, inner, 40);
 			ElementFx.earthImpact(level, feet.add(0, 0.2, 0), 2.5);
@@ -389,7 +389,7 @@ final class BrambleGiantFight extends GiantFight {
 		if (t < tell + HURL_FLIGHT) {
 			return;
 		}
-		sound(level, aim, SoundEvents.GENERIC_EXPLODE, 2.0F, 0.8F);
+		sound(level, aim, SoundEvents.GENERIC_EXPLODE.value(), 2.0F, 0.8F);
 		sound(level, aim, groundSound(level, aim), 2.0F, 0.6F);
 		ElementFx.earthImpact(level, aim.add(0, 0.3, 0), 1.6);
 		ElementFx.crack(level, aim, HURL_RADIUS, 30);
@@ -631,7 +631,7 @@ final class BrambleGiantFight extends GiantFight {
 		if (t != tell) {
 			return;
 		}
-		sound(level, feet, SoundEvents.GENERIC_EXPLODE, 2.5F, 0.6F);
+		sound(level, feet, SoundEvents.GENERIC_EXPLODE.value(), 2.5F, 0.6F);
 		sound(level, feet, SoundEvents.MACE_SMASH_GROUND_HEAVY, 2.5F, 0.5F);
 		ElementFx.earthImpact(level, laneFrom.add(lane.scale(hw() + 1)).add(0, 0.3, 0), 2);
 		for (double d = hw(); d <= HAMMER_LENGTH + hw(); d += 1.5) {
@@ -739,7 +739,7 @@ final class BrambleGiantFight extends GiantFight {
 		if (t != tell) {
 			return;
 		}
-		sound(level, feet, SoundEvents.GENERIC_EXPLODE, 2.5F, 0.7F);
+		sound(level, feet, SoundEvents.GENERIC_EXPLODE.value(), 2.5F, 0.7F);
 		sound(level, feet, SoundEvents.BLAZE_SHOOT, 2.5F, 0.4F);
 		ElementFx.flameBurst(level, feet.add(0, 1, 0), reach, 80);
 		ElementFx.fireImpact(level, feet.add(0, 1.5, 0), 3);

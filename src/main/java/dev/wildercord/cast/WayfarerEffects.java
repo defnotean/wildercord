@@ -481,7 +481,7 @@ public final class WayfarerEffects {
 				}
 				for (BrushableBlockEntity relic : relics) {
 					if (!relic.isRemoved() && level.getBlockEntity(relic.getBlockPos()) == relic) {
-						relic.brush(level.getGameTime(), level, caster instanceof Player brushUser ? brushUser : null, Direction.UP, stroke);
+						relic.brush(level.getGameTime(), caster instanceof Player brushUser ? brushUser : null, Direction.UP);
 						Fx.send(level, ParticleTypes.DUST_PLUME, Vec3.atCenterOf(relic.getBlockPos()).add(0, 0.6, 0), 3, 0.25, 0.01);
 						Fx.sound(level, Vec3.atCenterOf(relic.getBlockPos()), SoundEvents.BRUSH_SAND, 0.5f, 1.0f);
 					}
@@ -770,7 +770,7 @@ public final class WayfarerEffects {
 
 	private static Optional<Holder.Reference<MobEffect>> effect(String id) {
 		ResourceLocation parsed = ResourceLocation.tryParse(id);
-		return parsed == null ? Optional.empty() : BuiltInRegistries.MOB_EFFECT.get(parsed);
+		return parsed == null ? Optional.empty() : BuiltInRegistries.MOB_EFFECT.getHolder(parsed);
 	}
 
 	// ------------------------------------------------------------------ decoration

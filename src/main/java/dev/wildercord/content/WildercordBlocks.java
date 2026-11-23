@@ -38,14 +38,14 @@ public final class WildercordBlocks {
 		.instrument(NoteBlockInstrument.BASEDRUM)
 		.sound(SoundType.DEEPSLATE_TILES)
 		.strength(-1.0F, 3600000.0F)
-		.noLootTable()
+		
 		.lightLevel(state -> state.getValue(RuneSealBlock.LIT) ? 11 : 4), Rarity.EPIC);
 
 	public static final ArchiveLecternBlock ARCHIVE_LECTERN = register("archive_lectern", ArchiveLecternBlock::new, BlockBehaviour.Properties.of()
 		.mapColor(MapColor.COLOR_BLACK)
 		.sound(SoundType.CHISELED_BOOKSHELF)
 		.strength(-1.0F, 3600000.0F)
-		.noLootTable()
+		
 		.noOcclusion()
 		.lightLevel(state -> state.getValue(ArchiveLecternBlock.AWAKE) ? 4 : 10), Rarity.EPIC);
 

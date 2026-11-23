@@ -106,7 +106,7 @@ public final class FieldFusions {
             if(ownership.wildercord$target()!=null && !ownership.wildercord$target().equals(p.getUUID()))continue;
             if(item.distanceToSqr(point)>FieldFusionRules.SIEVE_REACH*FieldFusionRules.SIEVE_REACH
                 || !editable(c,item.blockPosition().below()) || !open(c,p.getEyePosition(),item.position().add(0,.1,0)))continue;
-            var input=new SingleRecipeInput(item.getItem());var recipe=c.level.recipeAccess().getRecipeFor(RecipeType.SMELTING,input,c.level);
+            var input=new SingleRecipeInput(item.getItem());var recipe=c.level.getRecipeManager().getRecipeFor(RecipeType.SMELTING,input,c.level);
             if(recipe.isEmpty())continue;var result=recipe.get().value().assemble(input, c.level.registryAccess());
             if(result.isEmpty())continue;
             int n=FieldFusionRules.sieveUnits(item.getItem().getCount(),result.getCount(),capacity(simulated,result),FieldFusionRules.SIEVE_ITEMS-used);

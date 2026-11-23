@@ -739,7 +739,7 @@ public final class DrownedBellWarden extends PathfinderMob implements Enemy {
 		}
 		if(el==tell){
 			entityData.set(CRACKED,true);bar.setColor(BossEvent.BossBarColor.PURPLE);
-			Feels.sound(level,b,"aura_bell_warden_knell",2.6F,.6F);sound(level,b,SoundEvents.GENERIC_EXPLODE,1.6F,.7F);sound(level,b,SoundEvents.GLASS_BREAK,1.6F,.5F);
+			Feels.sound(level,b,"aura_bell_warden_knell",2.6F,.6F);sound(level,b,SoundEvents.GENERIC_EXPLODE.value(),1.6F,.7F);sound(level,b,SoundEvents.GLASS_BREAK,1.6F,.5F);
 			level.sendParticles(ParticleTypes.EXPLOSION,b.x,b.y,b.z,4,1,1,1,0);level.sendParticles(ParticleTypes.GLOW,b.x,b.y,b.z,60,1.5,1,1.5,.4);
 			ring(level,position(),BellWardenRules.CRACK_RADIUS*.6,ParticleTypes.SPLASH,30);dust(level,position(),30,2);
 			for(var p:prey(level)){double dx=p.getX()-getX(),dz=p.getZ()-getZ();if(BellWardenRules.blasts(Math.sqrt(dx*dx+dz*dz),p.getY()-getY()))hit(level,p,BellWardenRules.CRACK_DAMAGE,2,position(),.6);}

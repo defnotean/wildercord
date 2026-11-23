@@ -27,7 +27,7 @@ public final class PhysicalBlocks {
 	public static final Block THUNDER=block("thunder_step",true,false,6);
 	private static Block block(String name,boolean step,boolean ghost,int light){
 		var key=ResourceKey.create(Registries.BLOCK,Wildercord.id(name));
-		var p=BlockBehaviour.Properties.of().strength(.6F,2).noLootTable().noOcclusion().lightLevel(s->light)
+		var p=BlockBehaviour.Properties.of().strength(.6F,2).noOcclusion().lightLevel(s->light)
 			.sound(step?SoundType.WOOL:SoundType.STONE);
 		if(ghost)p.noCollission().strength(-1,3600000);
 		return Registry.register(BuiltInRegistries.BLOCK,key,step?new Step(p):new Block(p));

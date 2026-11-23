@@ -199,7 +199,7 @@ public final class WardEffects {
 						WardVfx.calm(level, e, 0xCFF2E0);
 					}
 				}
-				dev.wildercord.cast.Fx.sound(level, caster.position(), net.minecraft.sounds.SoundEvents.NOTE_BLOCK_FLUTE, 0.8F, 1.6F);
+				dev.wildercord.cast.Fx.sound(level, caster.position(), net.minecraft.sounds.SoundEvents.NOTE_BLOCK_FLUTE.value(), 0.8F, 1.6F);
 			}
 			case "bellward" -> placeZone(cast, "bellward", hit.point(), 12.0 * radius, FxSupportAccess.ticks(120, duration), power, 0xE8C66B, 0xFFF0C0);
 			case "sanctuary" -> placeZone(cast, "sanctuary", hit.point(), 6.0 * radius, FxSupportAccess.ticks(30, duration), power, 0xE8C6FF, 0xFFF0FF);

@@ -61,7 +61,7 @@ public final class MoonreedBlock extends Block {
      if(selected!=null)return selected.getNoiseBiome(qx,qy,qz);
      available[0]=false;return level.getUncachedNoiseBiome(qx,qy,qz);
     }).getBiome(at);
-    return available[0]&&biome.value().getPrecipitationAt(at,level.getSeaLevel())==net.minecraft.world.level.biome.Biome.Precipitation.RAIN;
+    return available[0]&&biome.value().getPrecipitationAt(at)==net.minecraft.world.level.biome.Biome.Precipitation.RAIN;
    }
   },here.getX(),here.getY(),here.getZ(),dev.wildercord.compat.McTime.overworldClock(level));
   return found==null?null:new BlockPos(found.x(),found.y(),found.z());

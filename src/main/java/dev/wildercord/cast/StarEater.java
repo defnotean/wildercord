@@ -845,7 +845,7 @@ public class StarEater extends DungeonBoss {
 			shards.add(s);
 			figure(DATA_LOOSED, 0);
 			figure(DATA_EYE, 0);
-			Fx.sound(level, s.pos, SoundEvents.TRIDENT_THROW, 1.8F, 0.7F);
+			Fx.sound(level, s.pos, SoundEvents.TRIDENT_THROW.value(), 1.8F, 0.7F);
 			Vfx.emit(level, ParticleTypes.END_ROD, s.pos, 10, 0.2, 0.15);
 			// Thrown, it lurches back from the throw.
 			setDeltaMovement(dir.scale(-0.3));
@@ -963,7 +963,7 @@ public class StarEater extends DungeonBoss {
 			}
 			if (t == at) {
 				rings.add(new Ring(base, level.getGameTime(), NOVA_SPEED[phase], NOVA_REACH, high, NOVA_DAMAGE));
-				Fx.sound(level, c, SoundEvents.BREEZE_WIND_CHARGE_BURST, 1.6F, high ? 1.3F : 0.8F);
+				Fx.sound(level, c, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1.6F, high ? 1.3F : 0.8F);
 				figure(DATA_EYE, 0.6F);
 			}
 		}
@@ -1245,7 +1245,7 @@ public class StarEater extends DungeonBoss {
 			ElementFx.blackCore(level, c, 2.0, 10);
 			ElementFx.ring(level, base.add(0, 0.6, 0), new Vec3(0, 1, 0), ACCENT, 0.5, COLLAPSE_RADIUS + 1, 0.6, 8);
 			Vfx.radial(level, ParticleTypes.END_ROD, c, 40, 0.45);
-			Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE, 1.6F, 0.6F);
+			Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE.value(), 1.6F, 0.6F);
 			Fx.sound(level, c, SoundEvents.WARDEN_SONIC_BOOM, 1.4F, 0.8F);
 		}
 		figure(DATA_DARK, Math.max(0, entityData.get(DATA_DARK) - 0.08F));

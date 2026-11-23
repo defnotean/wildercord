@@ -360,7 +360,7 @@ public final class Tribulation {
 		}
 		net.minecraft.world.item.ItemStack blade = player.getMainHandItem();
 		mob.setItemSlot(EquipmentSlot.MAINHAND, blade.isEmpty() ? new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_SWORD) : blade.copy());
-		for (EquipmentSlot slot : EquipmentSlot.values()) mob.setDropChance(slot, 0F);
+		for (EquipmentSlot slot : EquipmentSlot.values()()) mob.setDropChance(slot, 0F);
 		AttributeInstance max = mob.getAttribute(Attributes.MAX_HEALTH);
 		if (max != null) {
 			double target = TribulationRules.shadowHealth(circle, player.getMaxHealth());

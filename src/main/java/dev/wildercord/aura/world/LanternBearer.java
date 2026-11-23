@@ -520,7 +520,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			return;
 		}
 		if(el==tell){
-			Feels.sound(level,lamp(),"aura_lantern_bearer_hook",1.4F,1);sound(level,lamp(),SoundEvents.TRIDENT_THROW,1.2F,.7F);
+			Feels.sound(level,lamp(),"aura_lantern_bearer_hook",1.4F,1);sound(level,lamp(),SoundEvents.TRIDENT_THROW.value(),1.2F,.7F);
 			double reach=LanternBearerRules.HOOK_REACH;
 			for(var p:prey(level)){
 				if(struck.contains(p.getUUID()) || !reaches(LanternBearerRules.HOOK,p))continue;
@@ -589,7 +589,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 		face(aim);still();
 		var top=overhead(el);
 		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,top.x,top.y,top.z,el<tell?1+(int)(el*3/Math.max(1,tell)):2,.05,.05,.05,.005);
-		if(el<tell){if(el%4==0)sound(level,top,SoundEvents.SOUL_ESCAPE,1F,.6F+el/(float)tell*.6F);return;}
+		if(el<tell){if(el%4==0)sound(level,top,SoundEvents.SOUL_ESCAPE.value(),1F,.6F+el/(float)tell*.6F);return;}
 		long k=el-tell;
 		if(k%LanternBearerRules.WISP_EVERY==0 && k<=last){
 			int i=(int)(k/LanternBearerRules.WISP_EVERY);
@@ -701,7 +701,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			level.sendParticles(new BlockParticleOption(ParticleTypes.DUST_PILLAR,ground(level,at)),at.x,at.y+.1,at.z,30,.6,.1,.6,.4);
 			level.sendParticles(ParticleTypes.SOUL,at.x,at.y+.5,at.z,10,.4,.8,.4,.06);
 			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,at.x,at.y+.5,at.z,8,.3,.6,.3,.08);
-			sound(level,at,SoundEvents.ROOTED_DIRT_BREAK,1.5F,.7F);sound(level,at,SoundEvents.SOUL_ESCAPE,1.2F,.6F);
+			sound(level,at,SoundEvents.ROOTED_DIRT_BREAK,1.5F,.7F);sound(level,at,SoundEvents.SOUL_ESCAPE.value(),1.2F,.6F);
 			for(var p:prey(level))
 				if(!m.caught().contains(p.getUUID()) && LanternBearerRules.buries(p.getX()-at.x,p.getY()-at.y,p.getZ()-at.z)){
 					m.caught().add(p.getUUID());hit(level,p,LanternBearerRules.GRAVE_DAMAGE,0,at,LanternBearerRules.GRAVE_LIFT);
@@ -731,7 +731,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			return;
 		}
 		if(el==tell){
-			Feels.sound(level,c,"aura_lantern_bearer_burst",1.8F,.7F);sound(level,c,SoundEvents.GENERIC_EXPLODE,1F,1.4F);
+			Feels.sound(level,c,"aura_lantern_bearer_burst",1.8F,.7F);sound(level,c,SoundEvents.GENERIC_EXPLODE.value(),1F,1.4F);
 			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,c.x,c.y+1.5,c.z,50,.4,.4,.4,.25);
 			for(int i=0;i<36;i++){double a=i*Math.PI*2/36;level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,c.x,c.y+.3,c.z,0,Math.cos(a),0,Math.sin(a),.4);}
 			ring(level,c,LanternBearerRules.FLARE_RADIUS,SOUL_DUST,32);
@@ -868,7 +868,7 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			face(aim);var m=mouth();
 			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,m.x,m.y,m.z,1+(int)(el*2/tell),.08,.08,.08,.005);
 			if(el>=tell-8 && el%2==0)arc(level,0,side*LanternBearerRules.BREATH_TURN,3.2,SOUL_SMALL,8);
-			if(el%4==0)sound(level,m,SoundEvents.SOUL_ESCAPE,1F,.5F+el/(float)tell*.5F);
+			if(el%4==0)sound(level,m,SoundEvents.SOUL_ESCAPE.value(),1F,.5F+el/(float)tell*.5F);
 			return;
 		}
 		long k=el-tell;
@@ -912,14 +912,14 @@ public final class LanternBearer extends PathfinderMob implements Enemy {
 			}
 			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,top.x,top.y,top.z,1+(int)(el/8),.15,.15,.15,.01);
 			if(el%8==0)for(var at:candles){var p=Vec3.atCenterOf(at);level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,p.x,p.y,p.z,3,.08,.2,.08,.03);}
-			if(el%10==0)sound(level,top,SoundEvents.SOUL_ESCAPE,1.6F,.5F+el/(float)tell*.4F);
+			if(el%10==0)sound(level,top,SoundEvents.SOUL_ESCAPE.value(),1.6F,.5F+el/(float)tell*.4F);
 			if(el==tell-14)sound(level,top,SoundEvents.WARDEN_SONIC_CHARGE,1.6F,.6F);
 			if(el>=tell-10 && el%2==0)ring(level,c,LanternBearerRules.RITE_RADIUS,SOUL_DUST,30);
 			return;
 		}
 		if(el==tell){
 			entityData.set(ROUSED,true);bar.setColor(BossEvent.BossBarColor.PURPLE);
-			Feels.sound(level,head(),"aura_lantern_bearer_roar",2F,.8F);sound(level,c,SoundEvents.GENERIC_EXPLODE,1.4F,.7F);
+			Feels.sound(level,head(),"aura_lantern_bearer_roar",2F,.8F);sound(level,c,SoundEvents.GENERIC_EXPLODE.value(),1.4F,.7F);
 			level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,c.x,c.y+2,c.z,70,.5,1,.5,.3);
 			level.sendParticles(ParticleTypes.SOUL,c.x,c.y+1,c.z,40,2,1,2,.08);
 			for(var p:prey(level))if(reaches(LanternBearerRules.RITE,p)){struck.add(p.getUUID());hit(level,p,LanternBearerRules.RITE_DAMAGE,LanternBearerRules.RITE_SHOVE,c,LanternBearerRules.RITE_LIFT);}

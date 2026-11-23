@@ -679,7 +679,7 @@ final class ExplorerVfx {
 	/** Vortex opens: the spell's circle on the ground, turning. */
 	static void vortexOpen(ServerLevel level, Vec3 centre, double radius, Vfx.Theme theme, int ticks) {
 		Sigils.ground(level, centre, theme.primary(), theme.secondary(), (float) (radius * 0.9), ticks + 10);
-		Fx.sound(level, centre, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 0.6F);
+		Fx.sound(level, centre, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.8F, 0.6F);
 		Fx.sound(level, centre, WildercordSounds.CIRCLE_OPEN, 0.7F, 0.9F);
 	}
 

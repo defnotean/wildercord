@@ -120,7 +120,7 @@ public final class McEntities {
 
 	/** Whether {@code mob} is an Enderman currently angered at {@code player}. */
 	public static boolean isEndermanAngryAt(Mob mob, Player player, ServerLevel level) {
-		return mob instanceof EnderMan man && man.isAngryAt(player, level);
+		return mob instanceof EnderMan man && man.isAngryAt(player);
 	}
 
 	/** Stops an Enderman's anger state and clears its current target. */

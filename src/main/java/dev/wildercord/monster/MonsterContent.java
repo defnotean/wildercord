@@ -92,14 +92,14 @@ public final class MonsterContent {
 
 	/** A Bog Witch-Frog's bubble of poison, in flight. */
 	public static final EntityType<BogBubble> BOG_BUBBLE = register("bog_bubble",
-		EntityType.Builder.<BogBubble>of(BogBubble::new, MobCategory.MISC).noLootTable().sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(2));
+		EntityType.Builder.<BogBubble>of(BogBubble::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(6).updateInterval(2));
 	/** A thrown Living Bramble. */
 	public static final EntityType<ThrownBramble> THROWN_BRAMBLE = register("thrown_bramble",
-		EntityType.Builder.<ThrownBramble>of(ThrownBramble::new, MobCategory.MISC).noLootTable().sized(0.25F, 0.25F).clientTrackingRange(4)
+		EntityType.Builder.<ThrownBramble>of(ThrownBramble::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(4)
 			.updateInterval(10));
 	/** A glob of resin lobbed by a Pitchback Beetle. */
 	public static final EntityType<ResinGlob> RESIN_GLOB = register("resin_glob",
-		EntityType.Builder.<ResinGlob>of(ResinGlob::new, MobCategory.MISC).noLootTable().sized(0.3F, 0.3F).clientTrackingRange(4)
+		EntityType.Builder.<ResinGlob>of(ResinGlob::new, MobCategory.MISC).sized(0.3F, 0.3F).clientTrackingRange(4)
 			.updateInterval(10));
 
 	// ------------------------------------------------------------------ what they drop

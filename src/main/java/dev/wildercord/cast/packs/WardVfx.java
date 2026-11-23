@@ -44,7 +44,7 @@ final class WardVfx {
 	static void guard(ServerLevel level, Entity e, int color) {
 		Sigils.target(level, chest(e), color, 0.9F, 20);
 		Fx.send(level, ParticleTypes.WAX_ON, chest(e), 8, 0.45, 0.0);
-		Fx.sound(level, e.position(), SoundEvents.ARMOR_EQUIP_IRON, 0.7F, 1.2F);
+		Fx.sound(level, e.position(), SoundEvents.ARMOR_EQUIP_IRON.value(), 0.7F, 1.2F);
 	}
 
 	/** A place ward raised: a sigil and a ring on the ground, and a bell-like tone. */

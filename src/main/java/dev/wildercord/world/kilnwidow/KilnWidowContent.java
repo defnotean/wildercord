@@ -24,7 +24,7 @@ public final class KilnWidowContent {
 	private KilnWidowContent() {}
 	private static final ResourceKey<Block> HEARTSTONE_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("kiln_heartstone"));
 	public static final KilnHeartstoneBlock HEARTSTONE = Registry.register(BuiltInRegistries.BLOCK, HEARTSTONE_KEY,
-		new KilnHeartstoneBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().noLootTable().lightLevel(s -> 9).sound(SoundType.DEEPSLATE_BRICKS)));
+		new KilnHeartstoneBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().lightLevel(s -> 9).sound(SoundType.DEEPSLATE_BRICKS)));
 	public static final Item HEARTSTONE_ITEM = Registry.register(BuiltInRegistries.ITEM, ResourceKey.create(Registries.ITEM, Wildercord.id("kiln_heartstone")),
 		new BlockItem(HEARTSTONE, new Item.Properties()));
 	public static final BlockEntityType<KilnHeartstoneEntity> HEARTSTONE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("kiln_heartstone"),

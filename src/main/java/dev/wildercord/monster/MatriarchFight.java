@@ -302,7 +302,7 @@ final class MatriarchFight extends GiantFight {
 
 	private void land(ServerLevel level, double r) {
 		Vec3 feet = feet();
-		sound(level, feet, SoundEvents.GENERIC_EXPLODE, 1.4F, 0.8F);
+		sound(level, feet, SoundEvents.GENERIC_EXPLODE.value(), 1.4F, 0.8F);
 		sound(level, feet, SoundEvents.POWDER_SNOW_BREAK, 2.2F, 0.5F);
 		sound(level, feet, SoundEvents.GLASS_BREAK, 1.4F, 0.6F);
 		ElementFx.frostImpact(level, feet.add(0, 0.3, 0), 2.0);
@@ -635,7 +635,7 @@ final class MatriarchFight extends GiantFight {
 				}
 			}
 			if (mob.horizontalCollision && now.distanceTo(lungeFrom) > 1) {
-				sound(level, now, SoundEvents.GENERIC_EXPLODE, 1.0F, 1.0F);
+				sound(level, now, SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 1.0F);
 				sound(level, now, SoundEvents.POWDER_SNOW_BREAK, 2.2F, 0.5F);
 				level.sendParticles(snow, now.x, now.y + 1, now.z, 50, hw(), 0.6, hw(), 0.25);
 				ElementFx.frostImpact(level, now.add(lungeWay.scale(hw())).add(0, 1, 0), 1.5);
@@ -732,7 +732,7 @@ final class MatriarchFight extends GiantFight {
 			return;
 		}
 		if (t == 10) {
-			sound(level, feet, SoundEvents.GENERIC_EXPLODE, 1.6F, 0.7F);
+			sound(level, feet, SoundEvents.GENERIC_EXPLODE.value(), 1.6F, 0.7F);
 			sound(level, feet, SoundEvents.GLASS_BREAK, 2.0F, 0.5F);
 			ElementFx.shatterRing(level, feet, ROAR_RADIUS + hw());
 			ElementFx.frostCreep(level, feet, ROAR_RADIUS + hw(), 80);

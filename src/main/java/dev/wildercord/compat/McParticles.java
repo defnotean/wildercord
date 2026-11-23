@@ -15,6 +15,11 @@ import org.joml.Vector3f;
 public final class McParticles {
 	private McParticles() {}
 
+	/** A tinted dust particle from a raw colour vector. */
+	public static DustParticleOptions dust(Vector3f color, float scale) {
+		return new DustParticleOptions(color, scale);
+	}
+
 	/** A tinted dust particle: 1.21.1's dust ctor takes a Vector3f colour, not an int. */
 	public static DustParticleOptions dust(int argb, float scale) {
 		int rgb = argb & 0xFFFFFF;

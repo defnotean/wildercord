@@ -86,7 +86,7 @@ public class ResidueBlock extends Block {
 
 	@Override
 	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return kind == Kind.WILDBLOOM ? shape.move(state.getOffset(pos)) : shape;
+		return kind == Kind.WILDBLOOM ? shape.move(state.getOffset(level, pos)) : shape;
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class ResidueBlock extends Block {
 	}
 
 	@Override
-	protected boolean propagatesSkylightDown(BlockState state) {
+	protected boolean propagatesSkylightDown(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
 		return rests();
 	}
 

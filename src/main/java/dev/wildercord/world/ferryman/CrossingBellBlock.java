@@ -24,6 +24,6 @@ public final class CrossingBellBlock extends Block implements EntityBlock {
 		return InteractionResult.SUCCESS;
 	}
 	@Override protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		return useWithoutItem(state, level, pos, player, hit);
+		return dev.wildercord.compat.McBlocksAndItems.itemResult(useWithoutItem(state, level, pos, player, hit));
 	}
 }

@@ -38,7 +38,7 @@ public final class WeaversSilk {
 
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("weavers_silk"));
 	public static final WeaversSilkBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new WeaversSilkBlock(BlockBehaviour.Properties.of()
-		.noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.WOOL).lightLevel(state -> 3)
+		.noOcclusion().strength(-1, 3600000).sound(SoundType.WOOL).lightLevel(state -> 3)
 		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("weavers_silk"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,

@@ -27,7 +27,7 @@ public abstract class ItemStackBondMixin {
 		}
 	}
 
-	@ModifyVariable(method = "applyDamage", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+	@ModifyVariable(method = "hurtAndBreak(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;)V", at = @At("HEAD"), argsOnly = true, ordinal = 0)
 	private int wildercord$neverBreaks(int damage) {
 		ItemStack self = (ItemStack) (Object) this;
 		if (damage >= self.getMaxDamage() && self.getMaxDamage() > 1 && BondedBlades.bonded(self)) {

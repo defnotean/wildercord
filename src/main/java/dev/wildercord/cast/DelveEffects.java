@@ -630,7 +630,7 @@ final class DelveEffects {
 				continue;
 			}
 			SingleRecipeInput input = new SingleRecipeInput(new ItemStack(item));
-			var recipe = level.recipeAccess().getRecipeFor(RecipeType.SMELTING, input, level);
+			var recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, input, level);
 			if (recipe.isEmpty()) {
 				continue;
 			}
@@ -717,7 +717,7 @@ final class DelveEffects {
 				grid.add(new ItemStack(item));
 			}
 			CraftingInput input = CraftingInput.of(3, 3, grid);
-			var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level);
+			var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
 			if (recipe.isEmpty()) {
 				continue;
 			}
@@ -750,7 +750,7 @@ final class DelveEffects {
 				continue;
 			}
 			CraftingInput input = CraftingInput.of(1, 1, List.of(new ItemStack(item)));
-			var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level);
+			var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
 			if (recipe.isEmpty()) {
 				continue;
 			}
@@ -800,7 +800,7 @@ final class DelveEffects {
 		int carried = 0;
 		for (int i = 0; i < PACK_SLOTS; i++) {
 			ItemStack s = inv.getItem(i);
-			if (s != tool && plain(s) && tool.isValidRepairItem(s)) {
+			if (s != tool && plain(s) && tool.getItem().isValidRepairItem(tool, s)) {
 				carried += s.getCount();
 			}
 		}
@@ -813,7 +813,7 @@ final class DelveEffects {
 		int left = units;
 		for (int i = PACK_SLOTS - 1; i >= 0 && left > 0; i--) {
 			ItemStack s = inv.getItem(i);
-			if (s != tool && plain(s) && tool.isValidRepairItem(s)) {
+			if (s != tool && plain(s) && tool.getItem().isValidRepairItem(tool, s)) {
 				int n = Math.min(left, s.getCount());
 				s.shrink(n);
 				left -= n;

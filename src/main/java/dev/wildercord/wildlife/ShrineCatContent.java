@@ -1,5 +1,6 @@
 package dev.wildercord.wildlife;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.spell.FieldGuide;

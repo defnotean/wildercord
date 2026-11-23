@@ -890,7 +890,7 @@ public final class RootcoilSerpent extends PathfinderMob implements Enemy {
 			return;
 		}
 		if(rousing && el==tell){
-			Feels.sound(level,position(),"aura_serpent_slam",1.8F,.6F);sound(level,position(),SoundEvents.GENERIC_EXPLODE,1.2F,.7F);
+			Feels.sound(level,position(),"aura_serpent_slam",1.8F,.6F);sound(level,position(),SoundEvents.GENERIC_EXPLODE.value(),1.2F,.7F);
 			level.sendParticles(ParticleTypes.EXPLOSION,getX(),getY()+.5,getZ(),3,1.5,.2,1.5,0);
 			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,ground(level,position())),getX(),getY()+.3,getZ(),60,2.5,.3,2.5,.3);
 			rippleAt=position();rippleAge=0;rippled.clear();

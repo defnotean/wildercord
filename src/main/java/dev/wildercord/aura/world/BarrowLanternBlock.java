@@ -42,7 +42,7 @@ public final class BarrowLanternBlock extends Block {
 	}
 
 	@Override protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		return take(level, pos, player);
+		return dev.wildercord.compat.McBlocksAndItems.itemResult(take(level, pos, player));
 	}
 
 	private static InteractionResult take(Level level, BlockPos pos, Player who) {
@@ -57,7 +57,7 @@ public final class BarrowLanternBlock extends Block {
 		}
 		BearersLantern.take(player);
 		server.playSound(null, pos, SoundEvents.LANTERN_BREAK, SoundSource.PLAYERS, 1, .7F);
-		server.playSound(null, pos, SoundEvents.SOUL_ESCAPE, SoundSource.PLAYERS, 1.2F, .8F);
+		server.playSound(null, pos, SoundEvents.SOUL_ESCAPE.value(), SoundSource.PLAYERS, 1.2F, .8F);
 		server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, .5F, .9F);
 		server.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, pos.getX() + .5, pos.getY() + .4, pos.getZ() + .5, 24, .25, .3, .25, .03);
 		server.sendParticles(ParticleTypes.SOUL, player.getX(), player.getY() + 1, player.getZ(), 16, .4, .7, .4, .03);

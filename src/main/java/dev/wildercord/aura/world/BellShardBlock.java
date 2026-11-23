@@ -40,7 +40,7 @@ public final class BellShardBlock extends Block {
 	}
 
 	@Override protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		return touch(level, pos, player);
+		return dev.wildercord.compat.McBlocksAndItems.itemResult(touch(level, pos, player));
 	}
 
 	private static InteractionResult touch(Level level, BlockPos pos, Player who) {

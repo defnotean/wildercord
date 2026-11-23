@@ -338,7 +338,7 @@ public final class LessonPackCasting {
         int color = Vfx.theme(rod.lesson.rune).primary();
         Light.ray(level, from.add(0, 1, 0), rod.top.add(0, 1, 0), color, .12, 8);
         Fx.particle(level, ParticleTypes.ELECTRIC_SPARK, rod.top.add(0, 1, 0), 24, .5, .1);
-        Fx.sound(level, rod.top, SoundEvents.TRIDENT_THUNDER, .45F, 1.9F);
+        Fx.sound(level, rod.top, SoundEvents.TRIDENT_THUNDER.value(), .45F, 1.9F);
         retire(rod);
         MasterStudies.completePractice(p, Lesson.CONDUIT);
     }

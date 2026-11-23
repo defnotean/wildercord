@@ -627,7 +627,7 @@ public final class RiftSiege {
 
 	/** The Riftcaller killed by a player: its own spoils ({@code wildercord:entities/riftcaller}), on top of the rift's. */
 	static void riftcallerLoot(ServerLevel level, LivingEntity riftcaller, DamageSource source) {
-		if (riftcaller.getLastHurtByPlayerTime() <= 0 || !level.getGameRules().getRule(GameRules.RULE_DOMOBLOOT).get()) {
+		if (!(source.getEntity() instanceof Player) || !level.getGameRules().getRule(GameRules.RULE_DOMOBLOOT).get()) {
 			return;
 		}
 		dev.wildercord.compat.McLoot.dropFromLootTable(riftcaller, level, source, true, RIFTCALLER_LOOT);

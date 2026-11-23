@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResultHolder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.feel.Feels;

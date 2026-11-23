@@ -25,7 +25,7 @@ public final class DungeonBlocks {
 			.mapColor(MapColor.COLOR_BLACK)
 			.sound(SoundType.POLISHED_DEEPSLATE)
 			.strength(-1.0F, 3600000.0F)
-			.noLootTable()
+			
 			.noOcclusion()
 			.lightLevel(state -> state.getValue(DungeonAltarBlock.AWAKE) ? 4 : 10)
 			));
@@ -47,6 +47,6 @@ public final class DungeonBlocks {
 	private static ExpeditionMechanism mechanism(String path,ExpeditionMechanism.Kind kind) {
 		var key=ResourceKey.create(Registries.BLOCK,Wildercord.id(path));
 		return Registry.register(BuiltInRegistries.BLOCK,key,new ExpeditionMechanism(kind,BlockBehaviour.Properties.of()
-			.mapColor(MapColor.COLOR_PURPLE).sound(SoundType.AMETHYST).strength(-1,3600000).noLootTable().lightLevel(s->8)));
+			.mapColor(MapColor.COLOR_PURPLE).sound(SoundType.AMETHYST).strength(-1,3600000).lightLevel(s->8)));
 	}
 }

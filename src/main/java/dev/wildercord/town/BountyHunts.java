@@ -50,7 +50,7 @@ public final class BountyHunts {
 			Tempering.champion(mob, threat, kinds[random.nextInt(kinds.length)], BountyRules.ELITE_HEALTH, name);
 			mob.addTag(Town.markTag(player.getUUID()));
 			level.addFreshEntity(mob);
-			level.playSound(null, mob.blockPosition(), SoundEvents.RAID_HORN, SoundSource.HOSTILE, 0.6F, 1.4F);
+			level.playSound(null, mob.blockPosition(), SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 0.6F, 1.4F);
 			return Direction.getNearest(x - board.getX(), 0, z - board.getZ());
 		}
 		return null;

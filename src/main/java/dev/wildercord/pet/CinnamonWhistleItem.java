@@ -1,5 +1,6 @@
 package dev.wildercord.pet;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;

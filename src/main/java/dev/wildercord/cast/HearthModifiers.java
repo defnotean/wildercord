@@ -599,7 +599,7 @@ public final class HearthModifiers {
 
 	private static ItemStack smelted(ServerLevel level, ItemStack stack) {
 		SingleRecipeInput input = new SingleRecipeInput(stack);
-		var recipe = level.recipeAccess().getRecipeFor(RecipeType.SMELTING, input, level);
+		var recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, input, level);
 		if (recipe.isEmpty()) {
 			return stack;
 		}
@@ -670,7 +670,7 @@ public final class HearthModifiers {
 		boolean any = false;
 		for (net.minecraft.world.entity.animal.Sheep s : sheep) {
 			if (s.readyForShearing()) {
-				s.shear(level, SoundSource.PLAYERS, new ItemStack(Items.SHEARS));
+				s.shear(SoundSource.PLAYERS);
 				any = true;
 			}
 		}

@@ -275,14 +275,14 @@ public final class TideEffects {
 			return;
 		}
 		emit(cast.level, ParticleTypes.NOTE, player.position().add(0, 2, 0), 1, 0);
-		Fx.sound(cast.level, player.position(), SoundEvents.NOTE_BLOCK_BELL, 0.6F, 1.6F);
+		Fx.sound(cast.level, player.position(), SoundEvents.NOTE_BLOCK_BELL.value(), 0.6F, 1.6F);
 		boolean[] rung = {false};
 		every(2, ticks / 2, cast::alive, () -> {
 			FishingHook hook = player.fishing;
 			int nibble = hook == null ? 0 : ((FishingHookAccessor) (Object) hook).wildercord$nibble();
 			if (nibble > 0 && !rung[0]) {
 				rung[0] = true;
-				Fx.sound(cast.level, player.position(), SoundEvents.NOTE_BLOCK_BELL, 1.0F, 1.8F);
+				Fx.sound(cast.level, player.position(), SoundEvents.NOTE_BLOCK_BELL.value(), 1.0F, 1.8F);
 				emit(cast.level, ParticleTypes.SPLASH, hook.position(), 20, 0.3);
 			} else if (nibble <= 0) {
 				rung[0] = false;
@@ -614,7 +614,7 @@ public final class TideEffects {
 			BlockState into = null;
 			String concrete = TideRules.concreteFor(BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath());
 			if (concrete != null) {
-				Block b = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(concrete));
+				Block b = BuiltInRegistries.BLOCK.get(ResourceLocation.withDefaultNamespace(concrete));
 				if (b != Blocks.AIR) into = b.defaultBlockState();
 			} else if (s.is(Blocks.DIRT)) {
 				into = Blocks.MUD.defaultBlockState();
@@ -705,7 +705,7 @@ public final class TideEffects {
 			BlockState s = level.getBlockState(p);
 			String living = TideRules.livingCoral(BuiltInRegistries.BLOCK.getKey(s.getBlock()).getPath());
 			if (living == null || !touchesWater(level, p, s)) continue;
-			Block b = BuiltInRegistries.BLOCK.getValue(ResourceLocation.withDefaultNamespace(living));
+			Block b = BuiltInRegistries.BLOCK.get(ResourceLocation.withDefaultNamespace(living));
 			if (b == Blocks.AIR || !take(cast, p)) continue;
 			level.setBlockAndUpdate(p, b.withPropertiesOf(s));
 			emit(level, ParticleTypes.BUBBLE, Vec3.atCenterOf(p), 6, 0.3);

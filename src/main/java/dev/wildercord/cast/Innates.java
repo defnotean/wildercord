@@ -275,7 +275,7 @@ public final class Innates {
 				Vfx.emit(cast.level, ParticleTypes.GUST, t.position().add(0, 0.5, 0), 1, 0.0, 0.0);
 				ElementFx.gustRing(cast.level, t.position(), 2.0);
 				ElementFx.swirl(cast.level, t.position().add(0, 0.1, 0), 0.7, t.getBbHeight() + 0.2, 4);
-				Fx.sound(cast.level, t.position(), SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 1.3F);
+				Fx.sound(cast.level, t.position(), SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.8F, 1.3F);
 			});
 			case "stoneform" -> helped.forEach(t -> {
 				int ticks = Effects.ticks(8, duration);

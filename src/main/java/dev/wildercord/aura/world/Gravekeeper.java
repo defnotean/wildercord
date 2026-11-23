@@ -148,11 +148,11 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 			}
 			case SwordTombRules.HANDS->{
 				pose(move,SwordTombRules.HANDS_TELL+(waves()-1)*SwordTombRules.HANDS_EVERY+SwordTombRules.HANDS_RISE+4);
-				sound(level,position(),SoundEvents.SOUL_ESCAPE,2F,.5F);
+				sound(level,position(),SoundEvents.SOUL_ESCAPE.value(),2F,.5F);
 			}
 			case SwordTombRules.RAMPART->{
 				pose(move,SwordTombRules.RAMPART_TELL+SwordTombRules.RAMPART_TICKS);
-				sound(level,position(),SoundEvents.ARMOR_EQUIP_NETHERITE,1.6F,.6F);
+				sound(level,position(),SoundEvents.ARMOR_EQUIP_NETHERITE.value(),1.6F,.6F);
 			}
 			case SwordTombRules.RITE->{
 				pose(move,SwordTombRules.RITE_TICKS);
@@ -314,7 +314,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		if(w%SwordTombRules.HANDS_EVERY==0 && w/SwordTombRules.HANDS_EVERY<waves()){
 			waves++;
 			for(var p:prey(level))grasps.add(new Grasp(p.position(),now+SwordTombRules.HANDS_RISE,waves));
-			sound(level,position(),SoundEvents.SOUL_ESCAPE,1.8F,.6F);
+			sound(level,position(),SoundEvents.SOUL_ESCAPE.value(),1.8F,.6F);
 			ring(level,position(),2,SOUL,16);
 		}
 		if(s%4==0)level.sendParticles(ParticleTypes.SOUL,getX(),getY()+.3,getZ(),3,1.2,.1,1.2,.02);
@@ -361,7 +361,7 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 				var at=position().add(direction.scale(r)).add(new Vec3(-direction.z,0,direction.x).scale(sign*SwordTombRules.RAMPART_WIDTH));
 				level.sendParticles(GRAVE,at.x,at.y+.15,at.z,1,0,0,0,0);
 			}
-			if(s==tell-SwordTombRules.RAMPART_LOCK)sound(level,position(),SoundEvents.ARMOR_EQUIP_NETHERITE,2F,.4F);
+			if(s==tell-SwordTombRules.RAMPART_LOCK)sound(level,position(),SoundEvents.ARMOR_EQUIP_NETHERITE.value(),2F,.4F);
 			return;
 		}
 		face(direction);
@@ -406,10 +406,10 @@ public final class Gravekeeper extends PathfinderMob implements Enemy {
 		level.sendParticles(ParticleTypes.WHITE_ASH,c.x,c.y,c.z,20,9,1.5,9,0);
 		level.sendParticles(ParticleTypes.ASH,getX(),getY()+1,getZ(),6,1,1,1,0);
 		if(s%3==0)ring(level,position(),Math.max(.6,SwordTombRules.RITE_RADIUS*(1-s/(double)SwordTombRules.RITE_TICKS)),SOUL,24);
-		if(s%9==0)sound(level,position(),SoundEvents.SOUL_ESCAPE,1.6F,.4F+s*.01F);
+		if(s%9==0)sound(level,position(),SoundEvents.SOUL_ESCAPE.value(),1.6F,.4F+s*.01F);
 		if(left>0)return;
 		roused=true;bar.setColor(BossEvent.BossBarColor.RED);
-		Feels.sound(level,position(),"aura_tomb_awake",2F,1.2F);sound(level,position(),SoundEvents.GENERIC_EXPLODE,1.4F,.6F);
+		Feels.sound(level,position(),"aura_tomb_awake",2F,1.2F);sound(level,position(),SoundEvents.GENERIC_EXPLODE.value(),1.4F,.6F);
 		for(int i=1;i<=3;i++)ring(level,position(),SwordTombRules.RITE_RADIUS*i/3.0,ParticleTypes.CLOUD,24*i);
 		level.sendParticles(ParticleTypes.SOUL,getX(),getY()+1,getZ(),30,1.5,1,1.5,.1);
 		double r=SwordTombRules.RITE_RADIUS;

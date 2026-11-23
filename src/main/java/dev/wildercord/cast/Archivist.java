@@ -762,7 +762,7 @@ public class Archivist extends SpellcasterIllager {
 		}
 		if (t == moveTell) {
 			Fx.sound(level, tome, SoundEvents.BOOK_PUT, 2.0F, 0.5F);
-			Fx.sound(level, feet, SoundEvents.GENERIC_EXPLODE, 0.6F, 1.6F);
+			Fx.sound(level, feet, SoundEvents.GENERIC_EXPLODE.value(), 0.6F, 1.6F);
 			Sigils.flash(level, tome, PALE, 2.5F);
 			ElementFx.groundRing(level, feet, PALE, 0.5, ArchivistRules.SNAP_RADIUS + 0.5, 0.4, 8);
 			Vfx.radial(level, PAGE, tome, 20, 0.4);
@@ -969,7 +969,7 @@ public class Archivist extends SpellcasterIllager {
 					struck.add(p.getUUID());
 					strike(level, p, ArchivistRules.HUSH_DAMAGE);
 					ElementFx.ray(level, tomeAt(), p.getBoundingBox().getCenter(), PALE, 0.18, 6);
-					Fx.sound(level, p.position(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, 1.2F, 1.4F);
+					Fx.sound(level, p.position(), SoundEvents.RESPAWN_ANCHOR_DEPLETE.value(), 1.2F, 1.4F);
 				}
 			}
 		}

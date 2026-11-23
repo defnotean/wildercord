@@ -38,7 +38,7 @@ public final class BellShard {
 
 	private static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("bell_shard"));
 	public static final BellShardBlock BLOCK = Registry.register(BuiltInRegistries.BLOCK, KEY, new BellShardBlock(BlockBehaviour.Properties.of()
-		.noOcclusion().strength(-1, 3600000).noLootTable().sound(SoundType.METAL).lightLevel(state -> 4)
+		.noOcclusion().strength(-1, 3600000).sound(SoundType.METAL).lightLevel(state -> 4)
 		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())));
 	private static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bell_shard"));
 	public static final Item ITEM = Registry.register(BuiltInRegistries.ITEM, ITEM_KEY,

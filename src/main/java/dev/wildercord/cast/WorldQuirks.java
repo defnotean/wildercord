@@ -119,7 +119,7 @@ public final class WorldQuirks {
 		String dimension = level.dimension().location().toString();
 		long time = Math.floorMod(dev.wildercord.compat.McTime.overworldClock(level), 24000L);
 		int moon = dev.wildercord.compat.EnvCompat.moonPhase(level, pos);
-		Biome.Precipitation falling = level.getBiome(pos.above()).value().getPrecipitationAt(pos.above(), level.getSeaLevel());
+		Biome.Precipitation falling = level.getBiome(pos.above()).value().getPrecipitationAt(pos.above());
 		String precipitation = falling == Biome.Precipitation.RAIN ? "rain" : falling == Biome.Precipitation.SNOW ? "snow" : "none";
 		return new Attunements.Place(biome, dimension, pos.getY(), time, moon, precipitation, level.canSeeSky(pos.above()), false);
 	}

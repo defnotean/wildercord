@@ -40,7 +40,7 @@ public final class RimescaleBlock extends Block {
 	}
 
 	@Override protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		return take(level, pos, player);
+		return dev.wildercord.compat.McBlocksAndItems.itemResult(take(level, pos, player));
 	}
 
 	private static InteractionResult take(Level level, BlockPos pos, Player who) {

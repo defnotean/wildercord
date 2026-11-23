@@ -98,7 +98,7 @@ public final class WildercordItems {
 
 	private static CordItem cord(CordTier tier, Rarity rarity) {
 		// Enchantable so Reservoir, Wellspring and Siphon can go on a Cord at the table, anvil or with books.
-		return register(tier.key + "_cord", p -> new CordItem(tier, p), new Item.Properties().stacksTo(1).rarity(rarity).enchantable(15));
+		return register(tier.key + "_cord", p -> new CordItem(tier, p), new Item.Properties().stacksTo(1).rarity(rarity));
 	}
 
 	private static BackpackItem backpack(BackpackTier tier, Rarity rarity) {

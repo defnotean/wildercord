@@ -17,7 +17,7 @@ public final class FerrymanContent {
 	private FerrymanContent() {}
 	private static final ResourceKey<Block> BELL_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("crossing_bell"));
 	public static final CrossingBellBlock BELL = Registry.register(BuiltInRegistries.BLOCK, BELL_KEY,
-		new CrossingBellBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).sound(SoundType.COPPER).noOcclusion().noLootTable()));
+		new CrossingBellBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).sound(SoundType.COPPER).noOcclusion()));
 	public static final BlockEntityType<CrossingBellEntity> BELL_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
 		Wildercord.id("crossing_bell"), FabricBlockEntityTypeBuilder.create(CrossingBellEntity::new, BELL).build());
 	private static final ResourceKey<EntityType<?>> ENTITY_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("reed_crowned_ferryman"));

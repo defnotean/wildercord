@@ -331,7 +331,7 @@ public final class Vfx {
 		supporting(level, center, theme, 0, Math.min(2, radius * 0.45));
 		radial(level, theme.mote, center, 20, 0.25);
 		radial(level, theme.spark, center, 12, 0.35);
-		Fx.sound(level, center, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 1.3F);
+		Fx.sound(level, center, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.8F, 1.3F);
 		Fx.sound(level, center, theme.impact, 0.6F, 1.0F);
 	}
 
@@ -439,7 +439,7 @@ public final class Vfx {
 		radial(level, ParticleTypes.FLAME, center, 18, 0.3);
 		Motes.clouds(level, center, 7, radius * 0.3, Motes.SMOKE, 1.2 + radius * 0.25, 45, new Vec3(0, 0.035, 0), 0.08, 0.45);
 		radial(level, ParticleTypes.LAVA, center, 4, 0.1);
-		Fx.sound(level, center, SoundEvents.GENERIC_EXPLODE, 1.2F, 1.0F);
+		Fx.sound(level, center, SoundEvents.GENERIC_EXPLODE.value(), 1.2F, 1.0F);
 	}
 
 	/** Heal: a soft green bloom, a leaf spiral climbing the target, petals and hearts. */
@@ -936,7 +936,7 @@ public final class Vfx {
 		}
 		Sigils.flash(level, base.add(0, 1, 0), theme.primary, (float) (radius * 2 + 1));
 		Light.groundRing(level, base, theme.primary, radius * 0.5, radius + 1.5, 0.08, 10);
-		Fx.sound(level, base, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 0.7F);
+		Fx.sound(level, base, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.8F, 0.7F);
 	}
 
 	/** Wave: a glowing crest rolling forward, spray flying off it. */

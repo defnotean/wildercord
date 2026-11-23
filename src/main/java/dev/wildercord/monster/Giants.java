@@ -121,7 +121,7 @@ public final class Giants {
 			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 			if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
 			var biome = level.getBiome(ground).value();
-			GiantRules.Kind kind = GiantRules.kind(biome.getBaseTemperature(), biome.coldEnoughToSnow(ground, level.getSeaLevel()));
+			GiantRules.Kind kind = GiantRules.kind(biome.getBaseTemperature(), biome.coldEnoughToSnow(ground));
 			int threat = Math.max(GiantRules.THREAT_MIN, TemperingRules.threat(Heart.circles(player), Aura.stage(player)));
 			Mob giant = make(level, kind, new Vec3(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5), threat, false);
 			if (giant == null) return null;
@@ -236,7 +236,7 @@ public final class Giants {
 		}
 		level.sendParticles(ParticleTypes.EXPLOSION, mob.getX(), mob.getY() + 0.2, mob.getZ(), 6, radius / 2, 0.1, radius / 2, 0);
 		level.sendParticles(ParticleTypes.CLOUD, mob.getX(), mob.getY() + 0.2, mob.getZ(), 30, radius / 2, 0.1, radius / 2, 0.05);
-		level.playSound(null, mob.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1.5F, 0.55F);
+		level.playSound(null, mob.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 1.5F, 0.55F);
 		return hit;
 	}
 

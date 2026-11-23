@@ -15,7 +15,7 @@ public final class WildercordEntities {
 
 	public static final EntityType<RuneBolt> RUNE_BOLT = Registry.register(BuiltInRegistries.ENTITY_TYPE, RUNE_BOLT_KEY,
 		EntityType.Builder.<RuneBolt>of(RuneBolt::new, MobCategory.MISC)
-			.noLootTable()
+			
 			.noSave()
 			.noSummon()
 			.sized(0.3F, 0.3F)

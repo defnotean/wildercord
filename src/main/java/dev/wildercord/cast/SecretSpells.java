@@ -218,7 +218,7 @@ public final class SecretSpells {
 			}
 			Fx.sound(level, from, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.8F, 1.5F);
 		});
-		Fx.sound(level, from, SoundEvents.TRIDENT_THROW, 1.0F, 0.6F);
+		Fx.sound(level, from, SoundEvents.TRIDENT_THROW.value(), 1.0F, 0.6F);
 		Fx.sound(level, from, SoundEvents.GLASS_BREAK, 0.8F, 1.8F);
 	}
 
@@ -280,7 +280,7 @@ public final class SecretSpells {
 			ElementFx.flameBurst(level, c, 3.5, 8);
 			Vfx.radial(level, ParticleTypes.FLAME, c, 36, 0.5);
 			Vfx.radial(level, ParticleTypes.LAVA, c, 12, 0.3);
-			Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE, 1.4F, 0.6F);
+			Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE.value(), 1.4F, 0.6F);
 			Fx.sound(level, c, SoundEvents.FIRECHARGE_USE, 1.0F, 0.5F);
 			// The ground burns for a few seconds.
 			for (int s = 0; s < 4; s++) {
@@ -319,7 +319,7 @@ public final class SecretSpells {
 		Vec3 side = fwd.cross(new Vec3(0, 1, 0)).normalize();
 		Set<UUID> cut = new HashSet<>();
 		Fx.sound(level, eye, SoundEvents.PLAYER_ATTACK_SWEEP, 1.2F, 0.5F);
-		Fx.sound(level, eye, SoundEvents.TRIDENT_RIPTIDE_1, 1.0F, 1.4F);
+		Fx.sound(level, eye, SoundEvents.TRIDENT_RIPTIDE_1.value(), 1.0F, 1.4F);
 		for (int t = 0; t < 6; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -435,7 +435,7 @@ public final class SecretSpells {
 			Casters.tell(caster, Component.translatable("message.wildercord.no_targets"));
 			return;
 		}
-		Fx.sound(level, caster.position(), SoundEvents.TRIDENT_THUNDER, 0.8F, 1.6F);
+		Fx.sound(level, caster.position(), SoundEvents.TRIDENT_THUNDER.value(), 0.8F, 1.6F);
 		for (int i = 0; i < path.size(); i++) {
 			LivingEntity target = path.get(i);
 			Scheduler.later(1 + i * 3, () -> {

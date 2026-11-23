@@ -253,7 +253,7 @@ final class CinnamonCompanion {
 		if (now < entry.whistleUntil()) { message(player, "recall_cooldown"); return; }
 		journal.put(player.getUUID(), entry.cooldown(now + CinnamonRecoveryRules.WHISTLE_TICKS));
 		REQUESTED.add(player.getUUID()); BLOCKED.remove(player.getUUID());
-		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), net.minecraft.sounds.SoundEvents.NOTE_BLOCK_FLUTE,
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), net.minecraft.sounds.SoundEvents.NOTE_BLOCK_FLUTE.value(),
 			net.minecraft.sounds.SoundSource.PLAYERS, 0.8F, 1.8F);
 		message(player, "recall_wait");
 	}

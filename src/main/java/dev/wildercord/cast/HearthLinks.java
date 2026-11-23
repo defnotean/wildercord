@@ -146,7 +146,7 @@ public final class HearthLinks {
 			return false;
 		}
 		Biome biome = level.getBiome(head).value();
-		return biome.hasPrecipitation() && biome.getPrecipitationAt(head, level.getSeaLevel()) != Biome.Precipitation.NONE;
+		return biome.hasPrecipitation() && biome.getPrecipitationAt(head) != Biome.Precipitation.NONE;
 	}
 
 	static boolean tool(ItemStack stack) {

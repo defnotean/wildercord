@@ -141,7 +141,7 @@ public class SnowcapStoat extends Animal {
 		long now = level.getGameTime();
 		if (tickCount % 100 == 1) {
 			BlockPos at = blockPosition();
-			entityData.set(WINTER, StoatRules.winterCoat(level.getBiome(at).value().coldEnoughToSnow(at, level.getSeaLevel())));
+			entityData.set(WINTER, StoatRules.winterCoat(level.getBiome(at).value().coldEnoughToSnow(at)));
 		}
 		int pose = pose(), left = poseLeft();
 		if (pose != StoatRules.IDLE) {

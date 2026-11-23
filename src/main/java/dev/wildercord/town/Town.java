@@ -141,7 +141,7 @@ public final class Town {
 	private static final ResourceKey<Block> BOARD_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("bounty_board"));
 	public static final BountyBoardBlock BOUNTY_BOARD = Registry.register(BuiltInRegistries.BLOCK, BOARD_KEY,
 		new BountyBoardBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(-1.0F, 3600000.0F)
-			.noOcclusion().noLootTable()));
+			.noOcclusion()));
 	private static final ResourceKey<Item> BOARD_ITEM_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("bounty_board"));
 	public static final Item BOUNTY_BOARD_ITEM = Registry.register(BuiltInRegistries.ITEM, BOARD_ITEM_KEY,
 		new BlockItem(BOUNTY_BOARD, new Item.Properties()));

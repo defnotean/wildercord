@@ -44,7 +44,7 @@ public final class Fishing {
 	 */
 	public static boolean inThunder(ServerLevel level, Vec3 at) {
 		return level.isThundering()
-			&& level.getBiome(BlockPos.containing(at).above()).value().getPrecipitationAt(BlockPos.containing(at).above(), level.getSeaLevel()) != net.minecraft.world.level.biome.Biome.Precipitation.NONE;
+			&& level.getBiome(BlockPos.containing(at).above()).value().getPrecipitationAt(BlockPos.containing(at).above()) != net.minecraft.world.level.biome.Biome.Precipitation.NONE;
 	}
 
 	/**

@@ -113,13 +113,13 @@ public final class WildercordEffects {
 		}
 
 		@Override
-		public boolean applyEffectTick(ServerLevel level, LivingEntity mob, int amplification) {
+		public boolean applyEffectTick(LivingEntity mob, int amplification) {
 			restore(mob, amplification, 1.0);
 			return true;
 		}
 
 		@Override
-		public void applyInstantenousEffect(ServerLevel level, Entity source, Entity owner, LivingEntity mob, int amplification, double scale) {
+		public void applyInstantenousEffect(Entity source, Entity owner, LivingEntity mob, int amplification, double scale) {
 			restore(mob, amplification, scale);
 		}
 

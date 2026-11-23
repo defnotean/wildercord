@@ -77,7 +77,7 @@ final class CraftedVfx {
 			Vfx.emit(level, theme.spark(), pos, 1, 0.1, 0.02);
 		}
 		if (tick % 6 == 0) {
-			Fx.sound(level, pos, SoundEvents.TRIDENT_RIPTIDE_1, 0.25F, 1.9F);
+			Fx.sound(level, pos, SoundEvents.TRIDENT_RIPTIDE_1.value(), 0.25F, 1.9F);
 		}
 	}
 
@@ -108,7 +108,7 @@ final class CraftedVfx {
 	/** Every half second while it waits: a pulse closing in, quicker as it's about to go. */
 	static void imprintTick(ServerLevel level, Vec3 feet, double radius, Vfx.Theme theme, int left) {
 		Light.groundRing(level, feet, theme.primary(), radius, 0.2, 0.04, 8);
-		Fx.sound(level, feet, SoundEvents.NOTE_BLOCK_HAT, 0.5F, 1.6F - Math.min(0.8F, left / 60F));
+		Fx.sound(level, feet, SoundEvents.NOTE_BLOCK_HAT.value(), 0.5F, 1.6F - Math.min(0.8F, left / 60F));
 	}
 
 	static void imprintErupt(ServerLevel level, Vec3 feet, double radius, Vfx.Theme theme) {
@@ -118,7 +118,7 @@ final class CraftedVfx {
 		Light.ray(level, feet, feet.add(0, 2.6, 0), theme.secondary(), 0.35, 7);
 		Vfx.radial(level, theme.mote(), heart, 16, 0.25);
 		Vfx.radial(level, theme.spark(), feet.add(0, 0.3, 0), 10, 0.3);
-		Fx.sound(level, feet, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.5F);
+		Fx.sound(level, feet, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 1.5F);
 		Fx.sound(level, feet, theme.impact(), 0.7F, 1.0F);
 		ScreenFx.shake(level, feet, 0.25F, 8.0);
 	}
@@ -182,7 +182,7 @@ final class CraftedVfx {
 	static void belated(ServerLevel level, Vec3 at, int ticks) {
 		Sigils.layer(level, at, UP, SigilOption.CIRCLE, TIME, 0.55F, ticks, 0.25F);
 		Light.ring(level, at, UP, TIME, 0.8, 0.2, 0.03, Math.max(6, ticks));
-		Fx.sound(level, at, SoundEvents.NOTE_BLOCK_HAT, 0.5F, 0.8F);
+		Fx.sound(level, at, SoundEvents.NOTE_BLOCK_HAT.value(), 0.5F, 0.8F);
 	}
 
 	// ------------------------------------------------------------------ the effects
@@ -364,7 +364,7 @@ final class CraftedVfx {
 	/** The weapon drifts back into its hand. */
 	static void rearm(ServerLevel level, Entity t) {
 		Vfx.emit(level, ParticleTypes.SMALL_GUST, t.getBoundingBox().getCenter(), 3, 0.3, 0.02);
-		Fx.sound(level, t.position(), SoundEvents.ARMOR_EQUIP_GENERIC, 0.6F, 1.2F);
+		Fx.sound(level, t.position(), SoundEvents.ARMOR_EQUIP_GENERIC.value(), 0.6F, 1.2F);
 	}
 
 	static void wind(ServerLevel level, Entity t) {

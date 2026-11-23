@@ -39,7 +39,7 @@ public final class Battlefields {
 	private Battlefields() {}
 	private static final ResourceKey<net.minecraft.world.level.block.Block> KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("battlefield_memorial"));
 	public static final BattlefieldMemorial MEMORIAL=Registry.register(BuiltInRegistries.BLOCK,KEY,new BattlefieldMemorial(
-		BlockBehaviour.Properties.of().mapColor(MapColor.STONE).sound(SoundType.STONE).strength(3,9).noLootTable().noOcclusion()));
+		BlockBehaviour.Properties.of().mapColor(MapColor.STONE).sound(SoundType.STONE).strength(3,9).noOcclusion()));
 	public static final BlockEntityType<BattlefieldMemoryEntity> MEMORY_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
 		Wildercord.id("battlefield_memory"),FabricBlockEntityTypeBuilder.create(BattlefieldMemoryEntity::new,MEMORIAL).build());
 	private record Rite(ServerLevel level,BlockPos at,int kind,int held) {}

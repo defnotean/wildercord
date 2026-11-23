@@ -522,7 +522,7 @@ final class FusedVoidVfx {
 		Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, centre, 28, 0.7);
 		Motes.burst(level, centre, 18, ElementFx.VOID.secondary(), 0.14, 26, 0.5);
 		ScreenFx.shake(level, centre, 0.7F, radius * 3);
-		Fx.sound(level, centre, SoundEvents.GENERIC_EXPLODE, 0.7F, 0.55F);
+		Fx.sound(level, centre, SoundEvents.GENERIC_EXPLODE.value(), 0.7F, 0.55F);
 		dev.wildercord.cast.feel.Feels.sound(level, centre, "void_snap", 1.2F, 0.8F);
 	}
 
@@ -618,7 +618,7 @@ final class FusedVoidVfx {
 			Scheduler.later(1 + 5 * j, () -> {
 				ElementFx.slash(level, c, UP, ElementFx.flatDir(from + Math.PI / 4), ElementFx.TIME.secondary(), r * 0.9, Math.PI / 2, 0.08, 2, 7);
 				ElementFx.ray(level, c, c.add(ElementFx.flatDir(from + Math.PI / 2).scale(r * 0.85)), WHITE, 0.04, 5);
-				Fx.sound(level, c, SoundEvents.NOTE_BLOCK_HAT, 0.8F, pitch);
+				Fx.sound(level, c, SoundEvents.NOTE_BLOCK_HAT.value(), 0.8F, pitch);
 			});
 		}
 		ElementFx.goldenTicks(level, c, 0.4, 5);

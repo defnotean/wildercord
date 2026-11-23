@@ -860,7 +860,7 @@ public class TideScribe extends DungeonBoss {
 					}
 				}
 			}
-			Fx.sound(level, hand, SoundEvents.TRIDENT_THROW, 1.4F, 1.4F);
+			Fx.sound(level, hand, SoundEvents.TRIDENT_THROW.value(), 1.4F, 1.4F);
 			Fx.sound(level, hand, SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 1.6F);
 		}
 		if (moveLeft == 1 && phase >= 3 && again == 0) {
@@ -1111,7 +1111,7 @@ public class TideScribe extends DungeonBoss {
 			Vfx.emit(level, ParticleTypes.BUBBLE, at.add(0, -0.4, 0), 6, 0.7, 0.1);
 			Vfx.fling(level, ParticleTypes.CLOUD, at, dir.add(0, 0.3, 0), 0.3);
 			if (k == 0) {
-				Fx.sound(level, position(), SoundEvents.TRIDENT_RIPTIDE_1, 1.6F, 0.9F);
+				Fx.sound(level, position(), SoundEvents.TRIDENT_RIPTIDE_1.value(), 1.6F, 0.9F);
 			}
 			if (k % 3 == 0) {
 				Fx.sound(level, at, SoundEvents.GENERIC_SPLASH, 1.0F, 1.2F);

@@ -445,7 +445,7 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 			struck.clear();
 			var f=ahead(aim);
 			Feels.sound(level,position().add(0,2,0),"aura_frost_wyrmling_wing",1.7F,.8F+random.nextFloat()*.15F);
-			sound(level,position().add(f.scale(2)),SoundEvents.BREEZE_WIND_CHARGE_BURST,1.2F,.7F);
+			sound(level,position().add(f.scale(2)),SoundEvents.BREEZE_WIND_CHARGE_BURST.value(),1.2F,.7F);
 			for(int i=0;i<36;i++){
 				double sp=(random.nextDouble()-.5)*1.6;
 				level.sendParticles(i%3==0?ParticleTypes.POOF:ParticleTypes.SNOWFLAKE,getX()+f.x*1.5,getY()+.4+random.nextDouble()*2,getZ()+f.z*1.5,0,f.x-f.z*sp,.02,f.z+f.x*sp,.9);

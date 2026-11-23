@@ -309,7 +309,7 @@ public class RuneBolt extends Projectile {
 			Vfx.radial(server, McParticles.dust(other.color, 1.3F), at, 16, 0.3);
 			Vfx.radial(server, ParticleTypes.ELECTRIC_SPARK, at, 12, 0.4);
 			Fx.sound(server, at, dev.wildercord.content.WildercordSounds.SHIELD_BREAK, 1.2F, 1.0F);
-			Fx.sound(server, at, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.6F);
+			Fx.sound(server, at, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 1.6F);
 			if (damage > 0) {
 				for (Entity victim : CastEngine.inRadius(owner, at, radius)) {
 					if (Targets.canHarm(player, victim)) {
@@ -373,7 +373,7 @@ public class RuneBolt extends Projectile {
 					float admitted = cast.admits(living) ? cast.admitDamage(living, (float) damage) : 0;
 					if (admitted > 0) living.hurt(source, admitted);
 				} else {
-					SpellDefence.hurt(living, source, (float) damage, cast);
+					SpellDefence.hurt(cast.level, living, source, (float) damage, cast);
 				}
 			}
 			fizzle();

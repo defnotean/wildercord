@@ -140,7 +140,7 @@ final class ReactionVfx {
 		}
 		ElementFx.sparks(level, c, 16, 0.5);
 		Motes.clouds(level, c, 5, 0.5, Motes.SMOKE, 1.3, 40, new Vec3(0, 0.035, 0), 0.06, 0.45);
-		Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE, 1.0F, 1.4F);
+		Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 1.4F);
 		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.8F, 1.3F);
 	}
 

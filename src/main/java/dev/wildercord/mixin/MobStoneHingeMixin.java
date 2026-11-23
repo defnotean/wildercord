@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(Mob.class)
 public abstract class MobStoneHingeMixin {
 	@WrapMethod(method = "doHurtTarget")
-	private boolean wildercord$stoneHingeMelee(ServerLevel level, Entity target, Operation<Boolean> original) {
-		return StoneHingeReceipt.melee((Mob) (Object) this, target, () -> original.call(level, target));
+	private boolean wildercord$stoneHingeMelee(Entity target, Operation<Boolean> original) {
+		return StoneHingeReceipt.melee((Mob) (Object) this, target, () -> original.call(target));
 	}
 
 	@WrapOperation(method = "doHurtTarget", at = @At(value = "INVOKE", target =
-		"Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-	private boolean wildercord$stoneHingeSource(Entity target, ServerLevel level, DamageSource source, float amount, Operation<Boolean> original) {
+		"Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+	private boolean wildercord$stoneHingeSource(Entity target, DamageSource source, float amount, Operation<Boolean> original) {
 		StoneHingeReceipt.meleeSource((Mob) (Object) this, target, source);
-		return original.call(target, level, source, amount);
+		return original.call(target, source, amount);
 	}
 }

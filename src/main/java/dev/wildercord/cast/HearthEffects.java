@@ -267,7 +267,7 @@ public final class HearthEffects {
 					}
 					glow(level, t, path);
 				}
-				Fx.sound(level, caster.position(), SoundEvents.NOTE_BLOCK_FLUTE, 0.8f, 1.2f);
+				Fx.sound(level, caster.position(), SoundEvents.NOTE_BLOCK_FLUTE.value(), 0.8f, 1.2f);
 			}
 			case "petward" -> {
 				int ticks = Effects.ticks(HearthRules.SHORT, duration);
@@ -291,7 +291,7 @@ public final class HearthEffects {
 					pet.getNavigation().stop();
 					count++;
 				}
-				Fx.sound(level, caster.position(), SoundEvents.NOTE_BLOCK_FLUTE, 1f, 1.8f);
+				Fx.sound(level, caster.position(), SoundEvents.NOTE_BLOCK_FLUTE.value(), 1f, 1.8f);
 				Casters.tell(caster, count == 0 ? Component.translatable("message.wildercord.hearth.no_pets")
 					: Component.translatable("message.wildercord.hearth.pets", count));
 			}
@@ -306,7 +306,7 @@ public final class HearthEffects {
 				for (ServerPlayer p : level.players()) {
 					asleep += p.isSleeping() ? 1 : 0;
 				}
-				Fx.sound(level, caster.position(), SoundEvents.NOTE_BLOCK_CHIME, 0.7f, 0.6f);
+				Fx.sound(level, caster.position(), SoundEvents.NOTE_BLOCK_CHIME.value(), 0.7f, 0.6f);
 				Casters.tell(caster, Component.translatable("message.wildercord.hearth.lullaby", asleep, level.players().size()));
 			}
 			case "hearthbond" -> {
@@ -536,7 +536,7 @@ public final class HearthEffects {
 			}
 		}
 		if (timers.containsKey("tinker_hum") && now % HearthRules.TINKER_EVERY == 0 && s.tinkerGiven < HearthRules.TINKER_MAX) {
-			for (EquipmentSlot slot : EquipmentSlot.values()) {
+			for (EquipmentSlot slot : EquipmentSlot.values()()) {
 				ItemStack stack = p.getItemBySlot(slot);
 				if (stack.isDamageableItem() && stack.isDamaged()) {
 					stack.setDamageValue(stack.getDamageValue() - 1);
@@ -638,7 +638,7 @@ public final class HearthEffects {
 				hunting.add(mob.getId());
 				if (s.warned.add(mob.getId()) && HearthRules.ready(s.warnedAt, now, 40)) {
 					s.warnedAt = now;
-					Fx.sound(level, p.position(), SoundEvents.NOTE_BLOCK_BELL, 0.6f, 1.6f);
+					Fx.sound(level, p.position(), SoundEvents.NOTE_BLOCK_BELL.value(), 0.6f, 1.6f);
 					Casters.tell(p, Component.translatable("message.wildercord.hearth.hunted"));
 				}
 			}
@@ -679,7 +679,7 @@ public final class HearthEffects {
 		}
 		if (warn != null) {
 			s.warnedAt = now;
-			Fx.sound(level, p.position(), SoundEvents.NOTE_BLOCK_BASS, 0.7f, 0.6f);
+			Fx.sound(level, p.position(), SoundEvents.NOTE_BLOCK_BASS.value(), 0.7f, 0.6f);
 			Casters.tell(p, Component.translatable(warn));
 		}
 	}
@@ -933,7 +933,7 @@ public final class HearthEffects {
 				for (UUID other : b.members()) {
 					ServerPlayer ally = server.getPlayerList().getPlayer(other);
 					if (ally != null && ally != hurt) {
-						Fx.sound(((ServerLevel) ally.level()), ally.position(), SoundEvents.NOTE_BLOCK_BELL, 0.8f, 0.8f);
+						Fx.sound(((ServerLevel) ally.level()), ally.position(), SoundEvents.NOTE_BLOCK_BELL.value(), 0.8f, 0.8f);
 						Casters.tell(ally, Component.translatable("message.wildercord.hearth.bond_low", hurt.getDisplayName()));
 						if (ally.level() == hurt.level()) {
 							Fx.sendParticles((ServerLevel) hurt.level(), ally, ParticleTypes.END_ROD, true, true, hurt.getX(), hurt.getY() + 2.5, hurt.getZ(), 1, 0, 0, 0, 0);

@@ -797,7 +797,7 @@ public class CinderWarden extends DungeonBoss {
 		if (t < tell + VENT_BLAST) {
 			if (t == tell) {
 				Fx.sound(level, back, SoundEvents.FIRE_EXTINGUISH, 1.6F, 0.5F);
-				Fx.sound(level, back, SoundEvents.BREEZE_WIND_CHARGE_BURST, 1.0F, 0.6F);
+				Fx.sound(level, back, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1.0F, 0.6F);
 			}
 			for (int i = 0; i < 6; i++) {
 				Vec3 dir = ahead(aim + 180 + (level.getRandom().nextDouble() * 2 - 1) * half);
@@ -877,7 +877,7 @@ public class CinderWarden extends DungeonBoss {
 		if (k < HAUL_CAST) {
 			// Thrown out down its lane; the first it finds there, it bites.
 			if (k == 0) {
-				Fx.sound(level, hand, SoundEvents.TRIDENT_THROW, 1.2F, 0.5F);
+				Fx.sound(level, hand, SoundEvents.TRIDENT_THROW.value(), 1.2F, 0.5F);
 			}
 			double was = cast;
 			cast = caught != null ? cast : HAUL_FROM + (haulTo - HAUL_FROM) * (k + 1) / HAUL_CAST;
@@ -1157,7 +1157,7 @@ public class CinderWarden extends DungeonBoss {
 			ElementFx.ring(level, chest, new Vec3(0, 1, 0), ACCENT, 1, FLARE_RADIUS, 0.6, 12);
 			ElementFx.groundRing(level, feet.add(0, 0.05, 0), COLOR, 1, FLARE_RADIUS, 0.4, 10);
 			Vfx.emit(level, ParticleTypes.LAVA, chest, 30, 2.0, 0.5);
-			Fx.sound(level, chest, SoundEvents.GENERIC_EXPLODE, 2.0F, 0.6F);
+			Fx.sound(level, chest, SoundEvents.GENERIC_EXPLODE.value(), 2.0F, 0.6F);
 			Fx.sound(level, chest, SoundEvents.WARDEN_SONIC_BOOM, 2.0F, 0.6F);
 		}
 	}

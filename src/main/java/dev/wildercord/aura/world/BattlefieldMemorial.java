@@ -29,5 +29,5 @@ public final class BattlefieldMemorial extends Block implements EntityBlock {
 		return InteractionResult.SUCCESS;
 	}
 	@Override protected ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack,BlockState state,Level level,BlockPos pos,
-		Player player,net.minecraft.world.InteractionHand hand,BlockHitResult hit) { return useWithoutItem(state,level,pos,player,hit); }
+		Player player,net.minecraft.world.InteractionHand hand,BlockHitResult hit) { return dev.wildercord.compat.McBlocksAndItems.itemResult(useWithoutItem(state, level, pos, player, hit)); }
 }

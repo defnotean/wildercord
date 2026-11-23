@@ -31,7 +31,7 @@ public final class Rhythm {
 		int stacks = onBeat ? Math.min(MAX, rhythm.stacks() + 1) : 0;
 		if (onBeat) {
 			float pitch = 0.9F + 0.25F * stacks;
-			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.NOTE_BLOCK_CHIME, 0.8F, pitch);
+			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.NOTE_BLOCK_CHIME.value(), 0.8F, pitch);
 			Fx.sound((ServerLevel) player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, pitch);
 			player.displayClientMessage(Component.translatable("message.wildercord.rhythm", stacks, Math.round(stacks * POWER_PER_STACK * 100))
 				.withColor(0xF5D56A).withStyle(ChatFormatting.BOLD), true);

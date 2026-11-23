@@ -26,8 +26,8 @@ import java.util.List;
 public final class SwordTombs {
 	private SwordTombs(){}
 	private static final ResourceKey<Block> GATE_KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("intent_gate")),RELIQUARY_KEY=ResourceKey.create(Registries.BLOCK,Wildercord.id("tomb_reliquary"));
-	public static final IntentGate GATE=Registry.register(BuiltInRegistries.BLOCK,GATE_KEY,new IntentGate(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.DEEPSLATE).noLootTable()));
-	public static final TombReliquary RELIQUARY=Registry.register(BuiltInRegistries.BLOCK,RELIQUARY_KEY,new TombReliquary(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.STONE).noLootTable().noOcclusion()));
+	public static final IntentGate GATE=Registry.register(BuiltInRegistries.BLOCK,GATE_KEY,new IntentGate(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.DEEPSLATE)));
+	public static final TombReliquary RELIQUARY=Registry.register(BuiltInRegistries.BLOCK,RELIQUARY_KEY,new TombReliquary(BlockBehaviour.Properties.of().strength(-1,3600000).sound(SoundType.STONE).noOcclusion()));
 	public static final BlockEntityType<TombReliquaryEntity> RELIQUARY_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("tomb_reliquary"),FabricBlockEntityTypeBuilder.create(TombReliquaryEntity::new,RELIQUARY).build());
 	private static final ResourceKey<EntityType<?>> KEEPER_KEY=ResourceKey.create(Registries.ENTITY_TYPE,Wildercord.id("gravekeeper"));
 	public static final EntityType<Gravekeeper> KEEPER=Registry.register(BuiltInRegistries.ENTITY_TYPE,KEEPER_KEY,EntityType.Builder.of(Gravekeeper::new,MobCategory.MONSTER).sized(1.0F,2.9F).eyeHeight(2.35F).clientTrackingRange(10).build(KEEPER_KEY.location().toString()));

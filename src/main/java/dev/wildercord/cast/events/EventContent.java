@@ -23,7 +23,7 @@ public final class EventContent {
 		.mapColor(MapColor.COLOR_LIGHT_BLUE)
 		.sound(SoundType.AMETHYST)
 		.strength(-1.0F, 3600000.0F)
-		.noLootTable()
+		
 		.noOcclusion()
 		.pushReaction(dev.wildercord.compat.McBlocksAndItems.immovablePushReaction())
 		.lightLevel(state -> 15));

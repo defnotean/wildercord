@@ -24,7 +24,7 @@ public final class CartographerContent {
 	private CartographerContent() {}
 	private static final ResourceKey<Block> ASTROLABE_KEY = ResourceKey.create(Registries.BLOCK, Wildercord.id("survey_astrolabe"));
 	public static final SurveyAstrolabeBlock ASTROLABE = Registry.register(BuiltInRegistries.BLOCK, ASTROLABE_KEY,
-		new SurveyAstrolabeBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().noLootTable().lightLevel(s -> 9).sound(SoundType.COPPER)));
+		new SurveyAstrolabeBlock(BlockBehaviour.Properties.of().strength(-1, 3600000).noOcclusion().lightLevel(s -> 9).sound(SoundType.COPPER)));
 	public static final Item ASTROLABE_ITEM = Registry.register(BuiltInRegistries.ITEM, ResourceKey.create(Registries.ITEM, Wildercord.id("survey_astrolabe")),
 		new BlockItem(ASTROLABE, new Item.Properties()));
 	public static final BlockEntityType<SurveyAstrolabeEntity> ASTROLABE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Wildercord.id("survey_astrolabe"),
