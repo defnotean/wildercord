@@ -5,7 +5,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.ocean.SingingMoonWhale;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -55,11 +55,11 @@ public final class SingingMoonWhaleRenderer extends MobRenderer<SingingMoonWhale
 		}
 
 		@Override
-		public void submit(PoseStack pose, SubmitNodeCollector collector, int light, OceanRenderStates.MoonWhaleState state, float yaw, float pitch) {
+		public void render(PoseStack pose, MultiBufferSource collector, int light, OceanRenderStates.MoonWhaleState state, float yaw, float pitch) {
 			if (state.isInvisible) return;
 			float pulse = state.singing ? (0.75F + 0.25F * Mth.sin(state.ageInTicks * 0.35F)) : 0.65F;
 			int a = Mth.clamp(Math.round(pulse * 255), 0, 255);
-			RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, (a << 24) | 0xFFFFFF, state.outlineColor);
+			RenderCompat.submitModel(collector, getParentModel(), state, pose, glowType, light, OverlayTexture.NO_OVERLAY, (a << 24) | 0xFFFFFF, state.outlineColor);
 		}
 	}
 }

@@ -5,7 +5,7 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.client.compat.RenderCompat;
 import dev.wildercord.ocean.BrineMerchant;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -64,14 +64,14 @@ public final class BrineMerchantRenderer extends MobRenderer<BrineMerchant, Ocea
 		}
 
 		@Override
-		public void submit(PoseStack pose, SubmitNodeCollector collector, int light, OceanRenderStates.BrineMerchantState state, float yaw, float pitch) {
+		public void render(PoseStack pose, MultiBufferSource collector, int light, OceanRenderStates.BrineMerchantState state, float yaw, float pitch) {
 			if (state.isInvisible) return;
 			RenderType type = switch (state.profession) {
 				case PEARL_JEWELER -> glowJeweler;
 				case ABYSSAL_CARTOGRAPHER -> glowCartographer;
 				case KELP_ALCHEMIST -> glowAlchemist;
 			};
-			RenderCompat.submitModel(collector.order(1), getParentModel(), state, pose, type, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
+			RenderCompat.submitModel(collector, getParentModel(), state, pose, type, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF, state.outlineColor);
 		}
 	}
 }
