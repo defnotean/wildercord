@@ -120,6 +120,8 @@ public class MossbackTortoise extends Animal {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
+		ServerLevel level = (ServerLevel) level();
+
 		float taken = hidden() ? amount * WildlifeRules.SHELL_GUARD : amount;
 		boolean hurt = super.hurt(source, taken);
 		if (hurt && isAlive()) {

@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.server.level.ServerLevel;
 import dev.wildercord.compat.McParticles;
 
 import dev.wildercord.aura.arts.ArtBlocks;
@@ -170,17 +171,17 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-17,b.getY()-3,b.getZ()-17,b.getX()+17,b.getY()+13,b.getZ()+17));}
 		// Left alone long enough (its prey died and went home, say) and it has curled up again in the meantime.
-		long now=level().getGameTime();
+		long now=level.getGameTime();
 		if(lastTick>=0 && move()!=FrostWyrmlingRules.DORMANT && FrostWyrmlingRules.forgets(now-lastTick))curlUp();
 		lastTick=now;
-		if(tickCount%FrostWyrmlingRules.GUARD_EVERY==0 && Guardians.enabled())guard(level());
+		if(tickCount%FrostWyrmlingRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
 		switch(move()){
-			case FrostWyrmlingRules.DORMANT->dormant(level());
-			case FrostWyrmlingRules.RISE->{hold();if(--left<=0)stand(level());else if(left==FrostWyrmlingRules.RISE_TICKS-FrostWyrmlingRules.ROAR_AT)roar(level(),1.6F,1);}
-			case FrostWyrmlingRules.BED->{hold();if(wakeful(level())!=null)wake(level(),FrostWyrmlingRules.RISE_TICKS-left);else if(--left<=0)curlUp();}
-			default->awake(level());
+			case FrostWyrmlingRules.DORMANT->dormant(level);
+			case FrostWyrmlingRules.RISE->{hold();if(--left<=0)stand(level);else if(left==FrostWyrmlingRules.RISE_TICKS-FrostWyrmlingRules.ROAR_AT)roar(level,1.6F,1);}
+			case FrostWyrmlingRules.BED->{hold();if(wakeful(level)!=null)wake(level,FrostWyrmlingRules.RISE_TICKS-left);else if(--left<=0)curlUp();}
+			default->awake(level);
 		}
-		if(tickCount%4==0)rime(level());
+		if(tickCount%4==0)rime(level);
 	}
 
 	/** Frost smokes off it whatever it is doing; on its feet, snow sifts off its back and wings. */
@@ -1008,6 +1009,8 @@ public final class FrostWyrmling extends PathfinderMob implements Enemy {
 	private void turn(float yaw,float most){face(turned(getYRot(),yaw,most));}
 
 	@Override public boolean hurt(DamageSource source, float damage){
+		ServerLevel level = (ServerLevel) level();
+
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING) || source.is(DamageTypes.FREEZE))return false;
 		int move=move();
 		if(FrostWyrmlingRules.scripted(move) && !source.is(DamageTypes.GENERIC_KILL)){

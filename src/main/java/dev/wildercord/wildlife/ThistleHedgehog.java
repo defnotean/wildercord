@@ -119,20 +119,20 @@ public class ThistleHedgehog extends TamableAnimal {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		int left = curlLeft();
 		if (left > 0) {
 			entityData.set(CURL, left - 1);
 			if (left == 1) {
 				playSound(SoundEvents.ARMADILLO_UNROLL_FINISH, 0.6F, 1.5F);
 			}
-		} else if (tickCount % 5 == 0 && startled(level())) {
+		} else if (tickCount % 5 == 0 && startled(level)) {
 			curlUp();
 		} else if (random.nextInt(HedgehogRules.SNEEZE_ODDS) == 0) {
-			level().broadcastEntityEvent(this, SNEEZE);
+			level.broadcastEntityEvent(this, SNEEZE);
 			playSound(SoundEvents.PANDA_SNEEZE, 0.5F, 1.9F + random.nextFloat() * 0.2F);
 		}
-		gift(level(), now);
+		gift(level, now);
 	}
 
 	/** Someone running close by (who it doesn't trust), or something hostile right beside it. */

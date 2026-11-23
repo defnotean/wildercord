@@ -57,35 +57,37 @@ public final class RootmoltStrider extends Monster {
  @Override public void remove(RemovalReason reason) {release();super.remove(reason);}
  @Override public void tick() {super.tick();if(level().isClientSide()) {warnO=warn;rakeO=rake;feedO=feed;warn=WildlifeRules.approach(warn,pose()==WARNING?1:0,.09F);rake=WildlifeRules.approach(rake,pose()==RAKING || pose()==HOLDING?1:0,.2F);feed=WildlifeRules.approach(feed,pose()==BROWSING?1:0,.08F);}}
  @Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
+
   super.customServerAiStep();if(committed())holdStill();
-  if(level().getDifficulty()==Difficulty.PEACEFUL) {release();setTarget(null);pose(IDLE,0);return;}
-  if(pose()==HOLDING) {if(!valid(held) || !held.hasEffect(RootmoltContent.TETHER) || !held.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(getUUID()) || !hasLineOfSight(held) || distanceToSqr(held)>16 || --left<=0)recover(level());return;}
+  if(level.getDifficulty()==Difficulty.PEACEFUL) {release();setTarget(null);pose(IDLE,0);return;}
+  if(pose()==HOLDING) {if(!valid(held) || !held.hasEffect(RootmoltContent.TETHER) || !held.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(getUUID()) || !hasLineOfSight(held) || distanceToSqr(held)>16 || --left<=0)recover(level);return;}
   if(pose()==RECOVERING) {if(--left<=0)pose(IDLE,0);return;}
   if(pose()==WARNING) {
-   if(!valid(getTarget())) {recover(level());return;}
-   if(tickCount%4==0)drawLine(level());if(tickCount%20==0)RootmoltContent.alarm(this);
-   if(--left<=0) {pose(RAKING,RootmoltRules.RAKE);Feels.sound(level(),position(),"rootmolt_rake",.65F,1);}
+   if(!valid(getTarget())) {recover(level);return;}
+   if(tickCount%4==0)drawLine(level);if(tickCount%20==0)RootmoltContent.alarm(this);
+   if(--left<=0) {pose(RAKING,RootmoltRules.RAKE);Feels.sound(level,position(),"rootmolt_rake",.65F,1);}
    return;
   }
   if(pose()==RAKING) {
    // Spend before calling external damage/equipment hooks. A changed target cannot reopen this same rake.
-   if(rakeSpent){recover(level());return;}
+   if(rakeSpent){recover(level);return;}
    var target=getTarget();if(valid(target) && hasLineOfSight(target) && onLine(target.position())) {
     rakeSpent=true;
     boolean hit=target.hurt(damageSources().mobAttack(this),4);
-    if(hit && target.isAlive() && !target.isRemoved() && target.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(RootmoltContent.NO_OWNER)) {if(RootmoltContent.resistRoot(target,this)) {recover(level());return;}
+    if(hit && target.isAlive() && !target.isRemoved() && target.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(RootmoltContent.NO_OWNER)) {if(RootmoltContent.resistRoot(target,this)) {recover(level);return;}
      // A callback may change actors; re-admit the original contact before claiming control.
      if(!isAlive() || isRemoved())return;
-     if(level()!=level() || pose()!=RAKING || getTarget()!=target)return;
-     if(!valid(target) || !hasLineOfSight(target) || !onLine(target.position()) || !target.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(RootmoltContent.NO_OWNER)){recover(level());return;}
-     held=target;held.setAttached(RootmoltContent.GRAB_OWNER,getUUID());if(!held.addEffect(new MobEffectInstance(RootmoltContent.TETHER,RootmoltRules.HELD,0,false,false,true),this)) {held.setAttached(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER);held=null;recover(level());return;}pose(HOLDING,RootmoltRules.HELD);}
-    else recover(level());
-   }else if(--left<=0) {if(target instanceof ServerPlayer p && valid(p) && hasLineOfSight(p)) {var d=p.position().subtract(position());double along=d.dot(line),side=Math.abs(d.x*line.z-d.z*line.x);if(along>=0 && along<=3.4 && side>=.8 && Math.abs(d.y)<1.3)RootmoltContent.countered(p,this);}recover(level());}
+     if(level!=level || pose()!=RAKING || getTarget()!=target)return;
+     if(!valid(target) || !hasLineOfSight(target) || !onLine(target.position()) || !target.getAttachedOrElse(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER).equals(RootmoltContent.NO_OWNER)){recover(level);return;}
+     held=target;held.setAttached(RootmoltContent.GRAB_OWNER,getUUID());if(!held.addEffect(new MobEffectInstance(RootmoltContent.TETHER,RootmoltRules.HELD,0,false,false,true),this)) {held.setAttached(RootmoltContent.GRAB_OWNER,RootmoltContent.NO_OWNER);held=null;recover(level);return;}pose(HOLDING,RootmoltRules.HELD);}
+    else recover(level);
+   }else if(--left<=0) {if(target instanceof ServerPlayer p && valid(p) && hasLineOfSight(p)) {var d=p.position().subtract(position());double along=d.dot(line),side=Math.abs(d.x*line.z-d.z*line.x);if(along>=0 && along<=3.4 && side>=.8 && Math.abs(d.y)<1.3)RootmoltContent.countered(p,this);}recover(level);}
    return;
   }
-  if(getTarget()!=null && !valid(getTarget()))setTarget(null);if(pose()==BROWSING || level().getGameTime()<attackReady || tickCount%10!=0)return;
-  if(!valid(getTarget()) && guardedCap!=null) {var p=level().getNearestPlayer(getX(),getY(),getZ(),5,e -> e instanceof Player player && valid(player) && nearGuardedCap(player.position()));if(p!=null)setTarget(p);}
-  if(valid(getTarget()) && distanceToSqr(getTarget())<16 && hasLineOfSight(getTarget())) {line=getTarget().position().subtract(position()).multiply(1,0,1).normalize();float yaw=(float)Math.toDegrees(Math.atan2(-line.x,line.z));setYRot(yaw);yBodyRot=yaw;yHeadRot=yaw;pose(WARNING,RootmoltRules.WINDUP);attackReady=level().getGameTime()+RootmoltRules.ATTACK_REST;Feels.sound(level(),position(),"rootmolt_warn",.55F,1);}
+  if(getTarget()!=null && !valid(getTarget()))setTarget(null);if(pose()==BROWSING || level.getGameTime()<attackReady || tickCount%10!=0)return;
+  if(!valid(getTarget()) && guardedCap!=null) {var p=level.getNearestPlayer(getX(),getY(),getZ(),5,e -> e instanceof Player player && valid(player) && nearGuardedCap(player.position()));if(p!=null)setTarget(p);}
+  if(valid(getTarget()) && distanceToSqr(getTarget())<16 && hasLineOfSight(getTarget())) {line=getTarget().position().subtract(position()).multiply(1,0,1).normalize();float yaw=(float)Math.toDegrees(Math.atan2(-line.x,line.z));setYRot(yaw);yBodyRot=yaw;yHeadRot=yaw;pose(WARNING,RootmoltRules.WINDUP);attackReady=level.getGameTime()+RootmoltRules.ATTACK_REST;Feels.sound(level,position(),"rootmolt_warn",.55F,1);}
  }
  boolean onLine(Vec3 p) {var d=p.subtract(position());double along=d.dot(line),side=Math.abs(d.x*line.z-d.z*line.x);return along>=0 && along<=3.4 && side<.6 && Math.abs(d.y)<1.3;}
  private void drawLine(ServerLevel l) {for(int i=1;i<=6;i++) {var p=position().add(line.scale(i*.5));var at=BlockPos.containing(p);if(l.hasChunkAt(at) && !l.getBlockState(at.below()).isAir())l.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,Blocks.ROOTED_DIRT.defaultBlockState()),p.x,p.y+.06,p.z,1,.04,.02,.04,0);}}

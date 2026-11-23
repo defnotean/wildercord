@@ -520,6 +520,8 @@ public final class CinnamonDog extends TamableAnimal {
 
 	@Override
 	public boolean hurt(DamageSource source, float amount) {
+		ServerLevel level = (ServerLevel) level();
+
 		// Operators can deliberately remove her. Ordinary hazards never enter the health-loss path.
 		if (source.is(DamageTypes.GENERIC_KILL)) return super.hurt(source, amount);
 		if (countingDamage) return false;

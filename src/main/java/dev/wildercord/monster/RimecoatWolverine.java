@@ -118,11 +118,11 @@ public class RimecoatWolverine extends WildMonster {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		boolean furious = furious();
 		if (furious && carrying()) {
 			// Cornered: it drops what it carries and turns.
-			dropCarried(level());
+			dropCarried(level);
 			eatingUntil = -1;
 			playSound(SoundEvents.POLAR_BEAR_WARNING, 1.0F, 1.5F);
 		}
@@ -133,7 +133,7 @@ public class RimecoatWolverine extends WildMonster {
 
 		if (eatingUntil >= 0) {
 			getNavigation().stop();
-			chew(level(), now);
+			chew(level, now);
 			return;
 		}
 
@@ -155,7 +155,7 @@ public class RimecoatWolverine extends WildMonster {
 
 		// Food on the ground draws it before anything else, unless it's cornered.
 		if (!furious && now % 10 == 0) {
-			scent = sniff(level());
+			scent = sniff(level);
 		}
 		if (scent != null) {
 			if (!scent.isAlive() || furious) {
@@ -192,7 +192,7 @@ public class RimecoatWolverine extends WildMonster {
 				snatchAt = -1;
 				setState(WINDUP, false);
 				if (distance <= WolverineRules.SNATCH_REACH + 0.6) {
-					snatch(level(), target, now);
+					snatch(level, target, now);
 				}
 			}
 			return;
@@ -333,6 +333,8 @@ public class RimecoatWolverine extends WildMonster {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		boolean hurt = super.hurt(source, damage);
 		if (hurt && isAlive() && carrying() && WolverineRules.dropsWhenHit(random.nextFloat())) {
 			dropCarried(level);

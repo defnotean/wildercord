@@ -269,21 +269,21 @@ public class TimbermaulBear extends EliteMonster {
 		if (tickCount % 20 == 0 && pressed > 0) {
 			pressed--;
 		}
-		logs(level());
+		logs(level);
 		switch (move()) {
-			case TimbermaulRules.BLUFF -> bluff(level(), target);
-			case TimbermaulRules.RAKE -> rake(level(), target);
-			case TimbermaulRules.SNAP -> snap(level(), target);
-			case TimbermaulRules.CRUSH -> crush(level(), target);
-			case TimbermaulRules.TOPPLED, TimbermaulRules.SPRAWLED, TimbermaulRules.DAZED -> lying(level());
-			case TimbermaulRules.POUNCE -> pounce(level(), target);
-			case TimbermaulRules.CHARGE -> charge(level());
-			case TimbermaulRules.LOG -> log(level(), target);
-			case TimbermaulRules.DIG -> dig(level());
-			case TimbermaulRules.HUG -> hug(level(), target);
-			case TimbermaulRules.PINNED -> pinned(level());
-			case TimbermaulRules.ROAR -> roar(level());
-			default -> idle(level(), target);
+			case TimbermaulRules.BLUFF -> bluff(level, target);
+			case TimbermaulRules.RAKE -> rake(level, target);
+			case TimbermaulRules.SNAP -> snap(level, target);
+			case TimbermaulRules.CRUSH -> crush(level, target);
+			case TimbermaulRules.TOPPLED, TimbermaulRules.SPRAWLED, TimbermaulRules.DAZED -> lying(level);
+			case TimbermaulRules.POUNCE -> pounce(level, target);
+			case TimbermaulRules.CHARGE -> charge(level);
+			case TimbermaulRules.LOG -> log(level, target);
+			case TimbermaulRules.DIG -> dig(level);
+			case TimbermaulRules.HUG -> hug(level, target);
+			case TimbermaulRules.PINNED -> pinned(level);
+			case TimbermaulRules.ROAR -> roar(level);
+			default -> idle(level, target);
 		}
 		int move = move();
 		boolean telling = since() < tell() && move != TimbermaulRules.BLUFF && move != TimbermaulRules.IDLE;
@@ -1236,6 +1236,8 @@ public class TimbermaulBear extends EliteMonster {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		int move = move();
 		boolean reared = (move == TimbermaulRules.CRUSH || move == TimbermaulRules.HUG) && since() < tell();
 		float before = getHealth();

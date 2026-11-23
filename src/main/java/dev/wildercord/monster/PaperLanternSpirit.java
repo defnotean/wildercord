@@ -79,13 +79,13 @@ public class PaperLanternSpirit extends WildMonster {
 			telegraphTicks--;
 			setState(WINDUP, true);
 			if (telegraphTicks % 4 == 0) {
-				level().sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.8, getZ(), 4, 0.5, 0.3, 0.5, 0.01);
+				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.8, getZ(), 4, 0.5, 0.3, 0.5, 0.01);
 			}
 			if (telegraphTicks == 0) {
 				setState(WINDUP, false);
 				setState(ACTING, true);
-				level().playSound(null, blockPosition(), SoundEvents.BLAZE_SHOOT, SoundSource.HOSTILE, 0.65F, 1.55F);
-				level().sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.7, getZ(), 18, 1.5, 0.25, 1.5, 0.05);
+				level.playSound(null, blockPosition(), SoundEvents.BLAZE_SHOOT, SoundSource.HOSTILE, 0.65F, 1.55F);
+				level.sendParticles(ParticleTypes.FLAME, getX(), getY() + 0.7, getZ(), 18, 1.5, 0.25, 1.5, 0.05);
 				double distSq = distanceToSqr(target);
 				if (distSq <= 16.0) {
 					target.hurt(damageSources().indirectMagic(this, this), 6.5F);
@@ -95,7 +95,7 @@ public class PaperLanternSpirit extends WildMonster {
 					Vec3 to = target.getEyePosition();
 					for (int step = 1; step <= 8; step++) {
 						Vec3 p = from.lerp(to, step / 8.0);
-						level().sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 2, 0.08, 0.08, 0.08, 0.01);
+						level.sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 2, 0.08, 0.08, 0.08, 0.01);
 					}
 					target.hurt(damageSources().indirectMagic(this, this), 4.5F);
 					target.setRemainingFireTicks(40);
@@ -109,7 +109,7 @@ public class PaperLanternSpirit extends WildMonster {
 		} else if (distanceToSqr(target) <= 225.0) {
 			pulseCooldown = 48;
 			telegraphTicks = 14;
-			level().playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.HOSTILE, 0.7F, 1.7F);
+			level.playSound(null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.HOSTILE, 0.7F, 1.7F);
 		}
 	}
 }

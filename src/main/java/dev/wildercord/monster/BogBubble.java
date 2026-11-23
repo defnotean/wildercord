@@ -173,6 +173,8 @@ public class BogBubble extends Projectile {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		// Struck before it lands (an arrow, a snowball, a blade): it pops where it is, its poison spilled for nothing.
 		if (!isRemoved()) {
 			pop(level, position(), RADIUS * 0.6);

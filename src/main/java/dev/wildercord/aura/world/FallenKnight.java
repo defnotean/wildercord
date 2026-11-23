@@ -150,10 +150,10 @@ public class FallenKnight extends AuraFighter implements Enemy {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		tickGuard(now);
 		tickStagger(now);
-		tickSlash(level(), now);
+		tickSlash(level, now);
 		setState(DRAWN, true);
 		LivingEntity target = getTarget();
 		if (target == null || !target.isAlive() || slashAt > 0 || staggered()) {
@@ -195,6 +195,8 @@ public class FallenKnight extends AuraFighter implements Enemy {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		float through = guarded(level, source, damage);
 		if (through < 0) {
 			return false;

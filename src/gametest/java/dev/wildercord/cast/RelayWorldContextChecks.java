@@ -145,6 +145,8 @@ public final class RelayWorldContextChecks {
     private static final class ChargeWitness extends TrainingDummy {
         ChargeWitness(ServerLevel level){super(WildercordEntities.TRAINING_DUMMY,level);}
         @Override public boolean hurt(DamageSource source, float amount){
+		ServerLevel level = (ServerLevel) level();
+
             boolean hurt=super.hurt(source,amount);
             if(this==secondary&&source instanceof RelayDamageSource&&lastDamage()>0){
                 pinNextCharge(level);

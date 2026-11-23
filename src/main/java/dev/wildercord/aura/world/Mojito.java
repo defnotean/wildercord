@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import net.minecraft.server.level.ServerLevel;
 import dev.wildercord.compat.McParticles;
 
 import dev.wildercord.cast.MoveDeck;
@@ -218,18 +219,18 @@ public final class Mojito extends PathfinderMob implements Enemy {
 		super.customServerAiStep();if(!isAlive())return;
 		if(!bound){var b=blockPosition();bind(b,getYRot(),new BoundingBox(b.getX()-20,b.getY()-1,b.getZ()-20,b.getX()+20,b.getY()+16,b.getZ()+20));}
 		// Left alone long enough (his prey died and went home, say) and he has curled up again in the meantime.
-		long now=level().getGameTime();
+		long now=level.getGameTime();
 		if(lastTick>=0 && move()!=MojitoRules.DORMANT && MojitoRules.forgets(now-lastTick))bedDown();
 		lastTick=now;
-		if(tickCount%MojitoRules.GUARD_EVERY==0 && Guardians.enabled())guard(level());
+		if(tickCount%MojitoRules.GUARD_EVERY==0 && Guardians.enabled())guard(level);
 		switch(move()){
-			case MojitoRules.DORMANT->dormant(level());
-			case MojitoRules.RISE->{hold();rising(level(),MojitoRules.RISE_TICKS-left);if(--left<=0)stand(level());}
-			case MojitoRules.BED->{hold();if(wakeful(level())!=null)wake(level(),MojitoRules.RISE_TICKS-left);else if(--left<=0)bedDown();}
-			default->awake(level());
+			case MojitoRules.DORMANT->dormant(level);
+			case MojitoRules.RISE->{hold();rising(level,MojitoRules.RISE_TICKS-left);if(--left<=0)stand(level);}
+			case MojitoRules.BED->{hold();if(wakeful(level)!=null)wake(level,MojitoRules.RISE_TICKS-left);else if(--left<=0)bedDown();}
+			default->awake(level);
 		}
-		fly(level());linger(level());waves(level());clods(level());
-		if(tickCount%4==0)glow(level());
+		fly(level);linger(level);waves(level);clods(level);
+		if(tickCount%4==0)glow(level);
 	}
 
 	/** The magic about him: a wisp now and then off the sword as he sleeps, wisps on both flanks on his feet. */
@@ -1037,6 +1038,8 @@ public final class Mojito extends PathfinderMob implements Enemy {
 	}
 
 	@Override public boolean hurt(DamageSource source, float damage){
+		ServerLevel level = (ServerLevel) level();
+
 		if(source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.CRAMMING))return false;
 		int move=move();
 		if(MojitoRules.scripted(move) && !source.is(DamageTypes.GENERIC_KILL)){

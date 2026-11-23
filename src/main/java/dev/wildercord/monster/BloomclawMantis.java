@@ -76,11 +76,11 @@ public class BloomclawMantis extends WildMonster {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		LivingEntity target = getTarget();
 		boolean hunting = target != null && target.isAlive() && Targets.canHarm(this, target);
 		switch (phase) {
-			case PERCH -> perch(level(), hunting);
+			case PERCH -> perch(level, hunting);
 			case WINDUP -> {
 				getNavigation().stop();
 				if (target != null) {
@@ -88,7 +88,7 @@ public class BloomclawMantis extends WildMonster {
 					face(target);
 				}
 				if (tickCount % 4 == 0) {
-					level().sendParticles(ParticleTypes.CHERRY_LEAVES, getX(), getY() + 0.8, getZ(), 2, 0.3, 0.2, 0.3, 0);
+					level.sendParticles(ParticleTypes.CHERRY_LEAVES, getX(), getY() + 0.8, getZ(), 2, 0.3, 0.2, 0.3, 0);
 				}
 				if (now >= phaseUntil) {
 					phase = Phase.STRIKE;
@@ -99,10 +99,10 @@ public class BloomclawMantis extends WildMonster {
 			case STRIKE -> {
 				getNavigation().stop();
 				if (now >= phaseUntil) {
-					strike(level(), target, now);
+					strike(level, target, now);
 				}
 			}
-			case CLUTCH -> clutch(level(), now);
+			case CLUTCH -> clutch(level, now);
 			case REEL -> {
 				getNavigation().stop();
 				if (now >= phaseUntil) {
@@ -110,7 +110,7 @@ public class BloomclawMantis extends WildMonster {
 					stalked = 0;
 				}
 			}
-			default -> stalk(level(), target, hunting, now);
+			default -> stalk(level, target, hunting, now);
 		}
 		setState(GUARD, phase == Phase.PERCH);
 		setState(WINDUP, phase == Phase.WINDUP);
@@ -229,6 +229,8 @@ public class BloomclawMantis extends WildMonster {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		boolean hit = super.hurt(source, MantisRules.hurt(damage, phase == Phase.REEL));
 		if (!hit) {
 			return false;

@@ -94,21 +94,21 @@ public class GlowlureAngler extends WildMonster {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		LivingEntity target = getTarget();
 		boolean hunting = target != null && target.isAlive() && Targets.canHarm(this, target);
 		switch (phase) {
-			case LURK -> lurk(level(), target, hunting, now);
+			case LURK -> lurk(level, target, hunting, now);
 			case WINDUP -> {
 				getNavigation().stop();
 				if (target != null) {
 					getLookControl().setLookAt(target, 60, 60);
 				}
 				if (now >= phaseUntil) {
-					lunge(level(), target);
+					lunge(level, target);
 				}
 			}
-			case LUNGE -> lunging(level(), now);
+			case LUNGE -> lunging(level, now);
 			case WINDED -> {
 				getNavigation().stop();
 				if (now >= phaseUntil) {
@@ -116,7 +116,7 @@ public class GlowlureAngler extends WildMonster {
 					chased = 0;
 				}
 			}
-			default -> chase(level(), target, hunting, now);
+			default -> chase(level, target, hunting, now);
 		}
 		setState(GUARD, phase == Phase.LURK);
 		setState(WINDUP, phase == Phase.WINDUP);

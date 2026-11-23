@@ -180,18 +180,18 @@ public class StonecrestPuffin extends Animal {
 		int pose = pose(), left = poseLeft();
 		if (pose != PuffinRules.IDLE) {
 			if (pose == PuffinRules.DIVE && isInWater() && left % 4 == 0) {
-				level().sendParticles(ParticleTypes.BUBBLE, getX(), getY() + 0.3, getZ(), 2, 0.1, 0.1, 0.1, 0.02);
+				level.sendParticles(ParticleTypes.BUBBLE, getX(), getY() + 0.3, getZ(), 2, 0.1, 0.1, 0.1, 0.02);
 			}
 			if (pose == PuffinRules.TAP && left % 5 == 0) {
 				playSound(SoundEvents.BAMBOO_WOOD_BUTTON_CLICK_ON, 0.35F, 1.6F + random.nextFloat() * 0.3F);
 			}
 			if (pose == PuffinRules.EAT && left % 10 == 0) {
 				double yaw = getYRot() * Mth.DEG_TO_RAD;
-				level().sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.COD)), getX() - Math.sin(yaw) * 0.3, getY() + 0.5,
+				level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.COD)), getX() - Math.sin(yaw) * 0.3, getY() + 0.5,
 					getZ() + Math.cos(yaw) * 0.3, 3, 0.05, 0.05, 0.05, 0.02);
 				playSound(SoundEvents.PARROT_EAT, 0.5F, 0.8F);
 			}
-			if (pose == PuffinRules.SLEEP && !PuffinRules.night(dev.wildercord.compat.McTime.overworldClock(level())) && left > 20) {
+			if (pose == PuffinRules.SLEEP && !PuffinRules.night(dev.wildercord.compat.McTime.overworldClock(level)) && left > 20) {
 				entityData.set(LEFT, left = 20);
 			}
 			if (pose == PuffinRules.FLY && left < PuffinRules.FLY_TICKS - 6 && (onGround() || isInWater())) {
@@ -199,22 +199,22 @@ public class StonecrestPuffin extends Animal {
 			}
 			if (left <= 1) {
 				pose(PuffinRules.IDLE, 0);
-				finish(level(), pose);
+				finish(level, pose);
 			} else {
 				entityData.set(LEFT, left - 1);
 			}
 			return;
 		}
-		long time = dev.wildercord.compat.McTime.overworldClock(level());
+		long time = dev.wildercord.compat.McTime.overworldClock(level);
 		boolean night = PuffinRules.night(time);
 		if (isInWater()) {
 			if (night && random.nextInt(PuffinRules.SLEEP_ODDS) == 0) {
 				pose(PuffinRules.SLEEP, PuffinRules.SLEEP_TICKS + random.nextInt(300));
 			} else if (!night && !carrying() && !isBaby() && random.nextInt(PuffinRules.DIVE_ODDS) == 0
-				&& PuffinRules.deepEnough(depth(level()))) {
+				&& PuffinRules.deepEnough(depth(level))) {
 				dive();
 			} else if (!night && !carrying() && !isBaby() && random.nextInt(PuffinRules.FLY_ODDS * 2) == 0) {
-				takeOff(level(), false);
+				takeOff(level, false);
 			}
 			return;
 		}
@@ -238,7 +238,7 @@ public class StonecrestPuffin extends Animal {
 		} else if (random.nextInt(PuffinRules.STRETCH_ODDS) == 0) {
 			stretch();
 		} else if (!isBaby() && random.nextInt(PuffinRules.TAP_ODDS) == 0) {
-			StonecrestPuffin other = mateNear(level());
+			StonecrestPuffin other = mateNear(level);
 			if (other != null) {
 				mate = other;
 				other.mate = this;
@@ -246,7 +246,7 @@ public class StonecrestPuffin extends Animal {
 				other.pose(PuffinRules.TAP, PuffinRules.TAP_TICKS);
 			}
 		} else if (!isBaby() && random.nextInt(PuffinRules.FLY_ODDS) == 0) {
-			takeOff(level(), true);
+			takeOff(level, true);
 		}
 	}
 

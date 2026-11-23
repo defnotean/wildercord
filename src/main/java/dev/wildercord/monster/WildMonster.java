@@ -224,6 +224,8 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 
 	@Override
 	public boolean hurt(net.minecraft.world.damagesource.DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		if (fight == null) {
 			return super.hurt(source, damage);
 		}

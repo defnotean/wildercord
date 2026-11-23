@@ -160,6 +160,8 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		if (source.is(DamageTypeTags.IS_FIRE) && !MonsterMagic.spellLanding()) {
 			// Flames boil it.
 			damage *= 1.5F;

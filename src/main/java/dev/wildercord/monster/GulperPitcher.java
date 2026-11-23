@@ -89,7 +89,7 @@ public class GulperPitcher extends WildMonster {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		hold();
 		LivingEntity target = getTarget();
 		boolean live = target != null && target.isAlive() && Targets.canHarm(this, target)
@@ -101,7 +101,7 @@ public class GulperPitcher extends WildMonster {
 		setState(GUARD, now < biteUntil);
 		setState(ACTING, now < lashUntil);
 		if (random.nextInt(open() ? 30 : 60) == 0) {
-			drip(level());
+			drip(level);
 		}
 
 		if (lashAt >= 0) {
@@ -110,7 +110,7 @@ public class GulperPitcher extends WildMonster {
 				face(target);
 			}
 			if (now >= lashAt) {
-				lash(level(), live ? target : null, now);
+				lash(level, live ? target : null, now);
 			}
 			return;
 		}
@@ -119,15 +119,15 @@ public class GulperPitcher extends WildMonster {
 		if (live) {
 			idle = 0;
 			if (!open()) {
-				stir(level());
+				stir(level);
 			}
 			face(target);
 			getLookControl().setLookAt(target, 30, 30);
-			strike(level(), target, now);
+			strike(level, target, now);
 		} else if (open() && ++idle >= GulperPitcherRules.SETTLE_TICKS) {
 			idle = 0;
 			setState(ALT, false);
-			level().playSound(null, getX(), getY(), getZ(), SoundEvents.AZALEA_LEAVES_PLACE, SoundSource.HOSTILE, 0.8F, 0.7F);
+			level.playSound(null, getX(), getY(), getZ(), SoundEvents.AZALEA_LEAVES_PLACE, SoundSource.HOSTILE, 0.8F, 0.7F);
 		}
 	}
 

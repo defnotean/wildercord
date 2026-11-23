@@ -110,7 +110,7 @@ public class CacklingHyena extends WildMonster {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		LivingEntity target = getTarget();
 		boolean live = target != null && target.isAlive() && Targets.canHarm(this, target);
 
@@ -130,11 +130,11 @@ public class CacklingHyena extends WildMonster {
 			return;
 		}
 		if (dartAt >= 0) {
-			crouch(level(), target, now);
+			crouch(level, target, now);
 			return;
 		}
 		if (dartUntil >= 0) {
-			dart(level(), target, now);
+			dart(level, target, now);
 			return;
 		}
 		if (HyenaRules.cowers(getHealth(), getMaxHealth(), now, nextCower)) {
@@ -147,7 +147,7 @@ public class CacklingHyena extends WildMonster {
 			away(target, now < cowerUntil ? 1.4 : 1.25, now < cowerUntil ? 14 : HyenaRules.orbit(bold(target)) + 2);
 			return;
 		}
-		circle(level(), target, now);
+		circle(level, target, now);
 	}
 
 	private static boolean bold(LivingEntity target) {

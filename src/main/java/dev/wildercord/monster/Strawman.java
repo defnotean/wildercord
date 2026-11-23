@@ -114,11 +114,13 @@ public class Strawman extends WildMonster {
 
 	@Override
 	protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
+
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		Player starer = null;
 		double starerDistance = Double.MAX_VALUE;
-		for (ServerPlayer player : level().players()) {
+		for (ServerPlayer player : level.players()) {
 			if (player.isSpectator() || !player.isAlive()) {
 				continue;
 			}
@@ -144,7 +146,7 @@ public class Strawman extends WildMonster {
 		}
 		LivingEntity target = getTarget();
 		boolean live = target != null && target.isAlive() && Targets.canHarm(this, target);
-		boolean dormant = (level().isDay() && level().dimensionType().hasSkyLight()) && !live;
+		boolean dormant = (level.isDay() && level.dimensionType().hasSkyLight()) && !live;
 		boolean frozen = starer != null || dormant;
 
 		if (frozen) {
@@ -161,12 +163,12 @@ public class Strawman extends WildMonster {
 			setXRot(0);
 			stared = starer != null ? stared + 1 : 0;
 			if (starer != null && StrawmanRules.crows(stared, starerDistance, now, nextCrows)) {
-				crows(level(), starer, now);
+				crows(level, starer, now);
 			}
 		} else {
 			stared = 0;
 			if (live) {
-				hunt(level(), target, now);
+				hunt(level, target, now);
 			} else {
 				getNavigation().stop();
 			}
@@ -220,6 +222,8 @@ public class Strawman extends WildMonster {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		boolean hurt = super.hurt(source, damage * StrawmanRules.damageScale(source.is(DamageTypeTags.IS_FIRE)));
 		if (hurt) {
 			Vec3 c = getBoundingBox().getCenter();

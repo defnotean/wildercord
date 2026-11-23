@@ -1,6 +1,7 @@
 package dev.wildercord.world.kilnwidow;
 
 import dev.wildercord.lore.LoreJournal;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.*;
@@ -129,19 +130,21 @@ public final class KilnWidow extends PathfinderMob implements Enemy {
 	}
 
 	@Override protected void customServerAiStep() {
+		ServerLevel level = (ServerLevel) level();
+
 		super.customServerAiStep();
 		if (!isAlive()) return;
 		hold();
-		if (heartstone != null && level().getBlockEntity(heartstone) instanceof KilnHeartstoneEntity entity && entity.slain()) {
+		if (heartstone != null && level.getBlockEntity(heartstone) instanceof KilnHeartstoneEntity entity && entity.slain()) {
 			discard();
 			return;
 		}
 		if (!active) return;
-		if (level().getDifficulty() == Difficulty.PEACEFUL || !dev.wildercord.aura.world.Guardians.enabled()) {
+		if (level.getDifficulty() == Difficulty.PEACEFUL || !dev.wildercord.aura.world.Guardians.enabled()) {
 			rest();
 			return;
 		}
-		var players = level().players().stream().filter(this::eligible).limit(MAX_CHALLENGERS).toList();
+		var players = level.players().stream().filter(this::eligible).limit(MAX_CHALLENGERS).toList();
 		for (var old : List.copyOf(bar.getPlayers())) if (!players.contains(old)) bar.removePlayer(old);
 		for (var player : players) bar.addPlayer(player);
 		bar.setProgress(getHealth() / getMaxHealth());
@@ -151,16 +154,16 @@ public final class KilnWidow extends PathfinderMob implements Enemy {
 			return;
 		}
 		quiet = 0;
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		if (move() != IDLE) {
 			if (impacted) {
 				if (elapsed(0) >= tell(move()) + recovery(move())) { retire(); readyAt = now; }
 				return;
 			}
-			var target = level().getPlayerByUUID(lockedTarget);
+			var target = level.getPlayerByUUID(lockedTarget);
 			if (!(target instanceof ServerPlayer player) || !eligible(player)) { retire(); readyAt = now + RETIRE; return; }
-			if (elapsed(0) >= tell(move())) { impact(level(), players); return; }
-		} else if (now >= readyAt) begin(level(), players);
+			if (elapsed(0) >= tell(move())) { impact(level, players); return; }
+		} else if (now >= readyAt) begin(level, players);
 	}
 
 	private void begin(ServerLevel server, List<ServerPlayer> players) {

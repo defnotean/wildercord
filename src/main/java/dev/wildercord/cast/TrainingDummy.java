@@ -80,6 +80,8 @@ public class TrainingDummy extends LivingEntity {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		lastDamage = 0;
 		// A sneaking punch picks it up; a sneaking caster's spell still hits it (for If Sneaking).
 		if (source.getDirectEntity() instanceof ServerPlayer player && source.getEntity() == player && player.isShiftKeyDown()

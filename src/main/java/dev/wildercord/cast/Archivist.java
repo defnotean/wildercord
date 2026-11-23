@@ -280,16 +280,16 @@ public class Archivist extends SpellcasterIllager {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		bossEvent.setProgress(getHealth() / getMaxHealth());
 		if (home == null) {
 			home = blockPosition();
 		}
 		if (now % 10 == 0) {
-			updateViewers(level());
+			updateViewers(level);
 		}
 		// What its tricks left behind (books about to land, rings rolling, lines of ink) goes on whatever it does next.
-		tickHazards(level(), now);
+		tickHazards(level, now);
 		// Rewriting its Cord: floats, untouchable, pages whirling.
 		if (rewriting > 0) {
 			rewriting--;
@@ -298,35 +298,35 @@ public class Archivist extends SpellcasterIllager {
 			Vec3 c = position().add(0, 1.4, 0);
 			for (int i = 0; i < 6; i++) {
 				double a = rewriting * 0.3 + Math.PI * 2 * i / 6;
-				Vfx.emit(level(), ParticleTypes.ENCHANT, c.add(Math.cos(a) * 1.6, Math.sin(rewriting * 0.2 + i) * 0.5, Math.sin(a) * 1.6), 2, 0.05, 0.1);
+				Vfx.emit(level, ParticleTypes.ENCHANT, c.add(Math.cos(a) * 1.6, Math.sin(rewriting * 0.2 + i) * 0.5, Math.sin(a) * 1.6), 2, 0.05, 0.1);
 			}
 			// Torn pages still whirl about it while the new Cord is written.
 			if (rewriting % 4 == 0) {
 				double a = rewriting * 0.45;
-				Vfx.emit(level(), PAGE, c.add(Math.cos(a) * 1.4, 0.4 + Math.sin(rewriting * 0.3) * 0.4, Math.sin(a) * 1.4), 2, 0.1, 0.06);
+				Vfx.emit(level, PAGE, c.add(Math.cos(a) * 1.4, 0.4 + Math.sin(rewriting * 0.3) * 0.4, Math.sin(a) * 1.4), 2, 0.1, 0.06);
 			}
 			// The new lines are written into the floor about it ring by ring, and a column of gold climbs out of it.
 			if (rewriting % 10 == 0) {
-				ElementFx.groundRing(level(), position(), GOLD, 0.5, 6.0, 0.25, 16);
-				Fx.sound(level(), c, SoundEvents.ENCHANTMENT_TABLE_USE, 1.2F, 0.6F + (REWRITE_TICKS - rewriting) * 0.01F);
+				ElementFx.groundRing(level, position(), GOLD, 0.5, 6.0, 0.25, 16);
+				Fx.sound(level, c, SoundEvents.ENCHANTMENT_TABLE_USE, 1.2F, 0.6F + (REWRITE_TICKS - rewriting) * 0.01F);
 			}
-			Vfx.emit(level(), GOLD_DUST, position().add(0, 0.2 + (REWRITE_TICKS - rewriting) * 0.06, 0), 2, 0.25, 0.02);
+			Vfx.emit(level, GOLD_DUST, position().add(0, 0.2 + (REWRITE_TICKS - rewriting) * 0.06, 0), 2, 0.25, 0.02);
 			if (rewriting == 0) {
 				setIsCastingSpell(IllagerSpell.NONE);
 				readyAt = now + 20;
 				// Written: the new Cord bursts out of it in pages and light.
-				Vfx.radial(level(), PAGE, c, 30, 0.45);
-				Vfx.radial(level(), VIOLET_DUST, c, 40, 0.5);
-				ElementFx.groundRing(level(), position(), VIOLET, 0.5, 9.0, 0.4, 14);
-				Sigils.flash(level(), c, GOLD, 3.0F);
-				Fx.sound(level(), c, SoundEvents.BOOK_PUT, 1.5F, 0.5F);
-				Fx.sound(level(), c, SoundEvents.BELL_RESONATE, 1.0F, 0.8F);
+				Vfx.radial(level, PAGE, c, 30, 0.45);
+				Vfx.radial(level, VIOLET_DUST, c, 40, 0.5);
+				ElementFx.groundRing(level, position(), VIOLET, 0.5, 9.0, 0.4, 14);
+				Sigils.flash(level, c, GOLD, 3.0F);
+				Fx.sound(level, c, SoundEvents.BOOK_PUT, 1.5F, 0.5F);
+				Fx.sound(level, c, SoundEvents.BELL_RESONATE, 1.0F, 0.8F);
 				updateName(null);
 			}
 			return;
 		}
 		// A blow starts its rewriting at once (see hurtServer); a command setting its health still gets one for each phase.
-		if (shiftIfDue(level())) {
+		if (shiftIfDue(level)) {
 			return;
 		}
 		// A seal on its casting breaks off whatever it was readying (though not an opening it stands spent in).
@@ -347,18 +347,18 @@ public class Archivist extends SpellcasterIllager {
 		// Never strays far from the Archive's heart.
 		if (home != null && position().distanceTo(Vec3.atCenterOf(home)) > 22) {
 			breakMove(now);
-			blink(level(), Vec3.atBottomCenterOf(home).add(level().getRandom().nextGaussian() * 4, 0, level().getRandom().nextGaussian() * 4));
+			blink(level, Vec3.atBottomCenterOf(home).add(level.getRandom().nextGaussian() * 4, 0, level.getRandom().nextGaussian() * 4));
 		}
 		if (move > 0) {
-			tickMove(level(), now);
+			tickMove(level, now);
 			return;
 		}
 		if (target != null && now >= nextBlink && castAt == 0) {
-			nextBlink = now + 160 + level().getRandom().nextInt(120);
-			if (distanceTo(target) < 6 || level().getRandom().nextBoolean()) {
+			nextBlink = now + 160 + level.getRandom().nextInt(120);
+			if (distanceTo(target) < 6 || level.getRandom().nextBoolean()) {
 				Vec3 away = position().subtract(target.position());
 				Vec3 dir = new Vec3(away.x, 0, away.z).lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : new Vec3(away.x, 0, away.z).normalize();
-				blink(level(), target.position().add(dir.yRot((float) (level().getRandom().nextGaussian() * 0.8)).scale(10)));
+				blink(level, target.position().add(dir.yRot((float) (level.getRandom().nextGaussian() * 0.8)).scale(10)));
 			}
 		}
 		if (castAt > 0) {
@@ -369,8 +369,8 @@ public class Archivist extends SpellcasterIllager {
 			if (now >= castAt) {
 				castAt = 0;
 				int made = casting == DOMAIN_SECRET ? ArchivistRules.SUNFALL : ArchivistRules.SPELL;
-				fire(level());
-				readyAt = now + ArchivistRules.pause(made, phase, level().getRandom().nextDouble());
+				fire(level);
+				readyAt = now + ArchivistRules.pause(made, phase, level.getRandom().nextDouble());
 				updateName(null);
 			}
 			return;
@@ -388,14 +388,14 @@ public class Archivist extends SpellcasterIllager {
 		double height = target.getY() - getY();
 		boolean sight = hasLineOfSight(target);
 		boolean behind = ArchivistRules.behind(yBodyRot, Math.toDegrees(Math.atan2(-dx, dz)));
-		int crowd = foes(level(), position(), ArchivistRules.CROWD).size();
+		int crowd = foes(level, position(), ArchivistRules.CROWD).size();
 		long[] since = new long[ArchivistRules.RESTS];
 		for (int i = 0; i < since.length; i++) {
 			since[i] = now - lastMade[i];
 		}
 		List<List<RuneDef>> spells = spells();
 		int choice = ArchivistRules.choose(deck, phase, spells.size(), distance, behind, height, sight, crowd, locked, since,
-			level().getRandom().nextDouble());
+			level.getRandom().nextDouble());
 		if (choice < 0) {
 			readyAt = now + 10;
 			if (distance > 8 || !sight) {
@@ -406,7 +406,7 @@ public class Archivist extends SpellcasterIllager {
 		deck.played(choice);
 		if (choice < ArchivistRules.MOVES) {
 			chainCount = 0;
-			beginMove(level(), choice, target, false, now);
+			beginMove(level, choice, target, false, now);
 			return;
 		}
 		castTarget = target;
@@ -417,19 +417,19 @@ public class Archivist extends SpellcasterIllager {
 		if (choice == ArchivistRules.SUNFALL) {
 			lastMade[ArchivistRules.SUNFALL] = now;
 			casting = DOMAIN_SECRET;
-			Sigils.target(level(), CastEngine.ground(level(), target.position().add(0, 1, 0)), 0xFF8A30, 7.0F, TELEGRAPH + 40);
+			Sigils.target(level, CastEngine.ground(level, target.position().add(0, 1, 0)), 0xFF8A30, 7.0F, TELEGRAPH + 40);
 			updateName(Secrets.SUNFALL.name());
 			// Its circle spells Sunfall out, rune by rune, for anyone watching closely enough to learn it.
 			List<RuneDef> sunfall = Secrets.SUNFALL.runes();
 			Vec3 look = target.getBoundingBox().getCenter().subtract(getEyePosition()).normalize();
-			Sigils.spell(level(), Runebound.hands(this, look, 0.55F), look, sunfall, Secrets.SUNFALL.color(), 0.55F, TELEGRAPH + 4);
-			Fx.sound(level(), position(), SoundEvents.EVOKER_PREPARE_ATTACK, 1.2F, 0.6F);
+			Sigils.spell(level, Runebound.hands(this, look, 0.55F), look, sunfall, Secrets.SUNFALL.color(), 0.55F, TELEGRAPH + 4);
+			Fx.sound(level, position(), SoundEvents.EVOKER_PREPARE_ATTACK, 1.2F, 0.6F);
 			return;
 		}
 		casting = choice - ArchivistRules.SPELL;
 		List<RuneDef> spell = spells.get(casting);
 		updateName(SpellNames.auto(spell));
-		Runebound.telegraph(level(), this, spell, target, TELEGRAPH);
+		Runebound.telegraph(level, this, spell, target, TELEGRAPH);
 	}
 
 	private void fire(ServerLevel level) {
@@ -1347,6 +1347,8 @@ public class Archivist extends SpellcasterIllager {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		// A command's kill and the void always go through, even while it rewrites.
 		if (source.is(DamageTypes.GENERIC_KILL) || source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
 			return super.hurt(source, damage);

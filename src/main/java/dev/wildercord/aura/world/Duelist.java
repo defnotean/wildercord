@@ -265,6 +265,8 @@ public class Duelist extends AuraFighter {
 
 	@Override
 	public boolean hurt(DamageSource source, float damage) {
+		ServerLevel level = (ServerLevel) level();
+
 		// The void and /kill take anything.
 		if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 			return super.hurt(source, damage);
@@ -358,24 +360,24 @@ public class Duelist extends AuraFighter {
 	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
-		long now = level().getGameTime();
+		long now = level.getGameTime();
 		tickGuard(now);
 		tickStagger(now);
 		if (leaving()) {
-			leave(level(), now);
+			leave(level, now);
 			return;
 		}
 		if (opponent == null) {
 			if(tournament!=null && now%40==0){
-				if(!level().hasChunkAt(tournament))return;
-				if(!(level().getBlockEntity(tournament) instanceof TournamentBoardEntity board) || !board.hosts(getUUID())){vanish(level());return;}
+				if(!level.hasChunkAt(tournament))return;
+				if(!(level.getBlockEntity(tournament) instanceof TournamentBoardEntity board) || !board.hosts(getUUID())){vanish(level);return;}
 				BlockPos home=board.waiting(tournamentSlot);
 				if(blockPosition().distSqr(home)>4)getNavigation().moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,.6);
 			}
-			idle(level(), now);
+			idle(level, now);
 			return;
 		}
-		tickSlash(level(), now);
+		tickSlash(level, now);
 		LivingEntity target = getTarget();
 		if (target == null || !DuelistDuels.fighting(this) || state(YIELD)) {
 			getNavigation().stop();
@@ -384,7 +386,7 @@ public class Duelist extends AuraFighter {
 			}
 			return;
 		}
-		if (tickDash(level(), now, target) || slashAt > 0 || staggered()) {
+		if (tickDash(level, now, target) || slashAt > 0 || staggered()) {
 			return;
 		}
 		int stage = stage();
@@ -410,7 +412,7 @@ public class Duelist extends AuraFighter {
 			return;
 		}
 		if (stage >= AuraRules.FORM && AuraApi.technique("step").isPresent() && now >= dashReadyAt && d > 4.5 && d < 10 && hasLineOfSight(target)) {
-			crouch(level(), now, target);
+			crouch(level, now, target);
 			return;
 		}
 		// Close, between blows: now and then it braces instead of striking, so a rushed swing meets its perfect moment.
