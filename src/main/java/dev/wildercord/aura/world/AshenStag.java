@@ -238,6 +238,7 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	 * {@link AshenStagRules#GUARD_EVERY} ticks, nearest first. Only players get a fight.
 	 */
 	private void guard(ServerLevel level){
+		if(getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG))return;
 		var box=new AABB(Vec3.atLowerCornerOf(gladeMin),Vec3.atLowerCornerOf(gladeMax).add(1,1,1));
 		var h=head();
 		var m=level.getEntitiesOfClass(Mob.class,box,e->e instanceof Enemy && e!=this && e.isAlive() && !(e instanceof AshenStag) && inGlade(e.position(),0))
@@ -256,8 +257,9 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 	/** The nearest player in the glade close enough to its bed to wake it, if any. */
 	private ServerPlayer wakeful(ServerLevel level){
 		var t=spot();
+		boolean rush=getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG);
 		return level.players().stream().filter(p->p.isAlive() && !p.isCreative() && !p.isSpectator() && inGlade(p.position(),0)
-			&& AshenStagRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z)).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
+			&& (rush || AshenStagRules.wakes(p.getX()-t.x,p.getY()-t.y,p.getZ()-t.z))).min(Comparator.comparingDouble(p->p.distanceToSqr(t))).orElse(null);
 	}
 
 	private void dormant(ServerLevel level){
@@ -1003,7 +1005,10 @@ public final class AshenStag extends PathfinderMob implements Enemy {
 		return hurt;
 	}
 	@Override public void die(DamageSource source){
-		if(level() instanceof ServerLevel server){Feels.sound(server,head(),"aura_ashen_stag_death",1.8F,1);Guardians.reward(server,this,AshenStagRules.TIER,bar,source);bar.removeAllPlayers();}
+		if(level() instanceof ServerLevel server){
+			Feels.sound(server,head(),"aura_ashen_stag_death",1.8F,1);Guardians.reward(server,this,AshenStagRules.TIER,bar,source);bar.removeAllPlayers();
+			if(bound && !getTags().contains(dev.wildercord.wildlife.WhiteRabbitRules.BOSS_RUSH_TAG)){LairRespawns.schedule(server,LairRespawns.Entry.simple("ashen_stag",bed,rest,gladeMin,gladeMax,server.getGameTime()+dev.wildercord.cast.BossRules.BOSS_RESPAWN_TICKS));}
+		}
 		super.die(source);
 	}
 	@Override protected SoundEvent getHurtSound(DamageSource source){return null;}

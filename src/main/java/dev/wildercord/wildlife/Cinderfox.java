@@ -1,7 +1,6 @@
 package dev.wildercord.wildlife;
 
-import dev.wildercord.compat.McEntities;
-
+import dev.wildercord.compat.McHands;
 import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.Affinities;
 import net.minecraft.core.particles.ParticleTypes;
@@ -19,7 +18,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
@@ -77,7 +76,7 @@ public class Cinderfox extends TamableAnimal {
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
-		return net.minecraft.world.entity.Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 14.0).add(Attributes.MOVEMENT_SPEED, 0.31).add(Attributes.ATTACK_DAMAGE, 3.0)
+		return createAnimalAttributes().add(Attributes.MAX_HEALTH, 14.0).add(Attributes.MOVEMENT_SPEED, 0.31).add(Attributes.ATTACK_DAMAGE, 3.0)
 			.add(Attributes.FOLLOW_RANGE, 24.0);
 	}
 
@@ -135,7 +134,7 @@ public class Cinderfox extends TamableAnimal {
 				} else {
 					level().broadcastEntityEvent(this, (byte) 6);
 				}
-				return InteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS_SERVER;
 			}
 			return super.mobInteract(player, hand);
 		}
@@ -159,7 +158,7 @@ public class Cinderfox extends TamableAnimal {
 			jumping = false;
 			getNavigation().stop();
 			setTarget(null);
-			return InteractionResult.SUCCESS;
+			return InteractionResult.SUCCESS.withoutItem();
 		}
 		return result;
 	}
@@ -171,7 +170,7 @@ public class Cinderfox extends TamableAnimal {
 			return false;
 		}
 		entityData.set(DATA_BRUSHED, today);
-		spawnAtLocation(new ItemStack(Wildlife.EMBER_TUFT));
+		spawnAtLocation(level, new ItemStack(Wildlife.EMBER_TUFT));
 		SoundEvent purr = Wildlife.sound("cinderfox_yip");
 		if (purr != null) {
 			level.playSound(null, getX(), getY(), getZ(), purr, SoundSource.NEUTRAL, 0.8F, 1.25F);
@@ -197,11 +196,10 @@ public class Cinderfox extends TamableAnimal {
 	}
 
 	@Override
-	public boolean doHurtTarget(Entity target) {
-		ServerLevel level = (ServerLevel) level();
+	public boolean doHurtTarget(ServerLevel level, Entity target) {
 		boolean weak = weakToFire(target);
 		float bite = WildlifeRules.sparkBite((float) getAttributeValue(Attributes.ATTACK_DAMAGE), weak);
-		boolean hit = target.hurt(damageSources().mobAttack(this), bite);
+		boolean hit = target.hurtServer(level, damageSources().mobAttack(this), bite);
 		if (hit) {
 			setLastHurtMob(target);
 			// A shower of sparks off its tail, and on a creature weak to fire, the embers catch.
@@ -221,7 +219,7 @@ public class Cinderfox extends TamableAnimal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		Cinderfox kit = McEntities.create(Wildlife.CINDERFOX, level, MobSpawnType.BREEDING);
+		Cinderfox kit = Wildlife.CINDERFOX.create(level, EntitySpawnReason.BREEDING);
 		if (kit != null && isTame()) {
 			kit.setOwnerUUID(getOwnerUUID());
 			kit.setTame(true, true);

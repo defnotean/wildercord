@@ -16,13 +16,13 @@ package dev.wildercord.aura.world;
  * </ol>
  */
 public enum BossTier {
-	APPRENTICE(200, 4, 2, 7, 0.6, 0.9, 120, 1, 1),
-	JOURNEY(250, 6, 3, 9, 0.75, 0.95, 145, 1, 1),
-	SEASONED(300, 8, 4, 11, 0.9, 1.0, 170, 2, 2),
-	VETERAN(350, 10, 5, 13, 1.0, 1.05, 195, 2, 2),
-	ELDER(410, 12, 6, 15, 1.1, 1.1, 225, 3, 2),
-	HEROIC(440, 13, 7, 16, 1.15, 1.1, 260, 3, 3),
-	DREAD(470, 14, 8, 17, 1.2, 1.1, 300, 4, 3);
+	APPRENTICE(750, 8, 4, 7, 0.6, 0.9, 120, 1, 1),
+	JOURNEY(950, 10, 5, 9, 0.75, 0.95, 145, 1, 1),
+	SEASONED(1150, 12, 6, 11, 0.9, 1.0, 170, 2, 2),
+	VETERAN(1350, 14, 7, 13, 1.0, 1.05, 195, 2, 2),
+	ELDER(1600, 16, 8, 15, 1.1, 1.1, 225, 3, 2),
+	HEROIC(1750, 17, 9, 16, 1.15, 1.1, 260, 3, 3),
+	DREAD(1950, 18, 10, 17, 1.2, 1.1, 300, 4, 3);
 
 	/** Its health, armour, armour toughness and plain melee hit. */
 	public final double health, armour, toughness, melee;

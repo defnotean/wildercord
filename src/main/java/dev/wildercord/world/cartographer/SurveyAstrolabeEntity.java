@@ -27,6 +27,7 @@ import net.minecraft.server.level.ServerLevel;
 public final class SurveyAstrolabeEntity extends BlockEntity {
 	private UUID guardian;
 	private boolean slain;
+	private long slainAt;
 
 	public SurveyAstrolabeEntity(BlockPos pos, BlockState state) { super(CartographerContent.ASTROLABE_ENTITY, pos, state); }
 	public UUID guardian() { return guardian; }
@@ -42,7 +43,15 @@ public final class SurveyAstrolabeEntity extends BlockEntity {
 			if (piece instanceof SurveyRingPiece found && found.astrolabe().equals(worldPosition)) { ring = found; break; }
 		}
 		if (ring == null) { say(player, "decorative"); return InteractionResult.CONSUME; }
-		if (slain) { say(player, "finished"); return InteractionResult.CONSUME; }
+		if (slain) {
+			long remaining = dev.wildercord.cast.BossRules.respawnTicksRemaining(slainAt, server.getGameTime());
+			if (remaining > 0) {
+				player.sendSystemMessage(Component.literal("The arena rests. You can challenge the guardian again in "
+					+ dev.wildercord.cast.BossRules.formatRespawnRemaining(remaining) + "."), true);
+				return InteractionResult.CONSUME;
+			}
+			slain = false; slainAt = 0; guardian = null; setChanged();
+		}
 		if (!Guardians.enabled() || server.getDifficulty() == Difficulty.PEACEFUL || player.isCreative()) { say(player, "quiet"); return InteractionResult.CONSUME; }
 		if (guardian != null) {
 			if (server.getEntity(guardian) instanceof GlassCartographer cartographer && cartographer.belongsTo(worldPosition)) {
@@ -70,6 +79,7 @@ public final class SurveyAstrolabeEntity extends BlockEntity {
 	public boolean complete(UUID id) {
 		if (slain || !id.equals(guardian)) return false;
 		slain = true;
+		slainAt = level != null ? level.getGameTime() : 0L;
 		setChanged();
 		return true;
 	}
@@ -77,11 +87,13 @@ public final class SurveyAstrolabeEntity extends BlockEntity {
 	@Override protected void loadAdditional(CompoundTag inputTag, HolderLookup.Provider registries) { McValueInput input = new McValueInput(inputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
 		super.loadAdditional(inputTag, registries);
 		guardian = input.read("guardian", UUIDUtil.CODEC).orElse(null);
-		slain = (input.contains("slain", 1) ? input.getBoolean("slain") :  false);
+		slain = input.getBooleanOr("slain", false);
+		slainAt = input.getLongOr("slain_at", 0L);
 	}
 	@Override protected void saveAdditional(CompoundTag outputTag, HolderLookup.Provider registries) { McValueOutput output = new McValueOutput(outputTag, (level == null ? RegistryAccess.EMPTY : level.registryAccess()));
 		super.saveAdditional(outputTag, registries);
 		if (guardian != null) output.store("guardian", UUIDUtil.CODEC, guardian);
 		output.putBoolean("slain", slain);
+		output.putLong("slain_at", slainAt);
 	}
 }

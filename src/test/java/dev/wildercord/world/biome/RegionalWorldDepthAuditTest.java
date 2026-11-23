@@ -210,10 +210,10 @@ class RegionalWorldDepthAuditTest {
 
 	@Test
 	void allFourRegionalBossRuleContractsMatchPhaseSafetyAndResetInvariants() {
-		assertEquals(180f, FerrymanRules.HEALTH);
-		assertEquals(180f, CartographerRules.HEALTH);
-		assertEquals(180f, HollowBellRules.HEALTH);
-		assertEquals(180f, KilnWidowRules.HEALTH);
+		assertEquals(720f, FerrymanRules.HEALTH);
+		assertEquals(720f, CartographerRules.HEALTH);
+		assertEquals(720f, HollowBellRules.HEALTH);
+		assertEquals(720f, KilnWidowRules.HEALTH);
 
 		assertEquals(200, FerrymanRules.QUIET_RESET);
 		assertEquals(200, CartographerRules.QUIET_RESET);
@@ -225,10 +225,10 @@ class RegionalWorldDepthAuditTest {
 		assertEquals(1.75, HollowBellRules.SAFE_HALF_WIDTH);
 		assertEquals(1.75, KilnWidowRules.SAFE_HALF_WIDTH);
 
-		assertTrue(FerrymanRules.second(90f, 180f) && !FerrymanRules.second(91f, 180f));
-		assertTrue(CartographerRules.second(90f, 180f) && !CartographerRules.second(91f, 180f));
-		assertTrue(HollowBellRules.second(90f, 180f) && !HollowBellRules.second(91f, 180f));
-		assertTrue(KilnWidowRules.second(90f, 180f) && !KilnWidowRules.second(91f, 180f));
+		assertTrue(FerrymanRules.second(360f, 720f) && !FerrymanRules.second(361f, 720f));
+		assertTrue(CartographerRules.second(360f, 720f) && !CartographerRules.second(361f, 720f));
+		assertTrue(HollowBellRules.second(360f, 720f) && !HollowBellRules.second(361f, 720f));
+		assertTrue(KilnWidowRules.second(360f, 720f) && !KilnWidowRules.second(361f, 720f));
 	}
 
 	private static List<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> applyOrder(

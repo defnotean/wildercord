@@ -86,7 +86,12 @@
     "PotionBrewingMixin",
     "DisplayAccessor",
     "BlockDisplayAccessor",
-    "TextDisplayAccessor"
+    "TextDisplayAccessor",
+    "ServerExplosionMixin",
+    "FxSupportExplosionMixin",
+    "OathholdSnowMixin",
+    "OathholdWeatherSnowMixin",
+    "RangedAttributeMaxHealthMixin"
   ],
   "injectors": {
     "defaultRequire": 1

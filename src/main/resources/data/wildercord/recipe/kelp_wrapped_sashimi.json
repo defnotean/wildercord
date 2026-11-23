@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:dried_kelp",
+    "minecraft:salmon",
+    "minecraft:cod"
+  ],
+  "result": {
+    "id": "wildercord:kelp_wrapped_sashimi",
+    "count": 2
+  }
+}

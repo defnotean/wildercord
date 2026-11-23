@@ -2,25 +2,74 @@ package dev.wildercord.gametest.compat;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.narration.NarrationThunk;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
+import dev.wildercord.client.compat.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
+import net.minecraft.network.protocol.game.VecDeltaCodec;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
-/** 1.21.1 compat seam for the dropped render-state gametest helpers: inert. */
+import java.util.function.Predicate;
+
+/** Version-specific gametest harness helpers for Minecraft 26.2. */
 public final class GametestCompat {
 	private GametestCompat() {}
+
+	/**
+	 * Polls a server condition until it holds or the tick budget runs out, returning the ticks
+	 * waited. 26.1.2's TestServerContext has no waitFor, and the integrated server only ticks
+	 * while the harness is inside a client-side wait, so each attempt advances the world with
+	 * ClientGameTestContext.waitTicks before the next check.
+	 */
+	public static int waitFor(ClientGameTestContext client, TestServerContext server, Predicate<MinecraftServer> condition, int timeoutTicks) {
+		int waited = 0;
+		try {
+			while (waited < timeoutTicks) {
+				if (Boolean.TRUE.equals(server.computeOnServer(condition::test))) {
+					return waited;
+				}
+				client.waitTicks(1);
+				waited++;
+			}
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		}
+		return waited;
+	}
 
 	public static InputConstants.Key keyboardKey(int keyCode) {
 		return InputConstants.Type.KEYSYM.getOrCreate(keyCode);
@@ -32,136 +81,201 @@ public final class GametestCompat {
 		}
 	}
 
-	public static void renderFrame(Minecraft mc, DeltaTracker delta) {}
-
-	public static void extractMainCamera(GameRenderer gameRenderer, Object camera, DeltaTracker delta) {}
-
-	public static BlockPos findNearestStructure(ServerLevel level, Holder<net.minecraft.world.level.levelgen.structure.Structure> structure, BlockPos origin, Object arg1, Object arg2) {
-		return null;
+	/** 1.21.11 dropped Camera#getViewRotationProjectionMatrix: rebuild it from the camera pose and the perspective. */
+	public static Matrix4f viewProjection(Camera camera, Matrix4f out) {
+		Vec3 pos = camera.position();
+		out.rotation(camera.rotation()).translate((float) -pos.x, (float) -pos.y, (float) -pos.z);
+		return Minecraft.getInstance().gameRenderer.getProjectionMatrix(reportedFov(camera)).mul(out, out);
 	}
 
-	public static net.minecraft.world.level.levelgen.structure.StructureStart generateStructureStart(ServerLevel level, Holder<net.minecraft.world.level.levelgen.structure.Structure> structure, Object chunk) {
-		return null;
+	/** 1.21.11 no longer reports a fov on Camera; the slider is what GameRenderer feeds the projection. */
+	public static float reportedFov(Camera camera) {
+		return Minecraft.getInstance().options.fov().get();
 	}
 
-	public static com.mojang.datafixers.util.Pair<BlockPos, Holder<net.minecraft.world.level.biome.Biome>> findBiomeHorizontal(
-		Object source, int x, int y, int z, int radius, int spacing,
-		java.util.function.Predicate<Holder<net.minecraft.world.level.biome.Biome>> biome,
-		net.minecraft.util.RandomSource random, boolean flag, Object randomState) {
-		return null;
+	public static void renderFrame(Minecraft mc, DeltaTracker delta) {
+		mc.gameRenderer.render(delta, true);
 	}
 
-	public static boolean biomeHasMob(Object biome, Object category, Object type) {
-		return false;
+	/** 1.21.10 has no GameRenderer.updateCamera: tick() refreshes the main camera from the camera entity. */
+	public static void updateCamera(GameRenderer gameRenderer, DeltaTracker delta) {
+		gameRenderer.tick();
 	}
 
-	public static Object configuredFeatureValue(Object placed) {
-		return null;
+	/** 1.21.10 dropped the client-loaded tracking, so a ticked, live player stands in for the loaded client. */
+	public static boolean clientLoaded(ServerPlayer player) {
+		return player.tickCount > 0 && !player.isRemoved();
 	}
 
-	public static Object dummyStructureContext(Object chunk, Object height) {
-		return null;
+	public static void extractMainCamera(GameRenderer gameRenderer, CameraRenderState camera, DeltaTracker delta) {
+		// 1.21.11 has no MainCamera.extractRenderState: the level render state carries the camera's, filled by the last frame.
+		// 1.21.10 has neither, so copy the live camera's pose into the state.
+		Camera source = gameRenderer.getMainCamera();
+		camera.blockPos = source.getBlockPosition();
+		camera.pos = source.getPosition();
+		camera.initialized = true;
+		camera.entityPos = source.getPosition();
+		camera.orientation = source.rotation();
 	}
 
-	/** 1.21.1 sends an entity's absolute position in a teleport packet; the target is the packet's own position. */
-	public static Vec3 entityPositionSyncTarget(Object sync) {
-		if (sync instanceof net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket teleport) {
-			return new Vec3(teleport.getX(), teleport.getY(), teleport.getZ());
+	/** 1.21.8 keeps the particle queues private and has no public clear: empty them by hand. */
+	public static void clearParticles(net.minecraft.client.particle.ParticleEngine engine) {
+		try {
+			java.lang.reflect.Field queues = net.minecraft.client.particle.ParticleEngine.class.getDeclaredField("particles");
+			queues.setAccessible(true);
+			for (Object queue : ((java.util.Map<?, ?>) queues.get(engine)).values()) {
+				((java.util.Collection<?>) queue).clear();
+			}
+			java.lang.reflect.Field adding = net.minecraft.client.particle.ParticleEngine.class.getDeclaredField("particlesToAdd");
+			adding.setAccessible(true);
+			((java.util.Collection<?>) adding.get(engine)).clear();
+		} catch (ReflectiveOperationException failure) {
+			throw new IllegalStateException(failure);
 		}
-		return Vec3.ZERO;
+	}
+
+	/** 1.21.8 carries a knock-back packet as three raw axis values, not a movement vector. */
+	public static net.minecraft.world.phys.Vec3 motionOf(net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket packet) {
+		return new net.minecraft.world.phys.Vec3(packet.getXa(), packet.getYa(), packet.getZa());
+	}
+
+	public static BlockPos findNearestStructure(ServerLevel level, Holder<Structure> structure, BlockPos origin,
+			int radiusChunks, boolean skipKnownStructures) {
+		var hit = level.getChunkSource().getGenerator().findNearestMapStructure(
+			level, HolderSet.direct(structure), origin, radiusChunks, skipKnownStructures);
+		return hit == null ? null : hit.getFirst();
+	}
+
+	public static StructureStart generateStructureStart(ServerLevel level, Holder<Structure> structure, ChunkPos chunk) {
+		var cs = level.getChunkSource();
+		var gen = cs.getGenerator();
+		// 1.21.3's Structure#generate dropped the dimension ResourceKey argument.
+		return structure.value().generate(level.registryAccess(), gen,
+			gen.getBiomeSource(), cs.randomState(), level.getStructureManager(), level.getSeed(),
+			chunk, 0, level, structure.value().biomes()::contains);
+	}
+
+	/** 1.21.3's Gui names title clearing {@code clear()}, not {@code clearTitles()}. */
+	public static void clearTitles(net.minecraft.client.Minecraft mc) {
+		mc.gui.clear();
+	}
+
+	public static Pair<BlockPos, Holder<Biome>> findBiomeHorizontal(BiomeSource source, int x, int y, int z,
+			int radius, int increment, Predicate<Holder<Biome>> target, RandomSource random, boolean findClosest,
+			RandomState randomState) {
+		return source.findBiomeHorizontal(x, y, z, radius, increment, target, random, findClosest, randomState.sampler());
+	}
+
+	/** 1.21.4 carries no extents on the item render state: the display transform over the unit cube stands in. */
+	public static void visitItemExtents(dev.wildercord.client.compat.vanilla.ItemStackRenderState item,
+			java.util.function.Consumer<org.joml.Vector3f> point) {
+		var pose = new com.mojang.blaze3d.vertex.PoseStack();
+		item.transform().apply(false, pose);
+		var m = pose.last().pose();
+		for (int corner = 0; corner < 8; corner++) {
+			point.accept(m.transformPosition(new org.joml.Vector3f((corner & 1) != 0 ? 1F : 0F,
+				(corner & 2) != 0 ? 1F : 0F, (corner & 4) != 0 ? 1F : 0F)));
+		}
+	}
+
+	public static boolean biomeHasMob(Biome biome, MobCategory category, EntityType<?> type) {
+		return biome.getMobSettings().getMobs(category).unwrap().stream().anyMatch(entry -> entry.type == type);
+	}
+
+	public static Feature<?> configuredFeatureValue(PlacedFeature placed) {
+		return placed.feature().value().feature();
+	}
+
+	public static Structure.GenerationContext dummyStructureContext(ChunkPos chunk, LevelHeightAccessor height) {
+		return new Structure.GenerationContext((RegistryAccess) null, null, null, null, null, (WorldgenRandom) null,
+			721, chunk, height, biome -> true);
 	}
 
 	/**
-	 * Whether the player is sending no movement input. 1.21.1 has no {@code Input} record and no
-	 * {@code ServerPlayer#getLastClientInput}: the client's own input state is read directly, and a
-	 * server-side player is judged by what that input has made them do.
+	 * A real {@link Structure.GenerationContext} backed by the level's actual chunk generator, biome
+	 * source and random state, so a site locator can be exercised against genuine terrain heightmaps
+	 * (the same inputs {@link #generateStructureStart} feeds through {@code Structure.generate}). The
+	 * biome predicate accepts everything; each locator does its own biome eligibility check. 26.2 keeps
+	 * the climate sampler off this record - {@code BiomeSource} takes it per call instead.
 	 */
-	public static boolean inputIdle(net.minecraft.world.entity.player.Player player) {
-		if (player instanceof LocalPlayer client) {
-			net.minecraft.client.player.Input keys = client.input;
-			return keys.forwardImpulse == 0.0F && keys.leftImpulse == 0.0F && !keys.up && !keys.down
-				&& !keys.left && !keys.right && !keys.jumping && !keys.shiftKeyDown;
-		}
-		return !player.isShiftKeyDown() && !player.isSprinting() && player.getDeltaMovement().lengthSqr() < 1.0E-7;
+	public static Structure.GenerationContext realStructureContext(ServerLevel level, ChunkPos chunk) {
+		var cs = level.getChunkSource();
+		var gen = cs.getGenerator();
+		return new Structure.GenerationContext(level.registryAccess(), gen, gen.getBiomeSource(),
+			cs.randomState(), level.getStructureManager(), level.getSeed(), chunk, level, biome -> true);
 	}
 
-	/** The last input the client sent this player. 1.21.1 keeps it in private fields with no accessor. */
-	public static Object lastClientInput(ServerPlayer player) {
-		return null;
+	public static Vec3 entityPositionSyncTarget(ClientboundEntityPositionSyncPacket sync) {
+		return sync.values().position();
 	}
 
-	public static Vec3 moveEntityDeltaTarget(Object move, Vec3 base) {
-		return base;
+	public static Vec3 moveEntityDeltaTarget(ClientboundMoveEntityPacket move, Vec3 base) {
+		VecDeltaCodec codec = new VecDeltaCodec();
+		codec.setBase(base);
+		return codec.decode(move.getXa(), move.getYa(), move.getZa());
 	}
 
 	public static boolean syncVelocityFlag(ServerPlayer player) {
-		return false;
+		return player.hurtMarked;
 	}
 
 	public static NarrationElementOutput narrationOutput(StringBuilder said) {
-		return null;
-	}
-
-	public static int particlePacketCount(Object packet) {
-		return 0;
-	}
-
-	public static void swingMainHandWithItem(LocalPlayer player) {}
-
-	/**
-	 * Waits for the server to satisfy {@code ready}, looking once a tick, and returns the ticks waited.
-	 * The newer versions hand this to fabric's own waiters; 1.21.1's harness has none, so each attempt
-	 * asks the server itself through {@code computeOnServer} and then advances the world with one
-	 * client tick, leaving the caller's own checks to report what the server actually did.
-	 */
-	public static int waitFor(ClientGameTestContext client, TestServerContext server,
-			java.util.function.Predicate<MinecraftServer> ready, int ticks) {
-		int waited = 0;
-		for (int i = 0; i < Math.max(1, ticks); i++) {
-			if (Boolean.TRUE.equals(server.computeOnServer(ready::test))) {
-				return waited;
+		return new NarrationElementOutput() {
+			@Override
+			public void add(NarratedElementType type, NarrationThunk<?> thunk) {
+				thunk.getText(text -> said.append(text).append(' '));
 			}
-			client.waitTicks(1);
-			waited++;
-		}
-		return waited;
+
+			@Override
+			public NarrationElementOutput nest() {
+				return this;
+			}
+		};
 	}
 
-	/** Empties the particle engine between screenshots. 1.21.1's engine has no public clear. */
-	public static void clearParticles(Object particleEngine) {}
-
-	/** The keys the client is holding, as one string for a probe row. 1.21.1 keeps them as plain fields. */
-	/** Clears the title and action bar between screenshots; 1.21.1's Gui has no single call for it. */
-	public static void clearTitles(Minecraft mc) {
-		mc.gui.clear();
-		mc.gui.resetTitleTimes();
+	public static int particlePacketCount(ClientboundLevelParticlesPacket packet) {
+		return Math.max(1, packet.getCount());
 	}
 
-	/** Whether the server still holds this player's live connection. */
-	public static boolean clientLoaded(ServerPlayer player) {
-		return player.connection != null && player.connection.player == player;
+	public static void swingMainHandWithItem(LocalPlayer player) {
+		player.swing(InteractionHand.MAIN_HAND, true);
 	}
 
-	/** The velocity a motion packet carries. 1.21.1 names its accessors by axis. */
-	public static Vec3 motionOf(net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket packet) {
-		return packet == null ? null : new Vec3(packet.getXa(), packet.getYa(), packet.getZa());
+	/** Clears the toast stack. 26.3 moved the toast manager from Minecraft onto Gui. */
+	public static void clearToasts(Minecraft mc) {
+		mc.getToastManager().clear();
 	}
 
-	/** 1.21.1 rebuilds the camera inside GameRenderer.render, so there is nothing to do first. */
-	public static void updateCamera(GameRenderer renderer, DeltaTracker delta) {}
+	/** Clears the chat line list. 26.3 reaches it through Gui#hud. */
+	public static void clearChat(Minecraft mc) {
+		mc.gui.getChat().clearMessages(false);
+	}
 
-	public static String inputSummary(LocalPlayer player) {
-		net.minecraft.client.player.Input keys = player.input;
-		return "[up=" + keys.up + ", down=" + keys.down + ", left=" + keys.left + ", right=" + keys.right
-			+ ", jump=" + keys.jumping + ", shift=" + keys.shiftKeyDown
-			+ ", forward=" + keys.forwardImpulse + ", strafe=" + keys.leftImpulse + "]";
+	/** Whether the HUD is hidden (the F3+A state). 26.3 moved it behind Gui#hud. */
+	public static boolean hudHidden(Minecraft mc) {
+		return mc.options.hideGui;
+	}
+
+	/** Flips HUD visibility, so a screenshot can be taken without the hotbar and crosshair. */
+	public static void toggleHud(Minecraft mc) {
+		mc.options.hideGui = !mc.options.hideGui;
 	}
 
 	/**
-	 * 1.21.1 has no camera-distance attribute: that arrived with 1.21.6. Third person sits at vanilla
-	 * 's fixed distance here, so the pull-back the tests ask for is a no-op and the spectacle checks
-	 * run at that distance.
+	 * Recomputes the GUI scale and re-inits the HUD. 26.x calls this Minecraft#resizeGui;
+	 * this branch still routes it through the window-resize handler, which is what rebuilds
+	 * the panes and the chat/scale state.
 	 */
-	public static void cameraDistance(ServerPlayer player, double distance) {
+	public static void resizeGui(Minecraft mc) {
+		mc.resizeDisplay();
+	}
+
+	/**
+	 * Pumps the client until queued clientbound packets are processed. 26.3 added
+	 * TestSingleplayerContext#getConnection; before it, waiting for the chunk download
+	 * to settle is what drains the client's inbound queue.
+	 */
+	public static void awaitClientPackets(TestSingleplayerContext world) {
+		world.getClientWorld().waitForChunksDownload();
 	}
 }

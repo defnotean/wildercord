@@ -1,6 +1,7 @@
 package dev.wildercord.mixin;
 
 import dev.wildercord.world.dungeons.DungeonWards;
+import dev.wildercord.world.sites.oathhold.OathholdLaw;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Explosion;
@@ -11,6 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.List;
 
 /**
  * No explosion blasts a dungeon's warded arena or vault open (TNT, creepers, fireballs, a spell's blast): the blocks
- * it would break there stay. Anything a player put there goes as usual.
+ * it would break there stay. Inside Oathhold, explosion damage is tracked for guard persecution and NPC rebuilding.
  */
 @Mixin(Explosion.class)
 public abstract class ServerExplosionMixin {
@@ -29,6 +31,11 @@ public abstract class ServerExplosionMixin {
 	@Shadow
 	@Final
 	private Vec3 center;
+
+	@Inject(method = "interactWithBlocks", at = @At("HEAD"))
+	private void wildercord$recordCityExplosion(List<BlockPos> blown, CallbackInfo ci) {
+		OathholdLaw.onExplosionBlocks(level, (ServerExplosion) (Object) this, center, blown);
+	}
 
 	@Inject(method = "calculateExplodedPositions", at = @At("RETURN"), cancellable = true)
 	private void wildercord$spareWards(CallbackInfoReturnable<List<BlockPos>> cir) {

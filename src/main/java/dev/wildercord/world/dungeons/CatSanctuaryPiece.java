@@ -320,8 +320,8 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 			Blocks.RED_CARPET.defaultBlockState(), Direction.SOUTH);
 		chest(level, bb, 47, F1 + 1, 64, DungeonWorldgen.CAT_SANCTUARY_HALL, Direction.WEST, 11);
 
-		// Eave skirt & 2nd-story exterior balcony railing.
-		JapaneseArchitecture.upturnedEaveSkirt(p, 5, 17, 51, 69, F2, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, DARK_LOG, true);
+		// Broad tiered pagoda eave skirt & 2nd-story exterior balcony railing.
+		JapaneseArchitecture.pagodaTierRoofApron(p, 5, 17, 51, 69, F2, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, DARK_LOG);
 		balconyRailing(level, bb, 7, 19, 49, 67, F2 + 1);
 	}
 
@@ -379,7 +379,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 			Blocks.YELLOW_CARPET.defaultBlockState(), Direction.NORTH);
 		chest(level, bb, 11, F2 + 1, 23, DungeonWorldgen.CAT_SANCTUARY_HALL, Direction.EAST, 22);
 
-		JapaneseArchitecture.upturnedEaveSkirt(p, 7, 19, 49, 67, F3, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, CHERRY_PLANKS, true);
+		JapaneseArchitecture.pagodaTierRoofApron(p, 7, 19, 49, 67, F3, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, CHERRY_PLANKS);
 		balconyRailing(level, bb, 9, 21, 47, 65, F3 + 1);
 	}
 
@@ -429,7 +429,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 			Blocks.PINK_CARPET.defaultBlockState(), Direction.SOUTH);
 		chest(level, bb, 43, F3 + 1, 61, DungeonWorldgen.CAT_SANCTUARY_HALL, Direction.WEST, 33);
 
-		JapaneseArchitecture.upturnedEaveSkirt(p, 9, 21, 47, 65, F4, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, VERMILION, true);
+		JapaneseArchitecture.pagodaTierRoofApron(p, 9, 21, 47, 65, F4, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, VERMILION);
 		balconyRailing(level, bb, 11, 23, 45, 63, F4 + 1);
 	}
 
@@ -485,7 +485,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		}
 
 		// Sweeping hipped crown pagoda roof + ornate golden Sorin spire finial.
-		JapaneseArchitecture.upturnedEaveSkirt(p, 11, 23, 45, 63, F4 + 12, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, VERMILION, true);
+		JapaneseArchitecture.pagodaTierRoofApron(p, 11, 23, 45, 63, F4 + 12, Blocks.DEEPSLATE_TILE_STAIRS, Blocks.DEEPSLATE_TILE_SLAB, VERMILION);
 		hipRoof(level, bb, 11, 23, 45, 63, F4 + 12, Blocks.DEEPSLATE_TILE_STAIRS, DEEPSLATE_TILES, Blocks.GOLD_BLOCK.defaultBlockState());
 		set(level, bb, Blocks.GOLD_BLOCK.defaultBlockState(), 28, F4 + 30, 43);
 		set(level, bb, VERMILION, 28, F4 + 31, 43);

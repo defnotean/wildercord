@@ -1,0 +1,40 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "ocean_abyssal_citadel": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "minecraft:location": {
+                "structures": "wildercord:ocean_abyssal_citadel"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:sovereign_altar"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.ocean_abyssal_citadel.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.ocean_abyssal_citadel.description"
+    }
+  },
+  "requirements": [
+    [
+      "ocean_abyssal_citadel"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.cast.feel.Feels;
+import dev.wildercord.compat.McHands;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.attachment.v1.*;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
