@@ -85,7 +85,7 @@ final class ShrineCatJournal extends SavedData {
 			.optionalFieldOf("companions", Map.of())
 			.forGetter(ShrineCatJournal::encodeEntries)
 	).apply(i, ShrineCatJournal::new));
-	private static final McMcSavedDataType<ShrineCatJournal> TYPE = new McSavedDataType<>("shrine_cat_companions",
+	private static final McSavedDataType<ShrineCatJournal> TYPE = new McSavedDataType<>("shrine_cat_companions",
 		ShrineCatJournal::new,
 		CODEC
 	);
