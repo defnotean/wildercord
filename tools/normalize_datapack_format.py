@@ -25,6 +25,32 @@ DATA = Path("src/main/resources/data/wildercord")
 RECIPE_UNLOCK_TRIGGER = "minecraft:recipe_unlocked"
 
 
+def _player_condition(profile: DataPackProfile, node):
+    """Swap the advancement ``player`` condition: a list of conditions before 26.3, one object after."""
+    if not isinstance(node, dict) or "player" not in node:
+        return node
+    out = dict(node)
+    value = out["player"]
+    items = value if isinstance(value, list) else [value]
+    converted = []
+    for item in items:
+        if not isinstance(item, dict):
+            converted.append(item)
+            continue
+        item = dict(item)
+        if profile.is_26_2:
+            if "type" in item and "condition" not in item:
+                item["condition"] = item.pop("type")
+        elif "condition" in item and "type" not in item:
+            item["type"] = item.pop("condition")
+        converted.append(item)
+    if profile.is_26_2:
+        out["player"] = converted
+    else:
+        out["player"] = converted[0] if len(converted) == 1 else {"type": "minecraft:all_of", "terms": converted}
+    return out
+
+
 def _recipe_unlock_condition(profile: DataPackProfile, node):
     """Swap the recipe_unlocked condition key to the active schema, recursively."""
     if isinstance(node, list):
@@ -40,6 +66,8 @@ def _recipe_unlock_condition(profile: DataPackProfile, node):
         elif "recipe" in conditions:
             conditions["recipes"] = conditions.pop("recipe")
         out["conditions"] = conditions
+    if isinstance(out.get("conditions"), dict):
+        out["conditions"] = _player_condition(profile, out["conditions"])
     return {key: _recipe_unlock_condition(profile, value) for key, value in out.items()}
 
 
