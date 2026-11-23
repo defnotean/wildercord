@@ -717,13 +717,13 @@ public final class OathboundBladeChampion extends PathfinderMob implements Enemy
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outTag) { McValueOutput out = new McValueOutput(outTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outTag);
 		out.putBoolean("blade_champion_empowered", empowered());
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inTag) { McValueInput in = new McValueInput(inTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inTag);
 		boolean emp = in.getBooleanOr("blade_champion_empowered", false)
 			|| OathboundBladeChampionRules.empowered(getHealth(), getMaxHealth());

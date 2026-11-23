@@ -194,7 +194,7 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		dealtDamage = input.getBooleanOr("DealtDamage", false);
 		anchorTicks = input.getIntOr("AnchorTicks", 0);
@@ -203,7 +203,7 @@ public class ThrownHarpoon extends ThrowableItemProjectile {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putBoolean("DealtDamage", dealtDamage);
 		output.putInt("AnchorTicks", anchorTicks);

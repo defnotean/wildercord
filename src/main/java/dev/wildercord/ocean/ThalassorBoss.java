@@ -112,9 +112,10 @@ public class ThalassorBoss extends Monster {
 		return new WaterBoundPathNavigation(this, level);
 	}
 
+	/** 1.21.5 pins canBreatheUnderwater; a steady air supply keeps the tidefolk breathing. */
 	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
+	protected int decreaseAirSupply(int air) {
+		return air;
 	}
 
 	@Override
@@ -260,14 +261,14 @@ public class ThalassorBoss extends Monster {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		Optional<BlockPos> savedArena = input.read("ArenaCenter", BlockPos.CODEC);
 		arenaCenter = savedArena.orElse(null);
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		if (arenaCenter != null) {
 			output.store("ArenaCenter", BlockPos.CODEC, arenaCenter);

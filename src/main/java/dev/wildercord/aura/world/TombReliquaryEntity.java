@@ -79,7 +79,7 @@ public final class TombReliquaryEntity extends BlockEntity {
 		give(p,AuraApi.techniqueScroll(first));give(p,AuraApi.techniqueScroll(second));
 		give(p,new ItemStack(AuraWorld.AURA_SHARD,3));give(p,SwordTombs.history());
 		dev.wildercord.cast.Grimoire.unlock(p,"aura:sword_tomb");
-		Feels.sound(p.level(),p.position(),"aura_tomb_reward",.8F,1);
+		Feels.sound((ServerLevel) p.level()),p.position(),"aura_tomb_reward",.8F,1);
 		p.sendSystemMessage(Component.translatable("message.wildercord.tomb.reward"));
 	}
 	private static void give(ServerPlayer p,ItemStack s){if(!p.getInventory().add(s))dev.wildercord.compat.McEntities.drop(p, s, false);}
