@@ -376,7 +376,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		var ownerPosition = player.position();
 		float previousScale = getScale();
 		long revision = stateRevision;
-		boolean safe = CompanionLanding.safe((ServerLevel) player.level()), this, proposed);
+		boolean safe = CompanionLanding.safe((ServerLevel) player.level(), this, proposed);
 		// Protection hooks can re-enter, transfer ownership, or replace the hand stack. Fail closed.
 		if (!safe || !CinnamonCompanion.active(this) || !isOwnedBy(player) || player.level() != level()
 			|| stateRevision != revision || !getBoundingBox().equals(before) || !player.position().equals(ownerPosition)
@@ -813,7 +813,7 @@ public final class CinnamonDog extends TamableAnimal implements HasCustomInvento
 		double physical = scaleAt(targetScale);
 		if (player instanceof ServerPlayer sp && physical > getScale()) {
 			AABB proposed = getDimensions(getPose()).scale((float) (physical / Math.max(0.01D, getScale()))).makeBoundingBox(position());
-			if (!CompanionLanding.safe((ServerLevel) sp.level()), this, proposed)) {
+			if (!CompanionLanding.safe((ServerLevel) sp.level(), this, proposed)) {
 				player.displayClientMessage(Component.translatable("message.wildercord.cinnamon.growth_blocked"), true);
 				return false;
 			}
