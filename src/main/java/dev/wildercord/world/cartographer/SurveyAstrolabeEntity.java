@@ -1,5 +1,7 @@
 package dev.wildercord.world.cartographer;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.world.sites.SiteStructure;
 import dev.wildercord.world.sites.highland.HighlandSites;
@@ -48,7 +50,7 @@ public final class SurveyAstrolabeEntity extends BlockEntity {
 			} else say(player, "waiting");
 			return InteractionResult.SUCCESS;
 		}
-		var cartographer = CartographerContent.CARTOGRAPHER.create(server, MobSpawnType.STRUCTURE);
+		var cartographer = McEntities.create(CartographerContent.CARTOGRAPHER, server, MobSpawnType.STRUCTURE);
 		if (cartographer == null) return InteractionResult.FAIL;
 		cartographer.bind(ring.pedestal(), worldPosition);
 		if (!server.addFreshEntity(cartographer)) return InteractionResult.FAIL;

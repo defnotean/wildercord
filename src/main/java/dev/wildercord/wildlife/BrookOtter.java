@@ -419,7 +419,7 @@ public class BrookOtter extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof BrookOtter pup ? pup : null;
+		return getType().create(level) instanceof BrookOtter pup ? pup : null;
 	}
 
 	// ------------------------------------------------------------------ sound: chirps and squeaks

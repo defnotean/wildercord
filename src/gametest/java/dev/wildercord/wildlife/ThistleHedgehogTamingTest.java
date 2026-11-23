@@ -1,4 +1,6 @@
 package dev.wildercord.wildlife;
+
+import dev.wildercord.compat.McEntities;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
@@ -49,7 +51,7 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.GRASS_BLOCK.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				var h = HedgehogContent.THISTLE_HEDGEHOG.create(l, MobSpawnType.COMMAND);
+				var h = McEntities.create(HedgehogContent.THISTLE_HEDGEHOG, l, MobSpawnType.COMMAND);
 				h.setPos(0.5, 101, 2.5);
 				l.addFreshEntity(h);
 				id = h.getUUID();
@@ -145,13 +147,13 @@ public final class ThistleHedgehogTamingTest implements FabricClientGameTest {
 				h.setOrderedToSit(true);
 				CompoundTag saved = new CompoundTag();
 				h.saveWithoutId(saved);
-				var restored = HedgehogContent.THISTLE_HEDGEHOG.create(s.overworld(), MobSpawnType.LOAD);
+				var restored = McEntities.create(HedgehogContent.THISTLE_HEDGEHOG, s.overworld(), MobSpawnType.LOAD);
 				restored.load(saved);
 				check(restored.isTame() && restored.isOwnedBy(p(s)), "Its owner survives a save");
 				check(restored.isOrderedToSit(), "Its order to sit survives a save");
 				restored.discard();
 
-				var mate = HedgehogContent.THISTLE_HEDGEHOG.create(s.overworld(), MobSpawnType.COMMAND);
+				var mate = McEntities.create(HedgehogContent.THISTLE_HEDGEHOG, s.overworld(), MobSpawnType.COMMAND);
 				mate.tame(p(s));
 				var hoglet = h.getBreedOffspring(s.overworld(), mate);
 				check(hoglet instanceof ThistleHedgehog baby && baby.isTame() && baby.isOwnedBy(p(s)), "A tame pair's hoglet belongs to their owner");

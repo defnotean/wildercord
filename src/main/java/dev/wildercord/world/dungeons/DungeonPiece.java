@@ -1,5 +1,7 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.Runebound;
 import dev.wildercord.content.RuneSealBlock;
 import dev.wildercord.content.WildercordBlocks;
@@ -187,7 +189,7 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		Mob mob = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		Mob mob = McEntities.create(type, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (mob == null) {
 			return;
 		}
@@ -204,7 +206,7 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		Mob mob = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		Mob mob = McEntities.create(type, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (mob == null) {
 			return;
 		}

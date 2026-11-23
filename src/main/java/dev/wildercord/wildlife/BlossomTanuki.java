@@ -275,7 +275,7 @@ public class BlossomTanuki extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof BlossomTanuki young ? young : null;
+		return getType().create(level) instanceof BlossomTanuki young ? young : null;
 	}
 
 	@Override

@@ -55,7 +55,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				var m = MonsterContent.COFFER_MIMIC.create(l, MobSpawnType.COMMAND);
+				var m = McEntities.create(MonsterContent.COFFER_MIMIC, l, MobSpawnType.COMMAND);
 				m.setPos(0.5, 101, 3.5);
 				m.settleHere(180);
 				l.addFreshEntity(m);
@@ -193,7 +193,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.STONE.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				var wild = MonsterContent.COFFER_MIMIC.create(l, MobSpawnType.COMMAND);
+				var wild = McEntities.create(MonsterContent.COFFER_MIMIC, l, MobSpawnType.COMMAND);
 				wild.setPos(20.5, 101, 20.5);
 				wild.settleHere(180);
 				l.addFreshEntity(wild);
@@ -238,7 +238,7 @@ public final class CofferMimicTamingTest implements FabricClientGameTest {
 				var m = mimic(s);
 				CompoundTag saved = new CompoundTag();
 				m.saveWithoutId(saved);
-				var restored = MonsterContent.COFFER_MIMIC.create(s.overworld(), MobSpawnType.LOAD);
+				var restored = McEntities.create(MonsterContent.COFFER_MIMIC, s.overworld(), MobSpawnType.LOAD);
 				restored.load(saved);
 				check(restored.isOwnedBy(p(s)), "Its owner survives a save");
 				check(restored.belly().getItem(0).getCount() == 3 && restored.belly().getItem(26).getCount() == 5, "Its belly survives a save");

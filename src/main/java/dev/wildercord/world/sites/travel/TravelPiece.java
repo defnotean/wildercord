@@ -1,5 +1,7 @@
 package dev.wildercord.world.sites.travel;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.world.dungeons.DungeonPiece;
 import dev.wildercord.world.sites.Sites;
 import net.minecraft.core.BlockPos;
@@ -153,7 +155,7 @@ abstract class TravelPiece extends DungeonPiece {
 			java.util.function.Consumer<? super T> setup) {
 		BlockPos at = getWorldPos(x, y, z).immutable();
 		if (!bb.isInside(at)) return;
-		T mob = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		T mob = McEntities.create(type, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (mob == null) return;
 		setup.accept(mob);
 		mob.setPersistenceRequired();

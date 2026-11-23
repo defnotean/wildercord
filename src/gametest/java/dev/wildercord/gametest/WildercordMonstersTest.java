@@ -223,7 +223,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 
 	/** A monster at {@code at}, facing {@code yaw}, never a random Runebound (tests pick their monsters), kept from despawning. */
 	private static <T extends Mob> T spawn(ServerLevel level, EntityType<T> type, Vec3 at, float yaw, boolean ai) {
-		T mob = type.create(level, MobSpawnType.COMMAND);
+		T mob = McEntities.create(type, level, MobSpawnType.COMMAND);
 		mob.moveTo(at.x, at.y, at.z, yaw, 0);
 		mob.setYHeadRot(yaw);
 		mob.setYBodyRot(yaw);
@@ -818,7 +818,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		world.getServer().runCommand("fill %d %d %d %d %d %d oak_log".formatted(tree.getX(), tree.getY(), tree.getZ(), tree.getX(), tree.getY() + 6, tree.getZ()));
 		heal(world, GameType.CREATIVE);
 		int id = world.getServer().computeOnServer(server -> {
-			var serpent = dev.wildercord.aura.world.Guardians.SERPENT.create(level(server), MobSpawnType.COMMAND);
+			var serpent = McEntities.create(dev.wildercord.aura.world.Guardians.SERPENT, level(server), MobSpawnType.COMMAND);
 			serpent.moveTo(tree.getX() + 0.5, tree.getY(), tree.getZ() + 0.5, 180, 0);
 			serpent.bind(tree, 180);
 			serpent.addTag("wildercord.rolled");

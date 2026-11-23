@@ -1,5 +1,7 @@
 package dev.wildercord.world.ferryman;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.world.sites.SiteStructure;
 import dev.wildercord.world.sites.water.LastCrossingPiece;
@@ -45,7 +47,7 @@ public final class CrossingBellEntity extends BlockEntity {
 			} else say(player, "waiting");
 			return;
 		}
-		var ferryman = FerrymanContent.FERRYMAN.create(server, MobSpawnType.STRUCTURE);
+		var ferryman = McEntities.create(FerrymanContent.FERRYMAN, server, MobSpawnType.STRUCTURE);
 		if (ferryman == null) return;
 		ferryman.bind(crossing.mooringPosition(), worldPosition);
 		// Store identity only after successful insertion. No cost, and no discarded challenge on a failed spawn.

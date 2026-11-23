@@ -240,7 +240,7 @@ public class GlowberryDormouse extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof GlowberryDormouse young ? young : null;
+		return getType().create(level) instanceof GlowberryDormouse young ? young : null;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.config.Config;
 import net.minecraft.core.*;
 import net.minecraft.util.RandomSource;
@@ -83,7 +85,7 @@ public final class MojitoGrovePiece extends DungeonPiece {
 		var foot=getWorldPos(REST_X,F+1,REST_Z);if(!bb.isInside(foot))return;
 		var gate=getWorldPos(REST_X,F+1,REST_Z-10);
 		float rest=(float)Math.toDegrees(Math.atan2(-(gate.getX()-foot.getX()),gate.getZ()-foot.getZ()));
-		var dog=dev.wildercord.aura.world.Guardians.MOJITO.create(level.getLevel(),net.minecraft.world.entity.MobSpawnType.STRUCTURE);if(dog==null)return;
+		var dog=McEntities.create(dev.wildercord.aura.world.Guardians.MOJITO, level.getLevel(), net.minecraft.world.entity.MobSpawnType.STRUCTURE);if(dog==null)return;
 		dog.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
 		dog.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.MobSpawnType.STRUCTURE,null);
 		dog.bind(foot,rest,worldBox(CX-(int)R,F,CZ-(int)R,CX+(int)R,F+16,CZ+(int)R));

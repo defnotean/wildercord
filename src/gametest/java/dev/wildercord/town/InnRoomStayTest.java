@@ -1,5 +1,7 @@
 package dev.wildercord.town;
 
+import dev.wildercord.compat.McEntities;
+
 import net.minecraft.server.level.ServerLevel;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -61,7 +63,7 @@ public final class InnRoomStayTest implements FabricClientGameTest {
 					l.setBlock(new BlockPos(x, 100, z), Blocks.OAK_PLANKS.defaultBlockState(), 2);
 					for (int y = 101; y <= 104; y++) l.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
 				}
-				WayfarerKeeper cook = Town.KEEPER.create(l, MobSpawnType.COMMAND);
+				WayfarerKeeper cook = McEntities.create(Town.KEEPER, l, MobSpawnType.COMMAND);
 				cook.setRole(WayfarerKeeper.Role.COOK);
 				cook.moveTo(0.5, 101, 4.5, 180, 0);
 				cook.setNoAi(true);

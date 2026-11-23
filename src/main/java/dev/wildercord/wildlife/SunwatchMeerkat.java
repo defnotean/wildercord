@@ -324,7 +324,7 @@ public class SunwatchMeerkat extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof SunwatchMeerkat pup ? pup : null;
+		return getType().create(level) instanceof SunwatchMeerkat pup ? pup : null;
 	}
 
 	// ------------------------------------------------------------------ sound: chirps and peeps

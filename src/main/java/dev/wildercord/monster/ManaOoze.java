@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.ElementFx;
 import dev.wildercord.compat.CompatCubeMob;
 import dev.wildercord.cast.Motes;
@@ -210,7 +212,7 @@ public class ManaOoze extends CompatCubeMob implements Enemy, RuneboundKin {
 		Vec3 c = getBoundingBox().getCenter();
 		int half = MonsterRules.MAX_OOZE / 2;
 		for (int i = 0; i < 2; i++) {
-			ManaOoze child = MonsterContent.MANA_OOZE.create(level, MobSpawnType.TRIGGERED);
+			ManaOoze child = McEntities.create(MonsterContent.MANA_OOZE, level, MobSpawnType.TRIGGERED);
 			if (child == null) {
 				continue;
 			}

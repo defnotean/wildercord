@@ -1,5 +1,7 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.*;
 import dev.wildercord.aura.world.*;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -73,7 +75,7 @@ public final class SwordTombTest implements FabricClientGameTest {
 			await(c,world,keeper,SwordTombRules.GUARD);c.waitTicks(8);aim(c,home,1.2);shot(c,"sword_tomb_forward_guard");
 			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);var p=s.getPlayerList().getPlayers().getFirst();var at=k.position().add(k.getViewVector(1).multiply(1,0,1).normalize().scale(2));p.teleportTo(s.overworld(),at.x,at.y,at.z,Set.<RelativeMovement>of(),180,0);p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.IRON_AXE));k.hurt(s.overworld().damageSources().playerAttack(p),8);check(k.move()==SwordTombRules.BROKEN,"Frontal axe breaks the actual guard");});
 			c.waitTicks(8);aim(c,home,1.2);shot(c,"sword_tomb_broken_guard");c.waitTicks(15);
-			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);CompoundTag saved = new CompoundTag();k.saveWithoutId(saved);var restored=SwordTombs.KEEPER.create(s.overworld(),net.minecraft.world.entity.MobSpawnType.LOAD);restored.load(saved);check(restored.home().equals(k.home()) && restored.getHealth()==k.getHealth(),"Keeper home and damaged health survive save/load");check(restored.move()==SwordTombRules.RECOVER,"Reload grants recovery instead of releasing a stale attack");restored.discard();});
+			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);CompoundTag saved = new CompoundTag();k.saveWithoutId(saved);var restored=McEntities.create(SwordTombs.KEEPER, s.overworld(), net.minecraft.world.entity.MobSpawnType.LOAD);restored.load(saved);check(restored.home().equals(k.home()) && restored.getHealth()==k.getHealth(),"Keeper home and damaged health survive save/load");check(restored.move()==SwordTombRules.RECOVER,"Reload grants recovery instead of releasing a stale attack");restored.discard();});
 			world.getServer().runOnServer(s->{var k=(Gravekeeper)s.overworld().getEntity(keeper);var p=s.getPlayerList().getPlayers().getFirst();k.setHealth(1);k.hurt(s.overworld().damageSources().playerAttack(p),20);check(((TombReliquaryEntity)s.overworld().getBlockEntity(altar)).cleared(),"Keeper death resolves the saved encounter");});
 			placePlayer(world,altar.relative(facing.getOpposite(),2),3);c.waitTicks(15);use(c,altar);c.waitTicks(10);
 			world.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(scrolls(p)==2,"Participant receives two distinct technique scrolls");var t=(TombReliquaryEntity)s.overworld().getBlockEntity(altar);var restored=(TombReliquaryEntity)BlockEntity.loadStatic(altar,t.getBlockState(),t.saveWithFullMetadata(s.registryAccess()),s.registryAccess());check(restored.cleared() && restored.guardian()==null,"Cleared state survives load");s.overworld().setBlockEntity(restored);});

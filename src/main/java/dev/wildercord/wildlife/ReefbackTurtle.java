@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -147,7 +149,7 @@ public class ReefbackTurtle extends AbstractHorse {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		ReefbackTurtle hatchling = MountContent.REEFBACK_TURTLE.create(level, MobSpawnType.BREEDING);
+		ReefbackTurtle hatchling = McEntities.create(MountContent.REEFBACK_TURTLE, level, MobSpawnType.BREEDING);
 		if (hatchling != null) {
 			setOffspringAttributes(partner, hatchling);
 		}

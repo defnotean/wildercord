@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McEntities;
+
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.server.level.ServerLevel;
@@ -27,7 +29,7 @@ final class StoneMarchFixture {
 	StoneMarchFixture(ServerLevel level, Vec3 origin, List<? extends ServerPlayer> party) {
 		this.level = level; this.origin = origin; this.party = List.copyOf(party);
 		staging = party.stream().map(ServerPlayer::position).toList();
-		master = AuraWorld.SWORD_MASTER.create(level, MobSpawnType.COMMAND);
+		master = McEntities.create(AuraWorld.SWORD_MASTER, level, MobSpawnType.COMMAND);
 		check(master != null, "Registered Stone Master exists");
 		master.plainOrdinaryOnly(); master.setDiscipline(MastersRules.STONE); master.moveTo(origin.x, origin.y, origin.z, 0, 0); level.addFreshEntity(master);
 		// Exact debit/refund assertions exclude the separate multiplayer Aura trickle.

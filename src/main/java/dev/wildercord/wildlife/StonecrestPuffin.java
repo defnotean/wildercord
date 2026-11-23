@@ -396,7 +396,7 @@ public class StonecrestPuffin extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof StonecrestPuffin puffling ? puffling : null;
+		return getType().create(level) instanceof StonecrestPuffin puffling ? puffling : null;
 	}
 
 	// ------------------------------------------------------------------ sound: a low purring growl

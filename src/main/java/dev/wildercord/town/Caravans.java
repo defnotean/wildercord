@@ -50,7 +50,7 @@ public final class Caravans {
 			if (!level.isPositionEntityTicking(column)) continue;
 			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 			if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
-			WayfarerKeeper keeper = Town.KEEPER.create(level, MobSpawnType.EVENT);
+			WayfarerKeeper keeper = McEntities.create(Town.KEEPER, level, MobSpawnType.EVENT);
 			if (keeper == null) return null;
 			keeper.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 			if (!level.noCollision(keeper)) continue;

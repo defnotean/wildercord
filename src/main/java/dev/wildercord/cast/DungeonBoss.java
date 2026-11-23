@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.dungeons.DungeonAltarBlockEntity;
 import dev.wildercord.player.Spellbooks;
@@ -269,7 +271,7 @@ public abstract class DungeonBoss extends Monster {
 
 	/** Sets it up over its altar: its home, its first pause, then into the world. */
 	protected static <T extends DungeonBoss> T place(ServerLevel level, EntityType<T> type, BlockPos altar, double lift) {
-		T boss = type.create(level, MobSpawnType.TRIGGERED);
+		T boss = McEntities.create(type, level, MobSpawnType.TRIGGERED);
 		if (boss == null) {
 			return null;
 		}

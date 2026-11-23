@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.BreathingMethod;
 import dev.wildercord.aura.BreathingMethods;
@@ -140,7 +142,7 @@ public final class KnightSpawner {
 
 	/** A knight of {@code haunt}'s rank and one of its methods, standing at {@code at}. */
 	public static  FallenKnight raise(ServerLevel level, BlockPos at, Haunt haunt, RandomSource random) {
-		FallenKnight knight = AuraWorld.FALLEN_KNIGHT.create(level, MobSpawnType.NATURAL);
+		FallenKnight knight = McEntities.create(AuraWorld.FALLEN_KNIGHT, level, MobSpawnType.NATURAL);
 		if (knight == null) {
 			return null;
 		}

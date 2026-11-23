@@ -271,7 +271,7 @@ public class CapcrownSnail extends Animal implements Shearable {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		if (getType().create(level, MobSpawnType.BREEDING) instanceof CapcrownSnail young) {
+		if (getType().create(level) instanceof CapcrownSnail young) {
 			int colour = partner instanceof CapcrownSnail other && random.nextBoolean() ? other.colour() : colour();
 			young.entityData.set(COLOUR, colour);
 			return young;

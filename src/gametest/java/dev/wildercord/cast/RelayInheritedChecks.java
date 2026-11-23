@@ -289,6 +289,6 @@ public final class RelayInheritedChecks {
 	}
 
 	private static TrainingDummy dummy(ServerPlayer player,double x,double z){
-		var dummy=WildercordEntities.TRAINING_DUMMY.create(player.level(),MobSpawnType.MOB_SUMMONED);RelayCircleTest.check(dummy!=null,"Native dummy creates");dummy.moveTo(x,150,z,180,0);dummy.setNoGravity(true);player.level().addFreshEntity(dummy);return dummy;
+		var dummy=McEntities.create(WildercordEntities.TRAINING_DUMMY, player.level(), MobSpawnType.MOB_SUMMONED);RelayCircleTest.check(dummy!=null,"Native dummy creates");dummy.moveTo(x,150,z,180,0);dummy.setNoGravity(true);player.level().addFreshEntity(dummy);return dummy;
 	}
 }

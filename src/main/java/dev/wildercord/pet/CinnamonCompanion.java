@@ -1,5 +1,7 @@
 package dev.wildercord.pet;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.Wildercord;
 import dev.wildercord.aura.world.DuelistDuels;
 import dev.wildercord.aura.world.SwordMaster;
@@ -221,7 +223,7 @@ final class CinnamonCompanion {
 
 	private static void createFirst(ServerPlayer player, CinnamonJournal journal) {
 		if (!journal.canRegister(player.getUUID()) || identity(player, journal.get(player.getUUID())) != CinnamonIdentityRules.Status.NEW) return;
-		CinnamonDog dog = CinnamonContent.CINNAMON.create(player.level(), MobSpawnType.EVENT);
+		CinnamonDog dog = McEntities.create(CinnamonContent.CINNAMON, player.level(), MobSpawnType.EVENT);
 		if (dog == null) return;
 		dog.bind(player); // Old saves migrate their player-owned sit/bow choices once, here.
 		Vec3 at = CompanionLanding.find(((ServerLevel) player.level()), player.position(), dog);

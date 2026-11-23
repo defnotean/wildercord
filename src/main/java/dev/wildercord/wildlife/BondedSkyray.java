@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.content.MoteOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,7 +65,7 @@ public class BondedSkyray extends Skyray {
 		for (BondedSkyray old : level.getEntitiesOfClass(BondedSkyray.class, player.getBoundingBox().inflate(256), r -> player.getUUID().equals(r.owner))) {
 			old.leave(level);
 		}
-		BondedSkyray ray = MountContent.BONDED_SKYRAY.create(level, MobSpawnType.MOB_SUMMONED);
+		BondedSkyray ray = McEntities.create(MountContent.BONDED_SKYRAY, level, MobSpawnType.MOB_SUMMONED);
 		if (ray == null) {
 			return null;
 		}

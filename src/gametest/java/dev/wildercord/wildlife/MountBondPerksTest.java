@@ -85,7 +85,7 @@ public final class MountBondPerksTest implements FabricClientGameTest {
 				}
 				p(s).setGameMode(GameType.SURVIVAL);
 				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 10);
-				RidgebackStag stag = MountContent.RIDGEBACK_STAG.create(l, MobSpawnType.COMMAND);
+				RidgebackStag stag = McEntities.create(MountContent.RIDGEBACK_STAG, l, MobSpawnType.COMMAND);
 				stag.moveTo(0.5, 101, 1.5, 0, 0);
 				l.addFreshEntity(stag);
 				stag.tameWithName(p(s));

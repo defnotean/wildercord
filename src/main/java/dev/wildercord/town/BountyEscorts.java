@@ -246,7 +246,7 @@ public final class BountyEscorts {
 		int spawned = 0;
 		for (int i = 0; i < count; i++) {
 			EntityType<? extends Mob> type = AMBUSHERS.get(random.nextInt(AMBUSHERS.size()));
-			if (!(type.create(level, MobSpawnType.EVENT) instanceof Mob mob)) continue;
+			if (!(McEntities.create(type, level, MobSpawnType.EVENT) instanceof Mob mob)) continue;
 			for (int attempt = 0; attempt < 6; attempt++) {
 				double angle = side + (random.nextDouble() - 0.5);
 				double distance = 14 + random.nextDouble() * 6;

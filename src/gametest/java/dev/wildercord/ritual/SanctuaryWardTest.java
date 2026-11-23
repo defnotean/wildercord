@@ -1,5 +1,7 @@
 package dev.wildercord.ritual;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.events.RiftSiege;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -27,7 +29,7 @@ public final class SanctuaryWardTest implements FabricClientGameTest {
 
 	private static Mob spawn(ServerPlayer player, EntityType<? extends Mob> type, double dx) {
 		ServerLevel level = ((ServerLevel) player.level());
-		Mob mob = type.create(level, MobSpawnType.COMMAND);
+		Mob mob = McEntities.create(type, level, MobSpawnType.COMMAND);
 		mob.setNoAi(true);
 		mob.setPos(player.getX() + dx, player.getY(), player.getZ() + 4);
 		level.addFreshEntity(mob);

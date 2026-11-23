@@ -278,7 +278,7 @@ public class ThistleHedgehog extends TamableAnimal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		if (!(getType().create(level, MobSpawnType.BREEDING) instanceof ThistleHedgehog hoglet)) {
+		if (!(getType().create(level) instanceof ThistleHedgehog hoglet)) {
 			return null;
 		}
 		// A tame pair's hoglet is its owner's too.

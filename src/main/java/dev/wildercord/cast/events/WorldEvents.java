@@ -1,5 +1,7 @@
 package dev.wildercord.cast.events;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.Runebound;
@@ -361,7 +363,7 @@ public final class WorldEvents {
 		if (!level.isPositionEntityTicking(pos)) {
 			return null;
 		}
-		Mob mob = type.create(level, MobSpawnType.EVENT);
+		Mob mob = McEntities.create(type, level, MobSpawnType.EVENT);
 		if (mob == null) {
 			return null;
 		}

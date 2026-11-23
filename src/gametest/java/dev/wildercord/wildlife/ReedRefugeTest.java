@@ -1,4 +1,6 @@
 package dev.wildercord.wildlife;
+
+import dev.wildercord.compat.McEntities;
 import dev.wildercord.cast.*;
 import dev.wildercord.spell.*;
 import net.fabricmc.fabric.api.client.gametest.v1.*;
@@ -65,7 +67,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    verifyNavigationCases(c,w);
   }
  }
- private static LanternNewt spawn(MinecraftServer s,double x,double z) {var n=WetlandContent.NEWT.create(s.overworld(),MobSpawnType.COMMAND);n.moveTo(x,101.1,z,0,0);n.getRandom().setSeed(314);s.overworld().addFreshEntity(n);return n;}
+ private static LanternNewt spawn(MinecraftServer s,double x,double z) {var n=McEntities.create(WetlandContent.NEWT, s.overworld(), MobSpawnType.COMMAND);n.moveTo(x,101.1,z,0,0);n.getRandom().setSeed(314);s.overworld().addFreshEntity(n);return n;}
  private static void awaitRest(ClientGameTestContext c,TestSingleplayerContext w,java.util.function.Supplier<LanternNewt> target,String why) {
   awaitRest(c,w,target,why,false);
  }
@@ -112,7 +114,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
   w.getServer().runCommand("weather clear");w.getServer().runCommand("time set 6000");
   w.getServer().runOnServer(s -> {
    s.overworld().setBlock(ROOF,WetlandShelters.REFUGE.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,true),2);
-   surfaceVisitor=WetlandContent.NEWT.create(s.overworld(),MobSpawnType.COMMAND);surfaceVisitor.moveTo(.5,101.6,3.5,0,0);surfaceVisitor.getRandom().setSeed(314);s.overworld().addFreshEntity(surfaceVisitor);
+   surfaceVisitor=McEntities.create(WetlandContent.NEWT, s.overworld(), MobSpawnType.COMMAND);surfaceVisitor.moveTo(.5,101.6,3.5,0,0);surfaceVisitor.getRandom().setSeed(314);s.overworld().addFreshEntity(surfaceVisitor);
   });c.waitTicks(1);
   w.getServer().runOnServer(s -> {
    check(surfaceVisitor.isInWater() && surfaceVisitor.getY()>=101.5,"Surface swimmer has wet feet but a dry rounded native start");
@@ -162,7 +164,7 @@ public final class ReedRefugeTest implements FabricClientGameTest {
    // complete result, then prove actual dry walking separately with TemptGoal.
    check(sameNativeRoute(expected,actual,dry),"After a refuge query, native and custom dry searches return identical target, nodes, costs, cursor and reachability, including partial paths");
    routeVisitor.setNoAi(true);checkOrdinaryLook(routeVisitor,"removed refuge");checkNativeSwimControl(routeVisitor,true,"removed refuge");
-   walker=WetlandContent.NEWT.create(s.overworld(),MobSpawnType.COMMAND);walker.moveTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
+   walker=McEntities.create(WetlandContent.NEWT, s.overworld(), MobSpawnType.COMMAND);walker.moveTo(-8.5,102,1.5,0,0);walker.getRandom().setSeed(314);s.overworld().addFreshEntity(walker);
    p(s).setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(Items.SEAGRASS));p(s).teleportTo(s.overworld(),-8.5,102,6.5,Set.<RelativeMovement>of(),180,0);
   });
   boolean tempted=false;

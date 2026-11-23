@@ -250,7 +250,7 @@ public class MirebathCapybara extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof MirebathCapybara young ? young : null;
+		return getType().create(level) instanceof MirebathCapybara young ? young : null;
 	}
 
 	@Override

@@ -198,7 +198,7 @@ public class TussockPika extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof TussockPika young ? young : null;
+		return getType().create(level) instanceof TussockPika young ? young : null;
 	}
 
 	@Override

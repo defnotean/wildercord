@@ -1,5 +1,7 @@
 package dev.wildercord.world.sites.travel;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.town.BountyBoardBlock;
 import dev.wildercord.town.Town;
 import dev.wildercord.town.WayfarerKeeper;
@@ -169,7 +171,7 @@ public final class WayfarerInnPiece extends TravelPiece {
 
 	private void keeper(ServerLevel level, int x, int y, int z, int radius, WayfarerKeeper.Role role) {
 		BlockPos at = getWorldPos(x, y, z).immutable();
-		WayfarerKeeper keeper = Town.KEEPER.create(level, MobSpawnType.STRUCTURE);
+		WayfarerKeeper keeper = McEntities.create(Town.KEEPER, level, MobSpawnType.STRUCTURE);
 		if (keeper == null) return;
 		keeper.setRole(role);
 		keeper.setPersistenceRequired();

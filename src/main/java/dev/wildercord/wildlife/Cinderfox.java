@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.compat.McTime;
 import dev.wildercord.cast.Affinities;
 import net.minecraft.core.particles.ParticleTypes;
@@ -218,7 +220,7 @@ public class Cinderfox extends TamableAnimal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		Cinderfox kit = Wildlife.CINDERFOX.create(level, MobSpawnType.BREEDING);
+		Cinderfox kit = McEntities.create(Wildlife.CINDERFOX, level, MobSpawnType.BREEDING);
 		if (kit != null && isTame()) {
 			kit.setOwnerUUID(getOwnerUUID());
 			kit.setTame(true, true);

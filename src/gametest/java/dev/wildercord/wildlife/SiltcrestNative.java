@@ -18,7 +18,7 @@ final class SiltcrestNative {
  private SiltcrestNative(){}
  static void floor(ServerLevel l){floor(l,0,0);}
  static void floor(ServerLevel l,int dx,int dz){for(int x=-8;x<=10;x++)for(int z=-8;z<=8;z++){l.setBlock(new BlockPos(x+dx,99,z+dz),Blocks.CLAY.defaultBlockState(),2);l.setBlock(new BlockPos(x+dx,100,z+dz),Blocks.CLAY.defaultBlockState(),2);for(int y=101;y<=105;y++)l.setBlock(new BlockPos(x+dx,y,z+dz),Blocks.AIR.defaultBlockState(),2);}for(int x=1;x<=4;x++)for(int z=0;z<=3;z++)l.setBlock(new BlockPos(x+dx,100,z+dz),Blocks.WATER.defaultBlockState(),2);}
- static SiltcrestBittern bird(ServerLevel l,double x,double z){var b=SiltcrestContent.BITTERN.create(l,MobSpawnType.COMMAND);check(b!=null,"Actual bittern factory");b.moveTo(x,101,z,0,0);b.setPersistenceRequired();l.addFreshEntity(b);return b;}
+ static SiltcrestBittern bird(ServerLevel l,double x,double z){var b=McEntities.create(SiltcrestContent.BITTERN, l, MobSpawnType.COMMAND);check(b!=null,"Actual bittern factory");b.moveTo(x,101,z,0,0);b.setPersistenceRequired();l.addFreshEntity(b);return b;}
  static AbstractFish fish(ServerLevel l,int i){return fish(l,i,0,0);}
  static AbstractFish fish(ServerLevel l,int i,int dx,int dz){var f=McEntities.create(EntityType.COD, l, MobSpawnType.COMMAND);check(f!=null,"Actual vanilla prey factory");f.moveTo(dx+1.5+i%4,100.1,dz+.5+(i/4)%4,0,0);check(l.addFreshEntity(f),"Native prey is registered");return f;}
  static void observer(ServerPlayer p,Vec3 eyeTarget){p.setGameMode(GameType.CREATIVE);place(p,5.5,101,-3.5,eyeTarget);}

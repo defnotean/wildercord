@@ -259,7 +259,7 @@ public class FloePenguin extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof FloePenguin young ? young : null;
+		return getType().create(level) instanceof FloePenguin young ? young : null;
 	}
 
 	@Override

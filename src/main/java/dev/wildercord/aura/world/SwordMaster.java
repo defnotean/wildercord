@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.AuraFx;
 import dev.wildercord.aura.AuraFxRules;
 import dev.wildercord.aura.AuraRules;
@@ -284,7 +286,7 @@ public final class SwordMaster extends AuraFighter implements Enemy {
 			|| master.level() == level && master.distanceToSqr(player) < 64 * 64)) {
 			return refuse(player, "occupied");
 		}
-		SwordMaster master = AuraWorld.SWORD_MASTER.create(level, MobSpawnType.TRIGGERED);
+		SwordMaster master = McEntities.create(AuraWorld.SWORD_MASTER, level, MobSpawnType.TRIGGERED);
 		if (master == null) {
 			return refuse(player, "obstructed");
 		}

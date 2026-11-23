@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -202,7 +204,7 @@ public class Rimehare extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return Wildlife.RIMEHARE.create(level, MobSpawnType.BREEDING);
+		return McEntities.create(Wildlife.RIMEHARE, level, MobSpawnType.BREEDING);
 	}
 
 	// ------------------------------------------------------------------ sound

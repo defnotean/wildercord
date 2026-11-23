@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McEntities;
+
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.core.BlockPos;
@@ -158,14 +160,14 @@ public final class WildMonsterPressureTest implements FabricClientGameTest {
 	}
 
 	private Gloomstalker gloom(ServerLevel level, ServerPlayer player, double distance) {
-		Gloomstalker mob = MonsterContent.GLOOMSTALKER.create(level, MobSpawnType.COMMAND);
+		Gloomstalker mob = McEntities.create(MonsterContent.GLOOMSTALKER, level, MobSpawnType.COMMAND);
 		check(mob != null, "Registered Gloomstalker constructs");
 		place(mob, level, player, distance);
 		return mob;
 	}
 
 	private BogWitchFrog frog(ServerLevel level, ServerPlayer player, double distance) {
-		BogWitchFrog mob = MonsterContent.BOG_WITCH_FROG.create(level, MobSpawnType.COMMAND);
+		BogWitchFrog mob = McEntities.create(MonsterContent.BOG_WITCH_FROG, level, MobSpawnType.COMMAND);
 		check(mob != null, "Registered Bog Witch-Frog constructs");
 		place(mob, level, player, distance);
 		return mob;

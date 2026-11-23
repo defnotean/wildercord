@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.*;
 import dev.wildercord.api.AuraApi;
 import dev.wildercord.cast.feel.Feels;
@@ -115,7 +117,7 @@ public final class TournamentBoardEntity extends BlockEntity {
 		for(int i=0;i<3;i++)if(!s.hasChunkAt(waiting(i)))return;
 		close(s);begins=s.getGameTime();ends=begins+TournamentRules.WINDOW;next=begins+TournamentRules.PERIOD;winners.clear();
 		for(int i=0;i<3;i++){
-			var d=AuraWorld.DUELIST.create(s,MobSpawnType.EVENT);if(d==null){close(s);ends=begins;return;}
+			var d=McEntities.create(AuraWorld.DUELIST, s, MobSpawnType.EVENT);if(d==null){close(s);ends=begins;return;}
 			BlockPos at=waiting(i);d.moveTo(at.getX()+.5,at.getY(),at.getZ()+.5,180,0);d.setMethod(BreathingMethods.BUILT_IN.get(TournamentRules.method(worldPosition.asLong(),begins,i)));d.gather(worldPosition,i,ends);
 			if(!s.addFreshEntity(d)){close(s);ends=begins;return;}roster[i]=d.getUUID();
 		}

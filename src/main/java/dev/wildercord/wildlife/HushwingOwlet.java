@@ -265,7 +265,7 @@ public class HushwingOwlet extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof HushwingOwlet young ? young : null;
+		return getType().create(level) instanceof HushwingOwlet young ? young : null;
 	}
 
 	// ------------------------------------------------------------------ sound: soft chirrs and, now and then, a hoot

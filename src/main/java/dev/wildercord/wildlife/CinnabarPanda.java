@@ -268,7 +268,7 @@ public class CinnabarPanda extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof CinnabarPanda cub ? cub : null;
+		return getType().create(level) instanceof CinnabarPanda cub ? cub : null;
 	}
 
 	// ------------------------------------------------------------------ sound: twitters and huffs

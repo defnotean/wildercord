@@ -1,5 +1,7 @@
 package dev.wildercord.town;
 
+import dev.wildercord.compat.McEntities;
+
 import java.util.List;
 import dev.wildercord.wildlife.MountContent;
 import dev.wildercord.wildlife.RidgebackStag;
@@ -30,7 +32,7 @@ public class RidgebackDeedItem extends Item {
 	@Override
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		if (level instanceof ServerLevel server) {
-			RidgebackStag stag = MountContent.RIDGEBACK_STAG.create(server, MobSpawnType.MOB_SUMMONED);
+			RidgebackStag stag = McEntities.create(MountContent.RIDGEBACK_STAG, server, MobSpawnType.MOB_SUMMONED);
 			if (stag == null) return InteractionResult.FAIL;
 			stag.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0);
 			stag.finalizeSpawn(server, server.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null);

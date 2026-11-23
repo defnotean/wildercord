@@ -1,5 +1,7 @@
 package dev.wildercord.world;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.Runebound;
 import dev.wildercord.content.RuneSealBlock;
 import dev.wildercord.content.WildercordBlocks;
@@ -684,7 +686,7 @@ public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercor
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		Mob mob = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		Mob mob = McEntities.create(type, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (mob == null) {
 			return;
 		}

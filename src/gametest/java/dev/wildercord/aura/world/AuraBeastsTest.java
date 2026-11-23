@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.SpellDefence;
 import dev.wildercord.cast.Spirits;
 import dev.wildercord.aura.Aura;
@@ -45,9 +47,9 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 				}
 				check(AuraBeasts.maySpawn(AuraBeasts.STONEHORN,l,MobSpawnType.NATURAL,new BlockPos(0,101,0)),"Dry open highland ground permits a natural spawn");
 				l.setBlock(new BlockPos(20,101,20),Blocks.STONE.defaultBlockState(),2);check(!AuraBeasts.maySpawn(AuraBeasts.STONEHORN,l,MobSpawnType.NATURAL,new BlockPos(20,101,20)),"Occupied habitat is rejected");
-				var stone=AuraBeasts.STONEHORN.create(l,MobSpawnType.COMMAND);stone.moveTo(-5,101,0,180,0);stone.setNoAi(true);l.addFreshEntity(stone);
-				var gale=AuraBeasts.GALECLAW.create(l,MobSpawnType.COMMAND);gale.moveTo(5,101,0,180,0);gale.setNoAi(true);l.addFreshEntity(gale);
-				var extra=AuraBeasts.STONEHORN.create(l,MobSpawnType.COMMAND);extra.moveTo(-15,101,0,0,0);l.addFreshEntity(extra);
+				var stone=McEntities.create(AuraBeasts.STONEHORN, l, MobSpawnType.COMMAND);stone.moveTo(-5,101,0,180,0);stone.setNoAi(true);l.addFreshEntity(stone);
+				var gale=McEntities.create(AuraBeasts.GALECLAW, l, MobSpawnType.COMMAND);gale.moveTo(5,101,0,180,0);gale.setNoAi(true);l.addFreshEntity(gale);
+				var extra=McEntities.create(AuraBeasts.STONEHORN, l, MobSpawnType.COMMAND);extra.moveTo(-15,101,0,0,0);l.addFreshEntity(extra);
 				check(!AuraBeasts.maySpawn(AuraBeasts.STONEHORN,l,MobSpawnType.NATURAL,new BlockPos(0,101,0)),"Two local animals cap the natural population");extra.discard();
 				var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(l,0,101,-9,Set.<RelativeMovement>of(),0,0);
 				for(var beast:List.of(stone,gale)) {
@@ -67,7 +69,7 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 			for(int index=0;index<2;index++) {
 				int which=index,id=ids[index];w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var beast=(AuraBeast)s.overworld().getEntity(id);p.teleportTo(s.overworld(),beast.getX(),101,beast.getZ()-2.5,Set.<RelativeMovement>of(),0,0);p.setItemInHand(InteractionHand.MAIN_HAND,new ItemStack(which==0?Items.WHEAT:Items.RABBIT,2));});c.waitTicks(10);
 				feed(c,id);c.waitTicks(10);feed(c,id);c.waitTicks(10);
-				w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var beast=(AuraBeast)s.overworld().getEntity(id);check(p.getMainHandItem().getCount()==1,"Only successful feeding consumes food");check(drops(s.overworld(),which==0?AuraBeasts.STONEHORN_PLATE:AuraBeasts.GALECLAW_PLUME)==1,"Exactly one material is shed");CompoundTag saved = new CompoundTag();beast.saveWithoutId(saved);var restored=(AuraBeast)beast.getType().create(s.overworld(),MobSpawnType.LOAD);restored.load(saved);check(restored.pose()==BeastRules.RECOVER && restored.calmTicks()>0,"Load resumes safely and preserves calm");restored.mobInteract(p,InteractionHand.MAIN_HAND);check(p.getMainHandItem().getCount()==1 && drops(s.overworld(),which==0?AuraBeasts.STONEHORN_PLATE:AuraBeasts.GALECLAW_PLUME)==1,"Saved shed cooldown prevents repeat material");restored.discard();beast.pose(BeastRules.IDLE,0);});
+				w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();var beast=(AuraBeast)s.overworld().getEntity(id);check(p.getMainHandItem().getCount()==1,"Only successful feeding consumes food");check(drops(s.overworld(),which==0?AuraBeasts.STONEHORN_PLATE:AuraBeasts.GALECLAW_PLUME)==1,"Exactly one material is shed");CompoundTag saved = new CompoundTag();beast.saveWithoutId(saved);var restored=(AuraBeast)beast.getType().create(s.overworld());restored.load(saved);check(restored.pose()==BeastRules.RECOVER && restored.calmTicks()>0,"Load resumes safely and preserves calm");restored.mobInteract(p,InteractionHand.MAIN_HAND);check(p.getMainHandItem().getCount()==1 && drops(s.overworld(),which==0?AuraBeasts.STONEHORN_PLATE:AuraBeasts.GALECLAW_PLUME)==1,"Saved shed cooldown prevents repeat material");restored.discard();beast.pose(BeastRules.IDLE,0);});
 			}
 			// Photograph authored silhouettes without using frozen AI to prove behavior.
 			view(w,c,ids[0],"stonehorn_grazer");view(w,c,ids[1],"galeclaw_ridge_runner");
@@ -100,13 +102,13 @@ public final class AuraBeastsTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.pose(BeastRules.IDLE,0);gale.calm=0;var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),gale.getX()+12,101,gale.getZ(),Set.<RelativeMovement>of(),0,0);dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(p,0,List.of(),10);});c.waitTicks(25);
 			check(w.getServer().computeOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);return gale.getTarget()==s.getPlayerList().getPlayers().getFirst();}),"Recent casting really draws the ridge runner's attention");
 			w.getServer().runOnServer(server -> freshHunter(server,ids));
-			var prey=w.getServer().computeOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.setTarget(null);gale.pose(BeastRules.IDLE,0);gale.calm=0;var hare=dev.wildercord.wildlife.Wildlife.RIMEHARE.create(s.overworld(),MobSpawnType.COMMAND);hare.moveTo(gale.getX()+5,101,gale.getZ(),0,0);hare.setNoAi(true);s.overworld().addFreshEntity(hare);return hare.getUUID();});c.waitTicks(130);
+			var prey=w.getServer().computeOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.CREATIVE);var gale=(Galeclaw)s.overworld().getEntity(ids[1]);gale.setTarget(null);gale.pose(BeastRules.IDLE,0);gale.calm=0;var hare=McEntities.create(dev.wildercord.wildlife.Wildlife.RIMEHARE, s.overworld(), MobSpawnType.COMMAND);hare.moveTo(gale.getX()+5,101,gale.getZ(),0,0);hare.setNoAi(true);s.overworld().addFreshEntity(hare);return hare.getUUID();});c.waitTicks(130);
 			check(w.getServer().computeOnServer(s->{var hare=(LivingEntity)s.overworld().getEntity(prey);return hare==null || !hare.isAlive() || hare.getHealth()<hare.getMaxHealth();}),"Ridge predator actually hunts its highland prey");
 			w.getServer().runCommand("difficulty peaceful");c.waitTicks(10);
 			w.getServer().runOnServer(s->{var gale=(Galeclaw)s.overworld().getEntity(ids[1]);check(gale.getTarget()==null && gale.pose()==BeastRules.IDLE,"Peaceful cancels aggression and committed attack poses");check(!AuraBeasts.maySpawn(AuraBeasts.GALECLAW,s.overworld(),MobSpawnType.NATURAL,new BlockPos(0,101,0)),"Peaceful suppresses new natural beasts");});
 		}
 	}
-	private static void freshHunter(MinecraftServer s,int[] ids) {var old=(Galeclaw)s.overworld().getEntity(ids[1]);var fresh=AuraBeasts.GALECLAW.create(s.overworld(),MobSpawnType.COMMAND);fresh.moveTo(old.getX(),old.getY(),old.getZ(),old.getYRot(),0);fresh.tickCount=99;old.discard();s.overworld().addFreshEntity(fresh);ids[1]=fresh.getId();}
+	private static void freshHunter(MinecraftServer s,int[] ids) {var old=(Galeclaw)s.overworld().getEntity(ids[1]);var fresh=McEntities.create(AuraBeasts.GALECLAW, s.overworld(), MobSpawnType.COMMAND);fresh.moveTo(old.getX(),old.getY(),old.getZ(),old.getYRot(),0);fresh.tickCount=99;old.discard();s.overworld().addFreshEntity(fresh);ids[1]=fresh.getId();}
 	private static void feed(ClientGameTestContext c,int id) { c.runOnClient(mc->{var e=mc.level.getEntity(id);mc.gameMode.interactAt(mc.player,e,new EntityHitResult(e,e.getBoundingBox().getCenter()),InteractionHand.MAIN_HAND);}); }
 	private static int drops(ServerLevel l,Item item) { int n=l.getEntitiesOfClass(ItemEntity.class,new AABB(-30,99,-30,30,110,30),e->e.getItem().is(item)).stream().mapToInt(e->e.getItem().getCount()).sum();for(var p:l.players())for(int i=0;i<p.getInventory().getContainerSize();i++)if(p.getInventory().getItem(i).is(item))n+=p.getInventory().getItem(i).getCount();return n; }
 	private static void aim(ClientGameTestContext c,int id) { c.runOnClient(mc->{var e=mc.level.getEntity(id);var d=e.getBoundingBox().getCenter().subtract(mc.player.getEyePosition());mc.player.setYRot((float)Math.toDegrees(Math.atan2(-d.x,d.z)));mc.player.setXRot((float)-Math.toDegrees(Math.atan2(d.y,d.horizontalDistance())));}); }

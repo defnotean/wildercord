@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
@@ -83,7 +85,7 @@ public final class RootmoltEncounterTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.CREATIVE);
 				p(s).addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 6000));
 				p(s).teleportTo(l, 0.5, 101, 2.5, Set.<RelativeMovement>of(), 180, 20);
-				RootmoltStrider rootmolt = RootmoltContent.STRIDER.create(l, MobSpawnType.COMMAND);
+				RootmoltStrider rootmolt = McEntities.create(RootmoltContent.STRIDER, l, MobSpawnType.COMMAND);
 				rootmolt.moveTo(0.5, 101, 0.5, 0, 0);
 				rootmolt.setPersistenceRequired();
 				l.addFreshEntity(rootmolt);
@@ -102,7 +104,7 @@ public final class RootmoltEncounterTest implements FabricClientGameTest {
 				p(s).setGameMode(GameType.SURVIVAL);
 				p(s).setHealth(p(s).getMaxHealth());
 				stand(s, 2);
-				SporebackSnail snail = SporebackContent.SNAIL.create(l, MobSpawnType.COMMAND);
+				SporebackSnail snail = McEntities.create(SporebackContent.SNAIL, l, MobSpawnType.COMMAND);
 				snail.moveTo(rootmolt(s).getX() + 2, 101, rootmolt(s).getZ(), 0, 0);
 				l.addFreshEntity(snail);
 				snailId = snail.getUUID();

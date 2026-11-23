@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McEntities;
+
 import static dev.wildercord.monster.GiantRules.Matriarch.*;
 
 import dev.wildercord.cast.ElementFx;
@@ -473,7 +475,7 @@ final class MatriarchFight extends GiantFight {
 		for (int i = 0; i < count; i++) {
 			double way = (i % 2 == 0 ? 1 : -1) * (70 + i * 10);
 			Vec3 at = floor(feet.add(turned(way).scale(hw() + 2)));
-			Gloomstalker pup = MonsterContent.GLOOMSTALKER.create(level, MobSpawnType.MOB_SUMMONED);
+			Gloomstalker pup = McEntities.create(MonsterContent.GLOOMSTALKER, level, MobSpawnType.MOB_SUMMONED);
 			if (pup == null) {
 				continue;
 			}

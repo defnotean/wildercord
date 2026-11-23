@@ -188,7 +188,7 @@ public class BrookbillDuck extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		if (!(getType().create(level, MobSpawnType.BREEDING) instanceof BrookbillDuck young)) {
+		if (!(getType().create(level) instanceof BrookbillDuck young)) {
 			return null;
 		}
 		// The first face it sees: whoever bred it, if they stayed to watch, else anyone standing close.

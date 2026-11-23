@@ -1,5 +1,7 @@
 package dev.wildercord.town;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.Aura;
 import dev.wildercord.monster.Tempering;
 import dev.wildercord.monster.TemperingRules;
@@ -337,7 +339,7 @@ public final class InnRaid {
 	private void emerge(EntityType<? extends Mob> type, double side, boolean captain) {
 		pending = Math.max(0, pending - 1);
 		if (!ACTIVE.containsValue(this)) return;
-		Mob mob = type.create(level, MobSpawnType.EVENT);
+		Mob mob = McEntities.create(type, level, MobSpawnType.EVENT);
 		if (mob == null) return;
 		RandomSource random = level.getRandom();
 		BlockPos at = null;

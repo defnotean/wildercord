@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.Targets;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
@@ -273,7 +275,7 @@ public class FoxfireKitsune extends WildMonster {
 		LivingEntity target = getTarget();
 		FoxfireKitsune swap = null;
 		for (int i = 0; i < KitsuneRules.DECOYS; i++) {
-			FoxfireKitsune copy = MonsterContent.FOXFIRE_KITSUNE.create(level, MobSpawnType.MOB_SUMMONED);
+			FoxfireKitsune copy = McEntities.create(MonsterContent.FOXFIRE_KITSUNE, level, MobSpawnType.MOB_SUMMONED);
 			if (copy == null) {
 				continue;
 			}

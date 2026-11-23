@@ -1,5 +1,7 @@
 package dev.wildercord.world.hollowbell;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.world.sites.SiteStructure;
 import dev.wildercord.world.sites.belowkeeper.BellSanctumPiece;
@@ -48,7 +50,7 @@ public final class ListeningBelfryEntity extends BlockEntity {
 			} else say(player, "waiting");
 			return InteractionResult.SUCCESS;
 		}
-		var bell = HollowBellContent.BELL.create(server, MobSpawnType.STRUCTURE);
+		var bell = McEntities.create(HollowBellContent.BELL, server, MobSpawnType.STRUCTURE);
 		if (bell == null) return InteractionResult.FAIL;
 		bell.bind(sanctum.plinth(), worldPosition);
 		if (!server.addFreshEntity(bell)) return InteractionResult.FAIL;

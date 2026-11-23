@@ -1,5 +1,7 @@
 package dev.wildercord.town;
 
+import dev.wildercord.compat.McEntities;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -82,7 +84,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 				check(BuiltInRegistries.ENTITY_TYPE.getKey(elite.getType()).toString().equals(TARGET), "it's the bounty's creature");
 				check(elite.hasCustomName() && elite.getCustomName().getString().contains("Grimjaw"), "it carries the bounty's name");
 				check(elite.isCustomNameVisible() && elite.isPersistenceRequired(), "its name shows and it never despawns");
-				check(elite.getMaxHealth() > ((Mob) elite.getType().create(s.overworld(), MobSpawnType.COMMAND)).getMaxHealth() * 2,
+				check(elite.getMaxHealth() > ((Mob) elite.getType().create(s.overworld())).getMaxHealth() * 2,
 					"a champion is far tougher than a plain one");
 				// Stand a few blocks off, facing it, for the screenshot.
 				double back = 5 / d;
@@ -98,7 +100,7 @@ public final class BountyHuntTest implements FabricClientGameTest {
 			w.getServer().runOnServer(s -> {
 				var l = s.overworld();
 				var type = BuiltInRegistries.ENTITY_TYPE.getValue(ResourceLocation.parse(TARGET));
-				Mob plain = (Mob) type.create(l, MobSpawnType.COMMAND);
+				Mob plain = (Mob) McEntities.create(type, l, MobSpawnType.COMMAND);
 				plain.moveTo(p(s).getX() + 2, Y + 1, p(s).getZ(), 0, 0);
 				l.addFreshEntity(plain);
 				plain.hurt(p(s).damageSources().playerAttack(p(s)), 1.0E6F);

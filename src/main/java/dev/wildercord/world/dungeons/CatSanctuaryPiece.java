@@ -1,5 +1,7 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.config.Config;
 import dev.wildercord.monster.MonsterContent;
 import dev.wildercord.wildlife.SakuraVillager;
@@ -601,7 +603,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 
 		BlockPos keeperPos = getWorldPos(28, F1 + 1, 20);
 		if (bb.isInside(keeperPos)) {
-			SakuraVillager keeper = ShrineCatContent.SAKURA_VILLAGER.create(level.getLevel(), MobSpawnType.STRUCTURE);
+			SakuraVillager keeper = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, level.getLevel(), MobSpawnType.STRUCTURE);
 			if (keeper != null) {
 				keeper.moveTo(keeperPos.getX() + 0.5, keeperPos.getY(), keeperPos.getZ() + 0.5, 180.0F, 0.0F);
 				keeper.configure(SakuraVillager.TEA_MASTER);
@@ -665,7 +667,7 @@ public final class CatSanctuaryPiece extends DungeonPiece {
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		ShrineCat cat = McEntities.create(ShrineCatContent.SHRINE_CAT, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (cat == null) {
 			return;
 		}

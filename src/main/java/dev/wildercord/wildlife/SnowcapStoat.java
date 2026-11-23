@@ -282,7 +282,7 @@ public class SnowcapStoat extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		return getType().create(level, MobSpawnType.BREEDING) instanceof SnowcapStoat kit ? kit : null;
+		return getType().create(level) instanceof SnowcapStoat kit ? kit : null;
 	}
 
 	// ------------------------------------------------------------------ sound: chitters and squeaks

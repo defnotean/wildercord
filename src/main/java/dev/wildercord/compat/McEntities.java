@@ -1,5 +1,7 @@
 package dev.wildercord.compat;
 
+import dev.wildercord.compat.McEntities;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -27,7 +29,7 @@ public final class McEntities {
 	/** Version-independent snapshot of hurt-cooldown state around an extra damage hit. */
 	public record HurtCooldown(int invulnerableTime, int damageCooldownTime) {}
 
-/** 1.21.1 has no 2-argument {@code EntityType.create(Level, MobSpawnType)}; the spawn type is dropped here. */
+/** 1.21.1 has no 2-argument {@code McEntities.create(EntityType, Level, MobSpawnType)}; the spawn type is dropped here. */
 	public static <T extends Entity> T create(EntityType<T> type, Level level, net.minecraft.world.entity.MobSpawnType spawnType) {
 		return type.create(level);
 	}

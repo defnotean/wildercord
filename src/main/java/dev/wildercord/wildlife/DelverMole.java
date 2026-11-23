@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.Casters;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -162,7 +164,7 @@ public class DelverMole extends AbstractHorse {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		DelverMole pup = MountContent.DELVER_MOLE.create(level, MobSpawnType.BREEDING);
+		DelverMole pup = McEntities.create(MountContent.DELVER_MOLE, level, MobSpawnType.BREEDING);
 		if (pup != null) {
 			setOffspringAttributes(partner, pup);
 		}

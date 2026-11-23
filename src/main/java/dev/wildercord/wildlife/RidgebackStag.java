@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -66,7 +68,7 @@ public class RidgebackStag extends AbstractHorse {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		RidgebackStag calf = MountContent.RIDGEBACK_STAG.create(level, MobSpawnType.BREEDING);
+		RidgebackStag calf = McEntities.create(MountContent.RIDGEBACK_STAG, level, MobSpawnType.BREEDING);
 		if (calf != null) {
 			setOffspringAttributes(partner, calf);
 		}

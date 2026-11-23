@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.content.ArchiveLecternBlockEntity;
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.SigilOption;
@@ -231,7 +233,7 @@ public class Archivist extends SpellcasterIllager {
 
 	/** Wakes the Archivist above its lectern (null if it couldn't be made). */
 	public static Archivist rise(ServerLevel level, BlockPos lectern) {
-		Archivist boss = WildercordEntities.ARCHIVIST.create(level, MobSpawnType.TRIGGERED);
+		Archivist boss = McEntities.create(WildercordEntities.ARCHIVIST, level, MobSpawnType.TRIGGERED);
 		if (boss == null) {
 			return null;
 		}
@@ -490,7 +492,7 @@ public class Archivist extends SpellcasterIllager {
 		}
 		// Allies from the stacks: Runebound, woken to defend the Archive.
 		for (int i = 0; i < 2; i++) {
-			Mob guard = (i == 0 ? EntityType.SKELETON : EntityType.PILLAGER).create(level, MobSpawnType.MOB_SUMMONED);
+			Mob guard = (i == 0 ? EntityType.SKELETON : EntityType.PILLAGER).create(level);
 			if (guard == null) {
 				continue;
 			}

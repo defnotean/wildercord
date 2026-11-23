@@ -1,5 +1,7 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.config.Config;
 import net.minecraft.core.*;
@@ -92,7 +94,7 @@ public final class SerpentGrovePiece extends DungeonPiece {
 		var foot=getWorldPos(CX,FLOOR+2,CZ);if(!bb.isInside(foot))return;
 		var herb=getWorldPos(HERB_X,FLOOR+2,HERB_Z);
 		float rest=(float)Math.toDegrees(Math.atan2(-(herb.getX()-foot.getX()),herb.getZ()-foot.getZ()));
-		var serpent=Guardians.SERPENT.create(level.getLevel(),net.minecraft.world.entity.MobSpawnType.STRUCTURE);if(serpent==null)return;
+		var serpent=McEntities.create(Guardians.SERPENT, level.getLevel(), net.minecraft.world.entity.MobSpawnType.STRUCTURE);if(serpent==null)return;
 		serpent.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
 		serpent.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.MobSpawnType.STRUCTURE,null);
 		serpent.bind(foot,rest);

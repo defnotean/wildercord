@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.content.MoteOption;
 import dev.wildercord.wildlife.WildlifeRules.Garden;
 import net.minecraft.core.particles.ParticleTypes;
@@ -215,7 +217,7 @@ public class MossbackTortoise extends Animal {
 
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
-		MossbackTortoise baby = Wildlife.MOSSBACK_TORTOISE.create(level, MobSpawnType.BREEDING);
+		MossbackTortoise baby = McEntities.create(Wildlife.MOSSBACK_TORTOISE, level, MobSpawnType.BREEDING);
 		if (baby != null) {
 			Garden here = gardenAt(level, blockPosition());
 			baby.setGarden(here != null ? here : (random.nextBoolean() || !(partner instanceof MossbackTortoise other) ? garden() : other.garden()));

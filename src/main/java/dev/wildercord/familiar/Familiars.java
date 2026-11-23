@@ -1,5 +1,7 @@
 package dev.wildercord.familiar;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.ElementFx;
 import dev.wildercord.cast.Fx;
 import dev.wildercord.cast.Grimoire;
@@ -183,7 +185,7 @@ public final class Familiars {
 	/** Calls a familiar out next to its owner. */
 	static Wisp summon(ServerPlayer player, Bonds.Bond bond) {
 		ServerLevel level = (ServerLevel) player.level();
-		Wisp wisp = FamiliarContent.WISP.create(level, MobSpawnType.MOB_SUMMONED);
+		Wisp wisp = McEntities.create(FamiliarContent.WISP, level, MobSpawnType.MOB_SUMMONED);
 		if (wisp == null) {
 			return null;
 		}

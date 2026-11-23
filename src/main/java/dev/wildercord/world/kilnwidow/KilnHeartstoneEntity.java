@@ -1,5 +1,7 @@
 package dev.wildercord.world.kilnwidow;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.aura.world.Guardians;
 import dev.wildercord.world.sites.SiteStructure;
 import dev.wildercord.world.sites.emberwood.EmberwoodSites;
@@ -48,7 +50,7 @@ public final class KilnHeartstoneEntity extends BlockEntity {
 			} else say(player, "waiting");
 			return InteractionResult.SUCCESS;
 		}
-		var widow = KilnWidowContent.WIDOW.create(server, MobSpawnType.STRUCTURE);
+		var widow = McEntities.create(KilnWidowContent.WIDOW, server, MobSpawnType.STRUCTURE);
 		if (widow == null) return InteractionResult.FAIL;
 		widow.bind(court.plinth(), worldPosition);
 		if (!server.addFreshEntity(widow)) return InteractionResult.FAIL;

@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.api.SpellMasteryApi;
 import dev.wildercord.config.Config;
 import dev.wildercord.content.WildercordItems;
@@ -75,7 +77,7 @@ public final class RelayMasteryChecks {
         } finally {owner=null;secondary=null;retire=false;}
     }
     private static TrainingDummy dummy(double x,double z) {
-        var d=WildercordEntities.TRAINING_DUMMY.create(owner.level(),MobSpawnType.MOB_SUMMONED);
+        var d=McEntities.create(WildercordEntities.TRAINING_DUMMY, owner.level(), MobSpawnType.MOB_SUMMONED);
         RelayCircleTest.check(d!=null,"Native Mastery dummy creates");d.moveTo(x,150,z,180,0);d.setNoGravity(true);owner.level().addFreshEntity(d);return d;
     }
 }

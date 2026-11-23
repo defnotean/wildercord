@@ -1,5 +1,7 @@
 package dev.wildercord.world.sites.water;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.world.dungeons.DungeonPiece;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -219,7 +221,7 @@ abstract class WaterPiece extends DungeonPiece {
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		Entity entity = type.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		Entity entity = McEntities.create(type, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (entity == null) {
 			return;
 		}

@@ -1634,7 +1634,7 @@ public class StarEater extends DungeonBoss {
 		ElementFx.blackCore(level, c, 1.5, SHIFT_TICKS);
 		announce(level, "message.wildercord.star_eater_phase." + phase, COLOR);
 		for (int i = 0; i < 2; i++) {
-			Mob guard = (i == 0 ? EntityType.STRAY : EntityType.SKELETON).create(level, MobSpawnType.MOB_SUMMONED);
+			Mob guard = (i == 0 ? EntityType.STRAY : EntityType.SKELETON).create(level);
 			if (guard == null) {
 				continue;
 			}

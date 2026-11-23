@@ -1,5 +1,7 @@
 package dev.wildercord.familiar;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.LeyWalker;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.world.LeyLines;
@@ -76,7 +78,7 @@ public final class WispSpawner {
 
 	/** A wild wisp of {@code element} at {@code at}. */
 	public static Wisp spawn(ServerLevel level, BlockPos at, String element) {
-		Wisp wisp = FamiliarContent.WISP.create(level, MobSpawnType.NATURAL);
+		Wisp wisp = McEntities.create(FamiliarContent.WISP, level, MobSpawnType.NATURAL);
 		if (wisp == null) {
 			return null;
 		}

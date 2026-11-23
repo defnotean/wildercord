@@ -233,7 +233,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				ShrineCatRules.Variant[] order = ShrineCatRules.Variant.values();
 				check(order.length == 4, "Four real Shrine Cat variants registered");
 				for (int i = 0; i < order.length; i++) {
-					ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(l, MobSpawnType.COMMAND);
+					ShrineCat cat = McEntities.create(ShrineCatContent.SHRINE_CAT, l, MobSpawnType.COMMAND);
 					check(cat != null, "ShrineCat created");
 					cat.moveTo(xs[i], 101.0, 3.2, 180.0F, 0.0F);
 					cat.configureVillage(order[i], new BlockPos((int) xs[i], 101, 3));
@@ -277,7 +277,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				UUID[] ids = new UUID[SakuraVillager.ROLE_COUNT];
 				double[] vx = {-4.5, -2.7, -0.9, 0.9, 2.7, 4.5};
 				for (int role = 0; role < SakuraVillager.ROLE_COUNT; role++) {
-					SakuraVillager v = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.COMMAND);
+					SakuraVillager v = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.COMMAND);
 					check(v != null, "SakuraVillager role " + role + " created");
 					v.moveTo(vx[role], 101.0, 6.8, 180.0F, 0.0F);
 					v.configure(role);
@@ -295,7 +295,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 			UUID[] duoIds = w.getServer().computeOnServer(s -> {
 				ServerLevel l = s.overworld();
-				SakuraVillager tea = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.COMMAND);
+				SakuraVillager tea = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.COMMAND);
 				check(tea != null, "Tea Master created");
 				tea.moveTo(-3.0, 101.0, 5.5, 180.0F, 0.0F);
 				tea.configure(SakuraVillager.TEA_MASTER);
@@ -303,7 +303,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				tea.setNoAi(true);
 				l.addFreshEntity(tea);
 
-				SakuraVillager maiden = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.COMMAND);
+				SakuraVillager maiden = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.COMMAND);
 				check(maiden != null, "Shrine Maiden created");
 				maiden.moveTo(-1.0, 101.0, 5.5, 180.0F, 0.0F);
 				maiden.configure(SakuraVillager.SHRINE_MAIDEN);
@@ -317,14 +317,14 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 					}
 				}
 
-				KarakuriSentinel karakuri = MonsterContent.KARAKURI_SENTINEL.create(l, MobSpawnType.COMMAND);
+				KarakuriSentinel karakuri = McEntities.create(MonsterContent.KARAKURI_SENTINEL, l, MobSpawnType.COMMAND);
 				check(karakuri != null, "KarakuriSentinel created");
 				karakuri.moveTo(1.0, 101.0, 5.5, 180.0F, 0.0F);
 				face(karakuri, 180.0F);
 				karakuri.setNoAi(true);
 				l.addFreshEntity(karakuri);
 
-				PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, MobSpawnType.COMMAND);
+				PaperLanternSpirit spirit = McEntities.create(MonsterContent.PAPER_LANTERN_SPIRIT, l, MobSpawnType.COMMAND);
 				check(spirit != null, "PaperLanternSpirit created");
 				spirit.moveTo(3.0, 101.5, 5.5, 180.0F, 0.0F);
 				face(spirit, 180.0F);
@@ -404,7 +404,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag savedV = new CompoundTag();
 				maiden.saveWithoutId(savedV);
-				SakuraVillager loadedV = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.LOAD);
+				SakuraVillager loadedV = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.LOAD);
 				check(loadedV != null, "Restored villager created");
 				loadedV.load(savedV);
 				check(loadedV.role() == SakuraVillager.SHRINE_MAIDEN, "SakuraVillager role persisted via NBT");
@@ -412,7 +412,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag savedF = new CompoundTag();
 				fisher.saveWithoutId(savedF);
-				SakuraVillager loadedF = ShrineCatContent.SAKURA_VILLAGER.create(l, MobSpawnType.LOAD);
+				SakuraVillager loadedF = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, l, MobSpawnType.LOAD);
 				check(loadedF != null, "Restored fisherman created");
 				loadedF.load(savedF);
 				check(loadedF.role() == SakuraVillager.FISHERMAN, "SakuraVillager fisherman role persisted via NBT");
@@ -438,8 +438,8 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 				player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 3, true, false));
 				player.teleportTo(l, -28.0, 101.0, -4.0, Set.<RelativeMovement>of(), 0.0F, 0.0F);
 
-				KarakuriSentinel k2 = MonsterContent.KARAKURI_SENTINEL.create(l, MobSpawnType.COMMAND);
-				PaperLanternSpirit p2 = MonsterContent.PAPER_LANTERN_SPIRIT.create(l, MobSpawnType.COMMAND);
+				KarakuriSentinel k2 = McEntities.create(MonsterContent.KARAKURI_SENTINEL, l, MobSpawnType.COMMAND);
+				PaperLanternSpirit p2 = McEntities.create(MonsterContent.PAPER_LANTERN_SPIRIT, l, MobSpawnType.COMMAND);
 				check(k2 != null && p2 != null, "Active combat test mobs created");
 				k2.moveTo(-25.5, 101.0, -4.0, 90.0F, 0.0F);
 				p2.moveTo(-30.5, 101.5, -4.0, -90.0F, 0.0F);
@@ -839,7 +839,7 @@ public final class ShrineSanctuaryTest implements FabricClientGameTest {
 
 				CompoundTag saved = new CompoundTag();
 				freya.saveWithoutId(saved);
-				ShrineCat restored = ShrineCatContent.SHRINE_CAT.create(l, MobSpawnType.LOAD);
+				ShrineCat restored = McEntities.create(ShrineCatContent.SHRINE_CAT, l, MobSpawnType.LOAD);
 				check(restored != null, "Restored cat created");
 				restored.load(saved);
 				check(restored.variant() == ShrineCatRules.Variant.FREYA, "Variant preserved in save");

@@ -1,5 +1,7 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.config.Config;
 import dev.wildercord.monster.MonsterContent;
 import net.minecraft.core.BlockPos;
@@ -186,7 +188,7 @@ public final class WaysideShrinePiece extends DungeonPiece {
 		var foot=getWorldPos(x,1,z);if(!bb.isInside(foot))return;
 		var toward=getWorldPos(tx,1,tz);
 		float yaw=(float)Math.toDegrees(Math.atan2(-(toward.getX()-foot.getX()),toward.getZ()-foot.getZ()));
-		var mimic=MonsterContent.COFFER_MIMIC.create(level.getLevel(),MobSpawnType.STRUCTURE);if(mimic==null)return;
+		var mimic=McEntities.create(MonsterContent.COFFER_MIMIC, level.getLevel(), MobSpawnType.STRUCTURE);if(mimic==null)return;
 		mimic.setPersistenceRequired();
 		mimic.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,yaw,0);
 		mimic.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),MobSpawnType.STRUCTURE,null);

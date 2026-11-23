@@ -1,5 +1,7 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.config.Config;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
@@ -125,7 +127,7 @@ public final class SilkHollowPiece extends DungeonPiece {
 		var hang=getWorldPos(CX,REST_Y,CZ);if(!bb.isInside(hang))return;
 		var drift=getWorldPos(CX,REST_Y,CZ-10);
 		float rest=(float)Math.toDegrees(Math.atan2(-(drift.getX()-hang.getX()),drift.getZ()-hang.getZ()));
-		var matron=dev.wildercord.aura.world.Guardians.HOLLOW_MATRON.create(level.getLevel(),net.minecraft.world.entity.MobSpawnType.STRUCTURE);if(matron==null)return;
+		var matron=McEntities.create(dev.wildercord.aura.world.Guardians.HOLLOW_MATRON, level.getLevel(), net.minecraft.world.entity.MobSpawnType.STRUCTURE);if(matron==null)return;
 		matron.moveTo(hang.getX()+.5,hang.getY(),hang.getZ()+.5,rest,0);
 		matron.finalizeSpawn(level,level.getCurrentDifficultyAt(hang),net.minecraft.world.entity.MobSpawnType.STRUCTURE,null);
 		// Her thread hangs from the underside of the nest, at its deepest.

@@ -1,5 +1,7 @@
 package dev.wildercord.world.sites.wilds;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.wildlife.SakuraVillager;
 import dev.wildercord.wildlife.ShrineCat;
 import dev.wildercord.wildlife.ShrineCatContent;
@@ -29,7 +31,7 @@ final class SakuraVillageHelper {
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		SakuraVillager villager = ShrineCatContent.SAKURA_VILLAGER.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		SakuraVillager villager = McEntities.create(ShrineCatContent.SAKURA_VILLAGER, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (villager == null) {
 			return;
 		}
@@ -42,7 +44,7 @@ final class SakuraVillageHelper {
 		if (!bb.isInside(pos)) {
 			return;
 		}
-		ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level.getLevel(), MobSpawnType.STRUCTURE);
+		ShrineCat cat = McEntities.create(ShrineCatContent.SHRINE_CAT, level.getLevel(), MobSpawnType.STRUCTURE);
 		if (cat == null) {
 			return;
 		}

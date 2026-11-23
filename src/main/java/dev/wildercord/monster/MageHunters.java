@@ -1,5 +1,7 @@
 package dev.wildercord.monster;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.player.Heart;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
@@ -48,7 +50,7 @@ public final class MageHunters {
 			BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
 			if (!level.getFluidState(ground).isEmpty() || !level.getFluidState(ground.below()).isEmpty()) continue;
 			for (int i = 0; i < count; i++) {
-				MageHunter hunter = MonsterContent.MAGE_HUNTER.create(level, MobSpawnType.EVENT);
+				MageHunter hunter = McEntities.create(MonsterContent.MAGE_HUNTER, level, MobSpawnType.EVENT);
 				if (hunter == null) break;
 				hunter.moveTo(ground.getX() + 0.5 + i * 1.5, ground.getY(), ground.getZ() + 0.5, random.nextFloat() * 360, 0);
 				if (!level.noCollision(hunter)) hunter.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, 0, 0);

@@ -1,5 +1,7 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -69,7 +71,7 @@ public final class PracticeRoom {
   count=Math.clamp(count,1,24);
   world.getEntitiesOfClass(TrainingDummy.class,new AABB(-12,79,-8,13,85,33)).forEach(TrainingDummy::discard);
   for(int i=0;i<count;i++) {
-   var dummy=WildercordEntities.TRAINING_DUMMY.create(world,MobSpawnType.TRIGGERED);
+   var dummy=McEntities.create(WildercordEntities.TRAINING_DUMMY, world, MobSpawnType.TRIGGERED);
    if(dummy==null)continue;
    dummy.setPos((i%5-2)*4+.5,81,10+(i/5)*4+.5);
    dummy.setPracticeMoving(moving); world.addFreshEntity(dummy);

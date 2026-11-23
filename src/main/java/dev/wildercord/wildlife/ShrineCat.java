@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.Targets;
 import dev.wildercord.monster.KarakuriSentinel;
 import dev.wildercord.monster.MonsterContent;
@@ -471,13 +473,13 @@ public class ShrineCat extends TamableAnimal {
 		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 0.8, getZ(), 20, 1.4, 0.4, 1.4, 0.05);
 		BlockPos sentinelPos = findOpenNearby(level, blockPosition().offset(3, 0, 0));
 		BlockPos spiritPos = findOpenNearby(level, blockPosition().offset(-3, 0, 0));
-		KarakuriSentinel sentinel = MonsterContent.KARAKURI_SENTINEL.create(level, MobSpawnType.REINFORCEMENT);
+		KarakuriSentinel sentinel = McEntities.create(MonsterContent.KARAKURI_SENTINEL, level, MobSpawnType.REINFORCEMENT);
 		if (sentinel != null) {
 			sentinel.moveTo(sentinelPos.getX() + 0.5, sentinelPos.getY(), sentinelPos.getZ() + 0.5, getYRot(), 0.0F);
 			sentinel.finalizeSpawn(level, level.getCurrentDifficultyAt(sentinelPos), MobSpawnType.REINFORCEMENT, null);
 			level.addFreshEntity(sentinel);
 		}
-		PaperLanternSpirit spirit = MonsterContent.PAPER_LANTERN_SPIRIT.create(level, MobSpawnType.REINFORCEMENT);
+		PaperLanternSpirit spirit = McEntities.create(MonsterContent.PAPER_LANTERN_SPIRIT, level, MobSpawnType.REINFORCEMENT);
 		if (spirit != null) {
 			spirit.moveTo(spiritPos.getX() + 0.5, spiritPos.getY() + 0.5, spiritPos.getZ() + 0.5, getYRot(), 0.0F);
 			spirit.finalizeSpawn(level, level.getCurrentDifficultyAt(spiritPos), MobSpawnType.REINFORCEMENT, null);
@@ -891,7 +893,7 @@ public class ShrineCat extends TamableAnimal {
 			if (have.contains(v)) {
 				continue;
 			}
-			ShrineCat cat = ShrineCatContent.SHRINE_CAT.create(level, MobSpawnType.COMMAND);
+			ShrineCat cat = McEntities.create(ShrineCatContent.SHRINE_CAT, level, MobSpawnType.COMMAND);
 			if (cat == null) {
 				continue;
 			}

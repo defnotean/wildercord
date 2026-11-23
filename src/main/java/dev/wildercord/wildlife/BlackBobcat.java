@@ -150,7 +150,7 @@ public class BlackBobcat extends TamableAnimal {
 	@Override
 	public  AgeableMob getBreedOffspring(ServerLevel level, AgeableMob partner) {
 		// A kitten of its own kind: a lynx raises a lynx, a cougar a cougar.
-		if (!(getType().create(level, MobSpawnType.BREEDING) instanceof BlackBobcat kitten)) {
+		if (!(getType().create(level) instanceof BlackBobcat kitten)) {
 			return null;
 		}
 		if (isTame()) {

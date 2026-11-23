@@ -1,5 +1,7 @@
 package dev.wildercord.content;
 
+import dev.wildercord.compat.McEntities;
+
 import net.minecraft.network.chat.Component;
 import java.util.List;
 import dev.wildercord.cast.TrainingDummy;
@@ -35,7 +37,7 @@ public class TrainingDummyItem extends Item {
 		}
 		BlockPos pos = context.getClickedPos().relative(context.getClickedFace());
 		Vec3 at = Vec3.atBottomCenterOf(pos);
-		TrainingDummy dummy = WildercordEntities.TRAINING_DUMMY.create(level, MobSpawnType.SPAWN_ITEM_USE);
+		TrainingDummy dummy = McEntities.create(WildercordEntities.TRAINING_DUMMY, level, MobSpawnType.SPAWN_ITEM_USE);
 		if (dummy == null || !level.noCollision(dummy, dummy.getDimensions(dummy.getPose()).makeBoundingBox(at))) {
 			return InteractionResult.FAIL;
 		}

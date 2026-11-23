@@ -166,7 +166,7 @@ public final class Tempering {
 	/** A Splitting elite's death: lesser copies, already tempered (so never elites themselves), with half their kind's health. */
 	private static void split(Mob mob, ServerLevel level) {
 		for (int i = 0; i < TemperingRules.SPLIT_COUNT; i++) {
-			if (!(mob.getType().create(level, net.minecraft.world.entity.MobSpawnType.MOB_SUMMONED) instanceof Mob copy)) return;
+			if (!(mob.getType().create(level) instanceof Mob copy)) return;
 			copy.addTag(TAG);
 			copy.addTag(THREAT_TAG + threat(mob));
 			double angle = Math.PI * 2 * i / TemperingRules.SPLIT_COUNT;

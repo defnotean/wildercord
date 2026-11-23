@@ -1,5 +1,7 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.cast.TemporaryBlocks;
 import dev.wildercord.config.Config;
 import dev.wildercord.config.WildercordConfig;
@@ -96,7 +98,7 @@ public final class DuelistSpawner {
 
 	/** Brings a duelist to a spot found for it (and, at a camp, lights its fire). */
 	public static  Duelist spawnAt(ServerLevel level, Spot spot, boolean camps, RandomSource random) {
-		Duelist duelist = AuraWorld.DUELIST.create(level, MobSpawnType.EVENT);
+		Duelist duelist = McEntities.create(AuraWorld.DUELIST, level, MobSpawnType.EVENT);
 		if (duelist == null) {
 			return null;
 		}

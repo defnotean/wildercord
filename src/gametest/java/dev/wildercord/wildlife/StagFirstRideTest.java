@@ -1,5 +1,7 @@
 package dev.wildercord.wildlife;
 
+import dev.wildercord.compat.McEntities;
+
 import java.util.Set;
 import java.util.UUID;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -41,7 +43,7 @@ public final class StagFirstRideTest implements FabricClientGameTest {
 				}
 				p(s).setGameMode(GameType.SURVIVAL);
 				p(s).teleportTo(l, 0.5, 101, 0.5, Set.<RelativeMovement>of(), 0, 10);
-				var stag = MountContent.RIDGEBACK_STAG.create(l, MobSpawnType.COMMAND);
+				var stag = McEntities.create(MountContent.RIDGEBACK_STAG, l, MobSpawnType.COMMAND);
 				stag.setPos(0.5, 101, 1.5);
 				l.addFreshEntity(stag);
 				stag.tameWithName(p(s));

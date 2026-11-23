@@ -1,5 +1,7 @@
 package dev.wildercord.world.dungeons;
 
+import dev.wildercord.compat.McEntities;
+
 import dev.wildercord.config.Config;
 import net.minecraft.core.*;
 import net.minecraft.util.RandomSource;
@@ -87,7 +89,7 @@ public final class AshenGladePiece extends DungeonPiece {
 		var foot=getWorldPos(REST_X,F+1,REST_Z);if(!bb.isInside(foot))return;
 		var gate=getWorldPos(REST_X,F+1,REST_Z-10);
 		float rest=(float)Math.toDegrees(Math.atan2(-(gate.getX()-foot.getX()),gate.getZ()-foot.getZ()));
-		var stag=dev.wildercord.aura.world.Guardians.ASHEN_STAG.create(level.getLevel(),net.minecraft.world.entity.MobSpawnType.STRUCTURE);if(stag==null)return;
+		var stag=McEntities.create(dev.wildercord.aura.world.Guardians.ASHEN_STAG, level.getLevel(), net.minecraft.world.entity.MobSpawnType.STRUCTURE);if(stag==null)return;
 		stag.moveTo(foot.getX()+.5,foot.getY(),foot.getZ()+.5,rest,0);
 		stag.finalizeSpawn(level,level.getCurrentDifficultyAt(foot),net.minecraft.world.entity.MobSpawnType.STRUCTURE,null);
 		stag.bind(foot,rest,worldBox(CX-(int)R,F,CZ-(int)R,CX+(int)R,F+14,CZ+(int)R));
