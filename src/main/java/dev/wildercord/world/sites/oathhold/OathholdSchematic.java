@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.io.InputStream;
@@ -26,9 +27,12 @@ public final class OathholdSchematic {
 	public static boolean placeHouse1(OathholdCanvas c, int baseY, int x0, int z0, int x1, int z1, boolean spawnResident, int seed) {
 		Schematic s = loadHouse1();
 		if (s == null) return false;
-		int ox = x0 + ((x1 - x0 + 1) - s.width) / 2;
-		int oz = z0 + ((z1 - z0 + 1) - s.length) / 2;
-		if (!c.intersects(ox, oz, ox + s.width - 1, oz + s.length - 1)) return true;
+		Rotation rot = Rotation.values()[Math.floorMod(seed, 4)];
+		int rw = (rot == Rotation.CLOCKWISE_90 || rot == Rotation.COUNTERCLOCKWISE_90) ? s.length : s.width;
+		int rl = (rot == Rotation.CLOCKWISE_90 || rot == Rotation.COUNTERCLOCKWISE_90) ? s.width : s.length;
+		int ox = x0 + ((x1 - x0 + 1) - rw) / 2;
+		int oz = z0 + ((z1 - z0 + 1) - rl) / 2;
+		if (!c.intersects(ox, oz, ox + rw - 1, oz + rl - 1)) return true;
 
 		for (int y = 0; y < s.height; y++) {
 			for (int z = 0; z < s.length; z++) {
@@ -38,7 +42,19 @@ public final class OathholdSchematic {
 					if (pIdx < 0 || pIdx >= s.palette.length) continue;
 					BlockState state = s.palette[pIdx];
 					if (state.isAir()) continue;
-					c.set(ox + x, baseY + y, oz + z, state);
+					int rx = switch (rot) {
+						case NONE -> x;
+						case CLOCKWISE_90 -> s.length - 1 - z;
+						case CLOCKWISE_180 -> s.width - 1 - x;
+						case COUNTERCLOCKWISE_90 -> z;
+					};
+					int rz = switch (rot) {
+						case NONE -> z;
+						case CLOCKWISE_90 -> x;
+						case CLOCKWISE_180 -> s.length - 1 - z;
+						case COUNTERCLOCKWISE_90 -> s.width - 1 - x;
+					};
+					c.set(ox + rx, baseY + y, oz + rz, state.rotate(rot));
 				}
 			}
 		}
