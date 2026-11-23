@@ -91,7 +91,10 @@
         "OathholdSnowMixin",
         "OathholdWeatherSnowMixin",
         "RangedAttributeMaxHealthMixin",
-		"LivingEntityJumpingAccessor"
+		"LivingEntityJumpingAccessor",
+		"DisplayAccessor",
+		"BlockDisplayAccessor",
+		"TextDisplayAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
