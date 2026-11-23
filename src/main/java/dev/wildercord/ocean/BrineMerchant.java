@@ -82,9 +82,10 @@ public class BrineMerchant extends WanderingTrader {
 		goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
 	}
 
+	/** 1.21.5 pins canBreatheUnderwater; a steady air supply keeps the tidefolk breathing. */
 	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
+	protected int decreaseAirSupply(int air) {
+		return air;
 	}
 
 	@Override
@@ -168,13 +169,13 @@ public class BrineMerchant extends WanderingTrader {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void readAdditionalSaveData(CompoundTag inputTag) { McValueInput input = new McValueInput(inputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.readAdditionalSaveData(inputTag);
 		setMerchantProfession(OceanRules.MerchantProfession.fromId(input.getIntOr("OceanProfession", 0)));
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
+	public void addAdditionalSaveData(CompoundTag outputTag) { McValueOutput output = new McValueOutput(outputTag, (level() == null ? RegistryAccess.EMPTY : level().registryAccess()));
 		super.addAdditionalSaveData(outputTag);
 		output.putInt("OceanProfession", getMerchantProfession().id);
 	}

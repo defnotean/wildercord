@@ -76,9 +76,10 @@ public class SirenVeilJelly extends Monster {
 		return new WaterBoundPathNavigation(this, level);
 	}
 
+	/** 1.21.5 pins canBreatheUnderwater; a steady air supply keeps the tidefolk breathing. */
 	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
+	protected int decreaseAirSupply(int air) {
+		return air;
 	}
 
 	@Override
