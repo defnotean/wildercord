@@ -99,7 +99,7 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 				mc.options.renderDistance().set(12);
 				mc.options.fov().set(75);
 				mc.options.broadcastOptions();
-				mc.resizeGui();
+				GametestCompat.resizeGui(mc);
 			});
 
 			// Sweep real deep-ocean chunks and assert every ocean locator finds a submerged floor.
@@ -174,7 +174,7 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 					+ " perStructure=" + Arrays.toString(perStructure));
 				return new int[] {
 					sea, candidates.size(), coralSuccess, firstSurf, firstFloor,
-					firstChunk == null ? 0 : firstChunk.x(), firstChunk == null ? 0 : firstChunk.z()
+					firstChunk == null ? 0 : firstChunk.x, firstChunk == null ? 0 : firstChunk.z
 				};
 			});
 
@@ -207,7 +207,7 @@ public final class DeepOceanPlacementTest implements FabricClientGameTest {
 				RandomSource rand = RandomSource.create(20261123L);
 				for (StructurePiece piece : start.getPieces()) {
 					var bb = piece.getBoundingBox();
-					piece.postProcess(l, l.structureManager(), gen, rand, bb, ChunkPos.containing(bb.getCenter()), bb.getCenter());
+					piece.postProcess(l, l.structureManager(), gen, rand, bb, new ChunkPos(bb.minX() >> 4, bb.minZ() >> 4), bb.getCenter());
 				}
 				BoundingBox box = start.getBoundingBox();
 				check(countBlocks(l, box, Blocks.CONDUIT) >= 1, "Naturally located Coral-Dome placed its central Conduit");

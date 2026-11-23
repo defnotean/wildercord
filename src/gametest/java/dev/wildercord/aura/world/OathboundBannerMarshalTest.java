@@ -1,5 +1,6 @@
 package dev.wildercord.aura.world;
 
+import dev.wildercord.gametest.compat.GametestCompat;
 import dev.wildercord.compat.McEntities;
 import dev.wildercord.spell.FieldGuide;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -133,7 +134,7 @@ public final class OathboundBannerMarshalTest implements FabricClientGameTest {
 			context.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1600, 900);
 				mc.options.guiScale().set(2);
-				mc.resizeGui();
+				GametestCompat.resizeGui(mc);
 			});
 
 			var server = world.getServer();

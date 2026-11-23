@@ -1,5 +1,6 @@
 package dev.wildercord.ocean;
 
+import dev.wildercord.gametest.compat.GametestCompat;
 import dev.wildercord.aura.world.BossDamage;
 import dev.wildercord.client.fx.CustomMobFireFx;
 import java.util.List;
@@ -194,7 +195,7 @@ public final class DeepOceanEntitiesAndGearTest implements FabricClientGameTest 
 				mc.options.renderDistance().set(10);
 				mc.options.fov().set(72);
 				mc.options.broadcastOptions();
-				mc.resizeGui();
+				GametestCompat.resizeGui(mc);
 			});
 
 			// Build Aquarium Stage first and wait for client chunk meshing before spawning & shooting
